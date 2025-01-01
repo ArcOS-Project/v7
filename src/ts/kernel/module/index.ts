@@ -6,7 +6,7 @@ export class KernelModule {
   public id: string;
 
   constructor(kernel: WaveKernel, id: string) {
-    if (kernel.getModule(id))
+    if (kernel.getModule(id, true))
       throw new Error(`KernelModule::${id} is already loaded`);
 
     this.kernel = kernel;

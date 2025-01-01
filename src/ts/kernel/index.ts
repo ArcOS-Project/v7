@@ -4,6 +4,7 @@ import {
   type LogItem,
 } from "../../types/logging";
 import { ProcessHandler } from "../process/handler";
+import { StateHandler } from "../state";
 import { InitProcess } from "./init";
 import { KernelModule } from "./module";
 import { KernelModules } from "./module/store";
@@ -16,6 +17,8 @@ export class WaveKernel {
   public Logs: LogItem[] = [];
   public startMs: number;
   public init: InitProcess | undefined;
+  public state: StateHandler | undefined;
+  public initPid = -1;
   public params = new URLSearchParams();
 
   public static get(): WaveKernel {
@@ -37,16 +40,23 @@ export class WaveKernel {
   }
 
   async _init() {
-    this.Log(`KERNEL`, `Initialized Core Modules`);
+    this.Log(`KERNEL`, `Called _init`);
 
     await this._kernelModules();
 
     const stack = this.getModule<ProcessHandler>("stack");
 
     this.init = await stack.spawn<InitProcess>(InitProcess);
+    this.initPid = this.init?.pid || -1;
+
+    this.state = await stack.spawn<StateHandler>(StateHandler, this.initPid);
+
+    console.log(this.init);
+
+    await this.init?.jumpstart();
   }
 
-  getModule<T = KernelModule>(id: string): T {
+  getModule<T = KernelModule>(id: string, dontCrash = false): T {
     const mod = (this as any)[id];
     const result =
       this.modules.includes(id) &&
@@ -56,12 +66,14 @@ export class WaveKernel {
         ? (mod as T)
         : undefined;
 
-    if (!result) throw new Error(`No such kernel module ${id}`);
+    if (!result && !dontCrash) throw new Error(`No such kernel module ${id}`);
 
-    return result;
+    return result as T;
   }
 
   private async _kernelModules() {
+    this.Log(`KERNEL`, `Loading kernel modules`);
+
     for (const [id, mod] of Object.entries(KernelModules)) {
       (this as any)[id] = new mod(this, id);
 

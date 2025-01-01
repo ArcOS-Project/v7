@@ -1,7 +1,7 @@
 import type { State } from "../../types/state";
 import BootRender from "../../state/boot/render";
-import BootHtml from "../../state/boot/boot.html?raw";
-import BootCss from "../../css/state/boot.css?raw";
+import BootHtml from "../../state/boot/boot.html?url";
+import BootCss from "../../css/state/boot.css?url";
 
 export const States: Record<string, State> = {
   boot: {

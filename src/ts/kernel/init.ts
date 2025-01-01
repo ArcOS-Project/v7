@@ -11,9 +11,11 @@ export class InitProcess extends Process {
     throw new Error("Attempted to kill init!");
   }
 
-  jumpstart() {
+  async jumpstart() {
     const kernel = WaveKernel.get();
 
-    const state = kernel.getModule("state");
+    const state = kernel.state;
+
+    state?.loadState("boot");
   }
 }

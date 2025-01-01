@@ -16,7 +16,7 @@ export class ProcessHandler extends KernelModule {
 
   async spawn<T = Process>(
     process: typeof Process,
-    parentPid = undefined,
+    parentPid: number | undefined = undefined,
     ...args: any[]
   ): Promise<T | undefined> {
     if (WaveKernel.isPanicked()) return;
@@ -32,7 +32,7 @@ export class ProcessHandler extends KernelModule {
     if (proc.start) {
       const result = await proc.start();
 
-      if (!result) return;
+      if (result === false) return;
     }
 
     proc.name = proc.constructor.name;
