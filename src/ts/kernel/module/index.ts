@@ -1,4 +1,4 @@
-import type { WaveKernel } from "..";
+import { WaveKernel } from "..";
 import { Log } from "../logging";
 
 export class KernelModule {
@@ -6,6 +6,9 @@ export class KernelModule {
   public id: string;
 
   constructor(kernel: WaveKernel, id: string) {
+    if (kernel.getModule(id))
+      throw new Error(`KernelModule::${id} is already loaded`);
+
     this.kernel = kernel;
     this.id = id;
   }
