@@ -1,3 +1,4 @@
+import type { AppRenderer } from "../apps/renderer";
 import { WaveKernel } from "../kernel";
 import { Log } from "../kernel/logging";
 import { KernelModule } from "../kernel/module";
@@ -6,7 +7,9 @@ import type { Process } from "./instance";
 
 export class ProcessHandler extends KernelModule {
   private lastPid: number = 0;
-  private store = Store<Map<number, Process>>(new Map([]));
+  public store = Store<Map<number, Process>>(new Map([]));
+  public rendererPid = -1;
+  public renderer: AppRenderer | undefined;
 
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);

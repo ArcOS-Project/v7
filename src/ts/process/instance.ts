@@ -3,7 +3,7 @@ import { ProcessDispatch } from "./dispatch";
 import type { ProcessHandler } from "./handler";
 
 export class Process {
-  private handler: ProcessHandler;
+  public handler: ProcessHandler;
   public dispatch: ProcessDispatch;
   public kernel: WaveKernel;
   public pid: number;
