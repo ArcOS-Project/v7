@@ -103,12 +103,12 @@ export class ProcessHandler extends KernelModule {
     return result;
   }
 
-  getProcess(pid: number) {
+  getProcess<T = Process>(pid: number) {
     const proc = this.store.get().get(pid);
 
     if (!proc) return undefined;
 
-    return proc._disposed ? undefined : proc;
+    return proc._disposed ? undefined : (proc as T);
   }
 
   getPid() {

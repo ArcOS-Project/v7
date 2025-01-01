@@ -1,8 +1,12 @@
+import { unmount } from "svelte";
+import type { App } from "../../types/app";
 import type { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
+import { Sleep } from "../sleep";
 import { Store } from "../writable";
 import { AppRendererError } from "./error";
-import type { AppProcess } from "./process";
+import { AppProcess } from "./process";
+import { htmlspecialchars } from "../util";
 
 export class AppRenderer extends Process {
   currentState: number[] = [];
@@ -41,36 +45,264 @@ export class AppRenderer extends Process {
     this.syncDisposed();
   }
 
-  syncNewbies() {}
+  syncNewbies() {
+    this.disposedCheck();
 
-  syncDisposed() {}
+    const appProcesses: AppProcess[] = [];
 
-  async render(process: AppProcess) {}
+    for (const [_, proc] of [...this.handler.store.get()]) {
+      if (proc instanceof AppProcess && proc.app && !proc._disposed)
+        appProcesses.push(proc);
+    }
 
-  _windowClasses(window: HTMLDivElement, data: any) {}
+    for (const process of appProcesses) {
+      const presentInstances = this.currentState.filter(
+        (p) => p == process.pid
+      );
+
+      if (!presentInstances.length && process.app) {
+        this.currentState.push(process.pid);
+
+        this.render(process);
+      }
+    }
+  }
+
+  syncDisposed() {
+    this.disposedCheck();
+
+    for (const pid of this.currentState) {
+      const process = this.handler.getProcess(pid);
+
+      if (process) continue;
+
+      this.remove(pid);
+    }
+  }
+
+  async render(process: AppProcess) {
+    this.disposedCheck();
+
+    if (process._disposed) return;
+
+    const window = document.createElement("div");
+    const titlebar = this._renderTitlebar(process);
+    const body = document.createElement("div");
+    const styling = document.createElement("link");
+
+    const { app } = process;
+    const { data } = app;
+
+    styling.rel = "stylesheet";
+    styling.href = data.assets.css;
+    styling.id = `$${process.pid}`;
+
+    document.body.append(styling);
+
+    await Sleep(100);
+
+    body.className = "body";
+
+    window.className = "window";
+    window.setAttribute("data-pid", process.pid.toString());
+    window.setAttribute("data-id", data.id);
+
+    if (!data.core) {
+      window.append(titlebar as HTMLDivElement, body);
+    } else {
+      window.append(body);
+    }
+
+    window.classList.add(data.id);
+
+    this._windowClasses(window, data);
+    this._windowEvents(process.pid, window, titlebar, data);
+
+    this.target.append(window);
+
+    try {
+      await process.__render__(body);
+      this.focusPid(process.pid);
+      await process.CrashDetection();
+    } catch (e) {
+      if (!process._disposed) {
+        this.notifyCrash(data, e as Error, process);
+      }
+
+      await Sleep(0);
+      await this.handler.kill(process.pid);
+    }
+  }
+
+  _windowClasses(window: HTMLDivElement, data: App) {}
 
   centerWindow(pid: number) {}
 
   _windowEvents(
     pid: number,
     window: HTMLDivElement,
-    titlebar: HTMLDivElement,
-    data: any
+    titlebar: HTMLDivElement | undefined,
+    data: App
   ) {}
 
   focusPid(pid: number) {}
 
-  async _windowHtml(body: HTMLDivElement, data: any) {}
+  async _windowHtml(body: HTMLDivElement, data: App) {}
 
-  _renderTitlebar(process: AppProcess) {}
+  _renderTitlebar(process: AppProcess) {
+    this.disposedCheck();
 
-  async remove(pid: number) {}
+    if (process.app.data.core) return undefined;
 
-  toggleMaximize(pid: number) {}
+    const titlebar = document.createElement("div");
+    const title = document.createElement("div");
+    const titleIcon = document.createElement("img");
+    const titleCaption = document.createElement("span");
+    const controls = document.createElement("div");
 
-  unMinimize(pid: number) {}
+    controls.className = "controls";
 
-  toggleMinimize(pid: number) {}
+    const { app } = process;
+    const { data } = app;
 
-  getAppInstances(id: string, originPid?: number) {}
+    if (data.controls.minimize) {
+      const minimize = document.createElement("button");
+
+      minimize.className = "minimize icon-chevron-down";
+      minimize.addEventListener("click", () =>
+        this.toggleMinimize(process.pid)
+      );
+
+      controls.append(minimize);
+    }
+
+    if (data.controls.maximize) {
+      const maximize = document.createElement("button");
+
+      maximize.className = "maximize icon-chevron-up";
+      maximize.addEventListener("click", () =>
+        this.toggleMaximize(process.pid)
+      );
+
+      controls.append(maximize);
+    }
+
+    if (data.controls.close) {
+      const close = document.createElement("button");
+
+      close.className = "close icon-x";
+      close.addEventListener("click", async () => {
+        process.closeWindow();
+      });
+
+      titlebar.append(close);
+    }
+
+    titleCaption.innerText = `${data.metadata.name}`;
+
+    process.windowTitle.subscribe((v) => {
+      titleCaption.innerText = v;
+    });
+
+    title.className = "window-title";
+    title.append(titleIcon, titleCaption);
+
+    titlebar.className = "titlebar";
+    titlebar.append(title, controls);
+
+    return titlebar;
+  }
+
+  async remove(pid: number) {
+    this.disposedCheck();
+
+    if (!pid) return;
+
+    const process = this.handler.getProcess<AppProcess>(pid);
+
+    if (!process) return;
+
+    unmount(process.componentMount);
+
+    const window = this.target.querySelector(`div.window[data-pid="${pid}"]`);
+    const styling = document.body.querySelector(`link[id="$${pid}"`);
+
+    if (window) window.remove();
+    if (styling) styling.remove();
+  }
+
+  toggleMaximize(pid: number) {
+    this.disposedCheck();
+
+    const window = this.target.querySelector(`div.window[data-pid="${pid}"]`);
+
+    if (!window) return;
+
+    window.classList.toggle("maximized");
+
+    const process = this.handler.getProcess<AppProcess>(+pid);
+
+    if (!process || !process.app) return;
+
+    process.app.data.state.maximized = window.classList.contains("maximized");
+  }
+
+  unMinimize(pid: number) {
+    this.disposedCheck();
+
+    const window = this.target.querySelector(`div.window[data-pid="${pid}"]`);
+
+    if (!window) return;
+
+    window.classList.remove("minimized");
+
+    const process = this.handler.getProcess<AppProcess>(+pid);
+
+    if (!process || !process.app) return;
+
+    process.app.data.state.minimized = false;
+  }
+
+  toggleMinimize(pid: number) {
+    this.disposedCheck();
+
+    const window = this.target.querySelector(`div.window[data-pid="${pid}"]`);
+
+    if (!window) return;
+
+    window.classList.toggle("minimized");
+
+    const process = this.handler.getProcess<AppProcess>(+pid);
+
+    if (!process || !process.app) return;
+
+    process.app.data.state.minimized = window.classList.contains("minimized");
+  }
+
+  getAppInstances(id: string, originPid?: number) {
+    const result = [];
+
+    for (const pid of this.currentState) {
+      if (pid === originPid) continue;
+
+      const proc = this.handler.getProcess<AppProcess>(pid);
+
+      if (proc && proc.app && proc.app.data && proc.app.data.id === id)
+        result.push(proc);
+    }
+
+    return result;
+  }
+
+  notifyCrash(data: App, e: Error, process: AppProcess) {
+    const lines = [
+      `<b><code>${data.id}::'${data.metadata.name}'</code> (PID ${process.pid}) has encountered a problem and needs to close. I am sorry for the inconvenience.</b>`,
+      `If you were in the middle of something, the information you were working on might be lost. You can choose to view the call stack, which may contain the reason for the crash.`,
+      `<details><summary>Show call stack</summary><pre>${htmlspecialchars(
+        e.stack?.replaceAll(location.href, "") || ""
+      )}</pre></details>`,
+    ];
+
+    console.log(lines);
+  }
 }
