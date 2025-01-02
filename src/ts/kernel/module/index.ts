@@ -6,6 +6,8 @@ export class KernelModule {
   public id: string;
 
   constructor(kernel: WaveKernel, id: string) {
+    Log(`KernelModule::${id}`, `Constructing`);
+
     if (kernel.getModule(id, true))
       throw new Error(`KernelModule::${id} is already loaded`);
 

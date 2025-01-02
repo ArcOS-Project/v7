@@ -32,8 +32,8 @@ export class ProcessHandler extends KernelModule {
       `Spawning new ${proc.constructor.name} with PID ${pid}`
     );
 
-    if (proc.start) {
-      const result = await proc.start();
+    if (proc.__start) {
+      const result = await proc.__start();
 
       if (result === false) return;
     }
@@ -57,7 +57,7 @@ export class ProcessHandler extends KernelModule {
     if (!proc) return "err_noExist";
     if (proc._criticalProcess && !force) return "err_criticalProcess";
 
-    if (proc.stop) await proc.stop();
+    if (proc.__stop) await proc.__stop();
 
     await this._killSubProceses(pid);
 

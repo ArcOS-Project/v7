@@ -1,4 +1,6 @@
+import { LogLevel } from "../../types/logging";
 import { WaveKernel } from "../kernel";
+import { Log } from "../kernel/logging";
 import { ProcessDispatch } from "./dispatch";
 import type { ProcessHandler } from "./handler";
 
@@ -18,20 +20,38 @@ export class Process {
     this.pid = pid;
     this.parentPid = parentPid || 0;
     this.kernel = WaveKernel.get();
-    this.dispatch = new ProcessDispatch(this);
-
     this.name ||= this.constructor.name;
+    this.dispatch = new ProcessDispatch(this);
   }
 
-  async stop(): Promise<any> {
+  protected async stop(): Promise<any> {
     /** */
   }
 
-  async start(): Promise<any> {
+  protected async start(): Promise<any> {
     /** */
+  }
+
+  public async __start(): Promise<any> {
+    this.Log(`STARTING PROCESS`);
+
+    return await await this.start();
+  }
+
+  public async __stop(): Promise<any> {
+    this.Log(`STOPPING PROCESS`);
+
+    return await await this.stop();
   }
 
   async killSelf() {
+    this.Log(`Killing self (PID ${this.pid})`);
     await this.handler.kill(this.pid);
+  }
+
+  protected Log(message: string, level = LogLevel.info) {
+    const source = `${this.name}[${this.pid}]`;
+
+    Log(source, message, level);
   }
 }

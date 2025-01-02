@@ -9,6 +9,10 @@ export class ProcessDispatch {
   private kernel: WaveKernel;
 
   constructor(process: Process) {
+    Log(
+      `ProcessDispatch::'${process.name}'`,
+      `Constructing new dispatch for ${process.name}`
+    );
     this.parent = process;
     this.kernel = process.kernel;
   }

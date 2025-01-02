@@ -32,6 +32,7 @@ export class AppProcess extends Process {
     this.windowTitle.set(app.data.metadata.name);
     this.name = app.data.id;
   }
+
   // Conditional function that can prohibit closing if it returns false
   async onClose() {
     return true;

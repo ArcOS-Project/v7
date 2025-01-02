@@ -1,1 +1,3 @@
-export default async function render() {}
+export default async function render() {
+  console.trace();
+}

@@ -3,6 +3,7 @@ import {
   ShortLogLevelCaptions,
   type LogItem,
 } from "../../types/logging";
+import { handleGlobalErrors } from "../error";
 import { ProcessHandler } from "../process/handler";
 import { StateHandler } from "../state";
 import { InitProcess } from "./init";
@@ -35,12 +36,31 @@ export class WaveKernel {
   constructor() {
     if (CurrentKernel) throw new Error("Attempted to reinitialize the kernel");
 
-    CurrentKernel = this;
     this.startMs = Date.now();
+    this.Log("KERNEL", "Constructing new Kernel. Have fun zottel.");
+
+    handleGlobalErrors();
+
+    CurrentKernel = this;
+
+    (window as any)["kernel"] = CurrentKernel;
+  }
+
+  static async panic(reason: string) {
+    const kernel = this.get();
+
+    if (!kernel || kernel.PANICKED) return;
+
+    kernel.PANICKED = true;
+    kernel.Log(`PANIC`, reason, LogLevel.critical);
+
+    throw reason;
   }
 
   async _init() {
     this.Log(`KERNEL`, `Called _init`);
+
+    // KERNEL AREA STARTS HERE
 
     await this._kernelModules();
 
@@ -48,10 +68,6 @@ export class WaveKernel {
 
     this.init = await stack.spawn<InitProcess>(InitProcess);
     this.initPid = this.init?.pid || -1;
-
-    this.state = await stack.spawn<StateHandler>(StateHandler, this.initPid);
-
-    console.log(this.init);
 
     await this.init?.jumpstart();
   }
