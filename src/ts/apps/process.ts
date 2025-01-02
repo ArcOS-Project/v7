@@ -98,6 +98,7 @@ export class AppProcess extends Process {
   }
 
   async __render__(body: HTMLDivElement) {
+    this.Log("Rendering window contents");
     const component = this.app.data.assets.component;
 
     this.componentMount = mount(component, {

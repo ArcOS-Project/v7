@@ -3,10 +3,10 @@ import type { App } from "../../types/app";
 import type { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
+import { htmlspecialchars } from "../util";
 import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
-import { htmlspecialchars } from "../util";
 
 export class AppRenderer extends Process {
   currentState: number[] = [];
@@ -85,6 +85,8 @@ export class AppRenderer extends Process {
 
     if (process._disposed) return;
 
+    this.Log(`Rendering PID ${process.pid}`);
+
     const window = document.createElement("div");
     const titlebar = this._renderTitlebar(process);
     const body = document.createElement("div");
@@ -145,9 +147,9 @@ export class AppRenderer extends Process {
     data: App
   ) {}
 
-  focusPid(pid: number) {}
-
-  async _windowHtml(body: HTMLDivElement, data: App) {}
+  focusPid(pid: number) {
+    this.focusedPid.set(pid);
+  }
 
   _renderTitlebar(process: AppProcess) {
     this.disposedCheck();
