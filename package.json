@@ -1,7 +1,7 @@
 {
-  "name": "waveos-foundation",
+  "name": "arcos",
   "private": true,
-  "version": "0.0.0",
+  "version": "7.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -16,5 +16,8 @@
     "svelte-check": "^4.1.1",
     "typescript": "~5.6.2",
     "vite": "^6.0.5"
+  },
+  "dependencies": {
+    "axios": "^1.7.9"
   }
 }

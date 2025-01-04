@@ -28,8 +28,6 @@ export class StateHandler extends Process {
 
     super(handler, pid, parentPid);
     this.store = store;
-
-    console.log(store);
   }
 
   async loadState(

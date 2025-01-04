@@ -21,4 +21,5 @@ const htmlImport: Plugin<any> = {
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [svelte(), htmlImport],
+  envPrefix: "ARCOS_",
 });

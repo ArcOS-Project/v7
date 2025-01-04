@@ -1,18 +1,20 @@
 import { WaveKernel } from "..";
+import { LogLevel } from "../../../types/logging";
 import { Log } from "../logging";
 
 export class KernelModule {
-  private kernel: WaveKernel;
+  protected kernel: WaveKernel;
   public id: string;
 
   constructor(kernel: WaveKernel, id: string) {
-    Log(`KernelModule::${id}`, `Constructing`);
+    this.id = id;
+
+    this.Log(`Constructing`);
 
     if (kernel.getModule(id, true))
       throw new Error(`KernelModule::${id} is already loaded`);
 
     this.kernel = kernel;
-    this.id = id;
   }
 
   async _init() {
@@ -20,8 +22,14 @@ export class KernelModule {
   }
 
   async __init() {
-    Log(`KernelModule::${this.id}`, `Calling _init`);
+    this.Log(`Calling _init`);
 
     await this._init();
+  }
+
+  protected Log(message: string, level = LogLevel.info) {
+    const source = `KernelModule::${this.id}`;
+
+    Log(source, message, level);
   }
 }
