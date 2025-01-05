@@ -1,0 +1,9 @@
+export { default as DownloadIcon } from "$assets/filesystem/download.svg";
+export { default as FileIcon } from "$assets/filesystem/file.svg";
+export { default as ArcTermFolderIcon } from "$assets/filesystem/folder-arcterm.svg";
+export { default as DocumentsFolderIcon } from "$assets/filesystem/folder-documents.svg";
+export { default as ThemeFolderIcon } from "$assets/filesystem/folder-themes.svg";
+export { default as WallpapersFolderIcon } from "$assets/filesystem/folder-wallpapers.svg";
+export { default as FolderIcon } from "$assets/filesystem/folder.svg";
+export { default as SaveIcon } from "$assets/filesystem/save.svg";
+export { default as SdIcon } from "$assets/filesystem/sd.svg";

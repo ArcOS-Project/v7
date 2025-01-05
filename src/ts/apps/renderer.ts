@@ -8,6 +8,7 @@ import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
 import { WaveKernel } from "../kernel";
+import { ComponentIcon } from "$ts/images/general";
 
 export class AppRenderer extends Process {
   currentState: number[] = [];
@@ -238,6 +239,8 @@ export class AppRenderer extends Process {
     process.windowTitle.subscribe((v) => {
       titleCaption.innerText = v;
     });
+
+    titleIcon.src = data.metadata.icon || ComponentIcon;
 
     title.className = "window-title";
     title.append(titleIcon, titleCaption);
