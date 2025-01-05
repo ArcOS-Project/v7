@@ -14,7 +14,12 @@ export class Process {
   public _disposed = false;
   public _criticalProcess = false;
 
-  constructor(handler: ProcessHandler, pid: number, parentPid?: number) {
+  constructor(
+    handler: ProcessHandler,
+    pid: number,
+    parentPid?: number,
+    ...args: any[]
+  ) {
     this.handler = handler;
     this._disposed = false;
     this.pid = pid;

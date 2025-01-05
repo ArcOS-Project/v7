@@ -1,4 +1,4 @@
-import type { AppRenderer } from "../apps/renderer";
+import { AppRenderer } from "../apps/renderer";
 import { WaveKernel } from "../kernel";
 import { Log } from "../kernel/logging";
 import { KernelModule } from "../kernel/module";
@@ -15,7 +15,17 @@ export class ProcessHandler extends KernelModule {
     super(kernel, id);
   }
 
-  async _init() {}
+  async _init() {
+    await this.startRenderer();
+  }
+
+  async startRenderer() {
+    this.renderer = await this.spawn(
+      AppRenderer,
+      this.kernel.initPid,
+      "appRenderer"
+    );
+  }
 
   async spawn<T = Process>(
     process: typeof Process,
@@ -46,6 +56,8 @@ export class ProcessHandler extends KernelModule {
 
     this.store.set(store);
 
+    if (this.renderer) this.renderer.sync();
+
     return proc as T;
   }
 
@@ -64,7 +76,11 @@ export class ProcessHandler extends KernelModule {
     const store = this.store.get();
 
     proc._disposed = true;
+
     store.set(pid, proc);
+    this.store.set(store);
+
+    if (this.renderer) this.renderer.sync();
 
     return "success";
   }
@@ -103,12 +119,12 @@ export class ProcessHandler extends KernelModule {
     return result;
   }
 
-  getProcess<T = Process>(pid: number) {
+  getProcess<T = Process>(pid: number, disposedToo = false) {
     const proc = this.store.get().get(pid);
 
     if (!proc) return undefined;
 
-    return proc._disposed ? undefined : (proc as T);
+    return proc._disposed && !disposedToo ? undefined : (proc as T);
   }
 
   getPid() {

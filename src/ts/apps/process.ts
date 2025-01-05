@@ -24,8 +24,8 @@ export class AppProcess extends Process {
     super(handler, pid, parentPid);
 
     this.app = {
-      data: JSON.parse(JSON.stringify({ ...app.data })),
-      meta: JSON.parse(JSON.stringify({ ...app.data })),
+      data: { ...app.data },
+      meta: { ...app.data },
       id: app.data.id,
     };
 
@@ -110,6 +110,7 @@ export class AppProcess extends Process {
         handler: this.handler,
         app: this.app.data,
         windowTitle: this.windowTitle,
+        safe: this.safe.bind(this),
       },
     });
 

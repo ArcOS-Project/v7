@@ -1,5 +1,8 @@
 import type { Component, SvelteComponent } from "svelte";
 import type { AppProcess } from "../ts/apps/process";
+import type { ProcessHandler } from "../ts/process/handler";
+import type { ReadableStore } from "../ts/writable";
+import type { WaveKernel } from "../ts/kernel";
 
 export interface App {
   metadata: AppMetadata;
@@ -40,6 +43,16 @@ export interface AppAssets {
   runtime: typeof AppProcess;
   component: typeof SvelteComponent;
   css: string;
+}
+
+export interface AppComponentProps<T = AppProcess> {
+  process: T;
+  pid: number;
+  kernel: WaveKernel;
+  handler: ProcessHandler;
+  app: App;
+  windowTitle: ReadableStore<string>;
+  safe(callback: (...a: any[]) => any): (...args: any[]) => void;
 }
 
 export type Size = { w: number; h: number };

@@ -40,6 +40,8 @@ export class AppRenderer extends Process {
   }
 
   sync() {
+    this.Log(`Syncing`);
+
     this.disposedCheck();
     this.syncNewbies();
     this.syncDisposed();
@@ -218,13 +220,16 @@ export class AppRenderer extends Process {
   async remove(pid: number) {
     this.disposedCheck();
 
+    this.Log(`Removing render state of PID ${pid}`);
+
     if (!pid) return;
 
-    const process = this.handler.getProcess<AppProcess>(pid);
+    const process = this.handler.getProcess<AppProcess>(pid, true);
 
     if (!process) return;
 
-    unmount(process.componentMount);
+    if (Object.entries(process.componentMount).length)
+      unmount(process.componentMount);
 
     const window = this.target.querySelector(`div.window[data-pid="${pid}"]`);
     const styling = document.body.querySelector(`link[id="$${pid}"`);
@@ -305,6 +310,6 @@ export class AppRenderer extends Process {
       )}</pre></details>`,
     ];
 
-    console.log(lines);
+    console.log(data, e, process);
   }
 }
