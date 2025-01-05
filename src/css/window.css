@@ -1,0 +1,39 @@
+@import url("./window/core.css");
+@import url("./window/titlebar.css");
+
+div.window:not(.core) {
+  --titlebar-height: 30px;
+  position: fixed;
+  color: var(--fg);
+  background-color: var(--win-bg);
+  border: var(--win-border);
+  border-radius: var(--win-border-rad);
+  overflow: hidden;
+  font-size: var(--font-size);
+  font-family: var(--font);
+  box-shadow: 0 5px 15px 5px #0003;
+  margin-top: 30px;
+  opacity: 0;
+  visibility: hidden;
+  scale: 0.95;
+}
+
+div.window *::selection {
+  background-color: var(--accent-transparent);
+}
+
+div:not(.noani) div.window:not(.core) {
+  transition: all 0.3s, z-index 0s, pointer-events 0s, transform 0s,
+    backdrop-filter 0s, width 0s, height 0s;
+}
+
+div.window:not(.core).visible:not(.closing) {
+  opacity: 1;
+  visibility: visible;
+  scale: 1;
+  margin-top: 0;
+}
+
+div.window:not(.core).resizable {
+  resize: both;
+}

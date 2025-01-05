@@ -1,4 +1,5 @@
 import { WaveKernel } from "./ts/kernel";
+import "./css/main.css";
 
 // CODE EXECUTION STARTS HERE
 async function Main() {

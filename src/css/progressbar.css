@@ -1,0 +1,61 @@
+div.progress-bar {
+  --bar-width: 100%;
+  --bar-height: 14px;
+  height: var(--bar-height, 7px);
+  width: var(--bar-width, 100%);
+  border-radius: 4px;
+  background-color: var(--button-active-bg);
+  border: var(--button-bg) 1px solid;
+  overflow: hidden;
+}
+
+div.progress-bar div.inner {
+  --width: 0%;
+  height: calc(var(--bar-height) - 2px);
+  width: var(--width, 0%);
+  background-color: var(--accent-dark);
+  position: relative;
+  overflow: hidden;
+}
+
+div.progress-bar.indeterminate div.inner {
+  width: 20%;
+  animation: progress-bar-indeterminate 2.5s linear infinite;
+}
+
+div.progress-bar:not(.indeterminate) div.inner::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: calc(var(--bar-height) - 2px);
+  background: linear-gradient(to right, #0000 0%, var(--accent-light) 50%, #0000 100%);
+  animation: progress-bar-inner-effect 2s linear infinite;
+}
+
+@keyframes progress-bar-indeterminate {
+  0%,
+  20% {
+    left: calc(-20% + 10px);
+  }
+
+  50%,
+  70% {
+    left: calc(100% - 10px);
+  }
+
+  100% {
+    left: calc(-20% + 10px);
+  }
+}
+
+@keyframes progress-bar-inner-effect {
+  0% {
+    left: -45%;
+  }
+
+  100% {
+    left: 145%;
+  }
+}

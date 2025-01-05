@@ -1,0 +1,63 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap");
+@import url("https://unpkg.com/lucide-static@latest/font/lucide.css");
+@import url("./window.css");
+@import url("./progressbar.css");
+@import url("./themes.css");
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  margin: 0;
+  overflow: hidden;
+  font-family: "Open Sans";
+  font-size: 14px;
+}
+
+* {
+  box-sizing: border-box;
+  color: var(--fg, #fff);
+  margin: 0;
+  font-size: inherit;
+  font-family: inherit;
+  user-select: none;
+  outline: none !important;
+}
+
+.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+main#main {
+  padding: 5px;
+  transition: opacity 300ms;
+}
+
+main#main.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#appRenderer {
+  z-index: 100;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+#appRenderer > div.window:not(.core) {
+  pointer-events: initial;
+}
+
+@font-face {
+  font-family: unifont;
+  src: url(../assets/unifont.ttf);
+}

@@ -2,11 +2,12 @@
   import type { AppComponentProps } from "../../types/app";
   import type { TestAppRuntime } from "./runtime";
 
-  const { windowTitle }: AppComponentProps<TestAppRuntime> = $props();
+  const { safe, windowTitle }: AppComponentProps<TestAppRuntime> = $props();
 
   windowTitle.set("this)");
+  function crash() {
+    throw new Error("bruh");
+  }
 </script>
 
-test
-
-{$windowTitle}
+<button onclick={safe(crash)}>Crash</button>

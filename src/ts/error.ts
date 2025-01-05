@@ -1,13 +1,10 @@
-import { WaveKernel } from "./kernel";
+import { Crash } from "./crash";
 
 export function handleGlobalErrors() {
   function Error(e: ErrorEvent | PromiseRejectionEvent) {
     e.preventDefault();
-    console.debug(e);
 
-    WaveKernel.panic(
-      e instanceof PromiseRejectionEvent ? e.reason.message : e.message
-    );
+    Crash(e);
   }
 
   window.addEventListener("error", Error, { passive: false });

@@ -83,7 +83,11 @@ export class StateHandler extends Process {
 
       Log(`StateHandler.loadState`, `==> Rendering`);
 
-      await data.render();
+      await data.render(props, {
+        state: this,
+        kernel: this.kernel,
+        stack: this.handler,
+      });
     } catch (e) {
       throw new StateError(`${id}: ${(e as any).stack}`);
     }

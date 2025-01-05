@@ -52,7 +52,12 @@ export class WaveKernel {
     if (!kernel || kernel.PANICKED) return;
 
     kernel.PANICKED = true;
-    kernel.Log(`PANIC`, reason, LogLevel.critical);
+
+    const state = kernel.state;
+
+    if (!state) return;
+
+    state.loadState("crash-screen", { text: reason }, true);
 
     throw reason;
   }
@@ -102,7 +107,13 @@ export class WaveKernel {
   public Log(source: string, message: string, level = LogLevel.info) {
     const timestamp = Date.now();
 
-    this.Logs.push({ timestamp, source, message, level });
+    this.Logs.push({
+      timestamp,
+      source,
+      message,
+      level,
+      kernelTime: timestamp - this.startMs,
+    });
 
     console.log(
       `[${timestamp - this.startMs}] ${

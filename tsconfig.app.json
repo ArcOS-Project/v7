@@ -14,7 +14,15 @@
     "allowJs": true,
     "checkJs": true,
     "isolatedModules": true,
-    "moduleDetection": "force"
+    "moduleDetection": "force",
+    "paths": {
+      "$assets/*": ["./src/assets/*"],
+      "$state/*": ["./src/state/*"],
+      "$apps/*": ["./src/apps/*"],
+      "$css/*": ["./src/css/*"],
+      "$types/*": ["./src/types/*"],
+      "$ts/*": ["./src/ts/*"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte", "src/**/*.html"]
 }

@@ -3,6 +3,7 @@ export interface LogItem {
   message: string;
   timestamp: number;
   level: LogLevel;
+  kernelTime: number;
 }
 
 export enum LogLevel {

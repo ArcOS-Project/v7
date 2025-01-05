@@ -1,0 +1,24 @@
+div.spinner {
+  --size: 32px;
+  --thickness: 5px;
+  border: var(--thickness) solid #0000;
+  border-top: var(--thickness) solid #fff;
+  border-radius: 50%;
+  width: var(--size);
+  height: var(--size);
+  animation: spin 0.75s linear infinite;
+}
+
+div.spinner.large {
+  --size: 64px;
+  --thickness: 5px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
