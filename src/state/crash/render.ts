@@ -1,6 +1,8 @@
+import { Sleep } from "$ts/sleep";
 import type { StateProps } from "../../types/state";
 
 export default async function render(props: StateProps) {
+  await Sleep(100);
   const crashText = document.getElementById("crashText")!;
 
   if (!crashText) return;

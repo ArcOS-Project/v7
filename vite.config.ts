@@ -5,7 +5,7 @@ import { resolve } from "path";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [svelte()],
-  envPrefix: "ARCOS_",
+  envPrefix: "DW_",
   resolve: {
     alias: {
       $assets: resolve(__dirname, "./src/assets"),

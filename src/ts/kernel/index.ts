@@ -55,7 +55,11 @@ export class WaveKernel {
 
     const state = kernel.state;
 
-    if (!state) return;
+    if (!state) {
+      kernel.Log(`WaveKernel::panic`, `\n\n${reason}`);
+
+      return;
+    }
 
     state.loadState("crash-screen", { text: reason }, true);
 

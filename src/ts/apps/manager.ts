@@ -1,3 +1,5 @@
+import { ComponentIcon } from "$ts/images/general";
+import { Draggable } from "@neodrag/vanilla";
 import { unmount } from "svelte";
 import type { App } from "../../types/app";
 import type { ProcessHandler } from "../process/handler";
@@ -7,10 +9,8 @@ import { htmlspecialchars } from "../util";
 import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
-import { WaveKernel } from "../kernel";
-import { ComponentIcon } from "$ts/images/general";
 
-export class AppRenderer extends Process {
+export class AppManager extends Process {
   currentState: number[] = [];
   target;
   maxZIndex = 1e6;
@@ -126,6 +126,10 @@ export class AppRenderer extends Process {
 
     this.target.append(window);
 
+    setTimeout(() => {
+      window.classList.add("visible");
+    }, 100);
+
     try {
       await process.__render__(body);
       this.focusPid(process.pid);
@@ -179,7 +183,19 @@ export class AppRenderer extends Process {
     window: HTMLDivElement,
     titlebar: HTMLDivElement | undefined,
     data: App
-  ) {}
+  ) {
+    this.disposedCheck();
+
+    if (data.core) return;
+
+    new Draggable(window, {
+      bounds: { top: 0, left: 0, right: 0 },
+      handle: titlebar,
+      cancel: `.controls`,
+      legacyTranslate: false,
+      gpuAcceleration: false,
+    });
+  }
 
   focusPid(pid: number) {
     this.focusedPid.set(pid);

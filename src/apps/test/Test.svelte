@@ -1,13 +1,18 @@
 <script lang="ts">
+  import { WaveKernel } from "$ts/kernel";
   import type { AppComponentProps } from "../../types/app";
   import type { TestAppRuntime } from "./runtime";
 
-  const { safe, windowTitle }: AppComponentProps<TestAppRuntime> = $props();
+  const { safe }: AppComponentProps<TestAppRuntime> = $props();
 
-  windowTitle.set("this)");
   function crash() {
     throw new Error("bruh");
   }
+
+  function crashOS() {
+    (window as any) = undefined;
+  }
 </script>
 
-<button onclick={safe(crash)}>Crash</button>
+<button onclick={safe(crash)}>Crash app</button>
+<button onclick={crashOS}>Crash OS</button>

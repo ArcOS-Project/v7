@@ -36,6 +36,14 @@
   --clr-aqua-bg: #214538;
 }
 
+:root {
+  --accent: dodgerblue;
+  --accent-dark: rgb(0, 94, 126);
+  --accent-light: rgb(113, 220, 255);
+  --accent-darkest: rgb(0, 46, 61);
+  --elevated-accent-filter: brightness(300%) saturate(150%);
+}
+
 :root .theme-dark.noglass {
   --glass-bg: #1e1e1e !important;
   --glass-alt-bg: #2a2a2a !important;

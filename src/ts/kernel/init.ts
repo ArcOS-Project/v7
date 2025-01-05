@@ -2,7 +2,6 @@ import { WaveKernel } from ".";
 import type { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
 import { StateHandler } from "../state";
-import { Log } from "./logging";
 
 export class InitProcess extends Process {
   constructor(handler: ProcessHandler, pid: number, parentPid = undefined) {
@@ -15,6 +14,7 @@ export class InitProcess extends Process {
 
   async jumpstart() {
     this.Log("Jumpstart");
+
     const state = await this.handler.spawn<StateHandler>(
       StateHandler,
       this.pid
@@ -24,7 +24,6 @@ export class InitProcess extends Process {
     if (!state) throw new Error("State handler failed to spawn");
 
     kernel.state = state;
-
     kernel.state?.loadState("boot");
   }
 }

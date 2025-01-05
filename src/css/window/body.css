@@ -1,0 +1,7 @@
+div.window:not(.core) > div.body {
+  width: 100%;
+  height: calc(100% - 40px);
+  overflow: hidden;
+  padding: 15px;
+  border-top: var(--win-border);
+}

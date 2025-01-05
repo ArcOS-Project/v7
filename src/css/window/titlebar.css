@@ -4,9 +4,27 @@ div.window > div.titlebar {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: var(--titlebar-height);
+  height: 40px;
   z-index: 100;
-  padding: 5px;
+  padding: 5px 10px;
   font-size: 12px;
   position: relative;
+}
+div.window > div.titlebar div.window-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 18px;
+}
+
+div.window > div.titlebar div.window-title > img {
+  height: 20px;
+  min-width: 20px;
+}
+
+div.window div.titlebar div.window-title > span {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

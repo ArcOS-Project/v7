@@ -167,6 +167,11 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
+"@neodrag/vanilla@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@neodrag/vanilla/-/vanilla-2.2.0.tgz#29722f155d0a1c6926dee190b94d74248a9adda5"
+  integrity sha512-zqa3wV1+pTUCRdXKHLB8DiNR5+7iG373C4KWXSy+rZ4yNxa5sfbbcoTo2DTrk2YfgapOtkAwPhPbIkmT7XXDfg==
+
 "@rollup/rollup-android-arm-eabi@4.29.1":
   version "4.29.1"
   resolved "https://registry.yarnpkg.com/@rollup/rollup-android-arm-eabi/-/rollup-android-arm-eabi-4.29.1.tgz#9bd38df6a29afb7f0336d988bc8112af0c8816c0"

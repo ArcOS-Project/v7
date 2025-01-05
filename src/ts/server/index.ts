@@ -1,11 +1,21 @@
 import axios from "axios";
-import type { WaveKernel } from "../kernel";
+import { WaveKernel } from "../kernel";
 import { KernelModule } from "../kernel/module";
 import { LogLevel } from "../../types/logging";
 
 export class ServerManager extends KernelModule {
   public url: string = "";
   public connected: boolean = false;
+
+  public static isConnected() {
+    const kernel = WaveKernel.get();
+
+    if (!kernel) return false;
+
+    const server = kernel.getModule<ServerManager>("server", true);
+
+    return server && server.connected;
+  }
 
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);
@@ -20,7 +30,7 @@ export class ServerManager extends KernelModule {
   private getServerUrl() {
     this.Log("Getting server URL from environment");
 
-    const serverUrl = import.meta.env.ARCOS_SERVER_URL;
+    const serverUrl = import.meta.env.DW_SERVER_URL;
 
     if (!serverUrl) throw new Error("Didn't get a server URL!");
 

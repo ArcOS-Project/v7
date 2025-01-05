@@ -1,4 +1,4 @@
-import { AppRenderer } from "../apps/renderer";
+import { AppManager } from "../apps/manager";
 import { WaveKernel } from "../kernel";
 import { Log } from "../kernel/logging";
 import { KernelModule } from "../kernel/module";
@@ -9,7 +9,7 @@ export class ProcessHandler extends KernelModule {
   private lastPid: number = 0;
   public store = Store<Map<number, Process>>(new Map([]));
   public rendererPid = -1;
-  public renderer: AppRenderer | undefined;
+  public renderer: AppManager | undefined;
 
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);
@@ -21,7 +21,7 @@ export class ProcessHandler extends KernelModule {
 
   async startRenderer() {
     this.renderer = await this.spawn(
-      AppRenderer,
+      AppManager,
       this.kernel.initPid,
       "appRenderer"
     );

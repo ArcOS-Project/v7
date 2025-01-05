@@ -1,11 +1,28 @@
 import { LogLevel } from "../types/logging";
 import { WaveKernel } from "./kernel";
+import { ServerManager } from "./server";
 
 export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
   const kernel = WaveKernel.get();
   if (WaveKernel.isPanicked()) return;
 
-  const str = `**** INEPTA EXCEPTION ****\n\nAn error has occurred, and Inepta has been halted.\nDetails of the error and the system log can be found below.\nNewest log entry is at the top.\n\nIf this keeps happening, try unloading any sideloaded applications.\n\n`;
+  const connected = ServerManager.isConnected();
+
+  const HEADER = [
+    `---! [ DeskWave Crashed ] !---`,
+    ``,
+    `An exception took place that wasn't handled. DeskWave has been halted.`,
+    `Details of the error and the system log up to the crash can be found below.`,
+    `Newest log item is at the top.`,
+    ``,
+    connected
+      ? `A bug report has been sent to us so that we may fix this issue.`
+      : `Please tell us about this issue on GitHub or in the Discord so that we can fix it.`,
+    ``,
+    ``,
+  ];
+
+  const str = HEADER.join("\n");
   const stack =
     reason instanceof ErrorEvent ? reason.error.stack : reason.reason.stack;
 
