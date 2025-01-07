@@ -1,18 +1,16 @@
-import type { State } from "../../types/state";
-import CrashRender from "../../state/crash/render";
-import CrashHtml from "../../state/crash/crash.html?url";
+import { BootScreen } from "$apps/core/bootscreen/metadata";
 import CrashCss from "../../css/state/crash.css?url";
 import BootRender from "../../state/boot/render";
-import BootHtml from "../../state/boot/boot.html?url";
-import BootCss from "../../css/state/boot.css?url";
+import CrashHtml from "../../state/crash/crash.html?url";
+import CrashRender from "../../state/crash/render";
+import type { State } from "../../types/state";
 
 export const States: Record<string, State> = {
   boot: {
     render: BootRender,
-    html: BootHtml,
-    css: BootCss,
     name: "Boot",
     identifier: "boot",
+    app: BootScreen,
   },
   "crash-screen": {
     render: CrashRender,

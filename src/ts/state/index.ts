@@ -1,7 +1,9 @@
+import { AppProcess } from "$ts/apps/process";
+import { LogLevel } from "$types/logging";
 import type { State } from "../../types/state";
 import { WaveKernel } from "../kernel";
 import { Log } from "../kernel/logging";
-import type { ProcessHandler } from "../process/handler";
+import { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
 import { StateError } from "./error";
@@ -11,6 +13,8 @@ export class StateHandler extends Process {
   store: Record<string, State> = {};
   currentState: string = "";
   stateProps: Record<string, Record<any, any>> = {};
+  stateAppProcess: AppProcess | undefined;
+
   override name = "StateHandler";
 
   constructor(
@@ -44,7 +48,19 @@ export class StateHandler extends Process {
         `No such state ${id} on handler with PID ${this.pid}`
       );
 
+    if (this.stateAppProcess)
+      await this.handler.kill(this.stateAppProcess.pid, true);
+
     const { htmlLoader, cssLoader, main } = this.getStateLoaders();
+
+    htmlLoader.innerHTML = "";
+    cssLoader.href = "";
+
+    if (!data.app && !(data.html && data.css)) {
+      throw new StateError(
+        `${id}: Tried to load a state without any valid code.`
+      );
+    }
 
     this.stateProps[id] = props || {};
 
@@ -54,21 +70,11 @@ export class StateHandler extends Process {
       await Sleep(400);
     }
 
-    Log(`StateHandler.loadState`, `BEGINNING LOAD OF ${data.name} (${id})`);
-
-    try {
-      const htmlContents = await (await fetch(data.html)).text();
-
-      htmlLoader.innerHTML = htmlContents;
-      Log(`StateHandler.loadState`, ` -> Loaded ${data.html}`);
-    } catch {}
-
-    if (this.currentState) htmlLoader.classList.remove(this.currentState);
-
-    htmlLoader.classList.add(`fullscreen`, id);
-    cssLoader.href = data.css;
-
-    Log(`StateHandler.loadState`, ` -> Loaded ${data.css}`);
+    if (data.app) {
+      await this.loadStateAsApp(data);
+    } else {
+      await this.loadStateNormally(id, data, htmlLoader, cssLoader);
+    }
 
     if (!instant) {
       await Sleep(500);
@@ -91,6 +97,66 @@ export class StateHandler extends Process {
     } catch (e) {
       throw new StateError(`${id}: ${(e as any).stack}`);
     }
+  }
+
+  async loadStateNormally(
+    id: string,
+    data: State,
+    htmlLoader: HTMLDivElement,
+    cssLoader: HTMLLinkElement
+  ) {
+    Log(
+      `StateHandler.loadStateNormally`,
+      `BEGINNING NORMAL LOAD OF ${data.name} (${id})`
+    );
+
+    try {
+      if (!data.html) throw "";
+      const htmlContents = await (await fetch(data.html)).text();
+
+      htmlLoader.innerHTML = htmlContents;
+      Log(`StateHandler.loadState`, ` -> Loaded ${data.html}`);
+    } catch {
+      Log(
+        `StateHandler.loadState`,
+        `Failed to load HTML for state ${id}, is it specified?`,
+        LogLevel.warning
+      );
+    }
+
+    if (this.currentState) htmlLoader.classList.remove(this.currentState);
+
+    htmlLoader.classList.add(`fullscreen`, id);
+    cssLoader.href = data.css || "";
+
+    Log(`StateHandler.loadState`, ` -> Loaded ${data.css}`);
+  }
+
+  async loadStateAsApp(data: State) {
+    Log(
+      `StateHandler.loadStateAsApp`,
+      `BEGINNING LOAD OF ${data.name} (${data.identifier}) IN APP MODE`
+    );
+
+    const stack = this.kernel.getModule<ProcessHandler>("stack");
+
+    if (!data.app) return;
+
+    const { app } = data;
+
+    const proc = await stack.spawn<AppProcess>(app.assets.runtime, this.pid, {
+      ...{
+        data: app,
+        meta: app,
+        id: app.id,
+      },
+    });
+
+    if (!proc) throw new StateError(`Failed to spawn state app ${app.id}`);
+
+    this.stateAppProcess = proc;
+
+    Log(`StateHandler.loadState`, ` -> Loaded ${data.identifier}`);
   }
 
   getStateLoaders() {
