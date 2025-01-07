@@ -2,6 +2,7 @@ import axios from "axios";
 import { WaveKernel } from "../kernel";
 import { KernelModule } from "../kernel/module";
 import { LogLevel } from "../../types/logging";
+import { VALIDATION_STR } from "$ts/env";
 
 export class ServerManager extends KernelModule {
   public url: string = "";
@@ -45,7 +46,15 @@ export class ServerManager extends KernelModule {
         timeoutErrorMessage: "We're offline",
       });
 
-      this.connected = response.status === 200;
+      if (response.status !== 200)
+        throw new Error("Invalid response from server");
+
+      const { validation } = response.data as Record<string, string>;
+
+      if (validation !== VALIDATION_STR)
+        throw new Error("Server validation string doesn't match ours");
+
+      this.connected = true;
 
       this.Log("Connection is good to go :D");
 
