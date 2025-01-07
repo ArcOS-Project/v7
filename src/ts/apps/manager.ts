@@ -111,7 +111,7 @@ export class AppManager extends Process {
 
     window.className = "window";
     window.setAttribute("data-pid", process.pid.toString());
-    window.setAttribute("data-id", data.id);
+    window.id = data.id;
 
     if (!data.core) {
       window.append(titlebar as HTMLDivElement, body);

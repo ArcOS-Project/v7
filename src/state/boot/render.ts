@@ -1,10 +1,15 @@
-import { mount } from "svelte";
-import BootComponent from "./Boot.svelte";
+import { BootScreen } from "$apps/core/bootscreen/metadata";
+import { BootScreenRuntime } from "$apps/core/bootscreen/runtime";
+import { WaveKernel } from "$ts/kernel";
+import type { ProcessHandler } from "$ts/process/handler";
 
 export default async function render() {
-  const bootScreen = document.querySelector("#bootScreen");
+  const kernel = WaveKernel.get();
+  const stack = kernel.getModule<ProcessHandler>("stack");
 
-  mount(BootComponent, {
-    target: bootScreen!,
+  stack.spawn<BootScreenRuntime>(BootScreenRuntime, 0, {
+    data: BootScreen,
+    meta: BootScreen,
+    id: "bootScreen",
   });
 }

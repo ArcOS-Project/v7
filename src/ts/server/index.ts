@@ -40,7 +40,10 @@ export class ServerManager extends KernelModule {
   private async testConnection() {
     this.Log("Testing server connection...");
     try {
-      const response = await axios.get(`${this.url}/ping`);
+      const response = await axios.get(`${this.url}/ping`, {
+        timeout: 3000,
+        timeoutErrorMessage: "We're offline",
+      });
 
       this.connected = response.status === 200;
 

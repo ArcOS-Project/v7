@@ -1,6 +1,6 @@
-import type { App } from "../../types/app";
+import type { App } from "../../../types/app";
 import { TestAppRuntime } from "./runtime";
-import CSS from "./test.css?url";
+import CSS from "$css/apps/components/test.css?url";
 import Test from "./Test.svelte";
 
 export const TestApp: App = {

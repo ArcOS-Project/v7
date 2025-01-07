@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { WaveKernel } from "$ts/kernel";
-  import type { AppComponentProps } from "../../types/app";
+  import type { AppComponentProps } from "$types/app";
   import type { TestAppRuntime } from "./runtime";
 
   const { safe }: AppComponentProps<TestAppRuntime> = $props();

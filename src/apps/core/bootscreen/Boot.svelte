@@ -1,15 +1,22 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import GlowingLogo from "../../lib/GlowingLogo.svelte";
-  import Spinner from "../../lib/Spinner.svelte";
   import { ArcOSVersion } from "$ts/env";
-  import { ArcMode } from "$ts/metadata/mode";
   import { ArcBuild } from "$ts/metadata/build";
+  import { ArcMode } from "$ts/metadata/mode";
+  import { ServerManager } from "$ts/server";
+  import { onMount } from "svelte";
+  import GlowingLogo from "../../../lib/GlowingLogo.svelte";
+  import Spinner from "../../../lib/Spinner.svelte";
 
   let status = $state<string>("");
   let progress = $state<boolean>(false);
 
   onMount(async () => {
+    const connected = ServerManager.isConnected();
+
+    if (!connected) {
+      status = "We're offline! Please come back later.";
+      return;
+    }
     status = "Press a key or click to start";
 
     document.addEventListener("click", startBooting, { once: true });

@@ -12,6 +12,14 @@ div.window.core {
   right: 0px;
   transform: none;
   position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, pointer-events 0s;
+}
+
+div.window.core.visible {
+  opacity: 1;
+  pointer-events: visible;
 }
 
 div.window.core div.body {
