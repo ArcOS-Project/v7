@@ -1,3 +1,45 @@
-* {
-  color: #f0f;
+:root div#bootScreen {
+  --fg: #eee;
+  --bg: #000;
+}
+
+div#bootScreen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  padding: 6vw 0;
+  justify-content: space-around;
+}
+
+div#bootScreen > img {
+  height: 200px;
+}
+
+div#bootScreen p.status {
+  text-align: center;
+  font-family: var(--font);
+  font-size: 16px;
+  color: var(--fg);
+  margin: 0;
+}
+
+div#bootScreen div.version {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  width: 100%;
+  margin: 20px 0;
+  opacity: 0.4;
+  font-family: "Source Code Pro";
+  font-size: 13px;
+}
+
+div#bootScreen div.bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }

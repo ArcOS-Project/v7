@@ -1,3 +1,5 @@
+import { getBuild } from "$ts/metadata/build";
+import { getMode } from "$ts/metadata/mode";
 import {
   LogLevel,
   ShortLogLevelCaptions,
@@ -21,6 +23,8 @@ export class WaveKernel {
   public state: StateHandler | undefined;
   public initPid = -1;
   public params = new URLSearchParams();
+  public ARCOS_MODE = "release";
+  public ARCOS_BUILD = "unknown";
 
   public static get(): WaveKernel {
     if (!CurrentKernel)
@@ -70,6 +74,14 @@ export class WaveKernel {
     this.Log(`KERNEL`, `Called _init`);
 
     // KERNEL AREA STARTS HERE
+
+    await getMode();
+    await getBuild();
+
+    this.Log(
+      `ArcOS`,
+      `***** [v7 -> ArcOS InDev v7.0.0-${this.ARCOS_MODE}_${this.ARCOS_BUILD}] *****`
+    );
 
     await this._kernelModules();
 

@@ -1,15 +1,10 @@
-import { TestApp } from "../../apps/test/metadata";
-import { TestAppRuntime } from "../../apps/test/runtime";
-import { WaveKernel } from "../../ts/kernel";
-import { ProcessHandler } from "../../ts/process/handler";
+import { mount } from "svelte";
+import BootComponent from "./Boot.svelte";
 
 export default async function render() {
-  const kernel = WaveKernel.get();
-  const stack = kernel.getModule<ProcessHandler>("stack");
+  const bootScreen = document.querySelector("#bootScreen");
 
-  stack.spawn<TestAppRuntime>(TestAppRuntime, 0, {
-    data: TestApp,
-    meta: TestApp,
-    id: "testApp",
+  mount(BootComponent, {
+    target: bootScreen!,
   });
 }
