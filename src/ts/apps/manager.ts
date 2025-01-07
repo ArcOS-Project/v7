@@ -41,41 +41,6 @@ export class AppManager extends Process {
     }
   }
 
-  syncNewbies() {
-    this.disposedCheck();
-
-    const appProcesses: AppProcess[] = [];
-
-    for (const [_, proc] of [...this.handler.store.get()]) {
-      if (proc instanceof AppProcess && proc.app && !proc._disposed)
-        appProcesses.push(proc);
-    }
-
-    for (const process of appProcesses) {
-      const presentInstances = this.currentState.filter(
-        (p) => p == process.pid
-      );
-
-      if (!presentInstances.length && process.app) {
-        this.currentState.push(process.pid);
-
-        this.render(process);
-      }
-    }
-  }
-
-  async syncDisposed() {
-    this.disposedCheck();
-
-    for (const pid of this.currentState) {
-      const process = this.handler.getProcess(pid);
-
-      if (!process) continue;
-
-      await this.remove(pid);
-    }
-  }
-
   async render(process: AppProcess) {
     this.disposedCheck();
 
