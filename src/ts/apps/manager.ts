@@ -41,14 +41,6 @@ export class AppManager extends Process {
     }
   }
 
-  sync() {
-    this.Log(`Syncing`);
-
-    this.disposedCheck();
-    this.syncNewbies();
-    this.syncDisposed();
-  }
-
   syncNewbies() {
     this.disposedCheck();
 
@@ -72,15 +64,15 @@ export class AppManager extends Process {
     }
   }
 
-  syncDisposed() {
+  async syncDisposed() {
     this.disposedCheck();
 
     for (const pid of this.currentState) {
       const process = this.handler.getProcess(pid);
 
-      if (process) continue;
+      if (!process) continue;
 
-      this.remove(pid);
+      await this.remove(pid);
     }
   }
 

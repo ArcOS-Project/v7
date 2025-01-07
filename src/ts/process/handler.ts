@@ -1,3 +1,4 @@
+import { AppProcess } from "$ts/apps/process";
 import { AppManager } from "../apps/manager";
 import { WaveKernel } from "../kernel";
 import { Log } from "../kernel/logging";
@@ -56,7 +57,7 @@ export class ProcessHandler extends KernelModule {
 
     this.store.set(store);
 
-    if (this.renderer) this.renderer.sync();
+    if (this.renderer && proc instanceof AppProcess) this.renderer.render(proc);
 
     return proc as T;
   }
@@ -80,7 +81,7 @@ export class ProcessHandler extends KernelModule {
     store.set(pid, proc);
     this.store.set(store);
 
-    if (this.renderer) this.renderer.sync();
+    if (this.renderer) this.renderer.remove(pid);
 
     return "success";
   }
