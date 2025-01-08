@@ -21,6 +21,7 @@
     "@neodrag/vanilla": "^2.2.0",
     "@types/node": "^22.10.5",
     "axios": "^1.7.9",
+    "dayjs": "^1.11.13",
     "path": "^0.12.7"
   }
 }
