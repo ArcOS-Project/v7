@@ -1,0 +1,171 @@
+div.window#loginApp {
+  background-image: url("../../../assets/bg/img15.jpg");
+  background-position: center;
+  background-size: cover;
+}
+
+div.window#loginApp div.body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 40px;
+  opacity: 0;
+  animation: new-login-show 0.3s forwards;
+  background-color: transparent;
+}
+
+div.window#loginApp div.body div.container {
+  display: flex;
+  align-items: end;
+  gap: 10px;
+  width: 240px;
+}
+
+div.window#loginApp div.body div.container div.left {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+div.window#loginApp div.body div.container div.field {
+  display: flex;
+  align-items: center;
+  backdrop-filter: blur(60px);
+}
+
+div.window#loginApp div.body div.container div.icon {
+  width: 40px;
+  height: 40px;
+  background-color: #fff1;
+  border: #fff2 1px solid;
+  border-right: 0;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+div.window#loginApp div.body div.container div.icon > span {
+  font-size: 24px;
+}
+
+div.window#loginApp div.body div.container input {
+  padding: 0 12px;
+  border: #fff2 1px solid;
+  border-radius: 0;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  background-color: #fff1;
+  width: 200px;
+  height: 40px;
+}
+
+div.window#loginApp div.body > img {
+  height: 128px;
+  border-radius: 64px;
+}
+
+div.window#loginApp div.body div.container button.continue {
+  width: 40px;
+  height: 40px;
+  color: #fff;
+  background-color: #fff3;
+  border-radius: 50%;
+  border: #fff2 1px solid;
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+div.window#loginApp div.body div.status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+div.window#loginApp div.body div.status:not(.show),
+div.window#loginApp div.body div.container.hide {
+  display: none;
+}
+
+div.window#loginApp div.body div.container button.continue span {
+  color: var(--accent-superdark);
+}
+
+div.window#loginApp div.body div.container button.continue:disabled {
+  opacity: 0.5;
+}
+
+div.window#loginApp div.power-options {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+div.window#loginApp div.power-options button.shutdown {
+  width: 50px;
+  height: 50px;
+  color: var(--accent-superdark);
+  background-color: var(--accent-light);
+  font-size: 24px;
+  border: none;
+  border-radius: 50%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: filter 0.3s;
+}
+
+div.window#loginApp div.power-options button.shutdown:hover:not(:active) {
+  filter: brightness(1.2);
+}
+div.window#loginApp div.power-options button.shutdown:active {
+  filter: brightness(0.9);
+}
+
+div.window#loginApp div.power-options button.shutdown span {
+  color: var(--accent-superdark);
+}
+
+div.window#loginApp div.power-options button.restart {
+  width: 40px;
+  height: 40px;
+  background-color: #fff3;
+  font-size: 16px;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s;
+}
+
+div.window#loginApp div.power-options button.restart:hover {
+  background-color: #fff4;
+}
+
+div.window#loginApp div.power-options button.restart:active {
+  background-color: #fff2;
+}
+div.window#loginApp div.body div#status {
+  font-size: 18px;
+  opacity: 0.5;
+}
+
+@keyframes new-login-show {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

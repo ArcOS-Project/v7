@@ -14,12 +14,17 @@ div.window.core {
   position: absolute;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s, pointer-events 0s;
+  transition: opacity 0.2s, pointer-events 0s;
 }
 
-div.window.core.visible {
+div.window.core.visible:not(.closing) {
   opacity: 1;
   pointer-events: visible;
+}
+
+div.window.core.closing {
+  opacity: 0;
+  pointer-events: none;
 }
 
 div.window.core div.body {

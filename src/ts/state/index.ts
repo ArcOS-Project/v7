@@ -48,8 +48,7 @@ export class StateHandler extends Process {
         `No such state ${id} on handler with PID ${this.pid}`
       );
 
-    if (this.stateAppProcess)
-      await this.handler.kill(this.stateAppProcess.pid, true);
+    if (this.stateAppProcess) await this.stateAppProcess.closeWindow();
 
     const { htmlLoader, cssLoader, main } = this.getStateLoaders();
 

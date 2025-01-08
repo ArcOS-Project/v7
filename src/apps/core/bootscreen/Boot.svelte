@@ -2,40 +2,25 @@
   import { ArcOSVersion } from "$ts/env";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
-  import { ServerManager } from "$ts/server";
+  import type { AppComponentProps } from "$types/app";
   import { onMount } from "svelte";
   import GlowingLogo from "../../../lib/GlowingLogo.svelte";
   import Spinner from "../../../lib/Spinner.svelte";
+  import type { BootScreenRuntime } from "./runtime";
 
-  let status = $state<string>("");
-  let progress = $state<boolean>(false);
+  const { process }: AppComponentProps<BootScreenRuntime> = $props();
+  const { status, progress } = process;
 
   onMount(async () => {
-    const connected = ServerManager.isConnected();
-
-    if (!connected) {
-      status = "We're offline! Please come back later.";
-      return;
-    }
-    status = "Press a key or click to start";
-
-    document.addEventListener("click", startBooting, { once: true });
-    document.addEventListener("keydown", startBooting, { once: true });
+    await process.begin();
   });
-
-  async function startBooting() {
-    if (progress) return;
-
-    status = "&nbsp;";
-    progress = true;
-  }
 </script>
 
 <GlowingLogo />
 
 <div class="bottom">
-  <Spinner height={30} stopped={!progress} />
-  <p class="status">{@html status}</p>
+  <Spinner height={30} stopped={!$progress} />
+  <p class="status">{@html $status}</p>
 </div>
 
 <div class="version">v{ArcOSVersion}-{ArcMode()} ({ArcBuild()})</div>
