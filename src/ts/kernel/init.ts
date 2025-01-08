@@ -1,3 +1,4 @@
+import { States } from "$ts/state/store";
 import { WaveKernel } from ".";
 import type { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
@@ -17,7 +18,9 @@ export class InitProcess extends Process {
 
     const state = await this.handler.spawn<StateHandler>(
       StateHandler,
-      this.pid
+      this.pid,
+      "ArcOS",
+      States
     );
     const kernel = WaveKernel.get();
 

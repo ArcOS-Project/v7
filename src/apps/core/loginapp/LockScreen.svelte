@@ -1,6 +1,6 @@
 <script lang="ts">
   import dayjs from "dayjs";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import advancedFormat from "dayjs/plugin/advancedFormat";
   import type { ReadableStore } from "$ts/writable";
 
@@ -11,10 +11,19 @@
 
   let currentTime = $state("");
   let currentDate = $state("");
+  let interval: NodeJS.Timeout;
 
-  onMount(() => {
+  function updateTime() {
     currentTime = dayjs().format("HH:mm");
     currentDate = dayjs().format("dddd D MMMM");
+  }
+
+  onDestroy(() => {
+    clearInterval(interval);
+  });
+
+  onMount(() => {
+    interval = setInterval(updateTime, 500);
   });
 
   function hide() {

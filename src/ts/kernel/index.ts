@@ -132,7 +132,7 @@ export class WaveKernel {
     });
 
     console.log(
-      `[${timestamp - this.startMs}] ${
+      `[${(timestamp - this.startMs).toString().padStart(10, "0")}] ${
         ShortLogLevelCaptions[level]
       } ${source}: ${message}`
     );

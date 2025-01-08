@@ -33,6 +33,7 @@ export class BootScreenRuntime extends AppProcess {
     document.addEventListener("click", () => this.startBooting(), {
       once: true,
     });
+
     document.addEventListener("keydown", () => this.startBooting(), {
       once: true,
     });
