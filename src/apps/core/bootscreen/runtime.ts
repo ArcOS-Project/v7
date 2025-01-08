@@ -8,6 +8,7 @@ import type { AppProcessData } from "../../../types/app";
 export class BootScreenRuntime extends AppProcess {
   public progress = Store<boolean>(false);
   public status = Store<string>("");
+  public connected = Store<boolean>(false);
 
   constructor(
     handler: ProcessHandler,
@@ -19,10 +20,11 @@ export class BootScreenRuntime extends AppProcess {
   }
 
   async begin() {
-    const connected = ServerManager.isConnected();
+    this.connected.set(ServerManager.isConnected());
 
-    if (!connected) {
+    if (!this.connected()) {
       this.status.set("We're offline! Please come back later.");
+
       return;
     }
 
@@ -37,7 +39,7 @@ export class BootScreenRuntime extends AppProcess {
   }
 
   async startBooting() {
-    if (this.progress.get()) return;
+    if (this.progress()) return;
 
     this.status.set("&nbsp;");
     this.progress.set(true);

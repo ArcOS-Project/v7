@@ -18,6 +18,11 @@ div.window#bootScreen div.body > img {
   height: 200px;
 }
 
+div.window#bootScreen div.body > img.gray {
+  filter: grayscale(50%);
+  background-image: url("../../../assets/branding/glow-red.png");
+}
+
 div.window#bootScreen p.status {
   text-align: center;
   font-family: var(--font);
