@@ -4,7 +4,7 @@ import type { StateHandler } from "../ts/state";
 import type { App } from "./app";
 
 export interface State {
-  render: (
+  render?: (
     props: Record<string, any>,
     accessors: StateRendererAccessors
   ) => Promise<any>;

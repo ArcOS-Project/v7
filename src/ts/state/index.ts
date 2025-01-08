@@ -84,18 +84,20 @@ export class StateHandler extends Process {
 
     this.currentState = id;
 
-    try {
-      if (!data.render) throw new StateError(`${id}: No render function`);
+    if (!data.app) {
+      try {
+        if (!data.render) throw new StateError(`${id}: No render function`);
 
-      Log(`StateHandler.loadState`, `==> Rendering`);
+        Log(`StateHandler.loadState`, `==> Rendering`);
 
-      await data.render(props, {
-        state: this,
-        kernel: this.kernel,
-        stack: this.handler,
-      });
-    } catch (e) {
-      throw new StateError(`${id}: ${(e as any).stack}`);
+        await data.render(props, {
+          state: this,
+          kernel: this.kernel,
+          stack: this.handler,
+        });
+      } catch (e) {
+        throw new StateError(`${id}: ${(e as any).stack}`);
+      }
     }
   }
 
