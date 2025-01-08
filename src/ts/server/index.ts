@@ -17,6 +17,15 @@ export class ServerManager extends KernelModule {
 
     return server && server.connected;
   }
+  public static url() {
+    const kernel = WaveKernel.get();
+
+    if (!kernel) return false;
+
+    const server = kernel.getModule<ServerManager>("server", true);
+
+    return server ? server.url : undefined;
+  }
 
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);

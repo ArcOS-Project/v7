@@ -1,4 +1,5 @@
 import { ProfilePictures } from "$ts/images/pfp";
+import { LoginUser } from "$ts/server/user/auth";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import { AppProcess } from "../../../ts/apps/process";
@@ -27,10 +28,16 @@ export class LoginAppRuntime extends AppProcess {
   async proceed(username: string, password: string) {
     this.loadingStatus.set(`Hi, ${username}!`);
 
-    await Sleep(2000);
+    const token = await LoginUser(username, password);
 
-    this.errorMessage.set("The username or password is incorrect.");
-    this.loadingStatus.set("");
+    if (!token) {
+      this.loadingStatus.set("");
+      this.errorMessage.set("Username or password incorrect.");
+
+      return;
+    }
+
+    console.log(token);
   }
 
   revealListener() {
