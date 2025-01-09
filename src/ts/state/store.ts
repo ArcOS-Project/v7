@@ -7,6 +7,7 @@ import DesktopCss from "../../css/state/desktop.css?url";
 import DesktopHtml from "../../state/desktop/desktop.html?url";
 import DesktopRender from "../../state/desktop/render";
 import type { State } from "../../types/state";
+import { InitialSetupWizard } from "$apps/core/initialsetup/metadata";
 
 export const States: Record<string, State> = {
   boot: {
@@ -32,5 +33,10 @@ export const States: Record<string, State> = {
     css: DesktopCss,
     name: "ArcOS Desktop",
     identifier: "desktop",
+  },
+  initialSetup: {
+    name: "Initial Setup Wizard",
+    identifier: "initialSetup",
+    app: InitialSetupWizard,
   },
 };
