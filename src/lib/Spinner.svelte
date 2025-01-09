@@ -19,7 +19,7 @@
 
 <style scoped>
   img.spinner-svg {
-    transition: opacity 0.3s;
+    transition: opacity 0.2s;
   }
 
   img.spinner-svg.hide {

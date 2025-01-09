@@ -16,6 +16,7 @@ export interface App {
   autoRun?: boolean;
   core?: boolean;
   hidden?: boolean;
+  overlay?: boolean;
   id: string;
 }
 

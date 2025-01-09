@@ -13,7 +13,7 @@ div.window#loginApp button:not(.continue) {
   border: none;
   border-radius: 10px;
   backdrop-filter: blur(10px);
-  transition: scale 0.2s, background-color 0.3s;
+  transition: scale 0.2s, background-color 0.2s;
   border: var(--button-glass-bg) 1px solid;
 }
 
@@ -99,7 +99,7 @@ div.window#loginApp div.login-form button.continue {
   justify-content: center;
   font-size: 24px;
   backdrop-filter: blur(10px);
-  transition: background-color 0.3s, opacity 0.3s;
+  transition: background-color 0.2s, opacity 0.2s;
 }
 
 div.window#loginApp div.login-form button.continue:hover:not(:disabled) {
@@ -138,7 +138,7 @@ div.window#loginApp div.topbar {
   border-radius: 10px;
   padding: 0 15px;
   padding-right: 5px;
-  transition: translate 0.3s;
+  transition: translate 0.2s;
 }
 div.window#loginApp div.topbar.hide {
   translate: 0 -50px;
@@ -201,7 +201,7 @@ div.window#loginApp div.power-options button {
   background-color: #fff2;
   border: none;
   font-size: 16px;
-  transition: opacity 0.3s, scale 0.3s;
+  transition: opacity 0.2s, scale 0.2s;
 }
 
 div.window#loginApp div.power-options button:hover {
@@ -233,14 +233,14 @@ div.window#loginApp div.lock-screen {
   background-image: url("../../../assets/bg/img15.jpg");
   background-position: center;
   background-size: cover;
-  transition: translate 0.3s, opacity 0s, pointer-events 0s;
+  transition: translate 0.2s, opacity 0s, pointer-events 0s;
 }
 
 div.window#loginApp div.lock-screen.hide {
   translate: 0 -100vh;
   opacity: 0;
   pointer-events: none;
-  transition: translate 0.4s, opacity 0.3s 0.7s, pointer-events 0s;
+  transition: translate 0.4s, opacity 0.2s 0.7s, pointer-events 0s;
 }
 
 div.window#loginApp div.lock-screen h1 {

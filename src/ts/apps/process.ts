@@ -19,7 +19,8 @@ export class AppProcess extends Process {
     handler: ProcessHandler,
     pid: number,
     parentPid: number,
-    app: AppProcessData
+    app: AppProcessData,
+    ...args: any[]
   ) {
     super(handler, pid, parentPid);
 

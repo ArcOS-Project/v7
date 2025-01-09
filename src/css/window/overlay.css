@@ -1,0 +1,19 @@
+div.window > div.overlay-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: inherit;
+  width: 100%;
+  height: 100%;
+  background-color: #0004;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+div.window > div.overlay-wrapper div.window.overlay div.titlebar {
+  display: none;
+}
+div.window > div.overlay-wrapper div.window.overlay div.body {
+  border-top: none;
+}

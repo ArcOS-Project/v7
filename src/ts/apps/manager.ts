@@ -81,7 +81,25 @@ export class AppManager extends Process {
     this._windowClasses(window, data);
     this._windowEvents(process.pid, window, titlebar, data);
 
-    this.target.append(window);
+    if (data.overlay && process.parentPid) {
+      const wrapper = document.createElement("div");
+      const parent = document.querySelector(
+        `div.window[data-pid="${process.parentPid}"]`
+      );
+
+      if (!parent) {
+        this.target.append(window);
+      } else {
+        wrapper.className = "overlay-wrapper";
+
+        window.classList.add("overlay");
+
+        wrapper.append(window);
+        parent.append(wrapper);
+      }
+    } else {
+      this.target.append(window);
+    }
 
     setTimeout(() => {
       window.classList.add("visible");
@@ -113,20 +131,24 @@ export class AppManager extends Process {
       window.style.width = `${data.size.w}px`;
       window.style.height = `${data.size.h}px`;
 
-      if (data.position.centered) {
-        const x =
-          data.position.x || (document.body.offsetWidth - data.size.w) / 2;
-        const y =
-          data.position.y || (document.body.offsetHeight - data.size.h) / 2;
+      if (!data.overlay) {
+        if (data.position.centered) {
+          const x =
+            data.position.x || (document.body.offsetWidth - data.size.w) / 2;
+          const y =
+            data.position.y || (document.body.offsetHeight - data.size.h) / 2;
 
-        window.style.top = `${y}px`;
-        window.style.left = `${x}px`;
-        window.style.transform = `translate3d(0px, 0px, 0px)`;
-      } else if (`${data.position.x}` && `${data.position.y}`) {
-        window.style.top = `${data.position.y}px`;
-        window.style.left = `${data.position.x}px`;
-      } else {
-        throw new Error(`Attempted to create a window without valid position`);
+          window.style.top = `${y}px`;
+          window.style.left = `${x}px`;
+          window.style.transform = `translate3d(0px, 0px, 0px)`;
+        } else if (`${data.position.x}` && `${data.position.y}`) {
+          window.style.top = `${data.position.y}px`;
+          window.style.left = `${data.position.x}px`;
+        } else {
+          throw new Error(
+            `Attempted to create a window without valid position`
+          );
+        }
       }
 
       if (data.state.resizable) window.classList.add("resizable");
@@ -143,7 +165,7 @@ export class AppManager extends Process {
   ) {
     this.disposedCheck();
 
-    if (data.core) return;
+    if (data.core || data.overlay) return;
 
     new Draggable(window, {
       bounds: { top: 0, left: 0, right: 0 },

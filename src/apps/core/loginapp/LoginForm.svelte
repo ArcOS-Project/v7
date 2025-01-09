@@ -8,7 +8,7 @@
   const { process }: { process: LoginAppRuntime } = $props();
 
   function createUser() {
-    process.kernel.state?.loadState("fts");
+    process.kernel.state?.loadState("initialSetup");
   }
 
   function go() {
