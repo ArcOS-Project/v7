@@ -235,7 +235,7 @@ export class AppManager extends Process {
 
     if (!process) return;
 
-    if (Object.entries(process.componentMount).length)
+    if (process.componentMount && Object.entries(process.componentMount).length)
       unmount(process.componentMount);
 
     const window = this.target.querySelector(`div.window[data-pid="${pid}"]`);

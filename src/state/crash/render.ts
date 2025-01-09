@@ -8,12 +8,17 @@ export default async function render(props: StateProps) {
   if (!crashText) return;
 
   const appRenderer = document.querySelector("div#appRenderer")!;
+  const main = document.querySelector("main#main")!;
 
   if (appRenderer) appRenderer.remove();
 
   const { text } = props;
 
   crashText.innerText = text || "";
+
+  setTimeout(() => {
+    if (main) main.classList.remove("hidden");
+  }, 600);
 
   throw text;
 }

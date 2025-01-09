@@ -35,6 +35,10 @@ div.window#loginApp div.container {
   gap: 40px;
 }
 
+div.window#loginApp div.container.full {
+  background-color: #000;
+}
+
 div.window#loginApp div.container img.profile-picture {
   height: 150px;
   border-radius: 50%;

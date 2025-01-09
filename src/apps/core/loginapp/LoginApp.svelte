@@ -8,13 +8,21 @@
   import Topbar from "./Topbar.svelte";
 
   const { process }: AppComponentProps<LoginAppRuntime> = $props();
-  const { hideLockscreen, loadingStatus, errorMessage, profileImage } = process;
+  const {
+    hideLockscreen,
+    loadingStatus,
+    errorMessage,
+    profileImage,
+    hideProfileImage,
+  } = process;
 </script>
 
 <Topbar {hideLockscreen} {loadingStatus} {errorMessage} />
 
-<div class="container">
-  <img src={$profileImage} alt="" class="profile-picture" />
+<div class="container" class:full={$hideProfileImage}>
+  {#if !$hideProfileImage}
+    <img src={$profileImage} alt="" class="profile-picture" />
+  {/if}
   {#if $loadingStatus}
     <Loading {loadingStatus} />
   {:else if $errorMessage}

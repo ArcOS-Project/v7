@@ -6,20 +6,45 @@ import { Store } from "$ts/writable";
 import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
 import type { AppProcessData } from "../../../types/app";
+import type { LoginAppProps } from "./types";
 
 export class LoginAppRuntime extends AppProcess {
   public hideLockscreen = Store<boolean>(false);
   public loadingStatus = Store<string>("");
   public errorMessage = Store<string>("");
   public profileImage = Store<string>(ProfilePictures.def);
+  public hideProfileImage = Store<boolean>(false);
 
   constructor(
     handler: ProcessHandler,
     pid: number,
     parentPid: number,
-    app: AppProcessData
+    app: AppProcessData,
+    props: LoginAppProps
   ) {
     super(handler, pid, parentPid, app);
+
+    if (props.type) {
+      this.hideLockscreen.set(true);
+      this.hideProfileImage.set(true);
+
+      if (!props.userDaemon)
+        throw new Error(`Irregular login type without a user daemon`);
+
+      switch (props.type) {
+        case "logoff":
+          this.logoff(props.userDaemon);
+          break;
+        case "shutdown":
+          this.shutdown(props.userDaemon);
+          break;
+        case "restart":
+          this.restart(props.userDaemon);
+          break;
+        default:
+          throw new Error(`Invalid login type "${props.type}"`);
+      }
+    }
   }
 
   async render() {
@@ -64,11 +89,14 @@ export class LoginAppRuntime extends AppProcess {
     this.profileImage.set(
       getProfilePicture(userDaemon.preferences().account.profilePicture)
     );
+
+    await Sleep(2000);
+
+    this.kernel.state?.loadState("desktop", { userDaemon });
   }
 
   revealListener() {
     const listener = this.safe(async (e: KeyboardEvent) => {
-      console.log(e);
       if (this._disposed) return;
 
       if (e.key.toLowerCase() === " ") this.hideLockscreen.set(true);
@@ -82,5 +110,41 @@ export class LoginAppRuntime extends AppProcess {
       document.addEventListener("keydown", listener, { once: true });
 
     addListener();
+  }
+
+  async logoff(daemon: UserDaemon) {
+    this.loadingStatus.set(`Goodbye, ${daemon.username}!`);
+    this.errorMessage.set("");
+
+    await Sleep(2000);
+
+    await daemon.killSelf();
+
+    this.hideLockscreen.set(false);
+
+    setTimeout(() => {
+      this.loadingStatus.set("");
+      this.hideProfileImage.set(false);
+    }, 600);
+  }
+
+  async shutdown(daemon: UserDaemon) {
+    this.loadingStatus.set(`Shutting down...`);
+    this.errorMessage.set("");
+
+    await Sleep(2000);
+
+    await daemon.killSelf();
+    window.close();
+  }
+
+  async restart(daemon: UserDaemon) {
+    this.loadingStatus.set(`Restarting...`);
+    this.errorMessage.set("");
+
+    await Sleep(2000);
+
+    await daemon.killSelf();
+    location.reload();
   }
 }

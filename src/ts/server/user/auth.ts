@@ -19,7 +19,6 @@ export async function LoginUser(identity: string, password: string) {
 
     return response.status === 200 ? response.data.token : undefined;
   } catch (e) {
-    console.log(e);
     Log("LoginUser", "API request errored: " + e, LogLevel.error);
 
     return undefined;

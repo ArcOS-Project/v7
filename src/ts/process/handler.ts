@@ -38,6 +38,8 @@ export class ProcessHandler extends KernelModule {
     const pid = this.getPid();
     const proc = new (process as any)(this, pid, parentPid, ...args) as Process;
 
+    console.group(`PROCESS ${proc.constructor.name} ${pid}`);
+
     Log(
       "ProcessHandler.spawn",
       `Spawning new ${proc.constructor.name} with PID ${pid}`
@@ -46,7 +48,11 @@ export class ProcessHandler extends KernelModule {
     if (proc.__start) {
       const result = await proc.__start();
 
-      if (result === false) return;
+      if (result === false) {
+        console.groupEnd();
+
+        return;
+      }
     }
 
     proc.name = proc.constructor.name;
@@ -58,6 +64,8 @@ export class ProcessHandler extends KernelModule {
     this.store.set(store);
 
     if (this.renderer && proc instanceof AppProcess) this.renderer.render(proc);
+
+    console.groupEnd();
 
     return proc as T;
   }

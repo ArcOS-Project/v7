@@ -113,10 +113,10 @@ export class UserDaemon extends Process {
       this.Log(`Not sanitizing default preferences`, LogLevel.warning);
     }
 
-    const result = applyDefaults<UserPreferences>(
-      preferences,
-      DefaultUserPreferences
-    );
+    const result = applyDefaults<UserPreferences>(preferences, {
+      ...DefaultUserPreferences,
+      isDefault: undefined,
+    });
 
     this.preferences.set(result);
     this.commitPreferences(result);

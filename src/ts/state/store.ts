@@ -3,6 +3,9 @@ import { LoginApp } from "$apps/core/loginapp/metadata";
 import CrashCss from "../../css/state/crash.css?url";
 import CrashHtml from "../../state/crash/crash.html?url";
 import CrashRender from "../../state/crash/render";
+import DesktopCss from "../../css/state/desktop.css?url";
+import DesktopHtml from "../../state/desktop/desktop.html?url";
+import DesktopRender from "../../state/desktop/render";
 import type { State } from "../../types/state";
 
 export const States: Record<string, State> = {
@@ -22,5 +25,12 @@ export const States: Record<string, State> = {
     css: CrashCss,
     name: "Aw, snap!",
     identifier: "crash-screen",
+  },
+  desktop: {
+    render: DesktopRender,
+    html: DesktopHtml,
+    css: DesktopCss,
+    name: "ArcOS Desktop",
+    identifier: "desktop",
   },
 };

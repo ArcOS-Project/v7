@@ -41,6 +41,8 @@ export class StateHandler extends Process {
 
     const data = this.store[id];
 
+    console.group(`LoadState: ${id}`);
+
     if (!data)
       throw new StateError(
         `No such state ${id} on handler with PID ${this.pid}`
@@ -54,6 +56,8 @@ export class StateHandler extends Process {
     cssLoader.href = "";
 
     if (!data.app && !(data.html && data.css)) {
+      console.groupEnd();
+
       throw new StateError(
         `${id}: Tried to load a state without any valid code.`
       );
@@ -68,7 +72,7 @@ export class StateHandler extends Process {
     }
 
     if (data.app) {
-      await this.loadStateAsApp(data);
+      await this.loadStateAsApp(data, props);
     } else {
       await this.loadStateNormally(id, data, htmlLoader, cssLoader);
     }
@@ -83,16 +87,24 @@ export class StateHandler extends Process {
 
     if (!data.app) {
       try {
-        if (!data.render) throw new StateError(`${id}: No render function`);
+        if (!data.render) {
+          console.groupEnd();
+
+          throw new StateError(`${id}: No render function`);
+        }
 
         this.Log(`==> Rendering`);
 
-        await data.render(props, {
+        console.groupEnd();
+
+        await data.render(props || {}, {
           state: this,
           kernel: this.kernel,
           stack: this.handler,
         });
       } catch (e) {
+        console.groupEnd();
+
         throw new StateError(`${id}: ${(e as any).stack}`);
       }
     }
@@ -127,7 +139,8 @@ export class StateHandler extends Process {
     this.Log(` -> Loaded ${data.css}`);
   }
 
-  async loadStateAsApp(data: State) {
+  async loadStateAsApp(data: State, props: Record<string, any>) {
+    await Sleep(500);
     this.Log(`BEGINNING LOAD OF ${data.name} (${data.identifier}) IN APP MODE`);
 
     const stack = this.kernel.getModule<ProcessHandler>("stack");
@@ -136,13 +149,18 @@ export class StateHandler extends Process {
 
     const { app } = data;
 
-    const proc = await stack.spawn<AppProcess>(app.assets.runtime, this.pid, {
-      ...{
-        data: app,
-        meta: app,
-        id: app.id,
+    const proc = await stack.spawn<AppProcess>(
+      app.assets.runtime,
+      this.pid,
+      {
+        ...{
+          data: app,
+          meta: app,
+          id: app.id,
+        },
       },
-    });
+      props
+    );
 
     if (!proc) throw new StateError(`Failed to spawn state app ${app.id}`);
 
