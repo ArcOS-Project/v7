@@ -32,6 +32,4 @@ export default async function render(
       userDaemon: props.userDaemon as UserDaemon,
     });
   });
-
-  console.log(props.userDaemon as UserDaemon);
 }

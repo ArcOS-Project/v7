@@ -133,7 +133,7 @@ div.window#loginApp div.topbar {
   left: 10px;
   width: calc(100% - 20px);
   height: 40px;
-  background-color: var(--button-glass-active-bg);
+  /* background-color: var(--button-glass-active-bg); */
   backdrop-filter: blur(10px);
   border-radius: 10px;
   padding: 0 15px;
@@ -178,6 +178,46 @@ div.window#loginApp div.topbar div.actions button:hover {
 
 div.window#loginApp div.topbar div.actions button:active {
   background-color: var(--button-glass-active-bg);
+}
+
+div.window#loginApp div.power-options {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+div.window#loginApp div.power-options button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  width: 36px;
+  height: 36px;
+  font-size: 24px;
+  border-radius: 50%;
+  background-color: #fff2;
+  border: none;
+  font-size: 16px;
+  transition: opacity 0.3s, scale 0.3s;
+}
+
+div.window#loginApp div.power-options button:hover {
+  scale: 1.1;
+}
+
+div.window#loginApp div.power-options button:active {
+  opacity: 0.7;
+  scale: 0.95;
+}
+
+div.window#loginApp div.power-options button.shutdown {
+  background-color: #fff4;
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
 }
 
 div.window#loginApp div.lock-screen {

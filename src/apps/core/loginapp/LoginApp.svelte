@@ -7,7 +7,7 @@
   import type { LoginAppRuntime } from "./runtime";
   import Topbar from "./Topbar.svelte";
 
-  const { process }: AppComponentProps<LoginAppRuntime> = $props();
+  const { process, safe }: AppComponentProps<LoginAppRuntime> = $props();
   const {
     hideLockscreen,
     loadingStatus,
@@ -31,5 +31,20 @@
     <LoginForm {process} />
   {/if}
 </div>
+
+{#if !$loadingStatus && !$errorMessage}
+  <div class="power-options">
+    <button
+      class="restart icon-rotate-ccw"
+      aria-label="Restart"
+      onclick={safe(() => process.restart())}
+    ></button>
+    <button
+      class="shutdown icon-power"
+      aria-label="Shutdown"
+      onclick={safe(() => process.shutdown())}
+    ></button>
+  </div>
+{/if}
 
 <LockScreen {hideLockscreen} />

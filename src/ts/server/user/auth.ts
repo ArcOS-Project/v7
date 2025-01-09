@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { ServerManager } from "..";
 import { Log } from "$ts/kernel/logging";
 import { LogLevel } from "$types/logging";
@@ -19,6 +19,12 @@ export async function LoginUser(identity: string, password: string) {
 
     return response.status === 200 ? response.data.token : undefined;
   } catch (e) {
+    const err = e as AxiosError;
+
+    console.log(e);
+
+    if (err.code === "ERR_NETWORK") throw e;
+
     Log("LoginUser", "API request errored: " + e, LogLevel.error);
 
     return undefined;

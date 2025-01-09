@@ -54,6 +54,8 @@ export class LoginAppRuntime extends AppProcess {
   async proceed(username: string, password: string) {
     this.loadingStatus.set(`Hi, ${username}!`);
 
+    await Sleep(1500);
+
     const token = await LoginUser(username, password);
 
     if (!token) {
@@ -90,7 +92,7 @@ export class LoginAppRuntime extends AppProcess {
       getProfilePicture(userDaemon.preferences().account.profilePicture)
     );
 
-    await Sleep(2000);
+    await Sleep(1500);
 
     this.kernel.state?.loadState("desktop", { userDaemon });
   }
@@ -113,6 +115,10 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async logoff(daemon: UserDaemon) {
+    this.profileImage.set(
+      getProfilePicture(daemon.preferences().account.profilePicture)
+    );
+
     this.loadingStatus.set(`Goodbye, ${daemon.username}!`);
     this.errorMessage.set("");
 
@@ -125,26 +131,39 @@ export class LoginAppRuntime extends AppProcess {
     setTimeout(() => {
       this.loadingStatus.set("");
       this.hideProfileImage.set(false);
+      this.profileImage.set(ProfilePictures.def);
     }, 600);
   }
 
-  async shutdown(daemon: UserDaemon) {
+  async shutdown(daemon?: UserDaemon) {
+    if (daemon) {
+      this.profileImage.set(
+        getProfilePicture(daemon.preferences().account.profilePicture)
+      );
+    }
+
     this.loadingStatus.set(`Shutting down...`);
     this.errorMessage.set("");
 
     await Sleep(2000);
 
-    await daemon.killSelf();
+    if (daemon) await daemon.killSelf();
     window.close();
   }
 
-  async restart(daemon: UserDaemon) {
+  async restart(daemon?: UserDaemon) {
+    if (daemon) {
+      this.profileImage.set(
+        getProfilePicture(daemon.preferences().account.profilePicture)
+      );
+    }
+
     this.loadingStatus.set(`Restarting...`);
     this.errorMessage.set("");
 
     await Sleep(2000);
 
-    await daemon.killSelf();
+    if (daemon) await daemon.killSelf();
     location.reload();
   }
 }

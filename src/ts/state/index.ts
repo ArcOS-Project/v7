@@ -48,7 +48,17 @@ export class StateHandler extends Process {
         `No such state ${id} on handler with PID ${this.pid}`
       );
 
-    if (this.stateAppProcess) await this.stateAppProcess.closeWindow();
+    if (this.stateAppProcess) {
+      console.group(`loadState: previous state app close`);
+
+      this.Log(`Closing previous state app process...`);
+
+      await this.stateAppProcess.closeWindow();
+
+      this.stateAppProcess = undefined;
+
+      console.groupEnd();
+    }
 
     const { htmlLoader, cssLoader, main } = this.getStateLoaders();
 
@@ -108,6 +118,8 @@ export class StateHandler extends Process {
         throw new StateError(`${id}: ${(e as any).stack}`);
       }
     }
+
+    console.groupEnd();
   }
 
   async loadStateNormally(

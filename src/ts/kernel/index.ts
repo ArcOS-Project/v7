@@ -95,6 +95,7 @@ export class WaveKernel {
     await this.init?.jumpstart();
 
     console.groupEnd();
+    console.groupEnd();
   }
 
   getModule<T = KernelModule>(id: string, dontCrash = false): T {

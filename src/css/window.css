@@ -20,7 +20,7 @@ div.window:not(.core) {
 }
 
 div.window *::selection {
-  background-color: var(--accent-transparent);
+  background-color: var(--accent-dark);
 }
 
 div:not(.noani) div.window:not(.core) {
