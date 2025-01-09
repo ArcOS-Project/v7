@@ -1,6 +1,6 @@
 import type { App } from "../../../types/app";
 import { TestAppRuntime } from "./runtime";
-import CSS from "$css/apps/components/test.css?url";
+import "$css/apps/components/test.css";
 import Test from "./Test.svelte";
 
 export const TestApp: App = {
@@ -37,7 +37,6 @@ export const TestApp: App = {
     close: true,
   },
   assets: {
-    css: CSS,
     component: Test as any,
     runtime: TestAppRuntime,
   },

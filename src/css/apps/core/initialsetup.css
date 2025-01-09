@@ -1,0 +1,15 @@
+#initialSetupWizard {
+  background-image: url("../../../assets/bg/img15.jpg");
+  background-position: center;
+  background-size: cover;
+}
+
+#initialSetupWizard::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0006;
+}

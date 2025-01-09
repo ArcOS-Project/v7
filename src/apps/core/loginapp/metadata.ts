@@ -1,4 +1,4 @@
-import CSS from "$css/apps/core/loginapp.css?url";
+import "$css/apps/core/loginapp.css";
 import { SecurityHighIcon } from "$ts/images/general";
 import type { App } from "../../../types/app";
 import Login from "./LoginApp.svelte";
@@ -27,7 +27,6 @@ export const LoginApp: App = {
     close: false,
   },
   assets: {
-    css: CSS,
     component: Login as any,
     runtime: LoginAppRuntime,
   },

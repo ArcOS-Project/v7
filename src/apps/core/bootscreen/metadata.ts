@@ -2,7 +2,7 @@ import { ComponentIcon } from "$ts/images/general";
 import type { App } from "../../../types/app";
 import Boot from "./Boot.svelte";
 import { BootScreenRuntime } from "./runtime";
-import CSS from "$css/apps/core/bootscreen.css?url";
+import "$css/apps/core/bootscreen.css";
 
 export const BootScreen: App = {
   metadata: {
@@ -27,7 +27,6 @@ export const BootScreen: App = {
     close: false,
   },
   assets: {
-    css: CSS,
     component: Boot as any,
     runtime: BootScreenRuntime,
   },

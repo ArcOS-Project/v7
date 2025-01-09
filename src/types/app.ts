@@ -43,7 +43,6 @@ export interface WindowControls {
 export interface AppAssets {
   runtime: typeof AppProcess;
   component: typeof SvelteComponent;
-  css: string;
 }
 
 export interface AppComponentProps<T = AppProcess> {

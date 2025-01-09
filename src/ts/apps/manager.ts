@@ -51,16 +51,9 @@ export class AppManager extends Process {
     const window = document.createElement("div");
     const titlebar = this._renderTitlebar(process);
     const body = document.createElement("div");
-    const styling = document.createElement("link");
 
     const { app } = process;
     const { data } = app;
-
-    styling.rel = "stylesheet";
-    styling.href = data.assets.css;
-    styling.id = `$${process.pid}`;
-
-    document.body.append(styling);
 
     await Sleep(100);
 
@@ -90,6 +83,7 @@ export class AppManager extends Process {
       if (!parent) {
         this.target.append(window);
       } else {
+        wrapper.setAttribute("data-pid", process.pid.toString());
         wrapper.className = "overlay-wrapper";
 
         window.classList.add("overlay");
@@ -261,10 +255,14 @@ export class AppManager extends Process {
       unmount(process.componentMount);
 
     const window = this.target.querySelector(`div.window[data-pid="${pid}"]`);
+    const wrapper = this.target.querySelector(
+      `div.overlay-wrapper[data-pid="${pid}"]`
+    );
     const styling = document.body.querySelector(`link[id="$${pid}"`);
 
     if (window) window.remove();
     if (styling) styling.remove();
+    if (wrapper) wrapper.remove();
   }
 
   toggleMaximize(pid: number) {

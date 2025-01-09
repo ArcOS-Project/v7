@@ -2,7 +2,7 @@ import { ErrorIcon } from "$ts/images/dialog";
 import type { App } from "$types/app";
 import MessageBox from "./MessageBox.svelte";
 import { MessageBoxRuntime } from "./runtime";
-import CSS from "$css/apps/components/messagebox.css?url";
+import "$css/apps/components/messagebox.css";
 
 export const MessageBoxApp: App = {
   metadata: {
@@ -29,7 +29,6 @@ export const MessageBoxApp: App = {
   assets: {
     runtime: MessageBoxRuntime,
     component: MessageBox as any,
-    css: CSS,
   },
   id: "messageBox",
 };
