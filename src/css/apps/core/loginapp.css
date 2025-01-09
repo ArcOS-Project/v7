@@ -189,14 +189,14 @@ div.window#loginApp div.lock-screen {
   background-image: url("../../../assets/bg/img15.jpg");
   background-position: center;
   background-size: cover;
-  transition: translate 0.5s, opacity 0s, pointer-events 0s;
+  transition: translate 0.3s, opacity 0s, pointer-events 0s;
 }
 
 div.window#loginApp div.lock-screen.hide {
   translate: 0 -100vh;
   opacity: 0;
   pointer-events: none;
-  transition: translate 0.5s, opacity 0.3s 0.7s, pointer-events 0s;
+  transition: translate 0.4s, opacity 0.3s 0.7s, pointer-events 0s;
 }
 
 div.window#loginApp div.lock-screen h1 {

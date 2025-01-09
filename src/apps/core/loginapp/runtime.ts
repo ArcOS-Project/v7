@@ -1,5 +1,6 @@
-import { ProfilePictures } from "$ts/images/pfp";
+import { getProfilePicture, ProfilePictures } from "$ts/images/pfp";
 import { LoginUser } from "$ts/server/user/auth";
+import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import { AppProcess } from "../../../ts/apps/process";
@@ -37,7 +38,32 @@ export class LoginAppRuntime extends AppProcess {
       return;
     }
 
-    console.log(token);
+    const userDaemon = await this.handler.spawn<UserDaemon>(
+      UserDaemon,
+      this.kernel.initPid,
+      token,
+      username
+    );
+
+    if (!userDaemon) {
+      this.loadingStatus.set("");
+      this.errorMessage.set("Failed to start user daemon");
+
+      return;
+    }
+
+    const userInfo = await userDaemon.getUserInfo();
+
+    if (!userInfo) {
+      this.loadingStatus.set("");
+      this.errorMessage.set("Failed to request user info");
+
+      return;
+    }
+
+    this.profileImage.set(
+      getProfilePicture(userDaemon.preferences().account.profilePicture)
+    );
   }
 
   revealListener() {
