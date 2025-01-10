@@ -88,6 +88,8 @@ export class LoginAppRuntime extends AppProcess {
       return;
     }
 
+    userDaemon.startPreferencesSync();
+
     this.profileImage.set(
       getProfilePicture(userDaemon.preferences().account.profilePicture)
     );

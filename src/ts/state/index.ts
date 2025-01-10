@@ -167,7 +167,6 @@ export class StateHandler extends Process {
       {
         ...{
           data: app,
-          meta: app,
           id: app.id,
         },
       },

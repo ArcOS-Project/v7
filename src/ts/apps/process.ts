@@ -1,19 +1,25 @@
+import type { UserDaemon } from "$ts/server/user/daemon";
+import { DefaultUserPreferences } from "$ts/server/user/default";
+import type { UserPreferences } from "$types/user";
 import { mount } from "svelte";
 import type { AppProcessData } from "../../types/app";
 import { LogLevel } from "../../types/logging";
+import { WaveKernel } from "../kernel";
 import { Log } from "../kernel/logging";
 import type { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
-import { Store } from "../writable";
+import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
-import { WaveKernel } from "../kernel";
 
 export class AppProcess extends Process {
   crashReason = "";
   windowTitle = Store("");
   app: AppProcessData;
   componentMount: Record<string, any> = {};
+  userPreferences: ReadableStore<UserPreferences> = Store<UserPreferences>(
+    DefaultUserPreferences
+  );
 
   constructor(
     handler: ProcessHandler,
@@ -26,12 +32,18 @@ export class AppProcess extends Process {
 
     this.app = {
       data: { ...app.data },
-      meta: { ...app.data },
       id: app.data.id,
     };
 
     this.windowTitle.set(app.data.metadata.name);
     this.name = app.data.id;
+    const desktopProps = this.kernel.state?.stateProps["desktop"];
+
+    if (desktopProps && desktopProps.userDaemon) {
+      this.userPreferences = (
+        desktopProps.userDaemon as UserDaemon
+      ).preferences;
+    }
   }
 
   // Conditional function that can prohibit closing if it returns false

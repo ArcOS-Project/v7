@@ -14,12 +14,12 @@ export interface UserPreferences {
   appPreferences: ApplicationPreferences;
   account: AccountSettings;
   isDefault?: boolean;
+  desktop: DesktopPreferences;
 }
 
 export interface ShellPreferences {
   taskbar: TaskbarPreferences;
   window: WindowPreferences;
-  desktop: DesktopPreferences;
   start: StartMenuPreferences;
   visuals: VisualPreferences;
 }

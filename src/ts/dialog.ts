@@ -21,7 +21,7 @@ export async function MessageBox(
     MessageBoxRuntime,
     parentPid,
     {
-      ...{ data: appData, meta: appData, id: appData.id },
+      ...{ data: appData, id: appData.id },
     },
     data
   );

@@ -59,4 +59,4 @@ export type Size = { w: number; h: number };
 export type Position = { x: number; y: number };
 export type MaybeCenteredPosition = Partial<Position> & { centered?: boolean };
 
-export type AppProcessData = { data: App; meta: App; id: string };
+export type AppProcessData = { data: App; id: string };

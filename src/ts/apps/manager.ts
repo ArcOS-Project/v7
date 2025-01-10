@@ -1,7 +1,7 @@
-import { ComponentIcon } from "$ts/images/general";
+import { BugReportIcon, ComponentIcon } from "$ts/images/general";
 import { Draggable } from "@neodrag/vanilla";
 import { unmount } from "svelte";
-import type { App } from "../../types/app";
+import type { App, AppProcessData } from "../../types/app";
 import type { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
@@ -9,12 +9,15 @@ import { htmlspecialchars } from "../util";
 import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
+import { BuiltinApps } from "./store";
+import { MessageBox } from "$ts/dialog";
 
 export class AppManager extends Process {
   currentState: number[] = [];
   target;
   maxZIndex = 1e6;
   focusedPid = Store(-1);
+  appStore = Store<Map<string, AppProcessData>>(new Map());
 
   constructor(
     handler: ProcessHandler,
@@ -354,6 +357,65 @@ export class AppManager extends Process {
     return result;
   }
 
+  loadApp(app: App) {
+    const id = app.id;
+    const assets = app.assets;
+    const procData: AppProcessData = {
+      data: { ...JSON.parse(JSON.stringify(app)), assets },
+      id,
+    };
+    const store = this.appStore.get();
+
+    if (store.get(id)) return false;
+
+    this.Log(
+      `Loading "${app.metadata.name}" (${app.metadata.version}) by ${app.metadata.author} as ${app.id}`
+    );
+
+    store.set(id, procData);
+
+    this.appStore.set(store);
+  }
+
+  async spawnApp<T = AppProcess>(
+    id: string,
+    parentPid?: number,
+    ...args: any[]
+  ): Promise<T | undefined> {
+    this.Log(
+      `Spawning new instance of app "${id}" against parent ${
+        parentPid || "(none)"
+      }`
+    );
+
+    const app = this.appStore().get(id);
+
+    if (!app) return;
+
+    const result = await this.handler.spawn<T>(
+      app.data.assets.runtime,
+      parentPid,
+      app,
+      ...args
+    );
+
+    return result as T;
+  }
+
+  async loadBuiltinApps(builtins = BuiltinApps) {
+    console.group("AppManager: load builtin apps");
+
+    this.Log(`Loading ${builtins.length} builtin app(s)`);
+
+    for (const app of builtins) {
+      this.loadApp(app);
+
+      if (app.autoRun) await this.spawnApp(app.id, this.pid);
+    }
+
+    console.groupEnd();
+  }
+
   notifyCrash(data: App, e: Error, process: AppProcess) {
     const lines = [
       `<b><code>${data.id}::'${data.metadata.name}'</code> (PID ${process.pid}) has encountered a problem and needs to close. I am sorry for the inconvenience.</b>`,
@@ -362,6 +424,16 @@ export class AppManager extends Process {
         e.stack?.replaceAll(location.href, "") || ""
       )}</pre></details>`,
     ];
+
+    MessageBox(
+      {
+        title: `${data.metadata.name} - Application Error`,
+        message: lines.join(""),
+        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        image: BugReportIcon,
+      },
+      this.pid
+    );
 
     console.log(e);
   }

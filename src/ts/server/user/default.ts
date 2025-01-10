@@ -1,6 +1,15 @@
 import type { UserPreferences, UserInfo } from "$types/user";
 
 export const DefaultUserPreferences: UserPreferences = {
+  desktop: {
+    wallpaper: "img18",
+    icons: true,
+    theme: "dark",
+    sharp: false,
+    accent: "#008CFF",
+    noIconGrid: false,
+    lockIcons: true,
+  },
   shell: {
     taskbar: {
       labels: false,
@@ -12,15 +21,6 @@ export const DefaultUserPreferences: UserPreferences = {
     },
     window: {
       bigTitlebar: true,
-    },
-    desktop: {
-      wallpaper: "img18",
-      icons: true,
-      theme: "dark",
-      sharp: false,
-      accent: "#008CFF",
-      noIconGrid: false,
-      lockIcons: true,
     },
     start: {
       noGroups: false,
