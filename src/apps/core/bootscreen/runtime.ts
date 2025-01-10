@@ -1,5 +1,3 @@
-import { MessageBox } from "$ts/dialog";
-import { WarningIcon } from "$ts/images/dialog";
 import { ServerManager } from "$ts/server";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
@@ -22,17 +20,6 @@ export class BootScreenRuntime extends AppProcess {
   }
 
   async begin() {
-    MessageBox(
-      {
-        image: WarningIcon,
-        title: "ArcOS Internal",
-        message:
-          "This codebase is an in-development implementation of the ArcOS project, version 7. All code that resides inside this repository is considered Walled Garden Internal. DO NOT SHARE THIS STUFF WITH ANYONE.",
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-      },
-      this.pid,
-      true
-    );
     this.connected.set(ServerManager.isConnected());
 
     if (!this.connected()) {
