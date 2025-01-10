@@ -10,14 +10,14 @@
   let PageComponent: Component | undefined = $state();
 
   pageNumber.subscribe((v) => {
-    PageComponent = pages[v || 0];
+    PageComponent = pages[v || 0] as Component;
   });
 </script>
 
 <div class="container">
   <div class="content">
     {#if PageComponent}
-      <PageComponent />
+      <PageComponent {process} />
     {/if}
   </div>
   <Actions {pageNumber} {pageButtons} {identityInfoValid} />

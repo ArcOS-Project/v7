@@ -90,6 +90,10 @@ export class AppManager extends Process {
 
         wrapper.append(window);
         parent.append(wrapper);
+
+        setTimeout(() => {
+          wrapper.classList.add("visible");
+        }, 100);
       }
     } else {
       this.target.append(window);
@@ -262,7 +266,9 @@ export class AppManager extends Process {
 
     if (window) window.remove();
     if (styling) styling.remove();
-    if (wrapper) wrapper.remove();
+    if (wrapper) {
+      wrapper.remove();
+    }
   }
 
   toggleMaximize(pid: number) {

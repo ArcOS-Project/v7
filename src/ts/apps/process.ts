@@ -49,6 +49,9 @@ export class AppProcess extends Process {
       ...(document.querySelectorAll(
         `button.opened-app[data-pid="${this.pid}"]`
       ) || []),
+      ...(document.querySelectorAll(
+        `div.overlay-wrapper[data-pid="${this.pid}"]`
+      ) || []),
     ];
 
     if (!elements.length) return this.killSelf();

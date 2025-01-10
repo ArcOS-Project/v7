@@ -10,6 +10,8 @@ div.window > div.overlay-wrapper {
   justify-content: center;
   align-items: center;
   z-index: 100000000000000000;
+  transition: opacity 0.3s, pointer-events 0s;
+  opacity: 0;
 }
 
 div.window > div.overlay-wrapper div.window.overlay div.titlebar {
@@ -17,4 +19,12 @@ div.window > div.overlay-wrapper div.window.overlay div.titlebar {
 }
 div.window > div.overlay-wrapper div.window.overlay div.body {
   border-top: none;
+}
+
+div.window > div.overlay-wrapper.visible:not(.closing) {
+  opacity: 1;
+}
+div.window > div.overlay-wrapper.visible.closing {
+  opacity: 0;
+  pointer-events: none;
 }

@@ -1,9 +1,11 @@
 import { MessageBox } from "$ts/dialog";
-import { QuestionIcon } from "$ts/images/dialog";
+import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
+import { RegisterUser } from "$ts/server/user/auth";
 import { Store } from "$ts/writable";
 import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
 import type { AppProcessData } from "../../../types/app";
+import CheckInbox from "./InitialSetup/Page/CheckInbox.svelte";
 import Finish from "./InitialSetup/Page/Finish.svelte";
 import Identity from "./InitialSetup/Page/Identity.svelte";
 import License from "./InitialSetup/Page/License.svelte";
@@ -18,7 +20,7 @@ export class InitialSetupRuntime extends AppProcess {
   public confirm = Store<string>();
   public email = Store<string>();
 
-  public readonly pages = [Welcome, License, Identity, Finish];
+  public readonly pages = [Welcome, License, Identity, CheckInbox, Finish];
 
   public readonly pageButtons: PageButtons = [
     {
@@ -91,6 +93,20 @@ export class InitialSetupRuntime extends AppProcess {
     app: AppProcessData
   ) {
     super(handler, pid, parentPid, app);
+
+    const update = () => {
+      this.identityInfoValid.set(
+        !!this.username() &&
+          !!this.password() &&
+          !!this.confirm() &&
+          !!this.email()
+      );
+    };
+
+    this.username.subscribe(update);
+    this.password.subscribe(update);
+    this.confirm.subscribe(update);
+    this.email.subscribe(update);
   }
 
   async licenseConfirmation() {
@@ -121,7 +137,48 @@ export class InitialSetupRuntime extends AppProcess {
 
   async viewLicense() {}
 
-  async createAccount() {}
+  async createAccount() {
+    const username = this.username();
+    const password = this.password();
+    const confirm = this.confirm();
+    const email = this.email();
+
+    if (confirm !== password) {
+      MessageBox(
+        {
+          image: WarningIcon,
+          title: "You made a typo!",
+          message:
+            "The passwords you entered don't match. Please re-enter them, and then try again.",
+          buttons: [{ caption: "Okay", suggested: true, action: () => {} }],
+        },
+        this.pid,
+        true
+      );
+
+      return;
+    }
+
+    const created = await RegisterUser(username, email, password);
+
+    if (!created) {
+      MessageBox(
+        {
+          image: ErrorIcon,
+          title: "Something went wrong",
+          message:
+            "I couldn't create your account. Maybe either the username or email is invalid or already in use. Enter another username and/or email, and then try again",
+          buttons: [{ caption: "Okay", suggested: true, action: () => {} }],
+        },
+        this.pid,
+        true
+      );
+
+      return;
+    }
+
+    this.pageNumber.set(this.pageNumber() + 1);
+  }
 
   async checkAccountActivation() {}
 

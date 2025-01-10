@@ -30,3 +30,32 @@ export async function LoginUser(identity: string, password: string) {
     return undefined;
   }
 }
+
+export async function RegisterUser(
+  username: string,
+  email: string,
+  password: string
+) {
+  const url = ServerManager.url();
+
+  try {
+    const response = await axios.post(
+      `${url}/user`,
+      toForm({
+        username,
+        password,
+        email,
+      })
+    );
+
+    return response.status === 200;
+  } catch (e) {
+    const err = e as AxiosError;
+
+    if (err.code === "ERR_NETWORK") throw e;
+
+    Log("RegisterUser", "API request errored: " + e, LogLevel.error);
+
+    return false;
+  }
+}
