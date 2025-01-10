@@ -1,29 +1,29 @@
-div.window:not(.core) div.body button:not(.reset) {
+div.window div.body button:not(.reset) {
   border: none;
   border-radius: var(--button-border-rad);
   padding: 6px 15px;
   background-color: var(--button-bg, #4a4a4a);
   color: var(--fg, #ccc);
-  transition: opacity 0.2s, background-color 0.2s, filter 0.2s;
+  transition: opacity 0.2s, background-color 0.2s, filter 0.2s, scale 0.2s;
   font-size: var(--font-size);
   margin: 2px;
   text-align: center;
 }
 
-div.window:not(.core) div.body button:not(.reset):hover {
+div.window div.body button:not(.reset):hover {
   background-color: var(--button-hover-bg, #555555);
 }
 
 button:not(.reset):not(:disabled):active {
-  transform: scale(0.95);
+  scale: 0.95;
   opacity: 0.8;
 }
 
-div.window:not(.core) div.body button:not(.reset):disabled {
+div.window div.body button:not(.reset):disabled {
   opacity: 0.3;
 }
 
-div.window:not(.core) div.body button:not(.reset):not(:disabled):active {
+div.window div.body button:not(.reset):not(:disabled):active {
   background-color: var(--button-active-bg, #2a2a2a);
 }
 

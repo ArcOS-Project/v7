@@ -172,9 +172,29 @@ export class AppManager extends Process {
       legacyTranslate: false,
       gpuAcceleration: false,
     });
+
+    this.focusedPid.subscribe((v) => {
+      window.classList.remove("focused");
+
+      if (v === pid) window.classList.add("focused");
+    });
   }
 
   focusPid(pid: number) {
+    this.disposedCheck();
+
+    const currentFocus = this.focusedPid.get();
+    const window = document.querySelector(
+      `div.window[data-pid="${pid}"]`
+    ) as HTMLDivElement;
+
+    this.unMinimize(pid);
+
+    if (!window || currentFocus === pid) return;
+
+    this.maxZIndex++;
+    window.style.zIndex = this.maxZIndex.toString();
+
     this.focusedPid.set(pid);
   }
 

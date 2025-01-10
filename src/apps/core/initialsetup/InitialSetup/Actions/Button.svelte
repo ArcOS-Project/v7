@@ -8,10 +8,12 @@
     pageNumber,
     button,
     identityInfoValid,
+    actionsDisabled,
   }: {
     pageNumber: ReadableStore<number>;
     button: PageButton;
     identityInfoValid: ReadableStore<boolean>;
+    actionsDisabled: ReadableStore<boolean>;
   } = $props();
 
   let identityInfoUnsubscribe: Unsubscriber;
@@ -26,7 +28,10 @@
       return;
     }
 
-    if (button.action) return await button.action();
+    if (button.action) {
+      $actionsDisabled = true;
+      return await button.action();
+    }
 
     throw new Error(`No action specified for button "${button.caption}"`);
   }
@@ -53,7 +58,11 @@
 </script>
 
 {#if button}
-  <button onclick={action} class:suggested={button.suggested} {disabled}>
+  <button
+    onclick={action}
+    class:suggested={button.suggested}
+    disabled={disabled || $actionsDisabled}
+  >
     {button.caption}
   </button>
 {/if}

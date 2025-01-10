@@ -1,0 +1,23 @@
+/* Still going strong since WebOSv3! */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+  border: transparent 3px solid;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--button-glass-bg);
+  transition: background-color 0.25s;
+  opacity: 0.5;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  border-radius: var(--win-border-rad);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--button-glass-hover-bg);
+}

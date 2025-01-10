@@ -1,6 +1,8 @@
 import { MessageBox } from "$ts/dialog";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
-import { RegisterUser } from "$ts/server/user/auth";
+import { SecurityMediumIcon } from "$ts/images/general";
+import { LoginUser, RegisterUser } from "$ts/server/user/auth";
+import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
@@ -19,6 +21,9 @@ export class InitialSetupRuntime extends AppProcess {
   public password = Store<string>();
   public confirm = Store<string>();
   public email = Store<string>();
+  public actionsDisabled = Store<boolean>(false);
+  public showMainContent = Store<boolean>(false);
+  private token: string | undefined;
 
   public readonly pages = [Welcome, License, Identity, CheckInbox, Finish];
 
@@ -86,6 +91,7 @@ export class InitialSetupRuntime extends AppProcess {
       },
     },
   ];
+
   constructor(
     handler: ProcessHandler,
     pid: number,
@@ -107,6 +113,17 @@ export class InitialSetupRuntime extends AppProcess {
     this.password.subscribe(update);
     this.confirm.subscribe(update);
     this.email.subscribe(update);
+
+    this.pageNumber.subscribe(() => {
+      this.actionsDisabled.set(false);
+    });
+  }
+
+  async render() {
+    // TODO: some kind of intro animation
+    await Sleep(1000);
+
+    this.showMainContent.set(true);
   }
 
   async licenseConfirmation() {
@@ -118,7 +135,9 @@ export class InitialSetupRuntime extends AppProcess {
         buttons: [
           {
             caption: "Decline",
-            action: () => {},
+            action: () => {
+              this.actionsDisabled.set(false);
+            },
           },
           {
             caption: "I agree",
@@ -135,7 +154,26 @@ export class InitialSetupRuntime extends AppProcess {
     );
   }
 
-  async viewLicense() {}
+  async viewLicense() {
+    MessageBox(
+      {
+        image: SecurityMediumIcon,
+        title: "ArcOS License - GPLv3",
+        message: `<code>${this.kernel.ARCOS_LICENSE}</code>`,
+        buttons: [
+          {
+            caption: "Okay",
+            action: () => {
+              this.actionsDisabled.set(false);
+            },
+            suggested: true,
+          },
+        ],
+      },
+      this.pid,
+      true
+    );
+  }
 
   async createAccount() {
     const username = this.username();
@@ -150,7 +188,15 @@ export class InitialSetupRuntime extends AppProcess {
           title: "You made a typo!",
           message:
             "The passwords you entered don't match. Please re-enter them, and then try again.",
-          buttons: [{ caption: "Okay", suggested: true, action: () => {} }],
+          buttons: [
+            {
+              caption: "Okay",
+              suggested: true,
+              action: () => {
+                this.actionsDisabled.set(false);
+              },
+            },
+          ],
         },
         this.pid,
         true
@@ -168,7 +214,15 @@ export class InitialSetupRuntime extends AppProcess {
           title: "Something went wrong",
           message:
             "I couldn't create your account. Maybe either the username or email is invalid or already in use. Enter another username and/or email, and then try again",
-          buttons: [{ caption: "Okay", suggested: true, action: () => {} }],
+          buttons: [
+            {
+              caption: "Okay",
+              suggested: true,
+              action: () => {
+                this.actionsDisabled.set(false);
+              },
+            },
+          ],
         },
         this.pid,
         true
@@ -180,7 +234,41 @@ export class InitialSetupRuntime extends AppProcess {
     this.pageNumber.set(this.pageNumber() + 1);
   }
 
-  async checkAccountActivation() {}
+  async checkAccountActivation() {
+    const token = await LoginUser(this.username(), this.password());
 
-  async finish() {}
+    if (!token) {
+      MessageBox(
+        {
+          title: "Did you click the link?",
+          message:
+            "Our systems tell me that your account hasn't been activated yet. Are you sure you clicked the link? If you did, and you're still seeing this, please contact support.",
+          buttons: [
+            {
+              caption: "Okay",
+              action: () => {
+                this.actionsDisabled.set(false);
+              },
+              suggested: true,
+            },
+          ],
+          image: WarningIcon,
+        },
+        this.pid,
+        true
+      );
+      return;
+    }
+
+    this.token = token;
+    this.pageNumber.set(this.pageNumber() + 1);
+  }
+
+  async finish() {
+    this.showMainContent.set(false);
+
+    await Sleep(1000);
+
+    location.reload();
+  }
 }

@@ -4,6 +4,7 @@
 @import url("./window/overlay.css");
 @import url("./window/body.css");
 @import url("./window/button.css");
+@import url("./window/scrollbars.css");
 
 div.window:not(.core) {
   position: fixed;

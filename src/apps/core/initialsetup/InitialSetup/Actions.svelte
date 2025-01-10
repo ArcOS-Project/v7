@@ -8,16 +8,22 @@
     pageNumber,
     pageButtons,
     identityInfoValid,
+    actionsDisabled,
+    hide,
   }: {
     pageNumber: ReadableStore<number>;
     pageButtons: PageButtons;
     identityInfoValid: ReadableStore<boolean>;
+    actionsDisabled: ReadableStore<boolean>;
+    hide: boolean;
   } = $props();
 
   let buttons = Store<PageButtonPage | undefined>();
 
   pageNumber.subscribe(async (v) => {
     v ||= 0;
+
+    await Sleep(300);
 
     $buttons = undefined;
 
@@ -29,18 +35,31 @@
   });
 </script>
 
-<div class="actions">
-  <!-- {#if buttons} -->
+<div class="actions" class:hide>
   {#if $buttons && $buttons.left}
     <div class="left">
-      <Button {pageNumber} button={$buttons.left} {identityInfoValid} />
+      <Button
+        {pageNumber}
+        button={$buttons.left}
+        {identityInfoValid}
+        {actionsDisabled}
+      />
     </div>
   {/if}
   {#if $buttons && $buttons.previous}
-    <Button {pageNumber} button={$buttons.previous} {identityInfoValid} />
+    <Button
+      {pageNumber}
+      button={$buttons.previous}
+      {identityInfoValid}
+      {actionsDisabled}
+    />
   {/if}
   {#if $buttons && $buttons.next}
-    <Button {pageNumber} button={$buttons.next} {identityInfoValid} />
+    <Button
+      {pageNumber}
+      button={$buttons.next}
+      {identityInfoValid}
+      {actionsDisabled}
+    />
   {/if}
-  <!-- {/if} -->
 </div>

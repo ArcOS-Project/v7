@@ -4,6 +4,10 @@
   flex-direction: column;
 }
 
+#messageBox.overlay {
+  max-width: 600px !important;
+}
+
 #messageBox div.body {
   padding: 0;
   display: flex;
@@ -66,4 +70,18 @@
 
 #messageBox div.bottom button:not(.suggested):active {
   background-color: var(--button-active-bg);
+}
+
+#messageBox div.top code {
+  max-height: 350px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  display: block;
+  font-family: "Source Code Pro";
+  width: 100%;
+  font-size: 12px;
+  padding: 10px;
+  border-radius: 6px;
+  background-color: var(--button-glass-active-bg);
+  margin-top: 10px;
 }

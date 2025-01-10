@@ -1,5 +1,9 @@
+<script lang="ts">
+  import { Rocket } from "lucide-svelte";
+</script>
+
 <div class="hero-page">
-  <span class="lucide icon-rocket"></span>
+  <Rocket className="lucide" />
   <h1>Welcome</h1>
   <p class="subtitle">We're happy to have you</p>
   <p class="message">

@@ -1,4 +1,5 @@
 import { getBuild } from "$ts/metadata/build";
+import { getLicense } from "$ts/metadata/license";
 import { getMode } from "$ts/metadata/mode";
 import {
   LogLevel,
@@ -25,6 +26,7 @@ export class WaveKernel {
   public params = new URLSearchParams();
   public ARCOS_MODE = "release";
   public ARCOS_BUILD = "unknown";
+  public ARCOS_LICENSE = "not here yet";
 
   public static get(): WaveKernel {
     if (!CurrentKernel)
@@ -79,6 +81,7 @@ export class WaveKernel {
 
     await getMode();
     await getBuild();
+    await getLicense();
 
     this.Log(
       `ArcOS`,

@@ -21,19 +21,38 @@
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 100;
+  z-index: 1;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 #initialSetupWizard div.container {
-  width: 500px;
-  height: 400px;
+  width: 550px;
+  height: 450px;
   background-color: var(--glass-bg);
   border: var(--win-border);
   border-radius: 10px;
   backdrop-filter: blur(10px);
+  scale: 0.9;
+  opacity: 0;
+  pointer-events: none;
+  transition: scale 0.3s, opacity 0.3s, pointer-events 0s;
+}
+
+#initialSetupWizard div.container.show {
+  scale: 1;
+  opacity: 1;
+  pointer-events: initial;
+}
+
+#initialSetupWizard div.container > div {
+  transition: opacity 0.2s, pointer-events 0s;
+}
+
+#initialSetupWizard div.container > .hide {
+  opacity: 0;
+  pointer-events: none;
 }
 
 #initialSetupWizard div.content {
@@ -60,7 +79,7 @@
   border-radius: 8px;
   padding: 0 15px;
   height: 30px;
-  transition: background-color 0.2s, opacity 0.2s, filter 0.2s;
+  transition: background-color 0.2s, opacity 0.2s, filter 0.2s, scale 0.2s;
 }
 
 #initialSetupWizard div.actions button:disabled {
@@ -83,15 +102,41 @@
   flex-direction: column;
 }
 
-#initialSetupWizard div.hero-page > span.lucide {
-  font-size: 72px;
-  color: var(--accent-light);
+#initialSetupWizard div.hero-page > .lucide {
+  width: 72px;
+  height: 72px;
+  stroke: var(--accent-light);
   margin-bottom: 20px;
+}
+
+#initialSetupWizard div.hero-page > .lucide path {
+  stroke-dasharray: 50;
+  stroke-dashoffset: 50;
+  animation: draw 2s 0.2s forwards;
+}
+
+#initialSetupWizard div.hero-page > .lucide.lucide-rocket path {
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+}
+
+#initialSetupWizard div.hero-page > .lucide.lucide-scale path {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+}
+
+#initialSetupWizard div.hero-page > .lucide.lucide-send path {
+  stroke-dasharray: 62;
+  stroke-dashoffset: 62;
+}
+
+#initialSetupWizard div.hero-page > .lucide.lucide-flag path {
+  stroke-dasharray: 58;
+  stroke-dashoffset: 58;
 }
 
 #initialSetupWizard div.hero-page > h1 {
   font-size: 22px;
-  /* margin: 10px 0; */
 }
 
 #initialSetupWizard div.hero-page > p.subtitle {
@@ -100,6 +145,8 @@
 
 #initialSetupWizard div.hero-page > p.message {
   margin-top: 30px;
+  max-width: 80%;
+  text-align: center;
 }
 
 #initialSetupWizard div.form-page {
@@ -121,10 +168,11 @@
 }
 
 #initialSetupWizard div.form-page p.subtitle {
-  margin-bottom: 30px;
+  margin-bottom: 40px;
 }
+
 #initialSetupWizard div.form-page div.fields {
-  width: 380px;
+  width: 400px;
   /* margin: 0 auto; */
 }
 
@@ -139,12 +187,12 @@
 }
 
 #initialSetupWizard div.form-page div.fields div.field > div.duo input {
-  width: 120px;
+  width: 130px;
 }
 
 #initialSetupWizard div.form-page div.fields div.field > input,
 #initialSetupWizard div.form-page div.fields div.field > div.duo {
-  width: 250px;
+  width: 270px;
   margin-left: auto;
 }
 
@@ -161,4 +209,10 @@
   border-radius: 6px;
   background: var(--glass-bg);
   padding: 0 10px;
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
 }

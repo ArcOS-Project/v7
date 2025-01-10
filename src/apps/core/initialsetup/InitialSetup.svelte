@@ -1,24 +1,47 @@
 <script lang="ts">
   import type { AppComponentProps } from "$types/app";
   import type { Component } from "svelte";
-  import Actions from "./IntialSetup/Actions.svelte";
+  import Actions from "./InitialSetup/Actions.svelte";
   import type { InitialSetupRuntime } from "./runtime";
+  import { Sleep } from "$ts/sleep";
 
   const { process }: AppComponentProps<InitialSetupRuntime> = $props();
-  const { pageNumber, pageButtons, identityInfoValid, pages } = process;
+  const {
+    pageNumber,
+    pageButtons,
+    identityInfoValid,
+    pages,
+    actionsDisabled,
+    showMainContent,
+  } = process;
 
   let PageComponent: Component | undefined = $state();
+  let hide = $state(true);
 
-  pageNumber.subscribe((v) => {
+  pageNumber.subscribe(async (v) => {
+    hide = true;
+
+    await Sleep(300);
+
     PageComponent = pages[v || 0] as Component;
+
+    await Sleep(300);
+
+    hide = false;
   });
 </script>
 
-<div class="container">
-  <div class="content">
+<div class="container" class:show={$showMainContent}>
+  <div class="content" class:hide>
     {#if PageComponent}
       <PageComponent {process} />
     {/if}
   </div>
-  <Actions {pageNumber} {pageButtons} {identityInfoValid} />
+  <Actions
+    {pageNumber}
+    {pageButtons}
+    {identityInfoValid}
+    {actionsDisabled}
+    {hide}
+  />
 </div>
