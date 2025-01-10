@@ -4,7 +4,7 @@
   background-size: cover;
 }
 
-#initialSetupWizard::after {
+#initialSetupWizard::before {
   content: "";
   position: absolute;
   top: 0;
@@ -12,4 +12,153 @@
   width: 100%;
   height: 100%;
   background-color: #0006;
+  z-index: 0;
+}
+
+#initialSetupWizard > div.body {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#initialSetupWizard div.container {
+  width: 500px;
+  height: 400px;
+  background-color: var(--glass-bg);
+  border: var(--win-border);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+}
+
+#initialSetupWizard div.content {
+  padding: 15px;
+  height: calc(100% - 51px);
+}
+#initialSetupWizard div.actions {
+  display: flex;
+  align-items: center;
+  height: 51px;
+  border-top: var(--win-border);
+  padding: 10px;
+  justify-content: end;
+  gap: 10px;
+}
+
+#initialSetupWizard div.actions div.left {
+  margin-right: auto;
+}
+
+#initialSetupWizard div.actions button {
+  border: none;
+  background-color: var(--button-glass-bg);
+  border-radius: 8px;
+  padding: 0 15px;
+  height: 30px;
+  transition: background-color 0.2s, opacity 0.2s, filter 0.2s;
+}
+
+#initialSetupWizard div.actions button:disabled {
+  opacity: 0.5;
+}
+
+#initialSetupWizard div.actions button:not(.suggested):hover {
+  background-color: var(--button-glass-hover-bg);
+}
+
+#initialSetupWizard div.actions button:not(.suggested):active {
+  background-color: var(--button-glass-active-bg);
+}
+
+#initialSetupWizard div.hero-page {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+#initialSetupWizard div.hero-page > span.lucide {
+  font-size: 72px;
+  color: var(--accent-light);
+  margin-bottom: 20px;
+}
+
+#initialSetupWizard div.hero-page > h1 {
+  font-size: 22px;
+  /* margin: 10px 0; */
+}
+
+#initialSetupWizard div.hero-page > p.subtitle {
+  opacity: 0.5;
+}
+
+#initialSetupWizard div.hero-page > p.message {
+  margin-top: 30px;
+}
+
+#initialSetupWizard div.form-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+#initialSetupWizard div.form-page h1,
+#initialSetupWizard div.form-page p.subtitle {
+  text-align: center;
+}
+
+#initialSetupWizard div.form-page h1 {
+  font-size: 16px;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+#initialSetupWizard div.form-page p.subtitle {
+  margin-bottom: 30px;
+}
+#initialSetupWizard div.form-page div.fields {
+  width: 380px;
+  /* margin: 0 auto; */
+}
+
+#initialSetupWizard div.form-page div.fields div.field {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+#initialSetupWizard div.form-page div.fields div.field > div.duo {
+  display: flex;
+  gap: 10px;
+}
+
+#initialSetupWizard div.form-page div.fields div.field > div.duo input {
+  width: 120px;
+}
+
+#initialSetupWizard div.form-page div.fields div.field > input,
+#initialSetupWizard div.form-page div.fields div.field > div.duo {
+  width: 250px;
+  margin-left: auto;
+}
+
+#initialSetupWizard div.form-page p.disclaimer {
+  margin-top: auto;
+  width: 100%;
+  opacity: 0.5;
+  font-size: 12px;
+}
+
+#initialSetupWizard div.form-page input {
+  border: var(--win-border);
+  height: 30px;
+  border-radius: 6px;
+  background: var(--glass-bg);
+  padding: 0 10px;
 }

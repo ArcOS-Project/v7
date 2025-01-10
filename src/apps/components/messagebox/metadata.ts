@@ -13,7 +13,7 @@ export const MessageBoxApp: App = {
   },
   size: { w: NaN, h: NaN },
   minSize: { w: NaN, h: 120 },
-  maxSize: { w: 700, h: NaN },
+  maxSize: { w: 500, h: NaN },
   position: { x: 60, y: 60 },
   state: {
     minimized: false,

@@ -9,6 +9,7 @@ div.window > div.overlay-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 100000000000000000;
 }
 
 div.window > div.overlay-wrapper div.window.overlay div.titlebar {
