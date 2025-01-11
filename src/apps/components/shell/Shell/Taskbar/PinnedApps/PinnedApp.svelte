@@ -1,0 +1,23 @@
+<script lang="ts">
+  import type { ShellRuntime } from "$apps/components/shell/runtime";
+  import type { App } from "$types/app";
+  import { onMount } from "svelte";
+
+  const { appId, process }: { appId: string; process: ShellRuntime } = $props();
+
+  let app: App | undefined = $state();
+
+  onMount(() => {
+    const renderer = process.handler.renderer;
+
+    app = renderer?.getAppById(appId);
+
+    console.log(app);
+  });
+</script>
+
+{#if app && app.metadata}
+  <button class="pinned-app" title={app.metadata.name}>
+    <img src={app.metadata.icon} alt="" />
+  </button>
+{/if}

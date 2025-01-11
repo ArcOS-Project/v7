@@ -18,6 +18,7 @@ export const DefaultUserPreferences: UserPreferences = {
       clock12hr: false,
       clockDate: false,
       clockSecs: false,
+      pinnedApps: [],
     },
     window: {
       bigTitlebar: true,

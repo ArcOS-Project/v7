@@ -1,10 +1,15 @@
 <script lang="ts">
+  import type { ShellRuntime } from "$apps/components/shell/runtime";
   import type { UserPreferencesStore } from "$types/user";
   import dayjs from "dayjs";
   import { onMount } from "svelte";
 
-  const { userPreferences }: { userPreferences: UserPreferencesStore } =
+  const {
+    userPreferences,
+    process,
+  }: { userPreferences: UserPreferencesStore; process: ShellRuntime } =
     $props();
+  const { safe } = process;
 
   let text = $state("");
 

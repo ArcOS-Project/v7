@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { Logo } from "$ts/branding";
   import type { ShellRuntime } from "../../runtime";
 
   const { process }: { process: ShellRuntime } = $props();

@@ -416,13 +416,27 @@ export class AppManager extends Process {
     console.groupEnd();
   }
 
+  getAppById(id: string) {
+    const app = this.appStore().get(id);
+
+    if (!app) return undefined;
+
+    const assets = app?.data.assets;
+    const procData: App = {
+      ...JSON.parse(JSON.stringify(app.data)),
+      assets,
+    };
+
+    return procData;
+  }
+
   notifyCrash(data: App, e: Error, process: AppProcess) {
     const lines = [
       `<b><code>${data.id}::'${data.metadata.name}'</code> (PID ${process.pid}) has encountered a problem and needs to close. I am sorry for the inconvenience.</b>`,
       `If you were in the middle of something, the information you were working on might be lost. You can choose to view the call stack, which may contain the reason for the crash.`,
-      `<details><summary>Show call stack</summary><pre>${htmlspecialchars(
+      `<details><summary>Show call stack</summary><code class='block'>${htmlspecialchars(
         e.stack?.replaceAll(location.href, "") || ""
-      )}</pre></details>`,
+      )}</code></details>`,
     ];
 
     MessageBox(
