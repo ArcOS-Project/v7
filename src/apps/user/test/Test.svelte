@@ -1,9 +1,4 @@
 <script lang="ts">
-  import type { AppComponentProps } from "$types/app";
-  import type { TestAppRuntime } from "./runtime";
-
-  const { safe }: AppComponentProps<TestAppRuntime> = $props();
-
   function crash() {
     throw new Error("bruh");
   }
@@ -13,5 +8,5 @@
   }
 </script>
 
-<button onclick={safe(crash)}>Crash app</button>
+<button onclick={crash}>Crash app</button>
 <button onclick={crashOS}>Crash OS</button>

@@ -9,7 +9,6 @@
     process,
   }: { userPreferences: UserPreferencesStore; process: ShellRuntime } =
     $props();
-  const { safe } = process;
 
   let text = $state("");
 

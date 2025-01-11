@@ -52,7 +52,6 @@ export interface AppComponentProps<T = AppProcess> {
   handler: ProcessHandler;
   app: App;
   windowTitle: ReadableStore<string>;
-  safe(callback: (...a: any[]) => any): (...args: any[]) => void;
 }
 
 export type Size = { w: number; h: number };

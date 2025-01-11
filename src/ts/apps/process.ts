@@ -91,24 +91,6 @@ export class AppProcess extends Process {
     }
   }
 
-  safe(callback: (...a: any[]) => any) {
-    return (...args: any[]) => {
-      try {
-        if (this._disposed) return;
-
-        callback(...args);
-      } catch (e) {
-        Log(
-          `AppProcess::'${this.pid}'.safe`,
-          (e as any).message,
-          LogLevel.error
-        );
-
-        this.crashReason = (e as any).stack;
-      }
-    };
-  }
-
   async render() {
     /** */
   }
@@ -126,7 +108,6 @@ export class AppProcess extends Process {
         handler: this.handler,
         app: this.app.data,
         windowTitle: this.windowTitle,
-        safe: this.safe.bind(this),
       },
     });
 

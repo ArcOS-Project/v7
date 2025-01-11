@@ -111,7 +111,7 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   revealListener() {
-    const listener = this.safe(async (e: KeyboardEvent) => {
+    const listener = async (e: KeyboardEvent) => {
       if (this._disposed) return;
 
       if (e.key.toLowerCase() === " ") this.hideLockscreen.set(true);
@@ -119,7 +119,7 @@ export class LoginAppRuntime extends AppProcess {
       await Sleep(10);
 
       addListener();
-    });
+    };
 
     const addListener = () =>
       document.addEventListener("keydown", listener, { once: true });

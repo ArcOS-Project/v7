@@ -7,7 +7,7 @@
   import type { LoginAppRuntime } from "./runtime";
   import Topbar from "./Topbar.svelte";
 
-  const { process, safe }: AppComponentProps<LoginAppRuntime> = $props();
+  const { process }: AppComponentProps<LoginAppRuntime> = $props();
   const {
     hideLockscreen,
     loadingStatus,
@@ -37,12 +37,12 @@
     <button
       class="restart icon-rotate-ccw"
       aria-label="Restart"
-      onclick={safe(() => process.restart())}
+      onclick={() => process.restart()}
     ></button>
     <button
       class="shutdown icon-power"
       aria-label="Shutdown"
-      onclick={safe(() => process.shutdown())}
+      onclick={() => process.shutdown()}
     ></button>
   </div>
 {/if}
