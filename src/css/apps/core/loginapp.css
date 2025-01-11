@@ -33,15 +33,25 @@ div.window#loginApp div.container {
   justify-content: center;
   flex-direction: column;
   gap: 40px;
+  transition: opacity 0.3s, pointer-events 0s;
 }
 
 div.window#loginApp div.container.full {
   background-color: #000;
 }
+div.window#loginApp div.container.hide {
+  opacity: 0;
+  pointer-events: none;
+}
 
-div.window#loginApp div.container img.profile-picture {
+div.window#loginApp div.container .profile-picture {
+  width: 150px;
   height: 150px;
   border-radius: 50%;
+  background-image: var(--src);
+  background-size: cover;
+  background-position: center;
+  transition: background-image 0.3s;
 }
 
 div.window#loginApp div.container div.field {

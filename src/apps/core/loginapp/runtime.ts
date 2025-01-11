@@ -1,8 +1,11 @@
 import { getProfilePicture, ProfilePictures } from "$ts/images/pfp";
+import { ServerManager } from "$ts/server";
 import { LoginUser } from "$ts/server/user/auth";
 import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
+import axios from "axios";
+import Cookies from "js-cookie";
 import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
 import type { AppProcessData } from "../../../types/app";
@@ -48,23 +51,29 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async render() {
+    await this.loadToken();
+
     this.revealListener();
   }
 
   async proceed(username: string, password: string) {
     this.loadingStatus.set(`Hi, ${username}!`);
 
-    await Sleep(1500);
-
     const token = await LoginUser(username, password);
 
     if (!token) {
+      await Sleep(1000);
       this.loadingStatus.set("");
       this.errorMessage.set("Username or password incorrect.");
 
       return;
     }
 
+    await this.startDaemon(token, username);
+  }
+
+  async startDaemon(token: string, username: string) {
+    this.hideLockscreen.set(true);
     const userDaemon = await this.handler.spawn<UserDaemon>(
       UserDaemon,
       this.kernel.initPid,
@@ -78,6 +87,8 @@ export class LoginAppRuntime extends AppProcess {
 
       return;
     }
+
+    this.saveToken(userDaemon);
 
     const userInfo = await userDaemon.getUserInfo();
 
@@ -94,7 +105,7 @@ export class LoginAppRuntime extends AppProcess {
       getProfilePicture(userDaemon.preferences().account.profilePicture)
     );
 
-    await Sleep(1500);
+    await Sleep(2000);
 
     this.kernel.state?.loadState("desktop", { userDaemon });
   }
@@ -126,6 +137,8 @@ export class LoginAppRuntime extends AppProcess {
 
     await Sleep(2000);
 
+    this.resetCookies();
+    await daemon.discontinueToken();
     await daemon.killSelf();
 
     this.hideLockscreen.set(false);
@@ -167,5 +180,60 @@ export class LoginAppRuntime extends AppProcess {
 
     if (daemon) await daemon.killSelf();
     location.reload();
+  }
+
+  private saveToken(daemon: UserDaemon) {
+    const token = daemon.token;
+    const username = daemon.username;
+
+    const cookieOptions = {
+      expires: 2,
+      domain: import.meta.env.DEV ? "localhost" : "izk-arcos.nl",
+    };
+
+    Cookies.set("arcToken", token, cookieOptions);
+    Cookies.set("arcUsername", username, cookieOptions);
+  }
+
+  private async loadToken() {
+    const token = Cookies.get("arcToken");
+    const username = Cookies.get("arcUsername");
+
+    if (!token || !username) return false;
+
+    const tokenValid = await this.validateUserToken(token);
+
+    if (!tokenValid) {
+      this.resetCookies();
+
+      return false;
+    }
+
+    this.loadingStatus.set(`Hi, ${username}!`);
+    this.errorMessage.set("");
+    this.hideProfileImage.set(false);
+
+    await this.startDaemon(token, username);
+
+    return true;
+  }
+
+  private async validateUserToken(token: string) {
+    const url = ServerManager.url();
+
+    try {
+      const response = await axios.get(`${url}/user/self`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  resetCookies() {
+    Cookies.remove("arcToken");
+    Cookies.remove("arcUsername");
   }
 }

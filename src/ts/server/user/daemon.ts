@@ -12,7 +12,7 @@ import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 export class UserDaemon extends Process {
   public initialized = false;
   public username: string;
-  private token: string;
+  public token: string;
   public preferences = Store<UserPreferences>();
   private preferencesUnsubscribe: Unsubscriber | undefined;
   public userInfo: UserInfo = DefaultUserInfo;
@@ -31,6 +31,8 @@ export class UserDaemon extends Process {
   }
 
   async getUserInfo(): Promise<UserInfo | undefined> {
+    if (this._disposed) return;
+
     if (this.initialized) {
       this.Log(
         `Tried to get user info while initialization is already complete`,
@@ -67,9 +69,13 @@ export class UserDaemon extends Process {
   }
 
   startPreferencesSync() {
+    if (this._disposed) return;
+
     this.Log(`Starting user preferences commit sync`);
 
     const unsubscribe = this.preferences.subscribe(async (v) => {
+      if (this._disposed) return;
+
       if (!v || v.isDefault) return;
 
       this.commitPreferences(v);
@@ -79,6 +85,8 @@ export class UserDaemon extends Process {
   }
 
   async commitPreferences(preferences: UserPreferences) {
+    if (this._disposed) return;
+
     this.Log(`Committing user preferences`);
 
     const url = ServerManager.url();
@@ -99,6 +107,8 @@ export class UserDaemon extends Process {
   }
 
   async sanitizeUserPreferences() {
+    if (this._disposed) return;
+
     if (this.initialized) {
       this.Log(
         `Tried to sanitize user preferences while initialization is already complete`
@@ -120,5 +130,21 @@ export class UserDaemon extends Process {
 
     this.preferences.set(result);
     this.commitPreferences(result);
+  }
+
+  async discontinueToken() {
+    const url = ServerManager.url();
+
+    try {
+      const response = await axios.post(
+        `${url}/logout`,
+        {},
+        { headers: { Authorization: `Bearer ${this.token}` } }
+      );
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
   }
 }

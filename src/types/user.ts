@@ -1,3 +1,5 @@
+import type { ReadableStore } from "$ts/writable";
+
 export interface UserInfo {
   username: string;
   preferences: UserPreferences;
@@ -7,6 +9,8 @@ export interface UserInfo {
   _id: string;
   email: string;
 }
+
+export type UserPreferencesStore = ReadableStore<UserPreferences>;
 
 export interface UserPreferences {
   shell: ShellPreferences;

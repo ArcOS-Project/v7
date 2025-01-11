@@ -1,6 +1,9 @@
 import { get, writable, type Writable } from "svelte/store";
 
 export type ReadableStore<T> = Writable<T> & { (): T; get: () => T };
+export type BooleanStore = ReadableStore<boolean>;
+export type StringStore = ReadableStore<string>;
+export type NumberStore = ReadableStore<number>;
 
 export function Store<T>(initial?: T): ReadableStore<T> {
   const store = writable<T>(initial);

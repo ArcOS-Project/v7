@@ -21,7 +21,7 @@
 
 <div class="container" class:full={$hideProfileImage}>
   {#if !$hideProfileImage}
-    <img src={$profileImage} alt="" class="profile-picture" />
+    <div class="profile-picture" style="--src: url('{$profileImage}')"></div>
   {/if}
   {#if $loadingStatus}
     <Loading {loadingStatus} />
