@@ -1,3 +1,4 @@
+import { Filesystem } from "$ts/fs";
 import { applyDefaults } from "$ts/hierarchy";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
@@ -8,6 +9,7 @@ import axios from "axios";
 import type { Unsubscriber } from "svelte/store";
 import { ServerManager } from "..";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
+import { ServerFilesystemSupplier } from "$ts/fs/suppliers/server";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -16,6 +18,7 @@ export class UserDaemon extends Process {
   public preferences = Store<UserPreferences>();
   private preferencesUnsubscribe: Unsubscriber | undefined;
   public userInfo: UserInfo = DefaultUserInfo;
+  private fs: Filesystem;
 
   constructor(
     handler: ProcessHandler,
@@ -28,6 +31,7 @@ export class UserDaemon extends Process {
 
     this.token = token;
     this.username = username;
+    this.fs = this.kernel.getModule<Filesystem>("fs");
   }
 
   async getUserInfo(): Promise<UserInfo | undefined> {
@@ -102,8 +106,14 @@ export class UserDaemon extends Process {
     }
   }
 
+  async startFilesystemSupplier() {
+    await this.fs.loadSupplier("userfs", ServerFilesystemSupplier, this.token);
+  }
+
   async stop() {
     if (this.preferencesUnsubscribe) this.preferencesUnsubscribe();
+
+    this.fs.unloadSupplier(`userfs`);
   }
 
   async sanitizeUserPreferences() {

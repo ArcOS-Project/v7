@@ -101,6 +101,7 @@ export class LoginAppRuntime extends AppProcess {
     }
 
     userDaemon.startPreferencesSync();
+    await userDaemon.startFilesystemSupplier();
 
     this.profileImage.set(
       getProfilePicture(userDaemon.preferences().account.profilePicture)
