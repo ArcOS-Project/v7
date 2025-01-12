@@ -6,7 +6,7 @@ import Wallpaper from "./Wallpaper.svelte";
 
 export const WallpaperApp: App = {
   metadata: {
-    name: "ArcOS Shell",
+    name: "Wallpaper",
     author: "Izaak Kuipers",
     version: "3.1.0",
     icon: DesktopIcon,

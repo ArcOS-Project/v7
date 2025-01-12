@@ -15,9 +15,7 @@
   class:colored={$userPreferences.shell.taskbar.colored}
 >
   <StartButton {process} />
-  {#if $userPreferences.shell.taskbar.pinnedApps && $userPreferences.shell.taskbar.pinnedApps.length}
-    <PinnedApps {process} />
-  {/if}
+  <PinnedApps {process} />
   <OpenedApps {process} />
   <SystemArea {process} />
   <ActionCenterButton {process} />

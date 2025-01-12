@@ -52,6 +52,7 @@ export interface AppComponentProps<T = AppProcess> {
   handler: ProcessHandler;
   app: App;
   windowTitle: ReadableStore<string>;
+  windowIcon: ReadableStore<string>;
 }
 
 export type Size = { w: number; h: number };

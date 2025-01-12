@@ -29,5 +29,6 @@ export class MessageBoxRuntime extends AppProcess {
     }
 
     this.windowTitle.set(this.data.title);
+    if (this.data.image) this.windowIcon.set(this.data.image);
   }
 }

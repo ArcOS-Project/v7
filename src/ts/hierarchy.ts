@@ -70,6 +70,8 @@ export function applyDefaults<T = NestedObject>(
       target[key] === undefined
     ) {
       result[key] = defaults[key];
+    } else if (Array.isArray(defaults[key]) && Array.isArray(target[key])) {
+      result[key] = [...defaults[key], ...target[key]];
     } else if (
       typeof defaults[key] === "object" &&
       defaults[key] !== null &&

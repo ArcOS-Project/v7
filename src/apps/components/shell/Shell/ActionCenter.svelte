@@ -4,4 +4,4 @@
   const { actionCenterOpened }: { actionCenterOpened: BooleanStore } = $props();
 </script>
 
-<div class="actioncenter" class:opened={actionCenterOpened}></div>
+<div class="actioncenter" class:opened={$actionCenterOpened}></div>

@@ -3,9 +3,7 @@ import { DefaultUserPreferences } from "$ts/server/user/default";
 import type { UserPreferences } from "$types/user";
 import { mount } from "svelte";
 import type { AppProcessData } from "../../types/app";
-import { LogLevel } from "../../types/logging";
 import { WaveKernel } from "../kernel";
-import { Log } from "../kernel/logging";
 import type { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
@@ -15,6 +13,7 @@ import { AppRuntimeError } from "./error";
 export class AppProcess extends Process {
   crashReason = "";
   windowTitle = Store("");
+  windowIcon = Store("");
   app: AppProcessData;
   componentMount: Record<string, any> = {};
   userPreferences: ReadableStore<UserPreferences> = Store<UserPreferences>(
@@ -36,6 +35,7 @@ export class AppProcess extends Process {
     };
 
     this.windowTitle.set(app.data.metadata.name);
+    this.windowIcon.set(app.data.metadata.icon);
     this.name = app.data.id;
     const desktopProps = this.kernel.state?.stateProps["desktop"];
 
@@ -108,6 +108,7 @@ export class AppProcess extends Process {
         handler: this.handler,
         app: this.app.data,
         windowTitle: this.windowTitle,
+        windowIcon: this.windowIcon,
       },
     });
 

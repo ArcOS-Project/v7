@@ -1,15 +1,15 @@
 import "$css/apps/core/loginapp.css";
-import { SecurityHighIcon } from "$ts/images/general";
+import { PasswordIcon } from "$ts/images/general";
 import type { App } from "../../../types/app";
 import Login from "./LoginApp.svelte";
 import { LoginAppRuntime } from "./runtime";
 
 export const LoginApp: App = {
   metadata: {
-    name: "Boot App",
+    name: "LogonUI",
     author: "Izaak Kuipers",
     version: "9.0.0",
-    icon: SecurityHighIcon,
+    icon: PasswordIcon,
   },
   size: { w: NaN, h: NaN },
   minSize: { w: NaN, h: NaN },

@@ -72,7 +72,7 @@
   background-color: var(--button-active-bg);
 }
 
-#messageBox div.top code {
+#messageBox div.top code.block {
   max-height: 350px;
   overflow-y: auto;
   white-space: pre-wrap;

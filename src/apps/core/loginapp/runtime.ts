@@ -17,6 +17,7 @@ export class LoginAppRuntime extends AppProcess {
   public errorMessage = Store<string>("");
   public profileImage = Store<string>(ProfilePictures.def);
   public hideProfileImage = Store<boolean>(false);
+  private type = "";
 
   constructor(
     handler: ProcessHandler,
@@ -51,7 +52,7 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async render() {
-    await this.loadToken();
+    if (!this.type) await this.loadToken();
 
     this.revealListener();
   }
@@ -128,6 +129,19 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async logoff(daemon: UserDaemon) {
+    this.type = "logoff";
+
+    for (const [pid, proc] of [...this.handler.store()]) {
+      if (
+        proc &&
+        !proc._disposed &&
+        proc instanceof AppProcess &&
+        proc.pid !== this.pid
+      ) {
+        await proc.killSelf();
+      }
+    }
+
     this.profileImage.set(
       getProfilePicture(daemon.preferences().account.profilePicture)
     );
@@ -151,6 +165,8 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async shutdown(daemon?: UserDaemon) {
+    this.type = "shutdown";
+
     if (daemon) {
       this.profileImage.set(
         getProfilePicture(daemon.preferences().account.profilePicture)
@@ -167,6 +183,8 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async restart(daemon?: UserDaemon) {
+    this.type = "restart";
+
     if (daemon) {
       this.profileImage.set(
         getProfilePicture(daemon.preferences().account.profilePicture)

@@ -4,10 +4,16 @@
 
   const { process }: { process: ShellRuntime } = $props();
   const { userPreferences } = process;
+
+  let pins = $state<string[]>([]);
+
+  userPreferences.subscribe((v) => {
+    pins = v.shell.taskbar.pinnedApps || [];
+  });
 </script>
 
 <div class="pinned-apps">
-  {#each $userPreferences.shell.taskbar.pinnedApps as appId}
+  {#each pins as appId}
     <PinnedApp {appId} {process} />
   {/each}
 </div>

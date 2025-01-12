@@ -1,3 +1,7 @@
+div.window#wallpaper {
+  z-index: 1000 !important;
+}
+
 div.desktop-wallpaper {
   background-image: var(--src);
   background-position: center;

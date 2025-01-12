@@ -19,4 +19,35 @@ export class ShellRuntime extends AppProcess {
 
     console.log(params);
   }
+
+  async render() {
+    document.body.addEventListener("click", (e) => {
+      const startMenu = document.querySelector("#arcShell div.startmenu");
+      const startButton = document.querySelector(
+        "#arcShell button.start-button"
+      );
+      const actionCenter = document.querySelector("#arcShell div.actioncenter");
+      const actionCenterButton = document.querySelector(
+        "#arcShell button.action-center-button"
+      );
+
+      const composed = e.composedPath();
+
+      if (
+        startMenu &&
+        startButton &&
+        !composed.includes(startMenu) &&
+        !composed.includes(startButton)
+      )
+        this.startMenuOpened.set(false);
+
+      if (
+        actionCenter &&
+        actionCenterButton &&
+        !composed.includes(actionCenter) &&
+        !composed.includes(actionCenterButton)
+      )
+        this.actionCenterOpened.set(false);
+    });
+  }
 }

@@ -106,6 +106,8 @@ export class AppManager extends Process {
       window.classList.add("visible");
     }, 100);
 
+    this.currentState.push(process.pid);
+
     try {
       await process.__render__(body);
       this.focusPid(process.pid);
@@ -174,6 +176,10 @@ export class AppManager extends Process {
       cancel: `.controls`,
       legacyTranslate: false,
       gpuAcceleration: false,
+    });
+
+    window.addEventListener("mousedown", () => {
+      this.focusPid(pid);
     });
 
     this.focusedPid.subscribe((v) => {
@@ -256,6 +262,10 @@ export class AppManager extends Process {
       titleCaption.innerText = v;
     });
 
+    process.windowIcon.subscribe((v) => {
+      titleIcon.innerText = v;
+    });
+
     titleIcon.src = data.metadata.icon || ComponentIcon;
 
     title.className = "window-title";
@@ -292,6 +302,10 @@ export class AppManager extends Process {
     if (wrapper) {
       wrapper.remove();
     }
+
+    const stateIndex = this.currentState.indexOf(pid);
+
+    if (stateIndex > -1) this.currentState.splice(stateIndex, 1);
   }
 
   toggleMaximize(pid: number) {
