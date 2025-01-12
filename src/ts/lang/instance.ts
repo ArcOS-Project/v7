@@ -32,7 +32,7 @@ export class LanguageInstance extends Process {
   public stdin: () => Promise<string> = async () => "";
   public stdout: (m: string) => void = (m) => console.log(m);
   private consumed = false;
-  private MAX_EXECUTION_CAP = 70;
+  private MAX_EXECUTION_CAP = 1000;
   private executionCount = -1;
 
   constructor(
