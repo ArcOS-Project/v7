@@ -15,6 +15,7 @@ import { json } from "./keywords/json";
 import { jump } from "./keywords/jump";
 import { length } from "./keywords/length";
 import { MsgBox } from "./keywords/msgbox";
+import { push } from "./keywords/push";
 import { sleep } from "./keywords/sleep";
 import { Window } from "./keywords/window";
 
@@ -37,4 +38,5 @@ export const BaseLanguageKeywords: Keywords = {
   Window,
   cat,
   abtostr,
+  push,
 };

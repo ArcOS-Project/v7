@@ -19,8 +19,8 @@ export class ArcLang extends KernelModule {
 
   async run(
     source: string,
-    stdin: () => Promise<string>,
-    stdout: (m: string) => void
+    stdin?: () => Promise<string>,
+    stdout?: (m: string) => void
   ) {
     if (this.locked) throw new Error("Language is busy");
 
@@ -36,12 +36,16 @@ export class ArcLang extends KernelModule {
 
     if (!process) throw new Error("Failed to spawn language instance");
 
-    const result = await process.run();
+    try {
+      const result = await process.run();
 
-    await process.killSelf();
+      await process.killSelf();
 
-    this.locked = false;
-
-    return result;
+      return result;
+    } catch (e) {
+      throw e;
+    } finally {
+      this.locked = false;
+    }
   }
 }

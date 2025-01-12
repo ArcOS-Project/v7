@@ -19,6 +19,7 @@ import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
+import { Sleep } from "$ts/sleep";
 import type { Keywords } from "$types/lang";
 import { BaseLanguageKeywords } from "./store";
 
@@ -31,7 +32,7 @@ export class LanguageInstance extends Process {
   public stdin: () => Promise<string> = async () => "";
   public stdout: (m: string) => void = (m) => console.log(m);
   private consumed = false;
-  private MAX_EXECUTION_CAP = 1000000;
+  private MAX_EXECUTION_CAP = 70;
   private executionCount = -1;
 
   constructor(
@@ -74,6 +75,8 @@ export class LanguageInstance extends Process {
 
       await this.interpret();
 
+      await Sleep(1);
+
       this.pointer++;
     }
 
@@ -105,10 +108,9 @@ export class LanguageInstance extends Process {
     } else if (this.tokens[1] == "+=") {
       this.variables.set(
         this.tokens[0],
-        tryJsonParse(
-          this.variables.get(this.tokens[0]) +
-            this.tokens.slice(2, this.tokens.length).join(" ")
-        )
+
+        this.variables.get(this.tokens[0]) +
+          tryJsonParse(this.tokens.slice(2, this.tokens.length).join(" "))
       );
     } else {
       const targetKeyword = this.tokens.shift() || "";

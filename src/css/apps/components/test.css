@@ -1,0 +1,46 @@
+#testApp > div.body {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+#testApp > div.body div.actions {
+  padding: 5px;
+  border-bottom: var(--win-border);
+}
+
+#testApp > div.body div.actions button {
+  margin: 0;
+}
+
+#testApp > div.body div.top {
+  display: flex;
+  align-items: center;
+  height: calc(100% - 100px - 42px);
+}
+
+#testApp > div.body div.top textarea {
+  background-color: var(--win-bg);
+  border: none;
+  flex-grow: 1;
+  height: 100% !important;
+  max-width: calc(100% - 200px);
+  border-right: var(--win-border);
+  resize: none;
+  padding: 10px;
+  font-family: "Source Code Pro";
+}
+
+#testApp > div.body div.top div.output {
+  width: 200px;
+  padding: 10px;
+}
+
+#testApp > div.body div.bottom {
+  height: 100px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  font-family: "Source Code Pro";
+  border-top: var(--win-border);
+  padding: 10px;
+}
