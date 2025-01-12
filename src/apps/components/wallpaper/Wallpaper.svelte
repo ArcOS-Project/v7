@@ -1,11 +1,11 @@
 <script lang="ts">
   import { getWallpaper } from "$ts/wallpaper";
+  import { Wallpapers } from "$ts/wallpaper/store";
   import type { AppComponentProps } from "$types/app";
   import type { Wallpaper } from "$types/wallpaper";
   import { onMount } from "svelte";
   import type { Unsubscriber } from "svelte/store";
   import type { WallpaperRuntime } from "./runtime";
-  import { Wallpapers } from "$ts/wallpaper/store";
 
   const { process }: AppComponentProps<WallpaperRuntime> = $props();
   const { userPreferences } = process;

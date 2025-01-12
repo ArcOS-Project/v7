@@ -1,8 +1,8 @@
+import "$css/apps/components/messagebox.css";
 import { ErrorIcon } from "$ts/images/dialog";
 import type { App } from "$types/app";
 import MessageBox from "./MessageBox.svelte";
 import { MessageBoxRuntime } from "./runtime";
-import "$css/apps/components/messagebox.css";
 
 export const MessageBoxApp: App = {
   metadata: {

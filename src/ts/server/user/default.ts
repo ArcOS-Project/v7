@@ -1,4 +1,4 @@
-import type { UserPreferences, UserInfo } from "$types/user";
+import type { UserInfo, UserPreferences } from "$types/user";
 
 export const DefaultUserPreferences: UserPreferences = {
   desktop: {

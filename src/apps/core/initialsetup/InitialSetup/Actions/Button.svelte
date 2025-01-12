@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { ReadableStore } from "$ts/writable";
   import { onDestroy, onMount } from "svelte";
-  import type { PageButton } from "../../types";
   import type { Unsubscriber } from "svelte/store";
+  import type { PageButton } from "../../types";
 
   const {
     pageNumber,

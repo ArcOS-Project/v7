@@ -1,8 +1,8 @@
+import "$css/apps/core/bootscreen.css";
 import { ComponentIcon } from "$ts/images/general";
 import type { App } from "../../../types/app";
 import Boot from "./Boot.svelte";
 import { BootScreenRuntime } from "./runtime";
-import "$css/apps/core/bootscreen.css";
 
 export const BootScreen: App = {
   metadata: {

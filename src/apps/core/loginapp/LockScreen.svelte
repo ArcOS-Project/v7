@@ -1,8 +1,8 @@
 <script lang="ts">
-  import dayjs from "dayjs";
-  import { onDestroy, onMount } from "svelte";
-  import advancedFormat from "dayjs/plugin/advancedFormat";
   import type { ReadableStore } from "$ts/writable";
+  import dayjs from "dayjs";
+  import advancedFormat from "dayjs/plugin/advancedFormat";
+  import { onDestroy, onMount } from "svelte";
 
   const { hideLockscreen }: { hideLockscreen: ReadableStore<boolean> } =
     $props();

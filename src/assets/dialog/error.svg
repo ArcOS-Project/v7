@@ -1,6 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" version="1">
-  <rect fill="#db3c30" width="20" height="20" x="-21" y="-21" rx="10" ry="10"
-    transform="matrix(0,-1,-1,0,0,0)" />
+  <rect fill="#db3c30" width="20" height="20" x="-21" y="-21" rx="10" ry="10" transform="matrix(0,-1,-1,0,0,0)" />
   <g opacity=".2" transform="translate(-535 360.5)">
     <path class="error" d="m545-355h2v9.0001h-2zm0 11h2v2h-2z" />
   </g>

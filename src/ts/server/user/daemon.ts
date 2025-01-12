@@ -1,4 +1,5 @@
 import { Filesystem } from "$ts/fs";
+import { ServerFilesystemSupplier } from "$ts/fs/suppliers/server";
 import { applyDefaults } from "$ts/hierarchy";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
@@ -9,7 +10,6 @@ import axios from "axios";
 import type { Unsubscriber } from "svelte/store";
 import { ServerManager } from "..";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
-import { ServerFilesystemSupplier } from "$ts/fs/suppliers/server";
 
 export class UserDaemon extends Process {
   public initialized = false;

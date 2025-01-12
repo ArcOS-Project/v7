@@ -1,9 +1,9 @@
 <script lang="ts">
+  import { Sleep } from "$ts/sleep";
   import type { AppComponentProps } from "$types/app";
   import type { Component } from "svelte";
   import Actions from "./InitialSetup/Actions.svelte";
   import type { InitialSetupRuntime } from "./runtime";
-  import { Sleep } from "$ts/sleep";
 
   const { process }: AppComponentProps<InitialSetupRuntime> = $props();
   const {

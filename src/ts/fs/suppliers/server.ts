@@ -1,3 +1,4 @@
+import { toForm } from "$ts/form";
 import type { WaveKernel } from "$ts/kernel";
 import { ServerManager } from "$ts/server";
 import type {
@@ -7,7 +8,6 @@ import type {
 } from "$types/fs";
 import axios from "axios";
 import { FilesystemSupplier } from "../supplier";
-import { toForm } from "$ts/form";
 
 export class ServerFilesystemSupplier extends FilesystemSupplier {
   private token = "";

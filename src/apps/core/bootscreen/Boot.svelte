@@ -1,5 +1,7 @@
 <script lang="ts">
+  import { Logo } from "$ts/branding";
   import { ArcOSVersion } from "$ts/env";
+  import { GrayLogo } from "$ts/images/branding";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
   import type { AppComponentProps } from "$types/app";
@@ -7,8 +9,6 @@
   import GlowingLogo from "../../../lib/GlowingLogo.svelte";
   import Spinner from "../../../lib/Spinner.svelte";
   import type { BootScreenRuntime } from "./runtime";
-  import { Logo } from "$ts/branding";
-  import { GrayLogo } from "$ts/images/branding";
 
   const { process }: AppComponentProps<BootScreenRuntime> = $props();
   const { status, progress, connected } = process;

@@ -1,8 +1,8 @@
-import type { Component, SvelteComponent } from "svelte";
+import type { SvelteComponent } from "svelte";
 import type { AppProcess } from "../ts/apps/process";
+import type { WaveKernel } from "../ts/kernel";
 import type { ProcessHandler } from "../ts/process/handler";
 import type { ReadableStore } from "../ts/writable";
-import type { WaveKernel } from "../ts/kernel";
 
 export interface App {
   metadata: AppMetadata;

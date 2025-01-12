@@ -14,7 +14,6 @@
  */
 
 import { ArcOSVersion } from "$ts/env";
-import { getJsonHierarchy, setJsonHierarchy } from "$ts/hierarchy";
 import { tryJsonParse } from "$ts/json";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";

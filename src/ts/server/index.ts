@@ -1,8 +1,8 @@
+import { VALIDATION_STR } from "$ts/env";
 import axios from "axios";
+import { LogLevel } from "../../types/logging";
 import { WaveKernel } from "../kernel";
 import { KernelModule } from "../kernel/module";
-import { LogLevel } from "../../types/logging";
-import { VALIDATION_STR } from "$ts/env";
 
 export class ServerManager extends KernelModule {
   public url: string = "";

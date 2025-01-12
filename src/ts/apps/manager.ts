@@ -1,3 +1,4 @@
+import { MessageBox } from "$ts/dialog";
 import { BugReportIcon, ComponentIcon } from "$ts/images/general";
 import { Draggable } from "@neodrag/vanilla";
 import { unmount } from "svelte";
@@ -10,7 +11,6 @@ import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
 import { BuiltinApps } from "./store";
-import { MessageBox } from "$ts/dialog";
 
 export class AppManager extends Process {
   currentState: number[] = [];

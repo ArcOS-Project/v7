@@ -1,8 +1,8 @@
-import axios, { AxiosError } from "axios";
-import { ServerManager } from "..";
+import { toForm } from "$ts/form";
 import { Log } from "$ts/kernel/logging";
 import { LogLevel } from "$types/logging";
-import { toForm } from "$ts/form";
+import axios, { AxiosError } from "axios";
+import { ServerManager } from "..";
 
 export async function LoginUser(identity: string, password: string) {
   Log("LoginUser", `Attempting to authenticate ${identity}`);

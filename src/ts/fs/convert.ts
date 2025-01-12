@@ -1,5 +1,3 @@
-import { Log } from "$ts/kernel/logging";
-
 export function arrayToText(buffer: ArrayLike<number> | ArrayBufferLike) {
   return new TextDecoder().decode(new Uint16Array(buffer as any));
 }

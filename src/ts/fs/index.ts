@@ -4,13 +4,13 @@ import {
   type CopyItemSupplier,
   type CreateDirectorySupplier,
   type DeleteItemSupplier,
+  type DirectoryReadReturn,
+  type FilesystemOperation,
   type MoveItemSupplier,
   type ReadDirectorySupplier,
   type ReadFileSupplier,
-  type TreeSupplier,
-  type DirectoryReadReturn,
-  type FilesystemOperation,
   type RecursiveDirectoryReadReturn,
+  type TreeSupplier,
   type WriteFileSupplier,
 } from "$types/fs";
 import type { FilesystemSupplier } from "./supplier";

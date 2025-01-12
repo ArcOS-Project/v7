@@ -1,6 +1,6 @@
-import { WaveKernel } from "./ts/kernel";
-import "./css/main.css";
 import { EchoIntro } from "$ts/kernel/intro";
+import "./css/main.css";
+import { WaveKernel } from "./ts/kernel";
 
 // CODE EXECUTION STARTS HERE
 async function Main() {
