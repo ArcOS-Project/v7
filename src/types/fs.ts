@@ -38,3 +38,34 @@ export interface SupplierFlags {
   moveItem: boolean;
   deleteItem: boolean;
 }
+
+export type FilesystemOperation =
+  | "readDir"
+  | "createDirectory"
+  | "readFile"
+  | "writeFile"
+  | "tree"
+  | "copyItem"
+  | "moveItem"
+  | "deleteItem";
+
+export type ReadDirectorySupplier = (
+  path: string
+) => Promise<DirectoryReadReturn | undefined>;
+export type CreateDirectorySupplier = (path: string) => Promise<boolean>;
+export type ReadFileSupplier = (
+  path: string
+) => Promise<ArrayBuffer | undefined>;
+export type WriteFileSupplier = (path: string, data: Blob) => Promise<boolean>;
+export type TreeSupplier = (
+  path: string
+) => Promise<RecursiveDirectoryReadReturn | undefined>;
+export type CopyItemSupplier = (
+  source: string,
+  destination: string
+) => Promise<boolean>;
+export type MoveItemSupplier = (
+  source: string,
+  destination: string
+) => Promise<boolean>;
+export type DeleteItemSupplier = (path: string) => Promise<boolean>;

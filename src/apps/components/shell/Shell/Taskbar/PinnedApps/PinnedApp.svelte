@@ -11,8 +11,6 @@
     const renderer = process.handler.renderer;
 
     app = renderer?.getAppById(appId);
-
-    console.log(app);
   });
 </script>
 

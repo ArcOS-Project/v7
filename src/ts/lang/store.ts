@@ -1,6 +1,8 @@
 import type { Keywords } from "$types/lang";
+import { abtostr } from "./keywords/abtostr";
 import { Btoa } from "./keywords/btoa";
 import { calc } from "./keywords/calc";
+import { cat } from "./keywords/cat";
 import { chr } from "./keywords/chr";
 import { clear } from "./keywords/clear";
 import { dataurl } from "./keywords/dataurl";
@@ -33,4 +35,6 @@ export const BaseLanguageKeywords: Keywords = {
   json,
   MsgBox,
   Window,
+  cat,
+  abtostr,
 };

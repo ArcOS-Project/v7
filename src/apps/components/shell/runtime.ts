@@ -16,8 +16,6 @@ export class ShellRuntime extends AppProcess {
     super(handler, pid, parentPid, app);
 
     const params = this.kernel.state?.stateProps["desktop"];
-
-    console.log(params);
   }
 
   async render() {

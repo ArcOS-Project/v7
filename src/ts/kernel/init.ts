@@ -15,6 +15,7 @@ export class InitProcess extends Process {
 
   async jumpstart() {
     console.group(`Init process jumpstart`);
+
     this.Log("Jumpstart");
 
     const state = await this.handler.spawn<StateHandler>(
@@ -23,12 +24,14 @@ export class InitProcess extends Process {
       "ArcOS",
       States
     );
+
     const kernel = WaveKernel.get();
 
     if (!state) throw new Error("State handler failed to spawn");
 
     kernel.state = state;
     await kernel.state?.loadState("boot");
+
     console.groupEnd();
   }
 }

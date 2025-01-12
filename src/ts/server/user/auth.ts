@@ -21,8 +21,6 @@ export async function LoginUser(identity: string, password: string) {
   } catch (e) {
     const err = e as AxiosError;
 
-    console.log(e);
-
     if (err.code === "ERR_NETWORK") throw e;
 
     Log("LoginUser", "API request errored: " + e, LogLevel.error);
