@@ -1,4 +1,3 @@
-import type { Filesystem } from "$ts/fs";
 import { arrayToText } from "$ts/fs/convert";
 import type { Keyword } from "$types/lang";
 
@@ -6,8 +5,7 @@ export const Import: Keyword = async (lang) => {
   lang.expectTokenLength(1, "import");
 
   const [path] = lang.tokens;
-  const fs = lang.kernel.getModule<Filesystem>("fs");
-  const contents = await fs.readFile(path);
+  const contents = await lang.readFile(path);
 
   if (!contents) throw lang.error(`File not found: ${path}`);
 

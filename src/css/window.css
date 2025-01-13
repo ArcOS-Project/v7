@@ -21,6 +21,32 @@ div.window:not(.core) {
   opacity: 0;
   visibility: hidden;
   scale: 0.95;
+  transform-origin: top !important;
+}
+
+div.window:not(.core).maximized {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  height: calc(100% - var(--taskbar-allocation)) !important;
+  min-height: calc(100% - var(--taskbar-allocation)) !important;
+  max-height: calc(100% - var(--taskbar-allocation)) !important;
+  translate: 0 0 !important;
+  transform: none !important;
+  border-radius: 0 !important;
+  resize: none !important;
+  border: none !important;
+  transition: all 0.3s;
+}
+
+div.window:not(.core).minimized {
+  opacity: 0 !important;
+  visibility: hidden !important;
+
+  scale: 1 0 !important;
 }
 
 div.window *::selection {

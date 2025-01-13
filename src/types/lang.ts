@@ -12,4 +12,5 @@ export interface LanguageOptions {
   onTick?: (l: LanguageInstance) => void;
   continuous?: boolean;
   tickDelay?: number;
+  workingDir?: string;
 }

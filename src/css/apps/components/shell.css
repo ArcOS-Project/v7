@@ -50,9 +50,20 @@ div.shell div.taskbar {
   backdrop-filter: blur(10px);
 }
 
+:root #main:has(#arcShell div.shell) {
+  --taskbar-allocation: 70px;
+}
+
+:root #main:has(#arcShell div.shell.docked) {
+  --taskbar-allocation: 50px;
+}
+
 div.shell.docked div.taskbar {
   width: 100%;
   margin: 0;
+  border-radius: 0;
+  border: none;
+  border-top: var(--win-border);
 }
 
 #arcShell div.shell div.taskbar > button {
@@ -91,6 +102,7 @@ div.shell div.taskbar div.opened-apps::-webkit-scrollbar {
   margin: 0;
   padding: 0 10px;
   height: 34px;
+  background-color: var(--button-glass-bg);
 }
 
 #arcShell div.shell div.taskbar div.opened-apps button + button {
@@ -103,7 +115,7 @@ div.shell div.taskbar div.opened-apps button img {
 
 #arcShell div.shell div.taskbar div.opened-apps button.active,
 #arcShell div.shell div.taskbar button.start-button.active {
-  background-color: var(--button-glass-bg);
+  background-color: var(--button-glass-active-bg);
 }
 
 div.shell div.taskbar button.start-button img {
@@ -171,6 +183,7 @@ div.shell div.startmenu {
   border: var(--win-border);
   max-height: 100%;
   backdrop-filter: blur(10px);
+  box-shadow: 0 5px 15px 5px #0003;
 }
 
 div.shell div.startmenu:not(.opened) {
@@ -182,7 +195,6 @@ div.shell div.startmenu:not(.opened) {
 div.shell div.actioncenter {
   width: 400px;
   height: 100%;
-  background-color: #f0f;
   background-color: var(--glass-bg);
   border-radius: 10px;
   border: var(--win-border);
@@ -191,6 +203,7 @@ div.shell div.actioncenter {
   opacity: 0;
   transition: translate 0.3s, opacity 0.2s;
   backdrop-filter: blur(10px);
+  box-shadow: 0 5px 15px 5px #0003;
 }
 
 div.shell div.actioncenter.opened {

@@ -354,6 +354,7 @@ export class AppManager extends Process {
     if (!process || !process.app) return;
 
     process.app.data.state.minimized = window.classList.contains("minimized");
+    if (process.app.data.state.minimized) this.focusedPid.set(-1);
   }
 
   getAppInstances(id: string, originPid?: number) {

@@ -14,6 +14,8 @@
  */
 
 import { ArcOSVersion } from "$ts/env";
+import { Filesystem } from "$ts/fs";
+import { join } from "$ts/fs/util";
 import { getJsonHierarchy } from "$ts/hierarchy";
 import { keysToLowerCase, tryJsonParse } from "$ts/json";
 import { ArcBuild } from "$ts/metadata/build";
@@ -21,6 +23,10 @@ import { ArcMode } from "$ts/metadata/mode";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { Sleep } from "$ts/sleep";
+import type {
+  DirectoryReadReturn,
+  RecursiveDirectoryReadReturn,
+} from "$types/fs";
 import type { LanguageOptions, Libraries } from "$types/lang";
 import { LanguageExecutionError } from "./error";
 import { BaseLibraries, DefaultLanguageOptions } from "./store";
@@ -38,7 +44,9 @@ export class LanguageInstance extends Process {
   private MAX_EXECUTION_CAP = 1000;
   private libraries: Libraries = BaseLibraries;
   public executionCount = -1;
+  public workingDir: string;
   private options: LanguageOptions;
+  private fs: Filesystem;
 
   constructor(
     handler: ProcessHandler,
@@ -58,8 +66,11 @@ export class LanguageInstance extends Process {
     this.stdin = options.stdin || (async () => "");
     this.stdout = options.stdout || ((m: string) => console.log(m));
     this.onTick = this.options.onTick || (() => {});
+    this.workingDir = this.options.workingDir || ".";
 
     this.libraries = keysToLowerCase(libraries) as Libraries;
+
+    this.fs = this.kernel.getModule<Filesystem>("fs");
   }
 
   error(reason: string, keyword?: string) {
@@ -291,5 +302,61 @@ export class LanguageInstance extends Process {
       default:
         this.error(`Unknown calc operation "${operator}"`);
     }
+  }
+
+  async readDir(
+    relativePath: string
+  ): Promise<DirectoryReadReturn | undefined> {
+    const path = join(this.workingDir, relativePath);
+
+    return await this.fs.readDir(path);
+  }
+
+  async createDirectory(relativePath: string): Promise<boolean> {
+    const path = join(this.workingDir, relativePath);
+
+    return await this.fs.createDirectory(path);
+  }
+
+  async readFile(relativePath: string): Promise<ArrayBuffer | undefined> {
+    const path = join(this.workingDir, relativePath);
+
+    console.log(path);
+
+    return await this.fs.readFile(path);
+  }
+
+  async writeFile(relativePath: string, data: Blob): Promise<boolean> {
+    const path = join(this.workingDir, relativePath);
+
+    return await this.fs.writeFile(path, data);
+  }
+
+  async tree(
+    relativePath: string
+  ): Promise<RecursiveDirectoryReadReturn | undefined> {
+    const path = join(this.workingDir, relativePath);
+
+    return await this.fs.tree(path);
+  }
+
+  async copyItem(source: string, destination: string): Promise<boolean> {
+    const absoluteSource = join(this.workingDir, source);
+    const absoluteDestination = join(this.workingDir, destination);
+
+    return await this.fs.copyItem(absoluteSource, absoluteDestination);
+  }
+
+  async moveItem(source: string, destination: string): Promise<boolean> {
+    const absoluteSource = join(this.workingDir, source);
+    const absoluteDestination = join(this.workingDir, destination);
+
+    return await this.fs.moveItem(absoluteSource, absoluteDestination);
+  }
+
+  async deleteItem(relativePath: string): Promise<boolean> {
+    const absoluteSource = join(this.workingDir, relativePath);
+
+    return await this.fs.deleteItem(absoluteSource);
   }
 }

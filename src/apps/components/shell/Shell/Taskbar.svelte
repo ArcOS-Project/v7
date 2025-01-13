@@ -13,6 +13,7 @@
 <div
   class="taskbar shell-colored"
   class:colored={$userPreferences.shell.taskbar.colored}
+  class:docked={$userPreferences.shell.taskbar.docked}
 >
   <StartButton {process} />
   <PinnedApps {process} />

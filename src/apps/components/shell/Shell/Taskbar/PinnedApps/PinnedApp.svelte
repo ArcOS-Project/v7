@@ -12,10 +12,14 @@
 
     app = renderer?.getAppById(appId);
   });
+
+  function spawn() {
+    process.handler.renderer?.spawnApp(appId);
+  }
 </script>
 
 {#if app && app.metadata}
-  <button class="pinned-app" title={app.metadata.name}>
+  <button class="pinned-app" title={app.metadata.name} onclick={spawn}>
     <img src={app.metadata.icon} alt="" />
   </button>
 {/if}

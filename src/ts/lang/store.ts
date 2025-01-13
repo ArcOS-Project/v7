@@ -20,7 +20,8 @@ export const BaseLibraries: Libraries = {
 export const DefaultLanguageOptions: LanguageOptions = {
   stdin: async () => "",
   stdout: (m: string) => console.log(m),
-  onTick: (l) => {},
+  onTick: (_) => {},
   continuous: false,
   tickDelay: 1,
+  workingDir: ".",
 };

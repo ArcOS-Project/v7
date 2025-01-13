@@ -80,7 +80,7 @@ export class ProcessHandler extends KernelModule {
 
     if (proc.__stop) await proc.__stop();
 
-    await this._killSubProceses(pid);
+    await this._killSubProceses(pid, force);
 
     const store = this.store.get();
 
@@ -94,7 +94,7 @@ export class ProcessHandler extends KernelModule {
     return "success";
   }
 
-  private async _killSubProceses(pid: number) {
+  private async _killSubProceses(pid: number, force = false) {
     const procs = await this.getSubProcesses(pid);
 
     if (!procs.size) return;
@@ -102,13 +102,11 @@ export class ProcessHandler extends KernelModule {
     for (const [pid, proc] of procs) {
       if (proc._disposed) continue;
 
-      // TODO: closeWindow
+      if (proc instanceof AppProcess && proc.closeWindow && !force) {
+        await proc.closeWindow();
 
-      // if (proc.closeWindow) {
-      //   proc.closeWindow();
-
-      //   continue;
-      // }
+        continue;
+      }
 
       await this.kill(pid);
     }

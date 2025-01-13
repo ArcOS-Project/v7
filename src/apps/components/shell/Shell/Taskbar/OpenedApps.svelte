@@ -1,5 +1,6 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
+  import { isPopulatable } from "$ts/apps/util";
   import type { ShellRuntime } from "../../runtime";
   import OpenedApp from "./OpenedApps/OpenedApp.svelte";
 
@@ -11,7 +12,7 @@
 
 <div class="opened-apps">
   {#each [...$store] as [pid, openedProcess]}
-    {#if openedProcess instanceof AppProcess && !openedProcess._disposed}
+    {#if openedProcess instanceof AppProcess && !openedProcess._disposed && isPopulatable(openedProcess.app.data)}
       <OpenedApp {pid} {openedProcess} />
     {/if}
   {/each}
