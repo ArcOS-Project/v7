@@ -22,6 +22,10 @@
         (await lang.run(code, process.pid, {
           continuous: true,
           stdout: (m) => (output += `${m}\n`),
+          tickDelay: 1000,
+          onTick: (lang) => {
+            process.windowTitle.set(lang.tokens.join(" "));
+          },
         })) || [];
     } catch (e) {
       MessageBox(

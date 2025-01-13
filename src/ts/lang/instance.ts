@@ -14,14 +14,16 @@
  */
 
 import { ArcOSVersion } from "$ts/env";
-import { tryJsonParse } from "$ts/json";
+import { getJsonHierarchy } from "$ts/hierarchy";
+import { keysToLowerCase, tryJsonParse } from "$ts/json";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { Sleep } from "$ts/sleep";
-import type { Keywords, LanguageOptions } from "$types/lang";
-import { BaseLanguageKeywords, DefaultLanguageOptions } from "./store";
+import type { LanguageOptions, Libraries } from "$types/lang";
+import { LanguageExecutionError } from "./error";
+import { BaseLibraries, DefaultLanguageOptions } from "./store";
 
 export class LanguageInstance extends Process {
   public output: string[] = [];
@@ -31,9 +33,11 @@ export class LanguageInstance extends Process {
   public tokens: any[] = [];
   public stdin: () => Promise<string> = async () => "";
   public stdout: (m: string) => void = (m) => console.log(m);
+  public onTick: (l: LanguageInstance) => void;
   private consumed = false;
   private MAX_EXECUTION_CAP = 1000;
-  private executionCount = -1;
+  private libraries: Libraries = BaseLibraries;
+  public executionCount = -1;
   private options: LanguageOptions;
 
   constructor(
@@ -42,29 +46,28 @@ export class LanguageInstance extends Process {
     parentPid: number,
     source: string,
     options: LanguageOptions = DefaultLanguageOptions,
-    keywords: Keywords = BaseLanguageKeywords
+    libraries: Libraries = BaseLibraries
   ) {
     super(handler, pid, parentPid);
+
+    this.options = options;
 
     this.source = `${source}\n\n:*idle\njump :*idle\n:EOF`.split("\n");
     this.source = this.source.map((l) => l.split("&&")).flat();
     this.source = this.source.map((l) => l.trim());
     this.stdin = options.stdin || (async () => "");
     this.stdout = options.stdout || ((m: string) => console.log(m));
+    this.onTick = this.options.onTick || (() => {});
 
-    this.options = options;
-
-    this.loadKeywords(keywords);
+    this.libraries = keysToLowerCase(libraries) as Libraries;
   }
 
-  loadKeywords(keywords: Keywords) {
-    for (const [keyword, func] of Object.entries(keywords)) {
-      (this as any)[`__${keyword.toLowerCase()}`] = func;
-    }
+  error(reason: string, keyword?: string) {
+    throw new LanguageExecutionError(reason, this, keyword);
   }
 
   async run() {
-    if (this.consumed) throw new Error("Language instance is already consumed");
+    if (this.consumed) this.error("Language instance is already consumed");
 
     this.consumed = true;
 
@@ -77,7 +80,7 @@ export class LanguageInstance extends Process {
 
       await this.interpret();
 
-      await Sleep(1);
+      await Sleep(this.options.tickDelay || 1);
 
       this.pointer++;
 
@@ -90,12 +93,16 @@ export class LanguageInstance extends Process {
   }
 
   async interpret() {
+    if (this._disposed) throw new Error("Disposed.");
+
+    this.options.onTick?.(this);
+
     if (!this.tokens[0]) return;
     if (
       this.executionCount > this.MAX_EXECUTION_CAP &&
       !this.options.continuous
     )
-      throw new Error("Execution cap exceeded");
+      this.error("Execution cap exceeded");
 
     this.executionCount++;
 
@@ -122,15 +129,15 @@ export class LanguageInstance extends Process {
           tryJsonParse(this.tokens.slice(2, this.tokens.length).join(" "))
       );
     } else {
-      const targetKeyword = this.tokens.shift() || "";
+      const targetKeyword = (this.tokens.shift() || "").toLowerCase();
+      const func = targetKeyword.includes(".")
+        ? getJsonHierarchy(this.libraries, targetKeyword)
+        : this.libraries["*"][targetKeyword];
 
       if (!targetKeyword.startsWith(":")) {
-        if (!(this as any)[`__${targetKeyword}`])
-          throw new Error(
-            `Unknown keyword "${targetKeyword}" on line ${this.pointer}`
-          );
+        if (!func) this.error(`Unknown keyword`, targetKeyword);
 
-        result = await (this as any)[`__${targetKeyword}`](this);
+        result = await func(this);
       }
 
       if (captureOutput && captureName) {
@@ -226,10 +233,11 @@ export class LanguageInstance extends Process {
   }
 
   expectTokenLength(length: number, where: string) {
-    if (this._disposed) throw new Error("Disposed.");
+    if (this._disposed) this.error("Disposed.");
     if (this.tokens.length < length)
-      throw new Error(
-        `${where}: expected ${length} arguments, got ${this.tokens.length}.`
+      this.error(
+        `Expected ${length} arguments, got ${this.tokens.length}.`,
+        where
       );
   }
 
@@ -281,7 +289,7 @@ export class LanguageInstance extends Process {
       case "item":
         return left[Number(right)];
       default:
-        throw new Error(`Unknown calc operation "${operator}"`);
+        this.error(`Unknown calc operation "${operator}"`);
     }
   }
 }

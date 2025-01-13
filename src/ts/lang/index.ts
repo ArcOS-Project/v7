@@ -2,6 +2,7 @@ import type { WaveKernel } from "$ts/kernel";
 import { KernelModule } from "$ts/kernel/module";
 import { ProcessHandler } from "$ts/process/handler";
 import type { LanguageOptions } from "$types/lang";
+import { PrematureLanguageError } from "./error";
 import { LanguageInstance } from "./instance";
 import { DefaultLanguageOptions } from "./store";
 
@@ -24,7 +25,7 @@ export class ArcLang extends KernelModule {
     parent: number,
     options: LanguageOptions = DefaultLanguageOptions
   ) {
-    if (this.locked) throw new Error("Language is busy");
+    if (this.locked) throw new PrematureLanguageError("Language is busy");
 
     this.locked = !options.continuous;
 
@@ -35,12 +36,11 @@ export class ArcLang extends KernelModule {
       options
     );
 
-    if (!process) throw new Error("Failed to spawn language instance");
+    if (!process)
+      throw new PrematureLanguageError("Failed to spawn language instance");
 
     try {
       const result = await process.run();
-
-      await process.killSelf();
 
       return result;
     } catch (e) {
@@ -48,6 +48,8 @@ export class ArcLang extends KernelModule {
 
       throw e;
     } finally {
+      await process.killSelf();
+
       this.locked = false;
     }
   }

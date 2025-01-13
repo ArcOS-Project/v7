@@ -3,13 +3,13 @@ import { arrayToText } from "$ts/fs/convert";
 import type { Keyword } from "$types/lang";
 
 export const Import: Keyword = async (lang) => {
-  lang.expectTokenLength(1, "$unsafe");
+  lang.expectTokenLength(1, "import");
 
   const [path] = lang.tokens;
   const fs = lang.kernel.getModule<Filesystem>("fs");
   const contents = await fs.readFile(path);
 
-  if (!contents) throw new Error(`File not found: ${path}`);
+  if (!contents) throw lang.error(`File not found: ${path}`);
 
   const str = arrayToText(contents);
 
@@ -19,6 +19,6 @@ export const Import: Keyword = async (lang) => {
 
     return fn;
   } catch {
-    throw new Error(`Keyword import failed: ${path}`);
+    throw lang.error(`Javascript import failed: ${path}`, "import");
   }
 };

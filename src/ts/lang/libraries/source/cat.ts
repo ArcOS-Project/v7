@@ -9,7 +9,7 @@ export const cat: Keyword = async (lang) => {
 
   const contents = await fs.readFile(path);
 
-  if (!contents) throw new Error("File not found");
+  if (!contents) throw lang.error("File not found", "cat");
 
   return contents;
 };

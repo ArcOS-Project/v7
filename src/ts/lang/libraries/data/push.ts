@@ -7,7 +7,8 @@ export const push: Keyword = async (lang) => {
 
   const variable = lang.variables.get(varName);
 
-  if (!variable || !variable.push) throw new Error(`Can only push to an array`);
+  if (!variable || !variable.push)
+    throw lang.error(`Can only push to an array`, "push");
 
   variable.push(value);
 
