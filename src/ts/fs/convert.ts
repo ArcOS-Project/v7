@@ -1,5 +1,5 @@
 export function arrayToText(buffer: ArrayLike<number> | ArrayBufferLike) {
-  return new TextDecoder().decode(new Uint16Array(buffer as any));
+  return new TextDecoder().decode(new Uint8Array(buffer as any));
 }
 
 export function textToArrayBuffer(text: string): ArrayBuffer {

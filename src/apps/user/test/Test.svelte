@@ -18,13 +18,11 @@
     await Sleep(0);
 
     try {
-      result = await lang.run(
-        code,
-        async () => "",
-        (m) => (output += `${m}\n`)
-      );
-
-      console.log(result, output);
+      result =
+        (await lang.run(code, process.pid, {
+          continuous: true,
+          stdout: (m) => (output += `${m}\n`),
+        })) || [];
     } catch (e) {
       MessageBox(
         {

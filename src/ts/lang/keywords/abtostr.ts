@@ -5,5 +5,5 @@ export const abtostr: Keyword = async (lang) => {
 
   const [data] = lang.tokens;
 
-  return new TextDecoder().decode(new Uint16Array(data as any)).toString();
+  return new TextDecoder().decode(new Uint8Array(data as any)).toString();
 };

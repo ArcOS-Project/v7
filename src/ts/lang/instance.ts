@@ -20,37 +20,39 @@ import { ArcMode } from "$ts/metadata/mode";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { Sleep } from "$ts/sleep";
-import type { Keywords } from "$types/lang";
-import { BaseLanguageKeywords } from "./store";
+import type { Keywords, LanguageOptions } from "$types/lang";
+import { BaseLanguageKeywords, DefaultLanguageOptions } from "./store";
 
 export class LanguageInstance extends Process {
   public output: string[] = [];
   public variables = new Map<string, any>([]);
   public pointer = -1;
   public source: string[] = [];
-  public tokens: string[] = [];
+  public tokens: any[] = [];
   public stdin: () => Promise<string> = async () => "";
   public stdout: (m: string) => void = (m) => console.log(m);
   private consumed = false;
   private MAX_EXECUTION_CAP = 1000;
   private executionCount = -1;
+  private options: LanguageOptions;
 
   constructor(
     handler: ProcessHandler,
     pid: number,
     parentPid: number,
     source: string,
-    stdin: () => Promise<string>,
-    stdout: (m: string) => void,
+    options: LanguageOptions = DefaultLanguageOptions,
     keywords: Keywords = BaseLanguageKeywords
   ) {
     super(handler, pid, parentPid);
 
-    this.source = `${source}\n:EOF`.split("\n");
+    this.source = `${source}\n\n:*idle\njump :*idle\n:EOF`.split("\n");
     this.source = this.source.map((l) => l.split("&&")).flat();
     this.source = this.source.map((l) => l.trim());
-    this.stdin = stdin || (async () => "");
-    this.stdout = stdout || ((m: string) => console.log(m));
+    this.stdin = options.stdin || (async () => "");
+    this.stdout = options.stdout || ((m: string) => console.log(m));
+
+    this.options = options;
 
     this.loadKeywords(keywords);
   }
@@ -78,6 +80,10 @@ export class LanguageInstance extends Process {
       await Sleep(1);
 
       this.pointer++;
+
+      if (this.pointer >= this.source.length - 1 && this.options.continuous) {
+        this.pointer = this.source.indexOf(":*idle");
+      }
     }
 
     return this.output;
@@ -85,7 +91,10 @@ export class LanguageInstance extends Process {
 
   async interpret() {
     if (!this.tokens[0]) return;
-    if (this.executionCount > this.MAX_EXECUTION_CAP)
+    if (
+      this.executionCount > this.MAX_EXECUTION_CAP &&
+      !this.options.continuous
+    )
       throw new Error("Execution cap exceeded");
 
     this.executionCount++;
@@ -148,6 +157,7 @@ export class LanguageInstance extends Process {
     for (let i = 0; i < tokens.length; i++) {
       if (tokens[i].startsWith("$")) {
         tokens[i] = this.variables.get(tokens[i].slice(1));
+        console.log(tokens, tokens[i]);
       } else if (tokens[i].startsWith('"') && tokens[i].endsWith('"')) {
         tokens[i] = tokens[i].slice(1, tokens[i].length - 1);
       }

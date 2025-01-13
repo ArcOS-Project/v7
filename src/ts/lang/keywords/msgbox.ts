@@ -1,5 +1,5 @@
 import { MessageBox } from "$ts/dialog";
-import { ComponentIcon } from "$ts/images/general";
+import { WarningIcon } from "$ts/images/dialog";
 import type { Keyword } from "$types/lang";
 
 export const MsgBox: Keyword = async (lang) => {
@@ -12,8 +12,8 @@ export const MsgBox: Keyword = async (lang) => {
       title,
       message,
       buttons: [{ caption: "OK", action: () => {} }],
-      image: ComponentIcon,
+      image: WarningIcon,
     },
-    0
+    lang.pid
   );
 };
