@@ -103,6 +103,17 @@ div.shell div.taskbar div.opened-apps::-webkit-scrollbar {
   padding: 0 10px;
   height: 34px;
   background-color: var(--button-glass-bg);
+  overflow: Hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#arcShell div.shell div.taskbar div.opened-apps button span {
+  max-width: calc(100% - 34px);
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 #arcShell div.shell div.taskbar div.opened-apps button + button {
