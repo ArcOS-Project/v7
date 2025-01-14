@@ -49,6 +49,7 @@ export class ServerFilesystemSupplier extends FilesystemSupplier {
     try {
       const response = await axios.post<DirectoryReadReturn>(
         `${url}/fs/dir/${path}`,
+        {},
         { headers: { Authorization: `Bearer ${this.token}` } }
       );
 
