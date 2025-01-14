@@ -2,7 +2,7 @@ import { arrayToText } from "$ts/fs/convert";
 import type { Keyword } from "$types/lang";
 
 export const load: Keyword = async (lang) => {
-  lang.expectTokenLength(1, "json.load");
+  if (!lang.expectTokenLength(1, "json.load")) return;
 
   const [path] = lang.tokens;
 

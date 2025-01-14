@@ -1,7 +1,7 @@
 import type { Keyword } from "$types/lang";
 
 export const button: Keyword = async (lang) => {
-  lang.expectTokenLength(4, "gui.element.button");
+  if (!lang.expectTokenLength(4, "gui.element.button")) return;
 
   const [caption, className, codepoint, target] = lang.tokens as [
     string,

@@ -2,7 +2,7 @@ import { arrayToText } from "$ts/fs/convert";
 import type { Keyword } from "$types/lang";
 
 export const css: Keyword = async (lang) => {
-  lang.expectTokenLength(2, "source.css");
+  if (!lang.expectTokenLength(2, "source.css")) return;
 
   const [path, target] = lang.tokens as [string, HTMLDivElement];
 

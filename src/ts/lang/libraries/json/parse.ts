@@ -1,7 +1,7 @@
 import type { Keyword } from "$types/lang";
 
 export const parse: Keyword = async (lang) => {
-  lang.expectTokenLength(1, "json");
+  if (!lang.expectTokenLength(1, "json")) return;
 
   const [string] = lang.tokens;
 

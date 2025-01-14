@@ -1,7 +1,7 @@
 import type { Keyword } from "$types/lang";
 
 export const dataurl: Keyword = async (lang) => {
-  lang.expectTokenLength(2, "dataurl");
+  if (!lang.expectTokenLength(2, "dataurl")) return;
 
   const [data, mimetype] = lang.tokens;
 

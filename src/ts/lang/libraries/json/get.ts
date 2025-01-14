@@ -2,7 +2,7 @@ import { getJsonHierarchy } from "$ts/hierarchy";
 import type { Keyword } from "$types/lang";
 
 export const get: Keyword = async (lang) => {
-  lang.expectTokenLength(2, "jget");
+  if (!lang.expectTokenLength(2, "jget")) return;
 
   const [object, path] = lang.tokens;
 

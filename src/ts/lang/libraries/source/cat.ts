@@ -1,7 +1,7 @@
 import type { Keyword } from "$types/lang";
 
 export const cat: Keyword = async (lang) => {
-  lang.expectTokenLength(1, "cat");
+  if (!lang.expectTokenLength(1, "cat")) return;
 
   const [path] = lang.tokens;
 

@@ -1,7 +1,7 @@
 import type { Keyword } from "$types/lang";
 
 export const jump: Keyword = async (lang) => {
-  lang.expectTokenLength(1, "jump");
+  if (!lang.expectTokenLength(1, "jump")) return;
 
   const location = lang.source.indexOf(lang.tokens[0]);
 

@@ -3,7 +3,7 @@ import { WarningIcon } from "$ts/images/dialog";
 import type { Keyword } from "$types/lang";
 
 export const MsgBox: Keyword = async (lang) => {
-  lang.expectTokenLength(2, "msgbox");
+  if (!lang.expectTokenLength(2, "msgbox")) return;
 
   const [title, message] = lang.tokens;
 

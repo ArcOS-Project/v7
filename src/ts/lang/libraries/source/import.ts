@@ -2,7 +2,7 @@ import { arrayToText } from "$ts/fs/convert";
 import type { Keyword } from "$types/lang";
 
 export const Import: Keyword = async (lang) => {
-  lang.expectTokenLength(1, "import");
+  if (!lang.expectTokenLength(1, "import")) return;
 
   const [path] = lang.tokens;
   const contents = await lang.readFile(path);

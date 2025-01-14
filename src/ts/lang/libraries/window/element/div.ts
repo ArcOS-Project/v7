@@ -1,7 +1,7 @@
 import type { Keyword } from "$types/lang";
 
 export const div: Keyword = async (lang) => {
-  lang.expectTokenLength(2, "gui.element.div");
+  if (!lang.expectTokenLength(2, "gui.element.div")) return;
 
   const [className, target] = lang.tokens;
 

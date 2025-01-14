@@ -2,7 +2,7 @@ import { Sleep } from "$ts/sleep";
 import type { Keyword } from "$types/lang";
 
 export const sleep: Keyword = async (lang) => {
-  lang.expectTokenLength(1, "sleep");
+  if (!lang.expectTokenLength(1, "sleep")) return;
 
   const delay = +lang.tokens[0];
 

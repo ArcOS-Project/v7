@@ -4,7 +4,7 @@ import type { ScriptedApp } from "$types/app";
 import type { Keyword } from "$types/lang";
 
 export const create: Keyword = async (lang) => {
-  lang.expectTokenLength(2, "window.create");
+  if (!lang.expectTokenLength(2, "window.create")) return;
 
   const [metadata, bodyVar] = lang.tokens as [ScriptedApp, string];
 

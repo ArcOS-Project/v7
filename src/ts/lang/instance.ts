@@ -317,11 +317,16 @@ export class LanguageInstance extends Process {
 
   expectTokenLength(length: number, where: string) {
     if (this._disposed) this.error("Disposed.");
-    if (this.tokens.length < length)
+
+    const notEnough = this.tokens.length < length;
+
+    if (notEnough)
       this.error(
         `Expected ${length} arguments, got ${this.tokens.length}.`,
         where
       );
+
+    return notEnough;
   }
 
   calculate(left: string, operator: string, right: string) {

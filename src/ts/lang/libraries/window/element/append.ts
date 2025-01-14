@@ -1,7 +1,7 @@
 import type { Keyword } from "$types/lang";
 
 export const append: Keyword = async (lang) => {
-  lang.expectTokenLength(2, "append");
+  if (!lang.expectTokenLength(2, "append")) return;
 
   const [element, target] = lang.tokens as HTMLElement[];
 

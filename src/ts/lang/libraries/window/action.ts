@@ -1,7 +1,7 @@
 import type { Keyword } from "$types/lang";
 
 export const action: Keyword = async (lang) => {
-  lang.expectTokenLength(2, "action");
+  if (!lang.expectTokenLength(2, "action")) return;
 
   const [target, codepoint] = lang.tokens as [HTMLElement, string];
 
