@@ -18,6 +18,17 @@ export class LanguageExecutionError extends Error {
     this.keyword = keyword;
     this.tokens = lang.tokens;
   }
+
+  getObject() {
+    return {
+      pointer: this.pointer,
+      executionCount: this.executionCount,
+      keyword: this.keyword,
+      message: this.message,
+      tokens: this.tokens,
+      instruction: this.instruction,
+    };
+  }
 }
 
 export class PrematureLanguageError extends Error {

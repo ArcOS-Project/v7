@@ -14,6 +14,7 @@ export const BaseLibraries: Libraries = {
   base64: Base64Library,
   convert: ConvertLibrary,
   data: DataLibrary,
+  user: {},
   "*": BaseLibrary,
 };
 

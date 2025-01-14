@@ -40,12 +40,14 @@ export class ArcLang extends KernelModule {
       throw new PrematureLanguageError("Failed to spawn language instance");
 
     try {
-      const result = await process.run();
       process.watchException();
+
+      const result = await process.run();
 
       return result;
     } catch (e) {
       if (process._disposed) return;
+      console.log(e);
 
       throw e;
     } finally {

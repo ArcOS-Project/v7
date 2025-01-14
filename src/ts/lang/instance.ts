@@ -37,12 +37,13 @@ export class LanguageInstance extends Process {
   public pointer = -1;
   public source: string[] = [];
   public tokens: any[] = [];
-  public stdin: () => Promise<string> = async () => "";
-  public stdout: (m: string) => void = (m) => console.log(m);
+  public stdin: () => Promise<string>;
+  public stdout: (m: string) => void;
   public onTick: (l: LanguageInstance) => void;
+  public onError: (error: LanguageExecutionError) => void;
   private consumed = false;
   private MAX_EXECUTION_CAP = 1000;
-  private libraries: Libraries = BaseLibraries;
+  public libraries: Libraries = BaseLibraries;
   public executionCount = -1;
   public workingDir: string;
   private options: LanguageOptions;
@@ -67,6 +68,7 @@ export class LanguageInstance extends Process {
     this.stdin = options.stdin || (async () => "");
     this.stdout = options.stdout || ((m: string) => console.log(m));
     this.onTick = this.options.onTick || (() => {});
+    this.onError = this.options.onError || (() => {});
     this.workingDir = this.options.workingDir || ".";
 
     this.libraries = keysToLowerCase(libraries) as Libraries;
@@ -76,13 +78,21 @@ export class LanguageInstance extends Process {
 
   async watchException() {
     while (!this._disposed) {
-      if (this.exception) throw this.exception;
+      if (this.exception) {
+        this.onError(this.exception);
+
+        await this.killSelf();
+
+        break;
+      }
 
       await Sleep(1);
     }
   }
 
   error(reason: string, keyword?: string) {
+    if (this.exception) return this.exception;
+
     this.exception = new LanguageExecutionError(reason, this, keyword);
 
     return this.exception;
@@ -186,7 +196,11 @@ export class LanguageInstance extends Process {
         : this.libraries["*"][targetKeyword];
 
       if (!targetKeyword.startsWith(":")) {
-        if (!func) this.error(`Unknown keyword`, targetKeyword);
+        if (!func) {
+          this.error(`Unknown keyword`, targetKeyword);
+
+          return;
+        }
 
         result = await func(this);
       }

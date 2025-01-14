@@ -6,6 +6,7 @@ import { input } from "./_base/input";
 import { jump } from "./_base/jump";
 import { MsgBox } from "./_base/msgbox";
 import { sleep } from "./_base/sleep";
+import { keyword } from "./keyword";
 
 export const BaseLibrary: Library = {
   clear,
@@ -15,4 +16,5 @@ export const BaseLibrary: Library = {
   jump,
   MsgBox,
   sleep,
+  keyword,
 };

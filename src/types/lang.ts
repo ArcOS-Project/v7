@@ -1,3 +1,4 @@
+import type { LanguageExecutionError } from "$ts/lang/error";
 import type { LanguageInstance } from "$ts/lang/instance";
 
 export type StdIn = (p?: string) => Promise<string>;
@@ -10,6 +11,7 @@ export interface LanguageOptions {
   stdin?: () => Promise<string>;
   stdout?: (m: string) => void;
   onTick?: (l: LanguageInstance) => void;
+  onError?: (error: LanguageExecutionError) => void;
   continuous?: boolean;
   tickDelay?: number;
   workingDir?: string;

@@ -1,10 +1,11 @@
 import type { Library } from "$types/lang";
-import { input } from "./_base/input";
 import { action } from "./window/action";
 import { create } from "./window/create";
 import { append as elementAppend } from "./window/element/append";
 import { button } from "./window/element/button";
 import { create as elementCreate } from "./window/element/create";
+import { div } from "./window/element/div";
+import { h1 } from "./window/element/h1";
 
 export const GuiLibrary: Library = {
   create,
@@ -13,6 +14,7 @@ export const GuiLibrary: Library = {
     append: elementAppend,
     create: elementCreate,
     button,
-    input,
+    div,
+    h1,
   },
 };
