@@ -47,6 +47,7 @@ export class LanguageInstance extends Process {
   public workingDir: string;
   private options: LanguageOptions;
   private fs: Filesystem;
+  private exception: LanguageExecutionError | null = null;
 
   constructor(
     handler: ProcessHandler,
@@ -73,8 +74,18 @@ export class LanguageInstance extends Process {
     this.fs = this.kernel.getModule<Filesystem>("fs");
   }
 
+  async watchException() {
+    while (!this._disposed) {
+      if (this.exception) throw this.exception;
+
+      await Sleep(1);
+    }
+  }
+
   error(reason: string, keyword?: string) {
-    throw new LanguageExecutionError(reason, this, keyword);
+    this.exception = new LanguageExecutionError(reason, this, keyword);
+
+    return this.exception;
   }
 
   async run() {
@@ -87,7 +98,7 @@ export class LanguageInstance extends Process {
     while (this.pointer < this.source.length - 1) {
       let command = this.source[this.pointer];
 
-      this.tokens = this.normalizeTokens(this.tokenise(command));
+      this.tokens = this.normalizeTokens(this.tokenise(command)) || [];
 
       await this.interpret();
 
@@ -134,15 +145,19 @@ export class LanguageInstance extends Process {
 
         const variable = name ? this.variables.get(name) : undefined;
 
-        if (!name || !variable)
-          throw this.error(
+        if (!name || !variable) {
+          this.error(
             "Can only perform a property assignment on a defined variable"
           );
 
-        if (typeof variable != "object")
-          throw this.error(
-            "Can only perform a property assignment on an object"
-          );
+          return;
+        }
+
+        if (typeof variable != "object") {
+          this.error("Can only perform a property assignment on an object");
+
+          return;
+        }
 
         setJsonHierarchy(
           variable,
@@ -203,11 +218,17 @@ export class LanguageInstance extends Process {
           const split = tokens[i].split(".");
           const name = split.shift()?.replace("$", "");
 
-          if (!name) throw this.error("Invalid JSON path");
+          if (!name) {
+            this.error("Invalid JSON path");
+            return;
+          }
 
           const variable = this.variables.get(name);
 
-          if (!variable) throw this.error(`Unknown variable "${variable}"`);
+          if (!variable) {
+            this.error(`Unknown variable "${variable}"`);
+            return;
+          }
 
           tokens[i] = getJsonHierarchy(variable, split.join("."));
         } else {
@@ -339,6 +360,16 @@ export class LanguageInstance extends Process {
       default:
         this.error(`Unknown calc operation "${operator}"`);
     }
+  }
+
+  jump(codepoint: string) {
+    if (codepoint[0] !== ":") this.error(`Invalid codepoint "${codepoint}"`);
+
+    const index = this.source.indexOf(codepoint);
+
+    if (index < 0) this.error(`Code point "${codepoint}" does not exist.`);
+
+    this.pointer = index;
   }
 
   async readDir(

@@ -5,8 +5,11 @@ export const jump: Keyword = async (lang) => {
 
   const location = lang.source.indexOf(lang.tokens[0]);
 
-  if (location < 0)
-    throw lang.error(`Missing code segment "${lang.tokens[0]}"`, "jump");
+  if (location < 0) {
+    lang.error(`Missing code segment "${lang.tokens[0]}"`, "jump");
 
-  lang.pointer = lang.source.indexOf(lang.tokens[0]);
+    return;
+  }
+
+  lang.jump(lang.tokens[0]);
 };

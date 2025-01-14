@@ -41,6 +41,7 @@ export class ArcLang extends KernelModule {
 
     try {
       const result = await process.run();
+      process.watchException();
 
       return result;
     } catch (e) {

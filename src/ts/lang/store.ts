@@ -3,13 +3,13 @@ import { BaseLibrary } from "./libraries/_base";
 import { Base64Library } from "./libraries/base64";
 import { ConvertLibrary } from "./libraries/convert";
 import { DataLibrary } from "./libraries/data";
+import { GuiLibrary } from "./libraries/gui";
 import { JsonLibrary } from "./libraries/json";
 import { SourceLibrary } from "./libraries/source";
-import { WindowLibrary } from "./libraries/window";
 
 export const BaseLibraries: Libraries = {
   json: JsonLibrary,
-  window: WindowLibrary,
+  gui: GuiLibrary,
   source: SourceLibrary,
   base64: Base64Library,
   convert: ConvertLibrary,

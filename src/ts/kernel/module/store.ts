@@ -1,5 +1,6 @@
 import { Filesystem } from "$ts/fs";
 import { ArcLang } from "$ts/lang";
+import { RoturExtension } from "$ts/rotur";
 import type { KernelModule } from ".";
 import { ProcessHandler } from "../../process/handler";
 import { ServerManager } from "../../server";
@@ -9,4 +10,5 @@ export const KernelModules: Record<string, typeof KernelModule> = {
   server: ServerManager,
   fs: Filesystem,
   lang: ArcLang,
+  rotur: RoturExtension,
 };

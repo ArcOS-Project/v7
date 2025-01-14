@@ -6,11 +6,17 @@ export const css: Keyword = async (lang) => {
 
   const [path, target] = lang.tokens as [string, HTMLDivElement];
 
-  if (!target) throw lang.error("Invalid target", "source.css");
+  if (!target) {
+    lang.error("Invalid target", "source.css");
+    return;
+  }
 
   const contents = await lang.readFile(path);
 
-  if (!contents) throw lang.error("File not found", "source.css");
+  if (!contents) {
+    lang.error("File not found", "source.css");
+    return;
+  }
 
   const str = arrayToText(contents);
   const style = document.createElement("style");

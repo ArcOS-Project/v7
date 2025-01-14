@@ -7,7 +7,10 @@ export const Import: Keyword = async (lang) => {
   const [path] = lang.tokens;
   const contents = await lang.readFile(path);
 
-  if (!contents) throw lang.error(`File not found: ${path}`);
+  if (!contents) {
+    lang.error(`File not found: ${path}`);
+    return;
+  }
 
   const str = arrayToText(contents);
 
@@ -17,6 +20,6 @@ export const Import: Keyword = async (lang) => {
 
     return fn;
   } catch {
-    throw lang.error(`Javascript import failed: ${path}`, "import");
+    lang.error(`Javascript import failed: ${path}`, "import");
   }
 };

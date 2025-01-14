@@ -7,7 +7,10 @@ export const cat: Keyword = async (lang) => {
 
   const contents = await lang.readFile(path);
 
-  if (!contents) throw lang.error("File not found", "cat");
+  if (!contents) {
+    lang.error("File not found", "cat");
+    return;
+  }
 
   return contents;
 };

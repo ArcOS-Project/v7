@@ -7,6 +7,6 @@ export const If: Keyword = async (lang) => {
   const result = lang.calculate(left, operator, right);
 
   if (!!result && target[0] == ":") {
-    lang.pointer = lang.source.indexOf(`${target}`);
+    lang.jump(target);
   }
 };

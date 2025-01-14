@@ -8,8 +8,11 @@ export const create: Keyword = async (lang) => {
 
   const [metadata, bodyVar] = lang.tokens as [ScriptedApp, string];
 
-  if (!metadata || typeof metadata !== "object")
-    throw lang.error("Need a JSON object as the metadata", "window.create");
+  if (!metadata || typeof metadata !== "object") {
+    lang.error("Need a JSON object as the metadata", "window.create");
+
+    return;
+  }
 
   const stack = lang.kernel.getModule<ProcessHandler>("stack");
   const result = await stack.spawn<ScriptedAppProcess>(
@@ -21,8 +24,10 @@ export const create: Keyword = async (lang) => {
     }
   );
 
-  if (!result)
-    throw lang.error("Failed to spawn scripted app process!", "window.create");
+  if (!result) {
+    lang.error("Failed to spawn scripted app process!", "window.create");
+    return;
+  }
 
   return new Promise((r) =>
     result.bodyStore.subscribe((v) => {

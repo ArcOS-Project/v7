@@ -1,7 +1,9 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
   import { WarningIcon } from "$ts/images/dialog";
+  import { LanguageExecutionError } from "$ts/lang/error";
   import { Sleep } from "$ts/sleep";
+  import { htmlspecialchars } from "$ts/util";
   import type { AppComponentProps } from "$types/app";
   import type { TestAppRuntime } from "./runtime";
 
@@ -25,14 +27,19 @@
           onTick: (lang) => {
             process.windowTitle.set(`Test - ${lang.tokens.join(" ")}`);
           },
-          workingDir: "test",
         })) || [];
     } catch (e) {
+      const err = e as LanguageExecutionError;
+
+      console.log(JSON.stringify(err));
+
+      const tokens = `<ul>${err.tokens.map((t) => `<li>${htmlspecialchars(JSON.stringify(t))}`)}</ul>`;
+
       MessageBox(
         {
           image: WarningIcon,
           title: "Execution Error",
-          message: (e as any).message,
+          message: `An error occured while executing the script: <b>${err.message}</b><br><br>At keyword "${err.keyword}" in instruction #${err.pointer}.<br><br><h3>Tokens</h3>${tokens}`,
           buttons: [{ caption: "Okay", action: () => {} }],
         },
         process.pid,
