@@ -16,7 +16,7 @@
 import { ArcOSVersion } from "$ts/env";
 import { Filesystem } from "$ts/fs";
 import { join } from "$ts/fs/util";
-import { getJsonHierarchy } from "$ts/hierarchy";
+import { getJsonHierarchy, setJsonHierarchy } from "$ts/hierarchy";
 import { keysToLowerCase, tryJsonParse } from "$ts/json";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -127,11 +127,36 @@ export class LanguageInstance extends Process {
       this.tokens.pop();
     }
 
-    if (this.tokens[1] == "=") {
-      this.variables.set(
-        this.tokens[0],
-        tryJsonParse(this.tokens.slice(2, this.tokens.length).join(" "))
-      );
+    if (this.tokens[1] == "=" && this.tokens[0]) {
+      if (this.tokens[0].includes(".")) {
+        const split = this.tokens[0].split(".") as string[];
+        const name = split.shift();
+
+        const variable = name ? this.variables.get(name) : undefined;
+
+        if (!name || !variable)
+          throw this.error(
+            "Can only perform a property assignment on a defined variable"
+          );
+
+        if (typeof variable != "object")
+          throw this.error(
+            "Can only perform a property assignment on an object"
+          );
+
+        setJsonHierarchy(
+          variable,
+          split.join("."),
+          tryJsonParse(this.tokens.slice(2, this.tokens.length).join(" "))
+        );
+
+        this.variables.set(name, variable);
+      } else {
+        this.variables.set(
+          this.tokens[0],
+          tryJsonParse(this.tokens.slice(2, this.tokens.length).join(" "))
+        );
+      }
     } else if (this.tokens[1] == "+=") {
       this.variables.set(
         this.tokens[0],
@@ -171,11 +196,23 @@ export class LanguageInstance extends Process {
     }
   }
 
-  normalizeTokens(tokens: string[]) {
+  normalizeTokens(tokens: any[]) {
     for (let i = 0; i < tokens.length; i++) {
       if (tokens[i].startsWith("$")) {
-        tokens[i] = this.variables.get(tokens[i].slice(1));
-        console.log(tokens, tokens[i]);
+        if (tokens[i].includes(".")) {
+          const split = tokens[i].split(".");
+          const name = split.shift()?.replace("$", "");
+
+          if (!name) throw this.error("Invalid JSON path");
+
+          const variable = this.variables.get(name);
+
+          if (!variable) throw this.error(`Unknown variable "${variable}"`);
+
+          tokens[i] = getJsonHierarchy(variable, split.join("."));
+        } else {
+          tokens[i] = this.variables.get(tokens[i].slice(1));
+        }
       } else if (tokens[i].startsWith('"') && tokens[i].endsWith('"')) {
         tokens[i] = tokens[i].slice(1, tokens[i].length - 1);
       }
