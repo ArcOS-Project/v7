@@ -1,3 +1,4 @@
+import { GlobalDispatcher } from "$ts/dispatch";
 import { ServerManager } from "$ts/server";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
@@ -9,6 +10,7 @@ export class BootScreenRuntime extends AppProcess {
   public progress = Store<boolean>(false);
   public status = Store<string>("");
   public connected = Store<boolean>(false);
+  private globalDispatch: GlobalDispatcher;
 
   constructor(
     handler: ProcessHandler,
@@ -17,6 +19,8 @@ export class BootScreenRuntime extends AppProcess {
     app: AppProcessData
   ) {
     super(handler, pid, parentPid, app);
+
+    this.globalDispatch = this.kernel.getModule<GlobalDispatcher>("dispatch");
   }
 
   async begin() {
@@ -28,6 +32,18 @@ export class BootScreenRuntime extends AppProcess {
       return;
     }
 
+    this.status.set("Waiting for Rotur...");
+    this.progress.set(true);
+
+    await new Promise((r) =>
+      this.globalDispatch.subscribe("rotur-connected", () => r(true))
+    );
+
+    this.progress.set(false);
+    this.status.set("Connected!");
+    await Sleep(1000);
+    this.status.set("&nbsp;");
+    await Sleep(500);
     this.status.set("Press a key or click to start");
 
     document.addEventListener("click", () => this.startBooting(), {

@@ -95,6 +95,8 @@ export class LanguageInstance extends Process {
 
     this.exception = new LanguageExecutionError(reason, this, keyword);
 
+    console.log(this.exception);
+
     return this.exception;
   }
 
@@ -320,13 +322,16 @@ export class LanguageInstance extends Process {
 
     const notEnough = this.tokens.length < length;
 
-    if (notEnough)
+    if (notEnough) {
       this.error(
         `Expected ${length} arguments, got ${this.tokens.length}.`,
         where
       );
 
-    return notEnough;
+      return false;
+    }
+
+    return true;
   }
 
   calculate(left: string, operator: string, right: string) {

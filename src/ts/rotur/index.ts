@@ -1,5 +1,7 @@
+import { GlobalDispatcher } from "$ts/dispatch";
 import type { WaveKernel } from "$ts/kernel";
 import { KernelModule } from "$ts/kernel/module";
+import { Sleep } from "$ts/sleep";
 import md5 from "md5";
 
 export class RoturExtension extends KernelModule {
@@ -27,6 +29,7 @@ export class RoturExtension extends KernelModule {
   badges: any[];
   friends: any;
   storage_id = "";
+  dispatch: GlobalDispatcher;
 
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);
@@ -55,6 +58,8 @@ export class RoturExtension extends KernelModule {
 
     this.version = 5;
     this.outdated = false;
+
+    this.dispatch = this.kernel.getModule<GlobalDispatcher>("dispatch");
 
     try {
       fetch(
@@ -154,31 +159,38 @@ export class RoturExtension extends KernelModule {
 
   // main functions
 
-  connectToServer(args: Record<string, any>) {
+  async connectToServer(args: Record<string, any>) {
     if (!this.server || !this.accounts) {
-      console.log("Waiting for server and accounts...");
-      setTimeout(() => {
-        this.connectToServer(args);
-      }, 1000);
+      this.Log("Waiting for server and accounts...");
+
+      await Sleep(1000);
+
+      await this.connectToServer(args);
+
       return true;
     }
+
     if (this.ws) {
       this.ws?.close();
     }
+
     this.designation = args.DESIGNATION;
     this.username = randomString(32);
     this.my_client = {
       system: args.SYSTEM,
       version: args.VERSION,
     };
+
     this.connectToWebsocket();
   }
 
   openPorts() {
-    let ports = [];
+    const ports = [];
+
     for (let key in this.packets) {
       ports.push(key);
     }
+
     if (ports.length === 0) {
       return ["No Open Ports"];
     } else {
@@ -187,10 +199,12 @@ export class RoturExtension extends KernelModule {
   }
 
   accountKeys() {
-    let keys = [];
+    const keys = [];
+
     for (let key of Object.keys(this.user)) {
       keys.push(key);
     }
+
     if (keys.length === 0) {
       return ["No User Keys"];
     } else {
@@ -200,10 +214,12 @@ export class RoturExtension extends KernelModule {
 
   myFriends() {
     if (this.authenticated && this.is_connected) {
-      let keys = [];
+      const keys = [];
+
       for (let key of this.user["sys.friends"]) {
         keys.push(key);
       }
+
       if (keys.length === 0) {
         return ["No Friends"];
       } else {
@@ -217,9 +233,11 @@ export class RoturExtension extends KernelModule {
   myRequests() {
     if (this.authenticated && this.is_connected) {
       let keys = [];
+
       for (let key of this.user["sys.requests"]) {
         keys.push(key);
       }
+
       if (keys.length === 0) {
         return ["No Requests"];
       } else {
@@ -234,6 +252,7 @@ export class RoturExtension extends KernelModule {
     if (!this.is_connected) {
       return false;
     }
+
     return this.client.users?.indexOf(this.accounts) !== -1;
   }
 
@@ -253,6 +272,7 @@ export class RoturExtension extends KernelModule {
 
       this.ws.onmessage = (event: Record<string, any>) => {
         let packet = JSON.parse(event.data);
+
         if (packet.cmd == "client_ip") {
           this.client.ip = packet.val;
         } else if (packet.cmd == "client_obj") {
@@ -265,9 +285,11 @@ export class RoturExtension extends KernelModule {
             this.client.users = this.client.users?.filter(
               (user) => user != packet.val.username
             );
+
             this.lastLeft = packet.val;
           } else if (packet.mode == "set") {
             this.client.users = [];
+
             for (let user of packet.val) {
               this.client.users.push(user.username);
             }
@@ -275,15 +297,20 @@ export class RoturExtension extends KernelModule {
         }
         if (packet.cmd == "pmsg") {
           this.packetQueue.push(packet);
+
           packet.origin = packet.origin.username;
+
           delete packet.rooms;
           delete packet.cmd;
+
           packet.client = packet.val.client;
           packet.source = packet.val.source;
           packet.payload = packet.val.payload;
           packet.timestamp = packet.val.timestamp;
+
           if (packet.val.source_command) {
             packet.source_command = packet.val.source_command;
+
             delete packet.val.source_command;
           }
           if (packet.origin === this.accounts) {
@@ -305,6 +332,7 @@ export class RoturExtension extends KernelModule {
               if (!this.syncedVariables[packet.origin]) {
                 this.syncedVariables[packet.origin] = {};
               }
+
               this.syncedVariables[packet.origin][packet.payload.key] =
                 packet.payload.value;
             }
@@ -314,7 +342,9 @@ export class RoturExtension extends KernelModule {
             if (!this.packets[packet.val.target]) {
               this.packets[packet.val.target] = [];
             }
+
             this.packets[packet.val.target].push(packet);
+
             delete packet.val;
           }
         }
@@ -330,6 +360,7 @@ export class RoturExtension extends KernelModule {
         }
         if (packet.listener == "set_username_cfg") {
           this.client.username = this.designation + "-" + this.username;
+
           let room = "roturTW";
           let msg = {
             cmd: "link",
@@ -342,12 +373,13 @@ export class RoturExtension extends KernelModule {
         if (packet.listener == "link_cfg") {
           this.client.room = packet.val;
           this.is_connected = true;
-          console.log("Connected!");
+          this.Log("Connected!");
+          this.dispatch.dispatch("rotur-connected");
         }
       };
     };
     this.ws.onclose = () => {
-      console.log("Disconnected!");
+      this.Log("Disconnected!");
       this.is_connected = false;
     };
   }
@@ -2219,7 +2251,6 @@ export class RoturExtension extends KernelModule {
   }
 
   allBadges() {
-    console.log(this.badges);
     return JSON.stringify(Object.keys(this.badges));
   }
 

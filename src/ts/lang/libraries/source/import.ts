@@ -2,6 +2,11 @@ import { arrayToText } from "$ts/fs/convert";
 import type { Keyword } from "$types/lang";
 
 export const Import: Keyword = async (lang) => {
+  if (!lang.options.allowUnsafe) {
+    lang.error("Unsafe code execution is not enabled!", "source.import");
+    return;
+  }
+
   if (!lang.expectTokenLength(1, "import")) return;
 
   const [path] = lang.tokens;
@@ -17,6 +22,8 @@ export const Import: Keyword = async (lang) => {
   try {
     const dataUrl = `data:application/javascript;base64,${btoa(str)}`;
     const { default: fn } = await import(dataUrl);
+
+    console.log(dataUrl, fn);
 
     return fn;
   } catch {
