@@ -12,6 +12,7 @@ export interface LanguageOptions {
   stdout?: (m: string) => void;
   onTick?: (l: LanguageInstance) => void;
   onError?: (error: LanguageExecutionError) => void;
+  allowUnsafe?: boolean;
   continuous?: boolean;
   tickDelay?: number;
   workingDir?: string;

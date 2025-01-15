@@ -46,7 +46,7 @@ export class LanguageInstance extends Process {
   public libraries: Libraries = BaseLibraries;
   public executionCount = -1;
   public workingDir: string;
-  private options: LanguageOptions;
+  public options: LanguageOptions;
   private fs: Filesystem;
   private exception: LanguageExecutionError | null = null;
 

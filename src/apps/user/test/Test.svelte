@@ -40,6 +40,7 @@
               true
             );
           },
+          allowUnsafe: false,
         })) || [];
     } catch (e) {
       MessageBox(

@@ -25,4 +25,5 @@ export const DefaultLanguageOptions: LanguageOptions = {
   continuous: false,
   tickDelay: 1,
   workingDir: ".",
+  allowUnsafe: false,
 };
