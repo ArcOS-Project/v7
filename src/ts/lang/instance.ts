@@ -27,7 +27,11 @@ import type {
   DirectoryReadReturn,
   RecursiveDirectoryReadReturn,
 } from "$types/fs";
-import type { LanguageOptions, Libraries } from "$types/lang";
+import type {
+  InterpreterCommand,
+  LanguageOptions,
+  Libraries,
+} from "$types/lang";
 import { LanguageExecutionError } from "./error";
 import { BaseLibraries, DefaultLanguageOptions } from "./store";
 
@@ -35,7 +39,7 @@ export class LanguageInstance extends Process {
   public output: string[] = [];
   public variables = new Map<string, any>([]);
   public pointer = -1;
-  public source: string[] = [];
+  public source: InterpreterCommand[] = [];
   public tokens: any[] = [];
   public stdin: () => Promise<string>;
   public stdout: (m: string) => void;
@@ -62,9 +66,7 @@ export class LanguageInstance extends Process {
 
     this.options = options;
 
-    this.source = `${source}\n\n:*idle\njump :*idle\n:EOF`.split("\n");
-    this.source = this.source.map((l) => l.split("&&")).flat();
-    this.source = this.source.map((l) => l.trim());
+    this.source = this.parseSource(source);
     this.stdin = options.stdin || (async () => "");
     this.stdout = options.stdout || ((m: string) => console.log(m));
     this.onTick = this.options.onTick || (() => {});
@@ -74,6 +76,41 @@ export class LanguageInstance extends Process {
     this.libraries = keysToLowerCase(libraries) as Libraries;
 
     this.fs = this.kernel.getModule<Filesystem>("fs");
+  }
+
+  private parseSource(source: string): InterpreterCommand[] {
+    const lines = `${source}\n:*idle\njump :*idle\n:EOF`.split("\n");
+    const commands: InterpreterCommand[] = [];
+
+    for (let lineNumber = 0; lineNumber < lines.length; lineNumber++) {
+      const line = lines[lineNumber];
+      const segments = line.split("&&");
+      const tokens: { col: number; text: string }[] = [];
+
+      let length = 0;
+
+      for (let i = 0; i < segments.length; i++) {
+        tokens.push({
+          col: length,
+          text: segments[i].trim(),
+        });
+
+        length += segments[i].length + 2;
+      }
+
+      for (let columnNumber = 0; columnNumber < tokens.length; columnNumber++) {
+        const command = tokens[columnNumber];
+        if (command) {
+          commands.push({
+            line: lineNumber + 1,
+            column: columnNumber + 1 + command.col,
+            command: command.text,
+          });
+        }
+      }
+    }
+
+    return commands;
   }
 
   async watchException() {
@@ -95,8 +132,6 @@ export class LanguageInstance extends Process {
 
     this.exception = new LanguageExecutionError(reason, this, keyword);
 
-    console.log(this.exception);
-
     return this.exception;
   }
 
@@ -108,7 +143,17 @@ export class LanguageInstance extends Process {
     await this.reset();
 
     while (this.pointer < this.source.length - 1) {
-      let command = this.source[this.pointer];
+      this.pointer++; // Increment pointer first
+
+      const commandObj = this.source[this.pointer];
+
+      // Check if commandObj is defined
+      if (!commandObj) {
+        this.error(`Command at pointer ${this.pointer} is undefined.`);
+        break; // Exit the loop if commandObj is undefined
+      }
+
+      const command = commandObj.command;
 
       this.tokens = this.normalizeTokens(this.tokenise(command)) || [];
 
@@ -116,10 +161,8 @@ export class LanguageInstance extends Process {
 
       await Sleep(this.options.tickDelay || 1);
 
-      this.pointer++;
-
       if (this.pointer >= this.source.length - 1 && this.options.continuous) {
-        this.pointer = this.source.indexOf(":*idle");
+        this.jump(":*idle");
       }
     }
 
@@ -187,7 +230,6 @@ export class LanguageInstance extends Process {
     } else if (this.tokens[1] == "+=") {
       this.variables.set(
         this.tokens[0],
-
         this.variables.get(this.tokens[0]) +
           tryJsonParse(this.tokens.slice(2, this.tokens.length).join(" "))
       );
@@ -389,7 +431,7 @@ export class LanguageInstance extends Process {
   jump(codepoint: string) {
     if (codepoint[0] !== ":") this.error(`Invalid codepoint "${codepoint}"`);
 
-    const index = this.source.indexOf(codepoint);
+    const index = this.source.findIndex((cmd) => cmd.command === codepoint);
 
     if (index < 0) this.error(`Code point "${codepoint}" does not exist.`);
 
@@ -412,8 +454,6 @@ export class LanguageInstance extends Process {
 
   async readFile(relativePath: string): Promise<ArrayBuffer | undefined> {
     const path = join(this.workingDir, relativePath);
-
-    console.log(path);
 
     return await this.fs.readFile(path);
   }

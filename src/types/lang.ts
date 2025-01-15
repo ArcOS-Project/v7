@@ -17,3 +17,9 @@ export interface LanguageOptions {
   tickDelay?: number;
   workingDir?: string;
 }
+
+export interface InterpreterCommand {
+  line: number;
+  column: number;
+  command: string;
+}

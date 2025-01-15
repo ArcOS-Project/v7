@@ -33,7 +33,7 @@
               {
                 image: WarningIcon,
                 title: "Execution Error",
-                message: `An error occured while executing the script: <b>${e.message}</b><br><br>At keyword "${e.keyword}" in instruction #${e.pointer}.<br><br><h3>Tokens</h3>${tokens}`,
+                message: `An error occured: ${e.message}.<br><br>At keyword "${e.keyword}" at position ${e.instruction.line}:${e.instruction.column} (instruction #${e.pointer}).<br><code class="block">${e.instruction.command}</code>`,
                 buttons: [{ caption: "Okay", action: () => {} }],
               },
               process.pid,

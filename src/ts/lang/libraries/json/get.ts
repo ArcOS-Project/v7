@@ -8,7 +8,5 @@ export const get: Keyword = async (lang) => {
 
   if (typeof object !== "object") return undefined;
 
-  console.log(object, path, getJsonHierarchy(object, path));
-
   return getJsonHierarchy(object, path);
 };

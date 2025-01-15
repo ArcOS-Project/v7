@@ -15,7 +15,5 @@ export const keyword: Keyword = async (lang) => {
     return;
   }
 
-  console.log(keyword, func);
-
   lang.libraries.user[keyword] = func;
 };

@@ -1,3 +1,4 @@
+import type { InterpreterCommand } from "$types/lang";
 import type { LanguageInstance } from "./instance";
 
 export class LanguageExecutionError extends Error {
@@ -6,7 +7,7 @@ export class LanguageExecutionError extends Error {
   public keyword: string = "";
   public message: string;
   public tokens: string[];
-  public instruction: string;
+  public instruction: InterpreterCommand;
 
   constructor(message: string, lang: LanguageInstance, keyword = "") {
     super(message);

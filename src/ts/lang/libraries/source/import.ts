@@ -23,8 +23,6 @@ export const Import: Keyword = async (lang) => {
     const dataUrl = `data:application/javascript;base64,${btoa(str)}`;
     const { default: fn } = await import(dataUrl);
 
-    console.log(dataUrl, fn);
-
     return fn;
   } catch {
     lang.error(`Javascript import failed: ${path}`, "import");

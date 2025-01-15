@@ -47,6 +47,7 @@ export class ArcLang extends KernelModule {
       return result;
     } catch (e) {
       if (process._disposed) return;
+
       console.log(e);
 
       throw e;
