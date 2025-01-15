@@ -21,7 +21,7 @@ export const Import: Keyword = async (lang) => {
 
   try {
     const dataUrl = `data:application/javascript;base64,${btoa(str)}`;
-    const { default: fn } = await import(dataUrl);
+    const { default: fn } = await import(/* @vite-ignore */ dataUrl);
 
     return fn;
   } catch {
