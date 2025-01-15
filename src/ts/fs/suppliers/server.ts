@@ -1,6 +1,7 @@
 import { toForm } from "$ts/form";
 import type { WaveKernel } from "$ts/kernel";
 import { ServerManager } from "$ts/server";
+import { Axios } from "$ts/server/axios";
 import type {
   DirectoryReadReturn,
   RecursiveDirectoryReadReturn,
@@ -29,11 +30,9 @@ export class ServerFilesystemSupplier extends FilesystemSupplier {
   }
 
   async readDir(path: string = ""): Promise<DirectoryReadReturn | undefined> {
-    const url = ServerManager.url();
-
     try {
-      const response = await axios.get<DirectoryReadReturn>(
-        path ? `${url}/fs/dir/${path}` : `${url}/fs/dir`,
+      const response = await Axios.get<DirectoryReadReturn>(
+        path ? `/fs/dir/${path}` : `/fs/dir`,
         { headers: { Authorization: `Bearer ${this.token}` } }
       );
 
@@ -44,11 +43,9 @@ export class ServerFilesystemSupplier extends FilesystemSupplier {
   }
 
   async createDirectory(path: string): Promise<boolean> {
-    const url = ServerManager.url();
-
     try {
-      const response = await axios.post<DirectoryReadReturn>(
-        `${url}/fs/dir/${path}`,
+      const response = await Axios.post<DirectoryReadReturn>(
+        `/fs/dir/${path}`,
         {},
         { headers: { Authorization: `Bearer ${this.token}` } }
       );
@@ -60,10 +57,8 @@ export class ServerFilesystemSupplier extends FilesystemSupplier {
   }
 
   async readFile(path: string): Promise<ArrayBuffer | undefined> {
-    const url = ServerManager.url();
-
     try {
-      const response = await axios.get(`${url}/fs/file/${path}`, {
+      const response = await Axios.get(`/fs/file/${path}`, {
         headers: { Authorization: `Bearer ${this.token}` },
         responseType: "arraybuffer",
       });
@@ -75,10 +70,8 @@ export class ServerFilesystemSupplier extends FilesystemSupplier {
   }
 
   async writeFile(path: string, blob: Blob): Promise<boolean> {
-    const url = ServerManager.url();
-
     try {
-      const response = await axios.post(`${url}/fs/file/${path}`, blob, {
+      const response = await Axios.post(`/fs/file/${path}`, blob, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -91,15 +84,10 @@ export class ServerFilesystemSupplier extends FilesystemSupplier {
   async tree(
     path: string = ""
   ): Promise<RecursiveDirectoryReadReturn | undefined> {
-    const url = ServerManager.url();
-
     try {
-      const response = await axios.get(
-        path ? `${url}/fs/tree/${path}` : `${url}/fs/tree`,
-        {
-          headers: { Authorization: `Bearer ${this.token}` },
-        }
-      );
+      const response = await Axios.get(path ? `/fs/tree/${path}` : `/fs/tree`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
 
       return response.data;
     } catch {
@@ -108,11 +96,9 @@ export class ServerFilesystemSupplier extends FilesystemSupplier {
   }
 
   async copyItem(source: string, destination: string): Promise<boolean> {
-    const url = ServerManager.url();
-
     try {
-      const response = await axios.post(
-        `${url}/fs/cp/${source}`,
+      const response = await Axios.post(
+        `/fs/cp/${source}`,
         toForm({ destination }),
         {
           headers: { Authorization: `Bearer ${this.token}` },
@@ -126,11 +112,9 @@ export class ServerFilesystemSupplier extends FilesystemSupplier {
   }
 
   async moveItem(source: string, destination: string): Promise<boolean> {
-    const url = ServerManager.url();
-
     try {
-      const response = await axios.post(
-        `${url}/fs/mv/${source}`,
+      const response = await Axios.post(
+        `/fs/mv/${source}`,
         toForm({ destination }),
         {
           headers: { Authorization: `Bearer ${this.token}` },
@@ -144,10 +128,8 @@ export class ServerFilesystemSupplier extends FilesystemSupplier {
   }
 
   async deleteItem(path: string): Promise<boolean> {
-    const url = ServerManager.url();
-
     try {
-      const response = await axios.delete(`${url}/fs/rm/${path}`, {
+      const response = await Axios.delete(`/fs/rm/${path}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 

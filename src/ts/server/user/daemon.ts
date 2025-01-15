@@ -6,9 +6,8 @@ import { Process } from "$ts/process/instance";
 import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
 import type { UserInfo, UserPreferences } from "$types/user";
-import axios from "axios";
 import type { Unsubscriber } from "svelte/store";
-import { ServerManager } from "..";
+import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 
 export class UserDaemon extends Process {
@@ -47,8 +46,7 @@ export class UserDaemon extends Process {
     }
 
     try {
-      const url = ServerManager.url();
-      const response = await axios.get(`${url}/user/self`, {
+      const response = await Axios.get(`/user/self`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -93,10 +91,8 @@ export class UserDaemon extends Process {
 
     this.Log(`Committing user preferences`);
 
-    const url = ServerManager.url();
-
     try {
-      const response = await axios.put(`${url}/user/preferences`, preferences, {
+      const response = await Axios.put(`/user/preferences`, preferences, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -143,11 +139,9 @@ export class UserDaemon extends Process {
   }
 
   async discontinueToken() {
-    const url = ServerManager.url();
-
     try {
-      const response = await axios.post(
-        `${url}/logout`,
+      const response = await Axios.post(
+        `/logout`,
         {},
         { headers: { Authorization: `Bearer ${this.token}` } }
       );

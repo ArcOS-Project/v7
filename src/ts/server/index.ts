@@ -1,8 +1,8 @@
 import { VALIDATION_STR } from "$ts/env";
-import axios from "axios";
 import { LogLevel } from "../../types/logging";
 import { WaveKernel } from "../kernel";
 import { KernelModule } from "../kernel/module";
+import { Axios } from "./axios";
 
 export class ServerManager extends KernelModule {
   public url: string = "";
@@ -50,7 +50,7 @@ export class ServerManager extends KernelModule {
   private async testConnection() {
     this.Log("Testing server connection...");
     try {
-      const response = await axios.get(`${this.url}/ping`, {
+      const response = await Axios.get(`/ping`, {
         timeout: 3000,
         timeoutErrorMessage: "We're offline",
       });

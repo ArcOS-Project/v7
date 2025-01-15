@@ -3,14 +3,14 @@ import { Log } from "$ts/kernel/logging";
 import { LogLevel } from "$types/logging";
 import axios, { AxiosError } from "axios";
 import { ServerManager } from "..";
+import { Axios } from "../axios";
 
 export async function LoginUser(identity: string, password: string) {
   Log("LoginUser", `Attempting to authenticate ${identity}`);
-  const url = ServerManager.url();
 
   try {
-    const response = await axios.post(
-      `${url}/login`,
+    const response = await Axios.post(
+      `/login`,
       toForm({
         identity,
         password,
@@ -34,11 +34,9 @@ export async function RegisterUser(
   email: string,
   password: string
 ) {
-  const url = ServerManager.url();
-
   try {
-    const response = await axios.post(
-      `${url}/user`,
+    const response = await Axios.post(
+      `/user`,
       toForm({
         username,
         password,

@@ -10,6 +10,7 @@ import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
 import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps } from "./types";
+import { Axios } from "$ts/server/axios";
 
 export class LoginAppRuntime extends AppProcess {
   public hideLockscreen = Store<boolean>(false);
@@ -238,10 +239,8 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   private async validateUserToken(token: string) {
-    const url = ServerManager.url();
-
     try {
-      const response = await axios.get(`${url}/user/self`, {
+      const response = await Axios.get(`/user/self`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
