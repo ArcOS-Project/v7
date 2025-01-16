@@ -11,6 +11,7 @@ import CheckInbox from "./InitialSetup/Page/CheckInbox.svelte";
 import Finish from "./InitialSetup/Page/Finish.svelte";
 import Identity from "./InitialSetup/Page/Identity.svelte";
 import License from "./InitialSetup/Page/License.svelte";
+import RoturSetup from "./InitialSetup/Page/RoturSetup.svelte";
 import Welcome from "./InitialSetup/Page/Welcome.svelte";
 import type { PageButtons } from "./types";
 
@@ -25,7 +26,14 @@ export class InitialSetupRuntime extends AppProcess {
   public showMainContent = Store<boolean>(false);
   private token: string | undefined;
 
-  public readonly pages = [Welcome, License, Identity, CheckInbox, Finish];
+  public readonly pages = [
+    Welcome,
+    License,
+    Identity,
+    CheckInbox,
+    RoturSetup,
+    Finish,
+  ];
 
   public readonly pageButtons: PageButtons = [
     {
@@ -76,6 +84,21 @@ export class InitialSetupRuntime extends AppProcess {
         caption: "I clicked it",
         suggested: true,
         action: () => this.checkAccountActivation(),
+      },
+    },
+    {
+      left: {
+        caption: "Learn more",
+        action: async () => {},
+      },
+      previous: {
+        caption: "Skip",
+        to: 5,
+      },
+      next: {
+        caption: "Connect",
+        action: async () => {},
+        suggested: true,
       },
     },
     {

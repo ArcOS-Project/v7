@@ -113,6 +113,7 @@
   stroke-dasharray: 50;
   stroke-dashoffset: 50;
   animation: draw 2s 0.2s forwards;
+  stroke: inherit;
 }
 
 #initialSetupWizard div.hero-page > .lucide.lucide-rocket path {
@@ -128,6 +129,12 @@
 #initialSetupWizard div.hero-page > .lucide.lucide-send path {
   stroke-dasharray: 62;
   stroke-dashoffset: 62;
+}
+
+#initialSetupWizard div.hero-page > .lucide.rotur path {
+  stroke-dasharray: 470;
+  stroke-dashoffset: 470;
+  animation: draw 3s 0.4s forwards;
 }
 
 #initialSetupWizard div.hero-page > .lucide.lucide-flag path {
