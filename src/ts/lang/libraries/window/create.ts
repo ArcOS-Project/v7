@@ -33,7 +33,7 @@ export const create: Keyword = async (lang) => {
     result.bodyStore.subscribe((v) => {
       if (v) {
         lang.variables.set(bodyVar, v);
-        r(v);
+        r(result);
       }
     })
   );

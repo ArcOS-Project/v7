@@ -101,13 +101,7 @@ export class RoturExtension extends KernelModule {
     }
   }
 
-  async _init() {
-    await this.connectToServer({
-      DESIGNATION: "arc",
-      SYSTEM: "ArcOS",
-      VERSION: "7",
-    });
-  }
+  async _init() {}
 
   async _initializeBadges() {
     await this._getBadges();
