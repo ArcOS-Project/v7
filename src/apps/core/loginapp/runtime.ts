@@ -117,7 +117,7 @@ export class LoginAppRuntime extends AppProcess {
     const listener = async (e: KeyboardEvent) => {
       if (this._disposed) return;
 
-      if (e.key.toLowerCase() === " ") this.hideLockscreen.set(true);
+      if (e.key && e.key.toLowerCase() === " ") this.hideLockscreen.set(true);
 
       await Sleep(10);
 
