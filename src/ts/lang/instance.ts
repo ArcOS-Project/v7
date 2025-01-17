@@ -39,6 +39,7 @@ export class LanguageInstance extends Process {
   public output: string[] = [];
   public variables = new Map<string, any>([]);
   public pointer = -1;
+  public oldPointer = -1;
   public source: InterpreterCommand[] = [];
   public tokens: any[] = [];
   public stdin: () => Promise<string>;
@@ -193,9 +194,13 @@ export class LanguageInstance extends Process {
       this.tokens.pop();
     }
 
-    if (this.tokens[1] == "=" && this.tokens[0]) {
+    if (
+      typeof this.tokens[0] === "string" &&
+      this.tokens[1] == "=" &&
+      this.tokens[0].startsWith("@")
+    ) {
       if (this.tokens[0].includes(".")) {
-        const split = this.tokens[0].split(".") as string[];
+        const split = this.tokens[0].replace("@", "").split(".") as string[];
         const name = split.shift();
 
         const variable = name ? this.variables.get(name) : undefined;
@@ -223,14 +228,19 @@ export class LanguageInstance extends Process {
         this.variables.set(name, variable);
       } else {
         this.variables.set(
-          this.tokens[0],
+          this.tokens[0].replace("@", ""),
           tryJsonParse(this.tokens.slice(2, this.tokens.length).join(" "))
         );
       }
-    } else if (this.tokens[1] == "+=") {
+    } else if (
+      typeof this.tokens[0] === "string" &&
+      this.tokens[1] == "+=" &&
+      this.tokens[0].startsWith("@")
+    ) {
+      const variable = this.tokens[0].replace("@", "");
       this.variables.set(
-        this.tokens[0],
-        this.variables.get(this.tokens[0]) +
+        variable,
+        this.variables.get(variable) +
           tryJsonParse(this.tokens.slice(2, this.tokens.length).join(" "))
       );
     } else {
@@ -435,6 +445,7 @@ export class LanguageInstance extends Process {
 
     if (index < 0) this.error(`Code point "${codepoint}" does not exist.`);
 
+    this.oldPointer = this.pointer;
     this.pointer = index;
   }
 
