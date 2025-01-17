@@ -1,3 +1,6 @@
+import { GlobalDispatcher } from "$ts/dispatch";
+import { WaveKernel } from "$ts/kernel";
+
 export function join(...args: string[]) {
   let parts: string[] = [];
 
@@ -25,15 +28,38 @@ export function dirname(path: string) {
 }
 
 export function getParentDirectory(p: string): string {
+  if (!p) return p;
+
   const split = p.split("/");
 
-  if (p == "./") return p;
   if (!split.length) return p;
-  if (split.length == 1) return "./";
+  if (split.length == 1) return "";
 
   split.splice(-1);
 
   const newPath = split.join("/");
 
   return newPath;
+}
+
+export function onFileChange(path: string, callback: () => void) {
+  const kernel = WaveKernel.get();
+  const dispatch = kernel.getModule<GlobalDispatcher>("dispatch");
+
+  dispatch.subscribe("fs-flush-file", (data) => {
+    if (data[0] === path) callback();
+  });
+
+  callback();
+}
+
+export function onFolderChange(path: string, callback: () => void) {
+  const kernel = WaveKernel.get();
+  const dispatch = kernel.getModule<GlobalDispatcher>("dispatch");
+
+  dispatch.subscribe("fs-flush-dir", (data) => {
+    if (data[0] === path) callback();
+  });
+
+  callback();
 }

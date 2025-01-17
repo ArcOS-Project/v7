@@ -28,19 +28,6 @@
   {#each apps as app}
     {#if isPopulatable(app)}
       <ListItem {app} {process} />
-      <ListItem {app} {process} />
-      <ListItem {app} {process} />
-      <ListItem {app} {process} />
-      <ListItem {app} {process} />
-      <ListItem {app} {process} />
-      <ListItem {app} {process} />
-      <ListItem {app} {process} />
-      <ListItem {app} {process} />
-      <ListItem {app} {process} />
-      <ListItem {app} {process} />
-      <ListItem {app} {process} />
-      <ListItem {app} {process} />
-      <ListItem {app} {process} />
     {/if}
   {/each}
 </div>

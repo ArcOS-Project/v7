@@ -9,6 +9,8 @@ import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
 import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
+import type { Filesystem } from "$ts/fs";
+import { GlobalDispatcher } from "$ts/dispatch";
 
 export class AppProcess extends Process {
   crashReason = "";
@@ -20,6 +22,8 @@ export class AppProcess extends Process {
     DefaultUserPreferences
   );
   username: string = "";
+  fs: Filesystem;
+  globalDispatch: GlobalDispatcher;
 
   constructor(
     handler: ProcessHandler,
@@ -38,6 +42,10 @@ export class AppProcess extends Process {
     this.windowTitle.set(app.data.metadata.name);
     this.windowIcon.set(app.data.metadata.icon);
     this.name = app.data.id;
+
+    this.fs = this.kernel.getModule<Filesystem>("fs");
+    this.globalDispatch = this.kernel.getModule<GlobalDispatcher>("dispatch");
+
     const desktopProps = this.kernel.state?.stateProps["desktop"];
 
     if (desktopProps && desktopProps.userDaemon) {
