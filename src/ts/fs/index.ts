@@ -1,3 +1,4 @@
+import { GlobalDispatcher } from "$ts/dispatch";
 import type { WaveKernel } from "$ts/kernel";
 import { KernelModule } from "$ts/kernel/module";
 import {
@@ -14,12 +15,16 @@ import {
   type WriteFileSupplier,
 } from "$types/fs";
 import type { FilesystemSupplier } from "./supplier";
+import { getParentDirectory } from "./util";
 
 export class Filesystem extends KernelModule {
   private suppliers: Record<string, FilesystemSupplier> = {};
+  private dispatch: GlobalDispatcher;
 
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);
+
+    this.dispatch = this.kernel.getModule<GlobalDispatcher>("dispatch");
   }
 
   async _init() {}
@@ -101,9 +106,14 @@ export class Filesystem extends KernelModule {
   }
 
   async createDirectory(path: string): Promise<boolean> {
-    return await this.getSupplierFor<CreateDirectorySupplier>(
+    const parent = getParentDirectory(path);
+    const result = await this.getSupplierFor<CreateDirectorySupplier>(
       "createDirectory"
     )(path);
+
+    this.dispatch.dispatch("fs-flush-folder", parent);
+
+    return result;
   }
 
   async readFile(path: string): Promise<ArrayBuffer | undefined> {
@@ -119,10 +129,16 @@ export class Filesystem extends KernelModule {
   }
 
   async writeFile(path: string, data: Blob): Promise<boolean> {
-    return await this.getSupplierFor<WriteFileSupplier>("writeFile")(
+    const parent = getParentDirectory(path);
+    const result = await this.getSupplierFor<WriteFileSupplier>("writeFile")(
       path,
       data
     );
+
+    this.dispatch.dispatch("fs-flush-file", path);
+    this.dispatch.dispatch("fs-flush-folder", parent);
+
+    return result;
   }
 
   async tree(path: string): Promise<RecursiveDirectoryReadReturn | undefined> {
@@ -130,20 +146,40 @@ export class Filesystem extends KernelModule {
   }
 
   async copyItem(source: string, destination: string): Promise<boolean> {
-    return await this.getSupplierFor<CopyItemSupplier>("copyItem")(
+    const destinationParent = getParentDirectory(destination);
+    const result = await this.getSupplierFor<CopyItemSupplier>("copyItem")(
       source,
       destination
     );
+
+    this.dispatch.dispatch("fs-flush-folder", destinationParent);
+
+    return result;
   }
 
   async moveItem(source: string, destination: string): Promise<boolean> {
-    return await this.getSupplierFor<MoveItemSupplier>("moveItem")(
+    const sourceParent = getParentDirectory(source);
+    const destinationParent = getParentDirectory(destination);
+
+    const result = await this.getSupplierFor<MoveItemSupplier>("moveItem")(
       source,
       destination
     );
+
+    this.dispatch.dispatch("fs-flush-folder", destinationParent);
+    this.dispatch.dispatch("fs-flush-folder", sourceParent);
+
+    return result;
   }
 
   async deleteItem(path: string): Promise<boolean> {
-    return await this.getSupplierFor<DeleteItemSupplier>("deleteItem")(path);
+    const parent = getParentDirectory(path);
+    const result = await this.getSupplierFor<DeleteItemSupplier>("deleteItem")(
+      path
+    );
+
+    this.dispatch.dispatch("fs-flush-folder", parent);
+
+    return result;
   }
 }

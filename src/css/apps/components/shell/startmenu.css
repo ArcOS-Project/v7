@@ -1,0 +1,129 @@
+div.shell div.startmenu {
+  width: 420px;
+  height: 490px;
+  background-color: var(--glass-bg);
+  border-radius: 10px;
+  transition: translate 0.3s, opacity 0.2s, pointer-events 0s, visibility 0.3s;
+  z-index: 10;
+  border: var(--win-border);
+  max-height: 100%;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 5px 15px 5px #0003;
+  padding: 10px;
+}
+
+div.shell div.startmenu:not(.opened) {
+  translate: 0 50px;
+  opacity: 0;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
+div.shell div.startmenu div.top {
+  display: flex;
+  gap: 10px;
+  height: calc(100% - 60px);
+  max-height: calc(100% - 60px);
+  margin-bottom: 10px;
+}
+
+div.shell div.startmenu div.top div.folders button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px;
+  width: 100%;
+  background-color: transparent;
+}
+
+div.shell div.startmenu div.top div.folders button:hover {
+  background-color: var(--button-glass-bg);
+}
+
+div.shell div.startmenu div.top div.folders button:active {
+  background-color: var(--button-glass-active-bg);
+}
+
+div.shell div.startmenu div.top div.folders button.user-button {
+  font-weight: bold;
+}
+
+div.shell div.startmenu div.top div.folders button img {
+  height: 24px;
+  border-radius: 12px;
+}
+
+div.shell div.startmenu div.top div.app-list {
+  width: calc(100% - 170px);
+  height: 100%;
+
+  padding: 5px;
+  padding-right: 0;
+  overflow-y: scroll;
+}
+div.shell div.startmenu div.top div.app-list button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 5px;
+  background-color: transparent;
+}
+
+div.shell div.startmenu div.top div.app-list button:hover {
+  background-color: var(--button-glass-bg);
+}
+
+div.shell div.startmenu div.top div.folders {
+  width: 170px;
+  background-color: var(--button-glass-bg);
+  border-radius: 7.5px;
+  padding: 10px;
+}
+
+div.shell div.startmenu div.bottom {
+  height: 50px;
+  min-height: 50px;
+  background-color: var(--button-glass-bg);
+  border-radius: 7.5px;
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  gap: 10px;
+}
+
+div.shell div.startmenu div.bottom span.lucide {
+  font-size: 20px;
+}
+
+div.shell div.startmenu div.bottom div.search {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+div.shell div.startmenu div.bottom div.search input {
+  margin: 0;
+  padding: 0;
+  flex-grow: 1;
+  border: none;
+  background-color: transparent;
+}
+
+div.shell div.startmenu div.bottom div.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding-left: 10px;
+  border-left: var(--button-glass-bg) 1px solid;
+  height: 30px;
+}
+
+div.shell div.startmenu div.bottom div.actions button {
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  height: 21px;
+}

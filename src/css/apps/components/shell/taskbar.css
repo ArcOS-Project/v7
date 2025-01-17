@@ -1,0 +1,150 @@
+div.shell div.taskbar {
+  display: flex;
+  align-items: center;
+  width: calc(100% - 20px);
+  height: 50px;
+  margin: 10px;
+  padding: 5px;
+  margin-top: 0;
+  gap: 5px;
+  z-index: 100;
+  background-color: var(--glass-bg);
+  border-radius: 10px;
+  border: var(--win-border);
+
+  backdrop-filter: blur(10px);
+}
+
+:root #main:has(#arcShell div.shell) {
+  --taskbar-allocation: 70px;
+}
+
+:root #main:has(#arcShell div.shell.docked) {
+  --taskbar-allocation: 50px;
+}
+
+div.shell.docked div.taskbar {
+  width: 100%;
+  margin: 0;
+  border-radius: 0;
+  border: none;
+  border-top: var(--win-border);
+}
+
+#arcShell div.shell div.taskbar > button {
+  height: 40px;
+  width: 40px;
+  min-width: 40px;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--button-glass-bg);
+}
+
+div.shell div.taskbar div.opened-apps {
+  background-color: var(--button-glass-bg);
+  flex-grow: 1;
+  height: 40px;
+  border-radius: 8px;
+  padding: 3px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
+}
+
+div.shell div.taskbar div.opened-apps::-webkit-scrollbar {
+  height: 1px;
+  width: 1px;
+}
+
+#arcShell div.shell div.taskbar div.opened-apps button {
+  display: inline-flex;
+  max-width: 180px;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0 10px;
+  height: 34px;
+  background-color: var(--button-glass-bg);
+  overflow: Hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#arcShell div.shell div.taskbar div.opened-apps button span {
+  max-width: calc(100% - 34px);
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#arcShell div.shell div.taskbar div.opened-apps button + button {
+  margin-left: 3px;
+}
+
+div.shell div.taskbar div.opened-apps button img {
+  height: 24px;
+}
+
+#arcShell div.shell div.taskbar div.opened-apps button.active,
+#arcShell div.shell div.taskbar button.start-button.active {
+  background-color: var(--button-glass-active-bg);
+}
+
+div.shell div.taskbar button.start-button img {
+  height: 30px;
+}
+
+#arcShell div.shell div.taskbar button.action-center-button.active {
+  background-color: var(--accent-light);
+}
+
+#arcShell div.shell div.taskbar button.action-center-button.active span {
+  color: var(--win-bg);
+}
+
+div.shell div.taskbar button.action-center-button span {
+  font-size: 16px;
+}
+
+div.shell div.taskbar div.system-area {
+  background-color: var(--button-glass-bg);
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  border-radius: 8px;
+}
+
+div.shell div.taskbar > *:not(.opened-apps) {
+  min-width: fit-content;
+}
+
+div.shell div.taskbar div.pinned-apps {
+  height: 40px;
+  padding: 3px;
+  background-color: var(--button-glass-bg);
+  border-radius: 8px;
+}
+
+div.shell div.taskbar div.pinned-apps img {
+  height: 24px;
+}
+
+div.shell div.taskbar div.pinned-apps > button {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+}
+
+div.shell div.taskbar div.pinned-apps > button + button {
+  margin-left: 3px;
+}

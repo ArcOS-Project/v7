@@ -1,3 +1,7 @@
+@import url("./shell/actioncenter.css");
+@import url("./shell/taskbar.css");
+@import url("./shell/startmenu.css");
+
 #arcShell {
   z-index: 1000000000000000000000000000000000000000 !important;
   pointer-events: none !important;
@@ -18,6 +22,11 @@ div.shell > div * {
   pointer-events: initial !important;
 }
 
+#arcShell div.overlay-wrapper,
+#arcShell div.overlay-wrapper * {
+  pointer-events: initial !important;
+}
+
 div.shell div.primary {
   height: calc(100% - 50px);
   max-height: calc(100% - 50px);
@@ -31,194 +40,4 @@ div.shell div.primary {
 div.shell div.secondary {
   z-index: 10000;
   position: relative;
-}
-
-div.shell div.taskbar {
-  display: flex;
-  align-items: center;
-  width: calc(100% - 20px);
-  height: 50px;
-  margin: 10px;
-  padding: 5px;
-  margin-top: 0;
-  gap: 5px;
-  z-index: 100;
-  background-color: var(--glass-bg);
-  border-radius: 10px;
-  border: var(--win-border);
-
-  backdrop-filter: blur(10px);
-}
-
-:root #main:has(#arcShell div.shell) {
-  --taskbar-allocation: 70px;
-}
-
-:root #main:has(#arcShell div.shell.docked) {
-  --taskbar-allocation: 50px;
-}
-
-div.shell.docked div.taskbar {
-  width: 100%;
-  margin: 0;
-  border-radius: 0;
-  border: none;
-  border-top: var(--win-border);
-}
-
-#arcShell div.shell div.taskbar > button {
-  height: 40px;
-  width: 40px;
-  min-width: 40px;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--button-glass-bg);
-}
-
-div.shell div.taskbar div.opened-apps {
-  background-color: var(--button-glass-bg);
-  flex-grow: 1;
-  height: 40px;
-  border-radius: 8px;
-  padding: 3px;
-  overflow-x: scroll;
-  overflow-y: hidden;
-  white-space: nowrap;
-}
-
-div.shell div.taskbar div.opened-apps::-webkit-scrollbar {
-  height: 1px;
-  width: 1px;
-}
-
-#arcShell div.shell div.taskbar div.opened-apps button {
-  display: inline-flex;
-  max-width: 180px;
-  align-items: center;
-  gap: 10px;
-  margin: 0;
-  padding: 0 10px;
-  height: 34px;
-  background-color: var(--button-glass-bg);
-  overflow: Hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-#arcShell div.shell div.taskbar div.opened-apps button span {
-  max-width: calc(100% - 34px);
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-#arcShell div.shell div.taskbar div.opened-apps button + button {
-  margin-left: 3px;
-}
-
-div.shell div.taskbar div.opened-apps button img {
-  height: 24px;
-}
-
-#arcShell div.shell div.taskbar div.opened-apps button.active,
-#arcShell div.shell div.taskbar button.start-button.active {
-  background-color: var(--button-glass-active-bg);
-}
-
-div.shell div.taskbar button.start-button img {
-  height: 30px;
-}
-
-#arcShell div.shell div.taskbar button.action-center-button.active {
-  background-color: var(--accent-light);
-}
-
-#arcShell div.shell div.taskbar button.action-center-button.active span {
-  color: var(--win-bg);
-}
-
-div.shell div.taskbar button.action-center-button span {
-  font-size: 16px;
-}
-
-div.shell div.taskbar div.system-area {
-  background-color: var(--button-glass-bg);
-  height: 40px;
-  display: flex;
-  align-items: center;
-  padding: 0 15px;
-  border-radius: 8px;
-}
-
-div.shell div.taskbar > *:not(.opened-apps) {
-  min-width: fit-content;
-}
-
-div.shell div.taskbar div.pinned-apps {
-  height: 40px;
-  padding: 3px;
-  background-color: var(--button-glass-bg);
-  border-radius: 8px;
-}
-
-div.shell div.taskbar div.pinned-apps img {
-  height: 24px;
-}
-
-div.shell div.taskbar div.pinned-apps > button {
-  width: 34px;
-  height: 34px;
-  padding: 0;
-  margin: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent;
-}
-
-div.shell div.taskbar div.pinned-apps > button + button {
-  margin-left: 3px;
-}
-
-div.shell div.startmenu {
-  width: 420px;
-  height: 490px;
-  background-color: var(--glass-bg);
-  border-radius: 10px;
-  transition: translate 0.3s, opacity 0.2s, pointer-events 0s;
-  z-index: 10;
-  border: var(--win-border);
-  max-height: 100%;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 5px 15px 5px #0003;
-}
-
-div.shell div.startmenu:not(.opened) {
-  translate: 0 50px;
-  opacity: 0;
-  pointer-events: none !important;
-}
-
-div.shell div.actioncenter {
-  width: 400px;
-  height: 100%;
-  background-color: var(--glass-bg);
-  border-radius: 10px;
-  border: var(--win-border);
-  max-height: 100%;
-  translate: 400px 0;
-  opacity: 0;
-  transition: translate 0.3s, opacity 0.2s;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 5px 15px 5px #0003;
-}
-
-div.shell div.actioncenter.opened {
-  translate: 0;
-  opacity: 1;
-  pointer-events: initial;
 }

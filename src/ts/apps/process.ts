@@ -19,6 +19,7 @@ export class AppProcess extends Process {
   userPreferences: ReadableStore<UserPreferences> = Store<UserPreferences>(
     DefaultUserPreferences
   );
+  username: string = "";
 
   constructor(
     handler: ProcessHandler,
@@ -43,6 +44,7 @@ export class AppProcess extends Process {
       this.userPreferences = (
         desktopProps.userDaemon as UserDaemon
       ).preferences;
+      this.username = (desktopProps.userDaemon as UserDaemon).username;
     }
   }
 

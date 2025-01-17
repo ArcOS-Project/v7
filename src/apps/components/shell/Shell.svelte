@@ -6,7 +6,8 @@
   import Taskbar from "./Shell/Taskbar.svelte";
 
   const { process }: AppComponentProps<ShellRuntime> = $props();
-  const { userPreferences, startMenuOpened, actionCenterOpened } = process;
+  const { userPreferences, startMenuOpened, actionCenterOpened, username } =
+    process;
 </script>
 
 <div
@@ -14,7 +15,7 @@
   class:docked={$userPreferences.shell.taskbar.docked}
 >
   <div class="primary">
-    <StartMenu {userPreferences} {startMenuOpened} />
+    <StartMenu {userPreferences} {startMenuOpened} {process} {username} />
     <div></div>
     <ActionCenter {actionCenterOpened} />
   </div>

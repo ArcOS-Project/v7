@@ -23,3 +23,17 @@ export function join(...args: string[]) {
 export function dirname(path: string) {
   return join(path, "..");
 }
+
+export function getParentDirectory(p: string): string {
+  const split = p.split("/");
+
+  if (p == "./") return p;
+  if (!split.length) return p;
+  if (split.length == 1) return "./";
+
+  split.splice(-1);
+
+  const newPath = split.join("/");
+
+  return newPath;
+}
