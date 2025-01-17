@@ -160,12 +160,20 @@ export class LanguageInstance extends Process {
 
       await this.interpret();
 
+      if (this._disposed) break;
+
       await Sleep(this.options.tickDelay || 1);
 
-      if (this.pointer >= this.source.length - 1 && this.options.continuous) {
+      if (
+        this.pointer >= this.source.length - 1 &&
+        this.options.continuous &&
+        !this._disposed
+      ) {
         this.jump(":*idle");
       }
     }
+
+    await this.killSelf();
 
     return this.output;
   }

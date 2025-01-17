@@ -22,7 +22,8 @@ export function getJsonHierarchy<T = any>(
   let currentObj: Record<string, any> = object;
 
   for (const part of parts) {
-    if (!currentObj[part]) return null;
+    if (currentObj[part] === undefined || currentObj[part] === null)
+      return null;
 
     currentObj = currentObj[part];
   }

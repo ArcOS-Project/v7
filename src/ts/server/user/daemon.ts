@@ -9,6 +9,7 @@ import type { UserInfo, UserPreferences } from "$types/user";
 import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
+import { UserDataFilesystemSupplier } from "$ts/fs/suppliers/userdata";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -104,12 +105,14 @@ export class UserDaemon extends Process {
 
   async startFilesystemSupplier() {
     await this.fs.loadSupplier("userfs", ServerFilesystemSupplier, this.token);
+    await this.fs.loadSupplier("userdata", UserDataFilesystemSupplier, this);
   }
 
   async stop() {
     if (this.preferencesUnsubscribe) this.preferencesUnsubscribe();
 
     this.fs.unloadSupplier(`userfs`);
+    this.fs.unloadSupplier(`userdata`);
   }
 
   async sanitizeUserPreferences() {

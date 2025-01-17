@@ -1,13 +1,11 @@
 import { toForm } from "$ts/form";
 import type { WaveKernel } from "$ts/kernel";
-import { ServerManager } from "$ts/server";
 import { Axios } from "$ts/server/axios";
 import type {
   DirectoryReadReturn,
   RecursiveDirectoryReadReturn,
   SupplierFlags,
 } from "$types/fs";
-import axios from "axios";
 import { FilesystemSupplier } from "../supplier";
 
 export class ServerFilesystemSupplier extends FilesystemSupplier {
