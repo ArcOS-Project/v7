@@ -6,7 +6,7 @@ export const css: Keyword = async (lang) => {
 
   const [path, target] = lang.tokens as [string, HTMLDivElement];
 
-  if (!target) {
+  if (!target || !(target instanceof HTMLDivElement)) {
     lang.error("Invalid target", "source.css");
     return;
   }
