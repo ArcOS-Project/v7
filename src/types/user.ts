@@ -26,6 +26,15 @@ export interface ShellPreferences {
   window: WindowPreferences;
   start: StartMenuPreferences;
   visuals: VisualPreferences;
+  actionCenter: {
+    weatherLocation: {
+      latitude: number;
+      longitude: number;
+    };
+    noteContent: string;
+    galleryImage: string;
+    cardIndex: number;
+  };
 }
 
 export interface TaskbarPreferences {

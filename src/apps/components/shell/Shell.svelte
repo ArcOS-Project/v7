@@ -17,7 +17,7 @@
   <div class="primary">
     <StartMenu {userPreferences} {startMenuOpened} {process} {username} />
     <div></div>
-    <ActionCenter {actionCenterOpened} />
+    <ActionCenter {actionCenterOpened} {userPreferences} {process} />
   </div>
   <div class="secondary">
     <Taskbar {process} />

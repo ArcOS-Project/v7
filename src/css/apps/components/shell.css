@@ -35,6 +35,7 @@ div.shell div.primary {
   grid-template-columns: 420px auto 400px;
   align-items: end;
   padding: 10px;
+  position: relative;
 }
 
 div.shell div.secondary {

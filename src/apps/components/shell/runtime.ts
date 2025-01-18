@@ -2,6 +2,15 @@ import { AppProcess } from "$ts/apps/process";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
+import { fetchWeatherApi } from "openmeteo";
+import type { WeatherInformation } from "./types";
+import {
+  weatherCaptions,
+  weatherClasses,
+  weatherGradients,
+  weatherIconColors,
+  weatherIcons,
+} from "./store";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
@@ -14,8 +23,6 @@ export class ShellRuntime extends AppProcess {
     app: AppProcessData
   ) {
     super(handler, pid, parentPid, app);
-
-    const params = this.kernel.state?.stateProps["desktop"];
   }
 
   async render() {
@@ -47,5 +54,36 @@ export class ShellRuntime extends AppProcess {
       )
         this.actionCenterOpened.set(false);
     });
+  }
+
+  async getWeather(): Promise<WeatherInformation> {
+    const preferences = this.userPreferences();
+    const params = {
+      latitude: preferences.shell.actionCenter.weatherLocation.latitude,
+      longitude: preferences.shell.actionCenter.weatherLocation.longitude,
+      current: ["temperature_2m", "weather_code"],
+    };
+    const url = "https://api.open-meteo.com/v1/forecast";
+
+    try {
+      const responses = await fetchWeatherApi(url, params);
+
+      const response = responses[0];
+      const current = response.current()!;
+      const temperature_2m = current.variables(0)!.value();
+      const weather_code = current.variables(1)!.value();
+
+      return {
+        code: weather_code,
+        condition: weatherCaptions[weather_code],
+        temperature: temperature_2m,
+        className: weatherClasses[weather_code],
+        gradient: weatherGradients[weather_code],
+        icon: weatherIcons[weather_code],
+        iconColor: weatherIconColors[weather_code],
+      };
+    } catch {
+      return false;
+    }
   }
 }

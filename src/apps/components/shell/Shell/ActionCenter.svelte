@@ -1,7 +1,24 @@
 <script lang="ts">
   import type { BooleanStore } from "$ts/writable";
+  import type { UserPreferencesStore } from "$types/user";
+  import type { ShellRuntime } from "../runtime";
+  import CardStack from "./ActionCenter/CardStack.svelte";
+  import Clock from "./ActionCenter/Clock.svelte";
 
-  const { actionCenterOpened }: { actionCenterOpened: BooleanStore } = $props();
+  const {
+    actionCenterOpened,
+    userPreferences,
+    process,
+  }: {
+    actionCenterOpened: BooleanStore;
+    userPreferences: UserPreferencesStore;
+    process: ShellRuntime;
+  } = $props();
 </script>
 
-<div class="actioncenter" class:opened={$actionCenterOpened}></div>
+<div class="actioncenter" class:opened={$actionCenterOpened}>
+  <div class="top">
+    <Clock />
+    <CardStack {userPreferences} {process} />
+  </div>
+</div>

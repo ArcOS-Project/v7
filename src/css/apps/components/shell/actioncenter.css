@@ -1,6 +1,9 @@
 div.shell div.actioncenter {
+  position: absolute;
+  right: 10px;
+  top: 10px;
   width: 400px;
-  height: 100%;
+  height: calc(100% - 20px);
   background-color: var(--glass-bg);
   border-radius: 10px;
   border: var(--win-border);
@@ -10,10 +13,197 @@ div.shell div.actioncenter {
   transition: translate 0.3s, opacity 0.2s;
   backdrop-filter: blur(10px);
   box-shadow: 0 5px 15px 5px #0003;
+  padding: 10px;
 }
 
 div.shell div.actioncenter.opened {
   translate: 0;
   opacity: 1;
   pointer-events: initial;
+}
+
+div.shell div.actioncenter div.top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 110px;
+}
+
+div.shell div.actioncenter div.top > div {
+  border-radius: 10px;
+  height: 110px;
+}
+
+div.shell div.actioncenter div.top div.clock {
+  flex-grow: 1;
+  padding: 0 20px;
+  display: flex;
+  align-items: start;
+  flex-direction: column;
+  justify-content: center;
+  background-color: var(--button-glass-bg);
+}
+
+div.shell div.actioncenter div.top div.clock h1 {
+  font-size: 42px;
+  line-height: 50px;
+  font-family: "fredoka";
+  font-weight: 500;
+}
+
+div.shell div.actioncenter div.top div.clock p.date {
+  opacity: 0.5;
+}
+
+div.shell div.actioncenter div.top div.card-stack {
+  overflow: hidden;
+  width: 150px;
+  max-width: 150px;
+  min-width: 150px;
+  position: relative;
+}
+
+div.shell div.actioncenter div.top div.card-stack div.indicator {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  left: 6px;
+  width: 4px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none !important;
+}
+
+div.shell div.actioncenter div.top div.card-stack div.indicator div.dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 2px;
+  background-color: var(--button-glass-active-bg);
+  pointer-events: initial !important;
+}
+
+div.shell div.actioncenter div.top div.card-stack div.indicator div.dot.active {
+  background-color: #fff;
+}
+
+div.shell div.actioncenter div.top div.card-stack div.cards {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: fit-content;
+  margin-top: calc(-120px * var(--index, 0));
+  transition: margin-top 0.3s;
+}
+
+div.shell div.actioncenter div.top div.card-stack div.cards div.card {
+  height: 110px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+div.shell div.actioncenter div.top div.card-stack div.card.weather {
+  --gradient-start: #41aaff;
+  --gradient-end: #71b2c8;
+  background: linear-gradient(
+    to bottom right,
+    var(--gradient-start) 0%,
+    var(--gradient-end) 100%
+  );
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 0 20px;
+  display: flex;
+  align-items: end;
+  flex-direction: column;
+  justify-content: center;
+  transition: background 0.3s;
+}
+
+div.shell
+  div.actioncenter
+  div.top
+  div.card-stack
+  div.card.weather
+  span.condition-icon {
+  color: var(--icon-color, var(--fg));
+}
+
+div.shell div.actioncenter div.top div.card-stack div.card.weather * {
+  color: #fff;
+}
+
+div.shell div.actioncenter div.top div.card-stack div.card.weather.errored,
+div.shell div.actioncenter div.top div.card-stack div.card.weather.loading {
+  align-items: center;
+  justify-content: center;
+}
+
+div.shell div.actioncenter div.top div.card.weather.errored p {
+  text-align: center;
+  opacity: 1 !important;
+}
+
+div.shell div.actioncenter div.top div.card.weather.errored button {
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+div.shell div.actioncenter div.top div.card-stack div.card.weather h1 {
+  font-size: 28px;
+  line-height: 40px;
+  font-family: "fredoka";
+  font-weight: 500;
+}
+div.shell div.actioncenter div.top div.card-stack div.card.weather p {
+  opacity: 0.5;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+div.shell div.actioncenter div.top div.card-stack div.card.weather p button {
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  border-radius: 0;
+}
+div.shell div.actioncenter div.top div.card-stack div.card.notes {
+  background-color: #ffe26c;
+  padding: 15px;
+}
+
+div.shell div.actioncenter div.top div.card-stack div.card.notes textarea {
+  width: 100%;
+  height: 100%;
+  resize: none;
+  border: none;
+  background-color: transparent;
+  color: #000;
+  text-align: right;
+  font-family: "Handlee";
+}
+
+div.shell
+  div.actioncenter
+  div.top
+  div.card-stack
+  div.card.notes
+  textarea::-webkit-scrollbar {
+  display: none;
+}
+
+div.shell div.actioncenter div.top div.card-stack div.card.gallery {
+  background-image: var(--src);
+  background-position: center;
+  background-size: cover;
 }

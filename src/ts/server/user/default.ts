@@ -20,6 +20,16 @@ export const DefaultUserPreferences: UserPreferences = {
       clockSecs: false,
       pinnedApps: [],
     },
+    actionCenter: {
+      weatherLocation: {
+        // new york
+        latitude: 40.7143,
+        longitude: -74.006,
+      },
+      noteContent: "",
+      galleryImage: "",
+      cardIndex: 0,
+    },
     window: {
       bigTitlebar: true,
     },
