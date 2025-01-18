@@ -27,6 +27,7 @@
     : ""}
   class:loading
   class:errored={!data}
+  class:night={data && data.isNight}
 >
   {#if !loading}
     {#if data}

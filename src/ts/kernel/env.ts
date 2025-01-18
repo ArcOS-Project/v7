@@ -1,3 +1,4 @@
+import { ArcOSVersion } from "$ts/env";
 import type { WaveKernel } from ".";
 import { KernelModule } from "./module";
 
@@ -11,6 +12,12 @@ export class Environment extends KernelModule {
 
   async _init() {
     this.reset();
+
+    this.setMultiple([
+      ["arcos_version", ArcOSVersion],
+      ["arcos_mode", this.kernel.ARCOS_MODE],
+      ["arcos_build", this.kernel.ARCOS_BUILD],
+    ]);
   }
 
   set(key: string, value: any): boolean {
@@ -24,8 +31,8 @@ export class Environment extends KernelModule {
     return true;
   }
 
-  setMultiple(entries: Map<string, any>): void {
-    for (const [key, value] of [...entries]) {
+  setMultiple(entries: [string, any][]): void {
+    for (const [key, value] of entries) {
       this.set(key, value);
     }
   }
