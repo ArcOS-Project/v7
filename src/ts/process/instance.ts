@@ -6,7 +6,7 @@ import { ProcessDispatch } from "./dispatch";
 import type { ProcessHandler } from "./handler";
 
 export class Process {
-  protected env: Environment;
+  public env: Environment;
   public handler: ProcessHandler;
   public dispatch: ProcessDispatch;
   public kernel: WaveKernel;

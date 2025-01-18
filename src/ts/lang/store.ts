@@ -3,6 +3,7 @@ import { BaseLibrary } from "./libraries/_base";
 import { Base64Library } from "./libraries/base64";
 import { ConvertLibrary } from "./libraries/convert";
 import { DataLibrary } from "./libraries/data";
+import { EnvLibrary } from "./libraries/env";
 import { GuiLibrary } from "./libraries/gui";
 import { JsonLibrary } from "./libraries/json";
 import { SourceLibrary } from "./libraries/source";
@@ -15,6 +16,7 @@ export const BaseLibraries: Libraries = {
   convert: ConvertLibrary,
   data: DataLibrary,
   user: {},
+  env: EnvLibrary,
   "*": BaseLibrary,
 };
 

@@ -13,22 +13,19 @@
     $props();
 
   function onwheel(e: WheelEvent) {
-    console.log(
-      e.deltaY >= 0 ? "down" : "up",
-      $userPreferences.shell.actionCenter.cardIndex,
-      $userPreferences.shell.actionCenter.cardIndex >= max,
-      $userPreferences.shell.actionCenter.cardIndex <= 0,
-      max
-    );
-    if (e.deltaY >= 0) {
-      if ($userPreferences.shell.actionCenter.cardIndex >= max - 1) return;
+    let { cardIndex } = $userPreferences.shell.actionCenter;
 
-      $userPreferences.shell.actionCenter.cardIndex++;
+    if (e.deltaY >= 0) {
+      if (cardIndex >= max - 1) return;
+
+      cardIndex++;
     } else {
       if ($userPreferences.shell.actionCenter.cardIndex <= 0) return;
 
-      $userPreferences.shell.actionCenter.cardIndex--;
+      cardIndex--;
     }
+
+    $userPreferences.shell.actionCenter.cardIndex = cardIndex;
   }
 
   let max = 3;
@@ -42,6 +39,6 @@
   >
     <Weather {process} />
     <Notes {userPreferences} />
-    <Gallery />
+    <Gallery {userPreferences} {process} />
   </div>
 </div>

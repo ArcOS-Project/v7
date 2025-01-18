@@ -26,9 +26,18 @@ export class Environment extends KernelModule {
     if (this.readOnlyValues.includes(key)) return false;
 
     this.Log(`${key} -> ${value}`);
-    this.store.set(key, value);
 
-    return true;
+    try {
+      const stringified = JSON.stringify(value, null, 2);
+
+      if (!stringified) return false;
+
+      this.store.set(key, stringified);
+
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   setMultiple(entries: [string, any][]): void {
