@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Sleep } from "$ts/sleep";
   import type { UserPreferencesStore } from "$types/user";
   import type { ShellRuntime } from "../../runtime";
   import Gallery from "./CardStack/Cards/Gallery.svelte";
@@ -12,7 +13,11 @@
   }: { userPreferences: UserPreferencesStore; process: ShellRuntime } =
     $props();
 
-  function onwheel(e: WheelEvent) {
+  let changing = $state(false);
+
+  async function onwheel(e: WheelEvent) {
+    if (changing) return;
+
     let { cardIndex } = $userPreferences.shell.actionCenter;
 
     if (e.deltaY >= 0) {
@@ -25,13 +30,19 @@
       cardIndex--;
     }
 
+    changing = true;
+
     $userPreferences.shell.actionCenter.cardIndex = cardIndex;
+
+    await Sleep(150);
+
+    changing = false;
   }
 
   let max = 3;
 </script>
 
-<div class="card-stack" {onwheel}>
+<div class="card-stack" {onwheel} class:changing>
   <Indicator {max} index={$userPreferences.shell.actionCenter.cardIndex} />
   <div
     class="cards"

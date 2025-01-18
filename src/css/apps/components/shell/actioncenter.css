@@ -105,6 +105,7 @@ div.shell div.actioncenter div.top div.card-stack div.cards div.card {
   margin-bottom: 10px;
   overflow: hidden;
   border-radius: 10px;
+  transition: scale 0.3s;
 }
 
 div.shell div.actioncenter div.top div.card-stack div.card.weather {
@@ -231,4 +232,8 @@ div.shell div.actioncenter div.top div.card-stack div.card.gallery {
   background-image: var(--src);
   background-position: center;
   background-size: cover;
+}
+
+div.shell div.actioncenter div.top div.card-stack.changing div.cards div.card {
+  scale: 0.9;
 }
