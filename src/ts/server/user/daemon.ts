@@ -32,6 +32,7 @@ export class UserDaemon extends Process {
     this.token = token;
     this.username = username;
     this.fs = this.kernel.getModule<Filesystem>("fs");
+    this.env.set("userdaemon_pid", this.pid);
   }
 
   async getUserInfo(): Promise<UserInfo | undefined> {
@@ -62,6 +63,7 @@ export class UserDaemon extends Process {
 
       this.initialized = true;
       this.userInfo = data;
+      this.env.set("currentuser", this.username);
 
       return response.status === 200 ? (response.data as UserInfo) : undefined;
     } catch {

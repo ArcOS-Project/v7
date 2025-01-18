@@ -1,3 +1,4 @@
+import { Environment } from "$ts/kernel/env";
 import { LogLevel } from "../../types/logging";
 import { WaveKernel } from "../kernel";
 import { Log } from "../kernel/logging";
@@ -5,6 +6,7 @@ import { ProcessDispatch } from "./dispatch";
 import type { ProcessHandler } from "./handler";
 
 export class Process {
+  protected env: Environment;
   public handler: ProcessHandler;
   public dispatch: ProcessDispatch;
   public kernel: WaveKernel;
@@ -27,6 +29,7 @@ export class Process {
     this.kernel = WaveKernel.get();
     this.name ||= this.constructor.name;
     this.dispatch = new ProcessDispatch(this);
+    this.env = this.kernel.getModule<Environment>("env");
   }
 
   protected async stop(): Promise<any> {

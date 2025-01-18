@@ -124,6 +124,30 @@ div.shell div.actioncenter div.top div.card-stack div.card.weather {
   flex-direction: column;
   justify-content: center;
   transition: background 0.3s;
+  position: relative;
+}
+
+div.shell div.actioncenter div.top div.card-stack div.card.weather::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0002;
+  transition: background-color 0.3s;
+}
+
+div.shell
+  div.actioncenter
+  div.top
+  div.card-stack
+  div.card.weather.night::before {
+  background-color: #0008;
+}
+
+div.shell div.actioncenter div.top div.card-stack div.card.weather * {
+  z-index: 100;
 }
 
 div.shell
@@ -165,7 +189,7 @@ div.shell div.actioncenter div.top div.card-stack div.card.weather h1 {
   font-weight: 500;
 }
 div.shell div.actioncenter div.top div.card-stack div.card.weather p {
-  opacity: 0.5;
+  opacity: 0.7;
   display: flex;
   align-items: center;
   gap: 5px;

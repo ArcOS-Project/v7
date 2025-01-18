@@ -23,6 +23,8 @@ export class ShellRuntime extends AppProcess {
     app: AppProcessData
   ) {
     super(handler, pid, parentPid, app);
+
+    this.env.set("shell_pid", this.pid);
   }
 
   async render() {
@@ -72,6 +74,7 @@ export class ShellRuntime extends AppProcess {
       const current = response.current()!;
       const temperature_2m = current.variables(0)!.value();
       const weather_code = current.variables(1)!.value();
+      const is_day = current.variables(2)!.value();
 
       return {
         code: weather_code,
@@ -81,6 +84,7 @@ export class ShellRuntime extends AppProcess {
         gradient: weatherGradients[weather_code],
         icon: weatherIcons[weather_code],
         iconColor: weatherIconColors[weather_code],
+        isNight: !is_day,
       };
     } catch {
       return false;

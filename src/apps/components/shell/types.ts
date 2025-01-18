@@ -12,5 +12,6 @@ export type WeatherInformation =
         | undefined;
       icon: string;
       iconColor: string;
+      isNight: boolean;
     }
   | false;
