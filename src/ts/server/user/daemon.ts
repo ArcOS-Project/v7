@@ -170,6 +170,7 @@ export class UserDaemon extends Process {
 
     this.notifications.set(id, data);
     this.globalDispatch.dispatch("update-notifications", [this.notifications]);
+    this.globalDispatch.dispatch("send-notification", [data]);
 
     return id;
   }
@@ -183,8 +184,10 @@ export class UserDaemon extends Process {
 
     notification.deleted = true;
 
-    this.globalDispatch.dispatch("delete-notification", [id]);
     this.notifications.set(id, notification);
+
+    this.globalDispatch.dispatch("delete-notification", [id]);
+    this.globalDispatch.dispatch("update-notifications", [this.notifications]);
   }
 
   clearNotifications() {

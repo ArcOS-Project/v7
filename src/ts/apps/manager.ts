@@ -463,7 +463,5 @@ export class AppManager extends Process {
       },
       this.pid
     );
-
-    console.log(e);
   }
 }

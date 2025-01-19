@@ -3,6 +3,10 @@
   import { Sleep } from "$ts/sleep";
   import type { ErrorButton, Notification } from "$types/notification";
   import { onMount } from "svelte";
+  import dayjs from "dayjs";
+  import relativeTime from "dayjs/plugin/relativeTime";
+  import updateLocale from "dayjs/plugin/updateLocale";
+  import { RelativeTimeMod } from "$ts/dayjs";
 
   const {
     userDaemon,
@@ -20,9 +24,11 @@
   let shortTime = $state("");
   let time = $state("");
 
-  onMount(() => {
-    console.log(userDaemon, id, notification);
+  dayjs.extend(relativeTime);
+  dayjs.extend(updateLocale);
+  dayjs.updateLocale("en", RelativeTimeMod);
 
+  onMount(() => {
     userDaemon.globalDispatch.subscribe(
       "delete-notification",
       async ([deletedId]) => {
@@ -35,6 +41,12 @@
         }
       }
     );
+
+    setInterval(() => {
+      const dj = dayjs(notification.timestamp || null);
+      time = dj.fromNow();
+      shortTime = dj.format("HH:mm");
+    }, 500);
   });
 
   function deleteThis() {

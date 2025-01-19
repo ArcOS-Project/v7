@@ -1,0 +1,6 @@
+div.shell div.actioncenter div.quick-settings {
+  height: 64px;
+  min-height: 64px;
+  background-color: var(--button-glass-bg);
+  border-radius: 10px;
+}

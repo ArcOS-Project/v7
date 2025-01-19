@@ -1,6 +1,7 @@
 @import url("./shell/actioncenter.css");
 @import url("./shell/taskbar.css");
 @import url("./shell/startmenu.css");
+@import url("./shell/pushnotification.css");
 
 #arcShell {
   z-index: 1000000000000000000000000000000000000000 !important;

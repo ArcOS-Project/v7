@@ -28,6 +28,8 @@ import img29 from "$assets/bg/img29.png";
 import img30 from "$assets/bg/img30.jpg";
 import img31 from "$assets/bg/img31.jpg";
 import img32 from "$assets/bg/img32.png";
+import img33 from "$assets/bg/img33.png";
+import img34 from "$assets/bg/img34.png";
 import img0Thumb from "$assets/bg/thumbnails/imgthumb0.png";
 import img01Thumb from "$assets/bg/thumbnails/imgthumb01.jpeg";
 import img02Thumb from "$assets/bg/thumbnails/imgthumb02.png";
@@ -58,6 +60,8 @@ import img29Thumb from "$assets/bg/thumbnails/imgthumb29.png";
 import img30Thumb from "$assets/bg/thumbnails/imgthumb30.jpg";
 import img31Thumb from "$assets/bg/thumbnails/imgthumb31.jpg";
 import img32Thumb from "$assets/bg/thumbnails/imgthumb32.png";
+import img33Thumb from "$assets/bg/thumbnails/imgthumb33.png";
+import img34Thumb from "$assets/bg/thumbnails/imgthumb34.png";
 import type { Wallpaper } from "$types/wallpaper";
 
 export const Wallpapers: { [key: string]: Wallpaper } = {
@@ -226,6 +230,19 @@ export const Wallpapers: { [key: string]: Wallpaper } = {
     author: "Saw Ramsson",
     name: "Sunny Lake",
     builtin: true,
+  },
+  /**Allucat1000 */
+  img33: {
+    url: img33,
+    thumb: img33Thumb,
+    author: "Allucat1000",
+    name: "Snowy Mountains",
+  },
+  img34: {
+    url: img34,
+    thumb: img34Thumb,
+    author: "Allucat1000",
+    name: "Germanic Waterfall",
   },
   /**Blocky (Cy) */
   img17: {

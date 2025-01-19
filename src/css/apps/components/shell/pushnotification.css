@@ -1,0 +1,57 @@
+div.shell div.push-notification {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  max-width: 400px;
+  backdrop-filter: blur(10px);
+  border: var(--win-border);
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  padding: 15px;
+  background-color: var(--glass-bg);
+  border-radius: var(--win-border-rad);
+  height: fit-content;
+  overflow: hidden;
+  transition: opacity 0.3s, visibility 0.3s, translate 0.3s, pointer-events 0s;
+}
+
+div.shell div.push-notification:not(.show) {
+  opacity: 0;
+  visibility: hidden;
+  translate: 50px 0;
+  pointer-events: none;
+}
+
+div.shell div.push-notification > div.content {
+  flex-grow: 1;
+  max-width: calc(100% - 58px);
+}
+
+div.shell div.push-notification h1.header {
+  font-size: 16px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+div.shell div.push-notification h1.header > span:first-of-type {
+  margin-right: auto;
+}
+
+div.shell div.push-notification h1.header > span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+div.shell div.push-notification h1.header button {
+  margin: 0;
+  padding: 0;
+  background-color: transparent !important;
+}
+
+div.shell div.push-notification img.icon {
+  height: 48px;
+}

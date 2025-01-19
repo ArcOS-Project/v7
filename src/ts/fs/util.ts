@@ -57,7 +57,7 @@ export function onFolderChange(path: string, callback: () => void) {
   const kernel = WaveKernel.get();
   const dispatch = kernel.getModule<GlobalDispatcher>("dispatch");
 
-  dispatch.subscribe("fs-flush-dir", (data) => {
+  dispatch.subscribe("fs-flush-folder", (data) => {
     if (data[0] === path) callback();
   });
 

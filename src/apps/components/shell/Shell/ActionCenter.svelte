@@ -23,4 +23,5 @@
     <CardStack {userPreferences} {process} />
   </div>
   <Notifications {process} />
+  <div class="quick-settings"></div>
 </div>

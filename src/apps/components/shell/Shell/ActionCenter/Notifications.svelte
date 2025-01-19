@@ -11,6 +11,7 @@
   let loading = $state(true);
   let noDaemon = $state(false);
   let store = $state<[string, Notification][]>();
+  let isEmpty = $state(false);
 
   onMount(() => {
     if (!userDaemon) {
@@ -25,10 +26,12 @@
       ([notifications]) => {
         store = [...notifications];
 
-        console.log(notifications);
+        isEmpty = store.filter(([_, n]) => !n.deleted).length > 0;
       }
     );
+
     store = [...userDaemon.notifications];
+    isEmpty = true;
     loading = false;
   });
 
@@ -56,7 +59,7 @@
       {#each [...store] as [id, notification]}
         <NotificationItem {userDaemon} {id} {notification} />
       {/each}
-      {#if !store.length}
+      {#if isEmpty}
         <p class="none">No notifications</p>
       {/if}
     {:else}

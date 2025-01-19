@@ -1,0 +1,95 @@
+#arcShell div.shell div.notifications {
+  padding: 10px;
+  background-color: var(--button-glass-bg);
+  border-radius: 10px;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+#arcShell div.shell div.notifications > h1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  line-height: 20px;
+  padding: 5px 10px;
+  padding-bottom: 10px;
+  border-bottom: var(--button-glass-bg) 1px solid;
+}
+#arcShell div.shell div.notifications > h1 button {
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  font-size: 16px;
+}
+
+#arcShell div.shell div.notifications > div.content {
+  height: calc(100% - 36px);
+  overflow-y: scroll;
+  margin-right: -8px;
+  padding: 10px 0;
+}
+
+div.shell div.actioncenter div.notification {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  padding: 10px;
+  background-color: var(--button-glass-active-bg);
+  border-radius: var(--win-border-rad);
+  height: fit-content;
+  overflow: hidden;
+  margin-bottom: 10px;
+  transition: scale 0.3s;
+  transform-origin: top;
+}
+
+div.shell div.actioncenter div.notification.collapsed p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+div.shell div.actioncenter div.notification > div.content {
+  flex-grow: 1;
+  max-width: calc(100% - 58px);
+}
+
+div.shell div.actioncenter div.notification h1.header {
+  font-size: 16px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+div.shell div.actioncenter div.notification h1.header > span:first-of-type {
+  margin-right: auto;
+}
+
+div.shell div.actioncenter div.notification h1.header > span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+div.shell div.actioncenter div.notification h1.header span.timestamp {
+  min-width: fit-content;
+  font-weight: normal;
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+div.shell div.actioncenter div.notification h1.header button {
+  margin: 0;
+  padding: 0;
+  background-color: transparent !important;
+}
+
+div.shell div.actioncenter div.notification img.icon {
+  height: 48px;
+}
+
+div.shell div.actioncenter div.notification.deleted {
+  display: none;
+}
