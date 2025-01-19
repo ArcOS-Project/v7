@@ -21,4 +21,12 @@
     <Clock />
     <CardStack {userPreferences} {process} />
   </div>
+  <div class="notifications">
+    <h1>
+      <span>Notifications</span>
+      <button class="lucide icon-eraser" aria-label="Clear Notifications"
+      ></button>
+    </h1>
+    <div class="content"></div>
+  </div>
 </div>
