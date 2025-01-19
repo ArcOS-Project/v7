@@ -1,0 +1,24 @@
+div.shell div.actioncenter div.top div.card-stack div.card.notes {
+  background-color: #ffe26c;
+  padding: 15px;
+}
+
+div.shell div.actioncenter div.top div.card-stack div.card.notes textarea {
+  width: 100%;
+  height: 100%;
+  resize: none;
+  border: none;
+  background-color: transparent;
+  color: #000;
+  text-align: right;
+  font-family: "Handlee";
+}
+
+div.shell
+  div.actioncenter
+  div.top
+  div.card-stack
+  div.card.notes
+  textarea::-webkit-scrollbar {
+  display: none;
+}

@@ -1,0 +1,6 @@
+div.shell div.actioncenter div.top div.card-stack div.card.gallery {
+  background-color: var(--button-glass-bg);
+  background-image: var(--src);
+  background-position: center;
+  background-size: cover;
+}

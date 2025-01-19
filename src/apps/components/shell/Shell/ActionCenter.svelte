@@ -4,6 +4,7 @@
   import type { ShellRuntime } from "../runtime";
   import CardStack from "./ActionCenter/CardStack.svelte";
   import Clock from "./ActionCenter/Clock.svelte";
+  import Notifications from "./ActionCenter/Notifications.svelte";
 
   const {
     actionCenterOpened,
@@ -21,12 +22,5 @@
     <Clock />
     <CardStack {userPreferences} {process} />
   </div>
-  <div class="notifications">
-    <h1>
-      <span>Notifications</span>
-      <button class="lucide icon-eraser" aria-label="Clear Notifications"
-      ></button>
-    </h1>
-    <div class="content"></div>
-  </div>
+  <Notifications {process} />
 </div>

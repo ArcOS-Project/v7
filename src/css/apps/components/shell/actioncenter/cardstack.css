@@ -1,0 +1,34 @@
+@import url("./cardstack/indicator.css");
+@import url("./cardstack/weather.css");
+@import url("./cardstack/gallery.css");
+@import url("./cardstack/notes.css");
+
+div.shell div.actioncenter div.top div.card-stack {
+  overflow: hidden;
+  width: 150px;
+  max-width: 150px;
+  min-width: 150px;
+  position: relative;
+}
+
+div.shell div.actioncenter div.top div.card-stack div.cards {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: fit-content;
+  margin-top: calc(-120px * var(--index, 0));
+  transition: margin-top 0.3s;
+}
+
+div.shell div.actioncenter div.top div.card-stack div.cards div.card {
+  height: 110px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  border-radius: 10px;
+  transition: scale 0.3s;
+}
+
+div.shell div.actioncenter div.top div.card-stack.changing div.cards div.card {
+  scale: 0.9;
+}

@@ -1,0 +1,20 @@
+div.shell div.actioncenter div.top div.clock {
+  flex-grow: 1;
+  padding: 0 20px;
+  display: flex;
+  align-items: start;
+  flex-direction: column;
+  justify-content: center;
+  background-color: var(--button-glass-bg);
+}
+
+div.shell div.actioncenter div.top div.clock h1 {
+  font-size: 42px;
+  line-height: 50px;
+  font-family: "fredoka";
+  font-weight: 500;
+}
+
+div.shell div.actioncenter div.top div.clock p.date {
+  opacity: 0.5;
+}

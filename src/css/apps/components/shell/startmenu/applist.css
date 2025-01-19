@@ -1,0 +1,21 @@
+div.shell div.startmenu div.top div.app-list {
+  width: calc(100% - 170px);
+  height: 100%;
+
+  padding: 5px;
+  padding-right: 0;
+  overflow-y: scroll;
+}
+div.shell div.startmenu div.top div.app-list button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 5px;
+  background-color: transparent;
+}
+
+div.shell div.startmenu div.top div.app-list button:hover {
+  background-color: var(--button-glass-bg);
+}

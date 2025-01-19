@@ -1,0 +1,26 @@
+div.shell div.actioncenter div.top div.card-stack div.indicator {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  left: 6px;
+  width: 4px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none !important;
+}
+
+div.shell div.actioncenter div.top div.card-stack div.indicator div.dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 2px;
+  background-color: var(--button-glass-active-bg);
+  pointer-events: initial !important;
+}
+
+div.shell div.actioncenter div.top div.card-stack div.indicator div.dot.active {
+  background-color: #fff;
+}

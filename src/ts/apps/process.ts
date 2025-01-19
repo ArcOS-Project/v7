@@ -24,6 +24,7 @@ export class AppProcess extends Process {
   username: string = "";
   fs: Filesystem;
   globalDispatch: GlobalDispatcher;
+  userDaemon: UserDaemon | undefined;
 
   constructor(
     handler: ProcessHandler,
@@ -53,6 +54,7 @@ export class AppProcess extends Process {
         desktopProps.userDaemon as UserDaemon
       ).preferences;
       this.username = (desktopProps.userDaemon as UserDaemon).username;
+      this.userDaemon = desktopProps.userDaemon as UserDaemon;
     }
   }
 

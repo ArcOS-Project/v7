@@ -10,12 +10,14 @@ import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { UserDataFilesystemSupplier } from "$ts/fs/suppliers/userdata";
+import type { Notification } from "$types/notification";
 
 export class UserDaemon extends Process {
   public initialized = false;
   public username: string;
   public token: string;
   public preferences = Store<UserPreferences>();
+  public notifications = new Map<string, Notification>([]);
   private preferencesUnsubscribe: Unsubscriber | undefined;
   public userInfo: UserInfo = DefaultUserInfo;
   private fs: Filesystem;
@@ -155,5 +157,38 @@ export class UserDaemon extends Process {
     } catch {
       return false;
     }
+  }
+
+  sendNotification(data: Notification) {
+    if (this._disposed) return;
+
+    this.Log(`notification: ${data.title}`);
+
+    const id = `${Math.floor(Math.random() * 1e9)}`;
+
+    data.timestamp = Date.now();
+
+    this.notifications.set(id, data);
+    this.globalDispatch.dispatch("update-notifications", [this.notifications]);
+
+    return id;
+  }
+
+  deleteNotification(id: string) {
+    if (this._disposed) return;
+
+    const notification = this.notifications.get(id);
+
+    if (!notification) return;
+
+    notification.deleted = true;
+
+    this.globalDispatch.dispatch("delete-notification", [id]);
+    this.notifications.set(id, notification);
+  }
+
+  clearNotifications() {
+    this.notifications = new Map<string, Notification>([]);
+    this.globalDispatch.dispatch("update-notifications", [this.notifications]);
   }
 }

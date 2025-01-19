@@ -1,3 +1,4 @@
+@import url("./taskbar/openedapps.css");
 div.shell div.taskbar {
   display: flex;
   align-items: center;
@@ -41,57 +42,6 @@ div.shell.docked div.taskbar {
   justify-content: center;
   align-items: center;
   background-color: var(--button-glass-bg);
-}
-
-div.shell div.taskbar div.opened-apps {
-  background-color: var(--button-glass-bg);
-  flex-grow: 1;
-  height: 40px;
-  border-radius: 8px;
-  padding: 3px;
-  overflow-x: scroll;
-  overflow-y: hidden;
-  white-space: nowrap;
-}
-
-div.shell div.taskbar div.opened-apps::-webkit-scrollbar {
-  height: 1px;
-  width: 1px;
-}
-
-#arcShell div.shell div.taskbar div.opened-apps button {
-  display: inline-flex;
-  max-width: 180px;
-  align-items: center;
-  gap: 10px;
-  margin: 0;
-  padding: 0 10px;
-  height: 34px;
-  background-color: var(--button-glass-bg);
-  overflow: Hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-#arcShell div.shell div.taskbar div.opened-apps button span {
-  max-width: calc(100% - 34px);
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-#arcShell div.shell div.taskbar div.opened-apps button + button {
-  margin-left: 3px;
-}
-
-div.shell div.taskbar div.opened-apps button img {
-  height: 24px;
-}
-
-#arcShell div.shell div.taskbar div.opened-apps button.active,
-#arcShell div.shell div.taskbar button.start-button.active {
-  background-color: var(--button-glass-active-bg);
 }
 
 div.shell div.taskbar button.start-button img {

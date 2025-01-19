@@ -1,0 +1,45 @@
+div.shell div.startmenu div.bottom {
+  height: 50px;
+  min-height: 50px;
+  background-color: var(--button-glass-bg);
+  border-radius: 7.5px;
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  gap: 10px;
+}
+
+div.shell div.startmenu div.bottom span.lucide {
+  font-size: 20px;
+}
+
+div.shell div.startmenu div.bottom div.search {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+div.shell div.startmenu div.bottom div.search input {
+  margin: 0;
+  padding: 0;
+  flex-grow: 1;
+  border: none;
+  background-color: transparent;
+}
+
+div.shell div.startmenu div.bottom div.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding-left: 10px;
+  border-left: var(--button-glass-bg) 1px solid;
+  height: 30px;
+}
+
+div.shell div.startmenu div.bottom div.actions button {
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  height: 21px;
+}

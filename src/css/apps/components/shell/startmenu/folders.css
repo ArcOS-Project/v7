@@ -1,0 +1,43 @@
+div.shell div.startmenu div.top div.folders button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px;
+  width: 100%;
+  background-color: transparent;
+}
+
+div.shell div.startmenu div.top div.folders > div.content {
+  border-top: var(--button-glass-bg) 1px solid;
+  margin-top: 5px;
+  padding-top: 5px;
+  height: calc(100% - 40px);
+  overflow-y: scroll;
+}
+
+div.shell div.startmenu div.top div.folders button:hover {
+  background-color: var(--button-glass-bg);
+}
+
+div.shell div.startmenu div.top div.folders button:active {
+  background-color: var(--button-glass-active-bg);
+}
+
+div.shell div.startmenu div.top div.folders button.user-button {
+  font-weight: bold;
+}
+
+div.shell div.startmenu div.top div.folders button.user-button img {
+  border-radius: 12px;
+}
+
+div.shell div.startmenu div.top div.folders button img {
+  height: 24px;
+}
+
+div.shell div.startmenu div.top div.folders {
+  width: 170px;
+  background-color: var(--button-glass-bg);
+  border-radius: 7.5px;
+  padding: 10px;
+}

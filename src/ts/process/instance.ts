@@ -1,3 +1,4 @@
+import { GlobalDispatcher } from "$ts/dispatch";
 import { Environment } from "$ts/kernel/env";
 import { LogLevel } from "../../types/logging";
 import { WaveKernel } from "../kernel";
@@ -9,6 +10,7 @@ export class Process {
   public env: Environment;
   public handler: ProcessHandler;
   public dispatch: ProcessDispatch;
+  public globalDispatch: GlobalDispatcher;
   public kernel: WaveKernel;
   public pid: number;
   public parentPid: number;
@@ -29,6 +31,7 @@ export class Process {
     this.kernel = WaveKernel.get();
     this.name ||= this.constructor.name;
     this.dispatch = new ProcessDispatch(this);
+    this.globalDispatch = this.kernel.getModule<GlobalDispatcher>("dispatch");
     this.env = this.kernel.getModule<Environment>("env");
   }
 

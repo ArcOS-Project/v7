@@ -9,9 +9,9 @@ import { Environment } from "../env";
 
 export const KernelModules: Record<string, typeof KernelModule> = {
   env: Environment,
+  dispatch: GlobalDispatcher,
   stack: ProcessHandler,
   server: ServerManager,
-  dispatch: GlobalDispatcher,
   fs: Filesystem,
   lang: ArcLang,
   rotur: RoturExtension,

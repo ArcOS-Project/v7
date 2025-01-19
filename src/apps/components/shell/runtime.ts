@@ -63,7 +63,7 @@ export class ShellRuntime extends AppProcess {
     const params = {
       latitude: preferences.shell.actionCenter.weatherLocation.latitude,
       longitude: preferences.shell.actionCenter.weatherLocation.longitude,
-      current: ["temperature_2m", "weather_code"],
+      current: ["temperature_2m", "weather_code", "is_day"],
     };
     const url = "https://api.open-meteo.com/v1/forecast";
 
