@@ -69,7 +69,7 @@ export class AppProcess extends Process {
     return true;
   }
 
-  async closeWindow() {
+  async closeWindow(kill = true) {
     const canClose = this._disposed || (await this.onClose());
 
     if (!canClose) return;
@@ -92,7 +92,7 @@ export class AppProcess extends Process {
 
     await Sleep(400);
 
-    await this.killSelf();
+    if (kill) await this.killSelf();
   }
 
   async CrashDetection() {

@@ -79,7 +79,7 @@ export class ProcessHandler extends KernelModule {
     if (proc._criticalProcess && !force) return "err_criticalProcess";
 
     if (proc instanceof AppProcess && proc.closeWindow && !force) {
-      await proc.closeWindow();
+      await proc.closeWindow(false);
     }
 
     if (proc.__stop) await proc.__stop();

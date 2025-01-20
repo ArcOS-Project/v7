@@ -113,7 +113,7 @@ export class AppManager extends Process {
 
     try {
       await process.__render__(body);
-      this.focusPid(process.pid);
+      if (!data.core) this.focusPid(process.pid);
       await process.CrashDetection();
     } catch (e) {
       if (!process._disposed) {
