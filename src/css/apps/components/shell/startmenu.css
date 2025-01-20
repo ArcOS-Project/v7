@@ -9,7 +9,7 @@ div.shell div.startmenu {
   border-radius: 10px;
   transition: translate 0.3s, opacity 0.2s, pointer-events 0s, visibility 0.3s;
   z-index: 10;
-  border: var(--win-border);
+  border: var(--border);
   max-height: 100%;
   backdrop-filter: blur(10px);
   box-shadow: 0 5px 15px 5px #0003;

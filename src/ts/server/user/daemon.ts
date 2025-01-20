@@ -11,6 +11,7 @@ import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { UserDataFilesystemSupplier } from "$ts/fs/suppliers/userdata";
 import type { Notification } from "$types/notification";
+import { darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -86,9 +87,39 @@ export class UserDaemon extends Process {
       if (!v || v.isDefault) return;
 
       this.commitPreferences(v);
+      this.setAppRendererClasses(v);
     });
 
     this.preferencesUnsubscribe = unsubscribe;
+  }
+
+  setAppRendererClasses(v: UserPreferences) {
+    if (this.kernel.state?.currentState !== "desktop") return;
+
+    const renderer = this.handler.renderer?.target;
+
+    if (!renderer)
+      throw new Error(
+        "UserDaemon: Tried to set renderer classes without accent renderer"
+      );
+
+    const accent = v.desktop.accent;
+    const theme = v.desktop.theme;
+
+    let style = `--accent: ${hex3to6(accent)} !important;
+    --accent-transparent: ${hex3to6(accent)}44 !important;
+    --accent-light: ${lightenColor(accent)} !important;
+    --accent-lighter: ${lightenColor(accent, 6.5)} !important;
+    --accent-dark: ${darkenColor(accent, 75)} !important;
+    --accent-darkest: ${darkenColor(accent, 85)} !important;
+    --accent-light-transparent: ${lightenColor(accent)}77 !important;
+    --accent-light-invert: ${invertColor(lightenColor(accent))} !important;`;
+
+    renderer.setAttribute("style", style);
+    renderer.classList.add(`theme-${theme}`);
+    renderer.classList.toggle("sharp", v.desktop.sharp);
+    renderer.classList.toggle("noani", v.shell.visuals.noAnimations);
+    renderer.classList.toggle("noglass", v.shell.visuals.noGlass);
   }
 
   async commitPreferences(preferences: UserPreferences) {

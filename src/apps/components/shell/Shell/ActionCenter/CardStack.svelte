@@ -13,6 +13,8 @@
   }: { userPreferences: UserPreferencesStore; process: ShellRuntime } =
     $props();
 
+  const { userDaemon } = process;
+
   let changing = $state(false);
 
   async function onwheel(e: WheelEvent) {
@@ -48,8 +50,10 @@
     class="cards"
     style="--index: {$userPreferences.shell.actionCenter.cardIndex};"
   >
-    <Weather {process} />
-    <Notes {userPreferences} />
-    <Gallery {userPreferences} {process} />
+    {#if userDaemon}
+      <Weather {process} />
+      <Notes {userPreferences} />
+      <Gallery {userPreferences} {process} />
+    {/if}
   </div>
 </div>

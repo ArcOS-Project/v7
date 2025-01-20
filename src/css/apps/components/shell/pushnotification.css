@@ -14,6 +14,8 @@ div.shell div.push-notification {
   height: fit-content;
   overflow: hidden;
   transition: opacity 0.3s, visibility 0.3s, translate 0.3s, pointer-events 0s;
+  min-width: 250px;
+  min-height: 100px;
 }
 
 div.shell div.push-notification:not(.show) {
@@ -44,6 +46,14 @@ div.shell div.push-notification h1.header > span {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  /* min-width: fit-content; */
+  max-width: calc(100% - 30px);
+  flex-grow: 1;
+  margin-right: auto;
+}
+
+div.shell div.push-notification.no-image > div.content {
+  max-width: 100%;
 }
 
 div.shell div.push-notification h1.header button {

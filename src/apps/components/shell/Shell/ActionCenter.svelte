@@ -17,7 +17,11 @@
   } = $props();
 </script>
 
-<div class="actioncenter" class:opened={$actionCenterOpened}>
+<div
+  class="actioncenter shell-colored"
+  class:colored={$userPreferences.shell.taskbar.colored}
+  class:opened={$actionCenterOpened}
+>
   <div class="top">
     <Clock />
     <CardStack {userPreferences} {process} />

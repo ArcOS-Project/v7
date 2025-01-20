@@ -11,7 +11,7 @@ div.shell div.actioncenter {
   height: calc(100% - 20px);
   background-color: var(--glass-bg);
   border-radius: 10px;
-  border: var(--win-border);
+  border: var(--border);
   max-height: 100%;
   translate: 400px 0;
   opacity: 0;

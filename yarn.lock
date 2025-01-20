@@ -371,6 +371,11 @@ clsx@^2.1.1:
   resolved "https://registry.yarnpkg.com/clsx/-/clsx-2.1.1.tgz#eed397c9fd8bd882bfb18deab7102049a2f32999"
   integrity sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==
 
+colorsea@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/colorsea/-/colorsea-1.2.2.tgz#19d88cf965efa27b93b99d24f5260cd2379c67d8"
+  integrity sha512-QkKZC82BqJOlzqhFdM12ASKHV7V1gUYNYNPMcyYcZYd+Eyipf+fflpCA2yqxhIP7zN26umUt34n8VqeOMiJu/A==
+
 combined-stream@^1.0.8:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/combined-stream/-/combined-stream-1.0.8.tgz#c3d45a8b34fd730631a110a8a2520682b31d5a7f"

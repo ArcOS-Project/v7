@@ -11,7 +11,7 @@ div.shell div.taskbar {
   z-index: 100;
   background-color: var(--glass-bg);
   border-radius: 10px;
-  border: var(--win-border);
+  border: var(--border);
 
   backdrop-filter: blur(10px);
 }
@@ -29,7 +29,7 @@ div.shell.docked div.taskbar {
   margin: 0;
   border-radius: 0;
   border: none;
-  border-top: var(--win-border);
+  border-top: var(--border);
 }
 
 #arcShell div.shell div.taskbar > button {

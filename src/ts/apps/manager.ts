@@ -18,6 +18,7 @@ export class AppManager extends Process {
   maxZIndex = 1e6;
   focusedPid = Store(-1);
   appStore = Store<Map<string, AppProcessData>>(new Map());
+  defaultApps = BuiltinApps;
 
   constructor(
     handler: ProcessHandler,

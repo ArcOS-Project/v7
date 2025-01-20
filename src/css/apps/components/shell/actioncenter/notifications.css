@@ -6,6 +6,22 @@
   overflow: hidden;
 }
 
+#arcShell div.shell div.notifications > div.content > p.none {
+  line-height: 60px;
+  text-align: center;
+  font-weight: bold;
+  animation: notifications-show-none 1s 1s forwards;
+  opacity: 0;
+}
+
+#arcShell div.shell div.notifications > div.content > p.no-daemon {
+  line-height: 60px;
+  text-align: center;
+  font-weight: bold;
+  color: var(--clr-red-fg);
+  font-weight: bold;
+}
+
 #arcShell div.shell div.notifications > h1 {
   display: flex;
   justify-content: space-between;
@@ -42,6 +58,10 @@ div.shell div.actioncenter div.notification {
   margin-bottom: 10px;
   transition: scale 0.3s;
   transform-origin: top;
+}
+
+div.shell div.actioncenter div.notification.no-image > div.content {
+  max-width: 100%;
 }
 
 div.shell div.actioncenter div.notification.collapsed p {
@@ -92,4 +112,13 @@ div.shell div.actioncenter div.notification img.icon {
 
 div.shell div.actioncenter div.notification.deleted {
   display: none;
+}
+
+@keyframes notifications-show-none {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.5;
+  }
 }

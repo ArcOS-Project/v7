@@ -1,0 +1,28 @@
+#arcShell div.shell-colored,
+#arcShell div.shell-colored * {
+  --border: var(--win-border);
+}
+
+.shell-colored::before {
+  content: " ";
+  border-radius: 9px;
+  width: calc(100%);
+  height: calc(100%);
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: -2;
+  opacity: 0.2;
+  /* margin: -1px; */
+  pointer-events: none;
+  transition: all 0.3s !important;
+}
+
+.shell-colored.colored::before {
+  background-color: var(--accent);
+}
+
+#arcShell div.shell-colored.colored,
+#arcShell div.shell-colored.colored * {
+  --border: var(--accent-light-transparent) 1px solid;
+}

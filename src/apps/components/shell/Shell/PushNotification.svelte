@@ -1,8 +1,8 @@
 <script lang="ts">
+  import { Sleep } from "$ts/sleep";
+  import type { ErrorButton, Notification } from "$types/notification";
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../runtime";
-  import type { Notification } from "$types/notification";
-  import type { ErrorButton } from "$types/notification";
 
   const { process }: { process: ShellRuntime } = $props();
   const { actionCenterOpened } = process;
@@ -12,19 +12,27 @@
   let show = $state(false);
 
   onMount(() => {
-    process.globalDispatch.subscribe("send-notification", ([incoming]) => {
-      if ($actionCenterOpened) return;
+    process.globalDispatch.subscribe(
+      "send-notification",
+      async ([incoming]) => {
+        if ($actionCenterOpened) return;
 
-      data = incoming;
-      show = true;
-
-      if (timeout) clearTimeout(timeout);
-
-      if (incoming.timeout)
-        timeout = setTimeout(() => {
+        if (show) {
           show = false;
-        }, 3000);
-    });
+          await Sleep(300);
+        }
+
+        data = incoming;
+        show = true;
+
+        if (timeout) clearTimeout(timeout);
+
+        if (incoming.timeout)
+          timeout = setTimeout(() => {
+            show = false;
+          }, 3000);
+      }
+    );
   });
 
   actionCenterOpened.subscribe((v) => {
@@ -41,7 +49,7 @@
   }
 </script>
 
-<div class="push-notification" class:show>
+<div class="push-notification" class:show class:no-image={!data?.image}>
   {#if data}
     {#if data.image}
       <div class="left">

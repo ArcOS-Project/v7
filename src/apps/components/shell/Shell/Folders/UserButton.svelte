@@ -38,5 +38,5 @@
 
 <button class="user-button" {onclick}>
   <img src={pfp} alt="" />
-  <span class="name">{username}</span>
+  <span class="name">{username || "ERR_NO_USER"}</span>
 </button>

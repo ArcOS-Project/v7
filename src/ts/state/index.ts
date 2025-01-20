@@ -48,6 +48,13 @@ export class StateHandler extends Process {
         `No such state ${id} on handler with PID ${this.pid}`
       );
 
+    const appRenderer = this.handler.renderer?.target;
+
+    if (appRenderer) {
+      appRenderer.className = "";
+      appRenderer.removeAttribute("style");
+    }
+
     if (this.stateAppProcess) {
       console.group(`loadState: previous state app close`);
 

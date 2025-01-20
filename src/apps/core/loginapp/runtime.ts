@@ -110,7 +110,9 @@ export class LoginAppRuntime extends AppProcess {
 
     await Sleep(2000);
 
-    this.kernel.state?.loadState("desktop", { userDaemon });
+    await this.kernel.state?.loadState("desktop", { userDaemon });
+
+    userDaemon.setAppRendererClasses(userDaemon.preferences());
   }
 
   revealListener() {

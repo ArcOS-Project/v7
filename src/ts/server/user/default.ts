@@ -41,6 +41,7 @@ export const DefaultUserPreferences: UserPreferences = {
       sharpCorners: false,
       compactContext: false,
       showHiddenApps: false,
+      noGlass: false,
     },
   },
   security: {

@@ -70,6 +70,7 @@ export interface VisualPreferences {
   sharpCorners: boolean;
   compactContext: boolean;
   showHiddenApps: boolean;
+  noGlass: boolean;
 }
 
 export interface SecurityPreferences {

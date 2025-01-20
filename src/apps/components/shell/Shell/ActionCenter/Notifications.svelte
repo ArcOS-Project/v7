@@ -1,8 +1,9 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import type { ShellRuntime } from "../../runtime";
-  import Spinner from "../../../../../lib/Spinner.svelte";
+  import { Sleep } from "$ts/sleep";
   import type { Notification } from "$types/notification";
+  import { onMount } from "svelte";
+  import Spinner from "../../../../../lib/Spinner.svelte";
+  import type { ShellRuntime } from "../../runtime";
   import NotificationItem from "./Notifications/NotificationItem.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
@@ -23,10 +24,12 @@
 
     userDaemon.globalDispatch.subscribe(
       "update-notifications",
-      ([notifications]) => {
+      async ([notifications]) => {
         store = [...notifications];
 
-        isEmpty = store.filter(([_, n]) => !n.deleted).length > 0;
+        isEmpty = false;
+        await Sleep(0);
+        isEmpty = ![...notifications].filter(([_, n]) => !n.deleted).length;
       }
     );
 
@@ -46,7 +49,7 @@
     <button
       class="lucide icon-eraser"
       aria-label="Clear Notifications"
-      disabled={loading || noDaemon}
+      disabled={loading || noDaemon || isEmpty}
       onclick={clear}
     ></button>
   </h1>
@@ -56,11 +59,12 @@
     {:else if noDaemon || !userDaemon}
       <p class="no-daemon">ERR_NO_DAEMON</p>
     {:else if store}
-      {#each [...store] as [id, notification]}
-        <NotificationItem {userDaemon} {id} {notification} />
-      {/each}
       {#if isEmpty}
         <p class="none">No notifications</p>
+      {:else}
+        {#each [...store] as [id, notification]}
+          <NotificationItem {userDaemon} {id} {notification} />
+        {/each}
       {/if}
     {:else}
       error
