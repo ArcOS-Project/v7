@@ -3,7 +3,6 @@ import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { fetchWeatherApi } from "openmeteo";
-import type { WeatherInformation } from "./types";
 import {
   weatherCaptions,
   weatherClasses,
@@ -11,6 +10,7 @@ import {
   weatherIconColors,
   weatherIcons,
 } from "./store";
+import type { WeatherInformation } from "./types";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
@@ -56,6 +56,15 @@ export class ShellRuntime extends AppProcess {
       )
         this.actionCenterOpened.set(false);
     });
+
+    this.acceleratorStore.push({
+      ctrl: true,
+      key: "q",
+      global: true,
+      action: () => {
+        this.closeFocused();
+      },
+    });
   }
 
   async getWeather(): Promise<WeatherInformation> {
@@ -89,5 +98,31 @@ export class ShellRuntime extends AppProcess {
     } catch {
       return false;
     }
+  }
+
+  async closeFocused() {
+    const focusedPid = this.handler.renderer?.focusedPid();
+
+    if (!focusedPid) return;
+
+    await this.handler.kill(focusedPid);
+
+    const appProcesses = (this.handler.renderer?.currentState || [])
+      .map((pid) => this.handler.getProcess(pid))
+      .filter(
+        (proc) =>
+          proc &&
+          !proc._disposed &&
+          proc instanceof AppProcess &&
+          !proc.app.data.core &&
+          !proc.app.data.overlay
+      )
+      .filter((proc) => !!proc);
+
+    const targetProcess = appProcesses[appProcesses.length - 1];
+
+    if (!targetProcess) return;
+
+    this.handler.renderer?.focusPid(targetProcess.pid);
   }
 }

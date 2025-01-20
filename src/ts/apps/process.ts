@@ -1,5 +1,9 @@
+import { GlobalDispatcher } from "$ts/dispatch";
+import type { Filesystem } from "$ts/fs";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { DefaultUserPreferences } from "$ts/server/user/default";
+import type { AppKeyCombinations } from "$types/accelerator";
+import { LogLevel } from "$types/logging";
 import type { UserPreferences } from "$types/user";
 import { mount } from "svelte";
 import type { AppProcessData } from "../../types/app";
@@ -9,8 +13,7 @@ import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
 import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
-import type { Filesystem } from "$ts/fs";
-import { GlobalDispatcher } from "$ts/dispatch";
+export const bannedKeys = ["tab", "pagedown", "pageup"];
 
 export class AppProcess extends Process {
   crashReason = "";
@@ -25,6 +28,7 @@ export class AppProcess extends Process {
   fs: Filesystem;
   globalDispatch: GlobalDispatcher;
   userDaemon: UserDaemon | undefined;
+  public acceleratorStore: AppKeyCombinations = [];
 
   constructor(
     handler: ProcessHandler,
@@ -56,6 +60,8 @@ export class AppProcess extends Process {
       this.username = (desktopProps.userDaemon as UserDaemon).username;
       this.userDaemon = desktopProps.userDaemon as UserDaemon;
     }
+
+    this.startAcceleratorListener();
   }
 
   // Conditional function that can prohibit closing if it returns false
@@ -125,5 +131,68 @@ export class AppProcess extends Process {
     });
 
     await this.render();
+  }
+
+  public startAcceleratorListener() {
+    this.Log("Starting listener!");
+
+    document.addEventListener("keydown", (e) => this.processor(e));
+  }
+
+  public stopAcceleratorListener() {
+    this.Log("Stopping listener!", LogLevel.warning);
+
+    document.removeEventListener("keydown", (e) => this.processor(e));
+  }
+
+  private processor(e: KeyboardEvent) {
+    if (!e.key) return;
+
+    if (bannedKeys.includes(e.key.toLowerCase())) {
+      e.preventDefault();
+
+      return false;
+    }
+
+    this.unfocusActiveElement();
+
+    const state = this.kernel.state?.currentState;
+
+    if (state != "desktop") return;
+
+    for (const combo of this.acceleratorStore) {
+      const alt = combo.alt ? e.altKey : true;
+      const ctrl = combo.ctrl ? e.ctrlKey : true;
+      const shift = combo.shift ? e.shiftKey : true;
+      /** */
+      const modifiers = alt && ctrl && shift;
+      /** */
+      const pK = e.key.toLowerCase().trim();
+      const key = combo.key?.trim().toLowerCase();
+      const codedKey = String.fromCharCode(e.keyCode).toLowerCase();
+      /** */
+      const isFocused =
+        this.handler.renderer?.focusedPid() == this.pid || combo.global;
+
+      if (!modifiers || (key != pK && key && key != codedKey) || !isFocused)
+        continue;
+
+      combo.action(this);
+
+      break;
+    }
+  }
+
+  public unfocusActiveElement() {
+    const el = document.activeElement as HTMLButtonElement;
+
+    if (
+      !el ||
+      el instanceof HTMLInputElement ||
+      el instanceof HTMLTextAreaElement
+    )
+      return;
+
+    el.blur();
   }
 }

@@ -78,6 +78,10 @@ export class ProcessHandler extends KernelModule {
     if (!proc) return "err_noExist";
     if (proc._criticalProcess && !force) return "err_criticalProcess";
 
+    if (proc instanceof AppProcess && proc.closeWindow && !force) {
+      await proc.closeWindow();
+    }
+
     if (proc.__stop) await proc.__stop();
 
     await this._killSubProceses(pid, force);

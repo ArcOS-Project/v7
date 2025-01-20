@@ -291,6 +291,8 @@ export class AppManager extends Process {
 
     if (!process) return;
 
+    if (process.stopAcceleratorListener) process.stopAcceleratorListener();
+
     if (process.componentMount && Object.entries(process.componentMount).length)
       unmount(process.componentMount);
 
@@ -305,6 +307,8 @@ export class AppManager extends Process {
     if (wrapper) {
       wrapper.remove();
     }
+
+    if (this.focusedPid() === process.pid) this.focusedPid.set(-1);
 
     const stateIndex = this.currentState.indexOf(pid);
 
@@ -325,6 +329,13 @@ export class AppManager extends Process {
     if (!process || !process.app) return;
 
     process.app.data.state.maximized = window.classList.contains("maximized");
+
+    this.globalDispatch.dispatch(
+      process.app.data.state.maximized
+        ? "window-maximize"
+        : "window-unmaximize",
+      [pid]
+    );
   }
 
   unMinimize(pid: number) {
@@ -341,6 +352,8 @@ export class AppManager extends Process {
     if (!process || !process.app) return;
 
     process.app.data.state.minimized = false;
+
+    this.globalDispatch.dispatch("window-unmaximize", [pid]);
   }
 
   toggleMinimize(pid: number) {
@@ -358,6 +371,13 @@ export class AppManager extends Process {
 
     process.app.data.state.minimized = window.classList.contains("minimized");
     if (process.app.data.state.minimized) this.focusedPid.set(-1);
+
+    this.globalDispatch.dispatch(
+      process.app.data.state.maximized
+        ? "window-minimize"
+        : "window-unminimize",
+      [pid]
+    );
   }
 
   getAppInstances(id: string, originPid?: number) {
