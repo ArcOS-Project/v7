@@ -14,7 +14,7 @@ import { BuiltinApps } from "./store";
 
 export class AppManager extends Process {
   currentState: number[] = [];
-  target;
+  target: HTMLDivElement;
   maxZIndex = 1e6;
   focusedPid = Store(-1);
   appStore = Store<Map<string, AppProcessData>>(new Map());
@@ -28,7 +28,7 @@ export class AppManager extends Process {
   ) {
     super(handler, pid, parentPid);
 
-    const targetDiv = document.getElementById(target);
+    const targetDiv = document.getElementById(target) as HTMLDivElement;
 
     if (!targetDiv)
       throw new AppRendererError(
