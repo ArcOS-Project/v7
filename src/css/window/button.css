@@ -46,3 +46,15 @@ div.window div.body button:not(.reset).suggested:hover {
 div.window div.body button:not(.reset).suggested:active {
   filter: brightness(0.8);
 }
+
+div.window.glass > div.body button:not(.reset):not(.suggested):not(.menu-item) {
+  background-color: var(--button-glass-bg, #fff1);
+}
+
+div.window.glass > div.body button:not(.reset):not(.menu-item):hover {
+  background-color: var(--button-glass-hover-bg, #fff3);
+}
+
+div.window.glass > div.body button:not(.reset):not(.menu-item):active {
+  background-color: var(--button-glass-active-bg, #0005);
+}

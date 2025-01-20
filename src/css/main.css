@@ -5,6 +5,8 @@
 @import url("./window.css");
 @import url("./progressbar.css");
 @import url("./themes.css");
+@import url("./noani.css");
+@import url("./sharp.css");
 
 html,
 body {

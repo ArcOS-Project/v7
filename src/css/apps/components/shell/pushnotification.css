@@ -4,7 +4,7 @@ div.shell div.push-notification {
   right: 10px;
   max-width: 400px;
   backdrop-filter: blur(10px);
-  border: var(--win-border);
+  border: var(--border);
   display: flex;
   align-items: start;
   gap: 10px;

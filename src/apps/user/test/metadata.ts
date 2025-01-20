@@ -42,4 +42,5 @@ export const TestApp: App = {
     runtime: TestAppRuntime,
   },
   id: "testApp",
+  glass: true,
 };

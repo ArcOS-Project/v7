@@ -68,3 +68,8 @@ div.window:not(.core).visible:not(.closing) {
 div.window:not(.core).resizable {
   resize: both;
 }
+div.window.focused.glass,
+div.window.overlay.glass {
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(10px);
+}

@@ -5,7 +5,7 @@
   import type { ShellRuntime } from "../runtime";
 
   const { process }: { process: ShellRuntime } = $props();
-  const { actionCenterOpened } = process;
+  const { actionCenterOpened, userPreferences } = process;
 
   let timeout: NodeJS.Timeout | undefined;
   let data: Notification | undefined = $state();
@@ -49,7 +49,12 @@
   }
 </script>
 
-<div class="push-notification" class:show class:no-image={!data?.image}>
+<div
+  class="push-notification shell-colored"
+  class:show
+  class:no-image={!data?.image}
+  class:colored={$userPreferences.shell.taskbar.colored}
+>
   {#if data}
     {#if data.image}
       <div class="left">

@@ -1,0 +1,6 @@
+#appRenderer.noani *,
+#appRenderer.noani *::before,
+#appRenderer.noani *::after {
+  animation: none !important;
+  transition: none !important;
+}

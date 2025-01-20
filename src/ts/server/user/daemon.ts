@@ -115,9 +115,10 @@ export class UserDaemon extends Process {
     --accent-light-transparent: ${lightenColor(accent)}77 !important;
     --accent-light-invert: ${invertColor(lightenColor(accent))} !important;`;
 
+    renderer.removeAttribute("class");
     renderer.setAttribute("style", style);
     renderer.classList.add(`theme-${theme}`);
-    renderer.classList.toggle("sharp", v.desktop.sharp);
+    renderer.classList.toggle("sharp", v.shell.visuals.sharpCorners);
     renderer.classList.toggle("noani", v.shell.visuals.noAnimations);
     renderer.classList.toggle("noglass", v.shell.visuals.noGlass);
   }

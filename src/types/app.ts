@@ -17,6 +17,7 @@ export interface App {
   core?: boolean;
   hidden?: boolean;
   overlay?: boolean;
+  glass?: boolean;
   id: string;
 }
 

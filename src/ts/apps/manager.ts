@@ -75,6 +75,8 @@ export class AppManager extends Process {
 
     window.classList.add(data.id);
 
+    if (data.glass) window.classList.add("glass");
+
     this._windowClasses(window, data);
     this._windowEvents(process.pid, window, titlebar, data);
 
