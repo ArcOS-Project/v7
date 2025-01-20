@@ -17,3 +17,43 @@ export function keysToLowerCase(obj: any): any {
   }
   return obj;
 }
+export type ValidationObject = { [key: string]: any };
+
+export function validateObject(
+  target: ValidationObject,
+  validation: ValidationObject
+): boolean {
+  if (typeof validation !== "object" || validation === null) return false;
+
+  for (const key in validation) {
+    if (!Object.prototype.hasOwnProperty.call(target, key)) return false;
+
+    const targetValue = target[key];
+    const validationValue = validation[key];
+
+    if (typeof validationValue === "object" && validationValue !== null) {
+      if (Array.isArray(validationValue)) {
+        if (
+          !Array.isArray(targetValue) ||
+          validationValue.length > targetValue.length
+        )
+          return false;
+
+        if (
+          !validationValue.every((val, index) =>
+            validateObject(targetValue[index], val)
+          )
+        )
+          return false;
+      } else {
+        if (!validateObject(targetValue, validationValue)) return false;
+      }
+    } else {
+      if (targetValue !== validationValue) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}

@@ -1,12 +1,21 @@
 import { GlobalDispatcher } from "$ts/dispatch";
+import { validateObject, type ValidationObject } from "$ts/json";
 import type { WaveKernel } from "$ts/kernel";
 import { KernelModule } from "$ts/kernel/module";
 import { Sleep } from "$ts/sleep";
 import { LogLevel } from "$types/logging";
 import type {
+  GetOrDeleteSyncedVariableArguments,
   RoturConnectionArguments,
   RoturLoginArguments,
   RoturPacket,
+  SendMailArguments,
+  SendMessageArguments,
+  SetSyncedVariableArguments,
+  TargetAggregationArguments,
+  UserConnectedArguments,
+  UserDesignationArguments,
+  UsernameConectedArguments,
 } from "$types/rotur";
 import axios from "axios";
 import md5 from "md5";
@@ -98,7 +107,6 @@ export class RoturExtension extends KernelModule {
       const response = await axios.get(
         "https://raw.githubusercontent.com/Mistium/Origin-OS/main/Resources/info.json"
       );
-
       if (response.status !== 200)
         throw new Error("Network response was not ok");
 
@@ -124,7 +132,6 @@ export class RoturExtension extends KernelModule {
       const response = await axios.get(
         "https://raw.githubusercontent.com/RoturTW/main/main/Implementations/SCRATCH/version.txt"
       );
-
       if (response.status !== 200)
         throw new Error("Network response was not ok");
 
@@ -267,7 +274,6 @@ export class RoturExtension extends KernelModule {
         this.client.users = this.client.users?.filter(
           (user) => user != packet.val.username
         );
-
         this.lastLeft = packet.val;
         break;
       case "set":
@@ -372,6 +378,29 @@ export class RoturExtension extends KernelModule {
     this.dispatch.dispatch("rotur-connected");
   }
 
+  socketSendWithAck(
+    outgoing: object,
+    validation: ValidationObject,
+    callback: (packet: RoturPacket) => void
+  ) {
+    this.socketSend(outgoing);
+
+    const onmessage = (event: MessageEvent) => {
+      const packet = JSON.parse(event.data) as RoturPacket;
+
+      if (!packet) return;
+
+      const valid = validateObject(packet, validation);
+
+      if (!valid) return;
+
+      callback(packet);
+      this.ws?.removeEventListener("message", onmessage);
+    };
+
+    this.ws?.addEventListener("message", onmessage);
+  }
+
   connectToWebsocket() {
     try {
       this.ws = new WebSocket(this.server);
@@ -389,23 +418,26 @@ export class RoturExtension extends KernelModule {
       this.ws.onmessage = async (event: MessageEvent) => {
         const packet = JSON.parse(event.data) as RoturPacket;
 
-        this.Log(
-          `Incoming Message: CMD->${packet.cmd}, LISTENER->${packet.listener}`
-        );
-
         const commandHandler = this.packetCommandHandlers[packet.cmd || ""];
         const listenerHandler =
           this.packetListenerHandlers[packet.listener || ""];
 
         if (commandHandler) {
-          this.Log(`Executing command handler for command ${packet.cmd}`);
+          this.Log(
+            `Executing command handler for command ${
+              packet.cmd || "<NONE>"
+            }, listener: ${packet.listener || "<NONE>"}`
+          );
 
           await commandHandler(packet);
         }
 
         if (listenerHandler) {
-          this.Log(`Executing listener handler for listener ${packet.cmd}`);
-
+          this.Log(
+            `Executing listener handler for listener ${
+              packet.listener || "<NONE>"
+            }, command: ${packet.cmd || "<NONE>"}`
+          );
           await listenerHandler(packet);
         }
       };
@@ -458,65 +490,61 @@ export class RoturExtension extends KernelModule {
     if (this.authenticated) return "Already Logged In";
 
     return new Promise((resolve, reject) => {
-      this.socketSend({
-        cmd: "pmsg",
-        val: {
-          ip: this.client.ip,
-          client: this.my_client,
-          command: "login",
-          id: this.userToken,
-          payload: [args.USERNAME, md5("" + args.PASSWORD)],
+      this.socketSendWithAck(
+        {
+          cmd: "pmsg",
+          val: {
+            ip: this.client.ip,
+            client: this.my_client,
+            command: "login",
+            id: this.userToken,
+            payload: [args.USERNAME, md5("" + args.PASSWORD)],
+          },
+          id: this.accounts,
         },
-        id: this.accounts,
-      });
+        {
+          origin: { username: this.accounts },
+          val: { source_command: "login" },
+        },
+        async (packet: RoturPacket) => {
+          if (typeof packet.val?.payload === "object") {
+            reject(`Failed to log in as ${args.USERNAME}`);
 
-      const handleLoginResponse = async (event: MessageEvent) => {
-        let packet = JSON.parse(event.data) as RoturPacket;
+            return;
+          }
 
-        if (!packet) return;
-        if (packet.origin?.username !== this.accounts) return;
-        if (packet.val?.source_command !== "login") return;
-        if (typeof packet.val?.payload === "object") {
-          reject(`Failed to log in as ${args.USERNAME}`);
+          this.ws?.close();
+          this.userToken = packet.val.token;
+          this.user = packet.val.payload;
+          this.first_login = packet.val.first_login;
 
-          return;
+          delete packet.val;
+          delete this.user.key;
+          delete this.user.password;
+
+          // friends data
+          this.friends = {};
+          // handle if the user has no friends :P
+          if (!this.user["sys.friends"]) this.user["sys.friends"] = [];
+          if (!this.user["sys.requests"]) this.user["sys.requests"] = [];
+
+          this.friends.list = this.user["sys.friends"];
+          this.friends.requests = this.user["sys.requests"];
+          delete this.user.friends;
+          delete this.user.requests;
+
+          // setup username for reconnect
+          this.username = args.USERNAME + "§" + randomString(10);
+          this.connectToWebsocket();
+
+          while (!this.is_connected) {
+            await Sleep(0); // Mist, let's not lock up the webpage while doin' this, mkay?
+          }
+
+          this.authenticated = true;
+          resolve(`Logged in as ${args.USERNAME}`);
         }
-
-        this.ws?.close();
-        this.userToken = packet.val.token;
-        this.user = packet.val.payload;
-        this.first_login = packet.val.first_login;
-
-        delete packet.val;
-        delete this.user.key;
-        delete this.user.password;
-
-        // friends data
-        this.friends = {};
-        // handle if the user has no friends :P
-        if (!this.user["sys.friends"]) this.user["sys.friends"] = [];
-        if (!this.user["sys.requests"]) this.user["sys.requests"] = [];
-
-        this.friends.list = this.user["sys.friends"];
-        this.friends.requests = this.user["sys.requests"];
-        delete this.user.friends;
-        delete this.user.requests;
-
-        // setup username for reconnect
-        this.username = args.USERNAME + "§" + randomString(10);
-        this.connectToWebsocket();
-
-        while (!this.is_connected) {
-          await Sleep(0); // Mist, let's not lock up the webpage while doin' this, mkay?
-        }
-
-        this.authenticated = true;
-
-        resolve(`Logged in as ${args.USERNAME}`);
-        this.ws?.removeEventListener("message", handleLoginResponse);
-      };
-
-      this.ws?.addEventListener("message", handleLoginResponse);
+      );
     });
   }
 
@@ -525,8 +553,8 @@ export class RoturExtension extends KernelModule {
     if (this.authenticated) return "Already Logged In";
 
     return new Promise((resolve, reject) => {
-      this.ws?.send(
-        JSON.stringify({
+      this.socketSendWithAck(
+        {
           cmd: "pmsg",
           val: {
             client: this.my_client,
@@ -539,29 +567,22 @@ export class RoturExtension extends KernelModule {
             },
           },
           id: this.accounts,
-        })
-      );
+        },
+        {
+          origin: { username: this.accounts },
+          val: { source_command: "new_account" },
+        },
+        (packet) => {
+          if (packet.val?.payload !== "Account Created Successfully") {
+            reject(
+              `Faield to register as ${args.USERNAME}: ${packet.val.payload}`
+            );
+            return;
+          }
 
-      const handleRegisterResponse = (event: Record<string, any>) => {
-        const packet = JSON.parse(event.data);
-
-        if (!packet) return;
-        if (packet.origin.username !== this.accounts) return;
-        if (packet.val?.source_command !== "new_account") return;
-        if (packet.val?.payload !== "Account Created Successfully") {
-          reject(
-            `Faield to register as ${args.USERNAME}: ${packet.val.payload}`
-          );
-
-          return;
+          resolve(`Registered as ${args.USERNAME}`);
         }
-
-        resolve(`Registered as ${args.USERNAME}`);
-      };
-
-      this.ws?.addEventListener("message", handleRegisterResponse, {
-        once: true,
-      });
+      );
     });
   }
 
@@ -570,41 +591,35 @@ export class RoturExtension extends KernelModule {
     if (!this.authenticated) return "Not Logged In";
 
     return new Promise((resolve, reject) => {
-      this.socketSend({
-        cmd: "pmsg",
-        val: {
-          client: this.my_client,
-          command: "delete_account",
-          id: this.userToken,
+      this.socketSendWithAck(
+        {
+          cmd: "pmsg",
+          val: {
+            client: this.my_client,
+            command: "delete_account",
+            id: this.userToken,
+          },
+          id: this.accounts,
         },
-        id: this.accounts,
-      });
+        {
+          origin: { username: this.accounts },
+          val: { source_command: "new_account" },
+        },
+        (packet) => {
+          if (packet.val?.payload !== "Account Deleted Successfully") {
+            reject("Failed to delete account: " + packet.val.payload);
 
-      const handleDeleteAccountResponse = (event: Record<string, any>) => {
-        const packet = JSON.parse(event.data);
+            return;
+          }
 
-        if (!packet) return;
-        if (packet.origin.username !== this.accounts) return;
-        if (packet.val?.source_command !== "new_account") return;
-        if (packet.val?.payload !== "Account Deleted Successfully") {
-          reject("Failed to delete account: " + packet.val.payload);
-
-          return;
+          resolve(`Account Deleted Successfully`);
         }
-
-        resolve(`Account Deleted Successfully`);
-      };
-
-      this.ws?.addEventListener("message", handleDeleteAccountResponse, {
-        once: true,
-      });
+      );
     });
   }
 
   logout() {
-    if (!this.is_connected) {
-      return;
-    }
+    if (!this.is_connected) return;
 
     this.ws?.send(
       JSON.stringify({
@@ -651,31 +666,26 @@ export class RoturExtension extends KernelModule {
     if (!this.authenticated) return "Not Logged In";
 
     return new Promise((resolve) => {
-      this.socketSend({
-        cmd: "pmsg",
-        val: {
-          command: "update",
-          client: this.my_client,
-          id: this.userToken,
-          payload: [args.KEY, args.VALUE],
+      this.socketSendWithAck(
+        {
+          cmd: "pmsg",
+          val: {
+            command: "update",
+            client: this.my_client,
+            id: this.userToken,
+            payload: [args.KEY, args.VALUE],
+          },
+          id: this.accounts,
         },
-        id: this.accounts,
-      });
-
-      const handleUpdateKeyResponse = (event: Record<string, any>) => {
-        const packet = JSON.parse(event.data);
-
-        if (!packet) return;
-        if (packet.origin.username !== this.accounts) return;
-        if (packet.val?.source_command !== "new_account") return;
-        if (packet.val?.payload !== "Account Deleted Successfully") return;
-
-        resolve(packet.val.payload);
-      };
-
-      this.ws?.addEventListener("message", handleUpdateKeyResponse, {
-        once: true,
-      });
+        {
+          origin: { username: this.accounts },
+          val: {
+            source_command: "new_account",
+            payload: "Account Updated Successfully",
+          },
+        },
+        (packet) => resolve(packet.val.payload)
+      );
     });
   }
 
@@ -720,8 +730,8 @@ export class RoturExtension extends KernelModule {
     }
 
     new Promise((resolve, reject) => {
-      this.ws?.send(
-        JSON.stringify({
+      this.socketSendWithAck(
+        {
           cmd: "pmsg",
           val: {
             command: "storage_getid",
@@ -730,27 +740,24 @@ export class RoturExtension extends KernelModule {
             payload: args.ID,
           },
           id: this.accounts,
-        })
-      );
+        },
+        {
+          origin: { username: this.accounts },
+          val: { source_command: "storage_getid" },
+        },
+        (packet) => {
+          if (packet.val.payload === "Not Logged In") {
+            console.error("Failed to set storage id: " + packet.val.payload);
+            reject(packet.val.payload);
 
-      const handleStorageIdSet = (event: Record<string, any>) => {
-        const packet = JSON.parse(event.data);
+            return;
+          }
 
-        if (!packet) return;
-        if (packet.origin?.username !== this.accounts) return;
-        if (packet.val.source_command !== "storage_getid") return;
-        if (packet.val.payload === "Not Logged In") {
-          console.error("Failed to set storage id: " + packet.val.payload);
-          reject(packet.val.payload);
-
-          return;
+          resolve("" + args.ID);
+          this.storage_id = "" + args.ID;
+          this.localKeys = JSON.parse(packet.val.payload);
         }
-
-        resolve("" + args.ID);
-        this.storage_id = "" + args.ID;
-        this.localKeys = JSON.parse(packet.val.payload);
-      };
-      this.ws?.addEventListener("message", handleStorageIdSet, { once: true });
+      );
     });
   }
 
@@ -780,35 +787,34 @@ export class RoturExtension extends KernelModule {
     this.localKeys[args.KEY] = args.VALUE;
 
     return new Promise((resolve, reject) => {
-      this.socketSend({
-        cmd: "pmsg",
-        val: {
-          command: "storage_set",
-          id: this.userToken,
-          client: this.my_client,
-          payload: {
-            key: args.KEY,
-            value: args.VALUE,
-            id: this.storage_id,
+      this.socketSendWithAck(
+        {
+          cmd: "pmsg",
+          val: {
+            command: "storage_set",
+            id: this.userToken,
+            client: this.my_client,
+            payload: {
+              key: args.KEY,
+              value: args.VALUE,
+              id: this.storage_id,
+            },
           },
+          id: this.accounts,
         },
-        id: this.accounts,
-      });
+        {
+          origin: { username: this.accounts },
+          val: { source_command: "storage_set" },
+        },
+        (packet) => {
+          if (packet.val.payload !== "Successfully Set Key") {
+            reject(packet.val.payload);
+            return;
+          }
 
-      const handleStorageKey = (event: Record<string, any>) => {
-        const packet = JSON.parse(event.data);
-
-        if (!packet) return;
-        if (packet.origin.username !== this.accounts) return;
-        if (packet.val.source_command !== "storage_set") return;
-        if (packet.val.payload !== "Successfully Set Key") {
-          reject(packet.val.payload);
-          return;
+          resolve("Key Set");
         }
-
-        resolve("Key Set");
-      };
-      this.ws?.addEventListener("message", handleStorageKey, { once: true });
+      );
     });
   }
 
@@ -834,36 +840,34 @@ export class RoturExtension extends KernelModule {
     delete this.localKeys[args.KEY];
 
     return new Promise((resolve, reject) => {
-      this.socketSend({
-        cmd: "pmsg",
-        val: {
-          command: "storage_delete",
-          id: this.userToken,
-          client: this.my_client,
-          payload: {
-            key: args.KEY,
-            id: this.storage_id,
+      this.socketSendWithAck(
+        {
+          cmd: "pmsg",
+          val: {
+            command: "storage_delete",
+            id: this.userToken,
+            client: this.my_client,
+            payload: {
+              key: args.KEY,
+              id: this.storage_id,
+            },
           },
+          id: this.accounts,
         },
-        id: this.accounts,
-      });
+        {
+          origin: { username: this.accounts },
+          val: { source_command: "storage_delete" },
+        },
+        (packet) => {
+          if (packet.val.payload !== "Successfully Deleted Key") {
+            reject(packet.val.payload);
 
-      const handleStorageKey = (event: Record<string, any>) => {
-        const packet = JSON.parse(event.data);
+            return;
+          }
 
-        if (!packet) return;
-        if (packet.origin?.username !== this.accounts) return;
-        if (packet.val.source_command !== "storage_delete") return;
-        if (packet.val.payload !== "Successfully Deleted Key") {
-          reject(packet.val.payload);
-
-          return;
+          resolve("Key Deleted");
         }
-
-        resolve("Key Deleted");
-      };
-
-      this.ws?.addEventListener("message", handleStorageKey, { once: true });
+      );
     });
   }
 
@@ -871,51 +875,43 @@ export class RoturExtension extends KernelModule {
   // I'M GOING TO BED.
 
   getStorageKeys() {
-    if (this.authenticated && this.is_connected) {
-      if (this.storage_id) {
-        return JSON.stringify(Object.keys(this.localKeys));
-      } else {
-        return "Storage Id Not Set";
-      }
-    } else {
-      return "Not Logged In";
-    }
+    if (!this.isAuthenticated()) return "Not Logged In";
+
+    if (!this.storage_id) return "Storage Id Not Set";
+
+    JSON.stringify(Object.keys(this.localKeys));
   }
 
   getStorageValues() {
-    if (this.authenticated && this.is_connected) {
-      if (this.storage_id) {
-        return JSON.stringify(Object.values(this.localKeys));
-      } else {
-        return "Storage Id Not Set";
-      }
-    } else {
-      return "Not Logged In";
-    }
+    if (!this.isAuthenticated()) return "Not Logged In";
+
+    if (!this.storage_id) return "Storage Id Not Set";
+
+    return JSON.stringify(Object.values(this.localKeys));
   }
 
   clearStorage() {
-    if (this.authenticated && this.is_connected) {
-      if (this.storage_id) {
-        this.localKeys = {};
-      } else {
-        console.error("Storage Id Not Set");
-      }
-    } else {
-      console.error("Not Logged In");
+    if (!this.isAuthenticated()) {
+      this.Log("Not clearing storage: Not logged in!", LogLevel.error);
+
+      return;
     }
+
+    if (!this.storage_id) {
+      this.Log("Not clearing storage: Storage Id Not Set", LogLevel.error);
+
+      return;
+    }
+
+    this.localKeys = {};
   }
 
   storageUsage() {
-    if (this.authenticated && this.is_connected) {
-      if (this.storage_id) {
-        return JSON.stringify(JSON.stringify(this.localKeys).length);
-      } else {
-        return "Storage Id Not Set";
-      }
-    } else {
-      return "Not Logged In";
-    }
+    if (!this.isAuthenticated()) return "Not Logged In";
+
+    if (!this.storage_id) return "Storage Id Not Set";
+
+    return JSON.stringify(JSON.stringify(this.localKeys).length);
   }
 
   storageLimit() {
@@ -923,49 +919,44 @@ export class RoturExtension extends KernelModule {
   }
 
   storageRemaining() {
-    if (this.authenticated && this.is_connected) {
-      if (this.storage_id) {
-        return 50000 - JSON.stringify(this.localKeys).length + "";
-      } else {
-        return "Storage Id Not Set";
-      }
-    } else {
-      return "Not Logged In";
-    }
+    if (!this.isAuthenticated()) return "Not Logged In";
+    if (!this.storage_id) return "Storage Id Not Set";
+
+    return 50000 - JSON.stringify(this.localKeys).length + "";
   }
 
-  accountStorageUsage() {
-    if (this.authenticated && this.is_connected) {
-      return new Promise((resolve, reject) => {
-        this.ws?.send(
-          JSON.stringify({
-            cmd: "pmsg",
-            val: {
-              command: "storage_usage",
-              client: this.my_client,
-              id: this.userToken,
-            },
-            id: this.accounts,
-          })
-        );
+  // TODO: REFACTOR FASE 2: CONTINUE FROM HERE
 
-        const handleStorageKey = (event: Record<string, any>) => {
-          let packet = JSON.parse(event.data);
-          if (packet?.origin?.username === this.accounts) {
-            if (packet.val.source_command === "storage_usage") {
-              if (packet.val.payload === "Not Logged In") {
-                reject("Not Logged In");
-              } else {
-                resolve(packet.val.payload);
-              }
-              this.ws?.removeEventListener("message", handleStorageKey);
-            }
-          }
-        };
-        this.ws?.addEventListener("message", handleStorageKey);
+  accountStorageUsage() {
+    if (!this.isAuthenticated()) return "Not Logged In";
+
+    return new Promise((resolve, reject) => {
+      this.socketSend({
+        cmd: "pmsg",
+        val: {
+          command: "storage_usage",
+          client: this.my_client,
+          id: this.userToken,
+        },
+        id: this.accounts,
       });
-    }
-    return "Not Logged In";
+
+      const handleStorageKey = (event: MessageEvent) => {
+        const packet = JSON.parse(event.data) as RoturPacket;
+        if (!packet) return;
+        if (packet.origin?.username !== this.accounts) return;
+        if (packet.val.source_command !== "storage_usage") return;
+        if (packet.val.payload === "Not Logged In") {
+          reject("Not Logged In");
+          return;
+        }
+
+        resolve(packet.val.payload);
+
+        this.ws?.removeEventListener("message", handleStorageKey);
+      };
+      this.ws?.addEventListener("message", handleStorageKey);
+    });
   }
 
   accountStorageLimit() {
@@ -973,76 +964,76 @@ export class RoturExtension extends KernelModule {
   }
 
   accountStorageRemaining() {
-    if (this.authenticated && this.is_connected) {
-      return new Promise((resolve, reject) => {
-        this.ws?.send(
-          JSON.stringify({
-            cmd: "pmsg",
-            val: {
-              command: "storage_usage",
-              client: this.my_client,
-              id: this.userToken,
-            },
-            id: this.accounts,
-          })
-        );
+    if (!this.isAuthenticated()) return "Not Logged In";
 
-        const handleStorageKey = (event: Record<string, any>) => {
-          let packet = JSON.parse(event.data);
-          if (packet?.origin?.username === this.accounts) {
-            if (packet.val.source_command === "storage_usage") {
-              if (packet.val.payload === "Not Logged In") {
-                reject("Not Logged In");
-              } else {
-                resolve(1000000 - Number(packet.val.payload));
-              }
-              this.ws?.removeEventListener("message", handleStorageKey);
-            }
-          }
-        };
-        this.ws?.addEventListener("message", handleStorageKey);
-      });
-    }
-    return "Not Logged In";
-  }
-
-  sendMessage(args: Record<string, any>) {
-    if (!this.is_connected) {
-      console.error("Unable to send message: Not Connected");
-      return "";
-    }
-    this.ws?.send(
-      JSON.stringify({
+    return new Promise((resolve, reject) => {
+      this.socketSend({
         cmd: "pmsg",
         val: {
+          command: "storage_usage",
           client: this.my_client,
-          payload: args.PAYLOAD,
-          source: args.SOURCE,
-          target: args.TARGET,
-          timestamp: Date.now(),
+          id: this.userToken,
         },
-        id: args.USER,
-      })
-    );
+        id: this.accounts,
+      });
+
+      const handleStorageKey = (event: MessageEvent) => {
+        const packet = JSON.parse(event.data) as RoturPacket;
+
+        if (!packet) return;
+        if (packet.origin?.username !== this.accounts) return;
+        if (packet.val.source_command !== "storage_space") return;
+        if (packet.val.payload === "Not Logged In") {
+          reject("Not Logged In");
+
+          return;
+        }
+
+        resolve(1000000 - Number(packet.val.payload));
+
+        this.ws?.removeEventListener("message", handleStorageKey);
+      };
+      this.ws?.addEventListener("message", handleStorageKey);
+    });
+  }
+
+  sendMessage(args: SendMessageArguments) {
+    if (!this.is_connected) {
+      this.Log("Can't send a message if not connected", LogLevel.error);
+
+      return "";
+    }
+
+    this.socketSend({
+      cmd: "pmsg",
+      val: {
+        client: this.my_client,
+        payload: args.PAYLOAD,
+        source: args.SOURCE,
+        target: args.TARGET,
+        timestamp: Date.now(),
+      },
+      id: args.USER,
+    });
   }
 
   whenMessageReceived() {
     return true;
   }
 
-  getPacketsFromTarget(args: Record<string, any>) {
+  getPacketsFromTarget(args: TargetAggregationArguments) {
     return JSON.stringify(this.packets[args.TARGET] || "[]");
   }
 
-  numberOfPacketsOnTarget(args: Record<string, any>) {
+  numberOfPacketsOnTarget(args: TargetAggregationArguments) {
     return this.packets[args.TARGET] ? this.packets[args.TARGET].length : 0;
   }
 
-  getFirstPacketOnTarget(args: Record<string, any>) {
+  getFirstPacketOnTarget(args: TargetAggregationArguments) {
     return JSON.stringify(this.packets[args.TARGET]?.[0] || "{}");
   }
 
-  dataOfFirstPacketOnTarget(args: Record<string, any>) {
+  dataOfFirstPacketOnTarget(args: TargetAggregationArguments) {
     switch (args.DATA) {
       case "origin":
         return this.packets[args.TARGET]?.[0]?.origin || "";
@@ -1071,12 +1062,12 @@ export class RoturExtension extends KernelModule {
   }
 
   deleteFirstPacketOnTarget(args: Record<string, any>) {
-    if (this.packets[args.TARGET]) {
-      let packet = this.packets[args.TARGET]?.[0];
-      this.packets[args.TARGET].shift();
-      return JSON.stringify(packet);
-    }
-    return "{}";
+    if (!this.packets[args.TARGET]) return "{}";
+
+    const packet = this.packets[args.TARGET]?.[0];
+    this.packets[args.TARGET].shift();
+
+    return JSON.stringify(packet);
   }
 
   deletePacketsOnTarget(args: Record<string, any>) {
@@ -1088,30 +1079,22 @@ export class RoturExtension extends KernelModule {
   }
 
   clientIP() {
-    if (!this.is_connected) {
-      return "Not Connected";
-    }
-    return this.client.ip;
+    return this.is_connected ? this.client.ip : "Not Connected";
   }
 
   clientUsername() {
-    if (!this.is_connected) {
-      return "Not Connected";
-    }
-    return this.client.username;
+    return this.is_connected ? this.client.username : "Not Connected";
   }
 
   clientUsers() {
-    if (!this.is_connected) {
-      return "Not Connected";
-    }
+    if (!this.is_connected) return "Not Connected";
+
     return JSON.stringify(this.client.users);
   }
 
-  getUserDesignation(args: Record<string, any>) {
-    if (!this.is_connected) {
-      return "Not Connected";
-    }
+  getUserDesignation(args: UserDesignationArguments) {
+    if (!this.is_connected) return "Not Connected";
+
     return JSON.stringify(
       this.client.users?.filter((user) =>
         user.startsWith(args.DESIGNATION + "-")
@@ -1119,39 +1102,34 @@ export class RoturExtension extends KernelModule {
     );
   }
 
-  usernameConnected(args: Record<string, any>) {
-    if (!this.is_connected) {
-      return false;
-    }
-    if (!this.authenticated) {
-      return false;
-    }
-    let regexp = new RegExp(
-      '(?<=")[a-zA-Z]{3}-' + args.USER + '§\\S{10}(?=")',
+  usernameConnected(args: UsernameConectedArguments) {
+    if (!this.isAuthenticated()) return false;
+
+    const regexp = new RegExp(
+      `(?<=")[a-zA-Z]{3}-${args.USER}§\\S{10}(?=")`,
       "gi"
     );
+
     return JSON.stringify(this.client.users).match(regexp) !== null;
   }
 
-  userConnected(args: Record<string, any>) {
-    if (!this.is_connected) {
-      return "Not Connected";
-    }
-    if (args.DESIGNATION.length !== 3) {
-      return "Invalid Designation";
-    }
-    let regexp = new RegExp(
-      '(?<=")' + args.DESIGNATION + "-" + args.USER + '§\\S{10}(?=")',
+  userConnected(args: UserConnectedArguments) {
+    if (!this.is_connected) return "Not Connected";
+    if (args.DESIGNATION.length !== 3) return "Invalid Designation";
+
+    const regexp = new RegExp(
+      `(?<=")${args.DESIGNATION}-${args.USER}§\\S{10}(?=")`,
       "gi"
     );
+
     return JSON.stringify(this.client.users).match(regexp) !== null;
   }
 
-  findID(args: Record<string, any>) {
-    if (!this.is_connected) {
-      return "Not Connected";
-    }
-    let regexp = new RegExp("[a-zA-Z]{3}-" + args.USER + "§\\S{10}", "gi");
+  findID(args: UsernameConectedArguments) {
+    if (!this.is_connected) return "Not Connected";
+
+    const regexp = new RegExp(`[a-zA-Z]{3}-${args.USER}§\\S{10}`, "gi");
+
     return JSON.stringify(
       this.client.users?.filter((user) => user.match(regexp) !== null)
     );
@@ -1181,13 +1159,10 @@ export class RoturExtension extends KernelModule {
     return this.lastLeft;
   }
 
-  setSyncedVariable(args: Record<string, any>) {
-    if (!this.is_connected) {
-      return "Not Connected";
-    }
-    if (!this.authenticated) {
-      return "Not Logged In";
-    }
+  setSyncedVariable(args: SetSyncedVariableArguments) {
+    if (!this.is_connected) return "Not Connected";
+    if (!this.authenticated) return "Not Logged In";
+
     this.ws?.send(
       JSON.stringify({
         cmd: "pmsg",
@@ -1202,29 +1177,23 @@ export class RoturExtension extends KernelModule {
         id: args.USER,
       })
     );
-    if (!this.syncedVariables[args.USER]) {
-      this.syncedVariables[args.USER] = {};
-    }
+
+    if (!this.syncedVariables[args.USER]) this.syncedVariables[args.USER] = {};
+
     this.syncedVariables[args.USER][args.KEY] = args.VALUE;
   }
 
-  getSyncedVariable(args: Record<string, any>) {
-    if (!this.is_connected) {
-      return "Not Connected";
-    }
-    if (!this.authenticated) {
-      return "Not Logged In";
-    }
+  getSyncedVariable(args: GetOrDeleteSyncedVariableArguments) {
+    if (!this.is_connected) return "Not Connected";
+    if (!this.authenticated) return "Not Logged In";
+
     return JSON.stringify(this.syncedVariables[args.USER][args.KEY] || "");
   }
 
-  deleteSyncedVariable(args: Record<string, any>) {
-    if (!this.is_connected) {
-      return "Not Connected";
-    }
-    if (!this.authenticated) {
-      return "Not Logged In";
-    }
+  deleteSyncedVariable(args: GetOrDeleteSyncedVariableArguments) {
+    if (!this.is_connected) return "Not Connected";
+    if (!this.authenticated) return "Not Logged In";
+
     this.ws?.send(
       JSON.stringify({
         cmd: "pmsg",
@@ -1238,10 +1207,11 @@ export class RoturExtension extends KernelModule {
         id: args.USER,
       })
     );
+
     delete this.syncedVariables[args.USER][args.KEY];
   }
 
-  getSyncedVariables(args: Record<string, any>) {
+  getSyncedVariables(args: UsernameConectedArguments) {
     if (!this.is_connected) {
       return "Not Connected";
     }
@@ -1251,45 +1221,41 @@ export class RoturExtension extends KernelModule {
     return JSON.stringify(this.syncedVariables[args.USER] || {});
   }
 
-  sendMail(args: Record<string, any>) {
-    if (!this.is_connected) {
-      return "Not Connected";
-    }
-    if (!this.authenticated) {
-      return "Not Logged In";
-    }
-    return new Promise((resolve, reject) => {
-      this.ws?.send(
-        JSON.stringify({
-          cmd: "pmsg",
-          val: {
-            command: "omail_send",
-            client: this.my_client,
-            id: this.userToken,
-            payload: {
-              title: args.SUBJECT,
-              body: args.MESSAGE,
-              recipient: args.TO,
-            },
-          },
-          id: this.accounts,
-        })
-      );
+  sendMail(args: SendMailArguments) {
+    if (!this.is_connected) return "Not Connected";
+    if (!this.authenticated) return "Not Logged In";
 
-      const handleSendMailResponse = (event: Record<string, any>) => {
-        let packet = JSON.parse(event.data);
-        if (packet?.origin?.username === this.accounts) {
-          if (packet.val.source_command === "omail_send") {
-            if (packet.val.payload === "Successfully Sent Omail") {
-              resolve(`Mail sent to ${args.TO}`);
-            } else {
-              reject(
-                `Failed to send mail to ${args.TO}: ${packet.val.payload}`
-              );
-            }
-            this.ws?.removeEventListener("message", handleSendMailResponse);
-          }
+    return new Promise((resolve, reject) => {
+      this.socketSend({
+        cmd: "pmsg",
+        val: {
+          command: "omail_send",
+          client: this.my_client,
+          id: this.userToken,
+          payload: {
+            title: args.SUBJECT,
+            body: args.MESSAGE,
+            recipient: args.TO,
+          },
+        },
+        id: this.accounts,
+      });
+
+      const handleSendMailResponse = (event: MessageEvent) => {
+        const packet = JSON.parse(event.data) as RoturPacket;
+
+        if (!packet) return;
+        if (packet.origin?.username !== this.accounts) return;
+        if (packet.val.source_command !== "omail_send") return;
+        if (packet.val.payload !== "Successfully Sent Omail") {
+          reject(`Failed to send mail to ${args.TO}: ${packet.val.payload}`);
+
+          return;
         }
+
+        resolve(`Mail sent to ${args.TO}`);
+
+        this.ws?.removeEventListener("message", handleSendMailResponse);
       };
 
       this.ws?.addEventListener("message", handleSendMailResponse);
@@ -1297,35 +1263,34 @@ export class RoturExtension extends KernelModule {
   }
 
   getAllMail() {
-    if (!this.is_connected) {
-      return "Not Connected";
-    }
-    if (!this.authenticated) {
-      return "Not Logged In";
-    }
-    return new Promise((resolve, reject) => {
-      this.ws?.send(
-        JSON.stringify({
-          cmd: "pmsg",
-          val: {
-            command: "omail_getinfo",
-            client: this.my_client,
-            id: this.userToken,
-          },
-          id: this.accounts,
-        })
-      );
+    if (!this.is_connected) return "Not Connected";
+    if (!this.authenticated) return "Not Logged In";
 
-      const handleGetAllMailResponse = (event: Record<string, any>) => {
-        let packet = JSON.parse(event.data);
-        if (packet?.origin?.username === this.accounts) {
-          if (packet.val.source_command === "omail_getinfo") {
-            resolve(JSON.stringify(packet.val.payload));
-            this.ws?.removeEventListener("message", handleGetAllMailResponse);
-          } else {
-            reject("Failed to get all mail");
-          }
+    return new Promise((resolve, reject) => {
+      this.socketSend({
+        cmd: "pmsg",
+        val: {
+          command: "omail_getinfo",
+          client: this.my_client,
+          id: this.userToken,
+        },
+        id: this.accounts,
+      });
+
+      const handleGetAllMailResponse = (event: MessageEvent) => {
+        const packet = JSON.parse(event.data) as RoturPacket;
+
+        if (!packet) return;
+        if (packet.origin?.username !== this.accounts) return;
+        if (packet.val.source_command !== "omail_getinfo") {
+          reject("Failed to get all mail");
+
+          return;
         }
+
+        resolve(JSON.stringify(packet.val.payload));
+
+        this.ws?.removeEventListener("message", handleGetAllMailResponse);
       };
 
       this.ws?.addEventListener("message", handleGetAllMailResponse);
@@ -1333,38 +1298,35 @@ export class RoturExtension extends KernelModule {
   }
 
   getMail(args: Record<string, any>) {
-    if (!this.is_connected) {
-      return "Not Connected";
-    }
-    if (!this.authenticated) {
-      return "Not Logged In";
-    }
-    return new Promise((resolve, reject) => {
-      this.ws?.send(
-        JSON.stringify({
-          cmd: "pmsg",
-          val: {
-            command: "omail_getid",
-            client: this.my_client,
-            payload: args.ID,
-            id: this.userToken,
-          },
-          id: this.accounts,
-        })
-      );
+    if (!this.is_connected) return "Not Connected";
+    if (!this.authenticated) return "Not Logged In";
 
-      const handleGetMailResponse = (event: Record<string, any>) => {
-        let packet = JSON.parse(event.data);
-        if (packet?.origin?.username === this.accounts) {
-          if (packet.val?.source_command === "omail_getid") {
-            if (packet.val?.payload[0] === args.ID) {
-              resolve(JSON.stringify(packet.val?.payload[1]));
-            } else {
-              reject(`Failed to get mail with ID: ${args.ID}`);
-            }
-            this.ws?.removeEventListener("message", handleGetMailResponse);
-          }
+    return new Promise((resolve, reject) => {
+      this.socketSend({
+        cmd: "pmsg",
+        val: {
+          command: "omail_getid",
+          client: this.my_client,
+          payload: args.ID,
+          id: this.userToken,
+        },
+        id: this.accounts,
+      });
+
+      const handleGetMailResponse = (event: MessageEvent) => {
+        const packet = JSON.parse(event.data) as RoturPacket;
+
+        if (!packet) return;
+        if (packet.origin?.username !== this.accounts) return;
+        if (packet.val?.source_command !== "omail_getid") return;
+
+        if (packet.val?.payload[0] === args.ID) {
+          resolve(JSON.stringify(packet.val?.payload[1]));
+        } else {
+          reject(`Failed to get mail with ID: ${args.ID}`);
         }
+
+        this.ws?.removeEventListener("message", handleGetMailResponse);
       };
 
       this.ws?.addEventListener("message", handleGetMailResponse);
@@ -1372,40 +1334,36 @@ export class RoturExtension extends KernelModule {
   }
 
   deleteMail(args: Record<string, any>) {
-    if (!this.is_connected) {
-      return "Not Connected";
-    }
-    if (!this.authenticated) {
-      return "Not Logged In";
-    }
-    return new Promise((resolve, reject) => {
-      this.ws?.send(
-        JSON.stringify({
-          cmd: "pmsg",
-          val: {
-            command: "omail_delete",
-            client: this.my_client,
-            payload: args.ID,
-            id: this.userToken,
-          },
-          id: this.accounts,
-        })
-      );
+    if (!this.is_connected) return "Not Connected";
+    if (!this.authenticated) return "Not Logged In";
 
-      const handleDeleteMailResponse = (event: Record<string, any>) => {
-        let packet = JSON.parse(event.data);
-        if (packet?.origin.username === this.accounts) {
-          if (packet.val.source_command === "omail_delete") {
-            if (packet.val.payload === "Deleted Successfully") {
-              resolve(`Mail with ID ${args.ID} deleted`);
-            } else {
-              reject(
-                `Failed to delete mail with ID ${args.ID}: ${packet.val.payload}`
-              );
-            }
-            this.ws?.removeEventListener("message", handleDeleteMailResponse);
-          }
+    return new Promise((resolve, reject) => {
+      this.socketSend({
+        cmd: "pmsg",
+        val: {
+          command: "omail_delete",
+          client: this.my_client,
+          payload: args.ID,
+          id: this.userToken,
+        },
+        id: this.accounts,
+      });
+
+      const handleDeleteMailResponse = (event: MessageEvent) => {
+        const packet = JSON.parse(event.data) as RoturPacket;
+
+        if (!packet) return;
+        if (packet.origin?.username !== this.accounts) return;
+        if (packet.val?.source_command !== "omail_delete") return;
+
+        if (packet.val.payload === "Deleted Successfully") {
+          resolve(`Mail with ID ${args.ID} deleted`);
+        } else {
+          reject(
+            `Failed to delete mail with ID ${args.ID}: ${packet.val.payload}`
+          );
         }
+        this.ws?.removeEventListener("message", handleDeleteMailResponse);
       };
 
       this.ws?.addEventListener("message", handleDeleteMailResponse);
@@ -1413,28 +1371,23 @@ export class RoturExtension extends KernelModule {
   }
 
   deleteAllMail() {
-    if (!this.is_connected) {
-      return "Not Connected";
-    }
-    if (!this.authenticated) {
-      return "Not Logged In";
-    }
-    return new Promise((resolve, reject) => {
-      this.ws?.send(
-        JSON.stringify({
-          cmd: "pmsg",
-          val: {
-            command: "omail_delete",
-            client: this.my_client,
-            payload: "all",
-            id: this.userToken,
-          },
-          id: this.accounts,
-        })
-      );
+    if (!this.is_connected) return "Not Connected";
+    if (!this.authenticated) return "Not Logged In";
 
-      const handleDeleteAllMailResponse = (event: Record<string, any>) => {
-        let packet = JSON.parse(event.data);
+    return new Promise((resolve, reject) => {
+      this.socketSend({
+        cmd: "pmsg",
+        val: {
+          command: "omail_delete",
+          client: this.my_client,
+          payload: "all",
+          id: this.userToken,
+        },
+        id: this.accounts,
+      });
+
+      const handleDeleteAllMailResponse = (event: MessageEvent) => {
+        const packet = JSON.parse(event.data) as RoturPacket;
         if (packet?.origin.username === this.accounts) {
           if (packet.val.source_command === "omail_delete") {
             if (packet.val.payload === "Deleted Successfully") {
@@ -1478,21 +1431,19 @@ export class RoturExtension extends KernelModule {
       return "You Need Other Friends :/";
     }
     return new Promise((resolve, reject) => {
-      this.ws?.send(
-        JSON.stringify({
-          cmd: "pmsg",
-          val: {
-            command: "friend_request",
-            client: this.my_client,
-            payload: args.FRIEND,
-            id: this.userToken,
-          },
-          id: this.accounts,
-        })
-      );
+      this.socketSend({
+        cmd: "pmsg",
+        val: {
+          command: "friend_request",
+          client: this.my_client,
+          payload: args.FRIEND,
+          id: this.userToken,
+        },
+        id: this.accounts,
+      });
 
-      const handleSendFriendRequestResponse = (event: Record<string, any>) => {
-        let packet = JSON.parse(event.data);
+      const handleSendFriendRequestResponse = (event: MessageEvent) => {
+        const packet = JSON.parse(event.data) as RoturPacket;
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "friend_request") {
             if (packet.val.payload === "Sent Successfully") {
@@ -1523,21 +1474,19 @@ export class RoturExtension extends KernelModule {
       return "Not Friends";
     }
     return new Promise((resolve, reject) => {
-      this.ws?.send(
-        JSON.stringify({
-          cmd: "pmsg",
-          val: {
-            command: "friend_remove",
-            client: this.my_client,
-            payload: args.FRIEND,
-            id: this.userToken,
-          },
-          id: this.accounts,
-        })
-      );
+      this.socketSend({
+        cmd: "pmsg",
+        val: {
+          command: "friend_remove",
+          client: this.my_client,
+          payload: args.FRIEND,
+          id: this.userToken,
+        },
+        id: this.accounts,
+      });
 
-      const handleRemoveFriendResponse = (event: Record<string, any>) => {
-        let packet = JSON.parse(event.data);
+      const handleRemoveFriendResponse = (event: MessageEvent) => {
+        const packet = JSON.parse(event.data) as RoturPacket;
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "friend_remove") {
             if (packet.val.payload === "Friend Removed") {
@@ -1565,21 +1514,19 @@ export class RoturExtension extends KernelModule {
       return "No Request";
     }
     return new Promise((resolve, reject) => {
-      this.ws?.send(
-        JSON.stringify({
-          cmd: "pmsg",
-          val: {
-            command: "friend_accept",
-            client: this.my_client,
-            payload: args.FRIEND,
-            id: this.userToken,
-          },
-          id: this.accounts,
-        })
-      );
+      this.socketSend({
+        cmd: "pmsg",
+        val: {
+          command: "friend_accept",
+          client: this.my_client,
+          payload: args.FRIEND,
+          id: this.userToken,
+        },
+        id: this.accounts,
+      });
 
-      const handleRemoveFriendResponse = (event: Record<string, any>) => {
-        let packet = JSON.parse(event.data);
+      const handleRemoveFriendResponse = (event: MessageEvent) => {
+        const packet = JSON.parse(event.data) as RoturPacket;
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "friend_accept") {
             if (packet.val.payload === "Request Accepted") {
@@ -1611,23 +1558,19 @@ export class RoturExtension extends KernelModule {
       return "No Request";
     }
     return new Promise((resolve, reject) => {
-      this.ws?.send(
-        JSON.stringify({
-          cmd: "pmsg",
-          val: {
-            command: "friend_decline",
-            client: this.my_client,
-            payload: args.FRIEND,
-            id: this.userToken,
-          },
-          id: this.accounts,
-        })
-      );
+      this.socketSend({
+        cmd: "pmsg",
+        val: {
+          command: "friend_decline",
+          client: this.my_client,
+          payload: args.FRIEND,
+          id: this.userToken,
+        },
+        id: this.accounts,
+      });
 
-      const handleDeclineFriendRequestResponse = (
-        event: Record<string, any>
-      ) => {
-        let packet = JSON.parse(event.data);
+      const handleDeclineFriendRequestResponse = (event: MessageEvent) => {
+        const packet = JSON.parse(event.data) as RoturPacket;
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "friend_decline") {
             if (packet.val.payload === "Request Declined") {
@@ -1704,24 +1647,22 @@ export class RoturExtension extends KernelModule {
       return "Not Logged In";
     }
     return new Promise((resolve, reject) => {
-      this.ws?.send(
-        JSON.stringify({
-          cmd: "pmsg",
-          val: {
-            command: "currency_transfer",
-            client: this.my_client,
-            payload: {
-              amount: args.AMOUNT,
-              recipient: args.USER,
-            },
-            id: this.userToken,
+      this.socketSend({
+        cmd: "pmsg",
+        val: {
+          command: "currency_transfer",
+          client: this.my_client,
+          payload: {
+            amount: args.AMOUNT,
+            recipient: args.USER,
           },
-          id: this.accounts,
-        })
-      );
+          id: this.userToken,
+        },
+        id: this.accounts,
+      });
 
-      const handleTransferCurrencyResponse = (event: Record<string, any>) => {
-        let packet = JSON.parse(event.data);
+      const handleTransferCurrencyResponse = (event: MessageEvent) => {
+        const packet = JSON.parse(event.data) as RoturPacket;
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "currency_transfer") {
             if (packet.val.payload === "Transfer Successful") {
@@ -1801,21 +1742,19 @@ export class RoturExtension extends KernelModule {
       return "You Do Not Own This Item";
     }
     return new Promise((resolve) => {
-      this.ws?.send(
-        JSON.stringify({
-          cmd: "pmsg",
-          val: {
-            command: "item_data",
-            payload: args.ITEM,
-            id: this.userToken,
-            client: this.my_client,
-          },
-          id: this.accounts,
-        })
-      );
+      this.socketSend({
+        cmd: "pmsg",
+        val: {
+          command: "item_data",
+          payload: args.ITEM,
+          id: this.userToken,
+          client: this.my_client,
+        },
+        id: this.accounts,
+      });
 
-      const handleItemDataResponse = (event: Record<string, any>) => {
-        let packet = JSON.parse(event.data);
+      const handleItemDataResponse = (event: MessageEvent) => {
+        const packet = JSON.parse(event.data) as RoturPacket;
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "item_data") {
             resolve(packet.val.payload);
@@ -1838,21 +1777,19 @@ export class RoturExtension extends KernelModule {
       return "You Already Own This Item";
     }
     return new Promise((resolve, reject) => {
-      this.ws?.send(
-        JSON.stringify({
-          cmd: "pmsg",
-          val: {
-            command: "item_purchase",
-            payload: args.ITEM,
-            id: this.userToken,
-            client: this.my_client,
-          },
-          id: this.accounts,
-        })
-      );
+      this.socketSend({
+        cmd: "pmsg",
+        val: {
+          command: "item_purchase",
+          payload: args.ITEM,
+          id: this.userToken,
+          client: this.my_client,
+        },
+        id: this.accounts,
+      });
 
-      const handlePurchaseItemResponse = (event: Record<string, any>) => {
-        let packet = JSON.parse(event.data);
+      const handlePurchaseItemResponse = (event: MessageEvent) => {
+        const packet = JSON.parse(event.data) as RoturPacket;
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "item_purchase") {
             if (packet.val.payload === "Item Purchased") {
@@ -1879,21 +1816,19 @@ export class RoturExtension extends KernelModule {
       return "You Do Not Own This Item";
     }
     return new Promise((resolve) => {
-      this.ws?.send(
-        JSON.stringify({
-          cmd: "pmsg",
-          val: {
-            command: "item_info",
-            payload: args.ITEM,
-            id: this.userToken,
-            client: this.my_client,
-          },
-          id: this.accounts,
-        })
-      );
+      this.socketSend({
+        cmd: "pmsg",
+        val: {
+          command: "item_info",
+          payload: args.ITEM,
+          id: this.userToken,
+          client: this.my_client,
+        },
+        id: this.accounts,
+      });
 
-      const handleItemInfoResponse = (event: Record<string, any>) => {
-        let packet = JSON.parse(event.data);
+      const handleItemInfoResponse = (event: MessageEvent) => {
+        const packet = JSON.parse(event.data) as RoturPacket;
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "item_info") {
             resolve(
@@ -1918,21 +1853,19 @@ export class RoturExtension extends KernelModule {
     }
 
     return new Promise((resolve, reject) => {
-      this.ws?.send(
-        JSON.stringify({
-          cmd: "pmsg",
-          val: {
-            command: "item_public",
-            payload: args.PAGE,
-            id: this.userToken,
-            client: this.my_client,
-          },
-          id: this.accounts,
-        })
-      );
+      this.socketSend({
+        cmd: "pmsg",
+        val: {
+          command: "item_public",
+          payload: args.PAGE,
+          id: this.userToken,
+          client: this.my_client,
+        },
+        id: this.accounts,
+      });
 
-      const handlePublicItemsResponse = (event: Record<string, any>) => {
-        let packet = JSON.parse(event.data);
+      const handlePublicItemsResponse = (event: MessageEvent) => {
+        const packet = JSON.parse(event.data) as RoturPacket;
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "item_public") {
             reject(JSON.stringify(packet.val.payload));
@@ -1952,20 +1885,18 @@ export class RoturExtension extends KernelModule {
       return "Not Logged In";
     }
     return new Promise((resolve) => {
-      this.ws?.send(
-        JSON.stringify({
-          cmd: "pmsg",
-          val: {
-            command: "item_public_pages",
-            id: this.userToken,
-            client: this.my_client,
-          },
-          id: this.accounts,
-        })
-      );
+      this.socketSend({
+        cmd: "pmsg",
+        val: {
+          command: "item_public_pages",
+          id: this.userToken,
+          client: this.my_client,
+        },
+        id: this.accounts,
+      });
 
-      const handlePublicItemPagesResponse = (event: Record<string, any>) => {
-        let packet = JSON.parse(event.data);
+      const handlePublicItemPagesResponse = (event: MessageEvent) => {
+        const packet = JSON.parse(event.data) as RoturPacket;
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "item_public_pages") {
             resolve(packet.val.payload);
@@ -1998,27 +1929,25 @@ export class RoturExtension extends KernelModule {
       return "Not Logged In";
     }
     return new Promise((resolve, reject) => {
-      this.ws?.send(
-        JSON.stringify({
-          cmd: "pmsg",
-          val: {
-            command: "item_create",
-            payload: {
-              name: args.NAME,
-              description: args.DESCRIPTION,
-              price: args.PRICE,
-              data: args.CODE,
-              tradable: args.TRADABLE,
-            },
-            id: this.userToken,
-            client: this.my_client,
+      this.socketSend({
+        cmd: "pmsg",
+        val: {
+          command: "item_create",
+          payload: {
+            name: args.NAME,
+            description: args.DESCRIPTION,
+            price: args.PRICE,
+            data: args.CODE,
+            tradable: args.TRADABLE,
           },
-          id: this.accounts,
-        })
-      );
+          id: this.userToken,
+          client: this.my_client,
+        },
+        id: this.accounts,
+      });
 
-      const handleCreateItemResponse = (event: Record<string, any>) => {
-        let packet = JSON.parse(event.data);
+      const handleCreateItemResponse = (event: MessageEvent) => {
+        const packet = JSON.parse(event.data) as RoturPacket;
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "item_create") {
             if (packet.val.payload === "Item Created") {
@@ -2046,25 +1975,23 @@ export class RoturExtension extends KernelModule {
       return "You Do Not Own This Item";
     }
     return new Promise((resolve, reject) => {
-      this.ws?.send(
-        JSON.stringify({
-          cmd: "pmsg",
-          val: {
-            command: "item_update",
-            payload: {
-              item: args.ITEM,
-              key: args.KEY,
-              data: args.DATA,
-            },
-            id: this.userToken,
-            client: this.my_client,
+      this.socketSend({
+        cmd: "pmsg",
+        val: {
+          command: "item_update",
+          payload: {
+            item: args.ITEM,
+            key: args.KEY,
+            data: args.DATA,
           },
-          id: this.accounts,
-        })
-      );
+          id: this.userToken,
+          client: this.my_client,
+        },
+        id: this.accounts,
+      });
 
-      const handleUpdateItemResponse = (event: Record<string, any>) => {
-        let packet = JSON.parse(event.data);
+      const handleUpdateItemResponse = (event: MessageEvent) => {
+        const packet = JSON.parse(event.data) as RoturPacket;
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "item_update") {
             if (packet.val.payload === "Item Updated") {
@@ -2092,21 +2019,19 @@ export class RoturExtension extends KernelModule {
       return "You Do Not Own This Item";
     }
     return new Promise((resolve, reject) => {
-      this.ws?.send(
-        JSON.stringify({
-          cmd: "pmsg",
-          val: {
-            command: "item_delete",
-            payload: args.ITEM,
-            id: this.userToken,
-            client: this.my_client,
-          },
-          id: this.accounts,
-        })
-      );
+      this.socketSend({
+        cmd: "pmsg",
+        val: {
+          command: "item_delete",
+          payload: args.ITEM,
+          id: this.userToken,
+          client: this.my_client,
+        },
+        id: this.accounts,
+      });
 
-      const handleDeleteItemResponse = (event: Record<string, any>) => {
-        let packet = JSON.parse(event.data);
+      const handleDeleteItemResponse = (event: MessageEvent) => {
+        const packet = JSON.parse(event.data) as RoturPacket;
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "item_delete") {
             if (packet.val.payload === "Item Deleted") {
@@ -2131,21 +2056,19 @@ export class RoturExtension extends KernelModule {
       return "Not Logged In";
     }
     return new Promise((resolve, reject) => {
-      this.ws?.send(
-        JSON.stringify({
-          cmd: "pmsg",
-          val: {
-            command: "item_hide",
-            payload: args.ID,
-            id: this.userToken,
-            client: this.my_client,
-          },
-          id: this.accounts,
-        })
-      );
+      this.socketSend({
+        cmd: "pmsg",
+        val: {
+          command: "item_hide",
+          payload: args.ID,
+          id: this.userToken,
+          client: this.my_client,
+        },
+        id: this.accounts,
+      });
 
-      const handleHideItemResponse = (event: Record<string, any>) => {
-        let packet = JSON.parse(event.data);
+      const handleHideItemResponse = (event: MessageEvent) => {
+        const packet = JSON.parse(event.data) as RoturPacket;
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "item_hide") {
             if (packet.val.payload === "Item Hidden") {
@@ -2170,21 +2093,19 @@ export class RoturExtension extends KernelModule {
       return "Not Logged In";
     }
     return new Promise((resolve, reject) => {
-      this.ws?.send(
-        JSON.stringify({
-          cmd: "pmsg",
-          val: {
-            command: "item_show",
-            payload: args.ID,
-            id: this.userToken,
-            client: this.my_client,
-          },
-          id: this.accounts,
-        })
-      );
+      this.socketSend({
+        cmd: "pmsg",
+        val: {
+          command: "item_show",
+          payload: args.ID,
+          id: this.userToken,
+          client: this.my_client,
+        },
+        id: this.accounts,
+      });
 
-      const handleShowItemResponse = (event: Record<string, any>) => {
-        let packet = JSON.parse(event.data);
+      const handleShowItemResponse = (event: MessageEvent) => {
+        const packet = JSON.parse(event.data) as RoturPacket;
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "item_show") {
             if (packet.val.payload === "Item Shown") {

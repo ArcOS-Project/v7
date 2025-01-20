@@ -25,3 +25,44 @@ export interface RoturPacket<T = any> {
   rooms?: string[];
   source_command: string;
 }
+
+export interface SendMessageArguments {
+  PAYLOAD: string;
+  SOURCE: string;
+  TARGET: string;
+  USER: string;
+}
+
+export interface TargetAggregationArguments {
+  TARGET: string;
+  DATA: string;
+}
+
+export interface UserDesignationArguments {
+  DESIGNATION: string;
+}
+
+export interface UsernameConectedArguments {
+  USER: string;
+}
+
+export interface UserConnectedArguments {
+  USER: string;
+  DESIGNATION: string;
+}
+
+export interface SetSyncedVariableArguments {
+  USER: string;
+  KEY: string;
+  VALUE: any;
+}
+export interface GetOrDeleteSyncedVariableArguments {
+  USER: string;
+  KEY: string;
+}
+
+export interface SendMailArguments {
+  SUBJECT: string;
+  MESSAGE: string;
+  TO: string;
+}
