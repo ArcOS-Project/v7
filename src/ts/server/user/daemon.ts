@@ -1,17 +1,17 @@
+import { darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 import { Filesystem } from "$ts/fs";
 import { ServerFilesystemSupplier } from "$ts/fs/suppliers/server";
+import { UserDataFilesystemSupplier } from "$ts/fs/suppliers/userdata";
 import { applyDefaults } from "$ts/hierarchy";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
+import type { Notification } from "$types/notification";
 import type { UserInfo, UserPreferences } from "$types/user";
 import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
-import { UserDataFilesystemSupplier } from "$ts/fs/suppliers/userdata";
-import type { Notification } from "$types/notification";
-import { darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 
 export class UserDaemon extends Process {
   public initialized = false;

@@ -1,4 +1,3 @@
-import { GlobalDispatcher } from "$ts/dispatch";
 import { RoturExtension } from "$ts/rotur";
 import { ServerManager } from "$ts/server";
 import { Sleep } from "$ts/sleep";

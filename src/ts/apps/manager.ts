@@ -343,7 +343,7 @@ export class AppManager extends Process {
 
     const window = this.target.querySelector(`div.window[data-pid="${pid}"]`);
 
-    if (!window) return;
+    if (!window || !window.classList.contains("minimized")) return;
 
     window.classList.remove("minimized");
 

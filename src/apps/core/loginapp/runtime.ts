@@ -1,16 +1,14 @@
 import { getProfilePicture, ProfilePictures } from "$ts/images/pfp";
-import { ServerManager } from "$ts/server";
+import { Axios } from "$ts/server/axios";
 import { LoginUser } from "$ts/server/user/auth";
 import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
-import axios from "axios";
 import Cookies from "js-cookie";
 import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
 import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps } from "./types";
-import { Axios } from "$ts/server/axios";
 
 export class LoginAppRuntime extends AppProcess {
   public hideLockscreen = Store<boolean>(false);

@@ -1,12 +1,12 @@
 <script lang="ts">
+  import { RelativeTimeMod } from "$ts/dayjs";
   import type { UserDaemon } from "$ts/server/user/daemon";
   import { Sleep } from "$ts/sleep";
   import type { ErrorButton, Notification } from "$types/notification";
-  import { onMount } from "svelte";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
-  import { RelativeTimeMod } from "$ts/dayjs";
+  import { onMount } from "svelte";
 
   const {
     userDaemon,

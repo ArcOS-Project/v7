@@ -1,8 +1,8 @@
-import { get } from "./json/get";
-import { set } from "./json/set";
-import { parse } from "./json/parse";
-import { load } from "./json/load";
 import type { Library } from "$types/lang";
+import { get } from "./json/get";
+import { load } from "./json/load";
+import { parse } from "./json/parse";
+import { set } from "./json/set";
 
 export const JsonLibrary: Library = {
   get,

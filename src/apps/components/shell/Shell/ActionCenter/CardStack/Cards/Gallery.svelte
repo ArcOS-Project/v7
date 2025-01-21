@@ -2,7 +2,6 @@
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import { arrayToBlob } from "$ts/fs/convert";
   import type { UserPreferencesStore } from "$types/user";
-  import { Turtle } from "lucide-svelte";
   import { onDestroy, onMount } from "svelte";
   import type { Unsubscriber } from "svelte/store";
   import Spinner from "../../../../../../../lib/Spinner.svelte";

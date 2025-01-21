@@ -1,8 +1,7 @@
 import { toForm } from "$ts/form";
 import { Log } from "$ts/kernel/logging";
 import { LogLevel } from "$types/logging";
-import axios, { AxiosError } from "axios";
-import { ServerManager } from "..";
+import { AxiosError } from "axios";
 import { Axios } from "../axios";
 
 export async function LoginUser(identity: string, password: string) {
