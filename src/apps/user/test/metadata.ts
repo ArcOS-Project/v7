@@ -31,6 +31,7 @@ export const TestApp: App = {
     minimized: false,
     resizable: true,
     fullscreen: false,
+    headless: false,
   },
   controls: {
     minimize: true,

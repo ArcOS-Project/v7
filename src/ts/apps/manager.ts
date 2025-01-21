@@ -67,7 +67,7 @@ export class AppManager extends Process {
     window.setAttribute("data-pid", process.pid.toString());
     window.id = data.id;
 
-    if (!data.core) {
+    if (!data.core && !data.state.headless) {
       window.append(titlebar as HTMLDivElement, body);
     } else {
       window.append(body);
@@ -175,7 +175,7 @@ export class AppManager extends Process {
 
     new Draggable(window, {
       bounds: { top: 0, left: 0, right: 0 },
-      handle: titlebar,
+      handle: `.titlebar`,
       cancel: `.controls`,
       legacyTranslate: false,
       gpuAcceleration: false,

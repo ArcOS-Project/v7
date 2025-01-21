@@ -11,7 +11,6 @@ export class BootScreenRuntime extends AppProcess {
   public progress = Store<boolean>(false);
   public status = Store<string>("");
   public connected = Store<boolean>(false);
-  private globalDispatch: GlobalDispatcher;
   private rotur: RoturExtension;
 
   constructor(
@@ -22,7 +21,6 @@ export class BootScreenRuntime extends AppProcess {
   ) {
     super(handler, pid, parentPid, app);
 
-    this.globalDispatch = this.kernel.getModule<GlobalDispatcher>("dispatch");
     this.rotur = this.kernel.getModule<RoturExtension>("rotur");
   }
 

@@ -1,4 +1,5 @@
-div.window > div.titlebar {
+div.window > div.titlebar,
+div.window > div.body div.titlebar.custom {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -10,19 +11,22 @@ div.window > div.titlebar {
   font-size: 12px;
   position: relative;
 }
-div.window > div.titlebar div.window-title {
+div.window > div.titlebar div.window-title,
+div.window > div.body div.titlebar.custom div.window-title {
   display: flex;
   align-items: center;
   gap: 10px;
   line-height: 18px;
 }
 
-div.window > div.titlebar div.window-title > img {
+div.window > div.titlebar div.window-title > img,
+div.window > div.body div.titlebar.custom div.window-title > img {
   height: 20px;
   min-width: 20px;
 }
 
-div.window div.titlebar div.window-title > span {
+div.window > div.titlebar div.window-title > span,
+div.window > div.body div.titlebar.custom div.window-title > span {
   max-width: 100%;
   white-space: nowrap;
   overflow: hidden;

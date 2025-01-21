@@ -1,0 +1,28 @@
+#systemSettings > div.body {
+  padding: 0;
+  display: flex;
+  height: 100%;
+}
+
+#systemSettings > div.body div.sidebar {
+  width: 250px;
+  height: 100%;
+  border-right: var(--win-border);
+}
+
+#systemSettings > div.body div.container {
+  flex-grow: 1;
+  max-width: calc(100% - 250px);
+  background-color: var(--win-bg);
+}
+
+#systemSettings > div.body div.page-content {
+  padding: 15px;
+  padding-top: 10px;
+  height: calc(100% - 40px);
+}
+
+#systemSettings > div.body div.container h1.page-title {
+  font-size: 24px;
+  margin: 12px 5px;
+}

@@ -18,7 +18,7 @@ import type { PageButtons } from "./types";
 export class InitialSetupRuntime extends AppProcess {
   public pageNumber = Store<number>();
   public identityInfoValid = Store<boolean>(false);
-  public username = Store<string>();
+  public newUsername = Store<string>();
   public password = Store<string>();
   public confirm = Store<string>();
   public email = Store<string>();
@@ -125,14 +125,14 @@ export class InitialSetupRuntime extends AppProcess {
 
     const update = () => {
       this.identityInfoValid.set(
-        !!this.username() &&
+        !!this.newUsername() &&
           !!this.password() &&
           !!this.confirm() &&
           !!this.email()
       );
     };
 
-    this.username.subscribe(update);
+    this.newUsername.subscribe(update);
     this.password.subscribe(update);
     this.confirm.subscribe(update);
     this.email.subscribe(update);
@@ -199,7 +199,7 @@ export class InitialSetupRuntime extends AppProcess {
   }
 
   async createAccount() {
-    const username = this.username();
+    const username = this.newUsername();
     const password = this.password();
     const confirm = this.confirm();
     const email = this.email();
@@ -258,7 +258,7 @@ export class InitialSetupRuntime extends AppProcess {
   }
 
   async checkAccountActivation() {
-    const token = await LoginUser(this.username(), this.password());
+    const token = await LoginUser(this.newUsername(), this.password());
 
     if (!token) {
       MessageBox(

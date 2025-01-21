@@ -20,6 +20,7 @@ export const LoginApp: App = {
     minimized: false,
     resizable: false,
     fullscreen: true,
+    headless: true,
   },
   controls: {
     minimize: false,

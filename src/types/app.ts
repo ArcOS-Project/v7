@@ -35,6 +35,7 @@ export interface AppState {
   minimized: boolean;
   maximized: boolean;
   fullscreen: boolean;
+  headless: boolean;
 }
 
 export interface WindowControls {

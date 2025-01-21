@@ -1,14 +1,15 @@
-div.window div.titlebar div.controls {
+div.window > div.titlebar div.controls {
   display: flex;
   gap: 2px;
   height: 16px;
   position: relative;
 }
 
-div.window div.titlebar div.controls button {
+div.window > div.body div.titlebar.custom div.controls button,
+div.window > div.titlebar div.controls button {
   margin: 0;
   padding: 0;
-  background-color: transparent;
+  background-color: transparent !important;
   border: none;
   font-size: 16px;
   width: 18px;
@@ -17,11 +18,14 @@ div.window div.titlebar div.controls button {
   transition: opacity 0.2s;
 }
 
-div.window div.titlebar div.controls button:hover {
+div.window > div.body div.titlebar.custom div.controls button:hover,
+div.window > div.titlebar div.controls button:hover {
   color: var(--accent-light);
 }
 
-div.window div.titlebar div.controls button:disabled,
-div.window div.titlebar div.controls button:active {
+div.window > div.body div.titlebar.custom div.controls button:disabled,
+div.window > div.body div.titlebar.custom div.controls button:active,
+div.window > div.titlebar div.controls button:disabled,
+div.window > div.titlebar div.controls button:active {
   opacity: 0.2;
 }
