@@ -2,7 +2,6 @@ import { GlobalDispatcher } from "$ts/dispatch";
 import { Filesystem } from "$ts/fs";
 import { ArcLang } from "$ts/lang";
 import { RoturExtension } from "$ts/rotur";
-import { ContextMenu } from "$ts/ui/context";
 import type { KernelModule } from ".";
 import { ProcessHandler } from "../../process/handler";
 import { ServerManager } from "../../server";
@@ -16,5 +15,4 @@ export const KernelModules: Record<string, typeof KernelModule> = {
   fs: Filesystem,
   lang: ArcLang,
   rotur: RoturExtension,
-  context: ContextMenu,
 };
