@@ -1,0 +1,37 @@
+#systemSettings div.sidebar {
+  padding: 10px;
+}
+
+#systemSettings div.sidebar button.page {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 5px 7px;
+  margin-bottom: 5px;
+  background-color: transparent;
+}
+
+#systemSettings div.sidebar button.page:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#systemSettings div.sidebar button.page:active {
+  background-color: var(--button-glass-active-bg);
+}
+
+#systemSettings div.sidebar button.page.selected {
+  font-weight: bold;
+  background-color: var(--accent-transparent);
+}
+
+#systemSettings div.sidebar button.page img {
+  height: 24px;
+}
+
+#systemSettings div.sidebar hr {
+  margin-bottom: 5px;
+  border: none;
+  border-top: var(--button-glass-bg) 1px solid;
+}
