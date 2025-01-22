@@ -266,7 +266,7 @@ export class AppManager extends Process {
     });
 
     process.windowIcon.subscribe((v) => {
-      titleIcon.innerText = v;
+      titleIcon.src = v;
     });
 
     titleIcon.src = data.metadata.icon || ComponentIcon;

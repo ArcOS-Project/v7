@@ -30,9 +30,6 @@ export const DefaultUserPreferences: UserPreferences = {
       galleryImage: "",
       cardIndex: 0,
     },
-    window: {
-      bigTitlebar: true,
-    },
     start: {
       noGroups: false,
     },
@@ -57,6 +54,7 @@ export const DefaultUserPreferences: UserPreferences = {
     loginBackground: "img15",
   },
   isDefault: true,
+  userThemes: {},
 };
 
 export const DefaultUserInfo: UserInfo = {

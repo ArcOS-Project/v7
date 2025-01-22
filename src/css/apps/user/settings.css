@@ -2,6 +2,7 @@
 @import url("./settings/themesheader.css");
 @import url("./settings/section.css");
 @import url("./settings/page/account.css");
+@import url("./settings/page/themes.css");
 
 #systemSettings > div.body {
   padding: 0;

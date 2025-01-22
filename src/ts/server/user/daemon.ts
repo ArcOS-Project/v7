@@ -12,6 +12,7 @@ import type { UserInfo, UserPreferences } from "$types/user";
 import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
+import { UserThemeKeys, type UserTheme } from "$types/theme";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -225,5 +226,82 @@ export class UserDaemon extends Process {
   clearNotifications() {
     this.notifications = new Map<string, Notification>([]);
     this.globalDispatch.dispatch("update-notifications", [this.notifications]);
+  }
+
+  saveCurrentTheme(name: string) {
+    const id = `${Math.floor(Math.random() * 1e6)}`;
+
+    this.preferences.update((userPreferences) => {
+      const context: UserTheme = {
+        author: this.username,
+        version: "1.0",
+        name,
+        /** */
+        taskbarLabels: userPreferences.shell.taskbar.labels,
+        taskbarDocked: userPreferences.shell.taskbar.docked,
+        taskbarColored: userPreferences.shell.taskbar.colored,
+        noAnimations: userPreferences.shell.visuals.noAnimations,
+        sharpCorners: userPreferences.shell.visuals.sharpCorners,
+        compactContext: userPreferences.shell.visuals.compactContext,
+        noGlass: userPreferences.shell.visuals.noGlass,
+        desktopWallpaper: userPreferences.desktop.wallpaper,
+        desktopTheme: userPreferences.desktop.theme,
+        desktopAccent: userPreferences.desktop.accent,
+        loginBackground: userPreferences.account.loginBackground || "img15",
+      };
+
+      userPreferences.userThemes[id] = context;
+
+      return userPreferences;
+    });
+  }
+
+  applyThemeData(data: UserTheme, id?: string) {
+    const verifier = this.verifyTheme(data);
+
+    if (verifier !== "themeIsValid") {
+      this.Log(
+        `Not loading invalid theme! Missing ${verifier}`,
+        LogLevel.error
+      );
+
+      return false;
+    }
+
+    this.preferences.update((userPreferences) => {
+      userPreferences.shell.taskbar.labels = !!data.taskbarLabels;
+      userPreferences.shell.taskbar.docked = !!data.taskbarDocked;
+      userPreferences.shell.taskbar.colored = !!data.taskbarColored;
+      userPreferences.shell.visuals.noAnimations = !!data.noAnimations;
+      userPreferences.shell.visuals.sharpCorners = !!data.sharpCorners;
+      userPreferences.shell.visuals.compactContext = !!data.compactContext;
+      userPreferences.shell.visuals.noGlass = !!data.noGlass;
+      userPreferences.desktop.wallpaper = data.desktopWallpaper;
+      userPreferences.desktop.accent = data.desktopAccent;
+      userPreferences.desktop.theme = data.desktopTheme;
+      userPreferences.account.loginBackground = data.loginBackground || "img15";
+
+      if (id) userPreferences.currentThemeId = id;
+
+      return userPreferences;
+    });
+  }
+
+  applySavedTheme(id: string) {
+    const userPreferences = this.preferences();
+
+    if (!userPreferences.userThemes[id]) return;
+
+    this.applyThemeData(userPreferences.userThemes[id], id);
+  }
+
+  verifyTheme(data: UserTheme) {
+    const keys = Object.keys(data);
+
+    for (const key of UserThemeKeys) {
+      if (!keys.includes(key)) return key;
+    }
+
+    return "themeIsValid";
   }
 }

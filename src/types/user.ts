@@ -1,4 +1,5 @@
 import type { ReadableStore } from "$ts/writable";
+import type { ThemeStore } from "./theme";
 
 export interface UserInfo {
   username: string;
@@ -19,11 +20,12 @@ export interface UserPreferences {
   account: AccountSettings;
   isDefault?: boolean;
   desktop: DesktopPreferences;
+  userThemes: ThemeStore;
+  currentThemeId?: string;
 }
 
 export interface ShellPreferences {
   taskbar: TaskbarPreferences;
-  window: WindowPreferences;
   start: StartMenuPreferences;
   visuals: VisualPreferences;
   actionCenter: {
@@ -45,10 +47,6 @@ export interface TaskbarPreferences {
   clockDate: boolean;
   clock12hr: boolean;
   pinnedApps: string[];
-}
-
-export interface WindowPreferences {
-  bigTitlebar: boolean;
 }
 
 export interface DesktopPreferences {

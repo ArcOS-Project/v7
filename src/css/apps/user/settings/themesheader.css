@@ -2,6 +2,7 @@
   display: flex;
   align-items: center;
   gap: 20px;
+  padding-right: 5px;
 }
 #systemSettings div.themes-header div.screen {
   width: 265px;
@@ -66,4 +67,28 @@
   margin-left: auto;
   margin-top: auto;
   border-radius: 5px;
+}
+
+#systemSettings div.themes-header > div.right {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#systemSettings div.themes-header div.setting {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-grow: 1;
+}
+
+#systemSettings div.themes-header div.setting p.caption {
+  font-weight: bold;
+}
+
+#systemSettings div.themes-header div.setting p.sub {
+  font-size: 12px;
+  opacity: 0.5;
 }

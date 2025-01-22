@@ -1,0 +1,46 @@
+#systemSettings div.container.themes div.setting.color-picker input {
+  border: none;
+  width: 0px;
+  height: 0px;
+  padding: 0;
+  min-width: unset !important;
+  flex-grow: 0;
+  margin-left: -5px;
+  opacity: 0;
+}
+
+#systemSettings div.container.themes div.setting.color-picker button {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  padding: 0;
+}
+
+#systemSettings div.container.themes div.setting.color-picker div.right {
+  height: 20px;
+}
+
+#systemSettings div.container.themes div.setting.theme-selector div.left {
+  flex-grow: 1;
+}
+
+#systemSettings div.container.themes div.setting.theme-selector select {
+  appearance: none;
+  width: 100%;
+}
+
+#systemSettings div.container.themes div.setting.theme-selector p.sub {
+  /* opacity: 1; */
+  display: flex;
+  align-items: center;
+}
+
+#systemSettings
+  div.container.themes
+  div.setting.theme-selector
+  p.sub
+  span.lucide {
+  height: 16px;
+  width: 16px;
+  font-size: 16px;
+}
