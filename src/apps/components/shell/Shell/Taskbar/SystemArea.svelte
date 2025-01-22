@@ -8,5 +8,5 @@
 
 <div class="system-area">
   <div class="tray-icons"></div>
-  <Clock {userPreferences} {process} />
+  <Clock {userPreferences} />
 </div>

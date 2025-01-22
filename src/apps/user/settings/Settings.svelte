@@ -20,7 +20,7 @@
 </script>
 
 <Sidebar {process} />
-<div class="container">
+<div class="container {$currentPage}">
   <CustomTitlebar {process}><span></span></CustomTitlebar>
   <div class="page-content">
     {#if Page}

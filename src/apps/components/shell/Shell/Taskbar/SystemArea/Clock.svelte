@@ -1,18 +1,13 @@
 <script lang="ts">
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
   import type { UserPreferencesStore } from "$types/user";
   import dayjs from "dayjs";
-  import { onMount } from "svelte";
 
-  const {
-    userPreferences,
-    process,
-  }: { userPreferences: UserPreferencesStore; process: ShellRuntime } =
+  const { userPreferences }: { userPreferences: UserPreferencesStore } =
     $props();
 
   let text = $state("");
 
-  onMount(() => {
+  $effect(() => {
     setInterval(() => {
       const tb = $userPreferences.shell.taskbar;
 

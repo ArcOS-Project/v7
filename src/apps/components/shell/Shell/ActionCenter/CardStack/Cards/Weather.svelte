@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import type { WeatherInformation } from "$apps/components/shell/types";
-  import { onMount } from "svelte";
   import Spinner from "../../../../../../../lib/Spinner.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
@@ -9,8 +8,8 @@
   let data = $state<WeatherInformation>();
   let loading = $state<boolean>(true);
 
-  onMount(async () => {
-    await refresh();
+  $effect(() => {
+    refresh();
   });
 
   async function refresh() {

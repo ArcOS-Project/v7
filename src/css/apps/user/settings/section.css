@@ -1,0 +1,56 @@
+#systemSettings section {
+  width: 350px;
+  margin-top: 20px;
+}
+
+#systemSettings section p.caption {
+  padding: 0 10px;
+  margin-bottom: 8px;
+  opacity: 0.5;
+  font-weight: bold;
+}
+
+#systemSettings section div.content {
+  border-radius: 10px;
+  background-color: var(--button-bg);
+}
+
+#systemSettings section div.content div.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 41px;
+  padding: 0 10px;
+}
+
+#systemSettings section div.content div.option.chevron div.right {
+  height: 16px;
+}
+
+#systemSettings section div.content div.option div.right {
+  height: fit-content;
+}
+
+#systemSettings
+  section
+  div.content
+  div.option
+  div.right
+  > span.lucide.icon-chevron-right {
+  font-size: 16px;
+  opacity: 0.5;
+}
+
+#systemSettings section div.content div.option div.name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#systemSettings section div.content div.option div.name img {
+  height: 24px;
+}
+
+#systemSettings section div.content div.option + div.option {
+  border-top: var(--win-border);
+}

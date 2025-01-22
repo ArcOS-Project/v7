@@ -2,8 +2,6 @@
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import { arrayToBlob } from "$ts/fs/convert";
   import type { UserPreferencesStore } from "$types/user";
-  import { onDestroy, onMount } from "svelte";
-  import type { Unsubscriber } from "svelte/store";
   import Spinner from "../../../../../../../lib/Spinner.svelte";
 
   const {
@@ -12,15 +10,14 @@
   }: { userPreferences: UserPreferencesStore; process: ShellRuntime } =
     $props();
 
-  let unsubscribe: Unsubscriber;
   let url = $state("");
   let errored = $state(false);
   let noImage = $state(false);
   let loading = $state(true);
   let lastValue = "";
 
-  onMount(() => {
-    unsubscribe = userPreferences.subscribe(async (v) => {
+  $effect(() => {
+    const unsubscribe = userPreferences.subscribe(async (v) => {
       if (!v.shell.actionCenter.galleryImage) {
         noImage = true;
 
@@ -50,10 +47,8 @@
       const blob = arrayToBlob(contents);
       url = URL.createObjectURL(blob);
     });
-  });
 
-  onDestroy(() => {
-    if (unsubscribe) unsubscribe();
+    return () => unsubscribe();
   });
 </script>
 

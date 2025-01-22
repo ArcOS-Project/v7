@@ -4,7 +4,6 @@
   import { Sleep } from "$ts/sleep";
   import { htmlspecialchars } from "$ts/util";
   import type { AppComponentProps } from "$types/app";
-  import { onMount } from "svelte";
   import type { TestAppRuntime } from "./runtime";
 
   const { process }: AppComponentProps<TestAppRuntime> = $props();
@@ -14,7 +13,7 @@
   let result = $state<string[]>([]);
   let output = $state<string>();
 
-  onMount(() => [
+  $effect(() => {
     process.acceleratorStore.push({
       alt: true,
       shift: true,
@@ -22,8 +21,8 @@
       action: () => {
         run();
       },
-    }),
-  ]);
+    });
+  });
 
   async function run() {
     result = [];

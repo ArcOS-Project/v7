@@ -1,7 +1,5 @@
 <script lang="ts">
   import type { ReadableStore } from "$ts/writable";
-  import { onDestroy, onMount } from "svelte";
-  import type { Unsubscriber } from "svelte/store";
   import type { PageButton } from "../../types";
 
   const {
@@ -16,8 +14,6 @@
     actionsDisabled: ReadableStore<boolean>;
   } = $props();
 
-  let identityInfoUnsubscribe: Unsubscriber;
-  let pageNumberUnsubscribe: Unsubscriber;
   let disabled = $state(false);
 
   async function action() {
@@ -42,19 +38,23 @@
     disabled = await button.disabled();
   }
 
-  onMount(async () => {
-    identityInfoUnsubscribe = identityInfoValid.subscribe(update);
-    pageNumberUnsubscribe = pageNumber.subscribe(update);
+  $effect(() => {
+    const identityInfoUnsubscribe = identityInfoValid.subscribe(update);
+    const pageNumberUnsubscribe = pageNumber.subscribe(update);
 
-    if (button && button.disabled) disabled = await button.disabled();
+    if (button && button.disabled) checkDisabled();
 
     disabled = disabled;
+
+    return () => {
+      identityInfoUnsubscribe();
+      pageNumberUnsubscribe();
+    };
   });
 
-  onDestroy(() => {
-    if (identityInfoUnsubscribe) identityInfoUnsubscribe();
-    if (pageNumberUnsubscribe) pageNumberUnsubscribe();
-  });
+  async function checkDisabled() {
+    disabled = (await button?.disabled?.()) || false;
+  }
 </script>
 
 {#if button}

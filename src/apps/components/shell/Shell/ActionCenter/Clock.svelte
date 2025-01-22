@@ -1,11 +1,10 @@
 <script lang="ts">
   import dayjs from "dayjs";
-  import { onMount } from "svelte";
 
-  let timeStr = "";
-  let dateStr = "";
+  let timeStr = $state("");
+  let dateStr = $state("");
 
-  onMount(() => {
+  $effect(() => {
     setInterval(() => {
       timeStr = dayjs().format(`HH:mm`);
       dateStr = dayjs().format(`dddd, D MMMM`);

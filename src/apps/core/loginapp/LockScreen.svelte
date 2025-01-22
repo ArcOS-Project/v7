@@ -2,7 +2,6 @@
   import type { ReadableStore } from "$ts/writable";
   import dayjs from "dayjs";
   import advancedFormat from "dayjs/plugin/advancedFormat";
-  import { onDestroy, onMount } from "svelte";
 
   const { hideLockscreen }: { hideLockscreen: ReadableStore<boolean> } =
     $props();
@@ -11,19 +10,16 @@
 
   let currentTime = $state("");
   let currentDate = $state("");
-  let interval: NodeJS.Timeout;
 
   function updateTime() {
     currentTime = dayjs().format("HH:mm");
     currentDate = dayjs().format("dddd D MMMM");
   }
 
-  onDestroy(() => {
-    clearInterval(interval);
-  });
+  $effect(() => {
+    const interval = setInterval(updateTime, 500);
 
-  onMount(() => {
-    interval = setInterval(updateTime, 500);
+    return () => clearInterval(interval);
   });
 
   function hide() {

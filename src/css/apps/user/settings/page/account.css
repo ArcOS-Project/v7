@@ -1,0 +1,37 @@
+#systemSettings div.container.account div.header img {
+  height: 128px;
+  border-radius: 64px;
+}
+
+#systemSettings div.container.account div.header div.profile-picture {
+  position: relative;
+  width: 128px;
+  height: 128px;
+  margin: 0 auto;
+  margin-bottom: 15px;
+}
+
+#systemSettings
+  div.container.account
+  div.header
+  div.profile-picture
+  button.lucide {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 15px;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  outline: var(--win-bg) 3px solid !important;
+  outline-offset: -1px !important;
+}
+
+#systemSettings div.container.account div.header h1.account-name {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+#systemSettings div.container.account div.header p.email {
+  opacity: 0.5;
+}

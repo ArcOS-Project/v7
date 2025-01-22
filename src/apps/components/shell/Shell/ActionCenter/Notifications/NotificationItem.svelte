@@ -6,7 +6,6 @@
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
-  import { onMount } from "svelte";
 
   const {
     userDaemon,
@@ -28,7 +27,7 @@
   dayjs.extend(updateLocale);
   dayjs.updateLocale("en", RelativeTimeMod);
 
-  onMount(() => {
+  $effect(() => {
     userDaemon.globalDispatch.subscribe(
       "delete-notification",
       async ([deletedId]) => {

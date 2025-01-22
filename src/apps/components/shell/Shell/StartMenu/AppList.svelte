@@ -1,26 +1,21 @@
 <script lang="ts">
   import { isPopulatable } from "$ts/apps/util";
   import type { App } from "$types/app";
-  import { onDestroy, onMount } from "svelte";
-  import type { Unsubscriber } from "svelte/store";
   import type { ShellRuntime } from "../../runtime";
   import ListItem from "./AppList/ListItem.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
 
-  let unsubscribe: Unsubscriber;
   let apps = $state<App[]>([]);
 
-  onMount(() => {
+  $effect(() => {
     if (!process.handler.renderer) return;
 
-    unsubscribe = process.handler.renderer.appStore.subscribe((v) => {
+    const unsubscribe = process.handler.renderer.appStore.subscribe((v) => {
       apps = [...v].map(([_, app]) => app.data);
     });
-  });
 
-  onDestroy(() => {
-    unsubscribe();
+    return () => unsubscribe();
   });
 </script>
 

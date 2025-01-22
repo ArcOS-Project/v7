@@ -2,7 +2,7 @@
   import type { AppManager } from "$ts/apps/manager";
   import { AppProcess } from "$ts/apps/process";
   import { ComponentIcon } from "$ts/images/general";
-  import { onMount, type Snippet } from "svelte";
+  import { type Snippet } from "svelte";
 
   const { process, children }: { process: AppProcess; children?: Snippet } =
     $props();
@@ -11,7 +11,7 @@
 
   let renderer: AppManager | undefined;
 
-  onMount(() => {
+  $effect(() => {
     renderer = process.handler.renderer;
   });
 

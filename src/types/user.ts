@@ -82,6 +82,7 @@ export interface SecurityPreferences {
 export interface AccountSettings {
   profilePicture: string | number | null;
   loginBackground: string;
+  displayName?: string;
 }
 
 export interface ApplicationPreferences {

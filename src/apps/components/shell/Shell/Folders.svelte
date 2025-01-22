@@ -4,7 +4,6 @@
   import { FolderIcon } from "$ts/images/filesystem";
   import type { FolderEntry } from "$types/fs";
   import type { UserPreferencesStore } from "$types/user";
-  import { onMount } from "svelte";
   import type { ShellRuntime } from "../runtime";
   import UserButton from "./Folders/UserButton.svelte";
 
@@ -20,7 +19,7 @@
 
   let dirs: FolderEntry[] = $state([]);
 
-  onMount(async () => {
+  $effect(() => {
     onFolderChange("", update);
   });
 

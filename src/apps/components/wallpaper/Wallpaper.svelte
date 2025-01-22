@@ -3,20 +3,19 @@
   import { Wallpapers } from "$ts/wallpaper/store";
   import type { AppComponentProps } from "$types/app";
   import type { Wallpaper } from "$types/wallpaper";
-  import { onMount } from "svelte";
-  import type { Unsubscriber } from "svelte/store";
   import type { WallpaperRuntime } from "./runtime";
 
   const { process }: AppComponentProps<WallpaperRuntime> = $props();
   const { userPreferences } = process;
 
   let wallpaper = $state<Wallpaper>();
-  let unsubscribe: Unsubscriber | undefined;
 
-  onMount(() => {
-    unsubscribe = userPreferences?.subscribe(async (v) => {
+  $effect(() => {
+    const unsubscribe = userPreferences?.subscribe(async (v) => {
       wallpaper = await getWallpaper(v.desktop.wallpaper);
     });
+
+    return () => unsubscribe();
   });
 </script>
 

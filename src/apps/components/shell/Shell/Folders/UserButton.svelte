@@ -3,7 +3,6 @@
   import { ComponentIcon } from "$ts/images/general";
   import { getProfilePicture, ProfilePictures } from "$ts/images/pfp";
   import type { UserPreferencesStore } from "$types/user";
-  import { onMount } from "svelte";
   import type { ShellRuntime } from "../../runtime";
 
   const {
@@ -18,7 +17,7 @@
 
   let pfp = $state<string>(ProfilePictures.def);
 
-  onMount(async () => {
+  $effect(() => {
     pfp = getProfilePicture($userPreferences.account.profilePicture);
   });
 

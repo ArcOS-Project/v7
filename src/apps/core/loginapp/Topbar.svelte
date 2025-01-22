@@ -3,10 +3,8 @@
   import { ArcBuild } from "$ts/metadata/build";
   import type { ReadableStore } from "$ts/writable";
   import dayjs from "dayjs";
-  import { onDestroy, onMount } from "svelte";
 
   let time = $state("");
-  let interval: NodeJS.Timeout;
 
   const {
     hideLockscreen,
@@ -18,12 +16,13 @@
     errorMessage: ReadableStore<string>;
   } = $props();
 
-  onMount(() => {
-    interval = setInterval(() => (time = dayjs().format("MMM D, HH:mm")), 500);
-  });
+  $effect(() => {
+    const interval = setInterval(
+      () => (time = dayjs().format("MMM D, HH:mm")),
+      500
+    );
 
-  onDestroy(() => {
-    clearInterval(interval);
+    return () => clearInterval(interval);
   });
 
   function lock() {
