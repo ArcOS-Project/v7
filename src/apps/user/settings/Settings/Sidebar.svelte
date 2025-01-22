@@ -1,12 +1,15 @@
 <script lang="ts">
   import type { SettingsRuntime } from "../runtime";
   import { settingsPageStore } from "../store";
+  import AccountButton from "./Sidebar/AccountButton.svelte";
 
   const { process }: { process: SettingsRuntime } = $props();
   const { currentPage } = process;
 </script>
 
 <div class="sidebar">
+  <AccountButton {process} />
+  <hr />
   {#each [...settingsPageStore] as [id, page]}
     {#if !page.hidden}
       <button

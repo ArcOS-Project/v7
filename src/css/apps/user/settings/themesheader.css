@@ -1,0 +1,69 @@
+#systemSettings div.themes-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+#systemSettings div.themes-header div.screen {
+  width: 265px;
+  height: 150px;
+  border-radius: 10px;
+  border: #000 10px solid;
+  outline: var(--button-bg) 1px solid !important;
+  background-image: var(--url);
+  background-position: center;
+  background-size: cover;
+  padding: 3px;
+}
+
+#systemSettings div.themes-header div.screen.desktop {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: end;
+  gap: 15px;
+}
+#systemSettings div.themes-header div.screen.desktop div.fake-taskbar {
+  width: 100%;
+  height: 20px;
+  border: var(--win-border) 1px solid;
+  backdrop-filter: blur(10px);
+  background-color: var(--glass-bg);
+  border-radius: 5px;
+}
+
+#systemSettings div.themes-header div.screen.desktop div.fake-window {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: var(--win-border);
+  padding: 12px;
+  margin-right: 10px;
+  display: flex;
+  gap: 5px;
+  flex-direction: column;
+}
+
+#systemSettings div.themes-header div.fake-window div.heading {
+  width: 50px;
+  height: 3px;
+  border-radius: 1.5px;
+  background-color: var(--fg);
+}
+
+#systemSettings div.themes-header div.fake-window div.text {
+  width: 30px;
+  height: 2px;
+  border-radius: 1px;
+  background-color: var(--fg);
+}
+
+#systemSettings div.themes-header div.fake-window div.button {
+  background-color: var(--accent);
+  width: 30px;
+  height: 10px;
+  margin-left: auto;
+  margin-top: auto;
+  border-radius: 5px;
+}

@@ -31,7 +31,37 @@
 }
 
 #systemSettings div.sidebar hr {
-  margin-bottom: 5px;
+  margin: 8px 0;
+  /* margin-bottom: 8px; */
   border: none;
   border-top: var(--button-glass-bg) 1px solid;
+}
+
+#systemSettings div.sidebar button.account-button {
+  padding: 8px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  text-align: left;
+  width: 100%;
+  margin-bottom: 5px;
+  background-color: transparent;
+}
+
+#systemSettings div.sidebar button.account-button.selected {
+  background-color: var(--accent-transparent);
+}
+
+#systemSettings div.sidebar button.account-button p.email {
+  opacity: 0.5;
+  font-size: 12px;
+}
+
+#systemSettings div.sidebar button.account-button p.account-name {
+  font-weight: bold;
+}
+
+#systemSettings div.sidebar button.account-button img {
+  height: 32px;
+  border-radius: 16px;
 }

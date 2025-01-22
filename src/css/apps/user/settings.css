@@ -1,6 +1,7 @@
 @import url("./settings/sidebar.css");
-@import url("./settings/page/account.css");
+@import url("./settings/themesheader.css");
 @import url("./settings/section.css");
+@import url("./settings/page/account.css");
 
 #systemSettings > div.body {
   padding: 0;
@@ -24,6 +25,13 @@
   padding: 15px;
   padding-top: 10px;
   height: calc(100% - 40px);
+  transition: pointer-events 0s, scale 0.3s, opacity 0.3s;
+}
+
+#systemSettings > div.body div.page-content.hide {
+  pointer-events: none;
+  scale: 0.95;
+  opacity: 0;
 }
 
 #systemSettings > div.body div.container h1.page-title {
