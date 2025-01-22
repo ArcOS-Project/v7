@@ -1058,14 +1058,14 @@ class FSL extends Process {
   }
   
   public runFunction(
-    content,
-    func,
+    content: any,
+    func: any,
     scope = {},
     root = false,
     stringify = false
   ) {
     if (root) {
-      const out = runFunctionRaw(content, content, scope, stringify);
+      const out = this.runFunctionRaw(content, content, scope, stringify);
       if (out) {
         return out;
       }
@@ -1080,46 +1080,46 @@ class FSL extends Process {
         }
       });
       if (funcDef) {
-        return runFunctionRaw(content, funcDef["data"]["data"], scope, stringify);
+        return this.runFunctionRaw(content, funcDef["data"]["data"], scope, stringify);
       }
     }
   }
-  runFunctionRaw(content, segment, scope = {}, stringify = false) {
-    const astID = allocate(content);
-    const dataID = allocate({
+  runFunctionRaw(content: any, segment: any, scope = {}, stringify = false) {
+    const astID = this.allocate(content);
+    const dataID = this.allocate({
       scope: "",
-      trace: allocate(traceMake(content)),
+      trace: this.allocate(this.traceMake(content)),
       ast: astID,
       memory_addresses: [],
     });
-    const segmentScopeID = getScope(scope, segment["definitions"], dataID);
-    const scopeID = getScope(
-      memory[segmentScopeID],
+    const segmentScopeID = this.getScope(scope, segment["definitions"], dataID);
+    const scopeID = this.getScope(
+      this.memory[segmentScopeID],
       content["definitions"],
       dataID
     );
-    memory[dataID]["typeAttributes"] = allocate(
-      toNormalObject(allocateTypedObjectContents(globalTypeAttributes, dataID)),
+    this.memory[dataID]["typeAttributes"] = this.allocate(
+      this.toNormalObject(this.allocateTypedObjectContents(this.globalTypeAttributes, dataID)),
       dataID
     );
-    const typeAttr = memory[memory[dataID]["typeAttributes"]];
+    const typeAttr = this.memory[this.memory[dataID]["typeAttributes"]];
     Object.keys(typeAttr).map((k) => {
-      typeAttr[k] = toNormalObject(typeAttr[k]);
+      typeAttr[k] = this.toNormalObject(typeAttr[k]);
     });
     memory[dataID]["scope"] = scopeID;
-    let out = runSegmentRaw(segment["data"], dataID);
+    let out = this.runSegmentRaw(segment["data"], dataID);
   
     if (stringify && out) {
-      out = castType(null, out, "str")[0];
+      out = this.castType(null, out, "str")[0];
     }
   
     // cleanup
-    const ids = memory[dataID]["memory_addresses"];
-    deAllocate(
+    const ids = this.memory[dataID]["memory_addresses"];
+    this.deAllocate(
       scopeID,
       segmentScopeID,
       astID,
-      memory[dataID]["trace"],
+      this.memory[dataID]["trace"],
       dataID,
       ...ids
     );
@@ -1127,19 +1127,19 @@ class FSL extends Process {
     return out;
   }
   runSegmentRaw(content, dataID) {
-    traceAdd(dataID, "content");
+    this.traceAdd(dataID, "content");
     for (let i = 0; i < content.length; i++) {
-      const out = runNode(content[i], dataID);
+      const out = this.runNode(content[i], dataID);
       if (typeof out == "object" && out && !Array.isArray(out)) {
         if (out["kind"] == "return") {
           return out["data"];
         }
       }
     }
-    traceOut(dataID);
+    this.traceOut(dataID);
   }
   runNodes(args, dataID) {
-    return args.map((arg) => runNode(arg, dataID));
+    return args.map((arg) => this.runNode(arg, dataID));
   }
   runNode(node, dataID, flags = [], extraData = {}) {
     if (Array.isArray(node)) {
@@ -1150,18 +1150,18 @@ class FSL extends Process {
     }
     switch (node["kind"]) {
       case "execution":
-        return runExecution(
-          runNode(node["key"], dataID),
+        return this.runExecution(
+          this.runNode(node["key"], dataID),
           node["key"],
           node["args"],
           node["content"],
           dataID
         );
       case "spacedCommand":
-        return runExecution(
-          runNode(node["key"], dataID),
+        return this.runExecution(
+          this.runNode(node["key"], dataID),
           node["key"],
-          [runNode(node["data"], dataID)],
+          [this.runNode(node["data"], dataID)],
           null,
           dataID,
           "spaced"
@@ -1169,49 +1169,49 @@ class FSL extends Process {
       case "variable":
         // no im not explaining this
         if (flags.includes("check")) {
-          return Object.keys(memory[memory[dataID]["scope"]]).includes(
+          return Object.keys(this.memory[this.memory[dataID]["scope"]]).includes(
             node["name"]
           );
         }
-        if (Object.keys(memory[memory[dataID]["scope"]]).includes(node["name"])) {
+        if (Object.keys(this.memory[this.memory[dataID]["scope"]]).includes(node["name"])) {
           if (flags.includes("assignment")) {
-            return memory[memory[dataID]["scope"]][node["name"]];
+            return this.memory[this.memory[dataID]["scope"]][node["name"]];
           }
-          return getMemory(memory[memory[dataID]["scope"]][node["name"]], dataID);
+          return this.getMemory(this.memory[this.memory[dataID]["scope"]][node["name"]], dataID);
         } else {
           if (flags.includes("assignment")) {
-            const id = randomStr(10);
-            memory[dataID]["memory_addresses"].push(id);
-            memory[memory[dataID]["scope"]][node["name"]] = id;
+            const id = this.randomStr(10);
+            this.memory[dataID]["memory_addresses"].push(id);
+            this.memory[this.memory[dataID]["scope"]][node["name"]] = id;
             return id;
           }
-          error(dataID, "variable not defined", node["name"]);
-          return inst("null", "null");
+          this.error(dataID, "variable not defined", node["name"]);
+          return this.inst("null", "null");
         }
       case "operation":
-        return runOperation(
+        return this.runOperation(
           node["operator"],
-          runNode(node["a"], dataID),
-          runNode(node["b"], dataID),
+          this.runNode(node["a"], dataID),
+          this.runNode(node["b"], dataID),
           dataID
         );
       case "comparison":
-        return runComparison(
+        return this.runComparison(
           node["type"],
-          runNode(node["a"], dataID),
-          runNode(node["b"], dataID),
+          this.runNode(node["a"], dataID),
+          this.runNode(node["b"], dataID),
           dataID
         );
       case "logic":
-        return runLogic(
+        return this.runLogic(
           node["type"],
-          runNode(node["a"], dataID),
-          runNode(node["b"], dataID),
+          this.runNode(node["a"], dataID),
+          this.runNode(node["b"], dataID),
           dataID
         );
       case "assignment":
-        let value = runNode(node["value"], dataID);
-        const reference = runNode(node["key"], dataID, ["assignment"]);
+        let value = this.runNode(node["value"], dataID);
+        const reference = this.runNode(node["key"], dataID, ["assignment"]);
         if (
           [
             "addition",
@@ -1223,27 +1223,27 @@ class FSL extends Process {
             "power",
           ].includes(node["type"])
         ) {
-          const base = runNode(runNode(node["key"], dataID));
-          value = runOperation(node["type"], base, value);
+          const base = this.runNode(this.runNode(node["key"], dataID));
+          value = this.runOperation(node["type"], base, value);
         }
         if (reference && typeof reference !== "object") {
-          memory[reference] = value;
+          this.memory[reference] = value;
         } else {
-          error(dataID, "cannot assign to non-allocatable value");
+          this.error(dataID, "cannot assign to non-allocatable value");
         }
         return value;
       case "key":
-        let keyOrg = runNode(node["data"], dataID);
-        const id = runKey(
+        let keyOrg = this.runNode(node["data"], dataID);
+        const id = this.runKey(
           keyOrg,
-          runNode(node["key"], dataID),
+          this.runNode(node["key"], dataID),
           node["isMethod"],
           dataID
         );
         if (flags.includes("assignment")) {
           return id;
         }
-        let keyOut = getMemory(id, dataID);
+        let keyOut = this.getMemory(id, dataID);
         if (keyOut) {
           if (keyOut.length == 2) {
             keyOut.push({});
@@ -1251,53 +1251,53 @@ class FSL extends Process {
           keyOut[2]["original"] = keyOrg;
           return keyOut;
         }
-        return inst("null", "null");
+        return this.inst("null", "null");
       case "range":
         let range = [];
-        const a = runNode(node["a"], dataID),
-          b = runNode(node["b"], dataID);
+        const a = this.runNode(node["a"], dataID),
+          b = this.runNode(node["b"], dataID);
         if (a[1] != "num" || b[1] != "num") {
-          error(dataID, "both sides of range must be a num");
+          this.error(dataID, "both sides of range must be a num");
         }
         for (let i = a[0]; i <= b[0]; i++) {
-          range.push(allocate(inst(i, "num"), dataID));
+          range.push(this.allocate(this.inst(i, "num"), dataID));
         }
-        return inst(range, "tuple");
+        return this.inst(range, "tuple");
       case "cast":
-        const type = runNode(node["type"], dataID);
+        const type = this.runNode(node["type"], dataID);
         if (type[1] !== "type") {
-          error(dataID, "cannot cast to non-type value");
+          this.error(dataID, "cannot cast to non-type value");
         }
-        return castType(dataID, runNode(node["data"], dataID), type[0]);
+        return this.castType(dataID, this.runNode(node["data"], dataID), type[0]);
   
       case "tuple":
-        return inst(
-          node["data"].map((elem) => allocate(runNode(elem, dataID), dataID)),
+        return this.inst(
+          node["data"].map((elem) => this.allocate(this.runNode(elem, dataID), dataID)),
           "tuple"
         );
       case "array":
-        return inst(
-          node["data"].map((elem) => allocate(runNode(elem, dataID), dataID)),
+        return this.inst(
+          node["data"].map((elem) => this.allocate(this.runNode(elem, dataID), dataID)),
           "arr"
         );
       case "object":
-        return inst(
+        return this.inst(
           {
-            keys: node["keys"].map((key) => runNode(key, dataID)),
+            keys: node["keys"].map((key) => this.runNode(key, dataID)),
             values: node["values"].map((value) =>
-              allocate(runNode(value, dataID), dataID)
+              this.allocate(this.runNode(value, dataID), dataID)
             ),
           },
           "obj"
         );
       case "function":
-        return inst(node["data"], "func");
+        return this.inst(node["data"], "func");
   
       case "unknown":
-        error(dataID, "unknown tokens", node["data"]);
-        return inst("null", "null");
+        this.error(dataID, "unknown tokens", node["data"]);
+        return this.inst("null", "null");
       default:
-        error(dataID, "unknown node type", node["kind"]);
+        this.error(dataID, "unknown node type", node["kind"]);
     }
   }
   runExecution(
@@ -1308,10 +1308,10 @@ class FSL extends Process {
     dataID,
     type = "standard"
   ) {
-    if (!execution) return inst("null", "null");
+    if (!execution) return this.inst("null", "null");
     if (execution[1] !== "func") {
-      error(dataID, "cannot run values of type", execution[1]);
-      return inst("null", "null");
+      this.error(dataID, "cannot run values of type", execution[1]);
+      return this.inst("null", "null");
     }
     if (typeof execution[0] == "string") execution[0] = memory[execution[0]];
   
@@ -1326,25 +1326,25 @@ class FSL extends Process {
             ? execution[2]["functionStrict"]
             : true
         ) {
-          error(dataID, "cannot run", type, "as", execution[2]["functionType"]);
+          this.error(dataID, "cannot run", type, "as", execution[2]["functionType"]);
         }
       }
     }
   
     switch (execution[0]["type"]) {
       case "builtin":
-        args = runNodes(args, dataID);
+        args = this.runNodes(args, dataID);
         const data = execution[0]["data"](dataID, ...args);
         if (data) {
           return data;
         }
-        return inst("null", "null");
+        return this.inst("null", "null");
       case "builtin_statement":
         const data2 = execution[0]["data"](dataID, content, ...args);
         if (data2) {
           return data2;
         }
-        return inst("null", "null");
+        return this.inst("null", "null");
       case "method":
         if (
           typeof execution[2] === "object" &&
@@ -1360,54 +1360,54 @@ class FSL extends Process {
           if (data3) {
             return data3;
           }
-          return inst("null", "null");
+          return this.inst("null", "null");
         } else {
-          error(dataID, "unrunnable method");
+          this.error(dataID, "unrunnable method");
         }
       case "definition":
-        args = runNodes(args, dataID);
-        const ast = memory[memory[dataID]["ast"]];
-        let scope = runArguments(execution[0]["args"], args, dataID);
-        Object.entries(memory[memory[dataID]["scope"]]).forEach((entry) => {
+        args = this.runNodes(args, dataID);
+        const ast = this.memory[this.memory[dataID]["ast"]];
+        let scope = this.runArguments(execution[0]["args"], args, dataID);
+        Object.entries(this.memory[this.memory[dataID]["scope"]]).forEach((entry) => {
           if (!scope[entry[0]]) {
-            scope[entry[0]] = memory[entry[1]];
+            scope[entry[0]] = this.memory[entry[1]];
           }
         });
-        const funcAstID = allocate(ast);
-        const funcDataID = allocate({
+        const funcAstID = this.allocate(ast);
+        const funcDataID = this.allocate({
           scope: "",
-          trace: allocate(traceMake(ast)),
+          trace: this.allocate(this.traceMake(ast)),
           ast: funcAstID,
           memory_addresses: [],
         });
-        const funcScopeID = getScope(scope, ast["definitions"], funcDataID);
-        memory[funcDataID]["scope"] = funcScopeID;
-        memory[funcDataID]["typeAttributes"] = allocate(
-          toNormalObject(
-            allocateTypedObjectContents(globalTypeAttributes, funcDataID)
+        const funcScopeID = this.getScope(scope, ast["definitions"], funcDataID);
+        this.memory[funcDataID]["scope"] = funcScopeID;
+        this.memory[funcDataID]["typeAttributes"] = this.allocate(
+          this.toNormalObject(
+            this.allocateTypedObjectContents(this.globalTypeAttributes, funcDataID)
           ),
           funcDataID
         );
-        const typeAttr = memory[memory[funcDataID]["typeAttributes"]];
+        const typeAttr = this.memory[this.memory[funcDataID]["typeAttributes"]];
         Object.keys(typeAttr).map((k) => {
-          typeAttr[k] = toNormalObject(typeAttr[k]);
+          typeAttr[k] = this.toNormalObject(typeAttr[k]);
         });
-        const out = runSegmentRaw(execution[0]["data"]["data"], funcDataID);
-        deAllocate(
+        const out = this.runSegmentRaw(execution[0]["data"]["data"], funcDataID);
+        this.deAllocate(
           funcAstID,
           funcScopeID,
-          memory[funcDataID]["trace"],
+          this.memory[funcDataID]["trace"],
           funcDataID,
-          ...memory[funcDataID]["memory_addresses"]
+          ...this.memory[funcDataID]["memory_addresses"]
         );
         if (out) {
           return out;
         } else {
-          return inst("null", "null");
+          return this.inst("null", "null");
         }
       default:
-        error(dataID, "unknown type", execution[0]["type"]);
-        return inst("null", "null");
+        this.error(dataID, "unknown type", execution[0]["type"]);
+        return this.inst("null", "null");
     }
   }
   runArguments(definition, args, dataID) {
@@ -1417,15 +1417,15 @@ class FSL extends Process {
       const passedArg = args[i];
       if (!passedArg) {
         if (definitionArg["value"]) {
-          data[definitionArg["name"]] = runNode(definitionArg["value"], dataID);
+          data[definitionArg["name"]] = this.runNode(definitionArg["value"], dataID);
         } else {
-          error(dataID, "missing argument", definitionArg["name"]);
+          this.error(dataID, "missing argument", definitionArg["name"]);
         }
       } else {
-        if (isTypes(passedArg[1], definitionArg["types"])) {
+        if (this.isTypes(passedArg[1], definitionArg["types"])) {
           data[definitionArg["name"]] = passedArg;
         } else {
-          error(
+          this.error(
             dataID,
             "expected",
             definitionArg["types"].join(" or "),
@@ -1439,19 +1439,19 @@ class FSL extends Process {
   }
   runOperation(operation, a, b, dataID) {
     if (a[1] === "color" && b[1] === "color") {
-      return inst(
+      return this.inst(
         {
-          r: runOperation(
+          r: this.runOperation(
             operation,
-            inst(a[0]["r"], "num"),
-            inst(b[0]["r"], "num")
+            this.inst(a[0]["r"], "num"),
+            this.inst(b[0]["r"], "num")
           )[0],
-          g: runOperation(
+          g: this.runOperation(
             operation,
             inst(a[0]["g"], "num"),
             inst(b[0]["g"], "num")
           )[0],
-          b: runOperation(
+          b: this.runOperation(
             operation,
             inst(a[0]["b"], "num"),
             inst(b[0]["b"], "num")
@@ -1461,21 +1461,21 @@ class FSL extends Process {
       );
     }
     if (a[1] === "color") {
-      return inst(
+      return this.inst(
         {
-          r: runOperation(operation, inst(a[0]["r"], "num"), b)[0],
-          g: runOperation(operation, inst(a[0]["g"], "num"), b)[0],
-          b: runOperation(operation, inst(a[0]["b"], "num"), b)[0],
+          r: this.runOperation(operation, this.inst(a[0]["r"], "num"), b)[0],
+          g: this.runOperation(operation, this.inst(a[0]["g"], "num"), b)[0],
+          b: this.runOperation(operation, this.inst(a[0]["b"], "num"), b)[0],
         },
         "color"
       );
     }
     if (b[1] === "color") {
-      return inst(
+      return this.inst(
         {
-          r: runOperation(operation, a, inst(b[0]["r"], "num"))[0],
-          g: runOperation(operation, a, inst(b[0]["g"], "num"))[0],
-          b: runOperation(operation, a, inst(b[0]["b"], "num"))[0],
+          r: this.runOperation(operation, a, this.inst(b[0]["r"], "num"))[0],
+          g: this.runOperation(operation, a, this.inst(b[0]["g"], "num"))[0],
+          b: this.runOperation(operation, a, this.inst(b[0]["b"], "num"))[0],
         },
         "color"
       );
@@ -1483,137 +1483,137 @@ class FSL extends Process {
     switch (operation) {
       case "addition":
         if (a[1] === "num" && b[1] === "num") {
-          return inst(a[0] + b[0], "num");
+          return this.inst(a[0] + b[0], "num");
         }
-        return inst(
-          castType(dataID, a, "str")[0] + " " + castType(dataID, b, "str")[0],
+        return this.inst(
+          this.castType(dataID, a, "str")[0] + " " + this.castType(dataID, b, "str")[0],
           "str"
         );
       case "join":
-        return inst(
-          castType(dataID, a, "str")[0] + castType(dataID, b, "str")[0],
+        return this.inst(
+          this.castType(dataID, a, "str")[0] + this.castType(dataID, b, "str")[0],
           "str"
         );
       case "subtraction":
         if (a[1] === "num" && b[1] === "num") {
-          return inst(a[0] - b[0], "num");
+          return this.inst(a[0] - b[0], "num");
         }
-        error(dataID, "cannot subtract", a[1], "by", b[1]);
+        this.error(dataID, "cannot subtract", a[1], "by", b[1]);
       case "multiplication":
         if (a[1] === "num" && b[1] === "num") {
-          return inst(a[0] * b[0], "num");
+          return this.inst(a[0] * b[0], "num");
         }
         if (b[1] == "num") {
-          return inst(castType(dataID, a, "str")[0].repeat(b[0]), "str");
+          return this.inst(this.castType(dataID, a, "str")[0].repeat(b[0]), "str");
         }
         if (a[1] == "num") {
-          return inst(castType(dataID, b, "str")[0].repeat(a[0]), "str");
+          return this.inst(this.castType(dataID, b, "str")[0].repeat(a[0]), "str");
         }
-        error(dataID, "cannot multiply", a[1], "by", b[1]);
+        this.error(dataID, "cannot multiply", a[1], "by", b[1]);
       case "division":
         if (a[1] === "num" && b[1] === "num") {
-          return inst(a[0] / b[0], "num");
+          return this.inst(a[0] / b[0], "num");
         }
-        error(dataID, "cannot divide", a[1], "by", b[1]);
+        this.error(dataID, "cannot divide", a[1], "by", b[1]);
       case "modulo":
         if (a[1] === "num" && b[1] === "num") {
-          return inst(a[0] % b[0], "num");
+          return this.inst(a[0] % b[0], "num");
         }
-        error(dataID, "cannot modulo", a[1], "by", b[1]);
+        this.error(dataID, "cannot modulo", a[1], "by", b[1]);
       case "power":
         if (a[1] === "num" && b[1] === "num") {
-          return inst(a[0] ** b[0], "num");
+          return this.inst(a[0] ** b[0], "num");
         }
-        error(dataID, "cannot raise", a[1], "to power", b[1]);
+        this.error(dataID, "cannot raise", a[1], "to power", b[1]);
   
       case "is":
         if (b[1] !== "type") {
           return false;
         }
-        return inst(a[1] == b[0], "bool");
+        return this.inst(a[1] == b[0], "bool");
       case "in":
-        return inst(
-          castType(dataID, b, "arr")[0]
-            .map((val) => getMemory([val]))
-            .findIndex((val) => isEqual(val, a)) !== -1,
+        return this.inst(
+          this.castType(dataID, b, "arr")[0]
+            .map((val) => this.getMemory([val]))
+            .findIndex((val) => this.isEqual(val, a)) !== -1,
           "bool"
         );
   
       case "not":
-        return inst(!castType(dataID, b, "bool")[0], "bool");
+        return this.inst(!this.castType(dataID, b, "bool")[0], "bool");
       case "boolify":
-        return inst(castType(dataID, b, "bool")[0], "bool");
+        return this.inst(this.castType(dataID, b, "bool")[0], "bool");
   
       default:
-        error(dataID, "unknown operation", operation);
+        this.error(dataID, "unknown operation", operation);
     }
   }
   runComparison(type, a, b, dataID) {
     switch (type) {
       case "equal":
-        return inst(isEqual(a, b), "bool");
+        return this.inst(this.isEqual(a, b), "bool");
       case "not_equal":
-        return inst(!isEqual(a, b), "bool");
+        return this.inst(!this.isEqual(a, b), "bool");
       case "string_equal":
-        return inst(
-          castType(dataID, a, "str")[0] == castType(dataID, b, "str")[0],
+        return this.inst(
+          this.castType(dataID, a, "str")[0] == this.castType(dataID, b, "str")[0],
           "bool"
         );
       case "type_equal":
-        return inst(a[1] === b[1]);
+        return this.inst(a[1] === b[1]);
   
       case "greater":
-        return inst(
-          castType(dataID, a, "num")[0] > castType(dataID, b, "num")[0],
+        return this.inst(
+          this.castType(dataID, a, "num")[0] > this.castType(dataID, b, "num")[0],
           "bool"
         );
       case "smaller":
-        return inst(
-          castType(dataID, a, "num")[0] < castType(dataID, b, "num")[0],
+        return this.inst(
+          this.castType(dataID, a, "num")[0] < this.castType(dataID, b, "num")[0],
           "bool"
         );
       case "greater_equal":
-        return inst(
-          castType(dataID, a, "num")[0] >= castType(dataID, b, "num")[0],
+        return this.inst(
+          this.castType(dataID, a, "num")[0] >= this.castType(dataID, b, "num")[0],
           "bool"
         );
       case "smaller_equal":
-        return inst(
-          castType(dataID, a, "num")[0] <= castType(dataID, b, "num")[0],
+        return this.inst(
+          this.castType(dataID, a, "num")[0] <= this.castType(dataID, b, "num")[0],
           "bool"
         );
   
       default:
-        error(dataID, "unknown comparison", type);
+        this.error(dataID, "unknown comparison", type);
     }
-    return inst("null", "null");
+    return this.inst("null", "null");
   }
   runLogic(type, a, b, dataID) {
-    a = castType(dataID, a, "bool");
-    b = castType(dataID, b, "bool");
+    a = this.castType(dataID, a, "bool");
+    b = this.castType(dataID, b, "bool");
     switch (type) {
       case "and":
-        return inst(a[0] && b[0], "bool");
+        return this.inst(a[0] && b[0], "bool");
       case "or":
-        return inst(a[0] || b[0], "bool");
+        return this.inst(a[0] || b[0], "bool");
       default:
-        error(dataID, "unknown logic type", type);
+        this.error(dataID, "unknown logic type", type);
     }
   }
   runKey(value, key, isMethod, dataID) {
     //console.log(value,key);
     if (isMethod) {
-      const typeAttributes = memory[memory[dataID]["typeAttributes"]];
+      const typeAttributes = this.memory[this.memory[dataID]["typeAttributes"]];
       if (Object.keys(typeAttributes).includes(value[1])) {
-        const k = castType(dataID, key, "str")[0];
+        const k = this.castType(dataID, key, "str")[0];
         if (Object.keys(typeAttributes[value[1]]).includes(k)) {
           return typeAttributes[value[1]][k];
         }
       }
     }
-    const indexedValue = castType(dataID, value, "arr", false, true, true);
+    const indexedValue = this.castType(dataID, value, "arr", false, true, true);
     if (indexedValue) {
-      const index = castType(dataID, key, "num", false, true);
+      const index = this.castType(dataID, key, "num", false, true);
       if (index) {
         return indexedValue[0][index[0]];
       }
@@ -1621,24 +1621,24 @@ class FSL extends Process {
     if (value[0] && !Array.isArray(value[0]) && typeof value[0] == "object") {
       if (value[0]["keys"]) {
         const keyIndex = value[0]["keys"].findIndex((objKey) =>
-          Object_isSame(objKey, key)
+          this.Object_isSame(objKey, key)
         );
         if (keyIndex > -1) {
           return value[0]["values"][keyIndex];
         }
       }
     }
-    return inst("null", "null");
+    return this.inst("null", "null");
   }
   
   globalTypeAttributes = {
     str: {
-      upper: inst(
+      upper: this.inst(
         {
           type: "method",
           data: (dataID, selfValue, ...args) =>{
-            return inst(
-              castType(dataID, selfValue, "str")[0].toUpperCase(),
+            return this.inst(
+              this.castType(dataID, selfValue, "str")[0].toUpperCase(),
               "str"
             );
           },
@@ -1652,19 +1652,19 @@ class FSL extends Process {
   getScope(scope, definitions, scopeDataID) {
     let data = {
       // constants
-      null: inst("null", "null"),
-      true: inst(true, "bool"),
-      false: inst(false, "bool"),
+      null: this.inst("null", "null"),
+      true: this.inst(true, "bool"),
+      false: this.inst(false, "bool"),
   
       // types
-      str: inst("str", "type"),
-      num: inst("num", "type"),
-      bool: inst("bool", "type"),
-      tuple: inst("tuple", "type"),
-      type: inst("type", "type"),
-      obj: inst("obj", "type"),
-      arr: inst("arr", "type"),
-      func: inst("func", "type"),
+      str: this.inst("str", "type"),
+      num: this.inst("num", "type"),
+      bool: this.inst("bool", "type"),
+      tuple: this.inst("tuple", "type"),
+      type: this.inst("type", "type"),
+      obj: this.inst("obj", "type"),
+      arr: this.inst("arr", "type"),
+      func: this.inst("func", "type"),
       nullish: inst("null", "type"),
       color: inst("color", "type"),
   
@@ -2302,4 +2302,8 @@ class FSL extends Process {
     }
   }
   
+}
+
+function runOperation(operation: any, a: any, arg2: any) {
+  throw new Error("Function not implemented.");
 }
