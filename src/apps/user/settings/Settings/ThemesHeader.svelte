@@ -9,7 +9,7 @@
     background?: string;
     userInfo: UserInfo;
     userPreferences: UserPreferencesStore;
-    children: Snippet;
+    children?: Snippet;
   }
 
   const {
@@ -46,7 +46,9 @@
       <div class="fake-taskbar"></div>
     {/if}
   </div>
-  <div class="right">
-    {@render children()}
-  </div>
+  {#if children}
+    <div class="right">
+      {@render children()}
+    </div>
+  {/if}
 </div>

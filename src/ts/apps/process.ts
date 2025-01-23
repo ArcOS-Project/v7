@@ -6,7 +6,7 @@ import type { AppKeyCombinations } from "$types/accelerator";
 import { LogLevel } from "$types/logging";
 import type { UserPreferences } from "$types/user";
 import { mount } from "svelte";
-import type { AppProcessData } from "../../types/app";
+import type { App, AppProcessData } from "../../types/app";
 import { WaveKernel } from "../kernel";
 import type { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
@@ -28,6 +28,7 @@ export class AppProcess extends Process {
   fs: Filesystem;
   globalDispatch: GlobalDispatcher;
   userDaemon: UserDaemon | undefined;
+  protected overlayStore: Record<string, App> = {};
   public acceleratorStore: AppKeyCombinations = [];
 
   constructor(
@@ -194,5 +195,24 @@ export class AppProcess extends Process {
       return;
 
     el.blur();
+  }
+
+  async spawnOverlay(id: string) {
+    const metadata = this.overlayStore[id];
+
+    if (!metadata) {
+      this.Log(`Tried spawning non-existent overlay '${id}'`, LogLevel.error);
+
+      return false;
+    }
+
+    return !!(await this.handler.spawn<AppProcess>(
+      metadata.assets.runtime,
+      this.pid,
+      {
+        data: { ...metadata, overlay: true },
+        id,
+      }
+    ));
   }
 }

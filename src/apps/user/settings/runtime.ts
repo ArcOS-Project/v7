@@ -2,11 +2,16 @@ import { AppProcess } from "$ts/apps/process";
 import { SettingsIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { App, AppProcessData } from "$types/app";
+import { SaveThemeApp } from "./overlays/saveTheme";
 import { settingsPageStore } from "./store";
 
 export class SettingsRuntime extends AppProcess {
   currentPage = Store<string>("");
+
+  protected override overlayStore: Record<string, App> = {
+    saveTheme: SaveThemeApp,
+  };
 
   constructor(
     handler: ProcessHandler,

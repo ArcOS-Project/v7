@@ -18,8 +18,12 @@
       currentWallpaper = await getWallpaper(v.desktop.wallpaper);
     });
 
-    return () => {};
+    return () => sub();
   });
+
+  function saveThemeDialog() {
+    process.spawnOverlay("saveTheme");
+  }
 </script>
 
 <ThemesHeader
@@ -50,7 +54,7 @@
     </div>
   </div>
 
-  <button class="save-theme">Save Theme</button>
+  <button class="save-theme" onclick={saveThemeDialog}>Save Theme</button>
 </ThemesHeader>
 
 <div class="theme-section">
@@ -67,9 +71,9 @@
   <div
     class="themes"
     class:empty={!$userPreferences.userThemes ||
-      !$userPreferences.userThemes.length}
+      !Object.values($userPreferences.userThemes).length}
   >
-    {#if $userPreferences.userThemes && $userPreferences.userThemes.length}
+    {#if $userPreferences.userThemes && Object.values($userPreferences.userThemes).length}
       {#each Object.entries($userPreferences.userThemes) as [id, theme]}
         <Theme {theme} {id} userDaemon={process.userDaemon!} />
       {/each}

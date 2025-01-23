@@ -27,6 +27,7 @@
 #systemSettings div.container.themes div.setting.theme-selector select {
   appearance: none;
   width: 100%;
+  background-color: var(--win-bg);
 }
 
 #systemSettings div.container.themes button.save-theme {

@@ -51,7 +51,7 @@ div.window:not(.core).minimized {
 }
 
 div.window *::selection {
-  background-color: var(--accent-dark);
+  background-color: var(--accent-transparent);
 }
 
 div:not(.noani) div.window:not(.core) {
