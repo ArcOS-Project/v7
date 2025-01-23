@@ -1,10 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap");
 
-div.window#loginApp div.body {
-  background: linear-gradient(to bottom, #0006 0%, #0006 100%),
-    url("../../../assets/bg/img15.jpg");
+div.window#loginApp div.container:not(.full) {
+  background: linear-gradient(to bottom, #0006 0%, #0006 100%), var(--bgurl);
   background-position: center;
   background-size: cover;
+  transition: all 0.3s !important;
 }
 
 div.window#loginApp button:not(.continue) {

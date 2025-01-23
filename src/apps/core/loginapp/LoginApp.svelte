@@ -14,12 +14,17 @@
     errorMessage,
     profileImage,
     hideProfileImage,
+    loginBackground,
   } = process;
 </script>
 
 <Topbar {hideLockscreen} {loadingStatus} {errorMessage} />
 
-<div class="container" class:full={$hideProfileImage}>
+<div
+  class="container"
+  class:full={$hideProfileImage}
+  style="--bgurl: url('{$loginBackground}')"
+>
   {#if !$hideProfileImage}
     <div class="profile-picture" style="--src: url('{$profileImage}')"></div>
   {/if}

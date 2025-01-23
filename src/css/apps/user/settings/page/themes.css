@@ -44,3 +44,100 @@
   width: 16px;
   font-size: 16px;
 }
+
+#systemSettings div.container.themes button.user-theme {
+  display: flex;
+  justify-content: end;
+  align-items: end;
+  height: 70px;
+  width: 70px;
+  padding: 5px !important;
+  margin: 0 !important;
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  outline: 1px solid var(--button-hover-bg) !important;
+  background: var(--url);
+  background-position: center;
+  background-size: cover;
+  background-color: transparent;
+}
+
+#systemSettings div.container.themes button.user-theme div.selected-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  color: var(--accent-dark);
+  background-color: var(--accent);
+  opacity: 0;
+  transition: opacity 0.3s, scale 0.3s;
+}
+
+#systemSettings
+  div.container.themes
+  button.user-theme
+  div.selected-overlay
+  span {
+  color: inherit;
+}
+
+#systemSettings
+  div.container.themes
+  button.user-theme.selected
+  div.selected-overlay {
+  opacity: 1;
+}
+#systemSettings div.container.themes button.user-theme img {
+  object-fit: cover;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#systemSettings div.container.themes button.user-theme div.fake-window {
+  display: flex;
+  justify-content: end;
+  align-items: end;
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+  background-color: var(--win-bg);
+  border-radius: 5px;
+  position: relative;
+  border: var(--win-border);
+}
+#systemSettings
+  div.container.themes
+  button.user-theme
+  div.fake-window
+  div.fake-button {
+  width: 20px;
+  height: 5px;
+  background-color: var(--accent);
+  border-radius: 2.5px;
+}
+
+#systemSettings div.container.themes div.theme-section {
+  margin-top: 15px;
+}
+
+#systemSettings div.container.themes div.theme-section p.name {
+  opacity: 0.5;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+#systemSettings div.container.themes div.theme-section div.themes {
+  display: grid;
+  grid-template-columns: repeat(5, 70px);
+  gap: 15px;
+}

@@ -5,3 +5,6 @@ div.window:not(.core) > div.body {
   padding: 15px;
   border-top: var(--win-border);
 }
+div.window:not(.core).headless > div.body {
+  border-top: none;
+}

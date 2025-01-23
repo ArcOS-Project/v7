@@ -1,5 +1,5 @@
-#appRenderer.sharp *,
-#appRenderer.sharp *::before,
-#appRenderer.sharp *::after {
+.sharp *,
+.sharp *::before,
+.sharp *::after {
   border-radius: 0 !important;
 }

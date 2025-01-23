@@ -6,6 +6,7 @@
   import ThemesHeader from "../ThemesHeader.svelte";
   import Setting from "../ThemesHeader/Setting.svelte";
   import AccentColor from "./Themes/AccentColor.svelte";
+  import BuiltinTheme from "./Themes/BuiltinTheme.svelte";
 
   const { process }: { process: SettingsRuntime } = $props();
   const { userInfo, preferences: userPreferences } = process.userDaemon!;
@@ -53,5 +54,9 @@
 
 <div class="theme-section">
   <p class="name">Built-in themes</p>
-  {#each Object.values(BuiltinThemes) as theme}{/each}
+  <div class="themes">
+    {#each Object.entries(BuiltinThemes) as [id, theme]}
+      <BuiltinTheme {theme} {id} userDaemon={process.userDaemon!} />
+    {/each}
+  </div>
 </div>

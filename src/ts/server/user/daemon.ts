@@ -94,6 +94,17 @@ export class UserDaemon extends Process {
     this.preferencesUnsubscribe = unsubscribe;
   }
 
+  getAppRendererStyle(accent: string) {
+    return `--accent: ${hex3to6(accent)} !important;
+    --accent-transparent: ${hex3to6(accent)}44 !important;
+    --accent-light: ${lightenColor(accent)} !important;
+    --accent-lighter: ${lightenColor(accent, 6.5)} !important;
+    --accent-dark: ${darkenColor(accent, 75)} !important;
+    --accent-darkest: ${darkenColor(accent, 85)} !important;
+    --accent-light-transparent: ${lightenColor(accent)}77 !important;
+    --accent-light-invert: ${invertColor(lightenColor(accent))} !important;`;
+  }
+
   setAppRendererClasses(v: UserPreferences) {
     if (this.kernel.state?.currentState !== "desktop") return;
 
@@ -107,14 +118,7 @@ export class UserDaemon extends Process {
     const accent = v.desktop.accent;
     const theme = v.desktop.theme;
 
-    let style = `--accent: ${hex3to6(accent)} !important;
-    --accent-transparent: ${hex3to6(accent)}44 !important;
-    --accent-light: ${lightenColor(accent)} !important;
-    --accent-lighter: ${lightenColor(accent, 6.5)} !important;
-    --accent-dark: ${darkenColor(accent, 75)} !important;
-    --accent-darkest: ${darkenColor(accent, 85)} !important;
-    --accent-light-transparent: ${lightenColor(accent)}77 !important;
-    --accent-light-invert: ${invertColor(lightenColor(accent))} !important;`;
+    let style = this.getAppRendererStyle(accent);
 
     renderer.removeAttribute("class");
     renderer.setAttribute("style", style);

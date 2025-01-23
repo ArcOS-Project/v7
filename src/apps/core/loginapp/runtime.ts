@@ -9,12 +9,16 @@ import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
 import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps } from "./types";
+import { Wallpapers } from "$ts/wallpaper/store";
+import { getWallpaper } from "$ts/wallpaper";
 
 export class LoginAppRuntime extends AppProcess {
+  private readonly DEFAULT_WALLPAPER = Wallpapers.img15.url;
   public hideLockscreen = Store<boolean>(false);
   public loadingStatus = Store<string>("");
   public errorMessage = Store<string>("");
   public profileImage = Store<string>(ProfilePictures.def);
+  public loginBackground = Store<string>(this.DEFAULT_WALLPAPER);
   public hideProfileImage = Store<boolean>(false);
   private type = "";
 
@@ -105,6 +109,9 @@ export class LoginAppRuntime extends AppProcess {
     this.profileImage.set(
       getProfilePicture(userDaemon.preferences().account.profilePicture)
     );
+    this.loginBackground.set(
+      (await getWallpaper(userDaemon.preferences().account.loginBackground)).url
+    );
 
     await Sleep(2000);
 
@@ -131,7 +138,11 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async logoff(daemon: UserDaemon) {
+    this.hideProfileImage.set(true);
     this.type = "logoff";
+
+    this.loadingStatus.set(`Goodbye, ${daemon.username}!`);
+    this.errorMessage.set("");
 
     for (const [pid, proc] of [...this.handler.store()]) {
       if (
@@ -147,9 +158,9 @@ export class LoginAppRuntime extends AppProcess {
     this.profileImage.set(
       getProfilePicture(daemon.preferences().account.profilePicture)
     );
-
-    this.loadingStatus.set(`Goodbye, ${daemon.username}!`);
-    this.errorMessage.set("");
+    this.loginBackground.set(
+      (await getWallpaper(daemon.preferences().account.loginBackground)).url
+    );
 
     await Sleep(2000);
 
@@ -163,6 +174,7 @@ export class LoginAppRuntime extends AppProcess {
       this.loadingStatus.set("");
       this.hideProfileImage.set(false);
       this.profileImage.set(ProfilePictures.def);
+      this.loginBackground.set(this.DEFAULT_WALLPAPER);
     }, 600);
   }
 

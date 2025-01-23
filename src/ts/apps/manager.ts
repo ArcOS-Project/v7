@@ -73,6 +73,8 @@ export class AppManager extends Process {
       window.append(body);
     }
 
+    if (data.state.headless) window.classList.add("headless");
+
     window.classList.add(data.id);
 
     if (data.glass) window.classList.add("glass");
