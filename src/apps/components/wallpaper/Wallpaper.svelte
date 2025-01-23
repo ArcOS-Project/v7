@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Sleep } from "$ts/sleep";
   import { getWallpaper } from "$ts/wallpaper";
   import { Wallpapers } from "$ts/wallpaper/store";
   import type { AppComponentProps } from "$types/app";
@@ -9,17 +10,29 @@
   const { userPreferences } = process;
 
   let wallpaper = $state<Wallpaper>();
+  let show = $state(false);
 
   $effect(() => {
     const unsubscribe = userPreferences?.subscribe(async (v) => {
+      show = false;
+
+      await Sleep(450);
+
       wallpaper = await getWallpaper(v.desktop.wallpaper);
+
+      await Sleep(100);
+
+      show = true;
     });
 
     return () => unsubscribe();
   });
 </script>
 
-<div
-  class="desktop-wallpaper"
-  style="--src: url('{wallpaper ? wallpaper.url : Wallpapers.img04.url}');"
-></div>
+<div class="desktop-wallpaper">
+  <div
+    class="wallpaper"
+    style="--src: url('{wallpaper ? wallpaper.url : Wallpapers.img04.url}');"
+    class:show
+  ></div>
+</div>

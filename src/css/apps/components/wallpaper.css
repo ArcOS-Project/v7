@@ -3,9 +3,18 @@ div.window#wallpaper {
 }
 
 div.desktop-wallpaper {
+  height: 100%;
+}
+
+div.desktop-wallpaper > div.wallpaper {
   background-image: var(--src);
   background-position: center;
   background-size: cover;
   height: 100%;
-  transition: background-image 0.3s;
+  transition: opacity 0.4s;
+  opacity: 1;
+}
+
+div.desktop-wallpaper > div.wallpaper:not(.show) {
+  opacity: 0;
 }
