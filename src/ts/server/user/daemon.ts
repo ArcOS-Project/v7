@@ -13,6 +13,7 @@ import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { UserThemeKeys, type UserTheme } from "$types/theme";
+import { BuiltinThemes } from "./store";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -87,6 +88,7 @@ export class UserDaemon extends Process {
 
       if (!v || v.isDefault) return;
 
+      v = this.checkCurrentThemeIdValidity(v);
       this.commitPreferences(v);
       this.setAppRendererClasses(v);
     });
@@ -232,27 +234,40 @@ export class UserDaemon extends Process {
     this.globalDispatch.dispatch("update-notifications", [this.notifications]);
   }
 
+  themeFromUserPreferences(
+    data: UserPreferences,
+    name: string,
+    author: string,
+    version: string
+  ): UserTheme {
+    return {
+      author,
+      version,
+      name,
+      taskbarLabels: data.shell.taskbar.labels,
+      taskbarDocked: data.shell.taskbar.docked,
+      taskbarColored: data.shell.taskbar.colored,
+      noAnimations: data.shell.visuals.noAnimations,
+      sharpCorners: data.shell.visuals.sharpCorners,
+      compactContext: data.shell.visuals.compactContext,
+      noGlass: data.shell.visuals.noGlass,
+      desktopWallpaper: data.desktop.wallpaper,
+      desktopTheme: data.desktop.theme,
+      desktopAccent: data.desktop.accent,
+      loginBackground: data.account.loginBackground || "img15",
+    };
+  }
+
   saveCurrentTheme(name: string) {
     const id = `${Math.floor(Math.random() * 1e6)}`;
 
     this.preferences.update((userPreferences) => {
-      const context: UserTheme = {
-        author: this.username,
-        version: "1.0",
+      const context = this.themeFromUserPreferences(
+        userPreferences,
         name,
-        /** */
-        taskbarLabels: userPreferences.shell.taskbar.labels,
-        taskbarDocked: userPreferences.shell.taskbar.docked,
-        taskbarColored: userPreferences.shell.taskbar.colored,
-        noAnimations: userPreferences.shell.visuals.noAnimations,
-        sharpCorners: userPreferences.shell.visuals.sharpCorners,
-        compactContext: userPreferences.shell.visuals.compactContext,
-        noGlass: userPreferences.shell.visuals.noGlass,
-        desktopWallpaper: userPreferences.desktop.wallpaper,
-        desktopTheme: userPreferences.desktop.theme,
-        desktopAccent: userPreferences.desktop.accent,
-        loginBackground: userPreferences.account.loginBackground || "img15",
-      };
+        this.username,
+        "1.0"
+      );
 
       userPreferences.userThemes[id] = context;
 
@@ -307,5 +322,30 @@ export class UserDaemon extends Process {
     }
 
     return "themeIsValid";
+  }
+
+  checkCurrentThemeIdValidity(data: UserPreferences): UserPreferences {
+    const { currentThemeId } = data;
+
+    if (!currentThemeId) return data;
+
+    const retrievedThemeData =
+      BuiltinThemes[currentThemeId] || (data.userThemes || {})[currentThemeId];
+
+    if (!retrievedThemeData) return data;
+
+    const theme = this.themeFromUserPreferences(
+      data,
+      retrievedThemeData.name,
+      retrievedThemeData.author,
+      retrievedThemeData.version
+    );
+
+    console.log(theme, retrievedThemeData);
+
+    if (JSON.stringify(theme) !== JSON.stringify(retrievedThemeData))
+      data.currentThemeId = undefined;
+
+    return data;
   }
 }

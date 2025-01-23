@@ -20,6 +20,7 @@
   flex-grow: 1;
   max-width: calc(100% - 250px);
   background-color: var(--win-bg);
+  transition: background-color 0.2s, color 0.2s;
 }
 
 #systemSettings > div.body div.page-content {

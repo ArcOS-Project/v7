@@ -29,6 +29,11 @@
   width: 100%;
 }
 
+#systemSettings div.container.themes button.save-theme {
+  width: fit-content;
+  margin-top: 5px;
+}
+
 #systemSettings div.container.themes div.setting.theme-selector p.sub {
   /* opacity: 1; */
   display: flex;
@@ -140,4 +145,16 @@
   display: grid;
   grid-template-columns: repeat(5, 70px);
   gap: 15px;
+}
+
+#systemSettings div.container.themes div.theme-section div.themes.empty {
+  display: block;
+}
+
+#systemSettings div.container.themes div.theme-section div.themes p.none {
+  line-height: 40px;
+  text-align: center;
+  opacity: 0.5;
+  border: var(--button-bg) 1px solid;
+  border-radius: 10px;
 }
