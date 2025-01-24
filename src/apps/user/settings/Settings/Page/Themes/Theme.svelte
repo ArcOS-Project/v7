@@ -5,7 +5,7 @@
   import type { UserDaemon } from "$ts/server/user/daemon";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { getWallpaper } from "$ts/wallpaper";
-  import type { ContextItemCallback, ContextMenuItem } from "$types/context";
+  import type { ContextItemCallback } from "$types/context";
   import type { UserTheme } from "$types/theme";
 
   interface Props {
@@ -26,6 +26,7 @@
           action: () => apply(),
           separator: true,
           default: true,
+          icon: "check",
         },
         {
           caption: "Delete theme",
@@ -33,7 +34,15 @@
           icon: "trash",
         },
       ]
-    : undefined;
+    : async () => [
+        {
+          caption: "Apply",
+          action: () => apply(),
+          separator: true,
+          default: true,
+          icon: "check",
+        },
+      ];
 
   let wallpaper = $state("");
   let css = $state("");
