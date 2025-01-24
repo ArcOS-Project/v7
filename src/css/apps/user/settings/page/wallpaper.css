@@ -1,0 +1,98 @@
+#systemSettings div.container.wallpaper div.upload-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#systemSettings div.container.wallpaper div.upload-actions button {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+}
+
+#systemSettings div.container.wallpaper div.upload-actions div.sep {
+  background-color: var(--button-glass-bg);
+  width: 1px;
+  height: 30px;
+}
+
+#systemSettings div.wallpaper div.wallpaper-section {
+  margin-top: 15px;
+}
+
+#systemSettings div.wallpaper div.wallpaper-section p.name {
+  opacity: 0.5;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+#systemSettings div.wallpaper div.wallpaper-section div.wallpapers {
+  display: grid;
+  grid-template-columns: repeat(5, 70px);
+  gap: 15px;
+}
+
+#systemSettings div.wallpaper div.wallpaper-section div.wallpapers.empty {
+  display: block;
+}
+
+#systemSettings div.wallpaper div.wallpaper-section div.wallpapers p.none {
+  line-height: 40px;
+  text-align: center;
+  opacity: 0.5;
+  border: var(--button-bg) 1px solid;
+  border-radius: 10px;
+}
+
+#systemSettings div.wallpaper button.wallpaper-option {
+  display: flex;
+  justify-content: end;
+  align-items: end;
+  height: 70px;
+  width: 70px;
+  padding: 5px !important;
+  margin: 0 !important;
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  outline: 1px solid var(--button-hover-bg) !important;
+  background: var(--url);
+  background-position: center;
+  background-size: cover;
+  background-color: transparent;
+}
+#systemSettings div.wallpaper button.wallpaper-option div.selected-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  color: var(--accent-dark);
+  background-color: var(--accent);
+  opacity: 0;
+  transition: opacity 0.3s, scale 0.3s;
+}
+
+#systemSettings
+  div.wallpaper
+  button.wallpaper-option
+  div.selected-overlay
+  span {
+  color: inherit;
+}
+
+#systemSettings
+  div.wallpaper
+  button.wallpaper-option.selected
+  div.selected-overlay {
+  opacity: 1;
+}

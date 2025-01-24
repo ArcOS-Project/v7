@@ -85,7 +85,7 @@
 </script>
 
 <button
-  class="user-theme builtin"
+  class="user-theme"
   class:selected={$preferences.currentThemeId === id}
   class:sharp={theme.sharpCorners}
   class:noani={theme.noAnimations}

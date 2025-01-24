@@ -1,0 +1,30 @@
+#systemSettings #SaveTheme > div.body {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+}
+
+#systemSettings #SaveTheme > div.body > * {
+  margin: 0;
+}
+#systemSettings #SaveTheme > div.body > h1 {
+  font-size: 16px;
+}
+
+#systemSettings #SaveTheme > div.body div.buttons {
+  display: flex;
+  gap: 10px;
+}
+
+#systemSettings #SaveTheme > div.body div.buttons button {
+  margin: 5px;
+}
+
+#systemSettings #SaveTheme > div.body input {
+  width: 250px;
+}

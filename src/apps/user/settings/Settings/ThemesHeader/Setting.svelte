@@ -4,7 +4,7 @@
   interface Props {
     caption: string;
     sub?: string;
-    children: Snippet;
+    children?: Snippet;
     className?: string;
   }
 
@@ -16,5 +16,7 @@
     <p class="caption">{caption}</p>
     <p class="sub">{sub}</p>
   </div>
-  <div class="slot">{@render children()}</div>
+  {#if children}
+    <div class="slot">{@render children()}</div>
+  {/if}
 </div>

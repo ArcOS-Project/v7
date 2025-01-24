@@ -29,7 +29,7 @@
 <ThemesHeader
   {userInfo}
   {userPreferences}
-  background={currentWallpaper?.thumb}
+  background={currentWallpaper?.thumb || currentWallpaper?.url}
   desktop
 >
   <Setting

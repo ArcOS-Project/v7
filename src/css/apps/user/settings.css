@@ -3,6 +3,8 @@
 @import url("./settings/section.css");
 @import url("./settings/page/account.css");
 @import url("./settings/page/themes.css");
+@import url("./settings/page/wallpaper.css");
+@import url("./settings/overlay/savetheme.css");
 
 #systemSettings > div.body {
   padding: 0;

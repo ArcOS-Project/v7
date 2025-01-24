@@ -32,7 +32,7 @@
 
 <Sidebar {process} />
 <div class="container {className}">
-  <CustomTitlebar {process}><span></span></CustomTitlebar>
+  <CustomTitlebar {process} />
   <div class="page-content" class:hide>
     {#if Page}
       <Page {process} />
