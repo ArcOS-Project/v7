@@ -18,6 +18,8 @@
       text = dayjs().format(`${date}${time}`);
     });
   });
+
+  // TODO: right click menu for changing prefs
 </script>
 
 <div class="clock">

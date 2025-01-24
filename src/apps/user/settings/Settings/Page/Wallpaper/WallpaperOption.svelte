@@ -4,41 +4,43 @@
   import type { Wallpaper } from "$types/wallpaper";
 
   interface Props {
-    wallpaper: Wallpaper;
     id: string;
     userPreferences: UserPreferencesStore;
     userDaemon: UserDaemon;
+    isLogin?: boolean;
   }
 
-  const { wallpaper, id, userPreferences, userDaemon }: Props = $props();
+  const { id, userPreferences, userDaemon, isLogin = false }: Props = $props();
 
-  let manual = $state<Wallpaper>();
+  let wallpaper = $state<Wallpaper>();
 
   $effect(() => {
-    getWallpaperManual();
+    getWallpaper();
   });
 
-  async function getWallpaperManual() {
-    manual = await userDaemon.getWallpaper(id);
+  async function getWallpaper() {
+    wallpaper = await userDaemon.getWallpaper(id);
   }
 
   function apply() {
-    $userPreferences.desktop.wallpaper = id;
+    if (isLogin) $userPreferences.account.loginBackground = id;
+    else $userPreferences.desktop.wallpaper = id;
   }
 </script>
 
-<button
-  class="wallpaper-option"
-  style="--url: url('{wallpaper.thumb ||
-    wallpaper.url ||
-    manual?.thumb ||
-    manual?.url}')"
-  aria-label="Apply '{wallpaper.name}'"
-  title="{wallpaper.name} by {wallpaper.author}"
-  onclick={apply}
-  class:selected={$userPreferences.desktop.wallpaper === id}
->
-  <div class="selected-overlay">
-    <span class="lucide icon-check"></span>
-  </div>
-</button>
+{#if wallpaper}
+  <button
+    class="wallpaper-option"
+    style="--url: url('{wallpaper.thumb || wallpaper.url}')"
+    aria-label="Apply '{wallpaper.name}'"
+    title="{wallpaper.name} by {wallpaper.author}"
+    onclick={apply}
+    class:selected={isLogin
+      ? $userPreferences.account.loginBackground === id
+      : $userPreferences.desktop.wallpaper === id}
+  >
+    <div class="selected-overlay">
+      <span class="lucide icon-check"></span>
+    </div>
+  </button>
+{/if}

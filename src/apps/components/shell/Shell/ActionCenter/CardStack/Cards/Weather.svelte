@@ -17,6 +17,8 @@
     data = await process.getWeather();
     loading = false;
   }
+
+  // TODO: weather location UI as part of systemSettings::shell::weatherLocation
 </script>
 
 <div

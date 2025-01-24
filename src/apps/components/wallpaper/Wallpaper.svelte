@@ -35,6 +35,8 @@
 
     return () => unsubscribe();
   });
+
+  // TODO: desktop icons
 </script>
 
 <div class="desktop-wallpaper">

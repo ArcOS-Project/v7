@@ -16,6 +16,8 @@
 
     return () => sub();
   });
+
+  // TODO: change profile picture UI
 </script>
 
 <div class="header">

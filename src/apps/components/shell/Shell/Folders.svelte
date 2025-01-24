@@ -32,6 +32,7 @@
   }
 
   async function openFolder(name: string) {
+    // TODO: file manager + open the folder in the file manager
     const contents = await process.fs.readDir(name);
 
     MessageBox(

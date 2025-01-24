@@ -124,4 +124,9 @@ export class ContextMenuLogic extends KernelModule {
 
     this.hideMenu();
   }
+
+  // TODO: single-depth submenus
+  // TODO: checked state
+  // TODO: disabled state
+  // TODO: accelerator depiction on the right side of the menu item, if provided
 }

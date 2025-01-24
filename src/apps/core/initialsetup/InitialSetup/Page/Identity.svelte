@@ -2,7 +2,14 @@
   import type { InitialSetupRuntime } from "../../runtime";
 
   const { process }: { process: InitialSetupRuntime } = $props();
-  const { username, password, confirm, email } = process;
+  const { newUsername, password, confirm, email } = process;
+
+  // TODO: username validation for incorrect characters and profanity on both the client and server sides:
+  //        - client for UX: user feedback to indicate a problem with their chosen username
+  //        - server: check to make sure the user isn't trying to bypass the preamble limits set by the client
+  // TODO: username availability endpoint to see if the username is available before the user clicks 'Continue'
+  // TODO: for the username validation, send the necessary validation options
+  //       from the server to the client to make sure they always match up.
 </script>
 
 <div class="form-page identity">
@@ -13,7 +20,7 @@
   <div class="fields">
     <div class="field">
       <p class="name">Username</p>
-      <input type="text" placeholder="johndoe" bind:value={$username} />
+      <input type="text" placeholder="johndoe" bind:value={$newUsername} />
     </div>
     <div class="field">
       <p class="name">Email address*</p>

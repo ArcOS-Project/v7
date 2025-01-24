@@ -1,3 +1,5 @@
+// TODO: merge these stores into one with a uniform interface
+
 export const weatherCaptions: Record<number, string> = {
   0: "Clear sky", // sun
   /** */

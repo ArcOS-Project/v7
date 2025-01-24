@@ -21,6 +21,9 @@ export class LoginAppRuntime extends AppProcess {
   public hideProfileImage = Store<boolean>(false);
   private type = "";
 
+  // TODO:  fetch profile picture using same method as UserDaemon.getWallpaper
+  //        to allow profile pictures to originate from the filesystem
+
   constructor(
     handler: ProcessHandler,
     pid: number,

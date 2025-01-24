@@ -15,6 +15,8 @@
   function spawn() {
     process.handler.renderer?.spawnApp(appId);
   }
+
+  // TODO: context menu to unpin
 </script>
 
 {#if app && app.metadata}

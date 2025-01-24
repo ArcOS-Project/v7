@@ -27,6 +27,9 @@ export class SettingsRuntime extends AppProcess {
     super(handler, pid, parentPid, app);
 
     this.switchPage(page || "account");
+
+    // TODO:  check for singleton and focus existing
+    //        instance & kill this one if another instance is already opened
   }
 
   switchPage(pageId: string) {

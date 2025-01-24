@@ -1,5 +1,7 @@
 <script>
   import RoturLogo from "../Assets/RoturLogo.svelte";
+
+  // TODO: impl Rotur
 </script>
 
 <div class="hero-page">

@@ -10,6 +10,8 @@
   userPreferences.subscribe((v) => {
     pins = v.shell.taskbar.pinnedApps || [];
   });
+
+  // TODO: pinned apps UI instead of manual injection
 </script>
 
 <div class="pinned-apps">

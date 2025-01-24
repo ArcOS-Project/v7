@@ -16,6 +16,8 @@
     process: ShellRuntime;
     username: string;
   } = $props();
+
+  // TODO: app groups
 </script>
 
 <div

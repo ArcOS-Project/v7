@@ -22,6 +22,7 @@
   });
 
   function onclick() {
+    // TODO: go to the settings app from here
     MessageBox(
       {
         image: ComponentIcon,

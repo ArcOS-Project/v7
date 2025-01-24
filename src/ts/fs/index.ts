@@ -182,4 +182,6 @@ export class Filesystem extends KernelModule {
 
     return result;
   }
+
+  // TODO: proper handlers for uploading files with and/or without progress indication
 }

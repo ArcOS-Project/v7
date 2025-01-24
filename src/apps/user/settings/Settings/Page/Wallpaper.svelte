@@ -44,8 +44,8 @@
   <div class="wallpaper-section">
     <p class="name">Built-in wallpapers</p>
     <div class="wallpapers">
-      {#each Object.entries(Wallpapers) as [id, wallpaper]}
-        <WallpaperOption {id} {wallpaper} {userPreferences} {userDaemon} />
+      {#each Object.keys(Wallpapers) as id}
+        <WallpaperOption {id} {userPreferences} {userDaemon} />
       {/each}
     </div>
   </div>
@@ -58,8 +58,8 @@
         !Object.values($userPreferences.userWallpapers).length}
     >
       {#if $userPreferences.userWallpapers && Object.values($userPreferences.userWallpapers).length}
-        {#each Object.entries($userPreferences.userWallpapers) as [id, wallpaper]}
-          <WallpaperOption {id} {wallpaper} {userPreferences} {userDaemon} />
+        {#each Object.keys($userPreferences.userWallpapers) as id}
+          <WallpaperOption {id} {userPreferences} {userDaemon} />
         {/each}
       {:else}
         <p class="none">You have no saved wallpapers!</p>
