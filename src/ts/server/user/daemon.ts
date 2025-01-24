@@ -348,4 +348,14 @@ export class UserDaemon extends Process {
 
     return data;
   }
+
+  deleteUserTheme(id: string) {
+    this.preferences.update((udata) => {
+      if (!udata.userThemes) return udata;
+
+      delete udata.userThemes[id];
+
+      return udata;
+    });
+  }
 }

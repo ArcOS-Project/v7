@@ -61,7 +61,7 @@
   <p class="name">Built-in themes</p>
   <div class="themes">
     {#each Object.entries(BuiltinThemes) as [id, theme]}
-      <Theme {theme} {id} userDaemon={process.userDaemon!} />
+      <Theme {theme} {id} userDaemon={process.userDaemon!} {process} />
     {/each}
   </div>
 </div>
@@ -75,7 +75,7 @@
   >
     {#if $userPreferences.userThemes && Object.values($userPreferences.userThemes).length}
       {#each Object.entries($userPreferences.userThemes) as [id, theme]}
-        <Theme {theme} {id} userDaemon={process.userDaemon!} />
+        <Theme {theme} {id} userDaemon={process.userDaemon!} {process} isUser />
       {/each}
     {:else}
       <p class="none">You have no saved themes!</p>

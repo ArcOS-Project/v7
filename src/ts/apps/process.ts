@@ -13,6 +13,8 @@ import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
 import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
+import type { ContextMenuItem } from "$types/context";
+import { ContextMenuLogic } from "$ts/ui/context";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
 export class AppProcess extends Process {
@@ -30,6 +32,7 @@ export class AppProcess extends Process {
   userDaemon: UserDaemon | undefined;
   protected overlayStore: Record<string, App> = {};
   public acceleratorStore: AppKeyCombinations = [];
+  context: ContextMenuLogic;
 
   constructor(
     handler: ProcessHandler,
@@ -51,6 +54,7 @@ export class AppProcess extends Process {
 
     this.fs = this.kernel.getModule<Filesystem>("fs");
     this.globalDispatch = this.kernel.getModule<GlobalDispatcher>("dispatch");
+    this.context = this.kernel.getModule<ContextMenuLogic>("context");
 
     const desktopProps = this.kernel.state?.stateProps["desktop"];
 
@@ -214,5 +218,38 @@ export class AppProcess extends Process {
         id,
       }
     ));
+  }
+
+  contextMenu(
+    element: HTMLElement,
+    optionsCallback: () => Promise<ContextMenuItem[]>
+  ) {
+    element.addEventListener("contextmenu", async (e: MouseEvent) => {
+      this.context.showMenu(e.clientX, e.clientY, await optionsCallback());
+    });
+  }
+
+  clickMenu(
+    element: HTMLElement,
+    optionsCallback: () => Promise<ContextMenuItem[]>
+  ) {
+    element.addEventListener("click", async (e: MouseEvent) => {
+      const {
+        x,
+        y: clientY,
+        height,
+      } = (e.target as HTMLElement).getBoundingClientRect();
+      const y = clientY + height + 2;
+
+      this.context.showMenu(x, y, await optionsCallback());
+    });
+  }
+
+  async spawnApp(id: string, parentPid?: number | undefined, ...args: any[]) {
+    return await this.handler.renderer?.spawnApp(
+      id,
+      parentPid ?? this.parentPid,
+      ...args
+    );
   }
 }

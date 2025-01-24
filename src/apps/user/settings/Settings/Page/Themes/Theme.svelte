@@ -1,14 +1,39 @@
 <script lang="ts">
+  import type { SettingsRuntime } from "$apps/user/settings/runtime";
+  import { MessageBox } from "$ts/dialog";
+  import { QuestionIcon } from "$ts/images/dialog";
   import type { UserDaemon } from "$ts/server/user/daemon";
+  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { getWallpaper } from "$ts/wallpaper";
+  import type { ContextItemCallback, ContextMenuItem } from "$types/context";
   import type { UserTheme } from "$types/theme";
 
-  const {
-    id,
-    theme,
-    userDaemon,
-  }: { id: string; theme: UserTheme; userDaemon: UserDaemon } = $props();
+  interface Props {
+    id: string;
+    theme: UserTheme;
+    userDaemon: UserDaemon;
+    isUser?: boolean;
+    process: SettingsRuntime;
+  }
+
+  const { id, theme, userDaemon, isUser = false, process }: Props = $props();
   const { preferences } = userDaemon;
+
+  const context: ContextItemCallback = isUser
+    ? async () => [
+        {
+          caption: "Apply",
+          action: () => apply(),
+          separator: true,
+          default: true,
+        },
+        {
+          caption: "Delete theme",
+          action: () => deleteTheme(),
+          icon: "trash",
+        },
+      ]
+    : undefined;
 
   let wallpaper = $state("");
   let css = $state("");
@@ -25,6 +50,29 @@
   function apply() {
     userDaemon.applyThemeData(theme, id);
   }
+
+  function deleteTheme() {
+    MessageBox(
+      {
+        title: "Delete theme?",
+        message:
+          "Are you sure you want to delete this amazing theme? You can't undo this.",
+        buttons: [
+          { caption: "Cancel", action: () => {} },
+          {
+            caption: "Delete it",
+            action: () => {
+              userDaemon.deleteUserTheme(id);
+            },
+            suggested: true,
+          },
+        ],
+        image: QuestionIcon,
+      },
+      process.pid,
+      true
+    );
+  }
 </script>
 
 <button
@@ -37,6 +85,10 @@
   title="{theme.name} by {theme.author} (version {theme.version})"
   onclick={apply}
   style="--url: url('{wallpaper}');"
+  use:contextMenu={{
+    process,
+    options: context,
+  }}
 >
   <!-- <img src={wallpaper} alt={theme.name} /> -->
   <div

@@ -1,0 +1,76 @@
+div.context-menu {
+  position: fixed;
+  top: var(--y, -1000px);
+  left: var(--x, -1000px);
+  z-index: 1000000000000000000000000000000000000000000000000;
+  padding: 5px;
+  border: var(--win-border);
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  min-width: 180px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px 5px #0003;
+  opacity: 1;
+  pointer-events: initial;
+  visibility: visible;
+  transition: opacity 0.2s, pointer-events 0.2s, visibility 0.2s;
+}
+
+div.context-menu button {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background-color: transparent;
+  color: var(--fg);
+  border-radius: 8px;
+  padding: 5px 10px;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+div.context-menu button:not(:disabled):hover {
+  background-color: var(--button-glass-bg);
+}
+
+div.context-menu button:not(:disabled):active {
+  background-color: var(--button-glass-active-bg);
+}
+
+div.context-menu button:disabled {
+  opacity: 0.5;
+}
+
+div.context-menu button.default > span {
+  font-weight: bold;
+}
+
+div.context-menu.hidden {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+div.context-menu span.icon-wrapper {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+}
+
+div.context-menu span.icon-wrapper span.lucide {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+div.context-menu span.icon-wrapper img {
+  width: 16px;
+  height: 16px;
+}
+
+div.context-menu hr {
+  margin: 5px;
+  border: var(--button-glass-bg) 1px solid;
+  border-bottom: none;
+}
