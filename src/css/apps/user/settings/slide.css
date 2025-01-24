@@ -1,0 +1,30 @@
+#systemSettings div.slide-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  pointer-events: none;
+  transition: pointer-events 0.3s, background-color 0.3s;
+  /* z-index: 1000; */
+}
+
+#systemSettings div.slide-wrapper.visible {
+  pointer-events: initial;
+  background-color: #0004;
+}
+
+#systemSettings div.slide-wrapper div.slide {
+  width: 100%;
+  height: 100%;
+  background-color: var(--win-bg);
+  translate: 100% 0;
+  transition: translate 0.3s;
+  padding: 15px;
+  padding-top: 45px;
+}
+
+#systemSettings div.slide-wrapper.visible div.slide {
+  translate: 0;
+}

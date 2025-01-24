@@ -21,7 +21,12 @@
   </Section>
 
   <Section>
-    <Option caption="View login activity" image={WaveIcon} chevron></Option>
+    <Option
+      caption="View login activity"
+      image={WaveIcon}
+      chevron
+      onclick={() => process.showSlide("account_loginActivity")}
+    ></Option>
     <Option caption="Log out everywhere" image={LogoutIcon} chevron></Option>
   </Section>
 </div>

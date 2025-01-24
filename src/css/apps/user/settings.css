@@ -5,6 +5,7 @@
 @import url("./settings/page/themes.css");
 @import url("./settings/page/wallpaper.css");
 @import url("./settings/overlay/savetheme.css");
+@import url("./settings/slide.css");
 
 #systemSettings > div.body {
   padding: 0;
@@ -23,6 +24,7 @@
   max-width: calc(100% - 250px);
   background-color: var(--win-bg);
   transition: background-color 0.2s, color 0.2s;
+  position: relative;
 }
 
 #systemSettings > div.body div.page-content {

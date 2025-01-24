@@ -9,3 +9,4 @@ export interface SettingsPage {
 }
 
 export type SettingsPages = Map<string, SettingsPage>;
+export type SettingsSlides = Map<string, Component<any>>;

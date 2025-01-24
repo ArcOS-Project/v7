@@ -5,15 +5,17 @@
   import Sidebar from "./Settings/Sidebar.svelte";
   import { settingsPageStore } from "./store";
   import { Sleep } from "$ts/sleep";
+  import Slide from "./Settings/Slide.svelte";
 
   const { process }: { process: SettingsRuntime } = $props();
-  const { currentPage } = process;
+  const { currentPage, slideVisible } = process;
 
   let hide = $state(true);
   let className = $state("");
 
   $effect(() => {
     const sub = currentPage.subscribe(async (v) => {
+      $slideVisible = false;
       hide = true;
       await Sleep(300);
 
@@ -38,4 +40,5 @@
       <Page {process} />
     {/if}
   </div>
+  <Slide {process} />
 </div>
