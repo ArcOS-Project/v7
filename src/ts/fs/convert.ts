@@ -26,3 +26,14 @@ export function arrayToBlob(buffer: ArrayBuffer, type = "text/plain"): Blob {
     type,
   });
 }
+
+export async function blobToDataURL(blob: Blob): Promise<string | undefined> {
+  const reader = new FileReader();
+
+  return new Promise((resolve) => {
+    reader.onload = function (e) {
+      resolve(e.target?.result?.toString());
+    };
+    reader.readAsDataURL(blob);
+  });
+}

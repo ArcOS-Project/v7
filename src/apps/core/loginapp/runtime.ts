@@ -3,14 +3,13 @@ import { Axios } from "$ts/server/axios";
 import { LoginUser } from "$ts/server/user/auth";
 import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
+import { Wallpapers } from "$ts/wallpaper/store";
 import { Store } from "$ts/writable";
 import Cookies from "js-cookie";
 import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
 import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps } from "./types";
-import { Wallpapers } from "$ts/wallpaper/store";
-import { getWallpaper } from "$ts/wallpaper";
 
 export class LoginAppRuntime extends AppProcess {
   private readonly DEFAULT_WALLPAPER = Wallpapers.img15.url;
@@ -110,7 +109,11 @@ export class LoginAppRuntime extends AppProcess {
       getProfilePicture(userDaemon.preferences().account.profilePicture)
     );
     this.loginBackground.set(
-      (await getWallpaper(userDaemon.preferences().account.loginBackground)).url
+      (
+        await userDaemon.getWallpaper(
+          userDaemon.preferences().account.loginBackground
+        )
+      ).url
     );
 
     await Sleep(2000);
@@ -159,7 +162,8 @@ export class LoginAppRuntime extends AppProcess {
       getProfilePicture(daemon.preferences().account.profilePicture)
     );
     this.loginBackground.set(
-      (await getWallpaper(daemon.preferences().account.loginBackground)).url
+      (await daemon.getWallpaper(daemon.preferences().account.loginBackground))
+        .url
     );
 
     await Sleep(2000);

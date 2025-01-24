@@ -4,7 +4,6 @@
   import { QuestionIcon } from "$ts/images/dialog";
   import type { UserDaemon } from "$ts/server/user/daemon";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
-  import { getWallpaper } from "$ts/wallpaper";
   import type { ContextItemCallback } from "$types/context";
   import type { UserTheme } from "$types/theme";
 
@@ -53,7 +52,7 @@
   });
 
   async function getWall() {
-    wallpaper = (await getWallpaper(theme.desktopWallpaper)).thumb;
+    wallpaper = (await userDaemon.getWallpaper(theme.desktopWallpaper)).thumb;
   }
 
   function apply() {

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { getWallpaper } from "$ts/wallpaper";
   import type { Wallpaper } from "$types/wallpaper";
   import type { OverlayRuntime } from "../../overlay";
   import ThemesHeader from "../ThemesHeader.svelte";
@@ -13,7 +12,9 @@
 
   $effect(() => {
     const sub = userPreferences.subscribe(async (v) => {
-      currentWallpaper = await getWallpaper(v.desktop.wallpaper);
+      currentWallpaper = await process.userDaemon!.getWallpaper(
+        v.desktop.wallpaper
+      );
     });
 
     return () => sub();

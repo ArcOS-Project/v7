@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { getWallpaper } from "$ts/wallpaper";
   import { Wallpapers } from "$ts/wallpaper/store";
   import type { Wallpaper } from "$types/wallpaper";
   import type { SettingsRuntime } from "../../runtime";
@@ -8,13 +7,14 @@
   import WallpaperOption from "./Wallpaper/WallpaperOption.svelte";
 
   const { process }: { process: SettingsRuntime } = $props();
+  const { userDaemon } = process;
   const { userInfo, preferences: userPreferences } = process.userDaemon!;
 
   let wallpaper = $state<Wallpaper>();
 
   $effect(() => {
     const sub = userPreferences.subscribe(async (v) => {
-      wallpaper = await getWallpaper(v.desktop.wallpaper);
+      wallpaper = await process.userDaemon!.getWallpaper(v.desktop.wallpaper);
     });
 
     return () => sub();
@@ -40,11 +40,32 @@
   </div>
 </ThemesHeader>
 
-<div class="wallpaper-section">
-  <p class="name">Built-in wallpapers</p>
-  <div class="wallpapers">
-    {#each Object.entries(Wallpapers) as [id, wallpaper]}
-      <WallpaperOption {id} {wallpaper} {userPreferences} />
-    {/each}
+{#if userDaemon}
+  <div class="wallpaper-section">
+    <p class="name">Built-in wallpapers</p>
+    <div class="wallpapers">
+      {#each Object.entries(Wallpapers) as [id, wallpaper]}
+        <WallpaperOption {id} {wallpaper} {userPreferences} {userDaemon} />
+      {/each}
+    </div>
   </div>
-</div>
+
+  <div class="wallpaper-section">
+    <p class="name">Your saved wallpapers</p>
+    <div
+      class="wallpapers"
+      class:empty={!$userPreferences.userWallpapers ||
+        !Object.values($userPreferences.userWallpapers).length}
+    >
+      {#if $userPreferences.userWallpapers && Object.values($userPreferences.userWallpapers).length}
+        {#each Object.entries($userPreferences.userWallpapers) as [id, wallpaper]}
+          <WallpaperOption {id} {wallpaper} {userPreferences} {userDaemon} />
+        {/each}
+      {:else}
+        <p class="none">You have no saved wallpapers!</p>
+      {/if}
+    </div>
+  </div>
+{:else}
+  ERR_NO_USER_DAEMON
+{/if}

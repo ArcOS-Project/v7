@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Sleep } from "$ts/sleep";
-  import { getWallpaper } from "$ts/wallpaper";
   import { Wallpapers } from "$ts/wallpaper/store";
   import type { AppComponentProps } from "$types/app";
   import type { Wallpaper } from "$types/wallpaper";
@@ -15,7 +14,9 @@
 
   $effect(() => {
     const unsubscribe = userPreferences?.subscribe(async (v) => {
-      const incomingWallpaper = await getWallpaper(v.desktop.wallpaper);
+      const incomingWallpaper = await process.userDaemon!.getWallpaper(
+        v.desktop.wallpaper
+      );
 
       if (incomingWallpaper && incomingWallpaper.url === lastWallpaper) return;
 

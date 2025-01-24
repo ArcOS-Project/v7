@@ -55,6 +55,7 @@ export const DefaultUserPreferences: UserPreferences = {
   },
   isDefault: true,
   userThemes: {},
+  userWallpapers: {},
 };
 
 export const DefaultUserInfo: UserInfo = {

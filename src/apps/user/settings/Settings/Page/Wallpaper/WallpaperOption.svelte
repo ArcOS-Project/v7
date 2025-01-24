@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { UserDaemon } from "$ts/server/user/daemon";
   import type { UserPreferencesStore } from "$types/user";
   import type { Wallpaper } from "$types/wallpaper";
 
@@ -6,9 +7,20 @@
     wallpaper: Wallpaper;
     id: string;
     userPreferences: UserPreferencesStore;
+    userDaemon: UserDaemon;
   }
 
-  const { wallpaper, id, userPreferences }: Props = $props();
+  const { wallpaper, id, userPreferences, userDaemon }: Props = $props();
+
+  let manual = $state<Wallpaper>();
+
+  $effect(() => {
+    getWallpaperManual();
+  });
+
+  async function getWallpaperManual() {
+    manual = await userDaemon.getWallpaper(id);
+  }
 
   function apply() {
     $userPreferences.desktop.wallpaper = id;
@@ -17,7 +29,10 @@
 
 <button
   class="wallpaper-option"
-  style="--url: url('{wallpaper.thumb || wallpaper.url}')"
+  style="--url: url('{wallpaper.thumb ||
+    wallpaper.url ||
+    manual?.thumb ||
+    manual?.url}')"
   aria-label="Apply '{wallpaper.name}'"
   title="{wallpaper.name} by {wallpaper.author}"
   onclick={apply}

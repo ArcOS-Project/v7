@@ -1,5 +1,6 @@
 import type { ReadableStore } from "$ts/writable";
 import type { ThemeStore } from "./theme";
+import type { Wallpaper } from "./wallpaper";
 
 export interface UserInfo {
   username: string;
@@ -21,6 +22,7 @@ export interface UserPreferences {
   isDefault?: boolean;
   desktop: DesktopPreferences;
   userThemes: ThemeStore;
+  userWallpapers: Record<string, Wallpaper>;
   currentThemeId?: string;
 }
 
@@ -91,3 +93,8 @@ export interface ApplicationPreferences {
 export type ScopedAppData = {
   [key: string]: number | boolean | string | object;
 };
+
+export type WallpaperGetters = [
+  string,
+  (id: string) => Wallpaper | Promise<Wallpaper>
+][];
