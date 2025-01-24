@@ -27,7 +27,7 @@ export class BootScreenRuntime extends AppProcess {
     this.connected.set(ServerManager.isConnected());
 
     if (!this.connected()) {
-      this.status.set("We're offline! Please come back later.");
+      this.kernel.state?.loadState("serverdown");
 
       return;
     }

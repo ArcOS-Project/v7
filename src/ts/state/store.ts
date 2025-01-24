@@ -7,6 +7,9 @@ import CrashHtml from "../../state/crash/crash.html?url";
 import CrashRender from "../../state/crash/render";
 import DesktopHtml from "../../state/desktop/desktop.html?url";
 import DesktopRender from "../../state/desktop/render";
+import ServerDownCss from "../../css/state/serverdown.css?url";
+import ServerDownRender from "../../state/serverdown/render";
+import ServerDownHtml from "../../state/serverdown/serverdown.html?url";
 import type { State } from "../../types/state";
 
 export const States: Record<string, State> = {
@@ -19,6 +22,13 @@ export const States: Record<string, State> = {
     name: "Login",
     identifier: "login",
     app: LoginApp,
+  },
+  serverdown: {
+    name: "Server down",
+    render: ServerDownRender,
+    identifier: "serverdown",
+    css: ServerDownCss,
+    html: ServerDownHtml,
   },
   "crash-screen": {
     render: CrashRender,

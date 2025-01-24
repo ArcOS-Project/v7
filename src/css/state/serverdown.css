@@ -1,0 +1,20 @@
+div.server-down {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+div.server-down span.lucide {
+  font-size: 128px;
+  opacity: 0.5;
+}
+
+div.server-down p {
+  position: fixed;
+  bottom: 10vw;
+  left: 0;
+  text-align: center;
+  width: 100%;
+  font-size: 18px;
+}
