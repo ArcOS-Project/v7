@@ -29,14 +29,14 @@
 </script>
 
 <div class="titlebar custom">
-  {#if children}
-    {@render children()}
-  {:else}
-    <div class="window-title">
+  <div class="window-title">
+    {#if children}
+      {@render children()}
+    {:else}
       <img src={$windowIcon || ComponentIcon} alt="" />
       <span>{$windowTitle}</span>
-    </div>
-  {/if}
+    {/if}
+  </div>
   <div class="controls">
     {#if data.controls.minimize}
       <button

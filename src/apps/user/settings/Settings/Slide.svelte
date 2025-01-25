@@ -18,7 +18,7 @@
 </script>
 
 <div class="slide-wrapper" class:visible={$slideVisible}>
-  <div class="slide">
+  <div class="slide {$currentSlide}">
     {#if Slide}
       <Slide {process} />
     {/if}

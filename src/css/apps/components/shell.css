@@ -13,14 +13,14 @@
   pointer-events: none;
 }
 
-div.shell {
+#arcShell div.shell {
   pointer-events: none;
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
-div.shell > div * {
+#arcShell div.shell > div * {
   pointer-events: initial !important;
 }
 
@@ -29,7 +29,7 @@ div.shell > div * {
   pointer-events: initial !important;
 }
 
-div.shell div.primary {
+#arcShell div.shell div.primary {
   height: calc(100% - 50px);
   max-height: calc(100% - 50px);
   overflow: hidden;
@@ -40,7 +40,7 @@ div.shell div.primary {
   position: relative;
 }
 
-div.shell div.secondary {
+#arcShell div.shell div.secondary {
   z-index: 10000;
   position: relative;
 }

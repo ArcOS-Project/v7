@@ -1,0 +1,58 @@
+#systemSettings div.slide.shell_weatherLocation div.option.search-results {
+  padding: 10px;
+  padding-bottom: 5px;
+  height: fit-content;
+  flex-direction: column;
+}
+
+#systemSettings
+  div.slide.shell_weatherLocation
+  div.option.search-results
+  button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 5px;
+  background-color: transparent;
+  padding: 0 5px;
+  scale: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#systemSettings
+  div.slide.shell_weatherLocation
+  div.option.search-results
+  button:hover {
+  background-color: var(--button-glass-bg);
+}
+#systemSettings
+  div.slide.shell_weatherLocation
+  div.option.search-results
+  button:active {
+  background-color: var(--button-glass-active-bg);
+}
+#systemSettings div.slide.shell_weatherLocation div.option.search-bar {
+  padding-right: 5px;
+}
+
+#systemSettings div.slide.shell_weatherLocation div.option.search-results > p {
+  margin-bottom: 5px;
+}
+
+#systemSettings div.slide.shell_weatherLocation div.option.search-bar input {
+  flex-grow: 1;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+}
+
+#systemSettings div.slide.shell_weatherLocation div.option.search-bar button {
+  background-color: transparent;
+}
+
+#systemSettings div.slide.shell_weatherLocation section {
+  margin-bottom: 20px;
+}

@@ -28,6 +28,7 @@ body {
   font-family: inherit;
   user-select: none;
   outline: none !important;
+  -webkit-user-drag: none !important;
 }
 
 .fullscreen {

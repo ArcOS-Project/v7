@@ -138,6 +138,22 @@ export class AppProcess extends Process {
     await this.render();
   }
 
+  getSingleton() {
+    const { renderer } = this.handler;
+
+    return renderer?.getAppInstances(this.app.data.id, this.pid) || [];
+  }
+
+  async closeIfSecondInstance() {
+    const instances = this.getSingleton();
+
+    if (instances.length) {
+      await this.killSelf();
+
+      this.handler.renderer?.focusPid(instances[0].pid);
+    }
+  }
+
   public startAcceleratorListener() {
     this.Log("Starting listener!");
 

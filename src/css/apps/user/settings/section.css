@@ -35,6 +35,15 @@
   gap: 5px;
 }
 
+#systemSettings section div.content div.option button {
+  height: 30px;
+}
+
+#systemSettings section div.content div.option button.suggested {
+  min-width: unset;
+  font-weight: normal;
+}
+
 #systemSettings section div.content div.option button.lucide {
   width: 30px;
   height: 30px;

@@ -44,6 +44,7 @@ export interface ShellPreferences {
     noteContent: string;
     galleryImage: string;
     cardIndex: number;
+    hideQuickSettings: boolean;
   };
 }
 

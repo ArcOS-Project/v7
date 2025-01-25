@@ -178,7 +178,7 @@ export class AppManager extends Process {
     new Draggable(window, {
       bounds: { top: 0, left: 0, right: 0 },
       handle: `.titlebar`,
-      cancel: `.controls`,
+      cancel: `button`,
       legacyTranslate: false,
       gpuAcceleration: false,
     });

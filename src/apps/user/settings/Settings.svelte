@@ -6,12 +6,15 @@
   import { settingsPageStore } from "./store";
   import { Sleep } from "$ts/sleep";
   import Slide from "./Settings/Slide.svelte";
+  import type { SettingsPage } from "./types";
+  import { SettingsIcon } from "$ts/images/general";
 
   const { process }: { process: SettingsRuntime } = $props();
   const { currentPage, slideVisible } = process;
 
   let hide = $state(true);
   let className = $state("");
+  let pageData = $state<SettingsPage>();
 
   $effect(() => {
     const sub = currentPage.subscribe(async (v) => {
@@ -19,7 +22,8 @@
       hide = true;
       await Sleep(300);
 
-      Page = settingsPageStore.get(v)?.content;
+      pageData = settingsPageStore.get(v);
+      Page = pageData?.content;
       className = v;
 
       await Sleep(10);
@@ -34,7 +38,17 @@
 
 <Sidebar {process} />
 <div class="container {className}">
-  <CustomTitlebar {process} />
+  <CustomTitlebar {process}>
+    {#if $slideVisible}
+      <button
+        class="lucide icon-arrow-left"
+        aria-label="Go back"
+        onclick={() => ($slideVisible = false)}
+      ></button>
+    {/if}
+    <img src={pageData?.icon || SettingsIcon} alt="" />
+    <span>{pageData?.name || "Settings"}</span>
+  </CustomTitlebar>
   <div class="page-content" class:hide>
     {#if Page}
       <Page {process} />

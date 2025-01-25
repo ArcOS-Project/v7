@@ -10,6 +10,8 @@
 
   $effect(() => {
     refresh();
+
+    process.dispatch.subscribe("refresh-weather", () => refresh());
   });
 
   async function refresh() {

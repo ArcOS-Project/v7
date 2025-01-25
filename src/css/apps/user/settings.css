@@ -7,6 +7,7 @@
 @import url("./settings/page/loginbackground.css");
 @import url("./settings/overlay/savetheme.css");
 @import url("./settings/slide.css");
+@import url("./settings/slide/weatherlocation.css");
 
 #systemSettings > div.body {
   padding: 0;
@@ -26,6 +27,30 @@
   background-color: var(--win-bg);
   transition: background-color 0.2s, color 0.2s;
   position: relative;
+}
+
+#systemSettings > div.body div.container > div.titlebar.custom button.lucide {
+  font-size: 16px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: -5px;
+  background-color: transparent;
+}
+
+#systemSettings
+  > div.body
+  div.container
+  > div.titlebar.custom
+  button.lucide:hover {
+  background-color: var(--button-glass-bg);
+}
+
+button.lucide:active {
+  background-color: var(--button-glass-active-bg);
 }
 
 #systemSettings > div.body div.page-content {

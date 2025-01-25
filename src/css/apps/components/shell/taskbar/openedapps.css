@@ -28,6 +28,10 @@ div.shell div.taskbar div.opened-apps::-webkit-scrollbar {
   white-space: nowrap;
 }
 
+#arcShell div.shell div.taskbar div.opened-apps button.iconic {
+  padding: 5px;
+}
+
 #arcShell div.shell div.taskbar div.opened-apps button span {
   max-width: calc(100% - 34px);
   display: block;

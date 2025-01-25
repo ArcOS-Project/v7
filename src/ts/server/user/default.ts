@@ -29,6 +29,7 @@ export const DefaultUserPreferences: UserPreferences = {
       noteContent: "",
       galleryImage: "",
       cardIndex: 0,
+      hideQuickSettings: false,
     },
     start: {
       noGroups: false,

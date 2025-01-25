@@ -13,7 +13,7 @@
 <div class="opened-apps">
   {#each [...$store] as [pid, openedProcess]}
     {#if openedProcess instanceof AppProcess && !openedProcess._disposed && isPopulatable(openedProcess.app.data)}
-      <OpenedApp {pid} {openedProcess} />
+      <OpenedApp {pid} {openedProcess} {process} />
     {/if}
   {/each}
 </div>

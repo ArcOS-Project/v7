@@ -6,23 +6,25 @@
   height: 100%;
   background-color: transparent;
   pointer-events: none;
-  transition: pointer-events 0.3s, background-color 0.3s;
+  transition: pointer-events 0.3s, background-color 0.3s, backdrop-filter 0.3s;
   /* z-index: 1000; */
 }
 
 #systemSettings div.slide-wrapper.visible {
   pointer-events: initial;
+  backdrop-filter: blur(8px);
   background-color: #0004;
 }
 
 #systemSettings div.slide-wrapper div.slide {
   width: 100%;
   height: 100%;
-  background-color: var(--win-bg);
+  background-color: var(--glass-bg);
   translate: 100% 0;
   transition: translate 0.3s;
   padding: 15px;
   padding-top: 45px;
+  overflow-y: scroll;
 }
 
 #systemSettings div.slide-wrapper.visible div.slide {

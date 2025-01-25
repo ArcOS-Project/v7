@@ -13,7 +13,7 @@
 
       const secs = tb.clockSecs ? ":ss" : "";
       const date = tb.clockDate ? "MMM D, " : "";
-      const time = tb.clock12hr ? `hh:mm${secs} A` : `HH:mm${secs}`;
+      const time = tb.clock12hr ? `h:mm${secs} A` : `HH:mm${secs}`;
 
       text = dayjs().format(`${date}${time}`);
     });

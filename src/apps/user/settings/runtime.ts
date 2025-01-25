@@ -32,6 +32,10 @@ export class SettingsRuntime extends AppProcess {
     //        instance & kill this one if another instance is already opened
   }
 
+  async render() {
+    await this.closeIfSecondInstance();
+  }
+
   switchPage(pageId: string) {
     if (!settingsPageStore.has(pageId)) return;
 
