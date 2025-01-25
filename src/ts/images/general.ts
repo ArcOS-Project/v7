@@ -32,3 +32,4 @@ export { default as UploadIcon } from "$assets/general/upload.svg";
 export { default as WaveIcon } from "$assets/general/wave.svg";
 export { default as WindowSettingsIcon } from "$assets/general/windowsettings.svg";
 export { default as WindowSnapIcon } from "$assets/general/windowsnap.svg";
+export { default as RoturIcon } from "$assets/general/rotur.svg";

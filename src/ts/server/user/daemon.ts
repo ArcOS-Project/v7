@@ -351,8 +351,6 @@ export class UserDaemon extends Process {
       retrievedThemeData.version
     );
 
-    console.log(theme, retrievedThemeData);
-
     if (JSON.stringify(theme) !== JSON.stringify(retrievedThemeData))
       data.currentThemeId = undefined;
 

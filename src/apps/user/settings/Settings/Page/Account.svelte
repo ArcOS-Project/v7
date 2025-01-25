@@ -1,6 +1,11 @@
 <script lang="ts">
   import { MessagingIcon } from "$ts/images/apps";
-  import { PasswordIcon, SecureIcon, WaveIcon } from "$ts/images/general";
+  import {
+    PasswordIcon,
+    RoturIcon,
+    SecureIcon,
+    WaveIcon,
+  } from "$ts/images/general";
   import { LogoutIcon } from "$ts/images/power";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
@@ -23,6 +28,7 @@
     <Option caption="Rename your account" image={SecureIcon} chevron />
     <Option caption="Change your email address" image={MessagingIcon} chevron />
     <Option caption="Update your password" image={PasswordIcon} chevron />
+    <Option caption="Manage Rotur..." image={RoturIcon} chevron />
   </Section>
 
   <Section>
