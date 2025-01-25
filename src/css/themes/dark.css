@@ -49,6 +49,7 @@
   --glass-alt-bg: #2a2a2a !important;
   --glass-ultralight: #222 !important;
   --glass-ultradark: #111 !important;
+  --blur: 0px;
 }
 
 .noglass * {

@@ -269,12 +269,14 @@ export class RoturExtension extends KernelModule {
       case "add":
         this.client.users?.push(packet.val.username);
         this.lastJoined = packet.val;
+        console.log(this.client.users, this.lastJoined);
         break;
       case "remove":
         this.client.users = this.client.users?.filter(
           (user) => user != packet.val.username
         );
         this.lastLeft = packet.val;
+        console.log(this.client.users, this.lastLeft);
         break;
       case "set":
         this.client.users = [];

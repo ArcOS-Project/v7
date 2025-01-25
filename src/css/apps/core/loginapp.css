@@ -12,7 +12,7 @@ div.window#loginApp button:not(.continue) {
   background-color: #fff1;
   border: none;
   border-radius: 10px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--blur));
   transition: scale 0.2s, background-color 0.2s;
   border: var(--button-glass-bg) 1px solid;
 }
@@ -63,7 +63,7 @@ div.window#loginApp div.container div.field {
   background-color: #fff1;
   border: #fff2 1px solid;
   overflow: hidden;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--blur));
   margin-bottom: 10px;
 }
 
@@ -108,7 +108,7 @@ div.window#loginApp div.login-form button.continue {
   align-items: center;
   justify-content: center;
   font-size: 24px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--blur));
   transition: background-color 0.2s, opacity 0.2s;
 }
 
@@ -144,7 +144,7 @@ div.window#loginApp div.topbar {
   width: calc(100% - 20px);
   height: 40px;
   /* background-color: var(--button-glass-active-bg); */
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--blur));
   border-radius: 10px;
   padding: 0 15px;
   padding-right: 5px;

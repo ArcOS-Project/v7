@@ -6,7 +6,7 @@ div.context-menu {
   padding: 5px;
   border: var(--win-border);
   background-color: var(--glass-bg);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--blur));
   min-width: 180px;
   border-radius: 10px;
   box-shadow: 0 5px 15px 5px #0003;

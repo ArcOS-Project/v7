@@ -33,7 +33,7 @@
   background-color: var(--glass-bg);
   border: var(--win-border);
   border-radius: 10px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--blur));
   scale: 0.9;
   opacity: 0;
   pointer-events: none;

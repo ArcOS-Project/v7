@@ -13,7 +13,7 @@ div.shell div.taskbar {
   border-radius: 10px;
   border: var(--border);
 
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--blur));
 }
 
 :root #main:has(#arcShell div.shell) {
@@ -93,6 +93,14 @@ div.shell div.taskbar div.pinned-apps > button {
   align-items: center;
   justify-content: center;
   background-color: transparent;
+}
+
+#arcShell div.shell div.taskbar div.pinned-apps > button:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#arcShell div.shell div.taskbar div.pinned-apps > button:active {
+  background-color: var(--button-glass-active-bg);
 }
 
 div.shell div.taskbar div.pinned-apps > button + button {

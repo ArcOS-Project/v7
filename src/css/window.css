@@ -73,5 +73,5 @@ div.window:not(.core).resizable {
 div.window.focused.glass,
 div.window.overlay.glass {
   background-color: var(--glass-bg);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--blur));
 }

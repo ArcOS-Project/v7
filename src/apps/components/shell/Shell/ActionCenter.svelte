@@ -30,5 +30,7 @@
     <CardStack {userPreferences} {process} />
   </div>
   <Notifications {process} />
-  <div class="quick-settings"></div>
+  {#if !$userPreferences.shell.actionCenter.hideQuickSettings}
+    <div class="quick-settings"></div>
+  {/if}
 </div>

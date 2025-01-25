@@ -1,2 +1,6 @@
 @import url("./themes/dark.css");
 @import url("./themes/light.css");
+
+:root {
+  --blur: 10px;
+}

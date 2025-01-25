@@ -26,6 +26,7 @@ div.shell div.startmenu div.bottom div.search input {
   flex-grow: 1;
   border: none;
   background-color: transparent;
+  border-radius: 0;
 }
 
 div.shell div.startmenu div.bottom div.actions {
@@ -40,6 +41,18 @@ div.shell div.startmenu div.bottom div.actions {
 div.shell div.startmenu div.bottom div.actions button {
   margin: 0;
   padding: 0;
-  background-color: transparent;
+  background-color: transparent !important;
   height: 21px;
+}
+div.shell div.startmenu div.bottom div.actions button span {
+  color: inherit;
+  transition: color 0.1s;
+}
+
+div.shell div.startmenu div.bottom div.actions button:hover {
+  color: var(--accent-light);
+}
+
+div.shell div.startmenu div.bottom div.actions button:active {
+  color: var(--accent-dark);
 }

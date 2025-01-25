@@ -16,7 +16,7 @@ div.shell div.actioncenter {
   translate: 400px 0;
   opacity: 0;
   transition: translate 0.3s, opacity 0.2s;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--blur));
   box-shadow: 0 5px 15px 5px #0003;
   padding: 10px;
   display: flex;

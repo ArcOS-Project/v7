@@ -37,7 +37,6 @@
         {
           caption: "Apply",
           action: () => apply(),
-          separator: true,
           default: true,
           icon: "check",
         },
