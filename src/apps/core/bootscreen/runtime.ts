@@ -60,13 +60,13 @@ export class BootScreenRuntime extends AppProcess {
       this.globalDispatch.subscribe("rotur-error", () => resolve(false));
     });
 
-    if (!connected) {
-      this.kernel.state?.loadState("serverdown", { rotur: true });
+    // if (!connected) {
+    //   // this.kernel.state?.loadState("serverdown", { rotur: true });
 
-      return;
-    }
+    //   return;
+    // }
 
-    this.status.set("Connected!");
+    this.status.set(connected ? "Connected!" : "Rotur is offline, skipping...");
 
     await Sleep(2000);
 
