@@ -55,9 +55,16 @@ export class BootScreenRuntime extends AppProcess {
     this.status.set("Waiting for Rotur...");
     this.progress.set(true);
 
-    await new Promise((r) =>
-      this.globalDispatch.subscribe("rotur-connected", () => r(true))
-    );
+    const connected = await new Promise((resolve) => {
+      this.globalDispatch.subscribe("rotur-connected", () => resolve(true));
+      this.globalDispatch.subscribe("rotur-error", () => resolve(false));
+    });
+
+    if (!connected) {
+      this.kernel.state?.loadState("serverdown", { rotur: true });
+
+      return;
+    }
 
     this.status.set("Connected!");
 

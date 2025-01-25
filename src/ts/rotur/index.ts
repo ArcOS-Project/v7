@@ -405,7 +405,9 @@ export class RoturExtension extends KernelModule {
     try {
       this.ws = new WebSocket(this.server);
     } catch (e) {
-      throw e;
+      this.dispatch.dispatch("rotur-error", [e]);
+
+      return;
     }
 
     if (!this.ws) return;
@@ -414,6 +416,10 @@ export class RoturExtension extends KernelModule {
       this.sendHandshake();
 
       if (!this.ws) return;
+
+      this.ws.onerror = () => {
+        this.dispatch.dispatch("rotur-error");
+      };
 
       this.ws.onmessage = async (event: MessageEvent) => {
         const packet = JSON.parse(event.data) as RoturPacket;
@@ -447,6 +453,20 @@ export class RoturExtension extends KernelModule {
       this.Log("Disconnected!");
       this.is_connected = false;
     };
+
+    return new Promise((resolve) => {
+      const timeout = setTimeout(() => {
+        this.dispatch.dispatch("rotur-error");
+
+        resolve(false);
+      }, 3000);
+
+      this.dispatch.subscribe("rotur-connected", () => {
+        clearTimeout(timeout);
+
+        resolve(true);
+      });
+    });
   }
 
   socketSend(data: object) {

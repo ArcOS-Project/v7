@@ -85,3 +85,18 @@
   background-color: var(--button-glass-active-bg);
   margin-top: 10px;
 }
+
+#messageBox div.top div.component {
+  display: flex;
+  flex-direction: column;
+}
+#messageBox div.top div.component :first-child {
+  margin-top: 5px;
+}
+#messageBox div.top div.component p {
+  margin: 10px 0;
+}
+
+#messageBox div.top div.component li {
+  padding-left: 10px;
+}

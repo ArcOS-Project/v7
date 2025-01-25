@@ -72,6 +72,10 @@
 
     process.slideVisible.set(false);
   }
+
+  function keydown(e: KeyboardEvent) {
+    if (e.key === "Enter" && searchInput) search();
+  }
 </script>
 
 <div class="centered-layout">
@@ -82,7 +86,7 @@
   </div>
   <Section>
     <div class="option search-bar">
-      <input type="text" bind:value={searchInput} />
+      <input type="text" bind:value={searchInput} onkeydown={keydown} />
       <button
         class="lucide icon-search"
         disabled={!searchInput || working}

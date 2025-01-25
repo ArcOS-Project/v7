@@ -1,14 +1,13 @@
-import { WaveKernel } from "$ts/kernel";
-import { ServerManager } from "$ts/server";
 import type { StateProps } from "$types/state";
 
 export default async function render(props: StateProps) {
-  const serverManager = WaveKernel.get().getModule<ServerManager>("server");
-  const serverUrlP = document.querySelector<HTMLParagraphElement>(
-    "div.serverdown #serverUrl"
+  const status = document.querySelector<HTMLParagraphElement>(
+    "div.serverdown #status"
   );
 
-  if (!serverUrlP) return;
+  if (!status) return;
 
-  serverUrlP.innerText = serverManager.url;
+  status.innerText = `${
+    props.rotur ? "Rotur" : "Server"
+  } offline. Please try again later.`;
 }

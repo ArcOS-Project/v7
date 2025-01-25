@@ -2,6 +2,7 @@
   import type { Component } from "svelte";
   import type { SettingsRuntime } from "../runtime";
   import { SlideStore } from "../store/slides";
+  import { Sleep } from "$ts/sleep";
 
   const { process }: { process: SettingsRuntime } = $props();
   const { slideVisible, currentSlide } = process;
@@ -13,7 +14,17 @@
       Slide = SlideStore.get(v);
     });
 
-    return () => sub();
+    const sub2 = slideVisible.subscribe(async (v) => {
+      if (v) return;
+      await Sleep(200);
+      $currentSlide = "";
+      Slide = undefined;
+    });
+
+    return () => {
+      sub();
+      sub2();
+    };
   });
 </script>
 

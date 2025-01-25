@@ -5,6 +5,8 @@
 
   const { process }: AppComponentProps<MessageBoxRuntime> = $props();
   const { data } = process;
+
+  const Component = data?.content;
 </script>
 
 {#if data}
@@ -14,7 +16,13 @@
     </div>
     <div class="right">
       <h1>{data?.title}</h1>
-      <p>{@html data.message}</p>
+      {#if data.message}
+        <p>{@html data.message}</p>
+      {:else if Component}
+        <div class="component">
+          <Component {process} {data} />
+        </div>
+      {/if}
     </div>
   </div>
   <div class="bottom">

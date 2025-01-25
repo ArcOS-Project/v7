@@ -8,6 +8,7 @@
 @import url("./settings/overlay/savetheme.css");
 @import url("./settings/slide.css");
 @import url("./settings/slide/weatherlocation.css");
+@import url("./settings/slide/userstyle.css");
 
 #systemSettings > div.body {
   padding: 0;

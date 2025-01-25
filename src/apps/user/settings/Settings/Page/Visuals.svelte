@@ -50,7 +50,12 @@
       />
     </Option>
     <Option caption="Add your own CSS to ArcOS">
-      <button class="lucide icon-pencil" aria-label="Edit custom CSS"></button>
+      <button
+        class="lucide icon-pencil"
+        aria-label="Edit custom CSS"
+        disabled={!$userPreferences.shell.customStyle.enabled}
+        onclick={() => process.showSlide("visuals_userStyles")}
+      ></button>
       <input
         type="checkbox"
         class="switch"

@@ -1,0 +1,33 @@
+#systemSettings div.slide.visuals_userStyles {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+#systemSettings div.slide.visuals_userStyles div.top {
+  flex-grow: 1;
+}
+
+#systemSettings div.slide.visuals_userStyles textarea {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  border: none;
+  resize: none;
+  font-family: "Source Code Pro";
+}
+
+#systemSettings div.slide.visuals_userStyles div.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#systemSettings div.slide.visuals_userStyles div.bottom div.left {
+  opacity: 0.5;
+}
+
+#systemSettings div.slide.visuals_userStyles div.bottom div.right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

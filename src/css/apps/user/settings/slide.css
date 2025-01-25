@@ -13,7 +13,7 @@
 #systemSettings div.slide-wrapper.visible {
   pointer-events: initial;
   backdrop-filter: blur(var(--blur));
-  background-color: #0004;
+  background-color: #0002;
 }
 
 #systemSettings div.slide-wrapper div.slide {
@@ -23,6 +23,7 @@
   translate: 100% 0;
   transition: translate 0.3s;
   padding: 15px;
+  padding-right: 7px;
   padding-top: 50px;
   overflow-y: scroll;
 }
