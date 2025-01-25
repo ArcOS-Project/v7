@@ -40,6 +40,9 @@ export const DefaultUserPreferences: UserPreferences = {
       showHiddenApps: false,
       noGlass: false,
     },
+    customStyle: {
+      enabled: false,
+    },
   },
   security: {
     lockdown: false,

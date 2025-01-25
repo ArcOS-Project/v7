@@ -53,3 +53,17 @@
   padding: 0 50px;
   text-align: center;
 }
+
+#systemSettings > div.body div.centered-layout > div.header img {
+  height: 84px;
+  margin-bottom: 15px;
+}
+
+#systemSettings > div.body div.centered-layout > div.header h1 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+#systemSettings > div.body div.centered-layout > div.header p {
+  opacity: 0.5;
+}

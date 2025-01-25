@@ -26,10 +26,16 @@ export interface UserPreferences {
   currentThemeId?: string;
 }
 
+export interface CustomStylePreferences {
+  enabled: boolean;
+  content?: string;
+}
+
 export interface ShellPreferences {
   taskbar: TaskbarPreferences;
   start: StartMenuPreferences;
   visuals: VisualPreferences;
+  customStyle: CustomStylePreferences;
   actionCenter: {
     weatherLocation: {
       latitude: number;

@@ -50,3 +50,7 @@
   --glass-ultralight: #222 !important;
   --glass-ultradark: #111 !important;
 }
+
+.noglass * {
+  backdrop-filter: unset;
+}

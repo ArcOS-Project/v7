@@ -35,8 +35,8 @@
   <div class="name">
     {#if image}
       <img src={image} alt="" />
-      <span>{caption}</span>
     {/if}
+    <span>{caption}</span>
   </div>
   <div class="right">
     {#if chevron}
