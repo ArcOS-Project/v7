@@ -6,6 +6,7 @@ export interface MessageBoxData {
   content?: Component<any>;
   buttons: MessageBoxButton[];
   image?: string;
+  sound?: string;
 }
 
 export interface MessageBoxButton {

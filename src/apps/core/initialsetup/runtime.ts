@@ -3,6 +3,7 @@ import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { SecurityMediumIcon } from "$ts/images/general";
 import { LoginUser, RegisterUser } from "$ts/server/user/auth";
 import { Sleep } from "$ts/sleep";
+import { htmlspecialchars } from "$ts/util";
 import { Store } from "$ts/writable";
 import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
@@ -182,10 +183,18 @@ export class InitialSetupRuntime extends AppProcess {
       {
         image: SecurityMediumIcon,
         title: "ArcOS License - GPLv3",
-        message: `<code>${this.kernel.ARCOS_LICENSE}</code>`,
+        message: `By using ArcOS, you agree to the GPLv3 License contained within: <code class='block'>${htmlspecialchars(
+          this.kernel.ARCOS_LICENSE
+        )}</code>`,
         buttons: [
           {
-            caption: "Okay",
+            caption: "Decline",
+            action: () => {
+              this.kernel.state?.loadState("licenseDeclined");
+            },
+          },
+          {
+            caption: "I agree",
             action: () => {
               this.actionsDisabled.set(false);
             },

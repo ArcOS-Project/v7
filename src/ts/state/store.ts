@@ -10,6 +10,9 @@ import DesktopRender from "../../state/desktop/render";
 import ServerDownCss from "../../css/state/serverdown.css?url";
 import ServerDownRender from "../../state/serverdown/render";
 import ServerDownHtml from "../../state/serverdown/serverdown.html?url";
+import LicenseDeclinedCss from "../../css/state/licensedeclined.css?url";
+import LicenseDeclinedRender from "../../state/licensedeclined/render";
+import LicenseDeclinedHtml from "../../state/licensedeclined/licensedeclined.html?url";
 import type { State } from "../../types/state";
 
 export const States: Record<string, State> = {
@@ -29,6 +32,13 @@ export const States: Record<string, State> = {
     identifier: "serverdown",
     css: ServerDownCss,
     html: ServerDownHtml,
+  },
+  licenseDeclined: {
+    name: "License Declined",
+    html: LicenseDeclinedHtml,
+    css: LicenseDeclinedCss,
+    render: LicenseDeclinedRender,
+    identifier: "licenseDeclined",
   },
   "crash-screen": {
     render: CrashRender,

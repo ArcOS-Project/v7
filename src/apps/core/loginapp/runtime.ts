@@ -122,6 +122,7 @@ export class LoginAppRuntime extends AppProcess {
     await Sleep(2000);
 
     await this.kernel.state?.loadState("desktop", { userDaemon });
+    this.soundBus.playSound("arcos.system.logon");
 
     userDaemon.setAppRendererClasses(userDaemon.preferences());
   }

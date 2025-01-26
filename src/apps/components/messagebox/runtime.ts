@@ -17,6 +17,8 @@ export class MessageBoxRuntime extends AppProcess {
     super(handler, pid, parentPid, app);
 
     this.data = data;
+
+    if (data.sound) this.soundBus.playSound(data.sound);
   }
 
   async start() {

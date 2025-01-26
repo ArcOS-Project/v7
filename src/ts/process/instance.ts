@@ -1,5 +1,6 @@
 import { GlobalDispatcher } from "$ts/dispatch";
 import { Environment } from "$ts/kernel/env";
+import { SoundBus } from "$ts/soundbus";
 import { LogLevel } from "../../types/logging";
 import { WaveKernel } from "../kernel";
 import { Log } from "../kernel/logging";
@@ -8,6 +9,7 @@ import type { ProcessHandler } from "./handler";
 
 export class Process {
   public env: Environment;
+  public soundBus: SoundBus;
   public handler: ProcessHandler;
   public dispatch: ProcessDispatch;
   public globalDispatch: GlobalDispatcher;
@@ -33,6 +35,7 @@ export class Process {
     this.dispatch = new ProcessDispatch(this);
     this.globalDispatch = this.kernel.getModule<GlobalDispatcher>("dispatch");
     this.env = this.kernel.getModule<Environment>("env");
+    this.soundBus = this.kernel.getModule<SoundBus>("soundbus");
   }
 
   protected async stop(): Promise<any> {
