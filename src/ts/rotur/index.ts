@@ -1,14 +1,15 @@
 import { GlobalDispatcher } from "$ts/dispatch";
 import { validateObject, type ValidationObject } from "$ts/json";
 import type { WaveKernel } from "$ts/kernel";
-import { KernelModule } from "$ts/kernel/module";
+import type { ProcessHandler } from "$ts/process/handler";
+import { Process } from "$ts/process/instance";
 import { Sleep } from "$ts/sleep";
 import { LogLevel } from "$types/logging";
 import { RoturErrors, RoturFriendStatus, type RoturPacket } from "$types/rotur";
 import axios from "axios";
 import md5 from "md5";
 
-export class RoturExtension extends KernelModule {
+export class RoturExtension extends Process {
   ws: WebSocket | null;
   client: { ip?: string; username?: string; users?: string[]; room?: string };
   packets: Record<string, any>;
@@ -33,7 +34,6 @@ export class RoturExtension extends KernelModule {
   badges: any[];
   friends: any;
   storage_id = "";
-  dispatch: GlobalDispatcher;
 
   packetCommandHandlers: Record<
     string,
@@ -53,8 +53,8 @@ export class RoturExtension extends KernelModule {
     link_cfg: this.linkCfgPacket.bind(this),
   };
 
-  constructor(kernel: WaveKernel, id: string) {
-    super(kernel, id);
+  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
+    super(handler, pid, parentPid);
 
     this.ws = null;
     this.client = {};
@@ -80,8 +80,6 @@ export class RoturExtension extends KernelModule {
 
     this.version = 5;
     this.outdated = false;
-
-    this.dispatch = this.kernel.getModule<GlobalDispatcher>("dispatch");
   }
 
   async _init() {
@@ -363,7 +361,7 @@ export class RoturExtension extends KernelModule {
     this.client.room = packet.val;
     this.is_connected = true;
     this.Log("Connected!");
-    this.dispatch.dispatch("rotur-connected");
+    this.globalDispatch.dispatch("rotur-connected");
   }
 
   socketSendWithAck(
@@ -393,7 +391,7 @@ export class RoturExtension extends KernelModule {
     try {
       this.ws = new WebSocket(this.server);
     } catch (e) {
-      this.dispatch.dispatch("rotur-error", [e]);
+      this.globalDispatch.dispatch("rotur-error", [e]);
 
       return;
     }
@@ -406,7 +404,7 @@ export class RoturExtension extends KernelModule {
       if (!this.ws) return;
 
       this.ws.onerror = () => {
-        this.dispatch.dispatch("rotur-error");
+        this.globalDispatch.dispatch("rotur-error");
       };
 
       this.ws.onmessage = async (event: MessageEvent) => {
@@ -444,12 +442,12 @@ export class RoturExtension extends KernelModule {
 
     return new Promise((resolve) => {
       const timeout = setTimeout(() => {
-        this.dispatch.dispatch("rotur-error");
+        this.globalDispatch.dispatch("rotur-error");
 
         resolve(false);
       }, 3000);
 
-      this.dispatch.subscribe("rotur-connected", () => {
+      this.globalDispatch.subscribe("rotur-connected", () => {
         clearTimeout(timeout);
 
         resolve(true);

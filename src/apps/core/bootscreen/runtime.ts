@@ -1,4 +1,3 @@
-import { RoturExtension } from "$ts/rotur";
 import { ServerManager } from "$ts/server";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
@@ -10,7 +9,6 @@ export class BootScreenRuntime extends AppProcess {
   public progress = Store<boolean>(false);
   public status = Store<string>("");
   public connected = Store<boolean>(false);
-  private rotur: RoturExtension;
 
   constructor(
     handler: ProcessHandler,
@@ -19,8 +17,6 @@ export class BootScreenRuntime extends AppProcess {
     app: AppProcessData
   ) {
     super(handler, pid, parentPid, app);
-
-    this.rotur = this.kernel.getModule<RoturExtension>("rotur");
   }
 
   async begin() {
@@ -46,23 +42,9 @@ export class BootScreenRuntime extends AppProcess {
   async startBooting() {
     if (this.progress()) return;
 
-    await this.rotur.connectToServer("arc", "arcOS", "7");
+    this.status.set("&nbsp;");
 
-    this.status.set("Waiting for Rotur...");
     this.progress.set(true);
-
-    const connected = await new Promise((resolve) => {
-      this.globalDispatch.subscribe("rotur-connected", () => resolve(true));
-      this.globalDispatch.subscribe("rotur-error", () => resolve(false));
-    });
-
-    // if (!connected) {
-    //   // this.kernel.state?.loadState("serverdown", { rotur: true });
-
-    //   return;
-    // }
-
-    this.status.set(connected ? "Connected!" : "Rotur is offline, skipping...");
 
     await Sleep(2000);
 
