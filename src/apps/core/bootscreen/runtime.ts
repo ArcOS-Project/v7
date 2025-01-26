@@ -46,11 +46,7 @@ export class BootScreenRuntime extends AppProcess {
   async startBooting() {
     if (this.progress()) return;
 
-    await this.rotur.connectToServer({
-      DESIGNATION: "arc",
-      SYSTEM: "arcOS",
-      VERSION: "7",
-    });
+    await this.rotur.connectToServer("arc", "arcOS", "7");
 
     this.status.set("Waiting for Rotur...");
     this.progress.set(true);

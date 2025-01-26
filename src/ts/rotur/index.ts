@@ -4,19 +4,7 @@ import type { WaveKernel } from "$ts/kernel";
 import { KernelModule } from "$ts/kernel/module";
 import { Sleep } from "$ts/sleep";
 import { LogLevel } from "$types/logging";
-import type {
-  GetOrDeleteSyncedVariableArguments,
-  RoturConnectionArguments,
-  RoturLoginArguments,
-  RoturPacket,
-  SendMailArguments,
-  SendMessageArguments,
-  SetSyncedVariableArguments,
-  TargetAggregationArguments,
-  UserConnectedArguments,
-  UserDesignationArguments,
-  UsernameConectedArguments,
-} from "$types/rotur";
+import { RoturErrors, RoturFriendStatus, type RoturPacket } from "$types/rotur";
 import axios from "axios";
 import md5 from "md5";
 
@@ -163,7 +151,7 @@ export class RoturExtension extends KernelModule {
 
   // main functions
 
-  async connectToServer(args: RoturConnectionArguments) {
+  async connectToServer(designation: string, system: string, version: string) {
     this.Log("Connecting to server");
 
     if (!this.server || !this.accounts) {
@@ -171,7 +159,7 @@ export class RoturExtension extends KernelModule {
 
       await Sleep(1000);
 
-      await this.connectToServer(args);
+      await this.connectToServer(designation, system, version);
 
       return true;
     }
@@ -180,11 +168,11 @@ export class RoturExtension extends KernelModule {
       this.ws?.close();
     }
 
-    this.designation = args.DESIGNATION;
+    this.designation = designation;
     this.username = randomString(32);
     this.my_client = {
-      system: args.SYSTEM,
-      version: args.VERSION,
+      system,
+      version,
     };
 
     this.connectToWebsocket();
@@ -505,9 +493,9 @@ export class RoturExtension extends KernelModule {
     return this.first_login;
   }
 
-  async login(args: RoturLoginArguments) {
-    if (!this.is_connected) return "Not Connected";
-    if (this.authenticated) return "Already Logged In";
+  async login(username: string, password: string) {
+    if (!this.is_connected) return RoturErrors.err_notConnected;
+    if (this.authenticated) return RoturErrors.err_alreadyLoggedIn;
 
     return new Promise((resolve, reject) => {
       this.socketSendWithAck(
@@ -518,7 +506,7 @@ export class RoturExtension extends KernelModule {
             client: this.my_client,
             command: "login",
             id: this.userToken,
-            payload: [args.USERNAME, md5("" + args.PASSWORD)],
+            payload: [username, md5("" + password)],
           },
           id: this.accounts,
         },
@@ -528,7 +516,7 @@ export class RoturExtension extends KernelModule {
         },
         async (packet: RoturPacket) => {
           if (typeof packet.val?.payload !== "object") {
-            reject(`Failed to log in as ${args.USERNAME}`);
+            reject(RoturErrors.err_loginFailed);
 
             return;
           }
@@ -554,7 +542,7 @@ export class RoturExtension extends KernelModule {
           delete this.user.requests;
 
           // setup username for reconnect
-          this.username = args.USERNAME + "§" + randomString(10);
+          this.username = username + "§" + randomString(10);
           this.connectToWebsocket();
 
           while (!this.is_connected) {
@@ -562,15 +550,15 @@ export class RoturExtension extends KernelModule {
           }
 
           this.authenticated = true;
-          resolve(`Logged in as ${args.USERNAME}`);
+          resolve(RoturErrors.ok_loggedIn);
         }
       );
     });
   }
 
-  register(args: RoturLoginArguments) {
-    if (!this.is_connected) return "Not Connected";
-    if (this.authenticated) return "Already Logged In";
+  register(username: string, password: string) {
+    if (!this.is_connected) return RoturErrors.err_notConnected;
+    if (this.authenticated) return RoturErrors.err_alreadyLoggedIn;
 
     return new Promise((resolve, reject) => {
       this.socketSendWithAck(
@@ -582,8 +570,8 @@ export class RoturExtension extends KernelModule {
             id: this.userToken,
             ip: this.client.ip,
             payload: {
-              username: args.USERNAME,
-              password: md5("" + args.PASSWORD),
+              username: username,
+              password: md5("" + password),
             },
           },
           id: this.accounts,
@@ -594,21 +582,19 @@ export class RoturExtension extends KernelModule {
         },
         (packet) => {
           if (packet.val?.payload !== "Account Created Successfully") {
-            reject(
-              `Faield to register as ${args.USERNAME}: ${packet.val.payload}`
-            );
+            reject(RoturErrors.err_registerFailed);
             return;
           }
 
-          resolve(`Registered as ${args.USERNAME}`);
+          resolve(RoturErrors.ok_registered);
         }
       );
     });
   }
 
   deleteAccount() {
-    if (!this.is_connected) return "Not Connected";
-    if (!this.authenticated) return "Not Logged In";
+    if (!this.is_connected) return RoturErrors.err_notConnected;
+    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
 
     return new Promise((resolve, reject) => {
       this.socketSendWithAck(
@@ -627,12 +613,12 @@ export class RoturExtension extends KernelModule {
         },
         (packet) => {
           if (packet.val?.payload !== "Account Deleted Successfully") {
-            reject("Failed to delete account: " + packet.val.payload);
+            reject(RoturErrors.err_accountDeleteFailed);
 
             return;
           }
 
-          resolve(`Account Deleted Successfully`);
+          resolve(RoturErrors.ok_accountDeleted);
         }
       );
     });
@@ -662,12 +648,12 @@ export class RoturExtension extends KernelModule {
     return this.userToken ?? "";
   }
 
-  getkey(args: Record<string, any>) {
-    if (!this.is_connected) return "Not Connected";
-    if (!this.authenticated) return "Not Logged In";
+  getkey(key: string) {
+    if (!this.is_connected) return RoturErrors.err_notConnected;
+    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
 
-    if (args.KEY in this.user) {
-      const keyData = this.user[args.KEY];
+    if (key in this.user) {
+      const keyData = this.user[key];
 
       if (typeof keyData === "object") {
         return JSON.stringify(keyData);
@@ -679,11 +665,10 @@ export class RoturExtension extends KernelModule {
     }
   }
 
-  setkey(args: Record<string, any>) {
-    if (args.VALUE.length > 1000)
-      return "Key Too Long, Limit is 1000 Characters";
-    if (!this.is_connected) return "Not Connected";
-    if (!this.authenticated) return "Not Logged In";
+  setkey(key: string, value: string) {
+    if (value.length > 1000) return RoturErrors.err_keyTooLong;
+    if (!this.is_connected) return RoturErrors.err_notConnected;
+    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
 
     return new Promise((resolve) => {
       this.socketSendWithAck(
@@ -693,7 +678,7 @@ export class RoturExtension extends KernelModule {
             command: "update",
             client: this.my_client,
             id: this.userToken,
-            payload: [args.KEY, args.VALUE],
+            payload: [key, value],
           },
           id: this.accounts,
         },
@@ -709,34 +694,34 @@ export class RoturExtension extends KernelModule {
     });
   }
 
-  keyExists(args: Record<string, any>) {
+  keyExists(key: string) {
     if (!this.isAuthenticated()) return false;
 
-    return args.KEY in this.user;
+    return key in this.user;
   }
 
   getkeys() {
-    if (!this.is_connected) return "Not Connected";
-    if (!this.authenticated) return "Not Logged In";
+    if (!this.is_connected) return RoturErrors.err_notConnected;
+    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
 
     return JSON.stringify(Object.keys(this.user));
   }
 
   getvalues() {
-    if (!this.is_connected) return "Not Connected";
-    if (!this.authenticated) return "Not Logged In";
+    if (!this.is_connected) return RoturErrors.err_notConnected;
+    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
 
     return JSON.stringify(Object.values(this.user));
   }
 
   getAccount() {
-    if (!this.is_connected) return "Not Connected";
-    if (!this.authenticated) return "Not Logged In";
+    if (!this.is_connected) return RoturErrors.err_notConnected;
+    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
 
     return JSON.stringify(this.user);
   }
 
-  setStorageID(args: Record<string, any>) {
+  setStorageID(id: string) {
     if (!this.isAuthenticated()) {
       this.Log("Unable to set the storage ID: Not Logged In", LogLevel.error);
 
@@ -757,7 +742,7 @@ export class RoturExtension extends KernelModule {
             command: "storage_getid",
             client: this.my_client,
             id: this.userToken,
-            payload: args.ID,
+            payload: id,
           },
           id: this.accounts,
         },
@@ -767,14 +752,13 @@ export class RoturExtension extends KernelModule {
         },
         (packet) => {
           if (packet.val.payload === "Not Logged In") {
-            console.error("Failed to set storage id: " + packet.val.payload);
-            reject(packet.val.payload);
+            reject(RoturErrors.err_storageIdSetFailed);
 
             return;
           }
 
-          resolve("" + args.ID);
-          this.storage_id = "" + args.ID;
+          resolve("" + id);
+          this.storage_id = "" + id;
           this.localKeys = JSON.parse(packet.val.payload);
         }
       );
@@ -789,22 +773,21 @@ export class RoturExtension extends KernelModule {
     return this.storage_id ?? "";
   }
 
-  getStorageKey(args: Record<string, any>) {
-    if (!this.isAuthenticated()) return "Not Logged In";
+  getStorageKey(key: string) {
+    if (!this.isAuthenticated()) return RoturErrors.err_notLoggedIn;
 
     return this.storage_id
-      ? this.localKeys[args.KEY] ?? ""
-      : "Storage Id Not Set";
+      ? this.localKeys[key] ?? ""
+      : RoturErrors.err_storageIdNotSet;
   }
 
-  setStorageKey(args: Record<string, any>) {
-    if (args.VALUE.length > 1000)
-      return "Key Too Long, Limit is 1000 Characters";
+  setStorageKey(key: string, value: string) {
+    if (value.length > 1000) return RoturErrors.err_keyTooLong;
 
-    if (!this.isAuthenticated()) return "Not Logged In";
-    if (!this.storage_id) return "Storage Id Not Set";
+    if (!this.isAuthenticated()) return RoturErrors.err_notLoggedIn;
+    if (!this.storage_id) return RoturErrors.err_storageIdNotSet;
 
-    this.localKeys[args.KEY] = args.VALUE;
+    this.localKeys[key] = value;
 
     return new Promise((resolve, reject) => {
       this.socketSendWithAck(
@@ -815,8 +798,8 @@ export class RoturExtension extends KernelModule {
             id: this.userToken,
             client: this.my_client,
             payload: {
-              key: args.KEY,
-              value: args.VALUE,
+              key: key,
+              value: value,
               id: this.storage_id,
             },
           },
@@ -828,23 +811,23 @@ export class RoturExtension extends KernelModule {
         },
         (packet) => {
           if (packet.val.payload !== "Successfully Set Key") {
-            reject(packet.val.payload);
+            reject(RoturErrors.err_keySetFailed);
             return;
           }
 
-          resolve("Key Set");
+          resolve(RoturErrors.ok_keySet);
         }
       );
     });
   }
 
-  existsStorageKey(args: Record<string, any>) {
+  existsStorageKey(key: string) {
     if (!this.isAuthenticated()) return false;
 
-    return this.storage_id ? args.KEY in this.localKeys : false;
+    return this.storage_id ? key in this.localKeys : false;
   }
 
-  deleteStorageKey(args: Record<string, any>) {
+  deleteStorageKey(key: string) {
     if (!this.isAuthenticated()) {
       this.Log("Not Logged In", LogLevel.error);
 
@@ -857,7 +840,7 @@ export class RoturExtension extends KernelModule {
       return;
     }
 
-    delete this.localKeys[args.KEY];
+    delete this.localKeys[key];
 
     return new Promise((resolve, reject) => {
       this.socketSendWithAck(
@@ -868,7 +851,7 @@ export class RoturExtension extends KernelModule {
             id: this.userToken,
             client: this.my_client,
             payload: {
-              key: args.KEY,
+              key,
               id: this.storage_id,
             },
           },
@@ -880,12 +863,12 @@ export class RoturExtension extends KernelModule {
         },
         (packet) => {
           if (packet.val.payload !== "Successfully Deleted Key") {
-            reject(packet.val.payload);
+            reject(RoturErrors.err_keyDeleteFailed);
 
             return;
           }
 
-          resolve("Key Deleted");
+          resolve(RoturErrors.ok_keyDeleted);
         }
       );
     });
@@ -895,17 +878,17 @@ export class RoturExtension extends KernelModule {
   // I'M GOING TO BED.
 
   getStorageKeys() {
-    if (!this.isAuthenticated()) return "Not Logged In";
+    if (!this.isAuthenticated()) return RoturErrors.err_notLoggedIn;
 
-    if (!this.storage_id) return "Storage Id Not Set";
+    if (!this.storage_id) return RoturErrors.err_storageIdNotSet;
 
     JSON.stringify(Object.keys(this.localKeys));
   }
 
   getStorageValues() {
-    if (!this.isAuthenticated()) return "Not Logged In";
+    if (!this.isAuthenticated()) return RoturErrors.err_notLoggedIn;
 
-    if (!this.storage_id) return "Storage Id Not Set";
+    if (!this.storage_id) return RoturErrors.err_storageIdNotSet;
 
     return JSON.stringify(Object.values(this.localKeys));
   }
@@ -927,9 +910,9 @@ export class RoturExtension extends KernelModule {
   }
 
   storageUsage() {
-    if (!this.isAuthenticated()) return "Not Logged In";
+    if (!this.isAuthenticated()) return RoturErrors.err_notLoggedIn;
 
-    if (!this.storage_id) return "Storage Id Not Set";
+    if (!this.storage_id) return RoturErrors.err_storageIdNotSet;
 
     return JSON.stringify(JSON.stringify(this.localKeys).length);
   }
@@ -939,8 +922,8 @@ export class RoturExtension extends KernelModule {
   }
 
   storageRemaining() {
-    if (!this.isAuthenticated()) return "Not Logged In";
-    if (!this.storage_id) return "Storage Id Not Set";
+    if (!this.isAuthenticated()) return RoturErrors.err_notLoggedIn;
+    if (!this.storage_id) return RoturErrors.err_storageIdNotSet;
 
     return 50000 - JSON.stringify(this.localKeys).length + "";
   }
@@ -948,7 +931,7 @@ export class RoturExtension extends KernelModule {
   // TODO: REFACTOR FASE 2: CONTINUE FROM HERE
 
   accountStorageUsage() {
-    if (!this.isAuthenticated()) return "Not Logged In";
+    if (!this.isAuthenticated()) return RoturErrors.err_notLoggedIn;
 
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -967,7 +950,7 @@ export class RoturExtension extends KernelModule {
         if (packet.origin?.username !== this.accounts) return;
         if (packet.val.source_command !== "storage_usage") return;
         if (packet.val.payload === "Not Logged In") {
-          reject("Not Logged In");
+          reject(RoturErrors.err_notLoggedIn);
           return;
         }
 
@@ -984,7 +967,7 @@ export class RoturExtension extends KernelModule {
   }
 
   accountStorageRemaining() {
-    if (!this.isAuthenticated()) return "Not Logged In";
+    if (!this.isAuthenticated()) return RoturErrors.err_notLoggedIn;
 
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1004,7 +987,7 @@ export class RoturExtension extends KernelModule {
         if (packet.origin?.username !== this.accounts) return;
         if (packet.val.source_command !== "storage_space") return;
         if (packet.val.payload === "Not Logged In") {
-          reject("Not Logged In");
+          reject(RoturErrors.err_notLoggedIn);
 
           return;
         }
@@ -1017,7 +1000,7 @@ export class RoturExtension extends KernelModule {
     });
   }
 
-  sendMessage(args: SendMessageArguments) {
+  sendMessage(payload: string, source: string, target: string, user: string) {
     if (!this.is_connected) {
       this.Log("Can't send a message if not connected", LogLevel.error);
 
@@ -1028,12 +1011,12 @@ export class RoturExtension extends KernelModule {
       cmd: "pmsg",
       val: {
         client: this.my_client,
-        payload: args.PAYLOAD,
-        source: args.SOURCE,
-        target: args.TARGET,
+        payload,
+        source,
+        target,
         timestamp: Date.now(),
       },
-      id: args.USER,
+      id: user,
     });
   }
 
@@ -1041,33 +1024,33 @@ export class RoturExtension extends KernelModule {
     return true;
   }
 
-  getPacketsFromTarget(args: TargetAggregationArguments) {
-    return JSON.stringify(this.packets[args.TARGET] || "[]");
+  getPacketsFromTarget(target: string) {
+    return JSON.stringify(this.packets[target] || "[]");
   }
 
-  numberOfPacketsOnTarget(args: TargetAggregationArguments) {
-    return this.packets[args.TARGET] ? this.packets[args.TARGET].length : 0;
+  numberOfPacketsOnTarget(target: string) {
+    return this.packets[target] ? this.packets[target].length : 0;
   }
 
-  getFirstPacketOnTarget(args: TargetAggregationArguments) {
-    return JSON.stringify(this.packets[args.TARGET]?.[0] || "{}");
+  getFirstPacketOnTarget(target: string) {
+    return JSON.stringify(this.packets[target]?.[0] || "{}");
   }
 
-  dataOfFirstPacketOnTarget(args: TargetAggregationArguments) {
-    switch (args.DATA) {
+  dataOfFirstPacketOnTarget(target: string, data: string) {
+    switch (data) {
       case "origin":
-        return this.packets[args.TARGET]?.[0]?.origin || "";
+        return this.packets[target]?.[0]?.origin || "";
       case "client":
         return (
-          this.packets[args.TARGET]?.[0]?.client ||
+          this.packets[target]?.[0]?.client ||
           '{"system":"Unknown", "version":"Unknown"}'
         );
       case "source port":
-        return this.packets[args.TARGET]?.[0]?.source || "Unknown";
+        return this.packets[target]?.[0]?.source || "Unknown";
       case "payload":
-        return this.packets[args.TARGET]?.[0]?.payload || "";
+        return this.packets[target]?.[0]?.payload || "";
       case "timestamp":
-        return this.packets[args.TARGET]?.[0]?.timestamp || "0";
+        return this.packets[target]?.[0]?.timestamp || "0";
       default:
         return "";
     }
@@ -1081,17 +1064,17 @@ export class RoturExtension extends KernelModule {
     return JSON.stringify(this.packets);
   }
 
-  deleteFirstPacketOnTarget(args: Record<string, any>) {
-    if (!this.packets[args.TARGET]) return "{}";
+  deleteFirstPacketOnTarget(target: string) {
+    if (!this.packets[target]) return "{}";
 
-    const packet = this.packets[args.TARGET]?.[0];
-    this.packets[args.TARGET].shift();
+    const packet = this.packets[target]?.[0];
+    this.packets[target].shift();
 
     return JSON.stringify(packet);
   }
 
-  deletePacketsOnTarget(args: Record<string, any>) {
-    delete this.packets[args.TARGET];
+  deletePacketsOnTarget(target: string) {
+    delete this.packets[target];
   }
 
   deleteAllPackets() {
@@ -1099,56 +1082,53 @@ export class RoturExtension extends KernelModule {
   }
 
   clientIP() {
-    return this.is_connected ? this.client.ip : "Not Connected";
+    return this.is_connected ? this.client.ip : RoturErrors.err_notConnected;
   }
 
   clientUsername() {
-    return this.is_connected ? this.client.username : "Not Connected";
+    return this.is_connected
+      ? this.client.username
+      : RoturErrors.err_notConnected;
   }
 
   clientUsers() {
-    if (!this.is_connected) return "Not Connected";
+    if (!this.is_connected) return RoturErrors.err_notConnected;
 
     return JSON.stringify(this.client.users);
   }
 
-  getUserDesignation(args: UserDesignationArguments) {
-    if (!this.is_connected) return "Not Connected";
+  getUserDesignation(designation: string) {
+    if (!this.is_connected) return RoturErrors.err_notConnected;
 
     return JSON.stringify(
-      this.client.users?.filter((user) =>
-        user.startsWith(args.DESIGNATION + "-")
-      )
+      this.client.users?.filter((user) => user.startsWith(designation + "-"))
     );
   }
 
-  usernameConnected(args: UsernameConectedArguments) {
+  usernameConnected(user: string) {
     if (!this.isAuthenticated()) return false;
 
+    const regexp = new RegExp(`(?<=")[a-zA-Z]{3}-${user}§\\S{10}(?=")`, "gi");
+
+    return JSON.stringify(this.client.users).match(regexp) !== null;
+  }
+
+  userConnected(designation: string, user: string) {
+    if (!this.is_connected) return RoturErrors.err_notConnected;
+    if (designation.length !== 3) return RoturErrors.err_invalidDesignation;
+
     const regexp = new RegExp(
-      `(?<=")[a-zA-Z]{3}-${args.USER}§\\S{10}(?=")`,
+      `(?<=")${designation}-${designation}§\\S{10}(?=")`,
       "gi"
     );
 
     return JSON.stringify(this.client.users).match(regexp) !== null;
   }
 
-  userConnected(args: UserConnectedArguments) {
-    if (!this.is_connected) return "Not Connected";
-    if (args.DESIGNATION.length !== 3) return "Invalid Designation";
+  findID(user: string) {
+    if (!this.is_connected) return RoturErrors.err_notConnected;
 
-    const regexp = new RegExp(
-      `(?<=")${args.DESIGNATION}-${args.USER}§\\S{10}(?=")`,
-      "gi"
-    );
-
-    return JSON.stringify(this.client.users).match(regexp) !== null;
-  }
-
-  findID(args: UsernameConectedArguments) {
-    if (!this.is_connected) return "Not Connected";
-
-    const regexp = new RegExp(`[a-zA-Z]{3}-${args.USER}§\\S{10}`, "gi");
+    const regexp = new RegExp(`[a-zA-Z]{3}-${user}§\\S{10}`, "gi");
 
     return JSON.stringify(
       this.client.users?.filter((user) => user.match(regexp) !== null)
@@ -1179,9 +1159,9 @@ export class RoturExtension extends KernelModule {
     return this.lastLeft;
   }
 
-  setSyncedVariable(args: SetSyncedVariableArguments) {
-    if (!this.is_connected) return "Not Connected";
-    if (!this.authenticated) return "Not Logged In";
+  setSyncedVariable(key: string, value: string, user: string) {
+    if (!this.is_connected) return RoturErrors.err_notConnected;
+    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
 
     this.ws?.send(
       JSON.stringify({
@@ -1190,29 +1170,29 @@ export class RoturExtension extends KernelModule {
           client: this.my_client,
           source_command: "sync_set",
           payload: {
-            key: args.KEY,
-            value: args.VALUE,
+            key,
+            value,
           },
         },
-        id: args.USER,
+        id: user,
       })
     );
 
-    if (!this.syncedVariables[args.USER]) this.syncedVariables[args.USER] = {};
+    if (!this.syncedVariables[user]) this.syncedVariables[user] = {};
 
-    this.syncedVariables[args.USER][args.KEY] = args.VALUE;
+    this.syncedVariables[user][key] = value;
   }
 
-  getSyncedVariable(args: GetOrDeleteSyncedVariableArguments) {
-    if (!this.is_connected) return "Not Connected";
-    if (!this.authenticated) return "Not Logged In";
+  getSyncedVariable(key: string, user: string) {
+    if (!this.is_connected) return RoturErrors.err_notConnected;
+    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
 
-    return JSON.stringify(this.syncedVariables[args.USER][args.KEY] || "");
+    return JSON.stringify(this.syncedVariables[user][key] || "");
   }
 
-  deleteSyncedVariable(args: GetOrDeleteSyncedVariableArguments) {
-    if (!this.is_connected) return "Not Connected";
-    if (!this.authenticated) return "Not Logged In";
+  deleteSyncedVariable(key: string, user: string) {
+    if (!this.is_connected) return RoturErrors.err_notConnected;
+    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
 
     this.ws?.send(
       JSON.stringify({
@@ -1221,29 +1201,29 @@ export class RoturExtension extends KernelModule {
           source_command: "sync_delete",
           client: this.my_client,
           payload: {
-            key: args.KEY,
+            key,
           },
         },
-        id: args.USER,
+        id: user,
       })
     );
 
-    delete this.syncedVariables[args.USER][args.KEY];
+    delete this.syncedVariables[user][key];
   }
 
-  getSyncedVariables(args: UsernameConectedArguments) {
+  getSyncedVariables(user: string) {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
-    return JSON.stringify(this.syncedVariables[args.USER] || {});
+    return JSON.stringify(this.syncedVariables[user] || {});
   }
 
-  sendMail(args: SendMailArguments) {
-    if (!this.is_connected) return "Not Connected";
-    if (!this.authenticated) return "Not Logged In";
+  sendMail(to: string, subject: string, message: string) {
+    if (!this.is_connected) return RoturErrors.err_notConnected;
+    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
 
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1253,9 +1233,9 @@ export class RoturExtension extends KernelModule {
           client: this.my_client,
           id: this.userToken,
           payload: {
-            title: args.SUBJECT,
-            body: args.MESSAGE,
-            recipient: args.TO,
+            title: subject,
+            body: message,
+            recipient: to,
           },
         },
         id: this.accounts,
@@ -1268,12 +1248,12 @@ export class RoturExtension extends KernelModule {
         if (packet.origin?.username !== this.accounts) return;
         if (packet.val.source_command !== "omail_send") return;
         if (packet.val.payload !== "Successfully Sent Omail") {
-          reject(`Failed to send mail to ${args.TO}: ${packet.val.payload}`);
+          reject(RoturErrors.err_mailSendFailed);
 
           return;
         }
 
-        resolve(`Mail sent to ${args.TO}`);
+        resolve(RoturErrors.ok_mailSent);
 
         this.ws?.removeEventListener("message", handleSendMailResponse);
       };
@@ -1283,8 +1263,8 @@ export class RoturExtension extends KernelModule {
   }
 
   getAllMail() {
-    if (!this.is_connected) return "Not Connected";
-    if (!this.authenticated) return "Not Logged In";
+    if (!this.is_connected) return RoturErrors.err_notConnected;
+    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
 
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1303,7 +1283,7 @@ export class RoturExtension extends KernelModule {
         if (!packet) return;
         if (packet.origin?.username !== this.accounts) return;
         if (packet.val.source_command !== "omail_getinfo") {
-          reject("Failed to get all mail");
+          reject(RoturErrors.err_mailGetAllFailed);
 
           return;
         }
@@ -1317,9 +1297,9 @@ export class RoturExtension extends KernelModule {
     });
   }
 
-  getMail(args: Record<string, any>) {
-    if (!this.is_connected) return "Not Connected";
-    if (!this.authenticated) return "Not Logged In";
+  getMail(id: string) {
+    if (!this.is_connected) return RoturErrors.err_notConnected;
+    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
 
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1327,7 +1307,7 @@ export class RoturExtension extends KernelModule {
         val: {
           command: "omail_getid",
           client: this.my_client,
-          payload: args.ID,
+          payload: id,
           id: this.userToken,
         },
         id: this.accounts,
@@ -1340,10 +1320,10 @@ export class RoturExtension extends KernelModule {
         if (packet.origin?.username !== this.accounts) return;
         if (packet.val?.source_command !== "omail_getid") return;
 
-        if (packet.val?.payload[0] === args.ID) {
+        if (packet.val?.payload[0] === id) {
           resolve(JSON.stringify(packet.val?.payload[1]));
         } else {
-          reject(`Failed to get mail with ID: ${args.ID}`);
+          reject(RoturErrors.err_mailGetFailed);
         }
 
         this.ws?.removeEventListener("message", handleGetMailResponse);
@@ -1353,9 +1333,9 @@ export class RoturExtension extends KernelModule {
     });
   }
 
-  deleteMail(args: Record<string, any>) {
-    if (!this.is_connected) return "Not Connected";
-    if (!this.authenticated) return "Not Logged In";
+  deleteMail(id: string) {
+    if (!this.is_connected) return RoturErrors.err_notConnected;
+    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
 
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1363,7 +1343,7 @@ export class RoturExtension extends KernelModule {
         val: {
           command: "omail_delete",
           client: this.my_client,
-          payload: args.ID,
+          payload: id,
           id: this.userToken,
         },
         id: this.accounts,
@@ -1377,11 +1357,9 @@ export class RoturExtension extends KernelModule {
         if (packet.val?.source_command !== "omail_delete") return;
 
         if (packet.val.payload === "Deleted Successfully") {
-          resolve(`Mail with ID ${args.ID} deleted`);
+          resolve(RoturErrors.ok_mailDeleted);
         } else {
-          reject(
-            `Failed to delete mail with ID ${args.ID}: ${packet.val.payload}`
-          );
+          reject(RoturErrors.err_mailDeleteFailed);
         }
         this.ws?.removeEventListener("message", handleDeleteMailResponse);
       };
@@ -1391,8 +1369,8 @@ export class RoturExtension extends KernelModule {
   }
 
   deleteAllMail() {
-    if (!this.is_connected) return "Not Connected";
-    if (!this.authenticated) return "Not Logged In";
+    if (!this.is_connected) return RoturErrors.err_notConnected;
+    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
 
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1411,9 +1389,9 @@ export class RoturExtension extends KernelModule {
         if (packet?.origin.username === this.accounts) {
           if (packet.val.source_command === "omail_delete") {
             if (packet.val.payload === "Deleted Successfully") {
-              resolve("All mail deleted");
+              resolve(RoturErrors.ok_allMailDeleted);
             } else {
-              reject(`Failed to delete all mail: ${packet.val.payload}`);
+              reject(RoturErrors.err_mailDeleteAllFailed);
             }
             this.ws?.removeEventListener(
               "message",
@@ -1429,26 +1407,26 @@ export class RoturExtension extends KernelModule {
 
   getFriendList() {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
     return JSON.stringify(this.friends.list);
   }
 
-  sendFriendRequest(args: Record<string, any>) {
+  sendFriendRequest(friend: string) {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
-    if (this.friends.list.includes(args.FRIEND)) {
-      return "Already Friends";
+    if (this.friends.list.includes(friend)) {
+      return RoturErrors.err_alreadyFriends;
     }
-    if (args.FRIEND === this.user.username) {
-      return "You Need Other Friends :/";
+    if (friend === this.user.username) {
+      return RoturErrors.err_needOtherFriends;
     }
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1456,7 +1434,7 @@ export class RoturExtension extends KernelModule {
         val: {
           command: "friend_request",
           client: this.my_client,
-          payload: args.FRIEND,
+          payload: friend,
           id: this.userToken,
         },
         id: this.accounts,
@@ -1467,9 +1445,9 @@ export class RoturExtension extends KernelModule {
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "friend_request") {
             if (packet.val.payload === "Sent Successfully") {
-              resolve(`Sent Successfully`);
+              resolve(RoturErrors.ok_friendRequestSent);
             } else {
-              reject(packet.val.payload);
+              reject(RoturErrors.err_friendRequestFailed);
             }
             this.ws?.removeEventListener(
               "message",
@@ -1483,15 +1461,15 @@ export class RoturExtension extends KernelModule {
     });
   }
 
-  removeFriend(args: Record<string, any>) {
+  removeFriend(friend: string) {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
-    if (!this.friends.list.includes(args.FRIEND)) {
-      return "Not Friends";
+    if (!this.friends.list.includes(friend)) {
+      return RoturErrors.err_notFriends;
     }
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1499,7 +1477,7 @@ export class RoturExtension extends KernelModule {
         val: {
           command: "friend_remove",
           client: this.my_client,
-          payload: args.FRIEND,
+          payload: friend,
           id: this.userToken,
         },
         id: this.accounts,
@@ -1510,9 +1488,9 @@ export class RoturExtension extends KernelModule {
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "friend_remove") {
             if (packet.val.payload === "Friend Removed") {
-              resolve(`Friend removed: ${args.FRIEND}`);
+              resolve(RoturErrors.ok_friendRemoved);
             } else {
-              reject(`Failed to remove friend: ${packet.val.payload}`);
+              reject(RoturErrors.err_friendRemoveFailed);
             }
             this.ws?.removeEventListener("message", handleRemoveFriendResponse);
           }
@@ -1523,15 +1501,15 @@ export class RoturExtension extends KernelModule {
     });
   }
 
-  acceptFriendRequest(args: Record<string, any>) {
+  acceptFriendRequest(friend: string) {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
-    if (!this.friends.requests.includes(args.FRIEND)) {
-      return "No Request";
+    if (!this.friends.requests.includes(friend)) {
+      return RoturErrors.err_noFriendRequest;
     }
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1539,7 +1517,7 @@ export class RoturExtension extends KernelModule {
         val: {
           command: "friend_accept",
           client: this.my_client,
-          payload: args.FRIEND,
+          payload: friend,
           id: this.userToken,
         },
         id: this.accounts,
@@ -1550,13 +1528,13 @@ export class RoturExtension extends KernelModule {
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "friend_accept") {
             if (packet.val.payload === "Request Accepted") {
-              this.friends.list.push(args.FRIEND);
+              this.friends.list.push(friend);
               this.friends.requests = this.friends.requests.filter(
-                (user: string) => user != args.FRIEND
+                (user: string) => user != friend
               );
-              resolve(`Request Accepted`);
+              resolve(RoturErrors.ok_friendRequestAccepted);
             } else {
-              reject(packet.val.payload);
+              reject(RoturErrors.err_friendRequestApproveFailed);
             }
             this.ws?.removeEventListener("message", handleRemoveFriendResponse);
           }
@@ -1567,15 +1545,15 @@ export class RoturExtension extends KernelModule {
     });
   }
 
-  declineFriendRequest(args: Record<string, any>) {
+  declineFriendRequest(friend: string) {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
-    if (!this.friends.requests.includes(args.FRIEND)) {
-      return "No Request";
+    if (!this.friends.requests.includes(friend)) {
+      return RoturErrors.err_noFriendRequest;
     }
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1583,7 +1561,7 @@ export class RoturExtension extends KernelModule {
         val: {
           command: "friend_decline",
           client: this.my_client,
-          payload: args.FRIEND,
+          payload: friend,
           id: this.userToken,
         },
         id: this.accounts,
@@ -1595,11 +1573,11 @@ export class RoturExtension extends KernelModule {
           if (packet.val.source_command === "friend_decline") {
             if (packet.val.payload === "Request Declined") {
               this.friends.requests = this.friends.requests.filter(
-                (user: string) => user != args.FRIEND
+                (user: string) => user != friend
               );
-              resolve(`Request Declined`);
+              resolve(RoturErrors.ok_friendRequestDeclined);
             } else {
-              reject(packet.val.payload);
+              reject(RoturErrors.err_friendRequestDeclineFailed);
             }
             this.ws?.removeEventListener(
               "message",
@@ -1613,58 +1591,58 @@ export class RoturExtension extends KernelModule {
     });
   }
 
-  getFriendStatus(args: Record<string, any>) {
+  getFriendStatus(friend: string) {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
-    if (this.friends.list.includes(args.FRIEND)) {
-      return "Friend";
-    } else if (this.friends.requests.includes(args.FRIEND)) {
-      return "Requested";
+    if (this.friends.list.includes(friend)) {
+      return RoturFriendStatus.friend;
+    } else if (this.friends.requests.includes(friend)) {
+      return RoturFriendStatus.requested;
     } else {
-      return "Not Friend";
+      return RoturFriendStatus.notFriend;
     }
   }
 
   getFriendRequests() {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
     return JSON.stringify(this.friends.requests) ?? "";
   }
 
   getFriendCount() {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
     return this.friends.list.length ?? "";
   }
 
   getBalance() {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
     return this.user["sys.currency"] ?? 0;
   }
 
-  tranferCurrency(args: Record<string, any>) {
+  tranferCurrency(amount: number, user: string) {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1673,8 +1651,8 @@ export class RoturExtension extends KernelModule {
           command: "currency_transfer",
           client: this.my_client,
           payload: {
-            amount: args.AMOUNT,
-            recipient: args.USER,
+            amount,
+            recipient: user,
           },
           id: this.userToken,
         },
@@ -1686,9 +1664,9 @@ export class RoturExtension extends KernelModule {
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "currency_transfer") {
             if (packet.val.payload === "Transfer Successful") {
-              resolve(`Success`);
+              resolve(RoturErrors.ok_currencyTransferSuccess);
             } else {
-              reject(packet.val.payload);
+              reject(RoturErrors.err_currencyTransferFailed);
             }
             this.ws?.removeEventListener(
               "message",
@@ -1703,70 +1681,70 @@ export class RoturExtension extends KernelModule {
 
   getTransactions() {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
     return JSON.stringify(this.user["sys.transactions"]);
   }
 
   getTransactionCount() {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
     return this.user["sys.transactions"].length;
   }
 
   getMyOwnedItems() {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
     return JSON.stringify(this.user["sys.purchases"]);
   }
 
-  ownsItem(args: Record<string, any>) {
+  ownsItem(item: string) {
     if (!this.is_connected) {
       return false;
     }
     if (!this.authenticated) {
       return false;
     }
-    return this.user["sys.purchases"].includes(args.ITEM);
+    return this.user["sys.purchases"].includes(item);
   }
 
   getMyOwnedItemCount() {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
     return this.user["sys.purchases"].length;
   }
 
-  itemData(args: Record<string, any>) {
+  itemData(item: string) {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
-    if (this.user["sys.purchases"].indexOf(args.ITEM) === -1) {
-      return "You Do Not Own This Item";
+    if (this.user["sys.purchases"].indexOf(item) === -1) {
+      return RoturErrors.err_itemNotOwned;
     }
     return new Promise((resolve) => {
       this.socketSend({
         cmd: "pmsg",
         val: {
           command: "item_data",
-          payload: args.ITEM,
+          payload: item,
           id: this.userToken,
           client: this.my_client,
         },
@@ -1786,22 +1764,22 @@ export class RoturExtension extends KernelModule {
     });
   }
 
-  purchaseItem(args: Record<string, any>) {
+  purchaseItem(item: string) {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
-    if (this.user["sys.purchases"].indexOf(args.ITEM) !== -1) {
-      return "You Already Own This Item";
+    if (this.user["sys.purchases"].indexOf(item) !== -1) {
+      return RoturErrors.err_itemAlreadyOwned;
     }
     return new Promise((resolve, reject) => {
       this.socketSend({
         cmd: "pmsg",
         val: {
           command: "item_purchase",
-          payload: args.ITEM,
+          payload: item,
           id: this.userToken,
           client: this.my_client,
         },
@@ -1813,9 +1791,9 @@ export class RoturExtension extends KernelModule {
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "item_purchase") {
             if (packet.val.payload === "Item Purchased") {
-              resolve("Item Purchased");
+              resolve(RoturErrors.ok_itemPurchased);
             } else {
-              reject(packet.val.payload);
+              reject(RoturErrors.err_itemPurchaseFailed);
             }
             this.ws?.removeEventListener("message", handlePurchaseItemResponse);
           }
@@ -1825,22 +1803,22 @@ export class RoturExtension extends KernelModule {
     });
   }
 
-  itemInfo(args: Record<string, any>) {
+  itemInfo(item: string) {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
-    if (this.user["sys.purchases"].indexOf(args.ITEM) === -1) {
-      return "You Do Not Own This Item";
+    if (this.user["sys.purchases"].indexOf(item) === -1) {
+      return RoturErrors.err_itemNotOwned;
     }
     return new Promise((resolve) => {
       this.socketSend({
         cmd: "pmsg",
         val: {
           command: "item_info",
-          payload: args.ITEM,
+          payload: item,
           id: this.userToken,
           client: this.my_client,
         },
@@ -1864,12 +1842,12 @@ export class RoturExtension extends KernelModule {
     });
   }
 
-  getPublicItems(args: Record<string, any>) {
+  getPublicItems(page: number) {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
 
     return new Promise((resolve, reject) => {
@@ -1877,7 +1855,7 @@ export class RoturExtension extends KernelModule {
         cmd: "pmsg",
         val: {
           command: "item_public",
-          payload: args.PAGE,
+          payload: page,
           id: this.userToken,
           client: this.my_client,
         },
@@ -1888,7 +1866,7 @@ export class RoturExtension extends KernelModule {
         const packet = JSON.parse(event.data) as RoturPacket;
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "item_public") {
-            reject(JSON.stringify(packet.val.payload));
+            resolve(JSON.stringify(packet.val.payload));
             this.ws?.removeEventListener("message", handlePublicItemsResponse);
           }
         }
@@ -1899,10 +1877,10 @@ export class RoturExtension extends KernelModule {
 
   getPublicItemPages() {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
     return new Promise((resolve) => {
       this.socketSend({
@@ -1933,20 +1911,26 @@ export class RoturExtension extends KernelModule {
 
   getMyCreatedItems() {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
     return JSON.stringify(this.user["sys.items"]);
   }
 
-  createItem(args: Record<string, any>) {
+  createItem(
+    name: string,
+    description: string,
+    price: number,
+    data: string,
+    tradable: boolean
+  ) {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1954,11 +1938,11 @@ export class RoturExtension extends KernelModule {
         val: {
           command: "item_create",
           payload: {
-            name: args.NAME,
-            description: args.DESCRIPTION,
-            price: args.PRICE,
-            data: args.CODE,
-            tradable: args.TRADABLE,
+            name,
+            description,
+            price,
+            data,
+            tradable,
           },
           id: this.userToken,
           client: this.my_client,
@@ -1971,9 +1955,9 @@ export class RoturExtension extends KernelModule {
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "item_create") {
             if (packet.val.payload === "Item Created") {
-              resolve("Item Created");
+              resolve(RoturErrors.ok_itemCreated);
             } else {
-              reject(packet.val.payload);
+              reject(RoturErrors.err_itemCreateFailed);
             }
             this.ws?.removeEventListener("message", handleCreateItemResponse);
           }
@@ -1984,15 +1968,15 @@ export class RoturExtension extends KernelModule {
     });
   }
 
-  updateItem(args: Record<string, any>) {
+  updateItem(item: string, key: string, data: string) {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
-    if (this.user["sys.items"].indexOf(args.ITEM) === -1) {
-      return "You Do Not Own This Item";
+    if (this.user["sys.items"].indexOf(item) === -1) {
+      return RoturErrors.err_itemNotOwned;
     }
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -2000,9 +1984,9 @@ export class RoturExtension extends KernelModule {
         val: {
           command: "item_update",
           payload: {
-            item: args.ITEM,
-            key: args.KEY,
-            data: args.DATA,
+            item,
+            key,
+            data,
           },
           id: this.userToken,
           client: this.my_client,
@@ -2015,9 +1999,9 @@ export class RoturExtension extends KernelModule {
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "item_update") {
             if (packet.val.payload === "Item Updated") {
-              resolve("Item Updated");
+              resolve(RoturErrors.ok_itemUpdated);
             } else {
-              reject(packet.val.payload);
+              reject(RoturErrors.err_itemUpdateFailed);
             }
             this.ws?.removeEventListener("message", handleUpdateItemResponse);
           }
@@ -2028,22 +2012,22 @@ export class RoturExtension extends KernelModule {
     });
   }
 
-  deleteItem(args: Record<string, any>) {
+  deleteItem(item: string) {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
-    if (this.user["sys.items"].indexOf(args.ITEM) === -1) {
-      return "You Do Not Own This Item";
+    if (this.user["sys.items"].indexOf(item) === -1) {
+      return RoturErrors.err_itemNotOwned;
     }
     return new Promise((resolve, reject) => {
       this.socketSend({
         cmd: "pmsg",
         val: {
           command: "item_delete",
-          payload: args.ITEM,
+          payload: item,
           id: this.userToken,
           client: this.my_client,
         },
@@ -2055,9 +2039,9 @@ export class RoturExtension extends KernelModule {
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "item_delete") {
             if (packet.val.payload === "Item Deleted") {
-              resolve("Item Deleted");
+              resolve(RoturErrors.ok_itemDeleted);
             } else {
-              reject(packet.val.payload);
+              reject(RoturErrors.err_itemDeleteFailed);
             }
             this.ws?.removeEventListener("message", handleDeleteItemResponse);
           }
@@ -2068,19 +2052,19 @@ export class RoturExtension extends KernelModule {
     });
   }
 
-  hideItem(args: Record<string, any>) {
+  hideItem(id: string) {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
     return new Promise((resolve, reject) => {
       this.socketSend({
         cmd: "pmsg",
         val: {
           command: "item_hide",
-          payload: args.ID,
+          payload: id,
           id: this.userToken,
           client: this.my_client,
         },
@@ -2092,9 +2076,9 @@ export class RoturExtension extends KernelModule {
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "item_hide") {
             if (packet.val.payload === "Item Hidden") {
-              resolve("Item Hidden");
+              resolve(RoturErrors.ok_itemHidden);
             } else {
-              reject(packet.val.payload);
+              reject(RoturErrors.err_itemHideFailed);
             }
             this.ws?.removeEventListener("message", handleHideItemResponse);
           }
@@ -2105,19 +2089,19 @@ export class RoturExtension extends KernelModule {
     });
   }
 
-  showItem(args: Record<string, any>) {
+  showItem(id: string) {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
     return new Promise((resolve, reject) => {
       this.socketSend({
         cmd: "pmsg",
         val: {
           command: "item_show",
-          payload: args.ID,
+          payload: id,
           id: this.userToken,
           client: this.my_client,
         },
@@ -2129,9 +2113,9 @@ export class RoturExtension extends KernelModule {
         if (packet?.origin?.username === this.accounts) {
           if (packet.val.source_command === "item_show") {
             if (packet.val.payload === "Item Shown") {
-              resolve("Item Shown");
+              resolve(RoturErrors.ok_itemShown);
             } else {
-              reject(packet.val.payload);
+              reject(RoturErrors.err_itemShowFailed);
             }
             this.ws?.removeEventListener("message", handleShowItemResponse);
           }
@@ -2148,40 +2132,40 @@ export class RoturExtension extends KernelModule {
 
   userBadges() {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
     return JSON.stringify(this.user["sys.badges"]);
   }
 
   userBadgeCount() {
     if (!this.is_connected) {
-      return "Not Connected";
+      return RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return "Not Logged In";
+      return RoturErrors.err_notLoggedIn;
     }
     return this.user["sys.badges"].length;
   }
 
-  hasBadge(args: Record<string, any>) {
+  hasBadge(badge: string) {
     if (!this.is_connected) {
       return false;
     }
     if (!this.authenticated) {
       return false;
     }
-    return this.user["sys.badges"].includes(args.BADGE);
+    return this.user["sys.badges"].includes(badge);
   }
 
   allBadges() {
     return JSON.stringify(Object.keys(this.badges));
   }
 
-  badgeInfo(args: Record<string, any>) {
-    return JSON.stringify(this.badges?.[args.BADGE] ?? {});
+  badgeInfo(badge: string) {
+    return JSON.stringify((this.badges as any)?.[badge] ?? {});
   }
 
   redownloadBadges() {

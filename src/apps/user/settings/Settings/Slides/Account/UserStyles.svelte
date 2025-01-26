@@ -8,9 +8,11 @@
   let value = $state("");
 
   const { process }: { process: SettingsRuntime } = $props();
-  const { userPreferences } = process;
+  const { userPreferences, slideVisible } = process;
 
   $effect(() => {
+    if (!$slideVisible) return;
+
     reset();
 
     MessageBox(

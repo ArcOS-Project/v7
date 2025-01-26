@@ -53,6 +53,7 @@ export class StateHandler extends Process {
     if (appRenderer) {
       appRenderer.className = "";
       appRenderer.removeAttribute("style");
+      appRenderer.querySelector("#userStyleLoader")?.remove();
     }
 
     if (this.stateAppProcess) {

@@ -50,7 +50,13 @@
     <p class="name">Built-in login backgrounds</p>
     <div class="wallpapers">
       {#each Object.keys(Wallpapers) as id}
-        <WallpaperOption {id} {userPreferences} {userDaemon} isLogin />
+        <WallpaperOption
+          {process}
+          {id}
+          {userPreferences}
+          {userDaemon}
+          isLogin
+        />
       {/each}
     </div>
   </div>
@@ -64,7 +70,14 @@
     >
       {#if $userPreferences.userWallpapers && Object.values($userPreferences.userWallpapers).length}
         {#each Object.keys($userPreferences.userWallpapers) as id}
-          <WallpaperOption {id} {userPreferences} {userDaemon} isLogin />
+          <WallpaperOption
+            {process}
+            {id}
+            {userPreferences}
+            {userDaemon}
+            isLogin
+            isUser
+          />
         {/each}
       {:else}
         <p class="none">You have no saved wallpapers!</p>

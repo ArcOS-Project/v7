@@ -11,6 +11,7 @@
 
   $effect(() => {
     const sub = currentSlide.subscribe((v) => {
+      if (!v) return;
       Slide = SlideStore.get(v);
     });
 

@@ -1,6 +1,6 @@
 import { darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 import { Filesystem } from "$ts/fs";
-import { arrayToBlob, blobToDataURL } from "$ts/fs/convert";
+import { arrayToBlob } from "$ts/fs/convert";
 import { ServerFilesystemSupplier } from "$ts/fs/suppliers/server";
 import { UserDataFilesystemSupplier } from "$ts/fs/suppliers/userdata";
 import { join } from "$ts/fs/util";
@@ -12,7 +12,12 @@ import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
 import type { Notification } from "$types/notification";
 import { UserThemeKeys, type UserTheme } from "$types/theme";
-import type { UserInfo, UserPreferences, WallpaperGetters } from "$types/user";
+import type {
+  CustomStylePreferences,
+  UserInfo,
+  UserPreferences,
+  WallpaperGetters,
+} from "$types/user";
 import type { Wallpaper } from "$types/wallpaper";
 import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
@@ -30,10 +35,10 @@ export class UserDaemon extends Process {
   private preferencesUnsubscribe: Unsubscriber | undefined;
   private fs: Filesystem;
   private wallpaperGetters: WallpaperGetters = [
-    ["@local:", (id: string) => this.getLocalWallpaper(id)],
+    ["@local:", async (id: string) => await this.getLocalWallpaper(id)],
     ["img", (id) => Wallpapers[id] || Wallpapers["img04"]],
   ];
-  private localWallpaperCache: Record<string, string> = {};
+  private localWallpaperCache: Record<string, Blob> = {};
 
   constructor(
     handler: ProcessHandler,
@@ -132,12 +137,28 @@ export class UserDaemon extends Process {
 
     let style = this.getAppRendererStyle(accent);
 
+    this.setUserStyleLoader(v.shell.customStyle);
+
     renderer.removeAttribute("class");
     renderer.setAttribute("style", style);
     renderer.classList.add(`theme-${theme}`);
     renderer.classList.toggle("sharp", v.shell.visuals.sharpCorners);
     renderer.classList.toggle("noani", v.shell.visuals.noAnimations);
     renderer.classList.toggle("noglass", v.shell.visuals.noGlass);
+  }
+
+  setUserStyleLoader(style: CustomStylePreferences) {
+    let styleLoader =
+      this.handler.renderer?.target.querySelector("#userStyleLoader");
+
+    if (!styleLoader) {
+      styleLoader = document.createElement("style");
+      styleLoader.id = "userStyleLoader";
+
+      this.handler.renderer?.target.append(styleLoader);
+    }
+
+    styleLoader.textContent = style.enabled ? style.content || "" : "";
   }
 
   async commitPreferences(preferences: UserPreferences) {
@@ -437,34 +458,60 @@ export class UserDaemon extends Process {
     return Wallpapers[override || "img04"];
   }
 
+  async deleteLocalWallpaper(id: string): Promise<boolean> {
+    const path = atob(id.replace("@local:", ""));
+    const result = await this.fs.deleteItem(path);
+
+    this.preferences.update((v) => {
+      delete v.userWallpapers[id];
+
+      return v;
+    });
+
+    delete this.localWallpaperCache[id];
+
+    return result;
+  }
+
   async getLocalWallpaper(id: string): Promise<Wallpaper> {
     const wallpaperData = this.preferences().userWallpapers[id];
 
-    if (!wallpaperData) return Wallpapers.img04;
+    if (!wallpaperData) {
+      this.Log(
+        `Tried to get unknown user wallpaper '${id}', defaulting to img04`,
+        LogLevel.warning
+      );
 
+      return Wallpapers.img04;
+    }
     if (this.localWallpaperCache[id])
       return {
         ...wallpaperData,
-        url: this.localWallpaperCache[id],
-        thumb: this.localWallpaperCache[id],
+        url: URL.createObjectURL(this.localWallpaperCache[id]),
+        thumb: URL.createObjectURL(this.localWallpaperCache[id]),
       };
 
     const path = atob(id.replace("@local:", ""));
     const contents = await this.fs.readFile(path);
 
-    if (!contents) return Wallpapers.img04;
+    if (!contents) {
+      this.Log(
+        `User wallpaper '${id}' doesn't exist on the filesystem anymore, defaulting to img04`,
+        LogLevel.warning
+      );
+
+      return Wallpapers.img04;
+    }
 
     const blob = arrayToBlob(contents, "image/png");
-    const dataUrl = await blobToDataURL(blob);
+    const blobUrl = URL.createObjectURL(blob);
 
-    if (!dataUrl) return Wallpapers.img04;
-
-    this.localWallpaperCache[id] = dataUrl;
+    this.localWallpaperCache[id] = blob;
 
     return {
       ...wallpaperData,
-      url: dataUrl,
-      thumb: dataUrl,
+      url: blobUrl,
+      thumb: blobUrl,
     };
   }
 }

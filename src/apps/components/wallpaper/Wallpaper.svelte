@@ -10,7 +10,7 @@
 
   let wallpaper = $state<Wallpaper>();
   let show = $state(false);
-  let lastWallpaper = $state(Wallpapers.img04.url);
+  let lastWallpaper = $state("img04");
 
   $effect(() => {
     const unsubscribe = userPreferences?.subscribe(async (v) => {
@@ -18,9 +18,9 @@
         v.desktop.wallpaper
       );
 
-      if (incomingWallpaper && incomingWallpaper.url === lastWallpaper) return;
+      if (incomingWallpaper && v.desktop.wallpaper === lastWallpaper) return;
 
-      lastWallpaper = incomingWallpaper.url;
+      lastWallpaper = v.desktop.wallpaper;
 
       show = false;
 
@@ -31,6 +31,8 @@
       await Sleep(100);
 
       show = true;
+
+      console.log(incomingWallpaper);
     });
 
     return () => unsubscribe();
