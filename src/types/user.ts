@@ -90,7 +90,10 @@ export interface AccountSettings {
   profilePicture: string | number | null;
   loginBackground: string;
   displayName?: string;
-  roturToken?: string;
+  rotur: {
+    username?: string;
+    password?: string;
+  };
 }
 
 export interface ApplicationPreferences {

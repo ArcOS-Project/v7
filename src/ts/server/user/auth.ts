@@ -20,9 +20,7 @@ export async function LoginUser(identity: string, password: string) {
   } catch (e) {
     const err = e as AxiosError;
 
-    if (err.code === "ERR_NETWORK") throw e;
-
-    Log("LoginUser", "API request errored: " + e, LogLevel.error);
+    Log("LoginUser", "API request errored:\n" + err, LogLevel.error);
 
     return undefined;
   }
@@ -47,9 +45,7 @@ export async function RegisterUser(
   } catch (e) {
     const err = e as AxiosError;
 
-    if (err.code === "ERR_NETWORK") throw e;
-
-    Log("RegisterUser", "API request errored: " + e, LogLevel.error);
+    Log("RegisterUse", "API request errored:\n" + err, LogLevel.error);
 
     return false;
   }

@@ -5,6 +5,7 @@
     placeholder: string;
     value?: string;
     disabled?: boolean;
+    onsubmit?: () => void;
   }
 
   let {
@@ -13,7 +14,12 @@
     disabled = false,
     placeholder,
     value = $bindable(),
+    onsubmit = () => {},
   }: Props = $props();
+
+  function keydown(e: KeyboardEvent) {
+    if (e.key === "Enter") onsubmit();
+  }
 </script>
 
 <div class="field">
@@ -23,5 +29,6 @@
     {placeholder}
     bind:value
     {disabled}
+    onkeydown={keydown}
   />
 </div>

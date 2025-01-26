@@ -24,6 +24,7 @@
       placeholder="Password"
       icon="key-round"
       password
+      onsubmit={go}
     />
   </div>
   <div class="right">

@@ -537,21 +537,22 @@ export class UserDaemon extends Process {
     };
   }
 
+  async restartRotur() {
+    this.Log("Killing Rotur extension");
+
+    if (this.rotur) await this.handler.kill(this.rotur.pid);
+
+    this.startRotur();
+  }
+
   async startRotur() {
     this.Log("Starting Rotur extension");
 
     const fn = (...data: any[]) => console.log(...data);
 
-    // this.globalDispatch.subscribe("rotur-cmd-ulist", fn);
-    // this.globalDispatch.subscribe("rotur-cmd-client_ip", fn);
-    // this.globalDispatch.subscribe("rotur-cmd-client_obj", fn);
-    // this.globalDispatch.subscribe("rotur-cmd-ulist", fn);
     this.globalDispatch.subscribe("rotur-cmd-pmsg", fn);
-    // this.globalDispatch.subscribe("rotur-listener-handshake_cfg", fn);
-    // this.globalDispatch.subscribe("rotur-listener-set_username_cfg", fn);
-    // this.globalDispatch.subscribe("rotur-listener-link_cfg", fn);
 
-    const roturToken = this.preferences().account.roturToken;
+    const roturCred = this.preferences().account.rotur;
 
     this.rotur = await this.handler.spawn<RoturExtension>(
       RoturExtension,
@@ -563,12 +564,13 @@ export class UserDaemon extends Process {
 
     await this.rotur.connectToServer("arc", "arcOS", "7");
 
-    if (!roturToken) return;
+    if (!roturCred.username || !roturCred.password) return;
 
-    await this.rotur.loginFromToken(roturToken);
+    await this.rotur.login(atob(roturCred.username), atob(roturCred.password));
 
     this.preferences.subscribe((v) => {
-      if (!v.account.roturToken) this.rotur?.disconnect();
+      if (!v.account.rotur.username || !v.account.rotur.password)
+        this.rotur?.disconnect();
     });
   }
 }

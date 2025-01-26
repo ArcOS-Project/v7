@@ -1,7 +1,9 @@
+import { RoturAuthGuiApp } from "$apps/components/roturauthgui/metadata";
 import { MessageBox } from "$ts/dialog";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { SecurityMediumIcon } from "$ts/images/general";
 import { LoginUser, RegisterUser } from "$ts/server/user/auth";
+import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import { htmlspecialchars } from "$ts/util";
 import { Store } from "$ts/writable";
@@ -98,7 +100,7 @@ export class InitialSetupRuntime extends AppProcess {
       },
       next: {
         caption: "Connect",
-        action: async () => {},
+        action: async () => this.roturAuthGui(),
         suggested: true,
       },
     },
@@ -292,6 +294,17 @@ export class InitialSetupRuntime extends AppProcess {
       return;
     }
 
+    this.userDaemon = await this.handler.spawn(
+      UserDaemon,
+      this.pid,
+      token,
+      this.newUsername()
+    );
+
+    await this.userDaemon?.getUserInfo();
+    await this.userDaemon?.startPreferencesSync();
+    await this.userDaemon?.startFilesystemSupplier();
+
     this.token = token;
     this.pageNumber.set(this.pageNumber() + 1);
   }
@@ -302,5 +315,19 @@ export class InitialSetupRuntime extends AppProcess {
     await Sleep(1000);
 
     location.reload();
+  }
+
+  async roturAuthGui() {
+    this.handler.renderer?.loadApp(RoturAuthGuiApp);
+
+    await this.handler.renderer?.spawnApp(
+      "RoturAuthGui",
+      this.pid,
+      this.userDaemon
+    );
+
+    this.globalDispatch.subscribe("ragui-loggedin", () => {
+      this.pageNumber.set(this.pageNumber() + 1);
+    });
   }
 }

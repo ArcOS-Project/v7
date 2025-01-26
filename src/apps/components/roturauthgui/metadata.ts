@@ -1,3 +1,4 @@
+import "$css/apps/components/roturauthgui.css";
 import { RoturIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import RoturAuthGui from "./RoturAuthGui.svelte";

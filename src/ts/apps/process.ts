@@ -2,7 +2,9 @@ import { GlobalDispatcher } from "$ts/dispatch";
 import type { Filesystem } from "$ts/fs";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { DefaultUserPreferences } from "$ts/server/user/default";
+import { ContextMenuLogic } from "$ts/ui/context";
 import type { AppKeyCombinations } from "$types/accelerator";
+import type { ContextMenuItem } from "$types/context";
 import { LogLevel } from "$types/logging";
 import type { UserPreferences } from "$types/user";
 import { mount } from "svelte";
@@ -13,8 +15,6 @@ import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
 import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
-import type { ContextMenuItem } from "$types/context";
-import { ContextMenuLogic } from "$ts/ui/context";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
 export class AppProcess extends Process {
@@ -81,9 +81,6 @@ export class AppProcess extends Process {
 
     const elements = [
       ...document.querySelectorAll(`div.window[data-pid="${this.pid}"]`),
-      ...(document.querySelectorAll(
-        `button.opened-app[data-pid="${this.pid}"]`
-      ) || []),
       ...(document.querySelectorAll(
         `div.overlay-wrapper[data-pid="${this.pid}"]`
       ) || []),
@@ -169,7 +166,10 @@ export class AppProcess extends Process {
   private processor(e: KeyboardEvent) {
     if (!e.key) return;
 
-    if (bannedKeys.includes(e.key.toLowerCase())) {
+    if (
+      bannedKeys.includes(e.key.toLowerCase()) &&
+      this.kernel.state?.currentState === "desktop"
+    ) {
       e.preventDefault();
 
       return false;

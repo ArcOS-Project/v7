@@ -499,8 +499,8 @@ export class RoturExtension extends Process {
   }
 
   async login(username: string, password: string) {
-    if (!this.is_connected) return RoturErrors.err_notConnected;
-    if (this.authenticated) return RoturErrors.err_alreadyLoggedIn;
+    if (!this.is_connected) throw RoturErrors.err_notConnected;
+    if (this.authenticated) throw RoturErrors.err_alreadyLoggedIn;
 
     return new Promise((resolve, reject) => {
       this.socketSendWithAck(
@@ -562,8 +562,8 @@ export class RoturExtension extends Process {
   }
 
   register(username: string, password: string) {
-    if (!this.is_connected) return RoturErrors.err_notConnected;
-    if (this.authenticated) return RoturErrors.err_alreadyLoggedIn;
+    if (!this.is_connected) throw RoturErrors.err_notConnected;
+    if (this.authenticated) throw RoturErrors.err_alreadyLoggedIn;
 
     return new Promise((resolve, reject) => {
       this.socketSendWithAck(
@@ -598,8 +598,8 @@ export class RoturExtension extends Process {
   }
 
   deleteAccount() {
-    if (!this.is_connected) return RoturErrors.err_notConnected;
-    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
+    if (!this.is_connected) throw RoturErrors.err_notConnected;
+    if (!this.authenticated) throw RoturErrors.err_notLoggedIn;
 
     return new Promise((resolve, reject) => {
       this.socketSendWithAck(
@@ -654,8 +654,8 @@ export class RoturExtension extends Process {
   }
 
   getkey(key: string) {
-    if (!this.is_connected) return RoturErrors.err_notConnected;
-    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
+    if (!this.is_connected) throw RoturErrors.err_notConnected;
+    if (!this.authenticated) throw RoturErrors.err_notLoggedIn;
 
     if (key in this.user) {
       const keyData = this.user[key];
@@ -671,9 +671,9 @@ export class RoturExtension extends Process {
   }
 
   setkey(key: string, value: string) {
-    if (value.length > 1000) return RoturErrors.err_keyTooLong;
-    if (!this.is_connected) return RoturErrors.err_notConnected;
-    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
+    if (value.length > 1000) throw RoturErrors.err_keyTooLong;
+    if (!this.is_connected) throw RoturErrors.err_notConnected;
+    if (!this.authenticated) throw RoturErrors.err_notLoggedIn;
 
     return new Promise((resolve) => {
       this.socketSendWithAck(
@@ -706,22 +706,22 @@ export class RoturExtension extends Process {
   }
 
   getkeys() {
-    if (!this.is_connected) return RoturErrors.err_notConnected;
-    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
+    if (!this.is_connected) throw RoturErrors.err_notConnected;
+    if (!this.authenticated) throw RoturErrors.err_notLoggedIn;
 
     return JSON.stringify(Object.keys(this.user));
   }
 
   getvalues() {
-    if (!this.is_connected) return RoturErrors.err_notConnected;
-    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
+    if (!this.is_connected) throw RoturErrors.err_notConnected;
+    if (!this.authenticated) throw RoturErrors.err_notLoggedIn;
 
     return JSON.stringify(Object.values(this.user));
   }
 
   getAccount() {
-    if (!this.is_connected) return RoturErrors.err_notConnected;
-    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
+    if (!this.is_connected) throw RoturErrors.err_notConnected;
+    if (!this.authenticated) throw RoturErrors.err_notLoggedIn;
 
     return JSON.stringify(this.user);
   }
@@ -779,7 +779,7 @@ export class RoturExtension extends Process {
   }
 
   getStorageKey(key: string) {
-    if (!this.isAuthenticated()) return RoturErrors.err_notLoggedIn;
+    if (!this.isAuthenticated()) throw RoturErrors.err_notLoggedIn;
 
     return this.storage_id
       ? this.localKeys[key] ?? ""
@@ -787,10 +787,10 @@ export class RoturExtension extends Process {
   }
 
   setStorageKey(key: string, value: string) {
-    if (value.length > 1000) return RoturErrors.err_keyTooLong;
+    if (value.length > 1000) throw RoturErrors.err_keyTooLong;
 
-    if (!this.isAuthenticated()) return RoturErrors.err_notLoggedIn;
-    if (!this.storage_id) return RoturErrors.err_storageIdNotSet;
+    if (!this.isAuthenticated()) throw RoturErrors.err_notLoggedIn;
+    if (!this.storage_id) throw RoturErrors.err_storageIdNotSet;
 
     this.localKeys[key] = value;
 
@@ -883,17 +883,17 @@ export class RoturExtension extends Process {
   // I'M GOING TO BED.
 
   getStorageKeys() {
-    if (!this.isAuthenticated()) return RoturErrors.err_notLoggedIn;
+    if (!this.isAuthenticated()) throw RoturErrors.err_notLoggedIn;
 
-    if (!this.storage_id) return RoturErrors.err_storageIdNotSet;
+    if (!this.storage_id) throw RoturErrors.err_storageIdNotSet;
 
     JSON.stringify(Object.keys(this.localKeys));
   }
 
   getStorageValues() {
-    if (!this.isAuthenticated()) return RoturErrors.err_notLoggedIn;
+    if (!this.isAuthenticated()) throw RoturErrors.err_notLoggedIn;
 
-    if (!this.storage_id) return RoturErrors.err_storageIdNotSet;
+    if (!this.storage_id) throw RoturErrors.err_storageIdNotSet;
 
     return JSON.stringify(Object.values(this.localKeys));
   }
@@ -915,9 +915,9 @@ export class RoturExtension extends Process {
   }
 
   storageUsage() {
-    if (!this.isAuthenticated()) return RoturErrors.err_notLoggedIn;
+    if (!this.isAuthenticated()) throw RoturErrors.err_notLoggedIn;
 
-    if (!this.storage_id) return RoturErrors.err_storageIdNotSet;
+    if (!this.storage_id) throw RoturErrors.err_storageIdNotSet;
 
     return JSON.stringify(JSON.stringify(this.localKeys).length);
   }
@@ -927,8 +927,8 @@ export class RoturExtension extends Process {
   }
 
   storageRemaining() {
-    if (!this.isAuthenticated()) return RoturErrors.err_notLoggedIn;
-    if (!this.storage_id) return RoturErrors.err_storageIdNotSet;
+    if (!this.isAuthenticated()) throw RoturErrors.err_notLoggedIn;
+    if (!this.storage_id) throw RoturErrors.err_storageIdNotSet;
 
     return 50000 - JSON.stringify(this.localKeys).length + "";
   }
@@ -936,7 +936,7 @@ export class RoturExtension extends Process {
   // TODO: REFACTOR FASE 2: CONTINUE FROM HERE
 
   accountStorageUsage() {
-    if (!this.isAuthenticated()) return RoturErrors.err_notLoggedIn;
+    if (!this.isAuthenticated()) throw RoturErrors.err_notLoggedIn;
 
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -972,7 +972,7 @@ export class RoturExtension extends Process {
   }
 
   accountStorageRemaining() {
-    if (!this.isAuthenticated()) return RoturErrors.err_notLoggedIn;
+    if (!this.isAuthenticated()) throw RoturErrors.err_notLoggedIn;
 
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1097,13 +1097,13 @@ export class RoturExtension extends Process {
   }
 
   clientUsers() {
-    if (!this.is_connected) return RoturErrors.err_notConnected;
+    if (!this.is_connected) throw RoturErrors.err_notConnected;
 
     return JSON.stringify(this.client.users);
   }
 
   getUserDesignation(designation: string) {
-    if (!this.is_connected) return RoturErrors.err_notConnected;
+    if (!this.is_connected) throw RoturErrors.err_notConnected;
 
     return JSON.stringify(
       this.client.users?.filter((user) => user.startsWith(designation + "-"))
@@ -1119,8 +1119,8 @@ export class RoturExtension extends Process {
   }
 
   userConnected(designation: string, user: string) {
-    if (!this.is_connected) return RoturErrors.err_notConnected;
-    if (designation.length !== 3) return RoturErrors.err_invalidDesignation;
+    if (!this.is_connected) throw RoturErrors.err_notConnected;
+    if (designation.length !== 3) throw RoturErrors.err_invalidDesignation;
 
     const regexp = new RegExp(
       `(?<=")${designation}-${designation}§\\S{10}(?=")`,
@@ -1131,7 +1131,7 @@ export class RoturExtension extends Process {
   }
 
   findID(user: string) {
-    if (!this.is_connected) return RoturErrors.err_notConnected;
+    if (!this.is_connected) throw RoturErrors.err_notConnected;
 
     const regexp = new RegExp(`[a-zA-Z]{3}-${user}§\\S{10}`, "gi");
 
@@ -1165,8 +1165,8 @@ export class RoturExtension extends Process {
   }
 
   setSyncedVariable(key: string, value: string, user: string) {
-    if (!this.is_connected) return RoturErrors.err_notConnected;
-    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
+    if (!this.is_connected) throw RoturErrors.err_notConnected;
+    if (!this.authenticated) throw RoturErrors.err_notLoggedIn;
 
     this.ws?.send(
       JSON.stringify({
@@ -1189,15 +1189,15 @@ export class RoturExtension extends Process {
   }
 
   getSyncedVariable(key: string, user: string) {
-    if (!this.is_connected) return RoturErrors.err_notConnected;
-    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
+    if (!this.is_connected) throw RoturErrors.err_notConnected;
+    if (!this.authenticated) throw RoturErrors.err_notLoggedIn;
 
     return JSON.stringify(this.syncedVariables[user][key] || "");
   }
 
   deleteSyncedVariable(key: string, user: string) {
-    if (!this.is_connected) return RoturErrors.err_notConnected;
-    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
+    if (!this.is_connected) throw RoturErrors.err_notConnected;
+    if (!this.authenticated) throw RoturErrors.err_notLoggedIn;
 
     this.ws?.send(
       JSON.stringify({
@@ -1218,17 +1218,17 @@ export class RoturExtension extends Process {
 
   getSyncedVariables(user: string) {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     return JSON.stringify(this.syncedVariables[user] || {});
   }
 
   sendMail(to: string, subject: string, message: string) {
-    if (!this.is_connected) return RoturErrors.err_notConnected;
-    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
+    if (!this.is_connected) throw RoturErrors.err_notConnected;
+    if (!this.authenticated) throw RoturErrors.err_notLoggedIn;
 
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1268,8 +1268,8 @@ export class RoturExtension extends Process {
   }
 
   getAllMail() {
-    if (!this.is_connected) return RoturErrors.err_notConnected;
-    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
+    if (!this.is_connected) throw RoturErrors.err_notConnected;
+    if (!this.authenticated) throw RoturErrors.err_notLoggedIn;
 
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1303,8 +1303,8 @@ export class RoturExtension extends Process {
   }
 
   getMail(id: string) {
-    if (!this.is_connected) return RoturErrors.err_notConnected;
-    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
+    if (!this.is_connected) throw RoturErrors.err_notConnected;
+    if (!this.authenticated) throw RoturErrors.err_notLoggedIn;
 
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1339,8 +1339,8 @@ export class RoturExtension extends Process {
   }
 
   deleteMail(id: string) {
-    if (!this.is_connected) return RoturErrors.err_notConnected;
-    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
+    if (!this.is_connected) throw RoturErrors.err_notConnected;
+    if (!this.authenticated) throw RoturErrors.err_notLoggedIn;
 
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1374,8 +1374,8 @@ export class RoturExtension extends Process {
   }
 
   deleteAllMail() {
-    if (!this.is_connected) return RoturErrors.err_notConnected;
-    if (!this.authenticated) return RoturErrors.err_notLoggedIn;
+    if (!this.is_connected) throw RoturErrors.err_notConnected;
+    if (!this.authenticated) throw RoturErrors.err_notLoggedIn;
 
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1412,26 +1412,26 @@ export class RoturExtension extends Process {
 
   getFriendList() {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     return JSON.stringify(this.friends.list);
   }
 
   sendFriendRequest(friend: string) {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     if (this.friends.list.includes(friend)) {
-      return RoturErrors.err_alreadyFriends;
+      throw RoturErrors.err_alreadyFriends;
     }
     if (friend === this.user.username) {
-      return RoturErrors.err_needOtherFriends;
+      throw RoturErrors.err_needOtherFriends;
     }
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1468,13 +1468,13 @@ export class RoturExtension extends Process {
 
   removeFriend(friend: string) {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     if (!this.friends.list.includes(friend)) {
-      return RoturErrors.err_notFriends;
+      throw RoturErrors.err_notFriends;
     }
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1508,13 +1508,13 @@ export class RoturExtension extends Process {
 
   acceptFriendRequest(friend: string) {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     if (!this.friends.requests.includes(friend)) {
-      return RoturErrors.err_noFriendRequest;
+      throw RoturErrors.err_noFriendRequest;
     }
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1552,13 +1552,13 @@ export class RoturExtension extends Process {
 
   declineFriendRequest(friend: string) {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     if (!this.friends.requests.includes(friend)) {
-      return RoturErrors.err_noFriendRequest;
+      throw RoturErrors.err_noFriendRequest;
     }
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1598,10 +1598,10 @@ export class RoturExtension extends Process {
 
   getFriendStatus(friend: string) {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     if (this.friends.list.includes(friend)) {
       return RoturFriendStatus.friend;
@@ -1614,40 +1614,40 @@ export class RoturExtension extends Process {
 
   getFriendRequests() {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     return JSON.stringify(this.friends.requests) ?? "";
   }
 
   getFriendCount() {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     return this.friends.list.length ?? "";
   }
 
   getBalance() {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     return this.user["sys.currency"] ?? 0;
   }
 
   tranferCurrency(amount: number, user: string) {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1686,30 +1686,30 @@ export class RoturExtension extends Process {
 
   getTransactions() {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     return JSON.stringify(this.user["sys.transactions"]);
   }
 
   getTransactionCount() {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     return this.user["sys.transactions"].length;
   }
 
   getMyOwnedItems() {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     return JSON.stringify(this.user["sys.purchases"]);
   }
@@ -1726,23 +1726,23 @@ export class RoturExtension extends Process {
 
   getMyOwnedItemCount() {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     return this.user["sys.purchases"].length;
   }
 
   itemData(item: string) {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     if (this.user["sys.purchases"].indexOf(item) === -1) {
-      return RoturErrors.err_itemNotOwned;
+      throw RoturErrors.err_itemNotOwned;
     }
     return new Promise((resolve) => {
       this.socketSend({
@@ -1771,13 +1771,13 @@ export class RoturExtension extends Process {
 
   purchaseItem(item: string) {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     if (this.user["sys.purchases"].indexOf(item) !== -1) {
-      return RoturErrors.err_itemAlreadyOwned;
+      throw RoturErrors.err_itemAlreadyOwned;
     }
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1810,13 +1810,13 @@ export class RoturExtension extends Process {
 
   itemInfo(item: string) {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     if (this.user["sys.purchases"].indexOf(item) === -1) {
-      return RoturErrors.err_itemNotOwned;
+      throw RoturErrors.err_itemNotOwned;
     }
     return new Promise((resolve) => {
       this.socketSend({
@@ -1849,10 +1849,10 @@ export class RoturExtension extends Process {
 
   getPublicItems(page: number) {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
 
     return new Promise((resolve, reject) => {
@@ -1882,10 +1882,10 @@ export class RoturExtension extends Process {
 
   getPublicItemPages() {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     return new Promise((resolve) => {
       this.socketSend({
@@ -1916,10 +1916,10 @@ export class RoturExtension extends Process {
 
   getMyCreatedItems() {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     return JSON.stringify(this.user["sys.items"]);
   }
@@ -1932,10 +1932,10 @@ export class RoturExtension extends Process {
     tradable: boolean
   ) {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -1975,13 +1975,13 @@ export class RoturExtension extends Process {
 
   updateItem(item: string, key: string, data: string) {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     if (this.user["sys.items"].indexOf(item) === -1) {
-      return RoturErrors.err_itemNotOwned;
+      throw RoturErrors.err_itemNotOwned;
     }
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -2019,13 +2019,13 @@ export class RoturExtension extends Process {
 
   deleteItem(item: string) {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     if (this.user["sys.items"].indexOf(item) === -1) {
-      return RoturErrors.err_itemNotOwned;
+      throw RoturErrors.err_itemNotOwned;
     }
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -2059,10 +2059,10 @@ export class RoturExtension extends Process {
 
   hideItem(id: string) {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -2096,10 +2096,10 @@ export class RoturExtension extends Process {
 
   showItem(id: string) {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     return new Promise((resolve, reject) => {
       this.socketSend({
@@ -2137,20 +2137,20 @@ export class RoturExtension extends Process {
 
   userBadges() {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     return JSON.stringify(this.user["sys.badges"]);
   }
 
   userBadgeCount() {
     if (!this.is_connected) {
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
     if (!this.authenticated) {
-      return RoturErrors.err_notLoggedIn;
+      throw RoturErrors.err_notLoggedIn;
     }
     return this.user["sys.badges"].length;
   }
@@ -2184,7 +2184,7 @@ export class RoturExtension extends Process {
         LogLevel.error
       );
 
-      return RoturErrors.err_notConnected;
+      throw RoturErrors.err_notConnected;
     }
 
     this.socketSend({
