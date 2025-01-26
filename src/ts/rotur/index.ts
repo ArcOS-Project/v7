@@ -1,6 +1,4 @@
-import { GlobalDispatcher } from "$ts/dispatch";
 import { validateObject, type ValidationObject } from "$ts/json";
-import type { WaveKernel } from "$ts/kernel";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { Sleep } from "$ts/sleep";
@@ -10,6 +8,8 @@ import axios from "axios";
 import md5 from "md5";
 
 export class RoturExtension extends Process {
+  override _criticalProcess: boolean = true;
+
   ws: WebSocket | null;
   client: { ip?: string; username?: string; users?: string[]; room?: string };
   packets: Record<string, any>;
@@ -82,7 +82,7 @@ export class RoturExtension extends Process {
     this.outdated = false;
   }
 
-  async _init() {
+  async start() {
     await this.getInformation();
     this._initializeBadges();
   }
@@ -173,7 +173,7 @@ export class RoturExtension extends Process {
       version,
     };
 
-    this.connectToWebsocket();
+    await this.connectToWebsocket();
   }
 
   isAuthenticated() {
@@ -279,6 +279,7 @@ export class RoturExtension extends Process {
 
   // TODO: full refactor of this function
   pmesgPacket(packet: RoturPacket) {
+    console.log(packet);
     this.packetQueue.push(packet);
 
     packet.origin = packet.origin.username;
@@ -415,6 +416,8 @@ export class RoturExtension extends Process {
           this.packetListenerHandlers[packet.listener || ""];
 
         if (commandHandler) {
+          this.globalDispatch.dispatch(`rotur-cmd-${packet.cmd}`, [packet]);
+
           this.Log(
             `Executing command handler for command ${
               packet.cmd || "<NONE>"
@@ -425,6 +428,10 @@ export class RoturExtension extends Process {
         }
 
         if (listenerHandler) {
+          this.globalDispatch.dispatch(`rotur-listener-${packet.listener}`, [
+            packet,
+          ]);
+
           this.Log(
             `Executing listener handler for listener ${
               packet.listener || "<NONE>"
@@ -2170,7 +2177,28 @@ export class RoturExtension extends Process {
     this._initializeBadges();
   }
 
-  async loginFromToken() {}
+  async loginFromToken(token: string) {
+    if (!this.is_connected) {
+      this.Log(
+        `Authentication impossible: not connected. Is Rotur down?`,
+        LogLevel.error
+      );
+
+      return RoturErrors.err_notConnected;
+    }
+
+    this.socketSend({
+      cmd: "pmsg",
+      val: {
+        id: token,
+        client: { system: "arcOS", version: "7" },
+        command: "myself",
+      },
+      id: "sys-rotur",
+    });
+    this.userToken = token;
+    this.authenticated = true;
+  }
 }
 
 function randomString(length: number) {

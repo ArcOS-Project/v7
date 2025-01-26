@@ -105,7 +105,7 @@ export class LoginAppRuntime extends AppProcess {
       return;
     }
 
-    userDaemon.startPreferencesSync();
+    await userDaemon.startPreferencesSync();
     await userDaemon.startFilesystemSupplier();
 
     this.profileImage.set(
@@ -118,6 +118,8 @@ export class LoginAppRuntime extends AppProcess {
         )
       ).url
     );
+
+    await userDaemon.startRotur();
 
     await Sleep(2000);
 

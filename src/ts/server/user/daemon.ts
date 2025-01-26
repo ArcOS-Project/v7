@@ -23,6 +23,7 @@ import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes } from "./store";
+import { RoturExtension } from "$ts/rotur";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -31,6 +32,7 @@ export class UserDaemon extends Process {
   public preferences = Store<UserPreferences>();
   public notifications = new Map<string, Notification>([]);
   public userInfo: UserInfo = DefaultUserInfo;
+  public rotur: RoturExtension | undefined;
 
   private preferencesUnsubscribe: Unsubscriber | undefined;
   private fs: Filesystem;
@@ -93,7 +95,7 @@ export class UserDaemon extends Process {
     }
   }
 
-  startPreferencesSync() {
+  async startPreferencesSync() {
     if (this._disposed) return;
 
     this.Log(`Starting user preferences commit sync`);
@@ -178,6 +180,8 @@ export class UserDaemon extends Process {
   }
 
   async startFilesystemSupplier() {
+    this.Log(`Starting filesystem supplier`);
+
     await this.fs.loadSupplier("userfs", ServerFilesystemSupplier, this.token);
     await this.fs.loadSupplier("userdata", UserDataFilesystemSupplier, this);
   }
@@ -216,6 +220,8 @@ export class UserDaemon extends Process {
   }
 
   async discontinueToken() {
+    this.Log(`Discontinuing token`);
+
     try {
       const response = await Axios.post(
         `/logout`,
@@ -230,6 +236,10 @@ export class UserDaemon extends Process {
   }
 
   sendNotification(data: Notification) {
+    this.Log(
+      `Sending notification: ${data.title} -> ${data.message.length} body bytes`
+    );
+
     if (this._disposed) return;
 
     this.Log(`notification: ${data.title}`);
@@ -246,6 +256,8 @@ export class UserDaemon extends Process {
   }
 
   deleteNotification(id: string) {
+    this.Log(`Deleting notification '${id}'`);
+
     if (this._disposed) return;
 
     const notification = this.notifications.get(id);
@@ -290,6 +302,8 @@ export class UserDaemon extends Process {
   }
 
   saveCurrentTheme(name: string) {
+    this.Log(`Saving current theme as '${name}'`);
+
     const id = `${Math.floor(Math.random() * 1e6)}`;
 
     this.preferences.update((userPreferences) => {
@@ -307,6 +321,8 @@ export class UserDaemon extends Process {
   }
 
   applyThemeData(data: UserTheme, id?: string) {
+    this.Log(`Apply theme data, ID='${id}'`);
+
     const verifier = this.verifyTheme(data);
 
     if (verifier !== "themeIsValid") {
@@ -338,6 +354,8 @@ export class UserDaemon extends Process {
   }
 
   applySavedTheme(id: string) {
+    this.Log(`Applying saved theme '${id}'`);
+
     const userPreferences = this.preferences();
 
     if (!userPreferences.userThemes[id]) return;
@@ -379,6 +397,8 @@ export class UserDaemon extends Process {
   }
 
   deleteUserTheme(id: string) {
+    this.Log(`Deleting user theme '${id}'`);
+
     this.preferences.update((udata) => {
       if (!udata.userThemes) return udata;
 
@@ -459,6 +479,8 @@ export class UserDaemon extends Process {
   }
 
   async deleteLocalWallpaper(id: string): Promise<boolean> {
+    this.Log(`Deleting local wallpaper '${id}'`);
+
     const path = atob(id.replace("@local:", ""));
     const result = await this.fs.deleteItem(path);
 
@@ -513,5 +535,40 @@ export class UserDaemon extends Process {
       url: blobUrl,
       thumb: blobUrl,
     };
+  }
+
+  async startRotur() {
+    this.Log("Starting Rotur extension");
+
+    const fn = (...data: any[]) => console.log(...data);
+
+    // this.globalDispatch.subscribe("rotur-cmd-ulist", fn);
+    // this.globalDispatch.subscribe("rotur-cmd-client_ip", fn);
+    // this.globalDispatch.subscribe("rotur-cmd-client_obj", fn);
+    // this.globalDispatch.subscribe("rotur-cmd-ulist", fn);
+    this.globalDispatch.subscribe("rotur-cmd-pmsg", fn);
+    // this.globalDispatch.subscribe("rotur-listener-handshake_cfg", fn);
+    // this.globalDispatch.subscribe("rotur-listener-set_username_cfg", fn);
+    // this.globalDispatch.subscribe("rotur-listener-link_cfg", fn);
+
+    const roturToken = this.preferences().account.roturToken;
+
+    this.rotur = await this.handler.spawn<RoturExtension>(
+      RoturExtension,
+      this.pid,
+      this
+    );
+
+    if (!this.rotur) throw new Error("Failed to start rotur");
+
+    await this.rotur.connectToServer("arc", "arcOS", "7");
+
+    if (!roturToken) return;
+
+    await this.rotur.loginFromToken(roturToken);
+
+    this.preferences.subscribe((v) => {
+      if (!v.account.roturToken) this.rotur?.disconnect();
+    });
   }
 }

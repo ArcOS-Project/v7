@@ -450,7 +450,7 @@ export class AppManager extends Process {
     for (const app of builtins) {
       this.loadApp(app);
 
-      if (app.autoRun) await this.spawnApp(app.id, this.pid);
+      if (app.autoRun) await this.spawnApp(app.id);
     }
 
     console.groupEnd();

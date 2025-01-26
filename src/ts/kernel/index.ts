@@ -94,7 +94,7 @@ export class WaveKernel {
     const stack = this.getModule<ProcessHandler>("stack");
 
     this.init = await stack.spawn<InitProcess>(InitProcess);
-    this.initPid = this.init?.pid || -1;
+    this.initPid = this.init?.pid ?? 0;
 
     await this.init?.jumpstart();
 

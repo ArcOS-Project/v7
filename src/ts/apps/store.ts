@@ -1,3 +1,4 @@
+import { RoturAuthGuiApp } from "$apps/components/roturauthgui/metadata";
 import { ArcShellApp } from "$apps/components/shell/metadata";
 import { WallpaperApp } from "$apps/components/wallpaper/metadata";
 import { SystemSettings } from "$apps/user/settings/metadata";
@@ -9,6 +10,7 @@ export const BuiltinApps: App[] = [
   WallpaperApp,
   ArcShellApp,
   SystemSettings,
+  RoturAuthGuiApp,
   TestApp,
 ];
 

@@ -16,6 +16,8 @@ export class InitProcess extends Process {
   async jumpstart() {
     console.group(`Init process jumpstart`);
 
+    this.handler.startRenderer(this.pid);
+
     this.Log("Jumpstart");
 
     const state = await this.handler.spawn<StateHandler>(

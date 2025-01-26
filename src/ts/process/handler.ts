@@ -1,4 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
+import { Environment } from "$ts/kernel/env";
 import { AppManager } from "../apps/manager";
 import { WaveKernel } from "../kernel";
 import { Log } from "../kernel/logging";
@@ -11,21 +12,20 @@ export class ProcessHandler extends KernelModule {
   public store = Store<Map<number, Process>>(new Map([]));
   public rendererPid = -1;
   public renderer: AppManager | undefined;
+  public env: Environment;
 
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);
+
+    this.env = this.kernel.getModule<Environment>("env");
   }
 
   async _init() {
-    await this.startRenderer();
+    // await this.startRenderer();
   }
 
-  async startRenderer() {
-    this.renderer = await this.spawn(
-      AppManager,
-      this.kernel.initPid,
-      "appRenderer"
-    );
+  async startRenderer(initPid: number) {
+    this.renderer = await this.spawn(AppManager, initPid, "appRenderer");
   }
 
   async spawn<T = Process>(
@@ -34,6 +34,12 @@ export class ProcessHandler extends KernelModule {
     ...args: any[]
   ): Promise<T | undefined> {
     if (WaveKernel.isPanicked()) return;
+
+    const userDaemonPid = this.env.get("userdaemon_pid");
+
+    if (this.kernel.state?.currentState === "desktop" && userDaemonPid) {
+      parentPid ??= +userDaemonPid;
+    }
 
     const pid = this.getPid();
     const proc = new (process as any)(this, pid, parentPid, ...args) as Process;
@@ -154,5 +160,42 @@ export class ProcessHandler extends KernelModule {
     if (!proc || !proc.dispatch) return undefined;
 
     return proc.dispatch;
+  }
+
+  logTree() {
+    // Build a tree structure
+    const processTree: Record<number, number[]> = {};
+    const roots: number[] = [];
+    let result = "";
+
+    this.store().forEach((process) => {
+      const parentPID = process.parentPid;
+      if (parentPID !== undefined) {
+        if (!processTree[parentPID]) {
+          processTree[parentPID] = [];
+        }
+        processTree[parentPID].push(process.pid);
+      } else {
+        roots.push(process.pid); // Root processes have no ParentPID
+      }
+    });
+
+    console.log(processTree, roots);
+
+    // Helper function for depth-first traversal
+    const traverse = (pid: number, depth: number) => {
+      result += `${" ".repeat(depth * 2)}- Process ${pid}\n`;
+      const children = processTree[pid] || [];
+      for (const child of children) {
+        traverse(child, depth + 1);
+      }
+    };
+
+    // Log each tree starting from a root process
+    for (const root of roots) {
+      traverse(root, 0);
+    }
+
+    this.Log(result);
   }
 }

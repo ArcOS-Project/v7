@@ -7,4 +7,5 @@ div.window:not(.core) > div.body {
 }
 div.window:not(.core).headless > div.body {
   border-top: none;
+  height: 100%;
 }
