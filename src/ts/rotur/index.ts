@@ -527,7 +527,7 @@ export class RoturExtension extends KernelModule {
           val: { source_command: "login" },
         },
         async (packet: RoturPacket) => {
-          if (typeof packet.val?.payload === "object") {
+          if (typeof packet.val?.payload !== "object") {
             reject(`Failed to log in as ${args.USERNAME}`);
 
             return;
@@ -2187,6 +2187,8 @@ export class RoturExtension extends KernelModule {
   redownloadBadges() {
     this._initializeBadges();
   }
+
+  async loginFromToken() {}
 }
 
 function randomString(length: number) {

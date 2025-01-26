@@ -48,7 +48,7 @@ export class BootScreenRuntime extends AppProcess {
 
     await this.rotur.connectToServer({
       DESIGNATION: "arc",
-      SYSTEM: "ArcOS",
+      SYSTEM: "arcOS",
       VERSION: "7",
     });
 
