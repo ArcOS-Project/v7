@@ -573,4 +573,24 @@ export class UserDaemon extends Process {
         this.rotur?.disconnect();
     });
   }
+
+  async logoff() {
+    await this.toLogin("logoff");
+  }
+
+  async shutdown() {
+    await this.toLogin("shutdown");
+  }
+
+  async restart() {
+    await this.toLogin("restart");
+  }
+
+  async toLogin(type: string) {
+    await this.handler._killSubProceses(this.pid);
+    await this.kernel.state?.loadState("login", {
+      type,
+      userDaemon: this,
+    });
+  }
 }

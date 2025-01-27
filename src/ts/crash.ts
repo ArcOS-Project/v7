@@ -33,12 +33,14 @@ export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
   text += stack;
   text = text.replaceAll(location.href, "./");
 
-  text += `\n\n${kernel.Logs.map(
-    ({ level, kernelTime, source, message }) =>
-      `[${kernelTime.toString().padStart(8, "0")}] ${
-        LogLevel[level]
-      } ${source}: ${message}`
-  )
+  text += `\n\n${kernel
+    .Logs()
+    .map(
+      ({ level, kernelTime, source, message }) =>
+        `[${kernelTime.toString().padStart(8, "0")}] ${
+          LogLevel[level]
+        } ${source}: ${message}`
+    )
     .reverse()
     .join("\n")}`;
 

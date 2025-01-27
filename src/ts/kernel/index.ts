@@ -2,6 +2,7 @@ import { getBuild } from "$ts/metadata/build";
 import { getLicense } from "$ts/metadata/license";
 import { getMode } from "$ts/metadata/mode";
 import { RoturExtension } from "$ts/rotur";
+import { Store, type ReadableStore } from "$ts/writable";
 import {
   LogLevel,
   ShortLogLevelCaptions,
@@ -19,7 +20,7 @@ let CurrentKernel: WaveKernel | undefined = undefined;
 export class WaveKernel {
   private modules: string[] = [];
   private PANICKED = false;
-  public Logs: LogItem[] = [];
+  public Logs: ReadableStore<LogItem[]> = Store([]);
   public startMs: number;
   public init: InitProcess | undefined;
   public state: StateHandler | undefined;
@@ -136,12 +137,16 @@ export class WaveKernel {
   public Log(source: string, message: string, level = LogLevel.info) {
     const timestamp = Date.now();
 
-    this.Logs.push({
-      timestamp,
-      source,
-      message,
-      level,
-      kernelTime: timestamp - this.startMs,
+    this.Logs.update((v) => {
+      v.push({
+        timestamp,
+        source,
+        message,
+        level,
+        kernelTime: timestamp - this.startMs,
+      });
+
+      return v;
     });
 
     console.log(

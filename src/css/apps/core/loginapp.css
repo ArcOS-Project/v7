@@ -132,6 +132,7 @@ div.window#loginApp p.loading {
   font-weight: bold;
   font-size: 18px;
   color: #fff;
+  text-align: center;
 }
 
 div.window#loginApp div.topbar {

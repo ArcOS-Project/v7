@@ -104,7 +104,7 @@ export class ProcessHandler extends KernelModule {
     return "success";
   }
 
-  private async _killSubProceses(pid: number, force = false) {
+  public async _killSubProceses(pid: number, force = false) {
     const procs = await this.getSubProcesses(pid);
 
     if (!procs.size) return;

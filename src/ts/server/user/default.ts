@@ -45,6 +45,15 @@ export const DefaultUserPreferences: UserPreferences = {
       enabled: false,
     },
   },
+  searchOptions: {
+    includeApps: true,
+    includeFilesystem: true,
+    includePower: true,
+    includeSettingsPages: true,
+    cacheFilesystem: true,
+    showHiddenApps: false,
+    showThirdPartyApps: true,
+  },
   security: {
     lockdown: false,
     noPassword: false,

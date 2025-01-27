@@ -24,6 +24,17 @@ export interface UserPreferences {
   userThemes: ThemeStore;
   userWallpapers: Record<string, Wallpaper>;
   currentThemeId?: string;
+  searchOptions: ArcFindOptions;
+}
+
+export interface ArcFindOptions {
+  includeFilesystem: boolean;
+  includeSettingsPages: boolean;
+  includeApps: boolean;
+  includePower: boolean;
+  cacheFilesystem: boolean;
+  showHiddenApps: boolean;
+  showThirdPartyApps: boolean;
 }
 
 export interface CustomStylePreferences {
