@@ -18,6 +18,17 @@ export interface App {
   hidden?: boolean;
   overlay?: boolean;
   glass?: boolean;
+  thirdParty?: boolean;
+  id: string;
+}
+
+export interface ThirdPartyApp {
+  metadata: AppMetadata;
+  entrypoint: string; // Path to MSL file
+  workingDirectory: string;
+  thirdParty: true;
+  unsafeCode?: boolean;
+  fileSignatures?: Record<string, string>; // [base64(path), SHA]
   id: string;
 }
 

@@ -29,6 +29,10 @@ export class Filesystem extends KernelModule {
 
   async _init() {}
 
+  getSupplier(id: string) {
+    return this.suppliers[id];
+  }
+
   async loadSupplier(
     id: string,
     supplier: typeof FilesystemSupplier,

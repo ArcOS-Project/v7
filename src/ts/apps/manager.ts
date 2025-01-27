@@ -1,8 +1,10 @@
 import { MessageBox } from "$ts/dialog";
+import { Filesystem } from "$ts/fs";
 import { BugReportIcon, ComponentIcon } from "$ts/images/general";
+import { ArcLang } from "$ts/lang";
 import { Draggable } from "@neodrag/vanilla";
 import { unmount } from "svelte";
-import type { App, AppProcessData } from "../../types/app";
+import type { App, AppProcessData, ThirdPartyApp } from "../../types/app";
 import type { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
@@ -11,6 +13,7 @@ import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
 import { BuiltinApps } from "./store";
+import { arrayToText } from "$ts/fs/convert";
 
 export class AppManager extends Process {
   currentState: number[] = [];
@@ -432,6 +435,10 @@ export class AppManager extends Process {
 
     if (!app) return;
 
+    if (app.data.thirdParty) {
+      return await this.spawnThirdParty(app.data as unknown as ThirdPartyApp);
+    }
+
     const result = await this.handler.spawn<T>(
       app.data.assets.runtime,
       parentPid,
@@ -440,6 +447,29 @@ export class AppManager extends Process {
     );
 
     return result as T;
+  }
+
+  async spawnThirdParty(app: ThirdPartyApp) {
+    const lang = this.kernel.getModule<ArcLang>("lang");
+    const fs = this.kernel.getModule<Filesystem>("fs");
+    const userfs = fs.getSupplier("userfs");
+    const userDaemonPid = this.env.get("userdaemon_pid");
+
+    if (!userfs || !userDaemonPid) return;
+
+    try {
+      const contents = arrayToText((await userfs.readFile(app.entrypoint))!);
+
+      await lang.run(contents, +userDaemonPid, {
+        allowUnsafe: app.unsafeCode, // Unsafe code execution
+        workingDir: app.workingDirectory, // Working directory (cwd)
+        continuous: true, // Continuous code execution to keep the mainloop going
+      });
+
+      return undefined;
+    } catch {
+      return undefined;
+    }
   }
 
   async loadBuiltinApps(builtins = BuiltinApps) {
