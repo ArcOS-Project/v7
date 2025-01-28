@@ -11,7 +11,7 @@ div.desktop-wallpaper > div.wallpaper {
   background-position: center;
   background-size: cover;
   height: 100%;
-  transition: opacity 0.4s;
+  transition: background-image 0.3s;
   opacity: 1;
 }
 

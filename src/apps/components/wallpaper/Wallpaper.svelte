@@ -9,7 +9,6 @@
   const { userPreferences } = process;
 
   let wallpaper = $state<Wallpaper>();
-  let show = $state(false);
   let lastWallpaper = $state("img04");
 
   $effect(() => {
@@ -21,18 +20,7 @@
       if (incomingWallpaper && v.desktop.wallpaper === lastWallpaper) return;
 
       lastWallpaper = v.desktop.wallpaper;
-
-      show = false;
-
-      await Sleep(450);
-
       wallpaper = incomingWallpaper;
-
-      await Sleep(100);
-
-      show = true;
-
-      console.log(incomingWallpaper);
     });
 
     return () => unsubscribe();
@@ -43,8 +31,7 @@
 
 <div class="desktop-wallpaper">
   <div
-    class="wallpaper"
+    class="wallpaper show"
     style="--src: url('{wallpaper ? wallpaper.url : Wallpapers.img04.url}');"
-    class:show
   ></div>
 </div>
