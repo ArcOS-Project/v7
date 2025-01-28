@@ -9,16 +9,18 @@ export class FilesystemDrive {
   server: ServerManager;
   public driveLetter = "";
   public label = "";
+  public kernel: WaveKernel;
 
   constructor(kernel: WaveKernel, letter: string, ...args: any[]) {
     this.server = kernel.getModule<ServerManager>("server");
 
     this.driveLetter = letter;
+    this.kernel = kernel;
   }
 
-  async _init() {}
+  async _spinUp() {}
 
-  async _windDown() {}
+  async _spinDown() {}
 
   async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
     return {

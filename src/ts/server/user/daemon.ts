@@ -1,7 +1,7 @@
 import { darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 import { Filesystem } from "$ts/fs";
 import { arrayToBlob } from "$ts/fs/convert";
-import { ServerDrive } from "$ts/fs/suppliers/server";
+import { ServerDrive } from "$ts/fs/drives/server";
 import { join } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
 import type { ProcessHandler } from "$ts/process/handler";
@@ -23,6 +23,7 @@ import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes } from "./store";
 import { RoturExtension } from "$ts/rotur";
+import { ZIPDrive } from "$ts/fs/drives/zipdrive";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -589,5 +590,11 @@ export class UserDaemon extends Process {
       type,
       userDaemon: this,
     });
+  }
+
+  async mountZip(path: string) {
+    const mount = this.fs.mountDrive(btoa(path), "A", ZIPDrive, path);
+
+    return mount;
   }
 }

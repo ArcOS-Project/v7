@@ -38,7 +38,7 @@ export class Filesystem extends KernelModule {
 
     this.drives[id] = instance;
 
-    await instance._init();
+    await instance._spinUp();
 
     return true;
   }
@@ -46,7 +46,7 @@ export class Filesystem extends KernelModule {
   async umountDrive(id: string) {
     if (!this.drives[id]) return false;
 
-    await this.drives[id]._windDown();
+    await this.drives[id]._spinDown();
 
     delete this.drives[id];
 
