@@ -436,7 +436,9 @@ export class AppManager extends Process {
     if (!app) return;
 
     if (app.data.thirdParty) {
-      return await this.spawnThirdParty(app.data as unknown as ThirdPartyApp);
+      await this.spawnThirdParty(app.data as unknown as ThirdPartyApp);
+
+      return;
     }
 
     const result = await this.handler.spawn<T>(
@@ -452,23 +454,20 @@ export class AppManager extends Process {
   async spawnThirdParty(app: ThirdPartyApp) {
     const lang = this.kernel.getModule<ArcLang>("lang");
     const fs = this.kernel.getModule<Filesystem>("fs");
-    const userfs = fs.getDriveById("userfs");
     const userDaemonPid = this.env.get("userdaemon_pid");
 
-    if (!userfs || !userDaemonPid) return;
+    if (!userDaemonPid) return;
 
     try {
-      const contents = arrayToText((await userfs.readFile(app.entrypoint))!);
+      const contents = arrayToText((await fs.readFile(app.entrypoint))!);
 
       await lang.run(contents, +userDaemonPid, {
         allowUnsafe: app.unsafeCode, // Unsafe code execution
         workingDir: app.workingDirectory, // Working directory (cwd)
         continuous: true, // Continuous code execution to keep the mainloop going
       });
-
-      return undefined;
-    } catch {
-      return undefined;
+    } catch (e) {
+      this.Log(`Execution error in third-party application "${app.id}": ${e}`);
     }
   }
 
