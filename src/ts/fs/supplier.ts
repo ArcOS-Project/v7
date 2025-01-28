@@ -3,24 +3,17 @@ import { ServerManager } from "$ts/server";
 import type {
   DirectoryReadReturn,
   RecursiveDirectoryReadReturn,
-  SupplierFlags,
 } from "$types/fs";
 
-export class FilesystemSupplier {
+export class FilesystemDrive {
   server: ServerManager;
-  supplies: SupplierFlags = {
-    readDir: false,
-    createDirectory: false,
-    readFile: false,
-    writeFile: false,
-    tree: false,
-    copyItem: false,
-    moveItem: false,
-    deleteItem: false,
-  };
+  public driveLetter = "";
+  public label = "";
 
-  constructor(kernel: WaveKernel, ...args: any[]) {
+  constructor(kernel: WaveKernel, letter: string, ...args: any[]) {
     this.server = kernel.getModule<ServerManager>("server");
+
+    this.driveLetter = letter;
   }
 
   async _init() {}

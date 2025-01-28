@@ -24,7 +24,7 @@
   });
 
   async function update() {
-    const root = await process.fs.readDir("");
+    const root = await process.fs.readDir("U:/");
 
     if (!root) return;
 
@@ -33,7 +33,7 @@
 
   async function openFolder(name: string) {
     // TODO: file manager + open the folder in the file manager
-    const contents = await process.fs.readDir(name);
+    const contents = await process.fs.readDir(`U:/${name}`);
 
     MessageBox(
       {

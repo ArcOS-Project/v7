@@ -452,7 +452,7 @@ export class AppManager extends Process {
   async spawnThirdParty(app: ThirdPartyApp) {
     const lang = this.kernel.getModule<ArcLang>("lang");
     const fs = this.kernel.getModule<Filesystem>("fs");
-    const userfs = fs.getSupplier("userfs");
+    const userfs = fs.getDriveById("userfs");
     const userDaemonPid = this.env.get("userdaemon_pid");
 
     if (!userfs || !userDaemonPid) return;

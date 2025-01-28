@@ -1,8 +1,7 @@
 import { darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 import { Filesystem } from "$ts/fs";
 import { arrayToBlob } from "$ts/fs/convert";
-import { ServerFilesystemSupplier } from "$ts/fs/suppliers/server";
-import { UserDataFilesystemSupplier } from "$ts/fs/suppliers/userdata";
+import { ServerDrive } from "$ts/fs/suppliers/server";
 import { join } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
 import type { ProcessHandler } from "$ts/process/handler";
@@ -182,15 +181,13 @@ export class UserDaemon extends Process {
   async startFilesystemSupplier() {
     this.Log(`Starting filesystem supplier`);
 
-    await this.fs.loadSupplier("userfs", ServerFilesystemSupplier, this.token);
-    await this.fs.loadSupplier("userdata", UserDataFilesystemSupplier, this);
+    await this.fs.mountDrive("userfs", "U", ServerDrive, this.token);
   }
 
   async stop() {
     if (this.preferencesUnsubscribe) this.preferencesUnsubscribe();
 
-    this.fs.unloadSupplier(`userfs`);
-    this.fs.unloadSupplier(`userdata`);
+    this.fs.umountDrive(`userfs`);
   }
 
   async sanitizeUserPreferences() {
@@ -425,11 +422,11 @@ export class UserDaemon extends Process {
           const file = files?.[0];
           const content = arrayToBlob(await file?.arrayBuffer()!);
 
-          await this.fs.createDirectory("Wallpapers");
+          await this.fs.createDirectory("U:/Wallpapers");
 
           if (!file?.name) return reject("File doesn't have a name");
 
-          const path = join(`Wallpapers`, file.name);
+          const path = join(`U:/Wallpapers`, file.name);
           const result = await this.fs.writeFile(path, content);
 
           if (!result) return reject("Failed to write file");

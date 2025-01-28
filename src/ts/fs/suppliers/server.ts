@@ -4,25 +4,15 @@ import { Axios } from "$ts/server/axios";
 import type {
   DirectoryReadReturn,
   RecursiveDirectoryReadReturn,
-  SupplierFlags,
 } from "$types/fs";
-import { FilesystemSupplier } from "../supplier";
+import { FilesystemDrive } from "../supplier";
 
-export class ServerFilesystemSupplier extends FilesystemSupplier {
+export class ServerDrive extends FilesystemDrive {
   private token = "";
-  override readonly supplies: SupplierFlags = {
-    readDir: true,
-    createDirectory: true,
-    readFile: true,
-    writeFile: true,
-    tree: true,
-    copyItem: true,
-    moveItem: true,
-    deleteItem: true,
-  };
+  override label = "Your Drive";
 
-  constructor(kernel: WaveKernel, token: string) {
-    super(kernel);
+  constructor(kernel: WaveKernel, letter: string, token: string) {
+    super(kernel, letter);
 
     this.token = token;
   }

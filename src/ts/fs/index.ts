@@ -2,23 +2,14 @@ import { GlobalDispatcher } from "$ts/dispatch";
 import type { WaveKernel } from "$ts/kernel";
 import { KernelModule } from "$ts/kernel/module";
 import {
-  type CopyItemSupplier,
-  type CreateDirectorySupplier,
-  type DeleteItemSupplier,
   type DirectoryReadReturn,
-  type FilesystemOperation,
-  type MoveItemSupplier,
-  type ReadDirectorySupplier,
-  type ReadFileSupplier,
   type RecursiveDirectoryReadReturn,
-  type TreeSupplier,
-  type WriteFileSupplier,
 } from "$types/fs";
-import type { FilesystemSupplier } from "./supplier";
+import type { FilesystemDrive } from "./supplier";
 import { getParentDirectory } from "./util";
 
 export class Filesystem extends KernelModule {
-  private suppliers: Record<string, FilesystemSupplier> = {};
+  private drives: Record<string, FilesystemDrive> = {};
   private dispatch: GlobalDispatcher;
 
   constructor(kernel: WaveKernel, id: string) {
@@ -29,91 +20,80 @@ export class Filesystem extends KernelModule {
 
   async _init() {}
 
-  getSupplier(id: string) {
-    return this.suppliers[id];
+  getDriveById(id: string) {
+    return this.drives[id];
   }
 
-  async loadSupplier(
+  async mountDrive(
     id: string,
-    supplier: typeof FilesystemSupplier,
+    letter: string,
+    supplier: typeof FilesystemDrive,
     ...args: any[]
   ) {
-    if (this.suppliers[id]) return false;
+    this.validateDriveLetter(letter);
 
-    const instance = new supplier(this.kernel, ...args);
+    if (this.drives[id] || this.getDriveByLetter(letter, false)) return false;
 
-    this.suppliers[id] = instance;
+    const instance = new supplier(this.kernel, letter, ...args);
+
+    this.drives[id] = instance;
 
     await instance._init();
 
     return true;
   }
 
-  async unloadSupplier(id: string) {
-    if (!this.suppliers[id]) return false;
+  async umountDrive(id: string) {
+    if (!this.drives[id]) return false;
 
-    await this.suppliers[id]._windDown();
+    await this.drives[id]._windDown();
 
-    delete this.suppliers[id];
+    delete this.drives[id];
 
     return true;
   }
 
-  private getSuppliersFor<T = any>(operation: FilesystemOperation) {
-    const result: T[] = [];
+  getDriveByLetter(letter: string, error = true) {
+    this.validateDriveLetter(letter);
 
-    for (const supplier of Object.values(this.suppliers)) {
-      if (supplier.supplies[operation])
-        result.push((supplier as any)[operation].bind(supplier));
-    }
+    const result = Object.values(this.drives).filter(
+      (s) => s.driveLetter == letter
+    )[0];
 
-    return result;
-  }
-
-  private getMaybeSupplierFor<T = any>(operation: FilesystemOperation) {
-    let result: T | undefined;
-
-    for (const supplier of Object.values(this.suppliers)) {
-      if (supplier.supplies[operation])
-        result = (supplier as any)[operation].bind(supplier);
-    }
+    if (!result && error) throw new Error(`Not mounted: ${letter}:/`);
 
     return result;
   }
 
-  private getSupplierFor<T = any>(operation: FilesystemOperation) {
-    const supplier = this.getMaybeSupplierFor<T>(operation);
+  validatePath(p: string) {
+    if (!/^[a-zA-Z]:\/(.*?)$/g.test(p)) throw new Error(`Invalid path "${p}"`);
+  }
 
-    if (!supplier)
-      throw new Error(`No filesystem supplier for operation "${operation}"`);
+  removeDriveLetter(p: string) {
+    this.validatePath(p);
 
-    return supplier;
+    return p.replace(`${p[0]}:/`, "");
+  }
+
+  validateDriveLetter(letter: string) {
+    if (!/^[a-zA-Z]$/g.test(letter))
+      throw new Error(`Invalid drive letter "${letter}"`);
   }
 
   async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
-    const suppliers = this.getSuppliersFor<ReadDirectorySupplier>("readDir");
-    const result: DirectoryReadReturn = {
-      files: [],
-      dirs: [],
-    };
+    this.validatePath(path);
+    const drive = this.getDriveByLetter(path[0]);
 
-    for (const supplier of suppliers) {
-      const directory = await supplier(path);
-
-      if (!directory) continue;
-
-      result.dirs = [...result.dirs, ...directory.dirs];
-      result.files = [...result.files, ...directory.files];
-    }
-
-    return result;
+    return await drive.readDir(this.removeDriveLetter(path));
   }
 
   async createDirectory(path: string): Promise<boolean> {
+    this.validatePath(path);
+    const drive = this.getDriveByLetter(path[0]);
+    path = this.removeDriveLetter(path);
+
     const parent = getParentDirectory(path);
-    const result = await this.getSupplierFor<CreateDirectorySupplier>(
-      "createDirectory"
-    )(path);
+    const result = await drive.createDirectory(path);
 
     this.dispatch.dispatch("fs-flush-folder", parent);
 
@@ -121,23 +101,21 @@ export class Filesystem extends KernelModule {
   }
 
   async readFile(path: string): Promise<ArrayBuffer | undefined> {
-    const suppliers = this.getSuppliersFor<ReadFileSupplier>("readFile");
+    this.validatePath(path);
+    const drive = this.getDriveByLetter(path[0]);
+    path = this.removeDriveLetter(path);
 
-    for (const supplier of suppliers) {
-      const content = await supplier(path);
-
-      if (content) return content;
-    }
-
-    return undefined;
+    return await drive.readFile(path);
   }
 
   async writeFile(path: string, data: Blob): Promise<boolean> {
+    this.validatePath(path);
+    const drive = this.getDriveByLetter(path[0]);
+
+    path = this.removeDriveLetter(path);
+
     const parent = getParentDirectory(path);
-    const result = await this.getSupplierFor<WriteFileSupplier>("writeFile")(
-      path,
-      data
-    );
+    const result = await drive.writeFile(path, data);
 
     this.dispatch.dispatch("fs-flush-file", path);
     this.dispatch.dispatch("fs-flush-folder", parent);
@@ -146,15 +124,28 @@ export class Filesystem extends KernelModule {
   }
 
   async tree(path: string): Promise<RecursiveDirectoryReadReturn | undefined> {
-    return await this.getSupplierFor<TreeSupplier>("tree")(path);
+    this.validatePath(path);
+
+    const drive = this.getDriveByLetter(path[0]);
+
+    path = this.removeDriveLetter(path);
+
+    return await drive.tree(path);
   }
 
   async copyItem(source: string, destination: string): Promise<boolean> {
+    this.validatePath(source);
+    this.validatePath(destination);
+
+    if (source[0] !== destination[0])
+      throw new Error("Copy operation across drives is not supported.");
+    const drive = this.getDriveByLetter(source[0]);
+
+    source = this.removeDriveLetter(source);
+    destination = this.removeDriveLetter(destination);
+
+    const result = await drive.copyItem(source, destination);
     const destinationParent = getParentDirectory(destination);
-    const result = await this.getSupplierFor<CopyItemSupplier>("copyItem")(
-      source,
-      destination
-    );
 
     this.dispatch.dispatch("fs-flush-folder", destinationParent);
 
@@ -162,13 +153,20 @@ export class Filesystem extends KernelModule {
   }
 
   async moveItem(source: string, destination: string): Promise<boolean> {
+    this.validatePath(source);
+    this.validatePath(destination);
+
+    if (source[0] !== destination[0])
+      throw new Error("Move operation across drives is not supported.");
+
+    const drive = this.getDriveByLetter(source[0]);
+
+    source = this.removeDriveLetter(source);
+    destination = this.removeDriveLetter(destination);
+
+    const result = await drive.moveItem(source, destination);
     const sourceParent = getParentDirectory(source);
     const destinationParent = getParentDirectory(destination);
-
-    const result = await this.getSupplierFor<MoveItemSupplier>("moveItem")(
-      source,
-      destination
-    );
 
     this.dispatch.dispatch("fs-flush-folder", destinationParent);
     this.dispatch.dispatch("fs-flush-folder", sourceParent);
@@ -177,10 +175,14 @@ export class Filesystem extends KernelModule {
   }
 
   async deleteItem(path: string): Promise<boolean> {
+    this.validatePath(path);
+
+    const drive = this.getDriveByLetter(path[0]);
+
+    path = this.removeDriveLetter(path);
+
     const parent = getParentDirectory(path);
-    const result = await this.getSupplierFor<DeleteItemSupplier>("deleteItem")(
-      path
-    );
+    const result = await drive.deleteItem(path);
 
     this.dispatch.dispatch("fs-flush-folder", parent);
 
