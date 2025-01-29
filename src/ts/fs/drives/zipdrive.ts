@@ -2,7 +2,12 @@ import type { WaveKernel } from "$ts/kernel";
 import JSZip from "jszip";
 import { Filesystem } from "..";
 import { FilesystemDrive } from "../supplier";
-import type { DirectoryReadReturn, FileEntry, FolderEntry } from "$types/fs";
+import type {
+  DirectoryReadReturn,
+  FileEntry,
+  FolderEntry,
+  RecursiveDirectoryReadReturn,
+} from "$types/fs";
 
 export class ZIPDrive extends FilesystemDrive {
   override label = "";
@@ -61,4 +66,20 @@ export class ZIPDrive extends FilesystemDrive {
 
     return { dirs, files };
   }
+
+  // TODO: implement all of these missing doodads
+
+  readFile(path: string): Promise<ArrayBuffer | undefined> {}
+
+  writeFile(path: string, data: Blob): Promise<boolean> {}
+
+  createDirectory(path: string): Promise<boolean> {}
+
+  deleteItem(path: string): Promise<boolean> {}
+
+  tree(path: string): Promise<RecursiveDirectoryReadReturn | undefined> {}
+
+  copyItem(source: string, destination: string): Promise<boolean> {}
+
+  moveItem(source: string, destination: string): Promise<boolean> {}
 }
