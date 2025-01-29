@@ -24,6 +24,7 @@ import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes } from "./store";
 import { RoturExtension } from "$ts/rotur";
 import { ZIPDrive } from "$ts/fs/drives/zipdrive";
+import type { BatteryType } from "$types/battery";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -33,6 +34,7 @@ export class UserDaemon extends Process {
   public notifications = new Map<string, Notification>([]);
   public userInfo: UserInfo = DefaultUserInfo;
   public rotur: RoturExtension | undefined;
+  public battery = Store<BatteryType | undefined>();
 
   private preferencesUnsubscribe: Unsubscriber | undefined;
   private fs: Filesystem;
@@ -596,5 +598,21 @@ export class UserDaemon extends Process {
     const mount = this.fs.mountDrive(btoa(path), "A", ZIPDrive, path);
 
     return mount;
+  }
+
+  async batteryInfo(): Promise<BatteryType | undefined> {
+    const navigator = window.navigator as any;
+
+    if (!navigator.getBattery) return undefined;
+
+    const info = (await navigator.getBattery()) as BatteryType;
+
+    return info;
+  }
+
+  startBatteryRefresh() {
+    setInterval(async () => {
+      this.battery.set(await this.batteryInfo());
+    }, 10000);
   }
 }

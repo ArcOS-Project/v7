@@ -60,6 +60,7 @@ div.shell div.taskbar button.action-center-button span {
   font-size: 16px;
 }
 
+div.shell div.taskbar div.battery,
 div.shell div.taskbar div.system-area {
   background-color: var(--button-glass-bg);
   height: 40px;
@@ -67,6 +68,17 @@ div.shell div.taskbar div.system-area {
   align-items: center;
   padding: 0 15px;
   border-radius: 8px;
+}
+
+div.shell div.taskbar div.battery {
+  /* width: 40px; */
+  padding: 0 10px;
+  justify-content: center;
+  gap: 5px;
+}
+
+div.shell div.taskbar div.battery span.lucide {
+  font-size: 16px;
 }
 
 div.shell div.taskbar > *:not(.opened-apps) {
