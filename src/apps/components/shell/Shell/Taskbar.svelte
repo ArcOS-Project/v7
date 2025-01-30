@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import type { ShellRuntime } from "../runtime";
   import ActionCenterButton from "./Taskbar/ActionCenterButton.svelte";
   import OpenedApps from "./Taskbar/OpenedApps.svelte";
@@ -16,18 +15,6 @@
   class="taskbar shell-colored"
   class:colored={$userPreferences.shell.taskbar.colored}
   class:docked={$userPreferences.shell.taskbar.docked}
-  use:contextMenu={{
-    process,
-    options: async () => [
-      {
-        caption: "Settings",
-        action: () => {
-          process.spawnApp("systemSettings", undefined, "shell");
-        },
-        icon: "settings-2",
-      },
-    ],
-  }}
 >
   <StartButton {process} />
   <PinnedApps {process} />

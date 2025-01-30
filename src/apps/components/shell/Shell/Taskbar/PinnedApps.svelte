@@ -14,8 +14,10 @@
   // TODO: pinned apps UI instead of manual injection
 </script>
 
-<div class="pinned-apps">
-  {#each pins as appId}
-    <PinnedApp {appId} {process} />
-  {/each}
-</div>
+{#if pins.length}
+  <div class="pinned-apps">
+    {#each pins as appId}
+      <PinnedApp {appId} {process} />
+    {/each}
+  </div>
+{/if}

@@ -1,14 +1,15 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
-  import type { App } from "$types/app";
+  import type { App, ThirdPartyApp } from "$types/app";
 
-  const { app, process }: { app: App; process: ShellRuntime } = $props();
+  const { app, process }: { app: App | ThirdPartyApp; process: ShellRuntime } =
+    $props();
 
   let disabled = $state(false);
 
   async function launch() {
     disabled = true;
-    await process.handler.renderer?.spawnApp(app.id, process.pid);
+    await process.spawnApp(app.id, process.pid);
     disabled = false;
     process.startMenuOpened.set(false);
   }

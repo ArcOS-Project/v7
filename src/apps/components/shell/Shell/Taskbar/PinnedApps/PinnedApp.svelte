@@ -1,19 +1,21 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
-  import type { App } from "$types/app";
+  import type { App, ThirdPartyApp } from "$types/app";
 
   const { appId, process }: { appId: string; process: ShellRuntime } = $props();
 
-  let app: App | undefined = $state();
+  let app: App | ThirdPartyApp | undefined = $state();
 
   $effect(() => {
-    const renderer = process.handler.renderer;
-
-    app = renderer?.getAppById(appId);
+    getApp();
   });
 
+  async function getApp() {
+    app = await process?.userDaemon?.appStore?.getAppById(appId);
+  }
+
   function spawn() {
-    process.handler.renderer?.spawnApp(appId);
+    process.spawnApp(appId);
   }
 
   // TODO: context menu to unpin
