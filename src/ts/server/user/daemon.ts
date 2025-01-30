@@ -2,13 +2,16 @@ import { darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 import { Filesystem } from "$ts/fs";
 import { arrayToBlob } from "$ts/fs/convert";
 import { ServerDrive } from "$ts/fs/drives/server";
+import { ZIPDrive } from "$ts/fs/drives/zipdrive";
 import { join } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
+import { RoturExtension } from "$ts/rotur";
 import { Wallpapers } from "$ts/wallpaper/store";
 import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
+import type { BatteryType } from "$types/navigator";
 import type { Notification } from "$types/notification";
 import { UserThemeKeys, type UserTheme } from "$types/theme";
 import type {
@@ -22,9 +25,6 @@ import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes } from "./store";
-import { RoturExtension } from "$ts/rotur";
-import { ZIPDrive } from "$ts/fs/drives/zipdrive";
-import type { BatteryType } from "$types/battery";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -35,6 +35,7 @@ export class UserDaemon extends Process {
   public userInfo: UserInfo = DefaultUserInfo;
   public rotur: RoturExtension | undefined;
   public battery = Store<BatteryType | undefined>();
+  public networkSpeed = Store<number>(-1);
 
   private preferencesUnsubscribe: Unsubscriber | undefined;
   private fs: Filesystem;
@@ -70,6 +71,8 @@ export class UserDaemon extends Process {
 
       return;
     }
+
+    this.Log("Getting user information");
 
     try {
       const response = await Axios.get(`/user/self`, {
@@ -461,7 +464,7 @@ export class UserDaemon extends Process {
   }
 
   public async getWallpaper(id: string, override?: string): Promise<Wallpaper> {
-    if (!id) return Wallpapers[override || "img04"];
+    if (!id) return Wallpapers[override || "img0"];
 
     if (id.startsWith("http"))
       return {
@@ -475,7 +478,7 @@ export class UserDaemon extends Process {
       if (id.startsWith(prefix)) return await getter(id);
     }
 
-    return Wallpapers[override || "img04"];
+    return Wallpapers[override || "img0"];
   }
 
   async deleteLocalWallpaper(id: string): Promise<boolean> {
@@ -601,6 +604,8 @@ export class UserDaemon extends Process {
   }
 
   async batteryInfo(): Promise<BatteryType | undefined> {
+    if (this._disposed) return;
+
     const navigator = window.navigator as any;
 
     if (!navigator.getBattery) return undefined;
@@ -610,9 +615,46 @@ export class UserDaemon extends Process {
     return info;
   }
 
-  startBatteryRefresh() {
+  async testNetworkSpeed() {
+    if (this._disposed) return -1;
+
+    this.Log("Testing network speed");
+
+    const fileSizeInBytes = 10 * 1024 * 1024;
+    const startTime = performance.now();
+
+    try {
+      await Axios.get("/10mb");
+    } catch (error) {
+      this.Log(
+        `Failed to test network speed, is the server up to date?`,
+        LogLevel.error
+      );
+      return -1;
+    }
+
+    const endTime = performance.now();
+    const durationInSeconds = (endTime - startTime) / 1000;
+
+    const speedMbps = (fileSizeInBytes * 8) / (durationInSeconds * 1_000_000);
+
+    this.Log(`Network speed equated: ${speedMbps}`);
+
+    return speedMbps;
+  }
+
+  async startSystemStatusRefresh() {
+    this.Log("Starting system status refresh");
+
     setInterval(async () => {
       this.battery.set(await this.batteryInfo());
-    }, 10000);
+    }, 1000); // Every second
+
+    setInterval(async () => {
+      this.networkSpeed.set(await this.testNetworkSpeed());
+    }, 60 * 1000); // Every minute
+
+    this.battery.set(await this.batteryInfo());
+    this.networkSpeed.set(await this.testNetworkSpeed());
   }
 }

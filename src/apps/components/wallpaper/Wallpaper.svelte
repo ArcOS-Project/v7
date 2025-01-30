@@ -9,7 +9,7 @@
   const { userPreferences } = process;
 
   let wallpaper = $state<Wallpaper>();
-  let lastWallpaper = $state("img04");
+  let lastWallpaper = $state("img0");
 
   $effect(() => {
     const unsubscribe = userPreferences?.subscribe(async (v) => {
@@ -32,6 +32,6 @@
 <div class="desktop-wallpaper">
   <div
     class="wallpaper show"
-    style="--src: url('{wallpaper ? wallpaper.url : Wallpapers.img04.url}');"
+    style="--src: url('{wallpaper ? wallpaper.url : Wallpapers.img0.url}');"
   ></div>
 </div>

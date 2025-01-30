@@ -5,6 +5,7 @@
   import OpenedApps from "./Taskbar/OpenedApps.svelte";
   import PinnedApps from "./Taskbar/PinnedApps.svelte";
   import StartButton from "./Taskbar/StartButton.svelte";
+  import StatusTray from "./Taskbar/StatusTray.svelte";
   import SystemArea from "./Taskbar/SystemArea.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
@@ -31,6 +32,7 @@
   <StartButton {process} />
   <PinnedApps {process} />
   <OpenedApps {process} />
+  <StatusTray {process} />
   <SystemArea {process} />
   <ActionCenterButton {process} />
 </div>

@@ -79,6 +79,7 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async startDaemon(token: string, username: string) {
+    this.Log("Starting user daemon");
     this.hideLockscreen.set(true);
     const userDaemon = await this.handler.spawn<UserDaemon>(
       UserDaemon,
@@ -107,7 +108,6 @@ export class LoginAppRuntime extends AppProcess {
 
     await userDaemon.startPreferencesSync();
     await userDaemon.startFilesystemSupplier();
-    userDaemon.startBatteryRefresh();
 
     this.profileImage.set(
       getProfilePicture(userDaemon.preferences().account.profilePicture)
@@ -120,6 +120,7 @@ export class LoginAppRuntime extends AppProcess {
       ).url
     );
 
+    await userDaemon.startSystemStatusRefresh();
     await userDaemon.startRotur();
 
     await Sleep(2000);
