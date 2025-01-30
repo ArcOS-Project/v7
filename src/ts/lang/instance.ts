@@ -17,7 +17,7 @@ import { ArcOSVersion } from "$ts/env";
 import { Filesystem } from "$ts/fs";
 import { join } from "$ts/fs/util";
 import { getJsonHierarchy, setJsonHierarchy } from "$ts/hierarchy";
-import { keysToLowerCase } from "$ts/json";
+import { keysToLowerCase, tryJsonParse } from "$ts/json";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import type { ProcessHandler } from "$ts/process/handler";
@@ -230,14 +230,14 @@ export class LanguageInstance extends Process {
         setJsonHierarchy(
           variable,
           split.join("."),
-          this.tokens.slice(2, this.tokens.length).join(" ")
+          tryJsonParse(this.tokens.slice(2, this.tokens.length).join(" "))
         );
 
         this.variables.set(name, variable);
       } else {
         this.variables.set(
           this.tokens[0].replace("@", ""),
-          this.tokens.slice(2, this.tokens.length).join(" ")
+          tryJsonParse(this.tokens.slice(2, this.tokens.length).join(" "))
         );
       }
     } else if (
@@ -249,7 +249,7 @@ export class LanguageInstance extends Process {
       this.variables.set(
         variable,
         this.variables.get(variable) +
-          this.tokens.slice(2, this.tokens.length).join(" ")
+          tryJsonParse(this.tokens.slice(2, this.tokens.length).join(" "))
       );
     } else {
       const targetKeyword = (this.tokens.shift() || "").toLowerCase();

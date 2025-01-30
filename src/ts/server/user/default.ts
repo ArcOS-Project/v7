@@ -18,7 +18,6 @@ export const DefaultUserPreferences: UserPreferences = {
       clock12hr: false,
       clockDate: false,
       clockSecs: false,
-      pinnedApps: [],
     },
     actionCenter: {
       weatherLocation: {
@@ -71,6 +70,7 @@ export const DefaultUserPreferences: UserPreferences = {
   userThemes: {},
   userWallpapers: {},
   userApps: {},
+  pinnedApps: [],
 };
 
 export const DefaultUserInfo: UserInfo = {

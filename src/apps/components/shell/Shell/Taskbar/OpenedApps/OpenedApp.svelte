@@ -18,20 +18,13 @@
     {
       caption: "Pin app",
       action: () => {
-        if (
-          $userPreferences.shell.taskbar.pinnedApps.includes(
-            openedProcess.app.id
-          )
-        ) {
+        if ($userPreferences.pinnedApps.includes(openedProcess.app.id)) {
           process.unpinApp(openedProcess.app.id);
         } else {
           process.pinApp(openedProcess.app.id);
         }
       },
-      checked: () =>
-        $userPreferences.shell.taskbar.pinnedApps.includes(
-          openedProcess.app.id
-        ),
+      checked: () => $userPreferences.pinnedApps.includes(openedProcess.app.id),
       icon: "pin",
       separator: true,
     },

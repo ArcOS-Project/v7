@@ -27,6 +27,7 @@ export interface UserPreferences {
   userApps: Record<string, ThirdPartyApp>;
   currentThemeId?: string;
   searchOptions: ArcFindOptions;
+  pinnedApps: string[];
 }
 
 export interface ArcFindOptions {
@@ -68,7 +69,6 @@ export interface TaskbarPreferences {
   clockSecs: boolean;
   clockDate: boolean;
   clock12hr: boolean;
-  pinnedApps: string[];
 }
 
 export interface DesktopPreferences {

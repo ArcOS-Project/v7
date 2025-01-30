@@ -81,7 +81,7 @@ export class ProcessHandler extends KernelModule {
 
     const proc = this.getProcess(pid);
 
-    if (!proc) return "err_noExist";
+    if (!proc || proc._disposed) return "err_noExist";
     if (proc._criticalProcess && !force) return "err_criticalProcess";
 
     if (proc instanceof AppProcess && proc.closeWindow && !force) {
@@ -96,7 +96,7 @@ export class ProcessHandler extends KernelModule {
 
     proc._disposed = true;
 
-    store.set(pid, proc);
+    store.delete(pid);
     this.store.set(store);
 
     if (this.renderer) this.renderer.remove(pid);

@@ -136,9 +136,9 @@ export class ShellRuntime extends AppProcess {
 
   pinApp(appId: string) {
     this.userPreferences.update((v) => {
-      if (v.shell.taskbar.pinnedApps.includes(appId)) return v;
+      if (v.pinnedApps.includes(appId)) return v;
 
-      v.shell.taskbar.pinnedApps.push(appId);
+      v.pinnedApps.push(appId);
 
       return v;
     });
@@ -146,11 +146,9 @@ export class ShellRuntime extends AppProcess {
 
   unpinApp(appId: string) {
     this.userPreferences.update((v) => {
-      if (!v.shell.taskbar.pinnedApps.includes) return v;
+      if (!v.pinnedApps.includes) return v;
 
-      v.shell.taskbar.pinnedApps.splice(
-        v.shell.taskbar.pinnedApps.indexOf(appId)
-      );
+      v.pinnedApps.splice(v.pinnedApps.indexOf(appId));
 
       return v;
     });

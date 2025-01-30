@@ -8,7 +8,7 @@
   let pins = $state<string[]>([]);
 
   userPreferences.subscribe((v) => {
-    pins = v.shell.taskbar.pinnedApps || [];
+    pins = v.pinnedApps || [];
   });
 
   // TODO: pinned apps UI instead of manual injection

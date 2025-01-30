@@ -21,7 +21,8 @@ export const create: Keyword = async (lang) => {
     {
       data: metadata,
       id: metadata.id,
-    }
+    },
+    lang
   );
 
   if (!result) {
