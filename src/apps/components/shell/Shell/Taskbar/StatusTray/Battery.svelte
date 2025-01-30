@@ -1,9 +1,15 @@
 <script lang="ts">
   import type { ReadableStore } from "$ts/writable";
   import type { BatteryType } from "$types/navigator";
+  import type { UserPreferencesStore } from "$types/user";
 
-  const { battery }: { battery: ReadableStore<BatteryType | undefined> } =
-    $props();
+  const {
+    battery,
+    userPreferences,
+  }: {
+    battery: ReadableStore<BatteryType | undefined>;
+    userPreferences: UserPreferencesStore;
+  } = $props();
 </script>
 
 <div class="battery">
@@ -20,7 +26,9 @@
     {:else}
       <span class="lucide icon-battery-full" title="Full battery"></span>
     {/if}
-    {$battery.level * 100}%
+    {#if $userPreferences.shell.taskbar.batteryPercentage}
+      {Math.floor($battery.level * 100)}%
+    {/if}
   {:else}
     <span class="lucide icon-battery-warning"></span>
   {/if}

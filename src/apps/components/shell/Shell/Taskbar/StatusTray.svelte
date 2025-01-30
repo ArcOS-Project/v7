@@ -9,5 +9,5 @@
 
 <div class="status-tray">
   <Network {networkSpeed} />
-  <Battery {battery} />
+  <Battery {battery} userPreferences={process.userPreferences} />
 </div>

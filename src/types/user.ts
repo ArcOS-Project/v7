@@ -69,6 +69,7 @@ export interface TaskbarPreferences {
   clockSecs: boolean;
   clockDate: boolean;
   clock12hr: boolean;
+  batteryPercentage: boolean;
 }
 
 export interface DesktopPreferences {

@@ -6,6 +6,7 @@
 
   const { process }: { process: SettingsRuntime } = $props();
   const { userPreferences } = process;
+  const { battery } = process.userDaemon!;
 </script>
 
 <div class="centered-layout">
@@ -28,6 +29,14 @@
         type="checkbox"
         class="switch"
         bind:checked={$userPreferences.shell.taskbar.labels}
+      />
+    </Option>
+    <Option caption="Show battery percentage">
+      <input
+        type="checkbox"
+        class="switch"
+        bind:checked={$userPreferences.shell.taskbar.batteryPercentage}
+        disabled={!$battery}
       />
     </Option>
     <Option caption="Show clock...">
