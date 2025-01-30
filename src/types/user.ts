@@ -1,4 +1,5 @@
 import type { ReadableStore } from "$ts/writable";
+import type { ThirdPartyApp } from "./app";
 import type { ThemeStore } from "./theme";
 import type { Wallpaper } from "./wallpaper";
 
@@ -23,6 +24,7 @@ export interface UserPreferences {
   desktop: DesktopPreferences;
   userThemes: ThemeStore;
   userWallpapers: Record<string, Wallpaper>;
+  userApps: Record<string, ThirdPartyApp>;
   currentThemeId?: string;
   searchOptions: ArcFindOptions;
 }

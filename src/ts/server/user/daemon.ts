@@ -1,6 +1,6 @@
 import { darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 import { Filesystem } from "$ts/fs";
-import { arrayToBlob } from "$ts/fs/convert";
+import { arrayToBlob, arrayToText } from "$ts/fs/convert";
 import { ServerDrive } from "$ts/fs/drives/server";
 import { ZIPDrive } from "$ts/fs/drives/zipdrive";
 import { join } from "$ts/fs/util";
@@ -25,6 +25,10 @@ import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes } from "./store";
+import { ApplicationStorage } from "$ts/apps/storage";
+import { BuiltinApps } from "$ts/apps/store";
+import type { AppStorage, AppStoreCb, ThirdPartyApp } from "$types/app";
+import type { ArcLang } from "$ts/lang";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -36,6 +40,7 @@ export class UserDaemon extends Process {
   public rotur: RoturExtension | undefined;
   public battery = Store<BatteryType | undefined>();
   public networkSpeed = Store<number>(-1);
+  public appStore: ApplicationStorage | undefined;
 
   private preferencesUnsubscribe: Unsubscriber | undefined;
   private fs: Filesystem;
@@ -58,6 +63,13 @@ export class UserDaemon extends Process {
     this.username = username;
     this.fs = this.kernel.getModule<Filesystem>("fs");
     this.env.set("userdaemon_pid", this.pid);
+  }
+
+  async start() {
+    this.appStore = await this.handler.spawn(ApplicationStorage, this.pid);
+
+    this.appStore?.loadOrigin("builtin", () => BuiltinApps);
+    this.appStore?.loadOrigin("userApps", () => this.getUserApps());
   }
 
   async getUserInfo(): Promise<UserInfo | undefined> {
@@ -656,5 +668,67 @@ export class UserDaemon extends Process {
 
     this.battery.set(await this.batteryInfo());
     this.networkSpeed.set(await this.testNetworkSpeed());
+  }
+
+  async getUserApps(): Promise<AppStorage> {
+    if (!this.preferences()) return [];
+
+    const apps = this.preferences().userApps;
+
+    return Object.values(apps) as unknown as AppStorage;
+  }
+
+  async spawnApp<T>(
+    id: string,
+    parentPid?: number,
+    ...args: any[]
+  ): Promise<T | undefined> {
+    const app = await this.appStore?.getAppById(id);
+
+    if (!app) return undefined;
+
+    if (app.thirdParty) {
+      await this.spawnThirdParty(app as unknown as ThirdPartyApp);
+
+      return;
+    }
+
+    return await this.handler.spawn<T>(
+      app.assets.runtime,
+      parentPid || this.pid,
+      {
+        data: app,
+        id: app.id,
+      },
+      ...args
+    );
+  }
+
+  async spawnThirdParty(app: ThirdPartyApp) {
+    const lang = this.kernel.getModule<ArcLang>("lang");
+    const fs = this.kernel.getModule<Filesystem>("fs");
+    const userDaemonPid = this.env.get("userdaemon_pid");
+
+    if (!userDaemonPid) return;
+
+    try {
+      const contents = arrayToText((await fs.readFile(app.entrypoint))!);
+
+      lang.run(contents, +userDaemonPid, {
+        allowUnsafe: app.unsafeCode, // Unsafe code execution
+        workingDir: app.workingDirectory, // Working directory (cwd)
+        continuous: true, // Continuous code execution to keep the mainloop going
+      });
+    } catch (e) {
+      this.Log(`Execution error in third-party application "${app.id}": ${e}`);
+    }
+  }
+
+  async spawnAutoloadApps() {
+    const store = (await this.appStore?.get()) || [];
+
+    for (const app of store) {
+      if (app.autoRun) this.spawnApp(app.id, this.pid);
+    }
   }
 }

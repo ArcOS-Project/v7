@@ -3,6 +3,7 @@ import type { AppProcess } from "../ts/apps/process";
 import type { WaveKernel } from "../ts/kernel";
 import type { ProcessHandler } from "../ts/process/handler";
 import type { ReadableStore } from "../ts/writable";
+import type { MaybePromise } from "./common";
 
 export interface App {
   metadata: AppMetadata;
@@ -30,6 +31,11 @@ export interface ThirdPartyApp {
   unsafeCode?: boolean;
   fileSignatures?: Record<string, string>; // [base64(path), SHA]
   id: string;
+  autoRun?: boolean;
+  core?: boolean;
+  hidden?: boolean;
+  overlay?: boolean;
+  glass?: boolean;
 }
 
 export type ScriptedApp = Omit<App, "assets">;
@@ -75,3 +81,6 @@ export type Position = { x: number; y: number };
 export type MaybeCenteredPosition = Partial<Position> & { centered?: boolean };
 
 export type AppProcessData = { data: App; id: string };
+
+export type AppStorage = ((App | ThirdPartyApp) & { originId?: string })[];
+export type AppStoreCb = () => MaybePromise<AppStorage>;

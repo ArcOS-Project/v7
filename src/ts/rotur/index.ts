@@ -247,10 +247,14 @@ export class RoturExtension extends Process {
   }
 
   clientObjectPacket(packet: RoturPacket) {
+    this.Log(`client_obj ${packet}`);
+
     this.client.username = packet.val.username;
   }
 
   ulistPacket(packet: RoturPacket) {
+    this.Log(`ulist ${packet}`);
+
     switch (packet.mode) {
       case "add":
         this.client.users?.push(packet.val.username);
@@ -279,6 +283,7 @@ export class RoturExtension extends Process {
 
   // TODO: full refactor of this function
   pmesgPacket(packet: RoturPacket) {
+    this.Log(`pmesg ${packet}`);
     this.packetQueue.push(packet);
 
     packet.origin = packet.origin.username;
@@ -334,6 +339,8 @@ export class RoturExtension extends Process {
   }
 
   handshakeCfgPacket(packet: RoturPacket) {
+    this.Log(`handshake_cfg ${packet}`);
+
     let username = this.designation + "-" + this.username;
     let msg = {
       cmd: "setid",
@@ -345,6 +352,8 @@ export class RoturExtension extends Process {
   }
 
   setUsernameCfgPacket(packet: RoturPacket) {
+    this.Log(`set_username_cfg ${packet}`);
+
     this.client.username = this.designation + "-" + this.username;
 
     let room = "roturTW";
@@ -358,6 +367,8 @@ export class RoturExtension extends Process {
   }
 
   linkCfgPacket(packet: RoturPacket) {
+    this.Log(`link_cfg ${packet}`);
+
     this.client.room = packet.val;
     this.is_connected = true;
     this.Log("Connected!");
@@ -2177,6 +2188,8 @@ export class RoturExtension extends Process {
   }
 
   async loginFromToken(token: string) {
+    this.Log(`loginFromToken: ${token.length} bytes`);
+
     if (!this.is_connected) {
       this.Log(
         `Authentication impossible: not connected. Is Rotur down?`,

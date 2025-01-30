@@ -240,8 +240,17 @@ export class AppProcess extends Process {
     element: HTMLElement,
     optionsCallback: () => Promise<ContextMenuItem[]>
   ) {
+    const taskbarAllocation = this.userPreferences().shell.taskbar.docked
+      ? 40
+      : 50;
+
     element.addEventListener("contextmenu", async (e: MouseEvent) => {
-      this.context.showMenu(e.clientX, e.clientY, await optionsCallback());
+      this.context.showMenu(
+        e.clientX,
+        e.clientY,
+        await optionsCallback(),
+        taskbarAllocation
+      );
     });
   }
 
@@ -249,20 +258,25 @@ export class AppProcess extends Process {
     element: HTMLElement,
     optionsCallback: () => Promise<ContextMenuItem[]>
   ) {
+    const taskbarAllocation = this.userPreferences().shell.taskbar.docked
+      ? 40
+      : 50;
+
     element.addEventListener("click", async (e: MouseEvent) => {
       const {
         x,
         y: clientY,
         height,
       } = (e.target as HTMLElement).getBoundingClientRect();
+
       const y = clientY + height + 2;
 
-      this.context.showMenu(x, y, await optionsCallback());
+      this.context.showMenu(x, y, await optionsCallback(), taskbarAllocation);
     });
   }
 
   async spawnApp(id: string, parentPid?: number | undefined, ...args: any[]) {
-    return await this.handler.renderer?.spawnApp(
+    return await this.userDaemon?.spawnApp(
       id,
       parentPid ?? this.parentPid,
       ...args

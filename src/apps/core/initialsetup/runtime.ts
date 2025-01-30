@@ -318,13 +318,9 @@ export class InitialSetupRuntime extends AppProcess {
   }
 
   async roturAuthGui() {
-    this.handler.renderer?.loadApp(RoturAuthGuiApp);
+    this.userDaemon?.appStore?.loadApp(RoturAuthGuiApp);
 
-    await this.handler.renderer?.spawnApp(
-      "RoturAuthGui",
-      this.pid,
-      this.userDaemon
-    );
+    await this.userDaemon?.spawnApp("RoturAuthGui", this.pid, this.userDaemon);
 
     this.globalDispatch.subscribe("ragui-loggedin", () => {
       this.pageNumber.set(this.pageNumber() + 1);

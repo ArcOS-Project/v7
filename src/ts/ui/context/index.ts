@@ -34,7 +34,12 @@ export class ContextMenuLogic extends KernelModule {
     main.append(this.menu);
   }
 
-  showMenu(x: number, y: number, options: ContextMenuItem[]) {
+  async showMenu(
+    x: number,
+    y: number,
+    options: ContextMenuItem[],
+    taskbarAllocation = 0
+  ) {
     this.locked = true;
 
     this.menu?.classList.add("hidden");
@@ -48,7 +53,9 @@ export class ContextMenuLogic extends KernelModule {
       const button = document.createElement("button");
       const caption = document.createElement("span");
       const iconWrapper = document.createElement("span");
+      const checked = document.createElement("span");
 
+      checked.className = "lucide icon-check checked";
       iconWrapper.className = "icon-wrapper";
 
       if (option.image) {
@@ -68,12 +75,14 @@ export class ContextMenuLogic extends KernelModule {
 
       button.className = option.className || "";
 
-      if (option.disabled) button.disabled = true;
+      if (option.disabled) button.disabled = !!(await option.disabled());
+      if (option.checked)
+        button.classList.toggle("checked", !!(await option.checked()));
       if (option.default) button.classList.add("default");
 
       caption.innerText = option.caption;
 
-      button.append(iconWrapper, caption);
+      button.append(iconWrapper, caption, checked);
 
       button.addEventListener("click", () => {
         this.hideMenu();
@@ -88,7 +97,11 @@ export class ContextMenuLogic extends KernelModule {
     this.menu?.classList.remove("hidden");
 
     setTimeout(() => {
-      const { x: newX, y: newY } = this.correctMenuPosition(x, y);
+      const { x: newX, y: newY } = this.correctMenuPosition(
+        x,
+        y,
+        taskbarAllocation
+      );
 
       x = newX;
       y = newY;
@@ -99,10 +112,12 @@ export class ContextMenuLogic extends KernelModule {
     }, 2);
   }
 
-  correctMenuPosition(x: number, y: number) {
+  correctMenuPosition(x: number, y: number, taskbarAllocation = 0) {
     const { offsetWidth: width, offsetHeight: height } = this.menu!;
-    const { width: screenWidth, height: screenHeight } =
+    let { width: screenWidth, height: screenHeight } =
       document.body.getBoundingClientRect();
+
+    screenHeight -= taskbarAllocation;
 
     if (x + width >= screenWidth) {
       x = screenWidth - width - 10;

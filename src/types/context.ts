@@ -1,9 +1,10 @@
 export interface ContextMenuItem {
   className?: string;
-  disabled?: boolean;
   default?: boolean;
   caption: string;
   action: (option: ContextMenuItem) => void;
+  checked?: () => boolean;
+  disabled?: () => boolean;
   separator?: boolean;
   icon?: string;
   image?: string;

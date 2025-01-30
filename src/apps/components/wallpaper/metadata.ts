@@ -20,6 +20,7 @@ export const WallpaperApp: App = {
     maximized: false,
     fullscreen: false,
     resizable: false,
+    headless: true,
   },
   controls: {
     minimize: false,

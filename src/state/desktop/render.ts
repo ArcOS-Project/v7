@@ -1,12 +1,6 @@
 import { StateError } from "$ts/state/error";
-import type { StateProps, StateRendererAccessors } from "../../types/state";
+import type { StateProps } from "../../types/state";
 
-export default async function render(
-  props: StateProps,
-  { stack }: StateRendererAccessors
-) {
+export default async function render(props: StateProps) {
   if (!props.userDaemon) throw new StateError(`Invalid desktop invocation`);
-
-  const { renderer } = stack;
-  await renderer?.loadBuiltinApps();
 }

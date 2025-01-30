@@ -133,4 +133,26 @@ export class ShellRuntime extends AppProcess {
 
     this.handler.renderer?.focusPid(targetProcess.pid);
   }
+
+  pinApp(appId: string) {
+    this.userPreferences.update((v) => {
+      if (v.shell.taskbar.pinnedApps.includes(appId)) return v;
+
+      v.shell.taskbar.pinnedApps.push(appId);
+
+      return v;
+    });
+  }
+
+  unpinApp(appId: string) {
+    this.userPreferences.update((v) => {
+      if (!v.shell.taskbar.pinnedApps.includes) return v;
+
+      v.shell.taskbar.pinnedApps.splice(
+        v.shell.taskbar.pinnedApps.indexOf(appId)
+      );
+
+      return v;
+    });
+  }
 }

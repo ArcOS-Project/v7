@@ -21,9 +21,6 @@ export class LoginAppRuntime extends AppProcess {
   public hideProfileImage = Store<boolean>(false);
   private type = "";
 
-  // TODO:  fetch profile picture using same method as UserDaemon.getWallpaper
-  //        to allow profile pictures to originate from the filesystem
-
   constructor(
     handler: ProcessHandler,
     pid: number,
@@ -129,6 +126,8 @@ export class LoginAppRuntime extends AppProcess {
     this.soundBus.playSound("arcos.system.logon");
 
     userDaemon.setAppRendererClasses(userDaemon.preferences());
+    await userDaemon.appStore?.refresh();
+    await userDaemon.spawnAutoloadApps();
   }
 
   revealListener() {

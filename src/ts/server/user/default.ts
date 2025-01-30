@@ -70,6 +70,7 @@ export const DefaultUserPreferences: UserPreferences = {
   isDefault: true,
   userThemes: {},
   userWallpapers: {},
+  userApps: {},
 };
 
 export const DefaultUserInfo: UserInfo = {

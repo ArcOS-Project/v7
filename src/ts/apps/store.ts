@@ -4,9 +4,9 @@ import { WallpaperApp } from "$apps/components/wallpaper/metadata";
 import { SystemSettings } from "$apps/user/settings/metadata";
 import { TestApp } from "$apps/user/test/metadata";
 import type { AppKeyCombinations } from "$types/accelerator";
-import type { App } from "$types/app";
+import type { App, AppStorage } from "$types/app";
 
-export const BuiltinApps: App[] = [
+export const BuiltinApps: AppStorage = [
   WallpaperApp,
   ArcShellApp,
   SystemSettings,
