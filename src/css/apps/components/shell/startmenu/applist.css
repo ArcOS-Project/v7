@@ -16,6 +16,10 @@ div.shell div.startmenu div.top div.app-list button {
   background-color: transparent;
 }
 
+div.shell div.startmenu div.top div.app-list button img {
+  height: 24px;
+}
+
 div.shell div.startmenu div.top div.app-list button:hover {
   background-color: var(--button-glass-bg);
 }

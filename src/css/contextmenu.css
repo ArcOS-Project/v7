@@ -2,7 +2,7 @@ div.context-menu {
   position: fixed;
   top: var(--y, -1000px);
   left: var(--x, -1000px);
-  z-index: 1000000000000000000000000000000000000000000000000;
+  z-index: 100000000000000000000000000000000000000000 !important;
   padding: 5px;
   border: var(--win-border);
   background-color: var(--glass-bg);
@@ -44,6 +44,18 @@ div.context-menu button:disabled {
 
 div.context-menu button.default > span {
   font-weight: bold;
+}
+
+div.context-menu button span.checked {
+  display: none;
+  margin-left: auto;
+  opacity: 0.5;
+  font-size: 16px;
+  height: 16px;
+}
+
+div.context-menu button.checked span.checked {
+  display: block;
 }
 
 div.context-menu.hidden {

@@ -74,6 +74,22 @@ div.shell div.taskbar div.status-tray {
   gap: 10px;
 }
 
+div.shell div.taskbar div.network {
+  position: relative;
+  width: 18px;
+  height: 20px;
+}
+
+div.shell div.taskbar div.network span {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+div.shell div.taskbar div.network span.backdrop {
+  opacity: 0.2;
+}
+
 div.shell div.taskbar div.battery {
   display: flex;
   align-items: center;
