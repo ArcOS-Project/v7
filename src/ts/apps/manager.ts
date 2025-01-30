@@ -294,18 +294,21 @@ export class AppManager extends Process {
 
     const process = this.handler.getProcess<AppProcess>(pid, true);
 
-    if (!process) return;
+    // if (!process) return;
 
-    if (process.stopAcceleratorListener) process.stopAcceleratorListener();
+    if (process?.stopAcceleratorListener) process.stopAcceleratorListener();
 
-    if (process.componentMount && Object.entries(process.componentMount).length)
-      unmount(process.componentMount);
+    if (
+      process?.componentMount &&
+      Object.entries(process.componentMount).length
+    )
+      unmount(process?.componentMount);
 
     const window = this.target.querySelector(`div.window[data-pid="${pid}"]`);
     const wrapper = this.target.querySelector(
       `div.overlay-wrapper[data-pid="${pid}"]`
     );
-    const styling = document.body.querySelector(`link[id="$${pid}"`);
+    const styling = document.body.querySelector(`link[id="$${pid}"]`);
 
     if (window) window.remove();
     if (styling) styling.remove();
@@ -313,7 +316,7 @@ export class AppManager extends Process {
       wrapper.remove();
     }
 
-    if (this.focusedPid() === process.pid) this.focusedPid.set(-1);
+    if (this.focusedPid() === process?.pid) this.focusedPid.set(-1);
 
     const stateIndex = this.currentState.indexOf(pid);
 

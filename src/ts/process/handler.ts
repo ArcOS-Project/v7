@@ -92,14 +92,18 @@ export class ProcessHandler extends KernelModule {
 
     await this._killSubProceses(pid, force);
 
-    const store = this.store.get();
+    let store = this.store.get();
 
     proc._disposed = true;
 
-    store.delete(pid);
+    store.set(pid, proc);
     this.store.set(store);
 
-    if (this.renderer) this.renderer.remove(pid);
+    if (this.renderer) await this.renderer.remove(pid);
+
+    store = this.store.get();
+    store.delete(pid);
+    this.store.set(store);
 
     return "success";
   }
