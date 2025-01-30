@@ -15,6 +15,7 @@ import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
 import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
+import { ComponentIcon } from "$ts/images/general";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
 export class AppProcess extends Process {
@@ -48,8 +49,8 @@ export class AppProcess extends Process {
       id: app.data.id,
     };
 
-    this.windowTitle.set(app.data.metadata.name);
-    this.windowIcon.set(app.data.metadata.icon);
+    this.windowTitle.set(app.data.metadata.name || "Application");
+    this.windowIcon.set(app.data.metadata.icon || ComponentIcon);
     this.name = app.data.id;
 
     this.fs = this.kernel.getModule<Filesystem>("fs");
