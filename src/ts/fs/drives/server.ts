@@ -4,8 +4,9 @@ import { Axios } from "$ts/server/axios";
 import type {
   DirectoryReadReturn,
   RecursiveDirectoryReadReturn,
+  UserQuota,
 } from "$types/fs";
-import { FilesystemDrive } from "../supplier";
+import { FilesystemDrive } from "../drive";
 
 export class ServerDrive extends FilesystemDrive {
   private token = "";
@@ -124,6 +125,23 @@ export class ServerDrive extends FilesystemDrive {
       return response.status === 200;
     } catch {
       return false;
+    }
+  }
+
+  async quota(): Promise<UserQuota> {
+    try {
+      const response = await Axios.get("/fs/quota", {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.data as UserQuota;
+    } catch {
+      return {
+        used: 0,
+        max: 0,
+        free: 0,
+        percentage: 0,
+      };
     }
   }
 }

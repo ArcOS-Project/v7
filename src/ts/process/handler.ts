@@ -81,7 +81,7 @@ export class ProcessHandler extends KernelModule {
 
     const proc = this.getProcess(pid);
 
-    if (!proc || proc._disposed) return "err_noExist";
+    if (!proc) return "err_noExist";
     if (proc._criticalProcess && !force) return "err_criticalProcess";
 
     if (proc instanceof AppProcess && proc.closeWindow && !force) {

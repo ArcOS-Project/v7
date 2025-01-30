@@ -4,6 +4,7 @@ import type {
   DirectoryReadReturn,
   RecursiveDirectoryReadReturn,
 } from "$types/fs";
+import type { UserQuota } from "../../types/fs";
 
 export class FilesystemDrive {
   server: ServerManager;
@@ -58,5 +59,14 @@ export class FilesystemDrive {
 
   async deleteItem(path: string): Promise<boolean> {
     return true;
+  }
+
+  async quota(): Promise<UserQuota> {
+    return {
+      used: 0,
+      max: 0,
+      free: 0,
+      percentage: 0,
+    };
   }
 }

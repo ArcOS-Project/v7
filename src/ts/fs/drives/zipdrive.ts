@@ -1,7 +1,7 @@
 import type { WaveKernel } from "$ts/kernel";
 import JSZip from "jszip";
 import { Filesystem } from "..";
-import { FilesystemDrive } from "../supplier";
+import { FilesystemDrive } from "../drive";
 import type {
   DirectoryReadReturn,
   FileEntry,

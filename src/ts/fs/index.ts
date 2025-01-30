@@ -5,7 +5,7 @@ import {
   type DirectoryReadReturn,
   type RecursiveDirectoryReadReturn,
 } from "$types/fs";
-import type { FilesystemDrive } from "./supplier";
+import type { FilesystemDrive } from "./drive";
 import { getParentDirectory } from "./util";
 
 export class Filesystem extends KernelModule {
