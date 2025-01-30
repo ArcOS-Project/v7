@@ -4,7 +4,7 @@ import { WallpaperApp } from "$apps/components/wallpaper/metadata";
 import { SystemSettings } from "$apps/user/settings/metadata";
 import { TestApp } from "$apps/user/test/metadata";
 import type { AppKeyCombinations } from "$types/accelerator";
-import type { App, AppStorage } from "$types/app";
+import type { AppStorage } from "$types/app";
 
 export const BuiltinApps: AppStorage = [
   WallpaperApp,
@@ -15,3 +15,9 @@ export const BuiltinApps: AppStorage = [
 ];
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];
+
+export const AppOrigins: Record<string, string> = {
+  builtin: "Built-in",
+  userApps: "Third-party",
+  injected: "Other",
+};
