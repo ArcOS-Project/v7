@@ -29,8 +29,6 @@ export class ZIPDrive extends FilesystemDrive {
 
     const zip = new JSZip();
     this._buffer = await zip.loadAsync(contents, {});
-
-    console.log(zip);
   }
 
   async readDir(path: string): Promise<DirectoryReadReturn | undefined> {

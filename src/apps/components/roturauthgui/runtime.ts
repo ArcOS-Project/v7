@@ -69,7 +69,6 @@ export class RoturAuthGuiProcess extends AppProcess {
 
       return true;
     } catch (e) {
-      console.log(e);
       MessageBox(
         {
           title: "Failed to log in",

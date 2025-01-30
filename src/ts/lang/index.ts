@@ -48,8 +48,6 @@ export class ArcLang extends KernelModule {
     } catch (e) {
       if (process._disposed) return;
 
-      console.log(e);
-
       throw e;
     } finally {
       await process.killSelf();

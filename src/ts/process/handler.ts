@@ -180,8 +180,6 @@ export class ProcessHandler extends KernelModule {
       }
     });
 
-    console.log(processTree, roots);
-
     // Helper function for depth-first traversal
     const traverse = (pid: number, depth: number) => {
       result += `${" ".repeat(depth * 2)}- Process ${pid}\n`;

@@ -279,7 +279,6 @@ export class RoturExtension extends Process {
 
   // TODO: full refactor of this function
   pmesgPacket(packet: RoturPacket) {
-    console.log(packet);
     this.packetQueue.push(packet);
 
     packet.origin = packet.origin.username;
