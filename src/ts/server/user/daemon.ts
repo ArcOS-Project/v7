@@ -704,6 +704,35 @@ export class UserDaemon extends Process {
     );
   }
 
+  async spawnOverlay<T>(
+    id: string,
+    parentPid?: number,
+    ...args: any[]
+  ): Promise<T | undefined> {
+    const app = await this.appStore?.getAppById(id);
+
+    if (!app) return undefined;
+
+    if (app.thirdParty) {
+      this.Log(
+        "Can't spawn a third party app as an overlay: not in our control",
+        LogLevel.error
+      );
+
+      return;
+    }
+
+    return await this.handler.spawn<T>(
+      app.assets.runtime,
+      parentPid || this.pid,
+      {
+        data: { ...app, overlay: true },
+        id: app.id,
+      },
+      ...args
+    );
+  }
+
   async spawnThirdParty(app: ThirdPartyApp) {
     const lang = this.kernel.getModule<ArcLang>("lang");
     const fs = this.kernel.getModule<Filesystem>("fs");

@@ -21,6 +21,7 @@ export interface App {
   glass?: boolean;
   thirdParty?: boolean;
   id: string;
+  appOrigin?: string;
 }
 
 export interface ThirdPartyApp {
@@ -36,6 +37,7 @@ export interface ThirdPartyApp {
   hidden?: boolean;
   overlay?: boolean;
   glass?: boolean;
+  appOrigin?: string;
 }
 
 export type ScriptedApp = Omit<App, "assets">;

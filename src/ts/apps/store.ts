@@ -1,3 +1,4 @@
+import { AppInfoApp } from "$apps/components/appinfo/metadata";
 import { RoturAuthGuiApp } from "$apps/components/roturauthgui/metadata";
 import { ArcShellApp } from "$apps/components/shell/metadata";
 import { WallpaperApp } from "$apps/components/wallpaper/metadata";
@@ -12,6 +13,7 @@ export const BuiltinApps: AppStorage = [
   SystemSettings,
   RoturAuthGuiApp,
   TestApp,
+  AppInfoApp,
 ];
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];

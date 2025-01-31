@@ -283,4 +283,16 @@ export class AppProcess extends Process {
       ...args
     );
   }
+
+  async spawnOverlayApp(
+    id: string,
+    parentPid?: number | undefined,
+    ...args: any[]
+  ) {
+    return await this.userDaemon?.spawnOverlay(
+      id,
+      parentPid ?? this.parentPid,
+      ...args
+    );
+  }
 }

@@ -8,7 +8,7 @@
     WeatherSearchResponse,
   } from "$types/weather";
   import axios from "axios";
-  import Section from "../../Section.svelte";
+  import Section from "../Section.svelte";
 
   const { process }: { process: SettingsRuntime } = $props();
   const { userPreferences } = process;

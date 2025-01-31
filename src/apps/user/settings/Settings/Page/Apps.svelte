@@ -24,6 +24,9 @@
               caption={app.metadata.name}
               image={app.metadata.icon}
               chevron
+              onclick={() => {
+                process.spawnOverlayApp("AppInfo", process.pid, app.id);
+              }}
             />
           {/if}
         {/each}

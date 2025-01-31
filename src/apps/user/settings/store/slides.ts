@@ -1,6 +1,6 @@
-import LoginActivity from "../Settings/Slides/Account/LoginActivity.svelte";
-import UserStyles from "../Settings/Slides/Account/UserStyles.svelte";
-import WeatherLocation from "../Settings/Slides/Account/WeatherLocation.svelte";
+import LoginActivity from "../Settings/Slides/LoginActivity.svelte";
+import UserStyles from "../Settings/Slides/UserStyles.svelte";
+import WeatherLocation from "../Settings/Slides/WeatherLocation.svelte";
 import type { SettingsSlides } from "../types";
 
 export const SlideStore: SettingsSlides = new Map([
