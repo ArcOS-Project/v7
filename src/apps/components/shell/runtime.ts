@@ -146,7 +146,7 @@ export class ShellRuntime extends AppProcess {
 
   unpinApp(appId: string) {
     this.userPreferences.update((v) => {
-      if (!v.pinnedApps.includes) return v;
+      if (!v.pinnedApps.includes(appId)) return v;
 
       v.pinnedApps.splice(v.pinnedApps.indexOf(appId));
 

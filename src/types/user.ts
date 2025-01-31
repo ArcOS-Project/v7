@@ -28,6 +28,7 @@ export interface UserPreferences {
   currentThemeId?: string;
   searchOptions: ArcFindOptions;
   pinnedApps: string[];
+  disabledApps: string[];
 }
 
 export interface ArcFindOptions {

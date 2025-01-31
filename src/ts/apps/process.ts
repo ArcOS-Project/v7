@@ -1,5 +1,6 @@
 import { GlobalDispatcher } from "$ts/dispatch";
 import type { Filesystem } from "$ts/fs";
+import { ComponentIcon } from "$ts/images/general";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { DefaultUserPreferences } from "$ts/server/user/default";
 import { ContextMenuLogic } from "$ts/ui/context";
@@ -15,7 +16,6 @@ import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
 import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
-import { ComponentIcon } from "$ts/images/general";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
 export class AppProcess extends Process {

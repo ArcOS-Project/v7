@@ -683,6 +683,8 @@ export class UserDaemon extends Process {
     parentPid?: number,
     ...args: any[]
   ): Promise<T | undefined> {
+    if (this.checkDisabled(id)) return;
+
     const app = await this.appStore?.getAppById(id);
 
     if (!app) return undefined;
@@ -709,6 +711,8 @@ export class UserDaemon extends Process {
     parentPid?: number,
     ...args: any[]
   ): Promise<T | undefined> {
+    if (this.checkDisabled(id)) return;
+
     const app = await this.appStore?.getAppById(id);
 
     if (!app) return undefined;
@@ -759,5 +763,44 @@ export class UserDaemon extends Process {
     for (const app of store) {
       if (app.autoRun) this.spawnApp(app.id, this.pid);
     }
+  }
+
+  checkDisabled(appId: string): boolean {
+    const { disabledApps } = this.preferences();
+
+    return (disabledApps || []).includes(appId);
+  }
+
+  disableApp(appId: string) {
+    if (this.checkDisabled(appId)) return false;
+
+    this.preferences.update((v) => {
+      v.disabledApps.push(appId);
+
+      return v;
+    });
+
+    const instances = this.handler.renderer?.getAppInstances(appId);
+
+    if (instances)
+      for (const instance of instances) {
+        this.handler.kill(instance.pid, true);
+      }
+
+    this.globalDispatch.dispatch("app-store-refresh");
+  }
+
+  enableApp(appId: string) {
+    if (!this.checkDisabled(appId)) return false;
+
+    this.preferences.update((v) => {
+      if (!v.disabledApps.includes(appId)) return v;
+
+      v.disabledApps.splice(v.disabledApps.indexOf(appId));
+
+      return v;
+    });
+
+    this.globalDispatch.dispatch("app-store-refresh");
   }
 }

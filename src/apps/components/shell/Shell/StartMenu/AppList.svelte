@@ -21,7 +21,7 @@
 
 <div class="app-list">
   {#each apps as app}
-    {#if isPopulatable(app)}
+    {#if isPopulatable(app) && !process.userDaemon?.checkDisabled(app.id)}
       <ListItem {app} {process} />
     {/if}
   {/each}

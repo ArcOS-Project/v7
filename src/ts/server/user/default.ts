@@ -72,6 +72,7 @@ export const DefaultUserPreferences: UserPreferences = {
   userWallpapers: {},
   userApps: {},
   pinnedApps: [],
+  disabledApps: [],
 };
 
 export const DefaultUserInfo: UserInfo = {
