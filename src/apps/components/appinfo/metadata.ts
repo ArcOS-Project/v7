@@ -44,4 +44,5 @@ export const AppInfoApp: App = {
   },
   hidden: true,
   id: "AppInfo",
+  glass: true,
 };

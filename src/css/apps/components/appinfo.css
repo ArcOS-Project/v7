@@ -1,12 +1,18 @@
+#AppInfo {
+  display: flex;
+  flex-direction: column;
+}
+
 #AppInfo div.body {
   padding: 25px;
   display: flex;
   flex-direction: column;
   gap: 15px;
+  flex-grow: 1;
 }
 
 #AppInfo div.body div.info-block {
-  background-color: var(--button-bg);
+  background-color: var(--button-glass-bg);
   border-radius: var(--win-border-rad);
 }
 
@@ -145,4 +151,29 @@
   padding: 0;
   width: 35px;
   font-size: 20px;
+}
+#AppInfo div.info-block.actions {
+  margin-top: auto;
+}
+
+#AppInfo div.body div.info-block.actions div.row {
+  gap: 10px;
+  padding-right: 10px;
+}
+
+#AppInfo div.info-block.actions div.row button {
+  margin: 0;
+}
+
+#AppInfo div.info-block.actions div.row p.id {
+  margin: 0;
+  margin-right: auto;
+  padding: 0 5px;
+  opacity: 0.5;
+  font-family: "Source Code Pro", monospace;
+  line-height: 30px;
+}
+
+#AppInfo div.info-block.process-info div.row button.processes {
+  margin-left: auto;
 }

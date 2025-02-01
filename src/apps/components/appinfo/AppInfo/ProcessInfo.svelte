@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Sleep } from "$ts/sleep";
   import type { AppInfoRuntime } from "../runtime";
   import InfoBlock from "./InfoBlock.svelte";
   import InfoRow from "./InfoBlock/InfoRow.svelte";
@@ -10,7 +11,8 @@
   let pid = $state(-1);
   let count = $state(0);
 
-  function update() {
+  async function update() {
+    await Sleep(300);
     const pids = process.handler.renderer
       ?.getAppInstances(appId)
       .map((p) => p.pid);
@@ -26,7 +28,7 @@
   });
 </script>
 
-<InfoBlock>
+<InfoBlock className="process-info">
   <InfoRow>
     <Segment title="Processes">
       {count} instance(s)
@@ -34,6 +36,6 @@
     <Segment title="First PID">
       {pid < 0 ? "None" : pid}
     </Segment>
-    <button>Processes</button>
+    <button class="processes">Processes</button>
   </InfoRow>
 </InfoBlock>

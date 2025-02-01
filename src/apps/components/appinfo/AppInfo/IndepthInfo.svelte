@@ -29,17 +29,17 @@
       <div class="controls">
         <button
           class="minimize icon-chevron-down"
-          class:disabled={target.controls.minimize}
+          class:disabled={!target.controls.minimize}
           aria-label="Minimize"
         ></button>
         <button
           class="maximize icon-chevron-up"
-          class:disabled={target.controls.maximize}
+          class:disabled={!target.controls.maximize}
           aria-label="Maximize"
         ></button>
         <button
           class="close icon-x"
-          class:disabled={target.controls.close}
+          class:disabled={!target.controls.close}
           aria-label="Close"
         ></button>
       </div>

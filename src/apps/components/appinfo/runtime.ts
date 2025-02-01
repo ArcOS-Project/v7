@@ -19,7 +19,7 @@ export class AppInfoRuntime extends AppProcess {
     this.targetAppId = appId;
   }
 
-  async start() {
+  async render() {
     const targetApp = await this.userDaemon?.appStore?.getAppById(
       this.targetAppId
     );
