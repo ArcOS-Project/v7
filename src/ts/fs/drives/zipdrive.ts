@@ -67,7 +67,15 @@ export class ZIPDrive extends FilesystemDrive {
 
   // TODO: implement all of these missing doodads
 
-  readFile(path: string): Promise<ArrayBuffer | undefined> {}
+  async readFile(path: string): Promise<ArrayBuffer | undefined> {
+    const file = Object.entries(this._buffer?.files || {}).filter(
+      ([itemPath, item]) => itemPath === path && !item.dir
+    )[0];
+
+    if (!file) return undefined;
+
+    return await file[1].async("arraybuffer");
+  }
 
   writeFile(path: string, data: Blob): Promise<boolean> {}
 
