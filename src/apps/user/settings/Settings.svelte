@@ -1,16 +1,16 @@
 <script lang="ts">
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
+  import { SettingsIcon } from "$ts/images/general";
+  import { Sleep } from "$ts/sleep";
   import type { Component } from "svelte";
   import type { SettingsRuntime } from "./runtime";
   import Sidebar from "./Settings/Sidebar.svelte";
-  import { settingsPageStore } from "./store";
-  import { Sleep } from "$ts/sleep";
   import Slide from "./Settings/Slide.svelte";
+  import { settingsPageStore } from "./store";
   import type { SettingsPage } from "./types";
-  import { SettingsIcon } from "$ts/images/general";
 
   const { process }: { process: SettingsRuntime } = $props();
-  const { currentPage, slideVisible } = process;
+  const { currentPage, slideVisible, userPreferences } = process;
 
   let hide = $state(true);
   let className = $state("");
@@ -20,7 +20,7 @@
     const sub = currentPage.subscribe(async (v) => {
       $slideVisible = false;
       hide = true;
-      await Sleep(300);
+      await Sleep(userPreferences().shell.visuals.noAnimations ? 0 : 300);
 
       pageData = settingsPageStore.get(v);
       Page = pageData?.content;

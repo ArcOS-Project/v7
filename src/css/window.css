@@ -75,3 +75,8 @@ div.window.overlay.glass {
   background-color: var(--glass-bg);
   backdrop-filter: blur(var(--blur));
 }
+
+div.window:not(.core) a {
+  color: var(--accent-light);
+  text-underline-offset: 2px;
+}

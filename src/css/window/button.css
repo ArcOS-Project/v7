@@ -18,6 +18,15 @@ button:not(.reset):not(:disabled):active {
   opacity: 0.8;
 }
 
+div.window div.body button:not(.reset).link {
+  margin: 0;
+  padding: 0;
+  color: var(--accent-light);
+  background-color: transparent !important;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 div.window div.body button:not(.reset):disabled {
   opacity: 0.3;
 }

@@ -22,17 +22,7 @@
   });
 
   function onclick() {
-    // TODO: go to the settings app from here
-    MessageBox(
-      {
-        image: ComponentIcon,
-        title: "User Preferences",
-        message: `<code class="block">${JSON.stringify($userPreferences, null, 2)}</code>`,
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-      },
-      process.pid,
-      true
-    );
+    process.spawnOverlayApp("systemSettings", process.pid);
   }
 </script>
 

@@ -117,7 +117,17 @@ export class AppProcess extends Process {
   }
 
   async __render__(body: HTMLDivElement) {
+    if (this.userPreferences().disabledApps.includes(this.app.id)) {
+      this.Log(
+        `Running application instance of app "${this.app.id}" is prohibited by the user. Terminating.`,
+        LogLevel.error
+      );
+
+      return;
+    }
+
     this.Log("Rendering window contents");
+
     const component = this.app.data.assets.component;
 
     this.componentMount = mount(component, {

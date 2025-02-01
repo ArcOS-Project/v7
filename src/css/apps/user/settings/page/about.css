@@ -1,0 +1,66 @@
+#systemSettings div.container.about {
+  background-color: transparent !important;
+}
+
+#systemSettings div.container.about div.window-title {
+  display: none;
+}
+
+#systemSettings div.container.about div.controls {
+  margin-left: auto;
+}
+
+#systemSettings div.container.about div.page-content {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 10px 0;
+  padding-top: 30px;
+}
+
+#systemSettings div.container.about div.page-content:not(.hide) {
+  animation: appear 0.5s 0.5s forwards !important;
+  opacity: 0;
+  scale: 0.9;
+}
+
+#systemSettings div.container.about div.page-content img {
+  height: 150px;
+}
+
+#systemSettings div.container.about h1 {
+  font-size: 32px;
+  margin: 5px 0;
+}
+
+#systemSettings div.container.about h1 span.colored {
+  color: var(--accent);
+}
+
+#systemSettings div.container.about p {
+  width: 380px;
+  text-align: center;
+  margin: 0;
+  margin-top: 35px;
+}
+
+#systemSettings div.container.about p.version {
+  margin-top: auto;
+  font-family: "Source Code Pro";
+  opacity: 0.7;
+  font-size: 12px;
+}
+
+@keyframes appear {
+  0% {
+    padding-top: 40px;
+    opacity: 0;
+    scale: 0.95;
+  }
+
+  to {
+    padding-top: 0;
+    opacity: 1;
+    scale: 1;
+  }
+}
