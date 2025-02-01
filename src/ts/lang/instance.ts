@@ -23,6 +23,7 @@ import { ArcMode } from "$ts/metadata/mode";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { Sleep } from "$ts/sleep";
+import type { App, AppProcessData, ThirdPartyApp } from "$types/app";
 import type {
   DirectoryReadReturn,
   RecursiveDirectoryReadReturn,
@@ -54,6 +55,7 @@ export class LanguageInstance extends Process {
   public options: LanguageOptions;
   private fs: Filesystem;
   private exception: LanguageExecutionError | null = null;
+  public app: AppProcessData | undefined;
 
   constructor(
     handler: ProcessHandler,

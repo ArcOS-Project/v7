@@ -1,6 +1,6 @@
 <script lang="ts">
   import { AppOrigins } from "$ts/apps/store";
-  import type { App, ThirdPartyApp } from "$types/app";
+  import type { App } from "$types/app";
   import type { AppInfoRuntime } from "../runtime";
   import InfoBlock from "./InfoBlock.svelte";
   import InfoRow from "./InfoBlock/InfoRow.svelte";
@@ -8,6 +8,8 @@
 
   const { target, process }: { target: App; process: AppInfoRuntime } =
     $props();
+
+  console.log(target);
 </script>
 
 <InfoBlock>
@@ -52,7 +54,7 @@
       {/if}
     </Segment>
     <Segment title="Origin">
-      {AppOrigins[target.appOrigin || "injected"]}
+      {AppOrigins[target.originId || "injected"]}
     </Segment>
     <Segment title="Core">
       {target.core ? "Yes" : "No"}

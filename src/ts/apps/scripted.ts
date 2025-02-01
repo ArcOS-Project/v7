@@ -19,6 +19,11 @@ export class ScriptedAppProcess extends AppProcess {
     super(handler, pid, parentPid, app);
 
     this.lang = lang;
+    this.lang.app = app;
+
+    if (!this.handler.renderer?.currentState.includes(this.lang.pid)) {
+      this.handler.renderer?.currentState.push(this.lang.pid);
+    }
   }
 
   override async __render__() {
@@ -33,8 +38,10 @@ export class ScriptedAppProcess extends AppProcess {
   }
 
   protected async stop() {
-    setTimeout(() => {
-      if (!this._disposed) this.lang.killSelf();
+    setTimeout(async () => {
+      const children = await this.handler.getSubProcesses(this.lang.pid);
+
+      if (!children.size) this.lang.killSelf();
     }, 1000);
   }
 }

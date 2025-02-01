@@ -1,0 +1,148 @@
+#AppInfo div.body {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#AppInfo div.body div.info-block {
+  background-color: var(--button-bg);
+  border-radius: var(--win-border-rad);
+}
+
+#AppInfo div.body div.info-block div.row {
+  display: flex;
+  gap: 30px;
+  padding: 10px 15px;
+}
+
+#AppInfo div.body div.info-block div.segment {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+#AppInfo div.body div.info-block div.segment > p {
+  margin: 0;
+}
+
+#AppInfo div.body div.info-block div.segment p.title {
+  opacity: 0.5;
+  font-weight: bold;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+#AppInfo div.body div.info-block div.segment p.title button.help {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  background-color: transparent;
+}
+
+#AppInfo div.body div.info-block div.segment p.title button.help:hover {
+  color: var(--accent-light);
+}
+
+#AppInfo div.body div.info-block div.segment.right {
+  margin-left: auto;
+  margin-top: -10px;
+  margin-bottom: -10px;
+  justify-content: center;
+  border-left: var(--win-border);
+  padding-left: 15px;
+}
+
+#AppInfo div.body div.info-block div.segment code {
+  background-color: transparent;
+}
+
+#AppInfo div.body div.info-block div.row + div.row {
+  border-top: var(--win-border);
+}
+
+#AppInfo div.body div.info-block div.row > button.action {
+  margin-left: auto;
+}
+
+#AppInfo div.body div.info-block div.segment.mode p.value,
+#AppInfo div.body div.info-block div.segment.version p.value {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#AppInfo div.body div.info-block div.segment.mode p.value img,
+#AppInfo div.body div.info-block div.segment.version p.value img {
+  height: 16px;
+}
+
+#AppInfo div.body div.info-block div.controls button {
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  font-size: 16px;
+}
+
+#AppInfo div.body div.info-block div.controls {
+  height: 19px;
+}
+#AppInfo div.body div.info-block div.controls button.disabled {
+  opacity: 0.3;
+}
+
+#AppInfo div.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+#AppInfo div.header > div {
+  display: flex;
+
+  gap: 10px;
+  align-items: center;
+}
+#AppInfo div.header div.left img {
+  height: 64px;
+  margin-right: 5px;
+}
+
+#AppInfo div.header div.left p.name {
+  font-size: 22px;
+  font-weight: bold;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#AppInfo div.header div.left p.name img {
+  height: 20px;
+}
+
+#AppInfo div.header div.left p.author {
+  opacity: 0.5;
+  margin: 0;
+}
+
+#AppInfo div.header div.right button {
+  height: 32px;
+  margin: 0;
+}
+
+#AppInfo div.header div.right button.disable {
+  background-color: var(--clr-red-fg);
+  color: var(--clr-red-bg);
+}
+
+#AppInfo div.header div.right button.disable.disabled {
+  background-color: var(--clr-green-fg);
+  color: var(--clr-green-bg);
+}
+
+#AppInfo div.header div.right button.lucide {
+  padding: 0;
+  width: 35px;
+  font-size: 20px;
+}

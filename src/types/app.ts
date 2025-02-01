@@ -19,9 +19,11 @@ export interface App {
   hidden?: boolean;
   overlay?: boolean;
   glass?: boolean;
-  thirdParty?: boolean;
+  thirdParty?: false;
   id: string;
-  appOrigin?: string;
+  originId?: string;
+  entrypoint?: "";
+  workingDirectory?: "";
 }
 
 export interface ThirdPartyApp {
@@ -37,7 +39,7 @@ export interface ThirdPartyApp {
   hidden?: boolean;
   overlay?: boolean;
   glass?: boolean;
-  appOrigin?: string;
+  originId?: string;
 }
 
 export type ScriptedApp = Omit<App, "assets">;
