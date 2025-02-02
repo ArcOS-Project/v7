@@ -12,8 +12,8 @@ export class ServerDrive extends FilesystemDrive {
   private token = "";
   override label = "Your Drive";
 
-  constructor(kernel: WaveKernel, letter: string, token: string) {
-    super(kernel, letter);
+  constructor(kernel: WaveKernel, uuid: string, letter: string, token: string) {
+    super(kernel, uuid, letter);
 
     this.token = token;
   }

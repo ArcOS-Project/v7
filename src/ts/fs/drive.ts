@@ -8,13 +8,20 @@ import type { UserQuota } from "../../types/fs";
 
 export class FilesystemDrive {
   server: ServerManager;
-  public driveLetter = "";
+  public driveLetter: string | undefined;
   public label = "";
+  public uuid = "";
   public kernel: WaveKernel;
 
-  constructor(kernel: WaveKernel, letter: string, ...args: any[]) {
+  constructor(
+    kernel: WaveKernel,
+    uuid: string,
+    letter?: string,
+    ...args: any[]
+  ) {
     this.server = kernel.getModule<ServerManager>("server");
 
+    this.uuid = uuid;
     this.driveLetter = letter;
     this.kernel = kernel;
   }

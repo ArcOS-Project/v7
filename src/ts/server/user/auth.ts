@@ -13,6 +13,7 @@ export async function LoginUser(identity: string, password: string) {
       toForm({
         identity,
         password,
+        userAgent: navigator.userAgent,
       })
     );
 

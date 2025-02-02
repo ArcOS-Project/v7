@@ -199,7 +199,7 @@ export class UserDaemon extends Process {
   async startFilesystemSupplier() {
     this.Log(`Starting filesystem supplier`);
 
-    await this.fs.mountDrive("userfs", "U", ServerDrive, this.token);
+    await this.fs.mountDrive("userfs", ServerDrive, "U", this.token);
   }
 
   async stop() {
@@ -610,7 +610,7 @@ export class UserDaemon extends Process {
   }
 
   async mountZip(path: string) {
-    const mount = this.fs.mountDrive(btoa(path), "A", ZIPDrive, path);
+    const mount = this.fs.mountDrive(btoa(path), ZIPDrive, undefined, path);
 
     return mount;
   }

@@ -26,21 +26,23 @@ export class Filesystem extends KernelModule {
 
   async mountDrive(
     id: string,
-    letter: string,
     supplier: typeof FilesystemDrive,
+    letter?: string,
     ...args: any[]
-  ) {
-    this.validateDriveLetter(letter);
+  ): Promise<FilesystemDrive | false> {
+    if (letter) this.validateDriveLetter(letter);
 
-    if (this.drives[id] || this.getDriveByLetter(letter, false)) return false;
+    if (this.drives[id] || (letter && this.getDriveByLetter(letter, false)))
+      return false;
 
-    const instance = new supplier(this.kernel, letter, ...args);
+    const uuid = crypto.randomUUID();
+    const instance = new supplier(this.kernel, uuid, letter, ...args);
 
     this.drives[id] = instance;
 
     await instance._spinUp();
 
-    return true;
+    return instance as FilesystemDrive;
   }
 
   async umountDrive(id: string) {

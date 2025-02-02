@@ -12,8 +12,8 @@ export class ZIPDrive extends FilesystemDrive {
   private _buffer: JSZip | undefined;
   private _path: string;
 
-  constructor(kernel: WaveKernel, letter: string, path: string) {
-    super(kernel, letter);
+  constructor(kernel: WaveKernel, uuid: string, letter: string, path: string) {
+    super(kernel, uuid, letter);
 
     this._path = path;
   }
@@ -27,6 +27,13 @@ export class ZIPDrive extends FilesystemDrive {
 
     const zip = new JSZip();
     this._buffer = await zip.loadAsync(contents, {});
+  }
+
+  async _spinDown(): Promise<void> {
+    await this._sync();
+
+    this._buffer = undefined;
+    this._path = "";
   }
 
   async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
