@@ -1,15 +1,21 @@
+import type LoginActivity from "$apps/user/settings/Settings/Slides/LoginActivity.svelte";
+import { ApplicationStorage } from "$ts/apps/storage";
+import { BuiltinApps } from "$ts/apps/store";
 import { darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
+import { toForm } from "$ts/form";
 import { Filesystem } from "$ts/fs";
 import { arrayToBlob, arrayToText } from "$ts/fs/convert";
 import { ServerDrive } from "$ts/fs/drives/server";
 import { ZIPDrive } from "$ts/fs/drives/zipdrive";
 import { join } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
+import type { ArcLang } from "$ts/lang";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { RoturExtension } from "$ts/rotur";
 import { Wallpapers } from "$ts/wallpaper/store";
 import { Store } from "$ts/writable";
+import type { AppStorage, ThirdPartyApp } from "$types/app";
 import { LogLevel } from "$types/logging";
 import type { BatteryType } from "$types/navigator";
 import type { Notification } from "$types/notification";
@@ -25,10 +31,6 @@ import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes } from "./store";
-import { ApplicationStorage } from "$ts/apps/storage";
-import { BuiltinApps } from "$ts/apps/store";
-import type { AppStorage, AppStoreCb, ThirdPartyApp } from "$types/app";
-import type { ArcLang } from "$ts/lang";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -802,5 +804,34 @@ export class UserDaemon extends Process {
     });
 
     this.globalDispatch.dispatch("app-store-refresh");
+  }
+
+  async getLoginActivity(): Promise<LoginActivity[]> {
+    try {
+      const response = await Axios.get("/activity", {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.data as LoginActivity[];
+    } catch {
+      return [];
+    }
+  }
+
+  async logLogin() {
+    try {
+      const response = await Axios.post(
+        "/activity",
+        toForm({
+          userAgent: navigator.userAgent,
+          location: JSON.stringify(window.location),
+        }),
+        { headers: { Authorization: `Bearer ${this.token}` } }
+      );
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
   }
 }

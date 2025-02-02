@@ -103,6 +103,7 @@ export class LoginAppRuntime extends AppProcess {
       return;
     }
 
+    await userDaemon.logLogin();
     await userDaemon.startPreferencesSync();
     await userDaemon.startFilesystemSupplier();
 
