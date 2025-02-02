@@ -697,6 +697,15 @@ export class UserDaemon extends Process {
       return;
     }
 
+    const shellDispatch = this.handler.ConnectDispatch(
+      +this.env.get("shell_pid")
+    );
+
+    if (shellDispatch) {
+      shellDispatch?.dispatch("close-start-menu");
+      shellDispatch?.dispatch("close-action-center");
+    }
+
     return await this.handler.spawn<T>(
       app.assets.runtime,
       parentPid || this.pid,

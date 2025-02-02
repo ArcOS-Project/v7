@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { MessageBox } from "$ts/dialog";
-  import { ComponentIcon } from "$ts/images/general";
   import { getProfilePicture, ProfilePictures } from "$ts/images/pfp";
   import type { UserPreferencesStore } from "$types/user";
   import type { ShellRuntime } from "../../runtime";
@@ -22,11 +20,15 @@
   });
 
   function onclick() {
-    process.spawnOverlayApp("systemSettings", process.pid);
+    process.spawnApp("systemSettings", process.pid);
   }
 </script>
 
 <button class="user-button" {onclick}>
   <img src={pfp} alt="" />
-  <span class="name">{username || "ERR_NO_USER"}</span>
+  <span class="name">
+    {username
+      ? $userPreferences.account.displayName || username
+      : "ERR_NO_USER"}
+  </span>
 </button>

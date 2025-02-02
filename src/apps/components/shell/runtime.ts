@@ -73,6 +73,14 @@ export class ShellRuntime extends AppProcess {
     this.dispatch.subscribe("open-start-menu", () =>
       this.startMenuOpened.set(true)
     );
+
+    this.dispatch.subscribe("close-action-center", () =>
+      this.actionCenterOpened.set(false)
+    );
+
+    this.dispatch.subscribe("close-start-menu", () =>
+      this.startMenuOpened.set(false)
+    );
   }
 
   async getWeather(): Promise<WeatherInformation> {
