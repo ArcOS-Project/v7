@@ -1,8 +1,6 @@
 import type { WaveKernel } from "$ts/kernel";
 import type {
   DirectoryReadReturn,
-  FileEntry,
-  FolderEntry,
   RecursiveDirectoryReadReturn,
 } from "$types/fs";
 import JSZip from "jszip";
@@ -95,7 +93,7 @@ export class ZIPDrive extends FilesystemDrive {
   async writeFile(path: string, data: Blob): Promise<boolean> {
     this._buffer?.file(path, data);
 
-    this._sync();
+    await this._sync();
 
     return true;
   }
@@ -103,7 +101,7 @@ export class ZIPDrive extends FilesystemDrive {
   async createDirectory(path: string): Promise<boolean> {
     this._buffer?.folder(path);
 
-    this._sync();
+    await this._sync();
 
     return true;
   }
@@ -111,16 +109,35 @@ export class ZIPDrive extends FilesystemDrive {
   async deleteItem(path: string): Promise<boolean> {
     this._buffer?.remove(path);
 
-    this._sync();
+    await this._sync();
 
     return true;
   }
 
   async tree(path: string): Promise<RecursiveDirectoryReadReturn | undefined> {
-    return {
+    const result: RecursiveDirectoryReadReturn = {
       dirs: [],
       files: [],
     };
+
+    const currentDirContents = await this.readDir(path);
+    if (!currentDirContents) return result;
+
+    result.files.push(...currentDirContents.files);
+
+    for (const dir of currentDirContents.dirs) {
+      const subDirPath = path ? `${path}${dir.name}/` : `${dir.name}/`;
+      const subDirTree = await this.tree(subDirPath);
+
+      if (subDirTree) {
+        result.dirs.push({
+          ...dir,
+          children: subDirTree,
+        });
+      }
+    }
+
+    return result;
   }
 
   async copyItem(source: string, destination: string): Promise<boolean> {
@@ -128,9 +145,11 @@ export class ZIPDrive extends FilesystemDrive {
 
     if (!sourceContents) return false;
 
+    console.log(sourceContents);
+
     this._buffer?.file(destination, sourceContents);
 
-    this._sync();
+    await this._sync();
 
     return true;
   }
@@ -143,7 +162,7 @@ export class ZIPDrive extends FilesystemDrive {
 
     this._buffer?.remove(source);
 
-    this._sync();
+    await this._sync();
 
     return true;
   }
@@ -154,6 +173,6 @@ export class ZIPDrive extends FilesystemDrive {
 
     if (!file) throw new Error(`Failed to sync to file '${this._path}'`);
 
-    fs.writeFile(this._path, file);
+    await fs.writeFile(this._path, file);
   }
 }
