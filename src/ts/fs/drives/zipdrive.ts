@@ -1,13 +1,13 @@
 import type { WaveKernel } from "$ts/kernel";
-import JSZip from "jszip";
-import { Filesystem } from "..";
-import { FilesystemDrive } from "../drive";
 import type {
   DirectoryReadReturn,
   FileEntry,
   FolderEntry,
   RecursiveDirectoryReadReturn,
 } from "$types/fs";
+import JSZip from "jszip";
+import { Filesystem } from "..";
+import { FilesystemDrive } from "../drive";
 
 export class ZIPDrive extends FilesystemDrive {
   override label = "";
@@ -32,37 +32,52 @@ export class ZIPDrive extends FilesystemDrive {
   }
 
   async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
-    const contents = path ? this._buffer?.folder(path) : this._buffer;
+    const entries = this._buffer?.files;
+    const result: DirectoryReadReturn = {
+      dirs: [],
+      files: [],
+    };
 
-    if (!contents) throw new Error("Folder not found");
+    const normalizedPath = path ? (path.endsWith("/") ? path : path + "/") : "";
+    const seenDirs = new Set<string>();
 
-    const dirs: FolderEntry[] = [];
-    const files: FileEntry[] = [];
-
-    for (const [path, item] of Object.entries(contents.files)) {
-      const slashes = path.split("").filter((p) => p === "/").length;
-
-      if (slashes > (item.dir ? 1 : 0)) continue;
-
-      const name = item.dir ? path.slice(0, -1) : path;
-
-      if (item.dir) {
-        dirs.push({
-          name,
-          dateCreated: item.date,
-          dateModified: item.date,
-        });
-      } else {
-        files.push({
-          name,
-          size: (item as any)._data.uncompressedSize,
-          dateCreated: item.date,
-          dateModified: item.date,
-        });
+    for (const entryName in entries) {
+      if (
+        !normalizedPath ||
+        (entryName.startsWith(normalizedPath) && entryName !== normalizedPath)
+      ) {
+        const relativePath = normalizedPath
+          ? entryName.slice(normalizedPath.length)
+          : entryName;
+        const parts = relativePath.split("/");
+        if (parts.length === 1) {
+          const entry = entries[entryName];
+          if (entry.dir) {
+            result.dirs.push({
+              name: relativePath.replace(/\/$/, ""),
+              dateCreated: new Date(),
+              dateModified: new Date(),
+            });
+          } else {
+            result.files.push({
+              name: relativePath.replace(/\/$/, ""),
+              size: (entry as any)._data.uncompressedSize || 0,
+              dateCreated: new Date(),
+              dateModified: new Date(),
+            });
+          }
+        } else if (!seenDirs.has(parts[0])) {
+          seenDirs.add(parts[0]);
+          result.dirs.push({
+            name: parts[0].replace(/\/$/, ""),
+            dateCreated: new Date(),
+            dateModified: new Date(),
+          });
+        }
       }
     }
 
-    return { dirs, files };
+    return result;
   }
 
   // TODO: implement all of these missing doodads
@@ -77,15 +92,67 @@ export class ZIPDrive extends FilesystemDrive {
     return await file[1].async("arraybuffer");
   }
 
-  writeFile(path: string, data: Blob): Promise<boolean> {}
+  async writeFile(path: string, data: Blob): Promise<boolean> {
+    this._buffer?.file(path, data);
 
-  createDirectory(path: string): Promise<boolean> {}
+    this._sync();
 
-  deleteItem(path: string): Promise<boolean> {}
+    return true;
+  }
 
-  tree(path: string): Promise<RecursiveDirectoryReadReturn | undefined> {}
+  async createDirectory(path: string): Promise<boolean> {
+    this._buffer?.folder(path);
 
-  copyItem(source: string, destination: string): Promise<boolean> {}
+    this._sync();
 
-  moveItem(source: string, destination: string): Promise<boolean> {}
+    return true;
+  }
+
+  async deleteItem(path: string): Promise<boolean> {
+    this._buffer?.remove(path);
+
+    this._sync();
+
+    return true;
+  }
+
+  async tree(path: string): Promise<RecursiveDirectoryReadReturn | undefined> {
+    return {
+      dirs: [],
+      files: [],
+    };
+  }
+
+  async copyItem(source: string, destination: string): Promise<boolean> {
+    this._buffer?.file(
+      destination,
+      await this._buffer.file(source)?.async("arraybuffer")!
+    );
+
+    this._sync();
+
+    return true;
+  }
+
+  async moveItem(source: string, destination: string): Promise<boolean> {
+    this._buffer?.file(
+      destination,
+      await this._buffer.file(source)?.async("arraybuffer")!
+    );
+
+    this._buffer?.remove(source);
+
+    this._sync();
+
+    return true;
+  }
+
+  async _sync() {
+    const file = await this._buffer?.generateAsync({ type: "blob" });
+    const fs = this.kernel.getModule<Filesystem>("fs");
+
+    if (!file) throw new Error(`Failed to sync to file '${this._path}'`);
+
+    fs.writeFile(this._path, file);
+  }
 }
