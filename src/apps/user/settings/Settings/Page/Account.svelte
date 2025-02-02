@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { MessagingIcon } from "$ts/images/apps";
   import {
     PasswordIcon,
     RoturIcon,
@@ -26,8 +25,7 @@
 
   <Section>
     <Option caption="Rename your account" image={SecureIcon} chevron />
-    <Option caption="Change your email address" image={MessagingIcon} chevron />
-    <Option caption="Update your password" image={PasswordIcon} chevron />
+    <Option caption="Change your password" image={PasswordIcon} chevron />
     <Option caption="Manage Rotur..." image={RoturIcon} chevron />
   </Section>
 
