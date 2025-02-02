@@ -124,10 +124,11 @@ export class ZIPDrive extends FilesystemDrive {
   }
 
   async copyItem(source: string, destination: string): Promise<boolean> {
-    this._buffer?.file(
-      destination,
-      await this._buffer.file(source)?.async("arraybuffer")!
-    );
+    const sourceContents = await this.readFile(source);
+
+    if (!sourceContents) return false;
+
+    this._buffer?.file(destination, sourceContents);
 
     this._sync();
 
