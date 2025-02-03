@@ -14,8 +14,6 @@ export class InitProcess extends Process {
   }
 
   async jumpstart() {
-    console.group(`Init process jumpstart`);
-
     this.handler.startRenderer(this.pid);
 
     this.Log("Jumpstart");
@@ -33,7 +31,5 @@ export class InitProcess extends Process {
 
     kernel.state = state;
     await kernel.state?.loadState("boot");
-
-    console.groupEnd();
   }
 }

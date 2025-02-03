@@ -85,8 +85,6 @@ export class ZIPDrive extends FilesystemDrive {
     return result;
   }
 
-  // TODO: implement all of these missing doodads
-
   async readFile(path: string): Promise<ArrayBuffer | undefined> {
     const file = Object.entries(this._buffer?.files || {}).filter(
       ([itemPath, item]) => itemPath === path && !item.dir
@@ -152,8 +150,6 @@ export class ZIPDrive extends FilesystemDrive {
 
     if (!sourceContents) return false;
 
-    console.log(sourceContents);
-
     this._buffer?.file(destination, sourceContents);
 
     await this._sync();
@@ -175,6 +171,7 @@ export class ZIPDrive extends FilesystemDrive {
   }
 
   async _sync() {
+    this.Log("Syncing " + this._path);
     const file = await this._buffer?.generateAsync({ type: "blob" });
     const fs = this.kernel.getModule<Filesystem>("fs");
 

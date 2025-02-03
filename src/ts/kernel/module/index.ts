@@ -7,8 +7,6 @@ export class KernelModule {
   public id: string;
 
   constructor(kernel: WaveKernel, id: string) {
-    console.group(`KernelModule::${id}`);
-
     this.id = id;
 
     this.Log(`Constructing`);
@@ -27,8 +25,6 @@ export class KernelModule {
     this.Log(`Calling _init`);
 
     await this._init();
-
-    console.groupEnd();
   }
 
   protected Log(message: string, level = LogLevel.info) {

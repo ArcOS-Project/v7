@@ -41,8 +41,6 @@ export class StateHandler extends Process {
 
     const data = this.store[id];
 
-    console.group(`LoadState: ${id}`);
-
     if (!data)
       throw new StateError(
         `No such state ${id} on handler with PID ${this.pid}`
@@ -57,15 +55,11 @@ export class StateHandler extends Process {
     }
 
     if (this.stateAppProcess) {
-      console.group(`loadState: previous state app close`);
-
       this.Log(`Closing previous state app process...`);
 
       await this.stateAppProcess.closeWindow();
 
       this.stateAppProcess = undefined;
-
-      console.groupEnd();
     }
 
     const { htmlLoader, cssLoader, main } = this.getStateLoaders();
@@ -74,8 +68,6 @@ export class StateHandler extends Process {
     cssLoader.href = "";
 
     if (!data.app && !(data.html && data.css)) {
-      console.groupEnd();
-
       throw new StateError(
         `${id}: Tried to load a state without any valid code.`
       );
@@ -106,14 +98,10 @@ export class StateHandler extends Process {
     if (!data.app) {
       try {
         if (!data.render) {
-          console.groupEnd();
-
           throw new StateError(`${id}: No render function`);
         }
 
         this.Log(`==> Rendering`);
-
-        console.groupEnd();
 
         await data.render(props || {}, {
           state: this,
@@ -121,13 +109,9 @@ export class StateHandler extends Process {
           stack: this.handler,
         });
       } catch (e) {
-        console.groupEnd();
-
         throw new StateError(`${id}: ${(e as any).stack}`);
       }
     }
-
-    console.groupEnd();
   }
 
   async loadStateNormally(
