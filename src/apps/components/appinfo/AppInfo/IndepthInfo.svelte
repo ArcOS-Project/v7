@@ -8,8 +8,6 @@
 
   const { target, process }: { target: App; process: AppInfoRuntime } =
     $props();
-
-  console.log(target);
 </script>
 
 <InfoBlock>

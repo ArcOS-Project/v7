@@ -9,8 +9,6 @@
     target,
     process,
   }: { target: ThirdPartyApp; process: AppInfoRuntime } = $props();
-
-  console.log(target);
 </script>
 
 <InfoBlock>
