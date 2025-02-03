@@ -167,3 +167,15 @@ export const VisualStyles: Record<string, string> = {
   dark: "Dark",
   light: "Light",
 };
+
+export const ActivityIconTranslations = {
+  unknown: "shield-question",
+  login: "log-in",
+  logout: "log-out",
+};
+
+export const ActivityCaptionTranslations = {
+  unknown: "Unknown activity",
+  login: "Logged in",
+  logout: "Logged out",
+};

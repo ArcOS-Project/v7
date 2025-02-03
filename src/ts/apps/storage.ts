@@ -19,6 +19,8 @@ export class ApplicationStorage extends Process {
   }
 
   loadOrigin(id: string, store: AppStoreCb) {
+    this.Log(`Loading app origin '${id}'`);
+
     if (this.origins.get(id)) return false;
 
     this.origins.set(id, store);
@@ -28,6 +30,8 @@ export class ApplicationStorage extends Process {
   }
 
   unloadOrigin(id: string) {
+    this.Log(`Unloading app origin '${id}'`);
+
     if (!this.origins.get(id)) return false;
 
     this.origins.delete(id);
@@ -37,6 +41,8 @@ export class ApplicationStorage extends Process {
   }
 
   loadApp(app: App) {
+    this.Log(`Loading injected app '${app.id}'`);
+
     if (this.injectedStore.get(app.id)) return false;
 
     this.injectedStore.set(app.id, app);
@@ -49,6 +55,8 @@ export class ApplicationStorage extends Process {
   }
 
   async refresh() {
+    this.Log(`Refreshing store`);
+
     this.buffer.set(await this.get());
   }
 
