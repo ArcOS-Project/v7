@@ -3,4 +3,8 @@ export interface LoginActivity {
   token?: string;
   userAgent: string;
   location?: Location;
+  action: "unknown" | "login" | "logout";
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
 }

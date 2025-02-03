@@ -1,4 +1,3 @@
-import type LoginActivity from "$apps/user/settings/Settings/Slides/LoginActivity.svelte";
 import { ApplicationStorage } from "$ts/apps/storage";
 import { BuiltinApps } from "$ts/apps/store";
 import { darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
@@ -15,6 +14,7 @@ import { Process } from "$ts/process/instance";
 import { RoturExtension } from "$ts/rotur";
 import { Wallpapers } from "$ts/wallpaper/store";
 import { Store } from "$ts/writable";
+import type { LoginActivity } from "$types/activity";
 import type { AppStorage, ThirdPartyApp } from "$types/app";
 import { LogLevel } from "$types/logging";
 import type { BatteryType } from "$types/navigator";
@@ -565,10 +565,6 @@ export class UserDaemon extends Process {
   async startRotur() {
     this.Log("Starting Rotur extension");
 
-    const fn = (...data: any[]) => console.log(...data);
-
-    this.globalDispatch.subscribe("rotur-cmd-pmsg", fn);
-
     const roturCred = this.preferences().account.rotur;
 
     this.rotur = await this.handler.spawn<RoturExtension>(
@@ -827,13 +823,14 @@ export class UserDaemon extends Process {
     }
   }
 
-  async logLogin() {
+  async logActivity(action: string) {
     try {
       const response = await Axios.post(
         "/activity",
         toForm({
           userAgent: navigator.userAgent,
           location: JSON.stringify(window.location),
+          action,
         }),
         { headers: { Authorization: `Bearer ${this.token}` } }
       );
