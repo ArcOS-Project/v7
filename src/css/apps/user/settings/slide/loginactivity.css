@@ -1,0 +1,54 @@
+#systemSettings div.account_loginActivity div.centered-layout div.header {
+  margin-bottom: 20px;
+}
+
+#systemSettings div.account_loginActivity div.activity-item {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  margin-bottom: 15px;
+  background-color: var(--button-bg);
+  padding: 10px;
+  border-radius: 15px;
+  text-align: left;
+}
+
+#systemSettings div.account_loginActivity div.activity-item p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#systemSettings div.account_loginActivity div.activity-item div.info {
+  flex-grow: 1;
+  max-width: calc(100% - 58px);
+}
+
+#systemSettings div.account_loginActivity div.activity-item div.info p.what {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#systemSettings
+  div.account_loginActivity
+  div.activity-item
+  div.info
+  p.frontend {
+  opacity: 0.5;
+  margin-top: 5px;
+}
+
+#systemSettings div.account_loginActivity div.activity-item div.icon {
+  width: 48px;
+  min-width: 48px;
+  border-radius: 50%;
+  height: 48px;
+  background-color: var(--button-glass-bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#systemSettings div.account_loginActivity div.activity-item div.icon span {
+  font-size: 24px;
+}

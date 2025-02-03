@@ -4,8 +4,11 @@
   import { ComponentIcon } from "$ts/images/general";
   import { type Snippet } from "svelte";
 
-  const { process, children }: { process: AppProcess; children?: Snippet } =
-    $props();
+  const {
+    process,
+    children,
+    className = "",
+  }: { process: AppProcess; children?: Snippet; className?: string } = $props();
   const { windowTitle, windowIcon } = process;
   const { data } = process.app;
 
@@ -28,7 +31,7 @@
   }
 </script>
 
-<div class="titlebar custom">
+<div class="titlebar custom {className}">
   <div class="window-title">
     {#if children}
       {@render children()}

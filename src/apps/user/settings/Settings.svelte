@@ -38,7 +38,7 @@
 
 <Sidebar {process} />
 <div class="container {className}">
-  <CustomTitlebar {process}>
+  <CustomTitlebar {process} className={$slideVisible ? "sliding" : ""}>
     {#if $slideVisible}
       <button
         class="lucide icon-arrow-left"

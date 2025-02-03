@@ -11,6 +11,7 @@
 @import url("./settings/slide.css");
 @import url("./settings/slide/weatherlocation.css");
 @import url("./settings/slide/userstyle.css");
+@import url("./settings/slide/loginactivity.css");
 
 #systemSettings > div.body {
   padding: 0;
@@ -32,6 +33,9 @@
   position: relative;
 }
 
+#systemSettings > div.body div.container > div.titlebar.custom.sliding {
+  background-color: var(--win-bg);
+}
 #systemSettings > div.body div.container > div.titlebar.custom button.lucide {
   font-size: 16px;
   width: 30px;
