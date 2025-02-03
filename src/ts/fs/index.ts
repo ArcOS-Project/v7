@@ -30,6 +30,8 @@ export class Filesystem extends KernelModule {
     letter?: string,
     ...args: any[]
   ): Promise<FilesystemDrive | false> {
+    this.Log(`Mounting drive '${id}' as letter ${letter || "<NONE>"}`);
+
     if (letter) this.validateDriveLetter(letter);
 
     if (this.drives[id] || (letter && this.getDriveByLetter(letter, false)))
@@ -40,15 +42,17 @@ export class Filesystem extends KernelModule {
 
     this.drives[id] = instance;
 
-    await instance._spinUp();
+    await instance.__spinUp();
 
     return instance as FilesystemDrive;
   }
 
   async umountDrive(id: string) {
+    this.Log(`Unmounting drive '${id}'`);
+
     if (!this.drives[id]) return false;
 
-    await this.drives[id]._spinDown();
+    await this.drives[id].__spinDown();
 
     delete this.drives[id];
 

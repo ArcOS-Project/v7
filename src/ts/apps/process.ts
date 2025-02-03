@@ -76,6 +76,8 @@ export class AppProcess extends Process {
   }
 
   async closeWindow(kill = true) {
+    this.Log(`Closing window ${this.pid}`);
+
     const canClose = this._disposed || (await this.onClose());
 
     if (!canClose) return;

@@ -1,9 +1,11 @@
 import type { WaveKernel } from "$ts/kernel";
+import { Log } from "$ts/kernel/logging";
 import { ServerManager } from "$ts/server";
 import type {
   DirectoryReadReturn,
   RecursiveDirectoryReadReturn,
 } from "$types/fs";
+import { LogLevel } from "$types/logging";
 import type { UserQuota } from "../../types/fs";
 
 export class FilesystemDrive {
@@ -24,6 +26,26 @@ export class FilesystemDrive {
     this.uuid = uuid;
     this.driveLetter = letter;
     this.kernel = kernel;
+  }
+
+  Log(message: string, level = LogLevel.info) {
+    Log(`FilesystemDrive::${this.uuid}`, message, level);
+  }
+
+  async __spinUp() {
+    this.Log("Spinning up drive...");
+
+    await this._spinUp();
+
+    this.Log("Heads loaded.");
+  }
+
+  async __spinDown() {
+    this.Log("Spinning down drive...");
+
+    await this._spinDown();
+
+    this.Log("READY.");
   }
 
   async _spinUp() {}
