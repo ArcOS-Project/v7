@@ -1,20 +1,26 @@
 <script lang="ts">
-  import { SecurityLowIcon, WaveIcon } from "$ts/images/general";
+  import { groupByTimeFrame } from "$ts/group";
+  import { SecurityLowIcon } from "$ts/images/general";
+  import { TimeFrames } from "$ts/server/user/store";
   import type { LoginActivity } from "$types/activity";
   import type { SettingsRuntime } from "../../runtime";
+  import Section from "../Section.svelte";
   import Activity from "./LoginActivity/Activity.svelte";
 
   const { process }: { process: SettingsRuntime } = $props();
   const { userDaemon } = process;
 
-  let activities: LoginActivity[] = $state([]);
+  let groups: Record<string, LoginActivity[]> = $state({});
 
   $effect(() => {
     getActivity();
   });
 
   async function getActivity() {
-    activities = ((await userDaemon?.getLoginActivity()) || []).reverse();
+    groups = groupByTimeFrame<LoginActivity>(
+      ((await userDaemon?.getLoginActivity()) || []).reverse(),
+      "createdAt"
+    );
   }
 </script>
 
@@ -22,10 +28,16 @@
   <div class="header">
     <img src={SecurityLowIcon} alt="" />
     <h1>Account Activity</h1>
-    <p>Here you can see all security activity on your account.</p>
+    <p>View the security activity on your account.</p>
   </div>
 
-  {#each activities as activity}
-    <Activity {activity}></Activity>
+  {#each Object.entries(groups) as [when, activities]}
+    {#if activities.length}
+      <Section caption={TimeFrames[when]}>
+        {#each activities as activity}
+          <Activity {activity} />
+        {/each}
+      </Section>
+    {/if}
   {/each}
 </div>

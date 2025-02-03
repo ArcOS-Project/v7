@@ -179,3 +179,11 @@ export const ActivityCaptionTranslations = {
   login: "Logged in",
   logout: "Logged out",
 };
+
+export const TimeFrames: Record<string, string> = {
+  today: "Today",
+  yesterday: "Yesterday",
+  sevenDays: "Past 7 days",
+  twentyEightDays: "Past 28 days",
+  older: "Older",
+};

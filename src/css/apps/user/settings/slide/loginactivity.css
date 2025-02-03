@@ -6,11 +6,13 @@
   display: flex;
   align-items: start;
   gap: 10px;
-  margin-bottom: 15px;
-  background-color: var(--button-bg);
   padding: 10px;
-  border-radius: 15px;
   text-align: left;
+  border-bottom: var(--win-border);
+}
+
+#systemSettings div.account_loginActivity div.activity-item:last-child {
+  border-bottom: none;
 }
 
 #systemSettings div.account_loginActivity div.activity-item p {
@@ -21,12 +23,19 @@
 
 #systemSettings div.account_loginActivity div.activity-item div.info {
   flex-grow: 1;
-  max-width: calc(100% - 58px);
+  max-width: calc(100% - 42px);
 }
 
 #systemSettings div.account_loginActivity div.activity-item div.info p.what {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
+  margin-bottom: 3px;
+}
+
+#systemSettings div.account_loginActivity div.activity-item div.info span.when {
+  opacity: 0.5;
+  font-weight: normal;
+  font-size: 12px;
 }
 
 #systemSettings
@@ -39,10 +48,10 @@
 }
 
 #systemSettings div.account_loginActivity div.activity-item div.icon {
-  width: 48px;
-  min-width: 48px;
+  width: 32px;
+  min-width: 32px;
   border-radius: 50%;
-  height: 48px;
+  height: 32px;
   background-color: var(--button-glass-bg);
   display: flex;
   justify-content: center;
@@ -50,5 +59,5 @@
 }
 
 #systemSettings div.account_loginActivity div.activity-item div.icon span {
-  font-size: 24px;
+  font-size: 16px;
 }
