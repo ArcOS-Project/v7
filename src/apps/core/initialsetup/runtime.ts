@@ -153,6 +153,8 @@ export class InitialSetupRuntime extends AppProcess {
   }
 
   async licenseConfirmation() {
+    this.Log("Showing license confirmation");
+
     MessageBox(
       {
         title: "Just making sure...",
@@ -181,6 +183,8 @@ export class InitialSetupRuntime extends AppProcess {
   }
 
   async viewLicense() {
+    this.Log("Opening ArcOS license message box");
+
     MessageBox(
       {
         image: SecurityMediumIcon,
@@ -214,6 +218,8 @@ export class InitialSetupRuntime extends AppProcess {
     const password = this.password();
     const confirm = this.confirm();
     const email = this.email();
+
+    this.Log(`Creating the user account '${username}' (${email})`);
 
     if (confirm !== password) {
       MessageBox(
@@ -269,6 +275,8 @@ export class InitialSetupRuntime extends AppProcess {
   }
 
   async checkAccountActivation() {
+    this.Log(`Checking account activation of '${this.newUsername()}'`);
+
     const token = await LoginUser(this.newUsername(), this.password());
 
     if (!token) {
@@ -310,6 +318,8 @@ export class InitialSetupRuntime extends AppProcess {
   }
 
   async finish() {
+    this.Log(`Finishing`);
+
     this.showMainContent.set(false);
 
     await Sleep(1000);
@@ -318,6 +328,8 @@ export class InitialSetupRuntime extends AppProcess {
   }
 
   async roturAuthGui() {
+    this.Log(`Spawning RoturAuthGui`);
+
     this.userDaemon?.appStore?.loadApp(RoturAuthGuiApp);
 
     await this.userDaemon?.spawnApp("RoturAuthGui", this.pid, this.userDaemon);

@@ -48,6 +48,8 @@ export class RoturAuthGuiProcess extends AppProcess {
   }
 
   async loginToRotur(username: string, password: string) {
+    this.Log(`Attempting to log into rotur as ${username}`);
+
     if (!this.userDaemon)
       throw new Error("Can't run RoturAuthGui without a user daemon");
 
@@ -89,6 +91,8 @@ export class RoturAuthGuiProcess extends AppProcess {
   }
 
   async register(username: string, password: string) {
+    this.Log(`Attempting to register as ${username}`);
+
     try {
       await this.userDaemon?.rotur?.register(username, password);
 

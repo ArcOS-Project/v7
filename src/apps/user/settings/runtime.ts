@@ -37,6 +37,8 @@ export class SettingsRuntime extends AppProcess {
   }
 
   switchPage(pageId: string) {
+    this.Log(`Loading page '${pageId}'`);
+
     if (!settingsPageStore.has(pageId)) return;
 
     const page = settingsPageStore.get(pageId);
@@ -48,6 +50,8 @@ export class SettingsRuntime extends AppProcess {
   }
 
   async showSlide(id: string) {
+    this.Log(`Showing slide '${id}'`);
+
     const slide = SlideStore.get(id);
 
     if (!slide) return;

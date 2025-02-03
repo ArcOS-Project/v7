@@ -20,6 +20,8 @@ export class BootScreenRuntime extends AppProcess {
   }
 
   async begin() {
+    this.Log("Initializing boot");
+
     this.connected.set(ServerManager.isConnected());
 
     if (!this.connected()) {
@@ -40,6 +42,8 @@ export class BootScreenRuntime extends AppProcess {
   }
 
   async startBooting() {
+    this.Log("Beginning boot process");
+
     if (this.progress()) return;
 
     this.status.set("&nbsp;");

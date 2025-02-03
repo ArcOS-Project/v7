@@ -84,6 +84,8 @@ export class ShellRuntime extends AppProcess {
   }
 
   async getWeather(): Promise<WeatherInformation> {
+    this.Log(`Retrieving weather`);
+
     const preferences = this.userPreferences();
     const params = {
       latitude: preferences.shell.actionCenter.weatherLocation.latitude,
@@ -117,6 +119,8 @@ export class ShellRuntime extends AppProcess {
   }
 
   async closeFocused() {
+    this.Log("Attempting to close focused window");
+
     const focusedPid = this.handler.renderer?.focusedPid();
 
     if (!focusedPid) return;
@@ -143,6 +147,8 @@ export class ShellRuntime extends AppProcess {
   }
 
   pinApp(appId: string) {
+    this.Log(`Pinning ${appId}`);
+
     this.userPreferences.update((v) => {
       if (v.pinnedApps.includes(appId)) return v;
 
@@ -153,6 +159,8 @@ export class ShellRuntime extends AppProcess {
   }
 
   unpinApp(appId: string) {
+    this.Log(`Unpinning ${appId}`);
+
     this.userPreferences.update((v) => {
       if (!v.pinnedApps.includes(appId)) return v;
 

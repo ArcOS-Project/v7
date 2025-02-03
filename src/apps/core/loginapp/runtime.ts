@@ -60,6 +60,8 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async proceed(username: string, password: string) {
+    this.Log(`Checking account activation of '${username}'`);
+
     this.loadingStatus.set(`Hi, ${username}!`);
 
     const token = await LoginUser(username, password);
@@ -76,8 +78,10 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async startDaemon(token: string, username: string) {
-    this.Log("Starting user daemon");
+    this.Log(`Starting user daemon for '${username}'`);
+
     this.hideLockscreen.set(true);
+
     const userDaemon = await this.handler.spawn<UserDaemon>(
       UserDaemon,
       this.kernel.initPid,
@@ -103,7 +107,7 @@ export class LoginAppRuntime extends AppProcess {
       return;
     }
 
-    await userDaemon.logLogin();
+    await userDaemon.logActivity("login");
     await userDaemon.startPreferencesSync();
     await userDaemon.startFilesystemSupplier();
 
@@ -132,6 +136,8 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   revealListener() {
+    this.Log(`Starting reveal listener`);
+
     const listener = async (e: KeyboardEvent) => {
       if (this._disposed) return;
 
@@ -149,6 +155,8 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async logoff(daemon: UserDaemon) {
+    this.Log(`Logging off user '${daemon.username}'`);
+
     this.hideProfileImage.set(true);
     this.type = "logoff";
 
@@ -176,6 +184,8 @@ export class LoginAppRuntime extends AppProcess {
 
     await Sleep(2000);
 
+    await daemon.logActivity("logout");
+
     this.resetCookies();
     await daemon.discontinueToken();
     await daemon.killSelf();
@@ -191,6 +201,8 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async shutdown(daemon?: UserDaemon) {
+    this.Log(`Handling shutdown`);
+
     this.type = "shutdown";
 
     if (daemon) {
@@ -209,6 +221,8 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async restart(daemon?: UserDaemon) {
+    this.Log(`Handling restart`);
+
     this.type = "restart";
 
     if (daemon) {
@@ -230,6 +244,8 @@ export class LoginAppRuntime extends AppProcess {
     const token = daemon.token;
     const username = daemon.username;
 
+    this.Log(`Saving token of '${daemon.username}' to cookies`);
+
     const cookieOptions = {
       expires: 2,
       domain: import.meta.env.DEV ? "localhost" : "izk-arcos.nl",
@@ -240,6 +256,8 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   private async loadToken() {
+    this.Log(`Loading token from cookies`);
+
     const token = Cookies.get("arcToken");
     const username = Cookies.get("arcUsername");
 
@@ -263,6 +281,8 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   private async validateUserToken(token: string) {
+    this.Log(`Validating user token for token login`);
+
     try {
       const response = await Axios.get(`/user/self`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -275,6 +295,8 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   resetCookies() {
+    this.Log(`Resetting stored cookie state`);
+
     Cookies.remove("arcToken");
     Cookies.remove("arcUsername");
   }
