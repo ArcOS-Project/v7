@@ -1,5 +1,6 @@
 import { AppInfoApp } from "$apps/components/appinfo/metadata";
 import { RoturAuthGuiApp } from "$apps/components/roturauthgui/metadata";
+import { SecureContextApp } from "$apps/components/securecontext/metadata";
 import { ArcShellApp } from "$apps/components/shell/metadata";
 import { WallpaperApp } from "$apps/components/wallpaper/metadata";
 import { SystemSettings } from "$apps/user/settings/metadata";
@@ -8,6 +9,7 @@ import type { AppKeyCombinations } from "$types/accelerator";
 import type { AppStorage } from "$types/app";
 
 export const BuiltinApps: AppStorage = [
+  SecureContextApp,
   WallpaperApp,
   ArcShellApp,
   SystemSettings,

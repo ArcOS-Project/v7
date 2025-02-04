@@ -1,10 +1,8 @@
 import { MessageBox } from "$ts/dialog";
-import { Filesystem } from "$ts/fs";
 import { BugReportIcon, ComponentIcon } from "$ts/images/general";
-import { ArcLang } from "$ts/lang";
 import { Draggable } from "@neodrag/vanilla";
 import { unmount } from "svelte";
-import type { App, AppProcessData, ThirdPartyApp } from "../../types/app";
+import type { App, AppProcessData } from "../../types/app";
 import type { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
@@ -13,7 +11,6 @@ import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
 import { BuiltinApps } from "./store";
-import { arrayToText } from "$ts/fs/convert";
 
 export class AppManager extends Process {
   currentState: number[] = [];
@@ -95,7 +92,7 @@ export class AppManager extends Process {
         this.target.append(window);
       } else {
         wrapper.setAttribute("data-pid", process.pid.toString());
-        wrapper.className = "overlay-wrapper";
+        wrapper.className = `overlay-wrapper shade-${process.app.id}`;
 
         window.classList.add("overlay");
 
