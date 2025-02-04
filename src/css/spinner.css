@@ -1,15 +1,15 @@
-div.spinner {
+div.html-spinner {
   --size: 32px;
   --thickness: 5px;
   border: var(--thickness) solid #0000;
-  border-top: var(--thickness) solid #fff;
+  border-top: var(--thickness) solid currentColor;
   border-radius: 50%;
   width: var(--size);
   height: var(--size);
   animation: spin 0.75s linear infinite;
 }
 
-div.spinner.large {
+div.html-spinner.large {
   --size: 64px;
   --thickness: 5px;
 }
