@@ -31,6 +31,7 @@ import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes } from "./store";
+import type { ElevationData } from "$types/elevation";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -43,6 +44,9 @@ export class UserDaemon extends Process {
   public battery = Store<BatteryType | undefined>();
   public networkSpeed = Store<number>(-1);
   public appStore: ApplicationStorage | undefined;
+  public Wallpaper = Store<Wallpaper>(Wallpapers.img0);
+  public lastWallpaper = Store<string>("img0");
+  private _elevating = false;
 
   private preferencesUnsubscribe: Unsubscriber | undefined;
   private fs: Filesystem;
@@ -127,9 +131,24 @@ export class UserDaemon extends Process {
       v = this.checkCurrentThemeIdValidity(v);
       this.commitPreferences(v);
       this.setAppRendererClasses(v);
+      this.updateWallpaper(v);
     });
 
     this.preferencesUnsubscribe = unsubscribe;
+  }
+
+  async updateWallpaper(v: UserPreferences) {
+    const incoming = v.desktop.wallpaper;
+
+    if (incoming === this.lastWallpaper()) return;
+
+    this.lastWallpaper.set(incoming);
+
+    const wallpaper = await this.getWallpaper(incoming);
+
+    if (!wallpaper) return;
+
+    this.Wallpaper.set(wallpaper);
   }
 
   getAppRendererStyle(accent: string) {
@@ -140,7 +159,8 @@ export class UserDaemon extends Process {
     --accent-dark: ${darkenColor(accent, 75)} !important;
     --accent-darkest: ${darkenColor(accent, 85)} !important;
     --accent-light-transparent: ${lightenColor(accent)}77 !important;
-    --accent-light-invert: ${invertColor(lightenColor(accent))} !important;`;
+    --accent-light-invert: ${invertColor(lightenColor(accent))} !important;
+    --wallpaper: url('${this.Wallpaper()?.url || Wallpapers.img0.url}');`;
   }
 
   setAppRendererClasses(v: UserPreferences) {
@@ -179,7 +199,8 @@ export class UserDaemon extends Process {
       this.handler.renderer?.target.append(styleLoader);
     }
 
-    styleLoader.textContent = style.enabled ? style.content || "" : "";
+    styleLoader.textContent =
+      style.enabled && !this._elevating ? style.content || "" : "";
   }
 
   async commitPreferences(preferences: UserPreferences) {
@@ -236,14 +257,14 @@ export class UserDaemon extends Process {
     this.commitPreferences(result);
   }
 
-  async discontinueToken() {
+  async discontinueToken(token = this.token) {
     this.Log(`Discontinuing token`);
 
     try {
       const response = await Axios.post(
         `/logout`,
         {},
-        { headers: { Authorization: `Bearer ${this.token}` } }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       return response.status === 200;
@@ -839,5 +860,56 @@ export class UserDaemon extends Process {
     } catch {
       return false;
     }
+  }
+
+  async elevate(data: ElevationData) {
+    const id = crypto.randomUUID();
+    const key = crypto.randomUUID();
+    const shellPid = this.env.get("shell_pid");
+
+    if (this.preferences().security.disabled) return true;
+
+    this._elevating = true;
+    this.setAppRendererClasses(this.preferences());
+
+    if (shellPid) {
+      const proc = await this.spawnOverlay(
+        "SecureContext",
+        +shellPid,
+        id,
+        key,
+        data
+      );
+
+      if (!proc) return false;
+    } else {
+      const proc = await this.spawnApp(
+        "SecureContext",
+        this.pid,
+        id,
+        key,
+        data
+      );
+
+      if (!proc) return false;
+    }
+
+    return new Promise((r) => {
+      this.globalDispatch.subscribe("elevation-approve", (data) => {
+        if (data[0] === id && data[1] === key) {
+          r(true);
+          this._elevating = false;
+          this.setAppRendererClasses(this.preferences());
+        }
+      });
+
+      this.globalDispatch.subscribe("elevation-deny", (data) => {
+        if (data[0] === id && data[1] === key) {
+          r(false);
+          this._elevating = false;
+          this.setAppRendererClasses(this.preferences());
+        }
+      });
+    });
   }
 }
