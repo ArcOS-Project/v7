@@ -1,0 +1,9 @@
+#SecureContext > div.body div.top div.login-status {
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+#SecureContext > div.body div.top div.login-status .whoami {
+  opacity: 0.5;
+}

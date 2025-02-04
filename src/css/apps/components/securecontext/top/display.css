@@ -1,0 +1,20 @@
+#SecureContext > div.body div.top div.display {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 0 15px;
+}
+
+#SecureContext > div.body div.top div.display img {
+  height: 48px;
+  min-width: 48px;
+}
+
+#SecureContext > div.body div.top div.display p.title {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+#SecureContext > div.body div.top div.display p.description {
+  opacity: 0.5;
+}

@@ -1,0 +1,20 @@
+#SecureContext div.actions button.approve.level-medium,
+#SecureContext div.actions button.approve.level-medium * {
+  background-color: rgba(255, 159, 5) !important;
+  color: #000 !important;
+}
+
+#SecureContext div.actions button.approve:hover:not(:active) {
+  filter: brightness(1.2);
+}
+
+#SecureContext div.actions button.approve.level-low,
+#SecureContext div.actions button.approve.level-low * {
+  background-color: rgba(112, 199, 77) !important;
+  color: #000 !important;
+}
+#SecureContext div.actions button.approve.level-high,
+#SecureContext div.actions button.approve.level-high * {
+  background-color: rgba(228, 54, 54) !important;
+  color: #fff !important;
+}

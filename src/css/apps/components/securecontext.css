@@ -1,0 +1,37 @@
+@import url("./securecontext/header.css");
+@import url("./securecontext/top.css");
+@import url("./securecontext/actions.css");
+
+.shade-SecureContext {
+  background-position: center;
+  background-size: cover;
+  background-image: linear-gradient(to bottom, #0006 0%, #0006 100%),
+    var(--wallpaper);
+  z-index: 10000000000;
+}
+
+#SecureContext {
+  z-index: 100000000000;
+}
+
+#SecureContext > div.body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+  height: 100%;
+  border-radius: 9px;
+}
+
+#SecureContext div.overlay-shade {
+  border-radius: 9px;
+}
+
+#SecureContext:not(.overlay) > div.body {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+#SecureContext {
+  overflow: visible;
+}

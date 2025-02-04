@@ -1,0 +1,28 @@
+@import url("./top/display.css");
+@import url("./top/loginstatus.css");
+
+#SecureContext > div.body div.top {
+  padding: 15px;
+  display: flex;
+  gap: 15px;
+  flex-direction: column;
+  height: calc(100% - 52px - 46px);
+}
+
+#SecureContext > div.body div.top p {
+  margin: 0;
+}
+
+#SecureContext > div.body div.top p.flex {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#SecureContext > div.body div.top input.password-field {
+  padding: 10px 15px;
+  width: 100%;
+}
+#SecureContext > div.body div.top p.notice span.material-icons-round {
+  min-width: 24px;
+}

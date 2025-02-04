@@ -1,0 +1,25 @@
+#SecureContext > div.body div.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  padding: 10px;
+  font-weight: bold;
+  border-bottom: var(--win-border);
+}
+
+#SecureContext > div.body div.header.level-medium {
+  background-color: rgba(255, 159, 5, 0.5);
+}
+
+#SecureContext > div.body div.header.level-low {
+  background-color: rgba(112, 199, 77, 0.5);
+}
+
+#SecureContext > div.body div.header.level-high {
+  background-color: rgba(228, 54, 54, 0.5);
+}
+
+#SecureContext > div.body div.header img {
+  height: 32px;
+}

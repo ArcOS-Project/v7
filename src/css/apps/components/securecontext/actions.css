@@ -1,0 +1,44 @@
+@import url("./actions/approve.css");
+
+#SecureContext div.actions {
+  display: flex;
+  margin-top: auto;
+  border-top: var(--win-border);
+  padding: 10px;
+  background-color: var(--button-bg);
+  margin: 0;
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+  width: 100%;
+  margin-top: auto;
+  justify-content: end;
+}
+
+#SecureContext div.actions div.right {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+#SecureContext div.actions button {
+  min-width: 85px;
+  margin: 0;
+  height: 32px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#SecureContext div.actions button:not(.suggested) {
+  background-color: var(--button-hover-bg);
+}
+
+#SecureContext div.actions button:not(.suggested):hover {
+  background-color: var(--button-glass-hover-bg);
+}
+
+#SecureContext div.actions button:not(.suggested):active {
+  background-color: var(--button-active-bg);
+}
