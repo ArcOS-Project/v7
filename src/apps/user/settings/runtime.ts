@@ -34,7 +34,19 @@ export class SettingsRuntime extends AppProcess {
   }
 
   async render() {
-    await this.closeIfSecondInstance();
+    const firstInstance = await this.closeIfSecondInstance();
+
+    if (firstInstance) {
+      const dispatch = this.handler.ConnectDispatch(firstInstance.pid);
+
+      dispatch?.dispatch("switch-page", this.currentPage());
+
+      return;
+    }
+
+    this.dispatch.subscribe("switch-page", (page: string) => {
+      this.switchPage(page);
+    });
   }
 
   switchPage(pageId: string) {

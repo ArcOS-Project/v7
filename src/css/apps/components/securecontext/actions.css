@@ -5,7 +5,7 @@
   margin-top: auto;
   border-top: var(--win-border);
   padding: 10px;
-  background-color: var(--button-bg);
+  background-color: var(--button-glass-bg);
   margin: 0;
   display: flex;
   gap: 10px;

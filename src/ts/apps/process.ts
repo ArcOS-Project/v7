@@ -162,6 +162,8 @@ export class AppProcess extends Process {
 
       this.handler.renderer?.focusPid(instances[0].pid);
     }
+
+    return instances.length ? instances[0] : undefined;
   }
 
   public startAcceleratorListener() {

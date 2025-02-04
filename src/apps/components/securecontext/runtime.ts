@@ -31,7 +31,9 @@ export class SecureContextRuntime extends AppProcess {
   }
 
   async render() {
-    await this.closeIfSecondInstance();
+    if (await this.closeIfSecondInstance()) return;
+
+    this.soundBus.playSound("arcos.dialog.info");
   }
 
   async validate() {

@@ -23,6 +23,11 @@
   padding: 10px 15px;
   width: 100%;
 }
-#SecureContext > div.body div.top p.notice span.material-icons-round {
+
+#SecureContext > div.body div.top p.notice {
+  margin: 5px 0;
+}
+#SecureContext > div.body div.top p.notice span.lucide {
   min-width: 24px;
+  font-size: 24px;
 }

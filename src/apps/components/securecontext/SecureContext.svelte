@@ -8,7 +8,7 @@
   import Password from "./SecureContext/Password.svelte";
 
   const { process }: AppComponentProps<SecureContextRuntime> = $props();
-  const { data } = process;
+  const { data, userPreferences } = process;
 
   function settings() {
     process.settings();
@@ -20,10 +20,13 @@
   <div class="top">
     <p class="what">{@html data.what}</p>
     <Display {data} />
-    <Notice userPreferences={process.userPreferences} />
+    <Notice {userPreferences} />
     <Password {process} />
     <div class="login-status">
-      <p class="whoami">Authorizing as {process.username}</p>
+      <p class="whoami">
+        Authorizing as {$userPreferences.account.displayName ||
+          process.username.toLowerCase()}
+      </p>
       <button class="link settings" onclick={settings}>Security Settings</button
       >
     </div>

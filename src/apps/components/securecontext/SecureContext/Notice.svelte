@@ -5,7 +5,7 @@
     $props();
 </script>
 
-<p class="notice" class:flex={$userPreferences.security.disabled}>
+<p class="notice" class:flex={$userPreferences.security.lockdown}>
   {#if !$userPreferences.security.lockdown}
     {#if !$userPreferences.security.noPassword}
       To continue, type in your password, and then click <b>Approve</b>.
