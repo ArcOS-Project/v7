@@ -23,7 +23,11 @@
 
   <Section caption="Options">
     <Option caption="Don't require password for approving">
-      <input type="checkbox" class="switch" />
+      <input
+        type="checkbox"
+        class="switch"
+        bind:checked={$userPreferences.security.noPassword}
+      />
     </Option>
     <Option caption="Reject all elevation requests">
       <input
