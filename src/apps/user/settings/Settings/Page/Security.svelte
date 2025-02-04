@@ -12,6 +12,18 @@
   const { userPreferences } = process;
 
   let showDangerZone = $state(false);
+
+  async function togglePassword(e: MouseEvent) {
+    if (!$userPreferences.security.noPassword) {
+      e.preventDefault();
+
+      const elevated = await process.elevate("disableSecurityPassword");
+
+      if (!elevated) return;
+
+      $userPreferences.security.noPassword = true;
+    }
+  }
 </script>
 
 <div class="centered-layout">
@@ -27,6 +39,7 @@
         type="checkbox"
         class="switch"
         bind:checked={$userPreferences.security.noPassword}
+        onclick={togglePassword}
       />
     </Option>
     <Option caption="Reject all elevation requests">

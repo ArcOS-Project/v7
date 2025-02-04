@@ -57,7 +57,7 @@ export class ProcessHandler extends KernelModule {
       }
     }
 
-    proc.name = proc.constructor.name;
+    proc.name ||= proc.constructor.name;
 
     const store = this.store.get();
 

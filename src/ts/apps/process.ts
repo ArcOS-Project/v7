@@ -16,6 +16,7 @@ import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
 import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
+import type { ElevationData } from "$types/elevation";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
 export class AppProcess extends Process {
@@ -32,6 +33,7 @@ export class AppProcess extends Process {
   globalDispatch: GlobalDispatcher;
   userDaemon: UserDaemon | undefined;
   protected overlayStore: Record<string, App> = {};
+  protected elevations: Record<string, ElevationData> = {};
   public acceleratorStore: AppKeyCombinations = [];
   context: ContextMenuLogic;
 
@@ -213,7 +215,7 @@ export class AppProcess extends Process {
       if (!modifiers || (key != pK && key && key != codedKey) || !isFocused)
         continue;
 
-      combo.action(this);
+      if (!this.userDaemon?._elevating) combo.action(this);
 
       break;
     }
@@ -308,5 +310,10 @@ export class AppProcess extends Process {
       parentPid ?? this.parentPid,
       ...args
     );
+  }
+
+  async elevate(id: string) {
+    if (!this.elevations[id]) return false;
+    return await this.userDaemon?.manuallyElevate(this.elevations[id]);
   }
 }

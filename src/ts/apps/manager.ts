@@ -412,7 +412,7 @@ export class AppManager extends Process {
     MessageBox(
       {
         title: `${data.metadata.name} - Application Error`,
-        message: lines.join(""),
+        message: lines.join("<br><br>"),
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
         image: BugReportIcon,
       },

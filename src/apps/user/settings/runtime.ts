@@ -1,10 +1,10 @@
 import { AppProcess } from "$ts/apps/process";
-import { SettingsIcon, WaveIcon } from "$ts/images/general";
+import { PasswordIcon, SettingsIcon, WaveIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
-import { ElevationLevel } from "$types/elevation";
+import { ElevationLevel, type ElevationData } from "$types/elevation";
 import { SaveThemeApp } from "./overlays/saveTheme";
 import { settingsPageStore } from "./store";
 import { SlideStore } from "./store/slides";
@@ -16,6 +16,23 @@ export class SettingsRuntime extends AppProcess {
 
   protected override overlayStore: Record<string, App> = {
     saveTheme: SaveThemeApp,
+  };
+
+  protected override elevations: Record<string, ElevationData> = {
+    showLoginActivity: {
+      what: "ArcOS needs your permission to view security activity",
+      title: "View security activity",
+      description: "Settings App",
+      image: WaveIcon,
+      level: ElevationLevel.medium,
+    },
+    disableSecurityPassword: {
+      what: "ArcOS needs your permission to disable passwords in the <b>Secure Context</b>:",
+      image: PasswordIcon,
+      title: "Disable secure context password",
+      description: "This will make your account less secure",
+      level: ElevationLevel.medium,
+    },
   };
 
   constructor(
@@ -80,16 +97,7 @@ export class SettingsRuntime extends AppProcess {
   }
 
   async loginActivity() {
-    if (
-      !(await this.userDaemon?.elevate({
-        what: "ArcOS needs your permission to view security activity",
-        title: "View security activity",
-        description: "Settings App",
-        image: WaveIcon,
-        level: ElevationLevel.medium,
-      }))
-    )
-      return;
+    if (!(await this.elevate("showLoginActivity"))) return;
 
     this.showSlide("account_loginActivity");
   }

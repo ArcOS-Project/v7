@@ -16,6 +16,7 @@ import { Wallpapers } from "$ts/wallpaper/store";
 import { Store } from "$ts/writable";
 import type { LoginActivity } from "$types/activity";
 import type { AppStorage, ThirdPartyApp } from "$types/app";
+import type { ElevationData } from "$types/elevation";
 import { LogLevel } from "$types/logging";
 import type { BatteryType } from "$types/navigator";
 import type { Notification } from "$types/notification";
@@ -31,7 +32,6 @@ import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes } from "./store";
-import type { ElevationData } from "$types/elevation";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -46,8 +46,8 @@ export class UserDaemon extends Process {
   public appStore: ApplicationStorage | undefined;
   public Wallpaper = Store<Wallpaper>(Wallpapers.img0);
   public lastWallpaper = Store<string>("img0");
-  private _elevating = false;
-
+  public _elevating = false;
+  private elevations: Record<string, ElevationData> = {};
   private preferencesUnsubscribe: Unsubscriber | undefined;
   private fs: Filesystem;
   private wallpaperGetters: WallpaperGetters = [
@@ -862,7 +862,15 @@ export class UserDaemon extends Process {
     }
   }
 
-  async elevate(data: ElevationData) {
+  async elevate(id: string) {
+    const data = this.elevations[id];
+
+    if (!data) return false;
+
+    return await this.manuallyElevate(data);
+  }
+
+  async manuallyElevate(data: ElevationData) {
     const id = crypto.randomUUID();
     const key = crypto.randomUUID();
     const shellPid = this.env.get("shell_pid");
@@ -911,5 +919,9 @@ export class UserDaemon extends Process {
         }
       });
     });
+  }
+
+  loadElevation(id: string, data: ElevationData) {
+    this.elevations[id] = data;
   }
 }
