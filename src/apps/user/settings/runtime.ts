@@ -1,9 +1,10 @@
 import { AppProcess } from "$ts/apps/process";
-import { SettingsIcon } from "$ts/images/general";
+import { SettingsIcon, WaveIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
+import { ElevationLevel } from "$types/elevation";
 import { SaveThemeApp } from "./overlays/saveTheme";
 import { settingsPageStore } from "./store";
 import { SlideStore } from "./store/slides";
@@ -64,5 +65,20 @@ export class SettingsRuntime extends AppProcess {
 
     this.currentSlide.set(id);
     this.slideVisible.set(true);
+  }
+
+  async loginActivity() {
+    if (
+      !(await this.userDaemon?.elevate({
+        what: "ArcOS needs your permission to view security activity",
+        title: "View security activity",
+        description: "Settings App",
+        image: WaveIcon,
+        level: ElevationLevel.medium,
+      }))
+    )
+      return;
+
+    this.showSlide("account_loginActivity");
   }
 }
