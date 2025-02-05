@@ -2,14 +2,11 @@
   import type { AppComponentProps } from "$types/app";
   import ErrorMessage from "./ErrorMessage.svelte";
   import Loading from "./Loading.svelte";
-  import LockScreen from "./LockScreen.svelte";
   import LoginForm from "./LoginForm.svelte";
   import type { LoginAppRuntime } from "./runtime";
-  import Topbar from "./Topbar.svelte";
 
   const { process }: AppComponentProps<LoginAppRuntime> = $props();
   const {
-    hideLockscreen,
     loadingStatus,
     errorMessage,
     profileImage,
@@ -17,8 +14,6 @@
     loginBackground,
   } = process;
 </script>
-
-<Topbar {hideLockscreen} {loadingStatus} {errorMessage} />
 
 <div
   class="container"
@@ -51,5 +46,3 @@
     ></button>
   </div>
 {/if}
-
-<LockScreen {hideLockscreen} />

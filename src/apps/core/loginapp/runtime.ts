@@ -13,7 +13,6 @@ import type { LoginAppProps } from "./types";
 
 export class LoginAppRuntime extends AppProcess {
   private readonly DEFAULT_WALLPAPER = Wallpapers.img15.url;
-  public hideLockscreen = Store<boolean>(false);
   public loadingStatus = Store<string>("");
   public errorMessage = Store<string>("");
   public profileImage = Store<string>(ProfilePictures.def);
@@ -31,7 +30,6 @@ export class LoginAppRuntime extends AppProcess {
     super(handler, pid, parentPid, app);
 
     if (props.type) {
-      this.hideLockscreen.set(true);
       this.hideProfileImage.set(true);
 
       if (!props.userDaemon)
@@ -55,12 +53,10 @@ export class LoginAppRuntime extends AppProcess {
 
   async render() {
     if (!this.type) await this.loadToken();
-
-    this.revealListener();
   }
 
   async proceed(username: string, password: string) {
-    this.Log(`Checking account activation of '${username}'`);
+    this.Log(`Trying login of '${username}'`);
 
     this.loadingStatus.set(`Hi, ${username}!`);
 
@@ -80,7 +76,7 @@ export class LoginAppRuntime extends AppProcess {
   async startDaemon(token: string, username: string) {
     this.Log(`Starting user daemon for '${username}'`);
 
-    this.hideLockscreen.set(true);
+    this.loadingStatus.set("Starting daemon");
 
     const userDaemon = await this.handler.spawn<UserDaemon>(
       UserDaemon,
@@ -96,7 +92,11 @@ export class LoginAppRuntime extends AppProcess {
       return;
     }
 
+    this.loadingStatus.set("Saving token");
+
     this.saveToken(userDaemon);
+
+    this.loadingStatus.set("Loading your settings");
 
     const userInfo = await userDaemon.getUserInfo();
 
@@ -107,8 +107,16 @@ export class LoginAppRuntime extends AppProcess {
       return;
     }
 
+    this.loadingStatus.set("Notifying login activity");
+
     await userDaemon.logActivity("login");
+
+    this.loadingStatus.set("Starting filesystem");
+
     await userDaemon.startFilesystemSupplier();
+
+    this.loadingStatus.set("Starting synchronization");
+
     await userDaemon.startPreferencesSync();
 
     this.profileImage.set(
@@ -122,10 +130,15 @@ export class LoginAppRuntime extends AppProcess {
       ).url
     );
 
+    this.loadingStatus.set("Starting status refresh");
+
     await userDaemon.startSystemStatusRefresh();
+
+    this.loadingStatus.set("Starting Rotur");
+
     await userDaemon.startRotur();
 
-    await Sleep(2000);
+    this.loadingStatus.set("Let's go!");
 
     await this.kernel.state?.loadState("desktop", { userDaemon });
     this.soundBus.playSound("arcos.system.logon");
@@ -133,25 +146,6 @@ export class LoginAppRuntime extends AppProcess {
     userDaemon.setAppRendererClasses(userDaemon.preferences());
     await userDaemon.appStore?.refresh();
     await userDaemon.spawnAutoloadApps();
-  }
-
-  revealListener() {
-    this.Log(`Starting reveal listener`);
-
-    const listener = async (e: KeyboardEvent) => {
-      if (this._disposed) return;
-
-      if (e.key && e.key.toLowerCase() === " ") this.hideLockscreen.set(true);
-
-      await Sleep(10);
-
-      addListener();
-    };
-
-    const addListener = () =>
-      document.addEventListener("keydown", listener, { once: true });
-
-    addListener();
   }
 
   async logoff(daemon: UserDaemon) {
@@ -189,8 +183,6 @@ export class LoginAppRuntime extends AppProcess {
     this.resetCookies();
     await daemon.discontinueToken();
     await daemon.killSelf();
-
-    this.hideLockscreen.set(false);
 
     setTimeout(() => {
       this.loadingStatus.set("");
