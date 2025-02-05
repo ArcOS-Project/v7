@@ -8,7 +8,7 @@ import { ServerDrive } from "$ts/fs/drives/server";
 import { ZIPDrive } from "$ts/fs/drives/zipdrive";
 import { join } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
-import { AccountIcon } from "$ts/images/general";
+import { AccountIcon, PasswordIcon } from "$ts/images/general";
 import type { ArcLang } from "$ts/lang";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
@@ -954,6 +954,32 @@ export class UserDaemon extends Process {
         expires: 2,
         domain: import.meta.env.DEV ? "localhost" : "izk-arcos.nl",
       });
+
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async changePassword(newPassword: string): Promise<boolean> {
+    const elevated = await this.manuallyElevate({
+      what: "ArcOS needs your permission to change your password:",
+      image: PasswordIcon,
+      title: "Change password",
+      description: `of ${this.username}`,
+      level: ElevationLevel.medium,
+    });
+
+    if (!elevated) return false;
+
+    try {
+      const response = await Axios.post(
+        "/user/changepswd",
+        toForm({ newPassword }),
+        { headers: { Authorization: `Bearer ${this.token}` } }
+      );
+
+      if (response.status !== 200) return false;
 
       return true;
     } catch {

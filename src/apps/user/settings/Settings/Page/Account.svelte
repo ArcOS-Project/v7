@@ -30,7 +30,12 @@
       chevron
       onclick={() => process.spawnOverlay("changeUsername")}
     />
-    <Option caption="Change your password" image={PasswordIcon} chevron />
+    <Option
+      caption="Change your password"
+      image={PasswordIcon}
+      chevron
+      onclick={() => process.spawnOverlay("changePassword")}
+    />
     <Option caption="Manage Rotur..." image={RoturIcon} chevron />
   </Section>
 

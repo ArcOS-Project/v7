@@ -1,5 +1,64 @@
-<script>
+<script lang="ts">
+  import { MessageBox } from "$ts/dialog";
+  import { WarningIcon } from "$ts/images/dialog";
   import { PasswordIcon } from "$ts/images/general";
+  import { GoodStatusIcon } from "$ts/images/status";
+  import type { SettingsRuntime } from "../../runtime";
+
+  const { process }: { process: SettingsRuntime } = $props();
+
+  let newPassword = $state("");
+  let confirmNewPassword = $state("");
+
+  async function changeIt() {
+    if (newPassword !== confirmNewPassword) {
+      MessageBox(
+        {
+          title: "Change password",
+          message: "The passwords you entered don't match. Please try again.",
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          image: WarningIcon,
+          sound: "arcos.dialog.warning",
+        },
+        process.parentPid,
+        true
+      );
+
+      return;
+    }
+
+    const result = await process.userDaemon?.changePassword(newPassword);
+
+    process.closeWindow();
+
+    if (!result) {
+      MessageBox(
+        {
+          title: "Change password",
+          message:
+            "Failed to change your password! Either the password is invalid or you didn't approve the elevation request. Please try again.",
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          image: WarningIcon,
+          sound: "arcos.dialog.warning",
+        },
+        process.parentPid,
+        true
+      );
+    } else {
+      MessageBox(
+        {
+          title: "Change password",
+          message:
+            "Your password has been changed successfully! You'll have to use this password when logging in in the future",
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          image: GoodStatusIcon,
+          sound: "arcos.dialog.info",
+        },
+        process.parentPid,
+        true
+      );
+    }
+  }
 </script>
 
 <div class="top">
@@ -12,12 +71,23 @@
       Fill out the following fields to change your password. You will stay
       logged in everywhere if you change it.
     </p>
-    <input type="password" placeholder="Old password" />
-    <input type="password" placeholder="New password" />
-    <input type="password" placeholder="Confirm new password" />
+    <input
+      type="password"
+      placeholder="New password"
+      bind:value={newPassword}
+    />
+    <input
+      type="password"
+      placeholder="Confirm new password"
+      bind:value={confirmNewPassword}
+    />
   </div>
 </div>
 <div class="bottom">
-  <button>Cancel</button>
-  <button class="suggested">Confirm</button>
+  <button onclick={() => process.closeWindow()}>Cancel</button>
+  <button
+    class="suggested"
+    disabled={!newPassword || !confirmNewPassword}
+    onclick={changeIt}>Confirm</button
+  >
 </div>
