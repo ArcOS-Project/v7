@@ -1,5 +1,10 @@
 import { AppProcess } from "$ts/apps/process";
-import { PasswordIcon, SettingsIcon, WaveIcon } from "$ts/images/general";
+import {
+  PasswordIcon,
+  SecurityHighIcon,
+  SettingsIcon,
+  WaveIcon,
+} from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
@@ -32,6 +37,13 @@ export class SettingsRuntime extends AppProcess {
       title: "Disable secure context password",
       description: "This will make your account less secure",
       level: ElevationLevel.medium,
+    },
+    turnOffSysSec: {
+      what: "ArcOS needs your permission to turn off System Security. We strongly advise against this.",
+      image: SecurityHighIcon,
+      title: "Disable System Security",
+      description: "We do NOT recommend this",
+      level: ElevationLevel.high,
     },
   };
 

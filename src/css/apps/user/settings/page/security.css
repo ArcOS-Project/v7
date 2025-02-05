@@ -2,6 +2,10 @@
   background-color: var(--clr-red-bg) !important;
 }
 
+#systemSettings div.securityCenter div.option.danger-zone.disabled {
+  background-color: var(--clr-green-bg) !important;
+}
+
 #systemSettings div.securityCenter div.danger-zone-content {
   padding: 10px;
   text-align: left;
@@ -13,6 +17,7 @@
   align-items: center;
   gap: 5px;
   margin-left: auto;
+  margin-top: 10px;
 }
 
 #systemSettings div.securityCenter div.danger-zone-content button img {

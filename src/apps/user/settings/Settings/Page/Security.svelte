@@ -2,6 +2,7 @@
   import {
     ElevationIcon,
     SecurityHighIcon,
+    SecurityLowIcon,
     SecurityMediumIcon,
   } from "$ts/images/general";
   import type { SettingsRuntime } from "../../runtime";
@@ -22,6 +23,18 @@
       if (!elevated) return;
 
       $userPreferences.security.noPassword = true;
+    }
+  }
+
+  async function turnOff() {
+    if ($userPreferences.security.disabled) {
+      $userPreferences.security.disabled = false;
+    } else {
+      const elevated = await process.elevate("turnOffSysSec");
+
+      if (!elevated) return;
+
+      $userPreferences.security.disabled = true;
     }
   }
 </script>
@@ -52,9 +65,15 @@
   </Section>
   <Section caption="Danger Zone">
     <Option
-      className="danger-zone"
-      image={SecurityHighIcon}
-      caption="Turn off system security"
+      className="danger-zone {$userPreferences.security.disabled
+        ? 'disabled'
+        : ''}"
+      image={$userPreferences.security.disabled
+        ? SecurityLowIcon
+        : SecurityHighIcon}
+      caption="Turn {$userPreferences.security.disabled
+        ? 'on'
+        : 'off'} system security"
       onclick={() => (showDangerZone = !showDangerZone)}
     >
       {#if !showDangerZone}
@@ -65,14 +84,28 @@
     </Option>
     {#if showDangerZone}
       <div class="danger-zone-content">
-        <p>
-          Turning off system security will allow any unwanted operations from
-          running without your permission. We recommend that you leave system
-          security <b>Enabled</b>.
-        </p>
-        <button class="disable">
+        {#if $userPreferences.security.disabled}
+          <p>
+            System security is disabled! It's recommended that you leave it
+            enabled to prevent unwanted elevated operations from running without
+            your permission.
+          </p>
+        {:else}
+          <p>
+            Turning off system security will allow any unwanted operations from
+            running without your permission. We recommend that you leave system
+            security <b>Enabled</b>.
+          </p>
+        {/if}
+        <button class="disable" onclick={turnOff}>
           <img src={ElevationIcon} alt="" />
-          <span>Turn off...</span>
+          <span>
+            {#if $userPreferences.security.disabled}
+              Turn on...
+            {:else}
+              Turn off...
+            {/if}
+          </span>
         </button>
       </div>
     {/if}

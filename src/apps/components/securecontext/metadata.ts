@@ -11,9 +11,9 @@ export const SecureContextApp: App = {
     author: "Izaak Kuipers",
     icon: SecureIcon,
   },
-  size: { w: 385, h: 400 },
-  minSize: { w: 385, h: 400 },
-  maxSize: { w: 385, h: 400 },
+  size: { w: 400, h: 400 },
+  minSize: { w: 400, h: 400 },
+  maxSize: { w: 400, h: 400 },
   controls: {
     minimize: false,
     maximize: false,
