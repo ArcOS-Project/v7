@@ -10,6 +10,7 @@ import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
+import { ChangeUsernameApp } from "./overlays/changeUsername";
 import { SaveThemeApp } from "./overlays/saveTheme";
 import { settingsPageStore } from "./store";
 import { SlideStore } from "./store/slides";
@@ -21,6 +22,7 @@ export class SettingsRuntime extends AppProcess {
 
   protected override overlayStore: Record<string, App> = {
     saveTheme: SaveThemeApp,
+    changeUsername: ChangeUsernameApp,
   };
 
   protected override elevations: Record<string, ElevationData> = {

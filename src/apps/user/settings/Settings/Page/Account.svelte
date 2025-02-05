@@ -24,7 +24,12 @@
   <Header {userInfo} {userPreferences} />
 
   <Section>
-    <Option caption="Rename your account" image={SecureIcon} chevron />
+    <Option
+      caption="Rename your account"
+      image={SecureIcon}
+      chevron
+      onclick={() => process.spawnOverlay("changeUsername")}
+    />
     <Option caption="Change your password" image={PasswordIcon} chevron />
     <Option caption="Manage Rotur..." image={RoturIcon} chevron />
   </Section>

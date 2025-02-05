@@ -8,6 +8,7 @@ import { ServerDrive } from "$ts/fs/drives/server";
 import { ZIPDrive } from "$ts/fs/drives/zipdrive";
 import { join } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
+import { AccountIcon } from "$ts/images/general";
 import type { ArcLang } from "$ts/lang";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
@@ -16,7 +17,7 @@ import { Wallpapers } from "$ts/wallpaper/store";
 import { Store } from "$ts/writable";
 import type { LoginActivity } from "$types/activity";
 import type { AppStorage, ThirdPartyApp } from "$types/app";
-import type { ElevationData } from "$types/elevation";
+import { ElevationLevel, type ElevationData } from "$types/elevation";
 import { LogLevel } from "$types/logging";
 import type { BatteryType } from "$types/navigator";
 import type { Notification } from "$types/notification";
@@ -28,6 +29,7 @@ import type {
   WallpaperGetters,
 } from "$types/user";
 import type { Wallpaper } from "$types/wallpaper";
+import Cookies from "js-cookie";
 import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
@@ -923,5 +925,39 @@ export class UserDaemon extends Process {
 
   loadElevation(id: string, data: ElevationData) {
     this.elevations[id] = data;
+  }
+
+  async changeUsername(newUsername: string): Promise<boolean> {
+    const elevated = await this.manuallyElevate({
+      what: "ArcOS needs your permission to change your username:",
+      image: AccountIcon,
+      title: "Change username",
+      description: `To ${newUsername}`,
+      level: ElevationLevel.medium,
+    });
+
+    if (!elevated) return false;
+
+    try {
+      const response = await Axios.patch(
+        "/user/rename",
+        toForm({ newUsername }),
+        { headers: { Authorization: `Bearer ${this.token}` } }
+      );
+
+      if (response.status !== 200) return false;
+
+      this.username = newUsername;
+      this.globalDispatch.dispatch("change-username", [newUsername]);
+
+      Cookies.set("arcUsername", newUsername, {
+        expires: 2,
+        domain: import.meta.env.DEV ? "localhost" : "izk-arcos.nl",
+      });
+
+      return true;
+    } catch {
+      return false;
+    }
   }
 }

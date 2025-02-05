@@ -19,6 +19,7 @@ div.window > div.overlay-wrapper div.window.overlay div.titlebar {
 }
 div.window > div.overlay-wrapper div.window.overlay div.body {
   border-top: none;
+  height: 100%;
 }
 
 div.window > div.overlay-wrapper.visible:not(.closing) {
