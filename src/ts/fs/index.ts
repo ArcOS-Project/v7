@@ -87,6 +87,8 @@ export class Filesystem extends KernelModule {
   }
 
   async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
+    this.Log(`Reading directory '${path}'`);
+
     this.validatePath(path);
     const drive = this.getDriveByLetter(path[0]);
 
@@ -94,6 +96,8 @@ export class Filesystem extends KernelModule {
   }
 
   async createDirectory(path: string): Promise<boolean> {
+    this.Log(`Creating directory '${path}'`);
+
     this.validatePath(path);
     const drive = this.getDriveByLetter(path[0]);
     path = this.removeDriveLetter(path);
@@ -107,6 +111,8 @@ export class Filesystem extends KernelModule {
   }
 
   async readFile(path: string): Promise<ArrayBuffer | undefined> {
+    this.Log(`Reading file '${path}'`);
+
     this.validatePath(path);
     const drive = this.getDriveByLetter(path[0]);
     path = this.removeDriveLetter(path);
@@ -115,6 +121,8 @@ export class Filesystem extends KernelModule {
   }
 
   async writeFile(path: string, data: Blob): Promise<boolean> {
+    this.Log(`Writing ${data.size} bytes to file '${path}'`);
+
     this.validatePath(path);
     const drive = this.getDriveByLetter(path[0]);
 
@@ -130,6 +138,8 @@ export class Filesystem extends KernelModule {
   }
 
   async tree(path: string): Promise<RecursiveDirectoryReadReturn | undefined> {
+    this.Log(`Getting tree of '${path}'`);
+
     this.validatePath(path);
 
     const drive = this.getDriveByLetter(path[0]);
@@ -140,6 +150,8 @@ export class Filesystem extends KernelModule {
   }
 
   async copyItem(source: string, destination: string): Promise<boolean> {
+    this.Log(`Copying '${source}' to '${destination}'`);
+
     this.validatePath(source);
     this.validatePath(destination);
 
@@ -159,6 +171,8 @@ export class Filesystem extends KernelModule {
   }
 
   async moveItem(source: string, destination: string): Promise<boolean> {
+    this.Log(`Moving '${source}' to '${destination}'`);
+
     this.validatePath(source);
     this.validatePath(destination);
 
@@ -181,6 +195,8 @@ export class Filesystem extends KernelModule {
   }
 
   async deleteItem(path: string): Promise<boolean> {
+    this.Log(`Deleting item '${path}'`);
+
     this.validatePath(path);
 
     const drive = this.getDriveByLetter(path[0]);

@@ -20,6 +20,7 @@
     const unsubscribe = userPreferences.subscribe(async (v) => {
       if (!v.shell.actionCenter.galleryImage) {
         noImage = true;
+        loading = false;
 
         return;
       }
