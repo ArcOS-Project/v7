@@ -54,6 +54,11 @@ div.window#loginApp div.container .profile-picture {
   transition: background-image 0.3s;
 }
 
+div.window#loginApp div.container h1.name {
+  font-size: 20px;
+  margin: -10px 0;
+}
+
 div.window#loginApp div.container div.field {
   display: flex;
   align-items: center;
@@ -129,7 +134,7 @@ div.window#loginApp p.loading {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-weight: bold;
+  /* font-weight: bold; */
   font-size: 18px;
   color: #fff;
   text-align: center;

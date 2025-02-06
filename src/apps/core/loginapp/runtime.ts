@@ -16,6 +16,7 @@ export class LoginAppRuntime extends AppProcess {
   public loadingStatus = Store<string>("");
   public errorMessage = Store<string>("");
   public profileImage = Store<string>(ProfilePictures.def);
+  public profileName = Store<string>("");
   public loginBackground = Store<string>(this.DEFAULT_WALLPAPER);
   public hideProfileImage = Store<boolean>(false);
   private type = "";
@@ -122,6 +123,9 @@ export class LoginAppRuntime extends AppProcess {
     this.profileImage.set(
       getProfilePicture(userDaemon.preferences().account.profilePicture)
     );
+    this.profileName.set(
+      userDaemon.preferences().account.displayName || username
+    );
     this.loginBackground.set(
       (
         await userDaemon.getWallpaper(
@@ -171,6 +175,9 @@ export class LoginAppRuntime extends AppProcess {
     this.profileImage.set(
       getProfilePicture(daemon.preferences().account.profilePicture)
     );
+    this.profileName.set(
+      daemon.preferences().account.displayName || daemon.username
+    );
     this.loginBackground.set(
       (await daemon.getWallpaper(daemon.preferences().account.loginBackground))
         .url
@@ -188,6 +195,7 @@ export class LoginAppRuntime extends AppProcess {
       this.loadingStatus.set("");
       this.hideProfileImage.set(false);
       this.profileImage.set(ProfilePictures.def);
+      this.profileName.set("");
       this.loginBackground.set(this.DEFAULT_WALLPAPER);
     }, 600);
   }
@@ -200,6 +208,9 @@ export class LoginAppRuntime extends AppProcess {
     if (daemon) {
       this.profileImage.set(
         getProfilePicture(daemon.preferences().account.profilePicture)
+      );
+      this.profileName.set(
+        daemon.preferences().account.displayName || daemon.username
       );
     }
 
@@ -220,6 +231,9 @@ export class LoginAppRuntime extends AppProcess {
     if (daemon) {
       this.profileImage.set(
         getProfilePicture(daemon.preferences().account.profilePicture)
+      );
+      this.profileName.set(
+        daemon.preferences().account.displayName || daemon.username
       );
     }
 

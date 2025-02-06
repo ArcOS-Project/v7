@@ -10,6 +10,7 @@
     loadingStatus,
     errorMessage,
     profileImage,
+    profileName,
     hideProfileImage,
     loginBackground,
   } = process;
@@ -22,7 +23,11 @@
 >
   {#if !$hideProfileImage}
     <div class="profile-picture" style="--src: url('{$profileImage}')"></div>
+    {#if $profileName}
+      <h1 class="name">{$profileName}</h1>
+    {/if}
   {/if}
+
   {#if $loadingStatus}
     <Loading {loadingStatus} />
   {:else if $errorMessage}
