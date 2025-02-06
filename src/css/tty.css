@@ -1,0 +1,21 @@
+div.tty {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0 !important;
+  background-color: #000;
+  font-family: "Unifont";
+  font-size: 16px;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+}
+
+div.tty * {
+  font-size: 16px;
+}
+
+body.show-tty div.tty {
+  z-index: 1000 !important;
+}

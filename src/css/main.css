@@ -9,6 +9,7 @@
 @import url("./sharp.css");
 @import url("./contextmenu.css");
 @import url("./spinner.css");
+@import url("./tty.css");
 
 html,
 body {
@@ -42,22 +43,28 @@ body {
 
 main#main {
   padding: 5px;
-  transition: opacity 300ms;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  background-color: #000;
 }
 
-main#main.hidden {
+main#main.hidden #appRenderer {
   opacity: 0;
-  pointer-events: none;
 }
 
 #appRenderer {
-  z-index: 100;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
+  background-color: #000;
+  transition: opacity 300ms;
 }
 
 #appRenderer > div.window:not(.core) {

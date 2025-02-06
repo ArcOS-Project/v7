@@ -2,9 +2,11 @@ import { getBuild } from "$ts/metadata/build";
 import { getLicense } from "$ts/metadata/license";
 import { getMode } from "$ts/metadata/mode";
 import { RoturExtension } from "$ts/rotur";
+import { Sleep } from "$ts/sleep";
 import { Store, type ReadableStore } from "$ts/writable";
 import {
   LogLevel,
+  LogLevelCaptions,
   ShortLogLevelCaptions,
   type LogItem,
 } from "../../types/logging";
@@ -79,6 +81,8 @@ export class WaveKernel {
 
     // KERNEL AREA STARTS HERE
 
+    this.startTTY();
+
     await getMode();
     await getBuild();
     await getLicense();
@@ -145,5 +149,34 @@ export class WaveKernel {
         ShortLogLevelCaptions[level]
       } ${source}: ${message}`
     );
+  }
+
+  async startTTY() {
+    const tty = document.createElement("div");
+    tty.className = "tty";
+
+    this.Logs.subscribe(async (v) => {
+      tty.innerText =
+        v
+          .map(
+            (v) =>
+              `[${(v.kernelTime / 1000).toFixed(4).padStart(12, " ")}] ${
+                ShortLogLevelCaptions[v.level]
+              } ${v.source}: ${v.message}`
+          )
+          .join("\n") + "\n ";
+    });
+
+    setInterval(() => {
+      tty.scrollTop = tty.scrollHeight;
+    }, 1);
+
+    document.body.append(tty);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.altKey && e.key === "F2") {
+        document.body.classList.toggle("show-tty");
+      }
+    });
   }
 }
