@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { AppManager } from "$ts/apps/manager";
+  import type { AppRenderer } from "$ts/apps/renderer";
   import { AppProcess } from "$ts/apps/process";
   import { ComponentIcon } from "$ts/images/general";
   import { type Snippet } from "svelte";
@@ -12,7 +12,7 @@
   const { windowTitle, windowIcon } = process;
   const { data } = process.app;
 
-  let renderer: AppManager | undefined;
+  let renderer: AppRenderer | undefined;
 
   $effect(() => {
     renderer = process.handler.renderer;

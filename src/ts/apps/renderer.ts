@@ -12,7 +12,7 @@ import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
 import { BuiltinApps } from "./store";
 
-export class AppManager extends Process {
+export class AppRenderer extends Process {
   currentState: number[] = [];
   target: HTMLDivElement;
   maxZIndex = 1e6;
