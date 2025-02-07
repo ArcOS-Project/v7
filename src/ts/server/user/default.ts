@@ -73,6 +73,10 @@ export const DefaultUserPreferences: UserPreferences = {
   userApps: {},
   pinnedApps: [],
   disabledApps: [],
+  workspaces: {
+    desktops: [{ uuid: "DEFAULT" }],
+    index: 0,
+  },
 };
 
 export const DefaultUserInfo: UserInfo = {

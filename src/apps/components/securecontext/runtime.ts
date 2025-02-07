@@ -113,12 +113,7 @@ export class SecureContextRuntime extends AppProcess {
             caption: "Continue",
             action: () => {
               this.deny();
-              this.spawnApp(
-                "systemSettings",
-                undefined,
-                undefined,
-                "securityCenter"
-              );
+              this.spawnApp("systemSettings", undefined, "securityCenter");
             },
             suggested: true,
           },

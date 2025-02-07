@@ -19,12 +19,7 @@
   }
 
   async function authGui() {
-    await userDaemon?.spawnApp(
-      "RoturAuthGui",
-      undefined,
-      process.pid,
-      userDaemon
-    );
+    await userDaemon?.spawnApp("RoturAuthGui", process.pid, userDaemon);
 
     process.globalDispatch.subscribe("ragui-loggedin", async () => {
       await userDaemon?.restartRotur();

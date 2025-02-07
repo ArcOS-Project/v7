@@ -29,6 +29,17 @@ export interface UserPreferences {
   searchOptions: ArcFindOptions;
   pinnedApps: string[];
   disabledApps: string[];
+  workspaces: WorkspacesOptions;
+}
+
+export interface WorkspacesOptions {
+  desktops: Workspace[];
+  index: number;
+}
+
+export interface Workspace {
+  name?: string;
+  uuid: string;
 }
 
 export interface ArcFindOptions {

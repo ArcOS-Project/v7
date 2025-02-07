@@ -704,7 +704,15 @@ export class UserDaemon extends Process {
     return Object.values(apps) as unknown as AppStorage;
   }
 
-  async spawnApp<T>(
+  async spawnApp<T>(id: string, parentPid?: number, ...args: any[]) {
+    return await this._spawnApp<T>(id, undefined, parentPid, ...args);
+  }
+
+  async spawnOverlay<T>(id: string, parentPid?: number, ...args: any[]) {
+    return await this._spawnOverlay<T>(id, undefined, parentPid, ...args);
+  }
+
+  async _spawnApp<T>(
     id: string,
     renderTarget: HTMLDivElement | undefined = undefined,
     parentPid?: number,
@@ -743,7 +751,7 @@ export class UserDaemon extends Process {
     );
   }
 
-  async spawnOverlay<T>(
+  async _spawnOverlay<T>(
     id: string,
     renderTarget: HTMLDivElement | undefined = undefined,
     parentPid?: number,
@@ -800,7 +808,7 @@ export class UserDaemon extends Process {
     const store = (await this.appStore?.get()) || [];
 
     for (const app of store) {
-      if (app.autoRun) this.spawnApp(app.id, undefined, this.pid);
+      if (app.autoRun) this._spawnApp(app.id, undefined, this.pid);
     }
   }
 
@@ -892,7 +900,7 @@ export class UserDaemon extends Process {
     this.setAppRendererClasses(this.preferences());
 
     if (shellPid) {
-      const proc = await this.spawnOverlay(
+      const proc = await this._spawnOverlay(
         "SecureContext",
         undefined,
         +shellPid,
@@ -903,7 +911,7 @@ export class UserDaemon extends Process {
 
       if (!proc) return false;
     } else {
-      const proc = await this.spawnApp(
+      const proc = await this._spawnApp(
         "SecureContext",
         undefined,
         this.pid,

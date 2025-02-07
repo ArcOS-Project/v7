@@ -9,7 +9,7 @@
 
   async function launch() {
     disabled = true;
-    await process.spawnApp(app.id, undefined, process.pid);
+    await process.spawnApp(app.id, process.pid);
     disabled = false;
     process.startMenuOpened.set(false);
   }
