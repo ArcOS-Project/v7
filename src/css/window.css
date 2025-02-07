@@ -10,7 +10,7 @@
 @import url("./window/scrollbars.css");
 
 div.window:not(.core) {
-  position: fixed;
+  position: absolute;
   color: var(--fg);
   background-color: var(--win-bg);
   border: var(--win-border);
@@ -27,7 +27,7 @@ div.window:not(.core) {
 }
 
 div.window:not(.core).maximized {
-  position: fixed !important;
+  /* position: fixed !important; */
   top: 0 !important;
   left: 0 !important;
   width: 100% !important;

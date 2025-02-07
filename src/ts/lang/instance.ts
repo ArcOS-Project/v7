@@ -22,6 +22,7 @@ import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
+import type { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import type { AppProcessData } from "$types/app";
 import type {
@@ -56,6 +57,7 @@ export class LanguageInstance extends Process {
   private fs: Filesystem;
   private exception: LanguageExecutionError | null = null;
   public app: AppProcessData | undefined;
+  public userDaemon: UserDaemon | undefined;
 
   constructor(
     handler: ProcessHandler,
@@ -79,6 +81,10 @@ export class LanguageInstance extends Process {
     this.libraries = keysToLowerCase(libraries) as Libraries;
 
     this.fs = this.kernel.getModule<Filesystem>("fs");
+
+    const daemonPid = this.env.get("userdaemon_pid");
+
+    if (daemonPid) this.userDaemon = this.handler.getProcess(+daemonPid);
   }
 
   private parseSource(source: string): InterpreterCommand[] {

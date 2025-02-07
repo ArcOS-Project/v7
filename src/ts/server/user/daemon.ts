@@ -34,6 +34,7 @@ import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes } from "./store";
+import { Sleep } from "$ts/sleep";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -57,6 +58,9 @@ export class UserDaemon extends Process {
     ["img", (id) => Wallpapers[id] || Wallpapers["img04"]],
   ];
   private localWallpaperCache: Record<string, Blob> = {};
+  private virtualDesktops: Record<string, HTMLDivElement> = {};
+  private virtualDesktopState: string[] = [];
+  private virtualDesktop: HTMLDivElement | undefined;
 
   constructor(
     handler: ProcessHandler,
@@ -138,6 +142,7 @@ export class UserDaemon extends Process {
       this.commitPreferences(v);
       this.setAppRendererClasses(v);
       this.updateWallpaper(v);
+      this.syncVirtualDesktops(v);
     });
 
     this.preferencesUnsubscribe = unsubscribe;
@@ -705,11 +710,21 @@ export class UserDaemon extends Process {
   }
 
   async spawnApp<T>(id: string, parentPid?: number, ...args: any[]) {
-    return await this._spawnApp<T>(id, undefined, parentPid, ...args);
+    return await this._spawnApp<T>(
+      id,
+      this.getCurrentDesktop(),
+      parentPid,
+      ...args
+    );
   }
 
   async spawnOverlay<T>(id: string, parentPid?: number, ...args: any[]) {
-    return await this._spawnOverlay<T>(id, undefined, parentPid, ...args);
+    return await this._spawnOverlay<T>(
+      id,
+      this.getCurrentDesktop(),
+      parentPid,
+      ...args
+    );
   }
 
   async _spawnApp<T>(
@@ -1004,5 +1019,93 @@ export class UserDaemon extends Process {
     } catch {
       return false;
     }
+  }
+
+  async syncVirtualDesktops(v: UserPreferences) {
+    if (!this.virtualDesktop) return;
+
+    this.Log(`Syncing virtual desktop render state`);
+
+    const { desktops, index } = v.workspaces;
+    const existing: string[] = [];
+
+    for (const { uuid } of desktops) {
+      if (!this.virtualDesktops[uuid]) this.renderVirtualDesktop(uuid);
+
+      existing.push(uuid);
+    }
+
+    for (const uuid of this.virtualDesktopState) {
+      if (!existing.includes(uuid)) {
+        this.removeVirtualDesktop(uuid);
+        this.virtualDesktopState.splice(this.virtualDesktopState.indexOf(uuid));
+      }
+    }
+
+    this.virtualDesktop.classList.add("changing");
+    this.virtualDesktop.setAttribute("style", `--index: ${index};`);
+    await Sleep(300);
+    this.virtualDesktop.classList.remove("changing");
+  }
+
+  renderVirtualDesktop(uuid: string) {
+    this.Log(`Rendering virtual desktop "${uuid}"`);
+    const desktop = document.createElement("div");
+
+    desktop.className = "workspace";
+    desktop.id = uuid;
+
+    console.log(this.virtualDesktop);
+
+    this.virtualDesktop?.append(desktop);
+    this.virtualDesktops[uuid] = desktop;
+  }
+
+  removeVirtualDesktop(uuid: string) {
+    this.Log(`Rendering virtual desktop "${uuid}"`);
+
+    const desktop = this.virtualDesktop?.querySelector(`#${uuid}`);
+
+    if (!desktop) return;
+
+    desktop.remove();
+
+    delete this.virtualDesktops[uuid];
+  }
+
+  async startVirtualDesktops() {
+    this.Log(`Starting virtual desktop system`);
+
+    const outer = document.createElement("div");
+    const inner = document.createElement("div");
+
+    outer.className = "virtual-desktop-container";
+    inner.className = "inner";
+
+    outer.append(inner);
+    this.handler.renderer?.target.append(outer);
+    this.virtualDesktop = inner;
+
+    this.syncVirtualDesktops(this.preferences());
+  }
+
+  getCurrentDesktop() {
+    const { workspaces } = this.preferences();
+    const uuid = workspaces.desktops[workspaces.index].uuid;
+
+    if (!uuid) return undefined;
+
+    console.log(workspaces, uuid, this.virtualDesktops[uuid]);
+
+    return this.virtualDesktops[uuid];
+  }
+
+  createWorkspace(name?: string) {
+    const uuid = crypto.randomUUID();
+
+    this.preferences.update((v) => {
+      v.workspaces.desktops.push({ uuid, name });
+      return v;
+    });
   }
 }

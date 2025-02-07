@@ -1,5 +1,6 @@
 div.window#wallpaper {
   z-index: 1000 !important;
+  pointer-events: none !important;
 }
 
 div.desktop-wallpaper {

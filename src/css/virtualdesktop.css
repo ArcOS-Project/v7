@@ -1,0 +1,34 @@
+div.virtual-desktop-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2000 !important;
+  pointer-events: initial !important;
+}
+
+div.virtual-desktop-container div.inner {
+  width: fit-content;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-left: calc(-100vw * var(--index, 0));
+  transition: margin-left 0.3s;
+  display: flex;
+}
+
+div.virtual-desktop-container > div.inner > div.workspace {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  transition: scale 0.3s, border-radius 0.3s, background-color 0.3s;
+  overflow: hidden;
+}
+
+div.virtual-desktop-container > div.inner.changing > div.workspace {
+  background-color: #0004;
+  border-radius: 30px;
+  scale: 0.9;
+}
