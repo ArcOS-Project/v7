@@ -20,6 +20,7 @@ export class InitProcess extends Process {
 
     const state = await this.handler.spawn<StateHandler>(
       StateHandler,
+      undefined,
       this.pid,
       "ArcOS",
       States

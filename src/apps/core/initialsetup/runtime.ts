@@ -304,6 +304,7 @@ export class InitialSetupRuntime extends AppProcess {
 
     this.userDaemon = await this.handler.spawn(
       UserDaemon,
+      undefined,
       this.pid,
       token,
       this.newUsername()
@@ -332,7 +333,12 @@ export class InitialSetupRuntime extends AppProcess {
 
     this.userDaemon?.appStore?.loadApp(RoturAuthGuiApp);
 
-    await this.userDaemon?.spawnApp("RoturAuthGui", this.pid, this.userDaemon);
+    await this.userDaemon?.spawnApp(
+      "RoturAuthGui",
+      undefined,
+      this.pid,
+      this.userDaemon
+    );
 
     this.globalDispatch.subscribe("ragui-loggedin", () => {
       this.userDaemon?.restartRotur();

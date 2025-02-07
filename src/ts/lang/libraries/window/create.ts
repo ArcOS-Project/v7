@@ -17,6 +17,7 @@ export const create: Keyword = async (lang) => {
   const stack = lang.kernel.getModule<ProcessHandler>("stack");
   const result = await stack.spawn<ScriptedAppProcess>(
     ScriptedAppProcess,
+    undefined,
     lang.pid,
     {
       data: metadata,

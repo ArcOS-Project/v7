@@ -19,6 +19,7 @@ export async function MessageBox(
 
   await stack.spawn(
     MessageBoxRuntime,
+    undefined,
     parentPid,
     {
       ...{ data: appData, id: appData.id },

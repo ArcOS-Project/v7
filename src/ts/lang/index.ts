@@ -31,6 +31,7 @@ export class ArcLang extends KernelModule {
 
     const process = await this.stack?.spawn<LanguageInstance>(
       LanguageInstance,
+      undefined,
       parent,
       source,
       options

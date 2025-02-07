@@ -81,6 +81,7 @@ export class LoginAppRuntime extends AppProcess {
 
     const userDaemon = await this.handler.spawn<UserDaemon>(
       UserDaemon,
+      undefined,
       this.kernel.initPid,
       token,
       username

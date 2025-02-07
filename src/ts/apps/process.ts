@@ -245,6 +245,7 @@ export class AppProcess extends Process {
 
     return !!(await this.handler.spawn<AppProcess>(
       metadata.assets.runtime,
+      undefined,
       this.pid,
       {
         data: { ...metadata, overlay: true },
@@ -292,9 +293,15 @@ export class AppProcess extends Process {
     });
   }
 
-  async spawnApp(id: string, parentPid?: number | undefined, ...args: any[]) {
+  async spawnApp(
+    id: string,
+    renderTarget: HTMLDivElement | undefined = undefined,
+    parentPid?: number | undefined,
+    ...args: any[]
+  ) {
     return await this.userDaemon?.spawnApp(
       id,
+      renderTarget,
       parentPid ?? this.parentPid,
       ...args
     );
@@ -302,11 +309,13 @@ export class AppProcess extends Process {
 
   async spawnOverlayApp(
     id: string,
+    renderTarget: HTMLDivElement | undefined = undefined,
     parentPid?: number | undefined,
     ...args: any[]
   ) {
     return await this.userDaemon?.spawnOverlay(
       id,
+      renderTarget,
       parentPid ?? this.parentPid,
       ...args
     );

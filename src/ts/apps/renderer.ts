@@ -45,13 +45,14 @@ export class AppRenderer extends Process {
     }
   }
 
-  async render(process: AppProcess) {
+  async render(process: AppProcess, renderTarget: HTMLDivElement | undefined) {
     this.disposedCheck();
 
     if (process._disposed) return;
 
     this.Log(`Rendering PID ${process.pid}`);
 
+    renderTarget ||= this.target;
     const window = document.createElement("div");
     const titlebar = this._renderTitlebar(process);
     const body = document.createElement("div");
@@ -89,7 +90,7 @@ export class AppRenderer extends Process {
       );
 
       if (!parent) {
-        this.target.append(window);
+        renderTarget.append(window);
       } else {
         wrapper.setAttribute("data-pid", process.pid.toString());
         wrapper.className = `overlay-wrapper shade-${process.app.id}`;
@@ -104,7 +105,7 @@ export class AppRenderer extends Process {
         }, 100);
       }
     } else {
-      this.target.append(window);
+      renderTarget.append(window);
     }
 
     setTimeout(() => {

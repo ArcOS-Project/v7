@@ -155,6 +155,7 @@ export class StateHandler extends Process {
 
     const proc = await stack.spawn<AppProcess>(
       app.assets.runtime,
+      undefined,
       this.pid,
       {
         ...{

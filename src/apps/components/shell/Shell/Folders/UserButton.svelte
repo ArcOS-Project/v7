@@ -20,7 +20,7 @@
   });
 
   function onclick() {
-    process.spawnApp("systemSettings", process.pid);
+    process.spawnApp("systemSettings", undefined, process.pid);
   }
 </script>
 

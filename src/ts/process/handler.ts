@@ -25,11 +25,17 @@ export class ProcessHandler extends KernelModule {
   }
 
   async startRenderer(initPid: number) {
-    this.renderer = await this.spawn(AppRenderer, initPid, "appRenderer");
+    this.renderer = await this.spawn(
+      AppRenderer,
+      undefined,
+      initPid,
+      "appRenderer"
+    );
   }
 
   async spawn<T = Process>(
     process: typeof Process,
+    renderTarget: HTMLDivElement | undefined = undefined,
     parentPid: number | undefined = undefined,
     ...args: any[]
   ): Promise<T | undefined> {
@@ -65,7 +71,8 @@ export class ProcessHandler extends KernelModule {
 
     this.store.set(store);
 
-    if (this.renderer && proc instanceof AppProcess) this.renderer.render(proc);
+    if (this.renderer && proc instanceof AppProcess)
+      this.renderer.render(proc, renderTarget);
 
     return proc as T;
   }

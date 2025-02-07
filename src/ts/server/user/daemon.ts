@@ -74,7 +74,11 @@ export class UserDaemon extends Process {
   }
 
   async start() {
-    this.appStore = await this.handler.spawn(ApplicationStorage, this.pid);
+    this.appStore = await this.handler.spawn(
+      ApplicationStorage,
+      undefined,
+      this.pid
+    );
 
     this.appStore?.loadOrigin("builtin", () => BuiltinApps);
     this.appStore?.loadOrigin("userApps", () => this.getUserApps());
@@ -592,6 +596,7 @@ export class UserDaemon extends Process {
 
     this.rotur = await this.handler.spawn<RoturExtension>(
       RoturExtension,
+      undefined,
       this.pid,
       this
     );
@@ -701,6 +706,7 @@ export class UserDaemon extends Process {
 
   async spawnApp<T>(
     id: string,
+    renderTarget: HTMLDivElement | undefined = undefined,
     parentPid?: number,
     ...args: any[]
   ): Promise<T | undefined> {
@@ -727,6 +733,7 @@ export class UserDaemon extends Process {
 
     return await this.handler.spawn<T>(
       app.assets.runtime,
+      renderTarget,
       parentPid || this.pid,
       {
         data: app,
@@ -738,6 +745,7 @@ export class UserDaemon extends Process {
 
   async spawnOverlay<T>(
     id: string,
+    renderTarget: HTMLDivElement | undefined = undefined,
     parentPid?: number,
     ...args: any[]
   ): Promise<T | undefined> {
@@ -758,6 +766,7 @@ export class UserDaemon extends Process {
 
     return await this.handler.spawn<T>(
       app.assets.runtime,
+      renderTarget,
       parentPid || this.pid,
       {
         data: { ...app, overlay: true },
@@ -791,7 +800,7 @@ export class UserDaemon extends Process {
     const store = (await this.appStore?.get()) || [];
 
     for (const app of store) {
-      if (app.autoRun) this.spawnApp(app.id, this.pid);
+      if (app.autoRun) this.spawnApp(app.id, undefined, this.pid);
     }
   }
 
@@ -885,6 +894,7 @@ export class UserDaemon extends Process {
     if (shellPid) {
       const proc = await this.spawnOverlay(
         "SecureContext",
+        undefined,
         +shellPid,
         id,
         key,
@@ -895,6 +905,7 @@ export class UserDaemon extends Process {
     } else {
       const proc = await this.spawnApp(
         "SecureContext",
+        undefined,
         this.pid,
         id,
         key,
