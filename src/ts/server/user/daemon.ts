@@ -61,6 +61,7 @@ export class UserDaemon extends Process {
   private virtualDesktops: Record<string, HTMLDivElement> = {};
   private virtualDesktopState: string[] = [];
   private virtualDesktop: HTMLDivElement | undefined;
+  private virtualDesktopIndex = -1;
 
   constructor(
     handler: ProcessHandler,
@@ -761,6 +762,7 @@ export class UserDaemon extends Process {
       {
         data: app,
         id: app.id,
+        desktop: renderTarget ? renderTarget.id : undefined,
       },
       ...args
     );
@@ -794,6 +796,7 @@ export class UserDaemon extends Process {
       {
         data: { ...app, overlay: true },
         id: app.id,
+        desktop: renderTarget ? renderTarget.id : undefined,
       },
       ...args
     );
@@ -1042,22 +1045,26 @@ export class UserDaemon extends Process {
       }
     }
 
+    if (this.virtualDesktopIndex === index) return;
+
     this.virtualDesktop.classList.add("changing");
     this.virtualDesktop.setAttribute("style", `--index: ${index};`);
     await Sleep(300);
     this.virtualDesktop.classList.remove("changing");
+
+    this.virtualDesktopIndex = index;
   }
 
   renderVirtualDesktop(uuid: string) {
     this.Log(`Rendering virtual desktop "${uuid}"`);
+
     const desktop = document.createElement("div");
 
     desktop.className = "workspace";
     desktop.id = uuid;
 
-    console.log(this.virtualDesktop);
-
     this.virtualDesktop?.append(desktop);
+    this.virtualDesktopState.push(uuid);
     this.virtualDesktops[uuid] = desktop;
   }
 
@@ -1095,8 +1102,6 @@ export class UserDaemon extends Process {
 
     if (!uuid) return undefined;
 
-    console.log(workspaces, uuid, this.virtualDesktops[uuid]);
-
     return this.virtualDesktops[uuid];
   }
 
@@ -1107,5 +1112,19 @@ export class UserDaemon extends Process {
       v.workspaces.desktops.push({ uuid, name });
       return v;
     });
+  }
+
+  switchToDesktopByUuid(uuid: string) {
+    const {
+      workspaces: { desktops },
+    } = this.preferences();
+
+    for (let i = 0; i < desktops.length; i++) {
+      if (uuid === desktops[i].uuid)
+        return this.preferences.update((v) => {
+          v.workspaces.index = i;
+          return v;
+        });
+    }
   }
 }

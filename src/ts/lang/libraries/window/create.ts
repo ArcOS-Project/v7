@@ -22,6 +22,7 @@ export const create: Keyword = async (lang) => {
     {
       data: metadata,
       id: metadata.id,
+      desktop: lang.userDaemon?.getCurrentDesktop()?.id,
     },
     lang
   );

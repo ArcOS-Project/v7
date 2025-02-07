@@ -84,7 +84,7 @@ export type Size = { w: number; h: number };
 export type Position = { x: number; y: number };
 export type MaybeCenteredPosition = Partial<Position> & { centered?: boolean };
 
-export type AppProcessData = { data: App; id: string };
+export type AppProcessData = { data: App; id: string; desktop?: string };
 
 export type AppStorage = ((App | ThirdPartyApp) & { originId?: string })[];
 export type AppStoreCb = () => MaybePromise<AppStorage>;

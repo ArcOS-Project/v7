@@ -49,6 +49,7 @@ export class AppProcess extends Process {
     this.app = {
       data: { ...app.data },
       id: app.data.id,
+      desktop: app.desktop,
     };
 
     this.windowTitle.set(app.data.metadata.name || "Application");

@@ -46,6 +46,9 @@
 
   function focus() {
     openedProcess.handler.renderer?.focusPid(pid);
+
+    if (openedProcess.app.desktop)
+      process.userDaemon?.switchToDesktopByUuid(openedProcess.app.desktop);
   }
 </script>
 
