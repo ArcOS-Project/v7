@@ -6,6 +6,7 @@ import { DefaultUserPreferences } from "$ts/server/user/default";
 import { ContextMenuLogic } from "$ts/ui/context";
 import type { AppKeyCombinations } from "$types/accelerator";
 import type { ContextMenuItem } from "$types/context";
+import type { ElevationData } from "$types/elevation";
 import { LogLevel } from "$types/logging";
 import type { UserPreferences } from "$types/user";
 import { mount } from "svelte";
@@ -16,7 +17,6 @@ import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
 import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
-import type { ElevationData } from "$types/elevation";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
 export class AppProcess extends Process {

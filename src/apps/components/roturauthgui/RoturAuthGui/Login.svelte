@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { RoturIcon } from "$ts/images/general";
   import type { RoturAuthGuiProcess } from "../runtime";
 
   const { process }: { process: RoturAuthGuiProcess } = $props();

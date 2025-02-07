@@ -2,11 +2,9 @@ import { getBuild } from "$ts/metadata/build";
 import { getLicense } from "$ts/metadata/license";
 import { getMode } from "$ts/metadata/mode";
 import { RoturExtension } from "$ts/rotur";
-import { Sleep } from "$ts/sleep";
 import { Store, type ReadableStore } from "$ts/writable";
 import {
   LogLevel,
-  LogLevelCaptions,
   ShortLogLevelCaptions,
   type LogItem,
 } from "../../types/logging";

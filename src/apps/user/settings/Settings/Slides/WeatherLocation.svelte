@@ -4,8 +4,8 @@
   import { ErrorIcon } from "$ts/images/dialog";
   import { GlobeIcon } from "$ts/images/general";
   import type {
-    WeatherSearchResult,
     WeatherSearchResponse,
+    WeatherSearchResult,
   } from "$types/weather";
   import axios from "axios";
   import Section from "../Section.svelte";

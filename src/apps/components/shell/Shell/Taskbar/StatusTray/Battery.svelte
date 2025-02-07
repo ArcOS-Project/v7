@@ -15,7 +15,10 @@
 <div class="battery">
   {#if $battery}
     {#if $battery.charging}
-      <span class="lucide icon-battery-charging" title="Charging ({Math.floor($battery.level * 100)}%)"></span>
+      <span
+        class="lucide icon-battery-charging"
+        title="Charging ({Math.floor($battery.level * 100)}%)"
+      ></span>
     {:else if $battery.level === 0}
       <span class="lucide icon-battery" title="Empty"></span>
     {:else if $battery.level <= 0.3}

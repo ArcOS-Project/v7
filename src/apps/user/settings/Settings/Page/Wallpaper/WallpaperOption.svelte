@@ -5,7 +5,7 @@
   import { TrashIcon } from "$ts/images/general";
   import type { UserDaemon } from "$ts/server/user/daemon";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
-  import type { ContextItemCallback, ContextMenuItem } from "$types/context";
+  import type { ContextItemCallback } from "$types/context";
   import type { UserPreferencesStore } from "$types/user";
   import type { Wallpaper } from "$types/wallpaper";
 

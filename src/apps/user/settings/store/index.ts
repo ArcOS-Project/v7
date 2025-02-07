@@ -1,3 +1,4 @@
+import { InfoIcon } from "$ts/images/dialog";
 import {
   AccountIcon,
   AppsIcon,
@@ -9,7 +10,6 @@ import {
   TaskbarIcon,
   ThemesIcon,
 } from "$ts/images/general";
-import { InfoIcon } from "$ts/images/dialog";
 import About from "../Settings/Page/About.svelte";
 import Account from "../Settings/Page/Account.svelte";
 import Apps from "../Settings/Page/Apps.svelte";

@@ -1,8 +1,8 @@
+import "$css/apps/components/securecontext.css";
 import { SecureIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import { SecureContextRuntime } from "./runtime";
 import SecureContext from "./SecureContext.svelte";
-import "$css/apps/components/securecontext.css";
 
 export const SecureContextApp: App = {
   metadata: {

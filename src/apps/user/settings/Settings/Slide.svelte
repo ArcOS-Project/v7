@@ -1,8 +1,8 @@
 <script lang="ts">
+  import { Sleep } from "$ts/sleep";
   import type { Component } from "svelte";
   import type { SettingsRuntime } from "../runtime";
   import { SlideStore } from "../store/slides";
-  import { Sleep } from "$ts/sleep";
 
   const { process }: { process: SettingsRuntime } = $props();
   const { slideVisible, currentSlide } = process;

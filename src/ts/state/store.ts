@@ -3,16 +3,16 @@ import { InitialSetupWizard } from "$apps/core/initialsetup/metadata";
 import { LoginApp } from "$apps/core/loginapp/metadata";
 import CrashCss from "../../css/state/crash.css?url";
 import DesktopCss from "../../css/state/desktop.css?url";
+import LicenseDeclinedCss from "../../css/state/licensedeclined.css?url";
+import ServerDownCss from "../../css/state/serverdown.css?url";
 import CrashHtml from "../../state/crash/crash.html?url";
 import CrashRender from "../../state/crash/render";
 import DesktopHtml from "../../state/desktop/desktop.html?url";
 import DesktopRender from "../../state/desktop/render";
-import ServerDownCss from "../../css/state/serverdown.css?url";
+import LicenseDeclinedHtml from "../../state/licensedeclined/licensedeclined.html?url";
+import LicenseDeclinedRender from "../../state/licensedeclined/render";
 import ServerDownRender from "../../state/serverdown/render";
 import ServerDownHtml from "../../state/serverdown/serverdown.html?url";
-import LicenseDeclinedCss from "../../css/state/licensedeclined.css?url";
-import LicenseDeclinedRender from "../../state/licensedeclined/render";
-import LicenseDeclinedHtml from "../../state/licensedeclined/licensedeclined.html?url";
 import type { State } from "../../types/state";
 
 export const States: Record<string, State> = {
