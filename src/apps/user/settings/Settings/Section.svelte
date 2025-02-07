@@ -1,11 +1,14 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
 
-  const { caption = "", children }: { caption?: string; children: Snippet } =
-    $props();
+  const {
+    caption = "",
+    children,
+    className = "",
+  }: { caption?: string; children: Snippet; className?: string } = $props();
 </script>
 
-<section>
+<section class={className}>
   {#if caption}
     <p class="caption">{caption}</p>
   {/if}

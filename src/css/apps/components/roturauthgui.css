@@ -1,5 +1,14 @@
+.shade-RoturAuthGui {
+  background-position: center;
+  background-size: cover;
+  background-image: linear-gradient(to bottom, #0006 0%, #0006 100%),
+    var(--wallpaper, url("../../../assets/bg/img15.jpg"));
+  z-index: 10000000000;
+}
+
 #RoturAuthGui {
   overflow: visible;
+  z-index: 100000000000;
 }
 
 #RoturAuthGui > div.body {

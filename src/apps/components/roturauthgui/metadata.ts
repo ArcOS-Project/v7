@@ -45,4 +45,5 @@ export const RoturAuthGuiApp: App = {
   id: "RoturAuthGui",
   hidden: true,
   glass: true,
+  overlay: true,
 };

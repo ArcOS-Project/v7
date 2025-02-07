@@ -582,7 +582,7 @@ export class UserDaemon extends Process {
 
     if (this.rotur) await this.handler.kill(this.rotur.pid);
 
-    this.startRotur();
+    await this.startRotur();
   }
 
   async startRotur() {

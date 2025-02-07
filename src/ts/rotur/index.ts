@@ -3,7 +3,12 @@ import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { Sleep } from "$ts/sleep";
 import { LogLevel } from "$types/logging";
-import { RoturErrors, RoturFriendStatus, type RoturPacket } from "$types/rotur";
+import {
+  RoturErrors,
+  RoturFriendStatus,
+  type RoturPacket,
+  type RoturUser,
+} from "$types/rotur";
 import axios from "axios";
 import md5 from "md5";
 
@@ -18,7 +23,7 @@ export class RoturExtension extends Process {
   accounts: string;
   server: string;
   userToken: string;
-  user: Record<string, any>;
+  user: RoturUser;
   first_login: boolean;
   designation: string;
   username: string;
@@ -64,7 +69,7 @@ export class RoturExtension extends Process {
     this.accounts = "";
     this.server = "";
     this.userToken = "";
-    this.user = {};
+    this.user = {} as RoturUser;
     this.first_login = false;
     this.designation = "";
     this.username = "";
@@ -655,7 +660,7 @@ export class RoturExtension extends Process {
     );
     this.authenticated = false;
     this.userToken = "";
-    this.user = {};
+    this.user = {} as RoturUser;
     this.disconnect();
   }
 

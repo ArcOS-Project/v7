@@ -79,3 +79,32 @@ export enum RoturFriendStatus {
   requested = 1,
   notFriend = 2,
 }
+
+export interface RoturUser {
+  created: number;
+  discord_id?: string;
+  hostOS: string;
+  last_login: number;
+  max_size: number;
+  onboot: string[];
+  origin_dock: string[];
+  pfp: string;
+  private: boolean;
+  "sys.backups": string[];
+  "sys.badges": string[];
+  "sys.currency": number;
+  "sys.friends": string[];
+  "sys.items": string[];
+  "sys.purchases": string[];
+  "sys.requests": string[];
+  "sys.total_logins": number;
+  "sys.transactions": string[];
+  "sys.used_systems": string;
+  system: string;
+  theme: Record<string, string>;
+  timezone: string;
+  username: string;
+  wallpaper: string;
+  wallpaper_mode: string;
+  [key: string]: any;
+}

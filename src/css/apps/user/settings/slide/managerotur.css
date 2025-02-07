@@ -1,0 +1,8 @@
+#systemSettings
+  div.slide.account_manageRotur
+  > div.centered-layout
+  > div.header
+  img {
+  height: 128px;
+  border-radius: 64px;
+}

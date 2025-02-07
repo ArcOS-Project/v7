@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import {
   PasswordIcon,
+  RoturIcon,
   SecurityHighIcon,
   SettingsIcon,
   WaveIcon,
@@ -31,7 +32,7 @@ export class SettingsRuntime extends AppProcess {
     showLoginActivity: {
       what: "ArcOS needs your permission to view security activity",
       title: "View security activity",
-      description: "Settings App",
+      description: "System Settings",
       image: WaveIcon,
       level: ElevationLevel.medium,
     },
@@ -48,6 +49,13 @@ export class SettingsRuntime extends AppProcess {
       title: "Disable System Security",
       description: "We do NOT recommend this",
       level: ElevationLevel.high,
+    },
+    manageRotur: {
+      what: "ArcOS needs your permission to manage your connection to Rotur",
+      image: RoturIcon,
+      title: "Manage Rotur",
+      description: "System Settings",
+      level: ElevationLevel.medium,
     },
   };
 
@@ -116,5 +124,11 @@ export class SettingsRuntime extends AppProcess {
     if (!(await this.elevate("showLoginActivity"))) return;
 
     this.showSlide("account_loginActivity");
+  }
+
+  async manageRotur() {
+    if (!(await this.elevate("manageRotur"))) return;
+
+    this.showSlide("account_manageRotur");
   }
 }
