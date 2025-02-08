@@ -143,6 +143,9 @@ export class UserDaemon extends Process {
       this.commitPreferences(v);
       this.setAppRendererClasses(v);
       this.updateWallpaper(v);
+
+      await Sleep(0);
+
       this.syncVirtualDesktops(v);
     });
 
@@ -1047,10 +1050,14 @@ export class UserDaemon extends Process {
 
     if (this.virtualDesktopIndex === index) return;
 
-    this.virtualDesktop.classList.add("changing");
-    this.virtualDesktop.setAttribute("style", `--index: ${index};`);
-    await Sleep(300);
-    this.virtualDesktop.classList.remove("changing");
+    if (v.shell.visuals.noAnimations) {
+      this.virtualDesktop.setAttribute("style", `--index: ${index};`);
+    } else {
+      this.virtualDesktop.classList.add("changing");
+      this.virtualDesktop.setAttribute("style", `--index: ${index};`);
+      await Sleep(300);
+      this.virtualDesktop.classList.remove("changing");
+    }
 
     this.virtualDesktopIndex = index;
   }

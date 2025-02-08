@@ -15,7 +15,7 @@ div.virtual-desktop-container div.inner {
   top: 0;
   left: 0;
   margin-left: calc(-100vw * var(--index, 0));
-  transition: margin-left 0.3s;
+  transition: margin-left 0.3s, background-color 0.3s;
   display: flex;
 }
 
@@ -28,7 +28,12 @@ div.virtual-desktop-container > div.inner > div.workspace {
 }
 
 div.virtual-desktop-container > div.inner.changing > div.workspace {
-  background-color: #0004;
   border-radius: 30px;
   scale: 0.9;
+  background-color: var(--button-glass-active-bg);
+}
+
+div.virtual-desktop-container > div.inner.changing > div.workspace,
+div.virtual-desktop-container > div.inner.changing > div.workspace * {
+  pointer-events: none !important;
 }
