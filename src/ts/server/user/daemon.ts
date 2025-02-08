@@ -1083,10 +1083,7 @@ export class UserDaemon extends Process {
 
     this.preferences.update((v) => {
       v.workspaces.desktops.splice(index, 1);
-
-      if (this.getCurrentDesktop()?.id === uuid) {
-        v.workspaces.index = 0;
-      }
+      v.workspaces.index = 0;
 
       return v;
     });

@@ -34,6 +34,10 @@
   }
 
   userPreferences.subscribe(async (v) => {
+    const incoming = JSON.stringify(v.workspaces.desktops);
+
+    if (incoming === JSON.stringify(workspaces)) return;
+
     workspaces = [];
     await Sleep(0);
     workspaces = v.workspaces.desktops;

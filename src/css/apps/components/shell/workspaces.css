@@ -56,8 +56,9 @@
 }
 
 #arcShell div.virtual-desktops button.desktop div.number {
-  width: 32px;
+  min-width: 32px;
   height: 32px;
+  padding: 0 10px;
   background-color: var(--button-bg);
   text-align: center;
   line-height: 32px;
