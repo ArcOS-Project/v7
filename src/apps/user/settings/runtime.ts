@@ -1,4 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
+import { MessageBox } from "$ts/dialog";
 import {
   PasswordIcon,
   RoturIcon,
@@ -130,5 +131,35 @@ export class SettingsRuntime extends AppProcess {
     if (!(await this.elevate("manageRotur"))) return;
 
     this.showSlide("account_manageRotur");
+  }
+
+  roturLogout() {
+    MessageBox(
+      {
+        title: "Log out of Rotur?",
+        message:
+          "Are you sure you want to log out of Rotur? You'll lose access to all Rotur-enabled ArcOS features.",
+        image: RoturIcon,
+        buttons: [
+          { caption: "Cancel", action: () => {} },
+          {
+            caption: "Log out",
+            action: () => {
+              this.userPreferences.update((v) => {
+                v.account.rotur = {};
+
+                return v;
+              });
+
+              this.userDaemon?.restartRotur();
+            },
+            suggested: true,
+          },
+        ],
+        sound: "arcos.dialog.warning",
+      },
+      this.pid,
+      true
+    );
   }
 }

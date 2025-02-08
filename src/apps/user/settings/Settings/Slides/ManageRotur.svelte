@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { AccountIcon, RoturIcon } from "$ts/images/general";
+  import { formatBytes } from "$ts/fs/util";
+  import { AccountIcon, PasswordIcon, RoturIcon } from "$ts/images/general";
+  import { LogoutIcon } from "$ts/images/power";
   import type { RoturUser } from "$types/rotur";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
@@ -40,6 +42,28 @@
         <p class="name">Currency</p>
         <p class="value">{data["sys.currency"]}</p>
       </div>
+      <div class="stat">
+        <p class="name">Storage</p>
+        <p class="value">{formatBytes(data.max_size)}</p>
+      </div>
+      <div class="stat">
+        <p class="name">Timezone</p>
+        <p class="value">{data.timezone}</p>
+      </div>
+      <div class="stat">
+        <p class="name">System</p>
+        <p class="value">{data.system}</p>
+      </div>
+    </Section>
+    <Section caption="Your Account">
+      <Option caption="Update your password" image={PasswordIcon} chevron
+      ></Option>
+      <Option
+        caption="Log out of Rotur"
+        image={LogoutIcon}
+        chevron
+        onclick={() => process.roturLogout()}
+      ></Option>
     </Section>
   {:else}
     <div class="header">
