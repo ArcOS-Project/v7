@@ -11,7 +11,6 @@ export class ContextMenuLogic extends KernelModule {
   }
 
   async _init() {
-    this.createMenu();
     document.addEventListener("contextmenu", (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -24,7 +23,7 @@ export class ContextMenuLogic extends KernelModule {
     this.menu = document.createElement("div");
     this.menu.className = "context-menu hidden";
 
-    const main = document.querySelector("#appRenderer");
+    const main = document.querySelector("#arcShell > div.body");
 
     if (!main) return;
 

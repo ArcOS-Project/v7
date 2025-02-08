@@ -1,0 +1,94 @@
+#arcShell div.virtual-desktops {
+  width: calc(100% - 20px);
+  height: 100px;
+  position: fixed;
+  bottom: 70px;
+  left: 10px;
+  background-color: var(--glass-bg);
+  border-radius: 10px;
+  border: var(--border);
+  backdrop-filter: blur(var(--blur));
+  padding: 10px;
+  transition: translate 0.3s;
+  white-space: nowrap;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+#arcShell div.virtual-desktops:not(.visible) {
+  translate: 0 200px;
+}
+
+#arcShell div.virtual-desktops > * {
+  vertical-align: middle;
+}
+
+#arcShell div.virtual-desktops.docked {
+  bottom: 50px;
+  left: 0;
+  width: 100%;
+  border-radius: 0;
+  border: none;
+  border-top: var(--border);
+}
+
+#arcShell div.virtual-desktops button.desktop {
+  min-width: 140px;
+  width: 140px;
+  height: 80px;
+  max-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: var(--wallpaper);
+  background-position: center;
+  background-size: cover;
+}
+
+#arcShell div.virtual-desktops button.desktop.selected {
+  outline: var(--accent-light) 2px solid !important;
+  outline-offset: -2px;
+}
+
+#arcShell div.virtual-desktops button.desktop:hover {
+  filter: brightness(1.1);
+}
+
+#arcShell div.virtual-desktops button.desktop div.number {
+  width: 32px;
+  height: 32px;
+  background-color: var(--button-bg);
+  text-align: center;
+  line-height: 32px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: 5px;
+}
+
+#arcShell div.virtual-desktops div.desktops {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  margin-right: 6px;
+  max-width: calc(100% - 90px);
+  overflow-x: auto;
+  overflow-y: hidden;
+  height: 80px;
+}
+
+#arcShell div.virtual-desktops button.add {
+  width: 80px;
+  height: 80px;
+  background-color: var(--button-glass-bg);
+  font-size: 24px;
+}
+
+#arcShell div.virtual-desktops button.add:hover {
+  background-color: var(--button-glass-hover-bg);
+}
+
+#arcShell div.virtual-desktops button.add:active {
+  background-color: var(--button-glass-active-bg);
+}

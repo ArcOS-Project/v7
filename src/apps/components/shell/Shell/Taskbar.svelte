@@ -6,6 +6,7 @@
   import StartButton from "./Taskbar/StartButton.svelte";
   import StatusTray from "./Taskbar/StatusTray.svelte";
   import SystemArea from "./Taskbar/SystemArea.svelte";
+  import WorkspaceManagerButton from "./Taskbar/WorkspaceManagerButton.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
   const { userPreferences } = process;
@@ -17,6 +18,7 @@
   class:docked={$userPreferences.shell.taskbar.docked}
 >
   <StartButton {process} />
+  <WorkspaceManagerButton {process} />
   <PinnedApps {process} />
   <OpenedApps {process} />
   <StatusTray {process} />

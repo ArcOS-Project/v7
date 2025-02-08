@@ -48,10 +48,12 @@ div.shell div.taskbar button.start-button img {
   height: 30px;
 }
 
+#arcShell div.shell div.taskbar button.workspace-manager-button.active,
 #arcShell div.shell div.taskbar button.action-center-button.active {
   background-color: var(--accent-light);
 }
 
+#arcShell div.shell div.taskbar button.workspace-manager-button.active span,
 #arcShell div.shell div.taskbar button.action-center-button.active span {
   color: var(--win-bg);
 }

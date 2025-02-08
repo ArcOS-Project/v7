@@ -15,7 +15,7 @@ div.virtual-desktop-container div.inner {
   top: 0;
   left: 0;
   margin-left: calc(-100vw * var(--index, 0));
-  transition: margin-left 0.3s, background-color 0.3s;
+  transition: background-color 0.3s;
   display: flex;
 }
 
@@ -25,6 +25,10 @@ div.virtual-desktop-container > div.inner > div.workspace {
   position: relative;
   transition: scale 0.3s, border-radius 0.3s, background-color 0.3s;
   overflow: hidden;
+}
+
+div.virtual-desktop-container > div.inner.changing {
+  transition: margin-left 0.3s, background-color 0.3s;
 }
 
 div.virtual-desktop-container > div.inner.changing > div.workspace {

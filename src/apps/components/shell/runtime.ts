@@ -15,6 +15,7 @@ import type { WeatherInformation } from "./types";
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
   public actionCenterOpened = Store<boolean>(false);
+  public workspaceManagerOpened = Store<boolean>(false);
 
   constructor(
     handler: ProcessHandler,
@@ -28,6 +29,8 @@ export class ShellRuntime extends AppProcess {
   }
 
   async render() {
+    this.context.createMenu();
+
     document.body.addEventListener("click", (e) => {
       const startMenu = document.querySelector("#arcShell div.startmenu");
       const startButton = document.querySelector(
@@ -36,6 +39,12 @@ export class ShellRuntime extends AppProcess {
       const actionCenter = document.querySelector("#arcShell div.actioncenter");
       const actionCenterButton = document.querySelector(
         "#arcShell button.action-center-button"
+      );
+      const workspaceManager = document.querySelector(
+        "#arcShell div.virtual-desktops"
+      );
+      const workspaceManagerButton = document.querySelector(
+        "#arcShell button.workspace-manager-button"
       );
 
       const composed = e.composedPath();
@@ -55,6 +64,14 @@ export class ShellRuntime extends AppProcess {
         !composed.includes(actionCenterButton)
       )
         this.actionCenterOpened.set(false);
+
+      if (
+        workspaceManager &&
+        workspaceManagerButton &&
+        !composed.includes(workspaceManager) &&
+        !composed.includes(workspaceManagerButton)
+      )
+        this.workspaceManagerOpened.set(false);
     });
 
     this.acceleratorStore.push({
@@ -72,6 +89,14 @@ export class ShellRuntime extends AppProcess {
 
     this.dispatch.subscribe("open-start-menu", () =>
       this.startMenuOpened.set(true)
+    );
+
+    this.dispatch.subscribe("open-workspace-manager", () =>
+      this.workspaceManagerOpened.set(true)
+    );
+
+    this.dispatch.subscribe("close-workspace-manager", () =>
+      this.workspaceManagerOpened.set(false)
     );
 
     this.dispatch.subscribe("close-action-center", () =>

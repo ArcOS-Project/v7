@@ -35,6 +35,7 @@ import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes } from "./store";
 import { Sleep } from "$ts/sleep";
+import { AppProcess } from "$ts/apps/process";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -1075,12 +1076,39 @@ export class UserDaemon extends Process {
     this.virtualDesktops[uuid] = desktop;
   }
 
-  removeVirtualDesktop(uuid: string) {
+  deleteVirtualDesktop(uuid: string) {
+    const index = this.getDesktopIndexByUuid(uuid);
+
+    if (index < 0) return;
+
+    this.preferences.update((v) => {
+      v.workspaces.desktops.splice(index, 1);
+
+      if (this.getCurrentDesktop()?.id === uuid) {
+        v.workspaces.index = 0;
+      }
+
+      return v;
+    });
+  }
+
+  async removeVirtualDesktop(uuid: string) {
+    if (this.preferences().workspaces.desktops.length <= 1) return;
+
     this.Log(`Rendering virtual desktop "${uuid}"`);
 
-    const desktop = this.virtualDesktop?.querySelector(`#${uuid}`);
+    const desktop = this.virtualDesktop?.querySelector(`[id*="${uuid}"]`);
 
     if (!desktop) return;
+
+    await this.killWindowsOfDesktop(uuid);
+
+    if (this.getCurrentDesktop()?.id === uuid) {
+      this.preferences.update((v) => {
+        v.workspaces.index = 0;
+        return v;
+      });
+    }
 
     desktop.remove();
 
@@ -1121,17 +1149,36 @@ export class UserDaemon extends Process {
     });
   }
 
-  switchToDesktopByUuid(uuid: string) {
+  getDesktopIndexByUuid(uuid: string) {
     const {
       workspaces: { desktops },
     } = this.preferences();
 
     for (let i = 0; i < desktops.length; i++) {
-      if (uuid === desktops[i].uuid)
-        return this.preferences.update((v) => {
-          v.workspaces.index = i;
-          return v;
-        });
+      if (uuid === desktops[i].uuid) return i;
+    }
+
+    return -1;
+  }
+
+  switchToDesktopByUuid(uuid: string) {
+    const i = this.getDesktopIndexByUuid(uuid);
+
+    if (i < 0) return;
+
+    this.preferences.update((v) => {
+      v.workspaces.index = i;
+      return v;
+    });
+  }
+
+  async killWindowsOfDesktop(uuid: string) {
+    const processes = this.handler.store();
+
+    for (const [_, proc] of [...processes]) {
+      if (!(proc instanceof AppProcess)) continue;
+
+      if (proc.app.desktop === uuid) await proc.closeWindow();
     }
   }
 }
