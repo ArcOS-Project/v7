@@ -1131,8 +1131,14 @@ export class UserDaemon extends Process {
     this.syncVirtualDesktops(this.preferences());
   }
 
-  getCurrentDesktop() {
+  getCurrentDesktop(): HTMLDivElement | undefined {
     const { workspaces } = this.preferences();
+
+    if (!workspaces.desktops.length) {
+      this.createWorkspace("Default");
+      return this.getCurrentDesktop();
+    }
+
     const uuid = workspaces.desktops[workspaces.index].uuid;
 
     if (!uuid) return undefined;
