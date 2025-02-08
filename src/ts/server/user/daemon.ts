@@ -1139,7 +1139,7 @@ export class UserDaemon extends Process {
       return this.getCurrentDesktop();
     }
 
-    const uuid = workspaces.desktops[workspaces.index].uuid;
+    const uuid = workspaces.desktops[workspaces.index]?.uuid;
 
     if (!uuid) return undefined;
 
