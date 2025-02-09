@@ -1,3 +1,8 @@
+div.window:not(.focused) > div.titlebar,
+div.window:not(.focused) > div.body div.titlebar.custom {
+  opacity: 0.5;
+}
+
 div.window > div.titlebar,
 div.window > div.body div.titlebar.custom {
   display: flex;
