@@ -24,6 +24,7 @@
 #systemSettings div.sidebar button.page.selected {
   font-weight: bold;
   background-color: var(--accent-transparent);
+  box-shadow: 0 2px 5px 2px #0002;
 }
 
 #systemSettings div.sidebar button.page img {

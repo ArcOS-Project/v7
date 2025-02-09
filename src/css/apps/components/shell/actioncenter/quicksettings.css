@@ -3,4 +3,5 @@ div.shell div.actioncenter div.quick-settings {
   min-height: 64px;
   background-color: var(--button-glass-bg);
   border-radius: 10px;
+  box-shadow: 0 2px 5px 2px #0002;
 }

@@ -154,7 +154,7 @@
       />
     </div>
     <div class="field email">
-      <p class="name">Email address*</p>
+      <p class="name">Email address *</p>
       <input
         type="email"
         placeholder="john.doe@gmail.com"

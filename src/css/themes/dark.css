@@ -22,6 +22,7 @@
   --button-glass-bg: #fff1;
   --button-glass-hover-bg: #fff3;
   --button-glass-active-bg: #0003;
+  --secondary-border: var(--win-bg) 1px solid;
   --clr-red-bg: #452929;
   --clr-red-fg: #ff7e7e;
   --clr-green-bg: #283e28;

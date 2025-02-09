@@ -40,6 +40,11 @@
       chevron
       onclick={() => process.loginActivity()}
     ></Option>
-    <Option caption="Log out everywhere" image={LogoutIcon} chevron></Option>
+    <Option
+      caption="Log out everywhere"
+      image={LogoutIcon}
+      chevron
+      onclick={() => process.logOutEverywhere()}
+    ></Option>
   </Section>
 </div>

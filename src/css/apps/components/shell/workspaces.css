@@ -14,6 +14,7 @@
   overflow: hidden;
   display: flex;
   align-items: center;
+  box-shadow: 0 2px 5px 2px #0004;
 }
 
 #arcShell div.virtual-desktops:not(.visible) {
@@ -31,14 +32,17 @@
   border-radius: 0;
   border: none;
   border-top: var(--border);
+  box-shadow: unset;
 }
 
 #arcShell div.virtual-desktops button.desktop {
   min-width: 140px;
   width: 140px;
   height: 80px;
+  padding: 8px;
   max-height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   background-image: var(--wallpaper);
@@ -66,6 +70,30 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   border-radius: 5px;
+
+  margin-left: auto;
+}
+
+#arcShell div.virtual-desktops button.desktop div.bottom {
+  margin-top: auto;
+  margin-right: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+#arcShell div.virtual-desktops button.desktop div.bottom > div {
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  padding: 2px 5px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#arcShell div.virtual-desktops button.desktop div.bottom > div span.lucide {
+  font-size: 16px;
 }
 
 #arcShell div.virtual-desktops div.desktops {
@@ -83,6 +111,7 @@
   width: 80px;
   height: 80px;
   background-color: var(--button-glass-bg);
+  /* box-shadow: 0 2px 5px 2px #0004; */
   font-size: 24px;
 }
 

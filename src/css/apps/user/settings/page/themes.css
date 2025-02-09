@@ -121,6 +121,22 @@
   position: relative;
   border: var(--win-border);
 }
+
+#systemSettings
+  div.container.themes
+  button.user-theme:not(.sharp)
+  div.fake-window {
+  border-radius: 5px !important;
+}
+
+#systemSettings
+  div.container.themes
+  button.user-theme:not(.sharp)
+  div.fake-window
+  div.fake-button {
+  border-radius: 2.5px !important;
+}
+
 #systemSettings
   div.container.themes
   button.user-theme

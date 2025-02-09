@@ -1,4 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
+import { MessageBox } from "$ts/dialog";
+import { WarningIcon } from "$ts/images/dialog";
 import {
   PasswordIcon,
   SecurityHighIcon,
@@ -6,6 +8,7 @@ import {
   WaveIcon,
 } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
+import { Axios } from "$ts/server/axios";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
@@ -132,5 +135,39 @@ export class SettingsRuntime extends AppProcess {
     if (!(await this.elevate("showLoginActivity"))) return;
 
     this.showSlide("account_loginActivity");
+  }
+
+  async logOutEverywhere() {
+    MessageBox(
+      {
+        title: "Log out everywhere?",
+        message:
+          "Are you sure you want to log out of all your devices? You'll have to log in again for each device, and any opened ArcOS instances will stop working immediately.",
+        buttons: [
+          { caption: "Cancel", action: () => {} },
+          {
+            caption: "Log out",
+            action: async () => {
+              this.userDaemon?.logoff();
+
+              await Axios.post(
+                "/logallout",
+                {},
+                {
+                  headers: {
+                    Authorization: `Bearer ${this.userDaemon?.token}`,
+                  },
+                }
+              );
+            },
+            suggested: true,
+          },
+        ],
+        image: WarningIcon,
+        sound: "arcos.dialog.warning",
+      },
+      this.pid,
+      true
+    );
   }
 }

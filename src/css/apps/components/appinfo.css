@@ -14,6 +14,7 @@
 #AppInfo div.body div.info-block {
   background-color: var(--button-glass-bg);
   border-radius: var(--win-border-rad);
+  box-shadow: 0 2px 5px 2px #0004;
 }
 
 #AppInfo div.body div.info-block div.row {

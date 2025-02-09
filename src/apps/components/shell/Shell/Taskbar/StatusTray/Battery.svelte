@@ -12,22 +12,21 @@
   } = $props();
 </script>
 
-<div class="battery">
+<div
+  class="battery"
+  title={$battery ? `${Math.floor($battery.level * 100)}%` : ""}
+>
   {#if $battery}
     {#if $battery.charging}
-      <span
-        class="lucide icon-battery-charging"
-        title="Charging ({Math.floor($battery.level * 100)}%)"
-      ></span>
+      <span class="lucide icon-battery-charging"></span>
     {:else if $battery.level === 0}
-      <span class="lucide icon-battery" title="Empty"></span>
+      <span class="lucide icon-battery"></span>
     {:else if $battery.level <= 0.3}
-      <span class="lucide icon-battery-low" title="Low battery"></span>
+      <span class="lucide icon-battery-low"></span>
     {:else if $battery.level <= 0.6}
-      <span class="lucide icon-battery-medium" title="Medium battery charge"
-      ></span>
+      <span class="lucide icon-battery-medium"></span>
     {:else}
-      <span class="lucide icon-battery-full" title="Full battery"></span>
+      <span class="lucide icon-battery-full"></span>
     {/if}
     {#if $userPreferences.shell.taskbar.batteryPercentage}
       {Math.floor($battery.level * 100)}%

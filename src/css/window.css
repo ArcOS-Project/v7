@@ -24,6 +24,7 @@ div.window:not(.core) {
   visibility: hidden;
   scale: 0.95;
   transform-origin: top !important;
+  outline: var(--secondary-border) !important;
 }
 
 div.window:not(.core).maximized {
@@ -42,6 +43,18 @@ div.window:not(.core).maximized {
   resize: none !important;
   border: none !important;
   transition: all 0.3s;
+}
+
+div.window:not(.core):not(.glass).focused {
+  background-color: var(--glass-bg);
+}
+
+div.window:not(.core):not(.glass).focused > div.titlebar {
+  backdrop-filter: blur(10px);
+}
+
+div.window:not(.core):not(.glass) > div.body {
+  background-color: var(--win-bg);
 }
 
 div.window:not(.core).minimized {
