@@ -136,7 +136,7 @@ export class UserDaemon extends Process {
     this.Log(`Starting user preferences commit sync`);
 
     const unsubscribe = this.preferences.subscribe(async (v) => {
-      if (this._disposed) return;
+      if (this._disposed) return unsubscribe();
 
       if (!v || v.isDefault) return;
 
