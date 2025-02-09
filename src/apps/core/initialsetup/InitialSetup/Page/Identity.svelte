@@ -125,13 +125,6 @@
 
     if (!passwordInvalid) $password = enteredPassword;
   }
-
-  // TODO: username validation for incorrect characters and profanity on both the client and server sides:
-  //        - client for UX: user feedback to indicate a problem with their chosen username
-  //        - server: check to make sure the user isn't trying to bypass the preamble limits set by the client
-  // TODO: username availability endpoint to see if the username is available before the user clicks 'Continue'
-  // TODO: for the username validation, send the necessary validation options
-  //       from the server to the client to make sure they always match up.
 </script>
 
 <div class="form-page identity">
