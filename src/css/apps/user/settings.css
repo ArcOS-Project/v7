@@ -67,7 +67,7 @@ button.lucide:active {
   padding-top: 10px;
   height: calc(100% - 40px);
   transition: pointer-events 0s, scale 0.3s, opacity 0.3s;
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 
 #systemSettings > div.body div.page-content.hide {

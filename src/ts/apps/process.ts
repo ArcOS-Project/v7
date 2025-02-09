@@ -294,20 +294,24 @@ export class AppProcess extends Process {
     });
   }
 
-  async spawnApp(id: string, parentPid?: number | undefined, ...args: any[]) {
-    return await this.userDaemon?.spawnApp(
+  async spawnApp<T = AppProcess>(
+    id: string,
+    parentPid?: number | undefined,
+    ...args: any[]
+  ) {
+    return await this.userDaemon?.spawnApp<T>(
       id,
       parentPid ?? this.parentPid,
       ...args
     );
   }
 
-  async spawnOverlayApp(
+  async spawnOverlayApp<T = AppProcess>(
     id: string,
     parentPid?: number | undefined,
     ...args: any[]
   ) {
-    return await this.userDaemon?.spawnOverlay(
+    return await this.userDaemon?.spawnOverlay<T>(
       id,
       parentPid ?? this.parentPid,
       ...args

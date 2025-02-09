@@ -16,19 +16,23 @@
   const { userDaemon } = process;
 
   let changing = $state(false);
+  const scrollThreshold = 500;
+  let accumulatedScroll = 0;
 
   async function onwheel(e: WheelEvent) {
     if (changing) return;
 
+    accumulatedScroll += e.deltaY;
+
     let { cardIndex } = $userPreferences.shell.actionCenter;
 
-    if (e.deltaY >= 0) {
-      if (cardIndex >= max - 1) return;
+    if (Math.abs(accumulatedScroll) < scrollThreshold) return;
 
+    if (accumulatedScroll > 0) {
+      if (cardIndex >= max - 1) return;
       cardIndex++;
     } else {
-      if ($userPreferences.shell.actionCenter.cardIndex <= 0) return;
-
+      if (cardIndex <= 0) return;
       cardIndex--;
     }
 
@@ -39,6 +43,7 @@
     await Sleep(150);
 
     changing = false;
+    accumulatedScroll = 0;
   }
 
   let max = 3;

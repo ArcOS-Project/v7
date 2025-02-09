@@ -20,6 +20,7 @@ export class SettingsRuntime extends AppProcess {
   currentPage = Store<string>("");
   currentSlide = Store<string>("");
   slideVisible = Store<boolean>(false);
+  requestedSlide: string | undefined;
 
   protected override overlayStore: Record<string, App> = {
     saveTheme: SaveThemeApp,
@@ -56,11 +57,14 @@ export class SettingsRuntime extends AppProcess {
     pid: number,
     parentPid: number,
     app: AppProcessData,
-    page?: string
+    page?: string,
+    slide?: string
   ) {
     super(handler, pid, parentPid, app);
 
     this.switchPage(page || "account");
+
+    this.requestedSlide = slide;
 
     // TODO:  check for singleton and focus existing
     //        instance & kill this one if another instance is already opened
@@ -73,6 +77,8 @@ export class SettingsRuntime extends AppProcess {
       const dispatch = this.handler.ConnectDispatch(firstInstance.pid);
 
       dispatch?.dispatch("switch-page", this.currentPage());
+      if (this.requestedSlide)
+        dispatch?.dispatch("show-slide", this.requestedSlide);
 
       return;
     }
@@ -80,6 +86,16 @@ export class SettingsRuntime extends AppProcess {
     this.dispatch.subscribe("switch-page", (page: string) => {
       this.switchPage(page);
     });
+
+    this.dispatch.subscribe("show-slide", (slide: string) => {
+      setTimeout(() => {
+        this.showSlide(slide);
+      }, 300);
+    });
+
+    await Sleep(300);
+
+    if (this.requestedSlide) this.showSlide(this.requestedSlide);
   }
 
   switchPage(pageId: string) {

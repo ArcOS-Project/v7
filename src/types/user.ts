@@ -66,6 +66,7 @@ export interface ShellPreferences {
     weatherLocation: {
       latitude: number;
       longitude: number;
+      name?: string;
     };
     noteContent: string;
     galleryImage: string;
