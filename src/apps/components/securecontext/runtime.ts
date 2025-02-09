@@ -60,28 +60,28 @@ export class SecureContextRuntime extends AppProcess {
     if (this._disposed) return;
     if (!(await this.validate())) return;
 
+    await this.closeWindow();
+
     this.globalDispatch.dispatch(
       "elevation-approve",
       [this.id, this.key],
       true
     );
-
-    await this.closeWindow();
   }
 
   async deny() {
     if (this._disposed) return;
 
-    this.globalDispatch.dispatch("elevation-deny", [this.id, this.key], true);
-
     await this.closeWindow();
+
+    this.globalDispatch.dispatch("elevation-deny", [this.id, this.key], true);
   }
 
-  passwordIncorrect() {
+  async passwordIncorrect() {
     if (this._disposed) return;
 
-    return new Promise<void>((r) => {
-      MessageBox(
+    return new Promise<void>(async (r) => {
+      await MessageBox(
         {
           title: "Authentication failed",
           message:
@@ -96,8 +96,8 @@ export class SecureContextRuntime extends AppProcess {
     });
   }
 
-  settings() {
-    MessageBox(
+  async settings() {
+    await MessageBox(
       {
         title: "Cancel elevation?",
         message:

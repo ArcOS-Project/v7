@@ -12,7 +12,6 @@ import { AccountIcon, PasswordIcon } from "$ts/images/general";
 import type { ArcLang } from "$ts/lang";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
-import { RoturExtension } from "$ts/rotur";
 import { Wallpapers } from "$ts/wallpaper/store";
 import { Store } from "$ts/writable";
 import type { LoginActivity } from "$types/activity";
@@ -44,7 +43,6 @@ export class UserDaemon extends Process {
   public preferences = Store<UserPreferences>();
   public notifications = new Map<string, Notification>([]);
   public userInfo: UserInfo = DefaultUserInfo;
-  public rotur: RoturExtension | undefined;
   public battery = Store<BatteryType | undefined>();
   public networkSpeed = Store<number>(-1);
   public appStore: ApplicationStorage | undefined;
@@ -589,40 +587,6 @@ export class UserDaemon extends Process {
       url: blobUrl,
       thumb: blobUrl,
     };
-  }
-
-  async restartRotur() {
-    this.Log("Killing Rotur extension");
-
-    if (this.rotur) await this.handler.kill(this.rotur.pid);
-
-    await this.startRotur();
-  }
-
-  async startRotur() {
-    this.Log("Starting Rotur extension");
-
-    const roturCred = this.preferences().account.rotur;
-
-    this.rotur = await this.handler.spawn<RoturExtension>(
-      RoturExtension,
-      undefined,
-      this.pid,
-      this
-    );
-
-    if (!this.rotur) throw new Error("Failed to start rotur");
-
-    await this.rotur.connectToServer("arc", "arcOS", "7");
-
-    if (!roturCred.username || !roturCred.password) return;
-
-    await this.rotur.login(atob(roturCred.username), atob(roturCred.password));
-
-    this.preferences.subscribe((v) => {
-      if (!v.account.rotur.username || !v.account.rotur.password)
-        this.rotur?.disconnect();
-    });
   }
 
   async logoff() {

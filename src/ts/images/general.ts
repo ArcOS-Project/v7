@@ -17,7 +17,6 @@ export { default as MemoryIcon } from "$assets/general/memory.svg";
 export { default as ModeIcon } from "$assets/general/mode.svg";
 export { default as PasswordIcon } from "$assets/general/password.svg";
 export { default as PersonalizationIcon } from "$assets/general/personalization.svg";
-export { default as RoturIcon } from "$assets/general/rotur.svg";
 export { default as SaveIcon } from "$assets/general/save.svg";
 export { default as SecureIcon } from "$assets/general/secure.svg";
 export { default as SecurityHighIcon } from "$assets/general/security-high.svg";

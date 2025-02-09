@@ -1,10 +1,5 @@
 <script lang="ts">
-  import {
-    PasswordIcon,
-    RoturIcon,
-    SecureIcon,
-    WaveIcon,
-  } from "$ts/images/general";
+  import { PasswordIcon, SecureIcon, WaveIcon } from "$ts/images/general";
   import { LogoutIcon } from "$ts/images/power";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
@@ -35,12 +30,6 @@
       image={PasswordIcon}
       chevron
       onclick={() => process.spawnOverlay("changePassword")}
-    />
-    <Option
-      caption="Manage Rotur..."
-      image={RoturIcon}
-      chevron
-      onclick={() => process.manageRotur()}
     />
   </Section>
 

@@ -131,12 +131,6 @@
   stroke-dashoffset: 62;
 }
 
-#initialSetupWizard div.hero-page > .lucide.rotur path {
-  stroke-dasharray: 470;
-  stroke-dashoffset: 470;
-  animation: draw 3s 0.4s forwards;
-}
-
 #initialSetupWizard div.hero-page > .lucide.lucide-flag path {
   stroke-dasharray: 58;
   stroke-dashoffset: 58;

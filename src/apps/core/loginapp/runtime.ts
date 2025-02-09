@@ -139,10 +139,6 @@ export class LoginAppRuntime extends AppProcess {
 
     await userDaemon.startSystemStatusRefresh();
 
-    this.loadingStatus.set("Starting Rotur");
-
-    await userDaemon.startRotur();
-
     this.loadingStatus.set("Starting Workspaces");
 
     await userDaemon.startVirtualDesktops();

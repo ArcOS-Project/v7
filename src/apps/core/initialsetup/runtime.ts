@@ -1,4 +1,3 @@
-import { RoturAuthGuiApp } from "$apps/components/roturauthgui/metadata";
 import { MessageBox } from "$ts/dialog";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { SecurityMediumIcon } from "$ts/images/general";
@@ -14,7 +13,6 @@ import CheckInbox from "./InitialSetup/Page/CheckInbox.svelte";
 import Finish from "./InitialSetup/Page/Finish.svelte";
 import Identity from "./InitialSetup/Page/Identity.svelte";
 import License from "./InitialSetup/Page/License.svelte";
-import RoturSetup from "./InitialSetup/Page/RoturSetup.svelte";
 import Welcome from "./InitialSetup/Page/Welcome.svelte";
 import type { PageButtons } from "./types";
 
@@ -29,14 +27,7 @@ export class InitialSetupRuntime extends AppProcess {
   public showMainContent = Store<boolean>(false);
   private token: string | undefined;
 
-  public readonly pages = [
-    Welcome,
-    License,
-    Identity,
-    CheckInbox,
-    RoturSetup,
-    Finish,
-  ];
+  public readonly pages = [Welcome, License, Identity, CheckInbox, Finish];
 
   public readonly pageButtons: PageButtons = [
     {
@@ -87,21 +78,6 @@ export class InitialSetupRuntime extends AppProcess {
         caption: "I clicked it",
         suggested: true,
         action: () => this.checkAccountActivation(),
-      },
-    },
-    {
-      left: {
-        caption: "Learn more",
-        action: async () => {},
-      },
-      previous: {
-        caption: "Skip",
-        to: 5,
-      },
-      next: {
-        caption: "Connect",
-        action: async () => this.roturAuthGui(),
-        suggested: true,
       },
     },
     {
@@ -326,18 +302,5 @@ export class InitialSetupRuntime extends AppProcess {
     await Sleep(1000);
 
     location.reload();
-  }
-
-  async roturAuthGui() {
-    this.Log(`Spawning RoturAuthGui`);
-
-    this.userDaemon?.appStore?.loadApp(RoturAuthGuiApp);
-
-    await this.userDaemon?.spawnApp("RoturAuthGui", this.pid, this.userDaemon);
-
-    this.globalDispatch.subscribe("ragui-loggedin", () => {
-      this.userDaemon?.restartRotur();
-      this.pageNumber.set(this.pageNumber() + 1);
-    });
   }
 }

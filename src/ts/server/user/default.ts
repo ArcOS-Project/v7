@@ -65,7 +65,6 @@ export const DefaultUserPreferences: UserPreferences = {
   account: {
     profilePicture: 3,
     loginBackground: "img15",
-    rotur: {},
   },
   isDefault: true,
   userThemes: {},

@@ -1,7 +1,6 @@
 import { getBuild } from "$ts/metadata/build";
 import { getLicense } from "$ts/metadata/license";
 import { getMode } from "$ts/metadata/mode";
-import { RoturExtension } from "$ts/rotur";
 import { Store, type ReadableStore } from "$ts/writable";
 import {
   LogLevel,
@@ -89,7 +88,7 @@ export class WaveKernel {
       `ArcOS`,
       `***** [v7 -> ArcOS InDev v7.0.0-${this.ARCOS_MODE}_${this.ARCOS_BUILD}] *****`
     );
-    RoturExtension;
+
     await this._kernelModules();
 
     const stack = this.getModule<ProcessHandler>("stack");
