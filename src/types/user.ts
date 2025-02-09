@@ -132,3 +132,12 @@ export type WallpaperGetters = [
   string,
   (id: string) => Wallpaper | Promise<Wallpaper>
 ][];
+
+export type PasswordStrength = "tooWeak" | "weak" | "medium" | "strong";
+
+export const PasswordStrengthCaptions: Record<PasswordStrength, string> = {
+  tooWeak: "too weak",
+  weak: "weak",
+  medium: "medium",
+  strong: "strong",
+};

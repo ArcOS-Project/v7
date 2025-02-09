@@ -1,17 +1,18 @@
 import validator from "validator";
 import leoProfanity from "leo-profanity";
+import { passwordStrength } from "check-password-strength";
 
 leoProfanity.loadDictionary("en");
 
 export function validateUsername(username: string): boolean {
-  // Username should have no profanity, be alphanumeric, and include only lowercase
+  if (username.length < 3 || username.length > 32) return false;
+
   const isValid =
     validator.isAlphanumeric(username) && !leoProfanity.check(username);
 
   return isValid;
 }
 
-// Implementation of PHPs htmlspecialchars() function in DOM JS
 export function htmlspecialchars(text: string) {
   const el = document.createElement("div");
 
@@ -21,14 +22,12 @@ export function htmlspecialchars(text: string) {
 }
 
 export function detectJavaScript(htmlString: string) {
-  // Regular expressions to detect disallowed elements and attributes
   const disallowedTagsRegex =
     /<(script|meta|title|link|iframe|noscript|embed|object|base|head|html|body)\b[^>]*>/i;
   const disallowedAttributesRegex =
     /\b(on\w+|lang|charset|http-equiv|content|scheme|target|rel|base)=["'][^"']*["']/i;
   const javascriptURLRegex = /href=["']javascript:[^"']*["']/i;
 
-  // Test the string against each regex
   return (
     disallowedTagsRegex.test(htmlString) ||
     disallowedAttributesRegex.test(htmlString) ||
@@ -43,3 +42,32 @@ export const validateEmail = (email: string) => {
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     );
 };
+
+export function checkPasswordStrength(password: string) {
+  return passwordStrength(password, [
+    {
+      id: 0,
+      value: "tooWeak",
+      minDiversity: 0,
+      minLength: 0,
+    },
+    {
+      id: 1,
+      value: "weak",
+      minDiversity: 2,
+      minLength: 8,
+    },
+    {
+      id: 2,
+      value: "medium",
+      minDiversity: 4,
+      minLength: 10,
+    },
+    {
+      id: 3,
+      value: "strong",
+      minDiversity: 4,
+      minLength: 12,
+    },
+  ]);
+}

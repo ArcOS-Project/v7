@@ -184,7 +184,8 @@
 }
 
 #initialSetupWizard div.form-page div.fields div.field.username input {
-  margin-right: -21px;
+  margin-right: -22px;
+  padding-right: 24px;
 }
 
 #initialSetupWizard
@@ -192,15 +193,16 @@
   div.fields
   div.field.username
   div.html-spinner {
-  margin-right: 5px;
+  margin-right: 6px;
 }
 
 #initialSetupWizard div.form-page div.fields div.field.email input {
-  margin-right: -21px;
+  margin-right: -22px;
+  padding-right: 24px;
 }
 
 #initialSetupWizard div.form-page div.fields div.field.email div.html-spinner {
-  margin-right: 5px;
+  margin-right: 6px;
 }
 #initialSetupWizard div.form-page div.fields div.field > div.duo {
   display: flex;
@@ -230,7 +232,6 @@
   border-radius: 6px;
   background: var(--glass-bg);
   padding: 0 10px;
-  padding-right: 24px;
 }
 
 #initialSetupWizard div.form-page input:focus {
@@ -250,6 +251,10 @@
   font-weight: bold;
   text-align: center;
   margin-top: 20px;
+}
+
+#initialSetupWizard div.form-page p.error + p.error {
+  margin-top: 0;
 }
 
 @keyframes draw {

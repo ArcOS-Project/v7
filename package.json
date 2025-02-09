@@ -26,6 +26,7 @@
     "@types/node": "^22.10.5",
     "@types/validator": "^13.12.2",
     "axios": "^1.7.9",
+    "check-password-strength": "^3.0.0",
     "colorsea": "^1.2.2",
     "dayjs": "^1.11.13",
     "js-cookie": "^3.0.5",

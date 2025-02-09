@@ -1,6 +1,12 @@
 <script lang="ts">
   import HtmlSpinner from "$lib/HtmlSpinner.svelte";
-  import { validateEmail, validateUsername } from "$ts/util";
+  import { Sleep } from "$ts/sleep";
+  import {
+    checkPasswordStrength,
+    validateEmail,
+    validateUsername,
+  } from "$ts/util";
+  import { PasswordStrengthCaptions, type PasswordStrength } from "$types/user";
   import type { InitialSetupRuntime } from "../../runtime";
 
   const { process }: { process: InitialSetupRuntime } = $props();
@@ -8,6 +14,7 @@
 
   let enteredUsername = $state("");
   let enteredEmail = $state("");
+  let enteredPassword = $state("");
   let usernameCheckTimeout: NodeJS.Timeout | undefined;
   let emailCheckTimeout: NodeJS.Timeout | undefined;
   let usernameInvalid = $state(false);
@@ -18,8 +25,11 @@
   let emailAvailable = $state(false);
   let checkingUsernameAvailability = $state(false);
   let checkingEmailAvailability = $state(false);
+  let passwordInvalid = $state(false);
+  let passwordStrength = $state<PasswordStrength>("tooWeak");
 
-  function onUsernameKeydown() {
+  async function onUsernameKeydown() {
+    await Sleep(1);
     checkingUsernameAvailability = true;
 
     if (usernameCheckTimeout) clearTimeout(usernameCheckTimeout);
@@ -57,7 +67,9 @@
     }, 1000);
   }
 
-  function onEmailKeydown() {
+  async function onEmailKeydown() {
+    await Sleep(1);
+
     checkingEmailAvailability = true;
 
     if (emailCheckTimeout) clearTimeout(emailCheckTimeout);
@@ -94,6 +106,24 @@
       emailAvailable = available;
       checkingEmailAvailability = false;
     }, 1000);
+  }
+
+  async function onPasswordKeydown() {
+    await Sleep(1);
+
+    if (!enteredPassword) {
+      passwordStrength = "tooWeak";
+      passwordInvalid = false;
+      $password = "";
+      return;
+    }
+
+    passwordStrength = checkPasswordStrength(enteredPassword)
+      .value as PasswordStrength;
+    passwordInvalid =
+      passwordStrength === "tooWeak" || passwordStrength === "weak";
+
+    if (!passwordInvalid) $password = enteredPassword;
   }
 
   // TODO: username validation for incorrect characters and profanity on both the client and server sides:
@@ -149,8 +179,19 @@
     <div class="field">
       <p class="name">Password</p>
       <div class="duo">
-        <input type="password" placeholder="Password" bind:value={$password} />
-        <input type="password" placeholder="Confirm" bind:value={$confirm} />
+        <input
+          type="password"
+          placeholder="Password"
+          bind:value={enteredPassword}
+          oninput={onPasswordKeydown}
+          class:taken={passwordInvalid}
+        />
+        <input
+          type="password"
+          placeholder="Confirm"
+          bind:value={$confirm}
+          class:taken={passwordInvalid}
+        />
       </div>
     </div>
     {#if usernameTaken && emailTaken}
@@ -159,12 +200,18 @@
       <p class="error">Username is already taken!</p>
     {:else if emailTaken}
       <p class="error">Email is already taken!</p>
-    {:else if emailInvalid && usernameInvalid}
-      <p class="error">Username and email address are invalid!</p>
+    {/if}
+    {#if emailInvalid && usernameInvalid}
+      <p class="error">Username and email address are both invalid!</p>
     {:else if usernameInvalid}
       <p class="error">Username is invalid!</p>
     {:else if emailInvalid}
       <p class="error">Email address is invalid!</p>
+    {/if}
+    {#if passwordInvalid}
+      <p class="error">
+        Password is {PasswordStrengthCaptions[passwordStrength]}!
+      </p>
     {/if}
   </div>
   <p class="disclaimer">
