@@ -49,7 +49,9 @@
       v.shell.actionCenter.weatherLocation = {
         latitude: result.latitude,
         longitude: result.longitude,
-        name: `${result.name}, ${result.country}`,
+        name: result.country
+          ? `${result.name || "Unknown"}, ${result.country}`
+          : result.name || "Unknown",
       };
 
       v.shell.actionCenter.cardIndex = 0;

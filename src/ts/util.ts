@@ -1,3 +1,16 @@
+import validator from "validator";
+import leoProfanity from "leo-profanity";
+
+leoProfanity.loadDictionary("en");
+
+export function validateUsername(username: string): boolean {
+  // Username should have no profanity, be alphanumeric, and include only lowercase
+  const isValid =
+    validator.isAlphanumeric(username) && !leoProfanity.check(username);
+
+  return isValid;
+}
+
 // Implementation of PHPs htmlspecialchars() function in DOM JS
 export function htmlspecialchars(text: string) {
   const el = document.createElement("div");
@@ -22,3 +35,11 @@ export function detectJavaScript(htmlString: string) {
     javascriptURLRegex.test(htmlString)
   );
 }
+
+export const validateEmail = (email: string) => {
+  return String(email)
+    .toLowerCase()
+    .match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+};

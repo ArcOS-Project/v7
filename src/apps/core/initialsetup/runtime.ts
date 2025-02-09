@@ -1,6 +1,7 @@
 import { MessageBox } from "$ts/dialog";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { SecurityMediumIcon } from "$ts/images/general";
+import type { ServerManager } from "$ts/server";
 import { LoginUser, RegisterUser } from "$ts/server/user/auth";
 import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
@@ -25,6 +26,8 @@ export class InitialSetupRuntime extends AppProcess {
   public email = Store<string>();
   public actionsDisabled = Store<boolean>(false);
   public showMainContent = Store<boolean>(false);
+  public fullName = Store<string>();
+  public server: ServerManager;
   private token: string | undefined;
 
   public readonly pages = [Welcome, License, Identity, CheckInbox, Finish];
@@ -107,7 +110,8 @@ export class InitialSetupRuntime extends AppProcess {
         !!this.newUsername() &&
           !!this.password() &&
           !!this.confirm() &&
-          !!this.email()
+          !!this.email() &&
+          !!this.fullName()
       );
     };
 
@@ -115,10 +119,13 @@ export class InitialSetupRuntime extends AppProcess {
     this.password.subscribe(update);
     this.confirm.subscribe(update);
     this.email.subscribe(update);
+    this.fullName.subscribe(update);
 
     this.pageNumber.subscribe(() => {
       this.actionsDisabled.set(false);
     });
+
+    this.server = this.kernel.getModule<ServerManager>("server");
   }
 
   async render() {
@@ -229,7 +236,7 @@ export class InitialSetupRuntime extends AppProcess {
           image: ErrorIcon,
           title: "Something went wrong",
           message:
-            "I couldn't create your account. Maybe either the username or email is invalid or already in use. Enter another username and/or email, and then try again",
+            "An error occured while creating your account. We might be experiencing some technical difficulties, please try again later.",
           buttons: [
             {
               caption: "Okay",
@@ -289,6 +296,11 @@ export class InitialSetupRuntime extends AppProcess {
     await this.userDaemon?.getUserInfo();
     await this.userDaemon?.startPreferencesSync();
     await this.userDaemon?.startFilesystemSupplier();
+    this.userDaemon?.preferences.update((v) => {
+      v.account.displayName = this.fullName();
+
+      return v;
+    });
 
     this.token = token;
     this.pageNumber.set(this.pageNumber() + 1);

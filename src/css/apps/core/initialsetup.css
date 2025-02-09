@@ -182,6 +182,26 @@
   align-items: center;
   margin-bottom: 10px;
 }
+
+#initialSetupWizard div.form-page div.fields div.field.username input {
+  margin-right: -21px;
+}
+
+#initialSetupWizard
+  div.form-page
+  div.fields
+  div.field.username
+  div.html-spinner {
+  margin-right: 5px;
+}
+
+#initialSetupWizard div.form-page div.fields div.field.email input {
+  margin-right: -21px;
+}
+
+#initialSetupWizard div.form-page div.fields div.field.email div.html-spinner {
+  margin-right: 5px;
+}
 #initialSetupWizard div.form-page div.fields div.field > div.duo {
   display: flex;
   gap: 10px;
@@ -210,6 +230,26 @@
   border-radius: 6px;
   background: var(--glass-bg);
   padding: 0 10px;
+  padding-right: 24px;
+}
+
+#initialSetupWizard div.form-page input:focus {
+  border-color: var(--accent);
+}
+
+#initialSetupWizard div.form-page input.taken {
+  border-color: var(--clr-red-fg);
+}
+
+#initialSetupWizard div.form-page input.available {
+  border-color: var(--clr-green-fg);
+}
+
+#initialSetupWizard div.form-page p.error {
+  color: var(--clr-red-fg);
+  font-weight: bold;
+  text-align: center;
+  margin-top: 20px;
 }
 
 @keyframes draw {

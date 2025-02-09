@@ -52,6 +52,7 @@ export class StateHandler extends Process {
       appRenderer.className = "";
       appRenderer.removeAttribute("style");
       appRenderer.querySelector("#userStyleLoader")?.remove();
+      appRenderer.querySelector(".virtual-desktop-container")?.remove();
     }
 
     if (this.stateAppProcess) {

@@ -72,4 +72,28 @@ export class ServerManager extends KernelModule {
       this.Log(`Failed to connect to server: ${e}`, LogLevel.error);
     }
   }
+
+  async checkUsernameAvailability(username: string) {
+    try {
+      const response = await Axios.get(
+        `/user/availability/username?name=${username}`
+      );
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async checkEmailAvailability(email: string) {
+    try {
+      const response = await Axios.get(
+        `/user/availability/email?email=${email}`
+      );
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
 }

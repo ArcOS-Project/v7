@@ -9,6 +9,10 @@ div.html-spinner {
   animation: spin 0.75s linear infinite;
 }
 
+div.html-spinner:not(.going) {
+  opacity: 0;
+}
+
 div.html-spinner.large {
   --size: 64px;
   --thickness: 5px;
