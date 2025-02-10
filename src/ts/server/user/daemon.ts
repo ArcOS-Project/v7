@@ -499,6 +499,8 @@ export class UserDaemon extends Process {
 
     return new Promise((resolve, reject) => {
       uploader.onchange = async () => {
+        if (this._disposed) return reject("Disposed");
+
         try {
           const files = uploader.files;
 

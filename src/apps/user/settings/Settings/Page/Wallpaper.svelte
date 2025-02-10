@@ -31,7 +31,12 @@
   <Setting caption="Author" sub={wallpaper?.author} />
 
   <div class="upload-actions">
-    <button class="lucide icon-upload" aria-label="Upload wallpaper"> </button>
+    <button
+      class="lucide icon-upload"
+      aria-label="Upload wallpaper"
+      onclick={() => process.uploadWallpaper()}
+    >
+    </button>
     <button class="lucide icon-link" aria-label="Enter a wallpaper URL">
     </button>
     <div class="sep"></div>
