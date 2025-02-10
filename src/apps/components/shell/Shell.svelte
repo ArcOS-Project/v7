@@ -5,6 +5,7 @@
   import PushNotification from "./Shell/PushNotification.svelte";
   import StartMenu from "./Shell/StartMenu.svelte";
   import Taskbar from "./Shell/Taskbar.svelte";
+  import VirtualDesktopIndicator from "./Shell/VirtualDesktopIndicator.svelte";
   import VirtualDesktops from "./Shell/VirtualDesktops.svelte";
 
   const { process }: AppComponentProps<ShellRuntime> = $props();
@@ -18,6 +19,7 @@
 >
   <div class="primary">
     <VirtualDesktops {process} />
+    <VirtualDesktopIndicator {process} />
     <StartMenu {userPreferences} {startMenuOpened} {process} {username} />
     <div></div>
     <ActionCenter {actionCenterOpened} {userPreferences} {process} />

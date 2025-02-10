@@ -1,6 +1,7 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
   import { MessageBox } from "$ts/dialog";
+  import { WarningIcon } from "$ts/images/dialog";
   import { DesktopIcon } from "$ts/images/general";
   import { Sleep } from "$ts/sleep";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
@@ -17,6 +18,23 @@
   let windowCounts = Store<Record<string, number>>({});
 
   function deleteWorkspace(uuid: string) {
+    if ($windowCounts[uuid] > 0) {
+      MessageBox(
+        {
+          title: "Can't delete workspace",
+          message:
+            "The workspace you want to delete still has windows opened in it. You have to close all windows in a workspace before you can delete it.",
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          sound: "arcos.dialog.warning",
+          image: WarningIcon,
+        },
+        process.pid,
+        true
+      );
+
+      return;
+    }
+
     MessageBox(
       {
         title: "Are you sure?",

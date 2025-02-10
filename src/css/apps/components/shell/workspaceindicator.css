@@ -1,0 +1,28 @@
+#arcShell div.workspace-indicator {
+  position: fixed;
+  bottom: 200px;
+  left: calc(50vw - 64px);
+  width: 100px;
+  height: 100px;
+  border-radius: 15px;
+  background-color: var(--glass-bg);
+  border: var(--border);
+  outline: var(--secondary-border) !important;
+  backdrop-filter: blur(15px);
+  font-size: 32px;
+  font-weight: bold;
+  line-height: 100px;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  translate: 0 30px;
+  pointer-events: none !important;
+  box-shadow: var(--secondary-box-shadow);
+  transition: opacity 0.3s, visibility 0.3s, translate 0.3s;
+}
+
+#arcShell div.workspace-indicator.show {
+  opacity: 1;
+  visibility: visible;
+  translate: 0;
+}
