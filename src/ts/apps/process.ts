@@ -164,6 +164,9 @@ export class AppProcess extends Process {
       await this.killSelf();
 
       this.handler.renderer?.focusPid(instances[0].pid);
+
+      if (instances[0].app.desktop)
+        this.userDaemon?.switchToDesktopByUuid(instances[0].app.desktop);
     }
 
     return instances.length ? instances[0] : undefined;
@@ -181,7 +184,14 @@ export class AppProcess extends Process {
     document.removeEventListener("keydown", (e) => this.processor(e));
   }
 
-  private processor(e: KeyboardEvent) {
+  public async __stop(): Promise<any> {
+    this.Log(`STOPPING PROCESS`);
+
+    this.stopAcceleratorListener();
+    return await this.stop();
+  }
+
+  private async processor(e: KeyboardEvent) {
     if (!e.key) return;
 
     if (
@@ -197,7 +207,7 @@ export class AppProcess extends Process {
 
     const state = this.kernel.state?.currentState;
 
-    if (state != "desktop") return;
+    if (state != "desktop" || this._disposed) return;
 
     for (const combo of this.acceleratorStore) {
       const alt = combo.alt ? e.altKey : true;
@@ -216,7 +226,7 @@ export class AppProcess extends Process {
       if (!modifiers || (key != pK && key && key != codedKey) || !isFocused)
         continue;
 
-      if (!this.userDaemon?._elevating) combo.action(this);
+      if (!this.userDaemon?._elevating) await combo.action(this);
 
       break;
     }
