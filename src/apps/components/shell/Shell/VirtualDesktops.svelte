@@ -25,7 +25,7 @@
           message:
             "The workspace you want to delete still has windows opened in it. You have to close all windows in a workspace before you can delete it.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          sound: "arcos.dialog.warning",
+          sound: "arcos.dialog.error",
           image: WarningIcon,
         },
         process.pid,
@@ -37,9 +37,8 @@
 
     MessageBox(
       {
-        title: "Are you sure?",
-        message:
-          "Deleting a workspace will close all windows in that workspace, which could cause you to lose unsaved information. Are you sure?",
+        title: "Delete workspace",
+        message: "Are you sure you want to permanently delete this workspace?",
         image: DesktopIcon,
         buttons: [
           { caption: "Cancel", action: () => {} },
@@ -48,8 +47,10 @@
             action: () => {
               userDaemon?.deleteVirtualDesktop(uuid);
             },
+            suggested: true,
           },
         ],
+        sound: "arcos.dialog.warning",
       },
       process.pid,
       true

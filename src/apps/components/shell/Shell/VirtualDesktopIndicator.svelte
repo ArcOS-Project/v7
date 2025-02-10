@@ -2,7 +2,7 @@
   import type { ShellRuntime } from "../runtime";
 
   const { process }: { process: ShellRuntime } = $props();
-  const { userPreferences } = process;
+  const { userPreferences, workspaceManagerOpened } = process;
 
   let show = $state(false);
   let index = $state(-1);
@@ -29,7 +29,7 @@
 
 <div
   class="workspace-indicator shell-colored"
-  class:show
+  class:show={show || $workspaceManagerOpened}
   class:colored={$userPreferences.shell.taskbar.colored}
 >
   {index + 1}

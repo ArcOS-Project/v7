@@ -3,6 +3,7 @@ export interface FileEntry {
   size: number;
   dateCreated: Date;
   dateModified: Date;
+  mimeType: string;
 }
 
 export interface FolderEntry {

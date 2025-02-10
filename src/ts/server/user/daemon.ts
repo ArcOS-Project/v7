@@ -6,7 +6,7 @@ import { Filesystem } from "$ts/fs";
 import { arrayToBlob, arrayToText } from "$ts/fs/convert";
 import { ServerDrive } from "$ts/fs/drives/server";
 import { ZIPDrive } from "$ts/fs/drives/zipdrive";
-import { join } from "$ts/fs/util";
+import { getParentDirectory, join } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
 import { AccountIcon, PasswordIcon } from "$ts/images/general";
 import type { ArcLang } from "$ts/lang";
@@ -603,9 +603,10 @@ export class UserDaemon extends Process {
       };
 
     const path = atob(id.replace("@local:", ""));
+    const parent = await this.fs.readDir(getParentDirectory(path));
     const contents = await this.fs.readFile(path);
 
-    if (!contents) {
+    if (!contents || !parent) {
       this.Log(
         `User wallpaper '${id}' doesn't exist on the filesystem anymore, defaulting to img04`,
         LogLevel.warning
@@ -614,7 +615,10 @@ export class UserDaemon extends Process {
       return Wallpapers.img04;
     }
 
-    const blob = arrayToBlob(contents, "image/png");
+    const blob = arrayToBlob(
+      contents,
+      parent.files.filter((f) => path.endsWith(f.name))[0]?.mimeType || ""
+    );
     const blobUrl = URL.createObjectURL(blob);
 
     this.localWallpaperCache[id] = blob;
