@@ -12,7 +12,7 @@ div.shell div.taskbar {
   background-color: var(--glass-bg);
   border-radius: 10px;
   border: var(--border);
-  box-shadow: 0 2px 5px 2px #0004;
+  box-shadow: var(--secondary-box-shadow);
   backdrop-filter: blur(var(--blur));
 }
 

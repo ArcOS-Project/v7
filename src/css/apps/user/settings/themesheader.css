@@ -14,7 +14,7 @@
   background-position: center;
   background-size: cover;
   padding: 3px;
-  box-shadow: 0 2px 5px 2px #0004;
+  box-shadow: var(--secondary-box-shadow);
 }
 
 #systemSettings div.themes-header div.screen.desktop {

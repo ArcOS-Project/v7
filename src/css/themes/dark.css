@@ -35,6 +35,7 @@
   --clr-blue-fg: #96d3ff;
   --clr-aqua-fg: #79ffd0;
   --clr-aqua-bg: #214538;
+  --secondary-box-shadow: 0 2px 5px 2px #0004;
 }
 
 :root {

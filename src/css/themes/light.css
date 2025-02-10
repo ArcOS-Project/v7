@@ -35,6 +35,7 @@
   --clr-aqua-fg: #39a17d;
   --accent-darken: brightness(0.7);
   --secondary-border: var(--win-bg) 1px solid;
+  --secondary-box-shadow: none;
 }
 
 :root .theme-light.noglass {

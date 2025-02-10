@@ -1,6 +1,7 @@
 #arcShell div.shell-colored,
 #arcShell div.shell-colored * {
   --border: var(--win-border);
+  /* --secondary-border: var(--accent-dark) 1px solid !important; */
 }
 
 .shell-colored::before {

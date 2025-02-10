@@ -16,7 +16,7 @@
   border-radius: 10px;
   background-color: var(--button-bg);
   overflow: hidden;
-  box-shadow: 0 2px 5px 2px #0004;
+  box-shadow: var(--secondary-box-shadow);
 }
 
 #systemSettings section div.content div.option {
