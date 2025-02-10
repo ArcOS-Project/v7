@@ -58,7 +58,6 @@ export class UserDaemon extends Process {
   ];
   private localWallpaperCache: Record<string, Blob> = {};
   private virtualDesktops: Record<string, HTMLDivElement> = {};
-  private virtualDesktopState: string[] = [];
   private virtualDesktop: HTMLDivElement | undefined;
   private virtualDesktopIndex = -1;
 
@@ -1080,19 +1079,9 @@ export class UserDaemon extends Process {
     this.Log(`Syncing virtual desktop render state`);
 
     const { desktops, index } = v.workspaces;
-    const existing: string[] = [];
 
     for (const { uuid } of desktops) {
       if (!this.virtualDesktops[uuid]) this.renderVirtualDesktop(uuid);
-
-      existing.push(uuid);
-    }
-
-    for (const uuid of this.virtualDesktopState) {
-      if (!existing.includes(uuid)) {
-        this.removeVirtualDesktop(uuid);
-        this.virtualDesktopState.splice(this.virtualDesktopState.indexOf(uuid));
-      }
     }
 
     if (this.virtualDesktopIndex === index) return;
@@ -1120,47 +1109,36 @@ export class UserDaemon extends Process {
     desktop.id = uuid;
 
     this.virtualDesktop?.append(desktop);
-    this.virtualDesktopState.push(uuid);
     this.virtualDesktops[uuid] = desktop;
   }
 
-  deleteVirtualDesktop(uuid: string) {
+  async deleteVirtualDesktop(uuid: string) {
     if (this._disposed) return;
 
+    this.Log(`Deleting virtual desktop "${uuid}"`);
+
     const index = this.getDesktopIndexByUuid(uuid);
+
+    if (this.getCurrentDesktop()?.id === uuid) {
+      this.previousDesktop();
+    }
 
     if (index < 0) return;
 
     this.preferences.update((v) => {
       v.workspaces.desktops.splice(index, 1);
-      v.workspaces.index = 0;
 
       return v;
     });
-  }
-
-  async removeVirtualDesktop(uuid: string) {
-    if (this._disposed) return;
-
-    if (this.preferences().workspaces.desktops.length <= 1) return;
-
-    this.Log(`Rendering virtual desktop "${uuid}"`);
 
     const desktop = this.virtualDesktop?.querySelector(`[id*="${uuid}"]`);
 
     if (!desktop) return;
 
     await this.killWindowsOfDesktop(uuid);
-
-    if (this.getCurrentDesktop()?.id === uuid) {
-      this.preferences.update((v) => {
-        v.workspaces.index = 0;
-        return v;
-      });
-    }
+    await Sleep(10);
 
     desktop.remove();
-
     delete this.virtualDesktops[uuid];
   }
 
@@ -1246,7 +1224,11 @@ export class UserDaemon extends Process {
       if (!(proc instanceof AppProcess)) continue;
 
       if (proc.app.desktop === uuid) await proc.closeWindow();
+
+      return true;
     }
+
+    return false;
   }
 
   nextDesktop() {
@@ -1260,7 +1242,11 @@ export class UserDaemon extends Process {
 
         return v;
       });
+
+      return true;
     }
+
+    return false;
   }
 
   previousDesktop() {
