@@ -35,6 +35,7 @@ import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes } from "./store";
 import { Sleep } from "$ts/sleep";
 import { AppProcess } from "$ts/apps/process";
+import { ProfilePictures } from "$ts/images/pfp";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -57,6 +58,7 @@ export class UserDaemon extends Process {
     ["img", (id) => Wallpapers[id] || Wallpapers["img04"]],
   ];
   private localWallpaperCache: Record<string, Blob> = {};
+  private localProfilePictureCache: Record<string, Blob> = {};
   private virtualDesktops: Record<string, HTMLDivElement> = {};
   private virtualDesktop: HTMLDivElement | undefined;
   private virtualDesktopIndex = -1;
@@ -561,6 +563,42 @@ export class UserDaemon extends Process {
     }
 
     return Wallpapers[override || "img0"];
+  }
+
+  public async getProfilePicture(picture: number | string): Promise<string> {
+    if (typeof picture === "number") return ProfilePictures[`pfp${picture}`];
+    if (picture.startsWith("http")) return picture;
+
+    try {
+      this.fs.validatePath(picture);
+    } catch {
+      return ProfilePictures[`pfp3`];
+    }
+
+    if (this.localProfilePictureCache[btoa(picture)])
+      return URL.createObjectURL(this.localProfilePictureCache[btoa(picture)]);
+
+    const parent = await this.fs.readDir(getParentDirectory(picture));
+    const contents = await this.fs.readFile(picture);
+
+    if (!contents || !parent) {
+      this.Log(
+        `User profile picture '${picture}' doesn't exist on the filesystem anymore, defaulting to pfp3`,
+        LogLevel.warning
+      );
+
+      return ProfilePictures[`pfp3`];
+    }
+
+    const blob = arrayToBlob(
+      contents,
+      parent.files.filter((f) => picture.endsWith(f.name))[0]?.mimeType || ""
+    );
+    const blobUrl = URL.createObjectURL(blob);
+
+    this.localProfilePictureCache[btoa(picture)] = blob;
+
+    return blobUrl;
   }
 
   async deleteLocalWallpaper(id: string): Promise<boolean> {

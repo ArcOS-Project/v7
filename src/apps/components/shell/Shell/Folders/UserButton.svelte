@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getProfilePicture, ProfilePictures } from "$ts/images/pfp";
+  import { ProfilePictures } from "$ts/images/pfp";
   import type { UserPreferencesStore } from "$types/user";
   import type { ShellRuntime } from "../../runtime";
 
@@ -13,11 +13,20 @@
     username: string;
   } = $props();
 
+  const { userDaemon } = process;
+
   let pfp = $state<string>(ProfilePictures.def);
 
   $effect(() => {
-    pfp = getProfilePicture($userPreferences.account.profilePicture);
+    getPfp();
   });
+
+  async function getPfp() {
+    pfp =
+      (await userDaemon?.getProfilePicture(
+        $userPreferences.account.profilePicture!
+      )) || ProfilePictures.pfp3;
+  }
 
   function onclick() {
     process.spawnApp("systemSettings", process.pid);

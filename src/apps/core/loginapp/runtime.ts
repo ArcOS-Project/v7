@@ -1,4 +1,4 @@
-import { getProfilePicture, ProfilePictures } from "$ts/images/pfp";
+import { ProfilePictures } from "$ts/images/pfp";
 import { Axios } from "$ts/server/axios";
 import { LoginUser } from "$ts/server/user/auth";
 import { UserDaemon } from "$ts/server/user/daemon";
@@ -122,8 +122,11 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.startPreferencesSync();
 
     this.profileImage.set(
-      getProfilePicture(userDaemon.preferences().account.profilePicture)
+      (await userDaemon?.getProfilePicture(
+        userDaemon.preferences().account.profilePicture!
+      )) || ProfilePictures.pfp3
     );
+
     this.profileName.set(
       userDaemon.preferences().account.displayName || username
     );
@@ -174,8 +177,11 @@ export class LoginAppRuntime extends AppProcess {
     }
 
     this.profileImage.set(
-      getProfilePicture(daemon.preferences().account.profilePicture)
+      (await daemon?.getProfilePicture(
+        daemon.preferences().account.profilePicture!
+      )) || ProfilePictures.pfp3
     );
+
     this.profileName.set(
       daemon.preferences().account.displayName || daemon.username
     );
@@ -208,8 +214,11 @@ export class LoginAppRuntime extends AppProcess {
 
     if (daemon) {
       this.profileImage.set(
-        getProfilePicture(daemon.preferences().account.profilePicture)
+        (await daemon?.getProfilePicture(
+          daemon.preferences().account.profilePicture!
+        )) || ProfilePictures.pfp3
       );
+
       this.profileName.set(
         daemon.preferences().account.displayName || daemon.username
       );
@@ -231,8 +240,11 @@ export class LoginAppRuntime extends AppProcess {
 
     if (daemon) {
       this.profileImage.set(
-        getProfilePicture(daemon.preferences().account.profilePicture)
+        (await daemon?.getProfilePicture(
+          daemon.preferences().account.profilePicture!
+        )) || ProfilePictures.pfp3
       );
+
       this.profileName.set(
         daemon.preferences().account.displayName || daemon.username
       );

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getProfilePicture, ProfilePictures } from "$ts/images/pfp";
+  import { ProfilePictures } from "$ts/images/pfp";
   import { DefaultUserInfo } from "$ts/server/user/default";
   import type { SettingsRuntime } from "../../runtime";
 
@@ -10,8 +10,8 @@
   let pfp = $state(ProfilePictures.def);
 
   $effect(() => {
-    const sub = userPreferences.subscribe((v) => {
-      pfp = getProfilePicture(v.account.profilePicture);
+    const sub = userPreferences.subscribe(async (v) => {
+      pfp = await userDaemon?.getProfilePicture(v.account.profilePicture!)!;
     });
 
     return () => sub();

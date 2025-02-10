@@ -16,7 +16,7 @@
 </script>
 
 <div class="centered-layout">
-  <Header {userInfo} {userPreferences} />
+  <Header {userInfo} {userPreferences} userDaemon={process.userDaemon!} />
 
   <Section>
     <Option

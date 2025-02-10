@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getProfilePicture } from "$ts/images/pfp";
+  import type { UserDaemon } from "$ts/server/user/daemon";
   import type { UserInfo, UserPreferencesStore } from "$types/user";
   import type { Snippet } from "svelte";
 
@@ -10,6 +10,21 @@
     userInfo: UserInfo;
     userPreferences: UserPreferencesStore;
     children?: Snippet;
+    userDaemon: UserDaemon;
+  }
+
+  let pfp = $state("");
+
+  $effect(() => {
+    getPfp();
+  });
+
+  async function getPfp() {
+    if (!login) return;
+
+    pfp = await userDaemon.getProfilePicture(
+      $userPreferences.account.profilePicture!
+    );
   }
 
   const {
@@ -19,6 +34,7 @@
     userInfo,
     userPreferences,
     children,
+    userDaemon,
   }: Props = $props();
 </script>
 
@@ -31,10 +47,7 @@
   >
     {#if login}
       <div class="center">
-        <img
-          src={getProfilePicture($userPreferences.account.profilePicture)}
-          alt=""
-        />
+        <img src={pfp} alt="" />
         <p>{$userPreferences.account.displayName || userInfo.username}</p>
       </div>
     {:else}

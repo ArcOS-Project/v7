@@ -29,6 +29,7 @@
 <ThemesHeader
   {userInfo}
   {userPreferences}
+  userDaemon={process.userDaemon!}
   login
   background={wallpaper?.thumb || wallpaper?.url}
 >

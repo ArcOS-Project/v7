@@ -1,17 +1,23 @@
 <script lang="ts">
-  import { getProfilePicture, ProfilePictures } from "$ts/images/pfp";
+  import { ProfilePictures } from "$ts/images/pfp";
+  import type { UserDaemon } from "$ts/server/user/daemon";
   import type { UserInfo, UserPreferencesStore } from "$types/user";
 
   const {
     userInfo,
     userPreferences,
-  }: { userInfo: UserInfo; userPreferences: UserPreferencesStore } = $props();
+    userDaemon,
+  }: {
+    userInfo: UserInfo;
+    userPreferences: UserPreferencesStore;
+    userDaemon: UserDaemon;
+  } = $props();
 
   let pfp = $state(ProfilePictures.def);
 
   $effect(() => {
-    const sub = userPreferences.subscribe((v) => {
-      pfp = getProfilePicture(v.account.profilePicture);
+    const sub = userPreferences.subscribe(async (v) => {
+      pfp = await userDaemon.getProfilePicture(v.account.profilePicture!);
     });
 
     return () => sub();

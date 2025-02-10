@@ -32,6 +32,7 @@
 <ThemesHeader
   {userInfo}
   {userPreferences}
+  userDaemon={process.userDaemon!}
   desktop
   background={currentWallpaper?.url}
 />

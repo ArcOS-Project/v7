@@ -24,6 +24,7 @@
 <ThemesHeader
   {userInfo}
   {userPreferences}
+  userDaemon={process.userDaemon!}
   desktop
   background={wallpaper?.thumb || wallpaper?.url}
 >
