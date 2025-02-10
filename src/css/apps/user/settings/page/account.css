@@ -4,6 +4,7 @@
   > div.centered-layout
   > div.header
   img {
+  width: 128px;
   height: 128px;
   border-radius: 64px;
 }

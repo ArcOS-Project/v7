@@ -32,6 +32,7 @@ div.shell div.startmenu div.top div.folders button.user-button img {
 }
 
 div.shell div.startmenu div.top div.folders button img {
+  width: 24px;
   height: 24px;
 }
 
