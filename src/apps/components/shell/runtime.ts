@@ -74,14 +74,32 @@ export class ShellRuntime extends AppProcess {
         this.workspaceManagerOpened.set(false);
     });
 
-    this.acceleratorStore.push({
-      ctrl: true,
-      key: "q",
-      global: true,
-      action: () => {
-        this.closeFocused();
+    this.acceleratorStore.push(
+      {
+        ctrl: true,
+        key: "q",
+        global: true,
+        action: () => {
+          this.closeFocused();
+        },
       },
-    });
+      {
+        alt: true,
+        key: "[",
+        global: true,
+        action: () => {
+          this.userDaemon?.previousDesktop();
+        },
+      },
+      {
+        alt: true,
+        key: "]",
+        global: true,
+        action: () => {
+          this.userDaemon?.nextDesktop();
+        },
+      }
+    );
 
     this.dispatch.subscribe("open-action-center", () =>
       this.actionCenterOpened.set(true)

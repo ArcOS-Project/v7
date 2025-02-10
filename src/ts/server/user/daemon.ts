@@ -1248,4 +1248,32 @@ export class UserDaemon extends Process {
       if (proc.app.desktop === uuid) await proc.closeWindow();
     }
   }
+
+  nextDesktop() {
+    const {
+      workspaces: { desktops, index },
+    } = this.preferences();
+
+    if (desktops.length - 1 >= index + 1) {
+      this.preferences.update((v) => {
+        v.workspaces.index++;
+
+        return v;
+      });
+    }
+  }
+
+  previousDesktop() {
+    const {
+      workspaces: { index },
+    } = this.preferences();
+
+    if (index - 1 >= 0) {
+      this.preferences.update((v) => {
+        v.workspaces.index--;
+
+        return v;
+      });
+    }
+  }
 }
