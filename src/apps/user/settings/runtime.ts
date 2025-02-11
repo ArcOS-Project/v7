@@ -4,12 +4,14 @@ import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import {
   PasswordIcon,
   SecurityHighIcon,
+  SecurityMediumIcon,
   SettingsIcon,
   WaveIcon,
 } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Axios } from "$ts/server/axios";
 import { Sleep } from "$ts/sleep";
+import { htmlspecialchars } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
@@ -192,5 +194,28 @@ export class SettingsRuntime extends AppProcess {
         true
       );
     }
+  }
+
+  async viewLicense() {
+    this.Log("Opening ArcOS license message box");
+
+    MessageBox(
+      {
+        image: SecurityMediumIcon,
+        title: "ArcOS License - GPLv3",
+        message: `By using ArcOS, you agree to the GPLv3 License contained within: <code class='block'>${htmlspecialchars(
+          this.kernel.ARCOS_LICENSE
+        )}</code>`,
+        buttons: [
+          {
+            caption: "Okay",
+            action: () => {},
+            suggested: true,
+          },
+        ],
+      },
+      +this.env.get("shell_pid") || this.pid,
+      true
+    );
   }
 }

@@ -1,8 +1,11 @@
-<script>
+<script lang="ts">
   import GlowingLogo from "$lib/GlowingLogo.svelte";
   import { ArcOSVersion } from "$ts/env";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
+  import type { SettingsRuntime } from "../../runtime";
+
+  const { process }: { process: SettingsRuntime } = $props();
 </script>
 
 <GlowingLogo />
@@ -23,5 +26,5 @@
   <span>
     v{ArcOSVersion}-{ArcMode()} ({ArcBuild()})
   </span>
-  <button class="link">License</button>
+  <button class="link" onclick={() => process.viewLicense()}>License</button>
 </p>
