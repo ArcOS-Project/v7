@@ -10,9 +10,9 @@ export const UrlLoginBackground: App = {
     version: "3.0.0",
     icon: DesktopIcon,
   },
-  size: { w: 350, h: 200 },
-  minSize: { w: 350, h: 200 },
-  maxSize: { w: 350, h: 200 },
+  size: { w: 400, h: 200 },
+  minSize: { w: 400, h: 200 },
+  maxSize: { w: 400, h: 200 },
   position: { x: 0, y: 0 },
   state: {
     minimized: false,

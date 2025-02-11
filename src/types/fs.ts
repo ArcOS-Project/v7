@@ -28,3 +28,9 @@ export interface UserQuota {
   free: number;
   percentage: number;
 }
+
+export interface SingleUploadReturn {
+  path: string;
+  file: File;
+  content: Blob;
+}

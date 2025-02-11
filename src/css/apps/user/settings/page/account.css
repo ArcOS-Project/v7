@@ -17,20 +17,68 @@
   margin-bottom: 15px;
 }
 
-#systemSettings
-  div.container.account
-  div.header
-  div.profile-picture
-  button.lucide {
+#systemSettings div.container.account div.profile-picture div.change-menu {
   width: 30px;
   height: 30px;
   padding: 0;
   border-radius: 15px;
   position: absolute;
   bottom: 5px;
-  right: 5px;
+  right: 4px;
   outline: var(--win-bg) 3px solid !important;
+  background-color: var(--button-bg) !important;
   outline-offset: -1px !important;
+  transition: width 0.3s, margin-left 0.3s;
+  overflow: hidden;
+}
+
+#systemSettings
+  div.container.account
+  div.profile-picture
+  div.change-menu:hover {
+  width: 120px;
+}
+
+#systemSettings
+  div.container.account
+  div.profile-picture
+  div.change-menu:hover
+  div.inner {
+  margin-left: 0;
+}
+
+#systemSettings div.change-menu div.inner {
+  transition: margin-left 0.3s;
+  display: flex;
+  align-items: center;
+  min-width: fit-content;
+  background-color: var(--button-bg);
+  border-radius: 15px;
+  margin-left: -120px;
+  overflow: hidden;
+}
+
+#systemSettings div.change-menu div.inner > span {
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+}
+
+#systemSettings div.change-menu button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  text-align: center;
+  border-radius: 15px;
+  font-size: 16px;
+  background-color: var(--button-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#systemSettings div.change-menu button:hover {
+  background-color: var(--button-hover-bg);
 }
 
 #systemSettings div.container.account div.header h1.account-name {

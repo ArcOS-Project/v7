@@ -17,6 +17,7 @@ import { ChangePasswordApp } from "./overlays/changePassword";
 import { ChangeUsernameApp } from "./overlays/changeUsername";
 import { SaveThemeApp } from "./overlays/saveTheme";
 import { UrlLoginBackground } from "./overlays/urlLoginBackground";
+import { UrlProfilePicture } from "./overlays/urlProfilePicture";
 import { UrlWallpaper } from "./overlays/urlWallpaper";
 import { settingsPageStore } from "./store";
 import { SlideStore } from "./store/slides";
@@ -33,6 +34,7 @@ export class SettingsRuntime extends AppProcess {
     changePassword: ChangePasswordApp,
     urlLoginBackground: UrlLoginBackground,
     urlWallpaper: UrlWallpaper,
+    urlProfilePicture: UrlProfilePicture,
   };
 
   protected override elevations: Record<string, ElevationData> = {

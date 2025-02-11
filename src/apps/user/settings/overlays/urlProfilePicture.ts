@@ -1,14 +1,14 @@
-import { DesktopIcon } from "$ts/images/general";
+import { AccountIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import { OverlayRuntime } from "../overlay";
-import UrlWallpaperSvelte from "../Settings/Overlays/UrlWallpaper.svelte";
+import UrlProfilePictureSvelte from "../Settings/Overlays/UrlProfilePicture.svelte";
 
-export const UrlWallpaper: App = {
+export const UrlProfilePicture: App = {
   metadata: {
-    name: "URL Wallpaper",
+    name: "URL Profile Picture",
     author: "ArcOS Team",
     version: "3.0.0",
-    icon: DesktopIcon,
+    icon: AccountIcon,
   },
   size: { w: 400, h: 200 },
   minSize: { w: 400, h: 200 },
@@ -28,9 +28,9 @@ export const UrlWallpaper: App = {
   },
   assets: {
     runtime: OverlayRuntime,
-    component: UrlWallpaperSvelte as any,
+    component: UrlProfilePictureSvelte as any,
   },
   overlay: true,
   glass: true,
-  id: "UrlWallpaper",
+  id: "UrlProfilePicture",
 };

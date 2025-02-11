@@ -8,15 +8,15 @@
 
   const { process }: { process: SettingsRuntime } = $props();
   const { userInfo, preferences: userPreferences } = process.userDaemon!;
-
-  // TODO: rename account slide
-  // TODO: change email slide + backend impl
-  // TODO: change password slide
-  // TODO: log out everywhere
 </script>
 
 <div class="centered-layout">
-  <Header {userInfo} {userPreferences} userDaemon={process.userDaemon!} />
+  <Header
+    {process}
+    {userInfo}
+    {userPreferences}
+    userDaemon={process.userDaemon!}
+  />
 
   <Section>
     <Option

@@ -1,0 +1,42 @@
+#systemSettings div.slide.account_pickPfpBuiltin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#systemSettings div.slide.account_pickPfpBuiltin h1 {
+  font-size: 18px;
+}
+
+#systemSettings div.slide.account_pickPfpBuiltin p {
+  opacity: 0.5;
+  margin-bottom: 30px;
+}
+#systemSettings div.slide.account_pickPfpBuiltin div.profile-picture-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 40px);
+  gap: 15px;
+}
+
+#systemSettings
+  div.slide.account_pickPfpBuiltin
+  div.profile-picture-grid
+  button {
+  margin: 0;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+}
+
+#systemSettings
+  div.slide.account_pickPfpBuiltin
+  div.profile-picture-grid
+  button.selected {
+  outline: var(--accent-light) 3px solid !important;
+  /* scale: 1.1; */
+  outline-offset: -1px;
+}

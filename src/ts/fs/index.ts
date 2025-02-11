@@ -4,9 +4,11 @@ import { KernelModule } from "$ts/kernel/module";
 import {
   type DirectoryReadReturn,
   type RecursiveDirectoryReadReturn,
+  type SingleUploadReturn,
 } from "$types/fs";
+import { arrayToBlob } from "./convert";
 import type { FilesystemDrive } from "./drive";
-import { getParentDirectory } from "./util";
+import { getParentDirectory, join } from "./util";
 
 export class Filesystem extends KernelModule {
   private drives: Record<string, FilesystemDrive> = {};
@@ -209,6 +211,46 @@ export class Filesystem extends KernelModule {
     this.dispatch.dispatch("fs-flush-folder", parent);
 
     return result;
+  }
+
+  uploadSingleFile(
+    target: string,
+    accept = "*/*"
+  ): Promise<SingleUploadReturn> {
+    this.validatePath(target);
+    const uploader = document.createElement("input");
+
+    uploader.type = "file";
+    uploader.accept = accept;
+    uploader.multiple = false;
+
+    return new Promise((resolve, reject) => {
+      uploader.onchange = async () => {
+        try {
+          const files = uploader.files;
+
+          if (!files?.length) return reject("Didn't get a file");
+
+          const file = files?.[0];
+          const content = arrayToBlob(await file?.arrayBuffer()!);
+
+          if (!file?.name) return reject("File doesn't have a name");
+
+          await this.createDirectory(target);
+
+          const path = join(target, file.name);
+          const result = await this.writeFile(path, content);
+
+          if (!result) return reject("Failed to write file");
+
+          resolve({ path, file, content });
+        } catch (e) {
+          reject((e as any).message);
+        }
+      };
+
+      uploader.click();
+    });
   }
 
   // TODO: proper handlers for uploading files with and/or without progress indication

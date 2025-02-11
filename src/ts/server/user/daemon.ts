@@ -489,60 +489,43 @@ export class UserDaemon extends Process {
     });
   }
 
-  uploadWallpaper(): Promise<Wallpaper> {
+  async uploadWallpaper(): Promise<Wallpaper> {
     if (this._disposed) return new Promise((r) => r({} as Wallpaper));
 
-    const uploader = document.createElement("input");
+    const { path, file } = await this.fs.uploadSingleFile(
+      "U:/Wallpapers",
+      "image/*"
+    );
 
-    uploader.type = "file";
-    uploader.accept = "image/*";
-    uploader.multiple = false;
+    const wallpaper: Wallpaper = {
+      author: this.username,
+      name: file.name,
+      url: "",
+      thumb: "",
+    };
 
-    return new Promise((resolve, reject) => {
-      uploader.onchange = async () => {
-        if (this._disposed) return reject("Disposed");
+    this.preferences.update((v) => {
+      v.userWallpapers ||= {};
+      v.userWallpapers[`@local:${btoa(path)}`] = wallpaper;
 
-        try {
-          const files = uploader.files;
-
-          if (!files?.length) return reject("Didn't get a file");
-
-          const file = files?.[0];
-          const content = arrayToBlob(await file?.arrayBuffer()!);
-
-          await this.fs.createDirectory("U:/Wallpapers");
-
-          if (!file?.name) return reject("File doesn't have a name");
-
-          const path = join(`U:/Wallpapers`, file.name);
-          const result = await this.fs.writeFile(path, content);
-
-          if (!result) return reject("Failed to write file");
-
-          const wallpaper: Wallpaper = {
-            author: this.username,
-            name: file.name,
-            url: "",
-            thumb: "",
-          };
-
-          this.preferences.update((v) => {
-            v.userWallpapers ||= {};
-            v.userWallpapers[`@local:${btoa(path)}`] = wallpaper;
-
-            return v;
-          });
-
-          resolve(wallpaper);
-        } catch (e) {
-          reject((e as any).message);
-
-          return;
-        }
-      };
-
-      uploader.click();
+      return v;
     });
+
+    return wallpaper;
+  }
+
+  async uploadProfilePicture(): Promise<string | undefined> {
+    if (this._disposed) return undefined;
+
+    const { path } = await this.fs.uploadSingleFile("U:/Pictures", "image/*");
+
+    this.preferences.update((v) => {
+      v.account.profilePicture = path;
+
+      return v;
+    });
+
+    return path;
   }
 
   public async getWallpaper(id: string, override?: string): Promise<Wallpaper> {
