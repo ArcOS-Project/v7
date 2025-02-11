@@ -38,7 +38,11 @@
       onclick={() => process.uploadWallpaper()}
     >
     </button>
-    <button class="lucide icon-link" aria-label="Enter a wallpaper URL">
+    <button
+      class="lucide icon-link"
+      aria-label="Enter a wallpaper URL"
+      onclick={() => process.spawnOverlay("urlWallpaper")}
+    >
     </button>
     <div class="sep"></div>
     <button class="lucide icon-folder-open" aria-label="Choose a file">

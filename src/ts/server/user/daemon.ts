@@ -1304,4 +1304,38 @@ export class UserDaemon extends Process {
       });
     }
   }
+
+  async moveWindow(pid: number, destination: string) {
+    const proc = this.handler.getProcess(pid);
+    const destinationWorkspace = this.virtualDesktops[destination];
+    const window = document.querySelector(
+      `#appRenderer div.window[data-pid*='${pid}']`
+    );
+
+    if (
+      !proc ||
+      !(proc instanceof AppProcess) ||
+      !destinationWorkspace ||
+      !window
+    )
+      return;
+
+    const currentWorkspace = proc.app.desktop;
+
+    destinationWorkspace.appendChild(window);
+    proc.app.desktop = destination;
+    this.handler.store.update((v) => {
+      v.set(pid, proc);
+
+      return v;
+    });
+
+    if (
+      currentWorkspace &&
+      this.getCurrentDesktop()?.id === currentWorkspace &&
+      this.handler.renderer?.focusedPid() === pid
+    ) {
+      this.switchToDesktopByUuid(destination);
+    }
+  }
 }

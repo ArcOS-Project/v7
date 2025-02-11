@@ -16,6 +16,8 @@ import { ElevationLevel, type ElevationData } from "$types/elevation";
 import { ChangePasswordApp } from "./overlays/changePassword";
 import { ChangeUsernameApp } from "./overlays/changeUsername";
 import { SaveThemeApp } from "./overlays/saveTheme";
+import { UrlLoginBackground } from "./overlays/urlLoginBackground";
+import { UrlWallpaper } from "./overlays/urlWallpaper";
 import { settingsPageStore } from "./store";
 import { SlideStore } from "./store/slides";
 
@@ -29,6 +31,8 @@ export class SettingsRuntime extends AppProcess {
     saveTheme: SaveThemeApp,
     changeUsername: ChangeUsernameApp,
     changePassword: ChangePasswordApp,
+    urlLoginBackground: UrlLoginBackground,
+    urlWallpaper: UrlWallpaper,
   };
 
   protected override elevations: Record<string, ElevationData> = {
@@ -68,9 +72,6 @@ export class SettingsRuntime extends AppProcess {
     this.switchPage(page || "account");
 
     this.requestedSlide = slide;
-
-    // TODO:  check for singleton and focus existing
-    //        instance & kill this one if another instance is already opened
   }
 
   async render() {

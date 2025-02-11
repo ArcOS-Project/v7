@@ -11,8 +11,8 @@ export const SystemSettings: App = {
     version: "6.0.0",
     icon: SettingsIcon,
   },
-  size: { w: 730, h: 550 },
-  minSize: { w: 730, h: 550 },
+  size: { w: 730, h: 500 },
+  minSize: { w: 730, h: 500 },
   maxSize: { w: 860, h: 650 },
   position: { centered: true },
   state: {

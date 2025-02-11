@@ -1,0 +1,39 @@
+#systemSettings #UrlLoginBackground > div.body {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+#systemSettings #UrlLoginBackground > div.body div.top {
+  display: flex;
+  align-items: start;
+  gap: 15px;
+  padding: 15px;
+}
+
+#systemSettings #UrlLoginBackground > div.body div.top img {
+  height: 48px;
+}
+
+#systemSettings #UrlLoginBackground > div.body div.top h1 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+#systemSettings #UrlLoginBackground > div.body div.top input {
+  width: 100%;
+  margin-top: 15px;
+}
+
+#systemSettings #UrlLoginBackground > div.body div.bottom {
+  border-top: var(--win-border);
+  padding: 10px;
+  background-color: var(--button-glass-bg);
+  margin: 0;
+  display: flex;
+  margin-left: auto;
+  margin-top: auto;
+  gap: 10px;
+  width: 100%;
+  justify-content: end;
+}

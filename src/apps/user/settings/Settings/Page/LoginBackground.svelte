@@ -38,7 +38,11 @@
 
   <div class="upload-actions">
     <button class="lucide icon-upload" aria-label="Upload wallpaper"> </button>
-    <button class="lucide icon-link" aria-label="Enter a wallpaper URL">
+    <button
+      class="lucide icon-link"
+      aria-label="Enter a wallpaper URL"
+      onclick={() => process.spawnOverlay("urlLoginBackground")}
+    >
     </button>
     <div class="sep"></div>
     <button class="lucide icon-folder-open" aria-label="Choose a file">

@@ -10,6 +10,8 @@
 @import url("./settings/overlay/savetheme.css");
 @import url("./settings/overlay/changeusername.css");
 @import url("./settings/overlay/changepassword.css");
+@import url("./settings/overlay/urlloginbackground.css");
+@import url("./settings/overlay/urlwallpaper.css");
 @import url("./settings/slide.css");
 @import url("./settings/slide/weatherlocation.css");
 @import url("./settings/slide/userstyle.css");
