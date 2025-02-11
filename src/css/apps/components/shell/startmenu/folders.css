@@ -27,10 +27,6 @@ div.shell div.startmenu div.top div.folders button.user-button {
   font-weight: bold;
 }
 
-div.shell div.startmenu div.top div.folders button.user-button img {
-  border-radius: 12px;
-}
-
 div.shell div.startmenu div.top div.folders button img {
   width: 24px;
   height: 24px;

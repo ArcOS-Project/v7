@@ -1,14 +1,3 @@
-#systemSettings
-  div.container.account
-  > div.page-content
-  > div.centered-layout
-  > div.header
-  img {
-  width: 128px;
-  height: 128px;
-  border-radius: 64px;
-}
-
 #systemSettings div.container.account div.header div.profile-picture {
   position: relative;
   width: 128px;

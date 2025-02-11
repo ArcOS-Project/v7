@@ -54,11 +54,6 @@
   text-align: center;
 }
 
-#systemSettings div.themes-header div.screen.login img {
-  height: 36px;
-  border-radius: 18px;
-}
-
 #systemSettings div.themes-header div.screen.login p {
   font-size: 10px;
 }

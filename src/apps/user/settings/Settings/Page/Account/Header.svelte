@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { SettingsRuntime } from "$apps/user/settings/runtime";
-  import { ProfilePictures } from "$ts/images/pfp";
+  import ProfilePicture from "$lib/ProfilePicture.svelte";
   import type { UserDaemon } from "$ts/server/user/daemon";
   import type { UserInfo, UserPreferencesStore } from "$types/user";
 
@@ -15,23 +15,11 @@
     userPreferences: UserPreferencesStore;
     userDaemon: UserDaemon;
   } = $props();
-
-  let pfp = $state(ProfilePictures.def);
-
-  $effect(() => {
-    const sub = userPreferences.subscribe(async (v) => {
-      pfp = await userDaemon.getProfilePicture(v.account.profilePicture!);
-    });
-
-    return () => sub();
-  });
-
-  // TODO: change profile picture UI
 </script>
 
 <div class="header">
   <div class="profile-picture">
-    <img src={pfp} alt="" />
+    <ProfilePicture {userDaemon} height={128} />
     <div class="change-menu">
       <div class="inner">
         <button

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ProfilePictures } from "$ts/images/pfp";
+  import ProfilePicture from "$lib/ProfilePicture.svelte";
   import type { UserPreferencesStore } from "$types/user";
   import type { ShellRuntime } from "../../runtime";
 
@@ -15,26 +15,13 @@
 
   const { userDaemon } = process;
 
-  let pfp = $state<string>(ProfilePictures.def);
-
-  $effect(() => {
-    getPfp();
-  });
-
-  async function getPfp() {
-    pfp =
-      (await userDaemon?.getProfilePicture(
-        $userPreferences.account.profilePicture!
-      )) || ProfilePictures.pfp3;
-  }
-
   function onclick() {
     process.spawnApp("systemSettings", process.pid);
   }
 </script>
 
 <button class="user-button" {onclick}>
-  <img src={pfp} alt="" />
+  <ProfilePicture height={24} {userDaemon} />
   <span class="name">
     {username
       ? $userPreferences.account.displayName || username

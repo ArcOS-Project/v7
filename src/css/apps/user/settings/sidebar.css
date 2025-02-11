@@ -60,9 +60,3 @@
 #systemSettings div.sidebar button.account-button p.account-name {
   font-weight: bold;
 }
-
-#systemSettings div.sidebar button.account-button img {
-  width: 32px;
-  height: 32px;
-  border-radius: 16px;
-}

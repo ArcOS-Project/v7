@@ -2,7 +2,7 @@
   import type { UserDaemon } from "$ts/server/user/daemon";
 
   interface Props {
-    userDaemon: UserDaemon | undefined;
+    userDaemon?: UserDaemon | undefined;
     fallback?: string;
     pfp?: string | number;
     height: number;
