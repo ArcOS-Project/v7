@@ -65,7 +65,7 @@ export class Filesystem extends KernelModule {
     this.validateDriveLetter(letter);
 
     const result = Object.values(this.drives).filter(
-      (s) => s.driveLetter == letter
+      (s) => s.driveLetter == letter || s.uuid == letter
     )[0];
 
     if (!result && error) throw new Error(`Not mounted: ${letter}:/`);
@@ -73,26 +73,45 @@ export class Filesystem extends KernelModule {
     return result;
   }
 
+  getDriveIdentifier(path: string) {
+    this.validatePath(path);
+
+    return path.split(":/")[0];
+  }
+
+  getDriveByPath(path: string) {
+    return this.getDriveByLetter(this.getDriveIdentifier(path));
+  }
+
   validatePath(p: string) {
-    if (!/^[a-zA-Z]:\/(.*?)$/g.test(p)) throw new Error(`Invalid path "${p}"`);
+    if (
+      !/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|[a-zA-Z]):\/(.*?)$/g.test(
+        p
+      )
+    )
+      throw new Error(`Invalid path "${p}"`);
   }
 
   removeDriveLetter(p: string) {
     this.validatePath(p);
 
-    return p.replace(`${p[0]}:/`, "");
+    return p.replace(`${this.getDriveIdentifier(p)}:/`, "");
   }
 
   validateDriveLetter(letter: string) {
-    if (!/^[a-zA-Z]$/g.test(letter))
-      throw new Error(`Invalid drive letter "${letter}"`);
+    if (
+      !/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|[a-zA-Z])$/g.test(
+        letter
+      )
+    )
+      throw new Error(`Invalid drive letter or UUID "${letter}"`);
   }
 
   async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
     this.Log(`Reading directory '${path}'`);
 
     this.validatePath(path);
-    const drive = this.getDriveByLetter(path[0]);
+    const drive = this.getDriveByPath(path);
 
     return await drive.readDir(this.removeDriveLetter(path));
   }
@@ -101,7 +120,7 @@ export class Filesystem extends KernelModule {
     this.Log(`Creating directory '${path}'`);
 
     this.validatePath(path);
-    const drive = this.getDriveByLetter(path[0]);
+    const drive = this.getDriveByPath(path);
     path = this.removeDriveLetter(path);
 
     const parent = getParentDirectory(path);
@@ -116,7 +135,7 @@ export class Filesystem extends KernelModule {
     this.Log(`Reading file '${path}'`);
 
     this.validatePath(path);
-    const drive = this.getDriveByLetter(path[0]);
+    const drive = this.getDriveByPath(path);
     path = this.removeDriveLetter(path);
 
     return await drive.readFile(path);
@@ -126,7 +145,7 @@ export class Filesystem extends KernelModule {
     this.Log(`Writing ${data.size} bytes to file '${path}'`);
 
     this.validatePath(path);
-    const drive = this.getDriveByLetter(path[0]);
+    const drive = this.getDriveByPath(path);
 
     path = this.removeDriveLetter(path);
 
@@ -144,7 +163,7 @@ export class Filesystem extends KernelModule {
 
     this.validatePath(path);
 
-    const drive = this.getDriveByLetter(path[0]);
+    const drive = this.getDriveByPath(path);
 
     path = this.removeDriveLetter(path);
 
@@ -157,9 +176,13 @@ export class Filesystem extends KernelModule {
     this.validatePath(source);
     this.validatePath(destination);
 
-    if (source[0] !== destination[0])
+    const sourceId = this.getDriveIdentifier(source);
+    const destinationId = this.getDriveIdentifier(destination);
+
+    if (sourceId !== destinationId)
       throw new Error("Copy operation across drives is not supported.");
-    const drive = this.getDriveByLetter(source[0]);
+
+    const drive = this.getDriveByPath(source);
 
     source = this.removeDriveLetter(source);
     destination = this.removeDriveLetter(destination);
@@ -178,10 +201,13 @@ export class Filesystem extends KernelModule {
     this.validatePath(source);
     this.validatePath(destination);
 
-    if (source[0] !== destination[0])
+    const sourceId = this.getDriveIdentifier(source);
+    const destinationId = this.getDriveIdentifier(destination);
+
+    if (sourceId !== destinationId)
       throw new Error("Move operation across drives is not supported.");
 
-    const drive = this.getDriveByLetter(source[0]);
+    const drive = this.getDriveByPath(source);
 
     source = this.removeDriveLetter(source);
     destination = this.removeDriveLetter(destination);
@@ -201,7 +227,7 @@ export class Filesystem extends KernelModule {
 
     this.validatePath(path);
 
-    const drive = this.getDriveByLetter(path[0]);
+    const drive = this.getDriveByPath(path);
 
     path = this.removeDriveLetter(path);
 
