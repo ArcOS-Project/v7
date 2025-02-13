@@ -17,6 +17,7 @@ export class FileManagerRuntime extends AppProcess {
   };
   public tabs = Store<Record<string, Tab>>({});
   public currentTabUuid = Store<string>("");
+  public editingAddress = Store<boolean>(false);
 
   constructor(
     handler: ProcessHandler,
