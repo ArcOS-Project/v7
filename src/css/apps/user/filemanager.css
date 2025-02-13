@@ -1,0 +1,126 @@
+#fileManager > div.body {
+  padding: 0;
+}
+
+#fileManager > div.body div.top {
+  height: 95px;
+  padding-bottom: 10px;
+  border-bottom: var(--win-border);
+}
+
+#fileManager > div.body div.titlebar.custom {
+  padding: 0;
+  padding-right: 10px;
+  height: fit-content;
+  align-items: start;
+}
+
+#fileManager > div.body div.titlebar.custom ::-webkit-scrollbar {
+  display: none;
+}
+
+#fileManager > div.body div.titlebar.custom div.controls {
+  margin-top: 10px;
+}
+
+#fileManager > div.body div.titlebar.custom div.window-title {
+  max-width: calc(100% - 70px);
+  display: block;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+#fileManager > div.body div.tabs {
+  padding: 10px;
+  width: 100%;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#fileManager > div.body div.tabs div.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+  background-color: var(--button-glass-active-bg);
+  height: 32px;
+  border-radius: 8px;
+  /* width: fit-content; */
+  /* min-width: 130px; */
+  flex-shrink: 1;
+  flex-grow: 1;
+  min-width: 32px;
+  max-width: 130px;
+  overflow: hidden;
+}
+#fileManager > div.body div.tabs div.tab.selected {
+  background-color: var(--button-glass-bg);
+}
+
+#fileManager > div.body div.tabs div.tab button {
+  background-color: transparent;
+  margin: 0;
+  padding: 0;
+}
+#fileManager > div.body div.tabs div.tab div.icon {
+  width: 24px;
+  height: 32px;
+  position: relative;
+  min-width: 24px;
+  padding: 8px;
+  padding-right: 0;
+}
+
+#fileManager > div.body div.tabs div.tab div.icon > button.icon-x {
+  display: none;
+}
+
+#fileManager > div.body div.tabs div.tab.selected div.icon > button.icon-x {
+  display: block;
+}
+
+#fileManager > div.body div.tabs div.tab.selected div.icon > img {
+  display: none;
+}
+
+#fileManager > div.body div.tabs div.tab div.icon > * {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+}
+
+#fileManager > div.body div.tabs div.tab div.icon img {
+  height: 16px;
+  min-width: 16px;
+}
+
+#fileManager > div.body div.tabs div.tab > button.trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  padding-left: 0;
+}
+
+#fileManager > div.body div.tabs div.tab button.icon-x {
+  opacity: 0.5;
+  font-size: 16px;
+}
+#fileManager > div.body div.tabs > button.icon-plus {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+  position: sticky;
+  right: 0;
+}
+
+#fileManager > div.body div.address-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

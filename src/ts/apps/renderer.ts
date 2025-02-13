@@ -179,7 +179,7 @@ export class AppRenderer extends Process {
     new Draggable(window, {
       bounds: { top: 0, left: 0, right: 0 },
       handle: `.titlebar`,
-      cancel: `button`,
+      cancel: `button, .nodrag`,
       legacyTranslate: false,
       gpuAcceleration: false,
     });

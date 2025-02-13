@@ -32,7 +32,7 @@
 </script>
 
 <div class="titlebar custom {className}">
-  <div class="window-title">
+  <div class="window-title nodrag">
     {#if children}
       {@render children()}
     {:else}

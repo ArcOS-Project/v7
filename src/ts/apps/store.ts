@@ -2,6 +2,7 @@ import { AppInfoApp } from "$apps/components/appinfo/metadata";
 import { SecureContextApp } from "$apps/components/securecontext/metadata";
 import { ArcShellApp } from "$apps/components/shell/metadata";
 import { WallpaperApp } from "$apps/components/wallpaper/metadata";
+import { FileManagerApp } from "$apps/user/filemanager/metadata";
 import { SystemSettings } from "$apps/user/settings/metadata";
 import { TestApp } from "$apps/user/test/metadata";
 import type { AppKeyCombinations } from "$types/accelerator";
@@ -14,6 +15,7 @@ export const BuiltinApps: AppStorage = [
   SystemSettings,
   TestApp,
   AppInfoApp,
+  FileManagerApp,
 ];
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];

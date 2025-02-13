@@ -46,6 +46,8 @@ export class Filesystem extends KernelModule {
 
     await instance.__spinUp();
 
+    this.dispatch.dispatch("fs-mount-drive", id);
+
     return instance as FilesystemDrive;
   }
 
@@ -57,6 +59,8 @@ export class Filesystem extends KernelModule {
     await this.drives[id].__spinDown();
 
     delete this.drives[id];
+
+    this.dispatch.dispatch("fs-umount-drive", id);
 
     return true;
   }
