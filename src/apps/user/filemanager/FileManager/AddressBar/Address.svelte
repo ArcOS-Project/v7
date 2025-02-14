@@ -4,4 +4,4 @@
   const { process }: { process: FileManagerRuntime } = $props();
 </script>
 
-<div class="address"></div>
+<div class="path"></div>

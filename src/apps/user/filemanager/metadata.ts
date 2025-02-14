@@ -12,11 +12,11 @@ export const FileManagerApp: App = {
     icon: FileManagerIcon,
   },
   size: {
-    w: 700,
-    h: 500,
+    w: 800,
+    h: 600,
   },
-  minSize: { w: 500, h: 400 },
-  maxSize: { w: NaN, h: NaN },
+  minSize: { w: 650, h: 520 },
+  maxSize: { w: 800, h: 800 },
   position: { centered: true },
   state: {
     maximized: false,

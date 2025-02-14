@@ -58,51 +58,75 @@
 #fileManager > div.body div.sidebar section + section {
   margin-top: 10px;
 }
-#fileManager > div.body div.address-bar {
+#fileManager div.address-bar {
   display: flex;
-  align-items: center;
   gap: 10px;
-  padding: 0;
+  height: 30px;
   margin: 5px 15px;
   margin-bottom: 0;
+  align-items: center;
+  position: relative;
 }
 
-#fileManager > div.body div.address-bar button.lucide {
-  height: 32px;
-  width: 32px;
-  padding: 0;
-  min-width: 32px;
-  font-size: 16px;
-}
-
-#fileManager > div.body div.address-bar div.address {
+#fileManager div.address-bar div.portion.address {
   flex-grow: 1;
-  border-radius: 8px;
-  background-color: var(--button-glass-bg);
-  height: 32px;
+  max-width: calc(100% - 243px);
 }
 
-#fileManager > div.body div.address-bar div.sep {
-  width: 1px;
+#fileManager div.address-bar div.path {
+  flex-grow: 1;
+  max-width: calc(100% - 35px);
+  background-color: var(--button-bg);
+  border-radius: var(--button-border-rad);
+  line-height: 30px;
+  padding: 0 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  position: relative;
+}
+
+#fileManager div.address-bar.system div.path {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    #0000 0px,
+    #0000 20px,
+    rgba(255, 166, 0, 0.1) 20px,
+    rgba(255, 166, 0, 0.1) 40px,
+    #0000 40px
+  );
+}
+
+/* 
+#fileManager div.address-bar.system div.path {
+  background-color: var(--clr-orange-bg);
+  color: var(--clr-orange-fg);
+} */
+
+#fileManager div.address-bar button {
+  width: 30px;
   height: 30px;
-  background-color: var(--button-glass-bg);
-}
-
-#fileManager > div.body div.address-bar button.new-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 8px;
-  height: 32px;
-}
-
-#fileManager > div.body div.address-bar button.new-item span.lucide {
+  padding: 0;
+  margin: 0;
   font-size: 16px;
+  min-width: unset;
 }
 
-#fileManager > div.body div.address-bar div.group {
+#fileManager div.address-bar button:not(.suggested) {
+  background-color: var(--button-bg);
+}
+
+#fileManager div.address-bar button.suggested {
+  opacity: 1;
+}
+
+#fileManager div.address-bar div.portion {
   display: flex;
-  align-items: center;
   gap: 5px;
-  min-width: fit-content;
+}
+
+#fileManager div.address-bar div.sep {
+  width: 1px;
+  height: 20px;
+  background-color: var(--button-hover-bg);
 }
