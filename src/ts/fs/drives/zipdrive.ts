@@ -25,6 +25,10 @@ export class ZIPDrive extends FilesystemDrive {
     if (!contents)
       throw new Error("Tried to create ZIP drive on an invalid file");
 
+    const split = this._path.split("/");
+
+    this.label = split[split.length - 1] || "ZIP file";
+
     const zip = new JSZip();
     this._buffer = await zip.loadAsync(contents, {});
   }
@@ -69,6 +73,7 @@ export class ZIPDrive extends FilesystemDrive {
               size: (entry as any)._data.uncompressedSize || 0,
               dateCreated: new Date(),
               dateModified: new Date(),
+              mimeType: "",
             });
           }
         } else if (!seenDirs.has(parts[0])) {

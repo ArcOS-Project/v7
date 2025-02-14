@@ -11,8 +11,8 @@ import type { FilesystemDrive } from "./drive";
 import { getParentDirectory, join } from "./util";
 
 export class Filesystem extends KernelModule {
-  private drives: Record<string, FilesystemDrive> = {};
   private dispatch: GlobalDispatcher;
+  public drives: Record<string, FilesystemDrive> = {};
 
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);

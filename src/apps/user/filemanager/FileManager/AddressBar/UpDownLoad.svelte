@@ -4,10 +4,7 @@
   const { process }: { process: FileManagerRuntime } = $props();
 </script>
 
-<div class="bread-crumbs">
-  <button
-    class="lucide icon-pencil"
-    aria-label="Edit path"
-    onclick={() => process.editingAddress.set(true)}
-  ></button>
+<div class="group">
+  <button class="lucide icon-upload" aria-label="Upload..."></button>
+  <button class="lucide icon-download" aria-label="Download"></button>
 </div>

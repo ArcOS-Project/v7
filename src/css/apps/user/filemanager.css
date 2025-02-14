@@ -1,126 +1,108 @@
 #fileManager > div.body {
   padding: 0;
-}
-
-#fileManager > div.body div.top {
-  height: 95px;
-  padding-bottom: 10px;
-  border-bottom: var(--win-border);
-}
-
-#fileManager > div.body div.titlebar.custom {
-  padding: 0;
-  padding-right: 10px;
-  height: fit-content;
-  align-items: start;
-}
-
-#fileManager > div.body div.titlebar.custom ::-webkit-scrollbar {
-  display: none;
-}
-
-#fileManager > div.body div.titlebar.custom div.controls {
-  margin-top: 10px;
-}
-
-#fileManager > div.body div.titlebar.custom div.window-title {
-  max-width: calc(100% - 70px);
-  display: block;
-  overflow-x: scroll;
-  overflow-y: hidden;
-}
-
-#fileManager > div.body div.tabs {
-  padding: 10px;
-  width: 100%;
-  white-space: nowrap;
   display: flex;
   align-items: center;
-  gap: 10px;
+  height: 100%;
 }
 
-#fileManager > div.body div.tabs div.tab {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  justify-content: space-between;
-  background-color: var(--button-glass-active-bg);
-  height: 32px;
-  border-radius: 8px;
-  /* width: fit-content; */
-  /* min-width: 130px; */
-  flex-shrink: 1;
-  flex-grow: 1;
-  min-width: 32px;
-  max-width: 130px;
-  overflow: hidden;
+#fileManager > div.body div.sidebar {
+  height: 100%;
+  width: 200px;
+  border-right: var(--win-border);
 }
-#fileManager > div.body div.tabs div.tab.selected {
+
+#fileManager > div.body div.container {
+  height: 100%;
+  background-color: var(--win-bg);
+  width: calc(100% - 200px);
+}
+
+#fileManager > div.body div.sidebar {
+  padding: 10px;
+}
+
+#fileManager > div.body div.sidebar button {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 5px 7px;
+  margin-bottom: 5px;
+  background-color: transparent;
+}
+
+#fileManager > div.body div.sidebar button img {
+  width: 24px;
+  height: 24px;
+}
+
+#fileManager > div.body div.sidebar button span.lucide {
+  font-size: 16px;
+  color: var(--accent-light);
+}
+
+#fileManager > div.body div.sidebar button:hover {
   background-color: var(--button-glass-bg);
 }
 
-#fileManager > div.body div.tabs div.tab button {
-  background-color: transparent;
-  margin: 0;
-  padding: 0;
-}
-#fileManager > div.body div.tabs div.tab div.icon {
-  width: 24px;
-  height: 32px;
-  position: relative;
-  min-width: 24px;
-  padding: 8px;
-  padding-right: 0;
+#fileManager > div.body div.sidebar button:active {
+  background-color: var(--button-glass-active-bg);
 }
 
-#fileManager > div.body div.tabs div.tab div.icon > button.icon-x {
-  display: none;
-}
-
-#fileManager > div.body div.tabs div.tab.selected div.icon > button.icon-x {
-  display: block;
-}
-
-#fileManager > div.body div.tabs div.tab.selected div.icon > img {
-  display: none;
-}
-
-#fileManager > div.body div.tabs div.tab div.icon > * {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-}
-
-#fileManager > div.body div.tabs div.tab div.icon img {
-  height: 16px;
-  min-width: 16px;
-}
-
-#fileManager > div.body div.tabs div.tab > button.trigger {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px;
-  padding-left: 0;
-}
-
-#fileManager > div.body div.tabs div.tab button.icon-x {
+#fileManager > div.body div.sidebar section h1 {
   opacity: 0.5;
-  font-size: 16px;
-}
-#fileManager > div.body div.tabs > button.icon-plus {
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  padding: 0;
-  margin: 0;
-  font-size: 16px;
-  position: sticky;
-  right: 0;
+  padding: 5px 7px;
 }
 
+#fileManager > div.body div.sidebar section + section {
+  margin-top: 10px;
+}
 #fileManager > div.body div.address-bar {
   display: flex;
   align-items: center;
   gap: 10px;
+  padding: 0;
+  margin: 5px 15px;
+  margin-bottom: 0;
+}
+
+#fileManager > div.body div.address-bar button.lucide {
+  height: 32px;
+  width: 32px;
+  padding: 0;
+  min-width: 32px;
+  font-size: 16px;
+}
+
+#fileManager > div.body div.address-bar div.address {
+  flex-grow: 1;
+  border-radius: 8px;
+  background-color: var(--button-glass-bg);
+  height: 32px;
+}
+
+#fileManager > div.body div.address-bar div.sep {
+  width: 1px;
+  height: 30px;
+  background-color: var(--button-glass-bg);
+}
+
+#fileManager > div.body div.address-bar button.new-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  height: 32px;
+}
+
+#fileManager > div.body div.address-bar button.new-item span.lucide {
+  font-size: 16px;
+}
+
+#fileManager > div.body div.address-bar div.group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: fit-content;
 }
