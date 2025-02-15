@@ -32,4 +32,5 @@ export const MessageBoxApp: App = {
     component: MessageBox as any,
   },
   id: "messageBox",
+  hidden: true,
 };

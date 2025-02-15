@@ -1,4 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
+import { ComponentIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import type { AppProcessData } from "$types/app";
 import { LogLevel } from "$types/logging";
@@ -16,9 +17,14 @@ export class MessageBoxRuntime extends AppProcess {
   ) {
     super(handler, pid, parentPid, app);
 
-    this.data = data;
+    this.data = data || {
+      title: "MsgBox::title",
+      message: "MsgBox::message",
+      buttons: [],
+      image: ComponentIcon,
+    };
 
-    if (data.sound) this.soundBus.playSound(data.sound);
+    if (this.data.sound) this.soundBus.playSound(this.data.sound);
   }
 
   async start() {
