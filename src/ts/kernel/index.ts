@@ -11,7 +11,6 @@ import { handleGlobalErrors } from "../error";
 import { ProcessHandler } from "../process/handler";
 import { StateHandler } from "../state";
 import { InitProcess } from "./init";
-import { KernelModule } from "./module";
 import { KernelModules } from "./module/store";
 
 let CurrentKernel: WaveKernel | undefined = undefined;
@@ -99,13 +98,10 @@ export class WaveKernel {
     await this.init?.jumpstart();
   }
 
-  getModule<T = KernelModule>(id: string, dontCrash = false): T {
+  getModule<T = any>(id: string, dontCrash = false): T {
     const mod = (this as any)[id];
     const result =
-      this.modules.includes(id) &&
-      mod &&
-      mod instanceof KernelModule &&
-      mod.id === id
+      this.modules.includes(id) && mod && mod.id === id
         ? (mod as T)
         : undefined;
 

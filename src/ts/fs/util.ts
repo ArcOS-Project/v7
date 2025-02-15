@@ -1,5 +1,53 @@
 import { GlobalDispatcher } from "$ts/dispatch";
+import {
+  ArcAppMimeIcon,
+  ArcTermMimeIcon,
+  ArcThemeMimeIcon,
+  AudioMimeIcon,
+  CompressMimeIcon,
+  DefaultMimeIcon,
+  ImageMimeIcon,
+  JavascriptMimeIcon,
+  JsonMimeIcon,
+  MarkdownMimeIcon,
+  PdfMimeIcon,
+  SvgMimeIcon,
+  TextMimeIcon,
+  UnknownFileIcon,
+  VideoMimeIcon,
+  WebpageMimeIcon,
+  XmlMimeIcon,
+} from "$ts/images/mime";
 import { WaveKernel } from "$ts/kernel";
+
+export const MimeTypeIcons: Record<string, string[]> = {
+  // <icon, .ext>
+  [ArcAppMimeIcon]: [".appmod"],
+  [JsonMimeIcon]: [".json"],
+  [PdfMimeIcon]: [".pdf"],
+  [SvgMimeIcon]: [".svg"],
+  [CompressMimeIcon]: [".zip", ".tar.xz", ".7z", ".rar"],
+  [AudioMimeIcon]: [".mp3", ".opus", ".wav", ".m4a", ".flac"],
+  [ImageMimeIcon]: [
+    ".png",
+    ".jpg",
+    ".gif",
+    ".webp",
+    ".ico",
+    ".bmp",
+    ".tif",
+    ".tiff",
+    ".jpeg",
+  ],
+  [TextMimeIcon]: [".txt"],
+  [ArcTermMimeIcon]: ["arcterm.conf", ".arcterm"],
+  [ArcThemeMimeIcon]: [".arctheme"],
+  [MarkdownMimeIcon]: [".md"],
+  [VideoMimeIcon]: [".mp4", ".mkv", ".mov", ".avi"],
+  [WebpageMimeIcon]: [".html", ".htm"],
+  [JavascriptMimeIcon]: [".js", ".ts", ".d.ts", ".mjs"],
+  [XmlMimeIcon]: [".xml"],
+};
 
 export const sizeUnits = [
   "bytes",
@@ -37,6 +85,24 @@ export function join(...args: string[]) {
 
 export function dirname(path: string) {
   return join(path, "..");
+}
+
+export function getDirectoryName(path: string) {
+  const split = path.split("/");
+
+  return split[split.length - 1];
+}
+
+export function getDriveLetter(path: string, allowUuid = false) {
+  const split = path.split("/");
+
+  if (allowUuid) {
+    if (split[0].endsWith(":")) return split[0];
+  } else {
+    if (split[0].endsWith(":") && split[0].length === 2) return split[0];
+  }
+
+  return undefined;
 }
 
 export function getParentDirectory(p: string): string {
@@ -90,4 +156,21 @@ export function formatBytes(bytes: number) {
   }
 
   return n.toFixed(n < 10 && l > 0 ? 1 : 0) + " " + sizeUnits[l];
+}
+
+export function getMimeIcon(
+  filename: string,
+  fallback = DefaultMimeIcon
+): string {
+  filename = filename.toLowerCase();
+
+  for (const icon in MimeTypeIcons) {
+    const extensions = MimeTypeIcons[icon];
+
+    for (const extension of extensions) {
+      if (filename.endsWith(extension)) return icon;
+    }
+  }
+
+  return fallback;
 }

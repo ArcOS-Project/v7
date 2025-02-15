@@ -8,3 +8,5 @@ export interface TypedProcess {
   _disposed: boolean;
   _criticalProcess: boolean;
 }
+
+export type RenderArgs = Record<string, any>;

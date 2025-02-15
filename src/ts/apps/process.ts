@@ -17,6 +17,7 @@ import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
 import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
+import type { RenderArgs } from "$types/process";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
 export class AppProcess extends Process {
@@ -34,6 +35,7 @@ export class AppProcess extends Process {
   userDaemon: UserDaemon | undefined;
   protected overlayStore: Record<string, App> = {};
   protected elevations: Record<string, ElevationData> = {};
+  public renderArgs: RenderArgs = {};
   public acceleratorStore: AppKeyCombinations = [];
   context: ContextMenuLogic;
 
@@ -117,7 +119,7 @@ export class AppProcess extends Process {
     }
   }
 
-  async render() {
+  async render(args: RenderArgs) {
     /** */
   }
 
@@ -148,7 +150,7 @@ export class AppProcess extends Process {
       },
     });
 
-    await this.render();
+    await this.render(this.renderArgs);
   }
 
   getSingleton() {

@@ -1,0 +1,28 @@
+<script lang="ts">
+  import Spinner from "$lib/Spinner.svelte";
+  import type { FileManagerRuntime } from "../runtime";
+  import FileItem from "./DirectoryListing/FileItem.svelte";
+  import FolderItem from "./DirectoryListing/FolderItem.svelte";
+  import HeaderRow from "./DirectoryListing/HeaderRow.svelte";
+
+  const { process }: { process: FileManagerRuntime } = $props();
+  const { loading, errored, contents } = process;
+</script>
+
+<div class="directory-viewer" role="directory" class:loading={$loading}>
+  {#if $loading}
+    <Spinner height={32} />
+  {:else}
+    <HeaderRow />
+    {#if $contents && ($contents.dirs.length || $contents.files.length)}
+      {#each $contents.dirs as dir}
+        <FolderItem {dir} {process} />
+      {/each}
+      {#each $contents.files as file}
+        <FileItem {file} {process} />
+      {/each}
+    {:else}
+      <p class="empty">This folder is empty</p>
+    {/if}
+  {/if}
+</div>

@@ -3,12 +3,11 @@ import { Filesystem } from "$ts/fs";
 import { ArcLang } from "$ts/lang";
 import { SoundBus } from "$ts/soundbus";
 import { ContextMenuLogic } from "$ts/ui/context";
-import type { KernelModule } from ".";
 import { ProcessHandler } from "../../process/handler";
 import { ServerManager } from "../../server";
 import { Environment } from "../env";
 
-export const KernelModules: Record<string, typeof KernelModule> = {
+export const KernelModules: Record<string, any> = {
   env: Environment,
   dispatch: GlobalDispatcher,
   soundbus: SoundBus,
