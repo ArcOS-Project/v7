@@ -679,10 +679,10 @@ export class UserDaemon extends Process {
     });
   }
 
-  async mountZip(path: string) {
+  async mountZip(path: string, letter?: string) {
     if (this._disposed) return;
 
-    const mount = this.fs.mountDrive(btoa(path), ZIPDrive, undefined, path);
+    const mount = this.fs.mountDrive(btoa(path), ZIPDrive, letter, path);
 
     return mount;
   }
