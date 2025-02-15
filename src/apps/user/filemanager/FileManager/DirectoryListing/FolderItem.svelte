@@ -10,8 +10,10 @@
 
   const { process, dir }: { process: FileManagerRuntime; dir: FolderEntry } =
     $props();
+  const { selection } = process;
 
   let date = $state<string>();
+  let thisPath = $state<string>("");
 
   $effect(() => {
     dayjs.extend(relativeTime);
@@ -19,18 +21,24 @@
     dayjs.updateLocale("en", RelativeTimeMod);
 
     date = dayjs(dir.dateModified).fromNow();
+    thisPath = join(process.path(), dir.name);
   });
 
   function ondblclick() {
-    process.navigate(join(process.path(), dir.name));
+    process.navigate(thisPath);
   }
 
   function onclick() {
-    process.selection.set([join(process.path(), dir.name)]);
+    process.selection.set([thisPath]);
   }
 </script>
 
-<button class="item folder" {ondblclick} {onclick}>
+<button
+  class="item folder"
+  {ondblclick}
+  {onclick}
+  class:selected={$selection.includes(thisPath)}
+>
   <div class="segment icon">
     <img src={FolderIcon} alt="" />
   </div>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { RelativeTimeMod } from "$ts/dayjs";
-  import { formatBytes, getMimeIcon } from "$ts/fs/util";
+  import { formatBytes, getMimeIcon, join } from "$ts/fs/util";
   import type { FileEntry } from "$types/fs";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
@@ -10,10 +10,12 @@
 
   const { process, file }: { process: FileManagerRuntime; file: FileEntry } =
     $props();
+  const { selection } = process;
 
   let date = $state<string>();
   let icon = $state<string>();
   let mime = $state<string>();
+  let thisPath = $state<string>("");
 
   $effect(() => {
     dayjs.extend(relativeTime);
@@ -26,10 +28,19 @@
 
     mime = m.replace(m[0], m[0].toUpperCase());
     icon = getMimeIcon(file.name);
+    thisPath = join(process.path(), file.name);
   });
+
+  function onclick() {
+    process.selection.set([thisPath]);
+  }
 </script>
 
-<button class="item file">
+<button
+  class="item file"
+  {onclick}
+  class:selected={$selection.includes(thisPath)}
+>
   <div class="segment icon">
     <img src={icon} alt="" />
   </div>

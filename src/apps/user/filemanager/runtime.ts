@@ -2,6 +2,7 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { ErrorIcon } from "$ts/images/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
+import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { DirectoryReadReturn } from "$types/fs";
@@ -10,7 +11,7 @@ import type { RenderArgs } from "$types/process";
 export class FileManagerRuntime extends AppProcess {
   path = Store<string>("");
   contents = Store<DirectoryReadReturn | undefined>();
-  loading = Store<boolean>(true);
+  loading = Store<boolean>(false);
   errored = Store<boolean>(false);
   selection = Store<string[]>([]);
   copyList = Store<string[]>([]);
@@ -36,6 +37,7 @@ export class FileManagerRuntime extends AppProcess {
   async navigate(path: string) {
     this.loading.set(true);
     this.errored.set(false);
+
     try {
       const contents = await this.fs.readDir(path);
 
@@ -44,9 +46,11 @@ export class FileManagerRuntime extends AppProcess {
         this.contents.set(contents);
         this.path.set(path);
       }
-    } catch {
+    } catch (e) {
+      console.log(e);
       this.DirectoryNotFound();
     } finally {
+      await Sleep(10);
       this.loading.set(false);
     }
   }

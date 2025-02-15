@@ -6,10 +6,16 @@
   import HeaderRow from "./DirectoryListing/HeaderRow.svelte";
 
   const { process }: { process: FileManagerRuntime } = $props();
-  const { loading, errored, contents } = process;
+  const { loading, errored, contents, userPreferences } = process;
 </script>
 
-<div class="directory-viewer" role="directory" class:loading={$loading}>
+<div
+  class="directory-viewer"
+  role="directory"
+  class:loading={$loading}
+  class:grid={$userPreferences.appPreferences.fileManager?.grid}
+  class:compact={$userPreferences.appPreferences.fileManager?.compact}
+>
   {#if $loading}
     <Spinner height={32} />
   {:else}

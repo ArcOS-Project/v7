@@ -17,6 +17,10 @@
   width: calc(100% - 200px);
 }
 
+#fileManager > div.body div.main-content {
+  height: calc(100% - 40px);
+}
+
 #fileManager > div.body div.sidebar {
   padding: 10px;
 }
@@ -30,6 +34,9 @@
   padding: 5px 7px;
   margin-bottom: 5px;
   background-color: transparent;
+}
+#fileManager > div.body div.sidebar button.selected {
+  background-color: var(--accent-transparent);
 }
 
 #fileManager > div.body div.sidebar button img {
@@ -102,6 +109,11 @@
 #fileManager div.address-bar div.path div.pill span.lucide {
   font-size: 16px;
   color: var(--accent-light);
+}
+
+#fileManager div.address-bar div.path img {
+  height: 16px;
+  margin-left: 5px;
 }
 
 #fileManager div.address-bar.system div.path {
@@ -191,6 +203,7 @@
   grid-template-columns: repeat(auto-fit, 80px);
   grid-template-rows: repeat(auto-fit, 85px);
   position: relative;
+  padding-top: 15px;
 }
 
 #fileManager div.directory-viewer.grid p.empty,
@@ -337,14 +350,6 @@
   margin-left: -1px;
 }
 
-#fileManager div.directory-viewer button.header-row {
-  box-shadow: none;
-  background-color: transparent;
-  opacity: 1;
-  padding: 0 5px;
-  font-weight: 900;
-}
-
 #fileManager div.directory-viewer.compact {
   gap: 2px;
 }
@@ -377,9 +382,28 @@
 #fileManager div.directory-viewer {
   display: flex;
   flex-direction: column;
-  height: calc(100% - var(--titlebar-height) - 40px - 45px);
+  height: calc(100% - 35px);
   overflow-y: scroll;
   padding: 15px;
+  padding-top: 0;
   gap: 5px;
   position: relative;
+}
+
+#fileManager div.directory-viewer button.header-row {
+  box-shadow: none;
+  opacity: 1;
+  padding: 0 5px;
+  font-weight: 900;
+  position: sticky;
+  top: 0;
+  background-color: var(--win-bg);
+  z-index: 100000;
+  padding-top: 15px;
+  padding-bottom: 5px;
+}
+
+#fileManager div.directory-viewer.loading {
+  justify-content: center;
+  align-items: center;
 }

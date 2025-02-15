@@ -6,12 +6,25 @@
   const { process }: { process: FileManagerRuntime } = $props();
   const { path } = process;
 
-  let drive = $state<string | undefined>();
+  let driveLetter = $state<string | undefined>();
+  let driveLabel = $state<string>("");
   let name = $state<string>("");
 
   $effect(() => {
     const sub = path.subscribe((v) => {
-      drive = getDriveLetter(v, false);
+      driveLetter = getDriveLetter(v, false);
+
+      const driveIdentifier = getDriveLetter(v, true);
+
+      if (driveIdentifier) {
+        const drive = process.fs.getDriveByLetter(
+          driveIdentifier.slice(0, -1),
+          false
+        );
+
+        driveLabel = drive.label || "";
+      }
+
       name = getDirectoryName(v);
     });
 
@@ -20,10 +33,10 @@
 </script>
 
 <div class="path">
-  {#if drive}
+  {#if !name}
     <div class="pill">
       <span class="lucide icon-hard-drive"></span>
-      <span>{drive}</span>
+      <span>{driveLetter || driveLabel}</span>
     </div>
   {:else}
     <img src={FolderIcon} alt="" />
