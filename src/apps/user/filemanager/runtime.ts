@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { getParentDirectory } from "$ts/fs/util";
 import { ErrorIcon } from "$ts/images/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Sleep } from "$ts/sleep";
@@ -35,8 +36,21 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   async navigate(path: string) {
+    if (this.path() === path) return;
+
     this.loading.set(true);
     this.errored.set(false);
+    this.path.set(path);
+
+    await this.refresh();
+
+    this.loading.set(false);
+  }
+
+  async refresh() {
+    const path = this.path();
+
+    if (!path) return;
 
     try {
       const contents = await this.fs.readDir(path);
@@ -44,14 +58,12 @@ export class FileManagerRuntime extends AppProcess {
       if (!contents) this.DirectoryNotFound();
       else {
         this.contents.set(contents);
-        this.path.set(path);
       }
     } catch (e) {
       console.log(e);
       this.DirectoryNotFound();
     } finally {
       await Sleep(10);
-      this.loading.set(false);
     }
   }
 
@@ -76,5 +88,34 @@ export class FileManagerRuntime extends AppProcess {
       this.pid,
       true
     );
+  }
+
+  parentDir() {
+    const parent = getParentDirectory(this.path());
+
+    this.navigate(parent || this.path());
+  }
+
+  public updateSelection(e: MouseEvent, path: string) {
+    if (!e.shiftKey) return this.selection.set([path]);
+
+    const selected = this.selection.get();
+
+    if (selected.includes(path)) selected.splice(selected.indexOf(path), 1);
+    else selected.push(path);
+
+    this.selection.set(selected);
+
+    return;
+  }
+
+  public setCopyFiles(files = this.selection()) {
+    this.copyList.set(files || []);
+    this.cutList.set([]);
+  }
+
+  public setCutFiles(files = this.selection()) {
+    this.cutList.set(files || []);
+    this.copyList.set([]);
   }
 }

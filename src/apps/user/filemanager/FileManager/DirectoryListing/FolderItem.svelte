@@ -28,8 +28,8 @@
     process.navigate(thisPath);
   }
 
-  function onclick() {
-    process.selection.set([thisPath]);
+  function onclick(e: MouseEvent) {
+    process.updateSelection(e, thisPath);
   }
 </script>
 

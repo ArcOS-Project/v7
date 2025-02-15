@@ -96,6 +96,11 @@
   gap: 10px;
 }
 
+#fileManager div.address-bar button.activated {
+  background-color: var(--accent-light);
+  color: var(--accent-darkest);
+}
+
 #fileManager div.address-bar div.path div.pill {
   padding: 0 5px;
   display: flex;

@@ -31,8 +31,8 @@
     thisPath = join(process.path(), file.name);
   });
 
-  function onclick() {
-    process.selection.set([thisPath]);
+  function onclick(e: MouseEvent) {
+    process.updateSelection(e, thisPath);
   }
 </script>
 
@@ -40,6 +40,7 @@
   class="item file"
   {onclick}
   class:selected={$selection.includes(thisPath)}
+  ondblclick={() => process.notImplemented("File handling")}
 >
   <div class="segment icon">
     <img src={icon} alt="" />

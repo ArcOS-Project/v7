@@ -5,7 +5,19 @@
 </script>
 
 <div class="portion">
-  <button class="lucide icon-upload" aria-label="Upload..."></button>
-  <button class="lucide icon-download" aria-label="Download"></button>
-  <button class="lucide icon-plus" aria-label="New..."></button>
+  <button
+    class="lucide icon-upload"
+    aria-label="Upload..."
+    onclick={() => process.notImplemented("Uploading files")}
+  ></button>
+  <button
+    class="lucide icon-download"
+    aria-label="Download"
+    onclick={() => process.notImplemented("Downloading items")}
+  ></button>
+  <button
+    class="lucide icon-plus"
+    aria-label="New..."
+    onclick={() => process.notImplemented("Creating new files")}
+  ></button>
 </div>
