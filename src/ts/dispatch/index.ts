@@ -14,6 +14,8 @@ export class GlobalDispatcher extends KernelModule {
   }
 
   subscribe<T = any[]>(event: string, callback: (data: T) => void): number {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     const id = Math.floor(Math.random() * 1e6);
 
     if (!this.subscribers[event]) this.subscribers[event] = {};
@@ -35,12 +37,16 @@ export class GlobalDispatcher extends KernelModule {
   }
 
   unsubscribeId(event: string, id: number) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     this.Log(`Unsubscribing ID ${id} of event ${event}`);
 
     delete this.subscribers[event][id];
   }
 
   discardEvent(event: string) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     this.Log(`Discarding event ${event}`);
 
     delete this.subscribers[event];
@@ -51,6 +57,8 @@ export class GlobalDispatcher extends KernelModule {
     data?: T,
     system = true
   ): GlobalDispatchResult {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     this.Log(`Dispatching ${caller}`);
 
     const callers = this.subscribers[caller];

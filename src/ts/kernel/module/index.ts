@@ -3,6 +3,7 @@ import { LogLevel } from "../../../types/logging";
 import { Log } from "../logging";
 
 export class KernelModule {
+  protected readonly IS_KMOD = true;
   protected kernel: WaveKernel;
   public id: string;
 

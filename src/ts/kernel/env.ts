@@ -21,6 +21,8 @@ export class Environment extends KernelModule {
   }
 
   set(key: string, value: any): boolean {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     key &&= key.toUpperCase();
 
     if (this.readOnlyValues.includes(key)) return false;
@@ -41,12 +43,16 @@ export class Environment extends KernelModule {
   }
 
   setMultiple(entries: [string, any][]): void {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     for (const [key, value] of entries) {
       this.set(key, value);
     }
   }
 
   delete(key: string): boolean {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     key &&= key.toUpperCase();
 
     if (this.readOnlyValues.includes(key)) return false;
@@ -57,10 +63,14 @@ export class Environment extends KernelModule {
   }
 
   get(key: string): any {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     return this.store.get(key.toUpperCase());
   }
 
   getMultiple(keys: string[]): any[] {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     let result = [];
 
     for (const key of keys) {
@@ -71,6 +81,8 @@ export class Environment extends KernelModule {
   }
 
   setReadonly(key: string): void {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     key &&= key.toUpperCase();
 
     const index = this.readOnlyValues.indexOf(key);
@@ -81,6 +93,8 @@ export class Environment extends KernelModule {
   }
 
   setWritable(key: string): void {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     key &&= key.toUpperCase();
 
     const index = this.readOnlyValues.indexOf(key);
@@ -91,6 +105,8 @@ export class Environment extends KernelModule {
   }
 
   reset(): void {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     this.Log("Resetting!");
     this.store = new Map([]);
   }

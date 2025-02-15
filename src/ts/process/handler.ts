@@ -25,6 +25,8 @@ export class ProcessHandler extends KernelModule {
   }
 
   async startRenderer(initPid: number) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     this.renderer = await this.spawn(
       AppRenderer,
       undefined,
@@ -39,6 +41,8 @@ export class ProcessHandler extends KernelModule {
     parentPid: number | undefined = undefined,
     ...args: any[]
   ): Promise<T | undefined> {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     if (WaveKernel.isPanicked()) return;
 
     const userDaemonPid = this.env.get("userdaemon_pid");
@@ -78,6 +82,8 @@ export class ProcessHandler extends KernelModule {
   }
 
   async kill(pid: number, force = false) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     Log("ProcessHandler.kill", `Attempting to kill ${pid}`);
 
     const proc = this.getProcess(pid);
@@ -110,6 +116,8 @@ export class ProcessHandler extends KernelModule {
   }
 
   public async _killSubProceses(pid: number, force = false) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     const procs = await this.getSubProcesses(pid);
 
     if (!procs.size) return;
@@ -128,6 +136,8 @@ export class ProcessHandler extends KernelModule {
   }
 
   public async getSubProcesses(parentPid: number) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     const result = new Map<number, Process>([]);
 
     if (!this.isPid(parentPid)) return result;
@@ -142,6 +152,8 @@ export class ProcessHandler extends KernelModule {
   }
 
   getProcess<T = Process>(pid: number, disposedToo = false) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     const proc = this.store.get().get(pid);
 
     if (!proc) return undefined;
@@ -150,16 +162,22 @@ export class ProcessHandler extends KernelModule {
   }
 
   getPid() {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     this.lastPid++;
 
     return this.lastPid;
   }
 
   isPid(pid: number) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     return this.store.get().has(pid) && !this.store.get().get(pid)?._disposed;
   }
 
   ConnectDispatch(pid: number) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     const proc = this.getProcess(pid);
 
     if (!proc || !proc.dispatch) return undefined;
@@ -168,6 +186,8 @@ export class ProcessHandler extends KernelModule {
   }
 
   logTree() {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     // Build a tree structure
     const processTree: Record<number, number[]> = {};
     const roots: number[] = [];

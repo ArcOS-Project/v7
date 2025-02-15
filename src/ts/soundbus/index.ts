@@ -14,6 +14,8 @@ export class SoundBus extends KernelModule {
   }
 
   public playSound(id: string, volume = 1) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     if (!this.store[id]) return false;
 
     this.Log(`Playing sound ${id} from store`);
@@ -39,6 +41,8 @@ export class SoundBus extends KernelModule {
   }
 
   public stopSound(id: string) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     this.Log(`Stopping ${id}`);
 
     if (!this._bus[id]) return false;
@@ -55,10 +59,14 @@ export class SoundBus extends KernelModule {
   }
 
   public getStore(): [string, string][] {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     return Object.entries(this.store);
   }
 
   public loadExternal(source: string, play: boolean = false) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     const uuid = `${Math.floor(Math.random() * 1e9)}`;
 
     this.store[uuid] = source;

@@ -20,6 +20,7 @@ export class ContextMenuLogic extends KernelModule {
   }
 
   createMenu() {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
     this.menu = document.createElement("div");
     this.menu.className = "context-menu hidden";
 
@@ -39,6 +40,7 @@ export class ContextMenuLogic extends KernelModule {
     options: ContextMenuItem[],
     taskbarAllocation = 0
   ) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
     this.locked = true;
 
     this.menu?.classList.add("hidden");
@@ -112,6 +114,7 @@ export class ContextMenuLogic extends KernelModule {
   }
 
   correctMenuPosition(x: number, y: number, taskbarAllocation = 0) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
     const { offsetWidth: width, offsetHeight: height } = this.menu!;
     let { width: screenWidth, height: screenHeight } =
       document.body.getBoundingClientRect();
@@ -130,10 +133,12 @@ export class ContextMenuLogic extends KernelModule {
   }
 
   hideMenu() {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
     this.menu?.classList.add("hidden");
   }
 
   checkOutsideClick(e: MouseEvent) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
     if (e.composedPath().includes(this.menu!) || this.locked) return;
 
     this.hideMenu();

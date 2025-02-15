@@ -23,6 +23,8 @@ export class Filesystem extends KernelModule {
   async _init() {}
 
   getDriveById(id: string) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     return this.drives[id];
   }
 
@@ -32,6 +34,8 @@ export class Filesystem extends KernelModule {
     letter?: string,
     ...args: any[]
   ): Promise<FilesystemDrive | false> {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     this.Log(`Mounting drive '${id}' as letter ${letter || "<NONE>"}`);
 
     if (letter) this.validateDriveLetter(letter);
@@ -52,6 +56,8 @@ export class Filesystem extends KernelModule {
   }
 
   async umountDrive(id: string) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     this.Log(`Unmounting drive '${id}'`);
 
     if (!this.drives[id]) return false;
@@ -66,6 +72,8 @@ export class Filesystem extends KernelModule {
   }
 
   getDriveByLetter(letter: string, error = true) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     this.validateDriveLetter(letter);
 
     const result = Object.values(this.drives).filter(
@@ -78,16 +86,22 @@ export class Filesystem extends KernelModule {
   }
 
   getDriveIdentifier(path: string) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     this.validatePath(path);
 
     return path.split(":/")[0];
   }
 
   getDriveByPath(path: string) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     return this.getDriveByLetter(this.getDriveIdentifier(path));
   }
 
   validatePath(p: string) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     if (
       !/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|[a-zA-Z]):\/(.*?)$/g.test(
         p
@@ -97,12 +111,16 @@ export class Filesystem extends KernelModule {
   }
 
   removeDriveLetter(p: string) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     this.validatePath(p);
 
     return p.replace(`${this.getDriveIdentifier(p)}:/`, "");
   }
 
   validateDriveLetter(letter: string) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     if (
       !/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|[a-zA-Z])$/g.test(
         letter
@@ -112,6 +130,8 @@ export class Filesystem extends KernelModule {
   }
 
   async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     this.Log(`Reading directory '${path}'`);
 
     this.validatePath(path);
@@ -121,9 +141,11 @@ export class Filesystem extends KernelModule {
   }
 
   async createDirectory(path: string): Promise<boolean> {
-    this.Log(`Creating directory '${path}'`);
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
+    this.Log(`Creating directory '${path}'`);
     this.validatePath(path);
+
     const drive = this.getDriveByPath(path);
     path = this.removeDriveLetter(path);
 
@@ -136,9 +158,11 @@ export class Filesystem extends KernelModule {
   }
 
   async readFile(path: string): Promise<ArrayBuffer | undefined> {
-    this.Log(`Reading file '${path}'`);
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
+    this.Log(`Reading file '${path}'`);
     this.validatePath(path);
+
     const drive = this.getDriveByPath(path);
     path = this.removeDriveLetter(path);
 
@@ -146,9 +170,11 @@ export class Filesystem extends KernelModule {
   }
 
   async writeFile(path: string, data: Blob): Promise<boolean> {
-    this.Log(`Writing ${data.size} bytes to file '${path}'`);
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
+    this.Log(`Writing ${data.size} bytes to file '${path}'`);
     this.validatePath(path);
+
     const drive = this.getDriveByPath(path);
 
     path = this.removeDriveLetter(path);
@@ -163,8 +189,9 @@ export class Filesystem extends KernelModule {
   }
 
   async tree(path: string): Promise<RecursiveDirectoryReadReturn | undefined> {
-    this.Log(`Getting tree of '${path}'`);
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
+    this.Log(`Getting tree of '${path}'`);
     this.validatePath(path);
 
     const drive = this.getDriveByPath(path);
@@ -175,8 +202,9 @@ export class Filesystem extends KernelModule {
   }
 
   async copyItem(source: string, destination: string): Promise<boolean> {
-    this.Log(`Copying '${source}' to '${destination}'`);
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
+    this.Log(`Copying '${source}' to '${destination}'`);
     this.validatePath(source);
     this.validatePath(destination);
 
@@ -200,8 +228,9 @@ export class Filesystem extends KernelModule {
   }
 
   async moveItem(source: string, destination: string): Promise<boolean> {
-    this.Log(`Moving '${source}' to '${destination}'`);
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
+    this.Log(`Moving '${source}' to '${destination}'`);
     this.validatePath(source);
     this.validatePath(destination);
 
@@ -227,8 +256,9 @@ export class Filesystem extends KernelModule {
   }
 
   async deleteItem(path: string): Promise<boolean> {
-    this.Log(`Deleting item '${path}'`);
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
+    this.Log(`Deleting item '${path}'`);
     this.validatePath(path);
 
     const drive = this.getDriveByPath(path);
@@ -247,6 +277,8 @@ export class Filesystem extends KernelModule {
     target: string,
     accept = "*/*"
   ): Promise<SingleUploadReturn> {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     this.validatePath(target);
     const uploader = document.createElement("input");
 

@@ -38,6 +38,8 @@ export class ServerManager extends KernelModule {
   }
 
   private getServerUrl() {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     this.Log("Getting server URL from environment");
 
     const serverUrl = import.meta.env.DW_SERVER_URL;
@@ -48,6 +50,8 @@ export class ServerManager extends KernelModule {
   }
 
   private async testConnection() {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     this.Log("Testing server connection...");
     try {
       const response = await Axios.get(`/ping`, {
@@ -74,6 +78,8 @@ export class ServerManager extends KernelModule {
   }
 
   async checkUsernameAvailability(username: string) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     try {
       const response = await Axios.get(
         `/user/availability/username?name=${username}`
@@ -86,6 +92,8 @@ export class ServerManager extends KernelModule {
   }
 
   async checkEmailAvailability(email: string) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
     try {
       const response = await Axios.get(
         `/user/availability/email?email=${email}`
