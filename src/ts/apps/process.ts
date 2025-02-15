@@ -1,6 +1,6 @@
 import { GlobalDispatcher } from "$ts/dispatch";
 import type { Filesystem } from "$ts/fs";
-import { ComponentIcon } from "$ts/images/general";
+import { BugReportIcon, ComponentIcon } from "$ts/images/general";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { DefaultUserPreferences } from "$ts/server/user/default";
 import { ContextMenuLogic } from "$ts/ui/context";
@@ -8,6 +8,7 @@ import type { AppKeyCombinations } from "$types/accelerator";
 import type { ContextMenuItem } from "$types/context";
 import type { ElevationData } from "$types/elevation";
 import { LogLevel } from "$types/logging";
+import type { RenderArgs } from "$types/process";
 import type { UserPreferences } from "$types/user";
 import { mount } from "svelte";
 import type { App, AppProcessData } from "../../types/app";
@@ -17,7 +18,9 @@ import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
 import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
-import type { RenderArgs } from "$types/process";
+import { ArcOSVersion } from "$ts/env";
+import { ArcMode } from "$ts/metadata/mode";
+import { ArcBuild } from "$ts/metadata/build";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
 export class AppProcess extends Process {
@@ -333,5 +336,23 @@ export class AppProcess extends Process {
   async elevate(id: string) {
     if (!this.elevations[id]) return false;
     return await this.userDaemon?.manuallyElevate(this.elevations[id]);
+  }
+
+  notImplemented(what?: string) {
+    this.Log("Tracing NotImplemented: ");
+    console.trace();
+
+    // Manually invoking spawnOverlay method on daemon to work around AppProcess <> MessageBox circular import
+    this.userDaemon?.spawnOverlay("messageBox", this.pid, {
+      title: "Not implemented",
+      message: `${
+        what || "This feature"
+      } isn't implemented yet ¯\\_(ツ)_/¯<br><br>Encountering this in a (recent) <b>release</b> build of ArcOS? Then I forgot to make something. Please let me know. Do that with this information:<br><code class='block'>ArcOS v${ArcOSVersion}-${ArcMode()} (${ArcBuild()}) - ${
+        location.hostname
+      }</code>`,
+      buttons: [{ caption: "Sad :(", action: () => {}, suggested: true }],
+      image: BugReportIcon,
+      sound: "arcos.dialog.warning",
+    });
   }
 }

@@ -50,7 +50,11 @@
     >
     </button>
     <div class="sep"></div>
-    <button class="lucide icon-folder-open" aria-label="Choose a file">
+    <button
+      class="lucide icon-folder-open"
+      aria-label="Choose a file"
+      onclick={() => process.notImplemented("Opening files")}
+    >
     </button>
   </div>
 </ThemesHeader>

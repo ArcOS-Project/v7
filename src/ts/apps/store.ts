@@ -1,4 +1,5 @@
 import { AppInfoApp } from "$apps/components/appinfo/metadata";
+import { MessageBoxApp } from "$apps/components/messagebox/metadata";
 import { SecureContextApp } from "$apps/components/securecontext/metadata";
 import { ArcShellApp } from "$apps/components/shell/metadata";
 import { WallpaperApp } from "$apps/components/wallpaper/metadata";
@@ -9,6 +10,7 @@ import type { AppKeyCombinations } from "$types/accelerator";
 import type { AppStorage } from "$types/app";
 
 export const BuiltinApps: AppStorage = [
+  MessageBoxApp,
   SecureContextApp,
   WallpaperApp,
   ArcShellApp,

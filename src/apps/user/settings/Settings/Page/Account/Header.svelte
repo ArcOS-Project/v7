@@ -32,6 +32,7 @@
           class="lucide icon-folder-open"
           aria-label="Choose profile picture"
           title="Choose an image..."
+          onclick={() => process.notImplemented("Opening files")}
         ></button>
         <button
           class="lucide icon-link"
