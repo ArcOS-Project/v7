@@ -31,6 +31,6 @@ export class InitProcess extends Process {
     if (!state) throw new Error("State handler failed to spawn");
 
     kernel.state = state;
-    await kernel.state?.loadState("boot");
+    await kernel.state?.loadState("boot", {}, true);
   }
 }

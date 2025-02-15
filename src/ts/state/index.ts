@@ -145,7 +145,7 @@ export class StateHandler extends Process {
   }
 
   async loadStateAsApp(data: State, props: Record<string, any>) {
-    await Sleep(500);
+    // await Sleep(500);
     this.Log(`BEGINNING LOAD OF ${data.name} (${data.identifier}) IN APP MODE`);
 
     const stack = this.kernel.getModule<ProcessHandler>("stack");

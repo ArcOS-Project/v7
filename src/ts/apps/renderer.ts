@@ -60,7 +60,7 @@ export class AppRenderer extends Process {
     const { app } = process;
     const { data } = app;
 
-    await Sleep(100);
+    await Sleep(1);
 
     body.className = "body";
 
