@@ -110,14 +110,13 @@ export function getParentDirectory(p: string): string {
 
   const split = p.split("/");
 
-  if (!split.length) return p;
-  if (split.length == 1) return "";
+  if (!split.length || split.length == 1) return p;
 
   split.splice(-1);
 
   const newPath = split.join("/");
 
-  return newPath;
+  return newPath.endsWith(":") ? `${newPath}/` : newPath;
 }
 
 export function onFileChange(path: string, callback: () => void) {
@@ -136,7 +135,7 @@ export function onFolderChange(path: string, callback: () => void) {
   const dispatch = kernel.getModule<GlobalDispatcher>("dispatch");
 
   dispatch.subscribe("fs-flush-folder", (data) => {
-    if (data[0] === path) callback();
+    if (!path || data[0] === path) callback();
   });
 
   callback();
