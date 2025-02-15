@@ -1,7 +1,7 @@
 <script lang="ts">
-  // TODO: proper shutdown/restart/logoff logic
-  // TODO: link icon-settings-2 to systemSettings
-  // TODO: port ArcFind functionality from v6
+  import type { ShellRuntime } from "../runtime";
+
+  const { process }: { process: ShellRuntime } = $props();
 </script>
 
 <div class="bottom">
@@ -10,10 +10,18 @@
     <input type="text" placeholder="Search..." />
   </div>
   <div class="actions">
-    <button class="settings" aria-label="Settings">
+    <button
+      class="settings"
+      aria-label="Settings"
+      onclick={() => process.notImplemented()}
+    >
       <span class="lucide icon-settings-2"></span>
     </button>
-    <button class="shutdown" aria-label="Shutdown">
+    <button
+      class="shutdown"
+      aria-label="Shutdown"
+      onclick={() => process.notImplemented()}
+    >
       <span class="lucide icon-power"></span>
     </button>
   </div>

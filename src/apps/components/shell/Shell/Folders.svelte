@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { MessageBox } from "$ts/dialog";
   import { onFolderChange } from "$ts/fs/util";
   import { FolderIcon } from "$ts/images/filesystem";
   import type { FolderEntry } from "$types/fs";
@@ -30,29 +29,13 @@
 
     dirs = root?.dirs;
   }
-
-  async function openFolder(name: string) {
-    // TODO: file manager + open the folder in the file manager
-    const contents = await process.fs.readDir(`U:/${name}`);
-
-    MessageBox(
-      {
-        title: name,
-        image: FolderIcon,
-        message: `<code class="block">${JSON.stringify(contents, null, 2)}</code>`,
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-      },
-      process.pid,
-      true
-    );
-  }
 </script>
 
 <div class="folders">
   <UserButton {userPreferences} {username} {process} />
   <div class="content">
     {#each dirs as dir}
-      <button class="folder" onclick={() => openFolder(dir.name)}>
+      <button class="folder" onclick={() => process.notImplemented()}>
         <img src={FolderIcon} alt="" />
         <span class="name">{dir.name}</span>
       </button>
