@@ -20,6 +20,7 @@ export class ScriptedAppProcess extends AppProcess {
 
     this.lang = lang;
     this.lang.app = app;
+    this.lang.appProcess = this;
 
     if (!this.handler.renderer?.currentState.includes(this.lang.pid)) {
       this.handler.renderer?.currentState.push(this.lang.pid);
@@ -27,7 +28,7 @@ export class ScriptedAppProcess extends AppProcess {
   }
 
   override async __render__() {
-    await this.render();
+    await this.render(this.renderArgs);
     const body =
       (document.querySelector(
         `div.window[data-pid="${this.pid}"] > div.body`
