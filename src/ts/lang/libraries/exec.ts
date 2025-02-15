@@ -1,13 +1,15 @@
 import type { Keyword } from "$types/lang";
 
-export const keyword: Keyword = async (lang) => {
+export const exec: Keyword = async (lang) => {
   if (!lang.options.allowUnsafe) {
     lang.error("Unsafe code execution is not enabled!", "keyword");
     return;
   }
-  if (!lang.expectTokenLength(2, "keyword")) return;
+  if (!lang.expectTokenLength(1, "exec")) return;
 
-  const [keyword, func] = lang.tokens as [string, Keyword];
+  const [func, ...args] = lang.tokens as [Function, ...any];
+
+  console.log(func);
 
   if (!(func instanceof Function)) {
     lang.error("Function must be a function", "keyword");
@@ -15,5 +17,5 @@ export const keyword: Keyword = async (lang) => {
     return;
   }
 
-  lang.libraries.user[keyword] = func.bind(lang.appProcess || lang);
+  return await func.bind(lang.appProcess || lang)(...args)();
 };

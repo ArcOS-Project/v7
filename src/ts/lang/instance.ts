@@ -13,6 +13,7 @@
  * January 12th 2024 @ 2:37PM GMT+1
  */
 
+import type { AppProcess } from "$ts/apps/process";
 import { ArcOSVersion } from "$ts/env";
 import { Filesystem } from "$ts/fs";
 import { join } from "$ts/fs/util";
@@ -57,6 +58,7 @@ export class LanguageInstance extends Process {
   private fs: Filesystem;
   private exception: LanguageExecutionError | null = null;
   public app: AppProcessData | undefined;
+  public appProcess: AppProcess | undefined;
   public userDaemon: UserDaemon | undefined;
 
   constructor(
