@@ -1,26 +1,24 @@
 import { GlobalDispatcher } from "$ts/dispatch";
+import { ArcOSVersion } from "$ts/env";
 import type { Filesystem } from "$ts/fs";
 import { BugReportIcon, ComponentIcon } from "$ts/images/general";
+import { ArcBuild } from "$ts/metadata/build";
+import { ArcMode } from "$ts/metadata/mode";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { DefaultUserPreferences } from "$ts/server/user/default";
-import { ContextMenuLogic } from "$ts/ui/context";
 import type { AppKeyCombinations } from "$types/accelerator";
-import type { ContextMenuItem } from "$types/context";
 import type { ElevationData } from "$types/elevation";
 import { LogLevel } from "$types/logging";
 import type { RenderArgs } from "$types/process";
 import type { UserPreferences } from "$types/user";
 import { mount } from "svelte";
-import type { App, AppProcessData } from "../../types/app";
+import type { App, AppContextMenu, AppProcessData } from "../../types/app";
 import { WaveKernel } from "../kernel";
 import type { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
 import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
-import { ArcOSVersion } from "$ts/env";
-import { ArcMode } from "$ts/metadata/mode";
-import { ArcBuild } from "$ts/metadata/build";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
 export class AppProcess extends Process {
@@ -40,7 +38,7 @@ export class AppProcess extends Process {
   protected elevations: Record<string, ElevationData> = {};
   public renderArgs: RenderArgs = {};
   public acceleratorStore: AppKeyCombinations = [];
-  context: ContextMenuLogic;
+  public readonly contextMenu: AppContextMenu = {};
 
   constructor(
     handler: ProcessHandler,
@@ -63,7 +61,6 @@ export class AppProcess extends Process {
 
     this.fs = this.kernel.getModule<Filesystem>("fs");
     this.globalDispatch = this.kernel.getModule<GlobalDispatcher>("dispatch");
-    this.context = this.kernel.getModule<ContextMenuLogic>("context");
 
     const desktopProps = this.kernel.state?.stateProps["desktop"];
 
@@ -268,45 +265,6 @@ export class AppProcess extends Process {
         id,
       }
     ));
-  }
-
-  contextMenu(
-    element: HTMLElement,
-    optionsCallback: () => Promise<ContextMenuItem[]>
-  ) {
-    const taskbarAllocation = this.userPreferences().shell.taskbar.docked
-      ? 40
-      : 50;
-
-    element.addEventListener("contextmenu", async (e: MouseEvent) => {
-      this.context.showMenu(
-        e.clientX,
-        e.clientY,
-        await optionsCallback(),
-        taskbarAllocation
-      );
-    });
-  }
-
-  clickMenu(
-    element: HTMLElement,
-    optionsCallback: () => Promise<ContextMenuItem[]>
-  ) {
-    const taskbarAllocation = this.userPreferences().shell.taskbar.docked
-      ? 40
-      : 50;
-
-    element.addEventListener("click", async (e: MouseEvent) => {
-      const {
-        x,
-        y: clientY,
-        height,
-      } = (e.target as HTMLElement).getBoundingClientRect();
-
-      const y = clientY + height + 2;
-
-      this.context.showMenu(x, y, await optionsCallback(), taskbarAllocation);
-    });
   }
 
   async spawnApp<T = AppProcess>(

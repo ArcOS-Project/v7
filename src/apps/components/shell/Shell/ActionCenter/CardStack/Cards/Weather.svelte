@@ -3,7 +3,6 @@
   import type { WeatherInformation } from "$apps/components/shell/types";
   import { SettingsRuntime } from "$apps/user/settings/runtime";
   import { Sleep } from "$ts/sleep";
-  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import Spinner from "../../../../../../../lib/Spinner.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
@@ -56,31 +55,7 @@
           style="--color: {data.iconColor};"
         ></span>
       {/if}
-      <h1
-        use:contextMenu={{
-          process,
-          options: async () => [
-            {
-              caption:
-                $userPreferences.shell.actionCenter.weatherLocation.name ||
-                "Weather",
-              disabled: () => true,
-              action: () => {},
-              separator: true,
-            },
-            {
-              icon: "map-pin",
-              caption: "Change location...",
-              action: changeLocation,
-            },
-            {
-              icon: "refresh-cw",
-              caption: "Refresh",
-              action: () => refresh(true),
-            },
-          ],
-        }}
-      >
+      <h1>
         {data.temperature.toFixed(1)} °C
       </h1>
       <p>

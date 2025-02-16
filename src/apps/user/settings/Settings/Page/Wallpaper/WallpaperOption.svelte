@@ -4,7 +4,6 @@
   import { WarningIcon } from "$ts/images/dialog";
   import { TrashIcon } from "$ts/images/general";
   import type { UserDaemon } from "$ts/server/user/daemon";
-  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import type { ContextItemCallback } from "$types/context";
   import type { UserPreferencesStore } from "$types/user";
   import type { Wallpaper } from "$types/wallpaper";
@@ -133,7 +132,6 @@
     class:selected={isLogin
       ? $userPreferences.account.loginBackground === id
       : $userPreferences.desktop.wallpaper === id}
-    use:contextMenu={{ process, options }}
   >
     <div class="selected-overlay">
       <span class="lucide icon-check"></span>

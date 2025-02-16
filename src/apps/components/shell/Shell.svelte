@@ -2,6 +2,7 @@
   import type { AppComponentProps } from "$types/app";
   import type { ShellRuntime } from "./runtime";
   import ActionCenter from "./Shell/ActionCenter.svelte";
+  import ContextMenuRenderer from "./Shell/ContextMenuRenderer.svelte";
   import PushNotification from "./Shell/PushNotification.svelte";
   import StartMenu from "./Shell/StartMenu.svelte";
   import Taskbar from "./Shell/Taskbar.svelte";
@@ -28,4 +29,5 @@
   <div class="secondary">
     <Taskbar {process} />
   </div>
+  <ContextMenuRenderer {process} />
 </div>

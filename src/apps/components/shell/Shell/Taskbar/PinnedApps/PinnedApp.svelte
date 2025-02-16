@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import { ComponentIcon } from "$ts/images/general";
-  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import type { App, ThirdPartyApp } from "$types/app";
   import type { ContextItemCallback } from "$types/context";
 
@@ -43,12 +42,7 @@
 </script>
 
 {#if app && app.metadata}
-  <button
-    class="pinned-app"
-    title={app.metadata.name}
-    onclick={spawn}
-    use:contextMenu={{ process, options }}
-  >
+  <button class="pinned-app" title={app.metadata.name} onclick={spawn}>
     <img src={app.metadata.icon} alt="" />
   </button>
 {/if}

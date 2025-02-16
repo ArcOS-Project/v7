@@ -16,6 +16,7 @@
   class="taskbar shell-colored"
   class:colored={$userPreferences.shell.taskbar.colored}
   class:docked={$userPreferences.shell.taskbar.docked}
+  data-contextmenu="shell-taskbar"
 >
   <StartButton {process} />
   <WorkspaceManagerButton {process} />

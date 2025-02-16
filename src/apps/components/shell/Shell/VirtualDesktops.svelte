@@ -4,7 +4,6 @@
   import { WarningIcon } from "$ts/images/dialog";
   import { DesktopIcon } from "$ts/images/general";
   import { Sleep } from "$ts/sleep";
-  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { Wallpapers } from "$ts/wallpaper/store";
   import { Store } from "$ts/writable";
   import type { Workspace } from "$types/user";
@@ -99,25 +98,6 @@
             : Wallpapers.img0.url}');"
           onclick={() => userDaemon?.switchToDesktopByUuid(desktop.uuid)}
           class:selected={$userPreferences.workspaces.index === i}
-          use:contextMenu={{
-            process,
-            options: async () => [
-              {
-                caption: "Go here",
-                action: () => {
-                  userDaemon?.switchToDesktopByUuid(desktop.uuid);
-                },
-                default: true,
-              },
-              {
-                icon: "trash",
-                caption: "Delete workspace",
-                action: () => {
-                  deleteWorkspace(desktop.uuid);
-                },
-              },
-            ],
-          }}
         >
           <div class="number">{i + 1}</div>
           <div class="bottom">

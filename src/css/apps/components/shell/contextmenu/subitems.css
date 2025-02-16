@@ -1,0 +1,26 @@
+#arcShell div.context-menu button.menu-item > div.sub-items {
+  position: absolute;
+  top: -6px;
+  left: calc(100% - 5px);
+  width: max-content;
+  min-width: 180px;
+  flex-grow: 1; /* 
+  animation: gone 1s forwards; */
+  transform: scaleY(0%);
+  background-color: var(--win-bg);
+  display: none;
+  z-index: 100;
+  transition: none !important;
+}
+
+#arcShell div.context-menu button.menu-item > div.sub-items.left {
+  left: unset;
+  right: calc(100%);
+}
+
+#arcShell div.context-menu button.menu-item > div.sub-items.show {
+  opacity: 1;
+  visibility: visible;
+  transform: unset;
+  display: flex;
+}

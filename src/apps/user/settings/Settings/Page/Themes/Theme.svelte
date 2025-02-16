@@ -3,7 +3,6 @@
   import { MessageBox } from "$ts/dialog";
   import { QuestionIcon } from "$ts/images/dialog";
   import type { UserDaemon } from "$ts/server/user/daemon";
-  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import type { ContextItemCallback } from "$types/context";
   import type { UserTheme } from "$types/theme";
 
@@ -92,10 +91,6 @@
   title="{theme.name} by {theme.author} (version {theme.version})"
   onclick={apply}
   style="--url: url('{wallpaper}');"
-  use:contextMenu={{
-    process,
-    options: context,
-  }}
 >
   <!-- <img src={wallpaper} alt={theme.name} /> -->
   <div

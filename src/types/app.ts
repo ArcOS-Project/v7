@@ -88,3 +88,33 @@ export type AppProcessData = { data: App; id: string; desktop?: string };
 
 export type AppStorage = ((App | ThirdPartyApp) & { originId?: string })[];
 export type AppStoreCb = () => MaybePromise<AppStorage>;
+
+export interface ContextMenuItem {
+  sep?: boolean;
+  caption?: string;
+  icon?: string;
+  image?: string;
+  isActive?: ContextMenuCallback<boolean>;
+  action?: ContextMenuCallback;
+  subItems?: ContextMenuItem[];
+  disabled?: ContextMenuCallback<boolean>;
+  accelerator?: string;
+}
+
+export type ContextMenuCallback<T = void> = (
+  window: ((App | ThirdPartyApp) & { originId?: string }) | undefined,
+  data: DOMStringMap | undefined,
+  scope: string
+) => MaybePromise<T>;
+
+export type AppContextMenu = { [key: string]: ContextMenuItem[] };
+export interface ContextMenuInstance {
+  x: number;
+  y: number;
+  items: ContextMenuItem[];
+  scope?: string;
+  scopeMap?: DOMStringMap;
+  app?: (App | ThirdPartyApp) & { originId?: string };
+  process?: AppProcess;
+  artificial?: boolean;
+}
