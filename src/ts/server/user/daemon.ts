@@ -392,7 +392,7 @@ export class UserDaemon extends Process {
   }
 
   applyThemeData(data: UserTheme, id?: string) {
-    if (this._disposed) return;
+    if (this._disposed || !data) return;
 
     this.Log(`Apply theme data, ID='${id}'`);
 

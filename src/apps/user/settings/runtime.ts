@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
+import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import {
   PasswordIcon,
   SecurityHighIcon,
@@ -10,10 +10,11 @@ import {
 } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Axios } from "$ts/server/axios";
+import { BuiltinThemes } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { htmlspecialchars } from "$ts/util";
 import { Store } from "$ts/writable";
-import type { App, AppProcessData } from "$types/app";
+import type { App, AppContextMenu, AppProcessData } from "$types/app";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
 import { ChangePasswordApp } from "./overlays/changePassword";
 import { ChangeUsernameApp } from "./overlays/changeUsername";
@@ -61,6 +62,40 @@ export class SettingsRuntime extends AppProcess {
       description: "We do NOT recommend this",
       level: ElevationLevel.high,
     },
+  };
+
+  override contextMenu: AppContextMenu = {
+    "user-theme-option": [
+      {
+        caption: "Apply",
+        action: (_, data) => {
+          this.userDaemon?.applyThemeData(
+            this.userDaemon.preferences().userThemes[data?.id || ""],
+            data?.id
+          );
+        },
+        icon: "check",
+      },
+      { sep: true },
+      {
+        caption: "Delete Theme",
+        action: (_, data) => {
+          this.deleteThemeConfirmation(data?.id);
+        },
+      },
+    ],
+    "builtin-theme-option": [
+      {
+        caption: "Apply",
+        action: (_, data) => {
+          this.userDaemon?.applyThemeData(
+            BuiltinThemes[data?.id || ""],
+            data?.id
+          );
+        },
+        icon: "check",
+      },
+    ],
   };
 
   constructor(
@@ -215,6 +250,32 @@ export class SettingsRuntime extends AppProcess {
         ],
       },
       +this.env.get("shell_pid") || this.pid,
+      true
+    );
+  }
+
+  deleteThemeConfirmation(id?: string) {
+    if (!id) return;
+
+    MessageBox(
+      {
+        title: "Delete theme?",
+        message:
+          "Are you sure you want to delete this amazing theme? You can't undo this.",
+        buttons: [
+          { caption: "Cancel", action: () => {} },
+          {
+            caption: "Delete it",
+            action: () => {
+              this.userDaemon?.deleteUserTheme(id);
+            },
+            suggested: true,
+          },
+        ],
+        image: QuestionIcon,
+        sound: "arcos.dialog.warning",
+      },
+      this.pid,
       true
     );
   }

@@ -69,7 +69,7 @@
   >
     <div class="inner">
       {#if data.icon}
-        <span class="icon material-icons-round">{data.icon}</span>
+        <span class="icon lucide icon-{data.icon}"></span>
       {:else if data.image}
         <img class="icon" src={data.image} alt={data.caption} />
       {:else}

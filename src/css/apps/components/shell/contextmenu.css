@@ -6,8 +6,7 @@
   min-width: 180px;
   min-height: 42px;
   background-color: var(--glass-bg);
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(10px);
   color: var(--fg);
   border: var(--win-border);
   border-radius: var(--win-border-rad);
@@ -60,6 +59,7 @@
   transform: unset;
   position: relative;
   z-index: 1;
+  height: 30px;
 }
 
 #arcShell div.context-menu button.menu-item:disabled {
