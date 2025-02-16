@@ -55,7 +55,7 @@ export class LanguageInstance extends Process {
   public executionCount = -1;
   public workingDir: string;
   public options: LanguageOptions;
-  private fs: Filesystem;
+  public fs: Filesystem;
   private exception: LanguageExecutionError | null = null;
   public app: AppProcessData | undefined;
   public appProcess: AppProcess | undefined;

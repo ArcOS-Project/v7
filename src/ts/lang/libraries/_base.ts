@@ -10,6 +10,7 @@ import { mount } from "./_base/mount";
 import { MsgBox } from "./_base/msgbox";
 import { Return } from "./_base/return";
 import { sleep } from "./_base/sleep";
+import { umount } from "./_base/umount";
 import { exec } from "./exec";
 import { keyword } from "./keyword";
 
@@ -26,5 +27,6 @@ export const BaseLibrary: Library = {
   Return,
   exit,
   mount,
+  umount,
   exec,
 };

@@ -55,6 +55,14 @@ export class Filesystem extends KernelModule {
     return instance as FilesystemDrive;
   }
 
+  getDriveIdByIdentifier(identifier: string) {
+    return Object.entries(this.drives)
+      .filter(([id, drv]) => {
+        return drv.driveLetter === identifier || drv.uuid === identifier;
+      })
+      .map(([id]) => id)[0];
+  }
+
   async umountDrive(id: string, fromSystem = false) {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
