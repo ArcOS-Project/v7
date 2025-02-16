@@ -42,6 +42,8 @@ export class BootScreenRuntime extends AppProcess {
   }
 
   async startBooting() {
+    if (this._disposed) return;
+
     this.Log("Beginning boot process");
 
     if (this.progress()) return;

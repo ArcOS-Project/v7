@@ -4,16 +4,22 @@
   import AddressBar from "./FileManager/AddressBar.svelte";
   import DirectoryListing from "./FileManager/DirectoryListing.svelte";
   import Sidebar from "./FileManager/Sidebar.svelte";
+  import Splash from "./FileManager/Splash.svelte";
   import type { FileManagerRuntime } from "./runtime";
 
   const { process }: AppComponentProps<FileManagerRuntime> = $props();
+  const { starting } = process;
 </script>
 
-<Sidebar {process} />
-<div class="container">
-  <CustomTitlebar {process} />
-  <div class="main-content">
-    <AddressBar {process} />
-    <DirectoryListing {process} />
+{#if !$starting}
+  <Sidebar {process} />
+  <div class="container">
+    <CustomTitlebar {process} />
+    <div class="main-content">
+      <AddressBar {process} />
+      <DirectoryListing {process} />
+    </div>
   </div>
-</div>
+{:else}
+  <Splash />
+{/if}

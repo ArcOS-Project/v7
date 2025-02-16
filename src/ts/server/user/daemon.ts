@@ -255,7 +255,7 @@ export class UserDaemon extends Process {
 
     if (this.preferencesUnsubscribe) this.preferencesUnsubscribe();
 
-    this.fs.umountDrive(`userfs`);
+    this.fs.umountDrive(`userfs`, true);
   }
 
   async sanitizeUserPreferences() {
@@ -339,6 +339,8 @@ export class UserDaemon extends Process {
 
   clearNotifications() {
     if (this._disposed) return;
+
+    this.Log(`Clearing notifications`);
 
     this.notifications = new Map<string, Notification>([]);
     this.globalDispatch.dispatch("update-notifications", [this.notifications]);
@@ -492,6 +494,8 @@ export class UserDaemon extends Process {
   async uploadWallpaper(): Promise<Wallpaper> {
     if (this._disposed) return new Promise((r) => r({} as Wallpaper));
 
+    this.Log(`Uploading wallpaper to U:/Wallpapers`);
+
     const { path, file } = await this.fs.uploadSingleFile(
       "U:/Wallpapers",
       "image/*"
@@ -516,6 +520,8 @@ export class UserDaemon extends Process {
 
   async uploadProfilePicture(): Promise<string | undefined> {
     if (this._disposed) return undefined;
+
+    this.Log(`Uploading profile picture to U:/Pictures`);
 
     const { path } = await this.fs.uploadSingleFile("U:/Pictures", "image/*");
 
@@ -654,17 +660,23 @@ export class UserDaemon extends Process {
   async logoff() {
     if (this._disposed) return;
 
+    this.Log(`Logging off NOW`);
+
     await this.toLogin("logoff");
   }
 
   async shutdown() {
     if (this._disposed) return;
 
+    this.Log(`Shutting down NOW`);
+
     await this.toLogin("shutdown");
   }
 
   async restart() {
     if (this._disposed) return;
+
+    this.Log(`Restarting NOW`);
 
     await this.toLogin("restart");
   }
@@ -681,6 +693,8 @@ export class UserDaemon extends Process {
 
   async mountZip(path: string, letter?: string) {
     if (this._disposed) return;
+
+    this.Log(`Mounting ZIP file at ${path} as ${letter || "?"}:/`);
 
     const mount = this.fs.mountDrive(btoa(path), ZIPDrive, letter, path);
 
@@ -702,8 +716,6 @@ export class UserDaemon extends Process {
   async testNetworkSpeed() {
     if (this._disposed) return -1;
 
-    this.Log("Testing network speed");
-
     const fileSizeInBytes = 10 * 1024 * 1024;
     const startTime = performance.now();
 
@@ -719,10 +731,9 @@ export class UserDaemon extends Process {
 
     const endTime = performance.now();
     const durationInSeconds = (endTime - startTime) / 1000;
-
     const speedMbps = (fileSizeInBytes * 8) / (durationInSeconds * 1_000_000);
 
-    this.Log(`Network speed equated: ${speedMbps}`);
+    this.globalDispatch.dispatch("net-speed", [speedMbps]);
 
     return speedMbps;
   }
@@ -789,6 +800,8 @@ export class UserDaemon extends Process {
 
     if (!app) return undefined;
 
+    this.Log(`SPAWNING APP ${id}`);
+
     if (app.thirdParty) {
       await this.spawnThirdParty(app as unknown as ThirdPartyApp);
 
@@ -831,6 +844,8 @@ export class UserDaemon extends Process {
 
     if (!app) return undefined;
 
+    this.Log(`SPAWNING OVERLAY APP ${id}`);
+
     if (app.thirdParty) {
       this.Log(
         "Can't spawn a third party app as an overlay: not in our control",
@@ -856,6 +871,8 @@ export class UserDaemon extends Process {
   async spawnThirdParty(app: ThirdPartyApp) {
     if (this._disposed) return;
 
+    this.Log(`Starting ArcMSL execution to run third-party app ${app.id}`);
+
     const lang = this.kernel.getModule<ArcLang>("lang");
     const fs = this.kernel.getModule<Filesystem>("fs");
     const userDaemonPid = this.env.get("userdaemon_pid");
@@ -878,6 +895,8 @@ export class UserDaemon extends Process {
   async spawnAutoloadApps() {
     if (this._disposed) return;
 
+    this.Log(`Spawning autoload applications`);
+
     const store = (await this.appStore?.get()) || [];
 
     for (const app of store) {
@@ -896,6 +915,8 @@ export class UserDaemon extends Process {
   disableApp(appId: string) {
     if (this._disposed) return false;
     if (this.checkDisabled(appId)) return false;
+
+    this.Log(`Disabling application ${appId}`);
 
     this.preferences.update((v) => {
       v.disabledApps.push(appId);
@@ -916,6 +937,8 @@ export class UserDaemon extends Process {
   enableApp(appId: string) {
     if (this._disposed) return false;
     if (!this.checkDisabled(appId)) return false;
+
+    this.Log(`Enabling application ${appId}`);
 
     this.preferences.update((v) => {
       if (!v.disabledApps.includes(appId)) return v;
@@ -945,6 +968,8 @@ export class UserDaemon extends Process {
   async logActivity(action: string) {
     if (this._disposed) return false;
 
+    this.Log(`Broadcasting login activity "${action}" to server`);
+
     try {
       const response = await Axios.post(
         "/activity",
@@ -965,6 +990,8 @@ export class UserDaemon extends Process {
   async elevate(id: string) {
     if (this._disposed) return false;
 
+    this.Log(`Elevating for "${id}"`);
+
     const data = this.elevations[id];
 
     if (!data) return false;
@@ -974,6 +1001,8 @@ export class UserDaemon extends Process {
 
   async manuallyElevate(data: ElevationData) {
     if (this._disposed) return false;
+
+    this.Log(`Manually elevating "${data.what}"`);
 
     const id = crypto.randomUUID();
     const key = crypto.randomUUID();
@@ -1030,11 +1059,15 @@ export class UserDaemon extends Process {
   loadElevation(id: string, data: ElevationData) {
     if (this._disposed) return;
 
+    this.Log(`Loading elevation "${id}"`);
+
     this.elevations[id] = data;
   }
 
   async changeUsername(newUsername: string): Promise<boolean> {
     if (this._disposed) return false;
+
+    this.Log(`Changing username to "${newUsername}"`);
 
     const elevated = await this.manuallyElevate({
       what: "ArcOS needs your permission to change your username:",
@@ -1071,6 +1104,8 @@ export class UserDaemon extends Process {
 
   async changePassword(newPassword: string): Promise<boolean> {
     if (this._disposed) return false;
+
+    this.Log(`Changing password to [REDACTED]`);
 
     const elevated = await this.manuallyElevate({
       what: "ArcOS needs your permission to change your password:",
@@ -1205,6 +1240,8 @@ export class UserDaemon extends Process {
   createWorkspace(name?: string) {
     if (this._disposed) return;
 
+    this.Log(`Creating new workspace "${name || "<NO NAME>"}"`);
+
     const uuid = crypto.randomUUID();
 
     this.preferences.update((v) => {
@@ -1230,6 +1267,8 @@ export class UserDaemon extends Process {
   switchToDesktopByUuid(uuid: string) {
     if (this._disposed) return;
 
+    this.Log(`Switching to workspace with UUID "${uuid}"`);
+
     const i = this.getDesktopIndexByUuid(uuid);
 
     if (i < 0) return;
@@ -1242,6 +1281,8 @@ export class UserDaemon extends Process {
 
   async killWindowsOfDesktop(uuid: string) {
     if (this._disposed) return;
+
+    this.Log(`Killing processes on workspace with UUID "${uuid}"`);
 
     const processes = this.handler.store();
 
@@ -1257,6 +1298,8 @@ export class UserDaemon extends Process {
   }
 
   nextDesktop() {
+    this.Log(`Switching to the next available workspace`);
+
     const {
       workspaces: { desktops, index },
     } = this.preferences();
@@ -1275,6 +1318,8 @@ export class UserDaemon extends Process {
   }
 
   previousDesktop() {
+    this.Log(`Switching to the previous available workspace`);
+
     const {
       workspaces: { index },
     } = this.preferences();
@@ -1289,6 +1334,8 @@ export class UserDaemon extends Process {
   }
 
   async moveWindow(pid: number, destination: string) {
+    this.Log(`Moving window ${pid} to destination ${destination}`);
+
     const proc = this.handler.getProcess(pid);
     const destinationWorkspace = this.virtualDesktops[destination];
     const window = document.querySelector(

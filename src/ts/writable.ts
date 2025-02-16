@@ -7,9 +7,7 @@ export type NumberStore = ReadableStore<number>;
 
 export function Store<T>(initial?: T): ReadableStore<T> {
   const store = writable<T>(initial);
-
   const obj = { ...store, get: () => get(store) };
-
   const fn = () => obj.get();
 
   fn.get = obj.get;

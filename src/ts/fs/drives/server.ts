@@ -11,6 +11,7 @@ import { FilesystemDrive } from "../drive";
 export class ServerDrive extends FilesystemDrive {
   private token = "";
   override label = "Your Drive";
+  override FIXED = true;
 
   constructor(kernel: WaveKernel, uuid: string, letter: string, token: string) {
     super(kernel, uuid, letter);

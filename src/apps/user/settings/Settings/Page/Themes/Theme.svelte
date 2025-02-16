@@ -70,7 +70,6 @@
   data-contextmenu={isUser ? "user-theme-option" : "builtin-theme-option"}
   use:contextProps={[apply, deleteTheme]}
 >
-  <!-- <img src={wallpaper} alt={theme.name} /> -->
   <div
     class="fake-window shell-colored theme-{theme.desktopTheme}"
     style={css}

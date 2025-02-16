@@ -2,6 +2,7 @@
   import type { AppProcess } from "$ts/apps/process";
   import { Sleep } from "$ts/sleep";
   import type { ContextMenuItem } from "$types/app";
+  import { onMount } from "svelte";
   import type { ShellRuntime } from "../../runtime";
   import SubItems from "./Item/SubItems.svelte";
 
@@ -20,6 +21,12 @@
   let disabled = $state(false);
   let showSub = $state(false);
   let inactiveTimer: NodeJS.Timeout;
+
+  onMount(async () => {
+    update();
+
+    disabled = data.disabled ? await data.disabled(...props) : false;
+  });
 
   async function trigger() {
     if (data.subItems) return;

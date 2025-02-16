@@ -1,9 +1,9 @@
 <script>
-  import { Flag } from "lucide-svelte";
+  import Flag from "../Icons/Flag.svelte";
 </script>
 
 <div class="hero-page">
-  <Flag className="lucide" />
+  <Flag />
   <h1>All finished!</h1>
   <p class="subtitle">You're all set.</p>
   <p class="message">

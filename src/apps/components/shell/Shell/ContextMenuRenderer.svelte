@@ -18,7 +18,6 @@
   onMount(() => {
     // DON'T USE $effect HERE, IT CREATES AN INFINITE LOOP
     process.contextData.subscribe(async (v) => {
-      console.trace("bruh)");
       const current = visible;
 
       visible = false;

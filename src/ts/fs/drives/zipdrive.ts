@@ -11,6 +11,7 @@ export class ZIPDrive extends FilesystemDrive {
   override label = "";
   private _buffer: JSZip | undefined;
   private _path: string;
+  override REMOVABLE = true;
 
   constructor(kernel: WaveKernel, uuid: string, letter: string, path: string) {
     super(kernel, uuid, letter);

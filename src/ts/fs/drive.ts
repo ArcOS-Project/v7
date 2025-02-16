@@ -14,6 +14,10 @@ export class FilesystemDrive {
   public label = "";
   public uuid = "";
   public kernel: WaveKernel;
+  public readonly FIXED: boolean = false;
+  public readonly REMOVABLE: boolean = false;
+  public readonly READONLY: boolean = false;
+  public BUSY: boolean = false;
 
   constructor(
     kernel: WaveKernel,

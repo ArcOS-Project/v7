@@ -1,3 +1,15 @@
+img.spinner-svg {
+  vertical-align: middle;
+}
+
+img.spinner-svg.hide {
+  opacity: 0 !important;
+}
+
+#appRenderer[class*="theme-light"] img.spinner-svg {
+  filter: brightness(0.4);
+}
+
 div.html-spinner {
   --size: 32px;
   --thickness: 5px;

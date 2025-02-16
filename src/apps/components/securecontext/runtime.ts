@@ -37,6 +37,8 @@ export class SecureContextRuntime extends AppProcess {
   }
 
   async validate() {
+    this.Log("Validating elevation request");
+
     if (this._disposed) return;
 
     const security = this.userPreferences().security;
@@ -57,6 +59,8 @@ export class SecureContextRuntime extends AppProcess {
   }
 
   async approve() {
+    this.Log("Approving elevation request");
+
     if (this._disposed) return;
     if (!(await this.validate())) return;
 
@@ -70,6 +74,8 @@ export class SecureContextRuntime extends AppProcess {
   }
 
   async deny() {
+    this.Log("Denying elevation request");
+
     if (this._disposed) return;
 
     await this.closeWindow();
@@ -78,6 +84,8 @@ export class SecureContextRuntime extends AppProcess {
   }
 
   async passwordIncorrect() {
+    this.Log("Password incorrect");
+
     if (this._disposed) return;
 
     return new Promise<void>(async (r) => {
@@ -97,6 +105,8 @@ export class SecureContextRuntime extends AppProcess {
   }
 
   async settings() {
+    this.Log("Displaying confirmation for Security Settings");
+
     await MessageBox(
       {
         title: "Cancel elevation?",

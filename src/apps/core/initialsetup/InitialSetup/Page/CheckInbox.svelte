@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { Send } from "lucide-svelte";
+  import Send from "../Icons/Send.svelte";
 </script>
 
 <div class="hero-page">
-  <Send className="lucide" />
+  <Send />
   <h1>Check your inbox</h1>
   <p class="subtitle">You've got mail!</p>
   <p class="message">

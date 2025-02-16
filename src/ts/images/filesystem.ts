@@ -7,3 +7,4 @@ export { default as WallpapersFolderIcon } from "$assets/filesystem/folder-wallp
 export { default as FolderIcon } from "$assets/filesystem/folder.svg";
 export { default as SaveIcon } from "$assets/filesystem/save.svg";
 export { default as SdIcon } from "$assets/filesystem/sd.svg";
+export { default as DriveIcon } from "$assets/filesystem/drive.svg";

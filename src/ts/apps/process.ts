@@ -160,6 +160,8 @@ export class AppProcess extends Process {
   }
 
   async closeIfSecondInstance() {
+    this.Log("Closing if second instance");
+
     const instances = this.getSingleton();
 
     if (instances.length) {
@@ -297,9 +299,7 @@ export class AppProcess extends Process {
   }
 
   notImplemented(what?: string) {
-    this.Log("Tracing NotImplemented: ");
-    console.trace();
-
+    this.Log(`Not implemented: ${what || "<unknown>"}`);
     // Manually invoking spawnOverlay method on daemon to work around AppProcess <> MessageBox circular import
     this.userDaemon?.spawnOverlay("messageBox", this.pid, {
       title: "Not implemented",

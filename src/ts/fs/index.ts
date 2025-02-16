@@ -55,12 +55,13 @@ export class Filesystem extends KernelModule {
     return instance as FilesystemDrive;
   }
 
-  async umountDrive(id: string) {
+  async umountDrive(id: string, fromSystem = false) {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
     this.Log(`Unmounting drive '${id}'`);
 
     if (!this.drives[id]) return false;
+    if (this.drives[id].FIXED && !fromSystem) return false;
 
     await this.drives[id].__spinDown();
 

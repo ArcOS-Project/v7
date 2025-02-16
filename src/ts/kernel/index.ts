@@ -49,7 +49,7 @@ export class WaveKernel {
 
     CurrentKernel = this;
 
-    (window as any)["kernel"] = CurrentKernel;
+    if (import.meta.env.DEV) (window as any)["kernel"] = CurrentKernel;
   }
 
   static async panic(reason: string) {

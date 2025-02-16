@@ -10,7 +10,6 @@ import {
 } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Axios } from "$ts/server/axios";
-import { BuiltinThemes } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { htmlspecialchars } from "$ts/util";
 import { Store } from "$ts/writable";
@@ -166,12 +165,16 @@ export class SettingsRuntime extends AppProcess {
   }
 
   async loginActivity() {
+    this.Log("Elevating for slide account_loginActivity");
+
     if (!(await this.elevate("showLoginActivity"))) return;
 
     this.showSlide("account_loginActivity");
   }
 
   async logOutEverywhere() {
+    this.Log("Showing confirmation for logOutEverywhere");
+
     MessageBox(
       {
         title: "Log out everywhere?",
@@ -206,6 +209,8 @@ export class SettingsRuntime extends AppProcess {
   }
 
   async uploadWallpaper() {
+    this.Log("Uploading wallpaper");
+
     try {
       await this.userDaemon?.uploadWallpaper();
     } catch (e) {
@@ -250,6 +255,8 @@ export class SettingsRuntime extends AppProcess {
 
   deleteThemeConfirmation(id?: string) {
     if (!id) return;
+
+    this.Log(`Showing delete theme confirmation for '${id}'`);
 
     MessageBox(
       {

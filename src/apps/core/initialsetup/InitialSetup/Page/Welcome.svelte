@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { Rocket } from "lucide-svelte";
+  import Rocket from "../Icons/Rocket.svelte";
 </script>
 
 <div class="hero-page">
-  <Rocket className="lucide" />
+  <Rocket />
   <h1>Welcome</h1>
   <p class="subtitle">We're happy to have you</p>
   <p class="message">
