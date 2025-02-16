@@ -27,7 +27,6 @@ export class FileManagerRuntime extends AppProcess {
   ) {
     super(handler, pid, parentPid, app);
 
-    console.log("bruh");
     this.renderArgs.path = path;
   }
 
@@ -59,8 +58,7 @@ export class FileManagerRuntime extends AppProcess {
       else {
         this.contents.set(contents);
       }
-    } catch (e) {
-      console.log(e);
+    } catch {
       this.DirectoryNotFound();
     } finally {
       await Sleep(10);

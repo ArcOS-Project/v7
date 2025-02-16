@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import type { ProcessHandler } from "$ts/process/handler";
-import { Store, type NumberStore } from "$ts/writable";
+import { Sleep } from "$ts/sleep";
+import { Store } from "$ts/writable";
 import type {
   AppContextMenu,
   AppProcessData,
@@ -16,7 +17,6 @@ import {
   weatherIcons,
 } from "./store";
 import type { WeatherInformation } from "./types";
-import { Sleep } from "$ts/sleep";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
@@ -46,6 +46,7 @@ export class ShellRuntime extends AppProcess {
       },
     ],
   };
+  public contextProps: Record<string, any[]> = {};
 
   constructor(
     handler: ProcessHandler,
@@ -266,8 +267,6 @@ export class ShellRuntime extends AppProcess {
 
       const el = document.querySelector("#arcShell div.shell > .context-menu");
 
-      console.log(e, el);
-
       if (!el || e.button !== 0 || e.composedPath().includes(el)) return;
 
       this.contextData.set(null);
@@ -290,6 +289,7 @@ export class ShellRuntime extends AppProcess {
     if (!pid) return this.closeContextMenu();
 
     const contextmenu = scope.dataset.contextmenu || "";
+    const contextProps = scope.dataset.contextprops || "";
 
     await Sleep();
 
@@ -300,10 +300,8 @@ export class ShellRuntime extends AppProcess {
       x: e.clientX,
       y: e.clientY,
       items,
-      scope: contextmenu,
-      scopeMap: scope.dataset,
-      app: await this.userDaemon?.appStore?.getAppById(window.id),
       process: proc && proc instanceof AppProcess ? proc : undefined,
+      props: this.contextProps[contextProps] || [],
     });
   }
 

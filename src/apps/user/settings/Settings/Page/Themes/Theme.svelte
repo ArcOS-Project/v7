@@ -1,5 +1,8 @@
 <script lang="ts">
   import type { SettingsRuntime } from "$apps/user/settings/runtime";
+  import { contextProps } from "$ts/context/actions.svelte";
+  import { MessageBox } from "$ts/dialog";
+  import { QuestionIcon } from "$ts/images/dialog";
   import type { UserDaemon } from "$ts/server/user/daemon";
   import type { UserTheme } from "$types/theme";
 
@@ -29,6 +32,29 @@
   function apply() {
     userDaemon.applyThemeData(theme, id);
   }
+
+  function deleteTheme() {
+    MessageBox(
+      {
+        title: "Delete theme?",
+        message:
+          "Are you sure you want to delete this amazing theme? You can't undo this.",
+        buttons: [
+          { caption: "Cancel", action: () => {} },
+          {
+            caption: "Delete it",
+            action: () => {
+              userDaemon.deleteUserTheme(id);
+            },
+            suggested: true,
+          },
+        ],
+        image: QuestionIcon,
+      },
+      process.pid,
+      true
+    );
+  }
 </script>
 
 <button
@@ -42,7 +68,7 @@
   onclick={apply}
   style="--url: url('{wallpaper}');"
   data-contextmenu={isUser ? "user-theme-option" : "builtin-theme-option"}
-  data-id={id}
+  use:contextProps={[apply, deleteTheme]}
 >
   <!-- <img src={wallpaper} alt={theme.name} /> -->
   <div

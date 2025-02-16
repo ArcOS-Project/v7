@@ -9,8 +9,6 @@ export const exec: Keyword = async (lang) => {
 
   const [func, ...args] = lang.tokens as [Function, ...any];
 
-  console.log(func);
-
   if (!(func instanceof Function)) {
     lang.error("Function must be a function", "keyword");
 

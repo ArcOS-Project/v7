@@ -101,20 +101,14 @@ export interface ContextMenuItem {
   accelerator?: string;
 }
 
-export type ContextMenuCallback<T = void> = (
-  window: ((App | ThirdPartyApp) & { originId?: string }) | undefined,
-  data: DOMStringMap | undefined,
-  scope: string
-) => MaybePromise<T>;
+export type ContextMenuCallback<T = void> = (...args: any[]) => MaybePromise<T>;
 
 export type AppContextMenu = { [key: string]: ContextMenuItem[] };
 export interface ContextMenuInstance {
   x: number;
   y: number;
   items: ContextMenuItem[];
-  scope?: string;
-  scopeMap?: DOMStringMap;
-  app?: (App | ThirdPartyApp) & { originId?: string };
   process?: AppProcess;
   artificial?: boolean;
+  props?: any[];
 }

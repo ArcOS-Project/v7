@@ -68,30 +68,24 @@ export class SettingsRuntime extends AppProcess {
     "user-theme-option": [
       {
         caption: "Apply",
-        action: (_, data) => {
-          this.userDaemon?.applyThemeData(
-            this.userDaemon.preferences().userThemes[data?.id || ""],
-            data?.id
-          );
+        action: (apply) => {
+          apply();
         },
         icon: "check",
       },
       { sep: true },
       {
         caption: "Delete Theme",
-        action: (_, data) => {
-          this.deleteThemeConfirmation(data?.id);
+        action: (_, deleteTheme) => {
+          deleteTheme();
         },
       },
     ],
     "builtin-theme-option": [
       {
         caption: "Apply",
-        action: (_, data) => {
-          this.userDaemon?.applyThemeData(
-            BuiltinThemes[data?.id || ""],
-            data?.id
-          );
+        action: (apply) => {
+          apply();
         },
         icon: "check",
       },

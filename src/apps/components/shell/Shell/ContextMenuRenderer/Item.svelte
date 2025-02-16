@@ -1,23 +1,20 @@
 <script lang="ts">
   import type { AppProcess } from "$ts/apps/process";
   import { Sleep } from "$ts/sleep";
-  import type { App, ContextMenuItem, ThirdPartyApp } from "$types/app";
+  import type { ContextMenuItem } from "$types/app";
   import type { ShellRuntime } from "../../runtime";
   import SubItems from "./Item/SubItems.svelte";
 
   interface Props {
-    window: ((App | ThirdPartyApp) & { originId?: string }) | undefined;
-    scope: string;
-    scopeMap: DOMStringMap | undefined;
     data: ContextMenuItem;
     shell: ShellRuntime;
     process?: AppProcess;
     mW: number;
     x: number;
+    props: any[];
   }
 
-  const { window, scope, scopeMap, data, shell, process, mW, x }: Props =
-    $props();
+  const { data, shell, process, mW, x, props }: Props = $props();
 
   let active = $state(false);
   let disabled = $state(false);
@@ -27,7 +24,7 @@
   async function trigger() {
     if (data.subItems) return;
 
-    if (data.action) data.action(window, scopeMap, scope);
+    if (data.action) data.action(...props);
 
     await Sleep(50);
 
@@ -39,7 +36,7 @@
   async function update() {
     if (!data.isActive) return (active = false);
 
-    active = await data.isActive(window, scopeMap, scope);
+    active = await data.isActive(...props);
   }
 
   function mouseEnter() {
@@ -83,17 +80,7 @@
       {/if}
     </div>
     {#if !disabled}
-      <SubItems
-        {data}
-        {scopeMap}
-        {scope}
-        {window}
-        {showSub}
-        {mW}
-        {x}
-        {process}
-        {shell}
-      />
+      <SubItems {data} {showSub} {mW} {x} {process} {shell} {props} />
     {/if}
   </button>
 {/if}

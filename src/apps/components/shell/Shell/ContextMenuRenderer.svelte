@@ -57,12 +57,10 @@
   {#if data}
     {#each data.items as item}
       <Item
-        window={data.app}
-        scope={data.scope || ""}
-        scopeMap={data.scopeMap}
         data={item}
         shell={process}
         process={data.process}
+        props={data.props || []}
         {mW}
         {x}
       />

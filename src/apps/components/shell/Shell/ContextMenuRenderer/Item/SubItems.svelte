@@ -6,26 +6,22 @@
 
   interface Props {
     data: ContextMenuItem;
-    scope: string;
-    scopeMap: DOMStringMap | undefined;
-    window: ((App | ThirdPartyApp) & { originId?: string }) | undefined;
     showSub?: boolean;
     mW: number;
     x: number;
     process: AppProcess | undefined;
     shell: ShellRuntime;
+    props: any[];
   }
 
   const {
-    window,
-    scope,
-    scopeMap,
     data,
     shell,
     process,
     mW,
     x,
     showSub = false,
+    props,
   }: Props = $props();
 
   const { userPreferences } = shell;
@@ -42,16 +38,7 @@
     class:left={screen.availWidth - 300 < x + mW}
   >
     {#each data.subItems as item}
-      <Item
-        data={item}
-        {scopeMap}
-        {scope}
-        {window}
-        {mW}
-        {x}
-        {shell}
-        {process}
-      />
+      <Item data={item} {mW} {x} {shell} {process} {props} />
     {/each}
   </div>
 {/if}
