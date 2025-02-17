@@ -497,11 +497,10 @@ export class UserDaemon extends Process {
 
     this.Log(`Uploading wallpaper to U:/Wallpapers`);
 
-    const { path, file } = await this.fs.uploadSingleFile(
-      "U:/Wallpapers",
-      "image/*"
-    );
+    const result = await this.fs.uploadSingleFile("U:/Wallpapers", "image/*");
+    if (!result.length) return {} as Wallpaper;
 
+    const { path, file } = result[0];
     const wallpaper: Wallpaper = {
       author: this.username,
       name: file.name,
@@ -524,8 +523,10 @@ export class UserDaemon extends Process {
 
     this.Log(`Uploading profile picture to U:/Pictures`);
 
-    const { path } = await this.fs.uploadSingleFile("U:/Pictures", "image/*");
+    const result = await this.fs.uploadSingleFile("U:/Pictures", "image/*");
+    if (!result.length) return;
 
+    const { path } = result[0];
     this.preferences.update((v) => {
       v.account.profilePicture = path;
 

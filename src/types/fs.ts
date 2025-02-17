@@ -35,3 +35,13 @@ export interface SingleUploadReturn {
   file: File;
   content: Blob;
 }
+
+export type UploadReturn = SingleUploadReturn[];
+
+export interface FilesystemProgress {
+  type: "size" | "items" | "percentage";
+  max: number;
+  value: number;
+}
+
+export type FilesystemProgressCallback = (progress: FilesystemProgress) => void;

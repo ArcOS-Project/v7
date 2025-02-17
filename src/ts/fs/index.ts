@@ -3,8 +3,11 @@ import type { WaveKernel } from "$ts/kernel";
 import { KernelModule } from "$ts/kernel/module";
 import {
   type DirectoryReadReturn,
+  type FilesystemProgress,
+  type FilesystemProgressCallback,
   type RecursiveDirectoryReadReturn,
   type SingleUploadReturn,
+  type UploadReturn,
 } from "$types/fs";
 import { arrayToBlob } from "./convert";
 import type { FilesystemDrive } from "./drive";
@@ -178,7 +181,13 @@ export class Filesystem extends KernelModule {
     return await drive.readFile(path);
   }
 
-  async writeFile(path: string, data: Blob): Promise<boolean> {
+  async writeFile(
+    path: string,
+    data: Blob,
+    onProgress?: FilesystemProgressCallback
+  ): Promise<boolean> {
+    onProgress ||= this.defaultProgress.bind(this);
+
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
     this.Log(`Writing ${data.size} bytes to file '${path}'`);
@@ -189,7 +198,7 @@ export class Filesystem extends KernelModule {
     path = this.removeDriveLetter(path);
 
     const parent = getParentDirectory(path);
-    const result = await drive.writeFile(path, data);
+    const result = await drive.writeFile(path, data, onProgress);
 
     this.dispatch.dispatch("fs-flush-file", path);
     this.dispatch.dispatch("fs-flush-folder", parent);
@@ -282,46 +291,75 @@ export class Filesystem extends KernelModule {
     return result;
   }
 
-  uploadSingleFile(
+  async uploadSingleFile(
     target: string,
-    accept = "*/*"
-  ): Promise<SingleUploadReturn> {
+    accept = "*/*",
+    multiple = false,
+    onProgress?: FilesystemProgressCallback
+  ): Promise<UploadReturn> {
+    onProgress ||= this.defaultProgress.bind(this);
+
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
     this.validatePath(target);
     const uploader = document.createElement("input");
 
-    uploader.type = "file";
-    uploader.accept = accept;
-    uploader.multiple = false;
-
     return new Promise((resolve, reject) => {
-      uploader.onchange = async () => {
-        try {
+      const result: UploadReturn = [];
+      try {
+        uploader.type = "file";
+        uploader.accept = accept;
+        uploader.multiple = multiple;
+
+        uploader.onchange = async () => {
           const files = uploader.files;
 
-          if (!files?.length) return reject("Didn't get a file");
+          if (!files || !files.length) {
+            return;
+          }
 
-          const file = files?.[0];
-          const content = arrayToBlob(await file?.arrayBuffer()!);
+          for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const content = arrayToBlob(await file?.arrayBuffer()!);
 
-          if (!file?.name) return reject("File doesn't have a name");
+            onProgress({
+              max: files.length,
+              value: i,
+              type: "items",
+            });
 
-          await this.createDirectory(target);
+            if (!file?.name) {
+              throw new Error(`File ${i} doesn't have a name`);
+            }
 
-          const path = join(target, file.name);
-          const result = await this.writeFile(path, content);
+            await this.createDirectory(target);
 
-          if (!result) return reject("Failed to write file");
+            const path = join(target, file.name);
+            const written = await this.writeFile(path, content);
 
-          resolve({ path, file, content });
-        } catch (e) {
-          reject((e as any).message);
-        }
-      };
+            if (!written) {
+              throw new Error(`Failed to write file "${path}"`);
+            }
+
+            result.push({
+              path,
+              file,
+              content,
+            });
+          }
+
+          resolve(result);
+        };
+      } catch (e) {
+        return reject(e);
+      }
 
       uploader.click();
     });
+  }
+
+  defaultProgress(d: FilesystemProgress) {
+    this.Log(`Got filesystem progress: ${d.type}: ${d.value}/${d.max}`);
   }
 
   // TODO: proper handlers for uploading files with and/or without progress indication

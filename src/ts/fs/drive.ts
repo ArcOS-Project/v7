@@ -3,6 +3,7 @@ import { Log } from "$ts/kernel/logging";
 import { ServerManager } from "$ts/server";
 import type {
   DirectoryReadReturn,
+  FilesystemProgressCallback,
   RecursiveDirectoryReadReturn,
 } from "$types/fs";
 import { LogLevel } from "$types/logging";
@@ -67,11 +68,18 @@ export class FilesystemDrive {
     return true;
   }
 
-  async readFile(path: string): Promise<ArrayBuffer | undefined> {
+  async readFile(
+    path: string,
+    onProgress?: FilesystemProgressCallback
+  ): Promise<ArrayBuffer | undefined> {
     return new ArrayBuffer();
   }
 
-  async writeFile(path: string, data: Blob): Promise<boolean> {
+  async writeFile(
+    path: string,
+    data: Blob,
+    onProgress?: FilesystemProgressCallback
+  ): Promise<boolean> {
     return true;
   }
 
