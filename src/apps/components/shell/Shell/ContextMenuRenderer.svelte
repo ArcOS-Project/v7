@@ -4,6 +4,7 @@
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../runtime";
   import Item from "./ContextMenuRenderer/Item.svelte";
+  import { Store } from "$ts/writable";
 
   const { process }: { process: ShellRuntime } = $props();
   const { userPreferences } = process;
@@ -15,8 +16,12 @@
   let mW = $state(0);
   let mH = $state(0);
 
+  const hideSubs = Store<boolean>(false);
+
+  // DON'T USE $effect HERE, IT CREATES AN INFINITE LOOP
   onMount(() => {
-    // DON'T USE $effect HERE, IT CREATES AN INFINITE LOOP
+    hideSubs.subscribe((v) => v && ($hideSubs = false));
+
     process.contextData.subscribe(async (v) => {
       const current = visible;
 
@@ -24,7 +29,7 @@
 
       if (!v) return;
 
-      await Sleep(data && v && current ? 200 : 0);
+      await Sleep(data && v && current ? 100 : 0);
 
       data = null;
       await Sleep();
@@ -62,6 +67,7 @@
         props={data.props || []}
         {mW}
         {x}
+        {hideSubs}
       />
     {/each}
   {/if}

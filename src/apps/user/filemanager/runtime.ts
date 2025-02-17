@@ -76,8 +76,10 @@ export class FileManagerRuntime extends AppProcess {
         {
           caption: "Refresh",
           icon: "rotate-cw",
-          action: () => {
-            this.refresh();
+          action: async () => {
+            this.loading.set(true);
+            await this.refresh();
+            this.loading.set(false);
           },
         },
         { sep: true },
@@ -94,43 +96,46 @@ export class FileManagerRuntime extends AppProcess {
       ],
     };
 
-    const goSubMenuItems: ContextMenuItem[] = [];
-
-    const driveSubmenu: (
-      drive: FilesystemDrive,
-      id: string
-    ) => ContextMenuItem[] = (d, i) => [
+    const menu: ContextMenuItem[] = [
+      fileMenu,
       {
-        caption: "Go here",
-        action: () => {
-          this.navigate(`${d.driveLetter || d.uuid}:/`);
-        },
-      },
-      {
-        caption: "Unmount",
-        action: () => {
-          this.unmountDrive(d, i);
-        },
-        icon: "icon-x",
+        caption: "Go",
+        subItems: [
+          ...this.folderGoItems(),
+          { sep: true },
+          ...this.driveGoItems(),
+        ],
       },
     ];
 
-    for (const folder of this.rootFolders()) {
-      goSubMenuItems.push({
-        caption: folder.name,
-        image: FolderIcon,
-        action: () => {
-          this.navigate(`U:/${folder.name}`);
-        },
-      });
-    }
+    this.altMenu.set(menu);
+  }
 
-    goSubMenuItems.push({ sep: true });
+  driveGoItems(): ContextMenuItem[] {
+    const result = [];
+    const driveSubmenu = (drive: FilesystemDrive, id: string) => [
+      {
+        caption: "Go here",
+        action: () => {
+          this.navigate(`${drive.driveLetter || drive.uuid}:/`);
+        },
+        icon: "hard-drive",
+      },
+      { sep: true },
+      {
+        caption: "Unmount",
+        action: () => {
+          this.unmountDrive(drive, id);
+        },
+        disabled: () => drive.FIXED,
+        icon: "x",
+      },
+    ];
 
     for (const [id, drive] of Object.entries(this.drives())) {
       const identifier = `${drive.driveLetter || drive.uuid}:`;
 
-      goSubMenuItems.push({
+      result.push({
         caption: drive.driveLetter
           ? `${drive.label} (${drive.driveLetter}:)`
           : drive.label,
@@ -140,15 +145,23 @@ export class FileManagerRuntime extends AppProcess {
       });
     }
 
-    const menu: ContextMenuItem[] = [
-      fileMenu,
-      {
-        caption: "Go",
-        subItems: goSubMenuItems,
-      },
-    ];
+    return result;
+  }
 
-    this.altMenu.set(menu);
+  folderGoItems(): ContextMenuItem[] {
+    const result = [];
+
+    for (const folder of this.rootFolders()) {
+      result.push({
+        caption: folder.name,
+        image: FolderIcon,
+        action: () => {
+          this.navigate(`U:/${folder.name}`);
+        },
+      });
+    }
+
+    return result;
   }
 
   async render({ path }: RenderArgs) {

@@ -23,4 +23,5 @@
   visibility: visible;
   transform: unset;
   display: flex;
+  pointer-events: initial !important;
 }

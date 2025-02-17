@@ -12,17 +12,18 @@
   border-radius: var(--win-border-rad);
   box-sizing: border-box;
   padding: 5px;
-  transition: all 0.3s, top 0s, left 0s;
+  transition: all 0.2s, top 0s, left 0s;
   display: flex;
   flex-direction: column;
   transform-origin: top center;
   z-index: 100000000000000000000000000000000000000000000000000000000;
+  pointer-events: none !important;
 }
 
 #arcShell div.context-menu {
   top: 0px;
   left: 0px;
-  transform: scaleY(0%);
+  transform: scaleY(80%);
   opacity: 0;
   visibility: hidden;
 }
@@ -39,6 +40,7 @@
   opacity: 1;
   visibility: visible;
   transform: scaleY(100%);
+  pointer-events: initial !important;
 }
 
 #arcShell div.context-menu::before,
@@ -134,6 +136,10 @@
   opacity: 0.5;
   margin-left: auto;
   font-size: 16px;
+}
+
+#arcShell div.context-menu span.is-active + span.has-subitems {
+  margin-left: -5px;
 }
 
 #arcShell div.context-menu button.menu-item span.accelerator {

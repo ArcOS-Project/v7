@@ -5,6 +5,7 @@
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../../runtime";
   import SubItems from "./Item/SubItems.svelte";
+  import type { ReadableStore } from "$ts/writable";
 
   interface Props {
     data: ContextMenuItem;
@@ -13,9 +14,10 @@
     mW: number;
     x: number;
     props: any[];
+    hideSubs: ReadableStore<boolean>;
   }
 
-  const { data, shell, process, mW, x, props }: Props = $props();
+  const { data, shell, process, mW, x, props, hideSubs }: Props = $props();
 
   let active = $state(false);
   let disabled = $state(false);
@@ -24,6 +26,8 @@
 
   onMount(async () => {
     update();
+
+    hideSubs.subscribe((v) => v && (showSub = false));
 
     disabled = data.disabled ? await data.disabled(...props) : false;
   });
@@ -47,6 +51,7 @@
   }
 
   function mouseEnter() {
+    $hideSubs = true;
     clearTimeout(inactiveTimer);
     showSub = true;
   }

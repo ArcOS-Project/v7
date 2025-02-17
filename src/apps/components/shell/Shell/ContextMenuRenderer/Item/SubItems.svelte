@@ -1,7 +1,8 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import type { AppProcess } from "$ts/apps/process";
-  import type { App, ContextMenuItem, ThirdPartyApp } from "$types/app";
+  import { Store } from "$ts/writable";
+  import type { ContextMenuItem } from "$types/app";
   import Item from "../Item.svelte";
 
   interface Props {
@@ -13,6 +14,10 @@
     shell: ShellRuntime;
     props: any[];
   }
+
+  const hideSubs = Store<boolean>(false);
+
+  hideSubs.subscribe((v) => v && ($hideSubs = false));
 
   const {
     data,
@@ -38,7 +43,7 @@
     class:left={screen.availWidth - 300 < x + mW}
   >
     {#each data.subItems as item}
-      <Item data={item} {mW} {x} {shell} {process} {props} />
+      <Item data={item} {mW} {x} {shell} {process} {props} {hideSubs} />
     {/each}
   </div>
 {/if}
