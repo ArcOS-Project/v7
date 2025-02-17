@@ -85,6 +85,12 @@
       {#if data.accelerator}
         <span class="accelerator">{data.accelerator}</span>
       {/if}
+      {#if active}
+        <span class="lucide icon-check is-active"></span>
+      {/if}
+      {#if data.subItems && data.subItems.length && !disabled}
+        <span class="lucide icon-chevron-right has-subitems"></span>
+      {/if}
     </div>
     {#if !disabled}
       <SubItems {data} {showSub} {mW} {x} {process} {shell} {props} />

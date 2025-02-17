@@ -1,8 +1,6 @@
 <script lang="ts">
   import { contextProps } from "$ts/context/actions.svelte";
-  import { MessageBox } from "$ts/dialog";
   import type { FilesystemDrive } from "$ts/fs/drive";
-  import { DriveIcon } from "$ts/images/filesystem";
   import type { FileManagerRuntime } from "../../runtime";
 
   const {
@@ -17,26 +15,7 @@
   let identifier = `${drive.driveLetter || drive.uuid}:`;
 
   function unmount() {
-    MessageBox(
-      {
-        title: `Unmount ${drive.label || identifier}`,
-        message: `Are you sure you want to unmount this drive?`,
-        buttons: [
-          { caption: "Cancel", action: () => {} },
-          {
-            caption: "Unmount",
-            action: async () => {
-              await process.fs.umountDrive(id);
-            },
-            suggested: true,
-          },
-        ],
-        image: DriveIcon,
-        sound: "arcos.dialog.warning",
-      },
-      process.pid,
-      true
-    );
+    process.unmountDrive(drive, id);
   }
 </script>
 

@@ -33,15 +33,14 @@
 </script>
 
 <div class="path">
-  {#if !name}
-    <div class="pill">
-      <span class="lucide icon-hard-drive"></span>
-      <span>{driveLetter || driveLabel}</span>
-    </div>
-  {:else}
+  <div class="pill">
+    <span class="lucide icon-hard-drive"></span>
+    <span>{driveLetter || driveLabel}</span>
+  </div>
+  {#if name}
     <img src={FolderIcon} alt="" />
+    <span>
+      {name}
+    </span>
   {/if}
-  <span>
-    {name}
-  </span>
 </div>

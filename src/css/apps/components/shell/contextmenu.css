@@ -72,29 +72,10 @@
   align-items: center;
 }
 
-#arcShell div.context-menu button.menu-item > div.inner::after {
-  content: "";
-  font-family: "Material Icons Round";
-  width: 28px;
-  height: 18px;
-  font-size: 18px;
-  margin-left: auto;
-  padding-left: 10px;
-}
-
 #arcShell div.context-menu.compact button.menu-item > div.inner::after {
   font-size: 16px;
   width: 26px;
   height: 16px;
-}
-
-#arcShell div.context-menu button.menu-item.active > div.inner::after {
-  content: "check";
-}
-
-#arcShell div.context-menu button.menu-item.subitems > div.inner::after {
-  content: "chevron_right";
-  opacity: 0.3;
 }
 
 #arcShell div.context-menu button.menu-item:hover {
@@ -145,6 +126,13 @@
 #arcShell div.context-menu.compact button.menu-item .icon {
   width: 16px;
   height: 16px;
+  font-size: 16px;
+}
+
+#arcShell div.context-menu span.has-subitems,
+#arcShell div.context-menu span.is-active {
+  opacity: 0.5;
+  margin-left: auto;
   font-size: 16px;
 }
 

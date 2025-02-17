@@ -3,11 +3,16 @@ import { MessageBox } from "$ts/dialog";
 import { FilesystemDrive } from "$ts/fs/drive";
 import { getDriveLetter, getParentDirectory } from "$ts/fs/util";
 import { ErrorIcon } from "$ts/images/dialog";
+import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import { ShutdownIcon } from "$ts/images/power";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
-import type { AppContextMenu, AppProcessData } from "$types/app";
+import type {
+  AppContextMenu,
+  AppProcessData,
+  ContextMenuItem,
+} from "$types/app";
 import type { DirectoryReadReturn, FolderEntry } from "$types/fs";
 import { LogLevel } from "$types/logging";
 import type { RenderArgs } from "$types/process";
@@ -57,6 +62,95 @@ export class FileManagerRuntime extends AppProcess {
     this.renderArgs.path = path;
   }
 
+  async updateAltMenu() {
+    const fileMenu = {
+      caption: "File",
+      subItems: [
+        {
+          caption: "New window",
+          icon: "plus",
+          action: () => {
+            this.userDaemon?.spawnApp("fileManager", undefined, this.path());
+          },
+        },
+        {
+          caption: "Refresh",
+          icon: "rotate-cw",
+          action: () => {
+            this.refresh();
+          },
+        },
+        { sep: true },
+        { caption: "Upload", icon: "upload" },
+        { caption: "Download", icon: "download" },
+        { sep: true },
+        {
+          caption: "Exit",
+          image: ShutdownIcon,
+          action: () => {
+            this.closeWindow();
+          },
+        },
+      ],
+    };
+
+    const goSubMenuItems: ContextMenuItem[] = [];
+
+    const driveSubmenu: (
+      drive: FilesystemDrive,
+      id: string
+    ) => ContextMenuItem[] = (d, i) => [
+      {
+        caption: "Go here",
+        action: () => {
+          this.navigate(`${d.driveLetter || d.uuid}:/`);
+        },
+      },
+      {
+        caption: "Unmount",
+        action: () => {
+          this.unmountDrive(d, i);
+        },
+        icon: "icon-x",
+      },
+    ];
+
+    for (const folder of this.rootFolders()) {
+      goSubMenuItems.push({
+        caption: folder.name,
+        image: FolderIcon,
+        action: () => {
+          this.navigate(`U:/${folder.name}`);
+        },
+      });
+    }
+
+    goSubMenuItems.push({ sep: true });
+
+    for (const [id, drive] of Object.entries(this.drives())) {
+      const identifier = `${drive.driveLetter || drive.uuid}:`;
+
+      goSubMenuItems.push({
+        caption: drive.driveLetter
+          ? `${drive.label} (${drive.driveLetter}:)`
+          : drive.label,
+        subItems: driveSubmenu(drive, id),
+        image: DriveIcon,
+        isActive: () => this.path().startsWith(`${identifier}/`),
+      });
+    }
+
+    const menu: ContextMenuItem[] = [
+      fileMenu,
+      {
+        caption: "Go",
+        subItems: goSubMenuItems,
+      },
+    ];
+
+    this.altMenu.set(menu);
+  }
+
   async render({ path }: RenderArgs) {
     this.updateDrives();
 
@@ -71,23 +165,6 @@ export class FileManagerRuntime extends AppProcess {
         this.updateRootFolders();
       }
     });
-    this.altMenu.set([
-      {
-        caption: "File",
-        subItems: [
-          { caption: "New window", icon: "plus" },
-          { caption: "Refresh", icon: "rotate-cw" },
-          { sep: true },
-          { caption: "Upload", icon: "upload" },
-          { caption: "Download", icon: "download" },
-          { sep: true },
-          { caption: "Exit", image: ShutdownIcon },
-        ],
-      },
-      { caption: "Edit" },
-      { caption: "View" },
-      { caption: "Go" },
-    ]);
     this.starting.set(false);
   }
 
@@ -108,6 +185,7 @@ export class FileManagerRuntime extends AppProcess {
     }
 
     this.drives.set(this.fs.drives);
+    this.updateAltMenu();
   }
 
   async updateRootFolders() {
@@ -120,6 +198,7 @@ export class FileManagerRuntime extends AppProcess {
     } catch {
       this.rootFolders.set([]);
     }
+    this.updateAltMenu();
   }
 
   async navigate(path: string) {
@@ -134,6 +213,7 @@ export class FileManagerRuntime extends AppProcess {
     await this.refresh();
 
     this.loading.set(false);
+    this.updateAltMenu();
   }
 
   async refresh() {
@@ -191,7 +271,12 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   public updateSelection(e: MouseEvent, path: string) {
-    if (!e.shiftKey) return this.selection.set([path]);
+    if (!e.shiftKey) {
+      this.selection.set([path]);
+      this.updateAltMenu();
+
+      return;
+    }
 
     const selected = this.selection.get();
 
@@ -199,8 +284,7 @@ export class FileManagerRuntime extends AppProcess {
     else selected.push(path);
 
     this.selection.set(selected);
-
-    return;
+    this.updateAltMenu();
   }
 
   public setCopyFiles(files = this.selection()) {
@@ -208,11 +292,38 @@ export class FileManagerRuntime extends AppProcess {
 
     this.copyList.set(files || []);
     this.cutList.set([]);
+    this.updateAltMenu();
   }
 
   public setCutFiles(files = this.selection()) {
     this.Log(`Setting CUT list to ${files.length} items`);
     this.cutList.set(files || []);
     this.copyList.set([]);
+    this.updateAltMenu();
+  }
+
+  unmountDrive(drive: FilesystemDrive, id: string) {
+    const identifier = `${drive.driveLetter || drive.uuid}:`;
+
+    MessageBox(
+      {
+        title: `Unmount ${drive.label || identifier}`,
+        message: `Are you sure you want to unmount this drive?`,
+        buttons: [
+          { caption: "Cancel", action: () => {} },
+          {
+            caption: "Unmount",
+            action: async () => {
+              await this.fs.umountDrive(id);
+            },
+            suggested: true,
+          },
+        ],
+        image: DriveIcon,
+        sound: "arcos.dialog.warning",
+      },
+      this.pid,
+      true
+    );
   }
 }
