@@ -1,3 +1,6 @@
+import type { FilesystemDrive } from "$ts/fs/drive";
+import type { UserQuota } from "$types/fs";
+
 export interface Tab {
   location: string;
   title: string;
@@ -9,3 +12,5 @@ export interface Location {
   icon: string;
   component: any;
 }
+
+export type QuotedDrive = { data: FilesystemDrive; quota: UserQuota };

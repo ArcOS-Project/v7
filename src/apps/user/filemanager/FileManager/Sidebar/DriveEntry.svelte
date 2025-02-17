@@ -1,21 +1,22 @@
 <script lang="ts">
+  import CircularProgress from "$lib/CircularProgress.svelte";
   import { contextProps } from "$ts/context/actions.svelte";
-  import type { FilesystemDrive } from "$ts/fs/drive";
+  import { formatBytes } from "$ts/fs/util";
   import type { FileManagerRuntime } from "../../runtime";
+  import type { QuotedDrive } from "../../types";
 
   const {
     process,
     drive,
     id,
-  }: { process: FileManagerRuntime; drive: FilesystemDrive; id: string } =
-    $props();
+  }: { process: FileManagerRuntime; drive: QuotedDrive; id: string } = $props();
 
   const { path } = process;
 
-  let identifier = `${drive.driveLetter || drive.uuid}:`;
+  let identifier = `${drive.data.driveLetter || drive.data.uuid}:`;
 
   function unmount() {
-    process.unmountDrive(drive, id);
+    process.unmountDrive(drive.data, id);
   }
 </script>
 
@@ -25,9 +26,23 @@
   class:selected={$path.startsWith(`${identifier}/`)}
   data-contextmenu="sidebar-drive"
   use:contextProps={[drive, identifier, unmount]}
+  title={drive.quota.unknown
+    ? drive.data.label
+    : `${drive.data.label}\nUsed: ${formatBytes(
+        drive.quota.used
+      )}\nSize: ${formatBytes(drive.quota.max)}`}
 >
   <span class="lucide icon-hard-drive"></span>
   <span>
-    {drive.driveLetter ? `${drive.label} (${drive.driveLetter}:)` : drive.label}
+    {drive.data.driveLetter
+      ? `${drive.data.label} (${drive.data.driveLetter}:)`
+      : drive.data.label}
   </span>
+  {#if !drive.quota.unknown}
+    <CircularProgress
+      className="Progress"
+      max={drive.quota.max}
+      value={drive.quota.used}
+    />
+  {/if}
 </button>

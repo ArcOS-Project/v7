@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { FolderIcon } from "$ts/images/filesystem";
   import type { FolderEntry } from "$types/fs";
   import type { FileManagerRuntime } from "../../runtime";
 
@@ -16,6 +15,6 @@
   onclick={() => process.navigate(`U:/${folder.name}`)}
   class:selected={$path.startsWith(`U:/${folder.name}`)}
 >
-  <img src={FolderIcon} alt="" />
+  <span class="lucide icon-folder-closed"></span>
   <span>{folder.name}</span>
 </button>

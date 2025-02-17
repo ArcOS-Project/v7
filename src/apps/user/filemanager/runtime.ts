@@ -13,9 +13,10 @@ import type {
   AppProcessData,
   ContextMenuItem,
 } from "$types/app";
-import type { DirectoryReadReturn, FolderEntry } from "$types/fs";
+import type { DirectoryReadReturn, FolderEntry, UserQuota } from "$types/fs";
 import { LogLevel } from "$types/logging";
 import type { RenderArgs } from "$types/process";
+import type { QuotedDrive } from "./types";
 
 export class FileManagerRuntime extends AppProcess {
   path = Store<string>("");
@@ -27,7 +28,7 @@ export class FileManagerRuntime extends AppProcess {
   cutList = Store<string[]>([]);
   starting = Store<boolean>(true);
   rootFolders = Store<FolderEntry[]>([]);
-  drives = Store<Record<string, FilesystemDrive>>({});
+  drives = Store<Record<string, QuotedDrive>>({});
 
   override contextMenu: AppContextMenu = {
     "sidebar-drive": [
@@ -62,7 +63,7 @@ export class FileManagerRuntime extends AppProcess {
     this.renderArgs.path = path;
   }
 
-  async updateAltMenu() {
+  updateAltMenu() {
     const fileMenu = {
       caption: "File",
       subItems: [
@@ -133,13 +134,13 @@ export class FileManagerRuntime extends AppProcess {
     ];
 
     for (const [id, drive] of Object.entries(this.drives())) {
-      const identifier = `${drive.driveLetter || drive.uuid}:`;
+      const identifier = `${drive.data.driveLetter || drive.data.uuid}:`;
 
       result.push({
-        caption: drive.driveLetter
-          ? `${drive.label} (${drive.driveLetter}:)`
-          : drive.label,
-        subItems: driveSubmenu(drive, id),
+        caption: drive.data.driveLetter
+          ? `${drive.data.label} (${drive.data.driveLetter}:)`
+          : drive.data.label,
+        subItems: driveSubmenu(drive.data, id),
         image: DriveIcon,
         isActive: () => this.path().startsWith(`${identifier}/`),
       });
@@ -181,7 +182,7 @@ export class FileManagerRuntime extends AppProcess {
     this.starting.set(false);
   }
 
-  updateDrives() {
+  async updateDrives() {
     this.Log(`Updating drives`);
 
     const currentDrive = getDriveLetter(this.path(), true) || "";
@@ -197,7 +198,13 @@ export class FileManagerRuntime extends AppProcess {
       );
     }
 
-    this.drives.set(this.fs.drives);
+    const result: Record<string, QuotedDrive> = {};
+
+    for (const [id, drive] of Object.entries(this.fs.drives)) {
+      result[id] = { data: drive, quota: await drive.quota() };
+    }
+
+    this.drives.set(result);
     this.updateAltMenu();
   }
 

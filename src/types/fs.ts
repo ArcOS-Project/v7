@@ -27,6 +27,7 @@ export interface UserQuota {
   max: number;
   free: number;
   percentage: number;
+  unknown?: boolean;
 }
 
 export interface SingleUploadReturn {

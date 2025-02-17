@@ -100,6 +100,7 @@ export class FilesystemDrive {
       max: 0,
       free: 0,
       percentage: 0,
+      unknown: true,
     };
   }
 }

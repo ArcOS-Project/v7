@@ -26,13 +26,21 @@
 
 #fileManager > div.body div.sidebar button {
   width: 100%;
+  height: 30px;
   text-align: left;
   display: flex;
   align-items: center;
   gap: 15px;
-  padding: 5px 7px;
+  padding: 0 7px;
   margin-bottom: 5px;
   background-color: transparent;
+}
+
+#fileManager > div.body div.sidebar button > span:not(.lucide) {
+  max-width: calc(100% - 16px - 30px - 20px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 #fileManager > div.body div.sidebar button.selected {
   background-color: var(--accent-transparent);
@@ -46,6 +54,10 @@
 #fileManager > div.body div.sidebar button span.lucide {
   font-size: 16px;
   color: var(--accent-light);
+}
+
+#fileManager > div.body div.sidebar button .circular-progress {
+  margin-left: auto;
 }
 
 #fileManager > div.body div.sidebar button:hover {
