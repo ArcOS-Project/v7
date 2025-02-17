@@ -1,3 +1,4 @@
+import { AppProcess } from "$ts/apps/process";
 import { ApplicationStorage } from "$ts/apps/storage";
 import { BuiltinApps } from "$ts/apps/store";
 import { darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
@@ -6,12 +7,15 @@ import { Filesystem } from "$ts/fs";
 import { arrayToBlob, arrayToText } from "$ts/fs/convert";
 import { ServerDrive } from "$ts/fs/drives/server";
 import { ZIPDrive } from "$ts/fs/drives/zipdrive";
-import { getParentDirectory, join } from "$ts/fs/util";
+import { getParentDirectory } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
+import { DriveIcon } from "$ts/images/filesystem";
 import { AccountIcon, PasswordIcon } from "$ts/images/general";
+import { ProfilePictures } from "$ts/images/pfp";
 import type { ArcLang } from "$ts/lang";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
+import { Sleep } from "$ts/sleep";
 import { Wallpapers } from "$ts/wallpaper/store";
 import { Store } from "$ts/writable";
 import type { LoginActivity } from "$types/activity";
@@ -33,9 +37,6 @@ import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes } from "./store";
-import { Sleep } from "$ts/sleep";
-import { AppProcess } from "$ts/apps/process";
-import { ProfilePictures } from "$ts/images/pfp";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -1367,5 +1368,42 @@ export class UserDaemon extends Process {
     ) {
       this.switchToDesktopByUuid(destination);
     }
+  }
+
+  startDriveNotifierWatcher() {
+    if (this._disposed) return;
+
+    this.Log("Starting drive notifier watcher");
+
+    this.globalDispatch.subscribe("fs-mount-drive", (id) => {
+      if (this._disposed) return;
+
+      const drive = this.fs.getDriveById(id as unknown as string);
+
+      if (!drive) return;
+
+      const notificationId = this.sendNotification({
+        title: drive.driveLetter
+          ? `${drive.label} (${drive.driveLetter}:)`
+          : drive.label,
+        message:
+          "This drive just got mounted! Click the button to view it in the file manager",
+        buttons: [
+          {
+            caption: "Open Drive",
+            action: () => {
+              this.spawnApp(
+                "fileManager",
+                undefined,
+                `${drive.driveLetter || drive.uuid}:/`
+              );
+
+              if (notificationId) this.deleteNotification(notificationId);
+            },
+          },
+        ],
+        image: DriveIcon,
+      });
+    });
   }
 }

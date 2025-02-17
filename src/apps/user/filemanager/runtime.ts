@@ -3,6 +3,7 @@ import { MessageBox } from "$ts/dialog";
 import { FilesystemDrive } from "$ts/fs/drive";
 import { getDriveLetter, getParentDirectory } from "$ts/fs/util";
 import { ErrorIcon } from "$ts/images/dialog";
+import { ShutdownIcon } from "$ts/images/power";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
@@ -70,7 +71,23 @@ export class FileManagerRuntime extends AppProcess {
         this.updateRootFolders();
       }
     });
-
+    this.altMenu.set([
+      {
+        caption: "File",
+        subItems: [
+          { caption: "New window", icon: "plus" },
+          { caption: "Refresh", icon: "rotate-cw" },
+          { sep: true },
+          { caption: "Upload", icon: "upload" },
+          { caption: "Download", icon: "download" },
+          { sep: true },
+          { caption: "Exit", image: ShutdownIcon },
+        ],
+      },
+      { caption: "Edit" },
+      { caption: "View" },
+      { caption: "Go" },
+    ]);
     this.starting.set(false);
   }
 

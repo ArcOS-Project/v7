@@ -65,3 +65,25 @@ div.shell div.push-notification h1.header button {
 div.shell div.push-notification img.icon {
   height: 48px;
 }
+
+div.shell div.push-notification div.buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  height: 32px;
+  margin-top: 15px;
+}
+
+div.shell div.push-notification div.buttons button {
+  flex-grow: 1;
+  margin: 0;
+  background-color: var(--button-glass-bg);
+  height: 32px;
+}
+
+div.shell div.push-notification div.buttons button:hover {
+  background-color: var(--button-glass-hover-bg);
+}
+div.shell div.push-notification div.buttons button:active {
+  background-color: var(--button-glass-active-bg);
+}

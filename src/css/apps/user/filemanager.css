@@ -9,6 +9,9 @@
   height: 100%;
   width: 200px;
   border-right: var(--win-border);
+  overflow-y: scroll;
+  padding: 10px;
+  padding-right: 2px;
 }
 
 #fileManager > div.body div.container {
@@ -19,10 +22,6 @@
 
 #fileManager > div.body div.main-content {
   height: calc(100% - 40px);
-}
-
-#fileManager > div.body div.sidebar {
-  padding: 10px;
 }
 
 #fileManager > div.body div.sidebar button {

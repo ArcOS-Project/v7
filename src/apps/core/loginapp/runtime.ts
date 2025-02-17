@@ -151,6 +151,10 @@ export class LoginAppRuntime extends AppProcess {
 
     await userDaemon.startVirtualDesktops();
 
+    this.loadingStatus.set("Starting drive notifier watcher");
+
+    userDaemon.startDriveNotifierWatcher();
+
     userDaemon.setAppRendererClasses(userDaemon.preferences());
     await userDaemon.appStore?.refresh();
     await userDaemon.spawnAutoloadApps();

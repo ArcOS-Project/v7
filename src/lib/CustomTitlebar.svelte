@@ -1,8 +1,9 @@
 <script lang="ts">
-  import type { AppRenderer } from "$ts/apps/renderer";
   import { AppProcess } from "$ts/apps/process";
+  import type { AppRenderer } from "$ts/apps/renderer";
   import { ComponentIcon } from "$ts/images/general";
   import { type Snippet } from "svelte";
+  import AltMenu from "./CustomTitlebar/AltMenu.svelte";
 
   const {
     process,
@@ -40,6 +41,7 @@
       <span>{$windowTitle}</span>
     {/if}
   </div>
+  <AltMenu {process} />
   <div class="controls">
     {#if data.controls.minimize}
       <button

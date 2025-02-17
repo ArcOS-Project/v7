@@ -12,7 +12,12 @@ import { LogLevel } from "$types/logging";
 import type { RenderArgs } from "$types/process";
 import type { UserPreferences } from "$types/user";
 import { mount } from "svelte";
-import type { App, AppContextMenu, AppProcessData } from "../../types/app";
+import type {
+  App,
+  AppContextMenu,
+  AppProcessData,
+  ContextMenuItem,
+} from "../../types/app";
 import { WaveKernel } from "../kernel";
 import type { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
@@ -39,6 +44,7 @@ export class AppProcess extends Process {
   public renderArgs: RenderArgs = {};
   public acceleratorStore: AppKeyCombinations = [];
   public readonly contextMenu: AppContextMenu = {};
+  public altMenu = Store<ContextMenuItem[]>([]);
 
   constructor(
     handler: ProcessHandler,

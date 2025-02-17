@@ -11,6 +11,7 @@ import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
 import { BuiltinApps } from "./store";
+import { ShellRuntime } from "$apps/components/shell/runtime";
 
 export class AppRenderer extends Process {
   currentState: number[] = [];
@@ -278,9 +279,63 @@ export class AppRenderer extends Process {
     title.append(titleIcon, titleCaption);
 
     titlebar.className = "titlebar";
-    titlebar.append(title, controls);
+    titlebar.append(title, this._renderAltMenu(process), controls);
 
     return titlebar;
+  }
+
+  _renderAltMenu(process: AppProcess) {
+    const menu = document.createElement("div");
+
+    menu.className = "alt-menu";
+
+    process.altMenu.subscribe((v) => {
+      menu.classList.toggle("hidden", !v.length);
+      menu.innerHTML = "";
+
+      for (const item of v) {
+        if (item.sep) {
+          const hr = document.createElement("div");
+
+          hr.className = "sep";
+
+          menu.append(hr);
+
+          continue;
+        }
+
+        if (!item.caption) continue;
+
+        const button = document.createElement("button");
+
+        button.className = "menu-item";
+        button.innerText = item.caption;
+        button.addEventListener("click", async (e) => {
+          if (!item.subItems) {
+            if (item.action) return await item.action(process);
+
+            return;
+          }
+
+          const rect = button.getBoundingClientRect();
+          const shellPid = this.env.get("shell_pid");
+          if (!shellPid) return;
+
+          const shell = this.handler.getProcess<ShellRuntime>(+shellPid);
+          if (!shell) return;
+
+          shell.createContextMenu({
+            items: item.subItems || [],
+            x: rect.x,
+            y: rect.y + rect.height + 5,
+          });
+        });
+
+        menu.append(button);
+      }
+    });
+
+    return menu;
   }
 
   async remove(pid: number) {

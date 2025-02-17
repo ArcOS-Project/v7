@@ -22,7 +22,7 @@
           false
         );
 
-        driveLabel = drive.label || "";
+        driveLabel = drive?.label || "";
       }
 
       name = getDirectoryName(v);
