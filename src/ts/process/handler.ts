@@ -91,13 +91,13 @@ export class ProcessHandler extends KernelModule {
     if (!proc) return "err_noExist";
     if (proc._criticalProcess && !force) return "err_criticalProcess";
 
+    await this._killSubProceses(pid, force);
+
     if (proc instanceof AppProcess && proc.closeWindow && !force) {
       await proc.closeWindow(false);
     }
 
     if (proc.__stop) await proc.__stop();
-
-    await this._killSubProceses(pid, force);
 
     let store = this.store.get();
 

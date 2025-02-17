@@ -2,7 +2,6 @@
   import { MessageBox } from "$ts/dialog";
   import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
   import { Sleep } from "$ts/sleep";
-  import { htmlspecialchars } from "$ts/util";
   import type { AppComponentProps } from "$types/app";
   import type { TestAppRuntime } from "./runtime";
 
@@ -10,14 +9,18 @@
   const { lang } = process;
 
   let code = $state<string>("");
-  let result = $state<string[]>([]);
+  let variables = $state<[string, any][]>([]);
   let output = $state<string>();
+  let executionDiv = $state<HTMLDivElement>();
+  let execution = $state<string>("");
+  let running = $state<boolean>(false);
+  let pid = $state<number>(-1);
+  let workingDirectory = $state<string>("U:/");
 
   $effect(() => {
     process.acceleratorStore.push({
-      alt: true,
-      shift: true,
-      key: "r",
+      ctrl: true,
+      key: "enter",
       action: () => {
         run();
       },
@@ -25,34 +28,65 @@
   });
 
   async function run() {
-    result = [];
+    if (running) return;
+
+    running = true;
     output = "";
+    execution = "";
+    variables = [];
+
     await Sleep(0);
 
     try {
-      result =
-        (await lang.run(code, process.pid, {
-          continuous: true,
-          stdout: (m) => (output += `${m}\n`),
-          onTick: (lang) => {
-            process.windowTitle.set(`Test - ${lang.tokens.join(" ")}`);
-          },
-          onError: (e) => {
-            const tokens = `<ul>${e.tokens.map((t) => `<li>${htmlspecialchars(JSON.stringify(t))}`)}</ul>`;
+      (await lang.run(code, process.pid, {
+        continuous: true,
+        workingDir: workingDirectory,
+        stdout: (m) => (output += `${m}\n`),
+        onTick: (lang) => {
+          variables = [...lang.variables];
+          pid = lang.pid;
+          const line = lang.tokens.map((a) => `"${a}"`).join(" ");
+          process.windowTitle.set(`Test - ${line}`);
 
-            MessageBox(
-              {
-                image: WarningIcon,
-                title: "Execution Error",
-                message: `An error occured: ${e.message}.<br><br>At keyword "${e.keyword}" at position ${e.instruction.line}:${e.instruction.column} (instruction #${e.pointer}).<br><code class="block">${e.instruction.command}</code>`,
-                buttons: [{ caption: "Okay", action: () => {} }],
-              },
-              process.pid,
-              true
-            );
-          },
-          allowUnsafe: true,
-        })) || [];
+          if (line === `"jump" ":*idle"` || !line) return;
+
+          execution += `${lang.executionCount + 1} -> ${line}\n`;
+          setTimeout(() => {
+            executionDiv!.scrollTop = executionDiv?.scrollHeight || 0;
+          }, 10);
+        },
+        onError: (e) => {
+          MessageBox(
+            {
+              image: WarningIcon,
+              title: "Execution Error",
+              message: `An error occured: ${e.message}.<br><br>At keyword "${e.keyword}" at position ${e.instruction.line}:${e.instruction.column} (instruction #${e.pointer}).<br><code class="block">${e.instruction.command}</code>`,
+              buttons: [
+                {
+                  caption: "Okay",
+                  action: () => {
+                    running = false;
+                  },
+                },
+              ],
+            },
+            process.pid,
+            true
+          );
+        },
+        onExit: (lang) => {
+          const pid = lang.pid;
+
+          setTimeout(() => {
+            output = `[${pid} Exited]`;
+            execution = "";
+            process.windowTitle.set(`Test`);
+            running = false;
+            variables = [];
+          }, 1000);
+        },
+        allowUnsafe: true,
+      })) || [];
     } catch (e) {
       MessageBox(
         {
@@ -67,19 +101,31 @@
     }
 
     output = output;
-    result = result;
+    variables = variables;
+  }
+
+  function stop() {
+    process.handler.kill(pid);
   }
 </script>
 
 <div class="actions">
-  <button class="run" onclick={run}>Run code</button>
+  <button class="run" onclick={run} disabled={running}>Run</button>
+  <button class="stop" onclick={stop} disabled={!running}>Stop</button>
+  <p>{pid}</p>
+  <input type="text" bind:value={workingDirectory} placeholder="U:/" />
 </div>
 <div class="top">
   <textarea bind:value={code} class="editor"></textarea>
   <div class="output">
-    {#each result as value, i}
-      <p>{i}: {value}</p>
-    {/each}
+    <div bind:this={executionDiv}>
+      {execution}
+    </div>
+    <div>
+      {#each variables as [id, variable]}
+        {id} -> {variable}<br />
+      {/each}
+    </div>
   </div>
 </div>
 <div class="bottom">

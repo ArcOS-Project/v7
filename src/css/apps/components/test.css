@@ -5,18 +5,28 @@
 }
 
 #testApp > div.body div.actions {
-  padding: 5px;
+  padding: 10px;
   border-bottom: var(--win-border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 #testApp > div.body div.actions button {
   margin: 0;
+  height: 24px;
+  line-height: 24px;
+  padding: 0 15px;
+}
+
+#testApp > div.body div.actions input {
+  margin-left: auto;
 }
 
 #testApp > div.body div.top {
   display: flex;
   align-items: center;
-  height: calc(100% - 100px - 42px);
+  height: calc(100% - 30% - 45px);
 }
 
 #testApp > div.body div.top textarea {
@@ -24,7 +34,7 @@
   border: none;
   flex-grow: 1;
   height: 100% !important;
-  max-width: calc(100% - 200px);
+  max-width: 50%;
   border-right: var(--win-border);
   resize: none;
   padding: 10px;
@@ -32,12 +42,26 @@
 }
 
 #testApp > div.body div.top div.output {
-  width: 200px;
+  width: 50%;
+  height: 100%;
+}
+
+#testApp > div.body div.top div.output > div {
+  height: 50%;
+  max-height: 50%;
+  width: 100%;
+  white-space: pre-wrap;
+  font-family: "Source Code Pro";
+  overflow-y: scroll;
   padding: 10px;
 }
 
+#testApp > div.body div.top div.output > div + div {
+  border-top: var(--win-border);
+}
+
 #testApp > div.body div.bottom {
-  height: 100px;
+  height: 30%;
   overflow-y: auto;
   white-space: pre-wrap;
   font-family: "Source Code Pro";

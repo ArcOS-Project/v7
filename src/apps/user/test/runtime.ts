@@ -1,4 +1,3 @@
-import { ShutdownIcon } from "$ts/images/power";
 import type { ArcLang } from "$ts/lang";
 import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
@@ -17,23 +16,5 @@ export class TestAppRuntime extends AppProcess {
     this.lang = this.kernel.getModule<ArcLang>("lang");
   }
 
-  async render() {
-    this.altMenu.set([
-      {
-        caption: "File",
-        subItems: [
-          { caption: "New window", icon: "plus" },
-          { caption: "New window", icon: "plus" },
-          { sep: true },
-          { caption: "Upload", icon: "upload" },
-          { caption: "Download", icon: "download" },
-          { sep: true },
-          { caption: "Exit", image: ShutdownIcon },
-        ],
-      },
-      { caption: "Edit" },
-      { caption: "View" },
-      { caption: "Go" },
-    ]);
-  }
+  async render() {}
 }

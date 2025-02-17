@@ -49,6 +49,7 @@ export class LanguageInstance extends Process {
   public stdout: (m: string) => void;
   public onTick: (l: LanguageInstance) => void;
   public onError: (error: LanguageExecutionError) => void;
+  public onExit: (l: LanguageInstance) => void;
   private consumed = false;
   private MAX_EXECUTION_CAP = 1000;
   public libraries: Libraries = BaseLibraries;
@@ -78,6 +79,7 @@ export class LanguageInstance extends Process {
     this.stdout = options.stdout || ((m: string) => console.log(m));
     this.onTick = this.options.onTick || (() => {});
     this.onError = this.options.onError || (() => {});
+    this.onExit = this.options.onExit || (() => {});
     this.workingDir = this.options.workingDir || ".";
 
     this.libraries = keysToLowerCase(libraries) as Libraries;
@@ -87,6 +89,12 @@ export class LanguageInstance extends Process {
     const daemonPid = this.env.get("userdaemon_pid");
 
     if (daemonPid) this.userDaemon = this.handler.getProcess(+daemonPid);
+  }
+
+  async stop() {
+    this.onExit(this);
+
+    await Sleep(10);
   }
 
   private parseSource(source: string): InterpreterCommand[] {
@@ -157,6 +165,10 @@ export class LanguageInstance extends Process {
       this.pointer++; // Increment pointer first
 
       const commandObj = this.source[this.pointer];
+
+      if (commandObj.command.startsWith("#")) {
+        continue;
+      }
 
       // Check if commandObj is defined
       if (!commandObj) {
