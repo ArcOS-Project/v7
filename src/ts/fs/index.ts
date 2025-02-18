@@ -6,12 +6,11 @@ import {
   type FilesystemProgress,
   type FilesystemProgressCallback,
   type RecursiveDirectoryReadReturn,
-  type SingleUploadReturn,
   type UploadReturn,
 } from "$types/fs";
 import { arrayToBlob } from "./convert";
 import type { FilesystemDrive } from "./drive";
-import { getParentDirectory, join } from "./util";
+import { formatBytes, getParentDirectory, join } from "./util";
 
 export class Filesystem extends KernelModule {
   private dispatch: GlobalDispatcher;
@@ -169,7 +168,12 @@ export class Filesystem extends KernelModule {
     return result;
   }
 
-  async readFile(path: string): Promise<ArrayBuffer | undefined> {
+  async readFile(
+    path: string,
+    onProgress?: FilesystemProgressCallback
+  ): Promise<ArrayBuffer | undefined> {
+    onProgress ||= this.defaultProgress.bind(this);
+
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
     this.Log(`Reading file '${path}'`);
@@ -178,7 +182,7 @@ export class Filesystem extends KernelModule {
     const drive = this.getDriveByPath(path);
     path = this.removeDriveLetter(path);
 
-    return await drive.readFile(path);
+    return await drive.readFile(path, onProgress);
   }
 
   async writeFile(
@@ -335,7 +339,7 @@ export class Filesystem extends KernelModule {
             await this.createDirectory(target);
 
             const path = join(target, file.name);
-            const written = await this.writeFile(path, content);
+            const written = await this.writeFile(path, content, onProgress);
 
             if (!written) {
               throw new Error(`Failed to write file "${path}"`);
@@ -359,7 +363,11 @@ export class Filesystem extends KernelModule {
   }
 
   defaultProgress(d: FilesystemProgress) {
-    this.Log(`Got filesystem progress: ${d.type}: ${d.value}/${d.max}`);
+    this.Log(
+      `Got filesystem progress: ${d.type}: ${
+        d.type === "size" ? formatBytes(d.value) : d.value
+      }/${d.type === "size" ? formatBytes(d.max) : d.max}`
+    );
   }
 
   // TODO: proper handlers for uploading files with and/or without progress indication

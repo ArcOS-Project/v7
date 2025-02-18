@@ -3,6 +3,7 @@ import type { WaveKernel } from "$ts/kernel";
 import { Axios } from "$ts/server/axios";
 import type {
   DirectoryReadReturn,
+  FilesystemProgressCallback,
   RecursiveDirectoryReadReturn,
   UserQuota,
 } from "$types/fs";
@@ -46,11 +47,21 @@ export class ServerDrive extends FilesystemDrive {
     }
   }
 
-  async readFile(path: string): Promise<ArrayBuffer | undefined> {
+  async readFile(
+    path: string,
+    onProgress: FilesystemProgressCallback
+  ): Promise<ArrayBuffer | undefined> {
     try {
       const response = await Axios.get(`/fs/file/${path}`, {
         headers: { Authorization: `Bearer ${this.token}` },
         responseType: "arraybuffer",
+        onDownloadProgress: (progress) => {
+          onProgress({
+            max: progress.total || 0,
+            value: progress.loaded || 0,
+            type: "size",
+          });
+        },
       });
 
       return response.data;
@@ -59,10 +70,21 @@ export class ServerDrive extends FilesystemDrive {
     }
   }
 
-  async writeFile(path: string, blob: Blob): Promise<boolean> {
+  async writeFile(
+    path: string,
+    blob: Blob,
+    onProgress: FilesystemProgressCallback
+  ): Promise<boolean> {
     try {
       const response = await Axios.post(`/fs/file/${path}`, blob, {
         headers: { Authorization: `Bearer ${this.token}` },
+        onUploadProgress: (progress) => {
+          onProgress({
+            max: progress.total || 0,
+            value: progress.loaded || 0,
+            type: "size",
+          });
+        },
       });
 
       return response.status === 200;

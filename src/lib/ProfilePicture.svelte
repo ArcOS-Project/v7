@@ -19,11 +19,16 @@
   const { preferences } = userDaemon!;
 
   let url = $state<string | undefined>("");
+  let currentPfp = $state<string | number>();
 
   preferences.subscribe(async (v) => {
+    if (!fallback && currentPfp === (pfp || v.account.profilePicture!)) return;
+
     url =
       fallback ||
       (await userDaemon?.getProfilePicture(pfp || v.account.profilePicture!));
+
+    currentPfp = pfp || v.account.profilePicture!;
   });
 </script>
 

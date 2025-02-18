@@ -177,7 +177,7 @@ export class UserDaemon extends Process {
     return `--accent: ${hex3to6(accent)} !important;
     --accent-transparent: ${hex3to6(accent)}44 !important;
     --accent-light: ${lightenColor(accent)} !important;
-    --accent-lighter: ${lightenColor(accent, 6.5)} !important;
+    --accent-lighter: ${lightenColor(accent, 7.5)} !important;
     --accent-dark: ${darkenColor(accent, 75)} !important;
     --accent-darkest: ${darkenColor(accent, 85)} !important;
     --accent-light-transparent: ${lightenColor(accent)}77 !important;
