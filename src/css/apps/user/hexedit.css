@@ -1,0 +1,25 @@
+#HexEdit div.container {
+  height: 100%;
+  display: flex;
+  align-items: start;
+  font-family: "Source Code Pro";
+  overflow-y: auto;
+}
+
+#HexEdit > div.body {
+  padding: 0;
+}
+
+#HexEdit div.container > div + div {
+  border-left: var(--win-border);
+}
+
+#HexEdit div.container > div {
+  padding: 10px;
+}
+
+#HexEdit div.container > div > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

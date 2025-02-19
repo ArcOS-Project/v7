@@ -2,6 +2,7 @@ import { ComponentIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import HexEdit from "./HexEdit.svelte";
 import { HexEditRuntime } from "./runtime";
+import "$css/apps/user/hexedit.css";
 
 export const HexEditorApp: App = {
   metadata: {

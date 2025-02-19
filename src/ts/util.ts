@@ -73,3 +73,15 @@ export function checkPasswordStrength(password: string) {
 }
 
 export const Plural = (s: string, x: number) => `${s}${x == 1 ? "" : "s"}`;
+
+export function sliceIntoChunks(arr: any[], chunkSize: number) {
+  const res = [];
+
+  for (let i = 0; i < arr.length; i += chunkSize) {
+    const chunk = arr.slice(i, i + chunkSize);
+
+    res.push(chunk);
+  }
+
+  return res;
+}
