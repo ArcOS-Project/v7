@@ -1,0 +1,45 @@
+#FsProgress div.bottom {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 10px;
+  height: 51px;
+  background-color: var(--button-bg);
+  border-top: var(--win-border);
+  padding: 0 10px;
+  padding-left: 20px;
+  text-align: left;
+  margin-top: auto !important;
+}
+
+#FsProgress div.bottom div.status {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+#FsProgress div.bottom div.status span {
+  font-size: 20px;
+  opacity: 0.2;
+  transition: none;
+}
+
+#FsProgress div.bottom div.status span.active {
+  color: var(--accent);
+  opacity: 1;
+}
+
+#FsProgress div.bottom button {
+  margin: 0;
+  height: 30px;
+}
+
+#FsProgress div.bottom button:not(.suggested) {
+  background-color: var(--button-glass-bg);
+}
+
+#FsProgress div.bottom div.sep {
+  width: 1px;
+  height: 20px;
+  background-color: var(--button-glass-bg);
+}

@@ -1,0 +1,17 @@
+#FsProgress div.bar {
+  height: 7px;
+  width: 100%;
+  border: var(--button-glass-bg) 1px solid;
+  border-radius: 3.5px;
+  background-color: var(--button-glass-bg);
+  overflow: hidden;
+}
+
+#FsProgress div.bar div.inner {
+  --max: 100;
+  --done: 0;
+  background-color: var(--accent);
+  height: 5px;
+  transition: none;
+  width: calc(100% / var(--max) * var(--done));
+}

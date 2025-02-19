@@ -1,3 +1,9 @@
+import { FsProgressRuntime } from "$apps/components/fsprogress/runtime";
+import {
+  DummyFileProgress,
+  type FileProgressMutator,
+  type FsProgressOperation,
+} from "$apps/components/fsprogress/types";
 import { AppProcess } from "$ts/apps/process";
 import { ApplicationStorage } from "$ts/apps/storage";
 import { BuiltinApps } from "$ts/apps/store";
@@ -7,10 +13,15 @@ import { Filesystem } from "$ts/fs";
 import { arrayToBlob, arrayToText } from "$ts/fs/convert";
 import { ServerDrive } from "$ts/fs/drives/server";
 import { ZIPDrive } from "$ts/fs/drives/zipdrive";
-import { getParentDirectory } from "$ts/fs/util";
+import {
+  getDirectoryName,
+  getDriveLetter,
+  getParentDirectory,
+} from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
-import { DriveIcon } from "$ts/images/filesystem";
+import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import { AccountIcon, PasswordIcon } from "$ts/images/general";
+import { ImageMimeIcon } from "$ts/images/mime";
 import { ProfilePictures } from "$ts/images/pfp";
 import type { ArcLang } from "$ts/lang";
 import type { ProcessHandler } from "$ts/process/handler";
@@ -492,30 +503,64 @@ export class UserDaemon extends Process {
     });
   }
 
-  async uploadWallpaper(): Promise<Wallpaper> {
-    if (this._disposed) return new Promise((r) => r({} as Wallpaper));
+  async uploadWallpaper(pid?: number): Promise<Wallpaper | undefined> {
+    if (this._disposed) return;
 
     this.Log(`Uploading wallpaper to U:/Wallpapers`);
 
-    const result = await this.fs.uploadSingleFile("U:/Wallpapers", "image/*");
-    if (!result.length) return {} as Wallpaper;
+    const prog = await this.FileProgress(
+      {
+        type: "size",
+        icon: ImageMimeIcon,
+        caption: "Uploading a wallpaper of your choosing",
+        subtitle: `To U:/Wallpapers`,
+        max: 0,
+        waiting: true,
+        working: false,
+        errors: [],
+        done: 0,
+      },
+      pid
+    );
 
-    const { path, file } = result[0];
-    const wallpaper: Wallpaper = {
-      author: this.username,
-      name: file.name,
-      url: "",
-      thumb: "",
-    };
+    try {
+      const result = await this.fs.uploadSingleFile(
+        "U:/Wallpapers",
+        "image/*",
+        false,
+        (progress) => {
+          prog.setMax(progress.max);
+          prog.setDone(progress.value);
+          prog.setWork(true);
+          prog.setWait(false);
+        }
+      );
 
-    this.preferences.update((v) => {
-      v.userWallpapers ||= {};
-      v.userWallpapers[`@local:${btoa(path)}`] = wallpaper;
+      if (!result.length) {
+        prog.stop();
+        return {} as Wallpaper;
+      }
 
-      return v;
-    });
+      const { path, file } = result[0];
 
-    return wallpaper;
+      const wallpaper: Wallpaper = {
+        author: this.username,
+        name: file.name,
+        url: "",
+        thumb: "",
+      };
+
+      this.preferences.update((v) => {
+        v.userWallpapers ||= {};
+        v.userWallpapers[`@local:${btoa(path)}`] = wallpaper;
+
+        return v;
+      });
+
+      return wallpaper;
+    } catch {
+      prog.stop();
+    }
   }
 
   async uploadProfilePicture(): Promise<string | undefined> {
@@ -1406,5 +1451,200 @@ export class UserDaemon extends Process {
         image: DriveIcon,
       });
     });
+  }
+
+  async FileProgress(
+    initialData: FsProgressOperation,
+    parentPid?: number
+  ): Promise<FileProgressMutator> {
+    const progress = Store<FsProgressOperation>(initialData);
+    let process: FsProgressRuntime | undefined;
+
+    if (!parentPid) {
+      process = await this.spawnApp<FsProgressRuntime>(
+        "FsProgress",
+        0,
+        progress
+      );
+
+      if (typeof process == "string") return DummyFileProgress;
+    } else {
+      process = await this.spawnOverlay<FsProgressRuntime>(
+        "FsProgress",
+        parentPid,
+        progress
+      );
+
+      if (typeof process == "string") return DummyFileProgress;
+    }
+
+    const mutateMax = (mutator: number) =>
+      progress.update((v) => {
+        v.max += mutator;
+        return v;
+      });
+
+    const mutDone = (mutator: number) =>
+      progress.update((v) => {
+        v.done += mutator;
+        return v;
+      });
+
+    const setMax = (value: number) =>
+      progress.update((v) => {
+        v.max = value;
+        return v;
+      });
+
+    const setDone = (value: number) =>
+      progress.update((v) => {
+        v.done = value;
+        return v;
+      });
+
+    const updateCaption = (caption: string) =>
+      progress.update((v) => {
+        v.caption = caption;
+        return v;
+      });
+
+    const updSub = (subtitle: string) =>
+      progress.update((v) => {
+        v.subtitle = subtitle;
+        return v;
+      });
+
+    const setWait = (waiting: boolean) =>
+      progress.update((v) => {
+        v.waiting = waiting;
+        return v;
+      });
+
+    const setWork = (working: boolean) =>
+      progress.update((v) => {
+        v.working = working;
+        return v;
+      });
+
+    const mutErr = (error: string) =>
+      progress.update((v) => {
+        v.errors.push(error);
+        return v;
+      });
+
+    const setErrors = (value: string[]) =>
+      progress.update((v) => {
+        v.errors = value;
+        return v;
+      });
+
+    const stop = () => {
+      process?.closeWindow();
+    };
+
+    return {
+      progress,
+      mutateMax,
+      mutDone,
+      updateCaption,
+      updSub,
+      setMax,
+      setDone,
+      setWait,
+      setWork,
+      mutErr,
+      setErrors,
+      stop,
+    };
+  }
+
+  async moveMultiple(sources: string[], destination: string, pid: number) {
+    this.Log(`Moving ${sources.length} items to ${destination}`);
+
+    const destinationName = getDirectoryName(destination);
+    const destinationDrive = getDriveLetter(destination, true);
+
+    const { updSub, setWait, setWork, mutErr, mutDone } =
+      await this.FileProgress(
+        {
+          type: "quantity",
+          max: sources.length,
+          done: 0,
+          waiting: true,
+          working: false,
+          errors: [],
+          icon: FolderIcon,
+          caption: `Moving files to ${destinationName || destination}`,
+          subtitle: "Working...",
+        },
+        pid
+      );
+
+    for (const source of sources) {
+      const sourceDrive = getDriveLetter(source, true);
+
+      updSub(source);
+      setWait(false);
+      setWork(true);
+
+      if (sourceDrive != destinationDrive) {
+        mutErr(
+          `Not moving ${source}: source and destination drives are different`
+        );
+
+        continue;
+      }
+
+      await this.fs.moveItem(source, destination);
+      setWait(true);
+      mutDone(+1);
+      await Sleep(200);
+    }
+  }
+
+  async copyMultiple(sources: string[], destination: string, pid: number) {
+    this.Log(`Copying ${sources.length} items to ${destination}`);
+
+    const destinationName = getDirectoryName(destination);
+    const destinationDrive = getDriveLetter(destination, true);
+
+    const { updSub, setWait, setWork, mutErr, mutDone } =
+      await this.FileProgress(
+        {
+          type: "quantity",
+          max: sources.length,
+          done: 0,
+          waiting: true,
+          working: false,
+          errors: [],
+          icon: FolderIcon,
+          caption: `Copying files to ${destinationName || destination}`,
+          subtitle: "Working...",
+        },
+        pid
+      );
+
+    for (const source of sources) {
+      const sourceDrive = getDriveLetter(source, true);
+
+      updSub(source);
+      setWait(false);
+      setWork(true);
+
+      if (sourceDrive != destinationDrive) {
+        mutErr(
+          `Not copying ${source}: source and destination drives are different`
+        );
+        mutDone(+1);
+
+        continue;
+      }
+
+      await this.fs.copyItem(source, destination);
+      setWait(true);
+      mutDone(+1);
+
+      await Sleep(200);
+    }
   }
 }

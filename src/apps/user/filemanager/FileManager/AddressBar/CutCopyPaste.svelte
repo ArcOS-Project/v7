@@ -3,7 +3,7 @@
 
   const { process }: { process: FileManagerRuntime } = $props();
 
-  const { cutList, copyList, selection, contents } = process;
+  const { cutList, copyList, selection } = process;
 </script>
 
 <div class="portion copy-paste">
@@ -25,6 +25,6 @@
     class="lucide icon-clipboard"
     aria-label="Paste items"
     disabled={!$copyList.length && !$cutList.length}
-    onclick={() => process.notImplemented()}
+    onclick={() => process.pasteFiles()}
   ></button>
 </div>

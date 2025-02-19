@@ -1,0 +1,30 @@
+#FsProgress div.display {
+  display: flex;
+  gap: 15px;
+  align-items: start;
+}
+
+#FsProgress div.display div.context {
+  flex-grow: 1;
+  max-width: calc(100% - 47px);
+}
+
+#FsProgress div.display img {
+  height: 32px;
+}
+#FsProgress div.display p {
+  margin: 0;
+}
+
+#FsProgress div.display p.caption {
+  font-weight: bold;
+}
+
+#FsProgress div.display p.subtitle {
+  opacity: 0.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+  max-width: 100%;
+}

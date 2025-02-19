@@ -1,4 +1,5 @@
 import { AppInfoApp } from "$apps/components/appinfo/metadata";
+import { FsProgressApp } from "$apps/components/fsprogress/metadata";
 import { MessageBoxApp } from "$apps/components/messagebox/metadata";
 import { SecureContextApp } from "$apps/components/securecontext/metadata";
 import { ArcShellApp } from "$apps/components/shell/metadata";
@@ -18,6 +19,7 @@ export const BuiltinApps: AppStorage = [
   TestApp,
   AppInfoApp,
   FileManagerApp,
+  FsProgressApp,
 ];
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];

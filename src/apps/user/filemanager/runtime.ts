@@ -13,7 +13,7 @@ import type {
   AppProcessData,
   ContextMenuItem,
 } from "$types/app";
-import type { DirectoryReadReturn, FolderEntry, UserQuota } from "$types/fs";
+import type { DirectoryReadReturn, FolderEntry } from "$types/fs";
 import { LogLevel } from "$types/logging";
 import type { RenderArgs } from "$types/process";
 import type { QuotedDrive } from "./types";
@@ -29,6 +29,7 @@ export class FileManagerRuntime extends AppProcess {
   starting = Store<boolean>(true);
   rootFolders = Store<FolderEntry[]>([]);
   drives = Store<Record<string, QuotedDrive>>({});
+  private _refreshLocked = false;
 
   override contextMenu: AppContextMenu = {
     "sidebar-drive": [
@@ -237,6 +238,8 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   async refresh() {
+    if (this._refreshLocked) return;
+
     this.Log(`Refreshing`);
 
     const path = this.path();
@@ -322,6 +325,27 @@ export class FileManagerRuntime extends AppProcess {
     this.updateAltMenu();
   }
 
+  public async pasteFiles() {
+    const copyList = this.copyList.get();
+    const cutList = this.cutList.get();
+
+    console.log(copyList, cutList);
+
+    if (!copyList.length && !cutList.length) return;
+
+    this.lockRefresh();
+
+    if (copyList.length)
+      await this.userDaemon?.copyMultiple(copyList, this.path(), this.pid);
+    else if (cutList.length)
+      await this.userDaemon?.moveMultiple(cutList, this.path(), this.pid);
+
+    this.copyList.set([]);
+    this.cutList.set([]);
+
+    this.unlockRefresh();
+  }
+
   unmountDrive(drive: FilesystemDrive, id: string) {
     const identifier = `${drive.driveLetter || drive.uuid}:`;
 
@@ -345,5 +369,15 @@ export class FileManagerRuntime extends AppProcess {
       this.pid,
       true
     );
+  }
+
+  public lockRefresh() {
+    this._refreshLocked = true;
+  }
+
+  public unlockRefresh(refresh = true) {
+    this._refreshLocked = false;
+
+    if (refresh) this.refresh();
   }
 }

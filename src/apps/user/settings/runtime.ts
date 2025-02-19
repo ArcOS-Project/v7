@@ -8,6 +8,7 @@ import {
   SettingsIcon,
   WaveIcon,
 } from "$ts/images/general";
+import { ImageMimeIcon } from "$ts/images/mime";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Axios } from "$ts/server/axios";
 import { Sleep } from "$ts/sleep";
@@ -212,7 +213,7 @@ export class SettingsRuntime extends AppProcess {
     this.Log("Uploading wallpaper");
 
     try {
-      await this.userDaemon?.uploadWallpaper();
+      await this.userDaemon?.uploadWallpaper(this.pid);
     } catch (e) {
       const message = (e as PromiseRejectionEvent).reason;
 

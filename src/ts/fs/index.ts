@@ -319,7 +319,7 @@ export class Filesystem extends KernelModule {
           const files = uploader.files;
 
           if (!files || !files.length) {
-            return;
+            throw new Error(`Didn't get any files`);
           }
 
           for (let i = 0; i < files.length; i++) {

@@ -1,0 +1,18 @@
+@import url("./fsprogress/bar.css");
+@import url("./fsprogress/display.css");
+@import url("./fsprogress/top.css");
+@import url("./fsprogress/bottom.css");
+
+#FsProgress {
+  display: flex;
+  flex-direction: column;
+}
+
+#FsProgress div.body {
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+  flex-grow: 1;
+  display: Flex;
+  flex-direction: column;
+}
