@@ -5,6 +5,7 @@ import { SecureContextApp } from "$apps/components/securecontext/metadata";
 import { ArcShellApp } from "$apps/components/shell/metadata";
 import { WallpaperApp } from "$apps/components/wallpaper/metadata";
 import { FileManagerApp } from "$apps/user/filemanager/metadata";
+import { HexEditorApp } from "$apps/user/hexedit/metadata";
 import { SystemSettings } from "$apps/user/settings/metadata";
 import { TestApp } from "$apps/user/test/metadata";
 import type { AppKeyCombinations } from "$types/accelerator";
@@ -20,6 +21,7 @@ export const BuiltinApps: AppStorage = [
   AppInfoApp,
   FileManagerApp,
   FsProgressApp,
+  HexEditorApp,
 ];
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];

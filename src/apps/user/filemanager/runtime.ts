@@ -416,4 +416,8 @@ export class FileManagerRuntime extends AppProcess {
 
     if (refresh) this.refresh();
   }
+
+  async openFile(path: string) {
+    return await this.userDaemon?.spawnApp("HexEdit", this.pid, path);
+  }
 }

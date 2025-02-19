@@ -40,7 +40,7 @@
   class="item file"
   {onclick}
   class:selected={$selection.includes(thisPath)}
-  ondblclick={() => process.notImplemented("File handling")}
+  ondblclick={() => process.openFile(thisPath)}
   data-contextmenu={$selection.includes(thisPath) ? "file-item" : ""}
 >
   <div class="segment icon">
