@@ -50,6 +50,41 @@ export class FileManagerRuntime extends AppProcess {
         disabled: (drive: FilesystemDrive) => drive.FIXED,
       },
     ],
+    "file-item": [
+      { caption: "Open file", icon: "external-link" },
+      { caption: "Open with..." },
+      { sep: true },
+      {
+        caption: "Send to",
+        icon: "send",
+        subItems: [
+          { caption: "Someone...", icon: "user" },
+          { caption: "Drive...", icon: "hard-drive" },
+        ],
+      },
+      { sep: true },
+      { caption: "Cut", icon: "scissors" },
+      { caption: "Copy", icon: "copy" },
+      { sep: true },
+      { caption: "Rename...", icon: "file-pen" },
+      { caption: "Delete", icon: "trash-2" },
+      { sep: true },
+      { caption: "Properties...", icon: "wrench" },
+    ],
+    "folder-item": [
+      { caption: "Go here", icon: "folder-open" },
+      { caption: "Open in new window", icon: "external-link" },
+      { sep: true },
+      { caption: "Send to", icon: "send" },
+      { sep: true },
+      { caption: "Cut", icon: "scissors" },
+      { caption: "Copy", icon: "copy" },
+      { sep: true },
+      { caption: "Rename...", icon: "file-pen" },
+      { caption: "Delete", icon: "trash-2" },
+      { sep: true },
+      { caption: "Properties...", icon: "wrench" },
+    ],
   };
 
   constructor(
@@ -230,6 +265,7 @@ export class FileManagerRuntime extends AppProcess {
     this.loading.set(true);
     this.errored.set(false);
     this.path.set(path);
+    this.selection.set([]);
 
     await this.refresh();
 

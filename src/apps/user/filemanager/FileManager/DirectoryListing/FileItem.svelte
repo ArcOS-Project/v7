@@ -41,6 +41,7 @@
   {onclick}
   class:selected={$selection.includes(thisPath)}
   ondblclick={() => process.notImplemented("File handling")}
+  data-contextmenu={$selection.includes(thisPath) ? "file-item" : ""}
 >
   <div class="segment icon">
     <img src={icon} alt="" />

@@ -38,6 +38,7 @@
   {ondblclick}
   {onclick}
   class:selected={$selection.includes(thisPath)}
+  data-contextmenu={$selection.includes(thisPath) ? "folder-item" : ""}
 >
   <div class="segment icon">
     <img src={FolderIcon} alt="" />

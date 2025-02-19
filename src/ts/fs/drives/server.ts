@@ -8,6 +8,7 @@ import type {
   UserQuota,
 } from "$types/fs";
 import { FilesystemDrive } from "../drive";
+import { getDirectoryName, join } from "../util";
 
 export class ServerDrive extends FilesystemDrive {
   private token = "";
@@ -108,10 +109,16 @@ export class ServerDrive extends FilesystemDrive {
   }
 
   async copyItem(source: string, destination: string): Promise<boolean> {
+    const sourceFilename = getDirectoryName(source);
+
     try {
       const response = await Axios.post(
         `/fs/cp/${source}`,
-        toForm({ destination }),
+        toForm({
+          destination: destination.endsWith(sourceFilename)
+            ? destination
+            : join(destination, sourceFilename),
+        }),
         {
           headers: { Authorization: `Bearer ${this.token}` },
         }
@@ -124,10 +131,16 @@ export class ServerDrive extends FilesystemDrive {
   }
 
   async moveItem(source: string, destination: string): Promise<boolean> {
+    const sourceFilename = getDirectoryName(source);
+
     try {
       const response = await Axios.post(
         `/fs/mv/${source}`,
-        toForm({ destination }),
+        toForm({
+          destination: destination.endsWith(sourceFilename)
+            ? destination
+            : join(destination, sourceFilename),
+        }),
         {
           headers: { Authorization: `Bearer ${this.token}` },
         }

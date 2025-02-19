@@ -108,7 +108,7 @@
 }
 
 #fileManager div.address-bar button.activated {
-  background-color: var(--accent-light);
+  background-color: var(--accent-light) !important;
   color: var(--accent-darkest);
 }
 
