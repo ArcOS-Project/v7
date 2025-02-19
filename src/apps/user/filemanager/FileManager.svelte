@@ -2,6 +2,7 @@
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
   import type { AppComponentProps } from "$types/app";
   import AddressBar from "./FileManager/AddressBar.svelte";
+  import BottomBar from "./FileManager/BottomBar.svelte";
   import DirectoryListing from "./FileManager/DirectoryListing.svelte";
   import Sidebar from "./FileManager/Sidebar.svelte";
   import Splash from "./FileManager/Splash.svelte";
@@ -18,6 +19,7 @@
     <div class="main-content">
       <AddressBar {process} />
       <DirectoryListing {process} />
+      <BottomBar {process} />
     </div>
   </div>
 {:else}

@@ -184,41 +184,4 @@ export class ProcessHandler extends KernelModule {
 
     return proc.dispatch;
   }
-
-  logTree() {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
-
-    // Build a tree structure
-    const processTree: Record<number, number[]> = {};
-    const roots: number[] = [];
-    let result = "";
-
-    this.store().forEach((process) => {
-      const parentPID = process.parentPid;
-      if (parentPID !== undefined) {
-        if (!processTree[parentPID]) {
-          processTree[parentPID] = [];
-        }
-        processTree[parentPID].push(process.pid);
-      } else {
-        roots.push(process.pid); // Root processes have no ParentPID
-      }
-    });
-
-    // Helper function for depth-first traversal
-    const traverse = (pid: number, depth: number) => {
-      result += `${" ".repeat(depth * 2)}- Process ${pid}\n`;
-      const children = processTree[pid] || [];
-      for (const child of children) {
-        traverse(child, depth + 1);
-      }
-    };
-
-    // Log each tree starting from a root process
-    for (const root of roots) {
-      traverse(root, 0);
-    }
-
-    this.Log(result);
-  }
 }
