@@ -24,12 +24,12 @@
   const value = Store<string>(decimalToHex(byte));
   let decimal = $state<number | undefined>();
   let disabled = $state<boolean>(false);
-  let className = $state<string>();
+  let className = $state<string>(process.getByteClass(byte));
 
   onMount(() => {
     value.subscribe(async (v) => {
       decimal = v.length === 2 ? Number(`0x${v}`) : undefined;
-      v ?? (className = process.getByteClass(v));
+      className = process.getByteClass(decimal || 0);
 
       if (v.length === 2) {
         const nextInput = $editorInputs[index + 1];

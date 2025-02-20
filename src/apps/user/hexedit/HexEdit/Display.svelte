@@ -10,7 +10,14 @@
   {#each $hexRows as rows}
     <div class="hex-row">
       {#each rows as [byte, index]}
-        <Byte {byte} {index} {view} {editorInputs} {original} {process} />
+        <Byte
+          {byte}
+          {index}
+          {view}
+          {editorInputs}
+          original={$original}
+          {process}
+        />
       {/each}
     </div>
   {/each}

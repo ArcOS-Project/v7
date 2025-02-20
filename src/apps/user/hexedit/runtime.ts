@@ -8,12 +8,12 @@ import type { AppProcessData } from "$types/app";
 
 export class HexEditRuntime extends AppProcess {
   buffer = Store<ArrayBuffer>();
-  original: Uint8Array | undefined;
+  original = Store<Uint8Array | undefined>();
   view = Store<Uint8Array>();
   offsets = Store<number[]>([]);
   offsetLength = Store<number>();
   hexRows = Store<[number, number][][]>([]);
-  decoded = Store<string[][]>([]);
+  decoded = Store<[string, number][][]>([]);
   requestedFile: string;
   editorInputs = Store<HTMLInputElement[]>([]);
 
@@ -48,7 +48,7 @@ export class HexEditRuntime extends AppProcess {
     );
 
     const decoded = sliceIntoChunks(
-      array.map((i) => this.sanitizeDecoded(String.fromCharCode(i))),
+      array.map((b, i) => [this.sanitizeDecoded(String.fromCharCode(b)), i]),
       16
     );
 
@@ -57,7 +57,7 @@ export class HexEditRuntime extends AppProcess {
 
   saveVariables(
     hexRows: [number, number][][],
-    decoded: string[][],
+    decoded: [string, number][][],
     offsetLength: number,
     offsets: number[]
   ) {
@@ -75,7 +75,7 @@ export class HexEditRuntime extends AppProcess {
 
       this.buffer.set(contents);
       this.view.set(new Uint8Array(contents));
-      this.original = this.view();
+      this.original.set(this.view());
     } catch {
       MessageBox(
         {
