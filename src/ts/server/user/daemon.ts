@@ -524,7 +524,7 @@ export class UserDaemon extends Process {
     );
 
     try {
-      const result = await this.fs.uploadSingleFile(
+      const result = await this.fs.uploadFiles(
         "U:/Wallpapers",
         "image/*",
         false,
@@ -568,7 +568,7 @@ export class UserDaemon extends Process {
 
     this.Log(`Uploading profile picture to U:/Pictures`);
 
-    const result = await this.fs.uploadSingleFile("U:/Pictures", "image/*");
+    const result = await this.fs.uploadFiles("U:/Pictures", "image/*");
     if (!result.length) return;
 
     const { path } = result[0];

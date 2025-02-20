@@ -42,6 +42,7 @@ export interface FilesystemProgress {
   type: "size" | "items" | "percentage";
   max: number;
   value: number;
+  what?: string;
 }
 
 export type FilesystemProgressCallback = (progress: FilesystemProgress) => void;

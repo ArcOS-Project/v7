@@ -8,7 +8,7 @@
   <button
     class="lucide icon-upload"
     aria-label="Upload..."
-    onclick={() => process.notImplemented("Uploading files")}
+    onclick={() => process.uploadItems()}
   ></button>
   <button
     class="lucide icon-download"

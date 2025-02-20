@@ -34,6 +34,12 @@ export class InitialSetupRuntime extends AppProcess {
 
   public readonly pageButtons: PageButtons = [
     {
+      left: {
+        caption: "Cancel",
+        action: async () => {
+          this.kernel.state?.loadState("login");
+        },
+      },
       previous: {
         disabled: () => true,
         caption: "Previous",

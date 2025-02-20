@@ -16,10 +16,69 @@
 
 #HexEdit div.container > div {
   padding: 10px;
+  min-height: 100%;
+  height: fit-content;
 }
 
-#HexEdit div.container > div > div {
+#HexEdit > div.body div.hex-editor {
+  background-color: var(--button-bg);
+}
+
+#HexEdit > div.body div.hex-editor div.hex-row {
+  height: 20px;
+  margin-bottom: 5px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
+}
+#HexEdit > div.body div.hex-editor input {
+  padding: 0;
+  background-color: var(--button-bg);
+  border: none;
+  width: 20px;
+  height: 20px;
+  min-width: unset !important;
+  font-family: "Source Code Pro";
+  border-radius: 3px;
+  text-align: center;
+}
+
+#HexEdit > div.body div.offsets {
+  width: 120px;
+}
+
+#HexEdit > div.body div.offsets button {
+  padding: 0;
+  display: block;
+  width: 100%;
+  height: 20px;
+  margin-bottom: 5px;
+  border-radius: 3px;
+  text-align: left;
+  background-color: transparent;
+}
+
+#HexEdit > div.body div.hex-editor input.changed {
+  font-weight: bold;
+}
+
+#HexEdit > div.body div.hex-editor input.nul {
+  opacity: 0.5;
+}
+
+#HexEdit > div.body div.hex-editor input.ascii-control {
+  color: var(--clr-green-fg);
+}
+
+#HexEdit > div.body div.hex-editor input.printable-ascii {
+  color: var(--clr-blue-fg);
+}
+
+#HexEdit > div.body div.hex-editor input.rest {
+  color: var(--clr-orange-fg);
+}
+
+#HexEdit > div.body div.decoded div {
+  height: 20px;
+  margin-bottom: 5px;
 }

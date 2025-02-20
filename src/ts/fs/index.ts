@@ -1,6 +1,7 @@
 import { GlobalDispatcher } from "$ts/dispatch";
 import type { WaveKernel } from "$ts/kernel";
 import { KernelModule } from "$ts/kernel/module";
+import { Sleep } from "$ts/sleep";
 import {
   type DirectoryReadReturn,
   type FilesystemProgress,
@@ -295,7 +296,7 @@ export class Filesystem extends KernelModule {
     return result;
   }
 
-  async uploadSingleFile(
+  async uploadFiles(
     target: string,
     accept = "*/*",
     multiple = false,
@@ -330,6 +331,7 @@ export class Filesystem extends KernelModule {
               max: files.length,
               value: i,
               type: "items",
+              what: `(${i + 1} / ${files.length}) ${file.name}`,
             });
 
             if (!file?.name) {
@@ -350,6 +352,8 @@ export class Filesystem extends KernelModule {
               file,
               content,
             });
+
+            await Sleep(100); // prevent rate limit
           }
 
           resolve(result);

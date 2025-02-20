@@ -85,3 +85,6 @@ export function sliceIntoChunks(arr: any[], chunkSize: number) {
 
   return res;
 }
+
+export const decimalToHex = (value: number, maxLength = 2) =>
+  value.toString(16).toUpperCase().padStart(maxLength, "0");

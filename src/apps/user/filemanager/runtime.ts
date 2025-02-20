@@ -1,9 +1,14 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { FilesystemDrive } from "$ts/fs/drive";
-import { getDriveLetter, getParentDirectory } from "$ts/fs/util";
+import {
+  getDirectoryName,
+  getDriveLetter,
+  getParentDirectory,
+} from "$ts/fs/util";
 import { ErrorIcon } from "$ts/images/dialog";
 import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
+import { UploadIcon } from "$ts/images/general";
 import { ShutdownIcon } from "$ts/images/power";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Sleep } from "$ts/sleep";
@@ -394,7 +399,7 @@ export class FileManagerRuntime extends AppProcess {
           {
             caption: "Unmount",
             action: async () => {
-              await this.fs.umountDrive(id);
+              await this.confirmUmountDrive(drive, id);
             },
             suggested: true,
           },
@@ -405,6 +410,57 @@ export class FileManagerRuntime extends AppProcess {
       this.pid,
       true
     );
+  }
+
+  async confirmUmountDrive(drive: FilesystemDrive, id: string) {
+    const { mutDone } = await this.userDaemon!.FileProgress(
+      {
+        max: 100,
+        done: 0,
+        working: true,
+        waiting: false,
+        errors: [],
+        type: "none",
+        icon: DriveIcon,
+        caption: `Unmounting ${drive.label || "drive"}...`,
+        subtitle: `${drive.driveLetter || drive.uuid}:/`,
+      },
+      this.pid
+    );
+
+    await Sleep(1000);
+
+    await this.fs.umountDrive(id);
+
+    mutDone(+99);
+    await Sleep(1000);
+    mutDone(+1);
+  }
+
+  async uploadItems() {
+    const prog = await this.userDaemon!.FileProgress(
+      {
+        type: "size",
+        icon: UploadIcon,
+        errors: [],
+        waiting: true,
+        working: false,
+        caption: "Uploading your files...",
+        subtitle: `To ${getDirectoryName(this.path())}`,
+        done: 0,
+        max: 0,
+      },
+      this.pid
+    );
+
+    await this.fs.uploadFiles(this.path(), "*/*", true, async (progress) => {
+      prog.setDone(0);
+      prog.setMax(progress.max + 1);
+      prog.setDone(progress.value);
+      if (progress.what) prog.updSub(progress.what);
+    });
+
+    prog.mutDone(+1);
   }
 
   public lockRefresh() {

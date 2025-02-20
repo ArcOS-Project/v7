@@ -116,13 +116,13 @@
         </button>
       {/each}
     </div>
-    <button
-      class="add"
-      aria-label="Add Desktop"
-      onclick={() => userDaemon?.createWorkspace()}
-      disabled={workspaces.length >= 10}
-    >
-      <span class="lucide icon-plus"></span>
-    </button>
   {/if}
+  <button
+    class="add"
+    aria-label="Add Desktop"
+    onclick={() => userDaemon?.createWorkspace()}
+    disabled={workspaces.length >= 10}
+  >
+    <span class="lucide icon-plus"></span>
+  </button>
 </div>

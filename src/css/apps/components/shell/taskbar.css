@@ -45,6 +45,14 @@ div.shell.docked div.taskbar {
   background-color: var(--button-glass-bg);
 }
 
+#arcShell div.shell div.taskbar > button:hover {
+  background-color: var(--button-glass-hover-bg);
+}
+
+#arcShell div.shell div.taskbar > button:active {
+  background-color: var(--button-glass-active-bg);
+}
+
 div.shell div.taskbar button.start-button img {
   height: 30px;
 }

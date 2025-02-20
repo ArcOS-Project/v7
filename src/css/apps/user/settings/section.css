@@ -4,6 +4,10 @@
   margin-top: 20px;
 }
 
+#systemSettings section:last-child {
+  padding-bottom: 30px;
+}
+
 #systemSettings section p.caption {
   padding: 0 10px;
   margin-bottom: 8px;
