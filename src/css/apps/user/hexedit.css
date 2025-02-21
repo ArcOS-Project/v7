@@ -81,6 +81,10 @@
   background-color: var(--clr-orange-bg);
 }
 
+#HexEdit > div.body .invalid {
+  background-color: var(--clr-red-bg) !important;
+}
+
 #HexEdit > div.body div.decoded div {
   height: 20px;
   margin-bottom: 5px;

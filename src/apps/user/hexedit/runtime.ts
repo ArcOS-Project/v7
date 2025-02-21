@@ -75,7 +75,7 @@ export class HexEditRuntime extends AppProcess {
 
       this.buffer.set(contents);
       this.view.set(new Uint8Array(contents));
-      this.original.set(this.view());
+      this.original.set(new Uint8Array(this.view()));
     } catch {
       MessageBox(
         {
@@ -108,5 +108,14 @@ export class HexEditRuntime extends AppProcess {
     } else {
       return "rest"; // Orange (everything else)
     }
+  }
+
+  newByte() {
+    const view = this.view();
+    const newView = new Uint8Array(view.length + 1);
+
+    newView.set(view);
+
+    this.view.set(newView);
   }
 }

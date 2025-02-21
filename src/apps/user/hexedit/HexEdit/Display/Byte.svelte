@@ -4,6 +4,8 @@
   import { Store, type ReadableStore } from "$ts/writable";
   import { onMount } from "svelte";
   import type { HexEditRuntime } from "../../runtime";
+  import { MessageBox } from "$ts/dialog";
+  import { ErrorIcon } from "$ts/images/dialog";
 
   let {
     byte,
@@ -25,28 +27,59 @@
   let decimal = $state<number | undefined>();
   let disabled = $state<boolean>(false);
   let className = $state<string>(process.getByteClass(byte));
+  let invalid = $state<boolean>(false);
 
   onMount(() => {
     value.subscribe(async (v) => {
+      if (!v) return;
+
       decimal = v.length === 2 ? Number(`0x${v}`) : undefined;
       className = process.getByteClass(decimal || 0);
 
-      if (v.length === 2) {
-        const nextInput = $editorInputs[index + 1];
+      if (v.length === 2 && decimal !== original?.[index]) {
+        invalid = false;
+        $editorInputs[index]?.blur();
 
-        if (!nextInput) return;
+        if (v.match(/[a-fA-F0-9]{2}/g)) {
+          let nextInput = $editorInputs[index + 1];
 
-        disabled = true;
+          if (!nextInput) return;
 
-        await Sleep(50);
+          disabled = true;
 
-        nextInput.focus();
-        nextInput.select();
+          await Sleep(50);
 
-        $view[index] = decimal ?? byte;
-        byte = decimal ?? byte;
+          nextInput.focus();
+          nextInput.select();
 
-        disabled = false;
+          $view[index] = decimal ?? byte;
+          byte = decimal ?? byte;
+
+          disabled = false;
+        } else {
+          invalid = true;
+          MessageBox(
+            {
+              title: "Invalid byte",
+              message: `The byte you entered at offset ${index} is invalid, expected a hex value (0-9 A-F) but got '${v}'. You have to change this byte before being able to save the file you're working on.`,
+              image: ErrorIcon,
+              sound: "arcos.dialog.error",
+              buttons: [
+                {
+                  caption: "Reset this byte",
+                  action: () => {
+                    if (!original?.[index]) return;
+
+                    $value = decimalToHex(original?.[index]);
+                  },
+                },
+                { caption: "Okay", action: () => {}, suggested: true },
+              ],
+            },
+            process.pid,
+            true
+          );
+        }
       }
     });
   });
@@ -64,6 +97,7 @@
   bind:value={$value}
   bind:this={$editorInputs[index]}
   class:changed={decimal !== original?.[index]}
+  class:invalid
   class={className}
   {onkeydown}
   {disabled}
