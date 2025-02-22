@@ -22,7 +22,7 @@
     dayjs.extend(updateLocale);
     dayjs.updateLocale("en", RelativeTimeMod);
 
-    date = dayjs(file.dateModified).fromNow();
+    date = dayjs(new Date(file.dateModified).getTime() - 2000).fromNow();
 
     const m = fromMime(file.mimeType);
 

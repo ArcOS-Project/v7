@@ -159,10 +159,10 @@ export class Filesystem extends KernelModule {
     this.validatePath(path);
 
     const drive = this.getDriveByPath(path);
-    path = this.removeDriveLetter(path);
+    const scopedPath = this.removeDriveLetter(path);
 
     const parent = getParentDirectory(path);
-    const result = await drive.createDirectory(path);
+    const result = await drive.createDirectory(scopedPath);
 
     this.dispatch.dispatch("fs-flush-folder", parent);
 
@@ -199,11 +199,9 @@ export class Filesystem extends KernelModule {
     this.validatePath(path);
 
     const drive = this.getDriveByPath(path);
-
-    path = this.removeDriveLetter(path);
-
+    const scopedPath = this.removeDriveLetter(path);
     const parent = getParentDirectory(path);
-    const result = await drive.writeFile(path, data, onProgress);
+    const result = await drive.writeFile(scopedPath, data, onProgress);
 
     this.dispatch.dispatch("fs-flush-file", path);
     this.dispatch.dispatch("fs-flush-folder", parent);
@@ -265,10 +263,9 @@ export class Filesystem extends KernelModule {
 
     const drive = this.getDriveByPath(source);
 
-    source = this.removeDriveLetter(source);
-    destination = this.removeDriveLetter(destination);
-
-    const result = await drive.moveItem(source, destination);
+    const scopedDestination = this.removeDriveLetter(destination);
+    const scopedSource = this.removeDriveLetter(source);
+    const result = await drive.moveItem(scopedSource, scopedDestination);
     const sourceParent = getParentDirectory(source);
     const destinationParent = getParentDirectory(destination);
 
@@ -285,11 +282,9 @@ export class Filesystem extends KernelModule {
     this.validatePath(path);
 
     const drive = this.getDriveByPath(path);
-
-    path = this.removeDriveLetter(path);
-
+    const scopedPath = this.removeDriveLetter(path);
     const parent = getParentDirectory(path);
-    const result = await drive.deleteItem(path);
+    const result = await drive.deleteItem(scopedPath);
 
     this.dispatch.dispatch("fs-flush-folder", parent);
 

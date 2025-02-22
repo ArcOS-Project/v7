@@ -6,12 +6,13 @@ import {
   getDriveLetter,
   getParentDirectory,
 } from "$ts/fs/util";
-import { ErrorIcon } from "$ts/images/dialog";
+import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
-import { UploadIcon } from "$ts/images/general";
+import { TrashIcon, UploadIcon } from "$ts/images/general";
 import { ShutdownIcon } from "$ts/images/power";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Sleep } from "$ts/sleep";
+import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
 import type {
   AppContextMenu,
@@ -215,10 +216,16 @@ export class FileManagerRuntime extends AppProcess {
     this.globalDispatch.subscribe("fs-umount-drive", () => this.updateDrives());
     this.globalDispatch.subscribe("fs-mount-drive", () => this.updateDrives());
 
-    this.globalDispatch.subscribe("fs-flush-folder", ([path]) => {
-      if (path && path.startsWith("U:")) {
+    this.globalDispatch.subscribe<string>("fs-flush-folder", (path) => {
+      if (!path) return;
+
+      if (path.startsWith("U:")) {
         this.updateRootFolders();
       }
+
+      console.log(path);
+
+      if (this.path().startsWith(path) || this.path() === path) this.refresh();
     });
     this.starting.set(false);
   }
@@ -413,7 +420,7 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   async confirmUmountDrive(drive: FilesystemDrive, id: string) {
-    const { mutDone } = await this.userDaemon!.FileProgress(
+    const { mutDone, show } = await this.userDaemon!.FileProgress(
       {
         max: 100,
         done: 0,
@@ -427,6 +434,8 @@ export class FileManagerRuntime extends AppProcess {
       },
       this.pid
     );
+
+    show();
 
     await Sleep(1000);
 
@@ -454,6 +463,7 @@ export class FileManagerRuntime extends AppProcess {
     );
 
     await this.fs.uploadFiles(this.path(), "*/*", true, async (progress) => {
+      prog.show();
       prog.setDone(0);
       prog.setMax(progress.max + 1);
       prog.setDone(progress.value);
@@ -475,5 +485,61 @@ export class FileManagerRuntime extends AppProcess {
 
   async openFile(path: string) {
     return await this.userDaemon?.spawnApp("HexEdit", this.pid, path);
+  }
+
+  async deleteSelected() {
+    const items = this.selection();
+    if (!items.length) return;
+
+    MessageBox(
+      {
+        title: `Delete ${items.length} ${Plural("item", items.length)}?`,
+        message: `Are you sure you want to <b>permanently</b> delete the selected ${Plural(
+          "item",
+          items.length
+        )}? This cannot be undone.`,
+        buttons: [
+          { caption: "Cancel", action: () => {} },
+          {
+            caption: "Delete",
+            action: () => this.confirmDeleteSelected(),
+            suggested: true,
+          },
+        ],
+        sound: "arcos.dialog.warning",
+        image: WarningIcon,
+      },
+      this.pid,
+      true
+    );
+  }
+
+  async confirmDeleteSelected() {
+    const items = this.selection();
+    const prog = await this.userDaemon!.FileProgress({
+      max: items.length,
+      done: 0,
+      working: false,
+      waiting: true,
+      errors: [],
+      type: "quantity",
+      icon: TrashIcon,
+      caption: `Deleting ${items.length} ${Plural("item", items.length)}...`,
+      subtitle: "Working...",
+    });
+
+    prog.show();
+
+    for (const item of items) {
+      prog.updSub(item);
+
+      try {
+        await this.fs.deleteItem(item);
+      } catch {
+        prog.mutErr(`Failed to delete ${item}`);
+      }
+
+      prog.setDone(+1);
+    }
   }
 }

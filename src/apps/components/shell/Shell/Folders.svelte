@@ -19,7 +19,7 @@
   let dirs: FolderEntry[] = $state([]);
 
   $effect(() => {
-    onFolderChange("", update);
+    onFolderChange("U:/", update);
   });
 
   async function update() {

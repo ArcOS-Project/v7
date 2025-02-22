@@ -1,12 +1,12 @@
 <script lang="ts">
+  import { RelativeTimeMod } from "$ts/dayjs";
+  import { join } from "$ts/fs/util";
   import { FolderIcon } from "$ts/images/filesystem";
   import type { FolderEntry } from "$types/fs";
   import dayjs from "dayjs";
-  import type { FileManagerRuntime } from "../../runtime";
-  import { RelativeTimeMod } from "$ts/dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
-  import { join } from "$ts/fs/util";
+  import type { FileManagerRuntime } from "../../runtime";
 
   const { process, dir }: { process: FileManagerRuntime; dir: FolderEntry } =
     $props();
@@ -20,7 +20,7 @@
     dayjs.extend(updateLocale);
     dayjs.updateLocale("en", RelativeTimeMod);
 
-    date = dayjs(dir.dateModified).fromNow();
+    date = dayjs(new Date(dir.dateModified).getTime() - 2000).fromNow();
     thisPath = join(process.path(), dir.name);
   });
 

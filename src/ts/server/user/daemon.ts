@@ -529,6 +529,7 @@ export class UserDaemon extends Process {
         "image/*",
         false,
         (progress) => {
+          prog.show();
           prog.setMax(progress.max);
           prog.setDone(progress.value);
           prog.setWork(true);
@@ -1459,24 +1460,30 @@ export class UserDaemon extends Process {
   ): Promise<FileProgressMutator> {
     const progress = Store<FsProgressOperation>(initialData);
     let process: FsProgressRuntime | undefined;
+    let shown = false;
 
-    if (!parentPid) {
-      process = await this.spawnApp<FsProgressRuntime>(
-        "FsProgress",
-        0,
-        progress
-      );
+    const show = async () => {
+      if (shown) return;
+      shown = true;
 
-      if (typeof process == "string") return DummyFileProgress;
-    } else {
-      process = await this.spawnOverlay<FsProgressRuntime>(
-        "FsProgress",
-        parentPid,
-        progress
-      );
+      if (!parentPid) {
+        process = await this.spawnApp<FsProgressRuntime>(
+          "FsProgress",
+          0,
+          progress
+        );
 
-      if (typeof process == "string") return DummyFileProgress;
-    }
+        if (typeof process == "string") return DummyFileProgress;
+      } else {
+        process = await this.spawnOverlay<FsProgressRuntime>(
+          "FsProgress",
+          parentPid,
+          progress
+        );
+
+        if (typeof process == "string") return DummyFileProgress;
+      }
+    };
 
     const mutateMax = (mutator: number) =>
       progress.update((v) => {
@@ -1555,6 +1562,7 @@ export class UserDaemon extends Process {
       mutErr,
       setErrors,
       stop,
+      show,
     };
   }
 
@@ -1564,7 +1572,7 @@ export class UserDaemon extends Process {
     const destinationName = getDirectoryName(destination);
     const destinationDrive = getDriveLetter(destination, true);
 
-    const { updSub, setWait, setWork, mutErr, mutDone } =
+    const { updSub, setWait, setWork, mutErr, mutDone, show } =
       await this.FileProgress(
         {
           type: "quantity",
@@ -1583,6 +1591,7 @@ export class UserDaemon extends Process {
     for (const source of sources) {
       const sourceDrive = getDriveLetter(source, true);
 
+      show();
       updSub(source);
       setWait(false);
       setWork(true);
@@ -1608,7 +1617,7 @@ export class UserDaemon extends Process {
     const destinationName = getDirectoryName(destination);
     const destinationDrive = getDriveLetter(destination, true);
 
-    const { updSub, setWait, setWork, mutErr, mutDone } =
+    const { updSub, setWait, setWork, mutErr, mutDone, show } =
       await this.FileProgress(
         {
           type: "quantity",
@@ -1627,6 +1636,7 @@ export class UserDaemon extends Process {
     for (const source of sources) {
       const sourceDrive = getDriveLetter(source, true);
 
+      show();
       updSub(source);
       setWait(false);
       setWork(true);
