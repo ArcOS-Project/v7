@@ -42,9 +42,7 @@ export class FsProgressRuntime extends AppProcess {
           `${v.errors.length} ${P("Error", v.errors.length)} occured while <b>${
             v.caption
           }</b> was running.`,
-          `<code class='block'>`,
-          v.errors.join("\n"),
-          `</code>`,
+          `<code class='block'> - ${v.errors.join("<br> - ")}</code>`,
         ];
 
         MessageBox(
@@ -54,8 +52,8 @@ export class FsProgressRuntime extends AppProcess {
             buttons: [
               {
                 caption: "Okay",
-                action() {
-                  stop();
+                action: () => {
+                  this.closeWindow();
                 },
                 suggested: true,
               },

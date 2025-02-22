@@ -306,12 +306,12 @@ export class Filesystem extends KernelModule {
 
     return new Promise((resolve, reject) => {
       const result: UploadReturn = [];
-      try {
-        uploader.type = "file";
-        uploader.accept = accept;
-        uploader.multiple = multiple;
+      uploader.type = "file";
+      uploader.accept = accept;
+      uploader.multiple = multiple;
 
-        uploader.onchange = async () => {
+      uploader.onchange = async () => {
+        try {
           const files = uploader.files;
 
           if (!files || !files.length) {
@@ -352,10 +352,10 @@ export class Filesystem extends KernelModule {
           }
 
           resolve(result);
-        };
-      } catch (e) {
-        return reject(e);
-      }
+        } catch (e) {
+          return reject(e);
+        }
+      };
 
       uploader.click();
     });

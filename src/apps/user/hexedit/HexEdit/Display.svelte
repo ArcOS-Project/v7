@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import type { HexEditRuntime } from "../runtime";
   import Byte from "./Display/Byte.svelte";
 
@@ -13,17 +12,10 @@
 </script>
 
 <div class="hex-editor">
-  {#each $hexRows.slice(startIndex, endIndex) as rows, rowIndex (startIndex + rowIndex)}
+  {#each $hexRows.slice(startIndex, endIndex) as row, rowIndex (startIndex + rowIndex)}
     <div class="hex-row">
-      {#each rows as [byte, index]}
-        <Byte
-          {byte}
-          {index}
-          {view}
-          {editorInputs}
-          original={$original}
-          {process}
-        />
+      {#each row as [byte, index]}
+        <Byte {byte} {index} original={$original} {process} {rowIndex} />
       {/each}
     </div>
   {/each}

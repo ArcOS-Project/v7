@@ -255,7 +255,7 @@ export class AppProcess extends Process {
     el.blur();
   }
 
-  async spawnOverlay(id: string) {
+  async spawnOverlay(id: string, ...args: any[]) {
     const metadata = this.overlayStore[id];
 
     if (!metadata) {
@@ -271,7 +271,8 @@ export class AppProcess extends Process {
       {
         data: { ...metadata, overlay: true },
         id,
-      }
+      },
+      ...args
     ));
   }
 

@@ -4,7 +4,8 @@ import { WarningIcon } from "$ts/images/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
 import { sliceIntoChunks } from "$ts/util";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { App, AppProcessData } from "$types/app";
+import { EditRow } from "./editrow/metadata";
 
 export class HexEditRuntime extends AppProcess {
   buffer = Store<ArrayBuffer>();
@@ -16,6 +17,9 @@ export class HexEditRuntime extends AppProcess {
   decoded = Store<[string, number][][]>([]);
   requestedFile: string;
   editorInputs = Store<HTMLInputElement[]>([]);
+  protected overlayStore: Record<string, App> = {
+    editRow: EditRow,
+  };
 
   constructor(
     handler: ProcessHandler,
@@ -117,5 +121,9 @@ export class HexEditRuntime extends AppProcess {
     newView.set(view);
 
     this.view.set(newView);
+  }
+
+  async alterRow(rowIndex: number) {
+    this.spawnOverlay("editRow", this.view, rowIndex);
   }
 }

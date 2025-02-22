@@ -21,6 +21,7 @@ export interface FileProgressMutator {
   setMax: (value: number) => void;
   setDone: (value: number) => void;
   setErrors: (value: string[]) => void;
+  setCancel: (cancel: (() => void) | undefined) => void;
   updateCaption: (caption: string) => void;
   updSub: (subtitle: string) => void;
   setWait: (waiting: boolean) => void;
@@ -43,4 +44,5 @@ export const DummyFileProgress: FileProgressMutator = {
   setErrors: (_: string[]) => {},
   stop: () => {},
   show: () => {},
+  setCancel: (_: (() => void) | undefined) => {},
 };

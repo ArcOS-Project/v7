@@ -462,13 +462,19 @@ export class FileManagerRuntime extends AppProcess {
       this.pid
     );
 
-    await this.fs.uploadFiles(this.path(), "*/*", true, async (progress) => {
-      prog.show();
-      prog.setDone(0);
-      prog.setMax(progress.max + 1);
-      prog.setDone(progress.value);
-      if (progress.what) prog.updSub(progress.what);
-    });
+    try {
+      await this.fs.uploadFiles(this.path(), "*/*", true, async (progress) => {
+        prog.show();
+        prog.setDone(0);
+        prog.setMax(progress.max + 1);
+        prog.setDone(progress.value);
+        if (progress.what) prog.updSub(progress.what);
+      });
+    } catch {
+      prog.mutErr(
+        `Failed to upload files! One of the files you tried to upload might be too big.`
+      );
+    }
 
     prog.mutDone(+1);
   }

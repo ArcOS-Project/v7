@@ -1549,6 +1549,14 @@ export class UserDaemon extends Process {
       process?.closeWindow();
     };
 
+    const setCancel = (cancel: (() => void) | undefined) => {
+      progress.update((v) => {
+        v.cancel = cancel;
+
+        return v;
+      });
+    };
+
     return {
       progress,
       mutateMax,
@@ -1563,6 +1571,7 @@ export class UserDaemon extends Process {
       setErrors,
       stop,
       show,
+      setCancel,
     };
   }
 

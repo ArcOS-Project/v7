@@ -31,7 +31,9 @@
   align-items: center;
   gap: 5px;
 }
-#HexEdit > div.body div.hex-editor input {
+
+#EditRow > div.body div.bytes input,
+#HexEdit > div.body div.hex-editor button {
   padding: 0;
   background-color: var(--button-bg);
   border: none;
@@ -41,6 +43,7 @@
   font-family: "Source Code Pro";
   border-radius: 3px;
   text-align: center;
+  text-transform: uppercase;
 }
 
 #HexEdit > div.body div.offsets {
@@ -58,34 +61,70 @@
   background-color: transparent;
 }
 
-#HexEdit > div.body div.hex-editor input.changed {
+#EditRow > div.body input.changed,
+#HexEdit > div.body div.hex-editor button.changed {
   font-weight: bold;
 }
 
-#HexEdit > div.body .nul {
+#HexEdit div.body .nul {
   opacity: 0.5;
 }
 
-#HexEdit > div.body .ascii-control {
+#HexEdit div.body .ascii-control {
   color: var(--clr-green-fg);
   background-color: var(--clr-green-bg);
 }
 
-#HexEdit > div.body .printable-ascii {
+#HexEdit div.body .printable-ascii {
   color: var(--clr-blue-fg);
   background-color: var(--clr-blue-bg);
 }
 
-#HexEdit > div.body .rest {
+#HexEdit div.body .rest {
   color: var(--clr-orange-fg);
   background-color: var(--clr-orange-bg);
 }
 
-#HexEdit > div.body .invalid {
+#HexEdit div.body .invalid {
   background-color: var(--clr-red-bg) !important;
 }
 
 #HexEdit > div.body div.decoded div {
   height: 20px;
   margin-bottom: 5px;
+}
+
+#EditRow > div.body {
+  padding: 0;
+}
+
+#EditRow > div.body div.top {
+  height: calc(100% - 51px);
+  padding: 20px;
+}
+
+#EditRow > div.body div.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+#EditRow > div.body div.row div.offset {
+  font-family: "Source Code Pro";
+}
+
+#EditRow > div.body div.bytes {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+#EditRow > div.body div.bytes input {
+  background-color: transparent;
+}
+
+#EditRow > div.body input.invalid {
+  background-color: var(--clr-red-fg) !important;
+  color: var(--clr-red-bg) !important;
+  font-weight: bold;
 }
