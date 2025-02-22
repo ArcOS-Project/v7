@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import type { ProcessHandler } from "$ts/process/handler";
+import { Sleep } from "$ts/sleep";
 import { sliceIntoChunks } from "$ts/util";
 import { Store, type ReadableStore } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -64,23 +65,10 @@ export class EditRowRuntime extends AppProcess {
 
   async writeBytes() {
     const view = this.view();
-    const array = Array.from(view);
-    const rows = sliceIntoChunks(
-      array.map((b, i) => [b, i]),
-      16
-    );
-    const bytes = rows
-      .filter(([_, b]) => !!b)
-      .map((v) => v[1])
-      .flat();
 
-    this.output.update((v) => {
-      for (const [byte, index] of bytes) {
-        v[index] = byte;
-      }
-
-      return v;
-    });
+    this.output.set(new Uint8Array());
+    await Sleep(0);
+    this.output.set(view);
 
     this.closeWindow();
   }

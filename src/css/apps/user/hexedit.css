@@ -61,6 +61,11 @@
   background-color: transparent;
 }
 
+#HexEdit > div.body div.offsets button:hover {
+  color: var(--accent-lighter);
+  font-weight: bold;
+}
+
 #EditRow > div.body input.changed,
 #HexEdit > div.body div.hex-editor button.changed {
   font-weight: bold;
@@ -110,6 +115,11 @@
   margin-bottom: 5px;
 }
 
+#EditRow > div.body div.row.primary div.offset {
+  font-weight: bold;
+  color: var(--accent-lighter);
+}
+
 #EditRow > div.body div.row div.offset {
   font-family: "Source Code Pro";
 }
@@ -127,4 +137,33 @@
   background-color: var(--clr-red-fg) !important;
   color: var(--clr-red-bg) !important;
   font-weight: bold;
+}
+
+#EditRow div.bottom {
+  display: flex;
+  margin-top: auto;
+  justify-content: end;
+  align-items: end;
+  border-top: var(--win-border);
+  padding: 10px;
+  background-color: var(--button-bg);
+  min-height: 50px;
+  gap: 10px;
+}
+
+#EditRow div.bottom button {
+  min-width: 70px;
+  margin: 0;
+}
+
+#EditRow div.bottom button:not(.suggested) {
+  background-color: var(--button-hover-bg);
+}
+
+#EditRow div.bottom button:not(.suggested):hover {
+  background-color: var(--button-glass-hover-bg);
+}
+
+#EditRow div.bottom button:not(.suggested):active {
+  background-color: var(--button-active-bg);
 }

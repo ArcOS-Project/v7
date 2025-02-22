@@ -38,7 +38,7 @@
         $editorInputs[index]?.blur();
 
         if (v.match(/[a-fA-F0-9]{2}/g)) {
-          if ($view[index] !== $output[index]) $view[index] = decimal ?? byte;
+          if (decimal !== $output[index]) $view[index] = decimal ?? byte;
 
           let nextInput = $editorInputs[index + 1];
 

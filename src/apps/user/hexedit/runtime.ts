@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { WarningIcon } from "$ts/images/dialog";
+import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
 import { sliceIntoChunks } from "$ts/util";
 import { Store } from "$ts/writable";
@@ -16,7 +16,7 @@ export class HexEditRuntime extends AppProcess {
   hexRows = Store<[number, number][][]>([]);
   decoded = Store<[string, number][][]>([]);
   requestedFile: string;
-  editorInputs = Store<HTMLInputElement[]>([]);
+  editorInputs = Store<HTMLButtonElement[]>([]);
   protected overlayStore: Record<string, App> = {
     editRow: EditRow,
   };
@@ -77,6 +77,24 @@ export class HexEditRuntime extends AppProcess {
 
       if (!contents) throw new Error();
 
+      if (contents.byteLength >= 20 * 1024 * 1024) {
+        MessageBox(
+          {
+            title: "File too big",
+            message: `HexEdit can't open files larger than 20MB at this time. Please choose another application.`,
+            buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+            image: ErrorIcon,
+            sound: "arcos.dialog.error",
+          },
+          this.parentPid,
+          true
+        );
+
+        this.closeWindow();
+
+        return;
+      }
+
       this.buffer.set(contents);
       this.view.set(new Uint8Array(contents));
       this.original.set(new Uint8Array(this.view()));
@@ -90,9 +108,11 @@ export class HexEditRuntime extends AppProcess {
           image: WarningIcon,
           sound: "arcos.dialog.warning",
         },
-        this.pid,
+        this.parentPid,
         true
       );
+
+      this.closeWindow();
     }
   }
 

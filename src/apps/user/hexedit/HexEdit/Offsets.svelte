@@ -13,10 +13,11 @@
 
 <div class="offsets">
   {#each $offsets.slice(startIndex, endIndex) as offset, i}
-    <!-- {#key startIndex} -->
-    <button class="offset {i + startIndex} ">
+    <button
+      class="offset {i + startIndex} "
+      onclick={() => process.alterRow(offset / 16)}
+    >
       {decimalToHex(offset, 8)}
     </button>
-    <!-- {/key} -->
   {/each}
 </div>
