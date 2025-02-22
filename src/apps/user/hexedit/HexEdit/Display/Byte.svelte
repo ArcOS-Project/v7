@@ -2,10 +2,11 @@
   import { Sleep } from "$ts/sleep";
   import { decimalToHex } from "$ts/util";
   import { Store, type ReadableStore } from "$ts/writable";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import type { HexEditRuntime } from "../../runtime";
   import { MessageBox } from "$ts/dialog";
   import { ErrorIcon } from "$ts/images/dialog";
+  import type { Unsubscriber } from "svelte/store";
 
   let {
     byte,
@@ -28,15 +29,17 @@
   let disabled = $state<boolean>(false);
   let className = $state<string>(process.getByteClass(byte));
   let invalid = $state<boolean>(false);
+  let unsub: Unsubscriber;
 
   onMount(() => {
-    value.subscribe(async (v) => {
+    $editorInputs[index]?.focus();
+    unsub = value.subscribe(async (v) => {
       if (!v) return;
 
       decimal = v.length === 2 ? Number(`0x${v}`) : undefined;
       className = process.getByteClass(decimal || 0);
 
-      if (v.length === 2 && decimal !== original?.[index]) {
+      if (v.length === 2) {
         invalid = false;
         $editorInputs[index]?.blur();
 
@@ -47,13 +50,10 @@
 
           disabled = true;
 
-          await Sleep(50);
+          // await Sleep(50);
 
           nextInput.focus();
           nextInput.select();
-
-          $view[index] = decimal ?? byte;
-          byte = decimal ?? byte;
 
           disabled = false;
         } else {
@@ -84,9 +84,12 @@
     });
   });
 
-  function onkeydown(e: KeyboardEvent) {
-    if (e.key !== "Enter") return;
+  onDestroy(() => {
+    unsub?.();
+  });
 
+  async function onkeydown(e: KeyboardEvent) {
+    await Sleep(10);
     $view[index] = decimal ?? byte;
     byte = decimal ?? byte;
   }
@@ -97,6 +100,7 @@
   bind:value={$value}
   bind:this={$editorInputs[index]}
   class:changed={decimal !== original?.[index]}
+  maxlength="2"
   class:invalid
   class={className}
   {onkeydown}
