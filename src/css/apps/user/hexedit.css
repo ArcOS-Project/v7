@@ -1,9 +1,10 @@
 #HexEdit div.container {
-  height: 100%;
+  height: calc(100% - 27px);
   display: flex;
   align-items: start;
   font-family: "Source Code Pro";
   /* overflow-y: auto; */
+  overflow: hidden;
 }
 
 #HexEdit > div.body {
@@ -22,6 +23,8 @@
 
 #HexEdit > div.body div.hex-editor {
   background-color: var(--button-bg);
+  width: 416px;
+  min-width: 416px;
 }
 
 #HexEdit > div.body div.hex-editor div.hex-row {
@@ -30,6 +33,12 @@
   display: flex;
   align-items: center;
   gap: 5px;
+}
+
+#HexEdit > div.body div.decoded div:last-child,
+#HexEdit > div.body div.offsets button:last-child,
+#HexEdit > div.body div.hex-editor div.hex-row:last-child {
+  margin-bottom: 0;
 }
 
 #EditRow > div.body div.bytes input,
@@ -47,7 +56,7 @@
 }
 
 #HexEdit > div.body div.offsets {
-  width: 120px;
+  width: 100px;
 }
 
 #HexEdit > div.body div.offsets button {
@@ -57,13 +66,16 @@
   height: 20px;
   margin-bottom: 5px;
   border-radius: 3px;
-  text-align: left;
+  text-align: right;
   background-color: transparent;
+  opacity: 0.5;
+  transition: none;
 }
 
 #HexEdit > div.body div.offsets button:hover {
   color: var(--accent-lighter);
   font-weight: bold;
+  opacity: 1;
 }
 
 #EditRow > div.body input.changed,
@@ -166,4 +178,65 @@
 
 #EditRow div.bottom button:not(.suggested):active {
   background-color: var(--button-active-bg);
+}
+
+#HexEdit div.virtual-scrollbar {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 26px;
+  padding: 5px 4.5px !important;
+}
+
+#HexEdit div.virtual-scrollbar button {
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+#HexEdit div.virtual-scrollbar div.track {
+  height: calc(100% - 64px);
+  flex-grow: 1;
+  position: relative;
+  width: 100%;
+}
+
+#HexEdit div.virtual-scrollbar div.inner {
+  width: 4px;
+  position: absolute;
+  background-color: var(--accent);
+  height: var(--height);
+  left: 6px;
+  top: var(--top);
+  border-radius: 2px;
+  min-height: 8px;
+}
+
+#HexEdit div.status-bar {
+  display: flex;
+  align-items: center;
+  height: 27px;
+  border-top: var(--win-border);
+}
+
+#HexEdit div.status-bar div.segment {
+  padding: 0 10px;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  height: 26px;
+  line-height: 26px;
+}
+
+#HexEdit div.status-bar div.segment + div.segment {
+  border-left: var(--win-border);
+}
+
+#HexEdit div.status-bar div.segment.size {
+  margin-left: auto;
 }

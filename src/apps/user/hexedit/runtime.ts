@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { getDirectoryName } from "$ts/fs/util";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
 import { sliceIntoChunks } from "$ts/util";
@@ -17,6 +18,8 @@ export class HexEditRuntime extends AppProcess {
   decoded = Store<[string, number][][]>([]);
   requestedFile: string;
   editorInputs = Store<HTMLButtonElement[]>([]);
+  filename = Store<string>();
+
   protected overlayStore: Record<string, App> = {
     editRow: EditRow,
   };
@@ -95,6 +98,7 @@ export class HexEditRuntime extends AppProcess {
         return;
       }
 
+      this.filename.set(getDirectoryName(this.requestedFile));
       this.buffer.set(contents);
       this.view.set(new Uint8Array(contents));
       this.original.set(new Uint8Array(this.view()));

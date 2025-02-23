@@ -11,9 +11,9 @@ export const HexEditorApp: App = {
     icon: ComponentIcon,
     author: "Izaak Kuipers",
   },
-  size: { w: 694, h: 456 },
-  minSize: { w: 694, h: 456 },
-  maxSize: { w: 694, h: 456 },
+  size: { w: 700, h: 485 },
+  minSize: { w: 700, h: 485 },
+  maxSize: { w: 700, h: 485 },
   position: { centered: true },
   assets: {
     runtime: HexEditRuntime,
