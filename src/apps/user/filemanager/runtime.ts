@@ -53,7 +53,7 @@ export class FileManagerRuntime extends AppProcess {
           unmount();
         },
         icon: "x",
-        disabled: (drive: FilesystemDrive) => drive.FIXED,
+        disabled: (drive: QuotedDrive) => drive.data.FIXED,
       },
     ],
     "file-item": [
