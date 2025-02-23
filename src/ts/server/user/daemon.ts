@@ -1458,11 +1458,17 @@ export class UserDaemon extends Process {
     initialData: FsProgressOperation,
     parentPid?: number
   ): Promise<FileProgressMutator> {
+    const uuid = crypto.randomUUID();
     const progress = Store<FsProgressOperation>(initialData);
     let process: FsProgressRuntime | undefined;
     let shown = false;
 
+    const Log = (m: string) => this.Log(`FileProgress::${uuid}: ${m}`);
+
+    this.Log(`Creating file progress '${uuid}': ${initialData.caption}`);
+
     const show = async () => {
+      Log(`Showing`);
       if (shown) return;
       shown = true;
 
@@ -1485,71 +1491,105 @@ export class UserDaemon extends Process {
       }
     };
 
-    const mutateMax = (mutator: number) =>
+    const mutateMax = (mutator: number) => {
+      Log(`Mutating max value: ${mutator}`);
+
       progress.update((v) => {
         v.max += mutator;
         return v;
       });
+    };
 
-    const mutDone = (mutator: number) =>
+    const mutDone = (mutator: number) => {
+      Log(`Mutating done: ${mutator}`);
+
       progress.update((v) => {
         v.done += mutator;
         return v;
       });
+    };
 
-    const setMax = (value: number) =>
+    const setMax = (value: number) => {
+      Log(`Setting max value: ${value}`);
+
       progress.update((v) => {
         v.max = value;
         return v;
       });
+    };
 
-    const setDone = (value: number) =>
+    const setDone = (value: number) => {
+      Log(`Setting done: ${value}`);
+
       progress.update((v) => {
         v.done = value;
         return v;
       });
+    };
 
-    const updateCaption = (caption: string) =>
+    const updateCaption = (caption: string) => {
+      Log(`Updating caption: ${caption}`);
+
       progress.update((v) => {
         v.caption = caption;
         return v;
       });
+    };
 
-    const updSub = (subtitle: string) =>
+    const updSub = (subtitle: string) => {
+      Log(`Updating subtitle: ${subtitle}`);
+
       progress.update((v) => {
         v.subtitle = subtitle;
         return v;
       });
+    };
 
-    const setWait = (waiting: boolean) =>
+    const setWait = (waiting: boolean) => {
+      Log(`Setting wait: ${waiting}`);
+
       progress.update((v) => {
         v.waiting = waiting;
         return v;
       });
+    };
 
-    const setWork = (working: boolean) =>
+    const setWork = (working: boolean) => {
+      Log(`Setting working: ${working}`);
+
       progress.update((v) => {
         v.working = working;
         return v;
       });
+    };
 
-    const mutErr = (error: string) =>
+    const mutErr = (error: string) => {
+      Log(`Mutating error: ${error}`);
+
       progress.update((v) => {
         v.errors.push(error);
         return v;
       });
+    };
 
-    const setErrors = (value: string[]) =>
+    const setErrors = (value: string[]) => {
+      Log(`Setting errors: ${value.length} error(s)`);
+
       progress.update((v) => {
         v.errors = value;
         return v;
       });
+    };
 
     const stop = () => {
+      Log(`Stopping`);
+
       process?.closeWindow();
     };
 
     const setCancel = (cancel: (() => void) | undefined) => {
+      Log(`Setting cancel: ${cancel}`);
+
       progress.update((v) => {
         v.cancel = cancel;
 

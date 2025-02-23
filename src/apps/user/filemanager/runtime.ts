@@ -227,6 +227,14 @@ export class FileManagerRuntime extends AppProcess {
 
       if (this.path().startsWith(path) || this.path() === path) this.refresh();
     });
+
+    this.acceleratorStore.push({
+      key: "Delete",
+      action: () => {
+        this.deleteSelected();
+      },
+    });
+
     this.starting.set(false);
   }
 
@@ -522,21 +530,26 @@ export class FileManagerRuntime extends AppProcess {
 
   async confirmDeleteSelected() {
     const items = this.selection();
-    const prog = await this.userDaemon!.FileProgress({
-      max: items.length,
-      done: 0,
-      working: false,
-      waiting: true,
-      errors: [],
-      type: "quantity",
-      icon: TrashIcon,
-      caption: `Deleting ${items.length} ${Plural("item", items.length)}...`,
-      subtitle: "Working...",
-    });
+    const prog = await this.userDaemon!.FileProgress(
+      {
+        max: items.length,
+        done: 0,
+        working: false,
+        waiting: true,
+        errors: [],
+        type: "quantity",
+        icon: TrashIcon,
+        caption: `Deleting ${items.length} ${Plural("item", items.length)}...`,
+        subtitle: "Working...",
+      },
+      this.pid
+    );
 
     prog.show();
 
     for (const item of items) {
+      prog.setWait(false);
+      prog.setWork(true);
       prog.updSub(item);
 
       try {
@@ -545,7 +558,7 @@ export class FileManagerRuntime extends AppProcess {
         prog.mutErr(`Failed to delete ${item}`);
       }
 
-      prog.setDone(+1);
+      prog.mutDone(+1);
     }
   }
 }
