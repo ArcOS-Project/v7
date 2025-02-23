@@ -106,6 +106,10 @@
   background-color: var(--clr-red-bg) !important;
 }
 
+#HexEdit > div.body div.decoded {
+  width: 156px;
+}
+
 #HexEdit > div.body div.decoded div {
   height: 20px;
   margin-bottom: 5px;

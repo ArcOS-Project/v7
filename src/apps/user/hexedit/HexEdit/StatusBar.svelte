@@ -11,8 +11,8 @@
   const { hexRows, view, filename } = process;
 </script>
 
-{#if $hexRows && $view}
-  <div class="status-bar">
+<div class="status-bar">
+  {#if $hexRows && $view}
     <div class="segment index">
       0x{decimalToHex(scrollIndex * 16, 8)} - 0x{decimalToHex(
         (scrollIndex + ROWS) * 16,
@@ -28,5 +28,5 @@
     <div class="segment filename">
       {$filename}
     </div>
-  </div>
-{/if}
+  {/if}
+</div>

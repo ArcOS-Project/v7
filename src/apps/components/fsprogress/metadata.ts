@@ -14,7 +14,7 @@ export const FsProgressApp: App = {
   size: { w: 400, h: NaN },
   minSize: { w: 400, h: 160 },
   maxSize: { w: 400, h: NaN },
-  position: { x: 300, y: 300 },
+  position: { centered: true },
   state: {
     minimized: false,
     maximized: false,

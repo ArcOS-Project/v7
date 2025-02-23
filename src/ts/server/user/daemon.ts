@@ -20,7 +20,7 @@ import {
 } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
 import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
-import { AccountIcon, PasswordIcon } from "$ts/images/general";
+import { AccountIcon, ComponentIcon, PasswordIcon } from "$ts/images/general";
 import { ImageMimeIcon } from "$ts/images/mime";
 import { ProfilePictures } from "$ts/images/pfp";
 import type { ArcLang } from "$ts/lang";
@@ -514,11 +514,7 @@ export class UserDaemon extends Process {
         icon: ImageMimeIcon,
         caption: "Uploading a wallpaper of your choosing",
         subtitle: `To U:/Wallpapers`,
-        max: 0,
         waiting: true,
-        working: false,
-        errors: [],
-        done: 0,
       },
       pid
     );
@@ -947,8 +943,10 @@ export class UserDaemon extends Process {
 
     const store = (await this.appStore?.get()) || [];
 
+    this.handler.BUSY = false;
+
     for (const app of store) {
-      if (app.autoRun) this._spawnApp(app.id, undefined, this.pid);
+      if (app.autoRun) await this._spawnApp(app.id, undefined, this.pid);
     }
   }
 
@@ -1455,15 +1453,27 @@ export class UserDaemon extends Process {
   }
 
   async FileProgress(
-    initialData: FsProgressOperation,
+    initialData: Partial<FsProgressOperation>,
     parentPid?: number
   ): Promise<FileProgressMutator> {
     const uuid = crypto.randomUUID();
-    const progress = Store<FsProgressOperation>(initialData);
+    const progress = Store<FsProgressOperation>(
+      applyDefaults(initialData, {
+        max: 0,
+        done: 0,
+        type: "none",
+        caption: ``,
+        subtitle: ``,
+        icon: "",
+        waiting: false,
+        working: false,
+        errors: [],
+      })
+    );
     let process: FsProgressRuntime | undefined;
     let shown = false;
 
-    const Log = (m: string) => this.Log(`FileProgress::${uuid}: ${m}`);
+    const Log = (m: string) => /*this.Log(`FileProgress::${uuid}: ${m}`)*/ m;
 
     this.Log(`Creating file progress '${uuid}': ${initialData.caption}`);
 
@@ -1626,10 +1636,7 @@ export class UserDaemon extends Process {
         {
           type: "quantity",
           max: sources.length,
-          done: 0,
           waiting: true,
-          working: false,
-          errors: [],
           icon: FolderIcon,
           caption: `Moving files to ${destinationName || destination}`,
           subtitle: "Working...",
@@ -1671,10 +1678,7 @@ export class UserDaemon extends Process {
         {
           type: "quantity",
           max: sources.length,
-          done: 0,
           waiting: true,
-          working: false,
-          errors: [],
           icon: FolderIcon,
           caption: `Copying files to ${destinationName || destination}`,
           subtitle: "Working...",

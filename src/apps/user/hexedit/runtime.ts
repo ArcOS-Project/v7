@@ -2,7 +2,9 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { getDirectoryName } from "$ts/fs/util";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
+import { MemoryIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
+import { Sleep } from "$ts/sleep";
 import { sliceIntoChunks } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
@@ -19,6 +21,7 @@ export class HexEditRuntime extends AppProcess {
   requestedFile: string;
   editorInputs = Store<HTMLButtonElement[]>([]);
   filename = Store<string>();
+  activeByte = Store<number>(-1);
 
   protected overlayStore: Record<string, App> = {
     editRow: EditRow,
@@ -75,10 +78,32 @@ export class HexEditRuntime extends AppProcess {
   }
 
   async render() {
+    const prog = await this.userDaemon!.FileProgress(
+      {
+        type: "size",
+        caption: `Reading file`,
+        subtitle: this.requestedFile,
+        icon: MemoryIcon,
+      },
+      this.pid
+    );
     try {
-      const contents = await this.fs.readFile(this.requestedFile);
+      const contents = await this.fs.readFile(
+        this.requestedFile,
+        (progress) => {
+          prog.setWait(false);
+          prog.setWork(true);
+          prog.show();
+          prog.setMax(progress.max);
+          prog.setDone(progress.value);
+        }
+      );
 
-      if (!contents) throw new Error();
+      prog.stop();
+
+      if (!contents) {
+        throw new Error();
+      }
 
       if (contents.byteLength >= 20 * 1024 * 1024) {
         MessageBox(

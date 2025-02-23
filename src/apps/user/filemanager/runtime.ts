@@ -223,8 +223,6 @@ export class FileManagerRuntime extends AppProcess {
         this.updateRootFolders();
       }
 
-      console.log(path);
-
       if (this.path().startsWith(path) || this.path() === path) this.refresh();
     });
 
@@ -385,8 +383,6 @@ export class FileManagerRuntime extends AppProcess {
     const copyList = this.copyList.get();
     const cutList = this.cutList.get();
 
-    console.log(copyList, cutList);
-
     if (!copyList.length && !cutList.length) return;
 
     this.lockRefresh();
@@ -431,11 +427,7 @@ export class FileManagerRuntime extends AppProcess {
     const { mutDone, show } = await this.userDaemon!.FileProgress(
       {
         max: 100,
-        done: 0,
         working: true,
-        waiting: false,
-        errors: [],
-        type: "none",
         icon: DriveIcon,
         caption: `Unmounting ${drive.label || "drive"}...`,
         subtitle: `${drive.driveLetter || drive.uuid}:/`,
@@ -459,13 +451,9 @@ export class FileManagerRuntime extends AppProcess {
       {
         type: "size",
         icon: UploadIcon,
-        errors: [],
         waiting: true,
-        working: false,
         caption: "Uploading your files...",
         subtitle: `To ${getDirectoryName(this.path())}`,
-        done: 0,
-        max: 0,
       },
       this.pid
     );
@@ -533,10 +521,7 @@ export class FileManagerRuntime extends AppProcess {
     const prog = await this.userDaemon!.FileProgress(
       {
         max: items.length,
-        done: 0,
-        working: false,
         waiting: true,
-        errors: [],
         type: "quantity",
         icon: TrashIcon,
         caption: `Deleting ${items.length} ${Plural("item", items.length)}...`,

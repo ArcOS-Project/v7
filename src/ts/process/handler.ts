@@ -8,6 +8,7 @@ import { Store } from "../writable";
 import type { Process } from "./instance";
 
 export class ProcessHandler extends KernelModule {
+  public BUSY = false;
   private lastPid: number = 0;
   public store = Store<Map<number, Process>>(new Map([]));
   public rendererPid = -1;
@@ -35,6 +36,16 @@ export class ProcessHandler extends KernelModule {
     );
   }
 
+  private makeBusy(reason: string) {
+    this.Log(`Now busy: ${reason}`);
+    this.BUSY = true;
+  }
+
+  private makeNotBusy(reason: string) {
+    this.Log(`Now no longer busy: ${reason}`);
+    this.BUSY = false;
+  }
+
   async spawn<T = Process>(
     process: typeof Process,
     renderTarget: HTMLDivElement | undefined = undefined,
@@ -43,7 +54,9 @@ export class ProcessHandler extends KernelModule {
   ): Promise<T | undefined> {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
-    if (WaveKernel.isPanicked()) return;
+    if (WaveKernel.isPanicked() || this.BUSY) return;
+
+    this.makeBusy("Spawning process");
 
     const userDaemonPid = this.env.get("userdaemon_pid");
 
@@ -60,9 +73,13 @@ export class ProcessHandler extends KernelModule {
     );
 
     if (proc.__start) {
+      this.makeNotBusy(`Calling __start of ${pid}`);
       const result = await proc.__start();
+      this.makeBusy(`Done calling __start of ${pid}`);
 
       if (result === false) {
+        this.makeNotBusy(`Stopped spawn of ${pid}: __start gave false`);
+
         return;
       }
     }
@@ -78,20 +95,33 @@ export class ProcessHandler extends KernelModule {
     if (this.renderer && proc instanceof AppProcess)
       this.renderer.render(proc, renderTarget);
 
+    this.makeNotBusy(`Stopped spawn of ${pid}: done`);
     return proc as T;
   }
 
   async kill(pid: number, force = false) {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
+    if (this.BUSY) return;
+
     Log("ProcessHandler.kill", `Attempting to kill ${pid}`);
+
+    this.makeBusy(`Killing ${pid}`);
 
     const proc = this.getProcess(pid);
 
-    if (!proc) return "err_noExist";
-    if (proc._criticalProcess && !force) return "err_criticalProcess";
+    if (!proc) {
+      this.BUSY = false;
+      return "err_noExist";
+    }
+    if (proc._criticalProcess && !force) {
+      this.BUSY = false;
+      return "err_criticalProcess";
+    }
 
+    this.makeNotBusy(`Killing subprocesses of ${pid}`);
     await this._killSubProceses(pid, force);
+    this.makeBusy(`Continuing killing of ${pid}`);
 
     if (proc instanceof AppProcess && proc.closeWindow && !force) {
       await proc.closeWindow(false);
@@ -111,6 +141,8 @@ export class ProcessHandler extends KernelModule {
     store = this.store.get();
     store.delete(pid);
     this.store.set(store);
+
+    this.makeNotBusy(`Done killing ${pid}`);
 
     return "success";
   }

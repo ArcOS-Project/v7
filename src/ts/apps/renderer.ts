@@ -114,10 +114,10 @@ export class AppRenderer extends Process {
     }, 100);
 
     this.currentState.push(process.pid);
+    if (!data.core) this.focusPid(process.pid);
 
     try {
       await process.__render__(body);
-      if (!data.core) this.focusPid(process.pid);
       await process.CrashDetection();
     } catch (e) {
       if (!process._disposed) {

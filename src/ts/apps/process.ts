@@ -117,15 +117,15 @@ export class AppProcess extends Process {
         throw new AppRuntimeError(this.crashReason);
       }
 
-      if (this._disposed) {
-        throw new Error("Disposed.");
-      }
+      // if (this._disposed) {
+      //   throw new Error("Disposed.");
+      // }
 
       await Sleep(1);
     }
   }
 
-  async render(args: RenderArgs) {
+  render(args: RenderArgs): any {
     /** */
   }
 
@@ -156,7 +156,7 @@ export class AppProcess extends Process {
       },
     });
 
-    await this.render(this.renderArgs);
+    this.render(this.renderArgs);
   }
 
   getSingleton() {
