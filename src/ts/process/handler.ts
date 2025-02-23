@@ -1,4 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
+import { GlobalDispatcher } from "$ts/dispatch";
 import { Environment } from "$ts/kernel/env";
 import { AppRenderer } from "../apps/renderer";
 import { WaveKernel } from "../kernel";
@@ -14,11 +15,13 @@ export class ProcessHandler extends KernelModule {
   public rendererPid = -1;
   public renderer: AppRenderer | undefined;
   public env: Environment;
+  public dispatch: GlobalDispatcher;
 
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);
 
     this.env = this.kernel.getModule<Environment>("env");
+    this.dispatch = this.kernel.getModule<GlobalDispatcher>("dispatch");
   }
 
   async _init() {
@@ -37,13 +40,17 @@ export class ProcessHandler extends KernelModule {
   }
 
   private makeBusy(reason: string) {
-    this.Log(`Now busy: ${reason}`);
     this.BUSY = true;
+
+    this.dispatch.dispatch("stack-busy");
+    this.Log(`Now busy: ${reason}`);
   }
 
   private makeNotBusy(reason: string) {
-    this.Log(`Now no longer busy: ${reason}`);
     this.BUSY = false;
+
+    this.dispatch.dispatch("stack-not-busy");
+    this.Log(`Now no longer busy: ${reason}`);
   }
 
   async spawn<T = Process>(
@@ -111,11 +118,11 @@ export class ProcessHandler extends KernelModule {
     const proc = this.getProcess(pid);
 
     if (!proc) {
-      this.BUSY = false;
+      this.makeNotBusy(`Can't kill ${pid}: no such process`);
       return "err_noExist";
     }
     if (proc._criticalProcess && !force) {
-      this.BUSY = false;
+      this.makeNotBusy(`Can't kill ${pid}: critical process`);
       return "err_criticalProcess";
     }
 

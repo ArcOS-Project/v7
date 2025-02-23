@@ -25,5 +25,6 @@
   class:changed={decimal !== original?.[index]}
   class={className}
   bind:this={$editorInputs[index]}
+  onmouseenter={() => process.activeByte.set(index)}
   >{value}
 </button>

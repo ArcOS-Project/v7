@@ -6,7 +6,7 @@
   import type { HexEditRuntime } from "./runtime";
 
   const { process }: { process: HexEditRuntime } = $props();
-  const { view, decoded, hexRows } = process;
+  const { view, decoded, hexRows, activeByte } = process;
   const ROWS = 16;
 
   let scrollIndex = $state<number>(0);
@@ -41,7 +41,8 @@
           <span
             class="{process.getByteClass($view[index])} {scrollIndex +
               rowIndex * chars.length +
-              charIndex}">{char}</span
+              charIndex}"
+            class:prominent={$activeByte === index}>{char}</span
           >
         {/each}
       </div>

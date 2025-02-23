@@ -101,10 +101,15 @@ div.shell div.taskbar div.network span.backdrop {
   opacity: 0.2;
 }
 
+div.shell div.taskbar div.stack-busy,
 div.shell div.taskbar div.battery {
   display: flex;
   align-items: center;
   gap: 5px;
+}
+
+div.shell div.taskbar div.stack-busy span.lucide:not(.busy) {
+  opacity: 0.5;
 }
 
 div.shell div.taskbar div.status-tray span.lucide {

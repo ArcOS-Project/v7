@@ -10,4 +10,6 @@ export const KnownGlobalDispatchers: string[] = [
   "delete-notification",
   "ragui-loggedin",
   "app-store-refresh",
+  "stack-busy",
+  "stack-not-busy",
 ];

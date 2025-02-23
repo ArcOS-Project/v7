@@ -4,7 +4,6 @@ import { getDirectoryName } from "$ts/fs/util";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { MemoryIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
-import { Sleep } from "$ts/sleep";
 import { sliceIntoChunks } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
@@ -174,5 +173,9 @@ export class HexEditRuntime extends AppProcess {
 
   async alterRow(rowIndex: number) {
     this.spawnOverlay("editRow", this.view, rowIndex);
+  }
+
+  async onClose() {
+    return false;
   }
 }

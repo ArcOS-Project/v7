@@ -20,7 +20,7 @@ import {
 } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
 import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
-import { AccountIcon, ComponentIcon, PasswordIcon } from "$ts/images/general";
+import { AccountIcon, PasswordIcon } from "$ts/images/general";
 import { ImageMimeIcon } from "$ts/images/mime";
 import { ProfilePictures } from "$ts/images/pfp";
 import type { ArcLang } from "$ts/lang";
@@ -90,9 +90,7 @@ export class UserDaemon extends Process {
     this.env.set("userdaemon_pid", this.pid);
   }
 
-  async start() {
-    if (this._disposed) return;
-
+  async startApplicationStorage() {
     this.appStore = await this.handler.spawn(
       ApplicationStorage,
       undefined,
@@ -791,9 +789,9 @@ export class UserDaemon extends Process {
       this.battery.set(await this.batteryInfo());
     }, 1000); // Every second
 
-    setInterval(async () => {
-      this.networkSpeed.set(await this.testNetworkSpeed());
-    }, 60 * 1000); // Every minute
+    // setInterval(async () => {
+    //   this.networkSpeed.set(await this.testNetworkSpeed());
+    // }, 60 * 1000); // Every minute
 
     this.battery.set(await this.batteryInfo());
     this.networkSpeed.set(await this.testNetworkSpeed());

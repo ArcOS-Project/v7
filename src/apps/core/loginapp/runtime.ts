@@ -121,6 +121,10 @@ export class LoginAppRuntime extends AppProcess {
 
     await userDaemon.startPreferencesSync();
 
+    this.loadingStatus.set("Starting application storage");
+
+    await userDaemon.startApplicationStorage();
+
     this.profileImage.set(
       (await userDaemon?.getProfilePicture(
         userDaemon.preferences().account.profilePicture!

@@ -49,13 +49,13 @@ export class Process {
   public async __start(): Promise<any> {
     this.Log(`STARTING PROCESS`);
 
-    return await await this.start();
+    return await this.start();
   }
 
   public async __stop(): Promise<any> {
     this.Log(`STOPPING PROCESS`);
 
-    return await await this.stop();
+    return await this.stop();
   }
 
   async killSelf() {

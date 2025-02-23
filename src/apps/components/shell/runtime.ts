@@ -23,6 +23,7 @@ export class ShellRuntime extends AppProcess {
   public actionCenterOpened = Store<boolean>(false);
   public workspaceManagerOpened = Store<boolean>(false);
   public contextData = Store<ContextMenuInstance | null>();
+  public stackBusy = Store<boolean>(false);
   public CLICKLOCKED = false;
   private readonly validContexMenuTags = [
     "button",
@@ -57,6 +58,10 @@ export class ShellRuntime extends AppProcess {
     super(handler, pid, parentPid, app);
 
     this.env.set("shell_pid", this.pid);
+    this.globalDispatch.subscribe("stack-busy", () => this.stackBusy.set(true));
+    this.globalDispatch.subscribe("stack-not-busy", () =>
+      this.stackBusy.set(false)
+    );
   }
 
   async render() {
@@ -196,10 +201,13 @@ export class ShellRuntime extends AppProcess {
     this.Log("Attempting to close focused window");
 
     const focusedPid = this.handler.renderer?.focusedPid();
-
     if (!focusedPid) return;
 
-    await this.handler.kill(focusedPid);
+    const focusedProc = this.handler.getProcess(focusedPid);
+
+    if (!focusedProc || !(focusedProc instanceof AppProcess)) return;
+
+    await focusedProc?.closeWindow();
 
     const appProcesses = (this.handler.renderer?.currentState || [])
       .map((pid) => this.handler.getProcess(pid))
