@@ -19,6 +19,27 @@ export class FilesystemDrive {
   public readonly REMOVABLE: boolean = false;
   public readonly READONLY: boolean = false;
   public BUSY: boolean = false;
+  protected fileLocks: Record<string, number> = {};
+
+  async lockFile(path: string, pid: number) {
+    if (this.fileLocks[path])
+      throw new Error(
+        `Can't lock ${path}: file is in use by process ${this.fileLocks[path]}`
+      );
+
+    this.fileLocks[path] = pid;
+  }
+
+  async releaseLock(path: string, pid: number, fromSystem = false) {
+    if (!this.fileLocks[path])
+      throw new Error(`Can't unlock '${path}': not locked`);
+    if (pid !== this.fileLocks[path] && !fromSystem)
+      throw new Error(
+        `Can't unlock '${path}': expected PID ${this.fileLocks[path]}, got ${pid}`
+      );
+
+    delete this.fileLocks[path];
+  }
 
   constructor(
     kernel: WaveKernel,

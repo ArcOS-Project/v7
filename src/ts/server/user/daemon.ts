@@ -64,7 +64,6 @@ export class UserDaemon extends Process {
   public _elevating = false;
   private elevations: Record<string, ElevationData> = {};
   private preferencesUnsubscribe: Unsubscriber | undefined;
-  private fs: Filesystem;
   private wallpaperGetters: WallpaperGetters = [
     ["@local:", async (id: string) => await this.getLocalWallpaper(id)],
     ["img", (id) => Wallpapers[id] || Wallpapers["img04"]],
@@ -86,7 +85,6 @@ export class UserDaemon extends Process {
 
     this.token = token;
     this.username = username;
-    this.fs = this.kernel.getModule<Filesystem>("fs");
     this.env.set("userdaemon_pid", this.pid);
   }
 
@@ -1589,10 +1587,10 @@ export class UserDaemon extends Process {
       });
     };
 
-    const stop = () => {
+    const stop = async () => {
       Log(`Stopping`);
 
-      process?.closeWindow();
+      await process?.closeWindow();
     };
 
     const setCancel = (cancel: (() => void) | undefined) => {

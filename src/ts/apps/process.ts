@@ -36,7 +36,6 @@ export class AppProcess extends Process {
     DefaultUserPreferences
   );
   username: string = "";
-  fs: Filesystem;
   globalDispatch: GlobalDispatcher;
   userDaemon: UserDaemon | undefined;
   protected overlayStore: Record<string, App> = {};
@@ -65,7 +64,6 @@ export class AppProcess extends Process {
     this.windowIcon.set(app.data.metadata.icon || ComponentIcon);
     this.name = app.data.id;
 
-    this.fs = this.kernel.getModule<Filesystem>("fs");
     this.globalDispatch = this.kernel.getModule<GlobalDispatcher>("dispatch");
 
     const desktopProps = this.kernel.state?.stateProps["desktop"];

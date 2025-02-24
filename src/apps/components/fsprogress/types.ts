@@ -26,8 +26,8 @@ export interface FileProgressMutator {
   updSub: (subtitle: string) => void;
   setWait: (waiting: boolean) => void;
   setWork: (waiting: boolean) => void;
-  stop: () => void;
-  show: () => void;
+  stop: () => Promise<any>;
+  show: () => Promise<any>;
 }
 
 export const DummyFileProgress: FileProgressMutator = {
@@ -42,7 +42,7 @@ export const DummyFileProgress: FileProgressMutator = {
   setWork: (_: boolean) => {},
   mutErr: (_: string) => {},
   setErrors: (_: string[]) => {},
-  stop: () => {},
-  show: () => {},
+  stop: async () => {},
+  show: async () => {},
   setCancel: (_: (() => void) | undefined) => {},
 };

@@ -52,6 +52,9 @@ export class ServerDrive extends FilesystemDrive {
     path: string,
     onProgress: FilesystemProgressCallback
   ): Promise<ArrayBuffer | undefined> {
+    if (this.fileLocks[path])
+      throw new Error(`Not reading locked file '${path}'`);
+
     try {
       const response = await Axios.get(`/fs/file/${path}`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -131,6 +134,9 @@ export class ServerDrive extends FilesystemDrive {
   }
 
   async moveItem(source: string, destination: string): Promise<boolean> {
+    if (this.fileLocks[source])
+      throw new Error(`Not moving locked file '${source}'`);
+
     const sourceFilename = getDirectoryName(source);
 
     try {
@@ -153,6 +159,9 @@ export class ServerDrive extends FilesystemDrive {
   }
 
   async deleteItem(path: string): Promise<boolean> {
+    if (this.fileLocks[path])
+      throw new Error(`Not deleting locked file '${path}'`);
+
     try {
       const response = await Axios.delete(`/fs/rm/${path}`, {
         headers: { Authorization: `Bearer ${this.token}` },

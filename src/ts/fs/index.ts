@@ -369,5 +369,27 @@ export class Filesystem extends KernelModule {
     );
   }
 
-  // TODO: proper handlers for uploading files with and/or without progress indication
+  async lockFile(path: string, pid: number) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
+    this.Log(`Locking file '${path}' for process ${pid}`);
+    this.validatePath(path);
+
+    const drive = this.getDriveByPath(path);
+    const scopedPath = this.removeDriveLetter(path);
+
+    await drive.lockFile(scopedPath, pid);
+  }
+
+  async releaseLock(path: string, pid: number) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
+    this.Log(`Unlocking file '${path}'`);
+    this.validatePath(path);
+
+    const drive = this.getDriveByPath(path);
+    const scopedPath = this.removeDriveLetter(path);
+
+    await drive.releaseLock(scopedPath, pid);
+  }
 }

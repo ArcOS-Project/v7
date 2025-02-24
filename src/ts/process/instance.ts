@@ -1,4 +1,5 @@
 import { GlobalDispatcher } from "$ts/dispatch";
+import { Filesystem } from "$ts/fs";
 import { Environment } from "$ts/kernel/env";
 import { SoundBus } from "$ts/soundbus";
 import { LogLevel } from "../../types/logging";
@@ -19,6 +20,8 @@ export class Process {
   public name = "";
   public _disposed = false;
   public _criticalProcess = false;
+  public fs: Filesystem;
+  private fileLocks: string[] = [];
 
   constructor(
     handler: ProcessHandler,
@@ -36,6 +39,7 @@ export class Process {
     this.globalDispatch = this.kernel.getModule<GlobalDispatcher>("dispatch");
     this.env = this.kernel.getModule<Environment>("env");
     this.soundBus = this.kernel.getModule<SoundBus>("soundbus");
+    this.fs = this.kernel.getModule<Filesystem>("fs");
   }
 
   protected async stop(): Promise<any> {
@@ -67,5 +71,29 @@ export class Process {
     const source = `${this.name}[${this.pid}]`;
 
     Log(source, message, level);
+  }
+
+  async requestFileLock(path: string) {
+    this.Log(`Requesting file lock for '${path}'`);
+
+    try {
+      await this.fs.lockFile(path, this.pid);
+
+      this.fileLocks.push(path);
+    } catch {
+      return false;
+    }
+  }
+
+  async unlockFile(path: string) {
+    this.Log(`Requesting file unlock for '${path}'`);
+
+    try {
+      await this.fs.releaseLock(path, this.pid);
+
+      this.fileLocks.splice(this.fileLocks.indexOf(path));
+    } catch {
+      return false;
+    }
   }
 }
