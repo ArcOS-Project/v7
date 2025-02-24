@@ -8,7 +8,7 @@
     scrollIndex,
     ROWS,
   }: { process: HexEditRuntime; scrollIndex: number; ROWS: number } = $props();
-  const { hexRows, view, filename } = process;
+  const { hexRows, view, filename, modified } = process;
 </script>
 
 <div class="status-bar">
@@ -26,7 +26,7 @@
       {formatBytes($view.length)}
     </div>
     <div class="segment filename">
-      {$filename}
+      {$filename}{$modified ? " *" : ""}
     </div>
   {/if}
 </div>

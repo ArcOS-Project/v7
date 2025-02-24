@@ -216,6 +216,7 @@
   flex-grow: 1;
   position: relative;
   width: 100%;
+  overflow: hidden;
 }
 
 #HexEdit div.virtual-scrollbar div.inner {

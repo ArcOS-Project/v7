@@ -2,6 +2,7 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { getDirectoryName } from "$ts/fs/util";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
+import { DriveIcon } from "$ts/images/filesystem";
 import { MemoryIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { sliceIntoChunks } from "$ts/util";
@@ -21,6 +22,7 @@ export class HexEditRuntime extends AppProcess {
   editorInputs = Store<HTMLButtonElement[]>([]);
   filename = Store<string>();
   activeByte = Store<number>(-1);
+  modified = Store<boolean>(false);
 
   protected overlayStore: Record<string, App> = {
     editRow: EditRow,
@@ -39,6 +41,9 @@ export class HexEditRuntime extends AppProcess {
     this.view.subscribe((v) => {
       if (!v) return;
       this.updateVariables(v);
+      this.modified.set(
+        this.requestedFile && this.original() ? this.isModified() : false
+      );
     });
   }
 
@@ -77,6 +82,24 @@ export class HexEditRuntime extends AppProcess {
   }
 
   async render() {
+    if (!this.requestedFile) {
+      MessageBox(
+        {
+          title: "No file",
+          message:
+            "HexEdit was launched without a file to read. This shouldn't happen.",
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          image: WarningIcon,
+          sound: "arcos.dialog.warning",
+        },
+        this.parentPid,
+        true
+      );
+      this.closeWindow();
+
+      return;
+    }
+
     const prog = await this.userDaemon!.FileProgress(
       {
         type: "size",
@@ -104,11 +127,13 @@ export class HexEditRuntime extends AppProcess {
         throw new Error();
       }
 
-      if (contents.byteLength >= 20 * 1024 * 1024) {
+      await this.requestFileLock(this.requestedFile);
+
+      if (contents.byteLength >= 10 * 1024 * 1024) {
         MessageBox(
           {
             title: "File too big",
-            message: `HexEdit can't open files larger than 20MB at this time. Please choose another application.`,
+            message: `HexEdit can't open files larger than 10MB at this time. Please choose another application.`,
             buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
             image: ErrorIcon,
             sound: "arcos.dialog.error",
@@ -126,20 +151,18 @@ export class HexEditRuntime extends AppProcess {
       this.buffer.set(contents);
       this.view.set(new Uint8Array(contents));
       this.original.set(new Uint8Array(this.view()));
-    } catch {
+    } catch (e) {
       MessageBox(
         {
-          title: "No file",
-          message:
-            "HexEdit was launched without a file to read. This shouldn't happen.",
+          title: "Failed to read file",
+          message: `HexEdit was unable to open the file you requested: ${e}`,
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           image: WarningIcon,
-          sound: "arcos.dialog.warning",
+          sound: "arcos.dialog.error",
         },
         this.parentPid,
         true
       );
-
       this.closeWindow();
     }
   }
@@ -175,7 +198,80 @@ export class HexEditRuntime extends AppProcess {
     this.spawnOverlay("editRow", this.view, rowIndex);
   }
 
-  async onClose() {
-    return false;
+  isModified() {
+    return !!(
+      this.requestedFile &&
+      this.filename() &&
+      this.original()?.toString() !== this.view().toString()
+    );
+  }
+
+  async onClose(): Promise<boolean> {
+    const modified = this.isModified();
+
+    if (modified) {
+      return new Promise<boolean>((r) => {
+        MessageBox(
+          {
+            title: "Save changes?",
+            message: `Do you want to save the changes you made to ${this.filename()}?`,
+            buttons: [
+              {
+                caption: "Cancel",
+                action: () => {
+                  r(false);
+                },
+              },
+              {
+                caption: "No",
+                action: () => {
+                  r(true);
+                },
+              },
+              {
+                caption: "Yes",
+                suggested: true,
+                action: async () => {
+                  await this.saveFile();
+                  await this.unlockFile(this.requestedFile);
+                  r(true);
+                },
+              },
+            ],
+          },
+          this.pid,
+          true
+        );
+      });
+    }
+
+    await this.unlockFile(this.requestedFile);
+    return true;
+  }
+
+  async saveFile() {
+    if (!this.isModified()) return;
+
+    const prog = await this.userDaemon!.FileProgress(
+      {
+        type: "size",
+        caption: `Saving ${this.filename()}`,
+        subtitle: `Writing ${this.requestedFile}`,
+        icon: DriveIcon,
+      },
+      this.pid
+    );
+
+    await this.fs.writeFile(
+      this.requestedFile,
+      new Blob([this.view()]),
+      async (progress) => {
+        await prog.show();
+        prog.setMax(progress.max);
+        prog.setDone(progress.value);
+      }
+    );
+
+    await prog.stop();
   }
 }

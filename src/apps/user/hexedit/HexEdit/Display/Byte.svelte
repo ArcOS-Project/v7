@@ -26,5 +26,6 @@
   class={className}
   bind:this={$editorInputs[index]}
   onmouseenter={() => process.activeByte.set(index)}
-  >{value}
+>
+  {value}
 </button>
