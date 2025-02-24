@@ -30,7 +30,7 @@ import { Sleep } from "$ts/sleep";
 import { Wallpapers } from "$ts/wallpaper/store";
 import { Store } from "$ts/writable";
 import type { LoginActivity } from "$types/activity";
-import type { AppStorage, ThirdPartyApp } from "$types/app";
+import type { App, AppStorage, ThirdPartyApp } from "$types/app";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
 import { LogLevel } from "$types/logging";
 import type { BatteryType } from "$types/navigator";
@@ -48,6 +48,7 @@ import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes } from "./store";
+import { fromExtension } from "human-filetypes";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -1705,5 +1706,25 @@ export class UserDaemon extends Process {
 
       await Sleep(200);
     }
+  }
+
+  async findAppToOpenFile(path: string) {
+    const apps = await this.appStore?.get();
+
+    const split = path.split(".");
+    const extension = `.${split[split.length - 1]}`;
+    const mimeType = fromExtension(path);
+    const result: (App | ThirdPartyApp)[] = [];
+
+    for (const app of apps!) {
+      if (
+        (app.opens?.extensions || [])?.includes(extension) ||
+        (app.opens?.mimeTypes || [])?.join("||").includes(mimeType)
+      ) {
+        result.push(app);
+      }
+    }
+
+    return result;
   }
 }

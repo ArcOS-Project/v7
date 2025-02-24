@@ -486,7 +486,33 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   async openFile(path: string) {
-    return await this.userDaemon?.spawnApp("HexEdit", this.pid, path);
+    const filename = getDirectoryName(path);
+    const apps = await this.userDaemon?.findAppToOpenFile(path)!;
+
+    if (!apps.length) {
+      MessageBox(
+        {
+          title: `Unknown file type`,
+          message: `ArcOS doesn't have an app that can open '${filename}'. Click <b>Open With</b> to pick from a list of applications.`,
+          buttons: [
+            {
+              caption: "Open With",
+              action: () => {
+                this.spawnOverlayApp("OpenWith", this.pid, path);
+              },
+            },
+            { caption: "Okay", action: () => {}, suggested: true },
+          ],
+          image: ErrorIcon,
+        },
+        this.pid,
+        true
+      );
+
+      return;
+    }
+
+    return await this.spawnApp(apps[0].id, this.pid, path);
   }
 
   async deleteSelected() {

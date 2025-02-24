@@ -24,6 +24,10 @@ export interface App {
   originId?: string;
   entrypoint?: "";
   workingDirectory?: "";
+  opens?: {
+    extensions?: string[];
+    mimeTypes?: string[];
+  };
 }
 
 export interface ThirdPartyApp {
@@ -40,6 +44,10 @@ export interface ThirdPartyApp {
   overlay?: boolean;
   glass?: boolean;
   originId?: string;
+  opens?: {
+    extensions?: string[];
+    mimeTypes?: string[];
+  };
 }
 
 export type ScriptedApp = Omit<App, "assets">;

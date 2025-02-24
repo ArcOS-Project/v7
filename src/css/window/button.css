@@ -25,6 +25,7 @@ div.window div.body button:not(.reset).link {
   background-color: transparent !important;
   text-decoration: underline;
   text-underline-offset: 2px;
+  width: fit-content;
 }
 
 div.window div.body button:not(.reset):disabled {

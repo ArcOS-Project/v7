@@ -1,0 +1,84 @@
+#OpenWith > div.body {
+  padding: 0;
+}
+
+#OpenWith > div.body > div.top {
+  padding: 15px;
+  height: calc(100% - 51px);
+}
+
+#OpenWith div.body > div.top div.options {
+  height: calc(100% - 85px);
+  overflow-y: scroll;
+  margin-top: 7px;
+}
+
+#OpenWith div.body > div.top div.options > p.empty {
+  text-align: center;
+  max-width: 50%;
+  margin: 10px auto;
+}
+
+#OpenWith div.body > div.top div.options > button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  width: 100%;
+  padding: 10px;
+  background-color: transparent;
+}
+
+#OpenWith div.body > div.bottom button {
+  height: 30px;
+  min-width: unset !important;
+}
+
+#OpenWith div.body > div.bottom div.mode {
+  margin-right: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#OpenWith div.body > div.top div.options button:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#OpenWith div.body > div.top div.options button.active {
+  background-color: var(--accent-transparent);
+}
+
+#OpenWith div.body > div.top div.options button img {
+  height: 32px;
+}
+
+#OpenWith div.body > div.top div.header h1 {
+  font-size: 18px;
+  /* height:24px; */
+  margin-bottom: 5px;
+}
+
+#OpenWith div.body > div.top p.location {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#OpenWith div.body > div.top p.location img {
+  height: 24px;
+}
+
+#OpenWith div.body > div.top p.location span {
+  opacity: 0.5;
+}
+
+#OpenWith div.body > div.bottom {
+  background-color: var(--button-glass-bg);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  height: 51px;
+  border-top: var(--win-border);
+}
