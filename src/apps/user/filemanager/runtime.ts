@@ -57,39 +57,106 @@ export class FileManagerRuntime extends AppProcess {
       },
     ],
     "file-item": [
-      { caption: "Open file", icon: "external-link" },
-      { caption: "Open with..." },
-      { sep: true },
       {
-        caption: "Send to",
-        icon: "send",
-        subItems: [
-          { caption: "Someone...", icon: "user" },
-          { caption: "Drive...", icon: "hard-drive" },
-        ],
+        caption: "Open file",
+        icon: "external-link",
+        action: (_, thisPath) => {
+          this.openFile(thisPath);
+        },
+      },
+      {
+        caption: "Open with...",
+        action: (_, thisPath) => {
+          console.log(_, thisPath);
+          this.openWith(thisPath);
+        },
       },
       { sep: true },
-      { caption: "Cut", icon: "scissors" },
-      { caption: "Copy", icon: "copy" },
+      {
+        caption: "Cut",
+        icon: "scissors",
+        action: (_, thisPath) => {
+          this.cutList.set([thisPath]);
+        },
+      },
+      {
+        caption: "Copy",
+        icon: "copy",
+        action: (_, thisPath) => {
+          this.copyList.set([thisPath]);
+        },
+      },
       { sep: true },
-      { caption: "Rename...", icon: "file-pen" },
-      { caption: "Delete", icon: "trash-2" },
+      {
+        caption: "Rename...",
+        icon: "file-pen",
+        action: () => this.notImplemented("Renaming files"),
+      },
+      {
+        caption: "Delete",
+        icon: "trash-2",
+        action: (_, thisPath) => {
+          this.selection.set([thisPath]);
+          this.deleteSelected();
+        },
+      },
       { sep: true },
-      { caption: "Properties...", icon: "wrench" },
+      {
+        caption: "Properties...",
+        icon: "wrench",
+        action: () => this.notImplemented("Viewing file properties"),
+      },
     ],
     "folder-item": [
-      { caption: "Go here", icon: "folder-open" },
-      { caption: "Open in new window", icon: "external-link" },
+      {
+        caption: "Go here",
+        icon: "folder-open",
+        action: (_, thisPath) => {
+          this.navigate(thisPath);
+        },
+      },
+      {
+        caption: "Open in new window",
+        icon: "external-link",
+        action: (_, thisPath) => {
+          this.spawnApp(this.app.id, this.parentPid, thisPath);
+        },
+      },
       { sep: true },
-      { caption: "Send to", icon: "send" },
+      {
+        caption: "Cut",
+        icon: "scissors",
+        action: (_, thisPath) => {
+          this.cutList.set([thisPath]);
+        },
+      },
+      {
+        caption: "Copy",
+        icon: "copy",
+        action: (_, thisPath) => {
+          this.copyList.set([thisPath]);
+        },
+      },
       { sep: true },
-      { caption: "Cut", icon: "scissors" },
-      { caption: "Copy", icon: "copy" },
+      {
+        caption: "Rename...",
+        icon: "file-pen",
+        action: () => this.notImplemented("Renaming folders"),
+      },
+      {
+        caption: "Delete",
+        icon: "trash-2",
+        action: (_, thisPath) => {
+          this.selection.set([thisPath]);
+          this.deleteSelected();
+        },
+      },
       { sep: true },
-      { caption: "Rename...", icon: "file-pen" },
-      { caption: "Delete", icon: "trash-2" },
-      { sep: true },
-      { caption: "Properties...", icon: "wrench" },
+      {
+        caption: "Properties...",
+        icon: "wrench",
+        action: () => this.notImplemented("Viewing folder properties"),
+      },
     ],
   };
 
@@ -126,8 +193,12 @@ export class FileManagerRuntime extends AppProcess {
           },
         },
         { sep: true },
-        { caption: "Upload", icon: "upload" },
-        { caption: "Download", icon: "download" },
+        { caption: "Upload", icon: "upload", action: () => this.uploadItems() },
+        {
+          caption: "Download",
+          icon: "download",
+          action: () => this.notImplemented("Downloading files"),
+        },
         { sep: true },
         {
           caption: "Exit",
@@ -497,8 +568,8 @@ export class FileManagerRuntime extends AppProcess {
           buttons: [
             {
               caption: "Open With",
-              action: () => {
-                this.spawnOverlayApp("OpenWith", this.pid, path);
+              action: async () => {
+                await this.openWith(path);
               },
             },
             { caption: "Okay", action: () => {}, suggested: true },
@@ -513,6 +584,10 @@ export class FileManagerRuntime extends AppProcess {
     }
 
     return await this.spawnApp(apps[0].id, this.pid, path);
+  }
+
+  async openWith(path: string) {
+    await this.spawnOverlayApp("OpenWith", this.pid, path);
   }
 
   async deleteSelected() {
