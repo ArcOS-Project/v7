@@ -25,6 +25,7 @@
   onclick={focus}
   class:active={$focusedPid == openedProcess.pid}
   class:iconic={!$userPreferences.shell.taskbar.labels}
+  data-pid={pid}
 >
   <img src={$windowIcon} alt="" />
   {#if $userPreferences.shell.taskbar.labels}

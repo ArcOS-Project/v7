@@ -26,10 +26,27 @@ div.shell div.taskbar div.opened-apps::-webkit-scrollbar {
   overflow: Hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  transition: background-color 0.3s, padding 0.3s, width 0.3s, transform 0.3s,
+    scale 0.2s;
 }
 
 #arcShell div.shell div.taskbar div.opened-apps button.iconic {
   padding: 5px;
+}
+
+#arcShell div.shell div.taskbar div.opened-apps button:not(.iconic).closing {
+  display: none;
+}
+
+#arcShell div.shell div.taskbar div.opened-apps button.iconic.closing {
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+#arcShell div.shell div.taskbar div.opened-apps button.iconic.closing + button {
+  margin-left: -34px;
+  transition: margin-left 0.3s, background-color 0.3s, padding 0.3s, width 0.3s,
+    transform 0.3s, scale 0.2s;
 }
 
 #arcShell div.shell div.taskbar div.opened-apps button span {
