@@ -223,4 +223,12 @@ export class ProcessHandler extends KernelModule {
 
     return proc.dispatch;
   }
+
+  async waitForAvailable() {
+    return new Promise<void>((r) => {
+      const interval = setInterval(() => {
+        if (!this.BUSY) r(clearInterval(interval));
+      }, 1);
+    });
+  }
 }

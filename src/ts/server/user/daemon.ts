@@ -859,6 +859,8 @@ export class UserDaemon extends Process {
       shellDispatch?.dispatch("close-action-center");
     }
 
+    await this.handler.waitForAvailable();
+
     return await this.handler.spawn<T>(
       app.assets.runtime,
       renderTarget,
@@ -896,6 +898,8 @@ export class UserDaemon extends Process {
 
       return;
     }
+
+    await this.handler.waitForAvailable();
 
     return await this.handler.spawn<T>(
       app.assets.runtime,

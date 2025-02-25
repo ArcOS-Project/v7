@@ -64,6 +64,7 @@ export class Process {
 
   async killSelf() {
     this.Log(`Killing self (PID ${this.pid})`);
+    await this.handler.waitForAvailable();
     await this.handler.kill(this.pid);
   }
 
