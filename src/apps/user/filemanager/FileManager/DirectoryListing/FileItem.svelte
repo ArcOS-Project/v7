@@ -8,6 +8,7 @@
   import { fromMime } from "human-filetypes";
   import type { FileManagerRuntime } from "../../runtime";
   import { DefaultMimeIcon } from "$ts/images/mime";
+  import { contextProps } from "$ts/context/actions.svelte";
 
   const { process, file }: { process: FileManagerRuntime; file: FileEntry } =
     $props();
@@ -37,18 +38,21 @@
   }
 </script>
 
-<button
-  class="item file"
-  {onclick}
-  class:selected={$selection.includes(thisPath)}
-  ondblclick={() => process.openFile(thisPath)}
-  data-contextmenu={$selection.includes(thisPath) ? "file-item" : ""}
->
-  <div class="segment icon">
-    <img src={icon} alt="" />
-  </div>
-  <div class="segment name">{file.name}</div>
-  <div class="segment type">{mime}</div>
-  <div class="segment size">{formatBytes(file.size)}</div>
-  <div class="segment modified">{date}</div>
-</button>
+{#if thisPath}
+  <button
+    class="item file"
+    {onclick}
+    class:selected={$selection.includes(thisPath)}
+    ondblclick={() => process.openFile(thisPath)}
+    data-contextmenu={$selection.includes(thisPath) ? "file-item" : ""}
+    use:contextProps={[file, thisPath]}
+  >
+    <div class="segment icon">
+      <img src={icon} alt="" />
+    </div>
+    <div class="segment name">{file.name}</div>
+    <div class="segment type">{mime}</div>
+    <div class="segment size">{formatBytes(file.size)}</div>
+    <div class="segment modified">{date}</div>
+  </button>
+{/if}

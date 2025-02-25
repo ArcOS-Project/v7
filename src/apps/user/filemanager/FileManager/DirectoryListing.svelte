@@ -21,10 +21,10 @@
   {:else}
     <HeaderRow />
     {#if $contents && ($contents.dirs.length || $contents.files.length)}
-      {#each $contents.dirs as dir}
+      {#each $contents.dirs as dir (dir.name)}
         <FolderItem {dir} {process} />
       {/each}
-      {#each $contents.files as file}
+      {#each $contents.files as file (file.name)}
         <FileItem {file} {process} />
       {/each}
     {:else}

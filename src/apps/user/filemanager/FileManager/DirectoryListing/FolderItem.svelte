@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { contextProps } from "$ts/context/actions.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
   import { join } from "$ts/fs/util";
   import { FolderIcon } from "$ts/images/filesystem";
@@ -33,18 +34,21 @@
   }
 </script>
 
-<button
-  class="item folder"
-  {ondblclick}
-  {onclick}
-  class:selected={$selection.includes(thisPath)}
-  data-contextmenu={$selection.includes(thisPath) ? "folder-item" : ""}
->
-  <div class="segment icon">
-    <img src={FolderIcon} alt="" />
-  </div>
-  <div class="segment name">{dir.name}</div>
-  <div class="segment type">Folder</div>
-  <div class="segment size">-</div>
-  <div class="segment modified">{date}</div>
-</button>
+{#if thisPath}
+  <button
+    class="item folder"
+    {ondblclick}
+    {onclick}
+    class:selected={$selection.includes(thisPath)}
+    data-contextmenu={$selection.includes(thisPath) ? "folder-item" : ""}
+    use:contextProps={[dir, thisPath]}
+  >
+    <div class="segment icon">
+      <img src={FolderIcon} alt="" />
+    </div>
+    <div class="segment name">{dir.name}</div>
+    <div class="segment type">Folder</div>
+    <div class="segment size">-</div>
+    <div class="segment modified">{date}</div>
+  </button>
+{/if}

@@ -30,7 +30,7 @@ export class FsProgressRuntime extends AppProcess {
       if (v.done >= v.max && v.max > 0 && !v.errors.length) {
         await Sleep(350);
 
-        this.closeWindow();
+        await this.closeWindow();
 
         return;
       }
@@ -45,16 +45,16 @@ export class FsProgressRuntime extends AppProcess {
           `<code class='block'> - ${v.errors.join("<br> - ")}</code>`,
         ];
 
-        MessageBox(
+        await this.closeWindow();
+
+        await MessageBox(
           {
             title: "Errors Occured",
             message: message.join("<br>"),
             buttons: [
               {
                 caption: "Okay",
-                action: () => {
-                  this.closeWindow();
-                },
+                action: async () => {},
                 suggested: true,
               },
             ],
