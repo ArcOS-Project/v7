@@ -42,5 +42,6 @@ export const OpenWithApp: App = {
     runtime: OpenWithRuntime,
     component: OpenWith as any,
   },
+  glass: true,
   id: "OpenWith",
 };

@@ -17,6 +17,7 @@ export interface LanguageOptions {
   continuous?: boolean;
   tickDelay?: number;
   workingDir?: string;
+  arguments?: any[];
 }
 
 export interface InterpreterCommand {

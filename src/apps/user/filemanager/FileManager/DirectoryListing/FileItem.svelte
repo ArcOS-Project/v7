@@ -1,16 +1,17 @@
 <script lang="ts">
   import { RelativeTimeMod } from "$ts/dayjs";
-  import { formatBytes, getMimeIcon, join } from "$ts/fs/util";
+  import { formatBytes, join } from "$ts/fs/util";
   import type { FileEntry } from "$types/fs";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
   import { fromMime } from "human-filetypes";
   import type { FileManagerRuntime } from "../../runtime";
+  import { DefaultMimeIcon } from "$ts/images/mime";
 
   const { process, file }: { process: FileManagerRuntime; file: FileEntry } =
     $props();
-  const { selection } = process;
+  const { selection, userDaemon } = process;
 
   let date = $state<string>();
   let icon = $state<string>();
@@ -27,7 +28,7 @@
     const m = fromMime(file.mimeType);
 
     mime = m.replace(m[0], m[0].toUpperCase());
-    icon = getMimeIcon(file.name);
+    icon = userDaemon!.getMimeIconByFilename(file.name) || DefaultMimeIcon;
     thisPath = join(process.path(), file.name);
   });
 

@@ -43,12 +43,12 @@ import type {
   WallpaperGetters,
 } from "$types/user";
 import type { Wallpaper } from "$types/wallpaper";
+import { fromExtension } from "human-filetypes";
 import Cookies from "js-cookie";
 import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
-import { BuiltinThemes } from "./store";
-import { fromExtension } from "human-filetypes";
+import { BuiltinThemes, DefaultMimeIcons } from "./store";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -74,6 +74,7 @@ export class UserDaemon extends Process {
   private virtualDesktops: Record<string, HTMLDivElement> = {};
   private virtualDesktop: HTMLDivElement | undefined;
   private virtualDesktopIndex = -1;
+  private mimeIcons: Record<string, string[]> = DefaultMimeIcons;
 
   constructor(
     handler: ProcessHandler,
@@ -844,7 +845,7 @@ export class UserDaemon extends Process {
     this.Log(`SPAWNING APP ${id}`);
 
     if (app.thirdParty) {
-      await this.spawnThirdParty(app as unknown as ThirdPartyApp);
+      await this.spawnThirdParty(app as unknown as ThirdPartyApp, ...args);
 
       return;
     }
@@ -909,7 +910,7 @@ export class UserDaemon extends Process {
     );
   }
 
-  async spawnThirdParty(app: ThirdPartyApp) {
+  async spawnThirdParty(app: ThirdPartyApp, ...args: any[]) {
     if (this._disposed) return;
 
     this.Log(`Starting ArcMSL execution to run third-party app ${app.id}`);
@@ -927,6 +928,7 @@ export class UserDaemon extends Process {
         allowUnsafe: app.unsafeCode, // Unsafe code execution
         workingDir: app.workingDirectory, // Working directory (cwd)
         continuous: true, // Continuous code execution to keep the mainloop going
+        arguments: args, // Send the arguments
       });
     } catch (e) {
       this.Log(`Execution error in third-party application "${app.id}": ${e}`);
@@ -1726,5 +1728,30 @@ export class UserDaemon extends Process {
     }
 
     return result;
+  }
+
+  getMimeIconByFilename(filename: string): string | undefined {
+    if (!filename) return;
+
+    const split = filename.split(".");
+
+    return this.getMimeIconByExtension(`.${split[split.length - 1]}`);
+  }
+
+  getMimeIconByExtension(extension: string): string | undefined {
+    return Object.entries(this.mimeIcons)
+      .filter(([_, ext]) => ext.includes(extension))
+      .map(([icn]) => icn)[0];
+  }
+
+  loadMimeIcon(extension: string, icon: string) {
+    if (this.getMimeIconByExtension(icon)) return;
+
+    if (this.mimeIcons[icon] && !this.mimeIcons[icon].includes(extension)) {
+      this.mimeIcons[icon].push(extension);
+      return;
+    }
+
+    if (!this.mimeIcons[icon]) this.mimeIcons[icon] = [extension];
   }
 }

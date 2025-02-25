@@ -1,3 +1,21 @@
+import {
+  ArcAppMimeIcon,
+  ArcTermMimeIcon,
+  ArcThemeMimeIcon,
+  AudioMimeIcon,
+  CompressMimeIcon,
+  ImageMimeIcon,
+  JavascriptMimeIcon,
+  JsonMimeIcon,
+  MarkdownMimeIcon,
+  PdfMimeIcon,
+  SvgMimeIcon,
+  TextMimeIcon,
+  UnknownFileIcon,
+  VideoMimeIcon,
+  WebpageMimeIcon,
+  XmlMimeIcon,
+} from "$ts/images/mime";
 import type { ThemeStore } from "$types/theme";
 
 export const BuiltinThemes: ThemeStore = {
@@ -186,4 +204,33 @@ export const TimeFrames: Record<string, string> = {
   sevenDays: "Past 7 days",
   twentyEightDays: "Past 28 days",
   older: "Older",
+};
+
+export const DefaultMimeIcons: Record<string, string[]> = {
+  [ArcAppMimeIcon]: [".appmod"],
+  [JsonMimeIcon]: [".json"],
+  [PdfMimeIcon]: [".pdf"],
+  [SvgMimeIcon]: [".svg"],
+  [CompressMimeIcon]: [".zip", ".tar.xz", ".7z", ".rar"],
+  [AudioMimeIcon]: [".mp3", ".opus", ".wav", ".m4a", ".flac"],
+  [ImageMimeIcon]: [
+    ".png",
+    ".jpg",
+    ".gif",
+    ".webp",
+    ".ico",
+    ".bmp",
+    ".tif",
+    ".tiff",
+    ".jpeg",
+  ],
+  [TextMimeIcon]: [".txt"],
+  [ArcTermMimeIcon]: ["arcterm.conf", ".arcterm"],
+  [ArcThemeMimeIcon]: [".arctheme"],
+  [MarkdownMimeIcon]: [".md"],
+  [VideoMimeIcon]: [".mp4", ".mkv", ".mov", ".avi"],
+  [WebpageMimeIcon]: [".html", ".htm"],
+  [JavascriptMimeIcon]: [".js", ".ts", ".d.ts", ".mjs"],
+  [XmlMimeIcon]: [".xml"],
+  [UnknownFileIcon]: [".$new"],
 };

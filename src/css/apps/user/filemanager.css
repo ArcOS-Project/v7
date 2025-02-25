@@ -438,7 +438,7 @@
   height: 96px;
 }
 
-#fileManager div.window.overlay {
+#fileManager > div.overlay-wrapper > div.window.overlay {
   top: 15px;
   scale: 1 !important;
   margin-top: -100px;

@@ -1,5 +1,13 @@
+#OpenWith {
+  overflow: visible;
+  background-color: var(--win-bg) !important;
+  backdrop-filter: none !important;
+}
+
 #OpenWith > div.body {
   padding: 0;
+  overflow: hidden;
+  border-radius: 9px;
 }
 
 #OpenWith > div.body > div.top {
@@ -8,18 +16,35 @@
 }
 
 #OpenWith div.body > div.top div.options {
-  height: calc(100% - 85px);
+  height: calc(100% - 60px);
+  min-height: calc(100% - 60px);
+  max-height: calc(100% - 60px);
   overflow-y: scroll;
   margin-top: 7px;
 }
 
-#OpenWith div.body > div.top div.options > p.empty {
+#OpenWith div.body > div.top div.options > section > p {
+  opacity: 0.5;
+  font-weight: bold;
+  margin-top: 10px;
+  padding-left: 10px;
+  margin-bottom: 5px;
+}
+#OpenWith div.body > div.top div.options > div.empty {
   text-align: center;
-  max-width: 50%;
   margin: 10px auto;
+  padding: 10px 0;
 }
 
-#OpenWith div.body > div.top div.options > button {
+#OpenWith div.body > div.top div.options > div.empty > button {
+  margin-top: 10px;
+}
+
+#OpenWith div.body > div.top div.options > div.empty > p {
+  opacity: 0.5;
+}
+
+#OpenWith div.body > div.top div.options button.option {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -27,6 +52,10 @@
   width: 100%;
   padding: 10px;
   background-color: transparent;
+}
+
+#OpenWith div.body > div.top div.options button.option p {
+  opacity: 0.5;
 }
 
 #OpenWith div.body > div.bottom button {
@@ -57,6 +86,9 @@
   font-size: 18px;
   /* height:24px; */
   margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 #OpenWith div.body > div.top p.location {

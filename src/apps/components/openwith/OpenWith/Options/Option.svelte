@@ -17,6 +17,7 @@
   onclick={() => ($selectedId = app.id)}
   ondblclick={() => process.go(app.id)}
   class:active={$selectedId === app.id}
+  class="option"
 >
   <img src={app.metadata.icon} alt="" />
   <div>
