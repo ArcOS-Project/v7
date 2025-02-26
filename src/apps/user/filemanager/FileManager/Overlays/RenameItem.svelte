@@ -8,7 +8,7 @@
 
 <div class="top">
   <img src={TextEditorIcon} alt="" />
-  <div class="content">
+  <div class="right">
     <h1>Rename file or folder</h1>
     <p>Enter a new name for the item:</p>
     <input type="text" bind:value={$newName} />

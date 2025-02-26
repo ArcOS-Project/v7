@@ -39,5 +39,6 @@ export const RenameItemApp: App = {
     runtime: RenameItemRuntime,
     component: RenameItem as any,
   },
+  glass: true,
   id: "RenameItem",
 };

@@ -2,16 +2,16 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { FilesystemDrive } from "$ts/fs/drive";
 import {
+  DownloadFile,
   getDirectoryName,
   getDriveLetter,
   getParentDirectory,
 } from "$ts/fs/util";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
-import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
+import { DownloadIcon, DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import { TrashIcon, UploadIcon } from "$ts/images/general";
 import { ShutdownIcon } from "$ts/images/power";
 import type { ProcessHandler } from "$ts/process/handler";
-import { Sleep } from "$ts/sleep";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
 import type {
@@ -386,8 +386,6 @@ export class FileManagerRuntime extends AppProcess {
       }
     } catch {
       this.DirectoryNotFound();
-    } finally {
-      await Sleep(10);
     }
   }
 
@@ -501,10 +499,9 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   async confirmUmountDrive(drive: FilesystemDrive, id: string) {
-    const { mutDone, show } = await this.userDaemon!.FileProgress(
+    const prog = await this.userDaemon!.FileProgress(
       {
-        max: 100,
-        working: true,
+        waiting: true,
         icon: DriveIcon,
         caption: `Unmounting ${drive.label || "drive"}...`,
         subtitle: `${drive.driveLetter || drive.uuid}:/`,
@@ -512,15 +509,15 @@ export class FileManagerRuntime extends AppProcess {
       this.pid
     );
 
-    show();
+    await this.fs.umountDrive(id, false, (progress) => {
+      prog.show();
+      prog.setMax(progress.max);
+      prog.setDone(progress.value);
+      prog.setWait(false);
+      prog.setWork(true);
+    });
 
-    await Sleep(1000);
-
-    await this.fs.umountDrive(id);
-
-    mutDone(+99);
-    await Sleep(1000);
-    mutDone(+1);
+    prog.stop();
   }
 
   async uploadItems() {
@@ -651,6 +648,70 @@ export class FileManagerRuntime extends AppProcess {
       }
 
       prog.mutDone(+1);
+    }
+  }
+
+  async downloadSelected() {
+    const selected = this.selection();
+
+    if (!selected.length) return;
+
+    const filename = getDirectoryName(selected[0]);
+
+    const prog = await this.userDaemon!.FileProgress(
+      {
+        type: "size",
+        caption: `Preparing for download`,
+        subtitle: selected[0],
+        icon: DownloadIcon,
+      },
+      this.pid
+    );
+
+    try {
+      const file = await this.fs.readFile(selected[0], (progress) => {
+        prog.setWait(false);
+        prog.setWork(true);
+        prog.show();
+        prog.setMax(progress.max);
+        prog.setDone(progress.value);
+      });
+      const dir = await this.fs.readDir(selected[0]);
+
+      if (!file && !dir) {
+        MessageBox(
+          {
+            title: "Failed to download",
+            message:
+              "ArcOS can't find the file you are trying to download. It might be moved or otherwise unavailable. Please try again.",
+            buttons: [
+              {
+                caption: "Okay",
+                suggested: true,
+                action: async () => {
+                  this.refresh();
+                },
+              },
+            ],
+            image: ErrorIcon,
+            sound: "arcos.dialog.error",
+          },
+          this.pid,
+          true
+        );
+
+        return;
+      }
+
+      if (!file && dir) {
+        // Check if the user is trying to download a folder
+        return;
+      }
+
+      DownloadFile(file!, filename);
+    } catch {
+      prog.stop();
+      return false;
     }
   }
 }

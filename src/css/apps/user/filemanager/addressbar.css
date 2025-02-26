@@ -1,0 +1,99 @@
+#fileManager div.address-bar {
+  display: flex;
+  gap: 10px;
+  height: 30px;
+  margin: 5px 15px;
+  margin-bottom: 0;
+  align-items: center;
+  position: relative;
+}
+
+#fileManager div.address-bar div.portion.address {
+  flex-grow: 1;
+  max-width: calc(100% - 243px);
+}
+
+#fileManager div.address-bar div.path {
+  flex-grow: 1;
+  max-width: calc(100% - 35px);
+  background-color: var(--button-bg);
+  border-radius: var(--button-border-rad);
+  /* line-height: 30px; */
+  padding: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#fileManager div.address-bar button.activated {
+  background-color: var(--accent-light) !important;
+  color: var(--accent-darkest);
+}
+
+#fileManager div.address-bar div.path div.pill {
+  padding: 0 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: var(--button-glass-bg);
+  height: 24px;
+  border-radius: 5px;
+}
+
+#fileManager div.address-bar div.path div.pill span.lucide {
+  font-size: 16px;
+  color: var(--accent-light);
+}
+
+#fileManager div.address-bar div.path img {
+  height: 16px;
+}
+
+#fileManager div.address-bar.system div.path {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    #0000 0px,
+    #0000 20px,
+    rgba(255, 166, 0, 0.1) 20px,
+    rgba(255, 166, 0, 0.1) 40px,
+    #0000 40px
+  );
+}
+
+/* 
+#fileManager div.address-bar.system div.path {
+  background-color: var(--clr-orange-bg);
+  color: var(--clr-orange-fg);
+} */
+
+#fileManager div.address-bar button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+  min-width: unset;
+}
+
+#fileManager div.address-bar button:not(.suggested) {
+  background-color: var(--button-bg);
+}
+
+#fileManager div.address-bar button.suggested {
+  opacity: 1;
+}
+
+#fileManager div.address-bar div.portion {
+  display: flex;
+  gap: 5px;
+}
+
+#fileManager div.address-bar div.sep {
+  width: 1px;
+  height: 20px;
+  background-color: var(--button-hover-bg);
+}

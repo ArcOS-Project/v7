@@ -1,0 +1,61 @@
+#fileManager > div.body div.sidebar {
+  height: 100%;
+  width: 200px;
+  border-right: var(--win-border);
+  overflow-y: scroll;
+  padding: 10px;
+  padding-right: 2px;
+}
+
+#fileManager > div.body div.sidebar button {
+  width: 100%;
+  height: 30px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 0 7px;
+  margin-bottom: 5px;
+  background-color: transparent;
+}
+
+#fileManager > div.body div.sidebar button > span:not(.lucide) {
+  max-width: calc(100% - 16px - 30px - 20px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#fileManager > div.body div.sidebar button.selected {
+  background-color: var(--accent-transparent);
+}
+
+#fileManager > div.body div.sidebar button img {
+  width: 24px;
+  height: 24px;
+}
+
+#fileManager > div.body div.sidebar button span.lucide {
+  font-size: 16px;
+  color: var(--accent-light);
+}
+
+#fileManager > div.body div.sidebar button .circular-progress {
+  margin-left: auto;
+}
+
+#fileManager > div.body div.sidebar button:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#fileManager > div.body div.sidebar button:active {
+  background-color: var(--button-glass-active-bg);
+}
+
+#fileManager > div.body div.sidebar section h1 {
+  opacity: 0.5;
+  padding: 5px 7px;
+}
+
+#fileManager > div.body div.sidebar section + section {
+  margin-top: 10px;
+}
