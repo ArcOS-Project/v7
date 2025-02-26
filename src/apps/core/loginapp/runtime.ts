@@ -64,7 +64,6 @@ export class LoginAppRuntime extends AppProcess {
     const token = await LoginUser(username, password);
 
     if (!token) {
-      await Sleep(1000);
       this.loadingStatus.set("");
       this.errorMessage.set("Username or password incorrect.");
 
