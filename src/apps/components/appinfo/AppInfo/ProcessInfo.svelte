@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { Sleep } from "$ts/sleep";
   import type { AppInfoRuntime } from "../runtime";
   import InfoBlock from "./InfoBlock.svelte";
   import InfoRow from "./InfoBlock/InfoRow.svelte";
@@ -12,7 +11,6 @@
   let count = $state(0);
 
   async function update() {
-    await Sleep(300);
     const pids = process.handler.renderer
       ?.getAppInstances(appId)
       .map((p) => p.pid);

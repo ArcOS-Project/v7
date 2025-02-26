@@ -17,5 +17,6 @@
   }
 </script>
 
-<button onclick={go} class:suggested={button.suggested}>{button.caption}</button
+<button onclick={go} class:suggested={button.suggested} {disabled}
+  >{button.caption}</button
 >
