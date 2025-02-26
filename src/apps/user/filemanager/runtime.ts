@@ -15,6 +15,7 @@ import { Sleep } from "$ts/sleep";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
 import type {
+  App,
   AppContextMenu,
   AppProcessData,
   ContextMenuItem,
@@ -22,6 +23,7 @@ import type {
 import type { DirectoryReadReturn, FolderEntry } from "$types/fs";
 import { LogLevel } from "$types/logging";
 import type { RenderArgs } from "$types/process";
+import { RenameItemApp } from "./renameitem/metadata";
 import type { QuotedDrive } from "./types";
 
 export class FileManagerRuntime extends AppProcess {
@@ -36,6 +38,10 @@ export class FileManagerRuntime extends AppProcess {
   rootFolders = Store<FolderEntry[]>([]);
   drives = Store<Record<string, QuotedDrive>>({});
   private _refreshLocked = false;
+
+  protected overlayStore: Record<string, App> = {
+    renameItem: RenameItemApp,
+  };
 
   override contextMenu: AppContextMenu = {
     "sidebar-drive": [
@@ -90,7 +96,7 @@ export class FileManagerRuntime extends AppProcess {
       {
         caption: "Rename...",
         icon: "file-pen",
-        action: () => this.notImplemented("Renaming files"),
+        action: (_, thisPath) => this.spawnOverlay("renameItem", thisPath),
       },
       {
         caption: "Delete",
@@ -141,7 +147,7 @@ export class FileManagerRuntime extends AppProcess {
       {
         caption: "Rename...",
         icon: "file-pen",
-        action: () => this.notImplemented("Renaming folders"),
+        action: (_, thisPath) => this.spawnOverlay("renameItem", thisPath),
       },
       {
         caption: "Delete",

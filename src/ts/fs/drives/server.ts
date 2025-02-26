@@ -137,15 +137,11 @@ export class ServerDrive extends FilesystemDrive {
     if (this.fileLocks[source])
       throw new Error(`Not moving locked file '${source}'`);
 
-    const sourceFilename = getDirectoryName(source);
-
     try {
       const response = await Axios.post(
         `/fs/mv/${source}`,
         toForm({
-          destination: destination.endsWith(sourceFilename)
-            ? destination
-            : join(destination, sourceFilename),
+          destination,
         }),
         {
           headers: { Authorization: `Bearer ${this.token}` },
