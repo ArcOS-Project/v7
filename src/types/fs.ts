@@ -6,6 +6,10 @@ export interface FileEntry {
   mimeType: string;
 }
 
+export type FullFileEntry = FileEntry & {
+  data: Blob;
+};
+
 export interface FolderEntry {
   name: string;
   dateCreated: Date;

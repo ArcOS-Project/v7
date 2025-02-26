@@ -1,6 +1,7 @@
 import type { WaveKernel } from "$ts/kernel";
 import type {
   DirectoryReadReturn,
+  FilesystemProgressCallback,
   RecursiveDirectoryReadReturn,
 } from "$types/fs";
 import JSZip from "jszip";
@@ -19,12 +20,13 @@ export class ZIPDrive extends FilesystemDrive {
     this._path = path;
   }
 
-  async _spinUp(): Promise<void> {
+  async _spinUp(onProgress?: FilesystemProgressCallback): Promise<boolean> {
     const fs = this.kernel.getModule<Filesystem>("fs");
-    const contents = await fs.readFile(this._path);
+    const contents = await fs.readFile(this._path, onProgress);
 
-    if (!contents)
-      throw new Error("Tried to create ZIP drive on an invalid file");
+    if (!contents) {
+      return false;
+    }
 
     const split = this._path.split("/");
 
@@ -32,13 +34,17 @@ export class ZIPDrive extends FilesystemDrive {
 
     const zip = new JSZip();
     this._buffer = await zip.loadAsync(contents, {});
+
+    return true;
   }
 
-  async _spinDown(): Promise<void> {
-    await this._sync();
+  async _spinDown(onProgress?: FilesystemProgressCallback): Promise<boolean> {
+    if (this._buffer) await this._sync(onProgress);
 
     this._buffer = undefined;
     this._path = "";
+
+    return true;
   }
 
   async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
@@ -92,6 +98,8 @@ export class ZIPDrive extends FilesystemDrive {
   }
 
   async readFile(path: string): Promise<ArrayBuffer | undefined> {
+    if (!path) return;
+
     const file = Object.entries(this._buffer?.files || {}).filter(
       ([itemPath, item]) => itemPath === path && !item.dir
     )[0];
@@ -101,23 +109,31 @@ export class ZIPDrive extends FilesystemDrive {
     return await file[1].async("arraybuffer");
   }
 
-  async writeFile(path: string, data: Blob): Promise<boolean> {
+  async writeFile(
+    path: string,
+    data: Blob,
+    onProgress?: FilesystemProgressCallback
+  ): Promise<boolean> {
+    if (!path || !data) return false;
+
     this._buffer?.file(path, data);
 
-    await this._sync();
+    await this._sync(onProgress);
 
     return true;
   }
 
   async createDirectory(path: string): Promise<boolean> {
-    this._buffer?.folder(path);
+    if (!path) return false;
 
-    await this._sync();
+    this._buffer?.folder(path);
 
     return true;
   }
 
   async deleteItem(path: string): Promise<boolean> {
+    if (!path) return false;
+
     this._buffer?.remove(path);
 
     await this._sync();
@@ -176,13 +192,13 @@ export class ZIPDrive extends FilesystemDrive {
     return true;
   }
 
-  async _sync() {
+  async _sync(progress?: FilesystemProgressCallback) {
     this.Log("Syncing " + this._path);
     const file = await this._buffer?.generateAsync({ type: "blob" });
     const fs = this.kernel.getModule<Filesystem>("fs");
 
     if (!file) throw new Error(`Failed to sync to file '${this._path}'`);
 
-    await fs.writeFile(this._path, file);
+    await fs.writeFile(this._path, file, progress);
   }
 }

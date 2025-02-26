@@ -155,9 +155,6 @@ export class UserDaemon extends Process {
       this.commitPreferences(v);
       this.setAppRendererClasses(v);
       this.updateWallpaper(v);
-
-      await Sleep(0);
-
       this.syncVirtualDesktops(v);
     });
 
@@ -257,7 +254,7 @@ export class UserDaemon extends Process {
 
     this.Log(`Starting filesystem supplier`);
 
-    await this.fs.mountDrive("userfs", ServerDrive, "U", this.token);
+    await this.fs.mountDrive("userfs", ServerDrive, "U", undefined, this.token);
   }
 
   async stop() {
@@ -738,8 +735,32 @@ export class UserDaemon extends Process {
 
     this.Log(`Mounting ZIP file at ${path} as ${letter || "?"}:/`);
 
-    const mount = this.fs.mountDrive(btoa(path), ZIPDrive, letter, path);
+    const prog = await this.FileProgress(
+      {
+        type: "size",
+        caption: "Mounting drive",
+        subtitle: `${path}${letter ? ` as ${letter}:/` : ""}`,
+        icon: DriveIcon,
+        waiting: true,
+      },
+      +this.env.get("shell_pid") || undefined
+    );
 
+    const mount = await this.fs.mountDrive(
+      btoa(path),
+      ZIPDrive,
+      letter,
+      (progress) => {
+        prog.show();
+        prog.setMax(progress.max);
+        prog.setDone(progress.value);
+        prog.setWait(false);
+        prog.setWork(true);
+      },
+      path
+    );
+
+    prog.stop();
     return mount;
   }
 
@@ -1245,7 +1266,6 @@ export class UserDaemon extends Process {
     if (!desktop) return;
 
     await this.killWindowsOfDesktop(uuid);
-    await Sleep(10);
 
     desktop.remove();
     delete this.virtualDesktops[uuid];
@@ -1666,7 +1686,7 @@ export class UserDaemon extends Process {
       await this.fs.moveItem(source, destination);
       setWait(true);
       mutDone(+1);
-      await Sleep(200);
+      await Sleep(200); // prevent rate limit
     }
   }
 
@@ -1710,7 +1730,7 @@ export class UserDaemon extends Process {
       setWait(true);
       mutDone(+1);
 
-      await Sleep(200);
+      await Sleep(200); // prevent rate limit
     }
   }
 

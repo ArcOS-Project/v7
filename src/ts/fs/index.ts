@@ -35,6 +35,7 @@ export class Filesystem extends KernelModule {
     id: string,
     supplier: typeof FilesystemDrive,
     letter?: string,
+    onProgress?: FilesystemProgressCallback,
     ...args: any[]
   ): Promise<FilesystemDrive | false> {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
@@ -49,10 +50,11 @@ export class Filesystem extends KernelModule {
     const uuid = crypto.randomUUID();
     const instance = new supplier(this.kernel, uuid, letter, ...args);
 
+    const ready = await instance.__spinUp(onProgress);
+
+    if (!ready) return false;
+
     this.drives[id] = instance;
-
-    await instance.__spinUp();
-
     this.dispatch.dispatch("fs-mount-drive", id);
 
     return instance as FilesystemDrive;
@@ -66,7 +68,11 @@ export class Filesystem extends KernelModule {
       .map(([id]) => id)[0];
   }
 
-  async umountDrive(id: string, fromSystem = false) {
+  async umountDrive(
+    id: string,
+    fromSystem = false,
+    onProgress?: FilesystemProgressCallback
+  ) {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
     this.Log(`Unmounting drive '${id}'`);
@@ -74,7 +80,7 @@ export class Filesystem extends KernelModule {
     if (!this.drives[id]) return false;
     if (this.drives[id].FIXED && !fromSystem) return false;
 
-    await this.drives[id].__spinDown();
+    await this.drives[id].__spinDown(onProgress);
 
     delete this.drives[id];
 
@@ -301,6 +307,8 @@ export class Filesystem extends KernelModule {
 
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
+    await this.createDirectory(target);
+
     this.validatePath(target);
     const uploader = document.createElement("input");
 
@@ -333,8 +341,6 @@ export class Filesystem extends KernelModule {
               throw new Error(`File ${i} doesn't have a name`);
             }
 
-            await this.createDirectory(target);
-
             const path = join(target, file.name);
             const written = await this.writeFile(path, content, onProgress);
 
@@ -365,7 +371,7 @@ export class Filesystem extends KernelModule {
     this.Log(
       `Got filesystem progress: ${d.type}: ${
         d.type === "size" ? formatBytes(d.value) : d.value
-      }/${d.type === "size" ? formatBytes(d.max) : d.max}`
+      }/${d.type === "size" ? formatBytes(d.max) : d.max} (${d.what})`
     );
   }
 

@@ -1,5 +1,6 @@
 import { GlobalDispatcher } from "$ts/dispatch";
 import { WaveKernel } from "$ts/kernel";
+import { arrayToBlob } from "./convert";
 
 export const sizeUnits = [
   "bytes",
@@ -107,4 +108,22 @@ export function formatBytes(bytes: number) {
   }
 
   return n.toFixed(n < 10 && l > 0 ? 1 : 0) + " " + sizeUnits[l];
+}
+
+export function DownloadFile(
+  file: ArrayBuffer,
+  filename: string,
+  mimetype?: string
+) {
+  if (!file || !filename) return;
+
+  const blob = arrayToBlob(file, mimetype);
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.target = "_blank";
+  anchor.click();
+  anchor.remove();
 }

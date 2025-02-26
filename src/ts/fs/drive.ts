@@ -58,25 +58,33 @@ export class FilesystemDrive {
     Log(`FilesystemDrive::${this.uuid}`, message, level);
   }
 
-  async __spinUp() {
+  async __spinUp(onProgress?: FilesystemProgressCallback): Promise<boolean> {
     this.Log("Spinning up drive...");
 
-    await this._spinUp();
+    const result = await this._spinUp(onProgress);
 
     this.Log("Heads loaded.");
+
+    return result;
   }
 
-  async __spinDown() {
+  async __spinDown(onProgress?: FilesystemProgressCallback): Promise<boolean> {
     this.Log("Spinning down drive...");
 
-    await this._spinDown();
+    const result = await this._spinDown(onProgress);
 
     this.Log("READY.");
+
+    return result;
   }
 
-  async _spinUp() {}
+  async _spinUp(onProgress?: FilesystemProgressCallback): Promise<boolean> {
+    return true;
+  }
 
-  async _spinDown() {}
+  async _spinDown(onProgress?: FilesystemProgressCallback): Promise<boolean> {
+    return true;
+  }
 
   async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
     return {
