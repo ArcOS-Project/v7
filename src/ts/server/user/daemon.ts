@@ -75,6 +75,7 @@ export class UserDaemon extends Process {
   private virtualDesktop: HTMLDivElement | undefined;
   private virtualDesktopIndex = -1;
   private mimeIcons: Record<string, string[]> = DefaultMimeIcons;
+  private virtualdesktopChangingTimeout: NodeJS.Timeout | undefined;
 
   constructor(
     handler: ProcessHandler,
@@ -730,10 +731,22 @@ export class UserDaemon extends Process {
     });
   }
 
-  async mountZip(path: string, letter?: string) {
+  async mountZip(path: string, letter?: string, fromSystem = false) {
     if (this._disposed) return;
 
     this.Log(`Mounting ZIP file at ${path} as ${letter || "?"}:/`);
+
+    const elevated =
+      fromSystem ||
+      (await this.manuallyElevate({
+        what: "ArcOS needs your permission to mount a ZIP file",
+        title: getDirectoryName(path),
+        description: letter ? `As ${letter}:/` : "As a drive",
+        image: DriveIcon,
+        level: ElevationLevel.medium,
+      }));
+
+    if (!elevated) return;
 
     const prog = await this.FileProgress(
       {
@@ -809,10 +822,6 @@ export class UserDaemon extends Process {
     setInterval(async () => {
       this.battery.set(await this.batteryInfo());
     }, 1000); // Every second
-
-    // setInterval(async () => {
-    //   this.networkSpeed.set(await this.testNetworkSpeed());
-    // }, 60 * 1000); // Every minute
 
     this.battery.set(await this.batteryInfo());
     this.networkSpeed.set(await this.testNetworkSpeed());
@@ -982,11 +991,23 @@ export class UserDaemon extends Process {
     return (disabledApps || []).includes(appId);
   }
 
-  disableApp(appId: string) {
+  async disableApp(appId: string) {
     if (this._disposed) return false;
     if (this.checkDisabled(appId)) return false;
 
     this.Log(`Disabling application ${appId}`);
+
+    const app = await this.appStore?.getAppById(appId);
+    if (!app) return;
+
+    const elevated = await this.manuallyElevate({
+      what: "ArcOS needs your permission to disable an application",
+      image: app.metadata.icon,
+      title: app.metadata.name,
+      description: `By ${app.metadata.author}`,
+      level: ElevationLevel.medium,
+    });
+    if (!elevated) return;
 
     this.preferences.update((v) => {
       v.disabledApps.push(appId);
@@ -1004,11 +1025,23 @@ export class UserDaemon extends Process {
     this.globalDispatch.dispatch("app-store-refresh");
   }
 
-  enableApp(appId: string) {
+  async enableApp(appId: string) {
     if (this._disposed) return false;
     if (!this.checkDisabled(appId)) return false;
 
     this.Log(`Enabling application ${appId}`);
+
+    const app = await this.appStore?.getAppById(appId);
+    if (!app) return;
+
+    const elevated = await this.manuallyElevate({
+      what: "ArcOS needs your permission to enable an application",
+      image: app.metadata.icon,
+      title: app.metadata.name,
+      description: `By ${app.metadata.author}`,
+      level: ElevationLevel.medium,
+    });
+    if (!elevated) return;
 
     this.preferences.update((v) => {
       if (!v.disabledApps.includes(appId)) return v;
@@ -1221,8 +1254,13 @@ export class UserDaemon extends Process {
     } else {
       this.virtualDesktop.classList.add("changing");
       this.virtualDesktop.setAttribute("style", `--index: ${index};`);
-      await Sleep(300);
-      this.virtualDesktop.classList.remove("changing");
+
+      if (this.virtualdesktopChangingTimeout)
+        clearTimeout(this.virtualdesktopChangingTimeout);
+
+      this.virtualdesktopChangingTimeout = setTimeout(() => {
+        this.virtualDesktop?.classList.remove("changing");
+      }, 300);
     }
 
     this.virtualDesktopIndex = index;
@@ -1471,6 +1509,7 @@ export class UserDaemon extends Process {
           },
         ],
         image: DriveIcon,
+        timeout: 3000,
       });
     });
   }

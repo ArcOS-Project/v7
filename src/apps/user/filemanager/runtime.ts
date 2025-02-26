@@ -577,6 +577,7 @@ export class FileManagerRuntime extends AppProcess {
             },
             { caption: "Okay", action: () => {}, suggested: true },
           ],
+          sound: "arcos.dialog.warning",
           image: ErrorIcon,
         },
         this.pid,

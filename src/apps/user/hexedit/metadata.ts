@@ -31,6 +31,7 @@ export const HexEditorApp: App = {
     maximize: false,
     close: true,
   },
+  hidden: true,
   id: "HexEdit",
   opens: {
     extensions: [".txt"],

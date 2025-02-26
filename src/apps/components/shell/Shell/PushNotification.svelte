@@ -23,6 +23,7 @@
 
         data = incoming;
         show = true;
+        process.soundBus.playSound("arcos.notification");
 
         if (timeout) clearTimeout(timeout);
 

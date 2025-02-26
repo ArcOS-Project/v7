@@ -13,7 +13,7 @@
     <section>
       <p class="name">Built-in</p>
       {#each apps as app}
-        {#if !app.thirdParty && isPopulatable(app)}
+        {#if !app.thirdParty}
           <Option {app} {process} />
         {/if}
       {/each}
@@ -24,7 +24,7 @@
     <section>
       <p class="name">Third-Party</p>
       {#each apps as app}
-        {#if app.thirdParty && isPopulatable(app)}
+        {#if app.thirdParty}
           <Option {app} {process} />
         {/if}
       {/each}

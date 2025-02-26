@@ -42,6 +42,7 @@ export const OpenWithApp: App = {
     runtime: OpenWithRuntime,
     component: OpenWith as any,
   },
+  hidden: true,
   glass: true,
   id: "OpenWith",
 };
