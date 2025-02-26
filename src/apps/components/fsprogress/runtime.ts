@@ -2,7 +2,6 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { WarningIcon } from "$ts/images/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
-import { Sleep } from "$ts/sleep";
 import { Plural as P } from "$ts/util";
 import { Store, type ReadableStore } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -28,8 +27,6 @@ export class FsProgressRuntime extends AppProcess {
       this.windowIcon.set(v.icon);
 
       if (v.done >= v.max && v.max > 0 && !v.errors.length) {
-        await Sleep(350);
-
         await this.closeWindow();
 
         return;

@@ -3,7 +3,6 @@ import { MessageBox } from "$ts/dialog";
 import { getDirectoryName } from "$ts/fs/util";
 import { WarningIcon } from "$ts/images/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
-import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import type { AppProcessData, AppStorage } from "$types/app";
 import type { RenderArgs } from "$types/process";
@@ -75,7 +74,6 @@ export class OpenWithRuntime extends AppProcess {
                 caption: "Continue",
                 action: async () => {
                   r(true);
-                  await Sleep(400);
                 },
                 suggested: true,
               },

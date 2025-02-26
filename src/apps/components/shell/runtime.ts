@@ -259,7 +259,6 @@ export class ShellRuntime extends AppProcess {
 
     this.CLICKLOCKED = true;
     this.contextData.set(data);
-    await Sleep(10);
     this.CLICKLOCKED = false;
   }
 
@@ -298,8 +297,6 @@ export class ShellRuntime extends AppProcess {
 
     const contextmenu = scope.dataset.contextmenu || "";
     const contextProps = scope.dataset.contextprops || "";
-
-    await Sleep();
 
     const items = this.getContextEntry(+pid, contextmenu);
     const proc = this.handler.getProcess(+pid);

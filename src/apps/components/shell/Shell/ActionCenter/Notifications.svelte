@@ -61,7 +61,7 @@
       {#if isEmpty}
         <p class="none">No notifications</p>
       {:else}
-        {#each [...store] as [id, notification]}
+        {#each [...store] as [id, notification] (id)}
           <NotificationItem {userDaemon} {id} {notification} />
         {/each}
       {/if}

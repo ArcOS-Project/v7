@@ -1,9 +1,5 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
-  import { MessageBox } from "$ts/dialog";
-  import { WarningIcon } from "$ts/images/dialog";
-  import { DesktopIcon } from "$ts/images/general";
-  import { Sleep } from "$ts/sleep";
   import { Wallpapers } from "$ts/wallpaper/store";
   import { Store } from "$ts/writable";
   import type { Workspace } from "$types/user";
@@ -15,46 +11,6 @@
 
   let workspaces: Workspace[] = $state([]);
   let windowCounts = Store<Record<string, number>>({});
-
-  function deleteWorkspace(uuid: string) {
-    if ($windowCounts[uuid] > 0) {
-      MessageBox(
-        {
-          title: "Can't delete workspace",
-          message:
-            "The workspace you want to delete still has windows opened in it. You have to close all windows in a workspace before you can delete it.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          sound: "arcos.dialog.error",
-          image: WarningIcon,
-        },
-        process.pid,
-        true
-      );
-
-      return;
-    }
-
-    MessageBox(
-      {
-        title: "Delete workspace",
-        message: "Are you sure you want to permanently delete this workspace?",
-        image: DesktopIcon,
-        buttons: [
-          { caption: "Cancel", action: () => {} },
-          {
-            caption: "Delete",
-            action: () => {
-              userDaemon?.deleteVirtualDesktop(uuid);
-            },
-            suggested: true,
-          },
-        ],
-        sound: "arcos.dialog.warning",
-      },
-      process.pid,
-      true
-    );
-  }
 
   $effect(() => {
     const sub = process.handler.store.subscribe((v) => {
@@ -76,8 +32,6 @@
 
     if (incoming === JSON.stringify(workspaces)) return;
 
-    workspaces = [];
-    await Sleep(0);
     workspaces = v.workspaces.desktops;
   });
 </script>
@@ -90,7 +44,7 @@
 >
   {#if workspaces && workspaces.length}
     <div class="desktops">
-      {#each workspaces as desktop, i}
+      {#each workspaces as desktop, i (desktop.uuid)}
         <button
           class="desktop"
           style="--wallpaper: url('{$Wallpaper

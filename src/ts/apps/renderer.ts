@@ -1,3 +1,4 @@
+import { ShellRuntime } from "$apps/components/shell/runtime";
 import { MessageBox } from "$ts/dialog";
 import { BugReportIcon, ComponentIcon } from "$ts/images/general";
 import { Draggable } from "@neodrag/vanilla";
@@ -5,13 +6,11 @@ import { unmount } from "svelte";
 import type { App, AppProcessData } from "../../types/app";
 import type { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
-import { Sleep } from "../sleep";
 import { htmlspecialchars } from "../util";
 import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
 import { BuiltinApps } from "./store";
-import { ShellRuntime } from "$apps/components/shell/runtime";
 
 export class AppRenderer extends Process {
   currentState: number[] = [];
@@ -60,8 +59,6 @@ export class AppRenderer extends Process {
 
     const { app } = process;
     const { data } = app;
-
-    await Sleep(1);
 
     body.className = "body";
 
@@ -124,7 +121,6 @@ export class AppRenderer extends Process {
         this.notifyCrash(data, e as Error, process);
       }
 
-      await Sleep(0);
       await this.handler.kill(process.pid);
     }
   }

@@ -35,8 +35,6 @@
     execution = "";
     variables = [];
 
-    await Sleep(0);
-
     try {
       (await lang.run(code, process.pid, {
         continuous: true,

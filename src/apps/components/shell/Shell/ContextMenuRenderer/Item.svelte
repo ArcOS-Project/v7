@@ -1,11 +1,10 @@
 <script lang="ts">
   import type { AppProcess } from "$ts/apps/process";
-  import { Sleep } from "$ts/sleep";
+  import type { ReadableStore } from "$ts/writable";
   import type { ContextMenuItem } from "$types/app";
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../../runtime";
   import SubItems from "./Item/SubItems.svelte";
-  import type { ReadableStore } from "$ts/writable";
 
   interface Props {
     data: ContextMenuItem;
@@ -36,8 +35,6 @@
     if (data.subItems) return;
 
     if (data.action) data.action(...props);
-
-    await Sleep(50);
 
     shell.contextData.set(null);
 

@@ -122,7 +122,7 @@ export class AppProcess extends Process {
       //   throw new Error("Disposed.");
       // }
 
-      await Sleep(1);
+      await Sleep(1); // prevent hanging bleh
     }
   }
 

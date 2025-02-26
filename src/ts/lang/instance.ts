@@ -142,7 +142,7 @@ export class LanguageInstance extends Process {
         break;
       }
 
-      await Sleep(1);
+      await Sleep(1); // prevent hanging or smth
     }
   }
 
