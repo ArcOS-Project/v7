@@ -7,6 +7,7 @@ import {
   getDirectoryName,
   getDriveLetter,
   getParentDirectory,
+  join,
 } from "$ts/fs/util";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { DownloadIcon, DriveIcon, FolderIcon } from "$ts/images/filesystem";
@@ -21,7 +22,7 @@ import type {
   AppProcessData,
   ContextMenuItem,
 } from "$types/app";
-import type { DirectoryReadReturn, FolderEntry } from "$types/fs";
+import type { DirectoryReadReturn, FileEntry, FolderEntry } from "$types/fs";
 import { LogLevel } from "$types/logging";
 import type { RenderArgs } from "$types/process";
 import { NewFileApp } from "./newfile/metadata";
@@ -115,7 +116,13 @@ export class FileManagerRuntime extends AppProcess {
       {
         caption: "Properties...",
         icon: "wrench",
-        action: () => this.notImplemented("Viewing file properties"),
+        action: (file: FileEntry) =>
+          this.spawnOverlayApp(
+            "ItemInfo",
+            this.pid,
+            join(this.path(), file.name),
+            file
+          ),
       },
     ],
     "folder-item": [
@@ -166,7 +173,13 @@ export class FileManagerRuntime extends AppProcess {
       {
         caption: "Properties...",
         icon: "wrench",
-        action: () => this.notImplemented("Viewing folder properties"),
+        action: (dir: FolderEntry) =>
+          this.spawnOverlayApp(
+            "ItemInfo",
+            this.pid,
+            join(this.path(), dir.name),
+            dir
+          ),
       },
     ],
   };

@@ -1,7 +1,7 @@
 <script lang="ts">
+  import InfoBlock from "$lib/InfoBlock.svelte";
+  import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import type { AppInfoRuntime } from "../runtime";
-  import InfoBlock from "./InfoBlock.svelte";
-  import InfoRow from "./InfoBlock/InfoRow.svelte";
 
   const { appId, process }: { appId: string; process: AppInfoRuntime } =
     $props();

@@ -1,10 +1,10 @@
 <script lang="ts">
+  import InfoBlock from "$lib/InfoBlock.svelte";
+  import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
+  import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
   import { AppOrigins } from "$ts/apps/store";
   import type { App } from "$types/app";
   import type { AppInfoRuntime } from "../runtime";
-  import InfoBlock from "./InfoBlock.svelte";
-  import InfoRow from "./InfoBlock/InfoRow.svelte";
-  import Segment from "./InfoBlock/InfoRow/Segment.svelte";
 
   const { target, process }: { target: App; process: AppInfoRuntime } =
     $props();

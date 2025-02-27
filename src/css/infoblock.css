@@ -1,0 +1,70 @@
+div.window:not(.core) div.body div.info-block {
+  background-color: var(--button-glass-bg);
+  border-radius: var(--win-border-rad);
+  box-shadow: var(--secondary-box-shadow);
+}
+
+div.window:not(.core) div.body div.info-block div.row {
+  display: flex;
+  gap: 30px;
+  padding: 10px 15px;
+}
+
+div.window:not(.core) div.body div.info-block div.segment {
+  max-width: 100%;
+}
+
+div.window:not(.core) div.body div.info-block div.segment > p {
+  margin: 0;
+}
+
+div.window:not(.core) div.body div.info-block div.segment p.title {
+  opacity: 0.5;
+  font-weight: bold;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+div.window:not(.core) div.body div.info-block div.segment p.title button.help {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  background-color: transparent;
+}
+
+div.window:not(.core) div.body div.info-block div.segment p.value {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+div.window:not(.core)
+  div.body
+  div.info-block
+  div.segment
+  p.title
+  button.help:hover {
+  color: var(--accent-light);
+}
+
+div.window:not(.core) div.body div.info-block div.segment.right {
+  margin-left: auto;
+  margin-top: -10px;
+  margin-bottom: -10px;
+  justify-content: center;
+  border-left: var(--win-border);
+  padding-left: 15px;
+}
+
+div.window:not(.core) div.body div.info-block div.segment code {
+  background-color: transparent;
+}
+
+div.window:not(.core) div.body div.info-block div.row + div.row {
+  border-top: var(--win-border);
+}
+
+div.window:not(.core) div.body div.info-block div.row > button.action {
+  margin-left: auto;
+}

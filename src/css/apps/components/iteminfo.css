@@ -1,0 +1,56 @@
+#ItemInfo {
+  overflow: visible;
+}
+
+#ItemInfo > div.body {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  flex-grow: 1;
+}
+
+#ItemInfo > div.body div.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#ItemInfo > div.body div.header img {
+  height: 64px;
+  margin-right: 5px;
+}
+
+#ItemInfo > div.body div.header button.lucide {
+  margin-left: auto;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font-size: 20px;
+  min-width: 32px;
+}
+
+#ItemInfo > div.body div.header > div {
+  max-width: calc(100% - 64px - 10px - 32px - 15px);
+}
+
+#ItemInfo > div.body div.header h1 {
+  font-size: 22px;
+  font-weight: bold;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#ItemInfo > div.body div.actions {
+  margin-top: auto;
+}
+
+#ItemInfo > div.body div.actions div.row {
+  justify-content: end;
+  gap: 10px;
+}
