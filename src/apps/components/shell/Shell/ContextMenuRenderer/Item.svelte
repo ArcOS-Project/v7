@@ -5,6 +5,7 @@
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../../runtime";
   import SubItems from "./Item/SubItems.svelte";
+  import { Sleep } from "$ts/sleep";
 
   interface Props {
     data: ContextMenuItem;
@@ -36,7 +37,9 @@
 
     if (data.action) data.action(...props);
 
-    shell.contextData.set(null);
+    await Sleep(50);
+
+    shell.closeContextMenu();
 
     update();
   }

@@ -20,6 +20,6 @@
   <button
     class="lucide icon-plus"
     aria-label="New..."
-    onclick={() => process.notImplemented("Creating new files")}
+    onclick={(e) => process.newMenu(e)}
   ></button>
 </div>

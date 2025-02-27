@@ -3,6 +3,8 @@
 @import url("./filemanager/directoryviewer.css");
 @import url("./filemanager/splash.css");
 @import url("./filemanager/overlays/renameitem.css");
+@import url("./filemanager/overlays/newfile.css");
+@import url("./filemanager/overlays/newfolder.css");
 
 #fileManager > div.body {
   padding: 0;

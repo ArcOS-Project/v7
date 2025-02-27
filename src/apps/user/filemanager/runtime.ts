@@ -1,3 +1,4 @@
+import type { ShellRuntime } from "$apps/components/shell/runtime";
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { FilesystemDrive } from "$ts/fs/drive";
@@ -23,6 +24,8 @@ import type {
 import type { DirectoryReadReturn, FolderEntry } from "$types/fs";
 import { LogLevel } from "$types/logging";
 import type { RenderArgs } from "$types/process";
+import { NewFileApp } from "./newfile/metadata";
+import { NewFolderApp } from "./newfolder/metadata";
 import { RenameItemApp } from "./renameitem/metadata";
 import type { QuotedDrive } from "./types";
 
@@ -41,6 +44,8 @@ export class FileManagerRuntime extends AppProcess {
 
   protected overlayStore: Record<string, App> = {
     renameItem: RenameItemApp,
+    newFile: NewFileApp,
+    newFolder: NewFolderApp,
   };
 
   override contextMenu: AppContextMenu = {
@@ -714,5 +719,37 @@ export class FileManagerRuntime extends AppProcess {
       prog.stop();
       return false;
     }
+  }
+
+  newMenu(e: MouseEvent) {
+    const button = e.target as HTMLButtonElement;
+    const rect = button.getBoundingClientRect();
+
+    const shellPid = this.env.get("shell_pid");
+    if (!shellPid) return;
+
+    const shell = this.handler.getProcess<ShellRuntime>(+shellPid);
+    if (!shell) return;
+
+    shell.createContextMenu({
+      items: [
+        {
+          caption: "Folder...",
+          icon: "folder-plus",
+          action: () => {
+            this.spawnOverlay("newFolder", this.path());
+          },
+        },
+        {
+          caption: "File...",
+          icon: "file-plus",
+          action: () => {
+            this.spawnOverlay("newFile", this.path());
+          },
+        },
+      ],
+      x: rect.x,
+      y: rect.y + rect.height + 5,
+    });
   }
 }

@@ -259,6 +259,7 @@ export class ShellRuntime extends AppProcess {
 
     this.CLICKLOCKED = true;
     this.contextData.set(data);
+    await Sleep(10);
     this.CLICKLOCKED = false;
   }
 

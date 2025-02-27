@@ -1,10 +1,10 @@
 <script lang="ts">
   import { Sleep } from "$ts/sleep";
-  import { Store } from "$ts/writable";
   import type { ContextMenuInstance } from "$types/app";
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../runtime";
   import Item from "./ContextMenuRenderer/Item.svelte";
+  import { Store } from "$ts/writable";
 
   const { process }: { process: ShellRuntime } = $props();
   const { userPreferences } = process;
@@ -23,6 +23,7 @@
     hideSubs.subscribe((v) => v && ($hideSubs = false));
 
     process.contextData.subscribe(async (v) => {
+      console.log(v);
       const current = visible;
 
       visible = false;
@@ -31,7 +32,10 @@
 
       await Sleep(data && v && current ? 100 : 0);
 
+      data = null;
+      await Sleep();
       data = v;
+      await Sleep();
 
       if (!menu) return;
 
@@ -39,6 +43,8 @@
       mH = menu.offsetHeight;
 
       [x, y] = process.composePosition(v.x, v.y, mW, mH);
+
+      await Sleep();
 
       visible = !!data;
     });
@@ -54,7 +60,7 @@
   bind:this={menu}
 >
   {#if data}
-    {#each data.items as item (item.caption)}
+    {#each data.items as item}
       <Item
         data={item}
         shell={process}

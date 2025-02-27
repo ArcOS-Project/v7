@@ -123,7 +123,7 @@ export class HexEditRuntime extends AppProcess {
 
       prog.stop();
 
-      if (!contents) {
+      if (!contents || !contents.byteLength) {
         throw new Error();
       }
 
@@ -155,7 +155,7 @@ export class HexEditRuntime extends AppProcess {
       MessageBox(
         {
           title: "Failed to read file",
-          message: `HexEdit was unable to open the file you requested: ${e}`,
+          message: `HexEdit was unable to open the file you requested: ${e}. It might not exist or it's empty.`,
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           image: WarningIcon,
           sound: "arcos.dialog.error",
