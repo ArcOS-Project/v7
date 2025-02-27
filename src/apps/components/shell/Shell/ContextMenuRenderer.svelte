@@ -23,7 +23,6 @@
     hideSubs.subscribe((v) => v && ($hideSubs = false));
 
     process.contextData.subscribe(async (v) => {
-      console.log(v);
       const current = visible;
 
       visible = false;

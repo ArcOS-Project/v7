@@ -20,8 +20,6 @@ export class RenameItemRuntime extends AppProcess {
     this.parentDir = getParentDirectory(path);
     this.newName.set(getDirectoryName(path));
     this.path = path;
-
-    console.log(this.parentDir, this.newName(), this.path);
   }
 
   async rename() {

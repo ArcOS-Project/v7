@@ -19,11 +19,10 @@ div.window:not(.core) {
   font-size: var(--font-size);
   font-family: var(--font);
   box-shadow: 0 5px 15px 5px #0003;
-  margin-top: 30px;
+  margin-top: 0;
   opacity: 0;
   visibility: hidden;
-  scale: 0.95;
-  transform-origin: top !important;
+  scale: 0.9;
   outline: var(--secondary-border) !important;
 }
 
@@ -60,7 +59,7 @@ div.window:not(.core):not(.glass) > div.body {
 div.window:not(.core).minimized {
   opacity: 0 !important;
   visibility: hidden !important;
-
+  transform-origin: top !important;
   scale: 1 0 !important;
 }
 

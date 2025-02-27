@@ -8,6 +8,7 @@
   flex-direction: column;
   gap: 15px;
   flex-grow: 1;
+  border-radius: 9px;
 }
 
 #ItemInfo > div.body div.header {

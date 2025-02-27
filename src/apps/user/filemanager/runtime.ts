@@ -79,7 +79,6 @@ export class FileManagerRuntime extends AppProcess {
       {
         caption: "Open with...",
         action: (_, thisPath) => {
-          console.log(_, thisPath);
           this.openWith(thisPath);
         },
       },

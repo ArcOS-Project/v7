@@ -33,7 +33,7 @@
     <Segment title="Mimetype">
       {$info.meta.mimetype || "-"}
     </Segment>
-    <Segment title="Size">
+    <Segment title="Size" right>
       {$info.meta.size ? formatBytes($info.meta.size) : "-"}
     </Segment>
   </InfoRow>

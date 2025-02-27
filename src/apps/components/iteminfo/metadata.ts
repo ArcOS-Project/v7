@@ -11,9 +11,9 @@ export const ItemInfoApp: App = {
     author: "Izaak Kuipers",
     icon: ComponentIcon,
   },
-  size: { w: 420, h: 480 },
-  minSize: { w: 420, h: 480 },
-  maxSize: { w: 420, h: 480 },
+  size: { w: 480, h: 520 },
+  minSize: { w: 480, h: 520 },
+  maxSize: { w: 480, h: 520 },
   position: { centered: true },
   state: {
     fullscreen: false,
@@ -32,7 +32,7 @@ export const ItemInfoApp: App = {
     component: ItemInfo as any,
   },
   id: "ItemInfo",
-  glass: true,
+  glass: false,
   hidden: true,
   overlay: true,
 };
