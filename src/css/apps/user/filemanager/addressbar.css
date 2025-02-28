@@ -10,7 +10,7 @@
 
 #fileManager div.address-bar div.portion.address {
   flex-grow: 1;
-  max-width: calc(100% - 243px);
+  max-width: calc(100% - 207px);
 }
 
 #fileManager div.address-bar div.path {

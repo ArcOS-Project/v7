@@ -17,9 +17,4 @@
     disabled={$selection.length !== 1 || !$contents}
     onclick={() => process.downloadSelected()}
   ></button>
-  <button
-    class="lucide icon-plus"
-    aria-label="New..."
-    onclick={(e) => process.newMenu(e)}
-  ></button>
 </div>

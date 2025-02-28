@@ -236,6 +236,48 @@ export class FileManagerRuntime extends AppProcess {
     const menu: ContextMenuItem[] = [
       fileMenu,
       {
+        caption: "Edit",
+        subItems: [
+          {
+            caption: "Cut",
+            action: () => {
+              this.setCutFiles();
+            },
+            icon: "scissors",
+            disabled: () => !this.selection().length,
+          },
+          {
+            caption: "Copy",
+            action: () => {
+              this.setCopyFiles();
+            },
+            icon: "copy",
+            disabled: () => !this.selection().length,
+          },
+          {
+            caption: "Paste",
+            action: () => this.pasteFiles(),
+            icon: "clipboard",
+            disabled: () => !this.copyList().length && !this.cutList().length,
+          },
+          { sep: true },
+          {
+            caption: "New folder",
+            action: () => {
+              this.spawnOverlay("newFolder", this.path());
+            },
+            icon: "folder-plus",
+          },
+          {
+            caption: "New files",
+            action: () => {
+              this.spawnOverlay("newFile", this.path());
+            },
+            icon: "file-plus",
+          },
+        ],
+      },
+      {
         caption: "Go",
         subItems: [
           ...this.folderGoItems(),
