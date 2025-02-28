@@ -88,8 +88,6 @@ export class WaveKernel {
 
     // KERNEL AREA STARTS HERE
 
-    this.startTTY();
-
     await getMode();
     await getBuild();
     await getLicense();
@@ -153,34 +151,5 @@ export class WaveKernel {
         ShortLogLevelCaptions[level]
       } ${source}: ${message}`
     );
-  }
-
-  async startTTY() {
-    const tty = document.createElement("div");
-    tty.className = "tty";
-
-    this.Logs.subscribe(async (v) => {
-      tty.innerText =
-        v
-          .map(
-            (v) =>
-              `[${(v.kernelTime / 1000).toFixed(4).padStart(12, " ")}] ${
-                ShortLogLevelCaptions[v.level]
-              } ${v.source}: ${v.message}`
-          )
-          .join("\n") + "\n ";
-    });
-
-    setInterval(() => {
-      tty.scrollTop = tty.scrollHeight;
-    }, 1);
-
-    document.body.append(tty);
-
-    document.addEventListener("keydown", (e) => {
-      if (e.altKey && e.key === "F2") {
-        document.body.classList.toggle("show-tty");
-      }
-    });
   }
 }
