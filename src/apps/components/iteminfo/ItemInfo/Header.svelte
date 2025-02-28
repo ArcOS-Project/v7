@@ -31,7 +31,6 @@
   <button
     class="lucide icon-pencil-line"
     aria-label="Rename"
-    onclick={() =>
-      process.notImplemented("Renaming items from properties dialog")}
+    onclick={() => process.renameItem()}
   ></button>
 </div>

@@ -4,9 +4,10 @@ import { getDirectoryName, getParentDirectory } from "$ts/fs/util";
 import { ErrorIcon } from "$ts/images/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { App, AppProcessData } from "$types/app";
 import type { FileEntry, FolderEntry } from "$types/fs";
 import type { RenderArgs } from "$types/process";
+import { RenameItemApp } from "./renameitem/metadata";
 import type { ItemInfo } from "./types";
 
 export class ItemInfoRuntime extends AppProcess {
@@ -24,6 +25,10 @@ export class ItemInfoRuntime extends AppProcess {
 
     this.renderArgs = { path, file };
   }
+
+  protected overlayStore: Record<string, App> = {
+    renameItem: RenameItemApp,
+  };
 
   render({ path, file }: RenderArgs) {
     file = file as FileEntry | FolderEntry;
@@ -109,5 +114,9 @@ export class ItemInfoRuntime extends AppProcess {
 
   async openWith(path: string) {
     await this.spawnOverlayApp("OpenWith", this.parentPid, path);
+  }
+
+  async renameItem() {
+    this.spawnOverlay("renameItem", this.info().location.fullPath);
   }
 }
