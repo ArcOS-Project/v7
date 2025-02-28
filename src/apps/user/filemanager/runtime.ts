@@ -391,12 +391,39 @@ export class FileManagerRuntime extends AppProcess {
       if (this.path().startsWith(path) || this.path() === path) this.refresh();
     });
 
-    this.acceleratorStore.push({
-      key: "Delete",
-      action: () => {
-        this.deleteSelected();
+    this.acceleratorStore.push(
+      {
+        key: "Delete",
+        action: () => {
+          this.deleteSelected();
+        },
       },
-    });
+      {
+        alt: true,
+        key: "Enter",
+        action: () => {
+          const path = this.selection()[0];
+          const contents = this.contents();
+          const items = [...(contents?.dirs || []), ...(contents?.files || [])];
+          const item = items.filter((a) => path?.endsWith(a.name))[0];
+
+          if (!path || !item) return;
+
+          this.selection.set([path]);
+          this.spawnOverlayApp("ItemInfo", this.pid, path, item);
+        },
+      },
+      {
+        key: "F2",
+        action: () => {
+          const path = this.selection()[0];
+          if (!path) return;
+
+          this.selection.set([path]);
+          this.spawnOverlay("renameItem", path);
+        },
+      }
+    );
 
     this.starting.set(false);
   }
@@ -804,35 +831,49 @@ export class FileManagerRuntime extends AppProcess {
     }
   }
 
-  newMenu(e: MouseEvent) {
-    const button = e.target as HTMLButtonElement;
-    const rect = button.getBoundingClientRect();
+  singlefySelected() {
+    const selected = this.selection();
 
-    const shellPid = this.env.get("shell_pid");
-    if (!shellPid) return;
+    if (!selected.length) return;
 
-    const shell = this.handler.getProcess<ShellRuntime>(+shellPid);
-    if (!shell) return;
+    this.selection.set([selected[selected.length - 1]]);
+  }
 
-    shell.createContextMenu({
-      items: [
-        {
-          caption: "Folder...",
-          icon: "folder-plus",
-          action: () => {
-            this.spawnOverlay("newFolder", this.path());
-          },
-        },
-        {
-          caption: "File...",
-          icon: "file-plus",
-          action: () => {
-            this.spawnOverlay("newFile", this.path());
-          },
-        },
-      ],
-      x: rect.x,
-      y: rect.y + rect.height + 5,
-    });
+  selectorUp() {
+    this.singlefySelected();
+    const selected = this.selection.get()[0];
+    const dir = this.contents.get();
+    const workingDir = this.path();
+    const paths = [
+      ...(dir?.dirs.map((a) => join(workingDir, a.name)) || []),
+      ...(dir?.files.map((a) => join(workingDir, a.name)) || []),
+    ];
+    const index = paths.indexOf(selected);
+
+    if (!selected) this.selection.set([paths[0]]);
+
+    const path =
+      paths[index < 0 || index - 1 < 0 ? paths.length - 1 : index - 1];
+
+    this.selection.set([path]);
+  }
+
+  selectorDown() {
+    this.singlefySelected();
+    const selected = this.selection.get()[0];
+    const dir = this.contents.get();
+    const workingDir = this.path();
+    const paths = [
+      ...(dir?.dirs.map((a) => join(workingDir, a.name)) || []),
+      ...(dir?.files.map((a) => join(workingDir, a.name)) || []),
+    ];
+    const index = paths.indexOf(selected);
+
+    if (!selected) this.selection.set([paths[0]]);
+
+    const path =
+      paths[index < 0 || index + 1 > paths.length - 1 ? 0 : index + 1];
+
+    this.selection.set([path]);
   }
 }

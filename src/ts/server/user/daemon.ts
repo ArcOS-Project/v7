@@ -963,11 +963,11 @@ export class UserDaemon extends Process {
       if (!contents) {
         MessageBox(
           {
-            title: "Entrypoint not found",
-            message: `ArcOS can't find the entrypoint of this third-party application. It might be deleted.<br><code class='block'>${app.entrypoint}</code>`,
+            title: `${app.metadata.name} - Entrypoint error`,
+            message: `ArcOS can't find the entrypoint of this third-party application. It might have been renamed or deleted. Please consider reinstalling the application to fix this problem.<br><code class='block'>${app.entrypoint}</code>`,
             buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
             sound: "arcos.dialog.error",
-            image: ErrorIcon,
+            image: app.metadata.icon,
           },
           +this.env.get("shell_pid"),
           true

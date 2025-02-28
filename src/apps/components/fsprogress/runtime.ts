@@ -5,6 +5,7 @@ import type { ProcessHandler } from "$ts/process/handler";
 import { Plural as P } from "$ts/util";
 import { Store, type ReadableStore } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
+import type { RenderArgs } from "$types/process";
 import type { FsProgressOperation } from "./types";
 
 export class FsProgressRuntime extends AppProcess {
@@ -19,9 +20,15 @@ export class FsProgressRuntime extends AppProcess {
   ) {
     super(handler, pid, parentPid, app);
 
+    this.renderArgs.store = store;
+  }
+
+  render({ store }: RenderArgs) {
+    if (!store.subscribe) return this.closeWindow();
+
     let errorNotified = false;
 
-    store.subscribe(async (v) => {
+    (store as ReadableStore<FsProgressOperation>).subscribe(async (v) => {
       this.Progress.set(v);
       this.windowTitle.set(v.caption);
       this.windowIcon.set(v.icon);
