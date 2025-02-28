@@ -17,6 +17,8 @@ import {
   weatherIcons,
 } from "./store";
 import type { WeatherInformation } from "./types";
+import { AppsIcon } from "$ts/images/general";
+import { ShutdownIcon } from "$ts/images/power";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
@@ -43,6 +45,30 @@ export class ShellRuntime extends AppProcess {
         caption: "Settings",
         action: () => {
           this.notImplemented();
+        },
+      },
+    ],
+    "taskbar-openedapp": [
+      {
+        caption: "Launch another",
+        icon: "rocket",
+        action: (proc: AppProcess) => {
+          this.spawnApp(proc.app.id, this.pid);
+        },
+      },
+      { sep: true },
+      {
+        caption: "App info",
+        image: AppsIcon,
+        action: (proc: AppProcess) => {
+          this.spawnOverlayApp("AppInfo", this.pid, proc.app.id);
+        },
+      },
+      {
+        caption: "Close window",
+        image: ShutdownIcon,
+        action: (proc: AppProcess) => {
+          proc.closeWindow();
         },
       },
     ],

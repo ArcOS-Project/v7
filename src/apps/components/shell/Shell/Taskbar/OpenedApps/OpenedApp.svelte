@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import type { AppProcess } from "$ts/apps/process";
+  import { contextProps } from "$ts/context/actions.svelte";
 
   const {
     openedProcess,
@@ -26,6 +27,8 @@
   class:active={$focusedPid == openedProcess.pid}
   class:iconic={!$userPreferences.shell.taskbar.labels}
   data-pid={pid}
+  data-contextmenu="taskbar-openedapp"
+  use:contextProps={[openedProcess]}
 >
   <img src={$windowIcon} alt="" />
   {#if $userPreferences.shell.taskbar.labels}
