@@ -1,4 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
+import { isPopulatable } from "$ts/apps/util";
 import { MessageBox } from "$ts/dialog";
 import { getDirectoryName } from "$ts/fs/util";
 import { WarningIcon } from "$ts/images/dialog";
@@ -10,10 +11,11 @@ import type { RenderArgs } from "$types/process";
 export class OpenWithRuntime extends AppProcess {
   available = Store<AppStorage>();
   all = Store<AppStorage>();
+  apps = Store<AppStorage>();
   filename = Store<string>();
   path = Store<string>();
   selectedId = Store<string>();
-  showAll = Store<boolean>(false);
+  viewMode = Store<"all" | "apps" | "compatible">("compatible");
 
   constructor(
     handler: ProcessHandler,
@@ -34,10 +36,11 @@ export class OpenWithRuntime extends AppProcess {
 
     this.available.set(available);
     this.all.set(await this.userDaemon!.appStore!.get());
+    this.apps.set(this.all().filter((a) => isPopulatable(a)));
     this.filename.set(getDirectoryName(path));
     this.path.set(path);
 
-    if (!available || !available.length) this.showAll.set(true);
+    if (!available || !available.length) this.viewMode.set("apps");
   }
 
   async go(id = this.selectedId()) {

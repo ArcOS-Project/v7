@@ -4,8 +4,16 @@
   import type { OpenWithRuntime } from "./runtime";
 
   const { process }: { process: OpenWithRuntime } = $props();
-  const { filename, showAll, available, all, path, selectedId, userDaemon } =
-    process;
+  const {
+    filename,
+    viewMode,
+    available,
+    all,
+    path,
+    selectedId,
+    userDaemon,
+    apps,
+  } = process;
 
   let icon = $state<string>("");
 
@@ -21,31 +29,34 @@
       <img src={icon} alt="" /><span>{$path}</span>
     </p>
   </div>
-  <div
-    class="options"
-    class:empty={$available && !$available.length && !$showAll}
-  >
-    {#if $showAll}
+  <div class="options">
+    {#if $viewMode === "all"}
       <Options apps={$all} {process} />
-    {:else}
+    {:else if $viewMode === "compatible"}
       <Options apps={$available} {process} />
-    {/if}
-    {#if $available && !$available.length && !$showAll}
-      <div class="empty">
-        <p>Couldn't find any compatible applications!</p>
-        <button class="link" onclick={() => ($showAll = true)}>
-          Show all
-        </button>
-      </div>
+    {:else if $viewMode === "apps"}
+      <Options apps={$apps} {process} />
     {/if}
   </div>
 </div>
 <div class="bottom">
   <div class="mode">
-    <button onclick={() => ($showAll = true)} class:suggested={$showAll}>
+    <button
+      onclick={() => ($viewMode = "all")}
+      class:suggested={$viewMode === "all"}
+    >
       All
     </button>
-    <button onclick={() => ($showAll = false)} class:suggested={!$showAll}>
+    <button
+      onclick={() => ($viewMode = "apps")}
+      class:suggested={$viewMode === "apps"}
+    >
+      Apps
+    </button>
+    <button
+      onclick={() => ($viewMode = "compatible")}
+      class:suggested={$viewMode === "compatible"}
+    >
       Compatible
     </button>
   </div>

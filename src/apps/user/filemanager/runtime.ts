@@ -181,6 +181,35 @@ export class FileManagerRuntime extends AppProcess {
           ),
       },
     ],
+    "sidebar-folder": [
+      {
+        caption: "Go here",
+        icon: "folder-open",
+        action: (folder: FolderEntry) => {
+          this.navigate(`U:/${folder.name}`);
+        },
+      },
+      {
+        caption: "Open in new window",
+        icon: "external-link",
+        action: (folder: FolderEntry) => {
+          this.spawnApp(this.app.id, this.parentPid, `U:/${folder.name}`);
+        },
+      },
+      { sep: true },
+      {
+        caption: "Properties...",
+        icon: "wrench",
+        action: (folder: FolderEntry) => {
+          this.spawnOverlayApp(
+            "ItemInfo",
+            this.pid,
+            `U:/${folder.name}`,
+            folder
+          );
+        },
+      },
+    ],
   };
 
   constructor(

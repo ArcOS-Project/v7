@@ -12,16 +12,16 @@ export const OpenWithApp: App = {
     icon: ComponentIcon,
   },
   size: {
-    w: 450,
-    h: 500,
+    w: 480,
+    h: 520,
   },
   minSize: {
-    w: 450,
-    h: 500,
+    w: 480,
+    h: 520,
   },
   maxSize: {
-    w: 450,
-    h: 540,
+    w: 480,
+    h: 520,
   },
   controls: {
     minimize: false,

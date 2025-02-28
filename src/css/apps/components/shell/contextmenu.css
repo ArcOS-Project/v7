@@ -18,6 +18,7 @@
   transform-origin: top center;
   z-index: 100000000000000000000000000000000000000000000000000000000;
   pointer-events: none !important;
+  box-shadow: var(--secondary-box-shadow);
 }
 
 #arcShell div.context-menu {

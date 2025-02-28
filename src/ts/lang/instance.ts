@@ -392,10 +392,11 @@ export class LanguageInstance extends Process {
   }
 
   async defaultVariables() {
-    return new Map<string, string>([
+    return new Map<string, any>([
       ["version", ArcOSVersion],
       ["mode", ArcMode()],
       ["build", ArcBuild()],
+      ["argv", this.options?.arguments || []],
     ]);
   }
 
