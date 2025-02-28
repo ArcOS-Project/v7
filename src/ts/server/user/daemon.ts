@@ -49,6 +49,8 @@ import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultMimeIcons } from "./store";
+import { MessageBox } from "$ts/dialog";
+import { ErrorIcon } from "$ts/images/dialog";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -957,6 +959,22 @@ export class UserDaemon extends Process {
 
     try {
       const contents = arrayToText((await fs.readFile(app.entrypoint))!);
+
+      if (!contents) {
+        MessageBox(
+          {
+            title: "Entrypoint not found",
+            message: `ArcOS can't find the entrypoint of this third-party application. It might be deleted.<br><code class='block'>${app.entrypoint}</code>`,
+            buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+            sound: "arcos.dialog.error",
+            image: ErrorIcon,
+          },
+          +this.env.get("shell_pid"),
+          true
+        );
+
+        return;
+      }
 
       lang.run(contents, +userDaemonPid, {
         allowUnsafe: app.unsafeCode, // Unsafe code execution

@@ -1,38 +1,41 @@
 #AppInfo {
   display: flex;
   flex-direction: column;
+  overflow: visible;
 }
 
-#AppInfo div.body {
+#AppInfo > div.body {
   padding: 25px;
   display: flex;
   flex-direction: column;
   gap: 15px;
   flex-grow: 1;
+  border-radius: 9px;
+  overflow: hidden;
 }
-#AppInfo div.body div.info-block div.segment.mode p.value,
-#AppInfo div.body div.info-block div.segment.version p.value {
+#AppInfo > div.body div.info-block div.segment.mode p.value,
+#AppInfo > div.body div.info-block div.segment.version p.value {
   display: flex;
   align-items: center;
   gap: 5px;
 }
 
-#AppInfo div.body div.info-block div.segment.mode p.value img,
-#AppInfo div.body div.info-block div.segment.version p.value img {
+#AppInfo > div.body div.info-block div.segment.mode p.value img,
+#AppInfo > div.body div.info-block div.segment.version p.value img {
   height: 16px;
 }
 
-#AppInfo div.body div.info-block div.controls button {
+#AppInfo > div.body div.info-block div.controls button {
   margin: 0;
   padding: 0;
   background-color: transparent;
   font-size: 16px;
 }
 
-#AppInfo div.body div.info-block div.controls {
+#AppInfo > div.body div.info-block div.controls {
   height: 19px;
 }
-#AppInfo div.body div.info-block div.controls button.disabled {
+#AppInfo > div.body div.info-block div.controls button.disabled {
   opacity: 0.3;
 }
 
@@ -94,7 +97,7 @@
   margin-top: auto;
 }
 
-#AppInfo div.body div.info-block.actions div.row {
+#AppInfo > div.body div.info-block.actions div.row {
   gap: 10px;
   padding-right: 10px;
 }
