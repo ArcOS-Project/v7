@@ -34,6 +34,10 @@
     <Segment title="First PID">
       {pid < 0 ? "None" : pid}
     </Segment>
-    <button class="processes">Processes</button>
+    <button
+      class="processes"
+      onclick={() => process.notImplemented("Process Manager")}
+      >Processes</button
+    >
   </InfoRow>
 </InfoBlock>
