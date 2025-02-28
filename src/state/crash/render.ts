@@ -19,6 +19,4 @@ export default async function render(props: StateProps) {
   setTimeout(() => {
     if (main) main.classList.remove("hidden");
   }, 600);
-
-  throw text;
 }

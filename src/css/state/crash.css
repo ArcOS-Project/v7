@@ -17,6 +17,7 @@
   height: 100%;
   overflow: hidden;
   white-space: pre;
+  overflow-y: scroll;
 }
 
 @keyframes crash-show {
