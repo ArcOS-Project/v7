@@ -28,6 +28,8 @@
   top: 15px;
   scale: 1 !important;
   margin-top: -100px;
+  max-height: calc(100% - 30px) !important;
+  min-height: unset !important;
 }
 
 #fileManager div.window.overlay.visible:not(.closing) {

@@ -445,6 +445,18 @@ export class FileManagerRuntime extends AppProcess {
         },
       },
       {
+        key: "ArrowLeft",
+        action: (_, e) => {
+          e.preventDefault();
+        },
+      },
+      {
+        key: "ArrowRight",
+        action: (_, e) => {
+          e.preventDefault();
+        },
+      },
+      {
         key: "Enter",
         shift: true,
         action: () => {

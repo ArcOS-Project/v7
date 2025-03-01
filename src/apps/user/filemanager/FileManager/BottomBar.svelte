@@ -5,7 +5,7 @@
   import type { FileManagerRuntime } from "../runtime";
 
   const { process }: { process: FileManagerRuntime } = $props();
-  const { selection, contents, path } = process;
+  const { selection, contents, path, userPreferences } = process;
 
   let dirName = $state("");
   let driveLetter = $state<string>();
@@ -42,7 +42,18 @@
       driveLabel}
   {/if}
   <div class="view-toggle">
-    <button class="lucide icon-grid-2x2" aria-label="Grid view"></button>
-    <button class="lucide icon-list" aria-label="List view"></button>
+    <button
+      class="lucide icon-columns-3"
+      aria-label="Grid view"
+      class:suggested={$userPreferences.appPreferences.fileManager!.grid}
+      onclick={() => ($userPreferences.appPreferences.fileManager!.grid = true)}
+    ></button>
+    <button
+      class="lucide icon-list"
+      aria-label="List view"
+      class:suggested={!$userPreferences.appPreferences.fileManager!.grid}
+      onclick={() =>
+        ($userPreferences.appPreferences.fileManager!.grid = false)}
+    ></button>
   </div>
 </div>

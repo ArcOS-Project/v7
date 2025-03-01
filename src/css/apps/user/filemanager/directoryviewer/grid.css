@@ -1,0 +1,72 @@
+#fileManager div.directory-viewer.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 200px);
+  grid-template-rows: repeat(auto-fit, 26px);
+  grid-auto-flow: column;
+  position: relative;
+  padding-top: 15px;
+  overflow-y: hidden;
+  overflow-x: scroll;
+}
+
+#fileManager div.directory-viewer.grid p.empty,
+#fileManager div.directory-viewer.grid div.center-flex {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0 !important;
+  padding: 25px;
+}
+
+#fileManager div.directory-viewer.grid button.header-row {
+  display: none;
+}
+
+#fileManager div.directory-viewer.grid button {
+  position: relative;
+  display: flex;
+  vertical-align: top;
+  /* flex-direction: column; */
+  max-width: 200px !important;
+  height: fit-content;
+  margin: 0;
+  margin-bottom: 12px;
+  padding: 5px;
+  border: none;
+  border-radius: 5px;
+  background-color: transparent;
+  min-height: 26px;
+}
+
+#fileManager div.directory-viewer.grid button div.segment.icon img {
+  width: 16px;
+  height: 16px;
+}
+
+#fileManager div.directory-viewer.grid button div.segment.icon {
+  width: unset;
+  height: 16px;
+}
+
+#fileManager
+  div.directory-viewer.grid
+  button
+  div.segment:not(.name):not(.icon) {
+  display: none;
+}
+
+#fileManager div.directory-viewer.grid button div.segment.name {
+  width: 100%;
+  text-align: left;
+  max-width: unset;
+  margin: 0;
+  height: fit-content;
+  max-height: 2.6em;
+  color: var(--fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+}

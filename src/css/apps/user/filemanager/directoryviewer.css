@@ -1,3 +1,5 @@
+@import url("./directoryviewer/grid.css");
+
 #fileManager div.directory-viewer button div.segment {
   text-align: left;
 }
@@ -35,99 +37,10 @@
   min-width: 90px;
 }
 
-#fileManager div.directory-viewer.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, 80px);
-  grid-template-rows: repeat(auto-fit, 85px);
-  position: relative;
-  padding-top: 15px;
-}
-
-#fileManager div.directory-viewer.grid p.empty,
-#fileManager div.directory-viewer.grid div.center-flex {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  margin: 0 !important;
-  padding: 25px;
-}
-
-#fileManager div.directory-viewer.grid button.header-row {
-  display: none;
-}
-
-#fileManager div.directory-viewer.grid button {
-  position: relative;
-  display: flex;
-  vertical-align: top;
-  flex-direction: column;
-  width: 80px !important;
-  height: fit-content;
-  margin: 0;
-  margin-bottom: 12px;
-  padding: 2px 5px;
-  border: none;
-  border-radius: 5px;
-  background-color: transparent;
-  min-height: 64px;
-}
-
-#fileManager div.directory-viewer.grid button div.segment.icon img {
-  width: 32px;
-  height: 32px;
-  margin: 0 8px;
-}
-
-#fileManager div.directory-viewer.grid button div.segment.icon {
-  width: unset;
-  height: 32px;
-}
-
-#fileManager
-  div.directory-viewer.grid
-  button
-  div.segment:not(.name):not(.icon) {
-  display: none;
-}
-
-#fileManager div.directory-viewer.grid button div.segment.name {
-  width: 100%;
-  text-align: center;
-  max-width: unset;
-  margin: 0;
-  height: fit-content;
-  max-height: 2.6em;
-  color: var(--fg);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: initial;
-  display: inline-block;
-}
-
 #fileManager div.directory-viewer button.renaming div.segment.name {
   overflow: visible !important;
   display: flex;
   justify-content: center;
-}
-
-#fileManager div.directory-viewer.grid button.renaming div.segment.name form {
-  text-align: left;
-  width: fit-content;
-  overflow: visible;
-}
-
-#fileManager div.directory-viewer.grid button input {
-  left: -2px;
-  width: 84px;
-  text-align: center;
-  display: block;
-  margin: 0 auto;
-  margin-top: -1px;
-  position: absolute;
-  z-index: 1000;
-  overflow: hidden;
 }
 
 #fileManager div.directory-viewer button {
