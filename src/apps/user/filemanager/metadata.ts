@@ -19,7 +19,7 @@ export const FileManagerApp: App = {
   maxSize: { w: NaN, h: NaN },
   position: { centered: true },
   state: {
-    maximized: true,
+    maximized: false,
     minimized: false,
     fullscreen: false,
     headless: true,

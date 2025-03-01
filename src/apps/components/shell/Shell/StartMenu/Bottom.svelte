@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ShellRuntime } from "../runtime";
+  import type { ShellRuntime } from "../../runtime";
 
   const { process }: { process: ShellRuntime } = $props();
 </script>
@@ -13,7 +13,7 @@
     <button
       class="settings"
       aria-label="Settings"
-      onclick={() => process.notImplemented()}
+      onclick={() => process.spawnApp("systemSettings", process.pid)}
     >
       <span class="lucide icon-settings-2"></span>
     </button>

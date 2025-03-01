@@ -17,8 +17,11 @@ import {
   weatherIcons,
 } from "./store";
 import type { WeatherInformation } from "./types";
-import { AppsIcon } from "$ts/images/general";
+import { AppsIcon, DesktopIcon } from "$ts/images/general";
 import { ShutdownIcon } from "$ts/images/power";
+import type { Workspace } from "$types/user";
+import { WarningIcon } from "$ts/images/dialog";
+import { MessageBox } from "$ts/dialog";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
@@ -75,8 +78,8 @@ export class ShellRuntime extends AppProcess {
     "actioncenter-weather-card": [
       {
         caption: "Refresh",
-        action: () => {
-          this.dispatch.dispatch("update-weather");
+        action: (_, refresh) => {
+          refresh(true);
         },
         icon: "rotate-cw",
       },
@@ -85,6 +88,21 @@ export class ShellRuntime extends AppProcess {
         icon: "map-pin",
         action: (changeLocation) => {
           changeLocation();
+        },
+      },
+    ],
+    "workspaces-desktop": [
+      {
+        caption: "Go here",
+        action: (desktop: Workspace) => {
+          this.userDaemon?.switchToDesktopByUuid(desktop.uuid);
+        },
+      },
+      {
+        caption: "Delete workspace",
+        icon: "trash",
+        action: (desktop: Workspace) => {
+          this.deleteWorkspace(desktop);
         },
       },
     ],
@@ -415,5 +433,49 @@ export class ShellRuntime extends AppProcess {
     }
 
     return null;
+  }
+
+  async deleteWorkspace(workspace: Workspace) {
+    const windowCount = [...this.handler.store()].filter(
+      ([_, p]) => p instanceof AppProcess && p.app.desktop === workspace.uuid
+    ).length;
+
+    if (windowCount > 0) {
+      MessageBox(
+        {
+          title: "Can't delete workspace",
+          message:
+            "The workspace you want to delete still has windows opened in it. You have to close all windows in a workspace before you can delete it.",
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          sound: "arcos.dialog.error",
+          image: WarningIcon,
+        },
+        this.pid,
+        true
+      );
+
+      return;
+    }
+
+    MessageBox(
+      {
+        title: "Delete workspace",
+        message: "Are you sure you want to permanently delete this workspace?",
+        image: DesktopIcon,
+        buttons: [
+          { caption: "Cancel", action: () => {} },
+          {
+            caption: "Delete",
+            action: () => {
+              this.userDaemon?.deleteVirtualDesktop(workspace.uuid);
+            },
+            suggested: true,
+          },
+        ],
+        sound: "arcos.dialog.warning",
+      },
+      this.pid,
+      true
+    );
   }
 }

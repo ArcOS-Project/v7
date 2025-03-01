@@ -8,7 +8,6 @@
   import { contextProps } from "$ts/context/actions.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
-  const { userPreferences } = process;
 
   let data = $state<WeatherInformation>();
   let loading = $state<boolean>(true);
@@ -49,7 +48,7 @@
   class:errored={!data}
   class:night={data && data.isNight}
   data-contextmenu="actioncenter-weather-card"
-  use:contextProps={[changeLocation]}
+  use:contextProps={[changeLocation, refresh]}
 >
   {#if !loading}
     {#if data}

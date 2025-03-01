@@ -43,6 +43,7 @@ div.shell.docked div.taskbar {
   justify-content: center;
   align-items: center;
   background-color: var(--button-glass-bg);
+  font-size: 18px;
 }
 
 #arcShell div.shell div.taskbar > button:hover {
@@ -68,7 +69,7 @@ div.shell div.taskbar button.start-button img {
 }
 
 div.shell div.taskbar button.action-center-button span {
-  font-size: 16px;
+  font-size: 18px;
 }
 
 div.shell div.taskbar div.status-tray,

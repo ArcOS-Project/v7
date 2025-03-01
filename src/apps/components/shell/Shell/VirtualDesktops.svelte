@@ -5,6 +5,7 @@
   import type { Workspace } from "$types/user";
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../runtime";
+  import { contextProps } from "$ts/context/actions.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
   const { userDaemon, userPreferences, workspaceManagerOpened } = process;
@@ -53,6 +54,8 @@
             : Wallpapers.img0.url}');"
           onclick={() => userDaemon?.switchToDesktopByUuid(desktop.uuid)}
           class:selected={$userPreferences.workspaces.index === i}
+          data-contextmenu="workspaces-desktop"
+          use:contextProps={[desktop]}
         >
           <div class="number">{i + 1}</div>
           <div class="bottom">

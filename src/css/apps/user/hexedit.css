@@ -139,6 +139,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
 }
 
 #EditRow > div.body div.row.primary div.offset {
@@ -153,6 +154,7 @@
 #EditRow > div.body div.bytes {
   display: flex;
   align-items: center;
+  flex-grow: 1;
 }
 #EditRow > div.body div.bytes input {
   background-color: transparent;

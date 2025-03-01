@@ -23,7 +23,7 @@
 </div>
 <div class="bottom">
   <button class="cancel" onclick={() => process.closeWindow()}>Cancel</button>
-  <button class="suggested" onclick={() => process.writeBytes()}
-    >Write bytes</button
-  >
+  <button class="suggested" onclick={() => process.writeBytes()}>
+    Write bytes
+  </button>
 </div>

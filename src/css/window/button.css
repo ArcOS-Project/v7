@@ -4,7 +4,7 @@ div.window div.body button:not(.reset) {
   padding: 6px 15px;
   background-color: var(--button-bg, #4a4a4a);
   color: var(--fg, #ccc);
-  transition: opacity 0.2s, background-color 0.2s, filter 0.2s, scale 0.2s;
+  transition: opacity 0.1s, background-color 0.1s, filter 0.2s, scale 0.2s;
   font-size: var(--font-size);
   text-align: center;
 }
