@@ -3,6 +3,7 @@
   import type { WeatherInformation } from "$apps/components/shell/types";
   import { SettingsRuntime } from "$apps/user/settings/runtime";
   import { Sleep } from "$ts/sleep";
+  import { onMount } from "svelte";
   import Spinner from "../../../../../../../lib/Spinner.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
@@ -11,7 +12,7 @@
   let data = $state<WeatherInformation>();
   let loading = $state<boolean>(true);
 
-  $effect(() => {
+  onMount(() => {
     refresh();
 
     process.dispatch.subscribe("refresh-weather", () => refresh());

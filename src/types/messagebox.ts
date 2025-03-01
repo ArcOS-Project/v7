@@ -14,3 +14,5 @@ export interface MessageBoxButton {
   action: () => void;
   suggested?: boolean;
 }
+
+export type ConfirmationData = Omit<MessageBoxData, "buttons">;

@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Wallpaper } from "$types/wallpaper";
+  import { onMount } from "svelte";
   import type { OverlayRuntime } from "../../overlay";
   import ThemesHeader from "../ThemesHeader.svelte";
 
@@ -10,7 +11,7 @@
   let name = $state("");
   let currentWallpaper: Wallpaper | undefined = $state();
 
-  $effect(() => {
+  onMount(() => {
     const sub = userPreferences.subscribe(async (v) => {
       currentWallpaper = await process.userDaemon!.getWallpaper(
         v.desktop.wallpaper

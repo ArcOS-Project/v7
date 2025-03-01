@@ -1,6 +1,7 @@
 <script lang="ts">
   import { isPopulatable } from "$ts/apps/util";
   import type { AppStorage } from "$types/app";
+  import { onMount } from "svelte";
   import type { ShellRuntime } from "../../runtime";
   import ListItem from "./AppList/ListItem.svelte";
 
@@ -8,7 +9,7 @@
 
   let apps = $state<AppStorage>([]);
 
-  $effect(() => {
+  onMount(() => {
     if (!process.handler.renderer) return;
 
     const unsubscribe = process.userDaemon?.appStore?.buffer.subscribe((v) => {

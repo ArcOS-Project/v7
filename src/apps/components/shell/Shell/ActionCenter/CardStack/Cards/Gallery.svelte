@@ -2,6 +2,7 @@
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import { arrayToBlob } from "$ts/fs/convert";
   import type { UserPreferencesStore } from "$types/user";
+  import { onMount } from "svelte";
   import Spinner from "../../../../../../../lib/Spinner.svelte";
 
   const {
@@ -16,7 +17,7 @@
   let loading = $state(true);
   let lastValue = "";
 
-  $effect(() => {
+  onMount(() => {
     const unsubscribe = userPreferences.subscribe(async (v) => {
       if (!v.shell.actionCenter.galleryImage) {
         noImage = true;

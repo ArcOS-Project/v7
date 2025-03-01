@@ -1,5 +1,6 @@
 <script lang="ts">
   import { DesktopIcon, PasswordIcon } from "$ts/images/general";
+  import { onMount } from "svelte";
   import type { OverlayRuntime } from "../../overlay";
 
   const { process }: { process: OverlayRuntime } = $props();
@@ -8,7 +9,7 @@
   let wallpaper = $state("");
   let valid = $state(false);
 
-  $effect(() => {
+  onMount(() => {
     const sub = userPreferences.subscribe((v) => {
       if (
         typeof v.desktop.wallpaper !== "string" ||

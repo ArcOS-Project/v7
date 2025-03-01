@@ -3,6 +3,7 @@
   import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
   import { Sleep } from "$ts/sleep";
   import type { AppComponentProps } from "$types/app";
+  import { onMount } from "svelte";
   import type { TestAppRuntime } from "./runtime";
 
   const { process }: AppComponentProps<TestAppRuntime> = $props();
@@ -17,7 +18,7 @@
   let pid = $state<number>(-1);
   let workingDirectory = $state<string>("U:/");
 
-  $effect(() => {
+  onMount(() => {
     process.acceleratorStore.push({
       ctrl: true,
       key: "enter",

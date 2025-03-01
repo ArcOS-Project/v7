@@ -219,7 +219,7 @@
 #fileManager div.directory-viewer {
   display: flex;
   flex-direction: column;
-  height: calc(100% - 35px - 41px);
+  height: calc(100% - 30px - 53px);
   overflow-y: scroll;
   padding: 15px;
   padding-top: 0;

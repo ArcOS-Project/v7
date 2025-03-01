@@ -1,13 +1,14 @@
 <script lang="ts">
   import type { UserPreferencesStore } from "$types/user";
   import dayjs from "dayjs";
+  import { onMount } from "svelte";
 
   const { userPreferences }: { userPreferences: UserPreferencesStore } =
     $props();
 
   let text = $state("");
 
-  $effect(() => {
+  onMount(() => {
     setInterval(() => {
       const tb = $userPreferences.shell.taskbar;
 

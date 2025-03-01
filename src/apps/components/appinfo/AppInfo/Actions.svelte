@@ -1,6 +1,7 @@
 <script lang="ts">
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
+  import { onMount } from "svelte";
   import type { AppInfoRuntime } from "../runtime";
 
   const { appId, process }: { appId: string; process: AppInfoRuntime } =
@@ -9,7 +10,7 @@
 
   let disabled = $state(false);
 
-  $effect(() => {
+  onMount(() => {
     const sub = userPreferences.subscribe((v) => {
       disabled = v.disabledApps.includes(appId);
     });

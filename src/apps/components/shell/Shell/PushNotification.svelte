@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Sleep } from "$ts/sleep";
   import type { ErrorButton, Notification } from "$types/notification";
+  import { onMount } from "svelte";
   import type { ShellRuntime } from "../runtime";
 
   const { process }: { process: ShellRuntime } = $props();
@@ -10,7 +11,7 @@
   let data: Notification | undefined = $state();
   let show = $state(false);
 
-  $effect(() => {
+  onMount(() => {
     process.globalDispatch.subscribe(
       "send-notification",
       async ([incoming]) => {

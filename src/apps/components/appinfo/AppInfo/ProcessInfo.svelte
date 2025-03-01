@@ -2,6 +2,7 @@
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
+  import { onMount } from "svelte";
   import type { AppInfoRuntime } from "../runtime";
 
   const { appId, process }: { appId: string; process: AppInfoRuntime } =
@@ -19,7 +20,7 @@
     pid = pids?.length ? pids[0] : -1;
   }
 
-  $effect(() => {
+  onMount(() => {
     const sub = process.handler.store.subscribe(update);
 
     return () => sub();

@@ -1,12 +1,13 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import type { App, ThirdPartyApp } from "$types/app";
+  import { onMount } from "svelte";
 
   const { appId, process }: { appId: string; process: ShellRuntime } = $props();
 
   let app: App | ThirdPartyApp | undefined = $state();
 
-  $effect(() => {
+  onMount(() => {
     getApp();
   });
 

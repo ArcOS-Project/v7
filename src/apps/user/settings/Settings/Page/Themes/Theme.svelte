@@ -5,6 +5,7 @@
   import { QuestionIcon } from "$ts/images/dialog";
   import type { UserDaemon } from "$ts/server/user/daemon";
   import type { UserTheme } from "$types/theme";
+  import { onMount } from "svelte";
 
   interface Props {
     id: string;
@@ -20,7 +21,7 @@
   let wallpaper = $state("");
   let css = $state("");
 
-  $effect(() => {
+  onMount(() => {
     getWall();
     css = userDaemon.getAppRendererStyle(theme.desktopAccent);
   });

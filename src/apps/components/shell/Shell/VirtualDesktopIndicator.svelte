@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import type { ShellRuntime } from "../runtime";
 
   const { process }: { process: ShellRuntime } = $props();
@@ -8,7 +9,7 @@
   let index = $state(-1);
   let timeout: NodeJS.Timeout | undefined;
 
-  $effect(() => {
+  onMount(() => {
     const sub = userPreferences.subscribe((v) => {
       const incomingIndex = v.workspaces.index;
 

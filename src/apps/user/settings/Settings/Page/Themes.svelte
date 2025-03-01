@@ -1,6 +1,7 @@
 <script lang="ts">
   import { BuiltinThemes, VisualStyles } from "$ts/server/user/store";
   import type { Wallpaper } from "$types/wallpaper";
+  import { onMount } from "svelte";
   import type { SettingsRuntime } from "../../runtime";
   import ThemesHeader from "../ThemesHeader.svelte";
   import Setting from "../ThemesHeader/Setting.svelte";
@@ -12,7 +13,7 @@
 
   let currentWallpaper: Wallpaper | undefined = $state();
 
-  $effect(() => {
+  onMount(() => {
     const sub = userPreferences.subscribe(async (v) => {
       currentWallpaper = await process.userDaemon!.getWallpaper(
         v.desktop.wallpaper

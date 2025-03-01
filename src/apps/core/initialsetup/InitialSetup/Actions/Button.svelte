@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { ReadableStore } from "$ts/writable";
+  import { onMount } from "svelte";
   import type { PageButton } from "../../types";
 
   const {
@@ -38,7 +39,7 @@
     disabled = await button.disabled();
   }
 
-  $effect(() => {
+  onMount(() => {
     const identityInfoUnsubscribe = identityInfoValid.subscribe(update);
     const pageNumberUnsubscribe = pageNumber.subscribe(update);
 

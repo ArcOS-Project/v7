@@ -2,7 +2,7 @@
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
   import { SettingsIcon } from "$ts/images/general";
   import { Sleep } from "$ts/sleep";
-  import type { Component } from "svelte";
+  import { onMount, type Component } from "svelte";
   import type { SettingsRuntime } from "./runtime";
   import Sidebar from "./Settings/Sidebar.svelte";
   import Slide from "./Settings/Slide.svelte";
@@ -16,7 +16,7 @@
   let className = $state("");
   let pageData = $state<SettingsPage>();
 
-  $effect(() => {
+  onMount(() => {
     const sub = currentPage.subscribe(async (v) => {
       $slideVisible = false;
       hide = true;

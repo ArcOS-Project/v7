@@ -2,7 +2,7 @@
   import { AppProcess } from "$ts/apps/process";
   import type { AppRenderer } from "$ts/apps/renderer";
   import { ComponentIcon } from "$ts/images/general";
-  import { type Snippet } from "svelte";
+  import { onMount, type Snippet } from "svelte";
   import AltMenu from "./CustomTitlebar/AltMenu.svelte";
 
   const {
@@ -15,7 +15,7 @@
 
   let renderer: AppRenderer | undefined;
 
-  $effect(() => {
+  onMount(() => {
     renderer = process.handler.renderer;
   });
 

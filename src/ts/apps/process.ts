@@ -183,6 +183,20 @@ export class AppProcess extends Process {
     return instances.length ? instances[0] : undefined;
   }
 
+  getWindow() {
+    const window = document.querySelector(`div.window[data-pid="${this.pid}"]`);
+
+    return window || undefined;
+  }
+
+  hasOverlays(): boolean {
+    const window = this.getWindow();
+
+    if (!window) return false;
+
+    return window.querySelectorAll("div.overlay-wrapper").length > 0;
+  }
+
   public startAcceleratorListener() {
     this.Log("Starting listener!");
 
@@ -203,7 +217,7 @@ export class AppProcess extends Process {
   }
 
   private async processor(e: KeyboardEvent) {
-    if (!e.key) return;
+    if (!e.key || this.hasOverlays()) return;
 
     if (
       bannedKeys.includes(e.key.toLowerCase()) &&
@@ -265,7 +279,7 @@ export class AppProcess extends Process {
       return false;
     }
 
-    return !!(await this.handler.spawn<AppProcess>(
+    const proc = await this.handler.spawn<AppProcess>(
       metadata.assets.runtime,
       undefined,
       this.pid,
@@ -274,7 +288,11 @@ export class AppProcess extends Process {
         id,
       },
       ...args
-    ));
+    );
+
+    if (proc) this.handler.renderer?.focusPid(proc?.pid);
+
+    return !!proc;
   }
 
   async spawnApp<T = AppProcess>(

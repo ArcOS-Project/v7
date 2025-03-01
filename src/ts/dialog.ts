@@ -1,6 +1,6 @@
 import { MessageBoxApp } from "$apps/components/messagebox/metadata";
 import { MessageBoxRuntime } from "$apps/components/messagebox/runtime";
-import type { MessageBoxData } from "$types/messagebox";
+import type { ConfirmationData, MessageBoxData } from "$types/messagebox";
 import { WaveKernel } from "./kernel";
 import { ProcessHandler } from "./process/handler";
 
@@ -26,4 +26,24 @@ export async function MessageBox(
     },
     data
   );
+}
+
+export async function GetConfirmation(
+  data: ConfirmationData,
+  parentPid: number,
+  overlay = false
+) {
+  return new Promise<boolean>((r) => {
+    MessageBox(
+      {
+        ...data,
+        buttons: [
+          { caption: "No", action: () => r(false) },
+          { caption: "Yes", action: () => r(true), suggested: true },
+        ],
+      },
+      parentPid,
+      overlay
+    );
+  });
 }

@@ -4,13 +4,14 @@
   import { htmlspecialchars } from "$ts/util";
   import type { ReadableStore } from "$ts/writable";
   import { ShortLogLevelCaptions } from "$types/logging";
+  import { onMount } from "svelte";
   import Spinner from "../../../lib/Spinner.svelte";
 
   const { loadingStatus }: { loadingStatus: ReadableStore<string> } = $props();
 
   let currentLogItem = $state("");
 
-  $effect(() => {
+  onMount(() => {
     const kernel = WaveKernel.get();
     const sub = kernel.Logs.subscribe((v) => {
       const last = v[v.length - 1];

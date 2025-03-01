@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Sleep } from "$ts/sleep";
-  import type { Component } from "svelte";
+  import { onMount, type Component } from "svelte";
   import type { SettingsRuntime } from "../runtime";
   import { SlideStore } from "../store/slides";
 
@@ -9,7 +9,7 @@
 
   let Slide: Component | undefined = $state();
 
-  $effect(() => {
+  onMount(() => {
     const sub = currentSlide.subscribe((v) => {
       if (!v) return;
       Slide = SlideStore.get(v);

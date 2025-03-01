@@ -2,6 +2,7 @@
 @import url("./filemanager/addressbar.css");
 @import url("./filemanager/directoryviewer.css");
 @import url("./filemanager/splash.css");
+@import url("./filemanager/bottom.css");
 @import url("./filemanager/overlays/renameitem.css");
 @import url("./filemanager/overlays/newfile.css");
 @import url("./filemanager/overlays/newfolder.css");
@@ -20,7 +21,7 @@
 }
 
 #fileManager > div.body div.main-content {
-  height: calc(100% - 40px);
+  height: calc(100% - 45px);
 }
 
 #fileManager > div.overlay-wrapper > div.window.overlay {

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { WarningIcon } from "$ts/images/dialog";
   import type { App, ThirdPartyApp } from "$types/app";
+  import { onMount } from "svelte";
   import type { AppInfoRuntime } from "../runtime";
 
   interface Props {
@@ -14,7 +15,7 @@
 
   let disabled = $state(false);
 
-  $effect(() => {
+  onMount(() => {
     const sub = userPreferences.subscribe((v) => {
       disabled = v.disabledApps.includes(id);
     });

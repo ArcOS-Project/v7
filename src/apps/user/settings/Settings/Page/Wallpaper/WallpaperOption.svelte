@@ -3,28 +3,20 @@
   import type { UserDaemon } from "$ts/server/user/daemon";
   import type { UserPreferencesStore } from "$types/user";
   import type { Wallpaper } from "$types/wallpaper";
+  import { onMount } from "svelte";
 
   interface Props {
     id: string;
     userPreferences: UserPreferencesStore;
     userDaemon: UserDaemon;
     isLogin?: boolean;
-    isUser?: boolean;
-    process: SettingsRuntime;
   }
 
-  const {
-    id,
-    userPreferences,
-    userDaemon,
-    isLogin = false,
-    isUser = false,
-    process,
-  }: Props = $props();
+  const { id, userPreferences, userDaemon, isLogin = false }: Props = $props();
 
   let wallpaper = $state<Wallpaper>();
 
-  $effect(() => {
+  onMount(() => {
     getWallpaper();
   });
 

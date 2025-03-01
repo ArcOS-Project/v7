@@ -5,6 +5,7 @@
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
   import type { AppComponentProps } from "$types/app";
+  import { onMount } from "svelte";
   import GlowingLogo from "../../../lib/GlowingLogo.svelte";
   import Spinner from "../../../lib/Spinner.svelte";
   import type { BootScreenRuntime } from "./runtime";
@@ -12,7 +13,7 @@
   const { process }: AppComponentProps<BootScreenRuntime> = $props();
   const { status, progress, connected } = process;
 
-  $effect(() => {
+  onMount(() => {
     process.begin();
   });
 </script>

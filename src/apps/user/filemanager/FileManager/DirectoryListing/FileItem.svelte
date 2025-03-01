@@ -9,6 +9,7 @@
   import type { FileManagerRuntime } from "../../runtime";
   import { DefaultMimeIcon } from "$ts/images/mime";
   import { contextProps } from "$ts/context/actions.svelte";
+  import { onMount } from "svelte";
 
   const { process, file }: { process: FileManagerRuntime; file: FileEntry } =
     $props();
@@ -19,7 +20,7 @@
   let mime = $state<string>();
   let thisPath = $state<string>("");
 
-  $effect(() => {
+  onMount(() => {
     dayjs.extend(relativeTime);
     dayjs.extend(updateLocale);
     dayjs.updateLocale("en", RelativeTimeMod);

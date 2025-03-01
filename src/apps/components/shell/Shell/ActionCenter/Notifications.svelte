@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Sleep } from "$ts/sleep";
   import type { Notification } from "$types/notification";
+  import { onMount } from "svelte";
   import Spinner from "../../../../../lib/Spinner.svelte";
   import type { ShellRuntime } from "../../runtime";
   import NotificationItem from "./Notifications/NotificationItem.svelte";
@@ -13,7 +14,7 @@
   let store = $state<[string, Notification][]>();
   let isEmpty = $state(false);
 
-  $effect(() => {
+  onMount(() => {
     if (!userDaemon) {
       loading = false;
       noDaemon = true;

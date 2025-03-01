@@ -3,6 +3,7 @@
   import { MessageBox } from "$ts/dialog";
   import { formatBytes } from "$ts/fs/util";
   import { WarningIcon } from "$ts/images/dialog";
+  import { onMount } from "svelte";
   import UserStyleWarning from "./UserStyles/UserStyleWarning.svelte";
 
   let value = $state("");
@@ -10,7 +11,7 @@
   const { process }: { process: SettingsRuntime } = $props();
   const { userPreferences, slideVisible } = process;
 
-  $effect(() => {
+  onMount(() => {
     if (!$slideVisible) return;
 
     reset();

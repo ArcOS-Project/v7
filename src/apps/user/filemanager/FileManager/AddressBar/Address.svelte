@@ -1,6 +1,7 @@
 <script lang="ts">
   import { getDirectoryName, getDriveLetter } from "$ts/fs/util";
   import { FolderIcon } from "$ts/images/filesystem";
+  import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../../runtime";
 
   const { process }: { process: FileManagerRuntime } = $props();
@@ -10,7 +11,7 @@
   let driveLabel = $state<string>("");
   let name = $state<string>("");
 
-  $effect(() => {
+  onMount(() => {
     const sub = path.subscribe((v) => {
       driveLetter = getDriveLetter(v, false);
 

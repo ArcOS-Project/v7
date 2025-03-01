@@ -8,6 +8,7 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
   import type { FileManagerRuntime } from "../../runtime";
+  import { onMount } from "svelte";
 
   const { process, dir }: { process: FileManagerRuntime; dir: FolderEntry } =
     $props();
@@ -16,7 +17,7 @@
   let date = $state<string>();
   let thisPath = $state<string>("");
 
-  $effect(() => {
+  onMount(() => {
     dayjs.extend(relativeTime);
     dayjs.extend(updateLocale);
     dayjs.updateLocale("en", RelativeTimeMod);

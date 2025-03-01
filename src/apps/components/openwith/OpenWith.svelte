@@ -1,5 +1,6 @@
 <script lang="ts">
   import { DefaultMimeIcon } from "$ts/images/mime";
+  import { onMount } from "svelte";
   import Options from "./OpenWith/Options.svelte";
   import type { OpenWithRuntime } from "./runtime";
 
@@ -17,7 +18,7 @@
 
   let icon = $state<string>("");
 
-  $effect(() => {
+  onMount(() => {
     icon = userDaemon!.getMimeIconByFilename($path) || DefaultMimeIcon;
   });
 </script>

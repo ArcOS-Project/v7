@@ -3,6 +3,7 @@
   import { Wallpapers } from "$ts/wallpaper/store";
   import { Store } from "$ts/writable";
   import type { Workspace } from "$types/user";
+  import { onMount } from "svelte";
   import type { ShellRuntime } from "../runtime";
 
   const { process }: { process: ShellRuntime } = $props();
@@ -12,7 +13,7 @@
   let workspaces: Workspace[] = $state([]);
   let windowCounts = Store<Record<string, number>>({});
 
-  $effect(() => {
+  onMount(() => {
     const sub = process.handler.store.subscribe((v) => {
       $windowCounts = {};
 

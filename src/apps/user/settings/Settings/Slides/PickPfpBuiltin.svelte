@@ -1,12 +1,13 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { ProfilePictures } from "$ts/images/pfp";
+  import { onMount } from "svelte";
   import type { SettingsRuntime } from "../../runtime";
 
   const { process }: { process: SettingsRuntime } = $props();
   const { userPreferences, slideVisible, userDaemon } = process;
 
-  $effect(() => {
+  onMount(() => {
     if (!$slideVisible) return;
   });
 </script>

@@ -3,6 +3,7 @@
   import { SecurityLowIcon } from "$ts/images/general";
   import { TimeFrames } from "$ts/server/user/store";
   import type { LoginActivity } from "$types/activity";
+  import { onMount } from "svelte";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
   import Activity from "./LoginActivity/Activity.svelte";
@@ -12,7 +13,7 @@
 
   let groups: Record<string, LoginActivity[]> = $state({});
 
-  $effect(() => {
+  onMount(() => {
     getActivity();
   });
 

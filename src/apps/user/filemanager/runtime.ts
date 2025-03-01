@@ -1,6 +1,6 @@
 import type { ShellRuntime } from "$apps/components/shell/runtime";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { GetConfirmation, MessageBox } from "$ts/dialog";
 import { FilesystemDrive } from "$ts/fs/drive";
 import {
   DownloadFile,
@@ -224,6 +224,11 @@ export class FileManagerRuntime extends AppProcess {
     super(handler, pid, parentPid, app);
 
     this.renderArgs.path = path;
+    this.userPreferences.update((v) => {
+      v.appPreferences.fileManager ||= {};
+
+      return v;
+    });
   }
 
   updateAltMenu() {
@@ -437,6 +442,19 @@ export class FileManagerRuntime extends AppProcess {
         action: (_, e) => {
           e.preventDefault();
           this.selectorUp();
+        },
+      },
+      {
+        key: "Enter",
+        shift: true,
+        action: () => {
+          this.EnterKey(true);
+        },
+      },
+      {
+        key: "Enter",
+        action: () => {
+          this.EnterKey(false);
         },
       }
     );
@@ -897,5 +915,64 @@ export class FileManagerRuntime extends AppProcess {
     this.directoryListing()
       ?.querySelector(`button.item[data-path="${path}"]`)
       ?.scrollIntoView(false);
+  }
+
+  public async EnterKey(alternative = false) {
+    const paths = this.selection.get();
+
+    if (alternative && paths.length > 1) {
+      MessageBox(
+        {
+          title: "Can't do that",
+          message:
+            "It is not possible to use <code>Shift</code>+<code>Enter</code> on multiple items. Please select a single item, or press <code>Enter</code> without <code>Shift</code>.",
+          image: ErrorIcon,
+          buttons: [{ caption: "Okay", action() {}, suggested: true }],
+        },
+        this.pid,
+        true
+      );
+
+      return;
+    }
+
+    if (paths.length > 1) {
+      const continueOperation = await GetConfirmation(
+        {
+          title: "Hold up!",
+          message:
+            "You're about to open multiple items at the same time. This could cause unexpected behaviour, depending on the number of files. Continue?",
+          image: WarningIcon,
+          sound: "arcos.dialog.warning",
+        },
+        this.pid,
+        true
+      );
+
+      if (!continueOperation) return;
+    }
+
+    for (const path of paths) {
+      if (!path) continue;
+
+      const isDir = this.isDirectory(path);
+
+      if (isDir) {
+        if (!alternative) await this.navigate(path);
+        else await this.spawnApp("fileManager", this.parentPid, path);
+
+        continue;
+      }
+
+      if (alternative) await this.openWith(path);
+      else await this.openFile(path);
+    }
+  }
+
+  public isDirectory(path: string, workingPath?: string) {
+    workingPath ||= this.path();
+    const dir = this.contents.get();
+
+    return dir?.dirs.map((a) => join(workingPath, a.name)).includes(path);
   }
 }
