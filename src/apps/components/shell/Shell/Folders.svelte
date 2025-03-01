@@ -36,7 +36,11 @@
   <UserButton {userPreferences} {username} {process} />
   <div class="content">
     {#each dirs as dir}
-      <button class="folder" onclick={() => process.notImplemented()}>
+      <button
+        class="folder"
+        onclick={() =>
+          process.spawnApp("fileManager", process.pid, `U:/${dir.name}`)}
+      >
         <img src={FolderIcon} alt="" />
         <span class="name">{dir.name}</span>
       </button>
