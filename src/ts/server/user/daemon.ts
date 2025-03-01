@@ -8,6 +8,7 @@ import { AppProcess } from "$ts/apps/process";
 import { ApplicationStorage } from "$ts/apps/storage";
 import { BuiltinApps } from "$ts/apps/store";
 import { darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
+import { MessageBox } from "$ts/dialog";
 import { toForm } from "$ts/form";
 import { Filesystem } from "$ts/fs";
 import { arrayToBlob, arrayToText } from "$ts/fs/convert";
@@ -49,8 +50,6 @@ import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultMimeIcons } from "./store";
-import { MessageBox } from "$ts/dialog";
-import { ErrorIcon } from "$ts/images/dialog";
 
 export class UserDaemon extends Process {
   public initialized = false;

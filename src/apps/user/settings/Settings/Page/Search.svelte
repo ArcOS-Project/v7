@@ -15,20 +15,13 @@
     <p>The search functionality of ArcOS</p>
   </div>
   <Section caption="Options">
-    <Option caption="Search the filesystem">
-      <input
-        type="checkbox"
-        class="switch"
-        bind:checked={$userPreferences.searchOptions.includeFilesystem}
-      />
-    </Option>
-    <Option caption="Include settings pages">
+    <!-- <Option caption="Include settings pages">
       <input
         type="checkbox"
         class="switch"
         bind:checked={$userPreferences.searchOptions.includeSettingsPages}
       />
-    </Option>
+    </Option> -->
     <Option caption="Include apps">
       <input
         type="checkbox"
@@ -45,11 +38,19 @@
     </Option>
   </Section>
   <Section caption="Filesystem">
+    <Option caption="Search the filesystem">
+      <input
+        type="checkbox"
+        class="switch"
+        bind:checked={$userPreferences.searchOptions.includeFilesystem}
+      />
+    </Option>
     <Option caption="Cache the filesystem index">
       <input
         type="checkbox"
         class="switch"
         bind:checked={$userPreferences.searchOptions.cacheFilesystem}
+        disabled={!$userPreferences.searchOptions.includeFilesystem}
       />
     </Option>
   </Section>

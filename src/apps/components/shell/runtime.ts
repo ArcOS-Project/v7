@@ -1,4 +1,11 @@
 import { AppProcess } from "$ts/apps/process";
+import { isPopulatable } from "$ts/apps/util";
+import { MessageBox } from "$ts/dialog";
+import { getDirectoryName } from "$ts/fs/util";
+import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
+import { AppsIcon, DesktopIcon } from "$ts/images/general";
+import { DefaultMimeIcon } from "$ts/images/mime";
+import { LogoutIcon, RestartIcon, ShutdownIcon } from "$ts/images/power";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
@@ -8,6 +15,9 @@ import type {
   ContextMenuInstance,
   ContextMenuItem,
 } from "$types/app";
+import type { PathedFileEntry, RecursiveDirectoryReadReturn } from "$types/fs";
+import type { SearchItem } from "$types/search";
+import type { UserPreferences, Workspace } from "$types/user";
 import { fetchWeatherApi } from "openmeteo";
 import {
   weatherCaptions,
@@ -17,11 +27,6 @@ import {
   weatherIcons,
 } from "./store";
 import type { WeatherInformation } from "./types";
-import { AppsIcon, DesktopIcon } from "$ts/images/general";
-import { ShutdownIcon } from "$ts/images/power";
-import type { Workspace } from "$types/user";
-import { WarningIcon } from "$ts/images/dialog";
-import { MessageBox } from "$ts/dialog";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
@@ -30,6 +35,7 @@ export class ShellRuntime extends AppProcess {
   public contextData = Store<ContextMenuInstance | null>();
   public stackBusy = Store<boolean>(false);
   public CLICKLOCKED = false;
+  private fileSystemIndex: PathedFileEntry[] = [];
   private readonly validContexMenuTags = [
     "button",
     "div",
@@ -122,6 +128,12 @@ export class ShellRuntime extends AppProcess {
     this.globalDispatch.subscribe("stack-not-busy", () =>
       this.stackBusy.set(false)
     );
+
+    this.globalDispatch.subscribe("fs-flush-file", () => {
+      this.fileSystemIndex = [];
+    });
+
+    this.getFilesystemSearchSupplier(this.userPreferences());
   }
 
   async render() {
@@ -477,5 +489,180 @@ export class ShellRuntime extends AppProcess {
       this.pid,
       true
     );
+  }
+
+  async Search() {
+    const preferences = this.userPreferences();
+    const sources = {
+      filesystem: preferences.searchOptions.includeFilesystem,
+      apps: preferences.searchOptions.includeApps,
+      power: preferences.searchOptions.includePower,
+      // settings: preferences.searchOptions.includeSettingsPages,
+    };
+    const items: SearchItem[] = [];
+
+    console.log(sources);
+
+    if (sources.filesystem)
+      items.push(...(await this.getFilesystemSearchSupplier(preferences)));
+
+    if (sources.apps)
+      items.push(...(await this.getAppSearchSupplier(preferences)));
+
+    if (sources.power)
+      items.push(
+        {
+          caption: "Shut down",
+          description: "Leave the desktop and turn off ArcOS",
+          image: ShutdownIcon,
+          action: () => {
+            this.userDaemon?.shutdown();
+          },
+        },
+        {
+          caption: "Restart",
+          description: "Leave the desktop and restart ArcOS",
+          image: RestartIcon,
+          action: () => {
+            this.userDaemon?.restart();
+          },
+        },
+        {
+          caption: "Log off",
+          description: "Leave the desktop and log out ArcOS",
+          image: LogoutIcon,
+          action: () => {
+            this.userDaemon?.logoff();
+          },
+        }
+      );
+
+    // if (sources.settings) items.push(...this.getSettingsSearchSupplier());
+
+    return items;
+  }
+
+  async getFilesystemSearchSupplier(preferences: UserPreferences) {
+    const result: SearchItem[] = [];
+    const index =
+      preferences.searchOptions.cacheFilesystem &&
+      this.fileSystemIndex &&
+      this.fileSystemIndex.length
+        ? this.fileSystemIndex
+        : await this.getFlatTree();
+
+    this.fileSystemIndex = index;
+
+    for (const file of index) {
+      result.push({
+        caption: file.name,
+        description: file.path,
+        action: () => {
+          this.openFile(file.path);
+        },
+        image:
+          this.userDaemon?.getMimeIconByFilename(file.name) || DefaultMimeIcon,
+      });
+    }
+
+    return result;
+  }
+
+  async getAppSearchSupplier(preferences: UserPreferences) {
+    const result: SearchItem[] = [];
+    const apps = (await this.userDaemon?.appStore?.get()) || [];
+
+    for (const app of apps) {
+      const populatable = isPopulatable(app);
+      const thirdParty = !!app.thirdParty;
+
+      if (
+        (preferences.searchOptions.showHiddenApps ? true : populatable) &&
+        (preferences.searchOptions.showThirdPartyApps ? true : !thirdParty)
+      ) {
+        result.push({
+          caption: app.metadata.name,
+          description: `By ${app.metadata.author}`,
+          image: app.metadata.icon,
+          action: () => {
+            this.spawnApp(app.id, this.pid);
+          },
+        });
+      }
+    }
+
+    return result;
+  }
+
+  // getSettingsSearchSupplier() {
+  //   const result: SearchItem[] = [];
+
+  //   for (const [id, page] of [...settingsPageStore]) {
+  //     if (page.hidden) continue;
+
+  //     result.push({
+  //       caption: page.name,
+  //       description: `Settings page - ${page.description}`,
+  //       image: page.icon,
+  //       action: () => {
+  //         this.spawnApp("systemSettings", this.pid, id);
+  //       },
+  //     });
+  //   }
+
+  //   return result;
+  // }
+
+  async getFlatTree() {
+    const result: PathedFileEntry[] = [];
+    const tree = await this.fs.tree("U:/");
+
+    const recurse = (tree: RecursiveDirectoryReadReturn, path = "U:") => {
+      for (const file of tree.files) {
+        result.push({ ...file, path: `${path}/${file.name}` });
+      }
+      for (const dir of tree.dirs) {
+        recurse(dir.children, `${path}/${dir.name}`);
+      }
+    };
+
+    recurse(tree!, "U:");
+
+    return result;
+  }
+
+  async openFile(path: string) {
+    const filename = getDirectoryName(path);
+    const apps = await this.userDaemon?.findAppToOpenFile(path)!;
+
+    if (!apps.length) {
+      MessageBox(
+        {
+          title: `Unknown file type`,
+          message: `ArcOS doesn't have an app that can open '${filename}'. Click <b>Open With</b> to pick from a list of applications.`,
+          buttons: [
+            {
+              caption: "Open With",
+              action: async () => {
+                await this.openWith(path);
+              },
+            },
+            { caption: "Okay", action: () => {}, suggested: true },
+          ],
+          sound: "arcos.dialog.warning",
+          image: ErrorIcon,
+        },
+        this.pid,
+        true
+      );
+
+      return;
+    }
+
+    return await this.spawnApp(apps[0].id, this.pid, path);
+  }
+
+  async openWith(path: string) {
+    await this.spawnOverlayApp("OpenWith", this.pid, path);
   }
 }

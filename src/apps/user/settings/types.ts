@@ -6,6 +6,7 @@ export interface SettingsPage {
   content: Component<any>;
   hidden?: boolean;
   separator?: boolean;
+  description: string;
 }
 
 export type SettingsPages = Map<string, SettingsPage>;

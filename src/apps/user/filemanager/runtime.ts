@@ -1,4 +1,3 @@
-import type { ShellRuntime } from "$apps/components/shell/runtime";
 import { AppProcess } from "$ts/apps/process";
 import { GetConfirmation, MessageBox } from "$ts/dialog";
 import { FilesystemDrive } from "$ts/fs/drive";
@@ -14,7 +13,6 @@ import { DownloadIcon, DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import { TrashIcon, UploadIcon } from "$ts/images/general";
 import { ShutdownIcon } from "$ts/images/power";
 import type { ProcessHandler } from "$ts/process/handler";
-import { Sleep } from "$ts/sleep";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
 import type {

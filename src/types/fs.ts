@@ -6,6 +6,8 @@ export interface FileEntry {
   mimeType: string;
 }
 
+export type PathedFileEntry = FileEntry & { path: string };
+
 export type FullFileEntry = FileEntry & {
   data: Blob;
 };
@@ -22,9 +24,13 @@ export interface DirectoryReadReturn {
 }
 
 export interface RecursiveDirectoryReadReturn {
-  dirs: (FolderEntry & { children: RecursiveDirectoryReadReturn })[];
+  dirs: RecursiveDirectory[];
   files: FileEntry[];
 }
+
+export type RecursiveDirectory = FolderEntry & {
+  children: RecursiveDirectoryReadReturn;
+};
 
 export interface UserQuota {
   used: number;

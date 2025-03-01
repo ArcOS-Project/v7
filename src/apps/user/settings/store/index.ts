@@ -30,6 +30,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
       name: "Your ArcOS Identity",
       icon: AccountIcon,
       content: Account,
+      description: "Manage your ArcOS account",
     },
   ],
   [
@@ -38,6 +39,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
       name: "Themes",
       icon: ThemesIcon,
       content: Themes,
+      description: "Personalize your ArcOS with themes",
     },
   ],
   [
@@ -46,6 +48,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
       name: "Wallpaper",
       icon: DesktopIcon,
       content: Wallpaper,
+      description: "Change your desktop wallpaper",
     },
   ],
   [
@@ -54,6 +57,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
       name: "Login Background",
       icon: PasswordIcon,
       content: LoginBackground,
+      description: "Change your login background",
     },
   ],
   [
@@ -63,6 +67,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
       icon: PersonalizationIcon,
       content: Visuals,
       separator: true,
+      description: "Fine-tune the appearance of ArcOS",
     },
   ],
   [
@@ -71,6 +76,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
       name: "Shell",
       icon: TaskbarIcon,
       content: Shell,
+      description: "The taskbar, start menu and action center",
     },
   ],
   [
@@ -79,6 +85,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
       name: "Search",
       icon: ArcFindIcon,
       content: Search,
+      description: "The search functionality of ArcOS",
     },
   ],
   [
@@ -88,6 +95,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
       icon: AppsIcon,
       content: Apps,
       separator: true,
+      description: "Manage the apps on your system",
     },
   ],
   [
@@ -96,6 +104,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
       name: "Security Center",
       icon: SecurityMediumIcon,
       content: Security,
+      description: "Manage the security of ArcOS",
     },
   ],
   [
@@ -104,6 +113,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
       name: "About ArcOS",
       icon: InfoIcon,
       content: About,
+      description: "ArcOS version information",
     },
   ],
 ]);

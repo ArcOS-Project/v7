@@ -180,9 +180,9 @@ export const BuiltinThemes: ThemeStore = {
     loginBackground: "img13",
   },
   eveningSunset: {
-    author: "izkuipers",
+    author: "Blocky (Cy)",
     version: "1.0",
-    name: "Evening Sunset",
+    name: "Evening Beach",
     taskbarLabels: false,
     taskbarDocked: true,
     taskbarColored: true,
