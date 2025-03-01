@@ -23,8 +23,11 @@
 <button class="user-button" {onclick}>
   <ProfilePicture height={24} {userDaemon} />
   <span class="name">
-    {username
-      ? $userPreferences.account.displayName || username
-      : "ERR_NO_USER"}
+    {#if username}
+      {$userPreferences.account.displayName || username}
+    {/if}
+    {#if !userDaemon}
+      <span class="error-text">ERR_NO_DAEMON</span>
+    {/if}
   </span>
 </button>

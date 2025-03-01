@@ -59,6 +59,16 @@
       <Weather {process} />
       <Notes {userPreferences} />
       <Gallery {userPreferences} {process} />
+    {:else}
+      <div class="card">
+        <span class="error-text">ERR_NO_DAEMON</span>
+      </div>
+      <div class="card">
+        <span class="error-text">ERR_NO_DAEMON</span>
+      </div>
+      <div class="card">
+        <span class="error-text">ERR_NO_DAEMON</span>
+      </div>
     {/if}
   </div>
 </div>

@@ -74,3 +74,17 @@ main#main.hidden #appRenderer {
   font-family: unifont;
   src: url(../assets/unifont.ttf);
 }
+
+@keyframes blink {
+  50% {
+    opacity: 1;
+  }
+}
+.blink {
+  animation: blink 1s step-start 0s infinite;
+}
+
+.error-text {
+  font-weight: bold;
+  color: var(--clr-red-fg);
+}

@@ -72,6 +72,22 @@ export class ShellRuntime extends AppProcess {
         },
       },
     ],
+    "actioncenter-weather-card": [
+      {
+        caption: "Refresh",
+        action: () => {
+          this.dispatch.dispatch("update-weather");
+        },
+        icon: "rotate-cw",
+      },
+      {
+        caption: "Change location...",
+        icon: "map-pin",
+        action: (changeLocation) => {
+          changeLocation();
+        },
+      },
+    ],
   };
   public contextProps: Record<string, any[]> = {};
 

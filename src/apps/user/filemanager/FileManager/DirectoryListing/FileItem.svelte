@@ -30,7 +30,7 @@
     const m = fromMime(file.mimeType);
 
     mime = m.replace(m[0], m[0].toUpperCase());
-    icon = userDaemon!.getMimeIconByFilename(file.name) || DefaultMimeIcon;
+    icon = userDaemon?.getMimeIconByFilename(file.name) || DefaultMimeIcon;
     thisPath = join(process.path(), file.name);
   });
 

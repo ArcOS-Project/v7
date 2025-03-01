@@ -30,6 +30,7 @@ import img31 from "$assets/bg/img31.jpg";
 import img32 from "$assets/bg/img32.png";
 import img33 from "$assets/bg/img33.png";
 import img34 from "$assets/bg/img34.png";
+export { default as NoDaemon } from "$assets/bg/nodaemon.svg";
 import img0Thumb from "$assets/bg/thumbnails/imgthumb0.png";
 import img01Thumb from "$assets/bg/thumbnails/imgthumb01.jpeg";
 import img02Thumb from "$assets/bg/thumbnails/imgthumb02.png";

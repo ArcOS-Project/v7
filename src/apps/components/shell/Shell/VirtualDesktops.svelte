@@ -8,7 +8,7 @@
 
   const { process }: { process: ShellRuntime } = $props();
   const { userDaemon, userPreferences, workspaceManagerOpened } = process;
-  const { Wallpaper } = userDaemon!;
+  const { Wallpaper } = userDaemon || {}!;
 
   let workspaces: Workspace[] = $state([]);
   let windowCounts = Store<Record<string, number>>({});
@@ -43,8 +43,8 @@
   class:docked={$userPreferences.shell.taskbar.docked}
   class:visible={$workspaceManagerOpened}
 >
-  {#if workspaces && workspaces.length}
-    <div class="desktops">
+  <div class="desktops">
+    {#if workspaces && workspaces.length}
       {#each workspaces as desktop, i (desktop.uuid)}
         <button
           class="desktop"
@@ -70,8 +70,15 @@
           </div>
         </button>
       {/each}
-    </div>
-  {/if}
+    {/if}
+
+    {#if !userDaemon}
+      <button class="desktop" style="--wallpaper: unset !important;">
+        <span class="error-text">ERR_NO_DAEMON</span>
+      </button>
+    {/if}
+  </div>
+
   <button
     class="add"
     aria-label="Add Desktop"

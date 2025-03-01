@@ -7,16 +7,20 @@
   import Header from "./Account/Header.svelte";
 
   const { process }: { process: SettingsRuntime } = $props();
-  const { userInfo, preferences: userPreferences } = process.userDaemon!;
+  const { userInfo, preferences: userPreferences } = process.userDaemon || {}!;
 </script>
 
 <div class="centered-layout">
-  <Header
-    {process}
-    {userInfo}
-    {userPreferences}
-    userDaemon={process.userDaemon!}
-  />
+  {#if userInfo && userPreferences}
+    <Header
+      {process}
+      {userInfo}
+      {userPreferences}
+      userDaemon={process.userDaemon!}
+    />
+  {:else}
+    <p class="error-text">ERR_NO_DAEMON</p>
+  {/if}
 
   <Section>
     <Option

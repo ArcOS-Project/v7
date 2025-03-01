@@ -4,7 +4,7 @@
   import type { WallpaperRuntime } from "./runtime";
 
   const { process }: AppComponentProps<WallpaperRuntime> = $props();
-  const { Wallpaper } = process.userDaemon!;
+  const { Wallpaper } = process.userDaemon || {};
 
   // TODO: desktop icons
 </script>

@@ -5,5 +5,5 @@
 </script>
 
 <div class="stack-busy">
-  <span class="lucide icon-clock-3" class:busy={$stackBusy}></span>
+  <span class="lucide icon-clock-3" class:blink={$stackBusy}></span>
 </div>

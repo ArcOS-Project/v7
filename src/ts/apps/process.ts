@@ -67,13 +67,14 @@ export class AppProcess extends Process {
     this.globalDispatch = this.kernel.getModule<GlobalDispatcher>("dispatch");
 
     const desktopProps = this.kernel.state?.stateProps["desktop"];
+    const daemon: UserDaemon | undefined =
+      desktopProps?.userDaemon ||
+      this.handler.getProcess(+this.env.get("userdaemon_pid"));
 
-    if (desktopProps && desktopProps.userDaemon) {
-      this.userPreferences = (
-        desktopProps.userDaemon as UserDaemon
-      ).preferences;
-      this.username = (desktopProps.userDaemon as UserDaemon).username;
-      this.userDaemon = desktopProps.userDaemon as UserDaemon;
+    if (daemon) {
+      this.userPreferences = daemon.preferences;
+      this.username = daemon.username;
+      this.userDaemon = daemon;
     }
 
     this.startAcceleratorListener();
@@ -137,7 +138,7 @@ export class AppProcess extends Process {
         LogLevel.error
       );
 
-      return;
+      return this.killSelf();
     }
 
     this.Log("Rendering window contents");

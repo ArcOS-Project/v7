@@ -1,5 +1,8 @@
 <script lang="ts">
+  import { ErrorIcon } from "$ts/images/dialog";
+  import { BadStatusIcon } from "$ts/images/status";
   import type { UserDaemon } from "$ts/server/user/daemon";
+  import { onMount } from "svelte";
 
   interface Props {
     userDaemon?: UserDaemon | undefined;
@@ -16,12 +19,12 @@
     className = "",
   }: Props = $props();
 
-  const { preferences } = userDaemon!;
+  const { preferences } = userDaemon || {}!;
 
   let url = $state<string | undefined>("");
   let currentPfp = $state<string | number>();
 
-  preferences.subscribe(async (v) => {
+  preferences?.subscribe(async (v) => {
     if (!fallback && currentPfp === (pfp || v.account.profilePicture!)) return;
 
     url =

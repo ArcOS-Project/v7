@@ -6,11 +6,18 @@
 
   const { process }: { process: ShellRuntime } = $props();
   const { stackBusy } = process;
-  const { battery, networkSpeed } = process.userDaemon!;
+  const { battery, networkSpeed } = process.userDaemon || {}!;
 </script>
 
 <div class="status-tray">
   <StackBusy {stackBusy} />
-  <Network {networkSpeed} />
-  <Battery {battery} userPreferences={process.userPreferences} />
+  {#if networkSpeed && battery}
+    <Network {networkSpeed} />
+    <Battery {battery} userPreferences={process.userPreferences} />
+  {:else}
+    <span
+      class="lucide error-text battery icon-triangle-alert"
+      title="ERR_NO_DAEMON"
+    ></span>
+  {/if}
 </div>

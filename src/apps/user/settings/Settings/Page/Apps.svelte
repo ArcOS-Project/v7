@@ -6,7 +6,7 @@
   import Option from "../Section/Option.svelte";
 
   const { process }: { process: SettingsRuntime } = $props();
-  const { buffer } = process.userDaemon!.appStore!;
+  const { buffer } = process.userDaemon?.appStore || {};
 </script>
 
 <div class="centered-layout">
@@ -16,21 +16,25 @@
     <p>Manage the apps on your system</p>
   </div>
   {#each Object.entries(AppOrigins) as [id, name]}
-    {#if $buffer.filter((a) => a.originId === id).length > 0}
-      <Section caption="{name} applications">
-        {#each $buffer as app}
-          {#if app.originId === id}
-            <Option
-              caption={app.metadata.name}
-              image={app.metadata.icon}
-              chevron
-              onclick={() => {
-                process.spawnOverlayApp("AppInfo", process.pid, app.id);
-              }}
-            />
-          {/if}
-        {/each}
-      </Section>
+    {#if buffer}
+      {#if $buffer!.filter((a) => a.originId === id).length > 0}
+        <Section caption="{name} applications">
+          {#each $buffer! as app}
+            {#if app.originId === id}
+              <Option
+                caption={app.metadata.name}
+                image={app.metadata.icon}
+                chevron
+                onclick={() => {
+                  process.spawnOverlayApp("AppInfo", process.pid, app.id);
+                }}
+              />
+            {/if}
+          {/each}
+        </Section>
+      {/if}
+    {:else}
+      <p class="error-text">ERR_NO_DAEMON</p>
     {/if}
   {/each}
 </div>

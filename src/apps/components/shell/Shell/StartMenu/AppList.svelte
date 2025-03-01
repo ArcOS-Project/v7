@@ -10,8 +10,6 @@
   let apps = $state<AppStorage>([]);
 
   onMount(() => {
-    if (!process.handler.renderer) return;
-
     const unsubscribe = process.userDaemon?.appStore?.buffer.subscribe((v) => {
       apps = v;
     });
@@ -26,4 +24,8 @@
       <ListItem {app} {process} />
     {/if}
   {/each}
+
+  {#if !process.userDaemon}
+    <span class="error-text">ERR_NO_DAEMON</span>
+  {/if}
 </div>

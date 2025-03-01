@@ -16,22 +16,23 @@
   }
 
   const { id, theme, userDaemon, isUser = false, process }: Props = $props();
-  const { preferences } = userDaemon;
+  const { preferences } = userDaemon || {};
 
   let wallpaper = $state("");
   let css = $state("");
 
   onMount(() => {
     getWall();
-    css = userDaemon.getAppRendererStyle(theme.desktopAccent);
+    css = userDaemon?.getAppRendererStyle(theme.desktopAccent);
   });
 
   async function getWall() {
-    wallpaper = (await userDaemon.getWallpaper(theme.desktopWallpaper)).thumb;
+    wallpaper = (await userDaemon?.getWallpaper(theme?.desktopWallpaper))
+      ?.thumb;
   }
 
   function apply() {
-    userDaemon.applyThemeData(theme, id);
+    userDaemon?.applyThemeData(theme, id);
   }
 
   function deleteTheme() {
@@ -60,7 +61,7 @@
 
 <button
   class="user-theme"
-  class:selected={$preferences.currentThemeId === id}
+  class:selected={$preferences?.currentThemeId === id}
   class:sharp={theme.sharpCorners}
   class:noani={theme.noAnimations}
   class:noglass={theme.noGlass}
