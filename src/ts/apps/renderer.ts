@@ -158,6 +158,9 @@ export class AppRenderer extends Process {
       }
 
       if (data.state.resizable) window.classList.add("resizable");
+      if (data.state.minimized) window.classList.add("minimized");
+      if (data.state.maximized) window.classList.add("maximized");
+      if (data.state.fullscreen) window.classList.add("fullscreen");
     }
   }
 
