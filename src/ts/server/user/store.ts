@@ -179,6 +179,22 @@ export const BuiltinThemes: ThemeStore = {
     desktopAccent: "FFB35C",
     loginBackground: "img13",
   },
+  eveningSunset: {
+    author: "izkuipers",
+    version: "1.0",
+    name: "Evening Sunset",
+    taskbarLabels: false,
+    taskbarDocked: true,
+    taskbarColored: true,
+    noAnimations: false,
+    sharpCorners: false,
+    compactContext: false,
+    noGlass: false,
+    desktopWallpaper: "img35",
+    desktopTheme: "dark",
+    desktopAccent: "44C5AC",
+    loginBackground: "img30",
+  },
 };
 
 export const VisualStyles: Record<string, string> = {

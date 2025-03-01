@@ -20,6 +20,7 @@ export const ArcShellApp: App = {
     maximized: false,
     fullscreen: false,
     resizable: false,
+    headless: true,
   },
   controls: {
     minimize: false,

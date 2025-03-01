@@ -48,7 +48,7 @@
         <p class="caption">Visual Style</p>
         <p class="sub">
           <select bind:value={$userPreferences!.desktop.theme} class="flat">
-            {#each Object.entries(VisualStyles) as [id, caption]}
+            {#each Object.entries(VisualStyles) as [id, caption] (id)}
               <option value={id}>{caption}</option>
             {/each}
           </select>
@@ -80,7 +80,7 @@
       !Object.values($userPreferences?.userThemes).length}
   >
     {#if $userPreferences?.userThemes && Object.values($userPreferences.userThemes).length}
-      {#each Object.entries($userPreferences.userThemes) as [id, theme]}
+      {#each Object.entries($userPreferences.userThemes) as [id, theme] (id)}
         <Theme {theme} {id} userDaemon={process.userDaemon!} {process} isUser />
       {/each}
     {:else}

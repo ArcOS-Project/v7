@@ -30,6 +30,8 @@ import img31 from "$assets/bg/img31.jpg";
 import img32 from "$assets/bg/img32.png";
 import img33 from "$assets/bg/img33.png";
 import img34 from "$assets/bg/img34.png";
+import img35 from "$assets/bg/img35.jpg";
+import img36 from "$assets/bg/img36.jpg";
 export { default as NoDaemon } from "$assets/bg/nodaemon.svg";
 import img0Thumb from "$assets/bg/thumbnails/imgthumb0.png";
 import img01Thumb from "$assets/bg/thumbnails/imgthumb01.jpeg";
@@ -63,6 +65,8 @@ import img31Thumb from "$assets/bg/thumbnails/imgthumb31.jpg";
 import img32Thumb from "$assets/bg/thumbnails/imgthumb32.png";
 import img33Thumb from "$assets/bg/thumbnails/imgthumb33.png";
 import img34Thumb from "$assets/bg/thumbnails/imgthumb34.png";
+import img35Thumb from "$assets/bg/thumbnails/imgthumb35.jpg";
+import img36Thumb from "$assets/bg/thumbnails/imgthumb36.jpg";
 import type { Wallpaper } from "$types/wallpaper";
 
 export const Wallpapers: { [key: string]: Wallpaper } = {
@@ -260,6 +264,20 @@ export const Wallpapers: { [key: string]: Wallpaper } = {
     author: "Blocky (Cy)",
     name: "Florida Beach",
     source: "Florida",
+    builtin: true,
+  },
+  img35: {
+    url: img35,
+    thumb: img35Thumb,
+    author: "Blocky (Cy)",
+    name: "Evening Beach",
+    builtin: true,
+  },
+  img36: {
+    url: img36,
+    thumb: img36Thumb,
+    author: "Blocky (Cy)",
+    name: "African Penguins",
     builtin: true,
   },
   /**Matteo Scaringi */
