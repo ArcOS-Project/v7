@@ -90,7 +90,7 @@ export class UserDaemon extends Process {
 
     this.token = token;
     this.username = username;
-    // this.env.set("userdaemon_pid", this.pid);
+    this.env.set("userdaemon_pid", this.pid);
   }
 
   async startApplicationStorage() {

@@ -147,7 +147,7 @@ export class LoginAppRuntime extends AppProcess {
 
     this.loadingStatus.set("Let's go!");
 
-    await this.kernel.state?.loadState("desktop" /*, { userDaemon }*/);
+    await this.kernel.state?.loadState("desktop", { userDaemon });
     this.soundBus.playSound("arcos.system.logon");
 
     this.loadingStatus.set("Starting Workspaces");
