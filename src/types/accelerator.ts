@@ -3,7 +3,7 @@ export interface AppKeyCombination {
   ctrl?: boolean;
   shift?: boolean;
   key?: string;
-  action(proc: any): void;
+  action(proc: any, event: KeyboardEvent): void;
   global?: boolean;
 }
 

@@ -46,6 +46,7 @@
     ondblclick={() => process.openFile(thisPath)}
     data-contextmenu={$selection.includes(thisPath) ? "file-item" : ""}
     use:contextProps={[file, thisPath]}
+    data-path={thisPath}
   >
     <div class="segment icon">
       <img src={icon} alt="" />

@@ -42,6 +42,7 @@
     class:selected={$selection.includes(thisPath)}
     data-contextmenu={$selection.includes(thisPath) ? "folder-item" : ""}
     use:contextProps={[dir, thisPath]}
+    data-path={thisPath}
   >
     <div class="segment icon">
       <img src={FolderIcon} alt="" />

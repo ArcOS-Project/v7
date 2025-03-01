@@ -237,7 +237,7 @@ export class AppProcess extends Process {
       if (!modifiers || (key != pK && key && key != codedKey) || !isFocused)
         continue;
 
-      if (!this.userDaemon?._elevating) await combo.action(this);
+      if (!this.userDaemon?._elevating) await combo.action(this, e);
 
       break;
     }

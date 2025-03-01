@@ -14,6 +14,7 @@ import { DownloadIcon, DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import { TrashIcon, UploadIcon } from "$ts/images/general";
 import { ShutdownIcon } from "$ts/images/power";
 import type { ProcessHandler } from "$ts/process/handler";
+import { Sleep } from "$ts/sleep";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
 import type {
@@ -41,6 +42,7 @@ export class FileManagerRuntime extends AppProcess {
   starting = Store<boolean>(true);
   rootFolders = Store<FolderEntry[]>([]);
   drives = Store<Record<string, QuotedDrive>>({});
+  directoryListing = Store<HTMLDivElement>();
   private _refreshLocked = false;
 
   protected overlayStore: Record<string, App> = {
@@ -421,6 +423,20 @@ export class FileManagerRuntime extends AppProcess {
 
           this.selection.set([path]);
           this.spawnOverlay("renameItem", path);
+        },
+      },
+      {
+        key: "ArrowDown",
+        action: (_, e) => {
+          e.preventDefault();
+          this.selectorDown();
+        },
+      },
+      {
+        key: "ArrowUp",
+        action: (_, e) => {
+          e.preventDefault();
+          this.selectorUp();
         },
       }
     );
@@ -839,7 +855,7 @@ export class FileManagerRuntime extends AppProcess {
     this.selection.set([selected[selected.length - 1]]);
   }
 
-  selectorUp() {
+  async selectorUp() {
     this.singlefySelected();
     const selected = this.selection.get()[0];
     const dir = this.contents.get();
@@ -856,9 +872,12 @@ export class FileManagerRuntime extends AppProcess {
       paths[index < 0 || index - 1 < 0 ? paths.length - 1 : index - 1];
 
     this.selection.set([path]);
+    this.directoryListing()
+      ?.querySelector(`button.item[data-path="${path}"]`)
+      ?.scrollIntoView(false);
   }
 
-  selectorDown() {
+  async selectorDown() {
     this.singlefySelected();
     const selected = this.selection.get()[0];
     const dir = this.contents.get();
@@ -875,5 +894,8 @@ export class FileManagerRuntime extends AppProcess {
       paths[index < 0 || index + 1 > paths.length - 1 ? 0 : index + 1];
 
     this.selection.set([path]);
+    this.directoryListing()
+      ?.querySelector(`button.item[data-path="${path}"]`)
+      ?.scrollIntoView(false);
   }
 }
