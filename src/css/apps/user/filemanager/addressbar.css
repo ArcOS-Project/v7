@@ -13,6 +13,10 @@
   max-width: calc(100% - 207px);
 }
 
+#fileManager div.load-save div.address-bar div.portion.address {
+  max-width: calc(100% - 40px);
+}
+
 #fileManager div.address-bar div.path {
   flex-grow: 1;
   max-width: calc(100% - 35px);

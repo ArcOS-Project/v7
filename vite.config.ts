@@ -17,4 +17,7 @@ export default defineConfig({
       $lib: resolve(__dirname, "./src/lib"),
     },
   },
+  build: {
+    minify: false,
+  },
 });

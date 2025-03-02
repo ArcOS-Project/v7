@@ -128,11 +128,12 @@ export class ProcessHandler extends KernelModule {
 
     this.makeNotBusy(`Killing subprocesses of ${pid}`);
     await this._killSubProceses(pid, force);
-    this.makeBusy(`Continuing killing of ${pid}`);
 
     if (proc instanceof AppProcess && proc.closeWindow && !force) {
       await proc.closeWindow(false);
     }
+
+    this.makeBusy(`Continuing killing of ${pid}`);
 
     if (proc.__stop) await proc.__stop();
 

@@ -27,7 +27,7 @@ import type { RenderArgs } from "$types/process";
 import { NewFileApp } from "./newfile/metadata";
 import { NewFolderApp } from "./newfolder/metadata";
 import { RenameItemApp } from "./renameitem/metadata";
-import type { QuotedDrive } from "./types";
+import type { LoadSaveDialogData, QuotedDrive } from "./types";
 
 export class FileManagerRuntime extends AppProcess {
   path = Store<string>("");
@@ -40,8 +40,47 @@ export class FileManagerRuntime extends AppProcess {
   starting = Store<boolean>(true);
   rootFolders = Store<FolderEntry[]>([]);
   drives = Store<Record<string, QuotedDrive>>({});
+  loadSave: LoadSaveDialogData | undefined;
+  saveName = Store<string>();
   directoryListing = Store<HTMLDivElement>();
   private _refreshLocked = false;
+
+  constructor(
+    handler: ProcessHandler,
+    pid: number,
+    parentPid: number,
+    app: AppProcessData,
+    path?: string,
+    loadSave?: LoadSaveDialogData
+  ) {
+    super(handler, pid, parentPid, app);
+
+    this.renderArgs.path = path;
+    this.userPreferences.update((v) => {
+      v.appPreferences.fileManager ||= {};
+
+      return v;
+    });
+
+    this.loadSave = loadSave;
+
+    if (loadSave) {
+      this.windowTitle.set(loadSave.title);
+      this.windowIcon.set(loadSave.icon);
+      this.renderArgs.path = loadSave.startDir || "U:/";
+      if (loadSave.isSave) {
+        this.selection.subscribe((v) => {
+          if (!v.length) return;
+
+          this.saveName.set(getDirectoryName(v[0]));
+        });
+
+        if (loadSave.saveName) this.saveName.set(loadSave.saveName);
+      }
+
+      this.contextMenu = {};
+    }
+  }
 
   protected overlayStore: Record<string, App> = {
     renameItem: RenameItemApp,
@@ -212,24 +251,8 @@ export class FileManagerRuntime extends AppProcess {
     ],
   };
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    path?: string
-  ) {
-    super(handler, pid, parentPid, app);
-
-    this.renderArgs.path = path;
-    this.userPreferences.update((v) => {
-      v.appPreferences.fileManager ||= {};
-
-      return v;
-    });
-  }
-
   updateAltMenu() {
+    if (this.loadSave) return;
     const fileMenu = {
       caption: "File",
       subItems: [
@@ -400,6 +423,8 @@ export class FileManagerRuntime extends AppProcess {
       {
         key: "Delete",
         action: () => {
+          if (this.loadSave) return;
+
           this.deleteSelected();
         },
       },
@@ -407,6 +432,8 @@ export class FileManagerRuntime extends AppProcess {
         alt: true,
         key: "Enter",
         action: () => {
+          if (this.loadSave) return;
+
           const path = this.selection()[0];
           const contents = this.contents();
           const items = [...(contents?.dirs || []), ...(contents?.files || [])];
@@ -431,6 +458,8 @@ export class FileManagerRuntime extends AppProcess {
       {
         key: "ArrowDown",
         action: (_, e) => {
+          if (this.loadSave) return;
+
           e.preventDefault();
           this.selectorDown();
         },
@@ -438,6 +467,8 @@ export class FileManagerRuntime extends AppProcess {
       {
         key: "ArrowUp",
         action: (_, e) => {
+          if (this.loadSave) return;
+
           e.preventDefault();
           this.selectorUp();
         },
@@ -445,13 +476,13 @@ export class FileManagerRuntime extends AppProcess {
       {
         key: "ArrowLeft",
         action: (_, e) => {
-          e.preventDefault();
+          if (!this.loadSave) e.preventDefault();
         },
       },
       {
         key: "ArrowRight",
         action: (_, e) => {
-          e.preventDefault();
+          if (!this.loadSave) e.preventDefault();
         },
       },
       {
@@ -582,7 +613,7 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   public updateSelection(e: MouseEvent, path: string) {
-    if (!e.shiftKey) {
+    if (!e.shiftKey || this.loadSave) {
       this.selection.set([path]);
       this.updateAltMenu();
 
@@ -719,6 +750,10 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   async openFile(path: string) {
+    if (this.loadSave) {
+      this.confirmLoadSave();
+      return;
+    }
     const filename = getDirectoryName(path);
     const apps = await this.userDaemon?.findAppToOpenFile(path)!;
 
@@ -928,6 +963,8 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   public async EnterKey(alternative = false) {
+    if (this.loadSave) return;
+
     const paths = this.selection.get();
 
     if (alternative && paths.length > 1) {
@@ -984,5 +1021,19 @@ export class FileManagerRuntime extends AppProcess {
     const dir = this.contents.get();
 
     return dir?.dirs.map((a) => join(workingPath, a.name)).includes(path);
+  }
+
+  async confirmLoadSave() {
+    const selection = this.selection();
+    const saveName = this.saveName();
+    const path = this.path();
+    const result = !this.loadSave?.isSave ? selection[0] : join(path, saveName);
+
+    this.globalDispatch.dispatch("ls-confirm", [
+      this.loadSave?.returnId,
+      result,
+    ]);
+
+    await this.closeWindow();
   }
 }

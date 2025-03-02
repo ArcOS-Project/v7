@@ -43,14 +43,14 @@
   </div>
   <AltMenu {process} />
   <div class="controls">
-    {#if data.controls.minimize}
+    {#if data.controls.minimize && !data.overlay}
       <button
         class="minimize icon-chevron-down"
         aria-label="minimize"
         onclick={minimize}
       ></button>
     {/if}
-    {#if data.controls.maximize}
+    {#if data.controls.maximize && !data.overlay}
       <button
         class="maximize icon-chevron-up"
         aria-label="maximize"

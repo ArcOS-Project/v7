@@ -31,6 +31,8 @@
   }
 
   function onclick(e: MouseEvent) {
+    if (process.loadSave) return;
+
     process.updateSelection(e, thisPath);
   }
 </script>

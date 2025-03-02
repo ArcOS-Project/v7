@@ -90,7 +90,10 @@ export class AppProcess extends Process {
 
     const canClose = this._disposed || (await this.onClose());
 
-    if (!canClose) return;
+    if (!canClose) {
+      this.Log(`Can't close`);
+      return;
+    }
 
     const elements = [
       ...document.querySelectorAll(`div.window[data-pid="${this.pid}"]`),
@@ -102,7 +105,11 @@ export class AppProcess extends Process {
       ) || []),
     ];
 
-    if (!elements.length) return this.killSelf();
+    if (!elements.length) {
+      this.Log(`No elements, calling killSelf`);
+
+      return this.killSelf();
+    }
 
     for (const element of elements) {
       element.classList.add("closing");

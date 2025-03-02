@@ -50,6 +50,7 @@ import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultMimeIcons } from "./store";
+import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -1833,5 +1834,28 @@ export class UserDaemon extends Process {
     }
 
     if (!this.mimeIcons[icon]) this.mimeIcons[icon] = [extension];
+  }
+
+  async LoadSaveDialog(data: Omit<LoadSaveDialogData, "returnId">) {
+    const uuid = crypto.randomUUID();
+
+    await this.spawnOverlay(
+      "fileManager",
+      +this.env.get("shell_pid"),
+      data.startDir || "U:/",
+      {
+        ...data,
+        returnId: uuid,
+      }
+    );
+
+    return new Promise<string | undefined>(async (r) => {
+      this.globalDispatch.subscribe("ls-confirm", ([id, path]) => {
+        if (id === uuid) r(path);
+      });
+      this.globalDispatch.subscribe("ls-cancel", ([id]) => {
+        if (id === uuid) r(undefined);
+      });
+    });
   }
 }

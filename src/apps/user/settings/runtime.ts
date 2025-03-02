@@ -2,6 +2,7 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import {
+  AccountIcon,
   PasswordIcon,
   SecurityHighIcon,
   SecurityMediumIcon,
@@ -280,5 +281,22 @@ export class SettingsRuntime extends AppProcess {
       this.pid,
       true
     );
+  }
+
+  async chooseProfilePicture() {
+    const path = await this.userDaemon?.LoadSaveDialog({
+      title: "Choose profile picture",
+      icon: AccountIcon,
+      startDir: "U:/",
+      extensions: ["jpg", "png", "gif", "svg", "jpeg"],
+    });
+
+    if (!path) return;
+
+    this.userPreferences.update((v) => {
+      v.account.profilePicture = path;
+
+      return v;
+    });
   }
 }

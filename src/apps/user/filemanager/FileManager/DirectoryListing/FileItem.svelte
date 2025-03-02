@@ -19,6 +19,7 @@
   let icon = $state<string>();
   let mime = $state<string>();
   let thisPath = $state<string>("");
+  let extension = $state<string>();
 
   onMount(() => {
     dayjs.extend(relativeTime);
@@ -28,18 +29,24 @@
     date = dayjs(new Date(file.dateModified).getTime() - 2000).fromNow();
 
     const m = fromMime(file.mimeType);
+    const split = file.name.split(".");
 
     mime = m.replace(m[0], m[0].toUpperCase());
     icon = userDaemon?.getMimeIconByFilename(file.name) || DefaultMimeIcon;
     thisPath = join(process.path(), file.name);
+    extension = split[split.length - 1];
   });
 
   function onclick(e: MouseEvent) {
     process.updateSelection(e, thisPath);
+
+    if (process.loadSave?.isSave) {
+      process.saveName.set(file.name);
+    }
   }
 </script>
 
-{#if thisPath}
+{#if thisPath && !(process?.loadSave?.extensions ? !!extension && !process?.loadSave?.extensions.includes(extension) : false)}
   <button
     class="item file"
     {onclick}

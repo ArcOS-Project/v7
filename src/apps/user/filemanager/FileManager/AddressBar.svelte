@@ -16,8 +16,10 @@
     ></button>
     <Address {process} />
   </div>
-  <div class="sep"></div>
-  <CutCopyPaste {process} />
-  <div class="sep"></div>
+  {#if !process.loadSave}
+    <div class="sep"></div>
+    <CutCopyPaste {process} />
+    <div class="sep"></div>
+  {/if}
   <UpDownLoad {process} />
 </div>

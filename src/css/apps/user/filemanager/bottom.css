@@ -8,7 +8,7 @@
   padding-left: 15px;
 }
 
-#fileManager > div.body div.bottom div.view-toggle {
+#fileManager > div.body div.bottom > div {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -24,4 +24,18 @@
   align-items: center;
   font-size: 16px;
   min-width: unset;
+}
+
+#fileManager > div.body div.bottom > div.actions {
+  gap: 10px;
+}
+
+#fileManager > div.body div.bottom > input {
+  flex-grow: 1;
+  height: 30px;
+  margin-left: -5px;
+}
+
+#fileManager > div.body div.bottom.save {
+  gap: 10px;
 }

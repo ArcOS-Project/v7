@@ -14,3 +14,14 @@ export interface Location {
 }
 
 export type QuotedDrive = { data: FilesystemDrive; quota: UserQuota };
+
+export interface LoadSaveDialogData {
+  title: string;
+  icon: string;
+  startDir?: string;
+  isSave?: boolean;
+  targetPid?: number;
+  extensions?: string[];
+  returnId: string;
+  saveName?: string;
+}

@@ -14,7 +14,11 @@ div.window > div.overlay-wrapper {
   opacity: 0;
 }
 
-div.window > div.overlay-wrapper div.window.overlay div.titlebar {
+div.window > div.overlay-wrapper div.window.overlay div.titlebar.custom {
+  opacity: 1 !important;
+}
+
+div.window > div.overlay-wrapper div.window.overlay div.titlebar:not(.custom) {
   display: none;
 }
 div.window > div.overlay-wrapper div.window.overlay div.body {
