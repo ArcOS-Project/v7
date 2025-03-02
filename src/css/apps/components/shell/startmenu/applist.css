@@ -14,6 +14,23 @@ div.shell div.startmenu div.top div.app-list button {
   padding: 5px;
   margin-bottom: 5px;
   background-color: transparent;
+  text-align: left;
+}
+
+div.shell div.startmenu div.top div.app-list button span p,
+div.shell div.startmenu div.top div.app-list button span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+div.shell div.startmenu div.top div.app-list button span p.description {
+  opacity: 0.5;
+}
+
+div.shell div.startmenu div.top div.app-list button span {
+  max-width: calc(100% - 34px);
+  display: block;
 }
 
 div.shell div.startmenu div.top div.app-list button img {
@@ -22,4 +39,17 @@ div.shell div.startmenu div.top div.app-list button img {
 
 div.shell div.startmenu div.top div.app-list button:hover {
   background-color: var(--button-glass-bg);
+}
+
+div.shell div.startmenu div.top div.searching p.no-results {
+  text-align: center;
+  margin-top: 20px;
+  opacity: 0.5;
+}
+div.shell div.startmenu div.top div.app-list.searching {
+  overflow-y: hidden;
+}
+
+div.shell div.startmenu div.top div.app-list.searching button.selected {
+  background-color: var(--accent-transparent);
 }

@@ -18,6 +18,7 @@ import type {
 import type { PathedFileEntry, RecursiveDirectoryReadReturn } from "$types/fs";
 import type { SearchItem } from "$types/search";
 import type { UserPreferences, Workspace } from "$types/user";
+import Fuse, { type FuseResult } from "fuse.js";
 import { fetchWeatherApi } from "openmeteo";
 import {
   weatherCaptions,
@@ -35,6 +36,11 @@ export class ShellRuntime extends AppProcess {
   public contextData = Store<ContextMenuInstance | null>();
   public stackBusy = Store<boolean>(false);
   public CLICKLOCKED = false;
+  public searchQuery = Store<string>();
+  public searchResults = Store<FuseResult<SearchItem>[]>([]);
+  public searching = Store<boolean>(false);
+  public SelectionIndex = Store<number>(0);
+
   private fileSystemIndex: PathedFileEntry[] = [];
   private readonly validContexMenuTags = [
     "button",
@@ -134,6 +140,22 @@ export class ShellRuntime extends AppProcess {
     });
 
     this.getFilesystemSearchSupplier(this.userPreferences());
+
+    this.searchQuery.subscribe(async (v) => {
+      if (!v) {
+        this.SelectionIndex.set(0);
+        this.searchResults.set([]);
+        return;
+      }
+
+      this.searching.set(true);
+      const result = await this.Search(v);
+
+      if (result.length > 8) result.length = 8;
+
+      this.searchResults.set(result);
+      this.searching.set(false);
+    });
   }
 
   async render() {
@@ -232,6 +254,10 @@ export class ShellRuntime extends AppProcess {
     this.dispatch.subscribe("close-start-menu", () =>
       this.startMenuOpened.set(false)
     );
+
+    this.startMenuOpened.subscribe((v) => {
+      if (!v) this.searchQuery.set("");
+    });
   }
 
   async getWeather(): Promise<WeatherInformation> {
@@ -491,13 +517,12 @@ export class ShellRuntime extends AppProcess {
     );
   }
 
-  async Search() {
+  async Search(query: string) {
     const preferences = this.userPreferences();
     const sources = {
       filesystem: preferences.searchOptions.includeFilesystem,
       apps: preferences.searchOptions.includeApps,
       power: preferences.searchOptions.includePower,
-      // settings: preferences.searchOptions.includeSettingsPages,
     };
     const items: SearchItem[] = [];
 
@@ -537,9 +562,15 @@ export class ShellRuntime extends AppProcess {
         }
       );
 
-    // if (sources.settings) items.push(...this.getSettingsSearchSupplier());
+    const options = {
+      includeScore: true,
+      keys: ["caption", "description"],
+    };
 
-    return items;
+    const fuse = new Fuse(items, options);
+    const result = fuse.search(query);
+
+    return result.map((r) => ({ ...r, id: crypto.randomUUID() }));
   }
 
   async getFilesystemSearchSupplier(preferences: UserPreferences) {
@@ -594,25 +625,6 @@ export class ShellRuntime extends AppProcess {
     return result;
   }
 
-  // getSettingsSearchSupplier() {
-  //   const result: SearchItem[] = [];
-
-  //   for (const [id, page] of [...settingsPageStore]) {
-  //     if (page.hidden) continue;
-
-  //     result.push({
-  //       caption: page.name,
-  //       description: `Settings page - ${page.description}`,
-  //       image: page.icon,
-  //       action: () => {
-  //         this.spawnApp("systemSettings", this.pid, id);
-  //       },
-  //     });
-  //   }
-
-  //   return result;
-  // }
-
   async getFlatTree() {
     const result: PathedFileEntry[] = [];
     const tree = await this.fs.tree("U:/");
@@ -664,5 +676,46 @@ export class ShellRuntime extends AppProcess {
 
   async openWith(path: string) {
     await this.spawnOverlayApp("OpenWith", this.pid, path);
+  }
+
+  public MutateIndex(e: KeyboardEvent) {
+    const key = e.key.toLowerCase();
+    const results = this.searchResults();
+
+    if (e.key === "Escape") return this.startMenuOpened.set(false);
+    let index = this.SelectionIndex();
+    if (!results.length) return (index = -1);
+    if (key == "enter") return this.Submit();
+    let length = results.length - 1;
+
+    switch (key) {
+      case "arrowup":
+        index--;
+        if (index < 0) index = length;
+        break;
+
+      case "arrowdown":
+        index++;
+        if (index > length) index = 0;
+        break;
+    }
+
+    this.SelectionIndex.set(index);
+  }
+
+  public async Trigger(result: SearchItem) {
+    await result.action(result);
+  }
+
+  public Submit() {
+    const results = this.searchResults();
+    const index = this.SelectionIndex.get();
+
+    if (!results.length) return;
+
+    this.searchQuery.set("");
+
+    // Trigger the selected search result
+    this.Trigger(results[index == -1 ? 0 : index].item);
   }
 }

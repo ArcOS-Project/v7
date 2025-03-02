@@ -18,13 +18,14 @@
     username: string;
   } = $props();
 
-  // TODO: app groups
+  const { searchQuery } = process;
 </script>
 
 <div
   class="startmenu shell-colored"
   class:colored={$userPreferences.shell.taskbar.colored}
   class:opened={$startMenuOpened}
+  class:searching={$searchQuery}
 >
   <div class="top">
     <AppList {process} />

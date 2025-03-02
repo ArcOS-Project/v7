@@ -1,13 +1,34 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import type { ShellRuntime } from "../../runtime";
+  import { Sleep } from "$ts/sleep";
 
   const { process }: { process: ShellRuntime } = $props();
+  const { searchQuery, startMenuOpened } = process;
+
+  let searchBar: HTMLInputElement;
+
+  onMount(() => {
+    startMenuOpened.subscribe(async (v) => {
+      if (!v) return;
+
+      await Sleep(100);
+
+      searchBar?.focus();
+    });
+  });
 </script>
 
 <div class="bottom">
   <div class="search">
     <span class="lucide icon-search"></span>
-    <input type="text" placeholder="Search..." />
+    <input
+      type="text"
+      placeholder="Search..."
+      bind:value={$searchQuery}
+      bind:this={searchBar}
+      onkeydown={(e) => process.MutateIndex(e)}
+    />
   </div>
   <div class="actions">
     <button
