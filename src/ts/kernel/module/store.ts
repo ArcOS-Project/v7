@@ -1,5 +1,6 @@
 import { GlobalDispatcher } from "$ts/dispatch";
 import { Filesystem } from "$ts/fs";
+import { ArcLang } from "$ts/lang";
 import { ArcMSL } from "$ts/msl";
 import { SoundBus } from "$ts/soundbus";
 import { ProcessHandler } from "../../process/handler";
@@ -14,4 +15,5 @@ export const KernelModules: Record<string, any> = {
   server: ServerManager,
   fs: Filesystem,
   msl: ArcMSL,
+  lang: ArcLang,
 };
