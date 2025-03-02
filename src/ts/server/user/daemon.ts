@@ -24,7 +24,7 @@ import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import { AccountIcon, PasswordIcon } from "$ts/images/general";
 import { ImageMimeIcon } from "$ts/images/mime";
 import { ProfilePictures } from "$ts/images/pfp";
-import type { ArcLang } from "$ts/lang";
+import type { ArcMSL } from "$ts/msl";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { Sleep } from "$ts/sleep";
@@ -950,7 +950,7 @@ export class UserDaemon extends Process {
 
     this.Log(`Starting ArcMSL execution to run third-party app ${app.id}`);
 
-    const lang = this.kernel.getModule<ArcLang>("lang");
+    const lang = this.kernel.getModule<ArcMSL>("msl");
     const fs = this.kernel.getModule<Filesystem>("fs");
     const userDaemonPid = this.env.get("userdaemon_pid");
 

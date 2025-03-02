@@ -12,7 +12,6 @@ import { ProcessHandler } from "../process/handler";
 import { StateHandler } from "../state";
 import { InitProcess } from "./init";
 import { KernelModules } from "./module/store";
-import * as FSL from "../fsl/index.js";
 
 let CurrentKernel: WaveKernel | undefined = undefined;
 
@@ -28,7 +27,6 @@ export class WaveKernel {
   public ARCOS_MODE = "release";
   public ARCOS_BUILD = "unknown";
   public ARCOS_LICENSE = "not here yet";
-  public FSL: Record<string, any> = FSL;
 
   public static get(): WaveKernel {
     if (!CurrentKernel)

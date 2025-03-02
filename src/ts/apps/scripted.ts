@@ -1,4 +1,4 @@
-import type { LanguageInstance } from "$ts/lang/instance";
+import type { LanguageInstance } from "$ts/msl/instance";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
