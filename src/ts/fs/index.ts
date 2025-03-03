@@ -398,4 +398,17 @@ export class Filesystem extends KernelModule {
 
     await drive.releaseLock(scopedPath, pid);
   }
+
+  async direct(path: string): Promise<string | undefined> {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
+    this.Log(`Requesting direct access of '${path}'`);
+    this.validatePath(path);
+
+    const drive = this.getDriveByPath(path);
+    const scopedPath = this.removeDriveLetter(path);
+    const result = await drive.direct(scopedPath);
+
+    return result;
+  }
 }

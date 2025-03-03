@@ -8,6 +8,7 @@ import { ArcShellApp } from "$apps/components/shell/metadata";
 import { WallpaperApp } from "$apps/components/wallpaper/metadata";
 import { FileManagerApp } from "$apps/user/filemanager/metadata";
 import { HexEditorApp } from "$apps/user/hexedit/metadata";
+import { MediaPlayerApp } from "$apps/user/mediaplayer/metadata";
 import { SystemSettings } from "$apps/user/settings/metadata";
 import { TestApp } from "$apps/user/test/metadata";
 import type { AppKeyCombinations } from "$types/accelerator";
@@ -26,6 +27,7 @@ export const BuiltinApps: AppStorage = [
   HexEditorApp,
   OpenWithApp,
   ItemInfoApp,
+  MediaPlayerApp,
 ];
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];

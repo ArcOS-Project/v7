@@ -4,6 +4,7 @@ import { Axios } from "$ts/server/axios";
 import type {
   DirectoryReadReturn,
   FilesystemProgressCallback,
+  FsAccess,
   RecursiveDirectoryReadReturn,
   UserQuota,
 } from "$types/fs";
@@ -183,6 +184,24 @@ export class ServerDrive extends FilesystemDrive {
         free: 0,
         percentage: 0,
       };
+    }
+  }
+
+  async direct(path: string): Promise<string | undefined> {
+    try {
+      const response = await Axios.post(
+        `/fs/accessors/${path}`,
+        {},
+        { headers: { Authorization: `Bearer ${this.token}` } }
+      );
+
+      const data = response.data as FsAccess;
+
+      return `${this.server.url}/fs/direct/${data.userId}/${
+        data.accessor
+      }?authcode=${import.meta.env.DW_SERVER_AUTHCODE || ""}`;
+    } catch {
+      return undefined;
     }
   }
 }

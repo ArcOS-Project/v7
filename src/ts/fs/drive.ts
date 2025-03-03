@@ -131,6 +131,10 @@ export class FilesystemDrive {
     return true;
   }
 
+  async direct(path: string): Promise<string | undefined> {
+    return undefined;
+  }
+
   async quota(): Promise<UserQuota> {
     return {
       used: 0,

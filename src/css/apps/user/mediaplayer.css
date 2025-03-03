@@ -1,0 +1,160 @@
+#MediaPlayer:not(.maximized) {
+  width: fit-content !important;
+  height: fit-content !important;
+}
+
+#MediaPlayer > div.body {
+  padding: 20px 30px;
+  resize: both;
+  transition: none !important;
+  min-width: 440px;
+  min-height: 350px;
+  display: flex;
+  flex-direction: column;
+}
+
+#MediaPlayer video,
+#MediaPlayer div.audio-visual {
+  flex-grow: 1;
+  max-height: calc(100% - 90px);
+  background-color: var(--button-glass-bg);
+  border-radius: var(--win-border-rad);
+  margin-bottom: 20px;
+  height: 350px;
+  aspect-ratio: 16/9;
+}
+
+#MediaPlayer > div.body div.controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+#MediaPlayer > div.body div.controls button {
+  border-radius: 0;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  font-size: 20px;
+  padding: 0;
+  box-shadow: none;
+  min-width: unset;
+  border-radius: 50%;
+}
+
+#MediaPlayer > div.body div.controls button.forward,
+#MediaPlayer > div.body div.controls button.reverse {
+  width: 30px;
+  height: 30px;
+}
+
+#MediaPlayer > div.body div.controls button.stop {
+  width: 20px;
+  height: 20px;
+  font-size: 16px;
+}
+#MediaPlayer > div.body div.controls div.group {
+  display: flex;
+  border-radius: var(--button-border-rad);
+  overflow: hidden;
+  gap: 10px;
+}
+
+#MediaPlayer > div.body div.controls div.timestamp {
+  margin-left: auto;
+}
+
+#MediaPlayer > div.body div.bar {
+  width: 100%;
+  height: 7px;
+  background-color: var(--button-glass-bg);
+  border-radius: 3.5px;
+  border: var(--button-glass-bg) 1px solid;
+  overflow: hidden;
+  margin: 20px 0;
+  margin-top: auto;
+  min-height: 7px;
+}
+
+#MediaPlayer > div.body div.bar.bounce div.inner {
+  width: 20%;
+  animation: bounce 1.5s infinite;
+}
+
+@keyframes bounce {
+  0% {
+    translate: 0%;
+  }
+
+  50% {
+    translate: 400%;
+  }
+
+  100% {
+    translate: 0;
+  }
+}
+
+#MediaPlayer > div.body div.bar div.inner {
+  height: 5px;
+  width: var(--w);
+  background-color: var(--accent);
+  transition: none;
+  border-radius: 2.5px;
+}
+
+#MediaPlayer > div.body div.file {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+#MediaPlayer > div.body div.file img {
+  height: 24px;
+}
+
+#MediaPlayer > div.body video {
+  display: none;
+}
+
+#MediaPlayer > div.body video.show {
+  display: block;
+}
+
+#MediaPlayer div.audio-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#MediaPlayer div.audio-visual span {
+  background-color: var(--button-glass-bg);
+  text-align: center;
+  line-height: 64px;
+  font-size: 40px;
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+}
+
+#MediaPlayer div.no-file {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+#MediaPlayer div.no-file img {
+  height: 48px;
+  margin-bottom: 20px;
+}
+
+#MediaPlayer div.no-file p {
+  margin: 0;
+  opacity: 0.5;
+  width: 50%;
+  text-align: center;
+}

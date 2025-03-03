@@ -6,6 +6,14 @@ export interface FileEntry {
   mimeType: string;
 }
 
+export interface FsAccess {
+  _id?: string;
+  userId: string;
+  path: string;
+  accessor: string;
+  createdAt?: Date;
+}
+
 export type PathedFileEntry = FileEntry & { path: string };
 
 export type FullFileEntry = FileEntry & {
