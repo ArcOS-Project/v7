@@ -1262,6 +1262,9 @@ export class UserDaemon extends Process {
     const { desktops, index } = v.workspaces;
 
     for (const { uuid } of desktops) {
+      this.virtualDesktop
+        ?.querySelector(`[id*="${uuid}"]`)
+        ?.classList.remove("selected");
       if (!this.virtualDesktops[uuid]) this.renderVirtualDesktop(uuid);
     }
 
@@ -1272,6 +1275,8 @@ export class UserDaemon extends Process {
     } else {
       this.virtualDesktop.classList.add("changing");
       this.virtualDesktop.setAttribute("style", `--index: ${index};`);
+
+      this.virtualDesktop?.children[index]?.classList.add("selected");
 
       if (this.virtualdesktopChangingTimeout)
         clearTimeout(this.virtualdesktopChangingTimeout);

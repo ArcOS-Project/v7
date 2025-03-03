@@ -25,9 +25,27 @@
   height: 100%;
   border-left: var(--win-border);
   padding: 10px;
+  padding-right: 2px;
+  overflow-y: scroll;
 }
 
-#MediaPlayer > div.body > div.queue > button {
+#MediaPlayer.fullscreen > div.body > div.queue {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(15px);
+  border-radius: 10px;
+  border: var(--win-border);
+  height: calc(100% - 89px - 30px);
+  transition: translate 0.3s;
+}
+
+#MediaPlayer.fullscreen > div.body > div.queue.hide {
+  translate: 220px;
+}
+
+#MediaPlayer > div.body > div.queue > div {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -35,25 +53,53 @@
   padding: 5px;
   background-color: transparent;
   margin-bottom: 5px;
+  border-radius: 8px;
 }
 
-#MediaPlayer > div.body > div.queue > button:hover {
+#MediaPlayer > div.body > div.queue > div:hover {
   background-color: var(--button-glass-bg);
 }
 
-#MediaPlayer > div.body > div.queue > button:active {
+#MediaPlayer > div.body > div.queue > div:active {
   background-color: var(--button-glass-active-bg);
 }
 
-#MediaPlayer > div.body > div.queue > button.selected {
+#MediaPlayer > div.body > div.queue > div.selected {
   background-color: var(--accent-transparent);
 }
 
-#MediaPlayer > div.body > div.queue > button > span {
+#MediaPlayer > div.body > div.queue > div > span.lucide {
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+}
+
+#MediaPlayer > div.body > div.queue > div > span.name {
   white-space: nowrap;
   max-width: calc(100% - 29px);
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+#MediaPlayer > div.body > div.queue > div button.lucide {
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin-left: auto;
+  background-color: transparent;
+  min-width: 24px;
+}
+
+#MediaPlayer > div.body > div.queue > div:not(:hover) button.lucide {
+  display: none;
 }
 
 #MediaPlayer video,
@@ -68,10 +114,56 @@
   /* aspect-ratio: 16/9; */
 }
 
+#MediaPlayer.fullscreen video,
+#MediaPlayer.fullscreen div.audio-visual {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  max-height: unset;
+  box-shadow: none;
+  border-radius: 0;
+  background-color: #000;
+}
+
 #MediaPlayer > div.body div.controls {
   display: flex;
   gap: 10px;
   align-items: center;
+}
+
+#MediaPlayer.fullscreen > div.body div.controls {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: calc(100% - 20px);
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(15px);
+  padding: 15px;
+  border-radius: 10px;
+  border: var(--win-border);
+  height: 89px;
+  padding-top: 32px;
+  transition: translate 0.3s;
+}
+
+#MediaPlayer.fullscreen > div.body div.container.hide-controls div.controls {
+  translate: 0 100px;
+}
+
+#MediaPlayer.fullscreen > div.body div.container.hide-controls div.bar {
+  translate: 0 100px;
+}
+
+#MediaPlayer.fullscreen > div.body div.bar {
+  position: absolute;
+  bottom: 82px;
+  left: 20px;
+  width: calc(100% - 40px);
+  margin-bottom: 0;
+  z-index: 1000;
+  transition: translate 0.3s;
 }
 
 #MediaPlayer > div.body div.controls button {

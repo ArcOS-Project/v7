@@ -14,6 +14,7 @@ div.shell div.taskbar {
   border: var(--border);
   box-shadow: var(--secondary-box-shadow);
   backdrop-filter: blur(var(--blur));
+  transition: translate 0.3s;
 }
 
 :root #main:has(#arcShell div.shell) {

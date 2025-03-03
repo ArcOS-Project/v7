@@ -10,6 +10,17 @@
   const { process }: { process: MediaPlayerRuntime } = $props();
 
   let audio: HTMLVideoElement;
+  let hideControls = $state<boolean>(false);
+  let hideTimeout: NodeJS.Timeout | undefined;
+
+  function onmousemove() {
+    if (hideTimeout) clearTimeout(hideTimeout);
+    hideControls = false;
+
+    hideTimeout = setTimeout(() => {
+      hideControls = true;
+    }, 3000);
+  }
 
   const { isVideo, State, queue, queueIndex, Loaded } = process;
 
@@ -18,7 +29,8 @@
   });
 </script>
 
-<div class="container">
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div class="container" class:hide-controls={hideControls} {onmousemove}>
   <video bind:this={audio} class:show={$isVideo && $Loaded}>
     <track kind="captions" /></video
   >
@@ -39,7 +51,7 @@
     </div>
   {/if}
 </div>
-<div class="queue">
+<div class="queue" class:hide={hideControls}>
   {#each $queue as path, i (path)}
     <QueueItem {path} {i} {process} />
   {/each}

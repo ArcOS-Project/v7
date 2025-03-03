@@ -48,6 +48,7 @@ export class MediaPlayerRuntime extends AppProcess {
         this.Loaded.set(false);
         this.windowTitle.set(this.app.data.metadata.name);
         this.windowIcon.set(this.app.data.metadata.icon);
+        this.getWindow()?.classList.remove("fullscreen");
       }
     });
   }

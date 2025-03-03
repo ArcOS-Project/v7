@@ -429,9 +429,27 @@ export class AppRenderer extends Process {
     if (minimized) this.focusedPid.set(-1);
 
     this.globalDispatch.dispatch(
-      process.app.data.state.maximized
-        ? "window-minimize"
-        : "window-unminimize",
+      minimized ? "window-minimize" : "window-unminimize",
+      [pid]
+    );
+  }
+  toggleFullscreen(pid: number) {
+    this.disposedCheck();
+
+    const window = this.target.querySelector(`div.window[data-pid="${pid}"]`);
+
+    if (!window) return;
+
+    window.classList.toggle("fullscreen");
+
+    const process = this.handler.getProcess<AppProcess>(+pid);
+
+    if (!process || !process.app) return;
+
+    this.globalDispatch.dispatch(
+      window.classList.contains("fullscreen")
+        ? "window-fullscreen"
+        : "window-unfullscreen",
       [pid]
     );
   }

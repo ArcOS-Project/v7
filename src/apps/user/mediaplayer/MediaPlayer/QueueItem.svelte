@@ -27,13 +27,14 @@
     class="queue-item"
     ondblclick={() => queueIndex.set(i)}
     class:selected={$queueIndex === i}
+    title={filename}
   >
     {#if $queueIndex === i && !$State.paused}
       <span class="lucide icon-play"></span>
     {:else}
       <img src={icon} alt="" />
     {/if}
-    <span>{filename}</span>
+    <span class="name">{filename}</span>
     <button
       class="lucide icon-x"
       aria-label="Remove from queue"
