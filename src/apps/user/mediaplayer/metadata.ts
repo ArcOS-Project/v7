@@ -12,11 +12,11 @@ export const MediaPlayerApp: App = {
     icon: MediaPlayerIcon,
   },
   size: {
-    w: 442,
+    w: 642,
     h: 392,
   },
   minSize: {
-    w: 442,
+    w: 642,
     h: 392,
   },
   maxSize: {

@@ -2,17 +2,20 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { getDirectoryName, getParentDirectory } from "$ts/fs/util";
 import { MediaPlayerIcon } from "$ts/images/apps";
-import { AudioMimeIcon, VideoMimeIcon } from "$ts/images/mime";
+import { VideoMimeIcon } from "$ts/images/mime";
 import type { ProcessHandler } from "$ts/process/handler";
 import { DefaultMimeIcons } from "$ts/server/user/store";
+import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
+import type { RenderArgs } from "$types/process";
 import { MediaPlayerAccelerators } from "./accelerators";
 import { MediaPlayerAltMenu } from "./altmenu";
 import type { PlayerState } from "./types";
 
 export class MediaPlayerRuntime extends AppProcess {
-  public path = Store<string>();
+  public queue = Store<string[]>([]);
+  public queueIndex = Store<number>(0);
   public url = Store<string>();
   public player: HTMLVideoElement | undefined;
   public State = Store<PlayerState>({ paused: true, current: 0, duration: 0 });
@@ -31,8 +34,28 @@ export class MediaPlayerRuntime extends AppProcess {
     this.altMenu.set(MediaPlayerAltMenu(this));
     this.acceleratorStore.push(...MediaPlayerAccelerators(this));
 
+    this.renderArgs.file = file;
+    this.queueIndex.subscribe((v) => this.handleSongChange(v));
+
+    this.State.subscribe((v) => {
+      if (this.Loaded()) if (v.current >= v.duration) this.nextSong();
+    });
+
+    this.queue.subscribe((v) => {
+      if (!v.length) {
+        this.Stop();
+        if (this.player) this.player.src = "";
+        this.Loaded.set(false);
+        this.windowTitle.set(this.app.data.metadata.name);
+        this.windowIcon.set(this.app.data.metadata.icon);
+      }
+    });
+  }
+
+  async render({ file }: RenderArgs) {
     if (file) this.readFile(file);
   }
+
   public setPlayer(player: HTMLVideoElement) {
     this.player = player;
 
@@ -44,21 +67,24 @@ export class MediaPlayerRuntime extends AppProcess {
   public Reset() {
     if (!this.player) return;
 
-    this.player.pause();
     this.player.src = this.url.get();
     this.player.currentTime = 0;
   }
 
-  public Play() {
+  public async Play() {
     if (!this.player) return;
 
-    this.player.play();
+    try {
+      await this.player.play();
+    } catch {}
   }
 
-  public Pause() {
+  public async Pause() {
     if (!this.player) return;
 
-    this.player.pause();
+    try {
+      this.player.pause();
+    } catch {}
   }
 
   public Seek(mod: number) {
@@ -70,8 +96,10 @@ export class MediaPlayerRuntime extends AppProcess {
   public Stop() {
     if (!this.player) return;
 
-    this.player.pause();
-    this.player.currentTime = 0;
+    try {
+      this.player.pause();
+      this.player.currentTime = 0;
+    } catch {}
   }
 
   public updateState() {
@@ -98,18 +126,18 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   public openFileLocation() {
-    const path = this.path.get();
+    const path = this.queue.get()[this.queueIndex()];
 
     if (!path) return;
 
-    this.spawnApp("FileManager", this.parentPid, getParentDirectory(path));
+    this.spawnApp("fileManager", this.parentPid, getParentDirectory(path));
   }
 
   public async openFile() {
     const path = await this.userDaemon?.LoadSaveDialog({
       title: "Select an audio or video file to open",
       icon: MediaPlayerIcon,
-      startDir: getParentDirectory(this.path()) || "U:/",
+      startDir: getParentDirectory(this.queue()[this.queueIndex()]) || "U:/",
       extensions: this.app.data.opens?.extensions,
     });
 
@@ -118,8 +146,52 @@ export class MediaPlayerRuntime extends AppProcess {
     await this.readFile(path);
   }
 
-  async readFile(path: string) {
-    this.path.set(path);
+  async readFile(path: string, addToQueue = false) {
+    if (addToQueue && this.queue().length) {
+      this.queue.update((v) => {
+        v.push(path);
+        return v;
+      });
+    } else {
+      const queueIndex = this.queueIndex();
+      this.Loaded.set(false);
+      this.queue.set([path]);
+      this.queueIndex.set(0);
+      if (!queueIndex) this.handleSongChange(0);
+    }
+  }
+
+  nextSong() {
+    let index = this.queueIndex();
+    const queue = this.queue();
+
+    if (index + 1 > queue.length - 1) {
+      return;
+    }
+    index++;
+    this.queueIndex.set(index);
+  }
+
+  previousSong() {
+    let index = this.queueIndex();
+
+    if (index - 1 < 0) {
+      return;
+    }
+    index--;
+    this.queueIndex.set(index);
+  }
+
+  clearQueue() {
+    this.queueIndex.set(0);
+    this.queue.set([]);
+  }
+
+  async handleSongChange(v: number) {
+    const path = this.queue()[v];
+
+    if (!path) return;
+
     this.Loaded.set(false);
 
     const url = await this.fs.direct(path);
@@ -140,7 +212,9 @@ export class MediaPlayerRuntime extends AppProcess {
       return;
     }
 
-    const split = this.path().split(".");
+    console.log(`Now playing: ${path}`, this.State());
+
+    const split = path.split(".");
 
     this.isVideo.set(
       DefaultMimeIcons[VideoMimeIcon].includes(`.${split[split.length - 1]}`)
@@ -153,9 +227,36 @@ export class MediaPlayerRuntime extends AppProcess {
 
     this.Reset();
 
-    setTimeout(() => {
-      this.player?.play();
-      this.Loaded.set(true);
+    await Sleep(0);
+
+    await this.player?.play();
+    this.Loaded.set(true);
+  }
+
+  async addToQueue() {
+    const path = await this.userDaemon?.LoadSaveDialog({
+      title: "Select a file to add to the queue",
+      icon: MediaPlayerIcon,
+      startDir: getParentDirectory(this.queue()[this.queueIndex()]) || "U:/",
+      extensions: this.app.data.opens?.extensions,
     });
+
+    if (!path) return;
+
+    await this.readFile(path, true);
+  }
+
+  moveQueueItem(sourceIndex: number, targetIndex: number) {
+    const currentQueue = this.queue(); // Get the current value of the queue store
+    if (!currentQueue) return;
+
+    // Remove the item from the source index
+    const [movedItem] = currentQueue.splice(sourceIndex, 1);
+
+    // Insert the item at the target index
+    currentQueue.splice(targetIndex, 0, movedItem);
+
+    // Update the queue store
+    this.queue.set(currentQueue);
   }
 }

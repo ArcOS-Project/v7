@@ -37,6 +37,7 @@
     "md5": "^2.3.0",
     "openmeteo": "^1.1.4",
     "path": "^0.12.7",
+    "svelte-dnd-action": "^0.9.57",
     "validator": "^13.12.0"
   }
 }

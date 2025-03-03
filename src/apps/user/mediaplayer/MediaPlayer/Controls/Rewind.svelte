@@ -8,5 +8,5 @@
   }
 </script>
 
-<button class="lucide icon-rewind" onclick={rewind} aria-label="Rewind">
+<button class="lucide reverse icon-rewind" onclick={rewind} aria-label="Rewind">
 </button>

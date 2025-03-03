@@ -15,13 +15,20 @@ export function FileMenu(runtime: MediaPlayerRuntime): ContextMenuItem {
         accelerator: "Alt+O",
       },
       {
+        caption: "Add to queue...",
+        icon: "list-plus",
+        action() {
+          runtime.addToQueue();
+        },
+        accelerator: "Alt+O",
+      },
+      {
         caption: "Open file location",
         icon: "folder-search",
         action: () => {
           runtime.openFileLocation();
         },
-        disabled: () =>
-          !runtime.path.get() || runtime.path.get().startsWith("@client"),
+        disabled: () => !runtime.queue.get(),
         accelerator: "Alt+Shift+O",
       },
       { sep: true },

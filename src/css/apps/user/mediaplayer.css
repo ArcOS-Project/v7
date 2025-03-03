@@ -4,13 +4,56 @@
 } */
 
 #MediaPlayer > div.body {
-  padding: 20px 30px;
-  resize: both;
   transition: none !important;
   min-width: 440px;
   min-height: 350px;
   display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+#MediaPlayer > div.body > div.container {
+  display: flex;
   flex-direction: column;
+  width: calc(100% - 200px);
+  height: 100%;
+  padding: 20px;
+}
+
+#MediaPlayer > div.body > div.queue {
+  width: 200px;
+  height: 100%;
+  border-left: var(--win-border);
+  padding: 10px;
+}
+
+#MediaPlayer > div.body > div.queue > button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  padding: 5px;
+  background-color: transparent;
+  margin-bottom: 5px;
+}
+
+#MediaPlayer > div.body > div.queue > button:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#MediaPlayer > div.body > div.queue > button:active {
+  background-color: var(--button-glass-active-bg);
+}
+
+#MediaPlayer > div.body > div.queue > button.selected {
+  background-color: var(--accent-transparent);
+}
+
+#MediaPlayer > div.body > div.queue > button > span {
+  white-space: nowrap;
+  max-width: calc(100% - 29px);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 #MediaPlayer video,
@@ -20,8 +63,9 @@
   background-color: var(--button-glass-bg);
   border-radius: var(--win-border-rad);
   margin-bottom: 20px;
-  height: 350px;
-  aspect-ratio: 16/9;
+  /* height: 350px; */
+  height: 100%;
+  /* aspect-ratio: 16/9; */
 }
 
 #MediaPlayer > div.body div.controls {
@@ -42,6 +86,8 @@
   border-radius: 50%;
 }
 
+#MediaPlayer > div.body div.controls button.previous,
+#MediaPlayer > div.body div.controls button.next,
 #MediaPlayer > div.body div.controls button.forward,
 #MediaPlayer > div.body div.controls button.reverse {
   width: 30px;
@@ -164,6 +210,6 @@
 #MediaPlayer div.no-file p {
   margin: 0;
   opacity: 0.5;
-  width: 50%;
+  max-width: 70%;
   text-align: center;
 }
