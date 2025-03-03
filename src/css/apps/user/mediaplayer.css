@@ -125,9 +125,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
-#MediaPlayer div.audio-visual span {
+#MediaPlayer div.audio-visual div.file {
+  width: 100%;
+  padding: 10px;
+  margin-top: auto;
+}
+
+#MediaPlayer div.audio-visual > span {
   background-color: var(--button-glass-bg);
   text-align: center;
   line-height: 64px;
@@ -135,6 +142,8 @@
   border-radius: 50%;
   width: 64px;
   height: 64px;
+  margin-top: auto;
+  translate: 0 22px;
 }
 
 #MediaPlayer div.no-file {

@@ -4,6 +4,7 @@
   import Bar from "./MediaPlayer/Bar.svelte";
   import Controls from "./MediaPlayer/Controls.svelte";
   import type { MediaPlayerRuntime } from "./runtime";
+  import File from "./MediaPlayer/File.svelte";
 
   const { process }: { process: MediaPlayerRuntime } = $props();
 
@@ -23,6 +24,7 @@
   {#if !$isVideo}
     <div class="audio-visual">
       <span class="lucide icon-music-2"></span>
+      <File {process} />
     </div>
   {/if}
   <Bar {process} />

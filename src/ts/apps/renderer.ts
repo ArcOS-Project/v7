@@ -388,8 +388,6 @@ export class AppRenderer extends Process {
 
     if (!process || !process.app) return;
 
-    process.app.data.state.maximized = window.classList.contains("maximized");
-
     this.globalDispatch.dispatch(
       process.app.data.state.maximized
         ? "window-maximize"
@@ -411,8 +409,6 @@ export class AppRenderer extends Process {
 
     if (!process || !process.app) return;
 
-    process.app.data.state.minimized = false;
-
     this.globalDispatch.dispatch("window-unmaximize", [pid]);
   }
 
@@ -429,8 +425,8 @@ export class AppRenderer extends Process {
 
     if (!process || !process.app) return;
 
-    process.app.data.state.minimized = window.classList.contains("minimized");
-    if (process.app.data.state.minimized) this.focusedPid.set(-1);
+    const minimized = window.classList.contains("minimized");
+    if (minimized) this.focusedPid.set(-1);
 
     this.globalDispatch.dispatch(
       process.app.data.state.maximized

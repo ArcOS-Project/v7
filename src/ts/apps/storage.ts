@@ -80,7 +80,10 @@ export class ApplicationStorage extends Process {
     const apps = fromBuffer ? this.buffer() : await this.get();
 
     for (const app of apps) {
-      if (app.id === id) return app;
+      if (app.id === id) {
+        console.log(app);
+        return { ...Object.freeze({ ...app }) };
+      }
     }
 
     return undefined;
