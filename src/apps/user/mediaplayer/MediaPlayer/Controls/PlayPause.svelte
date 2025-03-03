@@ -11,7 +11,12 @@
 </script>
 
 <div class="group playpause">
-  <button class="material-icons-round play suggested" onclick={toggle}>
-    {$State.paused ? "play_arrow" : "pause"}
+  <button
+    class="lucide play suggested"
+    class:icon-play={$State.paused}
+    class:icon-pause={!$State.paused}
+    onclick={toggle}
+    aria-label="Play/pause"
+  >
   </button>
 </div>

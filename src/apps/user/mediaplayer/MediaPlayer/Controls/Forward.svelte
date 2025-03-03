@@ -8,6 +8,9 @@
   }
 </script>
 
-<button class="material-icons-round forward" onclick={forward}>
-  fast_forward
+<button
+  class="lucide icon-fast-forward forward"
+  onclick={forward}
+  aria-label="Forward"
+>
 </button>

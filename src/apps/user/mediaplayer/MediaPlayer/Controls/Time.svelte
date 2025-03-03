@@ -8,8 +8,8 @@
   let duration = $state<string>("--:--");
 
   State.subscribe((v) => {
-    current = $Loaded ? process.formatTime(v.current) : "--:--";
-    duration = $Loaded ? process.formatTime(v.duration) : "--:--";
+    current = $Loaded ? process.formatTime(v.current || 0) : "--:--";
+    duration = $Loaded ? process.formatTime(v.duration || 0) : "--:--";
   });
 </script>
 

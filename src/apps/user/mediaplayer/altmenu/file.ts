@@ -8,7 +8,7 @@ export function FileMenu(runtime: MediaPlayerRuntime): ContextMenuItem {
     subItems: [
       {
         caption: "Open...",
-        icon: "file_open",
+        icon: "folder-open",
         action() {
           runtime.openFile();
         },
@@ -16,7 +16,7 @@ export function FileMenu(runtime: MediaPlayerRuntime): ContextMenuItem {
       },
       {
         caption: "Open file location",
-        icon: "folder_open",
+        icon: "folder-search",
         action: () => {
           runtime.openFileLocation();
         },

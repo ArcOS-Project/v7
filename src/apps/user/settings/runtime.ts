@@ -288,7 +288,7 @@ export class SettingsRuntime extends AppProcess {
       title: "Choose profile picture",
       icon: AccountIcon,
       startDir: "U:/",
-      extensions: ["jpg", "png", "gif", "svg", "jpeg"],
+      extensions: [".jpg", ".png", ".gif", ".svg", ".jpeg"],
     });
 
     if (!path) return;

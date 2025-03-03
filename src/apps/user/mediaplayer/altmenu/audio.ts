@@ -7,7 +7,7 @@ export function AudioMenu(runtime: MediaPlayerRuntime): ContextMenuItem {
     subItems: [
       {
         caption: "Play",
-        icon: "play_arrow",
+        icon: "play",
         action() {
           runtime.Play();
         },
@@ -22,7 +22,7 @@ export function AudioMenu(runtime: MediaPlayerRuntime): ContextMenuItem {
       { sep: true },
       {
         caption: "Stop",
-        icon: "stop",
+        icon: "square",
         action() {
           runtime.Stop();
         },

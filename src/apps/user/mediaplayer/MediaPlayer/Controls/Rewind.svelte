@@ -8,6 +8,5 @@
   }
 </script>
 
-<button class="material-icons-round reverse" onclick={rewind}>
-  fast_rewind
+<button class="lucide icon-rewind" onclick={rewind} aria-label="Rewind">
 </button>

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { MediaPlayerIcon } from "$ts/images/apps";
+  import { onMount } from "svelte";
   import Bar from "./MediaPlayer/Bar.svelte";
   import Controls from "./MediaPlayer/Controls.svelte";
   import type { MediaPlayerRuntime } from "./runtime";
@@ -9,6 +10,10 @@
   let audio: HTMLVideoElement;
 
   const { isVideo, State, path } = process;
+
+  onMount(() => {
+    process.setPlayer(audio);
+  });
 </script>
 
 <video bind:this={audio} class:show={$isVideo}>
@@ -17,7 +22,7 @@
 {#if $State && $path}
   {#if !$isVideo}
     <div class="audio-visual">
-      <span class="material-icons-round">music_note</span>
+      <span class="lucide icon-music-2"></span>
     </div>
   {/if}
   <Bar {process} />

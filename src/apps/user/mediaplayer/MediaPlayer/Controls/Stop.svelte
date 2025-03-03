@@ -8,4 +8,5 @@
   }
 </script>
 
-<button class="material-icons-round stop" onclick={stop}> stop </button>
+<button class="lucide icon-square stop" onclick={stop} aria-label="Stop"
+></button>

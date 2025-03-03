@@ -30,6 +30,8 @@ export class MediaPlayerRuntime extends AppProcess {
 
     this.altMenu.set(MediaPlayerAltMenu(this));
     this.acceleratorStore.push(...MediaPlayerAccelerators(this));
+
+    if (file) this.readFile(file);
   }
   public setPlayer(player: HTMLVideoElement) {
     this.player = player;
@@ -108,10 +110,7 @@ export class MediaPlayerRuntime extends AppProcess {
       title: "Select an audio or video file to open",
       icon: MediaPlayerIcon,
       startDir: getParentDirectory(this.path()) || "U:/",
-      extensions: [
-        ...DefaultMimeIcons[AudioMimeIcon],
-        ...DefaultMimeIcons[VideoMimeIcon],
-      ],
+      extensions: this.app.data.opens?.extensions,
     });
 
     if (!path) return;
@@ -141,6 +140,11 @@ export class MediaPlayerRuntime extends AppProcess {
       return;
     }
 
+    const split = this.path().split(".");
+
+    this.isVideo.set(
+      DefaultMimeIcons[VideoMimeIcon].includes(`.${split[split.length - 1]}`)
+    );
     this.url.set(url);
     this.windowTitle.set(`${getDirectoryName(path)} - Media Player`);
     this.windowIcon.set(
