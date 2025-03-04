@@ -9,6 +9,7 @@ import {
   JsonMimeIcon,
   MarkdownMimeIcon,
   PdfMimeIcon,
+  PlaylistMimeIcon,
   SvgMimeIcon,
   TextMimeIcon,
   UnknownFileIcon,
@@ -248,5 +249,5 @@ export const DefaultMimeIcons: Record<string, string[]> = {
   [WebpageMimeIcon]: [".html", ".htm"],
   [JavascriptMimeIcon]: [".js", ".ts", ".d.ts", ".mjs"],
   [XmlMimeIcon]: [".xml"],
-  [UnknownFileIcon]: [".$new"],
+  [PlaylistMimeIcon]: [".arcpl"],
 };

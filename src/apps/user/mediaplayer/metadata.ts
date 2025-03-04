@@ -50,6 +50,7 @@ export const MediaPlayerApp: App = {
       ".mkv",
       ".mov",
       ".avi",
+      ".arcpl",
     ],
   },
   position: { centered: true },

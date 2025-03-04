@@ -15,3 +15,4 @@ export { default as MarkdownMimeIcon } from "$assets/mimetypes/text-x-markdown.s
 export { default as UnknownFileIcon } from "$assets/mimetypes/unknown-file.svg";
 export { default as VideoMimeIcon } from "$assets/mimetypes/video-generic.svg";
 export { default as WebpageMimeIcon } from "$assets/mimetypes/webpage.svg";
+export { default as PlaylistMimeIcon } from "$assets/mimetypes/arcos-playlist.svg";

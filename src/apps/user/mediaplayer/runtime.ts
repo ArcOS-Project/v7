@@ -81,7 +81,10 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   async render({ file }: RenderArgs) {
-    if (file) this.readFile([file]);
+    if (file) {
+      if (file.endsWith(".arcpl")) this.readPlaylist(file);
+      else this.readFile([file]);
+    }
   }
 
   public setPlayer(player: HTMLVideoElement) {
@@ -314,6 +317,10 @@ export class MediaPlayerRuntime extends AppProcess {
 
     if (!path) return;
 
+    this.readPlaylist(path);
+  }
+
+  async readPlaylist(path: string) {
     try {
       const contents = await this.fs.readFile(path);
       if (!contents) throw new Error("Failed to read playlist");
