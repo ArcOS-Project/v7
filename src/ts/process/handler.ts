@@ -109,7 +109,7 @@ export class ProcessHandler extends KernelModule {
   async kill(pid: number, force = false) {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
-    if (this.BUSY) return;
+    if (this.BUSY || WaveKernel.isPanicked()) return;
 
     Log("ProcessHandler.kill", `Attempting to kill ${pid}`);
 
@@ -157,6 +157,8 @@ export class ProcessHandler extends KernelModule {
 
   public async _killSubProceses(pid: number, force = false) {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
+    if (WaveKernel.isPanicked()) return;
 
     const procs = await this.getSubProcesses(pid);
 

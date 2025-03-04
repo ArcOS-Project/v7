@@ -450,7 +450,7 @@ export class AppRenderer extends Process {
       window.classList.contains("fullscreen")
         ? "window-fullscreen"
         : "window-unfullscreen",
-      [pid]
+      [pid, process.app.desktop]
     );
   }
 

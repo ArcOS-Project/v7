@@ -7,7 +7,7 @@ import type { ProcessHandler } from "$ts/process/handler";
 import { DefaultMimeIcons } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { RenderArgs } from "$types/process";
 import { MediaPlayerAccelerators } from "./accelerators";
 import { MediaPlayerAltMenu } from "./altmenu";
@@ -21,6 +21,27 @@ export class MediaPlayerRuntime extends AppProcess {
   public State = Store<PlayerState>({ paused: true, current: 0, duration: 0 });
   public isVideo = Store<boolean>(false);
   public Loaded = Store<boolean>(false);
+
+  override contextMenu: AppContextMenu = {
+    player: [
+      {
+        caption: "Enter fullscreen",
+        disabled: async () =>
+          !!this.getWindow()?.classList.contains("fullscreen"),
+        action: () => {
+          this.handler.renderer?.toggleFullscreen(this.pid);
+        },
+      },
+      {
+        caption: "Exit fullscreen",
+        disabled: async () =>
+          !this.getWindow()?.classList.contains("fullscreen"),
+        action: () => {
+          this.handler.renderer?.toggleFullscreen(this.pid);
+        },
+      },
+    ],
+  };
 
   constructor(
     handler: ProcessHandler,
@@ -41,8 +62,11 @@ export class MediaPlayerRuntime extends AppProcess {
       if (this.Loaded()) if (v.current >= v.duration) this.nextSong();
     });
 
+    this.url.subscribe((v) => console.log(v));
+
     this.queue.subscribe((v) => {
       if (!v.length) {
+        console.log("Resetting player");
         this.Stop();
         if (this.player) this.player.src = "";
         this.Loaded.set(false);
@@ -228,7 +252,7 @@ export class MediaPlayerRuntime extends AppProcess {
 
     this.Reset();
 
-    await Sleep(0);
+    await Sleep(10);
 
     await this.player?.play();
     this.Loaded.set(true);

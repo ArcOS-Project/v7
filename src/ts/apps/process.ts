@@ -44,6 +44,7 @@ export class AppProcess extends Process {
   public acceleratorStore: AppKeyCombinations = [];
   public readonly contextMenu: AppContextMenu = {};
   public altMenu = Store<ContextMenuItem[]>([]);
+  public windowFullscreen = Store<boolean>(false);
 
   constructor(
     handler: ProcessHandler,
@@ -78,6 +79,14 @@ export class AppProcess extends Process {
     }
 
     this.startAcceleratorListener();
+
+    this.globalDispatch.subscribe("window-unfullscreen", ([pid]) => {
+      if (this.pid === pid) this.windowFullscreen.set(false);
+    });
+
+    this.globalDispatch.subscribe("window-fullscreen", ([pid]) => {
+      if (this.pid === pid) this.windowFullscreen.set(true);
+    });
   }
 
   // Conditional function that can prohibit closing if it returns false
@@ -89,6 +98,12 @@ export class AppProcess extends Process {
     this.Log(`Closing window ${this.pid}`);
 
     const canClose = this._disposed || (await this.onClose());
+
+    if (this.getWindow()?.classList.contains("fullscreen"))
+      this.globalDispatch.dispatch("window-unfullscreen", [
+        this.pid,
+        this.app.desktop,
+      ]);
 
     if (!canClose) {
       this.Log(`Can't close`);

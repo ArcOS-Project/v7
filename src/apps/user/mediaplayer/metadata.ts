@@ -12,8 +12,8 @@ export const MediaPlayerApp: App = {
     icon: MediaPlayerIcon,
   },
   size: {
-    w: 642,
-    h: 392,
+    w: 820,
+    h: 530,
   },
   minSize: {
     w: 642,
@@ -54,5 +54,5 @@ export const MediaPlayerApp: App = {
   },
   position: { centered: true },
   id: "MediaPlayer",
-  glass: true,
+  glass: false,
 };

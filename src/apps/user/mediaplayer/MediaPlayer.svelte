@@ -22,7 +22,8 @@
     }, 3000);
   }
 
-  const { isVideo, State, queue, queueIndex, Loaded } = process;
+  const { isVideo, State, queue, queueIndex, Loaded, windowFullscreen } =
+    process;
 
   onMount(() => {
     process.setPlayer(audio);
@@ -30,10 +31,19 @@
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="container" class:hide-controls={hideControls} {onmousemove}>
-  <video bind:this={audio} class:show={$isVideo && $Loaded}>
-    <track kind="captions" /></video
-  >
+<div
+  class="container"
+  class:hide-controls={hideControls}
+  {onmousemove}
+  data-contextmenu={$queue.length && $Loaded ? "player" : ""}
+  class:is-video={$isVideo && $Loaded}
+  class:theme-dark={$windowFullscreen}
+>
+  <div class="video-wrapper" class:show={$isVideo && $Loaded}>
+    <video bind:this={audio}>
+      <track kind="captions" />
+    </video>
+  </div>
   {#if $State && $queue[$queueIndex]}
     {#if !$isVideo}
       <div class="audio-visual">

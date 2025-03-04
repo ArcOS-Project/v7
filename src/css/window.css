@@ -58,8 +58,7 @@ div.window:not(.core).fullscreen {
   border-radius: 0 !important;
   resize: none !important;
   border: none !important;
-  z-index: 1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 !important;
-  background-color: var(--win-bg) !important;
+  background-color: var(--win-bg);
   backdrop-filter: none !important;
 }
 

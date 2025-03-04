@@ -35,3 +35,9 @@
 #fileManager div.window.overlay.visible:not(.closing) {
   margin-top: 0;
 }
+
+#fileManager.overlay {
+  width: 700px !important;
+  height: 520px !important;
+  resize: none;
+}

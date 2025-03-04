@@ -17,6 +17,10 @@ div.shell div.taskbar {
   transition: translate 0.3s;
 }
 
+div.shell.has-fullscreen div.taskbar {
+  translate: 0 70px;
+}
+
 :root #main:has(#arcShell div.shell) {
   --taskbar-allocation: 70px;
 }

@@ -9,6 +9,7 @@
   import Time from "./Controls/Time.svelte";
 
   const { process }: { process: MediaPlayerRuntime } = $props();
+  const { windowFullscreen, queue } = process;
 </script>
 
 <div class="controls">
@@ -19,4 +20,12 @@
   <Next {process} />
   <Stop {process} />
   <Time {process} />
+  <!-- svelte-ignore a11y_consider_explicit_label -->
+  <button
+    class="lucide fullscreen-toggle"
+    class:icon-minimize={$windowFullscreen}
+    class:icon-maximize={!$windowFullscreen}
+    onclick={() => process.handler?.renderer?.toggleFullscreen(process.pid)}
+    disabled={!$queue.length}
+  ></button>
 </div>

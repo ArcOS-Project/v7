@@ -40,6 +40,7 @@ export class ShellRuntime extends AppProcess {
   public searchResults = Store<FuseResult<SearchItem>[]>([]);
   public searching = Store<boolean>(false);
   public SelectionIndex = Store<number>(0);
+  public FullscreenCount = Store<Record<string, number>>({});
 
   private fileSystemIndex: PathedFileEntry[] = [];
   private readonly validContexMenuTags = [
@@ -137,6 +138,27 @@ export class ShellRuntime extends AppProcess {
 
     this.globalDispatch.subscribe("fs-flush-file", () => {
       this.fileSystemIndex = [];
+    });
+
+    this.globalDispatch.subscribe("window-fullscreen", ([pid, desktop]) => {
+      desktop = `${desktop}`;
+
+      this.FullscreenCount.update((v) => {
+        v[desktop] ??= 0;
+        v[desktop]++;
+        return v;
+      });
+    });
+
+    this.globalDispatch.subscribe("window-unfullscreen", ([_, desktop]) => {
+      desktop = `${desktop}`;
+
+      this.FullscreenCount.update((v) => {
+        v[desktop] ??= 0;
+        if (v[desktop] <= 0) return v;
+        v[desktop]--;
+        return v;
+      });
     });
 
     this.getFilesystemSearchSupplier(this.userPreferences());
