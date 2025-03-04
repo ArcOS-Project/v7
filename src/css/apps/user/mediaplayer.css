@@ -17,7 +17,7 @@
   flex-direction: column;
   width: calc(100% - 200px);
   height: 100%;
-  padding: 20px;
+  /* padding: 20px; */
 }
 
 #MediaPlayer.fullscreen {
@@ -116,13 +116,14 @@
 #MediaPlayer div.audio-visual {
   flex-grow: 1;
   max-height: calc(100% - 90px);
-  background-color: var(--button-glass-bg);
-  border-radius: var(--win-border-rad);
-  margin-bottom: 20px;
+  background-color: var(--button-glass-active-bg);
+  border-radius: 0;
+  border-bottom: var(--win-border);
   /* height: 350px; */
   height: 100%;
   /* aspect-ratio: 16/9; */
   position: relative;
+  overflow: hidden;
 }
 
 #MediaPlayer div.video-wrapper video {
@@ -158,16 +159,12 @@
   display: flex;
   gap: 10px;
   align-items: center;
+  padding: 15px;
 }
 
 #MediaPlayer.fullscreen > div.body div.controls {
   padding: 15px;
   transition: margin-bottom 0.3s;
-}
-
-#MediaPlayer.fullscreen > div.body div.bar {
-  margin: 0 15px;
-  width: calc(100% - 30px);
 }
 
 #MediaPlayer.fullscreen > div.body div.hide-controls div.controls {
@@ -191,6 +188,9 @@
   box-shadow: none;
   min-width: unset;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #MediaPlayer > div.body div.controls button.fullscreen-toggle {
@@ -208,13 +208,26 @@
 #MediaPlayer > div.body div.controls button.reverse {
   width: 30px;
   height: 30px;
+  background-color: transparent;
 }
 
 #MediaPlayer > div.body div.controls button.stop {
   width: 26px;
   height: 26px;
   font-size: 14px;
+  background-color: transparent;
 }
+#MediaPlayer > div.body div.controls button.previous,
+#MediaPlayer > div.body div.controls button.next {
+  font-size: 16px;
+  background-color: transparent;
+}
+
+#MediaPlayer > div.body div.controls button.previous::before,
+#MediaPlayer > div.body div.controls button.next::before {
+  height: 16px;
+}
+
 #MediaPlayer > div.body div.controls div.group {
   display: flex;
   border-radius: var(--button-border-rad);
@@ -227,14 +240,14 @@
 }
 
 #MediaPlayer > div.body div.bar {
-  width: 100%;
+  margin: 0 15px;
+  width: calc(100% - 30px);
+  margin-top: 15px;
   height: 7px;
   background-color: var(--button-glass-bg);
   border-radius: 3.5px;
   border: var(--button-glass-bg) 1px solid;
   overflow: hidden;
-  margin: 20px 0;
-  margin-top: auto;
   min-height: 7px;
 }
 
@@ -261,8 +274,11 @@
   height: 5px;
   width: var(--w);
   background-color: var(--accent);
-  transition: width 0.1s;
   border-radius: 2.5px;
+}
+
+#MediaPlayer.fullscreen > div.body div.bar {
+  margin-top: 0;
 }
 
 #MediaPlayer > div.body div.file {
