@@ -1,0 +1,178 @@
+import { join } from "$ts/fs/util";
+import type { AppContextMenu } from "$types/app";
+import type { FileEntry, FolderEntry } from "$types/fs";
+import type { FileManagerRuntime } from "./runtime";
+import type { QuotedDrive } from "./types";
+
+export function FileManagerContextMenu(
+  runtime: FileManagerRuntime
+): AppContextMenu {
+  return {
+    "sidebar-drive": [
+      {
+        caption: "Go here",
+        action: (_, identifier) => {
+          runtime.navigate(`${identifier}/`);
+        },
+        icon: "hard-drive",
+      },
+      { sep: true },
+      {
+        caption: "Unmount",
+        action: (_, __, unmount) => {
+          unmount();
+        },
+        icon: "x",
+        disabled: (drive: QuotedDrive) => drive.data.FIXED,
+      },
+    ],
+    "file-item": [
+      {
+        caption: "Open file",
+        icon: "external-link",
+        action: (_, runtimePath) => {
+          runtime.openFile(runtimePath);
+        },
+      },
+      {
+        caption: "Open with...",
+        action: (_, runtimePath) => {
+          runtime.openWith(runtimePath);
+        },
+      },
+      { sep: true },
+      {
+        caption: "Cut",
+        icon: "scissors",
+        action: (_, runtimePath) => {
+          runtime.cutList.set([runtimePath]);
+        },
+      },
+      {
+        caption: "Copy",
+        icon: "copy",
+        action: (_, runtimePath) => {
+          runtime.copyList.set([runtimePath]);
+        },
+      },
+      { sep: true },
+      {
+        caption: "Rename...",
+        icon: "file-pen",
+        action: (_, runtimePath) =>
+          runtime.spawnOverlay("renameItem", runtimePath),
+      },
+      {
+        caption: "Delete",
+        icon: "trash-2",
+        action: (_, runtimePath) => {
+          runtime.selection.set([runtimePath]);
+          runtime.deleteSelected();
+        },
+      },
+      { sep: true },
+      {
+        caption: "Properties...",
+        icon: "wrench",
+        action: (file: FileEntry) =>
+          runtime.spawnOverlayApp(
+            "ItemInfo",
+            runtime.pid,
+            join(runtime.path(), file.name),
+            file
+          ),
+      },
+    ],
+    "folder-item": [
+      {
+        caption: "Go here",
+        icon: "folder-open",
+        action: (_, runtimePath) => {
+          runtime.navigate(runtimePath);
+        },
+      },
+      {
+        caption: "Open in new window",
+        icon: "external-link",
+        action: (_, runtimePath) => {
+          runtime.spawnApp(runtime.app.id, runtime.parentPid, runtimePath);
+        },
+      },
+      { sep: true },
+      {
+        caption: "Cut",
+        icon: "scissors",
+        action: (_, runtimePath) => {
+          runtime.cutList.set([runtimePath]);
+        },
+      },
+      {
+        caption: "Copy",
+        icon: "copy",
+        action: (_, runtimePath) => {
+          runtime.copyList.set([runtimePath]);
+        },
+      },
+      { sep: true },
+      {
+        caption: "Rename...",
+        icon: "file-pen",
+        action: (_, runtimePath) =>
+          runtime.spawnOverlay("renameItem", runtimePath),
+      },
+      {
+        caption: "Delete",
+        icon: "trash-2",
+        action: (_, runtimePath) => {
+          runtime.selection.set([runtimePath]);
+          runtime.deleteSelected();
+        },
+      },
+      { sep: true },
+      {
+        caption: "Properties...",
+        icon: "wrench",
+        action: (dir: FolderEntry) =>
+          runtime.spawnOverlayApp(
+            "ItemInfo",
+            runtime.pid,
+            join(runtime.path(), dir.name),
+            dir
+          ),
+      },
+    ],
+    "sidebar-folder": [
+      {
+        caption: "Go here",
+        icon: "folder-open",
+        action: (folder: FolderEntry) => {
+          runtime.navigate(`U:/${folder.name}`);
+        },
+      },
+      {
+        caption: "Open in new window",
+        icon: "external-link",
+        action: (folder: FolderEntry) => {
+          runtime.spawnApp(
+            runtime.app.id,
+            runtime.parentPid,
+            `U:/${folder.name}`
+          );
+        },
+      },
+      { sep: true },
+      {
+        caption: "Properties...",
+        icon: "wrench",
+        action: (folder: FolderEntry) => {
+          runtime.spawnOverlayApp(
+            "ItemInfo",
+            runtime.pid,
+            `U:/${folder.name}`,
+            folder
+          );
+        },
+      },
+    ],
+  };
+}

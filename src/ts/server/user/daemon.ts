@@ -78,19 +78,22 @@ export class UserDaemon extends Process {
   private virtualDesktopIndex = -1;
   private mimeIcons: Record<string, string[]> = DefaultMimeIcons;
   private virtualdesktopChangingTimeout: NodeJS.Timeout | undefined;
+  private firstSyncDone = false;
 
   constructor(
     handler: ProcessHandler,
     pid: number,
     parentPid: number,
     token: string,
-    username: string
+    username: string,
+    userInfo?: UserInfo
   ) {
     super(handler, pid, parentPid);
 
     this.token = token;
     this.username = username;
     this.env.set("userdaemon_pid", this.pid);
+    if (userInfo) this.userInfo = userInfo;
   }
 
   async startApplicationStorage() {
@@ -119,9 +122,14 @@ export class UserDaemon extends Process {
     this.Log("Getting user information");
 
     try {
-      const response = await Axios.get(`/user/self`, {
-        headers: { Authorization: `Bearer ${this.token}` },
-      });
+      const response = this.userInfo._id
+        ? {
+            status: 200,
+            data: this.userInfo,
+          }
+        : await Axios.get(`/user/self`, {
+            headers: { Authorization: `Bearer ${this.token}` },
+          });
 
       const data =
         response.status === 200 ? (response.data as UserInfo) : undefined;
@@ -151,11 +159,13 @@ export class UserDaemon extends Process {
 
     const unsubscribe = this.preferences.subscribe(async (v) => {
       if (this._disposed) return unsubscribe();
-
       if (!v || v.isDefault) return;
 
       v = this.checkCurrentThemeIdValidity(v);
-      this.commitPreferences(v);
+
+      if (!this.firstSyncDone) this.firstSyncDone = true;
+      else this.commitPreferences(v);
+
       this.setAppRendererClasses(v);
       this.updateWallpaper(v);
       this.syncVirtualDesktops(v);
@@ -1715,6 +1725,8 @@ export class UserDaemon extends Process {
 
     const destinationName = getDirectoryName(destination);
     const destinationDrive = getDriveLetter(destination, true);
+    const firstSourceParent = getParentDirectory(sources[0]);
+    const destinationParent = getParentDirectory(destination);
 
     const { updSub, setWait, setWork, mutErr, mutDone, show } =
       await this.FileProgress(
@@ -1731,6 +1743,7 @@ export class UserDaemon extends Process {
 
     for (const source of sources) {
       const sourceDrive = getDriveLetter(source, true);
+      const sourceName = getDirectoryName(source);
 
       show();
       updSub(source);
@@ -1745,11 +1758,15 @@ export class UserDaemon extends Process {
         continue;
       }
 
-      await this.fs.moveItem(source, destination);
+      await this.fs.moveItem(source, `${destination}/${sourceName}`, false);
       setWait(true);
       mutDone(+1);
-      await Sleep(200); // prevent rate limit
+      await Sleep(100); // prevent rate limit
     }
+
+    this.globalDispatch.dispatch("fs-flush-folder", firstSourceParent);
+    if (firstSourceParent !== destinationParent)
+      this.globalDispatch.dispatch("fs-flush-folder", destinationParent);
   }
 
   async copyMultiple(sources: string[], destination: string, pid: number) {
@@ -1757,6 +1774,7 @@ export class UserDaemon extends Process {
 
     const destinationName = getDirectoryName(destination);
     const destinationDrive = getDriveLetter(destination, true);
+    const destinationParent = getParentDirectory(destination);
 
     const { updSub, setWait, setWork, mutErr, mutDone, show } =
       await this.FileProgress(
@@ -1788,12 +1806,14 @@ export class UserDaemon extends Process {
         continue;
       }
 
-      await this.fs.copyItem(source, destination);
+      await this.fs.copyItem(source, destination, false);
       setWait(true);
       mutDone(+1);
 
       await Sleep(200); // prevent rate limit
     }
+
+    this.globalDispatch.dispatch("fs-flush-folder", destinationParent);
   }
 
   async findAppToOpenFile(path: string) {

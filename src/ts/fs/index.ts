@@ -158,7 +158,7 @@ export class Filesystem extends KernelModule {
     return await drive.readDir(this.removeDriveLetter(path));
   }
 
-  async createDirectory(path: string): Promise<boolean> {
+  async createDirectory(path: string, dispatch = true): Promise<boolean> {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
     this.Log(`Creating directory '${path}'`);
@@ -170,7 +170,7 @@ export class Filesystem extends KernelModule {
     const parent = getParentDirectory(path);
     const result = await drive.createDirectory(scopedPath);
 
-    this.dispatch.dispatch("fs-flush-folder", parent);
+    if (dispatch) this.dispatch.dispatch("fs-flush-folder", parent);
 
     return result;
   }
@@ -195,7 +195,8 @@ export class Filesystem extends KernelModule {
   async writeFile(
     path: string,
     data: Blob,
-    onProgress?: FilesystemProgressCallback
+    onProgress?: FilesystemProgressCallback,
+    dispatch = true
   ): Promise<boolean> {
     onProgress ||= this.defaultProgress.bind(this);
 
@@ -209,8 +210,10 @@ export class Filesystem extends KernelModule {
     const parent = getParentDirectory(path);
     const result = await drive.writeFile(scopedPath, data, onProgress);
 
-    this.dispatch.dispatch("fs-flush-file", path);
-    this.dispatch.dispatch("fs-flush-folder", parent);
+    if (dispatch) {
+      this.dispatch.dispatch("fs-flush-file", path);
+      this.dispatch.dispatch("fs-flush-folder", parent);
+    }
 
     return result;
   }
@@ -228,7 +231,11 @@ export class Filesystem extends KernelModule {
     return await drive.tree(path);
   }
 
-  async copyItem(source: string, destination: string): Promise<boolean> {
+  async copyItem(
+    source: string,
+    destination: string,
+    dispatch = true
+  ): Promise<boolean> {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
     this.Log(`Copying '${source}' to '${destination}'`);
@@ -249,12 +256,18 @@ export class Filesystem extends KernelModule {
     const result = await drive.copyItem(source, destination);
     const destinationParent = getParentDirectory(destination);
 
-    this.dispatch.dispatch("fs-flush-folder", destinationParent);
+    if (dispatch) {
+      this.dispatch.dispatch("fs-flush-folder", destinationParent);
+    }
 
     return result;
   }
 
-  async moveItem(source: string, destination: string): Promise<boolean> {
+  async moveItem(
+    source: string,
+    destination: string,
+    dispatch = true
+  ): Promise<boolean> {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
     this.Log(`Moving '${source}' to '${destination}'`);
@@ -275,13 +288,16 @@ export class Filesystem extends KernelModule {
     const sourceParent = getParentDirectory(source);
     const destinationParent = getParentDirectory(destination);
 
-    this.dispatch.dispatch("fs-flush-folder", destinationParent);
-    this.dispatch.dispatch("fs-flush-folder", sourceParent);
+    if (dispatch) {
+      this.dispatch.dispatch("fs-flush-folder", destinationParent);
+      if (sourceParent !== destinationParent)
+        this.dispatch.dispatch("fs-flush-folder", sourceParent);
+    }
 
     return result;
   }
 
-  async deleteItem(path: string): Promise<boolean> {
+  async deleteItem(path: string, dispatch = true): Promise<boolean> {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
     this.Log(`Deleting item '${path}'`);
@@ -292,7 +308,7 @@ export class Filesystem extends KernelModule {
     const parent = getParentDirectory(path);
     const result = await drive.deleteItem(scopedPath);
 
-    this.dispatch.dispatch("fs-flush-folder", parent);
+    if (dispatch) this.dispatch.dispatch("fs-flush-folder", parent);
 
     return result;
   }

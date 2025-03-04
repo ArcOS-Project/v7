@@ -40,13 +40,6 @@ export function FileMenu(runtime: MediaPlayerRuntime): ContextMenuItem {
         image: ShutdownIcon,
         accelerator: "Alt+Q",
       },
-      {
-        caption: "Toggle fullscreen",
-        action: () => {
-          runtime.handler.renderer?.toggleFullscreen(runtime.pid);
-        },
-        disabled: () => !runtime.queue().length,
-      },
     ],
   };
 }

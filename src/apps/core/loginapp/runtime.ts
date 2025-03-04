@@ -5,6 +5,7 @@ import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import { Wallpapers } from "$ts/wallpaper/store";
 import { Store } from "$ts/writable";
+import type { UserInfo } from "$types/user";
 import Cookies from "js-cookie";
 import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
@@ -73,7 +74,7 @@ export class LoginAppRuntime extends AppProcess {
     await this.startDaemon(token, username);
   }
 
-  async startDaemon(token: string, username: string) {
+  async startDaemon(token: string, username: string, info?: UserInfo) {
     this.Log(`Starting user daemon for '${username}'`);
 
     this.loadingStatus.set("Starting daemon");
@@ -83,7 +84,8 @@ export class LoginAppRuntime extends AppProcess {
       undefined,
       this.kernel.initPid,
       token,
-      username
+      username,
+      info
     );
 
     if (!userDaemon) {
@@ -289,9 +291,9 @@ export class LoginAppRuntime extends AppProcess {
 
     if (!token || !username) return false;
 
-    const tokenValid = await this.validateUserToken(token);
+    const userInfo = await this.validateUserToken(token);
 
-    if (!tokenValid) {
+    if (!userInfo) {
       this.resetCookies();
 
       return false;
@@ -301,7 +303,7 @@ export class LoginAppRuntime extends AppProcess {
     this.errorMessage.set("");
     this.hideProfileImage.set(false);
 
-    await this.startDaemon(token, username);
+    await this.startDaemon(token, username, userInfo);
 
     return true;
   }
@@ -314,7 +316,7 @@ export class LoginAppRuntime extends AppProcess {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      return response.status === 200;
+      return response.status === 200 ? (response.data as UserInfo) : false;
     } catch {
       return false;
     }

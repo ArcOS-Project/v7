@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onFolderChange } from "$ts/fs/util";
   import { FolderIcon } from "$ts/images/filesystem";
   import type { FolderEntry } from "$types/fs";
   import type { UserPreferencesStore } from "$types/user";
@@ -20,7 +19,15 @@
   let dirs: FolderEntry[] = $state([]);
 
   onMount(() => {
-    onFolderChange("U:/", update);
+    process.globalDispatch.subscribe<string>("fs-flush-folder", (path) => {
+      if (!path) return;
+
+      if (path.startsWith("U:") && path.split("/").length == 1) {
+        update();
+      }
+    });
+
+    update();
   });
 
   async function update() {

@@ -9,21 +9,18 @@ import {
   join,
 } from "$ts/fs/util";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
-import { DownloadIcon, DriveIcon, FolderIcon } from "$ts/images/filesystem";
+import { DownloadIcon, DriveIcon } from "$ts/images/filesystem";
 import { TrashIcon, UploadIcon } from "$ts/images/general";
-import { ShutdownIcon } from "$ts/images/power";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
-import type {
-  App,
-  AppContextMenu,
-  AppProcessData,
-  ContextMenuItem,
-} from "$types/app";
-import type { DirectoryReadReturn, FileEntry, FolderEntry } from "$types/fs";
+import type { App, AppContextMenu, AppProcessData } from "$types/app";
+import type { DirectoryReadReturn, FolderEntry } from "$types/fs";
 import { LogLevel } from "$types/logging";
 import type { RenderArgs } from "$types/process";
+import { FileManagerAccelerators } from "./accelerators";
+import { FileManagerAltMenu } from "./altmenu";
+import { FileManagerContextMenu } from "./context";
 import { NewFileApp } from "./newfile/metadata";
 import { NewFolderApp } from "./newfolder/metadata";
 import { RenameItemApp } from "./renameitem/metadata";
@@ -56,11 +53,13 @@ export class FileManagerRuntime extends AppProcess {
     super(handler, pid, parentPid, app);
 
     this.renderArgs.path = path;
-    this.userPreferences.update((v) => {
-      v.appPreferences.fileManager ||= {};
 
-      return v;
-    });
+    if (!this.userPreferences().appPreferences.fileManager)
+      this.userPreferences.update((v) => {
+        v.appPreferences.fileManager ||= {};
+
+        return v;
+      });
 
     this.loadSave = loadSave;
 
@@ -88,422 +87,40 @@ export class FileManagerRuntime extends AppProcess {
     newFolder: NewFolderApp,
   };
 
-  override contextMenu: AppContextMenu = {
-    "sidebar-drive": [
-      {
-        caption: "Go here",
-        action: (_, identifier) => {
-          this.navigate(`${identifier}/`);
-        },
-        icon: "hard-drive",
-      },
-      { sep: true },
-      {
-        caption: "Unmount",
-        action: (_, __, unmount) => {
-          unmount();
-        },
-        icon: "x",
-        disabled: (drive: QuotedDrive) => drive.data.FIXED,
-      },
-    ],
-    "file-item": [
-      {
-        caption: "Open file",
-        icon: "external-link",
-        action: (_, thisPath) => {
-          this.openFile(thisPath);
-        },
-      },
-      {
-        caption: "Open with...",
-        action: (_, thisPath) => {
-          this.openWith(thisPath);
-        },
-      },
-      { sep: true },
-      {
-        caption: "Cut",
-        icon: "scissors",
-        action: (_, thisPath) => {
-          this.cutList.set([thisPath]);
-        },
-      },
-      {
-        caption: "Copy",
-        icon: "copy",
-        action: (_, thisPath) => {
-          this.copyList.set([thisPath]);
-        },
-      },
-      { sep: true },
-      {
-        caption: "Rename...",
-        icon: "file-pen",
-        action: (_, thisPath) => this.spawnOverlay("renameItem", thisPath),
-      },
-      {
-        caption: "Delete",
-        icon: "trash-2",
-        action: (_, thisPath) => {
-          this.selection.set([thisPath]);
-          this.deleteSelected();
-        },
-      },
-      { sep: true },
-      {
-        caption: "Properties...",
-        icon: "wrench",
-        action: (file: FileEntry) =>
-          this.spawnOverlayApp(
-            "ItemInfo",
-            this.pid,
-            join(this.path(), file.name),
-            file
-          ),
-      },
-    ],
-    "folder-item": [
-      {
-        caption: "Go here",
-        icon: "folder-open",
-        action: (_, thisPath) => {
-          this.navigate(thisPath);
-        },
-      },
-      {
-        caption: "Open in new window",
-        icon: "external-link",
-        action: (_, thisPath) => {
-          this.spawnApp(this.app.id, this.parentPid, thisPath);
-        },
-      },
-      { sep: true },
-      {
-        caption: "Cut",
-        icon: "scissors",
-        action: (_, thisPath) => {
-          this.cutList.set([thisPath]);
-        },
-      },
-      {
-        caption: "Copy",
-        icon: "copy",
-        action: (_, thisPath) => {
-          this.copyList.set([thisPath]);
-        },
-      },
-      { sep: true },
-      {
-        caption: "Rename...",
-        icon: "file-pen",
-        action: (_, thisPath) => this.spawnOverlay("renameItem", thisPath),
-      },
-      {
-        caption: "Delete",
-        icon: "trash-2",
-        action: (_, thisPath) => {
-          this.selection.set([thisPath]);
-          this.deleteSelected();
-        },
-      },
-      { sep: true },
-      {
-        caption: "Properties...",
-        icon: "wrench",
-        action: (dir: FolderEntry) =>
-          this.spawnOverlayApp(
-            "ItemInfo",
-            this.pid,
-            join(this.path(), dir.name),
-            dir
-          ),
-      },
-    ],
-    "sidebar-folder": [
-      {
-        caption: "Go here",
-        icon: "folder-open",
-        action: (folder: FolderEntry) => {
-          this.navigate(`U:/${folder.name}`);
-        },
-      },
-      {
-        caption: "Open in new window",
-        icon: "external-link",
-        action: (folder: FolderEntry) => {
-          this.spawnApp(this.app.id, this.parentPid, `U:/${folder.name}`);
-        },
-      },
-      { sep: true },
-      {
-        caption: "Properties...",
-        icon: "wrench",
-        action: (folder: FolderEntry) => {
-          this.spawnOverlayApp(
-            "ItemInfo",
-            this.pid,
-            `U:/${folder.name}`,
-            folder
-          );
-        },
-      },
-    ],
-  };
+  override contextMenu: AppContextMenu = FileManagerContextMenu(this);
 
   updateAltMenu() {
     if (this.loadSave) return;
-    const fileMenu = {
-      caption: "File",
-      subItems: [
-        {
-          caption: "New window",
-          icon: "plus",
-          action: () => {
-            this.userDaemon?.spawnApp("fileManager", undefined, this.path());
-          },
-        },
-        {
-          caption: "Refresh",
-          icon: "rotate-cw",
-          action: async () => {
-            this.loading.set(true);
-            await this.refresh();
-            this.loading.set(false);
-          },
-        },
-        { sep: true },
-        { caption: "Upload", icon: "upload", action: () => this.uploadItems() },
-        {
-          caption: "Download",
-          icon: "download",
-          action: () => this.notImplemented("Downloading files"),
-        },
-        { sep: true },
-        {
-          caption: "Exit",
-          image: ShutdownIcon,
-          action: () => {
-            this.closeWindow();
-          },
-        },
-      ],
-    };
 
-    const menu: ContextMenuItem[] = [
-      fileMenu,
-      {
-        caption: "Edit",
-        subItems: [
-          {
-            caption: "Cut",
-            action: () => {
-              this.setCutFiles();
-            },
-            icon: "scissors",
-            disabled: () => !this.selection().length,
-          },
-          {
-            caption: "Copy",
-            action: () => {
-              this.setCopyFiles();
-            },
-            icon: "copy",
-            disabled: () => !this.selection().length,
-          },
-          {
-            caption: "Paste",
-            action: () => this.pasteFiles(),
-            icon: "clipboard",
-            disabled: () => !this.copyList().length && !this.cutList().length,
-          },
-          { sep: true },
-          {
-            caption: "New folder",
-            action: () => {
-              this.spawnOverlay("newFolder", this.path());
-            },
-            icon: "folder-plus",
-          },
-          {
-            caption: "New files",
-            action: () => {
-              this.spawnOverlay("newFile", this.path());
-            },
-            icon: "file-plus",
-          },
-        ],
-      },
-      {
-        caption: "Go",
-        subItems: [
-          ...this.folderGoItems(),
-          { sep: true },
-          ...this.driveGoItems(),
-        ],
-      },
-    ];
-
-    this.altMenu.set(menu);
-  }
-
-  driveGoItems(): ContextMenuItem[] {
-    const result = [];
-    const driveSubmenu = (drive: FilesystemDrive, id: string) => [
-      {
-        caption: "Go here",
-        action: () => {
-          this.navigate(`${drive.driveLetter || drive.uuid}:/`);
-        },
-        icon: "hard-drive",
-      },
-      { sep: true },
-      {
-        caption: "Unmount",
-        action: () => {
-          this.unmountDrive(drive, id);
-        },
-        disabled: () => drive.FIXED,
-        icon: "x",
-      },
-    ];
-
-    for (const [id, drive] of Object.entries(this.drives())) {
-      const identifier = `${drive.data.driveLetter || drive.data.uuid}:`;
-
-      result.push({
-        caption: drive.data.driveLetter
-          ? `${drive.data.label} (${drive.data.driveLetter}:)`
-          : drive.data.label,
-        subItems: driveSubmenu(drive.data, id),
-        image: DriveIcon,
-        isActive: () => this.path().startsWith(`${identifier}/`),
-      });
-    }
-
-    return result;
-  }
-
-  folderGoItems(): ContextMenuItem[] {
-    const result = [];
-
-    for (const folder of this.rootFolders()) {
-      result.push({
-        caption: folder.name,
-        image: FolderIcon,
-        action: () => {
-          this.navigate(`U:/${folder.name}`);
-        },
-      });
-    }
-
-    return result;
+    this.altMenu.set(FileManagerAltMenu(this));
   }
 
   async render({ path }: RenderArgs) {
     this.updateDrives();
 
-    await this.updateRootFolders();
     await this.navigate(path || "U:/");
+    await this.updateRootFolders();
 
     this.globalDispatch.subscribe("fs-umount-drive", () => this.updateDrives());
     this.globalDispatch.subscribe("fs-mount-drive", () => this.updateDrives());
 
     this.globalDispatch.subscribe<string>("fs-flush-folder", (path) => {
-      if (!path) return;
+      if (!path || this._disposed) return;
 
-      if (path.startsWith("U:")) {
+      if (path.startsWith("U:") && path.split("/").length == 1) {
         this.updateRootFolders();
       }
 
       if (this.path().startsWith(path) || this.path() === path) this.refresh();
     });
 
-    this.acceleratorStore.push(
-      {
-        key: "Delete",
-        action: () => {
-          if (this.loadSave) return;
-
-          this.deleteSelected();
-        },
-      },
-      {
-        alt: true,
-        key: "Enter",
-        action: () => {
-          if (this.loadSave) return;
-
-          const path = this.selection()[0];
-          const contents = this.contents();
-          const items = [...(contents?.dirs || []), ...(contents?.files || [])];
-          const item = items.filter((a) => path?.endsWith(a.name))[0];
-
-          if (!path || !item) return;
-
-          this.selection.set([path]);
-          this.spawnOverlayApp("ItemInfo", this.pid, path, item);
-        },
-      },
-      {
-        key: "F2",
-        action: () => {
-          const path = this.selection()[0];
-          if (!path) return;
-
-          this.selection.set([path]);
-          this.spawnOverlay("renameItem", path);
-        },
-      },
-      {
-        key: "ArrowDown",
-        action: (_, e) => {
-          if (this.loadSave) return;
-
-          e.preventDefault();
-          this.selectorDown();
-        },
-      },
-      {
-        key: "ArrowUp",
-        action: (_, e) => {
-          if (this.loadSave) return;
-
-          e.preventDefault();
-          this.selectorUp();
-        },
-      },
-      {
-        key: "ArrowLeft",
-        action: (_, e) => {
-          if (!this.loadSave) e.preventDefault();
-        },
-      },
-      {
-        key: "ArrowRight",
-        action: (_, e) => {
-          if (!this.loadSave) e.preventDefault();
-        },
-      },
-      {
-        key: "Enter",
-        shift: true,
-        action: () => {
-          this.EnterKey(true);
-        },
-      },
-      {
-        key: "Enter",
-        action: () => {
-          this.EnterKey(false);
-        },
-      }
-    );
+    this.acceleratorStore.push(...FileManagerAccelerators(this));
 
     this.starting.set(false);
   }
 
   async updateDrives() {
+    if (this._disposed) return;
     this.Log(`Updating drives`);
 
     const currentDrive = getDriveLetter(this.path(), true) || "";
@@ -530,10 +147,12 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   async updateRootFolders() {
+    if (this._disposed) return;
     this.Log(`Updating root folders`);
 
     try {
-      const root = await this.fs.readDir("U:/");
+      const root =
+        this.path() === "U:/" ? this.contents() : await this.fs.readDir("U:/");
 
       this.rootFolders.set(root?.dirs || []);
     } catch {
@@ -543,6 +162,7 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   async navigate(path: string) {
+    if (this._disposed) return;
     this.Log(`Navigating to ${path}`);
 
     if (this.path() === path) return;
@@ -559,6 +179,7 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   async refresh() {
+    if (this._disposed) return;
     if (this._refreshLocked) return;
 
     this.Log(`Refreshing`);
@@ -580,6 +201,7 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   DirectoryNotFound() {
+    if (this._disposed) return;
     this.Log(`Directory Not Found!`);
 
     this.errored.set(true);
@@ -605,6 +227,7 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   parentDir() {
+    if (this._disposed) return;
     this.Log(`Navigating to parent directory`);
 
     const parent = getParentDirectory(this.path());
@@ -613,6 +236,7 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   public updateSelection(e: MouseEvent, path: string) {
+    if (this._disposed) return;
     if (!e.shiftKey || this.loadSave) {
       this.selection.set([path]);
       this.updateAltMenu();
@@ -630,6 +254,7 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   public setCopyFiles(files = this.selection()) {
+    if (this._disposed) return;
     this.Log(`Setting COPY list to ${files.length} items`);
 
     this.copyList.set(files || []);
@@ -638,6 +263,7 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   public setCutFiles(files = this.selection()) {
+    if (this._disposed) return;
     this.Log(`Setting CUT list to ${files.length} items`);
     this.cutList.set(files || []);
     this.copyList.set([]);
@@ -645,6 +271,8 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   public async pasteFiles() {
+    if (this._disposed) return;
+
     const copyList = this.copyList.get();
     const cutList = this.cutList.get();
 
@@ -664,6 +292,8 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   unmountDrive(drive: FilesystemDrive, id: string) {
+    if (this._disposed) return;
+
     const identifier = `${drive.driveLetter || drive.uuid}:`;
 
     MessageBox(
@@ -689,6 +319,8 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   async confirmUmountDrive(drive: FilesystemDrive, id: string) {
+    if (this._disposed) return;
+
     const prog = await this.userDaemon!.FileProgress(
       {
         waiting: true,
@@ -711,6 +343,8 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   async uploadItems() {
+    if (this._disposed) return;
+
     const prog = await this.userDaemon!.FileProgress(
       {
         type: "size",
@@ -740,16 +374,19 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   public lockRefresh() {
+    if (this._disposed) return;
     this._refreshLocked = true;
   }
 
   public unlockRefresh(refresh = true) {
+    if (this._disposed) return;
     this._refreshLocked = false;
 
     if (refresh) this.refresh();
   }
 
   async openFile(path: string) {
+    if (this._disposed) return;
     if (this.loadSave) {
       this.confirmLoadSave();
       return;
@@ -785,10 +422,12 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   async openWith(path: string) {
+    if (this._disposed) return;
     await this.spawnOverlayApp("OpenWith", this.pid, path);
   }
 
   async deleteSelected() {
+    if (this._disposed) return;
     const items = this.selection();
     if (!items.length) return;
 
@@ -816,6 +455,7 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   async confirmDeleteSelected() {
+    if (this._disposed) return;
     const items = this.selection();
     const prog = await this.userDaemon!.FileProgress(
       {
@@ -837,16 +477,19 @@ export class FileManagerRuntime extends AppProcess {
       prog.updSub(item);
 
       try {
-        await this.fs.deleteItem(item);
+        await this.fs.deleteItem(item, false);
       } catch {
         prog.mutErr(`Failed to delete ${item}`);
       }
 
       prog.mutDone(+1);
     }
+
+    this.globalDispatch.dispatch("fs-flush-folder", this.path());
   }
 
   async downloadSelected() {
+    if (this._disposed) return;
     const selected = this.selection();
 
     if (!selected.length) return;
@@ -911,6 +554,7 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   singlefySelected() {
+    if (this._disposed) return;
     const selected = this.selection();
 
     if (!selected.length) return;
@@ -919,6 +563,7 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   async selectorUp() {
+    if (this._disposed) return;
     this.singlefySelected();
     const selected = this.selection.get()[0];
     const dir = this.contents.get();
@@ -941,6 +586,7 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   async selectorDown() {
+    if (this._disposed) return;
     this.singlefySelected();
     const selected = this.selection.get()[0];
     const dir = this.contents.get();
@@ -963,6 +609,7 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   public async EnterKey(alternative = false) {
+    if (this._disposed) return;
     if (this.loadSave) return;
 
     const paths = this.selection.get();
@@ -1017,6 +664,7 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   public isDirectory(path: string, workingPath?: string) {
+    if (this._disposed) return;
     workingPath ||= this.path();
     const dir = this.contents.get();
 
@@ -1024,6 +672,7 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   async confirmLoadSave() {
+    if (this._disposed) return;
     const selection = this.selection();
     const saveName = this.saveName();
     const path = this.path();
