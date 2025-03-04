@@ -2,7 +2,7 @@
   import type { MediaPlayerRuntime } from "../../runtime";
 
   const { process }: { process: MediaPlayerRuntime } = $props();
-  const { queueIndex } = process;
+  const { queueIndex, Loaded, State } = process;
 
   function previous() {
     process.previousSong();
@@ -12,7 +12,7 @@
 <button
   class="lucide previous icon-skip-back"
   onclick={previous}
-  disabled={$queueIndex == 0}
+  disabled={$queueIndex == 0 || !$Loaded || !$State.duration}
   aria-label="Previous song"
 >
 </button>

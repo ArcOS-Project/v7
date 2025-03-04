@@ -39,7 +39,7 @@
   class:is-video={$isVideo && $Loaded}
   class:theme-dark={$windowFullscreen}
 >
-  <div class="video-wrapper" class:show={$isVideo && $Loaded}>
+  <div class="video-wrapper" class:show={$isVideo}>
     <video bind:this={audio}>
       <track kind="captions" />
     </video>
@@ -62,7 +62,7 @@
   {/if}
 </div>
 <div class="queue" class:hide={hideControls}>
-  {#each $queue as path, i (path)}
+  {#each $queue as path, i (path + `${i}`)}
     <QueueItem {path} {i} {process} />
   {/each}
 </div>

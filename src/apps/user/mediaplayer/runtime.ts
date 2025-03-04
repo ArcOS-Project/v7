@@ -81,7 +81,7 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   async render({ file }: RenderArgs) {
-    if (file) this.readFile(file);
+    if (file) this.readFile([file]);
   }
 
   public setPlayer(player: HTMLVideoElement) {

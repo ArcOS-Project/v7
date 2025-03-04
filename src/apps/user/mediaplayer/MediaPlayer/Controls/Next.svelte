@@ -2,7 +2,7 @@
   import type { MediaPlayerRuntime } from "../../runtime";
 
   const { process }: { process: MediaPlayerRuntime } = $props();
-  const { queueIndex, queue } = process;
+  const { queueIndex, queue, Loaded, State } = process;
 
   function next() {
     process.nextSong();
@@ -12,7 +12,7 @@
 <button
   class="lucide next icon-skip-forward"
   onclick={next}
-  disabled={$queueIndex >= $queue.length - 1}
+  disabled={$queueIndex >= $queue.length - 1 || !$Loaded || !$State.duration}
   aria-label="Next song"
 >
 </button>

@@ -6,7 +6,7 @@
   const { State, Loaded } = process;
 </script>
 
-<div class="bar" class:bounce={!$Loaded}>
+<div class="bar" class:bounce={!$Loaded || !$State.duration}>
   <div
     class="inner"
     style="--w: {(100 / $State.duration) * $State.current}%;"

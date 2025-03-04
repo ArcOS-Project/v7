@@ -2,7 +2,7 @@
   import type { MediaPlayerRuntime } from "../../runtime";
 
   const { process }: { process: MediaPlayerRuntime } = $props();
-  const { State } = process;
+  const { State, Loaded } = process;
 
   function toggle() {
     if ($State.paused) process.Play();
@@ -17,6 +17,7 @@
     class:icon-pause={!$State.paused}
     onclick={toggle}
     aria-label="Play/pause"
+    disabled={!$Loaded || !$State.duration}
   >
   </button>
 </div>
