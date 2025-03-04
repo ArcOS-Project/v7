@@ -1,11 +1,13 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { arrayToText, textToBlob } from "$ts/fs/convert";
 import { getDirectoryName, getParentDirectory } from "$ts/fs/util";
 import { MediaPlayerIcon } from "$ts/images/apps";
 import { VideoMimeIcon } from "$ts/images/mime";
 import type { ProcessHandler } from "$ts/process/handler";
 import { DefaultMimeIcons } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
+import { sha256 } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { RenderArgs } from "$types/process";
@@ -283,5 +285,58 @@ export class MediaPlayerRuntime extends AppProcess {
 
     // Update the queue store
     this.queue.set(currentQueue);
+  }
+
+  async savePlaylist() {
+    const playlist = btoa(JSON.stringify(this.queue(), null, 2));
+    const sha = await sha256(playlist);
+
+    const path = await this.userDaemon?.LoadSaveDialog({
+      title: "Save playlist",
+      icon: this.app.data.metadata.icon,
+      isSave: true,
+      extensions: [".arcpl"],
+    });
+
+    if (!path) return;
+
+    await this.fs.writeFile(path, textToBlob(playlist, "text/plain"));
+  }
+
+  async loadPlaylist() {
+    const path = await this.userDaemon?.LoadSaveDialog({
+      title: "Open playlist",
+      icon: this.app.data.metadata.icon,
+      extensions: [".arcpl"],
+    });
+
+    if (!path) return;
+
+    try {
+      const contents = await this.fs.readFile(path);
+      if (!contents) throw new Error("Failed to read playlist");
+
+      const queue = JSON.parse(atob(arrayToText(contents)));
+      if (!queue || !Array.isArray(queue))
+        throw new Error("Playlist is not valid");
+
+      const queueIndex = this.queueIndex();
+      this.Loaded.set(false);
+      this.queue.set(queue);
+      this.queueIndex.set(0);
+      if (!queueIndex) this.handleSongChange(0);
+    } catch (e) {
+      MessageBox(
+        {
+          title: "Failed to open playlist",
+          message: `Media Player couldn't open the file you requested. ${e}`,
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          sound: "arcos.dialog.error",
+          image: MediaPlayerIcon,
+        },
+        this.pid,
+        true
+      );
+    }
   }
 }
