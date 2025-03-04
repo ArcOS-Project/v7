@@ -284,7 +284,7 @@ export class SettingsRuntime extends AppProcess {
   }
 
   async chooseProfilePicture() {
-    const path = await this.userDaemon?.LoadSaveDialog({
+    const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Choose profile picture",
       icon: AccountIcon,
       startDir: "U:/",

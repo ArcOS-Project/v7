@@ -1861,7 +1861,9 @@ export class UserDaemon extends Process {
     if (!this.mimeIcons[icon]) this.mimeIcons[icon] = [extension];
   }
 
-  async LoadSaveDialog(data: Omit<LoadSaveDialogData, "returnId">) {
+  async LoadSaveDialog(
+    data: Omit<LoadSaveDialogData, "returnId">
+  ): Promise<string[] | [undefined]> {
     const uuid = crypto.randomUUID();
 
     await this.spawnOverlay(
@@ -1874,12 +1876,15 @@ export class UserDaemon extends Process {
       }
     );
 
-    return new Promise<string | undefined>(async (r) => {
-      this.globalDispatch.subscribe("ls-confirm", ([id, path]) => {
-        if (id === uuid) r(path);
-      });
+    return new Promise<string[] | [undefined]>(async (r) => {
+      this.globalDispatch.subscribe<[string, string[] | [undefined]]>(
+        "ls-confirm",
+        ([id, paths]) => {
+          if (id === uuid) r(paths);
+        }
+      );
       this.globalDispatch.subscribe("ls-cancel", ([id]) => {
-        if (id === uuid) r(undefined);
+        if (id === uuid) r([undefined]);
       });
     });
   }

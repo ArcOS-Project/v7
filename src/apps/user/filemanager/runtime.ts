@@ -78,6 +78,8 @@ export class FileManagerRuntime extends AppProcess {
       }
 
       this.contextMenu = {};
+      if (loadSave.isSave && loadSave.multiple)
+        throw new Error("LoadSave: can't have both isSave and multiple");
     }
   }
 
@@ -237,7 +239,7 @@ export class FileManagerRuntime extends AppProcess {
 
   public updateSelection(e: MouseEvent, path: string) {
     if (this._disposed) return;
-    if (!e.shiftKey || this.loadSave) {
+    if (!e.shiftKey || (this.loadSave && !this.loadSave?.multiple)) {
       this.selection.set([path]);
       this.updateAltMenu();
 
@@ -676,7 +678,9 @@ export class FileManagerRuntime extends AppProcess {
     const selection = this.selection();
     const saveName = this.saveName();
     const path = this.path();
-    const result = !this.loadSave?.isSave ? selection[0] : join(path, saveName);
+    const result = this.loadSave?.multiple
+      ? this.selection()
+      : [!this.loadSave?.isSave ? selection[0] : join(path, saveName)];
 
     this.globalDispatch.dispatch("ls-confirm", [
       this.loadSave?.returnId,

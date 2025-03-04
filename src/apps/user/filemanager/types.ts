@@ -24,4 +24,5 @@ export interface LoadSaveDialogData {
   extensions?: string[];
   returnId: string;
   saveName?: string;
+  multiple?: boolean;
 }

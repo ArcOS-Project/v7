@@ -45,7 +45,11 @@
     <button onclick={() => process.closeWindow()}>Cancel</button>
     <button
       onclick={() => process.confirmLoadSave()}
-      disabled={process.loadSave?.isSave ? !$saveName : $selection.length !== 1}
+      disabled={process.loadSave?.isSave
+        ? !$saveName
+        : process.loadSave?.multiple
+          ? !$selection.length
+          : $selection.length !== 1}
     >
       {process.loadSave?.isSave ? "Save" : "Open"}
     </button>

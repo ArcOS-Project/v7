@@ -19,6 +19,13 @@
     icon =
       process.userDaemon?.getMimeIconByFilename(filename) || DefaultMimeIcon;
   });
+
+  function removeThis() {
+    queue.update((v) => {
+      v.splice(i, 1);
+      return v;
+    });
+  }
 </script>
 
 {#if icon && filename}
@@ -38,10 +45,7 @@
     <button
       class="lucide icon-x"
       aria-label="Remove from queue"
-      onclick={() => {
-        $queue.splice(i);
-        $queue = $queue;
-      }}
+      onclick={() => removeThis()}
     ></button>
   </div>
 {/if}

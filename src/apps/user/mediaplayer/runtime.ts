@@ -76,6 +76,7 @@ export class MediaPlayerRuntime extends AppProcess {
         this.windowIcon.set(this.app.data.metadata.icon);
         this.getWindow()?.classList.remove("fullscreen");
       }
+      console.log(v);
     });
   }
 
@@ -161,7 +162,7 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   public async openFile() {
-    const path = await this.userDaemon?.LoadSaveDialog({
+    const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Select an audio or video file to open",
       icon: MediaPlayerIcon,
       startDir: getParentDirectory(this.queue()[this.queueIndex()]) || "U:/",
@@ -170,19 +171,19 @@ export class MediaPlayerRuntime extends AppProcess {
 
     if (!path) return;
 
-    await this.readFile(path);
+    await this.readFile([path]);
   }
 
-  async readFile(path: string, addToQueue = false) {
+  async readFile(paths: string[], addToQueue = false) {
     if (addToQueue && this.queue().length) {
       this.queue.update((v) => {
-        v.push(path);
+        v.push(...paths);
         return v;
       });
     } else {
       const queueIndex = this.queueIndex();
       this.Loaded.set(false);
-      this.queue.set([path]);
+      this.queue.set(paths);
       this.queueIndex.set(0);
       if (!queueIndex) this.handleSongChange(0);
     }
@@ -261,16 +262,17 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   async addToQueue() {
-    const path = await this.userDaemon?.LoadSaveDialog({
+    const paths = await this.userDaemon!.LoadSaveDialog({
       title: "Select a file to add to the queue",
       icon: MediaPlayerIcon,
       startDir: getParentDirectory(this.queue()[this.queueIndex()]) || "U:/",
       extensions: this.app.data.opens?.extensions,
+      multiple: true,
     });
 
-    if (!path) return;
+    if (!paths[0]) return;
 
-    await this.readFile(path, true);
+    await this.readFile(paths as string[], true);
   }
 
   moveQueueItem(sourceIndex: number, targetIndex: number) {
@@ -291,7 +293,7 @@ export class MediaPlayerRuntime extends AppProcess {
     const playlist = btoa(JSON.stringify(this.queue(), null, 2));
     const sha = await sha256(playlist);
 
-    const path = await this.userDaemon?.LoadSaveDialog({
+    const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Save playlist",
       icon: this.app.data.metadata.icon,
       isSave: true,
@@ -304,7 +306,7 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   async loadPlaylist() {
-    const path = await this.userDaemon?.LoadSaveDialog({
+    const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Open playlist",
       icon: this.app.data.metadata.icon,
       extensions: [".arcpl"],
