@@ -19,6 +19,7 @@ export class AppRenderer extends Process {
   focusedPid = Store(-1);
   appStore = Store<Map<string, AppProcessData>>(new Map());
   defaultApps = BuiltinApps;
+  override _criticalProcess: boolean = true;
 
   constructor(
     handler: ProcessHandler,

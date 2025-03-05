@@ -181,6 +181,7 @@ export class ShellRuntime extends AppProcess {
   }
 
   async render() {
+    if (await this.closeIfSecondInstance()) return;
     this.assignContextMenuHooks();
 
     document.body.addEventListener("click", (e) => {

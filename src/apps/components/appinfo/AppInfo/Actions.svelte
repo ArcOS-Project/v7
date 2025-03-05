@@ -17,20 +17,12 @@
 
     () => sub();
   });
-
-  async function killAll() {
-    const instances = process.handler.renderer?.getAppInstances(appId);
-
-    for (const instance of instances || []) {
-      instance.killSelf();
-    }
-  }
 </script>
 
 <InfoBlock className="actions">
   <InfoRow>
     <p class="id">{appId}</p>
-    <button onclick={killAll} {disabled}>Kill all</button>
+    <button onclick={() => process.killAll()} {disabled}>Kill all</button>
     <button class="suggested" onclick={() => process.killSelf()}>Close</button>
   </InfoRow>
 </InfoBlock>
