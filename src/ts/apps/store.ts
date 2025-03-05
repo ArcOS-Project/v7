@@ -8,6 +8,7 @@ import { ArcShellApp } from "$apps/components/shell/metadata";
 import { WallpaperApp } from "$apps/components/wallpaper/metadata";
 import { FileManagerApp } from "$apps/user/filemanager/metadata";
 import { HexEditorApp } from "$apps/user/hexedit/metadata";
+import { LoggingApp } from "$apps/user/logging/metadata";
 import { MediaPlayerApp } from "$apps/user/mediaplayer/metadata";
 import { ProcessesApp } from "$apps/user/processes/metadata";
 import { SystemSettings } from "$apps/user/settings/metadata";
@@ -30,6 +31,7 @@ export const BuiltinApps: AppStorage = [
   ItemInfoApp,
   MediaPlayerApp,
   ProcessesApp,
+  LoggingApp,
 ];
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];

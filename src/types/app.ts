@@ -28,6 +28,7 @@ export interface App {
     extensions?: string[];
     mimeTypes?: string[];
   };
+  elevated?: boolean;
 }
 
 export interface ThirdPartyApp {

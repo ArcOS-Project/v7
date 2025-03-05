@@ -893,6 +893,18 @@ export class UserDaemon extends Process {
       return;
     }
 
+    if (app.elevated) {
+      const elevated = await this.manuallyElevate({
+        what: "ArcOS needs your permission to open the following application:",
+        title: app.metadata.name,
+        description: `by ${app.metadata.author}`,
+        image: app.metadata.icon,
+        level: ElevationLevel.low,
+      });
+
+      if (!elevated) return;
+    }
+
     const shellDispatch = this.handler.ConnectDispatch(
       +this.env.get("shell_pid")
     );
@@ -940,6 +952,18 @@ export class UserDaemon extends Process {
       );
 
       return;
+    }
+
+    if (app.elevated) {
+      const elevated = await this.manuallyElevate({
+        what: "ArcOS needs your permission to open the following application as an overlay:",
+        title: app.metadata.name,
+        description: `by ${app.metadata.author}`,
+        image: app.metadata.icon,
+        level: ElevationLevel.low,
+      });
+
+      if (!elevated) return;
     }
 
     await this.handler.waitForAvailable();
