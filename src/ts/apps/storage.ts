@@ -19,6 +19,8 @@ export class ApplicationStorage extends Process {
   }
 
   loadOrigin(id: string, store: AppStoreCb) {
+    if (this._disposed) return false;
+
     this.Log(`Loading app origin '${id}'`);
 
     if (this.origins.get(id)) return false;
@@ -30,6 +32,8 @@ export class ApplicationStorage extends Process {
   }
 
   unloadOrigin(id: string) {
+    if (this._disposed) return false;
+
     this.Log(`Unloading app origin '${id}'`);
 
     if (!this.origins.get(id)) return false;
@@ -41,6 +45,8 @@ export class ApplicationStorage extends Process {
   }
 
   loadApp(app: App) {
+    if (this._disposed) return false;
+
     this.Log(`Loading injected app '${app.id}'`);
 
     if (this.injectedStore.get(app.id)) return false;
@@ -51,10 +57,14 @@ export class ApplicationStorage extends Process {
   }
 
   injected() {
+    if (this._disposed) return [];
+
     return [...this.injectedStore].map(([_, app]) => ({ ...app }));
   }
 
   async refresh() {
+    if (this._disposed) return;
+
     this.Log(`Refreshing store`);
 
     this.buffer.set(await this.get());
@@ -62,6 +72,8 @@ export class ApplicationStorage extends Process {
 
   async get() {
     let result: AppStorage = [];
+
+    if (this._disposed) return result;
 
     for (const [originId, origin] of [...this.origins]) {
       const apps = (await origin()).map((a) => {
@@ -77,6 +89,8 @@ export class ApplicationStorage extends Process {
   }
 
   async getAppById(id: string, fromBuffer = false) {
+    if (this._disposed) return undefined;
+
     const apps = fromBuffer ? this.buffer() : await this.get();
 
     for (const app of apps) {

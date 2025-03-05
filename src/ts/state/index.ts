@@ -13,6 +13,7 @@ export class StateHandler extends Process {
   currentState: string = "";
   stateProps: Record<string, Record<any, any>> = {};
   stateAppProcess: AppProcess | undefined;
+  public _criticalProcess: boolean = true;
 
   constructor(
     handler: ProcessHandler,
@@ -37,6 +38,8 @@ export class StateHandler extends Process {
     props: Record<string, any> = {},
     instant = false
   ) {
+    if (this._disposed) return;
+
     if (WaveKernel.isPanicked() && id !== "crash-screen") return;
 
     const data = this.store[id];
@@ -121,6 +124,8 @@ export class StateHandler extends Process {
     htmlLoader: HTMLDivElement,
     cssLoader: HTMLLinkElement
   ) {
+    if (this._disposed) return;
+
     this.Log(`BEGINNING NORMAL LOAD OF ${data.name} (${id})`);
 
     try {
@@ -145,6 +150,8 @@ export class StateHandler extends Process {
   }
 
   async loadStateAsApp(data: State, props: Record<string, any>) {
+    if (this._disposed) return;
+
     this.Log(`BEGINNING LOAD OF ${data.name} (${data.identifier}) IN APP MODE`);
 
     const stack = this.kernel.getModule<ProcessHandler>("stack");
@@ -184,5 +191,9 @@ export class StateHandler extends Process {
       throw new StateError("Missing elements of state handling.");
 
     return { htmlLoader, cssLoader, main };
+  }
+
+  protected async stop(): Promise<any> {
+    throw new Error("Tried to kill StateHandler!");
   }
 }

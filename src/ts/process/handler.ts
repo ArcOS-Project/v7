@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { GlobalDispatcher } from "$ts/dispatch";
 import { Environment } from "$ts/kernel/env";
+import type { ProcessKillResult } from "$types/process";
 import { AppRenderer } from "../apps/renderer";
 import { WaveKernel } from "../kernel";
 import { Log } from "../kernel/logging";
@@ -106,10 +107,10 @@ export class ProcessHandler extends KernelModule {
     return proc as T;
   }
 
-  async kill(pid: number, force = false) {
+  async kill(pid: number, force = false): Promise<ProcessKillResult> {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
-    if (this.BUSY || WaveKernel.isPanicked()) return;
+    if (this.BUSY || WaveKernel.isPanicked()) return "err_disposed";
 
     Log("ProcessHandler.kill", `Attempting to kill ${pid}`);
 

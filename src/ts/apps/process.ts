@@ -98,16 +98,16 @@ export class AppProcess extends Process {
 
     const canClose = this._disposed || (await this.onClose());
 
+    if (!canClose) {
+      this.Log(`Can't close`);
+      return;
+    }
+
     if (this.getWindow()?.classList.contains("fullscreen"))
       this.globalDispatch.dispatch("window-unfullscreen", [
         this.pid,
         this.app.desktop,
       ]);
-
-    if (!canClose) {
-      this.Log(`Can't close`);
-      return;
-    }
 
     const elements = [
       ...document.querySelectorAll(`div.window[data-pid="${this.pid}"]`),
@@ -124,6 +124,8 @@ export class AppProcess extends Process {
 
       return this.killSelf();
     }
+
+    this.globalDispatch.dispatch("window-closing", [this.pid]);
 
     for (const element of elements) {
       element.classList.add("closing");

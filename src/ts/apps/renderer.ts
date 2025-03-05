@@ -338,7 +338,7 @@ export class AppRenderer extends Process {
   }
 
   async remove(pid: number) {
-    this.disposedCheck();
+    if (this._disposed) return;
 
     this.Log(`Removing render state of PID ${pid}`);
 

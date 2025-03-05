@@ -1,0 +1,33 @@
+div.window:not(.core) div.tab-interface {
+  display: flex;
+  flex-direction: column;
+}
+
+div.window:not(.core) div.tabs {
+  display: flex;
+  gap: 10px;
+  padding: 20px;
+  padding-bottom: 0;
+  border-bottom: var(--accent) 1px solid;
+  overflow: hidden;
+}
+
+div.window:not(.core) div.tabs div.right {
+  margin-left: auto;
+}
+
+div.window:not(.core) div.tab-interface > div.renderer > div.tab {
+  display: none;
+}
+
+div.window:not(.core) div.tab-interface > div.renderer > div.tab.visible {
+  display: initial;
+}
+
+div.window:not(.core) div.tab-interface div.tabs button.tab {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin: 0;
+  transform: unset !important;
+  min-width: unset;
+}

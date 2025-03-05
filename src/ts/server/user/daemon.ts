@@ -79,6 +79,7 @@ export class UserDaemon extends Process {
   private mimeIcons: Record<string, string[]> = DefaultMimeIcons;
   private virtualdesktopChangingTimeout: NodeJS.Timeout | undefined;
   private firstSyncDone = false;
+  override _criticalProcess: boolean = true;
 
   constructor(
     handler: ProcessHandler,

@@ -66,7 +66,7 @@ export class Process {
     if (this._disposed) return;
     this.Log(`Killing self (PID ${this.pid})`);
     await this.handler.waitForAvailable();
-    await this.handler.kill(this.pid);
+    await this.handler.kill(this.pid, true);
   }
 
   protected Log(message: string, level = LogLevel.info) {

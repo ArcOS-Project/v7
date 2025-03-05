@@ -9,6 +9,7 @@ import { WallpaperApp } from "$apps/components/wallpaper/metadata";
 import { FileManagerApp } from "$apps/user/filemanager/metadata";
 import { HexEditorApp } from "$apps/user/hexedit/metadata";
 import { MediaPlayerApp } from "$apps/user/mediaplayer/metadata";
+import { ProcessesApp } from "$apps/user/processes/metadata";
 import { SystemSettings } from "$apps/user/settings/metadata";
 import { TestApp } from "$apps/user/test/metadata";
 import type { AppKeyCombinations } from "$types/accelerator";
@@ -28,6 +29,7 @@ export const BuiltinApps: AppStorage = [
   OpenWithApp,
   ItemInfoApp,
   MediaPlayerApp,
+  ProcessesApp,
 ];
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];
