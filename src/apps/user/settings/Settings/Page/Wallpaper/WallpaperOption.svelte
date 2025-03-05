@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { SettingsRuntime } from "$apps/user/settings/runtime";
   import type { UserDaemon } from "$ts/server/user/daemon";
   import type { UserPreferencesStore } from "$types/user";
   import type { Wallpaper } from "$types/wallpaper";

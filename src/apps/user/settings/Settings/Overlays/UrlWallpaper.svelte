@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { DesktopIcon, PasswordIcon } from "$ts/images/general";
+  import { DesktopIcon } from "$ts/images/general";
   import { onMount } from "svelte";
   import type { OverlayRuntime } from "../../overlay";
 

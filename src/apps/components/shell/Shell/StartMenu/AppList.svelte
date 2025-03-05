@@ -1,10 +1,10 @@
 <script lang="ts">
+  import Spinner from "$lib/Spinner.svelte";
   import { isPopulatable } from "$ts/apps/util";
   import type { AppStorage } from "$types/app";
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../../runtime";
   import ListItem from "./AppList/ListItem.svelte";
-  import Spinner from "$lib/Spinner.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
   const { searchResults, searchQuery, searching, SelectionIndex } = process;

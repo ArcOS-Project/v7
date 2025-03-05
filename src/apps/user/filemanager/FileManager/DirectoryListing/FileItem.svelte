@@ -1,15 +1,15 @@
 <script lang="ts">
+  import { contextProps } from "$ts/context/actions.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
   import { formatBytes, join } from "$ts/fs/util";
+  import { DefaultMimeIcon } from "$ts/images/mime";
   import type { FileEntry } from "$types/fs";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
   import { fromMime } from "human-filetypes";
-  import type { FileManagerRuntime } from "../../runtime";
-  import { DefaultMimeIcon } from "$ts/images/mime";
-  import { contextProps } from "$ts/context/actions.svelte";
   import { onMount } from "svelte";
+  import type { FileManagerRuntime } from "../../runtime";
 
   const { process, file }: { process: FileManagerRuntime; file: FileEntry } =
     $props();

@@ -3,7 +3,6 @@
   import { DefaultMimeIcon } from "$ts/images/mime";
   import { onMount } from "svelte";
   import type { MediaPlayerRuntime } from "../runtime";
-  import { QuestionIcon } from "$ts/images/dialog";
 
   const {
     process,

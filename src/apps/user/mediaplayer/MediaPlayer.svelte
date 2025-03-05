@@ -3,9 +3,9 @@
   import { onMount } from "svelte";
   import Bar from "./MediaPlayer/Bar.svelte";
   import Controls from "./MediaPlayer/Controls.svelte";
-  import type { MediaPlayerRuntime } from "./runtime";
   import File from "./MediaPlayer/File.svelte";
   import QueueItem from "./MediaPlayer/QueueItem.svelte";
+  import type { MediaPlayerRuntime } from "./runtime";
 
   const { process }: { process: MediaPlayerRuntime } = $props();
 

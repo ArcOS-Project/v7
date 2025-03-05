@@ -1,8 +1,8 @@
+import "$css/apps/components/openwith.css";
 import { ComponentIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import OpenWith from "./OpenWith.svelte";
 import { OpenWithRuntime } from "./runtime";
-import "$css/apps/components/openwith.css";
 
 export const OpenWithApp: App = {
   metadata: {

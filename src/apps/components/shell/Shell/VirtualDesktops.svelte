@@ -1,11 +1,11 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
+  import { contextProps } from "$ts/context/actions.svelte";
   import { Wallpapers } from "$ts/wallpaper/store";
   import { Store } from "$ts/writable";
   import type { Workspace } from "$types/user";
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../runtime";
-  import { contextProps } from "$ts/context/actions.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
   const { userDaemon, userPreferences, workspaceManagerOpened } = process;

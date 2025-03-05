@@ -1,7 +1,6 @@
 import { ComponentIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import NewFolder from "../FileManager/Overlays/NewFolder.svelte";
-import RenameItem from "../FileManager/Overlays/RenameItem.svelte";
 import { NewFolderRuntime } from "./runtime";
 
 export const NewFolderApp: App = {

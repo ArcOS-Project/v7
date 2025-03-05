@@ -5,10 +5,10 @@
   import { formatBytes } from "$ts/fs/util";
   import type { ReadableStore } from "$ts/writable";
   import dayjs from "dayjs";
-  import type { ItemInfoRuntime } from "../runtime";
-  import type { ItemInfo } from "../types";
   import advancedFormat from "dayjs/plugin/advancedFormat";
   import { onMount } from "svelte";
+  import type { ItemInfoRuntime } from "../runtime";
+  import type { ItemInfo } from "../types";
   dayjs.extend(advancedFormat);
 
   const {

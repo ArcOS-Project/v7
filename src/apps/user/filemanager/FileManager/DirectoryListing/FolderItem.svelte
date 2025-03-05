@@ -7,8 +7,8 @@
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
-  import type { FileManagerRuntime } from "../../runtime";
   import { onMount } from "svelte";
+  import type { FileManagerRuntime } from "../../runtime";
 
   const { process, dir }: { process: FileManagerRuntime; dir: FolderEntry } =
     $props();

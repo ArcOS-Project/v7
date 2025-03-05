@@ -1,6 +1,5 @@
 import { GlobalDispatcher } from "$ts/dispatch";
 import { ArcOSVersion } from "$ts/env";
-import type { Filesystem } from "$ts/fs";
 import { BugReportIcon, ComponentIcon } from "$ts/images/general";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";

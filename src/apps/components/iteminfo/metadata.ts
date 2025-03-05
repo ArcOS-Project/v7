@@ -1,8 +1,8 @@
+import "$css/apps/components/iteminfo.css";
 import { ComponentIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import ItemInfo from "./ItemInfo.svelte";
 import { ItemInfoRuntime } from "./runtime";
-import "$css/apps/components/iteminfo.css";
 
 export const ItemInfoApp: App = {
   metadata: {

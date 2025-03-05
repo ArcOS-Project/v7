@@ -1,7 +1,6 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
   import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
-  import { Sleep } from "$ts/sleep";
   import type { AppComponentProps } from "$types/app";
   import { onMount } from "svelte";
   import type { TestAppRuntime } from "./runtime";

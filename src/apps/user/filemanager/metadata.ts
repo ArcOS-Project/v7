@@ -1,8 +1,8 @@
+import "$css/apps/user/filemanager.css";
 import { FileManagerIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import FileManager from "./FileManager.svelte";
 import { FileManagerRuntime } from "./runtime";
-import "$css/apps/user/filemanager.css";
 
 export const FileManagerApp: App = {
   metadata: {

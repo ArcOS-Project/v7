@@ -2,9 +2,9 @@
   import type { BooleanStore } from "$ts/writable";
   import type { UserPreferencesStore } from "$types/user";
   import type { ShellRuntime } from "../runtime";
+  import AppList from "./StartMenu/AppList.svelte";
   import Bottom from "./StartMenu/Bottom.svelte";
   import Folders from "./StartMenu/Folders.svelte";
-  import AppList from "./StartMenu/AppList.svelte";
 
   const {
     process,

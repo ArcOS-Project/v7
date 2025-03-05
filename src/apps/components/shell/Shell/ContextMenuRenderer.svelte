@@ -1,10 +1,10 @@
 <script lang="ts">
   import { Sleep } from "$ts/sleep";
+  import { Store } from "$ts/writable";
   import type { ContextMenuInstance } from "$types/app";
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../runtime";
   import Item from "./ContextMenuRenderer/Item.svelte";
-  import { Store } from "$ts/writable";
 
   const { process }: { process: ShellRuntime } = $props();
   const { userPreferences } = process;

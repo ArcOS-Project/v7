@@ -1,8 +1,5 @@
 <script lang="ts">
-  import { ErrorIcon } from "$ts/images/dialog";
-  import { BadStatusIcon } from "$ts/images/status";
   import type { UserDaemon } from "$ts/server/user/daemon";
-  import { onMount } from "svelte";
 
   interface Props {
     userDaemon?: UserDaemon | undefined;

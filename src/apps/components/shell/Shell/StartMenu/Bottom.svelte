@@ -1,7 +1,7 @@
 <script lang="ts">
+  import { Sleep } from "$ts/sleep";
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../../runtime";
-  import { Sleep } from "$ts/sleep";
 
   const { process }: { process: ShellRuntime } = $props();
   const { searchQuery, startMenuOpened } = process;

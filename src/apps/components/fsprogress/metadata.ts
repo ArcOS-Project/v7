@@ -1,8 +1,8 @@
+import "$css/apps/components/fsprogress.css";
 import { ComponentIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import FsProgress from "./FsProgress.svelte";
 import { FsProgressRuntime } from "./runtime";
-import "$css/apps/components/fsprogress.css";
 
 export const FsProgressApp: App = {
   metadata: {

@@ -4,6 +4,7 @@ import {
   type FileProgressMutator,
   type FsProgressOperation,
 } from "$apps/components/fsprogress/types";
+import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import { AppProcess } from "$ts/apps/process";
 import { ApplicationStorage } from "$ts/apps/storage";
 import { BuiltinApps } from "$ts/apps/store";
@@ -50,7 +51,6 @@ import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultMimeIcons } from "./store";
-import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 
 export class UserDaemon extends Process {
   public initialized = false;

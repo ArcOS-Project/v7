@@ -32,7 +32,6 @@ import img33 from "$assets/bg/img33.png";
 import img34 from "$assets/bg/img34.png";
 import img35 from "$assets/bg/img35.jpg";
 import img36 from "$assets/bg/img36.jpg";
-export { default as NoDaemon } from "$assets/bg/nodaemon.svg";
 import img0Thumb from "$assets/bg/thumbnails/imgthumb0.png";
 import img01Thumb from "$assets/bg/thumbnails/imgthumb01.jpeg";
 import img02Thumb from "$assets/bg/thumbnails/imgthumb02.png";
@@ -68,6 +67,7 @@ import img34Thumb from "$assets/bg/thumbnails/imgthumb34.png";
 import img35Thumb from "$assets/bg/thumbnails/imgthumb35.jpg";
 import img36Thumb from "$assets/bg/thumbnails/imgthumb36.jpg";
 import type { Wallpaper } from "$types/wallpaper";
+export { default as NoDaemon } from "$assets/bg/nodaemon.svg";
 
 export const Wallpapers: { [key: string]: Wallpaper } = {
   /**ArcOS Team */

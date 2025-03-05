@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { TextEditorIcon } from "$ts/images/apps";
   import { DefaultMimeIcon } from "$ts/images/mime";
   import { onMount } from "svelte";
   import type { NewFileRuntime } from "../../newfile/runtime";

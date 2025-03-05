@@ -9,7 +9,6 @@ import {
   SettingsIcon,
   WaveIcon,
 } from "$ts/images/general";
-import { ImageMimeIcon } from "$ts/images/mime";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Axios } from "$ts/server/axios";
 import { Sleep } from "$ts/sleep";

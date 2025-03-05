@@ -1,7 +1,6 @@
 import type { WaveKernel } from "$ts/kernel";
 import { KernelModule } from "$ts/kernel/module";
 import { ProcessHandler } from "$ts/process/handler";
-import type { Process } from "$ts/process/instance";
 import { LangError } from "./error";
 import { Interpreter } from "./interpreter";
 

@@ -12,7 +12,6 @@ import {
   PlaylistMimeIcon,
   SvgMimeIcon,
   TextMimeIcon,
-  UnknownFileIcon,
   VideoMimeIcon,
   WebpageMimeIcon,
   XmlMimeIcon,

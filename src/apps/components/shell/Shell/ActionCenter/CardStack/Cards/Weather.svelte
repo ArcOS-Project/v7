@@ -2,10 +2,10 @@
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import type { WeatherInformation } from "$apps/components/shell/types";
   import { SettingsRuntime } from "$apps/user/settings/runtime";
+  import { contextProps } from "$ts/context/actions.svelte";
   import { Sleep } from "$ts/sleep";
   import { onMount } from "svelte";
   import Spinner from "../../../../../../../lib/Spinner.svelte";
-  import { contextProps } from "$ts/context/actions.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
 

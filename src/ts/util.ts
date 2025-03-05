@@ -1,6 +1,6 @@
-import validator from "validator";
-import leoProfanity from "leo-profanity";
 import { passwordStrength } from "check-password-strength";
+import leoProfanity from "leo-profanity";
+import validator from "validator";
 
 leoProfanity.loadDictionary("en");
 

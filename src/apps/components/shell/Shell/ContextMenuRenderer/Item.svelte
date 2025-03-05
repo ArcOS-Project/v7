@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { AppProcess } from "$ts/apps/process";
+  import { Sleep } from "$ts/sleep";
   import type { ReadableStore } from "$ts/writable";
   import type { ContextMenuItem } from "$types/app";
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../../runtime";
   import SubItems from "./Item/SubItems.svelte";
-  import { Sleep } from "$ts/sleep";
 
   interface Props {
     data: ContextMenuItem;
