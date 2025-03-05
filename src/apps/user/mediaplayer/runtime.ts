@@ -7,7 +7,6 @@ import { VideoMimeIcon } from "$ts/images/mime";
 import type { ProcessHandler } from "$ts/process/handler";
 import { DefaultMimeIcons } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
-import { sha256 } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { RenderArgs } from "$types/process";
@@ -72,6 +71,7 @@ export class MediaPlayerRuntime extends AppProcess {
         this.Stop();
         if (this.player) this.player.src = "";
         this.Loaded.set(false);
+        this.isVideo.set(false);
         this.windowTitle.set(this.app.data.metadata.name);
         this.windowIcon.set(this.app.data.metadata.icon);
         this.getWindow()?.classList.remove("fullscreen");
@@ -260,7 +260,11 @@ export class MediaPlayerRuntime extends AppProcess {
 
     await Sleep(10);
 
-    await this.player?.play();
+    try {
+      await this.player?.play();
+    } catch {
+      this.failedToPlay();
+    }
     this.Loaded.set(true);
   }
 
@@ -269,7 +273,9 @@ export class MediaPlayerRuntime extends AppProcess {
       title: "Select a file to add to the queue",
       icon: MediaPlayerIcon,
       startDir: getParentDirectory(this.queue()[this.queueIndex()]) || "U:/",
-      extensions: this.app.data.opens?.extensions,
+      extensions: this.app.data.opens?.extensions?.filter(
+        (e) => e !== ".arcpl"
+      ),
       multiple: true,
     });
 
@@ -294,7 +300,6 @@ export class MediaPlayerRuntime extends AppProcess {
 
   async savePlaylist() {
     const playlist = btoa(JSON.stringify(this.queue(), null, 2));
-    const sha = await sha256(playlist);
 
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Save playlist",
@@ -347,5 +352,19 @@ export class MediaPlayerRuntime extends AppProcess {
         true
       );
     }
+  }
+
+  async failedToPlay() {
+    MessageBox(
+      {
+        title: "Failed to play",
+        message: `Media Player failed to play the file you wanted to open. It might not be a (supported) audio or video file. Please try a different file.`,
+        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        image: MediaPlayerIcon,
+        sound: "arcos.dialog.error",
+      },
+      this.pid,
+      true
+    );
   }
 }
