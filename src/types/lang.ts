@@ -1,4 +1,6 @@
 import type { ASTNode } from "$ts/lang/ast";
+import type { LangError } from "$ts/lang/error";
+import type { Interpreter } from "$ts/lang/interpreter";
 
 export interface NativeFunction {
   parameters: string[];
@@ -45,3 +47,23 @@ export type TokenType =
   | "FOR"
   | "RETURN"
   | "ELSE";
+
+export type LangErrorCallback = (error: LangError) => void;
+export type LangStdoutCallback = (...args: any[]) => void;
+export type LangStdinCallback = () => Promise<string>;
+export type LangExitCallback = (interpreter: Interpreter) => void;
+export type GlobalEnvironmentCallback = (
+  interpreter: Interpreter
+) => Record<string, any>;
+
+export interface ArcLangOptions {
+  onError?: LangErrorCallback;
+  stdout?: LangStdoutCallback;
+  stdin?: LangStdinCallback;
+  onExit?: LangExitCallback;
+  allowUnsafe?: boolean;
+  globalEnvironment?: GlobalEnvironmentCallback;
+  arguments?: any[];
+  workingDir?: string;
+  ast?: ASTNode;
+}

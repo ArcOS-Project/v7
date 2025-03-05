@@ -32,6 +32,7 @@ export class LangError extends Error {
 
     const lineNumber = `${this.line} | `;
 
+    console.trace();
     return `${this.name}: ${
       this.message
     }${location}\n\n${lineNumber}${line}\n${" ".repeat(

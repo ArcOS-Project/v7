@@ -1,6 +1,7 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
   import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
+  import type { Interpreter } from "$ts/lang/interpreter";
   import type { AppComponentProps } from "$types/app";
   import { onMount } from "svelte";
   import type { TestAppRuntime } from "./runtime";
@@ -36,29 +37,15 @@
     variables = [];
 
     try {
-      (await lang.run(code, process.pid, {
-        continuous: true,
+      const proc = (await lang.run(code, process.pid, {
         workingDir: workingDirectory,
-        stdout: (m) => (output += `${m}\n`),
-        onTick: (lang) => {
-          variables = [...lang.variables];
-          pid = lang.pid;
-          const line = lang.tokens.map((a) => `"${a}"`).join(" ");
-          process.windowTitle.set(`Test - ${line}`);
-
-          if (line === `"jump" ":*idle"` || !line) return;
-
-          execution += `${lang.executionCount + 1} -> ${line}\n`;
-          setTimeout(() => {
-            executionDiv!.scrollTop = executionDiv?.scrollHeight || 0;
-          }, 10);
-        },
+        stdout: (m) => (output += `${JSON.stringify(m)}\n`),
         onError: (e) => {
           MessageBox(
             {
               image: WarningIcon,
               title: "Execution Error",
-              message: `An error occured: ${e.message}.<br><br>At keyword "${e.keyword}" at position ${e.instruction.line}:${e.instruction.column} (instruction #${e.pointer}).<br><code class="block">${e.instruction.command}</code>`,
+              message: `An error occured: ${e.message}.<br><br>At position ${e.line}:${e.column}.<br><code class="block">${e.input}</code>`,
               buttons: [
                 {
                   caption: "Okay",
@@ -84,7 +71,9 @@
           }, 1000);
         },
         allowUnsafe: true,
-      })) || [];
+      })) as Interpreter;
+
+      pid = proc.pid;
     } catch (e) {
       MessageBox(
         {

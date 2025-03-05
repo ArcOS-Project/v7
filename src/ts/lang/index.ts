@@ -1,8 +1,10 @@
 import type { WaveKernel } from "$ts/kernel";
 import { KernelModule } from "$ts/kernel/module";
 import { ProcessHandler } from "$ts/process/handler";
+import type { ArcLangOptions } from "$types/lang";
 import { LangError } from "./error";
 import { Interpreter } from "./interpreter";
+import { DefaultArcLangOptions } from "./store";
 
 export class ArcLang extends KernelModule {
   stack = this.kernel.getModule<ProcessHandler>("stack");
@@ -12,7 +14,11 @@ export class ArcLang extends KernelModule {
     super(kernel, id);
   }
 
-  async run(code: string, parentPid: number) {
+  async run(
+    code: string,
+    parentPid: number,
+    options: ArcLangOptions = DefaultArcLangOptions
+  ) {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
     if (this.locked) throw new LangError("ArcLang is busy");
 
@@ -20,7 +26,8 @@ export class ArcLang extends KernelModule {
       const proc = await this.stack.spawn<Interpreter>(
         Interpreter,
         undefined,
-        parentPid
+        parentPid,
+        options
       );
 
       if (!proc) throw new LangError("Failed to spawn language instance");

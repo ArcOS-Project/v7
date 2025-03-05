@@ -52,17 +52,20 @@ export class Parser {
       return this.forStatement();
     } else if (this.currentToken?.type === "RETURN") {
       return this.returnStatement();
-    } else if (
-      this.currentToken?.type === "IDENTIFIER" &&
-      (this.lexer.input[this.lexer.position] === "=" ||
-        this.lexer.input[this.lexer.position + 1] === "=")
-    ) {
-      return this.assignmentStatement()!;
-    } else if (
-      this.currentToken?.type === "IDENTIFIER" &&
-      this.lexer.input[this.lexer.position] === "."
-    ) {
-      return this.assignmentStatement()!;
+    } else if (this.currentToken?.type === "IDENTIFIER") {
+      // Check if it's an assignment statement
+      if (
+        this.lexer.input[this.lexer.position] === "=" ||
+        (this.lexer.input[this.lexer.position] === " " &&
+          this.lexer.input[this.lexer.position + 1] === "=")
+      ) {
+        console.log(this.lexer.input[this.lexer.position]);
+        return this.assignmentStatement()!;
+      } else if (this.lexer.input[this.lexer.position] === "(") {
+        return this.expressionStatement();
+      } else {
+        return this.expressionStatement();
+      }
     } else {
       return this.expressionStatement();
     }
@@ -71,9 +74,12 @@ export class Parser {
   functionDeclaration(): ASTNode {
     this.eat("FUN");
 
-    const identifier = new ASTNode("IDENTIFIER", this.currentToken?.value);
+    let identifier = null;
+    if (this.currentToken?.type === "IDENTIFIER") {
+      identifier = new ASTNode("IDENTIFIER", this.currentToken.value);
+      this.eat("IDENTIFIER");
+    }
 
-    this.eat("IDENTIFIER");
     this.eat("LPAREN");
 
     const parameters: ASTNode[] = [];
@@ -93,7 +99,7 @@ export class Parser {
 
     const body = this.blockStatement();
 
-    return new ASTNode("FUNCTION_DECLARATION", identifier.value, [
+    return new ASTNode("FUNCTION_DECLARATION", identifier?.value ?? null, [
       identifier,
       new ASTNode("PARAMETERS", null, parameters),
       body,
@@ -495,7 +501,12 @@ export class Parser {
       this.eat("STRING");
       this.eat("COLON");
 
-      const value = this.expression();
+      let value: ASTNode;
+      if (this.currentToken?.type === "FUN") {
+        value = this.functionDeclaration(); // Parse function definition
+      } else {
+        value = this.expression(); // Values can be any expression
+      }
 
       properties.push({ key: key, value: value });
 

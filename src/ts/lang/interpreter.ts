@@ -1,87 +1,144 @@
+import { applyDefaults } from "$ts/hierarchy";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
-import type { NativeFunction } from "$types/lang";
+import type {
+  ArcLangOptions,
+  LangErrorCallback,
+  LangExitCallback,
+  LangStdinCallback,
+  LangStdoutCallback,
+} from "$types/lang";
 import type { ASTNode } from "./ast";
 import { LangError } from "./error";
 import { Lexer } from "./lexer";
 import { Parser } from "./parser";
+import { DefaultArcLangOptions } from "./store";
 
 export class Interpreter extends Process {
   ast: ASTNode | undefined;
   globalEnvironment: Record<string, any>;
   currentEnvironment: Record<string, any>;
+  callStack: Record<string, any>[] = [];
+  onError: LangErrorCallback;
+  stdout: LangStdoutCallback;
+  stdin: LangStdinCallback;
+  onExit: LangExitCallback;
+  allowUnsafe: boolean = false;
+  arguments: any[] = [];
+  workingDir: string = "U:/";
 
   constructor(
     handler: ProcessHandler,
     pid: number,
     parentPid: number,
-    ast?: ASTNode
+    options?: ArcLangOptions
   ) {
+    options ||= DefaultArcLangOptions;
+
     super(handler, pid, parentPid);
 
-    if (ast) this.ast = ast;
+    const opt = applyDefaults<ArcLangOptions>(
+      options || {},
+      DefaultArcLangOptions
+    );
 
-    this.globalEnvironment = {
-      print: {
-        parameters: ["message"],
-        body: (...args: any[]) => {
-          console.log(...args);
+    this.onError = opt.onError!;
+    this.stdout = opt.stdout!;
+    this.stdin = opt.stdin!;
+    this.onExit = opt.onExit!;
+    if (opt.allowUnsafe) this.allowUnsafe = opt.allowUnsafe;
+    if (opt.arguments) this.arguments = opt.arguments;
+    if (opt.workingDir) this.workingDir = opt.workingDir;
+    if (opt.ast) this.ast = opt.ast;
 
-          return null;
-        },
+    this.globalEnvironment = opt.globalEnvironment
+      ? opt.globalEnvironment(this)
+      : {
+          print: {
+            parameters: ["message"],
+            body: (...args: any[]) => {
+              this.stdout(...args);
 
-        native: true,
-      },
-      performance: {
-        now: {
-          parameters: [],
-          body: () => {
-            return performance.now();
+              return null;
+            },
+
+            native: true,
           },
-          native: true,
-        },
-      },
-    };
+          performance: {
+            now: {
+              parameters: [],
+              body: () => {
+                return performance.now();
+              },
+              native: true,
+            },
+          },
+          stack: {
+            parameters: [],
+            body: () => {
+              return this.callStack;
+            },
+            native: true,
+          },
+          fs: {
+            readDir: {
+              parameters: ["path"],
+              body: async (path: string) => {
+                return await this.fs.readDir(path);
+              },
+              native: true,
+            },
+          },
+          len: {
+            parameters: ["x"],
+            body: (x: any) => (x ?? "").length || 0,
+            native: true,
+          },
+        };
 
     this.currentEnvironment = this.globalEnvironment;
   }
 
-  interpret(ast: ASTNode | undefined = this.ast) {
-    if (!ast) return;
-
-    return this.visit(ast);
+  protected async stop(): Promise<any> {
+    this.onExit(this);
   }
 
-  visit(node: ASTNode): any {
+  async interpret(ast: ASTNode | undefined = this.ast) {
+    if (!ast) return;
+
+    return await this.visit(ast);
+  }
+
+  async visit(node: ASTNode): Promise<any> {
     switch (node.type) {
       case "PROGRAM":
-        return this.visitProgram(node);
+        return await this.visitProgram(node);
       case "ASSIGNMENT":
-        return this.visitAssignment(node);
+        return await this.visitAssignment(node);
       case "EXPRESSION_STATEMENT":
-        return this.visitExpressionStatement(node);
+        return await this.visitExpressionStatement(node);
       case "IF_STATEMENT":
-        return this.visitIfStatement(node);
+        return await this.visitIfStatement(node);
       case "WHILE_STATEMENT":
-        return this.visitWhileStatement(node);
+        return await this.visitWhileStatement(node);
       case "FOR_STATEMENT":
-        return this.visitForStatement(node);
+        return await this.visitForStatement(node);
       case "BLOCK_STATEMENT":
-        return this.visitBlockStatement(node);
+        return await this.visitBlockStatement(node);
       case "FUNCTION_DECLARATION":
-        return this.visitFunctionDeclaration(node);
+        return await this.visitFunctionDeclaration(node);
       case "FUNCTION_CALL":
-        return this.visitFunctionCall(node);
+        return await this.visitFunctionCall(node);
       case "RETURN_STATEMENT":
-        return this.visitReturnStatement(node);
+        return await this.visitReturnStatement(node);
       case "ARRAY_LITERAL":
-        return this.visitArrayLiteral(node);
+        return await this.visitArrayLiteral(node);
       case "ARRAY_ACCESS":
-        return this.visitArrayAccess(node);
+        return await this.visitArrayAccess(node);
       case "OBJECT_LITERAL":
-        return this.visitObjectLiteral(node);
+        return await this.visitObjectLiteral(node);
       case "PROPERTY_ACCESS":
-        return this.visitPropertyAccess(node);
+        return await this.visitPropertyAccess(node);
       case "INTEGER":
       case "FLOAT":
       case "STRING":
@@ -89,7 +146,7 @@ export class Interpreter extends Process {
       case "NULL":
         return node.value;
       case "IDENTIFIER":
-        return this.visitIdentifier(node);
+        return await this.visitIdentifier(node);
       case "PLUS":
       case "MINUS":
       case "MULTIPLY":
@@ -104,34 +161,34 @@ export class Interpreter extends Process {
       case "AND":
       case "OR":
       case "NOT":
-        return this.visitBinaryOperator(node);
+        return await this.visitBinaryOperator(node);
       default:
         this.error(`Unknown node type: ${node.type}`);
     }
   }
 
-  visitProgram(node: ASTNode) {
+  async visitProgram(node: ASTNode) {
     let result = null;
 
     for (const child of node.children) {
-      result = this.visit(child!);
+      result = await this.visit(child!);
     }
 
     return result;
   }
 
-  visitExpressionStatement(node: ASTNode) {
-    return this.visit(node.children[0]!);
+  async visitExpressionStatement(node: ASTNode) {
+    return await this.visit(node.children[0]!);
   }
 
-  visitAssignment(node: ASTNode) {
+  async visitAssignment(node: ASTNode) {
     const target = node.children[0];
-    const value = this.visit(node.children[1]!);
+    const value = await this.visit(node.children[1]!);
 
     if (target?.type === "IDENTIFIER") {
       this.currentEnvironment[target?.value] = value;
     } else if (target?.type === "PROPERTY_ACCESS") {
-      const object = this.visit(target?.children[0]!);
+      const object = await this.visit(target?.children[0]!);
       const propertyName = target?.children[1]?.value;
 
       if (typeof object !== "object" || object === null) {
@@ -144,8 +201,8 @@ export class Interpreter extends Process {
     return value;
   }
 
-  visitIfStatement(node: ASTNode) {
-    const condition = this.visit(node.children[0]!);
+  async visitIfStatement(node: ASTNode) {
+    const condition = await this.visit(node.children[0]!);
 
     if (condition) {
       return this.visit(node.children[1]!);
@@ -156,32 +213,32 @@ export class Interpreter extends Process {
     return null;
   }
 
-  visitWhileStatement(node: ASTNode) {
+  async visitWhileStatement(node: ASTNode) {
     let result = null;
 
-    while (this.visit(node.children[0]!)) {
-      result = this.visit(node.children[1]!);
+    while (await this.visit(node.children[0]!)) {
+      result = await this.visit(node.children[1]!);
     }
 
     return result;
   }
-  visitForStatement(node: ASTNode) {
+  async visitForStatement(node: ASTNode) {
     const init = node.children[0];
     const condition = node.children[1];
     const update = node.children[2];
     const body = node.children[3];
 
-    this.visit(init!);
+    await this.visit(init!);
 
-    while (this.visit(condition!)) {
-      this.visit(body!);
-      this.visit(update!);
+    while (await this.visit(condition!)) {
+      await this.visit(body!);
+      await this.visit(update!);
     }
 
     return null;
   }
 
-  visitBlockStatement(node: ASTNode) {
+  async visitBlockStatement(node: ASTNode) {
     const previousEnvironment = this.currentEnvironment;
 
     this.currentEnvironment = Object.create(this.currentEnvironment);
@@ -189,7 +246,7 @@ export class Interpreter extends Process {
     let result = null;
 
     for (const child of node.children) {
-      result = this.visit(child!);
+      result = await this.visit(child!);
 
       if (child?.type === "RETURN_STATEMENT") {
         break;
@@ -201,31 +258,50 @@ export class Interpreter extends Process {
     return result;
   }
 
-  visitFunctionDeclaration(node: ASTNode) {
+  async visitFunctionDeclaration(node: ASTNode) {
     const functionName = node.children[0]?.value;
     const parameters = node.children[1]?.children.map((param) => param?.value);
     const body = node.children[2];
 
-    this.globalEnvironment[functionName] = {
+    return (this.globalEnvironment[functionName] = {
       parameters: parameters,
       body: body,
-    };
-
-    return null;
+    });
   }
 
-  visitFunctionCall(node: ASTNode) {
-    const functionName = node.children[0]?.value;
-    const args = node.children[1]?.children.map((arg) => this.visit(arg!));
-    const functionDefinition: NativeFunction =
-      this.globalEnvironment[functionName];
+  async visitFunctionCall(node: ASTNode) {
+    const functionIdentifier = node.children[0];
+    const args = await Promise.all(
+      node.children[1]?.children.map(async (arg) => await this.visit(arg!)) ||
+        []
+    );
+
+    let functionName;
+    let thisContext = this.globalEnvironment; // Default context
+    let functionDefinition;
+
+    if (functionIdentifier?.type === "IDENTIFIER") {
+      functionName = functionIdentifier.value;
+      functionDefinition =
+        this.currentEnvironment[functionName] ||
+        this.globalEnvironment[functionName];
+    } else if (functionIdentifier?.type === "PROPERTY_ACCESS") {
+      // Method call
+      thisContext = await this.visit(functionIdentifier.children[0]!); // Object
+      functionName = functionIdentifier.children[1]?.value; // Method name
+      functionDefinition = thisContext[functionName]; // Look up function in object
+      if (!functionDefinition) {
+        this.error(`Undefined method: ${functionName} on object`);
+      }
+    } else {
+      this.error("Invalid function identifier");
+    }
 
     if (!functionDefinition) {
       this.error(`Undefined function: ${functionName}`);
     }
 
-    const functionParams = functionDefinition.parameters || [];
-
+    const functionParams: string[] = functionDefinition.parameters;
     const functionBody = functionDefinition.body;
 
     if ((args?.length || 0) < functionParams.length) {
@@ -237,43 +313,73 @@ export class Interpreter extends Process {
     }
 
     const previousEnvironment = this.currentEnvironment;
+    this.currentEnvironment = Object.create(thisContext); // New scope, inheriting from the object's context
 
-    this.currentEnvironment = Object.create(this.globalEnvironment);
-
+    // Bind arguments to parameters in the new scope
     for (let i = 0; i < functionParams.length; i++) {
       this.currentEnvironment[functionParams[i]] = args![i];
     }
 
-    let result: ASTNode;
+    // Push a new frame onto the call stack
+    this.callStack.push({
+      functionName: functionName,
+      functionParams,
 
-    if (functionDefinition.native) {
-      const nativeArgs = functionParams.map(
-        (param) => this.currentEnvironment[param]
-      );
+      // You can add more information here, like line number, arguments, etc.
+    });
 
-      result = (functionDefinition.body as any)(...nativeArgs);
-    } else {
-      result = this.visit(functionBody as ASTNode);
+    let result;
+    try {
+      if (functionDefinition.native) {
+        // Call the native JavaScript function
+        const nativeArgs = functionParams.map(
+          (param, index) => this.currentEnvironment[param]
+        );
+        result = await functionDefinition.body.call(thisContext, ...nativeArgs); // Set 'this' context
+      } else {
+        result = await this.visit(functionBody);
+      }
+    } finally {
     }
 
+    // Restore the previous scope
     this.currentEnvironment = previousEnvironment;
 
     return result;
   }
 
-  visitReturnStatement(node: ASTNode) {
-    return this.visit(node.children[0]!);
+  async visitReturnStatement(node: ASTNode) {
+    return await this.visit(node.children[0]!);
   }
 
-  visitArrayLiteral(node: ASTNode) {
+  async visitArrayLiteral(node: ASTNode) {
     return node.children.map((child) => this.visit(child!));
   }
 
-  visitArrayAccess(node: ASTNode) {
-    const identifier = node.children[0]?.value;
-    const index = this.visit(node.children[1]!);
+  async visitArrayAccess(node: ASTNode) {
+    console.log(node);
+    const target = node.children[0];
+    let identifier: string;
+    let value: any;
 
-    const value = this.currentEnvironment[identifier];
+    if (target?.type === "IDENTIFIER") {
+      identifier = target?.value;
+      value = this.currentEnvironment[identifier];
+    } else if (target?.type === "PROPERTY_ACCESS") {
+      const object = await this.visit(target?.children[0]!);
+      const propertyName = target?.children[1]?.value;
+
+      if (typeof object !== "object" || object === null) {
+        this.error("Cannot set property on a non-object");
+      }
+
+      identifier = propertyName;
+      value = object[propertyName];
+    }
+
+    const index = await this.visit(node.children[1]!);
+
+    console.log(this.currentEnvironment, identifier!, value);
 
     if (typeof value === "string") {
       if (typeof index !== "number") {
@@ -296,22 +402,22 @@ export class Interpreter extends Process {
 
       return value[index];
     } else {
-      this.error(`${identifier} is not an array or a string`);
+      this.error(`${identifier!} is not an array or a string`);
     }
   }
 
-  visitObjectLiteral(node: ASTNode) {
+  async visitObjectLiteral(node: ASTNode) {
     const obj: Record<string, ASTNode> = {};
 
     for (const property of node.children) {
-      obj[property!.key] = this.visit(property!.value);
+      obj[property!.key] = await this.visit(property!.value);
     }
 
     return obj;
   }
 
-  visitPropertyAccess(node: ASTNode) {
-    const object = this.visit(node.children[0]!);
+  async visitPropertyAccess(node: ASTNode) {
+    const object = await this.visit(node.children[0]!);
     const propertyName = node.children[1]?.value;
     if (typeof object !== "object" || object === null) {
       this.error("Cannot access property on a non-object");
@@ -319,7 +425,7 @@ export class Interpreter extends Process {
     return object[propertyName];
   }
 
-  visitIdentifier(node: ASTNode) {
+  async visitIdentifier(node: ASTNode) {
     const identifier = node.value;
 
     let env = this.currentEnvironment;
@@ -335,9 +441,9 @@ export class Interpreter extends Process {
     this.error(`Undefined variable: ${identifier}`);
   }
 
-  visitBinaryOperator(node: ASTNode) {
-    const left = this.visit(node.children[0]!);
-    const right = this.visit(node.children[1]!);
+  async visitBinaryOperator(node: ASTNode) {
+    const left = await this.visit(node.children[0]!);
+    const right = await this.visit(node.children[1]!);
 
     switch (node.type) {
       case "PLUS":
@@ -370,7 +476,7 @@ export class Interpreter extends Process {
       case "OR":
         return left || right;
       case "NOT":
-        return !this.visit(node.children[0]!);
+        return !(await this.visit(node.children[0]!));
       default:
         this.error(`Unknown operator: ${node.type}`);
     }
