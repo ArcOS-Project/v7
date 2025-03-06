@@ -63,11 +63,8 @@ export class MediaPlayerRuntime extends AppProcess {
       if (this.Loaded()) if (v.current >= v.duration) this.nextSong();
     });
 
-    this.url.subscribe((v) => console.log(v));
-
     this.queue.subscribe((v) => {
       if (!v.length) {
-        console.log("Resetting player");
         this.Stop();
         if (this.player) this.player.src = "";
         this.Loaded.set(false);
@@ -76,7 +73,6 @@ export class MediaPlayerRuntime extends AppProcess {
         this.windowIcon.set(this.app.data.metadata.icon);
         this.getWindow()?.classList.remove("fullscreen");
       }
-      console.log(v);
     });
   }
 
@@ -242,8 +238,6 @@ export class MediaPlayerRuntime extends AppProcess {
       );
       return;
     }
-
-    console.log(`Now playing: ${path}`, this.State());
 
     const split = path.split(".");
 

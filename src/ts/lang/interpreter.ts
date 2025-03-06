@@ -357,7 +357,6 @@ export class Interpreter extends Process {
   }
 
   async visitArrayAccess(node: ASTNode) {
-    console.log(node);
     const target = node.children[0];
     let identifier: string;
     let value: any;
@@ -378,8 +377,6 @@ export class Interpreter extends Process {
     }
 
     const index = await this.visit(node.children[1]!);
-
-    console.log(this.currentEnvironment, identifier!, value);
 
     if (typeof value === "string") {
       if (typeof index !== "number") {

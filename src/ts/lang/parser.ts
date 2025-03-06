@@ -59,7 +59,6 @@ export class Parser {
         (this.lexer.input[this.lexer.position] === " " &&
           this.lexer.input[this.lexer.position + 1] === "=")
       ) {
-        console.log(this.lexer.input[this.lexer.position]);
         return this.assignmentStatement()!;
       } else if (this.lexer.input[this.lexer.position] === "(") {
         return this.expressionStatement();

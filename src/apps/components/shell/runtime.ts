@@ -549,8 +549,6 @@ export class ShellRuntime extends AppProcess {
     };
     const items: SearchItem[] = [];
 
-    console.log(sources);
-
     if (sources.filesystem)
       items.push(...(await this.getFilesystemSearchSupplier(preferences)));
 

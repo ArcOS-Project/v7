@@ -95,7 +95,6 @@ export class ApplicationStorage extends Process {
 
     for (const app of apps) {
       if (app.id === id) {
-        console.log(app);
         return { ...Object.freeze({ ...app }) };
       }
     }

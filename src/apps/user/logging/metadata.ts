@@ -1,3 +1,4 @@
+import "$css/apps/user/logging.css";
 import { LoggerIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import Logging from "./Logging.svelte";

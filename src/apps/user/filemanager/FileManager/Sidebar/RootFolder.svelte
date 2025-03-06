@@ -18,6 +18,9 @@
   data-contextmenu="sidebar-folder"
   use:contextProps={[folder]}
 >
-  <span class="lucide icon-folder-closed"></span>
+  <span
+    class="lucide icon-folder-closed"
+    class:icon-folder-open={$path.startsWith(`U:/${folder.name}`)}
+  ></span>
   <span>{folder.name}</span>
 </button>

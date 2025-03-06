@@ -347,10 +347,6 @@ export class AppRenderer extends Process {
 
     const process = this.handler.getProcess<AppProcess>(pid, true);
 
-    // if (!process) return;
-
-    if (process?.stopAcceleratorListener) process.stopAcceleratorListener();
-
     if (
       process?.componentMount &&
       Object.entries(process.componentMount).length
