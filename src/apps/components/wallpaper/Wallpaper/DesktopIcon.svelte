@@ -55,6 +55,7 @@
   }
 
   onMount(updatePos);
+  userPreferences.subscribe(updatePos);
 </script>
 
 <!-- svelte-ignore event_directive_deprecated -->

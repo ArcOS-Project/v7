@@ -1,6 +1,7 @@
 <script lang="ts">
   import { join } from "$ts/fs/util";
   import { FolderIcon } from "$ts/images/filesystem";
+  import { UnknownFileIcon } from "$ts/images/mime";
   import { Wallpapers } from "$ts/wallpaper/store";
   import type { AppComponentProps } from "$types/app";
   import type { WallpaperRuntime } from "./runtime";
@@ -32,6 +33,15 @@
               process.pid,
               join(process.directory, directory.name)
             )}
+        />
+      {/each}
+      {#each $contents.files as file, i (`${i}-${file.name}-${file.dateCreated}-${file.dateModified}`)}
+        <DesktopIcon
+          {process}
+          caption={file.name}
+          alt={`Location: ${join(process.directory, file.name)}`}
+          icon={UnknownFileIcon}
+          action={() => {}}
         />
       {/each}
     {/if}
