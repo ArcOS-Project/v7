@@ -33,7 +33,8 @@
   const { userPreferences } = process;
 
   function updatePos() {
-    $userPreferences.appPreferences.desktopIcons ||= {};
+    if (!$userPreferences.appPreferences.desktopIcons)
+      $userPreferences.appPreferences.desktopIcons = {};
     const pos = $userPreferences.appPreferences.desktopIcons[
       `icon$${caption}`
     ] as {
