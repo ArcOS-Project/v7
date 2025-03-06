@@ -2,6 +2,7 @@ import { GlobalDispatcher } from "$ts/dispatch";
 import type { WaveKernel } from "$ts/kernel";
 import { KernelModule } from "$ts/kernel/module";
 import { Sleep } from "$ts/sleep";
+import { UUID } from "$ts/uuid";
 import {
   type DirectoryReadReturn,
   type FilesystemProgress,
@@ -47,7 +48,7 @@ export class Filesystem extends KernelModule {
     if (this.drives[id] || (letter && this.getDriveByLetter(letter, false)))
       return false;
 
-    const uuid = crypto.randomUUID();
+    const uuid = UUID();
     const instance = new supplier(this.kernel, uuid, letter, ...args);
 
     const ready = await instance.__spinUp(onProgress);

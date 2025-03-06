@@ -2,6 +2,7 @@ import { ShellRuntime } from "$apps/components/shell/runtime";
 import { WaveKernel } from "$ts/kernel";
 import { Environment } from "$ts/kernel/env";
 import { ProcessHandler } from "$ts/process/handler";
+import { UUID } from "$ts/uuid";
 
 export function contextProps(node: HTMLElement, args: any[]) {
   const kernel = WaveKernel.get();
@@ -15,7 +16,7 @@ export function contextProps(node: HTMLElement, args: any[]) {
 
   if (!shell) return;
 
-  const uuid = crypto.randomUUID();
+  const uuid = UUID();
 
   shell.contextProps[uuid] = args;
   node.setAttribute(`data-contextprops`, uuid);

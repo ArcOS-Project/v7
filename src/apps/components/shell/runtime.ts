@@ -28,6 +28,7 @@ import {
   weatherIcons,
 } from "./store";
 import type { WeatherInformation } from "./types";
+import { UUID } from "$ts/uuid";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
@@ -591,7 +592,7 @@ export class ShellRuntime extends AppProcess {
     const fuse = new Fuse(items, options);
     const result = fuse.search(query);
 
-    return result.map((r) => ({ ...r, id: crypto.randomUUID() }));
+    return result.map((r) => ({ ...r, id: UUID() }));
   }
 
   async getFilesystemSearchSupplier(preferences: UserPreferences) {

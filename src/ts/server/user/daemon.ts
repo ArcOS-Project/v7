@@ -51,6 +51,7 @@ import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultMimeIcons } from "./store";
+import { UUID } from "$ts/uuid";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -1160,8 +1161,8 @@ export class UserDaemon extends Process {
 
     this.Log(`Manually elevating "${data.what}"`);
 
-    const id = crypto.randomUUID();
-    const key = crypto.randomUUID();
+    const id = UUID();
+    const key = UUID();
     const shellPid = this.env.get("shell_pid");
 
     if (this.preferences().security.disabled) return true;
@@ -1407,7 +1408,7 @@ export class UserDaemon extends Process {
 
     this.Log(`Creating new workspace "${name || "<NO NAME>"}"`);
 
-    const uuid = crypto.randomUUID();
+    const uuid = UUID();
 
     this.preferences.update((v) => {
       v.workspaces.desktops.push({ uuid, name });
@@ -1576,7 +1577,7 @@ export class UserDaemon extends Process {
     initialData: Partial<FsProgressOperation>,
     parentPid?: number
   ): Promise<FileProgressMutator> {
-    const uuid = crypto.randomUUID();
+    const uuid = UUID();
     const progress = Store<FsProgressOperation>(
       applyDefaults(initialData, {
         max: 0,
@@ -1889,7 +1890,7 @@ export class UserDaemon extends Process {
   async LoadSaveDialog(
     data: Omit<LoadSaveDialogData, "returnId">
   ): Promise<string[] | [undefined]> {
-    const uuid = crypto.randomUUID();
+    const uuid = UUID();
 
     await this.spawnOverlay(
       "fileManager",
