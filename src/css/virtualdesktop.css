@@ -5,7 +5,7 @@ div.virtual-desktop-container {
   width: 100%;
   height: 100%;
   z-index: 2000 !important;
-  pointer-events: initial !important;
+  pointer-events: none;
 }
 
 div.virtual-desktop-container > div.inner {
@@ -40,4 +40,8 @@ div.virtual-desktop-container > div.inner.changing > div.workspace {
 div.virtual-desktop-container > div.inner.changing > div.workspace,
 div.virtual-desktop-container > div.inner.changing > div.workspace * {
   pointer-events: none !important;
+}
+
+div.virtual-desktop-container > div.inner > div.workspace > div.window {
+  pointer-events: initial !important;
 }

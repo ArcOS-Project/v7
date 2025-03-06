@@ -33,7 +33,7 @@ export class LoggingRuntime extends AppProcess {
 
   public updateGroups() {
     const groupStore = this.groups.get();
-    const { items, sources } = this.collectLogsBySource(true);
+    const { items, sources } = this.collectLogsBySource(false);
     const entries = Object.entries(items);
 
     for (const [source, items] of entries) {

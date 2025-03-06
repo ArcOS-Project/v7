@@ -18,6 +18,7 @@
     "vite": "^6.0.5"
   },
   "dependencies": {
+    "@neodrag/svelte": "^2.3.1",
     "@neodrag/vanilla": "^2.2.0",
     "@types/js-cookie": "^3.0.6",
     "@types/jszip": "^3.4.1",
