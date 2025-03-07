@@ -18,6 +18,7 @@ import type { App, AppContextMenu, AppProcessData } from "$types/app";
 import type { DirectoryReadReturn, FolderEntry } from "$types/fs";
 import { LogLevel } from "$types/logging";
 import type { RenderArgs } from "$types/process";
+import type { ArcShortcut, ShortcutStore } from "$types/shortcut";
 import { FileManagerAccelerators } from "./accelerators";
 import { FileManagerAltMenu } from "./altmenu";
 import { FileManagerContextMenu } from "./context";
@@ -29,6 +30,7 @@ import type { LoadSaveDialogData, QuotedDrive } from "./types";
 export class FileManagerRuntime extends AppProcess {
   path = Store<string>("");
   contents = Store<DirectoryReadReturn | undefined>();
+  shortcuts = Store<ShortcutStore>({});
   loading = Store<boolean>(false);
   errored = Store<boolean>(false);
   selection = Store<string[]>([]);
@@ -67,6 +69,7 @@ export class FileManagerRuntime extends AppProcess {
       this.windowTitle.set(loadSave.title);
       this.windowIcon.set(loadSave.icon);
       this.renderArgs.path = loadSave.startDir || "U:/";
+
       if (loadSave.isSave) {
         this.selection.subscribe((v) => {
           if (!v.length) return;
@@ -78,6 +81,7 @@ export class FileManagerRuntime extends AppProcess {
       }
 
       this.contextMenu = {};
+
       if (loadSave.isSave && loadSave.multiple)
         throw new Error("LoadSave: can't have both isSave and multiple");
     }
@@ -192,10 +196,12 @@ export class FileManagerRuntime extends AppProcess {
 
     try {
       const contents = await this.fs.readDir(path);
+      const shortcuts = await this.fs.bulk<ArcShortcut>(path, "arclnk");
 
       if (!contents) this.DirectoryNotFound();
       else {
         this.contents.set(contents);
+        this.shortcuts.set(shortcuts);
       }
     } catch {
       this.DirectoryNotFound();
@@ -393,39 +399,8 @@ export class FileManagerRuntime extends AppProcess {
       this.confirmLoadSave();
       return;
     }
-    const filename = getDirectoryName(path);
-    const apps = await this.userDaemon?.findAppToOpenFile(path)!;
 
-    if (!apps.length) {
-      MessageBox(
-        {
-          title: `Unknown file type`,
-          message: `ArcOS doesn't have an app that can open '${filename}'. Click <b>Open With</b> to pick from a list of applications.`,
-          buttons: [
-            {
-              caption: "Open With",
-              action: async () => {
-                await this.openWith(path);
-              },
-            },
-            { caption: "Okay", action: () => {}, suggested: true },
-          ],
-          sound: "arcos.dialog.warning",
-          image: ErrorIcon,
-        },
-        this.pid,
-        true
-      );
-
-      return;
-    }
-
-    return await this.spawnApp(apps[0].id, this.pid, path);
-  }
-
-  async openWith(path: string) {
-    if (this._disposed) return;
-    await this.spawnOverlayApp("OpenWith", this.pid, path);
+    this.userDaemon?.openFile(path);
   }
 
   async deleteSelected() {
@@ -660,7 +635,7 @@ export class FileManagerRuntime extends AppProcess {
         continue;
       }
 
-      if (alternative) await this.openWith(path);
+      if (alternative) await this.userDaemon?.openWith(path);
       else await this.openFile(path);
     }
   }

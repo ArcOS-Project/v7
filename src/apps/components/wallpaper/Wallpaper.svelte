@@ -1,11 +1,9 @@
 <script lang="ts">
-  import { join } from "$ts/fs/util";
-  import { FolderIcon } from "$ts/images/filesystem";
-  import { UnknownFileIcon } from "$ts/images/mime";
   import { Wallpapers } from "$ts/wallpaper/store";
   import type { AppComponentProps } from "$types/app";
   import type { WallpaperRuntime } from "./runtime";
-  import DesktopIcon from "./Wallpaper/DesktopIcon.svelte";
+  import File from "./Wallpaper/DesktopIcon/File.svelte";
+  import Folder from "./Wallpaper/DesktopIcon/Folder.svelte";
 
   const { process }: AppComponentProps<WallpaperRuntime> = $props();
   const { Wallpaper } = process.userDaemon || {};
@@ -21,28 +19,11 @@
   ></div>
   <div class="desktop-icons">
     {#if $contents}
-      {#each $contents.dirs as directory, i (`${i}-${directory.name}-${directory.dateCreated}-${directory.dateModified}`)}
-        <DesktopIcon
-          {process}
-          caption={directory.name}
-          alt={`Location: ${join(process.directory, directory.name)}`}
-          icon={FolderIcon}
-          action={() =>
-            process.spawnApp(
-              "fileManager",
-              process.pid,
-              join(process.directory, directory.name)
-            )}
-        />
+      {#each $contents.dirs as folder, i (`${i}-${folder.itemId}-${folder.dateCreated}-${folder.dateModified}`)}
+        <Folder {folder} {process} />
       {/each}
       {#each $contents.files as file, i (`${i}-${file.name}-${file.dateCreated}-${file.dateModified}`)}
-        <DesktopIcon
-          {process}
-          caption={file.name}
-          alt={`Location: ${join(process.directory, file.name)}`}
-          icon={UnknownFileIcon}
-          action={() => {}}
-        />
+        <File {file} {process} />
       {/each}
     {/if}
   </div>

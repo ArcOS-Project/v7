@@ -4,6 +4,7 @@ export interface FileEntry {
   dateCreated: Date;
   dateModified: Date;
   mimeType: string;
+  itemId: string;
 }
 
 export interface FsAccess {
@@ -24,6 +25,7 @@ export interface FolderEntry {
   name: string;
   dateCreated: Date;
   dateModified: Date;
+  itemId: string;
 }
 
 export interface DirectoryReadReturn {

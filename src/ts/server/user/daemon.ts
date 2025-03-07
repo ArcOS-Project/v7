@@ -52,6 +52,8 @@ import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultMimeIcons } from "./store";
 import { UUID } from "$ts/uuid";
+import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
+import type { ArcShortcut } from "$types/shortcut";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -1913,5 +1915,75 @@ export class UserDaemon extends Process {
         if (id === uuid) r([undefined]);
       });
     });
+  }
+
+  async openFile(path: string, shortcut?: ArcShortcut): Promise<any> {
+    if (this._disposed) return;
+
+    if (shortcut) return await this.handleShortcut(path, shortcut);
+
+    const filename = getDirectoryName(path);
+    const apps = await this.findAppToOpenFile(path)!;
+
+    if (!apps.length) {
+      MessageBox(
+        {
+          title: `Unknown file type`,
+          message: `ArcOS doesn't have an app that can open '${filename}'. Click <b>Open With</b> to pick from a list of applications.`,
+          buttons: [
+            {
+              caption: "Open With",
+              action: async () => {
+                await this.openWith(path);
+              },
+            },
+            { caption: "Okay", action: () => {}, suggested: true },
+          ],
+          sound: "arcos.dialog.warning",
+          image: ErrorIcon,
+        },
+        +this.env.get("shell_pid"),
+        true
+      );
+
+      return;
+    }
+
+    return await this.spawnApp(apps[0].id, +this.env.get("shell_pid"), path);
+  }
+
+  async openWith(path: string) {
+    if (this._disposed) return;
+    await this.spawnOverlay("OpenWith", +this.env.get("shell_pid"), path);
+  }
+
+  async handleShortcut(path: string, shortcut: ArcShortcut) {
+    this.Log(`Handling shortcut "${path}"`);
+    const filename = getDirectoryName(path);
+
+    switch (shortcut.type) {
+      case "app":
+        return await this.spawnApp(shortcut.target, +this.env.get("shell_pid"));
+      case "file":
+        return await this.openFile(shortcut.target);
+      case "folder":
+        return await this.spawnApp(
+          "fileManager",
+          +this.env.get("shell_pid"),
+          shortcut.target
+        );
+      default:
+        MessageBox(
+          {
+            title: "Broken Shortcut",
+            message: `ArcOS doesn't know how to open shortcut '${shortcut.name}' (${filename}) of type ${shortcut.type}.`,
+            buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+            sound: "arcos.dialog.warning",
+            image: WarningIcon,
+          },
+          +this.env.get("shell_pid"),
+          true
+        );
+    }
   }
 }

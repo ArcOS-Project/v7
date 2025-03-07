@@ -1,4 +1,3 @@
-import { ServerManager } from "$ts/server";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import { AppProcess } from "../../../ts/apps/process";
@@ -8,7 +7,6 @@ import type { AppProcessData } from "../../../types/app";
 export class BootScreenRuntime extends AppProcess {
   public progress = Store<boolean>(false);
   public status = Store<string>("");
-  public connected = Store<boolean>(false);
 
   constructor(
     handler: ProcessHandler,
@@ -21,14 +19,6 @@ export class BootScreenRuntime extends AppProcess {
 
   async begin() {
     this.Log("Initializing boot");
-
-    this.connected.set(ServerManager.isConnected());
-
-    if (!this.connected()) {
-      this.kernel.state?.loadState("serverdown");
-
-      return;
-    }
 
     this.status.set("Press a key or click to start");
 

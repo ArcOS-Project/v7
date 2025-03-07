@@ -144,4 +144,11 @@ export class FilesystemDrive {
       unknown: true,
     };
   }
+
+  async bulk<T = any>(
+    path: string,
+    extension: string
+  ): Promise<Record<string, T>> {
+    return {};
+  }
 }

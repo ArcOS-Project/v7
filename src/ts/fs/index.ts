@@ -134,7 +134,10 @@ export class Filesystem extends KernelModule {
 
     this.validatePath(p);
 
-    return p.replace(`${this.getDriveIdentifier(p)}:/`, "");
+    let newPath = p.replace(`${this.getDriveIdentifier(p)}:/`, "");
+    if (newPath.startsWith("/")) newPath = newPath.substring(1);
+
+    return newPath;
   }
 
   validateDriveLetter(letter: string) {
@@ -157,6 +160,18 @@ export class Filesystem extends KernelModule {
     const drive = this.getDriveByPath(path);
 
     return await drive.readDir(this.removeDriveLetter(path));
+  }
+
+  async bulk<T = any>(path: string, extension: string) {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
+    this.Log(`Getting .${extension} files in bulk from '${path}'`);
+
+    this.validatePath(path);
+    const drive = this.getDriveByPath(path);
+    const scopedPath = this.removeDriveLetter(path);
+
+    return await drive.bulk<T>(scopedPath, extension);
   }
 
   async createDirectory(path: string, dispatch = true): Promise<boolean> {

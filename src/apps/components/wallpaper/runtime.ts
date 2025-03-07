@@ -1,14 +1,15 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { onFolderChange } from "$ts/fs/util";
 import { ErrorIcon } from "$ts/images/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { DirectoryReadReturn } from "$types/fs";
+import type { ShortcutStore } from "$types/shortcut";
 
 export class WallpaperRuntime extends AppProcess {
   contents = Store<DirectoryReadReturn | undefined>();
+  shortcuts = Store<ShortcutStore>({});
   directory: string;
 
   constructor(
@@ -21,11 +22,11 @@ export class WallpaperRuntime extends AppProcess {
     super(handler, pid, parentPid, app);
 
     this.directory = desktopDir || "U:/Desktop";
-
     this.renderArgs = { desktopDir: this.directory };
+    this.globalDispatch.subscribe<string>("fs-flush-folder", (path) => {
+      if (!path || this._disposed) return;
 
-    onFolderChange(this.renderArgs.desktopDir, () => {
-      this.updateContents();
+      if (path.startsWith(this.directory)) this.updateContents();
     });
   }
 
@@ -34,6 +35,7 @@ export class WallpaperRuntime extends AppProcess {
 
     try {
       await this.fs.createDirectory(desktopDir);
+      await this.updateContents();
     } catch {
       MessageBox(
         {
@@ -51,6 +53,7 @@ export class WallpaperRuntime extends AppProcess {
   }
 
   async updateContents() {
+    this.shortcuts.set(await this.fs.bulk(this.directory, "arclnk"));
     this.contents.set(await this.fs.readDir(this.directory));
   }
 }

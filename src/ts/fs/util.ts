@@ -67,7 +67,9 @@ export function getParentDirectory(p: string): string {
 
   split.splice(-1);
 
-  const newPath = split.join("/");
+  let newPath = split.join("/");
+
+  if (newPath.startsWith("/")) newPath = newPath.substring(1);
 
   return newPath.endsWith(":") ? `${newPath}/` : newPath;
 }

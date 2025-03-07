@@ -611,7 +611,7 @@ export class ShellRuntime extends AppProcess {
         caption: file.name,
         description: file.path,
         action: () => {
-          this.openFile(file.path);
+          this.userDaemon?.openFile(file.path);
         },
         image:
           this.userDaemon?.getMimeIconByFilename(file.name) || DefaultMimeIcon,
@@ -663,41 +663,6 @@ export class ShellRuntime extends AppProcess {
     recurse(tree!, "U:");
 
     return result;
-  }
-
-  async openFile(path: string) {
-    const filename = getDirectoryName(path);
-    const apps = await this.userDaemon?.findAppToOpenFile(path)!;
-
-    if (!apps.length) {
-      MessageBox(
-        {
-          title: `Unknown file type`,
-          message: `ArcOS doesn't have an app that can open '${filename}'. Click <b>Open With</b> to pick from a list of applications.`,
-          buttons: [
-            {
-              caption: "Open With",
-              action: async () => {
-                await this.openWith(path);
-              },
-            },
-            { caption: "Okay", action: () => {}, suggested: true },
-          ],
-          sound: "arcos.dialog.warning",
-          image: ErrorIcon,
-        },
-        this.pid,
-        true
-      );
-
-      return;
-    }
-
-    return await this.spawnApp(apps[0].id, this.pid, path);
-  }
-
-  async openWith(path: string) {
-    await this.spawnOverlayApp("OpenWith", this.pid, path);
   }
 
   public MutateIndex(e: KeyboardEvent) {

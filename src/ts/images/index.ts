@@ -4,6 +4,7 @@ import * as General from "./general";
 import * as Mimetypes from "./mime";
 import * as Power from "./power";
 import * as Status from "./status";
+import * as Apps from "./apps";
 
 export function getAllImages(): Record<string, string> {
   return {
@@ -13,6 +14,7 @@ export function getAllImages(): Record<string, string> {
     ...Dialog,
     ...Status,
     ...Mimetypes,
+    ...Apps,
   };
 }
 
@@ -24,6 +26,7 @@ export function getGroupedIcons() {
     Dialog,
     Power,
     Status,
+    Apps,
   };
 }
 

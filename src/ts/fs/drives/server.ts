@@ -204,4 +204,23 @@ export class ServerDrive extends FilesystemDrive {
       return undefined;
     }
   }
+
+  async bulk<T = any>(
+    path: string,
+    extension: string
+  ): Promise<Record<string, T>> {
+    try {
+      const response = await Axios.get(`/fs/bulk/${extension}/${path}`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      if (response.status !== 200) return {};
+
+      const data = response.data as Record<string, any>;
+
+      return data;
+    } catch {
+      return {};
+    }
+  }
 }

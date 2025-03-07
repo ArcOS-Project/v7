@@ -1,7 +1,6 @@
 <script lang="ts">
   import { Logo } from "$ts/branding";
   import { ArcOSVersion } from "$ts/env";
-  import { GrayLogo } from "$ts/images/branding";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
   import type { AppComponentProps } from "$types/app";
@@ -11,17 +10,14 @@
   import type { BootScreenRuntime } from "./runtime";
 
   const { process }: AppComponentProps<BootScreenRuntime> = $props();
-  const { status, progress, connected } = process;
+  const { status, progress } = process;
 
   onMount(() => {
     process.begin();
   });
 </script>
 
-<GlowingLogo
-  className={!$connected ? "gray" : ""}
-  src={$connected ? Logo() : GrayLogo}
-/>
+<GlowingLogo src={Logo()} />
 
 <div class="bottom">
   <Spinner height={30} stopped={!$progress} />

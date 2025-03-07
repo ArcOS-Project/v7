@@ -10,18 +10,22 @@
   import { fromMime } from "human-filetypes";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../../runtime";
+  import type { ArcShortcut } from "$types/shortcut";
+  import { getIconPath } from "$ts/images";
 
   const { process, file }: { process: FileManagerRuntime; file: FileEntry } =
     $props();
-  const { selection, userDaemon } = process;
+  const { selection, userDaemon, shortcuts } = process;
 
   let date = $state<string>();
   let icon = $state<string>();
   let mime = $state<string>();
   let thisPath = $state<string>("");
   let extension = $state<string>();
+  let shortcut: ArcShortcut | undefined = $shortcuts[file.name];
 
   onMount(() => {
+    console.log($shortcuts[file.name]);
     dayjs.extend(relativeTime);
     dayjs.extend(updateLocale);
     dayjs.updateLocale("en", RelativeTimeMod);
@@ -44,6 +48,10 @@
       process.saveName.set(file.name);
     }
   }
+
+  function ondblclick() {
+    process.userDaemon?.openFile(thisPath, shortcut);
+  }
 </script>
 
 {#if thisPath && !(process?.loadSave?.extensions ? !!extension && !process?.loadSave?.extensions.includes(extension) : false)}
@@ -51,17 +59,18 @@
     class="item file"
     {onclick}
     class:selected={$selection.includes(thisPath)}
-    ondblclick={() => process.openFile(thisPath)}
+    {ondblclick}
     data-contextmenu={$selection.includes(thisPath) ? "file-item" : ""}
     use:contextProps={[file, thisPath]}
     data-path={thisPath}
+    class:is-shortcut={shortcut}
   >
     <div class="segment icon">
-      <img src={icon} alt="" />
+      <img src={shortcut ? getIconPath(shortcut.icon) : icon} alt="" />
     </div>
-    <div class="segment name">{file.name}</div>
-    <div class="segment type">{mime}</div>
-    <div class="segment size">{formatBytes(file.size)}</div>
-    <div class="segment modified">{date}</div>
+    <div class="segment name">{shortcut?.name || file.name}</div>
+    <div class="segment type">{shortcut ? "Shortcut" : mime}</div>
+    <div class="segment size">{shortcut ? "-" : formatBytes(file.size)}</div>
+    <div class="segment modified">{shortcut ? "-" : date}</div>
   </button>
 {/if}
