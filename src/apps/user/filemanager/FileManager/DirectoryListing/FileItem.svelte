@@ -61,12 +61,15 @@
     class:selected={$selection.includes(thisPath)}
     {ondblclick}
     data-contextmenu={$selection.includes(thisPath) ? "file-item" : ""}
-    use:contextProps={[file, thisPath]}
+    use:contextProps={[file, thisPath, ondblclick]}
     data-path={thisPath}
     class:is-shortcut={shortcut}
   >
     <div class="segment icon">
       <img src={shortcut ? getIconPath(shortcut.icon) : icon} alt="" />
+      {#if shortcut}
+        <span class="icon-arrow-up-right"></span>
+      {/if}
     </div>
     <div class="segment name">{shortcut?.name || file.name}</div>
     <div class="segment type">{shortcut ? "Shortcut" : mime}</div>

@@ -14,11 +14,26 @@
 #fileManager div.directory-viewer button div.segment.icon {
   width: 24px;
   height: 24px;
+  position: relative;
 }
 
 #fileManager div.directory-viewer button div.segment.icon img {
   width: 24px;
   height: 24px;
+}
+
+#fileManager div.directory-viewer button div.segment.icon span {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-color: var(--fg);
+  color: var(--win-bg);
+  font-size: 12px;
+  width: 12px;
+  height: 12px;
+  text-align: center;
+  border-radius: 2px;
+  line-height: 12px;
 }
 
 #fileManager div.directory-viewer button div.segment.type {
@@ -112,6 +127,13 @@
 #fileManager div.directory-viewer.compact button div.segment.icon img {
   width: 16px;
   height: 16px;
+}
+
+#fileManager div.directory-viewer.grid button div.segment.icon span {
+  font-size: 8px !important;
+  width: 8px !important;
+  height: 8px !important;
+  line-height: 8px;
 }
 
 #fileManager div.directory-viewer p.empty {

@@ -30,14 +30,14 @@ export function FileManagerContextMenu(
       {
         caption: "Open file",
         icon: "external-link",
-        action: (_, runtimePath) => {
-          runtime.openFile(runtimePath);
+        action: (_, __, open) => {
+          open?.();
         },
       },
       {
         caption: "Open with...",
         action: (_, runtimePath) => {
-          runtime.openWith(runtimePath);
+          runtime.userDaemon?.openWith(runtimePath);
         },
       },
       { sep: true },
