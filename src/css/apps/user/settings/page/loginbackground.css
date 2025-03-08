@@ -41,11 +41,7 @@
   display: block;
 }
 
-#systemSettings
-  div.loginBackground
-  div.wallpaper-section
-  div.wallpapers
-  p.none {
+#systemSettings div.loginBackground div.wallpaper-section div.wallpapers p.none {
   line-height: 40px;
   text-align: center;
   opacity: 0.5;
@@ -70,10 +66,7 @@
   background-size: cover;
   background-color: transparent;
 }
-#systemSettings
-  div.loginBackground
-  button.wallpaper-option
-  div.selected-overlay {
+#systemSettings div.loginBackground button.wallpaper-option div.selected-overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -89,17 +82,10 @@
   transition: opacity 0.3s, scale 0.3s;
 }
 
-#systemSettings
-  div.loginBackground
-  button.wallpaper-option
-  div.selected-overlay
-  span {
+#systemSettings div.loginBackground button.wallpaper-option div.selected-overlay span {
   color: inherit;
 }
 
-#systemSettings
-  div.loginBackground
-  button.wallpaper-option.selected
-  div.selected-overlay {
+#systemSettings div.loginBackground button.wallpaper-option.selected div.selected-overlay {
   opacity: 1;
 }

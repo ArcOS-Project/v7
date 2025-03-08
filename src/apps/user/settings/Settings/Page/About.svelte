@@ -12,9 +12,8 @@
 <h1>ArcOS <span class="colored">v7</span></h1>
 
 <p>
-  Thank you for using ArcOS! I'm working really hard to give you the best
-  experience possible. Want to learn more about ArcOS? Go ahead and visit our
-  GitHub organization, there's some useful stuff there.
+  Thank you for using ArcOS! I'm working really hard to give you the best experience possible. Want to learn more about ArcOS? Go
+  ahead and visit our GitHub organization, there's some useful stuff there.
 </p>
 
 <!-- svelte-ignore a11y_invalid_attribute -->

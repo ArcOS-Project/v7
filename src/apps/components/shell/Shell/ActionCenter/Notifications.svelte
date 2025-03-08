@@ -22,16 +22,13 @@
       return;
     }
 
-    userDaemon.globalDispatch.subscribe(
-      "update-notifications",
-      async ([notifications]) => {
-        store = [...notifications];
+    userDaemon.globalDispatch.subscribe("update-notifications", async ([notifications]) => {
+      store = [...notifications];
 
-        isEmpty = false;
-        await Sleep(0);
-        isEmpty = ![...notifications].filter(([_, n]) => !n.deleted).length;
-      }
-    );
+      isEmpty = false;
+      await Sleep(0);
+      isEmpty = ![...notifications].filter(([_, n]) => !n.deleted).length;
+    });
 
     store = [...userDaemon.notifications];
     isEmpty = true;
@@ -46,11 +43,7 @@
 <div class="notifications">
   <h1>
     <span>Notifications</span>
-    <button
-      class="lucide icon-eraser"
-      aria-label="Clear Notifications"
-      disabled={loading || noDaemon || isEmpty}
-      onclick={clear}
+    <button class="lucide icon-eraser" aria-label="Clear Notifications" disabled={loading || noDaemon || isEmpty} onclick={clear}
     ></button>
   </h1>
   <div class="content">

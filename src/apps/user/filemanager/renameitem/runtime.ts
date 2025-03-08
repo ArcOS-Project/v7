@@ -8,13 +8,7 @@ export class RenameItemRuntime extends AppProcess {
   newName = Store<string>();
   parentDir: string;
   path: string;
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    path: string
-  ) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path: string) {
     super(handler, pid, parentPid, app);
 
     this.parentDir = getParentDirectory(path);

@@ -7,10 +7,7 @@ export function textToArrayBuffer(text: string): ArrayBuffer {
 
   const array = enc.encode(text);
 
-  return array.buffer.slice(
-    array.byteOffset,
-    array.byteLength + array.byteOffset
-  ) as ArrayBuffer;
+  return array.buffer.slice(array.byteOffset, array.byteLength + array.byteOffset) as ArrayBuffer;
 }
 
 export async function blobToText(blob: Blob) {

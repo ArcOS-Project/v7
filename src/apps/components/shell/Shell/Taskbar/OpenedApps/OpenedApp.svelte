@@ -3,12 +3,7 @@
   import type { AppProcess } from "$ts/apps/process";
   import { contextProps } from "$ts/context/actions.svelte";
 
-  const {
-    openedProcess,
-    pid,
-    process,
-  }: { openedProcess: AppProcess; pid: number; process: ShellRuntime } =
-    $props();
+  const { openedProcess, pid, process }: { openedProcess: AppProcess; pid: number; process: ShellRuntime } = $props();
   const { windowTitle, windowIcon } = openedProcess;
   const { userPreferences } = process;
   const { focusedPid } = openedProcess.handler.renderer!;
@@ -16,8 +11,7 @@
   function focus() {
     openedProcess.handler.renderer?.focusPid(pid);
 
-    if (openedProcess.app.desktop)
-      process.userDaemon?.switchToDesktopByUuid(openedProcess.app.desktop);
+    if (openedProcess.app.desktop) process.userDaemon?.switchToDesktopByUuid(openedProcess.app.desktop);
   }
 </script>
 

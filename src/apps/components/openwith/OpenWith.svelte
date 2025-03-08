@@ -5,16 +5,7 @@
   import type { OpenWithRuntime } from "./runtime";
 
   const { process }: { process: OpenWithRuntime } = $props();
-  const {
-    filename,
-    viewMode,
-    available,
-    all,
-    path,
-    selectedId,
-    userDaemon,
-    apps,
-  } = process;
+  const { filename, viewMode, available, all, path, selectedId, userDaemon, apps } = process;
 
   let icon = $state<string>("");
 
@@ -42,31 +33,10 @@
 </div>
 <div class="bottom">
   <div class="mode">
-    <button
-      onclick={() => ($viewMode = "all")}
-      class:suggested={$viewMode === "all"}
-    >
-      All
-    </button>
-    <button
-      onclick={() => ($viewMode = "apps")}
-      class:suggested={$viewMode === "apps"}
-    >
-      Apps
-    </button>
-    <button
-      onclick={() => ($viewMode = "compatible")}
-      class:suggested={$viewMode === "compatible"}
-    >
-      Compatible
-    </button>
+    <button onclick={() => ($viewMode = "all")} class:suggested={$viewMode === "all"}> All </button>
+    <button onclick={() => ($viewMode = "apps")} class:suggested={$viewMode === "apps"}> Apps </button>
+    <button onclick={() => ($viewMode = "compatible")} class:suggested={$viewMode === "compatible"}> Compatible </button>
   </div>
   <button onclick={() => process.closeWindow()}>Cancel</button>
-  <button
-    class="suggested"
-    disabled={!$selectedId}
-    onclick={() => process.go()}
-  >
-    Open
-  </button>
+  <button class="suggested" disabled={!$selectedId} onclick={() => process.go()}> Open </button>
 </div>

@@ -22,8 +22,7 @@
     }, 3000);
   }
 
-  const { isVideo, State, queue, queueIndex, Loaded, windowFullscreen } =
-    process;
+  const { isVideo, State, queue, queueIndex, Loaded, windowFullscreen } = process;
 
   onMount(() => {
     process.setPlayer(audio);

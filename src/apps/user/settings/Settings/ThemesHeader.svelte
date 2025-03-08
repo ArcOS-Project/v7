@@ -14,24 +14,11 @@
     userDaemon: UserDaemon;
   }
 
-  const {
-    login = false,
-    desktop = false,
-    background,
-    userInfo,
-    userPreferences,
-    children,
-    userDaemon,
-  }: Props = $props();
+  const { login = false, desktop = false, background, userInfo, userPreferences, children, userDaemon }: Props = $props();
 </script>
 
 <div class="themes-header">
-  <div
-    class="screen"
-    class:login
-    class:desktop
-    style="--url: url('{background}');"
-  >
+  <div class="screen" class:login class:desktop style="--url: url('{background}');">
     {#if login}
       <div class="center">
         <ProfilePicture height={36} {userDaemon} />

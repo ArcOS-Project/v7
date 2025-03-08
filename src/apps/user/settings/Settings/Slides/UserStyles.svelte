@@ -24,7 +24,7 @@
         buttons: [{ caption: "Understood", action: () => {}, suggested: true }],
       },
       process.pid,
-      true
+      true,
     );
   });
 
@@ -33,10 +33,7 @@
   }
 
   function apply() {
-    $userPreferences.shell.customStyle.content = value.replaceAll(
-      /\<(?:\/|)(?:[A-Za-z\-]+)\>/g,
-      ""
-    );
+    $userPreferences.shell.customStyle.content = value.replaceAll(/\<(?:\/|)(?:[A-Za-z\-]+)\>/g, "");
 
     process.slideVisible.set(false);
   }

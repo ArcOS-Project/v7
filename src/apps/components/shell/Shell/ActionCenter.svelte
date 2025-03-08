@@ -20,11 +20,7 @@
   // TODO: remove fade-in animation from "No notifications" text if animations are turned off
 </script>
 
-<div
-  class="actioncenter shell-colored"
-  class:colored={$userPreferences.shell.taskbar.colored}
-  class:opened={$actionCenterOpened}
->
+<div class="actioncenter shell-colored" class:colored={$userPreferences.shell.taskbar.colored} class:opened={$actionCenterOpened}>
   <div class="top">
     <Clock />
     <CardStack {userPreferences} {process} />

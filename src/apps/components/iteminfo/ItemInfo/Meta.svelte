@@ -11,10 +11,7 @@
   import type { ItemInfo } from "../types";
   dayjs.extend(advancedFormat);
 
-  const {
-    info,
-    process,
-  }: { info: ReadableStore<ItemInfo>; process: ItemInfoRuntime } = $props();
+  const { info, process }: { info: ReadableStore<ItemInfo>; process: ItemInfoRuntime } = $props();
 
   let created = $state<string>();
   let modified = $state<string>();

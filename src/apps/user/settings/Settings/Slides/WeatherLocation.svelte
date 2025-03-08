@@ -3,10 +3,7 @@
   import { MessageBox } from "$ts/dialog";
   import { ErrorIcon } from "$ts/images/dialog";
   import { GlobeIcon } from "$ts/images/general";
-  import type {
-    WeatherSearchResponse,
-    WeatherSearchResult,
-  } from "$types/weather";
+  import type { WeatherSearchResponse, WeatherSearchResult } from "$types/weather";
   import axios from "axios";
   import Section from "../Section.svelte";
 
@@ -22,9 +19,7 @@
     working = true;
     hasSearched = true;
     try {
-      const response = await axios.get(
-        `https://geocoding-api.open-meteo.com/v1/search?name=${searchInput}`
-      );
+      const response = await axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${searchInput}`);
 
       searchResults = (response.data as WeatherSearchResponse).results || [];
     } catch {
@@ -32,12 +27,11 @@
         {
           image: ErrorIcon,
           title: `Failed to search for '${searchInput}'`,
-          message:
-            "An error occured while trying to search for your query. Please try again later.",
+          message: "An error occured while trying to search for your query. Please try again later.",
           buttons: [{ caption: "Okay", suggested: true, action: () => {} }],
         },
         process.pid,
-        true
+        true,
       );
       process.slideVisible.set(false);
     }
@@ -49,9 +43,7 @@
       v.shell.actionCenter.weatherLocation = {
         latitude: result.latitude,
         longitude: result.longitude,
-        name: result.country
-          ? `${result.name || "Unknown"}, ${result.country}`
-          : result.name || "Unknown",
+        name: result.country ? `${result.name || "Unknown"}, ${result.country}` : result.name || "Unknown",
       };
 
       v.shell.actionCenter.cardIndex = 0;
@@ -59,9 +51,7 @@
       return v;
     });
 
-    const dispatch = process.handler.ConnectDispatch(
-      +process.env.get("shell_pid")
-    );
+    const dispatch = process.handler.ConnectDispatch(+process.env.get("shell_pid"));
 
     dispatch?.dispatch("refresh-weather");
 
@@ -90,11 +80,7 @@
   <Section>
     <div class="option search-bar">
       <input type="text" bind:value={searchInput} onkeydown={keydown} />
-      <button
-        class="lucide icon-search"
-        disabled={!searchInput || working}
-        aria-label="Search for location"
-        onclick={search}
+      <button class="lucide icon-search" disabled={!searchInput || working} aria-label="Search for location" onclick={search}
       ></button>
     </div>
 
@@ -103,10 +89,7 @@
         <p class="working">Searching...</p>
       {:else if hasSearched}
         {#if !searchResults.length}
-          <p class="no-results">
-            Can't find a place with that name. Maybe try searching for something
-            else?
-          </p>
+          <p class="no-results">Can't find a place with that name. Maybe try searching for something else?</p>
         {:else}
           {#each searchResults as result}
             <button class="result" onclick={() => apply(result)}>
@@ -115,10 +98,7 @@
           {/each}
         {/if}
       {:else}
-        <p class="get-started">
-          Type in the name of a country, city or place of which you want to see
-          the weather.
-        </p>
+        <p class="get-started">Type in the name of a country, city or place of which you want to see the weather.</p>
       {/if}
     </div>
   </Section>

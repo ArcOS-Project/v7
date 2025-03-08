@@ -6,8 +6,5 @@
 </script>
 
 <div class="bar">
-  <div
-    class="inner"
-    style="--max: {$Progress.max}; --done: {$Progress.done}"
-  ></div>
+  <div class="inner" style="--max: {$Progress.max}; --done: {$Progress.done}"></div>
 </div>

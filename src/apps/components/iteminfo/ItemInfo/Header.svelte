@@ -6,17 +6,12 @@
   import type { ItemInfoRuntime } from "../runtime";
   import type { ItemInfo } from "../types";
 
-  const {
-    info,
-    process,
-  }: { info: ReadableStore<ItemInfo>; process: ItemInfoRuntime } = $props();
+  const { info, process }: { info: ReadableStore<ItemInfo>; process: ItemInfoRuntime } = $props();
 
   let icon = $state<string>();
 
   onMount(() => {
-    icon = $info.isFolder
-      ? FolderIcon
-      : process.userDaemon?.getMimeIconByFilename($info.name);
+    icon = $info.isFolder ? FolderIcon : process.userDaemon?.getMimeIconByFilename($info.name);
   });
 </script>
 
@@ -28,9 +23,5 @@
       <p>in {$info.location.parent || $info.location.drive}</p>
     {/if}
   </div>
-  <button
-    class="lucide icon-pencil-line"
-    aria-label="Rename"
-    onclick={() => process.renameItem()}
-  ></button>
+  <button class="lucide icon-pencil-line" aria-label="Rename" onclick={() => process.renameItem()}></button>
 </div>

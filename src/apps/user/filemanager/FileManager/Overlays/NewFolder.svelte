@@ -16,11 +16,5 @@
 </div>
 <div class="bottom">
   <button onclick={() => process.closeWindow()}>Cancel</button>
-  <button
-    class="suggested"
-    disabled={!$newFolder}
-    onclick={() => process.createFolder()}
-  >
-    Create
-  </button>
+  <button class="suggested" disabled={!$newFolder} onclick={() => process.createFolder()}> Create </button>
 </div>

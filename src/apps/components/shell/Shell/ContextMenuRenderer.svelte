@@ -60,15 +60,7 @@
 >
   {#if data}
     {#each data.items as item}
-      <Item
-        data={item}
-        shell={process}
-        process={data.process}
-        props={data.props || []}
-        {mW}
-        {x}
-        {hideSubs}
-      />
+      <Item data={item} shell={process} process={data.process} props={data.props || []} {mW} {x} {hideSubs} />
     {/each}
   {/if}
 </div>

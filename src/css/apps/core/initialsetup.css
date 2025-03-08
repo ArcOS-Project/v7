@@ -188,11 +188,7 @@
   padding-right: 24px;
 }
 
-#initialSetupWizard
-  div.form-page
-  div.fields
-  div.field.username
-  div.html-spinner {
+#initialSetupWizard div.form-page div.fields div.field.username div.html-spinner {
   margin-right: 6px;
 }
 

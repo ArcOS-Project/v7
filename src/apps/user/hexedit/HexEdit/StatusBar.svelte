@@ -3,21 +3,14 @@
   import { decimalToHex } from "$ts/util";
   import type { HexEditRuntime } from "../runtime";
 
-  const {
-    process,
-    scrollIndex,
-    ROWS,
-  }: { process: HexEditRuntime; scrollIndex: number; ROWS: number } = $props();
+  const { process, scrollIndex, ROWS }: { process: HexEditRuntime; scrollIndex: number; ROWS: number } = $props();
   const { hexRows, view, filename, modified } = process;
 </script>
 
 <div class="status-bar">
   {#if $hexRows && $view}
     <div class="segment index">
-      0x{decimalToHex(scrollIndex * 16, 8)} - 0x{decimalToHex(
-        (scrollIndex + ROWS) * 16,
-        8
-      )}
+      0x{decimalToHex(scrollIndex * 16, 8)} - 0x{decimalToHex((scrollIndex + ROWS) * 16, 8)}
     </div>
     <div class="segment rows">
       0x{decimalToHex($hexRows.length, 8)}

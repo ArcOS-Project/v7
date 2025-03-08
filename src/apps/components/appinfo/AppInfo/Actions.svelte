@@ -4,8 +4,7 @@
   import { onMount } from "svelte";
   import type { AppInfoRuntime } from "../runtime";
 
-  const { appId, process }: { appId: string; process: AppInfoRuntime } =
-    $props();
+  const { appId, process }: { appId: string; process: AppInfoRuntime } = $props();
   const { userPreferences } = process;
 
   let disabled = $state(false);

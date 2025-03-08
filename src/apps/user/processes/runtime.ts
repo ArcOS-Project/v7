@@ -15,22 +15,14 @@ export class ProcessManagerRuntime extends AppProcess {
   public selected = Store<number>();
   public running = Store<number>(0);
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData
-  ) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
   }
 
   async kill(proc: Process) {
     const elevated = await this.userDaemon?.manuallyElevate({
       what: `ArcOS needs your permission to kill a process`,
-      image:
-        proc instanceof AppProcess
-          ? proc.app.data.metadata.icon || ComponentIcon
-          : DefaultIcon,
+      image: proc instanceof AppProcess ? proc.app.data.metadata.icon || ComponentIcon : DefaultIcon,
       title: proc.name,
       description: proc instanceof AppProcess ? "Application" : "Process",
       level: ElevationLevel.high,
@@ -38,8 +30,7 @@ export class ProcessManagerRuntime extends AppProcess {
 
     if (!elevated) return;
 
-    const name =
-      proc instanceof AppProcess ? proc.app.data.metadata.name : proc.name;
+    const name = proc instanceof AppProcess ? proc.app.data.metadata.name : proc.name;
 
     MessageBox(
       {

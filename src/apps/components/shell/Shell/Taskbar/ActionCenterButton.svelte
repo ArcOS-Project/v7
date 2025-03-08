@@ -9,11 +9,6 @@
   }
 </script>
 
-<button
-  class="action-center-button"
-  class:active={$actionCenterOpened}
-  onclick={toggle}
-  aria-label="Action Center"
->
+<button class="action-center-button" class:active={$actionCenterOpened} onclick={toggle} aria-label="Action Center">
   <span class="lucide icon-bell"></span>
 </button>

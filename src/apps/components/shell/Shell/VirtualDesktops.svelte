@@ -20,8 +20,7 @@
 
       for (const workspace of workspaces) {
         $windowCounts[workspace.uuid] = [...v].filter(
-          ([_, p]) =>
-            p instanceof AppProcess && p.app.desktop === workspace.uuid
+          ([_, p]) => p instanceof AppProcess && p.app.desktop === workspace.uuid,
         ).length;
       }
     });
@@ -49,9 +48,7 @@
       {#each workspaces as desktop, i (desktop.uuid)}
         <button
           class="desktop"
-          style="--wallpaper: url('{$Wallpaper
-            ? $Wallpaper.url
-            : Wallpapers.img0.url}');"
+          style="--wallpaper: url('{$Wallpaper ? $Wallpaper.url : Wallpapers.img0.url}');"
           onclick={() => userDaemon?.switchToDesktopByUuid(desktop.uuid)}
           class:selected={$userPreferences.workspaces.index === i}
           data-contextmenu="workspaces-desktop"
@@ -82,12 +79,7 @@
     {/if}
   </div>
 
-  <button
-    class="add"
-    aria-label="Add Desktop"
-    onclick={() => userDaemon?.createWorkspace()}
-    disabled={workspaces.length >= 10}
-  >
+  <button class="add" aria-label="Add Desktop" onclick={() => userDaemon?.createWorkspace()} disabled={workspaces.length >= 10}>
     <span class="lucide icon-plus"></span>
   </button>
 </div>

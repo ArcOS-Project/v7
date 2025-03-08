@@ -11,11 +11,7 @@
 
   onMount(() => {
     const sub = userPreferences.subscribe((v) => {
-      if (
-        typeof v.account.loginBackground !== "string" ||
-        !v.account.loginBackground.startsWith("http")
-      )
-        return;
+      if (typeof v.account.loginBackground !== "string" || !v.account.loginBackground.startsWith("http")) return;
 
       wallpaper = v.account.loginBackground;
 
@@ -59,13 +55,7 @@
   <div class="right">
     <h1>Login Background</h1>
     <p>Enter the URL you wish to use as your login wallpaper:</p>
-    <input
-      type="url"
-      bind:value={wallpaper}
-      oninput={check}
-      onkeydown={check}
-      placeholder="https://example.com/image.png"
-    />
+    <input type="url" bind:value={wallpaper} oninput={check} onkeydown={check} placeholder="https://example.com/image.png" />
   </div>
 </div>
 <div class="bottom">

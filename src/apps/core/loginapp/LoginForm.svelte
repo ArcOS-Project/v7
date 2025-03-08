@@ -19,21 +19,10 @@
 <div class="login-form">
   <div class="left">
     <Field bind:value={username} placeholder="Username or email" icon="user" />
-    <Field
-      bind:value={password}
-      placeholder="Password"
-      icon="key-round"
-      password
-      onsubmit={go}
-    />
+    <Field bind:value={password} placeholder="Password" icon="key-round" password onsubmit={go} />
   </div>
   <div class="right">
-    <button
-      class="continue"
-      aria-label="Continue"
-      disabled={!username || !password}
-      onclick={go}
-    >
+    <button class="continue" aria-label="Continue" disabled={!username || !password} onclick={go}>
       <span class="lucide icon-arrow-right"></span>
     </button>
   </div>

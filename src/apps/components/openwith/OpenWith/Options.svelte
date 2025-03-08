@@ -3,8 +3,7 @@
   import type { OpenWithRuntime } from "../runtime";
   import Option from "./Options/Option.svelte";
 
-  const { process, apps }: { process: OpenWithRuntime; apps: AppStorage } =
-    $props();
+  const { process, apps }: { process: OpenWithRuntime; apps: AppStorage } = $props();
   const { viewMode } = process;
 </script>
 
@@ -33,9 +32,7 @@
   {#if !apps.length}
     <div class="empty">
       <p>Couldn't find any compatible applications!</p>
-      <button class="link" onclick={() => ($viewMode = "apps")}>
-        Show apps
-      </button>
+      <button class="link" onclick={() => ($viewMode = "apps")}> Show apps </button>
     </div>
   {/if}
 {/if}

@@ -82,17 +82,10 @@
   transition: opacity 0.3s, scale 0.3s;
 }
 
-#systemSettings
-  div.wallpaper
-  button.wallpaper-option
-  div.selected-overlay
-  span {
+#systemSettings div.wallpaper button.wallpaper-option div.selected-overlay span {
   color: inherit;
 }
 
-#systemSettings
-  div.wallpaper
-  button.wallpaper-option.selected
-  div.selected-overlay {
+#systemSettings div.wallpaper button.wallpaper-option.selected div.selected-overlay {
   opacity: 1;
 }

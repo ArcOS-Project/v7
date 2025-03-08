@@ -9,19 +9,13 @@ export class ProcessDispatch {
   private kernel: WaveKernel;
 
   constructor(process: Process) {
-    Log(
-      `ProcessDispatch::'${process.name}'`,
-      `Constructing new dispatch for ${process.name}`
-    );
+    Log(`ProcessDispatch::'${process.name}'`, `Constructing new dispatch for ${process.name}`);
     this.parent = process;
     this.kernel = process.kernel;
   }
 
   subscribe(event: string, callback: DispatchCallback) {
-    Log(
-      `ProcessDispatch::'${this.parent.name}'`,
-      `Subscribing to event "${event}"`
-    );
+    Log(`ProcessDispatch::'${this.parent.name}'`, `Subscribing to event "${event}"`);
 
     if (!this.store[event]) this.store[event] = [];
 
@@ -29,10 +23,7 @@ export class ProcessDispatch {
   }
 
   async dispatch(event: string, ...args: any[]) {
-    Log(
-      `ProcessDispatch::'${this.parent.name}'`,
-      `Dispatching event "${event}"`
-    );
+    Log(`ProcessDispatch::'${this.parent.name}'`, `Dispatching event "${event}"`);
 
     const callbacks = this.store[event];
 

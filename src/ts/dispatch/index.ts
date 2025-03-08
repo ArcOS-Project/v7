@@ -28,10 +28,7 @@ export class GlobalDispatcher extends KernelModule {
     else this.subscribers[event][id] = callback;
 
     if (!KnownGlobalDispatchers.includes(event))
-      this.Log(
-        `Subscribing to unknown event ${event} on Global Dispatch. Don't do that.`,
-        LogLevel.warning
-      );
+      this.Log(`Subscribing to unknown event ${event} on Global Dispatch. Don't do that.`, LogLevel.warning);
 
     return id;
   }
@@ -52,11 +49,7 @@ export class GlobalDispatcher extends KernelModule {
     delete this.subscribers[event];
   }
 
-  dispatch<T = any[]>(
-    caller: string,
-    data?: T,
-    system = true
-  ): GlobalDispatchResult {
+  dispatch<T = any[]>(caller: string, data?: T, system = true): GlobalDispatchResult {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
     this.Log(`Dispatching ${caller}`);
@@ -64,10 +57,7 @@ export class GlobalDispatcher extends KernelModule {
     const callers = this.subscribers[caller];
 
     if (!system && SystemOnlyDispatches.includes(caller)) {
-      this.Log(
-        "Not allowing user to dispatch system-only event",
-        LogLevel.error
-      );
+      this.Log("Not allowing user to dispatch system-only event", LogLevel.error);
 
       return "err_systemOnly";
     }
@@ -81,10 +71,7 @@ export class GlobalDispatcher extends KernelModule {
     }
 
     if (!KnownGlobalDispatchers.includes(caller))
-      this.Log(
-        `Dispatching unknown event ${caller} over Global Dispatch. Don't do that.`,
-        LogLevel.warning
-      );
+      this.Log(`Dispatching unknown event ${caller} over Global Dispatch. Don't do that.`, LogLevel.warning);
 
     return "success";
   }

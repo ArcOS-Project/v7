@@ -23,27 +23,15 @@
       />
     </Option> -->
     <Option caption="Include apps">
-      <input
-        type="checkbox"
-        class="switch"
-        bind:checked={$userPreferences.searchOptions.includeApps}
-      />
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.searchOptions.includeApps} />
     </Option>
     <Option caption="Include shutdown, logoff and restart">
-      <input
-        type="checkbox"
-        class="switch"
-        bind:checked={$userPreferences.searchOptions.includePower}
-      />
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.searchOptions.includePower} />
     </Option>
   </Section>
   <Section caption="Filesystem">
     <Option caption="Search the filesystem">
-      <input
-        type="checkbox"
-        class="switch"
-        bind:checked={$userPreferences.searchOptions.includeFilesystem}
-      />
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.searchOptions.includeFilesystem} />
     </Option>
     <Option caption="Cache the filesystem index">
       <input
@@ -56,18 +44,10 @@
   </Section>
   <Section caption="Apps">
     <Option caption="Hidden apps">
-      <input
-        type="checkbox"
-        class="switch"
-        bind:checked={$userPreferences.searchOptions.showHiddenApps}
-      />
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.searchOptions.showHiddenApps} />
     </Option>
     <Option caption="Third-party apps">
-      <input
-        type="checkbox"
-        class="switch"
-        bind:checked={$userPreferences.searchOptions.showThirdPartyApps}
-      />
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.searchOptions.showThirdPartyApps} />
     </Option>
   </Section>
 </div>

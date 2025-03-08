@@ -21,11 +21,7 @@
 <div class="tab-interface">
   <div class="tabs">
     {#each tabs as tab}
-      <button
-        class="tab"
-        class:suggested={current == tab}
-        onclick={() => (current = tab)}
-      >
+      <button class="tab" class:suggested={current == tab} onclick={() => (current = tab)}>
         {tab}
       </button>
     {/each}

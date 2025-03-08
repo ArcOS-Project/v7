@@ -24,11 +24,9 @@
     <Password {process} />
     <div class="login-status">
       <p class="whoami">
-        Authorizing as {$userPreferences.account.displayName ||
-          process.username.toLowerCase()}
+        Authorizing as {$userPreferences.account.displayName || process.username.toLowerCase()}
       </p>
-      <button class="link settings" onclick={settings}>Security Settings</button
-      >
+      <button class="link settings" onclick={settings}>Security Settings</button>
     </div>
   </div>
   <Actions {process} />

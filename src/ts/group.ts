@@ -1,7 +1,4 @@
-export function groupByTimeFrame<T extends Record<string, any>>(
-  items: T[],
-  column: keyof T = "createdAt"
-) {
+export function groupByTimeFrame<T extends Record<string, any>>(items: T[], column: keyof T = "createdAt") {
   const now = new Date();
   const today = new Date(now.setHours(0, 0, 0, 0));
   const yesterday = new Date(today);

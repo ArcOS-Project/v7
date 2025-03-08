@@ -27,16 +27,14 @@ export class MediaPlayerRuntime extends AppProcess {
     player: [
       {
         caption: "Enter fullscreen",
-        disabled: async () =>
-          !!this.getWindow()?.classList.contains("fullscreen"),
+        disabled: async () => !!this.getWindow()?.classList.contains("fullscreen"),
         action: () => {
           this.handler.renderer?.toggleFullscreen(this.pid);
         },
       },
       {
         caption: "Exit fullscreen",
-        disabled: async () =>
-          !this.getWindow()?.classList.contains("fullscreen"),
+        disabled: async () => !this.getWindow()?.classList.contains("fullscreen"),
         action: () => {
           this.handler.renderer?.toggleFullscreen(this.pid);
         },
@@ -44,13 +42,7 @@ export class MediaPlayerRuntime extends AppProcess {
     ],
   };
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    file?: string
-  ) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, file?: string) {
     super(handler, pid, parentPid, app);
 
     this.altMenu.set(MediaPlayerAltMenu(this));
@@ -241,14 +233,10 @@ export class MediaPlayerRuntime extends AppProcess {
 
     const split = path.split(".");
 
-    this.isVideo.set(
-      DefaultMimeIcons[VideoMimeIcon].includes(`.${split[split.length - 1]}`)
-    );
+    this.isVideo.set(DefaultMimeIcons[VideoMimeIcon].includes(`.${split[split.length - 1]}`));
     this.url.set(url);
     this.windowTitle.set(`${getDirectoryName(path)} - Media Player`);
-    this.windowIcon.set(
-      this.userDaemon?.getMimeIconByFilename(path) || MediaPlayerIcon
-    );
+    this.windowIcon.set(this.userDaemon?.getMimeIconByFilename(path) || MediaPlayerIcon);
 
     this.Reset();
 
@@ -267,9 +255,7 @@ export class MediaPlayerRuntime extends AppProcess {
       title: "Select a file to add to the queue",
       icon: MediaPlayerIcon,
       startDir: getParentDirectory(this.queue()[this.queueIndex()]) || "U:/",
-      extensions: this.app.data.opens?.extensions?.filter(
-        (e) => e !== ".arcpl"
-      ),
+      extensions: this.app.data.opens?.extensions?.filter((e) => e !== ".arcpl"),
       multiple: true,
     });
 
@@ -325,8 +311,7 @@ export class MediaPlayerRuntime extends AppProcess {
       if (!contents) throw new Error("Failed to read playlist");
 
       const queue = JSON.parse(atob(arrayToText(contents)));
-      if (!queue || !Array.isArray(queue))
-        throw new Error("Playlist is not valid");
+      if (!queue || !Array.isArray(queue)) throw new Error("Playlist is not valid");
 
       const queueIndex = this.queueIndex();
       this.Loaded.set(false);

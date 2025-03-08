@@ -2,8 +2,7 @@
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import type { App, ThirdPartyApp } from "$types/app";
 
-  const { app, process }: { app: App | ThirdPartyApp; process: ShellRuntime } =
-    $props();
+  const { app, process }: { app: App | ThirdPartyApp; process: ShellRuntime } = $props();
 
   let disabled = $state(false);
 

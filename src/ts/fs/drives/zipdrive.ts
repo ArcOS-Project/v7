@@ -1,9 +1,5 @@
 import type { WaveKernel } from "$ts/kernel";
-import type {
-  DirectoryReadReturn,
-  FilesystemProgressCallback,
-  RecursiveDirectoryReadReturn,
-} from "$types/fs";
+import type { DirectoryReadReturn, FilesystemProgressCallback, RecursiveDirectoryReadReturn } from "$types/fs";
 import JSZip from "jszip";
 import { Filesystem } from "..";
 import { FilesystemDrive } from "../drive";
@@ -58,13 +54,8 @@ export class ZIPDrive extends FilesystemDrive {
     const seenDirs = new Set<string>();
 
     for (const entryName in entries) {
-      if (
-        !normalizedPath ||
-        (entryName.startsWith(normalizedPath) && entryName !== normalizedPath)
-      ) {
-        const relativePath = normalizedPath
-          ? entryName.slice(normalizedPath.length)
-          : entryName;
+      if (!normalizedPath || (entryName.startsWith(normalizedPath) && entryName !== normalizedPath)) {
+        const relativePath = normalizedPath ? entryName.slice(normalizedPath.length) : entryName;
         const parts = relativePath.split("/");
         if (parts.length === 1) {
           const entry = entries[entryName];
@@ -100,20 +91,14 @@ export class ZIPDrive extends FilesystemDrive {
   async readFile(path: string): Promise<ArrayBuffer | undefined> {
     if (!path) return;
 
-    const file = Object.entries(this._buffer?.files || {}).filter(
-      ([itemPath, item]) => itemPath === path && !item.dir
-    )[0];
+    const file = Object.entries(this._buffer?.files || {}).filter(([itemPath, item]) => itemPath === path && !item.dir)[0];
 
     if (!file) return undefined;
 
     return await file[1].async("arraybuffer");
   }
 
-  async writeFile(
-    path: string,
-    data: Blob,
-    onProgress?: FilesystemProgressCallback
-  ): Promise<boolean> {
+  async writeFile(path: string, data: Blob, onProgress?: FilesystemProgressCallback): Promise<boolean> {
     if (!path || !data) return false;
 
     this._buffer?.file(path, data);
@@ -180,10 +165,7 @@ export class ZIPDrive extends FilesystemDrive {
   }
 
   async moveItem(source: string, destination: string): Promise<boolean> {
-    this._buffer?.file(
-      destination,
-      await this._buffer.file(source)?.async("arraybuffer")!
-    );
+    this._buffer?.file(destination, await this._buffer.file(source)?.async("arraybuffer")!);
 
     this._buffer?.remove(source);
 

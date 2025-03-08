@@ -7,8 +7,5 @@
 </script>
 
 <div class="bar" class:bounce={!$Loaded || !$State.duration}>
-  <div
-    class="inner"
-    style="--w: {(100 / $State.duration) * $State.current}%;"
-  ></div>
+  <div class="inner" style="--w: {(100 / $State.duration) * $State.current}%;"></div>
 </div>

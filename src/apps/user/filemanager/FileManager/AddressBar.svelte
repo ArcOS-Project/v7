@@ -9,11 +9,7 @@
 
 <div class="address-bar">
   <div class="portion address">
-    <button
-      class="parent lucide icon-arrow-up"
-      aria-label="Parent Directory"
-      onclick={() => process.parentDir()}
-    ></button>
+    <button class="parent lucide icon-arrow-up" aria-label="Parent Directory" onclick={() => process.parentDir()}></button>
     <Address {process} />
   </div>
   {#if !process.loadSave}

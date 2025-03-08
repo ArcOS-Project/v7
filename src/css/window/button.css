@@ -57,20 +57,14 @@ div.window div.body button:not(.reset).suggested:active {
   filter: brightness(0.8);
 }
 
-div.window.glass
-  > div.body
-  button:not(.reset):not(.suggested):not(.menu-item):not(.no-glass) {
+div.window.glass > div.body button:not(.reset):not(.suggested):not(.menu-item):not(.no-glass) {
   background-color: var(--button-glass-bg, #fff1);
 }
 
-div.window.glass
-  > div.body
-  button:not(.reset):not(.suggested):not(.menu-item):not(.no-glass):hover {
+div.window.glass > div.body button:not(.reset):not(.suggested):not(.menu-item):not(.no-glass):hover {
   background-color: var(--button-glass-hover-bg, #fff3);
 }
 
-div.window.glass
-  > div.body
-  button:not(.reset):not(.suggested):not(.menu-item):not(.no-glass):active {
+div.window.glass > div.body button:not(.reset):not(.suggested):not(.menu-item):not(.no-glass):active {
   background-color: var(--button-glass-active-bg, #0005);
 }

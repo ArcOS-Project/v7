@@ -26,15 +26,8 @@ import { Process } from "$ts/process/instance";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import type { AppProcessData } from "$types/app";
-import type {
-  DirectoryReadReturn,
-  RecursiveDirectoryReadReturn,
-} from "$types/fs";
-import type {
-  InterpreterCommand,
-  LanguageOptions,
-  Libraries,
-} from "$types/msl";
+import type { DirectoryReadReturn, RecursiveDirectoryReadReturn } from "$types/fs";
+import type { InterpreterCommand, LanguageOptions, Libraries } from "$types/msl";
 import { LanguageExecutionError } from "./error";
 import { BaseLibraries, DefaultLanguageOptions } from "./store";
 
@@ -186,11 +179,7 @@ export class LanguageInstance extends Process {
 
       await Sleep(this.options.tickDelay || 1);
 
-      if (
-        this.pointer >= this.source.length - 1 &&
-        this.options.continuous &&
-        !this._disposed
-      ) {
+      if (this.pointer >= this.source.length - 1 && this.options.continuous && !this._disposed) {
         this.jump(":*idle");
       }
     }
@@ -206,11 +195,7 @@ export class LanguageInstance extends Process {
     this.options.onTick?.(this);
 
     if (!this.tokens[0]) return;
-    if (
-      this.executionCount > this.MAX_EXECUTION_CAP &&
-      !this.options.continuous
-    )
-      this.error("Execution cap exceeded");
+    if (this.executionCount > this.MAX_EXECUTION_CAP && !this.options.continuous) this.error("Execution cap exceeded");
 
     this.executionCount++;
 
@@ -224,11 +209,7 @@ export class LanguageInstance extends Process {
       this.tokens.pop();
     }
 
-    if (
-      typeof this.tokens[0] === "string" &&
-      this.tokens[1] == "=" &&
-      this.tokens[0].startsWith("@")
-    ) {
+    if (typeof this.tokens[0] === "string" && this.tokens[1] == "=" && this.tokens[0].startsWith("@")) {
       if (this.tokens[0].includes(".")) {
         const split = this.tokens[0].replace("@", "").split(".") as string[];
         const name = split.shift();
@@ -236,9 +217,7 @@ export class LanguageInstance extends Process {
         const variable = name ? this.variables.get(name) : undefined;
 
         if (!name || !variable) {
-          this.error(
-            "Can only perform a property assignment on a defined variable"
-          );
+          this.error("Can only perform a property assignment on a defined variable");
 
           return;
         }
@@ -249,29 +228,17 @@ export class LanguageInstance extends Process {
           return;
         }
 
-        setJsonHierarchy(
-          variable,
-          split.join("."),
-          tryJsonParse(this.tokens.slice(2, this.tokens.length).join(" "))
-        );
+        setJsonHierarchy(variable, split.join("."), tryJsonParse(this.tokens.slice(2, this.tokens.length).join(" ")));
 
         this.variables.set(name, variable);
       } else {
-        this.variables.set(
-          this.tokens[0].replace("@", ""),
-          tryJsonParse(this.tokens.slice(2, this.tokens.length).join(" "))
-        );
+        this.variables.set(this.tokens[0].replace("@", ""), tryJsonParse(this.tokens.slice(2, this.tokens.length).join(" ")));
       }
-    } else if (
-      typeof this.tokens[0] === "string" &&
-      this.tokens[1] == "+=" &&
-      this.tokens[0].startsWith("@")
-    ) {
+    } else if (typeof this.tokens[0] === "string" && this.tokens[1] == "+=" && this.tokens[0].startsWith("@")) {
       const variable = this.tokens[0].replace("@", "");
       this.variables.set(
         variable,
-        this.variables.get(variable) +
-          tryJsonParse(this.tokens.slice(2, this.tokens.length).join(" "))
+        this.variables.get(variable) + tryJsonParse(this.tokens.slice(2, this.tokens.length).join(" "))
       );
     } else {
       const targetKeyword = (this.tokens.shift() || "").toLowerCase();
@@ -297,11 +264,7 @@ export class LanguageInstance extends Process {
 
       if (!result) return;
 
-      if (
-        typeof result === "string" &&
-        result.startsWith('"') &&
-        result.endsWith('"')
-      ) {
+      if (typeof result === "string" && result.startsWith('"') && result.endsWith('"')) {
         result = result.slice(1, result.length - 1);
       }
 
@@ -406,10 +369,7 @@ export class LanguageInstance extends Process {
     const notEnough = this.tokens.length < length;
 
     if (notEnough) {
-      this.error(
-        `Expected ${length} arguments, got ${this.tokens.length}.`,
-        where
-      );
+      this.error(`Expected ${length} arguments, got ${this.tokens.length}.`, where);
 
       return false;
     }
@@ -436,10 +396,7 @@ export class LanguageInstance extends Process {
       case "or":
         return left == "true" || right == "true";
       case "xor":
-        return (
-          (left == "true" && right != "true") ||
-          (left != "true" && right == "true")
-        );
+        return (left == "true" && right != "true") || (left != "true" && right == "true");
       case "nor":
         return !(left == "true" || right == "true");
       case "nand":
@@ -480,9 +437,7 @@ export class LanguageInstance extends Process {
     this.pointer = index;
   }
 
-  async readDir(
-    relativePath: string
-  ): Promise<DirectoryReadReturn | undefined> {
+  async readDir(relativePath: string): Promise<DirectoryReadReturn | undefined> {
     const path = join(this.workingDir, relativePath);
 
     return await this.fs.readDir(path);
@@ -506,9 +461,7 @@ export class LanguageInstance extends Process {
     return await this.fs.writeFile(path, data);
   }
 
-  async tree(
-    relativePath: string
-  ): Promise<RecursiveDirectoryReadReturn | undefined> {
+  async tree(relativePath: string): Promise<RecursiveDirectoryReadReturn | undefined> {
     const path = join(this.workingDir, relativePath);
 
     return await this.fs.tree(path);

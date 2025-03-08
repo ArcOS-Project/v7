@@ -15,9 +15,7 @@
 
   onMount(() => {
     const sub = userPreferences?.subscribe(async (v) => {
-      currentWallpaper = await process.userDaemon!.getWallpaper(
-        v.desktop.wallpaper
-      );
+      currentWallpaper = await process.userDaemon!.getWallpaper(v.desktop.wallpaper);
     });
 
     return () => sub?.();
@@ -36,11 +34,7 @@
     background={currentWallpaper?.thumb || currentWallpaper?.url}
     desktop
   >
-    <Setting
-      caption="Accent Color"
-      sub={$userPreferences?.desktop.accent}
-      className="color-picker"
-    >
+    <Setting caption="Accent Color" sub={$userPreferences?.desktop.accent} className="color-picker">
       <AccentColor {userPreferences} />
     </Setting>
     <div class="setting theme-selector">
@@ -74,11 +68,7 @@
 
 <div class="theme-section">
   <p class="name">Your saved themes</p>
-  <div
-    class="themes"
-    class:empty={!$userPreferences?.userThemes ||
-      !Object.values($userPreferences?.userThemes).length}
-  >
+  <div class="themes" class:empty={!$userPreferences?.userThemes || !Object.values($userPreferences?.userThemes).length}>
     {#if $userPreferences?.userThemes && Object.values($userPreferences.userThemes).length}
       {#each Object.entries($userPreferences.userThemes) as [id, theme] (id)}
         <Theme {theme} {id} userDaemon={process.userDaemon!} {process} isUser />

@@ -1,9 +1,7 @@
 import type { AppKeyCombinations } from "$types/accelerator";
 import type { FileManagerRuntime } from "./runtime";
 
-export function FileManagerAccelerators(
-  runtime: FileManagerRuntime
-): AppKeyCombinations {
+export function FileManagerAccelerators(runtime: FileManagerRuntime): AppKeyCombinations {
   return [
     {
       key: "Delete",

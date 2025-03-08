@@ -2,19 +2,18 @@
   import { contextProps } from "$ts/context/actions.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
   import { formatBytes, join } from "$ts/fs/util";
+  import { getIconPath } from "$ts/images";
   import { DefaultMimeIcon } from "$ts/images/mime";
   import type { FileEntry } from "$types/fs";
+  import type { ArcShortcut } from "$types/shortcut";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
   import { fromMime } from "human-filetypes";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../../runtime";
-  import type { ArcShortcut } from "$types/shortcut";
-  import { getIconPath } from "$ts/images";
 
-  const { process, file }: { process: FileManagerRuntime; file: FileEntry } =
-    $props();
+  const { process, file }: { process: FileManagerRuntime; file: FileEntry } = $props();
   const { selection, userDaemon, shortcuts } = process;
 
   let date = $state<string>();

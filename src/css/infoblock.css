@@ -51,12 +51,7 @@ div.window:not(.core) div.body div.info-block div.segment p.value {
   text-overflow: ellipsis;
 }
 
-div.window:not(.core)
-  div.body
-  div.info-block
-  div.segment
-  p.title
-  button.help:hover {
+div.window:not(.core) div.body div.info-block div.segment p.title button.help:hover {
   color: var(--accent-light);
 }
 

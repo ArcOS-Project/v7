@@ -4,11 +4,7 @@ import type { ConfirmationData, MessageBoxData } from "$types/messagebox";
 import { WaveKernel } from "./kernel";
 import { ProcessHandler } from "./process/handler";
 
-export async function MessageBox(
-  data: MessageBoxData,
-  parentPid: number,
-  overlay = false
-) {
+export async function MessageBox(data: MessageBoxData, parentPid: number, overlay = false) {
   const kernel = WaveKernel.get();
 
   if (!kernel) return;
@@ -28,11 +24,7 @@ export async function MessageBox(
   );
 }
 
-export async function GetConfirmation(
-  data: ConfirmationData,
-  parentPid: number,
-  overlay = false
-) {
+export async function GetConfirmation(data: ConfirmationData, parentPid: number, overlay = false) {
   return new Promise<boolean>((r) => {
     MessageBox(
       {

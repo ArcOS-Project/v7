@@ -36,9 +36,7 @@
     aria-label="Apply '{wallpaper.name}'"
     title="{wallpaper.name} by {wallpaper.author}"
     onclick={apply}
-    class:selected={isLogin
-      ? $userPreferences.account.loginBackground === id
-      : $userPreferences.desktop.wallpaper === id}
+    class:selected={isLogin ? $userPreferences.account.loginBackground === id : $userPreferences.desktop.wallpaper === id}
   >
     <div class="selected-overlay">
       <span class="lucide icon-check"></span>

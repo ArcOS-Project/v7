@@ -2,12 +2,7 @@
   import type { HexEditRuntime } from "../runtime";
   import Byte from "./Display/Byte.svelte";
 
-  const {
-    process,
-    startIndex,
-    endIndex,
-  }: { process: HexEditRuntime; startIndex: number; endIndex: number } =
-    $props();
+  const { process, startIndex, endIndex }: { process: HexEditRuntime; startIndex: number; endIndex: number } = $props();
   const { hexRows, original } = process;
 </script>
 

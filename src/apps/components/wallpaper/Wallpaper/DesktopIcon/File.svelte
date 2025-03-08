@@ -3,13 +3,12 @@
   import { getIconPath } from "$ts/images";
   import { DefaultMimeIcon } from "$ts/images/mime";
   import type { FileEntry } from "$types/fs";
+  import type { ArcShortcut } from "$types/shortcut";
   import { onMount } from "svelte";
   import type { WallpaperRuntime } from "../../runtime";
   import DesktopIcon from "../DesktopIcon.svelte";
-  import type { ArcShortcut } from "$types/shortcut";
 
-  const { process, file }: { process: WallpaperRuntime; file: FileEntry } =
-    $props();
+  const { process, file }: { process: WallpaperRuntime; file: FileEntry } = $props();
   const { shortcuts } = process;
 
   const path = join(process.directory, file.name);

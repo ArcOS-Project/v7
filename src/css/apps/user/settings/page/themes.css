@@ -41,11 +41,7 @@
   align-items: center;
 }
 
-#systemSettings
-  div.container.themes
-  div.setting.theme-selector
-  p.sub
-  span.lucide {
+#systemSettings div.container.themes div.setting.theme-selector p.sub span.lucide {
   height: 16px;
   width: 16px;
   font-size: 16px;
@@ -85,18 +81,11 @@
   transition: opacity 0.3s, scale 0.3s;
 }
 
-#systemSettings
-  div.container.themes
-  button.user-theme
-  div.selected-overlay
-  span {
+#systemSettings div.container.themes button.user-theme div.selected-overlay span {
   color: inherit;
 }
 
-#systemSettings
-  div.container.themes
-  button.user-theme.selected
-  div.selected-overlay {
+#systemSettings div.container.themes button.user-theme.selected div.selected-overlay {
   opacity: 1;
 }
 #systemSettings div.container.themes button.user-theme img {
@@ -122,26 +111,15 @@
   border: var(--win-border);
 }
 
-#systemSettings
-  div.container.themes
-  button.user-theme:not(.sharp)
-  div.fake-window {
+#systemSettings div.container.themes button.user-theme:not(.sharp) div.fake-window {
   border-radius: 5px !important;
 }
 
-#systemSettings
-  div.container.themes
-  button.user-theme:not(.sharp)
-  div.fake-window
-  div.fake-button {
+#systemSettings div.container.themes button.user-theme:not(.sharp) div.fake-window div.fake-button {
   border-radius: 2.5px !important;
 }
 
-#systemSettings
-  div.container.themes
-  button.user-theme
-  div.fake-window
-  div.fake-button {
+#systemSettings div.container.themes button.user-theme div.fake-window div.fake-button {
   width: 20px;
   height: 5px;
   background-color: var(--accent);

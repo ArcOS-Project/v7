@@ -11,11 +11,7 @@
 
   onMount(() => {
     const sub = userPreferences.subscribe((v) => {
-      if (
-        typeof v.desktop.wallpaper !== "string" ||
-        !v.desktop.wallpaper.startsWith("http")
-      )
-        return;
+      if (typeof v.desktop.wallpaper !== "string" || !v.desktop.wallpaper.startsWith("http")) return;
 
       wallpaper = v.desktop.wallpaper;
 
@@ -59,13 +55,7 @@
   <div class="right">
     <h1>Change Wallpaper</h1>
     <p>Enter the URL you wish to use as your wallpaper:</p>
-    <input
-      type="url"
-      bind:value={wallpaper}
-      oninput={check}
-      onkeydown={check}
-      placeholder="https://example.com/image.png"
-    />
+    <input type="url" bind:value={wallpaper} oninput={check} onkeydown={check} placeholder="https://example.com/image.png" />
   </div>
 </div>
 <div class="bottom">

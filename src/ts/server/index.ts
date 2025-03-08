@@ -59,13 +59,11 @@ export class ServerManager extends KernelModule {
         timeoutErrorMessage: "We're offline",
       });
 
-      if (response.status !== 200)
-        throw new Error("Invalid response from server");
+      if (response.status !== 200) throw new Error("Invalid response from server");
 
       const { validation } = response.data as Record<string, string>;
 
-      if (validation !== VALIDATION_STR)
-        throw new Error("Server validation string doesn't match ours");
+      if (validation !== VALIDATION_STR) throw new Error("Server validation string doesn't match ours");
 
       this.connected = true;
 
@@ -81,9 +79,7 @@ export class ServerManager extends KernelModule {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
     try {
-      const response = await Axios.get(
-        `/user/availability/username?name=${username}`
-      );
+      const response = await Axios.get(`/user/availability/username?name=${username}`);
 
       return response.status === 200;
     } catch {
@@ -95,9 +91,7 @@ export class ServerManager extends KernelModule {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
     try {
-      const response = await Axios.get(
-        `/user/availability/email?email=${email}`
-      );
+      const response = await Axios.get(`/user/availability/email?email=${email}`);
 
       return response.status === 200;
     } catch {

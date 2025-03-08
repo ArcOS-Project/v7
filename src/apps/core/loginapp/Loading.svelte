@@ -16,9 +16,10 @@
     const sub = kernel.Logs.subscribe((v) => {
       const last = v[v.length - 1];
 
-      currentLogItem = htmlspecialchars(
-        `${ShortLogLevelCaptions[last.level]} ${last.source}%%br${last.message}`
-      ).replace("%%br", "<br>");
+      currentLogItem = htmlspecialchars(`${ShortLogLevelCaptions[last.level]} ${last.source}%%br${last.message}`).replace(
+        "%%br",
+        "<br>",
+      );
     });
 
     return () => sub();

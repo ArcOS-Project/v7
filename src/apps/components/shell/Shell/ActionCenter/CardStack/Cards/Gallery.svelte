@@ -5,11 +5,7 @@
   import { onMount } from "svelte";
   import Spinner from "../../../../../../../lib/Spinner.svelte";
 
-  const {
-    userPreferences,
-    process,
-  }: { userPreferences: UserPreferencesStore; process: ShellRuntime } =
-    $props();
+  const { userPreferences, process }: { userPreferences: UserPreferencesStore; process: ShellRuntime } = $props();
 
   let url = $state("");
   let errored = $state(false);
@@ -33,9 +29,7 @@
       errored = false;
       loading = true;
 
-      const contents = await process.fs.readFile(
-        v.shell.actionCenter.galleryImage
-      );
+      const contents = await process.fs.readFile(v.shell.actionCenter.galleryImage);
 
       loading = false;
 

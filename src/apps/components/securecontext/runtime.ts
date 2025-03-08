@@ -66,11 +66,7 @@ export class SecureContextRuntime extends AppProcess {
 
     await this.closeWindow();
 
-    this.globalDispatch.dispatch(
-      "elevation-approve",
-      [this.id, this.key],
-      true
-    );
+    this.globalDispatch.dispatch("elevation-approve", [this.id, this.key], true);
   }
 
   async deny() {
@@ -92,8 +88,7 @@ export class SecureContextRuntime extends AppProcess {
       await MessageBox(
         {
           title: "Authentication failed",
-          message:
-            "The password you entered is incorrect. Please try typing it again.",
+          message: "The password you entered is incorrect. Please try typing it again.",
           image: ErrorIcon,
           sound: "arcos.dialog.error",
           buttons: [{ caption: "Okay", action: () => r(), suggested: true }],
@@ -110,8 +105,7 @@ export class SecureContextRuntime extends AppProcess {
     await MessageBox(
       {
         title: "Cancel elevation?",
-        message:
-          "Going to the security settings from here will cancel the elevation request. Are you sure?",
+        message: "Going to the security settings from here will cancel the elevation request. Are you sure?",
         sound: "arcos.dialog.warning",
         image: WarningIcon,
         buttons: [

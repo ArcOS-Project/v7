@@ -21,7 +21,7 @@
           sound: "arcos.dialog.warning",
         },
         process.parentPid,
-        true
+        true,
       );
 
       return;
@@ -42,20 +42,19 @@
           sound: "arcos.dialog.warning",
         },
         process.parentPid,
-        true
+        true,
       );
     } else {
       MessageBox(
         {
           title: "Change password",
-          message:
-            "Your password has been changed successfully! You'll have to use this password when logging in in the future",
+          message: "Your password has been changed successfully! You'll have to use this password when logging in in the future",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           image: GoodStatusIcon,
           sound: "arcos.dialog.info",
         },
         process.parentPid,
-        true
+        true,
       );
     }
   }
@@ -67,27 +66,12 @@
   </div>
   <div class="right">
     <h1>Change your password</h1>
-    <p>
-      Fill out the following fields to change your password. You will stay
-      logged in everywhere if you change it.
-    </p>
-    <input
-      type="password"
-      placeholder="New password"
-      bind:value={newPassword}
-    />
-    <input
-      type="password"
-      placeholder="Confirm new password"
-      bind:value={confirmNewPassword}
-    />
+    <p>Fill out the following fields to change your password. You will stay logged in everywhere if you change it.</p>
+    <input type="password" placeholder="New password" bind:value={newPassword} />
+    <input type="password" placeholder="Confirm new password" bind:value={confirmNewPassword} />
   </div>
 </div>
 <div class="bottom">
   <button onclick={() => process.closeWindow()}>Cancel</button>
-  <button
-    class="suggested"
-    disabled={!newPassword || !confirmNewPassword}
-    onclick={changeIt}>Confirm</button
-  >
+  <button class="suggested" disabled={!newPassword || !confirmNewPassword} onclick={changeIt}>Confirm</button>
 </div>

@@ -15,12 +15,6 @@
 
 {#if !$userPreferences.security.noPassword && !$userPreferences.security.lockdown}
   <form onsubmit={submit} class="password-form">
-    <input
-      type="password"
-      bind:value={$password}
-      placeholder="Password"
-      class="password-field"
-      disabled={$loading}
-    />
+    <input type="password" bind:value={$password} placeholder="Password" class="password-field" disabled={$loading} />
   </form>
 {/if}

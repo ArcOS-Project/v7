@@ -31,8 +31,7 @@ export class EditRowRuntime extends AppProcess {
   async render() {
     const parent = this.handler.getProcess(this.parentPid)!;
 
-    if (!(parent instanceof HexEditRuntime))
-      throw new Error("Invalid invocation");
+    if (!(parent instanceof HexEditRuntime)) throw new Error("Invalid invocation");
 
     const v = this.view();
     const array = Array.from(v);

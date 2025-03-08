@@ -27,8 +27,7 @@
   });
 
   async function getWall() {
-    wallpaper = (await userDaemon?.getWallpaper(theme?.desktopWallpaper))
-      ?.thumb;
+    wallpaper = (await userDaemon?.getWallpaper(theme?.desktopWallpaper))?.thumb;
   }
 
   function apply() {
@@ -39,8 +38,7 @@
     MessageBox(
       {
         title: "Delete theme?",
-        message:
-          "Are you sure you want to delete this amazing theme? You can't undo this.",
+        message: "Are you sure you want to delete this amazing theme? You can't undo this.",
         buttons: [
           { caption: "Cancel", action: () => {} },
           {
@@ -54,7 +52,7 @@
         image: QuestionIcon,
       },
       process.pid,
-      true
+      true,
     );
   }
 </script>
@@ -72,11 +70,7 @@
   data-contextmenu={isUser ? "user-theme-option" : "builtin-theme-option"}
   use:contextProps={[apply, deleteTheme]}
 >
-  <div
-    class="fake-window shell-colored theme-{theme.desktopTheme}"
-    style={css}
-    class:colored={theme.taskbarColored}
-  >
+  <div class="fake-window shell-colored theme-{theme.desktopTheme}" style={css} class:colored={theme.taskbarColored}>
     <div class="fake-button"></div>
   </div>
   <div class="selected-overlay">

@@ -18,10 +18,7 @@
       const driveIdentifier = getDriveLetter(v, true);
 
       if (driveIdentifier) {
-        const drive = process.fs.getDriveByLetter(
-          driveIdentifier.slice(0, -1),
-          false
-        );
+        const drive = process.fs.getDriveByLetter(driveIdentifier.slice(0, -1), false);
 
         driveLabel = drive?.label || "";
       }

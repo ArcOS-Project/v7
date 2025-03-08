@@ -9,13 +9,7 @@
   const { height, stopped = false }: Props = $props();
 </script>
 
-<img
-  src={SpinnerIcon}
-  alt="spinner"
-  style="height: {height}px;"
-  class="spinner-svg"
-  class:hide={stopped}
-/>
+<img src={SpinnerIcon} alt="spinner" style="height: {height}px;" class="spinner-svg" class:hide={stopped} />
 
 <style scoped>
   img.spinner-svg {

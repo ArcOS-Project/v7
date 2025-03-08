@@ -27,11 +27,7 @@ export async function LoginUser(identity: string, password: string) {
   }
 }
 
-export async function RegisterUser(
-  username: string,
-  email: string,
-  password: string
-) {
+export async function RegisterUser(username: string, email: string, password: string) {
   try {
     const response = await Axios.post(
       `/user`,

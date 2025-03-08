@@ -2,11 +2,7 @@ import { getBuild } from "$ts/metadata/build";
 import { getLicense } from "$ts/metadata/license";
 import { getMode } from "$ts/metadata/mode";
 import { Store, type ReadableStore } from "$ts/writable";
-import {
-  LogLevel,
-  ShortLogLevelCaptions,
-  type LogItem,
-} from "../../types/logging";
+import { LogLevel, ShortLogLevelCaptions, type LogItem } from "../../types/logging";
 import { handleGlobalErrors } from "../error";
 import { ProcessHandler } from "../process/handler";
 import { StateHandler } from "../state";
@@ -29,8 +25,7 @@ export class WaveKernel {
   public ARCOS_LICENSE = "not here yet";
 
   public static get(): WaveKernel {
-    if (!CurrentKernel)
-      throw new Error("Tried to get kernel while it doesn't exist yet");
+    if (!CurrentKernel) throw new Error("Tried to get kernel while it doesn't exist yet");
 
     return CurrentKernel;
   }
@@ -74,10 +69,7 @@ export class WaveKernel {
 
   async _init() {
     if (navigator.userAgent.toLowerCase().includes("firefox")) {
-      this.Log(
-        `KERNEL`,
-        `Firefox? nahhhh.... Use a competent browser instead. :(`
-      );
+      this.Log(`KERNEL`, `Firefox? nahhhh.... Use a competent browser instead. :(`);
 
       return;
     }
@@ -90,10 +82,7 @@ export class WaveKernel {
     await getBuild();
     await getLicense();
 
-    this.Log(
-      `ArcOS`,
-      `***** [v7 -> ArcOS InDev v7.0.0-${this.ARCOS_MODE}_${this.ARCOS_BUILD}] *****`
-    );
+    this.Log(`ArcOS`, `***** [v7 -> ArcOS InDev v7.0.0-${this.ARCOS_MODE}_${this.ARCOS_BUILD}] *****`);
 
     await this._kernelModules();
 
@@ -107,10 +96,7 @@ export class WaveKernel {
 
   getModule<T = any>(id: string, dontCrash = false): T {
     const mod = (this as any)[id];
-    const result =
-      this.modules.includes(id) && mod && mod.id === id
-        ? (mod as T)
-        : undefined;
+    const result = this.modules.includes(id) && mod && mod.id === id ? (mod as T) : undefined;
 
     if (!result && !dontCrash) throw new Error(`No such kernel module ${id}`);
 
@@ -145,9 +131,7 @@ export class WaveKernel {
     });
 
     console.log(
-      `[${(timestamp - this.startMs).toString().padStart(10, "0")}] ${
-        ShortLogLevelCaptions[level]
-      } ${source}: ${message}`
+      `[${(timestamp - this.startMs).toString().padStart(10, "0")}] ${ShortLogLevelCaptions[level]} ${source}: ${message}`
     );
   }
 }

@@ -19,8 +19,7 @@
     <button
       class="approve level-{ElevationLevel[data.level]}"
       onclick={approve}
-      disabled={$loading ||
-        (!$password && !$userPreferences.security.noPassword)}
+      disabled={$loading || (!$password && !$userPreferences.security.noPassword)}
     >
       {#if $loading}
         <HtmlSpinner height={16} thickness={3} />

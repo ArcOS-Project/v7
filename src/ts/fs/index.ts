@@ -45,8 +45,7 @@ export class Filesystem extends KernelModule {
 
     if (letter) this.validateDriveLetter(letter);
 
-    if (this.drives[id] || (letter && this.getDriveByLetter(letter, false)))
-      return false;
+    if (this.drives[id] || (letter && this.getDriveByLetter(letter, false))) return false;
 
     const uuid = UUID();
     const instance = new supplier(this.kernel, uuid, letter, ...args);
@@ -69,11 +68,7 @@ export class Filesystem extends KernelModule {
       .map(([id]) => id)[0];
   }
 
-  async umountDrive(
-    id: string,
-    fromSystem = false,
-    onProgress?: FilesystemProgressCallback
-  ) {
+  async umountDrive(id: string, fromSystem = false, onProgress?: FilesystemProgressCallback) {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
     this.Log(`Unmounting drive '${id}'`);
@@ -95,9 +90,7 @@ export class Filesystem extends KernelModule {
 
     this.validateDriveLetter(letter);
 
-    const result = Object.values(this.drives).filter(
-      (s) => s.driveLetter == letter || s.uuid == letter
-    )[0];
+    const result = Object.values(this.drives).filter((s) => s.driveLetter == letter || s.uuid == letter)[0];
 
     if (!result && error) throw new Error(`Not mounted: ${letter}:/`);
 
@@ -121,11 +114,7 @@ export class Filesystem extends KernelModule {
   validatePath(p: string) {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
-    if (
-      !/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|[a-zA-Z]):\/(.*?)$/g.test(
-        p
-      )
-    )
+    if (!/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|[a-zA-Z]):\/(.*?)$/g.test(p))
       throw new Error(`Invalid path "${p}"`);
   }
 
@@ -143,11 +132,7 @@ export class Filesystem extends KernelModule {
   validateDriveLetter(letter: string) {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
-    if (
-      !/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|[a-zA-Z])$/g.test(
-        letter
-      )
-    )
+    if (!/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|[a-zA-Z])$/g.test(letter))
       throw new Error(`Invalid drive letter or UUID "${letter}"`);
   }
 
@@ -191,10 +176,7 @@ export class Filesystem extends KernelModule {
     return result;
   }
 
-  async readFile(
-    path: string,
-    onProgress?: FilesystemProgressCallback
-  ): Promise<ArrayBuffer | undefined> {
+  async readFile(path: string, onProgress?: FilesystemProgressCallback): Promise<ArrayBuffer | undefined> {
     onProgress ||= this.defaultProgress.bind(this);
 
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
@@ -208,12 +190,7 @@ export class Filesystem extends KernelModule {
     return await drive.readFile(path, onProgress);
   }
 
-  async writeFile(
-    path: string,
-    data: Blob,
-    onProgress?: FilesystemProgressCallback,
-    dispatch = true
-  ): Promise<boolean> {
+  async writeFile(path: string, data: Blob, onProgress?: FilesystemProgressCallback, dispatch = true): Promise<boolean> {
     onProgress ||= this.defaultProgress.bind(this);
 
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
@@ -247,11 +224,7 @@ export class Filesystem extends KernelModule {
     return await drive.tree(path);
   }
 
-  async copyItem(
-    source: string,
-    destination: string,
-    dispatch = true
-  ): Promise<boolean> {
+  async copyItem(source: string, destination: string, dispatch = true): Promise<boolean> {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
     this.Log(`Copying '${source}' to '${destination}'`);
@@ -261,8 +234,7 @@ export class Filesystem extends KernelModule {
     const sourceId = this.getDriveIdentifier(source);
     const destinationId = this.getDriveIdentifier(destination);
 
-    if (sourceId !== destinationId)
-      throw new Error("Copy operation across drives is not supported.");
+    if (sourceId !== destinationId) throw new Error("Copy operation across drives is not supported.");
 
     const drive = this.getDriveByPath(source);
 
@@ -279,11 +251,7 @@ export class Filesystem extends KernelModule {
     return result;
   }
 
-  async moveItem(
-    source: string,
-    destination: string,
-    dispatch = true
-  ): Promise<boolean> {
+  async moveItem(source: string, destination: string, dispatch = true): Promise<boolean> {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
     this.Log(`Moving '${source}' to '${destination}'`);
@@ -293,8 +261,7 @@ export class Filesystem extends KernelModule {
     const sourceId = this.getDriveIdentifier(source);
     const destinationId = this.getDriveIdentifier(destination);
 
-    if (sourceId !== destinationId)
-      throw new Error("Move operation across drives is not supported.");
+    if (sourceId !== destinationId) throw new Error("Move operation across drives is not supported.");
 
     const drive = this.getDriveByPath(source);
 
@@ -306,8 +273,7 @@ export class Filesystem extends KernelModule {
 
     if (dispatch) {
       this.dispatch.dispatch("fs-flush-folder", destinationParent);
-      if (sourceParent !== destinationParent)
-        this.dispatch.dispatch("fs-flush-folder", sourceParent);
+      if (sourceParent !== destinationParent) this.dispatch.dispatch("fs-flush-folder", sourceParent);
     }
 
     return result;
@@ -374,12 +340,7 @@ export class Filesystem extends KernelModule {
             }
 
             const path = join(target, file.name);
-            const written = await this.writeFile(
-              path,
-              content,
-              onProgress,
-              false
-            );
+            const written = await this.writeFile(path, content, onProgress, false);
 
             if (!written) {
               throw new Error(`Failed to write file "${path}"`);
@@ -407,9 +368,9 @@ export class Filesystem extends KernelModule {
 
   defaultProgress(d: FilesystemProgress) {
     this.Log(
-      `Got filesystem progress: ${d.type}: ${
-        d.type === "size" ? formatBytes(d.value) : d.value
-      }/${d.type === "size" ? formatBytes(d.max) : d.max} (${d.what})`
+      `Got filesystem progress: ${d.type}: ${d.type === "size" ? formatBytes(d.value) : d.value}/${
+        d.type === "size" ? formatBytes(d.max) : d.max
+      } (${d.what})`
     );
   }
 

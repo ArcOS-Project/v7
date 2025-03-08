@@ -15,10 +15,7 @@
   });
 </script>
 
-<tr
-  class="log-item item-{LogLevel[item.level]}"
-  class:new={now && now < item.timestamp + 600}
->
+<tr class="log-item item-{LogLevel[item.level]}" class:new={now && now < item.timestamp + 600}>
   <td class="icon">
     <img src={LogItemIcons[item.level]} alt={LogLevel[item.level]} />
   </td>

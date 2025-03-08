@@ -2,8 +2,7 @@
   import { Logo } from "$ts/branding";
   import { ArcMode } from "$ts/metadata/mode";
 
-  const { className = "", src = Logo() }: { className?: string; src?: string } =
-    $props();
+  const { className = "", src = Logo() }: { className?: string; src?: string } = $props();
 </script>
 
 <img {src} alt={ArcMode()} class={className} />

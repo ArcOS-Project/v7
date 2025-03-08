@@ -11,12 +11,7 @@ import { LogLevel } from "$types/logging";
 import type { RenderArgs } from "$types/process";
 import type { UserPreferences } from "$types/user";
 import { mount } from "svelte";
-import type {
-  App,
-  AppContextMenu,
-  AppProcessData,
-  ContextMenuItem,
-} from "../../types/app";
+import type { App, AppContextMenu, AppProcessData, ContextMenuItem } from "../../types/app";
 import { WaveKernel } from "../kernel";
 import type { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
@@ -31,9 +26,7 @@ export class AppProcess extends Process {
   windowIcon = Store("");
   app: AppProcessData;
   componentMount: Record<string, any> = {};
-  userPreferences: ReadableStore<UserPreferences> = Store<UserPreferences>(
-    DefaultUserPreferences
-  );
+  userPreferences: ReadableStore<UserPreferences> = Store<UserPreferences>(DefaultUserPreferences);
   username: string = "";
   globalDispatch: GlobalDispatcher;
   userDaemon: UserDaemon | undefined;
@@ -45,13 +38,7 @@ export class AppProcess extends Process {
   public altMenu = Store<ContextMenuItem[]>([]);
   public windowFullscreen = Store<boolean>(false);
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    ...args: any[]
-  ) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, ...args: any[]) {
     super(handler, pid, parentPid);
 
     this.app = {
@@ -67,9 +54,7 @@ export class AppProcess extends Process {
     this.globalDispatch = this.kernel.getModule<GlobalDispatcher>("dispatch");
 
     const desktopProps = this.kernel.state?.stateProps["desktop"];
-    const daemon: UserDaemon | undefined =
-      desktopProps?.userDaemon ||
-      this.handler.getProcess(+this.env.get("userdaemon_pid"));
+    const daemon: UserDaemon | undefined = desktopProps?.userDaemon || this.handler.getProcess(+this.env.get("userdaemon_pid"));
 
     if (daemon) {
       this.userPreferences = daemon.preferences;
@@ -104,19 +89,12 @@ export class AppProcess extends Process {
     }
 
     if (this.getWindow()?.classList.contains("fullscreen"))
-      this.globalDispatch.dispatch("window-unfullscreen", [
-        this.pid,
-        this.app.desktop,
-      ]);
+      this.globalDispatch.dispatch("window-unfullscreen", [this.pid, this.app.desktop]);
 
     const elements = [
       ...document.querySelectorAll(`div.window[data-pid="${this.pid}"]`),
-      ...(document.querySelectorAll(
-        `div.overlay-wrapper[data-pid="${this.pid}"]`
-      ) || []),
-      ...(document.querySelectorAll(
-        `button.opened-app[data-pid="${this.pid}"]`
-      ) || []),
+      ...(document.querySelectorAll(`div.overlay-wrapper[data-pid="${this.pid}"]`) || []),
+      ...(document.querySelectorAll(`button.opened-app[data-pid="${this.pid}"]`) || []),
     ];
 
     if (!elements.length) {
@@ -156,10 +134,7 @@ export class AppProcess extends Process {
 
   async __render__(body: HTMLDivElement) {
     if (this.userPreferences().disabledApps.includes(this.app.id)) {
-      this.Log(
-        `Running application instance of app "${this.app.id}" is prohibited by the user. Terminating.`,
-        LogLevel.error
-      );
+      this.Log(`Running application instance of app "${this.app.id}" is prohibited by the user. Terminating.`, LogLevel.error);
 
       return this.killSelf();
     }
@@ -200,8 +175,7 @@ export class AppProcess extends Process {
 
       this.handler.renderer?.focusPid(instances[0].pid);
 
-      if (instances[0].app.desktop)
-        this.userDaemon?.switchToDesktopByUuid(instances[0].app.desktop);
+      if (instances[0].app.desktop) this.userDaemon?.switchToDesktopByUuid(instances[0].app.desktop);
     }
 
     return instances.length ? instances[0] : undefined;
@@ -243,10 +217,7 @@ export class AppProcess extends Process {
   private async processor(e: KeyboardEvent) {
     if (!e.key || this.hasOverlays()) return;
 
-    if (
-      bannedKeys.includes(e.key.toLowerCase()) &&
-      this.kernel.state?.currentState === "desktop"
-    ) {
+    if (bannedKeys.includes(e.key.toLowerCase()) && this.kernel.state?.currentState === "desktop") {
       e.preventDefault();
 
       return false;
@@ -269,11 +240,9 @@ export class AppProcess extends Process {
       const key = combo.key?.trim().toLowerCase();
       const codedKey = String.fromCharCode(e.keyCode).toLowerCase();
       /** */
-      const isFocused =
-        this.handler.renderer?.focusedPid() == this.pid || combo.global;
+      const isFocused = this.handler.renderer?.focusedPid() == this.pid || combo.global;
 
-      if (!modifiers || (key != pK && key && key != codedKey) || !isFocused)
-        continue;
+      if (!modifiers || (key != pK && key && key != codedKey) || !isFocused) continue;
 
       if (!this.userDaemon?._elevating) await combo.action(this, e);
 
@@ -284,12 +253,7 @@ export class AppProcess extends Process {
   public unfocusActiveElement() {
     const el = document.activeElement as HTMLButtonElement;
 
-    if (
-      !el ||
-      el instanceof HTMLInputElement ||
-      el instanceof HTMLTextAreaElement
-    )
-      return;
+    if (!el || el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) return;
 
     el.blur();
   }
@@ -319,28 +283,12 @@ export class AppProcess extends Process {
     return !!proc;
   }
 
-  async spawnApp<T = AppProcess>(
-    id: string,
-    parentPid?: number | undefined,
-    ...args: any[]
-  ) {
-    return await this.userDaemon?.spawnApp<T>(
-      id,
-      parentPid ?? this.parentPid,
-      ...args
-    );
+  async spawnApp<T = AppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
+    return await this.userDaemon?.spawnApp<T>(id, parentPid ?? this.parentPid, ...args);
   }
 
-  async spawnOverlayApp<T = AppProcess>(
-    id: string,
-    parentPid?: number | undefined,
-    ...args: any[]
-  ) {
-    return await this.userDaemon?.spawnOverlay<T>(
-      id,
-      parentPid ?? this.parentPid,
-      ...args
-    );
+  async spawnOverlayApp<T = AppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
+    return await this.userDaemon?.spawnOverlay<T>(id, parentPid ?? this.parentPid, ...args);
   }
 
   async elevate(id: string) {

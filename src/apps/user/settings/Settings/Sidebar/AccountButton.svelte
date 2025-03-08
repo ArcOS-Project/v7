@@ -8,11 +8,7 @@
   const userInfo = userDaemon?.userInfo || DefaultUserInfo;
 </script>
 
-<button
-  class="account-button"
-  onclick={() => process.switchPage("account")}
-  class:selected={$currentPage === "account"}
->
+<button class="account-button" onclick={() => process.switchPage("account")} class:selected={$currentPage === "account"}>
   <ProfilePicture height={32} {userDaemon} />
   <div class="info">
     <p class="account-name">

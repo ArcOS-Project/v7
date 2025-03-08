@@ -14,11 +14,6 @@ div.shell div.actioncenter div.top div.card-stack div.card.notes textarea {
   font-family: "Handlee";
 }
 
-div.shell
-  div.actioncenter
-  div.top
-  div.card-stack
-  div.card.notes
-  textarea::-webkit-scrollbar {
+div.shell div.actioncenter div.top div.card-stack div.card.notes textarea::-webkit-scrollbar {
   display: none;
 }

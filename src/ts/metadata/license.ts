@@ -3,10 +3,7 @@ import { WaveKernel } from "$ts/kernel";
 export async function getLicense() {
   const kernel = WaveKernel.get();
 
-  kernel.Log(
-    "branding",
-    "Attempting to retrieve project license from /license"
-  );
+  kernel.Log("branding", "Attempting to retrieve project license from /license");
 
   try {
     const req = await (await fetch("./license")).text();

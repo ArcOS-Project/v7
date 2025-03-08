@@ -3,12 +3,7 @@ export class LangError extends Error {
   column: number | null;
   input: string;
 
-  constructor(
-    message: string,
-    line: number | null = null,
-    column: number | null = null,
-    input: string = ""
-  ) {
+  constructor(message: string, line: number | null = null, column: number | null = null, input: string = "") {
     super(message);
     this.name = "LangError";
     this.line = line;
@@ -32,9 +27,7 @@ export class LangError extends Error {
 
     const lineNumber = `${this.line} | `;
 
-    return `${this.name}: ${
-      this.message
-    }${location}\n\n${lineNumber}${line}\n${" ".repeat(
+    return `${this.name}: ${this.message}${location}\n\n${lineNumber}${line}\n${" ".repeat(
       this.column || 0 + lineNumber.length - 1
     )}^ HERE`;
   }

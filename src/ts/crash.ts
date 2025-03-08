@@ -23,10 +23,7 @@ export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
   ];
 
   const str = HEADER.join("\n");
-  const stack =
-    reason instanceof ErrorEvent
-      ? reason.error.stack
-      : reason.reason.stack || reason.reason || reason;
+  const stack = reason instanceof ErrorEvent ? reason.error.stack : reason.reason.stack || reason.reason || reason;
 
   let text = str;
 
@@ -37,9 +34,7 @@ export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
     .Logs()
     .map(
       ({ level, kernelTime, source, message }) =>
-        `[${kernelTime.toString().padStart(8, "0")}] ${
-          LogLevel[level]
-        } ${source}: ${message}`
+        `[${kernelTime.toString().padStart(8, "0")}] ${LogLevel[level]} ${source}: ${message}`
     )
     .reverse()
     .join("\n")}`;

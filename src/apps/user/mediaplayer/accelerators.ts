@@ -1,9 +1,7 @@
 import type { AppKeyCombinations } from "$types/accelerator";
 import type { MediaPlayerRuntime } from "./runtime";
 
-export const MediaPlayerAccelerators: (
-  runtime: MediaPlayerRuntime
-) => AppKeyCombinations = (runtime) => {
+export const MediaPlayerAccelerators: (runtime: MediaPlayerRuntime) => AppKeyCombinations = (runtime) => {
   return [
     {
       key: "o",

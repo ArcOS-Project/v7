@@ -45,8 +45,5 @@ export function invertColor(hex: string) {
 
   if (hex.length !== 6) return hex;
 
-  return `#${(Number(`0x1${hex}`) ^ 0xffffff)
-    .toString(16)
-    .substring(1)
-    .toUpperCase()}`;
+  return `#${(Number(`0x1${hex}`) ^ 0xffffff).toString(16).substring(1).toUpperCase()}`;
 }

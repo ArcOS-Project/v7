@@ -1,11 +1,7 @@
 div.shell div.actioncenter div.top div.card-stack div.card.weather {
   --gradient-start: #41aaff;
   --gradient-end: #71b2c8;
-  background: linear-gradient(
-    to bottom right,
-    var(--gradient-start) 0%,
-    var(--gradient-end) 100%
-  );
+  background: linear-gradient(to bottom right, var(--gradient-start) 0%, var(--gradient-end) 100%);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -29,11 +25,7 @@ div.shell div.actioncenter div.top div.card-stack div.card.weather::before {
   transition: background-color 0.3s;
 }
 
-div.shell
-  div.actioncenter
-  div.top
-  div.card-stack
-  div.card.weather.night::before {
+div.shell div.actioncenter div.top div.card-stack div.card.weather.night::before {
   background-color: #0008;
 }
 
@@ -41,12 +33,7 @@ div.shell div.actioncenter div.top div.card-stack div.card.weather * {
   z-index: 100;
 }
 
-div.shell
-  div.actioncenter
-  div.top
-  div.card-stack
-  div.card.weather
-  span.condition-icon {
+div.shell div.actioncenter div.top div.card-stack div.card.weather span.condition-icon {
   color: var(--icon-color, var(--fg));
 }
 

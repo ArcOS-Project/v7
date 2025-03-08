@@ -1,10 +1,7 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
 
-  const {
-    className = "",
-    children,
-  }: { className?: string; children: Snippet } = $props();
+  const { className = "", children }: { className?: string; children: Snippet } = $props();
 </script>
 
 <div class="row {className}">

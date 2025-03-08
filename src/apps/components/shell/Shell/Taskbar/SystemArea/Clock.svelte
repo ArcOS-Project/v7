@@ -3,8 +3,7 @@
   import dayjs from "dayjs";
   import { onMount } from "svelte";
 
-  const { userPreferences }: { userPreferences: UserPreferencesStore } =
-    $props();
+  const { userPreferences }: { userPreferences: UserPreferencesStore } = $props();
 
   let text = $state("");
 

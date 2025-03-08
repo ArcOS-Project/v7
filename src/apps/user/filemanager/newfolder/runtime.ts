@@ -7,13 +7,7 @@ import type { AppProcessData } from "$types/app";
 export class NewFolderRuntime extends AppProcess {
   newFolder = Store<string>();
   path: string;
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    path: string
-  ) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path: string) {
     super(handler, pid, parentPid, app);
 
     this.path = path;

@@ -1,8 +1,7 @@
 <script lang="ts">
   import type { UserPreferencesStore } from "$types/user";
 
-  const { userPreferences }: { userPreferences: UserPreferencesStore } =
-    $props();
+  const { userPreferences }: { userPreferences: UserPreferencesStore } = $props();
 </script>
 
 <p class="notice" class:flex={$userPreferences.security.lockdown}>

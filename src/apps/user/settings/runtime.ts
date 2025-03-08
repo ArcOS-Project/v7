@@ -1,14 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
-import {
-  AccountIcon,
-  PasswordIcon,
-  SecurityHighIcon,
-  SecurityMediumIcon,
-  SettingsIcon,
-  WaveIcon,
-} from "$ts/images/general";
+import { AccountIcon, PasswordIcon, SecurityHighIcon, SecurityMediumIcon, SettingsIcon, WaveIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Axios } from "$ts/server/axios";
 import { Sleep } from "$ts/sleep";
@@ -92,14 +85,7 @@ export class SettingsRuntime extends AppProcess {
     ],
   };
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    page?: string,
-    slide?: string
-  ) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, page?: string, slide?: string) {
     super(handler, pid, parentPid, app);
 
     this.switchPage(page || "account");
@@ -114,8 +100,7 @@ export class SettingsRuntime extends AppProcess {
       const dispatch = this.handler.ConnectDispatch(firstInstance.pid);
 
       dispatch?.dispatch("switch-page", this.currentPage());
-      if (this.requestedSlide)
-        dispatch?.dispatch("show-slide", this.requestedSlide);
+      if (this.requestedSlide) dispatch?.dispatch("show-slide", this.requestedSlide);
 
       return;
     }
@@ -262,8 +247,7 @@ export class SettingsRuntime extends AppProcess {
     MessageBox(
       {
         title: "Delete theme?",
-        message:
-          "Are you sure you want to delete this amazing theme? You can't undo this.",
+        message: "Are you sure you want to delete this amazing theme? You can't undo this.",
         buttons: [
           { caption: "Cancel", action: () => {} },
           {

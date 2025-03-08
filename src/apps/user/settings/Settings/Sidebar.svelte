@@ -12,11 +12,7 @@
   <hr />
   {#each [...settingsPageStore] as [id, page]}
     {#if !page.hidden}
-      <button
-        class="page"
-        class:selected={$currentPage === id}
-        onclick={() => process.switchPage(id)}
-      >
+      <button class="page" class:selected={$currentPage === id} onclick={() => process.switchPage(id)}>
         <img src={page.icon} alt="" />
         <span>{page.name}</span>
       </button>

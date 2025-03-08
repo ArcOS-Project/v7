@@ -25,20 +25,19 @@
           sound: "arcos.dialog.warning",
         },
         process.parentPid,
-        true
+        true,
       );
     } else {
       MessageBox(
         {
           title: "Change username",
-          message:
-            "Your username has been updated! You might have to restart ArcOS before the changes take effect everywhere.",
+          message: "Your username has been updated! You might have to restart ArcOS before the changes take effect everywhere.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           image: GoodStatusIcon,
           sound: "arcos.dialog.info",
         },
         process.parentPid,
-        true
+        true,
       );
     }
   }
@@ -51,16 +50,10 @@
   <div class="right">
     <h1>Change your username</h1>
     <p>Please enter the new name you'd like to use for your account:</p>
-    <input
-      type="username"
-      placeholder="New username"
-      bind:value={newUsername}
-    />
+    <input type="username" placeholder="New username" bind:value={newUsername} />
   </div>
 </div>
 <div class="bottom">
   <button onclick={() => process.closeWindow()}>Cancel</button>
-  <button class="suggested" disabled={!newUsername} onclick={changeIt}
-    >Confirm</button
-  >
+  <button class="suggested" disabled={!newUsername} onclick={changeIt}>Confirm</button>
 </div>

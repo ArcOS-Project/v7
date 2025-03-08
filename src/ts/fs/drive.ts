@@ -1,11 +1,7 @@
 import type { WaveKernel } from "$ts/kernel";
 import { Log } from "$ts/kernel/logging";
 import { ServerManager } from "$ts/server";
-import type {
-  DirectoryReadReturn,
-  FilesystemProgressCallback,
-  RecursiveDirectoryReadReturn,
-} from "$types/fs";
+import type { DirectoryReadReturn, FilesystemProgressCallback, RecursiveDirectoryReadReturn } from "$types/fs";
 import { LogLevel } from "$types/logging";
 import type { UserQuota } from "../../types/fs";
 
@@ -22,31 +18,20 @@ export class FilesystemDrive {
   protected fileLocks: Record<string, number> = {};
 
   async lockFile(path: string, pid: number) {
-    if (this.fileLocks[path])
-      throw new Error(
-        `Can't lock ${path}: file is in use by process ${this.fileLocks[path]}`
-      );
+    if (this.fileLocks[path]) throw new Error(`Can't lock ${path}: file is in use by process ${this.fileLocks[path]}`);
 
     this.fileLocks[path] = pid;
   }
 
   async releaseLock(path: string, pid: number, fromSystem = false) {
-    if (!this.fileLocks[path])
-      throw new Error(`Can't unlock '${path}': not locked`);
+    if (!this.fileLocks[path]) throw new Error(`Can't unlock '${path}': not locked`);
     if (pid !== this.fileLocks[path] && !fromSystem)
-      throw new Error(
-        `Can't unlock '${path}': expected PID ${this.fileLocks[path]}, got ${pid}`
-      );
+      throw new Error(`Can't unlock '${path}': expected PID ${this.fileLocks[path]}, got ${pid}`);
 
     delete this.fileLocks[path];
   }
 
-  constructor(
-    kernel: WaveKernel,
-    uuid: string,
-    letter?: string,
-    ...args: any[]
-  ) {
+  constructor(kernel: WaveKernel, uuid: string, letter?: string, ...args: any[]) {
     this.server = kernel.getModule<ServerManager>("server");
 
     this.uuid = uuid;
@@ -97,18 +82,11 @@ export class FilesystemDrive {
     return true;
   }
 
-  async readFile(
-    path: string,
-    onProgress?: FilesystemProgressCallback
-  ): Promise<ArrayBuffer | undefined> {
+  async readFile(path: string, onProgress?: FilesystemProgressCallback): Promise<ArrayBuffer | undefined> {
     return new ArrayBuffer();
   }
 
-  async writeFile(
-    path: string,
-    data: Blob,
-    onProgress?: FilesystemProgressCallback
-  ): Promise<boolean> {
+  async writeFile(path: string, data: Blob, onProgress?: FilesystemProgressCallback): Promise<boolean> {
     return true;
   }
 
@@ -145,10 +123,7 @@ export class FilesystemDrive {
     };
   }
 
-  async bulk<T = any>(
-    path: string,
-    extension: string
-  ): Promise<Record<string, T>> {
+  async bulk<T = any>(path: string, extension: string): Promise<Record<string, T>> {
     return {};
   }
 }

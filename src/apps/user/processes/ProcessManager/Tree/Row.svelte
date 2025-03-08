@@ -1,17 +1,13 @@
 <script lang="ts">
-  import type { Process } from "$ts/process/instance";
-  import { onMount } from "svelte";
-  import type { ProcessManagerRuntime } from "../../runtime";
   import { AppProcess } from "$ts/apps/process";
   import { DefaultIcon } from "$ts/images/apps";
   import { FlagIcon } from "$ts/images/general";
+  import type { Process } from "$ts/process/instance";
+  import { onMount } from "svelte";
+  import type { ProcessManagerRuntime } from "../../runtime";
   import Row from "./Row.svelte";
 
-  const {
-    pid,
-    proc,
-    process,
-  }: { pid: number; proc: Process; process: ProcessManagerRuntime } = $props();
+  const { pid, proc, process }: { pid: number; proc: Process; process: ProcessManagerRuntime } = $props();
 
   const { selected } = process;
   const { handler } = process;
@@ -35,15 +31,12 @@
       icon = app.data.metadata.icon;
       appId = app.id;
 
-      const dispatcher = process.globalDispatch.subscribe(
-        "window-closing",
-        ([pid]) => {
-          if (pid === proc.pid) {
-            closing = true;
-            process.globalDispatch.unsubscribeId("window-closing", dispatcher);
-          }
+      const dispatcher = process.globalDispatch.subscribe("window-closing", ([pid]) => {
+        if (pid === proc.pid) {
+          closing = true;
+          process.globalDispatch.unsubscribeId("window-closing", dispatcher);
         }
-      );
+      });
 
       return;
     }
@@ -56,12 +49,7 @@
 {#if !proc._disposed}
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div
-    class="row"
-    class:closing
-    onclick={() => ($selected = pid)}
-    class:selected={$selected === pid}
-  >
+  <div class="row" class:closing onclick={() => ($selected = pid)} class:selected={$selected === pid}>
     <div class="segment name">
       <img src={icon} alt="" />
       <span>{name}</span>

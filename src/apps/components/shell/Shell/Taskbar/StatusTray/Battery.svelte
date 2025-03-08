@@ -12,10 +12,7 @@
   } = $props();
 </script>
 
-<div
-  class="battery"
-  title={$battery ? `${Math.floor($battery.level * 100)}%` : ""}
->
+<div class="battery" title={$battery ? `${Math.floor($battery.level * 100)}%` : ""}>
   {#if $battery}
     {#if $battery.charging}
       <span class="lucide icon-battery-charging"></span>

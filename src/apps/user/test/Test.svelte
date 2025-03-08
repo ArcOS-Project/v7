@@ -56,7 +56,7 @@
               ],
             },
             process.pid,
-            true
+            true,
           );
         },
         onExit: (lang) => {
@@ -83,7 +83,7 @@
           buttons: [{ caption: "Okay", action: () => {} }],
         },
         process.pid,
-        true
+        true,
       );
     }
 

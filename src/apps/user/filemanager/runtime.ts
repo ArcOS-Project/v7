@@ -1,13 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { GetConfirmation, MessageBox } from "$ts/dialog";
 import { FilesystemDrive } from "$ts/fs/drive";
-import {
-  DownloadFile,
-  getDirectoryName,
-  getDriveLetter,
-  getParentDirectory,
-  join,
-} from "$ts/fs/util";
+import { DownloadFile, getDirectoryName, getDriveLetter, getParentDirectory, join } from "$ts/fs/util";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { DownloadIcon, DriveIcon } from "$ts/images/filesystem";
 import { TrashIcon, UploadIcon } from "$ts/images/general";
@@ -82,8 +76,7 @@ export class FileManagerRuntime extends AppProcess {
 
       this.contextMenu = {};
 
-      if (loadSave.isSave && loadSave.multiple)
-        throw new Error("LoadSave: can't have both isSave and multiple");
+      if (loadSave.isSave && loadSave.multiple) throw new Error("LoadSave: can't have both isSave and multiple");
     }
   }
 
@@ -136,10 +129,7 @@ export class FileManagerRuntime extends AppProcess {
         this.navigate("U:/");
       }
     } catch {
-      this.Log(
-        "Failed to determine the currently selected drive",
-        LogLevel.error
-      );
+      this.Log("Failed to determine the currently selected drive", LogLevel.error);
     }
 
     const result: Record<string, QuotedDrive> = {};
@@ -157,8 +147,7 @@ export class FileManagerRuntime extends AppProcess {
     this.Log(`Updating root folders`);
 
     try {
-      const root =
-        this.path() === "U:/" ? this.contents() : await this.fs.readDir("U:/");
+      const root = this.path() === "U:/" ? this.contents() : await this.fs.readDir("U:/");
 
       this.rootFolders.set(root?.dirs || []);
     } catch {
@@ -288,10 +277,8 @@ export class FileManagerRuntime extends AppProcess {
 
     this.lockRefresh();
 
-    if (copyList.length)
-      await this.userDaemon?.copyMultiple(copyList, this.path(), this.pid);
-    else if (cutList.length)
-      await this.userDaemon?.moveMultiple(cutList, this.path(), this.pid);
+    if (copyList.length) await this.userDaemon?.copyMultiple(copyList, this.path(), this.pid);
+    else if (cutList.length) await this.userDaemon?.moveMultiple(cutList, this.path(), this.pid);
 
     this.copyList.set([]);
     this.cutList.set([]);
@@ -373,9 +360,7 @@ export class FileManagerRuntime extends AppProcess {
         if (progress.what) prog.updSub(progress.what);
       });
     } catch {
-      prog.mutErr(
-        `Failed to upload files! One of the files you tried to upload might be too big.`
-      );
+      prog.mutErr(`Failed to upload files! One of the files you tried to upload might be too big.`);
     }
 
     prog.mutDone(+1);
@@ -553,13 +538,10 @@ export class FileManagerRuntime extends AppProcess {
 
     if (!selected) this.selection.set([paths[0]]);
 
-    const path =
-      paths[index < 0 || index - 1 < 0 ? paths.length - 1 : index - 1];
+    const path = paths[index < 0 || index - 1 < 0 ? paths.length - 1 : index - 1];
 
     this.selection.set([path]);
-    this.directoryListing()
-      ?.querySelector(`button.item[data-path="${path}"]`)
-      ?.scrollIntoView(false);
+    this.directoryListing()?.querySelector(`button.item[data-path="${path}"]`)?.scrollIntoView(false);
   }
 
   async selectorDown() {
@@ -576,13 +558,10 @@ export class FileManagerRuntime extends AppProcess {
 
     if (!selected) this.selection.set([paths[0]]);
 
-    const path =
-      paths[index < 0 || index + 1 > paths.length - 1 ? 0 : index + 1];
+    const path = paths[index < 0 || index + 1 > paths.length - 1 ? 0 : index + 1];
 
     this.selection.set([path]);
-    this.directoryListing()
-      ?.querySelector(`button.item[data-path="${path}"]`)
-      ?.scrollIntoView(false);
+    this.directoryListing()?.querySelector(`button.item[data-path="${path}"]`)?.scrollIntoView(false);
   }
 
   public async EnterKey(alternative = false) {
@@ -653,14 +632,9 @@ export class FileManagerRuntime extends AppProcess {
     const selection = this.selection();
     const saveName = this.saveName();
     const path = this.path();
-    const result = this.loadSave?.multiple
-      ? this.selection()
-      : [!this.loadSave?.isSave ? selection[0] : join(path, saveName)];
+    const result = this.loadSave?.multiple ? this.selection() : [!this.loadSave?.isSave ? selection[0] : join(path, saveName)];
 
-    this.globalDispatch.dispatch("ls-confirm", [
-      this.loadSave?.returnId,
-      result,
-    ]);
+    this.globalDispatch.dispatch("ls-confirm", [this.loadSave?.returnId, result]);
 
     await this.closeWindow();
   }

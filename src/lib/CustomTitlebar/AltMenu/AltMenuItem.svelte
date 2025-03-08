@@ -3,8 +3,7 @@
   import type { AppProcess } from "$ts/apps/process";
   import type { ContextMenuItem } from "$types/app";
 
-  const { process, menu }: { process: AppProcess; menu: ContextMenuItem } =
-    $props();
+  const { process, menu }: { process: AppProcess; menu: ContextMenuItem } = $props();
 
   let button: HTMLButtonElement | undefined = $state();
 

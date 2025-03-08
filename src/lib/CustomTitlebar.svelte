@@ -5,11 +5,7 @@
   import { onMount, type Snippet } from "svelte";
   import AltMenu from "./CustomTitlebar/AltMenu.svelte";
 
-  const {
-    process,
-    children,
-    className = "",
-  }: { process: AppProcess; children?: Snippet; className?: string } = $props();
+  const { process, children, className = "" }: { process: AppProcess; children?: Snippet; className?: string } = $props();
   const { windowTitle, windowIcon } = process;
   const { data } = process.app;
 
@@ -44,18 +40,10 @@
   <AltMenu {process} />
   <div class="controls">
     {#if data.controls.minimize && !data.overlay}
-      <button
-        class="minimize icon-chevron-down"
-        aria-label="minimize"
-        onclick={minimize}
-      ></button>
+      <button class="minimize icon-chevron-down" aria-label="minimize" onclick={minimize}></button>
     {/if}
     {#if data.controls.maximize && !data.overlay}
-      <button
-        class="maximize icon-chevron-up"
-        aria-label="maximize"
-        onclick={maximize}
-      ></button>
+      <button class="maximize icon-chevron-up" aria-label="maximize" onclick={maximize}></button>
     {/if}
     {#if data.controls.close}
       <button class="close icon-x" aria-label="close" onclick={close}></button>

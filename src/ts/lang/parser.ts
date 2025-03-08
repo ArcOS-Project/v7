@@ -56,8 +56,7 @@ export class Parser {
       // Check if it's an assignment statement
       if (
         this.lexer.input[this.lexer.position] === "=" ||
-        (this.lexer.input[this.lexer.position] === " " &&
-          this.lexer.input[this.lexer.position + 1] === "=")
+        (this.lexer.input[this.lexer.position] === " " && this.lexer.input[this.lexer.position + 1] === "=")
       ) {
         return this.assignmentStatement()!;
       } else if (this.lexer.input[this.lexer.position] === "(") {
@@ -132,11 +131,7 @@ export class Parser {
       elseBranch = this.blockStatement();
     }
 
-    return new ASTNode("IF_STATEMENT", null, [
-      condition,
-      thenBranch,
-      elseBranch,
-    ]);
+    return new ASTNode("IF_STATEMENT", null, [condition, thenBranch, elseBranch]);
   }
 
   whileStatement(): ASTNode {
@@ -201,10 +196,7 @@ export class Parser {
 
         this.eat("IDENTIFIER");
 
-        identifier = new ASTNode("PROPERTY_ACCESS", null, [
-          identifier,
-          property,
-        ]);
+        identifier = new ASTNode("PROPERTY_ACCESS", null, [identifier, property]);
       }
 
       target = identifier;
@@ -266,10 +258,7 @@ export class Parser {
   equality(): ASTNode {
     let node = this.relational();
 
-    while (
-      this.currentToken?.type === "EQUAL_EQUAL" ||
-      this.currentToken?.type === "NOT_EQUAL"
-    ) {
+    while (this.currentToken?.type === "EQUAL_EQUAL" || this.currentToken?.type === "NOT_EQUAL") {
       const token = this.currentToken;
 
       if (token.type === "EQUAL_EQUAL") {
@@ -314,10 +303,7 @@ export class Parser {
   additive(): ASTNode {
     let node = this.multiplicative();
 
-    while (
-      this.currentToken?.type === "PLUS" ||
-      this.currentToken?.type === "MINUS"
-    ) {
+    while (this.currentToken?.type === "PLUS" || this.currentToken?.type === "MINUS") {
       const token = this.currentToken;
 
       if (token.type === "PLUS") {
@@ -326,10 +312,7 @@ export class Parser {
         this.eat("MINUS");
       }
 
-      node = new ASTNode(token.type, token.value, [
-        node,
-        this.multiplicative(),
-      ]);
+      node = new ASTNode(token.type, token.value, [node, this.multiplicative()]);
     }
 
     return node;
@@ -360,11 +343,7 @@ export class Parser {
   }
 
   unary(): any {
-    if (
-      this.currentToken?.type === "PLUS" ||
-      this.currentToken?.type === "MINUS" ||
-      this.currentToken?.type === "NOT"
-    ) {
+    if (this.currentToken?.type === "PLUS" || this.currentToken?.type === "MINUS" || this.currentToken?.type === "NOT") {
       const token = this.currentToken;
 
       if (token.type === "PLUS") {
@@ -391,10 +370,7 @@ export class Parser {
       currentTokenType === "BOOLEAN" ||
       currentTokenType === "NULL"
     ) {
-      let node = new ASTNode(
-        this.currentToken?.type!,
-        this.currentToken?.value
-      );
+      let node = new ASTNode(this.currentToken?.type!, this.currentToken?.value);
 
       this.eat(this.currentToken?.type!);
 
@@ -425,10 +401,7 @@ export class Parser {
 
         this.eat("IDENTIFIER");
 
-        identifier = new ASTNode("PROPERTY_ACCESS", null, [
-          identifier,
-          property,
-        ]);
+        identifier = new ASTNode("PROPERTY_ACCESS", null, [identifier, property]);
       }
 
       if (`${this.currentToken?.type}` === "LPAREN") {
@@ -448,10 +421,7 @@ export class Parser {
 
         this.eat("RPAREN");
 
-        return new ASTNode("FUNCTION_CALL", identifier.value, [
-          identifier,
-          new ASTNode("ARGUMENTS", null, args),
-        ]);
+        return new ASTNode("FUNCTION_CALL", identifier.value, [identifier, new ASTNode("ARGUMENTS", null, args)]);
       } else if (this.currentToken?.type === "LBRACKET") {
         this.eat("LBRACKET");
         const index = this.expression();
@@ -540,11 +510,6 @@ export class Parser {
   }
 
   error(message: string) {
-    throw new LangError(
-      message,
-      this.lexer.line,
-      this.lexer.column,
-      this.lexer.input
-    );
+    throw new LangError(message, this.lexer.line, this.lexer.column, this.lexer.input);
   }
 }

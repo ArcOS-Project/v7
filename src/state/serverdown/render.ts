@@ -1,7 +1,5 @@
 export default async function render() {
-  const status = document.querySelector<HTMLParagraphElement>(
-    "div.serverdown #status"
-  );
+  const status = document.querySelector<HTMLParagraphElement>("div.serverdown #status");
 
   if (!status) return;
 

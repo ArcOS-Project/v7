@@ -28,22 +28,14 @@ export class HexEditRuntime extends AppProcess {
     editRow: EditRow,
   };
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    file: string
-  ) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, file: string) {
     super(handler, pid, parentPid, app);
 
     this.requestedFile = file;
     this.view.subscribe((v) => {
       if (!v) return;
       this.updateVariables(v);
-      this.modified.set(
-        this.requestedFile && this.original() ? this.isModified() : false
-      );
+      this.modified.set(this.requestedFile && this.original() ? this.isModified() : false);
     });
   }
 
@@ -69,12 +61,7 @@ export class HexEditRuntime extends AppProcess {
     this.saveVariables(hexRows, decoded, offsetLength, offsets);
   }
 
-  saveVariables(
-    hexRows: [number, number][][],
-    decoded: [string, number][][],
-    offsetLength: number,
-    offsets: number[]
-  ) {
+  saveVariables(hexRows: [number, number][][], decoded: [string, number][][], offsetLength: number, offsets: number[]) {
     this.hexRows.set(hexRows);
     this.decoded.set(decoded);
     this.offsetLength.set(offsetLength);
@@ -86,8 +73,7 @@ export class HexEditRuntime extends AppProcess {
       MessageBox(
         {
           title: "No file",
-          message:
-            "HexEdit was launched without a file to read. This shouldn't happen.",
+          message: "HexEdit was launched without a file to read. This shouldn't happen.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           image: WarningIcon,
           sound: "arcos.dialog.warning",
@@ -110,16 +96,13 @@ export class HexEditRuntime extends AppProcess {
       this.pid
     );
     try {
-      const contents = await this.fs.readFile(
-        this.requestedFile,
-        (progress) => {
-          prog.setWait(false);
-          prog.setWork(true);
-          prog.show();
-          prog.setMax(progress.max);
-          prog.setDone(progress.value);
-        }
-      );
+      const contents = await this.fs.readFile(this.requestedFile, (progress) => {
+        prog.setWait(false);
+        prog.setWork(true);
+        prog.show();
+        prog.setMax(progress.max);
+        prog.setDone(progress.value);
+      });
 
       prog.stop();
 
@@ -199,11 +182,7 @@ export class HexEditRuntime extends AppProcess {
   }
 
   isModified() {
-    return !!(
-      this.requestedFile &&
-      this.filename() &&
-      this.original()?.toString() !== this.view().toString()
-    );
+    return !!(this.requestedFile && this.filename() && this.original()?.toString() !== this.view().toString());
   }
 
   async onClose(): Promise<boolean> {
@@ -262,15 +241,11 @@ export class HexEditRuntime extends AppProcess {
       this.pid
     );
 
-    await this.fs.writeFile(
-      this.requestedFile,
-      new Blob([this.view()]),
-      async (progress) => {
-        await prog.show();
-        prog.setMax(progress.max);
-        prog.setDone(progress.value);
-      }
-    );
+    await this.fs.writeFile(this.requestedFile, new Blob([this.view()]), async (progress) => {
+      await prog.show();
+      prog.setMax(progress.max);
+      prog.setDone(progress.value);
+    });
 
     await prog.stop();
   }

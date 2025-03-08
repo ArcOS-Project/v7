@@ -32,12 +32,7 @@ export class ProcessHandler extends KernelModule {
   async startRenderer(initPid: number) {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
-    this.renderer = await this.spawn(
-      AppRenderer,
-      undefined,
-      initPid,
-      "appRenderer"
-    );
+    this.renderer = await this.spawn(AppRenderer, undefined, initPid, "appRenderer");
   }
 
   private makeBusy(reason: string) {
@@ -75,10 +70,7 @@ export class ProcessHandler extends KernelModule {
     const pid = this.getPid();
     const proc = new (process as any)(this, pid, parentPid, ...args) as Process;
 
-    Log(
-      "ProcessHandler.spawn",
-      `Spawning new ${proc.constructor.name} with PID ${pid}`
-    );
+    Log("ProcessHandler.spawn", `Spawning new ${proc.constructor.name} with PID ${pid}`);
 
     if (proc.__start) {
       this.makeNotBusy(`Calling __start of ${pid}`);
@@ -100,8 +92,7 @@ export class ProcessHandler extends KernelModule {
 
     this.store.set(store);
 
-    if (this.renderer && proc instanceof AppProcess)
-      this.renderer.render(proc, renderTarget);
+    if (this.renderer && proc instanceof AppProcess) this.renderer.render(proc, renderTarget);
 
     this.makeNotBusy(`Stopped spawn of ${pid}: done`);
     return proc as T;

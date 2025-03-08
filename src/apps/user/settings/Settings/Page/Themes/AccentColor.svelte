@@ -1,8 +1,7 @@
 <script lang="ts">
   import type { UserPreferencesStore } from "$types/user";
 
-  const { userPreferences }: { userPreferences: UserPreferencesStore } =
-    $props();
+  const { userPreferences }: { userPreferences: UserPreferencesStore } = $props();
 
   let hex = $state("70D6FF");
   let picker: HTMLInputElement;
@@ -22,17 +21,6 @@
 </script>
 
 <div class="right">
-  <button
-    class="accent-circle"
-    onclick={openPicker}
-    style="background-color:#{hex};"
-    aria-label="Change accent color"
-  ></button>
-  <input
-    type="color"
-    bind:this={picker}
-    class="picker no-display"
-    oninput={pickerInput}
-    value="#{hex}"
-  />
+  <button class="accent-circle" onclick={openPicker} style="background-color:#{hex};" aria-label="Change accent color"></button>
+  <input type="color" bind:this={picker} class="picker no-display" oninput={pickerInput} value="#{hex}" />
 </div>

@@ -8,12 +8,7 @@ export class BootScreenRuntime extends AppProcess {
   public progress = Store<boolean>(false);
   public status = Store<string>("");
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData
-  ) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
   }
 

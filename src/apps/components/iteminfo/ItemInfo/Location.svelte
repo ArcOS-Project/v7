@@ -6,10 +6,7 @@
   import type { ItemInfoRuntime } from "../runtime";
   import type { ItemInfo } from "../types";
 
-  const {
-    info,
-    process,
-  }: { info: ReadableStore<ItemInfo>; process: ItemInfoRuntime } = $props();
+  const { info, process }: { info: ReadableStore<ItemInfo>; process: ItemInfoRuntime } = $props();
 </script>
 
 <InfoBlock>

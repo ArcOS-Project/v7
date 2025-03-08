@@ -11,11 +11,7 @@
 
   onMount(() => {
     const sub = userPreferences.subscribe((v) => {
-      if (
-        typeof v.account.profilePicture !== "string" ||
-        !v.account.profilePicture.startsWith("http")
-      )
-        return;
+      if (typeof v.account.profilePicture !== "string" || !v.account.profilePicture.startsWith("http")) return;
 
       pfp = v.account.profilePicture;
 
@@ -59,13 +55,7 @@
   <div class="right">
     <h1>Change Profile Picture</h1>
     <p>Enter the URL you wish to use as your profile picture:</p>
-    <input
-      type="url"
-      bind:value={pfp}
-      oninput={check}
-      onkeydown={check}
-      placeholder="https://example.com/image.png"
-    />
+    <input type="url" bind:value={pfp} oninput={check} onkeydown={check} placeholder="https://example.com/image.png" />
   </div>
 </div>
 <div class="bottom">

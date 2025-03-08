@@ -14,21 +14,12 @@ export class ArcLang extends KernelModule {
     super(kernel, id);
   }
 
-  async run(
-    code: string,
-    parentPid: number,
-    options: ArcLangOptions = DefaultArcLangOptions
-  ) {
+  async run(code: string, parentPid: number, options: ArcLangOptions = DefaultArcLangOptions) {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
     if (this.locked) throw new LangError("ArcLang is busy");
 
     return new Promise(async (resolve, reject) => {
-      const proc = await this.stack.spawn<Interpreter>(
-        Interpreter,
-        undefined,
-        parentPid,
-        options
-      );
+      const proc = await this.stack.spawn<Interpreter>(Interpreter, undefined, parentPid, options);
 
       if (!proc) throw new LangError("Failed to spawn language instance");
 

@@ -4,8 +4,6 @@ import { FileMenu } from "./altmenu/File";
 import { GoMenu } from "./altmenu/Go";
 import type { FileManagerRuntime } from "./runtime";
 
-export function FileManagerAltMenu(
-  runtime: FileManagerRuntime
-): ContextMenuItem[] {
+export function FileManagerAltMenu(runtime: FileManagerRuntime): ContextMenuItem[] {
   return [FileMenu(runtime), EditMenu(runtime), GoMenu(runtime)];
 }

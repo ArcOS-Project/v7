@@ -2,12 +2,7 @@
   import { decimalToHex } from "$ts/util";
   import type { HexEditRuntime } from "../runtime";
 
-  const {
-    process,
-    startIndex,
-    endIndex,
-  }: { process: HexEditRuntime; startIndex: number; endIndex: number } =
-    $props();
+  const { process, startIndex, endIndex }: { process: HexEditRuntime; startIndex: number; endIndex: number } = $props();
   const { offsets, activeByte } = process;
 </script>
 

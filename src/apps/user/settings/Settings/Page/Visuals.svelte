@@ -19,35 +19,19 @@
 
   <Section caption="Effects">
     <Option caption="Reduce animations throughout ArcOS">
-      <input
-        type="checkbox"
-        class="switch"
-        bind:checked={$userPreferences.shell.visuals.noAnimations}
-      />
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.visuals.noAnimations} />
     </Option>
     <Option caption="Disable window transparency">
-      <input
-        type="checkbox"
-        class="switch"
-        bind:checked={$userPreferences.shell.visuals.noGlass}
-      />
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.visuals.noGlass} />
     </Option>
     <Option caption="Remove rounded corners">
-      <input
-        type="checkbox"
-        class="switch"
-        bind:checked={$userPreferences.shell.visuals.sharpCorners}
-      />
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.visuals.sharpCorners} />
     </Option>
   </Section>
 
   <Section caption="Additional tweaks">
     <Option caption="Show accent colors on glass surfaces">
-      <input
-        type="checkbox"
-        class="switch"
-        bind:checked={$userPreferences.shell.taskbar.colored}
-      />
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.taskbar.colored} />
     </Option>
     <Option caption="Add your own CSS to ArcOS">
       <button
@@ -56,11 +40,7 @@
         disabled={!$userPreferences.shell.customStyle.enabled}
         onclick={() => process.showSlide("visuals_userStyles")}
       ></button>
-      <input
-        type="checkbox"
-        class="switch"
-        bind:checked={$userPreferences.shell.customStyle.enabled}
-      />
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.customStyle.enabled} />
     </Option>
   </Section>
 </div>

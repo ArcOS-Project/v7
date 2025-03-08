@@ -4,11 +4,7 @@
   import { onMount } from "svelte";
   import type { MediaPlayerRuntime } from "../runtime";
 
-  const {
-    process,
-    i,
-    path,
-  }: { process: MediaPlayerRuntime; i: number; path: string } = $props();
+  const { process, i, path }: { process: MediaPlayerRuntime; i: number; path: string } = $props();
   const { queueIndex, queue, State, Loaded } = process;
 
   let icon = $state<string>();
@@ -16,8 +12,7 @@
 
   onMount(() => {
     filename = getDirectoryName(path);
-    icon =
-      process.userDaemon?.getMimeIconByFilename(filename) || DefaultMimeIcon;
+    icon = process.userDaemon?.getMimeIconByFilename(filename) || DefaultMimeIcon;
   });
 
   function playThis() {
@@ -37,12 +32,7 @@
 
 {#if icon && filename}
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div
-    class="queue-item"
-    ondblclick={playThis}
-    class:selected={$queueIndex === i}
-    title={filename}
-  >
+  <div class="queue-item" ondblclick={playThis} class:selected={$queueIndex === i} title={filename}>
     {#if $queueIndex === i && !$State.paused}
       <span class="lucide icon-play"></span>
     {:else}

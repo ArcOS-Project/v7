@@ -22,20 +22,13 @@ export class LoginAppRuntime extends AppProcess {
   public hideProfileImage = Store<boolean>(false);
   private type = "";
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    props: LoginAppProps
-  ) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, props: LoginAppProps) {
     super(handler, pid, parentPid, app);
 
     if (props.type) {
       this.hideProfileImage.set(true);
 
-      if (!props.userDaemon)
-        throw new Error(`Irregular login type without a user daemon`);
+      if (!props.userDaemon) throw new Error(`Irregular login type without a user daemon`);
 
       switch (props.type) {
         case "logoff":
@@ -79,14 +72,7 @@ export class LoginAppRuntime extends AppProcess {
 
     this.loadingStatus.set("Starting daemon");
 
-    const userDaemon = await this.handler.spawn<UserDaemon>(
-      UserDaemon,
-      undefined,
-      this.kernel.initPid,
-      token,
-      username,
-      info
-    );
+    const userDaemon = await this.handler.spawn<UserDaemon>(UserDaemon, undefined, this.kernel.initPid, token, username, info);
 
     if (!userDaemon) {
       this.loadingStatus.set("");
@@ -127,21 +113,11 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.startApplicationStorage();
 
     this.profileImage.set(
-      (await userDaemon?.getProfilePicture(
-        userDaemon.preferences().account.profilePicture!
-      )) || ProfilePictures.pfp3
+      (await userDaemon?.getProfilePicture(userDaemon.preferences().account.profilePicture!)) || ProfilePictures.pfp3
     );
 
-    this.profileName.set(
-      userDaemon.preferences().account.displayName || username
-    );
-    this.loginBackground.set(
-      (
-        await userDaemon.getWallpaper(
-          userDaemon.preferences().account.loginBackground
-        )
-      ).url
-    );
+    this.profileName.set(userDaemon.preferences().account.displayName || username);
+    this.loginBackground.set((await userDaemon.getWallpaper(userDaemon.preferences().account.loginBackground)).url);
 
     this.loadingStatus.set("Starting status refresh");
 
@@ -175,29 +151,17 @@ export class LoginAppRuntime extends AppProcess {
     this.errorMessage.set("");
 
     for (const [pid, proc] of [...this.handler.store()]) {
-      if (
-        proc &&
-        !proc._disposed &&
-        proc instanceof AppProcess &&
-        proc.pid !== this.pid
-      ) {
+      if (proc && !proc._disposed && proc instanceof AppProcess && proc.pid !== this.pid) {
         await proc.killSelf();
       }
     }
 
     this.profileImage.set(
-      (await daemon?.getProfilePicture(
-        daemon.preferences().account.profilePicture!
-      )) || ProfilePictures.pfp3
+      (await daemon?.getProfilePicture(daemon.preferences().account.profilePicture!)) || ProfilePictures.pfp3
     );
 
-    this.profileName.set(
-      daemon.preferences().account.displayName || daemon.username
-    );
-    this.loginBackground.set(
-      (await daemon.getWallpaper(daemon.preferences().account.loginBackground))
-        .url
-    );
+    this.profileName.set(daemon.preferences().account.displayName || daemon.username);
+    this.loginBackground.set((await daemon.getWallpaper(daemon.preferences().account.loginBackground)).url);
 
     await Sleep(2000);
 
@@ -223,14 +187,10 @@ export class LoginAppRuntime extends AppProcess {
 
     if (daemon) {
       this.profileImage.set(
-        (await daemon?.getProfilePicture(
-          daemon.preferences().account.profilePicture!
-        )) || ProfilePictures.pfp3
+        (await daemon?.getProfilePicture(daemon.preferences().account.profilePicture!)) || ProfilePictures.pfp3
       );
 
-      this.profileName.set(
-        daemon.preferences().account.displayName || daemon.username
-      );
+      this.profileName.set(daemon.preferences().account.displayName || daemon.username);
     }
 
     this.loadingStatus.set(`Shutting down...`);
@@ -249,14 +209,10 @@ export class LoginAppRuntime extends AppProcess {
 
     if (daemon) {
       this.profileImage.set(
-        (await daemon?.getProfilePicture(
-          daemon.preferences().account.profilePicture!
-        )) || ProfilePictures.pfp3
+        (await daemon?.getProfilePicture(daemon.preferences().account.profilePicture!)) || ProfilePictures.pfp3
       );
 
-      this.profileName.set(
-        daemon.preferences().account.displayName || daemon.username
-      );
+      this.profileName.set(daemon.preferences().account.displayName || daemon.username);
     }
 
     this.loadingStatus.set(`Restarting...`);

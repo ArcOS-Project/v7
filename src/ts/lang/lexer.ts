@@ -54,10 +54,7 @@ export class Lexer {
     let result = "";
     let hasDecimal = false;
 
-    while (
-      this.currentChar &&
-      (/[0-9]/.test(this.currentChar) || this.currentChar === ".")
-    ) {
+    while (this.currentChar && (/[0-9]/.test(this.currentChar) || this.currentChar === ".")) {
       if (this.currentChar === ".") {
         if (hasDecimal) {
           this.error("Invalid number: multiple decimal points");

@@ -34,9 +34,7 @@ export class ItemInfoRuntime extends AppProcess {
     file = file as FileEntry | FolderEntry;
 
     const drive = this.fs.getDriveByPath(path);
-    const driveId = this.fs.getDriveIdByIdentifier(
-      drive.driveLetter || drive.uuid
-    );
+    const driveId = this.fs.getDriveIdByIdentifier(drive.driveLetter || drive.uuid);
     const name = getDirectoryName(path);
     const parent = getDirectoryName(getParentDirectory(path));
     const split = path.split(".");
@@ -66,11 +64,7 @@ export class ItemInfoRuntime extends AppProcess {
     const info = this.info();
 
     if (info.isFolder) {
-      await this.spawnApp(
-        "fileManager",
-        +this.env.get("shell_pid"),
-        info.location.fullPath
-      );
+      await this.spawnApp("fileManager", +this.env.get("shell_pid"), info.location.fullPath);
     } else {
       const path = info.location.fullPath;
       const filename = getDirectoryName(path);

@@ -19,15 +19,7 @@
 
   hideSubs.subscribe((v) => v && ($hideSubs = false));
 
-  const {
-    data,
-    shell,
-    process,
-    mW,
-    x,
-    showSub = false,
-    props,
-  }: Props = $props();
+  const { data, shell, process, mW, x, showSub = false, props }: Props = $props();
 
   const { userPreferences } = shell;
 

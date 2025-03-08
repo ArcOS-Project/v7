@@ -6,21 +6,10 @@
   import type { LoginAppRuntime } from "./runtime";
 
   const { process }: AppComponentProps<LoginAppRuntime> = $props();
-  const {
-    loadingStatus,
-    errorMessage,
-    profileImage,
-    profileName,
-    hideProfileImage,
-    loginBackground,
-  } = process;
+  const { loadingStatus, errorMessage, profileImage, profileName, hideProfileImage, loginBackground } = process;
 </script>
 
-<div
-  class="container"
-  class:full={$hideProfileImage}
-  style="--bgurl: url('{$loginBackground}')"
->
+<div class="container" class:full={$hideProfileImage} style="--bgurl: url('{$loginBackground}')">
   {#if !$hideProfileImage}
     <div class="profile-picture" style="--src: url('{$profileImage}')"></div>
     {#if $profileName}
@@ -39,15 +28,7 @@
 
 {#if !$loadingStatus && !$errorMessage}
   <div class="power-options">
-    <button
-      class="restart icon-rotate-ccw"
-      aria-label="Restart"
-      onclick={() => process.restart()}
-    ></button>
-    <button
-      class="shutdown icon-power"
-      aria-label="Shutdown"
-      onclick={() => process.shutdown()}
-    ></button>
+    <button class="restart icon-rotate-ccw" aria-label="Restart" onclick={() => process.restart()}></button>
+    <button class="shutdown icon-power" aria-label="Shutdown" onclick={() => process.shutdown()}></button>
   </div>
 {/if}

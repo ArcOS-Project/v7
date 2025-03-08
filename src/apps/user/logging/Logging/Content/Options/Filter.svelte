@@ -16,9 +16,7 @@
   ></button>
   {#each FilterLevels as level}
     <button
-      class="option level-{LogLevel[level as LogLevel]} icon-{FilterIcons.get(
-        level
-      )}"
+      class="option level-{LogLevel[level as LogLevel]} icon-{FilterIcons.get(level)}"
       onclick={() => ($selectedLevel = level)}
       class:suggested={$selectedLevel == level}
       aria-label={level.toString()}

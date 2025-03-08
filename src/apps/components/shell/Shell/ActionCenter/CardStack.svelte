@@ -7,11 +7,7 @@
   import Weather from "./CardStack/Cards/Weather.svelte";
   import Indicator from "./CardStack/Indicator.svelte";
 
-  const {
-    userPreferences,
-    process,
-  }: { userPreferences: UserPreferencesStore; process: ShellRuntime } =
-    $props();
+  const { userPreferences, process }: { userPreferences: UserPreferencesStore; process: ShellRuntime } = $props();
 
   const { userDaemon } = process;
 
@@ -51,10 +47,7 @@
 
 <div class="card-stack" {onwheel} class:changing>
   <Indicator {max} index={$userPreferences.shell.actionCenter.cardIndex} />
-  <div
-    class="cards"
-    style="--index: {$userPreferences.shell.actionCenter.cardIndex};"
-  >
+  <div class="cards" style="--index: {$userPreferences.shell.actionCenter.cardIndex};">
     {#if userDaemon}
       <Weather {process} />
       <Notes {userPreferences} />

@@ -7,8 +7,7 @@ leoProfanity.loadDictionary("en");
 export function validateUsername(username: string): boolean {
   if (username.length < 3 || username.length > 32) return false;
 
-  const isValid =
-    validator.isAlphanumeric(username) && !leoProfanity.check(username);
+  const isValid = validator.isAlphanumeric(username) && !leoProfanity.check(username);
 
   return isValid;
 }
@@ -22,16 +21,12 @@ export function htmlspecialchars(text: string) {
 }
 
 export function detectJavaScript(htmlString: string) {
-  const disallowedTagsRegex =
-    /<(script|meta|title|link|iframe|noscript|embed|object|base|head|html|body)\b[^>]*>/i;
-  const disallowedAttributesRegex =
-    /\b(on\w+|lang|charset|http-equiv|content|scheme|target|rel|base)=["'][^"']*["']/i;
+  const disallowedTagsRegex = /<(script|meta|title|link|iframe|noscript|embed|object|base|head|html|body)\b[^>]*>/i;
+  const disallowedAttributesRegex = /\b(on\w+|lang|charset|http-equiv|content|scheme|target|rel|base)=["'][^"']*["']/i;
   const javascriptURLRegex = /href=["']javascript:[^"']*["']/i;
 
   return (
-    disallowedTagsRegex.test(htmlString) ||
-    disallowedAttributesRegex.test(htmlString) ||
-    javascriptURLRegex.test(htmlString)
+    disallowedTagsRegex.test(htmlString) || disallowedAttributesRegex.test(htmlString) || javascriptURLRegex.test(htmlString)
   );
 }
 
@@ -86,15 +81,12 @@ export function sliceIntoChunks(arr: any[], chunkSize: number) {
   return res;
 }
 
-export const decimalToHex = (value: number, maxLength = 2) =>
-  value.toString(16).toUpperCase().padStart(maxLength, "0");
+export const decimalToHex = (value: number, maxLength = 2) => value.toString(16).toUpperCase().padStart(maxLength, "0");
 
 export async function sha256(message: string) {
   const msgBuffer = new TextEncoder().encode(message);
   const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
+  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
   return hashHex;
 }

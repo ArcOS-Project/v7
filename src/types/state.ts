@@ -4,10 +4,7 @@ import type { StateHandler } from "../ts/state";
 import type { App } from "./app";
 
 export interface State {
-  render?: (
-    props: Record<string, any>,
-    accessors: StateRendererAccessors
-  ) => Promise<any>;
+  render?: (props: Record<string, any>, accessors: StateRendererAccessors) => Promise<any>;
   app?: App; // It's either an app ...
   css?: string; // ... or CSS ...
   html?: string; // ... and HTML.

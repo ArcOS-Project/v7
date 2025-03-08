@@ -9,21 +9,14 @@
     children: Snippet;
   }
 
-  const {
-    title,
-    help,
-    right = false,
-    className = "",
-    children,
-  }: Props = $props();
+  const { title, help, right = false, className = "", children }: Props = $props();
 </script>
 
 <div class="segment {className}" class:right>
   <p class="title">
     {title}
     {#if help}
-      <button class="lucide icon-hand-helping" aria-label="What's this?"
-      ></button>
+      <button class="lucide icon-hand-helping" aria-label="What's this?"></button>
     {/if}
   </p>
   <p class="value">

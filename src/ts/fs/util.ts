@@ -2,17 +2,7 @@ import { GlobalDispatcher } from "$ts/dispatch";
 import { WaveKernel } from "$ts/kernel";
 import { arrayToBlob } from "./convert";
 
-export const sizeUnits = [
-  "bytes",
-  "KB",
-  "MB",
-  "GB",
-  "TB",
-  "PB",
-  "EB",
-  "ZB",
-  "YB",
-];
+export const sizeUnits = ["bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
 export function join(...args: string[]) {
   let parts: string[] = [];
@@ -112,11 +102,7 @@ export function formatBytes(bytes: number) {
   return n.toFixed(n < 10 && l > 0 ? 1 : 0) + " " + sizeUnits[l];
 }
 
-export function DownloadFile(
-  file: ArrayBuffer,
-  filename: string,
-  mimetype?: string
-) {
+export function DownloadFile(file: ArrayBuffer, filename: string, mimetype?: string) {
   if (!file || !filename) return;
 
   const blob = arrayToBlob(file, mimetype);

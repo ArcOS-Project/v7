@@ -96,8 +96,8 @@ div.window *::selection {
 }
 
 div:not(.noani) div.window:not(.core) {
-  transition: all 0.2s, z-index 0s, pointer-events 0s, transform 0s,
-    backdrop-filter 0s, width 0s, height 0s, translate 0s, transform-origin 0s;
+  transition: all 0.2s, z-index 0s, pointer-events 0s, transform 0s, backdrop-filter 0s, width 0s, height 0s, translate 0s,
+    transform-origin 0s;
 }
 
 div.window:not(.core).visible:not(.closing) {

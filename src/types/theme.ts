@@ -16,10 +16,7 @@ export interface UserTheme {
   loginBackground?: string;
 }
 
-export type UserThemeNoMeta = Omit<
-  Omit<Omit<UserTheme, "author">, "version">,
-  "name"
->;
+export type UserThemeNoMeta = Omit<Omit<Omit<UserTheme, "author">, "version">, "name">;
 
 export type ThemeStore = { [key: string]: UserTheme };
 

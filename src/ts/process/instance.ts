@@ -23,12 +23,7 @@ export class Process {
   public fs: Filesystem;
   private fileLocks: string[] = [];
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid?: number,
-    ...args: any[]
-  ) {
+  constructor(handler: ProcessHandler, pid: number, parentPid?: number, ...args: any[]) {
     this.handler = handler;
     this._disposed = false;
     this.pid = pid;

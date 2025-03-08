@@ -14,11 +14,7 @@
   });
 
   function info() {
-    process.spawnOverlayApp(
-      "AppInfo",
-      process.pid,
-      (proc as AppProcess).app.id
-    );
+    process.spawnOverlayApp("AppInfo", process.pid, (proc as AppProcess).app.id);
   }
 </script>
 
@@ -27,13 +23,7 @@
     {$running} running {Plural("task", $running)}
   </p>
   <div class="buttons">
-    <button
-      class="app-info"
-      disabled={!proc || !(proc instanceof AppProcess)}
-      onclick={info}
-    >
-      App Info
-    </button>
+    <button class="app-info" disabled={!proc || !(proc instanceof AppProcess)} onclick={info}> App Info </button>
     <button
       class="app-info"
       disabled={!proc || !(proc instanceof AppProcess) || proc.app.data.overlay}
@@ -42,11 +32,7 @@
       Focus
     </button>
     <div class="sep"></div>
-    <button
-      class="suggested"
-      onclick={() => proc && process.kill(proc)}
-      disabled={!proc}
-    >
+    <button class="suggested" onclick={() => proc && process.kill(proc)} disabled={!proc}>
       Kill {proc && proc instanceof AppProcess ? "App" : "Process"}
     </button>
   </div>

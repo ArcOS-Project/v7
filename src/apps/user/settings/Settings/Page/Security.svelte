@@ -1,10 +1,5 @@
 <script lang="ts">
-  import {
-    ElevationIcon,
-    SecurityHighIcon,
-    SecurityLowIcon,
-    SecurityMediumIcon,
-  } from "$ts/images/general";
+  import { ElevationIcon, SecurityHighIcon, SecurityLowIcon, SecurityMediumIcon } from "$ts/images/general";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
@@ -48,32 +43,17 @@
 
   <Section caption="Options">
     <Option caption="Don't require password for approving">
-      <input
-        type="checkbox"
-        class="switch"
-        bind:checked={$userPreferences.security.noPassword}
-        onclick={togglePassword}
-      />
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.security.noPassword} onclick={togglePassword} />
     </Option>
     <Option caption="Reject all elevation requests">
-      <input
-        type="checkbox"
-        class="switch"
-        bind:checked={$userPreferences.security.lockdown}
-      />
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.security.lockdown} />
     </Option>
   </Section>
   <Section caption="Danger Zone">
     <Option
-      className="danger-zone {$userPreferences.security.disabled
-        ? 'disabled'
-        : ''}"
-      image={$userPreferences.security.disabled
-        ? SecurityLowIcon
-        : SecurityHighIcon}
-      caption="Turn {$userPreferences.security.disabled
-        ? 'on'
-        : 'off'} system security"
+      className="danger-zone {$userPreferences.security.disabled ? 'disabled' : ''}"
+      image={$userPreferences.security.disabled ? SecurityLowIcon : SecurityHighIcon}
+      caption="Turn {$userPreferences.security.disabled ? 'on' : 'off'} system security"
       onclick={() => (showDangerZone = !showDangerZone)}
     >
       {#if !showDangerZone}
@@ -86,15 +66,13 @@
       <div class="danger-zone-content">
         {#if $userPreferences.security.disabled}
           <p>
-            System security is disabled! It's recommended that you leave it
-            enabled to prevent unwanted elevated operations from running without
-            your permission.
+            System security is disabled! It's recommended that you leave it enabled to prevent unwanted elevated operations from
+            running without your permission.
           </p>
         {:else}
           <p>
-            Turning off system security will allow any unwanted operations from
-            running without your permission. We recommend that you leave system
-            security <b>Enabled</b>.
+            Turning off system security will allow any unwanted operations from running without your permission. We recommend that
+            you leave system security <b>Enabled</b>.
           </p>
         {/if}
         <button class="disable" onclick={turnOff}>

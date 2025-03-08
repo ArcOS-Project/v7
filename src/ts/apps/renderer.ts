@@ -21,20 +21,12 @@ export class AppRenderer extends Process {
   defaultApps = BuiltinApps;
   override _criticalProcess: boolean = true;
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    target: string
-  ) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, target: string) {
     super(handler, pid, parentPid);
 
     const targetDiv = document.getElementById(target) as HTMLDivElement;
 
-    if (!targetDiv)
-      throw new AppRendererError(
-        "Tried to create an app renderer on a non existent element"
-      );
+    if (!targetDiv) throw new AppRendererError("Tried to create an app renderer on a non existent element");
 
     this.target = targetDiv;
     handler.rendererPid = this.pid;
@@ -84,9 +76,7 @@ export class AppRenderer extends Process {
 
     if (data.overlay && process.parentPid) {
       const wrapper = document.createElement("div");
-      const parent = document.querySelector(
-        `div.window[data-pid="${process.parentPid}"]`
-      );
+      const parent = document.querySelector(`div.window[data-pid="${process.parentPid}"]`);
 
       if (!parent) {
         renderTarget.append(window);
@@ -140,10 +130,8 @@ export class AppRenderer extends Process {
 
       if (!data.overlay) {
         if (data.position.centered) {
-          const x =
-            data.position.x || (document.body.offsetWidth - data.size.w) / 2;
-          const y =
-            data.position.y || (document.body.offsetHeight - data.size.h) / 2;
+          const x = data.position.x || (document.body.offsetWidth - data.size.w) / 2;
+          const y = data.position.y || (document.body.offsetHeight - data.size.h) / 2;
 
           window.style.top = `${y}px`;
           window.style.left = `${x}px`;
@@ -152,9 +140,7 @@ export class AppRenderer extends Process {
           window.style.top = `${data.position.y}px`;
           window.style.left = `${data.position.x}px`;
         } else {
-          throw new Error(
-            `Attempted to create a window without valid position`
-          );
+          throw new Error(`Attempted to create a window without valid position`);
         }
       }
 
@@ -167,12 +153,7 @@ export class AppRenderer extends Process {
 
   centerWindow(pid: number) {}
 
-  _windowEvents(
-    pid: number,
-    window: HTMLDivElement,
-    titlebar: HTMLDivElement | undefined,
-    data: App
-  ) {
+  _windowEvents(pid: number, window: HTMLDivElement, titlebar: HTMLDivElement | undefined, data: App) {
     this.disposedCheck();
 
     if (data.core || data.overlay) return;
@@ -200,9 +181,7 @@ export class AppRenderer extends Process {
     this.disposedCheck();
 
     const currentFocus = this.focusedPid.get();
-    const window = document.querySelector(
-      `div.window[data-pid="${pid}"]`
-    ) as HTMLDivElement;
+    const window = document.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
 
     this.unMinimize(pid);
 
@@ -234,9 +213,7 @@ export class AppRenderer extends Process {
       const minimize = document.createElement("button");
 
       minimize.className = "minimize icon-chevron-down";
-      minimize.addEventListener("click", () =>
-        this.toggleMinimize(process.pid)
-      );
+      minimize.addEventListener("click", () => this.toggleMinimize(process.pid));
 
       controls.append(minimize);
     }
@@ -245,9 +222,7 @@ export class AppRenderer extends Process {
       const maximize = document.createElement("button");
 
       maximize.className = "maximize icon-chevron-up";
-      maximize.addEventListener("click", () =>
-        this.toggleMaximize(process.pid)
-      );
+      maximize.addEventListener("click", () => this.toggleMaximize(process.pid));
 
       controls.append(maximize);
     }
@@ -347,16 +322,10 @@ export class AppRenderer extends Process {
 
     const process = this.handler.getProcess<AppProcess>(pid, true);
 
-    if (
-      process?.componentMount &&
-      Object.entries(process.componentMount).length
-    )
-      unmount(process?.componentMount);
+    if (process?.componentMount && Object.entries(process.componentMount).length) unmount(process?.componentMount);
 
     const window = this.target.querySelector(`div.window[data-pid="${pid}"]`);
-    const wrapper = this.target.querySelector(
-      `div.overlay-wrapper[data-pid="${pid}"]`
-    );
+    const wrapper = this.target.querySelector(`div.overlay-wrapper[data-pid="${pid}"]`);
     const styling = document.body.querySelector(`link[id="$${pid}"]`);
 
     if (window) window.remove();
@@ -385,12 +354,7 @@ export class AppRenderer extends Process {
 
     if (!process || !process.app) return;
 
-    this.globalDispatch.dispatch(
-      process.app.data.state.maximized
-        ? "window-maximize"
-        : "window-unmaximize",
-      [pid]
-    );
+    this.globalDispatch.dispatch(process.app.data.state.maximized ? "window-maximize" : "window-unmaximize", [pid]);
   }
 
   unMinimize(pid: number) {
@@ -425,10 +389,7 @@ export class AppRenderer extends Process {
     const minimized = window.classList.contains("minimized");
     if (minimized) this.focusedPid.set(-1);
 
-    this.globalDispatch.dispatch(
-      minimized ? "window-minimize" : "window-unminimize",
-      [pid]
-    );
+    this.globalDispatch.dispatch(minimized ? "window-minimize" : "window-unminimize", [pid]);
   }
   toggleFullscreen(pid: number) {
     this.disposedCheck();
@@ -443,12 +404,10 @@ export class AppRenderer extends Process {
 
     if (!process || !process.app) return;
 
-    this.globalDispatch.dispatch(
-      window.classList.contains("fullscreen")
-        ? "window-fullscreen"
-        : "window-unfullscreen",
-      [pid, process.app.desktop]
-    );
+    this.globalDispatch.dispatch(window.classList.contains("fullscreen") ? "window-fullscreen" : "window-unfullscreen", [
+      pid,
+      process.app.desktop,
+    ]);
   }
 
   getAppInstances(id: string, originPid?: number) {
@@ -459,8 +418,7 @@ export class AppRenderer extends Process {
 
       const proc = this.handler.getProcess<AppProcess>(pid);
 
-      if (proc && proc.app && proc.app.data && proc.app.data.id === id)
-        result.push(proc);
+      if (proc && proc.app && proc.app.data && proc.app.data.id === id) result.push(proc);
     }
 
     return result;

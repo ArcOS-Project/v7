@@ -12,8 +12,7 @@ export class KernelModule {
 
     this.Log(`Constructing`);
 
-    if (kernel.getModule(id, true))
-      throw new Error(`KernelModule::${id} is already loaded`);
+    if (kernel.getModule(id, true)) throw new Error(`KernelModule::${id} is already loaded`);
 
     this.kernel = kernel;
   }

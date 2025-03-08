@@ -171,10 +171,7 @@
   margin-bottom: -93px;
 }
 
-#MediaPlayer.fullscreen
-  > div.body
-  div.container:not(.hide-controls)
-  div.video-wrapper {
+#MediaPlayer.fullscreen > div.body div.container:not(.hide-controls) div.video-wrapper {
   height: calc(100% - 93px) !important;
 }
 

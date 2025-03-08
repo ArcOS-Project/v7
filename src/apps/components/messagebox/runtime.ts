@@ -8,13 +8,7 @@ import type { MessageBoxData } from "$types/messagebox";
 export class MessageBoxRuntime extends AppProcess {
   data: MessageBoxData | undefined;
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    data: MessageBoxData
-  ) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, data: MessageBoxData) {
     super(handler, pid, parentPid, app);
 
     this.data = data || {

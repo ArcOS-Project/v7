@@ -24,10 +24,9 @@ export class ServerDrive extends FilesystemDrive {
 
   async readDir(path: string = ""): Promise<DirectoryReadReturn | undefined> {
     try {
-      const response = await Axios.get<DirectoryReadReturn>(
-        path ? `/fs/dir/${path}` : `/fs/dir`,
-        { headers: { Authorization: `Bearer ${this.token}` } }
-      );
+      const response = await Axios.get<DirectoryReadReturn>(path ? `/fs/dir/${path}` : `/fs/dir`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
 
       return response.data;
     } catch {
@@ -49,12 +48,8 @@ export class ServerDrive extends FilesystemDrive {
     }
   }
 
-  async readFile(
-    path: string,
-    onProgress: FilesystemProgressCallback
-  ): Promise<ArrayBuffer | undefined> {
-    if (this.fileLocks[path])
-      throw new Error(`Not reading locked file '${path}'`);
+  async readFile(path: string, onProgress: FilesystemProgressCallback): Promise<ArrayBuffer | undefined> {
+    if (this.fileLocks[path]) throw new Error(`Not reading locked file '${path}'`);
 
     try {
       const response = await Axios.get(`/fs/file/${path}`, {
@@ -75,11 +70,7 @@ export class ServerDrive extends FilesystemDrive {
     }
   }
 
-  async writeFile(
-    path: string,
-    blob: Blob,
-    onProgress: FilesystemProgressCallback
-  ): Promise<boolean> {
+  async writeFile(path: string, blob: Blob, onProgress: FilesystemProgressCallback): Promise<boolean> {
     try {
       const response = await Axios.post(`/fs/file/${path}`, blob, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -98,9 +89,7 @@ export class ServerDrive extends FilesystemDrive {
     }
   }
 
-  async tree(
-    path: string = ""
-  ): Promise<RecursiveDirectoryReadReturn | undefined> {
+  async tree(path: string = ""): Promise<RecursiveDirectoryReadReturn | undefined> {
     try {
       const response = await Axios.get(path ? `/fs/tree/${path}` : `/fs/tree`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -119,9 +108,7 @@ export class ServerDrive extends FilesystemDrive {
       const response = await Axios.post(
         `/fs/cp/${source}`,
         toForm({
-          destination: destination.endsWith(sourceFilename)
-            ? destination
-            : join(destination, sourceFilename),
+          destination: destination.endsWith(sourceFilename) ? destination : join(destination, sourceFilename),
         }),
         {
           headers: { Authorization: `Bearer ${this.token}` },
@@ -135,8 +122,7 @@ export class ServerDrive extends FilesystemDrive {
   }
 
   async moveItem(source: string, destination: string): Promise<boolean> {
-    if (this.fileLocks[source])
-      throw new Error(`Not moving locked file '${source}'`);
+    if (this.fileLocks[source]) throw new Error(`Not moving locked file '${source}'`);
 
     try {
       const response = await Axios.post(
@@ -156,8 +142,7 @@ export class ServerDrive extends FilesystemDrive {
   }
 
   async deleteItem(path: string): Promise<boolean> {
-    if (this.fileLocks[path])
-      throw new Error(`Not deleting locked file '${path}'`);
+    if (this.fileLocks[path]) throw new Error(`Not deleting locked file '${path}'`);
 
     try {
       const response = await Axios.delete(`/fs/rm/${path}`, {
@@ -189,26 +174,17 @@ export class ServerDrive extends FilesystemDrive {
 
   async direct(path: string): Promise<string | undefined> {
     try {
-      const response = await Axios.post(
-        `/fs/accessors/${path}`,
-        {},
-        { headers: { Authorization: `Bearer ${this.token}` } }
-      );
+      const response = await Axios.post(`/fs/accessors/${path}`, {}, { headers: { Authorization: `Bearer ${this.token}` } });
 
       const data = response.data as FsAccess;
 
-      return `${this.server.url}/fs/direct/${data.userId}/${
-        data.accessor
-      }?authcode=${import.meta.env.DW_SERVER_AUTHCODE || ""}`;
+      return `${this.server.url}/fs/direct/${data.userId}/${data.accessor}?authcode=${import.meta.env.DW_SERVER_AUTHCODE || ""}`;
     } catch {
       return undefined;
     }
   }
 
-  async bulk<T = any>(
-    path: string,
-    extension: string
-  ): Promise<Record<string, T>> {
+  async bulk<T = any>(path: string, extension: string): Promise<Record<string, T>> {
     try {
       const response = await Axios.get(`/fs/bulk/${extension}/${path}`, {
         headers: { Authorization: `Bearer ${this.token}` },

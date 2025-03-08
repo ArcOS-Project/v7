@@ -29,11 +29,5 @@
   {/if}
   <Status {process} />
 
-  <button
-    class="cancel"
-    disabled={!$Progress.cancel || canceling}
-    onclick={cancel}
-  >
-    Cancel
-  </button>
+  <button class="cancel" disabled={!$Progress.cancel || canceling} onclick={cancel}> Cancel </button>
 </div>

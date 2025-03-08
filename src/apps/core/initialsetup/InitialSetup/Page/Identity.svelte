@@ -1,11 +1,7 @@
 <script lang="ts">
   import HtmlSpinner from "$lib/HtmlSpinner.svelte";
   import { Sleep } from "$ts/sleep";
-  import {
-    checkPasswordStrength,
-    validateEmail,
-    validateUsername,
-  } from "$ts/util";
+  import { checkPasswordStrength, validateEmail, validateUsername } from "$ts/util";
   import { PasswordStrengthCaptions, type PasswordStrength } from "$types/user";
   import type { InitialSetupRuntime } from "../../runtime";
 
@@ -56,8 +52,7 @@
         return;
       }
 
-      const available =
-        await process.server.checkUsernameAvailability(enteredUsername);
+      const available = await process.server.checkUsernameAvailability(enteredUsername);
 
       if (available) $newUsername = enteredUsername;
 
@@ -97,8 +92,7 @@
         return;
       }
 
-      const available =
-        await process.server.checkEmailAvailability(enteredEmail);
+      const available = await process.server.checkEmailAvailability(enteredEmail);
 
       if (available) $email = enteredEmail;
 
@@ -118,10 +112,8 @@
       return;
     }
 
-    passwordStrength = checkPasswordStrength(enteredPassword)
-      .value as PasswordStrength;
-    passwordInvalid =
-      passwordStrength === "tooWeak" || passwordStrength === "weak";
+    passwordStrength = checkPasswordStrength(enteredPassword).value as PasswordStrength;
+    passwordInvalid = passwordStrength === "tooWeak" || passwordStrength === "weak";
 
     if (!passwordInvalid) $password = enteredPassword;
   }
@@ -129,9 +121,7 @@
 
 <div class="form-page identity">
   <h1>Your ArcOS Identity</h1>
-  <p class="subtitle">
-    We'll use this information to create your ArcOS account.
-  </p>
+  <p class="subtitle">We'll use this information to create your ArcOS account.</p>
   <div class="fields">
     <div class="field">
       <p class="name">Full Name</p>
@@ -147,11 +137,7 @@
         class:taken={usernameTaken || usernameInvalid}
         class:available={usernameAvailable}
       />
-      <HtmlSpinner
-        height={16}
-        stopped={!checkingUsernameAvailability}
-        thickness={2}
-      />
+      <HtmlSpinner height={16} stopped={!checkingUsernameAvailability} thickness={2} />
     </div>
     <div class="field email">
       <p class="name">Email address *</p>
@@ -163,11 +149,7 @@
         class:taken={emailTaken || emailInvalid}
         class:available={emailAvailable}
       />
-      <HtmlSpinner
-        height={16}
-        stopped={!checkingEmailAvailability}
-        thickness={2}
-      />
+      <HtmlSpinner height={16} stopped={!checkingEmailAvailability} thickness={2} />
     </div>
     <div class="field">
       <p class="name">Password</p>
@@ -179,12 +161,7 @@
           oninput={onPasswordKeydown}
           class:taken={passwordInvalid}
         />
-        <input
-          type="password"
-          placeholder="Confirm"
-          bind:value={$confirm}
-          class:taken={passwordInvalid}
-        />
+        <input type="password" placeholder="Confirm" bind:value={$confirm} class:taken={passwordInvalid} />
       </div>
     </div>
     {#if usernameTaken && emailTaken}
@@ -207,7 +184,5 @@
       </p>
     {/if}
   </div>
-  <p class="disclaimer">
-    * You will receive an email with a link to activate your account.
-  </p>
+  <p class="disclaimer">* You will receive an email with a link to activate your account.</p>
 </div>

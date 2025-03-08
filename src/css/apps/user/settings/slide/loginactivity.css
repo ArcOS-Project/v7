@@ -38,11 +38,7 @@
   font-size: 12px;
 }
 
-#systemSettings
-  div.account_loginActivity
-  div.activity-item
-  div.info
-  p.frontend {
+#systemSettings div.account_loginActivity div.activity-item div.info p.frontend {
   opacity: 0.5;
   margin-top: 5px;
 }

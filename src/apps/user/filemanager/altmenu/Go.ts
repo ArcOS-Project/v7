@@ -6,11 +6,7 @@ import type { FileManagerRuntime } from "../runtime";
 export function GoMenu(runtime: FileManagerRuntime): ContextMenuItem {
   return {
     caption: "Go",
-    subItems: [
-      ...folderGoItems(runtime),
-      { sep: true },
-      ...driveGoItems(runtime),
-    ],
+    subItems: [...folderGoItems(runtime), { sep: true }, ...driveGoItems(runtime)],
   };
 }
 
@@ -55,9 +51,7 @@ function driveGoItems(runtime: FileManagerRuntime) {
     const identifier = `${drive.data.driveLetter || drive.data.uuid}:`;
 
     result.push({
-      caption: drive.data.driveLetter
-        ? `${drive.data.label} (${drive.data.driveLetter}:)`
-        : drive.data.label,
+      caption: drive.data.driveLetter ? `${drive.data.label} (${drive.data.driveLetter}:)` : drive.data.label,
       subItems: driveSubmenu(drive.data, id),
       image: DriveIcon,
       isActive: () => runtime.path().startsWith(`${identifier}/`),

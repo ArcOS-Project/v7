@@ -10,8 +10,7 @@
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../../runtime";
 
-  const { process, dir }: { process: FileManagerRuntime; dir: FolderEntry } =
-    $props();
+  const { process, dir }: { process: FileManagerRuntime; dir: FolderEntry } = $props();
   const { selection } = process;
 
   let date = $state<string>();

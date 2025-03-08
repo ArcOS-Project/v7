@@ -39,9 +39,7 @@
       <div>
         {#each chars as [char, index], charIndex}
           <span
-            class="{process.getByteClass($view[index])} {scrollIndex +
-              rowIndex * chars.length +
-              charIndex}"
+            class="{process.getByteClass($view[index])} {scrollIndex + rowIndex * chars.length + charIndex}"
             class:prominent={$activeByte === index}>{char}</span
           >
         {/each}

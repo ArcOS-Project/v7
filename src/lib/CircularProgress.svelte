@@ -7,13 +7,7 @@
     value?: number;
   }
 
-  const {
-    className = "",
-    strokeWidth = 3,
-    size = 20,
-    max = 100,
-    value = 50,
-  }: Props = $props();
+  const { className = "", strokeWidth = 3, size = 20, max = 100, value = 50 }: Props = $props();
 
   let progressValue = $state<number>(0);
   let radius = $state<number>(0);
@@ -35,13 +29,7 @@
   viewBox={`0 0 ${size} ${size}`}
   xmlns="http://www.w3.org/2000/svg"
 >
-  <circle
-    class="background"
-    cx={size / 2}
-    cy={size / 2}
-    r={radius}
-    stroke-width={strokeWidth}
-  />
+  <circle class="background" cx={size / 2} cy={size / 2} r={radius} stroke-width={strokeWidth} />
 
   <circle
     class="progress"

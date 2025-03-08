@@ -3,11 +3,7 @@ import type { Keyword } from "$types/msl";
 export const h1: Keyword = async (lang) => {
   lang.expectTokenLength(2, "gui.element.h1");
 
-  const [innerText, className, target] = lang.tokens as [
-    string,
-    string,
-    HTMLElement
-  ];
+  const [innerText, className, target] = lang.tokens as [string, string, HTMLElement];
 
   if (!(target instanceof HTMLElement)) {
     lang.error("Target has to be an HTML element", "gui.element.h1");

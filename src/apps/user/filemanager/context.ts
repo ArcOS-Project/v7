@@ -4,9 +4,7 @@ import type { FileEntry, FolderEntry } from "$types/fs";
 import type { FileManagerRuntime } from "./runtime";
 import type { QuotedDrive } from "./types";
 
-export function FileManagerContextMenu(
-  runtime: FileManagerRuntime
-): AppContextMenu {
+export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextMenu {
   return {
     "sidebar-drive": [
       {
@@ -59,8 +57,7 @@ export function FileManagerContextMenu(
       {
         caption: "Rename...",
         icon: "file-pen",
-        action: (_, runtimePath) =>
-          runtime.spawnOverlay("renameItem", runtimePath),
+        action: (_, runtimePath) => runtime.spawnOverlay("renameItem", runtimePath),
       },
       {
         caption: "Delete",
@@ -74,13 +71,7 @@ export function FileManagerContextMenu(
       {
         caption: "Properties...",
         icon: "wrench",
-        action: (file: FileEntry) =>
-          runtime.spawnOverlayApp(
-            "ItemInfo",
-            runtime.pid,
-            join(runtime.path(), file.name),
-            file
-          ),
+        action: (file: FileEntry) => runtime.spawnOverlayApp("ItemInfo", runtime.pid, join(runtime.path(), file.name), file),
       },
     ],
     "folder-item": [
@@ -117,8 +108,7 @@ export function FileManagerContextMenu(
       {
         caption: "Rename...",
         icon: "file-pen",
-        action: (_, runtimePath) =>
-          runtime.spawnOverlay("renameItem", runtimePath),
+        action: (_, runtimePath) => runtime.spawnOverlay("renameItem", runtimePath),
       },
       {
         caption: "Delete",
@@ -132,13 +122,7 @@ export function FileManagerContextMenu(
       {
         caption: "Properties...",
         icon: "wrench",
-        action: (dir: FolderEntry) =>
-          runtime.spawnOverlayApp(
-            "ItemInfo",
-            runtime.pid,
-            join(runtime.path(), dir.name),
-            dir
-          ),
+        action: (dir: FolderEntry) => runtime.spawnOverlayApp("ItemInfo", runtime.pid, join(runtime.path(), dir.name), dir),
       },
     ],
     "sidebar-folder": [
@@ -153,11 +137,7 @@ export function FileManagerContextMenu(
         caption: "Open in new window",
         icon: "external-link",
         action: (folder: FolderEntry) => {
-          runtime.spawnApp(
-            runtime.app.id,
-            runtime.parentPid,
-            `U:/${folder.name}`
-          );
+          runtime.spawnApp(runtime.app.id, runtime.parentPid, `U:/${folder.name}`);
         },
       },
       { sep: true },
@@ -165,12 +145,7 @@ export function FileManagerContextMenu(
         caption: "Properties...",
         icon: "wrench",
         action: (folder: FolderEntry) => {
-          runtime.spawnOverlayApp(
-            "ItemInfo",
-            runtime.pid,
-            `U:/${folder.name}`,
-            folder
-          );
+          runtime.spawnOverlayApp("ItemInfo", runtime.pid, `U:/${folder.name}`, folder);
         },
       },
     ],

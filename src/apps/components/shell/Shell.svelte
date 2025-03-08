@@ -11,13 +11,7 @@
   import VirtualDesktops from "./Shell/VirtualDesktops.svelte";
 
   const { process }: AppComponentProps<ShellRuntime> = $props();
-  const {
-    userPreferences,
-    startMenuOpened,
-    actionCenterOpened,
-    username,
-    FullscreenCount,
-  } = process;
+  const { userPreferences, startMenuOpened, actionCenterOpened, username, FullscreenCount } = process;
 
   let currentDesktop = $state<string>();
 

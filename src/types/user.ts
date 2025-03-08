@@ -128,10 +128,7 @@ export type ScopedAppData = {
   [key: string]: any;
 };
 
-export type WallpaperGetters = [
-  string,
-  (id: string) => Wallpaper | Promise<Wallpaper>
-][];
+export type WallpaperGetters = [string, (id: string) => Wallpaper | Promise<Wallpaper>][];
 
 export type PasswordStrength = "tooWeak" | "weak" | "medium" | "strong";
 

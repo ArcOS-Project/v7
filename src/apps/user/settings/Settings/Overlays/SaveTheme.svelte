@@ -13,9 +13,7 @@
 
   onMount(() => {
     const sub = userPreferences.subscribe(async (v) => {
-      currentWallpaper = await process.userDaemon!.getWallpaper(
-        v.desktop.wallpaper
-      );
+      currentWallpaper = await process.userDaemon!.getWallpaper(v.desktop.wallpaper);
     });
 
     return () => sub();
@@ -30,13 +28,7 @@
   }
 </script>
 
-<ThemesHeader
-  {userInfo}
-  {userPreferences}
-  userDaemon={process.userDaemon!}
-  desktop
-  background={currentWallpaper?.url}
-/>
+<ThemesHeader {userInfo} {userPreferences} userDaemon={process.userDaemon!} desktop background={currentWallpaper?.url} />
 
 <h1>Save Theme</h1>
 <p>What a nice theme! Enter a fitting name for it:</p>

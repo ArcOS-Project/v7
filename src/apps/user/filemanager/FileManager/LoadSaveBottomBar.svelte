@@ -19,10 +19,7 @@
       const driveIdentifier = getDriveLetter(v, true);
 
       if (driveIdentifier) {
-        const drive = process.fs.getDriveByLetter(
-          driveIdentifier.slice(0, -1),
-          false
-        );
+        const drive = process.fs.getDriveByLetter(driveIdentifier.slice(0, -1), false);
 
         driveLabel = drive?.label || "";
       }
@@ -36,20 +33,14 @@
       <input type="text" bind:value={$saveName} />
     {:else}
       {$contents.dirs.length + $contents.files.length}
-      {Plural("item", $contents.dirs.length + $contents.files.length)} in {dirName ||
-        driveLetter ||
-        driveLabel}
+      {Plural("item", $contents.dirs.length + $contents.files.length)} in {dirName || driveLetter || driveLabel}
     {/if}
   {/if}
   <div class="actions">
     <button onclick={() => process.closeWindow()}>Cancel</button>
     <button
       onclick={() => process.confirmLoadSave()}
-      disabled={process.loadSave?.isSave
-        ? !$saveName
-        : process.loadSave?.multiple
-          ? !$selection.length
-          : $selection.length !== 1}
+      disabled={process.loadSave?.isSave ? !$saveName : process.loadSave?.multiple ? !$selection.length : $selection.length !== 1}
     >
       {process.loadSave?.isSave ? "Save" : "Open"}
     </button>

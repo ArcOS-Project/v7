@@ -19,10 +19,7 @@
       const driveIdentifier = getDriveLetter(v, true);
 
       if (driveIdentifier) {
-        const drive = process.fs.getDriveByLetter(
-          driveIdentifier.slice(0, -1),
-          false
-        );
+        const drive = process.fs.getDriveByLetter(driveIdentifier.slice(0, -1), false);
 
         driveLabel = drive?.label || "";
       }
@@ -37,9 +34,7 @@
     {/if}
 
     {$contents.dirs.length + $contents.files.length}
-    {Plural("item", $contents.dirs.length + $contents.files.length)} in {dirName ||
-      driveLetter ||
-      driveLabel}
+    {Plural("item", $contents.dirs.length + $contents.files.length)} in {dirName || driveLetter || driveLabel}
   {/if}
   <div class="view-toggle">
     <button
@@ -52,8 +47,7 @@
       class="lucide icon-list"
       aria-label="List view"
       class:suggested={!$userPreferences.appPreferences.fileManager!.grid}
-      onclick={() =>
-        ($userPreferences.appPreferences.fileManager!.grid = false)}
+      onclick={() => ($userPreferences.appPreferences.fileManager!.grid = false)}
     ></button>
   </div>
 </div>

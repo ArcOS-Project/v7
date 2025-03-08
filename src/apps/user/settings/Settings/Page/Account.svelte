@@ -12,43 +12,18 @@
 
 <div class="centered-layout">
   {#if userInfo && userPreferences}
-    <Header
-      {process}
-      {userInfo}
-      {userPreferences}
-      userDaemon={process.userDaemon!}
-    />
+    <Header {process} {userInfo} {userPreferences} userDaemon={process.userDaemon!} />
   {:else}
     <p class="error-text">ERR_NO_DAEMON</p>
   {/if}
 
   <Section>
-    <Option
-      caption="Rename your account"
-      image={SecureIcon}
-      chevron
-      onclick={() => process.spawnOverlay("changeUsername")}
-    />
-    <Option
-      caption="Change your password"
-      image={PasswordIcon}
-      chevron
-      onclick={() => process.spawnOverlay("changePassword")}
-    />
+    <Option caption="Rename your account" image={SecureIcon} chevron onclick={() => process.spawnOverlay("changeUsername")} />
+    <Option caption="Change your password" image={PasswordIcon} chevron onclick={() => process.spawnOverlay("changePassword")} />
   </Section>
 
   <Section>
-    <Option
-      caption="View login activity"
-      image={WaveIcon}
-      chevron
-      onclick={() => process.loginActivity()}
-    ></Option>
-    <Option
-      caption="Log out everywhere"
-      image={LogoutIcon}
-      chevron
-      onclick={() => process.logOutEverywhere()}
-    ></Option>
+    <Option caption="View login activity" image={WaveIcon} chevron onclick={() => process.loginActivity()}></Option>
+    <Option caption="Log out everywhere" image={LogoutIcon} chevron onclick={() => process.logOutEverywhere()}></Option>
   </Section>
 </div>

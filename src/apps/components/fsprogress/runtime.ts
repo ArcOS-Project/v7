@@ -43,9 +43,7 @@ export class FsProgressRuntime extends AppProcess {
         errorNotified = true;
 
         const message = [
-          `${v.errors.length} ${P("Error", v.errors.length)} occured while <b>${
-            v.caption
-          }</b> was running.`,
+          `${v.errors.length} ${P("Error", v.errors.length)} occured while <b>${v.caption}</b> was running.`,
           `<code class='block'> - ${v.errors.join("<br> - ")}</code>`,
         ];
 

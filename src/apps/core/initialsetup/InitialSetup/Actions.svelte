@@ -38,28 +38,13 @@
 <div class="actions" class:hide>
   {#if $buttons && $buttons.left}
     <div class="left">
-      <Button
-        {pageNumber}
-        button={$buttons.left}
-        {identityInfoValid}
-        {actionsDisabled}
-      />
+      <Button {pageNumber} button={$buttons.left} {identityInfoValid} {actionsDisabled} />
     </div>
   {/if}
   {#if $buttons && $buttons.previous}
-    <Button
-      {pageNumber}
-      button={$buttons.previous}
-      {identityInfoValid}
-      {actionsDisabled}
-    />
+    <Button {pageNumber} button={$buttons.previous} {identityInfoValid} {actionsDisabled} />
   {/if}
   {#if $buttons && $buttons.next}
-    <Button
-      {pageNumber}
-      button={$buttons.next}
-      {identityInfoValid}
-      {actionsDisabled}
-    />
+    <Button {pageNumber} button={$buttons.next} {identityInfoValid} {actionsDisabled} />
   {/if}
 </div>

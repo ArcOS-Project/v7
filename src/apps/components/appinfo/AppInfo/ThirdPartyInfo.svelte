@@ -5,10 +5,7 @@
   import type { ThirdPartyApp } from "$types/app";
   import type { AppInfoRuntime } from "../runtime";
 
-  const {
-    target,
-    process,
-  }: { target: ThirdPartyApp; process: AppInfoRuntime } = $props();
+  const { target, process }: { target: ThirdPartyApp; process: AppInfoRuntime } = $props();
 </script>
 
 <InfoBlock>
@@ -17,9 +14,7 @@
       {target.unsafeCode ? "Yes" : "No"}
     </Segment>
     <Segment title="Signatures">
-      {target.fileSignatures
-        ? Object.entries(target.fileSignatures).length
-        : "None"}
+      {target.fileSignatures ? Object.entries(target.fileSignatures).length : "None"}
     </Segment>
   </InfoRow>
   <InfoRow>

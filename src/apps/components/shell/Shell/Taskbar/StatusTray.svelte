@@ -15,9 +15,6 @@
     <Network {networkSpeed} />
     <Battery {battery} userPreferences={process.userPreferences} />
   {:else}
-    <span
-      class="lucide error-text battery icon-triangle-alert"
-      title="ERR_NO_DAEMON"
-    ></span>
+    <span class="lucide error-text battery icon-triangle-alert" title="ERR_NO_DAEMON"></span>
   {/if}
 </div>

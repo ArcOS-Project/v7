@@ -59,11 +59,7 @@
 </script>
 
 {#if button}
-  <button
-    onclick={action}
-    class:suggested={button.suggested}
-    disabled={disabled || $actionsDisabled}
-  >
+  <button onclick={action} class:suggested={button.suggested} disabled={disabled || $actionsDisabled}>
     {button.caption}
   </button>
 {/if}

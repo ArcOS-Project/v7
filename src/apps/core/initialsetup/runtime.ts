@@ -103,21 +103,12 @@ export class InitialSetupRuntime extends AppProcess {
     },
   ];
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData
-  ) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
 
     const update = () => {
       this.identityInfoValid.set(
-        !!this.newUsername() &&
-          !!this.password() &&
-          !!this.confirm() &&
-          !!this.email() &&
-          !!this.fullName()
+        !!this.newUsername() && !!this.password() && !!this.confirm() && !!this.email() && !!this.fullName()
       );
     };
 
@@ -215,8 +206,7 @@ export class InitialSetupRuntime extends AppProcess {
         {
           image: WarningIcon,
           title: "You made a typo!",
-          message:
-            "The passwords you entered don't match. Please re-enter them, and then try again.",
+          message: "The passwords you entered don't match. Please re-enter them, and then try again.",
           buttons: [
             {
               caption: "Okay",
@@ -291,13 +281,7 @@ export class InitialSetupRuntime extends AppProcess {
       return;
     }
 
-    this.userDaemon = await this.handler.spawn(
-      UserDaemon,
-      undefined,
-      this.pid,
-      token,
-      this.newUsername()
-    );
+    this.userDaemon = await this.handler.spawn(UserDaemon, undefined, this.pid, token, this.newUsername());
 
     await this.userDaemon?.getUserInfo();
     await this.userDaemon?.startPreferencesSync();

@@ -5,10 +5,7 @@
   import type { WallpaperRuntime } from "../../runtime";
   import DesktopIcon from "../DesktopIcon.svelte";
 
-  const {
-    process,
-    folder,
-  }: { process: WallpaperRuntime; folder: FolderEntry } = $props();
+  const { process, folder }: { process: WallpaperRuntime; folder: FolderEntry } = $props();
 
   const path = join(process.directory, folder.name);
 </script>

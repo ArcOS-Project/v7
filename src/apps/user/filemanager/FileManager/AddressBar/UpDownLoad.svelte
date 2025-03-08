@@ -6,11 +6,7 @@
 </script>
 
 <div class="portion">
-  <button
-    class="lucide icon-upload"
-    aria-label="Upload..."
-    onclick={() => process.uploadItems()}
-  ></button>
+  <button class="lucide icon-upload" aria-label="Upload..." onclick={() => process.uploadItems()}></button>
   {#if !process.loadSave}
     <button
       class="lucide icon-download"

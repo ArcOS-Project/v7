@@ -1,13 +1,13 @@
 import { AppProcess } from "$ts/apps/process";
 import { isPopulatable } from "$ts/apps/util";
 import { MessageBox } from "$ts/dialog";
-import { getDirectoryName } from "$ts/fs/util";
-import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
-import { AppsIcon, DesktopIcon } from "$ts/images/general";
+import { WarningIcon } from "$ts/images/dialog";
+import { DesktopIcon } from "$ts/images/general";
 import { DefaultMimeIcon } from "$ts/images/mime";
 import { LogoutIcon, RestartIcon, ShutdownIcon } from "$ts/images/power";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Sleep } from "$ts/sleep";
+import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData, ContextMenuInstance, ContextMenuItem } from "$types/app";
 import type { PathedFileEntry, RecursiveDirectoryReadReturn } from "$types/fs";
@@ -15,10 +15,9 @@ import type { SearchItem } from "$types/search";
 import type { UserPreferences, Workspace } from "$types/user";
 import Fuse, { type FuseResult } from "fuse.js";
 import { fetchWeatherApi } from "openmeteo";
+import { ShellContextMenu } from "./context";
 import { weatherCaptions, weatherClasses, weatherGradients, weatherIconColors, weatherIcons } from "./store";
 import type { WeatherInformation } from "./types";
-import { UUID } from "$ts/uuid";
-import { ShellContextMenu } from "./context";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);

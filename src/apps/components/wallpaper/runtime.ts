@@ -16,13 +16,7 @@ export class WallpaperRuntime extends AppProcess {
   orphaned = Store<string[]>([]);
   directory: string;
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    desktopDir?: string
-  ) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, desktopDir?: string) {
     super(handler, pid, parentPid, app);
 
     this.directory = desktopDir || "U:/Desktop";
@@ -47,8 +41,7 @@ export class WallpaperRuntime extends AppProcess {
       MessageBox(
         {
           title: "Failed to create home directory",
-          message:
-            "The desktop wasn't able to create the necessary desktop folder, which contains your desktop icons.",
+          message: "The desktop wasn't able to create the necessary desktop folder, which contains your desktop icons.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           image: ErrorIcon,
           sound: "arcos.dialog.error",
@@ -85,10 +78,7 @@ export class WallpaperRuntime extends AppProcess {
       ];
 
       if (!items.length) {
-        this.Log(
-          `Found orphaned icon position '${id}' in user preferences, deleting`,
-          LogLevel.warning
-        );
+        this.Log(`Found orphaned icon position '${id}' in user preferences, deleting`, LogLevel.warning);
 
         orphaned.push(id);
         delete udata.appPreferences.desktopIcons[id];
@@ -100,10 +90,7 @@ export class WallpaperRuntime extends AppProcess {
     this.orphaned.set(orphaned);
   }
 
-  findFreeDesktopIconPosition(
-    identifier: string,
-    wrapper: HTMLDivElement = this.iconsElement()
-  ) {
+  findFreeDesktopIconPosition(identifier: string, wrapper: HTMLDivElement = this.iconsElement()) {
     this.Log(`Finding first available icon position for '${identifier}'`);
 
     if (!wrapper) return { x: 0, y: 0 };
@@ -122,10 +109,7 @@ export class WallpaperRuntime extends AppProcess {
         const desktopIcons = v?.appPreferences?.desktopIcons || {};
 
         function taken(x: number, y: number): boolean {
-          const appdata = desktopIcons as Record<
-            string,
-            { x: number; y: number }
-          >;
+          const appdata = desktopIcons as Record<string, { x: number; y: number }>;
           const values = Object.values(appdata);
           const filtered = values.filter((v) => v.x == x * 80 && v.y == y * 85);
 

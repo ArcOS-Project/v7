@@ -20,13 +20,7 @@ export class InitProcess extends Process {
     await this.handler.startRenderer(this.pid);
     const connected = ServerManager.isConnected();
 
-    const state = await this.handler.spawn<StateHandler>(
-      StateHandler,
-      undefined,
-      this.pid,
-      "ArcOS",
-      States
-    );
+    const state = await this.handler.spawn<StateHandler>(StateHandler, undefined, this.pid, "ArcOS", States);
 
     const kernel = WaveKernel.get();
 

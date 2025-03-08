@@ -20,27 +20,16 @@ export class ArcMSL extends KernelModule {
     this.stack = stack;
   }
 
-  async run(
-    source: string,
-    parent: number,
-    options: LanguageOptions = DefaultLanguageOptions
-  ) {
+  async run(source: string, parent: number, options: LanguageOptions = DefaultLanguageOptions) {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
     if (this.locked) throw new PrematureLanguageError("Language is busy");
 
     this.locked = !options.continuous;
 
-    const process = await this.stack?.spawn<LanguageInstance>(
-      LanguageInstance,
-      undefined,
-      parent,
-      source,
-      options
-    );
+    const process = await this.stack?.spawn<LanguageInstance>(LanguageInstance, undefined, parent, source, options);
 
-    if (!process)
-      throw new PrematureLanguageError("Failed to spawn language instance");
+    if (!process) throw new PrematureLanguageError("Failed to spawn language instance");
 
     try {
       process.watchException();

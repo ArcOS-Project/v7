@@ -34,24 +34,11 @@
     <Setting caption="Author" sub={wallpaper?.author} />
 
     <div class="upload-actions">
-      <button
-        class="lucide icon-upload"
-        aria-label="Upload wallpaper"
-        onclick={() => process.uploadWallpaper()}
-      >
-      </button>
-      <button
-        class="lucide icon-link"
-        aria-label="Enter a wallpaper URL"
-        onclick={() => process.spawnOverlay("urlWallpaper")}
-      >
+      <button class="lucide icon-upload" aria-label="Upload wallpaper" onclick={() => process.uploadWallpaper()}> </button>
+      <button class="lucide icon-link" aria-label="Enter a wallpaper URL" onclick={() => process.spawnOverlay("urlWallpaper")}>
       </button>
       <div class="sep"></div>
-      <button
-        class="lucide icon-folder-open"
-        aria-label="Choose a file"
-        onclick={() => process.notImplemented("Opening files")}
-      >
+      <button class="lucide icon-folder-open" aria-label="Choose a file" onclick={() => process.notImplemented("Opening files")}>
       </button>
     </div>
   </ThemesHeader>
@@ -69,8 +56,7 @@
     <p class="name">Your saved wallpapers</p>
     <div
       class="wallpapers"
-      class:empty={!$userPreferences?.userWallpapers ||
-        !Object.values($userPreferences?.userWallpapers).length}
+      class:empty={!$userPreferences?.userWallpapers || !Object.values($userPreferences?.userWallpapers).length}
     >
       {#if $userPreferences?.userWallpapers && Object.values($userPreferences?.userWallpapers).length}
         {#each Object.keys($userPreferences?.userWallpapers) as id}

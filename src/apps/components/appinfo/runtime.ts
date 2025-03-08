@@ -9,22 +9,14 @@ import { ElevationLevel } from "$types/elevation";
 export class AppInfoRuntime extends AppProcess {
   targetApp = Store<App | ThirdPartyApp>();
   targetAppId: string;
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    appId: string
-  ) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, appId: string) {
     super(handler, pid, parentPid, app);
 
     this.targetAppId = appId;
   }
 
   async render() {
-    const targetApp = await this.userDaemon?.appStore?.getAppById(
-      this.targetAppId
-    );
+    const targetApp = await this.userDaemon?.appStore?.getAppById(this.targetAppId);
 
     if (!targetApp) {
       this.userDaemon?.sendNotification({

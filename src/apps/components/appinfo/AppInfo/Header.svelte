@@ -40,22 +40,14 @@
       <p class="name">
         <span>{target.metadata.name}</span>
         {#if disabled}
-          <img
-            src={WarningIcon}
-            alt=""
-            class="disabled"
-            title="{target.metadata.name} is disabled!"
-          />
+          <img src={WarningIcon} alt="" class="disabled" title="{target.metadata.name} is disabled!" />
         {/if}
       </p>
       <p class="author">{target.metadata.author}</p>
     </div>
   </div>
   <div class="right">
-    <button class="disable" onclick={toggleDisabledState} class:disabled
-      >{disabled ? "Enable" : "Disable"}</button
-    >
-    <button class="lucide icon-rocket" onclick={launch} aria-label="Launch"
-    ></button>
+    <button class="disable" onclick={toggleDisabledState} class:disabled>{disabled ? "Enable" : "Disable"}</button>
+    <button class="lucide icon-rocket" onclick={launch} aria-label="Launch"></button>
   </div>
 </div>

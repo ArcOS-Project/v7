@@ -5,10 +5,7 @@
   flex-direction: column;
 }
 
-#systemSettings
-  div.slide.shell_weatherLocation
-  div.option.search-results
-  button {
+#systemSettings div.slide.shell_weatherLocation div.option.search-results button {
   display: block;
   width: 100%;
   text-align: left;
@@ -21,16 +18,10 @@
   text-overflow: ellipsis;
 }
 
-#systemSettings
-  div.slide.shell_weatherLocation
-  div.option.search-results
-  button:hover {
+#systemSettings div.slide.shell_weatherLocation div.option.search-results button:hover {
   background-color: var(--button-glass-bg);
 }
-#systemSettings
-  div.slide.shell_weatherLocation
-  div.option.search-results
-  button:active {
+#systemSettings div.slide.shell_weatherLocation div.option.search-results button:active {
   background-color: var(--button-glass-active-bg);
 }
 #systemSettings div.slide.shell_weatherLocation div.option.search-bar {

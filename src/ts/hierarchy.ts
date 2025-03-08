@@ -13,17 +13,13 @@ export function getAllJsonPaths(obj: any, prefix: string = ""): string[] {
   return paths;
 }
 
-export function getJsonHierarchy<T = any>(
-  object: Object,
-  hierarchy: string
-): T | null {
+export function getJsonHierarchy<T = any>(object: Object, hierarchy: string): T | null {
   const parts = hierarchy.split(".");
 
   let currentObj: Record<string, any> = object;
 
   for (const part of parts) {
-    if (currentObj[part] === undefined || currentObj[part] === null)
-      return null;
+    if (currentObj[part] === undefined || currentObj[part] === null) return null;
 
     currentObj = currentObj[part];
   }
@@ -31,11 +27,7 @@ export function getJsonHierarchy<T = any>(
   return currentObj as T;
 }
 
-export function setJsonHierarchy<T = any>(
-  object: Object,
-  hierarchy: string,
-  value: T
-): T | null {
+export function setJsonHierarchy<T = any>(object: Object, hierarchy: string, value: T): T | null {
   const parts = hierarchy.split(".");
   const lastIndex = parts.length - 1;
 
@@ -59,17 +51,11 @@ export function setJsonHierarchy<T = any>(
 
 type NestedObject = Record<string, any>;
 
-export function applyDefaults<T = NestedObject>(
-  target: NestedObject,
-  defaults: NestedObject
-): T {
+export function applyDefaults<T = NestedObject>(target: NestedObject, defaults: NestedObject): T {
   const result: NestedObject = { ...target };
 
   for (const key in defaults) {
-    if (
-      !Object.prototype.hasOwnProperty.call(target, key) ||
-      target[key] === undefined
-    ) {
+    if (!Object.prototype.hasOwnProperty.call(target, key) || target[key] === undefined) {
       result[key] = defaults[key];
     } else if (Array.isArray(defaults[key]) && Array.isArray(target[key])) {
       result[key] = [...defaults[key], ...target[key]];

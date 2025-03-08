@@ -5,16 +5,13 @@
   import { onMount } from "svelte";
   import type { AppInfoRuntime } from "../runtime";
 
-  const { appId, process }: { appId: string; process: AppInfoRuntime } =
-    $props();
+  const { appId, process }: { appId: string; process: AppInfoRuntime } = $props();
 
   let pid = $state(-1);
   let count = $state(0);
 
   async function update() {
-    const pids = process.handler.renderer
-      ?.getAppInstances(appId)
-      .map((p) => p.pid);
+    const pids = process.handler.renderer?.getAppInstances(appId).map((p) => p.pid);
 
     count = pids?.length || 0;
     pid = pids?.length ? pids[0] : -1;
@@ -35,10 +32,6 @@
     <Segment title="First PID">
       {pid < 0 ? "None" : pid}
     </Segment>
-    <button
-      class="processes"
-      onclick={() => process.notImplemented("Process Manager")}
-      >Processes</button
-    >
+    <button class="processes" onclick={() => process.notImplemented("Process Manager")}>Processes</button>
   </InfoRow>
 </InfoBlock>

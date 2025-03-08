@@ -21,18 +21,11 @@
   overflow: hidden;
 }
 
-#systemSettings
-  div.container.account
-  div.profile-picture
-  div.change-menu:hover {
+#systemSettings div.container.account div.profile-picture div.change-menu:hover {
   width: 120px;
 }
 
-#systemSettings
-  div.container.account
-  div.profile-picture
-  div.change-menu:hover
-  div.inner {
+#systemSettings div.container.account div.profile-picture div.change-menu:hover div.inner {
   margin-left: 0;
 }
 

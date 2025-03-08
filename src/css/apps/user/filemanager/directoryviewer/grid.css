@@ -50,10 +50,7 @@
   height: 16px;
 }
 
-#fileManager
-  div.directory-viewer.grid
-  button
-  div.segment:not(.name):not(.icon) {
+#fileManager div.directory-viewer.grid button div.segment:not(.name):not(.icon) {
   display: none;
 }
 

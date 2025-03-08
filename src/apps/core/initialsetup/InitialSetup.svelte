@@ -6,14 +6,7 @@
   import type { InitialSetupRuntime } from "./runtime";
 
   const { process }: AppComponentProps<InitialSetupRuntime> = $props();
-  const {
-    pageNumber,
-    pageButtons,
-    identityInfoValid,
-    pages,
-    actionsDisabled,
-    showMainContent,
-  } = process;
+  const { pageNumber, pageButtons, identityInfoValid, pages, actionsDisabled, showMainContent } = process;
 
   let PageComponent: Component | undefined = $state();
   let hide = $state(true);
@@ -37,11 +30,5 @@
       <PageComponent {process} />
     {/if}
   </div>
-  <Actions
-    {pageNumber}
-    {pageButtons}
-    {identityInfoValid}
-    {actionsDisabled}
-    {hide}
-  />
+  <Actions {pageNumber} {pageButtons} {identityInfoValid} {actionsDisabled} {hide} />
 </div>

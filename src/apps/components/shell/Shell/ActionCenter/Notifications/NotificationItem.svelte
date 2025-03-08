@@ -29,18 +29,15 @@
   dayjs.updateLocale("en", RelativeTimeMod);
 
   onMount(() => {
-    userDaemon.globalDispatch.subscribe(
-      "delete-notification",
-      async ([deletedId]) => {
-        if (id === deletedId) {
-          deleted = true;
+    userDaemon.globalDispatch.subscribe("delete-notification", async ([deletedId]) => {
+      if (id === deletedId) {
+        deleted = true;
 
-          await Sleep(350);
+        await Sleep(350);
 
-          hideContent = true;
-        }
+        hideContent = true;
       }
-    );
+    });
 
     setInterval(() => {
       const dj = dayjs(notification.timestamp || null);
@@ -67,12 +64,7 @@
 </script>
 
 {#if notification}
-  <div
-    class="notification"
-    class:deleted
-    class:collapsed
-    class:no-image={!notification.image}
-  >
+  <div class="notification" class:deleted class:collapsed class:no-image={!notification.image}>
     {#if !hideContent}
       {#if notification.image}
         <div class="left">
@@ -86,12 +78,7 @@
             {collapsed ? shortTime : time}
           </span>
 
-          <button
-            class="lucide icon-trash-2"
-            onclick={deleteThis}
-            class:collapsed
-            aria-label="Delete"
-          ></button>
+          <button class="lucide icon-trash-2" onclick={deleteThis} class:collapsed aria-label="Delete"></button>
           <button
             class="collapse icon-chevron-{collapsed ? 'down' : 'up'}"
             class:collapsed
@@ -103,10 +90,7 @@
         {#if notification.buttons}
           <div class="buttons">
             {#each notification.buttons as button}
-              <button
-                onclick={() => trigger(button)}
-                class:suggested={button.suggested}
-              >
+              <button onclick={() => trigger(button)} class:suggested={button.suggested}>
                 {button.caption}
               </button>
             {/each}

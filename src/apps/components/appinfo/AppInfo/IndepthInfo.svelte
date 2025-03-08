@@ -6,8 +6,7 @@
   import type { App } from "$types/app";
   import type { AppInfoRuntime } from "../runtime";
 
-  const { target, process }: { target: App; process: AppInfoRuntime } =
-    $props();
+  const { target, process }: { target: App; process: AppInfoRuntime } = $props();
 </script>
 
 <InfoBlock>
@@ -25,21 +24,9 @@
     </Segment>
     <Segment title="Controls" right>
       <div class="controls">
-        <button
-          class="minimize icon-chevron-down"
-          class:disabled={!target.controls.minimize}
-          aria-label="Minimize"
-        ></button>
-        <button
-          class="maximize icon-chevron-up"
-          class:disabled={!target.controls.maximize}
-          aria-label="Maximize"
-        ></button>
-        <button
-          class="close icon-x"
-          class:disabled={!target.controls.close}
-          aria-label="Close"
-        ></button>
+        <button class="minimize icon-chevron-down" class:disabled={!target.controls.minimize} aria-label="Minimize"></button>
+        <button class="maximize icon-chevron-up" class:disabled={!target.controls.maximize} aria-label="Maximize"></button>
+        <button class="close icon-x" class:disabled={!target.controls.close} aria-label="Close"></button>
       </div>
     </Segment>
   </InfoRow>

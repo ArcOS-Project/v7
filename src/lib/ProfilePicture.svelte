@@ -8,13 +8,7 @@
     height: number;
     className?: string;
   }
-  const {
-    userDaemon,
-    fallback = "",
-    pfp = "",
-    height,
-    className = "",
-  }: Props = $props();
+  const { userDaemon, fallback = "", pfp = "", height, className = "" }: Props = $props();
 
   const { preferences } = userDaemon || {}!;
 
@@ -24,9 +18,7 @@
   preferences?.subscribe(async (v) => {
     if (!fallback && currentPfp === (pfp || v.account.profilePicture!)) return;
 
-    url =
-      fallback ||
-      (await userDaemon?.getProfilePicture(pfp || v.account.profilePicture!));
+    url = fallback || (await userDaemon?.getProfilePicture(pfp || v.account.profilePicture!));
 
     currentPfp = pfp || v.account.profilePicture!;
   });
@@ -34,10 +26,7 @@
 
 {#if url}
   <!-- svelte-ignore element_invalid_self_closing_tag -->
-  <div
-    class="pfprenderer {className} pfp"
-    style="background-image:url('{url}'); --h: {height}px;"
-  />
+  <div class="pfprenderer {className} pfp" style="background-image:url('{url}'); --h: {height}px;" />
 {/if}
 
 <style scoped>

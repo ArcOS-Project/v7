@@ -54,11 +54,7 @@
   background-color: transparent;
 }
 
-#systemSettings
-  > div.body
-  div.container
-  > div.titlebar.custom
-  button.lucide:hover {
+#systemSettings > div.body div.container > div.titlebar.custom button.lucide:hover {
   background-color: var(--button-glass-bg);
 }
 

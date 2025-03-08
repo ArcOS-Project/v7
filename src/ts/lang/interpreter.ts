@@ -1,13 +1,7 @@
 import { applyDefaults } from "$ts/hierarchy";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
-import type {
-  ArcLangOptions,
-  LangErrorCallback,
-  LangExitCallback,
-  LangStdinCallback,
-  LangStdoutCallback,
-} from "$types/lang";
+import type { ArcLangOptions, LangErrorCallback, LangExitCallback, LangStdinCallback, LangStdoutCallback } from "$types/lang";
 import type { ASTNode } from "./ast";
 import { LangError } from "./error";
 import { Lexer } from "./lexer";
@@ -27,20 +21,12 @@ export class Interpreter extends Process {
   arguments: any[] = [];
   workingDir: string = "U:/";
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    options?: ArcLangOptions
-  ) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, options?: ArcLangOptions) {
     options ||= DefaultArcLangOptions;
 
     super(handler, pid, parentPid);
 
-    const opt = applyDefaults<ArcLangOptions>(
-      options || {},
-      DefaultArcLangOptions
-    );
+    const opt = applyDefaults<ArcLangOptions>(options || {}, DefaultArcLangOptions);
 
     this.onError = opt.onError!;
     this.stdout = opt.stdout!;
@@ -271,10 +257,7 @@ export class Interpreter extends Process {
 
   async visitFunctionCall(node: ASTNode) {
     const functionIdentifier = node.children[0];
-    const args = await Promise.all(
-      node.children[1]?.children.map(async (arg) => await this.visit(arg!)) ||
-        []
-    );
+    const args = await Promise.all(node.children[1]?.children.map(async (arg) => await this.visit(arg!)) || []);
 
     let functionName;
     let thisContext = this.globalEnvironment; // Default context
@@ -282,9 +265,7 @@ export class Interpreter extends Process {
 
     if (functionIdentifier?.type === "IDENTIFIER") {
       functionName = functionIdentifier.value;
-      functionDefinition =
-        this.currentEnvironment[functionName] ||
-        this.globalEnvironment[functionName];
+      functionDefinition = this.currentEnvironment[functionName] || this.globalEnvironment[functionName];
     } else if (functionIdentifier?.type === "PROPERTY_ACCESS") {
       // Method call
       thisContext = await this.visit(functionIdentifier.children[0]!); // Object
@@ -306,9 +287,7 @@ export class Interpreter extends Process {
 
     if ((args?.length || 0) < functionParams.length) {
       this.error(
-        `Not enough arguments for function ${functionName}: expected ${
-          functionParams.length
-        }, got ${args?.length || 0}`
+        `Not enough arguments for function ${functionName}: expected ${functionParams.length}, got ${args?.length || 0}`
       );
     }
 
@@ -332,9 +311,7 @@ export class Interpreter extends Process {
     try {
       if (functionDefinition.native) {
         // Call the native JavaScript function
-        const nativeArgs = functionParams.map(
-          (param, index) => this.currentEnvironment[param]
-        );
+        const nativeArgs = functionParams.map((param, index) => this.currentEnvironment[param]);
         result = await functionDefinition.body.call(thisContext, ...nativeArgs); // Set 'this' context
       } else {
         result = await this.visit(functionBody);
