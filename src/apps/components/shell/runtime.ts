@@ -9,26 +9,16 @@ import { LogoutIcon, RestartIcon, ShutdownIcon } from "$ts/images/power";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
-import type {
-  AppContextMenu,
-  AppProcessData,
-  ContextMenuInstance,
-  ContextMenuItem,
-} from "$types/app";
+import type { AppContextMenu, AppProcessData, ContextMenuInstance, ContextMenuItem } from "$types/app";
 import type { PathedFileEntry, RecursiveDirectoryReadReturn } from "$types/fs";
 import type { SearchItem } from "$types/search";
 import type { UserPreferences, Workspace } from "$types/user";
 import Fuse, { type FuseResult } from "fuse.js";
 import { fetchWeatherApi } from "openmeteo";
-import {
-  weatherCaptions,
-  weatherClasses,
-  weatherGradients,
-  weatherIconColors,
-  weatherIcons,
-} from "./store";
+import { weatherCaptions, weatherClasses, weatherGradients, weatherIconColors, weatherIcons } from "./store";
 import type { WeatherInformation } from "./types";
 import { UUID } from "$ts/uuid";
+import { ShellContextMenu } from "./context";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
@@ -44,98 +34,16 @@ export class ShellRuntime extends AppProcess {
   public FullscreenCount = Store<Record<string, number>>({});
 
   private fileSystemIndex: PathedFileEntry[] = [];
-  private readonly validContexMenuTags = [
-    "button",
-    "div",
-    "span",
-    "p",
-    "h1",
-    "h2",
-    "h3",
-    "h4",
-    "h5",
-    "img",
-  ];
-  override contextMenu: AppContextMenu = {
-    "shell-taskbar": [
-      {
-        caption: "Settings",
-        action: () => {
-          this.notImplemented();
-        },
-      },
-    ],
-    "taskbar-openedapp": [
-      {
-        caption: "Launch another",
-        icon: "rocket",
-        action: (proc: AppProcess) => {
-          this.spawnApp(proc.app.id, this.pid);
-        },
-      },
-      { sep: true },
-      {
-        caption: "App info",
-        image: AppsIcon,
-        action: (proc: AppProcess) => {
-          this.spawnOverlayApp("AppInfo", this.pid, proc.app.id);
-        },
-      },
-      {
-        caption: "Close window",
-        image: ShutdownIcon,
-        action: (proc: AppProcess) => {
-          proc.closeWindow();
-        },
-      },
-    ],
-    "actioncenter-weather-card": [
-      {
-        caption: "Refresh",
-        action: (_, refresh) => {
-          refresh(true);
-        },
-        icon: "rotate-cw",
-      },
-      {
-        caption: "Change location...",
-        icon: "map-pin",
-        action: (changeLocation) => {
-          changeLocation();
-        },
-      },
-    ],
-    "workspaces-desktop": [
-      {
-        caption: "Go here",
-        action: (desktop: Workspace) => {
-          this.userDaemon?.switchToDesktopByUuid(desktop.uuid);
-        },
-      },
-      {
-        caption: "Delete workspace",
-        icon: "trash",
-        action: (desktop: Workspace) => {
-          this.deleteWorkspace(desktop);
-        },
-      },
-    ],
-  };
+  private readonly validContexMenuTags = ["button", "div", "span", "p", "h1", "h2", "h3", "h4", "h5", "img"];
+  override contextMenu: AppContextMenu = ShellContextMenu(this);
   public contextProps: Record<string, any[]> = {};
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData
-  ) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
 
     this.env.set("shell_pid", this.pid);
     this.globalDispatch.subscribe("stack-busy", () => this.stackBusy.set(true));
-    this.globalDispatch.subscribe("stack-not-busy", () =>
-      this.stackBusy.set(false)
-    );
+    this.globalDispatch.subscribe("stack-not-busy", () => this.stackBusy.set(false));
 
     this.globalDispatch.subscribe("fs-flush-file", () => {
       this.fileSystemIndex = [];
@@ -187,36 +95,18 @@ export class ShellRuntime extends AppProcess {
 
     document.body.addEventListener("click", (e) => {
       const startMenu = document.querySelector("#arcShell div.startmenu");
-      const startButton = document.querySelector(
-        "#arcShell button.start-button"
-      );
+      const startButton = document.querySelector("#arcShell button.start-button");
       const actionCenter = document.querySelector("#arcShell div.actioncenter");
-      const actionCenterButton = document.querySelector(
-        "#arcShell button.action-center-button"
-      );
-      const workspaceManager = document.querySelector(
-        "#arcShell div.virtual-desktops"
-      );
-      const workspaceManagerButton = document.querySelector(
-        "#arcShell button.workspace-manager-button"
-      );
+      const actionCenterButton = document.querySelector("#arcShell button.action-center-button");
+      const workspaceManager = document.querySelector("#arcShell div.virtual-desktops");
+      const workspaceManagerButton = document.querySelector("#arcShell button.workspace-manager-button");
 
       const composed = e.composedPath();
 
-      if (
-        startMenu &&
-        startButton &&
-        !composed.includes(startMenu) &&
-        !composed.includes(startButton)
-      )
+      if (startMenu && startButton && !composed.includes(startMenu) && !composed.includes(startButton))
         this.startMenuOpened.set(false);
 
-      if (
-        actionCenter &&
-        actionCenterButton &&
-        !composed.includes(actionCenter) &&
-        !composed.includes(actionCenterButton)
-      )
+      if (actionCenter && actionCenterButton && !composed.includes(actionCenter) && !composed.includes(actionCenterButton))
         this.actionCenterOpened.set(false);
 
       if (
@@ -255,29 +145,17 @@ export class ShellRuntime extends AppProcess {
       }
     );
 
-    this.dispatch.subscribe("open-action-center", () =>
-      this.actionCenterOpened.set(true)
-    );
+    this.dispatch.subscribe("open-action-center", () => this.actionCenterOpened.set(true));
 
-    this.dispatch.subscribe("open-start-menu", () =>
-      this.startMenuOpened.set(true)
-    );
+    this.dispatch.subscribe("open-start-menu", () => this.startMenuOpened.set(true));
 
-    this.dispatch.subscribe("open-workspace-manager", () =>
-      this.workspaceManagerOpened.set(true)
-    );
+    this.dispatch.subscribe("open-workspace-manager", () => this.workspaceManagerOpened.set(true));
 
-    this.dispatch.subscribe("close-workspace-manager", () =>
-      this.workspaceManagerOpened.set(false)
-    );
+    this.dispatch.subscribe("close-workspace-manager", () => this.workspaceManagerOpened.set(false));
 
-    this.dispatch.subscribe("close-action-center", () =>
-      this.actionCenterOpened.set(false)
-    );
+    this.dispatch.subscribe("close-action-center", () => this.actionCenterOpened.set(false));
 
-    this.dispatch.subscribe("close-start-menu", () =>
-      this.startMenuOpened.set(false)
-    );
+    this.dispatch.subscribe("close-start-menu", () => this.startMenuOpened.set(false));
 
     this.startMenuOpened.subscribe((v) => {
       if (!v) this.searchQuery.set("");
@@ -333,14 +211,7 @@ export class ShellRuntime extends AppProcess {
 
     const appProcesses = (this.handler.renderer?.currentState || [])
       .map((pid) => this.handler.getProcess(pid))
-      .filter(
-        (proc) =>
-          proc &&
-          !proc._disposed &&
-          proc instanceof AppProcess &&
-          !proc.app.data.core &&
-          !proc.app.data.overlay
-      )
+      .filter((proc) => proc && !proc._disposed && proc instanceof AppProcess && !proc.app.data.core && !proc.app.data.overlay)
       .filter((proc) => !!proc);
 
     const targetProcess = appProcesses[appProcesses.length - 1];
@@ -375,9 +246,7 @@ export class ShellRuntime extends AppProcess {
   }
 
   async createContextMenu(data: ContextMenuInstance) {
-    this.Log(
-      `Spawning context menu with ${data.items.length} items at ${data.x}, ${data.y}`
-    );
+    this.Log(`Spawning context menu with ${data.items.length} items at ${data.x}, ${data.y}`);
 
     this.CLICKLOCKED = true;
     this.contextData.set(data);
@@ -445,12 +314,7 @@ export class ShellRuntime extends AppProcess {
     return null;
   }
 
-  composePosition(
-    x: number,
-    y: number,
-    mW: number,
-    mH: number
-  ): [number, number] {
+  composePosition(x: number, y: number, mW: number, mH: number): [number, number] {
     const dW = window.innerWidth;
     const dH = window.innerHeight;
 
@@ -550,11 +414,9 @@ export class ShellRuntime extends AppProcess {
     };
     const items: SearchItem[] = [];
 
-    if (sources.filesystem)
-      items.push(...(await this.getFilesystemSearchSupplier(preferences)));
+    if (sources.filesystem) items.push(...(await this.getFilesystemSearchSupplier(preferences)));
 
-    if (sources.apps)
-      items.push(...(await this.getAppSearchSupplier(preferences)));
+    if (sources.apps) items.push(...(await this.getAppSearchSupplier(preferences)));
 
     if (sources.power)
       items.push(
@@ -598,9 +460,7 @@ export class ShellRuntime extends AppProcess {
   async getFilesystemSearchSupplier(preferences: UserPreferences) {
     const result: SearchItem[] = [];
     const index =
-      preferences.searchOptions.cacheFilesystem &&
-      this.fileSystemIndex &&
-      this.fileSystemIndex.length
+      preferences.searchOptions.cacheFilesystem && this.fileSystemIndex && this.fileSystemIndex.length
         ? this.fileSystemIndex
         : await this.getFlatTree();
 
@@ -613,8 +473,7 @@ export class ShellRuntime extends AppProcess {
         action: () => {
           this.userDaemon?.openFile(file.path);
         },
-        image:
-          this.userDaemon?.getMimeIconByFilename(file.name) || DefaultMimeIcon,
+        image: this.userDaemon?.getMimeIconByFilename(file.name) || DefaultMimeIcon,
       });
     }
 

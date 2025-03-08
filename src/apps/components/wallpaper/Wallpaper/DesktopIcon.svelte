@@ -107,8 +107,8 @@
   use:draggable={{
     grid: $userPreferences.desktop.noIconGrid ? undefined : [80, 85],
     bounds: $userPreferences.desktop.noIconGrid
-      ? { bottom: 80, left: 10, right: 10, top: 10 }
-      : { bottom: 110, left: 0, right: 80, top: 0 },
+      ? { bottom: 70, left: 10, right: 10, top: 10 }
+      : { bottom: 150, left: 0, right: 80, top: 0 },
     threshold: { delay: 300 },
     position,
     disabled: $userPreferences.desktop.lockIcons,

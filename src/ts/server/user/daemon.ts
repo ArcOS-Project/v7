@@ -1,9 +1,5 @@
 import { FsProgressRuntime } from "$apps/components/fsprogress/runtime";
-import {
-  DummyFileProgress,
-  type FileProgressMutator,
-  type FsProgressOperation,
-} from "$apps/components/fsprogress/types";
+import { DummyFileProgress, type FileProgressMutator, type FsProgressOperation } from "$apps/components/fsprogress/types";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import { AppProcess } from "$ts/apps/process";
 import { ApplicationStorage } from "$ts/apps/storage";
@@ -12,14 +8,10 @@ import { darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 import { MessageBox } from "$ts/dialog";
 import { toForm } from "$ts/form";
 import { Filesystem } from "$ts/fs";
-import { arrayToBlob, arrayToText } from "$ts/fs/convert";
+import { arrayToBlob, arrayToText, textToBlob } from "$ts/fs/convert";
 import { ServerDrive } from "$ts/fs/drives/server";
 import { ZIPDrive } from "$ts/fs/drives/zipdrive";
-import {
-  getDirectoryName,
-  getDriveLetter,
-  getParentDirectory,
-} from "$ts/fs/util";
+import { getDirectoryName, getDriveLetter, getParentDirectory } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
 import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import { AccountIcon, PasswordIcon } from "$ts/images/general";
@@ -38,12 +30,7 @@ import { LogLevel } from "$types/logging";
 import type { BatteryType } from "$types/navigator";
 import type { Notification } from "$types/notification";
 import { UserThemeKeys, type UserTheme } from "$types/theme";
-import type {
-  CustomStylePreferences,
-  UserInfo,
-  UserPreferences,
-  WallpaperGetters,
-} from "$types/user";
+import type { CustomStylePreferences, UserInfo, UserPreferences, WallpaperGetters } from "$types/user";
 import type { Wallpaper } from "$types/wallpaper";
 import { fromExtension } from "human-filetypes";
 import Cookies from "js-cookie";
@@ -54,6 +41,7 @@ import { BuiltinThemes, DefaultMimeIcons } from "./store";
 import { UUID } from "$ts/uuid";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import type { ArcShortcut } from "$types/shortcut";
+import { getIconPath } from "$ts/images";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -84,14 +72,7 @@ export class UserDaemon extends Process {
   private firstSyncDone = false;
   override _criticalProcess: boolean = true;
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    token: string,
-    username: string,
-    userInfo?: UserInfo
-  ) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, token: string, username: string, userInfo?: UserInfo) {
     super(handler, pid, parentPid);
 
     this.token = token;
@@ -101,11 +82,7 @@ export class UserDaemon extends Process {
   }
 
   async startApplicationStorage() {
-    this.appStore = await this.handler.spawn(
-      ApplicationStorage,
-      undefined,
-      this.pid
-    );
+    this.appStore = await this.handler.spawn(ApplicationStorage, undefined, this.pid);
 
     this.appStore?.loadOrigin("builtin", () => BuiltinApps);
     this.appStore?.loadOrigin("userApps", () => this.getUserApps());
@@ -115,10 +92,7 @@ export class UserDaemon extends Process {
     if (this._disposed) return;
 
     if (this.initialized) {
-      this.Log(
-        `Tried to get user info while initialization is already complete`,
-        LogLevel.warning
-      );
+      this.Log(`Tried to get user info while initialization is already complete`, LogLevel.warning);
 
       return;
     }
@@ -135,8 +109,7 @@ export class UserDaemon extends Process {
             headers: { Authorization: `Bearer ${this.token}` },
           });
 
-      const data =
-        response.status === 200 ? (response.data as UserInfo) : undefined;
+      const data = response.status === 200 ? (response.data as UserInfo) : undefined;
 
       if (!data) return undefined;
 
@@ -213,10 +186,7 @@ export class UserDaemon extends Process {
 
     const renderer = this.handler.renderer?.target;
 
-    if (!renderer)
-      throw new Error(
-        "UserDaemon: Tried to set renderer classes without accent renderer"
-      );
+    if (!renderer) throw new Error("UserDaemon: Tried to set renderer classes without accent renderer");
 
     const accent = v.desktop.accent;
     const theme = v.desktop.theme;
@@ -236,8 +206,7 @@ export class UserDaemon extends Process {
   setUserStyleLoader(style: CustomStylePreferences) {
     if (this._disposed) return;
 
-    let styleLoader =
-      this.handler.renderer?.target.querySelector("#userStyleLoader");
+    let styleLoader = this.handler.renderer?.target.querySelector("#userStyleLoader");
 
     if (!styleLoader) {
       styleLoader = document.createElement("style");
@@ -246,8 +215,7 @@ export class UserDaemon extends Process {
       this.handler.renderer?.target.append(styleLoader);
     }
 
-    styleLoader.textContent =
-      style.enabled && !this._elevating ? style.content || "" : "";
+    styleLoader.textContent = style.enabled && !this._elevating ? style.content || "" : "";
   }
 
   async commitPreferences(preferences: UserPreferences) {
@@ -286,9 +254,7 @@ export class UserDaemon extends Process {
     if (this._disposed) return;
 
     if (this.initialized) {
-      this.Log(
-        `Tried to sanitize user preferences while initialization is already complete`
-      );
+      this.Log(`Tried to sanitize user preferences while initialization is already complete`);
 
       return;
     }
@@ -314,11 +280,7 @@ export class UserDaemon extends Process {
     this.Log(`Discontinuing token`);
 
     try {
-      const response = await Axios.post(
-        `/logout`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await Axios.post(`/logout`, {}, { headers: { Authorization: `Bearer ${token}` } });
 
       return response.status === 200;
     } catch {
@@ -329,9 +291,7 @@ export class UserDaemon extends Process {
   sendNotification(data: Notification) {
     if (this._disposed) return;
 
-    this.Log(
-      `Sending notification: ${data.title} -> ${data.message.length} body bytes`
-    );
+    this.Log(`Sending notification: ${data.title} -> ${data.message.length} body bytes`);
 
     const id = `${Math.floor(Math.random() * 1e9)}`;
 
@@ -370,12 +330,7 @@ export class UserDaemon extends Process {
     this.globalDispatch.dispatch("update-notifications", [this.notifications]);
   }
 
-  themeFromUserPreferences(
-    data: UserPreferences,
-    name: string,
-    author: string,
-    version: string
-  ): UserTheme {
+  themeFromUserPreferences(data: UserPreferences, name: string, author: string, version: string): UserTheme {
     if (this._disposed) return {} as UserTheme;
 
     return {
@@ -404,12 +359,7 @@ export class UserDaemon extends Process {
     const id = `${Math.floor(Math.random() * 1e6)}`;
 
     this.preferences.update((userPreferences) => {
-      const context = this.themeFromUserPreferences(
-        userPreferences,
-        name,
-        this.username,
-        "1.0"
-      );
+      const context = this.themeFromUserPreferences(userPreferences, name, this.username, "1.0");
 
       userPreferences.userThemes[id] = context;
 
@@ -425,10 +375,7 @@ export class UserDaemon extends Process {
     const verifier = this.verifyTheme(data);
 
     if (verifier !== "themeIsValid") {
-      this.Log(
-        `Not loading invalid theme! Missing ${verifier}`,
-        LogLevel.error
-      );
+      this.Log(`Not loading invalid theme! Missing ${verifier}`, LogLevel.error);
 
       return false;
     }
@@ -483,8 +430,7 @@ export class UserDaemon extends Process {
 
     if (!currentThemeId) return data;
 
-    const retrievedThemeData =
-      BuiltinThemes[currentThemeId] || (data.userThemes || {})[currentThemeId];
+    const retrievedThemeData = BuiltinThemes[currentThemeId] || (data.userThemes || {})[currentThemeId];
 
     if (!retrievedThemeData) return data;
 
@@ -495,8 +441,7 @@ export class UserDaemon extends Process {
       retrievedThemeData.version
     );
 
-    if (JSON.stringify(theme) !== JSON.stringify(retrievedThemeData))
-      data.currentThemeId = undefined;
+    if (JSON.stringify(theme) !== JSON.stringify(retrievedThemeData)) data.currentThemeId = undefined;
 
     return data;
   }
@@ -532,18 +477,13 @@ export class UserDaemon extends Process {
     );
 
     try {
-      const result = await this.fs.uploadFiles(
-        "U:/Wallpapers",
-        "image/*",
-        false,
-        (progress) => {
-          prog.show();
-          prog.setMax(progress.max);
-          prog.setDone(progress.value);
-          prog.setWork(true);
-          prog.setWait(false);
-        }
-      );
+      const result = await this.fs.uploadFiles("U:/Wallpapers", "image/*", false, (progress) => {
+        prog.show();
+        prog.setMax(progress.max);
+        prog.setDone(progress.value);
+        prog.setWork(true);
+        prog.setWait(false);
+      });
 
       if (!result.length) {
         prog.stop();
@@ -620,25 +560,18 @@ export class UserDaemon extends Process {
       return ProfilePictures[`pfp3`];
     }
 
-    if (this.localProfilePictureCache[btoa(picture)])
-      return URL.createObjectURL(this.localProfilePictureCache[btoa(picture)]);
+    if (this.localProfilePictureCache[btoa(picture)]) return URL.createObjectURL(this.localProfilePictureCache[btoa(picture)]);
 
     const parent = await this.fs.readDir(getParentDirectory(picture));
     const contents = await this.fs.readFile(picture);
 
     if (!contents || !parent) {
-      this.Log(
-        `User profile picture '${picture}' doesn't exist on the filesystem anymore, defaulting to pfp3`,
-        LogLevel.warning
-      );
+      this.Log(`User profile picture '${picture}' doesn't exist on the filesystem anymore, defaulting to pfp3`, LogLevel.warning);
 
       return ProfilePictures[`pfp3`];
     }
 
-    const blob = arrayToBlob(
-      contents,
-      parent.files.filter((f) => picture.endsWith(f.name))[0]?.mimeType || ""
-    );
+    const blob = arrayToBlob(contents, parent.files.filter((f) => picture.endsWith(f.name))[0]?.mimeType || "");
     const blobUrl = URL.createObjectURL(blob);
 
     this.localProfilePictureCache[btoa(picture)] = blob;
@@ -671,10 +604,7 @@ export class UserDaemon extends Process {
     const wallpaperData = this.preferences().userWallpapers[id];
 
     if (!wallpaperData) {
-      this.Log(
-        `Tried to get unknown user wallpaper '${id}', defaulting to img04`,
-        LogLevel.warning
-      );
+      this.Log(`Tried to get unknown user wallpaper '${id}', defaulting to img04`, LogLevel.warning);
 
       return Wallpapers.img04;
     }
@@ -690,18 +620,12 @@ export class UserDaemon extends Process {
     const contents = await this.fs.readFile(path);
 
     if (!contents || !parent) {
-      this.Log(
-        `User wallpaper '${id}' doesn't exist on the filesystem anymore, defaulting to img04`,
-        LogLevel.warning
-      );
+      this.Log(`User wallpaper '${id}' doesn't exist on the filesystem anymore, defaulting to img04`, LogLevel.warning);
 
       return Wallpapers.img04;
     }
 
-    const blob = arrayToBlob(
-      contents,
-      parent.files.filter((f) => path.endsWith(f.name))[0]?.mimeType || ""
-    );
+    const blob = arrayToBlob(contents, parent.files.filter((f) => path.endsWith(f.name))[0]?.mimeType || "");
     const blobUrl = URL.createObjectURL(blob);
 
     this.localWallpaperCache[id] = blob;
@@ -814,10 +738,7 @@ export class UserDaemon extends Process {
     try {
       await Axios.get("/10mb");
     } catch (error) {
-      this.Log(
-        `Failed to test network speed, is the server up to date?`,
-        LogLevel.error
-      );
+      this.Log(`Failed to test network speed, is the server up to date?`, LogLevel.error);
       return -1;
     }
 
@@ -855,23 +776,13 @@ export class UserDaemon extends Process {
   async spawnApp<T>(id: string, parentPid?: number, ...args: any[]) {
     if (this._disposed) return;
 
-    return await this._spawnApp<T>(
-      id,
-      this.getCurrentDesktop(),
-      parentPid,
-      ...args
-    );
+    return await this._spawnApp<T>(id, this.getCurrentDesktop(), parentPid, ...args);
   }
 
   async spawnOverlay<T>(id: string, parentPid?: number, ...args: any[]) {
     if (this._disposed) return;
 
-    return await this._spawnOverlay<T>(
-      id,
-      this.getCurrentDesktop(),
-      parentPid,
-      ...args
-    );
+    return await this._spawnOverlay<T>(id, this.getCurrentDesktop(), parentPid, ...args);
   }
 
   async _spawnApp<T>(
@@ -908,9 +819,7 @@ export class UserDaemon extends Process {
       if (!elevated) return;
     }
 
-    const shellDispatch = this.handler.ConnectDispatch(
-      +this.env.get("shell_pid")
-    );
+    const shellDispatch = this.handler.ConnectDispatch(+this.env.get("shell_pid"));
 
     if (shellDispatch) {
       shellDispatch?.dispatch("close-start-menu");
@@ -949,10 +858,7 @@ export class UserDaemon extends Process {
     this.Log(`SPAWNING OVERLAY APP ${id}`);
 
     if (app.thirdParty) {
-      this.Log(
-        "Can't spawn a third party app as an overlay: not in our control",
-        LogLevel.error
-      );
+      this.Log("Can't spawn a third party app as an overlay: not in our control", LogLevel.error);
 
       return;
     }
@@ -1173,25 +1079,11 @@ export class UserDaemon extends Process {
     this.setAppRendererClasses(this.preferences());
 
     if (shellPid) {
-      const proc = await this._spawnOverlay(
-        "SecureContext",
-        undefined,
-        +shellPid,
-        id,
-        key,
-        data
-      );
+      const proc = await this._spawnOverlay("SecureContext", undefined, +shellPid, id, key, data);
 
       if (!proc) return false;
     } else {
-      const proc = await this._spawnApp(
-        "SecureContext",
-        undefined,
-        this.pid,
-        id,
-        key,
-        data
-      );
+      const proc = await this._spawnApp("SecureContext", undefined, this.pid, id, key, data);
 
       if (!proc) return false;
     }
@@ -1239,11 +1131,9 @@ export class UserDaemon extends Process {
     if (!elevated) return false;
 
     try {
-      const response = await Axios.patch(
-        "/user/rename",
-        toForm({ newUsername }),
-        { headers: { Authorization: `Bearer ${this.token}` } }
-      );
+      const response = await Axios.patch("/user/rename", toForm({ newUsername }), {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
 
       if (response.status !== 200) return false;
 
@@ -1277,11 +1167,9 @@ export class UserDaemon extends Process {
     if (!elevated) return false;
 
     try {
-      const response = await Axios.post(
-        "/user/changepswd",
-        toForm({ newPassword }),
-        { headers: { Authorization: `Bearer ${this.token}` } }
-      );
+      const response = await Axios.post("/user/changepswd", toForm({ newPassword }), {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
 
       if (response.status !== 200) return false;
 
@@ -1300,9 +1188,7 @@ export class UserDaemon extends Process {
     const { desktops, index } = v.workspaces;
 
     for (const { uuid } of desktops) {
-      this.virtualDesktop
-        ?.querySelector(`[id*="${uuid}"]`)
-        ?.classList.remove("selected");
+      this.virtualDesktop?.querySelector(`[id*="${uuid}"]`)?.classList.remove("selected");
       if (!this.virtualDesktops[uuid]) this.renderVirtualDesktop(uuid);
     }
 
@@ -1316,8 +1202,7 @@ export class UserDaemon extends Process {
 
       this.virtualDesktop?.children[index]?.classList.add("selected");
 
-      if (this.virtualdesktopChangingTimeout)
-        clearTimeout(this.virtualdesktopChangingTimeout);
+      if (this.virtualdesktopChangingTimeout) clearTimeout(this.virtualdesktopChangingTimeout);
 
       this.virtualdesktopChangingTimeout = setTimeout(() => {
         this.virtualDesktop?.classList.remove("changing");
@@ -1506,17 +1391,9 @@ export class UserDaemon extends Process {
 
     const proc = this.handler.getProcess(pid);
     const destinationWorkspace = this.virtualDesktops[destination];
-    const window = document.querySelector(
-      `#appRenderer div.window[data-pid*='${pid}']`
-    );
+    const window = document.querySelector(`#appRenderer div.window[data-pid*='${pid}']`);
 
-    if (
-      !proc ||
-      !(proc instanceof AppProcess) ||
-      !destinationWorkspace ||
-      !window
-    )
-      return;
+    if (!proc || !(proc instanceof AppProcess) || !destinationWorkspace || !window) return;
 
     const currentWorkspace = proc.app.desktop;
 
@@ -1528,11 +1405,7 @@ export class UserDaemon extends Process {
       return v;
     });
 
-    if (
-      currentWorkspace &&
-      this.getCurrentDesktop()?.id === currentWorkspace &&
-      this.handler.renderer?.focusedPid() === pid
-    ) {
+    if (currentWorkspace && this.getCurrentDesktop()?.id === currentWorkspace && this.handler.renderer?.focusedPid() === pid) {
       this.switchToDesktopByUuid(destination);
     }
   }
@@ -1550,20 +1423,13 @@ export class UserDaemon extends Process {
       if (!drive) return;
 
       const notificationId = this.sendNotification({
-        title: drive.driveLetter
-          ? `${drive.label} (${drive.driveLetter}:)`
-          : drive.label,
-        message:
-          "This drive just got mounted! Click the button to view it in the file manager",
+        title: drive.driveLetter ? `${drive.label} (${drive.driveLetter}:)` : drive.label,
+        message: "This drive just got mounted! Click the button to view it in the file manager",
         buttons: [
           {
             caption: "Open Drive",
             action: () => {
-              this.spawnApp(
-                "fileManager",
-                undefined,
-                `${drive.driveLetter || drive.uuid}:/`
-              );
+              this.spawnApp("fileManager", undefined, `${drive.driveLetter || drive.uuid}:/`);
 
               if (notificationId) this.deleteNotification(notificationId);
             },
@@ -1575,10 +1441,7 @@ export class UserDaemon extends Process {
     });
   }
 
-  async FileProgress(
-    initialData: Partial<FsProgressOperation>,
-    parentPid?: number
-  ): Promise<FileProgressMutator> {
+  async FileProgress(initialData: Partial<FsProgressOperation>, parentPid?: number): Promise<FileProgressMutator> {
     const uuid = UUID();
     const progress = Store<FsProgressOperation>(
       applyDefaults(initialData, {
@@ -1606,19 +1469,11 @@ export class UserDaemon extends Process {
       shown = true;
 
       if (!parentPid) {
-        process = await this.spawnApp<FsProgressRuntime>(
-          "FsProgress",
-          0,
-          progress
-        );
+        process = await this.spawnApp<FsProgressRuntime>("FsProgress", 0, progress);
 
         if (typeof process == "string") return DummyFileProgress;
       } else {
-        process = await this.spawnOverlay<FsProgressRuntime>(
-          "FsProgress",
-          parentPid,
-          progress
-        );
+        process = await this.spawnOverlay<FsProgressRuntime>("FsProgress", parentPid, progress);
 
         if (typeof process == "string") return DummyFileProgress;
       }
@@ -1755,18 +1610,17 @@ export class UserDaemon extends Process {
     const destinationDrive = getDriveLetter(destination, true);
     const firstSourceParent = getParentDirectory(sources[0]);
 
-    const { updSub, setWait, setWork, mutErr, mutDone, show } =
-      await this.FileProgress(
-        {
-          type: "quantity",
-          max: sources.length,
-          waiting: true,
-          icon: FolderIcon,
-          caption: `Moving files to ${destinationName || destination}`,
-          subtitle: "Working...",
-        },
-        pid
-      );
+    const { updSub, setWait, setWork, mutErr, mutDone, show } = await this.FileProgress(
+      {
+        type: "quantity",
+        max: sources.length,
+        waiting: true,
+        icon: FolderIcon,
+        caption: `Moving files to ${destinationName || destination}`,
+        subtitle: "Working...",
+      },
+      pid
+    );
 
     for (const source of sources) {
       const sourceDrive = getDriveLetter(source, true);
@@ -1778,9 +1632,7 @@ export class UserDaemon extends Process {
       setWork(true);
 
       if (sourceDrive != destinationDrive) {
-        mutErr(
-          `Not moving ${source}: source and destination drives are different`
-        );
+        mutErr(`Not moving ${source}: source and destination drives are different`);
 
         continue;
       }
@@ -1792,8 +1644,7 @@ export class UserDaemon extends Process {
     }
 
     this.globalDispatch.dispatch("fs-flush-folder", firstSourceParent);
-    if (firstSourceParent !== destination)
-      this.globalDispatch.dispatch("fs-flush-folder", destination);
+    if (firstSourceParent !== destination) this.globalDispatch.dispatch("fs-flush-folder", destination);
   }
 
   async copyMultiple(sources: string[], destination: string, pid: number) {
@@ -1802,18 +1653,17 @@ export class UserDaemon extends Process {
     const destinationName = getDirectoryName(destination);
     const destinationDrive = getDriveLetter(destination, true);
 
-    const { updSub, setWait, setWork, mutErr, mutDone, show } =
-      await this.FileProgress(
-        {
-          type: "quantity",
-          max: sources.length,
-          waiting: true,
-          icon: FolderIcon,
-          caption: `Copying files to ${destinationName || destination}`,
-          subtitle: "Working...",
-        },
-        pid
-      );
+    const { updSub, setWait, setWork, mutErr, mutDone, show } = await this.FileProgress(
+      {
+        type: "quantity",
+        max: sources.length,
+        waiting: true,
+        icon: FolderIcon,
+        caption: `Copying files to ${destinationName || destination}`,
+        subtitle: "Working...",
+      },
+      pid
+    );
 
     for (const source of sources) {
       const sourceDrive = getDriveLetter(source, true);
@@ -1824,9 +1674,7 @@ export class UserDaemon extends Process {
       setWork(true);
 
       if (sourceDrive != destinationDrive) {
-        mutErr(
-          `Not copying ${source}: source and destination drives are different`
-        );
+        mutErr(`Not copying ${source}: source and destination drives are different`);
         mutDone(+1);
 
         continue;
@@ -1853,10 +1701,7 @@ export class UserDaemon extends Process {
     const result: (App | ThirdPartyApp)[] = [];
 
     for (const app of apps!) {
-      if (
-        (app.opens?.extensions || [])?.includes(extension) ||
-        (app.opens?.mimeTypes || [])?.join("||").includes(mimeType)
-      ) {
+      if ((app.opens?.extensions || [])?.includes(extension) || (app.opens?.mimeTypes || [])?.join("||").includes(mimeType)) {
         result.push(app);
       }
     }
@@ -1891,30 +1736,20 @@ export class UserDaemon extends Process {
     if (!this.mimeIcons[icon]) this.mimeIcons[icon] = [extension];
   }
 
-  async LoadSaveDialog(
-    data: Omit<LoadSaveDialogData, "returnId">
-  ): Promise<string[] | [undefined]> {
+  async LoadSaveDialog(data: Omit<LoadSaveDialogData, "returnId">): Promise<string[] | [undefined]> {
     const uuid = UUID();
 
     this.Log(`Spawning LoadSaveDialog with UUID ${uuid}`);
 
-    await this.spawnOverlay(
-      "fileManager",
-      +this.env.get("shell_pid"),
-      data.startDir || "U:/",
-      {
-        ...data,
-        returnId: uuid,
-      }
-    );
+    await this.spawnOverlay("fileManager", +this.env.get("shell_pid"), data.startDir || "U:/", {
+      ...data,
+      returnId: uuid,
+    });
 
     return new Promise<string[] | [undefined]>(async (r) => {
-      this.globalDispatch.subscribe<[string, string[] | [undefined]]>(
-        "ls-confirm",
-        ([id, paths]) => {
-          if (id === uuid) r(paths);
-        }
-      );
+      this.globalDispatch.subscribe<[string, string[] | [undefined]]>("ls-confirm", ([id, paths]) => {
+        if (id === uuid) r(paths);
+      });
       this.globalDispatch.subscribe("ls-cancel", ([id]) => {
         if (id === uuid) r([undefined]);
       });
@@ -1975,11 +1810,7 @@ export class UserDaemon extends Process {
       case "file":
         return await this.openFile(shortcut.target);
       case "folder":
-        return await this.spawnApp(
-          "fileManager",
-          +this.env.get("shell_pid"),
-          shortcut.target
-        );
+        return await this.spawnApp("fileManager", +this.env.get("shell_pid"), shortcut.target);
       default:
         MessageBox(
           {
@@ -1993,5 +1824,13 @@ export class UserDaemon extends Process {
           true
         );
     }
+  }
+
+  async createShortcut(data: ArcShortcut, path: string) {
+    if (!getIconPath(data.icon)) return false;
+
+    const string = JSON.stringify(data, null, 2);
+
+    await this.fs.writeFile(path, textToBlob(string, "application/json"));
   }
 }
