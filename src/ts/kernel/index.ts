@@ -68,12 +68,6 @@ export class WaveKernel {
   }
 
   async _init() {
-    if (navigator.userAgent.toLowerCase().includes("firefox")) {
-      this.Log(`KERNEL`, `Firefox? nahhhh.... Use a competent browser instead. :(`);
-
-      return;
-    }
-
     this.Log(`KERNEL`, `Called _init`);
 
     // KERNEL AREA STARTS HERE

@@ -27,6 +27,11 @@ export class InitProcess extends Process {
     if (!state) throw new Error("State handler failed to spawn");
 
     kernel.state = state;
+
+    if (navigator.userAgent.toLowerCase().includes("firefox")) {
+      throw new Error("Firefox");
+    }
+
     await kernel.state?.loadState(connected ? "boot" : "serverdown", {}, true);
   }
 }
