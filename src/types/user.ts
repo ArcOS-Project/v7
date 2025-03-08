@@ -125,13 +125,7 @@ export interface ApplicationPreferences {
 }
 
 export type ScopedAppData = {
-  [key: string]:
-    | number
-    | boolean
-    | string
-    | object
-    | Array<any>
-    | Record<string, any>;
+  [key: string]: any;
 };
 
 export type WallpaperGetters = [

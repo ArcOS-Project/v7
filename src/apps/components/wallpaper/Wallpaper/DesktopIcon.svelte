@@ -41,11 +41,9 @@
   const { userPreferences, selected, orphaned } = process;
 
   async function updatePos() {
-    if (!$userPreferences.appPreferences.desktopIcons)
-      $userPreferences.appPreferences.desktopIcons = {};
-    const pos = $userPreferences.appPreferences.desktopIcons[
-      `icon$${identifier}`
-    ] as {
+    if (!$userPreferences.appPreferences.desktopIcons) $userPreferences.appPreferences.desktopIcons = {};
+
+    const pos = $userPreferences.appPreferences.desktopIcons[`icon$${identifier}`] as {
       x: number;
       y: number;
     };
@@ -66,12 +64,16 @@
 
     const { x, y } = target.getBoundingClientRect();
 
-    if (!$userPreferences.appPreferences.desktopIcons)
-      $userPreferences.appPreferences.desktopIcons = {};
-    $userPreferences.appPreferences.desktopIcons[`icon$${identifier}`] = {
-      x,
-      y,
-    };
+    if (!$userPreferences.appPreferences.desktopIcons) $userPreferences.appPreferences.desktopIcons = {};
+
+    if (!Object.values($userPreferences.appPreferences.desktopIcons).filter((pos) => pos.x === x && pos.y === y).length) {
+      $userPreferences.appPreferences.desktopIcons[`icon$${identifier}`] = {
+        x,
+        y,
+      };
+    } else {
+      updatePos();
+    }
 
     $moving = false;
   }
@@ -80,9 +82,7 @@
     $moving = true;
 
     const { clientX, clientY } = e.detail.event;
-    const { width, height } = (
-      e.target as HTMLButtonElement
-    ).getBoundingClientRect();
+    const { width, height } = (e.target as HTMLButtonElement).getBoundingClientRect();
 
     movingX = clientX - ($userPreferences.desktop.noIconGrid ? width / 2 : 0);
     movingY = clientY - ($userPreferences.desktop.noIconGrid ? height / 2 : 0);
@@ -125,11 +125,7 @@
   </div>
   <p>{caption}</p>
 </button>
-<div
-  class="ghost"
-  style="--top: {movingY}px; --left: {movingX}px;"
-  class:moving={$moving}
->
+<div class="ghost" style="--top: {movingY}px; --left: {movingX}px;" class:moving={$moving}>
   <div class="img">
     <img src={icon} alt="" />
     {#if cornerIcon}
