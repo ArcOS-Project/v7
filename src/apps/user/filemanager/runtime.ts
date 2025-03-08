@@ -95,10 +95,11 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   async render({ path }: RenderArgs) {
-    this.updateDrives();
+    const startTime = performance.now();
 
     await this.navigate(path || "U:/");
     await this.updateRootFolders();
+    await this.updateDrives();
 
     this.globalDispatch.subscribe("fs-umount-drive", () => this.updateDrives());
     this.globalDispatch.subscribe("fs-mount-drive", () => this.updateDrives());
@@ -116,6 +117,9 @@ export class FileManagerRuntime extends AppProcess {
     this.acceleratorStore.push(...FileManagerAccelerators(this));
 
     this.starting.set(false);
+    const startDuration = performance.now() - startTime;
+
+    this.Log(`Starting file manager took ${startDuration}ms`);
   }
 
   async updateDrives() {
