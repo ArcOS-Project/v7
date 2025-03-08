@@ -186,7 +186,7 @@ export class UserDaemon extends Process {
 
     const renderer = this.handler.renderer?.target;
 
-    if (!renderer) throw new Error("UserDaemon: Tried to set renderer classes without accent renderer");
+    if (!renderer) throw new Error("UserDaemon: Tried to set renderer classes without renderer");
 
     const accent = v.desktop.accent;
     const theme = v.desktop.theme;
