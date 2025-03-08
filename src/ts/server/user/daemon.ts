@@ -1754,7 +1754,6 @@ export class UserDaemon extends Process {
     const destinationName = getDirectoryName(destination);
     const destinationDrive = getDriveLetter(destination, true);
     const firstSourceParent = getParentDirectory(sources[0]);
-    const destinationParent = getParentDirectory(destination);
 
     const { updSub, setWait, setWork, mutErr, mutDone, show } =
       await this.FileProgress(
@@ -1793,8 +1792,8 @@ export class UserDaemon extends Process {
     }
 
     this.globalDispatch.dispatch("fs-flush-folder", firstSourceParent);
-    if (firstSourceParent !== destinationParent)
-      this.globalDispatch.dispatch("fs-flush-folder", destinationParent);
+    if (firstSourceParent !== destination)
+      this.globalDispatch.dispatch("fs-flush-folder", destination);
   }
 
   async copyMultiple(sources: string[], destination: string, pid: number) {
@@ -1802,7 +1801,6 @@ export class UserDaemon extends Process {
 
     const destinationName = getDirectoryName(destination);
     const destinationDrive = getDriveLetter(destination, true);
-    const destinationParent = getParentDirectory(destination);
 
     const { updSub, setWait, setWork, mutErr, mutDone, show } =
       await this.FileProgress(
@@ -1841,10 +1839,12 @@ export class UserDaemon extends Process {
       await Sleep(200); // prevent rate limit
     }
 
-    this.globalDispatch.dispatch("fs-flush-folder", destinationParent);
+    this.globalDispatch.dispatch("fs-flush-folder", destination);
   }
 
   async findAppToOpenFile(path: string) {
+    this.Log(`Finding an application to open ${path}`);
+
     const apps = await this.appStore?.get();
 
     const split = path.split(".");
@@ -1879,6 +1879,8 @@ export class UserDaemon extends Process {
   }
 
   loadMimeIcon(extension: string, icon: string) {
+    this.Log(`Loading mime icon for extension ${extension}`);
+
     if (this.getMimeIconByExtension(icon)) return;
 
     if (this.mimeIcons[icon] && !this.mimeIcons[icon].includes(extension)) {
@@ -1893,6 +1895,8 @@ export class UserDaemon extends Process {
     data: Omit<LoadSaveDialogData, "returnId">
   ): Promise<string[] | [undefined]> {
     const uuid = UUID();
+
+    this.Log(`Spawning LoadSaveDialog with UUID ${uuid}`);
 
     await this.spawnOverlay(
       "fileManager",
@@ -1918,6 +1922,8 @@ export class UserDaemon extends Process {
   }
 
   async openFile(path: string, shortcut?: ArcShortcut): Promise<any> {
+    this.Log(`Opening file "${path}" (${shortcut ? "Shortcut" : "File"})`);
+
     if (this._disposed) return;
 
     if (shortcut) return await this.handleShortcut(path, shortcut);
@@ -1953,6 +1959,8 @@ export class UserDaemon extends Process {
   }
 
   async openWith(path: string) {
+    this.Log(`Opening OpenWith for "${path}"`);
+
     if (this._disposed) return;
     await this.spawnOverlay("OpenWith", +this.env.get("shell_pid"), path);
   }

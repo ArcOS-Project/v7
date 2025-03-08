@@ -107,6 +107,11 @@ div.desktop-wallpaper > div.wallpaper:not(.show) {
 
 #wallpaper div.desktop-icons button.selected {
   background-color: var(--accent-transparent);
+  min-height: fit-content !important;
+}
+
+#wallpaper div.desktop-icons button.selected p {
+  min-height: fit-content !important;
 }
 
 #wallpaper div.desktop-icons button.moving {

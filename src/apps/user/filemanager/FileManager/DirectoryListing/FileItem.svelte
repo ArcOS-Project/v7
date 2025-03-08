@@ -25,7 +25,6 @@
   let shortcut: ArcShortcut | undefined = $shortcuts[file.name];
 
   onMount(() => {
-    console.log($shortcuts[file.name]);
     dayjs.extend(relativeTime);
     dayjs.extend(updateLocale);
     dayjs.updateLocale("en", RelativeTimeMod);

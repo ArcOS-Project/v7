@@ -38,9 +38,9 @@
   let movingX = $state<number>();
   let movingY = $state<number>();
 
-  const { userPreferences } = process;
+  const { userPreferences, selected, orphaned } = process;
 
-  function updatePos() {
+  async function updatePos() {
     if (!$userPreferences.appPreferences.desktopIcons)
       $userPreferences.appPreferences.desktopIcons = {};
     const pos = $userPreferences.appPreferences.desktopIcons[
@@ -50,7 +50,9 @@
       y: number;
     };
 
-    position = pos || { x: 0, y: 0 };
+    if ($orphaned.includes(`icon$${identifier}`)) return;
+
+    position = pos || (await process.findFreeDesktopIconPosition(identifier));
   }
 
   async function startDrag() {
@@ -64,7 +66,8 @@
 
     const { x, y } = target.getBoundingClientRect();
 
-    $userPreferences.appPreferences.desktopIcons ||= {};
+    if (!$userPreferences.appPreferences.desktopIcons)
+      $userPreferences.appPreferences.desktopIcons = {};
     $userPreferences.appPreferences.desktopIcons[`icon$${identifier}`] = {
       x,
       y,
@@ -94,10 +97,12 @@
   class="icon {className}"
   class:moving={$moving}
   class:no-grid={$userPreferences.desktop.noIconGrid}
+  class:selected={$selected === identifier}
   title={alt}
   data-contextmenu={contextMenu}
   use:contextProps={props}
   on:dblclick={() => action()}
+  on:click={() => ($selected = identifier)}
   draggable={$moving}
   use:draggable={{
     grid: $userPreferences.desktop.noIconGrid ? undefined : [80, 85],

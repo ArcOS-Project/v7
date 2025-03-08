@@ -374,7 +374,12 @@ export class Filesystem extends KernelModule {
             }
 
             const path = join(target, file.name);
-            const written = await this.writeFile(path, content, onProgress);
+            const written = await this.writeFile(
+              path,
+              content,
+              onProgress,
+              false
+            );
 
             if (!written) {
               throw new Error(`Failed to write file "${path}"`);
@@ -389,6 +394,7 @@ export class Filesystem extends KernelModule {
             await Sleep(100); // prevent rate limit
           }
 
+          this.dispatch.dispatch("fs-flush-folder", target);
           resolve(result);
         } catch (e) {
           return reject(e);

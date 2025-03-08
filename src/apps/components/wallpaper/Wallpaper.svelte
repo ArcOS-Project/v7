@@ -7,7 +7,7 @@
 
   const { process }: AppComponentProps<WallpaperRuntime> = $props();
   const { Wallpaper } = process.userDaemon || {};
-  const { contents } = process;
+  const { contents, iconsElement } = process;
 
   // TODO: desktop icons
 </script>
@@ -17,7 +17,7 @@
     class="wallpaper show"
     style="--src: url('{$Wallpaper ? $Wallpaper.url : Wallpapers.img0.url}');"
   ></div>
-  <div class="desktop-icons">
+  <div class="desktop-icons" bind:this={$iconsElement}>
     {#if $contents}
       {#each $contents.dirs as folder, i (`${i}-${folder.itemId}-${folder.dateCreated}-${folder.dateModified}`)}
         <Folder {folder} {process} />
