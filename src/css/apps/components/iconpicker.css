@@ -1,0 +1,84 @@
+#IconPicker > div.body {
+  padding: 15px;
+}
+
+/** TEMP */
+#IconPicker > div.body img {
+  height: 32px;
+}
+
+#IconPicker > div.body div.header {
+  height: 55px;
+  margin-bottom: 15px;
+}
+
+#IconPicker > div.body div.selector {
+  padding: 15px;
+  border: var(--win-border);
+  border-radius: 10px;
+  height: calc(100% - 30px - 55px - 51px);
+  overflow-y: auto;
+  margin-bottom: 15px;
+}
+
+#IconPicker > div.body div.selector div.icons {
+  display: grid;
+
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, 48px);
+}
+
+#IconPicker > div.body div.selector section h1 {
+  margin-bottom: 5px;
+  opacity: 0.5;
+}
+
+#IconPicker > div.body div.selector section {
+  margin-bottom: 20px;
+}
+
+#IconPicker > div.body div.selector div.icons button {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#IconPicker > div.body div.selector div.icons button.selected {
+  scale: 1.25;
+  background-color: var(--accent-light-transparent);
+}
+
+#IconPicker > div.body div.header h1 {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+#IconPicker > div.body div.header div.what {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#IconPicker > div.body div.header div.what > img {
+  height: 24px;
+}
+#IconPicker > div.body div.header div.what > span {
+  opacity: 0.5;
+}
+
+#IconPicker > div.body div.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: var(--button-glass-bg);
+  height: 51px;
+}
+
+#IconPicker > div.body div.actions > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

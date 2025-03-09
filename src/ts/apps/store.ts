@@ -1,5 +1,6 @@
 import { AppInfoApp } from "$apps/components/appinfo/metadata";
 import { FsProgressApp } from "$apps/components/fsprogress/metadata";
+import { IconPickerApp } from "$apps/components/iconpicker/metadata";
 import { ItemInfoApp } from "$apps/components/iteminfo/metadata";
 import { MessageBoxApp } from "$apps/components/messagebox/metadata";
 import { OpenWithApp } from "$apps/components/openwith/metadata";
@@ -32,6 +33,7 @@ export const BuiltinApps: AppStorage = [
   MediaPlayerApp,
   ProcessesApp,
   LoggingApp,
+  IconPickerApp,
 ];
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];

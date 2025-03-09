@@ -42,6 +42,7 @@ import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultMimeIcons } from "./store";
+import type { IconPickerData } from "$apps/components/iconpicker/types";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -1874,5 +1875,27 @@ export class UserDaemon extends Process {
         timeout: 6000,
       });
     }
+  }
+
+  async IconPicker(data: Omit<IconPickerData, "returnId">) {
+    if (this._disposed) return;
+
+    this.Log(`Opening OpenWith for ${data.forWhat}`);
+
+    const uuid = UUID();
+
+    await this.spawnOverlay("IconPicker", +this.env.get("shell_pid"), {
+      ...data,
+      returnId: uuid,
+    });
+
+    return new Promise<string>(async (r) => {
+      this.globalDispatch.subscribe<[string, string]>("ip-confirm", ([id, icon]) => {
+        if (id === uuid) r(icon);
+      });
+      this.globalDispatch.subscribe("ip-cancel", ([id]) => {
+        if (id === uuid) r(data.defaultIcon);
+      });
+    });
   }
 }

@@ -4,10 +4,12 @@ import * as Filesystem from "./filesystem";
 import * as General from "./general";
 import * as Mimetypes from "./mime";
 import * as Power from "./power";
+import * as Branding from "./branding";
 import * as Status from "./status";
 
 export function getAllImages(): Record<string, string> {
   return {
+    ...Branding,
     ...General,
     ...Filesystem,
     ...Power,
@@ -18,8 +20,9 @@ export function getAllImages(): Record<string, string> {
   };
 }
 
-export function getGroupedIcons() {
+export function getGroupedIcons(): Record<string, Record<string, string>> {
   return {
+    Branding,
     Filesystem,
     Mimetypes,
     General,
