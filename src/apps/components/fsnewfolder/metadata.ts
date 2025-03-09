@@ -41,5 +41,6 @@ export const FsNewFolderApp: App = {
     component: NewFolder as any,
   },
   glass: true,
+  hidden: true,
   id: "FsNewFolder",
 };

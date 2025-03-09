@@ -41,5 +41,6 @@ export const FsRenameItemApp: App = {
     component: RenameItem as any,
   },
   glass: true,
+  hidden: true,
   id: "FsRenameItem",
 };

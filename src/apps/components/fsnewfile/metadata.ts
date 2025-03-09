@@ -41,5 +41,6 @@ export const FsNewFileApp: App = {
     component: NewFile as any,
   },
   glass: true,
+  hidden: true,
   id: "FsNewFile",
 };
