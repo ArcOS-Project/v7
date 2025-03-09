@@ -30,6 +30,7 @@ export interface UserPreferences {
   pinnedApps: string[];
   disabledApps: string[];
   workspaces: WorkspacesOptions;
+  globalSettings: Record<string, any>;
 }
 
 export interface WorkspacesOptions {

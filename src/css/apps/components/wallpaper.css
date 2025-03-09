@@ -117,8 +117,8 @@ div.desktop-wallpaper > div.wallpaper:not(.show) {
 #wallpaper div.desktop-icons button.moving {
   transition: none !important;
   pointer-events: none;
-  background-color: var(--accent-transparent);
-  opacity: 0.5;
+  background-color: var(--accent);
+  opacity: 0.3;
 }
 
 #wallpaper div.desktop-icons button.moving * {

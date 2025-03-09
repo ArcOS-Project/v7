@@ -159,6 +159,8 @@ export class ShellRuntime extends AppProcess {
     this.startMenuOpened.subscribe((v) => {
       if (!v) this.searchQuery.set("");
     });
+
+    this.userDaemon?.checkReducedMotion();
   }
 
   async getWeather(): Promise<WeatherInformation> {

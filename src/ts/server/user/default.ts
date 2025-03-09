@@ -76,6 +76,7 @@ export const DefaultUserPreferences: UserPreferences = {
     desktops: [],
     index: 0,
   },
+  globalSettings: {},
 };
 
 export const DefaultUserInfo: UserInfo = {
