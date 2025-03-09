@@ -8,6 +8,7 @@ export { default as CompressMimeIcon } from "$assets/mimetypes/application-x-com
 export { default as JavascriptMimeIcon } from "$assets/mimetypes/application-x-javascript.svg";
 export { default as XmlMimeIcon } from "$assets/mimetypes/application-xml.svg";
 export { default as PlaylistMimeIcon } from "$assets/mimetypes/arcos-playlist.svg";
+export { default as ShortcutMimeIcon } from "$assets/mimetypes/arcos-shortcut.svg";
 export { default as ArcTermMimeIcon } from "$assets/mimetypes/arcterm-conf.svg";
 export { default as AudioMimeIcon } from "$assets/mimetypes/audio-x-generic.svg";
 export { default as ImageMimeIcon } from "$assets/mimetypes/image-x-generic.svg";

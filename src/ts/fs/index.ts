@@ -367,11 +367,7 @@ export class Filesystem extends KernelModule {
   }
 
   defaultProgress(d: FilesystemProgress) {
-    this.Log(
-      `Got filesystem progress: ${d.type}: ${d.type === "size" ? formatBytes(d.value) : d.value}/${
-        d.type === "size" ? formatBytes(d.max) : d.max
-      } (${d.what})`
-    );
+    /** NOOP */
   }
 
   async lockFile(path: string, pid: number) {

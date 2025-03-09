@@ -10,6 +10,7 @@ import {
   MarkdownMimeIcon,
   PdfMimeIcon,
   PlaylistMimeIcon,
+  ShortcutMimeIcon,
   SvgMimeIcon,
   TextMimeIcon,
   VideoMimeIcon,
@@ -239,4 +240,5 @@ export const DefaultMimeIcons: Record<string, string[]> = {
   [JavascriptMimeIcon]: [".js", ".ts", ".d.ts", ".mjs"],
   [XmlMimeIcon]: [".xml"],
   [PlaylistMimeIcon]: [".arcpl"],
+  [ShortcutMimeIcon]: [".arclnk"],
 };

@@ -38,3 +38,9 @@ export function getIconPath(id: string) {
 
   return icons[id] || General.ComponentIcon;
 }
+
+export function iconIdFromPath(path: string) {
+  const icons = Object.entries(getAllImages());
+
+  return icons.filter(([_, p]) => path === p).map(([i]) => i)[0];
+}

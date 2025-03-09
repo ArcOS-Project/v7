@@ -6,6 +6,7 @@ import { MessageBoxApp } from "$apps/components/messagebox/metadata";
 import { OpenWithApp } from "$apps/components/openwith/metadata";
 import { SecureContextApp } from "$apps/components/securecontext/metadata";
 import { ArcShellApp } from "$apps/components/shell/metadata";
+import { ShortcutPropertiesApp } from "$apps/components/shortcutproperties/metadata";
 import { WallpaperApp } from "$apps/components/wallpaper/metadata";
 import { FileManagerApp } from "$apps/user/filemanager/metadata";
 import { HexEditorApp } from "$apps/user/hexedit/metadata";
@@ -18,22 +19,23 @@ import type { AppKeyCombinations } from "$types/accelerator";
 import type { AppStorage } from "$types/app";
 
 export const BuiltinApps: AppStorage = [
-  MessageBoxApp,
-  SecureContextApp,
-  WallpaperApp,
-  ArcShellApp,
-  SystemSettings,
-  TestApp,
   AppInfoApp,
-  FileManagerApp,
   FsProgressApp,
-  HexEditorApp,
-  OpenWithApp,
+  IconPickerApp,
   ItemInfoApp,
+  MessageBoxApp,
+  OpenWithApp,
+  SecureContextApp,
+  ArcShellApp,
+  ShortcutPropertiesApp,
+  WallpaperApp,
+  FileManagerApp,
+  HexEditorApp,
+  LoggingApp,
   MediaPlayerApp,
   ProcessesApp,
-  LoggingApp,
-  IconPickerApp,
+  SystemSettings,
+  TestApp,
 ];
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];

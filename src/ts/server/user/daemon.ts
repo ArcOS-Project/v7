@@ -1768,7 +1768,7 @@ export class UserDaemon extends Process {
     const apps = await this.findAppToOpenFile(path)!;
 
     if (!apps.length) {
-      MessageBox(
+      await MessageBox(
         {
           title: `Unknown file type`,
           message: `ArcOS doesn't have an app that can open '${filename}'. Click <b>Open With</b> to pick from a list of applications.`,
@@ -1832,7 +1832,7 @@ export class UserDaemon extends Process {
 
     const string = JSON.stringify(data, null, 2);
 
-    await this.fs.writeFile(path, textToBlob(string, "application/json"));
+    return await this.fs.writeFile(path, textToBlob(string, "application/json"));
   }
 
   getGlobalSetting(key: string) {
