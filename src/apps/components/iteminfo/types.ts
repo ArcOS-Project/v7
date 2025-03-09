@@ -14,5 +14,6 @@ export interface ItemInfo {
     driveId?: string;
   };
   isFolder: boolean;
+  isShortcut: boolean;
   name: string;
 }

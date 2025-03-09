@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { arrayToText } from "$ts/fs/convert";
 import { getDirectoryName, getParentDirectory } from "$ts/fs/util";
 import { ErrorIcon } from "$ts/images/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
@@ -7,11 +8,13 @@ import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import type { FileEntry, FolderEntry } from "$types/fs";
 import type { RenderArgs } from "$types/process";
+import type { ArcShortcut } from "$types/shortcut";
 import { RenameItemApp } from "./renameitem/metadata";
 import type { ItemInfo } from "./types";
 
 export class ItemInfoRuntime extends AppProcess {
   info = Store<ItemInfo>();
+  shortcut = Store<ArcShortcut>();
 
   constructor(
     handler: ProcessHandler,
@@ -30,7 +33,7 @@ export class ItemInfoRuntime extends AppProcess {
     renameItem: RenameItemApp,
   };
 
-  render({ path, file }: RenderArgs) {
+  async render({ path, file }: RenderArgs) {
     file = file as FileEntry | FolderEntry;
 
     const drive = this.fs.getDriveByPath(path);
@@ -39,6 +42,7 @@ export class ItemInfoRuntime extends AppProcess {
     const parent = getDirectoryName(getParentDirectory(path));
     const split = path.split(".");
     const extension = file.mimeType ? split[split.length - 1] : undefined;
+    const isShortcut = file?.name?.endsWith(".arclnk");
 
     this.info.set({
       meta: {
@@ -56,53 +60,25 @@ export class ItemInfoRuntime extends AppProcess {
         extension,
       },
       isFolder: !file.mimeType,
+      isShortcut,
       name,
     });
+
+    if (isShortcut) {
+      this.shortcut.set(JSON.parse(arrayToText((await this.fs.readFile(this.info().location.fullPath))!)));
+    }
   }
 
   async open() {
     const info = this.info();
+    await this.closeWindow();
 
     if (info.isFolder) {
       await this.spawnApp("fileManager", +this.env.get("shell_pid"), info.location.fullPath);
     } else {
       const path = info.location.fullPath;
-      const filename = getDirectoryName(path);
-      const apps = await this.userDaemon?.findAppToOpenFile(path)!;
 
-      if (!apps.length) {
-        MessageBox(
-          {
-            title: `Unknown file type`,
-            message: `ArcOS doesn't have an app that can open '${filename}'. Click <b>Open With</b> to pick from a list of applications.`,
-            buttons: [
-              {
-                caption: "Open With",
-                action: async () => {
-                  await this.openWith(path);
-                  this.closeWindow();
-                },
-              },
-              {
-                caption: "Okay",
-                action: () => {
-                  this.closeWindow();
-                },
-                suggested: true,
-              },
-            ],
-            sound: "arcos.dialog.warning",
-            image: ErrorIcon,
-          },
-          this.pid,
-          true
-        );
-
-        return;
-      }
-
-      await this.closeWindow();
-      return await this.spawnApp(apps[0].id, this.pid, path);
+      this.userDaemon?.openFile(path, this.shortcut());
     }
   }
 

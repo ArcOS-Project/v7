@@ -10,6 +10,13 @@
 
 <InfoBlock className="actions">
   <InfoRow>
+    {#if $info.isShortcut}
+      <button
+        onclick={() => process.spawnOverlayApp("ShortcutProperties", process.pid, $info.location.fullPath, process.shortcut())}
+      >
+        Edit Shortcut...
+      </button>
+    {/if}
     <button onclick={() => process.open()}>Open</button>
     <button class="suggested" onclick={() => process.closeWindow()}> Okay </button>
   </InfoRow>
