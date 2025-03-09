@@ -22,6 +22,6 @@
   <InfoRow>
     <p class="id">{appId}</p>
     <button onclick={() => process.killAll()} {disabled}>Kill all</button>
-    <button class="suggested" onclick={() => process.killSelf()}>Close</button>
+    <button class="suggested" onclick={() => process.closeWindow()}>Close</button>
   </InfoRow>
 </InfoBlock>
