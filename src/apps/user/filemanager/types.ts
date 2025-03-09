@@ -25,4 +25,5 @@ export interface LoadSaveDialogData {
   returnId: string;
   saveName?: string;
   multiple?: boolean;
+  folder?: boolean;
 }

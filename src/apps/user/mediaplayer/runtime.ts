@@ -1,8 +1,9 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { arrayToText, textToBlob } from "$ts/fs/convert";
-import { getDirectoryName, getParentDirectory } from "$ts/fs/util";
+import { getDirectoryName, getParentDirectory, join } from "$ts/fs/util";
 import { MediaPlayerIcon } from "$ts/images/apps";
+import { FolderIcon } from "$ts/images/filesystem";
 import { VideoMimeIcon } from "$ts/images/mime";
 import type { ProcessHandler } from "$ts/process/handler";
 import { DefaultMimeIcons } from "$ts/server/user/store";
@@ -22,6 +23,7 @@ export class MediaPlayerRuntime extends AppProcess {
   public State = Store<PlayerState>({ paused: true, current: 0, duration: 0 });
   public isVideo = Store<boolean>(false);
   public Loaded = Store<boolean>(false);
+  public playlistPath = Store<string>();
 
   override contextMenu: AppContextMenu = {
     player: [
@@ -318,6 +320,7 @@ export class MediaPlayerRuntime extends AppProcess {
       this.queue.set(queue);
       this.queueIndex.set(0);
       if (!queueIndex) this.handleSongChange(0);
+      this.playlistPath.set(path);
     } catch (e) {
       MessageBox(
         {
@@ -331,6 +334,29 @@ export class MediaPlayerRuntime extends AppProcess {
         true
       );
     }
+  }
+
+  async createPlaylistShortcut() {
+    const paths = await this.userDaemon?.LoadSaveDialog({
+      title: "Pick where to create the shortcut",
+      icon: FolderIcon,
+      folder: true,
+      startDir: `U:/Desktop`,
+    });
+
+    if (!paths?.length) return;
+
+    const filename = getDirectoryName(this.playlistPath());
+
+    this.userDaemon?.createShortcut(
+      {
+        type: "file",
+        target: this.playlistPath(),
+        icon: "PlaylistMimeIcon",
+        name: `${filename} - Shortcut`,
+      },
+      join(paths[0]!, `${filename.toLowerCase().split(".")[0]}.arclnk`)
+    );
   }
 
   async failedToPlay() {

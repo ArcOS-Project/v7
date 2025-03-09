@@ -40,6 +40,8 @@
   });
 
   function onclick(e: MouseEvent) {
+    if (process.loadSave?.folder) return;
+
     process.updateSelection(e, thisPath);
 
     if (process.loadSave?.isSave) {

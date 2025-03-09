@@ -30,7 +30,7 @@
   }
 
   function onclick(e: MouseEvent) {
-    if (process.loadSave) return;
+    if (process.loadSave && !process.loadSave.folder) return;
 
     process.updateSelection(e, thisPath);
   }

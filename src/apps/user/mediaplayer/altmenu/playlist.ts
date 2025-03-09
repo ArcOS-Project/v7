@@ -15,6 +15,13 @@ export function PlaylistAltMenu(runtime: MediaPlayerRuntime): ContextMenuItem {
         icon: "save",
         action: () => runtime.savePlaylist(),
       },
+      { sep: true },
+      {
+        caption: "Create shortcut...",
+        icon: "arrow-up-right",
+        action: () => runtime.createPlaylistShortcut(),
+        disabled: () => !runtime.playlistPath(),
+      },
     ],
   };
 }
