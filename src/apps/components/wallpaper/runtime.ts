@@ -3,10 +3,11 @@ import { MessageBox } from "$ts/dialog";
 import { ErrorIcon } from "$ts/images/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { DirectoryReadReturn } from "$types/fs";
 import { LogLevel } from "$types/logging";
-import type { ShortcutStore } from "$types/shortcut";
+import type { ArcShortcut, ShortcutStore } from "$types/shortcut";
+import { WallpaperContextMenu } from "./context";
 
 export class WallpaperRuntime extends AppProcess {
   contents = Store<DirectoryReadReturn | undefined>();
@@ -15,6 +16,8 @@ export class WallpaperRuntime extends AppProcess {
   iconsElement = Store<HTMLDivElement>();
   orphaned = Store<string[]>([]);
   directory: string;
+
+  public contextMenu: AppContextMenu = WallpaperContextMenu(this);
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, desktopDir?: string) {
     super(handler, pid, parentPid, app);
@@ -149,4 +152,6 @@ export class WallpaperRuntime extends AppProcess {
       });
     });
   }
+
+  async deleteItem(path: string) {}
 }

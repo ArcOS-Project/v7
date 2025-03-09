@@ -15,23 +15,29 @@
   const size = formatBytes(file.size);
   let shortcut = $state<ArcShortcut>();
   let icon = $state<string>();
+  let render = $state<boolean>(false);
 
   onMount(() => {
     shortcut = $shortcuts[file.name];
     icon = process.userDaemon?.getMimeIconByFilename(file.name);
+    render = true;
   });
 </script>
 
-<DesktopIcon
-  {process}
-  caption={shortcut?.name || file.name}
-  icon={(shortcut ? getIconPath(shortcut.icon) : icon) || DefaultMimeIcon}
-  alt={shortcut
-    ? `Target: ${shortcut.target}\nType: Shortcut (${shortcut.type})`
-    : `Location: ${path}\nType: ${file.mimeType}\nSize: ${size}`}
-  identifier={file.itemId}
-  cornerIcon={shortcut ? "arrow-up-right" : ""}
-  action={() => {
-    process.userDaemon?.openFile(path, shortcut);
-  }}
-/>
+{#if render}
+  <DesktopIcon
+    {process}
+    caption={shortcut?.name || file.name}
+    icon={(shortcut ? getIconPath(shortcut.icon) : icon) || DefaultMimeIcon}
+    alt={shortcut
+      ? `Target: ${shortcut.target}\nType: Shortcut (${shortcut.type})`
+      : `Location: ${path}\nType: ${file.mimeType}\nSize: ${size}`}
+    identifier={file.itemId}
+    cornerIcon={shortcut ? "arrow-up-right" : ""}
+    contextMenu={shortcut ? "shortcut-icon" : "file-icon"}
+    props={[file, path, shortcut]}
+    action={() => {
+      process.userDaemon?.openFile(path, shortcut);
+    }}
+  />
+{/if}

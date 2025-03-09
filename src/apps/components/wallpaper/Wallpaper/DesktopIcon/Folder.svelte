@@ -10,11 +10,15 @@
   const path = join(process.directory, folder.name);
 </script>
 
-<DesktopIcon
-  {process}
-  identifier={folder.itemId}
-  caption={folder.name}
-  alt={`Location: ${path}`}
-  icon={FolderIcon}
-  action={() => process.spawnApp("fileManager", process.pid, path)}
-/>
+{#if path}
+  <DesktopIcon
+    {process}
+    identifier={folder.itemId}
+    caption={folder.name}
+    alt={`Location: ${path}`}
+    props={[folder, path]}
+    contextMenu="folder-icon"
+    icon={FolderIcon}
+    action={() => process.spawnApp("fileManager", +process.env.get("shell_pid"), path)}
+  />
+{/if}
