@@ -13,6 +13,10 @@ export class NewFileRuntime extends AppProcess {
     this.path = path;
   }
 
+  render() {
+    if (!this.path) this.closeWindow();
+  }
+
   async createFile() {
     const blob = new Blob();
     await this.fs.writeFile(join(this.path, this.newFile()), blob);
