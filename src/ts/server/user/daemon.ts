@@ -16,7 +16,7 @@ import { applyDefaults } from "$ts/hierarchy";
 import { getIconPath } from "$ts/images";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
-import { AccountIcon, PasswordIcon } from "$ts/images/general";
+import { AccountIcon, PasswordIcon, PersonalizationIcon } from "$ts/images/general";
 import { ImageMimeIcon } from "$ts/images/mime";
 import { ProfilePictures } from "$ts/images/pfp";
 import type { ArcMSL } from "$ts/msl";
@@ -1832,5 +1832,47 @@ export class UserDaemon extends Process {
     const string = JSON.stringify(data, null, 2);
 
     await this.fs.writeFile(path, textToBlob(string, "application/json"));
+  }
+
+  getGlobalSetting(key: string) {
+    return this.preferences().globalSettings[key];
+  }
+
+  setGlobalSetting(key: string, value: any) {
+    this.preferences.update((v) => {
+      v.globalSettings[key] = value;
+
+      return v;
+    });
+  }
+
+  checkReducedMotion() {
+    if (this.getGlobalSetting("reducedMotionDetection_disable") || this.preferences().shell.visuals.noAnimations) return;
+
+    if (window.matchMedia("(prefers-reduced-motion)").matches) {
+      this.sendNotification({
+        title: "Disable animations?",
+        message: "ArcOS has detected that your device has Reduced Motion activated. Do you want ArcOS to reduce animations also?",
+        buttons: [
+          {
+            caption: "Don't show again",
+            action: () => {
+              this.setGlobalSetting("reducedMotionDetection_disable", true);
+            },
+          },
+          {
+            caption: "Reduce",
+            action: () => {
+              this.preferences.update((v) => {
+                v.shell.visuals.noAnimations = true;
+                return v;
+              });
+            },
+          },
+        ],
+        image: PersonalizationIcon,
+        timeout: 6000,
+      });
+    }
   }
 }
