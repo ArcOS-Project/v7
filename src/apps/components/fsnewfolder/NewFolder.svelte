@@ -1,6 +1,6 @@
 <script lang="ts">
   import { FolderIcon } from "$ts/images/filesystem";
-  import type { NewFolderRuntime } from "../../newfolder/runtime";
+  import type { NewFolderRuntime } from "./runtime";
 
   const { process }: { process: NewFolderRuntime } = $props();
   const { newFolder } = process;

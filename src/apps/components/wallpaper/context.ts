@@ -3,6 +3,7 @@ import type { FileEntry } from "$types/fs";
 import type { WallpaperRuntime } from "./runtime";
 
 export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu {
+  const shellPid = +runtime.env.get("shell_pid");
   return {
     "file-icon": [
       {
@@ -16,6 +17,21 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
         caption: "Open with...",
         action: (_, runtimePath) => {
           runtime.userDaemon?.openWith(runtimePath);
+        },
+      },
+      { sep: true },
+      {
+        caption: "Rename...",
+        icon: "file-pen",
+        action: (_, path) => {
+          runtime.spawnOverlayApp("FsRenameItem", shellPid, path);
+        },
+      },
+      {
+        caption: "Delete",
+        icon: "trash-2",
+        action: (_, path) => {
+          runtime.deleteItem(path);
         },
       },
       { sep: true },
@@ -41,16 +57,31 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
       },
       { sep: true },
       {
-        caption: "Properties...",
-        icon: "wrench",
-        action: (file: FileEntry, path: string) => runtime.spawnOverlayApp("ItemInfo", +runtime.env.get("shell_pid"), path, file),
-      },
-      {
         caption: "Edit Shortcut...",
         icon: "pencil",
         action: (_, path, shortcut) => {
-          runtime.spawnOverlayApp("ShortcutProperties", +runtime.env.get("shell_pid"), path, shortcut);
+          runtime.spawnOverlayApp("ShortcutProperties", shellPid, path, shortcut);
         },
+      },
+      {
+        caption: "Rename...",
+        icon: "file-pen",
+        action: (_, path) => {
+          runtime.spawnOverlayApp("FsRenameItem", shellPid, path);
+        },
+      },
+      {
+        caption: "Delete",
+        icon: "trash-2",
+        action: (_, path) => {
+          runtime.deleteItem(path);
+        },
+      },
+      { sep: true },
+      {
+        caption: "Properties...",
+        icon: "wrench",
+        action: (file: FileEntry, path: string) => runtime.spawnOverlayApp("ItemInfo", shellPid, path, file),
       },
     ],
     "folder-icon": [
@@ -58,21 +89,36 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
         caption: "Go here",
         icon: "folder-open",
         action: (_, path) => {
-          runtime.spawnApp("fileManager", +runtime.env.get("shell_pid"), path);
+          runtime.spawnApp("fileManager", shellPid, path);
         },
       },
       {
         caption: "Open in new window",
         icon: "external-link",
         action: (_, path) => {
-          runtime.spawnApp(runtime.app.id, +runtime.env.get("shell_pid"), path);
+          runtime.spawnApp(runtime.app.id, shellPid, path);
+        },
+      },
+      { sep: true },
+      {
+        caption: "Rename...",
+        icon: "folder-pen",
+        action: (_, path) => {
+          runtime.spawnOverlayApp("FsRenameItem", shellPid, path);
+        },
+      },
+      {
+        caption: "Delete",
+        icon: "trash-2",
+        action: (_, path) => {
+          runtime.deleteItem(path);
         },
       },
       { sep: true },
       {
         caption: "Properties...",
         icon: "wrench",
-        action: (dir, path) => runtime.spawnOverlayApp("ItemInfo", +runtime.env.get("shell_pid"), path, dir),
+        action: (dir, path) => runtime.spawnOverlayApp("ItemInfo", shellPid, path, dir),
       },
     ],
   };

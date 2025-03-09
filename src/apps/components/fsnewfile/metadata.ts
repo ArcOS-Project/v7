@@ -1,9 +1,10 @@
+import "$css/apps/components/fsnewfile.css";
 import { ComponentIcon } from "$ts/images/general";
 import type { App } from "$types/app";
-import NewFile from "../FileManager/Overlays/NewFile.svelte";
+import NewFile from "./NewFile.svelte";
 import { NewFileRuntime } from "./runtime";
 
-export const NewFileApp: App = {
+export const FsNewFileApp: App = {
   metadata: {
     name: "New File",
     version: "4.0.0",
@@ -40,5 +41,5 @@ export const NewFileApp: App = {
     component: NewFile as any,
   },
   glass: true,
-  id: "NewFile",
+  id: "FsNewFile",
 };

@@ -1,36 +1,36 @@
-#ItemInfo #RenameItem > div.body {
+#FsRenameItem > div.body {
   display: flex;
   flex-direction: column;
   padding: 0;
 }
 
-#ItemInfo #RenameItem > div.body div.top {
+#FsRenameItem > div.body div.top {
   display: flex;
   align-items: start;
   gap: 15px;
   padding: 15px;
 }
 
-#ItemInfo #RenameItem > div.body div.top img {
+#FsRenameItem > div.body div.top img {
   height: 48px;
 }
 
-#ItemInfo #RenameItem > div.body div.top h1 {
+#FsRenameItem > div.body div.top h1 {
   font-size: 16px;
   margin-bottom: 5px;
 }
 
-#ItemInfo #RenameItem > div.body div.top input {
+#FsRenameItem > div.body div.top input {
   width: 100%;
   margin-top: 15px;
 }
 
-#ItemInfo #RenameItem > div.body div.right {
+#FsRenameItem > div.body div.right {
   flex-grow: 1;
   max-width: calc(100% - 48px - 15px);
 }
 
-#ItemInfo #RenameItem > div.body div.bottom {
+#FsRenameItem > div.body div.bottom {
   border-top: var(--win-border);
   padding: 10px;
   background-color: var(--button-glass-bg);

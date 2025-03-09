@@ -31,14 +31,14 @@ export function EditMenu(runtime: FileManagerRuntime): ContextMenuItem {
       {
         caption: "New folder",
         action: () => {
-          runtime.spawnOverlay("newFolder", runtime.path());
+          runtime.spawnOverlayApp("FsNewFolder", runtime.pid, runtime.path());
         },
         icon: "folder-plus",
       },
       {
         caption: "New files",
         action: () => {
-          runtime.spawnOverlay("newFile", runtime.path());
+          runtime.spawnOverlayApp("FsNewFile", runtime.pid, runtime.path());
         },
         icon: "file-plus",
       },

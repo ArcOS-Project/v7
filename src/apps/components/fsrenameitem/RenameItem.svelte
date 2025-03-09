@@ -1,6 +1,6 @@
 <script lang="ts">
   import { TextEditorIcon } from "$ts/images/apps";
-  import type { RenameItemRuntime } from "../renameitem/runtime";
+  import type { RenameItemRuntime } from "./runtime";
 
   const { process }: { process: RenameItemRuntime } = $props();
   const { newName } = process;

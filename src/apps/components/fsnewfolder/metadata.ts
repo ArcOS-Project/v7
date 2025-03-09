@@ -1,26 +1,27 @@
+import "$css/apps/components/fsnewfolder.css";
 import { ComponentIcon } from "$ts/images/general";
 import type { App } from "$types/app";
-import RenameItem from "../FileManager/Overlays/RenameItem.svelte";
-import { RenameItemRuntime } from "./runtime";
+import NewFolder from "./NewFolder.svelte";
+import { NewFolderRuntime } from "./runtime";
 
-export const RenameItemApp: App = {
+export const FsNewFolderApp: App = {
   metadata: {
-    name: "Rename Item",
+    name: "New Folder",
     version: "4.0.0",
     author: "Izaak Kuipers",
     icon: ComponentIcon,
   },
   size: {
     w: 380,
-    h: 185,
+    h: 203,
   },
   minSize: {
     w: 380,
-    h: 185,
+    h: 203,
   },
   maxSize: {
     w: 380,
-    h: 185,
+    h: 203,
   },
   position: { centered: true },
   state: {
@@ -36,9 +37,9 @@ export const RenameItemApp: App = {
     close: false,
   },
   assets: {
-    runtime: RenameItemRuntime,
-    component: RenameItem as any,
+    runtime: NewFolderRuntime,
+    component: NewFolder as any,
   },
   glass: true,
-  id: "RenameItem",
+  id: "FsNewFolder",
 };

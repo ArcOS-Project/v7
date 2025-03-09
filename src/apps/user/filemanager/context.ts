@@ -64,7 +64,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       {
         caption: "Rename...",
         icon: "file-pen",
-        action: (_, runtimePath) => runtime.spawnOverlay("renameItem", runtimePath),
+        action: (_, runtimePath) => runtime.spawnOverlayApp("FsRenameItem", runtime.pid, runtimePath),
       },
       {
         caption: "Delete",
@@ -90,13 +90,6 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         },
       },
       {
-        caption: "Edit Shortcut...",
-        icon: "pencil",
-        action: (_, path, __, shortcut) => {
-          runtime.spawnOverlayApp("ShortcutProperties", runtime.pid, path, shortcut);
-        },
-      },
-      {
         caption: "Open with...",
         action: (_, runtimePath) => {
           runtime.userDaemon?.openWith(runtimePath);
@@ -119,9 +112,16 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       },
       { sep: true },
       {
+        caption: "Edit Shortcut...",
+        icon: "pencil",
+        action: (_, path, __, shortcut) => {
+          runtime.spawnOverlayApp("ShortcutProperties", runtime.pid, path, shortcut);
+        },
+      },
+      {
         caption: "Rename...",
         icon: "file-pen",
-        action: (_, runtimePath) => runtime.spawnOverlay("renameItem", runtimePath),
+        action: (_, runtimePath) => runtime.spawnOverlayApp("FsRenameItem", runtime.pid, runtimePath),
       },
       {
         caption: "Delete",
@@ -178,8 +178,8 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       { sep: true },
       {
         caption: "Rename...",
-        icon: "file-pen",
-        action: (_, runtimePath) => runtime.spawnOverlay("renameItem", runtimePath),
+        icon: "folder-pen",
+        action: (_, runtimePath) => runtime.spawnOverlayApp("FsRenameItem", runtime.pid, runtimePath),
       },
       {
         caption: "Delete",

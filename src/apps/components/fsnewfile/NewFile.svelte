@@ -1,7 +1,7 @@
 <script lang="ts">
   import { DefaultMimeIcon } from "$ts/images/mime";
   import { onMount } from "svelte";
-  import type { NewFileRuntime } from "../../newfile/runtime";
+  import type { NewFileRuntime } from "./runtime";
 
   const { process }: { process: NewFileRuntime } = $props();
   const { newFile } = process;

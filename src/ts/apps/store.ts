@@ -1,5 +1,8 @@
 import { AppInfoApp } from "$apps/components/appinfo/metadata";
+import { FsNewFileApp } from "$apps/components/fsnewfile/metadata";
+import { FsNewFolderApp } from "$apps/components/fsnewfolder/metadata";
 import { FsProgressApp } from "$apps/components/fsprogress/metadata";
+import { FsRenameItemApp } from "$apps/components/fsrenameitem/metadata";
 import { IconPickerApp } from "$apps/components/iconpicker/metadata";
 import { ItemInfoApp } from "$apps/components/iteminfo/metadata";
 import { MessageBoxApp } from "$apps/components/messagebox/metadata";
@@ -36,6 +39,9 @@ export const BuiltinApps: AppStorage = [
   ProcessesApp,
   SystemSettings,
   TestApp,
+  FsRenameItemApp,
+  FsNewFolderApp,
+  FsNewFileApp,
 ];
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];

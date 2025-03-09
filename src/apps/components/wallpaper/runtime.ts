@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { ErrorIcon } from "$ts/images/dialog";
+import { getDirectoryName } from "$ts/fs/util";
+import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
@@ -153,5 +154,28 @@ export class WallpaperRuntime extends AppProcess {
     });
   }
 
-  async deleteItem(path: string) {}
+  async deleteItem(path: string) {
+    const filename = getDirectoryName(path);
+
+    MessageBox(
+      {
+        title: `Delete file?`,
+        message: `Are you sure you want to <b>permanently</b> delete ${filename}? This cannot be undone.`,
+        buttons: [
+          { caption: "Cancel", action: () => {} },
+          {
+            caption: "Delete",
+            action: () => {
+              this.fs.deleteItem(path, true);
+            },
+            suggested: true,
+          },
+        ],
+        image: WarningIcon,
+        sound: "arcos.dialog.warning",
+      },
+      +this.env.get("shell_pid"),
+      true
+    );
+  }
 }

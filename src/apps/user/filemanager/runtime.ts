@@ -18,9 +18,6 @@ import type { ArcShortcut, ShortcutStore } from "$types/shortcut";
 import { FileManagerAccelerators } from "./accelerators";
 import { FileManagerAltMenu } from "./altmenu";
 import { FileManagerContextMenu } from "./context";
-import { NewFileApp } from "./newfile/metadata";
-import { NewFolderApp } from "./newfolder/metadata";
-import { RenameItemApp } from "./renameitem/metadata";
 import type { LoadSaveDialogData, QuotedDrive } from "./types";
 
 export class FileManagerRuntime extends AppProcess {
@@ -83,12 +80,6 @@ export class FileManagerRuntime extends AppProcess {
       if (loadSave.folder && loadSave.multiple) throw new Error("LoadSave: can't have both folder and multiple");
     }
   }
-
-  protected overlayStore: Record<string, App> = {
-    renameItem: RenameItemApp,
-    newFile: NewFileApp,
-    newFolder: NewFolderApp,
-  };
 
   override contextMenu: AppContextMenu = FileManagerContextMenu(this);
 

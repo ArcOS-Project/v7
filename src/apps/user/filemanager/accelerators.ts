@@ -35,7 +35,7 @@ export function FileManagerAccelerators(runtime: FileManagerRuntime): AppKeyComb
         if (!path) return;
 
         runtime.selection.set([path]);
-        runtime.spawnOverlay("renameItem", path);
+        runtime.spawnOverlayApp("FsRenameItem", runtime.pid, path);
       },
     },
     {
