@@ -50,6 +50,8 @@
   }
 
   function ondblclick() {
+    if (process.loadSave) return;
+
     process.userDaemon?.openFile(thisPath, shortcut);
   }
 </script>
@@ -60,8 +62,8 @@
     {onclick}
     class:selected={$selection.includes(thisPath)}
     {ondblclick}
-    data-contextmenu={$selection.includes(thisPath) ? "file-item" : ""}
-    use:contextProps={[file, thisPath, ondblclick]}
+    data-contextmenu={$selection.includes(thisPath) ? (shortcut ? "shortcut-item" : "file-item") : ""}
+    use:contextProps={[file, thisPath, ondblclick, shortcut]}
     data-path={thisPath}
     class:is-shortcut={shortcut}
   >

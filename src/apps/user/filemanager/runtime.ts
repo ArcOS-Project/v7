@@ -2,14 +2,16 @@ import { AppProcess } from "$ts/apps/process";
 import { GetConfirmation, MessageBox } from "$ts/dialog";
 import { FilesystemDrive } from "$ts/fs/drive";
 import { DownloadFile, getDirectoryName, getDriveLetter, getParentDirectory, join } from "$ts/fs/util";
+import { iconIdFromPath } from "$ts/images";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
-import { DownloadIcon, DriveIcon } from "$ts/images/filesystem";
+import { DownloadIcon, DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import { TrashIcon, UploadIcon } from "$ts/images/general";
+import { DefaultMimeIcon } from "$ts/images/mime";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { App, AppContextMenu, AppProcessData } from "$types/app";
-import type { DirectoryReadReturn, FolderEntry } from "$types/fs";
+import type { DirectoryReadReturn, FileEntry, FolderEntry } from "$types/fs";
 import { LogLevel } from "$types/logging";
 import type { RenderArgs } from "$types/process";
 import type { ArcShortcut, ShortcutStore } from "$types/shortcut";
@@ -647,5 +649,26 @@ export class FileManagerRuntime extends AppProcess {
     this.globalDispatch.dispatch("ls-confirm", [this.loadSave?.returnId, result]);
 
     await this.closeWindow();
+  }
+
+  async createShortcut(name: string, path: string, folder = false) {
+    const paths = await this.userDaemon?.LoadSaveDialog({
+      title: "Pick where to create the shortcut",
+      icon: FolderIcon,
+      folder: true,
+      startDir: `U:/Desktop`,
+    });
+
+    if (!paths?.[0]) return;
+
+    this.userDaemon?.createShortcut(
+      {
+        type: folder ? "folder" : "file",
+        target: path,
+        icon: iconIdFromPath(this.userDaemon?.getMimeIconByFilename(name) || DefaultMimeIcon),
+        name: `${name} - Shortcut`,
+      },
+      join(paths[0], `${name}.arclnk`)
+    );
   }
 }

@@ -38,6 +38,70 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
           runtime.userDaemon?.openWith(runtimePath);
         },
       },
+      {
+        caption: "Create shortcut...",
+        icon: "arrow-up-right",
+        action: (file, path) => {
+          runtime.createShortcut(file.name, path);
+        },
+      },
+      { sep: true },
+      {
+        caption: "Cut",
+        icon: "scissors",
+        action: (_, runtimePath) => {
+          runtime.cutList.set([runtimePath]);
+        },
+      },
+      {
+        caption: "Copy",
+        icon: "copy",
+        action: (_, runtimePath) => {
+          runtime.copyList.set([runtimePath]);
+        },
+      },
+      { sep: true },
+      {
+        caption: "Rename...",
+        icon: "file-pen",
+        action: (_, runtimePath) => runtime.spawnOverlay("renameItem", runtimePath),
+      },
+      {
+        caption: "Delete",
+        icon: "trash-2",
+        action: (_, runtimePath) => {
+          runtime.selection.set([runtimePath]);
+          runtime.deleteSelected();
+        },
+      },
+      { sep: true },
+      {
+        caption: "Properties...",
+        icon: "wrench",
+        action: (file: FileEntry) => runtime.spawnOverlayApp("ItemInfo", runtime.pid, join(runtime.path(), file.name), file),
+      },
+    ],
+    "shortcut-item": [
+      {
+        caption: "Open shortcut",
+        icon: "external-link",
+        action: (_, __, open) => {
+          open?.();
+        },
+      },
+      {
+        caption: "Edit Shortcut...",
+        icon: "pencil",
+        action: (_, path, __, shortcut) => {
+          runtime.spawnOverlayApp("ShortcutProperties", runtime.pid, path, shortcut);
+        },
+      },
+      {
+        caption: "Open with...",
+        action: (_, runtimePath) => {
+          runtime.userDaemon?.openWith(runtimePath);
+        },
+      },
       { sep: true },
       {
         caption: "Cut",
@@ -87,6 +151,13 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         icon: "external-link",
         action: (_, runtimePath) => {
           runtime.spawnApp(runtime.app.id, runtime.parentPid, runtimePath);
+        },
+      },
+      {
+        caption: "Create shortcut...",
+        icon: "arrow-up-right",
+        action: (folder, path) => {
+          runtime.createShortcut(folder.name, path);
         },
       },
       { sep: true },
