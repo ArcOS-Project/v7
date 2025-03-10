@@ -32,13 +32,13 @@ export class Filesystem extends KernelModule {
     return this.drives[id];
   }
 
-  async mountDrive(
+  async mountDrive<T = FilesystemDrive>(
     id: string,
     supplier: typeof FilesystemDrive,
     letter?: string,
     onProgress?: FilesystemProgressCallback,
     ...args: any[]
-  ): Promise<FilesystemDrive | false> {
+  ): Promise<T | false> {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
     this.Log(`Mounting drive '${id}' as letter ${letter || "<NONE>"}`);
@@ -57,7 +57,7 @@ export class Filesystem extends KernelModule {
     this.drives[id] = instance;
     this.dispatch.dispatch("fs-mount-drive", id);
 
-    return instance as FilesystemDrive;
+    return instance as T;
   }
 
   getDriveIdByIdentifier(identifier: string) {

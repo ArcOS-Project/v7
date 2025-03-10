@@ -41,5 +41,6 @@ export const ShortcutPropertiesApp: App = {
     component: ShortcutProperties as any,
   },
   glass: true,
+  hidden: true,
   id: "ShortcutProperties",
 };

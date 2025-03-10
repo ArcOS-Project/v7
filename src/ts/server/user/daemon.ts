@@ -240,7 +240,9 @@ export class UserDaemon extends Process {
 
     this.Log(`Starting filesystem supplier`);
 
-    await this.fs.mountDrive("userfs", ServerDrive, "U", undefined, this.token);
+    await this.fs.mountDrive<ServerDrive>("userfs", ServerDrive, "U", undefined, this.token);
+
+    await Axios.post("/fs/index", {}, { headers: { Authorization: `Bearer ${this.token}` } });
   }
 
   async stop() {

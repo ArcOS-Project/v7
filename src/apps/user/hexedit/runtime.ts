@@ -186,6 +186,7 @@ export class HexEditRuntime extends AppProcess {
   }
 
   async onClose(): Promise<boolean> {
+    this.Log("onClose");
     const modified = this.isModified();
 
     if (modified) {

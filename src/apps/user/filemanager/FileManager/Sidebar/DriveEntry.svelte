@@ -31,6 +31,10 @@
     {drive.data.driveLetter ? `${drive.data.label} (${drive.data.driveLetter}:)` : drive.data.label}
   </span>
   {#if !drive.quota.unknown}
-    <CircularProgress className="Progress" max={drive.quota.max} value={drive.quota.used} />
+    <CircularProgress
+      className="progress {drive.quota.percentage >= 80 ? 'almost-full' : ''}"
+      max={drive.quota.max}
+      value={drive.quota.used}
+    />
   {/if}
 </button>

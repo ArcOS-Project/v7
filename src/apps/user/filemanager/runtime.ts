@@ -106,6 +106,8 @@ export class FileManagerRuntime extends AppProcess {
         this.updateRootFolders();
       }
 
+      this.updateDrives();
+
       if (this.path().startsWith(path) || this.path() === path) this.refresh();
     });
 
@@ -439,8 +441,8 @@ export class FileManagerRuntime extends AppProcess {
 
       try {
         await this.fs.deleteItem(item, false);
-      } catch {
-        prog.mutErr(`Failed to delete ${item}`);
+      } catch (e) {
+        prog.mutErr(`Failed to delete ${item}: ${e}`);
       }
 
       prog.mutDone(+1);

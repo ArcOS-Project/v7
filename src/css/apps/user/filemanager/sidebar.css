@@ -43,6 +43,14 @@
   margin-left: auto;
 }
 
+#fileManager > div.body div.sidebar button .circular-progress.almost-full .background {
+  stroke: transparent;
+}
+
+#fileManager > div.body div.sidebar button .circular-progress.almost-full .progress {
+  stroke: var(--clr-red-fg);
+}
+
 #fileManager > div.body div.sidebar button:hover {
   background-color: var(--button-glass-bg);
 }
