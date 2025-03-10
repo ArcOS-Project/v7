@@ -37,7 +37,7 @@ export class BootScreenRuntime extends AppProcess {
 
     this.progress.set(true);
 
-    await Sleep(2000);
+    // await Sleep(2000);
 
     this.kernel.state?.loadState("login");
   }

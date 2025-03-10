@@ -8,9 +8,3 @@ export interface BatteryType {
   ondischargingtimechange: number | null;
   onlevelchange: number | null;
 }
-
-export interface NetworkInformation {
-  downlink: number;
-  effectiveType: string;
-  rtt: number;
-}

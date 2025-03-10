@@ -1,5 +1,6 @@
 import { FsProgressRuntime } from "$apps/components/fsprogress/runtime";
 import { DummyFileProgress, type FileProgressMutator, type FsProgressOperation } from "$apps/components/fsprogress/types";
+import type { IconPickerData } from "$apps/components/iconpicker/types";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import { AppProcess } from "$ts/apps/process";
 import { ApplicationStorage } from "$ts/apps/storage";
@@ -42,7 +43,6 @@ import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultMimeIcons } from "./store";
-import type { IconPickerData } from "$apps/components/iconpicker/types";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -52,7 +52,6 @@ export class UserDaemon extends Process {
   public notifications = new Map<string, Notification>([]);
   public userInfo: UserInfo = DefaultUserInfo;
   public battery = Store<BatteryType | undefined>();
-  public networkSpeed = Store<number>(-1);
   public appStore: ApplicationStorage | undefined;
   public Wallpaper = Store<Wallpaper>(Wallpapers.img0);
   public lastWallpaper = Store<string>("img0");
@@ -732,28 +731,6 @@ export class UserDaemon extends Process {
     return info;
   }
 
-  async testNetworkSpeed() {
-    if (this._disposed) return -1;
-
-    const fileSizeInBytes = 10 * 1024 * 1024;
-    const startTime = performance.now();
-
-    try {
-      await Axios.get("/10mb");
-    } catch (error) {
-      this.Log(`Failed to test network speed, is the server up to date?`, LogLevel.error);
-      return -1;
-    }
-
-    const endTime = performance.now();
-    const durationInSeconds = (endTime - startTime) / 1000;
-    const speedMbps = (fileSizeInBytes * 8) / (durationInSeconds * 1_000_000);
-
-    this.globalDispatch.dispatch("net-speed", [speedMbps]);
-
-    return speedMbps;
-  }
-
   async startSystemStatusRefresh() {
     if (this._disposed) return;
 
@@ -764,7 +741,6 @@ export class UserDaemon extends Process {
     }, 1000); // Every second
 
     this.battery.set(await this.batteryInfo());
-    this.networkSpeed.set(await this.testNetworkSpeed());
   }
 
   async getUserApps(): Promise<AppStorage> {
