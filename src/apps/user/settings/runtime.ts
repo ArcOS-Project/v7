@@ -1,7 +1,15 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
-import { AccountIcon, PasswordIcon, SecurityHighIcon, SecurityMediumIcon, SettingsIcon, WaveIcon } from "$ts/images/general";
+import {
+  AccountIcon,
+  DesktopIcon,
+  PasswordIcon,
+  SecurityHighIcon,
+  SecurityMediumIcon,
+  SettingsIcon,
+  WaveIcon,
+} from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Axios } from "$ts/server/axios";
 import { Sleep } from "$ts/sleep";
@@ -278,6 +286,40 @@ export class SettingsRuntime extends AppProcess {
 
     this.userPreferences.update((v) => {
       v.account.profilePicture = path;
+
+      return v;
+    });
+  }
+
+  async chooseWallpaper() {
+    const [path] = await this.userDaemon!.LoadSaveDialog({
+      title: "Choose wallpaper",
+      icon: DesktopIcon,
+      startDir: "U:/",
+      extensions: [".jpg", ".png", ".gif", ".svg", ".jpeg"],
+    });
+
+    if (!path) return;
+
+    this.userPreferences.update((v) => {
+      v.desktop.wallpaper = `@local:${btoa(path)}`;
+
+      return v;
+    });
+  }
+
+  async chooseLoginBackground() {
+    const [path] = await this.userDaemon!.LoadSaveDialog({
+      title: "Choose login background",
+      icon: PasswordIcon,
+      startDir: "U:/",
+      extensions: [".jpg", ".png", ".gif", ".svg", ".jpeg"],
+    });
+
+    if (!path) return;
+
+    this.userPreferences.update((v) => {
+      v.account.loginBackground = `@local:${btoa(path)}`;
 
       return v;
     });

@@ -1,3 +1,9 @@
+import type { SettingsRuntime } from "$apps/user/settings/runtime";
+import { MessageBox } from "$ts/dialog";
+import { FileManagerIcon, ProcessManagerIcon, SettingsIcon } from "$ts/images/apps";
+import { QuestionIcon } from "$ts/images/dialog";
+import { PersonalizationIcon } from "$ts/images/general";
+import { LogoutIcon, RestartIcon, ShutdownIcon } from "$ts/images/power";
 import type { AppContextMenu } from "$types/app";
 import type { FileEntry } from "$types/fs";
 import type { WallpaperRuntime } from "./runtime";
@@ -119,6 +125,166 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
         caption: "Properties...",
         icon: "wrench",
         action: (dir, path) => runtime.spawnOverlayApp("ItemInfo", shellPid, path, dir),
+      },
+    ],
+    desktop: [
+      {
+        caption: "View",
+        icon: "binoculars",
+        subItems: [
+          {
+            caption: "Show desktop icons",
+            icon: "eye",
+            isActive: () => runtime.userPreferences().desktop.icons,
+            action: () => {
+              runtime.userPreferences.update((v) => {
+                v.desktop.icons = !v.desktop.icons;
+                return v;
+              });
+            },
+          },
+          {
+            caption: "Align icons to grid",
+            icon: "grid-2x2",
+            isActive: () => !runtime.userPreferences().desktop.noIconGrid,
+            action: () => {
+              runtime.userPreferences.update((v) => {
+                v.desktop.noIconGrid = !v.desktop.noIconGrid;
+                return v;
+              });
+            },
+          },
+          {
+            caption: "Lock desktop icons",
+            icon: "lock",
+            isActive: () => runtime.userPreferences().desktop.lockIcons,
+            action: () => {
+              runtime.userPreferences.update((v) => {
+                v.desktop.lockIcons = !v.desktop.lockIcons;
+                return v;
+              });
+            },
+          },
+          { sep: true },
+          {
+            caption: "Reset icon positions",
+            icon: "iteration-cw",
+            action: () => {
+              MessageBox(
+                {
+                  title: "Reset desktop icons?",
+                  message: "Are you sure you want to reset your desktop icon positions?",
+                  image: QuestionIcon,
+                  sound: "arcos.dialog.info",
+                  buttons: [
+                    {
+                      caption: "Cancel",
+                      action: () => {},
+                    },
+                    {
+                      caption: "Reset",
+                      action: () => {
+                        runtime.userPreferences.update((v) => {
+                          v.appPreferences.desktopIcons = {};
+                          return v;
+                        });
+                      },
+                      suggested: true,
+                    },
+                  ],
+                },
+                shellPid,
+                true
+              );
+            },
+          },
+        ],
+      },
+      { sep: true },
+      {
+        caption: "File manager",
+        image: FileManagerIcon,
+        action: () => {
+          runtime.spawnApp("fileManager", shellPid, "U:/");
+        },
+      },
+      {
+        caption: "Processes",
+        image: ProcessManagerIcon,
+        action: () => {
+          runtime.spawnApp("processManager", shellPid, "U:/");
+        },
+      },
+      {
+        caption: "Settings",
+        image: SettingsIcon,
+        action: () => {
+          runtime.spawnApp("systemSettings", shellPid, "U:/");
+        },
+      },
+      { sep: true },
+      {
+        caption: "Shut down",
+        image: ShutdownIcon,
+        action: () => runtime.userDaemon?.shutdown(),
+      },
+      {
+        caption: "Log off",
+        image: LogoutIcon,
+        action: () => runtime.userDaemon?.logoff(),
+      },
+      {
+        caption: "Restart",
+        image: RestartIcon,
+        action: () => runtime.userDaemon?.restart(),
+      },
+      { sep: true },
+      {
+        caption: "New",
+        icon: "plus",
+        subItems: [
+          {
+            caption: "New folder...",
+            icon: "folder-plus",
+            action: () => {
+              runtime.spawnOverlayApp("FsNewFolder", shellPid, "U:/Desktop");
+            },
+          },
+          {
+            caption: "New file...",
+            icon: "file-plus",
+            action: () => {
+              runtime.spawnOverlayApp("FsNewFile", shellPid, "U:/Desktop");
+            },
+          },
+          {
+            caption: "Upload...",
+            icon: "upload",
+            action: () => {
+              runtime.uploadItems();
+            },
+          },
+        ],
+      },
+      { sep: true },
+      {
+        caption: "Folder properties...",
+        icon: "wrench",
+        action: async () => {
+          const parent = await runtime.fs.readDir("U:/");
+          const dir = parent?.dirs.filter((d) => d.name === "Desktop")[0];
+
+          if (!dir) return;
+
+          runtime.spawnOverlayApp("ItemInfo", shellPid, "U:/Desktop", dir);
+        },
+      },
+      {
+        caption: "Personalize...",
+        image: PersonalizationIcon,
+        action: async () => {
+          await runtime.spawnApp<SettingsRuntime>("systemSettings", shellPid, "visuals");
+        },
       },
     ],
   };

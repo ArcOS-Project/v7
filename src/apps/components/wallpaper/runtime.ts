@@ -2,6 +2,7 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { getDirectoryName } from "$ts/fs/util";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
+import { UploadIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
@@ -177,5 +178,34 @@ export class WallpaperRuntime extends AppProcess {
       +this.env.get("shell_pid"),
       true
     );
+  }
+
+  async uploadItems() {
+    if (this._disposed) return;
+
+    const prog = await this.userDaemon!.FileProgress(
+      {
+        type: "size",
+        icon: UploadIcon,
+        waiting: true,
+        caption: "Uploading your files...",
+        subtitle: `To ${getDirectoryName(this.directory)}`,
+      },
+      +this.env.get("shell_pid")
+    );
+
+    try {
+      await this.fs.uploadFiles(this.directory, "*/*", true, async (progress) => {
+        prog.show();
+        prog.setDone(0);
+        prog.setMax(progress.max + 1);
+        prog.setDone(progress.value);
+        if (progress.what) prog.updSub(progress.what);
+      });
+    } catch {
+      prog.mutErr(`Failed to upload files! One of the files you tried to upload might be too big.`);
+    }
+
+    prog.mutDone(+1);
   }
 }

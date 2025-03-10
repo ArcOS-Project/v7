@@ -38,8 +38,7 @@
       <button class="lucide icon-link" aria-label="Enter a wallpaper URL" onclick={() => process.spawnOverlay("urlWallpaper")}>
       </button>
       <div class="sep"></div>
-      <button class="lucide icon-folder-open" aria-label="Choose a file" onclick={() => process.notImplemented("Opening files")}>
-      </button>
+      <button class="lucide icon-folder-open" aria-label="Choose a file" onclick={() => process.chooseWallpaper()}> </button>
     </div>
   </ThemesHeader>
 
