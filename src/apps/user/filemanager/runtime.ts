@@ -186,12 +186,12 @@ export class FileManagerRuntime extends AppProcess {
 
     try {
       const contents = await this.fs.readDir(path);
-      const shortcuts = await this.fs.bulk<ArcShortcut>(path, "arclnk");
+      const shortcuts = contents?.shortcuts;
 
       if (!contents) this.DirectoryNotFound();
       else {
         this.contents.set(contents);
-        this.shortcuts.set(shortcuts);
+        this.shortcuts.set(shortcuts || {});
       }
     } catch {
       this.DirectoryNotFound();

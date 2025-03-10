@@ -60,8 +60,8 @@ export class WallpaperRuntime extends AppProcess {
   async updateContents() {
     this.Log("Refreshing desktop icons!");
 
-    const shortcuts = await this.fs.bulk(this.directory, "arclnk");
     const contents = await this.fs.readDir(this.directory);
+    const shortcuts = contents?.shortcuts || {};
 
     this.shortcuts.set(shortcuts);
     this.contents.set(contents);

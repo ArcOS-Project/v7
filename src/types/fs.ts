@@ -1,3 +1,5 @@
+import type { ShortcutStore } from "./shortcut";
+
 export interface FileEntry {
   name: string;
   size: number;
@@ -31,6 +33,10 @@ export interface FolderEntry {
 export interface DirectoryReadReturn {
   dirs: FolderEntry[];
   files: FileEntry[];
+  totalFiles: number;
+  totalFolders: number;
+  totalSize: number;
+  shortcuts: ShortcutStore;
 }
 
 export interface RecursiveDirectoryReadReturn {
