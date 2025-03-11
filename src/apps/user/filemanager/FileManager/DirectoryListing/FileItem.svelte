@@ -50,6 +50,10 @@
   }
 
   function ondblclick() {
+    if (process.loadSave && !process.loadSave?.folder && !process?.loadSave?.multiple) {
+      process.confirmLoadSave();
+      return;
+    }
     if (process.loadSave) return;
 
     process.userDaemon?.openFile(thisPath, shortcut);
