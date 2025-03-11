@@ -215,9 +215,17 @@ export class AppProcess extends Process {
   }
 
   private async processor(e: KeyboardEvent) {
-    if (!e.key || this.hasOverlays()) return;
+    if (!e.key || this.hasOverlays() || this._disposed) return;
 
-    if (bannedKeys.includes(e.key.toLowerCase()) && this.kernel.state?.currentState === "desktop") {
+    let focusingTextArea = false;
+
+    const textareas = this.getWindow()?.getElementsByTagName("textarea");
+
+    for (const textarea of textareas || []) {
+      if (document.activeElement === textarea) focusingTextArea = true;
+    }
+
+    if (!focusingTextArea && bannedKeys.includes(e.key.toLowerCase()) && this.kernel.state?.currentState === "desktop") {
       e.preventDefault();
 
       return false;
