@@ -69,4 +69,10 @@ export class FsProgressRuntime extends AppProcess {
       }
     });
   }
+
+  async onClose(): Promise<boolean> {
+    if (this.parentPid) this.handler.renderer?.focusedPid.set(this.parentPid);
+
+    return true;
+  }
 }
