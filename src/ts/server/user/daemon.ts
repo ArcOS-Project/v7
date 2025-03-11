@@ -43,6 +43,7 @@ import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultMimeIcons } from "./store";
+import type { LanguageExecutionError } from "$ts/msl/error";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -904,8 +905,8 @@ export class UserDaemon extends Process {
         workingDir: app.workingDirectory, // Working directory (cwd)
         continuous: true, // Continuous code execution to keep the mainloop going
         arguments: args, // Send the arguments
-        onError: (e) => {
-          throw e;
+        onError: (e: LanguageExecutionError) => {
+          console.log(e.getObject());
         },
       });
     } catch (e) {
