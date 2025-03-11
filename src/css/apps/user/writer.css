@@ -1,0 +1,104 @@
+#writer > div.body {
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+}
+
+#writer #replace {
+  top: unset;
+  bottom: 15px;
+  margin-bottom: -100px;
+  scale: 1 !important;
+}
+
+#writer #replace.visible:not(.closing) {
+  margin-bottom: 0;
+}
+
+#writer #replace > div.body {
+  padding: 0;
+}
+
+#writer #replace > div.body > div.top {
+  height: calc(100% - 51px);
+  padding: 15px;
+  padding-bottom: 5px;
+}
+
+#writer #replace div.row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+#writer #replace div.row p {
+  width: 100px;
+}
+
+#writer #replace div.row input {
+  flex-grow: 1;
+}
+
+#writer #replace > div.body div.bottom {
+  border-top: var(--win-border);
+  padding: 10px;
+  background-color: var(--button-glass-bg);
+  margin: 0;
+  display: flex;
+  margin-left: auto;
+  margin-top: auto;
+  gap: 10px;
+  width: 100%;
+  justify-content: end;
+}
+
+#writer > div.body textarea {
+  width: 100% !important;
+  height: calc(100% - 27px) !important;
+  background-color: var(--win-bg);
+  padding: 10px;
+  border: none;
+  resize: none;
+  white-space: pre;
+}
+
+#writer > div.body textarea.monospace {
+  font-family: "Source Code Pro";
+}
+
+#writer > div.body textarea.wrap {
+  white-space: pre-wrap;
+}
+
+#writer > div.body textarea.no-statusbar {
+  height: 100%;
+}
+
+#writer > div.body div.status-bar {
+  display: flex;
+  align-items: center;
+  height: 27px;
+  border-top: var(--win-border);
+}
+
+#writer > div.body div.status-bar > div {
+  height: 100%;
+  padding: 0 10px;
+  line-height: 26px;
+}
+
+#writer > div.body div.status-bar > div.file {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-grow: 1;
+}
+
+#writer > div.body div.status-bar > div.file img {
+  height: 16px;
+}
+
+#writer > div.body div.status-bar > div + div {
+  border-left: var(--win-border);
+}
