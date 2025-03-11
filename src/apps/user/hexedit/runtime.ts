@@ -107,10 +107,8 @@ export class HexEditRuntime extends AppProcess {
       prog.stop();
 
       if (!contents || !contents.byteLength) {
-        throw new Error();
+        throw new Error("The file is empty or doesn't exist.");
       }
-
-      await this.requestFileLock(this.requestedFile);
 
       if (contents.byteLength >= 10 * 1024 * 1024) {
         MessageBox(
@@ -130,6 +128,8 @@ export class HexEditRuntime extends AppProcess {
         return;
       }
 
+      await this.requestFileLock(this.requestedFile);
+
       this.filename.set(getDirectoryName(this.requestedFile));
       this.buffer.set(contents);
       this.view.set(new Uint8Array(contents));
@@ -138,7 +138,7 @@ export class HexEditRuntime extends AppProcess {
       MessageBox(
         {
           title: "Failed to read file",
-          message: `HexEdit was unable to open the file you requested: ${e}. It might not exist or it's empty.`,
+          message: `HexEdit was unable to open the file you requested: ${e}`,
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           image: WarningIcon,
           sound: "arcos.dialog.error",

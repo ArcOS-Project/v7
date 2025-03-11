@@ -33,7 +33,4 @@ export const HexEditorApp: App = {
   },
   hidden: true,
   id: "HexEdit",
-  opens: {
-    extensions: [".txt"],
-  },
 };
