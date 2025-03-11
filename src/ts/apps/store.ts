@@ -13,6 +13,7 @@ import { ShortcutPropertiesApp } from "$apps/components/shortcutproperties/metad
 import { WallpaperApp } from "$apps/components/wallpaper/metadata";
 import { FileManagerApp } from "$apps/user/filemanager/metadata";
 import { HexEditorApp } from "$apps/user/hexedit/metadata";
+import { ImageViewerApp } from "$apps/user/imageviewer/metadata";
 import { LoggingApp } from "$apps/user/logging/metadata";
 import { MediaPlayerApp } from "$apps/user/mediaplayer/metadata";
 import { ProcessesApp } from "$apps/user/processes/metadata";
@@ -44,6 +45,7 @@ export const BuiltinApps: AppStorage = [
   FsNewFolderApp,
   FsNewFileApp,
   WriterApp,
+  ImageViewerApp,
 ];
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];
