@@ -360,6 +360,10 @@ export class LanguageInstance extends Process {
       ["mode", ArcMode()],
       ["build", ArcBuild()],
       ["argv", this.options?.arguments || []],
+      ["false", false],
+      ["true", true],
+      ["undefined", undefined],
+      ["null", null],
     ]);
   }
 

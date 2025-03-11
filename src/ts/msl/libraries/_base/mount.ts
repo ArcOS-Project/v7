@@ -15,7 +15,7 @@ export const mount: Keyword = async (lang) => {
     return;
   }
 
-  const result = await daemon.mountZip(path, letter);
+  const result = await daemon.mountZip(path.trim(), letter?.trim());
 
   if (!result) {
     lang.error("Failed to mount drive", "mount");

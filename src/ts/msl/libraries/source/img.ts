@@ -1,18 +1,18 @@
-import { arrayToBlob } from "$ts/fs/convert";
+import { join } from "$ts/fs/util";
 import type { Keyword } from "$types/msl";
 
 export const Img: Keyword = async (lang) => {
   if (!lang.expectTokenLength(1, "source.img")) return;
 
   const [path] = lang.tokens;
-  const contents = await lang.readFile(path);
+  const resolved = join(lang.workingDir, path);
+  const url = await lang.fs.direct(resolved);
 
-  if (!contents) {
+  if (!url) {
     lang.error(`File not found: ${path}`);
 
     return;
   }
 
-  const blob = arrayToBlob(contents);
-  return URL.createObjectURL(blob);
+  return url;
 };

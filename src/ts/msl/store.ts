@@ -25,7 +25,7 @@ export const DefaultLanguageOptions: LanguageOptions = {
   stdout: (m: string) => console.log(m),
   onTick: (_) => {},
   continuous: false,
-  tickDelay: 1,
+  tickDelay: 0,
   workingDir: ".",
   allowUnsafe: false,
   arguments: [],
