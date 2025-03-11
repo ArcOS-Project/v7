@@ -53,7 +53,6 @@ export class WriterRuntime extends AppProcess {
   }
 
   async readFile(path: string) {
-    if (this.openedFile()) this.unlockFile(this.openedFile());
     try {
       const prog = await this.userDaemon!.FileProgress(
         {
@@ -75,11 +74,10 @@ export class WriterRuntime extends AppProcess {
 
       prog.stop();
 
-      if (!contents || !contents.byteLength) {
+      if (!contents) {
         throw new Error("Failed to get the contents of the file.");
       }
 
-      await this.requestFileLock(path);
       this.buffer.set(arrayToText(contents));
       this.openedFile.set(path);
       this.filename.set(getDirectoryName(path));
@@ -126,7 +124,6 @@ export class WriterRuntime extends AppProcess {
               {
                 caption: "No",
                 action: () => {
-                  this.unlockFile(opened);
                   r(true);
                 },
               },
@@ -134,7 +131,6 @@ export class WriterRuntime extends AppProcess {
                 caption: "Yes",
                 action: async () => {
                   await this.saveChanges();
-                  this.unlockFile(opened);
                   r(true);
                 },
                 suggested: true,
@@ -147,7 +143,6 @@ export class WriterRuntime extends AppProcess {
       });
     }
 
-    this.unlockFile(opened);
     return true;
   }
 

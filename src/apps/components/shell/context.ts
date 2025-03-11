@@ -3,7 +3,7 @@ import { iconIdFromPath } from "$ts/images";
 import { AppsIcon } from "$ts/images/general";
 import { ShortcutMimeIcon } from "$ts/images/mime";
 import { ShutdownIcon } from "$ts/images/power";
-import type { AppContextMenu } from "$types/app";
+import type { App, AppContextMenu, ThirdPartyApp } from "$types/app";
 import type { Workspace } from "$types/user";
 import type { ShellRuntime } from "./runtime";
 
@@ -14,6 +14,59 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         caption: "Settings",
         action: () => {
           runtime.notImplemented();
+        },
+      },
+    ],
+    "startmenu-app": [
+      {
+        caption: "Launch",
+        icon: "rocket",
+        action: (app: App | ThirdPartyApp) => {
+          runtime.spawnApp(app.id, runtime.pid);
+        },
+      },
+      { sep: true },
+      {
+        caption: "Create shortcut",
+        icon: "arrow-up-right",
+        action: async (app: App | ThirdPartyApp) => {
+          const [path] = await runtime.userDaemon!.LoadSaveDialog({
+            title: "Choose where to save the app shortcut",
+            icon: ShortcutMimeIcon,
+            startDir: "U:/Desktop",
+            isSave: true,
+            saveName: `${app.id}.arclnk`,
+            extensions: [".arclnk"],
+          });
+
+          if (!path) return;
+
+          await runtime.userDaemon?.createShortcut(
+            {
+              icon: iconIdFromPath(app.metadata.icon),
+              name: app.metadata.name,
+              type: "app",
+              target: app.id,
+            },
+            path
+          );
+        },
+      },
+      {
+        caption: "Pin app",
+        action: (app: App | ThirdPartyApp) => {
+          if (runtime.userPreferences().pinnedApps?.includes(app.id)) runtime.unpinApp(app.id);
+          else runtime.pinApp(app.id);
+        },
+        isActive: (app: App | ThirdPartyApp) => runtime.userPreferences().pinnedApps?.includes(app.id),
+        icon: "pin",
+      },
+      { sep: true },
+      {
+        caption: "App info",
+        image: AppsIcon,
+        action: (app: App | ThirdPartyApp) => {
+          runtime.spawnOverlayApp("AppInfo", runtime.pid, app.id);
         },
       },
     ],

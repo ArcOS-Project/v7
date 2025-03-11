@@ -904,6 +904,9 @@ export class UserDaemon extends Process {
         workingDir: app.workingDirectory, // Working directory (cwd)
         continuous: true, // Continuous code execution to keep the mainloop going
         arguments: args, // Send the arguments
+        onError: (e) => {
+          throw e;
+        },
       });
     } catch (e) {
       this.Log(`Execution error in third-party application "${app.id}": ${e}`);

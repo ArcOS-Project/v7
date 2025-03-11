@@ -157,7 +157,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Create shortcut...",
         icon: "arrow-up-right",
         action: (folder, path) => {
-          runtime.createShortcut(folder.name, path);
+          runtime.createShortcut(folder.name, path, true);
         },
       },
       { sep: true },

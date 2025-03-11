@@ -5,6 +5,7 @@ import { append as elementAppend } from "./window/element/append";
 import { button } from "./window/element/button";
 import { create as elementCreate } from "./window/element/create";
 import { div } from "./window/element/div";
+import { ElementGet } from "./window/element/get";
 import { h1 } from "./window/element/h1";
 
 export const GuiLibrary: Library = {
@@ -16,5 +17,6 @@ export const GuiLibrary: Library = {
     button,
     div,
     h1,
+    get: ElementGet,
   },
 };

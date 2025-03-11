@@ -658,7 +658,7 @@ export class FileManagerRuntime extends AppProcess {
       {
         type: folder ? "folder" : "file",
         target: path,
-        icon: iconIdFromPath(this.userDaemon?.getMimeIconByFilename(name) || DefaultMimeIcon),
+        icon: folder ? "FolderIcon" : iconIdFromPath(this.userDaemon?.getMimeIconByFilename(name) || DefaultMimeIcon),
         name: `${name} - Shortcut`,
       },
       join(paths[0], `${name}.arclnk`)

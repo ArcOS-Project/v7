@@ -2,6 +2,7 @@ import type { Library } from "$types/msl";
 import { cat } from "./source/cat";
 import { css } from "./source/css";
 import { html } from "./source/html";
+import { Img } from "./source/img";
 import { Import } from "./source/import";
 import { _unsafe } from "./source/unsafe";
 
@@ -10,5 +11,6 @@ export const SourceLibrary: Library = {
   css,
   html,
   Import,
+  Img,
   _unsafe,
 };
