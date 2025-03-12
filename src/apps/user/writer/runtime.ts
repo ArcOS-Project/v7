@@ -85,6 +85,8 @@ export class WriterRuntime extends AppProcess {
       this.original.set(`${this.buffer()}`);
       this.mimetype.set(fromExtension(this.filename()));
       this.mimeIcon.set(this.userDaemon?.getMimeIconByFilename(path) || DefaultMimeIcon);
+      this.windowTitle.set(this.filename());
+      this.windowIcon.set(this.mimeIcon());
     } catch (e) {
       MessageBox(
         {
@@ -103,7 +105,6 @@ export class WriterRuntime extends AppProcess {
   async onClose(): Promise<boolean> {
     const buffer = this.buffer();
     const original = this.original();
-    const opened = this.openedFile();
     const filename = this.filename() || "Untitled";
 
     if (original !== buffer) {
@@ -194,6 +195,8 @@ export class WriterRuntime extends AppProcess {
     this.original.set(`${this.buffer()}`);
     this.mimetype.set(fromExtension(this.filename()));
     this.mimeIcon.set(this.userDaemon?.getMimeIconByFilename(path) || DefaultMimeIcon);
+    this.windowTitle.set(this.filename());
+    this.windowIcon.set(this.mimeIcon());
   }
 
   async openFile() {

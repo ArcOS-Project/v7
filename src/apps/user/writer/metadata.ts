@@ -39,7 +39,7 @@ export const WriterApp: App = {
     fullscreen: false,
   },
   opens: {
-    extensions: [".txt", ".json", ".svg"],
+    extensions: [".txt", ".json", ".svg", ".html", ".msl", ".css"],
   },
   assets: {
     component: Writer as any,
