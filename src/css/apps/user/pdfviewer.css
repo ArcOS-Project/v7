@@ -1,0 +1,7 @@
+#PdfViewer > div.body {
+  padding: 0;
+}
+#PdfViewer > div.body > object {
+  width: 100%;
+  height: 100%;
+}
