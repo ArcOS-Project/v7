@@ -56,6 +56,11 @@
     }
     if (process.loadSave) return;
 
+    if (shortcut && shortcut.type === "folder") {
+      process.navigate(shortcut.target);
+      return;
+    }
+
     process.userDaemon?.openFile(thisPath, shortcut);
   }
 </script>

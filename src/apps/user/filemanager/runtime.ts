@@ -192,6 +192,17 @@ export class FileManagerRuntime extends AppProcess {
       else {
         this.contents.set(contents);
         this.shortcuts.set(shortcuts || {});
+        let driveLabel: string = "";
+        const driveLetter = getDriveLetter(path, false);
+        const driveIdentifier = getDriveLetter(path, true);
+
+        if (driveIdentifier) {
+          const drive = this.fs.getDriveByLetter(driveIdentifier.slice(0, -1), false);
+
+          driveLabel = drive?.label || "";
+        }
+
+        this.windowTitle.set(getDirectoryName(path) || driveLetter ? `${driveLetter}/` : driveLabel);
       }
     } catch {
       this.DirectoryNotFound();
