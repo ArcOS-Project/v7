@@ -30,6 +30,7 @@ export class AppProcess extends Process {
   username: string = "";
   globalDispatch: GlobalDispatcher;
   userDaemon: UserDaemon | undefined;
+  overridePopulatable: boolean = false;
   protected overlayStore: Record<string, App> = {};
   protected elevations: Record<string, ElevationData> = {};
   public renderArgs: RenderArgs = {};
