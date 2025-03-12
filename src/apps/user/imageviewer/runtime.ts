@@ -12,6 +12,7 @@ export class ImageViewerRuntime extends AppProcess {
   openedFile = Store<string>();
   imageUrl = Store<string>();
   indirect = Store<boolean>(false);
+  overridePopulatable: boolean = true;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path?: string) {
     super(handler, pid, parentPid, app);

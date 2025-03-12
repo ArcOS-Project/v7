@@ -1,3 +1,4 @@
+import "$css/apps/user/imageviewer.css";
 import { ImageViewerIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import ImageViewer from "./ImageViewer.svelte";
@@ -28,6 +29,9 @@ export const ImageViewerApp: App = {
   position: { centered: true },
   id: "ImageViewer",
   hidden: true,
+  opens: {
+    extensions: [".png", ".jpg", ".gif", ".webp", ".ico", ".bmp", ".tif", ".tiff", ".jpeg", ".svg"],
+  },
   assets: {
     runtime: ImageViewerRuntime,
     component: ImageViewer as any,
