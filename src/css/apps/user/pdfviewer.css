@@ -1,5 +1,6 @@
 #PdfViewer > div.body {
   padding: 0;
+  overflow-y: scroll;
 }
 #PdfViewer > div.body > object {
   width: 100%;
