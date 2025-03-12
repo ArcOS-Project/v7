@@ -40,9 +40,9 @@ export class OpenWithRuntime extends AppProcess {
   async go(id = this.selectedId()) {
     if (!id) return;
 
-    const compatible = await this.checkCompatibility(id);
+    // const compatible = await this.checkCompatibility(id);
 
-    if (!compatible) return;
+    // if (!compatible) return;
 
     await this.closeWindow();
     await this.spawnApp(id, this.parentPid, this.path());

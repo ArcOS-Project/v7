@@ -1,24 +1,17 @@
 <script lang="ts">
   import { DefaultMimeIcon } from "$ts/images/mime";
-  import { onMount } from "svelte";
   import Options from "./OpenWith/Options.svelte";
   import type { OpenWithRuntime } from "./runtime";
 
   const { process }: { process: OpenWithRuntime } = $props();
   const { filename, viewMode, available, all, path, selectedId, userDaemon, apps } = process;
-
-  let icon = $state<string>("");
-
-  onMount(() => {
-    icon = userDaemon!.getMimeIconByFilename($path) || DefaultMimeIcon;
-  });
 </script>
 
 <div class="top">
   <div class="header">
     <h1>Select an app to open {$filename}</h1>
     <p class="location">
-      <img src={icon} alt="" /><span>{$path}</span>
+      <img src={userDaemon!.getMimeIconByFilename($path) || DefaultMimeIcon} alt="" /><span>{$path}</span>
     </p>
   </div>
   <div class="options">
