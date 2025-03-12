@@ -1,5 +1,5 @@
 import "$css/apps/user/writer.css";
-import { TextEditorIcon } from "$ts/images/apps";
+import { TextMimeIcon } from "$ts/images/mime";
 import type { App } from "$types/app";
 import { WriterRuntime } from "./runtime";
 import Writer from "./Writer.svelte";
@@ -9,7 +9,7 @@ export const WriterApp: App = {
     name: "Writer",
     author: "Izaak Kuipers",
     version: "5.0.0",
-    icon: TextEditorIcon,
+    icon: TextMimeIcon,
   },
   size: {
     w: 700,

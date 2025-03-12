@@ -20,6 +20,7 @@ import { PdfViewerApp } from "$apps/user/pdfviewer/metadata";
 import { ProcessesApp } from "$apps/user/processes/metadata";
 import { SystemSettings } from "$apps/user/settings/metadata";
 import { TestApp } from "$apps/user/test/metadata";
+import { WordPadApp } from "$apps/user/wordpad/metadata";
 import { WriterApp } from "$apps/user/writer/metadata";
 import type { AppKeyCombinations } from "$types/accelerator";
 import type { AppStorage } from "$types/app";
@@ -48,6 +49,7 @@ export const BuiltinApps: AppStorage = [
   WriterApp,
   ImageViewerApp,
   PdfViewerApp,
+  WordPadApp,
 ];
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];

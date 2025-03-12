@@ -220,7 +220,7 @@ export class AppProcess extends Process {
 
     let focusingTextArea = false;
 
-    const textareas = this.getWindow()?.getElementsByTagName("textarea");
+    const textareas = this.getWindow()?.querySelectorAll("textarea, [contenteditable]");
 
     for (const textarea of textareas || []) {
       if (document.activeElement === textarea) focusingTextArea = true;
@@ -262,7 +262,7 @@ export class AppProcess extends Process {
   public unfocusActiveElement() {
     const el = document.activeElement as HTMLButtonElement;
 
-    if (!el || el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) return;
+    if (!el || el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement || el.isContentEditable) return;
 
     el.blur();
   }

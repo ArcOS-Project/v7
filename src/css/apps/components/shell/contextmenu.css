@@ -8,7 +8,7 @@
   background-color: var(--glass-bg);
   backdrop-filter: blur(10px);
   color: var(--fg);
-  border: var(--win-border);
+  border: var(--border);
   border-radius: var(--win-border-rad);
   box-sizing: border-box;
   padding: 5px;
@@ -42,11 +42,6 @@
   visibility: visible;
   transform: scaleY(100%);
   pointer-events: initial !important;
-}
-
-#arcShell div.context-menu::before,
-#arcShell div.context-menu div.sub-items::before {
-  opacity: 0.08;
 }
 
 #arcShell div.context-menu button.menu-item {
@@ -103,8 +98,9 @@
 }
 
 #arcShell div.context-menu hr {
-  margin: 5px;
+  margin: 5px 0;
   border: var(--button-glass-bg) 1px solid;
+  border-top: none;
 }
 
 #arcShell div.context-menu.compact {

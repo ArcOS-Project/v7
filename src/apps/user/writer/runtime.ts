@@ -5,7 +5,7 @@ import { getDirectoryName, getParentDirectory } from "$ts/fs/util";
 import { TextEditorIcon } from "$ts/images/apps";
 import { WarningIcon } from "$ts/images/dialog";
 import { DriveIcon } from "$ts/images/filesystem";
-import { DefaultMimeIcon } from "$ts/images/mime";
+import { DefaultMimeIcon, TextMimeIcon } from "$ts/images/mime";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppKeyCombinations } from "$types/accelerator";
@@ -59,7 +59,7 @@ export class WriterRuntime extends AppProcess {
           type: "size",
           caption: `Reading file`,
           subtitle: path,
-          icon: TextEditorIcon,
+          icon: TextMimeIcon,
         },
         this.pid
       );
