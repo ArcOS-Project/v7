@@ -34,5 +34,9 @@ export const PdfViewerApp: App = {
     runtime: PdfViewerRuntime,
     component: PdfViewer as any,
   },
+  opens: {
+    extensions: [".pdf"],
+    mimeTypes: ["application/pdf"],
+  },
   id: "PdfViewer",
 };
