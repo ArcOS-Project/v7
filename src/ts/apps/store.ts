@@ -16,6 +16,7 @@ import { HexEditorApp } from "$apps/user/hexedit/metadata";
 import { ImageViewerApp } from "$apps/user/imageviewer/metadata";
 import { LoggingApp } from "$apps/user/logging/metadata";
 import { MediaPlayerApp } from "$apps/user/mediaplayer/metadata";
+import { PdfViewerApp } from "$apps/user/pdfviewer/metadata";
 import { ProcessesApp } from "$apps/user/processes/metadata";
 import { SystemSettings } from "$apps/user/settings/metadata";
 import { TestApp } from "$apps/user/test/metadata";
@@ -46,6 +47,7 @@ export const BuiltinApps: AppStorage = [
   FsNewFileApp,
   WriterApp,
   ImageViewerApp,
+  PdfViewerApp,
 ];
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];

@@ -224,7 +224,7 @@ export const TimeFrames: Record<string, string> = {
 };
 
 export const DefaultMimeIcons: Record<string, string[]> = {
-  [ArcAppMimeIcon]: [".appmod"],
+  [ArcAppMimeIcon]: [".appmod", ".msl"],
   [JsonMimeIcon]: [".json"],
   [PdfMimeIcon]: [".pdf"],
   [SvgMimeIcon]: [".svg"],
