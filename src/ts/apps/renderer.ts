@@ -121,37 +121,35 @@ export class AppRenderer extends Process {
 
     if (data.core) window.classList.add("core");
     else {
-      window.style.maxWidth = `${data.maxSize.w}px`;
-      window.style.maxHeight = `${data.maxSize.h}px`;
-      window.style.minWidth = `${data.minSize.w}px`;
-      window.style.minHeight = `${data.minSize.h}px`;
-      window.style.width = `${data.size.w}px`;
-      window.style.height = `${data.size.h}px`;
+      window.style.maxWidth = `${data.maxSize?.w}px`;
+      window.style.maxHeight = `${data.maxSize?.h}px`;
+      window.style.minWidth = `${data.minSize?.w}px`;
+      window.style.minHeight = `${data.minSize?.h}px`;
+      window.style.width = `${data.size?.w}px`;
+      window.style.height = `${data.size?.h}px`;
 
       if (!data.overlay) {
-        if (data.position.centered) {
-          const x = data.position.x || (document.body.offsetWidth - data.size.w) / 2;
-          const y = data.position.y || (document.body.offsetHeight - data.size.h) / 2;
+        if (data.position?.centered) {
+          const x = data.position?.x || (document.body.offsetWidth - data.size?.w) / 2;
+          const y = data.position?.y || (document.body.offsetHeight - data.size?.h) / 2;
 
           window.style.top = `${y}px`;
           window.style.left = `${x}px`;
           window.style.transform = `translate3d(0px, 0px, 0px)`;
-        } else if (`${data.position.x}` && `${data.position.y}`) {
-          window.style.top = `${data.position.y}px`;
-          window.style.left = `${data.position.x}px`;
+        } else if (`${data.position?.x}` && `${data.position?.y}`) {
+          window.style.top = `${data.position?.y}px`;
+          window.style.left = `${data.position?.x}px`;
         } else {
           throw new Error(`Attempted to create a window without valid position`);
         }
       }
 
-      if (data.state.resizable) window.classList.add("resizable");
-      if (data.state.minimized) window.classList.add("minimized");
-      if (data.state.maximized) window.classList.add("maximized");
-      if (data.state.fullscreen) window.classList.add("fullscreen");
+      if (data.state?.resizable) window.classList.add("resizable");
+      if (data.state?.minimized) window.classList.add("minimized");
+      if (data.state?.maximized) window.classList.add("maximized");
+      if (data.state?.fullscreen) window.classList.add("fullscreen");
     }
   }
-
-  centerWindow(pid: number) {}
 
   _windowEvents(pid: number, window: HTMLDivElement, titlebar: HTMLDivElement | undefined, data: App) {
     this.disposedCheck();

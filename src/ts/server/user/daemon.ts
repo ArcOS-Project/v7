@@ -44,6 +44,7 @@ import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultMimeIcons } from "./store";
 import type { LanguageExecutionError } from "$ts/msl/error";
+import { tryJsonParse, validateObject } from "$ts/json";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -1902,5 +1903,20 @@ export class UserDaemon extends Process {
 
     await this.appStore?.refresh();
     if (deleteFiles) await this.fs.deleteItem(app.workingDirectory);
+  }
+
+  async installAppFromPath(path: string) {
+    const contents = await this.fs.readFile(path);
+    if (!contents) return "failed to read file";
+    try {
+      const text = arrayToText(contents);
+      const json = tryJsonParse<ThirdPartyApp>(text);
+
+      if (typeof json !== "object") return "failed to convert to JSON";
+
+      if (!json.metadata || !json.entrypoint || !json.thirdParty || !json.workingDirectory) return "missing properties";
+
+      this.installApp(json);
+    } catch {}
   }
 }
