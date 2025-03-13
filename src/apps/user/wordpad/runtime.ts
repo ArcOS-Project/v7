@@ -1,12 +1,15 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { arrayToText } from "$ts/fs/convert";
+import { arrayToText, textToBlob } from "$ts/fs/convert";
 import { TextEditorIcon } from "$ts/images/apps";
 import { WarningIcon } from "$ts/images/dialog";
+import { DriveIcon } from "$ts/images/filesystem";
 import type { ProcessHandler } from "$ts/process/handler";
 import { detectJavaScript } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
+import { fromExtension } from "human-filetypes";
+import { WordPadAltMenu } from "./altmenu";
 
 export class WordPadRuntime extends AppProcess {
   openedFile = Store<string>();
@@ -23,6 +26,8 @@ export class WordPadRuntime extends AppProcess {
 
   async render({ path }: { path: string }) {
     if (path) this.readFile(path);
+
+    this.altMenu.set(WordPadAltMenu(this));
   }
 
   async readFile(path: string) {
@@ -69,5 +74,66 @@ export class WordPadRuntime extends AppProcess {
         true
       );
     }
+  }
+
+  async saveChanges() {
+    const opened = this.openedFile();
+    const filename = this.filename();
+
+    if (!opened) return await this.saveAs();
+
+    const prog = await this.userDaemon!.FileProgress(
+      {
+        type: "size",
+        caption: `Saving ${filename}`,
+        subtitle: `Writing ${opened}`,
+        icon: DriveIcon,
+      },
+      this.pid
+    );
+
+    await this.fs.writeFile(opened, textToBlob(this.editor().innerHTML), async (progress) => {
+      await prog.show();
+      prog.setMax(progress.max);
+      prog.setDone(progress.value);
+    });
+
+    await prog.stop();
+  }
+
+  async saveAs() {
+    const [path] = await this.userDaemon!.LoadSaveDialog({
+      title: "Choose where to save the file",
+      icon: TextEditorIcon,
+      startDir: "U:/",
+      isSave: true,
+      saveName: this.openedFile() ? this.filename() : "",
+    });
+
+    if (!path) return;
+
+    this.openedFile.set(path);
+    await this.saveChanges();
+    this.openedFile.set(path);
+    this.mimetype.set(fromExtension(this.filename()));
+    this.windowTitle.set(this.filename());
+  }
+
+  async openFile() {
+    const [path] = await this.userDaemon!.LoadSaveDialog({
+      title: "Select a file to open",
+      icon: TextEditorIcon,
+      startDir: "U:/",
+    });
+
+    if (!path) return;
+
+    this.readFile(path);
+  }
+
+  formatDoc(cmd: string, value: any = null) {
+    if (cmd === "fontSize") value = +value;
+
+    document.execCommand(cmd, false, value);
   }
 }

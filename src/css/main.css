@@ -33,6 +33,10 @@ body {
   -webkit-user-drag: none !important;
 }
 
+font[size] {
+  font-size: revert-layer !important;
+}
+
 .fullscreen {
   position: fixed;
   top: 0;

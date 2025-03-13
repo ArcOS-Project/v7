@@ -179,7 +179,7 @@ export class WriterRuntime extends AppProcess {
   async saveAs() {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Choose where to save the file",
-      icon: TextEditorIcon,
+      icon: TextMimeIcon,
       startDir: "U:/",
       isSave: true,
       saveName: this.openedFile() ? this.filename() : "",
@@ -202,7 +202,7 @@ export class WriterRuntime extends AppProcess {
   async openFile() {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Select a file to open",
-      icon: TextEditorIcon,
+      icon: TextMimeIcon,
       startDir: "U:/",
     });
 
