@@ -1880,4 +1880,27 @@ export class UserDaemon extends Process {
       });
     });
   }
+
+  async installApp(data: ThirdPartyApp) {
+    this.preferences.update((v) => {
+      v.userApps[data.id] = data;
+      return v;
+    });
+
+    await this.appStore?.refresh();
+  }
+
+  async deleteApp(id: string, deleteFiles = false) {
+    const app = this.preferences().userApps[id];
+
+    if (!app) return false;
+
+    this.preferences.update((v) => {
+      delete v.userApps[id];
+      return v;
+    });
+
+    await this.appStore?.refresh();
+    if (deleteFiles) await this.fs.deleteItem(app.workingDirectory);
+  }
 }
