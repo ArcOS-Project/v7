@@ -8,6 +8,7 @@
 @import url("./window/fields.css");
 @import url("./window/code.css");
 @import url("./window/scrollbars.css");
+@import url("./window/snapping.css");
 
 div.window:not(.core) {
   position: absolute;

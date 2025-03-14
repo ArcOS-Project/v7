@@ -164,3 +164,103 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
     ],
   };
 }
+
+export function WindowSystemContextMenu(runtime: ShellRuntime): AppContextMenu {
+  return {
+    "_window-titlebar": [
+      {
+        caption: "App Info",
+        image: AppsIcon,
+        action: (proc: AppProcess) => {
+          proc.spawnOverlayApp("AppInfo", +proc.env.get("shell_pid"), proc.app.id);
+        },
+      },
+      { sep: true },
+      {
+        caption: "Minimize",
+        action: (proc: AppProcess) => {
+          proc.handler.renderer?.toggleMinimize(proc.pid);
+        },
+        icon: "chevron-down",
+        disabled: (proc: AppProcess) => !proc.app.data.controls.minimize,
+        isActive: (proc: AppProcess) => !!proc.getWindow()?.classList.contains("minimized"),
+      },
+      {
+        caption: "Maximize",
+        action: (proc: AppProcess) => {
+          proc.handler.renderer?.toggleMaximize(proc.pid);
+        },
+        icon: "chevron-up",
+        disabled: (proc: AppProcess) => !proc.app.data.controls.maximize,
+        isActive: (proc: AppProcess) => !!proc.getWindow()?.classList.contains("maximized"),
+      },
+      { sep: true },
+      {
+        caption: "Window snapping",
+        icon: "fullscreen",
+        disabled: (proc: AppProcess) => !proc.app.data.controls.maximize,
+        isActive: (proc: AppProcess) => !!proc.getWindow()?.classList.contains("snapped"),
+        subItems: [
+          {
+            caption: "None",
+            icon: "x",
+            action: (proc: AppProcess) => runtime.handler.renderer?.unsnapWindow(proc.pid),
+          },
+          { sep: true },
+          {
+            caption: "Left",
+            icon: "arrow-left",
+            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc.pid, "left"),
+          },
+          {
+            caption: "Right",
+            icon: "arrow-right",
+            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc.pid, "right"),
+          },
+          { sep: true },
+          {
+            caption: "Top",
+            icon: "arrow-up",
+            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc.pid, "top"),
+          },
+          {
+            caption: "Bottom",
+            icon: "arrow-down",
+            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc.pid, "bottom"),
+          },
+          { sep: true },
+          {
+            caption: "Top Left",
+            icon: "arrow-up-left",
+            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc.pid, "top-left"),
+          },
+          {
+            caption: "Top Right",
+            icon: "arrow-up-right",
+            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc.pid, "top-right"),
+          },
+          { sep: true },
+          {
+            caption: "Bottom Left",
+            icon: "arrow-down-left",
+            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc.pid, "bottom-left"),
+          },
+          {
+            caption: "Bottom Right",
+            icon: "arrow-down-right",
+            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc.pid, "bottom-right"),
+          },
+        ],
+      },
+      { sep: true },
+      {
+        caption: "Close",
+        action: (proc: AppProcess) => {
+          proc.closeWindow();
+        },
+        image: ShutdownIcon,
+        disabled: (proc: AppProcess) => !proc.app.data.controls.close,
+      },
+    ],
+  };
+}

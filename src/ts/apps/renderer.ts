@@ -11,6 +11,7 @@ import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
 import { BuiltinApps } from "./store";
+import { contextProps } from "$ts/context/actions.svelte";
 
 export class AppRenderer extends Process {
   currentState: number[] = [];
@@ -72,7 +73,7 @@ export class AppRenderer extends Process {
     if (data.glass) window.classList.add("glass");
 
     this._windowClasses(window, data);
-    this._windowEvents(process.pid, window, titlebar, data);
+    this._windowEvents(process, window, titlebar, data);
 
     if (data.overlay && process.parentPid) {
       const wrapper = document.createElement("div");
@@ -151,7 +152,7 @@ export class AppRenderer extends Process {
     }
   }
 
-  _windowEvents(pid: number, window: HTMLDivElement, titlebar: HTMLDivElement | undefined, data: App) {
+  _windowEvents(proc: AppProcess, window: HTMLDivElement, titlebar: HTMLDivElement | undefined, data: App) {
     this.disposedCheck();
 
     if (data.core || data.overlay) return;
@@ -164,14 +165,19 @@ export class AppRenderer extends Process {
       gpuAcceleration: false,
     });
 
+    if (titlebar) {
+      titlebar?.setAttribute("data-contextmenu", "_window-titlebar");
+      contextProps(titlebar, [proc]);
+    }
+
     window.addEventListener("mousedown", () => {
-      this.focusPid(pid);
+      this.focusPid(proc.pid);
     });
 
     this.focusedPid.subscribe((v) => {
       window.classList.remove("focused");
 
-      if (v === pid) window.classList.add("focused");
+      if (v === proc.pid) window.classList.add("focused");
     });
   }
 
@@ -215,6 +221,13 @@ export class AppRenderer extends Process {
 
       controls.append(minimize);
     }
+
+    const unsnap = document.createElement("button");
+
+    unsnap.className = "unsnap icon-arrow-down-left";
+    unsnap.addEventListener("click", () => this.unsnapWindow(process.pid));
+
+    controls.append(unsnap);
 
     if (data.controls.maximize) {
       const maximize = document.createElement("button");
@@ -369,6 +382,47 @@ export class AppRenderer extends Process {
     if (!process || !process.app) return;
 
     this.globalDispatch.dispatch("window-unmaximize", [pid]);
+  }
+
+  unsnapWindow(pid: number, dispatch = true) {
+    this.disposedCheck();
+
+    const window = this.target.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
+
+    if (!window || !window.classList.contains("snapped")) return;
+
+    window.classList.remove("snapped");
+
+    if (window.dataset.snapstate) {
+      window.classList.remove(window.dataset.snapstate);
+      window.removeAttribute("data-snapstate");
+    }
+
+    const process = this.handler.getProcess<AppProcess>(+pid);
+
+    if (!process || !process.app) return;
+
+    if (dispatch) this.globalDispatch.dispatch("window-unsnap", [pid]);
+  }
+
+  snapWindow(pid: number, variant: string) {
+    this.disposedCheck();
+
+    const window = this.target.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
+
+    if (!window) return;
+    if (window.dataset.snapstate) this.unsnapWindow(pid, false);
+    if (!window.classList.contains("snapped")) window.classList.add("snapped");
+
+    window.classList.add(variant);
+    window.classList.remove("maximized");
+    window.setAttribute("data-snapstate", variant);
+
+    const process = this.handler.getProcess<AppProcess>(+pid);
+
+    if (!process || !process.app) return;
+
+    this.globalDispatch.dispatch("window-snap", [pid, variant]);
   }
 
   toggleMinimize(pid: number) {

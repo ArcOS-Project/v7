@@ -1381,6 +1381,12 @@ export class UserDaemon extends Process {
 
     const currentWorkspace = proc.app.desktop;
 
+    if (currentWorkspace && this.getCurrentDesktop()?.id === currentWorkspace && this.handler.renderer?.focusedPid() === pid) {
+      this.switchToDesktopByUuid(destination);
+    }
+
+    await Sleep(100);
+
     destinationWorkspace.appendChild(window);
     proc.app.desktop = destination;
     this.handler.store.update((v) => {
@@ -1388,10 +1394,6 @@ export class UserDaemon extends Process {
 
       return v;
     });
-
-    if (currentWorkspace && this.getCurrentDesktop()?.id === currentWorkspace && this.handler.renderer?.focusedPid() === pid) {
-      this.switchToDesktopByUuid(destination);
-    }
   }
 
   startDriveNotifierWatcher() {

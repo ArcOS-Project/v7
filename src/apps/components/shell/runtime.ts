@@ -15,7 +15,7 @@ import type { SearchItem } from "$types/search";
 import type { UserPreferences, Workspace } from "$types/user";
 import Fuse, { type FuseResult } from "fuse.js";
 import { fetchWeatherApi } from "openmeteo";
-import { ShellContextMenu } from "./context";
+import { ShellContextMenu, WindowSystemContextMenu } from "./context";
 import { weatherCaptions, weatherClasses, weatherGradients, weatherIconColors, weatherIcons } from "./store";
 import type { WeatherInformation } from "./types";
 
@@ -335,7 +335,7 @@ export class ShellRuntime extends AppProcess {
 
     if (!(proc instanceof AppProcess)) return [];
 
-    const menu = Object.entries(proc.contextMenu);
+    const menu = Object.entries({ ...proc.contextMenu, ...WindowSystemContextMenu(this) });
 
     for (const [key, items] of menu) {
       if (scope.includes(key)) return items;

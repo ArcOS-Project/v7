@@ -4,6 +4,7 @@
   import { ComponentIcon } from "$ts/images/general";
   import { onMount, type Snippet } from "svelte";
   import AltMenu from "./CustomTitlebar/AltMenu.svelte";
+  import { contextProps } from "$ts/context/actions.svelte";
 
   const { process, children, className = "" }: { process: AppProcess; children?: Snippet; className?: string } = $props();
   const { windowTitle, windowIcon } = process;
@@ -28,7 +29,7 @@
   }
 </script>
 
-<div class="titlebar custom {className}">
+<div class="titlebar custom {className}" data-contextmenu="_window-titlebar" use:contextProps={[process]}>
   <div class="window-title nodrag">
     {#if children}
       {@render children()}

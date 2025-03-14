@@ -25,6 +25,9 @@ div.virtual-desktop-container > div.inner > div.workspace {
   position: relative;
   transition: scale 0.3s, border-radius 0.3s, background-color 0.3s;
   overflow: hidden;
+  display: grid;
+  grid-template-rows: [top] 50% [bottom] calc(50% - var(--taskbar-allocation));
+  grid-template-columns: [left] 50% [right] 50%;
 }
 
 div.virtual-desktop-container > div.inner.changing {

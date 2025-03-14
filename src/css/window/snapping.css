@@ -1,0 +1,78 @@
+div.window:not(.core).snapped {
+  position: static !important;
+  transform: none !important;
+  width: revert !important;
+  max-height: unset !important;
+  min-height: unset !important;
+  height: unset !important;
+  translate: none !important;
+  border-radius: 0 !important;
+  resize: none !important;
+}
+
+div.window:not(.core).snapped.left.tb-vertical-right,
+div.window:not(.core).snapped.top-left.tb-vertical-right,
+div.window:not(.core).snapped.bottom-left.tb-vertical-right,
+div.window:not(.core).snapped.right.tb-vertical,
+div.window:not(.core).snapped.top-right.tb-vertical,
+div.window:not(.core).snapped.bottom-right.tb-vertical,
+div.window:not(.core).snapped.bottom.tb-top,
+div.window:not(.core).snapped.top.tb-,
+div.window:not(.core).snapped.top-left.tb-,
+div.window:not(.core).snapped.top-right.tb-,
+div.window:not(.core).snapped.bottom-left.tb-top,
+div.window:not(.core).snapped.bottom-right.tb-top {
+  --taskbar-allocation: 0 !important;
+}
+
+div.window:not(.core).snapped.top-left {
+  grid-row: top;
+  grid-column: left;
+}
+
+div.window:not(.core).snapped.top {
+  grid-row: top;
+  grid-column: 1 / span 2;
+}
+
+div.window:not(.core).snapped.bottom {
+  grid-row: bottom;
+  grid-column: 1 / span 2;
+}
+
+div.window:not(.core).snapped.left {
+  grid-row: 1 / span 2;
+  grid-column: left;
+}
+
+div.window:not(.core).snapped.right {
+  grid-row: 1 / span 2;
+  grid-column: right;
+}
+
+div.window:not(.core).snapped.top-right {
+  grid-row: top;
+  grid-column: right;
+}
+
+div.window:not(.core).snapped.bottom-left {
+  grid-row: bottom;
+  grid-column: left;
+}
+
+div.window:not(.core).snapped.bottom-right {
+  grid-row: bottom;
+  grid-column: right;
+}
+
+div.window:not(.core):not(.snapped) div.titlebar div.controls button.unsnap {
+  display: none;
+}
+
+div.window:not(.core).snapped div.titlebar div.controls button.unsnap {
+  display: block;
+}
+
+div.window:not(.core).snapped div.titlebar div.controls button.maximize {
+  display: none;
+}
