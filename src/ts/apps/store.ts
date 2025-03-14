@@ -1,3 +1,4 @@
+import { AcceleratorOverviewApp } from "$apps/components/acceleratoroverview/metadata";
 import { AppInfoApp } from "$apps/components/appinfo/metadata";
 import { FsNewFileApp } from "$apps/components/fsnewfile/metadata";
 import { FsNewFolderApp } from "$apps/components/fsnewfolder/metadata";
@@ -50,6 +51,7 @@ export const BuiltinApps: AppStorage = [
   ImageViewerApp,
   PdfViewerApp,
   LightsOffApp,
+  AcceleratorOverviewApp,
 ];
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];

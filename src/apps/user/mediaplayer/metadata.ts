@@ -45,4 +45,9 @@ export const MediaPlayerApp: App = {
   position: { centered: true },
   id: "MediaPlayer",
   glass: false,
+  acceleratorDescriptions: {
+    "Alt+Shift+O": "Open the file location of the playing file",
+    "Alt+O": "Open a file to play",
+    "Alt+A": "Add a media file to the queue",
+  },
 };

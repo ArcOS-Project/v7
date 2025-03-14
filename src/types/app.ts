@@ -29,6 +29,7 @@ export interface App {
     mimeTypes?: string[];
   };
   elevated?: boolean;
+  acceleratorDescriptions?: Record<string, string>; // <[combo in One+Two+Key format], description>
 }
 
 export interface ThirdPartyApp {
@@ -49,6 +50,7 @@ export interface ThirdPartyApp {
     extensions?: string[];
     mimeTypes?: string[];
   };
+  acceleratorDescriptions?: Record<string, string>; // <[combo in One+Two+Key format], description>
 }
 
 export type ScriptedApp = Omit<App, "assets">;

@@ -20,7 +20,7 @@ export function FileMenu(runtime: MediaPlayerRuntime): ContextMenuItem {
         action() {
           runtime.addToQueue();
         },
-        accelerator: "Alt+O",
+        accelerator: "Alt+A",
       },
       {
         caption: "Open file location",
@@ -38,7 +38,7 @@ export function FileMenu(runtime: MediaPlayerRuntime): ContextMenuItem {
           runtime.closeWindow();
         },
         image: ShutdownIcon,
-        accelerator: "Alt+Q",
+        accelerator: "Ctrl+Q",
       },
     ],
   };

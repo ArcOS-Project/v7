@@ -35,4 +35,9 @@ export const ArcShellApp: App = {
   autoRun: true,
   core: true,
   hidden: true,
+  acceleratorDescriptions: {
+    "Ctrl+Q": "Close the currently focused application",
+    "Alt+[": "Switch to the previous workspace",
+    "Alt+]": "Switch to the next workspace",
+  },
 };

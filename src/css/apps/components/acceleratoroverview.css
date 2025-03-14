@@ -1,0 +1,86 @@
+#AcceleratorOverview > div.body {
+  overflow-y: scroll;
+}
+
+#AcceleratorOverview > div.body div.header {
+  padding: 10px 15px;
+  padding-bottom: 0;
+}
+
+#AcceleratorOverview > div.body div.header h1 {
+  font-size: 18px;
+}
+
+#AcceleratorOverview > div.body div.header p {
+  opacity: 0.5;
+}
+
+#AcceleratorOverview > div.body div.app-shortcuts {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+#AcceleratorOverview > div.body div.shortcut {
+  border-radius: 10px;
+  border: var(--button-glass-bg) 1px solid;
+  padding: 10px;
+  width: 250px;
+  height: 100px;
+  transition: scale 0.3s, box-shadow 0.3s, background-color 0.3s;
+}
+
+#AcceleratorOverview > div.body div.shortcut:hover {
+  scale: 1.05;
+  background-color: var(--button-glass-bg);
+  box-shadow: var(--secondary-box-shadow);
+}
+
+#AcceleratorOverview > div.body div.shortcuts div.app {
+  border-bottom: var(--button-bg) 1px solid;
+  padding: 20px 15px;
+}
+
+#AcceleratorOverview > div.body div.shortcuts div.app:last-child {
+  border-bottom: none;
+}
+
+#AcceleratorOverview > div.body div.shortcuts div.app h1 {
+  font-size: 22px;
+  margin-bottom: 15px;
+}
+
+#AcceleratorOverview > div.body div.shortcuts div.keys {
+  display: flex;
+  gap: 10px;
+  align-items: start;
+  width: 150px;
+  min-width: 270px;
+  margin-bottom: 10px;
+}
+#AcceleratorOverview > div.body div.shortcuts div.key {
+  padding: 0 7px;
+  line-height: 25px;
+  text-align: center;
+  text-transform: uppercase;
+
+  border-radius: 5px;
+  background-color: var(--button-hover-bg);
+  border-bottom: var(--button-bg) 5px solid;
+  min-width: 25px;
+  height: 30px;
+  width: fit-content;
+  font-weight: bold;
+  border-radius: 5px 5px 10px 10px;
+  font-size: 12px;
+  font-family: "Source Code Pro", monospace;
+}
+
+#AcceleratorOverview > div.body div.shortcuts span.plus {
+  opacity: 0.5;
+  line-height: 25px;
+  height: 25px;
+  font-size: 12px;
+  display: block;
+}

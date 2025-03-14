@@ -36,4 +36,13 @@ export const FileManagerApp: App = {
   },
   glass: true,
   id: "fileManager",
+  acceleratorDescriptions: {
+    Del: "Delete the selected items",
+    "Alt+Enter": "View item details of selected item",
+    F2: "Rename the selected item",
+    Up: "Move selection up using the keyboard",
+    Down: "Move selection down using the keyboard",
+    "Shift+Enter": "Opens a single selected file with an app of your choosing",
+    Enter: "Opens one or more selected items",
+  },
 };

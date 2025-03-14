@@ -46,4 +46,10 @@ export const WriterApp: App = {
     runtime: WriterRuntime,
   },
   id: "writer",
+  acceleratorDescriptions: {
+    "Alt+O": "Select a file to edit",
+    "Alt+Shift+S": "Save file under a different name",
+    "Alt+S": "Save file",
+    F3: "Open Search & Replace",
+  },
 };
