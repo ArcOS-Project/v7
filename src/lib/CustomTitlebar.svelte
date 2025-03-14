@@ -27,6 +27,10 @@
   function close() {
     process.closeWindow();
   }
+
+  function unsnap() {
+    renderer?.unsnapWindow(process.pid);
+  }
 </script>
 
 <div class="titlebar custom {className}" data-contextmenu="_window-titlebar" use:contextProps={[process]}>
@@ -43,6 +47,7 @@
     {#if data.controls.minimize && !data.overlay}
       <button class="minimize icon-chevron-down" aria-label="minimize" onclick={minimize}></button>
     {/if}
+    <button class="unsnap icon-arrow-down-left" aria-label="unsnal" onclick={unsnap}></button>
     {#if data.controls.maximize && !data.overlay}
       <button class="maximize icon-chevron-up" aria-label="maximize" onclick={maximize}></button>
     {/if}

@@ -12,7 +12,7 @@
   border-radius: var(--win-border-rad);
   box-sizing: border-box;
   padding: 5px;
-  transition: all 0.2s, top 0s, left 0s;
+  transition: all 0.2s, top 0s, left 0s, pointer-events 0s;
   display: flex;
   flex-direction: column;
   transform-origin: top center;
@@ -30,7 +30,7 @@
 }
 
 #arcShell div.context-menu * {
-  pointer-events: none;
+  pointer-events: none !important;
 }
 
 #arcShell div.context-menu.show * {
