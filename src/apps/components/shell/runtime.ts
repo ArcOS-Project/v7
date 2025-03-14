@@ -141,6 +141,14 @@ export class ShellRuntime extends AppProcess {
         action: () => {
           this.userDaemon?.nextDesktop();
         },
+      },
+      {
+        ctrl: true,
+        key: "/",
+        action: () => {
+          this.spawnOverlayApp("AcceleratorOverview", this.pid);
+        },
+        global: true,
       }
     );
 

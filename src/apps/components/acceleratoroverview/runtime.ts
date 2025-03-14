@@ -48,6 +48,8 @@ export class AcceleratorOverviewRuntime extends AppProcess {
   }
 
   async render() {
+    if (await this.closeIfSecondInstance()) return;
+
     const apps = await this.userDaemon?.appStore?.get();
 
     if (!apps) throw new Error("ERR_NO_DAEMON");
