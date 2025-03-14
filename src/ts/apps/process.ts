@@ -18,6 +18,7 @@ import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
 import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
+import type { Draggable } from "@neodrag/vanilla";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
 export class AppProcess extends Process {
@@ -38,6 +39,7 @@ export class AppProcess extends Process {
   public readonly contextMenu: AppContextMenu = {};
   public altMenu = Store<ContextMenuItem[]>([]);
   public windowFullscreen = Store<boolean>(false);
+  draggable: Draggable | undefined;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, ...args: any[]) {
     super(handler, pid, parentPid);
@@ -185,7 +187,7 @@ export class AppProcess extends Process {
   getWindow() {
     const window = document.querySelector(`div.window[data-pid="${this.pid}"]`);
 
-    return window || undefined;
+    return (window as HTMLDivElement) || undefined;
   }
 
   hasOverlays(): boolean {

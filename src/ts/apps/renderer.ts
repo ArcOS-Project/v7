@@ -157,13 +157,15 @@ export class AppRenderer extends Process {
 
     if (data.core || data.overlay) return;
 
-    new Draggable(window, {
+    const draggable = new Draggable(window, {
       bounds: { top: 0, left: 0, right: 0 },
       handle: `.titlebar`,
       cancel: `button, .nodrag`,
       legacyTranslate: false,
       gpuAcceleration: false,
     });
+
+    proc.draggable = draggable;
 
     if (titlebar) {
       titlebar?.setAttribute("data-contextmenu", "_window-titlebar");
@@ -355,33 +357,46 @@ export class AppRenderer extends Process {
   toggleMaximize(pid: number) {
     this.disposedCheck();
 
-    const window = this.target.querySelector(`div.window[data-pid="${pid}"]`);
-
+    const window = this.target.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
     if (!window) return;
 
     window.classList.toggle("maximized");
+    this.updateDraggableDisabledState(pid, window);
 
-    const process = this.handler.getProcess<AppProcess>(+pid);
+    this.globalDispatch.dispatch(window.classList.contains("maximized") ? "window-maximize" : "window-unmaximize", [pid]);
+  }
 
-    if (!process || !process.app) return;
+  updateDraggableDisabledState(pid: number, window: HTMLDivElement) {
+    const process = this.handler.getProcess<AppProcess>(pid);
 
-    this.globalDispatch.dispatch(process.app.data.state.maximized ? "window-maximize" : "window-unmaximize", [pid]);
+    if (!process || !process.draggable) return;
+
+    process.draggable.options = {
+      ...process.draggable.options,
+      disabled:
+        window.classList.contains("snapped") ||
+        window.classList.contains("maximized") ||
+        window.classList.contains("minimized") ||
+        window.classList.contains("fullscreen") ||
+        window.classList.contains("overlay"),
+    };
   }
 
   unMinimize(pid: number) {
     this.disposedCheck();
 
-    const window = this.target.querySelector(`div.window[data-pid="${pid}"]`);
+    const window = this.target.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
 
     if (!window || !window.classList.contains("minimized")) return;
 
     window.classList.remove("minimized");
-
     const process = this.handler.getProcess<AppProcess>(+pid);
 
     if (!process || !process.app) return;
 
     this.globalDispatch.dispatch("window-unmaximize", [pid]);
+
+    this.updateDraggableDisabledState(pid, window);
   }
 
   unsnapWindow(pid: number, dispatch = true) {
@@ -398,11 +413,9 @@ export class AppRenderer extends Process {
       window.removeAttribute("data-snapstate");
     }
 
-    const process = this.handler.getProcess<AppProcess>(+pid);
-
-    if (!process || !process.app) return;
-
     if (dispatch) this.globalDispatch.dispatch("window-unsnap", [pid]);
+
+    this.updateDraggableDisabledState(pid, window);
   }
 
   snapWindow(pid: number, variant: string) {
@@ -418,35 +431,30 @@ export class AppRenderer extends Process {
     window.classList.remove("maximized");
     window.setAttribute("data-snapstate", variant);
 
-    const process = this.handler.getProcess<AppProcess>(+pid);
-
-    if (!process || !process.app) return;
-
     this.globalDispatch.dispatch("window-snap", [pid, variant]);
+    this.updateDraggableDisabledState(pid, window);
   }
 
   toggleMinimize(pid: number) {
     this.disposedCheck();
 
-    const window = this.target.querySelector(`div.window[data-pid="${pid}"]`);
+    const window = this.target.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
 
     if (!window) return;
 
     window.classList.toggle("minimized");
 
-    const process = this.handler.getProcess<AppProcess>(+pid);
-
-    if (!process || !process.app) return;
-
     const minimized = window.classList.contains("minimized");
     if (minimized) this.focusedPid.set(-1);
 
     this.globalDispatch.dispatch(minimized ? "window-minimize" : "window-unminimize", [pid]);
+    this.updateDraggableDisabledState(pid, window);
   }
+
   toggleFullscreen(pid: number) {
     this.disposedCheck();
 
-    const window = this.target.querySelector(`div.window[data-pid="${pid}"]`);
+    const window = this.target.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
 
     if (!window) return;
 
@@ -460,6 +468,7 @@ export class AppRenderer extends Process {
       pid,
       process.app.desktop,
     ]);
+    this.updateDraggableDisabledState(pid, window);
   }
 
   getAppInstances(id: string, originPid?: number) {

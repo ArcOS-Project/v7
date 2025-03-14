@@ -4,6 +4,8 @@ div.window:not(.core).snapped {
   width: revert !important;
   max-height: unset !important;
   min-height: unset !important;
+  max-width: unset !important;
+  max-width: unset !important;
   height: unset !important;
   translate: none !important;
   border-radius: 0 !important;
