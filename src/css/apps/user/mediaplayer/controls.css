@@ -1,0 +1,80 @@
+#MediaPlayer div.media-controls button {
+  border-radius: 0;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  font-size: 20px;
+  padding: 0;
+  box-shadow: none;
+  min-width: unset;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#MediaPlayer > div.body div.media-controls button.fullscreen-toggle {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  /* background-color: transparent; */
+  font-size: 16px;
+  margin-left: 5px;
+}
+
+#MediaPlayer div.media-controls button.previous,
+#MediaPlayer div.media-controls button.next,
+#MediaPlayer div.media-controls button.forward,
+#MediaPlayer div.media-controls button.reverse {
+  width: 30px;
+  height: 30px;
+  background-color: transparent;
+}
+
+#MediaPlayer > div.body div.media-controls button.stop {
+  width: 26px;
+  height: 26px;
+  font-size: 14px;
+  background-color: transparent;
+}
+#MediaPlayer > div.body div.media-controls button.previous,
+#MediaPlayer > div.body div.media-controls button.next {
+  font-size: 16px;
+  background-color: transparent;
+}
+
+#MediaPlayer > div.body div.media-controls button.previous::before,
+#MediaPlayer > div.body div.media-controls button.next::before {
+  height: 16px;
+}
+
+#MediaPlayer > div.body div.media-controls div.group {
+  display: flex;
+  border-radius: var(--button-border-rad);
+  overflow: hidden;
+  gap: 10px;
+}
+
+#MediaPlayer > div.body div.media-controls div.timestamp {
+  margin-left: auto;
+}
+
+#MediaPlayer div.media-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 15px;
+}
+
+#MediaPlayer.fullscreen > div.body div.media-controls {
+  padding: 15px;
+  transition: margin-bottom 0.3s;
+}
+
+#MediaPlayer.fullscreen > div.body div.hide-controls div.media-controls {
+  margin-bottom: -93px;
+}
+
+#MediaPlayer.fullscreen > div.body div.container:not(.hide-controls) div.video-wrapper {
+  height: calc(100% - 93px) !important;
+}

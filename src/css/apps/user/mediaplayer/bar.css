@@ -1,0 +1,41 @@
+#MediaPlayer div.bar {
+  margin: 0 15px;
+  width: calc(100% - 30px);
+  margin-top: 15px;
+  height: 7px;
+  background-color: var(--button-glass-bg);
+  border-radius: 3.5px;
+  border: var(--button-glass-bg) 1px solid;
+  overflow: hidden;
+  min-height: 7px;
+}
+
+#MediaPlayer div.bar.bounce div.inner {
+  width: 20%;
+  animation: bounce 1.5s infinite;
+}
+
+@keyframes bounce {
+  0% {
+    translate: 0%;
+  }
+
+  50% {
+    translate: 400%;
+  }
+
+  100% {
+    translate: 0;
+  }
+}
+
+#MediaPlayer div.bar div.inner {
+  height: 5px;
+  width: var(--w);
+  background-color: var(--accent);
+  border-radius: 2.5px;
+}
+
+#MediaPlayer.fullscreen > div.body div.bar {
+  margin-top: 0;
+}

@@ -1,0 +1,69 @@
+#MediaPlayer > div.body > div.queue {
+  width: 200px;
+  height: 100%;
+  border-left: var(--win-border);
+  padding: 10px;
+  padding-right: 2px;
+  overflow-y: scroll;
+}
+
+#MediaPlayer.fullscreen > div.body > div.queue {
+  display: none;
+}
+
+#MediaPlayer > div.body > div.queue > div {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  padding: 5px;
+  background-color: transparent;
+  margin-bottom: 5px;
+  border-radius: 8px;
+}
+
+#MediaPlayer > div.body > div.queue > div:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#MediaPlayer > div.body > div.queue > div:active {
+  background-color: var(--button-glass-active-bg);
+}
+
+#MediaPlayer > div.body > div.queue > div.selected {
+  background-color: var(--accent-transparent);
+}
+
+#MediaPlayer > div.body > div.queue > div > span.lucide {
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+}
+
+#MediaPlayer > div.body > div.queue > div > span.name {
+  white-space: nowrap;
+  max-width: calc(100% - 29px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#MediaPlayer > div.body > div.queue > div button.lucide {
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin-left: auto;
+  background-color: transparent;
+  min-width: 24px;
+}
+
+#MediaPlayer > div.body > div.queue > div:not(:hover) button.lucide {
+  display: none;
+}
