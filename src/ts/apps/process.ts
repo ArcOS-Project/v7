@@ -19,6 +19,7 @@ import { Sleep } from "../sleep";
 import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
 import type { Draggable } from "@neodrag/vanilla";
+import type { ShellRuntime } from "$apps/components/shell/runtime";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
 export class AppProcess extends Process {
@@ -31,6 +32,7 @@ export class AppProcess extends Process {
   username: string = "";
   globalDispatch: GlobalDispatcher;
   userDaemon: UserDaemon | undefined;
+  shell: ShellRuntime | undefined;
   overridePopulatable: boolean = false;
   protected overlayStore: Record<string, App> = {};
   protected elevations: Record<string, ElevationData> = {};
@@ -53,8 +55,8 @@ export class AppProcess extends Process {
     this.windowTitle.set(app.data.metadata.name || "Application");
     this.windowIcon.set(app.data.metadata.icon || ComponentIcon);
     this.name = app.data.id;
-
     this.globalDispatch = this.kernel.getModule<GlobalDispatcher>("dispatch");
+    this.shell = this.handler.getProcess(+this.env.get("shell_pid"));
 
     const desktopProps = this.kernel.state?.stateProps["desktop"];
     const daemon: UserDaemon | undefined = desktopProps?.userDaemon || this.handler.getProcess(+this.env.get("userdaemon_pid"));
@@ -90,6 +92,8 @@ export class AppProcess extends Process {
       this.Log(`Can't close`);
       return;
     }
+
+    this.shell?.disposeProcessTrayIcons(this.pid);
 
     if (this.getWindow()?.classList.contains("fullscreen"))
       this.globalDispatch.dispatch("window-unfullscreen", [this.pid, this.app.desktop]);
