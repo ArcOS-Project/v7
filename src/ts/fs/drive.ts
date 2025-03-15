@@ -75,6 +75,10 @@ export class FilesystemDrive {
     return {
       files: [],
       dirs: [],
+      totalFiles: 0,
+      totalFolders: 0,
+      totalSize: 0,
+      shortcuts: {},
     };
   }
 
@@ -94,6 +98,7 @@ export class FilesystemDrive {
     return {
       dirs: [],
       files: [],
+      shortcuts: {},
     };
   }
 

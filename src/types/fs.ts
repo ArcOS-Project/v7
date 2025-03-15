@@ -43,6 +43,7 @@ export interface DirectoryReadReturn {
 export interface RecursiveDirectoryReadReturn {
   dirs: RecursiveDirectory[];
   files: FileEntry[];
+  shortcuts: ShortcutStore;
 }
 
 export type RecursiveDirectory = FolderEntry & {

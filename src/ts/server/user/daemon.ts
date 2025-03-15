@@ -20,7 +20,9 @@ import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import { AccountIcon, PasswordIcon, PersonalizationIcon } from "$ts/images/general";
 import { ImageMimeIcon } from "$ts/images/mime";
 import { ProfilePictures } from "$ts/images/pfp";
+import { tryJsonParse } from "$ts/json";
 import type { ArcMSL } from "$ts/msl";
+import type { LanguageExecutionError } from "$ts/msl/error";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { Sleep } from "$ts/sleep";
@@ -43,8 +45,7 @@ import type { Unsubscriber } from "svelte/store";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultMimeIcons } from "./store";
-import type { LanguageExecutionError } from "$ts/msl/error";
-import { tryJsonParse, validateObject } from "$ts/json";
+import { AdminBootstrapper } from "../admin";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -54,6 +55,7 @@ export class UserDaemon extends Process {
   public notifications = new Map<string, Notification>([]);
   public userInfo: UserInfo = DefaultUserInfo;
   public battery = Store<BatteryType | undefined>();
+  public admin: AdminBootstrapper | undefined;
   public appStore: ApplicationStorage | undefined;
   public Wallpaper = Store<Wallpaper>(Wallpapers.img0);
   public lastWallpaper = Store<string>("img0");
@@ -1930,5 +1932,6 @@ export class UserDaemon extends Process {
     if (!this.userInfo.admin) return;
 
     this.appStore?.loadOrigin("admin", () => AdminApps);
+    this.admin = await this.handler.spawn<AdminBootstrapper>(AdminBootstrapper, undefined, this.pid, this.token);
   }
 }

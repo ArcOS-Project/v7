@@ -18,6 +18,7 @@ import { fetchWeatherApi } from "openmeteo";
 import { ShellContextMenu, WindowSystemContextMenu } from "./context";
 import { weatherCaptions, weatherClasses, weatherGradients, weatherIconColors, weatherIcons } from "./store";
 import type { ShellTrayIcon, TrayIconDiscriminator, TrayIconOptions, WeatherInformation } from "./types";
+import { getIconPath } from "$ts/images";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
@@ -479,12 +480,14 @@ export class ShellRuntime extends AppProcess {
 
     for (const file of index) {
       result.push({
-        caption: file.name,
-        description: file.path,
+        caption: file.shortcut ? file.shortcut.name : file.name,
+        description: file.shortcut ? `Shortcut - ${file.path}` : file.path,
         action: () => {
-          this.userDaemon?.openFile(file.path);
+          this.userDaemon?.openFile(file.path, file.shortcut);
         },
-        image: this.userDaemon?.getMimeIconByFilename(file.name) || DefaultMimeIcon,
+        image:
+          (file.shortcut ? getIconPath(file.shortcut.icon) : this.userDaemon?.getMimeIconByFilename(file.name)) ||
+          DefaultMimeIcon,
       });
     }
 
@@ -523,7 +526,7 @@ export class ShellRuntime extends AppProcess {
 
     const recurse = (tree: RecursiveDirectoryReadReturn, path = "U:") => {
       for (const file of tree.files) {
-        result.push({ ...file, path: `${path}/${file.name}` });
+        result.push({ ...file, path: `${path}/${file.name}`, shortcut: tree.shortcuts[file.name] });
       }
       for (const dir of tree.dirs) {
         recurse(dir.children, `${path}/${dir.name}`);
