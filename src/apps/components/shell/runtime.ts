@@ -17,7 +17,7 @@ import Fuse, { type FuseResult } from "fuse.js";
 import { fetchWeatherApi } from "openmeteo";
 import { ShellContextMenu, WindowSystemContextMenu } from "./context";
 import { weatherCaptions, weatherClasses, weatherGradients, weatherIconColors, weatherIcons } from "./store";
-import type { WeatherInformation } from "./types";
+import type { ShellTrayIcon, TrayIconDiscriminator, TrayIconOptions, WeatherInformation } from "./types";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
@@ -31,6 +31,8 @@ export class ShellRuntime extends AppProcess {
   public searching = Store<boolean>(false);
   public SelectionIndex = Store<number>(0);
   public FullscreenCount = Store<Record<string, number>>({});
+  public trayIcons = Store<Record<TrayIconDiscriminator, ShellTrayIcon>>({});
+  public openedTrayPopup = Store<string>();
 
   private fileSystemIndex: PathedFileEntry[] = [];
   private readonly validContexMenuTags = ["button", "div", "span", "p", "h1", "h2", "h3", "h4", "h5", "img"];
@@ -99,6 +101,7 @@ export class ShellRuntime extends AppProcess {
       const actionCenterButton = document.querySelector("#arcShell button.action-center-button");
       const workspaceManager = document.querySelector("#arcShell div.virtual-desktops");
       const workspaceManagerButton = document.querySelector("#arcShell button.workspace-manager-button");
+      const systemTray = document.querySelector("#arcShell div.tray-icons");
 
       const composed = e.composedPath();
 
@@ -107,6 +110,8 @@ export class ShellRuntime extends AppProcess {
 
       if (actionCenter && actionCenterButton && !composed.includes(actionCenter) && !composed.includes(actionCenterButton))
         this.actionCenterOpened.set(false);
+
+      if (systemTray && !composed.includes(systemTray)) this.openedTrayPopup.set("");
 
       if (
         workspaceManager &&
@@ -572,5 +577,41 @@ export class ShellRuntime extends AppProcess {
 
     // Trigger the selected search result
     this.Trigger(results[index == -1 ? 0 : index].item);
+  }
+
+  createTrayIcon(pid: number, identifier: string, options: TrayIconOptions) {
+    const trayIcons = this.trayIcons();
+
+    if (trayIcons[`${pid}#${identifier}`]) return false;
+
+    trayIcons[`${pid}#${identifier}`] = { ...options, pid, identifier };
+
+    this.trayIcons.set(trayIcons);
+    this.globalDispatch.dispatch("tray-icon-create", [pid, identifier]);
+
+    return true;
+  }
+
+  disposeTrayIcon(pid: number, identifier: string) {
+    const trayIcons = this.trayIcons();
+    const discriminator: TrayIconDiscriminator = `${pid}#${identifier}`;
+
+    if (!trayIcons[discriminator]) return false;
+
+    delete trayIcons[discriminator];
+
+    this.trayIcons.set(trayIcons);
+    this.globalDispatch.dispatch("tray-icon-dispose", [pid, identifier]);
+  }
+
+  disposeProcessTrayIcons(pid: number) {
+    const trayIcons = this.trayIcons();
+
+    for (const id of Object.keys(trayIcons) as TrayIconDiscriminator[]) {
+      if (id.startsWith(`${pid}#`)) delete trayIcons[id];
+    }
+
+    this.trayIcons.set(trayIcons);
+    this.globalDispatch.dispatch("tray-icon-dispose", [pid]);
   }
 }

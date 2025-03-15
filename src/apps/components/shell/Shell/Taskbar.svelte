@@ -4,12 +4,13 @@
   import OpenedApps from "./Taskbar/OpenedApps.svelte";
   import PinnedApps from "./Taskbar/PinnedApps.svelte";
   import StartButton from "./Taskbar/StartButton.svelte";
-  import StatusTray from "./Taskbar/StatusTray.svelte";
-  import SystemArea from "./Taskbar/SystemArea.svelte";
+  import StatusArea from "./Taskbar/StatusArea.svelte";
+  import SystemTray from "./Taskbar/SystemTray.svelte";
+  import TrayIcon from "./Taskbar/SystemTray/TrayIcon.svelte";
   import WorkspaceManagerButton from "./Taskbar/WorkspaceManagerButton.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
-  const { userPreferences } = process;
+  const { userPreferences, trayIcons } = process;
 </script>
 
 <div
@@ -22,7 +23,14 @@
   <WorkspaceManagerButton {process} />
   <PinnedApps {process} />
   <OpenedApps {process} />
-  <StatusTray {process} />
-  <SystemArea {process} />
+  {#if Object.entries($trayIcons).length}
+    <div class="tray-icons">
+      {#each Object.entries($trayIcons) as [discriminator, icon] (discriminator)}
+        <TrayIcon {discriminator} {icon} {process} />
+      {/each}
+    </div>
+  {/if}
+  <StatusArea {process} />
+  <SystemTray {process} />
   <ActionCenterButton {process} />
 </div>

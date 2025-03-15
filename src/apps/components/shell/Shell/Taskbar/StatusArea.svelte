@@ -8,7 +8,7 @@
   const { battery } = process.userDaemon || {}!;
 </script>
 
-<div class="status-tray">
+<div class="status-area">
   <StackBusy {stackBusy} />
   {#if battery}
     <Battery {battery} userPreferences={process.userPreferences} />

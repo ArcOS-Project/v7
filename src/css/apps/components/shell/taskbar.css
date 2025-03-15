@@ -77,8 +77,9 @@ div.shell div.taskbar button.action-center-button span {
   font-size: 18px;
 }
 
-div.shell div.taskbar div.status-tray,
-div.shell div.taskbar div.system-area {
+div.shell div.taskbar div.clock,
+div.shell div.taskbar div.status-area,
+div.shell div.taskbar div.tray-icons {
   background-color: var(--button-glass-bg);
   height: 40px;
   display: flex;
@@ -87,10 +88,15 @@ div.shell div.taskbar div.system-area {
   border-radius: 8px;
 }
 
-div.shell div.taskbar div.status-tray {
+div.shell div.taskbar div.tray-icons {
+  padding: 0 3px;
+}
+
+div.shell div.taskbar div.status-area {
   gap: 10px;
 }
 
+div.shell div.taskbar div.tray-icons div.icon,
 div.shell div.taskbar div.stack-busy,
 div.shell div.taskbar div.battery {
   display: flex;
@@ -102,7 +108,7 @@ div.shell div.taskbar div.stack-busy span.lucide:not(.busy) {
   opacity: 0.5;
 }
 
-div.shell div.taskbar div.status-tray span.lucide {
+div.shell div.taskbar div.status-area span.lucide {
   font-size: 18px;
 }
 
@@ -142,4 +148,61 @@ div.shell div.taskbar div.pinned-apps > button {
 
 div.shell div.taskbar div.pinned-apps > button + button {
   margin-left: 3px;
+}
+
+#arcShell div.taskbar div.tray-icons > div.icon,
+#arcShell div.taskbar div.tray-icons > div.icon > button.trigger {
+  margin: 0;
+  padding: 0;
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  border: none;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+}
+
+#arcShell div.taskbar div.tray-icons > div.icon > button.trigger:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#arcShell div.taskbar div.tray-icons > div.icon > button.trigger:disabled {
+  opacity: 1;
+}
+
+#arcShell div.taskbar div.tray-icons > div.icon > button.trigger.active {
+  background-color: var(--accent-transparent);
+}
+
+#arcShell div.taskbar div.tray-icons > div.icon > button.trigger img {
+  height: 20px;
+}
+
+#arcShell div.taskbar div.tray-icons > div.icon > div.popup {
+  --w: 150px;
+  --h: 200px;
+  position: absolute;
+  top: calc(0px - var(--h) - 10px);
+  width: var(--w);
+  height: var(--h);
+  background-color: var(--win-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border: var(--border);
+  border-radius: var(--win-border-rad);
+  margin-top: 20px;
+  scale: 0.9;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+  transition: scale 0.2s, margin 0.2s, opacity 0.2s;
+}
+
+#arcShell div.taskbar div.tray-icons > div.icon > div.popup.visible {
+  opacity: 1;
+  margin-top: 0;
+  pointer-events: initial;
+  scale: 1;
 }

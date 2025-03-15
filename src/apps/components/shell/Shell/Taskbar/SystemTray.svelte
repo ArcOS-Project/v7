@@ -8,7 +8,4 @@
   // TODO: tray icons + popups
 </script>
 
-<div class="system-area">
-  <div class="tray-icons"></div>
-  <Clock {userPreferences} />
-</div>
+<Clock {userPreferences} />
