@@ -54,6 +54,8 @@ export const BuiltinApps: AppStorage = [
   AcceleratorOverviewApp,
 ];
 
+export const AdminApps: AppStorage = [];
+
 export const appShortcuts: [number, AppKeyCombinations][] = [];
 
 export const AppOrigins: Record<string, string> = {

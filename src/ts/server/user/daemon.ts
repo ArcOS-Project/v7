@@ -4,7 +4,7 @@ import type { IconPickerData } from "$apps/components/iconpicker/types";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import { AppProcess } from "$ts/apps/process";
 import { ApplicationStorage } from "$ts/apps/storage";
-import { BuiltinApps } from "$ts/apps/store";
+import { AdminApps, BuiltinApps } from "$ts/apps/store";
 import { darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 import { MessageBox } from "$ts/dialog";
 import { toForm } from "$ts/form";
@@ -1929,6 +1929,6 @@ export class UserDaemon extends Process {
 
     if (!this.userInfo.admin) return;
 
-    this.appStore?.loadOrigin("admin", () => []);
+    this.appStore?.loadOrigin("admin", () => AdminApps);
   }
 }
