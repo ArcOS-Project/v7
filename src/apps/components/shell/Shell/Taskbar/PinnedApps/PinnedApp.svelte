@@ -16,7 +16,7 @@
   }
 
   function spawn() {
-    process.spawnApp(appId);
+    process.spawnApp(appId, process.pid);
   }
 
   // TODO: context menu to unpin

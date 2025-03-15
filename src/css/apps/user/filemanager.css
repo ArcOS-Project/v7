@@ -34,7 +34,7 @@
 }
 
 #fileManager.overlay {
-  width: 700px !important;
-  height: 520px !important;
-  resize: none;
+  width: 700px;
+  height: 520px;
+  /* resize: none; */
 }

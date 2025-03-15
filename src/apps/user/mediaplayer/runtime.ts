@@ -96,6 +96,7 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   public Reset() {
+    if (this._disposed) return;
     if (!this.player) return;
 
     this.player.src = this.url.get();
@@ -103,6 +104,7 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   public async Play() {
+    if (this._disposed) return;
     if (!this.player) return;
 
     try {
@@ -111,6 +113,7 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   public async Pause() {
+    if (this._disposed) return;
     if (!this.player) return;
 
     try {
@@ -119,12 +122,14 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   public Seek(mod: number) {
+    if (this._disposed) return;
     if (!this.player) return;
 
     this.player.currentTime += mod;
   }
 
   public Stop() {
+    if (this._disposed) return;
     if (!this.player) return;
 
     try {
@@ -134,6 +139,7 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   public updateState() {
+    if (this._disposed) return this.player?.remove();
     if (!this.player)
       return {
         paused: true,
@@ -151,12 +157,14 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   public formatTime(seconds: number) {
+    if (this._disposed) return;
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   }
 
   public openFileLocation() {
+    if (this._disposed) return;
     const path = this.queue.get()[this.queueIndex()];
 
     if (!path) return;
@@ -165,6 +173,7 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   public async openFile() {
+    if (this._disposed) return;
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Select an audio or video file to open",
       icon: MediaPlayerIcon,
@@ -178,6 +187,7 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   async readFile(paths: string[], addToQueue = false) {
+    if (this._disposed) return;
     if (addToQueue && this.queue().length) {
       this.queue.update((v) => {
         v.push(...paths);
@@ -193,6 +203,7 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   nextSong() {
+    if (this._disposed) return;
     let index = this.queueIndex();
     const queue = this.queue();
 
@@ -204,6 +215,7 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   previousSong() {
+    if (this._disposed) return;
     let index = this.queueIndex();
 
     if (index - 1 < 0) {
@@ -214,11 +226,13 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   clearQueue() {
+    if (this._disposed) return;
     this.queueIndex.set(0);
     this.queue.set([]);
   }
 
   async handleSongChange(v: number) {
+    if (this._disposed) return;
     const path = this.queue()[v];
 
     if (!path) return;
@@ -263,6 +277,7 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   async addToQueue() {
+    if (this._disposed) return;
     const paths = await this.userDaemon!.LoadSaveDialog({
       title: "Select a file to add to the queue",
       icon: MediaPlayerIcon,
@@ -277,6 +292,7 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   moveQueueItem(sourceIndex: number, targetIndex: number) {
+    if (this._disposed) return;
     const currentQueue = this.queue(); // Get the current value of the queue store
     if (!currentQueue) return;
 
@@ -291,6 +307,7 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   async savePlaylist() {
+    if (this._disposed) return;
     const playlist = btoa(JSON.stringify(this.queue(), null, 2));
 
     const [path] = await this.userDaemon!.LoadSaveDialog({
@@ -306,6 +323,7 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   async loadPlaylist() {
+    if (this._disposed) return;
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Open playlist",
       icon: this.app.data.metadata.icon,
@@ -318,6 +336,7 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   async readPlaylist(path: string) {
+    if (this._disposed) return;
     try {
       const contents = await this.fs.readFile(path);
       if (!contents) throw new Error("Failed to read playlist");
@@ -347,6 +366,7 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   async createPlaylistShortcut() {
+    if (this._disposed) return;
     const paths = await this.userDaemon?.LoadSaveDialog({
       title: "Pick where to create the shortcut",
       icon: FolderIcon,
@@ -370,6 +390,7 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   async failedToPlay() {
+    if (this._disposed) return;
     MessageBox(
       {
         title: "Failed to play",
