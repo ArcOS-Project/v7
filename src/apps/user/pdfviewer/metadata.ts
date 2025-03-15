@@ -39,4 +39,5 @@ export const PdfViewerApp: App = {
     mimeTypes: ["application/pdf"],
   },
   id: "PdfViewer",
+  hidden: true,
 };

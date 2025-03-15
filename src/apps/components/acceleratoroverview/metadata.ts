@@ -41,4 +41,5 @@ export const AcceleratorOverviewApp: App = {
     component: AcceleratorOverview as any,
   },
   id: "AcceleratorOverview",
+  hidden: true,
 };

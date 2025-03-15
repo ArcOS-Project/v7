@@ -4,7 +4,7 @@ import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import type { AuditLog, ServerLogItem, ServerStatistics, Token } from "$types/admin";
 import type { BugReport, ReportStatistics } from "$types/bughunt";
-import type { FilesystemProgressCallback } from "$types/fs";
+import type { FilesystemProgressCallback, UserQuota } from "$types/fs";
 import type { UserInfo, UserPreferences } from "$types/user";
 import { Axios } from "../axios";
 
@@ -362,6 +362,30 @@ export class AdminBootstrapper extends Process {
   async setScopesOf(username: string, scopes: string[]): Promise<boolean> {
     try {
       const response = await Axios.put(`/admin/scopes`, toForm({ target: username, scopes: JSON.stringify(scopes) }), {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async getQuotaOf(username: string): Promise<UserQuota | undefined> {
+    try {
+      const response = await Axios.get(`/admin/fs/quota/${username}`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.data as UserQuota;
+    } catch {
+      return undefined;
+    }
+  }
+
+  async setQuotaOf(username: string, newQuota: number) {
+    try {
+      const response = await Axios.put(`/admin/fs/quota/${username}`, toForm({ limit: newQuota }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
