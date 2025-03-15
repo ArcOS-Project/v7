@@ -1919,6 +1919,16 @@ export class UserDaemon extends Process {
       if (!json.metadata || !json.entrypoint || !json.thirdParty || !json.workingDirectory) return "missing properties";
 
       this.installApp(json);
-    } catch {}
+    } catch (e) {
+      this.Log(`Failed to install app from "${path}": ${e}`, LogLevel.error);
+    }
+  }
+
+  async startAdminBootstrapper() {
+    this.Log("Starting admin bootstrapper");
+
+    if (!this.userInfo.admin) return;
+
+    this.appStore?.loadOrigin("admin", () => []);
   }
 }

@@ -112,6 +112,14 @@ export class LoginAppRuntime extends AppProcess {
 
     await userDaemon.startApplicationStorage();
 
+    if (userDaemon.userInfo.admin) {
+      this.loadingStatus.set("Starting admin bootstrapper");
+
+      await userDaemon.startAdminBootstrapper();
+    }
+
+    this.loadingStatus.set("Reading profile customization");
+
     this.profileImage.set(
       (await userDaemon?.getProfilePicture(userDaemon.preferences().account.profilePicture!)) || ProfilePictures.pfp3
     );

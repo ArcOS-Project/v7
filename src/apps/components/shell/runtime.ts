@@ -158,19 +158,16 @@ export class ShellRuntime extends AppProcess {
     );
 
     this.dispatch.subscribe("open-action-center", () => this.actionCenterOpened.set(true));
-
     this.dispatch.subscribe("open-start-menu", () => this.startMenuOpened.set(true));
-
     this.dispatch.subscribe("open-workspace-manager", () => this.workspaceManagerOpened.set(true));
-
     this.dispatch.subscribe("close-workspace-manager", () => this.workspaceManagerOpened.set(false));
-
     this.dispatch.subscribe("close-action-center", () => this.actionCenterOpened.set(false));
-
     this.dispatch.subscribe("close-start-menu", () => this.startMenuOpened.set(false));
 
     this.startMenuOpened.subscribe((v) => {
       if (!v) this.searchQuery.set("");
+
+      if (v) this.handler.renderer?.focusedPid.set(-1);
     });
 
     this.userDaemon?.checkReducedMotion();

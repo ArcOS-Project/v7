@@ -60,4 +60,5 @@ export const AppOrigins: Record<string, string> = {
   builtin: "Built-in",
   userApps: "Third-party",
   injected: "Other",
+  admin: "Administrative",
 };

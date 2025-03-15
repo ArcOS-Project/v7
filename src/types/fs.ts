@@ -1,4 +1,4 @@
-import type { ShortcutStore } from "./shortcut";
+import type { ArcShortcut, ShortcutStore } from "./shortcut";
 
 export interface FileEntry {
   name: string;
@@ -7,6 +7,7 @@ export interface FileEntry {
   dateModified: Date;
   mimeType: string;
   itemId: string;
+  shortcut?: ArcShortcut;
 }
 
 export interface FsAccess {
