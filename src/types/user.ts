@@ -11,6 +11,8 @@ export interface UserInfo {
   approved: boolean;
   _id: string;
   email: string;
+  updatedAt: string;
+  createdAt: string;
 }
 
 export type UserPreferencesStore = ReadableStore<UserPreferences>;

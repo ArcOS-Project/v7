@@ -10,13 +10,13 @@
 <div class="sidebar">
   <section>
     <h1>Your Places</h1>
-    {#each $rootFolders as folder}
+    {#each $rootFolders as folder (`${folder.name}-${folder.itemId}`)}
       <RootFolder {process} {folder} />
     {/each}
   </section>
   <section>
     <h1>Drives</h1>
-    {#each Object.entries($drives) as [id, drive]}
+    {#each Object.entries($drives) as [id, drive] (`${id}-${drive.data.uuid}`)}
       <DriveEntry {process} {drive} {id} />
     {/each}
   </section>

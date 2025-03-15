@@ -8,6 +8,7 @@ export interface FileEntry {
   mimeType: string;
   itemId: string;
   shortcut?: ArcShortcut;
+  action?: () => void;
 }
 
 export interface FsAccess {
