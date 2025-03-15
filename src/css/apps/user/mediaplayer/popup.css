@@ -1,0 +1,32 @@
+#MediaPlayer.popup {
+  padding: 10px;
+}
+
+#MediaPlayer.popup div.file {
+  border-bottom: var(--button-glass-bg) 1px solid;
+  padding-bottom: 10px;
+}
+
+#MediaPlayer.popup div.file span {
+  max-width: calc(100% - 24px - 10px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#MediaPlayer.popup div.media-controls {
+  padding: 15px 0;
+  justify-content: center;
+}
+
+#MediaPlayer.popup div.bar {
+  margin: 0;
+  width: 100%;
+}
+
+#MediaPlayer.popup div.meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  opacity: 0.5;
+}

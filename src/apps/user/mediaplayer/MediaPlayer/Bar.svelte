@@ -3,9 +3,9 @@
 
   const { process }: { process: MediaPlayerRuntime } = $props();
 
-  const { State, Loaded } = process;
+  const { State, Loaded, queue } = process;
 </script>
 
-<div class="bar" class:bounce={!$Loaded || !$State.duration}>
+<div class="bar" class:bounce={$queue.length && (!$Loaded || !$State.duration)}>
   <div class="inner" style="--w: {(100 / $State.duration) * $State.current}%;"></div>
 </div>

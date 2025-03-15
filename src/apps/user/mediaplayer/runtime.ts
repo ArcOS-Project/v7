@@ -13,6 +13,7 @@ import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { RenderArgs } from "$types/process";
 import { MediaPlayerAccelerators } from "./accelerators";
 import { MediaPlayerAltMenu } from "./altmenu";
+import TrayPopup from "./MediaPlayer/TrayPopup.svelte";
 import type { PlayerState } from "./types";
 
 export class MediaPlayerRuntime extends AppProcess {
@@ -75,6 +76,15 @@ export class MediaPlayerRuntime extends AppProcess {
       if (file.endsWith(".arcpl")) this.readPlaylist(file);
       else this.readFile([file]);
     }
+
+    this.shell?.createTrayIcon(this.pid, this.app.id, {
+      icon: MediaPlayerIcon,
+      popup: {
+        width: 250,
+        height: 160,
+        component: TrayPopup as any,
+      },
+    });
   }
 
   public setPlayer(player: HTMLVideoElement) {

@@ -12,7 +12,7 @@
   const { windowFullscreen, queue } = process;
 </script>
 
-<div class="controls">
+<div class="media-controls">
   <Previous {process} />
   <Rewind {process} />
   <PlayPause {process} />
