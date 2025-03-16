@@ -23,6 +23,16 @@ export class AdminServerDrive extends FilesystemDrive {
     this.label = targetUsername;
   }
 
+  async _spinUp(onProgress?: FilesystemProgressCallback): Promise<boolean> {
+    try {
+      await this.readDir("");
+      await this.quota();
+      await this.tree("");
+      return true;
+    } catch {
+      return false;
+    }
+  }
   async writeFile(path: string, data: Blob, onProgress?: FilesystemProgressCallback): Promise<boolean> {
     onProgress?.({
       value: 0,
