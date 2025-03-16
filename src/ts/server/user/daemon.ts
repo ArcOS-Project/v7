@@ -9,12 +9,21 @@ import { darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 import { MessageBox } from "$ts/dialog";
 import { toForm } from "$ts/form";
 import { Filesystem } from "$ts/fs";
-import { arrayToBlob, arrayToText, textToBlob } from "$ts/fs/convert";
+import { arrayToBlob, arrayToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/fs/convert";
 import { ServerDrive } from "$ts/fs/drives/server";
 import { ZIPDrive } from "$ts/fs/drives/zipdrive";
-import { getDirectoryName, getDriveLetter, getParentDirectory } from "$ts/fs/util";
+import {
+  DownloadFile,
+  formatBytes,
+  getDirectoryName,
+  getDriveLetter,
+  getParentDirectory,
+  join,
+  onFileChange,
+  onFolderChange,
+} from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
-import { getIconPath } from "$ts/images";
+import { getAllImages, getIconPath } from "$ts/images";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import { AccountIcon, PasswordIcon, PersonalizationIcon } from "$ts/images/general";
@@ -46,6 +55,17 @@ import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultMimeIcons } from "./store";
 import { AdminBootstrapper } from "../admin";
+import {
+  checkPasswordStrength,
+  CountInstances,
+  decimalToHex,
+  detectJavaScript,
+  htmlspecialchars,
+  Plural,
+  sha256,
+  sliceIntoChunks,
+} from "$ts/util";
+import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -876,9 +896,8 @@ export class UserDaemon extends Process {
   async spawnThirdParty(app: ThirdPartyApp, ...args: any[]) {
     if (this._disposed) return;
 
-    this.Log(`Starting ArcMSL execution to run third-party app ${app.id}`);
+    this.Log(`Starting JS execution to run third-party app ${app.id}`);
 
-    const lang = this.kernel.getModule<ArcMSL>("msl");
     const fs = this.kernel.getModule<Filesystem>("fs");
     const userDaemonPid = this.env.get("userdaemon_pid");
 
@@ -903,16 +922,112 @@ export class UserDaemon extends Process {
         return;
       }
 
-      lang.run(contents, +userDaemonPid, {
-        allowUnsafe: app.unsafeCode, // Unsafe code execution
-        workingDir: app.workingDirectory, // Working directory (cwd)
-        continuous: true, // Continuous code execution to keep the mainloop going
-        arguments: args, // Send the arguments
-        onError: (e: LanguageExecutionError) => {
-          console.log(e.getObject());
+      const load = async (path: string) => {
+        const contents = wrap(arrayToText((await fs.readFile(join(app.workingDirectory, path)))!));
+        const dataUrl = `data:application/javascript;base64,${btoa(contents)}`;
+
+        try {
+          const loaded = await import(/* @vite-ignore */ dataUrl);
+
+          const { default: func } = loaded;
+
+          if (!func) return undefined;
+
+          return await func(props);
+        } catch {
+          return undefined;
+        }
+      };
+
+      const runApp = async (process: typeof ThirdPartyAppProcess, metadataPath: string, parentPid?: number, ...args: any[]) => {
+        try {
+          const metaStr = arrayToText((await fs.readFile(join(app.workingDirectory, metadataPath)))!);
+          const metadata = tryJsonParse(metaStr);
+          const renderTarget = this.getCurrentDesktop();
+
+          if (typeof metadata === "string") throw new Error("Failed to parse metadata");
+
+          return await this.handler.spawn(
+            process,
+            renderTarget,
+            parentPid,
+            {
+              data: metadata,
+              id: metadata.id,
+              desktop: renderTarget ? renderTarget.id : undefined,
+            },
+            app.workingDirectory,
+            ...args
+          );
+        } catch (e) {
+          console.log(e);
+          return undefined;
+        }
+      };
+
+      const loadHtml = async (path: string) => {
+        const htmlCode = arrayToText((await fs.readFile(join(app.workingDirectory, path)))!);
+
+        if (detectJavaScript(htmlCode)) return undefined;
+
+        return htmlCode;
+      };
+
+      const props = {
+        kernel: this.kernel,
+        daemon: this,
+        handler: this.handler,
+        fs: this.fs,
+        env: this.env,
+        dispatch: this.globalDispatch,
+        MessageBox,
+        icons: getAllImages(),
+        util: {
+          htmlspecialchars,
+          Plural,
+          sliceIntoChunks,
+          decimalToHex,
+          sha256,
+          CountInstances,
+          join,
+          getDirectoryName,
+          getParentDirectory,
+          getDriveLetter,
+          formatBytes,
+          DownloadFile,
+          onFileChange,
+          onFolderChange,
         },
-      });
+        convert: {
+          arrayToText,
+          textToArrayBuffer,
+          blobToText,
+          textToBlob,
+          arrayToBlob,
+          blobToDataURL,
+        },
+        Process,
+        AppProcess,
+        ThirdPartyAppProcess,
+        argv: args,
+        app,
+        load,
+        loadHtml,
+        runApp,
+      };
+
+      const wrap = (c: string) =>
+        `export default async function({ ${Object.keys(props).join(",")} }) { const global = arguments; ${c} }`;
+
+      const js = wrap(contents);
+      const dataUrl = `data:application/javascript;base64,${btoa(js)}`;
+      const code = await import(/* @vite-ignore */ dataUrl);
+
+      if (!code.default || !(code.default instanceof Function)) throw new Error("Expected a default function");
+
+      await code.default(props);
     } catch (e) {
+      console.log(e);
       this.Log(`Execution error in third-party application "${app.id}": ${e}`);
     }
   }
