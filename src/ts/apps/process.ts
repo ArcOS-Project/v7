@@ -194,6 +194,12 @@ export class AppProcess extends Process {
     return (window as HTMLDivElement) || undefined;
   }
 
+  getBody() {
+    const body = document.querySelector(`div.window[data-pid="${this.pid}"] > div.body`);
+
+    return (body as HTMLDivElement) || undefined;
+  }
+
   hasOverlays(): boolean {
     const window = this.getWindow();
 
