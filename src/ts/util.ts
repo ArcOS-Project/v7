@@ -21,8 +21,8 @@ export function htmlspecialchars(text: string) {
 }
 
 export function detectJavaScript(htmlString: string) {
-  const disallowedTagsRegex = /<(script|meta|title|link|iframe|noscript|embed|object|base|head|html|body)\b[^>]*>/i;
-  const disallowedAttributesRegex = /\b(on\w+|lang|charset|http-equiv|content|scheme|target|rel|base)=["'][^"']*["']/i;
+  const disallowedTagsRegex = /<(script|meta|title|iframe|noscript|embed|object|base|head|html|body)\b[^>]*>/i;
+  const disallowedAttributesRegex = /\b(on\w+|lang|charset|http-equiv|content|scheme|target|base)=["'][^"']*["']/i;
   const javascriptURLRegex = /href=["']javascript:[^"']*["']/i;
 
   return (
