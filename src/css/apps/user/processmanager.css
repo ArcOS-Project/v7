@@ -6,6 +6,9 @@
 #processManager > div.body div.top {
   padding: 15px;
   height: calc(100% - 51px);
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding-right: 7px;
 }
 #processManager > div.body div.actions {
   border-top: var(--win-border);
