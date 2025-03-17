@@ -23,7 +23,7 @@ div.window > div.body div.titlebar.custom div.window-title {
   align-items: center;
   gap: 10px;
   line-height: 18px;
-  max-width: 40%;
+  max-width: 70%;
 }
 
 div.window > div.titlebar div.window-title > img,
