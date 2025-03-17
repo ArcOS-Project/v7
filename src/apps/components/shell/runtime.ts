@@ -106,6 +106,10 @@ export class ShellRuntime extends AppProcess {
 
       const composed = e.composedPath();
 
+      this.startMenuOpened.subscribe((v) => v && this.handler.renderer?.focusedPid.set(-1));
+      this.actionCenterOpened.subscribe((v) => v && this.handler.renderer?.focusedPid.set(-1));
+      this.openedTrayPopup.subscribe((v) => v && this.handler.renderer?.focusedPid.set(-1));
+
       if (startMenu && startButton && !composed.includes(startMenu) && !composed.includes(startButton))
         this.startMenuOpened.set(false);
 
