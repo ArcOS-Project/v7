@@ -934,8 +934,8 @@ export class UserDaemon extends Process {
           if (!func) return undefined;
 
           return await func(props);
-        } catch {
-          return undefined;
+        } catch (e) {
+          throw e;
         }
       };
 
@@ -960,8 +960,7 @@ export class UserDaemon extends Process {
             ...args
           );
         } catch (e) {
-          console.log(e);
-          return undefined;
+          throw e;
         }
       };
 
@@ -1028,7 +1027,7 @@ export class UserDaemon extends Process {
       await code.default(props);
     } catch (e) {
       console.log(e);
-      this.Log(`Execution error in third-party application "${app.id}": ${e}`);
+      this.Log(`Execution error in third-party application "${app.id}": ${(e as any).stack}`);
     }
   }
 

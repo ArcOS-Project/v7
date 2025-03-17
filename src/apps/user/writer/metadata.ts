@@ -17,7 +17,7 @@ export const WriterApp: App = {
   },
   minSize: {
     w: 480,
-    h: 500,
+    h: 300,
   },
   maxSize: {
     w: 1800,
@@ -39,7 +39,7 @@ export const WriterApp: App = {
     fullscreen: false,
   },
   opens: {
-    extensions: [".txt", ".json", ".svg", ".html", ".msl", ".css"],
+    extensions: [".txt", ".json", ".svg", ".html", ".msl", ".css", ".js"],
   },
   assets: {
     component: Writer as any,
