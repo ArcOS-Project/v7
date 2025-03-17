@@ -202,7 +202,7 @@ export class FileManagerRuntime extends AppProcess {
           driveLabel = drive?.label || "";
         }
 
-        this.windowTitle.set(getDirectoryName(path) || driveLetter ? `${driveLetter}/` : driveLabel);
+        this.windowTitle.set(getDirectoryName(path) || (driveLetter ? `${driveLetter}/` : driveLabel));
       }
     } catch {
       this.DirectoryNotFound();
