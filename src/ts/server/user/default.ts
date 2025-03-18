@@ -87,4 +87,6 @@ export const DefaultUserInfo: UserInfo = {
   admin: false,
   adminScopes: [],
   preferences: DefaultUserPreferences,
+  createdAt: new Date().toLocaleString(),
+  updatedAt: new Date().toLocaleString(),
 };

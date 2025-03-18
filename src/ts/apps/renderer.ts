@@ -12,6 +12,7 @@ import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
 import { BuiltinApps } from "./store";
 import { contextProps } from "$ts/context/actions.svelte";
+import { maybeIconId } from "$ts/images";
 
 export class AppRenderer extends Process {
   currentState: number[] = [];
@@ -261,7 +262,7 @@ export class AppRenderer extends Process {
       titleIcon.src = v;
     });
 
-    titleIcon.src = data.metadata.icon || ComponentIcon;
+    titleIcon.src = maybeIconId(data.metadata.icon || ComponentIcon);
 
     title.className = "window-title";
     title.append(titleIcon, titleCaption);
@@ -479,6 +480,8 @@ export class AppRenderer extends Process {
 
       const proc = this.handler.getProcess<AppProcess>(pid);
 
+      console.log(proc, proc?.app, proc?.app?.data);
+
       if (proc && proc.app && proc.app.data && proc.app.data.id === id) result.push(proc);
     }
 
@@ -487,7 +490,9 @@ export class AppRenderer extends Process {
 
   notifyCrash(data: App, e: Error, process: AppProcess) {
     const lines = [
-      `<b><code>${data.id}::'${data.metadata.name}'</code> (PID ${process.pid}) has encountered a problem and needs to close. I am sorry for the inconvenience.</b>`,
+      `<b><code>${data.id}::'${data.metadata.name}'</code> (PID ${
+        process?.pid || "unknown"
+      }) has encountered a problem and needs to close. I am sorry for the inconvenience.</b>`,
       `If you were in the middle of something, the information you were working on might be lost. You can choose to view the call stack, which may contain the reason for the crash.`,
       `<details><summary>Show call stack</summary><code class='block'>${htmlspecialchars(
         e.stack?.replaceAll(location.href, "") || ""

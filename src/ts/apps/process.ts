@@ -20,6 +20,7 @@ import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
 import type { Draggable } from "@neodrag/vanilla";
 import type { ShellRuntime } from "$apps/components/shell/runtime";
+import { getAllImages, maybeIconId } from "$ts/images";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
 export class AppProcess extends Process {
@@ -76,6 +77,8 @@ export class AppProcess extends Process {
     this.globalDispatch.subscribe("window-fullscreen", ([pid]) => {
       if (this.pid === pid) this.windowFullscreen.set(true);
     });
+
+    this.windowIcon.set(maybeIconId(this.app.data.metadata.icon));
   }
 
   // Conditional function that can prohibit closing if it returns false
