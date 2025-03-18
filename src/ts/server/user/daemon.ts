@@ -781,8 +781,6 @@ export class UserDaemon extends Process {
 
     const app = await this.appStore?.getAppById(id);
 
-    console.log(app);
-
     if (!app) return undefined;
 
     this.Log(`SPAWNING APP ${id}`);
@@ -885,7 +883,6 @@ export class UserDaemon extends Process {
     const userDaemonPid = this.env.get("userdaemon_pid");
 
     app.workingDirectory ||= getParentDirectory(metaPath);
-    console.log(app.entrypoint, app.workingDirectory, metaPath);
 
     if (!userDaemonPid) return;
 
@@ -915,7 +912,6 @@ export class UserDaemon extends Process {
 
       const props = ThirdPartyProps(this, args, app, wrap, metaPath);
       const js = wrap(contents);
-      console.log(js, contents);
       const dataUrl = `data:application/javascript;base64,${btoa(js)}`;
       const code = await import(/* @vite-ignore */ dataUrl);
 
@@ -924,7 +920,6 @@ export class UserDaemon extends Process {
       await code.default(props);
     } catch (e) {
       this.handler.renderer?.notifyCrash(app as any, e as Error, app.process!);
-      console.log(e);
       this.Log(`Execution error in third-party application "${app.id}": ${(e as any).stack}`);
     }
   }

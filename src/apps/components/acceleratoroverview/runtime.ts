@@ -69,7 +69,6 @@ export class AcceleratorOverviewRuntime extends AppProcess {
       result.push([app.metadata.name, shortcuts]);
     }
 
-    console.log(apps, result);
     this.apps.set(apps);
     this.store.set(result);
   }

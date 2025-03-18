@@ -119,9 +119,9 @@ export class AppProcess extends Process {
       element.classList.add("closing");
     }
 
-    await Sleep(400);
-
-    if (kill) await this.killSelf();
+    setTimeout(() => {
+      if (kill) this.killSelf();
+    }, 400);
   }
 
   async CrashDetection() {

@@ -13,13 +13,15 @@ import {
   onFolderChange,
 } from "$ts/fs/util";
 import { getAllImages } from "$ts/images";
+import { WindowSettingsIcon } from "$ts/images/general";
+import { tryJsonStringify } from "$ts/json";
 import { Process } from "$ts/process/instance";
 import { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";
 import type { App } from "$types/app";
 import axios from "axios";
+import { Axios } from "../axios";
 import type { UserDaemon } from "./daemon";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
-import { Axios } from "../axios";
 
 export function ThirdPartyProps(daemon: UserDaemon, args: any[], app: App, wrap: (c: string) => string, metaPath: string) {
   const props = {
@@ -72,6 +74,18 @@ export function ThirdPartyProps(daemon: UserDaemon, args: any[], app: App, wrap:
     loadHtml: async (path: string): Promise<string | undefined> => undefined,
     axios,
     Server: Axios,
+    Debug: (m: any) => {
+      MessageBox(
+        {
+          title: "🐛🪵",
+          message: tryJsonStringify(m, 2),
+          image: WindowSettingsIcon,
+          sound: "arcos.dialog.info",
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        },
+        +daemon.env.get("shell_pid")
+      );
+    },
   };
 
   const supplementary = SupplementaryThirdPartyPropFunctions(daemon, daemon.fs, app, props, wrap);

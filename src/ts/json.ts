@@ -6,6 +6,14 @@ export function tryJsonParse<T = any>(input: string) {
   }
 }
 
+export function tryJsonStringify(input: any, indent: number): string {
+  try {
+    return JSON.stringify(input, null, indent);
+  } catch {
+    return input;
+  }
+}
+
 export function keysToLowerCase(obj: any): any {
   if (Array.isArray(obj)) {
     return obj.map(keysToLowerCase);

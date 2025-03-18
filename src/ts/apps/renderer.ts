@@ -480,8 +480,6 @@ export class AppRenderer extends Process {
 
       const proc = this.handler.getProcess<AppProcess>(pid);
 
-      console.log(proc, proc?.app, proc?.app?.data);
-
       if (proc && proc.app && proc.app.data && proc.app.data.id === id) result.push(proc);
     }
 

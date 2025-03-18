@@ -96,8 +96,6 @@ export class ApplicationStorage extends Process {
 
     const apps = fromBuffer ? this.buffer() : await this.get();
 
-    console.log(apps);
-
     for (const app of apps) {
       if (app.id === id) {
         const tpaPath = (app as InstalledApp).tpaPath;
