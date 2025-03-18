@@ -68,6 +68,7 @@ export class ThirdPartyAppProcess extends AppProcess {
 
     observer.observe(body, { childList: true, subtree: true, attributes: true });
     processElements(body);
-    this.render(this.renderArgs);
+
+    await this.render(this.renderArgs);
   }
 }
