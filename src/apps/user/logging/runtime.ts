@@ -43,6 +43,8 @@ export class LoggingRuntime extends AppProcess {
     this.windowTitle.set(`${this.kernel.Logs().length} items`);
     this.groups.set(groupStore);
     this.sources.set(sources);
+
+    if (!groupStore.get(this.currentSource())) this.currentSource.set(sources[0].what);
   }
 
   collectLogsBySource(reverse = false) {

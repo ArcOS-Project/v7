@@ -17,7 +17,7 @@
     </tr>
   </thead>
   <tbody>
-    {#each $currentSource === "*" ? $Logs : $groups.get($currentSource) || [] as item, i (`${i}-${item.kernelTime}-${item.message}-${item.source}`)}
+    {#each $groups.get($currentSource) || [] as item, i (`${i}-${item.kernelTime}-${item.message}-${item.source}`)}
       {#if $selectedLevel == "all" || item.level === $selectedLevel}
         <Item {item} />
       {/if}

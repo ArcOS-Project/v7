@@ -11,10 +11,10 @@
   <div class="current-source">
     <div class="pill">
       <span class="lucide icon-scroll-text"></span>
-      <span>{$currentSource === "*" ? "All" : "Group"}</span>
+      <span>Group</span>
     </div>
     <img src={FolderIcon} alt="" />
-    <span>{$currentSource == "*" ? "All Log Items" : $currentSource}</span>
+    <span>{$currentSource}</span>
   </div>
   <div class="sep"></div>
   <Filter {process} />
