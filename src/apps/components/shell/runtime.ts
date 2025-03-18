@@ -530,7 +530,7 @@ export class ShellRuntime extends AppProcess {
 
     const recurse = (tree: RecursiveDirectoryReadReturn, path = "U:") => {
       for (const file of tree.files) {
-        result.push({ ...file, path: `${path}/${file.name}`, shortcut: tree.shortcuts[file.name] });
+        result.push({ ...file, path: `${path}/${file.name}`, shortcut: tree.shortcuts?.[file.name] });
       }
       for (const dir of tree.dirs) {
         recurse(dir.children, `${path}/${dir.name}`);
