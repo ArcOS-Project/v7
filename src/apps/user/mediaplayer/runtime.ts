@@ -71,6 +71,17 @@ export class MediaPlayerRuntime extends AppProcess {
     });
   }
 
+  async onClose() {
+    this.Reset();
+    this.player?.remove();
+    return true;
+  }
+
+  protected async stop(): Promise<any> {
+    this.Reset();
+    this.player?.remove();
+  }
+
   async render({ file }: RenderArgs) {
     if (file) {
       if (file.endsWith(".arcpl")) this.readPlaylist(file);
