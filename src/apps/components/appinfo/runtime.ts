@@ -3,11 +3,11 @@ import { AppInfoIcon } from "$ts/images/apps";
 import { ComponentIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
-import type { App, AppProcessData, ThirdPartyApp } from "$types/app";
+import type { App, AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
 
 export class AppInfoRuntime extends AppProcess {
-  targetApp = Store<App | ThirdPartyApp>();
+  targetApp = Store<App>();
   targetAppId: string;
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, appId: string) {
     super(handler, pid, parentPid, app);

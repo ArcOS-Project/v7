@@ -1,11 +1,12 @@
 <script lang="ts">
   import { WarningIcon } from "$ts/images/dialog";
-  import type { App, ThirdPartyApp } from "$types/app";
+  import type { App } from "$types/app";
   import { onMount } from "svelte";
   import type { AppInfoRuntime } from "../runtime";
+  import { maybeIconId } from "$ts/images";
 
   interface Props {
-    target: App | ThirdPartyApp;
+    target: App;
     id: string;
     process: AppInfoRuntime;
   }
@@ -35,7 +36,7 @@
 
 <div class="header">
   <div class="left">
-    <img src={target.metadata.icon} alt="" />
+    <img src={maybeIconId(target.metadata.icon)} alt="" />
     <div class="base-info">
       <p class="name">
         <span>{target.metadata.name}</span>

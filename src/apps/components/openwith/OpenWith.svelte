@@ -16,11 +16,11 @@
   </div>
   <div class="options">
     {#if $viewMode === "all"}
-      <Options apps={$all} {process} />
+      <Options handlers={$all} {process} />
     {:else if $viewMode === "compatible"}
-      <Options apps={$available} {process} />
+      <Options handlers={$available} {process} />
     {:else if $viewMode === "apps"}
-      <Options apps={$apps} {process} />
+      <Options handlers={$apps} {process} />
     {/if}
   </div>
 </div>

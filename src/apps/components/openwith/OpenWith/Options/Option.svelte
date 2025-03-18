@@ -1,27 +1,27 @@
 <script lang="ts">
   import { AppOrigins } from "$ts/apps/store";
-  import type { App, ThirdPartyApp } from "$types/app";
+  import type { FileOpenerResult } from "$types/fs";
   import type { OpenWithRuntime } from "../../runtime";
 
   const {
     process,
-    app,
+    handler,
   }: {
     process: OpenWithRuntime;
-    app: (App | ThirdPartyApp) & { originId?: string };
+    handler: FileOpenerResult;
   } = $props();
   const { selectedId } = process;
 </script>
 
 <button
-  onclick={() => ($selectedId = app.id)}
-  ondblclick={() => process.go(app.id)}
-  class:active={$selectedId === app.id}
+  onclick={() => ($selectedId = handler.id)}
+  ondblclick={() => process.go(handler.id)}
+  class:active={$selectedId === handler.id}
   class="option"
 >
-  <img src={app.metadata.icon} alt="" />
+  <img src={handler.type === "app" ? handler.app?.metadata.icon : handler.handler?.icon} alt="" />
   <div>
-    <h1>{app.metadata.name}</h1>
-    <p>{AppOrigins[app.originId || ""] || "Unknown"} - {app.metadata.author}</p>
+    <h1>{handler.type === "app" ? handler.app?.metadata.name : handler.handler?.name}</h1>
+    <p>{handler.type === "handler" ? handler.handler?.description : handler.app?.metadata.author}</p>
   </div>
 </button>

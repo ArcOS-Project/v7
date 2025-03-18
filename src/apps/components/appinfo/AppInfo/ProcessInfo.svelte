@@ -4,6 +4,7 @@
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
   import { onMount } from "svelte";
   import type { AppInfoRuntime } from "../runtime";
+  import { Sleep } from "$ts/sleep";
 
   const { appId, process }: { appId: string; process: AppInfoRuntime } = $props();
 
@@ -11,6 +12,7 @@
   let count = $state(0);
 
   async function update() {
+    await Sleep(10);
     const pids = process.handler.renderer?.getAppInstances(appId).map((p) => p.pid);
 
     count = pids?.length || 0;
