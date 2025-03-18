@@ -1,4 +1,6 @@
 import { arrayToText } from "$ts/fs/convert";
+import { getParentDirectory } from "$ts/fs/util";
+import { DownloadIcon } from "$ts/images/filesystem";
 import {
   ArcAppMimeIcon,
   ArcTermMimeIcon,
@@ -263,6 +265,25 @@ export function DefaultFileHandlers(daemon: UserDaemon): Record<string, FileHand
         if (typeof json !== "object") return;
 
         await daemon.spawnThirdParty(json, path);
+      },
+      isHandler: true,
+    },
+    installTpaFile: {
+      opens: {
+        extensions: [".tpa"],
+      },
+      icon: DownloadIcon,
+      name: "Install application",
+      description: "Install this TPA file as an app",
+      handle: async (path: string) => {
+        const text = arrayToText((await daemon.fs.readFile(path))!);
+        const json = tryJsonParse(text);
+
+        if (typeof json !== "object") return;
+
+        console.log(path);
+
+        await daemon.installApp({ ...json, workingDirectory: getParentDirectory(path), tpaPath: path });
       },
       isHandler: true,
     },
