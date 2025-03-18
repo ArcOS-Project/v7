@@ -1,5 +1,6 @@
 <script lang="ts">
   import { AppOrigins } from "$ts/apps/store";
+  import { maybeIconId } from "$ts/images";
   import { AppsIcon } from "$ts/images/general";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
@@ -23,7 +24,7 @@
             {#if app.originId === id}
               <Option
                 caption={app.metadata.name}
-                image={app.metadata.icon}
+                image={maybeIconId(app.metadata.icon)}
                 chevron
                 onclick={() => {
                   process.spawnOverlayApp("AppInfo", process.pid, app.id);

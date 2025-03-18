@@ -44,3 +44,7 @@ export function iconIdFromPath(path: string) {
 
   return icons.filter(([_, p]) => path === p).map(([i]) => i)[0];
 }
+
+export function maybeIconId(id: string) {
+  return getAllImages()[id] || id;
+}
