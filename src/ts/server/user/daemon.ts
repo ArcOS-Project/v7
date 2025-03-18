@@ -1935,7 +1935,7 @@ export class UserDaemon extends Process {
     });
   }
 
-  async installApp(data: App) {
+  async installApp(data: InstalledApp) {
     this.preferences.update((v) => {
       v.userApps[data.id] = data;
       return v;
@@ -1963,7 +1963,7 @@ export class UserDaemon extends Process {
     if (!contents) return "failed to read file";
     try {
       const text = arrayToText(contents);
-      const json = tryJsonParse<App>(text);
+      const json = tryJsonParse<InstalledApp>(text);
 
       if (typeof json !== "object") return "failed to convert to JSON";
 
