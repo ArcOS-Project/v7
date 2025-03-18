@@ -9,29 +9,18 @@ import { darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 import { MessageBox } from "$ts/dialog";
 import { toForm } from "$ts/form";
 import { Filesystem } from "$ts/fs";
-import { arrayToBlob, arrayToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/fs/convert";
+import { arrayToBlob, arrayToText, textToBlob } from "$ts/fs/convert";
 import { ServerDrive } from "$ts/fs/drives/server";
 import { ZIPDrive } from "$ts/fs/drives/zipdrive";
-import {
-  DownloadFile,
-  formatBytes,
-  getDirectoryName,
-  getDriveLetter,
-  getParentDirectory,
-  join,
-  onFileChange,
-  onFolderChange,
-} from "$ts/fs/util";
+import { getDirectoryName, getDriveLetter, getParentDirectory, join } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
-import { getAllImages, getIconPath } from "$ts/images";
+import { getIconPath } from "$ts/images";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import { AccountIcon, PasswordIcon, PersonalizationIcon } from "$ts/images/general";
 import { ImageMimeIcon } from "$ts/images/mime";
 import { ProfilePictures } from "$ts/images/pfp";
 import { tryJsonParse } from "$ts/json";
-import type { ArcMSL } from "$ts/msl";
-import type { LanguageExecutionError } from "$ts/msl/error";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { Sleep } from "$ts/sleep";
@@ -39,8 +28,9 @@ import { UUID } from "$ts/uuid";
 import { Wallpapers } from "$ts/wallpaper/store";
 import { Store } from "$ts/writable";
 import type { LoginActivity } from "$types/activity";
-import type { App, AppStorage, ThirdPartyApp } from "$types/app";
+import type { App, AppStorage, InstalledApp } from "$types/app";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
+import type { FileHandler, FileOpenerResult } from "$types/fs";
 import { LogLevel } from "$types/logging";
 import type { BatteryType } from "$types/navigator";
 import type { Notification } from "$types/notification";
@@ -51,21 +41,11 @@ import type { Wallpaper } from "$types/wallpaper";
 import { fromExtension } from "human-filetypes";
 import Cookies from "js-cookie";
 import type { Unsubscriber } from "svelte/store";
+import { AdminBootstrapper } from "../admin";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
-import { BuiltinThemes, DefaultMimeIcons } from "./store";
-import { AdminBootstrapper } from "../admin";
-import {
-  checkPasswordStrength,
-  CountInstances,
-  decimalToHex,
-  detectJavaScript,
-  htmlspecialchars,
-  Plural,
-  sha256,
-  sliceIntoChunks,
-} from "$ts/util";
-import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
+import { BuiltinThemes, DefaultFileHandlers, DefaultMimeIcons } from "./store";
+import { ThirdPartyProps } from "./thirdparty";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -94,6 +74,7 @@ export class UserDaemon extends Process {
   private mimeIcons: Record<string, string[]> = DefaultMimeIcons;
   private virtualdesktopChangingTimeout: NodeJS.Timeout | undefined;
   private firstSyncDone = false;
+  public fileHandlers: Record<string, FileHandler> = DefaultFileHandlers(this);
   override _criticalProcess: boolean = true;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, token: string, username: string, userInfo?: UserInfo) {
@@ -800,12 +781,14 @@ export class UserDaemon extends Process {
 
     const app = await this.appStore?.getAppById(id);
 
+    console.log(app);
+
     if (!app) return undefined;
 
     this.Log(`SPAWNING APP ${id}`);
 
-    if (app.thirdParty) {
-      await this.spawnThirdParty(app as unknown as ThirdPartyApp, ...args);
+    if (app.thirdParty || app.entrypoint) {
+      await this.spawnThirdParty(app, (app as InstalledApp).tpaPath!, ...args);
 
       return;
     }
@@ -893,7 +876,7 @@ export class UserDaemon extends Process {
     );
   }
 
-  async spawnThirdParty(app: ThirdPartyApp, ...args: any[]) {
+  async spawnThirdParty(app: App, metaPath: string, ...args: any[]) {
     if (this._disposed) return;
 
     this.Log(`Starting JS execution to run third-party app ${app.id}`);
@@ -901,10 +884,15 @@ export class UserDaemon extends Process {
     const fs = this.kernel.getModule<Filesystem>("fs");
     const userDaemonPid = this.env.get("userdaemon_pid");
 
+    app.workingDirectory ||= getParentDirectory(metaPath);
+    console.log(app.entrypoint, app.workingDirectory, metaPath);
+
     if (!userDaemonPid) return;
 
     try {
-      const contents = arrayToText((await fs.readFile(app.entrypoint))!);
+      const contents = arrayToText(
+        (await fs.readFile(app.entrypoint?.includes(":/") ? app.entrypoint! : join(app.workingDirectory, app.entrypoint!)))!
+      );
 
       if (!contents) {
         MessageBox(
@@ -913,7 +901,7 @@ export class UserDaemon extends Process {
             message: `ArcOS can't find the entrypoint of this third-party application. It might have been renamed or deleted. Please consider reinstalling the application to fix this problem.<br><code class='block'>${app.entrypoint}</code>`,
             buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
             sound: "arcos.dialog.error",
-            image: app.metadata.icon,
+            image: ErrorIcon,
           },
           +this.env.get("shell_pid"),
           true
@@ -922,103 +910,12 @@ export class UserDaemon extends Process {
         return;
       }
 
-      const load = async (path: string) => {
-        const contents = wrap(arrayToText((await fs.readFile(join(app.workingDirectory, path)))!));
-        const dataUrl = `data:application/javascript;base64,${btoa(contents)}`;
-
-        try {
-          const loaded = await import(/* @vite-ignore */ dataUrl);
-
-          const { default: func } = loaded;
-
-          if (!func) return undefined;
-
-          return await func(props);
-        } catch (e) {
-          throw e;
-        }
-      };
-
-      const runApp = async (process: typeof ThirdPartyAppProcess, metadataPath: string, parentPid?: number, ...args: any[]) => {
-        try {
-          const metaStr = arrayToText((await fs.readFile(join(app.workingDirectory, metadataPath)))!);
-          const metadata = tryJsonParse(metaStr);
-          const renderTarget = this.getCurrentDesktop();
-
-          if (typeof metadata === "string") throw new Error("Failed to parse metadata");
-
-          return await this.handler.spawn(
-            process,
-            renderTarget,
-            parentPid,
-            {
-              data: metadata,
-              id: metadata.id,
-              desktop: renderTarget ? renderTarget.id : undefined,
-            },
-            app.workingDirectory,
-            ...args
-          );
-        } catch (e) {
-          throw e;
-        }
-      };
-
-      const loadHtml = async (path: string) => {
-        const htmlCode = arrayToText((await fs.readFile(join(app.workingDirectory, path)))!);
-
-        if (detectJavaScript(htmlCode)) return undefined;
-
-        return htmlCode;
-      };
-
-      const props = {
-        kernel: this.kernel,
-        daemon: this,
-        handler: this.handler,
-        fs: this.fs,
-        env: this.env,
-        dispatch: this.globalDispatch,
-        MessageBox,
-        icons: getAllImages(),
-        util: {
-          htmlspecialchars,
-          Plural,
-          sliceIntoChunks,
-          decimalToHex,
-          sha256,
-          CountInstances,
-          join,
-          getDirectoryName,
-          getParentDirectory,
-          getDriveLetter,
-          formatBytes,
-          DownloadFile,
-          onFileChange,
-          onFolderChange,
-        },
-        convert: {
-          arrayToText,
-          textToArrayBuffer,
-          blobToText,
-          textToBlob,
-          arrayToBlob,
-          blobToDataURL,
-        },
-        Process,
-        AppProcess,
-        ThirdPartyAppProcess,
-        argv: args,
-        app,
-        load,
-        loadHtml,
-        runApp,
-      };
-
       const wrap = (c: string) =>
-        `export default async function({ ${Object.keys(props).join(",")} }) { const global = arguments; ${c} }`;
+        `export default async function({ ${Object.keys(props).join(",")} }) { \nconst global = arguments;\n ${c}\n }`;
 
+      const props = ThirdPartyProps(this, args, app, wrap, metaPath);
       const js = wrap(contents);
+      console.log(js, contents);
       const dataUrl = `data:application/javascript;base64,${btoa(js)}`;
       const code = await import(/* @vite-ignore */ dataUrl);
 
@@ -1026,6 +923,7 @@ export class UserDaemon extends Process {
 
       await code.default(props);
     } catch (e) {
+      this.handler.renderer?.notifyCrash(app as any, e as Error, app.process!);
       console.log(e);
       this.Log(`Execution error in third-party application "${app.id}": ${(e as any).stack}`);
     }
@@ -1792,20 +1690,60 @@ export class UserDaemon extends Process {
     this.globalDispatch.dispatch("fs-flush-folder", destination);
   }
 
-  async findAppToOpenFile(path: string) {
-    this.Log(`Finding an application to open ${path}`);
+  async findHandlerToOpenFile(path: string): Promise<FileOpenerResult[]> {
+    this.Log(`Finding a handler to open ${path}`);
 
     const apps = await this.appStore?.get();
-
     const split = path.split(".");
     const extension = `.${split[split.length - 1]}`;
     const mimeType = fromExtension(path);
-    const result: (App | ThirdPartyApp)[] = [];
+    const result: FileOpenerResult[] = [];
+
+    for (const id in this.fileHandlers) {
+      const handler = this.fileHandlers[id];
+
+      if (handler.opens.extensions?.includes(extension)) {
+        result.push({
+          type: "handler",
+          handler,
+          id,
+        });
+      }
+    }
 
     for (const app of apps!) {
       if ((app.opens?.extensions || [])?.includes(extension) || (app.opens?.mimeTypes || [])?.join("||").includes(mimeType)) {
-        result.push(app);
+        result.push({
+          type: "app",
+          app,
+          id: app.id,
+        });
       }
+    }
+
+    return result;
+  }
+
+  async getAllFileHandlers() {
+    const apps = await this.appStore?.get();
+    const result: FileOpenerResult[] = [];
+
+    for (const id in this.fileHandlers) {
+      const handler = this.fileHandlers[id];
+
+      result.push({
+        type: "handler",
+        handler,
+        id,
+      });
+    }
+
+    for (const app of apps!) {
+      result.push({
+        type: "app",
+        app,
+        id: app.id,
+      });
     }
 
     return result;
@@ -1866,9 +1804,9 @@ export class UserDaemon extends Process {
     if (shortcut) return await this.handleShortcut(path, shortcut);
 
     const filename = getDirectoryName(path);
-    const apps = await this.findAppToOpenFile(path)!;
+    const results = await this.findHandlerToOpenFile(path)!;
 
-    if (!apps.length) {
+    if (!results.length) {
       await MessageBox(
         {
           title: `Unknown file type`,
@@ -1892,7 +1830,9 @@ export class UserDaemon extends Process {
       return;
     }
 
-    return await this.spawnApp(apps[0].id, +this.env.get("shell_pid"), path);
+    if (results[0].type === "handler") return await results[0]?.handler?.handle(path);
+
+    return await this.spawnApp(results[0]?.app?.id!, +this.env.get("shell_pid"), path);
   }
 
   async openWith(path: string) {
@@ -2000,7 +1940,7 @@ export class UserDaemon extends Process {
     });
   }
 
-  async installApp(data: ThirdPartyApp) {
+  async installApp(data: App) {
     this.preferences.update((v) => {
       v.userApps[data.id] = data;
       return v;
@@ -2020,7 +1960,7 @@ export class UserDaemon extends Process {
     });
 
     await this.appStore?.refresh();
-    if (deleteFiles) await this.fs.deleteItem(app.workingDirectory);
+    if (deleteFiles) await this.fs.deleteItem(app.workingDirectory!);
   }
 
   async installAppFromPath(path: string) {
@@ -2028,7 +1968,7 @@ export class UserDaemon extends Process {
     if (!contents) return "failed to read file";
     try {
       const text = arrayToText(contents);
-      const json = tryJsonParse<ThirdPartyApp>(text);
+      const json = tryJsonParse<App>(text);
 
       if (typeof json !== "object") return "failed to convert to JSON";
 

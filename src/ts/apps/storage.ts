@@ -1,7 +1,10 @@
+import { arrayToText } from "$ts/fs/convert";
+import { getParentDirectory } from "$ts/fs/util";
+import { tryJsonParse } from "$ts/json";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { Store } from "$ts/writable";
-import type { App, AppStorage, AppStoreCb } from "$types/app";
+import type { App, AppStorage, AppStoreCb, InstalledApp } from "$types/app";
 
 export class ApplicationStorage extends Process {
   private origins = new Map<string, AppStoreCb>([]);
@@ -88,13 +91,29 @@ export class ApplicationStorage extends Process {
     return result;
   }
 
-  async getAppById(id: string, fromBuffer = false) {
+  async getAppById(id: string, fromBuffer = false): Promise<App | undefined> {
     if (this._disposed) return undefined;
 
     const apps = fromBuffer ? this.buffer() : await this.get();
 
+    console.log(apps);
+
     for (const app of apps) {
       if (app.id === id) {
+        const tpaPath = (app as InstalledApp).tpaPath;
+
+        if (tpaPath) {
+          try {
+            const json = tryJsonParse(arrayToText((await this.fs.readFile(tpaPath))!));
+
+            return {
+              ...Object.freeze({ ...json, workingDirectory: getParentDirectory(tpaPath), tpaPath, originId: "userApps" }),
+            };
+          } catch {
+            continue;
+          }
+        }
+
         return { ...Object.freeze({ ...app }) };
       }
     }

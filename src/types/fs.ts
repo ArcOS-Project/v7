@@ -1,3 +1,4 @@
+import type { App } from "./app";
 import type { ArcShortcut, ShortcutStore } from "./shortcut";
 
 export interface FileEntry {
@@ -75,3 +76,23 @@ export interface FilesystemProgress {
 }
 
 export type FilesystemProgressCallback = (progress: FilesystemProgress) => void;
+
+export interface FileHandler {
+  isHandler: true;
+  name: string;
+  description: string;
+  icon: string;
+  hidden?: boolean;
+  opens: {
+    extensions?: string[];
+    mimetypes?: string[];
+  };
+  handle: (path: string) => void;
+}
+
+export interface FileOpenerResult {
+  type: "handler" | "app";
+  app?: App;
+  handler?: FileHandler;
+  id: string;
+}
