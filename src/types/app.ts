@@ -1,3 +1,4 @@
+import type { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import type { SvelteComponent } from "svelte";
 import type { AppProcess } from "../ts/apps/process";
 import type { WaveKernel } from "../ts/kernel";
@@ -22,35 +23,21 @@ export interface App {
   thirdParty?: false;
   id: string;
   originId?: string;
-  entrypoint?: "";
-  workingDirectory?: "";
+  entrypoint?: string;
+  workingDirectory?: string;
   opens?: {
     extensions?: string[];
     mimeTypes?: string[];
   };
   elevated?: boolean;
   acceleratorDescriptions?: Record<string, string>; // <[combo in One+Two+Key format], description>
+  fileSignatures?: Record<string, string>;
+  process?: ThirdPartyAppProcess;
 }
 
-export interface ThirdPartyApp {
+export interface InstalledApp extends App {
   metadata: AppMetadata;
-  entrypoint: string; // Path to MSL file
-  workingDirectory: string;
-  thirdParty: true;
-  unsafeCode?: boolean;
-  fileSignatures?: Record<string, string>; // [base64(path), SHA]
-  id: string;
-  autoRun?: boolean;
-  core?: boolean;
-  hidden?: boolean;
-  overlay?: boolean;
-  glass?: boolean;
-  originId?: string;
-  opens?: {
-    extensions?: string[];
-    mimeTypes?: string[];
-  };
-  acceleratorDescriptions?: Record<string, string>; // <[combo in One+Two+Key format], description>
+  tpaPath: string;
 }
 
 export type ScriptedApp = Omit<App, "assets">;
@@ -97,7 +84,7 @@ export type MaybeCenteredPosition = Partial<Position> & { centered?: boolean };
 
 export type AppProcessData = { data: App; id: string; desktop?: string };
 
-export type AppStorage = ((App | ThirdPartyApp) & { originId?: string })[];
+export type AppStorage = ((App | InstalledApp) & { originId?: string })[];
 export type AppStoreCb = () => MaybePromise<AppStorage>;
 
 export interface ContextMenuItem {

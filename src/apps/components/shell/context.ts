@@ -3,7 +3,7 @@ import { iconIdFromPath } from "$ts/images";
 import { AppsIcon } from "$ts/images/general";
 import { ShortcutMimeIcon } from "$ts/images/mime";
 import { ShutdownIcon } from "$ts/images/power";
-import type { App, AppContextMenu, ThirdPartyApp } from "$types/app";
+import type { App, AppContextMenu } from "$types/app";
 import type { Workspace } from "$types/user";
 import type { ShellRuntime } from "./runtime";
 
@@ -21,7 +21,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       {
         caption: "Launch",
         icon: "rocket",
-        action: (app: App | ThirdPartyApp) => {
+        action: (app: App) => {
           runtime.spawnApp(app.id, runtime.pid);
         },
       },
@@ -29,7 +29,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       {
         caption: "Create shortcut",
         icon: "arrow-up-right",
-        action: async (app: App | ThirdPartyApp) => {
+        action: async (app: App) => {
           const [path] = await runtime.userDaemon!.LoadSaveDialog({
             title: "Choose where to save the app shortcut",
             icon: ShortcutMimeIcon,
@@ -54,18 +54,18 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       },
       {
         caption: "Pin app",
-        action: (app: App | ThirdPartyApp) => {
+        action: (app: App) => {
           if (runtime.userPreferences().pinnedApps?.includes(app.id)) runtime.unpinApp(app.id);
           else runtime.pinApp(app.id);
         },
-        isActive: (app: App | ThirdPartyApp) => runtime.userPreferences().pinnedApps?.includes(app.id),
+        isActive: (app: App) => runtime.userPreferences().pinnedApps?.includes(app.id),
         icon: "pin",
       },
       { sep: true },
       {
         caption: "App info",
         image: AppsIcon,
-        action: (app: App | ThirdPartyApp) => {
+        action: (app: App) => {
           runtime.spawnOverlayApp("AppInfo", runtime.pid, app.id);
         },
       },
