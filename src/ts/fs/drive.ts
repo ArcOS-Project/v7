@@ -87,7 +87,7 @@ export class FilesystemDrive {
   }
 
   async readFile(path: string, onProgress?: FilesystemProgressCallback): Promise<ArrayBuffer | undefined> {
-    return new ArrayBuffer();
+    return new ArrayBuffer(0);
   }
 
   async writeFile(path: string, data: Blob, onProgress?: FilesystemProgressCallback): Promise<boolean> {

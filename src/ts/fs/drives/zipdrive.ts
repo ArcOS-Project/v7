@@ -48,6 +48,10 @@ export class ZIPDrive extends FilesystemDrive {
     const result: DirectoryReadReturn = {
       dirs: [],
       files: [],
+      shortcuts: {},
+      totalFiles: 0,
+      totalFolders: 0,
+      totalSize: 0,
     };
 
     const normalizedPath = path ? (path.endsWith("/") ? path : path + "/") : "";
@@ -64,6 +68,7 @@ export class ZIPDrive extends FilesystemDrive {
               name: relativePath.replace(/\/$/, ""),
               dateCreated: new Date(),
               dateModified: new Date(),
+              itemId: "",
             });
           } else {
             result.files.push({
@@ -72,6 +77,7 @@ export class ZIPDrive extends FilesystemDrive {
               dateCreated: new Date(),
               dateModified: new Date(),
               mimeType: "",
+              itemId: "",
             });
           }
         } else if (!seenDirs.has(parts[0])) {
@@ -80,6 +86,7 @@ export class ZIPDrive extends FilesystemDrive {
             name: parts[0].replace(/\/$/, ""),
             dateCreated: new Date(),
             dateModified: new Date(),
+            itemId: "",
           });
         }
       }
@@ -130,6 +137,7 @@ export class ZIPDrive extends FilesystemDrive {
     const result: RecursiveDirectoryReadReturn = {
       dirs: [],
       files: [],
+      shortcuts: {},
     };
 
     const currentDirContents = await this.readDir(path);

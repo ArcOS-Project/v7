@@ -16,11 +16,13 @@ import { getAllImages } from "$ts/images";
 import { Process } from "$ts/process/instance";
 import { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";
 import type { App } from "$types/app";
+import axios from "axios";
 import type { UserDaemon } from "./daemon";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
+import { Axios } from "../axios";
 
 export function ThirdPartyProps(daemon: UserDaemon, args: any[], app: App, wrap: (c: string) => string, metaPath: string) {
-  const props: Record<string, any> = {
+  const props = {
     kernel: daemon.kernel,
     daemon,
     handler: daemon.handler,
@@ -60,12 +62,22 @@ export function ThirdPartyProps(daemon: UserDaemon, args: any[], app: App, wrap:
     app,
     $ENTRYPOINT: app.entrypoint?.includes(":/") ? app.entrypoint! : join(app.workingDirectory!, app.entrypoint!),
     $METADATA: metaPath,
+    load: async (path: string): Promise<any> => {},
+    runApp: async (
+      process: typeof ThirdPartyAppProcess,
+      metadataPath: string,
+      parentPid?: number,
+      ...args: any[]
+    ): Promise<ThirdPartyAppProcess | undefined> => undefined,
+    loadHtml: async (path: string): Promise<string | undefined> => undefined,
+    axios,
+    Server: Axios,
   };
 
   const supplementary = SupplementaryThirdPartyPropFunctions(daemon, daemon.fs, app, props, wrap);
 
   for (const [key, supp] of Object.entries(supplementary)) {
-    props[key] = supp;
+    (props as any)[key] = supp;
   }
 
   return props;
