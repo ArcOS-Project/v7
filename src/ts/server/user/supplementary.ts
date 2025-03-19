@@ -63,7 +63,9 @@ export function SupplementaryThirdPartyPropFunctions(
     loadHtml: async (path: string) => {
       const htmlCode = arrayToText((await fs.readFile(join(app.workingDirectory!, path)))!);
 
-      if (detectJavaScript(htmlCode)) return undefined;
+      const detected = detectJavaScript(htmlCode);
+
+      if (detected) throw new Error(`- ${detected.join("\n- ")}`);
 
       return htmlCode;
     },

@@ -12,40 +12,40 @@
 <InfoBlock>
   <InfoRow>
     <Segment title="Size">
-      {target.size.w || "FIT"}x{target.size.h || "FIT"}
+      {target.size?.w || "FIT"}x{target.size?.h || "FIT"}
     </Segment>
 
     <Segment title="Minimal Size">
-      {target.minSize.w || "FIT"}x{target.minSize.h || "FIT"}
+      {target.minSize?.w || "FIT"}x{target.minSize?.h || "FIT"}
     </Segment>
 
     <Segment title="Maximal Size">
-      {target.maxSize.w || "FIT"}x{target.maxSize.h || "FIT"}
+      {target.maxSize?.w || "FIT"}x{target.maxSize?.h || "FIT"}
     </Segment>
     <Segment title="Controls" right>
       <div class="controls">
-        <button class="minimize icon-chevron-down" class:disabled={!target.controls.minimize} aria-label="Minimize"></button>
-        <button class="maximize icon-chevron-up" class:disabled={!target.controls.maximize} aria-label="Maximize"></button>
-        <button class="close icon-x" class:disabled={!target.controls.close} aria-label="Close"></button>
+        <button class="minimize icon-chevron-down" class:disabled={!target?.controls?.minimize} aria-label="Minimize"></button>
+        <button class="maximize icon-chevron-up" class:disabled={!target?.controls?.maximize} aria-label="Maximize"></button>
+        <button class="close icon-x" class:disabled={!target?.controls?.close} aria-label="Close"></button>
       </div>
     </Segment>
   </InfoRow>
   <InfoRow>
     <Segment title="Initial Position">
-      {#if target.position.centered}
+      {#if target?.position?.centered}
         Centered
       {:else}
-        {target.position.x}, {target.position.y}
+        {target?.position?.x}, {target?.position?.y}
       {/if}
     </Segment>
     <Segment title="Origin">
-      {AppOrigins[target.originId || "injected"]}
+      {AppOrigins[target?.originId || "injected"]}
     </Segment>
     <Segment title="Core">
-      {target.core ? "Yes" : "No"}
+      {target?.core ? "Yes" : "No"}
     </Segment>
     <Segment title="Hidden">
-      {target.hidden ? "Yes" : "No"}
+      {target?.hidden ? "Yes" : "No"}
     </Segment>
   </InfoRow>
 </InfoBlock>

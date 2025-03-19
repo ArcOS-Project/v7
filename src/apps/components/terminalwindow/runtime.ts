@@ -6,7 +6,7 @@ import { FitAddon } from "@xterm/addon-fit";
 import { ImageAddon } from "@xterm/addon-image";
 import { Unicode11Addon } from "@xterm/addon-unicode11";
 import { WebLinksAddon } from "@xterm/addon-web-links";
-import { Terminal } from "@xterm/xterm";
+import { Terminal } from "xterm";
 
 export class TerminalWindowRuntime extends AppProcess {
   term: Terminal | undefined;

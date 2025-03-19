@@ -21,13 +21,27 @@ export function htmlspecialchars(text: string) {
 }
 
 export function detectJavaScript(htmlString: string) {
-  const disallowedTagsRegex = /<(script|meta|title|iframe|noscript|embed|object|base|head|html|body)\b[^>]*>/i;
-  const disallowedAttributesRegex = /\b(on\w+|lang|charset|http-equiv|content|scheme|target|base)=["'][^"']*["']/i;
-  const javascriptURLRegex = /href=["']javascript:[^"']*["']/i;
+  const issues: string[] = [];
 
-  return (
-    disallowedTagsRegex.test(htmlString) || disallowedAttributesRegex.test(htmlString) || javascriptURLRegex.test(htmlString)
-  );
+  const disallowedTagsRegex = /<(script|meta|title|iframe|noscript|embed|object|base|head|html|body)\b[^>]*>/gi;
+  const disallowedAttributesRegex = /\b(on\w+|lang|charset|http-equiv|content|scheme|target|base)=["'][^"']*["']/gi;
+  const javascriptURLRegex = /href=["']javascript:[^"']*["']/gi;
+
+  let match;
+
+  while ((match = disallowedTagsRegex.exec(htmlString)) !== null) {
+    issues.push(`Disallowed tag: ${match[0]}`);
+  }
+
+  while ((match = disallowedAttributesRegex.exec(htmlString)) !== null) {
+    issues.push(`Disallowed attribute: ${match[0]}`);
+  }
+
+  while ((match = javascriptURLRegex.exec(htmlString)) !== null) {
+    issues.push(`JavaScript URL detected: ${match[0]}`);
+  }
+
+  return issues.length > 0 ? issues : null;
 }
 
 export const validateEmail = (email: string) => {

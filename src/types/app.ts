@@ -5,6 +5,7 @@ import type { WaveKernel } from "../ts/kernel";
 import type { ProcessHandler } from "../ts/process/handler";
 import type { ReadableStore } from "../ts/writable";
 import type { MaybePromise } from "./common";
+import type { Process } from "$ts/process/instance";
 
 export interface App {
   metadata: AppMetadata;
@@ -64,7 +65,7 @@ export interface WindowControls {
 }
 
 export interface AppAssets {
-  runtime: typeof AppProcess;
+  runtime: typeof Process;
   component: typeof SvelteComponent;
 }
 

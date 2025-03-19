@@ -44,7 +44,7 @@ import type { Unsubscriber } from "svelte/store";
 import { AdminBootstrapper } from "../admin";
 import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
-import { BuiltinThemes, DefaultFileHandlers, DefaultMimeIcons } from "./store";
+import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
 
 export class UserDaemon extends Process {
@@ -1937,7 +1937,7 @@ export class UserDaemon extends Process {
 
   async installApp(data: InstalledApp) {
     this.preferences.update((v) => {
-      v.userApps[data.id] = data;
+      v.userApps[data.id] = applyDefaults(data, DefaultAppData);
       return v;
     });
 

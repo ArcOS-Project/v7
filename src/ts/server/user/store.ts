@@ -1,5 +1,6 @@
 import { arrayToText } from "$ts/fs/convert";
 import { getParentDirectory } from "$ts/fs/util";
+import { QuestionIcon } from "$ts/images/dialog";
 import { DownloadIcon } from "$ts/images/filesystem";
 import {
   ArcAppMimeIcon,
@@ -21,6 +22,8 @@ import {
   XmlMimeIcon,
 } from "$ts/images/mime";
 import { tryJsonParse } from "$ts/json";
+import { Process } from "$ts/process/instance";
+import type { App } from "$types/app";
 import type { FileHandler } from "$types/fs";
 import type { ThemeStore } from "$types/theme";
 import type { UserDaemon } from "./daemon";
@@ -289,3 +292,33 @@ export function DefaultFileHandlers(daemon: UserDaemon): Record<string, FileHand
     },
   };
 }
+
+export const DefaultAppData: App = {
+  metadata: {
+    name: "Unknown",
+    author: "No author",
+    version: "0.0.0",
+    icon: QuestionIcon,
+  },
+  size: { w: NaN, h: NaN },
+  minSize: { w: NaN, h: NaN },
+  maxSize: { w: NaN, h: NaN },
+  position: { centered: true },
+  state: {
+    maximized: false,
+    minimized: false,
+    fullscreen: false,
+    headless: false,
+    resizable: false,
+  },
+  controls: {
+    minimize: false,
+    maximize: false,
+    close: false,
+  },
+  id: "unknown",
+  assets: {
+    runtime: Process,
+    component: "" as any,
+  },
+};

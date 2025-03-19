@@ -1,7 +1,7 @@
 import "$css/apps/components/test.css";
 import { ConnectIcon } from "$ts/images/general";
+import { UserDaemon } from "$ts/server/user/daemon";
 import type { App } from "../../../types/app";
-import { TestAppRuntime } from "./runtime";
 import Test from "./Test.svelte";
 
 export const TestApp: App = {
@@ -40,7 +40,7 @@ export const TestApp: App = {
   },
   assets: {
     component: Test as any,
-    runtime: TestAppRuntime,
+    runtime: UserDaemon,
   },
   id: "testApp",
   glass: true,

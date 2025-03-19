@@ -46,7 +46,7 @@ export class ThirdPartyAppProcess extends AppProcess {
           const originalValue = element.getAttribute(attribute);
           const keep = element.getAttribute("data-arc-keep");
 
-          if (!originalValue || keep || originalValue.startsWith("http")) continue;
+          if (!originalValue || keep || originalValue.startsWith("http") || element.getAttribute("data-original-path")) continue;
 
           const filePath = originalValue.includes(":/") ? originalValue : join(this.workingDirectory, originalValue);
           const direct = await this.fs.direct(filePath);
@@ -54,6 +54,7 @@ export class ThirdPartyAppProcess extends AppProcess {
           if (!direct) continue;
 
           element.setAttribute(attribute, direct);
+          element.setAttribute("data-original-path", filePath);
         }
       }
     };
