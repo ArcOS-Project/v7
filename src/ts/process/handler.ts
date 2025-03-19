@@ -152,7 +152,7 @@ export class ProcessHandler extends KernelModule {
 
     if (WaveKernel.isPanicked()) return;
 
-    const procs = await this.getSubProcesses(pid);
+    const procs = this.getSubProcesses(pid);
 
     if (!procs.size) return;
 
@@ -169,7 +169,7 @@ export class ProcessHandler extends KernelModule {
     }
   }
 
-  public async getSubProcesses(parentPid: number) {
+  public getSubProcesses(parentPid: number) {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
     const result = new Map<number, Process>([]);

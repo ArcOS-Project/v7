@@ -44,4 +44,16 @@ export class TerminalWindowRuntime extends AppProcess {
 
     new ResizeObserver(() => fitAddon.fit()).observe(body);
   }
+
+  protected async stop() {
+    setTimeout(() => {
+      const parent = this.handler.getProcess(this.parentPid);
+
+      if (!parent || parent instanceof AppProcess) return;
+
+      const children = this.handler.getSubProcesses(this.parentPid);
+
+      if (!children.size) this.handler.kill(this.parentPid);
+    });
+  }
 }

@@ -30,8 +30,8 @@ export class ScriptedAppProcess extends AppProcess {
   }
 
   protected async stop() {
-    setTimeout(async () => {
-      const children = await this.handler.getSubProcesses(this.lang.pid);
+    setTimeout(() => {
+      const children = this.handler.getSubProcesses(this.lang.pid);
 
       if (!children.size) this.lang.killSelf();
     }, 1000);
