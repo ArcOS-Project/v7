@@ -25,16 +25,28 @@
   --secondary-border: var(--win-bg) 1px solid;
   --clr-red-bg: #452929;
   --clr-red-fg: #ff7e7e;
+  --clr-red-bright-fg: #ffbaba;
   --clr-green-bg: #283e28;
   --clr-green-fg: #72e070;
+  --clr-green-bright-fg: #bbffba;
   --clr-yellow-bg: #49432e;
   --clr-yellow-fg: #ffe073;
+  --clr-yellow-bright-fg: #ffeca8;
   --clr-orange-bg: #543d1b;
   --clr-orange-fg: #ffad32;
+  --clr-orange-bright-fg: #ffcb7d;
   --clr-blue-bg: #273a48;
   --clr-blue-fg: #96d3ff;
+  --clr-blue-bright-fg: #abdcff;
   --clr-aqua-fg: #79ffd0;
   --clr-aqua-bg: #214538;
+  --clr-aqua-bright-fg: #a3ffdf;
+  --clr-magenta-bg: #402145;
+  --clr-magenta-fg: #ed79ff;
+  --clr-magenta-bright-fg: #f3a3ff;
+  --clr-purple-bg: #2f2145;
+  --clr-purple-fg: #ac79ff;
+  --clr-purple-bright-fg: #c6a3ff;
   --secondary-box-shadow: 0 2px 5px 2px #0004;
 }
 

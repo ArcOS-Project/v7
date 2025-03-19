@@ -1,5 +1,6 @@
 export { default as AppInfoIcon } from "$assets/apps/appinfo.svg";
 export { default as ArcTermIcon } from "$assets/apps/arcterm.svg";
+export { default as TerminalWindowIcon } from "$assets/apps/terminalwindow.svg";
 export { default as CalculatorIcon } from "$assets/apps/calculator.svg";
 export { default as DefaultIcon } from "$assets/apps/default.svg";
 export { default as DonutIcon } from "$assets/apps/donut.png";

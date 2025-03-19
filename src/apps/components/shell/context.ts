@@ -75,6 +75,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         caption: "Launch another",
         icon: "rocket",
         action: (proc: AppProcess) => {
+          if (!proc) return;
           runtime.spawnApp(proc.app.id, runtime.pid);
         },
       },
@@ -109,6 +110,8 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       {
         caption: "Pin app",
         action: (proc: AppProcess) => {
+          if (!proc) return;
+
           if (runtime.userPreferences().pinnedApps?.includes(proc.app.id)) runtime.unpinApp(proc.app.id);
           else runtime.pinApp(proc.app.id);
         },
@@ -120,6 +123,8 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         caption: "App info",
         image: AppsIcon,
         action: (proc: AppProcess) => {
+          if (!proc) return;
+
           runtime.spawnOverlayApp("AppInfo", runtime.pid, proc.app.id);
         },
       },
@@ -127,6 +132,8 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         caption: "Close window",
         image: ShutdownIcon,
         action: (proc: AppProcess) => {
+          if (!proc) return;
+
           proc.closeWindow();
         },
       },

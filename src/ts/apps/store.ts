@@ -11,6 +11,7 @@ import { OpenWithApp } from "$apps/components/openwith/metadata";
 import { SecureContextApp } from "$apps/components/securecontext/metadata";
 import { ArcShellApp } from "$apps/components/shell/metadata";
 import { ShortcutPropertiesApp } from "$apps/components/shortcutproperties/metadata";
+import { TerminalWindowApp } from "$apps/components/terminalwindow/metadata";
 import { WallpaperApp } from "$apps/components/wallpaper/metadata";
 import { FileManagerApp } from "$apps/user/filemanager/metadata";
 import { HexEditorApp } from "$apps/user/hexedit/metadata";
@@ -52,6 +53,7 @@ export const BuiltinApps: AppStorage = [
   PdfViewerApp,
   LightsOffApp,
   AcceleratorOverviewApp,
+  TerminalWindowApp,
 ];
 
 export const AdminApps: AppStorage = [];

@@ -1,0 +1,29 @@
+#TerminalWindow > div.body {
+  padding: 0;
+  border-top: none;
+  background-color: transparent;
+}
+
+#TerminalWindow {
+  background-color: #000d;
+}
+.theme-light #TerminalWindow {
+  background-color: #fffd;
+}
+
+#TerminalWindow > div.body * {
+  font-family: "Source Code Pro";
+  /* color: var(--fg); */
+}
+
+#TerminalWindow > div.body div.xterm-viewport {
+  background-color: transparent !important;
+}
+
+#TerminalWindow > div.body .xterm-cursor.xterm-cursor-bar {
+  box-shadow: 1px 0 0 var(--fg) inset !important;
+}
+
+#TerminalWindow > div.titlebar {
+  backdrop-filter: unset;
+}
