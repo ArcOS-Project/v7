@@ -153,18 +153,19 @@ export class AppProcess extends Process {
 
     const component = this.app.data.assets.component;
 
-    this.componentMount = mount(component, {
-      target: body,
-      props: {
-        process: this,
-        pid: this.pid,
-        kernel: WaveKernel.get(),
-        handler: this.handler,
-        app: this.app.data,
-        windowTitle: this.windowTitle,
-        windowIcon: this.windowIcon,
-      },
-    });
+    if (component)
+      this.componentMount = mount(component, {
+        target: body,
+        props: {
+          process: this,
+          pid: this.pid,
+          kernel: WaveKernel.get(),
+          handler: this.handler,
+          app: this.app.data,
+          windowTitle: this.windowTitle,
+          windowIcon: this.windowIcon,
+        },
+      });
 
     this.render(this.renderArgs);
   }

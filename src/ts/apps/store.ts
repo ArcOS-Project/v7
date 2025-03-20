@@ -13,6 +13,7 @@ import { ArcShellApp } from "$apps/components/shell/metadata";
 import { ShortcutPropertiesApp } from "$apps/components/shortcutproperties/metadata";
 import { TerminalWindowApp } from "$apps/components/terminalwindow/metadata";
 import { WallpaperApp } from "$apps/components/wallpaper/metadata";
+import { ArcTermApp } from "$apps/user/arcterm/metadata";
 import { FileManagerApp } from "$apps/user/filemanager/metadata";
 import { HexEditorApp } from "$apps/user/hexedit/metadata";
 import { ImageViewerApp } from "$apps/user/imageviewer/metadata";
@@ -54,6 +55,7 @@ export const BuiltinApps: AppStorage = [
   LightsOffApp,
   AcceleratorOverviewApp,
   TerminalWindowApp,
+  ArcTermApp,
 ];
 
 export const AdminApps: AppStorage = [];
