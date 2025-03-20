@@ -54,8 +54,6 @@ export class ArcTerminal extends Process {
 
     if (!text) return this.readline();
 
-    console.log(this.var);
-
     const str = this.var?.replace(text.trim()) || "";
     const flags = this.parseFlags(str);
     const argv = str.split(" ");

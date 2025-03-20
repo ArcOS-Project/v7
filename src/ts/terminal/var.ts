@@ -75,8 +75,6 @@ export class ArcTermVariables {
       const part = `$${variable}`;
       const value = this.get(variable);
 
-      console.log(variables, variable);
-
       str = str.replace(part, value == variable && part ? part : value || "");
     }
 
