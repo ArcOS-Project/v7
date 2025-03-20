@@ -1,11 +1,24 @@
 import { Crash } from "./crash";
 
 export function handleGlobalErrors() {
+  let LOCKED = false;
   function Error(e: ErrorEvent | PromiseRejectionEvent) {
-    console.log(e);
+    if (LOCKED) {
+      e.preventDefault();
+      return false;
+    }
+    LOCKED = true;
+    if (e instanceof ErrorEvent) {
+      console.log(e.error);
+      e.filename;
+    } else if (e instanceof PromiseRejectionEvent) {
+      console.log(e.reason);
+    }
+
     e.preventDefault();
 
-    Crash(e);
+    // Crash(e);
+    return false;
   }
 
   window.addEventListener("error", Error, { passive: false });

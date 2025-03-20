@@ -23,7 +23,7 @@ export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
   ];
 
   const str = HEADER.join("\n");
-  const stack = reason instanceof ErrorEvent ? reason.error.stack : reason.reason.stack || reason.reason || reason;
+  const stack = reason instanceof ErrorEvent ? reason?.error?.stack : reason?.reason?.stack || reason?.reason || reason;
 
   let text = str;
 
