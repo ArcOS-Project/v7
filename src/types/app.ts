@@ -66,7 +66,7 @@ export interface WindowControls {
 
 export interface AppAssets {
   runtime: typeof Process;
-  component: typeof SvelteComponent;
+  component?: typeof SvelteComponent;
 }
 
 export interface AppComponentProps<T = AppProcess> {
