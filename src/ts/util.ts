@@ -120,3 +120,5 @@ export const maxLength = (m: string[], padding = 0) => {
 };
 
 export const Truncate = (s: string, m: number) => (s.length > m - 1 ? s.substring(0, m - 1) + "…" : s);
+export const FormatLargeNumber = (n: number) => new Intl.NumberFormat().format(n);
+export const Gap = (n: number, s = " ") => s.repeat(n);
