@@ -108,3 +108,15 @@ export async function sha256(message: string) {
 export function CountInstances(input: string, search: string) {
   return input.split(search).length;
 }
+
+export const maxLength = (m: string[], padding = 0) => {
+  let max = 0;
+
+  for (let i = 0; i < m.length; i++) {
+    if (m[i].length > max) max = m[i].length;
+  }
+
+  return max + padding;
+};
+
+export const Truncate = (s: string, m: number) => (s.length > m - 1 ? s.substring(0, m - 1) + "…" : s);
