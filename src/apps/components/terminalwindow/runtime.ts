@@ -22,8 +22,22 @@ export class TerminalWindowRuntime extends AppProcess {
       allowProposedApi: true,
       allowTransparency: true,
       cursorStyle: "bar",
-      fontSize: 15,
+      fontSize: 13,
       fontFamily: "Source Code Pro",
+      theme: {
+        brightRed: "#ff7e7e",
+        red: "#ff7e7e",
+        brightGreen: "#82ff80",
+        green: "#82ff80",
+        brightYellow: "#ffe073",
+        yellow: "#ffe073",
+        brightBlue: "#96d3ff",
+        blue: "#96d3ff",
+        brightCyan: "#79ffd0",
+        cyan: "#79ffd0",
+        brightMagenta: "#d597ff",
+        magenta: "#d597ff",
+      },
     });
 
     const fitAddon = new FitAddon();

@@ -10,6 +10,15 @@
 #TerminalWindow {
   background-color: #000d;
 }
+
+#TerminalWindow:not(.focused) {
+  background-color: #000;
+}
+
+.theme-light #TerminalWindow:not(.focused) {
+  background-color: #fff;
+}
+
 .theme-light #TerminalWindow {
   background-color: #fffd;
 }
