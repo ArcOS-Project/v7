@@ -150,6 +150,7 @@ export class AppRenderer extends Process {
       if (data.state?.minimized) window.classList.add("minimized");
       if (data.state?.maximized) window.classList.add("maximized");
       if (data.state?.fullscreen) window.classList.add("fullscreen");
+      if (data.entrypoint || data.thirdParty || data.workingDirectory) window.classList.add("tp");
     }
   }
 
@@ -487,6 +488,7 @@ export class AppRenderer extends Process {
   }
 
   notifyCrash(data: App, e: Error, process: AppProcess) {
+    console.warn(` - PID ${process?.pid} APPLICATION ERROR - `, e);
     const lines = [
       `<b><code>${data.id}::'${data.metadata.name}'</code> (PID ${
         process?.pid || "unknown"

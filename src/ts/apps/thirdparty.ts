@@ -5,6 +5,7 @@ import { AppProcess } from "./process";
 
 export class ThirdPartyAppProcess extends AppProcess {
   workingDirectory: string;
+  urlCache: Record<string, string> = {};
 
   constructor(
     handler: ProcessHandler,
@@ -49,9 +50,11 @@ export class ThirdPartyAppProcess extends AppProcess {
           if (!originalValue || keep || originalValue.startsWith("http") || element.getAttribute("data-original-path")) continue;
 
           const filePath = originalValue.includes(":/") ? originalValue : join(this.workingDirectory, originalValue);
-          const direct = await this.fs.direct(filePath);
+          const direct = this.urlCache[filePath] || (await this.fs.direct(filePath));
 
           if (!direct) continue;
+
+          if (!this.urlCache[filePath]) this.urlCache[filePath] = direct;
 
           element.setAttribute(attribute, direct);
           element.setAttribute("data-original-path", filePath);
@@ -59,17 +62,16 @@ export class ThirdPartyAppProcess extends AppProcess {
       }
     };
 
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === "childList" || mutation.type === "attributes") {
-          processElements(body);
-        }
-      });
+    const observer = new MutationObserver(async (mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type !== "childList" && mutation.type !== "attributes") continue;
+
+        await processElements(body);
+      }
     });
 
     observer.observe(body, { childList: true, subtree: true, attributes: true });
-    processElements(body);
-
     await this.render(this.renderArgs);
+    await processElements(body);
   }
 }
