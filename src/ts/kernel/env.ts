@@ -30,9 +30,9 @@ export class Environment extends KernelModule {
     this.Log(`${key} -> ${value}`);
 
     try {
-      const stringified = JSON.stringify(value, null, 2);
+      const stringified = typeof value === "object" ? JSON.stringify(value, null, 2) : value;
 
-      if (!stringified) return false;
+      if (stringified === null || stringified === undefined) return false;
 
       this.store.set(key, stringified);
 
