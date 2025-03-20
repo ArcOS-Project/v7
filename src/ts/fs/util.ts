@@ -23,7 +23,9 @@ export function join(...args: string[]) {
 
   if (parts[0] === "") newParts.unshift("");
 
-  return newParts.join("/") || (newParts.length ? "/" : ".");
+  const newPath = newParts.join("/");
+
+  return newPath.endsWith(":") ? `${newPath}/` : newPath;
 }
 
 export function dirname(path: string) {
