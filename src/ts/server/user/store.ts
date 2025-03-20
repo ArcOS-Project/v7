@@ -284,8 +284,6 @@ export function DefaultFileHandlers(daemon: UserDaemon): Record<string, FileHand
 
         if (typeof json !== "object") return;
 
-        console.log(path);
-
         await daemon.installApp({ ...json, workingDirectory: getParentDirectory(path), tpaPath: path });
       },
       isHandler: true,

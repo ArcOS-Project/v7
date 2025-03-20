@@ -42,7 +42,6 @@ export class WallpaperRuntime extends AppProcess {
       await this.fs.createDirectory(desktopDir);
       await this.updateContents();
     } catch (e) {
-      console.log(e);
       MessageBox(
         {
           title: "Failed to create home directory",

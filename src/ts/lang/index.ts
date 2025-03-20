@@ -27,7 +27,6 @@ export class ArcLang extends KernelModule {
         await proc.run(code);
         resolve(proc);
       } catch (e) {
-        console.log(e instanceof LangError ? e.toString() : e);
         reject(e);
         await proc?.killSelf();
       }

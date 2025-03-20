@@ -17,7 +17,7 @@ export function handleGlobalErrors() {
 
     e.preventDefault();
 
-    // Crash(e);
+    Crash(e);
     return false;
   }
 
