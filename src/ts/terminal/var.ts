@@ -93,4 +93,35 @@ export class ArcTermVariables {
 
     return matches;
   }
+
+  async newParseInlineNames(str: string): Promise<string[]> {
+    const split = str.split("");
+    const names: string[] = [];
+    const all = await this.getAll();
+
+    let namesIndex = 0;
+    let inVar = false;
+
+    for (let i = 0; i < split.length; i++) {
+      if (split[i] === "$") {
+        inVar = true;
+        continue;
+      }
+
+      if (inVar) {
+        names[namesIndex] ||= "";
+        names[namesIndex] += split[i];
+        if (all[names[namesIndex]]) {
+          inVar = false;
+          namesIndex++;
+        }
+      }
+    }
+
+    if (inVar) {
+      names.splice(-1);
+    }
+
+    return names;
+  }
 }

@@ -13,6 +13,7 @@ import { HelpCommand } from "./commands/help";
 import { LogoutCommand } from "./commands/logout";
 import { MkdirCommand } from "./commands/mkdir";
 import { OpenCommand } from "./commands/open";
+import { QuotaCommand } from "./commands/quota";
 import { RestartCommand } from "./commands/restart";
 import { RmCommand } from "./commands/rm";
 import { ShutdownCommand } from "./commands/shutdown";
@@ -39,6 +40,7 @@ export const TerminalCommandStore: TerminalCommand[] = [
   LogoutCommand,
   ShutdownCommand,
   RestartCommand,
+  QuotaCommand,
 ];
 
 export const ESC = `\x1b[`;
