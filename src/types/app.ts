@@ -45,7 +45,7 @@ export type ScriptedApp = Omit<App, "assets">;
 
 export interface AppMetadata {
   name: string;
-  version: `${number}.${number}.${number}`;
+  version: string;
   author: string;
   icon: string;
 }

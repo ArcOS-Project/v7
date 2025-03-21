@@ -320,3 +320,42 @@ export const DefaultAppData: App = {
     component: "" as any,
   },
 };
+
+export const DefaultThirdPartyAppData = {
+  metadata: {
+    name: "Template",
+    author: "Izaak Kuipers",
+    version: "0.0.1",
+    icon: "DefaultMimeIcon",
+  },
+  size: {
+    w: 0,
+    h: 0,
+  },
+  minSize: {
+    w: 0,
+    h: 0,
+  },
+  maxSize: {
+    w: 0,
+    h: 0,
+  },
+  position: {
+    centered: false,
+  },
+  state: {
+    maximized: false,
+    minimized: false,
+    resizable: false,
+    headless: false,
+    fullscreen: false,
+  },
+  controls: {
+    minimize: false,
+    maximize: false,
+    close: false,
+  },
+  entrypoint: "main.js",
+  glass: false,
+  id: "template",
+};

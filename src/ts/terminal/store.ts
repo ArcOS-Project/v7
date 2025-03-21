@@ -3,6 +3,7 @@ import { AppListCommand } from "./commands/applist";
 import { ArcFetchCommand } from "./commands/arcfetch";
 import { CdCommand } from "./commands/cd";
 import { ClearCommand } from "./commands/clear";
+import { CrTpaCommand } from "./commands/crtpa";
 import { DirCommand } from "./commands/dir";
 import { DispatchCommand } from "./commands/dispatch";
 import { EchoCommand } from "./commands/echo";
@@ -41,6 +42,7 @@ export const TerminalCommandStore: TerminalCommand[] = [
   ShutdownCommand,
   RestartCommand,
   QuotaCommand,
+  CrTpaCommand,
 ];
 
 export const ESC = `\x1b[`;
