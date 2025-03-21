@@ -55,8 +55,8 @@ export class ArcTerminal extends Process {
     if (!text) return this.readline();
 
     const str = this.var?.replace(text.trim()) || "";
-    const flags = this.parseFlags(str);
-    const argv = str.split(" ");
+    const [flags, args] = this.parseFlags(str);
+    const argv = args.split(" ");
     const cmd = argv[0];
 
     argv.shift();
@@ -68,10 +68,12 @@ export class ArcTerminal extends Process {
 
       if (!command) {
         this.Error("Command not found.");
+        this.lastCommandErrored = true;
       } else {
         const result = await command.exec(this, flags, argv);
 
         if (result !== 0) this.lastCommandErrored = true;
+        if (result <= -128) return this.rl?.dispose();
       }
     }
 
@@ -155,7 +157,7 @@ export class ArcTerminal extends Process {
     return true;
   }
 
-  parseFlags(args: string): Arguments {
+  parseFlags(args: string): [Arguments, string] {
     const regex = /(?:--(?<nl>[a-z\-]+)(?:="(?<vl>.*?)"|(?:=(?<vs>.*?)(?: |$))|)|-(?<ns>[a-zA-Z]))/gm; //--name=?value
     const matches: RegExpMatchArray[] = [];
 
@@ -177,7 +179,7 @@ export class ArcTerminal extends Process {
       if (arg.name) result[arg.name] = arg.value;
     }
 
-    return result;
+    return [result, args.replace(regex, "").split(" ").filter(Boolean).join(" ")];
   }
 
   async stop(): Promise<any> {
