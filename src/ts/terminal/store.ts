@@ -4,7 +4,17 @@ import { ArcFetchCommand } from "./commands/arcfetch";
 import { CdCommand } from "./commands/cd";
 import { ClearCommand } from "./commands/clear";
 import { DirCommand } from "./commands/dir";
+import { DispatchCommand } from "./commands/dispatch";
+import { EchoCommand } from "./commands/echo";
+import { ExitCommand } from "./commands/exit";
+import { ExploreCommand } from "./commands/explore";
+import { FindCommand } from "./commands/find";
+import { HelpCommand } from "./commands/help";
+import { MkdirCommand } from "./commands/mkdir";
 import { OpenCommand } from "./commands/open";
+import { RmCommand } from "./commands/rm";
+import { TestCommand } from "./commands/test";
+import { VerCommand } from "./commands/ver";
 
 export const TerminalCommandStore: TerminalCommand[] = [
   AppListCommand,
@@ -13,6 +23,16 @@ export const TerminalCommandStore: TerminalCommand[] = [
   ClearCommand,
   OpenCommand,
   ArcFetchCommand,
+  MkdirCommand,
+  VerCommand,
+  RmCommand,
+  ExitCommand,
+  DispatchCommand,
+  EchoCommand,
+  HelpCommand,
+  ExploreCommand,
+  TestCommand,
+  FindCommand,
 ];
 
 export const ESC = `\x1b[`;
@@ -31,5 +51,5 @@ export const BRYELLOW = `${ESC}93m`;
 export const BRBLUE = `${ESC}94m`;
 export const BRPURPLE = `${ESC}95m`;
 export const BRCYAN = `${ESC}96m`;
-export const BRWRITE = `${ESC}97m`;
+export const BRWHITE = `${ESC}97m`;
 export const RESET = `${ESC}0m`;

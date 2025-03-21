@@ -2,12 +2,12 @@ import { formatBytes, join } from "$ts/fs/util";
 import { FormatLargeNumber, Gap, maxLength, Plural, Truncate } from "$ts/util";
 import type { TerminalCommand } from "$types/terminal";
 import dayjs from "dayjs";
-import { BRBLUE, BRGREEN, RESET } from "../store";
+import { BRBLACK, BRBLUE, BRGREEN, RESET } from "../store";
 
 export const DirCommand: TerminalCommand = {
   keyword: "dir",
   async exec(term, flags, argv) {
-    const dir = argv[0] || "";
+    const dir = argv.join(" ") || "";
 
     try {
       const contents = await term.readDir(dir);
@@ -29,7 +29,7 @@ export const DirCommand: TerminalCommand = {
         const name = Truncate(dir.name + "/", MAXLEN).padEnd(MAXLEN, " ");
         const size = "<DIR>".padEnd(SIZELEN, " ");
 
-        term.rl?.println(`${date} ${size}    ${BRBLUE}${name}${RESET}`);
+        term.rl?.println(`${date} ${BRBLACK}${size}${RESET}    ${BRBLUE}${name}${RESET}`);
       }
 
       let totalBytes = 0;
@@ -52,6 +52,7 @@ export const DirCommand: TerminalCommand = {
       const longestByteLength = maxLength([byteSize, freeSize], 1);
       const longestCountLength = maxLength([totalFiles, totalFolders]);
 
+      term.rl?.println("");
       term.rl?.print(Gap(16));
       term.rl?.println(`${totalFiles.padStart(longestCountLength)} ${byteSize.padStart(longestByteLength)}`);
       term.rl?.print(Gap(16));

@@ -3,7 +3,7 @@ import { ArcOSVersion } from "$ts/env";
 import { formatBytes } from "$ts/fs/util";
 import { ServerManager } from "$ts/server";
 import type { TerminalCommand } from "$types/terminal";
-import { BRBLUE, BRCYAN, BRGREEN, BRPURPLE, BRRED, BRYELLOW, RESET } from "../store";
+import { BRBLACK, BRBLUE, BRCYAN, BRGREEN, BRPURPLE, BRRED, BRYELLOW, RESET } from "../store";
 
 export const ArcFetchCommand: TerminalCommand = {
   keyword: "arcfetch",
@@ -16,9 +16,11 @@ export const ArcFetchCommand: TerminalCommand = {
 
       return Object.entries({
         OS: `ArcOS ${ArcOSVersion}-${term.kernel.ARCOS_MODE} (${term.kernel.ARCOS_BUILD})`,
-        Host: `${server?.url} (${import.meta.env.DW_SERVER_AUTHCODE ? "Protected" : "Open"})`,
-        Username: term.env.get("currentuser"),
-        Mode: `Browser (on state ${state?.toUpperCase()})`,
+        Host: `${server?.url} ${BRBLACK}(${import.meta.env.DW_SERVER_AUTHCODE ? "Protected" : "Open"})${RESET}`,
+        Username: `${term.env.get("currentuser")} ${BRBLACK}(${
+          term.env.get("administrator") ? "Administrator" : "Regular User"
+        })${RESET}`,
+        Mode: `Browser ${BRBLACK}(on state ${state?.toUpperCase()})${RESET}`,
         Terminal: `PID ${term.pid} (${term.name}) on parent PID ${term.parentPid}`,
         CPU: `${info.cpu.cores} cores`,
         GPU: `${info.gpu.vendor} ${info.gpu.model}`,
@@ -64,5 +66,5 @@ export const ArcFetchCommand: TerminalCommand = {
 
     return 0;
   },
-  description: "",
+  description: "View information about your device and ArcOS",
 };
