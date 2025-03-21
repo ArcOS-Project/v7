@@ -25,7 +25,6 @@
 
 #TerminalWindow > div.body * {
   font-family: "Source Code Pro";
-  /* color: var(--fg); */
 }
 
 #TerminalWindow > div.body div.xterm-viewport {

@@ -195,7 +195,7 @@ div.shell div.taskbar div.pinned-apps > button + button {
   margin-top: 20px;
   scale: 0.9;
   opacity: 0;
-  pointer-events: none;
+  pointer-events: none !important;
   overflow: hidden;
   transition: scale 0.2s, margin 0.2s, opacity 0.2s;
 }
@@ -203,6 +203,10 @@ div.shell div.taskbar div.pinned-apps > button + button {
 #arcShell div.taskbar div.tray-icons > div.icon > div.popup.visible {
   opacity: 1;
   margin-top: 0;
-  pointer-events: initial;
+  pointer-events: initial !important;
   scale: 1;
+}
+
+#arcShell div.taskbar div.tray-icons > div.icon > div.popup:not(.visible) * {
+  pointer-events: none !important;
 }
