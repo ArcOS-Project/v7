@@ -15,7 +15,7 @@ import { ZIPDrive } from "$ts/fs/drives/zipdrive";
 import { getDirectoryName, getDriveLetter, getParentDirectory, join } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
 import { getIconPath } from "$ts/images";
-import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
+import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import { AccountIcon, PasswordIcon, PersonalizationIcon } from "$ts/images/general";
 import { ImageMimeIcon } from "$ts/images/mime";
@@ -125,6 +125,7 @@ export class UserDaemon extends Process {
       this.initialized = true;
       this.userInfo = data;
       this.env.set("currentuser", this.username);
+      if (data.admin) this.env.set("administrator", data.admin);
 
       return response.status === 200 ? (response.data as UserInfo) : undefined;
     } catch {
@@ -781,7 +782,15 @@ export class UserDaemon extends Process {
 
     const app = await this.appStore?.getAppById(id);
 
-    if (!app) return undefined;
+    if (!app) {
+      this.sendNotification({
+        title: "Application not found",
+        message: `ArcOS can't find an application with ID '${id}'. Is it installed?`,
+        timeout: 3000,
+        image: QuestionIcon,
+      });
+      return undefined;
+    }
 
     this.Log(`SPAWNING APP ${id}`);
 
@@ -837,7 +846,15 @@ export class UserDaemon extends Process {
 
     const app = await this.appStore?.getAppById(id);
 
-    if (!app) return undefined;
+    if (!app) {
+      this.sendNotification({
+        title: "Application not found",
+        message: `ArcOS can't find an application with ID '${id}'. Is it installed?`,
+        timeout: 3000,
+        image: QuestionIcon,
+      });
+      return undefined;
+    }
 
     this.Log(`SPAWNING OVERLAY APP ${id}`);
 
