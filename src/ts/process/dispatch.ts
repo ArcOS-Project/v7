@@ -32,5 +32,7 @@ export class ProcessDispatch {
     for (const callback of callbacks) {
       await callback(...args);
     }
+
+    return true;
   }
 }

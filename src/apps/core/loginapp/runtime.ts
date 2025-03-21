@@ -158,7 +158,7 @@ export class LoginAppRuntime extends AppProcess {
     this.loadingStatus.set(`Goodbye, ${daemon.username}!`);
     this.errorMessage.set("");
 
-    for (const [pid, proc] of [...this.handler.store()]) {
+    for (const [_, proc] of [...this.handler.store()]) {
       if (proc && !proc._disposed && proc instanceof AppProcess && proc.pid !== this.pid) {
         await proc.killSelf();
       }

@@ -195,6 +195,7 @@ export function WindowSystemContextMenu(runtime: ShellRuntime): AppContextMenu {
       {
         caption: "Maximize",
         action: (proc: AppProcess) => {
+          proc.handler.renderer?.unsnapWindow(proc.pid);
           proc.handler.renderer?.toggleMaximize(proc.pid);
         },
         icon: "chevron-up",
