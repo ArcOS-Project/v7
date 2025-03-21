@@ -1,5 +1,6 @@
-import type { IDisposable } from "xterm";
 import { Terminal } from "xterm";
+import { Unicode11Addon } from "xterm-addon-unicode11";
+import type { IDisposable } from "xterm";
 
 export class SelectionList {
   private terminal: Terminal;
@@ -12,6 +13,8 @@ export class SelectionList {
   private scrollOffset: number;
   private promptLines: number;
   private scrollIndicatorSpace: number;
+  private isDrawn: boolean = false;
+  private totalDrawnLines: number = 0;
 
   constructor(terminal: Terminal, items: string[], prompt: string = "Select an item:") {
     this.terminal = terminal;
@@ -36,6 +39,11 @@ export class SelectionList {
 
   public async show(): Promise<string | undefined> {
     return new Promise((resolve) => {
+      // Ensure any previous drawing is cleaned up
+      if (this.isDrawn) {
+        this.clearList();
+      }
+
       this.resolve = resolve;
 
       // Recalculate visible items in case terminal size changed
@@ -46,17 +54,16 @@ export class SelectionList {
         const event = e.domEvent;
 
         if (event.key === "Enter") {
-          this.keyListener?.dispose();
-          this.clearList();
-          this.resolve?.(this.items[this.selectedIndex]);
+          const selectedItem = this.items[this.selectedIndex];
+          this.cleanup();
+          resolve(selectedItem);
         } else if (event.key === "ArrowUp") {
           this.moveUp();
         } else if (event.key === "ArrowDown") {
           this.moveDown();
         } else if (event.key === "Escape") {
-          this.keyListener?.dispose();
-          this.clearList();
-          this.resolve?.(undefined);
+          this.cleanup();
+          resolve(undefined);
         } else if (event.key === "Home") {
           this.moveToTop();
         } else if (event.key === "End") {
@@ -68,6 +75,20 @@ export class SelectionList {
         }
       });
     });
+  }
+
+  private cleanup(): void {
+    // Remove event listener
+    if (this.keyListener) {
+      this.keyListener.dispose();
+      this.keyListener = null;
+    }
+
+    // Clear UI elements
+    this.clearList();
+
+    // Reset state
+    this.resolve = null;
   }
 
   // Add method to update visible items when terminal size changes
@@ -103,11 +124,18 @@ export class SelectionList {
   }
 
   private draw(): void {
+    // Reset line counter
+    this.totalDrawnLines = 0;
+
+    // Write prompt and count lines
     this.terminal.write(this.prompt + "\r\n");
+    this.totalDrawnLines += this.promptLines;
 
     // No items case
     if (this.items.length === 0) {
       this.terminal.write("No items available.\r\n");
+      this.totalDrawnLines++;
+      this.isDrawn = true;
       return;
     }
 
@@ -117,6 +145,7 @@ export class SelectionList {
     // Show top scroll indicator if needed
     if (needsScroll && this.scrollOffset > 0) {
       this.terminal.write("\x1b[33m↑ More above\x1b[0m\r\n");
+      this.totalDrawnLines++;
     }
 
     // Calculate range to display
@@ -125,17 +154,36 @@ export class SelectionList {
 
     // Display items
     for (let i = start; i < end; i++) {
-      if (i === this.selectedIndex) {
-        this.terminal.write(`\x1b[30;47m> ${this.items[i]}\x1b[0m\r\n`);
-      } else {
-        this.terminal.write(`  ${this.items[i]}\r\n`);
+      const itemText = this.items[i];
+      const isSelected = i === this.selectedIndex;
+
+      // Apply highlighting for the selected item
+      let prefix = isSelected ? "\x1b[30;47m> " : "  ";
+      let suffix = isSelected ? "\x1b[0m" : "";
+
+      // Handle wrapping by writing in chunks
+      let remainingText = itemText;
+      while (remainingText.length > 0) {
+        const lineLength = this.terminal.cols - 2;
+        const chunk = remainingText.substring(0, lineLength);
+        remainingText = remainingText.substring(lineLength);
+
+        this.terminal.write(`${prefix}${chunk}${suffix}\r\n`);
+        this.totalDrawnLines++;
+
+        prefix = "  ";
+        suffix = "";
       }
     }
 
     // Show bottom scroll indicator if needed
     if (needsScroll && end < this.items.length) {
       this.terminal.write("\x1b[33m↓ More below\x1b[0m\r\n");
+      this.totalDrawnLines++;
     }
+
+    // Mark as drawn
+    this.isDrawn = true;
   }
 
   private moveUp(): void {
@@ -145,8 +193,7 @@ export class SelectionList {
     // Ensure selection is visible after moving
     this.ensureSelectionVisible();
 
-    this.clearList();
-    this.draw();
+    this.redraw();
   }
 
   private moveDown(): void {
@@ -156,22 +203,19 @@ export class SelectionList {
     // Ensure selection is visible after moving
     this.ensureSelectionVisible();
 
-    this.clearList();
-    this.draw();
+    this.redraw();
   }
 
   private moveToTop(): void {
     this.selectedIndex = 0;
     this.scrollOffset = 0;
-    this.clearList();
-    this.draw();
+    this.redraw();
   }
 
   private moveToBottom(): void {
     this.selectedIndex = this.items.length - 1;
     this.scrollOffset = Math.max(0, this.items.length - this.visibleItems);
-    this.clearList();
-    this.draw();
+    this.redraw();
   }
 
   private pageUp(): void {
@@ -182,8 +226,7 @@ export class SelectionList {
     this.scrollOffset = Math.max(0, this.scrollOffset - this.visibleItems);
     this.ensureSelectionVisible();
 
-    this.clearList();
-    this.draw();
+    this.redraw();
   }
 
   private pageDown(): void {
@@ -194,34 +237,23 @@ export class SelectionList {
     this.scrollOffset = Math.min(Math.max(0, this.items.length - this.visibleItems), this.scrollOffset + this.visibleItems);
     this.ensureSelectionVisible();
 
+    this.redraw();
+  }
+
+  private redraw(): void {
     this.clearList();
     this.draw();
   }
 
   private clearList(): void {
-    // Calculate lines to clear
-    let linesToClear = this.promptLines;
-
-    // No items message
-    if (this.items.length === 0) {
-      linesToClear += 1;
-    } else {
-      // Displayed items
-      const displayedItems = Math.min(this.visibleItems, this.items.length);
-      linesToClear += displayedItems;
-
-      // Scroll indicators
-      if (this.scrollOffset > 0) {
-        linesToClear++;
+    // Only clear if something was drawn
+    if (this.isDrawn && this.totalDrawnLines > 0) {
+      for (let i = 0; i < this.totalDrawnLines; i++) {
+        this.terminal.write("\x1b[1A\x1b[2K\r");
       }
-      if (this.scrollOffset + this.visibleItems < this.items.length) {
-        linesToClear++;
-      }
-    }
-
-    // Clear lines
-    for (let i = 0; i < linesToClear; i++) {
-      this.terminal.write("\x1b[1A\x1b[2K\r");
+      // Reset after clearing
+      this.isDrawn = false;
+      this.totalDrawnLines = 0;
     }
   }
 }

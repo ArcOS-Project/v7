@@ -10,9 +10,12 @@ import { ExitCommand } from "./commands/exit";
 import { ExploreCommand } from "./commands/explore";
 import { FindCommand } from "./commands/find";
 import { HelpCommand } from "./commands/help";
+import { LogoutCommand } from "./commands/logout";
 import { MkdirCommand } from "./commands/mkdir";
 import { OpenCommand } from "./commands/open";
+import { RestartCommand } from "./commands/restart";
 import { RmCommand } from "./commands/rm";
+import { ShutdownCommand } from "./commands/shutdown";
 import { TestCommand } from "./commands/test";
 import { VerCommand } from "./commands/ver";
 
@@ -33,6 +36,9 @@ export const TerminalCommandStore: TerminalCommand[] = [
   ExploreCommand,
   TestCommand,
   FindCommand,
+  LogoutCommand,
+  ShutdownCommand,
+  RestartCommand,
 ];
 
 export const ESC = `\x1b[`;
