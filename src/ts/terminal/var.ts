@@ -12,7 +12,7 @@ export class ArcTermVariables {
     this.store = getArcTermStore(t);
   }
 
-  async getAll(): Promise<StaticVariableStore> {
+  getAll(): StaticVariableStore {
     const result: StaticVariableStore = {};
     const entries = Object.entries(this.store);
 
@@ -67,18 +67,30 @@ export class ArcTermVariables {
   }
 
   replace(str: string) {
-    const variables = this.parseInlineNames(str);
+    const all = this.getAll();
 
-    if (!variables.length) return str;
+    for (const key in all) {
+      const value = all[key]?.value;
 
-    for (const variable of variables) {
-      const part = `$${variable}`;
-      const value = this.get(variable);
+      if (!value) continue;
 
-      str = str.replace(part, value == variable && part ? part : value || "");
+      str = str.replace(`$${key}`, value);
     }
 
     return str;
+
+    // const variables = this.parseInlineNames(str);
+
+    // if (!variables.length) return str;
+
+    // for (const variable of variables) {
+    //   const part = `$${variable}`;
+    //   const value = this.get(variable);
+
+    //   str = str.replace(part, value == variable && part ? part : value || "");
+    // }
+
+    // return str;
   }
 
   private parseInlineNames(str: string): string[] {
@@ -92,36 +104,5 @@ export class ArcTermVariables {
     }
 
     return matches;
-  }
-
-  async newParseInlineNames(str: string): Promise<string[]> {
-    const split = str.split("");
-    const names: string[] = [];
-    const all = await this.getAll();
-
-    let namesIndex = 0;
-    let inVar = false;
-
-    for (let i = 0; i < split.length; i++) {
-      if (split[i] === "$") {
-        inVar = true;
-        continue;
-      }
-
-      if (inVar) {
-        names[namesIndex] ||= "";
-        names[namesIndex] += split[i];
-        if (all[names[namesIndex]]) {
-          inVar = false;
-          namesIndex++;
-        }
-      }
-    }
-
-    if (inVar) {
-      names.splice(-1);
-    }
-
-    return names;
   }
 }

@@ -33,6 +33,8 @@ export class ArcTerminal extends Process {
   }
 
   async start() {
+    if (!this.term) return this.killSelf();
+
     const rl = new Readline();
 
     this.term.loadAddon(rl);
