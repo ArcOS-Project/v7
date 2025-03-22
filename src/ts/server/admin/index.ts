@@ -10,6 +10,7 @@ import { Axios } from "../axios";
 
 export class AdminBootstrapper extends Process {
   private token: string;
+  private availableScopes: Record<string, string> = {};
   private userInfo: UserInfo | undefined;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, token: string) {
@@ -21,6 +22,8 @@ export class AdminBootstrapper extends Process {
     await this.getUserInfo();
 
     if (!this.userInfo || !this.userInfo.admin) throw new Error("Invalid user or not an admin");
+
+    this.availableScopes = await this.getAvailableScopes();
   }
 
   async getUserInfo(): Promise<UserInfo | undefined> {

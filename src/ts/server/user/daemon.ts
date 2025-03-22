@@ -76,6 +76,7 @@ export class UserDaemon extends Process {
   private firstSyncDone = false;
   public fileHandlers: Record<string, FileHandler> = DefaultFileHandlers(this);
   override _criticalProcess: boolean = true;
+  public mountedDrives: string[] = [];
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, token: string, username: string, userInfo?: UserInfo) {
     super(handler, pid, parentPid);
@@ -677,6 +678,7 @@ export class UserDaemon extends Process {
       type,
       userDaemon: this,
     });
+    this.unmountMountedDrives();
   }
 
   async mountZip(path: string, letter?: string, fromSystem = false) {
@@ -1434,6 +1436,8 @@ export class UserDaemon extends Process {
 
       if (!drive) return;
 
+      this.mountedDrives.push(id as unknown as string);
+
       const notificationId = this.sendNotification({
         title: drive.driveLetter ? `${drive.label} (${drive.driveLetter}:)` : drive.label,
         message: "This drive just got mounted! Click the button to view it in the file manager",
@@ -1451,6 +1455,14 @@ export class UserDaemon extends Process {
         timeout: 3000,
       });
     });
+  }
+
+  async unmountMountedDrives() {
+    this.Log("Unmounting mounted drives");
+
+    for (const drive of this.mountedDrives) {
+      this.fs.umountDrive(drive, true);
+    }
   }
 
   async FileProgress(initialData: Partial<FsProgressOperation>, parentPid?: number): Promise<FileProgressMutator> {
