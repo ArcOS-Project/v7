@@ -19,6 +19,7 @@ import { RestartCommand } from "./commands/restart";
 import { RmCommand } from "./commands/rm";
 import { ShutdownCommand } from "./commands/shutdown";
 import { TestCommand } from "./commands/test";
+import { TreeCommand } from "./commands/tree";
 import { VerCommand } from "./commands/ver";
 
 export const TerminalCommandStore: TerminalCommand[] = [
@@ -43,6 +44,7 @@ export const TerminalCommandStore: TerminalCommand[] = [
   RestartCommand,
   QuotaCommand,
   CrTpaCommand,
+  TreeCommand,
 ];
 
 export const ESC = `\x1b[`;
