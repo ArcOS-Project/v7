@@ -23,7 +23,7 @@ export function htmlspecialchars(text: string) {
 export function detectJavaScript(htmlString: string) {
   const issues: string[] = [];
 
-  const disallowedTagsRegex = /<(script|meta|title|iframe|noscript|embed|object|base|head|html|body)\b[^>]*>/gi;
+  const disallowedTagsRegex = /<(script|meta|title|noscript|embed|object|base|head|html|body)\b[^>]*>/gi;
   const disallowedAttributesRegex = /\b(on\w+|lang|charset|http-equiv|content|scheme|target|base)=["'][^"']*["']/gi;
   const javascriptURLRegex = /href=["']javascript:[^"']*["']/gi;
 
