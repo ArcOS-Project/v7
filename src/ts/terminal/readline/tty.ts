@@ -100,13 +100,20 @@ export class Tty {
     return newLayout;
   }
 
-  public refreshLine(prompt: string, line: LineBuffer, oldLayout: Layout, newLayout: Layout, highlighter: Highlighter) {
+  public refreshLine(
+    prompt: string,
+    line: LineBuffer,
+    oldLayout: Layout,
+    newLayout: Layout,
+    highlighter: Highlighter,
+    conceiled = false
+  ) {
     const cursor = newLayout.cursor;
     const endPos = newLayout.end;
     this.clearOldRows(oldLayout);
 
     this.write(highlighter.highlightPrompt(prompt));
-    this.write(highlighter.highlight(line.buf, line.pos));
+    if (!conceiled) this.write(highlighter.highlight(line.buf, line.pos));
 
     if (endPos.col === 0 && endPos.row > 0 && line.buf[line.buf.length - 1] !== "\n") {
       this.write("\n");

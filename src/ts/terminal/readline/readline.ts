@@ -18,39 +18,51 @@ import { State } from "./state";
 import { History } from "./history";
 import { type Output, Tty } from "./tty";
 import { type Highlighter, IdentityHighlighter } from "./highlight";
+import type { ArcTerminal } from "..";
+import { Process } from "$ts/process/instance";
+import type { ProcessHandler } from "$ts/process/handler";
 
 interface ActiveRead {
   prompt: string;
   resolve: (input: string) => void;
   reject: (e: unknown) => void;
+  conceiled: boolean;
 }
 
 type CheckHandler = (text: string) => boolean;
 type CtrlCHandler = () => void;
 type PauseHandler = (resume: boolean) => void;
 
-export class Readline implements ITerminalAddon {
+export class Readline extends Process implements ITerminalAddon {
   private term: Terminal | undefined;
   private highlighter: Highlighter = new IdentityHighlighter();
-  private history: History = new History(50);
+  private history: History | undefined;
   private activeRead: ActiveRead | undefined;
   private disposables: IDisposable[] = [];
   private watermark = 0;
   private highWatermark = 10000;
   private lowWatermark = 1000;
   private highWater = false;
-  private state: State = new State(">", this.tty(), this.highlighter, this.history);
+  private state: State | undefined;
   private checkHandler: CheckHandler = () => true;
   private ctrlCHandler: CtrlCHandler = () => {
     return;
   };
+  public terminal: ArcTerminal | undefined;
 
   private pauseHandler: PauseHandler = (resume: boolean) => {
     return;
   };
 
-  constructor() {
-    this.history.restoreFromLocalStorage();
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, terminal?: ArcTerminal) {
+    super(handler, pid, parentPid);
+    this.terminal = terminal;
+  }
+
+  async start() {
+    this.history = await this.handler.spawn(History, undefined, this.pid, 50, this.terminal);
+    this.state = await this.handler.spawn(State, undefined, this.pid, ">", this.tty(), this.highlighter, this.history, false);
+    this.history?.restore();
   }
 
   /**
@@ -79,7 +91,7 @@ export class Readline implements ITerminalAddon {
    * @param text - The text to append to history.
    */
   public appendHistory(text: string) {
-    this.history.append(text);
+    this.history?.append(text);
   }
 
   /**
@@ -211,15 +223,27 @@ export class Readline implements ITerminalAddon {
    * @param prompt The prompt to use.
    * @returns A promise to be called when the input has been read.
    */
-  public read(prompt: string): Promise<string> {
-    return new Promise((resolve, reject) => {
+  public read(prompt: string, conceiled = false): Promise<string> {
+    return new Promise(async (resolve, reject) => {
       if (this.term === undefined) {
         reject("addon is not active");
         return;
       }
-      this.state = new State(prompt, this.tty(), this.highlighter, this.history);
-      this.state.refresh();
-      this.activeRead = { prompt, resolve, reject };
+
+      this.state?.killSelf();
+
+      this.state = await this.handler.spawn(
+        State,
+        undefined,
+        this.pid,
+        prompt,
+        this.tty(),
+        this.highlighter,
+        this.history,
+        conceiled
+      );
+      this.state?.refresh();
+      this.activeRead = { prompt, resolve, reject, conceiled };
     });
   }
 
@@ -236,16 +260,16 @@ export class Readline implements ITerminalAddon {
     return true;
   }
 
-  private readData(data: string) {
+  private async readData(data: string) {
     const input = parseInput(data);
     if (input.length > 1 || (input[0].inputType === InputType.Text && input[0].data.length > 1)) {
-      this.readPaste(input);
+      await this.readPaste(input);
       return;
     }
-    this.readKey(input[0]);
+    await this.readKey(input[0]);
   }
 
-  private readPaste(input: Input[]) {
+  private async readPaste(input: Input[]) {
     const mappedInput = input.map((it) => {
       if (it.inputType === InputType.Enter) {
         return { inputType: InputType.Text, data: ["\n"] };
@@ -255,14 +279,15 @@ export class Readline implements ITerminalAddon {
 
     for (const it of mappedInput) {
       if (it.inputType === InputType.Text) {
-        this.state.editInsert(it.data.join(""));
+        this.state?.editInsert(it.data.join(""));
       } else {
-        this.readKey(it);
+        await this.readKey(it);
       }
     }
   }
 
-  private readKey(input: Input) {
+  private async readKey(input: Input) {
+    if (!this.state) return;
     if (this.activeRead === undefined) {
       switch (input.inputType) {
         case InputType.CtrlC:
@@ -277,17 +302,17 @@ export class Readline implements ITerminalAddon {
 
     switch (input.inputType) {
       case InputType.Text:
-        this.state.editInsert(input.data.join(""));
+        this.state?.editInsert(input.data.join(""));
         break;
       case InputType.AltEnter:
       case InputType.ShiftEnter:
-        this.state.editInsert("\n");
+        this.state?.editInsert("\n");
         break;
       case InputType.Enter:
         if (this.checkHandler(this.state.buffer())) {
           this.state.moveCursorToEnd();
           this.term?.write("\r\n");
-          this.history.append(this.state.buffer());
+          if (!this.activeRead.conceiled) this.history?.append(this.state.buffer());
           this.activeRead?.resolve(this.state.buffer());
           this.activeRead = undefined;
         } else {
@@ -297,8 +322,18 @@ export class Readline implements ITerminalAddon {
       case InputType.CtrlC:
         this.state.moveCursorToEnd();
         this.term?.write("^C\r\n");
-        this.state = new State(this.activeRead.prompt, this.tty(), this.highlighter, this.history);
-        this.state.refresh();
+        this.state?.killSelf();
+        this.state = await this.handler.spawn(
+          State,
+          undefined,
+          this.pid,
+          this.activeRead.prompt,
+          this.tty(),
+          this.highlighter,
+          this.history,
+          this.activeRead.conceiled
+        );
+        this.state?.refresh();
         break;
       case InputType.CtrlS:
         this.pauseHandler(false);

@@ -18,6 +18,8 @@ import { Tty } from "./tty";
 import { History } from "./history";
 import stringWidth from "string-width";
 import type { Highlighter } from "./highlight";
+import { Process } from "$ts/process/instance";
+import type { ProcessHandler } from "$ts/process/handler";
 
 export class Position {
   public col: number;
@@ -49,7 +51,7 @@ export class Layout {
   }
 }
 
-export class State {
+export class State extends Process {
   private prompt: string;
   private promptSize: Position;
   private line: LineBuffer = new LineBuffer();
@@ -57,15 +59,28 @@ export class State {
   private layout: Layout;
   private highlighter: Highlighter;
   private highlighting = false;
-  private history: History;
+  private history: History | undefined;
+  private conceiled: boolean;
 
-  constructor(prompt: string, tty: Tty, highlighter: Highlighter, history: History) {
+  constructor(
+    handler: ProcessHandler,
+    pid: number,
+    parentPid: number,
+    prompt: string,
+    tty: Tty,
+    highlighter: Highlighter,
+    history?: History,
+    conceiled = false
+  ) {
+    super(handler, pid, parentPid);
+
     this.prompt = prompt;
     this.tty = tty;
     this.highlighter = highlighter;
     this.history = history;
     this.promptSize = tty.calculatePosition(prompt, new Position());
     this.layout = new Layout(this.promptSize);
+    this.conceiled = conceiled;
   }
 
   public buffer(): string {
@@ -86,6 +101,8 @@ export class State {
   }
 
   public clearScreen() {
+    if (this.conceiled) return;
+
     this.tty.clearScreen();
     this.layout.cursor = new Position();
     this.layout.end = new Position();
@@ -100,7 +117,7 @@ export class State {
       if (width > 0 && this.layout.cursor.col + width < this.tty.col && !this.shouldHighlight()) {
         this.layout.cursor.col += width;
         this.layout.end.col += width;
-        this.tty.write(text);
+        if (!this.conceiled) this.tty.write(text);
       } else {
         this.refresh();
       }
@@ -121,12 +138,16 @@ export class State {
   }
 
   public editDelete(n: number) {
+    if (this.conceiled) return;
+
     if (this.line.delete(n)) {
       this.refresh();
     }
   }
 
   public editDeleteEndOfLine() {
+    if (this.conceiled) return;
+
     if (this.line.deleteEndOfLine()) {
       this.refresh();
     }
@@ -134,23 +155,26 @@ export class State {
 
   public refresh() {
     const newLayout = this.tty.computeLayout(this.promptSize, this.line);
-    this.tty.refreshLine(this.prompt, this.line, this.layout, newLayout, this.highlighter);
+    this.tty.refreshLine(this.prompt, this.line, this.layout, newLayout, this.highlighter, this.conceiled);
     this.layout = newLayout;
   }
 
   public moveCursorBack(n: number) {
+    if (this.conceiled) return;
     if (this.line.moveBack(n)) {
       this.moveCursor();
     }
   }
 
   public moveCursorForward(n: number) {
+    if (this.conceiled) return;
     if (this.line.moveForward(n)) {
       this.moveCursor();
     }
   }
 
   public moveCursorUp(n: number) {
+    if (this.conceiled) return;
     if (this.line.moveLineUp(n)) {
       this.moveCursor();
     } else {
@@ -159,6 +183,7 @@ export class State {
   }
 
   public moveCursorDown(n: number) {
+    if (this.conceiled) return;
     if (this.line.moveLineDown(n)) {
       this.moveCursor();
     } else {
@@ -167,18 +192,21 @@ export class State {
   }
 
   public moveCursorHome() {
+    if (this.conceiled) return;
     if (this.line.moveHome()) {
       this.moveCursor();
     }
   }
 
   public moveCursorEnd() {
+    if (this.conceiled) return;
     if (this.line.moveEnd()) {
       this.moveCursor();
     }
   }
 
   public moveCursorToEnd() {
+    if (this.conceiled) return;
     if (this.layout.cursor === this.layout.end) {
       return;
     }
@@ -187,20 +215,24 @@ export class State {
   }
 
   public previousHistory() {
-    if (this.history.cursor === -1 && this.line.length() > 0) {
+    if (this.conceiled) return;
+
+    if (this.history?.cursor === -1 && this.line.length() > 0) {
       return;
     }
-    const prev = this.history.prev();
+    const prev = this.history?.prev();
     if (prev !== undefined) {
       this.update(prev);
     }
   }
 
   public nextHistory() {
-    if (this.history.cursor === -1) {
+    if (this.conceiled) return;
+
+    if (this.history?.cursor === -1) {
       return;
     }
-    const next = this.history.next();
+    const next = this.history?.next();
     if (next !== undefined) {
       this.update(next);
     } else {
@@ -209,6 +241,8 @@ export class State {
   }
 
   public moveCursor() {
+    if (this.conceiled) return;
+
     const cursor = this.tty.calculatePosition(this.line.pos_buffer(), this.promptSize);
     if (cursor === this.layout.cursor) {
       return;

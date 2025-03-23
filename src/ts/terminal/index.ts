@@ -4,14 +4,14 @@ import { join } from "$ts/fs/util";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import type { UserDaemon } from "$ts/server/user/daemon";
+import { ElevationLevel, type ElevationData } from "$types/elevation";
 import type { DirectoryReadReturn } from "$types/fs";
 import type { Arguments } from "$types/terminal";
 import ansiEscapes from "ansi-escapes";
 import type { Terminal } from "xterm";
-import { Readline } from "xterm-readline";
-import { BOLD, BRBLACK, BRBLUE, BRGREEN, BRPURPLE, BRRED, BRYELLOW, RED, RESET, TerminalCommandStore, YELLOW } from "./store";
+import { Readline } from "./readline/readline";
+import { BOLD, BRBLACK, BRBLUE, BRGREEN, BRPURPLE, BRRED, BRYELLOW, RESET, TerminalCommandStore } from "./store";
 import { ArcTermVariables } from "./var";
-import { ElevationLevel, type ElevationData } from "$types/elevation";
 
 export class ArcTerminal extends Process {
   path: string;
@@ -36,9 +36,9 @@ export class ArcTerminal extends Process {
   async start() {
     if (!this.term) return this.killSelf();
 
-    const rl = new Readline();
+    const rl = await this.handler.spawn<Readline>(Readline, undefined, this.pid, this);
 
-    this.term.loadAddon(rl);
+    this.term.loadAddon(rl!);
     this.rl = rl;
     this.var = new ArcTermVariables(this);
     this.readline();
@@ -211,7 +211,7 @@ export class ArcTerminal extends Process {
     this.rl?.println(`  ${data.title}`);
     this.rl?.println(`  ${BRBLACK}${data.description}${RESET}`);
     this.rl?.println("");
-    this.rl?.println(`➡️ To continue, ${continueCaption}`);
+    this.rl?.read(`➡️ To continue, ${continueCaption}`, true);
     this.rl?.println("");
 
     if (lockdown) return false;

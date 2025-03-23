@@ -1,3 +1,7 @@
+import type { ProcessHandler } from "$ts/process/handler";
+import { Process } from "$ts/process/instance";
+import type { ArcTerminal } from "..";
+
 /**
  * strtok/xterm-readline 1.1.2
  *
@@ -12,45 +16,53 @@
  *
  * © IzKuipers 2025
  */
-export class History {
+export class History extends Process {
   public entries: string[] = [];
   public maxEntries: number;
   public cursor = -1;
+  private terminal: ArcTerminal | undefined;
 
-  constructor(maxEntries: number) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, maxEntries: number, terminal?: ArcTerminal) {
+    super(handler, pid, parentPid);
+
     this.maxEntries = maxEntries;
+    this.terminal = terminal;
   }
 
-  public saveToLocalStorage() {
-    const localStorage = window?.localStorage;
-    if (localStorage !== undefined) {
-      localStorage.setItem("history", JSON.stringify(this.entries));
+  async start() {
+    if (!this.terminal) {
+      this.Log("Not running under ArcTerm, history disabled.");
+
+      return false;
     }
   }
 
-  public restoreFromLocalStorage() {
-    const localStorage = window?.localStorage;
-    if (localStorage !== undefined) {
-      const historyJson = localStorage.getItem("history");
-      if (historyJson === undefined || historyJson === null) {
-        return;
-      }
-      try {
-        const historyEntries: string[] = JSON.parse(historyJson);
-        if (!Array.isArray(historyEntries) || historyEntries.find((it) => typeof it !== "string") !== undefined) {
-          this.entries = [];
-          localStorage.setItem("history", "[]");
-        } else {
-          this.entries = historyEntries;
-        }
-      } catch (e) {
-        this.entries = [];
-        localStorage.setItem("history", "[]");
-      }
-    }
+  public save() {
+    const pref = this.terminal?.daemon?.preferences();
+
+    if (!this.terminal || !pref) return;
+
+    pref.appPreferences.ArcTerm ||= {};
+    pref.appPreferences.ArcTerm.history = this.entries;
+
+    this.terminal?.daemon?.preferences.set(pref);
+  }
+
+  public restore() {
+    const pref = this.terminal?.daemon?.preferences();
+
+    if (!this.terminal || !pref) return;
+
+    pref.appPreferences.ArcTerm ||= {};
+
+    if (!pref.appPreferences.ArcTerm.history) return undefined;
+
+    this.entries = pref.appPreferences.ArcTerm.history;
   }
 
   public append(text: string) {
+    if (!this.terminal) return undefined;
+
     this.resetCursor();
     if (!this.entries.includes(text)) {
       this.entries.unshift(text);
@@ -61,7 +73,7 @@ export class History {
     if (this.entries.length > this.maxEntries) {
       this.entries.pop();
     }
-    this.saveToLocalStorage();
+    this.save();
   }
 
   public resetCursor() {
@@ -69,6 +81,8 @@ export class History {
   }
 
   public next(): string | undefined {
+    if (!this.terminal) return undefined;
+
     if (this.cursor === -1) {
       return undefined;
     } else {
@@ -79,6 +93,8 @@ export class History {
   }
 
   public prev(): string | undefined {
+    if (!this.terminal) return undefined;
+
     if (this.cursor + 1 >= this.entries.length) {
       return undefined;
     } else {
