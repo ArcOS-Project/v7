@@ -16,6 +16,14 @@ export function SupplementaryThirdPartyPropFunctions(
 ) {
   return {
     load: async (path: string) => {
+      if (path.startsWith("http")) {
+        try {
+          await import(/* @vite-ignore */ path);
+        } catch (e) {
+          throw e;
+        }
+        return {};
+      }
       const contents = wrap(arrayToText((await fs.readFile(join(app.workingDirectory!, path)))!));
       const dataUrl = `data:application/javascript;base64,${btoa(contents)}`;
 
