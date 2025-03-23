@@ -3,6 +3,7 @@ import type { FilesystemDrive } from "$ts/fs/drive";
 import { join } from "$ts/fs/util";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
+import { LoginUser } from "$ts/server/user/auth";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
 import type { DirectoryReadReturn } from "$types/fs";
@@ -10,7 +11,7 @@ import type { Arguments } from "$types/terminal";
 import ansiEscapes from "ansi-escapes";
 import type { Terminal } from "xterm";
 import { Readline } from "./readline/readline";
-import { BOLD, BRBLACK, BRBLUE, BRGREEN, BRPURPLE, BRRED, BRYELLOW, RESET, TerminalCommandStore } from "./store";
+import { BOLD, BRBLACK, BRBLUE, BRGREEN, BRRED, BRYELLOW, RESET, TerminalCommandStore } from "./store";
 import { ArcTermVariables } from "./var";
 
 export class ArcTerminal extends Process {
@@ -194,31 +195,62 @@ export class ArcTerminal extends Process {
   }
 
   async elevate(data: ElevationData) {
-    const color = data.level == ElevationLevel.low ? BRGREEN : data.level === ElevationLevel.medium ? BRYELLOW : BRPURPLE;
+    const color = data.level == ElevationLevel.low ? BRGREEN : data.level === ElevationLevel.medium ? BRYELLOW : BRRED;
     const pref = this.daemon?.preferences();
 
     if (!pref) return false;
 
-    const { lockdown, noPassword } = pref.security;
+    const { lockdown, noPassword, disabled } = pref.security;
     const continueCaption = lockdown
       ? `allow elevation in Settings.`
       : noPassword
-      ? `press ${BRBLUE}Enter${RESET}.`
+      ? `type "yes", and hit ${BRBLUE}Enter${RESET}.`
       : `type in your password, and hit ${BRBLUE}Enter${RESET}.`;
 
-    this.rl?.println(`🔒 ${BOLD}${color}${data.what}${RESET}`);
+    if (disabled) return true;
+
+    this.rl?.println("");
+    this.rl?.println(`🔒  ${BOLD}${color}${data.what}${RESET}`);
     this.rl?.println("");
     this.rl?.println(`  ${data.title}`);
     this.rl?.println(`  ${BRBLACK}${data.description}${RESET}`);
     this.rl?.println("");
-    this.rl?.read(`➡️ To continue, ${continueCaption}`, true);
+
+    if (lockdown) {
+      this.rl?.println("⛔  You can't continue because elevation is prohibited.");
+      this.rl?.println("");
+
+      return false;
+    }
+
+    this.rl?.println(`➡️  To continue, ${continueCaption}`);
     this.rl?.println("");
 
-    if (lockdown) return false;
+    const password = await this.rl?.read(
+      noPassword
+        ? `Type ${BRBLUE}yes${RESET} to continue: `
+        : `🔑  Enter the password for ${BRBLUE}${this.daemon?.username}${RESET}:`,
+      !noPassword
+    );
+    this.rl?.println("");
 
     if (noPassword) {
-      // this.term.
+      return password === "yes";
     }
-    this.rl?.println(`➡️ To continue, ${continueCaption}`);
+
+    if (lockdown || !password) return false;
+
+    const token = await LoginUser(this.daemon?.username!, password!);
+
+    if (!token) {
+      this.Error("Incorrect password");
+      this.rl?.println("");
+
+      return false;
+    }
+
+    await this.daemon?.discontinueToken(token);
+
+    return true;
   }
 }

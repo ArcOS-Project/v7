@@ -1,4 +1,6 @@
+import { AppProcess } from "$ts/apps/process";
 import { tryJsonParse } from "$ts/json";
+import { ElevationLevel } from "$types/elevation";
 import type { TerminalCommand } from "$types/terminal";
 
 export const KillCommand: TerminalCommand = {
@@ -14,6 +16,23 @@ export const KillCommand: TerminalCommand = {
 
     if (!process) {
       term.Error("Process not found");
+      return 1;
+    }
+
+    const elevated = await term.elevate({
+      what: "ArcOS needs your permission to kill a process",
+      image: "",
+      title: process.name,
+      description: process instanceof AppProcess ? "Application" : "Process",
+      level: ElevationLevel.high,
+    });
+
+    if (!elevated) return 1;
+
+    const result = await term.handler.kill(process.pid);
+
+    if (result !== "success") {
+      term.Error(result);
       return 1;
     }
 

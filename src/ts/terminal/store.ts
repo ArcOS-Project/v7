@@ -11,6 +11,7 @@ import { ExitCommand } from "./commands/exit";
 import { ExploreCommand } from "./commands/explore";
 import { FindCommand } from "./commands/find";
 import { HelpCommand } from "./commands/help";
+import { KillCommand } from "./commands/kill";
 import { LogoutCommand } from "./commands/logout";
 import { MkdirCommand } from "./commands/mkdir";
 import { OpenCommand } from "./commands/open";
@@ -45,6 +46,7 @@ export const TerminalCommandStore: TerminalCommand[] = [
   QuotaCommand,
   CrTpaCommand,
   TreeCommand,
+  KillCommand,
 ];
 
 export const ESC = `\x1b[`;
