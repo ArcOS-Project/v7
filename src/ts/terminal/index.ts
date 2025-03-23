@@ -9,8 +9,9 @@ import type { Arguments } from "$types/terminal";
 import ansiEscapes from "ansi-escapes";
 import type { Terminal } from "xterm";
 import { Readline } from "xterm-readline";
-import { BRBLUE, BRGREEN, BRRED, BRYELLOW, RESET, TerminalCommandStore } from "./store";
+import { BOLD, BRBLACK, BRBLUE, BRGREEN, BRPURPLE, BRRED, BRYELLOW, RED, RESET, TerminalCommandStore, YELLOW } from "./store";
 import { ArcTermVariables } from "./var";
+import { ElevationLevel, type ElevationData } from "$types/elevation";
 
 export class ArcTerminal extends Process {
   path: string;
@@ -190,5 +191,34 @@ export class ArcTerminal extends Process {
     if (parent instanceof TerminalWindow) {
       this.handler.kill(this.parentPid);
     }
+  }
+
+  async elevate(data: ElevationData) {
+    const color = data.level == ElevationLevel.low ? BRGREEN : data.level === ElevationLevel.medium ? BRYELLOW : BRPURPLE;
+    const pref = this.daemon?.preferences();
+
+    if (!pref) return false;
+
+    const { lockdown, noPassword } = pref.security;
+    const continueCaption = lockdown
+      ? `allow elevation in Settings.`
+      : noPassword
+      ? `press ${BRBLUE}Enter${RESET}.`
+      : `type in your password, and hit ${BRBLUE}Enter${RESET}.`;
+
+    this.rl?.println(`🔒 ${BOLD}${color}${data.what}${RESET}`);
+    this.rl?.println("");
+    this.rl?.println(`  ${data.title}`);
+    this.rl?.println(`  ${BRBLACK}${data.description}${RESET}`);
+    this.rl?.println("");
+    this.rl?.println(`➡️ To continue, ${continueCaption}`);
+    this.rl?.println("");
+
+    if (lockdown) return false;
+
+    if (noPassword) {
+      // this.term.
+    }
+    this.rl?.println(`➡️ To continue, ${continueCaption}`);
   }
 }
