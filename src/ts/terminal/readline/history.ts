@@ -27,6 +27,7 @@ export class History extends Process {
 
     this.maxEntries = maxEntries;
     this.terminal = terminal;
+    this.name = `TerminalHistory[${this.pid}P:${maxEntries}M]`;
   }
 
   async start() {

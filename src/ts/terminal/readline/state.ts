@@ -81,6 +81,7 @@ export class State extends Process {
     this.promptSize = tty.calculatePosition(prompt, new Position());
     this.layout = new Layout(this.promptSize);
     this.conceiled = conceiled;
+    this.name = `TerminalState[${this.pid}P:${prompt.length}L]`;
   }
 
   public buffer(): string {
