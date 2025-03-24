@@ -24,7 +24,14 @@ import type { UserDaemon } from "./daemon";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
 import { Store } from "$ts/writable";
 
-export function ThirdPartyProps(daemon: UserDaemon, args: any[], app: App, wrap: (c: string) => string, metaPath: string) {
+export function ThirdPartyProps(
+  daemon: UserDaemon,
+  args: any[],
+  app: App,
+  wrap: (c: string) => string,
+  metaPath: string,
+  workingDirectory?: string
+) {
   const props = {
     kernel: daemon.kernel,
     daemon,
@@ -90,7 +97,16 @@ export function ThirdPartyProps(daemon: UserDaemon, args: any[], app: App, wrap:
     },
   };
 
-  const supplementary = SupplementaryThirdPartyPropFunctions(daemon, daemon.fs, app, props, wrap);
+  const supplementary = SupplementaryThirdPartyPropFunctions(
+    daemon,
+    daemon.fs,
+    app,
+    props,
+    wrap,
+    args,
+    metaPath,
+    workingDirectory || app.workingDirectory
+  );
 
   for (const [key, supp] of Object.entries(supplementary)) {
     (props as any)[key] = supp;
