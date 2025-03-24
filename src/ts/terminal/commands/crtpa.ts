@@ -151,19 +151,19 @@ class proc extends ThirdPartyAppProcess {
 	}
 
 	async render() {
-    const body = this.getBody();
-    body.innerHTML = html;
+		const body = this.getBody();
+		body.innerHTML = html;
 
-    /* Do some interesting stuff here */
-    this.myAmazingFunction();
-  }
+		/* Do some interesting stuff here */
+		this.myAmazingFunction();
+	}
 
-  myAmazingFunction() {
-    // Check if the process is disposed at the top of every method. This makes sure the process has the least amount of lasting effects.
-    if (this._disposed) return;
+	myAmazingFunction() {
+		// Check if the process is disposed at the top of every method. This makes sure the process has the least amount of lasting effects.
+		if (this._disposed) return;
 
-    Debug("Working!");
-  }
+		Debug("Working!");
+	}
 }
 
 return { proc };`;
@@ -176,5 +176,5 @@ const PROJECT_HTML = `<!-- CSS is imported here -->
 
 const PROJECT_CSS = (id: string) => `/* Scope CSS of your app by prefixing selectors with the app ID: */
 #${id} > div.body {
-  padding: 15px;
+	padding: 15px;
 }`;
