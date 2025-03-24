@@ -72,9 +72,13 @@ export const CrTpaCommand: TerminalCommand = {
 
       section("Size and Position", 4);
 
-      tpaData.size = size((await input("default size (WxH):", "string", /[0-9]+x[0-9]+/g)).split("x").map(Number));
-      tpaData.minSize = size((await input("minimal window size (WxH):", "string", /[0-9]+x[0-9]+/g)).split("x").map(Number));
-      tpaData.maxSize = size((await input("maximal window size (WxH):", "string", /[0-9]+x[0-9]+/g)).split("x").map(Number));
+      tpaData.size = size((await input("default size (WxH):", "string", /([0-9]+|\-\1)x([0-9]+|\-\1)/g)).split("x").map(Number));
+      tpaData.minSize = size(
+        (await input("minimal window size (WxH):", "string", /([0-9]+|\-\1)x([0-9]+|\-\1)/g)).split("x").map(Number)
+      );
+      tpaData.maxSize = size(
+        (await input("maximal window size (WxH):", "string", /([0-9]+|\-\1)x([0-9]+|\-\1)/g)).split("x").map(Number)
+      );
 
       section("Window State", 5);
 
