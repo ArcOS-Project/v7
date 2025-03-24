@@ -4,6 +4,8 @@
   import type { UserPreferencesStore } from "$types/user";
   import { onMount } from "svelte";
   import Spinner from "../../../../../../../lib/Spinner.svelte";
+  import { DesktopIcon } from "$ts/images/general";
+  import { contextProps } from "$ts/context/actions.svelte";
 
   const { userPreferences, process }: { userPreferences: UserPreferencesStore; process: ShellRuntime } = $props();
 
@@ -15,37 +17,55 @@
 
   onMount(() => {
     const unsubscribe = userPreferences.subscribe(async (v) => {
-      if (!v.shell.actionCenter.galleryImage) {
-        noImage = true;
+      try {
+        if (!v.shell.actionCenter.galleryImage) {
+          noImage = true;
+          loading = false;
+
+          return;
+        }
+
+        if (v.shell.actionCenter.galleryImage === lastValue) return;
+
+        lastValue = v.shell.actionCenter.galleryImage;
+        noImage = false;
+        errored = false;
+        loading = true;
+
+        const contents = await process.fs.readFile(v.shell.actionCenter.galleryImage);
+
         loading = false;
 
-        return;
-      }
+        if (!contents) {
+          errored = true;
+          url = "";
 
-      if (v.shell.actionCenter.galleryImage === lastValue) return;
+          return;
+        }
 
-      lastValue = v.shell.actionCenter.galleryImage;
-      noImage = false;
-      errored = false;
-      loading = true;
-
-      const contents = await process.fs.readFile(v.shell.actionCenter.galleryImage);
-
-      loading = false;
-
-      if (!contents) {
+        const blob = arrayToBlob(contents);
+        url = URL.createObjectURL(blob);
+      } catch {
         errored = true;
-        url = "";
-
-        return;
+        loading = false;
       }
-
-      const blob = arrayToBlob(contents);
-      url = URL.createObjectURL(blob);
     });
 
     return () => unsubscribe();
   });
+
+  async function chooseImage() {
+    const [path] = await process.userDaemon!.LoadSaveDialog({
+      title: "Choose an image for the gallery",
+      icon: DesktopIcon,
+      startDir: "U:/",
+      extensions: [".png", ".jpg", ".gif", ".webp", ".jpeg"],
+    });
+
+    if (!path) return;
+
+    $userPreferences.shell.actionCenter.galleryImage = path;
+  }
 </script>
 
 <div
@@ -54,15 +74,17 @@
   class:no-image={noImage}
   class:errored
   class:loading
+  data-contextmenu="actioncenter-gallery-card"
+  use:contextProps={[chooseImage]}
 >
   {#if !loading}
     {#if noImage}
       <span class="lucide icon-image"></span>
-      <button>Choose an image</button>
+      <button onclick={chooseImage} class="link">Choose an image</button>
     {:else if errored}
       <span class="lucide icon-circle-slash"></span>
       <p>Image not found!</p>
-      <button>Change it</button>
+      <button onclick={chooseImage} class="link">Change it</button>
     {/if}
   {:else}
     <Spinner height={32} />

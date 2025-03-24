@@ -3,6 +3,7 @@ import { iconIdFromPath } from "$ts/images";
 import { AppsIcon } from "$ts/images/general";
 import { ShortcutMimeIcon } from "$ts/images/mime";
 import { ShutdownIcon } from "$ts/images/power";
+import { Sleep } from "$ts/sleep";
 import type { App, AppContextMenu } from "$types/app";
 import type { Workspace } from "$types/user";
 import type { ShellRuntime } from "./runtime";
@@ -151,6 +152,24 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         icon: "map-pin",
         action: (changeLocation) => {
           changeLocation();
+        },
+      },
+    ],
+    "actioncenter-gallery-card": [
+      {
+        caption: "Change image...",
+        action: (chooseImage) => {
+          chooseImage();
+        },
+      },
+      {
+        caption: "Remove image",
+        action: async () => {
+          runtime.userPreferences.update((v) => {
+            v.shell.actionCenter.galleryImage = "";
+
+            return v;
+          });
         },
       },
     ],

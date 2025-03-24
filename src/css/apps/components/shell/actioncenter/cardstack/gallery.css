@@ -3,4 +3,13 @@ div.shell div.actioncenter div.top div.card-stack div.card.gallery {
   background-image: var(--src);
   background-position: center;
   background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+div.shell div.actioncenter div.top div.card-stack div.card.gallery span.lucide {
+  font-size: 24px;
+  margin-bottom: 5px;
 }
