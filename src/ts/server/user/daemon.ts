@@ -51,7 +51,7 @@ export class UserDaemon extends Process {
   public initialized = false;
   public username: string;
   public token: string;
-  public preferences = Store<UserPreferences>();
+  public preferences = Store<UserPreferences>(DefaultUserPreferences);
   public notifications = new Map<string, Notification>([]);
   public userInfo: UserInfo = DefaultUserInfo;
   public battery = Store<BatteryType | undefined>();

@@ -25,6 +25,7 @@ export class ArcTermRuntime extends Process {
 
     const proc = await daemon.spawnApp<TerminalWindowRuntime>("TerminalWindow", this.pid);
 
+    proc!.app = this.app;
     proc?.windowTitle.set("ArcTerm");
     proc?.windowIcon.set(this.app.data.metadata.icon);
 

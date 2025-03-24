@@ -2,10 +2,12 @@ import { AppProcess } from "$ts/apps/process";
 import { tryJsonParse } from "$ts/json";
 import { ElevationLevel } from "$types/elevation";
 import type { TerminalCommand } from "$types/terminal";
+import { SelectionList } from "../select";
 
 export const KillCommand: TerminalCommand = {
   keyword: "kill",
   async exec(term, flags, argv) {
+    const force = flags.force || flags.f;
     const pid = tryJsonParse<number>(argv[0]) as number;
     const process = term.handler.getProcess(pid);
 
@@ -29,7 +31,15 @@ export const KillCommand: TerminalCommand = {
 
     if (!elevated) return 1;
 
-    const result = await term.handler.kill(process.pid);
+    if (force) {
+      const select = new SelectionList(term.term, ["Yes", "No"], "Force flag specified. Are you sure?");
+
+      await select.show();
+
+      if (select.selectedIndex !== 0) return 1;
+    }
+
+    const result = await term.handler.kill(process.pid, !!force);
 
     if (result !== "success") {
       term.Error(result);
