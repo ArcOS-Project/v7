@@ -22,6 +22,7 @@ import axios from "axios";
 import { Axios } from "../axios";
 import type { UserDaemon } from "./daemon";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
+import { Store } from "$ts/writable";
 
 export function ThirdPartyProps(daemon: UserDaemon, args: any[], app: App, wrap: (c: string) => string, metaPath: string) {
   const props = {
@@ -62,6 +63,7 @@ export function ThirdPartyProps(daemon: UserDaemon, args: any[], app: App, wrap:
     ThirdPartyAppProcess,
     argv: args,
     app,
+    Store,
     $ENTRYPOINT: app.entrypoint?.includes(":/") ? app.entrypoint! : join(app.workingDirectory!, app.entrypoint!),
     $METADATA: metaPath,
     load: async (path: string): Promise<any> => {},
