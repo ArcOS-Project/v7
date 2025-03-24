@@ -74,7 +74,7 @@ export class ArcTermVariables {
 
       if (!value) continue;
 
-      str = str.replace(`$${key}`, value);
+      str = str.replaceAll(`$${key}`, value);
     }
 
     return str;

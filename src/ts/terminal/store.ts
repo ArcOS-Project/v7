@@ -1,4 +1,4 @@
-import type { TerminalCommand } from "$types/terminal";
+import type { ArcTermConfiguration, TerminalCommand } from "$types/terminal";
 import { AppListCommand } from "./commands/applist";
 import { ArcFetchCommand } from "./commands/arcfetch";
 import { CdCommand } from "./commands/cd";
@@ -16,6 +16,7 @@ import { LogoutCommand } from "./commands/logout";
 import { MkdirCommand } from "./commands/mkdir";
 import { OpenCommand } from "./commands/open";
 import { QuotaCommand } from "./commands/quota";
+import { ReloadCommand } from "./commands/reload";
 import { RestartCommand } from "./commands/restart";
 import { RmCommand } from "./commands/rm";
 import { ShutdownCommand } from "./commands/shutdown";
@@ -47,6 +48,7 @@ export const TerminalCommandStore: TerminalCommand[] = [
   CrTpaCommand,
   TreeCommand,
   KillCommand,
+  ReloadCommand,
 ];
 
 export const ESC = `\x1b[`;
@@ -72,3 +74,8 @@ export const DIM = `${ESC}2m`;
 export const UNDERLINE = `${ESC}4m`;
 export const INVERTED = `${ESC}7m`;
 export const HIDDEN = `${ESC}8m`;
+
+export const DefaultArcTermConfiguration: ArcTermConfiguration = {
+  prompt: `$BRGREEN$username$RESET: $BRGREEN$pwd $RESULTCOLOR$ $RESET`,
+  greeting: "ArcTerm & ArcOS v$version\r\n\r\nLicensed under GPLv3. Created by Izaak Kuipers.",
+};

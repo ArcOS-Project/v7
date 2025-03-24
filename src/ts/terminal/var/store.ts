@@ -27,7 +27,7 @@ import {
 export function getArcTermStore(term: ArcTerminal): VariableStore {
   return {
     username: {
-      get: () => term.env.get("username"),
+      get: () => term.env.get("currentuser") || "stranger",
       readOnly: true,
       canDelete: false,
     },
@@ -157,6 +157,11 @@ export function getArcTermStore(term: ArcTerminal): VariableStore {
       get: () => RESET,
       canDelete: false,
       readOnly: true,
+    },
+    RESULTCOLOR: {
+      get: () => (term.lastCommandErrored ? BRRED : RESET),
+      readOnly: true,
+      canDelete: false,
     },
   };
 }
