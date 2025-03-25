@@ -65,6 +65,7 @@ export function ThirdPartyProps(
       arrayToBlob,
       blobToDataURL,
     },
+    workingDirectory: workingDirectory || app.workingDirectory!,
     Process,
     AppProcess,
     ThirdPartyAppProcess,
