@@ -73,7 +73,7 @@ export class AppRenderer extends Process {
 
     if (data.glass) window.classList.add("glass");
 
-    this._windowClasses(window, data);
+    this._windowClasses(process, window, data);
     this._windowEvents(process, window, titlebar, data);
 
     if (data.overlay && process.parentPid) {
@@ -118,7 +118,7 @@ export class AppRenderer extends Process {
     }
   }
 
-  _windowClasses(window: HTMLDivElement, data: App) {
+  _windowClasses(proc: AppProcess, window: HTMLDivElement, data: App) {
     this.disposedCheck();
 
     if (data.core) window.classList.add("core");
@@ -149,7 +149,10 @@ export class AppRenderer extends Process {
       if (data.state?.resizable) window.classList.add("resizable");
       if (data.state?.minimized) window.classList.add("minimized");
       if (data.state?.maximized) window.classList.add("maximized");
-      if (data.state?.fullscreen) window.classList.add("fullscreen");
+      if (data.state?.fullscreen) {
+        window.classList.add("fullscreen");
+        this.globalDispatch.dispatch("window-fullscreen", [proc.pid, proc.app.desktop]);
+      }
       if (data.entrypoint || data.thirdParty || data.workingDirectory) window.classList.add("tp");
     }
   }
