@@ -1,8 +1,10 @@
 import type { ArcTermConfiguration, TerminalCommand } from "$types/terminal";
 import { AppListCommand } from "./commands/applist";
 import { ArcFetchCommand } from "./commands/arcfetch";
+import { AtConfCommand } from "./commands/atconf";
 import { CdCommand } from "./commands/cd";
 import { ClearCommand } from "./commands/clear";
+import { ConfigCommand } from "./commands/config";
 import { CrTpaCommand } from "./commands/crtpa";
 import { DirCommand } from "./commands/dir";
 import { DispatchCommand } from "./commands/dispatch";
@@ -11,6 +13,7 @@ import { ExitCommand } from "./commands/exit";
 import { ExploreCommand } from "./commands/explore";
 import { FindCommand } from "./commands/find";
 import { HelpCommand } from "./commands/help";
+import { HistoryCommand } from "./commands/history";
 import { KillCommand } from "./commands/kill";
 import { LogoutCommand } from "./commands/logout";
 import { MkdirCommand } from "./commands/mkdir";
@@ -20,6 +23,8 @@ import { ReloadCommand } from "./commands/reload";
 import { RestartCommand } from "./commands/restart";
 import { RmCommand } from "./commands/rm";
 import { ShutdownCommand } from "./commands/shutdown";
+import { SpawnCommand } from "./commands/spawn";
+import { TasksCommand } from "./commands/tasks";
 import { TestCommand } from "./commands/test";
 import { TreeCommand } from "./commands/tree";
 import { VerCommand } from "./commands/ver";
@@ -49,6 +54,11 @@ export const TerminalCommandStore: TerminalCommand[] = [
   TreeCommand,
   KillCommand,
   ReloadCommand,
+  HistoryCommand,
+  AtConfCommand,
+  ConfigCommand,
+  SpawnCommand,
+  TasksCommand,
 ];
 
 export const ESC = `\x1b[`;
