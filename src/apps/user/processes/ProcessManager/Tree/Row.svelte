@@ -6,6 +6,7 @@
   import { onMount } from "svelte";
   import type { ProcessManagerRuntime } from "../../runtime";
   import Row from "./Row.svelte";
+  import { maybeIconId } from "$ts/images";
 
   const { pid, proc, process }: { pid: number; proc: Process; process: ProcessManagerRuntime } = $props();
 
@@ -51,7 +52,7 @@
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div class="row" class:closing onclick={() => ($selected = pid)} class:selected={$selected === pid}>
     <div class="segment name">
-      <img src={icon} alt="" />
+      <img src={maybeIconId(icon!)} alt="" />
       <span>{name}</span>
     </div>
     <div class="segment pid" class:flagged={$focusedPid === proc.pid}>
