@@ -147,12 +147,12 @@ export class WriterRuntime extends AppProcess {
     return true;
   }
 
-  async saveChanges() {
+  async saveChanges(force = false) {
     const opened = this.openedFile();
     const buffer = this.buffer();
 
     if (!opened) return await this.saveAs();
-    if (buffer === this.original()) return;
+    if (buffer === this.original() && !force) return;
 
     const filename = this.filename();
 
@@ -188,8 +188,6 @@ export class WriterRuntime extends AppProcess {
     if (!path) return;
 
     this.openedFile.set(path);
-    await this.saveChanges();
-    this.openedFile.set(path);
     this.filename.set(getDirectoryName(path));
     this.directoryName.set(getDirectoryName(getParentDirectory(path)));
     this.original.set(`${this.buffer()}`);
@@ -197,6 +195,7 @@ export class WriterRuntime extends AppProcess {
     this.mimeIcon.set(this.userDaemon?.getMimeIconByFilename(path) || DefaultMimeIcon);
     this.windowTitle.set(this.filename());
     this.windowIcon.set(this.mimeIcon());
+    await this.saveChanges(true);
   }
 
   async openFile() {

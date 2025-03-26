@@ -14,6 +14,7 @@ import { ShortcutPropertiesApp } from "$apps/components/shortcutproperties/metad
 import { TerminalWindowApp } from "$apps/components/terminalwindow/metadata";
 import { WallpaperApp } from "$apps/components/wallpaper/metadata";
 import { ArcTermApp } from "$apps/user/arcterm/metadata";
+import { CalculatorApp } from "$apps/user/calculator/metadata";
 import { FileManagerApp } from "$apps/user/filemanager/metadata";
 import { HexEditorApp } from "$apps/user/hexedit/metadata";
 import { ImageViewerApp } from "$apps/user/imageviewer/metadata";
@@ -56,6 +57,7 @@ export const BuiltinApps: AppStorage = [
   AcceleratorOverviewApp,
   TerminalWindowApp,
   ArcTermApp,
+  CalculatorApp,
 ];
 
 export const AdminApps: AppStorage = [];

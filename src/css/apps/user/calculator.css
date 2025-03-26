@@ -1,0 +1,66 @@
+#calculator div.body {
+  overflow: hidden;
+  background-color: var(--win-bg);
+  border-top: var(--win-border);
+}
+
+#calculator input.display {
+  height: 50px;
+  width: 100%;
+  padding: 10px 20px;
+  font-family: "Source Code Pro", monospace;
+  font-size: 16px;
+  text-align: right;
+  background-color: var(--button-bg);
+  border: none;
+  box-shadow: none;
+}
+
+#calculator input.display::placeholder {
+  opacity: 1;
+}
+
+#calculator div.keys {
+  display: grid;
+  grid-template-columns: repeat(4, 75px);
+  grid-template-rows: repeat(5, 60px);
+  margin-top: 10px;
+  gap: 5px;
+  justify-content: center;
+}
+
+#calculator div.keys button {
+  position: relative;
+  margin: 0;
+  font-size: 16px;
+}
+
+#calculator div.keys button.empty {
+  opacity: 0;
+}
+
+#calculator div.keys button.clear {
+  background-color: rgba(228, 54, 54) !important;
+  color: #fff !important;
+}
+
+#calculator div.keys button.alt {
+  background-color: var(--button-hover-bg);
+}
+
+#calculator div.keys button.clear:hover,
+#calculator div.keys button.process:hover,
+#calculator div.keys button.alt:hover {
+  opacity: 0.7;
+}
+
+#calculator div.keys button.clear:active,
+#calculator div.keys button.process:active,
+#calculator div.keys button.alt:active {
+  opacity: 0.4;
+}
+
+#calculator div.keys button.process {
+  background-color: var(--accent);
+  color: var(--accent-darkest);
+}
