@@ -15,15 +15,15 @@ export const CalculatorApp: App = {
     centered: true,
   },
   size: {
-    w: 342,
+    w: 347,
     h: NaN,
   },
   minSize: {
-    w: 342,
+    w: 347,
     h: NaN,
   },
   maxSize: {
-    w: 342,
+    w: 347,
     h: NaN,
   },
   state: {

@@ -13,11 +13,12 @@ export class CalculatorRuntime extends AppProcess {
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
+
+    this.keys = this.compileKeys(this.Store.AllowedKeys, this.Store.Overrides);
   }
 
   async render(args: RenderArgs) {
     this.acceleratorStore.push(...this.generateKeyboardShortcuts());
-    this.keys = this.compileKeys(this.Store.AllowedKeys, this.Store.Overrides);
   }
 
   public keys: CalculatorKeys = [];
