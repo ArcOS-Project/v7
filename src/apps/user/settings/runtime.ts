@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { getDirectoryName } from "$ts/fs/util";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import {
   AccountIcon,
@@ -300,8 +301,23 @@ export class SettingsRuntime extends AppProcess {
     });
 
     if (!path) return;
+    const id = `@local:${btoa(path)}`;
+    const filename = getDirectoryName(path);
+    const pref = this.userPreferences();
+
+    if (!pref.userWallpapers[id]) {
+      pref.userWallpapers[id] = {
+        author: this.username,
+        name: filename,
+        url: "",
+        thumb: "",
+      };
+      this.userPreferences.set(pref);
+    }
 
     this.userPreferences.update((v) => {
+      if (!v.userWallpapers[id]) {
+      }
       v.desktop.wallpaper = `@local:${btoa(path)}`;
 
       return v;
