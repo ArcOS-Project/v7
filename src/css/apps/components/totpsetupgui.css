@@ -1,0 +1,42 @@
+#TotpSetupGui > div.body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+}
+
+#TotpSetupGui > div.body div.inputs {
+  display: flex;
+  gap: 5px;
+  margin-top: 20px;
+}
+
+#TotpSetupGui > div.body > svg {
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+#TotpSetupGui > div.body div.inputs input {
+  width: 30px;
+  height: 40px;
+  font-size: 16px;
+  font-family: "Source Code Pro";
+  padding: 0;
+  text-align: center;
+}
+
+#TotpSetupGui > div.body h1 {
+  font-size: 18px;
+}
+
+#TotpSetupGui > div.body p {
+  opacity: 0.5;
+  margin-top: 5px;
+}
+
+#TotpSetupGui > div.body div.buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+}

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { PasswordIcon, SecureIcon, WaveIcon } from "$ts/images/general";
+  import { ElevationIcon, PasswordIcon, SecureIcon, SecurityHighIcon, WaveIcon } from "$ts/images/general";
   import { LogoutIcon } from "$ts/images/power";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
@@ -20,6 +20,16 @@
   <Section>
     <Option caption="Rename your account" image={SecureIcon} chevron onclick={() => process.spawnOverlay("changeUsername")} />
     <Option caption="Change your password" image={PasswordIcon} chevron onclick={() => process.spawnOverlay("changePassword")} />
+    {#if !process.userDaemon?.userInfo.hasTotp}
+      <Option caption="Set up two-factor authentication" image={ElevationIcon} chevron onclick={() => process.setup2fa()} />
+    {:else}
+      <Option
+        caption="Disable two-factor authentication"
+        image={SecurityHighIcon}
+        chevron
+        onclick={() => process.disableTotp()}
+      />
+    {/if}
   </Section>
 
   <Section>

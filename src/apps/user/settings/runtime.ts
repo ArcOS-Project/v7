@@ -5,12 +5,14 @@ import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import {
   AccountIcon,
   DesktopIcon,
+  ElevationIcon,
   PasswordIcon,
   SecurityHighIcon,
   SecurityMediumIcon,
   SettingsIcon,
   WaveIcon,
 } from "$ts/images/general";
+import { GoodStatusIcon } from "$ts/images/status";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Axios } from "$ts/server/axios";
 import { Sleep } from "$ts/sleep";
@@ -339,5 +341,63 @@ export class SettingsRuntime extends AppProcess {
 
       return v;
     });
+  }
+
+  async setup2fa() {
+    const elevated = await this.userDaemon?.manuallyElevate({
+      what: "ArcOS needs your permission to set up two-factor authentication",
+      image: ElevationIcon,
+      title: "Set up 2FA",
+      description: `For ${this.username}`,
+      level: ElevationLevel.high,
+    });
+
+    if (!elevated) return;
+
+    await this.spawnOverlayApp("TotpSetupGui", this.pid);
+  }
+
+  async disableTotp() {
+    const elevated = await this.userDaemon?.manuallyElevate({
+      what: "ArcOS needs your permission to disable two-factor authentication",
+      image: ElevationIcon,
+      title: "Disable 2FA",
+      description: `For ${this.username}`,
+      level: ElevationLevel.high,
+    });
+
+    if (!elevated) return;
+
+    try {
+      Axios.delete("/totp", { headers: { Authorization: `Bearer ${this.userDaemon?.token}` } });
+
+      MessageBox(
+        {
+          title: "ArcOS Security",
+          message:
+            "Two-factor authentication has now been disabled for your account. You must restart for the changes to fully take effect.",
+          buttons: [
+            { caption: "Restart later", action: () => {} },
+            { caption: "Restart now", suggested: true, action: () => this.userDaemon?.restart() },
+          ],
+          sound: "arcos.dialog.info",
+          image: GoodStatusIcon,
+        },
+        this.pid,
+        true
+      );
+    } catch {
+      MessageBox(
+        {
+          title: "Something went wrong",
+          message: "An error occured while disabling two-factor authentication for your account. Please contact ArcOS support.",
+          buttons: [{ caption: "Okay", suggested: true, action: () => {} }],
+          sound: "arcos.dialog.error",
+          image: ErrorIcon,
+        },
+        this.pid,
+        true
+      );
+    }
   }
 }
