@@ -11,6 +11,9 @@ import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
 import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps } from "./types";
+import { UUID } from "$ts/uuid";
+import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
+import { TotpAuthGuiApp } from "$apps/components/totpauthgui/metadata";
 
 export class LoginAppRuntime extends AppProcess {
   private readonly DEFAULT_WALLPAPER = Wallpapers.img15.url;
@@ -94,6 +97,20 @@ export class LoginAppRuntime extends AppProcess {
       this.errorMessage.set("Failed to request user info");
 
       return;
+    }
+
+    if (userInfo.hasTotp && userInfo.restricted) {
+      this.loadingStatus.set("Requesting 2FA");
+      const unlocked = await this.askForTotp(token);
+
+      if (!unlocked) {
+        await userDaemon.discontinueToken();
+        await userDaemon.killSelf();
+        this.resetCookies();
+        this.loadingStatus.set("");
+        this.errorMessage.set("You didn't enter a valid 2FA code!");
+        return;
+      }
     }
 
     this.loadingStatus.set("Notifying login activity");
@@ -291,5 +308,28 @@ export class LoginAppRuntime extends AppProcess {
 
     Cookies.remove("arcToken");
     Cookies.remove("arcUsername");
+  }
+
+  private async askForTotp(token: string) {
+    const returnId = UUID();
+
+    return new Promise(async (r) => {
+      this.globalDispatch.subscribe("totp-unlock-success", ([id]) => {
+        if (id === returnId) r(true);
+      });
+
+      this.globalDispatch.subscribe("totp-unlock-cancel", ([id]) => {
+        if (id === returnId) r(false);
+      });
+
+      await this.handler.spawn(
+        TotpAuthGuiRuntime,
+        undefined,
+        this.pid,
+        { data: { ...TotpAuthGuiApp, overlay: true }, id: "TotpAuthGuiApp" },
+        token,
+        returnId
+      );
+    });
   }
 }

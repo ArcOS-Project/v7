@@ -12,6 +12,7 @@ import { SecureContextApp } from "$apps/components/securecontext/metadata";
 import { ArcShellApp } from "$apps/components/shell/metadata";
 import { ShortcutPropertiesApp } from "$apps/components/shortcutproperties/metadata";
 import { TerminalWindowApp } from "$apps/components/terminalwindow/metadata";
+import { TotpAuthGuiApp } from "$apps/components/totpauthgui/metadata";
 import { WallpaperApp } from "$apps/components/wallpaper/metadata";
 import { ArcTermApp } from "$apps/user/arcterm/metadata";
 import { CalculatorApp } from "$apps/user/calculator/metadata";
@@ -58,6 +59,7 @@ export const BuiltinApps: AppStorage = [
   TerminalWindowApp,
   ArcTermApp,
   CalculatorApp,
+  TotpAuthGuiApp,
 ];
 
 export const AdminApps: AppStorage = [];

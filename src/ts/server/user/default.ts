@@ -89,4 +89,6 @@ export const DefaultUserInfo: UserInfo = {
   preferences: DefaultUserPreferences,
   createdAt: new Date().toLocaleString(),
   updatedAt: new Date().toLocaleString(),
+  restricted: false,
+  hasTotp: false,
 };

@@ -13,6 +13,8 @@ export interface UserInfo {
   email: string;
   updatedAt: string;
   createdAt: string;
+  hasTotp: boolean;
+  restricted: boolean;
 }
 
 export type UserPreferencesStore = ReadableStore<UserPreferences>;

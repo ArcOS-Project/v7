@@ -1,13 +1,13 @@
 @import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap");
 
-div.window#loginApp div.container {
+div.window#loginApp > div.body div.container {
   background: linear-gradient(to bottom, #0006 0%, #0006 100%), var(--bgurl);
   background-position: center;
   background-size: cover;
   transition: all 0.3s !important;
 }
 
-div.window#loginApp button:not(.continue) {
+div.window#loginApp > div.body button:not(.continue) {
   padding: 8px 20px;
   background-color: #fff1;
   border: none;
@@ -17,16 +17,16 @@ div.window#loginApp button:not(.continue) {
   border: var(--button-glass-bg) 1px solid;
 }
 
-div.window#loginApp button:not(.continue):hover {
+div.window#loginApp > div.body button:not(.continue):hover {
   background-color: #fff2;
 }
 
-div.window#loginApp button:not(.continue):active {
+div.window#loginApp > div.body button:not(.continue):active {
   /* opacity: 0.7; */
   scale: 0.95;
 }
 
-div.window#loginApp div.container {
+div.window#loginApp > div.body div.container {
   height: 100%;
   display: flex;
   align-items: center;
@@ -36,15 +36,15 @@ div.window#loginApp div.container {
   transition: opacity 0.3s, pointer-events 0s;
 }
 
-div.window#loginApp div.container.full {
+div.window#loginApp > div.body div.container.full {
   background-color: #000;
 }
-div.window#loginApp div.container.hide {
+div.window#loginApp > div.body div.container.hide {
   opacity: 0;
   pointer-events: none;
 }
 
-div.window#loginApp div.container .profile-picture {
+div.window#loginApp > div.body div.container .profile-picture {
   width: 128px;
   height: 128px;
   border-radius: 50%;
@@ -54,12 +54,12 @@ div.window#loginApp div.container .profile-picture {
   transition: background-image 0.3s;
 }
 
-div.window#loginApp div.container h1.name {
+div.window#loginApp > div.body div.container h1.name {
   font-size: 20px;
   margin: -10px 0;
 }
 
-div.window#loginApp div.container div.field {
+div.window#loginApp > div.body div.container div.field {
   display: flex;
   align-items: center;
   width: 220px;
@@ -72,11 +72,11 @@ div.window#loginApp div.container div.field {
   margin-bottom: 10px;
 }
 
-div.window#loginApp div.container div.field:last-child {
+div.window#loginApp > div.body div.container div.field:last-child {
   margin-bottom: 0;
 }
 
-div.window#loginApp div.container div.field div.lucide {
+div.window#loginApp > div.body div.container div.field div.lucide {
   width: 36px;
   min-width: 36px;
   height: 35px;
@@ -87,7 +87,7 @@ div.window#loginApp div.container div.field div.lucide {
   align-items: center;
 }
 
-div.window#loginApp div.container div.field input {
+div.window#loginApp > div.body div.container div.field input {
   background-color: transparent;
   border: none;
   color: #fff;
@@ -97,14 +97,14 @@ div.window#loginApp div.container div.field input {
   max-width: calc(100% - 36px);
 }
 
-div.window#loginApp div.login-form {
+div.window#loginApp > div.body div.login-form {
   display: flex;
   align-items: end;
   gap: 10px;
   width: 220px;
 }
 
-div.window#loginApp div.login-form button.continue {
+div.window#loginApp > div.body div.login-form button.continue {
   width: 37px;
   height: 37px;
   border-radius: 50%;
@@ -119,20 +119,20 @@ div.window#loginApp div.login-form button.continue {
   transition: background-color 0.2s, opacity 0.2s;
 }
 
-div.window#loginApp div.login-form button.continue:hover:not(:disabled) {
+div.window#loginApp > div.body div.login-form button.continue:hover:not(:disabled) {
   background-color: #fff5;
 }
 
-div.window#loginApp div.login-form button.continue:disabled,
-div.window#loginApp div.login-form button.continue:active {
+div.window#loginApp > div.body div.login-form button.continue:disabled,
+div.window#loginApp > div.body div.login-form button.continue:active {
   opacity: 0.5;
 }
 
-div.window#loginApp p.error-message {
+div.window#loginApp > div.body p.error-message {
   font-size: 16px;
 }
 
-div.window#loginApp p.loading {
+div.window#loginApp > div.body p.loading {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -142,7 +142,7 @@ div.window#loginApp p.loading {
   text-align: center;
 }
 
-div.window#loginApp div.power-options {
+div.window#loginApp > div.body div.power-options {
   position: fixed;
   bottom: 30px;
   right: 30px;
@@ -151,7 +151,7 @@ div.window#loginApp div.power-options {
   gap: 20px;
 }
 
-div.window#loginApp div.power-options button {
+div.window#loginApp > div.body div.power-options button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -166,16 +166,16 @@ div.window#loginApp div.power-options button {
   transition: opacity 0.2s, scale 0.2s;
 }
 
-div.window#loginApp div.power-options button:hover {
+div.window#loginApp > div.body div.power-options button:hover {
   scale: 1.1;
 }
 
-div.window#loginApp div.power-options button:active {
+div.window#loginApp > div.body div.power-options button:active {
   opacity: 0.7;
   scale: 0.95;
 }
 
-div.window#loginApp div.power-options button.shutdown {
+div.window#loginApp > div.body div.power-options button.shutdown {
   background-color: #fff4;
   width: 50px;
   height: 50px;
