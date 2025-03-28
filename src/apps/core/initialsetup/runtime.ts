@@ -126,6 +126,10 @@ export class InitialSetupRuntime extends AppProcess {
   }
 
   async render() {
+    if (this.server.serverInfo?.disableRegistration) {
+      throw new Error("Registration is disabled on this server");
+    }
+
     // TODO: some kind of intro animation
     await Sleep(1000);
 

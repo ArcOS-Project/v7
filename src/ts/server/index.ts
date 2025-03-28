@@ -1,4 +1,5 @@
 import { VALIDATION_STR } from "$ts/env";
+import type { ServerInfo } from "$types/server";
 import { LogLevel } from "../../types/logging";
 import { WaveKernel } from "../kernel";
 import { KernelModule } from "../kernel/module";
@@ -7,6 +8,7 @@ import { Axios } from "./axios";
 export class ServerManager extends KernelModule {
   public url: string = "";
   public connected: boolean = false;
+  public serverInfo: ServerInfo | undefined;
 
   public static isConnected() {
     const kernel = WaveKernel.get();
@@ -61,11 +63,14 @@ export class ServerManager extends KernelModule {
 
       if (response.status !== 200) throw new Error("Invalid response from server");
 
-      const { validation } = response.data as Record<string, string>;
+      const data = response.data as ServerInfo;
+
+      const { validation } = data;
 
       if (validation !== VALIDATION_STR) throw new Error("Server validation string doesn't match ours");
 
       this.connected = true;
+      this.serverInfo = data;
 
       this.Log("Connection is good to go :D");
 

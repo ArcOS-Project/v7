@@ -14,19 +14,33 @@ import type { LoginAppProps } from "./types";
 import { UUID } from "$ts/uuid";
 import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/metadata";
+import { ServerManager } from "$ts/server";
+import type { ServerInfo } from "$types/server";
 
 export class LoginAppRuntime extends AppProcess {
-  private readonly DEFAULT_WALLPAPER = Wallpapers.img15.url;
+  private DEFAULT_WALLPAPER = Store<string>("");
   public loadingStatus = Store<string>("");
   public errorMessage = Store<string>("");
   public profileImage = Store<string>(ProfilePictures.def);
   public profileName = Store<string>("");
-  public loginBackground = Store<string>(this.DEFAULT_WALLPAPER);
+  public loginBackground = Store<string>(this.DEFAULT_WALLPAPER());
   public hideProfileImage = Store<boolean>(false);
+  public serverInfo: ServerInfo | undefined;
   private type = "";
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, props: LoginAppProps) {
     super(handler, pid, parentPid, app);
+
+    const server = this.kernel.getModule<ServerManager>("server");
+
+    this.DEFAULT_WALLPAPER.set(
+      server.serverInfo?.loginWallpaper
+        ? `${server.url}/loginbg?authcode=${import.meta.env.DW_SERVER_AUTHCODE}`
+        : Wallpapers.img15.url
+    );
+
+    this.serverInfo = server.serverInfo;
+    this.loginBackground.set(this.DEFAULT_WALLPAPER());
 
     if (props.type) {
       this.hideProfileImage.set(true);
@@ -51,6 +65,10 @@ export class LoginAppRuntime extends AppProcess {
 
   async render() {
     if (!this.type) await this.loadToken();
+
+    if (this.serverInfo?.loginNotice) {
+      this.errorMessage.set(this.serverInfo.loginNotice);
+    }
   }
 
   async proceed(username: string, password: string) {
@@ -201,7 +219,7 @@ export class LoginAppRuntime extends AppProcess {
       this.hideProfileImage.set(false);
       this.profileImage.set(ProfilePictures.def);
       this.profileName.set("");
-      this.loginBackground.set(this.DEFAULT_WALLPAPER);
+      this.loginBackground.set(this.DEFAULT_WALLPAPER());
     }, 600);
   }
 

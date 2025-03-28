@@ -6,7 +6,7 @@
   import type { LoginAppRuntime } from "./runtime";
 
   const { process }: AppComponentProps<LoginAppRuntime> = $props();
-  const { loadingStatus, errorMessage, profileImage, profileName, hideProfileImage, loginBackground } = process;
+  const { loadingStatus, errorMessage, profileImage, profileName, hideProfileImage, loginBackground, serverInfo } = process;
 </script>
 
 <div class="container" class:full={$hideProfileImage} style="--bgurl: url('{$loginBackground}')">
@@ -31,4 +31,8 @@
     <button class="restart icon-rotate-ccw" aria-label="Restart" onclick={() => process.restart()}></button>
     <button class="shutdown icon-power" aria-label="Shutdown" onclick={() => process.shutdown()}></button>
   </div>
+{/if}
+
+{#if serverInfo?.loginBottomText}
+  <p class="bottom-text">{serverInfo?.loginBottomText}</p>
 {/if}

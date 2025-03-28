@@ -6,6 +6,7 @@
   let password = $state("");
 
   const { process }: { process: LoginAppRuntime } = $props();
+  const { serverInfo } = process;
 
   function createUser() {
     process.kernel.state?.loadState("initialSetup");
@@ -27,4 +28,6 @@
     </button>
   </div>
 </div>
-<button class="create-user" onclick={createUser}>No account?</button>
+{#if !serverInfo?.disableRegistration}
+  <button class="create-user" onclick={createUser}>No account?</button>
+{/if}

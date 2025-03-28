@@ -182,6 +182,16 @@ div.window#loginApp > div.body div.power-options button.shutdown {
   font-size: 24px;
 }
 
+div.window#loginApp > div.body p.bottom-text {
+  position: fixed;
+  bottom: 30px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 16px;
+  opacity: 0.5;
+}
+
 @keyframes new-login-show {
   from {
     opacity: 0;
