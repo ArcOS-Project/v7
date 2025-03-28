@@ -17,6 +17,7 @@ import { TotpSetupGuiApp } from "$apps/components/totpsetupgui/metadata";
 import { WallpaperApp } from "$apps/components/wallpaper/metadata";
 import { ArcTermApp } from "$apps/user/arcterm/metadata";
 import { CalculatorApp } from "$apps/user/calculator/metadata";
+import { CameraApp } from "$apps/user/camera/metadata";
 import { FileManagerApp } from "$apps/user/filemanager/metadata";
 import { HexEditorApp } from "$apps/user/hexedit/metadata";
 import { ImageViewerApp } from "$apps/user/imageviewer/metadata";
@@ -62,6 +63,7 @@ export const BuiltinApps: AppStorage = [
   CalculatorApp,
   TotpAuthGuiApp,
   TotpSetupGuiApp,
+  CameraApp,
 ];
 
 export const AdminApps: AppStorage = [];

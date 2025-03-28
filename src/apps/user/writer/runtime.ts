@@ -33,13 +33,6 @@ export class WriterRuntime extends AppProcess {
     super(handler, pid, parentPid, app);
 
     this.renderArgs.path = path;
-
-    if (!this.userPreferences().appPreferences.writer)
-      this.userPreferences.update((v) => {
-        v.appPreferences.writer ||= {};
-
-        return v;
-      });
   }
 
   public acceleratorStore: AppKeyCombinations = WriterAccelerators(this);

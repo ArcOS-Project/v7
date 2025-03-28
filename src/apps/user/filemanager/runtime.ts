@@ -48,14 +48,6 @@ export class FileManagerRuntime extends AppProcess {
     super(handler, pid, parentPid, app);
 
     this.renderArgs.path = path;
-
-    if (!this.userPreferences().appPreferences.fileManager)
-      this.userPreferences.update((v) => {
-        v.appPreferences.fileManager ||= {};
-
-        return v;
-      });
-
     this.loadSave = loadSave;
 
     if (loadSave) {

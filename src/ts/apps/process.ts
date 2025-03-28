@@ -79,6 +79,16 @@ export class AppProcess extends Process {
     });
 
     this.windowIcon.set(maybeIconId(this.app.data.metadata.icon));
+
+    const preferences = this.userPreferences();
+
+    if (!preferences.appPreferences[app.id]) {
+      this.userPreferences.update((v) => {
+        v.appPreferences[app.id] = {};
+
+        return v;
+      });
+    }
   }
 
   // Conditional function that can prohibit closing if it returns false
