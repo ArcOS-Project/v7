@@ -74,7 +74,7 @@ export class CameraRuntime extends AppProcess {
       const blob = await new Promise<Blob | null>((r) => canvas.toBlob((b) => r(b)));
       if (!blob) throw "Failed to retrieve blob from canvas";
 
-      const filename = join(this.getSaveLocation(), dayjs().format(`[Photo_]DD-MM-YYYY_HH:mm:ss[.png]`));
+      const filename = join(await this.getSaveLocation(), dayjs().format(`[Photo_]DD-MM-YYYY_HHmmss[.png]`));
       const written = await this.fs.writeFile(filename, blob!);
 
       if (!written) throw "Failed to save the image!";
@@ -130,8 +130,12 @@ export class CameraRuntime extends AppProcess {
     });
   }
 
-  getSaveLocation() {
-    return this.userPreferences().appPreferences[this.app.id].saveLocation || "U:/Pictures";
+  async getSaveLocation() {
+    const location = this.userPreferences().appPreferences[this.app.id].saveLocation || "U:/Pictures";
+
+    await this.fs.createDirectory(location);
+
+    return location;
   }
 
   async onClose() {
@@ -141,6 +145,6 @@ export class CameraRuntime extends AppProcess {
   }
 
   async openFileLocation() {
-    this.spawnApp("fileManager", this.parentPid, this.getSaveLocation());
+    this.spawnApp("fileManager", this.parentPid, await this.getSaveLocation());
   }
 }
