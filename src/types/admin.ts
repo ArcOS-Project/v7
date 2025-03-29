@@ -21,6 +21,7 @@ export interface AuditLog {
   severity: AuditSeverity;
   targetUserId?: string;
   data: Record<any, any>;
+  createdAt: string;
 }
 
 // Audit log severity
@@ -92,7 +93,7 @@ export interface ServerStatistics {
   endpoints: number;
 }
 
-export interface ServerStatGroup {
+export interface ServerStatGroup extends Record<string, number> {
   tokens: number;
   users: number;
   indexes: number;

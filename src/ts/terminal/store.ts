@@ -1,4 +1,5 @@
 import type { ArcTermConfiguration, TerminalCommand } from "$types/terminal";
+import { AdminCommand } from "./commands/admin";
 import { AppListCommand } from "./commands/applist";
 import { ArcFetchCommand } from "./commands/arcfetch";
 import { AtConfCommand } from "./commands/atconf";
@@ -59,6 +60,7 @@ export const TerminalCommandStore: TerminalCommand[] = [
   ConfigCommand,
   SpawnCommand,
   TasksCommand,
+  AdminCommand,
 ];
 
 export const ESC = `\x1b[`;

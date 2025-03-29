@@ -16,7 +16,6 @@ import type {
 import type { BugReport, ReportStatistics } from "$types/bughunt";
 import type { FilesystemProgressCallback, UserQuota } from "$types/fs";
 import type { UserInfo, UserPreferences } from "$types/user";
-import axios from "axios";
 import { Axios } from "../axios";
 
 export class AdminBootstrapper extends Process {
@@ -583,5 +582,15 @@ export class AdminBootstrapper extends Process {
     } catch {
       return false;
     }
+  }
+
+  canAccess(...scopes: string[]): boolean {
+    if (this.userInfo?.adminScopes?.includes("admin.god")) return true;
+
+    for (const scope of scopes) {
+      if (!this.userInfo?.adminScopes.includes(scope)) return false;
+    }
+
+    return true;
   }
 }

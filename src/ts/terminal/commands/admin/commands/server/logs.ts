@@ -1,0 +1,16 @@
+import type { AdminCommand } from "$ts/terminal/commands/admin";
+import dayjs from "dayjs";
+
+export const AdminServerLogs: AdminCommand = async (term, admin) => {
+  if (!admin.canAccess("admin.logs")) return 2;
+
+  const logs = await admin.getServerLogs();
+
+  if (!logs.length) return 1;
+
+  for (const log of logs) {
+    term.rl?.println(`[${dayjs(log.timestamp).format("DD-MM-YYYY HH:mm:ss")}] ${log.subs.join(":")}: ${log.message}`);
+  }
+
+  return 0;
+};
