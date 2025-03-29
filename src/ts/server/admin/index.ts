@@ -2,10 +2,21 @@ import { toForm } from "$ts/form";
 import { AdminServerDrive } from "$ts/fs/drives/admin";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
-import type { AuditLog, ServerLogItem, ServerStatistics, Token } from "$types/admin";
+import type {
+  Activity,
+  AuditLog,
+  FsAccess,
+  FSItem,
+  PartialUserTotp,
+  ServerLogItem,
+  ServerStatistics,
+  Token,
+  UserTotp,
+} from "$types/admin";
 import type { BugReport, ReportStatistics } from "$types/bughunt";
 import type { FilesystemProgressCallback, UserQuota } from "$types/fs";
 import type { UserInfo, UserPreferences } from "$types/user";
+import axios from "axios";
 import { Axios } from "../axios";
 
 export class AdminBootstrapper extends Process {
@@ -391,6 +402,182 @@ export class AdminBootstrapper extends Process {
       const response = await Axios.put(`/admin/fs/quota/${username}`, toForm({ limit: newQuota }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async getAllActivity(): Promise<Activity[]> {
+    try {
+      const response = await Axios.get("/admin/activities/list", {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.data as Activity[];
+    } catch {
+      return [];
+    }
+  }
+
+  async getActivityOf(username: string): Promise<Activity[]> {
+    try {
+      const response = await Axios.get(`/admin/activities/user/${username}`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.data as Activity[];
+    } catch {
+      return [];
+    }
+  }
+
+  async deleteAllActivities(): Promise<boolean> {
+    try {
+      const response = await Axios.delete(`/admin/activities`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async deleteActivitiesOf(username: string): Promise<boolean> {
+    try {
+      const response = await Axios.delete(`/admin/activities/${username}`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async getAllTotp(): Promise<PartialUserTotp[]> {
+    try {
+      const response = await Axios.get("/admin/totp", { headers: { Authorization: `Bearer ${this.token}` } });
+
+      return response.data as PartialUserTotp[];
+    } catch {
+      return [];
+    }
+  }
+
+  async getTotpOf(username: string): Promise<UserTotp | undefined> {
+    try {
+      const response = await Axios.get(`/admin/totp/${username}`, { headers: { Authorization: `Bearer ${this.token}` } });
+
+      return response.status === 200 ? response.data : undefined;
+    } catch {
+      return undefined;
+    }
+  }
+
+  async deActivateTotpOf(username: string) {
+    try {
+      const response = await Axios.post(
+        `/admin/totp/deactivate/${username}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${this.token}` },
+        }
+      );
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async deleteTotpOf(username: string) {
+    try {
+      const response = await Axios.delete(`/admin/totp/${username}`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async getAllFsAccessors(): Promise<FsAccess[]> {
+    try {
+      const response = await Axios.get("/admin/accessors", { headers: { Authorization: `Bearer ${this.token}` } });
+
+      return response.data as FsAccess[];
+    } catch {
+      return [];
+    }
+  }
+
+  async getFsAccessorsOf(username: string): Promise<FsAccess[]> {
+    try {
+      const response = await Axios.get(`/admin/accessors/${username}`, { headers: { Authorization: `Bearer ${this.token}` } });
+
+      return response.data;
+    } catch {
+      return [];
+    }
+  }
+
+  async deleteAllFsAccessors(): Promise<boolean> {
+    try {
+      const response = await Axios.delete("/admin/accessors", { headers: { Authorization: `Bearer ${this.token}` } });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async deleteFsAccessorsOf(username: string): Promise<boolean> {
+    try {
+      const response = await Axios.delete(`/admin/accessors/${username}`, { headers: { Authorization: `Bearer ${this.token}` } });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async getAllIndexingNodes(): Promise<FSItem[]> {
+    try {
+      const response = await Axios.get(`/admin/index`, { headers: { Authorization: `Bearer ${this.token}` } });
+
+      return response.data as FSItem[];
+    } catch {
+      return [];
+    }
+  }
+
+  async getIndexingNodesOf(username: string): Promise<FSItem[]> {
+    try {
+      const response = await Axios.get(`/admin/index/${username}`, { headers: { Authorization: `Bearer ${this.token}` } });
+
+      return response.data as FSItem[];
+    } catch {
+      return [];
+    }
+  }
+
+  async forceIndexFor(username: string): Promise<string[]> {
+    try {
+      const response = await Axios.post(`/admin/index/${username}`, {}, { headers: { Authorization: `Bearer ${this.token}` } });
+
+      return response.data as string[];
+    } catch {
+      return [];
+    }
+  }
+
+  async deleteIndexingOf(username: string): Promise<boolean> {
+    try {
+      const response = await Axios.delete(`/admin/index/${username}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.status === 200;
     } catch {
