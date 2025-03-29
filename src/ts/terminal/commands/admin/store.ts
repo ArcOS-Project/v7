@@ -5,6 +5,7 @@ import { AdminBugHuntReportClose } from "./commands/bughunt/report/close";
 import { AdminBugHuntReportDelete } from "./commands/bughunt/report/delete";
 import { AdminBugHuntReportOpen } from "./commands/bughunt/report/open";
 import { AdminBugHuntStats } from "./commands/bughunt/stats";
+import { AdminMount } from "./commands/mount";
 import { AdminScopesAdd } from "./commands/scopes/add";
 import { AdminScopesAvailable } from "./commands/scopes/available";
 import { AdminScopesGet } from "./commands/scopes/get";
@@ -25,6 +26,8 @@ import { AdminUserDisapprove } from "./commands/user/disapprove";
 import { AdminUserList } from "./commands/user/list";
 import { AdminUserPreferencesGet } from "./commands/user/preferences/get";
 import { AdminUserPreferencesSet } from "./commands/user/preferences/set";
+import { AdminUserQuotaGet } from "./commands/user/quota/get";
+import { AdminUserQuotaSet } from "./commands/user/quota/set";
 
 export const AdminCommandStore = {
   server: {
@@ -77,7 +80,12 @@ export const AdminCommandStore = {
       set: AdminUserPreferencesSet,
     },
     delete: AdminUserDelete,
+    quota: {
+      get: AdminUserQuotaGet,
+      set: AdminUserQuotaSet,
+    },
   },
+  mount: AdminMount,
 };
 
 export const RESULT_CAPTIONS: Record<number, string> = {

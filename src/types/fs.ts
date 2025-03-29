@@ -52,7 +52,7 @@ export type RecursiveDirectory = FolderEntry & {
   children: RecursiveDirectoryReadReturn;
 };
 
-export interface UserQuota {
+export interface UserQuota extends Record<string, number | boolean | undefined> {
   used: number;
   max: number;
   free: number;
