@@ -7,6 +7,9 @@ export const AdminTokensPurgeUser: AdminCommand = async (term, admin, argv) => {
 
   if (!username) return 5;
 
+  const proceed = (await term.rl?.read("Confirm change (y/n)? ")) === "y";
+  if (!proceed) return 6;
+
   const users = await admin.getAllUsers();
   const result = await admin.purgeUserTokens(users.filter((u) => u.username === username)[0]?._id);
 

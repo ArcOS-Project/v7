@@ -14,6 +14,7 @@ export interface BugReport {
   api?: string;
   frontend: string;
   meta: MetaEnvironment;
+  _id?: string;
 }
 
 export interface Location {
@@ -36,7 +37,7 @@ export interface MetaEnvironment {
   SSR: boolean;
 }
 
-export interface ReportStatistics {
+export interface ReportStatistics extends Record<string, number> {
   opened: number;
   closed: number;
   resolved: number;

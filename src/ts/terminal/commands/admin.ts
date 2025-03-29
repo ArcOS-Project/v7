@@ -5,7 +5,7 @@ import { ServerManager } from "$ts/server";
 import type { AdminBootstrapper } from "$ts/server/admin";
 import type { TerminalCommand } from "$types/terminal";
 import type { ArcTerminal } from "..";
-import { BRBLACK, BRRED, BRYELLOW, RESET } from "../store";
+import { BOLD, BRBLACK, BRRED, BRYELLOW, RESET } from "../store";
 import { AdminCommandStore, RESULT_CAPTIONS } from "./admin/store";
 
 export const AdminCommand: TerminalCommand = {
@@ -16,8 +16,17 @@ export const AdminCommand: TerminalCommand = {
     const server = term.kernel.getModule<ServerManager>("server");
 
     term.term.clear();
+    term.rl?.println(`ArcOS Administrator Console version 1.0.0\r\n\r\n© 2025 Izaak Z. Kuipers\r\nOn server: ${server.url}`);
 
-    term.rl?.println(`ArcOS Administrator CLI version 1.0.0\r\n\r\n© 2025 Izaak Z. Kuipers\r\nOn server: ${server.url}\r\n`);
+    if (!admin) {
+      term.Error("Access is denied.");
+
+      return 1;
+    }
+
+    term.rl?.println(
+      `\r\n${BRRED}${BOLD}WARNING!${RESET} Sensitive information may be displayed in query results.\r\n         ${BOLD}Do not share screenshots of this console.${RESET}\r\n`
+    );
 
     if (!admin) {
       term.Error("Access is denied.");

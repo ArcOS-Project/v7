@@ -15,6 +15,9 @@ export const AdminScopesAdd: AdminCommand = async (term, admin, argv) => {
 
   scopes.push(newScope);
 
+  const proceed = (await term.rl?.read("Confirm change (y/n)? ")) === "y";
+  if (!proceed) return 6;
+
   const result = await admin.setScopesOf(username, scopes);
 
   return result ? 0 : 3;
