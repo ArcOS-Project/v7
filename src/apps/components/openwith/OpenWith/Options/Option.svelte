@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { AppOrigins } from "$ts/apps/store";
   import { maybeIconId } from "$ts/images";
   import type { FileOpenerResult } from "$types/fs";
   import type { OpenWithRuntime } from "../../runtime";

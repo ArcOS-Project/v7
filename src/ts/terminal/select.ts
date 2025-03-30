@@ -1,6 +1,5 @@
-import { Terminal } from "xterm";
-import { Unicode11Addon } from "xterm-addon-unicode11";
 import type { IDisposable } from "xterm";
+import { Terminal } from "xterm";
 
 export class SelectionList {
   private terminal: Terminal;

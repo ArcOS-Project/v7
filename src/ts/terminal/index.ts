@@ -1,4 +1,5 @@
 import TerminalWindow from "$apps/components/terminalwindow/TerminalWindow.svelte";
+import { arrayToText, textToBlob } from "$ts/fs/convert";
 import type { FilesystemDrive } from "$ts/fs/drive";
 import { join } from "$ts/fs/util";
 import type { ProcessHandler } from "$ts/process/handler";
@@ -23,7 +24,6 @@ import {
   TerminalCommandStore,
 } from "./store";
 import { ArcTermVariables } from "./var";
-import { arrayToText, textToBlob } from "$ts/fs/convert";
 
 export class ArcTerminal extends Process {
   path: string;

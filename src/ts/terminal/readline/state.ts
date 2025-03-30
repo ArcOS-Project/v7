@@ -13,13 +13,13 @@
  * © IzKuipers 2025
  */
 /* tslint:disable:max-classes-per-file */
-import { LineBuffer } from "./line";
-import { Tty } from "./tty";
-import { History } from "./history";
+import type { ProcessHandler } from "$ts/process/handler";
+import { Process } from "$ts/process/instance";
 import stringWidth from "string-width";
 import type { Highlighter } from "./highlight";
-import { Process } from "$ts/process/instance";
-import type { ProcessHandler } from "$ts/process/handler";
+import { History } from "./history";
+import { LineBuffer } from "./line";
+import { Tty } from "./tty";
 
 export class Position {
   public col: number;

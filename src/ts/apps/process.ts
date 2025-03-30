@@ -1,5 +1,7 @@
+import type { ShellRuntime } from "$apps/components/shell/runtime";
 import { GlobalDispatcher } from "$ts/dispatch";
 import { ArcOSVersion } from "$ts/env";
+import { maybeIconId } from "$ts/images";
 import { BugReportIcon, ComponentIcon } from "$ts/images/general";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -10,6 +12,7 @@ import type { ElevationData } from "$types/elevation";
 import { LogLevel } from "$types/logging";
 import type { RenderArgs } from "$types/process";
 import type { UserPreferences } from "$types/user";
+import type { Draggable } from "@neodrag/vanilla";
 import { mount } from "svelte";
 import type { App, AppContextMenu, AppProcessData, ContextMenuItem } from "../../types/app";
 import { WaveKernel } from "../kernel";
@@ -18,9 +21,6 @@ import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
 import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
-import type { Draggable } from "@neodrag/vanilla";
-import type { ShellRuntime } from "$apps/components/shell/runtime";
-import { getAllImages, maybeIconId } from "$ts/images";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
 export class AppProcess extends Process {

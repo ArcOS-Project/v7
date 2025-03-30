@@ -1,10 +1,10 @@
 import * as Apps from "./apps";
+import * as Branding from "./branding";
 import * as Dialog from "./dialog";
 import * as Filesystem from "./filesystem";
 import * as General from "./general";
 import * as Mimetypes from "./mime";
 import * as Power from "./power";
-import * as Branding from "./branding";
 import * as Status from "./status";
 
 export function getAllImages(): Record<string, string> {

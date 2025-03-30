@@ -12,15 +12,15 @@
  *
  * © IzKuipers 2025
  */
-import { Terminal, type ITerminalAddon, type IDisposable } from "@xterm/xterm";
+import type { ProcessHandler } from "$ts/process/handler";
+import { Process } from "$ts/process/instance";
+import { type IDisposable, type ITerminalAddon, Terminal } from "@xterm/xterm";
+import type { ArcTerminal } from "..";
+import { type Highlighter, IdentityHighlighter } from "./highlight";
+import { History } from "./history";
 import { type Input, InputType, parseInput } from "./keymap";
 import { State } from "./state";
-import { History } from "./history";
 import { type Output, Tty } from "./tty";
-import { type Highlighter, IdentityHighlighter } from "./highlight";
-import type { ArcTerminal } from "..";
-import { Process } from "$ts/process/instance";
-import type { ProcessHandler } from "$ts/process/handler";
 
 interface ActiveRead {
   prompt: string;

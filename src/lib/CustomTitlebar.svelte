@@ -1,10 +1,10 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
   import type { AppRenderer } from "$ts/apps/renderer";
+  import { contextProps } from "$ts/context/actions.svelte";
   import { ComponentIcon } from "$ts/images/general";
   import { onMount, type Snippet } from "svelte";
   import AltMenu from "./CustomTitlebar/AltMenu.svelte";
-  import { contextProps } from "$ts/context/actions.svelte";
 
   const { process, children, className = "" }: { process: AppProcess; children?: Snippet; className?: string } = $props();
   const { windowTitle, windowIcon } = process;

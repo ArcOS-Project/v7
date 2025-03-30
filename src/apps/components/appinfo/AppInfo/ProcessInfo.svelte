@@ -2,9 +2,9 @@
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
+  import { Sleep } from "$ts/sleep";
   import { onMount } from "svelte";
   import type { AppInfoRuntime } from "../runtime";
-  import { Sleep } from "$ts/sleep";
 
   const { appId, process }: { appId: string; process: AppInfoRuntime } = $props();
 

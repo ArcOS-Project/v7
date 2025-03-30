@@ -12,7 +12,7 @@ import {
 } from "$types/fs";
 import { arrayToBlob } from "./convert";
 import type { FilesystemDrive } from "./drive";
-import { formatBytes, getParentDirectory, join } from "./util";
+import { getParentDirectory, join } from "./util";
 
 export class Filesystem extends KernelModule {
   private dispatch: GlobalDispatcher;

@@ -1,9 +1,9 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
   import { ErrorIcon } from "$ts/images/dialog";
+  import { GoodStatusIcon } from "$ts/images/status";
   import QRCode from "@castlenine/svelte-qrcode";
   import type { TotpSetupGuiRuntime } from "./runtime";
-  import { GoodStatusIcon } from "$ts/images/status";
 
   const { process }: { process: TotpSetupGuiRuntime } = $props();
   const { inputs, digits, url } = process;

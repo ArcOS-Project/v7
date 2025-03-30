@@ -17,12 +17,12 @@ import { WindowSettingsIcon } from "$ts/images/general";
 import { tryJsonStringify } from "$ts/json";
 import { Process } from "$ts/process/instance";
 import { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";
+import { Store } from "$ts/writable";
 import type { App } from "$types/app";
 import axios from "axios";
 import { Axios } from "../axios";
 import type { UserDaemon } from "./daemon";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
-import { Store } from "$ts/writable";
 
 export function ThirdPartyProps(
   daemon: UserDaemon,

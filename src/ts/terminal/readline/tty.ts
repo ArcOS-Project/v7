@@ -12,10 +12,10 @@
  *
  * © IzKuipers 2025
  */
-import { Position, Layout } from "./state";
-import { LineBuffer } from "./line";
 import stringWidth from "string-width";
 import type { Highlighter } from "./highlight";
+import { LineBuffer } from "./line";
+import { Layout, Position } from "./state";
 
 export interface Output {
   write(text: string): void;

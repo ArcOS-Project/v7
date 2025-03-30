@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { isPopulatable } from "$ts/apps/util";
 import { MessageBox } from "$ts/dialog";
+import { getIconPath } from "$ts/images";
 import { WarningIcon } from "$ts/images/dialog";
 import { DesktopIcon } from "$ts/images/general";
 import { DefaultMimeIcon } from "$ts/images/mime";
@@ -18,7 +19,6 @@ import { fetchWeatherApi } from "openmeteo";
 import { ShellContextMenu, WindowSystemContextMenu } from "./context";
 import { weatherCaptions, weatherClasses, weatherGradients, weatherIconColors, weatherIcons } from "./store";
 import type { ShellTrayIcon, TrayIconDiscriminator, TrayIconOptions, WeatherInformation } from "./types";
-import { getIconPath } from "$ts/images";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);

@@ -1,12 +1,12 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
+  import { maybeIconId } from "$ts/images";
   import { DefaultIcon } from "$ts/images/apps";
   import { FlagIcon } from "$ts/images/general";
   import type { Process } from "$ts/process/instance";
   import { onMount } from "svelte";
   import type { ProcessManagerRuntime } from "../../runtime";
   import Row from "./Row.svelte";
-  import { maybeIconId } from "$ts/images";
 
   const { pid, proc, process }: { pid: number; proc: Process; process: ProcessManagerRuntime } = $props();
 

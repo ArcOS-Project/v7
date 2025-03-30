@@ -1,7 +1,7 @@
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import type { Filesystem } from "$ts/fs";
 import { arrayToText } from "$ts/fs/convert";
-import { getDirectoryName, getParentDirectory, join } from "$ts/fs/util";
+import { getParentDirectory, join } from "$ts/fs/util";
 import { tryJsonParse } from "$ts/json";
 import { detectJavaScript } from "$ts/util";
 import type { App } from "$types/app";

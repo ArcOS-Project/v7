@@ -1,5 +1,4 @@
 import type { TerminalCommand } from "$types/terminal";
-import { SelectionList } from "../select";
 
 export const TestCommand: TerminalCommand = {
   keyword: "test",

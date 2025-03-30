@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { appShortcuts } from "$ts/apps/store";
-  import type { AppStorage } from "$types/app";
   import type { FileOpenerResult } from "$types/fs";
   import type { OpenWithRuntime } from "../runtime";
   import Option from "./Options/Option.svelte";

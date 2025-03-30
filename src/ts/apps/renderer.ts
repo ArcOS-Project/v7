@@ -1,5 +1,7 @@
 import { ShellRuntime } from "$apps/components/shell/runtime";
+import { contextProps } from "$ts/context/actions.svelte";
 import { MessageBox } from "$ts/dialog";
+import { maybeIconId } from "$ts/images";
 import { BugReportIcon, ComponentIcon } from "$ts/images/general";
 import { Draggable } from "@neodrag/vanilla";
 import { unmount } from "svelte";
@@ -11,8 +13,6 @@ import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
 import { BuiltinApps } from "./store";
-import { contextProps } from "$ts/context/actions.svelte";
-import { maybeIconId } from "$ts/images";
 
 export class AppRenderer extends Process {
   currentState: number[] = [];

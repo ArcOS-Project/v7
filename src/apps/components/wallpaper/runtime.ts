@@ -8,7 +8,7 @@ import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { DirectoryReadReturn } from "$types/fs";
 import { LogLevel } from "$types/logging";
-import type { ArcShortcut, ShortcutStore } from "$types/shortcut";
+import type { ShortcutStore } from "$types/shortcut";
 import { WallpaperContextMenu } from "./context";
 
 export class WallpaperRuntime extends AppProcess {

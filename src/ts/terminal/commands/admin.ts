@@ -1,4 +1,3 @@
-import { ArcOSVersion } from "$ts/env";
 import { getAllJsonPaths, getJsonHierarchy } from "$ts/hierarchy";
 import { tryJsonParse } from "$ts/json";
 import { ServerManager } from "$ts/server";
@@ -10,7 +9,7 @@ import { AdminCommandStore, RESULT_CAPTIONS } from "./admin/store";
 
 export const AdminCommand: TerminalCommand = {
   keyword: "admin",
-  async exec(term, flags, argv) {
+  async exec(term) {
     const paths = getAllJsonPaths(AdminCommandStore).map((a) => a.replaceAll(".", " "));
     const admin = term.daemon?.admin;
     const server = term.kernel.getModule<ServerManager>("server");

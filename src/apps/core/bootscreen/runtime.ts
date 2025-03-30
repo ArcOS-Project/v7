@@ -1,4 +1,3 @@
-import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
