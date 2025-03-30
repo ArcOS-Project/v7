@@ -49,9 +49,10 @@ export const AdminCommand: TerminalCommand = {
         }
 
         for (const path of paths) {
-          if (response?.startsWith(path)) {
+          const text = `${response} `;
+          if (text?.startsWith(`${path} `)) {
             const command = getJsonHierarchy<AdminCommand>(AdminCommandStore, path.replaceAll(" ", "."));
-            const result = await command?.(term, admin, response.replace(path, "").trim().split(" ").map(tryJsonParse));
+            const result = await command?.(term, admin, text.replace(path, "").trim().split(" ").map(tryJsonParse));
 
             term.rl?.println(`${BRBLACK}?${RESULT_CAPTIONS[result ?? 4]}${RESET}`);
 
@@ -68,6 +69,7 @@ export const AdminCommand: TerminalCommand = {
     });
   },
   description: "",
+  hidden: true,
 };
 
 export type AdminCommand = (term: ArcTerminal, admin: AdminBootstrapper, argv: string[]) => Promise<number>;

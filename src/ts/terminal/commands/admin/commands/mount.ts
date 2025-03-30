@@ -2,7 +2,14 @@ import type { AdminCommand } from "../../admin";
 
 export const AdminMount: AdminCommand = async (term, admin, argv) => {
   if (
-    !admin.canAccess("admin.userfs.folder", "admin.userfs.file", "admin.userfs.direct", "admin.userfs.tree", "admin.userfs.quota")
+    !admin.canAccess(
+      "admin.users.list",
+      "admin.userfs.folder",
+      "admin.userfs.file",
+      "admin.userfs.direct",
+      "admin.userfs.tree",
+      "admin.userfs.quota"
+    )
   )
     return 2;
 
@@ -10,7 +17,11 @@ export const AdminMount: AdminCommand = async (term, admin, argv) => {
 
   if (!username) return 5;
 
-  await admin.mountUserDrive(username, letter, (progress) => {
+  const users = (await admin.getAllUsers()).map((u) => u.username);
+
+  if (!users.includes(username)) return 3;
+
+  await admin.mountUserDrive(username, letter ? letter.toUpperCase() : undefined, (progress) => {
     term.rl?.println(`MOUNT ${username}: ${progress.value} / ${progress.max} (${progress.type})`);
   });
 
