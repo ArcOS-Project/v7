@@ -9,6 +9,7 @@ import { AdminBugHuntReportClose } from "./commands/bughunt/report/close";
 import { AdminBugHuntReportDelete } from "./commands/bughunt/report/delete";
 import { AdminBugHuntReportOpen } from "./commands/bughunt/report/open";
 import { AdminBugHuntStats } from "./commands/bughunt/stats";
+import { AdminHelp } from "./commands/help";
 import { AdminMount } from "./commands/mount";
 import { AdminScopesAdd } from "./commands/scopes/add";
 import { AdminScopesAvailable } from "./commands/scopes/available";
@@ -21,6 +22,10 @@ import { AdminTokensListAll } from "./commands/tokens/list/all";
 import { AdminTokensPurgeAll } from "./commands/tokens/purge/all";
 import { AdminTokensPurgeOne } from "./commands/tokens/purge/one";
 import { AdminTokensPurgeUser } from "./commands/tokens/purge/user";
+import { AdminTotpDeactivate } from "./commands/totp/deactivate";
+import { AdminTotpDelete } from "./commands/totp/delete";
+import { AdminTotpGet } from "./commands/totp/get";
+import { AdminTotpListAll } from "./commands/totp/list/all";
 import { AdminUserApprove } from "./commands/user/approve";
 import { AdminUserChangeemail } from "./commands/user/changeemail";
 import { AdminUserChangepswdGenerated } from "./commands/user/changepswd/generated";
@@ -100,6 +105,15 @@ export const AdminCommandStore = {
       user: AdminActivitiesDeleteUser,
     },
   },
+  totp: {
+    list: {
+      all: AdminTotpListAll,
+    },
+    get: AdminTotpGet,
+    delete: AdminTotpDelete,
+    deactivate: AdminTotpDeactivate,
+  },
+  "?": AdminHelp,
 };
 
 export const RESULT_CAPTIONS: Record<number, string> = {

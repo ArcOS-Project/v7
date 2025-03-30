@@ -9,7 +9,7 @@ export const AdminActivitiesListUser: AdminCommand = async (term, admin, [userna
 
   const activities = await admin.getActivityOf(username);
 
-  if (!activities) return 3;
+  if (!activities.length) return 3;
 
   const maxActionLength = maxLength(activities.map((a) => a.action));
 

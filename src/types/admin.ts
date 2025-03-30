@@ -105,7 +105,7 @@ export interface ServerStatGroup extends Record<string, number> {
   activities: number;
 }
 
-export interface UserTotp {
+export interface UserTotp extends Record<string, string | boolean> {
   userId: string;
   secret: string;
   activated: boolean;
