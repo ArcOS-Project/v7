@@ -1,3 +1,7 @@
+import { AdminActivitiesDeleteAll } from "./commands/activities/delete/all";
+import { AdminActivitiesDeleteUser } from "./commands/activities/delete/user";
+import { AdminActivitiesListAll } from "./commands/activities/list/all";
+import { AdminActivitiesListUser } from "./commands/activities/list/user";
 import { AdminGrant } from "./commands/admin/grant";
 import { AdminRevoke } from "./commands/admin/revoke";
 import { AdminBugHuntListAll } from "./commands/bughunt/list/all";
@@ -86,6 +90,16 @@ export const AdminCommandStore = {
     },
   },
   mount: AdminMount,
+  activities: {
+    list: {
+      all: AdminActivitiesListAll,
+      user: AdminActivitiesListUser,
+    },
+    delete: {
+      all: AdminActivitiesDeleteAll,
+      user: AdminActivitiesDeleteUser,
+    },
+  },
 };
 
 export const RESULT_CAPTIONS: Record<number, string> = {

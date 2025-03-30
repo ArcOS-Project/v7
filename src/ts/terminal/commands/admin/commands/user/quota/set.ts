@@ -14,6 +14,9 @@ export const AdminUserQuotaSet: AdminCommand = async (term, admin, argv) => {
 
   if (!parsed || Number.isNaN(parsed)) return 5;
 
+  const proceed = (await term.rl?.read("Confirm change (y/n)? ")) === "y";
+  if (!proceed) return 6;
+
   const result = await admin.setQuotaOf(username, parsed);
 
   return result ? 0 : 3;

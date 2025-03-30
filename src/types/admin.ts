@@ -5,6 +5,7 @@ export interface Activity {
   location: Location;
   action: string;
   createdAt?: Date;
+  _id: string;
 }
 
 export interface Approval {
