@@ -1,3 +1,5 @@
+import { AdminAccessorsListAll } from "./commands/accessors/list/all";
+import { AdminAccessorsListUser } from "./commands/accessors/list/user";
 import { AdminActivitiesDeleteAll } from "./commands/activities/delete/all";
 import { AdminActivitiesDeleteUser } from "./commands/activities/delete/user";
 import { AdminActivitiesListAll } from "./commands/activities/list/all";
@@ -114,6 +116,12 @@ export const AdminCommandStore = {
     deactivate: AdminTotpDeactivate,
   },
   "?": AdminHelp,
+  accessors: {
+    list: {
+      all: AdminAccessorsListAll,
+      user: AdminAccessorsListUser,
+    },
+  },
 };
 
 export const RESULT_CAPTIONS: Record<number, string> = {
