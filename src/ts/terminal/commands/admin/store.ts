@@ -1,3 +1,5 @@
+import { AdminAccessorsDeleteAll } from "./commands/accessors/delete/all";
+import { AdminAccessorsDeleteUser } from "./commands/accessors/delete/user";
 import { AdminAccessorsListAll } from "./commands/accessors/list/all";
 import { AdminAccessorsListUser } from "./commands/accessors/list/user";
 import { AdminActivitiesDeleteAll } from "./commands/activities/delete/all";
@@ -120,6 +122,10 @@ export const AdminCommandStore = {
     list: {
       all: AdminAccessorsListAll,
       user: AdminAccessorsListUser,
+    },
+    delete: {
+      all: AdminAccessorsDeleteAll,
+      user: AdminAccessorsDeleteUser,
     },
   },
 };
