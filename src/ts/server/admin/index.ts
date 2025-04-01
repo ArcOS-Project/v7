@@ -82,6 +82,12 @@ export class AdminBootstrapper extends Process {
     }
   }
 
+  async getUserByUsername(username: string): Promise<UserInfo | undefined> {
+    const users = await this.getAllUsers();
+
+    return users.filter((u) => u.username === username)[0];
+  }
+
   async getServerLogs(): Promise<ServerLogItem[]> {
     try {
       const response = await Axios.get("/admin/logs", { headers: { Authorization: `Bearer ${this.token}` } });
