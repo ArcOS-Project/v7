@@ -42,6 +42,7 @@ export interface FsAccess {
   createdAt?: Date;
 }
 export interface FSItem {
+  _id: string;
   userId: string;
   itemId: string;
   type: "file" | "directory";

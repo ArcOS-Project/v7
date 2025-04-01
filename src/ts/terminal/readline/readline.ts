@@ -260,11 +260,14 @@ export class Readline extends Process implements ITerminalAddon {
   }
 
   private async readData(data: string) {
-    const input = parseInput(data);
-    if (input.length > 1 || (input[0].inputType === InputType.Text && input[0].data.length > 1)) {
+    const input = parseInput(data) || [];
+
+    if (input.length > 1 || (input[0]?.inputType === InputType.Text && input[0]?.data?.length > 1)) {
       await this.readPaste(input);
+
       return;
     }
+
     await this.readKey(input[0]);
   }
 
@@ -286,7 +289,7 @@ export class Readline extends Process implements ITerminalAddon {
   }
 
   private async readKey(input: Input) {
-    if (!this.state) return;
+    if (!this.state || !input) return;
     if (this.activeRead === undefined) {
       switch (input.inputType) {
         case InputType.CtrlC:
