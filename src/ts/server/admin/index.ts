@@ -294,6 +294,16 @@ export class AdminBootstrapper extends Process {
     }
   }
 
+  async getBugReport(id: string): Promise<BugReport | undefined> {
+    try {
+      const response = await Axios.get(`/bughunt/report/${id}`, { headers: { Authorization: `Bearer ${this.token}` } });
+
+      return response.data as BugReport;
+    } catch {
+      return undefined;
+    }
+  }
+
   async getBugHuntStatistics() {
     try {
       const response = await Axios.get(`/admin/bughunt/stats`, {

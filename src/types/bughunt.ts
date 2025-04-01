@@ -9,12 +9,29 @@ export interface BugReport {
   resolved: boolean;
   version: `${number}.${number}.${number}`;
   location: Location;
-  userData?: object;
+  userData?: Record<string, any>;
   userAgent?: string;
   api?: string;
   frontend: string;
   meta: MetaEnvironment;
   _id?: string;
+  createdAt: string;
+  mode: string;
+  build: string;
+}
+
+export interface OutgoingBugReport {
+  title: string;
+  body: string;
+  logs: LogItem[];
+  version: `${number}.${number}.${number}`;
+  location: Location;
+  userAgent?: string;
+  api?: string;
+  frontend: string;
+  meta: MetaEnvironment;
+  mode: string;
+  build: string;
 }
 
 export interface Location {
@@ -35,6 +52,8 @@ export interface MetaEnvironment {
   DEV: boolean;
   PROD: boolean;
   SSR: boolean;
+  DW_SERVER_URL?: string;
+  DW_SERVER_AUTHCODE?: string;
 }
 
 export interface ReportStatistics extends Record<string, number> {
@@ -43,4 +62,9 @@ export interface ReportStatistics extends Record<string, number> {
   resolved: number;
   total: number;
   apis: number;
+}
+
+export interface ReportOptions {
+  title: string;
+  body?: string;
 }

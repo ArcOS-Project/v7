@@ -8,6 +8,7 @@ import { AdminActivitiesListAll } from "./commands/activities/list/all";
 import { AdminActivitiesListUser } from "./commands/activities/list/user";
 import { AdminGrant } from "./commands/admin/grant";
 import { AdminRevoke } from "./commands/admin/revoke";
+import { AdminBugHuntReportGet } from "./commands/bughunt/get";
 import { AdminBugHuntListAll } from "./commands/bughunt/list/all";
 import { AdminBugHuntReportClose } from "./commands/bughunt/report/close";
 import { AdminBugHuntReportDelete } from "./commands/bughunt/report/delete";
@@ -77,6 +78,7 @@ export const AdminCommandStore = {
       delete: AdminBugHuntReportDelete,
       open: AdminBugHuntReportOpen,
       close: AdminBugHuntReportClose,
+      get: AdminBugHuntReportGet,
     },
     list: {
       all: AdminBugHuntListAll,
