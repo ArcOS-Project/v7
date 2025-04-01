@@ -7,6 +7,12 @@ div.window#loginApp > div.body div.container {
   transition: all 0.3s !important;
 }
 
+div.window#loginApp > div.body div.container.server-bg {
+  background: var(--bgurl);
+  background-position: center;
+  background-size: cover;
+}
+
 div.window#loginApp > div.body button:not(.continue) {
   padding: 8px 20px;
   background-color: #fff1;

@@ -18,7 +18,7 @@ import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps } from "./types";
 
 export class LoginAppRuntime extends AppProcess {
-  private DEFAULT_WALLPAPER = Store<string>("");
+  public DEFAULT_WALLPAPER = Store<string>("");
   public loadingStatus = Store<string>("");
   public errorMessage = Store<string>("");
   public profileImage = Store<string>(ProfilePictures.def);

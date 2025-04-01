@@ -6,10 +6,24 @@
   import type { LoginAppRuntime } from "./runtime";
 
   const { process }: AppComponentProps<LoginAppRuntime> = $props();
-  const { loadingStatus, errorMessage, profileImage, profileName, hideProfileImage, loginBackground, serverInfo } = process;
+  const {
+    loadingStatus,
+    errorMessage,
+    profileImage,
+    profileName,
+    hideProfileImage,
+    loginBackground,
+    serverInfo,
+    DEFAULT_WALLPAPER,
+  } = process;
 </script>
 
-<div class="container" class:full={$hideProfileImage} style="--bgurl: url('{$loginBackground}')">
+<div
+  class="container"
+  class:full={$hideProfileImage}
+  style="--bgurl: url('{$loginBackground}')"
+  class:server-bg={serverInfo?.loginWallpaper && $loginBackground === $DEFAULT_WALLPAPER}
+>
   {#if !$hideProfileImage}
     <div class="profile-picture" style="--src: url('{$profileImage}')"></div>
     {#if $profileName}
