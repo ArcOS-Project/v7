@@ -15,7 +15,7 @@ export const AdminUserList: AdminCommand = async (term, admin) => {
     const email = user.email.padEnd(maxEmailLength);
 
     term.rl?.println(
-      `${BRPURPLE}${username}${BRBLACK} | ${RESET}${email}${BRBLACK} | ${RESET}${
+      `${BRBLACK}${user._id} ${BRPURPLE}${username}${BRBLACK} | ${RESET}${email}${BRBLACK} | ${RESET}${
         user.admin ? "Administrator" : "Regular user"
       }, ${user.approved ? "approved" : `${BRRED}pending${RESET}`}`
     );

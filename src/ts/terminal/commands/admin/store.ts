@@ -14,6 +14,10 @@ import { AdminBugHuntReportDelete } from "./commands/bughunt/report/delete";
 import { AdminBugHuntReportOpen } from "./commands/bughunt/report/open";
 import { AdminBugHuntStats } from "./commands/bughunt/stats";
 import { AdminHelp } from "./commands/help";
+import { AdminIndexingDelete } from "./commands/indexing/delete";
+import { AdminIndexingForce } from "./commands/indexing/force";
+import { AdminIndexingListAll } from "./commands/indexing/list/all";
+import { AdminIndexingListUser } from "./commands/indexing/list/user";
 import { AdminMount } from "./commands/mount";
 import { AdminScopesAdd } from "./commands/scopes/add";
 import { AdminScopesAvailable } from "./commands/scopes/available";
@@ -127,6 +131,14 @@ export const AdminCommandStore = {
       all: AdminAccessorsDeleteAll,
       user: AdminAccessorsDeleteUser,
     },
+  },
+  indexing: {
+    list: {
+      user: AdminIndexingListUser,
+      all: AdminIndexingListAll,
+    },
+    force: AdminIndexingForce,
+    delete: AdminIndexingDelete,
   },
 };
 
