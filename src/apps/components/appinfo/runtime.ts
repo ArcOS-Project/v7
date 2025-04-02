@@ -1,4 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
+import { maybeIconId } from "$ts/images";
 import { AppInfoIcon } from "$ts/images/apps";
 import { ComponentIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
@@ -37,7 +38,7 @@ export class AppInfoRuntime extends AppProcess {
   async killAll() {
     const elevated = await this.userDaemon?.manuallyElevate({
       what: `ArcOS needs your permission to kill all instances of an app`,
-      image: this.targetApp().metadata.icon || ComponentIcon,
+      image: maybeIconId(this.targetApp().metadata.icon) || ComponentIcon,
       title: this.targetApp().metadata.name,
       description: this.targetAppId,
       level: ElevationLevel.high,
