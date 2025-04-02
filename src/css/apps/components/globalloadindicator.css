@@ -3,5 +3,10 @@
   justify-content: space-between;
   align-items: center;
   min-height: 80px;
-  padding: 0 20px;
+  padding: 20px;
+  gap: 15px;
+}
+
+#GlobalLoadIndicator > div.body svg {
+  min-width: 32px;
 }

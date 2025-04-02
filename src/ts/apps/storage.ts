@@ -104,6 +104,8 @@ export class ApplicationStorage extends Process {
           try {
             const json = tryJsonParse(arrayToText((await this.fs.readFile(tpaPath))!));
 
+            if (!json || typeof json !== "object") return undefined;
+
             return {
               ...Object.freeze({ ...json, workingDirectory: getParentDirectory(tpaPath), tpaPath, originId: "userApps" }),
             };
