@@ -250,6 +250,7 @@ export const DefaultMimeIcons: Record<string, string[]> = {
   [XmlMimeIcon]: [".xml"],
   [PlaylistMimeIcon]: [".arcpl"],
   [ShortcutMimeIcon]: [".arclnk"],
+  [ArcTermMimeIcon]: ["arcterm.conf"],
 };
 
 export function DefaultFileHandlers(daemon: UserDaemon): Record<string, FileHandler> {

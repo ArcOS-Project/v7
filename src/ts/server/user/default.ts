@@ -77,6 +77,10 @@ export const DefaultUserPreferences: UserPreferences = {
     index: 0,
   },
   globalSettings: {},
+  startup: {
+    arcShell: "app",
+    wallpaper: "app",
+  },
 };
 
 export const DefaultUserInfo: UserInfo = {

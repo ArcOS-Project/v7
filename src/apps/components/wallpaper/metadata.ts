@@ -32,7 +32,6 @@ export const WallpaperApp: App = {
     component: Wallpaper as any,
   },
   id: "wallpaper",
-  autoRun: true,
   core: true,
   hidden: true,
 };

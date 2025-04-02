@@ -970,17 +970,29 @@ export class UserDaemon extends Process {
     }
   }
 
-  async spawnAutoloadApps() {
+  async spawnAutoload() {
     if (this._disposed) return;
 
     this.Log(`Spawning autoload applications`);
 
-    const store = (await this.appStore?.get()) || [];
+    const { startup } = this.preferences();
 
-    this.handler.BUSY = false;
+    for (const payload in startup) {
+      const type = startup[payload];
 
-    for (const app of store) {
-      if (app.autoRun) await this._spawnApp(app.id, undefined, this.pid);
+      switch (type.toLowerCase()) {
+        case "app":
+          await this._spawnApp(payload, undefined, this.pid);
+          break;
+        case "file":
+          await this.openFile(payload);
+          break;
+        case "folder":
+          await this.spawnApp("fileManager", undefined, payload);
+          break;
+        default:
+          this.Log(`Unknown startup type: ${type.toUpperCase()} (payload: '${payload}')`);
+      }
     }
   }
 
@@ -1746,6 +1758,7 @@ export class UserDaemon extends Process {
 
     const apps = await this.appStore?.get();
     const split = path.split(".");
+    const filename = getDirectoryName(path);
     const extension = `.${split[split.length - 1]}`;
     const mimeType = fromExtension(path);
     const result: FileOpenerResult[] = [];
@@ -1763,7 +1776,12 @@ export class UserDaemon extends Process {
     }
 
     for (const app of apps!) {
-      if ((app.opens?.extensions || [])?.includes(extension) || (app.opens?.mimeTypes || [])?.join("||").includes(mimeType)) {
+      const extensions = app.opens?.extensions || [];
+      if (
+        extensions.includes(extension) ||
+        extensions.includes(filename) ||
+        (app.opens?.mimeTypes || [])?.join("||").includes(mimeType)
+      ) {
         result.push({
           type: "app",
           app,
@@ -1805,7 +1823,7 @@ export class UserDaemon extends Process {
 
     const split = filename.split(".");
 
-    return this.getMimeIconByExtension(`.${split[split.length - 1]}`);
+    return this.getMimeIconByExtension(`.${split[split.length - 1]}`) || this.getMimeIconByExtension(filename);
   }
 
   getMimeIconByExtension(extension: string): string | undefined {

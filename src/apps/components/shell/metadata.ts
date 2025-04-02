@@ -32,7 +32,6 @@ export const ArcShellApp: App = {
     component: Shell as any,
   },
   id: "arcShell",
-  autoRun: true,
   core: true,
   hidden: true,
   acceleratorDescriptions: {
