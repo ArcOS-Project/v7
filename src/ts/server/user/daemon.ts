@@ -47,6 +47,7 @@ import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
+import { GlobalLoadIndicatorRuntime } from "$apps/components/globalloadindicator/runtime";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -906,14 +907,16 @@ export class UserDaemon extends Process {
 
     if (!userDaemonPid) return;
 
+    const { stop } = await this.GlobalLoadIndicator(`Opening ${app.metadata.name}...`);
+
     try {
       const compatibleRevision = !app.tpaRevision || ThirdPartyAppProcess.TPA_REV >= app.tpaRevision;
 
       if (!compatibleRevision) {
         MessageBox(
           {
-            title: `${app.metadata.name} - Incompatible`,
-            message: `The third-party app process revision this app expects is higher than what this version of ArcOS can supply. Please update your ArcOS version and try again.`,
+            title: `${app.metadata.name}`,
+            message: `This application expects a newer version of the TPA process than what ArcOS can supply. Please update your ArcOS version and try again.`,
             buttons: [{ caption: "Okay", action: () => {} }],
             sound: "arcos.dialog.error",
             image: ErrorIcon,
@@ -921,6 +924,8 @@ export class UserDaemon extends Process {
           +this.env.get("shell_pid"),
           true
         );
+
+        return;
       }
 
       const contents = arrayToText(
@@ -928,6 +933,8 @@ export class UserDaemon extends Process {
       );
 
       if (!contents) {
+        await stop();
+
         MessageBox(
           {
             title: `${app.metadata.name} - Entrypoint error`,
@@ -954,9 +961,12 @@ export class UserDaemon extends Process {
       if (!code.default || !(code.default instanceof Function)) throw new Error("Expected a default function");
 
       await code.default(props);
+
+      stop();
     } catch (e) {
       this.handler.renderer?.notifyCrash(app as any, e as Error, app.process!);
       this.Log(`Execution error in third-party application "${app.id}": ${(e as any).stack}`);
+      stop();
     }
   }
 
@@ -2028,5 +2038,27 @@ export class UserDaemon extends Process {
 
     this.appStore?.loadOrigin("admin", () => AdminApps);
     this.admin = await this.handler.spawn<AdminBootstrapper>(AdminBootstrapper, undefined, this.pid, this.token);
+  }
+
+  async GlobalLoadIndicator(caption?: string) {
+    const process = await this.spawnOverlay<GlobalLoadIndicatorRuntime>(
+      "GlobalLoadIndicator",
+      +this.env.get("shell_pid"),
+      caption
+    );
+
+    if (!process)
+      return {
+        caption: Store<string>(),
+        stop: async () => {},
+      };
+
+    return {
+      caption: process.caption,
+      stop: async () => {
+        await Sleep(500);
+        await process.closeWindow();
+      },
+    };
   }
 }
