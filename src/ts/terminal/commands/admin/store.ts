@@ -26,6 +26,7 @@ import { AdminScopesGet } from "./commands/scopes/get";
 import { AdminScopesRemove } from "./commands/scopes/remove";
 import { AdminServerAuditlog } from "./commands/server/auditlog";
 import { AdminServerLogs } from "./commands/server/logs";
+import { AdminServerPing } from "./commands/server/ping";
 import { AdminServerStats } from "./commands/server/stats";
 import { AdminTokensListAll } from "./commands/tokens/list/all";
 import { AdminTokensPurgeAll } from "./commands/tokens/purge/all";
@@ -53,6 +54,7 @@ export const AdminCommandStore = {
     logs: AdminServerLogs,
     auditlog: AdminServerAuditlog,
     stats: AdminServerStats,
+    ping: AdminServerPing,
   },
   admin: {
     grant: AdminGrant,
