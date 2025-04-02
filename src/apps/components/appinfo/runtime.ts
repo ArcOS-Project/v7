@@ -51,4 +51,9 @@ export class AppInfoRuntime extends AppProcess {
       instance.killSelf();
     }
   }
+
+  async processManager() {
+    await this.userDaemon?.spawnApp("processManager", +this.env.get("shell_pid"));
+    this.closeWindow();
+  }
 }
