@@ -1,4 +1,5 @@
 import { LogLevel } from "../types/logging";
+import { BugHunt } from "./bughunt";
 import { WaveKernel } from "./kernel";
 import { ServerManager } from "./server";
 
@@ -6,6 +7,7 @@ export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
   const kernel = WaveKernel.get();
   if (WaveKernel.isPanicked()) return;
 
+  const bughunt = kernel.getModule<BugHunt>("bughunt", true);
   const connected = ServerManager.isConnected();
 
   const HEADER = [
@@ -38,6 +40,14 @@ export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
     )
     .reverse()
     .join("\n")}`;
+
+  if (!import.meta.env.DEV)
+    bughunt?.sendReport(
+      bughunt?.createReport({
+        title: `Crash by irrecoverable unhandled exception`,
+        body: text.replace(HEADER.join("\n"), ""),
+      })
+    );
 
   WaveKernel.panic(text);
 }
