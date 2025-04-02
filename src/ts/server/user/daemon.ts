@@ -798,6 +798,8 @@ export class UserDaemon extends Process {
 
     this.Log(`SPAWNING APP ${id}`);
 
+    console.log(app);
+
     if (app.thirdParty || app.entrypoint) {
       await this.spawnThirdParty(app, (app as InstalledApp).tpaPath!, ...args);
 
@@ -2078,5 +2080,45 @@ export class UserDaemon extends Process {
         await process.closeWindow();
       },
     };
+  }
+
+  async uninstallAppWithAck(app: App): Promise<boolean> {
+    return new Promise<boolean>((r) => {
+      MessageBox(
+        {
+          title: "Uninstall app?",
+          message: `You're about to uninstall "${app?.metadata?.name || "Unknown"}" by ${
+            app?.metadata?.author || "nobody"
+          }. Do you want to just uninstall it, or do you want to delete its files also?`,
+          image: WarningIcon,
+          sound: "arcos.dialog.warning",
+          buttons: [
+            {
+              caption: "Cancel",
+              action: () => {
+                r(false);
+              },
+            },
+            {
+              caption: "Delete",
+              action: () => {
+                this.deleteApp(app?.id, true);
+                r(true);
+              },
+            },
+            {
+              caption: "Just uninstall",
+              action: () => {
+                this.deleteApp(app?.id, false);
+                r(true);
+              },
+              suggested: true,
+            },
+          ],
+        },
+        +this.env.get("shell_pid"),
+        true
+      );
+    });
   }
 }

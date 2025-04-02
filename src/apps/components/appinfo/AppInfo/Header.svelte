@@ -34,35 +34,10 @@
     else process.userDaemon?.disableApp(id);
   }
 
-  function deleteApp() {
-    MessageBox(
-      {
-        title: "Uninstall app?",
-        message: `You're about to uninstall "${target?.metadata?.name || "Unknown"}" by ${target?.metadata?.author || "nobody"}. Do you want to just uninstall it, or do you want to delete its files also?`,
-        image: WarningIcon,
-        sound: "arcos.dialog.warning",
-        buttons: [
-          { caption: "Cancel", action: () => {} },
-          {
-            caption: "Delete",
-            action: () => {
-              process.userDaemon?.deleteApp(target?.id, true);
-              process.closeWindow();
-            },
-          },
-          {
-            caption: "Just uninstall",
-            action: () => {
-              process.userDaemon?.deleteApp(target?.id, false);
-              process.closeWindow();
-            },
-            suggested: true,
-          },
-        ],
-      },
-      process.pid,
-      true,
-    );
+  async function deleteApp() {
+    const deleted = await process.userDaemon?.uninstallAppWithAck(target!);
+
+    if (deleted) process.closeWindow();
   }
 </script>
 

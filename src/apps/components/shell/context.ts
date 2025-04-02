@@ -1,6 +1,6 @@
 import type { AppProcess } from "$ts/apps/process";
 import { iconIdFromPath } from "$ts/images";
-import { AppsIcon } from "$ts/images/general";
+import { ProcessManagerIcon } from "$ts/images/apps";
 import { ShortcutMimeIcon } from "$ts/images/mime";
 import { ShutdownIcon } from "$ts/images/power";
 import type { App, AppContextMenu } from "$types/app";
@@ -12,8 +12,16 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
     "shell-taskbar": [
       {
         caption: "Settings",
+        icon: "settings",
         action: () => {
-          runtime.notImplemented();
+          runtime.spawnApp("systemSettings", runtime.pid);
+        },
+      },
+      {
+        caption: "Processes",
+        image: ProcessManagerIcon,
+        action: () => {
+          runtime.spawnApp("processManager", runtime.pid);
         },
       },
     ],
@@ -71,10 +79,18 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       { sep: true },
       {
         caption: "App info",
-        image: AppsIcon,
+        icon: "info",
         action: (app: App) => {
           runtime.spawnOverlayApp("AppInfo", runtime.pid, app.id);
         },
+      },
+      {
+        caption: "Uninstall",
+        icon: "trash-2",
+        action: (app: App) => {
+          runtime.userDaemon?.uninstallAppWithAck(app);
+        },
+        disabled: (app: App) => !app.entrypoint && !app.thirdParty,
       },
     ],
     "taskbar-openedapp": [
@@ -133,7 +149,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       { sep: true },
       {
         caption: "App info",
-        image: AppsIcon,
+        icon: "info",
         action: (proc: AppProcess) => {
           if (!proc) return;
 
@@ -207,7 +223,7 @@ export function WindowSystemContextMenu(runtime: ShellRuntime): AppContextMenu {
     "_window-titlebar": [
       {
         caption: "App Info",
-        image: AppsIcon,
+        icon: "info",
         action: (proc: AppProcess) => {
           proc.spawnOverlayApp("AppInfo", +proc.env.get("shell_pid"), proc.app.id);
         },
