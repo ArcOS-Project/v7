@@ -46,6 +46,7 @@ import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
+import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -906,6 +907,22 @@ export class UserDaemon extends Process {
     if (!userDaemonPid) return;
 
     try {
+      const compatibleRevision = !app.tpaRevision || ThirdPartyAppProcess.TPA_REV >= app.tpaRevision;
+
+      if (!compatibleRevision) {
+        MessageBox(
+          {
+            title: `${app.metadata.name} - Incompatible`,
+            message: `The third-party app process revision this app expects is higher than what this version of ArcOS can supply. Please update your ArcOS version and try again.`,
+            buttons: [{ caption: "Okay", action: () => {} }],
+            sound: "arcos.dialog.error",
+            image: ErrorIcon,
+          },
+          +this.env.get("shell_pid"),
+          true
+        );
+      }
+
       const contents = arrayToText(
         (await fs.readFile(app.entrypoint?.includes(":/") ? app.entrypoint! : join(app.workingDirectory, app.entrypoint!)))!
       );

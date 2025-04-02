@@ -4,6 +4,7 @@ import type { AppProcessData } from "$types/app";
 import { AppProcess } from "./process";
 
 export class ThirdPartyAppProcess extends AppProcess {
+  public static readonly TPA_REV = 1;
   workingDirectory: string;
   mutationLock = false;
   urlCache: Record<string, string> = {};

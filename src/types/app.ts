@@ -34,6 +34,7 @@ export interface App {
   acceleratorDescriptions?: Record<string, string>; // <[combo in One+Two+Key format], description>
   fileSignatures?: Record<string, string>;
   process?: ThirdPartyAppProcess;
+  tpaRevision?: number;
 }
 
 export interface InstalledApp extends App {

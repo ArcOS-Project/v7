@@ -1,3 +1,4 @@
+import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { textToBlob } from "$ts/fs/convert";
 import { join } from "$ts/fs/util";
 import { tryJsonParse } from "$ts/json";
@@ -100,6 +101,8 @@ export const CrTpaCommand: TerminalCommand = {
       tpaData.hidden = (await input("Is this a hidden app (y/n):", "string", /y|n/g)) === "y";
       tpaData.core = (await input("Is this a core app (y/n):", "string", /y|n/g)) === "y";
 
+      tpaData.tpaRevision = ThirdPartyAppProcess.TPA_REV;
+
       term.rl?.println("");
 
       term.Info(`Scaffolding directory ${BRPURPLE}${location}${RESET}...`);
@@ -111,24 +114,24 @@ export const CrTpaCommand: TerminalCommand = {
       const bodyPath = join(location, "body.html");
       const stylePath = join(location, "style.css");
 
-      term.Info(`Writing ${BRPURPLE}${tpaPath}${RESET}`);
+      term.Info(tpaPath, "Writing");
       await term.writeFile(tpaPath, textToBlob(JSON.stringify(tpaData, null, 2)));
 
-      term.Info(`Writing ${BRPURPLE}${entryPath}${RESET}`);
+      term.Info(entryPath, "Writing");
       await term.writeFile(entryPath, textToBlob(ENTRYPOINT_JS));
 
-      term.Info(`Writing ${BRPURPLE}${processPath}${RESET}`);
+      term.Info(processPath, "Writing");
       await term.writeFile(processPath, textToBlob(PROCESS_JS));
 
-      term.Info(`Writing ${BRPURPLE}${bodyPath}${RESET}`);
+      term.Info(bodyPath, "Writing");
       await term.writeFile(bodyPath, textToBlob(PROJECT_HTML));
 
-      term.Info(`Writing ${BRPURPLE}${stylePath}${RESET}`);
+      term.Info(stylePath, "Writing");
       await term.writeFile(stylePath, textToBlob(PROJECT_CSS(tpaData.id)));
       term.rl?.println(`${BRGREEN}Done.${RESET}`);
 
       term.rl?.println("");
-      term.Info(`Opening ${BRPURPLE}${tpaData.id}${RESET}...`);
+      term.Info(`Opening ${BRPURPLE}${tpaData.id}${RESET} (revision ${tpaData.tpaRevision})...`);
       await term.daemon?.openFile(term.join(tpaPath));
 
       term.rl?.println("");
