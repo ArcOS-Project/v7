@@ -237,8 +237,12 @@ export class ShellRuntime extends AppProcess {
     this.handler.renderer?.focusPid(targetProcess.pid);
   }
 
-  pinApp(appId: string) {
+  async pinApp(appId: string) {
     this.Log(`Pinning ${appId}`);
+
+    const app = await this.userDaemon?.appStore?.getAppById(appId);
+
+    if (!app) return;
 
     this.userPreferences.update((v) => {
       if (v.pinnedApps.includes(appId)) return v;
@@ -255,7 +259,7 @@ export class ShellRuntime extends AppProcess {
     this.userPreferences.update((v) => {
       if (!v.pinnedApps.includes(appId)) return v;
 
-      v.pinnedApps.splice(v.pinnedApps.indexOf(appId));
+      v.pinnedApps.splice(v.pinnedApps.indexOf(appId), 1);
 
       return v;
     });

@@ -16,7 +16,7 @@
 
 {#if pins.length}
   <div class="pinned-apps">
-    {#each pins as appId}
+    {#each pins as appId (appId)}
       <PinnedApp {appId} {process} />
     {/each}
   </div>

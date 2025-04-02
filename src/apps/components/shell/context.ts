@@ -54,9 +54,16 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       },
       {
         caption: "Pin app",
-        action: (app: App) => {
+        action: async (app: App) => {
           if (runtime.userPreferences().pinnedApps?.includes(app.id)) runtime.unpinApp(app.id);
-          else runtime.pinApp(app.id);
+          else await runtime.pinApp(app.id);
+        },
+        disabled: async (app: App) => {
+          const x = await runtime.userDaemon?.appStore?.getAppById(app.id);
+
+          console.log(app.id, x);
+
+          return !x;
         },
         isActive: (app: App) => runtime.userPreferences().pinnedApps?.includes(app.id),
         icon: "pin",
@@ -109,11 +116,16 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       },
       {
         caption: "Pin app",
-        action: (proc: AppProcess) => {
-          if (!proc) return;
-
+        action: async (proc: AppProcess) => {
           if (runtime.userPreferences().pinnedApps?.includes(proc.app.id)) runtime.unpinApp(proc.app.id);
-          else runtime.pinApp(proc.app.id);
+          else await runtime.pinApp(proc.app.id);
+        },
+        disabled: async (proc: AppProcess) => {
+          const x = await runtime.userDaemon?.appStore?.getAppById(proc.app.id);
+
+          console.log(proc.app.id, x);
+
+          return !x;
         },
         isActive: (proc: AppProcess) => runtime.userPreferences().pinnedApps?.includes(proc.app.id),
         icon: "pin",
