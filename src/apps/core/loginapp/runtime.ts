@@ -181,7 +181,7 @@ export class LoginAppRuntime extends AppProcess {
 
     userDaemon.setAppRendererClasses(userDaemon.preferences());
     await userDaemon.appStore?.refresh();
-    await userDaemon.spawnAutoloadApps();
+    await userDaemon.spawnAutoload();
   }
 
   async logoff(daemon: UserDaemon) {
