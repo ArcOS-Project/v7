@@ -42,6 +42,7 @@ import { AdminUserChangepswdManual } from "./commands/user/changepswd/manual";
 import { AdminUserDelete } from "./commands/user/delete";
 import { AdminUserDisapprove } from "./commands/user/disapprove";
 import { AdminUserList } from "./commands/user/list";
+import { AdminUserPreferencesDelete } from "./commands/user/preferences/delete";
 import { AdminUserPreferencesGet } from "./commands/user/preferences/get";
 import { AdminUserPreferencesSet } from "./commands/user/preferences/set";
 import { AdminUserQuotaGet } from "./commands/user/quota/get";
@@ -97,6 +98,7 @@ export const AdminCommandStore = {
     preferences: {
       get: AdminUserPreferencesGet,
       set: AdminUserPreferencesSet,
+      delete: AdminUserPreferencesDelete,
     },
     delete: AdminUserDelete,
     quota: {
