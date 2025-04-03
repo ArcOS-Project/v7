@@ -153,6 +153,10 @@ export class LoginAppRuntime extends AppProcess {
       await userDaemon.startAdminBootstrapper();
     }
 
+    this.loadingStatus.set("Starting share management");
+
+    await userDaemon.startShareManager();
+
     this.loadingStatus.set("Reading profile customization");
 
     this.profileImage.set(

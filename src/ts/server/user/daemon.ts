@@ -48,6 +48,7 @@ import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons } 
 import { ThirdPartyProps } from "./thirdparty";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { GlobalLoadIndicatorRuntime } from "$apps/components/globalloadindicator/runtime";
+import { ShareManager } from "$ts/fs/shares/index";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -58,6 +59,7 @@ export class UserDaemon extends Process {
   public userInfo: UserInfo = DefaultUserInfo;
   public battery = Store<BatteryType | undefined>();
   public admin: AdminBootstrapper | undefined;
+  public shares: ShareManager | undefined;
   public appStore: ApplicationStorage | undefined;
   public Wallpaper = Store<Wallpaper>(Wallpapers.img0);
   public lastWallpaper = Store<string>("img0");
@@ -2058,6 +2060,12 @@ export class UserDaemon extends Process {
 
     this.appStore?.loadOrigin("admin", () => AdminApps);
     this.admin = await this.handler.spawn<AdminBootstrapper>(AdminBootstrapper, undefined, this.pid, this.token);
+  }
+
+  async startShareManager() {
+    this.Log("Starting share manager");
+
+    this.shares = await this.handler.spawn<ShareManager>(ShareManager, undefined, this.pid, this.token);
   }
 
   async GlobalLoadIndicator(caption?: string) {

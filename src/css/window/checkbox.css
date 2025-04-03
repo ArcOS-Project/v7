@@ -31,7 +31,7 @@
     left: 0;
     top: 0;
     position: absolute;
-    transition: transform var(--d-t, 0.3s) var(--d-t-e, ease), opacity var(--d-o, 0.2s);
+    transition: transform var(--d-t, 0.3s) var(--d-t-e, ease), opacity var(--d-o, 0.2s) !important;
   }
 
   input[type="checkbox"]:checked,
@@ -100,8 +100,8 @@
     border: 2px solid var(--active-inner);
     border-top: 0;
     border-left: 0;
-    left: 7px;
-    top: 4px;
+    left: 6px;
+    top: 2px;
     transform: rotate(var(--r, 20deg));
   }
 
