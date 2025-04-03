@@ -7,17 +7,19 @@ import type { ServerInfo } from "$types/server";
 
 export const AdminServerPing: AdminCommand = async (term, admin) => {
   try {
+    const start = performance.now();
     const response = await Axios.get("/ping");
 
     if (response.status !== 200) return 3;
 
+    const latency = performance.now() - start;
     const info = response.data as ServerInfo;
 
     const NONE = `${BRBLACK}(none)${RESET}`;
     const TRUE = `${BRGREEN}Yes${RESET}`;
     const FALSE = `${BRRED}No${RESET}`;
 
-    term.rl?.println(`\r\n${BRGREEN}${BOLD}SERVER PING -- ${ServerManager.url()}${RESET}\r\n`);
+    term.rl?.println(`\r\nSERVER PING -- ${BRGREEN}${BOLD}${ServerManager.url()}${RESET} (${latency.toFixed(2)}ms)\r\n`);
     term.rl?.println(`${BRPURPLE}Login bottom text    ${BRBLACK}:${RESET} ${info.loginBottomText || NONE}`);
     term.rl?.println(`${BRPURPLE}Login notice         ${BRBLACK}:${RESET} ${info.loginNotice || NONE}`);
     term.rl?.println(`${BRPURPLE}Login wallpaper      ${BRBLACK}:${RESET} ${info.loginWallpaper ? "Supplied" : "Default"}\r\n`);
@@ -27,7 +29,7 @@ export const AdminServerPing: AdminCommand = async (term, admin) => {
         await sha256(info.validation)
       ).slice(0, 16)})`
     );
-    term.rl?.println(`${BRPURPLE}Registration enabled ${BRBLACK}:${RESET} ${!info.disableRegistration ? TRUE : FALSE}`);
+    term.rl?.println(`${BRPURPLE}Registration enabled ${BRBLACK}:${RESET} ${!info.disableRegistration ? TRUE : FALSE}\r\n`);
 
     return 0;
   } catch {
