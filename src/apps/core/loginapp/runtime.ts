@@ -174,18 +174,21 @@ export class LoginAppRuntime extends AppProcess {
 
     await this.kernel.state?.loadState("desktop", { userDaemon });
     this.soundBus.playSound("arcos.system.logon");
+    userDaemon.setAppRendererClasses(userDaemon.preferences());
 
     this.loadingStatus.set("Starting Workspaces");
 
     await userDaemon.startVirtualDesktops();
 
+    this.loadingStatus.set("Running autorun");
+
+    await userDaemon.spawnAutoload();
+
     this.loadingStatus.set("Starting drive notifier watcher");
 
     userDaemon.startDriveNotifierWatcher();
 
-    userDaemon.setAppRendererClasses(userDaemon.preferences());
     await userDaemon.appStore?.refresh();
-    await userDaemon.spawnAutoload();
   }
 
   async logoff(daemon: UserDaemon) {
