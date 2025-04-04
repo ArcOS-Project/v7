@@ -35,7 +35,7 @@ export interface UserPreferences {
   disabledApps: string[];
   workspaces: WorkspacesOptions;
   globalSettings: Record<string, any>;
-  startup: Record<string, "app" | "file" | "folder">;
+  startup: Record<string, "app" | "file" | "folder" | "share">;
 }
 
 export interface WorkspacesOptions {

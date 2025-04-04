@@ -50,8 +50,8 @@ export function FileMenu(runtime: FileManagerRuntime): ContextMenuItem {
       },
       { sep: true },
       {
-        caption: "Connect to a share",
-        action: () => runtime.notImplemented("Connecting to shares"),
+        caption: "Join a share",
+        action: () => runtime.spawnOverlayApp("ShareConnGui", runtime.pid),
         icon: "network",
       },
       { sep: true },

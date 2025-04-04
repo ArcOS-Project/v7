@@ -90,9 +90,9 @@ export class ShareManager extends Process {
       if (response.status !== 200) return false;
       if (!mountAlso) return true;
 
-      await this.mountShare(username, shareName);
+      const drive = await this.mountShare(username, shareName);
 
-      return response.status === 200;
+      return drive;
     } catch {
       return false;
     }

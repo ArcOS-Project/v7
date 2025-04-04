@@ -1,4 +1,7 @@
+import { MessageBox } from "$ts/dialog";
+import type { SharedDrive } from "$ts/fs/shares/drive";
 import { join } from "$ts/fs/util";
+import { WarningIcon } from "$ts/images/dialog";
 import type { AppContextMenu } from "$types/app";
 import type { FileEntry, FolderEntry } from "$types/fs";
 import type { FileManagerRuntime } from "./runtime";
@@ -39,8 +42,47 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
           unmount();
         },
         icon: "x",
-        disabled: (drive: QuotedDrive) => drive.data.FIXED,
+        disabled: (drive: QuotedDrive) =>
+          drive.data.FIXED || (drive.data as SharedDrive).shareInfo.userId === runtime.userDaemon?.userInfo?._id,
       },
+      {
+        caption: "Leave share",
+        action: (drive: QuotedDrive) => {
+          const share = drive.data as SharedDrive;
+
+          MessageBox(
+            {
+              title: "Leave share?",
+              message: "Are you sure you want to leave this share? You'll have to enter its credentials to access it again.",
+              buttons: [
+                { caption: "Cancel", action: () => {} },
+                {
+                  caption: "Leave",
+                  action: async () => {
+                    await runtime.fs.umountDrive(share.shareId!);
+                    await runtime.userDaemon?.shares?.leaveShare(share.shareId!);
+
+                    runtime.userPreferences.update((v) => {
+                      v.startup ||= {};
+                      delete v.startup[share.shareId!];
+
+                      return v;
+                    });
+                  },
+                  suggested: true,
+                },
+              ],
+              image: WarningIcon,
+              sound: "arcos.dialog.warning",
+            },
+            runtime.pid,
+            true
+          );
+        },
+        icon: "log-out",
+        disabled: (drive: QuotedDrive) => (drive.data as SharedDrive).shareInfo.userId === runtime.userDaemon?.userInfo?._id,
+      },
+      { sep: true },
       {
         caption: "Manage share...",
         action: () => runtime.notImplemented("Managing shares"),

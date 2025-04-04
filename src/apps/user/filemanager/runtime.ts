@@ -71,6 +71,10 @@ export class FileManagerRuntime extends AppProcess {
       if (loadSave.folder && loadSave.isSave) throw new Error("LoadSave: can't have both folder and isSave");
       if (loadSave.folder && loadSave.multiple) throw new Error("LoadSave: can't have both folder and multiple");
     }
+
+    this.dispatch.subscribe("navigate", (path) => {
+      this.navigate(path);
+    });
   }
 
   override contextMenu: AppContextMenu = FileManagerContextMenu(this);
