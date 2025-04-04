@@ -2,7 +2,7 @@ import { GlobalDispatcher } from "$ts/dispatch";
 import type { WaveKernel } from "$ts/kernel";
 import { KernelModule } from "$ts/kernel/module";
 import { Sleep } from "$ts/sleep";
-import { UUID } from "$ts/uuid";
+import { sha256, sliceIntoChunks } from "$ts/util";
 import {
   type DirectoryReadReturn,
   type FilesystemProgress,
@@ -47,7 +47,9 @@ export class Filesystem extends KernelModule {
 
     if (this.drives[id] || (letter && this.getDriveByLetter(letter, false))) return false;
 
-    const uuid = UUID();
+    const uuid = sliceIntoChunks((await sha256(id)).slice(0, 16).split(""), 4)
+      .map((c) => c.join("").toUpperCase())
+      .join("-");
     const instance = new supplier(this.kernel, uuid, letter, ...args);
 
     const ready = await instance.__spinUp(onProgress);
@@ -114,8 +116,7 @@ export class Filesystem extends KernelModule {
   validatePath(p: string) {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
-    if (!/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|[a-zA-Z]):\/(.*?)$/g.test(p))
-      throw new Error(`Invalid path "${p}"`);
+    if (!/^([A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}|[a-zA-Z]):\/(.*?)$/g.test(p)) throw new Error(`Invalid path "${p}"`);
   }
 
   removeDriveLetter(p: string) {
@@ -132,7 +133,7 @@ export class Filesystem extends KernelModule {
   validateDriveLetter(letter: string) {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
-    if (!/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|[a-zA-Z])$/g.test(letter))
+    if (!/^([A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}|[a-zA-Z])$/g.test(letter))
       throw new Error(`Invalid drive letter or UUID "${letter}"`);
   }
 
@@ -405,5 +406,16 @@ export class Filesystem extends KernelModule {
     const result = await drive.direct(scopedPath);
 
     return result;
+  }
+
+  nextAvailableDriveLetter() {
+    const letters = "ABCDEFGHIJKLMNOPQRSTVWXYZ".split(""); // No U because U === userfs
+
+    for (const letter of letters) {
+      const drive = this.getDriveByLetter(letter, false);
+
+      if (drive) continue;
+      return letter;
+    }
   }
 }
