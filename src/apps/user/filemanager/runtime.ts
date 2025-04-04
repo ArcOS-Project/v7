@@ -206,6 +206,7 @@ export class FileManagerRuntime extends AppProcess {
     this.Log(`Directory Not Found!`);
 
     this.errored.set(true);
+    this.contents.set(undefined);
 
     MessageBox(
       {

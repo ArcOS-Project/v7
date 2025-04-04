@@ -35,6 +35,27 @@ export function FileMenu(runtime: FileManagerRuntime): ContextMenuItem {
       },
       { sep: true },
       {
+        caption: "New folder",
+        action: () => {
+          runtime.spawnOverlayApp("FsNewFolder", runtime.pid, runtime.path());
+        },
+        icon: "folder-plus",
+      },
+      {
+        caption: "New file",
+        action: () => {
+          runtime.spawnOverlayApp("FsNewFile", runtime.pid, runtime.path());
+        },
+        icon: "file-plus",
+      },
+      { sep: true },
+      {
+        caption: "Connect to a share",
+        action: () => runtime.notImplemented("Connecting to shares"),
+        icon: "network",
+      },
+      { sep: true },
+      {
         caption: "Exit",
         image: ShutdownIcon,
         action: () => {

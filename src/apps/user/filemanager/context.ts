@@ -24,6 +24,29 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         disabled: (drive: QuotedDrive) => drive.data.FIXED,
       },
     ],
+    "sidebar-shared-drive": [
+      {
+        caption: "Go here",
+        action: (_, identifier) => {
+          runtime.navigate(`${identifier}/`);
+        },
+        icon: "hard-drive",
+      },
+      { sep: true },
+      {
+        caption: "Unmount",
+        action: (_, __, unmount) => {
+          unmount();
+        },
+        icon: "x",
+        disabled: (drive: QuotedDrive) => drive.data.FIXED,
+      },
+      {
+        caption: "Manage share...",
+        action: () => runtime.notImplemented("Managing shares"),
+        icon: "wrench",
+      },
+    ],
     "file-item": [
       {
         caption: "Open file",

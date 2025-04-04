@@ -27,21 +27,6 @@ export function EditMenu(runtime: FileManagerRuntime): ContextMenuItem {
         icon: "clipboard",
         disabled: () => !runtime.copyList().length && !runtime.cutList().length,
       },
-      { sep: true },
-      {
-        caption: "New folder",
-        action: () => {
-          runtime.spawnOverlayApp("FsNewFolder", runtime.pid, runtime.path());
-        },
-        icon: "folder-plus",
-      },
-      {
-        caption: "New files",
-        action: () => {
-          runtime.spawnOverlayApp("FsNewFile", runtime.pid, runtime.path());
-        },
-        icon: "file-plus",
-      },
     ],
   };
 }
