@@ -1484,6 +1484,8 @@ export class UserDaemon extends Process {
 
       this.mountedDrives.push(id as unknown as string);
 
+      if (!drive.REMOVABLE) return;
+
       const notificationId = this.sendNotification({
         title: drive.driveLetter ? `${drive.label} (${drive.driveLetter}:)` : drive.label,
         message: "This drive just got mounted! Click the button to view it in the file manager",
