@@ -2,7 +2,6 @@ import { toForm } from "$ts/form";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { Axios } from "$ts/server/axios";
-import type { UserDaemon } from "$ts/server/user/daemon";
 import type { FilesystemProgressCallback } from "$types/fs";
 import type { SharedDriveType } from "$types/shares";
 import { SharedDrive } from "./drive";
@@ -125,14 +124,16 @@ export class ShareManager extends Process {
   }
 
   async mountShare(shareId: string, letter?: string, onProgress?: FilesystemProgressCallback) {
-    const joinedShares = await this.getJoinedShares();
-    const ownedShares = await this.getOwnedShares();
-    const targetedJoinedShare = joinedShares.filter((s) => s._id === shareId)[0];
-    const targetedOwnedShare = ownedShares.filter((s) => s._id === shareId)[0];
-    const targetedShare = targetedJoinedShare || targetedOwnedShare;
-
-    if (!targetedShare) return false;
-
     return await this.fs.mountDrive(shareId, SharedDrive, letter, onProgress, shareId, this.token);
+  }
+
+  async getShareMembers(shareId: string): Promise<Record<string, string>> {
+    try {
+      const response = await Axios.get(`/share/members/${shareId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+
+      return response.data as Record<string, string>;
+    } catch {
+      return {};
+    }
   }
 }
