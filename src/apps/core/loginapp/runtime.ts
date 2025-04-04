@@ -180,13 +180,13 @@ export class LoginAppRuntime extends AppProcess {
 
     await userDaemon.startVirtualDesktops();
 
-    this.loadingStatus.set("Running autorun");
-
-    await userDaemon.spawnAutoload();
-
     this.loadingStatus.set("Starting drive notifier watcher");
 
     userDaemon.startDriveNotifierWatcher();
+
+    this.loadingStatus.set("Running autorun");
+
+    await userDaemon.spawnAutoload();
 
     await userDaemon.appStore?.refresh();
   }
