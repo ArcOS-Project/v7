@@ -25,8 +25,8 @@
     <Segment title="Drive">
       {$info.location.drive || "-"}
     </Segment>
-    <Segment title="Drive ID">
-      {$info.location.driveId || "-"}
+    <Segment title="Filesystem">
+      {$info.location.driveFs || "GFS"}
     </Segment>
   </InfoRow>
 </InfoBlock>

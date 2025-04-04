@@ -47,7 +47,7 @@ export class ItemInfoRuntime extends AppProcess {
       },
       location: {
         fullPath: path,
-        driveId,
+        driveFs: drive.FILESYSTEM_SHORT,
         drive: drive.driveLetter ? `${drive.driveLetter}:/` : undefined,
         parent,
         extension,

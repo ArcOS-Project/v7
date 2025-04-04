@@ -11,7 +11,7 @@ export interface ItemInfo {
     extension?: string;
     parent?: string;
     drive?: string;
-    driveId?: string;
+    driveFs?: string;
   };
   isFolder: boolean;
   isShortcut: boolean;
