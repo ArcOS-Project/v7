@@ -15,6 +15,11 @@ import { getDirectoryName, join } from "../util";
 export class SharedDrive extends FilesystemDrive {
   shareId: string;
   token: string;
+  shareInfo: SharedDriveType | undefined;
+  public IDENTIFIES_AS: string = "share";
+  public FILESYSTEM_SHORT: string = "SDFS";
+  public FILESYSTEM_LONG: string = "Shared Drive Filesystem";
+
   constructor(kernel: WaveKernel, uuid: string, letter: string, shareId: string, token: string) {
     super(kernel, uuid, letter);
 
@@ -30,6 +35,7 @@ export class SharedDrive extends FilesystemDrive {
 
       const info = response.data as SharedDriveType;
 
+      this.shareInfo = info;
       this.label = `${info.shareName}`;
 
       return true;
@@ -194,7 +200,7 @@ export class SharedDrive extends FilesystemDrive {
   async direct(path: string): Promise<string | undefined> {
     try {
       const response = await Axios.post(
-        `/share/accessors/${this.shareId}/${path}`,
+        `/share/accessor/${this.shareId}/${path}`,
         {},
         { headers: { Authorization: `Bearer ${this.token}` } }
       );
