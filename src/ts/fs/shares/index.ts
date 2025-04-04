@@ -81,11 +81,16 @@ export class ShareManager extends Process {
     }
   }
 
-  async joinShare(username: string, shareName: string, password: string) {
+  async joinShare(username: string, shareName: string, password: string, mountAlso = false) {
     try {
       const response = await Axios.post(`/share/join/${username}/${shareName}`, toForm({ password }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
+
+      if (response.status !== 200) return false;
+      if (!mountAlso) return true;
+
+      await this.mountShare(username, shareName);
 
       return response.status === 200;
     } catch {
@@ -123,8 +128,18 @@ export class ShareManager extends Process {
     }
   }
 
-  async mountShare(shareId: string, letter?: string, onProgress?: FilesystemProgressCallback) {
-    return await this.fs.mountDrive(shareId, SharedDrive, letter, onProgress, shareId, this.token);
+  async mountShare(username: string, shareName: string, letter?: string, onProgress?: FilesystemProgressCallback) {
+    const info = await this.getShareInfoByName(username, shareName);
+
+    if (!info) return false;
+    return await this.fs.mountDrive(info._id, SharedDrive, letter, onProgress, info, this.token);
+  }
+
+  async mountShareById(shareId: string, letter?: string, onProgress?: FilesystemProgressCallback) {
+    const info = await this.getShareInfoById(shareId);
+
+    if (!info) return false;
+    return await this.fs.mountDrive(shareId, SharedDrive, letter, onProgress, info, this.token);
   }
 
   async getShareMembers(shareId: string): Promise<Record<string, string>> {
@@ -134,6 +149,30 @@ export class ShareManager extends Process {
       return response.data as Record<string, string>;
     } catch {
       return {};
+    }
+  }
+
+  async getShareInfoByName(username: string, shareName: string): Promise<SharedDriveType | undefined> {
+    try {
+      const response = await Axios.get(`/share/info/byname/${username}/${shareName}`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.status === 200 ? (response.data as SharedDriveType) : undefined;
+    } catch {
+      return undefined;
+    }
+  }
+
+  async getShareInfoById(shareId: string): Promise<SharedDriveType | undefined> {
+    try {
+      const response = await Axios.get(`/share/info/byid/${shareId}`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.status === 200 ? (response.data as SharedDriveType) : undefined;
+    } catch {
+      return undefined;
     }
   }
 }

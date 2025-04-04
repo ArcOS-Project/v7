@@ -995,7 +995,7 @@ export class UserDaemon extends Process {
           await this.spawnApp("fileManager", undefined, payload);
           break;
         case "share":
-          await this.shares?.mountShare(payload);
+          await this.shares?.mountShareById(payload);
           break;
         default:
           this.Log(`Unknown startup type: ${type.toUpperCase()} (payload: '${payload}')`);
