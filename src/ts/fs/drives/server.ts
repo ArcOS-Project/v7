@@ -15,6 +15,9 @@ export class ServerDrive extends FilesystemDrive {
   private token = "";
   override label = "Your Drive";
   override FIXED = true;
+  public IDENTIFIES_AS: string = "userfs";
+  public FILESYSTEM_SHORT: string = "UFS";
+  public FILESYSTEM_LONG: string = "User Filesystem";
 
   constructor(kernel: WaveKernel, uuid: string, letter: string, token: string) {
     super(kernel, uuid, letter);

@@ -14,6 +14,9 @@ export class AdminServerDrive extends FilesystemDrive {
   private token: string;
   override READONLY = true;
   override FIXED = false;
+  override IDENTIFIES_AS: string = "admin";
+  override FILESYSTEM_SHORT: string = "AFS";
+  override FILESYSTEM_LONG: string = "Admin Filesystem";
 
   constructor(kernel: WaveKernel, uuid: string, letter: string, token: string, targetUsername: string) {
     super(kernel, uuid, letter);

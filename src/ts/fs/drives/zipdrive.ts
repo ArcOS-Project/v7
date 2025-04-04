@@ -9,6 +9,9 @@ export class ZIPDrive extends FilesystemDrive {
   private _buffer: JSZip | undefined;
   private _path: string;
   override REMOVABLE = true;
+  public IDENTIFIES_AS: string = "zip";
+  public FILESYSTEM_SHORT: string = "ZipFS";
+  public FILESYSTEM_LONG: string = "ZIP Filesystem";
 
   constructor(kernel: WaveKernel, uuid: string, letter: string, path: string) {
     super(kernel, uuid, letter);
