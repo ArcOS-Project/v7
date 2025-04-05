@@ -1,3 +1,6 @@
+@import url("./sharemgmtgui/renameshare.css");
+@import url("./sharemgmtgui/changepassword.css");
+
 #ShareMgmtGui {
   overflow: visible;
 }
@@ -48,7 +51,8 @@
   justify-content: space-between;
   padding: 10px;
   border-radius: 8px;
-  background-color: var(--button-glass-bg);
+  background-color: var(--button-bg);
+  box-shadow: var(--secondary-box-shadow);
   height: 51px;
 }
 
