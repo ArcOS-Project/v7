@@ -1,0 +1,65 @@
+#ShareCreateGui > div.body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+}
+
+#ShareCreateGui > div.body div.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#ShareCreateGui > div.body div.header img {
+  height: 84px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+#ShareCreateGui > div.body div.header h1 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+#ShareCreateGui > div.body div.header p {
+  opacity: 0.5;
+}
+
+#ShareCreateGui > div.body div.info-block {
+  background-color: var(--button-bg);
+}
+
+#ShareCreateGui > div.body div.info-block {
+  width: 100%;
+}
+
+#ShareCreateGui > div.body div.info-block div.segment {
+  flex-grow: 1;
+}
+
+#ShareCreateGui > div.body input {
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  width: fit-content;
+  background-color: transparent;
+  background-color: var(--button-bg);
+  width: 100%;
+}
+
+#ShareCreateGui > div.body div.actions {
+  margin-top: auto;
+  padding: 10px;
+  background-color: var(--button-bg);
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: var(--secondary-box-shadow);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#ShareCreateGui > div.body div.actions button.joined {
+  margin-right: auto;
+}
