@@ -7,7 +7,7 @@
 
   const { process }: AppComponentProps<WallpaperRuntime> = $props();
   const { Wallpaper } = process.userDaemon || {};
-  const { contents, iconsElement } = process;
+  const { contents, iconsElement, userPreferences } = process;
 </script>
 
 <div class="desktop-wallpaper">
@@ -16,7 +16,7 @@
     style="--src: url('{$Wallpaper ? $Wallpaper.url : Wallpapers.img0.url}');"
     data-contextmenu="desktop"
   ></div>
-  <div class="desktop-icons" bind:this={$iconsElement}>
+  <div class="desktop-icons" bind:this={$iconsElement} class:hide={!$userPreferences.desktop.icons}>
     {#if $contents}
       {#each $contents.dirs as folder, i (`${i}-${folder.itemId}-${folder.dateCreated}-${folder.dateModified}`)}
         <Folder {folder} {process} />
