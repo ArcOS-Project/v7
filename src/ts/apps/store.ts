@@ -11,6 +11,7 @@ import { MessageBoxApp } from "$apps/components/messagebox/metadata";
 import { OpenWithApp } from "$apps/components/openwith/metadata";
 import { SecureContextApp } from "$apps/components/securecontext/metadata";
 import { ShareConnGuiApp } from "$apps/components/shareconngui/metadata";
+import { ShareMgmtGuiApp } from "$apps/components/sharemgmtgui/metadata";
 import { ArcShellApp } from "$apps/components/shell/metadata";
 import { ShortcutPropertiesApp } from "$apps/components/shortcutproperties/metadata";
 import { TerminalWindowApp } from "$apps/components/terminalwindow/metadata";
@@ -68,6 +69,7 @@ export const BuiltinApps: AppStorage = [
   CameraApp,
   GlobalLoadIndicatorApp,
   ShareConnGuiApp,
+  ShareMgmtGuiApp,
 ];
 
 export const AdminApps: AppStorage = [];

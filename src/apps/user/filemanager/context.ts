@@ -85,7 +85,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       { sep: true },
       {
         caption: "Manage share...",
-        action: () => runtime.notImplemented("Managing shares"),
+        action: (drive: QuotedDrive) => runtime.spawnOverlayApp("ShareMgmtGui", runtime.pid, (drive.data as SharedDrive).shareId),
         icon: "wrench",
       },
     ],

@@ -1,0 +1,128 @@
+#ShareMgmtGui {
+  overflow: visible;
+}
+
+#ShareMgmtGui > div.body {
+  padding: 20px;
+  border-radius: 9px;
+}
+
+#ShareMgmtGui > div.body div.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 15px;
+}
+
+#ShareMgmtGui > div.body div.header img {
+  height: 64px;
+  margin-right: 5px;
+}
+
+#ShareMgmtGui > div.body div.header div.actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#ShareMgmtGui > div.body div.header button.lucide {
+  margin-left: auto;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font-size: 20px;
+  min-width: 32px;
+}
+
+#ShareMgmtGui > div.body div.header h1 {
+  font-size: 22px;
+}
+
+#ShareMgmtGui > div.body > div.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: var(--button-glass-bg);
+  height: 51px;
+}
+
+#ShareMgmtGui > div.body > div.actions button.delete {
+  font-weight: bold;
+}
+
+#ShareMgmtGui > div.body div.user-list {
+  padding: 15px;
+  border: var(--win-border);
+  border-radius: 10px;
+  height: calc(100% - 30px - 65px - 51px);
+  overflow-y: auto;
+  margin-bottom: 15px;
+}
+
+#ShareMgmtGui > div.body div.user-list h1 {
+  opacity: 0.5;
+  margin-bottom: 5px;
+}
+
+#ShareMgmtGui > div.body div.user-list div.user {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 6px;
+  padding-left: 10px;
+  gap: 15px;
+  border-radius: 10px;
+}
+
+#ShareMgmtGui > div.body div.user-list div.user:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#ShareMgmtGui > div.body div.user-list div.user span.lucide {
+  font-size: 24px;
+}
+
+#ShareMgmtGui > div.body div.user-list div.user > button {
+  margin-left: auto;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: none;
+}
+
+#ShareMgmtGui > div.body div.user-list div.user.selected {
+  background-color: var(--accent-transparent);
+}
+
+#ShareMgmtGui > div.body div.user-list div.user.selected span.lucide {
+  color: var(--accent-light);
+}
+
+#ShareMgmtGui > div.body div.user-list div.user.selected > button {
+  display: block;
+}
+
+#ShareMgmtGui > div.body button.delete {
+  background-color: var(--clr-red-fg);
+  color: var(--clr-red-bg);
+}
+
+#ShareMgmtGui > div.body div.user-list div.no-members {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 20px;
+}
+
+#ShareMgmtGui > div.body div.user-list div.no-members span.lucide {
+  font-size: 48px;
+  opacity: 0.5;
+}

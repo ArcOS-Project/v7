@@ -6,6 +6,7 @@ export interface SharedDriveType {
   passwordHash: string;
   description?: string;
   locked: boolean;
+  ownerName?: string;
   _id: string;
 }
 
