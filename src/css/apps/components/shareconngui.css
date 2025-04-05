@@ -29,6 +29,10 @@
   background-color: var(--button-bg);
 }
 
+#ShareConnGui > div.body div.info-block div.segment {
+  flex-grow: 1;
+}
+
 #ShareConnGui > div.body div.fields {
   width: 100%;
 }
@@ -41,6 +45,7 @@
   width: fit-content;
   background-color: transparent;
   background-color: var(--button-bg);
+  width: 100%;
 }
 
 #ShareConnGui > div.body div.actions {

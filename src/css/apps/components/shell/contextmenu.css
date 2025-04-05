@@ -12,7 +12,6 @@
   border-radius: var(--win-border-rad);
   box-sizing: border-box;
   padding: 5px;
-  transition: all 0.2s, top 0s, left 0s, pointer-events 0s;
   display: flex;
   flex-direction: column;
   transform-origin: top center;
@@ -42,6 +41,11 @@
   visibility: visible;
   transform: scaleY(100%);
   pointer-events: initial !important;
+  transition: all 0.2s, top 0s, left 0s, pointer-events 0s;
+}
+
+#arcShell div.context-menu:not(.show) * {
+  display: none;
 }
 
 #arcShell div.context-menu button.menu-item {
