@@ -40,5 +40,7 @@ export const ShareMgmtGuiApp: App = {
     runtime: ShareMgmtGuiRuntime,
     component: ShareMgmtGui as any,
   },
+  hidden: true,
+  glass: true,
   id: "ShareMgmtGui",
 };

@@ -32,5 +32,5 @@ export const RenameShareApp: App = {
   },
   overlay: true,
   glass: true,
-  id: "ChangeUsername",
+  id: "RenameShare",
 };
