@@ -34,7 +34,7 @@
   </InfoBlock>
 </div>
 <div class="actions">
-  <button class="joined" onclick={() => process.notImplemented("Viewing joined shares")}>Joined</button>
+  <button class="joined" onclick={() => process.myShares()}>My shares</button>
   <button class="cancel" onclick={() => process.closeWindow()}>Cancel</button>
   <button class="suggested connect" disabled={!$shareUsername || !$shareName || !$sharePassword} onclick={() => process.go()}>
     Connect

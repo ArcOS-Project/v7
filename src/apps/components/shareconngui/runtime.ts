@@ -61,4 +61,9 @@ export class ShareConnGuiRuntime extends AppProcess {
 
     this.closeWindow();
   }
+
+  async myShares() {
+    await this.closeWindow();
+    this.spawnOverlayApp("ShareListGui", this.parentPid);
+  }
 }
