@@ -15,10 +15,6 @@ export class ShareManager extends Process {
     this.token = token;
   }
 
-  async start() {
-    await this.mountOwnedShares();
-  }
-
   async getOwnedShares(): Promise<SharedDriveType[]> {
     try {
       const response = await Axios.get("/share/owned", { headers: { Authorization: `Bearer ${this.token}` } });

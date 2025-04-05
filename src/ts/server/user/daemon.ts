@@ -977,6 +977,8 @@ export class UserDaemon extends Process {
   async spawnAutoload() {
     if (this._disposed) return;
 
+    await this.shares?.mountOwnedShares();
+
     this.Log(`Spawning autoload applications`);
 
     const { startup } = this.preferences();
