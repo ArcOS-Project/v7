@@ -50,9 +50,26 @@ export function FileMenu(runtime: FileManagerRuntime): ContextMenuItem {
       },
       { sep: true },
       {
-        caption: "Join a share",
-        action: () => runtime.spawnOverlayApp("ShareConnGui", runtime.pid),
+        caption: "Shared drives",
         icon: "network",
+        subItems: [
+          {
+            caption: "My shares",
+            action: () => runtime.spawnOverlayApp("ShareListGui", runtime.pid),
+            icon: "library",
+          },
+          {
+            caption: "Connect to a share",
+            action: () => runtime.spawnOverlayApp("ShareConnGui", runtime.pid),
+            icon: "plug",
+          },
+          { sep: true },
+          {
+            caption: "Create a share",
+            action: () => runtime.spawnOverlayApp("ShareCreateGui", runtime.pid),
+            icon: "plus",
+          },
+        ],
       },
       { sep: true },
       {
