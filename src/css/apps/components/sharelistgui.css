@@ -1,0 +1,134 @@
+#ShareListGui {
+  overflow: visible;
+}
+#ShareListGui > div.body {
+  padding: 20px;
+  border-radius: 9px;
+}
+
+#ShareListGui > div.body div.header {
+  height: 50px;
+  margin-bottom: 20px;
+}
+#ShareListGui > div.body div.header h1 {
+  font-size: 18px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+#ShareListGui > div.body div.header p {
+  opacity: 0.5;
+}
+
+#ShareListGui > div.body div.listing {
+  padding: 15px;
+  border-radius: 10px;
+  border: var(--win-border);
+  margin-bottom: 20px;
+  height: calc(100% - 50px - 20px - 20px - 52px);
+  overflow-y: auto;
+}
+
+#ShareListGui > div.body div.listing.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#ShareListGui > div.body div.listing section {
+  margin-bottom: 15px;
+}
+
+#ShareListGui > div.body div.listing h1 {
+  opacity: 0.5;
+  margin-bottom: 5px;
+}
+
+#ShareListGui > div.body div.listing button {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+  width: 100%;
+  background-color: transparent;
+}
+
+#ShareListGui > div.body div.listing button:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#ShareListGui > div.body div.listing button.selected {
+  background-color: var(--accent-transparent);
+}
+
+#ShareListGui > div.body div.listing button > span.lucide {
+  font-size: 24px;
+}
+
+#ShareListGui > div.body div.listing button span.owner {
+  font-style: italic;
+  opacity: 0.5;
+}
+
+#ShareListGui > div.body div.listing button.selected > span.lucide {
+  color: var(--accent-light);
+}
+
+#ShareListGui > div.body div.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: var(--button-bg);
+  box-shadow: var(--secondary-box-shadow);
+}
+
+#ShareListGui > div.body div.actions div.sep {
+  width: 1px;
+  height: 20px;
+  background-color: var(--button-glass-hover-bg);
+}
+#ShareListGui > div.body div.actions button {
+  height: 32px;
+}
+
+#ShareListGui > div.body div.actions button.create {
+  margin-right: auto;
+}
+
+#ShareListGui > div.body button.refresh {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  scale: 1 !important;
+  background-color: transparent;
+}
+
+#ShareListGui > div.body button.refresh.loading {
+  animation: sharelistgui_refresh_spin 1s linear infinite;
+  background-color: transparent;
+}
+
+#ShareListGui > div.body div.actions button.refresh::before {
+  display: block;
+  height: 16px !important;
+}
+
+@keyframes sharelistgui_refresh_spin {
+  0% {
+    rotate: 0deg;
+  }
+
+  100% {
+    rotate: 360deg;
+  }
+}
