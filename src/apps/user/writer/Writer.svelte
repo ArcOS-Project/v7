@@ -3,7 +3,7 @@
   import type { WriterRuntime } from "./runtime";
 
   const { process }: { process: WriterRuntime } = $props();
-  const { buffer, filename, original, input, mimetype, directoryName, mimeIcon, userPreferences } = process;
+  const { buffer, filename, original, input, mimetype, directoryName, mimeIcon, userPreferences, windowFullscreen } = process;
 </script>
 
 <textarea
@@ -13,6 +13,7 @@
   spellcheck={!$userPreferences.appPreferences.writer.noErrorChecking}
   class:wrap={$userPreferences.appPreferences.writer.wordWrap}
   class:no-statusbar={$userPreferences.appPreferences.writer.hideStatusBar}
+  class:zen={$windowFullscreen}
 ></textarea>
 {#if !$userPreferences.appPreferences.writer.hideStatusBar}
   <div class="status-bar">

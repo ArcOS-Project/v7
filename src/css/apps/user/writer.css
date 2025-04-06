@@ -63,6 +63,10 @@
   white-space: pre;
 }
 
+#writer > div.body textarea.zen {
+  padding: 60px 20%;
+}
+
 #writer > div.body textarea.monospace {
   font-family: "Source Code Pro";
 }
