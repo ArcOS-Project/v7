@@ -23,6 +23,8 @@ import axios from "axios";
 import { Axios } from "../axios";
 import type { UserDaemon } from "./daemon";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
+import { FilesystemDrive } from "$ts/fs/drive";
+import { KernelModule } from "$ts/kernel/module";
 
 export function ThirdPartyProps(
   daemon: UserDaemon,
@@ -69,6 +71,8 @@ export function ThirdPartyProps(
     Process,
     AppProcess,
     ThirdPartyAppProcess,
+    FilesystemDrive,
+    KernelModule,
     argv: args,
     app,
     Store,
