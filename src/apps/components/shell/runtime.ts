@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { isPopulatable } from "$ts/apps/util";
 import { MessageBox } from "$ts/dialog";
-import { getIconPath } from "$ts/images";
+import { getIconPath, maybeIconId } from "$ts/images";
 import { WarningIcon } from "$ts/images/dialog";
 import { DesktopIcon } from "$ts/images/general";
 import { DefaultMimeIcon } from "$ts/images/mime";
@@ -508,7 +508,7 @@ export class ShellRuntime extends AppProcess {
 
     for (const app of apps) {
       const populatable = isPopulatable(app);
-      const thirdParty = !!app.thirdParty;
+      const thirdParty = app.thirdParty || app.entrypoint;
 
       if (
         (preferences.searchOptions.showHiddenApps ? true : populatable) &&
@@ -517,7 +517,7 @@ export class ShellRuntime extends AppProcess {
         result.push({
           caption: app.metadata.name,
           description: `By ${app.metadata.author}`,
-          image: app.metadata.icon,
+          image: maybeIconId(app.metadata.icon),
           action: () => {
             this.spawnApp(app.id, this.pid);
           },
