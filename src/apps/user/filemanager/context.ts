@@ -80,7 +80,9 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
           );
         },
         icon: "log-out",
-        disabled: (drive: QuotedDrive) => (drive.data as SharedDrive).shareInfo.userId === runtime.userDaemon?.userInfo?._id,
+        disabled: (drive: QuotedDrive) =>
+          (drive.data as SharedDrive).shareInfo.userId === runtime.userDaemon?.userInfo?._id ||
+          runtime.shareAccessIsAdministrative(drive.data),
       },
       { sep: true },
       {

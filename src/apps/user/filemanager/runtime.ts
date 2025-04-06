@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { GetConfirmation, MessageBox } from "$ts/dialog";
 import { FilesystemDrive } from "$ts/fs/drive";
+import { SharedDrive } from "$ts/fs/shares/drive";
 import { DownloadFile, getDirectoryName, getDriveLetter, getParentDirectory, join } from "$ts/fs/util";
 import { iconIdFromPath } from "$ts/images";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
@@ -18,7 +19,7 @@ import type { ShortcutStore } from "$types/shortcut";
 import { FileManagerAccelerators } from "./accelerators";
 import { FileManagerAltMenu } from "./altmenu";
 import { FileManagerContextMenu } from "./context";
-import type { LoadSaveDialogData, QuotedDrive } from "./types";
+import type { FileManagerNotice, LoadSaveDialogData, QuotedDrive } from "./types";
 
 export class FileManagerRuntime extends AppProcess {
   path = Store<string>("");
@@ -32,6 +33,8 @@ export class FileManagerRuntime extends AppProcess {
   starting = Store<boolean>(true);
   rootFolders = Store<FolderEntry[]>([]);
   drives = Store<Record<string, QuotedDrive>>({});
+  notice = Store<FileManagerNotice | undefined>();
+  showNotice = Store<boolean>(false);
   loadSave: LoadSaveDialogData | undefined;
   saveName = Store<string>();
   directoryListing = Store<HTMLDivElement>();
@@ -200,6 +203,8 @@ export class FileManagerRuntime extends AppProcess {
 
         this.windowTitle.set(getDirectoryName(path) || (driveLetter ? `${driveLetter}/` : driveLabel));
       }
+
+      this.checkNotice();
     } catch {
       this.DirectoryNotFound();
     }
@@ -671,5 +676,36 @@ export class FileManagerRuntime extends AppProcess {
       },
       join(paths[0], `${name}.arclnk`)
     );
+  }
+
+  async checkNotice() {
+    this.showNotice.set(false);
+    this.notice.set(undefined);
+
+    const drive = this.fs.getDriveByPath(this.path());
+
+    if (this.shareAccessIsAdministrative(drive)) {
+      this.notice.set({
+        icon: "shield-user",
+        text: "You're accessing a share as an administrator!",
+        className: "warning",
+      });
+      this.showNotice.set(true);
+    }
+  }
+
+  shareAccessIsAdministrative(drive: FilesystemDrive) {
+    const userInfo = this.userDaemon?.userInfo!;
+    const thisUser = userInfo._id;
+    const userIsAdmin =
+      userInfo.admin && (userInfo.adminScopes.includes("admin.god") || userInfo.adminScopes.includes("admin.shares.interact"));
+
+    if (!drive || !(drive instanceof SharedDrive) || !thisUser) return false;
+
+    if (!drive.shareInfo.accessors.includes(thisUser) && drive.shareInfo.userId !== thisUser && userIsAdmin) {
+      return true;
+    }
+
+    return false;
   }
 }

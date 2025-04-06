@@ -27,3 +27,9 @@ export interface LoadSaveDialogData {
   multiple?: boolean;
   folder?: boolean;
 }
+
+export interface FileManagerNotice {
+  icon: string;
+  text: string;
+  className?: string;
+}

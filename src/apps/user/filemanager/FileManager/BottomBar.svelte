@@ -5,18 +5,18 @@
   import type { FileManagerRuntime } from "../runtime";
 
   const { process }: { process: FileManagerRuntime } = $props();
-  const { selection, contents, path, userPreferences } = process;
+  const { contents, path, userPreferences, notice, showNotice } = process;
 
   let dirName = $state("");
   let driveLetter = $state<string>();
   let driveLabel = $state<string>();
 
   onMount(() => {
-    path.subscribe((v) => {
-      dirName = getDirectoryName(v);
-      driveLetter = getDriveLetter(v, false);
+    contents.subscribe((v) => {
+      dirName = getDirectoryName($path);
+      driveLetter = getDriveLetter($path, false);
 
-      const driveIdentifier = getDriveLetter(v, true);
+      const driveIdentifier = getDriveLetter($path, true);
 
       if (driveIdentifier) {
         const drive = process.fs.getDriveByLetter(driveIdentifier.slice(0, -1), false);
@@ -29,12 +29,16 @@
 
 <div class="bottom">
   {#if $contents}
-    {#if $selection.length}
-      Selecting {$selection.length} of
-    {/if}
-
-    {$contents.dirs.length + $contents.files.length}
-    {Plural("item", $contents.dirs.length + $contents.files.length)} in {dirName || driveLetter || driveLabel}
+    <div class="stat">
+      {$contents.dirs.length + $contents.files.length}
+      {Plural("item", $contents.dirs.length + $contents.files.length)} in {dirName || driveLetter || driveLabel}
+    </div>
+  {/if}
+  {#if $showNotice && $notice}
+    <div class="notice {$notice.className || ''}" title={$notice.text}>
+      <span class="lucide icon-{$notice.icon}"></span>
+      <span>{$notice.text}</span>
+    </div>
   {/if}
   <div class="view-toggle">
     <button
