@@ -4,7 +4,7 @@ This is the main repository for the ArcOS v7 project. This code is to remain pri
 
 ## Getting started
 
-You'll need the latest version of (NodeJS)[https://nodejs.org/], along with (Git)[https://git-scm.com/]. If you don't want to use the deployed ArcOS backend, you'll have to clone it yourself. For more information, go to [ReArc-Backend-v1](https://github.com/IzK-ArcOS/ReArc-Backend-v1)
+You'll need the latest version of [NodeJS](https://nodejs.org/), along with [Git](https://git-scm.com/). If you don't want to use the deployed ArcOS backend, you'll have to clone it yourself. For more information, go to [ReArc-Backend-v1](https://github.com/IzK-ArcOS/ReArc-Backend-v1)
 
 1. Clone the repository:
 
@@ -58,7 +58,7 @@ The compiled copy of ArcOS v7 will be in the `dist/` directory.
 
 ## License
 
-ArcOS is licensed under the GPLv3 license specified (here)[./public/license].
+ArcOS is licensed under the GPLv3 license specified [here](./public/license).
 
 ## Author
 
