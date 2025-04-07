@@ -25,7 +25,7 @@ $ npm install
 $ bun i
 ```
 
-3. Copy the `.env.example` file to `.env`. ArcOS won't boot without a correct ENV file. In this `.env` file, modify `DW_SERVER_URL` and `DW_SERVER_AUTHCODE` to the URL and AuthCode of the server you're connecting to.
+3. Copy the `.env.example` file to `.env`. ArcOS won't boot without a correct ENV file. In this `.env` file, modify `DW_SERVER_URL` and `DW_SERVER_AUTHCODE` to the URL and AuthCode of the server you're connecting to. **DO NOTE**: a trailing slash in the server URL prevents various ArcOS functions, including Direct File Accessing, from working. **Do not end the URL with a slash.**
 4. Run the frontend:
 
 ```bash
@@ -60,7 +60,7 @@ The compiled copy of ArcOS v7 will be in the `dist/` directory.
 
 If you don't have a backend and you're not able to host one yourself, use these credentials in your `.env` file to connect to the deployed ReArc backend:
 
-- set `DW_SERVER_URL` to `https://api.arcapi.nl/`
+- set `DW_SERVER_URL` to `https://api.arcapi.nl`
 - set `DW_SERVER_AUTHCODE` to `ohshitv7iscoming`
 
 ## License
