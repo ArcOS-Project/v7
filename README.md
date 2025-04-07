@@ -67,3 +67,11 @@ Izaak Kuipers <izaak.kuipers@gmail.com>
 ## Credits
 
 All assets used in ArcOS belong to their respective authors. Wallpapers have been provided by outside collaborators, each of them asked if I can use the wallpaper. A wallpaper with copyright issues won't ever be added to ArcOS.
+
+## Disclaimers
+
+- ArcOS cannot be used as a primary operating system. An attempt to do so is discouraged.
+- This is not an actual operating system. It is an environment that runs on top of your browser, built using web technologies.
+- All assets in ArcOS, including those created by me, belong to their respective owners. Reuse without credit is not permitted.
+- I’m not responsible for loss of data when making use of ArcOS’ filesystem. Do not store sensitive info on the filesystem. ArcOS passwords are hashed and salted.
+- ArcOS is in a pre-release stage. Full system stability cannot be guaranteed. When working on documents, be sure to frequently save changes to prevent a loss of data in case of a sudden crash.
