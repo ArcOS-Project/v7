@@ -15,6 +15,7 @@ import type {
 } from "$types/admin";
 import type { BugReport, ReportStatistics } from "$types/bughunt";
 import type { FilesystemProgressCallback, UserQuota } from "$types/fs";
+import type { SharedDriveType } from "$types/shares";
 import type { UserInfo, UserPreferences } from "$types/user";
 import { Axios } from "../axios";
 
@@ -608,5 +609,119 @@ export class AdminBootstrapper extends Process {
     }
 
     return true;
+  }
+
+  async getAllShares(): Promise<SharedDriveType[]> {
+    try {
+      const response = await Axios.get("/admin/share/list", { headers: { Authorization: `Bearer ${this.token}` } });
+
+      return response.data as SharedDriveType[];
+    } catch {
+      return [];
+    }
+  }
+
+  async getSharesOf(userId: string): Promise<SharedDriveType[]> {
+    try {
+      const response = await Axios.get(`/admin/share/list/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+
+      return response.data as SharedDriveType[];
+    } catch {
+      return [];
+    }
+  }
+
+  async deleteShare(shareId: string): Promise<boolean> {
+    try {
+      const response = await Axios.delete(`/admin/share/${shareId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async kickUserFromShare(shareId: string, userId: string): Promise<boolean> {
+    try {
+      const response = await Axios.post(`/admin/share/kick/${shareId}`, toForm({ userId }), {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async addUserToShare(shareId: string, userId: string): Promise<boolean> {
+    try {
+      const response = await Axios.post(`/admin/share/adduser/${shareId}`, toForm({ userId }), {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async getShareAccessors(shareId: string): Promise<FSItem[]> {
+    try {
+      const response = await Axios.get(`/admin/share/accessors/${shareId}`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.data as FSItem[];
+    } catch {
+      return [];
+    }
+  }
+
+  async deleteShareAccessors(shareId: string): Promise<boolean> {
+    try {
+      const response = await Axios.delete(`/admin/share/accessors/${shareId}`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async changeSharePassword(shareId: string, newPassword: string): Promise<boolean> {
+    try {
+      const response = await Axios.post(`/admin/share/changepswd/${shareId}`, toForm({ newPassword }), {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async renameShare(shareId: string, newName: string): Promise<boolean> {
+    try {
+      const response = await Axios.post(`/admin/share/rename/${shareId}`, toForm({ newName }), {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async changeShareOwner(shareId: string, newUserId: string): Promise<boolean> {
+    try {
+      const response = await Axios.post(`/admin/share/chown/${shareId}`, toForm({ newUserId }), {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
   }
 }

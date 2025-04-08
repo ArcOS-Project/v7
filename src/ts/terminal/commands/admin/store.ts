@@ -28,6 +28,17 @@ import { AdminServerAuditlog } from "./commands/server/auditlog";
 import { AdminServerLogs } from "./commands/server/logs";
 import { AdminServerPing } from "./commands/server/ping";
 import { AdminServerStats } from "./commands/server/stats";
+import { AdminShareAccessorsDelete } from "./commands/share/accessors/delete";
+import { AdminShareAccessorsList } from "./commands/share/accessors/list";
+import { AdminShareAdduser } from "./commands/share/adduser";
+import { AdminShareChangepswdGenerated } from "./commands/share/changepswd/generated";
+import { AdminShareChangepswdManual } from "./commands/share/changepswd/manual";
+import { AdminShareChown } from "./commands/share/chown";
+import { AdminShareDelete } from "./commands/share/delete";
+import { AdminShareKick } from "./commands/share/kick";
+import { AdminShareListAll } from "./commands/share/list/all";
+import { AdminShareListUser } from "./commands/share/list/user";
+import { AdminShareRename } from "./commands/share/rename";
 import { AdminTokensListAll } from "./commands/tokens/list/all";
 import { AdminTokensPurgeAll } from "./commands/tokens/purge/all";
 import { AdminTokensPurgeOne } from "./commands/tokens/purge/one";
@@ -145,6 +156,25 @@ export const AdminCommandStore = {
     },
     force: AdminIndexingForce,
     delete: AdminIndexingDelete,
+  },
+  share: {
+    list: {
+      all: AdminShareListAll,
+      user: AdminShareListUser,
+    },
+    delete: AdminShareDelete,
+    kick: AdminShareKick,
+    adduser: AdminShareAdduser,
+    accessors: {
+      list: AdminShareAccessorsList,
+      delete: AdminShareAccessorsDelete,
+    },
+    changepswd: {
+      manual: AdminShareChangepswdManual,
+      generated: AdminShareChangepswdGenerated,
+    },
+    rename: AdminShareRename,
+    chown: AdminShareChown,
   },
 };
 
