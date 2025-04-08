@@ -70,7 +70,32 @@ export function SupplementaryThirdPartyPropFunctions(
         throw e;
       }
     },
+    runAppDirect: async (process: typeof ThirdPartyAppProcess, metadataPath: string, parentPid?: number, ...args: any[]) => {
+      try {
+        const metaStr = arrayToText((await fs.readFile(metadataPath))!);
+        const metadata = tryJsonParse(metaStr);
 
+        if (typeof metadata === "string") throw new Error("Failed to parse metadata");
+
+        const proc = await daemon.handler.spawn<ThirdPartyAppProcess>(
+          process,
+          undefined,
+          parentPid,
+          {
+            data: metadata,
+            id: metadata.id,
+          },
+          app.workingDirectory,
+          ...args
+        );
+
+        app.process = proc;
+
+        return proc;
+      } catch (e) {
+        throw e;
+      }
+    },
     loadHtml: async (path: string) => {
       const htmlCode = arrayToText((await fs.readFile(join(workingDirectory!, path)))!);
 
