@@ -7,7 +7,7 @@ export const AdminShareAccessorsList: AdminCommand = async (term, admin, [shareI
 
   const accessors = await admin.getShareAccessors(shareId);
 
-  if (!accessors) return 1;
+  if (!accessors.length) return 1;
 
   for (const accessor of accessors) {
     term.rl?.println(`${BRBLACK}${accessor._id}${RESET} ${accessor.path}`);
