@@ -1,6 +1,6 @@
 import { MessageBox } from "$ts/dialog";
 import type { SharedDrive } from "$ts/fs/shares/drive";
-import { join } from "$ts/fs/util";
+import { getDirectoryName, getParentDirectory, join } from "$ts/fs/util";
 import { WarningIcon } from "$ts/images/dialog";
 import type { AppContextMenu } from "$types/app";
 import type { FileEntry, FolderEntry } from "$types/fs";
@@ -89,6 +89,115 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Manage share...",
         action: (drive: QuotedDrive) => runtime.spawnOverlayApp("ShareMgmtGui", runtime.pid, (drive.data as SharedDrive).shareId),
         icon: "wrench",
+      },
+    ],
+    "directory-listing": [
+      {
+        caption: "View",
+        icon: "eye",
+        subItems: [
+          {
+            caption: "Compact grid",
+            icon: "columns-3",
+            action: () => {
+              runtime.userPreferences.update((v) => {
+                v.appPreferences.fileManager!.grid = true;
+                return v;
+              });
+            },
+            isActive: () => !!runtime.userPreferences().appPreferences.fileManager?.grid,
+          },
+          {
+            caption: "List view",
+            icon: "list",
+            action: () => {
+              runtime.userPreferences.update((v) => {
+                v.appPreferences.fileManager!.grid = false;
+                return v;
+              });
+            },
+            isActive: () => !runtime.userPreferences().appPreferences.fileManager?.grid,
+          },
+        ],
+      },
+      {
+        caption: "Refresh",
+        icon: "rotate-cw",
+        action: () => {
+          runtime.refresh();
+        },
+      },
+      { sep: true },
+      {
+        caption: "Cut items",
+        disabled: () => !runtime.selection().length,
+        isActive: () => !!runtime.cutList().length,
+        action: () => runtime.setCutFiles(),
+        icon: "scissors",
+      },
+      {
+        caption: "Copy items",
+        disabled: () => !runtime.selection().length,
+        isActive: () => !!runtime.copyList().length,
+        action: () => runtime.setCopyFiles(),
+        icon: "copy",
+      },
+      {
+        caption: "Paste items",
+        disabled: () => !runtime.cutList().length && !runtime.copyList().length,
+        action: () => runtime.pasteFiles(),
+        icon: "clipboard",
+      },
+      { sep: true },
+      {
+        caption: "New",
+        icon: "plus",
+        subItems: [
+          {
+            caption: "New folder",
+            action: () => {
+              runtime.spawnOverlayApp("FsNewFolder", runtime.pid, runtime.path());
+            },
+            icon: "folder-plus",
+          },
+          {
+            caption: "New file",
+            action: () => {
+              runtime.spawnOverlayApp("FsNewFile", runtime.pid, runtime.path());
+            },
+            icon: "file-plus",
+          },
+          {
+            caption: "Upload...",
+            action: () => {
+              runtime.uploadItems();
+            },
+            icon: "upload",
+          },
+        ],
+      },
+      { sep: true },
+      {
+        caption: "Open in ArcTerm",
+        icon: "terminal",
+        action: () => {
+          runtime.spawnApp("ArcTerm", +runtime.env.get("shell_pid"), runtime.path());
+        },
+      },
+      {
+        caption: "Properties...",
+        icon: "wrench",
+        action: async (folder: FolderEntry) => {
+          const path = runtime.path();
+          const parentPath = getParentDirectory(path);
+          const name = getDirectoryName(path);
+          const parent = await runtime.fs.readDir(parentPath);
+          const dir = parent?.dirs.filter((d) => d.name === name)[0] || parent;
+
+          if (!dir) return;
+
+          runtime.spawnOverlayApp("ItemInfo", runtime.pid, path, dir);
+        },
       },
     ],
     "file-item": [
