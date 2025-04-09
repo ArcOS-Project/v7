@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { FolderIcon } from "$ts/images/filesystem";
+  import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
   import { DefaultMimeIcon } from "$ts/images/mime";
   import type { ReadableStore } from "$ts/writable";
   import { onMount } from "svelte";
@@ -16,12 +16,14 @@
 </script>
 
 <div class="header">
-  <img src={icon || DefaultMimeIcon} alt="" />
+  <img src={$info.name ? icon || DefaultMimeIcon : DriveIcon} alt="" />
   <div>
-    <h1>{$info.name}</h1>
-    {#if $info.location.parent || $info.location.drive}
+    <h1>{$info.name || $info.location.parent || $info.location.drive}</h1>
+    {#if $info.name && ($info.location.parent || $info.location.drive)}
       <p>in {$info.location.parent || $info.location.drive}</p>
     {/if}
   </div>
-  <button class="lucide icon-pencil-line" aria-label="Rename" onclick={() => process.renameItem()}></button>
+  {#if $info.name}
+    <button class="lucide icon-pencil-line" aria-label="Rename" onclick={() => process.renameItem()}></button>
+  {/if}
 </div>

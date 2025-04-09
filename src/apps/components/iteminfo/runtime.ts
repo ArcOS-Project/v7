@@ -30,7 +30,6 @@ export class ItemInfoRuntime extends AppProcess {
     file = file as FileEntry | FolderEntry;
 
     const drive = this.fs.getDriveByPath(path);
-    const driveId = this.fs.getDriveIdByIdentifier(drive.driveLetter || drive.uuid);
     const name = getDirectoryName(path);
     const parent = getDirectoryName(getParentDirectory(path));
     const split = path.split(".");

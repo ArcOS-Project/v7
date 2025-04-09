@@ -25,7 +25,7 @@
 <InfoBlock>
   <InfoRow>
     <Segment title="Sort">
-      {$info.meta.sort}
+      {$info.name ? $info.meta.sort : "drive"}
     </Segment>
     <Segment title="Mimetype">
       {$info.meta.mimetype || "-"}
