@@ -7,11 +7,17 @@ export const AppListCommand: TerminalCommand = {
   keyword: "applist",
   async exec(term, flags, argv) {
     const all = flags.a || flags.all;
+    const countInstead = flags.c || flags.count;
     const store = await term.daemon?.appStore?.get();
 
     if (!store) {
       term.Error("ERR_NO_DAEMON");
       return 1;
+    }
+
+    if (countInstead) {
+      term.Info(`Counting ${BRBLUE}${store.length}${RESET} applications`);
+      return 0;
     }
 
     header();
