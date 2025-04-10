@@ -49,6 +49,7 @@ import { ThirdPartyProps } from "./thirdparty";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { GlobalLoadIndicatorRuntime } from "$apps/components/globalloadindicator/runtime";
 import { ShareManager } from "$ts/fs/shares/index";
+import { BugHuntUserSpaceProcess } from "./bughunt";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -60,6 +61,7 @@ export class UserDaemon extends Process {
   public battery = Store<BatteryType | undefined>();
   public admin: AdminBootstrapper | undefined;
   public shares: ShareManager | undefined;
+  public bughunt: BugHuntUserSpaceProcess | undefined;
   public appStore: ApplicationStorage | undefined;
   public Wallpaper = Store<Wallpaper>(Wallpapers.img0);
   public lastWallpaper = Store<string>("img0");
@@ -277,6 +279,12 @@ export class UserDaemon extends Process {
     if (preferences.isDefault) {
       this.Log(`Not sanitizing default preferences`, LogLevel.warning);
     }
+
+    if (!preferences.startup)
+      preferences.startup = {
+        wallpaper: "app",
+        arcShell: "app",
+      };
 
     const result = applyDefaults<UserPreferences>(preferences, {
       ...DefaultUserPreferences,
@@ -981,7 +989,8 @@ export class UserDaemon extends Process {
 
     this.Log(`Spawning autoload applications`);
 
-    const { startup } = this.preferences();
+    let { startup } = this.preferences();
+    startup ||= {};
 
     for (const payload in startup) {
       const type = startup[payload];
@@ -2073,6 +2082,12 @@ export class UserDaemon extends Process {
     this.Log("Starting share manager");
 
     this.shares = await this.handler.spawn<ShareManager>(ShareManager, undefined, this.pid, this.token);
+  }
+
+  async startBugHuntUserSpaceProcess() {
+    this.Log("Starting BugHunt user space process");
+
+    this.bughunt = await this.handler.spawn<BugHuntUserSpaceProcess>(BugHuntUserSpaceProcess, undefined, this.pid, this.token);
   }
 
   async GlobalLoadIndicator(caption?: string) {
