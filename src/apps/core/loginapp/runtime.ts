@@ -131,10 +131,6 @@ export class LoginAppRuntime extends AppProcess {
       }
     }
 
-    this.loadingStatus.set("Notifying login activity");
-
-    await userDaemon.logActivity("login");
-
     this.loadingStatus.set("Starting filesystem");
 
     await userDaemon.startFilesystemSupplier();
@@ -142,6 +138,19 @@ export class LoginAppRuntime extends AppProcess {
     this.loadingStatus.set("Starting synchronization");
 
     await userDaemon.startPreferencesSync();
+
+    this.loadingStatus.set("Reading profile customization");
+
+    this.profileImage.set(
+      (await userDaemon?.getProfilePicture(userDaemon.preferences().account.profilePicture!)) || ProfilePictures.pfp3
+    );
+
+    this.profileName.set(userDaemon.preferences().account.displayName || username);
+    this.loginBackground.set((await userDaemon.getWallpaper(userDaemon.preferences().account.loginBackground)).url);
+
+    this.loadingStatus.set("Notifying login activity");
+
+    await userDaemon.logActivity("login");
 
     this.loadingStatus.set("Starting application storage");
 
@@ -157,14 +166,9 @@ export class LoginAppRuntime extends AppProcess {
 
     await userDaemon.startShareManager();
 
-    this.loadingStatus.set("Reading profile customization");
+    this.loadingStatus.set("Starting BHUSP");
 
-    this.profileImage.set(
-      (await userDaemon?.getProfilePicture(userDaemon.preferences().account.profilePicture!)) || ProfilePictures.pfp3
-    );
-
-    this.profileName.set(userDaemon.preferences().account.displayName || username);
-    this.loginBackground.set((await userDaemon.getWallpaper(userDaemon.preferences().account.loginBackground)).url);
+    await userDaemon.startBugHuntUserSpaceProcess();
 
     this.loadingStatus.set("Starting status refresh");
 
