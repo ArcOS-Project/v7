@@ -26,6 +26,12 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         icon: "x",
         disabled: (drive: QuotedDrive) => drive.data.FIXED,
       },
+      {
+        caption: "Properties...",
+        action: (drive: QuotedDrive) => {
+          runtime.spawnOverlayApp("ItemInfo", runtime.pid, `${drive.data.uuid}:/`, drive.data);
+        },
+      },
     ],
     "sidebar-shared-drive": [
       {
@@ -89,6 +95,12 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Manage share...",
         action: (drive: QuotedDrive) => runtime.spawnOverlayApp("ShareMgmtGui", runtime.pid, (drive.data as SharedDrive).shareId),
         icon: "wrench",
+      },
+      {
+        caption: "Properties...",
+        action: (drive: QuotedDrive) => {
+          runtime.spawnOverlayApp("ItemInfo", runtime.pid, `${drive.data.uuid}:/`, drive.data);
+        },
       },
     ],
     "directory-listing": [
