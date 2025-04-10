@@ -62,4 +62,24 @@ export class BugHunt extends KernelModule {
 
     return userDaemon.token;
   }
+
+  async getUserBugReports(token: string): Promise<BugReport[]> {
+    try {
+      const response = await Axios.get("/bughunt/reports/private", { headers: { Authorization: `Bearer ${token}` } });
+
+      return response.data as BugReport[];
+    } catch {
+      return [];
+    }
+  }
+
+  async getPublicBugReports(): Promise<BugReport[]> {
+    try {
+      const response = await Axios.get(`/bughunt/reports/public`);
+
+      return response.data as BugReport[];
+    } catch {
+      return [];
+    }
+  }
 }
