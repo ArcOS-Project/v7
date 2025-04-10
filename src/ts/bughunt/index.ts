@@ -42,10 +42,10 @@ export class BugHunt extends KernelModule {
     };
   }
 
-  async sendReport(outgoing: OutgoingBugReport): Promise<boolean> {
+  async sendReport(outgoing: OutgoingBugReport, token = this.getToken()): Promise<boolean> {
     try {
       const response = await Axios.post("/bughunt/report", outgoing, {
-        headers: { Authorization: `Bearer ${this.getToken()}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       return response.status === 200;
