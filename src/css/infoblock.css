@@ -1,5 +1,5 @@
 div.window:not(.core) div.body div.info-block {
-  background-color: var(--button-glass-bg);
+  background-color: var(--button-bg);
   border-radius: var(--win-border-rad);
   box-shadow: var(--secondary-box-shadow);
 }
