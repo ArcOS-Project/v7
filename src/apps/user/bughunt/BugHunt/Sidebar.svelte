@@ -8,7 +8,7 @@
   const { currentTab, loading, store, selectedReport, userPreferences, username } = process;
 </script>
 
-{#if !$loading && $store.length}
+{#if $store.length}
   <div class="sidebar">
     <div class="tabs">
       <button class="tab private" onclick={() => process.changeTab("private")} class:suggested={$currentTab === "private"}>

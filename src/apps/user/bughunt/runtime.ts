@@ -36,11 +36,12 @@ export class BugHuntRuntime extends AppProcess {
     this.store.set(tab === "private" ? await this.bughunt.getPrivateReports() : await this.bughunt.getPublicReports());
   }
 
-  async invalidateCaches() {
+  async invalidateCaches(restoreSelected = false) {
+    const selected = this.selectedReport();
     this.loading.set(true);
     await this.bughunt.refreshAllCaches();
     await this.refresh();
-    this.selectedReport.set("");
+    this.selectedReport.set(restoreSelected ? selected : "");
     this.loading.set(false);
   }
 }

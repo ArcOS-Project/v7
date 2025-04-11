@@ -30,6 +30,7 @@ div.window div.body button:not(.reset).link {
 
 div.window div.body button:not(.reset):disabled {
   opacity: 0.3;
+  pointer-events: none;
 }
 
 div.window div.body button:not(.reset):not(:disabled):active {
