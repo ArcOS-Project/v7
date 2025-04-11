@@ -21,6 +21,7 @@ import { TotpAuthGuiApp } from "$apps/components/totpauthgui/metadata";
 import { TotpSetupGuiApp } from "$apps/components/totpsetupgui/metadata";
 import { WallpaperApp } from "$apps/components/wallpaper/metadata";
 import { ArcTermApp } from "$apps/user/arcterm/metadata";
+import { BugHuntApp } from "$apps/user/bughunt/metadata";
 import { CalculatorApp } from "$apps/user/calculator/metadata";
 import { CameraApp } from "$apps/user/camera/metadata";
 import { FileManagerApp } from "$apps/user/filemanager/metadata";
@@ -74,6 +75,7 @@ export const BuiltinApps: AppStorage = [
   ShareMgmtGuiApp,
   ShareListGuiApp,
   ShareCreateGuiApp,
+  BugHuntApp,
 ];
 
 export const AdminApps: AppStorage = [];
