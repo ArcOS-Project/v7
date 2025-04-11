@@ -1,3 +1,4 @@
+import "$css/apps/user/bughunt.css";
 import { BugReportIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import BugHunt from "./BugHunt.svelte";
@@ -30,5 +31,6 @@ export const BugHuntApp: App = {
     runtime: BugHuntRuntime,
     component: BugHunt as any,
   },
+  glass: true,
   id: "BugHunt",
 };

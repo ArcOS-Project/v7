@@ -9,6 +9,7 @@ export class BugHuntRuntime extends AppProcess {
   loading = Store<boolean>(true);
   currentTab = Store<string>();
   store = Store<BugReport[]>([]);
+  selectedReport = Store<string>();
   bughunt: BugHuntUserSpaceProcess;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
@@ -22,9 +23,12 @@ export class BugHuntRuntime extends AppProcess {
   }
 
   async changeTab(tab: string) {
+    if (this.currentTab() === tab) return;
+
     this.loading.set(true);
     this.store.set(tab === "private" ? await this.bughunt.getPrivateReports() : await this.bughunt.getPublicReports());
     this.currentTab.set(tab);
+    this.selectedReport.set("");
     this.loading.set(false);
   }
 }
