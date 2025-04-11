@@ -26,8 +26,20 @@ export class BugHuntRuntime extends AppProcess {
     if (this.currentTab() === tab) return;
 
     this.loading.set(true);
-    this.store.set(tab === "private" ? await this.bughunt.getPrivateReports() : await this.bughunt.getPublicReports());
+    await this.refresh(tab);
     this.currentTab.set(tab);
+    this.selectedReport.set("");
+    this.loading.set(false);
+  }
+
+  async refresh(tab = this.currentTab()) {
+    this.store.set(tab === "private" ? await this.bughunt.getPrivateReports() : await this.bughunt.getPublicReports());
+  }
+
+  async invalidateCaches() {
+    this.loading.set(true);
+    await this.bughunt.refreshAllCaches();
+    await this.refresh();
     this.selectedReport.set("");
     this.loading.set(false);
   }

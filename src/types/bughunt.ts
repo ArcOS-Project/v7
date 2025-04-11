@@ -18,6 +18,7 @@ export interface BugReport {
   createdAt: string;
   mode: string;
   build: string;
+  public: boolean;
 }
 
 export interface OutgoingBugReport {
@@ -32,6 +33,7 @@ export interface OutgoingBugReport {
   meta: MetaEnvironment;
   mode: string;
   build: string;
+  public?: boolean;
 }
 
 export interface Location {

@@ -41,7 +41,7 @@ export class BugHuntUserSpaceProcess extends Process {
       }
     }
 
-    const reports = await this.module.getUserBugReports(this.token);
+    const reports = (await this.module.getUserBugReports(this.token)).reverse();
 
     this.privateCache = reports;
 
@@ -60,7 +60,7 @@ export class BugHuntUserSpaceProcess extends Process {
       }
     }
 
-    const reports = await this.module.getPublicBugReports();
+    const reports = (await this.module.getPublicBugReports()).reverse();
 
     this.publicCache = reports;
 

@@ -12,8 +12,8 @@ export const BugHuntApp: App = {
     icon: BugReportIcon,
   },
   position: { centered: true },
-  size: { w: 840, h: 500 },
-  minSize: { w: 700, h: 500 },
+  size: { w: 920, h: 550 },
+  minSize: { w: 920, h: 550 },
   maxSize: { w: NaN, h: NaN },
   state: {
     minimized: false,
