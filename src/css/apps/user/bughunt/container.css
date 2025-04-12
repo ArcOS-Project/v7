@@ -1,0 +1,18 @@
+@import url("./container/reportcontent.css");
+@import url("./container/centernotice.css");
+
+#BugHunt > div.body > div.container {
+  width: calc(100% - 250px);
+  max-width: calc(100% - 250px);
+  border-left: var(--win-border);
+  background-color: var(--win-bg);
+}
+
+#BugHunt > div.body > div.container.full {
+  width: 100%;
+  max-width: 100%;
+}
+
+#BugHunt > div.body > div.container > div.titlebar {
+  border-bottom: var(--win-border);
+}

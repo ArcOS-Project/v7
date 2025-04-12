@@ -1,0 +1,13 @@
+#BugHunt > div.body > div.container > div.report-content {
+  height: calc(100% - 40px - 51px);
+  padding: 15px;
+}
+
+#BugHunt > div.body > div.container > div.report-content > h1 {
+  font-size: 18px;
+}
+
+#BugHunt > div.body > div.container > div.report-content > p {
+  opacity: 0.5;
+  margin-bottom: 15px;
+}

@@ -1,0 +1,8 @@
+@import url("./sidebar/tabs.css");
+@import url("./sidebar/selector.css");
+@import url("./sidebar/account.css");
+
+#BugHunt > div.body > div.sidebar {
+  max-width: 250px;
+  width: 250px;
+}

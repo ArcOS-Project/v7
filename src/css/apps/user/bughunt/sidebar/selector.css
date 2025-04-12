@@ -1,0 +1,51 @@
+#BugHunt > div.body div.sidebar div.selector {
+  padding: 10px;
+  padding-right: 2px;
+  overflow-y: scroll;
+  height: calc(100% - 40px - 52px);
+}
+#BugHunt > div.body div.sidebar div.selector > button {
+  text-align: left;
+  width: 100%;
+  background-color: transparent;
+  padding: 5px 7px;
+  display: flex;
+  align-items: start;
+  gap: 15px;
+  margin-bottom: 5px;
+}
+
+#BugHunt > div.body div.sidebar div.selector > button:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#BugHunt > div.body div.sidebar div.selector > button.selected {
+  background-color: var(--accent-transparent);
+}
+
+#BugHunt > div.body div.sidebar div.selector > button * {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+#BugHunt > div.body div.sidebar div.selector > button p {
+  opacity: 0.5;
+  font-size: 12px;
+}
+
+#BugHunt > div.body div.sidebar div.selector > button h1 {
+  height: 16px;
+  line-height: 16px;
+  margin-bottom: 5px;
+}
+
+#BugHunt > div.body div.sidebar div.selector > button > div {
+  max-width: calc(100% - 16px - 15px);
+}
+
+#BugHunt > div.body div.sidebar div.selector > button span.lucide {
+  font-size: 16px;
+  height: 16px;
+  color: var(--accent-lighter);
+}

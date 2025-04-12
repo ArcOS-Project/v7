@@ -1,0 +1,44 @@
+#BugHunt > div.body > div.container div.actionbar button.create {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--accent-darkest);
+  font-weight: normal;
+  padding-left: 10px;
+}
+
+#BugHunt > div.body > div.container div.actionbar button.create * {
+  color: inherit;
+}
+
+#BugHunt > div.body > div.container div.actionbar button.create span.lucide {
+  font-size: 16px;
+}
+
+#BugHunt > div.body > div.container div.actionbar button.lucide {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  font-size: 16px;
+}
+
+#BugHunt > div.body > div.container div.actionbar div.sep {
+  width: 1px;
+  height: 20px;
+  background-color: var(--button-glass-hover-bg);
+}
+
+#BugHunt > div.body > div.container div.actionbar > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#BugHunt > div.body > div.container div.actionbar {
+  height: 51px;
+  border-top: var(--win-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+}

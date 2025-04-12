@@ -1,0 +1,12 @@
+#BugHunt > div.body div.sidebar div.account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  height: 52px;
+}
+
+#BugHunt > div.body div.sidebar div.account p {
+  opacity: 0.5;
+  font-size: 12px;
+}
