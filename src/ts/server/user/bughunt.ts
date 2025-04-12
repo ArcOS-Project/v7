@@ -26,7 +26,7 @@ export class BugHuntUserSpaceProcess extends Process {
   async sendBugReport(options: ReportOptions): Promise<boolean> {
     const data = this.module.createReport(options);
 
-    return await this.module.sendReport(data, this.token);
+    return await this.module.sendReport(data, this.token, options);
   }
 
   async getPrivateReports(forceInvalidate = false) {

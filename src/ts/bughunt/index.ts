@@ -30,7 +30,7 @@ export class BugHunt extends KernelModule {
     return {
       title: options.title,
       body: options.body || "No body",
-      logs: this.kernel.Logs(),
+      logs: options.noLogs ? [] : this.kernel.Logs(),
       version: ArcOSVersion,
       location: window.location,
       userAgent: navigator.userAgent,
@@ -39,13 +39,14 @@ export class BugHunt extends KernelModule {
       meta: import.meta.env,
       mode: this.kernel.ARCOS_MODE,
       build: this.kernel.ARCOS_BUILD,
+      public: options.public,
     };
   }
 
-  async sendReport(outgoing: OutgoingBugReport, token = this.getToken()): Promise<boolean> {
+  async sendReport(outgoing: OutgoingBugReport, token = this.getToken(), options = defaultReportOptions): Promise<boolean> {
     try {
       const response = await Axios.post("/bughunt/report", outgoing, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${options.anonymous ? "" : token}` },
       });
 
       return response.status === 200;

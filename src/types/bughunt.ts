@@ -69,4 +69,7 @@ export interface ReportStatistics extends Record<string, number> {
 export interface ReportOptions {
   title: string;
   body?: string;
+  noLogs?: boolean;
+  anonymous?: boolean;
+  public?: boolean;
 }
