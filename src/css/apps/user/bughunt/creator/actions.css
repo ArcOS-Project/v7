@@ -1,0 +1,29 @@
+#BugHuntCreator > div.body div.actions {
+  display: flex;
+  height: 50px;
+  border-top: var(--win-border);
+  background-color: var(--button-bg);
+  padding: 10px;
+  padding-left: 15px;
+  align-items: center;
+  gap: 10px;
+}
+
+#BugHuntCreator > div.body div.actions button {
+  height: 30px;
+  margin: 0;
+  background-color: var(--button-glass-bg);
+}
+
+#BugHuntCreator > div.body div.actions button:hover {
+  background-color: var(--button-glass-hover-bg);
+}
+
+#BugHuntCreator > div.body div.actions button:active {
+  background-color: var(--button-glass-active-bg);
+}
+
+#BugHuntCreator > div.body div.actions p.version {
+  opacity: 0.5;
+  margin-right: auto;
+}

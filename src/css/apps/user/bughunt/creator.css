@@ -1,0 +1,35 @@
+@import url("./creator/actions.css");
+@import url("./creator/fields.css");
+
+#BugHuntCreator > div.body {
+  padding: 0;
+  background-color: var(--win-bg);
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+#BugHuntCreator > div.body div.fields {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  max-height: calc(100% - 50px - var(--titlebar-height));
+}
+#BugHuntCreator > div.body textarea {
+  width: 100%;
+  height: calc(100% - 50px - 50px - 60px);
+  background-color: transparent;
+  color: var(--fg);
+  padding: 15px;
+  border: none;
+  border-bottom: var(--win-border);
+  resize: none;
+  font-size: 13px;
+}
+
+#BugHuntCreator > div.body div.notice {
+  padding: 10px;
+  opacity: 0.5;
+  height: 60px;
+}

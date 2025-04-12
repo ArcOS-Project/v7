@@ -1,0 +1,49 @@
+#BugHuntCreator > div.body div.fields div.field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: var(--win-border);
+  height: 50px;
+  padding: 10px;
+}
+
+#BugHuntCreator > div.body div.field p.caption {
+  width: 80px;
+  margin-left: 10px;
+  opacity: 0.5;
+}
+
+#BugHuntCreator > div.body div.field div.value {
+  flex-grow: 1;
+  max-width: calc(100% - 100px);
+  overflow-x: auto;
+}
+#BugHuntCreator > div.body div.field div.value > * {
+  vertical-align: middle;
+}
+
+#BugHuntCreator > div.body div.field div.value input:not([type*="checkbox"]) {
+  width: 100%;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  height: 30px;
+}
+
+#BugHuntCreator > div.body div.field div.value::-webkit-scrollbar {
+  display: none;
+}
+#BugHuntCreator > div.body div.field.options div.value {
+  display: flex;
+  gap: 30px;
+}
+
+#BugHuntCreator > div.body div.field.options div.value div.option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#BugHuntCreator > div.body div.field.options div.value div.option .disabled {
+  opacity: 0.5;
+}
