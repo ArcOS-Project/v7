@@ -2,8 +2,9 @@ import { AppProcess } from "$ts/apps/process";
 import type { ProcessHandler } from "$ts/process/handler";
 import type { BugHuntUserSpaceProcess } from "$ts/server/user/bughunt";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { App, AppProcessData } from "$types/app";
 import type { BugReport } from "$types/bughunt";
+import { BugReportsCreatorApp } from "./creator/metadata";
 
 export class BugHuntRuntime extends AppProcess {
   loading = Store<boolean>(true);
@@ -11,6 +12,10 @@ export class BugHuntRuntime extends AppProcess {
   store = Store<BugReport[]>([]);
   selectedReport = Store<string>();
   bughunt: BugHuntUserSpaceProcess;
+
+  protected overlayStore: Record<string, App> = {
+    creator: BugReportsCreatorApp,
+  };
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
@@ -43,5 +48,9 @@ export class BugHuntRuntime extends AppProcess {
     await this.refresh();
     this.selectedReport.set(restoreSelected ? selected : "");
     this.loading.set(false);
+  }
+
+  newReport() {
+    this.spawnOverlay("creator");
   }
 }

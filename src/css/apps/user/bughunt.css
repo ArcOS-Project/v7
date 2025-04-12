@@ -1,6 +1,7 @@
 @import url("./bughunt/sidebar.css");
 @import url("./bughunt/container.css");
 @import url("./bughunt/actionbar.css");
+@import url("./bughunt/creator.css");
 
 #BugHunt > div.body {
   padding: 0;

@@ -6,7 +6,7 @@
 </script>
 
 <div class="actionbar">
-  <button class="create suggested">
+  <button class="create suggested" onclick={() => process.newReport()}>
     <span class="lucide icon-plus"></span>
     <span>New report...</span>
   </button>
