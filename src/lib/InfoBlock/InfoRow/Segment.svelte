@@ -7,12 +7,13 @@
     right?: boolean;
     className?: string;
     children: Snippet;
+    grow?: boolean;
   }
 
-  const { title, help, right = false, className = "", children }: Props = $props();
+  const { title, help, right = false, className = "", children, grow }: Props = $props();
 </script>
 
-<div class="segment {className}" class:right>
+<div class="segment {className}" class:right class:grow>
   <p class="title">
     {title}
     {#if help}

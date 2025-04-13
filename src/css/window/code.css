@@ -1,3 +1,16 @@
 div.window div.body code {
   font-family: "Source Code Pro";
 }
+
+div.window div.body code.block {
+  max-height: 350px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  display: block;
+  font-family: "Source Code Pro";
+  width: 100%;
+  font-size: 11px;
+  padding: 10px;
+  border-radius: 6px;
+  background-color: var(--button-glass-active-bg) !important;
+}

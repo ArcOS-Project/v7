@@ -66,6 +66,10 @@ div.window:not(.core) div.body div.info-block div.segment.right {
   padding-bottom: 10px;
 }
 
+div.window:not(.core) div.body div.info-block div.segment.grow {
+  width: 100%;
+}
+
 div.window:not(.core) div.body div.info-block div.segment code {
   background-color: transparent;
 }
@@ -76,4 +80,10 @@ div.window:not(.core) div.body div.info-block div.row + div.row {
 
 div.window:not(.core) div.body div.info-block div.row > button.action {
   margin-left: auto;
+}
+
+div.window:not(.core) div.body div.info-block code.block {
+  margin: 10px 0;
+  width: 100%;
+  max-width: unset;
 }

@@ -21,3 +21,6 @@
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--button-glass-hover-bg);
 }
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
