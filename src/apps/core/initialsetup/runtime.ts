@@ -75,6 +75,7 @@ export class InitialSetupRuntime extends AppProcess {
         caption: "Continue",
         disabled: () => !this.identityInfoValid(),
         action: () => this.createAccount(),
+        suggested: true,
       },
     },
     {
