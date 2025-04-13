@@ -22,7 +22,7 @@
         class="lucide icon-braces"
         aria-label="View user data"
         disabled={!report.userData}
-        onclick={() => process.notImplemented("Viewing user data")}
+        onclick={() => process.userData()}
       ></button>
       <button
         class="lucide icon-file-text"

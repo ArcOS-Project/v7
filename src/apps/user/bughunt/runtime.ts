@@ -5,6 +5,7 @@ import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import type { BugReport } from "$types/bughunt";
 import { BugReportsCreatorApp } from "./creator/metadata";
+import { BugHuntUserDataApp } from "./userdata/metadata";
 
 export class BugHuntRuntime extends AppProcess {
   loading = Store<boolean>(true);
@@ -15,6 +16,7 @@ export class BugHuntRuntime extends AppProcess {
 
   protected overlayStore: Record<string, App> = {
     creator: BugReportsCreatorApp,
+    userdata: BugHuntUserDataApp,
   };
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
@@ -61,5 +63,14 @@ export class BugHuntRuntime extends AppProcess {
     if (!report || !report.logs || !report.logs.length) return;
 
     this.spawnOverlayApp("logging", this.pid, "", "all", report.logs);
+  }
+
+  userData() {
+    const selected = this.selectedReport();
+    const report = this.store().filter((r) => r._id === selected)[0];
+
+    if (!report || !report.userData) return;
+
+    this.spawnOverlay("userdata", report.userData);
   }
 }

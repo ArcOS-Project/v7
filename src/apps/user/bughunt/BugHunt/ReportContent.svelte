@@ -13,6 +13,8 @@
     date,
     time,
   }: { process: BugHuntRuntime; report: BugReport | undefined; date: string | undefined; time: string | undefined } = $props();
+
+  let viewBody = $state<boolean>(false);
 </script>
 
 {#if report}
@@ -83,6 +85,16 @@
       </Segment>
       <Segment title="ID">
         {report._id}
+      </Segment>
+    </InfoRow>
+  </InfoBlock>
+  <InfoBlock>
+    <InfoRow>
+      <Segment title="Report body" grow>
+        {#if viewBody}
+          <code class="block">{report.body}</code>
+        {/if}
+        <button class="link" onclick={() => (viewBody = !viewBody)}>{viewBody ? "Hide body" : "View body"}</button>
       </Segment>
     </InfoRow>
   </InfoBlock>

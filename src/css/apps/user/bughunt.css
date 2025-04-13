@@ -3,6 +3,7 @@
 @import url("./bughunt/actionbar.css");
 @import url("./bughunt/creator.css");
 @import url("./bughunt/logging.css");
+@import url("./bughunt/userdata.css");
 
 #BugHunt > div.body {
   padding: 0;
