@@ -24,15 +24,8 @@
         disabled={!report.userData}
         onclick={() => process.userData()}
       ></button>
-      <button
-        class="lucide icon-file-text"
-        aria-label="View body"
-        disabled={!report.body}
-        onclick={() => process.notImplemented("Viewing report body")}
-      ></button>
+      <button class="lucide icon-save" aria-label="Save JSON" onclick={() => process.exportReport()}></button>
       <div class="sep"></div>
-      <button class="lucide icon-save" aria-label="Save JSON" onclick={() => process.notImplemented("Exporting reports")}
-      ></button>
       <button class="lucide icon-refresh-cw" aria-label="Refresh" onclick={() => process.invalidateCaches(true)}></button>
     </div>
   {/if}

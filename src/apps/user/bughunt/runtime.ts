@@ -1,4 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
+import { textToBlob } from "$ts/fs/convert";
+import { getDirectoryName } from "$ts/fs/util";
+import { SaveIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import type { BugHuntUserSpaceProcess } from "$ts/server/user/bughunt";
 import { Store } from "$ts/writable";
@@ -72,5 +75,44 @@ export class BugHuntRuntime extends AppProcess {
     if (!report || !report.userData) return;
 
     this.spawnOverlay("userdata", report.userData);
+  }
+
+  async exportReport() {
+    const selected = this.selectedReport();
+    const report = this.store().filter((r) => r._id === selected)[0];
+
+    if (!report) return;
+
+    const [path] = await this.userDaemon!.LoadSaveDialog({
+      isSave: true,
+      title: "Choose where to export the report to",
+      icon: SaveIcon,
+      startDir: "U:/",
+      extensions: [".json"],
+      saveName: `Report-${report._id}.json`,
+    });
+
+    if (!path) return;
+
+    const prog = await this.userDaemon!.FileProgress(
+      {
+        type: "size",
+        waiting: true,
+        icon: SaveIcon,
+        caption: "Exporting report...",
+        subtitle: `${getDirectoryName(path)}`,
+      },
+      this.pid
+    );
+
+    await this.fs.writeFile(path, textToBlob(JSON.stringify(report, null, 2)), (progress) => {
+      prog.show();
+      prog.setMax(progress.max);
+      prog.setDone(progress.value);
+      prog.setWait(false);
+      prog.setWork(true);
+    });
+
+    prog.stop();
   }
 }
