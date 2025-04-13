@@ -53,4 +53,13 @@ export class BugHuntRuntime extends AppProcess {
   newReport() {
     this.spawnOverlay("creator");
   }
+
+  viewLogs() {
+    const selected = this.selectedReport();
+    const report = this.store().filter((r) => r._id === selected)[0];
+
+    if (!report || !report.logs || !report.logs.length) return;
+
+    this.spawnOverlayApp("logging", this.pid, "", "all", report.logs);
+  }
 }

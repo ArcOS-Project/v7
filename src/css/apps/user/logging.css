@@ -23,7 +23,7 @@
 }
 
 #logging div.list-wrapper {
-  height: calc(100% - 75px);
+  height: calc(100% - 85px);
   padding: 20px;
   padding-top: 0;
   overflow-y: scroll;
@@ -31,7 +31,7 @@
 
 #logging div.list-wrapper table {
   border-collapse: collapse;
-  width: 100%;
+  /* width: 100%; */
 }
 
 #logging div.list-wrapper thead tr {
@@ -53,6 +53,11 @@
   align-items: center;
   gap: 10px;
 }
+
+#logging div.options.archive div.current-source {
+  background-color: var(--clr-orange-bg);
+}
+
 #logging div.options div.current-source div.pill {
   padding: 0 5px;
   display: flex;
@@ -66,6 +71,12 @@
 #logging div.options div.current-source div.pill span.lucide {
   font-size: 16px;
   color: var(--accent-light);
+}
+
+#logging div.options.archive div.current-source div.pill,
+#logging div.options.archive div.current-source div.pill * {
+  color: var(--clr-orange-bg) !important;
+  background-color: var(--clr-orange-fg);
 }
 
 #logging div.options div.current-source img {
@@ -92,47 +103,44 @@
   height: 20px;
   background-color: var(--button-hover-bg);
 }
-#logging div.list-wrapper .source {
-  padding-left: 10px !important;
+
+#logging > div.body div.log-list div.row {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 10px;
+  border-bottom: var(--win-border);
+  gap: 10px;
+}
+
+#logging > div.body div.log-list div.row .icon,
+#logging > div.body div.log-list div.row .icon img {
+  width: 16px;
+  height: 16px;
+}
+
+#logging > div.body div.log-list div.row.head div.segment {
+  font-weight: bold;
+}
+
+#logging > div.body div.log-list div.row div.segment {
   white-space: nowrap;
-  max-width: 150px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-#logging div.list-wrapper .message span {
-  margin: 9px 0;
-  display: block;
-  white-space: nowrap;
+#logging > div.body div.log-list div.row div.segment.message {
+  max-width: calc(100% - 160px - 16px - 20px);
 }
 
-#logging div.list-wrapper .icon {
-  width: 26px;
-  padding-left: 10px;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  height: inherit;
+#logging > div.body div.log-list div.row div.segment:not(.icon) {
+  padding-right: 30px;
 }
 
-#logging div.list-wrapper .icon img {
-  height: 18px;
-  min-width: 18px;
+#logging > div.body div.log-list div.row div.segment.timestamp {
+  width: 160px;
 }
 
-#logging div.list-wrapper td:not(.icon),
-#logging div.list-wrapper th:not(.icon) {
-  padding: 0;
-  padding-left: 30px;
-}
-
-#logging div.list-wrapper tr {
-  height: 37px;
-  border-bottom: var(--button-hover-bg) 1px solid;
-  transition: all 0.3s, background-color 0.5s;
-}
-
-#logging div.list-wrapper tr.new {
-  background-color: var(--accent-transparent);
-  transition: none;
+#logging > div.body div.log-list div.row:not(.head) div.segment.timestamp {
+  font-family: "Source Code Pro";
 }

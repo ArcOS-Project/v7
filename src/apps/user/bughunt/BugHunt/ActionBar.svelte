@@ -16,7 +16,7 @@
         class="lucide icon-scroll-text"
         aria-label="View logs"
         disabled={!report.logs.length}
-        onclick={() => process.notImplemented("Viewing report logs")}
+        onclick={() => process.viewLogs()}
       ></button>
       <button
         class="lucide icon-braces"
