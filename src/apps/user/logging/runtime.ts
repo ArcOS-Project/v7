@@ -10,6 +10,8 @@ export class LoggingRuntime extends AppProcess {
   public sources = Store<LogSource[]>([]);
   public currentSource = Store<string>("*");
   public selectedLevel = Store<FilterLevel>("all");
+  private archive: LogItem[] = [];
+  public isArchive = false;
 
   constructor(
     handler: ProcessHandler,
@@ -17,11 +19,18 @@ export class LoggingRuntime extends AppProcess {
     parentPid: number,
     app: AppProcessData,
     source?: string,
-    level?: FilterLevel
+    level?: FilterLevel,
+    archive?: LogItem[]
   ) {
     super(handler, pid, parentPid, app);
 
-    this.kernel.Logs.subscribe(() => this.updateGroups());
+    this.archive = archive || [];
+    this.isArchive = this.archive.length > 0;
+
+    if (!this.archive.length) this.kernel.Logs.subscribe(() => this.updateGroups());
+    else {
+      this.updateGroups();
+    }
 
     this.dispatch.subscribe("change-source", (source) => {
       this.currentSource.set(source);
@@ -32,23 +41,24 @@ export class LoggingRuntime extends AppProcess {
   }
 
   public updateGroups() {
+    const logs = this.archive.length ? this.archive : this.kernel.Logs();
     const groupStore = this.groups.get();
-    const { items, sources } = this.collectLogsBySource(false);
+    const { items, sources } = this.collectLogsBySource(logs, false);
     const entries = Object.entries(items);
 
     for (const [source, items] of entries) {
       groupStore.set(source, items);
     }
 
-    this.windowTitle.set(`${this.kernel.Logs().length} items`);
+    this.windowTitle.set(`${this.isArchive ? "Viewing archive - " : ""}${logs.length} items`);
     this.groups.set(groupStore);
     this.sources.set(sources);
 
     if (!groupStore.get(this.currentSource())) this.currentSource.set(sources[0].what);
   }
 
-  collectLogsBySource(reverse = false) {
-    let logs = this.kernel.Logs().sort((a, b) => b.timestamp - a.timestamp);
+  collectLogsBySource(logs: LogItem[], reverse = false) {
+    logs = logs.sort((a, b) => b.timestamp - a.timestamp);
 
     if (reverse) logs.reverse();
 

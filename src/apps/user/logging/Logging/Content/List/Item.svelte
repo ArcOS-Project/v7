@@ -15,11 +15,10 @@
   });
 </script>
 
-<tr class="log-item item-{LogLevel[item.level]}" class:new={now && now < item.timestamp + 600}>
-  <td class="icon">
+<div class="row item-{LogLevel[item.level]}" class:new={now && now < item.timestamp + 600}>
+  <div class="segment icon">
     <img src={LogItemIcons[item.level]} alt={LogLevel[item.level]} />
-  </td>
-  <td class="source" title={item.source}>{item.source}</td>
-  <td class="timestamp">{timestamp}</td>
-  <td class="message" title={item.message}><span>{item.message}</span></td>
-</tr>
+  </div>
+  <div class="segment timestamp">{timestamp}</div>
+  <div class="segment message" title={item.message}><span>{item.message}</span></div>
+</div>

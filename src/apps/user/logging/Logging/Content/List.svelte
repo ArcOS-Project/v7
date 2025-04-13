@@ -7,20 +7,17 @@
   const { Logs } = process.kernel;
 </script>
 
-<table class="log-list">
-  <thead>
-    <tr>
-      <th class="icon"></th>
-      <th class="source">Source</th>
-      <th class="timeout">Timestamp</th>
-      <th class="message">Message</th>
-    </tr>
-  </thead>
-  <tbody>
+<div class="log-list">
+  <div class="row head">
+    <div class="segment icon"></div>
+    <div class="segment timestamp">Timestamp</div>
+    <div class="segment message">Message</div>
+  </div>
+  <div class="rows">
     {#each $groups.get($currentSource) || [] as item, i (`${i}-${item.kernelTime}-${item.message}-${item.source}`)}
       {#if $selectedLevel == "all" || item.level === $selectedLevel}
         <Item {item} />
       {/if}
     {/each}
-  </tbody>
-</table>
+  </div>
+</div>

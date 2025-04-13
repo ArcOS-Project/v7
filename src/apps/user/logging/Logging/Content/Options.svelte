@@ -4,14 +4,14 @@
   import Filter from "./Options/Filter.svelte";
 
   const { process }: { process: LoggingRuntime } = $props();
-  const { currentSource } = process;
+  const { currentSource, isArchive } = process;
 </script>
 
-<div class="options">
+<div class="options" class:archive={isArchive}>
   <div class="current-source">
     <div class="pill">
-      <span class="lucide icon-scroll-text"></span>
-      <span>Group</span>
+      <span class="lucide icon-scroll-text" class:icon-archive={isArchive}></span>
+      <span>{isArchive ? "Archive" : "Group"}</span>
     </div>
     <img src={FolderIcon} alt="" />
     <span>{$currentSource}</span>

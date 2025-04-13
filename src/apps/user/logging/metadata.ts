@@ -12,12 +12,12 @@ export const LoggingApp: App = {
     icon: LoggerIcon,
   },
   size: {
-    w: 1000,
-    h: 600,
+    w: 680,
+    h: 450,
   },
   minSize: {
-    w: 1000,
-    h: 600,
+    w: 680,
+    h: 450,
   },
   maxSize: {
     w: 1300,
