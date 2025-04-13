@@ -37,8 +37,8 @@
       </div>
     </div>
   </div>
-  <textarea class="body" bind:value={$body} placeholder="Report Body: Provide any particular information about the bug here.">
-  </textarea>
+  <textarea class="body" bind:value={$body} placeholder="Report Body: Provide any particular information about the bug here."
+  ></textarea>
   <div class="notice">
     All information you provide in a bug report is treated as confidential and will never be shared with external parties. Select <b
       >Data Privacy</b
