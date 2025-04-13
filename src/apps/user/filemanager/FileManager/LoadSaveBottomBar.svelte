@@ -47,6 +47,7 @@
             ? !$selection.length
             : $selection.length !== 1
         : false}
+      class="suggested"
     >
       {process.loadSave?.isSave ? "Save" : "Open"}
     </button>
