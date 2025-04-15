@@ -90,5 +90,5 @@ main#main.hidden #appRenderer {
 
 .error-text {
   font-weight: bold;
-  color: var(--clr-red-fg);
+  color: var(--clr-red-fg) !important;
 }
