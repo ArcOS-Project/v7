@@ -1,0 +1,143 @@
+import type { ProcessHandler } from "$ts/process/handler";
+import { Process } from "$ts/process/instance";
+import { Store } from "$ts/writable";
+import { LogLevel } from "$types/logging";
+import type { ReadableServiceStore, ServiceChangeResult, ServiceStore } from "$types/service";
+import type { BaseService } from "./base";
+import { ServicesStore } from "./store";
+
+export class ServiceHost extends Process {
+  public Services: ReadableServiceStore = Store<ServiceStore>();
+  public _criticalProcess: boolean = true;
+  private _storeLoaded = false;
+  private _holdRestart = false;
+
+  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
+    super(handler, pid, parentPid);
+  }
+
+  public loadStore(store: ServiceStore) {
+    if (this._storeLoaded) {
+      this.Log(`Can't load another store: a store is already loaded.`, LogLevel.error);
+
+      return false;
+    }
+
+    this.Log(`Loading store (${store.size} services)`);
+
+    for (const [id, service] of [...store]) {
+      service.id = id;
+      service.loadedAt = new Date().getTime();
+
+      store.set(id, service);
+    }
+
+    this.Services.set(store);
+
+    return (this._storeLoaded = true);
+  }
+
+  async startService(id: string) {
+    this.Log(`Starting service ${id}...`);
+
+    const services = this.Services.get();
+    const service = services.get(id);
+
+    if (!services.has(id) || !service) return "err_noExist";
+
+    const canStart = service.startCondition ? await service.startCondition(this.handler.getProcess(this.parentPid)!) : true;
+
+    if (!canStart) return "err_startCondition";
+    if (service.pid) return "err_alreadyRunning";
+
+    const instance = await this.handler.spawn(service.process, undefined, this.pid, id, this);
+
+    if (!instance) return "err_spawnFailed";
+
+    service.pid = instance.pid;
+    service.changedAt = new Date().getTime();
+
+    services.set(id, service);
+    this.Services.set(services);
+
+    return "success";
+  }
+
+  public async stopService(id: string): Promise<ServiceChangeResult> {
+    this.Log(`Stopping service ${id}...`);
+
+    const services = this.Services.get();
+    const service = services.get(id);
+
+    if (!services.has(id) || !service) return "err_noExist";
+
+    if (!service.pid) return "err_notRunning";
+
+    this._holdRestart = true;
+
+    await this.handler.kill(service.pid, true);
+
+    service.pid = undefined;
+    service.changedAt = new Date().getTime();
+
+    services.set(id, service);
+    this.Services.set(services);
+
+    this._holdRestart = false;
+
+    return "success";
+  }
+
+  public async restartService(id: string): Promise<ServiceChangeResult> {
+    const services = this.Services.get();
+
+    if (!services.has(id)) return "err_noExist";
+
+    await this.stopService(id);
+    const started = await this.startService(id);
+
+    return started;
+  }
+
+  public async initialRun() {
+    const services = this.Services.get();
+
+    for (const [id, service] of [...services]) {
+      if (!service.initialState || service.initialState != "started") continue;
+
+      await this.startService(id);
+    }
+  }
+
+  async init() {
+    this.loadStore(ServicesStore);
+    await this.initialRun();
+
+    this.handler.store.subscribe(() => this.verifyServicesProcesses());
+
+    this.Services.subscribe(() => this.globalDispatch.dispatch("services-flush"));
+  }
+
+  public async verifyServicesProcesses() {
+    if (this._holdRestart) return;
+
+    const services = this.Services.get();
+
+    for (const [id, service] of [...services]) {
+      if (!service.pid || this.handler.isPid(service.pid)) continue;
+
+      this.Log(`Process of ${id} doesn't exist anymore! Restarting service...`, LogLevel.warning);
+
+      await this.restartService(id);
+    }
+  }
+
+  public getService<T extends BaseService = BaseService>(id: string): T | undefined {
+    const store = this.Services();
+    const service = store.get(id);
+
+    if (!store.has(id) || !service || !service.pid) return undefined;
+
+    return this.handler.getProcess(service.pid) as T;
+  }
+}
