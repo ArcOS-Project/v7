@@ -40,5 +40,6 @@ export const GlobalLoadIndicatorApp: App = {
     runtime: GlobalLoadIndicatorRuntime,
     component: GlobalLoadIndicator as any,
   },
+  hidden: true,
   id: "GlobalLoadIndicator",
 };
