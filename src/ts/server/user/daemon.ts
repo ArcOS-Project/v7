@@ -1,10 +1,13 @@
 import { FsProgressRuntime } from "$apps/components/fsprogress/runtime";
 import { DummyFileProgress, type FileProgressMutator, type FsProgressOperation } from "$apps/components/fsprogress/types";
+import { GlobalLoadIndicatorRuntime } from "$apps/components/globalloadindicator/runtime";
 import type { IconPickerData } from "$apps/components/iconpicker/types";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import { AppProcess } from "$ts/apps/process";
 import { ApplicationStorage } from "$ts/apps/storage";
 import { AdminApps, BuiltinApps } from "$ts/apps/store";
+import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
+import { BugHuntUserSpaceProcess } from "$ts/bughunt/process";
 import { darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 import { MessageBox } from "$ts/dialog";
 import { toForm } from "$ts/form";
@@ -12,6 +15,7 @@ import { Filesystem } from "$ts/fs";
 import { arrayToBlob, arrayToText, textToBlob } from "$ts/fs/convert";
 import { ServerDrive } from "$ts/fs/drives/server";
 import { ZIPDrive } from "$ts/fs/drives/zipdrive";
+import { ShareManager } from "$ts/fs/shares/index";
 import { getDirectoryName, getDriveLetter, getParentDirectory, join } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
 import { getIconPath } from "$ts/images";
@@ -23,6 +27,7 @@ import { ProfilePictures } from "$ts/images/pfp";
 import { tryJsonParse } from "$ts/json";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
+import { ServiceHost } from "$ts/services";
 import { Sleep } from "$ts/sleep";
 import { UUID } from "$ts/uuid";
 import { Wallpapers } from "$ts/wallpaper/store";
@@ -46,10 +51,6 @@ import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
-import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { GlobalLoadIndicatorRuntime } from "$apps/components/globalloadindicator/runtime";
-import { ShareManager } from "$ts/fs/shares/index";
-import { BugHuntUserSpaceProcess } from "./bughunt";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -59,10 +60,7 @@ export class UserDaemon extends Process {
   public notifications = new Map<string, Notification>([]);
   public userInfo: UserInfo = DefaultUserInfo;
   public battery = Store<BatteryType | undefined>();
-  public admin: AdminBootstrapper | undefined;
-  public shares: ShareManager | undefined;
-  public bughunt: BugHuntUserSpaceProcess | undefined;
-  public appStore: ApplicationStorage | undefined;
+  public serviceHost: ServiceHost | undefined;
   public Wallpaper = Store<Wallpaper>(Wallpapers.img0);
   public lastWallpaper = Store<string>("img0");
   public _elevating = false;
@@ -94,10 +92,10 @@ export class UserDaemon extends Process {
   }
 
   async startApplicationStorage() {
-    this.appStore = await this.handler.spawn(ApplicationStorage, undefined, this.pid);
+    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
 
-    this.appStore?.loadOrigin("builtin", () => BuiltinApps);
-    this.appStore?.loadOrigin("userApps", () => this.getUserApps());
+    appStore?.loadOrigin("builtin", () => BuiltinApps);
+    appStore?.loadOrigin("userApps", () => this.getUserApps());
   }
 
   async getUserInfo(): Promise<UserInfo | undefined> {
@@ -794,7 +792,8 @@ export class UserDaemon extends Process {
 
     if (this.checkDisabled(id)) return;
 
-    const app = await this.appStore?.getAppById(id);
+    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const app = await appStore?.getAppById(id);
 
     if (!app) {
       this.sendNotification({
@@ -860,7 +859,9 @@ export class UserDaemon extends Process {
 
     if (this.checkDisabled(id)) return;
 
-    const app = await this.appStore?.getAppById(id);
+    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+
+    const app = await appStore?.getAppById(id);
 
     if (!app) {
       this.sendNotification({
@@ -985,7 +986,9 @@ export class UserDaemon extends Process {
   async spawnAutoload() {
     if (this._disposed) return;
 
-    await this.shares?.mountOwnedShares();
+    const shares = this.serviceHost?.getService<ShareManager>("ShareMgmt");
+
+    await shares?.mountOwnedShares();
 
     this.Log(`Spawning autoload applications`);
 
@@ -1006,7 +1009,7 @@ export class UserDaemon extends Process {
           await this.spawnApp("fileManager", undefined, payload);
           break;
         case "share":
-          await this.shares?.mountShareById(payload);
+          await shares?.mountShareById(payload);
           break;
         default:
           this.Log(`Unknown startup type: ${type.toUpperCase()} (payload: '${payload}')`);
@@ -1028,7 +1031,9 @@ export class UserDaemon extends Process {
 
     this.Log(`Disabling application ${appId}`);
 
-    const app = await this.appStore?.getAppById(appId);
+    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const app = await appStore?.getAppById(appId);
+
     if (!app) return;
 
     const elevated = await this.manuallyElevate({
@@ -1062,7 +1067,9 @@ export class UserDaemon extends Process {
 
     this.Log(`Enabling application ${appId}`);
 
-    const app = await this.appStore?.getAppById(appId);
+    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const app = await appStore?.getAppById(appId);
+
     if (!app) return;
 
     const elevated = await this.manuallyElevate({
@@ -1776,7 +1783,8 @@ export class UserDaemon extends Process {
   async findHandlerToOpenFile(path: string): Promise<FileOpenerResult[]> {
     this.Log(`Finding a handler to open ${path}`);
 
-    const apps = await this.appStore?.get();
+    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const apps = await appStore?.get();
     const split = path.split(".");
     const filename = getDirectoryName(path);
     const extension = `.${split[split.length - 1]}`;
@@ -1814,7 +1822,8 @@ export class UserDaemon extends Process {
   }
 
   async getAllFileHandlers() {
-    const apps = await this.appStore?.get();
+    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const apps = await appStore?.get();
     const result: FileOpenerResult[] = [];
 
     for (const id in this.fileHandlers) {
@@ -2030,16 +2039,19 @@ export class UserDaemon extends Process {
   }
 
   async installApp(data: InstalledApp) {
+    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+
     this.preferences.update((v) => {
       v.userApps[data.id] = applyDefaults(data, DefaultAppData);
       return v;
     });
 
-    await this.appStore?.refresh();
+    await appStore?.refresh();
   }
 
   async deleteApp(id: string, deleteFiles = false) {
     const app = this.preferences().userApps[id];
+    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
 
     if (!app) return false;
 
@@ -2048,7 +2060,7 @@ export class UserDaemon extends Process {
       return v;
     });
 
-    await this.appStore?.refresh();
+    await appStore?.refresh();
     if (deleteFiles) await this.fs.deleteItem(app.workingDirectory!);
   }
 
@@ -2069,25 +2081,39 @@ export class UserDaemon extends Process {
     }
   }
 
-  async startAdminBootstrapper() {
-    this.Log("Starting admin bootstrapper");
+  async activateAdminBootstrapper() {
+    this.Log("Activating admin bootstrapper");
 
     if (!this.userInfo.admin) return;
 
-    this.appStore?.loadOrigin("admin", () => AdminApps);
-    this.admin = await this.handler.spawn<AdminBootstrapper>(AdminBootstrapper, undefined, this.pid, this.token);
+    const admin = this.serviceHost!.getService<AdminBootstrapper>("AdminBootstrapper");
+    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+
+    appStore?.loadOrigin("admin", () => AdminApps);
+    admin?._activate(this.token);
   }
 
   async startShareManager() {
     this.Log("Starting share manager");
 
-    this.shares = await this.handler.spawn<ShareManager>(ShareManager, undefined, this.pid, this.token);
+    const share = this.serviceHost!.getService<ShareManager>("ShareMgmt");
+
+    share?._activate(this.token);
   }
 
-  async startBugHuntUserSpaceProcess() {
-    this.Log("Starting BugHunt user space process");
+  async startServiceHost() {
+    this.Log("Starting service host");
 
-    this.bughunt = await this.handler.spawn<BugHuntUserSpaceProcess>(BugHuntUserSpaceProcess, undefined, this.pid, this.token);
+    this.serviceHost = await this.handler.spawn<ServiceHost>(ServiceHost, undefined, this.pid);
+    await this.serviceHost?.init();
+  }
+
+  async activateBugHuntUserSpaceProcess() {
+    const bhusp = this.serviceHost!.getService<BugHuntUserSpaceProcess>("BugHuntUsp");
+
+    console.log(bhusp);
+
+    await bhusp?._activate(this.token);
   }
 
   async GlobalLoadIndicator(caption?: string) {

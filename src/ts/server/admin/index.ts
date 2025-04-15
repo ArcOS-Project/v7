@@ -1,7 +1,8 @@
 import { toForm } from "$ts/form";
 import { AdminServerDrive } from "$ts/fs/drives/admin";
 import type { ProcessHandler } from "$ts/process/handler";
-import { Process } from "$ts/process/instance";
+import type { ServiceHost } from "$ts/services";
+import { BaseService } from "$ts/services/base";
 import type {
   Activity,
   AuditLog,
@@ -15,21 +16,25 @@ import type {
 } from "$types/admin";
 import type { BugReport, ReportStatistics } from "$types/bughunt";
 import type { FilesystemProgressCallback, UserQuota } from "$types/fs";
+import type { Service } from "$types/service";
 import type { SharedDriveType } from "$types/shares";
 import type { UserInfo, UserPreferences } from "$types/user";
 import { Axios } from "../axios";
 
-export class AdminBootstrapper extends Process {
-  private token: string;
+export class AdminBootstrapper extends BaseService {
+  private token: string | undefined;
   private availableScopes: Record<string, string> = {};
   private userInfo: UserInfo | undefined;
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, token: string) {
-    super(handler, pid, parentPid);
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
+    super(handler, pid, parentPid, name, host);
+  }
+
+  async activate(token: string) {
     this.token = token;
   }
 
-  async start() {
+  async afterActivate() {
     await this.getUserInfo();
 
     if (!this.userInfo || !this.userInfo.admin) throw new Error("Invalid user or not an admin");
@@ -725,3 +730,11 @@ export class AdminBootstrapper extends Process {
     }
   }
 }
+
+export const adminService: Service = {
+  initialState: "started",
+  name: "Admin Bootstrapper",
+  description: "Handles administrator interactions",
+  process: AdminBootstrapper,
+  startCondition: (daemon) => daemon.userInfo?.admin,
+};

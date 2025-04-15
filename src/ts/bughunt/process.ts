@@ -1,35 +1,44 @@
 import { BugHunt } from "$ts/bughunt";
 import type { ProcessHandler } from "$ts/process/handler";
-import { Process } from "$ts/process/instance";
+import type { ServiceHost } from "$ts/services";
+import { BaseService } from "$ts/services/base";
 import type { BugReport, ReportOptions } from "$types/bughunt";
+import type { Service } from "$types/service";
 
-export class BugHuntUserSpaceProcess extends Process {
+export class BugHuntUserSpaceProcess extends BaseService {
   INVALIDATION_THRESHOLD = 10;
   privateCache: BugReport[] = [];
   publicCache: BugReport[] = [];
   cachedPrivateResponseCount = 0;
   cachedPublicResponseCount = 0;
-  token: string;
+  token: string | undefined;
   module: BugHunt;
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, token: string) {
-    super(handler, pid, parentPid);
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
+    super(handler, pid, parentPid, name, host);
 
-    this.token = token;
     this.module = this.kernel.getModule<BugHunt>("bughunt");
   }
 
-  protected async start(): Promise<any> {
+  async activate(token: string) {
+    this.token = token;
+  }
+
+  async afterActivate() {
     await this.refreshAllCaches();
   }
 
   async sendBugReport(options: ReportOptions): Promise<boolean> {
+    if (!this.activated) return false;
+
     const data = this.module.createReport(options);
 
     return await this.module.sendReport(data, this.token, options);
   }
 
   async getPrivateReports(forceInvalidate = false) {
+    if (!this.activated) return [];
+
     if (this.privateCache.length) {
       this.cachedPrivateResponseCount++;
 
@@ -41,7 +50,7 @@ export class BugHuntUserSpaceProcess extends Process {
       }
     }
 
-    const reports = (await this.module.getUserBugReports(this.token)).reverse();
+    const reports = (await this.module.getUserBugReports(this.token!)).reverse();
 
     this.privateCache = reports;
 
@@ -49,6 +58,8 @@ export class BugHuntUserSpaceProcess extends Process {
   }
 
   async getPublicReports(forceInvalidate = false) {
+    if (!this.activated) return [];
+
     if (this.publicCache.length) {
       this.cachedPublicResponseCount++;
 
@@ -68,19 +79,32 @@ export class BugHuntUserSpaceProcess extends Process {
   }
 
   async refreshPrivateCache() {
+    if (!this.activated) return false;
+
     this.Log("Refreshing private cache");
 
     await this.getPrivateReports(true);
   }
 
   async refreshPublicCache() {
+    if (!this.activated) return false;
+
     this.Log("Refreshing public cache");
 
     await this.getPublicReports(true);
   }
 
   async refreshAllCaches() {
+    if (!this.activated) return false;
+
     await this.refreshPublicCache();
     await this.refreshPrivateCache();
   }
 }
+
+export const bhuspService: Service = {
+  initialState: "started",
+  name: "User process for bug reports",
+  description: "Manages your ArcOS bug reports",
+  process: BugHuntUserSpaceProcess,
+};

@@ -14,13 +14,14 @@ import type { RenderArgs } from "$types/process";
 import type { UserPreferences } from "$types/user";
 import type { Draggable } from "@neodrag/vanilla";
 import { mount } from "svelte";
-import type { App, AppContextMenu, AppProcessData, ContextMenuItem } from "../../types/app";
+import { type App, type AppContextMenu, type AppProcessData, type ContextMenuItem } from "../../types/app";
 import { WaveKernel } from "../kernel";
 import type { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
 import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
+import { ApplicationStorage } from "./storage";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
 export class AppProcess extends Process {
@@ -345,5 +346,9 @@ export class AppProcess extends Process {
       image: BugReportIcon,
       sound: "arcos.dialog.warning",
     });
+  }
+
+  appStore() {
+    return this.userDaemon?.serviceHost?.getService("AppStorage") as ApplicationStorage;
   }
 }

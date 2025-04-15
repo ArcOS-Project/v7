@@ -43,6 +43,7 @@ export class ArcTerminal extends Process {
     this.path = path || "U:/";
     this.changeDirectory(path || "U:/");
     this.daemon = handler.getProcess(+this.env.get("userdaemon_pid"));
+
     this.term = term;
   }
 

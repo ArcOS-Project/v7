@@ -1,3 +1,4 @@
+import { ApplicationStorage } from "$ts/apps/storage";
 import { isPopulatable } from "$ts/apps/util";
 import type { App, InstalledApp } from "$types/app";
 import type { TerminalCommand } from "$types/terminal";
@@ -8,7 +9,7 @@ export const AppListCommand: TerminalCommand = {
   async exec(term, flags, argv) {
     const all = flags.a || flags.all;
     const countInstead = flags.c || flags.count;
-    const store = await term.daemon?.appStore?.get();
+    const store = term.daemon?.serviceHost?.getService<ApplicationStorage>("AppStorage")?.buffer();
 
     if (!store) {
       term.Error("ERR_NO_DAEMON");

@@ -1,7 +1,7 @@
 import { getAllJsonPaths, getJsonHierarchy } from "$ts/hierarchy";
 import { tryJsonParse } from "$ts/json";
 import { ServerManager } from "$ts/server";
-import type { AdminBootstrapper } from "$ts/server/admin";
+import { AdminBootstrapper } from "$ts/server/admin";
 import type { TerminalCommand } from "$types/terminal";
 import type { ArcTerminal } from "..";
 import { BOLD, BRBLACK, BRRED, BRYELLOW, RESET, UNDERLINE } from "../store";
@@ -11,7 +11,7 @@ export const AdminCommand: TerminalCommand = {
   keyword: "admin",
   async exec(term) {
     const paths = getAllJsonPaths(AdminCommandStore).map((a) => a.replaceAll(".", " "));
-    const admin = term.daemon?.admin;
+    const admin = term.daemon?.serviceHost?.getService<AdminBootstrapper>("admin");
     const server = term.kernel.getModule<ServerManager>("server");
 
     term.term.clear();

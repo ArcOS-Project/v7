@@ -1,17 +1,21 @@
 import { toForm } from "$ts/form";
 import type { ProcessHandler } from "$ts/process/handler";
-import { Process } from "$ts/process/instance";
 import { Axios } from "$ts/server/axios";
+import type { ServiceHost } from "$ts/services";
+import { BaseService } from "$ts/services/base";
 import type { FilesystemProgressCallback } from "$types/fs";
+import type { Service } from "$types/service";
 import type { SharedDriveType } from "$types/shares";
 import { SharedDrive } from "./drive";
 
-export class ShareManager extends Process {
-  token: string;
+export class ShareManager extends BaseService {
+  token: string | undefined;
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, token: string) {
-    super(handler, pid, parentPid);
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
+    super(handler, pid, parentPid, name, host);
+  }
 
+  async activate(token: string) {
     this.token = token;
   }
 
@@ -184,3 +188,10 @@ export class ShareManager extends Process {
     }
   }
 }
+
+export const shareService: Service = {
+  name: "Share management",
+  description: "Host process for shared drives",
+  process: ShareManager,
+  initialState: "started",
+};

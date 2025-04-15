@@ -2,24 +2,30 @@ import { arrayToText } from "$ts/fs/convert";
 import { getParentDirectory } from "$ts/fs/util";
 import { tryJsonParse } from "$ts/json";
 import type { ProcessHandler } from "$ts/process/handler";
-import { Process } from "$ts/process/instance";
+import type { ServiceHost } from "$ts/services";
+import { BaseService } from "$ts/services/base";
 import { sortByHierarchy } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { App, AppStorage, AppStoreCb, InstalledApp } from "$types/app";
+import type { Service } from "$types/service";
 
-export class ApplicationStorage extends Process {
+export class ApplicationStorage extends BaseService {
   private origins = new Map<string, AppStoreCb>([]);
   private injectedStore = new Map<string, App>([]);
   public buffer = Store<AppStorage>([]);
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
-    super(handler, pid, parentPid);
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
+    super(handler, pid, parentPid, name, host);
 
     this.loadOrigin("injected", () => this.injected());
 
     this.globalDispatch.subscribe("app-store-refresh", async () => {
       await this.refresh();
     });
+  }
+
+  async start() {
+    await this.refresh();
   }
 
   loadOrigin(id: string, store: AppStoreCb) {
@@ -125,3 +131,10 @@ export class ApplicationStorage extends Process {
     return undefined;
   }
 }
+
+export const appStoreService: Service = {
+  name: "Application Storage",
+  description: "Host process for application storage",
+  process: ApplicationStorage,
+  initialState: "started",
+};
