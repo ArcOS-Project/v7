@@ -17,7 +17,7 @@ export class AppInfoRuntime extends AppProcess {
   }
 
   async render() {
-    const targetApp = await this.userDaemon?.appStore?.getAppById(this.targetAppId);
+    const targetApp = await this.appStore()?.getAppById(this.targetAppId);
 
     if (!targetApp) {
       this.userDaemon?.sendNotification({

@@ -12,7 +12,7 @@
   let apps = $state<AppStorage>([]);
 
   onMount(() => {
-    const unsubscribe = process.userDaemon?.appStore?.buffer.subscribe((v) => {
+    const unsubscribe = process.appStore()?.buffer.subscribe((v) => {
       apps = v;
     });
 

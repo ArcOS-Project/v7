@@ -240,7 +240,7 @@ export class ShellRuntime extends AppProcess {
   async pinApp(appId: string) {
     this.Log(`Pinning ${appId}`);
 
-    const app = await this.userDaemon?.appStore?.getAppById(appId);
+    const app = await this.appStore()?.getAppById(appId);
 
     if (!app) return;
 
@@ -504,7 +504,7 @@ export class ShellRuntime extends AppProcess {
 
   async getAppSearchSupplier(preferences: UserPreferences) {
     const result: SearchItem[] = [];
-    const apps = (await this.userDaemon?.appStore?.get()) || [];
+    const apps = (await this.appStore()?.get()) || [];
 
     for (const app of apps) {
       const populatable = isPopulatable(app);

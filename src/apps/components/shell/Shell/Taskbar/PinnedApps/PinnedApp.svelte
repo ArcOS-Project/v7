@@ -14,7 +14,7 @@
   });
 
   async function getApp() {
-    app = await process?.userDaemon?.appStore?.getAppById(appId);
+    app = await process?.appStore()?.getAppById(appId);
   }
 
   function spawn() {

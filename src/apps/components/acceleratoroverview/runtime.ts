@@ -1,4 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
+import type { ApplicationStorage } from "$ts/apps/storage";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData, AppStorage } from "$types/app";
@@ -50,7 +51,7 @@ export class AcceleratorOverviewRuntime extends AppProcess {
   async render() {
     if (await this.closeIfSecondInstance()) return;
 
-    const apps = await this.userDaemon?.appStore?.get();
+    const apps = await this.userDaemon?.serviceHost?.getService<ApplicationStorage>("AppStorage")?.get();
 
     if (!apps) throw new Error("ERR_NO_DAEMON");
 

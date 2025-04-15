@@ -152,23 +152,27 @@ export class LoginAppRuntime extends AppProcess {
 
     await userDaemon.logActivity("login");
 
+    this.loadingStatus.set("Starting service host");
+
+    await userDaemon.startServiceHost();
+
     this.loadingStatus.set("Starting application storage");
 
     await userDaemon.startApplicationStorage();
 
     if (userDaemon.userInfo.admin) {
-      this.loadingStatus.set("Starting admin bootstrapper");
+      this.loadingStatus.set("Activating admin bootstrapper");
 
-      await userDaemon.startAdminBootstrapper();
+      await userDaemon.activateAdminBootstrapper();
     }
 
     this.loadingStatus.set("Starting share management");
 
     await userDaemon.startShareManager();
 
-    this.loadingStatus.set("Starting BHUSP");
+    this.loadingStatus.set("Activating BHUSP");
 
-    await userDaemon.startBugHuntUserSpaceProcess();
+    await userDaemon.activateBugHuntUserSpaceProcess();
 
     this.loadingStatus.set("Starting status refresh");
 
@@ -192,7 +196,7 @@ export class LoginAppRuntime extends AppProcess {
 
     await userDaemon.spawnAutoload();
 
-    await userDaemon.appStore?.refresh();
+    await this.appStore()?.refresh();
   }
 
   async logoff(daemon: UserDaemon) {

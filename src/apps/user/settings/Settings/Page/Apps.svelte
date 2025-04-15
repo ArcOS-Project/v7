@@ -2,6 +2,7 @@
   import { AppOrigins } from "$ts/apps/store";
   import { isPopulatable } from "$ts/apps/util";
   import { maybeIconId } from "$ts/images";
+  import { WarningIcon } from "$ts/images/dialog";
   import { AppsIcon } from "$ts/images/general";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
@@ -9,7 +10,7 @@
 
   const { process }: { process: SettingsRuntime } = $props();
   const { userPreferences } = process;
-  const { buffer } = process.userDaemon?.appStore || {};
+  const { buffer } = process?.appStore() || {};
 </script>
 
 <div class="centered-layout">
@@ -23,8 +24,8 @@
       <input type="checkbox" bind:checked={$userPreferences.shell.visuals.showHiddenApps} />
     </Option>
   </Section>
-  {#each Object.entries(AppOrigins) as [id, name]}
-    {#if buffer}
+  {#if $buffer}
+    {#each Object.entries(AppOrigins) as [id, name]}
       {#if $buffer!.filter((a) => a.originId === id).length > 0}
         <Section caption="{name} applications">
           {#each $buffer! as app (`${app.originId}-${app.id}-${app.metadata.name}`)}
@@ -42,8 +43,10 @@
           {/each}
         </Section>
       {/if}
-    {:else}
-      <p class="error-text">ERR_NO_DAEMON</p>
-    {/if}
-  {/each}
+    {/each}
+  {:else}
+    <Section>
+      <Option caption="Failed to get app list from AppStorage" image={WarningIcon}></Option>
+    </Section>
+  {/if}
 </div>
