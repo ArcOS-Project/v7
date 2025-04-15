@@ -1,6 +1,7 @@
 import { passwordStrength } from "check-password-strength";
 import leoProfanity from "leo-profanity";
 import validator from "validator";
+import { getJsonHierarchy } from "./hierarchy";
 
 leoProfanity.loadDictionary("en");
 
@@ -129,4 +130,21 @@ export function tryParseInt(input: any, returnsUndefined = false) {
   } catch {
     return returnsUndefined ? undefined : input;
   }
+}
+export function sortByKey(array: any[], key: string) {
+  return array.sort(function (a, b) {
+    var x = a[key];
+    var y = b[key];
+
+    return x < y ? -1 : x > y ? 1 : 0;
+  });
+}
+
+export function sortByHierarchy(array: any[], hierarchy: string) {
+  return array.sort(function (a, b) {
+    const x = `${getJsonHierarchy(a, hierarchy)}`.toLowerCase();
+    const y = `${getJsonHierarchy(b, hierarchy)}`.toLowerCase();
+
+    return x < y ? -1 : x > y ? 1 : 0;
+  });
 }
