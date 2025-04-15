@@ -7,7 +7,7 @@
   import ListItem from "./AppList/ListItem.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
-  const { searchResults, searchQuery, searching, SelectionIndex } = process;
+  const { searchResults, searchQuery, searching, SelectionIndex, userPreferences } = process;
 
   let apps = $state<AppStorage>([]);
 
@@ -44,8 +44,8 @@
       {/if}
     {/if}
   {:else}
-    {#each apps as app}
-      {#if isPopulatable(app) && !process.userDaemon?.checkDisabled(app.id)}
+    {#each apps as app (`${app.id}-${app.metadata.name}`)}
+      {#if (isPopulatable(app) || $userPreferences.shell.visuals.showHiddenApps) && !process.userDaemon?.checkDisabled(app.id)}
         <ListItem {app} {process} />
       {/if}
     {/each}

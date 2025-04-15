@@ -3,6 +3,7 @@ import { getParentDirectory } from "$ts/fs/util";
 import { tryJsonParse } from "$ts/json";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
+import { sortByHierarchy } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { App, AppStorage, AppStoreCb, InstalledApp } from "$types/app";
 
@@ -88,7 +89,10 @@ export class ApplicationStorage extends Process {
       result.push(...apps);
     }
 
-    return result;
+    return sortByHierarchy(
+      result.sort((a) => (a.hidden ? 0 : -1)),
+      "metadata.name"
+    );
   }
 
   async getAppById(id: string, fromBuffer = false): Promise<App | undefined> {

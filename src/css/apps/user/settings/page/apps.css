@@ -1,0 +1,4 @@
+#systemSettings div.container.apps .hidden > div.name span {
+  opacity: 0.5;
+  font-style: italic;
+}
