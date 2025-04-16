@@ -78,6 +78,10 @@ export class ApplicationStorage extends BaseService {
     this.Log(`Refreshing store`);
 
     this.buffer.set(await this.get());
+
+    for (const app of this.buffer()) {
+      this.fs.createDirectory(`T:/Apps/${app.id}`, false);
+    }
   }
 
   async get() {
