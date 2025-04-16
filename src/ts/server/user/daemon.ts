@@ -41,7 +41,7 @@ import type { BatteryType } from "$types/navigator";
 import type { Notification } from "$types/notification";
 import type { ArcShortcut } from "$types/shortcut";
 import { UserThemeKeys, type UserTheme } from "$types/theme";
-import type { CustomStylePreferences, UserInfo, UserPreferences, WallpaperGetters } from "$types/user";
+import type { CustomStylePreferences, PublicUserInfo, UserInfo, UserPreferences, WallpaperGetters } from "$types/user";
 import type { Wallpaper } from "$types/wallpaper";
 import { fromExtension } from "human-filetypes";
 import Cookies from "js-cookie";
@@ -51,6 +51,8 @@ import { Axios } from "../axios";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
+import type { MessagingInterface } from "../messaging";
+import type { ServerManager } from "..";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -81,6 +83,7 @@ export class UserDaemon extends Process {
   public fileHandlers: Record<string, FileHandler> = DefaultFileHandlers(this);
   override _criticalProcess: boolean = true;
   public mountedDrives: string[] = [];
+  public server: ServerManager;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, token: string, username: string, userInfo?: UserInfo) {
     super(handler, pid, parentPid);
@@ -89,6 +92,8 @@ export class UserDaemon extends Process {
     this.username = username;
     this.env.set("userdaemon_pid", this.pid);
     if (userInfo) this.userInfo = userInfo;
+
+    this.server = this.kernel.getModule<ServerManager>("server");
   }
 
   async startApplicationStorage() {
@@ -2093,6 +2098,12 @@ export class UserDaemon extends Process {
     admin?._activate(this.token);
   }
 
+  activateMessagingService() {
+    const messaging = this.serviceHost!.getService<MessagingInterface>("MessagingService");
+
+    messaging?._activate(this.token);
+  }
+
   async startShareManager() {
     this.Log("Starting share manager");
 
@@ -2176,5 +2187,18 @@ export class UserDaemon extends Process {
         true
       );
     });
+  }
+
+  async getPublicUserInfoOf(userId: string): Promise<PublicUserInfo | undefined> {
+    try {
+      const response = await Axios.get(`/user/info/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const information = response.data as PublicUserInfo;
+
+      information.profilePicture = `${this.server.url}/user/pfp/${userId}?authcode=${import.meta.env.DW_SERVER_AUTHCODE || ""}`;
+
+      return information;
+    } catch {
+      return undefined;
+    }
   }
 }

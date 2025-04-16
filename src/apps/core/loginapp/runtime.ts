@@ -155,6 +155,7 @@ export class LoginAppRuntime extends AppProcess {
     this.loadingStatus.set("Starting service host");
 
     await userDaemon.startServiceHost();
+    userDaemon.activateMessagingService();
 
     this.loadingStatus.set("Starting application storage");
 
