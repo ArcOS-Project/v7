@@ -14,6 +14,7 @@ export class FilesystemDrive {
   public readonly FIXED: boolean = false;
   public readonly REMOVABLE: boolean = false;
   public readonly READONLY: boolean = false;
+  public readonly HIDDEN: boolean = false;
   public readonly IDENTIFIES_AS: string = "generic";
   public readonly FILESYSTEM_SHORT: string = "GFS";
   public readonly FILESYSTEM_LONG: string = "Generic Filesystem";

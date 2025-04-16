@@ -1,4 +1,5 @@
 import { MessageBox } from "$ts/dialog";
+import { ShareManager } from "$ts/fs/shares";
 import type { SharedDrive } from "$ts/fs/shares/drive";
 import { getDirectoryName, getParentDirectory, join } from "$ts/fs/util";
 import { WarningIcon } from "$ts/images/dialog";
@@ -65,8 +66,10 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
                 {
                   caption: "Leave",
                   action: async () => {
+                    const shares = runtime.userDaemon?.serviceHost?.getService<ShareManager>("ShareMgmt");
+
                     await runtime.fs.umountDrive(share.shareId!);
-                    await runtime.userDaemon?.shares?.leaveShare(share.shareId!);
+                    await shares?.leaveShare(share.shareId!);
 
                     runtime.userPreferences.update((v) => {
                       v.startup ||= {};

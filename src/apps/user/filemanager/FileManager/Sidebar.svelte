@@ -17,7 +17,9 @@
   <section>
     <h1>Drives</h1>
     {#each Object.entries($drives) as [id, drive] (`${id}-${drive.data.uuid}`)}
-      <DriveEntry {process} {drive} {id} />
+      {#if !drive.data.HIDDEN}
+        <DriveEntry {process} {drive} {id} />
+      {/if}
     {/each}
   </section>
 </div>
