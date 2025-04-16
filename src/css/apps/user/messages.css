@@ -1,0 +1,154 @@
+#Messages > div.body {
+  padding: 0;
+  display: flex;
+  height: 100%;
+}
+
+#Messages > div.body div.sidebar {
+  display: flex;
+}
+
+#Messages > div.body div.pages {
+  width: 51px;
+  height: 100%;
+  border-right: var(--win-border);
+  padding: 10px;
+}
+
+#Messages > div.body div.pages button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  font-size: 16px;
+  margin-bottom: 5px;
+  background-color: transparent;
+}
+
+#Messages > div.body div.pages button:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#Messages > div.body div.pages button:active {
+  background-color: var(--button-glass-active-bg);
+}
+
+#Messages > div.body div.pages button.active {
+  background-color: var(--accent-transparent);
+  color: var(--accent-lighter);
+}
+
+#Messages > div.body div.messages div.search {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-bottom: var(--win-border);
+}
+
+#Messages > div.body div.messages div.search input {
+  padding: 0;
+  background-color: transparent;
+  border-radius: 0;
+  border: none;
+  min-width: unset;
+}
+
+#Messages > div.body div.messages div.search span {
+  opacity: 0.5;
+}
+
+#Messages > div.body div.messages {
+  border-right: var(--win-border);
+  width: 251px;
+}
+
+#Messages > div.body div.messages > div.list {
+  padding: 10px;
+}
+
+#Messages > div.body div.messages button.message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 5px;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 5px;
+  background-color: transparent;
+}
+
+#Messages > div.body div.messages button.message:hover {
+  background-color: var(--button-glass-bg);
+}
+#Messages > div.body div.messages button.message:active {
+  background-color: var(--button-glass-active-bg);
+}
+
+#Messages > div.body div.messages button.message.selected {
+  background-color: var(--accent-transparent);
+}
+
+#Messages > div.body div.messages button.message > div {
+  flex-grow: 1;
+  max-width: calc(100% - 12px - 40px);
+}
+
+#Messages > div.body div.messages button.message div.subject {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#Messages > div.body div.messages button.message,
+#Messages > div.body div.messages button.message * {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+#Messages > div.body div.messages button.message div.subject h1 {
+  margin-right: auto;
+}
+
+#Messages > div.body div.messages button.message p {
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+#Messages > div.body div.messages button.message div.subject div.statuses {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  opacity: 0.5;
+  font-size: 12px;
+  min-width: fit-content;
+}
+
+#Messages > div.body div.messages button.message div.subject .timestamp {
+  opacity: 0.5;
+  display: block;
+  min-width: fit-content;
+}
+
+#Messages > div.body div.messages button.message > img {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+}
+
+#Messages > div.body div.container {
+  width: calc(100% - 50px - 250px);
+  background-color: var(--win-bg);
+}
+
+#Messages > div.body div.container div.message-content {
+  height: calc(100% - 40px - 46px - 51px);
+  padding: 20px;
+}
+
+#Messages > div.body div.container div.message-content div.header img {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+}
