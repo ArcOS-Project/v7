@@ -133,7 +133,7 @@ export class AppRenderer extends Process {
       if (!data.overlay) {
         if (data.position?.centered) {
           const x = data.position?.x || (document.body.offsetWidth - data.size?.w) / 2;
-          const y = data.position?.y || (document.body.offsetHeight - data.size?.h) / 2;
+          const y = data.position?.y || (document.body.offsetHeight - 60 - data.size?.h) / 2;
 
           window.style.top = `${y}px`;
           window.style.left = `${x}px`;
