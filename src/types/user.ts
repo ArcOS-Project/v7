@@ -144,3 +144,11 @@ export const PasswordStrengthCaptions: Record<PasswordStrength, string> = {
   medium: "medium",
   strong: "strong",
 };
+
+export interface PublicUserInfo {
+  username: string;
+  displayName?: string;
+  profilePicture: string;
+  accountNumber: number;
+  admin: boolean;
+}

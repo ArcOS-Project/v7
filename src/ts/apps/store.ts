@@ -30,6 +30,7 @@ import { ImageViewerApp } from "$apps/user/imageviewer/metadata";
 import { LightsOffApp } from "$apps/user/lightsoff/metadata";
 import { LoggingApp } from "$apps/user/logging/metadata";
 import { MediaPlayerApp } from "$apps/user/mediaplayer/metadata";
+import { MessagingApp } from "$apps/user/messages/metadata";
 import { PdfViewerApp } from "$apps/user/pdfviewer/metadata";
 import { ProcessesApp } from "$apps/user/processes/metadata";
 import { SystemSettings } from "$apps/user/settings/metadata";
@@ -76,6 +77,7 @@ export const BuiltinApps: AppStorage = [
   ShareListGuiApp,
   ShareCreateGuiApp,
   BugHuntApp,
+  MessagingApp,
 ];
 
 export const AdminApps: AppStorage = [];

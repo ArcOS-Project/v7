@@ -8,8 +8,8 @@ export interface Message {
   repliesTo?: string;
   deleted?: boolean;
   correlationId: string;
-  createdAt: boolean;
-  updatedAt: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface MessageNode extends Message {
@@ -24,6 +24,7 @@ export interface PartialMessage {
   deleted?: boolean;
   _id: string;
   repliesTo?: string;
+  createdAt: string;
 }
 
 export type ExpandedMessage = Omit<Message, "attachments"> & {
