@@ -1,3 +1,8 @@
+import { ArcOSVersion } from "$ts/env";
+import { textToBlob } from "$ts/fs/convert";
+import { MemoryFilesystemDrive } from "$ts/fs/drives/temp";
+import { ArcBuild } from "$ts/metadata/build";
+import { ArcMode } from "$ts/metadata/mode";
 import { ServerManager } from "$ts/server";
 import { States } from "$ts/state/store";
 import { WaveKernel } from ".";
@@ -32,6 +37,19 @@ export class InitProcess extends Process {
       throw new Error("Firefox");
     }
 
+    await this.initializeTempFs();
+
     await kernel.state?.loadState(connected ? "boot" : "serverdown", {}, true);
+  }
+
+  async initializeTempFs() {
+    this.Log("Initializing TEMP");
+
+    await this.fs.mountDrive("temp", MemoryFilesystemDrive, "T");
+    await this.fs.createDirectory("T:/Apps");
+    await this.fs.createDirectory("T:/Meta");
+    await this.fs.writeFile("T:/Meta/ARCOS_BUILD", textToBlob(ArcBuild()));
+    await this.fs.writeFile("T:/Meta/ARCOS_MODE", textToBlob(ArcMode()));
+    await this.fs.writeFile("T:/Meta/ARCOS_VERSION", textToBlob(ArcOSVersion));
   }
 }
