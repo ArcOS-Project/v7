@@ -7,12 +7,13 @@
   const { message } = process;
 </script>
 
-{#if $message && $message.attachments.length}
-  <div class="attachment-bar">
+<div class="attachment-bar" class:visible={$message && $message.attachments.length}>
+  {#if $message && $message.attachments.length}
     {#each $message.attachments as attachment (attachment._id)}
       <button
         class="attachment"
-        title="Name: {attachment.filename}\nSize: {formatBytes(attachment.size)}\nType: {attachment.mimeType}"
+        title={`Name: ${attachment.filename}\nSize: ${formatBytes(attachment.size)}\nType: ${attachment.mimeType}`}
+        ondblclick={() => process.openAttachment(attachment, $message._id)}
       >
         <img src={process.userDaemon!.getMimeIconByFilename(attachment.filename) || DefaultMimeIcon} alt="" />
         <p>
@@ -23,5 +24,5 @@
         </p>
       </button>
     {/each}
-  </div>
-{/if}
+  {/if}
+</div>

@@ -1,11 +1,14 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { arrayToBlob } from "$ts/fs/convert";
+import { getParentDirectory } from "$ts/fs/util";
+import { MessagingIcon } from "$ts/images/apps";
 import { WarningIcon } from "$ts/images/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
 import { MessagingInterface } from "$ts/server/messaging";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
-import type { ExpandedMessage, PartialMessage } from "$types/messaging";
+import type { ExpandedMessage, MessageAttachment, PartialMessage } from "$types/messaging";
 import type { PublicUserInfo } from "$types/user";
 import { messagingPages } from "./store";
 import type { MessagingPage } from "./types";
@@ -16,6 +19,7 @@ export class MessagingAppRuntime extends AppProcess {
   pageId = Store<string | undefined>();
   buffer = Store<PartialMessage[]>([]);
   loading = Store<boolean>(false);
+  refreshing = Store<boolean>(true);
   errored = Store<boolean>(false);
   message = Store<ExpandedMessage | undefined>();
   userInfoCache: Record<string, PublicUserInfo> = {};
@@ -97,9 +101,9 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   async refresh() {
-    this.loading.set(true);
+    this.refreshing.set(true);
     const messages = await this.page()?.supplier?.(this);
-    this.loading.set(false);
+    this.refreshing.set(false);
 
     if (!messages) {
       this.refreshFailed();
@@ -141,5 +145,33 @@ export class MessagingAppRuntime extends AppProcess {
     this.userInfoCache[userId] = info;
 
     return info;
+  }
+
+  async openAttachment(attachment: MessageAttachment, messageId: string) {
+    const path = `T:/Apps/${this.app.id}/${messageId}/${attachment.filename}`;
+
+    if (await this.fs.readFile(path)) return this.userDaemon?.openFile(path);
+
+    const prog = await this.userDaemon?.FileProgress({
+      type: "size",
+      max: attachment.size,
+      caption: `Reading Attachment...`,
+      icon: MessagingIcon,
+      subtitle: attachment.filename,
+    });
+
+    const contents = await this.service.readAttachment(messageId, attachment._id, (progress) => {
+      prog?.show();
+      prog?.setDone(progress.value);
+      prog?.setMax(progress.max);
+    });
+
+    prog?.stop();
+
+    if (!contents) return;
+
+    await this.fs.createDirectory(getParentDirectory(path));
+    await this.fs.writeFile(path, arrayToBlob(contents, attachment.mimeType));
+    await this.userDaemon?.openFile(path);
   }
 }

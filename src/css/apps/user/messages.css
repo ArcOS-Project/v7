@@ -1,3 +1,6 @@
+#Messages > div.body div.titlebar.custom {
+  border-bottom: var(--win-border);
+}
 #Messages > div.body {
   padding: 0;
   display: flex;
@@ -143,12 +146,126 @@
 }
 
 #Messages > div.body div.container div.message-content {
-  height: calc(100% - 40px - 46px - 51px);
+  height: calc(100% - 40px - 48px - 51px);
   padding: 20px;
+}
+
+#Messages > div.body div.container div.message-content div.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
 }
 
 #Messages > div.body div.container div.message-content div.header img {
   width: 40px;
   height: 40px;
   border-radius: 20px;
+}
+
+#Messages > div.body div.container div.message-content div.header h1 {
+  font-size: 16px;
+}
+#Messages > div.body div.container div.message-content div.header p {
+  opacity: 0.5;
+}
+
+#Messages > div.body div.container div.attachment-bar {
+  height: 48px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+}
+
+#Messages > div.body div.container div.attachment-bar.visible {
+  border-top: var(--win-border);
+}
+
+#Messages > div.body div.container div.attachment-bar button {
+  display: flex;
+  padding: 5px;
+  align-items: center;
+  gap: 5px;
+  border-radius: 4px;
+}
+
+#Messages > div.body div.container div.attachment-bar button img {
+  height: 16px;
+}
+
+#Messages > div.body div.container div.attachment-bar button span.size {
+  opacity: 0.5;
+}
+
+#Messages > div.body div.container div.attachment-bar button p {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+#Messages > div.body div.container div.action-bar {
+  height: 51px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-top: var(--win-border);
+}
+
+#Messages > div.body div.container div.action-bar button.compose {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--accent-darkest);
+  font-weight: normal;
+  padding: 0 15px;
+  padding-left: 10px;
+  height: 30px;
+}
+
+#Messages > div.body div.container div.action-bar button.compose * {
+  color: inherit;
+}
+
+#Messages > div.body div.container div.action-bar button.compose span.lucide {
+  font-size: 16px;
+}
+
+#Messages > div.body div.container div.action-bar button.lucide {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  font-size: 16px;
+}
+
+#Messages > div.body div.container div.action-bar div.sep {
+  width: 1px;
+  height: 20px;
+  background-color: var(--button-glass-hover-bg);
+}
+
+#Messages > div.body div.container div.action-bar > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#Messages > div.body div.container div.center-notice {
+  height: calc(100% - 40px - 51px);
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#Messages > div.body div.container div.center-notice img {
+  height: 84px;
+  margin-bottom: 10px;
+}
+
+#Messages > div.body div.container div.center-notice p {
+  opacity: 0.5;
+}
+#Messages > div.body div.container div.center-notice h1 {
+  margin-bottom: 5px;
+  font-size: 16px;
 }

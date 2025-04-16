@@ -3,9 +3,10 @@
   import { onMount } from "svelte";
   import type { MessagingAppRuntime } from "../../runtime";
   import dayjs from "dayjs";
+  import Spinner from "$lib/Spinner.svelte";
 
   const { process }: { process: MessagingAppRuntime } = $props();
-  const { message } = process;
+  const { message, loading } = process;
   const userId = process.userDaemon!.userInfo!._id;
   const isSent = $message?.authorId === userId;
 
@@ -15,7 +16,7 @@
   onMount(async () => {
     if (!$message) return;
 
-    user = await process.userInfo(isSent ? $message.recipient : $message.authorId);
+    user = isSent ? await process.userInfo($message.recipient) : $message.author!;
     date = dayjs($message.createdAt).format("D MMMM YYYY, hh:mm A");
   });
 </script>

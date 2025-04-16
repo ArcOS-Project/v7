@@ -10,7 +10,7 @@
 <div class="message-list">
   <Search {process} />
   <div class="messages">
-    {#each $buffer as message}
+    {#each $buffer as message (message._id)}
       <Message {process} {message} />
     {/each}
   </div>
