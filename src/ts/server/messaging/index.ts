@@ -5,12 +5,18 @@ import { BaseService } from "$ts/services/base";
 import type { FilesystemProgressCallback } from "$types/fs";
 import type { ExpandedMessage, MessageNode, PartialMessage } from "$types/messaging";
 import type { Service } from "$types/service";
+import { ServerManager } from "..";
 import { Axios } from "../axios";
 
 export class MessagingInterface extends BaseService {
   token: string | undefined;
+  serverUrl: string | false | undefined;
+  serverAuthCode: string;
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);
+
+    this.serverUrl = ServerManager.url();
+    this.serverAuthCode = import.meta.env.DW_SERVER_AUTHCODE || "";
   }
 
   async activate(token: string): Promise<void> {
@@ -22,8 +28,15 @@ export class MessagingInterface extends BaseService {
 
     try {
       const response = await Axios.get("/messaging/sent", { headers: { Authorization: `Bearer ${this.token}` } });
+      const data = (response.data as PartialMessage[]).map((message) => {
+        if (message.author) {
+          message.author.profilePicture = `${this.serverUrl}/user/pfp/${message.authorId}?authcode=${this.serverAuthCode}`;
+        }
 
-      return response.data as PartialMessage[];
+        return message;
+      });
+
+      return data;
     } catch {
       return [];
     }
@@ -33,8 +46,15 @@ export class MessagingInterface extends BaseService {
 
     try {
       const response = await Axios.get("/messaging/received", { headers: { Authorization: `Bearer ${this.token}` } });
+      const data = (response.data as PartialMessage[]).map((message) => {
+        if (message.author) {
+          message.author.profilePicture = `${this.serverUrl}/user/pfp/${message.authorId}?authcode=${this.serverAuthCode}`;
+        }
 
-      return response.data as PartialMessage[];
+        return message;
+      });
+
+      return data;
     } catch {
       return [];
     }
@@ -83,6 +103,12 @@ export class MessagingInterface extends BaseService {
 
     try {
       const response = await Axios.get(`/messaging/read/${messageId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+
+      const data = response.data as ExpandedMessage;
+
+      if (data && data.author) {
+        data.author.profilePicture = `${this.serverUrl}/user/pfp/${data.authorId}?authcode=${this.serverAuthCode}`;
+      }
 
       return response.data as ExpandedMessage;
     } catch {

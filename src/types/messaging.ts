@@ -1,3 +1,5 @@
+import type { PublicUserInfo } from "./user";
+
 export interface Message {
   authorId: string; // userId
   title: string;
@@ -10,6 +12,7 @@ export interface Message {
   correlationId: string;
   createdAt: string;
   updatedAt: string;
+  author?: PublicUserInfo;
 }
 
 export interface MessageNode extends Message {
@@ -25,6 +28,7 @@ export interface PartialMessage {
   _id: string;
   repliesTo?: string;
   createdAt: string;
+  author?: PublicUserInfo;
 }
 
 export type ExpandedMessage = Omit<Message, "attachments"> & {
