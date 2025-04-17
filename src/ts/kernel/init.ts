@@ -33,10 +33,6 @@ export class InitProcess extends Process {
 
     kernel.state = state;
 
-    if (navigator.userAgent.toLowerCase().includes("firefox")) {
-      throw new Error("Firefox");
-    }
-
     await this.initializeTempFs();
 
     await kernel.state?.loadState(connected ? "boot" : "serverdown", {}, true);

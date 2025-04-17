@@ -8,6 +8,7 @@ import { ProcessHandler } from "../process/handler";
 import { StateHandler } from "../state";
 import { InitProcess } from "./init";
 import { KernelModules } from "./module/store";
+import { prematurePanic } from "./premature";
 
 let CurrentKernel: WaveKernel | undefined = undefined;
 
@@ -59,6 +60,8 @@ export class WaveKernel {
     if (!state) {
       kernel.Log(`WaveKernel::panic`, `\n\n${reason}`);
 
+      prematurePanic();
+
       return;
     }
 
@@ -79,6 +82,10 @@ export class WaveKernel {
     this.Log(`ArcOS`, `***** [v7 -> ArcOS InDev v7.0.0-${this.ARCOS_MODE}_${this.ARCOS_BUILD}] *****`);
 
     await this._kernelModules();
+
+    if (navigator.userAgent.toLowerCase().includes("firefox")) {
+      throw new Error("Firefox");
+    }
 
     const stack = this.getModule<ProcessHandler>("stack");
 
