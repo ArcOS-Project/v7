@@ -55,10 +55,19 @@
   border-radius: 0;
   border: none;
   min-width: unset;
+  flex-grow: 1;
 }
 
 #Messages > div.body div.messages div.search span {
   opacity: 0.5;
+}
+
+#Messages > div.body div.messages div.search button.icon-x {
+  width: 16px;
+  height: 16px;
+  background-color: transparent;
+  padding: 0;
+  font-size: 16px;
 }
 
 #Messages > div.body div.messages {
@@ -68,6 +77,18 @@
 
 #Messages > div.body div.messages > div.list {
   padding: 10px;
+  padding-right: 2px;
+  overflow-y: scroll;
+  height: calc(100% - 40px);
+}
+
+#Messages > div.body div.messages > div.list p.info {
+  opacity: 0.5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  margin: 10px 0;
 }
 
 #Messages > div.body div.messages button.message {
@@ -143,6 +164,10 @@
 #Messages > div.body div.container {
   width: calc(100% - 50px - 250px);
   background-color: var(--win-bg);
+}
+
+#Messages > div.body div.container.full {
+  width: 100%;
 }
 
 #Messages > div.body div.container div.message-content {
@@ -243,10 +268,17 @@
   background-color: var(--button-glass-hover-bg);
 }
 
-#Messages > div.body div.container div.action-bar > div {
+#Messages > div.body div.container div.action-bar > div.actions {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-left: auto;
+}
+
+#Messages > div.body div.container div.action-bar > div.actions > div {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 #Messages > div.body div.container div.center-notice {
