@@ -1,10 +1,14 @@
 .crash-screen {
-  background-color: #000;
+  background-color: #111;
 
   opacity: 0;
   animation: crash-show 0s linear forwards;
   animation-delay: 1s;
   transition: none !important;
+}
+
+.crash-screen * {
+  color: #ddd;
 }
 
 .crash-screen #crashScreen,
