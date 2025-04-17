@@ -4,7 +4,10 @@
   import type { MessagingAppRuntime } from "./runtime";
 
   const { process }: { process: MessagingAppRuntime } = $props();
+  const { messageWindow } = process;
 </script>
 
-<Sidebar {process} />
+{#if !messageWindow}
+  <Sidebar {process} />
+{/if}
 <Container {process} />

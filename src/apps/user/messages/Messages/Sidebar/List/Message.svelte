@@ -20,7 +20,12 @@
 </script>
 
 {#if message.author}
-  <button class="message" onclick={() => process.readMessage(message._id)} class:selected={$openedMessage?._id === message._id}>
+  <button
+    class="message"
+    onclick={() => process.readMessage(message._id)}
+    class:selected={$openedMessage?._id === message._id}
+    ondblclick={() => process.popoutMessage(message._id)}
+  >
     <img src={message.author.profilePicture} alt="" />
     <div>
       <div class="subject">
