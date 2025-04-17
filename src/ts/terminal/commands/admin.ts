@@ -11,7 +11,7 @@ export const AdminCommand: TerminalCommand = {
   keyword: "admin",
   async exec(term) {
     const paths = getAllJsonPaths(AdminCommandStore).map((a) => a.replaceAll(".", " "));
-    const admin = term.daemon?.serviceHost?.getService<AdminBootstrapper>("admin");
+    const admin = term.daemon?.serviceHost?.getService<AdminBootstrapper>("AdminBootstrapper");
     const server = term.kernel.getModule<ServerManager>("server");
 
     term.term.clear();
