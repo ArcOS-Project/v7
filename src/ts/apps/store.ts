@@ -8,6 +8,7 @@ import { GlobalLoadIndicatorApp } from "$apps/components/globalloadindicator/met
 import { IconPickerApp } from "$apps/components/iconpicker/metadata";
 import { ItemInfoApp } from "$apps/components/iteminfo/metadata";
 import { MessageBoxApp } from "$apps/components/messagebox/metadata";
+import { MessageComposerApp } from "$apps/components/messagecomposer/metadata";
 import { OpenWithApp } from "$apps/components/openwith/metadata";
 import { SecureContextApp } from "$apps/components/securecontext/metadata";
 import { ShareConnGuiApp } from "$apps/components/shareconngui/metadata";
@@ -78,6 +79,7 @@ export const BuiltinApps: AppStorage = [
   ShareCreateGuiApp,
   BugHuntApp,
   MessagingApp,
+  MessageComposerApp,
 ];
 
 export const AdminApps: AppStorage = [];

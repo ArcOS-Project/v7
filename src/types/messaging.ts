@@ -15,6 +15,13 @@ export interface Message {
   author?: PublicUserInfo;
 }
 
+export interface MessageCreateData {
+  title: string;
+  body: string;
+  recipients: string[];
+  attachments: File[];
+}
+
 export interface MessageNode extends Message {
   replies: MessageNode[];
 }
