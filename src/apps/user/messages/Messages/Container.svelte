@@ -2,15 +2,17 @@
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
   import Spinner from "$lib/Spinner.svelte";
   import { MessagingIcon } from "$ts/images/apps";
+  import { BadStatusIcon } from "$ts/images/status";
   import type { MessagingAppRuntime } from "../runtime";
+  import ActionBar from "./Container/ActionBar.svelte";
   import AttachmentBar from "./Container/AttachmentBar.svelte";
   import MessageContent from "./Container/MessageContent.svelte";
 
   const { process }: { process: MessagingAppRuntime } = $props();
-  const { message, loading } = process;
+  const { message, loading, messageNotFound, messageWindow } = process;
 </script>
 
-<div class="container">
+<div class="container" class:full={messageWindow}>
   <CustomTitlebar {process} />
   {#if $loading}
     <div class="center-notice">
@@ -19,6 +21,12 @@
   {:else if $message}
     <MessageContent {process} />
     <AttachmentBar {process} />
+  {:else if $messageNotFound}
+    <div class="center-notice">
+      <img src={BadStatusIcon} alt="" />
+      <h1>Message not found!</h1>
+      <p>The message you tried to open could not be found.</p>
+    </div>
   {:else}
     <div class="center-notice">
       <img src={MessagingIcon} alt="" />
@@ -26,10 +34,5 @@
       <p>Click on a message to read it.</p>
     </div>
   {/if}
-  <div class="action-bar">
-    <button class="compose suggested">
-      <span class="lucide icon-plus"></span>
-      <span>Compose</span>
-    </button>
-  </div>
+  <ActionBar {process} />
 </div>
