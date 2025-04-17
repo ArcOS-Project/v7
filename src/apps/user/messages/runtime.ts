@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { arrayToBlob } from "$ts/fs/convert";
+import { arrayToBlob, arrayToText, textToBlob } from "$ts/fs/convert";
 import { getParentDirectory } from "$ts/fs/util";
 import { MessagingIcon } from "$ts/images/apps";
 import { WarningIcon } from "$ts/images/dialog";
@@ -10,8 +10,11 @@ import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { ExpandedMessage, MessageAttachment, PartialMessage } from "$types/messaging";
 import type { PublicUserInfo } from "$types/user";
+import Fuse from "fuse.js";
 import { messagingPages } from "./store";
 import type { MessagingPage } from "./types";
+import dayjs from "dayjs";
+import { tryJsonParse } from "$ts/json";
 
 export class MessagingAppRuntime extends AppProcess {
   service: MessagingInterface;
@@ -21,21 +24,49 @@ export class MessagingAppRuntime extends AppProcess {
   loading = Store<boolean>(false);
   refreshing = Store<boolean>(true);
   errored = Store<boolean>(false);
+  messageNotFound = Store<boolean>(false);
   message = Store<ExpandedMessage | undefined>();
   userInfoCache: Record<string, PublicUserInfo> = {};
+  searchQuery = Store<string>();
+  searchResults = Store<string[]>([]);
+  messageWindow = false;
+  messageFromFile = false;
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, page = "inbox") {
+  constructor(
+    handler: ProcessHandler,
+    pid: number,
+    parentPid: number,
+    app: AppProcessData,
+    pageOrMessagePath = "inbox",
+    messageId?: string
+  ) {
     super(handler, pid, parentPid, app);
 
     this.service = this.userDaemon?.serviceHost?.getService<MessagingInterface>("MessagingService")!;
-    this.renderArgs.page = page;
+
+    const path = pageOrMessagePath.includes(":/") && pageOrMessagePath.endsWith(".msg") ? pageOrMessagePath : undefined;
+
+    if (messageId || path) {
+      this.messageWindow = true;
+      if (messageId) this.readMessage(messageId);
+      else if (path) this.readMessageFromFile(path);
+      this.app.data.minSize.w = 600;
+      this.app.data.size.w = this.app.data.minSize.w;
+      this.app.data.size.h = this.app.data.minSize.h;
+    } else {
+      this.renderArgs.page = pageOrMessagePath;
+    }
   }
 
   async render({ page }: { page: string }) {
     this.switchPage(page);
+
+    this.searchQuery.subscribe((v) => this.Search(v));
   }
 
   async getInbox() {
+    if (this.messageWindow) return [];
+
     const received = await this.service.getReceivedMessages();
     const archived = this.getArchiveState();
 
@@ -43,6 +74,8 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   async getSent() {
+    if (this.messageWindow) return [];
+
     const sent = await this.service.getSentMessages();
     const archived = this.getArchiveState();
 
@@ -50,6 +83,8 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   async getArchived() {
+    if (this.messageWindow) return [];
+
     const sent = await this.service.getSentMessages();
     const received = await this.service.getReceivedMessages();
     const archived = this.getArchiveState();
@@ -90,6 +125,7 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   async switchPage(id: string) {
+    if (this.messageWindow) return;
     if (this.pageId() === id && !this.errored()) return;
     if (!messagingPages[id]) return;
 
@@ -101,6 +137,8 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   async refresh() {
+    if (this.messageWindow) return;
+
     this.refreshing.set(true);
     const messages = await this.page()?.supplier?.(this);
     this.refreshing.set(false);
@@ -131,9 +169,19 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   async readMessage(messageId: string) {
+    if (this.message()?._id === messageId) return;
+
+    this.messageNotFound.set(false);
     this.loading.set(true);
-    this.message.set(await this.service.readMessage(messageId));
+
+    const message = await this.service.readMessage(messageId);
+    if (!message) this.messageNotFound.set(true);
+
+    this.message.set(message);
     this.loading.set(false);
+
+    if (this.messageWindow && message)
+      this.windowTitle.set(`${message.title} from ${message.author?.displayName || message.author?.username || "unknown user"}`);
   }
 
   async userInfo(userId: string): Promise<PublicUserInfo | undefined> {
@@ -173,5 +221,74 @@ export class MessagingAppRuntime extends AppProcess {
     await this.fs.createDirectory(getParentDirectory(path));
     await this.fs.writeFile(path, arrayToBlob(contents, attachment.mimeType));
     await this.userDaemon?.openFile(path);
+  }
+
+  Search(query: string) {
+    if (this.messageWindow) return;
+    if (!query) return this.searchResults.set([]);
+
+    const messages = this.buffer().map((m) => ({ ...m, authorName: m.author?.displayName || m.author?.username }));
+
+    if (!messages) return;
+
+    const options = {
+      includeScore: true,
+      keys: ["title", "authorname"],
+    };
+
+    const fuse = new Fuse(messages, options);
+    const result = fuse.search(query);
+
+    this.searchResults.set(result.map((r) => r.item._id));
+  }
+
+  popoutMessage(messageId: string) {
+    this.message.set(undefined);
+    this.spawnApp(this.app.id, this.parentPid, this.pageId(), messageId);
+  }
+
+  async saveMessage() {
+    const message = this.message();
+
+    if (!message) return;
+
+    const date = dayjs(message.createdAt).format("DD MMM YYYY, HH.mm.ss");
+    const [path] = await this.userDaemon!.LoadSaveDialog({
+      title: "Choose where to save the message",
+      icon: MessagingIcon,
+      isSave: true,
+      extensions: [".arcmsg"],
+      saveName: `${message.title} from ${
+        message.author?.displayName || message.author?.displayName || "unknown user"
+      } - ${date}.msg`,
+    });
+
+    if (!path) return;
+
+    const prog = await this.userDaemon?.FileProgress({
+      type: "size",
+      caption: `Writing message...`,
+      icon: MessagingIcon,
+      subtitle: path,
+    });
+
+    await this.fs.writeFile(path, textToBlob(JSON.stringify(message, null, 2)), (progress) => {
+      prog?.show();
+      prog?.setDone(progress.value);
+      prog?.setMax(progress.max);
+    });
+  }
+
+  async readMessageFromFile(path: string) {
+    this.messageFromFile = true;
+
+    const contents = await this.fs.readFile(path);
+    if (!contents) return this.closeWindow();
+
+    const json = tryJsonParse(arrayToText(contents));
+    if (typeof json === "string") return this.closeWindow();
+
+    this.message.set(json as ExpandedMessage);
+    this.windowTitle.set(path);
   }
 }
