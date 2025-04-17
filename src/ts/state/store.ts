@@ -1,10 +1,6 @@
 import { BootScreen } from "$apps/core/bootscreen/metadata";
 import { InitialSetupWizard } from "$apps/core/initialsetup/metadata";
 import { LoginApp } from "$apps/core/loginapp/metadata";
-import CrashCss from "../../css/state/crash.css?url";
-import DesktopCss from "../../css/state/desktop.css?url";
-import LicenseDeclinedCss from "../../css/state/licensedeclined.css?url";
-import ServerDownCss from "../../css/state/serverdown.css?url";
 import CrashHtml from "../../state/crash/crash.html?url";
 import CrashRender from "../../state/crash/render";
 import DesktopHtml from "../../state/desktop/desktop.html?url";
@@ -30,27 +26,23 @@ export const States: Record<string, State> = {
     name: "Server down",
     render: ServerDownRender,
     identifier: "serverdown",
-    css: ServerDownCss,
     html: ServerDownHtml,
   },
   licenseDeclined: {
     name: "License Declined",
     html: LicenseDeclinedHtml,
-    css: LicenseDeclinedCss,
     render: LicenseDeclinedRender,
     identifier: "licenseDeclined",
   },
   "crash-screen": {
     render: CrashRender,
     html: CrashHtml,
-    css: CrashCss,
     name: "Aw, snap!",
     identifier: "crash-screen",
   },
   desktop: {
     render: DesktopRender,
     html: DesktopHtml,
-    css: DesktopCss,
     name: "ArcOS Desktop",
     identifier: "desktop",
   },

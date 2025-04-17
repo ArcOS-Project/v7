@@ -10,6 +10,10 @@
 @import url("./spinner.css");
 @import url("./virtualdesktop.css");
 @import url("./infoblock.css");
+@import url("./state/crash.css");
+@import url("./state/desktop.css");
+@import url("./state/licensedeclined.css");
+@import url("./state/serverdown.css");
 
 html,
 body {

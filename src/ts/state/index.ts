@@ -54,7 +54,7 @@ export class StateHandler extends Process {
     htmlLoader.innerHTML = "";
     cssLoader.href = "";
 
-    if (!data.app && !(data.html && data.css)) {
+    if (!data.app && !data.html) {
       throw new StateError(`${id}: Tried to load a state without any valid code.`);
     }
 
@@ -117,9 +117,6 @@ export class StateHandler extends Process {
     if (this.currentState) htmlLoader.classList.remove(this.currentState);
 
     htmlLoader.classList.add(`fullscreen`, id);
-    cssLoader.href = data.css || "";
-
-    this.Log(` -> Loaded ${data.css}`);
   }
 
   async loadStateAsApp(data: State, props: Record<string, any>) {
