@@ -157,6 +157,10 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.startServiceHost();
     userDaemon.activateMessagingService();
 
+    this.loadingStatus.set("Starting share management");
+
+    await userDaemon.startShareManager();
+
     this.loadingStatus.set("Starting application storage");
 
     await userDaemon.startApplicationStorage();
@@ -166,10 +170,6 @@ export class LoginAppRuntime extends AppProcess {
 
       await userDaemon.activateAdminBootstrapper();
     }
-
-    this.loadingStatus.set("Starting share management");
-
-    await userDaemon.startShareManager();
 
     this.loadingStatus.set("Activating BHUSP");
 
