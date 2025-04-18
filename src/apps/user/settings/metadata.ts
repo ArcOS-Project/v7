@@ -1,5 +1,5 @@
 import "$css/apps/user/settings.css";
-import { SettingsIcon } from "$ts/images/general";
+import { SettingsIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import { SettingsRuntime } from "./runtime";
 import Settings from "./Settings.svelte";

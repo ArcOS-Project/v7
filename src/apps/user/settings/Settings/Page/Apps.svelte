@@ -32,7 +32,7 @@
             {#if app.originId === id && (isPopulatable(app) || $userPreferences.shell.visuals.showHiddenApps)}
               <Option
                 caption={app.metadata.name}
-                image={maybeIconId(app.metadata.icon)}
+                image={process.userDaemon?.getAppIcon(app)}
                 chevron
                 onclick={() => {
                   process.spawnOverlayApp("AppInfo", process.pid, app.id);

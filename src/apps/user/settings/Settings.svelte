@@ -1,6 +1,6 @@
 <script lang="ts">
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
-  import { SettingsIcon } from "$ts/images/general";
+  import { SettingsIcon } from "$ts/images/apps";
   import { Sleep } from "$ts/sleep";
   import { onMount, type Component } from "svelte";
   import type { SettingsRuntime } from "./runtime";

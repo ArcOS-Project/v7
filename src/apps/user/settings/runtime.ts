@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { getDirectoryName } from "$ts/fs/util";
+import { SettingsIcon } from "$ts/images/apps";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import {
   AccountIcon,
@@ -9,7 +10,6 @@ import {
   PasswordIcon,
   SecurityHighIcon,
   SecurityMediumIcon,
-  SettingsIcon,
   WaveIcon,
 } from "$ts/images/general";
 import { GoodStatusIcon } from "$ts/images/status";
