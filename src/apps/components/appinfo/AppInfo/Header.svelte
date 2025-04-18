@@ -43,7 +43,7 @@
 
 <div class="header">
   <div class="left">
-    <img src={maybeIconId(target?.metadata?.icon || QuestionIcon)} alt="" />
+    <img src={process.userDaemon?.getAppIcon(target) || QuestionIcon} alt="" />
     <div class="base-info">
       <p class="name">
         <span>{target?.metadata?.name || "Unknown"}</span>
