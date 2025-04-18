@@ -69,8 +69,6 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         disabled: async (app: App) => {
           const x = await runtime.appStore()?.getAppById(app.id);
 
-          console.log(app.id, x);
-
           return !x;
         },
         isActive: (app: App) => runtime.userPreferences().pinnedApps?.includes(app.id),
@@ -138,8 +136,6 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         },
         disabled: async (proc: AppProcess) => {
           const x = await runtime.appStore()?.getAppById(proc.app.id);
-
-          console.log(proc.app.id, x);
 
           return !x;
         },

@@ -18,7 +18,7 @@
 
 {#if app && process}
   <button class="list-item" onclick={launch} {disabled} data-contextmenu="startmenu-app" use:contextProps={[app]}>
-    <img src={maybeIconId(app.metadata.icon)} alt="" />
+    <img src={process.userDaemon?.getAppIcon(app)} alt="" />
     <span class="name">{app.metadata.name}</span>
   </button>
 {/if}

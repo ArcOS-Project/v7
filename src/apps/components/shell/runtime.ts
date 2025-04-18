@@ -517,7 +517,7 @@ export class ShellRuntime extends AppProcess {
         result.push({
           caption: app.metadata.name,
           description: `By ${app.metadata.author}`,
-          image: maybeIconId(app.metadata.icon),
+          image: this.userDaemon?.getAppIcon(app),
           action: () => {
             this.spawnApp(app.id, this.pid);
           },
