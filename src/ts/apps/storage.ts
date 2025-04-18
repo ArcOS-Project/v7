@@ -1,5 +1,5 @@
 import { arrayToText } from "$ts/fs/convert";
-import { getParentDirectory } from "$ts/fs/util";
+import { getParentDirectory, join } from "$ts/fs/util";
 import { tryJsonParse } from "$ts/json";
 import type { ProcessHandler } from "$ts/process/handler";
 import type { ServiceHost } from "$ts/services";
@@ -13,6 +13,7 @@ export class ApplicationStorage extends BaseService {
   private origins = new Map<string, AppStoreCb>([]);
   private injectedStore = new Map<string, App>([]);
   public buffer = Store<AppStorage>([]);
+  public appIconCache: Record<string, string> = {};
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);
@@ -36,7 +37,7 @@ export class ApplicationStorage extends BaseService {
     if (this.origins.get(id)) return false;
 
     this.origins.set(id, store);
-    this.globalDispatch.dispatch("app-store-refresh");
+    // this.globalDispatch.dispatch("app-store-refresh");
 
     return true;
   }
@@ -81,6 +82,17 @@ export class ApplicationStorage extends BaseService {
 
     for (const app of this.buffer()) {
       this.fs.createDirectory(`T:/Apps/${app.id}`, false);
+
+      const icon = app.metadata.icon;
+
+      if (icon.startsWith("@local:")) {
+        try {
+          const path = join(app.workingDirectory || "", app.metadata.icon.replace("@local:", ""));
+          const direct = await this.fs.direct(path);
+
+          if (direct) this.appIconCache[path] = direct;
+        } catch {}
+      }
     }
   }
 

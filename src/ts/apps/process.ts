@@ -55,7 +55,6 @@ export class AppProcess extends Process {
     };
 
     this.windowTitle.set(app.data.metadata.name || "Application");
-    this.windowIcon.set(app.data.metadata.icon || ComponentIcon);
     this.name = app.data.id;
     this.globalDispatch = this.kernel.getModule<GlobalDispatcher>("dispatch");
     this.shell = this.handler.getProcess(+this.env.get("shell_pid"));
@@ -69,6 +68,7 @@ export class AppProcess extends Process {
       this.userDaemon = daemon;
     }
 
+    this.windowIcon.set(this.userDaemon?.getAppIconByProcess(this) || ComponentIcon);
     this.startAcceleratorListener();
 
     this.globalDispatch.subscribe("window-unfullscreen", ([pid]) => {
@@ -78,8 +78,6 @@ export class AppProcess extends Process {
     this.globalDispatch.subscribe("window-fullscreen", ([pid]) => {
       if (this.pid === pid) this.windowFullscreen.set(true);
     });
-
-    this.windowIcon.set(maybeIconId(this.app.data.metadata.icon));
 
     const preferences = this.userPreferences();
 

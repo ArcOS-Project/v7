@@ -23,7 +23,6 @@ export { default as SecureIcon } from "$assets/general/secure.svg";
 export { default as SecurityHighIcon } from "$assets/general/security-high.svg";
 export { default as SecurityLowIcon } from "$assets/general/security-low.svg";
 export { default as SecurityMediumIcon } from "$assets/general/security-medium.svg";
-export { default as SettingsIcon } from "$assets/general/settings.svg";
 export { default as SpinnerIcon } from "$assets/general/spinner.svg";
 export { default as StartMenuIcon } from "$assets/general/startmenu.svg";
 export { default as TaskbarIcon } from "$assets/general/taskbar.svg";

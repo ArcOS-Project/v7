@@ -266,7 +266,7 @@ export class AppRenderer extends Process {
       titleIcon.src = v;
     });
 
-    titleIcon.src = maybeIconId(data.metadata.icon || ComponentIcon);
+    titleIcon.src = process.userDaemon?.getAppIconByProcess(process) || ComponentIcon;
 
     title.className = "window-title";
     title.append(titleIcon, titleCaption);

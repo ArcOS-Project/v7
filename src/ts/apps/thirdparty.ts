@@ -1,4 +1,5 @@
 import { join } from "$ts/fs/util";
+import { ComponentIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import type { AppProcessData } from "$types/app";
 import { AppProcess } from "./process";
@@ -20,6 +21,7 @@ export class ThirdPartyAppProcess extends AppProcess {
     super(handler, pid, parentPid, app);
 
     this.workingDirectory = workingDirectory;
+    this.windowIcon.set(this.userDaemon?.getAppIconByProcess(this) || ComponentIcon);
   }
 
   async __render__(body: HTMLDivElement): Promise<void> {

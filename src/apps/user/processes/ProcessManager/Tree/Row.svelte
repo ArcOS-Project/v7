@@ -2,7 +2,7 @@
   import { AppProcess } from "$ts/apps/process";
   import { maybeIconId } from "$ts/images";
   import { DefaultIcon } from "$ts/images/apps";
-  import { FlagIcon } from "$ts/images/general";
+  import { ComponentIcon, FlagIcon } from "$ts/images/general";
   import type { Process } from "$ts/process/instance";
   import { onMount } from "svelte";
   import type { ProcessManagerRuntime } from "../../runtime";
@@ -29,7 +29,7 @@
       const { app } = proc;
 
       name = app.data.metadata.name;
-      icon = app.data.metadata.icon;
+      icon = process.userDaemon?.getAppIconByProcess(proc);
       appId = app.id;
 
       const dispatcher = process.globalDispatch.subscribe("window-closing", ([pid]) => {
@@ -52,7 +52,7 @@
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div class="row" class:closing onclick={() => ($selected = pid)} class:selected={$selected === pid}>
     <div class="segment name">
-      <img src={maybeIconId(icon!)} alt="" />
+      <img src={icon} alt="" />
       <span>{name}</span>
     </div>
     <div class="segment pid" class:flagged={$focusedPid === proc.pid}>

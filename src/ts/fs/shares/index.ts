@@ -33,7 +33,7 @@ export class ShareManager extends BaseService {
     const shares = await this.getOwnedShares();
 
     for (const share of shares) {
-      this.mountShareById(share._id);
+      await this.mountShareById(share._id);
     }
   }
 
