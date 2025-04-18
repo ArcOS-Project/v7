@@ -26,7 +26,10 @@ export class WaveKernel {
   public ARCOS_LICENSE = "not here yet";
 
   public static get(): WaveKernel {
-    if (!CurrentKernel) throw new Error("Tried to get kernel while it doesn't exist yet");
+    if (!CurrentKernel) {
+      prematurePanic();
+      throw new Error("Tried to get kernel while it doesn't exist yet");
+    }
 
     return CurrentKernel;
   }
