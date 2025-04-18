@@ -11,8 +11,6 @@ export const AdminUserPreferencesDelete: AdminCommand = async (term, admin, [use
 
   setJsonHierarchy(preferences, path, undefined);
 
-  console.log(preferences);
-
   const proceed = (await term.rl?.read("Confirm change (y/n)? ")) === "y";
   if (!proceed) return 6;
 

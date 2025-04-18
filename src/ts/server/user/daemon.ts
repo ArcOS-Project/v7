@@ -18,10 +18,10 @@ import { ZIPDrive } from "$ts/fs/drives/zipdrive";
 import { ShareManager } from "$ts/fs/shares/index";
 import { getDirectoryName, getDriveLetter, getParentDirectory, join } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
-import { getIconPath } from "$ts/images";
+import { getIconPath, iconIdFromPath, maybeIconId } from "$ts/images";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
-import { AccountIcon, PasswordIcon, PersonalizationIcon } from "$ts/images/general";
+import { AccountIcon, ComponentIcon, PasswordIcon, PersonalizationIcon } from "$ts/images/general";
 import { ImageMimeIcon } from "$ts/images/mime";
 import { ProfilePictures } from "$ts/images/pfp";
 import { tryJsonParse } from "$ts/json";
@@ -101,6 +101,8 @@ export class UserDaemon extends Process {
 
     appStore?.loadOrigin("builtin", () => BuiltinApps);
     appStore?.loadOrigin("userApps", () => this.getUserApps());
+
+    await appStore?.refresh();
   }
 
   async getUserInfo(): Promise<UserInfo | undefined> {
@@ -812,8 +814,6 @@ export class UserDaemon extends Process {
 
     this.Log(`SPAWNING APP ${id}`);
 
-    console.log(app);
-
     if (app.thirdParty || app.entrypoint) {
       await this.spawnThirdParty(app, (app as InstalledApp).tpaPath!, ...args);
 
@@ -992,8 +992,6 @@ export class UserDaemon extends Process {
     if (this._disposed) return;
 
     const shares = this.serviceHost?.getService<ShareManager>("ShareMgmt");
-
-    await shares?.mountOwnedShares();
 
     this.Log(`Spawning autoload applications`);
 
@@ -2109,7 +2107,8 @@ export class UserDaemon extends Process {
 
     const share = this.serviceHost!.getService<ShareManager>("ShareMgmt");
 
-    share?._activate(this.token);
+    await share?._activate(this.token);
+    await share?.mountOwnedShares();
   }
 
   async startServiceHost() {
@@ -2121,8 +2120,6 @@ export class UserDaemon extends Process {
 
   async activateBugHuntUserSpaceProcess() {
     const bhusp = this.serviceHost!.getService<BugHuntUserSpaceProcess>("BugHuntUsp");
-
-    console.log(bhusp);
 
     await bhusp?._activate(this.token);
   }
@@ -2200,5 +2197,33 @@ export class UserDaemon extends Process {
     } catch {
       return undefined;
     }
+  }
+
+  getAppIcon(app: App, workingDirectory?: string) {
+    const { icon } = app.metadata;
+    try {
+      const maybe = maybeIconId(icon);
+      const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+
+      if (icon.startsWith("http")) return icon;
+      if (maybe !== icon) return maybe;
+      if (icon.startsWith("@local:")) {
+        const path = join(workingDirectory || app.workingDirectory || "", icon.replace("@local:", ""));
+
+        if (appStore?.appIconCache[path]) return appStore?.appIconCache[path];
+      }
+
+      if (iconIdFromPath(icon)) return icon;
+
+      return ComponentIcon;
+    } catch {
+      return ComponentIcon;
+    }
+  }
+
+  getAppIconByProcess(process: AppProcess) {
+    const workingDir = (process as any).workingDirectory;
+
+    return this.getAppIcon(process.app?.data, workingDir);
   }
 }
