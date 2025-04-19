@@ -40,5 +40,6 @@ export const LightsOffApp: App = {
     runtime: LightsOffRuntime,
     component: LightsOff as any,
   },
+  noSafeMode: true,
   id: "LightsOff",
 };

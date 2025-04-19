@@ -42,5 +42,6 @@ export const TotpSetupGuiApp: App = {
   },
   hidden: true,
   overlay: true,
+  noSafeMode: true,
   id: "TotpSetupGui",
 };

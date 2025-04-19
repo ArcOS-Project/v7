@@ -32,6 +32,7 @@ export const ImageViewerApp: App = {
   opens: {
     extensions: [".png", ".jpg", ".gif", ".webp", ".ico", ".bmp", ".tif", ".tiff", ".jpeg", ".svg"],
   },
+  noSafeMode: true,
   assets: {
     runtime: ImageViewerRuntime,
     component: ImageViewer as any,

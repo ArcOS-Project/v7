@@ -40,5 +40,6 @@ export const CameraApp: App = {
     runtime: CameraRuntime,
     component: Camera as any,
   },
+  noSafeMode: true,
   id: "CameraApp",
 };

@@ -42,6 +42,7 @@ export const TestApp: App = {
     component: Test as any,
     runtime: TestAppRuntime,
   },
+  noSafeMode: true,
   id: "testApp",
   glass: true,
 };

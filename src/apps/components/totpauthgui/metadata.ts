@@ -42,5 +42,6 @@ export const TotpAuthGuiApp: App = {
   },
   hidden: true,
   overlay: true,
+  noSafeMode: true,
   id: "TotpAuthGui",
 };

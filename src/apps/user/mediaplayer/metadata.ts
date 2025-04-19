@@ -50,4 +50,5 @@ export const MediaPlayerApp: App = {
     "Alt+O": "Open a file to play",
     "Alt+A": "Add a media file to the queue",
   },
+  noSafeMode: true,
 };
