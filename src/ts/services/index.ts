@@ -1,10 +1,14 @@
+import { appStoreService } from "$ts/apps/storage";
+import { bhuspService } from "$ts/bughunt/process";
+import { shareService } from "$ts/fs/shares";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
+import { adminService } from "$ts/server/admin";
+import { messagingService } from "$ts/server/messaging";
 import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
 import type { ReadableServiceStore, ServiceChangeResult, ServiceStore } from "$types/service";
 import type { BaseService } from "./base";
-import { ServicesStore } from "./store";
 
 export class ServiceHost extends Process {
   public Services: ReadableServiceStore = Store<ServiceStore>();
@@ -16,6 +20,14 @@ export class ServiceHost extends Process {
     super(handler, pid, parentPid);
   }
 
+  readonly STORE = new Map([
+    ["BugHuntUsp", { ...bhuspService }],
+    ["AdminBootstrapper", { ...adminService }],
+    ["ShareMgmt", { ...shareService }],
+    ["AppStorage", { ...appStoreService }],
+    ["MessagingService", { ...messagingService }],
+  ]);
+
   public loadStore(store: ServiceStore) {
     if (this._storeLoaded) {
       this.Log(`Can't load another store: a store is already loaded.`, LogLevel.error);
@@ -26,10 +38,11 @@ export class ServiceHost extends Process {
     this.Log(`Loading store (${store.size} services)`);
 
     for (const [id, service] of [...store]) {
+      const { process, startCondition } = service;
       service.id = id;
       service.loadedAt = new Date().getTime();
 
-      store.set(id, service);
+      store.set(id, { ...JSON.parse(JSON.stringify(service)), process, startCondition });
     }
 
     this.Services.set(store);
@@ -110,7 +123,7 @@ export class ServiceHost extends Process {
   }
 
   async init() {
-    this.loadStore(ServicesStore);
+    this.loadStore(this.STORE);
     await this.initialRun();
 
     this.handler.store.subscribe(() => this.verifyServicesProcesses());
