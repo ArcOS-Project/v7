@@ -6,6 +6,9 @@
   import ThemesHeader from "../ThemesHeader.svelte";
   import Setting from "../ThemesHeader/Setting.svelte";
   import WallpaperOption from "./Wallpaper/WallpaperOption.svelte";
+  import { WarningIcon } from "$ts/images/dialog";
+  import Section from "../Section.svelte";
+  import Option from "../Section/Option.svelte";
 
   const { process }: { process: SettingsRuntime } = $props();
   const { userDaemon } = process;
@@ -34,38 +37,65 @@
     <Setting caption="Author" sub={wallpaper?.author} />
 
     <div class="upload-actions">
-      <button class="lucide icon-upload" aria-label="Upload wallpaper" onclick={() => process.uploadWallpaper()}> </button>
-      <button class="lucide icon-link" aria-label="Enter a wallpaper URL" onclick={() => process.spawnOverlay("urlWallpaper")}>
+      <button
+        class="lucide icon-upload"
+        aria-label="Upload wallpaper"
+        onclick={() => process.uploadWallpaper()}
+        disabled={process.safeMode}
+      >
+      </button>
+      <button
+        class="lucide icon-link"
+        aria-label="Enter a wallpaper URL"
+        onclick={() => process.spawnOverlay("urlWallpaper")}
+        disabled={process.safeMode}
+      >
       </button>
       <div class="sep"></div>
-      <button class="lucide icon-folder-open" aria-label="Choose a file" onclick={() => process.chooseWallpaper()}> </button>
+      <button
+        class="lucide icon-folder-open"
+        aria-label="Choose a file"
+        onclick={() => process.chooseWallpaper()}
+        disabled={process.safeMode}
+      >
+      </button>
     </div>
   </ThemesHeader>
 
-  <div class="wallpaper-section">
-    <p class="name">Built-in wallpapers</p>
-    <div class="wallpapers">
-      {#each Object.keys(Wallpapers) as id}
-        <WallpaperOption {id} {userPreferences} {userDaemon} />
-      {/each}
-    </div>
-  </div>
-
-  <div class="wallpaper-section">
-    <p class="name">Your saved wallpapers</p>
-    <div
-      class="wallpapers"
-      class:empty={!$userPreferences?.userWallpapers || !Object.values($userPreferences?.userWallpapers).length}
-    >
-      {#if $userPreferences?.userWallpapers && Object.values($userPreferences?.userWallpapers).length}
-        {#each Object.keys($userPreferences?.userWallpapers) as id}
+  {#if !process.safeMode}
+    <div class="wallpaper-section">
+      <p class="name">Built-in wallpapers</p>
+      <div class="wallpapers">
+        {#each Object.keys(Wallpapers) as id}
           <WallpaperOption {id} {userPreferences} {userDaemon} />
         {/each}
-      {:else}
-        <p class="none">You have no saved wallpapers!</p>
+      </div>
+    </div>
+
+    <div class="wallpaper-section">
+      <p class="name">Your saved wallpapers</p>
+      <div
+        class="wallpapers"
+        class:empty={!$userPreferences?.userWallpapers || !Object.values($userPreferences?.userWallpapers).length}
+      >
+        {#if $userPreferences?.userWallpapers && Object.values($userPreferences?.userWallpapers).length}
+          {#each Object.keys($userPreferences?.userWallpapers) as id}
+            <WallpaperOption {id} {userPreferences} {userDaemon} />
+          {/each}
+        {:else}
+          <p class="none">You have no saved wallpapers!</p>
+        {/if}
+      </div>
+    </div>
+  {:else}
+    <div class="centered-layout">
+      {#if process.safeMode}
+        <Section>
+          <Option caption="Safe Mode - wallpaper is disabled" image={WarningIcon}></Option>
+        </Section>
       {/if}
     </div>
-  </div>
+  {/if}
 {:else}
   <p class="error-text">ERR_NO_DAEMON</p>
 {/if}

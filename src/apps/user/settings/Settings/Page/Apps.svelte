@@ -19,6 +19,13 @@
     <h1>Applications</h1>
     <p>Manage the apps on your system</p>
   </div>
+
+  {#if process.safeMode}
+    <Section>
+      <Option caption="Safe Mode - some apps are disabled" image={WarningIcon}></Option>
+    </Section>
+  {/if}
+
   <Section caption="Options">
     <Option caption="Show hidden apps">
       <input type="checkbox" bind:checked={$userPreferences.shell.visuals.showHiddenApps} />

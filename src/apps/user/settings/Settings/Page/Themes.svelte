@@ -41,7 +41,7 @@
       <div class="left">
         <p class="caption">Visual Style</p>
         <p class="sub">
-          <select bind:value={$userPreferences!.desktop.theme} class="flat">
+          <select bind:value={$userPreferences!.desktop.theme} class="flat" disabled={process.safeMode}>
             {#each Object.entries(VisualStyles) as [id, caption] (id)}
               <option value={id}>{caption}</option>
             {/each}
@@ -51,30 +51,32 @@
       </div>
     </div>
 
-    <button class="save-theme" onclick={saveThemeDialog}>Save Theme</button>
+    <button class="save-theme" onclick={saveThemeDialog} disabled={process.safeMode}>Save Theme</button>
   </ThemesHeader>
 {:else}
   <p class="error-text">ERR_NO_DAEMON</p>
 {/if}
 
-<div class="theme-section">
-  <p class="name">Built-in themes</p>
-  <div class="themes">
-    {#each Object.entries(BuiltinThemes) as [id, theme]}
-      <Theme {theme} {id} userDaemon={process.userDaemon!} {process} />
-    {/each}
-  </div>
-</div>
-
-<div class="theme-section">
-  <p class="name">Your saved themes</p>
-  <div class="themes" class:empty={!$userPreferences?.userThemes || !Object.values($userPreferences?.userThemes).length}>
-    {#if $userPreferences?.userThemes && Object.values($userPreferences.userThemes).length}
-      {#each Object.entries($userPreferences.userThemes) as [id, theme] (id)}
-        <Theme {theme} {id} userDaemon={process.userDaemon!} {process} isUser />
+{#if !process.safeMode}
+  <div class="theme-section">
+    <p class="name">Built-in themes</p>
+    <div class="themes">
+      {#each Object.entries(BuiltinThemes) as [id, theme]}
+        <Theme {theme} {id} userDaemon={process.userDaemon!} {process} />
       {/each}
-    {:else}
-      <p class="none">You have no saved themes!</p>
-    {/if}
+    </div>
   </div>
-</div>
+
+  <div class="theme-section">
+    <p class="name">Your saved themes</p>
+    <div class="themes" class:empty={!$userPreferences?.userThemes || !Object.values($userPreferences?.userThemes).length}>
+      {#if $userPreferences?.userThemes && Object.values($userPreferences.userThemes).length}
+        {#each Object.entries($userPreferences.userThemes) as [id, theme] (id)}
+          <Theme {theme} {id} userDaemon={process.userDaemon!} {process} isUser />
+        {/each}
+      {:else}
+        <p class="none">You have no saved themes!</p>
+      {/if}
+    </div>
+  </div>
+{/if}

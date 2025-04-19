@@ -40,6 +40,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
       icon: ThemesIcon,
       content: Themes,
       description: "Personalize your ArcOS with themes",
+      noSafeMode: true,
     },
   ],
   [
@@ -49,6 +50,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
       icon: DesktopIcon,
       content: Wallpaper,
       description: "Change your desktop wallpaper",
+      noSafeMode: true,
     },
   ],
   [
@@ -58,6 +60,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
       icon: PasswordIcon,
       content: LoginBackground,
       description: "Change your login background",
+      noSafeMode: true,
     },
   ],
   [
@@ -86,6 +89,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
       icon: ArcFindIcon,
       content: Search,
       description: "The search functionality of ArcOS",
+      noSafeMode: true,
     },
   ],
   [

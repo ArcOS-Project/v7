@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { WarningIcon } from "$ts/images/dialog";
   import { ElevationIcon, PasswordIcon, SecureIcon, SecurityHighIcon, WaveIcon } from "$ts/images/general";
   import { LogoutIcon } from "$ts/images/power";
   import type { SettingsRuntime } from "../../runtime";
@@ -17,17 +18,30 @@
     <p class="error-text">ERR_NO_DAEMON</p>
   {/if}
 
+  {#if process.safeMode}
+    <Section>
+      <Option caption="Safe Mode - some options are disabled" image={WarningIcon}></Option>
+    </Section>
+  {/if}
+
   <Section>
     <Option caption="Rename your account" image={SecureIcon} chevron onclick={() => process.spawnOverlay("changeUsername")} />
     <Option caption="Change your password" image={PasswordIcon} chevron onclick={() => process.spawnOverlay("changePassword")} />
     {#if !process.userDaemon?.userInfo.hasTotp}
-      <Option caption="Set up two-factor authentication" image={ElevationIcon} chevron onclick={() => process.setup2fa()} />
+      <Option
+        caption="Set up two-factor authentication"
+        image={ElevationIcon}
+        chevron
+        onclick={() => process.setup2fa()}
+        disabled={process.safeMode}
+      />
     {:else}
       <Option
         caption="Disable two-factor authentication"
         image={SecurityHighIcon}
         chevron
         onclick={() => process.disableTotp()}
+        disabled={process.safeMode}
       />
     {/if}
   </Section>

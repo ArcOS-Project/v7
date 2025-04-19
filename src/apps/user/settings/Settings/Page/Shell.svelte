@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { WarningIcon } from "$ts/images/dialog";
   import { TaskbarIcon } from "$ts/images/general";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
@@ -15,6 +16,12 @@
     <h1>The ArcOS Shell</h1>
     <p>The taskbar, start menu and action center</p>
   </div>
+
+  {#if process.safeMode}
+    <Section>
+      <Option caption="Safe Mode - some options are disabled" image={WarningIcon}></Option>
+    </Section>
+  {/if}
 
   <Section caption="Taskbar">
     <Option caption="Dock to screen edge">
@@ -48,10 +55,15 @@
   </Section>
   <Section caption="Action Center">
     <Option caption="Weather location">
-      <button onclick={() => process.showSlide("shell_weatherLocation")}>Change...</button>
+      <button onclick={() => process.showSlide("shell_weatherLocation")} disabled={process.safeMode}>Change...</button>
     </Option>
     <Option caption="Hide the quick settings">
-      <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.actionCenter.hideQuickSettings} />
+      <input
+        type="checkbox"
+        class="switch"
+        bind:checked={$userPreferences.shell.actionCenter.hideQuickSettings}
+        disabled={process.safeMode}
+      />
     </Option>
   </Section>
 </div>

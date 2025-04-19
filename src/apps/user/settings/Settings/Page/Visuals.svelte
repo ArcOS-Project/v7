@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { WarningIcon } from "$ts/images/dialog";
   import { PersonalizationIcon } from "$ts/images/general";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
@@ -17,12 +18,23 @@
     <p>Fine-tune the appearance of ArcOS</p>
   </div>
 
+  {#if process.safeMode}
+    <Section>
+      <Option caption="Safe Mode - some options are disabled" image={WarningIcon}></Option>
+    </Section>
+  {/if}
+
   <Section caption="Effects">
     <Option caption="Reduce animations throughout ArcOS">
-      <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.visuals.noAnimations} />
+      <input
+        type="checkbox"
+        class="switch"
+        bind:checked={$userPreferences.shell.visuals.noAnimations}
+        disabled={process.safeMode}
+      />
     </Option>
     <Option caption="Disable window transparency">
-      <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.visuals.noGlass} />
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.visuals.noGlass} disabled={process.safeMode} />
     </Option>
     <Option caption="Remove rounded corners">
       <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.visuals.sharpCorners} />
@@ -37,10 +49,15 @@
       <button
         class="lucide icon-pencil"
         aria-label="Edit custom CSS"
-        disabled={!$userPreferences.shell.customStyle.enabled}
+        disabled={!$userPreferences.shell.customStyle.enabled || process.safeMode}
         onclick={() => process.showSlide("visuals_userStyles")}
       ></button>
-      <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.customStyle.enabled} />
+      <input
+        type="checkbox"
+        class="switch"
+        bind:checked={$userPreferences.shell.customStyle.enabled}
+        disabled={process.safeMode}
+      />
     </Option>
   </Section>
 </div>

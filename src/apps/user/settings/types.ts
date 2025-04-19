@@ -7,6 +7,7 @@ export interface SettingsPage {
   hidden?: boolean;
   separator?: boolean;
   description: string;
+  noSafeMode?: boolean;
 }
 
 export type SettingsPages = Map<string, SettingsPage>;

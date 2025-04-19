@@ -344,6 +344,8 @@ export class SettingsRuntime extends AppProcess {
   }
 
   async setup2fa() {
+    if (this.safeMode) return;
+
     const elevated = await this.userDaemon?.manuallyElevate({
       what: "ArcOS needs your permission to set up two-factor authentication",
       image: ElevationIcon,
@@ -358,6 +360,8 @@ export class SettingsRuntime extends AppProcess {
   }
 
   async disableTotp() {
+    if (this.safeMode) return;
+
     const elevated = await this.userDaemon?.manuallyElevate({
       what: "ArcOS needs your permission to disable two-factor authentication",
       image: ElevationIcon,
