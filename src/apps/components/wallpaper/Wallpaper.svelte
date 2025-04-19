@@ -13,7 +13,7 @@
 <div class="desktop-wallpaper">
   <div
     class="wallpaper show"
-    style="--src: url('{$Wallpaper ? $Wallpaper.url : Wallpapers.img0.url}');"
+    style="--src: url('{!process.safeMode && $Wallpaper ? $Wallpaper.url : Wallpapers.img0.url}');"
     data-contextmenu="desktop"
   ></div>
   <div class="desktop-icons" bind:this={$iconsElement} class:hide={!$userPreferences.desktop.icons}>

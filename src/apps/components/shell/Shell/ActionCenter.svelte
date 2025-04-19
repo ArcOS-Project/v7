@@ -23,10 +23,12 @@
 <div class="actioncenter shell-colored" class:colored={$userPreferences.shell.taskbar.colored} class:opened={$actionCenterOpened}>
   <div class="top">
     <Clock />
-    <CardStack {userPreferences} {process} />
+    {#if !process.safeMode}
+      <CardStack {userPreferences} {process} />
+    {/if}
   </div>
   <Notifications {process} />
-  {#if !$userPreferences.shell.actionCenter.hideQuickSettings}
+  {#if !$userPreferences.shell.actionCenter.hideQuickSettings && !process.safeMode}
     <div class="quick-settings"></div>
   {/if}
 </div>
