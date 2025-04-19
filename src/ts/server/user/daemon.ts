@@ -1686,6 +1686,14 @@ export class UserDaemon extends Process {
       });
     };
 
+    const setType = (type: "none" | "quantity" | "size") => {
+      progress.update((v) => {
+        v.type = type;
+
+        return v;
+      });
+    };
+
     return {
       progress,
       mutateMax,
@@ -1701,6 +1709,7 @@ export class UserDaemon extends Process {
       stop,
       show,
       setCancel,
+      setType,
     };
   }
 
@@ -2105,7 +2114,7 @@ export class UserDaemon extends Process {
   }
 
   activateMessagingService() {
-    if (!this.safeMode) return;
+    if (this.safeMode) return;
 
     const messaging = this.serviceHost!.getService<MessagingInterface>("MessagingService");
 

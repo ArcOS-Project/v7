@@ -28,6 +28,7 @@ export interface FileProgressMutator {
   setWork: (waiting: boolean) => void;
   stop: () => Promise<any>;
   show: () => Promise<any>;
+  setType: (type: "quantity" | "size" | "none") => void;
 }
 
 export const DummyFileProgress: FileProgressMutator = {
@@ -45,4 +46,5 @@ export const DummyFileProgress: FileProgressMutator = {
   stop: async () => {},
   show: async () => {},
   setCancel: (_: (() => void) | undefined) => {},
+  setType: (_: string) => {},
 };
