@@ -64,7 +64,8 @@ export class MessagingInterface extends BaseService {
     recipients: string[],
     body: string,
     attachments: File[],
-    repliesTo?: string
+    repliesTo?: string,
+    onProgress?: FilesystemProgressCallback
   ): Promise<boolean> {
     if (this._disposed) return false;
 
@@ -78,7 +79,16 @@ export class MessagingInterface extends BaseService {
     attachments.forEach((a) => formData.append("attachments", a));
 
     try {
-      const response = await Axios.post("/messaging", formData, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Axios.post("/messaging", formData, {
+        headers: { Authorization: `Bearer ${this.token}` },
+        onUploadProgress: (progress) => {
+          onProgress?.({
+            max: progress.total || 0,
+            value: progress.loaded || 0,
+            type: "size",
+          });
+        },
+      });
 
       return response.status === 200;
     } catch {
