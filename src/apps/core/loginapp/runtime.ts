@@ -41,7 +41,7 @@ export class LoginAppRuntime extends AppProcess {
     );
 
     this.serverInfo = server.serverInfo;
-    this.safeMode = !!props.safeMode;
+    this.safeMode = !!(props.safeMode || this.env.get("safemode"));
     if (this.safeMode) this.env.set("safemode", true);
     this.loginBackground.set(this.DEFAULT_WALLPAPER());
 
@@ -49,6 +49,8 @@ export class LoginAppRuntime extends AppProcess {
       this.hideProfileImage.set(true);
 
       if (!props.userDaemon) throw new Error(`Irregular login type without a user daemon`);
+
+      this.soundBus.playSound("arcos.system.logoff");
 
       switch (props.type) {
         case "logoff":
@@ -161,6 +163,10 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.startServiceHost();
     userDaemon.activateMessagingService();
 
+    this.loadingStatus.set("Starting drive notifier watcher");
+
+    userDaemon.startDriveNotifierWatcher();
+
     this.loadingStatus.set("Starting share management");
 
     await userDaemon.startShareManager();
@@ -192,10 +198,6 @@ export class LoginAppRuntime extends AppProcess {
     this.loadingStatus.set("Starting Workspaces");
 
     await userDaemon.startVirtualDesktops();
-
-    this.loadingStatus.set("Starting drive notifier watcher");
-
-    userDaemon.startDriveNotifierWatcher();
 
     this.loadingStatus.set("Running autorun");
 
