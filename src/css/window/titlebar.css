@@ -16,6 +16,7 @@ div.window > div.body div.titlebar.custom {
   padding: 5px 10px;
   font-size: 12px;
   position: relative;
+  min-height: 40px;
 }
 div.window > div.titlebar div.window-title,
 div.window > div.body div.titlebar.custom div.window-title {
