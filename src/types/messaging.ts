@@ -36,6 +36,7 @@ export interface PartialMessage {
   repliesTo?: string;
   createdAt: string;
   author?: PublicUserInfo;
+  correlationId: string;
 }
 
 export type ExpandedMessage = Omit<Message, "attachments"> & {
