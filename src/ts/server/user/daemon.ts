@@ -53,6 +53,7 @@ import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons } 
 import { ThirdPartyProps } from "./thirdparty";
 import type { MessagingInterface } from "../messaging";
 import type { ServerManager } from "..";
+import SafeModeNotice from "$lib/Daemon/SafeModeNotice.svelte";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -80,6 +81,7 @@ export class UserDaemon extends Process {
   private mimeIcons: Record<string, string[]> = DefaultMimeIcons;
   private virtualdesktopChangingTimeout: NodeJS.Timeout | undefined;
   private firstSyncDone = false;
+  public safeMode = false;
   public fileHandlers: Record<string, FileHandler> = DefaultFileHandlers(this);
   override _criticalProcess: boolean = true;
   public mountedDrives: string[] = [];
@@ -94,6 +96,7 @@ export class UserDaemon extends Process {
     if (userInfo) this.userInfo = userInfo;
 
     this.server = this.kernel.getModule<ServerManager>("server");
+    this.safeMode = !!this.env.get("safemode");
   }
 
   async startApplicationStorage() {
@@ -217,12 +220,12 @@ export class UserDaemon extends Process {
     renderer.setAttribute("style", style);
     renderer.classList.add(`theme-${theme}`);
     renderer.classList.toggle("sharp", v.shell.visuals.sharpCorners);
-    renderer.classList.toggle("noani", v.shell.visuals.noAnimations);
-    renderer.classList.toggle("noglass", v.shell.visuals.noGlass);
+    renderer.classList.toggle("noani", v.shell.visuals.noAnimations || this.safeMode);
+    renderer.classList.toggle("noglass", v.shell.visuals.noGlass || this.safeMode);
   }
 
   setUserStyleLoader(style: CustomStylePreferences) {
-    if (this._disposed) return;
+    if (this._disposed || this.safeMode) return;
 
     let styleLoader = this.handler.renderer?.target.querySelector("#userStyleLoader");
 
@@ -757,7 +760,7 @@ export class UserDaemon extends Process {
   }
 
   async startSystemStatusRefresh() {
-    if (this._disposed) return;
+    if (this._disposed || this.safeMode) return;
 
     this.Log("Starting system status refresh");
 
@@ -797,10 +800,10 @@ export class UserDaemon extends Process {
   ): Promise<T | undefined> {
     if (this._disposed) return;
 
-    if (this.checkDisabled(id)) return;
-
     const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
     const app = await appStore?.getAppById(id);
+
+    if (this.checkDisabled(id, app?.noSafeMode)) return;
 
     if (!app) {
       this.sendNotification({
@@ -862,11 +865,10 @@ export class UserDaemon extends Process {
   ): Promise<T | undefined> {
     if (this._disposed) return;
 
-    if (this.checkDisabled(id)) return;
-
     const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
-
     const app = await appStore?.getAppById(id);
+
+    if (this.checkDisabled(id, app?.noSafeMode)) return;
 
     if (!app) {
       this.sendNotification({
@@ -915,6 +917,11 @@ export class UserDaemon extends Process {
 
   async spawnThirdParty(app: App, metaPath: string, ...args: any[]) {
     if (this._disposed) return;
+
+    if (this.safeMode) {
+      this.Log(`TPA execution in Safe Mode is prohibited: ${app.id}`, LogLevel.error);
+      return;
+    }
 
     this.Log(`Starting JS execution to run third-party app ${app.id}`);
 
@@ -1006,10 +1013,10 @@ export class UserDaemon extends Process {
           await this._spawnApp(payload, undefined, this.pid);
           break;
         case "file":
-          await this.openFile(payload);
+          if (!this.safeMode) await this.openFile(payload);
           break;
         case "folder":
-          await this.spawnApp("fileManager", undefined, payload);
+          if (!this.safeMode) await this.spawnApp("fileManager", undefined, payload);
           break;
         case "share":
           await shares?.mountShareById(payload);
@@ -1018,14 +1025,15 @@ export class UserDaemon extends Process {
           this.Log(`Unknown startup type: ${type.toUpperCase()} (payload: '${payload}')`);
       }
     }
+
+    if (this.safeMode) this.safeModeNotice();
   }
 
-  checkDisabled(appId: string): boolean {
+  checkDisabled(appId: string, noSafeMode?: boolean): boolean {
     if (this._disposed) return false;
 
     const { disabledApps } = this.preferences();
-
-    return (disabledApps || []).includes(appId);
+    return (disabledApps || []).includes(appId) || !!(this.safeMode && noSafeMode);
   }
 
   async disableApp(appId: string) {
@@ -2097,6 +2105,8 @@ export class UserDaemon extends Process {
   }
 
   activateMessagingService() {
+    if (!this.safeMode) return;
+
     const messaging = this.serviceHost!.getService<MessagingInterface>("MessagingService");
 
     messaging?._activate(this.token);
@@ -2225,5 +2235,22 @@ export class UserDaemon extends Process {
     const workingDir = (process as any).workingDirectory;
 
     return this.getAppIcon(process.app?.data, workingDir);
+  }
+
+  safeModeNotice() {
+    MessageBox(
+      {
+        title: "ArcOS is running in safe mode",
+        content: SafeModeNotice,
+        image: WarningIcon,
+        sound: "arcos.dialog.warning",
+        buttons: [
+          { caption: "Restart now", action: () => this.restart() },
+          { caption: "Okay", action: () => {}, suggested: true },
+        ],
+      },
+      +this.env.get("shell_pid"),
+      true
+    );
   }
 }

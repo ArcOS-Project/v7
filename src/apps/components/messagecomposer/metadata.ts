@@ -30,5 +30,6 @@ export const MessageComposerApp: App = {
     runtime: MessageComposerRuntime,
     component: MessageComposer as any,
   },
+  noSafeMode: true,
   id: "MessageComposer",
 };

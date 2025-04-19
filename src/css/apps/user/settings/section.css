@@ -32,6 +32,10 @@
   transition: background-color 0.2s;
 }
 
+#systemSettings section div.content div.option.disabled {
+  opacity: 0.5;
+}
+
 #systemSettings section div.content div.option.clickable:hover {
   background-color: var(--button-hover-bg);
 }

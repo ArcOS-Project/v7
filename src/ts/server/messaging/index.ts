@@ -176,4 +176,5 @@ export const messagingService: Service = {
   description: "Handles the ArcOS messaging system",
   initialState: "started",
   process: MessagingInterface,
+  startCondition: (daemon) => !daemon.env.get("safemode"),
 };

@@ -35,6 +35,7 @@ export interface App {
   fileSignatures?: Record<string, string>;
   process?: ThirdPartyAppProcess;
   tpaRevision?: number;
+  noSafeMode?: boolean;
 }
 
 export interface InstalledApp extends App {

@@ -1,3 +1,4 @@
+import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
@@ -20,24 +21,27 @@ export class BootScreenRuntime extends AppProcess {
       once: true,
     });
 
-    document.addEventListener("keydown", () => this.startBooting(), {
+    document.addEventListener("keydown", (e) => this.startBooting(e), {
       once: true,
     });
   }
 
-  async startBooting() {
+  async startBooting(e?: KeyboardEvent) {
     if (this._disposed) return;
 
     this.Log("Beginning boot process");
 
     if (this.progress()) return;
 
-    this.status.set("&nbsp;");
-
     this.progress.set(true);
 
-    // await Sleep(2000);
-
-    this.kernel.state?.loadState("login");
+    if (e?.key === "F8") {
+      this.status.set("Entering Safe Mode");
+      await Sleep(2000);
+      this.kernel.state?.loadState("login", { safeMode: true });
+    } else {
+      this.status.set("&nbsp;");
+      this.kernel.state?.loadState("login");
+    }
   }
 }

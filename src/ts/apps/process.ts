@@ -36,6 +36,7 @@ export class AppProcess extends Process {
   userDaemon: UserDaemon | undefined;
   shell: ShellRuntime | undefined;
   overridePopulatable: boolean = false;
+  public safeMode = false;
   protected overlayStore: Record<string, App> = {};
   protected elevations: Record<string, ElevationData> = {};
   public renderArgs: RenderArgs = {};
@@ -66,6 +67,7 @@ export class AppProcess extends Process {
       this.userPreferences = daemon.preferences;
       this.username = daemon.username;
       this.userDaemon = daemon;
+      this.safeMode = daemon.safeMode;
     }
 
     this.windowIcon.set(this.userDaemon?.getAppIconByProcess(this) || ComponentIcon);
