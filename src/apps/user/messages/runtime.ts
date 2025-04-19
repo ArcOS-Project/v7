@@ -1,21 +1,22 @@
+import type { FileProgressMutator } from "$apps/components/fsprogress/types";
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { arrayToBlob, arrayToText, textToBlob } from "$ts/fs/convert";
 import { getParentDirectory } from "$ts/fs/util";
 import { MessagingIcon } from "$ts/images/apps";
 import { WarningIcon } from "$ts/images/dialog";
+import { tryJsonParse } from "$ts/json";
 import type { ProcessHandler } from "$ts/process/handler";
 import { MessagingInterface } from "$ts/server/messaging";
+import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { ExpandedMessage, MessageAttachment, PartialMessage } from "$types/messaging";
 import type { PublicUserInfo } from "$types/user";
+import dayjs from "dayjs";
 import Fuse from "fuse.js";
 import { messagingPages } from "./store";
 import type { MessagingPage } from "./types";
-import dayjs from "dayjs";
-import { tryJsonParse } from "$ts/json";
-import type { FileProgressMutator } from "$apps/components/fsprogress/types";
 
 export class MessagingAppRuntime extends AppProcess {
   service: MessagingInterface;
@@ -159,7 +160,6 @@ export class MessagingAppRuntime extends AppProcess {
     const result: Record<string, PartialMessage[]> = {};
 
     for (const message of messages) {
-      console.log(message.correlationId);
       result[message.correlationId] ||= [];
       result[message.correlationId].push(message);
     }
@@ -243,7 +243,8 @@ export class MessagingAppRuntime extends AppProcess {
 
     const contents = await this.readAttachment(attachment, messageId, prog!);
 
-    prog?.stop();
+    await Sleep(300);
+    await prog?.stop();
 
     if (!contents) return;
 
