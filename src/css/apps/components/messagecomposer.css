@@ -1,0 +1,188 @@
+#MessageComposer > div.body {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+#MessageComposer > div.body div.fields > div.field {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  border-bottom: var(--win-border);
+  padding: 0 15px;
+}
+
+#MessageComposer > div.body div.fields > div.field p.name {
+  width: 70px;
+  min-width: 70px;
+}
+
+#MessageComposer > div.body div.fields > div.field input {
+  margin: 0;
+  padding: 0;
+  height: fit-content;
+  border: none;
+  border-radius: 0;
+}
+#MessageComposer > div.body div.fields > div.field > div.value {
+  flex-grow: 1;
+}
+
+#MessageComposer > div.body div.fields > div.field.to {
+  min-height: 36px;
+  height: fit-content;
+  align-items: start;
+}
+
+#MessageComposer > div.body div.fields > div.field.to p.name {
+  line-height: 35px;
+}
+
+#MessageComposer > div.body div.fields > div.field.to > div.value {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 7px 0;
+  gap: 5px;
+}
+
+#MessageComposer > div.body div.fields > div.field > div.value input {
+  flex-grow: 1;
+  height: 21px;
+}
+
+#MessageComposer > div.body div.fields > div.field.to div.recipient {
+  background-color: var(--button-glass-bg);
+  height: 21px;
+  display: flex;
+  align-items: center;
+  padding: 0 5px;
+  gap: 5px;
+  border-radius: 3px;
+}
+
+#MessageComposer > div.body div.fields > div.field.to div.recipient button {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  background-color: transparent;
+}
+
+#MessageComposer > div.body div.message-body {
+  flex-grow: 1;
+  border-bottom: var(--win-border);
+}
+
+#MessageComposer > div.body div.message-body textarea {
+  width: 100%;
+  height: 100%;
+  resize: none;
+  background-color: var(--win-bg);
+  border: none;
+  padding: 15px;
+}
+
+#MessageComposer > div.body div.attachment-bar {
+  height: 47px;
+  min-height: fit-content;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  border-bottom: var(--win-border);
+  gap: 5px;
+}
+
+#MessageComposer > div.body div.attachment-bar.visible {
+  border-top: var(--win-border);
+}
+
+#MessageComposer > div.body div.attachment-bar div {
+  display: flex;
+  padding: 0 5px;
+  align-items: center;
+  gap: 5px;
+  border-radius: 4px;
+  background-color: var(--button-glass-bg);
+  height: 30px;
+}
+
+#MessageComposer > div.body div.attachment-bar div img {
+  height: 16px;
+}
+
+#MessageComposer > div.body div.attachment-bar div span.size {
+  opacity: 0.5;
+}
+
+#MessagseComposer > div.body div.attachment-bar div p {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#MessageComposer > div.body div.attachment-bar button {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  font-size: 16px;
+  background-color: transparent;
+  min-width: fit-content;
+}
+
+#MessageComposer > div.body div.action-bar {
+  height: 50px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#MessageComposer > div.body div.action-bar button {
+  height: 30px;
+}
+
+#MessageComposer > div.body div.action-bar button.lucide {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  font-size: 16px;
+}
+
+#MessageComposer > div.body div.action-bar button.discard {
+  background-color: var(--clr-red-fg);
+  color: var(--clr-red-bg);
+}
+
+#MessageComposer > div.body div.action-bar div.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+#MessageComposer > div.body div.action-bar div.sep {
+  width: 1px;
+  height: 20px;
+  background-color: var(--button-glass-hover-bg);
+}
+
+#MessageComposer > div.body div.action-bar div.pill {
+  height: 30px;
+  border-radius: 8px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--button-bg);
+  border: var(--win-border);
+  background-color: transparent;
+}
+
+#MessageComposer > div.body div.action-bar div.pill p.caption {
+  font-weight: bold;
+  opacity: 0.5;
+  padding-right: 8px;
+  border-right: var(--button-glass-hover-bg) 1px solid;
+  line-height: 20px;
+}

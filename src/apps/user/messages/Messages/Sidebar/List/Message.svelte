@@ -5,9 +5,9 @@
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
-  import { onMount } from "svelte";
+  import { onMount, type Snippet } from "svelte";
 
-  const { process, message }: { process: MessagingAppRuntime; message: PartialMessage } = $props();
+  const { process, message, children }: { process: MessagingAppRuntime; message: PartialMessage; children?: Snippet } = $props();
   const { message: openedMessage } = process;
   let date = $state<string>();
 
@@ -39,6 +39,9 @@
           {/if}
         </div>
         <span class="timestamp">{date}</span>
+        {#if children}
+          {@render children()}
+        {/if}
       </div>
       <p>{message.title}</p>
     </div>

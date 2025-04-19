@@ -1,11 +1,12 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
   import type { MessagingAppRuntime } from "../../runtime";
+  import CorrelatedMessages from "./List/CorrelatedMessages.svelte";
   import Message from "./List/Message.svelte";
   import Search from "./List/Search.svelte";
 
   const { process }: { process: MessagingAppRuntime } = $props();
-  const { buffer, refreshing, searchQuery, searchResults } = process;
+  const { buffer, refreshing, searchQuery, searchResults, correlated } = process;
 </script>
 
 <div class="messages">
@@ -17,8 +18,8 @@
       </p>
     {:else if $buffer.length}
       {#if !$searchQuery}
-        {#each $buffer as message (message._id)}
-          <Message {process} {message} />
+        {#each $correlated as messages (messages[0].correlationId)}
+          <CorrelatedMessages {process} {messages} />
         {/each}
       {:else if $searchResults.length}
         {#each $buffer as message (message._id)}

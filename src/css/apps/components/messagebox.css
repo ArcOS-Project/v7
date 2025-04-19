@@ -6,6 +6,7 @@
 
 #messageBox.overlay {
   max-width: 550px !important;
+  width: 90% !important;
 }
 
 #messageBox div.body {

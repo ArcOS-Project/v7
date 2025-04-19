@@ -15,12 +15,14 @@ import { messagingPages } from "./store";
 import type { MessagingPage } from "./types";
 import dayjs from "dayjs";
 import { tryJsonParse } from "$ts/json";
+import type { FileProgressMutator } from "$apps/components/fsprogress/types";
 
 export class MessagingAppRuntime extends AppProcess {
   service: MessagingInterface;
   page = Store<MessagingPage | undefined>();
   pageId = Store<string | undefined>();
   buffer = Store<PartialMessage[]>([]);
+  correlated = Store<PartialMessage[][]>([]);
   loading = Store<boolean>(false);
   refreshing = Store<boolean>(true);
   errored = Store<boolean>(false);
@@ -150,6 +152,19 @@ export class MessagingAppRuntime extends AppProcess {
     }
 
     this.buffer.set(messages);
+    this.correlated.set(this.correlateMessages(messages));
+  }
+
+  correlateMessages(messages: PartialMessage[]): PartialMessage[][] {
+    const result: Record<string, PartialMessage[]> = {};
+
+    for (const message of messages) {
+      console.log(message.correlationId);
+      result[message.correlationId] ||= [];
+      result[message.correlationId].push(message);
+    }
+
+    return Object.values(result);
   }
 
   refreshFailed() {
@@ -195,24 +210,38 @@ export class MessagingAppRuntime extends AppProcess {
     return info;
   }
 
-  async openAttachment(attachment: MessageAttachment, messageId: string) {
+  async readAttachment(attachment: MessageAttachment, messageId: string, prog: FileProgressMutator) {
     const path = `T:/Apps/${this.app.id}/${messageId}/${attachment.filename}`;
+    const existing = await this.fs.readFile(path);
 
-    if (await this.fs.readFile(path)) return this.userDaemon?.openFile(path);
-
-    const prog = await this.userDaemon?.FileProgress({
-      type: "size",
-      max: attachment.size,
-      caption: `Reading Attachment...`,
-      icon: MessagingIcon,
-      subtitle: attachment.filename,
-    });
+    if (existing) return existing;
 
     const contents = await this.service.readAttachment(messageId, attachment._id, (progress) => {
       prog?.show();
+      prog?.setType("size");
+      prog?.setDone(0);
+      prog?.setMax(progress.max + 1);
       prog?.setDone(progress.value);
-      prog?.setMax(progress.max);
     });
+
+    return contents;
+  }
+
+  async openAttachment(attachment: MessageAttachment, messageId: string) {
+    const path = `T:/Apps/${this.app.id}/${messageId}/${attachment.filename}`;
+
+    const prog = await this.userDaemon?.FileProgress(
+      {
+        type: "size",
+        max: attachment.size,
+        caption: `Reading Attachment...`,
+        icon: MessagingIcon,
+        subtitle: attachment.filename,
+      },
+      this.pid
+    );
+
+    const contents = await this.readAttachment(attachment, messageId, prog!);
 
     prog?.stop();
 
@@ -265,18 +294,23 @@ export class MessagingAppRuntime extends AppProcess {
 
     if (!path) return;
 
-    const prog = await this.userDaemon?.FileProgress({
-      type: "size",
-      caption: `Writing message...`,
-      icon: MessagingIcon,
-      subtitle: path,
-    });
+    const prog = await this.userDaemon?.FileProgress(
+      {
+        type: "size",
+        caption: `Writing message...`,
+        icon: MessagingIcon,
+        subtitle: path,
+      },
+      this.pid
+    );
 
     await this.fs.writeFile(path, textToBlob(JSON.stringify(message, null, 2)), (progress) => {
       prog?.show();
       prog?.setDone(progress.value);
       prog?.setMax(progress.max);
     });
+
+    await prog?.stop();
   }
 
   async readMessageFromFile(path: string) {
@@ -290,5 +324,58 @@ export class MessagingAppRuntime extends AppProcess {
 
     this.message.set(json as ExpandedMessage);
     this.windowTitle.set(path);
+  }
+
+  compose() {
+    this.spawnOverlayApp("MessageComposer", this.pid);
+  }
+
+  replyTo(message: ExpandedMessage) {
+    const originalDate = dayjs(message.createdAt).format("ddd, D MMM YYYY [at] HH:mm");
+    this.spawnOverlayApp(
+      "MessageComposer",
+      this.pid,
+      {
+        title: `Re: ${message.title}`,
+        body: `\n\n------\n\nOn ${originalDate}, ${
+          message.author?.displayName || message.author?.username || "unknown user"
+        } wrote:\n\n${message.body}`,
+        recipients: [message.author!.username],
+        attachments: [],
+      },
+      message._id
+    );
+  }
+
+  async forward(message: ExpandedMessage) {
+    const attachments: File[] = [];
+
+    const prog = await this.userDaemon?.FileProgress(
+      {
+        type: "none",
+        max: 100,
+        caption: `Reading attachments`,
+        icon: MessagingIcon,
+        subtitle: `Just a moment...`,
+      },
+      this.pid
+    );
+
+    for (const attachment of message.attachments) {
+      const contents = await this.readAttachment(attachment, message._id, prog!);
+
+      if (!contents) continue;
+
+      attachments.push(new File([contents], attachment.filename, { type: attachment.mimeType }));
+    }
+
+    prog?.stop();
+
+    this.spawnOverlayApp("MessageComposer", this.pid, {
+      title: `Fw: ${message.title}`,
+      body: message.body,
+      recipients: [],
+      attachments,
+    });
   }
 }

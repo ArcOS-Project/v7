@@ -102,6 +102,10 @@
   background-color: transparent;
 }
 
+#Messages > div.body div.messages button.message:last-child {
+  margin-bottom: 0;
+}
+
 #Messages > div.body div.messages button.message:hover {
   background-color: var(--button-glass-bg);
 }
@@ -140,6 +144,29 @@
   opacity: 0.5;
 }
 
+#Messages > div.body div.messages button.message button.lucide {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  background-color: transparent;
+}
+#Messages > div.body div.messages div.correlation {
+  height: 50px;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 5px;
+}
+
+#Messages > div.body div.messages div.correlation div.master {
+  background-color: var(--button-glass-bg);
+  border-radius: 8px;
+}
+
+#Messages > div.body div.messages div.correlation.expanded {
+  height: fit-content;
+  background-color: var(--button-glass-active-bg);
+}
+
 #Messages > div.body div.messages button.message div.subject div.statuses {
   display: flex;
   align-items: center;
@@ -164,6 +191,8 @@
 #Messages > div.body div.container {
   width: calc(100% - 50px - 250px);
   background-color: var(--win-bg);
+  display: flex;
+  flex-direction: column;
 }
 
 #Messages > div.body div.container.full {
@@ -171,7 +200,9 @@
 }
 
 #Messages > div.body div.container div.message-content {
-  height: calc(100% - 40px - 48px - 51px);
+  /* height: 100%; */
+  flex-grow: 1;
+  overflow-y: scroll;
   padding: 20px;
 }
 
@@ -188,6 +219,9 @@
   border-radius: 20px;
 }
 
+#Messages > div.body div.container div.message-content p.message-body {
+  white-space: pre-wrap;
+}
 #Messages > div.body div.container div.message-content div.header h1 {
   font-size: 16px;
 }
@@ -197,9 +231,12 @@
 
 #Messages > div.body div.container div.attachment-bar {
   height: 48px;
-  padding: 0 10px;
+  padding: 8px 10px;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-height: fit-content;
 }
 
 #Messages > div.body div.container div.attachment-bar.visible {

@@ -7,15 +7,21 @@
 
 <div class="action-bar">
   {#if !messageWindow}
-    <button class="compose suggested">
+    <button class="compose suggested" onclick={() => process.compose()}>
       <span class="lucide icon-plus"></span>
       <span>Compose</span>
     </button>
   {/if}
   <div class="actions">
     <div class="reply-forward">
-      <button class="lucide icon-reply" aria-label="Reply" disabled={!$message || messageFromFile}></button>
-      <button class="lucide icon-forward" aria-label="Forward" disabled={!$message}></button>
+      <button
+        class="lucide icon-reply"
+        aria-label="Reply"
+        disabled={!$message || messageFromFile}
+        onclick={() => process.replyTo($message!)}
+      ></button>
+      <button class="lucide icon-forward" aria-label="Forward" disabled={!$message} onclick={() => process.forward($message!)}
+      ></button>
     </div>
     <div class="sep"></div>
     <div class="modifiers">
