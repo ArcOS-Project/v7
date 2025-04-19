@@ -6,7 +6,7 @@
   const { process }: { process: ShellRuntime } = $props();
   const { searchQuery, startMenuOpened } = process;
 
-  let searchBar: HTMLInputElement;
+  let searchBar = $state<HTMLInputElement>();
 
   onMount(() => {
     startMenuOpened.subscribe(async (v) => {
@@ -21,14 +21,17 @@
 
 <div class="bottom">
   <div class="search">
-    <span class="lucide icon-search"></span>
-    <input
-      type="text"
-      placeholder="Search..."
-      bind:value={$searchQuery}
-      bind:this={searchBar}
-      onkeydown={(e) => process.MutateIndex(e)}
-    />
+    {#if !process.safeMode}
+      <span class="lucide icon-search"></span>
+      <input
+        type="text"
+        placeholder="Search..."
+        bind:value={$searchQuery}
+        bind:this={searchBar}
+        onkeydown={(e) => process.MutateIndex(e)}
+        disabled={process.safeMode}
+      />
+    {/if}
   </div>
   <div class="actions">
     <button class="settings" aria-label="Settings" onclick={() => process.spawnApp("systemSettings", process.pid)}>

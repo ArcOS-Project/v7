@@ -426,6 +426,8 @@ export class ShellRuntime extends AppProcess {
   }
 
   async Search(query: string) {
+    if (this.safeMode) return [];
+
     const preferences = this.userPreferences();
     const sources = {
       filesystem: preferences.searchOptions.includeFilesystem,
