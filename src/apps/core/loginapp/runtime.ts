@@ -26,6 +26,7 @@ export class LoginAppRuntime extends AppProcess {
   public loginBackground = Store<string>(this.DEFAULT_WALLPAPER());
   public hideProfileImage = Store<boolean>(false);
   public serverInfo: ServerInfo | undefined;
+  public safeMode = false;
   private type = "";
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, props: LoginAppProps) {
@@ -40,6 +41,8 @@ export class LoginAppRuntime extends AppProcess {
     );
 
     this.serverInfo = server.serverInfo;
+    this.safeMode = !!props.safeMode;
+    if (this.safeMode) this.env.set("safemode", true);
     this.loginBackground.set(this.DEFAULT_WALLPAPER());
 
     if (props.type) {
@@ -146,7 +149,8 @@ export class LoginAppRuntime extends AppProcess {
     );
 
     this.profileName.set(userDaemon.preferences().account.displayName || username);
-    this.loginBackground.set((await userDaemon.getWallpaper(userDaemon.preferences().account.loginBackground)).url);
+    if (!this.safeMode)
+      this.loginBackground.set((await userDaemon.getWallpaper(userDaemon.preferences().account.loginBackground)).url);
 
     this.loadingStatus.set("Notifying login activity");
 

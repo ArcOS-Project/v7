@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Wallpapers } from "$ts/wallpaper/store";
   import type { AppComponentProps } from "$types/app";
   import ErrorMessage from "./ErrorMessage.svelte";
   import Loading from "./Loading.svelte";
@@ -21,8 +22,9 @@
 <div
   class="container"
   class:full={$hideProfileImage}
-  style="--bgurl: url('{$loginBackground}')"
+  style="--bgurl: url('{process.safeMode ? Wallpapers.img0.url : $loginBackground}')"
   class:server-bg={serverInfo?.loginWallpaper && $loginBackground === $DEFAULT_WALLPAPER}
+  class:safemode={process.safeMode}
 >
   {#if !$hideProfileImage}
     <div class="profile-picture" style="--src: url('{$profileImage}')"></div>

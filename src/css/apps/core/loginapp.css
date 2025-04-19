@@ -13,6 +13,11 @@ div.window#loginApp > div.body div.container.server-bg {
   background-size: cover;
 }
 
+div.window#loginApp > div.body div.container.safemode {
+  outline: #ff0 2px solid !important;
+  outline-offset: -2px !important	;
+}
+
 div.window#loginApp > div.body button:not(.continue) {
   padding: 8px 20px;
   background-color: #fff1;
