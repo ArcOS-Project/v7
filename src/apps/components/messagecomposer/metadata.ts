@@ -1,3 +1,4 @@
+import "$css/apps/components/messagecomposer.css";
 import { MessagingIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import MessageComposer from "./MessageComposer.svelte";
@@ -11,8 +12,8 @@ export const MessageComposerApp: App = {
     icon: MessagingIcon,
   },
   position: { centered: true },
-  size: { w: 550, h: 500 },
-  minSize: { w: 550, h: 500 },
+  size: { w: 550, h: 450 },
+  minSize: { w: 550, h: 450 },
   maxSize: { w: NaN, h: NaN },
   state: {
     maximized: false,
