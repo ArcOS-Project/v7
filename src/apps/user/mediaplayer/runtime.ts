@@ -225,9 +225,15 @@ export class MediaPlayerRuntime extends AppProcess {
     this.queueIndex.set(index);
   }
 
-  previousSong() {
+  async previousSong() {
     if (this._disposed) return;
     let index = this.queueIndex();
+
+    if (this.State().current >= 2) {
+      this.player!.currentTime = 0;
+
+      return;
+    }
 
     if (index - 1 < 0) {
       return;

@@ -12,7 +12,7 @@
 <button
   class="lucide previous icon-skip-back"
   onclick={previous}
-  disabled={$queueIndex == 0 || !$Loaded || !$State.duration}
+  disabled={($State.current <= 2 ? $queueIndex == 0 : false) || !$Loaded || !$State.duration}
   aria-label="Previous song"
 >
 </button>
