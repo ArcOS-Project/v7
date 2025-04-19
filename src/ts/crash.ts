@@ -1,6 +1,7 @@
 import { LogLevel } from "../types/logging";
 import { BugHunt } from "./bughunt";
 import { WaveKernel } from "./kernel";
+import { ASCII_ART } from "./kernel/intro";
 import { ServerManager } from "./server";
 
 export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
@@ -11,6 +12,8 @@ export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
   const connected = ServerManager.isConnected();
 
   const HEADER = [
+    ...ASCII_ART,
+    ``,
     `---! [ ArcOS Crashed ] !---`,
     ``,
     `An exception took place that wasn't handled. ArcOS has been halted.`,
