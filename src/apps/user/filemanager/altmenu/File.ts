@@ -31,7 +31,9 @@ export function FileMenu(runtime: FileManagerRuntime): ContextMenuItem {
       {
         caption: "Download",
         icon: "download",
-        action: () => runtime.notImplemented("Downloading files"),
+
+        disabled: () => runtime.selection().length !== 1 || !runtime.contents(),
+        action: () => runtime.downloadSelected(),
       },
       { sep: true },
       {
