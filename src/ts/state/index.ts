@@ -32,15 +32,6 @@ export class StateHandler extends Process {
 
     if (!data) throw new StateError(`No such state ${id} on handler with PID ${this.pid}`);
 
-    const appRenderer = this.handler.renderer?.target;
-
-    if (appRenderer) {
-      appRenderer.className = "";
-      appRenderer.removeAttribute("style");
-      appRenderer.querySelector("#userStyleLoader")?.remove();
-      appRenderer.querySelector(".virtual-desktop-container")?.remove();
-    }
-
     if (this.stateAppProcess) {
       this.Log(`Closing previous state app process...`);
 
@@ -64,6 +55,15 @@ export class StateHandler extends Process {
       main.classList.add("hidden");
 
       await Sleep(400);
+    }
+
+    const appRenderer = this.handler.renderer?.target;
+
+    if (appRenderer) {
+      appRenderer.className = "";
+      appRenderer.removeAttribute("style");
+      appRenderer.querySelector("#userStyleLoader")?.remove();
+      appRenderer.querySelector(".virtual-desktop-container")?.remove();
     }
 
     if (data.app) {

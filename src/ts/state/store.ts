@@ -1,6 +1,7 @@
 import { BootScreen } from "$apps/core/bootscreen/metadata";
 import { InitialSetupWizard } from "$apps/core/initialsetup/metadata";
 import { LoginApp } from "$apps/core/loginapp/metadata";
+import TurnedOff from "$state/turnedoff/render";
 import CrashHtml from "../../state/crash/crash.html?url";
 import CrashRender from "../../state/crash/render";
 import DesktopHtml from "../../state/desktop/desktop.html?url";
@@ -9,6 +10,7 @@ import LicenseDeclinedHtml from "../../state/licensedeclined/licensedeclined.htm
 import LicenseDeclinedRender from "../../state/licensedeclined/render";
 import ServerDownRender from "../../state/serverdown/render";
 import ServerDownHtml from "../../state/serverdown/serverdown.html?url";
+import TurnedOffHtml from "../../state/turnedoff/turnedoff.html?url";
 import type { State } from "../../types/state";
 
 export const States: Record<string, State> = {
@@ -50,5 +52,11 @@ export const States: Record<string, State> = {
     name: "Initial Setup Wizard",
     identifier: "initialSetup",
     app: InitialSetupWizard,
+  },
+  turnedOff: {
+    name: "Turned off",
+    identifier: "turnedOff",
+    render: TurnedOff,
+    html: TurnedOffHtml,
   },
 };
