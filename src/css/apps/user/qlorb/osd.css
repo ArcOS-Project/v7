@@ -1,0 +1,29 @@
+@import url("./osd/segments.css");
+@import url("./osd/credits.css");
+@import url("./osd/score.css");
+
+#QlorbApp div.osd {
+  box-sizing: border-box;
+  z-index: 10000;
+  pointer-events: none !important;
+}
+
+#QlorbApp div.osd * {
+  pointer-events: initial !important;
+}
+
+#QlorbApp div.titlebar {
+  z-index: 20000;
+}
+
+#QlorbApp div.osd div.topleft {
+  top: 40px;
+  left: 20px;
+}
+#QlorbApp div.osd div button.material-icons-round {
+  margin: 10px;
+  padding: 0;
+  font-family: "Material Icons Round" !important;
+  font-size: 24px;
+  background-color: transparent;
+}

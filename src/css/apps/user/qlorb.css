@@ -1,0 +1,32 @@
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons+Round");
+@import url("https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap");
+@import url("./qlorb/background.css");
+@import url("./qlorb/osd.css");
+@import url("./qlorb/game.css");
+
+#QlorbApp > div.titlebar {
+  border-bottom: none !important;
+  background-color: transparent;
+}
+
+#QlorbApp .game *,
+#QlorbApp .game *::before,
+#QlorbApp .game *::after {
+  border-radius: 5px;
+}
+
+#QlorbApp > .body * {
+  font-family: "Kdam Thmor Pro", sans-serif !important;
+  box-sizing: initial;
+}
+
+#QlorbApp > .body {
+  padding: 0;
+  box-sizing: initial;
+  overflow: hidden;
+}
+
+#QlorbApp,
+#QlorbApp * {
+  overflow: hidden;
+}
