@@ -37,7 +37,7 @@
     <button class="settings" aria-label="Settings" onclick={() => process.spawnApp("systemSettings", process.pid)}>
       <span class="lucide icon-settings-2"></span>
     </button>
-    <button class="shutdown" aria-label="Shutdown" onclick={() => process.notImplemented()}>
+    <button class="shutdown" aria-label="Shutdown" onclick={() => process.exit()}>
       <span class="lucide icon-power"></span>
     </button>
   </div>

@@ -624,4 +624,9 @@ export class ShellRuntime extends AppProcess {
     this.trayIcons.set(trayIcons);
     this.globalDispatch.dispatch("tray-icon-dispose", [pid]);
   }
+
+  async exit() {
+    this.startMenuOpened.set(false);
+    await this.spawnOverlayApp("ExitApp", this.pid);
+  }
 }
