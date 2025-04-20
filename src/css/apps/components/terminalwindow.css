@@ -24,7 +24,7 @@
 }
 
 #TerminalWindow > div.body * {
-  font-family: "Source Code Pro";
+  font-family: "Fira Code";
 }
 
 #TerminalWindow > div.body div.xterm-viewport {
