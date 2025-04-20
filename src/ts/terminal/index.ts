@@ -77,7 +77,7 @@ export class ArcTerminal extends Process {
     const str = this.var?.replace(text.trim()) || "";
     const [flags, args] = this.parseFlags(str);
     const argv = args.split(" ");
-    const cmd = argv[0];
+    const cmd = text.split(" ")[0];
 
     argv.shift();
 

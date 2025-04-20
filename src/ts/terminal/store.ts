@@ -9,6 +9,7 @@ import { ConfigCommand } from "./commands/config";
 import { CrTpaCommand } from "./commands/crtpa";
 import { DirCommand } from "./commands/dir";
 import { DispatchCommand } from "./commands/dispatch";
+import { DrivesCommand } from "./commands/drives";
 import { EchoCommand } from "./commands/echo";
 import { ExitCommand } from "./commands/exit";
 import { ExploreCommand } from "./commands/explore";
@@ -61,6 +62,7 @@ export const TerminalCommandStore: TerminalCommand[] = [
   SpawnCommand,
   TasksCommand,
   AdminCommand,
+  DrivesCommand,
 ];
 
 export const ESC = `\x1b[`;
