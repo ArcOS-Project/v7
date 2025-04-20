@@ -254,6 +254,7 @@ export class LoginAppRuntime extends AppProcess {
       this.profileImage.set(
         (await daemon?.getProfilePicture(daemon.preferences().account.profilePicture!)) || ProfilePictures.pfp3
       );
+      this.loginBackground.set((await daemon.getWallpaper(daemon.preferences().account.loginBackground)).url);
 
       this.profileName.set(daemon.preferences().account.displayName || daemon.username);
     }
@@ -264,7 +265,7 @@ export class LoginAppRuntime extends AppProcess {
     await Sleep(2000);
 
     if (daemon) await daemon.killSelf();
-    window.close();
+    this.kernel.state?.loadState("turnedOff");
   }
 
   async restart(daemon?: UserDaemon) {
@@ -276,6 +277,7 @@ export class LoginAppRuntime extends AppProcess {
       this.profileImage.set(
         (await daemon?.getProfilePicture(daemon.preferences().account.profilePicture!)) || ProfilePictures.pfp3
       );
+      this.loginBackground.set((await daemon.getWallpaper(daemon.preferences().account.loginBackground)).url);
 
       this.profileName.set(daemon.preferences().account.displayName || daemon.username);
     }
