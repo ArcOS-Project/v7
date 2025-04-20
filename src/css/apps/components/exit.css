@@ -1,0 +1,74 @@
+#ExitApp > div.body {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  text-align: center;
+}
+
+#ExitApp > div.body div.confirm {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+#ExitApp > div.body div.options {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border-bottom: var(--button-glass-hover-bg) 1px solid;
+  padding-bottom: 25px;
+  margin: 0 auto;
+  margin-bottom: 15px;
+  width: fit-content;
+}
+
+#ExitApp > div.body div.options button {
+  width: 85px;
+  height: 75px;
+  padding: 0;
+  padding-bottom: 5px;
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background-color: transparent;
+}
+
+#ExitApp > div.body div.options button:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#ExitApp > div.body div.options button:active {
+  background-color: var(--button-glass-active-bg);
+}
+
+#ExitApp > div.body div.options button .icon {
+  height: 32px !important;
+  min-height: 32px;
+}
+
+#ExitApp > div.body div.options button.selected {
+  background-color: var(--accent-transparent);
+}
+#ExitApp > div.body h1 {
+  font-size: 22px;
+}
+
+#ExitApp > div.body div.header {
+  margin-bottom: 10px;
+}
+
+#ExitApp > div.body div.header p {
+  opacity: 0.5;
+}
+
+.shade-ExitApp {
+  background-position: center;
+  background-size: cover;
+  background-image: linear-gradient(to bottom, #0006 0%, #0006 100%), var(--wallpaper);
+  z-index: 10000000000;
+}

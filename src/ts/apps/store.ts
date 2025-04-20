@@ -1,5 +1,6 @@
 import { AcceleratorOverviewApp } from "$apps/components/acceleratoroverview/metadata";
 import { AppInfoApp } from "$apps/components/appinfo/metadata";
+import { ExitApp } from "$apps/components/exit/metadata";
 import { FsNewFileApp } from "$apps/components/fsnewfile/metadata";
 import { FsNewFolderApp } from "$apps/components/fsnewfolder/metadata";
 import { FsProgressApp } from "$apps/components/fsprogress/metadata";
@@ -80,6 +81,7 @@ export const BuiltinApps: AppStorage = [
   BugHuntApp,
   MessagingApp,
   MessageComposerApp,
+  ExitApp,
 ];
 
 export const AdminApps: AppStorage = [];
