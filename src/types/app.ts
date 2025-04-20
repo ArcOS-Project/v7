@@ -102,7 +102,7 @@ export interface ContextMenuItem {
   accelerator?: string;
 }
 
-export type ContextMenuCallback<T = void> = (...args: any[]) => MaybePromise<T>;
+export type ContextMenuCallback<T = any> = (...args: any[]) => MaybePromise<T>;
 
 export type AppContextMenu = { [key: string]: ContextMenuItem[] };
 export interface ContextMenuInstance {

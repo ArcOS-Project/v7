@@ -690,13 +690,22 @@ export class UserDaemon extends Process {
     await this.toLogin("restart");
   }
 
-  async toLogin(type: string) {
+  async logoffSafeMode() {
+    this.Log(`Logging off NOW (safe mode)`);
+
+    this.env.set("safemode", true);
+
+    await this.toLogin("logoff", { safeMode: true });
+  }
+
+  async toLogin(type: string, props: Record<string, any> = {}) {
     if (this._disposed) return;
 
     await this.handler._killSubProceses(this.pid);
     await this.kernel.state?.loadState("login", {
       type,
       userDaemon: this,
+      ...props,
     });
     this.unmountMountedDrives();
   }
