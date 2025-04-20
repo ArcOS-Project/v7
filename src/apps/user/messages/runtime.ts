@@ -109,6 +109,10 @@ export class MessagingAppRuntime extends AppProcess {
     });
   }
 
+  isArchived(id: string) {
+    return this.getArchiveState().includes(id);
+  }
+
   addToArchive(id: string) {
     const state = this.getArchiveState();
 
@@ -161,8 +165,13 @@ export class MessagingAppRuntime extends AppProcess {
 
     for (const message of messages) {
       result[message.correlationId] ||= [];
-      result[message.correlationId].push(message);
+
+      const existing = result[message.correlationId].filter((m) => m._id === message._id)[0];
+
+      if (!existing) result[message.correlationId].push(message);
     }
+
+    console.log(Object.values(result));
 
     return Object.values(result);
   }
@@ -183,8 +192,8 @@ export class MessagingAppRuntime extends AppProcess {
     );
   }
 
-  async readMessage(messageId: string) {
-    if (this.message()?._id === messageId) return;
+  async readMessage(messageId: string, force = false) {
+    if (this.message()?._id === messageId && !force) return;
 
     this.messageNotFound.set(false);
     this.loading.set(true);
@@ -378,5 +387,38 @@ export class MessagingAppRuntime extends AppProcess {
       recipients: [],
       attachments,
     });
+  }
+
+  toggleArchived(message: ExpandedMessage) {
+    if (this.isArchived(message._id)) {
+      this.removeFromArchive(message._id);
+      this.switchPage(message.authorId === this.userDaemon?.userInfo?._id ? "sent" : "inbox");
+    } else {
+      this.addToArchive(message._id);
+      this.switchPage("archived");
+    }
+
+    this.readMessage(message._id, true);
+  }
+
+  async deleteMessage(id: string) {
+    MessageBox(
+      {
+        title: "Delete message?",
+        message: "Are you sure you want to delete this message? This cannot be undone.",
+        buttons: [
+          { caption: "Cancel", action: () => {} },
+          {
+            caption: "Delete",
+            action: async () => {
+              await this.service.deleteMessage(id);
+            },
+            suggested: true,
+          },
+        ],
+      },
+      this.pid,
+      true
+    );
   }
 }

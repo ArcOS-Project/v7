@@ -31,8 +31,20 @@
         disabled={!$message || messageFromFile}
         onclick={() => process.saveMessage()}
       ></button>
-      <button class="lucide icon-trash-2" aria-label="Delete" disabled={!$message || messageFromFile}></button>
-      <button class="lucide icon-archive" aria-label="Archive" disabled={!$message || messageFromFile}></button>
+      <button
+        class="lucide icon-trash-2"
+        aria-label="Delete"
+        disabled={!$message || messageFromFile}
+        onclick={() => $message && process.deleteMessage($message._id)}
+      ></button>
+      <button
+        class="lucide"
+        aria-label="Archive"
+        disabled={!$message || messageFromFile}
+        onclick={() => $message && process.toggleArchived($message)}
+        class:icon-archive-x={$message && process.isArchived($message!._id)}
+        class:icon-archive={$message && !process.isArchived($message!._id)}
+      ></button>
     </div>
     {#if !messageWindow}
       <div class="sep"></div>
