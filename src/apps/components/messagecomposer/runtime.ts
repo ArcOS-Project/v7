@@ -178,7 +178,7 @@ export class MessageComposerRuntime extends AppProcess {
   }
 
   async discard() {
-    if (!this.isModified) return this.closeWindow();
+    if (!this.isModified()) return this.closeWindow();
     MessageBox(
       {
         title: "Discard message?",
