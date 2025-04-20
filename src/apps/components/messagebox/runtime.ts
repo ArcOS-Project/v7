@@ -1,12 +1,14 @@
 import { AppProcess } from "$ts/apps/process";
 import { ComponentIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
+import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { LogLevel } from "$types/logging";
 import type { MessageBoxData } from "$types/messagebox";
 
 export class MessageBoxRuntime extends AppProcess {
   data: MessageBoxData | undefined;
+  acted = Store<boolean>(false);
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, data: MessageBoxData) {
     super(handler, pid, parentPid, app);
@@ -37,6 +39,8 @@ export class MessageBoxRuntime extends AppProcess {
   }
 
   async onClose(): Promise<boolean> {
+    if (this.acted()) return true;
+
     await this.data?.buttons
       .reverse()
       .filter((b) => b.suggested)[0]

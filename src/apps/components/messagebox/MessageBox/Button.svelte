@@ -9,6 +9,7 @@
   async function go() {
     disabled = true;
 
+    process.acted.set(true);
     await button.action();
     await process.closeWindow();
   }
