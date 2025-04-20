@@ -25,7 +25,7 @@ export const MessageBoxApp: App = {
   controls: {
     minimize: false,
     maximize: false,
-    close: false,
+    close: true,
   },
   assets: {
     runtime: MessageBoxRuntime,
