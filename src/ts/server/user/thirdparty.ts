@@ -102,16 +102,7 @@ export function ThirdPartyProps(
     },
   };
 
-  const supplementary = SupplementaryThirdPartyPropFunctions(
-    daemon,
-    daemon.fs,
-    app,
-    props,
-    wrap,
-    args,
-    metaPath,
-    workingDirectory || app.workingDirectory
-  );
+  const supplementary = SupplementaryThirdPartyPropFunctions(daemon, daemon.fs, app, props, wrap, args, metaPath);
 
   for (const [key, supp] of Object.entries(supplementary)) {
     (props as any)[key] = supp;

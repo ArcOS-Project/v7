@@ -1,7 +1,7 @@
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import type { Filesystem } from "$ts/fs";
 import { arrayToText } from "$ts/fs/convert";
-import { getParentDirectory, join } from "$ts/fs/util";
+import { join } from "$ts/fs/util";
 import { tryJsonParse } from "$ts/json";
 import { detectJavaScript } from "$ts/util";
 import type { App } from "$types/app";
@@ -15,8 +15,7 @@ export function SupplementaryThirdPartyPropFunctions(
   props: any,
   wrap: (c: string) => string,
   args: any[],
-  metaPath: string,
-  workingDirectory = app.workingDirectory
+  metaPath: string
 ) {
   return {
     load: async (path: string) => {
@@ -27,7 +26,7 @@ export function SupplementaryThirdPartyPropFunctions(
           throw e;
         }
       }
-      const contents = wrap(arrayToText((await fs.readFile(join(workingDirectory!, path)))!));
+      const contents = wrap(arrayToText((await fs.readFile(join(app.workingDirectory!, path)))!));
       const dataUrl = `data:application/javascript;base64,${btoa(contents)}`;
 
       try {
@@ -37,7 +36,7 @@ export function SupplementaryThirdPartyPropFunctions(
 
         if (!func) return undefined;
 
-        return await func(ThirdPartyProps(daemon, args, app, wrap, metaPath, getParentDirectory(join(workingDirectory!, path))));
+        return await func(ThirdPartyProps(daemon, args, app, wrap, metaPath, app.workingDirectory));
       } catch (e) {
         throw e;
       }
@@ -97,7 +96,7 @@ export function SupplementaryThirdPartyPropFunctions(
       }
     },
     loadHtml: async (path: string) => {
-      const htmlCode = arrayToText((await fs.readFile(join(workingDirectory!, path)))!);
+      const htmlCode = arrayToText((await fs.readFile(join(app.workingDirectory!, path)))!);
 
       const detected = detectJavaScript(htmlCode);
 
