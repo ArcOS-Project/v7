@@ -33,7 +33,11 @@
   }
 </script>
 
-<div class="titlebar custom {className}" data-contextmenu="_window-titlebar" use:contextProps={[process]}>
+<div
+  class="titlebar custom {className}"
+  data-contextmenu={process.app.data.overlay ? "" : "_window-titlebar"}
+  use:contextProps={[process]}
+>
   <div class="window-title nodrag">
     {#if children}
       {@render children()}
