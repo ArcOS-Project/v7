@@ -182,14 +182,16 @@ export class SettingsRuntime extends AppProcess {
           {
             caption: "Log out",
             action: async () => {
-              this.userDaemon?.logoff();
+              const token = this.userDaemon?.token;
+
+              await this.userDaemon?.logoff();
 
               await Axios.post(
                 "/logallout",
                 {},
                 {
                   headers: {
-                    Authorization: `Bearer ${this.userDaemon?.token}`,
+                    Authorization: `Bearer ${token}`,
                   },
                 }
               );
