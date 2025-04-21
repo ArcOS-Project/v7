@@ -24,6 +24,7 @@ import {
   TerminalCommandStore,
 } from "./store";
 import { ArcTermVariables } from "./var";
+import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 
 export class ArcTerminal extends Process {
   path: string;
@@ -36,6 +37,7 @@ export class ArcTerminal extends Process {
   ansiEscapes = ansiEscapes;
   lastCommandErrored = false;
   config: ArcTermConfiguration = DefaultArcTermConfiguration;
+  window: TerminalWindowRuntime | undefined;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, term: Terminal, path?: string) {
     super(handler, pid, parentPid);
@@ -45,6 +47,7 @@ export class ArcTerminal extends Process {
     this.daemon = handler.getProcess(+this.env.get("userdaemon_pid"));
 
     this.term = term;
+    this.tryGetTermWindow();
   }
 
   async start() {
@@ -62,6 +65,8 @@ export class ArcTerminal extends Process {
   async readline() {
     if (this._disposed) return;
 
+    this.window?.windowTitle.set(`ArcTerm - ${this.path}`);
+
     const line = await this.rl?.read(this.var?.replace(this.config.prompt || "$")!);
 
     await this.processLine(line);
@@ -78,6 +83,7 @@ export class ArcTerminal extends Process {
     const [flags, args] = this.parseFlags(str);
     const argv = args.split(" ");
     const cmd = text.split(" ")[0];
+    this.window?.windowTitle.set(`ArcTerm - ${cmd} ${this.path}`);
 
     argv.shift();
 
@@ -199,6 +205,7 @@ export class ArcTerminal extends Process {
     }
 
     this.path = path;
+    this.window?.windowTitle.set(`ArcTerm - ${path}`);
 
     return true;
   }
@@ -324,5 +331,11 @@ export class ArcTerminal extends Process {
     await this.rl?.dispose();
     await this.killSelf();
     await this.handler.spawn(ArcTerminal, undefined, this.parentPid, this.term, this.path);
+  }
+
+  tryGetTermWindow() {
+    const parent = this.handler.getProcess(this.parentPid);
+
+    if (parent instanceof TerminalWindowRuntime) this.window = parent;
   }
 }
