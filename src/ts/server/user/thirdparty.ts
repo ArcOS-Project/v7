@@ -2,6 +2,7 @@ import { AppProcess } from "$ts/apps/process";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { MessageBox } from "$ts/dialog";
 import { arrayToBlob, arrayToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/fs/convert";
+import { FilesystemDrive } from "$ts/fs/drive";
 import {
   DownloadFile,
   formatBytes,
@@ -15,6 +16,7 @@ import {
 import { getAllImages } from "$ts/images";
 import { WindowSettingsIcon } from "$ts/images/general";
 import { tryJsonStringify } from "$ts/json";
+import { KernelModule } from "$ts/kernel/module";
 import { Process } from "$ts/process/instance";
 import { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";
 import { Store } from "$ts/writable";
@@ -23,8 +25,6 @@ import axios from "axios";
 import { Axios } from "../axios";
 import type { UserDaemon } from "./daemon";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
-import { FilesystemDrive } from "$ts/fs/drive";
-import { KernelModule } from "$ts/kernel/module";
 
 export function ThirdPartyProps(
   daemon: UserDaemon,

@@ -6,13 +6,13 @@ import { WarningIcon } from "$ts/images/dialog";
 import { MemoryIcon, UploadIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { MessagingInterface } from "$ts/server/messaging";
+import { Sleep } from "$ts/sleep";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { MessageCreateData } from "$types/messaging";
 import mime from "mime";
 import type { Attachment } from "./types";
-import { Sleep } from "$ts/sleep";
 
 export class MessageComposerRuntime extends AppProcess {
   sending = Store<boolean>(false);

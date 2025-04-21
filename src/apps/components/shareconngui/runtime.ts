@@ -1,7 +1,6 @@
 import { FileManagerRuntime } from "$apps/user/filemanager/runtime";
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { FilesystemDrive } from "$ts/fs/drive";
 import type { ShareManager } from "$ts/fs/shares";
 import { SharedDrive } from "$ts/fs/shares/drive";
 import { ErrorIcon } from "$ts/images/dialog";

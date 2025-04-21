@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { MessageBox } from "$ts/dialog";
-  import { maybeIconId } from "$ts/images";
   import { QuestionIcon, WarningIcon } from "$ts/images/dialog";
   import type { App } from "$types/app";
   import { onMount } from "svelte";

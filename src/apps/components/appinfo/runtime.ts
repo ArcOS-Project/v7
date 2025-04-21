@@ -1,5 +1,4 @@
 import { AppProcess } from "$ts/apps/process";
-import { maybeIconId } from "$ts/images";
 import { AppInfoIcon } from "$ts/images/apps";
 import { ComponentIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";

@@ -1,3 +1,4 @@
+import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import TerminalWindow from "$apps/components/terminalwindow/TerminalWindow.svelte";
 import { arrayToText, textToBlob } from "$ts/fs/convert";
 import type { FilesystemDrive } from "$ts/fs/drive";
@@ -24,7 +25,6 @@ import {
   TerminalCommandStore,
 } from "./store";
 import { ArcTermVariables } from "./var";
-import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 
 export class ArcTerminal extends Process {
   path: string;

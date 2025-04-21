@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import { contextProps } from "$ts/context/actions.svelte";
-  import { maybeIconId } from "$ts/images";
   import type { App } from "$types/app";
 
   const { app, process }: { app: App; process: ShellRuntime } = $props();

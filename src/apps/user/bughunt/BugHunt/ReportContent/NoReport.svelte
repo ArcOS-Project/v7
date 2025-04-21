@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { QuestionIcon } from "$ts/images/dialog";
   import { BugReportIcon } from "$ts/images/general";
 </script>
 

@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { isPopulatable } from "$ts/apps/util";
 import { MessageBox } from "$ts/dialog";
-import { getIconPath, maybeIconId } from "$ts/images";
+import { getIconPath } from "$ts/images";
 import { WarningIcon } from "$ts/images/dialog";
 import { DesktopIcon } from "$ts/images/general";
 import { DefaultMimeIcon } from "$ts/images/mime";

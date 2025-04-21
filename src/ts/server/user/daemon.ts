@@ -3,6 +3,7 @@ import { DummyFileProgress, type FileProgressMutator, type FsProgressOperation }
 import { GlobalLoadIndicatorRuntime } from "$apps/components/globalloadindicator/runtime";
 import type { IconPickerData } from "$apps/components/iconpicker/types";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
+import SafeModeNotice from "$lib/Daemon/SafeModeNotice.svelte";
 import { AppProcess } from "$ts/apps/process";
 import { ApplicationStorage } from "$ts/apps/storage";
 import { AdminApps, BuiltinApps } from "$ts/apps/store";
@@ -46,14 +47,13 @@ import type { Wallpaper } from "$types/wallpaper";
 import { fromExtension } from "human-filetypes";
 import Cookies from "js-cookie";
 import type { Unsubscriber } from "svelte/store";
+import type { ServerManager } from "..";
 import { AdminBootstrapper } from "../admin";
 import { Axios } from "../axios";
+import type { MessagingInterface } from "../messaging";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
-import type { MessagingInterface } from "../messaging";
-import type { ServerManager } from "..";
-import SafeModeNotice from "$lib/Daemon/SafeModeNotice.svelte";
 
 export class UserDaemon extends Process {
   public initialized = false;

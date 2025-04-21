@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { Box } from "../../types";
   import type { QlorbRuntime } from "../../runtime";
+  import type { Box } from "../../types";
   import BoxComponent from "./Game/Box.svelte";
 
   const { process }: { process: QlorbRuntime } = $props();

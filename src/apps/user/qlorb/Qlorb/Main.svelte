@@ -2,8 +2,8 @@
   import { onMount } from "svelte";
   import type { QlorbRuntime } from "../runtime";
   import Background from "./Main/Background.svelte";
-  import OnScreenDisplay from "./Main/OnScreenDisplay.svelte";
   import Game from "./Main/Game.svelte";
+  import OnScreenDisplay from "./Main/OnScreenDisplay.svelte";
 
   const { process }: { process: QlorbRuntime } = $props();
   const { Score } = process;

@@ -1,7 +1,6 @@
 <script lang="ts">
   import { AppOrigins } from "$ts/apps/store";
   import { isPopulatable } from "$ts/apps/util";
-  import { maybeIconId } from "$ts/images";
   import { WarningIcon } from "$ts/images/dialog";
   import { AppsIcon } from "$ts/images/general";
   import type { SettingsRuntime } from "../../runtime";

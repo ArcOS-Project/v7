@@ -1,7 +1,6 @@
 import type { ShellRuntime } from "$apps/components/shell/runtime";
 import { GlobalDispatcher } from "$ts/dispatch";
 import { ArcOSVersion } from "$ts/env";
-import { maybeIconId } from "$ts/images";
 import { BugReportIcon, ComponentIcon } from "$ts/images/general";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";

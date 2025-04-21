@@ -1,9 +1,8 @@
 <script lang="ts">
   import type { PublicUserInfo } from "$types/user";
+  import dayjs from "dayjs";
   import { onMount } from "svelte";
   import type { MessagingAppRuntime } from "../../runtime";
-  import dayjs from "dayjs";
-  import Spinner from "$lib/Spinner.svelte";
 
   const { process }: { process: MessagingAppRuntime } = $props();
   const { message, loading } = process;

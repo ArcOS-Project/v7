@@ -2,8 +2,8 @@ import { AppProcess } from "$ts/apps/process";
 import type { ProcessHandler } from "$ts/process/handler";
 import type { AppProcessData } from "$types/app";
 import type { UserInfo } from "$types/user";
-import json from "highlight.js/lib/languages/json";
 import hljs, { type HLJSApi } from "highlight.js";
+import json from "highlight.js/lib/languages/json";
 import "highlight.js/styles/atom-one-dark.css";
 
 export class BugHuntUserDataRuntime extends AppProcess {
