@@ -28,6 +28,7 @@ import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
 import { BaseService } from "$ts/services/base";
 import { TrayIconProcess } from "$ts/ui/tray/process";
 import dayjs from "dayjs";
+import { Sleep } from "$ts/sleep";
 
 export function ThirdPartyProps(
   daemon: UserDaemon,
@@ -80,6 +81,7 @@ export function ThirdPartyProps(
     argv: args,
     app,
     Store,
+    Sleep,
     $ENTRYPOINT: app.entrypoint?.includes(":/") ? app.entrypoint! : join(app.workingDirectory!, app.entrypoint!),
     $METADATA: metaPath,
     load: async (path: string): Promise<any> => {},
