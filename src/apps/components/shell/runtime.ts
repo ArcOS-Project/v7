@@ -8,6 +8,7 @@ import { DefaultMimeIcon } from "$ts/images/mime";
 import { LogoutIcon, RestartIcon, ShutdownIcon } from "$ts/images/power";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Sleep } from "$ts/sleep";
+import { TrayIconProcess } from "$ts/ui/tray/process";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData, ContextMenuInstance, ContextMenuItem } from "$types/app";
@@ -17,9 +18,8 @@ import type { UserPreferences, Workspace } from "$types/user";
 import Fuse, { type FuseResult } from "fuse.js";
 import { fetchWeatherApi } from "openmeteo";
 import { ShellContextMenu, WindowSystemContextMenu } from "./context";
-import { weatherCaptions, weatherClasses, weatherGradients, weatherIconColors, weatherIcons } from "./store";
-import type { ShellTrayIcon, TrayIconDiscriminator, TrayIconOptions, WeatherInformation } from "./types";
-import { TrayIconProcess } from "$ts/ui/tray/process";
+import { weatherClasses, weatherMetadata } from "./store";
+import type { TrayIconDiscriminator, TrayIconOptions, WeatherInformation } from "./types";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
@@ -198,15 +198,16 @@ export class ShellRuntime extends AppProcess {
       const temperature_2m = current.variables(0)!.value();
       const weather_code = current.variables(1)!.value();
       const is_day = current.variables(2)!.value();
+      const metadata = weatherMetadata[weather_code]!;
 
       return {
         code: weather_code,
-        condition: weatherCaptions[weather_code],
+        condition: metadata.caption,
         temperature: temperature_2m,
         className: weatherClasses[weather_code],
-        gradient: weatherGradients[weather_code],
-        icon: weatherIcons[weather_code],
-        iconColor: weatherIconColors[weather_code],
+        gradient: metadata.gradient,
+        icon: metadata.icon,
+        iconColor: metadata.iconColor,
         isNight: !is_day,
       };
     } catch {

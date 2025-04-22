@@ -7,8 +7,6 @@
 
   const { process }: { process: SettingsRuntime } = $props();
   const { userPreferences } = process;
-
-  // TODO: user styles
 </script>
 
 <div class="centered-layout">

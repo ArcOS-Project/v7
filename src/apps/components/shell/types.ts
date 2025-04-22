@@ -2,6 +2,16 @@ import type { Process } from "$ts/process/instance";
 import type { ContextMenuItem } from "$types/app";
 import type { Component } from "svelte";
 
+export interface WeatherMeta {
+  caption: string;
+  iconColor: string;
+  icon: string;
+  gradient: {
+    start: string;
+    end: string;
+  };
+}
+
 export type WeatherInformation =
   | {
       temperature: number;
