@@ -18,10 +18,8 @@
       text = dayjs().format(`${date}${time}`);
     });
   });
-
-  // TODO: right click menu for changing prefs
 </script>
 
-<div class="clock">
+<div class="clock" data-contextmenu="taskbar-clock">
   {text}
 </div>
