@@ -4,8 +4,6 @@
 
   const { process }: { process: ShellRuntime } = $props();
   const { userPreferences } = process;
-
-  // TODO: tray icons + popups
 </script>
 
 <Clock {userPreferences} />

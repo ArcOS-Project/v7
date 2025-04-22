@@ -20,8 +20,6 @@
   function spawn() {
     process.spawnApp(appId, process.pid);
   }
-
-  // TODO: context menu to unpin
 </script>
 
 {#if app && app.metadata}

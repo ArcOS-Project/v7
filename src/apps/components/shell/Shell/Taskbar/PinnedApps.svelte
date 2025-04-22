@@ -10,8 +10,6 @@
   userPreferences.subscribe((v) => {
     pins = v.pinnedApps || [];
   });
-
-  // TODO: pinned apps UI instead of manual injection
 </script>
 
 {#if pins.length}
