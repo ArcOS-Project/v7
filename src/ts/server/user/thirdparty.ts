@@ -27,6 +27,7 @@ import type { UserDaemon } from "./daemon";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
 import { BaseService } from "$ts/services/base";
 import { TrayIconProcess } from "$ts/ui/tray/process";
+import dayjs from "dayjs";
 
 export function ThirdPartyProps(
   daemon: UserDaemon,
@@ -105,6 +106,7 @@ export function ThirdPartyProps(
         +daemon.env.get("shell_pid")
       );
     },
+    dayjs,
   };
 
   const supplementary = SupplementaryThirdPartyPropFunctions(daemon, daemon.fs, app, props, wrap, args, metaPath);
