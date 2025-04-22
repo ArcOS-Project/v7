@@ -19,6 +19,7 @@ import { fetchWeatherApi } from "openmeteo";
 import { ShellContextMenu, WindowSystemContextMenu } from "./context";
 import { weatherCaptions, weatherClasses, weatherGradients, weatherIconColors, weatherIcons } from "./store";
 import type { ShellTrayIcon, TrayIconDiscriminator, TrayIconOptions, WeatherInformation } from "./types";
+import { TrayIconProcess } from "$ts/ui/tray/process";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
@@ -32,7 +33,7 @@ export class ShellRuntime extends AppProcess {
   public searching = Store<boolean>(false);
   public SelectionIndex = Store<number>(0);
   public FullscreenCount = Store<Record<string, number>>({});
-  public trayIcons = Store<Record<TrayIconDiscriminator, ShellTrayIcon>>({});
+  public trayIcons = Store<Record<TrayIconDiscriminator, TrayIconProcess>>({});
   public openedTrayPopup = Store<string>();
 
   private fileSystemIndex: PathedFileEntry[] = [];
@@ -589,24 +590,44 @@ export class ShellRuntime extends AppProcess {
     this.Trigger(results[index == -1 ? 0 : index].item);
   }
 
-  createTrayIcon(pid: number, identifier: string, options: TrayIconOptions) {
+  async createTrayIcon(
+    pid: number,
+    identifier: string,
+    options: TrayIconOptions,
+    process: typeof TrayIconProcess = TrayIconProcess
+  ) {
+    await this.handler.waitForAvailable();
     const trayIcons = this.trayIcons();
 
     if (trayIcons[`${pid}#${identifier}`]) return false;
 
-    trayIcons[`${pid}#${identifier}`] = { ...options, pid, identifier };
+    const proc = await this.handler.spawn<TrayIconProcess>(process, undefined, pid, {
+      ...options,
+      pid,
+      identifier,
+    });
+
+    if (!proc) return false;
+
+    trayIcons[`${pid}#${identifier}`] = proc;
 
     this.trayIcons.set(trayIcons);
     this.globalDispatch.dispatch("tray-icon-create", [pid, identifier]);
 
+    await Sleep(100);
+
+    proc.__render();
+
     return true;
   }
 
-  disposeTrayIcon(pid: number, identifier: string) {
+  async disposeTrayIcon(pid: number, identifier: string) {
     const trayIcons = this.trayIcons();
     const discriminator: TrayIconDiscriminator = `${pid}#${identifier}`;
 
     if (!trayIcons[discriminator]) return false;
+
+    await this.handler.kill(trayIcons[discriminator].pid);
 
     delete trayIcons[discriminator];
 
@@ -618,7 +639,9 @@ export class ShellRuntime extends AppProcess {
     const trayIcons = this.trayIcons();
 
     for (const id of Object.keys(trayIcons) as TrayIconDiscriminator[]) {
-      if (id.startsWith(`${pid}#`)) delete trayIcons[id];
+      if (id.startsWith(`${pid}#`)) {
+        this.disposeTrayIcon(pid, id.split("#")[1]);
+      }
     }
 
     this.trayIcons.set(trayIcons);

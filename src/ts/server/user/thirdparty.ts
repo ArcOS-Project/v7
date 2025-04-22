@@ -25,6 +25,8 @@ import axios from "axios";
 import { Axios } from "../axios";
 import type { UserDaemon } from "./daemon";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
+import { BaseService } from "$ts/services/base";
+import { TrayIconProcess } from "$ts/ui/tray/process";
 
 export function ThirdPartyProps(
   daemon: UserDaemon,
@@ -40,6 +42,7 @@ export function ThirdPartyProps(
     handler: daemon.handler,
     fs: daemon.fs,
     env: daemon.env,
+    serviceHost: daemon.serviceHost,
     dispatch: daemon.globalDispatch,
     MessageBox,
     icons: getAllImages(),
@@ -88,6 +91,8 @@ export function ThirdPartyProps(
     loadHtml: async (path: string): Promise<string | undefined> => undefined,
     axios,
     Server: Axios,
+    BaseService,
+    TrayIconProcess,
     Debug: (m: any) => {
       MessageBox(
         {

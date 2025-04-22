@@ -37,7 +37,7 @@ export interface TrayIconOptions {
 }
 
 export interface TrayPopup {
-  component: Component;
+  component?: Component;
   width: number;
   height: number;
   className?: string;
