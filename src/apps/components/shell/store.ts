@@ -1,5 +1,3 @@
-// TODO: merge these stores into one with a uniform interface
-
 import type { WeatherMeta } from "./types";
 
 export const weatherMetadata: Record<number, WeatherMeta> = {
