@@ -33,7 +33,7 @@ export class TrayIconProcess extends Process {
 
     if (this.popup?.component) {
       this.Log("Mounting tray popup component");
-      console.log(this.popup.component, popupBody);
+
       this.componentMount = mount(this.popup?.component, {
         target: popupBody!,
         props: {
@@ -59,8 +59,6 @@ export class TrayIconProcess extends Process {
 
   getPopupBody() {
     const body = document.querySelector(`[data-selector="${this.targetPid}#${this.identifier}"]`);
-
-    console.log(body, `[id="${this.targetPid}#${this.identifier}"]`);
 
     return body;
   }

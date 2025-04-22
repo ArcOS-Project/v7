@@ -171,8 +171,6 @@ export class MessagingAppRuntime extends AppProcess {
       if (!existing) result[message.correlationId].push(message);
     }
 
-    console.log(Object.values(result));
-
     return Object.values(result);
   }
 
