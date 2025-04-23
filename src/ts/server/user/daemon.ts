@@ -2283,13 +2283,16 @@ export class UserDaemon extends Process {
 1. Do you want to submit a new 'app', 'feature', or 'other'? Please answer one.
 => 
 
-2. How should we go about implementing this? Any ideas?
+2. What do you want me to implement?
+=>
+
+3. How should I go about this? Any ideas?
 => 
 
-3. Did a previous version of ArcOS include this (v5 or v6)?
+4. Did a previous version of ArcOS include this (v5 or v6)?
 => 
 
-4. Convince me why I should implement this feature.
+5. Convince me why I should implement this feature.
 => 
 
 

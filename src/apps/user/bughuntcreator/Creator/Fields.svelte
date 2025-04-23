@@ -42,6 +42,6 @@
   <div class="notice">
     All information you provide in a bug report is treated as confidential and will never be shared with external parties. Select <b
       >Data Privacy</b
-    > for more information.
+    > for more information. Public reports don't include user data.
   </div>
 </div>
