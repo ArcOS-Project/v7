@@ -41,12 +41,12 @@ div.window > div.body div.titlebar.custom div.window-title > span {
   text-overflow: ellipsis;
 }
 
-div.window > div.titlebar button.feedback {
+div.window div.titlebar button.feedback {
   margin: 0;
   padding: 0;
   border: none;
   background-color: transparent;
   text-decoration: underline;
   color: var(--accent-lighter);
-  margin-left: auto;
+  margin-left: auto !important;
 }

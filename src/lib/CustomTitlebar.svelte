@@ -47,6 +47,7 @@
     {/if}
   </div>
   <AltMenu {process} />
+  <button class="link feedback" onclick={() => process.notImplemented()}>Feedback?</button>
   <div class="controls">
     {#if data.controls.minimize && !data.overlay}
       <button class="minimize icon-chevron-down" aria-label="minimize" onclick={minimize}></button>
