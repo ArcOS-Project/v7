@@ -12,8 +12,17 @@ export class BugHuntCreatorRuntime extends AppProcess {
   title = Store<string>();
   body = Store<string>();
   loading = Store<boolean>();
+  overrideOptions: BugHuntCreatorOptions | undefined;
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, title?: string, body?: string) {
+  constructor(
+    handler: ProcessHandler,
+    pid: number,
+    parentPid: number,
+    app: AppProcessData,
+    title?: string,
+    body?: string,
+    options?: BugHuntCreatorOptions
+  ) {
     super(handler, pid, parentPid, app);
 
     const parent = this.handler.getProcess(this.parentPid);
@@ -24,10 +33,12 @@ export class BugHuntCreatorRuntime extends AppProcess {
       this.title.set(title);
       this.body.set(body);
     }
+
+    if (options) this.overrideOptions = options;
   }
 
   async Send() {
-    const options = this.userPreferences().appPreferences.BugHunt! as BugHuntCreatorOptions;
+    const options = this.overrideOptions || (this.userPreferences().appPreferences.BugHunt! as BugHuntCreatorOptions);
     const title = this.title();
     const body = this.body();
 

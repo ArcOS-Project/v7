@@ -65,6 +65,11 @@ div.shell div.push-notification img.icon {
   height: 48px;
 }
 
+div.shell div.push-notification div.left span.lucide {
+  font-size: 32px;
+  color: var(--accent-lighter);
+}
+
 div.shell div.push-notification div.buttons {
   display: flex;
   gap: 8px;

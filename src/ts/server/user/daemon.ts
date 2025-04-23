@@ -1037,6 +1037,22 @@ export class UserDaemon extends Process {
     }
 
     if (this.safeMode) this.safeModeNotice();
+
+    this.sendNotification({
+      title: "Have any feedback?",
+      message:
+        "I'd love to hear it! There's a feedback button in the titlebar of every window. Don't hesitate to tell me how I'm doing stuff wrong, what you want to see or what I forgot. I want to hear all of it.",
+      buttons: [
+        {
+          caption: "Send feedback",
+          action: () => {
+            this.iHaveFeedback(this.handler.getProcess(+this.env.get("shell_pid"))!);
+          },
+        },
+      ],
+      icon: "message-square-heart",
+      timeout: 6000,
+    });
   }
 
   checkDisabled(appId: string, noSafeMode?: boolean): boolean {
@@ -2307,7 +2323,12 @@ User ID: ${this.userInfo?._id}
 
 *** DISCLAIMER ***
 
-The information provided in this report is subject for review by me or another ArcOS acquaintance. We may contact you using the ArcOS Messages app if we have any additional questions. It's also possible that the feedback you've provided will be converted into a GitHub issue for communication with other developers. By submitting this feedback, you agree to that. The issue will not contain any personal information, any personal information will be filtered out by a human being.`
+The information provided in this report is subject for review by me or another ArcOS acquaintance. We may contact you using the ArcOS Messages app if we have any additional questions. It's also possible that the feedback you've provided will be converted into a GitHub issue for communication with other developers. By submitting this feedback, you agree to that. The issue will not contain any personal information, any personal information will be filtered out by a human being.`,
+      {
+        sendAnonymously: true,
+        excludeLogs: true,
+        makePublic: true,
+      }
     );
   }
 }

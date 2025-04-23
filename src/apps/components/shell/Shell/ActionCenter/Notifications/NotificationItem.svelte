@@ -70,6 +70,10 @@
         <div class="left">
           <img src={notification.image} alt="" class="icon" />
         </div>
+      {:else if notification.icon}
+        <div class="left">
+          <span class="lucide icon-{notification.icon} icon"></span>
+        </div>
       {/if}
       <div class="content">
         <h1 class="header">

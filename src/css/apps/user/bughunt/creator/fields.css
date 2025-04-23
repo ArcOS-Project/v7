@@ -47,3 +47,25 @@
 #BugHuntCreator > div.body div.field.options div.value div.option .disabled {
   opacity: 0.5;
 }
+
+#BugHuntCreator > div.body div.field div.policy {
+  height: 30px;
+  padding: 0 10px;
+  padding-left: 6px;
+  border-radius: 10px;
+  background-color: var(--clr-orange-fg);
+  color: var(--win-bg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+#BugHuntCreator > div.body div.field div.policy span.lucide {
+  font-size: 18px;
+}
+
+#BugHuntCreator > div.body div.field div.policy span {
+  color: inherit;
+}

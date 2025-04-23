@@ -111,6 +111,11 @@ div.shell div.actioncenter div.notification img.icon {
   height: 48px;
 }
 
+div.shell div.actioncenter div.notification div.left span.lucide {
+  font-size: 32px;
+  color: var(--accent-lighter);
+}
+
 div.shell div.actioncenter div.notification.deleted {
   display: none;
 }

@@ -58,6 +58,10 @@
       <div class="left">
         <img src={data.image} alt="" class="icon" />
       </div>
+    {:else if data.icon}
+      <div class="left">
+        <span class="lucide icon-{data.icon} icon"></span>
+      </div>
     {/if}
     <div class="content">
       <h1 class="header">
