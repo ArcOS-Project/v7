@@ -1,6 +1,15 @@
 @import url("./creator/actions.css");
 @import url("./creator/fields.css");
 
+#BugHuntCreator {
+  min-height: fit-content !important;
+}
+
+#BugHuntCreator div.titlebar button.feedback {
+  pointer-events: none;
+  opacity: 0;
+}
+
 #BugHuntCreator > div.body {
   padding: 0;
   background-color: var(--win-bg);

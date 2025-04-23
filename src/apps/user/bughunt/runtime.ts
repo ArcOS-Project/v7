@@ -7,7 +7,7 @@ import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import type { BugReport } from "$types/bughunt";
-import { BugReportsCreatorApp } from "./creator/metadata";
+import { BugReportsCreatorApp } from "../bughuntcreator/metadata";
 import { BugHuntUserDataApp } from "./userdata/metadata";
 
 export class BugHuntRuntime extends AppProcess {

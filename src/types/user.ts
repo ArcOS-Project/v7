@@ -15,6 +15,7 @@ export interface UserInfo {
   createdAt: string;
   hasTotp: boolean;
   restricted: boolean;
+  accountNumber: number;
 }
 
 export type UserPreferencesStore = ReadableStore<UserPreferences>;

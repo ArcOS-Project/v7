@@ -3,7 +3,7 @@ import { MessageBox } from "$ts/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
-import { BugHuntRuntime } from "../runtime";
+import { BugHuntRuntime } from "../bughunt/runtime";
 import DataPrivacy from "./Creator/DataPrivacy.svelte";
 import type { BugHuntCreatorOptions } from "./types";
 
@@ -13,12 +13,17 @@ export class BugHuntCreatorRuntime extends AppProcess {
   body = Store<string>();
   loading = Store<boolean>();
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, title?: string, body?: string) {
     super(handler, pid, parentPid, app);
 
     const parent = this.handler.getProcess(this.parentPid);
 
     if (parent && parent instanceof BugHuntRuntime) this.parent = parent;
+
+    if (title && body) {
+      this.title.set(title);
+      this.body.set(body);
+    }
   }
 
   async Send() {

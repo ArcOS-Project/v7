@@ -24,6 +24,7 @@ import { TotpSetupGuiApp } from "$apps/components/totpsetupgui/metadata";
 import { WallpaperApp } from "$apps/components/wallpaper/metadata";
 import { ArcTermApp } from "$apps/user/arcterm/metadata";
 import { BugHuntApp } from "$apps/user/bughunt/metadata";
+import { BugReportsCreatorApp } from "$apps/user/bughuntcreator/metadata";
 import { CalculatorApp } from "$apps/user/calculator/metadata";
 import { CameraApp } from "$apps/user/camera/metadata";
 import { FileManagerApp } from "$apps/user/filemanager/metadata";
@@ -84,6 +85,7 @@ export const BuiltinApps: AppStorage = [
   MessageComposerApp,
   ExitApp,
   QlorbApp,
+  BugReportsCreatorApp,
 ];
 
 export const AdminApps: AppStorage = [];
