@@ -12,6 +12,7 @@ div.shell div.startmenu {
   border: var(--border);
   max-height: 100%;
   backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
   box-shadow: 0 5px 15px 5px #0003;
   padding: 10px;
 }
