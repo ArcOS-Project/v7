@@ -213,6 +213,7 @@ export class AppRenderer extends Process {
     const titleIcon = document.createElement("img");
     const titleCaption = document.createElement("span");
     const controls = document.createElement("div");
+    const feedbackButton = document.createElement("button");
 
     controls.className = "controls";
 
@@ -270,8 +271,14 @@ export class AppRenderer extends Process {
     title.className = "window-title";
     title.append(titleIcon, titleCaption);
 
+    feedbackButton.className = "link feedback";
+    feedbackButton.innerText = "Feedback?";
+    feedbackButton.addEventListener("click", () => {
+      process.notImplemented("Asking for feedback");
+    });
+
     titlebar.className = "titlebar";
-    titlebar.append(title, this._renderAltMenu(process), controls);
+    titlebar.append(title, this._renderAltMenu(process), feedbackButton, controls);
 
     return titlebar;
   }
