@@ -59,9 +59,9 @@ export const TerminalCommandStore: (typeof TerminalProcess)[] = [
   ReloadCommand,
   HistoryCommand,
   AtConfCommand,
-  // ConfigCommand,
-  // SpawnCommand,
-  // TasksCommand,
+  ConfigCommand,
+  SpawnCommand,
+  TasksCommand,
   // AdminCommand,
   // DrivesCommand,
 ];

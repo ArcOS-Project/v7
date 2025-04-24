@@ -1,11 +1,20 @@
 import { AppProcess } from "$ts/apps/process";
+import type { ProcessHandler } from "$ts/process/handler";
 import type { Process } from "$ts/process/instance";
-import type { TerminalCommand } from "$types/terminal";
+import type { Arguments } from "$types/terminal";
+import type { ArcTerminal } from "..";
+import { TerminalProcess } from "../process";
 import { BRBLACK, BRBLUE, BRYELLOW, RESET } from "../store";
 
-export const TasksCommand: TerminalCommand = {
-  keyword: "tasks",
-  async exec(term, flags, argv) {
+export class TasksCommand extends TerminalProcess {
+  public static keyword = "tasks";
+  public static description = "Display the running processes as a list or tree";
+
+  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
+    super(handler, pid, parentPid);
+  }
+
+  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const tree = flags.tree || flags.t;
     const store = term.handler.store();
 
@@ -50,6 +59,5 @@ export const TasksCommand: TerminalCommand = {
     }
 
     return 0;
-  },
-  description: "Display the running processes as a list or tree",
-};
+  }
+}

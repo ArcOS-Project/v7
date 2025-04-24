@@ -1,9 +1,18 @@
 import { tryJsonParse } from "$ts/json";
-import type { TerminalCommand } from "$types/terminal";
+import type { ProcessHandler } from "$ts/process/handler";
+import type { Arguments } from "$types/terminal";
+import type { ArcTerminal } from "..";
+import { TerminalProcess } from "../process";
 
-export const SpawnCommand: TerminalCommand = {
-  keyword: "spawn",
-  async exec(term, flags, argv) {
+export class SpawnCommand extends TerminalProcess {
+  public static keyword = "spawn";
+  public static description = "Spawn an app with specified arguments";
+
+  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
+    super(handler, pid, parentPid);
+  }
+
+  protected async main(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const id = argv.shift();
 
     argv = argv.map(tryJsonParse);
@@ -14,6 +23,5 @@ export const SpawnCommand: TerminalCommand = {
     }
 
     return (await term.daemon?.spawnApp(id, term.daemon?.pid, ...argv)) ? 0 : 1;
-  },
-  description: "Spawn an app with specified arguments",
-};
+  }
+}
