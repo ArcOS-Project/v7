@@ -1,10 +1,12 @@
-import type { TerminalCommand } from "$types/terminal";
+import type { ArcTerminal } from "..";
+import { TerminalProcess } from "../process";
 
-export const RestartCommand: TerminalCommand = {
-  keyword: "restart",
-  async exec(term, flags, argv) {
+export class RestartCommand extends TerminalProcess {
+  public static keyword = "restart";
+  public static description = "Restart ArcOS";
+
+  protected async main(term: ArcTerminal) {
     term.daemon?.restart();
     return -256;
-  },
-  description: "Restart ArcOS",
-};
+  }
+}

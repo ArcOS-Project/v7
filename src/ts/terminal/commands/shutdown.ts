@@ -1,10 +1,12 @@
-import type { TerminalCommand } from "$types/terminal";
+import type { ArcTerminal } from "..";
+import { TerminalProcess } from "../process";
 
-export const ShutdownCommand: TerminalCommand = {
-  keyword: "shutdown",
-  async exec(term, flags, argv) {
+export class ShutdownCommand extends TerminalProcess {
+  public static keyword = "shutdown";
+  public static description = "Shut down ArcOS";
+
+  protected async main(term: ArcTerminal) {
     term.daemon?.shutdown();
     return -256;
-  },
-  description: "Shut down ArcOS",
-};
+  }
+}

@@ -1,10 +1,19 @@
 import { formatBytes } from "$ts/fs/util";
-import type { TerminalCommand } from "$types/terminal";
+import type { ProcessHandler } from "$ts/process/handler";
+import type { Arguments, TerminalCommand } from "$types/terminal";
+import type { ArcTerminal } from "..";
+import { TerminalProcess } from "../process";
 import { BRBLACK, BRBLUE, RESET } from "../store";
 
-export const QuotaCommand: TerminalCommand = {
-  keyword: "quota",
-  async exec(term, flags, argv) {
+export class QuotaCommand extends TerminalProcess {
+  public static keyword = "quota";
+  public static description = "Display your ArcOS filesystem quota";
+
+  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
+    super(handler, pid, parentPid);
+  }
+
+  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const BAR_LENGTH = 50;
     const quota = await term.fs.drives.userfs?.quota();
 
@@ -24,6 +33,5 @@ export const QuotaCommand: TerminalCommand = {
     term.rl?.println(sub);
 
     return 0;
-  },
-  description: "Display your ArcOS filesystem quota",
-};
+  }
+}
