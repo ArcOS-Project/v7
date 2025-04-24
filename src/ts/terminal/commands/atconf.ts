@@ -1,10 +1,16 @@
-import type { TerminalCommand } from "$types/terminal";
+import type { ProcessHandler } from "$ts/process/handler";
+import type { ArcTerminal } from "..";
+import { TerminalProcess } from "../process";
 
-export const AtConfCommand: TerminalCommand = {
-  keyword: "atconf",
-  async exec(term, flags, argv) {
+export class AtConfCommand extends TerminalProcess {
+  public static keyword = "atconf";
+  public static description = "Edit the ArcTerm configuration file";
+  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
+    super(handler, pid, parentPid);
+  }
+
+  protected async main(term: ArcTerminal): Promise<number> {
     await term.daemon?.openFile("U:/arcterm.conf");
     return 0;
-  },
-  description: "Edit the ArcTerm configuration file",
-};
+  }
+}

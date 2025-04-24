@@ -1,9 +1,17 @@
-import type { TerminalCommand } from "$types/terminal";
+import type { ProcessHandler } from "$ts/process/handler";
+import type { ArcTerminal } from "..";
+import { TerminalProcess } from "../process";
 import { BRBLACK, RESET } from "../store";
 
-export const HistoryCommand: TerminalCommand = {
-  keyword: "history",
-  async exec(term, flags, argv) {
+export class HistoryCommand extends TerminalProcess {
+  public static keyword = "history";
+  public static description = "Show your ArcTerm history";
+
+  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
+    super(handler, pid, parentPid);
+  }
+
+  protected async main(term: ArcTerminal): Promise<number> {
     const pref = term.daemon?.preferences();
 
     if (!pref) return 1;
@@ -15,6 +23,5 @@ export const HistoryCommand: TerminalCommand = {
     }
 
     return 0;
-  },
-  description: "Show your ArcTerm history",
-};
+  }
+}

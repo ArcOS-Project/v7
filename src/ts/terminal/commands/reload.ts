@@ -1,10 +1,17 @@
-import type { TerminalCommand } from "$types/terminal";
+import type { ProcessHandler } from "$ts/process/handler";
+import type { ArcTerminal } from "..";
+import { TerminalProcess } from "../process";
 
-export const ReloadCommand: TerminalCommand = {
-  keyword: "reload",
-  async exec(term) {
+export class ReloadCommand extends TerminalProcess {
+  public static keyword = "reload";
+  public static description = "Reload the terminal";
+
+  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
+    super(handler, pid, parentPid);
+  }
+
+  protected async main(term: ArcTerminal): Promise<number> {
     await term.reload();
     return 0;
-  },
-  description: "Reload the terminal",
-};
+  }
+}
