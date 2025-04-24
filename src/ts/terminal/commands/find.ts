@@ -1,10 +1,19 @@
 import { ShellRuntime } from "$apps/components/shell/runtime";
-import type { TerminalCommand } from "$types/terminal";
+import type { ProcessHandler } from "$ts/process/handler";
+import type { Arguments } from "$types/terminal";
+import type { ArcTerminal } from "..";
+import { TerminalProcess } from "../process";
 import { SelectionList } from "../select";
 
-export const FindCommand: TerminalCommand = {
-  keyword: "find",
-  async exec(term, flags, argv) {
+export class FindCommand extends TerminalProcess {
+  public static keyword = "find";
+  public static description = "Find files, folders and shortcuts in ArcOS";
+
+  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
+    super(handler, pid, parentPid);
+  }
+
+  protected async main(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const query = argv.join(" ");
     const shellPid = +term.env.get("shell_pid");
     const shellProc = term.handler.getProcess<ShellRuntime>(shellPid);
@@ -43,6 +52,5 @@ export const FindCommand: TerminalCommand = {
     await result.action(result);
 
     return 0;
-  },
-  description: "Find files, folders and shortcuts in ArcOS",
-};
+  }
+}
