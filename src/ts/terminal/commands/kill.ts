@@ -1,12 +1,21 @@
 import { AppProcess } from "$ts/apps/process";
 import { tryJsonParse } from "$ts/json";
+import type { ProcessHandler } from "$ts/process/handler";
 import { ElevationLevel } from "$types/elevation";
-import type { TerminalCommand } from "$types/terminal";
+import type { Arguments } from "$types/terminal";
+import type { ArcTerminal } from "..";
+import { TerminalProcess } from "../process";
 import { SelectionList } from "../select";
 
-export const KillCommand: TerminalCommand = {
-  keyword: "kill",
-  async exec(term, flags, argv) {
+export class KillCommand extends TerminalProcess {
+  public static keyword = "kill";
+  public static description = "Kill a process using its PID";
+
+  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
+    super(handler, pid, parentPid);
+  }
+
+  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const force = flags.force || flags.f;
     const pid = tryJsonParse<number>(argv[0]) as number;
     const process = term.handler.getProcess(pid);
@@ -47,6 +56,5 @@ export const KillCommand: TerminalCommand = {
     }
 
     return 0;
-  },
-  description: "Kill a process using its PID",
-};
+  }
+}

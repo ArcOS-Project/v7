@@ -2,14 +2,22 @@ import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { textToBlob } from "$ts/fs/convert";
 import { join } from "$ts/fs/util";
 import { tryJsonParse } from "$ts/json";
+import type { ProcessHandler } from "$ts/process/handler";
 import { DefaultThirdPartyAppData } from "$ts/server/user/store";
 import type { ScriptedApp } from "$types/app";
-import type { TerminalCommand } from "$types/terminal";
+import type { ArcTerminal } from "..";
+import { TerminalProcess } from "../process";
 import { BRGREEN, BRPURPLE, BRYELLOW, RESET } from "../store";
 
-export const CrTpaCommand: TerminalCommand = {
-  keyword: "crtpa",
-  async exec(term, flags, argv) {
+export class CrTpaCommand extends TerminalProcess {
+  public static keyword: string = "crtpa";
+  public static description: string = "Create an ArcOS Third Party Application (TPA) project";
+
+  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
+    super(handler, pid, parentPid);
+  }
+
+  protected async main(term: ArcTerminal): Promise<number> {
     try {
       const tpaData: ScriptedApp = DefaultThirdPartyAppData;
       const sectionMax = 6;
@@ -73,13 +81,14 @@ export const CrTpaCommand: TerminalCommand = {
 
       section("Size and Position", 4);
 
-      tpaData.size = size((await input("default size (WxH):", "string", /([0-9]+|\-\1)x([0-9]+|\-\1)/g)).split("x").map(Number));
+      tpaData.size = size((await input("default size (WxH):", "string", /([0-9]+|NaN)x([0-9]+|NaN)/g)).split("x").map(Number));
       tpaData.minSize = size(
-        (await input("minimal window size (WxH):", "string", /([0-9]+|\-\1)x([0-9]+|\-\1)/g)).split("x").map(Number)
+        (await input("minimal window size (WxH):", "string", /([0-9]+|NaN)x([0-9]+|NaN)/g)).split("x").map(Number)
       );
       tpaData.maxSize = size(
-        (await input("maximal window size (WxH):", "string", /([0-9]+|\-\1)x([0-9]+|\-\1)/g)).split("x").map(Number)
+        (await input("maximal window size (WxH):", "string", /([0-9]+|NaN)x([0-9]+|NaN)/g)).split("x").map(Number)
       );
+      tpaData.position.centered = true;
 
       section("Window State", 5);
 
@@ -141,9 +150,8 @@ export const CrTpaCommand: TerminalCommand = {
       term.Error(`Something went wrong: ${e}`);
       return 1;
     }
-  },
-  description: "Create an ArcOS Third Party Application (TPA) project",
-};
+  }
+}
 
 const ENTRYPOINT_JS = `const shellPid = +env.get("shell_pid");
 const { proc } = await load("process.js");

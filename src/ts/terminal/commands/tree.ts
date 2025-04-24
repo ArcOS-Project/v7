@@ -1,12 +1,21 @@
 import { join } from "$ts/fs/util";
+import type { ProcessHandler } from "$ts/process/handler";
 import { Plural } from "$ts/util";
 import type { RecursiveDirectory } from "$types/fs";
-import type { TerminalCommand } from "$types/terminal";
+import type { Arguments } from "$types/terminal";
+import type { ArcTerminal } from "..";
+import { TerminalProcess } from "../process";
 import { BRBLUE, BRGREEN, RESET } from "../store";
 
-export const TreeCommand: TerminalCommand = {
-  keyword: "tree",
-  async exec(term, flags, argv) {
+export class TreeCommand extends TerminalProcess {
+  public static keyword = "tree";
+  public static description = "Print a recursive tree of the current or specified folder";
+
+  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
+    super(handler, pid, parentPid);
+  }
+
+  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const noColor = flags["no-color"];
     const resolveShortcuts = flags.shortcuts || flags.s;
     const filename = argv.join(" ");
@@ -70,6 +79,5 @@ export const TreeCommand: TerminalCommand = {
     term.rl?.println(`\r\n${counts.dirs} ${Plural("folder", counts.dirs)}, ${counts.files} ${Plural("file", counts.files)}`);
 
     return 0;
-  },
-  description: "Print a recursive tree of the current or specified folder",
-};
+  }
+}
