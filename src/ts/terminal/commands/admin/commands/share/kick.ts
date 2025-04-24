@@ -1,6 +1,6 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
-export const AdminShareKick: AdminCommand = async (term, admin, [shareId, username]) => {
+export const AdminShareKick: AdminCommandType = async (term, admin, [shareId, username]) => {
   if (!admin.canAccess("admin.users.list", "admin.share.kick")) return 2;
   if (!shareId || !username) return 5;
 

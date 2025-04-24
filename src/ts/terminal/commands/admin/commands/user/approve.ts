@@ -1,6 +1,6 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
-export const AdminUserApprove: AdminCommand = async (term, admin, argv) => {
+export const AdminUserApprove: AdminCommandType = async (term, admin, argv) => {
   if (!admin.canAccess("admin.users.approve")) return 2;
 
   const [username] = argv;

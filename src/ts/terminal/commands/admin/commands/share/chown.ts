@@ -1,6 +1,6 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
-export const AdminShareChown: AdminCommand = async (term, admin, [shareId, newUsername]) => {
+export const AdminShareChown: AdminCommandType = async (term, admin, [shareId, newUsername]) => {
   if (!admin.canAccess("admin.users.list", "admin.share.chown")) return 2;
   if (!newUsername) return 5;
 

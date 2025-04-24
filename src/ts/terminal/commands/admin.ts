@@ -1,15 +1,24 @@
 import { getAllJsonPaths, getJsonHierarchy } from "$ts/hierarchy";
 import { tryJsonParse } from "$ts/json";
+import type { ProcessHandler } from "$ts/process/handler";
 import { ServerManager } from "$ts/server";
 import { AdminBootstrapper } from "$ts/server/admin";
-import type { TerminalCommand } from "$types/terminal";
+import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";
+import { TerminalProcess } from "../process";
 import { BOLD, BRBLACK, BRRED, BRYELLOW, RESET, UNDERLINE } from "../store";
 import { AdminCommandStore, RESULT_CAPTIONS } from "./admin/store";
 
-export const AdminCommand: TerminalCommand = {
-  keyword: "admin",
-  async exec(term) {
+export class AdminCommand extends TerminalProcess {
+  public static keyword = "admin";
+  public static description = "";
+  public static hidden = true;
+
+  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
+    super(handler, pid, parentPid);
+  }
+
+  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const paths = getAllJsonPaths(AdminCommandStore).map((a) => a.replaceAll(".", " "));
     const admin = term.daemon?.serviceHost?.getService<AdminBootstrapper>("AdminBootstrapper");
     const server = term.kernel.getModule<ServerManager>("server");
@@ -50,7 +59,7 @@ export const AdminCommand: TerminalCommand = {
         for (const path of paths) {
           const text = `${response} `;
           if (text?.startsWith(`${path} `)) {
-            const command = getJsonHierarchy<AdminCommand>(AdminCommandStore, path.replaceAll(" ", "."));
+            const command = getJsonHierarchy<AdminCommandType>(AdminCommandStore, path.replaceAll(" ", "."));
             const result = await command?.(term, admin, text.replace(path, "").trim().split(" ").map(tryJsonParse));
 
             term.rl?.println(`${BRBLACK}?${RESULT_CAPTIONS[result ?? 4]}${RESET}`);
@@ -66,9 +75,7 @@ export const AdminCommand: TerminalCommand = {
 
       await prompt();
     });
-  },
-  description: "",
-  hidden: true,
-};
+  }
+}
 
-export type AdminCommand = (term: ArcTerminal, admin: AdminBootstrapper, argv: string[]) => Promise<number>;
+export type AdminCommandType = (term: ArcTerminal, admin: AdminBootstrapper, argv: string[]) => Promise<number>;

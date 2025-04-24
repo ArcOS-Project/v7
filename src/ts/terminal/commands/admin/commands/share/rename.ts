@@ -1,6 +1,6 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
-export const AdminShareRename: AdminCommand = async (term, admin, [shareId]) => {
+export const AdminShareRename: AdminCommandType = async (term, admin, [shareId]) => {
   if (!admin.canAccess("admin.share.rename")) return 2;
   if (!shareId) return 5;
 

@@ -1,7 +1,7 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { generate } from "generate-password-ts";
 
-export const AdminUserChangepswdGenerated: AdminCommand = async (term, admin, argv) => {
+export const AdminUserChangepswdGenerated: AdminCommandType = async (term, admin, argv) => {
   if (!admin.canAccess("admin.users.list", "admin.users.changepswd")) return 2;
 
   const [username] = argv;

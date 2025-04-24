@@ -1,8 +1,8 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { BRBLACK, BRPURPLE, RESET } from "$ts/terminal/store";
 import { maxLength } from "$ts/util";
 
-export const AdminIndexingListAll: AdminCommand = async (term, admin) => {
+export const AdminIndexingListAll: AdminCommandType = async (term, admin) => {
   if (!admin.canAccess("admin.index.get", "admin.users.list")) return 2;
 
   const indexings = (await admin.getAllIndexingNodes()).sort((a, b) => (a.type === "directory" ? -1 : 0));

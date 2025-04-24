@@ -1,6 +1,6 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
-export const AdminShareAccessorsDelete: AdminCommand = async (term, admin, [shareId]) => {
+export const AdminShareAccessorsDelete: AdminCommandType = async (term, admin, [shareId]) => {
   if (!admin.canAccess("admin.share.accessors.delete")) return 2;
   if (!shareId) return 5;
 

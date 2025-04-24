@@ -1,7 +1,7 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { generate } from "generate-password-ts";
 
-export const AdminShareChangepswdGenerated: AdminCommand = async (term, admin, [shareId]) => {
+export const AdminShareChangepswdGenerated: AdminCommandType = async (term, admin, [shareId]) => {
   if (!admin.canAccess("admin.share.changepswd")) return 2;
   if (!shareId) return 5;
 

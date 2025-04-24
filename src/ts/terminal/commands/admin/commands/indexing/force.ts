@@ -1,7 +1,7 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { BRPURPLE, RESET } from "$ts/terminal/store";
 
-export const AdminIndexingForce: AdminCommand = async (term, admin, [username]) => {
+export const AdminIndexingForce: AdminCommandType = async (term, admin, [username]) => {
   if (!admin.canAccess("admin.index.user")) return 2;
   if (!username) return 5;
 

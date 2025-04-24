@@ -1,9 +1,9 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { BRBLACK, BRBLUE, BRPURPLE, RESET } from "$ts/terminal/store";
 import { maxLength } from "$ts/util";
 import dayjs from "dayjs";
 
-export const AdminActivitiesListAll: AdminCommand = async (term, admin) => {
+export const AdminActivitiesListAll: AdminCommandType = async (term, admin) => {
   if (!admin.canAccess("admin.activities.list", "admin.users.list")) return 2;
 
   const users = await admin.getAllUsers();

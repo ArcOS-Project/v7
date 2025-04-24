@@ -1,7 +1,7 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { BRBLACK, RESET } from "$ts/terminal/store";
 
-export const AdminShareAccessorsList: AdminCommand = async (term, admin, [shareId]) => {
+export const AdminShareAccessorsList: AdminCommandType = async (term, admin, [shareId]) => {
   if (!admin.canAccess("admin.share.accessors.get")) return 2;
   if (!shareId) return 5;
 

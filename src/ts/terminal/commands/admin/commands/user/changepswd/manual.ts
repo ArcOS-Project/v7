@@ -1,6 +1,6 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
-export const AdminUserChangepswdManual: AdminCommand = async (term, admin, argv) => {
+export const AdminUserChangepswdManual: AdminCommandType = async (term, admin, argv) => {
   if (!admin.canAccess("admin.users.list", "admin.users.changepswd")) return 2;
 
   const [username] = argv;

@@ -1,9 +1,9 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { BOLD, BRGREEN, BRPURPLE, BRRED, RESET } from "$ts/terminal/store";
 import { arrayToAsciiTable } from "$ts/terminal/util";
 import dayjs from "dayjs";
 
-export const AdminBugHuntReportGet: AdminCommand = async (term, admin, [id]) => {
+export const AdminBugHuntReportGet: AdminCommandType = async (term, admin, [id]) => {
   if (!admin.canAccess("admin.bughunt.get", "admin.users.list")) return 2;
   if (!id) return 5;
 

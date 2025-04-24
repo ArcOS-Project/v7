@@ -1,7 +1,7 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { tryParseInt } from "$ts/util";
 
-export const AdminUserQuotaSet: AdminCommand = async (term, admin, argv) => {
+export const AdminUserQuotaSet: AdminCommandType = async (term, admin, argv) => {
   if (!admin.canAccess("admin.userfs.quota")) return 2;
 
   const [username, newQuota] = argv;

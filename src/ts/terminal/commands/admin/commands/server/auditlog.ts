@@ -1,8 +1,8 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { AuditSeverity } from "$types/admin";
 import dayjs from "dayjs";
 
-export const AdminServerAuditlog: AdminCommand = async (term, admin) => {
+export const AdminServerAuditlog: AdminCommandType = async (term, admin) => {
   if (!admin.canAccess("admin.logs", "admin.users.list")) return 2;
 
   const logs = await admin.getAuditLog();

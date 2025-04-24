@@ -1,8 +1,8 @@
 import { setJsonHierarchy } from "$ts/hierarchy";
 import { tryJsonParse } from "$ts/json";
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
-export const AdminUserPreferencesSet: AdminCommand = async (term, admin, argv) => {
+export const AdminUserPreferencesSet: AdminCommandType = async (term, admin, argv) => {
   if (!admin.canAccess("admin.preferences.get", "admin.preferences.put")) return 2;
 
   const [username, path, ...rest] = argv;

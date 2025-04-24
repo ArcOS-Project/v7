@@ -1,9 +1,9 @@
 import { getAllJsonPaths } from "$ts/hierarchy";
 import { BRBLACK, BRPURPLE, RESET } from "$ts/terminal/store";
-import type { AdminCommand } from "../../admin";
+import type { AdminCommandType } from "../../admin";
 import { AdminCommandStore } from "../store";
 
-export const AdminHelp: AdminCommand = async (term, admin) => {
+export const AdminHelp: AdminCommandType = async (term, admin) => {
   const paths = getAllJsonPaths(AdminCommandStore).map((p) => p.replaceAll(".", " "));
 
   for (let i = 0; i < paths.length; i++) {

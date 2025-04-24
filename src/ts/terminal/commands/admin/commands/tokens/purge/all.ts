@@ -1,6 +1,6 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
-export const AdminTokensPurgeAll: AdminCommand = async (term, admin, argv) => {
+export const AdminTokensPurgeAll: AdminCommandType = async (term, admin, argv) => {
   if (!admin.canAccess("admin.tokens.purge.all")) return 2;
 
   const proceed = (await term.rl?.read("Confirm change (y/n)? ")) === "y";

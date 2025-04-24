@@ -1,6 +1,6 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
-export const AdminUserDelete: AdminCommand = async (term, admin, argv) => {
+export const AdminUserDelete: AdminCommandType = async (term, admin, argv) => {
   if (!admin.canAccess("admin.users.delete")) return 2;
 
   const [username] = argv;

@@ -1,6 +1,6 @@
-import type { AdminCommand } from "../../admin";
+import type { AdminCommandType } from "../../admin";
 
-export const AdminMount: AdminCommand = async (term, admin, argv) => {
+export const AdminMount: AdminCommandType = async (term, admin, argv) => {
   if (
     !admin.canAccess(
       "admin.users.list",

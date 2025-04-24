@@ -1,6 +1,6 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
-export const AdminBugHuntListAll: AdminCommand = async (term, admin) => {
+export const AdminBugHuntListAll: AdminCommandType = async (term, admin) => {
   if (!admin.canAccess("admin.bughunt.reports.list")) return 2;
 
   const reports = await admin.getAllBugReports();

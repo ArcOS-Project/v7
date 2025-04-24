@@ -1,4 +1,4 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { BRBLACK, BRPURPLE, RESET } from "$ts/terminal/store";
 import { maxLength } from "$ts/util";
 import dayjs from "dayjs";
@@ -6,7 +6,7 @@ import RelativeTime from "dayjs/plugin/relativeTime";
 
 dayjs.extend(RelativeTime);
 
-export const AdminAccessorsListUser: AdminCommand = async (term, admin, [username]) => {
+export const AdminAccessorsListUser: AdminCommandType = async (term, admin, [username]) => {
   if (!admin.canAccess("admin.accessors.get.user")) return 2;
   if (!username) return 5;
 

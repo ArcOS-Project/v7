@@ -1,9 +1,9 @@
 import { formatBytes } from "$ts/fs/util";
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { BRBLACK, BRPURPLE, RESET } from "$ts/terminal/store";
 import { maxLength } from "$ts/util";
 
-export const AdminIndexingListUser: AdminCommand = async (term, admin, [username]) => {
+export const AdminIndexingListUser: AdminCommandType = async (term, admin, [username]) => {
   if (!admin.canAccess("admin.index.get.user")) return 2;
   if (!username) return 5;
 

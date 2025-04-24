@@ -1,8 +1,8 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { BRBLACK, BRPURPLE, RESET } from "$ts/terminal/store";
 import { maxLength } from "$ts/util";
 
-export const AdminAccessorsListAll: AdminCommand = async (term, admin) => {
+export const AdminAccessorsListAll: AdminCommandType = async (term, admin) => {
   if (!admin.canAccess("admin.accessors.get", "admin.users.list")) return 2;
 
   const accessors = await admin.getAllFsAccessors();

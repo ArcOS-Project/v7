@@ -1,7 +1,7 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { BRBLACK, BRPURPLE, RESET } from "$ts/terminal/store";
 
-export const AdminScopesAvailable: AdminCommand = async (term, admin) => {
+export const AdminScopesAvailable: AdminCommandType = async (term, admin) => {
   const available = await admin.getAvailableScopes();
   if (!admin.canAccess("admin.scopes.available")) return 2;
 

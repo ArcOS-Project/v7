@@ -1,6 +1,6 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
-export const AdminActivitiesDeleteAll: AdminCommand = async (term, admin) => {
+export const AdminActivitiesDeleteAll: AdminCommandType = async (term, admin) => {
   if (!admin.canAccess("admin.activities.delete")) return 2;
 
   const proceed = (await term.rl?.read("Confirm change (y/n)? ")) === "y";

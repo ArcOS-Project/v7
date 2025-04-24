@@ -1,4 +1,4 @@
-import type { ArcTermConfiguration, TerminalCommand } from "$types/terminal";
+import type { ArcTermConfiguration } from "$types/terminal";
 import { AdminCommand } from "./commands/admin";
 import { AppListCommand } from "./commands/applist";
 import { ArcFetchCommand } from "./commands/arcfetch";
@@ -62,7 +62,7 @@ export const TerminalCommandStore: (typeof TerminalProcess)[] = [
   ConfigCommand,
   SpawnCommand,
   TasksCommand,
-  // AdminCommand,
+  AdminCommand,
   // DrivesCommand,
 ];
 

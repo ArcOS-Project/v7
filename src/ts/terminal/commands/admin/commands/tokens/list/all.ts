@@ -1,6 +1,6 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
-export const AdminTokensListAll: AdminCommand = async (term, admin, argv) => {
+export const AdminTokensListAll: AdminCommandType = async (term, admin, argv) => {
   if (!admin.canAccess("admin.tokens.get", "admin.users.list")) return 2;
 
   const [reveal] = argv;

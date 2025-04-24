@@ -1,8 +1,8 @@
 import { getJsonHierarchy } from "$ts/hierarchy";
 import { tryJsonStringify } from "$ts/json";
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
-export const AdminUserPreferencesGet: AdminCommand = async (term, admin, argv) => {
+export const AdminUserPreferencesGet: AdminCommandType = async (term, admin, argv) => {
   if (!admin.canAccess("admin.preferences.get")) return 2;
 
   const [username, path] = argv;

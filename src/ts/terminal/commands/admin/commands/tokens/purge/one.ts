@@ -1,6 +1,6 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
-export const AdminTokensPurgeOne: AdminCommand = async (term, admin, argv) => {
+export const AdminTokensPurgeOne: AdminCommandType = async (term, admin, argv) => {
   if (!admin.canAccess("admin.tokens.purge.one")) return 2;
 
   const [id] = argv;

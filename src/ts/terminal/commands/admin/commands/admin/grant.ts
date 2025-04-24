@@ -1,6 +1,6 @@
-import type { AdminCommand } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
-export const AdminGrant: AdminCommand = async (term, admin, argv) => {
+export const AdminGrant: AdminCommandType = async (term, admin, argv) => {
   const [username] = argv;
 
   if (!username) return 5;
