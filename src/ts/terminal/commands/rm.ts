@@ -1,8 +1,17 @@
-import type { TerminalCommand } from "$types/terminal";
+import type { ProcessHandler } from "$ts/process/handler";
+import type { Arguments } from "$types/terminal";
+import type { ArcTerminal } from "..";
+import { TerminalProcess } from "../process";
 
-export const RmCommand: TerminalCommand = {
-  keyword: "rm",
-  async exec(term, flags, argv) {
+export class RmCommand extends TerminalProcess {
+  public static keyword = "rm";
+  public static description = "Delete the specified file or folder";
+
+  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
+    super(handler, pid, parentPid);
+  }
+
+  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const recursive = flags.recursive || flags.r;
     const name = argv.join(" ");
     if (!name) {
@@ -20,6 +29,5 @@ export const RmCommand: TerminalCommand = {
     const result = await term.deleteItem(name);
 
     return result ? 0 : 1;
-  },
-  description: "Delete the specified file or folder",
-};
+  }
+}

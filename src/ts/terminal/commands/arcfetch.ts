@@ -8,6 +8,9 @@ import { TerminalProcess } from "../process";
 import { BRBLACK, BRBLUE, BRCYAN, BRGREEN, BRPURPLE, BRRED, BRYELLOW, RESET } from "../store";
 
 export class ArcFetchCommand extends TerminalProcess {
+  static keyword: string = "arcfetch";
+  static description: string = "View information about your device and ArcOS";
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }

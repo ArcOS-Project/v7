@@ -1,12 +1,21 @@
 import { KnownGlobalDispatchers, SystemOnlyDispatches } from "$ts/dispatch/store";
 import { tryJsonParse } from "$ts/json";
+import type { ProcessHandler } from "$ts/process/handler";
 import { tryParseInt } from "$ts/util";
-import type { TerminalCommand } from "$types/terminal";
+import type { Arguments } from "$types/terminal";
+import type { ArcTerminal } from "..";
+import { TerminalProcess } from "../process";
 import { BRBLUE, RESET } from "../store";
 
-export const DispatchCommand: TerminalCommand = {
-  keyword: "dispatch",
-  async exec(term, flags, argv) {
+export class DispatchCommand extends TerminalProcess {
+  public static keyword: string = "dispatch";
+  public static description: string = "Dispatch events to ArcOS or a specific process";
+
+  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
+    super(handler, pid, parentPid);
+  }
+
+  protected async main(term: ArcTerminal, flags: Arguments): Promise<number> {
     const command = flags.cmd;
     const data = tryJsonParse(flags.data);
     const pid = tryParseInt(flags.pid, true);
@@ -62,6 +71,5 @@ export const DispatchCommand: TerminalCommand = {
 
       return 0;
     }
-  },
-  description: "Dispatch events to ArcOS or a specific process",
-};
+  }
+}
