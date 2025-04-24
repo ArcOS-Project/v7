@@ -1,12 +1,20 @@
 import { formatBytes, join } from "$ts/fs/util";
+import type { ProcessHandler } from "$ts/process/handler";
 import { FormatLargeNumber, Gap, maxLength, Plural, Truncate } from "$ts/util";
-import type { TerminalCommand } from "$types/terminal";
+import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
+import type { ArcTerminal } from "..";
+import { TerminalProcess } from "../process";
 import { BRBLACK, BRBLUE, BRGREEN, RESET } from "../store";
 
-export const DirCommand: TerminalCommand = {
-  keyword: "dir",
-  async exec(term, flags, argv) {
+export class DirCommand extends TerminalProcess {
+  public static keyword = "dir";
+  public static description = "List the contents of the current or specified directory";
+  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
+    super(handler, pid, parentPid);
+  }
+
+  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const dir = argv.join(" ") || "";
 
     try {
@@ -64,6 +72,5 @@ export const DirCommand: TerminalCommand = {
 
       return 1;
     }
-  },
-  description: "List the contents of the current or specified directory",
-};
+  }
+}

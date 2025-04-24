@@ -1,12 +1,20 @@
 import { ApplicationStorage } from "$ts/apps/storage";
 import { isPopulatable } from "$ts/apps/util";
+import type { ProcessHandler } from "$ts/process/handler";
 import type { App, InstalledApp } from "$types/app";
-import type { TerminalCommand } from "$types/terminal";
+import type { Arguments } from "$types/terminal";
+import type { ArcTerminal } from "..";
+import { TerminalProcess } from "../process";
 import { BRBLUE, BRYELLOW, RESET } from "../store";
 
-export const AppListCommand: TerminalCommand = {
-  keyword: "applist",
-  async exec(term, flags, argv) {
+export class AppListCommand extends TerminalProcess {
+  public static keyword = "applist";
+  public static description = "Display a list of installed applications";
+  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
+    super(handler, pid, parentPid);
+  }
+
+  async main(term: ArcTerminal, flags: Arguments) {
     const all = flags.a || flags.all;
     const countInstead = flags.c || flags.count;
     const store = term.daemon?.serviceHost?.getService<ApplicationStorage>("AppStorage")?.buffer();
@@ -48,6 +56,5 @@ export const AppListCommand: TerminalCommand = {
     }
 
     return 0;
-  },
-  description: "Display a list of installed applications",
-};
+  }
+}

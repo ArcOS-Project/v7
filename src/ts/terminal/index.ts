@@ -25,6 +25,7 @@ import {
   TerminalCommandStore,
 } from "./store";
 import { ArcTermVariables } from "./var";
+import { TerminalProcess } from "./process";
 
 export class ArcTerminal extends Process {
   path: string;
@@ -96,7 +97,8 @@ export class ArcTerminal extends Process {
         this.Error("Command not found.");
         this.lastCommandErrored = true;
       } else {
-        const result = await command.exec(this, flags, argv);
+        const proc = await this.handler.spawn<TerminalProcess>(command, undefined, this.pid);
+        const result = await proc!._main(this, flags, argv);
 
         if (result !== 0) this.lastCommandErrored = true;
         if (result <= -128) return this.rl?.dispose();

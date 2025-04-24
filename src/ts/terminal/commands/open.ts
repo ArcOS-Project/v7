@@ -1,8 +1,16 @@
-import type { TerminalCommand } from "$types/terminal";
+import type { ProcessHandler } from "$ts/process/handler";
+import type { Arguments } from "$types/terminal";
+import type { ArcTerminal } from "..";
+import { TerminalProcess } from "../process";
 
-export const OpenCommand: TerminalCommand = {
-  keyword: "open",
-  async exec(term, flags, argv) {
+export class OpenCommand extends TerminalProcess {
+  public static description = "Opens the specified file";
+  public static keyword = "open";
+  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
+    super(handler, pid, parentPid);
+  }
+
+  protected async main(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const filename = argv.join(" ");
     const shortcuts = Object.entries(term.contents?.shortcuts || {});
     const translated = shortcuts.filter(([_, v]) => v.name === filename).map(([k, v]) => ({ ...v, filename: k }))[0];
@@ -16,6 +24,5 @@ export const OpenCommand: TerminalCommand = {
     } else {
       return 1;
     }
-  },
-  description: "Opens the specified file",
-};
+  }
+}
