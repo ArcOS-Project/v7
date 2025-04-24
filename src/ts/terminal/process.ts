@@ -6,6 +6,7 @@ import type { ArcTerminal } from ".";
 export class TerminalProcess extends Process {
   public static keyword: string;
   public static description: string;
+  public static hidden = false;
   private exitCode: number = 0;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {

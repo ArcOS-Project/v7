@@ -1,10 +1,19 @@
+import type { ProcessHandler } from "$ts/process/handler";
 import { maxLength } from "$ts/util";
-import type { TerminalCommand } from "$types/terminal";
+import type { Arguments } from "$types/terminal";
+import type { ArcTerminal } from "..";
+import { TerminalProcess } from "../process";
 import { BRPURPLE, BRYELLOW, RESET, TerminalCommandStore } from "../store";
 
-export const HelpCommand: TerminalCommand = {
-  keyword: "help",
-  async exec(term, flags, argv) {
+export class HelpCommand extends TerminalProcess {
+  public static description: string = "Shows a list of built-in ArcTerm commands";
+  public static keyword: string = "help";
+
+  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
+    super(handler, pid, parentPid);
+  }
+
+  protected async main(term: ArcTerminal, flags: Arguments): Promise<number> {
     const showHidden = flags.a || flags.all;
     const maxLen = maxLength(
       TerminalCommandStore.map((c) => c.keyword),
@@ -17,6 +26,5 @@ export const HelpCommand: TerminalCommand = {
       );
     }
     return 0;
-  },
-  description: "Shows a list of built-in ArcTerm commands",
-};
+  }
+}
