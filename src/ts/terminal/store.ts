@@ -63,7 +63,7 @@ export const TerminalCommandStore: (typeof TerminalProcess)[] = [
   SpawnCommand,
   TasksCommand,
   AdminCommand,
-  // DrivesCommand,
+  DrivesCommand,
 ];
 
 export const ESC = `\x1b[`;

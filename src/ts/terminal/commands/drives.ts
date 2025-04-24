@@ -1,9 +1,18 @@
-import type { TerminalCommand } from "$types/terminal";
+import type { ProcessHandler } from "$ts/process/handler";
+import type { Arguments, TerminalCommand } from "$types/terminal";
+import type { ArcTerminal } from "..";
+import { TerminalProcess } from "../process";
 import { arrayToAsciiTable } from "../util";
 
-export const DrivesCommand: TerminalCommand = {
-  keyword: "drives",
-  async exec(term, flags, argv) {
+export class DrivesCommand extends TerminalProcess {
+  public static keyword = "drives";
+  public static description = "Returns the drive mount table";
+
+  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
+    super(handler, pid, parentPid);
+  }
+
+  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const drives = term.fs.drives;
     const showHidden = flags.h || flags.hidden;
     const goTo = argv[0];
@@ -32,6 +41,5 @@ export const DrivesCommand: TerminalCommand = {
     term.rl?.println(arrayToAsciiTable(table));
 
     return 0;
-  },
-  description: "Returns the drive mount table",
-};
+  }
+}
