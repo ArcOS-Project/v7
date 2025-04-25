@@ -5,6 +5,7 @@ import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { adminService } from "$ts/server/admin";
 import { messagingService } from "$ts/server/messaging";
+import { globalDispatchService } from "$ts/server/ws";
 import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
 import type { ReadableServiceStore, ServiceChangeResult, ServiceStore } from "$types/service";
@@ -25,6 +26,7 @@ export class ServiceHost extends Process {
     ["AdminBootstrapper", { ...adminService }],
     ["ShareMgmt", { ...shareService }],
     ["AppStorage", { ...appStoreService }],
+    ["GlobalDispatch", { ...globalDispatchService }],
     ["MessagingService", { ...messagingService }],
   ]);
 

@@ -3,10 +3,12 @@ import type { ProcessHandler } from "$ts/process/handler";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import type { FilesystemProgressCallback } from "$types/fs";
-import type { ExpandedMessage, MessageNode, PartialMessage } from "$types/messaging";
+import type { ExpandedMessage, Message, MessageNode, PartialMessage } from "$types/messaging";
 import type { Service } from "$types/service";
 import { ServerManager } from "..";
 import { Axios } from "../axios";
+import { UserDaemon } from "../user/daemon";
+import { GlobalDispatch } from "../ws";
 
 export class MessagingInterface extends BaseService {
   token: string | undefined;
@@ -20,7 +22,26 @@ export class MessagingInterface extends BaseService {
   }
 
   async activate(token: string): Promise<void> {
+    const daemon = this.handler.getProcess<UserDaemon>(+this.env.get("userdaemon_pid")!)!;
+    const dispatch = daemon.serviceHost?.getService<GlobalDispatch>("GlobalDispatch")!;
     this.token = token;
+
+    dispatch.subscribe("incoming-message", (message: Message) => {
+      daemon.sendNotification({
+        className: "incoming-message",
+        image: `${import.meta.env.DW_SERVER_URL}${message.author?.profilePicture}`,
+        title: message.author?.username || "New message",
+        message: message.title,
+        buttons: [
+          {
+            caption: "View message",
+            action: () => {
+              daemon.spawnApp("Messages", +this.env.get("shell_pid"), "inbox", message._id);
+            },
+          },
+        ],
+      });
+    });
   }
 
   async getSentMessages(): Promise<PartialMessage[]> {

@@ -14,7 +14,7 @@ div.shell div.push-notification {
   height: fit-content;
   overflow: hidden;
   transition: opacity 0.3s, visibility 0.3s, translate 0.3s cubic-bezier(0.165, 0.84, 0.44, 1), pointer-events 0s;
-  min-width: 250px;
+  min-width: 300px;
   min-height: 100px;
 }
 

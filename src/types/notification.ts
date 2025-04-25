@@ -7,6 +7,7 @@ export interface Notification {
   buttons?: ErrorButton[];
   timestamp?: number;
   deleted?: boolean;
+  className?: string;
 }
 
 export interface ErrorButton {

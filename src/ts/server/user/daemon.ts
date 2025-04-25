@@ -54,6 +54,7 @@ import type { MessagingInterface } from "../messaging";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
+import { GlobalDispatch } from "../ws";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -2330,5 +2331,11 @@ The information provided in this report is subject for review by me or another A
         makePublic: true,
       }
     );
+  }
+
+  async activateGlobalDispatch() {
+    const service = this.serviceHost!.getService<GlobalDispatch>("GlobalDispatch");
+
+    await service?._activate(this.token);
   }
 }

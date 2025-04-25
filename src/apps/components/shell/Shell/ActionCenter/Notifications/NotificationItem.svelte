@@ -64,7 +64,7 @@
 </script>
 
 {#if notification}
-  <div class="notification" class:deleted class:collapsed class:no-image={!notification.image}>
+  <div class="notification {notification.className || ''}" class:deleted class:collapsed class:no-image={!notification.image}>
     {#if !hideContent}
       {#if notification.image}
         <div class="left">

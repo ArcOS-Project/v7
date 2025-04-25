@@ -48,7 +48,7 @@
 </script>
 
 <div
-  class="push-notification shell-colored"
+  class="push-notification shell-colored {data?.className || ''}"
   class:show
   class:no-image={!data?.image}
   class:colored={$userPreferences.shell.taskbar.colored}

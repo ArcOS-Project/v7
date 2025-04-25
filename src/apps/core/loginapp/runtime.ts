@@ -155,52 +155,44 @@ export class LoginAppRuntime extends AppProcess {
       this.loginBackground.set((await userDaemon.getWallpaper(userDaemon.preferences().account.loginBackground)).url);
 
     this.loadingStatus.set("Notifying login activity");
-
     await userDaemon.logActivity("login");
 
     this.loadingStatus.set("Starting service host");
-
     await userDaemon.startServiceHost();
+
+    this.loadingStatus.set("Connecting global dispatch");
+    await userDaemon.activateGlobalDispatch();
     userDaemon.activateMessagingService();
 
     this.loadingStatus.set("Starting drive notifier watcher");
-
     userDaemon.startDriveNotifierWatcher();
 
     this.loadingStatus.set("Starting share management");
-
     await userDaemon.startShareManager();
 
     this.loadingStatus.set("Starting application storage");
-
     await userDaemon.startApplicationStorage();
 
     if (userDaemon.userInfo.admin) {
       this.loadingStatus.set("Activating admin bootstrapper");
-
       await userDaemon.activateAdminBootstrapper();
     }
 
     this.loadingStatus.set("Activating BHUSP");
-
     await userDaemon.activateBugHuntUserSpaceProcess();
 
     this.loadingStatus.set("Starting status refresh");
-
     await userDaemon.startSystemStatusRefresh();
 
     this.loadingStatus.set("Let's go!");
-
     await this.kernel.state?.loadState("desktop", { userDaemon });
     this.soundBus.playSound("arcos.system.logon");
     userDaemon.setAppRendererClasses(userDaemon.preferences());
 
     this.loadingStatus.set("Starting Workspaces");
-
     await userDaemon.startVirtualDesktops();
 
     this.loadingStatus.set("Running autorun");
-
     await userDaemon.spawnAutoload();
 
     await this.appStore()?.refresh();
