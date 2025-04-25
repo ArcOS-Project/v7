@@ -356,11 +356,11 @@ export class LoginAppRuntime extends AppProcess {
     const returnId = UUID();
 
     return new Promise(async (r) => {
-      this.globalDispatch.subscribe("totp-unlock-success", ([id]) => {
+      this.systemDispatch.subscribe("totp-unlock-success", ([id]) => {
         if (id === returnId) r(true);
       });
 
-      this.globalDispatch.subscribe("totp-unlock-cancel", ([id]) => {
+      this.systemDispatch.subscribe("totp-unlock-cancel", ([id]) => {
         if (id === returnId) r(false);
       });
 

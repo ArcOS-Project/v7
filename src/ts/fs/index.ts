@@ -1,4 +1,4 @@
-import { GlobalDispatcher } from "$ts/dispatch";
+import { SystemDispatch } from "$ts/dispatch";
 import type { WaveKernel } from "$ts/kernel";
 import { KernelModule } from "$ts/kernel/module";
 import { Sleep } from "$ts/sleep";
@@ -15,13 +15,13 @@ import type { FilesystemDrive } from "./drive";
 import { getParentDirectory, join } from "./util";
 
 export class Filesystem extends KernelModule {
-  private dispatch: GlobalDispatcher;
+  private dispatch: SystemDispatch;
   public drives: Record<string, FilesystemDrive> = {};
 
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);
 
-    this.dispatch = this.kernel.getModule<GlobalDispatcher>("dispatch");
+    this.dispatch = this.kernel.getModule<SystemDispatch>("dispatch");
   }
 
   async _init() {}

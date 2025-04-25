@@ -67,11 +67,11 @@ export class TotpAuthGuiRuntime extends AppProcess {
   }
 
   async doDispatch() {
-    this.globalDispatch.dispatch("totp-unlock-success", [this.dispatchId]);
+    this.systemDispatch.dispatch("totp-unlock-success", [this.dispatchId]);
   }
 
   async cancel() {
-    this.globalDispatch.dispatch("totp-unlock-cancel", [this.dispatchId]);
+    this.systemDispatch.dispatch("totp-unlock-cancel", [this.dispatchId]);
     this.closeWindow();
   }
 

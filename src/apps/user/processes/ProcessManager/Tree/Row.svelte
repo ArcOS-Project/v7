@@ -31,10 +31,10 @@
       icon = process.userDaemon?.getAppIconByProcess(proc);
       appId = app.id;
 
-      const dispatcher = process.globalDispatch.subscribe("window-closing", ([pid]) => {
+      const dispatcher = process.systemDispatch.subscribe("window-closing", ([pid]) => {
         if (pid === proc.pid) {
           closing = true;
-          process.globalDispatch.unsubscribeId("window-closing", dispatcher);
+          process.systemDispatch.unsubscribeId("window-closing", dispatcher);
         }
       });
 

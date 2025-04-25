@@ -19,7 +19,7 @@
   let dirs: FolderEntry[] = $state([]);
 
   onMount(() => {
-    process.globalDispatch.subscribe<string>("fs-flush-folder", (path) => {
+    process.systemDispatch.subscribe<string>("fs-flush-folder", (path) => {
       if (!path) return;
 
       if (path.startsWith("U:") && path.split("/").length == 1) {

@@ -20,7 +20,7 @@ export class ApplicationStorage extends BaseService {
 
     this.loadOrigin("injected", () => this.injected());
 
-    this.globalDispatch.subscribe("app-store-refresh", async () => {
+    this.systemDispatch.subscribe("app-store-refresh", async () => {
       await this.refresh();
     });
   }
@@ -37,7 +37,6 @@ export class ApplicationStorage extends BaseService {
     if (this.origins.get(id)) return false;
 
     this.origins.set(id, store);
-    // this.globalDispatch.dispatch("app-store-refresh");
 
     return true;
   }
@@ -50,7 +49,7 @@ export class ApplicationStorage extends BaseService {
     if (!this.origins.get(id)) return false;
 
     this.origins.delete(id);
-    this.globalDispatch.dispatch("app-store-refresh");
+    this.systemDispatch.dispatch("app-store-refresh");
 
     return true;
   }

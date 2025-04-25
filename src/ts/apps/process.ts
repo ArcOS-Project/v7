@@ -1,5 +1,5 @@
 import type { ShellRuntime } from "$apps/components/shell/runtime";
-import { GlobalDispatcher } from "$ts/dispatch";
+import { SystemDispatch } from "$ts/dispatch";
 import { ArcOSVersion } from "$ts/env";
 import { BugReportIcon, ComponentIcon } from "$ts/images/general";
 import { ArcBuild } from "$ts/metadata/build";
@@ -31,7 +31,7 @@ export class AppProcess extends Process {
   componentMount: Record<string, any> = {};
   userPreferences: ReadableStore<UserPreferences> = Store<UserPreferences>(DefaultUserPreferences);
   username: string = "";
-  globalDispatch: GlobalDispatcher;
+  systemDispatch: SystemDispatch;
   userDaemon: UserDaemon | undefined;
   shell: ShellRuntime | undefined;
   overridePopulatable: boolean = false;
@@ -56,7 +56,7 @@ export class AppProcess extends Process {
 
     this.windowTitle.set(app.data.metadata.name || "Application");
     this.name = app.data.id;
-    this.globalDispatch = this.kernel.getModule<GlobalDispatcher>("dispatch");
+    this.systemDispatch = this.kernel.getModule<SystemDispatch>("dispatch");
     this.shell = this.handler.getProcess(+this.env.get("shell_pid"));
 
     const desktopProps = this.kernel.state?.stateProps["desktop"];
@@ -72,11 +72,11 @@ export class AppProcess extends Process {
     this.windowIcon.set(this.userDaemon?.getAppIconByProcess(this) || ComponentIcon);
     this.startAcceleratorListener();
 
-    this.globalDispatch.subscribe("window-unfullscreen", ([pid]) => {
+    this.systemDispatch.subscribe("window-unfullscreen", ([pid]) => {
       if (this.pid === pid) this.windowFullscreen.set(false);
     });
 
-    this.globalDispatch.subscribe("window-fullscreen", ([pid]) => {
+    this.systemDispatch.subscribe("window-fullscreen", ([pid]) => {
       if (this.pid === pid) this.windowFullscreen.set(true);
     });
 
@@ -109,7 +109,7 @@ export class AppProcess extends Process {
     this.shell?.disposeProcessTrayIcons(this.pid);
 
     if (this.getWindow()?.classList.contains("fullscreen"))
-      this.globalDispatch.dispatch("window-unfullscreen", [this.pid, this.app.desktop]);
+      this.systemDispatch.dispatch("window-unfullscreen", [this.pid, this.app.desktop]);
 
     const elements = [
       ...document.querySelectorAll(`div.window[data-pid="${this.pid}"]`),
@@ -123,7 +123,7 @@ export class AppProcess extends Process {
       return this.killSelf();
     }
 
-    this.globalDispatch.dispatch("window-closing", [this.pid]);
+    this.systemDispatch.dispatch("window-closing", [this.pid]);
 
     for (const element of elements) {
       element.classList.add("closing");

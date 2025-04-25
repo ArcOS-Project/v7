@@ -25,13 +25,13 @@ export class IconPickerRuntime extends AppProcess {
   }
 
   async confirm() {
-    this.globalDispatch.dispatch("ip-confirm", [this.returnId, this.selected()]);
+    this.systemDispatch.dispatch("ip-confirm", [this.returnId, this.selected()]);
 
     await this.closeWindow();
   }
 
   async cancel() {
-    this.globalDispatch.dispatch("ip-cancel", [this.returnId]);
+    this.systemDispatch.dispatch("ip-cancel", [this.returnId]);
 
     await this.closeWindow();
   }

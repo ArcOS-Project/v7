@@ -328,8 +328,8 @@ export class UserDaemon extends Process {
     data.timestamp = Date.now();
 
     this.notifications.set(id, data);
-    this.globalDispatch.dispatch("update-notifications", [this.notifications]);
-    this.globalDispatch.dispatch("send-notification", [data]);
+    this.systemDispatch.dispatch("update-notifications", [this.notifications]);
+    this.systemDispatch.dispatch("send-notification", [data]);
 
     return id;
   }
@@ -347,8 +347,8 @@ export class UserDaemon extends Process {
 
     this.notifications.set(id, notification);
 
-    this.globalDispatch.dispatch("delete-notification", [id]);
-    this.globalDispatch.dispatch("update-notifications", [this.notifications]);
+    this.systemDispatch.dispatch("delete-notification", [id]);
+    this.systemDispatch.dispatch("update-notifications", [this.notifications]);
   }
 
   clearNotifications() {
@@ -357,7 +357,7 @@ export class UserDaemon extends Process {
     this.Log(`Clearing notifications`);
 
     this.notifications = new Map<string, Notification>([]);
-    this.globalDispatch.dispatch("update-notifications", [this.notifications]);
+    this.systemDispatch.dispatch("update-notifications", [this.notifications]);
   }
 
   themeFromUserPreferences(data: UserPreferences, name: string, author: string, version: string): UserTheme {
@@ -1095,7 +1095,7 @@ export class UserDaemon extends Process {
         this.handler.kill(instance.pid, true);
       }
 
-    this.globalDispatch.dispatch("app-store-refresh");
+    this.systemDispatch.dispatch("app-store-refresh");
   }
 
   async enableApp(appId: string) {
@@ -1126,7 +1126,7 @@ export class UserDaemon extends Process {
       return v;
     });
 
-    this.globalDispatch.dispatch("app-store-refresh");
+    this.systemDispatch.dispatch("app-store-refresh");
   }
 
   async getLoginActivity(): Promise<LoginActivity[]> {
@@ -1202,7 +1202,7 @@ export class UserDaemon extends Process {
     }
 
     return new Promise((r) => {
-      this.globalDispatch.subscribe("elevation-approve", (data) => {
+      this.systemDispatch.subscribe("elevation-approve", (data) => {
         if (data[0] === id && data[1] === key) {
           r(true);
           this._elevating = false;
@@ -1210,7 +1210,7 @@ export class UserDaemon extends Process {
         }
       });
 
-      this.globalDispatch.subscribe("elevation-deny", (data) => {
+      this.systemDispatch.subscribe("elevation-deny", (data) => {
         if (data[0] === id && data[1] === key) {
           r(false);
           this._elevating = false;
@@ -1251,7 +1251,7 @@ export class UserDaemon extends Process {
       if (response.status !== 200) return false;
 
       this.username = newUsername;
-      this.globalDispatch.dispatch("change-username", [newUsername]);
+      this.systemDispatch.dispatch("change-username", [newUsername]);
 
       Cookies.set("arcUsername", newUsername, {
         expires: 2,
@@ -1530,7 +1530,7 @@ export class UserDaemon extends Process {
 
     this.Log("Starting drive notifier watcher");
 
-    this.globalDispatch.subscribe("fs-mount-drive", (id) => {
+    this.systemDispatch.subscribe("fs-mount-drive", (id) => {
       if (this._disposed) return;
 
       const drive = this.fs.getDriveById(id as unknown as string);
@@ -1779,8 +1779,8 @@ export class UserDaemon extends Process {
       await Sleep(100); // prevent rate limit
     }
 
-    this.globalDispatch.dispatch("fs-flush-folder", firstSourceParent);
-    if (firstSourceParent !== destination) this.globalDispatch.dispatch("fs-flush-folder", destination);
+    this.systemDispatch.dispatch("fs-flush-folder", firstSourceParent);
+    if (firstSourceParent !== destination) this.systemDispatch.dispatch("fs-flush-folder", destination);
   }
 
   async copyMultiple(sources: string[], destination: string, pid: number) {
@@ -1823,7 +1823,7 @@ export class UserDaemon extends Process {
       await Sleep(200); // prevent rate limit
     }
 
-    this.globalDispatch.dispatch("fs-flush-folder", destination);
+    this.systemDispatch.dispatch("fs-flush-folder", destination);
   }
 
   async findHandlerToOpenFile(path: string): Promise<FileOpenerResult[]> {
@@ -1931,10 +1931,10 @@ export class UserDaemon extends Process {
     });
 
     return new Promise<string[] | [undefined]>(async (r) => {
-      this.globalDispatch.subscribe<[string, string[] | [undefined]]>("ls-confirm", ([id, paths]) => {
+      this.systemDispatch.subscribe<[string, string[] | [undefined]]>("ls-confirm", ([id, paths]) => {
         if (id === uuid) r(paths);
       });
-      this.globalDispatch.subscribe("ls-cancel", ([id]) => {
+      this.systemDispatch.subscribe("ls-cancel", ([id]) => {
         if (id === uuid) r([undefined]);
       });
     });
@@ -2075,10 +2075,10 @@ export class UserDaemon extends Process {
     });
 
     return new Promise<string>(async (r) => {
-      this.globalDispatch.subscribe<[string, string]>("ip-confirm", ([id, icon]) => {
+      this.systemDispatch.subscribe<[string, string]>("ip-confirm", ([id, icon]) => {
         if (id === uuid) r(icon);
       });
-      this.globalDispatch.subscribe("ip-cancel", ([id]) => {
+      this.systemDispatch.subscribe("ip-cancel", ([id]) => {
         if (id === uuid) r(data.defaultIcon);
       });
     });

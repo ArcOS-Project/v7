@@ -1,4 +1,4 @@
-import { KnownGlobalDispatchers, SystemOnlyDispatches } from "$ts/dispatch/store";
+import { KnownSystemDispatchers, SystemOnlyDispatches } from "$ts/dispatch/store";
 import { tryJsonParse } from "$ts/json";
 import type { ProcessHandler } from "$ts/process/handler";
 import { tryParseInt } from "$ts/util";
@@ -24,7 +24,7 @@ export class DispatchCommand extends TerminalProcess {
     if (list) {
       term.rl?.println("Global dispatches known to ArcOS:");
 
-      for (const key of KnownGlobalDispatchers) {
+      for (const key of KnownSystemDispatchers) {
         const keyStr = key.padEnd(25, " ");
 
         term.rl?.println(`${SystemOnlyDispatches.includes(key) ? "#" : " "} ${BRBLUE}${keyStr}${RESET}`);
@@ -39,7 +39,7 @@ export class DispatchCommand extends TerminalProcess {
     }
 
     if (!pid) {
-      const result = term.globalDispatch.dispatch(command, data, false);
+      const result = term.systemDispatch.dispatch(command, data, false);
 
       if (result !== "success") {
         term.Error(`failed: ${command}: ${result}`);
@@ -47,7 +47,7 @@ export class DispatchCommand extends TerminalProcess {
         return 1;
       }
 
-      term.Info(`Dispatched ${BRBLUE}${command}${RESET} over GlobalDispatch.`);
+      term.Info(`Dispatched ${BRBLUE}${command}${RESET} over SystemDispatch.`);
 
       return 0;
     } else {

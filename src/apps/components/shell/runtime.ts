@@ -45,14 +45,14 @@ export class ShellRuntime extends AppProcess {
     super(handler, pid, parentPid, app);
 
     this.env.set("shell_pid", this.pid);
-    this.globalDispatch.subscribe("stack-busy", () => this.stackBusy.set(true));
-    this.globalDispatch.subscribe("stack-not-busy", () => this.stackBusy.set(false));
+    this.systemDispatch.subscribe("stack-busy", () => this.stackBusy.set(true));
+    this.systemDispatch.subscribe("stack-not-busy", () => this.stackBusy.set(false));
 
-    this.globalDispatch.subscribe("fs-flush-file", () => {
+    this.systemDispatch.subscribe("fs-flush-file", () => {
       this.fileSystemIndex = [];
     });
 
-    this.globalDispatch.subscribe("window-fullscreen", ([pid, desktop]) => {
+    this.systemDispatch.subscribe("window-fullscreen", ([pid, desktop]) => {
       desktop = `${desktop}`;
 
       this.FullscreenCount.update((v) => {
@@ -62,7 +62,7 @@ export class ShellRuntime extends AppProcess {
       });
     });
 
-    this.globalDispatch.subscribe("window-unfullscreen", ([_, desktop]) => {
+    this.systemDispatch.subscribe("window-unfullscreen", ([_, desktop]) => {
       desktop = `${desktop}`;
 
       this.FullscreenCount.update((v) => {
@@ -613,7 +613,7 @@ export class ShellRuntime extends AppProcess {
     trayIcons[`${pid}#${identifier}`] = proc;
 
     this.trayIcons.set(trayIcons);
-    this.globalDispatch.dispatch("tray-icon-create", [pid, identifier]);
+    this.systemDispatch.dispatch("tray-icon-create", [pid, identifier]);
 
     await Sleep(100);
 
@@ -633,7 +633,7 @@ export class ShellRuntime extends AppProcess {
     delete trayIcons[discriminator];
 
     this.trayIcons.set(trayIcons);
-    this.globalDispatch.dispatch("tray-icon-dispose", [pid, identifier]);
+    this.systemDispatch.dispatch("tray-icon-dispose", [pid, identifier]);
   }
 
   disposeProcessTrayIcons(pid: number) {
@@ -646,7 +646,7 @@ export class ShellRuntime extends AppProcess {
     }
 
     this.trayIcons.set(trayIcons);
-    this.globalDispatch.dispatch("tray-icon-dispose", [pid]);
+    this.systemDispatch.dispatch("tray-icon-dispose", [pid]);
   }
 
   async exit() {

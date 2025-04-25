@@ -26,7 +26,7 @@ export class WallpaperRuntime extends AppProcess {
 
     this.directory = desktopDir || "U:/Desktop";
     this.renderArgs = { desktopDir: this.directory };
-    this.globalDispatch.subscribe<string>("fs-flush-folder", async (path) => {
+    this.systemDispatch.subscribe<string>("fs-flush-folder", async (path) => {
       if (!path || this._disposed) return;
 
       if (path.startsWith(this.directory)) {

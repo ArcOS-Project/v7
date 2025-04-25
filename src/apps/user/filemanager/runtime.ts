@@ -95,10 +95,10 @@ export class FileManagerRuntime extends AppProcess {
     await this.updateRootFolders();
     await this.updateDrives();
 
-    this.globalDispatch.subscribe("fs-umount-drive", () => this.updateDrives());
-    this.globalDispatch.subscribe("fs-mount-drive", () => this.updateDrives());
+    this.systemDispatch.subscribe("fs-umount-drive", () => this.updateDrives());
+    this.systemDispatch.subscribe("fs-mount-drive", () => this.updateDrives());
 
-    this.globalDispatch.subscribe<string>("fs-flush-folder", (path) => {
+    this.systemDispatch.subscribe<string>("fs-flush-folder", (path) => {
       if (!path || this._disposed) return;
 
       if (path.startsWith("U:") && path.split("/").length == 1) {
@@ -461,7 +461,7 @@ export class FileManagerRuntime extends AppProcess {
       prog.mutDone(+1);
     }
 
-    this.globalDispatch.dispatch("fs-flush-folder", this.path());
+    this.systemDispatch.dispatch("fs-flush-folder", this.path());
   }
 
   async downloadSelected() {
@@ -652,7 +652,7 @@ export class FileManagerRuntime extends AppProcess {
       ? [selection[0] || path]
       : [!this.loadSave?.isSave ? selection[0] : join(path, saveName)];
 
-    this.globalDispatch.dispatch("ls-confirm", [this.loadSave?.returnId, result]);
+    this.systemDispatch.dispatch("ls-confirm", [this.loadSave?.returnId, result]);
 
     await this.closeWindow();
   }

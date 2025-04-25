@@ -1,6 +1,6 @@
 export const SystemOnlyDispatches: string[] = [];
 
-export const KnownGlobalDispatchers: string[] = [
+export const KnownSystemDispatchers: string[] = [
   "fs-mount-drive",
   "fs-umount-drive",
   "fs-flush-folder",

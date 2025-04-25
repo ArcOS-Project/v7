@@ -150,7 +150,7 @@ export class AppRenderer extends Process {
       if (data.state?.maximized) window.classList.add("maximized");
       if (data.state?.fullscreen) {
         window.classList.add("fullscreen");
-        this.globalDispatch.dispatch("window-fullscreen", [proc.pid, proc.app.desktop]);
+        this.systemDispatch.dispatch("window-fullscreen", [proc.pid, proc.app.desktop]);
       }
       if (data.entrypoint || data.thirdParty || data.workingDirectory) window.classList.add("tp");
     }
@@ -374,7 +374,7 @@ export class AppRenderer extends Process {
     window.classList.toggle("maximized");
     this.updateDraggableDisabledState(pid, window);
 
-    this.globalDispatch.dispatch(window.classList.contains("maximized") ? "window-maximize" : "window-unmaximize", [pid]);
+    this.systemDispatch.dispatch(window.classList.contains("maximized") ? "window-maximize" : "window-unmaximize", [pid]);
   }
 
   updateDraggableDisabledState(pid: number, window: HTMLDivElement) {
@@ -405,7 +405,7 @@ export class AppRenderer extends Process {
 
     if (!process || !process.app) return;
 
-    this.globalDispatch.dispatch("window-unmaximize", [pid]);
+    this.systemDispatch.dispatch("window-unmaximize", [pid]);
 
     this.updateDraggableDisabledState(pid, window);
   }
@@ -424,7 +424,7 @@ export class AppRenderer extends Process {
       window.removeAttribute("data-snapstate");
     }
 
-    if (dispatch) this.globalDispatch.dispatch("window-unsnap", [pid]);
+    if (dispatch) this.systemDispatch.dispatch("window-unsnap", [pid]);
 
     this.updateDraggableDisabledState(pid, window);
   }
@@ -442,7 +442,7 @@ export class AppRenderer extends Process {
     window.classList.remove("maximized");
     window.setAttribute("data-snapstate", variant);
 
-    this.globalDispatch.dispatch("window-snap", [pid, variant]);
+    this.systemDispatch.dispatch("window-snap", [pid, variant]);
     this.updateDraggableDisabledState(pid, window);
   }
 
@@ -458,7 +458,7 @@ export class AppRenderer extends Process {
     const minimized = window.classList.contains("minimized");
     if (minimized) this.focusedPid.set(-1);
 
-    this.globalDispatch.dispatch(minimized ? "window-minimize" : "window-unminimize", [pid]);
+    this.systemDispatch.dispatch(minimized ? "window-minimize" : "window-unminimize", [pid]);
     this.updateDraggableDisabledState(pid, window);
   }
 
@@ -475,7 +475,7 @@ export class AppRenderer extends Process {
 
     if (!process || !process.app) return;
 
-    this.globalDispatch.dispatch(window.classList.contains("fullscreen") ? "window-fullscreen" : "window-unfullscreen", [
+    this.systemDispatch.dispatch(window.classList.contains("fullscreen") ? "window-fullscreen" : "window-unfullscreen", [
       pid,
       process.app.desktop,
     ]);

@@ -128,7 +128,7 @@ export class ServiceHost extends Process {
 
     this.handler.store.subscribe(() => this.verifyServicesProcesses());
 
-    this.Services.subscribe(() => this.globalDispatch.dispatch("services-flush"));
+    this.Services.subscribe(() => this.systemDispatch.dispatch("services-flush"));
   }
 
   public async verifyServicesProcesses() {

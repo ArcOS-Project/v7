@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { GlobalDispatcher } from "$ts/dispatch";
+import { SystemDispatch } from "$ts/dispatch";
 import { Environment } from "$ts/kernel/env";
 import type { ProcessKillResult } from "$types/process";
 import { AppRenderer } from "../apps/renderer";
@@ -16,13 +16,13 @@ export class ProcessHandler extends KernelModule {
   public rendererPid = -1;
   public renderer: AppRenderer | undefined;
   public env: Environment;
-  public dispatch: GlobalDispatcher;
+  public dispatch: SystemDispatch;
 
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);
 
     this.env = this.kernel.getModule<Environment>("env");
-    this.dispatch = this.kernel.getModule<GlobalDispatcher>("dispatch");
+    this.dispatch = this.kernel.getModule<SystemDispatch>("dispatch");
   }
 
   async _init() {

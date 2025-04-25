@@ -66,7 +66,7 @@ export class SecureContextRuntime extends AppProcess {
 
     await this.closeWindow();
 
-    this.globalDispatch.dispatch("elevation-approve", [this.id, this.key], true);
+    this.systemDispatch.dispatch("elevation-approve", [this.id, this.key], true);
   }
 
   async deny() {
@@ -76,7 +76,7 @@ export class SecureContextRuntime extends AppProcess {
 
     await this.closeWindow();
 
-    this.globalDispatch.dispatch("elevation-deny", [this.id, this.key], true);
+    this.systemDispatch.dispatch("elevation-deny", [this.id, this.key], true);
   }
 
   async passwordIncorrect() {

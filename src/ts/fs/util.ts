@@ -1,4 +1,4 @@
-import { GlobalDispatcher } from "$ts/dispatch";
+import { SystemDispatch } from "$ts/dispatch";
 import { WaveKernel } from "$ts/kernel";
 import { arrayToBlob } from "./convert";
 
@@ -68,7 +68,7 @@ export function getParentDirectory(p: string): string {
 
 export function onFileChange(path: string, callback: () => void) {
   const kernel = WaveKernel.get();
-  const dispatch = kernel.getModule<GlobalDispatcher>("dispatch");
+  const dispatch = kernel.getModule<SystemDispatch>("dispatch");
 
   dispatch.subscribe("fs-flush-file", (data) => {
     if (data[0] === path) callback();
@@ -79,7 +79,7 @@ export function onFileChange(path: string, callback: () => void) {
 
 export function onFolderChange(path: string, callback: () => void) {
   const kernel = WaveKernel.get();
-  const dispatch = kernel.getModule<GlobalDispatcher>("dispatch");
+  const dispatch = kernel.getModule<SystemDispatch>("dispatch");
 
   dispatch.subscribe<string>("fs-flush-folder", (data) => {
     if (!path || data === path) callback();

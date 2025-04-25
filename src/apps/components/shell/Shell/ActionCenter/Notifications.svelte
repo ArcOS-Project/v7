@@ -22,7 +22,7 @@
       return;
     }
 
-    userDaemon.globalDispatch.subscribe("update-notifications", async ([notifications]) => {
+    userDaemon.systemDispatch.subscribe("update-notifications", async ([notifications]) => {
       store = [...notifications];
 
       isEmpty = false;

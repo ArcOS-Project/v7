@@ -1,16 +1,16 @@
-import type { GlobalDispatchResult } from "$types/dispatch";
+import type { SystemDispatchResult } from "$types/dispatch";
 import { LogLevel } from "$types/logging";
 import type { WaveKernel } from "../kernel";
 import { KernelModule } from "../kernel/module";
-import { KnownGlobalDispatchers, SystemOnlyDispatches } from "./store";
+import { KnownSystemDispatchers, SystemOnlyDispatches } from "./store";
 
-export class GlobalDispatcher extends KernelModule {
+export class SystemDispatch extends KernelModule {
   public subscribers: Record<string, Record<number, (data: any) => void>> = {};
 
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);
 
-    this.Log("Creating new GlobalDispatcher");
+    this.Log("Creating new SystemDispatch");
   }
 
   subscribe<T = any[]>(event: string, callback: (data: T) => void): number {
@@ -27,7 +27,7 @@ export class GlobalDispatcher extends KernelModule {
     if (!this.subscribers[event]) this.subscribers[event] = { [id]: callback };
     else this.subscribers[event][id] = callback;
 
-    if (!KnownGlobalDispatchers.includes(event))
+    if (!KnownSystemDispatchers.includes(event))
       this.Log(`Subscribing to unknown event ${event} on Global Dispatch. Don't do that.`, LogLevel.warning);
 
     return id;
@@ -49,7 +49,7 @@ export class GlobalDispatcher extends KernelModule {
     delete this.subscribers[event];
   }
 
-  dispatch<T = any[]>(caller: string, data?: T, system = true): GlobalDispatchResult {
+  dispatch<T = any[]>(caller: string, data?: T, system = true): SystemDispatchResult {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
     this.Log(`Dispatching ${caller}`);
@@ -70,7 +70,7 @@ export class GlobalDispatcher extends KernelModule {
       callback(data);
     }
 
-    if (!KnownGlobalDispatchers.includes(caller))
+    if (!KnownSystemDispatchers.includes(caller))
       this.Log(`Dispatching unknown event ${caller} over Global Dispatch. Don't do that.`, LogLevel.warning);
 
     return "success";

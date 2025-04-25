@@ -29,7 +29,7 @@
   dayjs.updateLocale("en", RelativeTimeMod);
 
   onMount(() => {
-    userDaemon.globalDispatch.subscribe("delete-notification", async ([deletedId]) => {
+    userDaemon.systemDispatch.subscribe("delete-notification", async ([deletedId]) => {
       if (id === deletedId) {
         deleted = true;
 

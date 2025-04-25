@@ -45,7 +45,7 @@ export function ThirdPartyProps(
     fs: daemon.fs,
     env: daemon.env,
     serviceHost: daemon.serviceHost,
-    dispatch: daemon.globalDispatch,
+    dispatch: daemon.systemDispatch,
     MessageBox,
     icons: getAllImages(),
     util: {

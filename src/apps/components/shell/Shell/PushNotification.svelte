@@ -12,7 +12,7 @@
   let show = $state(false);
 
   onMount(() => {
-    process.globalDispatch.subscribe("send-notification", async ([incoming]) => {
+    process.systemDispatch.subscribe("send-notification", async ([incoming]) => {
       if ($actionCenterOpened) return;
 
       if (show) {
