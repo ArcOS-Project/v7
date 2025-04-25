@@ -44,7 +44,8 @@ export class AdminCommand extends TerminalProcess {
     }
 
     return new Promise<number>(async (r) => {
-      async function prompt() {
+      const prompt = async () => {
+        if (this._disposed) return r(255);
         if (!admin) return r(1);
 
         const response = await term.rl?.read(`${BRYELLOW}ADMIN${BRBLACK}>${RESET} `);
@@ -71,7 +72,7 @@ export class AdminCommand extends TerminalProcess {
         term.rl?.println(`${BRRED}?COMMAND NOT FOUND${RESET}`);
 
         return await prompt();
-      }
+      };
 
       await prompt();
     });
