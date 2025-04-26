@@ -87,6 +87,7 @@ export class UserDaemon extends Process {
   override _criticalProcess: boolean = true;
   public mountedDrives: string[] = [];
   public server: ServerManager;
+  public syncLock = false;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, token: string, username: string, userInfo?: UserInfo) {
     super(handler, pid, parentPid);
@@ -163,7 +164,7 @@ export class UserDaemon extends Process {
       v = this.checkCurrentThemeIdValidity(v);
 
       if (!this.firstSyncDone) this.firstSyncDone = true;
-      else this.commitPreferences(v);
+      else if (!this.syncLock) this.commitPreferences(v);
 
       this.setAppRendererClasses(v);
       this.updateWallpaper(v);
@@ -2337,5 +2338,21 @@ The information provided in this report is subject for review by me or another A
     const service = this.serviceHost!.getService<GlobalDispatch>("GlobalDispatch");
 
     await service?._activate(this.token);
+
+    service?.subscribe("update-preferences", async (preferences: UserPreferences) => {
+      this.syncLock = true;
+      await Sleep(0);
+      this.preferences.set(preferences);
+      await Sleep(0);
+      this.syncLock = false;
+    });
+
+    service?.subscribe("fs-flush-folder", (path) => {
+      this.systemDispatch.dispatch("fs-flush-folder", path);
+    });
+
+    service?.subscribe("fs-flush-file", (path) => {
+      this.systemDispatch.dispatch("fs-flush-file", path);
+    });
   }
 }

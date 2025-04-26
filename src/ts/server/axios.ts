@@ -1,3 +1,5 @@
+import { WaveKernel } from "$ts/kernel";
+import { Environment } from "$ts/kernel/env";
 import axios from "axios";
 
 const presetAuthCode = import.meta.env.DW_SERVER_AUTHCODE;
@@ -15,3 +17,11 @@ export const Axios = axios.create({
     Expires: "0",
   },
 });
+
+Axios.interceptors.request.use(
+  (config) => {
+    config.headers.set("X-Request-ID", WaveKernel.get().getModule<Environment>("env").get("dispatch_sock_id"));
+    return config;
+  },
+  (error) => Promise.reject(error)
+);

@@ -27,26 +27,35 @@ export class GlobalDispatch extends BaseService {
   }
 
   async connected(token: string) {
+    this.Log(`Connected, authorizing using token`);
     this.client?.emit("authorize", token);
 
     await new Promise<void>((resolve, reject) => {
       this.client?.once("authorized", () => {
+        this.Log(`Global Dispatch is good to go :D`);
+        this.env.set("dispatch_sock_id", this.client?.id);
         this.authorized = true;
         resolve();
       });
-      this.client?.once("auth-failed", reject);
+      this.client?.once("auth-failed", () => {
+        this.Log(`The server rejected our token :(`);
+        reject();
+      });
     });
   }
 
   subscribe<T extends Array<any> = any[]>(event: string, callback: (...data: T) => void) {
+    this.Log(`Subscribing to event ${event}`);
     this.client?.on(event, (...data: T) => callback(...data));
   }
 
   emit(event: string, ...data: any[]) {
+    this.Log(`Emitting event ${event} to all other user clients`);
     this.client?.emit("user-dispatch", event, ...data);
   }
 
   async stop() {
+    this.Log(`Disconnecting websocket`);
     this.client?.disconnect();
   }
 }
