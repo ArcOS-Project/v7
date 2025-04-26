@@ -1,4 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
+import type { BugHuntUserSpaceProcess } from "$ts/bughunt/process";
 import { MessageBox } from "$ts/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
@@ -13,6 +14,7 @@ export class BugHuntCreatorRuntime extends AppProcess {
   body = Store<string>();
   loading = Store<boolean>();
   overrideOptions: BugHuntCreatorOptions | undefined;
+  bughunt: BugHuntUserSpaceProcess;
 
   constructor(
     handler: ProcessHandler,
@@ -35,6 +37,7 @@ export class BugHuntCreatorRuntime extends AppProcess {
     }
 
     if (options) this.overrideOptions = options;
+    this.bughunt = this.userDaemon?.serviceHost?.getService<BugHuntUserSpaceProcess>("BugHuntUsp")!;
   }
 
   async Send() {
@@ -46,7 +49,7 @@ export class BugHuntCreatorRuntime extends AppProcess {
 
     this.loading.set(true);
 
-    await this.parent?.bughunt.sendBugReport({
+    await this.bughunt.sendBugReport({
       title,
       body,
       anonymous: options.sendAnonymously,
