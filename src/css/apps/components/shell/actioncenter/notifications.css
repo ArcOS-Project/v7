@@ -73,7 +73,7 @@ div.shell div.actioncenter div.notification.collapsed p {
 
 div.shell div.actioncenter div.notification > div.content {
   flex-grow: 1;
-  max-width: calc(100% - 58px);
+  max-width: calc(100% - 42px) !important;
 }
 
 div.shell div.actioncenter div.notification h1.header {
