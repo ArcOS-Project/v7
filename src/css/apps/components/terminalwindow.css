@@ -15,14 +15,6 @@
   background-color: #000;
 }
 
-.theme-light #TerminalWindow:not(.focused) {
-  background-color: #fff;
-}
-
-.theme-light #TerminalWindow {
-  background-color: #fffd;
-}
-
 #TerminalWindow > div.body * {
   font-family: "Fira Code";
 }

@@ -18,6 +18,8 @@ export class TerminalWindowRuntime extends AppProcess {
 
   async render() {
     const body = this.getBody();
+    this.getWindow().classList.add("theme-dark");
+
     const term = new Terminal({
       allowProposedApi: true,
       allowTransparency: true,
