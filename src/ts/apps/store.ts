@@ -1,3 +1,4 @@
+import { AdminPortalApp } from "$apps/admin/adminportal/metadata";
 import { AcceleratorOverviewApp } from "$apps/components/acceleratoroverview/metadata";
 import { AppInfoApp } from "$apps/components/appinfo/metadata";
 import { ExitApp } from "$apps/components/exit/metadata";
@@ -88,7 +89,7 @@ export const BuiltinApps: AppStorage = [
   BugReportsCreatorApp,
 ];
 
-export const AdminApps: AppStorage = [];
+export const AdminApps: AppStorage = [AdminPortalApp];
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];
 
