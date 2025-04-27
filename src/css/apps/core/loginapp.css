@@ -1,5 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap");
 
+div.window#loginApp > div.body {
+  padding: 0;
+}
+
 div.window#loginApp > div.body div.container {
   background: linear-gradient(to bottom, #0006 0%, #0006 100%), var(--bgurl);
   background-position: center;

@@ -26,10 +26,11 @@ export class LoginAppRuntime extends AppProcess {
   public loginBackground = Store<string>(this.DEFAULT_WALLPAPER());
   public hideProfileImage = Store<boolean>(false);
   public serverInfo: ServerInfo | undefined;
+  public unexpectedInvocation = false;
   public safeMode = false;
   private type = "";
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, props: LoginAppProps) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, props?: LoginAppProps) {
     super(handler, pid, parentPid, app);
 
     const server = this.kernel.getModule<ServerManager>("server");
@@ -40,12 +41,33 @@ export class LoginAppRuntime extends AppProcess {
         : Wallpapers.img15.url
     );
 
+    console.log(this.kernel.state?.currentState);
+
+    this.unexpectedInvocation = this.kernel.state?.currentState !== "boot";
     this.serverInfo = server.serverInfo;
-    this.safeMode = !!(props.safeMode || this.env.get("safemode"));
+    this.safeMode = !!(props?.safeMode || this.env.get("safemode"));
     if (this.safeMode) this.env.set("safemode", true);
     this.loginBackground.set(this.DEFAULT_WALLPAPER());
 
-    if (props.type) {
+    if (this.unexpectedInvocation) {
+      this.app.data.core = false;
+      this.app.data.position = { centered: true };
+      this.app.data.minSize = { w: 700, h: 500 };
+      this.app.data.maxSize = { w: NaN, h: NaN };
+      this.app.data.size = { w: 700, h: 500 };
+      this.app.data.state = {
+        maximized: false,
+        minimized: false,
+        resizable: true,
+        headless: false,
+        fullscreen: false,
+      };
+      this.app.data.controls = {
+        maximize: true,
+        minimize: true,
+        close: true,
+      };
+    } else if (props?.type) {
       this.hideProfileImage.set(true);
 
       if (!props.userDaemon) throw new Error(`Irregular login type without a user daemon`);
@@ -69,7 +91,9 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async render() {
-    if (!this.type) await this.loadToken();
+    this.getWindow().classList.add("theme-dark");
+
+    if (!this.type && !this.unexpectedInvocation) await this.loadToken();
 
     if (this.serverInfo?.loginNotice) {
       this.errorMessage.set(this.serverInfo.loginNotice);
