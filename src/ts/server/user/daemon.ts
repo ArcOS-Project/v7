@@ -134,6 +134,7 @@ export class UserDaemon extends Process {
       const data = response.status === 200 ? (response.data as UserInfo) : undefined;
 
       if (!data) return undefined;
+      if (!data.preferences.globalSettings.shellExec) data.preferences.globalSettings.shellExec = "arcShell";
 
       this.preferences.set(data.preferences);
 
@@ -294,7 +295,7 @@ export class UserDaemon extends Process {
     if (!preferences.startup)
       preferences.startup = {
         wallpaper: "app",
-        arcShell: "app",
+        shellHost: "app",
       };
 
     const result = applyDefaults<UserPreferences>(preferences, {
