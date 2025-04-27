@@ -1,3 +1,4 @@
+import "$css/apps/admin/adminportal.css";
 import { ElevationIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import AdminPortal from "./AdminPortal.svelte";
