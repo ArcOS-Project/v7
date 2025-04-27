@@ -1,0 +1,60 @@
+#AdminPortal div.container.dashboard div.statistics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(2, auto);
+  gap: 10px;
+  padding: 10px;
+}
+
+#AdminPortal div.container.dashboard div.statistic {
+  height: 100px;
+  background-color: var(--button-glass-bg);
+  padding: 10px;
+  border-radius: 10px;
+}
+
+#AdminPortal div.container.dashboard div.statistic p.name {
+  text-transform: uppercase;
+  opacity: 0.5;
+  font-size: 12px;
+}
+
+#AdminPortal div.container.dashboard div.statistic p.big-value {
+  font-size: 36px;
+}
+
+#AdminPortal div.container.dashboard div.statistic p.size {
+  font-size: 12px;
+  opacity: 0.5;
+  text-align: right;
+}
+
+#AdminPortal div.container.dashboard div.logs {
+  padding: 10px;
+  border-top: var(--win-border);
+}
+#AdminPortal div.container.dashboard div.logs h1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#AdminPortal div.container.dashboard div.logs code {
+  white-space: pre-wrap;
+  font-size: 12px;
+}
+
+#AdminPortal div.container.dashboard div.logs button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+}
+
+#AdminPortal div.container.dashboard div.logs button span {
+  color: inherit;
+}
+
+#AdminPortal div.container.dashboard div.logs button span.lucide {
+  font-size: 16px;
+}

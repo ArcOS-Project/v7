@@ -1,0 +1,44 @@
+@import url("./adminportal/page/dashboard.css");
+@import url("./adminportal/sidebar.css");
+
+#AdminPortal > div.body {
+  padding: 0;
+  display: flex;
+}
+#AdminPortal > div.body > div.container {
+  width: calc(100% - 200px);
+  height: 100%;
+  background-color: var(--win-bg);
+}
+
+#AdminPortal > div.body > div.container > div.titlebar {
+  border-bottom: var(--win-border);
+}
+
+#AdminPortal > div.body > div.container div.page-content {
+  height: calc(100% - 40px - 31px);
+  overflow: hidden;
+}
+
+#AdminPortal > div.body div.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 31px;
+  border-top: var(--win-border);
+  padding: 0 7px;
+}
+
+#AdminPortal > div.body div.status-bar div.crumbs {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#AdminPortal > div.body div.status-bar div.crumbs span.lucide {
+  opacity: 0.5;
+}
+
+#AdminPortal > div.body div.status-bar div.crumbs p:last-child {
+  font-weight: bold;
+}
