@@ -18,11 +18,15 @@ import { ShareCreateGuiApp } from "$apps/components/sharecreategui/metadata";
 import { ShareListGuiApp } from "$apps/components/sharelistgui/metadata";
 import { ShareMgmtGuiApp } from "$apps/components/sharemgmtgui/metadata";
 import { ArcShellApp } from "$apps/components/shell/metadata";
+import { ShellHostApp } from "$apps/components/shellhost/metadata";
 import { ShortcutPropertiesApp } from "$apps/components/shortcutproperties/metadata";
 import { TerminalWindowApp } from "$apps/components/terminalwindow/metadata";
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/metadata";
 import { TotpSetupGuiApp } from "$apps/components/totpsetupgui/metadata";
 import { WallpaperApp } from "$apps/components/wallpaper/metadata";
+import { BootScreen } from "$apps/core/bootscreen/metadata";
+import { InitialSetupWizard } from "$apps/core/initialsetup/metadata";
+import { LoginApp } from "$apps/core/loginapp/metadata";
 import { ArcTermApp } from "$apps/user/arcterm/metadata";
 import { BugHuntApp } from "$apps/user/bughunt/metadata";
 import { BugReportsCreatorApp } from "$apps/user/bughuntcreator/metadata";
@@ -87,6 +91,10 @@ export const BuiltinApps: AppStorage = [
   ExitApp,
   QlorbApp,
   BugReportsCreatorApp,
+  ShellHostApp,
+  BootScreen,
+  LoginApp,
+  InitialSetupWizard,
 ];
 
 export const AdminApps: AppStorage = [AdminPortalApp];
