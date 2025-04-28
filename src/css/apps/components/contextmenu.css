@@ -1,0 +1,174 @@
+@import url("./contextmenu/subitems.css");
+
+#contextMenu {
+  pointer-events: none !important;
+}
+
+#contextMenu div.context-menu,
+#contextMenu div.context-menu div.sub-items {
+  position: fixed;
+  min-width: 180px;
+  min-height: 42px;
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  color: var(--fg);
+  border: var(--border);
+  border-radius: var(--win-border-rad);
+  box-sizing: border-box;
+  padding: 5px;
+  transition: all 0.2s, top 0s, left 0s, pointer-events 0s;
+  display: flex;
+  flex-direction: column;
+  transform-origin: top center;
+  z-index: 100000000000000000000000000000000000000000000000000000000 !important;
+  pointer-events: none !important;
+  box-shadow: var(--secondary-box-shadow);
+}
+
+#contextMenu div.context-menu {
+  top: 0px;
+  left: 0px;
+  transform: scaleY(80%);
+  opacity: 0;
+  visibility: hidden;
+}
+
+#contextMenu div.context-menu * {
+  pointer-events: none !important;
+}
+
+#contextMenu div.context-menu.show * {
+  pointer-events: initial !important;
+}
+
+#contextMenu div.context-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: scaleY(100%);
+  pointer-events: initial !important;
+}
+
+#contextMenu div.context-menu:not(.show) div.sub-items {
+  display: none !important;
+}
+
+#contextMenu div.context-menu button.menu-item {
+  width: 100%;
+
+  text-align: left;
+  border: none;
+  background-color: transparent;
+  color: var(--fg);
+  border-radius: var(--button-border-rad);
+  padding: 0 5px;
+  line-height: 18px;
+  transform: unset;
+  position: relative;
+  z-index: 1;
+  height: 28px;
+}
+
+#contextMenu div.context-menu button.menu-item:disabled {
+  opacity: 0.5 !important;
+}
+
+#contextMenu div.context-menu button.menu-item > div.inner {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+#contextMenu div.context-menu.compact button.menu-item > div.inner::after {
+  font-size: 16px;
+  width: 26px;
+  height: 16px;
+}
+
+#contextMenu div.context-menu button.menu-item:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#contextMenu div.context-menu.colored button.menu-item:hover {
+  background-color: var(--accent-light-transparent);
+  /* box-shadow: 0 1px 2px 1px #0000001c; */
+}
+
+#contextMenu div.context-menu button.menu-item.subitems {
+  opacity: 1;
+  scale: 1;
+  z-index: 1000;
+}
+
+#contextMenu div.context-menu.colored button.menu-item:not(.subitems):active {
+  background-color: var(--accent-dark);
+  color: var(--accent-light);
+  box-shadow: none;
+}
+
+#contextMenu div.context-menu hr {
+  margin: 5px 0;
+  border: var(--button-glass-bg) 1px solid;
+  border-top: none;
+}
+
+#contextMenu div.context-menu.compact {
+  padding: 3px;
+  min-height: 32px;
+}
+
+#contextMenu div.context-menu.compact button.menu-item {
+  padding: 4px 6px;
+  font-size: 9pt;
+  height: 24px;
+  line-height: 16px;
+  gap: 5px;
+}
+
+#contextMenu div.context-menu button.menu-item .icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
+#contextMenu div.context-menu.compact button.menu-item .icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+#contextMenu div.context-menu span.has-subitems,
+#contextMenu div.context-menu span.is-active {
+  opacity: 0;
+  margin-left: auto;
+  font-size: 16px;
+  width: 16px;
+}
+
+#contextMenu div.context-menu span.has-subitems {
+  opacity: 0.5;
+}
+
+#contextMenu div.context-menu span.is-active.show {
+  opacity: 0.5;
+}
+
+#contextMenu div.context-menu span.is-active + span.has-subitems {
+  margin-left: -5px;
+}
+
+#contextMenu div.context-menu button.menu-item span.accelerator {
+  margin-left: 30px;
+  margin-right: 5px;
+  flex-grow: 1;
+  text-align: right;
+  font-size: 11px;
+  opacity: 0.5;
+}
+
+#contextMenu div.context-menu button.menu-item.accelerator div.inner::after {
+  display: none !important;
+}
+
+#contextMenu div.context-menu.compact hr {
+  margin: 3px 5px;
+}
