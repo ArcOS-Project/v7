@@ -12,7 +12,7 @@
   background-color: var(--glass-bg);
   backdrop-filter: blur(10px);
   color: var(--fg);
-  border: var(--border);
+  border: var(--accent-light-transparent) 1px solid;
   border-radius: var(--win-border-rad);
   box-sizing: border-box;
   padding: 5px;
