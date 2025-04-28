@@ -1,3 +1,4 @@
+import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
 import { ShellRuntime } from "$apps/components/shell/runtime";
 import { WaveKernel } from "$ts/kernel";
 import { Environment } from "$ts/kernel/env";
@@ -8,16 +9,18 @@ export function contextProps(node: HTMLElement, args: any[]) {
   const kernel = WaveKernel.get();
   const env = kernel.getModule<Environment>("env", true);
   const stack = kernel.getModule<ProcessHandler>("stack", true);
-  const shellPid = env?.get("shell_pid");
+  const contextMenuPid = env?.get("contextmenu_pid");
 
-  if (!shellPid) return;
+  if (!contextMenuPid) return;
 
-  const shell = stack?.getProcess<ShellRuntime>(+shellPid);
+  const contextmenu = stack?.getProcess<ContextMenuRuntime>(+contextMenuPid);
 
-  if (!shell) return;
+  if (!contextmenu) return;
 
   const uuid = UUID();
 
-  shell.contextProps[uuid] = args;
+  console.log(contextmenu, contextmenu.contextProps, node);
+
+  contextmenu.contextProps[uuid] = args;
   node.setAttribute(`data-contextprops`, uuid);
 }
