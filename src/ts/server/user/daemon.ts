@@ -55,6 +55,7 @@ import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
 import { GlobalDispatch } from "../ws";
+import { RestartIcon } from "$ts/images/power";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -831,9 +832,7 @@ export class UserDaemon extends Process {
     this.Log(`SPAWNING APP ${id}`);
 
     if (app.thirdParty || app.entrypoint) {
-      await this.spawnThirdParty(app, (app as InstalledApp).tpaPath!, ...args);
-
-      return;
+      return await this.spawnThirdParty<T>(app, (app as InstalledApp).tpaPath!, ...args);
     }
 
     if (app.elevated) {
@@ -928,7 +927,7 @@ export class UserDaemon extends Process {
     );
   }
 
-  async spawnThirdParty(app: App, metaPath: string, ...args: any[]) {
+  async spawnThirdParty<T>(app: App, metaPath: string, ...args: any[]): Promise<T | undefined> {
     if (this._disposed) return;
 
     if (this.safeMode) {
@@ -998,9 +997,9 @@ export class UserDaemon extends Process {
 
       if (!code.default || !(code.default instanceof Function)) throw new Error("Expected a default function");
 
-      await code.default(props);
-
       stop();
+
+      return await code.default(props);
     } catch (e) {
       this.handler.renderer?.notifyCrash(app as any, e as Error, app.process!);
       this.Log(`Execution error in third-party application "${app.id}": ${(e as any).stack}`);
@@ -2355,6 +2354,56 @@ The information provided in this report is subject for review by me or another A
 
     service?.subscribe("fs-flush-file", (path) => {
       this.systemDispatch.dispatch("fs-flush-file", path);
+    });
+  }
+
+  async changeShell(id: string) {
+    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const newShell = await appStore?.getAppById(id);
+
+    if (!newShell) return false;
+
+    const proceed = await this.Confirm(
+      "Change your shell",
+      `${newShell.metadata.name} by ${newShell.metadata.author} wants to act as your ArcOS shell. Do you allow this?`,
+      "Deny",
+      "Allow"
+    );
+
+    if (!proceed) return false;
+
+    this.preferences.update((v) => {
+      v.globalSettings.shellExec = id;
+      return v;
+    });
+
+    const restartNow = await this.Confirm(
+      "Restart now?",
+      "ArcOS has to restart before the changes will apply. Do you want to restart now?",
+      "Not now",
+      "Restart",
+      RestartIcon
+    );
+
+    if (restartNow) await this.restart();
+  }
+
+  async Confirm(title: string, message: string, no: string, yes: string, image = QuestionIcon) {
+    const shellPid = +this.env.get("shell_pid");
+    return new Promise((r) => {
+      MessageBox(
+        {
+          title,
+          message,
+          image,
+          buttons: [
+            { caption: no, action: () => r(false) },
+            { caption: yes, action: () => r(true), suggested: true },
+          ],
+        },
+        shellPid,
+        !!shellPid
+      );
     });
   }
 }
