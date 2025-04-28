@@ -11,13 +11,13 @@ import { Sleep } from "$ts/sleep";
 import { TrayIconProcess } from "$ts/ui/tray/process";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
-import type { AppContextMenu, AppProcessData, ContextMenuInstance, ContextMenuItem } from "$types/app";
+import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { PathedFileEntry, RecursiveDirectoryReadReturn } from "$types/fs";
 import type { SearchItem } from "$types/search";
 import type { UserPreferences, Workspace } from "$types/user";
 import Fuse, { type FuseResult } from "fuse.js";
 import { fetchWeatherApi } from "openmeteo";
-import { ShellContextMenu, WindowSystemContextMenu } from "./context";
+import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
 import type { TrayIconDiscriminator, TrayIconOptions, WeatherInformation } from "./types";
 
@@ -25,9 +25,7 @@ export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
   public actionCenterOpened = Store<boolean>(false);
   public workspaceManagerOpened = Store<boolean>(false);
-  public contextData = Store<ContextMenuInstance | null>();
   public stackBusy = Store<boolean>(false);
-  public CLICKLOCKED = false;
   public searchQuery = Store<string>();
   public searchResults = Store<FuseResult<SearchItem>[]>([]);
   public searching = Store<boolean>(false);
@@ -35,11 +33,10 @@ export class ShellRuntime extends AppProcess {
   public FullscreenCount = Store<Record<string, number>>({});
   public trayIcons = Store<Record<TrayIconDiscriminator, TrayIconProcess>>({});
   public openedTrayPopup = Store<string>();
+  public ready = Store<boolean>(false);
 
   private fileSystemIndex: PathedFileEntry[] = [];
-  private readonly validContexMenuTags = ["button", "div", "span", "p", "h1", "h2", "h3", "h4", "h5", "img"];
   override contextMenu: AppContextMenu = ShellContextMenu(this);
-  public contextProps: Record<string, any[]> = {};
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
@@ -89,11 +86,14 @@ export class ShellRuntime extends AppProcess {
       this.searchResults.set(result);
       this.searching.set(false);
     });
+
+    this.dispatch.subscribe("ready", () => {
+      this.ready.set(true);
+    });
   }
 
   async render() {
     if (await this.closeIfSecondInstance()) return;
-    this.assignContextMenuHooks();
 
     document.body.addEventListener("click", (e) => {
       const startMenu = document.querySelector("#arcShell div.startmenu");
@@ -126,41 +126,6 @@ export class ShellRuntime extends AppProcess {
       )
         this.workspaceManagerOpened.set(false);
     });
-
-    this.acceleratorStore.push(
-      {
-        ctrl: true,
-        key: "q",
-        global: true,
-        action: () => {
-          this.closeFocused();
-        },
-      },
-      {
-        alt: true,
-        key: "[",
-        global: true,
-        action: () => {
-          this.userDaemon?.previousDesktop();
-        },
-      },
-      {
-        alt: true,
-        key: "]",
-        global: true,
-        action: () => {
-          this.userDaemon?.nextDesktop();
-        },
-      },
-      {
-        ctrl: true,
-        key: "/",
-        action: () => {
-          this.spawnOverlayApp("AcceleratorOverview", this.pid);
-        },
-        global: true,
-      }
-    );
 
     this.dispatch.subscribe("open-action-center", () => this.actionCenterOpened.set(true));
     this.dispatch.subscribe("open-start-menu", () => this.startMenuOpened.set(true));
@@ -214,30 +179,6 @@ export class ShellRuntime extends AppProcess {
     }
   }
 
-  async closeFocused() {
-    this.Log("Attempting to close focused window");
-
-    const focusedPid = this.handler.renderer?.focusedPid();
-    if (!focusedPid) return;
-
-    const focusedProc = this.handler.getProcess(focusedPid);
-
-    if (!focusedProc || !(focusedProc instanceof AppProcess)) return;
-
-    await focusedProc?.closeWindow();
-
-    const appProcesses = (this.handler.renderer?.currentState || [])
-      .map((pid) => this.handler.getProcess(pid))
-      .filter((proc) => proc && !proc._disposed && proc instanceof AppProcess && !proc.app.data.core && !proc.app.data.overlay)
-      .filter((proc) => !!proc);
-
-    const targetProcess = appProcesses[appProcesses.length - 1];
-
-    if (!targetProcess) return;
-
-    this.handler.renderer?.focusPid(targetProcess.pid);
-  }
-
   async pinApp(appId: string) {
     this.Log(`Pinning ${appId}`);
 
@@ -264,122 +205,6 @@ export class ShellRuntime extends AppProcess {
 
       return v;
     });
-  }
-
-  async createContextMenu(data: ContextMenuInstance) {
-    this.Log(`Spawning context menu with ${data.items.length} items at ${data.x}, ${data.y}`);
-
-    this.CLICKLOCKED = true;
-    this.contextData.set(data);
-    await Sleep(10);
-    this.CLICKLOCKED = false;
-  }
-
-  closeContextMenu() {
-    this.contextData.set(null);
-  }
-
-  assignContextMenuHooks() {
-    this.Log("Assigning context menu hooks");
-
-    document.addEventListener("click", (e) => {
-      if (this.CLICKLOCKED) return;
-
-      const el = document.querySelector("#arcShell div.shell > .context-menu");
-
-      if (!el || e.button !== 0 || e.composedPath().includes(el)) return;
-
-      this.contextData.set(null);
-    });
-
-    document.addEventListener("contextmenu", (e) => {
-      e.preventDefault();
-      this.handleContext(e);
-    });
-  }
-
-  async handleContext(e: MouseEvent) {
-    const window = this.getWindowByEventTarget(e.composedPath());
-    const scope = this.getContextMenuScope(e);
-
-    if (!window || !scope) return this.closeContextMenu();
-
-    const pid = window.dataset.pid;
-
-    if (!pid) return this.closeContextMenu();
-
-    const contextmenu = scope.dataset.contextmenu || "";
-    const contextProps = scope.dataset.contextprops || "";
-
-    const items = this.getContextEntry(+pid, contextmenu);
-    const proc = this.handler.getProcess(+pid);
-
-    this.createContextMenu({
-      x: e.clientX,
-      y: e.clientY,
-      items,
-      process: proc && proc instanceof AppProcess ? proc : undefined,
-      props: this.contextProps[contextProps] || [],
-    });
-  }
-
-  getWindowByEventTarget(target: EventTarget[]): HTMLDivElement | null {
-    for (const element of target as HTMLDivElement[]) {
-      const classList = element.classList;
-
-      if (!classList) continue;
-
-      if (classList.contains("window")) return element;
-    }
-
-    return null;
-  }
-
-  composePosition(x: number, y: number, mW: number, mH: number): [number, number] {
-    const dW = window.innerWidth;
-    const dH = window.innerHeight;
-
-    let newX = x;
-    let newY = y;
-
-    if (newX + mW > dW) newX = dW - mW - 10;
-    if (newY + mH > dH) newY = dH - mH - 10;
-    if (newX < 0) x = 10;
-    if (newY < 0) y = 10;
-
-    return [newX, newY];
-  }
-
-  getContextEntry(pid: number, scope: string): ContextMenuItem[] {
-    const proc = this.handler.getProcess(pid);
-
-    if (!(proc instanceof AppProcess)) return [];
-
-    const menu = Object.entries({ ...proc.contextMenu, ...WindowSystemContextMenu(this) });
-
-    for (const [key, items] of menu) {
-      if (scope.includes(key)) return items;
-    }
-
-    return [];
-  }
-
-  getContextMenuScope(e: MouseEvent) {
-    const path = e.composedPath() as HTMLDivElement[];
-
-    for (const element of path) {
-      const tag = element.tagName;
-
-      if (!tag) continue;
-
-      const contextmenu = element.dataset.contextmenu;
-
-      if (this.validContexMenuTags.includes(tag.toLowerCase()) && contextmenu) {
-        return element;
-      }
-    }
-
-    return null;
   }
 
   async deleteWorkspace(workspace: Workspace) {
