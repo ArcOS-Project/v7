@@ -2,6 +2,7 @@ import { AppProcess } from "$ts/apps/process";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { UserDaemon } from "$ts/server/user/daemon";
+import { Sleep } from "$ts/sleep";
 import type { AppProcessData } from "$types/app";
 import type { UserPreferencesStore } from "$types/user";
 
@@ -29,7 +30,11 @@ export class ShellHostRuntime extends Process {
       await this.userDaemon?._spawnApp(id, undefined, this.pid);
     }
 
-    this.env.set("shell_pid", proc?.pid);
+    await new Promise<void>(async (r) => {
+      while (!this.env.get("shell_pid")) await Sleep(1);
+      r();
+    });
+
     proc?.dispatch?.dispatch("ready");
   }
 }

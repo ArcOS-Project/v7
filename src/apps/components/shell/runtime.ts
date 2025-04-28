@@ -90,6 +90,8 @@ export class ShellRuntime extends AppProcess {
     this.dispatch.subscribe("ready", () => {
       this.ready.set(true);
     });
+
+    this.env.set("shell_pid", this.pid);
   }
 
   async render() {
