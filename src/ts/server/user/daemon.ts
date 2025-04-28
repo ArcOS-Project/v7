@@ -2138,8 +2138,6 @@ export class UserDaemon extends Process {
     const admin = this.serviceHost!.getService<AdminBootstrapper>("AdminBootstrapper");
     const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
 
-    console.log(admin, appStore);
-
     appStore?.loadOrigin("admin", () => AdminApps);
     appStore?.refresh();
     admin?._activate(this.token);

@@ -19,8 +19,6 @@ export function contextProps(node: HTMLElement, args: any[]) {
 
   const uuid = UUID();
 
-  console.log(contextmenu, contextmenu.contextProps, node);
-
   contextmenu.contextProps[uuid] = args;
   node.setAttribute(`data-contextprops`, uuid);
 }

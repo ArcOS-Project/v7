@@ -30,7 +30,6 @@ export class ContextMenuRuntime extends AppProcess {
 
     this.CLICKLOCKED = true;
     this.contextData.set(data);
-    console.log(data);
     await Sleep(10);
     this.CLICKLOCKED = false;
   }
