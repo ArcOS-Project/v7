@@ -44,7 +44,6 @@ export class ShellRuntime extends AppProcess {
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
 
-    this.env.set("shell_pid", this.pid);
     this.systemDispatch.subscribe("stack-busy", () => this.stackBusy.set(true));
     this.systemDispatch.subscribe("stack-not-busy", () => this.stackBusy.set(false));
 

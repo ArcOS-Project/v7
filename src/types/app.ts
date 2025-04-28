@@ -38,6 +38,14 @@ export interface App {
   noSafeMode?: boolean;
 }
 
+export type RegisteredProcess = {
+  metadata: AppMetadata;
+  id: string;
+  assets: {
+    runtime: typeof Process;
+  };
+};
+
 export interface InstalledApp extends App {
   metadata: AppMetadata;
   tpaPath: string;

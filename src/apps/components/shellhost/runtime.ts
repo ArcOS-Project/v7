@@ -1,3 +1,4 @@
+import { AppProcess } from "$ts/apps/process";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { UserDaemon } from "$ts/server/user/daemon";
@@ -16,6 +17,11 @@ export class ShellHostRuntime extends Process {
   }
 
   async start() {
-    this.userDaemon?._spawnApp(this.userPreferences().globalSettings.shellExec, undefined, this.pid);
+    const proc = await this.userDaemon?._spawnApp<AppProcess>(
+      this.userPreferences().globalSettings.shellExec,
+      undefined,
+      this.pid
+    );
+    this.env.set("shell_pid", proc?.pid);
   }
 }
