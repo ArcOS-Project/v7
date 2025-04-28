@@ -9,7 +9,7 @@ import type { FileEntry } from "$types/fs";
 import type { WallpaperRuntime } from "./runtime";
 
 export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu {
-  const shellPid = +runtime.env.get("shell_pid");
+  const shellPid = () => +runtime.env.get("shell_pid");
   return {
     "file-icon": [
       {
@@ -30,7 +30,7 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
         caption: "Rename...",
         icon: "file-pen",
         action: (_, path) => {
-          runtime.spawnOverlayApp("FsRenameItem", shellPid, path);
+          runtime.spawnOverlayApp("FsRenameItem", shellPid(), path);
         },
       },
       {
@@ -66,14 +66,14 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
         caption: "Edit Shortcut...",
         icon: "pencil",
         action: (_, path, shortcut) => {
-          runtime.spawnOverlayApp("ShortcutProperties", shellPid, path, shortcut);
+          runtime.spawnOverlayApp("ShortcutProperties", shellPid(), path, shortcut);
         },
       },
       {
         caption: "Rename...",
         icon: "file-pen",
         action: (_, path) => {
-          runtime.spawnOverlayApp("FsRenameItem", shellPid, path);
+          runtime.spawnOverlayApp("FsRenameItem", shellPid(), path);
         },
       },
       {
@@ -87,7 +87,7 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
       {
         caption: "Properties...",
         icon: "wrench",
-        action: (file: FileEntry, path: string) => runtime.spawnOverlayApp("ItemInfo", shellPid, path, file),
+        action: (file: FileEntry, path: string) => runtime.spawnOverlayApp("ItemInfo", shellPid(), path, file),
       },
     ],
     "folder-icon": [
@@ -95,14 +95,14 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
         caption: "Go here",
         icon: "folder-open",
         action: (_, path) => {
-          runtime.spawnApp("fileManager", shellPid, path);
+          runtime.spawnApp("fileManager", shellPid(), path);
         },
       },
       {
         caption: "Open in new window",
         icon: "external-link",
         action: (_, path) => {
-          runtime.spawnApp(runtime.app.id, shellPid, path);
+          runtime.spawnApp(runtime.app.id, shellPid(), path);
         },
       },
       { sep: true },
@@ -110,7 +110,7 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
         caption: "Rename...",
         icon: "folder-pen",
         action: (_, path) => {
-          runtime.spawnOverlayApp("FsRenameItem", shellPid, path);
+          runtime.spawnOverlayApp("FsRenameItem", shellPid(), path);
         },
       },
       {
@@ -124,7 +124,7 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
       {
         caption: "Properties...",
         icon: "wrench",
-        action: (dir, path) => runtime.spawnOverlayApp("ItemInfo", shellPid, path, dir),
+        action: (dir, path) => runtime.spawnOverlayApp("ItemInfo", shellPid(), path, dir),
       },
     ],
     desktop: [
@@ -193,7 +193,7 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
                     },
                   ],
                 },
-                shellPid,
+                shellPid(),
                 true
               );
             },
@@ -205,21 +205,21 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
         caption: "File manager",
         image: FileManagerIcon,
         action: () => {
-          runtime.spawnApp("fileManager", shellPid, "U:/");
+          runtime.spawnApp("fileManager", shellPid(), "U:/");
         },
       },
       {
         caption: "Processes",
         image: ProcessManagerIcon,
         action: () => {
-          runtime.spawnApp("processManager", shellPid, "U:/");
+          runtime.spawnApp("processManager", shellPid(), "U:/");
         },
       },
       {
         caption: "Settings",
         image: SettingsIcon,
         action: () => {
-          runtime.spawnApp("systemSettings", shellPid, "U:/");
+          runtime.spawnApp("systemSettings", shellPid(), "U:/");
         },
       },
       { sep: true },
@@ -247,14 +247,14 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
             caption: "New folder...",
             icon: "folder-plus",
             action: () => {
-              runtime.spawnOverlayApp("FsNewFolder", shellPid, "U:/Desktop");
+              runtime.spawnOverlayApp("FsNewFolder", shellPid(), "U:/Desktop");
             },
           },
           {
             caption: "New file...",
             icon: "file-plus",
             action: () => {
-              runtime.spawnOverlayApp("FsNewFile", shellPid, "U:/Desktop");
+              runtime.spawnOverlayApp("FsNewFile", shellPid(), "U:/Desktop");
             },
           },
           {
@@ -276,14 +276,14 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
 
           if (!dir) return;
 
-          runtime.spawnOverlayApp("ItemInfo", shellPid, "U:/Desktop", dir);
+          runtime.spawnOverlayApp("ItemInfo", shellPid(), "U:/Desktop", dir);
         },
       },
       {
         caption: "Personalize...",
         image: PersonalizationIcon,
         action: async () => {
-          await runtime.spawnApp<SettingsRuntime>("systemSettings", shellPid, "visuals");
+          await runtime.spawnApp<SettingsRuntime>("systemSettings", shellPid(), "visuals");
         },
       },
     ],
