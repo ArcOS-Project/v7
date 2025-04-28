@@ -3,7 +3,6 @@
   import { onMount } from "svelte";
   import type { ShellRuntime } from "./runtime";
   import ActionCenter from "./Shell/ActionCenter.svelte";
-  import ContextMenuRenderer from "./Shell/ContextMenuRenderer.svelte";
   import PushNotification from "./Shell/PushNotification.svelte";
   import StartMenu from "./Shell/StartMenu.svelte";
   import Taskbar from "./Shell/Taskbar.svelte";
@@ -11,7 +10,7 @@
   import VirtualDesktops from "./Shell/VirtualDesktops.svelte";
 
   const { process }: AppComponentProps<ShellRuntime> = $props();
-  const { userPreferences, startMenuOpened, actionCenterOpened, username, FullscreenCount } = process;
+  const { userPreferences, startMenuOpened, actionCenterOpened, username, FullscreenCount, ready } = process;
 
   let currentDesktop = $state<string>();
 
@@ -26,21 +25,22 @@
   });
 </script>
 
-<div
-  class="shell taskbar-bounds fullscreen"
-  class:docked={$userPreferences.shell.taskbar.docked}
-  class:has-fullscreen={currentDesktop && $FullscreenCount[currentDesktop] > 0}
->
-  <div class="primary">
-    <VirtualDesktops {process} />
-    <VirtualDesktopIndicator {process} />
-    <StartMenu {userPreferences} {startMenuOpened} {process} {username} />
-    <div></div>
-    <ActionCenter {actionCenterOpened} {userPreferences} {process} />
-    <PushNotification {process} />
+{#if $ready}
+  <div
+    class="shell taskbar-bounds fullscreen"
+    class:docked={$userPreferences.shell.taskbar.docked}
+    class:has-fullscreen={currentDesktop && $FullscreenCount[currentDesktop] > 0}
+  >
+    <div class="primary">
+      <VirtualDesktops {process} />
+      <VirtualDesktopIndicator {process} />
+      <StartMenu {userPreferences} {startMenuOpened} {process} {username} />
+      <div></div>
+      <ActionCenter {actionCenterOpened} {userPreferences} {process} />
+      <PushNotification {process} />
+    </div>
+    <div class="secondary">
+      <Taskbar {process} />
+    </div>
   </div>
-  <div class="secondary">
-    <Taskbar {process} />
-  </div>
-  <ContextMenuRenderer {process} />
-</div>
+{/if}
