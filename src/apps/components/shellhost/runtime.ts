@@ -6,6 +6,8 @@ import type { AppProcessData } from "$types/app";
 import type { UserPreferencesStore } from "$types/user";
 
 export class ShellHostRuntime extends Process {
+  public _criticalProcess: boolean = true;
+  readonly shellComponents: string[] = ["contextMenu", "SystemShortcutsProc"];
   userDaemon: UserDaemon | undefined;
   userPreferences: UserPreferencesStore;
 
@@ -22,6 +24,12 @@ export class ShellHostRuntime extends Process {
       undefined,
       this.pid
     );
+
+    for (const id of this.shellComponents) {
+      await this.userDaemon?._spawnApp(id, undefined, this.pid);
+    }
+
     this.env.set("shell_pid", proc?.pid);
+    proc?.dispatch?.dispatch("ready");
   }
 }
