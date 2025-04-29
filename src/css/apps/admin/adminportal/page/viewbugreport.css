@@ -1,0 +1,254 @@
+#AdminPortal div.viewBugReport > div.page-content div.panels {
+  display: flex;
+  height: calc(100% - 41px);
+}
+
+#AdminPortal div.viewBugReport > div.page-content div.panels > div.leftpanel {
+  width: 65%;
+}
+
+#AdminPortal div.viewBugReport > div.page-content div.panels > div.rightpanel {
+  border-left: var(--win-border);
+  width: 35%;
+}
+
+#AdminPortal div.viewBugReport div.header {
+  display: flex;
+  height: 41px;
+  border-bottom: var(--win-border);
+  padding-left: 10px;
+}
+
+#AdminPortal div.viewBugReport div.header * {
+  min-width: fit-content;
+}
+
+#AdminPortal div.viewBugReport div.header div.title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+#AdminPortal div.viewBugReport div.header div.title > span:not(.id) {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+#AdminPortal div.viewBugReport div.header div.title img {
+  height: 20px;
+}
+
+#AdminPortal div.viewBugReport div.header div.shortcuts,
+#AdminPortal div.viewBugReport div.header div.actions {
+  display: flex;
+  align-items: center;
+}
+
+#AdminPortal div.viewBugReport div.header div.shortcuts button {
+  width: 41px;
+  height: 40px;
+  border-left: var(--win-border);
+  border-radius: 0;
+  background-color: var(--win-bg);
+  padding: 0;
+  font-size: 16px;
+}
+
+#AdminPortal div.viewBugReport div.header div.shortcuts button:disabled {
+  opacity: 1;
+  color: var(--button-glass-hover-bg);
+}
+
+#AdminPortal div.viewBugReport div.header div.shortcuts button:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#AdminPortal div.viewBugReport div.header div.shortcuts button:active {
+  background-color: var(--button-glass-active-bg);
+}
+
+#AdminPortal div.viewBugReport div.header div.actions button {
+  height: 40px;
+  border-radius: 0;
+  border-left: var(--win-border);
+  min-width: 80px;
+  background-color: var(--button-bg);
+}
+#AdminPortal div.viewBugReport div.header div.actions button:hover {
+  background-color: var(--button-hover-bg);
+}
+#AdminPortal div.viewBugReport div.header div.actions button:active {
+  background-color: var(--button-active-bg);
+}
+
+#AdminPortal div.viewBugReport div.header div.actions button.close {
+  background-color: var(--clr-orange-bg);
+  color: var(--clr-orange-fg);
+}
+#AdminPortal div.viewBugReport div.header div.actions button.close.closed {
+  background-color: var(--clr-green-bg);
+  color: var(--clr-green-fg);
+}
+
+#AdminPortal div.viewBugReport div.header div.actions button.delete {
+  background-color: var(--clr-red-bg);
+  color: var(--clr-red-fg);
+}
+
+#AdminPortal div.viewBugReport div.header div.actions button.close:hover,
+#AdminPortal div.viewBugReport div.header div.actions button.delete:hover {
+  filter: brightness(1.2);
+}
+
+/* #AdminPortal div.viewBugReport div.header  */
+
+#AdminPortal div.viewBugReport div.leftpanel {
+  display: flex;
+  flex-direction: column;
+}
+
+#AdminPortal div.viewBugReport div.leftpanel div.property {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: var(--win-border);
+  min-height: fit-content;
+}
+
+#AdminPortal div.viewBugReport div.leftpanel div.property p.key {
+  font-weight: bold;
+  width: 100px;
+  min-width: 100px;
+}
+
+#AdminPortal div.viewBugReport div.leftpanel div.property p.value {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#AdminPortal div.viewBugReport div.leftpanel div.property.client {
+  height: 64px;
+  min-height: 64px;
+  padding: 0 10px;
+  align-items: start;
+  overflow: hidden;
+}
+
+#AdminPortal div.viewBugReport div.leftpanel div.property.client p.key {
+  margin: 10px 0;
+  line-height: 21px;
+}
+
+#AdminPortal div.viewBugReport div.leftpanel div.property.client p.host {
+  margin: 10px 0;
+  line-height: 21px;
+}
+
+#AdminPortal div.viewBugReport div.leftpanel div.property.client div.value {
+  display: flex;
+  gap: 15px;
+}
+
+#AdminPortal div.viewBugReport div.leftpanel div.property.client div.flags {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  opacity: 1;
+  border-left: var(--win-border);
+  min-height: 63px;
+  padding: 10px 0;
+  padding-left: 15px;
+  gap: 0 20px;
+}
+
+#AdminPortal div.viewBugReport div.leftpanel div.property.client div.flags img {
+  height: 16px;
+}
+
+#AdminPortal div.viewBugReport div.leftpanel div.property.client div.flag {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 21px !important;
+}
+
+#AdminPortal div.viewBugReport div.leftpanel div.property.provided div.value {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+}
+
+#AdminPortal div.viewBugReport div.leftpanel div.property.provided div.value div.item {
+  opacity: 0.2;
+}
+
+#AdminPortal div.viewBugReport div.leftpanel div.property.provided div.value div.item.active {
+  color: var(--accent-lighter);
+  opacity: 1;
+}
+
+#AdminPortal div.viewBugReport div.leftpanel div.report-body {
+  flex-grow: 1;
+}
+
+#AdminPortal div.viewBugReport div.leftpanel div.report-body textarea {
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  font-family: "Source Code Pro";
+  font-size: 12px;
+  background-color: var(--win-bg);
+  border: none;
+  resize: none;
+}
+
+#AdminPortal div.viewBugReport div.rightpanel div.tabs {
+  height: 30px;
+  display: flex;
+  align-items: center;
+}
+
+#AdminPortal div.viewBugReport div.rightpanel div.tabs button {
+  height: 30px;
+  border-radius: 0;
+  border-right: var(--win-border);
+  background-color: var(--button-bg);
+  min-width: 80px;
+  font-size: 12px;
+}
+
+#AdminPortal div.viewBugReport div.rightpanel div.tabs button:hover {
+  background-color: var(--button-hover-bg);
+}
+#AdminPortal div.viewBugReport div.rightpanel div.tabs button:active {
+  background-color: var(--button-active-bg);
+}
+
+#AdminPortal div.viewBugReport div.rightpanel div.tabs button.selected {
+  background-color: var(--accent-transparent);
+}
+
+#AdminPortal div.viewBugReport div.rightpanel div.value {
+  height: calc(100% - 30px);
+  overflow-y: scroll;
+  border-top: var(--win-border);
+  white-space: pre-wrap;
+  font-family: "Source Code Pro";
+  padding: 10px;
+  font-size: 12px;
+}
+
+#AdminPortal div.viewBugReport div.rightpanel div.value.no-data {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--clr-red-fg);
+}
