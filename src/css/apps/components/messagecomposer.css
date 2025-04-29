@@ -23,6 +23,7 @@
   height: fit-content;
   border: none;
   border-radius: 0;
+  width: 100%;
 }
 #MessageComposer > div.body div.fields > div.field > div.value {
   flex-grow: 1;
@@ -66,6 +67,10 @@
   padding: 0;
   font-size: 16px;
   background-color: transparent;
+}
+
+#MessageComposer > div.body div.fields > div.field.to input {
+  width: initial;
 }
 
 #MessageComposer > div.body div.message-body {

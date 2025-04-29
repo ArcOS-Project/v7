@@ -3,19 +3,32 @@
   import type { ViewBugReportData } from "$apps/admin/adminportal/types";
   import { MessageBox } from "$ts/dialog";
   import { MemoryIcon } from "$ts/images/general";
+  import type { MessageCreateData } from "$types/messaging";
 
   const { data, process }: { data: ViewBugReportData; process: AdminPortalRuntime } = $props();
   const { report } = data;
 
-  function copy() {
+  function share() {
     MessageBox(
       {
-        title: "Copy Report...",
-        message: `Please be so kind to choose how to copy Bug Report ${report._id} to your clipboard. Click Cancel to leave the clipboard untouched.`,
+        title: "Share Report...",
+        message: `You're about to perform a potentially dangerous operation. Do not share this report with a non-admin! We don't want to leak sensitive data of our users. How do you want to share this report?`,
         buttons: [
           { caption: "Cancel", action: () => {} },
           {
-            caption: "Copy full report",
+            caption: "Send...",
+            action: () => {
+              const message: MessageCreateData = {
+                title: `Report ${report._id}`,
+                body: `Please refer to the report in the attachments.`,
+                attachments: [],
+                recipients: [],
+              };
+              process.spawnOverlayApp("MessageComposer", process.pid, message);
+            },
+          },
+          {
+            caption: "Copy JSON",
             action: () => {
               navigator.clipboard.writeText(JSON.stringify(report, null, 2));
             },
@@ -37,4 +50,4 @@
   }
 </script>
 
-<button class="lucide icon-share" aria-label="Copy..." title="Copy..." onclick={copy}></button>
+<button class="lucide icon-share-2" aria-label="Share..." title="Share..." onclick={share}></button>
