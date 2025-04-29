@@ -2,15 +2,18 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-template-rows: repeat(2, auto);
-  gap: 10px;
-  padding: 10px;
+  gap: 0;
+  padding: 0;
+  margin-bottom: -1px;
+  margin-left: -1px;
 }
 
 #AdminPortal div.container.dashboard div.statistic {
   height: 100px;
-  background-color: var(--button-glass-bg);
+  background-color: var(--button-bg);
+  border: var(--win-border);
+  margin: -0.5px;
   padding: 10px;
-  border-radius: 10px;
 }
 
 #AdminPortal div.container.dashboard div.statistic p.name {
