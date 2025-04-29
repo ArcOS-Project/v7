@@ -12,8 +12,8 @@ export const AdminPortalApp: App = {
     icon: ElevationIcon,
   },
   position: { centered: true },
-  size: { w: 770, h: 550 },
-  minSize: { w: 770, h: 550 },
+  size: { w: 900, h: 500 },
+  minSize: { w: 900, h: 500 },
   maxSize: { w: NaN, h: NaN },
   state: {
     maximized: false,
@@ -24,7 +24,7 @@ export const AdminPortalApp: App = {
   },
   controls: {
     minimize: true,
-    maximize: false,
+    maximize: true,
     close: true,
   },
   assets: {
