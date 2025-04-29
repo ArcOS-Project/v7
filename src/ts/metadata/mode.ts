@@ -1,6 +1,7 @@
 import { WaveKernel } from "$ts/kernel";
 
 export async function getMode() {
+  console.time("Get Mode");
   const kernel = WaveKernel.get();
 
   kernel.Log("branding", "Attempting to retrieve mode from /mode");
@@ -11,6 +12,8 @@ export async function getMode() {
     kernel.ARCOS_MODE = mode.trim();
   } catch {
     kernel.ARCOS_MODE = "release";
+  } finally {
+    console.timeEnd("Get Mode");
   }
 }
 

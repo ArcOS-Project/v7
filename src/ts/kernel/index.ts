@@ -74,6 +74,7 @@ export class WaveKernel {
   }
 
   async _init() {
+    console.time("** Kernel init");
     this.Log(`KERNEL`, `Called _init`);
 
     // KERNEL AREA STARTS HERE
@@ -96,6 +97,7 @@ export class WaveKernel {
     this.initPid = this.init?.pid ?? 0;
 
     await this.init?.jumpstart();
+    console.timeEnd("** Kernel init");
   }
 
   getModule<T = any>(id: string, dontCrash = false): T {
@@ -111,11 +113,13 @@ export class WaveKernel {
     this.Log(`KERNEL`, `Loading kernel modules`);
 
     for (const [id, mod] of Object.entries(KernelModules)) {
+      console.time(`kernel module ${id}`);
       (this as any)[id] = new mod(this, id);
 
       await (this as any)[id].__init();
 
       this.modules.push(id);
+      console.timeEnd(`kernel module ${id}`);
     }
   }
 

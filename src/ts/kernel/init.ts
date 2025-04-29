@@ -20,6 +20,7 @@ export class InitProcess extends Process {
   }
 
   async jumpstart() {
+    console.time("** Init jumpstart");
     this.Log("Jumpstarting init process!");
 
     await this.handler.startRenderer(this.pid);
@@ -36,6 +37,7 @@ export class InitProcess extends Process {
     await this.initializeTempFs();
 
     await kernel.state?.loadState(connected ? "boot" : "serverdown", {}, true);
+    console.timeEnd("** Init jumpstart");
   }
 
   async initializeTempFs() {
