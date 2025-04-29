@@ -1,15 +1,15 @@
 <script lang="ts">
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
+  import Spinner from "$lib/Spinner.svelte";
   import { onMount, type Component } from "svelte";
   import Sidebar from "./AdminPortal/Sidebar.svelte";
+  import StatusBar from "./AdminPortal/StatusBar.svelte";
   import type { AdminPortalRuntime } from "./runtime";
   import { AdminPortalPageStore } from "./store";
   import type { AdminPortalPage } from "./types";
-  import Spinner from "$lib/Spinner.svelte";
-  import StatusBar from "./AdminPortal/StatusBar.svelte";
 
   const { process }: { process: AdminPortalRuntime } = $props();
-  const { currentPage } = process;
+  const { currentPage, switchPageProps } = process;
 
   let Page: Component | undefined = $state();
   let pageData = $state<AdminPortalPage>();
@@ -23,15 +23,18 @@
       loading = true;
       noAccess = false;
       Page = undefined;
+      className = "";
       pageData = AdminPortalPageStore.get(v);
 
       if (pageData?.scopes && !process.admin.canAccess(...pageData!.scopes)) {
         loading = false;
         noAccess = true;
+
+        return;
       }
 
       Page = pageData?.content;
-      pageProps = pageData?.props ? await pageData.props(process) : {};
+      pageProps = pageData?.props ? { ...$switchPageProps, ...(await pageData.props(process)) } : $switchPageProps;
       loading = false;
       className = v;
     });

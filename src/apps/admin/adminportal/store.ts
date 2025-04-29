@@ -1,3 +1,4 @@
+import { DevelopmentLogo, EsrLogo, RcLogo, ReleaseLogo, UnstableLogo } from "$ts/images/branding";
 import Activities from "./AdminPortal/Page/Activities.svelte";
 import Administrators from "./AdminPortal/Page/Administrators.svelte";
 import Approvals from "./AdminPortal/Page/Approvals.svelte";
@@ -12,6 +13,7 @@ import Shares from "./AdminPortal/Page/Shares.svelte";
 import Tokens from "./AdminPortal/Page/Tokens.svelte";
 import TwoFactor from "./AdminPortal/Page/TwoFactor.svelte";
 import Users from "./AdminPortal/Page/Users.svelte";
+import ViewBugReport from "./AdminPortal/Page/ViewBugReport.svelte";
 import type { AdminPortalPage, AdminPortalPages } from "./types";
 
 export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPortalPage>([
@@ -27,6 +29,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
 
         return { stats, logs };
       },
+      scopes: ["admin.logs", "admin.stats"],
     },
   ],
   [
@@ -36,6 +39,24 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       icon: "bug",
       content: BugHunt,
       separator: true,
+      scopes: ["admin.users.list", "admin.bughunt.reports.list", "admin.bughunt.stats"],
+      props: async (process) => {
+        const users = await process.admin.getAllUsers();
+        const reports = await process.admin.getAllBugReports();
+        const stats = await process.admin.getBugHuntStatistics();
+
+        return { users, reports, stats };
+      },
+    },
+  ],
+  [
+    "viewBugReport",
+    {
+      name: "View Bug Report",
+      content: ViewBugReport,
+      hidden: true,
+      scopes: ["admin.bughunt.get", "admin.bughunt.delete", "admin.bughunt.open", "admin.bughunt.close"],
+      icon: "",
     },
   ],
   [
@@ -140,3 +161,11 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     },
   ],
 ]);
+
+export const LogoTranslations: Record<string, string> = {
+  release: ReleaseLogo,
+  development: DevelopmentLogo,
+  rc: RcLogo,
+  esr: EsrLogo,
+  unstable: UnstableLogo,
+};
