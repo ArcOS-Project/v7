@@ -266,9 +266,13 @@ export class AdminBootstrapper extends BaseService {
 
   async closeBugReport(reportId: string) {
     try {
-      const response = await Axios.patch(`/admin/bughunt/close/${reportId}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
-      });
+      const response = await Axios.patch(
+        `/admin/bughunt/close/${reportId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${this.token}` },
+        }
+      );
 
       return response.status === 200;
     } catch {
@@ -278,9 +282,13 @@ export class AdminBootstrapper extends BaseService {
 
   async reopenBugReport(reportId: string) {
     try {
-      const response = await Axios.patch(`/admin/bughunt/open/${reportId}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
-      });
+      const response = await Axios.patch(
+        `/admin/bughunt/open/${reportId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${this.token}` },
+        }
+      );
 
       return response.status === 200;
     } catch {
