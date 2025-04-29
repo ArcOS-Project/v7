@@ -1,0 +1,21 @@
+#AdminPortal #BugHuntUserData > div.body {
+  padding: 0;
+}
+
+#AdminPortal #BugHuntUserData > div.body > div.user-data {
+  height: calc(100% - 40px);
+  /* overflow-y: scroll; */
+  max-height: calc(100% - 40px);
+}
+#AdminPortal #BugHuntUserData > div.body > div.titlebar {
+  border-bottom: var(--win-border);
+}
+
+#AdminPortal #BugHuntUserData > div.body pre {
+  height: 100%;
+}
+
+#AdminPortal #BugHuntUserData > div.body pre code.hljs {
+  overflow: scroll;
+  height: 100%;
+}
