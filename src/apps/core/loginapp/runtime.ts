@@ -41,7 +41,7 @@ export class LoginAppRuntime extends AppProcess {
         : Wallpapers.img15.url
     );
 
-    this.unexpectedInvocation = this.kernel.state?.currentState !== "boot";
+    this.unexpectedInvocation = this.kernel.state?.currentState !== "boot" && !props?.type;
     this.serverInfo = server.serverInfo;
     this.safeMode = !!(props?.safeMode || this.env.get("safemode"));
     if (this.safeMode) this.env.set("safemode", true);
