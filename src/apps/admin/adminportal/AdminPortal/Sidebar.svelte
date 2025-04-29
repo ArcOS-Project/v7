@@ -8,7 +8,6 @@
 
 <div class="sidebar">
   <section>
-    <h1>ArcOS Admin</h1>
     {#each [...AdminPortalPageStore] as [id, page] (id)}
       {#if !page.hidden}
         <button class="page" class:selected={$currentPage === id} onclick={() => process.switchPage(id)}>
