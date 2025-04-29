@@ -1,12 +1,26 @@
 @import url("./adminportal/page/dashboard.css");
+@import url("./adminportal/page/bughunt.css");
+@import url("./adminportal/page/viewbugreport.css");
 @import url("./adminportal/sidebar.css");
+@import url("./adminportal/userdata.css");
+
+#AdminPortal {
+  --font-size: 12px;
+}
 
 #AdminPortal > div.body {
   padding: 0;
   display: flex;
 }
+
+#AdminPortal > div.body *,
+#AdminPortal > div.body *::before,
+#AdminPortal > div.body *::after {
+  transition: unset !important;
+}
+
 #AdminPortal > div.body > div.container {
-  width: calc(100% - 200px);
+  width: calc(100% - 150px);
   height: 100%;
   background-color: var(--win-bg);
 }
@@ -41,4 +55,36 @@
 
 #AdminPortal > div.body div.status-bar div.crumbs p:last-child {
   font-weight: bold;
+}
+
+#AdminPortal > div.body div.page-content > div.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+}
+
+#AdminPortal > div.body div.page-content > div.no-access {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 5px;
+  height: 100%;
+}
+
+#AdminPortal > div.body div.page-content > div.no-access h1 {
+  font-size: 18px;
+}
+
+#AdminPortal > div.body div.page-content > div.no-access p {
+  opacity: 0.5;
+}
+
+#AdminPortal > div.body div.page-content > div.no-access span.lucide {
+  font-size: 64px;
+  margin-bottom: 10px;
+  color: var(--accent-lighter);
 }
