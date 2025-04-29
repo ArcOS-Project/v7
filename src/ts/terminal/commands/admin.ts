@@ -1,8 +1,10 @@
 import { getAllJsonPaths, getJsonHierarchy } from "$ts/hierarchy";
+import { ElevationIcon } from "$ts/images/general";
 import { tryJsonParse } from "$ts/json";
 import type { ProcessHandler } from "$ts/process/handler";
 import { ServerManager } from "$ts/server";
 import { AdminBootstrapper } from "$ts/server/admin";
+import { ElevationLevel } from "$types/elevation";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
@@ -19,6 +21,16 @@ export class AdminCommand extends TerminalProcess {
   }
 
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+    const elevated = await term.elevate({
+      what: "ArcTerm wants to open the Administrator Console",
+      title: "Administrator Console",
+      description: "Izaak Kuipers",
+      image: ElevationIcon,
+      level: ElevationLevel.medium,
+    });
+
+    if (!elevated) return 1;
+
     const paths = getAllJsonPaths(AdminCommandStore).map((a) => a.replaceAll(".", " "));
     const admin = term.daemon?.serviceHost?.getService<AdminBootstrapper>("AdminBootstrapper");
     const server = term.kernel.getModule<ServerManager>("server");
