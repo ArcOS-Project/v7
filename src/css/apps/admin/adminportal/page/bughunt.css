@@ -1,0 +1,119 @@
+#AdminPortal div.container.bughunt > div.page-content {
+  display: flex;
+}
+
+#AdminPortal div.container.bughunt div.stats {
+  width: 100px;
+  padding: 10px;
+}
+
+#AdminPortal div.container.bughunt div.stats h1 {
+  font-size: 12px;
+  text-transform: uppercase;
+  opacity: 0.5;
+  font-weight: bold;
+}
+
+#AdminPortal div.container.bughunt div.stats p {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+#AdminPortal div.container.bughunt div.list-wrapper {
+  width: calc(100% - 100px);
+  border-right: var(--win-border);
+}
+
+#AdminPortal div.container.bughunt div.list-wrapper div.tabs {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+
+#AdminPortal div.container.bughunt div.list-wrapper div.tabs button {
+  height: 40px;
+  border-radius: 0;
+  font-size: 12px;
+  min-width: 80px;
+  padding: 5px 15px;
+  border-left: var(--win-border);
+}
+#AdminPortal div.container.bughunt div.list-wrapper div.tabs p {
+  margin-right: auto;
+  padding: 0 10px;
+  font-weight: bold;
+  opacity: 0.5;
+  text-transform: uppercase;
+}
+
+#AdminPortal div.container.bughunt div.list-wrapper div.tabs button.selected {
+  background-color: var(--accent-transparent);
+}
+
+#AdminPortal div.container.bughunt div.list-wrapper div.listing {
+  border-top: var(--win-border);
+  height: calc(100% - 40px);
+  overflow-y: scroll;
+}
+
+#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 35px;
+  border-bottom: var(--win-border);
+  padding: 0 10px;
+}
+
+#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row * {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row div.segment {
+  min-width: fit-content;
+}
+
+#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row div.segment.title {
+  min-width: unset;
+}
+
+#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row div.segment.author,
+#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row div.segment.timestamp {
+  min-width: 130px;
+}
+
+#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row div.segment.mode-icon,
+#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row img {
+  height: 24px;
+  width: 24px;
+  min-width: 24px;
+}
+
+#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row div.segment.author {
+  margin-left: auto;
+}
+
+#AdminPortal div.container.bughunt div.list-wrapper div.listing::-webkit-scrollbar {
+  display: none;
+}
+
+#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row:last-child {
+  border-bottom: none;
+}
+
+#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row.head {
+  background-color: var(--button-bg);
+  border-bottom: var(--win-border);
+  font-weight: bold;
+  position: sticky;
+  top: 0.1px;
+  z-index: 10000;
+  height: 40px;
+}
