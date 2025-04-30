@@ -24,10 +24,6 @@
   border-radius: 0;
 }
 
-#AdminPortal > div.body div.sidebar button.selected {
-  background-color: var(--accent-transparent);
-}
-
 #AdminPortal > div.body div.sidebar button span.lucide {
   font-size: 16px;
   color: var(--accent-light);
@@ -45,6 +41,10 @@
 
 #AdminPortal > div.body div.sidebar button:active {
   background-color: var(--button-glass-active-bg);
+}
+
+#AdminPortal > div.body div.sidebar button.selected {
+  background-color: var(--accent-transparent);
 }
 
 #AdminPortal > div.body div.sidebar section h1 {
