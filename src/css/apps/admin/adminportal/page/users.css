@@ -1,0 +1,124 @@
+#AdminPortal div.container.users > div.page-content > div.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 30px;
+}
+
+#AdminPortal div.container.users > div.page-content > div.header button.lucide {
+  border-radius: 0;
+  border-right: var(--win-border);
+  background-color: var(--win-bg);
+  height: 30px;
+  width: 31px;
+  font-size: 16px;
+  padding: 0;
+}
+#AdminPortal div.container.users > div.page-content > div.header div.actions {
+  display: flex;
+}
+
+#AdminPortal div.container.users div.user-list {
+  height: calc(100% - 30px);
+  border-top: var(--win-border);
+  overflow-y: auto;
+}
+#AdminPortal div.container.users div.user-list::-webkit-scrollbar {
+  display: none;
+}
+
+#AdminPortal div.container.users div.header div.tabs {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+
+#AdminPortal div.container.users div.header div.tabs button {
+  height: 30px;
+  border-radius: 0;
+  font-size: 12px;
+  min-width: 80px;
+  padding: 5px 15px;
+  border-left: var(--win-border);
+}
+#AdminPortal div.container.users div.header div.tabs p {
+  margin-right: auto;
+  padding: 0 10px;
+  font-weight: bold;
+  opacity: 0.5;
+  text-transform: uppercase;
+}
+
+#AdminPortal div.container.users div.header div.tabs button.selected {
+  background-color: var(--accent-transparent);
+}
+
+#AdminPortal div.container.users div.user-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  border-bottom: var(--win-border);
+  height: 36px;
+}
+
+#AdminPortal div.container.users div.user-row:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#AdminPortal div.container.users div.user-row.selected {
+  background-color: var(--accent-transparent);
+}
+
+#AdminPortal div.container.users div.user-row:last-child {
+  border-bottom: none;
+  height: 35px;
+}
+
+#AdminPortal div.container.users div.user-row div.segment {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#AdminPortal div.container.users div.user-row div.segment.username {
+  width: 200px;
+}
+#AdminPortal div.container.users div.user-row div.segment.email {
+  width: 200px;
+  margin-right: auto;
+}
+
+#AdminPortal div.container.users div.user-row div.segment.created {
+  width: 80px;
+}
+
+#AdminPortal div.container.users div.user-row div.segment.admin,
+#AdminPortal div.container.users div.user-row div.segment.approved,
+#AdminPortal div.container.users div.user-row div.segment.account-number {
+  width: 35px;
+  height: 35px;
+  line-height: 35px;
+  text-align: center;
+  border-left: var(--win-border);
+  margin-right: -10px;
+  background-color: var(--button-bg);
+}
+
+#AdminPortal div.container.users div.user-row div.segment.approved.is-approved {
+  background-color: var(--clr-green-bg);
+  color: var(--clr-green-fg);
+}
+
+#AdminPortal div.container.users div.user-row div.segment.admin.is-admin {
+  background-color: var(--clr-orange-bg);
+  color: var(--clr-orange-fg);
+}
+
+#AdminPortal div.container.users div.user-row img {
+  height: 20px;
+  width: 20px;
+  object-fit: cover;
+  border-radius: 100%;
+}
