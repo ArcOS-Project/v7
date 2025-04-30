@@ -1,6 +1,6 @@
 #AdminPortal div.viewBugReport > div.page-content div.panels {
   display: flex;
-  height: calc(100% - 41px);
+  height: calc(100% - 31px);
 }
 
 #AdminPortal div.viewBugReport > div.page-content div.panels > div.leftpanel {
@@ -14,7 +14,7 @@
 
 #AdminPortal div.viewBugReport div.header {
   display: flex;
-  height: 41px;
+  height: 31px;
   border-bottom: var(--win-border);
   padding-left: 10px;
 }
@@ -26,7 +26,7 @@
 #AdminPortal div.viewBugReport div.header div.title {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
   margin-right: auto;
   white-space: nowrap;
   overflow: hidden;
@@ -40,7 +40,7 @@
 }
 
 #AdminPortal div.viewBugReport div.header div.title img {
-  height: 20px;
+  height: 16px;
 }
 
 #AdminPortal div.viewBugReport div.header div.shortcuts,
@@ -50,8 +50,8 @@
 }
 
 #AdminPortal div.viewBugReport div.header div.shortcuts button {
-  width: 41px;
-  height: 40px;
+  width: 31px;
+  height: 30px;
   border-left: var(--win-border);
   border-radius: 0;
   background-color: var(--win-bg);
@@ -73,7 +73,7 @@
 }
 
 #AdminPortal div.viewBugReport div.header div.actions button {
-  height: 40px;
+  height: 30px;
   border-radius: 0;
   border-left: var(--win-border);
   min-width: 80px;
