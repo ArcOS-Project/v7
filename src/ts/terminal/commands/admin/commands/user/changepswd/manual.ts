@@ -17,7 +17,7 @@ export const AdminUserChangepswdManual: AdminCommandType = async (term, admin, a
   if (!newPassword || !confirmPassword) return 6;
   if (newPassword !== confirmPassword) return 7;
 
-  const changed = await admin.changeUserPassword(username, newPassword);
+  const changed = await admin.changePasswordOf(username, newPassword);
 
   return changed ? 0 : 3;
 };

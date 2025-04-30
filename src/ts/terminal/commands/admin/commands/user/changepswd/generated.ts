@@ -21,7 +21,7 @@ export const AdminUserChangepswdGenerated: AdminCommandType = async (term, admin
 
   if (!proceed) return 6;
 
-  const changed = await admin.changeUserPassword(username, generated);
+  const changed = await admin.changePasswordOf(username, generated);
 
   return changed ? 0 : 3;
 };
