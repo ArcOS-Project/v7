@@ -25,14 +25,14 @@
 }
 
 #AdminPortal div.container.bughunt div.list-wrapper div.tabs {
-  height: 40px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: end;
 }
 
 #AdminPortal div.container.bughunt div.list-wrapper div.tabs button {
-  height: 40px;
+  height: 30px;
   border-radius: 0;
   font-size: 12px;
   min-width: 80px;
@@ -53,8 +53,38 @@
 
 #AdminPortal div.container.bughunt div.list-wrapper div.listing {
   border-top: var(--win-border);
-  height: calc(100% - 40px);
+  border-bottom: var(--win-border);
+  height: calc(100% - 30px - 30px);
   overflow-y: scroll;
+}
+
+#AdminPortal div.container.bughunt div.list-wrapper div.id-entry {
+  display: flex;
+  align-items: center;
+}
+
+#AdminPortal div.container.bughunt div.list-wrapper div.id-entry div.icon {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+}
+
+#AdminPortal div.container.bughunt div.list-wrapper div.id-entry input {
+  flex-grow: 1;
+  border: none;
+  border-radius: 0;
+  border-left: var(--win-border);
+  border-right: var(--win-border);
+  height: 30px;
+  font-family: "Source Code Pro";
+}
+
+#AdminPortal div.container.bughunt div.list-wrapper div.id-entry button {
+  border-radius: 0;
+  height: 30px;
 }
 
 #AdminPortal div.container.bughunt div.list-wrapper div.listing div.row {
@@ -78,6 +108,7 @@
 
 #AdminPortal div.container.bughunt div.list-wrapper div.listing div.row div.segment.title {
   min-width: unset;
+  font-family: "Source Code Pro";
 }
 
 #AdminPortal div.container.bughunt div.list-wrapper div.listing div.row div.segment.author,
@@ -104,6 +135,10 @@
   background-color: var(--button-glass-bg);
 }
 
+#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row.selected {
+  background-color: var(--accent-transparent);
+}
+
 #AdminPortal div.container.bughunt div.list-wrapper div.listing div.row:last-child {
   border-bottom: none;
 }
@@ -115,5 +150,8 @@
   position: sticky;
   top: 0.1px;
   z-index: 10000;
-  height: 40px;
+}
+
+#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row.head div.segment.title {
+  font-family: "Nunito Sans";
 }
