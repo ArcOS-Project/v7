@@ -8,6 +8,7 @@ import { AdminPortalPageStore } from "./store";
 import { BugHuntUserDataApp } from "./userdata/metadata";
 
 export class AdminPortalRuntime extends AppProcess {
+  ready = Store<boolean>(false);
   currentPage = Store<string>("");
   switchPageProps = Store<Record<string, any>>({});
   admin: AdminBootstrapper;
