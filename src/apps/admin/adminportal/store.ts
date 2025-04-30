@@ -25,7 +25,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       content: Dashboard,
       props: async (process) => {
         const stats = await process.admin.getStatistics();
-        const logs = await process.admin.getServerLogs();
+        const logs = (await process.admin.getServerLogs()).reverse();
 
         return { stats, logs };
       },
