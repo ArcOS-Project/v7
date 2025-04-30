@@ -66,6 +66,12 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       icon: "user",
       content: Users,
       separator: true,
+      props: async (process) => {
+        const users = await process.admin.getAllUsers();
+
+        return { users };
+      },
+      scopes: ["admin.users.list"],
     },
   ],
   [

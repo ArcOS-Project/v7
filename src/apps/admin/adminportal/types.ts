@@ -2,6 +2,7 @@ import type { Component } from "svelte";
 import type { AdminPortalRuntime } from "./runtime";
 import type { ServerLogItem, ServerStatistics, User } from "$types/admin";
 import type { BugReport, ReportStatistics } from "$types/bughunt";
+import type { ExpandedUserInfo } from "$types/user";
 
 export interface AdminPortalPage {
   name: string;
@@ -26,4 +27,7 @@ export type BugHuntData = {
 };
 export type ViewBugReportData = {
   report: BugReport;
+};
+export type UsersData = {
+  users: ExpandedUserInfo[];
 };
