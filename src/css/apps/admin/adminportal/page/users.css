@@ -3,26 +3,73 @@
   align-items: center;
   justify-content: space-between;
   height: 30px;
+  padding-left: 10px;
 }
 
-#AdminPortal div.container.users > div.page-content > div.header button.lucide {
+#AdminPortal div.container.users button.lucide {
   border-radius: 0;
-  border-right: var(--win-border);
+  border-left: var(--win-border);
   background-color: var(--win-bg);
   height: 30px;
   width: 31px;
   font-size: 16px;
   padding: 0;
 }
+
+#AdminPortal div.container.users button.lucide:disabled {
+  opacity: 1;
+  color: var(--button-glass-hover-bg);
+}
+
 #AdminPortal div.container.users > div.page-content > div.header div.actions {
   display: flex;
 }
 
+#AdminPortal div.container.users > div.page-content > div.header p {
+  font-weight: bold;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
 #AdminPortal div.container.users div.user-list {
-  height: calc(100% - 30px);
+  height: calc(100% - 30px - 30px);
   border-top: var(--win-border);
+  border-bottom: var(--win-border);
   overflow-y: auto;
 }
+
+#AdminPortal div.container.users div.id-entry {
+  display: flex;
+  align-items: center;
+}
+
+#AdminPortal div.container.users div.id-entry div.icon {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+}
+
+#AdminPortal div.container.users div.id-entry input {
+  flex-grow: 1;
+  border: none;
+  border-radius: 0;
+  border-left: var(--win-border);
+  border-right: var(--win-border);
+  height: 30px;
+  font-family: "Source Code Pro";
+}
+
+#AdminPortal div.container.users div.id-entry button:not(.lucide) {
+  border-radius: 0;
+  height: 30px;
+}
+
+#AdminPortal div.container.users div.id-entry div.actions {
+  display: flex;
+}
+
 #AdminPortal div.container.users div.user-list::-webkit-scrollbar {
   display: none;
 }
@@ -121,4 +168,9 @@
   width: 20px;
   object-fit: cover;
   border-radius: 100%;
+}
+
+#AdminPortal div.container.users div.user-row.header {
+  font-weight: bold;
+  background-color: var(--button-bg);
 }

@@ -13,7 +13,7 @@
   const states: ("all" | "regular" | "admins" | "disapproved")[] = ["all", "regular", "admins", "disapproved"];
   const sortState = Store<"all" | "regular" | "admins" | "disapproved">("all");
   const store = Store<ExpandedUserInfo[]>([]);
-  const selection = Store<string>();
+  const selection = Store<string>("");
   const selected = Store<ExpandedUserInfo | undefined>(undefined);
 
   onMount(() => {
@@ -39,6 +39,34 @@
 </script>
 
 <div class="header">
+  <p>{$sortState} ({$store.length})</p>
+  <div class="tabs">
+    {#each states as state}
+      <button onclick={() => ($sortState = state)} class:selected={$sortState === state}>{state.toUpperCase()}</button>
+    {/each}
+  </div>
+</div>
+<div class="user-list">
+  <div class="user-row header">
+    <img src={Logo()} alt="" />
+    <div class="segment username">Username</div>
+    <div class="segment email">Email</div>
+    <div class="segment created">Created</div>
+    <div class="segment account-number">#</div>
+    <div class="segment approved">APP</div>
+    <div class="segment admin">ADM</div>
+  </div>
+
+  {#each $store as user (user._id)}
+    <UserRow {process} {user} {selection} />
+  {/each}
+</div>
+<div class="id-entry">
+  <div class="icon">
+    <span class="lucide icon-user"></span>
+  </div>
+  <input type="text" placeholder="User ID" bind:value={$selection} maxlength="24" />
+  <button disabled={$selection.length !== 24}>Go</button>
   <div class="actions">
     <button class="lucide icon-braces" aria-label="View user data" disabled={!$selected}></button>
     <button class="lucide icon-rectangle-ellipsis" aria-label="Change password" disabled={!$selected}></button>
@@ -51,24 +79,4 @@
     ></button>
     <button class="lucide icon-shield-plus" aria-label="Grant/revoke admin" class:icon-shield-x={$selected?.admin}></button>
   </div>
-  <div class="tabs">
-    {#each states as state}
-      <button onclick={() => ($sortState = state)} class:selected={$sortState === state}>{state.toUpperCase()}</button>
-    {/each}
-  </div>
-</div>
-<div class="user-list">
-  <div class="user-row">
-    <img src={Logo()} alt="" />
-    <div class="segment username">Username</div>
-    <div class="segment email">Email</div>
-    <div class="segment created">Created</div>
-    <div class="segment account-number">#</div>
-    <div class="segment approved">Appr.</div>
-    <div class="segment admin">Adm.</div>
-  </div>
-
-  {#each $store as user (user._id)}
-    <UserRow {process} {user} {selection} />
-  {/each}
 </div>
