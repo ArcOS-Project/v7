@@ -178,22 +178,6 @@ export class AdminBootstrapper extends BaseService {
     }
   }
 
-  async changeUserPassword(username: string, newPassword: string) {
-    try {
-      const response = await Axios.post(
-        `/admin/users/changepswd`,
-        { target: username, newPassword },
-        {
-          headers: { Authorization: `Bearer ${this.token}` },
-        }
-      );
-
-      return response.status === 200;
-    } catch {
-      return false;
-    }
-  }
-
   async getStatistics() {
     try {
       const response = await Axios.get(`/admin/stats`, {
