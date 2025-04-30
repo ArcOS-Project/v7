@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import type { AppProcess } from "$ts/apps/process";
   import type { ContextMenuItem } from "$types/app";
@@ -18,13 +19,13 @@
 
     if (!rect) return;
 
-    const shellPid = process.env.get("shell_pid");
-    if (!shellPid) return;
+    const contextMenuPid = process.env.get("contextmenu_pid");
+    if (!contextMenuPid) return;
 
-    const shell = process.handler.getProcess<ShellRuntime>(+shellPid);
-    if (!shell) return;
+    const contextMenu = process.handler.getProcess<ContextMenuRuntime>(+contextMenuPid);
+    if (!contextMenu) return;
 
-    shell.createContextMenu({
+    contextMenu.createContextMenu({
       items: menu.subItems || [],
       x: rect.x,
       y: rect.y + rect.height + 5,
