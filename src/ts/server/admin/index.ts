@@ -18,7 +18,7 @@ import type { BugReport, ReportStatistics } from "$types/bughunt";
 import type { FilesystemProgressCallback, UserQuota } from "$types/fs";
 import type { Service } from "$types/service";
 import type { SharedDriveType } from "$types/shares";
-import type { UserInfo, UserPreferences } from "$types/user";
+import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
 import { Axios } from "../axios";
 
 export class AdminBootstrapper extends BaseService {
@@ -78,11 +78,15 @@ export class AdminBootstrapper extends BaseService {
     }
   }
 
-  async getAllUsers(): Promise<UserInfo[]> {
+  async getAllUsers(): Promise<ExpandedUserInfo[]> {
     try {
       const response = await Axios.get("/admin/users/list", { headers: { Authorization: `Bearer ${this.token}` } });
 
-      return response.data as UserInfo[];
+      return (response.data as ExpandedUserInfo[]).map((u) => {
+        u.profile.profilePicture = `${import.meta.env.DW_SERVER_URL}${u.profile.profilePicture}`;
+
+        return u;
+      });
     } catch {
       return [];
     }
@@ -622,6 +626,12 @@ export class AdminBootstrapper extends BaseService {
     }
 
     return true;
+  }
+
+  getMissingScopes(...scopes: string[]): string[] {
+    if (this.userInfo?.adminScopes?.includes("admin.god")) return [];
+
+    return scopes.filter((s) => !this.userInfo?.adminScopes?.includes(s));
   }
 
   async getAllShares(): Promise<SharedDriveType[]> {

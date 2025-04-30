@@ -39,6 +39,8 @@ export interface UserPreferences {
   startup?: Record<string, "app" | "file" | "folder" | "share">;
 }
 
+export type ExpandedUserInfo = UserInfo & { profile: PublicUserInfo };
+
 export interface WorkspacesOptions {
   desktops: Workspace[];
   index: number;
