@@ -39,13 +39,12 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       icon: "bug",
       content: BugHunt,
       separator: true,
-      scopes: ["admin.users.list", "admin.bughunt.reports.list", "admin.bughunt.stats"],
+      scopes: ["admin.bughunt.reports.list", "admin.bughunt.stats"],
       props: async (process) => {
-        const users = await process.admin.getAllUsers();
         const reports = await process.admin.getAllBugReports();
         const stats = await process.admin.getBugHuntStatistics();
 
-        return { users, reports, stats };
+        return { reports, stats };
       },
     },
   ],

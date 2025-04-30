@@ -10,7 +10,7 @@
   import { ErrorIcon } from "$ts/images/dialog";
 
   const { process, data }: { process: AdminPortalRuntime; data: BugHuntData } = $props();
-  const { users, reports, stats } = data;
+  const { reports, stats } = data;
   const pages: ("all" | "opened" | "closed" | "resolved")[] = ["all", "opened", "closed", "resolved"];
 
   let store = Store<BugReport[]>([]);
@@ -73,7 +73,7 @@
       <div class="segment author">Author</div>
     </div>
     {#each $store as report (report._id)}
-      <Row {process} {report} {users} {idEntry} />
+      <Row {process} {report} {idEntry} />
     {/each}
     {#if !$store.length}
       <p class="no-results">No results.</p>
