@@ -18,15 +18,17 @@
 </div>
 <div class="logs">
   <h1>
-    <span>Server Logs</span>
-    <button class="link" onclick={() => process.switchPage("logs")}>
+    <span>Server Logs - last 50</span>
+    <button onclick={() => process.switchPage("logs")}>
       <span>View All</span>
       <span class="lucide icon-chevron-right"></span>
     </button>
   </h1>
-  <code>
-    {#each Array(10) as _, i}
-      {logs[i].origin}: {logs[i].message}<br />
-    {/each}
-  </code>
+  <div class="log">
+    <code>
+      {#each Array(50) as _, i}
+        {logs[i].origin}: {logs[i].message}<br />
+      {/each}
+    </code>
+  </div>
 </div>

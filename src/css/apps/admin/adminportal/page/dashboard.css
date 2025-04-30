@@ -33,13 +33,22 @@
 }
 
 #AdminPortal div.container.dashboard div.logs {
-  padding: 10px;
+  height: calc(100% - 200px);
   border-top: var(--win-border);
 }
 #AdminPortal div.container.dashboard div.logs h1 {
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding-left: 10px;
+}
+
+#AdminPortal div.container.dashboard div.logs div.log {
+  height: calc(100% - 30px);
+  overflow-y: scroll;
+  border-top: var(--win-border);
+  padding: 10px;
 }
 
 #AdminPortal div.container.dashboard div.logs code {
@@ -52,6 +61,11 @@
   align-items: center;
   gap: 5px;
   text-decoration: none;
+  border-radius: 0;
+  border-left: var(--win-border);
+  height: 30px;
+  padding: 0 10px;
+  padding-right: 5px;
 }
 
 #AdminPortal div.container.dashboard div.logs button span {
