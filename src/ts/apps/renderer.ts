@@ -1,4 +1,4 @@
-import { ShellRuntime } from "$apps/components/shell/runtime";
+import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
 import { contextProps } from "$ts/context/actions.svelte";
 import { MessageBox } from "$ts/dialog";
 import { BugReportIcon, ComponentIcon } from "$ts/images/general";
@@ -317,13 +317,13 @@ export class AppRenderer extends Process {
           }
 
           const rect = button.getBoundingClientRect();
-          const shellPid = this.env.get("shell_pid");
-          if (!shellPid) return;
+          const contextMenuPid = this.env.get("contextmenu_pid");
+          if (!contextMenuPid) return;
 
-          const shell = this.handler.getProcess<ShellRuntime>(+shellPid);
-          if (!shell) return;
+          const contextMenu = this.handler.getProcess<ContextMenuRuntime>(+contextMenuPid);
+          if (!contextMenu) return;
 
-          shell.createContextMenu({
+          contextMenu.createContextMenu({
             items: item.subItems || [],
             x: rect.x,
             y: rect.y + rect.height + 5,
@@ -504,7 +504,7 @@ export class AppRenderer extends Process {
       }) has encountered a problem and needs to close. I am sorry for the inconvenience.</b>`,
       `If you were in the middle of something, the information you were working on might be lost. You can choose to view the call stack, which may contain the reason for the crash.`,
       `<details><summary>Show call stack</summary><code class='block'>${htmlspecialchars(
-        e.stack?.replaceAll(location.href, "") || ""
+        e.stack?.replaceAll(location.href, "") || "",
       )}</code></details>`,
     ];
 
@@ -515,7 +515,7 @@ export class AppRenderer extends Process {
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
         image: BugReportIcon,
       },
-      this.pid
+      this.pid,
     );
   }
 }

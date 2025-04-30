@@ -87,10 +87,6 @@ export class WaveKernel {
 
     await this._kernelModules();
 
-    if (navigator.userAgent.toLowerCase().includes("firefox")) {
-      throw new Error("Firefox");
-    }
-
     const stack = this.getModule<ProcessHandler>("stack");
 
     this.init = await stack.spawn<InitProcess>(InitProcess);
@@ -139,7 +135,7 @@ export class WaveKernel {
     });
 
     console.log(
-      `[${(timestamp - this.startMs).toString().padStart(10, "0")}] ${ShortLogLevelCaptions[level]} ${source}: ${message}`
+      `[${(timestamp - this.startMs).toString().padStart(10, "0")}] ${ShortLogLevelCaptions[level]} ${source}: ${message}`,
     );
   }
 }
