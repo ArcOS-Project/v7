@@ -3,14 +3,19 @@
   import { AdminPortalPageStore } from "../store";
 
   const { process }: { process: AdminPortalRuntime } = $props();
-  const { currentPage } = process;
+  const { currentPage, ready } = process;
 </script>
 
 <div class="sidebar">
   <section>
     {#each [...AdminPortalPageStore] as [id, page] (id)}
       {#if !page.hidden}
-        <button class="page" class:selected={$currentPage === id} onclick={() => process.switchPage(id)}>
+        <button
+          class="page"
+          class:selected={$currentPage === id}
+          onclick={() => process.switchPage(id)}
+          disabled={!$ready || (page.scopes && !process.admin.canAccess(...page.scopes))}
+        >
           <span class="lucide icon-{page.icon}"></span>
           <span>{page.name}</span>
         </button>
