@@ -473,7 +473,7 @@ export class UserDaemon extends Process {
       data,
       retrievedThemeData.name,
       retrievedThemeData.author,
-      retrievedThemeData.version,
+      retrievedThemeData.version
     );
 
     if (JSON.stringify(theme) !== JSON.stringify(retrievedThemeData)) data.currentThemeId = undefined;
@@ -508,7 +508,7 @@ export class UserDaemon extends Process {
         subtitle: `To U:/Wallpapers`,
         waiting: true,
       },
-      pid,
+      pid
     );
 
     try {
@@ -741,7 +741,7 @@ export class UserDaemon extends Process {
         icon: DriveIcon,
         waiting: true,
       },
-      +this.env.get("shell_pid") || undefined,
+      +this.env.get("shell_pid") || undefined
     );
 
     const mount = await this.fs.mountDrive(
@@ -755,7 +755,7 @@ export class UserDaemon extends Process {
         prog.setWait(false);
         prog.setWork(true);
       },
-      path,
+      path
     );
 
     prog.stop();
@@ -866,7 +866,7 @@ export class UserDaemon extends Process {
         id: app.id,
         desktop: renderTarget ? renderTarget.id : undefined,
       },
-      ...args,
+      ...args
     );
   }
 
@@ -924,7 +924,7 @@ export class UserDaemon extends Process {
         id: app.id,
         desktop: renderTarget ? renderTarget.id : undefined,
       },
-      ...args,
+      ...args
     );
   }
 
@@ -960,14 +960,14 @@ export class UserDaemon extends Process {
             image: ErrorIcon,
           },
           +this.env.get("shell_pid"),
-          true,
+          true
         );
 
         return;
       }
 
       const contents = arrayToText(
-        (await fs.readFile(app.entrypoint?.includes(":/") ? app.entrypoint! : join(app.workingDirectory, app.entrypoint!)))!,
+        (await fs.readFile(app.entrypoint?.includes(":/") ? app.entrypoint! : join(app.workingDirectory, app.entrypoint!)))!
       );
 
       if (!contents) {
@@ -982,7 +982,7 @@ export class UserDaemon extends Process {
             image: ErrorIcon,
           },
           +this.env.get("shell_pid"),
-          true,
+          true
         );
 
         return;
@@ -1067,7 +1067,7 @@ export class UserDaemon extends Process {
           image: FirefoxIcon,
         },
         +this.env.get("shell_pid"),
-        true,
+        true
       );
     }
   }
@@ -1173,7 +1173,7 @@ export class UserDaemon extends Process {
           location: JSON.stringify(window.location),
           action,
         }),
-        { headers: { Authorization: `Bearer ${this.token}` } },
+        { headers: { Authorization: `Bearer ${this.token}` } }
       );
 
       return response.status === 200;
@@ -1598,7 +1598,7 @@ export class UserDaemon extends Process {
         waiting: false,
         working: false,
         errors: [],
-      }),
+      })
     );
     let process: FsProgressRuntime | undefined;
     let shown = false;
@@ -1772,7 +1772,7 @@ export class UserDaemon extends Process {
         caption: `Moving files to ${destinationName || destination}`,
         subtitle: "Working...",
       },
-      pid,
+      pid
     );
 
     for (const source of sources) {
@@ -1815,7 +1815,7 @@ export class UserDaemon extends Process {
         caption: `Copying files to ${destinationName || destination}`,
         subtitle: "Working...",
       },
-      pid,
+      pid
     );
 
     for (const source of sources) {
@@ -1985,7 +1985,7 @@ export class UserDaemon extends Process {
           image: ErrorIcon,
         },
         +this.env.get("shell_pid"),
-        true,
+        true
       );
 
       return;
@@ -2024,7 +2024,7 @@ export class UserDaemon extends Process {
             image: WarningIcon,
           },
           +this.env.get("shell_pid"),
-          true,
+          true
         );
     }
   }
@@ -2191,7 +2191,7 @@ export class UserDaemon extends Process {
     const process = await this.spawnOverlay<GlobalLoadIndicatorRuntime>(
       "GlobalLoadIndicator",
       +this.env.get("shell_pid"),
-      caption,
+      caption
     );
 
     if (!process)
@@ -2244,7 +2244,7 @@ export class UserDaemon extends Process {
           ],
         },
         +this.env.get("shell_pid"),
-        true,
+        true
       );
     });
   }
@@ -2303,7 +2303,7 @@ export class UserDaemon extends Process {
         ],
       },
       +this.env.get("shell_pid"),
-      true,
+      true
     );
   }
 
@@ -2346,7 +2346,7 @@ The information provided in this report is subject for review by me or another A
         sendAnonymously: true,
         excludeLogs: true,
         makePublic: true,
-      },
+      }
     );
   }
 
@@ -2382,7 +2382,7 @@ The information provided in this report is subject for review by me or another A
       "Change your shell",
       `${newShell.metadata.name} by ${newShell.metadata.author} wants to act as your ArcOS shell. Do you allow this?`,
       "Deny",
-      "Allow",
+      "Allow"
     );
 
     if (!proceed) return false;
@@ -2397,7 +2397,7 @@ The information provided in this report is subject for review by me or another A
       "ArcOS has to restart before the changes will apply. Do you want to restart now?",
       "Not now",
       "Restart",
-      RestartIcon,
+      RestartIcon
     );
 
     if (restartNow) await this.restart();
@@ -2417,7 +2417,7 @@ The information provided in this report is subject for review by me or another A
           ],
         },
         shellPid,
-        !!shellPid,
+        !!shellPid
       );
     });
   }
