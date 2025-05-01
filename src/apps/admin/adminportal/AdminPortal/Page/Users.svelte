@@ -6,6 +6,7 @@
   import type { UsersData } from "../../types";
   import UserRow from "./Users/UserRow.svelte";
   import { Logo } from "$ts/branding";
+  import Header from "$apps/user/settings/Settings/Page/Account/Header.svelte";
 
   const { process, data }: { process: AdminPortalRuntime; data: UsersData } = $props();
   const { users } = data;
@@ -66,7 +67,7 @@
     <span class="lucide icon-user"></span>
   </div>
   <input type="text" placeholder="User ID" bind:value={$selection} maxlength="24" />
-  <button disabled={$selection.length !== 24}>Go</button>
+  <button disabled={$selection.length !== 24} onclick={() => process.switchPage("viewUser", { $selected })}>Go</button>
   <div class="actions">
     <button class="lucide icon-braces" aria-label="View user data" disabled={!$selected}></button>
     <button class="lucide icon-rectangle-ellipsis" aria-label="Change password" disabled={!$selected}></button>

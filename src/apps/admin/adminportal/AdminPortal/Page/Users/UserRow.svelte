@@ -12,7 +12,12 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="user-row" onclick={() => ($selection = user._id)} class:selected={$selection === user._id}>
+<div
+  class="user-row"
+  onclick={() => ($selection = user._id)}
+  class:selected={$selection === user._id}
+  ondblclick={() => process.switchPage("viewUser", { user })}
+>
   <img src={profile.profilePicture} alt="" />
   <div class="segment username">{profile.username}</div>
   <div class="segment email">{user.email}</div>
