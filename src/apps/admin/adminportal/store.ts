@@ -14,6 +14,7 @@ import Tokens from "./AdminPortal/Page/Tokens.svelte";
 import TwoFactor from "./AdminPortal/Page/TwoFactor.svelte";
 import Users from "./AdminPortal/Page/Users.svelte";
 import ViewBugReport from "./AdminPortal/Page/ViewBugReport.svelte";
+import ViewUser from "./AdminPortal/Page/ViewUser.svelte";
 import type { AdminPortalPage, AdminPortalPages } from "./types";
 
 export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPortalPage>([
@@ -71,6 +72,15 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
         return { users };
       },
       scopes: ["admin.users.list"],
+    },
+  ],
+  [
+    "viewUser",
+    {
+      name: "View User",
+      hidden: true,
+      icon: "",
+      content: ViewUser,
     },
   ],
   [
