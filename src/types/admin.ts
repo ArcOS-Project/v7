@@ -137,3 +137,14 @@ export interface ShareCreateOptions {
   shareName: string;
   password: string;
 }
+
+export interface UserStatistics {
+  activities: number;
+  approvals: number;
+  bughunts: number;
+  fsaccesses: number;
+  indexings: number;
+  messages: number;
+  shares: number;
+  tokens: number;
+}

@@ -12,6 +12,7 @@ import type {
   ServerLogItem,
   ServerStatistics,
   Token,
+  UserStatistics,
   UserTotp,
 } from "$types/admin";
 import type { BugReport, ReportStatistics } from "$types/bughunt";
@@ -729,6 +730,16 @@ export class AdminBootstrapper extends BaseService {
       return response.status === 200;
     } catch {
       return false;
+    }
+  }
+
+  async getStatisticsOf(userId: string): Promise<UserStatistics | undefined> {
+    try {
+      const response = await Axios.get(`/admin/users/stats/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+
+      return response.data as UserStatistics;
+    } catch {
+      return undefined;
     }
   }
 }
