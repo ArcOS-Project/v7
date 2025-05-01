@@ -1,0 +1,172 @@
+#AdminPortal div.viewUser div.page-content {
+  display: flex;
+}
+
+#AdminPortal div.viewUser div.leftpanel {
+  border-right: var(--win-border);
+  width: 45%;
+}
+
+#AdminPortal div.viewUser div.rightpanel {
+  width: 55%;
+}
+
+#AdminPortal div.viewUser div.identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  width: 100%;
+}
+
+#AdminPortal div.viewUser div.identity img {
+  width: 64px;
+  object-fit: cover;
+  height: 64px;
+  border-radius: 32px;
+}
+
+#AdminPortal div.viewUser div.section {
+  border-top: var(--win-border);
+}
+
+#AdminPortal div.viewUser div.section h1 {
+  height: 30px;
+  padding: 0 10px;
+  line-height: 30px;
+  text-transform: uppercase;
+  opacity: 0.5;
+  font-weight: bold;
+}
+
+#AdminPortal div.viewUser div.section > div {
+  border-top: var(--win-border);
+  padding: 10px;
+}
+
+#AdminPortal div.viewUser div.identity div.badges {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+#AdminPortal div.viewUser div.identity div.badges div {
+  padding: 0 6px;
+  background-color: var(--button-bg);
+  height: 20px;
+  line-height: 20px;
+  border-radius: 4px;
+}
+
+#AdminPortal div.viewUser div.identity div.badges div.admin {
+  background-color: var(--clr-purple-fg);
+  color: var(--clr-purple-bg);
+}
+
+#AdminPortal div.viewUser div.identity div.badges div.approved {
+  background-color: var(--clr-green-fg);
+  color: var(--clr-purple-bg);
+}
+
+#AdminPortal div.viewUser div.identity h1 {
+  font-size: 16px;
+}
+
+#AdminPortal div.viewUser div.identity p {
+  opacity: 0.5;
+}
+
+#AdminPortal div.viewUser div.section.quota > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#AdminPortal div.viewUser div.section.quota > div p.used {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#AdminPortal div.viewUser div.section.quota > div p.percentage {
+  opacity: 0.5;
+}
+
+#AdminPortal div.viewUser div.section.shares > div {
+  padding: 0;
+}
+
+#AdminPortal div.viewUser div.section.shares div.share-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: var(--win-border);
+  height: 36px;
+}
+
+#AdminPortal div.viewUser div.section.shares div.share-row span.lucide {
+  font-size: 16px;
+  color: var(--accent-lighter);
+  line-height: 35px;
+}
+
+#AdminPortal div.viewUser div.section.shares div.share-row div.segment.icon {
+  width: 36px;
+  height: 35px;
+  border-right: var(--win-border);
+  text-align: center;
+  font-weight: normal;
+}
+
+#AdminPortal div.viewUser div.section.shares div.share-row.header {
+  font-weight: bold;
+  background-color: var(--button-bg);
+}
+
+#AdminPortal div.viewUser div.section.shares div.segment.members,
+#AdminPortal div.viewUser div.section.shares div.segment.locked {
+  width: 36px;
+  height: 35px;
+  border-left: var(--win-border);
+  background-color: var(--button-bg);
+  line-height: 36px;
+  text-align: center;
+}
+
+#AdminPortal div.viewUser div.section.shares div.segment.locked {
+  margin-left: -10px;
+}
+
+#AdminPortal div.viewUser div.section.shares div.segment.size {
+  margin-left: auto;
+}
+
+#AdminPortal div.viewUser div.statistics {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  grid-template-rows: repeat(2, auto);
+  gap: 0;
+  padding: 0;
+  margin-bottom: -1px;
+  /* margin-left: -1px; */
+  width: calc(100% + 1px);
+}
+
+#AdminPortal div.viewUser div.statistics div.statistic {
+  height: 80px;
+  background-color: var(--button-bg);
+  border: var(--win-border);
+  margin: -0.5px;
+  padding: 10px;
+}
+
+#AdminPortal div.viewUser div.statistics div.statistic h1 {
+  text-transform: uppercase;
+  opacity: 0.5;
+  font-size: 12px;
+}
+
+#AdminPortal div.viewUser div.statistics div.statistic p.big-value {
+  font-size: 28px;
+}
