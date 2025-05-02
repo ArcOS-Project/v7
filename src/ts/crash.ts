@@ -47,7 +47,7 @@ export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
   if (!import.meta.env.DEV)
     bughunt?.sendReport(
       bughunt?.createReport({
-        title: `Crash by irrecoverable unhandled exception`,
+        title: kernel.BUGREP_TITLE,
         body: `${stack}`.replaceAll(location.href, "./"),
       })
     );
