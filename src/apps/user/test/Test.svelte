@@ -1,4 +1,8 @@
-<script lang="ts">
+<script>
+  import MarkdownEditorComponent from "$lib/MarkdownEditorComponent.svelte";
+</script>
+
+<!-- <script lang="ts">
   import { MessageBox } from "$ts/dialog";
   import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
   import type { Interpreter } from "$ts/lang/interpreter";
@@ -117,4 +121,5 @@
 </div>
 <div class="bottom">
   {output}
-</div>
+</div> -->
+<MarkdownEditorComponent />
