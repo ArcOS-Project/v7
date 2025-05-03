@@ -3,6 +3,7 @@
   const carta = new Carta({
     sanitizer: false,
     extensions: [],
+    shikiOptions: {},
   });
 
   let {
