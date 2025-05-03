@@ -6,12 +6,7 @@
     shikiOptions: {},
   });
 
-  let {
-    value = $bindable<string>(`This is an example inspired by [GitHub](https://github.com)
-\`\`\`js
-console.log('Hello, World!');
-\`\`\``),
-  } = $props();
+  let { value = $bindable() } = $props();
 </script>
 
-<MarkdownEditor bind:value mode="tabs" theme="github" {carta} />
+<MarkdownEditor bind:value mode="tabs" theme="github" scroll="async" {carta} />
