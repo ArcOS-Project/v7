@@ -1,4 +1,5 @@
 <script lang="ts">
+  import MarkdownEditorComponent from "$lib/MarkdownEditorComponent.svelte";
   import ActionBar from "./MessageComposer/ActionBar.svelte";
   import AttachmentBar from "./MessageComposer/AttachmentBar.svelte";
   import SubjectField from "./MessageComposer/SubjectField.svelte";
@@ -14,7 +15,7 @@
   <SubjectField {process} />
 </div>
 <div class="message-body">
-  <textarea name="" id="" bind:value={$body} disabled={$sending}></textarea>
+  <MarkdownEditorComponent bind:value={$body} />
 </div>
 <AttachmentBar {process} />
 <ActionBar {process} />

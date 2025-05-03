@@ -1,7 +1,5 @@
 #MessageComposer > div.body {
   padding: 0;
-  display: flex;
-  flex-direction: column;
 }
 
 #MessageComposer > div.body div.fields > div.field {
@@ -74,17 +72,18 @@
 }
 
 #MessageComposer > div.body div.message-body {
-  flex-grow: 1;
+  /* flex-grow: 1; */
+  height: calc(100% - 36px - 36px - 50px - 47px);
   border-bottom: var(--win-border);
 }
 
-#MessageComposer > div.body div.message-body textarea {
-  width: 100%;
+#MessageComposer > div.body div.message-body div.carta-editor {
   height: 100%;
-  resize: none;
-  background-color: var(--win-bg);
   border: none;
-  padding: 15px;
+}
+
+#MessageComposer > div.body div.message-body div.carta-wrapper {
+  height: calc(100% - 50px);
 }
 
 #MessageComposer > div.body div.attachment-bar {
