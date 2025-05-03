@@ -1,4 +1,5 @@
 <script lang="ts">
+  import MarkdownEditorComponent from "$lib/MarkdownEditorComponent.svelte";
   import type { BugHuntCreatorRuntime } from "../runtime";
 
   const { process }: { process: BugHuntCreatorRuntime } = $props();
@@ -44,8 +45,9 @@
       {/if}
     </div>
   </div>
-  <textarea class="body" bind:value={$body} placeholder="Report Body: Provide any particular information about the bug here."
-  ></textarea>
+  <div class="report-body">
+    <MarkdownEditorComponent bind:value={$body} />
+  </div>
   <div class="notice">
     All information you provide in a bug report is treated as confidential and will never be shared with external parties. Select <b
       >Data Privacy</b

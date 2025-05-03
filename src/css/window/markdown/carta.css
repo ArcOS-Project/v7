@@ -1,4 +1,8 @@
 .carta-theme__github {
+  .carta-container {
+    height: 100%;
+  }
+
   &.carta-editor {
     background-color: var(--win-bg);
     border: var(--win-border);
@@ -14,8 +18,7 @@
 
     .carta-input,
     .carta-renderer {
-      min-height: 120px;
-      max-height: 160px;
+      max-height: unset;
       overflow: auto;
     }
 
@@ -63,6 +66,56 @@
       display: flex;
       gap: 5px;
     }
+  }
+
+  .carta-icons-menu {
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: var(--accent-light-transparent) 1px solid;
+    padding: 5px;
+    border-radius: 10px;
+    box-shadow: var(--secondary-box-shadow);
+    position: relative;
+    z-index: 100000000000000000000000000000000000000000000000000000000 !important;
+  }
+
+  .carta-icons-menu button {
+    width: 100%;
+
+    text-align: left;
+    border: none;
+    background-color: transparent !important;
+    color: var(--fg);
+    border-radius: var(--button-border-rad) !important;
+    padding: 0 5px !important;
+    line-height: 18px;
+    transform: unset;
+    position: relative;
+    z-index: 1;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .carta-icons-menu button:hover {
+    background-color: var(--accent-light-transparent) !important;
+  }
+
+  .carta-icons-menu::before {
+    content: " ";
+    border-radius: 9px;
+    width: calc(100%);
+    height: calc(100%);
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: -2;
+    opacity: 0.2;
+    /* margin: -1px; */
+    pointer-events: none;
+    transition: all 0.3s !important;
+    background-color: var(--accent);
   }
 }
 
