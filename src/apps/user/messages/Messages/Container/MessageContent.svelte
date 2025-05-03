@@ -3,6 +3,8 @@
   import dayjs from "dayjs";
   import { onMount } from "svelte";
   import type { MessagingAppRuntime } from "../../runtime";
+  import SvelteMarkdown from "svelte-markdown";
+  import MarkdownRenderingComponent from "$lib/MarkdownRenderingComponent.svelte";
 
   const { process }: { process: MessagingAppRuntime } = $props();
   const { message, loading } = process;
@@ -36,7 +38,7 @@
       </div>
     </div>
     <p class="message-body">
-      {$message.body}
+      <MarkdownRenderingComponent source={$message.body} />
     </p>
   {/if}
 </div>
