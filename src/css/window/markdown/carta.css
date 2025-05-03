@@ -20,9 +20,9 @@
     }
 
     .carta-font-code {
-      font-family: "Fira Code", monospace;
+      font-family: "Source Code Pro", monospace;
       caret-color: var(--fg);
-      font-size: 1.1rem;
+      font-size: 14px;
     }
 
     .carta-toolbar {

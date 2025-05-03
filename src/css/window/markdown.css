@@ -1,1 +1,98 @@
 @import url("./markdown/carta.css");
+
+div.markdown-body h1 {
+  margin: 24px 0 16px;
+  padding-bottom: 8.4px;
+  border-bottom: var(--button-bg) 1px solid;
+}
+
+div.markdown-body > *:first-child {
+  margin-top: 0 !important;
+}
+
+div.markdown-body h2 {
+  margin: 24px 0 16px;
+  padding: 0 0 6.3px;
+  border-bottom: var(--button-bg) 1px solid;
+}
+
+div.markdown-body ul {
+  min-width: 100%;
+  list-style: initial;
+  margin: 0 0 16px;
+  padding-left: 2em;
+}
+
+div.markdown-body ul li {
+  display: list-item;
+  margin: 0;
+}
+div.markdown-body ul li + li {
+  margin-top: 0.25em;
+}
+
+div.markdown-body p {
+  margin: 0 0 16px !important;
+}
+
+div.markdown-body blockquote {
+  margin: 0 0 16px;
+  padding: 0 14px;
+  border-left: var(--button-hover-bg) 0.25em solid;
+  opacity: 0.6;
+}
+
+div.markdown-body pre {
+  padding: 16px;
+  background-color: var(--button-active-bg);
+  line-height: 1.45;
+  overflow: auto;
+  border-radius: var(--win-border-rad);
+}
+
+div.markdown-body pre code {
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+
+div.markdown-body code {
+  font-family: "Source Code Pro", monospace !important;
+  background-color: var(--button-active-bg);
+  padding: 2px;
+  border-radius: 5px;
+}
+
+div.markdown-body table {
+  display: block;
+  width: 100%;
+  width: max-content;
+  max-width: 100%;
+  overflow: auto;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+div.markdown-body table tr {
+  background-color: var(--button-active-bg);
+  border-top: var(--button-bg) 1px solid;
+}
+div.markdown-body table th,
+div.markdown-body table td {
+  padding: 6px 13px;
+  border: 1px solid var(--button-bg);
+  text-align: left !important;
+}
+
+div.markdown-body table tr:nth-child(2n) {
+  background-color: var(--button-bg) 1px solid;
+}
+
+div.markdown-body hr {
+  height: 1px;
+  padding: 0;
+  margin: 15px 0;
+  background-color: var(--button-bg);
+  border: 0;
+}
