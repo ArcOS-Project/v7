@@ -10,6 +10,7 @@ export const AcceleratorOverviewApp: App = {
     author: "Izaak Kuipers",
     version: "2.0.0",
     icon: KeyboardIcon,
+    appGroup: "components",
   },
   size: {
     w: 1000,

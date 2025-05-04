@@ -11,6 +11,7 @@ export const TerminalWindowApp: App = {
     version: "1.0.0",
     author: "Izaak Kuipers",
     icon: TerminalWindowIcon,
+    appGroup: "systemTools",
   },
   size: { w: 640, h: 480 },
   minSize: { w: 350, h: 250 },

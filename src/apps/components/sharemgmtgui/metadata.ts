@@ -10,6 +10,7 @@ export const ShareMgmtGuiApp: App = {
     version: "1.0.0",
     author: "Izaak Kuipers",
     icon: ShareIcon,
+    appGroup: "components",
   },
   size: {
     w: 460,

@@ -10,6 +10,7 @@ export const GlobalLoadIndicatorApp: App = {
     version: "1.0.0",
     author: "Izaak Kuipers",
     icon: ComponentIcon,
+    appGroup: "components",
   },
   size: {
     w: NaN,

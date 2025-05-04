@@ -9,6 +9,7 @@ export const ShellHostApp: App = RegisteredProcess({
     version: "1.0.0",
     author: "Izaak Kuipers",
     icon: ComponentIcon,
+    appGroup: "coreApps",
   },
   assets: {
     runtime: ShellHostRuntime,

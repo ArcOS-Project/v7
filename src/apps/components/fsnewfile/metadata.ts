@@ -10,6 +10,7 @@ export const FsNewFileApp: App = {
     version: "4.0.0",
     author: "Izaak Kuipers",
     icon: ComponentIcon,
+    appGroup: "components",
   },
   size: {
     w: 380,

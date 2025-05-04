@@ -10,6 +10,7 @@ export const ArcShellApp: App = {
     author: "Izaak Kuipers",
     version: "4.1.0",
     icon: ComponentIcon,
+    appGroup: "coreApps",
   },
   size: { w: NaN, h: NaN },
   minSize: { w: NaN, h: NaN },

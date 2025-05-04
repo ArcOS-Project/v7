@@ -10,6 +10,7 @@ export const ContextMenuApp: App = {
     author: "Izaak Kuipers",
     version: "5.0.0",
     icon: StartMenuIcon,
+    appGroup: "components",
   },
   size: { w: NaN, h: NaN },
   minSize: { w: NaN, h: NaN },

@@ -10,6 +10,7 @@ export const FsProgressApp: App = {
     author: "The ArcOS Team",
     version: "1.0.0",
     icon: ComponentIcon,
+    appGroup: "components",
   },
   size: { w: 400, h: NaN },
   minSize: { w: 400, h: 160 },

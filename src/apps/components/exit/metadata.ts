@@ -10,6 +10,7 @@ export const ExitApp: App = {
     author: "Izaak Kuipers",
     version: "6.0.0",
     icon: ShutdownIcon,
+    appGroup: "components",
   },
   position: { centered: true },
   size: { w: 380, h: 300 },

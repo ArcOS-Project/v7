@@ -10,6 +10,7 @@ export const ShortcutPropertiesApp: App = {
     version: "1.0.0",
     author: "Izaak Kuipers",
     icon: ComponentIcon,
+    appGroup: "components",
   },
   size: {
     w: 360,

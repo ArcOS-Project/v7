@@ -9,6 +9,7 @@ export const SystemShortcuts: App = RegisteredProcess({
     version: "1.0.0",
     author: "Izaak Kuipers",
     icon: ComponentIcon,
+    appGroup: "components",
   },
   assets: {
     runtime: SystemShortcutsRuntime,

@@ -10,6 +10,7 @@ export const ItemInfoApp: App = {
     version: "1.0.0",
     author: "Izaak Kuipers",
     icon: ComponentIcon,
+    appGroup: "components",
   },
   size: { w: 480, h: 520 },
   minSize: { w: 480, h: 520 },

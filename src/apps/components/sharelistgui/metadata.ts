@@ -10,6 +10,7 @@ export const ShareListGuiApp: App = {
     author: "Izaak Kuipers",
     version: "1.0.0",
     icon: ShareIcon,
+    appGroup: "components",
   },
   position: { centered: true },
   size: {

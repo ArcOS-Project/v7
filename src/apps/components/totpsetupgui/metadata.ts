@@ -10,6 +10,7 @@ export const TotpSetupGuiApp: App = {
     version: "1.0.0",
     author: "Izaak Kuipers",
     icon: ElevationIcon,
+    appGroup: "components",
   },
   size: {
     w: 370,

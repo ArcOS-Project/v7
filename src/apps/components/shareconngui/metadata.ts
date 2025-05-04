@@ -10,6 +10,7 @@ export const ShareConnGuiApp: App = {
     author: "Izaak Kuipers",
     version: "1.0.0",
     icon: ShareIcon,
+    appGroup: "components",
   },
   size: {
     w: 360,

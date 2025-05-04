@@ -10,6 +10,7 @@ export const IconPickerApp: App = {
     version: "3.0.0",
     author: "Izaak Kuipers",
     icon: IconLibraryIcon,
+    appGroup: "components",
   },
   size: {
     w: 500,

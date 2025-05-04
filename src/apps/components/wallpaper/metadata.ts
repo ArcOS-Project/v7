@@ -10,6 +10,7 @@ export const WallpaperApp: App = {
     author: "Izaak Kuipers",
     version: "3.1.0",
     icon: DesktopIcon,
+    appGroup: "coreApps",
   },
   size: { w: NaN, h: NaN },
   minSize: { w: NaN, h: NaN },

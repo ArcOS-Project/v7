@@ -10,6 +10,7 @@ export const SecureContextApp: App = {
     version: "2.0.0",
     author: "Izaak Kuipers",
     icon: SecureIcon,
+    appGroup: "components",
   },
   size: { w: 400, h: 400 },
   minSize: { w: 400, h: 400 },

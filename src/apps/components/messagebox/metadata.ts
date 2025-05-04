@@ -10,6 +10,7 @@ export const MessageBoxApp: App = {
     author: "Izaak Kuipers",
     version: "5.1.0",
     icon: ErrorIcon,
+    appGroup: "components",
   },
   size: { w: NaN, h: NaN },
   minSize: { w: NaN, h: 120 },
