@@ -89,6 +89,7 @@ export class UserDaemon extends Process {
   public mountedDrives: string[] = [];
   public server: ServerManager;
   public syncLock = false;
+  public autoLoadComplete = false;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, token: string, username: string, userInfo?: UserInfo) {
     super(handler, pid, parentPid);
@@ -295,7 +296,6 @@ export class UserDaemon extends Process {
     if (!preferences.startup)
       preferences.startup = {
         wallpaper: "app",
-        shellHost: "app",
       };
 
     const result = applyDefaults<UserPreferences>(preferences, {
@@ -945,7 +945,9 @@ export class UserDaemon extends Process {
 
     if (!userDaemonPid) return;
 
-    const { stop } = await this.GlobalLoadIndicator(`Opening ${app.metadata.name}...`);
+    let stop: (() => Promise<void>) | undefined;
+
+    if (this.autoLoadComplete) stop = (await this.GlobalLoadIndicator(`Opening ${app.metadata.name}...`)).stop;
 
     try {
       const compatibleRevision = !app.tpaRevision || ThirdPartyAppProcess.TPA_REV >= app.tpaRevision;
@@ -971,7 +973,7 @@ export class UserDaemon extends Process {
       );
 
       if (!contents) {
-        await stop();
+        await stop?.();
 
         MessageBox(
           {
@@ -998,13 +1000,13 @@ export class UserDaemon extends Process {
 
       if (!code.default || !(code.default instanceof Function)) throw new Error("Expected a default function");
 
-      stop();
+      stop?.();
 
       return await code.default(props);
     } catch (e) {
       this.handler.renderer?.notifyCrash(app as any, e as Error, app.process!);
       this.Log(`Execution error in third-party application "${app.id}": ${(e as any).stack}`);
-      stop();
+      stop?.();
     }
   }
 
@@ -1012,6 +1014,7 @@ export class UserDaemon extends Process {
     if (this._disposed) return;
 
     const shares = this.serviceHost?.getService<ShareManager>("ShareMgmt");
+    const autoloadApps: string[] = [];
 
     this.Log(`Spawning autoload applications`);
 
@@ -1023,7 +1026,7 @@ export class UserDaemon extends Process {
 
       switch (type.toLowerCase()) {
         case "app":
-          await this._spawnApp(payload, undefined, this.pid);
+          autoloadApps.push(payload);
           break;
         case "file":
           if (!this.safeMode) await this.openFile(payload);
@@ -1038,6 +1041,8 @@ export class UserDaemon extends Process {
           this.Log(`Unknown startup type: ${type.toUpperCase()} (payload: '${payload}')`);
       }
     }
+
+    await this._spawnApp("shellHost", undefined, this.pid, autoloadApps);
 
     if (this.safeMode) this.safeModeNotice();
 
@@ -1058,7 +1063,7 @@ export class UserDaemon extends Process {
     });
 
     if (navigator.userAgent.toLowerCase().includes("firefox")) {
-      MessageBox(
+      await MessageBox(
         {
           title: "Firefox support",
           message:
@@ -1070,6 +1075,8 @@ export class UserDaemon extends Process {
         true
       );
     }
+
+    this.autoLoadComplete = true;
   }
 
   checkDisabled(appId: string, noSafeMode?: boolean): boolean {
