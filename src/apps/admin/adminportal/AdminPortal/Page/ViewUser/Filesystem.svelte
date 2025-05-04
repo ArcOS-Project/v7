@@ -20,7 +20,7 @@
 
 <div class="section quota">
   <h1>Filesystem</h1>
-  <div>
+  <div class:centered={loading || !quota}>
     {#if loading}
       <Spinner height={16} />
     {:else if quota}

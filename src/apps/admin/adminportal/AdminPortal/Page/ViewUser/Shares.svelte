@@ -1,12 +1,11 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import Spinner from "$lib/Spinner.svelte";
-  import { formatBytes } from "$ts/fs/util";
+  import { Store } from "$ts/writable";
   import type { SharedDriveType } from "$types/shares";
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";
   import ShareRow from "./Shares/ShareRow.svelte";
-  import { Store } from "$ts/writable";
 
   const { process, user }: { process: AdminPortalRuntime; user: ExpandedUserInfo } = $props();
   const selection = Store<string>();
@@ -22,7 +21,7 @@
 
 <div class="section shares">
   <h1>Shares</h1>
-  <div class="share-list">
+  <div class="share-list" class:centered={loading || !shares.length}>
     {#if loading}
       <Spinner height={16} />
     {:else if shares.length}
