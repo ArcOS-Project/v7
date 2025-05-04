@@ -10,6 +10,7 @@ export const LoginApp: App = {
     author: "Izaak Kuipers",
     version: "9.0.0",
     icon: PasswordIcon,
+    appGroup: "coreApps",
   },
   size: { w: NaN, h: NaN },
   minSize: { w: NaN, h: NaN },

@@ -10,6 +10,7 @@ export const BootScreen: App = {
     author: "Izaak Kuipers",
     version: "9.0.0",
     icon: ComponentIcon,
+    appGroup: "coreApps",
   },
   size: { w: NaN, h: NaN },
   minSize: { w: NaN, h: NaN },

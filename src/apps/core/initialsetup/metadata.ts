@@ -10,6 +10,7 @@ export const InitialSetupWizard: App = {
     author: "Izaak Kuipers",
     version: "7.0.0",
     icon: WaveIcon,
+    appGroup: "coreApps",
   },
   size: { w: NaN, h: NaN },
   minSize: { w: NaN, h: NaN },
