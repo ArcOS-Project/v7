@@ -5,6 +5,7 @@
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../../runtime";
   import ListItem from "./AppList/ListItem.svelte";
+  import AppGroups from "./AppList/AppGroups.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
   const { searchResults, searchQuery, searching, SelectionIndex, userPreferences } = process;
@@ -43,12 +44,14 @@
         <p class="no-results">Couldn't find anything</p>
       {/if}
     {/if}
-  {:else}
+  {:else if $userPreferences.shell.start.noGroups}
     {#each apps as app (`${app.id}-${app.metadata.name}`)}
       {#if (isPopulatable(app) || $userPreferences.shell.visuals.showHiddenApps) && !process.userDaemon?.checkDisabled(app.id)}
         <ListItem {app} {process} />
       {/if}
     {/each}
+  {:else}
+    <AppGroups {process} {apps} />
   {/if}
 
   {#if !process.userDaemon}

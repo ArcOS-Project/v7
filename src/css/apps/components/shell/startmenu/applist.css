@@ -53,3 +53,24 @@ div.shell div.startmenu div.top div.app-list.searching {
 div.shell div.startmenu div.top div.app-list.searching button.selected {
   background-color: var(--accent-transparent);
 }
+
+div.shell div.startmenu div.top div.app-list button.expander span.lucide {
+  font-size: 16px;
+  margin-left: auto;
+  opacity: 0.5;
+  width: 16px;
+  height: 16px;
+  transition: transform 0.1s;
+}
+
+div.shell div.startmenu div.top div.app-list div.app-group div.items {
+  padding-left: 15px;
+}
+
+div.shell div.startmenu div.top div.app-list button.expander.expanded {
+  background-color: var(--accent-transparent);
+}
+
+div.shell div.startmenu div.top div.app-list button.expander.expanded span.lucide {
+  transform: rotate(90deg);
+}
