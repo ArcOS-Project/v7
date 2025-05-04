@@ -10,6 +10,7 @@ export const SystemSettings: App = {
     author: "Izaak Kuipers",
     version: "6.0.0",
     icon: SettingsIcon,
+    appGroup: "systemTools",
   },
   size: { w: 730, h: 500 },
   minSize: { w: 730, h: 500 },

@@ -10,6 +10,7 @@ export const HexEditorApp: App = {
     version: "1.0.0",
     icon: ComponentIcon,
     author: "Izaak Kuipers",
+    appGroup: "utilities",
   },
   size: { w: 700, h: 485 },
   minSize: { w: 700, h: 485 },

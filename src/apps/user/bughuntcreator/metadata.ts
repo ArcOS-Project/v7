@@ -9,6 +9,7 @@ export const BugReportsCreatorApp: App = {
     author: "Izaak Kuipers",
     version: "3.0.0",
     icon: BugReportIcon,
+    appGroup: "systemTools",
   },
   position: { centered: true },
   size: { w: 650, h: 500 },

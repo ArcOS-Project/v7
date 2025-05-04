@@ -10,6 +10,7 @@ export const ProcessesApp: App = {
     version: "3.0.0",
     author: "Izaak Kuipers",
     icon: ProcessManagerIcon,
+    appGroup: "systemTools",
   },
   size: {
     w: 750,

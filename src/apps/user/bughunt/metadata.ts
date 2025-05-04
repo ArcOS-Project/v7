@@ -10,6 +10,7 @@ export const BugHuntApp: App = {
     version: "3.0.0",
     author: "Izaak Kuipers",
     icon: BugReportIcon,
+    appGroup: "systemTools",
   },
   position: { centered: true },
   size: { w: 920, h: 550 },

@@ -10,6 +10,7 @@ export const CameraApp: App = {
     version: "1.0.0",
     author: "Izaak Kuipers",
     icon: CameraIcon,
+    appGroup: "multimedia",
   },
   size: {
     w: 560,

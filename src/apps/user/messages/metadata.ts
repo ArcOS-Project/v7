@@ -10,6 +10,7 @@ export const MessagingApp: App = {
     version: "3.0.0",
     author: "Izaak Kuipers",
     icon: MessagingIcon,
+    appGroup: "multimedia",
   },
   position: { centered: true },
   size: {

@@ -10,6 +10,7 @@ export const MediaPlayerApp: App = {
     author: "Izaak Kuipers",
     version: "4.0.0",
     icon: MediaPlayerIcon,
+    appGroup: "multimedia",
   },
   size: {
     w: 820,

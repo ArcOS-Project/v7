@@ -10,6 +10,7 @@ export const FileManagerApp: App = {
     author: "Izaak Kuipers",
     version: "8.0.0",
     icon: FileManagerIcon,
+    appGroup: "utilities",
   },
   size: {
     w: 800,

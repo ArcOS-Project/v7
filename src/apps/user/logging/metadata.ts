@@ -10,6 +10,7 @@ export const LoggingApp: App = {
     version: "3.0.0",
     author: "Izaak Kuipers",
     icon: LoggerIcon,
+    appGroup: "systemTools",
   },
   size: {
     w: 680,

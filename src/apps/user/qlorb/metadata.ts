@@ -10,6 +10,7 @@ export const QlorbApp: App = {
     author: "Izaak Kuipers",
     version: "1.0.0",
     icon: QlorbIcon,
+    appGroup: "entertainment",
   },
   position: { centered: true },
   size: { w: 890, h: NaN },

@@ -10,6 +10,7 @@ export const CalculatorApp: App = {
     version: "4.0.0",
     author: "Izaak Kuipers",
     icon: CalculatorIcon,
+    appGroup: "utilities",
   },
   position: {
     centered: true,

@@ -8,6 +8,7 @@ export const ArcTermApp: App = {
     version: "4.0.0",
     author: "Izaak Kuipers",
     icon: ArcTermIcon,
+    appGroup: "utilities",
   },
   size: {
     w: 640,

@@ -10,6 +10,7 @@ export const WriterApp: App = {
     author: "Izaak Kuipers",
     version: "5.0.0",
     icon: TextMimeIcon,
+    appGroup: "utilities",
   },
   size: {
     w: 700,

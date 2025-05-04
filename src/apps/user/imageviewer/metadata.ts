@@ -10,6 +10,7 @@ export const ImageViewerApp: App = {
     version: "4.0.0",
     author: "Izaak Kuipers",
     icon: ImageViewerIcon,
+    appGroup: "multimedia",
   },
   size: { w: 640, h: 480 },
   minSize: { w: 300, h: 200 },

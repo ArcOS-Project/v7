@@ -10,6 +10,7 @@ export const TestApp: App = {
     author: "Izaak Kuipers",
     version: "25.0.0",
     icon: ConnectIcon,
+    appGroup: "utilities",
   },
   size: {
     w: 640,

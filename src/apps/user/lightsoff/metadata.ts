@@ -10,6 +10,7 @@ export const LightsOffApp: App = {
     version: "3.0.0",
     author: "Tim Horton, ported by Izaak Kuipers",
     icon: LightsOffIcon,
+    appGroup: "entertainment",
   },
   size: {
     w: 442,

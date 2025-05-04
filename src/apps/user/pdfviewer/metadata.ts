@@ -10,6 +10,7 @@ export const PdfViewerApp: App = {
     version: "1.0.0",
     author: "Izaak Kuipers",
     icon: PdfMimeIcon,
+    appGroup: "utilities",
   },
   size: {
     w: 600,
