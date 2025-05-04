@@ -58,6 +58,7 @@ export interface AppMetadata {
   version: string;
   author: string;
   icon: string;
+  appGroup?: string;
 }
 
 export interface AppState {

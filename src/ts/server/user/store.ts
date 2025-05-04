@@ -360,3 +360,13 @@ export const DefaultThirdPartyAppData = {
   glass: false,
   id: "template",
 };
+
+export const AppGroups: Record<string, string> = {
+  multimedia: "Multimedia",
+  systemTools: "System Tools",
+  utilities: "Utilities",
+  thirdParty: "Third-party apps",
+  components: "Components",
+  coreApps: "Core Applications",
+  entertainment: "Entertainment",
+};
