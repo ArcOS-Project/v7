@@ -30,5 +30,6 @@ export const BugReportsCreatorApp: App = {
     runtime: BugHuntCreatorRuntime,
     component: Creator as any,
   },
+  hidden: true,
   id: "BugHuntCreator",
 };
