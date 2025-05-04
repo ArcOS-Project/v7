@@ -44,6 +44,14 @@
   padding: 10px;
 }
 
+#AdminPortal div.viewUser div.section > div.centered {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
+}
+
 #AdminPortal div.viewUser div.identity div.badges {
   display: flex;
   align-items: center;
