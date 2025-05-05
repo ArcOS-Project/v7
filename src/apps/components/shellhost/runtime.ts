@@ -10,7 +10,6 @@ import type { UserPreferencesStore } from "$types/user";
 import type { ShellRuntime } from "../shell/runtime";
 
 export class ShellHostRuntime extends Process {
-  public _criticalProcess: boolean = true;
   private autoloadApps: string[];
   readonly shellComponents: string[] = ["contextMenu", "SystemShortcutsProc"];
   userDaemon: UserDaemon | undefined;
