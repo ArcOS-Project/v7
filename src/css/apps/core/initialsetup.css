@@ -1,7 +1,12 @@
 #initialSetupWizard {
-  background-image: url("../../../assets/bg/img15.jpg");
+  background-image: url("../../../assets/bg/img18.jpg");
   background-position: center;
   background-size: cover;
+}
+
+#initialSetupWizard * {
+  --accent: #ff6e54;
+  --accent-light: #ff6e54;
 }
 
 #initialSetupWizard::before {
@@ -38,6 +43,7 @@
   opacity: 0;
   pointer-events: none;
   transition: scale 0.3s, opacity 0.3s, pointer-events 0s;
+  overflow: hidden;
 }
 
 #initialSetupWizard div.container.show {
@@ -64,6 +70,7 @@
   align-items: center;
   height: 51px;
   border-top: var(--win-border);
+  background-color: var(--win-bg);
   padding: 10px;
   justify-content: end;
   gap: 10px;

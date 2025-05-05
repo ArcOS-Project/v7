@@ -70,6 +70,9 @@ export class ServerManager extends KernelModule {
       if (validation !== VALIDATION_STR) throw new Error("Server validation string doesn't match ours");
 
       this.connected = true;
+
+      data.loginWallpaper = false;
+
       this.serverInfo = data;
 
       this.Log("Connection is good to go :D");

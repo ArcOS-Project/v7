@@ -5,7 +5,7 @@ div.window#loginApp > div.body {
 }
 
 div.window#loginApp > div.body div.container {
-  background: linear-gradient(to bottom, #0006 0%, #0006 100%), var(--bgurl);
+  background: linear-gradient(to bottom, #0007 0%, #0007 100%), var(--bgurl);
   background-position: center;
   background-size: cover;
   transition: all 0.3s !important;

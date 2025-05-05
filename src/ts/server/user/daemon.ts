@@ -382,7 +382,7 @@ export class UserDaemon extends Process {
       desktopWallpaper: data.desktop.wallpaper,
       desktopTheme: data.desktop.theme,
       desktopAccent: data.desktop.accent,
-      loginBackground: data.account.loginBackground || "img15",
+      loginBackground: data.account.loginBackground || "img18",
     };
   }
 
@@ -426,7 +426,7 @@ export class UserDaemon extends Process {
       userPreferences.desktop.wallpaper = data.desktopWallpaper;
       userPreferences.desktop.accent = data.desktopAccent;
       userPreferences.desktop.theme = data.desktopTheme;
-      userPreferences.account.loginBackground = data.loginBackground || "img15";
+      userPreferences.account.loginBackground = data.loginBackground || "img18";
 
       if (id) userPreferences.currentThemeId = id;
 

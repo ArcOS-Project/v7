@@ -38,10 +38,11 @@ export class LoginAppRuntime extends AppProcess {
     this.DEFAULT_WALLPAPER.set(
       server.serverInfo?.loginWallpaper
         ? `${server.url}/loginbg?authcode=${import.meta.env.DW_SERVER_AUTHCODE}`
-        : Wallpapers.img15.url
+        : Wallpapers.img18.url
     );
 
-    this.unexpectedInvocation = this.kernel.state?.currentState !== "boot" && !props?.type;
+    this.unexpectedInvocation =
+      this.kernel.state?.currentState !== "boot" && this.kernel.state?.currentState !== "initialSetup" && !props?.type;
     this.serverInfo = server.serverInfo;
     this.safeMode = !!(props?.safeMode || this.env.get("safemode"));
     if (this.safeMode) this.env.set("safemode", true);
@@ -200,7 +201,7 @@ export class LoginAppRuntime extends AppProcess {
       await userDaemon.activateAdminBootstrapper();
     }
 
-    this.loadingStatus.set("Activating BHUSP");
+    this.loadingStatus.set("Activating user bug reports");
     await userDaemon.activateBugHuntUserSpaceProcess();
 
     this.loadingStatus.set("Starting status refresh");
