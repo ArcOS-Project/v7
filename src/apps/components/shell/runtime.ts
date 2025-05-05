@@ -341,7 +341,7 @@ export class ShellRuntime extends AppProcess {
       const thirdParty = app.thirdParty || app.entrypoint;
 
       if (
-        (preferences.searchOptions.showHiddenApps ? true : populatable) &&
+        (preferences.searchOptions.showHiddenApps || preferences.shell.visuals.showHiddenApps ? true : populatable) &&
         (preferences.searchOptions.showThirdPartyApps ? true : !thirdParty)
       ) {
         result.push({

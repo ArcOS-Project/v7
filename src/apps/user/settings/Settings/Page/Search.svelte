@@ -45,9 +45,15 @@
       </Option>
     </Section>
     <Section caption="Apps">
-      <Option caption="Hidden apps">
-        <input type="checkbox" class="switch" bind:checked={$userPreferences.searchOptions.showHiddenApps} />
-      </Option>
+      {#if !$userPreferences.shell.visuals.showHiddenApps}
+        <Option caption="Hidden apps">
+          <input type="checkbox" class="switch" bind:checked={$userPreferences.searchOptions.showHiddenApps} />
+        </Option>
+      {:else}
+        <Option caption="Hidden apps (enabled system-wide)">
+          <input type="checkbox" class="switch" checked disabled />
+        </Option>
+      {/if}
       <Option caption="Third-party apps">
         <input type="checkbox" class="switch" bind:checked={$userPreferences.searchOptions.showThirdPartyApps} />
       </Option>
