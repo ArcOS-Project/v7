@@ -1,9 +1,14 @@
 <script lang="ts">
-  import SvelteMarkdown from "svelte-markdown";
+  import { Carta, Markdown } from "carta-md";
 
   const { source }: { source: string } = $props();
+  const carta = new Carta({
+    sanitizer: false,
+    extensions: [],
+    shikiOptions: {},
+  });
 </script>
 
 <div class="markdown-body">
-  <SvelteMarkdown {source}></SvelteMarkdown>
+  <Markdown value={source} {carta} />
 </div>
