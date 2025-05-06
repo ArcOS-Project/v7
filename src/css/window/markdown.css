@@ -6,6 +6,18 @@ div.markdown-body h1 {
   border-bottom: var(--button-bg) 1px solid;
 }
 
+div.markdown-body h1 {
+  font-size: 26px;
+}
+
+div.markdown-body h2 {
+  font-size: 19px;
+}
+
+div.markdown-body h3 {
+  font-size: 15px;
+}
+
 div.markdown-body > *:first-child {
   margin-top: 0 !important;
 }
