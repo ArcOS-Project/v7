@@ -42,6 +42,7 @@
 #AdminPortal div.viewUser div.section > div {
   border-top: var(--win-border);
   padding: 10px;
+  min-height: 36px;
 }
 
 #AdminPortal div.viewUser div.section > div.centered {
@@ -150,6 +151,33 @@
   margin-left: auto;
 }
 
+#AdminPortal div.viewUser div.rightpanel div.section > div {
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+#AdminPortal div.viewUser div.rightpanel div.section > div input {
+  flex-grow: 1;
+  height: 36px;
+  border: none;
+  border-radius: 0;
+}
+
+#AdminPortal div.viewUser div.rightpanel div.section:last-child > div {
+  border-bottom: var(--win-border);
+}
+
+#AdminPortal div.viewUser div.rightpanel div.section > div div.buttons {
+  display: flex;
+}
+
+#AdminPortal div.viewUser div.rightpanel div.section > div button {
+  height: 36px;
+  border: none;
+  border-radius: 0;
+  border-left: var(--win-border);
+}
+
 #AdminPortal div.viewUser div.statistics {
   display: grid;
   grid-template-columns: repeat(4, auto);
@@ -177,4 +205,17 @@
 
 #AdminPortal div.viewUser div.statistics div.statistic p.big-value {
   font-size: 28px;
+}
+
+#AdminPortal div.viewUser div.quick-actions {
+  display: flex;
+  align-items: center;
+  height: 35px;
+  margin-top: 1px;
+}
+
+#AdminPortal div.viewUser div.quick-actions button {
+  height: 35px;
+  border-radius: 0;
+  border-right: var(--win-border);
 }
