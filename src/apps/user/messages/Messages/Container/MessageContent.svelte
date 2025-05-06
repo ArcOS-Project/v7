@@ -1,10 +1,9 @@
 <script lang="ts">
+  import MarkdownRenderingComponent from "$lib/MarkdownRenderingComponent.svelte";
   import type { PublicUserInfo } from "$types/user";
   import dayjs from "dayjs";
   import { onMount } from "svelte";
   import type { MessagingAppRuntime } from "../../runtime";
-  import SvelteMarkdown from "svelte-markdown";
-  import MarkdownRenderingComponent from "$lib/MarkdownRenderingComponent.svelte";
 
   const { process }: { process: MessagingAppRuntime } = $props();
   const { message, loading } = process;
