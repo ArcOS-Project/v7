@@ -6,7 +6,7 @@
   import type { MessagingAppRuntime } from "../../runtime";
 
   const { process }: { process: MessagingAppRuntime } = $props();
-  const { message, loading } = process;
+  const { message } = process;
   const userId = process.userDaemon!.userInfo!._id;
   const isSent = $message?.authorId === userId;
 
