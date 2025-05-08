@@ -155,10 +155,11 @@
   display: flex;
   align-items: center;
   padding: 0;
+  min-height: unset;
 }
 #AdminPortal div.viewUser div.rightpanel div.section > div input {
   flex-grow: 1;
-  height: 36px;
+  height: 30px;
   border: none;
   border-radius: 0;
 }
@@ -171,8 +172,11 @@
   display: flex;
 }
 
+#AdminPortal div.viewUser div.rightpanel div.section > h1 {
+  background-color: var(--button-glass-bg);
+}
 #AdminPortal div.viewUser div.rightpanel div.section > div button {
-  height: 36px;
+  height: 30px;
   border: none;
   border-radius: 0;
   border-left: var(--win-border);
@@ -184,16 +188,15 @@
   grid-template-rows: repeat(2, auto);
   gap: 0;
   padding: 0;
-  margin-bottom: -1px;
   /* margin-left: -1px; */
-  width: calc(100% + 1px);
+  width: calc(100%);
 }
 
 #AdminPortal div.viewUser div.statistics div.statistic {
   height: 80px;
   background-color: var(--button-bg);
-  border: var(--win-border);
-  margin: -0.5px;
+  border-right: var(--win-border);
+  border-bottom: var(--win-border);
   padding: 10px;
 }
 
@@ -207,15 +210,32 @@
   font-size: 28px;
 }
 
+#AdminPortal div.viewUser div.split {
+  display: flex;
+  align-items: start;
+  height: calc(100% - 157px);
+}
+
+#AdminPortal div.viewUser div.split div.resets {
+  width: calc(100% - 35px);
+  height: 100%;
+  border-right: var(--win-border);
+}
+
 #AdminPortal div.viewUser div.quick-actions {
   display: flex;
   align-items: center;
-  height: 35px;
-  margin-top: 1px;
+  height: 100%;
+  width: 35px;
+  display: flex;
+  flex-direction: column;
 }
 
 #AdminPortal div.viewUser div.quick-actions button {
-  height: 35px;
+  height: 36px;
+  width: 35px;
   border-radius: 0;
-  border-right: var(--win-border);
+  padding: 0;
+  border-bottom: var(--win-border);
+  font-size: 16px;
 }
