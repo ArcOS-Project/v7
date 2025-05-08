@@ -15,6 +15,15 @@
   display: flex;
 }
 
+#AdminPortal > div.body .suggested {
+  min-width: unset;
+}
+
+#AdminPortal > div.body :disabled {
+  opacity: 1;
+  color: var(--button-glass-hover-bg);
+}
+
 #AdminPortal > div.body *,
 #AdminPortal > div.body *::before,
 #AdminPortal > div.body *::after {
