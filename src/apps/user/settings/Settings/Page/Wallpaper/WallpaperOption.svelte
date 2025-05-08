@@ -1,5 +1,7 @@
 <script lang="ts">
+  import Spinner from "$lib/Spinner.svelte";
   import type { UserDaemon } from "$ts/server/user/daemon";
+  import { Wallpapers } from "$ts/wallpaper/store";
   import type { UserPreferencesStore } from "$types/user";
   import type { Wallpaper } from "$types/wallpaper";
   import { onMount } from "svelte";
@@ -13,14 +15,17 @@
 
   const { id, userPreferences, userDaemon, isLogin = false }: Props = $props();
 
-  let wallpaper = $state<Wallpaper>();
+  let wallpaper = $state<Wallpaper>(Wallpapers.img0);
+  let loading = $state<boolean>(true);
 
   onMount(() => {
     getWallpaper();
   });
 
   async function getWallpaper() {
+    loading = true;
     wallpaper = await userDaemon.getWallpaper(id);
+    loading = false;
   }
 
   function apply() {
@@ -38,8 +43,14 @@
     onclick={apply}
     class:selected={isLogin ? $userPreferences.account.loginBackground === id : $userPreferences.desktop.wallpaper === id}
   >
-    <div class="selected-overlay">
-      <span class="lucide icon-check"></span>
-    </div>
+    {#if !loading}
+      <div class="selected-overlay">
+        <span class="lucide icon-check"></span>
+      </div>
+    {:else}
+      <div class="loading">
+        <Spinner height={24} />
+      </div>
+    {/if}
   </button>
 {/if}
