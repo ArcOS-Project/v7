@@ -11,7 +11,7 @@
   let expand = $state<boolean>(false);
 </script>
 
-{#if apps.filter((a) => a.metadata.appGroup === id).length}
+{#if apps.filter((a) => a.metadata.appGroup === id && (isPopulatable(a) || $userPreferences.shell.visuals.showHiddenApps)).length}
   <div class="app-group">
     <button class="list-item expander" class:expanded={expand} onclick={() => (expand = !expand)}>
       <img src={FolderIcon} alt="" />
