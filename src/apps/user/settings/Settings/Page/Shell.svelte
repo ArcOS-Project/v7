@@ -66,4 +66,9 @@
       />
     </Option>
   </Section>
+  <Section caption="Start Menu">
+    <Option caption="Disable app groups">
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.start.noGroups} />
+    </Option>
+  </Section>
 </div>
