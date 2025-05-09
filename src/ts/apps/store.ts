@@ -25,6 +25,7 @@ import { SystemShortcuts } from "$apps/components/systemshortcuts/metadata";
 import { TerminalWindowApp } from "$apps/components/terminalwindow/metadata";
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/metadata";
 import { TotpSetupGuiApp } from "$apps/components/totpsetupgui/metadata";
+import { TrayHost } from "$apps/components/trayhost/metadata";
 import { WallpaperApp } from "$apps/components/wallpaper/metadata";
 import { BootScreen } from "$apps/core/bootscreen/metadata";
 import { InitialSetupWizard } from "$apps/core/initialsetup/metadata";
@@ -79,6 +80,7 @@ export const BuiltinApps: AppStorage = [
   LightsOffApp,
   AcceleratorOverviewApp,
   TerminalWindowApp,
+  TrayHost,
   ArcTermApp,
   CalculatorApp,
   TotpAuthGuiApp,

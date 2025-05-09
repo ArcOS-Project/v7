@@ -106,7 +106,7 @@ export class AppProcess extends Process {
       return;
     }
 
-    this.shell?.disposeProcessTrayIcons?.(this.pid);
+    this.shell?.trayHost.disposeProcessTrayIcons?.(this.pid);
 
     if (this.getWindow()?.classList.contains("fullscreen"))
       this.systemDispatch.dispatch("window-unfullscreen", [this.pid, this.app.desktop]);

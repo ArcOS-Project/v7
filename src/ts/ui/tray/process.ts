@@ -52,7 +52,7 @@ export class TrayIconProcess extends Process {
   async stop() {
     if (this.componentMount && Object.entries(this.componentMount).length) unmount(this.componentMount);
 
-    this.shell.disposeTrayIcon?.(this.targetPid, this.identifier);
+    this.shell.trayHost.disposeTrayIcon?.(this.targetPid, this.identifier);
   }
 
   async renderPopup(popup: HTMLDivElement, target: Process) {}
