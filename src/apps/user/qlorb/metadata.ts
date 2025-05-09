@@ -32,5 +32,6 @@ export const QlorbApp: App = {
     component: Qlorb as any,
     runtime: QlorbRuntime,
   },
+  noSafeMode: true,
   id: "QlorbApp",
 };
