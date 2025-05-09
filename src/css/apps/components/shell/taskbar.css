@@ -18,6 +18,10 @@ div.shell div.taskbar {
   transition: translate 0.3s;
 }
 
+div.shell.docked div.taskbar.shell-colored::before {
+  border-radius: 0;
+}
+
 div.shell.has-fullscreen div.taskbar {
   translate: 0 70px;
 }
