@@ -7,8 +7,6 @@ import { DesktopIcon } from "$ts/images/general";
 import { DefaultMimeIcon } from "$ts/images/mime";
 import { LogoutIcon, RestartIcon, ShutdownIcon } from "$ts/images/power";
 import type { ProcessHandler } from "$ts/process/handler";
-import { Sleep } from "$ts/sleep";
-import { TrayIconProcess } from "$ts/ui/tray/process";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
@@ -19,7 +17,8 @@ import Fuse, { type FuseResult } from "fuse.js";
 import { fetchWeatherApi } from "openmeteo";
 import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
-import type { TrayIconDiscriminator, TrayIconOptions, WeatherInformation } from "./types";
+import type { WeatherInformation } from "./types";
+import type { TrayHostRuntime } from "../trayhost/runtime";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
@@ -31,8 +30,8 @@ export class ShellRuntime extends AppProcess {
   public searching = Store<boolean>(false);
   public SelectionIndex = Store<number>(0);
   public FullscreenCount = Store<Record<string, number>>({});
-  public trayIcons = Store<Record<TrayIconDiscriminator, TrayIconProcess>>({});
   public openedTrayPopup = Store<string>();
+  public trayHost: TrayHostRuntime;
   public ready = Store<boolean>(false);
 
   private fileSystemIndex: PathedFileEntry[] = [];
@@ -40,6 +39,8 @@ export class ShellRuntime extends AppProcess {
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
+
+    this.trayHost = this.handler.getProcess(+this.env.get("trayhost_pid"))!;
 
     this.systemDispatch.subscribe("stack-busy", () => this.stackBusy.set(true));
     this.systemDispatch.subscribe("stack-not-busy", () => this.stackBusy.set(false));
@@ -88,6 +89,7 @@ export class ShellRuntime extends AppProcess {
     });
 
     this.dispatch.subscribe("ready", () => {
+      this.trayHost = this.handler.getProcess(+this.env.get("trayhost_pid"))!;
       this.ready.set(true);
     });
 
@@ -415,64 +417,6 @@ export class ShellRuntime extends AppProcess {
 
     // Trigger the selected search result
     this.Trigger(results[index == -1 ? 0 : index].item);
-  }
-
-  async createTrayIcon(
-    pid: number,
-    identifier: string,
-    options: TrayIconOptions,
-    process: typeof TrayIconProcess = TrayIconProcess
-  ) {
-    await this.handler.waitForAvailable();
-    const trayIcons = this.trayIcons();
-
-    if (trayIcons[`${pid}#${identifier}`]) return false;
-
-    const proc = await this.handler.spawn<TrayIconProcess>(process, undefined, pid, {
-      ...options,
-      pid,
-      identifier,
-    });
-
-    if (!proc) return false;
-
-    trayIcons[`${pid}#${identifier}`] = proc;
-
-    this.trayIcons.set(trayIcons);
-    this.systemDispatch.dispatch("tray-icon-create", [pid, identifier]);
-
-    await Sleep(100);
-
-    proc.__render();
-
-    return true;
-  }
-
-  async disposeTrayIcon(pid: number, identifier: string) {
-    const trayIcons = this.trayIcons();
-    const discriminator: TrayIconDiscriminator = `${pid}#${identifier}`;
-
-    if (!trayIcons[discriminator]) return false;
-
-    await this.handler.kill(trayIcons[discriminator].pid);
-
-    delete trayIcons[discriminator];
-
-    this.trayIcons.set(trayIcons);
-    this.systemDispatch.dispatch("tray-icon-dispose", [pid, identifier]);
-  }
-
-  disposeProcessTrayIcons(pid: number) {
-    const trayIcons = this.trayIcons();
-
-    for (const id of Object.keys(trayIcons) as TrayIconDiscriminator[]) {
-      if (id.startsWith(`${pid}#`)) {
-        this.disposeTrayIcon(pid, id.split("#")[1]);
-      }
-    }
-
-    this.trayIcons.set(trayIcons);
-    this.systemDispatch.dispatch("tray-icon-dispose", [pid]);
   }
 
   async exit() {

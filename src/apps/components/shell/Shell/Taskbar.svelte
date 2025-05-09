@@ -10,7 +10,8 @@
   import WorkspaceManagerButton from "./Taskbar/WorkspaceManagerButton.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
-  const { userPreferences, trayIcons } = process;
+  const { userPreferences, trayHost } = process;
+  const { trayIcons } = trayHost;
 </script>
 
 <div
