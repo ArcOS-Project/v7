@@ -32,5 +32,6 @@ export const ExitApp: App = {
     runtime: ExitRuntime,
     component: Exit as any,
   },
+  hidden: true,
   id: "ExitApp",
 };
