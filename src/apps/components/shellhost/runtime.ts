@@ -8,10 +8,11 @@ import { Sleep } from "$ts/sleep";
 import type { AppProcessData } from "$types/app";
 import type { UserPreferencesStore } from "$types/user";
 import type { ShellRuntime } from "../shell/runtime";
+import type { TrayHostRuntime } from "../trayhost/runtime";
 
 export class ShellHostRuntime extends Process {
   private autoloadApps: string[];
-  readonly shellComponents: string[] = ["contextMenu", "SystemShortcutsProc"];
+  readonly shellComponents: string[] = ["contextMenu", "SystemShortcutsProc", "TrayHostProc"];
   userDaemon: UserDaemon | undefined;
   userPreferences: UserPreferencesStore;
 
@@ -26,6 +27,7 @@ export class ShellHostRuntime extends Process {
   async start() {
     if (this.userDaemon?.autoLoadComplete) return false;
 
+    const procs: Record<string, Process> = {};
     // TODO: abstract the tray icon handling from the shell
     const proc = await this.userDaemon?._spawnApp<ShellRuntime>(
       this.userPreferences().globalSettings.shellExec,
@@ -33,16 +35,18 @@ export class ShellHostRuntime extends Process {
       this.pid
     );
 
-    await proc?.createTrayIcon?.(this.pid, "shellHost_loading", {
+    for (const id of this.shellComponents) {
+      procs[id] = (await this.userDaemon!._spawnApp(id, undefined, this.pid))!;
+    }
+
+    const trayHost = procs.TrayHostProc as TrayHostRuntime;
+
+    await trayHost?.createTrayIcon(this.pid, "shellHost_loading", {
       icon: SpinnerIcon,
     });
 
-    for (const id of this.shellComponents) {
-      await this.userDaemon?._spawnApp(id, undefined, this.pid);
-    }
-
     await new Promise<void>(async (r) => {
-      while (!this.env.get("shell_pid")) await Sleep(1);
+      while (!this.env.get("shell_pid") || !this.env.get("trayhost_pid")) await Sleep(1);
       r();
     });
 
@@ -54,12 +58,12 @@ export class ShellHostRuntime extends Process {
       await this.userDaemon?._spawnApp(app, undefined, this.pid);
     }
 
-    proc?.trayIcons.update((v) => {
+    trayHost?.trayIcons.update((v) => {
       v[`${this.pid}#shellHost_loading`]!.icon = GoodStatusIcon;
       return v;
     });
 
     await Sleep(1000);
-    await proc?.disposeTrayIcon?.(this.pid, "shellHost_loading");
+    await trayHost?.disposeTrayIcon(this.pid, "shellHost_loading");
   }
 }
