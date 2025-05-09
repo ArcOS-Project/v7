@@ -19,8 +19,8 @@
 
 <div class="process-tree">
   {#each [...map] as [pid, proc], i (`${i}-${pid} ${proc.name}`)}
-    {#if !proc.parentPid}
-      <Row {proc} {pid} {process} />
+    {#if !proc.parentPid || !handler.getProcess(proc.parentPid)}
+      <Row {proc} {pid} {process} orphan={!handler.getProcess(proc.parentPid)} />
     {/if}
   {/each}
 </div>

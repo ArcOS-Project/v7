@@ -149,3 +149,7 @@
   margin-bottom: -28px;
   opacity: 0;
 }
+
+#processManager > div.body div.row.orphan {
+  color: var(--clr-red-fg);
+}
