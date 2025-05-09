@@ -4,11 +4,11 @@
 
 #AdminPortal div.viewUser div.leftpanel {
   border-right: var(--win-border);
-  width: 45%;
+  width: calc(100% - 400px);
 }
 
 #AdminPortal div.viewUser div.rightpanel {
-  width: 55%;
+  width: 400px;
 }
 
 #AdminPortal div.viewUser div.identity {
@@ -164,6 +164,10 @@
   border-radius: 0;
 }
 
+#AdminPortal div.viewUser div.rightpanel div.section:first-child {
+  border-top: none;
+}
+
 #AdminPortal div.viewUser div.rightpanel div.section:last-child > div {
   border-bottom: var(--win-border);
 }
@@ -184,8 +188,8 @@
 
 #AdminPortal div.viewUser div.statistics {
   display: grid;
-  grid-template-columns: repeat(4, auto);
-  grid-template-rows: repeat(2, auto);
+  grid-template-columns: repeat(2, auto);
+  grid-template-rows: repeat(4, auto);
   gap: 0;
   padding: 0;
   /* margin-left: -1px; */
@@ -193,11 +197,14 @@
 }
 
 #AdminPortal div.viewUser div.statistics div.statistic {
-  height: 80px;
+  height: 58px;
   background-color: var(--button-bg);
   border-right: var(--win-border);
   border-bottom: var(--win-border);
   padding: 10px;
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
 }
 
 #AdminPortal div.viewUser div.statistics div.statistic h1 {
