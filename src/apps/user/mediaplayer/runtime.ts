@@ -88,7 +88,7 @@ export class MediaPlayerRuntime extends AppProcess {
       else this.readFile([file]);
     }
 
-    this.shell?.createTrayIcon?.(this.pid, this.app.id, {
+    this.shell?.trayHost.createTrayIcon?.(this.pid, this.app.id, {
       icon: MediaPlayerIcon,
       popup: {
         width: 250,
