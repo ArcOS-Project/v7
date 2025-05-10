@@ -34,7 +34,7 @@ div.shell div.actioncenter div.top div.card-stack div.card.weather * {
 }
 
 div.shell div.actioncenter div.top div.card-stack div.card.weather span.condition-icon {
-  color: var(--icon-color, var(--fg));
+  color: var(--color, var(--fg));
 }
 
 div.shell div.actioncenter div.top div.card-stack div.card.weather * {

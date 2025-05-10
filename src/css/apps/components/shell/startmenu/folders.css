@@ -37,4 +37,5 @@ div.shell div.startmenu div.top div.folders {
   background-color: var(--button-glass-bg);
   border-radius: 7.5px;
   padding: 10px;
+  box-shadow: var(--secondary-box-shadow);
 }

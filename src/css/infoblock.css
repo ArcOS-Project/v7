@@ -4,6 +4,10 @@ div.window:not(.core) div.body div.info-block {
   box-shadow: var(--secondary-box-shadow);
 }
 
+.theme-light div.window:not(.core) div.body div.info-block {
+  background-color: var(--win-bg);
+}
+
 div.window:not(.core) div.body div.info-block button {
   background-color: var(--button-glass-bg);
 }

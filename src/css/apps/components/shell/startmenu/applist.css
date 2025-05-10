@@ -17,6 +17,10 @@ div.shell div.startmenu div.top div.app-list button {
   text-align: left;
 }
 
+.theme-light #arcShell > div.body div.shell div.startmenu div.top div.app-list button {
+  --button-glass-bg: #0001 !important;
+}
+
 div.shell div.startmenu div.top div.app-list button span p,
 div.shell div.startmenu div.top div.app-list button span {
   overflow: hidden;

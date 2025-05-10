@@ -4,7 +4,7 @@
   --win-border-rad: 10px;
   --win-border: rgb(192, 192, 192) 1px solid;
   --win-border-light: rgb(195, 195, 195) 1px solid;
-  --glass-bg: #ffffffcc;
+  --glass-bg: #ffffffdd;
   --glass-alt-bg: #ffffff44;
   --glass-ultralight: rgba(255, 255, 255, 0.267);
   --glass-ultradark: rgba(232, 232, 232, 0.64);
@@ -47,7 +47,7 @@
   --clr-purple-bright-fg: #995aff;
   --accent-darken: brightness(0.7);
   --secondary-border: var(--win-bg) 1px solid;
-  --secondary-box-shadow: none;
+  --secondary-box-shadow: 0 2px 5px 2px #0002;
 }
 
 :root .theme-light.noglass {
@@ -55,4 +55,8 @@
   --glass-alt-bg: #eee;
   --glass-ultralight: #eeeeee;
   --glass-ultradark: #bbbbbb;
+}
+
+.theme-light #arcShell > div.body * {
+  --button-glass-bg: #ffffffea !important;
 }

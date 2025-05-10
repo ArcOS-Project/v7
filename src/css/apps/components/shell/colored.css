@@ -27,3 +27,11 @@
 #arcShell div.shell-colored.colored * {
   --border: var(--accent-light-transparent) 1px solid;
 }
+
+.theme-light .shell-colored {
+  --border: var(--win-border) !important;
+}
+
+.theme-light .shell-colored::before {
+  display: none;
+}

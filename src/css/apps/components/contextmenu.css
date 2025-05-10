@@ -100,7 +100,7 @@
 }
 
 #contextMenu div.context-menu.colored button.menu-item:not(.subitems):active {
-  background-color: var(--accent-dark);
+  background-color: var(--accent-transparent);
   color: var(--accent-light);
   box-shadow: none;
 }

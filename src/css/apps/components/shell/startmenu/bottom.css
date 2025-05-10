@@ -7,6 +7,7 @@ div.shell div.startmenu div.bottom {
   align-items: center;
   padding: 10px 15px;
   gap: 10px;
+  box-shadow: var(--secondary-box-shadow);
 }
 
 div.shell div.startmenu div.bottom span.lucide {
