@@ -314,7 +314,7 @@ export class LoginAppRuntime extends AppProcess {
 
     const cookieOptions = {
       expires: 2,
-      domain: import.meta.env.DEV ? "localhost" : "izk-arcos.nl",
+      domain: import.meta.env.DEV ? "localhost" : "izkuipers.nl",
     };
 
     Cookies.set("arcToken", token, cookieOptions);
