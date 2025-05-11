@@ -12,6 +12,7 @@ import type { DirectoryReadReturn } from "$types/fs";
 import type { ArcTermConfiguration, Arguments } from "$types/terminal";
 import ansiEscapes from "ansi-escapes";
 import type { Terminal } from "xterm";
+import { TerminalProcess } from "./process";
 import { Readline } from "./readline/readline";
 import {
   BOLD,
@@ -25,7 +26,6 @@ import {
   TerminalCommandStore,
 } from "./store";
 import { ArcTermVariables } from "./var";
-import { TerminalProcess } from "./process";
 
 export class ArcTerminal extends Process {
   path: string;

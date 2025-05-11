@@ -1,12 +1,11 @@
 <script lang="ts">
+  import { Logo } from "$ts/branding";
   import { Store } from "$ts/writable";
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";
   import type { AdminPortalRuntime } from "../../runtime";
   import type { UsersData } from "../../types";
   import UserRow from "./Users/UserRow.svelte";
-  import { Logo } from "$ts/branding";
-  import Header from "$apps/user/settings/Settings/Page/Account/Header.svelte";
 
   const { process, data }: { process: AdminPortalRuntime; data: UsersData } = $props();
   const { users } = data;

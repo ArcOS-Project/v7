@@ -1,13 +1,13 @@
 <script lang="ts">
+  import { Logo } from "$ts/branding";
+  import { MessageBox } from "$ts/dialog";
+  import { ErrorIcon } from "$ts/images/dialog";
   import { Store } from "$ts/writable";
   import type { BugReport } from "$types/bughunt";
   import { onMount } from "svelte";
   import type { AdminPortalRuntime } from "../../runtime";
   import type { BugHuntData } from "../../types";
   import Row from "./BugHunt/Row.svelte";
-  import { Logo } from "$ts/branding";
-  import { MessageBox } from "$ts/dialog";
-  import { ErrorIcon } from "$ts/images/dialog";
 
   const { process, data }: { process: AdminPortalRuntime; data: BugHuntData } = $props();
   const { reports, stats } = data;

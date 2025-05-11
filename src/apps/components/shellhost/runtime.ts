@@ -1,4 +1,3 @@
-import { AppProcess } from "$ts/apps/process";
 import { SpinnerIcon } from "$ts/images/general";
 import { GoodStatusIcon } from "$ts/images/status";
 import type { ProcessHandler } from "$ts/process/handler";

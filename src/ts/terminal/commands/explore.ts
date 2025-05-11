@@ -1,8 +1,7 @@
 import type { ProcessHandler } from "$ts/process/handler";
-import type { Arguments, TerminalCommand } from "$types/terminal";
+import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
-import { TerminalCommandStore } from "../store";
 
 export class ExploreCommand extends TerminalProcess {
   public static keyword = "explore";

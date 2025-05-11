@@ -1,5 +1,4 @@
 import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
-import { ShellRuntime } from "$apps/components/shell/runtime";
 import { WaveKernel } from "$ts/kernel";
 import { Environment } from "$ts/kernel/env";
 import { ProcessHandler } from "$ts/process/handler";

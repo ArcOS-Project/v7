@@ -4,11 +4,11 @@
   import { onMount } from "svelte";
   import type { AdminPortalRuntime } from "../../runtime";
   import type { ViewUserData } from "../../types";
+  import ChangeEmail from "./ViewUser/ChangeEmail.svelte";
+  import ChangePassword from "./ViewUser/ChangePassword.svelte";
   import Filesystem from "./ViewUser/Filesystem.svelte";
   import Identity from "./ViewUser/Identity.svelte";
   import Shares from "./ViewUser/Shares.svelte";
-  import ChangeEmail from "./ViewUser/ChangeEmail.svelte";
-  import ChangePassword from "./ViewUser/ChangePassword.svelte";
 
   const { process, data }: { process: AdminPortalRuntime; data: ViewUserData } = $props();
   const { user } = data;

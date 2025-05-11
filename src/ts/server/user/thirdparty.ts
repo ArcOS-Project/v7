@@ -18,17 +18,17 @@ import { WindowSettingsIcon } from "$ts/images/general";
 import { tryJsonStringify } from "$ts/json";
 import { KernelModule } from "$ts/kernel/module";
 import { Process } from "$ts/process/instance";
+import { BaseService } from "$ts/services/base";
+import { Sleep } from "$ts/sleep";
+import { TrayIconProcess } from "$ts/ui/tray/process";
 import { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { App } from "$types/app";
 import axios from "axios";
+import dayjs from "dayjs";
 import { Axios } from "../axios";
 import type { UserDaemon } from "./daemon";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
-import { BaseService } from "$ts/services/base";
-import { TrayIconProcess } from "$ts/ui/tray/process";
-import dayjs from "dayjs";
-import { Sleep } from "$ts/sleep";
 
 export function ThirdPartyProps(
   daemon: UserDaemon,

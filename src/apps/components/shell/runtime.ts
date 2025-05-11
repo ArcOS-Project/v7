@@ -15,10 +15,10 @@ import type { SearchItem } from "$types/search";
 import type { UserPreferences, Workspace } from "$types/user";
 import Fuse, { type FuseResult } from "fuse.js";
 import { fetchWeatherApi } from "openmeteo";
+import type { TrayHostRuntime } from "../trayhost/runtime";
 import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
 import type { WeatherInformation } from "./types";
-import type { TrayHostRuntime } from "../trayhost/runtime";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);

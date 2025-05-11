@@ -25,6 +25,7 @@ import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import { AccountIcon, ComponentIcon, FirefoxIcon, PasswordIcon, PersonalizationIcon } from "$ts/images/general";
 import { ImageMimeIcon } from "$ts/images/mime";
 import { ProfilePictures } from "$ts/images/pfp";
+import { RestartIcon } from "$ts/images/power";
 import { tryJsonParse } from "$ts/json";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
@@ -51,11 +52,10 @@ import type { ServerManager } from "..";
 import { AdminBootstrapper } from "../admin";
 import { Axios } from "../axios";
 import type { MessagingInterface } from "../messaging";
+import { GlobalDispatch } from "../ws";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
-import { GlobalDispatch } from "../ws";
-import { RestartIcon } from "$ts/images/power";
 
 export class UserDaemon extends Process {
   public initialized = false;

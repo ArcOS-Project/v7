@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import { isPopulatable } from "$ts/apps/util";
-  import { FolderIcon } from "$ts/images/filesystem";
   import { AppGroups } from "$ts/server/user/store";
   import type { AppStorage } from "$types/app";
   import AppGroup from "./AppGroups/AppGroup.svelte";

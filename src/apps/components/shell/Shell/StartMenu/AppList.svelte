@@ -4,8 +4,8 @@
   import type { AppStorage } from "$types/app";
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../../runtime";
-  import ListItem from "./AppList/ListItem.svelte";
   import AppGroups from "./AppList/AppGroups.svelte";
+  import ListItem from "./AppList/ListItem.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
   const { searchResults, searchQuery, searching, SelectionIndex, userPreferences } = process;

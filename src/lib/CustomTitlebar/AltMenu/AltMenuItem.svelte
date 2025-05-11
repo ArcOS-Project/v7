@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
   import type { AppProcess } from "$ts/apps/process";
   import type { ContextMenuItem } from "$types/app";
 
