@@ -1,0 +1,138 @@
+#systemSettings div.apps_manageApps div.options {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+}
+
+#systemSettings div.apps_manageApps div.options div.view-mode {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#systemSettings div.apps_manageApps div.options button.lucide {
+  min-width: unset;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+}
+
+#systemSettings div.apps_manageApps div.options div.search {
+  display: flex;
+  background-color: var(--button-glass-bg);
+  align-items: center;
+  padding: 0 10px;
+  gap: 10px;
+  border-radius: 8px;
+  height: 30px;
+  flex-grow: 1;
+}
+#systemSettings div.apps_manageApps div.options div.search span.lucide {
+  opacity: 0.5;
+  font-size: 16px;
+}
+
+#systemSettings div.apps_manageApps div.options div.search input {
+  border: none;
+  padding: 0;
+  height: 100%;
+  flex-grow: 1;
+}
+
+#systemSettings div.apps_manageApps div.options select {
+  height: 30px;
+  padding: 0 10px;
+  border: none;
+  background-color: var(--button-glass-bg);
+}
+#systemSettings div.apps_manageApps div.apps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 140px);
+  gap: 5px;
+  position: relative;
+}
+
+#systemSettings div.apps_manageApps div.apps button.app {
+  display: grid;
+  grid-template:
+    "icon name"
+    "icon author";
+  grid-template-columns: 32px auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  gap: 0 10px;
+  text-align: left;
+  --font-size: 12px;
+  padding: 5px;
+}
+
+#systemSettings div.apps_manageApps div.apps.grid-large {
+  grid-template-columns: repeat(auto-fit, calc(50% - 10px));
+}
+
+#systemSettings div.apps_manageApps div.apps.grid-large button.app {
+  grid-template-columns: 40px auto;
+}
+
+#systemSettings div.apps_manageApps div.apps button.app h1 {
+  grid-area: "name";
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#systemSettings div.apps_manageApps div.apps button.app p.author {
+  grid-area: "author";
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#systemSettings div.apps_manageApps div.apps button.app img {
+  width: 32px;
+  height: 32px;
+  grid-area: icon;
+}
+
+#systemSettings div.apps_manageApps div.apps.grid-large button.app img {
+  width: 40px;
+  height: 40px;
+}
+
+#systemSettings div.apps_manageApps div.apps.grid-large button.app h1 {
+  font-size: 14px;
+}
+
+#systemSettings div.apps_manageApps div.apps.list {
+  display: flex;
+  flex-direction: column;
+}
+
+#systemSettings div.apps_manageApps div.apps.list button.app {
+  display: flex;
+  align-items: center;
+  --font-size: 14px;
+  padding-right: 10px;
+}
+#systemSettings div.apps_manageApps div.apps.list button.app img {
+  width: 24px;
+  height: 24px;
+}
+
+#systemSettings div.apps_manageApps div.apps.list button.app h1 {
+  margin-right: auto;
+}
+
+#systemSettings div.apps_manageApps p.no-results {
+  margin: 15px 0;
+  opacity: 0.5;
+  font-style: italic;
+  text-align: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}

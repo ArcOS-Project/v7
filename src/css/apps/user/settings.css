@@ -19,6 +19,7 @@
 @import url("./settings/slide/userstyle.css");
 @import url("./settings/slide/loginactivity.css");
 @import url("./settings/slide/pickpfpbuiltin.css");
+@import url("./settings/slide/manageapps.css");
 
 #systemSettings > div.body {
   padding: 0;

@@ -1,4 +1,5 @@
 import LoginActivity from "../Settings/Slides/LoginActivity.svelte";
+import ManageApps from "../Settings/Slides/ManageApps.svelte";
 import PickPfpBuiltin from "../Settings/Slides/PickPfpBuiltin.svelte";
 import UserStyles from "../Settings/Slides/UserStyles.svelte";
 import WeatherLocation from "../Settings/Slides/WeatherLocation.svelte";
@@ -9,4 +10,5 @@ export const SlideStore: SettingsSlides = new Map([
   ["account_pickPfpBuiltin", PickPfpBuiltin as any],
   ["shell_weatherLocation", WeatherLocation as any],
   ["visuals_userStyles", UserStyles as any],
+  ["apps_manageApps", ManageApps as any],
 ]);

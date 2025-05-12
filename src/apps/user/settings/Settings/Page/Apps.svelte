@@ -1,8 +1,7 @@
 <script lang="ts">
-  import { AppOrigins } from "$ts/apps/store";
-  import { isPopulatable } from "$ts/apps/util";
+  import { Glow } from "$ts/images/branding";
   import { WarningIcon } from "$ts/images/dialog";
-  import { AppsIcon } from "$ts/images/general";
+  import { AppsIcon, ElevationIcon } from "$ts/images/general";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
@@ -25,34 +24,25 @@
     </Section>
   {/if}
 
+  <Section>
+    <Option caption="Manage apps" onclick={() => process.showSlide("apps_manageApps")} image={AppsIcon} chevron></Option>
+  </Section>
+
   <Section caption="Options">
     <Option caption="Show hidden apps">
       <input type="checkbox" bind:checked={$userPreferences.shell.visuals.showHiddenApps} />
     </Option>
+    {#if $userPreferences.security.enableThirdParty}
+      <Option caption="Disable third-party apps" chevron image={ElevationIcon}></Option>
+    {/if}
   </Section>
-  {#if $buffer}
-    {#each Object.entries(AppOrigins) as [id, name]}
-      {#if $buffer!.filter((a) => a.originId === id).length > 0}
-        <Section caption="{name} applications">
-          {#each $buffer! as app (`${app.originId}-${app.id}-${app.metadata.name}`)}
-            {#if app.originId === id && (isPopulatable(app) || $userPreferences.shell.visuals.showHiddenApps)}
-              <Option
-                caption={app.metadata.name}
-                image={process.userDaemon?.getAppIcon(app)}
-                chevron
-                onclick={() => {
-                  process.spawnOverlayApp("AppInfo", process.pid, app.id);
-                }}
-                className={!isPopulatable(app) ? "hidden" : ""}
-              />
-            {/if}
-          {/each}
-        </Section>
-      {/if}
-    {/each}
-  {:else}
-    <Section>
-      <Option caption="Failed to get app list from AppStorage" image={WarningIcon}></Option>
-    </Section>
-  {/if}
+
+  <Section className="third-party">
+    <img src={Glow} alt="" />
+    <div>
+      <h1>Enable third-party apps</h1>
+      <p>Click the button to allow third-party applications to run on your ArcOS account.</p>
+      <button class="suggested">Enable Third-party</button>
+    </div>
+  </Section>
 </div>
