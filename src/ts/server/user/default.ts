@@ -58,6 +58,7 @@ export const DefaultUserPreferences: UserPreferences = {
     lockdown: false,
     noPassword: false,
     disabled: false,
+    enableThirdParty: false,
   },
   appPreferences: {
     experiments: {},

@@ -120,6 +120,7 @@ export interface SecurityPreferences {
   lockdown: boolean;
   noPassword: boolean;
   disabled: boolean;
+  enableThirdParty: boolean;
 }
 
 export interface AccountSettings {
