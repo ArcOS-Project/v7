@@ -1069,7 +1069,7 @@ export class UserDaemon extends Process {
 
     const elevated = await this.manuallyElevate({
       what: "ArcOS needs your permission to disable an application",
-      image: app.metadata.icon,
+      image: this.getAppIcon(app, app.workingDirectory),
       title: app.metadata.name,
       description: `By ${app.metadata.author}`,
       level: ElevationLevel.medium,
@@ -1105,7 +1105,7 @@ export class UserDaemon extends Process {
 
     const elevated = await this.manuallyElevate({
       what: "ArcOS needs your permission to enable an application",
-      image: app.metadata.icon,
+      image: this.getAppIcon(app, app.workingDirectory),
       title: app.metadata.name,
       description: `By ${app.metadata.author}`,
       level: ElevationLevel.medium,
