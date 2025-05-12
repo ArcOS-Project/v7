@@ -112,6 +112,10 @@ div.window#loginApp > div.body div.container div.field input {
   max-width: calc(100% - 36px);
 }
 
+div.window#loginApp > div.body div.container div.field input::placeholder {
+  color: #fff5;
+}
+
 div.window#loginApp > div.body div.login-form {
   display: flex;
   align-items: end;
