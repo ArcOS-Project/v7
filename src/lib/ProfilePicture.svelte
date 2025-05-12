@@ -9,16 +9,17 @@
     className?: string;
   }
   const { userDaemon, fallback = "", pfp = "", height, className = "" }: Props = $props();
-
   const { preferences } = userDaemon || {}!;
 
   let url = $state<string | undefined>("");
   let currentPfp = $state<string | number>();
 
-  preferences?.subscribe(async (v) => {
+  preferences?.subscribe((v) => {
     if (!fallback && currentPfp === (pfp || v.account.profilePicture!)) return;
 
-    url = fallback || (await userDaemon?.getProfilePicture(pfp || v.account.profilePicture!));
+    url =
+      fallback ||
+      `${import.meta.env.DW_SERVER_URL}/user/pfp/${userDaemon?.userInfo._id}?authcode=${import.meta.env.DW_SERVER_AUTHCODE}`;
 
     currentPfp = pfp || v.account.profilePicture!;
   });

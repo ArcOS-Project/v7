@@ -41,6 +41,10 @@ export class LoginAppRuntime extends AppProcess {
         : Wallpapers.img18.url
     );
 
+    this.errorMessage.subscribe((v) => {
+      if (!v) this.profileImage.set(ProfilePictures.def);
+    });
+
     this.unexpectedInvocation =
       this.kernel.state?.currentState !== "boot" && this.kernel.state?.currentState !== "initialSetup" && !props?.type;
     this.serverInfo = server.serverInfo;
@@ -145,6 +149,10 @@ export class LoginAppRuntime extends AppProcess {
       return;
     }
 
+    this.profileImage.set(
+      `${import.meta.env.DW_SERVER_URL}/user/pfp/${userInfo._id}?authcode=${import.meta.env.DW_SERVER_AUTHCODE}`
+    );
+
     if (userInfo.hasTotp && userInfo.restricted) {
       this.loadingStatus.set("Requesting 2FA");
       const unlocked = await this.askForTotp(token);
@@ -168,10 +176,6 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.startPreferencesSync();
 
     this.loadingStatus.set("Reading profile customization");
-
-    this.profileImage.set(
-      (await userDaemon?.getProfilePicture(userDaemon.preferences().account.profilePicture!)) || ProfilePictures.pfp3
-    );
 
     this.profileName.set(userDaemon.preferences().account.displayName || username);
     if (!this.safeMode)
@@ -224,7 +228,7 @@ export class LoginAppRuntime extends AppProcess {
   async logoff(daemon: UserDaemon) {
     this.Log(`Logging off user '${daemon.username}'`);
 
-    this.hideProfileImage.set(true);
+    // this.hideProfileImage.set(true);
     this.type = "logoff";
 
     this.loadingStatus.set(`Goodbye, ${daemon.username}!`);
@@ -237,7 +241,7 @@ export class LoginAppRuntime extends AppProcess {
     }
 
     this.profileImage.set(
-      (await daemon?.getProfilePicture(daemon.preferences().account.profilePicture!)) || ProfilePictures.pfp3
+      `${import.meta.env.DW_SERVER_URL}/user/pfp/${daemon.userInfo._id}?authcode=${import.meta.env.DW_SERVER_AUTHCODE}`
     );
 
     this.profileName.set(daemon.preferences().account.displayName || daemon.username);
@@ -267,7 +271,7 @@ export class LoginAppRuntime extends AppProcess {
 
     if (daemon) {
       this.profileImage.set(
-        (await daemon?.getProfilePicture(daemon.preferences().account.profilePicture!)) || ProfilePictures.pfp3
+        `${import.meta.env.DW_SERVER_URL}/user/pfp/${daemon.userInfo._id}?authcode=${import.meta.env.DW_SERVER_AUTHCODE}`
       );
       this.loginBackground.set((await daemon.getWallpaper(daemon.preferences().account.loginBackground)).url);
 
@@ -290,7 +294,7 @@ export class LoginAppRuntime extends AppProcess {
 
     if (daemon) {
       this.profileImage.set(
-        (await daemon?.getProfilePicture(daemon.preferences().account.profilePicture!)) || ProfilePictures.pfp3
+        `${import.meta.env.DW_SERVER_URL}/user/pfp/${daemon.userInfo._id}?authcode=${import.meta.env.DW_SERVER_AUTHCODE}`
       );
       this.loginBackground.set((await daemon.getWallpaper(daemon.preferences().account.loginBackground)).url);
 
