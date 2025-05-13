@@ -27,6 +27,8 @@ import type { App } from "$types/app";
 import type { FileHandler } from "$types/fs";
 import type { ThemeStore } from "$types/theme";
 import type { UserDaemon } from "./daemon";
+import installTpaFile from "./handlers/installtpa";
+import runTpaFile from "./handlers/runtpa";
 
 export const BuiltinThemes: ThemeStore = {
   wilhelminaSunset: {
@@ -255,40 +257,8 @@ export const DefaultMimeIcons: Record<string, string[]> = {
 
 export function DefaultFileHandlers(daemon: UserDaemon): Record<string, FileHandler> {
   return {
-    runTpaFile: {
-      opens: {
-        extensions: [".tpa"],
-      },
-      icon: ArcAppMimeIcon,
-      name: "Run ArcOS app",
-      description: "Run this TPA file as an application",
-      handle: async (path: string) => {
-        const text = arrayToText((await daemon.fs.readFile(path))!);
-        const json = tryJsonParse(text);
-
-        if (typeof json !== "object") return;
-
-        await daemon.spawnThirdParty(json, path);
-      },
-      isHandler: true,
-    },
-    installTpaFile: {
-      opens: {
-        extensions: [".tpa"],
-      },
-      icon: DownloadIcon,
-      name: "Install application",
-      description: "Install this TPA file as an app",
-      handle: async (path: string) => {
-        const text = arrayToText((await daemon.fs.readFile(path))!);
-        const json = tryJsonParse(text);
-
-        if (typeof json !== "object") return;
-
-        await daemon.installApp({ ...json, workingDirectory: getParentDirectory(path), tpaPath: path });
-      },
-      isHandler: true,
-    },
+    runTpaFile: runTpaFile(daemon),
+    installTpaFile: installTpaFile(daemon),
   };
 }
 
