@@ -1,4 +1,5 @@
 import { sortByKey } from "$ts/util";
+import { UUID } from "$ts/uuid";
 import type { DirectoryReadReturn, FileEntry, FolderEntry, RecursiveDirectoryReadReturn, UserQuota } from "$types/fs";
 import { FilesystemDrive } from "../drive";
 export class MemoryFilesystemDrive extends FilesystemDrive {
@@ -27,10 +28,12 @@ export class MemoryFilesystemDrive extends FilesystemDrive {
     let current = this.data;
     for (const part of parts) {
       if (!current[part]) {
+        console.log(`Could not find part: ${part} in current object for path: ${path}`);
         return undefined;
       }
       current = current[part];
     }
+    console.log(`Successfully retrieved entry for path: ${path}`, current);
     return current;
   }
 
@@ -80,9 +83,11 @@ export class MemoryFilesystemDrive extends FilesystemDrive {
   }
 
   async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
+    console.log(`Attempting to read directory: ${path}`);
     const dir = this.getEntry(path);
 
     if (!dir || typeof dir !== "object") {
+      console.log(`Entry for path ${path} is not a directory or does not exist.`);
       return undefined;
     }
 
@@ -102,6 +107,7 @@ export class MemoryFilesystemDrive extends FilesystemDrive {
             itemId: entry.itemId,
           });
         } else if (entry.isDir) {
+          console.log(`Found directory entry: ${name}`);
           dirs.push({
             name: name,
             dateCreated: entry.dateCreated,
@@ -111,6 +117,8 @@ export class MemoryFilesystemDrive extends FilesystemDrive {
         }
       }
     }
+
+    console.log(`Finished reading directory ${path}. Found ${dirs.length} directories and ${files.length} files.`);
 
     return {
       files: sortByKey(files, "name"),
@@ -127,7 +135,7 @@ export class MemoryFilesystemDrive extends FilesystemDrive {
       return false; // Directory already exists
     }
 
-    const itemId = crypto.randomUUID();
+    const itemId = UUID();
     const now = new Date();
     this.setEntry(path, {
       isDir: true,
@@ -160,7 +168,7 @@ export class MemoryFilesystemDrive extends FilesystemDrive {
       await this.createDirectory(dirPath);
     }
 
-    const itemId = crypto.randomUUID();
+    const itemId = UUID();
     const now = new Date();
 
     const fileEntry = {

@@ -29,6 +29,7 @@ import type { ThemeStore } from "$types/theme";
 import type { UserDaemon } from "./daemon";
 import installTpaFile from "./handlers/installtpa";
 import runTpaFile from "./handlers/runtpa";
+import runTpaBundle from "./handlers/runtpab";
 
 export const BuiltinThemes: ThemeStore = {
   wilhelminaSunset: {
@@ -259,6 +260,7 @@ export function DefaultFileHandlers(daemon: UserDaemon): Record<string, FileHand
   return {
     runTpaFile: runTpaFile(daemon),
     installTpaFile: installTpaFile(daemon),
+    runTpaBundle: runTpaBundle(daemon),
   };
 }
 
