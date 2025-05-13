@@ -2,3 +2,37 @@
   opacity: 0.5;
   font-style: italic;
 }
+section.third-party > div.content {
+  background-color: #2b173b !important;
+  display: flex;
+  text-align: left;
+  padding: 15px;
+  position: relative;
+  gap: 15px;
+  z-index: 0;
+}
+
+section.third-party > div.content img {
+  position: absolute;
+  top: 0;
+  left: 30%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(200%);
+  z-index: 0;
+}
+
+section.third-party > div.content div {
+  z-index: 1;
+  --fg: #fff !important;
+}
+
+section.third-party > div.content h1 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+section.third-party > div.content p {
+  margin-bottom: 20px;
+}

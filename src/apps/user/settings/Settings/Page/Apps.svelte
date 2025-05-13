@@ -33,16 +33,23 @@
       <input type="checkbox" bind:checked={$userPreferences.shell.visuals.showHiddenApps} />
     </Option>
     {#if $userPreferences.security.enableThirdParty}
-      <Option caption="Disable third-party apps" chevron image={ElevationIcon}></Option>
+      <Option
+        caption="Disable third-party apps"
+        chevron
+        image={ElevationIcon}
+        onclick={() => process.userDaemon?.disableThirdParty()}
+      ></Option>
     {/if}
   </Section>
 
-  <Section className="third-party">
-    <img src={Glow} alt="" />
-    <div>
-      <h1>Enable third-party apps</h1>
-      <p>Click the button to allow third-party applications to run on your ArcOS account.</p>
-      <button class="suggested">Enable Third-party</button>
-    </div>
-  </Section>
+  {#if !$userPreferences.security.enableThirdParty}
+    <Section className="third-party">
+      <img src={Glow} alt="" />
+      <div>
+        <h1>Enable third-party apps</h1>
+        <p>Click the button to allow third-party applications to run on your ArcOS account.</p>
+        <button class="suggested" onclick={() => process.userDaemon?.enableThirdParty()}>Enable Third-party</button>
+      </div>
+    </Section>
+  {/if}
 </div>
