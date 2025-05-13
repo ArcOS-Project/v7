@@ -22,7 +22,7 @@ import { applyDefaults } from "$ts/hierarchy";
 import { getIconPath, iconIdFromPath, maybeIconId } from "$ts/images";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
-import { AccountIcon, ComponentIcon, FirefoxIcon, PasswordIcon, PersonalizationIcon } from "$ts/images/general";
+import { AccountIcon, AppsIcon, ComponentIcon, FirefoxIcon, PasswordIcon, PersonalizationIcon } from "$ts/images/general";
 import { ImageMimeIcon } from "$ts/images/mime";
 import { ProfilePictures } from "$ts/images/pfp";
 import { RestartIcon } from "$ts/images/power";
@@ -899,6 +899,22 @@ export class UserDaemon extends Process {
   }
 
   async spawnThirdParty<T>(app: App, metaPath: string, ...args: any[]): Promise<T | undefined> {
+    if (!this.preferences().security.enableThirdParty) {
+      if (this.autoLoadComplete)
+        MessageBox(
+          {
+            title: "Third-party apps",
+            message:
+              "ArcOS can't run third-party apps without your permission. Please enable third-party apps in Settings to access this app.",
+            image: AppsIcon,
+            sound: "arcos.dialog.warning",
+            buttons: [{ caption: "Okay", suggested: true, action: () => {} }],
+          },
+          +this.env.get("shell_pid"),
+          true
+        );
+      return;
+    }
     if (this._disposed) return;
 
     if (this.safeMode) {
@@ -2399,5 +2415,45 @@ The information provided in this report is subject for review by me or another A
         !!shellPid
       );
     });
+  }
+
+  async enableThirdParty() {
+    const elevated = await this.manuallyElevate({
+      what: "ArcOS wants to enable third-party applications",
+      title: "Enable Third-party",
+      description: "ArcOS System",
+      image: AppsIcon,
+      level: ElevationLevel.medium,
+    });
+
+    if (!elevated) return;
+
+    this.preferences.update((v) => {
+      v.security.enableThirdParty = true;
+      return v;
+    });
+  }
+
+  async disableThirdParty() {
+    const elevated = await this.manuallyElevate({
+      what: "ArcOS wants to disable third-party applications and kill any running third-party apps",
+      title: "Disable Third-party",
+      description: "ArcOS System",
+      image: AppsIcon,
+      level: ElevationLevel.medium,
+    });
+
+    if (!elevated) return;
+
+    this.preferences.update((v) => {
+      v.security.enableThirdParty = false;
+      return v;
+    });
+
+    const store = this.handler.store();
+
+    for (const [pid, proc] of [...store]) {
+      if (!proc._disposed && proc instanceof ThirdPartyAppProcess) this.handler.kill(pid, true);
+    }
   }
 }
