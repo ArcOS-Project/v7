@@ -50,12 +50,7 @@
         disabled={!$userPreferences.shell.customStyle.enabled && !process.safeMode}
         onclick={() => process.showSlide("visuals_userStyles")}
       ></button>
-      <input
-        type="checkbox"
-        class="switch"
-        bind:checked={$userPreferences.shell.customStyle.enabled}
-        disabled={process.safeMode}
-      />
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.customStyle.enabled} />
     </Option>
   </Section>
 </div>
