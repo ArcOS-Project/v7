@@ -17,6 +17,11 @@ div.shell div.startmenu div.top div.app-list button {
   text-align: left;
 }
 
+div.shell div.startmenu div.top div.app-list button.no-safemode {
+  opacity: 0.7;
+  filter: grayscale(100%);
+}
+
 .theme-light #arcShell > div.body div.shell div.startmenu div.top div.app-list button {
   --button-glass-bg: #0001 !important;
 }

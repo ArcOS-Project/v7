@@ -16,7 +16,14 @@
 </script>
 
 {#if app && process}
-  <button class="list-item" onclick={launch} {disabled} data-contextmenu="startmenu-app" use:contextProps={[app]}>
+  <button
+    class="list-item"
+    onclick={launch}
+    {disabled}
+    data-contextmenu="startmenu-app"
+    use:contextProps={[app]}
+    class:no-safemode={process.safeMode && app.noSafeMode}
+  >
     <img src={process.userDaemon?.getAppIcon(app)} alt="" />
     <span class="name">{app.metadata.name}</span>
   </button>
