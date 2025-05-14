@@ -4,6 +4,7 @@
   import dayjs from "dayjs";
   import { onMount } from "svelte";
   import type { MessagingAppRuntime } from "../../runtime";
+  import { ProfilePictures } from "$ts/images/pfp";
 
   const { process }: { process: MessagingAppRuntime } = $props();
   const { message } = process;
@@ -16,7 +17,12 @@
   onMount(async () => {
     if (!$message) return;
 
-    user = isSent ? await process.userInfo($message.recipient) : $message.author!;
+    user = (isSent ? await process.userInfo($message.recipient) : $message.author!) || {
+      username: "(deleted user)",
+      accountNumber: -1,
+      profilePicture: ProfilePictures.def,
+      admin: false,
+    };
     date = dayjs($message.createdAt).format("D MMMM YYYY, hh:mm A");
   });
 </script>
