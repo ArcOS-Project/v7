@@ -7,6 +7,7 @@ import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import dayjs from "dayjs";
 import { CameraAltMenu } from "./altmenu";
+import { UserPaths } from "$ts/server/user/store";
 
 export class CameraRuntime extends AppProcess {
   videoFeed = Store<HTMLVideoElement>();
@@ -118,7 +119,7 @@ export class CameraRuntime extends AppProcess {
       title: "Choose save location",
       icon: CameraIcon,
       folder: true,
-      startDir: "U:/",
+      startDir: UserPaths.Pictures,
     });
 
     if (!path) return;
@@ -131,7 +132,7 @@ export class CameraRuntime extends AppProcess {
   }
 
   async getSaveLocation() {
-    const location = this.userPreferences().appPreferences[this.app.id].saveLocation || "U:/Pictures";
+    const location = this.userPreferences().appPreferences[this.app.id].saveLocation || UserPaths.Pictures;
 
     await this.fs.createDirectory(location);
 

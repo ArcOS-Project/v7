@@ -1,6 +1,7 @@
 import { ArcOSVersion } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
+import { UserPaths } from "$ts/server/user/store";
 import type { VariableStore } from "$types/terminal";
 import type { ArcTerminal } from "..";
 import {
@@ -37,7 +38,7 @@ export function getArcTermStore(term: ArcTerminal): VariableStore {
       canDelete: false,
     },
     pwd: {
-      get: () => term.path || "U:/",
+      get: () => term.path || UserPaths.Home,
       set: async (v) => {
         const dir = await term.changeDirectory(v);
 

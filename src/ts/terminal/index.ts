@@ -26,6 +26,7 @@ import {
   TerminalCommandStore,
 } from "./store";
 import { ArcTermVariables } from "./var";
+import { UserPaths } from "$ts/server/user/store";
 
 export class ArcTerminal extends Process {
   path: string;
@@ -43,8 +44,8 @@ export class ArcTerminal extends Process {
   constructor(handler: ProcessHandler, pid: number, parentPid: number, term: Terminal, path?: string) {
     super(handler, pid, parentPid);
 
-    this.path = path || "U:/";
-    this.changeDirectory(path || "U:/");
+    this.path = path || UserPaths.Home;
+    this.changeDirectory(this.path);
     this.daemon = handler.getProcess(+this.env.get("userdaemon_pid"));
 
     this.term = term;

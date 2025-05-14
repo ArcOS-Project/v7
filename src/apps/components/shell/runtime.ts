@@ -20,6 +20,7 @@ import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
 import type { WeatherInformation } from "./types";
 import { Sleep } from "$ts/sleep";
+import { UserPaths } from "$ts/server/user/store";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
@@ -346,7 +347,7 @@ export class ShellRuntime extends AppProcess {
 
   async getFlatTree() {
     const result: PathedFileEntry[] = [];
-    const tree = await this.fs.tree("U:/");
+    const tree = await this.fs.tree(UserPaths.Desktop);
 
     const recurse = (tree: RecursiveDirectoryReadReturn, path = "U:") => {
       for (const file of tree.files) {

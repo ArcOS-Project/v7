@@ -4,6 +4,7 @@ import { textToBlob } from "$ts/fs/convert";
 import { getDirectoryName } from "$ts/fs/util";
 import { SaveIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
+import { UserPaths } from "$ts/server/user/store";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import type { BugReport } from "$types/bughunt";
@@ -87,7 +88,7 @@ export class BugHuntRuntime extends AppProcess {
       isSave: true,
       title: "Choose where to export the report to",
       icon: SaveIcon,
-      startDir: "U:/",
+      startDir: UserPaths.Documents,
       extensions: [".json"],
       saveName: `Report-${report._id}.json`,
     });

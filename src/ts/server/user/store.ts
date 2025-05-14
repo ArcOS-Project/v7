@@ -342,3 +342,15 @@ export const AppGroups: Record<string, string> = {
   coreApps: "Core Applications",
   entertainment: "Entertainment",
 };
+
+export const UserPaths = {
+  Root: "U:/",
+  Home: "U:/Home",
+  Applications: "U:/Applications",
+  Documents: "U:/Home/Documents",
+  Pictures: "U:/Home/Pictures",
+  Downloads: "U:/Home/Downloads",
+  Wallpapers: "U:/Home/Wallpapers",
+  Desktop: "U:/Home/Desktop",
+  Music: "U:/Home/Music",
+};

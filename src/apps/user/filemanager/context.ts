@@ -3,6 +3,7 @@ import { ShareManager } from "$ts/fs/shares";
 import type { SharedDrive } from "$ts/fs/shares/drive";
 import { getDirectoryName, getParentDirectory, join } from "$ts/fs/util";
 import { WarningIcon } from "$ts/images/dialog";
+import { UserPaths } from "$ts/server/user/store";
 import type { AppContextMenu } from "$types/app";
 import type { FileEntry, FolderEntry } from "$types/fs";
 import type { FileManagerRuntime } from "./runtime";
@@ -392,14 +393,14 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Go here",
         icon: "folder-open",
         action: (folder: FolderEntry) => {
-          runtime.navigate(`U:/${folder.name}`);
+          runtime.navigate(`${UserPaths.Home}/${folder.name}`);
         },
       },
       {
         caption: "Open in new window",
         icon: "external-link",
         action: (folder: FolderEntry) => {
-          runtime.spawnApp(runtime.app.id, runtime.parentPid, `U:/${folder.name}`);
+          runtime.spawnApp(runtime.app.id, runtime.parentPid, `${UserPaths.Home}/${folder.name}`);
         },
       },
       { sep: true },
@@ -407,7 +408,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Properties...",
         icon: "wrench",
         action: (folder: FolderEntry) => {
-          runtime.spawnOverlayApp("ItemInfo", runtime.pid, `U:/${folder.name}`, folder);
+          runtime.spawnOverlayApp("ItemInfo", runtime.pid, `${UserPaths.Home}/${folder.name}`, folder);
         },
       },
     ],

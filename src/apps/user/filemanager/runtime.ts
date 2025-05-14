@@ -9,6 +9,7 @@ import { DownloadIcon, DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import { TrashIcon, UploadIcon } from "$ts/images/general";
 import { DefaultMimeIcon } from "$ts/images/mime";
 import type { ProcessHandler } from "$ts/process/handler";
+import { UserPaths } from "$ts/server/user/store";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
@@ -56,7 +57,7 @@ export class FileManagerRuntime extends AppProcess {
     if (loadSave) {
       this.windowTitle.set(loadSave.title);
       this.windowIcon.set(loadSave.icon);
-      this.renderArgs.path = loadSave.startDir || "U:/";
+      this.renderArgs.path = loadSave.startDir || UserPaths.Home;
 
       if (loadSave.isSave) {
         this.selection.subscribe((v) => {
@@ -91,7 +92,7 @@ export class FileManagerRuntime extends AppProcess {
   async render({ path }: RenderArgs) {
     const startTime = performance.now();
 
-    await this.navigate(path || "U:/");
+    await this.navigate(path || UserPaths.Home);
     await this.updateRootFolders();
     await this.updateDrives();
 
@@ -126,7 +127,7 @@ export class FileManagerRuntime extends AppProcess {
 
     try {
       if (!this.fs.getDriveByLetter(currentDrive.slice(0, -1), false)) {
-        this.navigate("U:/");
+        this.navigate(UserPaths.Home);
       }
     } catch {
       this.Log("Failed to determine the currently selected drive", LogLevel.error);
@@ -147,7 +148,7 @@ export class FileManagerRuntime extends AppProcess {
     this.Log(`Updating root folders`);
 
     try {
-      const root = this.path() === "U:/" ? this.contents() : await this.fs.readDir("U:/");
+      const root = this.path() === UserPaths.Home ? this.contents() : await this.fs.readDir(UserPaths.Home);
 
       this.rootFolders.set(root?.dirs || []);
     } catch {
@@ -223,9 +224,9 @@ export class FileManagerRuntime extends AppProcess {
         message: `The location you tried to navigate to is unavailable. Maybe the specified drive isn't mounted or the folder itself is missing.`,
         buttons: [
           {
-            caption: "Your Drive",
+            caption: "Go Home",
             action: () => {
-              this.navigate("U:/");
+              this.navigate(UserPaths.Home);
             },
           },
         ],
@@ -662,7 +663,7 @@ export class FileManagerRuntime extends AppProcess {
       title: "Pick where to create the shortcut",
       icon: FolderIcon,
       folder: true,
-      startDir: `U:/Desktop`,
+      startDir: UserPaths.Desktop,
     });
 
     if (!paths?.[0]) return;

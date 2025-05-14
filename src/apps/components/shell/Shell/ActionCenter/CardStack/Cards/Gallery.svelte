@@ -6,6 +6,7 @@
   import type { UserPreferencesStore } from "$types/user";
   import { onMount } from "svelte";
   import Spinner from "../../../../../../../lib/Spinner.svelte";
+  import { UserPaths } from "$ts/server/user/store";
 
   const { userPreferences, process }: { userPreferences: UserPreferencesStore; process: ShellRuntime } = $props();
 
@@ -58,7 +59,7 @@
     const [path] = await process.userDaemon!.LoadSaveDialog({
       title: "Choose an image for the gallery",
       icon: DesktopIcon,
-      startDir: "U:/",
+      startDir: UserPaths.Pictures,
       extensions: [".png", ".jpg", ".gif", ".webp", ".jpeg"],
     });
 

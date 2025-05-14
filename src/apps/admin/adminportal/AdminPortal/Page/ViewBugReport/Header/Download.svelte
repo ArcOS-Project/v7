@@ -4,6 +4,7 @@
   import { textToBlob } from "$ts/fs/convert";
   import { getDirectoryName } from "$ts/fs/util";
   import { SaveIcon } from "$ts/images/general";
+  import { UserPaths } from "$ts/server/user/store";
 
   const { data, process }: { data: ViewBugReportData; process: AdminPortalRuntime } = $props();
   const { report } = data;
@@ -13,7 +14,7 @@
       isSave: true,
       title: "Choose where to export the report to",
       icon: SaveIcon,
-      startDir: "U:/",
+      startDir: UserPaths.Documents,
       extensions: [".json"],
       saveName: `Report-${report._id}.json`,
     });

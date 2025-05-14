@@ -1,5 +1,6 @@
 import type { FilesystemDrive } from "$ts/fs/drive";
 import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
+import { UserPaths } from "$ts/server/user/store";
 import type { ContextMenuItem } from "$types/app";
 import type { FileManagerRuntime } from "../runtime";
 
@@ -18,7 +19,7 @@ function folderGoItems(runtime: FileManagerRuntime) {
       caption: folder.name,
       image: FolderIcon,
       action: () => {
-        runtime.navigate(`U:/${folder.name}`);
+        runtime.navigate(`${UserPaths.Home}/${folder.name}`);
       },
     });
   }

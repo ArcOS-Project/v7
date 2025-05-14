@@ -54,7 +54,7 @@ import { Axios } from "../axios";
 import type { MessagingInterface } from "../messaging";
 import { GlobalDispatch } from "../ws";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
-import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons } from "./store";
+import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
 
 export class UserDaemon extends Process {
@@ -511,7 +511,7 @@ export class UserDaemon extends Process {
     );
 
     try {
-      const result = await this.fs.uploadFiles("U:/Wallpapers", "image/*", false, (progress) => {
+      const result = await this.fs.uploadFiles(UserPaths.Wallpapers, "image/*", false, (progress) => {
         prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);
@@ -549,9 +549,9 @@ export class UserDaemon extends Process {
   async uploadProfilePicture(): Promise<string | undefined> {
     if (this._disposed) return undefined;
 
-    this.Log(`Uploading profile picture to U:/Pictures`);
+    this.Log(`Uploading profile picture to ${UserPaths.Pictures}`);
 
-    const result = await this.fs.uploadFiles("U:/Pictures", "image/*");
+    const result = await this.fs.uploadFiles(UserPaths.Pictures, "image/*");
     if (!result.length) return;
 
     const { path } = result[0];
@@ -908,7 +908,15 @@ export class UserDaemon extends Process {
               "ArcOS can't run third-party apps without your permission. Please enable third-party apps in Settings to access this app.",
             image: AppsIcon,
             sound: "arcos.dialog.warning",
-            buttons: [{ caption: "Okay", suggested: true, action: () => {} }],
+            buttons: [
+              {
+                caption: "Take me there",
+                action: () => {
+                  this.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps");
+                },
+              },
+              { caption: "Okay", suggested: true, action: () => {} },
+            ],
           },
           +this.env.get("shell_pid"),
           true
@@ -942,7 +950,7 @@ export class UserDaemon extends Process {
         MessageBox(
           {
             title: `${app.metadata.name}`,
-            message: `This application expects a newer version of the TPA process than what ArcOS can supply. Please update your ArcOS version and try again.`,
+            message: `This application expects a newer version of the TPA framework than what ArcOS can supply. Please update your ArcOS version and try again.`,
             buttons: [{ caption: "Okay", action: () => {} }],
             sound: "arcos.dialog.error",
             image: ErrorIcon,
@@ -1938,7 +1946,7 @@ export class UserDaemon extends Process {
 
     this.Log(`Spawning LoadSaveDialog with UUID ${uuid}`);
 
-    await this.spawnOverlay("fileManager", +this.env.get("shell_pid"), data.startDir || "U:/", {
+    await this.spawnOverlay("fileManager", +this.env.get("shell_pid"), data.startDir || UserPaths.Home, {
       ...data,
       returnId: uuid,
     });

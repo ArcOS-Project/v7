@@ -3,6 +3,7 @@ import { iconIdFromPath } from "$ts/images";
 import { ProcessManagerIcon } from "$ts/images/apps";
 import { ShortcutMimeIcon } from "$ts/images/mime";
 import { ShutdownIcon } from "$ts/images/power";
+import { UserPaths } from "$ts/server/user/store";
 import type { App, AppContextMenu } from "$types/app";
 import type { Workspace } from "$types/user";
 import type { ShellRuntime } from "./runtime";
@@ -41,7 +42,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
           const [path] = await runtime.userDaemon!.LoadSaveDialog({
             title: "Choose where to save the app shortcut",
             icon: ShortcutMimeIcon,
-            startDir: "U:/Desktop",
+            startDir: UserPaths.Desktop,
             isSave: true,
             saveName: `${app.id}.arclnk`,
             extensions: [".arclnk"],
@@ -109,7 +110,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
           const [path] = await runtime.userDaemon!.LoadSaveDialog({
             title: "Choose where to save the app shortcut",
             icon: ShortcutMimeIcon,
-            startDir: "U:/Desktop",
+            startDir: UserPaths.Desktop,
             isSave: true,
             saveName: `${appData.id}.arclnk`,
             extensions: [".arclnk"],

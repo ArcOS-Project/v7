@@ -6,7 +6,7 @@ import { MediaPlayerIcon } from "$ts/images/apps";
 import { FolderIcon } from "$ts/images/filesystem";
 import { VideoMimeIcon } from "$ts/images/mime";
 import type { ProcessHandler } from "$ts/process/handler";
-import { DefaultMimeIcons } from "$ts/server/user/store";
+import { DefaultMimeIcons, UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
@@ -188,7 +188,7 @@ export class MediaPlayerRuntime extends AppProcess {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Select an audio or video file to open",
       icon: MediaPlayerIcon,
-      startDir: getParentDirectory(this.queue()[this.queueIndex()]) || "U:/",
+      startDir: getParentDirectory(this.queue()[this.queueIndex()]) || UserPaths.Music,
       extensions: this.app.data.opens?.extensions,
     });
 
@@ -298,7 +298,7 @@ export class MediaPlayerRuntime extends AppProcess {
     const paths = await this.userDaemon!.LoadSaveDialog({
       title: "Select a file to add to the queue",
       icon: MediaPlayerIcon,
-      startDir: getParentDirectory(this.queue()[this.queueIndex()]) || "U:/",
+      startDir: getParentDirectory(this.queue()[this.queueIndex()]) || UserPaths.Music,
       extensions: this.app.data.opens?.extensions?.filter((e) => e !== ".arcpl"),
       multiple: true,
     });
@@ -388,7 +388,7 @@ export class MediaPlayerRuntime extends AppProcess {
       title: "Pick where to create the shortcut",
       icon: FolderIcon,
       folder: true,
-      startDir: `U:/Desktop`,
+      startDir: UserPaths.Desktop,
     });
 
     if (!paths?.length) return;

@@ -5,6 +5,7 @@
   import type { AppComponentProps } from "$types/app";
   import { onMount } from "svelte";
   import type { TestAppRuntime } from "./runtime";
+  import { UserPaths } from "$ts/server/user/store";
 
   const { process }: AppComponentProps<TestAppRuntime> = $props();
   const { lang } = process;
@@ -16,7 +17,7 @@
   let execution = $state<string>("");
   let running = $state<boolean>(false);
   let pid = $state<number>(-1);
-  let workingDirectory = $state<string>("U:/");
+  let workingDirectory = $state<string>(UserPaths.Home);
 
   onMount(() => {
     process.acceleratorStore.push({

@@ -13,6 +13,7 @@ import type { AppProcessData } from "$types/app";
 import type { MessageCreateData } from "$types/messaging";
 import mime from "mime";
 import type { Attachment } from "./types";
+import { UserPaths } from "$ts/server/user/store";
 
 export class MessageComposerRuntime extends AppProcess {
   sending = Store<boolean>(false);
@@ -109,7 +110,7 @@ export class MessageComposerRuntime extends AppProcess {
     const paths = await this.userDaemon!.LoadSaveDialog({
       title: "Choose one or more files to attach",
       icon: UploadIcon,
-      startDir: "U:/",
+      startDir: UserPaths.Documents,
       multiple: true,
     });
 

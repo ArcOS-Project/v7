@@ -1,9 +1,11 @@
 import type { SettingsRuntime } from "$apps/user/settings/runtime";
 import { MessageBox } from "$ts/dialog";
+import { getParentDirectory } from "$ts/fs/util";
 import { FileManagerIcon, ProcessManagerIcon, SettingsIcon } from "$ts/images/apps";
 import { QuestionIcon } from "$ts/images/dialog";
 import { PersonalizationIcon } from "$ts/images/general";
 import { LogoutIcon, RestartIcon, ShutdownIcon } from "$ts/images/power";
+import { UserPaths } from "$ts/server/user/store";
 import type { AppContextMenu } from "$types/app";
 import type { FileEntry } from "$types/fs";
 import type { WallpaperRuntime } from "./runtime";
@@ -205,21 +207,21 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
         caption: "File manager",
         image: FileManagerIcon,
         action: () => {
-          runtime.spawnApp("fileManager", shellPid(), "U:/");
+          runtime.spawnApp("fileManager", shellPid(), UserPaths.Home);
         },
       },
       {
         caption: "Processes",
         image: ProcessManagerIcon,
         action: () => {
-          runtime.spawnApp("processManager", shellPid(), "U:/");
+          runtime.spawnApp("processManager", shellPid());
         },
       },
       {
         caption: "Settings",
         image: SettingsIcon,
         action: () => {
-          runtime.spawnApp("systemSettings", shellPid(), "U:/");
+          runtime.spawnApp("systemSettings", shellPid());
         },
       },
       { sep: true },
@@ -247,14 +249,14 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
             caption: "New folder...",
             icon: "folder-plus",
             action: () => {
-              runtime.spawnOverlayApp("FsNewFolder", shellPid(), "U:/Desktop");
+              runtime.spawnOverlayApp("FsNewFolder", shellPid(), UserPaths.Desktop);
             },
           },
           {
             caption: "New file...",
             icon: "file-plus",
             action: () => {
-              runtime.spawnOverlayApp("FsNewFile", shellPid(), "U:/Desktop");
+              runtime.spawnOverlayApp("FsNewFile", shellPid(), UserPaths.Desktop);
             },
           },
           {
@@ -271,12 +273,12 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
         caption: "Folder properties...",
         icon: "wrench",
         action: async () => {
-          const parent = await runtime.fs.readDir("U:/");
+          const parent = await runtime.fs.readDir(getParentDirectory(UserPaths.Desktop));
           const dir = parent?.dirs.filter((d) => d.name === "Desktop")[0];
 
           if (!dir) return;
 
-          runtime.spawnOverlayApp("ItemInfo", shellPid(), "U:/Desktop", dir);
+          runtime.spawnOverlayApp("ItemInfo", shellPid(), UserPaths.Desktop, dir);
         },
       },
       {

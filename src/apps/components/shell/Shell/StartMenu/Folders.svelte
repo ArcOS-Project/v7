@@ -5,6 +5,7 @@
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../../runtime";
   import UserButton from "../Folders/UserButton.svelte";
+  import { UserPaths } from "$ts/server/user/store";
 
   const {
     process,
@@ -31,7 +32,7 @@
   });
 
   async function update() {
-    const root = await process.fs.readDir("U:/");
+    const root = await process.fs.readDir(UserPaths.Home);
 
     if (!root) return;
 
@@ -43,7 +44,7 @@
   <UserButton {userPreferences} {username} {process} />
   <div class="content">
     {#each dirs as dir}
-      <button class="folder" onclick={() => process.spawnApp("fileManager", process.pid, `U:/${dir.name}`)}>
+      <button class="folder" onclick={() => process.spawnApp("fileManager", process.pid, `${UserPaths.Home}/${dir.name}`)}>
         <img src={FolderIcon} alt="" />
         <span class="name">{dir.name}</span>
       </button>

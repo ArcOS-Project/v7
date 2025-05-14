@@ -13,6 +13,7 @@ import { fromExtension } from "human-filetypes";
 import { WriterAccelerators } from "./accelerators";
 import { WriterAltMenu } from "./altmenu";
 import { ReplaceOverlay } from "./replace/metadata";
+import { UserPaths } from "$ts/server/user/store";
 
 export class WriterRuntime extends AppProcess {
   buffer = Store<string>("");
@@ -172,7 +173,7 @@ export class WriterRuntime extends AppProcess {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Choose where to save the file",
       icon: TextMimeIcon,
-      startDir: "U:/",
+      startDir: UserPaths.Documents,
       isSave: true,
       saveName: this.openedFile() ? this.filename() : "",
     });
@@ -194,7 +195,7 @@ export class WriterRuntime extends AppProcess {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Select a file to open",
       icon: TextMimeIcon,
-      startDir: "U:/",
+      startDir: UserPaths.Documents,
     });
 
     if (!path) return;

@@ -15,6 +15,7 @@ import {
 import { GoodStatusIcon } from "$ts/images/status";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Axios } from "$ts/server/axios";
+import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { htmlspecialchars } from "$ts/util";
 import { Store } from "$ts/writable";
@@ -283,7 +284,7 @@ export class SettingsRuntime extends AppProcess {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Choose profile picture",
       icon: AccountIcon,
-      startDir: "U:/",
+      startDir: UserPaths.Pictures,
       extensions: [".jpg", ".png", ".gif", ".svg", ".jpeg"],
     });
 
@@ -300,7 +301,7 @@ export class SettingsRuntime extends AppProcess {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Choose wallpaper",
       icon: DesktopIcon,
-      startDir: "U:/",
+      startDir: UserPaths.Wallpapers,
       extensions: [".jpg", ".png", ".gif", ".svg", ".jpeg"],
     });
 
@@ -332,7 +333,7 @@ export class SettingsRuntime extends AppProcess {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Choose login background",
       icon: PasswordIcon,
-      startDir: "U:/",
+      startDir: UserPaths.Wallpapers,
       extensions: [".jpg", ".png", ".gif", ".svg", ".jpeg"],
     });
 
