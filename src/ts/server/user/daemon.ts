@@ -297,6 +297,9 @@ export class UserDaemon extends Process {
         wallpaper: "app",
       };
 
+    if (!preferences.pinnedApps?.length)
+      preferences.pinnedApps = ["$", "fileManager", "processManager", "systemSettings", "Messages", "MediaPlayer"];
+
     const result = applyDefaults<UserPreferences>(preferences, {
       ...DefaultUserPreferences,
       isDefault: undefined,

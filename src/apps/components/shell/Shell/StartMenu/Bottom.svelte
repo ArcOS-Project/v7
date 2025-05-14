@@ -34,6 +34,9 @@
     {/if}
   </div>
   <div class="actions">
+    <button class="file-manager" aria-label="Your files" onclick={() => process.spawnApp("fileManager", process.pid)}>
+      <span class="lucide icon-folder-open"></span>
+    </button>
     <button class="settings" aria-label="Settings" onclick={() => process.spawnApp("systemSettings", process.pid)}>
       <span class="lucide icon-settings-2"></span>
     </button>
