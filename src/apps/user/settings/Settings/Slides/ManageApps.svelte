@@ -83,7 +83,11 @@
     <p class="no-results">No results!</p>
   {:else}
     {#each $store as app (`${app.originId}-${app.id}-${app.metadata.name}`)}
-      <button class="app" onclick={() => process.spawnOverlayApp("AppInfo", process.pid, app.id)}>
+      <button
+        class="app"
+        onclick={() => process.spawnOverlayApp("AppInfo", process.pid, app.id)}
+        class:disabled={process.userDaemon?.checkDisabled(app.id, app.noSafeMode)}
+      >
         <img src={process.userDaemon?.getAppIcon(app)} alt="" />
         <h1>{app.metadata.name}</h1>
         <p class="author">{app.metadata.author} - v{app.metadata.version}</p>

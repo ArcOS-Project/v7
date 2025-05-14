@@ -117,6 +117,12 @@
   --font-size: 14px;
   padding-right: 10px;
 }
+#systemSettings div.apps_manageApps div.apps button.app.disabled {
+  opacity: 0.5;
+  filter: grayscale(100%);
+  font-style: italic;
+}
+
 #systemSettings div.apps_manageApps div.apps.list button.app img {
   width: 24px;
   height: 24px;
