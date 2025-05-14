@@ -30,6 +30,7 @@ import { WallpaperApp } from "$apps/components/wallpaper/metadata";
 import { BootScreen } from "$apps/core/bootscreen/metadata";
 import { InitialSetupWizard } from "$apps/core/initialsetup/metadata";
 import { LoginApp } from "$apps/core/loginapp/metadata";
+import { AdvSystemSettings } from "$apps/user/advsystemsettings/metadata";
 import { ArcTermApp } from "$apps/user/arcterm/metadata";
 import { BugHuntApp } from "$apps/user/bughunt/metadata";
 import { BugReportsCreatorApp } from "$apps/user/bughuntcreator/metadata";
@@ -101,6 +102,7 @@ export const BuiltinApps: AppStorage = [
   BootScreen,
   LoginApp,
   InitialSetupWizard,
+  AdvSystemSettings,
 ];
 
 export const AdminApps: AppStorage = [AdminPortalApp];
