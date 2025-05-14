@@ -19,6 +19,7 @@ import type { TrayHostRuntime } from "../trayhost/runtime";
 import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
 import type { WeatherInformation } from "./types";
+import { Sleep } from "$ts/sleep";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
@@ -233,26 +234,9 @@ export class ShellRuntime extends AppProcess {
       return;
     }
 
-    MessageBox(
-      {
-        title: "Delete workspace",
-        message: "Are you sure you want to permanently delete this workspace?",
-        image: DesktopIcon,
-        buttons: [
-          { caption: "Cancel", action: () => {} },
-          {
-            caption: "Delete",
-            action: () => {
-              this.userDaemon?.deleteVirtualDesktop(workspace.uuid);
-            },
-            suggested: true,
-          },
-        ],
-        sound: "arcos.dialog.warning",
-      },
-      this.pid,
-      true
-    );
+    this.userDaemon?.deleteVirtualDesktop(workspace.uuid);
+    await Sleep(0);
+    this.workspaceManagerOpened.set(true);
   }
 
   async Search(query: string) {
