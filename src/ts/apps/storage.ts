@@ -113,7 +113,7 @@ export class ApplicationStorage extends BaseService {
     return sortByHierarchy(
       result.sort((a) => (a.hidden ? 0 : -1)),
       "metadata.name"
-    ).filter((a) => (this.env.get("safemode") ? !a.noSafeMode : true));
+    );
   }
 
   async getAppById(id: string, fromBuffer = false): Promise<App | undefined> {

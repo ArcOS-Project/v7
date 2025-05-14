@@ -1067,6 +1067,9 @@ export class UserDaemon extends Process {
 
   checkDisabled(appId: string, noSafeMode?: boolean): boolean {
     if (this._disposed) return false;
+    if (this.safeMode && !noSafeMode) {
+      return false;
+    }
 
     const { disabledApps } = this.preferences();
     return (disabledApps || []).includes(appId) || !!(this.safeMode && noSafeMode);

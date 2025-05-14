@@ -1,7 +1,7 @@
 import type { ShellRuntime } from "$apps/components/shell/runtime";
 import { SystemDispatch } from "$ts/dispatch";
 import { ArcOSVersion } from "$ts/env";
-import { BugReportIcon, ComponentIcon } from "$ts/images/general";
+import { BugReportIcon, ComponentIcon, SecurityHighIcon } from "$ts/images/general";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import type { UserDaemon } from "$ts/server/user/daemon";
@@ -154,9 +154,25 @@ export class AppProcess extends Process {
 
   async __render__(body: HTMLDivElement) {
     if (this.userPreferences().disabledApps.includes(this.app.id)) {
-      this.Log(`Running application instance of app "${this.app.id}" is prohibited by the user. Terminating.`, LogLevel.error);
+      if (this.safeMode) {
+        this.userDaemon?.sendNotification({
+          title: "Running disabled app!",
+          message: `Allowing execution of disabled app '${this.app.data.metadata.name}' because of Safe Mode.`,
+          buttons: [
+            {
+              caption: "Manage apps",
+              action: () => {
+                this.userDaemon?.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps", "apps_manageApps");
+              },
+            },
+          ],
+          image: SecurityHighIcon,
+        });
+      } else {
+        this.Log(`Running application instance of app "${this.app.id}" is prohibited by the user. Terminating.`, LogLevel.error);
 
-      return this.killSelf();
+        return this.killSelf();
+      }
     }
 
     this.Log("Rendering window contents");
