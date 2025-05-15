@@ -142,6 +142,8 @@ export class MessageComposerRuntime extends AppProcess {
         prog.setWork(true);
       });
 
+      await Sleep(10);
+
       if (!contents) continue;
 
       attachments.push({ data: new File([contents], filename, { type: mimetype || "application/octet-stream" }), uuid: UUID() });
