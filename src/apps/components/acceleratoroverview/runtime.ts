@@ -5,6 +5,7 @@ import { Store } from "$ts/writable";
 import type { AppProcessData, AppStorage } from "$types/app";
 
 export class AcceleratorOverviewRuntime extends AppProcess {
+  // Very gross array containing keys known to the accelerator handlers
   KnownAcceleratorKeys = [
     "alt",
     "shift",
@@ -34,7 +35,7 @@ export class AcceleratorOverviewRuntime extends AppProcess {
     "enter",
   ];
 
-  store = Store<[string, [string[], string][]][]>(); // R<I, R<A, D>>
+  store = Store<[string, [string[], string][]][]>(); // Record<appId, Record<Accelerator, Description>> (ugly, I know)
   apps = Store<AppStorage>();
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
@@ -53,15 +54,15 @@ export class AcceleratorOverviewRuntime extends AppProcess {
 
     const apps = await this.userDaemon?.serviceHost?.getService<ApplicationStorage>("AppStorage")?.get();
 
-    if (!apps) throw new Error("ERR_NO_DAEMON");
+    if (!apps) throw new Error("ERR_NO_DAEMON"); // Should never happen
 
-    const result: [string, [string[], string][]][] = [];
+    const result: [string, [string[], string][]][] = []; // 3D array? 4D? idk
 
     for (const app of apps) {
       if (!app.acceleratorDescriptions) continue;
 
       const strings = Object.keys(app.acceleratorDescriptions);
-      const shortcuts: [string[], string][] = [];
+      const shortcuts: [string[], string][] = []; // I don't even know what I'm looking at
 
       for (const string of strings) {
         shortcuts.push([this.splitAcceleratorString(string), app.acceleratorDescriptions[string]]);
@@ -84,7 +85,7 @@ export class AcceleratorOverviewRuntime extends AppProcess {
       if (!this.KnownAcceleratorKeys.includes(segment.toLowerCase())) continue;
 
       result.push(segment);
-      if (i + 1 != split.length) result.push("+");
+      if (i + 1 != split.length) result.push("+"); // Ugly way to concatenate
     }
 
     return result;

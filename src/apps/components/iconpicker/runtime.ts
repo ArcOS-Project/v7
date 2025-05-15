@@ -21,17 +21,17 @@ export class IconPickerRuntime extends AppProcess {
     this.forWhat = forWhat;
     this.defaultIcon = defaultIcon;
     this.selected.set(defaultIcon);
-    this.returnId = returnId;
+    this.returnId = returnId; // Identifying string from invocator
   }
 
   async confirm() {
-    this.systemDispatch.dispatch("ip-confirm", [this.returnId, this.selected()]);
+    this.systemDispatch.dispatch("ip-confirm", [this.returnId, this.selected()]); // Return selection to invocator
 
     await this.closeWindow();
   }
 
   async cancel() {
-    this.systemDispatch.dispatch("ip-cancel", [this.returnId]);
+    this.systemDispatch.dispatch("ip-cancel", [this.returnId]); // Broadcast cancel to invocator
 
     await this.closeWindow();
   }

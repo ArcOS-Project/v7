@@ -13,6 +13,7 @@ export class MessageBoxRuntime extends AppProcess {
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, data: MessageBoxData) {
     super(handler, pid, parentPid, app);
 
+    // Fallback to default data if missing
     this.data = data || {
       title: "MsgBox::title",
       message: "MsgBox::message",
@@ -20,7 +21,7 @@ export class MessageBoxRuntime extends AppProcess {
       image: ComponentIcon,
     };
 
-    if (this.data.sound) this.soundBus.playSound(this.data.sound);
+    if (this.data.sound) this.soundBus.playSound(this.data.sound); // Play the sound
   }
 
   async start() {
@@ -41,6 +42,7 @@ export class MessageBoxRuntime extends AppProcess {
   async onClose(): Promise<boolean> {
     if (this.acted()) return true;
 
+    // Gross way to determine the primary action of the dialog
     await this.data?.buttons
       .reverse()
       .filter((b) => b.suggested)[0]

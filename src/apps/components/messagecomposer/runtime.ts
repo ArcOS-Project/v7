@@ -65,7 +65,7 @@ export class MessageComposerRuntime extends AppProcess {
       title(),
       recipients(),
       body(),
-      attachments().map((a) => a.data),
+      attachments().map((a) => a.data), // Reduce attachments down to the files themselves
       this.replyId,
       (progress) => {
         prog?.show();
@@ -146,6 +146,7 @@ export class MessageComposerRuntime extends AppProcess {
 
       if (!contents) continue;
 
+      // Create a new NodeJS File based on what we got
       attachments.push({ data: new File([contents], filename, { type: mimetype || "application/octet-stream" }), uuid: UUID() });
     }
 
@@ -164,7 +165,7 @@ export class MessageComposerRuntime extends AppProcess {
   }
 
   filesToAttachments(...files: File[]): Attachment[] {
-    return files.map((f) => ({ data: f, uuid: UUID() }));
+    return files.map((f) => ({ data: f, uuid: UUID() })); // Give each Node file a UUID
   }
 
   removeAttachment(uuid: string) {

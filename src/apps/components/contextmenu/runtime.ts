@@ -9,6 +9,7 @@ export class ContextMenuRuntime extends AppProcess {
   public contextData = Store<ContextMenuInstance | null>();
   public CLICKLOCKED = false;
   public contextProps: Record<string, any[]> = {};
+  // Elements that can contain a contextmenu dataset key
   private readonly validContexMenuTags = ["button", "div", "span", "p", "h1", "h2", "h3", "h4", "h5", "img"];
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
@@ -101,6 +102,7 @@ export class ContextMenuRuntime extends AppProcess {
     let newX = x;
     let newY = y;
 
+    // Position corrections to adhere to screen bounds
     if (newX + mW > dW) newX = dW - mW - 10;
     if (newY + mH > dH) newY = dH - mH - 10;
     if (newX < 0) x = 10;
@@ -114,7 +116,7 @@ export class ContextMenuRuntime extends AppProcess {
 
     if (!(proc instanceof AppProcess)) return [];
 
-    const menu = Object.entries({ ...proc.contextMenu, ...WindowSystemContextMenu(this) });
+    const menu = Object.entries({ ...proc.contextMenu, ...WindowSystemContextMenu(this) }); // Concatenate process context menu with the system contexts
 
     for (const [key, items] of menu) {
       if (scope.includes(key)) return items;
@@ -129,7 +131,7 @@ export class ContextMenuRuntime extends AppProcess {
     for (const element of path) {
       const tag = element.tagName;
 
-      if (!tag) continue;
+      if (!tag) continue; // Theoretically impossible
 
       const contextmenu = element.dataset.contextmenu;
 

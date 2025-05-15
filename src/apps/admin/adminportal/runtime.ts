@@ -34,7 +34,7 @@ export class AdminPortalRuntime extends AppProcess {
     this.switchPageProps.set(props);
     if (force) {
       this.currentPage.set("");
-      await Sleep(0);
+      await Sleep(0); // Wait a frame for the store change to process
     }
     this.currentPage.set(pageId);
 

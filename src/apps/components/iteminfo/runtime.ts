@@ -32,11 +32,11 @@ export class ItemInfoRuntime extends AppProcess {
     this.isDrive = getParentDirectory(path) === path;
 
     if (this.isDrive) {
-      const id = path.split(":")[0];
+      const id = path.split(":")[0]; // Drive discriminator
 
       this.drive = this.fs.getDriveByLetter(id);
 
-      if (!this.drive) this.isDrive = false;
+      if (!this.drive) this.isDrive = false; // Verify the drive exists
     }
   }
 
@@ -71,13 +71,14 @@ export class ItemInfoRuntime extends AppProcess {
     });
 
     if (isShortcut) {
+      // Longwinded and godawful way to get the shortcut metadata in this file
       this.shortcut.set(JSON.parse(arrayToText((await this.fs.readFile(this.info().location.fullPath))!)));
     }
   }
 
   async open() {
     const info = this.info();
-    await this.closeWindow();
+    await this.closeWindow(); // First get the process out of here
 
     if (info.isFolder) {
       await this.spawnApp("fileManager", +this.env.get("shell_pid"), info.location.fullPath);

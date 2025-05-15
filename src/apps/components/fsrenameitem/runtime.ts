@@ -19,7 +19,7 @@ export class RenameItemRuntime extends AppProcess {
   }
 
   render() {
-    if (!this.path) this.closeWindow();
+    if (!this.path) this.closeWindow(); // Probably unexpected invocation
   }
 
   async rename() {

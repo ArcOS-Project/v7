@@ -11,4 +11,4 @@ async function Main() {
   await kernel._init();
 }
 
-Main();
+Main(); // Let's get started

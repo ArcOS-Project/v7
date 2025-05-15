@@ -26,7 +26,7 @@ export class FsProgressRuntime extends AppProcess {
   render({ store }: RenderArgs) {
     if (!store.subscribe) return this.closeWindow();
 
-    let errorNotified = false;
+    let errorNotified = false; // true if errors have been broadcasted
 
     (store as ReadableStore<FsProgressOperation>).subscribe(async (v) => {
       this.Progress.set(v);
@@ -34,12 +34,13 @@ export class FsProgressRuntime extends AppProcess {
       this.windowIcon.set(v.icon);
 
       if (v.done >= v.max && v.max > 0 && !v.errors.length) {
-        await this.closeWindow();
+        await this.closeWindow(); // Close the window if pending operations are done
 
         return;
       }
 
       if (v.done >= v.max && v.max && v.errors.length && !errorNotified) {
+        // Errors occured
         errorNotified = true;
 
         const message = [
@@ -71,7 +72,7 @@ export class FsProgressRuntime extends AppProcess {
   }
 
   async onClose(): Promise<boolean> {
-    if (this.parentPid) this.handler.renderer?.focusedPid.set(this.parentPid);
+    if (this.parentPid) this.handler.renderer?.focusedPid.set(this.parentPid); // Focus the parent PID upon close
 
     return true;
   }
