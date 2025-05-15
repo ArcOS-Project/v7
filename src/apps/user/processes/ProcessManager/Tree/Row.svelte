@@ -57,7 +57,7 @@
   <div class="row" class:closing onclick={() => ($selected = pid)} class:selected={$selected === pid} class:orphan>
     <div class="segment name">
       <img src={icon} alt="" />
-      <span>{name}</span>
+      <span>{name}{orphan ? " (orphaned)" : ""}</span>
     </div>
     <div class="segment pid" class:flagged={$focusedPid === proc.pid}>
       <img src={FlagIcon} alt="" class="flag" />
