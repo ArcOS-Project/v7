@@ -3,10 +3,11 @@ import { isPopulatable } from "$ts/apps/util";
 import { MessageBox } from "$ts/dialog";
 import { getIconPath } from "$ts/images";
 import { WarningIcon } from "$ts/images/dialog";
-import { DesktopIcon } from "$ts/images/general";
 import { DefaultMimeIcon } from "$ts/images/mime";
 import { LogoutIcon, RestartIcon, ShutdownIcon } from "$ts/images/power";
 import type { ProcessHandler } from "$ts/process/handler";
+import { UserPaths } from "$ts/server/user/store";
+import { Sleep } from "$ts/sleep";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
@@ -19,8 +20,6 @@ import type { TrayHostRuntime } from "../trayhost/runtime";
 import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
 import type { WeatherInformation } from "./types";
-import { Sleep } from "$ts/sleep";
-import { UserPaths } from "$ts/server/user/store";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
@@ -42,21 +41,21 @@ export class ShellRuntime extends AppProcess {
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
 
-    this.trayHost = this.handler.getProcess(+this.env.get("trayhost_pid"))!;
+    this.trayHost = this.handler.getProcess(+this.env.get("trayhost_pid"))!; // Get the tray host
 
-    this.systemDispatch.subscribe("stack-busy", () => this.stackBusy.set(true));
-    this.systemDispatch.subscribe("stack-not-busy", () => this.stackBusy.set(false));
+    this.systemDispatch.subscribe("stack-busy", () => this.stackBusy.set(true)); // Subscribe to stack-busy
+    this.systemDispatch.subscribe("stack-not-busy", () => this.stackBusy.set(false)); // Subscribe to stack-not-busy
 
     this.systemDispatch.subscribe("fs-flush-file", () => {
-      this.fileSystemIndex = [];
+      this.fileSystemIndex = []; // Clear the filesystem cache if a file has changed
     });
 
-    this.systemDispatch.subscribe("window-fullscreen", ([pid, desktop]) => {
-      desktop = `${desktop}`;
+    this.systemDispatch.subscribe("window-fullscreen", ([_, desktop]) => {
+      desktop = `${desktop}`; // Ugly way to stringify
 
       this.FullscreenCount.update((v) => {
-        v[desktop] ??= 0;
-        v[desktop]++;
+        v[desktop] ??= 0; // Set to zero if null or undefined
+        v[desktop]++; // Increment
         return v;
       });
     });
@@ -65,9 +64,9 @@ export class ShellRuntime extends AppProcess {
       desktop = `${desktop}`;
 
       this.FullscreenCount.update((v) => {
-        v[desktop] ??= 0;
-        if (v[desktop] <= 0) return v;
-        v[desktop]--;
+        v[desktop] ??= 0; // Set to zero if null or undefined
+        if (v[desktop] <= 0) return v; // If 0, return
+        v[desktop]--; // Decrement
         return v;
       });
     });
@@ -76,6 +75,7 @@ export class ShellRuntime extends AppProcess {
 
     this.searchQuery.subscribe(async (v) => {
       if (!v) {
+        // Reset the search stuff
         this.SelectionIndex.set(0);
         this.searchResults.set([]);
         return;
@@ -84,18 +84,19 @@ export class ShellRuntime extends AppProcess {
       this.searching.set(true);
       const result = await this.Search(v);
 
-      if (result.length > 8) result.length = 8;
+      if (result.length > 8) result.length = 8; // Cut the list down if it's too long
 
       this.searchResults.set(result);
       this.searching.set(false);
     });
 
     this.dispatch.subscribe("ready", () => {
+      // Get the tray host process (idk why I have to do it two times, must be a timing thing)
       this.trayHost = this.handler.getProcess(+this.env.get("trayhost_pid"))!;
       this.ready.set(true);
     });
 
-    this.env.set("shell_pid", this.pid);
+    this.env.set("shell_pid", this.pid); // Set the shell PID
   }
 
   async render() {
@@ -116,12 +117,15 @@ export class ShellRuntime extends AppProcess {
       this.actionCenterOpened.subscribe((v) => v && this.handler.renderer?.focusedPid.set(-1));
       this.openedTrayPopup.subscribe((v) => v && this.handler.renderer?.focusedPid.set(-1));
 
+      // Clicked outside the start menu? Then close it
       if (startMenu && startButton && !composed.includes(startMenu) && !composed.includes(startButton))
         this.startMenuOpened.set(false);
 
+      // Clicked outside the action center? Then close it
       if (actionCenter && actionCenterButton && !composed.includes(actionCenter) && !composed.includes(actionCenterButton))
         this.actionCenterOpened.set(false);
 
+      // Clicked outside a tray popup? Close it
       if (systemTray && !composed.includes(systemTray)) this.openedTrayPopup.set("");
 
       if (
@@ -130,9 +134,10 @@ export class ShellRuntime extends AppProcess {
         !composed.includes(workspaceManager) &&
         !composed.includes(workspaceManagerButton)
       )
-        this.workspaceManagerOpened.set(false);
+        this.workspaceManagerOpened.set(false); // Clicked outside the wsman? close it
     });
 
+    // Various controlling dispatches
     this.dispatch.subscribe("open-action-center", () => this.actionCenterOpened.set(true));
     this.dispatch.subscribe("open-start-menu", () => this.startMenuOpened.set(true));
     this.dispatch.subscribe("open-workspace-manager", () => this.workspaceManagerOpened.set(true));
@@ -141,9 +146,9 @@ export class ShellRuntime extends AppProcess {
     this.dispatch.subscribe("close-start-menu", () => this.startMenuOpened.set(false));
 
     this.startMenuOpened.subscribe((v) => {
-      if (!v) this.searchQuery.set("");
+      if (!v) this.searchQuery.set(""); // Remove search query on close
 
-      if (v) this.handler.renderer?.focusedPid.set(-1);
+      if (v) this.handler.renderer?.focusedPid.set(-1); // Unfocus window on start menu invocation
     });
 
     this.userDaemon?.checkReducedMotion();
@@ -161,7 +166,7 @@ export class ShellRuntime extends AppProcess {
     const url = "https://api.open-meteo.com/v1/forecast";
 
     try {
-      const responses = await fetchWeatherApi(url, params);
+      const responses = await fetchWeatherApi(url, params); // Fetch some weather stuff
 
       const response = responses[0];
       const current = response.current()!;
