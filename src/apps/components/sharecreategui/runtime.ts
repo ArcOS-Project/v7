@@ -15,7 +15,7 @@ export class ShareCreateGuiRuntime extends AppProcess {
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
 
-    this.shares = this.userDaemon?.serviceHost?.getService("ShareMgmt")!;
+    this.shares = this.userDaemon?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
   }
 
   async go() {
@@ -24,9 +24,10 @@ export class ShareCreateGuiRuntime extends AppProcess {
 
     if (!name || !password) return;
 
-    const result = await this.shares.createShare(name, password);
+    const result = await this.shares.createShare(name, password); // Let's create the share
 
     if (!result) {
+      // create failed or smth
       MessageBox(
         {
           title: "Failed to create share",
@@ -43,7 +44,9 @@ export class ShareCreateGuiRuntime extends AppProcess {
       return;
     }
 
-    const drive = await this.shares.mountShareById(result._id);
+    const drive = await this.shares.mountShareById(result._id); // Mount the created share
+
+    // NOTE: The user daemon automatically mounts owned shares upon login, so we don't have to add it to startup
 
     if (!drive) return;
 
@@ -51,17 +54,19 @@ export class ShareCreateGuiRuntime extends AppProcess {
     const parent = this.handler.getProcess(this.parentPid);
 
     if (parent && parent instanceof FileManagerRuntime) {
+      // In case the parent is a file manager, navigate it instead
       const dispatch = this.handler.ConnectDispatch(this.parentPid);
       dispatch?.dispatch("navigate", path);
     } else {
+      // Otherwise spawn a new file manager
       this.spawnApp("fileManager", +this.env.get("shell_pid"), path);
     }
 
-    this.closeWindow();
+    this.closeWindow(); // Finally close the creategui
   }
 
   async myShares() {
-    await this.closeWindow();
-    this.spawnOverlayApp("ShareListGui", this.parentPid);
+    await this.closeWindow(); // Close the creategui
+    this.spawnOverlayApp("ShareListGui", this.parentPid); // Spawn the listgui
   }
 }

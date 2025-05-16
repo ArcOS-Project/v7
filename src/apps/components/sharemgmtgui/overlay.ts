@@ -9,6 +9,6 @@ export class OverlayRuntime extends AppProcess {
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
 
-    this.parentProcess = this.handler.getProcess(this.parentPid)!;
+    this.parentProcess = this.handler.getProcess(this.parentPid)!; // Get the parent process
   }
 }

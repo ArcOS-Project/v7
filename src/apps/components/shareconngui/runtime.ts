@@ -17,12 +17,14 @@ export class ShareConnGuiRuntime extends AppProcess {
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
 
-    this.shares = this.userDaemon?.serviceHost?.getService("ShareMgmt")!;
+    this.shares = this.userDaemon?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
   }
 
   async go() {
+    // Join the share
     const result = await this.shares.joinShare(this.shareUsername(), this.shareName(), this.sharePassword(), true);
 
+    // Join failed?
     if (!result) {
       MessageBox(
         {
@@ -45,24 +47,26 @@ export class ShareConnGuiRuntime extends AppProcess {
       const parent = this.handler.getProcess(this.parentPid);
 
       if (parent && parent instanceof FileManagerRuntime) {
+        // Is the parent a file manager? Then navigate it instead of spawning one
         const dispatch = this.handler.ConnectDispatch(this.parentPid);
         dispatch?.dispatch("navigate", path);
       } else {
+        // Spawn a file manager instead
         this.spawnApp("fileManager", +this.env.get("shell_pid"), path);
       }
 
       this.userPreferences.update((v) => {
-        v.startup ||= {};
-        v.startup[result.shareId!] = "share";
+        v.startup ||= {}; // In case startup doesn't exist, should not ever happen tho
+        v.startup[result.shareId!] = "share"; // Make sure the share mounts on login
         return v;
       });
     }
 
-    this.closeWindow();
+    this.closeWindow(); // Finally close the conngui
   }
 
   async myShares() {
-    await this.closeWindow();
-    this.spawnOverlayApp("ShareListGui", this.parentPid);
+    await this.closeWindow(); // Close the conngui
+    this.spawnOverlayApp("ShareListGui", this.parentPid); // Spawn the listgui
   }
 }

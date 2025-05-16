@@ -34,7 +34,7 @@ export class ShareMgmtGuiRuntime extends AppProcess {
     this.info = await this.shares.getShareInfoById(this.shareId);
 
     if (!this.info) return false;
-    this.myShare = this.userDaemon?.userInfo._id === this.info.userId;
+    this.myShare = this.userDaemon?.userInfo._id === this.info.userId; // Compare user IDs to see if the share is own
 
     await this.updateMembers();
   }
@@ -54,8 +54,8 @@ export class ShareMgmtGuiRuntime extends AppProcess {
           {
             caption: "Kick user",
             action: async () => {
-              await this.shares.kickUserFromShare(this.shareId, id);
-              await this.updateMembers();
+              await this.shares.kickUserFromShare(this.shareId, id); // First kick the user
+              await this.updateMembers(); // Then update the member list
             },
             suggested: true,
           },
@@ -79,9 +79,9 @@ export class ShareMgmtGuiRuntime extends AppProcess {
           {
             caption: "Delete share",
             action: async () => {
-              this.closeWindow();
-              await this.fs.umountDrive(this.shareId);
-              await this.shares.deleteShare(this.shareId);
+              this.closeWindow(); // First close the mgmtgui
+              await this.fs.umountDrive(this.shareId); // Then unmount the share
+              await this.shares.deleteShare(this.shareId); // And finally delete the share
             },
             suggested: true,
           },
