@@ -221,7 +221,7 @@ export class ShellRuntime extends AppProcess {
   async deleteWorkspace(workspace: Workspace) {
     const windowCount = [...this.handler.store()].filter(
       ([_, p]) => p instanceof AppProcess && p.app.desktop === workspace.uuid
-    ).length;
+    ).length; // Get the window count using some arguably unreadable code
 
     if (windowCount > 0) {
       MessageBox(
@@ -240,9 +240,9 @@ export class ShellRuntime extends AppProcess {
       return;
     }
 
-    this.userDaemon?.deleteVirtualDesktop(workspace.uuid);
-    await Sleep(0);
-    this.workspaceManagerOpened.set(true);
+    this.userDaemon?.deleteVirtualDesktop(workspace.uuid); //First delete the desktop
+    await Sleep(0); // Then wait for the next frame
+    this.workspaceManagerOpened.set(true); // (ugly) and re-open the workspace manager
   }
 
   async Search(query: string) {
@@ -296,7 +296,7 @@ export class ShellRuntime extends AppProcess {
     const fuse = new Fuse(items, options);
     const result = fuse.search(query);
 
-    return result.map((r) => ({ ...r, id: UUID() }));
+    return result.map((r) => ({ ...r, id: UUID() })); // Add a UUID to each search result
   }
 
   async getFilesystemSearchSupplier(preferences: UserPreferences) {
@@ -304,9 +304,9 @@ export class ShellRuntime extends AppProcess {
     const index =
       preferences.searchOptions.cacheFilesystem && this.fileSystemIndex && this.fileSystemIndex.length
         ? this.fileSystemIndex
-        : await this.getFlatTree();
+        : await this.getFlatTree(); // Resort to caching if it exists and the user allows it
 
-    this.fileSystemIndex = index;
+    this.fileSystemIndex = index; // Set the cache
 
     for (const file of index) {
       result.push({
@@ -332,6 +332,7 @@ export class ShellRuntime extends AppProcess {
       const populatable = isPopulatable(app);
       const thirdParty = app.thirdParty || app.entrypoint;
 
+      // Longwinded way to determine if an app can be searched for
       if (
         (preferences.searchOptions.showHiddenApps || preferences.shell.visuals.showHiddenApps ? true : populatable) &&
         (preferences.searchOptions.showThirdPartyApps ? true : !thirdParty)
@@ -356,14 +357,14 @@ export class ShellRuntime extends AppProcess {
 
     const recurse = (tree: RecursiveDirectoryReadReturn, path = "U:") => {
       for (const file of tree.files) {
-        result.push({ ...file, path: `${path}/${file.name}`, shortcut: tree.shortcuts?.[file.name] });
+        result.push({ ...file, path: `${path}/${file.name}`, shortcut: tree.shortcuts?.[file.name] }); // Add path to each file
       }
       for (const dir of tree.dirs) {
-        recurse(dir.children, `${path}/${dir.name}`);
+        recurse(dir.children, `${path}/${dir.name}`); // Get the contents of the enclosed dir
       }
     };
 
-    recurse(tree!, "U:");
+    recurse(tree!, "U:"); // Recurse the contents
 
     return result;
   }
@@ -372,21 +373,21 @@ export class ShellRuntime extends AppProcess {
     const key = e.key.toLowerCase();
     const results = this.searchResults();
 
-    if (e.key === "Escape") return this.startMenuOpened.set(false);
+    if (e.key === "Escape") return this.startMenuOpened.set(false); // Close the start menu upon escape
     let index = this.SelectionIndex();
-    if (!results.length) return (index = -1);
-    if (key == "enter") return this.Submit();
+    if (!results.length) return (index = -1); // Reset the index if no results
+    if (key == "enter") return this.Submit(); // Execute the selected result upon enter
     let length = results.length - 1;
 
     switch (key) {
       case "arrowup":
         index--;
-        if (index < 0) index = length;
+        if (index < 0) index = length; // Reset to end of list if index below 0
         break;
 
       case "arrowdown":
         index++;
-        if (index > length) index = 0;
+        if (index > length) index = 0; // Reset to 0 if index above length
         break;
     }
 
@@ -406,11 +407,11 @@ export class ShellRuntime extends AppProcess {
     this.searchQuery.set("");
 
     // Trigger the selected search result
-    this.Trigger(results[index == -1 ? 0 : index].item);
+    this.Trigger(results[index == -1 ? 0 : index].item); // Default to index 0
   }
 
   async exit() {
-    this.startMenuOpened.set(false);
-    await this.spawnOverlayApp("ExitApp", this.pid);
+    this.startMenuOpened.set(false); // First close the start menu
+    await this.spawnOverlayApp("ExitApp", this.pid); // Then spawn the exit overlay
   }
 }
