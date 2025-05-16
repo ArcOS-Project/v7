@@ -8,13 +8,16 @@
     "build": "git rev-parse --short HEAD > ./public/build && vite build",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
-    "types": "npx tsc -p tsconfig.app.json --emitDeclarationOnly --declaration --outFile dist/types.d.ts --verbatimModuleSyntax false --isolatedModules false --removeComments"
+    "types": "npx tsc -p tsconfig.app.json --emitDeclarationOnly --declaration --outFile dist/types.d.ts --verbatimModuleSyntax false --isolatedModules false --removeComments",
+    "docs": "npx typedoc --plugin typedoc-plugin-markdown --name \"ArcOS v7\" --entryPointStrategy Expand src"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@tsconfig/svelte": "^5.0.4",
     "svelte": "^5.15.0",
     "svelte-check": "^4.1.1",
+    "typedoc": "^0.28.4",
+    "typedoc-plugin-markdown": "^4.6.3",
     "typescript": "~5.6.2",
     "vite": "^6.0.5"
   },
