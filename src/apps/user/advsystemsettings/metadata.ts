@@ -31,5 +31,7 @@ export const AdvSystemSettings: App = {
     runtime: AdvSysSetRuntime,
     component: AdvancedSystemSettings as any,
   },
+  glass: true,
+
   id: "AdvSystemSettings",
 };

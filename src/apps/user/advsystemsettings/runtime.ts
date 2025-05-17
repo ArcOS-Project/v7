@@ -14,8 +14,8 @@ export class AdvSysSetRuntime extends AppProcess {
   public currentTab = Store<string>("General");
   public tabs: Record<string, Component> = {
     General,
-    Startup,
-    Policies,
+    "Startup Items": Startup,
+    "System Policies": Policies,
   };
   public preferencesBuffer = Store<UserPreferences>();
   syncInitialized = false;

@@ -1,0 +1,51 @@
+#AdvSystemSettings > div.body div.startup-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#AdvSystemSettings > div.body div.startup-items div.list {
+  border: var(--win-border);
+  flex-grow: 1;
+  overflow-y: auto;
+  border-radius: 4px;
+}
+
+#AdvSystemSettings > div.body div.startup-items div.list::-webkit-scrollbar {
+  display: none;
+}
+
+#AdvSystemSettings > div.body div.startup-items div.list div.row {
+  display: flex;
+  align-items: center;
+  border-bottom: var(--win-border);
+}
+
+#AdvSystemSettings > div.body div.startup-items div.list div.row input,
+#AdvSystemSettings > div.body div.startup-items div.list div.row select {
+  margin: 0;
+  padding: 0;
+  border: none;
+  height: 30px;
+  border-radius: 0;
+  background-color: var(--button-active-bg);
+}
+#AdvSystemSettings > div.body div.startup-items div.list div.row input {
+  flex-grow: 1;
+  padding: 0 10px;
+}
+
+#AdvSystemSettings > div.body div.startup-items div.list div.row select {
+  border-left: var(--win-border);
+  padding: 0 5px;
+}
+
+#AdvSystemSettings > div.body div.startup-items div.list div.row button {
+  border-radius: 0;
+  border-left: var(--win-border);
+  background-color: var(--button-bg);
+  width: 31px;
+  height: 30px;
+  font-size: 16px;
+  padding: 0;
+}

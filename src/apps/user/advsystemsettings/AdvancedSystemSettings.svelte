@@ -17,7 +17,7 @@
     <button class:selected={$currentTab === name} onclick={() => ($currentTab = name)}>{name}</button>
   {/each}
 </div>
-<div class="content">
+<div class="content {$currentTab.replaceAll(' ', '-').toLowerCase()}">
   {#if Tab}
     <Tab {process} />
   {/if}
