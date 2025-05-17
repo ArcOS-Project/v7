@@ -9,6 +9,7 @@
   flex-grow: 1;
   overflow-y: auto;
   border-radius: 4px;
+  background-color: var(--win-bg);
 }
 
 #AdvSystemSettings > div.body div.startup-items div.list::-webkit-scrollbar {
@@ -28,7 +29,7 @@
   border: none;
   height: 30px;
   border-radius: 0;
-  background-color: var(--button-active-bg);
+  background-color: var(--win-bg);
 }
 #AdvSystemSettings > div.body div.startup-items div.list div.row input {
   flex-grow: 1;

@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { WarningIcon } from "$ts/images/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -14,7 +15,7 @@ export class AdvSysSetRuntime extends AppProcess {
   public currentTab = Store<string>("General");
   public tabs: Record<string, Component> = {
     General,
-    "Startup Items": Startup,
+    "Startup Items": Startup as any,
     "System Policies": Policies,
   };
   public preferencesBuffer = Store<UserPreferences>();
@@ -48,6 +49,7 @@ export class AdvSysSetRuntime extends AppProcess {
           title: "Your preferences changed",
           message:
             "The user preferences changed while this app was running. Click 'Synchronize' to synchronize. This will discard any changes you've made since opening the dialog.",
+          image: WarningIcon,
           buttons: [
             {
               caption: "Ignore",
