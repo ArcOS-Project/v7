@@ -1,0 +1,47 @@
+@import url("./codeeditor/dark.css");
+@import url("./codeeditor/light.css");
+
+div.code-editor {
+  /* height: fit-content; */
+  /* overflow: hidden; */
+  position: relative;
+}
+
+div.code-editor-wrapper {
+  height: 100%;
+  overflow: auto;
+  cursor: text;
+  padding: 10px;
+}
+
+div.code-editor-wrapper > div.code-editor > div.highlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  min-width: fit-content;
+}
+
+.code-editor-wrapper textarea {
+  border: none;
+  resize: none;
+  font-family: "Source Code Pro";
+  background-color: transparent;
+  color: #0000;
+  caret-color: var(--fg);
+  width: 100%;
+  position: relative;
+  z-index: 1000;
+  white-space: nowrap;
+  padding: 0;
+  overflow: visible;
+}
+
+.code-editor-wrapper textarea,
+.code-editor-wrapper pre code.hljs {
+  display: block;
+  overflow: visible;
+  width: fit-content;
+  height: fit-content;
+}
