@@ -44,6 +44,7 @@ export const TestApp: App = {
     runtime: TestAppRuntime,
   },
   noSafeMode: true,
-  id: "testApp",
   glass: true,
+  hidden: true,
+  id: "testApp",
 };

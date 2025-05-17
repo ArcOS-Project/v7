@@ -1,0 +1,93 @@
+pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1em;
+}
+code.hljs {
+  padding: 3px 5px;
+}
+/*
+
+Atom One Light by Daniel Gamage
+Original One Light Syntax theme from https://github.com/atom/one-light-syntax
+
+base:    #fafafa
+mono-1:  #383a42
+mono-2:  #686b77
+mono-3:  #a0a1a7
+hue-1:   #0184bb
+hue-2:   #4078f2
+hue-3:   #a626a4
+hue-4:   #50a14f
+hue-5:   #e45649
+hue-5-2: #c91243
+hue-6:   #986801
+hue-6-2: #c18401
+
+*/
+.theme-light .code-editor-wrapper {
+  background: var(--win-bg);
+}
+.theme-light .code-editor-wrapper .hljs {
+  color: var(--fg);
+  background: var(--win-bg);
+}
+.theme-light .code-editor-wrapper .hljs-comment,
+.theme-light .code-editor-wrapper .hljs-quote {
+  color: #a0a1a7;
+  font-style: italic;
+}
+.theme-light .code-editor-wrapper .hljs-doctag,
+.theme-light .code-editor-wrapper .hljs-keyword,
+.theme-light .code-editor-wrapper .hljs-formula {
+  color: #a626a4;
+}
+.theme-light .code-editor-wrapper .hljs-section,
+.theme-light .code-editor-wrapper .hljs-name,
+.theme-light .code-editor-wrapper .hljs-selector-tag,
+.theme-light .code-editor-wrapper .hljs-deletion,
+.theme-light .code-editor-wrapper .hljs-subst {
+  color: #e45649;
+}
+.theme-light .code-editor-wrapper .hljs-literal {
+  color: #0184bb;
+}
+.theme-light .code-editor-wrapper .hljs-string,
+.theme-light .code-editor-wrapper .hljs-regexp,
+.theme-light .code-editor-wrapper .hljs-addition,
+.theme-light .code-editor-wrapper .hljs-attribute,
+.theme-light .code-editor-wrapper .hljs-meta .hljs-string {
+  color: #50a14f;
+}
+.theme-light .code-editor-wrapper .hljs-attr,
+.theme-light .code-editor-wrapper .hljs-variable,
+.theme-light .code-editor-wrapper .hljs-template-variable,
+.theme-light .code-editor-wrapper .hljs-type,
+.theme-light .code-editor-wrapper .hljs-selector-class,
+.theme-light .code-editor-wrapper .hljs-selector-attr,
+.theme-light .code-editor-wrapper .hljs-selector-pseudo,
+.theme-light .code-editor-wrapper .hljs-number {
+  color: #986801;
+}
+.theme-light .code-editor-wrapper .hljs-symbol,
+.theme-light .code-editor-wrapper .hljs-bullet,
+.theme-light .code-editor-wrapper .hljs-link,
+.theme-light .code-editor-wrapper .hljs-meta,
+.theme-light .code-editor-wrapper .hljs-selector-id,
+.theme-light .code-editor-wrapper .hljs-title {
+  color: #4078f2;
+}
+.theme-light .code-editor-wrapper .hljs-built_in,
+.theme-light .code-editor-wrapper .hljs-title.class_,
+.theme-light .code-editor-wrapper .hljs-class .hljs-title {
+  color: #c18401;
+}
+.theme-light .code-editor-wrapper .hljs-emphasis {
+  font-style: italic;
+}
+.theme-light .code-editor-wrapper .hljs-strong {
+  font-weight: bold;
+}
+.theme-light .code-editor-wrapper .hljs-link {
+  text-decoration: underline;
+}
