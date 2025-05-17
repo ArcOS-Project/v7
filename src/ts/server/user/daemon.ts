@@ -1034,6 +1034,8 @@ export class UserDaemon extends Process {
         case "share":
           await shares?.mountShareById(payload);
           break;
+        case "disabled":
+          break;
         default:
           this.Log(`Unknown startup type: ${type.toUpperCase()} (payload: '${payload}')`);
       }

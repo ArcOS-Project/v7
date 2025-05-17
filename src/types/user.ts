@@ -36,7 +36,7 @@ export interface UserPreferences {
   disabledApps: string[];
   workspaces: WorkspacesOptions;
   globalSettings: Record<string, any>;
-  startup?: Record<string, "app" | "file" | "folder" | "share">;
+  startup?: Record<string, "app" | "file" | "folder" | "share" | "disabled">;
 }
 
 export type ExpandedUserInfo = UserInfo & { profile: PublicUserInfo };
