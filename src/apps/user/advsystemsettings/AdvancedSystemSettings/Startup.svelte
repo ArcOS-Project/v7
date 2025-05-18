@@ -40,7 +40,7 @@
   }
 </script>
 
-<p>This list desides what runs when you log in. This includes shares you've joined or apps you want to launch automatically.</p>
+<p>This list decides what runs when you log in. This includes shares you've joined or apps you want to launch automatically.</p>
 <div class="list">
   {#each Object.entries($preferencesBuffer.startup || {}) as [payload, type], i (`${payload}-${type}-${i}`)}
     <!-- svelte-ignore a11y_click_events_have_key_events -->
