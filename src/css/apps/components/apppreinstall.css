@@ -1,0 +1,64 @@
+#AppPreInstall > div.body {
+  padding: 20px;
+  padding-top: 30px;
+  text-align: center;
+}
+
+#AppPreInstall > div.body div.header img {
+  height: 84px;
+  margin-bottom: 15px;
+}
+
+#AppPreInstall > div.body div.header h1 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+#AppPreInstall > div.body div.header p {
+  opacity: 0.5;
+}
+
+#AppPreInstall > div.body div.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+#AppPreInstall > div.body div.info {
+  margin: 20px 0;
+  text-align: left;
+  padding: 15px;
+  border-radius: 10px;
+  border: var(--win-border);
+}
+
+#AppPreInstall > div.body div.info div.rows {
+  margin-top: 10px;
+}
+
+#AppPreInstall > div.body div.info div.row {
+  display: flex;
+  margin-top: 5px;
+  align-items: center;
+}
+
+#AppPreInstall > div.body div.info p.key {
+  font-weight: bold;
+  opacity: 0.5;
+  width: 70px;
+}
+
+#AppPreInstall > div.body div.action {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#AppPreInstall > div.body div.action button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+  height: 36px;
+}

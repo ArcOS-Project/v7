@@ -46,6 +46,10 @@ div.window div.body button:not(.reset).suggested {
   font-weight: bold;
 }
 
+div.window div.body button:not(.reset).suggested * {
+  color: var(--accent-darkest);
+}
+
 div.window div.body button:not(.reset).suggested:disabled {
   opacity: 0.5 !important;
 }

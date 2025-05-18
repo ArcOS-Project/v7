@@ -1,0 +1,77 @@
+#AppInstaller > div.body {
+  padding: 20px;
+}
+
+#AppInstaller > div.body div.header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+#AppInstaller > div.body div.header img {
+  height: 64px;
+}
+
+#AppInstaller > div.body div.header h1 {
+  font-size: 22px;
+}
+
+#AppInstaller > div.body div.header p {
+  opacity: 0.5;
+}
+
+#AppInstaller > div.body div.log {
+  border-radius: 10px;
+  border: var(--win-border);
+  padding: 15px;
+  overflow-y: scroll;
+  height: calc(100% - 30px - 64px - 40px); /* actions - header - gapping */
+  margin: 20px 0;
+}
+
+#AppInstaller > div.body div.log div.item {
+  height: 20px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#AppInstaller > div.body div.log div.item img {
+  margin-left: auto;
+  height: 16px;
+}
+#AppInstaller > div.body div.log div.item p.type {
+  opacity: 0.5;
+  font-weight: bold;
+}
+
+#AppInstaller > div.body div.ready-to-install {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#AppInstaller > div.body div.ready-to-install span {
+  color: var(--accent-lighter);
+  font-size: 64px;
+  margin-bottom: 10px;
+}
+
+#AppInstaller > div.body div.ready-to-install h1 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+#AppInstaller > div.body div.ready-to-install p {
+  opacity: 0.5;
+}
+
+#AppInstaller > div.body div.actions {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 15px;
+}
