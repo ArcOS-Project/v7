@@ -270,6 +270,7 @@ export class UserDaemon extends Process {
   }
 
   async stop() {
+    if (this.serviceHost) this.serviceHost._holdRestart = true;
     if (this._disposed) return;
 
     if (this.preferencesUnsubscribe) this.preferencesUnsubscribe();
@@ -679,6 +680,7 @@ export class UserDaemon extends Process {
 
   async toLogin(type: string, props: Record<string, any> = {}) {
     if (this._disposed) return;
+    if (this.serviceHost) this.serviceHost._holdRestart = true;
 
     await this.handler._killSubProceses(this.pid);
     await this.kernel.state?.loadState("login", {
@@ -686,6 +688,7 @@ export class UserDaemon extends Process {
       userDaemon: this,
       ...props,
     });
+    this.serviceHost?.killSelf?.();
     this.unmountMountedDrives();
   }
 

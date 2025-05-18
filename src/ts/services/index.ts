@@ -13,9 +13,8 @@ import type { BaseService } from "./base";
 
 export class ServiceHost extends Process {
   public Services: ReadableServiceStore = Store<ServiceStore>();
-  public _criticalProcess: boolean = true;
+  public _holdRestart = false;
   private _storeLoaded = false;
-  private _holdRestart = false;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
@@ -154,5 +153,9 @@ export class ServiceHost extends Process {
     if (!store.has(id) || !service || !service.pid) return undefined;
 
     return this.handler.getProcess(service.pid) as T;
+  }
+
+  async stop() {
+    this._holdRestart = true;
   }
 }
