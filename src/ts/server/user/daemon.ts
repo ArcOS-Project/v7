@@ -2148,7 +2148,11 @@ export class UserDaemon extends Process {
 
       if (typeof json !== "object") return "failed to convert to JSON";
 
-      if (!json.metadata || !json.entrypoint || !json.thirdParty || !json.workingDirectory) return "missing properties";
+      if (!json.metadata || !json.entrypoint) return "missing properties";
+
+      (json as any).thirdParty = true;
+      json.tpaPath = path;
+      json.workingDirectory = getParentDirectory(path);
 
       this.installApp(json);
     } catch (e) {
@@ -2199,10 +2203,10 @@ export class UserDaemon extends Process {
     await bhusp?._activate(this.token);
   }
 
-  async GlobalLoadIndicator(caption?: string) {
+  async GlobalLoadIndicator(caption?: string, pid?: number) {
     const process = await this.spawnOverlay<GlobalLoadIndicatorRuntime>(
       "GlobalLoadIndicator",
-      +this.env.get("shell_pid"),
+      pid ?? +this.env.get("shell_pid"),
       caption
     );
 
