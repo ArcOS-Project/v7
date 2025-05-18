@@ -1,6 +1,8 @@
 import { AdminPortalApp } from "$apps/admin/adminportal/metadata";
 import { AcceleratorOverviewApp } from "$apps/components/acceleratoroverview/metadata";
 import { AppInfoApp } from "$apps/components/appinfo/metadata";
+import { AppInstallerApp } from "$apps/components/appinstaller/metadata";
+import { AppPreinstallApp } from "$apps/components/apppreinstall/metadata";
 import { ContextMenuApp } from "$apps/components/contextmenu/metadata";
 import { ExitApp } from "$apps/components/exit/metadata";
 import { FsNewFileApp } from "$apps/components/fsnewfile/metadata";
@@ -103,6 +105,8 @@ export const BuiltinApps: AppStorage = [
   LoginApp,
   InitialSetupWizard,
   AdvSystemSettings,
+  AppPreinstallApp,
+  AppInstallerApp,
 ];
 
 export const AdminApps: AppStorage = [AdminPortalApp];

@@ -1,4 +1,4 @@
-export function tryJsonParse<T = any>(input: any) {
+export function tryJsonParse<T = any>(input: any): T {
   try {
     return JSON.parse(input) as T;
   } catch {

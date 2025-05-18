@@ -27,6 +27,7 @@ import type { App } from "$types/app";
 import type { FileHandler } from "$types/fs";
 import type { ThemeStore } from "$types/theme";
 import type { UserDaemon } from "./daemon";
+import installArcPkg from "./handlers/arcpkg";
 import installTpaFile from "./handlers/installtpa";
 import runTpaFile from "./handlers/runtpa";
 import runTpaBundle from "./handlers/runtpab";
@@ -254,6 +255,7 @@ export const DefaultMimeIcons: Record<string, string[]> = {
   [PlaylistMimeIcon]: [".arcpl"],
   [ShortcutMimeIcon]: [".arclnk"],
   [ArcTermMimeIcon]: ["arcterm.conf"],
+  [DownloadIcon]: [".arc"],
 };
 
 export function DefaultFileHandlers(daemon: UserDaemon): Record<string, FileHandler> {
@@ -261,6 +263,7 @@ export function DefaultFileHandlers(daemon: UserDaemon): Record<string, FileHand
     runTpaFile: runTpaFile(daemon),
     installTpaFile: installTpaFile(daemon),
     runTpaBundle: runTpaBundle(daemon),
+    installArcPkg: installArcPkg(daemon),
   };
 }
 
