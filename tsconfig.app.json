@@ -23,7 +23,8 @@
       "$types/*": ["./src/types/*"],
       "$lib/*": ["./src/lib/*"],
       "$ts/*": ["./src/ts/*"]
-    }
+    },
+    "esModuleInterop": true
   },
   "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte", "src/**/*.html"]
 }

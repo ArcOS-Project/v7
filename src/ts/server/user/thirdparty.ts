@@ -29,6 +29,7 @@ import dayjs from "dayjs";
 import { Axios } from "../axios";
 import type { UserDaemon } from "./daemon";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
+import type { ThirdPartyPropMap } from "$types/thirdparty";
 
 export function ThirdPartyProps(
   daemon: UserDaemon,
@@ -37,7 +38,7 @@ export function ThirdPartyProps(
   wrap: (c: string) => string,
   metaPath: string,
   workingDirectory?: string
-) {
+): ThirdPartyPropMap {
   const props = {
     kernel: daemon.kernel,
     daemon,

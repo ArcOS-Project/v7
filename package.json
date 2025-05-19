@@ -8,7 +8,9 @@
     "build": "git rev-parse --short HEAD > ./public/build && vite build",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
-    "types": "npx tsc -p tsconfig.app.json --emitDeclarationOnly --declaration --outFile dist/types.d.ts --verbatimModuleSyntax false --isolatedModules false --removeComments",
+    "build:types": "tsc -p tsconfig.app.json --emitDeclarationOnly --declaration --outFile dist/types.d.ts --verbatimModuleSyntax false --isolatedModules false --removeComments",
+    "build:globals": "node tools/build-globals.mjs",
+    "build:types:all": "npm run build:types && npm run build:globals",
     "docs": "npx typedoc --plugin typedoc-plugin-markdown --name \"ArcOS v7\" --entryPointStrategy Expand src"
   },
   "devDependencies": {
@@ -18,7 +20,7 @@
     "svelte-check": "^4.1.1",
     "typedoc": "^0.28.4",
     "typedoc-plugin-markdown": "^4.6.3",
-    "typescript": "~5.6.2",
+    "typescript": "^5.8.3",
     "vite": "^6.0.5"
   },
   "dependencies": {
@@ -64,6 +66,7 @@
     "svelte-dnd-action": "^0.9.57",
     "svelte-markdown": "^0.4.1",
     "svelte-pdf-simple": "^2.0.0",
+    "ts-node": "^10.9.2",
     "tsparticles-engine": "^2.12.0",
     "tsparticles-preset-fire": "^2.12.0",
     "validator": "^13.12.0",
