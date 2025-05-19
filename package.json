@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
     "build:types": "tsc -p tsconfig.app.json --emitDeclarationOnly --declaration --outFile dist/types.d.ts --verbatimModuleSyntax false --isolatedModules false --removeComments",
-    "build:globals": "node tools/build-globals.mjs",
+    "build:globals": "node tools/build-globals.mjs && node tools/convert-global.mjs",
     "build:types:all": "npm run build:types && npm run build:globals",
     "docs": "npx typedoc --plugin typedoc-plugin-markdown --name \"ArcOS v7\" --entryPointStrategy Expand src"
   },
