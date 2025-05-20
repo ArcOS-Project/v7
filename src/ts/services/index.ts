@@ -53,6 +53,13 @@ export class ServiceHost extends Process {
     return (this._storeLoaded = true);
   }
 
+  getServiceInfo(id: string) {
+    const services = this.Services.get();
+    const service = services.get(id);
+
+    return service;
+  }
+
   async startService(id: string) {
     this.Log(`Starting service ${id}...`);
 

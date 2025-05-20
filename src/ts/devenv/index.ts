@@ -9,6 +9,9 @@ import { DevDrive } from "./drive";
 import type { Service } from "$types/service";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { AppProcess } from "$ts/apps/process";
+import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
+import { MessageBox } from "$ts/dialog";
+import { ErrorIcon } from "$ts/images/dialog";
 
 export class DevelopmentEnvironment extends BaseService {
   public connected = false;
@@ -16,7 +19,7 @@ export class DevelopmentEnvironment extends BaseService {
   private url?: string;
   private client: Socket | undefined;
   private axios?: AxiosInstance;
-  private meta?: ProjectMetadata;
+  public meta?: ProjectMetadata;
   private daemon: UserDaemon;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
@@ -30,6 +33,11 @@ export class DevelopmentEnvironment extends BaseService {
   }
 
   async connect(port: number): Promise<DevEnvActivationResult> {
+    if (this._disposed) {
+      this.disconnect();
+      return "ping_failed";
+    }
+
     const abort = (code: DevEnvActivationResult) => {
       return new Promise<DevEnvActivationResult>((r) => {
         this.disconnect();
@@ -64,16 +72,42 @@ export class DevelopmentEnvironment extends BaseService {
 
       this.client = io(this.url, { transports: ["websocket"] });
       this.client.on("connect", async () => {
+        if (this._disposed) return this.disconnect();
+
         resolved = true;
         r("success");
       });
 
+      this.client.on("disconnect", (reason) => {
+        MessageBox(
+          {
+            title: "ArcDev stopped",
+            message: `The websocket connection was lost. Please reconnect to continue development. Disconnect reason was '${reason}'`,
+            image: ErrorIcon,
+            sound: "arcos.dialog.error",
+            buttons: [{ caption: "Okay", action: () => {} }],
+          },
+          +this.env.get("shell_pid"),
+          true
+        );
+
+        this.host.stopService("DevEnvironment");
+      });
+
       this.client.on("open-file", (file: string) => {
+        if (this._disposed) return this.disconnect();
+
         this.daemon.openFile(file);
       });
-      this.client.on("restart-tpa", () => this.restartTpa());
+      this.client.on("restart-tpa", () => {
+        if (this._disposed) return this.disconnect();
+
+        this.restartTpa();
+      });
 
       setTimeout(() => {
+        if (this._disposed) return this.disconnect();
+
         if (!resolved) {
           r("websock_failed");
           this.disconnect();
@@ -89,9 +123,12 @@ export class DevelopmentEnvironment extends BaseService {
     this.client?.disconnect();
     this.connected = false;
     await this.fs.umountDrive("devenv", true);
+    return undefined;
   }
 
   async getProjectMeta() {
+    if (this._disposed) return this.disconnect();
+
     try {
       const response = await this.axios?.get("/ping");
 
@@ -102,14 +139,18 @@ export class DevelopmentEnvironment extends BaseService {
   }
 
   async mountDevDrive() {
+    if (this._disposed) return this.disconnect();
+
     const result = await this.fs.mountDrive("devenv", DevDrive, "V", undefined, this.axios, this.url);
 
     return !!result;
   }
 
   async restartTpa() {
+    if (this._disposed) return this.disconnect();
+
     const procs = [...this.handler.store()]
-      .filter(([pid, proc]) => proc instanceof AppProcess && proc.app.id === this.meta?.metadata.appId)
+      .filter(([_, proc]) => proc instanceof ThirdPartyAppProcess && proc.app.id === this.meta?.metadata.appId)
       .map(([pid]) => pid);
 
     for (const pid of procs) {
@@ -117,6 +158,10 @@ export class DevelopmentEnvironment extends BaseService {
     }
 
     await this.daemon.openFile("V:/_app.tpa");
+  }
+
+  async stop() {
+    await this.disconnect();
   }
 }
 
