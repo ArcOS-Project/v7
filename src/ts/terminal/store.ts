@@ -7,6 +7,7 @@ import { CdCommand } from "./commands/cd";
 import { ClearCommand } from "./commands/clear";
 import { ConfigCommand } from "./commands/config";
 import { CrTpaCommand } from "./commands/crtpa";
+import { DevenvCommand } from "./commands/devenv";
 import { DirCommand } from "./commands/dir";
 import { DispatchCommand } from "./commands/dispatch";
 import { DrivesCommand } from "./commands/drives";
@@ -64,6 +65,7 @@ export const TerminalCommandStore: (typeof TerminalProcess)[] = [
   TasksCommand,
   AdminCommand,
   DrivesCommand,
+  DevenvCommand,
 ];
 
 export const ESC = `\x1b[`;

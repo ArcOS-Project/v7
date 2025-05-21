@@ -1,5 +1,6 @@
 import { appStoreService } from "$ts/apps/storage";
 import { bhuspService } from "$ts/bughunt/process";
+import { devEnvironmentService } from "$ts/devenv";
 import { shareService } from "$ts/fs/shares";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
@@ -27,6 +28,7 @@ export class ServiceHost extends Process {
     ["AppStorage", { ...appStoreService }],
     ["GlobalDispatch", { ...globalDispatchService }],
     ["MessagingService", { ...messagingService }],
+    ["DevEnvironment", { ...devEnvironmentService }],
   ]);
 
   public loadStore(store: ServiceStore) {
@@ -49,6 +51,13 @@ export class ServiceHost extends Process {
     this.Services.set(store);
 
     return (this._storeLoaded = true);
+  }
+
+  getServiceInfo(id: string) {
+    const services = this.Services.get();
+    const service = services.get(id);
+
+    return service;
   }
 
   async startService(id: string) {
