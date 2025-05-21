@@ -1,12 +1,19 @@
+/**
+ * ArcOS proprietary type build process
+ *
+ * The files in the tools/ directory are responsible for generating and altering the ArcOS v7 type declarations to make
+ * them compatible with ArcOS third-party app development using v7cli. The code in this file is not to be compared to any
+ * ordinary build systems, because it is far from usual.
+ *
+ * © IzKuipers 2025. Licensed under GPLv3.
+ */
 import ts from "typescript";
 import path from "path";
 import fs from "fs";
 
-// File paths
 const INPUT_PATH = path.resolve("dist/globals.d.ts");
 const OUTPUT_PATH = path.resolve("dist/arcos.d.ts");
 
-// Extract and convert declarations
 function extractAndConvertDeclarations() {
   const program = ts.createProgram([INPUT_PATH], {
     target: ts.ScriptTarget.ESNext,
@@ -19,7 +26,6 @@ function extractAndConvertDeclarations() {
   const exports = [];
 
   ts.forEachChild(sourceFile, (node) => {
-    // Skip imports, exports, and "export import" nonsense
     if (
       ts.isImportDeclaration(node) ||
       ts.isImportEqualsDeclaration(node) ||
@@ -29,7 +35,6 @@ function extractAndConvertDeclarations() {
       return;
     }
 
-    // Top-level declarations
     if (
       ts.isFunctionDeclaration(node) ||
       ts.isInterfaceDeclaration(node) ||
@@ -41,7 +46,6 @@ function extractAndConvertDeclarations() {
       exports.push(makeExport(node, sourceFile));
     }
 
-    // `declare global { ... }`
     if (
       ts.isModuleDeclaration(node) &&
       node.name.kind === ts.SyntaxKind.Identifier &&
@@ -62,7 +66,6 @@ function extractAndConvertDeclarations() {
       }
     }
 
-    // `declare module "..." { ... }`
     if (
       ts.isModuleDeclaration(node) &&
       node.name.kind === ts.SyntaxKind.StringLiteral &&
@@ -86,14 +89,12 @@ function extractAndConvertDeclarations() {
   return exports;
 }
 
-// Convert `declare` to `export`, skip `export import`
 function makeExport(node, sourceFile) {
   const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed });
 
   const transformer = (context) => {
     const visit = (n) => {
       if (ts.isImportTypeNode(n) && ts.isLiteralTypeNode(n.argument) && ts.isStringLiteral(n.argument.literal) && n.qualifier) {
-        // Replace import("...").X with just X
         return ts.factory.createTypeReferenceNode(n.qualifier.escapedText, n.typeArguments || []);
       }
       return ts.visitEachChild(n, visit, context);
@@ -101,17 +102,13 @@ function makeExport(node, sourceFile) {
     return (node) => ts.visitNode(node, visit);
   };
 
-  // Transform the node
   const result = ts.transform(node, [transformer]);
   const transformedNode = result.transformed[0];
   result.dispose();
 
   let text = printer.printNode(ts.EmitHint.Unspecified, transformedNode, sourceFile).trim();
 
-  // Remove invalid 'export import' lines
   if (/^export\s+import\s+/.test(text)) return "";
-
-  // Convert declare to export
   if (text.startsWith("declare ")) {
     text = "export " + text.slice(8);
   } else if (!text.startsWith("export ")) {
@@ -121,7 +118,6 @@ function makeExport(node, sourceFile) {
   return text;
 }
 
-// Strip all types we're removing, only keep real import statements if desired
 function stripOriginalTypesFile() {
   const program = ts.createProgram([INPUT_PATH], {
     target: ts.ScriptTarget.ESNext,
@@ -134,7 +130,6 @@ function stripOriginalTypesFile() {
   const kept = [];
 
   ts.forEachChild(sourceFile, (node) => {
-    // Keep only actual imports if you still want them at top-level
     if (ts.isImportDeclaration(node) || ts.isImportEqualsDeclaration(node)) {
       kept.push(node.getText(sourceFile));
     }
@@ -143,18 +138,12 @@ function stripOriginalTypesFile() {
   return kept.join("\n\n");
 }
 
-// Step 1: Extract + convert all valid declarations
 const exportedDeclarations = extractAndConvertDeclarations().filter(Boolean);
-
-// Step 2: Strip any old declarations or modules
 const stripped = stripOriginalTypesFile();
-
-// Step 3: Write final file
-const header = `// Auto-generated arcos.d.ts\n\n`;
-const globalBlock = `// ========== CONVERTED GLOBAL EXPORTS ==========\ndeclare global {\n${exportedDeclarations
-  .map((s) => "  " + s.replace(/\n/g, "\n  "))
-  .join("\n\n")}\n}`;
+const header =
+  "/// ARCOS GLOBAL TYPE DEFINITIONS\n///\n/// This file contains errors. I know. The important thing is that all relevant types\n/// are detected and processed properly. Don't worry about it.\n///\n/// © IzKuipers 2025. Licensed under GPLv3.\n///\n\n";
+const globalBlock = `declare global {\n${exportedDeclarations.map((s) => "  " + s.replace(/\n/g, "\n  ")).join("\n\n")}\n}`;
 const footer = `\n\nexport {};`;
 
-fs.writeFileSync(OUTPUT_PATH, header + stripped + "\n\n" + globalBlock + footer);
+fs.writeFileSync(OUTPUT_PATH, header + stripped + globalBlock + footer);
 console.log("✅ dist/arcos.d.ts written.");

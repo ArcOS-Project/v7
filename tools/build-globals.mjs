@@ -1,26 +1,31 @@
+/**
+ * ArcOS proprietary type build process
+ *
+ * The files in the tools/ directory are responsible for generating and altering the ArcOS v7 type declarations to make
+ * them compatible with ArcOS third-party app development using v7cli. The code in this file is not to be compared to any
+ * ordinary build systems, because it is far from usual.
+ *
+ * © IzKuipers 2025. Licensed under GPLv3.
+ */
 import ts from "typescript";
 import path from "path";
 import fs from "fs";
 
-// Input files
 const TYPES_PATH = path.resolve("dist/types.d.ts");
 const THIRDPARTY_TYPES_PATH = path.resolve("src/types/thirdparty.ts");
 const OUTPUT_PATH = path.resolve("dist/globals.d.ts");
 
-// Read the ThirdPartyPropMap interface from the types file
 function extractTypesFromThirdPartyPropMap() {
   const program = ts.createProgram([THIRDPARTY_TYPES_PATH], {
     target: ts.ScriptTarget.ESNext,
     module: ts.ModuleKind.ESNext,
   });
 
-  const checker = program.getTypeChecker();
   const sourceFile = program.getSourceFile(THIRDPARTY_TYPES_PATH);
   if (!sourceFile) throw new Error("❌ Could not read types file");
 
   let propMapInterface;
 
-  // Find the ThirdPartyPropMap interface
   ts.forEachChild(sourceFile, (node) => {
     if (ts.isInterfaceDeclaration(node) && node.name.text === "ThirdPartyPropMap") {
       propMapInterface = node;
@@ -29,7 +34,6 @@ function extractTypesFromThirdPartyPropMap() {
 
   if (!propMapInterface) throw new Error("❌ Could not locate ThirdPartyPropMap interface");
 
-  // Convert interface properties to global declarations
   return propMapInterface.members
     .map((member) => {
       if (ts.isPropertySignature(member) && member.name) {
@@ -49,16 +53,10 @@ function extractTypesFromThirdPartyPropMap() {
     .filter(Boolean);
 }
 
-// Step 1: Read original type dump
 const originalTypes = fs.readFileSync(TYPES_PATH, "utf8");
-
-// Step 2: Get types from ThirdPartyPropMap interface
 const globalDecls = extractTypesFromThirdPartyPropMap();
-
-// Step 3: Merge and write final file
-const header = `// Auto-generated globals.d.ts\n\n`;
-const globalBlock = `// ========== GLOBAL BINDINGS FROM ThirdPartyProps ==========\n${globalDecls.join("\n")}`;
+const globalBlock = globalDecls.join("\n");
 const footer = `\n\nexport {};`;
 
-fs.writeFileSync(OUTPUT_PATH, header + originalTypes + "\n\n" + globalBlock + footer);
+fs.writeFileSync(OUTPUT_PATH, originalTypes + "\n\n" + globalBlock + footer);
 console.log("✅ dist/globals.d.ts written.");
