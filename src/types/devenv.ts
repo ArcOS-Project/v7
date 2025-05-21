@@ -7,6 +7,7 @@ export interface ProjectMetadata {
   outFile: string;
   payloadDir: string;
   buildHash?: string;
+  noHotRelaunch?: boolean;
 }
 
 export type DevEnvActivationResult =
