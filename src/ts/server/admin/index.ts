@@ -20,7 +20,7 @@ import type { FilesystemProgressCallback, UserQuota } from "$types/fs";
 import type { Service } from "$types/service";
 import type { SharedDriveType } from "$types/shares";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
-import { Axios } from "../axios";
+import { Backend } from "../axios";
 
 export class AdminBootstrapper extends BaseService {
   private token: string | undefined;
@@ -49,7 +49,7 @@ export class AdminBootstrapper extends BaseService {
     this.Log("Getting user information");
 
     try {
-      const response = await Axios.get(`/user/self`, {
+      const response = await Backend.get(`/user/self`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -81,7 +81,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getAllUsers(): Promise<ExpandedUserInfo[]> {
     try {
-      const response = await Axios.get("/admin/users/list", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get("/admin/users/list", { headers: { Authorization: `Bearer ${this.token}` } });
 
       return (response.data as ExpandedUserInfo[]).map((u) => {
         u.profile.profilePicture = `${import.meta.env.DW_SERVER_URL}${u.profile.profilePicture}`;
@@ -101,7 +101,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getServerLogs(): Promise<ServerLogItem[]> {
     try {
-      const response = await Axios.get("/admin/logs", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get("/admin/logs", { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.data as ServerLogItem[];
     } catch {
@@ -111,7 +111,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getAuditLog(): Promise<AuditLog[]> {
     try {
-      const response = await Axios.get("/admin/auditlog", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get("/admin/auditlog", { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.data as AuditLog[];
     } catch {
@@ -121,7 +121,7 @@ export class AdminBootstrapper extends BaseService {
 
   async grantAdmin(username: string) {
     try {
-      const response = await Axios.post("/admin/grant", toForm({ target: username }), {
+      const response = await Backend.post("/admin/grant", toForm({ target: username }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -133,7 +133,7 @@ export class AdminBootstrapper extends BaseService {
 
   async revokeAdmin(username: string) {
     try {
-      const response = await Axios.post("/admin/revoke", toForm({ target: username }), {
+      const response = await Backend.post("/admin/revoke", toForm({ target: username }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -145,7 +145,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getPreferencesOf(username: string) {
     try {
-      const response = await Axios.get(`/admin/preferences/${username}`, {
+      const response = await Backend.get(`/admin/preferences/${username}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -157,7 +157,7 @@ export class AdminBootstrapper extends BaseService {
 
   async setPreferencesOf(username: string, preferences: UserPreferences) {
     try {
-      const response = await Axios.put(`/admin/preferences/${username}`, preferences, {
+      const response = await Backend.put(`/admin/preferences/${username}`, preferences, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -169,7 +169,7 @@ export class AdminBootstrapper extends BaseService {
 
   async deleteUser(username: string) {
     try {
-      const response = await Axios.delete(`/admin/users/delete/${username}`, {
+      const response = await Backend.delete(`/admin/users/delete/${username}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -181,7 +181,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getStatistics() {
     try {
-      const response = await Axios.get(`/admin/stats`, {
+      const response = await Backend.get(`/admin/stats`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -193,7 +193,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getAllTokens() {
     try {
-      const response = await Axios.get(`/admin/tokens`, {
+      const response = await Backend.get(`/admin/tokens`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -205,7 +205,7 @@ export class AdminBootstrapper extends BaseService {
 
   async purgeAllTokens() {
     try {
-      const response = await Axios.delete(`/admin/tokens/purge/all`, {
+      const response = await Backend.delete(`/admin/tokens/purge/all`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -219,7 +219,7 @@ export class AdminBootstrapper extends BaseService {
 
   async purgeOneToken(id: string) {
     try {
-      const response = await Axios.delete(`/admin/tokens/purge/one/${id}`, {
+      const response = await Backend.delete(`/admin/tokens/purge/one/${id}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -231,7 +231,7 @@ export class AdminBootstrapper extends BaseService {
 
   async purgeUserTokens(userId: string) {
     try {
-      const response = await Axios.delete(`/admin/tokens/purge/user/${userId}`, {
+      const response = await Backend.delete(`/admin/tokens/purge/user/${userId}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -243,7 +243,7 @@ export class AdminBootstrapper extends BaseService {
 
   async deleteBugReport(reportId: string) {
     try {
-      const response = await Axios.delete(`/admin/bughunt/report/${reportId}`, {
+      const response = await Backend.delete(`/admin/bughunt/report/${reportId}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -255,7 +255,7 @@ export class AdminBootstrapper extends BaseService {
 
   async closeBugReport(reportId: string) {
     try {
-      const response = await Axios.patch(
+      const response = await Backend.patch(
         `/admin/bughunt/close/${reportId}`,
         {},
         {
@@ -271,7 +271,7 @@ export class AdminBootstrapper extends BaseService {
 
   async reopenBugReport(reportId: string) {
     try {
-      const response = await Axios.patch(
+      const response = await Backend.patch(
         `/admin/bughunt/open/${reportId}`,
         {},
         {
@@ -287,7 +287,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getAllBugReports() {
     try {
-      const response = await Axios.get(`/admin/bughunt/list`, {
+      const response = await Backend.get(`/admin/bughunt/list`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -299,7 +299,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getBugReport(id: string): Promise<BugReport | undefined> {
     try {
-      const response = await Axios.get(`/bughunt/report/${id}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/bughunt/report/${id}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.data as BugReport;
     } catch {
@@ -309,7 +309,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getBugHuntStatistics() {
     try {
-      const response = await Axios.get(`/admin/bughunt/stats`, {
+      const response = await Backend.get(`/admin/bughunt/stats`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -321,7 +321,7 @@ export class AdminBootstrapper extends BaseService {
 
   async approveUser(username: string) {
     try {
-      const response = await Axios.post(`/admin/users/approve`, toForm({ target: username }), {
+      const response = await Backend.post(`/admin/users/approve`, toForm({ target: username }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -333,7 +333,7 @@ export class AdminBootstrapper extends BaseService {
 
   async disapproveUser(username: string) {
     try {
-      const response = await Axios.post(`/admin/users/disapprove`, toForm({ target: username }), {
+      const response = await Backend.post(`/admin/users/disapprove`, toForm({ target: username }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -345,7 +345,7 @@ export class AdminBootstrapper extends BaseService {
 
   async changeEmailOf(username: string, newEmail: string) {
     try {
-      const response = await Axios.post(`/admin/users/changeemail`, toForm({ target: username, newEmail }), {
+      const response = await Backend.post(`/admin/users/changeemail`, toForm({ target: username, newEmail }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -357,7 +357,7 @@ export class AdminBootstrapper extends BaseService {
 
   async changePasswordOf(username: string, newPassword: string) {
     try {
-      const response = await Axios.post(`/admin/users/changepswd`, toForm({ target: username, newPassword }), {
+      const response = await Backend.post(`/admin/users/changepswd`, toForm({ target: username, newPassword }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -369,7 +369,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getAvailableScopes(): Promise<Record<string, string>> {
     try {
-      const response = await Axios.get(`/admin/scopes/available`, {
+      const response = await Backend.get(`/admin/scopes/available`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -381,7 +381,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getScopesOf(username: string): Promise<string[]> {
     try {
-      const response = await Axios.get(`/admin/scopes/${username}`, {
+      const response = await Backend.get(`/admin/scopes/${username}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -393,7 +393,7 @@ export class AdminBootstrapper extends BaseService {
 
   async setScopesOf(username: string, scopes: string[]): Promise<boolean> {
     try {
-      const response = await Axios.put(`/admin/scopes`, toForm({ target: username, scopes: JSON.stringify(scopes) }), {
+      const response = await Backend.put(`/admin/scopes`, toForm({ target: username, scopes: JSON.stringify(scopes) }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -405,7 +405,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getQuotaOf(username: string): Promise<UserQuota | undefined> {
     try {
-      const response = await Axios.get(`/admin/fs/quota/${username}`, {
+      const response = await Backend.get(`/admin/fs/quota/${username}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -417,7 +417,7 @@ export class AdminBootstrapper extends BaseService {
 
   async setQuotaOf(username: string, newQuota: number) {
     try {
-      const response = await Axios.put(`/admin/fs/quota/${username}`, toForm({ limit: newQuota }), {
+      const response = await Backend.put(`/admin/fs/quota/${username}`, toForm({ limit: newQuota }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -429,7 +429,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getAllActivity(): Promise<Activity[]> {
     try {
-      const response = await Axios.get("/admin/activities/list", {
+      const response = await Backend.get("/admin/activities/list", {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -441,7 +441,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getActivityOf(username: string): Promise<Activity[]> {
     try {
-      const response = await Axios.get(`/admin/activities/user/${username}`, {
+      const response = await Backend.get(`/admin/activities/user/${username}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -453,7 +453,7 @@ export class AdminBootstrapper extends BaseService {
 
   async deleteAllActivities(): Promise<boolean> {
     try {
-      const response = await Axios.delete(`/admin/activities`, {
+      const response = await Backend.delete(`/admin/activities`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -465,7 +465,7 @@ export class AdminBootstrapper extends BaseService {
 
   async deleteActivitiesOf(username: string): Promise<boolean> {
     try {
-      const response = await Axios.delete(`/admin/activities/${username}`, {
+      const response = await Backend.delete(`/admin/activities/${username}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -477,7 +477,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getAllTotp(): Promise<PartialUserTotp[]> {
     try {
-      const response = await Axios.get("/admin/totp", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get("/admin/totp", { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.data as PartialUserTotp[];
     } catch {
@@ -487,7 +487,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getTotpOf(username: string): Promise<UserTotp | undefined> {
     try {
-      const response = await Axios.get(`/admin/totp/${username}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/admin/totp/${username}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.status === 200 ? response.data : undefined;
     } catch {
@@ -497,7 +497,7 @@ export class AdminBootstrapper extends BaseService {
 
   async deActivateTotpOf(username: string) {
     try {
-      const response = await Axios.post(
+      const response = await Backend.post(
         `/admin/totp/deactivate/${username}`,
         {},
         {
@@ -513,7 +513,7 @@ export class AdminBootstrapper extends BaseService {
 
   async deleteTotpOf(username: string) {
     try {
-      const response = await Axios.delete(`/admin/totp/${username}`, {
+      const response = await Backend.delete(`/admin/totp/${username}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -525,7 +525,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getAllFsAccessors(): Promise<FsAccess[]> {
     try {
-      const response = await Axios.get("/admin/accessors", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get("/admin/accessors", { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.data as FsAccess[];
     } catch {
@@ -535,7 +535,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getFsAccessorsOf(username: string): Promise<FsAccess[]> {
     try {
-      const response = await Axios.get(`/admin/accessors/${username}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/admin/accessors/${username}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.data;
     } catch {
@@ -545,7 +545,7 @@ export class AdminBootstrapper extends BaseService {
 
   async deleteAllFsAccessors(): Promise<boolean> {
     try {
-      const response = await Axios.delete("/admin/accessors", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.delete("/admin/accessors", { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.status === 200;
     } catch {
@@ -555,7 +555,9 @@ export class AdminBootstrapper extends BaseService {
 
   async deleteFsAccessorsOf(username: string): Promise<boolean> {
     try {
-      const response = await Axios.delete(`/admin/accessors/${username}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.delete(`/admin/accessors/${username}`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
 
       return response.status === 200;
     } catch {
@@ -565,7 +567,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getAllIndexingNodes(): Promise<FSItem[]> {
     try {
-      const response = await Axios.get(`/admin/index`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/admin/index`, { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.data as FSItem[];
     } catch {
@@ -575,7 +577,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getIndexingNodesOf(username: string): Promise<FSItem[]> {
     try {
-      const response = await Axios.get(`/admin/index/${username}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/admin/index/${username}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.data as FSItem[];
     } catch {
@@ -585,7 +587,7 @@ export class AdminBootstrapper extends BaseService {
 
   async forceIndexFor(username: string): Promise<string[]> {
     try {
-      const response = await Axios.post(`/admin/index/${username}`, {}, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.post(`/admin/index/${username}`, {}, { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.data as string[];
     } catch {
@@ -595,7 +597,7 @@ export class AdminBootstrapper extends BaseService {
 
   async deleteIndexingOf(username: string): Promise<boolean> {
     try {
-      const response = await Axios.delete(`/admin/index/${username}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.delete(`/admin/index/${username}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.status === 200;
     } catch {
@@ -621,7 +623,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getAllShares(): Promise<SharedDriveType[]> {
     try {
-      const response = await Axios.get("/admin/share/list", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get("/admin/share/list", { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.data as SharedDriveType[];
     } catch {
@@ -631,7 +633,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getSharesOf(userId: string): Promise<SharedDriveType[]> {
     try {
-      const response = await Axios.get(`/admin/share/list/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/admin/share/list/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.data as SharedDriveType[];
     } catch {
@@ -641,7 +643,7 @@ export class AdminBootstrapper extends BaseService {
 
   async deleteShare(shareId: string): Promise<boolean> {
     try {
-      const response = await Axios.delete(`/admin/share/${shareId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.delete(`/admin/share/${shareId}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.status === 200;
     } catch {
@@ -651,7 +653,7 @@ export class AdminBootstrapper extends BaseService {
 
   async kickUserFromShare(shareId: string, userId: string): Promise<boolean> {
     try {
-      const response = await Axios.post(`/admin/share/kick/${shareId}`, toForm({ userId }), {
+      const response = await Backend.post(`/admin/share/kick/${shareId}`, toForm({ userId }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -663,7 +665,7 @@ export class AdminBootstrapper extends BaseService {
 
   async addUserToShare(shareId: string, userId: string): Promise<boolean> {
     try {
-      const response = await Axios.post(`/admin/share/adduser/${shareId}`, toForm({ userId }), {
+      const response = await Backend.post(`/admin/share/adduser/${shareId}`, toForm({ userId }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -675,7 +677,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getShareAccessors(shareId: string): Promise<FSItem[]> {
     try {
-      const response = await Axios.get(`/admin/share/accessors/${shareId}`, {
+      const response = await Backend.get(`/admin/share/accessors/${shareId}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -687,7 +689,7 @@ export class AdminBootstrapper extends BaseService {
 
   async deleteShareAccessors(shareId: string): Promise<boolean> {
     try {
-      const response = await Axios.delete(`/admin/share/accessors/${shareId}`, {
+      const response = await Backend.delete(`/admin/share/accessors/${shareId}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -699,7 +701,7 @@ export class AdminBootstrapper extends BaseService {
 
   async changeSharePassword(shareId: string, newPassword: string): Promise<boolean> {
     try {
-      const response = await Axios.post(`/admin/share/changepswd/${shareId}`, toForm({ newPassword }), {
+      const response = await Backend.post(`/admin/share/changepswd/${shareId}`, toForm({ newPassword }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -711,7 +713,7 @@ export class AdminBootstrapper extends BaseService {
 
   async renameShare(shareId: string, newName: string): Promise<boolean> {
     try {
-      const response = await Axios.post(`/admin/share/rename/${shareId}`, toForm({ newName }), {
+      const response = await Backend.post(`/admin/share/rename/${shareId}`, toForm({ newName }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -723,7 +725,7 @@ export class AdminBootstrapper extends BaseService {
 
   async changeShareOwner(shareId: string, newUserId: string): Promise<boolean> {
     try {
-      const response = await Axios.post(`/admin/share/chown/${shareId}`, toForm({ newUserId }), {
+      const response = await Backend.post(`/admin/share/chown/${shareId}`, toForm({ newUserId }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -735,7 +737,7 @@ export class AdminBootstrapper extends BaseService {
 
   async getStatisticsOf(userId: string): Promise<UserStatistics | undefined> {
     try {
-      const response = await Axios.get(`/admin/users/stats/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/admin/users/stats/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.data as UserStatistics;
     } catch {

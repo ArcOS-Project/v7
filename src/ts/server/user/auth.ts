@@ -2,13 +2,13 @@ import { toForm } from "$ts/form";
 import { Log } from "$ts/kernel/logging";
 import { LogLevel } from "$types/logging";
 import { AxiosError } from "axios";
-import { Axios } from "../axios";
+import { Backend } from "../axios";
 
 export async function LoginUser(identity: string, password: string) {
   Log("LoginUser", `Attempting to authenticate ${identity}`);
 
   try {
-    const response = await Axios.post(
+    const response = await Backend.post(
       `/login`,
       toForm({
         identity,
@@ -29,7 +29,7 @@ export async function LoginUser(identity: string, password: string) {
 
 export async function RegisterUser(username: string, email: string, password: string) {
   try {
-    const response = await Axios.post(
+    const response = await Backend.post(
       `/user`,
       toForm({
         username,

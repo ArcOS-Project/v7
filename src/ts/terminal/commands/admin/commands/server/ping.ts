@@ -1,5 +1,5 @@
 import { ServerManager } from "$ts/server";
-import { Axios } from "$ts/server/axios";
+import { Backend } from "$ts/server/axios";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { BOLD, BRBLACK, BRGREEN, BRPURPLE, BRRED, RESET } from "$ts/terminal/store";
 import { sha256 } from "$ts/util";
@@ -8,7 +8,7 @@ import type { ServerInfo } from "$types/server";
 export const AdminServerPing: AdminCommandType = async (term, admin) => {
   try {
     const start = performance.now();
-    const response = await Axios.get("/ping");
+    const response = await Backend.get("/ping");
 
     if (response.status !== 200) return 3;
 

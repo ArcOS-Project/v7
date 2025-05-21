@@ -1,6 +1,6 @@
 import { toForm } from "$ts/form";
 import type { WaveKernel } from "$ts/kernel";
-import { Axios } from "$ts/server/axios";
+import { Backend } from "$ts/server/axios";
 import type {
   DirectoryReadReturn,
   FilesystemProgressCallback,
@@ -27,7 +27,7 @@ export class ServerDrive extends FilesystemDrive {
 
   async readDir(path: string = ""): Promise<DirectoryReadReturn | undefined> {
     try {
-      const response = await Axios.get<DirectoryReadReturn>(path ? `/fs/dir/${path}` : `/fs/dir`, {
+      const response = await Backend.get<DirectoryReadReturn>(path ? `/fs/dir/${path}` : `/fs/dir`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -39,7 +39,7 @@ export class ServerDrive extends FilesystemDrive {
 
   async createDirectory(path: string): Promise<boolean> {
     try {
-      const response = await Axios.post<DirectoryReadReturn>(
+      const response = await Backend.post<DirectoryReadReturn>(
         `/fs/dir/${path}`,
         {},
         { headers: { Authorization: `Bearer ${this.token}` } }
@@ -55,7 +55,7 @@ export class ServerDrive extends FilesystemDrive {
     if (this.fileLocks[path]) throw new Error(`Not reading locked file '${path}'`);
 
     try {
-      const response = await Axios.get(`/fs/file/${path}`, {
+      const response = await Backend.get(`/fs/file/${path}`, {
         headers: { Authorization: `Bearer ${this.token}` },
         responseType: "arraybuffer",
         onDownloadProgress: (progress) => {
@@ -75,7 +75,7 @@ export class ServerDrive extends FilesystemDrive {
 
   async writeFile(path: string, blob: Blob, onProgress: FilesystemProgressCallback): Promise<boolean> {
     try {
-      const response = await Axios.post(`/fs/file/${path}`, blob, {
+      const response = await Backend.post(`/fs/file/${path}`, blob, {
         headers: { Authorization: `Bearer ${this.token}` },
         onUploadProgress: (progress) => {
           onProgress({
@@ -94,7 +94,7 @@ export class ServerDrive extends FilesystemDrive {
 
   async tree(path: string = ""): Promise<RecursiveDirectoryReadReturn | undefined> {
     try {
-      const response = await Axios.get(path ? `/fs/tree/${path}` : `/fs/tree`, {
+      const response = await Backend.get(path ? `/fs/tree/${path}` : `/fs/tree`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -108,7 +108,7 @@ export class ServerDrive extends FilesystemDrive {
     const sourceFilename = getDirectoryName(source);
 
     try {
-      const response = await Axios.post(
+      const response = await Backend.post(
         `/fs/cp/${source}`,
         toForm({
           destination: destination.endsWith(sourceFilename) ? destination : join(destination, sourceFilename),
@@ -128,7 +128,7 @@ export class ServerDrive extends FilesystemDrive {
     if (this.fileLocks[source]) throw new Error(`Not moving locked file '${source}'`);
 
     try {
-      const response = await Axios.post(
+      const response = await Backend.post(
         `/fs/mv/${source}`,
         toForm({
           destination,
@@ -148,7 +148,7 @@ export class ServerDrive extends FilesystemDrive {
     if (this.fileLocks[path]) throw new Error(`Not deleting locked file '${path}'`);
 
     try {
-      const response = await Axios.delete(`/fs/rm/${path}`, {
+      const response = await Backend.delete(`/fs/rm/${path}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -160,7 +160,7 @@ export class ServerDrive extends FilesystemDrive {
 
   async quota(): Promise<UserQuota> {
     try {
-      const response = await Axios.get("/fs/quota", {
+      const response = await Backend.get("/fs/quota", {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -177,7 +177,7 @@ export class ServerDrive extends FilesystemDrive {
 
   async direct(path: string): Promise<string | undefined> {
     try {
-      const response = await Axios.post(`/fs/accessors/${path}`, {}, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.post(`/fs/accessors/${path}`, {}, { headers: { Authorization: `Bearer ${this.token}` } });
 
       const data = response.data as FsAccess;
 
@@ -189,7 +189,7 @@ export class ServerDrive extends FilesystemDrive {
 
   async bulk<T = any>(path: string, extension: string): Promise<Record<string, T>> {
     try {
-      const response = await Axios.get(`/fs/bulk/${extension}/${path}`, {
+      const response = await Backend.get(`/fs/bulk/${extension}/${path}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 

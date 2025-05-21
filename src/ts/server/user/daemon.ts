@@ -50,7 +50,7 @@ import Cookies from "js-cookie";
 import type { Unsubscriber } from "svelte/store";
 import type { ServerManager } from "..";
 import { AdminBootstrapper } from "../admin";
-import { Axios } from "../axios";
+import { Backend } from "../axios";
 import type { MessagingInterface } from "../messaging";
 import { GlobalDispatch } from "../ws";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
@@ -128,7 +128,7 @@ export class UserDaemon extends Process {
             status: 200,
             data: this.userInfo,
           }
-        : await Axios.get(`/user/self`, {
+        : await Backend.get(`/user/self`, {
             headers: { Authorization: `Bearer ${this.token}` },
           });
 
@@ -249,7 +249,7 @@ export class UserDaemon extends Process {
     this.Log(`Committing user preferences`);
 
     try {
-      const response = await Axios.put(`/user/preferences`, preferences, {
+      const response = await Backend.put(`/user/preferences`, preferences, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -266,7 +266,7 @@ export class UserDaemon extends Process {
 
     await this.fs.mountDrive<ServerDrive>("userfs", ServerDrive, "U", undefined, this.token);
 
-    await Axios.post("/fs/index", {}, { headers: { Authorization: `Bearer ${this.token}` } });
+    await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${this.token}` } });
   }
 
   async stop() {
@@ -318,7 +318,7 @@ export class UserDaemon extends Process {
     this.Log(`Discontinuing token`);
 
     try {
-      const response = await Axios.post(`/logout`, {}, { headers: { Authorization: `Bearer ${token}` } });
+      const response = await Backend.post(`/logout`, {}, { headers: { Authorization: `Bearer ${token}` } });
 
       return response.status === 200;
     } catch {
@@ -1162,7 +1162,7 @@ export class UserDaemon extends Process {
     if (this._disposed) return [];
 
     try {
-      const response = await Axios.get("/activity", {
+      const response = await Backend.get("/activity", {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -1178,7 +1178,7 @@ export class UserDaemon extends Process {
     this.Log(`Broadcasting login activity "${action}" to server`);
 
     try {
-      const response = await Axios.post(
+      const response = await Backend.post(
         "/activity",
         toForm({
           userAgent: navigator.userAgent,
@@ -1273,7 +1273,7 @@ export class UserDaemon extends Process {
     if (!elevated) return false;
 
     try {
-      const response = await Axios.patch("/user/rename", toForm({ newUsername }), {
+      const response = await Backend.patch("/user/rename", toForm({ newUsername }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -1309,7 +1309,7 @@ export class UserDaemon extends Process {
     if (!elevated) return false;
 
     try {
-      const response = await Axios.post("/user/changepswd", toForm({ newPassword }), {
+      const response = await Backend.post("/user/changepswd", toForm({ newPassword }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -2267,7 +2267,7 @@ export class UserDaemon extends Process {
 
   async getPublicUserInfoOf(userId: string): Promise<PublicUserInfo | undefined> {
     try {
-      const response = await Axios.get(`/user/info/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/user/info/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
       const information = response.data as PublicUserInfo;
 
       information.profilePicture = `${this.server.url}/user/pfp/${userId}?authcode=${import.meta.env.DW_SERVER_AUTHCODE || ""}`;

@@ -4,7 +4,7 @@ import axios from "axios";
 
 const presetAuthCode = import.meta.env.DW_SERVER_AUTHCODE;
 
-export const Axios = axios.create({
+export const Backend = axios.create({
   baseURL: import.meta.env.DW_SERVER_URL,
   params: presetAuthCode
     ? {
@@ -18,7 +18,7 @@ export const Axios = axios.create({
   },
 });
 
-Axios.interceptors.request.use(
+Backend.interceptors.request.use(
   (config) => {
     config.headers.set("X-Request-ID", WaveKernel.get().getModule<Environment>("env").get("dispatch_sock_id"));
     return config;

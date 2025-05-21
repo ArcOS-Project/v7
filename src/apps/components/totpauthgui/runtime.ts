@@ -3,7 +3,7 @@ import { MessageBox } from "$ts/dialog";
 import { toForm } from "$ts/form";
 import { InfoIcon } from "$ts/images/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
-import { Axios } from "$ts/server/axios";
+import { Backend } from "$ts/server/axios";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { RenderArgs } from "$types/process";
@@ -48,7 +48,7 @@ export class TotpAuthGuiRuntime extends AppProcess {
     if (string.length !== 6) return false;
 
     try {
-      const response = await Axios.post("/totp/unlock", toForm({ code: string }), {
+      const response = await Backend.post("/totp/unlock", toForm({ code: string }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 

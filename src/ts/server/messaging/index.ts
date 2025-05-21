@@ -6,7 +6,7 @@ import type { FilesystemProgressCallback } from "$types/fs";
 import type { ExpandedMessage, Message, MessageNode, PartialMessage } from "$types/messaging";
 import type { Service } from "$types/service";
 import { ServerManager } from "..";
-import { Axios } from "../axios";
+import { Backend } from "../axios";
 import { UserDaemon } from "../user/daemon";
 import { GlobalDispatch } from "../ws";
 
@@ -48,7 +48,7 @@ export class MessagingInterface extends BaseService {
     if (this._disposed) return [];
 
     try {
-      const response = await Axios.get("/messaging/sent", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get("/messaging/sent", { headers: { Authorization: `Bearer ${this.token}` } });
       const data = (response.data as PartialMessage[]).map((message) => {
         if (message.author) {
           message.author.profilePicture = `${this.serverUrl}/user/pfp/${message.authorId}?authcode=${this.serverAuthCode}`;
@@ -66,7 +66,7 @@ export class MessagingInterface extends BaseService {
     if (this._disposed) return [];
 
     try {
-      const response = await Axios.get("/messaging/received", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get("/messaging/received", { headers: { Authorization: `Bearer ${this.token}` } });
       const data = (response.data as PartialMessage[]).map((message) => {
         if (message.author) {
           message.author.profilePicture = `${this.serverUrl}/user/pfp/${message.authorId}?authcode=${this.serverAuthCode}`;
@@ -100,7 +100,7 @@ export class MessagingInterface extends BaseService {
     attachments.forEach((a) => formData.append("attachments", a));
 
     try {
-      const response = await Axios.post("/messaging", formData, {
+      const response = await Backend.post("/messaging", formData, {
         headers: { Authorization: `Bearer ${this.token}` },
         onUploadProgress: (progress) => {
           onProgress?.({
@@ -121,7 +121,7 @@ export class MessagingInterface extends BaseService {
     if (this._disposed) return false;
 
     try {
-      const response = await Axios.delete(`/messaging/${messageId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.delete(`/messaging/${messageId}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.status === 200;
     } catch {
@@ -133,7 +133,7 @@ export class MessagingInterface extends BaseService {
     if (this._disposed) return;
 
     try {
-      const response = await Axios.get(`/messaging/read/${messageId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/messaging/read/${messageId}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
       const data = response.data as ExpandedMessage;
 
@@ -155,7 +155,7 @@ export class MessagingInterface extends BaseService {
     if (this._disposed) return;
 
     try {
-      const response = await Axios.get(`/messaging/attachment/${messageId}/${attachmentId}`, {
+      const response = await Backend.get(`/messaging/attachment/${messageId}/${attachmentId}`, {
         headers: { Authorization: `Bearer ${this.token}` },
         responseType: "arraybuffer",
         onDownloadProgress: (progress) => {
@@ -177,7 +177,7 @@ export class MessagingInterface extends BaseService {
     const url = messageId ? `/messaging/thread/${messageId}` : `/messaging/thread`;
 
     try {
-      const response = await Axios.get(url, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(url, { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.data as MessageNode[];
     } catch {

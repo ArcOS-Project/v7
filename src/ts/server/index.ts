@@ -3,7 +3,7 @@ import type { ServerInfo } from "$types/server";
 import { LogLevel } from "../../types/logging";
 import { WaveKernel } from "../kernel";
 import { KernelModule } from "../kernel/module";
-import { Axios } from "./axios";
+import { Backend } from "./axios";
 
 export class ServerManager extends KernelModule {
   public url: string = "";
@@ -56,7 +56,7 @@ export class ServerManager extends KernelModule {
 
     this.Log("Testing server connection...");
     try {
-      const response = await Axios.get(`/ping`, {
+      const response = await Backend.get(`/ping`, {
         timeout: 3000,
         timeoutErrorMessage: "We're offline",
       });
@@ -84,7 +84,7 @@ export class ServerManager extends KernelModule {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
     try {
-      const response = await Axios.get(`/user/availability/username?name=${username}`);
+      const response = await Backend.get(`/user/availability/username?name=${username}`);
 
       return response.status === 200;
     } catch {
@@ -96,7 +96,7 @@ export class ServerManager extends KernelModule {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
     try {
-      const response = await Axios.get(`/user/availability/email?email=${email}`);
+      const response = await Backend.get(`/user/availability/email?email=${email}`);
 
       return response.status === 200;
     } catch {

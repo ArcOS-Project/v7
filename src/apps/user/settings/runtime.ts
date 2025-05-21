@@ -14,7 +14,7 @@ import {
 } from "$ts/images/general";
 import { GoodStatusIcon } from "$ts/images/status";
 import type { ProcessHandler } from "$ts/process/handler";
-import { Axios } from "$ts/server/axios";
+import { Backend } from "$ts/server/axios";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { htmlspecialchars } from "$ts/util";
@@ -187,7 +187,7 @@ export class SettingsRuntime extends AppProcess {
 
               await this.userDaemon?.logoff();
 
-              await Axios.post(
+              await Backend.post(
                 "/logallout",
                 {},
                 {
@@ -376,7 +376,7 @@ export class SettingsRuntime extends AppProcess {
     if (!elevated) return;
 
     try {
-      Axios.delete("/totp", { headers: { Authorization: `Bearer ${this.userDaemon?.token}` } });
+      Backend.delete("/totp", { headers: { Authorization: `Bearer ${this.userDaemon?.token}` } });
 
       MessageBox(
         {

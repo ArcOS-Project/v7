@@ -1,6 +1,6 @@
 import { toForm } from "$ts/form";
 import type { WaveKernel } from "$ts/kernel";
-import { Axios } from "$ts/server/axios";
+import { Backend } from "$ts/server/axios";
 import type {
   DirectoryReadReturn,
   FilesystemProgressCallback,
@@ -40,7 +40,7 @@ export class SharedDrive extends FilesystemDrive {
 
   async readDir(path: string = ""): Promise<DirectoryReadReturn | undefined> {
     try {
-      const response = await Axios.get<DirectoryReadReturn>(
+      const response = await Backend.get<DirectoryReadReturn>(
         path ? `/share/dir/${this.shareId}/${path}` : `/share/dir/${this.shareId}`,
         {
           headers: { Authorization: `Bearer ${this.token}` },
@@ -55,7 +55,7 @@ export class SharedDrive extends FilesystemDrive {
 
   async createDirectory(path: string): Promise<boolean> {
     try {
-      const response = await Axios.post<DirectoryReadReturn>(
+      const response = await Backend.post<DirectoryReadReturn>(
         `/share/dir/${this.shareId}/${path}`,
         {},
         { headers: { Authorization: `Bearer ${this.token}` } }
@@ -71,7 +71,7 @@ export class SharedDrive extends FilesystemDrive {
     if (this.fileLocks[path]) throw new Error(`Not reading locked file '${path}'`);
 
     try {
-      const response = await Axios.get(`/share/file/${this.shareId}/${path}`, {
+      const response = await Backend.get(`/share/file/${this.shareId}/${path}`, {
         headers: { Authorization: `Bearer ${this.token}` },
         responseType: "arraybuffer",
         onDownloadProgress: (progress) => {
@@ -91,7 +91,7 @@ export class SharedDrive extends FilesystemDrive {
 
   async writeFile(path: string, blob: Blob, onProgress: FilesystemProgressCallback): Promise<boolean> {
     try {
-      const response = await Axios.post(`/share/file/${this.shareId}/${path}`, blob, {
+      const response = await Backend.post(`/share/file/${this.shareId}/${path}`, blob, {
         headers: { Authorization: `Bearer ${this.token}` },
         onUploadProgress: (progress) => {
           onProgress({
@@ -110,7 +110,7 @@ export class SharedDrive extends FilesystemDrive {
 
   async tree(path: string = ""): Promise<RecursiveDirectoryReadReturn | undefined> {
     try {
-      const response = await Axios.get(path ? `/share/tree/${this.shareId}/${path}` : `/share/tree/${this.shareId}`, {
+      const response = await Backend.get(path ? `/share/tree/${this.shareId}/${path}` : `/share/tree/${this.shareId}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -124,7 +124,7 @@ export class SharedDrive extends FilesystemDrive {
     const sourceFilename = getDirectoryName(source);
 
     try {
-      const response = await Axios.post(
+      const response = await Backend.post(
         `/share/cp/${this.shareId}/${source}`,
         toForm({
           destination: destination.endsWith(sourceFilename) ? destination : join(destination, sourceFilename),
@@ -144,7 +144,7 @@ export class SharedDrive extends FilesystemDrive {
     if (this.fileLocks[source]) throw new Error(`Not moving locked file '${source}'`);
 
     try {
-      const response = await Axios.post(
+      const response = await Backend.post(
         `/share/mv/${this.shareId}/${source}`,
         toForm({
           destination,
@@ -164,7 +164,7 @@ export class SharedDrive extends FilesystemDrive {
     if (this.fileLocks[path]) throw new Error(`Not deleting locked file '${path}'`);
 
     try {
-      const response = await Axios.delete(`/share/rm/${this.shareId}/${path}`, {
+      const response = await Backend.delete(`/share/rm/${this.shareId}/${path}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -176,7 +176,7 @@ export class SharedDrive extends FilesystemDrive {
 
   async quota(): Promise<UserQuota> {
     try {
-      const response = await Axios.get(`/share/quota/${this.shareId}`, {
+      const response = await Backend.get(`/share/quota/${this.shareId}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -193,7 +193,7 @@ export class SharedDrive extends FilesystemDrive {
 
   async direct(path: string): Promise<string | undefined> {
     try {
-      const response = await Axios.post(
+      const response = await Backend.post(
         `/share/accessor/${this.shareId}/${path}`,
         {},
         { headers: { Authorization: `Bearer ${this.token}` } }
@@ -211,7 +211,7 @@ export class SharedDrive extends FilesystemDrive {
 
   async bulk<T = any>(path: string, extension: string): Promise<Record<string, T>> {
     try {
-      const response = await Axios.get(`/share/bulk/${this.shareId}/${extension}/${path}`, {
+      const response = await Backend.get(`/share/bulk/${this.shareId}/${extension}/${path}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 

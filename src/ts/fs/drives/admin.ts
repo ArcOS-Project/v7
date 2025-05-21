@@ -1,5 +1,5 @@
 import type { WaveKernel } from "$ts/kernel";
-import { Axios } from "$ts/server/axios";
+import { Backend } from "$ts/server/axios";
 import type {
   DirectoryReadReturn,
   FilesystemProgressCallback,
@@ -63,7 +63,7 @@ export class AdminServerDrive extends FilesystemDrive {
 
   async readDir(path: string = ""): Promise<DirectoryReadReturn | undefined> {
     try {
-      const response = await Axios.get<DirectoryReadReturn>(
+      const response = await Backend.get<DirectoryReadReturn>(
         path ? `/admin/fs/dir/${this.targetUsername}/${path}` : `/admin/fs/dir/${this.targetUsername}`,
         {
           headers: { Authorization: `Bearer ${this.token}` },
@@ -80,7 +80,7 @@ export class AdminServerDrive extends FilesystemDrive {
     if (this.fileLocks[path]) throw new Error(`Not reading locked file '${path}'`);
 
     try {
-      const response = await Axios.get(`/admin/fs/file/${this.targetUsername}/${path}`, {
+      const response = await Backend.get(`/admin/fs/file/${this.targetUsername}/${path}`, {
         headers: { Authorization: `Bearer ${this.token}` },
         responseType: "arraybuffer",
         onDownloadProgress: (progress) => {
@@ -100,7 +100,7 @@ export class AdminServerDrive extends FilesystemDrive {
 
   async tree(path: string = ""): Promise<RecursiveDirectoryReadReturn | undefined> {
     try {
-      const response = await Axios.get(
+      const response = await Backend.get(
         path ? `/admin/fs/tree/${this.targetUsername}/${path}` : `/admin/fs/tree/${this.targetUsername}`,
         {
           headers: { Authorization: `Bearer ${this.token}` },
@@ -115,7 +115,7 @@ export class AdminServerDrive extends FilesystemDrive {
 
   async quota(): Promise<UserQuota> {
     try {
-      const response = await Axios.get(`/admin/fs/quota/${this.targetUsername}`, {
+      const response = await Backend.get(`/admin/fs/quota/${this.targetUsername}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -132,7 +132,7 @@ export class AdminServerDrive extends FilesystemDrive {
 
   async direct(path: string): Promise<string | undefined> {
     try {
-      const response = await Axios.post(
+      const response = await Backend.post(
         `/admin/fs/direct/${this.targetUsername}/${path}`,
         {},
         { headers: { Authorization: `Bearer ${this.token}` } }
@@ -148,7 +148,7 @@ export class AdminServerDrive extends FilesystemDrive {
 
   async bulk<T = any>(path: string, extension: string): Promise<Record<string, T>> {
     try {
-      const response = await Axios.get(`/admin/fs/bulk/${this.targetUsername}/${extension}/${path}`, {
+      const response = await Backend.get(`/admin/fs/bulk/${this.targetUsername}/${extension}/${path}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 

@@ -4,7 +4,7 @@ import type { Environment } from "$ts/kernel/env";
 import { KernelModule } from "$ts/kernel/module";
 import { ProcessHandler } from "$ts/process/handler";
 import { ServerManager } from "$ts/server";
-import { Axios } from "$ts/server/axios";
+import { Backend } from "$ts/server/axios";
 import { UserDaemon } from "$ts/server/user/daemon";
 import type { BugReport, OutgoingBugReport } from "$types/bughunt";
 import { defaultReportOptions } from "./store";
@@ -45,7 +45,7 @@ export class BugHunt extends KernelModule {
 
   async sendReport(outgoing: OutgoingBugReport, token = this.getToken(), options = defaultReportOptions): Promise<boolean> {
     try {
-      const response = await Axios.post("/bughunt/report", outgoing, {
+      const response = await Backend.post("/bughunt/report", outgoing, {
         headers: { Authorization: `Bearer ${options.anonymous ? "" : token}` },
       });
 
@@ -66,7 +66,7 @@ export class BugHunt extends KernelModule {
 
   async getUserBugReports(token: string): Promise<BugReport[]> {
     try {
-      const response = await Axios.get("/bughunt/reports/private", { headers: { Authorization: `Bearer ${token}` } });
+      const response = await Backend.get("/bughunt/reports/private", { headers: { Authorization: `Bearer ${token}` } });
 
       return response.data as BugReport[];
     } catch {
@@ -76,7 +76,7 @@ export class BugHunt extends KernelModule {
 
   async getPublicBugReports(): Promise<BugReport[]> {
     try {
-      const response = await Axios.get(`/bughunt/reports/public`);
+      const response = await Backend.get(`/bughunt/reports/public`);
 
       return response.data as BugReport[];
     } catch {

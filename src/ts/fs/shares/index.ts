@@ -1,6 +1,6 @@
 import { toForm } from "$ts/form";
 import type { ProcessHandler } from "$ts/process/handler";
-import { Axios } from "$ts/server/axios";
+import { Backend } from "$ts/server/axios";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import type { FilesystemProgressCallback } from "$types/fs";
@@ -21,7 +21,7 @@ export class ShareManager extends BaseService {
 
   async getOwnedShares(): Promise<SharedDriveType[]> {
     try {
-      const response = await Axios.get("/share/owned", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get("/share/owned", { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.data as SharedDriveType[];
     } catch {
@@ -39,7 +39,7 @@ export class ShareManager extends BaseService {
 
   async getJoinedShares(): Promise<SharedDriveType[]> {
     try {
-      const response = await Axios.get("/share/joined", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get("/share/joined", { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.data as SharedDriveType[];
     } catch {
@@ -49,7 +49,7 @@ export class ShareManager extends BaseService {
 
   async createShare(name: string, password: string): Promise<SharedDriveType | undefined> {
     try {
-      const response = await Axios.post("/share", toForm({ name, password }), {
+      const response = await Backend.post("/share", toForm({ name, password }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -61,7 +61,7 @@ export class ShareManager extends BaseService {
 
   async deleteShare(shareId: string) {
     try {
-      const response = await Axios.delete(`/share/${shareId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.delete(`/share/${shareId}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.status === 200;
     } catch {
@@ -71,7 +71,7 @@ export class ShareManager extends BaseService {
 
   async changeSharePassword(shareId: string, newPassword: string): Promise<boolean> {
     try {
-      const response = await Axios.post(`/share/changepswd/${shareId}`, toForm({ newPassword }), {
+      const response = await Backend.post(`/share/changepswd/${shareId}`, toForm({ newPassword }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -83,7 +83,7 @@ export class ShareManager extends BaseService {
 
   async renameShare(shareId: string, newName: string): Promise<boolean> {
     try {
-      const response = await Axios.post(`/share/rename/${shareId}`, toForm({ newName }), {
+      const response = await Backend.post(`/share/rename/${shareId}`, toForm({ newName }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -95,7 +95,7 @@ export class ShareManager extends BaseService {
 
   async joinShare(username: string, shareName: string, password: string, mountAlso = false) {
     try {
-      const response = await Axios.post(`/share/join/${username}/${shareName}`, toForm({ password }), {
+      const response = await Backend.post(`/share/join/${username}/${shareName}`, toForm({ password }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -114,7 +114,7 @@ export class ShareManager extends BaseService {
     await this.unmountIfMounted(shareId);
 
     try {
-      const response = await Axios.post(`/share/leave/${shareId}`, {}, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.post(`/share/leave/${shareId}`, {}, { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.status === 200;
     } catch {
@@ -130,7 +130,7 @@ export class ShareManager extends BaseService {
 
   async kickUserFromShare(shareId: string, userId: string): Promise<boolean> {
     try {
-      const response = await Axios.post(`/share/kick/${shareId}`, toForm({ userId }), {
+      const response = await Backend.post(`/share/kick/${shareId}`, toForm({ userId }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -156,7 +156,7 @@ export class ShareManager extends BaseService {
 
   async getShareMembers(shareId: string): Promise<Record<string, string>> {
     try {
-      const response = await Axios.get(`/share/members/${shareId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/share/members/${shareId}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.data as Record<string, string>;
     } catch {
@@ -166,7 +166,7 @@ export class ShareManager extends BaseService {
 
   async getShareInfoByName(username: string, shareName: string): Promise<SharedDriveType | undefined> {
     try {
-      const response = await Axios.get(`/share/info/byname/${username}/${shareName}`, {
+      const response = await Backend.get(`/share/info/byname/${username}/${shareName}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
@@ -178,7 +178,7 @@ export class ShareManager extends BaseService {
 
   async getShareInfoById(shareId: string): Promise<SharedDriveType | undefined> {
     try {
-      const response = await Axios.get(`/share/info/byid/${shareId}`, {
+      const response = await Backend.get(`/share/info/byid/${shareId}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 

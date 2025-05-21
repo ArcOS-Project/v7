@@ -26,7 +26,7 @@ import { Store } from "$ts/writable";
 import type { App } from "$types/app";
 import axios from "axios";
 import dayjs from "dayjs";
-import { Axios } from "../axios";
+import { Backend } from "../axios";
 import type { UserDaemon } from "./daemon";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
 import type { ThirdPartyPropMap } from "$types/thirdparty";
@@ -94,7 +94,7 @@ export function ThirdPartyProps(
     ): Promise<ThirdPartyAppProcess | undefined> => undefined,
     loadHtml: async (path: string): Promise<string | undefined> => undefined,
     axios,
-    Server: Axios,
+    Server: Backend,
     BaseService,
     TrayIconProcess,
     Debug: (m: any) => {

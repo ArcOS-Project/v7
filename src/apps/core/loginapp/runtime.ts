@@ -2,7 +2,7 @@ import { TotpAuthGuiApp } from "$apps/components/totpauthgui/metadata";
 import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
 import { ProfilePictures } from "$ts/images/pfp";
 import { ServerManager } from "$ts/server";
-import { Axios } from "$ts/server/axios";
+import { Backend } from "$ts/server/axios";
 import { LoginUser } from "$ts/server/user/auth";
 import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
@@ -354,7 +354,7 @@ export class LoginAppRuntime extends AppProcess {
     this.Log(`Validating user token for token login`);
 
     try {
-      const response = await Axios.get(`/user/self`, {
+      const response = await Backend.get(`/user/self`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
