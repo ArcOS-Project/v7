@@ -93,6 +93,7 @@ export class DevelopmentEnvironment extends BaseService {
           true
         );
 
+        this.killTpa();
         this.host.stopService("DevEnvironment");
       });
 
@@ -151,6 +152,13 @@ export class DevelopmentEnvironment extends BaseService {
   async restartTpa() {
     if (this._disposed) return this.disconnect();
 
+    await this.killTpa();
+    await this.daemon.openFile("V:/_app.tpa");
+  }
+
+  async killTpa() {
+    if (this._disposed) return this.disconnect();
+
     const procs = [...this.handler.store()]
       .filter(([_, proc]) => proc instanceof ThirdPartyAppProcess && proc.app.id === this.meta?.metadata.appId)
       .map(([pid]) => pid);
@@ -158,8 +166,6 @@ export class DevelopmentEnvironment extends BaseService {
     for (const pid of procs) {
       await this.handler.kill(pid, true);
     }
-
-    await this.daemon.openFile("V:/_app.tpa");
   }
 
   async stop() {
