@@ -15,13 +15,12 @@ import type {
 import type { WaveKernel } from "$ts/kernel";
 import type { Environment } from "$ts/kernel/env";
 import type { ProcessHandler } from "$ts/process/handler";
-import type { Axios } from "$ts/server/axios";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import type { ServiceHost } from "$ts/services";
 import type { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";
-import type axios from "axios";
-import type dayjs from "dayjs";
 import type { App } from "./app";
+import type { AxiosInstance, AxiosStatic } from "./axios";
+import type { dayjs } from "./dayjs";
 
 export interface ThirdPartyPropMap {
   kernel: WaveKernel;
@@ -69,9 +68,9 @@ export interface ThirdPartyPropMap {
     ...args: any[]
   ) => Promise<ThirdPartyAppProcess | undefined>;
   loadHtml: (path: string) => Promise<string | undefined>;
-  axios: typeof axios;
-  Server: typeof Axios;
+  axios: AxiosStatic;
+  Server: AxiosInstance;
   Debug: (m: any) => void;
-  dayjs: typeof dayjs;
+  dayjs: (s: string) => dayjs.Dayjs;
   [key: string]: any;
 }
