@@ -55,6 +55,7 @@ export class DevenvCommand extends TerminalProcess {
     }
 
     term.Error(`Failed to connect: ${result.toUpperCase()}`);
+    await service.disconnect();
     return 1;
   }
 
