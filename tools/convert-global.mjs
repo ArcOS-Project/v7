@@ -145,5 +145,5 @@ const header =
 const globalBlock = `declare global {\n${exportedDeclarations.map((s) => "  " + s.replace(/\n/g, "\n  ")).join("\n\n")}\n}`;
 const footer = `\n\nexport {};`;
 
-fs.writeFileSync(OUTPUT_PATH, header + stripped + globalBlock + footer);
+fs.writeFileSync(OUTPUT_PATH, "// @ts-ignore\n" + header + stripped + globalBlock + footer);
 console.log("✅ dist/arcos.d.ts written.");
