@@ -12,6 +12,7 @@ import { AppProcess } from "$ts/apps/process";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { MessageBox } from "$ts/dialog";
 import { ErrorIcon } from "$ts/images/dialog";
+import { ArcBuild } from "$ts/metadata/build";
 
 export class DevelopmentEnvironment extends BaseService {
   public connected = false;
@@ -62,6 +63,7 @@ export class DevelopmentEnvironment extends BaseService {
 
     if (!this.meta) return abort("ping_failed");
     if ((this.meta.devPort || 3128) !== this.port) return abort("port_mismatch");
+    if (this.meta.buildHash !== ArcBuild()) return abort("build_mismatch");
 
     const drive = await this.mountDevDrive();
 

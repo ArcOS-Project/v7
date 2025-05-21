@@ -6,12 +6,14 @@ export interface ProjectMetadata {
   repository?: string;
   outFile: string;
   payloadDir: string;
+  buildHash?: string;
 }
 
 export type DevEnvActivationResult =
   | "success"
   | "ping_failed"
   | "port_mismatch"
+  | "build_mismatch"
   | "already_connected"
   | "websock_failed"
   | "drivemnt_failed";
