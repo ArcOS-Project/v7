@@ -1,109 +1,160 @@
-import fs from "fs";
+import ts from "typescript";
 import path from "path";
+import fs from "fs";
 
-// Configuration
-const inputFilePath = "dist/globals.d.ts";
-const outputFilePath = "dist/arcos.d.ts";
+// File paths
+const INPUT_PATH = path.resolve("dist/globals.d.ts");
+const OUTPUT_PATH = path.resolve("dist/arcos.d.ts");
 
-if (!inputFilePath) {
-  console.error("Usage: node convert-typedefs.js <input-file> [output-file]");
-  process.exit(1);
-}
-
-// Read the input file
-try {
-  console.log(`Reading type definitions from ${inputFilePath}...`);
-  const content = fs.readFileSync(inputFilePath, "utf8");
-
-  // Process the content
-  console.log("Converting module declarations to global declarations...");
-  const convertedContent = convertToGlobalDeclarations(content);
-
-  // Write the output file
-  console.log(`Writing global declarations to ${outputFilePath}...`);
-  fs.writeFileSync(outputFilePath, convertedContent, "utf8");
-
-  console.log("Conversion completed successfully!");
-} catch (error) {
-  console.error("Error:", error.message);
-  process.exit(1);
-}
-
-/**
- * Converts module declarations to global declarations
- * @param {string} content - The original type definition file content
- * @returns {string} - The converted content with global declarations
- */
-function convertToGlobalDeclarations(content) {
-  // Regular expression to match declare module blocks
-  const moduleRegex = /declare\s+module\s+(['"].*?['"])\s*{([^{}]*(?:{[^{}]*(?:{[^{}]*}[^{}]*)*}[^{}]*)*)}/gs;
-
-  // Extract all module declarations
-  const modules = [];
-  let match;
-  while ((match = moduleRegex.exec(content)) !== null) {
-    const moduleName = match[1].replace(/['"]/g, "");
-    const moduleContent = match[2];
-    modules.push({ name: moduleName, content: moduleContent });
-  }
-
-  // Generate the new content
-  let result = "";
-
-  // Add any content that appears before the first declare module
-  const firstModuleIndex = content.search(/declare\s+module/);
-  if (firstModuleIndex > 0) {
-    const preamble = content.substring(0, firstModuleIndex).trim();
-    if (preamble) {
-      result += preamble + "\n\n";
-    }
-  }
-
-  // Create the global declaration block
-  result += "declare global {\n";
-
-  // Process each module
-  modules.forEach((module) => {
-    result += `  // From module ${module.name}\n`;
-    result += `  namespace ${moduleNameToNamespace(module.name)} {\n`;
-
-    // Process the module content
-    const processedContent = processModuleContent(module.content);
-
-    // Add the processed content with indentation
-    result += processedContent
-      .split("\n")
-      .map((line) => (line.trim() ? "    " + line : ""))
-      .join("\n");
-
-    result += "\n  }\n\n";
+// Extract and convert declarations
+function extractAndConvertDeclarations() {
+  const program = ts.createProgram([INPUT_PATH], {
+    target: ts.ScriptTarget.ESNext,
+    module: ts.ModuleKind.ESNext,
   });
 
-  result += "}\n\n";
-  result += "// This empty export makes the file a module\nexport {};\n";
+  const sourceFile = program.getSourceFile(INPUT_PATH);
+  if (!sourceFile) throw new Error("❌ Could not read globals.d.ts");
 
-  return result;
+  const exports = [];
+
+  ts.forEachChild(sourceFile, (node) => {
+    // Skip imports, exports, and "export import" nonsense
+    if (
+      ts.isImportDeclaration(node) ||
+      ts.isImportEqualsDeclaration(node) ||
+      ts.isExportDeclaration(node) ||
+      ts.isExportAssignment(node)
+    ) {
+      return;
+    }
+
+    // Top-level declarations
+    if (
+      ts.isFunctionDeclaration(node) ||
+      ts.isInterfaceDeclaration(node) ||
+      ts.isTypeAliasDeclaration(node) ||
+      ts.isClassDeclaration(node) ||
+      ts.isEnumDeclaration(node) ||
+      ts.isVariableStatement(node)
+    ) {
+      exports.push(makeExport(node, sourceFile));
+    }
+
+    // `declare global { ... }`
+    if (
+      ts.isModuleDeclaration(node) &&
+      node.name.kind === ts.SyntaxKind.Identifier &&
+      node.name.text === "global" &&
+      node.body &&
+      ts.isModuleBlock(node.body)
+    ) {
+      for (const stmt of node.body.statements) {
+        if (
+          ts.isImportDeclaration(stmt) ||
+          ts.isImportEqualsDeclaration(stmt) ||
+          ts.isExportDeclaration(stmt) ||
+          ts.isExportAssignment(stmt)
+        ) {
+          continue;
+        }
+        exports.push(makeExport(stmt, sourceFile));
+      }
+    }
+
+    // `declare module "..." { ... }`
+    if (
+      ts.isModuleDeclaration(node) &&
+      node.name.kind === ts.SyntaxKind.StringLiteral &&
+      node.body &&
+      ts.isModuleBlock(node.body)
+    ) {
+      for (const stmt of node.body.statements) {
+        if (
+          ts.isImportDeclaration(stmt) ||
+          ts.isImportEqualsDeclaration(stmt) ||
+          ts.isExportDeclaration(stmt) ||
+          ts.isExportAssignment(stmt)
+        ) {
+          continue;
+        }
+        exports.push(makeExport(stmt, sourceFile));
+      }
+    }
+  });
+
+  return exports;
 }
 
-/**
- * Processes the content inside a module declaration
- * @param {string} content - The content inside a module declaration
- * @returns {string} - The processed content
- */
-function processModuleContent(content) {
-  // Remove export keywords
-  return content.replace(/export\s+/g, "");
+// Convert `declare` to `export`, skip `export import`
+function makeExport(node, sourceFile) {
+  const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed });
+
+  const transformer = (context) => {
+    const visit = (n) => {
+      if (ts.isImportTypeNode(n) && ts.isLiteralTypeNode(n.argument) && ts.isStringLiteral(n.argument.literal) && n.qualifier) {
+        // Replace import("...").X with just X
+        return ts.factory.createTypeReferenceNode(n.qualifier.escapedText, n.typeArguments || []);
+      }
+      return ts.visitEachChild(n, visit, context);
+    };
+    return (node) => ts.visitNode(node, visit);
+  };
+
+  // Transform the node
+  const result = ts.transform(node, [transformer]);
+  const transformedNode = result.transformed[0];
+  result.dispose();
+
+  let text = printer.printNode(ts.EmitHint.Unspecified, transformedNode, sourceFile).trim();
+
+  // Remove invalid 'export import' lines
+  if (/^export\s+import\s+/.test(text)) return "";
+
+  // Convert declare to export
+  if (text.startsWith("declare ")) {
+    text = "export " + text.slice(8);
+  } else if (!text.startsWith("export ")) {
+    text = "export " + text;
+  }
+
+  return text;
 }
 
-/**
- * Converts a module name to a valid namespace name
- * @param {string} moduleName - The original module name
- * @returns {string} - A valid namespace name
- */
-function moduleNameToNamespace(moduleName) {
-  // Replace invalid characters and make it PascalCase
-  return moduleName
-    .replace(/[^\w.]/g, "_")
-    .replace(/\./g, "_")
-    .replace(/(^|_)([a-z])/g, (_, p1, p2) => p2.toUpperCase());
+// Strip all types we're removing, only keep real import statements if desired
+function stripOriginalTypesFile() {
+  const program = ts.createProgram([INPUT_PATH], {
+    target: ts.ScriptTarget.ESNext,
+    module: ts.ModuleKind.ESNext,
+  });
+
+  const sourceFile = program.getSourceFile(INPUT_PATH);
+  if (!sourceFile) throw new Error("❌ Could not read globals.d.ts");
+
+  const kept = [];
+
+  ts.forEachChild(sourceFile, (node) => {
+    // Keep only actual imports if you still want them at top-level
+    if (ts.isImportDeclaration(node) || ts.isImportEqualsDeclaration(node)) {
+      kept.push(node.getText(sourceFile));
+    }
+  });
+
+  return kept.join("\n\n");
 }
+
+// Step 1: Extract + convert all valid declarations
+const exportedDeclarations = extractAndConvertDeclarations().filter(Boolean);
+
+// Step 2: Strip any old declarations or modules
+const stripped = stripOriginalTypesFile();
+
+// Step 3: Write final file
+const header = `// Auto-generated arcos.d.ts\n\n`;
+const globalBlock = `// ========== CONVERTED GLOBAL EXPORTS ==========\ndeclare global {\n${exportedDeclarations
+  .map((s) => "  " + s.replace(/\n/g, "\n  "))
+  .join("\n\n")}\n}`;
+const footer = `\n\nexport {};`;
+
+fs.writeFileSync(OUTPUT_PATH, header + stripped + "\n\n" + globalBlock + footer);
+console.log("✅ dist/arcos.d.ts written.");

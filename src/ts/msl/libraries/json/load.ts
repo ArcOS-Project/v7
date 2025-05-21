@@ -1,7 +1,7 @@
 import { arrayToText } from "$ts/fs/convert";
 import type { Keyword } from "$types/msl";
 
-export const load: Keyword = async (lang) => {
+export const jload: Keyword = async (lang) => {
   if (!lang.expectTokenLength(1, "json.load")) return;
 
   const [path] = lang.tokens;

@@ -1,11 +1,7 @@
+import type { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import type { SystemDispatch } from "$ts/dispatch";
-import type { WaveKernel } from "$ts/kernel";
-import type { Environment } from "$ts/kernel/env";
-import type { ProcessHandler } from "$ts/process/handler";
-import type { UserDaemon } from "$ts/server/user/daemon";
-import type { ServiceHost } from "$ts/services";
-import { MessageBox } from "$ts/dialog";
-import type { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";
+import type { Filesystem } from "$ts/fs";
+import type { arrayToBlob, arrayToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/fs/convert";
 import type {
   DownloadFile,
   formatBytes,
@@ -16,21 +12,16 @@ import type {
   onFileChange,
   onFolderChange,
 } from "$ts/fs/util";
-import type { Filesystem } from "$ts/fs";
-import type { arrayToBlob, arrayToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/fs/convert";
-import type { Process } from "$ts/process/instance";
-import type { AppProcess } from "$ts/apps/process";
-import type { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import type { FilesystemDrive } from "$ts/fs/drive";
-import type { KernelModule } from "$ts/kernel/module";
-import type { App } from "./app";
-import type { Store } from "$ts/writable";
-import type { Sleep } from "$ts/sleep";
-import type axios from "axios";
+import type { WaveKernel } from "$ts/kernel";
+import type { Environment } from "$ts/kernel/env";
+import type { ProcessHandler } from "$ts/process/handler";
 import type { Axios } from "$ts/server/axios";
-import type { BaseService } from "$ts/services/base";
-import type { TrayIconProcess } from "$ts/ui/tray/process";
+import type { UserDaemon } from "$ts/server/user/daemon";
+import type { ServiceHost } from "$ts/services";
+import type { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";
+import type axios from "axios";
 import type dayjs from "dayjs";
+import type { App } from "./app";
 
 export interface ThirdPartyPropMap {
   kernel: WaveKernel;
@@ -40,7 +31,6 @@ export interface ThirdPartyPropMap {
   env: Environment;
   serviceHost: ServiceHost | undefined;
   dispatch: SystemDispatch;
-  MessageBox: typeof MessageBox;
   icons: Record<string, string>;
   util: {
     htmlspecialchars: typeof htmlspecialchars;
@@ -67,15 +57,8 @@ export interface ThirdPartyPropMap {
     blobToDataURL: typeof blobToDataURL;
   };
   workingDirectory: string;
-  Process: typeof Process;
-  AppProcess: typeof AppProcess;
-  ThirdPartyAppProcess: typeof ThirdPartyAppProcess;
-  FilesystemDrive: typeof FilesystemDrive;
-  KernelModule: typeof KernelModule;
   argv: any[];
   app: App;
-  Store: typeof Store;
-  Sleep: typeof Sleep;
   $ENTRYPOINT: string;
   $METADATA: string;
   load: (path: string) => Promise<any>;
@@ -88,8 +71,7 @@ export interface ThirdPartyPropMap {
   loadHtml: (path: string) => Promise<string | undefined>;
   axios: typeof axios;
   Server: typeof Axios;
-  BaseService: typeof BaseService;
-  TrayIconProcess: typeof TrayIconProcess;
   Debug: (m: any) => void;
   dayjs: typeof dayjs;
+  [key: string]: any;
 }
