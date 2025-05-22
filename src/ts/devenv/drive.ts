@@ -19,6 +19,7 @@ export class DevDrive extends FilesystemDrive {
   override FILESYSTEM_LONG: string = "DevEnv Filesystem";
   private axios: AxiosInstance;
   private url: string;
+  public label: string = "Dev Drive";
 
   constructor(kernel: WaveKernel, uuid: string, letter: string, axios: AxiosInstance, url: string) {
     super(kernel, uuid, letter);
@@ -103,7 +104,7 @@ export class DevDrive extends FilesystemDrive {
         `/fs/cp/${source}`,
         toForm({
           destination: destination.endsWith(sourceFilename) ? destination : join(destination, sourceFilename),
-        }),
+        })
       );
 
       return response.status === 200;
@@ -120,7 +121,7 @@ export class DevDrive extends FilesystemDrive {
         `/fs/mv/${source}`,
         toForm({
           destination,
-        }),
+        })
       );
 
       return response.status === 200;

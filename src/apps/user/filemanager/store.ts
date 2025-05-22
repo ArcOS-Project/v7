@@ -4,4 +4,5 @@ export const DriveIcons: Record<string, string> = {
   userfs: "hard-drive",
   zip: "folder-archive",
   share: "network",
+  devenv: "bug",
 };

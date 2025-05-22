@@ -4,7 +4,7 @@ import { BaseService } from "$ts/services/base";
 import type { DevEnvActivationResult, ProjectMetadata } from "$types/devenv";
 import type { AxiosInstance } from "axios";
 import axios from "axios";
-import { io, type Socket } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import { DevDrive } from "./drive";
 import type { Service } from "$types/service";
 import type { UserDaemon } from "$ts/server/user/daemon";
@@ -59,6 +59,16 @@ export class DevelopmentEnvironment extends BaseService {
       },
     });
 
+    this.handler.store.subscribe((v) => {
+      if (this._disposed) return;
+
+      const procs = [...v]
+        .filter(([_, proc]) => proc instanceof ThirdPartyAppProcess && proc.app.id === this.meta?.metadata.appId)
+        .map(([pid]) => pid);
+
+      if (this.connected) this.client?.emit("pids", procs);
+    });
+
     this.meta = await this.getProjectMeta();
 
     if (!this.meta) return abort("ping_failed");
@@ -76,6 +86,7 @@ export class DevelopmentEnvironment extends BaseService {
       this.client.on("connect", async () => {
         if (this._disposed) return this.disconnect();
 
+        this.connected = true;
         resolved = true;
         r("success");
       });
@@ -99,13 +110,15 @@ export class DevelopmentEnvironment extends BaseService {
 
       this.client.on("open-file", (file: string) => {
         if (this._disposed) return this.disconnect();
-
         this.daemon.openFile(file);
       });
       this.client.on("restart-tpa", () => {
         if (this._disposed) return this.disconnect();
-
         this.restartTpa();
+      });
+      this.kernel.Logs.subscribe((v) => {
+        if (this._disposed) return;
+        this.client?.emit("log-item", v[v.length - 1]);
       });
 
       setTimeout(() => {
