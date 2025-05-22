@@ -118,5 +118,6 @@ export function ThirdPartyProps(
     (props as any)[key] = supp;
   }
 
+  //@ts-ignore
   return props;
 }
