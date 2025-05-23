@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import type { BugHuntUserSpaceProcess } from "$ts/bughunt/process";
 import { textToBlob } from "$ts/fs/convert";
-import { getDirectoryName } from "$ts/fs/util";
+import { getItemNameFromPath } from "$ts/fs/util";
 import { SaveIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { UserPaths } from "$ts/server/user/store";
@@ -101,7 +101,7 @@ export class BugHuntRuntime extends AppProcess {
         waiting: true,
         icon: SaveIcon,
         caption: "Exporting report...",
-        subtitle: `${getDirectoryName(path)}`,
+        subtitle: `${getItemNameFromPath(path)}`,
       },
       this.pid
     );

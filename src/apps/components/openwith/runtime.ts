@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { isPopulatable } from "$ts/apps/util";
-import { getDirectoryName } from "$ts/fs/util";
+import { getItemNameFromPath } from "$ts/fs/util";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -30,7 +30,7 @@ export class OpenWithRuntime extends AppProcess {
     this.available.set(available);
     this.all.set(await this.userDaemon!.getAllFileHandlers());
     this.apps.set(this.all().filter((a) => a.type === "app" && isPopulatable(a.app!))); // Filter apps to populatable
-    this.filename.set(getDirectoryName(path));
+    this.filename.set(getItemNameFromPath(path));
     this.path.set(path);
 
     if (!available || !available.length) this.viewMode.set("apps");

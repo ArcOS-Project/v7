@@ -1,6 +1,6 @@
 import { toForm } from "$ts/form";
 import { FilesystemDrive } from "$ts/fs/drive";
-import { getDirectoryName, join } from "$ts/fs/util";
+import { getItemNameFromPath, join } from "$ts/fs/util";
 import type { WaveKernel } from "$ts/kernel";
 import type {
   DirectoryReadReturn,
@@ -97,7 +97,7 @@ export class DevDrive extends FilesystemDrive {
   }
 
   async copyItem(source: string, destination: string): Promise<boolean> {
-    const sourceFilename = getDirectoryName(source);
+    const sourceFilename = getItemNameFromPath(source);
 
     try {
       const response = await this.axios.post(

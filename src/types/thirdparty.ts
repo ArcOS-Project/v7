@@ -5,7 +5,7 @@ import type { arrayToBlob, arrayToText, blobToDataURL, blobToText, textToArrayBu
 import type {
   DownloadFile,
   formatBytes,
-  getDirectoryName,
+  getItemNameFromPath,
   getDriveLetter,
   getParentDirectory,
   join,
@@ -39,7 +39,7 @@ export interface ThirdPartyPropMap {
     sha256: typeof sha256;
     CountInstances: typeof CountInstances;
     join: typeof join;
-    getDirectoryName: typeof getDirectoryName;
+    getItemNameFromPath: typeof getItemNameFromPath;
     getParentDirectory: typeof getParentDirectory;
     getDriveLetter: typeof getDriveLetter;
     formatBytes: typeof formatBytes;

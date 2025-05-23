@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { arrayToText, textToBlob } from "$ts/fs/convert";
-import { getDirectoryName, getParentDirectory, join } from "$ts/fs/util";
+import { getItemNameFromPath, getParentDirectory, join } from "$ts/fs/util";
 import { MediaPlayerIcon } from "$ts/images/apps";
 import { FolderIcon } from "$ts/images/filesystem";
 import { VideoMimeIcon } from "$ts/images/mime";
@@ -278,7 +278,7 @@ export class MediaPlayerRuntime extends AppProcess {
 
     this.isVideo.set(DefaultMimeIcons[VideoMimeIcon].includes(`.${split[split.length - 1]}`));
     this.url.set(url);
-    this.windowTitle.set(`${getDirectoryName(path)} - Media Player`);
+    this.windowTitle.set(`${getItemNameFromPath(path)} - Media Player`);
     this.windowIcon.set(this.userDaemon?.getMimeIconByFilename(path) || MediaPlayerIcon);
 
     this.Reset();
@@ -393,7 +393,7 @@ export class MediaPlayerRuntime extends AppProcess {
 
     if (!paths?.length) return;
 
-    const filename = getDirectoryName(this.playlistPath());
+    const filename = getItemNameFromPath(this.playlistPath());
 
     this.userDaemon?.createShortcut(
       {

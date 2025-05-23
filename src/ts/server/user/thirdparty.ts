@@ -6,7 +6,7 @@ import { FilesystemDrive } from "$ts/fs/drive";
 import {
   DownloadFile,
   formatBytes,
-  getDirectoryName,
+  getItemNameFromPath,
   getDriveLetter,
   getParentDirectory,
   join,
@@ -57,7 +57,7 @@ export function ThirdPartyProps(
       sha256,
       CountInstances,
       join,
-      getDirectoryName,
+      getItemNameFromPath,
       getParentDirectory,
       getDriveLetter,
       formatBytes,

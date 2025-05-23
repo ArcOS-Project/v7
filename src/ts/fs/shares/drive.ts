@@ -10,7 +10,7 @@ import type {
 } from "$types/fs";
 import type { SharedDriveType } from "$types/shares";
 import { FilesystemDrive } from "../drive";
-import { getDirectoryName, join } from "../util";
+import { getItemNameFromPath, join } from "../util";
 
 export class SharedDrive extends FilesystemDrive {
   shareId: string | undefined;
@@ -121,7 +121,7 @@ export class SharedDrive extends FilesystemDrive {
   }
 
   async copyItem(source: string, destination: string): Promise<boolean> {
-    const sourceFilename = getDirectoryName(source);
+    const sourceFilename = getItemNameFromPath(source);
 
     try {
       const response = await Backend.post(

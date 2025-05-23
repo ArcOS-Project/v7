@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { getDirectoryName } from "$ts/fs/util";
+import { getItemNameFromPath } from "$ts/fs/util";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { DriveIcon } from "$ts/images/filesystem";
 import { MemoryIcon } from "$ts/images/general";
@@ -130,7 +130,7 @@ export class HexEditRuntime extends AppProcess {
 
       await this.requestFileLock(this.requestedFile);
 
-      this.filename.set(getDirectoryName(this.requestedFile));
+      this.filename.set(getItemNameFromPath(this.requestedFile));
       this.buffer.set(contents);
       this.view.set(new Uint8Array(contents));
       this.original.set(new Uint8Array(this.view()));

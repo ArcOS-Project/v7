@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { getDirectoryName } from "$ts/fs/util";
+import { getItemNameFromPath } from "$ts/fs/util";
 import { SettingsIcon } from "$ts/images/apps";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import {
@@ -307,7 +307,7 @@ export class SettingsRuntime extends AppProcess {
 
     if (!path) return;
     const id = `@local:${btoa(path)}`;
-    const filename = getDirectoryName(path);
+    const filename = getItemNameFromPath(path);
     const pref = this.userPreferences();
 
     if (!pref.userWallpapers[id]) {

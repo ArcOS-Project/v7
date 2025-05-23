@@ -17,7 +17,7 @@ import { arrayToBlob, arrayToText, textToBlob } from "$ts/fs/convert";
 import { ServerDrive } from "$ts/fs/drives/server";
 import { ZIPDrive } from "$ts/fs/drives/zipdrive";
 import { ShareManager } from "$ts/fs/shares/index";
-import { getDirectoryName, getDriveLetter, getParentDirectory, join } from "$ts/fs/util";
+import { getItemNameFromPath, getDriveLetter, getParentDirectory, join } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
 import { getIconPath, iconIdFromPath, maybeIconId } from "$ts/images";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
@@ -701,7 +701,7 @@ export class UserDaemon extends Process {
       fromSystem ||
       (await this.manuallyElevate({
         what: "ArcOS needs your permission to mount a ZIP file",
-        title: getDirectoryName(path),
+        title: getItemNameFromPath(path),
         description: letter ? `As ${letter}:/` : "As a drive",
         image: DriveIcon,
         level: ElevationLevel.medium,
@@ -1771,7 +1771,7 @@ export class UserDaemon extends Process {
   async moveMultiple(sources: string[], destination: string, pid: number) {
     this.Log(`Moving ${sources.length} items to ${destination}`);
 
-    const destinationName = getDirectoryName(destination);
+    const destinationName = getItemNameFromPath(destination);
     const destinationDrive = getDriveLetter(destination, true);
     const firstSourceParent = getParentDirectory(sources[0]);
 
@@ -1789,7 +1789,7 @@ export class UserDaemon extends Process {
 
     for (const source of sources) {
       const sourceDrive = getDriveLetter(source, true);
-      const sourceName = getDirectoryName(source);
+      const sourceName = getItemNameFromPath(source);
 
       show();
       updSub(source);
@@ -1815,7 +1815,7 @@ export class UserDaemon extends Process {
   async copyMultiple(sources: string[], destination: string, pid: number) {
     this.Log(`Copying ${sources.length} items to ${destination}`);
 
-    const destinationName = getDirectoryName(destination);
+    const destinationName = getItemNameFromPath(destination);
     const destinationDrive = getDriveLetter(destination, true);
 
     const { updSub, setWait, setWork, mutErr, mutDone, show } = await this.FileProgress(
@@ -1861,7 +1861,7 @@ export class UserDaemon extends Process {
     const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
     const apps = await appStore?.get();
     const split = path.split(".");
-    const filename = getDirectoryName(path);
+    const filename = getItemNameFromPath(path);
     const extension = `.${split[split.length - 1]}`;
     const mimeType = fromExtension(path);
     const result: FileOpenerResult[] = [];
@@ -1976,7 +1976,7 @@ export class UserDaemon extends Process {
 
     if (shortcut) return await this.handleShortcut(path, shortcut);
 
-    const filename = getDirectoryName(path);
+    const filename = getItemNameFromPath(path);
     const results = await this.findHandlerToOpenFile(path)!;
 
     if (!results.length) {
@@ -2017,7 +2017,7 @@ export class UserDaemon extends Process {
 
   async handleShortcut(path: string, shortcut: ArcShortcut) {
     this.Log(`Handling shortcut "${path}"`);
-    const filename = getDirectoryName(path);
+    const filename = getItemNameFromPath(path);
 
     switch (shortcut.type) {
       case "app":

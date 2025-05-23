@@ -9,7 +9,7 @@ import type {
   UserQuota,
 } from "$types/fs";
 import { FilesystemDrive } from "../drive";
-import { getDirectoryName, join } from "../util";
+import { getItemNameFromPath, join } from "../util";
 
 export class ServerDrive extends FilesystemDrive {
   private token = "";
@@ -105,7 +105,7 @@ export class ServerDrive extends FilesystemDrive {
   }
 
   async copyItem(source: string, destination: string): Promise<boolean> {
-    const sourceFilename = getDirectoryName(source);
+    const sourceFilename = getItemNameFromPath(source);
 
     try {
       const response = await Backend.post(

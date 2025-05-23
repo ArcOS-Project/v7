@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getDirectoryName } from "$ts/fs/util";
+  import { getItemNameFromPath } from "$ts/fs/util";
   import { DefaultMimeIcon } from "$ts/images/mime";
   import { onMount } from "svelte";
   import type { MediaPlayerRuntime } from "../runtime";
@@ -11,7 +11,7 @@
   let filename = $state<string>();
 
   onMount(() => {
-    filename = getDirectoryName(path);
+    filename = getItemNameFromPath(path);
     icon = process.userDaemon?.getMimeIconByFilename(filename) || DefaultMimeIcon;
   });
 

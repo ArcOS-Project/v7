@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { getDirectoryName } from "$ts/fs/util";
+import { getItemNameFromPath } from "$ts/fs/util";
 import { MessagingIcon } from "$ts/images/apps";
 import { WarningIcon } from "$ts/images/dialog";
 import { MemoryIcon, UploadIcon } from "$ts/images/general";
@@ -129,7 +129,7 @@ export class MessageComposerRuntime extends AppProcess {
       if (!path) continue;
 
       const mimetype = mime.getType(path);
-      const filename = getDirectoryName(path);
+      const filename = getItemNameFromPath(path);
       const contents = await this.fs.readFile(path, (progress) => {
         prog.show();
         prog.updateCaption(progress.what ? `Reading ${progress.what}` : "Reading file...");

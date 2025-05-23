@@ -2,7 +2,7 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { arrayToText } from "$ts/fs/convert";
 import type { FilesystemDrive } from "$ts/fs/drive";
-import { getDirectoryName, getParentDirectory } from "$ts/fs/util";
+import { getItemNameFromPath, getParentDirectory } from "$ts/fs/util";
 import { DriveIcon } from "$ts/images/filesystem";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
@@ -44,8 +44,8 @@ export class ItemInfoRuntime extends AppProcess {
     file = file as FileEntry | FolderEntry;
 
     const drive = this.fs.getDriveByPath(path);
-    const name = getDirectoryName(path);
-    const parent = getDirectoryName(getParentDirectory(path));
+    const name = getItemNameFromPath(path);
+    const parent = getItemNameFromPath(getParentDirectory(path));
     const split = path.split(".");
     const extension = file.mimeType ? split[split.length - 1] : undefined;
     const isShortcut = file?.name?.endsWith(".arclnk");

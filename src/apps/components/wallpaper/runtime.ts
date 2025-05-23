@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { getDirectoryName } from "$ts/fs/util";
+import { getItemNameFromPath } from "$ts/fs/util";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { UploadIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
@@ -156,7 +156,7 @@ export class WallpaperRuntime extends AppProcess {
   }
 
   async deleteItem(path: string) {
-    const filename = getDirectoryName(path);
+    const filename = getItemNameFromPath(path);
 
     MessageBox(
       {
@@ -189,7 +189,7 @@ export class WallpaperRuntime extends AppProcess {
         icon: UploadIcon,
         waiting: true,
         caption: "Uploading your files...",
-        subtitle: `To ${getDirectoryName(this.directory)}`,
+        subtitle: `To ${getItemNameFromPath(this.directory)}`,
       },
       +this.env.get("shell_pid")
     );

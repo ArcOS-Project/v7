@@ -2,7 +2,7 @@
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import type { ViewBugReportData } from "$apps/admin/adminportal/types";
   import { textToBlob } from "$ts/fs/convert";
-  import { getDirectoryName } from "$ts/fs/util";
+  import { getItemNameFromPath } from "$ts/fs/util";
   import { SaveIcon } from "$ts/images/general";
   import { UserPaths } from "$ts/server/user/store";
 
@@ -27,7 +27,7 @@
         waiting: true,
         icon: SaveIcon,
         caption: "Exporting report...",
-        subtitle: `${getDirectoryName(path)}`,
+        subtitle: `${getItemNameFromPath(path)}`,
       },
       process.pid,
     );

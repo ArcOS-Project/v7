@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getDirectoryName, getDriveLetter } from "$ts/fs/util";
+  import { getItemNameFromPath, getDriveLetter } from "$ts/fs/util";
   import { Plural } from "$ts/util";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../runtime";
@@ -13,7 +13,7 @@
 
   onMount(() => {
     contents.subscribe((v) => {
-      dirName = getDirectoryName($path);
+      dirName = getItemNameFromPath($path);
       driveLetter = getDriveLetter($path, false);
 
       const driveIdentifier = getDriveLetter($path, true);

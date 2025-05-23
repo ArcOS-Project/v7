@@ -1,7 +1,7 @@
 import { MessageBox } from "$ts/dialog";
 import { ShareManager } from "$ts/fs/shares";
 import type { SharedDrive } from "$ts/fs/shares/drive";
-import { getDirectoryName, getParentDirectory, join } from "$ts/fs/util";
+import { getItemNameFromPath, getParentDirectory, join } from "$ts/fs/util";
 import { WarningIcon } from "$ts/images/dialog";
 import { UserPaths } from "$ts/server/user/store";
 import type { AppContextMenu } from "$types/app";
@@ -206,7 +206,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         action: async (folder: FolderEntry) => {
           const path = runtime.path();
           const parentPath = getParentDirectory(path);
-          const name = getDirectoryName(path);
+          const name = getItemNameFromPath(path);
           const parent = await runtime.fs.readDir(parentPath);
           const dir = parent?.dirs.filter((d) => d.name === name)[0] || parent;
 

@@ -2,7 +2,7 @@ import { AppProcess } from "$ts/apps/process";
 import { GetConfirmation, MessageBox } from "$ts/dialog";
 import { FilesystemDrive } from "$ts/fs/drive";
 import { SharedDrive } from "$ts/fs/shares/drive";
-import { DownloadFile, getDirectoryName, getDriveLetter, getParentDirectory, join } from "$ts/fs/util";
+import { DownloadFile, getItemNameFromPath, getDriveLetter, getParentDirectory, join } from "$ts/fs/util";
 import { iconIdFromPath } from "$ts/images";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { DownloadIcon, DriveIcon, FolderIcon } from "$ts/images/filesystem";
@@ -63,7 +63,7 @@ export class FileManagerRuntime extends AppProcess {
         this.selection.subscribe((v) => {
           if (!v.length) return;
 
-          this.saveName.set(getDirectoryName(v[0]));
+          this.saveName.set(getItemNameFromPath(v[0]));
         });
 
         if (loadSave.saveName) this.saveName.set(loadSave.saveName);
@@ -202,7 +202,7 @@ export class FileManagerRuntime extends AppProcess {
           driveLabel = drive?.label || "";
         }
 
-        this.windowTitle.set(getDirectoryName(path) || (driveLetter ? `${driveLetter}/` : driveLabel));
+        this.windowTitle.set(getItemNameFromPath(path) || (driveLetter ? `${driveLetter}/` : driveLabel));
       }
 
       this.checkNotice();
@@ -361,7 +361,7 @@ export class FileManagerRuntime extends AppProcess {
         icon: UploadIcon,
         waiting: true,
         caption: "Uploading your files...",
-        subtitle: `To ${getDirectoryName(this.path())}`,
+        subtitle: `To ${getItemNameFromPath(this.path())}`,
       },
       this.pid
     );
@@ -471,7 +471,7 @@ export class FileManagerRuntime extends AppProcess {
 
     if (!selected.length) return;
 
-    const filename = getDirectoryName(selected[0]);
+    const filename = getItemNameFromPath(selected[0]);
 
     const prog = await this.userDaemon!.FileProgress(
       {

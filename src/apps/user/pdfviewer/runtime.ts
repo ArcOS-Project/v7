@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { arrayToBlob } from "$ts/fs/convert";
-import { getDirectoryName } from "$ts/fs/util";
+import { getItemNameFromPath } from "$ts/fs/util";
 import { ErrorIcon } from "$ts/images/dialog";
 import { PdfMimeIcon } from "$ts/images/mime";
 import type { ProcessHandler } from "$ts/process/handler";
@@ -33,7 +33,7 @@ export class PdfViewerRuntime extends AppProcess {
 
     this.openedFile.set(path);
     this.documentUrl.set(url);
-    this.windowTitle.set(getDirectoryName(path));
+    this.windowTitle.set(getItemNameFromPath(path));
   }
 
   async readFileIndirectFallback(path: string) {
@@ -79,6 +79,6 @@ export class PdfViewerRuntime extends AppProcess {
 
     this.openedFile.set(path);
     this.documentUrl.set(url);
-    this.windowTitle.set(getDirectoryName(path));
+    this.windowTitle.set(getItemNameFromPath(path));
   }
 }

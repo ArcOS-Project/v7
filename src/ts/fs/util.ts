@@ -32,7 +32,7 @@ export function dirname(path: string) {
   return join(path, "..");
 }
 
-export function getDirectoryName(path: string) {
+export function getItemNameFromPath(path: string) {
   const split = path.split("/");
 
   return split[split.length - 1];

@@ -1,4 +1,4 @@
-import { getDirectoryName, getParentDirectory } from "$ts/fs/util";
+import { getItemNameFromPath, getParentDirectory } from "$ts/fs/util";
 import type { ProcessHandler } from "$ts/process/handler";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
@@ -188,7 +188,7 @@ export class MessagingInterface extends BaseService {
   async buildAttachment(filePath: string, onProgress?: FilesystemProgressCallback): Promise<File | undefined> {
     try {
       const parent = getParentDirectory(filePath);
-      const filename = getDirectoryName(filePath);
+      const filename = getItemNameFromPath(filePath);
       const parentDir = await this.fs.readDir(parent);
       const partial = parentDir?.files.filter((f) => f.name === filename)[0];
       const contents = await this.fs.readFile(filePath, onProgress);

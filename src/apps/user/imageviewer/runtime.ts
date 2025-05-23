@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { arrayToBlob } from "$ts/fs/convert";
-import { getDirectoryName } from "$ts/fs/util";
+import { getItemNameFromPath } from "$ts/fs/util";
 import { ImageViewerIcon } from "$ts/images/apps";
 import { ErrorIcon } from "$ts/images/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
@@ -36,7 +36,7 @@ export class ImageViewerRuntime extends AppProcess {
     this.indirect.set(false);
     this.openedFile.set(path);
     this.imageUrl.set(url);
-    this.windowTitle.set(getDirectoryName(path));
+    this.windowTitle.set(getItemNameFromPath(path));
   }
 
   async readFileIndirectFallback(path: string) {
@@ -83,6 +83,6 @@ export class ImageViewerRuntime extends AppProcess {
     this.indirect.set(true);
     this.openedFile.set(path);
     this.imageUrl.set(url);
-    this.windowTitle.set(getDirectoryName(path));
+    this.windowTitle.set(getItemNameFromPath(path));
   }
 }

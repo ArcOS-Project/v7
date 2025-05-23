@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { getDirectoryName, getParentDirectory, join } from "$ts/fs/util";
+import { getItemNameFromPath, getParentDirectory, join } from "$ts/fs/util";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -14,7 +14,7 @@ export class RenameItemRuntime extends AppProcess {
     path ||= "";
 
     this.parentDir = getParentDirectory(path);
-    this.newName.set(getDirectoryName(path));
+    this.newName.set(getItemNameFromPath(path));
     this.path = path;
   }
 

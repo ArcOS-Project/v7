@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { arrayToText, textToBlob } from "$ts/fs/convert";
-import { getDirectoryName, getParentDirectory } from "$ts/fs/util";
+import { getItemNameFromPath, getParentDirectory } from "$ts/fs/util";
 import { WarningIcon } from "$ts/images/dialog";
 import { DriveIcon } from "$ts/images/filesystem";
 import { DefaultMimeIcon, TextMimeIcon } from "$ts/images/mime";
@@ -73,8 +73,8 @@ export class WriterRuntime extends AppProcess {
 
       this.buffer.set(arrayToText(contents));
       this.openedFile.set(path);
-      this.filename.set(getDirectoryName(path));
-      this.directoryName.set(getDirectoryName(getParentDirectory(path)));
+      this.filename.set(getItemNameFromPath(path));
+      this.directoryName.set(getItemNameFromPath(getParentDirectory(path)));
       this.original.set(`${this.buffer()}`);
       this.mimetype.set(fromExtension(this.filename()));
       this.mimeIcon.set(this.userDaemon?.getMimeIconByFilename(path) || DefaultMimeIcon);
@@ -181,8 +181,8 @@ export class WriterRuntime extends AppProcess {
     if (!path) return;
 
     this.openedFile.set(path);
-    this.filename.set(getDirectoryName(path));
-    this.directoryName.set(getDirectoryName(getParentDirectory(path)));
+    this.filename.set(getItemNameFromPath(path));
+    this.directoryName.set(getItemNameFromPath(getParentDirectory(path)));
     this.original.set(`${this.buffer()}`);
     this.mimetype.set(fromExtension(this.filename()));
     this.mimeIcon.set(this.userDaemon?.getMimeIconByFilename(path) || DefaultMimeIcon);

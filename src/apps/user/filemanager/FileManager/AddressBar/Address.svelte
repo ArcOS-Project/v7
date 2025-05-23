@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getDirectoryName, getDriveLetter } from "$ts/fs/util";
+  import { getItemNameFromPath, getDriveLetter } from "$ts/fs/util";
   import { FolderIcon } from "$ts/images/filesystem";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../../runtime";
@@ -23,7 +23,7 @@
         driveLabel = drive?.label || "";
       }
 
-      name = getDirectoryName(v);
+      name = getItemNameFromPath(v);
     });
 
     return () => sub();
