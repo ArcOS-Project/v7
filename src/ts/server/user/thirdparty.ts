@@ -109,6 +109,29 @@ export function ThirdPartyProps(
         +daemon.env.get("shell_pid")
       );
     },
+    //
+    // Override some DOM scope stuff
+    //
+    globalThis: undefined,
+    window: undefined,
+    body: undefined,
+    document: new Proxy(document, {
+      get(target, prop) {
+        if (prop === "body" || prop === "documentElement" || prop === "html") {
+          return undefined;
+        }
+        return Reflect.get(target, prop);
+      },
+      set(target, prop, value) {
+        if (prop === "body" || prop === "documentElement" || prop === "html") {
+          return false;
+        }
+        return Reflect.set(target, prop, value);
+      },
+    }),
+    //
+    // end override of some DOM scope stuff
+    //
     dayjs,
   };
 
