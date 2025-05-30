@@ -1,11 +1,15 @@
 import type { ProcessHandler } from "$ts/process/handler";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
+import type { GlobalDispatchClient } from "$types/dispatch";
 import type { Service } from "$types/service";
 import io, { Socket } from "socket.io-client";
+import { Backend } from "../axios";
+import { UserDaemon } from "../user/daemon";
 
 export class GlobalDispatch extends BaseService {
   client: Socket | undefined;
+  token?: string;
   authorized = false;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
@@ -21,7 +25,13 @@ export class GlobalDispatch extends BaseService {
       this.client = io(import.meta.env.DW_SERVER_URL, { transports: ["websocket"] });
       this.client.on("connect", async () => {
         await this.connected(token);
+        this.token = token;
         resolve();
+      });
+
+      this.client.on("kicked", () => {
+        const daemon = this.handler.getProcess<UserDaemon>(+this.env.get("userdaemon_pid"));
+        daemon?.logoff();
       });
     });
   }
@@ -57,6 +67,30 @@ export class GlobalDispatch extends BaseService {
   async stop() {
     this.Log(`Disconnecting websocket`);
     this.client?.disconnect();
+  }
+
+  async getClients(): Promise<GlobalDispatchClient[]> {
+    try {
+      const response = await Backend.get("/user/dispatch", { headers: { Authorization: `Bearer ${this.token}` } });
+
+      return response.data as GlobalDispatchClient[];
+    } catch {
+      return [];
+    }
+  }
+
+  async disconnectClient(clientId: string) {
+    try {
+      const response = await Backend.post(
+        `/user/dispatch/kick/${clientId}`,
+        {},
+        { headers: { Authorization: `Bearer ${this.token}` } }
+      );
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
   }
 }
 

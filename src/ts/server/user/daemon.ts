@@ -17,14 +17,13 @@ import { arrayToBlob, arrayToText, textToBlob } from "$ts/fs/convert";
 import { ServerDrive } from "$ts/fs/drives/server";
 import { ZIPDrive } from "$ts/fs/drives/zipdrive";
 import { ShareManager } from "$ts/fs/shares/index";
-import { getItemNameFromPath, getDriveLetter, getParentDirectory, join } from "$ts/fs/util";
+import { getDriveLetter, getItemNameFromPath, getParentDirectory, join } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
 import { getIconPath, iconIdFromPath, maybeIconId } from "$ts/images";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import { AccountIcon, AppsIcon, ComponentIcon, FirefoxIcon, PasswordIcon, PersonalizationIcon } from "$ts/images/general";
 import { ImageMimeIcon } from "$ts/images/mime";
-import { ProfilePictures } from "$ts/images/pfp";
 import { RestartIcon } from "$ts/images/power";
 import { tryJsonParse } from "$ts/json";
 import type { ProcessHandler } from "$ts/process/handler";
@@ -89,6 +88,7 @@ export class UserDaemon extends Process {
   public server: ServerManager;
   public syncLock = false;
   public autoLoadComplete = false;
+  public globalDispatch?: GlobalDispatch;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, token: string, username: string, userInfo?: UserInfo) {
     super(handler, pid, parentPid);
@@ -2369,11 +2369,11 @@ The information provided in this report is subject for review by me or another A
   }
 
   async activateGlobalDispatch() {
-    const service = this.serviceHost!.getService<GlobalDispatch>("GlobalDispatch");
+    this.globalDispatch = this.serviceHost!.getService<GlobalDispatch>("GlobalDispatch");
 
-    await service?._activate(this.token);
+    await this.globalDispatch?._activate(this.token);
 
-    service?.subscribe("update-preferences", async (preferences: UserPreferences) => {
+    this.globalDispatch?.subscribe("update-preferences", async (preferences: UserPreferences) => {
       this.syncLock = true;
       await Sleep(0);
       this.preferences.set(preferences);
@@ -2381,11 +2381,11 @@ The information provided in this report is subject for review by me or another A
       this.syncLock = false;
     });
 
-    service?.subscribe("fs-flush-folder", (path) => {
+    this.globalDispatch?.subscribe("fs-flush-folder", (path) => {
       this.systemDispatch.dispatch("fs-flush-folder", path);
     });
 
-    service?.subscribe("fs-flush-file", (path) => {
+    this.globalDispatch?.subscribe("fs-flush-file", (path) => {
       this.systemDispatch.dispatch("fs-flush-file", path);
     });
   }
