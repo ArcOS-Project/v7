@@ -8,7 +8,7 @@ import type { UserPreferences } from "$types/user";
 import type { Component } from "svelte";
 import type { Unsubscriber } from "svelte/store";
 import General from "./AdvancedSystemSettings/General.svelte";
-import Policies from "./AdvancedSystemSettings/Policies.svelte";
+import DispatchClients from "./AdvancedSystemSettings/DispatchClients.svelte";
 import Startup from "./AdvancedSystemSettings/Startup.svelte";
 
 export class AdvSysSetRuntime extends AppProcess {
@@ -16,7 +16,7 @@ export class AdvSysSetRuntime extends AppProcess {
   public tabs: Record<string, Component> = {
     General,
     "Startup Items": Startup as any,
-    "System Policies": Policies,
+    "Dispatch Clients": DispatchClients as any,
   };
   public preferencesBuffer = Store<UserPreferences>();
   syncInitialized = false;

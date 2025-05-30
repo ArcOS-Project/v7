@@ -1,4 +1,5 @@
 @import url("./advsystemsettings/startup.css");
+@import url("./advsystemsettings/dispatch.css");
 
 #AdvSystemSettings > div.body {
   padding: 0 10px;

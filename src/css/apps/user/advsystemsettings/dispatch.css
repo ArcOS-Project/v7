@@ -1,0 +1,33 @@
+#AdvSystemSettings > div.body div.dispatch-clients {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#AdvSystemSettings > div.body div.dispatch-clients div.list {
+  border: var(--win-border);
+  flex-grow: 1;
+  overflow-y: auto;
+  border-radius: 4px;
+  background-color: var(--win-bg);
+}
+
+#AdvSystemSettings > div.body div.dispatch-clients div.list::-webkit-scrollbar {
+  display: none;
+}
+
+#AdvSystemSettings > div.body div.dispatch-clients div.list div.row {
+  display: flex;
+  align-items: center;
+  border-bottom: var(--win-border);
+  height: 30px;
+  padding: 0 10px;
+}
+
+#AdvSystemSettings > div.body div.dispatch-clients div.list div.row div.segment.ip {
+  flex-grow: 1;
+}
+
+#AdvSystemSettings > div.body div.dispatch-clients div.list div.row div.segment.authorized {
+  width: 85px;
+}
