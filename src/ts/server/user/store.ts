@@ -357,3 +357,26 @@ export const UserPaths = {
   Desktop: "U:/Home/Desktop",
   Music: "U:/Home/Music",
 };
+
+export const UserPathCaptions: Record<string, string> = {
+  Root: "Your Drive",
+  Home: "Home folder",
+  Applications: "Applications",
+  Documents: "Documents",
+  Pictures: "Pictures",
+  Downloads: "Downloads",
+  Wallpapers: "Wallpapers",
+  Desktop: "Desktop",
+  Music: "Music",
+};
+export const UserPathIcons: Record<string, string> = {
+  Root: "hard-drive",
+  Home: "house",
+  Applications: "app-window",
+  Documents: "folder-dot",
+  Pictures: "image",
+  Downloads: "download",
+  Wallpapers: "wallpaper",
+  Desktop: "dock",
+  Music: "music",
+};

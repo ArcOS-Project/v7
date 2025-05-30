@@ -13,6 +13,10 @@
   max-width: calc(100% - 207px);
 }
 
+#fileManager div.address-bar div.portion.address.virtual {
+  max-width: 100%;
+}
+
 #fileManager div.load-save div.address-bar div.portion.address {
   max-width: calc(100% - 40px);
 }
@@ -51,6 +55,7 @@
 #fileManager div.address-bar div.path div.pill span.lucide {
   font-size: 16px;
   color: var(--accent-light);
+  height: 16px;
 }
 
 #fileManager div.address-bar div.path img {

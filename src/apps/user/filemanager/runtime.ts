@@ -2,7 +2,7 @@ import { AppProcess } from "$ts/apps/process";
 import { GetConfirmation, MessageBox } from "$ts/dialog";
 import { FilesystemDrive } from "$ts/fs/drive";
 import { SharedDrive } from "$ts/fs/shares/drive";
-import { DownloadFile, getItemNameFromPath, getDriveLetter, getParentDirectory, join } from "$ts/fs/util";
+import { DownloadFile, getDriveLetter, getItemNameFromPath, getParentDirectory, join } from "$ts/fs/util";
 import { iconIdFromPath } from "$ts/images";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { DownloadIcon, DriveIcon, FolderIcon } from "$ts/images/filesystem";
@@ -20,7 +20,8 @@ import type { ShortcutStore } from "$types/shortcut";
 import { FileManagerAccelerators } from "./accelerators";
 import { FileManagerAltMenu } from "./altmenu";
 import { FileManagerContextMenu } from "./context";
-import type { FileManagerNotice, LoadSaveDialogData, QuotedDrive } from "./types";
+import MyArcOs from "./FileManager/Virtual/MyArcOS.svelte";
+import type { FileManagerNotice, LoadSaveDialogData, QuotedDrive, VirtualFileManagerLocation } from "./types";
 
 export class FileManagerRuntime extends AppProcess {
   path = Store<string>("");
@@ -38,7 +39,15 @@ export class FileManagerRuntime extends AppProcess {
   showNotice = Store<boolean>(false);
   loadSave: LoadSaveDialogData | undefined;
   saveName = Store<string>();
+  virtual = Store<VirtualFileManagerLocation | undefined>();
   directoryListing = Store<HTMLDivElement>();
+  virtualLocations: Record<string, VirtualFileManagerLocation> = {
+    my_arcos: {
+      name: "My ArcOS",
+      icon: "computer",
+      component: MyArcOs as any,
+    },
+  };
   private _refreshLocked = false;
 
   constructor(
@@ -162,6 +171,22 @@ export class FileManagerRuntime extends AppProcess {
     this.Log(`Navigating to ${path}`);
 
     if (this.path() === path) return;
+
+    this.virtual.set(undefined);
+
+    if (path.startsWith("::")) {
+      const virtual = this.virtualLocations[path.replace("::", "")];
+
+      if (!virtual) {
+        this.DirectoryNotFound();
+        return;
+      }
+
+      this.virtual.set(virtual);
+      this.path.set(path);
+
+      return;
+    }
 
     this.loading.set(true);
     this.errored.set(false);

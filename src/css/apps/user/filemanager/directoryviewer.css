@@ -162,6 +162,13 @@
   position: relative;
 }
 
+#fileManager div.virtual-page {
+  height: calc(100% - 30px - 53px);
+  overflow-y: scroll;
+  padding: 15px;
+  position: relative;
+}
+
 #fileManager div.directory-viewer button.header-row {
   box-shadow: none;
   opacity: 1;

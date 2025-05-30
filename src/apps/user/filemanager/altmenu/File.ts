@@ -16,6 +16,7 @@ export function FileMenu(runtime: FileManagerRuntime): ContextMenuItem {
       {
         caption: "Refresh",
         icon: "rotate-cw",
+        disabled: () => !!runtime.virtual(),
         action: async () => {
           runtime.loading.set(true);
           await runtime.refresh();
@@ -27,12 +28,13 @@ export function FileMenu(runtime: FileManagerRuntime): ContextMenuItem {
         caption: "Upload",
         icon: "upload",
         action: () => runtime.uploadItems(),
+        disabled: () => !!runtime.virtual(),
       },
       {
         caption: "Download",
         icon: "download",
 
-        disabled: () => runtime.selection().length !== 1 || !runtime.contents(),
+        disabled: () => runtime.selection().length !== 1 || !runtime.contents() || !!runtime.virtual(),
         action: () => runtime.downloadSelected(),
       },
       { sep: true },
@@ -41,6 +43,7 @@ export function FileMenu(runtime: FileManagerRuntime): ContextMenuItem {
         action: () => {
           runtime.spawnOverlayApp("FsNewFolder", runtime.pid, runtime.path());
         },
+        disabled: () => !!runtime.virtual(),
         icon: "folder-plus",
       },
       {
@@ -48,6 +51,7 @@ export function FileMenu(runtime: FileManagerRuntime): ContextMenuItem {
         action: () => {
           runtime.spawnOverlayApp("FsNewFile", runtime.pid, runtime.path());
         },
+        disabled: () => !!runtime.virtual(),
         icon: "file-plus",
       },
       { sep: true },

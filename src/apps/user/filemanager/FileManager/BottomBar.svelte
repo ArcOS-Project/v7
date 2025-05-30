@@ -5,7 +5,7 @@
   import type { FileManagerRuntime } from "../runtime";
 
   const { process }: { process: FileManagerRuntime } = $props();
-  const { contents, path, userPreferences, notice, showNotice } = process;
+  const { contents, path, userPreferences, notice, showNotice, virtual } = process;
 
   let dirName = $state("");
   let driveLetter = $state<string>();
@@ -28,10 +28,14 @@
 </script>
 
 <div class="bottom">
-  {#if $contents}
+  {#if $contents || $virtual}
     <div class="stat">
-      {$contents.dirs.length + $contents.files.length}
-      {Plural("item", $contents.dirs.length + $contents.files.length)} in {dirName || driveLetter || driveLabel}
+      {#if !$virtual}
+        {$contents!.dirs.length + $contents!.files.length}
+        {Plural("item", $contents!.dirs.length + $contents!.files.length)} in {dirName || driveLetter || driveLabel}
+      {:else}
+        in {$virtual.name}
+      {/if}
     </div>
   {/if}
   {#if $showNotice && $notice}
@@ -46,12 +50,14 @@
       aria-label="Grid view"
       class:suggested={$userPreferences.appPreferences.fileManager!.grid}
       onclick={() => ($userPreferences.appPreferences.fileManager!.grid = true)}
+      disabled={!!$virtual}
     ></button>
     <button
       class="lucide icon-list"
       aria-label="List view"
       class:suggested={!$userPreferences.appPreferences.fileManager!.grid}
       onclick={() => ($userPreferences.appPreferences.fileManager!.grid = false)}
+      disabled={!!$virtual}
     ></button>
   </div>
 </div>

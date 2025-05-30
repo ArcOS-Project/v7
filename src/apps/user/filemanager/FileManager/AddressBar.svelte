@@ -5,17 +5,25 @@
   import UpDownLoad from "./AddressBar/UpDownLoad.svelte";
 
   const { process }: { process: FileManagerRuntime } = $props();
+  const { virtual } = process;
 </script>
 
 <div class="address-bar">
-  <div class="portion address">
-    <button class="parent lucide icon-arrow-up" aria-label="Parent Directory" onclick={() => process.parentDir()}></button>
+  <div class="portion address" class:virtual={$virtual}>
+    <button
+      class="parent lucide icon-arrow-up"
+      aria-label="Parent Directory"
+      onclick={() => process.parentDir()}
+      disabled={!!$virtual}
+    ></button>
     <Address {process} />
   </div>
-  {#if !process.loadSave}
-    <div class="sep"></div>
-    <CutCopyPaste {process} />
-    <div class="sep"></div>
+  {#if !$virtual}
+    {#if !process.loadSave}
+      <div class="sep"></div>
+      <CutCopyPaste {process} />
+      <div class="sep"></div>
+    {/if}
+    <UpDownLoad {process} />
   {/if}
-  <UpDownLoad {process} />
 </div>

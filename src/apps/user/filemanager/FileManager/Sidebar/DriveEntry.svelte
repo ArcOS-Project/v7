@@ -23,7 +23,7 @@
 <button
   class="drive"
   onclick={() => process.navigate(`${identifier}/`)}
-  class:selected={$path.startsWith(`${identifier}/`)}
+  class:selected={$path === `${identifier}/`}
   data-contextmenu={identifiesAs === "share" ? "sidebar-shared-drive" : "sidebar-drive"}
   use:contextProps={[drive, identifier, unmount]}
   title={drive.quota.unknown

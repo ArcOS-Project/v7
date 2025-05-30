@@ -1,11 +1,12 @@
 import type { SettingsRuntime } from "$apps/user/settings/runtime";
 import { MessageBox } from "$ts/dialog";
-import { getParentDirectory } from "$ts/fs/util";
+import { getParentDirectory, join } from "$ts/fs/util";
 import { FileManagerIcon, ProcessManagerIcon, SettingsIcon } from "$ts/images/apps";
 import { QuestionIcon } from "$ts/images/dialog";
 import { PersonalizationIcon } from "$ts/images/general";
 import { LogoutIcon, RestartIcon, ShutdownIcon } from "$ts/images/power";
 import { UserPaths } from "$ts/server/user/store";
+import { UUID } from "$ts/uuid";
 import type { AppContextMenu } from "$types/app";
 import type { FileEntry } from "$types/fs";
 import type { WallpaperRuntime } from "./runtime";
@@ -245,6 +246,18 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
         caption: "New",
         icon: "plus",
         subItems: [
+          {
+            caption: "Shortcut...",
+            icon: "arrow-up-right",
+            action: () => {
+              runtime.spawnOverlayApp("ShortcutProperties", shellPid(), join(UserPaths.Desktop, `${UUID()}.arclnk`), {
+                icon: "ShortcutMimeIcon",
+                name: "New shortcut",
+                type: "folder",
+                target: UserPaths.Desktop,
+              });
+            },
+          },
           {
             caption: "New folder...",
             icon: "folder-plus",

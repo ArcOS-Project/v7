@@ -7,10 +7,11 @@
   import LoadSaveBottomBar from "./FileManager/LoadSaveBottomBar.svelte";
   import Sidebar from "./FileManager/Sidebar.svelte";
   import Splash from "./FileManager/Splash.svelte";
+  import VirtualRenderer from "./FileManager/VirtualRenderer.svelte";
   import type { FileManagerRuntime } from "./runtime";
 
   const { process }: AppComponentProps<FileManagerRuntime> = $props();
-  const { starting } = process;
+  const { starting, virtual } = process;
 </script>
 
 {#if !$starting}
@@ -19,7 +20,11 @@
     <CustomTitlebar {process} />
     <div class="main-content">
       <AddressBar {process} />
-      <DirectoryListing {process} />
+      {#if !$virtual}
+        <DirectoryListing {process} />
+      {:else}
+        <VirtualRenderer {process} />
+      {/if}
       {#if !process.loadSave}
         <BottomBar {process} />
       {:else}

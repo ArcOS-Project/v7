@@ -3,12 +3,15 @@
   import { FolderIcon } from "$ts/images/filesystem";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../../runtime";
+  import { DriveIcons } from "../../store";
+  import { FilesystemDrive } from "$ts/fs/drive";
 
   const { process }: { process: FileManagerRuntime } = $props();
-  const { path } = process;
+  const { path, virtual } = process;
 
   let driveLetter = $state<string | undefined>();
   let driveLabel = $state<string>("");
+  let drive = $state<FilesystemDrive>();
   let name = $state<string>("");
 
   onMount(() => {
@@ -32,10 +35,10 @@
 
 <div class="path">
   <div class="pill">
-    <span class="lucide icon-hard-drive"></span>
-    <span>{driveLetter || driveLabel}</span>
+    <span class="lucide icon-{$virtual?.icon || DriveIcons[drive?.IDENTIFIES_AS || ''] || 'hard-drive'}"></span>
+    <span>{$virtual ? $virtual.name : driveLetter || driveLabel}</span>
   </div>
-  {#if name}
+  {#if name && !$virtual}
     <img src={FolderIcon} alt="" />
     <span>
       {name}

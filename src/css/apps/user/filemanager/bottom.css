@@ -74,6 +74,7 @@
   display: inline-block;
   margin-right: 6px;
   font-size: 18px;
+  height: 18px;
 }
 
 #fileManager > div.body div.bottom div.stat {

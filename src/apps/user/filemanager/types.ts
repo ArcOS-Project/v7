@@ -1,5 +1,6 @@
 import type { FilesystemDrive } from "$ts/fs/drive";
 import type { UserQuota } from "$types/fs";
+import type { Component } from "svelte";
 
 export interface Tab {
   location: string;
@@ -32,4 +33,11 @@ export interface FileManagerNotice {
   icon: string;
   text: string;
   className?: string;
+}
+
+export interface VirtualFileManagerLocation {
+  name: string;
+  icon: string;
+  component: Component;
+  hidden?: boolean;
 }

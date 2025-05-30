@@ -37,6 +37,7 @@
 #fileManager > div.body div.sidebar button span.lucide {
   font-size: 16px;
   color: var(--accent-light);
+  height: 16px;
 }
 
 #fileManager > div.body div.sidebar button .circular-progress {

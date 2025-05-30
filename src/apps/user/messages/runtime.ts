@@ -17,6 +17,7 @@ import dayjs from "dayjs";
 import Fuse from "fuse.js";
 import { messagingPages } from "./store";
 import type { MessagingPage } from "./types";
+import { sortByKey } from "$ts/util";
 
 export class MessagingAppRuntime extends AppProcess {
   service: MessagingInterface;
@@ -156,7 +157,7 @@ export class MessagingAppRuntime extends AppProcess {
       return;
     }
 
-    this.buffer.set(messages);
+    this.buffer.set(sortByKey(messages, "createdAt", true));
     this.correlated.set(this.correlateMessages(messages));
   }
 

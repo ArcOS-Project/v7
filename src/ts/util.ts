@@ -131,12 +131,13 @@ export function tryParseInt(input: any, returnsUndefined = false) {
     return returnsUndefined ? undefined : input;
   }
 }
-export function sortByKey(array: any[], key: string) {
+export function sortByKey(array: any[], key: string, reverse = false) {
   return array.sort(function (a, b) {
-    var x = a[key];
-    var y = b[key];
+    const x = a[key];
+    const y = b[key];
 
-    return x < y ? -1 : x > y ? 1 : 0;
+    const comparison = x < y ? -1 : x > y ? 1 : 0;
+    return reverse ? -comparison : comparison;
   });
 }
 
