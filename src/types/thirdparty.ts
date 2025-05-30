@@ -71,9 +71,5 @@ export interface ThirdPartyPropMap {
   Server: AxiosInstance;
   Debug: (m: any) => void;
   dayjs: (s: string) => dayjs.Dayjs;
-  document: Document;
-  body: undefined;
-  globalThis: undefined;
-  window: undefined;
   [key: string]: any;
 }
