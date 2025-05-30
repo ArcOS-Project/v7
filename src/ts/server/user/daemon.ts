@@ -2272,6 +2272,8 @@ export class UserDaemon extends Process {
 
       information.profilePicture = `${this.server.url}/user/pfp/${userId}?authcode=${import.meta.env.DW_SERVER_AUTHCODE || ""}`;
 
+      console.log(information);
+
       return information;
     } catch {
       return undefined;

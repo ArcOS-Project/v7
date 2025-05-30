@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { MessagingAppRuntime } from "$apps/user/messages/runtime";
+  import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
   import type { PartialMessage } from "$types/messaging";
   import dayjs from "dayjs";
@@ -26,7 +27,7 @@
     class:selected={$openedMessage?._id === message._id}
     ondblclick={() => process.popoutMessage(message._id)}
   >
-    <img src={message.author.profilePicture} alt="" />
+    <ProfilePicture fallback={message.author.profilePicture} showOnline online={message.author.dispatchClients > 0} height={40} />
     <div>
       <div class="subject">
         <h1>{message.author.displayName || message.author.username}</h1>

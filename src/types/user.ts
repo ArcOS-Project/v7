@@ -155,4 +155,5 @@ export interface PublicUserInfo {
   profilePicture: string;
   accountNumber: number;
   admin: boolean;
+  dispatchClients: number;
 }

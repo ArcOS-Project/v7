@@ -5,6 +5,7 @@
   import { onMount } from "svelte";
   import type { MessagingAppRuntime } from "../../runtime";
   import { ProfilePictures } from "$ts/images/pfp";
+  import ProfilePicture from "$lib/ProfilePicture.svelte";
 
   const { process }: { process: MessagingAppRuntime } = $props();
   const { message } = process;
@@ -22,6 +23,7 @@
       accountNumber: -1,
       profilePicture: ProfilePictures.def,
       admin: false,
+      dispatchClients: 0,
     };
     date = dayjs($message.createdAt).format("D MMMM YYYY, hh:mm A");
   });
@@ -30,7 +32,12 @@
 <div class="message-content">
   {#if $message && user}
     <div class="header">
-      <img src={user.profilePicture} alt="" />
+      <ProfilePicture
+        fallback={$message.author!.profilePicture}
+        height={40}
+        showOnline
+        online={$message.author!.dispatchClients > 0}
+      />
       <div>
         <h1>{$message.title}</h1>
         <p>
