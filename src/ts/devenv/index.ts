@@ -34,17 +34,16 @@ export class DevelopmentEnvironment extends BaseService {
   }
 
   async connect(port: number): Promise<DevEnvActivationResult> {
-    if (this._disposed) {
-      this.disconnect();
-      return "ping_failed";
-    }
-
     const abort = (code: DevEnvActivationResult) => {
       return new Promise<DevEnvActivationResult>((r) => {
         this.disconnect();
         r(code);
       });
     };
+
+    if (this._disposed) {
+      abort("ping_failed");
+    }
 
     if (this.connected) return abort("already_connected");
 

@@ -1,5 +1,6 @@
 import { DevelopmentEnvironment } from "$ts/devenv";
 import type { ProcessHandler } from "$ts/process/handler";
+import { DevEnvActivationResultCaptions } from "$types/devenv";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
@@ -54,7 +55,10 @@ export class DevenvCommand extends TerminalProcess {
       return 0;
     }
 
-    term.Error(`Failed to connect: ${result.toUpperCase()}`);
+    term.Error(
+      `${DevEnvActivationResultCaptions[result]}.\n\nVisit https://go.arcapi.nl/devclient_connfail for more info.`,
+      result.toUpperCase()
+    );
     await service.disconnect();
     return 1;
   }
