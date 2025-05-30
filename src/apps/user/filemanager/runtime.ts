@@ -101,7 +101,7 @@ export class FileManagerRuntime extends AppProcess {
   async render({ path }: RenderArgs) {
     const startTime = performance.now();
 
-    await this.navigate(path || UserPaths.Home);
+    await this.navigate(path || "::my_arcos");
     await this.updateRootFolders();
     await this.updateDrives();
 
