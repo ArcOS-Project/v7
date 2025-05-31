@@ -202,7 +202,8 @@ export class UserDaemon extends Process {
     --accent-darkest: ${darkenColor(accent, 85)} !important;
     --accent-light-transparent: ${lightenColor(accent)}77 !important;
     --accent-light-invert: ${invertColor(lightenColor(accent))} !important;
-    --wallpaper: url('${this.Wallpaper()?.url || Wallpapers.img0.url}');`;
+    --wallpaper: url('${this.Wallpaper()?.url || Wallpapers.img0.url}');
+    --user-font: "${this.preferences().shell.visuals.userFont || ""}"`;
   }
 
   setAppRendererClasses(v: UserPreferences) {

@@ -27,6 +27,7 @@ import { SaveThemeApp } from "./overlays/saveTheme";
 import { UrlLoginBackground } from "./overlays/urlLoginBackground";
 import { UrlProfilePicture } from "./overlays/urlProfilePicture";
 import { UrlWallpaper } from "./overlays/urlWallpaper";
+import { UserFontApp } from "./overlays/userFont";
 import { settingsPageStore } from "./store";
 import { SlideStore } from "./store/slides";
 
@@ -43,6 +44,7 @@ export class SettingsRuntime extends AppProcess {
     urlLoginBackground: UrlLoginBackground,
     urlWallpaper: UrlWallpaper,
     urlProfilePicture: UrlProfilePicture,
+    userFont: UserFontApp,
   };
 
   protected override elevations: Record<string, ElevationData> = {

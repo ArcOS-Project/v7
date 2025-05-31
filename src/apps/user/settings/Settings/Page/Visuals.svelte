@@ -52,5 +52,8 @@
       ></button>
       <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.customStyle.enabled} />
     </Option>
+    <Option caption="Change display font">
+      <button onclick={() => process.spawnOverlay("userFont")}>Change...</button>
+    </Option>
   </Section>
 </div>

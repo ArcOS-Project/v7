@@ -114,6 +114,7 @@ export interface VisualPreferences {
   compactContext: boolean;
   showHiddenApps: boolean;
   noGlass: boolean;
+  userFont?: string;
 }
 
 export interface SecurityPreferences {

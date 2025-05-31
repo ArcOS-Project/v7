@@ -33,6 +33,10 @@ div.desktop-wallpaper > div.wallpaper:not(.show) {
   z-index: 1000000000000000000000000000000;
 }
 
+#appRenderer #wallpaper div.desktop-icons {
+  --user-font: "Nunito Sans" !important;
+}
+
 #wallpaper div.desktop-icons.hide {
   display: none !important;
 }
@@ -56,6 +60,7 @@ div.desktop-wallpaper > div.wallpaper:not(.show) {
   text-align: center;
   pointer-events: initial !important;
   translate: none !important;
+  --user-font: "Nunito Sans" !important;
 }
 
 #wallpaper div.desktop-icons div.ghost {
@@ -79,6 +84,7 @@ div.desktop-wallpaper > div.wallpaper:not(.show) {
   color: #eee;
   overflow: hidden;
   text-overflow: ellipsis;
+  --user-font: "Nunito Sans" !important;
 }
 
 #wallpaper div.desktop-icons div.img {
@@ -110,6 +116,7 @@ div.desktop-wallpaper > div.wallpaper:not(.show) {
   color: #eee;
   overflow: hidden;
   text-overflow: ellipsis;
+  --user-font: "Nunito Sans" !important;
 }
 
 #wallpaper div.desktop-icons img {

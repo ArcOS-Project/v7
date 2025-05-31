@@ -1,0 +1,71 @@
+#systemSettings #UserFont > div.body {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+#systemSettings #UserFont div.body > h1 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+#systemSettings #UserFont div.body > p {
+  margin-bottom: 10px;
+}
+
+#systemSettings #UserFont div.body div.options {
+  flex-grow: 1;
+  overflow-y: scroll;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 10px;
+  border: var(--win-border);
+  width: 100%;
+}
+
+#systemSettings #UserFont div.body button.reset-font {
+  display: flex;
+  text-align: left;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 10px;
+  width: 100%;
+}
+
+#systemSettings #UserFont div.body button.reset-font span.lucide {
+  color: var(--accent-lighter);
+  font-size: 32px;
+}
+
+#systemSettings #UserFont div.body div.options button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 10px;
+  height: 30px;
+  padding: 0 7px;
+  background-color: transparent;
+  font-family: var(--font);
+  font-size: 16px;
+}
+#systemSettings #UserFont div.body div.options button span.lucide {
+  font-size: 16px;
+  height: 16px;
+  color: var(--accent-lighter);
+}
+
+#systemSettings #UserFont div.body div.options button:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#systemSettings #UserFont div.body div.options button.selected {
+  background-color: var(--accent-transparent);
+}
+
+#systemSettings #UserFont div.body div.options button.selected span:not(.lucide) {
+  font-weight: bold;
+}
+
+#systemSettings #UserFont div.body > button.suggested {
+  margin-left: auto;
+}

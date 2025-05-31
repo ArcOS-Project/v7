@@ -380,3 +380,22 @@ export const UserPathIcons: Record<string, string> = {
   Desktop: "dock",
   Music: "music",
 };
+
+export const UserFonts: string[] = [
+  "Reddit Sans",
+  "Poppins",
+  "Arsenal",
+  "Nothing You Could Do",
+  "Overlock",
+  "Sofia",
+  "Inter",
+  "Fira Sans",
+  "Lora",
+  "Crimson Text",
+  "Cormorant",
+  "Albert Sans",
+  "Alegreya Sans",
+  "Merienda",
+  "Changa",
+  "Kotta One",
+];
