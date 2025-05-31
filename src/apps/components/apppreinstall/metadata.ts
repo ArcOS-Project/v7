@@ -12,9 +12,9 @@ export const AppPreinstallApp: App = {
     icon: DownloadIcon,
   },
   position: { centered: true },
-  size: { w: 320, h: 430 },
+  size: { w: 320, h: NaN },
   minSize: { w: 320, h: 430 },
-  maxSize: { w: 320, h: 430 },
+  maxSize: { w: 320, h: NaN },
   state: {
     maximized: false,
     minimized: false,
