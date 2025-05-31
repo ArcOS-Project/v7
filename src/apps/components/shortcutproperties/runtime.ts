@@ -56,6 +56,9 @@ export class ShortcutPropertiesRuntime extends AppProcess {
       case "folder":
         await this.userDaemon?.spawnApp("fileManager", +this.env.get("shell_pid"), data.target);
         break;
+      case "new":
+        await this.closeWindow();
+        break;
     }
   }
 

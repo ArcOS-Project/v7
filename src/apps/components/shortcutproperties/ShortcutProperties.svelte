@@ -23,6 +23,8 @@
         Folder shortcut
       {:else if $shortcutData.type === "file"}
         File shortcut
+      {:else if $shortcutData.type === "new"}
+        New shortcut
       {/if}
     </p>
   </div>
@@ -33,6 +35,7 @@
       </Segment>
       <Segment title="Type" right>
         <select name="" id="" bind:value={$shortcutData.type}>
+          <option value="new" disabled>New</option>
           <option value="file">File</option>
           <option value="folder">Folder</option>
           <option value="app">Application</option>
@@ -44,27 +47,40 @@
   <InfoBlock>
     <InfoRow>
       <Segment title="Points to" className="points-to">
-        <input type="text" bind:value={$shortcutData.target} />
+        <input type="text" bind:value={$shortcutData.target} disabled={$shortcutData.type === "new"} />
         {#if $shortcutData.type !== "app"}
-          <button class="lucide icon-folder-open" aria-label="Change" onclick={() => process.pickTarget()}> </button>
+          <button
+            class="lucide icon-folder-open"
+            aria-label="Change"
+            onclick={() => process.pickTarget()}
+            disabled={$shortcutData.type === "new"}
+          >
+          </button>
         {/if}
       </Segment>
     </InfoRow>
   </InfoBlock>
 
   <div class="actions">
-    <button class="target" onclick={() => process.goTarget()}>
-      {#if $shortcutData.type === "app"}
-        App Info
-      {:else if $shortcutData.type === "folder"}
-        Open Target
-      {:else if $shortcutData.type === "file"}
-        Find Target
-      {/if}
-    </button>
+    {#if $shortcutData.type !== "new"}
+      <button class="target" onclick={() => process.goTarget()}>
+        {#if $shortcutData.type === "app"}
+          App Info
+        {:else if $shortcutData.type === "folder"}
+          Open Target
+        {:else if $shortcutData.type === "file"}
+          Find Target
+        {/if}
+      </button>
+    {/if}
     <div class="right">
       <button onclick={() => process.closeWindow()}>Cancel</button>
-      <button class="suggested" onclick={() => process.save()}>Save</button>
+      <button
+        class="suggested"
+        onclick={() => process.save()}
+        disabled={!$shortcutData.icon || !$shortcutData.name || !$shortcutData.target || $shortcutData.type === "new"}
+        >Save</button
+      >
     </div>
   </div>
 {/if}
