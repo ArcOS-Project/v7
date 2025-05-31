@@ -35,5 +35,6 @@ export const TerminalWindowApp: App = {
   },
   glass: true,
   hidden: true,
+  vital: true,
   id: "TerminalWindow",
 };

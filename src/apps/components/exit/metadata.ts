@@ -33,5 +33,6 @@ export const ExitApp: App = {
     component: Exit as any,
   },
   hidden: true,
+  vital: true,
   id: "ExitApp",
 };

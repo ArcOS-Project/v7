@@ -34,5 +34,6 @@ export const ContextMenuApp: App = {
   },
   id: "contextMenu",
   core: true,
+  vital: true,
   hidden: true,
 };

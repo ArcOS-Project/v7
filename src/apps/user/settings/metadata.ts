@@ -33,5 +33,6 @@ export const SystemSettings: App = {
     runtime: SettingsRuntime,
   },
   id: "systemSettings",
+  vital: true,
   glass: true,
 };

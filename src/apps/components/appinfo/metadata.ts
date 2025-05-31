@@ -44,6 +44,7 @@ export const AppInfoApp: App = {
     component: AppInfo as any,
   },
   hidden: true,
+  vital: true,
   id: "AppInfo",
   glass: false,
 };

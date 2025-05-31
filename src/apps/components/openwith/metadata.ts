@@ -45,5 +45,6 @@ export const OpenWithApp: App = {
   },
   hidden: true,
   glass: true,
+  vital: true,
   id: "OpenWith",
 };

@@ -37,6 +37,7 @@ export const FileManagerApp: App = {
   },
   glass: true,
   id: "fileManager",
+  vital: true,
   acceleratorDescriptions: {
     Del: "Delete the selected items",
     "Alt+Enter": "View item details of selected item",

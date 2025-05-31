@@ -35,5 +35,6 @@ export const SecureContextApp: App = {
   },
   glass: true,
   hidden: true,
+  vital: true,
   core: false,
 };

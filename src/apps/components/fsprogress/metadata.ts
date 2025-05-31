@@ -33,6 +33,7 @@ export const FsProgressApp: App = {
     component: FsProgress as any,
   },
   id: "FsProgress",
+  vital: true,
   hidden: true,
   overlay: true,
 };

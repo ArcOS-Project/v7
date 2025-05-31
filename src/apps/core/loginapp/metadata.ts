@@ -34,5 +34,6 @@ export const LoginApp: App = {
   },
   core: true,
   hidden: true,
+  vital: true,
   id: "loginApp",
 };

@@ -1088,7 +1088,17 @@ export class UserDaemon extends Process {
     }
 
     const { disabledApps } = this.preferences();
+
+    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const app = appStore?.buffer().filter((a) => a.id === appId)[0];
+
+    if (app && this.isVital(app)) return false;
+
     return (disabledApps || []).includes(appId) || !!(this.safeMode && noSafeMode);
+  }
+
+  isVital(app: App) {
+    return app.vital && !app.entrypoint && !app.workingDirectory && !app.thirdParty;
   }
 
   async disableApp(appId: string) {
@@ -1100,7 +1110,7 @@ export class UserDaemon extends Process {
     const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
     const app = await appStore?.getAppById(appId);
 
-    if (!app) return;
+    if (!app || this.isVital(app)) return;
 
     const elevated = await this.manuallyElevate({
       what: "ArcOS needs your permission to disable an application",

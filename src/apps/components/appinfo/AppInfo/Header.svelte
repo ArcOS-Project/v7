@@ -53,7 +53,9 @@
     </div>
   </div>
   <div class="right">
-    <button class="disable" onclick={toggleDisabledState} class:disabled>{disabled ? "Enable" : "Disable"}</button>
+    <button class="disable" onclick={toggleDisabledState} class:disabled disabled={process.userDaemon?.isVital(target!)}
+      >{disabled ? "Enable" : "Disable"}</button
+    >
     {#if (target?.entrypoint || target?.workingDirectory) && $userPreferences.userApps[target?.id]}
       <button class="lucide icon-trash-2" onclick={deleteApp} aria-label="Delete app"></button>
     {/if}

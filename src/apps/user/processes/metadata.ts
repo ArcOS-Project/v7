@@ -41,5 +41,6 @@ export const ProcessesApp: App = {
     runtime: ProcessManagerRuntime,
     component: ProcessManager as any,
   },
+  vital: true,
   id: "processManager",
 };

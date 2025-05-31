@@ -36,6 +36,7 @@ export interface App {
   process?: ThirdPartyAppProcess;
   tpaRevision?: number;
   noSafeMode?: boolean;
+  vital?: boolean;
 }
 
 export type RegisteredProcess = {
@@ -44,6 +45,7 @@ export type RegisteredProcess = {
   assets: {
     runtime: typeof Process;
   };
+  vital?: boolean;
 };
 
 export interface InstalledApp extends App {

@@ -34,5 +34,6 @@ export const WallpaperApp: App = {
   },
   id: "wallpaper",
   core: true,
+  vital: true,
   hidden: true,
 };

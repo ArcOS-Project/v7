@@ -14,5 +14,6 @@ export const SystemShortcuts: App = RegisteredProcess({
   assets: {
     runtime: SystemShortcutsRuntime,
   },
+  vital: true,
   id: "SystemShortcutsProc",
 });

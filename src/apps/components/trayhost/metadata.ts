@@ -14,5 +14,6 @@ export const TrayHost: App = RegisteredProcess({
   assets: {
     runtime: TrayHostRuntime,
   },
+  vital: true,
   id: "TrayHostProc",
 });

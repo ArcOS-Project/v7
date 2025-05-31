@@ -38,5 +38,6 @@ export const ArcTermApp: App = {
   assets: {
     runtime: ArcTermRuntime,
   },
+  vital: true,
   id: "ArcTerm",
 };

@@ -34,5 +34,6 @@ export const InitialSetupWizard: App = {
   },
   core: true,
   hidden: true,
+  vital: true,
   id: "initialSetupWizard",
 };

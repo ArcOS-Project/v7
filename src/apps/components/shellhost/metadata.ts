@@ -14,5 +14,6 @@ export const ShellHostApp: App = RegisteredProcess({
   assets: {
     runtime: ShellHostRuntime,
   },
+  vital: true,
   id: "shellHost",
 });
