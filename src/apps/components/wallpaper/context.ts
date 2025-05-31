@@ -253,7 +253,7 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
               runtime.spawnOverlayApp("ShortcutProperties", shellPid(), join(UserPaths.Desktop, `${UUID()}.arclnk`), {
                 icon: "ShortcutMimeIcon",
                 name: "New shortcut",
-                type: "folder",
+                type: "new",
                 target: UserPaths.Desktop,
               });
             },
