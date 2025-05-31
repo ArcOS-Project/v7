@@ -182,6 +182,9 @@ export class FileManagerRuntime extends AppProcess {
         return;
       }
 
+      this.contents.set(undefined);
+      this.selection.set([]);
+      this.errored.set(false);
       this.virtual.set(virtual);
       this.path.set(path);
 
@@ -192,6 +195,7 @@ export class FileManagerRuntime extends AppProcess {
     this.errored.set(false);
     this.path.set(path);
     this.selection.set([]);
+    this.contents.set(undefined);
 
     await this.refresh();
 

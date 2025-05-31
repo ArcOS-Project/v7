@@ -3,6 +3,7 @@
   import { Plural } from "$ts/util";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../runtime";
+  import Spinner from "$lib/Spinner.svelte";
 
   const { process }: { process: FileManagerRuntime } = $props();
   const { contents, path, userPreferences, notice, showNotice, virtual } = process;
@@ -28,16 +29,18 @@
 </script>
 
 <div class="bottom">
-  {#if $contents || $virtual}
-    <div class="stat">
+  <div class="stat">
+    {#if $contents || $virtual}
       {#if !$virtual}
         {$contents!.dirs.length + $contents!.files.length}
         {Plural("item", $contents!.dirs.length + $contents!.files.length)} in {dirName || driveLetter || driveLabel}
       {:else}
         in {$virtual.name}
       {/if}
-    </div>
-  {/if}
+    {:else}
+      <Spinner height={16} />
+    {/if}
+  </div>
   {#if $showNotice && $notice}
     <div class="notice {$notice.className || ''}" title={$notice.text}>
       <span class="lucide icon-{$notice.icon}"></span>
