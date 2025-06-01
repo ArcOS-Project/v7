@@ -34,4 +34,4 @@
   {/each}
 </div>
 
-<button class="suggested">Done</button>
+<button class="suggested" onclick={() => process.closeWindow()}>Done</button>
