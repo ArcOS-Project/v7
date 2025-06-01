@@ -1,5 +1,5 @@
 <script lang="ts">
-  import GlowingLogo from "$lib/GlowingLogo.svelte";
+  import { Logo } from "$ts/branding";
   import { ArcOSVersion } from "$ts/env";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
@@ -8,7 +8,7 @@
   const { process }: { process: SettingsRuntime } = $props();
 </script>
 
-<GlowingLogo />
+<img src={Logo()} alt="ArcOS" />
 <h1>ArcOS <span class="colored">v7</span></h1>
 
 <p>

@@ -5,7 +5,6 @@
   import { ArcMode } from "$ts/metadata/mode";
   import type { AppComponentProps } from "$types/app";
   import { onMount } from "svelte";
-  import GlowingLogo from "../../../lib/GlowingLogo.svelte";
   import Spinner from "../../../lib/Spinner.svelte";
   import type { BootScreenRuntime } from "./runtime";
 
@@ -17,7 +16,7 @@
   });
 </script>
 
-<GlowingLogo src={Logo()} />
+<img src={Logo()} alt="ArcOS" />
 
 <div class="bottom">
   <Spinner height={30} stopped={!$progress} />
