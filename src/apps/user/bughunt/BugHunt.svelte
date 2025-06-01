@@ -28,7 +28,7 @@
 </script>
 
 <Sidebar {process} />
-<div class="container" class:full={!$loading && !$store.length}>
+<div class="container" class:full={!$loading}>
   <CustomTitlebar {process} />
   <div class="report-content" class:loading={$loading}>
     {#if !$loading}

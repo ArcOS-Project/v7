@@ -3,6 +3,13 @@
 @import url("./sidebar/account.css");
 
 #BugHunt > div.body > div.sidebar {
-  max-width: 250px;
+  min-width: 250px;
   width: 250px;
+}
+
+#BugHunt > div.body > div.sidebar p.empty {
+  text-align: center;
+  margin: 10px 0;
+  font-weight: bold;
+  opacity: 0.5;
 }
