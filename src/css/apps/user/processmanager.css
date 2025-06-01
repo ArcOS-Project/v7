@@ -151,5 +151,10 @@
 }
 
 #processManager > div.body div.row.orphan {
+  /* background-color: var(--clr-red-bg); */
+  opacity: 0.5;
+}
+
+#processManager > div.body div.row.orphan * {
   color: var(--clr-red-fg);
 }

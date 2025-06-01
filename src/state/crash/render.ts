@@ -22,7 +22,7 @@ export default async function render(props: StateProps) {
   }, 600);
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "F2" && e.altKey) {
+    if (e.key === " ") {
       crashScreen?.classList.toggle("hidden");
     }
   });
