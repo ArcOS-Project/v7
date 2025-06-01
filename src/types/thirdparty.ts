@@ -5,8 +5,8 @@ import type { arrayToBlob, arrayToText, blobToDataURL, blobToText, textToArrayBu
 import type {
   DownloadFile,
   formatBytes,
-  getItemNameFromPath,
   getDriveLetter,
+  getItemNameFromPath,
   getParentDirectory,
   join,
   onFileChange,

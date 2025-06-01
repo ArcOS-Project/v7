@@ -30,6 +30,8 @@ import { Backend } from "../axios";
 import type { UserDaemon } from "./daemon";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
 import type { ThirdPartyPropMap } from "$types/thirdparty";
+import { CustomTitlebar } from "$ts/ui/thirdparty/titlebar";
+import { contextProps } from "$ts/context/actions.svelte";
 
 export function ThirdPartyProps(
   daemon: UserDaemon,
@@ -109,6 +111,8 @@ export function ThirdPartyProps(
         +daemon.env.get("shell_pid")
       );
     },
+    CustomTitlebar,
+    contextProps,
     dayjs,
   };
 
