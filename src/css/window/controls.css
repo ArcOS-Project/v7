@@ -4,6 +4,12 @@ div.window > div.titlebar div.controls {
   gap: 2px;
   height: 16px;
   position: relative;
+  margin-left: auto;
+}
+
+div.window > div.body div.titlebar.custom button.feedback + div.controls,
+div.window > div.titlebar button.feedback + div.controls {
+  margin-left: 0;
 }
 
 div.window > div.body div.titlebar.custom div.controls button,

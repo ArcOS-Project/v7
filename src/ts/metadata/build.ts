@@ -7,7 +7,7 @@ export async function getBuild() {
   kernel.Log("branding", "Attempting to retrieve git hash from /build");
 
   try {
-    const req = await (await fetch("./build")).text();
+    const req = await (await fetch(`./build?t=${Date.now()}`)).text();
     const str = req.split("\n")[0].trim();
 
     kernel.ARCOS_BUILD = str.startsWith("<!") ? "unknown" : str;

@@ -5,6 +5,7 @@
   import { ComponentIcon } from "$ts/images/general";
   import { onMount, type Snippet } from "svelte";
   import AltMenu from "./CustomTitlebar/AltMenu.svelte";
+  import { ArcMode } from "$ts/metadata/mode";
 
   const { process, children, className = "" }: { process: AppProcess; children?: Snippet; className?: string } = $props();
   const { windowTitle, windowIcon } = process;
@@ -47,7 +48,9 @@
     {/if}
   </div>
   <AltMenu {process} />
-  <button class="link feedback" onclick={() => process.userDaemon?.iHaveFeedback(process)}>Feedback?</button>
+  {#if ArcMode() !== "release"}
+    <button class="link feedback" onclick={() => process.userDaemon?.iHaveFeedback(process)}>Feedback?</button>
+  {/if}
   <div class="controls">
     {#if data.controls.minimize && !data.overlay}
       <button class="minimize icon-chevron-down" aria-label="minimize" onclick={minimize}></button>

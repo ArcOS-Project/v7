@@ -7,7 +7,7 @@ export async function getMode() {
   kernel.Log("branding", "Attempting to retrieve mode from /mode");
 
   try {
-    const mode = await (await fetch("./mode")).text();
+    const mode = await (await fetch(`./mode?t=${Date.now()}`)).text();
 
     kernel.ARCOS_MODE = mode.trim();
   } catch {

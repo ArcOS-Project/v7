@@ -7,7 +7,7 @@ export async function getLicense() {
   kernel.Log("branding", "Attempting to retrieve project license from /license");
 
   try {
-    const req = await (await fetch("./license")).text();
+    const req = await (await fetch(`./license?t=${Date.now()}`)).text();
     const str = req;
 
     kernel.ARCOS_LICENSE = str.startsWith("<!") ? "not found" : str;
