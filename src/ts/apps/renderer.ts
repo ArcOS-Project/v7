@@ -12,6 +12,7 @@ import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
 import { BuiltinApps } from "./store";
+import { ArcMode } from "$ts/metadata/mode";
 
 export class AppRenderer extends Process {
   currentState: number[] = [];
@@ -271,14 +272,20 @@ export class AppRenderer extends Process {
     title.className = "window-title";
     title.append(titleIcon, titleCaption);
 
-    feedbackButton.className = "link feedback";
-    feedbackButton.innerText = "Feedback?";
-    feedbackButton.addEventListener("click", () => {
-      process.userDaemon?.iHaveFeedback(process);
-    });
-
     titlebar.className = "titlebar";
-    titlebar.append(title, this._renderAltMenu(process), feedbackButton, controls);
+    titlebar.append(title, this._renderAltMenu(process));
+
+    if (ArcMode() !== "release") {
+      feedbackButton.className = "link feedback";
+      feedbackButton.innerText = "Feedback?";
+      feedbackButton.addEventListener("click", () => {
+        process.userDaemon?.iHaveFeedback(process);
+      });
+
+      titlebar.append(feedbackButton);
+    }
+
+    titlebar.append(controls);
 
     return titlebar;
   }
