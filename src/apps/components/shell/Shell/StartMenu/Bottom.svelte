@@ -20,11 +20,18 @@
 </script>
 
 <div class="bottom">
-  <div class="search">
+  <form
+    class="search"
+    onsubmit={() => {
+      return false;
+    }}
+    autocomplete="off"
+  >
     {#if !process.safeMode}
       <span class="lucide icon-search"></span>
       <input
         type="text"
+        role="searchbox"
         placeholder="Search..."
         bind:value={$searchQuery}
         bind:this={searchBar}
@@ -32,7 +39,7 @@
         disabled={process.safeMode}
       />
     {/if}
-  </div>
+  </form>
   <div class="actions">
     <button class="file-manager" aria-label="Your files" onclick={() => process.spawnApp("fileManager", process.pid)}>
       <span class="lucide icon-folder-open"></span>
