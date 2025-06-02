@@ -67,7 +67,14 @@ export interface ThirdPartyPropMap {
     parentPid?: number,
     ...args: any[]
   ) => Promise<ThirdPartyAppProcess | undefined>;
+  runAppDirect: (
+    process: typeof ThirdPartyAppProcess,
+    metadataPath: string,
+    parentPid?: number,
+    ...args: any[]
+  ) => Promise<ThirdPartyAppProcess | undefined>;
   loadHtml: (path: string) => Promise<string | undefined>;
+  loadDirect: (path: string) => Promise<string | undefined>;
   Server: AxiosInstance;
   Debug: (m: any) => void;
   dayjs: (s: string) => dayjs.Dayjs;

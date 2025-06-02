@@ -104,5 +104,8 @@ export function SupplementaryThirdPartyPropFunctions(
 
       return htmlCode;
     },
+    loadDirect: async (path: string) => {
+      const url = await fs.direct(join(app.workingDirectory!, path));
+    },
   };
 }
