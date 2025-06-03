@@ -797,6 +797,18 @@ export class UserDaemon extends Process {
 
     if (this.checkDisabled(id, app?.noSafeMode)) return;
 
+    if (app?.id.includes("-") || app?.id.includes(".")) {
+      this.sendNotification({
+        title: `Refusing to spawn '${id}'`,
+        message:
+          "The application ID is malformed: it contains periods or dashes. If you're the creator of the app, be sure to use the suggested format for application IDs.",
+        timeout: 3000,
+        image: WarningIcon,
+      });
+
+      return;
+    }
+
     if (!app) {
       this.sendNotification({
         title: "Application not found",
@@ -859,6 +871,18 @@ export class UserDaemon extends Process {
     const app = await appStore?.getAppById(id);
 
     if (this.checkDisabled(id, app?.noSafeMode)) return;
+
+    if (app?.id.includes("-") || app?.id.includes(".")) {
+      this.sendNotification({
+        title: `Refusing to spawn '${id}'`,
+        message:
+          "The application ID is malformed: it contains periods or dashes. If you're the creator of the app, be sure to use the suggested format for application IDs.",
+        timeout: 3000,
+        image: WarningIcon,
+      });
+
+      return;
+    }
 
     if (!app) {
       this.sendNotification({

@@ -94,6 +94,12 @@ export class AppPreInstallRuntime extends AppProcess {
       return this.fail("The package metadata could not be read");
     }
 
+    if (metadata.appId.includes(".") || metadata.appId.includes("-")) {
+      return this.fail(
+        "The application ID is malformed: it contains periods or dashes. If you're the creator of the app, be sure to use the suggested format for application IDs."
+      );
+    }
+
     this.metadata.set(metadata);
   }
 
