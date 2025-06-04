@@ -34,6 +34,10 @@ div.shell.docked div.actioncenter {
   border-radius: 0;
 }
 
+div.shell.docked div.actioncenter::before {
+  border-radius: 0 !important;
+}
+
 div.shell div.actioncenter.opened {
   translate: 0;
   opacity: 1;

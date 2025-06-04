@@ -7,7 +7,7 @@
   import NotificationItem from "./Notifications/NotificationItem.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
-  const { userDaemon } = process;
+  const { userDaemon, userPreferences } = process;
 
   let loading = $state(true);
   let noDaemon = $state(false);
@@ -63,4 +63,11 @@
       error
     {/if}
   </div>
+  <button
+    class="link quick-settings-toggle"
+    class:shown={!$userPreferences.shell.actionCenter.hideQuickSettings}
+    onclick={() =>
+      ($userPreferences.shell.actionCenter.hideQuickSettings = !$userPreferences.shell.actionCenter.hideQuickSettings)}
+    >{$userPreferences.shell.actionCenter.hideQuickSettings ? "Quick settings" : "Hide quick settings"}</button
+  >
 </div>

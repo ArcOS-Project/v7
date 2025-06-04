@@ -1,4 +1,4 @@
-import type { WeatherMeta } from "./types";
+import type { QuickSetting, WeatherMeta } from "./types";
 
 export const weatherMetadata: Record<number, WeatherMeta> = {
   0: {
@@ -222,3 +222,56 @@ export const weatherMetadata: Record<number, WeatherMeta> = {
 export const weatherClasses: Record<number, string> = Object.fromEntries(
   Object.entries(weatherMetadata).map(([n, m]) => [n, m.caption.replaceAll(" ", "").toLowerCase()])
 );
+
+export const QuickSettings: QuickSetting[] = [
+  {
+    caption: "Enable animations",
+    icon: "sparkle",
+    isActive: (p) => !p.userPreferences().shell.visuals.noAnimations,
+    action: (p) =>
+      p.userPreferences.update((v) => {
+        v.shell.visuals.noAnimations = !v.shell.visuals.noAnimations;
+        return v;
+      }),
+  },
+  {
+    caption: "Enable glass effects",
+    icon: "blend",
+    isActive: (p) => !p.userPreferences().shell.visuals.noGlass,
+    action: (p) =>
+      p.userPreferences.update((v) => {
+        v.shell.visuals.noGlass = !v.shell.visuals.noGlass;
+        return v;
+      }),
+  },
+  {
+    caption: "Dock the shell",
+    icon: "dock",
+    isActive: (p) => p.userPreferences().shell.taskbar.docked,
+    action: (p) =>
+      p.userPreferences.update((v) => {
+        v.shell.taskbar.docked = !v.shell.taskbar.docked;
+        return v;
+      }),
+  },
+  {
+    caption: "Dark mode",
+    icon: "moon",
+    isActive: (p) => p.userPreferences().desktop.theme === "dark",
+    action: (p) =>
+      p.userPreferences.update((v) => {
+        v.desktop.theme = v.desktop.theme === "light" ? "dark" : "light";
+        return v;
+      }),
+  },
+  {
+    caption: "Enable broad accent colors",
+    icon: "palette",
+    isActive: (p) => p.userPreferences().shell.taskbar.colored,
+    action: (p) =>
+      p.userPreferences.update((v) => {
+        v.shell.taskbar.colored = !v.shell.taskbar.colored;
+        return v;
+      }),
+  },
+];

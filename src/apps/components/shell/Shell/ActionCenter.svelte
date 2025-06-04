@@ -2,9 +2,11 @@
   import type { BooleanStore } from "$ts/writable";
   import type { UserPreferencesStore } from "$types/user";
   import type { ShellRuntime } from "../runtime";
+  import { QuickSettings } from "../store";
   import CardStack from "./ActionCenter/CardStack.svelte";
   import Clock from "./ActionCenter/Clock.svelte";
   import Notifications from "./ActionCenter/Notifications.svelte";
+  import QuickSetting from "./ActionCenter/QuickSetting.svelte";
 
   const {
     actionCenterOpened,
@@ -29,6 +31,18 @@
   </div>
   <Notifications {process} />
   {#if !$userPreferences.shell.actionCenter.hideQuickSettings && !process.safeMode}
-    <div class="quick-settings"></div>
+    <div class="quick-settings">
+      <button
+        class="lucide icon-settings-2 settings"
+        aria-label="Open Settings"
+        title="Open Settings"
+        onclick={() => process.spawnApp("systemSettings", process.pid)}
+      ></button>
+      <button class="lucide icon-log-out logout" aria-label="Log out" title="Log out..." onclick={() => process.exit()}></button>
+      <div class="sep"></div>
+      {#each QuickSettings as setting}
+        <QuickSetting {process} {setting} />
+      {/each}
+    </div>
   {/if}
 </div>

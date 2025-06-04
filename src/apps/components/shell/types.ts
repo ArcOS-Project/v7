@@ -1,6 +1,7 @@
-import type { Process } from "$ts/process/instance";
+import { Process } from "$ts/process/instance";
 import type { ContextMenuItem } from "$types/app";
 import type { Component } from "svelte";
+import type { ShellRuntime } from "./runtime";
 
 export interface WeatherMeta {
   caption: string;
@@ -51,6 +52,14 @@ export interface TrayPopup {
   width: number;
   height: number;
   className?: string;
+}
+
+export interface QuickSetting {
+  isActive: (process: ShellRuntime) => boolean | Promise<boolean>;
+  action: (process: ShellRuntime) => any;
+  icon: string;
+  className?: string;
+  caption: string;
 }
 
 export type TrayIconDiscriminator = `${number}#${string}`;
