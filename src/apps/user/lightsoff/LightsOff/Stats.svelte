@@ -31,6 +31,8 @@
 
   button {
     margin: 0;
+    height: 30px;
+    padding: 0 15px !important;
   }
 
   div.statistics div.right {

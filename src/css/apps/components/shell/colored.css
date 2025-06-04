@@ -16,7 +16,7 @@
   opacity: 0.2;
   /* margin: -1px; */
   pointer-events: none;
-  transition: all 0.3s !important;
+  transition: none !important;
 }
 
 .shell-colored.colored::before {

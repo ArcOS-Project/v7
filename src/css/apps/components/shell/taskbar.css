@@ -3,7 +3,7 @@ div.shell div.taskbar {
   display: flex;
   align-items: center;
   width: calc(100% - 20px);
-  height: 50px;
+  height: 52px;
   margin: 10px;
   padding: 5px;
   margin-top: 0;
@@ -27,11 +27,11 @@ div.shell.has-fullscreen div.taskbar {
 }
 
 :root #main:has(#arcShell div.shell) {
-  --taskbar-allocation: 70px;
+  --taskbar-allocation: 72px;
 }
 
 :root #main:has(#arcShell div.shell.docked) {
-  --taskbar-allocation: 50px;
+  --taskbar-allocation: 51px;
 }
 
 div.shell.docked div.taskbar {
@@ -41,6 +41,7 @@ div.shell.docked div.taskbar {
   border: none;
   border-top: var(--border);
   box-shadow: none;
+  height: 51px;
 }
 
 #arcShell div.shell div.taskbar > button {
