@@ -59,6 +59,9 @@ export class MessagingAppRuntime extends AppProcess {
       this.app.data.size.h = this.app.data.minSize.h;
     } else {
       this.renderArgs.page = pageOrMessagePath;
+      this.app.data.minSize.w = 700;
+      this.app.data.size.w = 850;
+      this.app.data.size.h = 500;
     }
   }
 
