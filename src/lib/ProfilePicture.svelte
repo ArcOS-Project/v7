@@ -67,13 +67,16 @@
     /* border: var(--button-glass-hover-bg) 2px solid; */
     background-color: var(--button-active-bg);
     outline: var(--win-bg) 2px solid;
+    outline-offset: -1px !important;
     box-sizing: border-box;
     position: absolute;
     bottom: 1px;
     right: 1px;
+    display: none;
   }
 
   div.pfprenderer.show-online.is-online::after {
+    display: block;
     border: none;
     background-color: var(--clr-green-fg);
   }
