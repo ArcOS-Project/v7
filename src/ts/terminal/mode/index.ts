@@ -1,0 +1,263 @@
+import type { ProcessHandler } from "$ts/process/handler";
+import { Process } from "$ts/process/instance";
+import { Backend } from "$ts/server/axios";
+import { UserDaemon } from "$ts/server/user/daemon";
+import type { UserInfo } from "$types/user";
+import Cookies from "js-cookie";
+import { ClipboardAddon } from "@xterm/addon-clipboard";
+import { FitAddon } from "@xterm/addon-fit";
+import { ImageAddon } from "@xterm/addon-image";
+import { Unicode11Addon } from "@xterm/addon-unicode11";
+import { WebLinksAddon } from "@xterm/addon-web-links";
+import { Terminal } from "xterm";
+import { Readline } from "../readline/readline";
+import { ArcOSVersion } from "$ts/env";
+import { ArcMode } from "$ts/metadata/mode";
+import { ArcBuild } from "$ts/metadata/build";
+import { LoginUser } from "$ts/server/user/auth";
+import { toForm } from "$ts/form";
+import { ArcTerminal } from "..";
+
+export class TerminalMode extends Process {
+  userDaemon?: UserDaemon;
+  target: HTMLDivElement;
+  term?: Terminal;
+  rl?: Readline;
+  arcTerm?: ArcTerminal;
+
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, target: HTMLDivElement) {
+    super(handler, pid, parentPid);
+
+    this.target = target;
+  }
+
+  async initializeTerminal() {
+    const term = new Terminal({
+      allowProposedApi: true,
+      allowTransparency: true,
+      cursorStyle: "bar",
+      fontSize: 13,
+      fontFamily: "Source Code Pro",
+      theme: {
+        brightRed: "#ff7e7e",
+        red: "#ff7e7e",
+        brightGreen: "#82ff80",
+        green: "#82ff80",
+        brightYellow: "#ffe073",
+        yellow: "#ffe073",
+        brightBlue: "#96d3ff",
+        blue: "#96d3ff",
+        brightCyan: "#79ffd0",
+        cyan: "#79ffd0",
+        brightMagenta: "#d597ff",
+        magenta: "#d597ff",
+      },
+      scrollback: -1,
+    });
+
+    const fitAddon = new FitAddon();
+    const clipboardAddon = new ClipboardAddon();
+    const imageAddon = new ImageAddon();
+    const unicode11Addon = new Unicode11Addon();
+    const webLinksAddon = new WebLinksAddon();
+
+    this.term = term;
+
+    term.loadAddon(fitAddon);
+    term.loadAddon(clipboardAddon);
+    term.loadAddon(imageAddon);
+    term.loadAddon(unicode11Addon);
+    term.loadAddon(webLinksAddon);
+    term.open(this.target);
+    fitAddon.fit();
+
+    new ResizeObserver(() => fitAddon.fit()).observe(this.target);
+
+    const rl = await this.handler.spawn<Readline>(Readline, undefined, this.pid, this);
+    this.term.loadAddon(rl!);
+    this.rl = rl;
+  }
+
+  async proceed(username: string, password: string) {
+    this.Log(`Trying login of '${username}'`);
+
+    const token = await LoginUser(username, password);
+    if (!token) return false;
+
+    return await this.startDaemon(token, username);
+  }
+
+  async start() {
+    await this.initializeTerminal();
+
+    if (await this.loadToken()) return;
+
+    return await this.loginPrompt();
+  }
+
+  async startDaemon(token: string, username: string, info?: UserInfo) {
+    const userDaemon = await this.handler.spawn<UserDaemon>(UserDaemon, undefined, this.kernel.initPid, token, username, info);
+
+    this.rl?.println("Starting daemon");
+
+    if (!userDaemon) {
+      this.rl?.println("Failed to start user daemon");
+      return;
+    }
+
+    // this.rl?.println("Saving token");
+    this.saveToken(userDaemon);
+
+    if (info?.hasTotp && info.restricted) {
+      const unlocked = await this.askForTotp(token);
+
+      if (!unlocked) {
+        this.rl?.println("2FA code invalid!");
+        await userDaemon.discontinueToken();
+        await userDaemon.killSelf();
+        this.resetCookies();
+        this.loginPrompt();
+      }
+    }
+
+    this.rl?.println("Starting filesystem");
+    await userDaemon.startFilesystemSupplier();
+
+    this.rl?.println("Starting synchronization");
+    await userDaemon.startPreferencesSync();
+
+    this.rl?.println("Notifying login activity");
+    await userDaemon.logActivity("login");
+
+    this.rl?.println("Starting service host");
+    await userDaemon.startServiceHost();
+
+    this.rl?.println("Connecting global dispatch");
+    await userDaemon.activateGlobalDispatch();
+    userDaemon.activateMessagingService();
+
+    this.rl?.println("Starting drive notifier watcher");
+    userDaemon.startDriveNotifierWatcher();
+
+    this.rl?.println("Starting share management");
+    await userDaemon.startShareManager();
+
+    // this.rl?.println("Starting application storage");
+    // await userDaemon.startApplicationStorage();
+
+    if (userDaemon.userInfo.admin) {
+      this.rl?.println("Activating admin bootstrapper");
+      await userDaemon.activateAdminBootstrapper();
+    }
+
+    this.rl?.println("Activating user bug reports");
+    await userDaemon.activateBugHuntUserSpaceProcess();
+
+    this.rl?.println("Starting status refresh");
+    await userDaemon.startSystemStatusRefresh();
+
+    this.rl?.println("\nUser daemon is ready\n");
+
+    this.env.set("currentuser", username);
+    this.env.set("shell_pid", undefined);
+
+    this.arcTerm = await this.handler.spawn<ArcTerminal>(ArcTerminal, undefined, this.pid, this.term);
+  }
+
+  private async loadToken() {
+    this.Log(`Loading token from cookies`);
+
+    const token = Cookies.get("arcToken");
+    const username = Cookies.get("arcUsername");
+
+    if (!token || !username) return false;
+
+    const userInfo = await this.validateUserToken(token);
+
+    if (!userInfo) {
+      this.resetCookies();
+
+      return false;
+    }
+
+    await this.startDaemon(token, username, userInfo);
+
+    return true;
+  }
+
+  private async validateUserToken(token: string) {
+    this.Log(`Validating user token for token login`);
+
+    try {
+      const response = await Backend.get(`/user/self`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      return response.status === 200 ? (response.data as UserInfo) : false;
+    } catch {
+      return false;
+    }
+  }
+
+  resetCookies() {
+    this.Log(`Resetting stored cookie state`);
+
+    Cookies.remove("arcToken");
+    Cookies.remove("arcUsername");
+  }
+
+  async loginPrompt(): Promise<boolean> {
+    this.rl?.println(`ArcTerm ${ArcOSVersion}-${ArcMode()}_${ArcBuild()}\n`);
+    const username = await this.rl?.read("arcapi.nl login: ");
+    const password = await this.rl?.read("Password:");
+
+    if (!username || !password) {
+      this.rl?.println("\nLogin incorrect");
+      return await this.loginPrompt();
+    }
+
+    const valid = await this.proceed(username, password);
+
+    if (!valid) {
+      this.rl?.println("\nLogin incorrect");
+      return await this.loginPrompt();
+    }
+
+    return true;
+  }
+
+  private saveToken(daemon: UserDaemon) {
+    const token = daemon.token;
+    const username = daemon.username;
+
+    this.Log(`Saving token of '${daemon.username}' to cookies`);
+
+    const cookieOptions = {
+      expires: 2,
+      domain: import.meta.env.DEV ? "localhost" : "izkuipers.nl",
+    };
+
+    Cookies.set("arcToken", token, cookieOptions);
+    Cookies.set("arcUsername", username, cookieOptions);
+  }
+
+  async askForTotp(token: string): Promise<boolean> {
+    const code = await this.rl?.read("Enter 2FA code: ");
+
+    if (!Number(code) || code?.length !== 6) {
+      return await this.askForTotp(token);
+    }
+
+    try {
+      const response = await Backend.post("/totp/unlock", toForm({ code }), {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.status !== 200) return false;
+
+      return true;
+    } catch {
+      return false;
+    }
+  }
+}

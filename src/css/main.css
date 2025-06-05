@@ -20,6 +20,7 @@
 @import url("./state/licensedeclined.css");
 @import url("./state/serverdown.css");
 @import url("./state/turnedoff.css");
+@import url("./state/arcterm.css");
 
 html,
 body {
