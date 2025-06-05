@@ -22,7 +22,8 @@
 <div class="bottom">
   <form
     class="search"
-    onsubmit={() => {
+    onsubmit={(e) => {
+      e.preventDefault();
       return false;
     }}
     autocomplete="off"
