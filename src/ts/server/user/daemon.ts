@@ -1251,7 +1251,7 @@ export class UserDaemon extends Process {
     const shellPid = this.env.get("shell_pid");
 
     if (this.preferences().security.disabled) return true;
-    if (this.checkDisabled("SecureContext")) return true;
+    if (this.preferences().disabledApps.includes("SecureContext")) return true;
 
     this._elevating = true;
     this.setAppRendererClasses(this.preferences());
