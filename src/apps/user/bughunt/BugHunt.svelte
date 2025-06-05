@@ -28,7 +28,7 @@
 </script>
 
 <Sidebar {process} />
-<div class="container" class:full={!$loading}>
+<div class="container">
   <CustomTitlebar {process} />
   <div class="report-content" class:loading={$loading}>
     {#if !$loading}
@@ -43,7 +43,7 @@
       <Loading />
     {/if}
   </div>
-  {#if $selectedReport && !$loading}
+  {#if !$loading}
     <ActionBar {process} {report} />
   {/if}
 </div>
