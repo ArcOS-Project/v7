@@ -11,7 +11,7 @@ export async function MessageBox(data: MessageBoxData, parentPid: number, overla
 
   const stack = kernel.getModule<ProcessHandler>("stack");
 
-  const appData = { ...MessageBoxApp, overlay };
+  const appData = { ...MessageBoxApp, overlay: overlay && !!stack.getProcess(parentPid) };
 
   await stack.spawn(
     MessageBoxRuntime,
