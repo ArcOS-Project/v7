@@ -1,5 +1,6 @@
 import { arrayToText } from "$ts/fs/convert";
 import { getParentDirectory } from "$ts/fs/util";
+import { MessagingIcon } from "$ts/images/apps";
 import { QuestionIcon } from "$ts/images/dialog";
 import { DownloadIcon } from "$ts/images/filesystem";
 import {
@@ -256,6 +257,7 @@ export const DefaultMimeIcons: Record<string, string[]> = {
   [ShortcutMimeIcon]: [".arclnk"],
   [ArcTermMimeIcon]: ["arcterm.conf"],
   [DownloadIcon]: [".arc"],
+  [MessagingIcon]: [".msg"],
 };
 
 export function DefaultFileHandlers(daemon: UserDaemon): Record<string, FileHandler> {

@@ -41,6 +41,9 @@ export const MessagingApp: App = {
     runtime: MessagingAppRuntime,
     component: Messages as any,
   },
+  opens: {
+    extensions: [".msg"],
+  },
   noSafeMode: true,
   glass: true,
   id: "Messages",
