@@ -12,7 +12,7 @@ import type { TrayHostRuntime } from "../trayhost/runtime";
 export class ShellHostRuntime extends Process {
   private autoloadApps: string[];
   // Processes to spawn in support of the shell
-  readonly shellComponents: string[] = ["contextMenu", "SystemShortcutsProc", "TrayHostProc"];
+  readonly shellComponents: string[] = ["contextMenu", "SystemShortcutsProc", "TrayHostProc", "ArcFindProc"];
   userDaemon: UserDaemon | undefined;
   userPreferences: UserPreferencesStore;
 
@@ -47,7 +47,7 @@ export class ShellHostRuntime extends Process {
     }); // Create the shellHost loading icon
 
     await new Promise<void>(async (r) => {
-      while (!this.env.get("shell_pid") || !this.env.get("trayhost_pid")) await Sleep(1);
+      while (!this.env.get("shell_pid") || !this.env.get("trayhost_pid") || !this.env.get("arcfind_pid")) await Sleep(1);
       r();
     }); // Wait for the shell PID and trayhost PID to be set
 

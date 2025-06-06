@@ -3,6 +3,7 @@ import { AcceleratorOverviewApp } from "$apps/components/acceleratoroverview/met
 import { AppInfoApp } from "$apps/components/appinfo/metadata";
 import { AppInstallerApp } from "$apps/components/appinstaller/metadata";
 import { AppPreinstallApp } from "$apps/components/apppreinstall/metadata";
+import { ArcFind } from "$apps/components/arcfind/metadata";
 import { ContextMenuApp } from "$apps/components/contextmenu/metadata";
 import { ExitApp } from "$apps/components/exit/metadata";
 import { FsNewFileApp } from "$apps/components/fsnewfile/metadata";
@@ -29,9 +30,6 @@ import { TotpAuthGuiApp } from "$apps/components/totpauthgui/metadata";
 import { TotpSetupGuiApp } from "$apps/components/totpsetupgui/metadata";
 import { TrayHost } from "$apps/components/trayhost/metadata";
 import { WallpaperApp } from "$apps/components/wallpaper/metadata";
-import { BootScreen } from "$apps/core/bootscreen/metadata";
-import { InitialSetupWizard } from "$apps/core/initialsetup/metadata";
-import { LoginApp } from "$apps/core/loginapp/metadata";
 import { AdvSystemSettings } from "$apps/user/advsystemsettings/metadata";
 import { ArcTermApp } from "$apps/user/arcterm/metadata";
 import { BugHuntApp } from "$apps/user/bughunt/metadata";
@@ -105,6 +103,7 @@ export const BuiltinApps: AppStorage = [
   AdvSystemSettings,
   AppPreinstallApp,
   AppInstallerApp,
+  ArcFind,
 ];
 
 export const AdminApps: AppStorage = [AdminPortalApp];

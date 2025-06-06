@@ -1,21 +1,15 @@
 import { AppProcess } from "$ts/apps/process";
-import { isPopulatable } from "$ts/apps/util";
 import { MessageBox } from "$ts/dialog";
-import { getIconPath } from "$ts/images";
 import { WarningIcon } from "$ts/images/dialog";
-import { DefaultMimeIcon } from "$ts/images/mime";
-import { LogoutIcon, RestartIcon, ShutdownIcon } from "$ts/images/power";
 import type { ProcessHandler } from "$ts/process/handler";
-import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
-import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
-import type { PathedFileEntry, RecursiveDirectoryReadReturn } from "$types/fs";
 import type { SearchItem } from "$types/search";
-import type { UserPreferences, Workspace } from "$types/user";
-import Fuse, { type FuseResult } from "fuse.js";
+import type { Workspace } from "$types/user";
+import { type FuseResult } from "fuse.js";
 import { fetchWeatherApi } from "openmeteo";
+import type { ArcFindRuntime } from "../arcfind/runtime";
 import type { TrayHostRuntime } from "../trayhost/runtime";
 import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
@@ -32,23 +26,17 @@ export class ShellRuntime extends AppProcess {
   public SelectionIndex = Store<number>(0);
   public FullscreenCount = Store<Record<string, number>>({});
   public openedTrayPopup = Store<string>();
-  public trayHost: TrayHostRuntime;
+  public trayHost?: TrayHostRuntime;
+  public arcFind?: ArcFindRuntime;
   public ready = Store<boolean>(false);
 
-  private fileSystemIndex: PathedFileEntry[] = [];
   override contextMenu: AppContextMenu = ShellContextMenu(this);
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
 
-    this.trayHost = this.handler.getProcess(+this.env.get("trayhost_pid"))!; // Get the tray host
-
     this.systemDispatch.subscribe("stack-busy", () => this.stackBusy.set(true)); // Subscribe to stack-busy
     this.systemDispatch.subscribe("stack-not-busy", () => this.stackBusy.set(false)); // Subscribe to stack-not-busy
-
-    this.systemDispatch.subscribe("fs-flush-file", () => {
-      this.fileSystemIndex = []; // Clear the filesystem cache if a file has changed
-    });
 
     this.systemDispatch.subscribe("window-fullscreen", ([_, desktop]) => {
       desktop = `${desktop}`; // Ugly way to stringify
@@ -71,8 +59,6 @@ export class ShellRuntime extends AppProcess {
       });
     });
 
-    this.getFilesystemSearchSupplier(this.userPreferences());
-
     this.searchQuery.subscribe(async (v) => {
       if (!v) {
         // Reset the search stuff
@@ -82,7 +68,7 @@ export class ShellRuntime extends AppProcess {
       }
 
       this.searching.set(true);
-      const result = await this.Search(v);
+      const result = await this.arcFind?.Search(v)!;
 
       if (result.length > 8) result.length = 8; // Cut the list down if it's too long
 
@@ -90,13 +76,15 @@ export class ShellRuntime extends AppProcess {
       this.searching.set(false);
     });
 
-    this.dispatch.subscribe("ready", () => {
-      // Get the tray host process (idk why I have to do it two times, must be a timing thing)
-      this.trayHost = this.handler.getProcess(+this.env.get("trayhost_pid"))!;
-      this.ready.set(true);
-    });
+    this.dispatch.subscribe("ready", () => this.gotReadySignal());
 
     this.env.set("shell_pid", this.pid); // Set the shell PID
+  }
+
+  async gotReadySignal() {
+    this.trayHost = this.handler.getProcess(+this.env.get("trayhost_pid"))!;
+    this.arcFind = this.handler.getProcess(+this.env.get("arcfind_pid"))!;
+    this.ready.set(true);
   }
 
   async render() {
@@ -243,130 +231,6 @@ export class ShellRuntime extends AppProcess {
     this.userDaemon?.deleteVirtualDesktop(workspace.uuid); //First delete the desktop
     await Sleep(0); // Then wait for the next frame
     this.workspaceManagerOpened.set(true); // (ugly) and re-open the workspace manager
-  }
-
-  async Search(query: string) {
-    if (this.safeMode) return [];
-
-    const preferences = this.userPreferences();
-    const sources = {
-      filesystem: preferences.searchOptions.includeFilesystem,
-      apps: preferences.searchOptions.includeApps,
-      power: preferences.searchOptions.includePower,
-    };
-    const items: SearchItem[] = [];
-
-    if (sources.filesystem) items.push(...(await this.getFilesystemSearchSupplier(preferences)));
-
-    if (sources.apps) items.push(...(await this.getAppSearchSupplier(preferences)));
-
-    if (sources.power)
-      items.push(
-        {
-          caption: "Shut down",
-          description: "Leave the desktop and turn off ArcOS",
-          image: ShutdownIcon,
-          action: () => {
-            this.userDaemon?.shutdown();
-          },
-        },
-        {
-          caption: "Restart",
-          description: "Leave the desktop and restart ArcOS",
-          image: RestartIcon,
-          action: () => {
-            this.userDaemon?.restart();
-          },
-        },
-        {
-          caption: "Log off",
-          description: "Leave the desktop and log out ArcOS",
-          image: LogoutIcon,
-          action: () => {
-            this.userDaemon?.logoff();
-          },
-        }
-      );
-
-    const options = {
-      includeScore: true,
-      keys: ["caption", "description"],
-    };
-
-    const fuse = new Fuse(items, options);
-    const result = fuse.search(query);
-
-    return result.map((r) => ({ ...r, id: UUID() })); // Add a UUID to each search result
-  }
-
-  async getFilesystemSearchSupplier(preferences: UserPreferences) {
-    const result: SearchItem[] = [];
-    const index =
-      preferences.searchOptions.cacheFilesystem && this.fileSystemIndex && this.fileSystemIndex.length
-        ? this.fileSystemIndex
-        : await this.getFlatTree(); // Resort to caching if it exists and the user allows it
-
-    this.fileSystemIndex = index; // Set the cache
-
-    for (const file of index) {
-      result.push({
-        caption: file.shortcut ? file.shortcut.name : file.name,
-        description: file.shortcut ? `Shortcut - ${file.path}` : file.path,
-        action: () => {
-          this.userDaemon?.openFile(file.path, file.shortcut);
-        },
-        image:
-          (file.shortcut ? getIconPath(file.shortcut.icon) : this.userDaemon?.getMimeIconByFilename(file.name)) ||
-          DefaultMimeIcon,
-      });
-    }
-
-    return result;
-  }
-
-  async getAppSearchSupplier(preferences: UserPreferences) {
-    const result: SearchItem[] = [];
-    const apps = (await this.appStore()?.get()) || [];
-
-    for (const app of apps) {
-      const populatable = isPopulatable(app);
-      const thirdParty = app.thirdParty || app.entrypoint;
-
-      // Longwinded way to determine if an app can be searched for
-      if (
-        (preferences.searchOptions.showHiddenApps || preferences.shell.visuals.showHiddenApps ? true : populatable) &&
-        (preferences.searchOptions.showThirdPartyApps ? true : !thirdParty)
-      ) {
-        result.push({
-          caption: app.metadata.name,
-          description: `By ${app.metadata.author}`,
-          image: this.userDaemon?.getAppIcon(app),
-          action: () => {
-            this.spawnApp(app.id, this.pid);
-          },
-        });
-      }
-    }
-
-    return result;
-  }
-
-  async getFlatTree() {
-    const result: PathedFileEntry[] = [];
-    const tree = await this.fs.tree(UserPaths.Desktop);
-
-    const recurse = (tree: RecursiveDirectoryReadReturn, path = "U:") => {
-      for (const file of tree.files) {
-        result.push({ ...file, path: `${path}/${file.name}`, shortcut: tree.shortcuts?.[file.name] }); // Add path to each file
-      }
-      for (const dir of tree.dirs) {
-        recurse(dir.children, `${path}/${dir.name}`); // Get the contents of the enclosed dir
-      }
-    };
-
-    recurse(tree!, "U:"); // Recurse the contents
-
-    return result;
   }
 
   public MutateIndex(e: KeyboardEvent) {
