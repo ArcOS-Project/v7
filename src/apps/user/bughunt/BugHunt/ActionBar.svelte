@@ -17,16 +17,25 @@
         aria-label="View logs"
         disabled={!report.logs.length}
         onclick={() => process.viewLogs()}
+        title="View logs"
       ></button>
       <button
         class="lucide icon-braces"
         aria-label="View user data"
         disabled={!report.userData}
         onclick={() => process.userData()}
+        title="View user data"
       ></button>
-      <button class="lucide icon-save" aria-label="Save JSON" onclick={() => process.exportReport()}></button>
+
+      <button class="lucide icon-save" aria-label="Save JSON" onclick={() => process.exportReport()} title="Export bug report..."
+      ></button>
       <div class="sep"></div>
-      <button class="lucide icon-refresh-cw" aria-label="Refresh" onclick={() => process.invalidateCaches(true)}></button>
+      <button
+        class="lucide icon-refresh-cw"
+        aria-label="Refresh"
+        onclick={() => process.invalidateCaches(true)}
+        title="Refresh caches"
+      ></button>
     </div>
   {/if}
 </div>

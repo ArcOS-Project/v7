@@ -1,4 +1,5 @@
 <script lang="ts">
+  import CodeEditor from "$lib/CodeEditor.svelte";
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
   import type { BugHuntUserDataRuntime } from "./runtime";
 
@@ -7,6 +8,6 @@
 </script>
 
 <CustomTitlebar {process}></CustomTitlebar>
-<div class="user-data">
+<div class="user-data code-editor-wrapper">
   <pre><code class="hljs">{@html html}</code></pre>
 </div>

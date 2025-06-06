@@ -7,6 +7,6 @@
 </script>
 
 <CustomTitlebar {process}></CustomTitlebar>
-<div class="user-data">
+<div class="user-data code-editor-wrapper">
   <pre><code class="hljs">{@html html}</code></pre>
 </div>

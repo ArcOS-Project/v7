@@ -9,6 +9,7 @@ import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import type { BugReport } from "$types/bughunt";
 import { BugReportsCreatorApp } from "../bughuntcreator/metadata";
+import { BugHuntAltMenu } from "./context";
 import { BugHuntUserDataApp } from "./userdata/metadata";
 
 export class BugHuntRuntime extends AppProcess {
@@ -27,6 +28,7 @@ export class BugHuntRuntime extends AppProcess {
     super(handler, pid, parentPid, app);
 
     this.bughunt = this.userDaemon?.serviceHost?.getService<BugHuntUserSpaceProcess>("BugHuntUsp")!;
+    this.altMenu.set(BugHuntAltMenu(this));
   }
 
   async render() {
