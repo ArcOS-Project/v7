@@ -22,7 +22,7 @@ export class ArcFindRuntime extends AppProcess {
       this.fileSystemIndex = []; // Clear the filesystem cache if a file has changed
     });
 
-    // this.getFilesystemSearchSupplier(this.userPreferences());
+    this.getFilesystemSearchSupplier(this.userPreferences());
   }
 
   async start() {
