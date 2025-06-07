@@ -76,14 +76,5 @@
       disabled={!$selected}
       onclick={() => process.spawnOverlay("userdata", $selected)}
     ></button>
-    <button class="lucide icon-rectangle-ellipsis" aria-label="Change password" disabled={!$selected}></button>
-    <button class="lucide icon-user-pen" aria-label="Change username" disabled={!$selected}></button>
-    <button
-      class="lucide icon-user-check"
-      aria-label="Approve/disapprove"
-      disabled={!$selected}
-      class:icon-user-x={$selected?.approved}
-    ></button>
-    <button class="lucide icon-shield-plus" aria-label="Grant/revoke admin" class:icon-shield-x={$selected?.admin}></button>
   </div>
 </div>
