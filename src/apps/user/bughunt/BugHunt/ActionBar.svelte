@@ -37,5 +37,14 @@
         title="Refresh caches"
       ></button>
     </div>
+  {:else}
+    <div class="actions">
+      <button
+        class="lucide icon-refresh-cw"
+        aria-label="Refresh"
+        onclick={() => process.invalidateCaches(true)}
+        title="Refresh caches"
+      ></button>
+    </div>
   {/if}
 </div>
