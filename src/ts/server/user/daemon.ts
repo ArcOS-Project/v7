@@ -55,6 +55,7 @@ import { GlobalDispatch } from "../ws";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
+import { ShellRuntime } from "$apps/components/shell/runtime";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -2173,6 +2174,8 @@ export class UserDaemon extends Process {
 
     await appStore?.refresh();
     if (deleteFiles) await this.fs.deleteItem(app.workingDirectory!);
+
+    this.unpinApp(id);
   }
 
   async installAppFromPath(path: string) {
@@ -2516,5 +2519,34 @@ The information provided in this report is subject for review by me or another A
     for (const [pid, proc] of [...store]) {
       if (!proc._disposed && proc instanceof ThirdPartyAppProcess) this.handler.kill(pid, true);
     }
+  }
+
+  async pinApp(appId: string) {
+    this.Log(`Pinning ${appId}`);
+
+    const appStore = this.serviceHost?.getService("AppStorage") as ApplicationStorage;
+    const app = await appStore?.getAppById(appId);
+
+    if (!app) return;
+
+    this.preferences.update((v) => {
+      if (v.pinnedApps.includes(appId)) return v;
+
+      v.pinnedApps.push(appId);
+
+      return v;
+    });
+  }
+
+  unpinApp(appId: string) {
+    this.Log(`Unpinning ${appId}`);
+
+    this.preferences.update((v) => {
+      if (!v.pinnedApps.includes(appId)) return v;
+
+      v.pinnedApps.splice(v.pinnedApps.indexOf(appId), 1);
+
+      return v;
+    });
   }
 }
