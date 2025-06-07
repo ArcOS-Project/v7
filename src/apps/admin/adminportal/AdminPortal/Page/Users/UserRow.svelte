@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import ProfilePicture from "$lib/ProfilePicture.svelte";
   import type { ReadableStore } from "$ts/writable";
   import type { ExpandedUserInfo } from "$types/user";
   import dayjs from "dayjs";
@@ -18,7 +19,7 @@
   class:selected={$selection === user._id}
   ondblclick={() => process.switchPage("viewUser", { user })}
 >
-  <img src={profile.profilePicture} alt="" />
+  <ProfilePicture fallback={profile.profilePicture} height={20} showOnline online={profile.dispatchClients > 0} />
   <div class="segment username">{profile.username}</div>
   <div class="segment email">{user.email}</div>
   <div class="segment created">{created}</div>

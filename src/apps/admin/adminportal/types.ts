@@ -47,3 +47,5 @@ export type ViewUserData = {
 //
 // End props for individual pages
 //
+
+export type UsersPageFilters = "all" | "regular" | "admins" | "disapproved" | "online";

@@ -19,11 +19,12 @@
   width: 100%;
 }
 
-#AdminPortal div.viewUser div.identity img {
-  width: 64px;
-  object-fit: cover;
-  height: 64px;
-  border-radius: 32px;
+#AdminPortal div.viewUser div.identity div.pfprenderer::after {
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  bottom: 3px;
+  right: 3px;
 }
 
 #AdminPortal div.viewUser div.section {

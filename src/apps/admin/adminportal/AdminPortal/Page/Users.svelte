@@ -4,14 +4,14 @@
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";
   import type { AdminPortalRuntime } from "../../runtime";
-  import type { UsersData } from "../../types";
+  import type { UsersData, UsersPageFilters } from "../../types";
   import UserRow from "./Users/UserRow.svelte";
 
   const { process, data }: { process: AdminPortalRuntime; data: UsersData } = $props();
   const { users } = data;
 
-  const states: ("all" | "regular" | "admins" | "disapproved")[] = ["all", "regular", "admins", "disapproved"];
-  const sortState = Store<"all" | "regular" | "admins" | "disapproved">("all");
+  const states: UsersPageFilters[] = ["all", "online", "regular", "admins", "disapproved"];
+  const sortState = Store<UsersPageFilters>("all");
   const store = Store<ExpandedUserInfo[]>([]);
   const selection = Store<string>("");
   const selected = Store<ExpandedUserInfo | undefined>(undefined);
@@ -27,6 +27,8 @@
               return !user.admin;
             case "admins":
               return user.admin;
+            case "online":
+              return user.profile.dispatchClients > 0;
             case "disapproved":
               return !user.approved;
           }
@@ -68,7 +70,12 @@
   <input type="text" placeholder="User ID" bind:value={$selection} maxlength="24" />
   <button disabled={$selection.length !== 24} onclick={() => process.switchPage("viewUser", { $selected })}>Go</button>
   <div class="actions">
-    <button class="lucide icon-braces" aria-label="View user data" disabled={!$selected}></button>
+    <button
+      class="lucide icon-braces"
+      aria-label="View user data"
+      disabled={!$selected}
+      onclick={() => process.spawnOverlay("userdata", $selected)}
+    ></button>
     <button class="lucide icon-rectangle-ellipsis" aria-label="Change password" disabled={!$selected}></button>
     <button class="lucide icon-user-pen" aria-label="Change username" disabled={!$selected}></button>
     <button

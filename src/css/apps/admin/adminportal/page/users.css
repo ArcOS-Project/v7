@@ -170,6 +170,11 @@
   border-radius: 100%;
 }
 
+#AdminPortal div.container.users div.user-row div.pfprenderer::after {
+  bottom: -1px;
+  right: -1px;
+}
+
 #AdminPortal div.container.users div.user-row.header {
   font-weight: bold;
   background-color: var(--button-bg);
