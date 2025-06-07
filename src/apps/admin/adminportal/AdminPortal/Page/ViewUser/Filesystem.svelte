@@ -16,6 +16,16 @@
     quota = await process.admin.getQuotaOf(user.username);
     loading = false;
   });
+
+  async function mountUser() {
+    if (process.fs.drives[btoa(user.username)]) await process.fs.umountDrive(btoa(user.username), true);
+    else {
+      const drive = await process.admin.mountUserDrive(user.username);
+      if (drive) process.spawnApp("fileManager", +process.env.get("shell_pid"), `${drive.uuid}:/`);
+    }
+
+    process.switchPage("viewUser", { user }, true);
+  }
 </script>
 
 <div class="section quota">
@@ -29,6 +39,7 @@
         <p class="used">{formatBytes(quota.used)} / {formatBytes(quota.max)}</p>
         <p class="percentage">({quota.percentage.toFixed(2)}%)</p>
       </div>
+      <button onclick={mountUser}>{process.fs.drives[btoa(user.username)] ? "Unmount" : "Mount"}</button>
     {:else}
       <p class="error-text">Failed to get quota</p>
     {/if}

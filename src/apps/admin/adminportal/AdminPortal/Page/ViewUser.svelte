@@ -9,6 +9,9 @@
   import Filesystem from "./ViewUser/Filesystem.svelte";
   import Identity from "./ViewUser/Identity.svelte";
   import Shares from "./ViewUser/Shares.svelte";
+  import { MessageBox } from "$ts/dialog";
+  import { PasswordIcon, SecurityLowIcon } from "$ts/images/general";
+  import { adminService } from "$ts/server/admin";
 
   const { process, data }: { process: AdminPortalRuntime; data: ViewUserData } = $props();
   const { user } = data;
@@ -18,6 +21,86 @@
   onMount(async () => {
     statistics = await process.admin.getStatisticsOf(user._id);
   });
+
+  function logout() {
+    MessageBox(
+      {
+        title: "Log out user?",
+        message: "Are you sure you want to invalidate all of this user's tokens? They'll have to log in again everywhere.",
+        buttons: [
+          { caption: "Cancel", action: () => {} },
+          {
+            caption: "Confirm",
+            action: async () => {
+              await process.admin.purgeUserTokens(user._id.toString());
+
+              process.switchPage("viewUser", { user: await process.admin.getUserByUsername(user.username) }, true);
+            },
+            suggested: true,
+          },
+        ],
+        image: PasswordIcon,
+        sound: "arcos.dialog.warning",
+      },
+      process.pid,
+      true,
+    );
+  }
+
+  function toggleApproved() {
+    MessageBox(
+      {
+        title: user.approved ? "Disapprove user?" : "Approve user?",
+        message: user.approved
+          ? "Are you sure you want to disapprove this user? They'll have to be manually approved again should they need to regain access to their account."
+          : "Are you sure you want to manually approve this user? This goes against the core principle of email activation: never approve spam accounts!",
+        buttons: [
+          { caption: "Cancel", action: () => {} },
+          {
+            caption: user.approved ? "Disapprove" : "Approve",
+            suggested: true,
+            action: async () => {
+              if (user.approved) await process.admin.disapproveUser(user.username);
+              else await process.admin.approveUser(user.username);
+
+              process.switchPage("viewUser", { user: await process.admin.getUserByUsername(user.username) }, true);
+            },
+          },
+        ],
+        image: SecurityLowIcon,
+        sound: "arcos.dialog.warning",
+      },
+      process.pid,
+      true,
+    );
+  }
+  function toggleAdmin() {
+    MessageBox(
+      {
+        title: user.admin ? "Revoke admin?" : "Grant admin?",
+        message: user.admin
+          ? "Are you absolutely certain you wish to revoke the administrative privileges from this user? If this action is unjust your privileges may be revoked."
+          : "This might be a security vulnerability. Are you sure you want to grant this user admin? ArcOS could be comprimised if this person has any malicious intent.",
+        buttons: [
+          { caption: "Cancel", action: () => {} },
+          {
+            caption: user.admin ? "Revoke" : "Grant",
+            suggested: true,
+            action: async () => {
+              if (user.admin) await process.admin.revokeAdmin(user.username);
+              else await process.admin.grantAdmin(user.username);
+
+              process.switchPage("viewUser", { user: await process.admin.getUserByUsername(user.username) }, true);
+            },
+          },
+        ],
+        image: SecurityLowIcon,
+        sound: "arcos.dialog.warning",
+      },
+      process.pid,
+      true,
+    );
+  }
 </script>
 
 <div class="leftpanel">
@@ -44,9 +127,20 @@
       <ChangePassword {process} {user} />
     </div>
     <div class="quick-actions">
-      <button class="lucide icon-log-out" aria-label="Log out"></button>
-      <button class="lucide icon-user-minus" aria-label="Disapprove"></button>
-      <button class="lucide icon-shield-plus" aria-label="Grant admin"></button>
+      <button class="lucide icon-log-out" aria-label="Log out" onclick={logout} disabled={!user.approved}></button>
+      <button
+        class="lucide icon-user-minus"
+        class:icon-user-plus={!user.approved}
+        aria-label={user.approved ? "Disapprove" : "Approve"}
+        onclick={toggleApproved}
+      ></button>
+      <button
+        class="lucide icon-shield-minus"
+        class:icon-shield-plus={!user.admin}
+        aria-label={user.admin ? "Revoke admin" : "Grant admin"}
+        onclick={toggleAdmin}
+        disabled={!user.approved}
+      ></button>
     </div>
   </div>
 </div>

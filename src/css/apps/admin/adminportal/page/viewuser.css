@@ -102,6 +102,14 @@
 #AdminPortal div.viewUser div.section.quota > div p.percentage {
   opacity: 0.5;
 }
+#AdminPortal div.viewUser div.section.quota > div button {
+  margin-left: auto;
+  border-radius: 0;
+  margin-bottom: auto;
+  translate: 10px -41px;
+  height: 30px;
+  border-left: var(--win-border);
+}
 
 #AdminPortal div.viewUser div.section.shares > div {
   padding: 0;

@@ -68,7 +68,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async mountUserDrive(username: string, driveLetter?: string, onProgress?: FilesystemProgressCallback) {
-    await this.fs.mountDrive(btoa(username), AdminServerDrive, driveLetter, onProgress, this.token, username);
+    return await this.fs.mountDrive(btoa(username), AdminServerDrive, driveLetter, onProgress, this.token, username);
   }
 
   async mountAllUsers() {
