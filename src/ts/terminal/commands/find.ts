@@ -28,7 +28,7 @@ export class FindCommand extends TerminalProcess {
       return 1;
     }
 
-    const results = (await shellProc.Search(query)).map((r) => r.item);
+    const results = ((await shellProc.arcFind?.Search(query)) || []).map((r) => r.item);
 
     if (!results.length) {
       term.Warning("Didn't find anything! Try changing your search query.");
