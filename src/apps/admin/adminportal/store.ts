@@ -57,6 +57,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       hidden: true,
       scopes: ["admin.bughunt.get", "admin.bughunt.delete", "admin.bughunt.open", "admin.bughunt.close"],
       icon: "",
+      parent: "bugHunt",
     },
   ],
   [
@@ -81,6 +82,11 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       hidden: true,
       icon: "",
       content: ViewUser,
+      props: async (process) => {
+        return { reports: await process.admin.getAllBugReports() };
+      },
+      scopes: ["admin.bughunt.get"],
+      parent: "users",
     },
   ],
   [

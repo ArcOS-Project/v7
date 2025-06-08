@@ -3,6 +3,7 @@ import type { BugReport, ReportStatistics } from "$types/bughunt";
 import type { ExpandedUserInfo } from "$types/user";
 import type { Component } from "svelte";
 import type { AdminPortalRuntime } from "./runtime";
+import type { SharedDriveType } from "$types/shares";
 
 export interface AdminPortalPage {
   name: string;
@@ -11,6 +12,7 @@ export interface AdminPortalPage {
   hidden?: boolean;
   separator?: boolean;
   scopes?: string[];
+  parent?: string;
   props?: (process: AdminPortalRuntime) => Promise<Record<string, any>> | Record<string, any>; // = any data to be gathered before rendering
 }
 
@@ -42,6 +44,11 @@ export type UsersData = {
 
 export type ViewUserData = {
   user: ExpandedUserInfo;
+  reports: BugReport[];
+};
+
+export type SharesData = {
+  shares: SharedDriveType[];
 };
 
 //

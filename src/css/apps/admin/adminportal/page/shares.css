@@ -1,0 +1,53 @@
+#AdminPortal div.container.shares div.share-list div.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: var(--win-border);
+  height: 36px;
+  line-height: 36px;
+}
+
+#AdminPortal div.container.shares div.share-list div.row span.lucide {
+  font-size: 16px;
+  color: var(--accent-lighter);
+  line-height: 35px;
+}
+
+#AdminPortal div.container.shares div.share-list div.row div.segment.icon {
+  width: 36px;
+  height: 35px;
+  border-right: var(--win-border);
+  text-align: center;
+  font-weight: normal;
+}
+
+#AdminPortal div.container.shares div.share-list div.row.header {
+  font-weight: bold;
+  background-color: var(--button-bg);
+}
+
+#AdminPortal div.container.shares div.share-list div.segment.size {
+  margin-left: auto;
+  width: 50px;
+  text-align: right;
+}
+
+#AdminPortal div.container.shares div.share-list div.segment.locked {
+  width: 36px;
+  height: 35px;
+  border-left: var(--win-border);
+  background-color: var(--button-bg);
+  line-height: 35px;
+  text-align: center;
+}
+
+#AdminPortal div.container.shares div.share-list div.segment.members {
+  width: 100px;
+}
+
+#AdminPortal div.container.shares div.share-list div.segment.name {
+  flex-grow: 1;
+}
+#AdminPortal div.container.shares div.share-list div.segment.owner {
+  width: 200px;
+}
