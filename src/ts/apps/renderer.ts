@@ -164,7 +164,7 @@ export class AppRenderer extends Process {
     if (data.core || data.overlay) return;
 
     const draggable = new Draggable(window, {
-      bounds: { top: 0, left: 0, right: 0 },
+      bounds: { top: 0, left: -10000000, right: -10000000 },
       handle: `.titlebar, .draggable`,
       cancel: `button, .nodrag`,
       legacyTranslate: false,
