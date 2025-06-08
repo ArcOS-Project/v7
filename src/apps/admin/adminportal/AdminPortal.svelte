@@ -9,7 +9,7 @@
   import type { AdminPortalPage } from "./types";
 
   const { process }: { process: AdminPortalRuntime } = $props();
-  const { currentPage, switchPageProps, ready } = process;
+  const { currentPage, switchPageProps, ready, windowTitle, windowIcon } = process;
 
   let Page: Component | undefined = $state();
   let pageData = $state<AdminPortalPage>();
@@ -48,7 +48,13 @@
 
 <Sidebar {process} />
 <div class="container {className}">
-  <CustomTitlebar {process}></CustomTitlebar>
+  <CustomTitlebar {process}>
+    {#if pageData?.parent}
+      <button class="lucide icon-arrow-left" aria-label="Go back" onclick={() => process.switchPage(pageData?.parent!)}></button>
+    {/if}
+    <img src={$windowIcon} alt="" />
+    <span>{$windowTitle}</span>
+  </CustomTitlebar>
   <div class="page-content">
     {#if loading}
       <div class="loading">
