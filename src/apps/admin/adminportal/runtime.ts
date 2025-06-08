@@ -1,4 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
+import { ShareManager } from "$ts/fs/shares";
 import type { ProcessHandler } from "$ts/process/handler";
 import { AdminBootstrapper } from "$ts/server/admin";
 import { Sleep } from "$ts/sleep";
@@ -11,6 +12,7 @@ export class AdminPortalRuntime extends AppProcess {
   ready = Store<boolean>(false);
   currentPage = Store<string>("");
   switchPageProps = Store<Record<string, any>>({});
+  shares: ShareManager;
   admin: AdminBootstrapper;
 
   protected overlayStore: Record<string, App> = {
@@ -21,6 +23,7 @@ export class AdminPortalRuntime extends AppProcess {
     super(handler, pid, parentPid, app);
 
     this.admin = this.userDaemon!.serviceHost!.getService<AdminBootstrapper>("AdminBootstrapper")!;
+    this.shares = this.userDaemon!.serviceHost!.getService<ShareManager>("ShareMgmt")!;
     this.switchPage(page || "dashboard");
   }
 

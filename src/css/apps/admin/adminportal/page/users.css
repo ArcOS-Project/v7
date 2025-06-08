@@ -178,4 +178,7 @@
 #AdminPortal div.container.users div.user-row.header {
   font-weight: bold;
   background-color: var(--button-bg);
+  position: sticky;
+  top: 0.5px;
+  z-index: 10000;
 }

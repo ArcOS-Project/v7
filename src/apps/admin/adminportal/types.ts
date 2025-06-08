@@ -49,6 +49,7 @@ export type ViewUserData = {
 
 export type SharesData = {
   shares: SharedDriveType[];
+  users: ExpandedUserInfo[];
 };
 
 //
@@ -56,3 +57,4 @@ export type SharesData = {
 //
 
 export type UsersPageFilters = "all" | "regular" | "admins" | "disapproved" | "online";
+export type SharesPageFilters = "all" | "resized" | "locked";

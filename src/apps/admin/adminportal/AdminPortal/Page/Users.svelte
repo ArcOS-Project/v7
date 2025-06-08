@@ -68,7 +68,7 @@
     <span class="lucide icon-user"></span>
   </div>
   <input type="text" placeholder="User ID" bind:value={$selection} maxlength="24" />
-  <button disabled={$selection.length !== 24} onclick={() => process.switchPage("viewUser", { $selected })}>Go</button>
+  <button disabled={$selection.length !== 24} onclick={() => process.switchPage("viewUser", { user: $selected })}>Go</button>
   <div class="actions">
     <button
       class="lucide icon-braces"

@@ -1,4 +1,5 @@
 import { DevelopmentLogo, EsrLogo, RcLogo, ReleaseLogo, UnstableLogo } from "$ts/images/branding";
+import { AdminScopes } from "$ts/server/admin/store";
 import Activities from "./AdminPortal/Page/Activities.svelte";
 import Administrators from "./AdminPortal/Page/Administrators.svelte";
 import Approvals from "./AdminPortal/Page/Approvals.svelte";
@@ -30,7 +31,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
 
         return { stats, logs };
       },
-      scopes: ["admin.logs", "admin.stats"],
+      scopes: [AdminScopes.adminLogs, AdminScopes.adminStats],
     },
   ],
   [
@@ -40,7 +41,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       icon: "bug",
       content: BugHunt,
       separator: true,
-      scopes: ["admin.bughunt.reports.list", "admin.bughunt.stats"],
+      scopes: [AdminScopes.adminBugHuntList, AdminScopes.adminBugHuntStats],
       props: async (process) => {
         const reports = await process.admin.getAllBugReports();
         const stats = await process.admin.getBugHuntStatistics();
@@ -55,7 +56,12 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       name: "View Bug Report",
       content: ViewBugReport,
       hidden: true,
-      scopes: ["admin.bughunt.get", "admin.bughunt.delete", "admin.bughunt.open", "admin.bughunt.close"],
+      scopes: [
+        AdminScopes.adminBugHuntGet,
+        AdminScopes.adminBugHuntDelete,
+        AdminScopes.adminBugHuntOpen,
+        AdminScopes.adminBugHuntClose,
+      ],
       icon: "",
       parent: "bugHunt",
     },
@@ -72,7 +78,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
 
         return { users };
       },
-      scopes: ["admin.users.list"],
+      scopes: [AdminScopes.adminUsersList],
     },
   ],
   [
@@ -85,7 +91,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       props: async (process) => {
         return { reports: await process.admin.getAllBugReports() };
       },
-      scopes: ["admin.bughunt.get"],
+      scopes: [AdminScopes.adminBugHuntGet],
       parent: "users",
     },
   ],
@@ -98,6 +104,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       props: async (process) => {
         return { shares: await process.admin.getAllShares(), users: await process.admin.getAllUsers() };
       },
+      scopes: [AdminScopes.adminShareList, AdminScopes.adminUsersList],
     },
   ],
   [

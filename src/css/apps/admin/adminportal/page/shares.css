@@ -1,3 +1,14 @@
+#AdminPortal div.container.shares div.share-list {
+  height: calc(100% - 30px - 30px);
+  border-bottom: var(--win-border);
+  border-top: var(--win-border);
+  overflow-y: auto;
+}
+
+#AdminPortal div.container.shares div.share-list::-webkit-scrollbar {
+  display: none;
+}
+
 #AdminPortal div.container.shares div.share-list div.row {
   display: flex;
   align-items: center;
@@ -24,6 +35,17 @@
 #AdminPortal div.container.shares div.share-list div.row.header {
   font-weight: bold;
   background-color: var(--button-bg);
+  position: sticky;
+  top: 0.5px;
+  z-index: 10000;
+}
+
+#AdminPortal div.container.shares div.row:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#AdminPortal div.container.shares div.row.selected {
+  background-color: var(--accent-transparent);
 }
 
 #AdminPortal div.container.shares div.share-list div.segment.size {
@@ -50,4 +72,66 @@
 }
 #AdminPortal div.container.shares div.share-list div.segment.owner {
   width: 200px;
+}
+
+#AdminPortal div.container.shares div.id-entry {
+  display: flex;
+  align-items: center;
+}
+
+#AdminPortal div.container.shares div.id-entry div.icon {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+}
+
+#AdminPortal div.container.shares div.id-entry input {
+  flex-grow: 1;
+  border: none;
+  border-radius: 0;
+  border-left: var(--win-border);
+  border-right: var(--win-border);
+  height: 30px;
+  font-family: "Source Code Pro";
+}
+
+#AdminPortal div.container.shares div.id-entry button {
+  border-radius: 0;
+  height: 30px;
+}
+
+#AdminPortal div.container.shares div.id-entry div.actions button {
+  border-left: var(--win-border);
+}
+
+#AdminPortal div.container.shares div.id-entry div.actions {
+  display: flex;
+}
+#AdminPortal div.container.shares > div.page-content > div.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 30px;
+  padding-left: 10px;
+}
+
+#AdminPortal div.container.shares div.header div.tabs button {
+  height: 30px;
+  border-radius: 0;
+  font-size: 12px;
+  min-width: 80px;
+  padding: 5px 15px;
+  border-left: var(--win-border);
+}
+#AdminPortal div.container.shares div.header p {
+  font-weight: bold;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+#AdminPortal div.container.shares div.header div.tabs button.selected {
+  background-color: var(--accent-transparent);
 }
