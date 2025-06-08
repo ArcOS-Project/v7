@@ -19,7 +19,7 @@
 
 <div class="login-form">
   <div class="left">
-    <Field bind:value={username} placeholder="Username or email" icon="user" />
+    <Field bind:value={username} placeholder="Username" icon="user" />
     <Field bind:value={password} placeholder="Password" icon="key-round" password onsubmit={go} />
   </div>
   <div class="right">
