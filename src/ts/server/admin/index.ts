@@ -21,6 +21,7 @@ import type { Service } from "$types/service";
 import type { SharedDriveType } from "$types/shares";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
 import { Backend } from "../axios";
+import { AdminScopes } from "./store";
 
 export class AdminBootstrapper extends BaseService {
   private token: string | undefined;
@@ -606,7 +607,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   canAccess(...scopes: string[]): boolean {
-    if (this.userInfo?.adminScopes?.includes("admin.god")) return true;
+    if (this.userInfo?.adminScopes?.includes(AdminScopes.adminGod)) return true;
 
     for (const scope of scopes) {
       if (!this.userInfo?.adminScopes.includes(scope)) return false;
@@ -616,7 +617,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   getMissingScopes(...scopes: string[]): string[] {
-    if (this.userInfo?.adminScopes?.includes("admin.god")) return [];
+    if (this.userInfo?.adminScopes?.includes(AdminScopes.adminGod)) return [];
 
     return scopes.filter((s) => !this.userInfo?.adminScopes?.includes(s));
   }
@@ -742,6 +743,56 @@ export class AdminBootstrapper extends BaseService {
       return response.data as UserStatistics;
     } catch {
       return undefined;
+    }
+  }
+
+  async setShareQuotaOf(shareId: string, quota: number): Promise<boolean> {
+    try {
+      const response = await Backend.put(`/admin/share/quota/${shareId}`, toForm({ limit: quota }), {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async getShareQuotaOf(shareId: string): Promise<UserQuota | undefined> {
+    try {
+      const response = await Backend.get(`/admin/share/quota/${shareId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+
+      return response.data as UserQuota;
+    } catch {
+      return undefined;
+    }
+  }
+
+  async unlockShare(shareId: string): Promise<boolean> {
+    try {
+      const response = await Backend.post(
+        `/admin/share/unlock/${shareId}`,
+        {},
+        { headers: { Authorization: `Bearer ${this.token}` } }
+      );
+
+      return response.status === 2000;
+    } catch {
+      return false;
+    }
+  }
+
+  async lockShare(shareId: string): Promise<boolean> {
+    try {
+      const response = await Backend.post(
+        `/admin/share/lock/${shareId}`,
+        {},
+        { headers: { Authorization: `Bearer ${this.token}` } }
+      );
+
+      return response.status === 2000;
+    } catch {
+      return false;
     }
   }
 }
