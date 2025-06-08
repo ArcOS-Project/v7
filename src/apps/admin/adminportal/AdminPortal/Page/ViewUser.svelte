@@ -1,5 +1,7 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
+  import { MessageBox } from "$ts/dialog";
+  import { PasswordIcon, SecurityLowIcon } from "$ts/images/general";
   import type { UserStatistics } from "$types/admin";
   import { onMount } from "svelte";
   import type { AdminPortalRuntime } from "../../runtime";
@@ -9,12 +11,10 @@
   import Filesystem from "./ViewUser/Filesystem.svelte";
   import Identity from "./ViewUser/Identity.svelte";
   import Shares from "./ViewUser/Shares.svelte";
-  import { MessageBox } from "$ts/dialog";
-  import { PasswordIcon, SecurityLowIcon } from "$ts/images/general";
-  import { adminService } from "$ts/server/admin";
+  import Reports from "./ViewUser/Reports.svelte";
 
   const { process, data }: { process: AdminPortalRuntime; data: ViewUserData } = $props();
-  const { user } = data;
+  const { user, reports } = data;
 
   let statistics: UserStatistics | undefined = $state();
 
@@ -107,6 +107,7 @@
   <Identity {user} />
   <Filesystem {user} {process} />
   <Shares {user} {process} />
+  <Reports {user} {reports} {process} />
 </div>
 <div class="rightpanel">
   <div class="statistics">

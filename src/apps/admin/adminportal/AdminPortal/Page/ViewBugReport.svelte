@@ -11,6 +11,6 @@
 
 <Header {data} {process} />
 <div class="panels">
-  <LeftPanel {report} />
+  <LeftPanel {report} {process} />
   <RightPanel {report} />
 </div>
