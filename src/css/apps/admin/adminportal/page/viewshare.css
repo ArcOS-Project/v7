@@ -1,0 +1,244 @@
+#AdminPortal div.viewShare div.page-content {
+  display: flex;
+}
+
+#AdminPortal div.viewShare div.leftpanel {
+  border-right: var(--win-border);
+  width: calc(100% - 430px);
+  overflow-y: auto;
+}
+
+#AdminPortal div.viewShare div.rightpanel {
+  width: 430px;
+}
+
+#AdminPortal div.viewShare div.leftpanel::-webkit-scrollbar {
+  display: none;
+}
+
+#AdminPortal div.viewShare div.leftpanel > div.header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  gap: 10px;
+}
+
+#AdminPortal div.viewShare div.header h1 {
+  font-size: 16px;
+}
+
+#AdminPortal div.viewShare div.header p.author {
+  opacity: 0.5;
+  font-size: 12px;
+  line-height: 10px;
+  margin-bottom: 5px;
+}
+
+#AdminPortal div.viewShare div.header p.usage {
+  font-size: 14px;
+}
+
+#AdminPortal div.viewShare div.section {
+  border-top: var(--win-border);
+}
+
+#AdminPortal div.viewShare div.section:first-child {
+  border-top: 0;
+}
+
+#AdminPortal div.viewShare div.section h1 {
+  height: 30px;
+  padding: 0 10px;
+  line-height: 30px;
+  text-transform: uppercase;
+  opacity: 0.5;
+  font-weight: bold;
+}
+
+#AdminPortal div.viewShare div.section > div {
+  border-top: var(--win-border);
+  min-height: 36px;
+}
+
+#AdminPortal div.viewShare div.section > div > p.error-text {
+  height: 35px;
+  line-height: 35px;
+  text-align: center;
+}
+#AdminPortal div.viewShare div.section > div.centered {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
+}
+
+#AdminPortal div.viewShare div.section div.accessor-row,
+#AdminPortal div.viewShare div.section div.member-row {
+  display: Flex;
+  height: 36px;
+  border-bottom: var(--win-border);
+  padding: 0;
+  padding-right: 0;
+  line-height: 35px;
+}
+
+#AdminPortal div.viewShare div.section div.member-row:hover,
+#AdminPortal div.viewShare div.section div.accessor-row:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#AdminPortal div.viewShare div.section div.accessor-row.header,
+#AdminPortal div.viewShare div.section div.member-row.header {
+  font-weight: bold;
+  background-color: var(--button-bg);
+}
+
+#AdminPortal div.viewShare div.section div.member-row div.segment.pfp {
+  height: 35px;
+  width: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 35px;
+}
+
+#AdminPortal div.viewShare div.section div.member-row div.segment.username {
+  margin-right: auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#AdminPortal div.viewShare div.section div.member-row div.segment.created {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#AdminPortal div.viewShare div.section div.member-row button.lucide {
+  width: 36px;
+  height: 35px;
+  padding: 0;
+  border-radius: 0;
+  font-size: 16px;
+  min-width: 36px;
+}
+
+#AdminPortal div.viewShare div.section div.member-row div.segment.account-number,
+#AdminPortal div.viewShare div.section div.member-row div.segment.approved,
+#AdminPortal div.viewShare div.section div.member-row div.segment.admin {
+  width: 36px;
+  height: 35px;
+  padding: 0;
+  border-radius: 0;
+  border-left: var(--win-border);
+  text-align: center;
+  min-width: 36px;
+}
+
+#AdminPortal div.viewShare div.section div.member-row div.segment.kick {
+  width: 36px;
+  min-width: 36px;
+  text-align: center;
+  border-left: var(--win-border);
+}
+
+#AdminPortal div.viewShare div.section div.member-row div.segment.created {
+  margin-right: 10px;
+}
+
+#AdminPortal div.viewShare div.section div.member-row div.segment.pfp img {
+  height: 20px;
+}
+
+#AdminPortal div.viewShare div.rightpanel div.section:not(.accessors) > div {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  min-height: unset;
+}
+#AdminPortal div.viewShare div.rightpanel div.section > div select,
+#AdminPortal div.viewShare div.rightpanel div.section > div input {
+  flex-grow: 1;
+  height: 30px;
+  border: none;
+  border-radius: 0;
+  background-color: var(--win-bg);
+}
+
+#AdminPortal div.viewShare div.rightpanel div.section > div button {
+  height: 30px;
+  border: none;
+  border-radius: 0;
+  border-left: var(--win-border);
+}
+
+#AdminPortal div.viewShare div.rightpanel div.section > div div.buttons {
+  display: flex;
+}
+
+#AdminPortal div.viewShare div.split {
+  display: flex;
+  align-items: start;
+  width: 100%;
+}
+
+#AdminPortal div.viewShare div.split div.resets {
+  width: calc(100% - 35px);
+  height: 100%;
+  border-right: var(--win-border);
+}
+
+#AdminPortal div.viewShare div.quick-actions {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 35px;
+  display: flex;
+  flex-direction: column;
+}
+
+#AdminPortal div.viewShare div.quick-actions button {
+  height: 36px;
+  width: 35px;
+  border-radius: 0;
+  padding: 0;
+  border-bottom: var(--win-border);
+  font-size: 16px;
+}
+
+#AdminPortal div.viewShare div.rightpanel div.section.quota button {
+  padding: 0 5px;
+}
+
+#AdminPortal div.viewShare div.rightpanel div.section.quota input {
+  width: 0;
+  flex-grow: 1;
+}
+
+#AdminPortal div.viewShare div.accessor-row div.segment.icon {
+  width: 36px;
+  min-width: 36px;
+  height: 35px;
+  text-align: center;
+  line-height: 35px;
+  border-right: var(--win-border);
+}
+
+#AdminPortal div.viewShare div.accessor-row div.segment.icon span.lucide {
+  color: var(--accent-light);
+  font-weight: normal;
+  font-size: 16px;
+}
+
+#AdminPortal div.viewShare div.accessor-row div.segment.path {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 10px;
+  margin-right: auto;
+}
+
+#AdminPortal div.viewShare div.accessor-row div.segment.ttl {
+  width: 80px;
+}
