@@ -15,6 +15,7 @@ export interface FileEntry {
 export interface FsAccess {
   _id?: string;
   userId: string;
+  shareId?: string;
   path: string;
   accessor: string;
   createdAt?: Date;
