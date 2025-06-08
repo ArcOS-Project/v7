@@ -50,7 +50,7 @@
 <div class="container {className}">
   <CustomTitlebar {process}>
     {#if pageData?.parent}
-      <button class="lucide icon-arrow-left" aria-label="Go back" onclick={() => process.switchPage(pageData?.parent!)}></button>
+      <button class="lucide icon-arrow-up" aria-label="Go back" onclick={() => process.switchPage(pageData?.parent!)}></button>
     {/if}
     <img src={$windowIcon} alt="" />
     <span>{$windowTitle}</span>

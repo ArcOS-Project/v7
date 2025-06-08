@@ -24,6 +24,10 @@
   border-radius: 0;
 }
 
+#AdminPortal > div.body div.sidebar button:disabled {
+  opacity: 0.5 !important;
+}
+
 #AdminPortal > div.body div.sidebar button span.lucide {
   font-size: 16px;
   color: var(--accent-light);
