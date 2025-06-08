@@ -41,7 +41,7 @@ export const MediaPlayerApp: App = {
     component: MediaPlayer as any,
   },
   opens: {
-    extensions: [".mp3", ".opus", ".wav", ".m4a", ".flac", ".mp4", ".mkv", ".mov", ".avi", ".arcpl"],
+    extensions: [".mp3", ".opus", ".wav", ".m4a", ".flac", ".mp4", ".mkv", ".mov", ".avi", ".arcpl", ".ogg"],
   },
   position: { centered: true },
   id: "MediaPlayer",

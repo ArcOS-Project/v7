@@ -89,6 +89,9 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       name: "Shares",
       icon: "network",
       content: Shares,
+      props: async (process) => {
+        return { shares: await process.admin.getAllShares(), users: await process.admin.getAllUsers() };
+      },
     },
   ],
   [
