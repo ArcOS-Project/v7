@@ -38,9 +38,17 @@ div.window#bootScreen div.version {
   text-align: center;
   width: 100%;
   margin: 20px 0;
-  opacity: 0.4;
+  opacity: 1;
   font-family: "Source Code Pro";
   font-size: 13px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+div.window#bootScreen div.version span.string {
+  opacity: 0.4;
 }
 
 div.window#bootScreen div.bottom {

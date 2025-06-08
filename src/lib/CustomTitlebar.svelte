@@ -6,6 +6,7 @@
   import { onMount, type Snippet } from "svelte";
   import AltMenu from "./CustomTitlebar/AltMenu.svelte";
   import { ArcMode } from "$ts/metadata/mode";
+  import { BETA } from "$ts/env";
 
   const { process, children, className = "" }: { process: AppProcess; children?: Snippet; className?: string } = $props();
   const { windowTitle, windowIcon } = process;
@@ -46,9 +47,12 @@
       <img src={$windowIcon || ComponentIcon} alt="" />
       <span>{$windowTitle}</span>
     {/if}
+    {#if BETA}
+      <span class="beta-pill">BETA</span>
+    {/if}
   </div>
   <AltMenu {process} />
-  {#if ArcMode() !== "release"}
+  {#if BETA}
     <button class="link feedback" onclick={() => process.userDaemon?.iHaveFeedback(process)}>Feedback?</button>
   {/if}
   <div class="controls">

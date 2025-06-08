@@ -13,6 +13,7 @@ import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
 import { BuiltinApps } from "./store";
 import { ArcMode } from "$ts/metadata/mode";
+import { BETA } from "$ts/env";
 
 export class AppRenderer extends Process {
   currentState: number[] = [];
@@ -272,10 +273,19 @@ export class AppRenderer extends Process {
     title.className = "window-title";
     title.append(titleIcon, titleCaption);
 
+    if (BETA) {
+      const beta = document.createElement("span");
+
+      beta.className = "beta-pill";
+      beta.innerText = "BETA";
+
+      title.append(beta);
+    }
+
     titlebar.className = "titlebar";
     titlebar.append(title, this._renderAltMenu(process));
 
-    if (ArcMode() !== "release") {
+    if (BETA) {
       feedbackButton.className = "link feedback";
       feedbackButton.innerText = "Feedback?";
       feedbackButton.addEventListener("click", () => {

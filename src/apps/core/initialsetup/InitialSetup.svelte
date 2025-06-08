@@ -4,6 +4,7 @@
   import type { Component } from "svelte";
   import Actions from "./InitialSetup/Actions.svelte";
   import type { InitialSetupRuntime } from "./runtime";
+  import { BETA } from "$ts/env";
 
   const { process }: AppComponentProps<InitialSetupRuntime> = $props();
   const { pageNumber, pageButtons, identityInfoValid, pages, actionsDisabled, showMainContent } = process;
@@ -32,3 +33,6 @@
   </div>
   <Actions {pageNumber} {pageButtons} {identityInfoValid} {actionsDisabled} {hide} />
 </div>
+{#if BETA}
+  <span class="beta-pill">BETA</span>
+{/if}

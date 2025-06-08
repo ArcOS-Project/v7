@@ -104,3 +104,16 @@ main#main.hidden #appRenderer {
   font-weight: bold;
   color: var(--clr-red-fg) !important;
 }
+
+span.beta-pill {
+  display: block;
+  padding: 0 8px;
+  height: 18px;
+  border-radius: 9px;
+  background-color: var(--clr-orange-bg);
+  border: var(--clr-orange-fg) 1px solid;
+  color: var(--clr-orange-fg);
+  font-weight: bold;
+  font-family: "Source Code Pro";
+  line-height: 16px;
+}

@@ -5,7 +5,7 @@ div.shell div.actioncenter div.top div.card-stack div.card.weather {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  padding: 0 20px;
+  padding: 0 15px;
   display: flex;
   align-items: end;
   flex-direction: column;
@@ -71,6 +71,8 @@ div.shell div.actioncenter div.top div.card-stack div.card.weather p {
   display: flex;
   align-items: center;
   gap: 5px;
+  font-size: 12px;
+  white-space: nowrap;
 }
 
 div.shell div.actioncenter div.top div.card-stack div.card.weather p button {
@@ -78,4 +80,6 @@ div.shell div.actioncenter div.top div.card-stack div.card.weather p button {
   padding: 0;
   background-color: transparent;
   border-radius: 0;
+  font-size: 12px;
+  height: 12px;
 }

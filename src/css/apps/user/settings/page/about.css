@@ -2,6 +2,11 @@
   background-color: transparent !important;
 }
 
+#systemSettings div.container.about button.link.feedback {
+  position: absolute;
+  left: 15px;
+}
+
 #systemSettings div.container.about div.window-title {
   display: none;
 }

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Logo } from "$ts/branding";
-  import { ArcOSVersion } from "$ts/env";
+  import { ArcOSVersion, BETA } from "$ts/env";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
   import type { AppComponentProps } from "$types/app";
@@ -23,4 +23,11 @@
   <p class="status">{@html $status}</p>
 </div>
 
-<div class="version">v{ArcOSVersion}-{ArcMode()} ({ArcBuild()})</div>
+<div class="version">
+  <span class="string">
+    v{ArcOSVersion}-{ArcMode()} ({ArcBuild()})
+  </span>
+  {#if BETA}
+    <span class="beta-pill">BETA</span>
+  {/if}
+</div>
