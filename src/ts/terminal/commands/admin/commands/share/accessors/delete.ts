@@ -1,7 +1,8 @@
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
 export const AdminShareAccessorsDelete: AdminCommandType = async (term, admin, [shareId]) => {
-  if (!admin.canAccess("admin.share.accessors.delete")) return 2;
+  if (!admin.canAccess(AdminScopes.adminShareAccessorsDelete)) return 2;
   if (!shareId) return 5;
 
   const proceed = (await term.rl?.read("Confirm change (y/n)? ")) === "y";

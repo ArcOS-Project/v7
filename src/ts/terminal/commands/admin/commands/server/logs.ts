@@ -1,8 +1,9 @@
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import dayjs from "dayjs";
 
 export const AdminServerLogs: AdminCommandType = async (term, admin) => {
-  if (!admin.canAccess("admin.logs")) return 2;
+  if (!admin.canAccess(AdminScopes.adminLogs)) return 2;
 
   const logs = await admin.getServerLogs();
 

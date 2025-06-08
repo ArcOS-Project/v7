@@ -1,7 +1,8 @@
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
 export const AdminShareChown: AdminCommandType = async (term, admin, [shareId, newUsername]) => {
-  if (!admin.canAccess("admin.users.list", "admin.share.chown")) return 2;
+  if (!admin.canAccess(AdminScopes.adminUsersList, AdminScopes.adminShareChown)) return 2;
   if (!newUsername) return 5;
 
   const user = await admin.getUserByUsername(newUsername);

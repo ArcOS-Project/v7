@@ -1,8 +1,9 @@
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { BRBLACK, RESET } from "$ts/terminal/store";
 
 export const AdminShareAccessorsList: AdminCommandType = async (term, admin, [shareId]) => {
-  if (!admin.canAccess("admin.share.accessors.get")) return 2;
+  if (!admin.canAccess(AdminScopes.adminShareAccessorsGet)) return 2;
   if (!shareId) return 5;
 
   const accessors = await admin.getShareAccessors(shareId);

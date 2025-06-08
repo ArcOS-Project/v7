@@ -1,10 +1,11 @@
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { BOLD, BRGREEN, BRPURPLE, BRRED, RESET } from "$ts/terminal/store";
 import { arrayToAsciiTable } from "$ts/terminal/util";
 import dayjs from "dayjs";
 
 export const AdminBugHuntReportGet: AdminCommandType = async (term, admin, [id]) => {
-  if (!admin.canAccess("admin.bughunt.get", "admin.users.list")) return 2;
+  if (!admin.canAccess(AdminScopes.adminBugHuntGet, AdminScopes.adminUsersList)) return 2;
   if (!id) return 5;
 
   const report = await admin.getBugReport(id);

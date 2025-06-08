@@ -1,8 +1,9 @@
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { generate } from "generate-password-ts";
 
 export const AdminShareChangepswdGenerated: AdminCommandType = async (term, admin, [shareId]) => {
-  if (!admin.canAccess("admin.share.changepswd")) return 2;
+  if (!admin.canAccess(AdminScopes.adminShareChangePswd)) return 2;
   if (!shareId) return 5;
 
   const generated = generate({

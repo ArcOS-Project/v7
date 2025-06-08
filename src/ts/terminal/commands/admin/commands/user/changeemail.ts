@@ -1,7 +1,8 @@
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
 export const AdminUserChangeemail: AdminCommandType = async (term, admin, argv) => {
-  if (!admin.canAccess("admin.users.changeemail")) return 2;
+  if (!admin.canAccess(AdminScopes.adminUsersChangeEmail)) return 2;
 
   const [username, newEmail] = argv;
   if (!username || !newEmail) return 5;

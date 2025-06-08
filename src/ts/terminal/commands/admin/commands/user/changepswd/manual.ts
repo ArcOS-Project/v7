@@ -1,7 +1,8 @@
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
 export const AdminUserChangepswdManual: AdminCommandType = async (term, admin, argv) => {
-  if (!admin.canAccess("admin.users.list", "admin.users.changepswd")) return 2;
+  if (!admin.canAccess(AdminScopes.adminUsersList, AdminScopes.adminUsersChangePswd)) return 2;
 
   const [username] = argv;
   const users = await admin.getAllUsers();

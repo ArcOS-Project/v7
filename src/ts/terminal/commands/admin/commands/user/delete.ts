@@ -1,7 +1,8 @@
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
 export const AdminUserDelete: AdminCommandType = async (term, admin, argv) => {
-  if (!admin.canAccess("admin.users.delete")) return 2;
+  if (!admin.canAccess(AdminScopes.adminUsersDelete)) return 2;
 
   const [username] = argv;
   if (!username) return 5;

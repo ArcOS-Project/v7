@@ -1,7 +1,8 @@
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
 export const AdminUserDisapprove: AdminCommandType = async (term, admin, argv) => {
-  if (!admin.canAccess("admin.users.disapprove")) return 2;
+  if (!admin.canAccess(AdminScopes.adminUsersDisapprove)) return 2;
 
   const [username] = argv;
   if (!username) return 5;

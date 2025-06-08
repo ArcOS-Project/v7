@@ -1,7 +1,8 @@
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
 export const AdminTotpDeactivate: AdminCommandType = async (term, admin, [username]) => {
-  if (!admin.canAccess("admin.totp.deactivate.user")) return 2;
+  if (!admin.canAccess(AdminScopes.adminTotpDeactivateUser)) return 2;
   if (!username) return 5;
 
   const proceed = (await term.rl?.read("Confirm change (y/n)? ")) === "y";

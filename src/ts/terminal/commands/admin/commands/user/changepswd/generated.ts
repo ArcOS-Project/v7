@@ -1,8 +1,9 @@
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { generate } from "generate-password-ts";
 
 export const AdminUserChangepswdGenerated: AdminCommandType = async (term, admin, argv) => {
-  if (!admin.canAccess("admin.users.list", "admin.users.changepswd")) return 2;
+  if (!admin.canAccess(AdminScopes.adminUsersList, AdminScopes.adminUsersChangePswd)) return 2;
 
   const [username] = argv;
   const users = await admin.getAllUsers();

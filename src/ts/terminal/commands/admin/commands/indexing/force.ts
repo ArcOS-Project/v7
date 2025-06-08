@@ -1,8 +1,9 @@
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { BRPURPLE, RESET } from "$ts/terminal/store";
 
 export const AdminIndexingForce: AdminCommandType = async (term, admin, [username]) => {
-  if (!admin.canAccess("admin.index.user")) return 2;
+  if (!admin.canAccess(AdminScopes.adminIndexUser)) return 2;
   if (!username) return 5;
 
   const result = await admin.forceIndexFor(username);

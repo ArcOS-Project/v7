@@ -1,10 +1,11 @@
 import { formatBytes } from "$ts/fs/util";
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { BRBLACK, BRPURPLE, RESET } from "$ts/terminal/store";
 import { maxLength, Plural } from "$ts/util";
 
 export const AdminShareListAll: AdminCommandType = async (term, admin) => {
-  if (!admin.canAccess("admin.share.list")) return 2;
+  if (!admin.canAccess(AdminScopes.adminShareList)) return 2;
 
   const shares = await admin.getAllShares();
   const users = await admin.getAllUsers();

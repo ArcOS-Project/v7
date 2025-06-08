@@ -1,7 +1,8 @@
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
 export const AdminTokensListAll: AdminCommandType = async (term, admin, argv) => {
-  if (!admin.canAccess("admin.tokens.get", "admin.users.list")) return 2;
+  if (!admin.canAccess(AdminScopes.adminTokensGet, AdminScopes.adminTokensGet)) return 2;
 
   const [reveal] = argv;
 

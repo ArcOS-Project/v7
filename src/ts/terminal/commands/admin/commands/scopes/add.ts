@@ -1,7 +1,8 @@
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
 export const AdminScopesAdd: AdminCommandType = async (term, admin, argv) => {
-  if (!admin.canAccess("admin.scopes.put", "admin.scopes.available", "admin.scopes.get")) return 2;
+  if (!admin.canAccess(AdminScopes.adminScopesPut, AdminScopes.adminScopesAvailable, AdminScopes.adminScopesGet)) return 2;
 
   const [username, newScope] = argv;
 

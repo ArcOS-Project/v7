@@ -1,8 +1,9 @@
 import { setJsonHierarchy } from "$ts/hierarchy";
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
 export const AdminUserPreferencesDelete: AdminCommandType = async (term, admin, [username, path]) => {
-  if (!admin.canAccess("admin.preferences.get", "admin.preferences.put")) return 2;
+  if (!admin.canAccess(AdminScopes.adminPreferencesGet, AdminScopes.adminPreferencesPut)) return 2;
   if (!username || !path) return 5;
 
   const preferences = await admin.getPreferencesOf(username);

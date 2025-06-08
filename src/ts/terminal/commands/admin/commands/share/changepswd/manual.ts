@@ -1,7 +1,8 @@
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
 export const AdminShareChangepswdManual: AdminCommandType = async (term, admin, [shareId]) => {
-  if (!admin.canAccess("admin.share.changepswd")) return 2;
+  if (!admin.canAccess(AdminScopes.adminShareChangePswd)) return 2;
   if (!shareId) return 5;
 
   const newPassword = await term.rl?.read("New password:");

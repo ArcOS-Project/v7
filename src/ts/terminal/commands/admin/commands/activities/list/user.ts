@@ -1,10 +1,11 @@
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { BRBLACK, BRPURPLE, RESET } from "$ts/terminal/store";
 import { maxLength } from "$ts/util";
 import dayjs from "dayjs";
 
 export const AdminActivitiesListUser: AdminCommandType = async (term, admin, [username]) => {
-  if (!admin.canAccess("admin.admin.activities.user")) return 2;
+  if (!admin.canAccess(AdminScopes.adminActivitiesUserGet)) return 2;
   if (!username) return 5;
 
   const activities = await admin.getActivityOf(username);

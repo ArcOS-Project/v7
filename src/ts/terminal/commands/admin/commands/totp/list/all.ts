@@ -1,9 +1,10 @@
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { BRBLACK, BRGREEN, BRPURPLE, BRYELLOW, RESET } from "$ts/terminal/store";
 import { maxLength } from "$ts/util";
 
 export const AdminTotpListAll: AdminCommandType = async (term, admin) => {
-  if (!admin.canAccess("admin.totp.get", "admin.users.list")) return 2;
+  if (!admin.canAccess(AdminScopes.adminTotpGet, AdminScopes.adminUsersList)) return 2;
 
   const totps = await admin.getAllTotp();
   const users = await admin.getAllUsers();

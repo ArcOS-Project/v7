@@ -1,9 +1,10 @@
 import { formatBytes } from "$ts/fs/util";
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { BOLD, BRGREEN, BRPURPLE, BRYELLOW, RESET } from "$ts/terminal/store";
 
 export const AdminServerStats: AdminCommandType = async (term, admin) => {
-  if (!admin.canAccess("admin.stats")) return 2;
+  if (!admin.canAccess(AdminScopes.adminStats)) return 2;
 
   const stats = await admin.getStatistics();
 

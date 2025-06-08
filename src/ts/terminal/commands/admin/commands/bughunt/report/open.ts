@@ -1,7 +1,8 @@
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
 export const AdminBugHuntReportOpen: AdminCommandType = async (term, admin, argv) => {
-  if (!admin.canAccess("admin.bughunt.open")) return 2;
+  if (!admin.canAccess(AdminScopes.adminBugHuntOpen)) return 2;
 
   const [id] = argv;
 

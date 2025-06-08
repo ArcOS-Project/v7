@@ -1,7 +1,8 @@
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
 export const AdminShareRename: AdminCommandType = async (term, admin, [shareId]) => {
-  if (!admin.canAccess("admin.share.rename")) return 2;
+  if (!admin.canAccess(AdminScopes.adminShareRename)) return 2;
   if (!shareId) return 5;
 
   const shareName = await term.rl?.read("New share name:");

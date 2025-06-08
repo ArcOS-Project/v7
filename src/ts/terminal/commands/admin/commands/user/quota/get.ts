@@ -1,8 +1,9 @@
 import { formatBytes } from "$ts/fs/util";
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
 export const AdminUserQuotaGet: AdminCommandType = async (term, admin, argv) => {
-  if (!admin.canAccess("admin.userfs.quota")) return 2;
+  if (!admin.canAccess(AdminScopes.adminUserfsQuota)) return 2;
 
   const [username] = argv;
   if (!username) return 5;

@@ -1,14 +1,15 @@
+import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "../../admin";
 
 export const AdminMount: AdminCommandType = async (term, admin, argv) => {
   if (
     !admin.canAccess(
-      "admin.users.list",
-      "admin.userfs.folder",
-      "admin.userfs.file",
-      "admin.userfs.direct",
-      "admin.userfs.tree",
-      "admin.userfs.quota"
+      AdminScopes.adminUsersList,
+      AdminScopes.adminUserfsFolder,
+      AdminScopes.adminUserfsFile,
+      AdminScopes.adminUserfsDirect,
+      AdminScopes.adminUserfsTree,
+      AdminScopes.adminUserfsQuota
     )
   )
     return 2;
