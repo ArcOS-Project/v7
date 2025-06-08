@@ -9,6 +9,7 @@ import { DownloadIcon, DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import { TrashIcon, UploadIcon } from "$ts/images/general";
 import { DefaultMimeIcon } from "$ts/images/mime";
 import type { ProcessHandler } from "$ts/process/handler";
+import { AdminScopes } from "$ts/server/admin/store";
 import { UserPaths } from "$ts/server/user/store";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
@@ -730,7 +731,8 @@ export class FileManagerRuntime extends AppProcess {
     const userInfo = this.userDaemon?.userInfo!;
     const thisUser = userInfo._id;
     const userIsAdmin =
-      userInfo.admin && (userInfo.adminScopes.includes("admin.god") || userInfo.adminScopes.includes("admin.shares.interact"));
+      userInfo.admin &&
+      (userInfo.adminScopes.includes(AdminScopes.adminGod) || userInfo.adminScopes.includes(AdminScopes.adminShareInteract));
 
     if (!drive || !(drive instanceof SharedDrive) || !thisUser) return false;
 
