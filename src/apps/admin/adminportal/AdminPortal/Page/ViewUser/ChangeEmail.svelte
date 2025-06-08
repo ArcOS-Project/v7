@@ -21,6 +21,7 @@
     loading = true;
 
     await process.admin.changeEmailOf(user.username, newEmail);
+    process.switchPage("viewUser", { user: await process.admin.getUserByUsername(user.username) }, true);
   }
 </script>
 

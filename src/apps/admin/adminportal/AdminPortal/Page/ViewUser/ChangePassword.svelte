@@ -22,6 +22,7 @@
     loading = true;
 
     await process.admin.changePasswordOf(user.username, newPassword);
+    process.switchPage("viewUser", { user: await process.admin.getUserByUsername(user.username) }, true);
   }
 </script>
 

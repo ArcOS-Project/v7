@@ -146,6 +146,10 @@
   text-align: center;
   font-weight: normal;
 }
+#AdminPortal div.viewUser div.section.shares div.share-row:hover,
+#AdminPortal div.viewUser div.section.reports div.report-row:hover {
+  background-color: var(--button-glass-bg);
+}
 
 #AdminPortal div.viewUser div.section.shares div.share-row.header {
   font-weight: bold;
@@ -184,10 +188,6 @@
   gap: 10px;
   border-bottom: var(--win-border);
   height: 36px;
-}
-
-#AdminPortal div.viewUser div.section.reports div.report-row:hover {
-  background-color: var(--accent-transparent);
 }
 
 #AdminPortal div.viewUser div.section.reports div.report-row:last-child {
@@ -334,4 +334,10 @@
   padding: 0;
   border-bottom: var(--win-border);
   font-size: 16px;
+}
+
+#AdminPortal div.viewUser div.section > div > p.error-text {
+  height: 35px;
+  line-height: 35px;
+  text-align: center;
 }
