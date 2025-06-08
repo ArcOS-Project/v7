@@ -2204,12 +2204,12 @@ export class UserDaemon extends Process {
 
     if (!this.userInfo.admin) return;
 
-    const admin = this.serviceHost!.getService<AdminBootstrapper>("AdminBootstrapper");
-    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const admin = this.serviceHost?.getService<AdminBootstrapper>("AdminBootstrapper")!;
+    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage")!;
 
-    appStore?.loadOrigin("admin", () => AdminApps);
-    appStore?.refresh();
-    admin?._activate(this.token);
+    appStore.loadOrigin("admin", () => AdminApps);
+    appStore.refresh();
+    admin._activate(this.token);
   }
 
   activateMessagingService() {
