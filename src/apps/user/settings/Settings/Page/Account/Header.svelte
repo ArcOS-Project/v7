@@ -3,6 +3,7 @@
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import type { UserDaemon } from "$ts/server/user/daemon";
   import type { UserInfo, UserPreferencesStore } from "$types/user";
+  import AccountName from "./Header/AccountName.svelte";
 
   const {
     userInfo,
@@ -52,8 +53,7 @@
       </div>
     {/if}
   </div>
-  <h1 class="account-name">
-    {$userPreferences.account.displayName || userInfo.username}
-  </h1>
+  <AccountName {process} {userInfo} />
+
   <p class="email">{userInfo.email}</p>
 </div>
