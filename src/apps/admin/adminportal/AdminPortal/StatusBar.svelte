@@ -12,7 +12,7 @@
     <p>{process.app.data.metadata.name}</p>
     <span class="lucide icon-chevron-right"></span>
     {#if pageData.parent}
-      <p>{AdminPortalPageStore.get(pageData.parent)?.parent || "Unknown"}</p>
+      <p>{AdminPortalPageStore.get(pageData.parent)?.name || "Unknown"}</p>
       <span class="lucide icon-chevron-right"></span>
     {/if}
     <p>{pageData.name}</p>

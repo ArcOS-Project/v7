@@ -4,6 +4,7 @@ import type { ExpandedUserInfo } from "$types/user";
 import type { Component } from "svelte";
 import type { AdminPortalRuntime } from "./runtime";
 import type { SharedDriveType } from "$types/shares";
+import type { FsAccess } from "$types/fs";
 
 export interface AdminPortalPage {
   name: string;
@@ -49,6 +50,12 @@ export type ViewUserData = {
 
 export type SharesData = {
   shares: SharedDriveType[];
+  users: ExpandedUserInfo[];
+};
+
+export type ViewShareData = {
+  share: SharedDriveType;
+  accessors: FsAccess[];
   users: ExpandedUserInfo[];
 };
 

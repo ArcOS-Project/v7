@@ -15,6 +15,7 @@ import Tokens from "./AdminPortal/Page/Tokens.svelte";
 import TwoFactor from "./AdminPortal/Page/TwoFactor.svelte";
 import Users from "./AdminPortal/Page/Users.svelte";
 import ViewBugReport from "./AdminPortal/Page/ViewBugReport.svelte";
+import ViewShare from "./AdminPortal/Page/ViewShare.svelte";
 import ViewUser from "./AdminPortal/Page/ViewUser.svelte";
 import type { AdminPortalPage, AdminPortalPages } from "./types";
 
@@ -105,6 +106,20 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
         return { shares: await process.admin.getAllShares(), users: await process.admin.getAllUsers() };
       },
       scopes: [AdminScopes.adminShareList, AdminScopes.adminUsersList],
+    },
+  ],
+  [
+    "viewShare",
+    {
+      name: "View share",
+      hidden: true,
+      icon: "",
+      content: ViewShare,
+      props: async (process) => {
+        return { users: await process.admin.getAllUsers(), accessors: await process.admin.getAllFsAccessors() };
+      },
+      scopes: [AdminScopes.adminUsersList, AdminScopes.adminAccessorsGet],
+      parent: "shares",
     },
   ],
   [
