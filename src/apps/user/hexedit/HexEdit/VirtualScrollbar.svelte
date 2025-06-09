@@ -31,13 +31,14 @@
 </script>
 
 <div class="virtual-scrollbar">
-  <button class="lucide icon-chevrons-up jump-up" aria-label="Jump upward" onclick={jumpUp}></button>
-  <button class="lucide icon-chevron-up up" aria-label="Up" onclick={up}></button>
+  <button class="lucide icon-chevrons-up jump-up" title="Jump upward" aria-label="Jump upward" onclick={jumpUp}></button>
+  <button class="lucide icon-chevron-up up" title="Up" aria-label="Up" onclick={up}></button>
   <div class="track">
     {#if $hexRows.length >= 16}
       <div class="inner" style="--top: {(100 / $hexRows.length) * scrollIndex}%; --height: {(100 / $hexRows.length) * 16}%"></div>
     {/if}
   </div>
-  <button class="lucide icon-chevron-down down" aria-label="Down" onclick={down}></button>
-  <button class="lucide icon-chevrons-down jump-down" aria-label="Jump downward" onclick={jumpDown}></button>
+  <button class="lucide icon-chevron-down down" title="Down" aria-label="Down" onclick={down}></button>
+  <button class="lucide icon-chevrons-down jump-down" title="Jump downward" aria-label="Jump downward" onclick={jumpDown}
+  ></button>
 </div>

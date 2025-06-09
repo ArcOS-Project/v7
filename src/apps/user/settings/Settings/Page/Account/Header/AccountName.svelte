@@ -30,5 +30,13 @@
   {:else}
     <span>{$userPreferences.account.displayName || userInfo.username}</span>
   {/if}
-  <button class="lucide" class:icon-check={$editing} class:icon-pencil={!$editing} onclick={toggle} aria-label="Edit"> </button>
+  <button
+    class="lucide"
+    class:icon-check={$editing}
+    title="Change display name"
+    class:icon-pencil={!$editing}
+    onclick={toggle}
+    aria-label="Edit"
+  >
+  </button>
 </h1>

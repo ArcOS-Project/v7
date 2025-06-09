@@ -17,7 +17,7 @@
   <p class="title">
     {title}
     {#if help}
-      <button class="lucide icon-hand-helping" aria-label="What's this?"></button>
+      <button class="lucide icon-hand-helping" title="What's this?" aria-label="What's this?"></button>
     {/if}
   </p>
   <p class="value">

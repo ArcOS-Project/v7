@@ -40,7 +40,8 @@
 <div class="container {className}">
   <CustomTitlebar {process} className={$slideVisible ? "sliding" : ""}>
     {#if $slideVisible}
-      <button class="lucide icon-arrow-left" aria-label="Go back" onclick={() => ($slideVisible = false)}></button>
+      <button class="lucide icon-arrow-left" title="Go back" aria-label="Go back" onclick={() => ($slideVisible = false)}
+      ></button>
     {/if}
     <img src={pageData?.icon || SettingsIcon} alt="" />
     <span>{pageData?.name || "Settings"}</span>

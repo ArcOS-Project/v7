@@ -11,7 +11,7 @@
 
   const { process }: { process: ShellRuntime } = $props();
   const { userPreferences, trayHost } = process;
-  const { trayIcons } = trayHost;
+  const { trayIcons } = trayHost!;
 </script>
 
 <div

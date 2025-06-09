@@ -9,6 +9,12 @@
   }
 </script>
 
-<button class="workspace-manager-button" class:active={$workspaceManagerOpened} onclick={toggle} aria-label="Workspace Manager">
+<button
+  class="workspace-manager-button"
+  class:active={$workspaceManagerOpened}
+  onclick={toggle}
+  aria-label="Workspace Manager"
+  title="Workspaces..."
+>
   <span class="lucide icon-gallery-horizontal"></span>
 </button>

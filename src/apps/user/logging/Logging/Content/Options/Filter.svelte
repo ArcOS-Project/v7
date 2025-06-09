@@ -13,6 +13,7 @@
     onclick={() => ($selectedLevel = "all")}
     class:suggested={$selectedLevel == "all"}
     aria-label="All logs"
+    title="All logs"
   ></button>
   {#each FilterLevels as level}
     <button
@@ -20,6 +21,7 @@
       onclick={() => ($selectedLevel = level)}
       class:suggested={$selectedLevel == level}
       aria-label={level.toString()}
+      title={level.toString()}
     >
     </button>
   {/each}

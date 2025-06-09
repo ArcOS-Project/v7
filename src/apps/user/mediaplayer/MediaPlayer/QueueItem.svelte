@@ -42,6 +42,7 @@
     <button
       class="lucide icon-x"
       aria-label="Remove from queue"
+      title="Remove from queue"
       onclick={() => removeThis()}
       disabled={!$Loaded || !$State.duration}
     ></button>

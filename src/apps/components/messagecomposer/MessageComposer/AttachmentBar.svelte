@@ -19,6 +19,7 @@
           aria-label="Remove attachment"
           onclick={() => process.removeAttachment(attachment.uuid)}
           disabled={$sending}
+          title="Remove attachment"
         >
         </button>
       </div>

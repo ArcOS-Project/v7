@@ -92,9 +92,10 @@
         class:icon-lock-open={share.locked}
         class:suggested={share.locked}
         aria-label="Lock share"
+        title="Lock share"
         onclick={lock}
       ></button>
-      <button class="lucide icon-trash-2" aria-label={"Delete share"} onclick={deleteShare}></button>
+      <button class="lucide icon-trash-2" onclick={deleteShare} aria-label="Delete share" title="Delete share"></button>
     </div>
   </div>
   <Accessors {share} accessors={shareAccessors} />

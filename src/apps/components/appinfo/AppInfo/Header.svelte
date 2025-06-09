@@ -57,8 +57,8 @@
       >{disabled ? "Enable" : "Disable"}</button
     >
     {#if (target?.entrypoint || target?.workingDirectory) && $userPreferences.userApps[target?.id]}
-      <button class="lucide icon-trash-2" onclick={deleteApp} aria-label="Delete app"></button>
+      <button class="lucide icon-trash-2" onclick={deleteApp} title="Delete app" aria-label="Delete app"></button>
     {/if}
-    <button class="lucide icon-rocket" onclick={launch} aria-label="Launch"></button>
+    <button class="lucide icon-rocket" onclick={launch} title="Launch" aria-label="Launch"></button>
   </div>
 </div>

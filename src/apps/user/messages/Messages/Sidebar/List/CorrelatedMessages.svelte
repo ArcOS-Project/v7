@@ -19,6 +19,7 @@
           class:icon-chevron-up={expanded}
           onclick={() => (expanded = !expanded)}
           aria-label="Expand message"
+          title="Expand message"
         ></button>
       </Message>
     </div>

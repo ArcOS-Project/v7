@@ -11,7 +11,7 @@
   onMount(() => {
     const unsub = process.handler.store.subscribe(() => {
       if (!process.handler.getProcess(icon.pid)) {
-        process.trayHost.disposeTrayIcon(icon.pid, icon.identifier);
+        process.trayHost!.disposeTrayIcon(icon.pid, icon.identifier);
         unsub();
       }
     });

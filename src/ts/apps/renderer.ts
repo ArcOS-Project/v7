@@ -165,7 +165,7 @@ export class AppRenderer extends Process {
     if (data.core || data.overlay) return;
 
     const draggable = new Draggable(window, {
-      bounds: { top: 0, left: -10000000, right: -10000000 },
+      bounds: { top: 0, left: -10000000, right: -10000000, bottom: -10000000 },
       handle: `.titlebar, .draggable`,
       cancel: `button, .nodrag`,
       legacyTranslate: false,
@@ -359,10 +359,10 @@ export class AppRenderer extends Process {
     if (!process.app.data.state.resizable) return undefined;
 
     const RESIZERS: WindowResizer[] = [
-      { className: "top", cursor: "ns-resize", width: "100%", height: "5px", top: "-3px" },
-      { className: "bottom", cursor: "ns-resize", width: "100%", height: "5px", bottom: "-3px" },
-      { className: "left", cursor: "ew-resize", width: "5px", height: "100%", left: "-3px" },
-      { className: "right", cursor: "ew-resize", width: "5px", height: "100%", right: "-3px" },
+      { className: "top", cursor: "ns-resize", width: "100%", height: "7px", top: "-3px" },
+      { className: "bottom", cursor: "ns-resize", width: "100%", height: "7px", bottom: "-3px" },
+      { className: "left", cursor: "ew-resize", width: "7px", height: "100%", left: "-3px" },
+      { className: "right", cursor: "ew-resize", width: "7px", height: "100%", right: "-3px" },
       { className: "top-left", cursor: "nwse-resize", width: "14px", height: "14px", top: "-3px", left: "-3px" },
       { className: "top-right", cursor: "nesw-resize", width: "14px", height: "14px", top: "-3px", right: "-3px" },
       { className: "bottom-left", cursor: "nesw-resize", width: "14px", height: "14px", bottom: "-3px", left: "-3px" },
@@ -391,6 +391,9 @@ export class AppRenderer extends Process {
 
     el.addEventListener("mousedown", (e) => {
       e.preventDefault();
+
+      window.classList.add("resizing");
+
       const startX = e.clientX;
       const startY = e.clientY;
       const startWidth = window.offsetWidth;
@@ -456,6 +459,7 @@ export class AppRenderer extends Process {
         });
 
         window.dispatchEvent(mouseUpEvent);
+        window.classList.remove("resizing");
       }
 
       document.addEventListener("mousemove", resizeMove);
@@ -499,7 +503,15 @@ export class AppRenderer extends Process {
     const window = this.target.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
     if (!window) return;
 
+    if (window.classList.contains("maximized")) {
+      window.classList.add("unmaximizing");
+      setTimeout(() => {
+        window.classList.remove("unmaximizing");
+      }, 300);
+    }
+
     window.classList.toggle("maximized");
+
     this.updateDraggableDisabledState(pid, window);
 
     this.systemDispatch.dispatch(window.classList.contains("maximized") ? "window-maximize" : "window-unmaximize", [pid]);

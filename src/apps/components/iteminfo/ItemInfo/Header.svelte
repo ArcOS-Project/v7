@@ -24,6 +24,6 @@
     {/if}
   </div>
   {#if $info.name}
-    <button class="lucide icon-pencil-line" aria-label="Rename" onclick={() => process.renameItem()}></button>
+    <button class="lucide icon-pencil-line" title="Rename item" aria-label="Rename" onclick={() => process.renameItem()}></button>
   {/if}
 </div>

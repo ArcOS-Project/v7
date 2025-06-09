@@ -15,6 +15,7 @@
       disabled={$loading}
       onclick={() => process.start()}
       aria-label="Refresh"
+      title="Refresh list"
     ></button>
   </h1>
   <p>These are the shares you've created or joined</p>

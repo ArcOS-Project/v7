@@ -22,12 +22,14 @@
       <button
         class="lucide icon-rectangle-ellipsis"
         aria-label="Change share password"
+        title="Change share password"
         disabled={!myShare}
         onclick={() => process.spawnOverlay("changePassword")}
       ></button>
       <button
         class="lucide icon-pencil-line"
         aria-label="Rename share"
+        title="Rename share"
         disabled={!myShare}
         onclick={() => process.spawnOverlay("renameShare")}
       ></button>
@@ -45,7 +47,11 @@
               <span class="lucide icon-user"></span>
               <span>{username}</span>
               {#if myShare}
-                <button class="lucide icon-unlink delete" aria-label="Kick user" onclick={() => process.kickUser(id, username)}
+                <button
+                  class="lucide icon-unlink delete"
+                  title="Kick user"
+                  aria-label="Kick user"
+                  onclick={() => process.kickUser(id, username)}
                 ></button>
               {/if}
             </div>

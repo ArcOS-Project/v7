@@ -54,6 +54,7 @@
       class:suggested={$userPreferences.appPreferences.fileManager!.grid}
       onclick={() => ($userPreferences.appPreferences.fileManager!.grid = true)}
       disabled={!!$virtual}
+      title="Compact view"
     ></button>
     <button
       class="lucide icon-list"
@@ -61,6 +62,7 @@
       class:suggested={!$userPreferences.appPreferences.fileManager!.grid}
       onclick={() => ($userPreferences.appPreferences.fileManager!.grid = false)}
       disabled={!!$virtual}
+      title="List view"
     ></button>
   </div>
 </div>

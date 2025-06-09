@@ -54,12 +54,13 @@
         <option value="share">Share</option>
         <option value="disabled">(Disabled)</option>
       </select>
-      <button class="lucide icon-trash-2" aria-label="Delete" onclick={() => deleteItem(payload)}></button>
+      <button class="lucide icon-trash-2" title="Delete startup item" aria-label="Delete" onclick={() => deleteItem(payload)}
+      ></button>
     </div>
   {/each}
   <div class="row new">
     <input type="text" bind:value={newPayload} onblur={newOnBlur} onkeydown={newKeydown} placeholder="New item..." />
-    <button class="lucide icon-plus" disabled={!newPayload} aria-label="Add" onclick={doNew}></button>
+    <button class="lucide icon-plus" title="Add startup item" disabled={!newPayload} aria-label="Add" onclick={doNew}></button>
   </div>
 </div>
 <div class="warning">

@@ -42,6 +42,7 @@
         aria-label="Upload wallpaper"
         onclick={() => userDaemon?.uploadWallpaper()}
         disabled={process.safeMode}
+        title="Upload wallpaper"
       >
       </button>
       <button
@@ -49,6 +50,7 @@
         aria-label="Enter a wallpaper URL"
         onclick={() => process.spawnOverlay("urlLoginBackground")}
         disabled={process.safeMode}
+        title="Set URL as wallpaper"
       >
       </button>
       <div class="sep"></div>
@@ -57,6 +59,7 @@
         aria-label="Choose a file"
         onclick={() => process.chooseLoginBackground()}
         disabled={process.safeMode}
+        title="Wallpaper from file"
       >
       </button>
     </div>

@@ -13,6 +13,7 @@
     <button
       class="parent lucide icon-arrow-up"
       aria-label="Parent Directory"
+      title="Parent directory"
       onclick={() => process.parentDir()}
       disabled={!!$virtual}
     ></button>

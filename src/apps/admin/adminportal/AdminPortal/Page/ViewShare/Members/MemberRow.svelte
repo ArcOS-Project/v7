@@ -52,6 +52,6 @@
   <div class="segment approved">{member.approved ? "Yes" : "No"}</div>
   <div class="segment admin">{member.admin ? "Yes" : "No"}</div>
   <div class="segment kick">
-    <button class="lucide icon-log-out" aria-label="Kick user" onclick={kick}></button>
+    <button class="lucide icon-log-out" title="Kick user" aria-label="Kick user" onclick={kick}></button>
   </div>
 </div>

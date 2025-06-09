@@ -13,7 +13,8 @@
   <div class="header">
     <div class="icon">
       <img src={iconStore[$shortcutData.icon] || UnknownFileIcon} alt="" />
-      <button class="change lucide icon-pencil" aria-label="Change icon" onclick={() => process.changeIcon()}></button>
+      <button class="change lucide icon-pencil" title="Change icon" aria-label="Change icon" onclick={() => process.changeIcon()}
+      ></button>
     </div>
     <h1>{$shortcutData.name}</h1>
     <p>
@@ -52,6 +53,7 @@
           <button
             class="lucide icon-folder-open"
             aria-label="Change"
+            title="Choose a target..."
             onclick={() => process.pickTarget()}
             disabled={$shortcutData.type === "new"}
           >

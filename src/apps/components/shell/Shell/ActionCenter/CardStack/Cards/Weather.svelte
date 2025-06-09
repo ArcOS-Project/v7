@@ -52,7 +52,7 @@
         {data.temperature.toFixed(1)} °C
       </h1>
       <p>
-        <button class="lucide icon-refresh-cw" aria-label="Refresh" onclick={() => refresh()}></button>
+        <button class="lucide icon-refresh-cw" title="Refresh" aria-label="Refresh" onclick={() => refresh()}></button>
         {#if data.condition}
           <span>
             {data.condition}
@@ -61,7 +61,7 @@
       </p>
     {:else}
       <p>Failed to get weather info</p>
-      <button class="retry lucide icon-refresh-cw" aria-label="Retry" onclick={() => refresh()}></button>
+      <button class="retry lucide icon-refresh-cw" title="Retry" aria-label="Retry" onclick={() => refresh()}></button>
     {/if}
   {:else}
     <Spinner height={32} />

@@ -128,17 +128,20 @@
       <ChangePassword {process} {user} />
     </div>
     <div class="quick-actions">
-      <button class="lucide icon-log-out" aria-label="Log out" onclick={logout} disabled={!user.approved}></button>
+      <button class="lucide icon-log-out" aria-label="Log out" onclick={logout} disabled={!user.approved} title="Log user out"
+      ></button>
       <button
         class="lucide icon-user-minus"
         class:icon-user-plus={!user.approved}
         aria-label={user.approved ? "Disapprove" : "Approve"}
         onclick={toggleApproved}
+        title={user.approved ? "Disapprove" : "Approve"}
       ></button>
       <button
         class="lucide icon-shield-minus"
         class:icon-shield-plus={!user.admin}
         aria-label={user.admin ? "Revoke admin" : "Grant admin"}
+        title={user.admin ? "Revoke admin" : "Grant admin"}
         onclick={toggleAdmin}
         disabled={!user.approved}
       ></button>

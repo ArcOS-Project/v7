@@ -60,14 +60,22 @@
       aria-label="Large grid"
       class:suggested={view === "grid-large"}
       onclick={() => (view = "grid-large")}
+      title="Grid view"
     ></button>
     <button
       class="lucide icon-grid-3x3"
       aria-label="Small grid"
       class:suggested={view === "grid-small"}
       onclick={() => (view = "grid-small")}
+      title="Compact grid"
     ></button>
-    <button class="lucide icon-list" aria-label="List" class:suggested={view === "list"} onclick={() => (view = "list")}></button>
+    <button
+      class="lucide icon-list"
+      title="List view"
+      aria-label="List"
+      class:suggested={view === "list"}
+      onclick={() => (view = "list")}
+    ></button>
   </div>
   <select class="filter" bind:value={$filter}>
     <option value="all">All</option>

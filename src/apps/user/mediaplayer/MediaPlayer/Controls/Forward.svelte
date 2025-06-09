@@ -9,5 +9,11 @@
   }
 </script>
 
-<button class="lucide icon-fast-forward forward" onclick={forward} disabled={!$Loaded || !$State.duration} aria-label="Forward">
+<button
+  class="lucide icon-fast-forward forward"
+  title="Skip forward"
+  onclick={forward}
+  disabled={!$Loaded || !$State.duration}
+  aria-label="Forward"
+>
 </button>

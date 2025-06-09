@@ -9,4 +9,11 @@
   }
 </script>
 
-<button class="lucide reverse icon-rewind" onclick={rewind} aria-label="Rewind" disabled={!$Loaded || !$State.duration}> </button>
+<button
+  class="lucide reverse icon-rewind"
+  title="Rewind"
+  onclick={rewind}
+  aria-label="Rewind"
+  disabled={!$Loaded || !$State.duration}
+>
+</button>

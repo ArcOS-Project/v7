@@ -10,6 +10,7 @@
   <button
     class="lucide icon-scissors"
     aria-label="Cut items"
+    title="Cut items"
     disabled={!$selection.length}
     class:activated={$cutList.length}
     onclick={() => process.setCutFiles()}
@@ -17,6 +18,7 @@
   <button
     class="lucide icon-copy"
     aria-label="Copy items"
+    title="Copy items"
     disabled={!$selection.length}
     class:activated={$copyList.length}
     onclick={() => process.setCopyFiles()}
@@ -24,6 +26,7 @@
   <button
     class="lucide icon-clipboard"
     aria-label="Paste items"
+    title="Paste items"
     disabled={!$copyList.length && !$cutList.length}
     onclick={() => process.pasteFiles()}
   ></button>

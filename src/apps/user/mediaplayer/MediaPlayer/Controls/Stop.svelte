@@ -9,4 +9,5 @@
   }
 </script>
 
-<button class="lucide icon-square stop" onclick={stop} disabled={!$Loaded || !$State.duration} aria-label="Stop"></button>
+<button class="lucide icon-square stop" title="Stop" onclick={stop} disabled={!$Loaded || !$State.duration} aria-label="Stop"
+></button>

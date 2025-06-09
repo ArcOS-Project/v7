@@ -82,7 +82,8 @@
             {collapsed ? shortTime : time}
           </span>
 
-          <button class="lucide icon-trash-2" onclick={deleteThis} class:collapsed aria-label="Delete"></button>
+          <button class="lucide icon-trash-2" title="Delete notification" onclick={deleteThis} class:collapsed aria-label="Delete"
+          ></button>
           <button
             class="collapse icon-chevron-{collapsed ? 'down' : 'up'}"
             class:collapsed

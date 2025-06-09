@@ -36,6 +36,7 @@
           onclick={() => process.removeRecipient(recipient)}
           aria-label="Remove {recipient}"
           disabled={$sending}
+          title="Remove {recipient}"
         ></button>
       </div>
     {/each}

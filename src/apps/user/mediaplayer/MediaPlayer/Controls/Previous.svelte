@@ -14,5 +14,6 @@
   onclick={previous}
   disabled={($State.current <= 2 ? $queueIndex == 0 : false) || !$Loaded || !$State.duration}
   aria-label="Previous song"
+  title="Previous song"
 >
 </button>

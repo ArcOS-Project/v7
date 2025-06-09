@@ -66,7 +66,7 @@
     <div class="content">
       <h1 class="header">
         <span title={data.title}>{data.title}</span>
-        <button class="lucide icon-arrow-right" onclick={dismiss} aria-label="Delete"></button>
+        <button class="lucide icon-arrow-right" title="Dismiss" onclick={dismiss} aria-label="Dismiss"></button>
       </h1>
       <p class="message">{@html data.message}</p>
       {#if data.buttons}

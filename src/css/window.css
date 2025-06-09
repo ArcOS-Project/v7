@@ -43,7 +43,7 @@ div.window:not(.core).maximized {
   border-radius: 0 !important;
   resize: none !important;
   border: none !important;
-  transition: all 0.3s;
+  transition: all 0.3s !important;
 }
 
 div.window:not(.core).fullscreen {
@@ -138,4 +138,12 @@ div.window:not(.core) div.resizer.top-right,
 div.window:not(.core) div.resizer.bottom-left,
 div.window:not(.core) div.resizer.bottom-right {
   z-index: 1000000000000000000;
+}
+
+div.window:not(.core).resizing {
+  transition: none !important;
+}
+
+div.window:not(.core).ummaximizing {
+  transition: all 0.2s !important;
 }

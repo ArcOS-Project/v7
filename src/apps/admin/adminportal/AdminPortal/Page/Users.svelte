@@ -74,6 +74,7 @@
       class="lucide icon-braces"
       aria-label="View user data"
       disabled={!$selected}
+      title="View user data"
       onclick={() => process.spawnOverlay("userdata", $selected)}
     ></button>
   </div>

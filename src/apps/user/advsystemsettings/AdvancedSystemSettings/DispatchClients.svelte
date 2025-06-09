@@ -31,7 +31,8 @@
     <div class="row head">
       <div class="segment ip">IP address</div>
       <div class="segment authorized">Authorized</div>
-      <button class="lucide icon-rotate-cw" disabled={loading} aria-label="Refresh" onclick={update}></button>
+      <button class="lucide icon-rotate-cw" title="Refresh list" disabled={loading} aria-label="Refresh" onclick={update}
+      ></button>
     </div>
     {#each clients as client (client.socketId)}
       <div class="row" title={client.socketId}>
@@ -44,6 +45,7 @@
           class="lucide icon-link-2-off"
           onclick={() => disconnectClient(client.socketId)}
           aria-label="Kick client"
+          title="Kick client"
           disabled={client.socketId === process.userDaemon?.globalDispatch?.client?.id}
         ></button>
       </div>

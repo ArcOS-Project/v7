@@ -14,5 +14,6 @@
   onclick={next}
   disabled={$queueIndex >= $queue.length - 1 || !$Loaded || !$State.duration}
   aria-label="Next song"
+  title="Next song"
 >
 </button>

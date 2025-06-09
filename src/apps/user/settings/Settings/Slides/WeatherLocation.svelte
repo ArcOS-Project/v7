@@ -80,7 +80,12 @@
   <Section>
     <div class="option search-bar">
       <input type="text" bind:value={searchInput} onkeydown={keydown} />
-      <button class="lucide icon-search" disabled={!searchInput || working} aria-label="Search for location" onclick={search}
+      <button
+        class="lucide icon-search"
+        title="Search for location"
+        disabled={!searchInput || working}
+        aria-label="Search for location"
+        onclick={search}
       ></button>
     </div>
 

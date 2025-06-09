@@ -47,6 +47,7 @@
       <button
         class="lucide icon-pencil"
         aria-label="Edit custom CSS"
+        title="Edit custom CSS"
         disabled={!$userPreferences.shell.customStyle.enabled && !process.safeMode}
         onclick={() => process.showSlide("visuals_userStyles")}
       ></button>

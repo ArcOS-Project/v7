@@ -257,7 +257,21 @@ export class MessagingAppRuntime extends AppProcess {
     await Sleep(300);
     await prog?.stop();
 
-    if (!contents) return;
+    if (!contents) {
+      MessageBox(
+        {
+          title: `'${attachment.filename}' unavailable`,
+          message:
+            "The attachment you tried to open could not be found, it may have been deleted. Please ask the sender of the message to send the attachment again.",
+          image: this.userDaemon!.getMimeIconByFilename(attachment.filename),
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          sound: "arcos.dialog.error",
+        },
+        this.pid,
+        true
+      );
+      return;
+    }
 
     await this.fs.createDirectory(getParentDirectory(path));
     await this.fs.writeFile(path, arrayToBlob(contents, attachment.mimeType));

@@ -17,10 +17,20 @@
     <p class="value">{formatBytes($attachments.map((a) => a.data.size).reduce((partialSum, a) => partialSum + a, 0))}</p>
   </div>
   <div class="actions">
-    <button class="lucide icon-paperclip" onclick={() => process.addAttachment()} aria-label="Add attachment" disabled={$sending}
+    <button
+      class="lucide icon-paperclip"
+      title="Add attachment"
+      onclick={() => process.addAttachment()}
+      aria-label="Add attachment"
+      disabled={$sending}
     ></button>
     <div class="sep"></div>
-    <button class="lucide icon-trash-2 discard" onclick={() => process.discard()} aria-label="Discard message" disabled={$sending}
+    <button
+      class="lucide icon-trash-2 discard"
+      title="Discard message"
+      onclick={() => process.discard()}
+      aria-label="Discard message"
+      disabled={$sending}
     ></button>
     <button class="suggested" disabled={!$title || !$body || !$recipients.length || $sending} onclick={() => process.send()}
       >Send</button

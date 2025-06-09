@@ -43,7 +43,12 @@
 <div class="notifications">
   <h1>
     <span>Notifications</span>
-    <button class="lucide icon-eraser" aria-label="Clear Notifications" disabled={loading || noDaemon || isEmpty} onclick={clear}
+    <button
+      class="lucide icon-eraser"
+      title="Clear notifications"
+      aria-label="Clear Notifications"
+      disabled={loading || noDaemon || isEmpty}
+      onclick={clear}
     ></button>
   </h1>
   <div class="content">
