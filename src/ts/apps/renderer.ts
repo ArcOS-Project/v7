@@ -4,7 +4,7 @@ import { MessageBox } from "$ts/dialog";
 import { BugReportIcon, ComponentIcon } from "$ts/images/general";
 import { Draggable } from "@neodrag/vanilla";
 import { unmount } from "svelte";
-import type { App, AppProcessData } from "../../types/app";
+import type { App, AppProcessData, WindowResizer } from "../../types/app";
 import type { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
 import { htmlspecialchars } from "../util";
@@ -52,6 +52,7 @@ export class AppRenderer extends Process {
     const window = document.createElement("div");
     const titlebar = this._renderTitlebar(process);
     const body = document.createElement("div");
+    this._resizeGrabbers(process, window);
 
     const { app } = process;
     const { data } = app;
@@ -352,6 +353,116 @@ export class AppRenderer extends Process {
     });
 
     return menu;
+  }
+
+  _resizeGrabbers(process: AppProcess, window: HTMLDivElement) {
+    if (!process.app.data.state.resizable) return undefined;
+
+    const RESIZERS: WindowResizer[] = [
+      { className: "top", cursor: "ns-resize", width: "100%", height: "5px", top: "-3px" },
+      { className: "bottom", cursor: "ns-resize", width: "100%", height: "5px", bottom: "-3px" },
+      { className: "left", cursor: "ew-resize", width: "5px", height: "100%", left: "-3px" },
+      { className: "right", cursor: "ew-resize", width: "5px", height: "100%", right: "-3px" },
+      { className: "top-left", cursor: "nwse-resize", width: "14px", height: "14px", top: "-3px", left: "-3px" },
+      { className: "top-right", cursor: "nesw-resize", width: "14px", height: "14px", top: "-3px", right: "-3px" },
+      { className: "bottom-left", cursor: "nesw-resize", width: "14px", height: "14px", bottom: "-3px", left: "-3px" },
+      { className: "bottom-right", cursor: "nwse-resize", width: "14px", height: "14px", bottom: "-3px", right: "-3px" },
+    ];
+
+    for (const resizer of RESIZERS) {
+      const el = this._resizer(window, resizer);
+
+      window.append(el);
+    }
+  }
+
+  _resizer(window: HTMLDivElement, resizer: WindowResizer) {
+    const el = document.createElement("div");
+    el.className = `resizer ${resizer.className}`;
+
+    let style = `width: ${resizer.width}; height: ${resizer.height}; cursor: ${resizer.cursor};`;
+
+    if (resizer.top) style += `top: ${resizer.top};`;
+    if (resizer.left) style += `left: ${resizer.left};`;
+    if (resizer.bottom) style += `bottom: ${resizer.bottom};`;
+    if (resizer.right) style += `right: ${resizer.right};`;
+
+    el.setAttribute("style", style);
+
+    el.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      const startX = e.clientX;
+      const startY = e.clientY;
+      const startWidth = window.offsetWidth;
+      const startHeight = window.offsetHeight;
+      const startLeft = window.offsetLeft;
+      const startTop = window.offsetTop;
+
+      function resizeMove(e: MouseEvent) {
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+
+        const minWidth = parseInt(window.style.minWidth) || 100;
+        const minHeight = parseInt(window.style.minHeight) || 100;
+
+        if (resizer.className.includes("right")) {
+          const newWidth = startWidth + dx;
+          if (newWidth >= minWidth) {
+            window.style.width = newWidth + "px";
+          }
+        }
+
+        if (resizer.className.includes("bottom")) {
+          const newHeight = startHeight + dy;
+          if (newHeight >= minHeight) {
+            window.style.height = newHeight + "px";
+          }
+        }
+
+        if (resizer.className.includes("left")) {
+          const newWidth = startWidth - dx;
+          if (newWidth >= minWidth) {
+            window.style.width = newWidth + "px";
+            window.style.left = startLeft + dx + "px";
+          } else {
+            window.style.width = minWidth + "px";
+            window.style.left = startLeft + (startWidth - minWidth) + "px";
+          }
+        }
+
+        if (resizer.className.includes("top")) {
+          const newHeight = startHeight - dy;
+          const newTop = startTop + dy;
+          if (newHeight >= minHeight && newTop >= 0) {
+            window.style.height = newHeight + "px";
+            window.style.top = newTop + "px";
+          } else if (newTop < 0) {
+            window.style.top = "0px";
+            window.style.height = startHeight + startTop + "px";
+          } else {
+            window.style.height = minHeight + "px";
+            window.style.top = startTop + (startHeight - minHeight) + "px";
+          }
+        }
+      }
+
+      function stopResize(e: MouseEvent) {
+        document.removeEventListener("mousemove", resizeMove);
+        document.removeEventListener("mouseup", stopResize);
+
+        const mouseUpEvent = new MouseEvent("mouseup", {
+          clientX: e.clientX,
+          clientY: e.clientY,
+        });
+
+        window.dispatchEvent(mouseUpEvent);
+      }
+
+      document.addEventListener("mousemove", resizeMove);
+      document.addEventListener("mouseup", stopResize);
+    });
+
+    return el;
   }
 
   async remove(pid: number) {

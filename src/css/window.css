@@ -108,10 +108,10 @@ div.window:not(.core).visible:not(.closing) {
   scale: 1;
   margin-top: 0;
 }
-
+/* 
 div.window:not(.core).resizable {
   resize: both;
-}
+} */
 div.window.focused.glass,
 div.window.overlay.glass {
   background-color: var(--glass-bg);
@@ -121,4 +121,21 @@ div.window.overlay.glass {
 div.window:not(.core) a {
   color: var(--accent-light);
   text-underline-offset: 2px;
+}
+
+div.window:not(.core) div.resizer {
+  position: absolute;
+  z-index: 1000000000000;
+}
+
+div.window.snapped div.resizer,
+div.window.maximized div.resizer {
+  display: none;
+}
+
+div.window:not(.core) div.resizer.top-left,
+div.window:not(.core) div.resizer.top-right,
+div.window:not(.core) div.resizer.bottom-left,
+div.window:not(.core) div.resizer.bottom-right {
+  z-index: 1000000000000000000;
 }

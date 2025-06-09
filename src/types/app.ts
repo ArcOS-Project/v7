@@ -124,3 +124,14 @@ export interface ContextMenuInstance {
   artificial?: boolean;
   props?: any[];
 }
+
+export interface WindowResizer {
+  className: string;
+  cursor: string;
+  width: string;
+  height: string;
+  top?: string;
+  bottom?: string;
+  left?: string;
+  right?: string;
+}
