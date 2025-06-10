@@ -1019,9 +1019,17 @@ export class UserDaemon extends Process {
       const wrap = (c: string) =>
         `export default async function({ ${Object.keys(props).join(",")} }) { \nconst global = arguments;\n ${c}\n }`;
 
+      const filename = getItemNameFromPath(
+        app.entrypoint?.includes(":/") ? app.entrypoint! : join(app.workingDirectory, app.entrypoint!)
+      );
       const props = ThirdPartyProps(this, args, app, wrap, metaPath);
       const js = wrap(contents);
-      const dataUrl = `data:application/javascript;base64,${btoa(js)}`;
+      await Backend.post(`/tpa/${app.id}/${filename}`, textToBlob(js), {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+      const dataUrl = `${import.meta.env.DW_SERVER_URL}/tpa/${app.id}@${filename}?authcode=${
+        import.meta.env.DW_SERVER_AUTHCODE
+      }&t=${Date.now()}`;
       const code = await import(/* @vite-ignore */ dataUrl);
 
       if (!code.default || !(code.default instanceof Function)) throw new Error("Expected a default function");

@@ -1,10 +1,11 @@
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import type { Filesystem } from "$ts/fs";
-import { arrayToText } from "$ts/fs/convert";
-import { join } from "$ts/fs/util";
+import { arrayToText, textToBlob } from "$ts/fs/convert";
+import { getItemNameFromPath, join } from "$ts/fs/util";
 import { tryJsonParse } from "$ts/json";
 import { detectJavaScript } from "$ts/util";
 import type { App } from "$types/app";
+import { Backend } from "../axios";
 import type { UserDaemon } from "./daemon";
 import { ThirdPartyProps } from "./thirdparty";
 
@@ -26,8 +27,14 @@ export function SupplementaryThirdPartyPropFunctions(
           throw e;
         }
       }
+      const filename = getItemNameFromPath(path);
       const contents = wrap(arrayToText((await fs.readFile(join(app.workingDirectory!, path)))!));
-      const dataUrl = `data:application/javascript;base64,${btoa(contents)}`;
+      await Backend.post(`/tpa/${app.id}/${filename}`, textToBlob(contents), {
+        headers: { Authorization: `Bearer ${daemon.token}` },
+      });
+      const dataUrl = `${import.meta.env.DW_SERVER_URL}/tpa/${app.id}@${filename}?authcode=${
+        import.meta.env.DW_SERVER_AUTHCODE
+      }&t=${Date.now()}`;
 
       try {
         const loaded = await import(/* @vite-ignore */ dataUrl);
