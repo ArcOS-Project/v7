@@ -77,7 +77,7 @@ div.shell div.actioncenter div.notification.collapsed p {
 
 div.shell div.actioncenter div.notification > div.content {
   flex-grow: 1;
-  max-width: calc(100% - 42px) !important;
+  max-width: calc(100% - 48px - 10px) !important;
 }
 
 div.shell div.actioncenter div.notification h1.header {
@@ -116,7 +116,7 @@ div.shell div.actioncenter div.notification img.icon {
 }
 
 div.shell div.actioncenter div.notification div.left span.lucide {
-  font-size: 32px;
+  font-size: 48px;
   color: var(--accent-lighter);
 }
 
