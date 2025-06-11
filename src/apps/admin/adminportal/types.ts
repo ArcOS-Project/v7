@@ -59,6 +59,10 @@ export type ViewShareData = {
   users: ExpandedUserInfo[];
 };
 
+export type FilesystemsData = {
+  users: ExpandedUserInfo[];
+};
+
 //
 // End props for individual pages
 //
