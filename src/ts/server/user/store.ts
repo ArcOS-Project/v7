@@ -1,5 +1,3 @@
-import { arrayToText } from "$ts/fs/convert";
-import { getParentDirectory } from "$ts/fs/util";
 import { MessagingIcon } from "$ts/images/apps";
 import { QuestionIcon } from "$ts/images/dialog";
 import { DownloadIcon } from "$ts/images/filesystem";
@@ -22,7 +20,6 @@ import {
   WebpageMimeIcon,
   XmlMimeIcon,
 } from "$ts/images/mime";
-import { tryJsonParse } from "$ts/json";
 import { Process } from "$ts/process/instance";
 import type { App } from "$types/app";
 import type { FileHandler } from "$types/fs";
