@@ -141,6 +141,10 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       name: "Tokens",
       icon: "key",
       content: Tokens,
+      props: async (process) => {
+        return { tokens: await process.admin.getAllTokens() };
+      },
+      scopes: [AdminScopes.adminTokensGet],
     },
   ],
   [
