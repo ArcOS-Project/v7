@@ -4,3 +4,51 @@
 :root {
   --blur: 10px;
 }
+
+.clr-red,
+.clr-red * {
+  background-color: var(--clr-red-bg) !important;
+  color: var(--clr-red-fg) !important;
+}
+
+.clr-green,
+.clr-green * {
+  background-color: var(--clr-green-bg) !important;
+  color: var(--clr-green-fg) !important;
+}
+
+.clr-yellow,
+.clr-yellow * {
+  background-color: var(--clr-yellow-bg) !important;
+  color: var(--clr-yellow-fg) !important;
+}
+
+.clr-orange,
+.clr-orange * {
+  background-color: var(--clr-orange-bg) !important;
+  color: var(--clr-orange-fg) !important;
+}
+
+.clr-blue,
+.clr-blue * {
+  background-color: var(--clr-blue-bg) !important;
+  color: var(--clr-blue-fg) !important;
+}
+
+.clr-aqua,
+.clr-aqua * {
+  background-color: var(--clr-aqua-bg) !important;
+  color: var(--clr-aqua-fg) !important;
+}
+
+.clr-magenta,
+.clr-magenta * {
+  background-color: var(--clr-magenta-bg) !important;
+  color: var(--clr-magenta-fg) !important;
+}
+
+.clr-purple,
+.clr-purple * {
+  background-color: var(--clr-purple-bg) !important;
+  color: var(--clr-purple-fg) !important;
+}

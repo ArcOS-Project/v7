@@ -128,14 +128,10 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       name: "Filesystems",
       icon: "server",
       content: Filesystems,
-    },
-  ],
-  [
-    "indexing",
-    {
-      name: "Indexing",
-      icon: "list-check",
-      content: Indexing,
+      props: async (process) => {
+        return { users: (await process.admin.getAllUsers()).reverse() };
+      },
+      scopes: [AdminScopes.adminUsersList],
       separator: true,
     },
   ],

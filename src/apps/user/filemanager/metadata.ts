@@ -14,9 +14,9 @@ export const FileManagerApp: App = {
   },
   size: {
     w: 800,
-    h: 600,
+    h: 500,
   },
-  minSize: { w: 650, h: 520 },
+  minSize: { w: 650, h: 500 },
   maxSize: { w: NaN, h: NaN },
   position: { centered: true },
   state: {

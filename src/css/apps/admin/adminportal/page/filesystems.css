@@ -1,0 +1,71 @@
+#AdminPortal .container.filesystems div.fs-list {
+  height: 100%;
+  overflow-y: scroll;
+}
+
+#AdminPortal .container.filesystems div.fs-list::-webkit-scrollbar {
+  display: none;
+}
+
+#AdminPortal .container.filesystems div.row {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  border-bottom: var(--win-border);
+}
+
+#AdminPortal .container.filesystems div.row button:not(.link) {
+  height: 35px;
+  border-radius: 0;
+  padding: 0 10px;
+  width: 54px;
+}
+
+#AdminPortal .container.filesystems div.row.header {
+  font-weight: bold;
+  position: sticky;
+  top: 0;
+  background-color: var(--button-bg);
+  z-index: 100000;
+}
+
+#AdminPortal .container.filesystems div.row div.segment.pfp {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#AdminPortal .container.filesystems div.row div.segment.index {
+  margin-left: auto;
+}
+
+#AdminPortal .container.filesystems div.row div.segment.mount,
+#AdminPortal .container.filesystems div.row div.segment.index {
+  border-left: var(--win-border);
+  width: 55px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#AdminPortal .container.filesystems div.row div.segment.username {
+  flex-grow: 1;
+}
+
+#AdminPortal .container.filesystems div.row div.segment.quota {
+  width: 36px;
+  border-left: var(--win-border);
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#AdminPortal .container.filesystems div.row div.segment.used,
+#AdminPortal .container.filesystems div.row div.segment.available,
+#AdminPortal .container.filesystems div.row div.segment.total {
+  width: 100px;
+}
