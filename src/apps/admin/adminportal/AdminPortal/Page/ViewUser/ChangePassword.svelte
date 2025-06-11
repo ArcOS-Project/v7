@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import { QuestionIcon } from "$ts/images/dialog";
+  import { AdminScopes } from "$ts/server/admin/store";
   import type { ExpandedUserInfo } from "$types/user";
   import { generate } from "generate-password-ts";
 
@@ -41,7 +42,11 @@
       >
         Generate
       </button>
-      <button class:suggested={newPassword} disabled={!newPassword} onclick={changePassword}>Change</button>
+      <button
+        class:suggested={newPassword}
+        disabled={!newPassword || !process.admin.canAccess(AdminScopes.adminUsersChangePswd)}
+        onclick={changePassword}>Change</button
+      >
     </div>
   </div>
 </div>

@@ -1,7 +1,7 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
   import { MessageBox } from "$ts/dialog";
-  import { PasswordIcon, SecurityLowIcon } from "$ts/images/general";
+  import { PasswordIcon, SecurityLowIcon, TrashIcon } from "$ts/images/general";
   import type { UserStatistics } from "$types/admin";
   import { onMount } from "svelte";
   import type { AdminPortalRuntime } from "../../runtime";
@@ -12,6 +12,8 @@
   import Identity from "./ViewUser/Identity.svelte";
   import Shares from "./ViewUser/Shares.svelte";
   import Reports from "./ViewUser/Reports.svelte";
+  import { AdminScopes } from "$ts/server/admin/store";
+  import ChangeQuota from "./ViewUser/ChangeQuota.svelte";
 
   const { process, data }: { process: AdminPortalRuntime; data: ViewUserData } = $props();
   const { user, reports } = data;
@@ -101,6 +103,30 @@
       true,
     );
   }
+
+  async function deleteUser() {
+    MessageBox(
+      {
+        title: "Delete user?",
+        message: "Are you sure you want to delete this user? THIS CANNOT BE REVERTED!",
+        buttons: [
+          { caption: "Cancel", action: () => {} },
+          {
+            caption: "Delete",
+            action: async () => {
+              await process.admin.deleteUser(user.username);
+              process.switchPage("users");
+            },
+            suggested: true,
+          },
+        ],
+        image: TrashIcon,
+        sound: "arcos.dialog.warning",
+      },
+      process.pid,
+      true,
+    );
+  }
 </script>
 
 <div class="leftpanel">
@@ -126,9 +152,15 @@
     <div class="resets">
       <ChangeEmail {process} {user} />
       <ChangePassword {process} {user} />
+      <ChangeQuota {process} {user} />
     </div>
     <div class="quick-actions">
-      <button class="lucide icon-log-out" aria-label="Log out" onclick={logout} disabled={!user.approved} title="Log user out"
+      <button
+        class="lucide icon-log-out"
+        aria-label="Log out"
+        onclick={logout}
+        disabled={!user.approved || !process.admin.canAccess(AdminScopes.adminTokensPurgeUserDelete)}
+        title="Log user out"
       ></button>
       <button
         class="lucide icon-user-minus"
@@ -136,6 +168,7 @@
         aria-label={user.approved ? "Disapprove" : "Approve"}
         onclick={toggleApproved}
         title={user.approved ? "Disapprove" : "Approve"}
+        disabled={!process.admin.canAccess(user.approved ? AdminScopes.adminUsersDisapprove : AdminScopes.adminUsersApprove)}
       ></button>
       <button
         class="lucide icon-shield-minus"
@@ -143,7 +176,14 @@
         aria-label={user.admin ? "Revoke admin" : "Grant admin"}
         title={user.admin ? "Revoke admin" : "Grant admin"}
         onclick={toggleAdmin}
-        disabled={!user.approved}
+        disabled={!user.approved || !process.admin.canAccess(user.admin ? AdminScopes.adminRevoke : AdminScopes.adminGrant)}
+      ></button>
+      <button
+        class="clr-red lucide icon-trash-2"
+        aria-label="Delete user"
+        title="Delete user"
+        onclick={deleteUser}
+        disabled={!process.admin.canAccess(AdminScopes.adminUsersDelete)}
       ></button>
     </div>
   </div>

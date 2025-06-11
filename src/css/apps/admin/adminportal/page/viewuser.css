@@ -4,7 +4,7 @@
 
 #AdminPortal div.viewUser div.leftpanel {
   border-right: var(--win-border);
-  width: calc(100% - 400px);
+  width: calc(100% - 450px);
   overflow-y: auto;
 }
 
@@ -13,7 +13,7 @@
 }
 
 #AdminPortal div.viewUser div.rightpanel {
-  width: 400px;
+  width: 450px;
 }
 
 #AdminPortal div.viewUser div.identity {
@@ -107,7 +107,7 @@
 #AdminPortal div.viewUser div.section.quota > div p.percentage {
   opacity: 0.5;
 }
-#AdminPortal div.viewUser div.section.quota > div button {
+#AdminPortal div.viewUser div.leftpanel div.section.quota > div button {
   margin-left: auto;
   border-radius: 0;
   margin-bottom: auto;
@@ -273,6 +273,19 @@
   border: none;
   border-radius: 0;
   border-left: var(--win-border);
+}
+
+#AdminPortal div.viewUser div.rightpanel div.section.quota > div {
+  gap: 0;
+}
+
+#AdminPortal div.viewUser div.rightpanel div.section.quota > div button {
+  padding: 0 5px;
+}
+
+#AdminPortal div.viewUser div.rightpanel div.section.quota > div input {
+  width: 0;
+  flex-grow: 1;
 }
 
 #AdminPortal div.viewUser div.statistics {

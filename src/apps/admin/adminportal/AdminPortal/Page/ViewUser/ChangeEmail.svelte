@@ -30,7 +30,11 @@
   <div>
     <input type="text" placeholder={user.email} bind:value={newEmail} />
     <div class="buttons">
-      <button class:suggested={newEmail} disabled={!newEmail} onclick={rename}>Change</button>
+      <button
+        class:suggested={newEmail}
+        disabled={!newEmail || !process.admin.canAccess("admin.users.changeemail")}
+        onclick={rename}>Change</button
+      >
     </div>
   </div>
 </div>
