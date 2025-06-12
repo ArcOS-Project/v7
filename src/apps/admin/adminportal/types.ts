@@ -1,4 +1,4 @@
-import type { ServerLogItem, ServerStatistics, User } from "$types/admin";
+import type { Activity, ExpandedToken, ServerLogItem, ServerStatistics, Token, User } from "$types/admin";
 import type { BugReport, ReportStatistics } from "$types/bughunt";
 import type { ExpandedUserInfo } from "$types/user";
 import type { Component } from "svelte";
@@ -60,6 +60,16 @@ export type ViewShareData = {
 };
 
 export type FilesystemsData = {
+  users: ExpandedUserInfo[];
+};
+
+export type TokensData = {
+  tokens: ExpandedToken[];
+  users: ExpandedUserInfo[];
+};
+
+export type ActivitiesData = {
+  activities: Activity[];
   users: ExpandedUserInfo[];
 };
 

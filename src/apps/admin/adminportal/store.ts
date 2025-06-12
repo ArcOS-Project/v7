@@ -142,17 +142,9 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       icon: "key",
       content: Tokens,
       props: async (process) => {
-        return { tokens: await process.admin.getAllTokens() };
+        return { tokens: await process.admin.getAllTokens(), users: await process.admin.getAllUsers() };
       },
-      scopes: [AdminScopes.adminTokensGet],
-    },
-  ],
-  [
-    "approvals",
-    {
-      name: "Approvals",
-      icon: "user-check",
-      content: Approvals,
+      scopes: [AdminScopes.adminTokensGet, AdminScopes.adminUsersList],
     },
   ],
   [
@@ -161,6 +153,10 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       name: "Activities",
       icon: "shield-ellipsis",
       content: Activities,
+      props: async (process) => {
+        return { activities: await process.admin.getAllActivity(), users: await process.admin.getAllUsers() };
+      },
+      scopes: [AdminScopes.adminUsersList, AdminScopes.adminActivitiesList],
     },
   ],
   [

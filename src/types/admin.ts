@@ -1,12 +1,16 @@
+import type { ExpandedUserInfo } from "./user";
+
 export interface Activity {
   authorId: string;
   token: string;
   userAgent: string;
   location: Location;
-  action: string;
+  action: "unknown" | "login" | "logout";
   createdAt?: Date;
   _id: string;
 }
+
+export type ExpandedActivity = Activity & { user?: ExpandedUserInfo };
 
 export interface Approval {
   username: string;
@@ -61,6 +65,8 @@ export interface Token {
   timesUsed?: number;
   userAgent?: string;
 }
+
+export type ExpandedToken = Token & { user?: ExpandedUserInfo };
 
 // User interface
 export interface User {

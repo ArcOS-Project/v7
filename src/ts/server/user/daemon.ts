@@ -690,8 +690,8 @@ export class UserDaemon extends Process {
       userDaemon: this,
       ...props,
     });
-    this.serviceHost?.killSelf?.();
-    this.unmountMountedDrives();
+    await this.serviceHost?.killSelf?.();
+    await this.unmountMountedDrives();
   }
 
   async mountZip(path: string, letter?: string, fromSystem = false) {
@@ -2201,7 +2201,7 @@ export class UserDaemon extends Process {
       json.tpaPath = path;
       json.workingDirectory = getParentDirectory(path);
 
-      this.installApp(json);
+      await this.installApp(json);
     } catch (e) {
       this.Log(`Failed to install app from "${path}": ${e}`, LogLevel.error);
     }

@@ -1,0 +1,65 @@
+#AdminPortal .container.activities div.activities-list {
+  overflow-y: scroll;
+  height: 100%;
+}
+
+#AdminPortal .container.activities div.row.header {
+  font-weight: bold;
+  background-color: var(--button-bg);
+  position: sticky;
+  top: 0;
+  z-index: 10000;
+}
+
+#AdminPortal .container.activities div.row {
+  height: 36px;
+  border-bottom: var(--win-border);
+  display: flex;
+  align-items: center;
+  padding-right: 10px;
+}
+#AdminPortal .container.activities div.segment.icon {
+  width: 36px;
+  height: 35px;
+  border-right: var(--win-border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#AdminPortal .container.activities div.segment.icon span.lucide {
+  font-size: 16px;
+  color: var(--accent-light);
+}
+
+#AdminPortal .container.activities div.segment.username {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 10px;
+  font-weight: bold;
+  flex-grow: 1;
+}
+
+#AdminPortal .container.activities div.segment {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#AdminPortal .container.activities div.segment.user-agent {
+  width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-right: 20px;
+}
+
+#AdminPortal .container.activities div.segment.action {
+  width: 100px;
+}
+
+#AdminPortal .container.activities div.segment.frontend,
+#AdminPortal .container.activities div.segment.timestamp {
+  width: 120px;
+}
