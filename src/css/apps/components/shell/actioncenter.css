@@ -10,7 +10,7 @@ div.shell div.actioncenter {
   width: 400px;
   height: calc(100% - 20px);
   background-color: var(--glass-bg);
-  border-radius: 10px;
+  border-radius: 15px;
   border: var(--border);
   max-height: 100%;
   translate: 420px 0;

@@ -10,7 +10,7 @@ div.shell div.taskbar {
   gap: 5px;
   z-index: 100;
   background-color: var(--glass-bg);
-  border-radius: 10px;
+  border-radius: 15px;
   border: var(--border);
   box-shadow: var(--secondary-box-shadow);
   backdrop-filter: blur(var(--blur));
@@ -91,7 +91,7 @@ div.shell div.taskbar div.tray-icons {
   display: flex;
   align-items: center;
   padding: 0 15px;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
 div.shell div.taskbar div.tray-icons {
@@ -126,7 +126,7 @@ div.shell div.taskbar div.pinned-apps {
   height: 40px;
   padding: 3px;
   background-color: var(--button-glass-bg);
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
 div.shell div.taskbar div.pinned-apps img {
@@ -142,6 +142,7 @@ div.shell div.taskbar div.pinned-apps > button {
   align-items: center;
   justify-content: center;
   background-color: transparent;
+  border-radius: 7px;
 }
 
 #arcShell div.shell div.taskbar div.pinned-apps > button:hover {
@@ -163,7 +164,7 @@ div.shell div.taskbar div.pinned-apps > button + button {
   width: 34px;
   min-width: 34px;
   height: 34px;
-  border-radius: 6px;
+  border-radius: 8px;
   border: none;
   display: inline-flex;
   justify-content: center;

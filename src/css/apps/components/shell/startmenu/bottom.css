@@ -2,7 +2,7 @@ div.shell div.startmenu div.bottom {
   height: 50px;
   min-height: 50px;
   background-color: var(--button-glass-bg);
-  border-radius: 7.5px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   padding: 10px 15px;

@@ -27,6 +27,7 @@ div.shell div.taskbar div.opened-apps::-webkit-scrollbar {
   text-overflow: ellipsis;
   white-space: nowrap;
   transition: background-color 0.3s, padding 0.3s, width 0.3s, transform 0.3s, scale 0.2s;
+  border-radius: 7px;
 }
 
 #arcShell div.shell div.taskbar div.opened-apps button.iconic {
