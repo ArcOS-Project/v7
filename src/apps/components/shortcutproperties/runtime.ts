@@ -11,17 +11,23 @@ import type { ArcShortcut } from "$types/shortcut";
 export class ShortcutPropertiesRuntime extends AppProcess {
   shortcutData = Store<ArcShortcut>();
   iconStore = getAllImages();
-  path: string;
+  path?: string;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path: string, data: ArcShortcut) {
     super(handler, pid, parentPid, app);
 
-    this.shortcutData.set(JSON.parse(JSON.stringify(data)));
-    this.path = path.toString();
+    if (data && path) {
+      this.shortcutData.set(JSON.parse(JSON.stringify(data)));
+      this.path = path.toString();
+    }
+  }
+
+  async start() {
+    if (!this.path) return false;
   }
 
   async save() {
-    const result = await this.userDaemon?.createShortcut(this.shortcutData(), this.path);
+    const result = await this.userDaemon?.createShortcut(this.shortcutData(), this.path!);
 
     if (result) {
       await this.closeWindow();

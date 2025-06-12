@@ -30,6 +30,10 @@ export class SecureContextRuntime extends AppProcess {
     this.data = data;
   }
 
+  async start() {
+    if (!this.id || !this.key || !this.data) return false;
+  }
+
   async render() {
     if (await this.closeIfSecondInstance()) return;
 

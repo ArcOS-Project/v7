@@ -210,7 +210,7 @@ export class AppProcess extends Process {
     if (instances.length) {
       await this.killSelf();
 
-      this.handler.renderer?.focusPid(instances[0].pid);
+      if (!this.app.data.core) this.handler.renderer?.focusPid(instances[0].pid);
 
       if (instances[0].app.desktop) this.userDaemon?.switchToDesktopByUuid(instances[0].app.desktop);
     }

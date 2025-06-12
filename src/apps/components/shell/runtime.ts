@@ -34,6 +34,10 @@ export class ShellRuntime extends AppProcess {
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
+  }
+
+  async start() {
+    if (await this.closeIfSecondInstance()) return;
 
     this.systemDispatch.subscribe("stack-busy", () => this.stackBusy.set(true)); // Subscribe to stack-busy
     this.systemDispatch.subscribe("stack-not-busy", () => this.stackBusy.set(false)); // Subscribe to stack-not-busy
@@ -88,8 +92,6 @@ export class ShellRuntime extends AppProcess {
   }
 
   async render() {
-    if (await this.closeIfSecondInstance()) return;
-
     document.body.addEventListener("click", (e) => {
       const startMenu = document.querySelector("#arcShell div.startmenu");
       const startButton = document.querySelector("#arcShell button.start-button");

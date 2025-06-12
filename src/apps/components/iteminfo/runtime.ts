@@ -29,10 +29,15 @@ export class ItemInfoRuntime extends AppProcess {
     super(handler, pid, parentPid, app);
 
     this.renderArgs = { path, file };
-    this.isDrive = getParentDirectory(path) === path;
+  }
+
+  async start() {
+    if (!this.renderArgs.path || !this.renderArgs.file) return false;
+
+    this.isDrive = getParentDirectory(this.renderArgs.path) === this.renderArgs.path;
 
     if (this.isDrive) {
-      const id = path.split(":")[0]; // Drive discriminator
+      const id = this.renderArgs.path.split(":")[0]; // Drive discriminator
 
       this.drive = this.fs.getDriveByLetter(id);
 

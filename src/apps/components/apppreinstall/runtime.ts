@@ -24,6 +24,10 @@ export class AppPreInstallRuntime extends AppProcess {
     this.pkgPath = pkgPath;
   }
 
+  async start() {
+    if (!this.pkgPath) return false;
+  }
+
   async render() {
     if (!this.userPreferences().security.enableThirdParty) {
       MessageBox(

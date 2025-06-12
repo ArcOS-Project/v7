@@ -6,22 +6,28 @@ import type { AppProcessData } from "$types/app";
 import type { IconPickerData } from "./types";
 
 export class IconPickerRuntime extends AppProcess {
-  forWhat: string;
-  defaultIcon: string;
+  forWhat?: string;
+  defaultIcon?: string;
   selected = Store<string>();
   groups = getGroupedIcons();
   store = getAllImages();
-  returnId: string;
+  returnId?: string;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, data: IconPickerData) {
     super(handler, pid, parentPid, app);
 
-    const { forWhat, defaultIcon, returnId } = data;
+    if (data) {
+      const { forWhat, defaultIcon, returnId } = data;
 
-    this.forWhat = forWhat;
-    this.defaultIcon = defaultIcon;
-    this.selected.set(defaultIcon);
-    this.returnId = returnId; // Identifying string from invocator
+      this.forWhat = forWhat;
+      this.defaultIcon = defaultIcon;
+      this.selected.set(defaultIcon);
+      this.returnId = returnId; // Identifying string from invocator
+    }
+  }
+
+  async start() {
+    if (!this.forWhat) return false;
   }
 
   async confirm() {

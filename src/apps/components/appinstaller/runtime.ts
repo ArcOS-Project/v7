@@ -19,8 +19,8 @@ export class AppInstallerRuntime extends AppProcess {
   completed = Store<boolean>(false);
   focused = Store<string>();
   verboseLog: string[] = [];
-  metadata: ArcPackage;
-  zip: JSZip;
+  metadata?: ArcPackage;
+  zip?: JSZip;
 
   constructor(
     handler: ProcessHandler,
@@ -32,15 +32,15 @@ export class AppInstallerRuntime extends AppProcess {
   ) {
     super(handler, pid, parentPid, app);
 
-    console.log(metadata, zip);
-
-    this.metadata = metadata();
-    this.zip = zip;
-    this.verboseLog.push("Constructing process");
+    if (metadata && zip) {
+      this.metadata = metadata();
+      this.zip = zip;
+      this.verboseLog.push("Constructing process");
+    }
   }
 
   async start() {
-    if (!(this.zip instanceof JSZip)) return false;
+    if (!(this.zip instanceof JSZip) || !this.metadata) return false;
 
     this.verboseLog.push("Validated JSZip instance");
   }
@@ -136,7 +136,7 @@ export class AppInstallerRuntime extends AppProcess {
 
     for (const path of sortedPaths) {
       if (!path) continue;
-      const target = join(this.metadata.installLocation, path);
+      const target = join(this.metadata!.installLocation, path);
       const item = files[path];
 
       if (!item) continue;
@@ -155,7 +155,7 @@ export class AppInstallerRuntime extends AppProcess {
 
   async getFiles() {
     const files = Object.fromEntries(
-      Object.entries(this.zip.files)
+      Object.entries(this.zip!.files)
         .filter(([k]) => k.startsWith("payload/"))
         .map(([k, v]) => [k.replace("payload/", ""), v])
     );
@@ -167,9 +167,9 @@ export class AppInstallerRuntime extends AppProcess {
   }
 
   async createInstallLocation(): Promise<boolean> {
-    this.logStatus(this.metadata.installLocation, "mkdir");
+    this.logStatus(this.metadata!.installLocation, "mkdir");
     try {
-      await this.fs.createDirectory(this.metadata.installLocation);
+      await this.fs.createDirectory(this.metadata!.installLocation);
       this.setCurrentStatus("done");
       return true;
     } catch {
@@ -179,10 +179,10 @@ export class AppInstallerRuntime extends AppProcess {
   }
 
   async registerApp(): Promise<boolean> {
-    this.logStatus(this.metadata.name, "registration");
+    this.logStatus(this.metadata!.name, "registration");
 
     try {
-      const result = await this.userDaemon?.installAppFromPath(join(this.metadata.installLocation, "_app.tpa"));
+      const result = await this.userDaemon?.installAppFromPath(join(this.metadata!.installLocation, "_app.tpa"));
       if (!result) {
         this.setCurrentStatus("done");
         return true;
@@ -196,7 +196,7 @@ export class AppInstallerRuntime extends AppProcess {
   }
 
   async mkdir(path: string): Promise<boolean> {
-    const formattedPath = path.replace(`${this.metadata.installLocation}/`, "");
+    const formattedPath = path.replace(`${this.metadata!.installLocation}/`, "");
     this.logStatus(formattedPath, "mkdir");
 
     try {
@@ -210,7 +210,7 @@ export class AppInstallerRuntime extends AppProcess {
   }
 
   async writeFile(path: string, content: ArrayBuffer): Promise<boolean> {
-    const formattedPath = path.replace(`${this.metadata.installLocation}/`, "");
+    const formattedPath = path.replace(`${this.metadata!.installLocation}/`, "");
     this.logStatus(formattedPath, "file");
 
     try {
@@ -234,8 +234,8 @@ export class AppInstallerRuntime extends AppProcess {
   async revert() {
     const gli = await this.userDaemon?.GlobalLoadIndicator("Rolling back changes...", this.pid);
 
-    await this.fs.deleteItem(this.metadata.installLocation);
-    await this.userDaemon?.deleteApp(this.metadata.appId, false);
+    await this.fs.deleteItem(this.metadata!.installLocation);
+    await this.userDaemon?.deleteApp(this.metadata!.appId, false);
     await gli?.stop();
 
     this.closeWindow();
@@ -243,6 +243,6 @@ export class AppInstallerRuntime extends AppProcess {
 
   runNow() {
     this.closeWindow();
-    this.spawnApp(this.metadata.appId, +this.env.get("shell_pid"));
+    this.spawnApp(this.metadata!.appId, +this.env.get("shell_pid"));
   }
 }

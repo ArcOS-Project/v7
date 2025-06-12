@@ -22,6 +22,10 @@ export class OpenWithRuntime extends AppProcess {
     this.renderArgs.path = path;
   }
 
+  async start() {
+    if (!this.renderArgs.path) return false;
+  }
+
   async render({ path }: RenderArgs) {
     if (!path) return;
 

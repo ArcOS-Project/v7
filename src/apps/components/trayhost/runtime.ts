@@ -10,11 +10,15 @@ import type { TrayIconDiscriminator, TrayIconOptions } from "../shell/types";
 
 export class TrayHostRuntime extends Process {
   userDaemon: UserDaemon | undefined;
-  userPreferences: UserPreferencesStore;
+  userPreferences?: UserPreferencesStore;
   public trayIcons = Store<Record<TrayIconDiscriminator, TrayIconProcess>>({});
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, _: AppProcessData) {
     super(handler, pid, parentPid);
+  }
+
+  async start() {
+    if (this.env.get("trayhost_pid") && this.handler.getProcess(+this.env.get("trayhost_pid"))) return false;
 
     this.userDaemon = this.handler.getProcess<UserDaemon>(+this.env.get("userdaemon_pid"));
     this.userPreferences = this.userDaemon!.preferences;

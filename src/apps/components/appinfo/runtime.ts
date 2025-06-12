@@ -15,6 +15,10 @@ export class AppInfoRuntime extends AppProcess {
     this.targetAppId = appId;
   }
 
+  async start() {
+    if (!this.targetAppId) return false;
+  }
+
   async render() {
     const targetApp = await this.appStore()?.getAppById(this.targetAppId);
 
