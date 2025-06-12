@@ -14,6 +14,7 @@
   import Reports from "./ViewUser/Reports.svelte";
   import { AdminScopes } from "$ts/server/admin/store";
   import ChangeQuota from "./ViewUser/ChangeQuota.svelte";
+  import TwoFactor from "./ViewUser/TwoFactor.svelte";
 
   const { process, data }: { process: AdminPortalRuntime; data: ViewUserData } = $props();
   const { user, reports } = data;
@@ -153,6 +154,7 @@
       <ChangeEmail {process} {user} />
       <ChangePassword {process} {user} />
       <ChangeQuota {process} {user} />
+      <TwoFactor {process} {user} />
     </div>
     <div class="quick-actions">
       <button

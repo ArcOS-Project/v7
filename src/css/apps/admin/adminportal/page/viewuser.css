@@ -5,7 +5,7 @@
 #AdminPortal div.viewUser div.leftpanel {
   border-right: var(--win-border);
   width: calc(100% - 450px);
-  overflow-y: auto;
+  /* overflow-y: auto; */
 }
 
 #AdminPortal div.viewUser div.leftpanel::-webkit-scrollbar {
@@ -14,6 +14,8 @@
 
 #AdminPortal div.viewUser div.rightpanel {
   width: 450px;
+  height: 100%;
+  overflow-y: auto;
 }
 
 #AdminPortal div.viewUser div.identity {
@@ -322,7 +324,8 @@
 #AdminPortal div.viewUser div.split {
   display: flex;
   align-items: start;
-  height: calc(100% - 157px);
+  height: calc(100% - 232px);
+  overflow-y: auto;
 }
 
 #AdminPortal div.viewUser div.split div.resets {
@@ -353,4 +356,24 @@
   height: 35px;
   line-height: 35px;
   text-align: center;
+}
+
+#AdminPortal div.viewUser div.section.totp div.status {
+  padding: 0 10px;
+  margin-left: 10px;
+  height: 20px;
+  line-height: 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  margin-right: auto;
+}
+
+#AdminPortal div.viewUser div.section.totp div.status.enabled {
+  background-color: var(--clr-green-fg);
+  color: var(--clr-green-bg);
+}
+
+#AdminPortal div.viewUser div.section.totp div.status.disabled {
+  background-color: var(--clr-red-fg);
+  color: var(--clr-red-bg);
 }
