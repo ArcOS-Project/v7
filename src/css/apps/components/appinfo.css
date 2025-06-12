@@ -1,7 +1,7 @@
 #AppInfo {
   display: flex;
   flex-direction: column;
-  overflow: visible;
+  /* overflow: visible; */
 }
 
 #AppInfo > div.body {

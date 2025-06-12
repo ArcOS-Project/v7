@@ -128,6 +128,11 @@ div.window:not(.core) div.resizer {
   z-index: 1000000000000;
 }
 
+div.window.overlay.resizable {
+  resize: both;
+}
+
+div.window.overlay div.resizer,
 div.window.snapped div.resizer,
 div.window.maximized div.resizer {
   display: none;
