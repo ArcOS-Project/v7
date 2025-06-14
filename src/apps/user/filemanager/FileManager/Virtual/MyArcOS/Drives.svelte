@@ -2,6 +2,7 @@
   import type { FileManagerRuntime } from "$apps/user/filemanager/runtime";
   import type { QuotedDrive } from "$apps/user/filemanager/types";
   import { contextProps } from "$ts/context/actions.svelte";
+  import { SharedDrive } from "$ts/fs/shares/drive";
   import { DriveIcon } from "$ts/images/filesystem";
   import { onMount } from "svelte";
 
@@ -39,6 +40,7 @@
           onclick={() => process.navigate(`${drive.data.driveLetter || drive.data.uuid}:/`)}
           data-contextmenu={drive.data.IDENTIFIES_AS === "share" ? "sidebar-shared-drive" : "sidebar-drive"}
           use:contextProps={[drive, `${drive.data.driveLetter || drive.data.uuid}:`, () => process.unmountDrive(drive.data, id)]}
+          disabled={drive.data.IDENTIFIES_AS === "share" && (drive.data as SharedDrive).shareInfo?.locked}
         >
           <img src={DriveIcon} alt="" />
           <div>
