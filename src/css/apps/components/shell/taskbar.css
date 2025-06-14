@@ -55,6 +55,7 @@ div.shell.docked div.taskbar {
   align-items: center;
   background-color: var(--button-glass-bg);
   font-size: 18px;
+  border-radius: 10px;
 }
 
 #arcShell div.shell div.taskbar > button:hover {

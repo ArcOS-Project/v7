@@ -1,18 +1,14 @@
 import { DevelopmentLogo, EsrLogo, RcLogo, ReleaseLogo, UnstableLogo } from "$ts/images/branding";
 import { AdminScopes } from "$ts/server/admin/store";
 import Activities from "./AdminPortal/Page/Activities.svelte";
-import Administrators from "./AdminPortal/Page/Administrators.svelte";
-import Approvals from "./AdminPortal/Page/Approvals.svelte";
 import AuditLog from "./AdminPortal/Page/AuditLog.svelte";
 import BugHunt from "./AdminPortal/Page/BugHunt.svelte";
 import Dashboard from "./AdminPortal/Page/Dashboard.svelte";
 import Filesystems from "./AdminPortal/Page/Filesystems.svelte";
-import Indexing from "./AdminPortal/Page/Indexing.svelte";
 import Logs from "./AdminPortal/Page/Logs.svelte";
 import Scopes from "./AdminPortal/Page/Scopes.svelte";
 import Shares from "./AdminPortal/Page/Shares.svelte";
 import Tokens from "./AdminPortal/Page/Tokens.svelte";
-import TwoFactor from "./AdminPortal/Page/TwoFactor.svelte";
 import Users from "./AdminPortal/Page/Users.svelte";
 import ViewBugReport from "./AdminPortal/Page/ViewBugReport.svelte";
 import ViewShare from "./AdminPortal/Page/ViewShare.svelte";
@@ -160,30 +156,21 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     },
   ],
   [
-    "2fa",
-    {
-      name: "2FA",
-      icon: "fingerprint",
-      content: TwoFactor,
-      separator: true,
-    },
-  ],
-
-  [
-    "administrators",
-    {
-      name: "Administrators",
-      icon: "shield-user",
-      content: Administrators,
-    },
-  ],
-  [
     "scopes",
     {
       name: "Scopes",
       icon: "telescope",
       content: Scopes,
       separator: true,
+      props: async (process) => {
+        return { admins: (await process.admin.getAllUsers()).filter((u) => u.admin) };
+      },
+      scopes: [
+        AdminScopes.adminScopesAvailable,
+        AdminScopes.adminScopesGet,
+        AdminScopes.adminScopesPut,
+        AdminScopes.adminUsersList,
+      ],
     },
   ],
   [

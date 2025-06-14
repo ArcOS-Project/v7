@@ -73,6 +73,10 @@ export type ActivitiesData = {
   users: ExpandedUserInfo[];
 };
 
+export type ScopesData = {
+  admins: ExpandedUserInfo[];
+};
+
 //
 // End props for individual pages
 //

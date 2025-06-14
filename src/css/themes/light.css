@@ -1,10 +1,9 @@
 :root .theme-light {
   --fg: #333;
-  --win-bg: #fff;
-  --win-border-rad: 10px;
-  --win-border: rgb(192, 192, 192) 1px solid;
+  --win-bg: #fbfbfb;
+  --win-border: #d4d4d4 1px solid;
   --win-border-light: rgb(195, 195, 195) 1px solid;
-  --glass-bg: #ffffffdd;
+  --glass-bg: #fbfbfbdd;
   --glass-alt-bg: #ffffff44;
   --glass-ultralight: rgba(255, 255, 255, 0.267);
   --glass-ultradark: rgba(232, 232, 232, 0.64);
@@ -14,13 +13,12 @@
   --startmenu-applist-item-bg: transparent;
   --startmenu-applist-item-bg-hover: #00000005;
   --startmenu-applist-item-bg-active: rgba(0, 0, 0, 0.067);
-  --button-border-rad: 6px;
-  --button-bg: #eeeeee;
-  --button-hover-bg: #dddddd;
+  --button-bg: #f3f3f3;
+  --button-hover-bg: #e4e4e4;
   --button-active-bg: #cccccc;
-  --button-glass-bg: rgba(0, 0, 0, 0.067);
-  --button-glass-hover-bg: rgba(0, 0, 0, 0.05);
-  --button-glass-active-bg: rgba(0, 0, 0, 0.1);
+  --button-glass-bg: rgba(0, 0, 0, 0.04);
+  --button-glass-hover-bg: rgba(0, 0, 0, 0.08);
+  --button-glass-active-bg: rgba(0, 0, 0, 0.16);
   --clr-red-bg: #ffc5c5;
   --clr-red-fg: #c50000;
   --clr-red-bright-fg: #ff1717;
