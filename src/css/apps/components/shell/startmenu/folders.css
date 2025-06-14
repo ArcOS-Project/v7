@@ -39,3 +39,7 @@ div.shell div.startmenu div.top div.folders {
   padding: 10px;
   box-shadow: var(--secondary-box-shadow);
 }
+
+.theme-light div.shell div.startmenu div.top div.folders button:hover {
+  background-color: var(--glass-ultradark);
+}

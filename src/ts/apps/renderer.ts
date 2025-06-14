@@ -59,9 +59,13 @@ export class AppRenderer extends Process {
 
     body.className = "body";
 
-    window.className = "window";
+    window.className = "window shell-colored";
     window.setAttribute("data-pid", process.pid.toString());
     window.id = data.id;
+
+    process.userDaemon?.preferences.subscribe((v) => {
+      window.classList.toggle("colored", v.shell.taskbar.colored && !app.data.core);
+    });
 
     if (!data.core && !data.state.headless) {
       window.append(titlebar as HTMLDivElement, body);

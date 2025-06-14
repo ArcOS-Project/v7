@@ -28,6 +28,10 @@ div.window:not(.core) {
   outline: var(--secondary-border) !important;
 }
 
+div.window:not(.core).shell-colored.colored::before {
+  opacity: 0.1;
+}
+
 div.window:not(.core).maximized {
   /* position: fixed !important; */
   top: 0 !important;

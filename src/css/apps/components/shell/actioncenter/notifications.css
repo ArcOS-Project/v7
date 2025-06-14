@@ -65,6 +65,10 @@ div.shell div.actioncenter div.notification {
   transform-origin: top;
 }
 
+.theme-light div.shell div.actioncenter div.notification {
+  background-color: var(--glass-ultradark);
+}
+
 div.shell div.actioncenter div.notification.no-image > div.content {
   max-width: 100%;
 }

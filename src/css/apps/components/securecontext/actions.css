@@ -32,7 +32,7 @@
 }
 
 #SecureContext div.actions button:not(.suggested) {
-  background-color: var(--button-hover-bg);
+  background-color: var(--button-glass-bg);
 }
 
 #SecureContext div.actions button:not(.suggested):hover {
@@ -40,5 +40,5 @@
 }
 
 #SecureContext div.actions button:not(.suggested):active {
-  background-color: var(--button-active-bg);
+  background-color: var(--button-glass-active-bg);
 }

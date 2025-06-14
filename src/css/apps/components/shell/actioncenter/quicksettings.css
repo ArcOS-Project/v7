@@ -19,6 +19,10 @@ div.shell div.actioncenter div.quick-settings button {
   background-color: var(--button-glass-bg);
 }
 
+.theme-light div.shell div.actioncenter div.quick-settings button {
+  background-color: var(--glass-ultradark);
+}
+
 div.shell div.actioncenter div.quick-settings button:hover {
   background-color: var(--button-glass-hover-bg);
 }

@@ -31,7 +31,7 @@
 .theme-light .shell-colored {
   --border: var(--win-border) !important;
 }
-
+/* 
 .theme-light .shell-colored::before {
   display: none;
-}
+} */
