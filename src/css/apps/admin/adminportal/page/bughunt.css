@@ -155,3 +155,10 @@
 #AdminPortal div.container.bughunt div.list-wrapper div.listing div.row.head div.segment.title {
   font-family: "Nunito Sans";
 }
+
+#AdminPortal div.container.bughunt p.no-results {
+  text-align: center;
+  margin: 15px 0;
+  font-weight: bold;
+  opacity: 0.5;
+}

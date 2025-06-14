@@ -8,6 +8,7 @@
 
   const { process, report, idEntry }: { process: AdminPortalRuntime; report: BugReport; idEntry: ReadableStore<string> } =
     $props();
+  const { redacted } = process;
   const timestamp = dayjs(report.createdAt).format("D MMM YYYY, HH:mm");
 </script>
 
@@ -22,5 +23,5 @@
   <div class="segment mode-icon"><img src={LogoTranslations[report.mode] || QuestionIcon} alt="" /></div>
   <div class="segment timestamp">{timestamp}</div>
   <div class="segment title">{report.title}</div>
-  <div class="segment author">{report.userData?.username || "Stranger"}</div>
+  <div class="segment author" class:redacted={$redacted}>{report.userData?.username || "Stranger"}</div>
 </div>

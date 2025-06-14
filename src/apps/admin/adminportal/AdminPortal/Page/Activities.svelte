@@ -7,6 +7,7 @@
   import type { ActivitiesData } from "../../types";
 
   const { process, data }: { process: AdminPortalRuntime; data: ActivitiesData } = $props();
+  const { redacted } = process;
   const { users } = data;
   const activities: ExpandedActivity[] = data.activities
     .map((a) => ({
@@ -32,7 +33,7 @@
       <div class="segment icon">
         <span class="lucide icon-{ActivityIconTranslations[activity.action]}"></span>
       </div>
-      <div class="segment username">
+      <div class="segment username" class:redacted={$redacted}>
         {#if activity.user}
           <ProfilePicture height={20} fallback={activity.user.profile.profilePicture} />
           <button class="link" onclick={() => process.switchPage("viewUser", { user: activity.user })}>

@@ -17,6 +17,7 @@
   import TwoFactor from "./ViewUser/TwoFactor.svelte";
 
   const { process, data }: { process: AdminPortalRuntime; data: ViewUserData } = $props();
+  const { redacted } = process;
   const { user, reports } = data;
 
   let statistics: UserStatistics | undefined = $state();
@@ -131,7 +132,7 @@
 </script>
 
 <div class="leftpanel">
-  <Identity {user} />
+  <Identity {user} {redacted} />
   <Filesystem {user} {process} />
   <Shares {user} {process} />
   <Reports {user} {reports} {process} />

@@ -3,7 +3,6 @@
   import CircularProgress from "$lib/CircularProgress.svelte";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import Spinner from "$lib/Spinner.svelte";
-  import { MessageBox } from "$ts/dialog";
   import { formatBytes } from "$ts/fs/util";
   import { GoodStatusIcon } from "$ts/images/status";
   import type { AdminBootstrapper } from "$ts/server/admin";
@@ -12,6 +11,7 @@
   import { onMount } from "svelte";
 
   const { admin, user, process }: { admin: AdminBootstrapper; user: ExpandedUserInfo; process: AdminPortalRuntime } = $props();
+  const { redacted } = process;
 
   let quota = $state<UserQuota>();
   let loading = $state<boolean>(true);
@@ -53,7 +53,9 @@
     <ProfilePicture height={20} fallback={user.profile.profilePicture} />
   </div>
   <div class="segment username">
-    <button class="link" onclick={() => process.switchPage("viewUser", { user })}>{user.username}</button>
+    <button class="link" onclick={() => process.switchPage("viewUser", { user })} class:redacted={$redacted}
+      >{user.username}</button
+    >
   </div>
   <div class="segment used">
     {#if !loading}

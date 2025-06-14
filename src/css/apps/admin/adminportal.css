@@ -62,10 +62,30 @@
 #AdminPortal > div.body div.status-bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   height: 31px;
   border-top: var(--win-border);
   padding: 0 7px;
+  gap: 8px;
+}
+
+#AdminPortal > div.body div.status-bar button.lock {
+  margin-left: auto;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  background-color: var(--clr-green-fg);
+  color: var(--clr-green-bg);
+}
+
+#AdminPortal > div.body div.status-bar button.lock.icon-lock-open {
+  background-color: var(--clr-red-fg);
+  color: var(--clr-red-bg);
+}
+
+#AdminPortal > div.body div.status-bar div.sep {
+  width: 1px;
+  height: 20px;
+  background-color: var(--button-glass-hover-bg);
 }
 
 #AdminPortal > div.body div.status-bar div.crumbs {
@@ -74,12 +94,18 @@
   gap: 5px;
 }
 
+#AdminPortal > div.body div.status-bar div.crumbs p {
+  opacity: 0.5;
+}
+
 #AdminPortal > div.body div.status-bar div.crumbs span.lucide {
   opacity: 0.5;
+  height: 12px;
 }
 
 #AdminPortal > div.body div.status-bar div.crumbs p:last-child {
   font-weight: bold;
+  opacity: 1;
 }
 
 #AdminPortal > div.body div.page-content > div.loading {
@@ -112,4 +138,12 @@
   font-size: 64px;
   margin-bottom: 10px;
   color: var(--accent-lighter);
+}
+
+#AdminPortal .redacted {
+  filter: blur(5px);
+}
+
+#AdminPortal .redacted:hover {
+  filter: none;
 }

@@ -5,6 +5,7 @@
   import type { AdminPortalPage } from "../types";
 
   const { process, pageData }: { process: AdminPortalRuntime; pageData: AdminPortalPage } = $props();
+  const { redacted } = process;
 </script>
 
 <div class="status-bar">
@@ -17,5 +18,14 @@
     {/if}
     <p>{pageData.name}</p>
   </div>
-  <ProfilePicture height={16} userDaemon={process.userDaemon!} />
+  <button
+    class="lock lucide"
+    class:icon-lock={$redacted}
+    class:icon-lock-open={!$redacted}
+    onclick={() => ($redacted = !$redacted)}
+    aria-label="Toggle redacting"
+  ></button>
+  <div class="sep"></div>
+  <ProfilePicture height={20} userDaemon={process.userDaemon!} />
+  <span>{process.username}</span>
 </div>

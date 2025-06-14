@@ -76,7 +76,7 @@
       <Row {process} {report} {idEntry} />
     {/each}
     {#if !$store.length}
-      <p class="no-results">No results.</p>
+      <p class="no-results">Logan ate them all.</p>
     {/if}
   </div>
   <div class="id-entry">
