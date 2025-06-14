@@ -1,3 +1,4 @@
+import { __Console__ } from "$ts/console";
 import { ArcOSVersion } from "$ts/env";
 import { textToBlob } from "$ts/fs/convert";
 import { MemoryFilesystemDrive } from "$ts/fs/drives/temp";
@@ -20,7 +21,7 @@ export class InitProcess extends Process {
   }
 
   async jumpstart() {
-    console.time("** Init jumpstart");
+    __Console__.time("** Init jumpstart");
     this.Log("Jumpstarting init process!");
 
     await this.handler.startRenderer(this.pid);
@@ -37,7 +38,7 @@ export class InitProcess extends Process {
     await this.initializeTempFs();
 
     await kernel.state?.loadState(connected ? "boot" : "serverdown", {}, true);
-    console.timeEnd("** Init jumpstart");
+    __Console__.timeEnd("** Init jumpstart");
   }
 
   async initializeTempFs() {

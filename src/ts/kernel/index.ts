@@ -1,3 +1,4 @@
+import { __Console__ } from "$ts/console";
 import { getBuild } from "$ts/metadata/build";
 import { getLicense } from "$ts/metadata/license";
 import { getMode } from "$ts/metadata/mode";
@@ -75,7 +76,7 @@ export class WaveKernel {
   }
 
   async _init() {
-    console.time("** Kernel init");
+    __Console__.time("** Kernel init");
     this.Log(`KERNEL`, `Called _init`);
 
     // KERNEL AREA STARTS HERE
@@ -96,7 +97,7 @@ export class WaveKernel {
     this.BUGREP_TITLE = "Crash by irrecoverable unhandled exception";
 
     await this.init?.jumpstart();
-    console.timeEnd("** Kernel init");
+    __Console__.timeEnd("** Kernel init");
   }
 
   getModule<T = any>(id: string, dontCrash = false): T {
@@ -112,13 +113,13 @@ export class WaveKernel {
     this.Log(`KERNEL`, `Loading kernel modules`);
 
     for (const [id, mod] of Object.entries(KernelModules)) {
-      console.time(`kernel module ${id}`);
+      __Console__.time(`kernel module ${id}`);
       (this as any)[id] = new mod(this, id);
 
       await (this as any)[id].__init();
 
       this.modules.push(id);
-      console.timeEnd(`kernel module ${id}`);
+      __Console__.timeEnd(`kernel module ${id}`);
     }
   }
 
@@ -137,7 +138,7 @@ export class WaveKernel {
       return v;
     });
 
-    console.log(
+    __Console__.log(
       `[${(timestamp - this.startMs).toString().padStart(10, "0")}] ${ShortLogLevelCaptions[level]} ${source}: ${message}`
     );
   }

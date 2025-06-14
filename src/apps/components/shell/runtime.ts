@@ -236,7 +236,6 @@ export class ShellRuntime extends AppProcess {
   }
 
   public MutateIndex(e: KeyboardEvent) {
-    console.log(e);
     if (!e?.key) return;
 
     const key = e.key.toLowerCase();

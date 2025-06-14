@@ -14,6 +14,7 @@ import { AppProcess } from "./process";
 import { BuiltinApps } from "./store";
 import { ArcMode } from "$ts/metadata/mode";
 import { BETA } from "$ts/env";
+import { __Console__ } from "$ts/console";
 
 export class AppRenderer extends Process {
   currentState: number[] = [];
@@ -641,7 +642,7 @@ export class AppRenderer extends Process {
   }
 
   notifyCrash(data: App, e: Error, process: AppProcess) {
-    console.warn(` - PID ${process?.pid} APPLICATION ERROR - `, e);
+    __Console__.warn(` - PID ${process?.pid} APPLICATION ERROR - `, e);
     const lines = [
       `<b><code>${data.id}::'${data.metadata.name}'</code> (PID ${
         process?.pid || "unknown"

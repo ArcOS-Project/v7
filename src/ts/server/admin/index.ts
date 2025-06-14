@@ -616,6 +616,12 @@ export class AdminBootstrapper extends BaseService {
     return true;
   }
 
+  canAccessP(provided: UserInfo, ...scopes: string[]) {
+    if (provided.adminScopes?.includes(AdminScopes.adminGod)) return [];
+
+    return scopes.filter((s) => !provided.adminScopes?.includes(s));
+  }
+
   getMissingScopes(...scopes: string[]): string[] {
     if (this.userInfo?.adminScopes?.includes(AdminScopes.adminGod)) return [];
 

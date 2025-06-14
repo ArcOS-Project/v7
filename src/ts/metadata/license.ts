@@ -1,7 +1,8 @@
+import { __Console__ } from "$ts/console";
 import { WaveKernel } from "$ts/kernel";
 
 export async function getLicense() {
-  console.time("Get License");
+  __Console__.time("Get License");
   const kernel = WaveKernel.get();
 
   kernel.Log("branding", "Attempting to retrieve project license from /license");
@@ -14,7 +15,7 @@ export async function getLicense() {
   } catch {
     kernel.ARCOS_LICENSE = "not found";
   } finally {
-    console.timeEnd("Get License");
+    __Console__.timeEnd("Get License");
   }
 }
 

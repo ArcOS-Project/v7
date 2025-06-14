@@ -14,6 +14,7 @@
  */
 
 import type { AppProcess } from "$ts/apps/process";
+import { __Console__ } from "$ts/console";
 import { ArcOSVersion } from "$ts/env";
 import { Filesystem } from "$ts/fs";
 import { join } from "$ts/fs/util";
@@ -69,7 +70,7 @@ export class LanguageInstance extends Process {
 
     this.source = this.parseSource(source);
     this.stdin = options.stdin || (async () => "");
-    this.stdout = options.stdout || ((m: string) => console.log(m));
+    this.stdout = options.stdout || ((m: string) => __Console__.log(m));
     this.onTick = this.options.onTick || (() => {});
     this.onError = this.options.onError || (() => {});
     this.onExit = this.options.onExit || (() => {});

@@ -45,7 +45,7 @@ export class AdminCommand extends TerminalProcess {
     }
 
     term.rl?.println(
-      `${BRRED}${BOLD}WARNING!${RESET} Sensitive information may be displayed in query results.\r\n         ${BOLD}Do not share screenshots of this console.${RESET}\r\n`
+      `${BRRED}${BOLD}WARNING!${RESET} Sensitive information may be displayed in query results.\r\n         ${BOLD}Do not share screenshots of this utility.${RESET}\r\n`
     );
 
     if (!term.daemon?.userInfo?.hasTotp && term.daemon?.userInfo?.admin) {

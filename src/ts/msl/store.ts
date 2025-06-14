@@ -1,3 +1,4 @@
+import { __Console__ } from "$ts/console";
 import type { LanguageOptions, Libraries } from "$types/msl";
 import { BaseLibrary } from "./libraries/_base";
 import { Base64Library } from "./libraries/base64";
@@ -22,7 +23,7 @@ export const BaseLibraries: Libraries = {
 
 export const DefaultLanguageOptions: LanguageOptions = {
   stdin: async () => "",
-  stdout: (m: string) => console.log(m),
+  stdout: (m: string) => __Console__.log(m),
   onTick: (_) => {},
   continuous: false,
   tickDelay: 0,

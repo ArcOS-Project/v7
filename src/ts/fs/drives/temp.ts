@@ -28,12 +28,11 @@ export class MemoryFilesystemDrive extends FilesystemDrive {
     let current = this.data;
     for (const part of parts) {
       if (!current[part]) {
-        console.log(`Could not find part: ${part} in current object for path: ${path}`);
+        this.Log(`Could not find part: ${part} in current object for path: ${path}`);
         return undefined;
       }
       current = current[part];
     }
-    console.log(`Successfully retrieved entry for path: ${path}`, current);
     return current;
   }
 
@@ -83,11 +82,11 @@ export class MemoryFilesystemDrive extends FilesystemDrive {
   }
 
   async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
-    console.log(`Attempting to read directory: ${path}`);
+    this.Log(`Attempting to read directory: ${path}`);
     const dir = this.getEntry(path);
 
     if (!dir || typeof dir !== "object") {
-      console.log(`Entry for path ${path} is not a directory or does not exist.`);
+      this.Log(`Entry for path ${path} is not a directory or does not exist.`);
       return undefined;
     }
 
@@ -107,7 +106,7 @@ export class MemoryFilesystemDrive extends FilesystemDrive {
             itemId: entry.itemId,
           });
         } else if (entry.isDir) {
-          console.log(`Found directory entry: ${name}`);
+          this.Log(`Found directory entry: ${name}`);
           dirs.push({
             name: name,
             dateCreated: entry.dateCreated,
@@ -118,7 +117,7 @@ export class MemoryFilesystemDrive extends FilesystemDrive {
       }
     }
 
-    console.log(`Finished reading directory ${path}. Found ${dirs.length} directories and ${files.length} files.`);
+    this.Log(`Finished reading directory ${path}. Found ${dirs.length} directories and ${files.length} files.`);
 
     return {
       files: sortByKey(files, "name"),

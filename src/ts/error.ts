@@ -1,3 +1,4 @@
+import { __Console__ } from "./console";
 import { Crash } from "./crash";
 
 export function handleGlobalErrors() {
@@ -9,10 +10,10 @@ export function handleGlobalErrors() {
     }
     LOCKED = true;
     if (e instanceof ErrorEvent) {
-      console.log(e.error);
+      __Console__.log(e.error);
       e.filename;
     } else if (e instanceof PromiseRejectionEvent) {
-      console.log(e.reason);
+      __Console__.log(e.reason);
     }
 
     e.preventDefault();

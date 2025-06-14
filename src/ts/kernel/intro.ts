@@ -1,3 +1,5 @@
+import { __Console__ } from "$ts/console";
+
 export const ASCII_ART = [
   "    _           ___  ___ ",
   "   /_\\  _ _ __ / _ \\/ __|",
@@ -15,4 +17,4 @@ export const LINES = [
   "",
 ];
 
-export const EchoIntro = () => console.log(LINES.join(`\n`));
+export const EchoIntro = () => __Console__.log(LINES.join(`\n`));

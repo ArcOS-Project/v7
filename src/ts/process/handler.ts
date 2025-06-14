@@ -1,4 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
+import { __Console__ } from "$ts/console";
 import { SystemDispatch } from "$ts/dispatch";
 import { Environment } from "$ts/kernel/env";
 import type { ProcessKillResult } from "$types/process";
@@ -68,7 +69,7 @@ export class ProcessHandler extends KernelModule {
     }
 
     const pid = this.getPid();
-    console.time(`process spawn: ${pid}`);
+    __Console__.time(`process spawn: ${pid}`);
     const proc = new (process as any)(this, pid, parentPid, ...args) as Process;
 
     Log("ProcessHandler.spawn", `Spawning new ${proc.constructor.name} with PID ${pid}`);
@@ -81,7 +82,7 @@ export class ProcessHandler extends KernelModule {
       if (result === false) {
         this.makeNotBusy(`Stopped spawn of ${pid}: __start gave false`);
 
-        console.timeEnd(`process spawn: ${pid}`);
+        __Console__.timeEnd(`process spawn: ${pid}`);
         return;
       }
     }
@@ -97,7 +98,7 @@ export class ProcessHandler extends KernelModule {
     if (this.renderer && proc instanceof AppProcess) this.renderer.render(proc, renderTarget);
 
     this.makeNotBusy(`Stopped spawn of ${pid}: done`);
-    console.timeEnd(`process spawn: ${pid}`);
+    __Console__.timeEnd(`process spawn: ${pid}`);
     return proc as T;
   }
 

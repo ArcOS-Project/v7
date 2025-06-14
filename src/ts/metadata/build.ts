@@ -1,7 +1,8 @@
+import { __Console__ } from "$ts/console";
 import { WaveKernel } from "$ts/kernel";
 
 export async function getBuild() {
-  console.time("Get Build");
+  __Console__.time("Get Build");
   const kernel = WaveKernel.get();
 
   kernel.Log("branding", "Attempting to retrieve git hash from /build");
@@ -14,7 +15,7 @@ export async function getBuild() {
   } catch {
     kernel.ARCOS_BUILD = "unknown";
   } finally {
-    console.timeEnd("Get Build");
+    __Console__.timeEnd("Get Build");
   }
 }
 
