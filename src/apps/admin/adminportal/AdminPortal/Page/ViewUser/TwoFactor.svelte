@@ -2,6 +2,7 @@
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import { MessageBox } from "$ts/dialog";
   import { ElevationIcon, SecurityHighIcon, SecurityMediumIcon } from "$ts/images/general";
+  import { AdminScopes } from "$ts/server/admin/store";
   import type { UserTotp } from "$types/admin";
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";
@@ -85,14 +86,16 @@
   }
 </script>
 
-<div class="section totp">
-  <h1>Two-factor authentication</h1>
-  <div>
-    <div class="status" class:enabled={totp?.activated} class:disabled={!totp?.activated}>
-      {totp?.activated ? "Enabled" : totp ? "Disabled" : "Not present"}
+{#if process.admin.canAccess(AdminScopes.adminTotpGetUser)}
+  <div class="section totp">
+    <h1>Two-factor authentication</h1>
+    <div>
+      <div class="status" class:enabled={totp?.activated} class:disabled={!totp?.activated}>
+        {totp?.activated ? "Enabled" : totp ? "Disabled" : "Not present"}
+      </div>
+      <button class:clr-orange={totp?.activated} disabled={!totp?.activated} onclick={disableTotp}>Disable</button>
+      <button class:clr-red={!!totp} disabled={!totp} onclick={deleteTotp}>Delete</button>
+      <button disabled={!totp?.activated} onclick={viewTotp}>View...</button>
     </div>
-    <button class:clr-orange={totp?.activated} disabled={!totp?.activated} onclick={disableTotp}>Disable</button>
-    <button class:clr-red={!!totp} disabled={!totp} onclick={deleteTotp}>Delete</button>
-    <button disabled={!totp?.activated} onclick={viewTotp}>View...</button>
   </div>
-</div>
+{/if}

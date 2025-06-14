@@ -6,6 +6,7 @@
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";
   import ShareRow from "./Shares/ShareRow.svelte";
+  import { AdminScopes } from "$ts/server/admin/store";
 
   const { process, user }: { process: AdminPortalRuntime; user: ExpandedUserInfo } = $props();
   const selection = Store<string>();
@@ -19,26 +20,28 @@
   });
 </script>
 
-<div class="section shares">
-  <h1>Shares</h1>
-  <div class="share-list" class:centered={loading || !shares.length}>
-    {#if loading}
-      <Spinner height={16} />
-    {:else if shares.length}
-      <div class="share-row header">
-        <div class="segment icon">
-          <span class="lucide icon-hard-drive"></span>
+{#if process.admin.canAccess(AdminScopes.adminShareListUser)}
+  <div class="section shares">
+    <h1>Shares</h1>
+    <div class="share-list" class:centered={loading || !shares.length}>
+      {#if loading}
+        <Spinner height={16} />
+      {:else if shares.length}
+        <div class="share-row header">
+          <div class="segment icon">
+            <span class="lucide icon-hard-drive"></span>
+          </div>
+          <div class="segment name">Share name</div>
+          <div class="segment size">Size</div>
+          <div class="segment members">ACC</div>
+          <div class="segment locked">LCK</div>
         </div>
-        <div class="segment name">Share name</div>
-        <div class="segment size">Size</div>
-        <div class="segment members">ACC</div>
-        <div class="segment locked">LCK</div>
-      </div>
-      {#each shares as share (share._id)}
-        <ShareRow {process} {selection} {share} />
-      {/each}
-    {:else}
-      <p class="error-text">No shares found.</p>
-    {/if}
+        {#each shares as share (share._id)}
+          <ShareRow {process} {selection} {share} />
+        {/each}
+      {:else}
+        <p class="error-text">No shares found.</p>
+      {/if}
+    </div>
   </div>
-</div>
+{/if}

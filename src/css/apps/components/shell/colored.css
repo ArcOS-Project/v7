@@ -7,8 +7,8 @@
 .shell-colored::before {
   content: " ";
   border-radius: 14px;
-  width: calc(100%);
-  height: calc(100%);
+  width: 100%;
+  height: 100%;
   position: absolute;
   top: 0px;
   left: 0px;

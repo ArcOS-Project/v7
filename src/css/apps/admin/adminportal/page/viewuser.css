@@ -298,6 +298,14 @@
   padding: 0;
   /* margin-left: -1px; */
   width: calc(100%);
+  height: 232px;
+}
+
+#AdminPortal div.viewUser div.statistics.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: var(--win-border);
 }
 
 #AdminPortal div.viewUser div.statistics div.statistic {
@@ -332,6 +340,11 @@
   width: calc(100% - 35px);
   height: 100%;
   border-right: var(--win-border);
+  overflow-y: auto;
+}
+
+#AdminPortal div.viewUser div.split div.resets::-webkit-scrollbar {
+  display: none;
 }
 
 #AdminPortal div.viewUser div.quick-actions {

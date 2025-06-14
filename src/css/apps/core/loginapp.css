@@ -84,6 +84,7 @@ div.window#loginApp > div.body div.container div.field {
   border: #fff2 1px solid;
   overflow: hidden;
   backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
   margin-bottom: 10px;
 }
 
