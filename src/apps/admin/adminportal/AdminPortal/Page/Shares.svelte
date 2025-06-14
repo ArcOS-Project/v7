@@ -7,6 +7,7 @@
   import type { SharesData, SharesPageFilters } from "../../types";
 
   const { process, data }: { process: AdminPortalRuntime; data: SharesData } = $props();
+  const { redacted } = process;
   const { shares, users } = data;
 
   const states: SharesPageFilters[] = ["all", "resized", "locked"];

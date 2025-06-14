@@ -20,7 +20,7 @@
     <ProfilePicture fallback={admin.profile.profilePicture} height={20} />
   </div>
   <div class="segment username">{admin.username}</div>
-  <div class="segment scopes">
+  <div class="segment pages">
     {#each pages as page}
       {#if !page.hidden}
         <span class="lucide page-icon icon-{page.icon}" title={page.name}></span>

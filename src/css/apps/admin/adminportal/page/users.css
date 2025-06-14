@@ -6,7 +6,7 @@
   padding-left: 10px;
 }
 
-#AdminPortal div.container.users button.lucide {
+#AdminPortal div.container.users > div.page-content button.lucide {
   border-radius: 0;
   border-left: var(--win-border);
   background-color: var(--win-bg);

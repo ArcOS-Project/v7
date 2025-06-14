@@ -1,0 +1,19 @@
+#AdminPortal .container.scopes div.row {
+  height: 36px;
+  border-bottom: var(--win-border);
+  display: flex;
+  align-items: center;
+}
+
+#AdminPortal .container.scopes div.row.header {
+  background-color: var(--button-bg);
+  font-weight: bold;
+}
+
+#AdminPortal .container.scopes div.row div.segment.pfp {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
