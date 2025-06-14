@@ -1,8 +1,10 @@
 #AdminPortal .container.scopes div.row {
-  height: 36px;
+  min-height: 36px;
+  height: fit-content;
   border-bottom: var(--win-border);
   display: flex;
   align-items: center;
+  gap: 10px;
 }
 
 #AdminPortal .container.scopes div.row.header {
@@ -10,10 +12,49 @@
   font-weight: bold;
 }
 
+#AdminPortal .container.scopes div.row div.segment {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 #AdminPortal .container.scopes div.row div.segment.pfp {
   width: 35px;
+  min-width: 35px;
   height: 35px;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+#AdminPortal .container.scopes div.row div.segment.pages {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  min-height: 35px;
+  height: fit-content;
+  padding: 8px;
+}
+
+#AdminPortal .container.scopes div.row div.segment.pages div.page {
+  height: 18px;
+  border-radius: 4px;
+  background-color: var(--button-bg);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 4px;
+}
+#AdminPortal .container.scopes div.row div.segment.username {
+  width: 150px;
+  min-width: 150px;
+}
+#AdminPortal .container.scopes div.row div.segment.count {
+  margin-left: auto;
+}
+
+#AdminPortal .container.scopes div.row div.segment.count,
+#AdminPortal .container.scopes div.row div.segment.god {
+  width: 100px;
+  min-width: 100px;
 }

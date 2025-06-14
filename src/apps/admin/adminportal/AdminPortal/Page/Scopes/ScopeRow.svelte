@@ -23,7 +23,10 @@
   <div class="segment pages">
     {#each pages as page}
       {#if !page.hidden}
-        <span class="lucide page-icon icon-{page.icon}" title={page.name}></span>
+        <div class="page">
+          <span class="lucide page-icon icon-{page.icon}" title={page.name}></span>
+          <span>{page.name}</span>
+        </div>
       {/if}
     {/each}
   </div>
