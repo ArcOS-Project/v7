@@ -15,7 +15,8 @@ import Cookies from "js-cookie";
 import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
 import type { AppProcessData } from "../../../types/app";
-import type { LoginAppProps } from "./types";
+import type { LoginAppProps, PersistenceInfo } from "./types";
+import { tryJsonParse } from "$ts/json";
 
 export class LoginAppRuntime extends AppProcess {
   public DEFAULT_WALLPAPER = Store<string>("");
@@ -25,6 +26,7 @@ export class LoginAppRuntime extends AppProcess {
   public profileName = Store<string>("");
   public loginBackground = Store<string>(this.DEFAULT_WALLPAPER());
   public hideProfileImage = Store<boolean>(false);
+  public persistence = Store<PersistenceInfo | undefined>();
   public serverInfo: ServerInfo | undefined;
   public unexpectedInvocation = false;
   public safeMode = false;
@@ -42,7 +44,10 @@ export class LoginAppRuntime extends AppProcess {
     );
 
     this.errorMessage.subscribe((v) => {
-      if (!v) this.profileImage.set(ProfilePictures.def);
+      if (!v) {
+        this.profileImage.set(ProfilePictures.def);
+        this.loadPersistence();
+      }
     });
 
     this.unexpectedInvocation =
@@ -153,6 +158,8 @@ export class LoginAppRuntime extends AppProcess {
       `${import.meta.env.DW_SERVER_URL}/user/pfp/${userInfo._id}?authcode=${import.meta.env.DW_SERVER_AUTHCODE}`
     );
 
+    this.savePersistence(username, this.profileImage());
+
     if (userInfo.hasTotp && userInfo.restricted) {
       this.loadingStatus.set("Requesting 2FA");
       const unlocked = await this.askForTotp(token);
@@ -178,8 +185,11 @@ export class LoginAppRuntime extends AppProcess {
     this.loadingStatus.set("Reading profile customization");
 
     this.profileName.set(userDaemon.preferences().account.displayName || username);
-    if (!this.safeMode)
+    if (!this.safeMode) {
       this.loginBackground.set((await userDaemon.getWallpaper(userDaemon.preferences().account.loginBackground)).url);
+
+      this.savePersistence(username, this.profileImage(), this.loginBackground());
+    }
 
     this.loadingStatus.set("Notifying login activity");
     await userDaemon.logActivity("login");
@@ -392,5 +402,28 @@ export class LoginAppRuntime extends AppProcess {
         returnId
       );
     });
+  }
+
+  loadPersistence() {
+    const persistence = tryJsonParse<PersistenceInfo>(localStorage.getItem("arcLoginPersistence"));
+
+    if (!persistence) return;
+
+    this.persistence.set(persistence);
+    this.profileImage.set(persistence.profilePicture);
+    this.profileName.set(persistence.username);
+    if (persistence.loginWallpaper) this.loginBackground.set(persistence.loginWallpaper);
+  }
+
+  savePersistence(username: string, profilePicture: string, loginWallpaper?: string) {
+    localStorage.setItem("arcLoginPersistence", JSON.stringify({ username, profilePicture, loginWallpaper }));
+  }
+
+  deletePersistence() {
+    localStorage.removeItem("arcLoginPersistence");
+    this.persistence.set(undefined);
+    this.profileImage.set(ProfilePictures.def);
+    this.loginBackground.set(this.DEFAULT_WALLPAPER());
+    this.profileName.set("");
   }
 }
