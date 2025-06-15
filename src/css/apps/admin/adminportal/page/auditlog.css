@@ -1,0 +1,93 @@
+#AdminPortal .auditLog {
+  height: 100%;
+}
+
+#AdminPortal .auditLog > div.page-content {
+  padding: 10px;
+  overflow-y: scroll !important;
+}
+
+details.audit-log {
+  --accent: var(--clr-green-fg);
+  background-color: var(--button-bg);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  border: var(--win-border);
+  overflow: hidden;
+}
+
+details.audit-log.medium {
+  --accent: var(--clr-blue-fg);
+}
+
+details.audit-log.high {
+  --accent: var(--clr-yellow-fg);
+}
+
+details.audit-log.critical {
+  --accent: var(--clr-orange-fg);
+}
+
+details.audit-log.deadly {
+  --accent: var(--clr-red-fg);
+}
+
+details.audit-log > summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  padding-right: 15px;
+}
+
+details.audit-log p.timestamp {
+  font-size: 12px;
+  opacity: 0.5;
+  margin-top: 5px;
+}
+
+details.audit-log[open].has-data {
+  background-color: var(--bg);
+}
+
+details.audit-log.has-data > summary::after {
+  content: "chevron_right";
+  font-family: "Material Icons Round";
+  font-size: 24px;
+}
+
+details.audit-log.has-data[open] > summary::after {
+  transform: rotate(90deg);
+}
+
+details.audit-log div.context {
+  background-color: var(--button-bg);
+  padding: 10px;
+}
+
+details.audit-log td {
+  font-family: "Source Code Pro";
+  vertical-align: top;
+}
+
+details.audit-log td.key {
+  padding-right: 10px;
+  font-weight: bold;
+  color: var(--accent);
+}
+
+details.audit-log td.value {
+  white-space: pre;
+}
+
+details.audit-log span.severity {
+  margin-left: auto;
+  color: var(--accent);
+  font-size: 16px;
+}
+
+details.audit-log.has-data span.severity {
+  border-right: var(--border-clr) 1px solid;
+  display: block;
+}

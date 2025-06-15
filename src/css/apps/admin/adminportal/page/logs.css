@@ -1,0 +1,12 @@
+#AdminPortal .container.logs textarea {
+  width: 100%;
+  height: 100%;
+  resize: none;
+  font-family: "Source Code Pro";
+  padding: 10px;
+  background-color: var(--win-bg);
+  color: var(--fg);
+  resize: none;
+  white-space: pre;
+  border: none;
+}

@@ -1,4 +1,4 @@
-import type { Activity, ExpandedToken, ServerLogItem, ServerStatistics, User } from "$types/admin";
+import type { Activity, AuditLog, ExpandedToken, ServerLogItem, ServerStatistics, User } from "$types/admin";
 import type { BugReport, ReportStatistics } from "$types/bughunt";
 import type { FsAccess } from "$types/fs";
 import type { SharedDriveType } from "$types/shares";
@@ -80,6 +80,11 @@ export type ScopesData = {
 export type ViewScopesData = {
   admin: ExpandedUserInfo;
   scopes: Record<string, string>;
+};
+
+export type AuditLogData = {
+  users: ExpandedUserInfo[];
+  audits: AuditLog[];
 };
 
 //

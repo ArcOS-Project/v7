@@ -21,6 +21,7 @@ export interface Approval {
   validated: boolean;
 }
 export interface AuditLog {
+  _id: string;
   authorId: string;
   message: string;
   severity: AuditSeverity;
@@ -36,6 +37,14 @@ export enum AuditSeverity {
   high, // High
   critical, // CRITICAL
   deadly, // DEADLY!?!?!?!!!
+}
+
+export enum AuditSeverityIcons {
+  moon,
+  "shield-checkc",
+  "shield-ellipsis",
+  "shield-x",
+  siren,
 }
 
 export interface FsAccess {

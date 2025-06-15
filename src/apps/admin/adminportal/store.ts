@@ -194,6 +194,9 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       name: "Audit log",
       icon: "scroll-text",
       content: AuditLog,
+      props: async (process) => {
+        return { audits: (await process.admin.getAuditLog()).reverse(), users: await process.admin.getAllUsers() };
+      },
       scopes: [AdminScopes.adminAuditLog, AdminScopes.adminUsersList],
     },
   ],
@@ -204,6 +207,13 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       icon: "layout-list",
       content: Logs,
       scopes: [AdminScopes.adminLogs],
+      props: async (process) => {
+        const logs = (await process.admin.getServerLogs()).reverse();
+
+        logs.length = 1024;
+
+        return { logs };
+      },
     },
   ],
 ]);
