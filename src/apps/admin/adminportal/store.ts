@@ -127,7 +127,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       props: async (process) => {
         return { users: (await process.admin.getAllUsers()).reverse() };
       },
-      scopes: [AdminScopes.adminUsersList],
+      scopes: [AdminScopes.adminUsersList, AdminScopes.adminUserfsQuota],
       separator: true,
     },
   ],
@@ -179,6 +179,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       name: "Audit log",
       icon: "scroll-text",
       content: AuditLog,
+      scopes: [AdminScopes.adminAuditLog, AdminScopes.adminUsersList],
     },
   ],
   [
@@ -187,6 +188,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       name: "Logs",
       icon: "layout-list",
       content: Logs,
+      scopes: [AdminScopes.adminLogs],
     },
   ],
 ]);

@@ -34,6 +34,16 @@
   margin-bottom: 5px;
 }
 
+#AdminPortal div.viewShare div.header > button {
+  margin-left: auto;
+  border-radius: 0;
+  margin-bottom: auto;
+  translate: 10px -10px;
+  height: 30px;
+  border-left: var(--win-border);
+  border-bottom: var(--win-border);
+}
+
 #AdminPortal div.viewShare div.header p.usage {
   font-size: 14px;
 }

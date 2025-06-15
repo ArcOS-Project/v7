@@ -2,6 +2,7 @@
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import CircularProgress from "$lib/CircularProgress.svelte";
   import Spinner from "$lib/Spinner.svelte";
+  import { ShareManager } from "$ts/fs/shares";
   import { formatBytes } from "$ts/fs/util";
   import type { UserQuota } from "$types/fs";
   import type { SharedDriveType } from "$types/shares";
@@ -24,6 +25,16 @@
 
     loading = false;
   });
+
+  async function mountShare() {
+    if (process.fs.drives[share._id]) await process.fs.umountDrive(share._id, true);
+    else {
+      const drive = await process.userDaemon!.serviceHost!.getService<ShareManager>("ShareMgmt")!.mountShareById(share._id);
+      if (drive) process.spawnApp("fileManager", +process.env.get("shell_pid"), `${drive.uuid}:/`);
+    }
+
+    process.switchPage("viewShare", { share }, true);
+  }
 </script>
 
 <div class="header" class:centered={loading}>
@@ -38,6 +49,7 @@
       </p>
       <p class="usage">Using {formatBytes(quota.used)} of {formatBytes(quota.max)} ({quota.percentage.toFixed(2)}%)</p>
     </div>
+    <button onclick={mountShare}>{process.fs.drives[share._id] ? "Unmount" : "Mount"}</button>
   {:else}
     <p class="error-text">Failed to get quota</p>
   {/if}
