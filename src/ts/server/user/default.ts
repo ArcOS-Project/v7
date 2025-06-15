@@ -93,4 +93,5 @@ export const DefaultUserInfo: UserInfo = {
   restricted: false,
   hasTotp: false,
   accountNumber: -1,
+  storageSize: 1024 ** 3, // 1GB
 };
