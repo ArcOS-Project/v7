@@ -11,9 +11,10 @@ import Shares from "./AdminPortal/Page/Shares.svelte";
 import Tokens from "./AdminPortal/Page/Tokens.svelte";
 import Users from "./AdminPortal/Page/Users.svelte";
 import ViewBugReport from "./AdminPortal/Page/ViewBugReport.svelte";
+import ViewScopes from "./AdminPortal/Page/ViewScopes.svelte";
 import ViewShare from "./AdminPortal/Page/ViewShare.svelte";
 import ViewUser from "./AdminPortal/Page/ViewUser.svelte";
-import type { AdminPortalPage, AdminPortalPages } from "./types";
+import type { AdminPortalPage, AdminPortalPages, SpecificAdminActions } from "./types";
 
 export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPortalPage>([
   [
@@ -174,6 +175,20 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     },
   ],
   [
+    "viewScopes",
+    {
+      name: "View scopes",
+      icon: "",
+      parent: "scopes",
+      content: ViewScopes,
+      hidden: true,
+      props: async (process) => {
+        return { scopes: await process.admin.getAvailableScopes() };
+      },
+      scopes: [AdminScopes.adminScopesAvailable],
+    },
+  ],
+  [
     "auditLog",
     {
       name: "Audit log",
@@ -199,4 +214,153 @@ export const LogoTranslations: Record<string, string> = {
   rc: RcLogo,
   esr: EsrLogo,
   unstable: UnstableLogo,
+};
+
+export const specificAdminActions: SpecificAdminActions = {
+  logs: {
+    caption: "View logs",
+    scopes: [AdminScopes.adminAuditLog, AdminScopes.adminLogs],
+  },
+  stats: {
+    caption: "View statistics",
+    scopes: [AdminScopes.adminStats],
+  },
+  adminGnr: {
+    caption: "Admin G&R",
+    scopes: [AdminScopes.adminGrant, AdminScopes.adminRevoke],
+  },
+  preferences: {
+    caption: "Manage preferences",
+    scopes: [AdminScopes.adminPreferencesGet, AdminScopes.adminPreferencesPut],
+  },
+  accessFs: {
+    caption: "Access filesystems",
+    scopes: [
+      AdminScopes.adminUserfsDirect,
+      AdminScopes.adminUserfsFile,
+      AdminScopes.adminUserfsFolder,
+      AdminScopes.adminUserfsTree,
+    ],
+  },
+  userQuota: {
+    caption: "Manage user quota",
+    scopes: [AdminScopes.adminUserfsQuota],
+  },
+  listUsers: {
+    caption: "List users",
+    scopes: [AdminScopes.adminUsersList],
+  },
+  deleteUser: {
+    caption: "Delete user!",
+    scopes: [AdminScopes.adminUsersDelete],
+  },
+  changeEmail: {
+    caption: "Change email",
+    scopes: [AdminScopes.adminUsersChangeEmail],
+  },
+  changePassword: {
+    caption: "Change user password",
+    scopes: [AdminScopes.adminUsersChangePswd],
+  },
+  approval: {
+    caption: "User A&D",
+    scopes: [AdminScopes.adminUsersApprove, AdminScopes.adminUsersDisapprove],
+  },
+  getTokens: {
+    caption: "Get tokens",
+    scopes: [AdminScopes.adminTokensGet],
+  },
+  deleteTokens: {
+    caption: "Delete tokens",
+    scopes: [
+      AdminScopes.adminTokensPurgeAllDelete,
+      AdminScopes.adminTokensPurgeOneDelete,
+      AdminScopes.adminTokensPurgeUserDelete,
+    ],
+  },
+  getScopes: {
+    caption: "Get scopes",
+    scopes: [AdminScopes.adminScopesAvailable, AdminScopes.adminScopesGet],
+  },
+  changeScopes: {
+    caption: "Change scopes",
+    scopes: [AdminScopes.adminScopesPut],
+  },
+  listBugReports: {
+    caption: "List bug reports",
+    scopes: [AdminScopes.adminBugHuntList],
+  },
+  manageBugReports: {
+    caption: "Manage bug reports",
+    scopes: [
+      AdminScopes.adminBugHuntClose,
+      AdminScopes.adminBugHuntDelete,
+      AdminScopes.adminBugHuntGet,
+      AdminScopes.adminBugHuntOpen,
+    ],
+  },
+  bugHuntStats: {
+    caption: "BugHunt stats",
+    scopes: [AdminScopes.adminBugHuntStats],
+  },
+  viewActivities: {
+    caption: "View activities",
+    scopes: [AdminScopes.adminActivitiesList, AdminScopes.adminActivitiesUserGet],
+  },
+  deleteActivities: {
+    caption: "Delete activities",
+    scopes: [AdminScopes.adminActivitiesDelete, AdminScopes.adminActivitiesDeleteUser],
+  },
+  getTotp: {
+    caption: "Get TOTP",
+    scopes: [AdminScopes.adminTotpGet, AdminScopes.adminTotpGetUser],
+  },
+  manageTotp: {
+    caption: "Manage TOTP",
+    scopes: [AdminScopes.adminTotpDeactivateUser, AdminScopes.adminTotpDeleteUser],
+  },
+  getDfas: {
+    caption: "Get DFAs",
+    scopes: [AdminScopes.adminAccessorsGet, AdminScopes.adminAccessorsGetUser],
+  },
+  deleteDfas: {
+    caption: "Delete DFAs",
+    scopes: [AdminScopes.adminAccessorsDelete, AdminScopes.adminAccessorsDeleteUser],
+  },
+  getIndexes: {
+    caption: "Get indexes",
+    scopes: [AdminScopes.adminIndexGet, AdminScopes.adminIndexGetUser],
+  },
+  deleteIndexes: {
+    caption: "Delete indexes",
+    scopes: [AdminScopes.adminIndexDeleteUser],
+  },
+  shareInteract: {
+    caption: "Share interact",
+    scopes: [AdminScopes.adminShareInteract],
+  },
+  deleteShare: {
+    caption: "Delete share",
+    scopes: [AdminScopes.adminShareDelete],
+  },
+  manageShareMembers: {
+    caption: "Manage share members",
+    scopes: [AdminScopes.adminShareMembersGet, AdminScopes.adminShareKick, AdminScopes.adminShareAddUser],
+  },
+  getSdfas: {
+    caption: "Get SDFAs",
+    scopes: [AdminScopes.adminShareAccessorsGet],
+  },
+  deleteSdfas: {
+    caption: "Delete SDFAs",
+    scopes: [AdminScopes.adminShareAccessorsDelete],
+  },
+  changeShareAuth: {
+    caption: "Change share auth",
+    scopes: [AdminScopes.adminShareChangePswd, AdminScopes.adminShareRename, AdminScopes.adminShareChown],
+  },
+  manageShareQuota: {
+    caption: "Manage share quota",
+    scopes: [AdminScopes.adminShareQuotaGet, AdminScopes.adminShareQuotaPut],
+  },
 };

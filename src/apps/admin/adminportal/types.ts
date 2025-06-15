@@ -1,10 +1,10 @@
-import type { Activity, ExpandedToken, ServerLogItem, ServerStatistics, Token, User } from "$types/admin";
+import type { Activity, ExpandedToken, ServerLogItem, ServerStatistics, User } from "$types/admin";
 import type { BugReport, ReportStatistics } from "$types/bughunt";
-import type { ExpandedUserInfo } from "$types/user";
+import type { FsAccess } from "$types/fs";
+import type { SharedDriveType } from "$types/shares";
+import type { ExpandedUserInfo, UserInfo } from "$types/user";
 import type { Component } from "svelte";
 import type { AdminPortalRuntime } from "./runtime";
-import type { SharedDriveType } from "$types/shares";
-import type { FsAccess } from "$types/fs";
 
 export interface AdminPortalPage {
   name: string;
@@ -77,9 +77,24 @@ export type ScopesData = {
   admins: ExpandedUserInfo[];
 };
 
+export type ViewScopesData = {
+  admin: ExpandedUserInfo;
+  scopes: Record<string, string>;
+};
+
 //
 // End props for individual pages
 //
 
 export type UsersPageFilters = "all" | "regular" | "admins" | "disapproved" | "online";
 export type SharesPageFilters = "all" | "resized" | "locked";
+
+export interface SpecificAdminAction {
+  caption: string;
+  scopes: string[];
+  className?: string;
+  disabled?: (user: UserInfo) => boolean;
+  separate?: boolean;
+}
+
+export type SpecificAdminActions = Record<string, SpecificAdminAction>;

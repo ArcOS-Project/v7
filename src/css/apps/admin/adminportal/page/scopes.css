@@ -7,6 +7,10 @@
   gap: 10px;
 }
 
+#AdminPortal .container.scopes div.row:hover {
+  background-color: var(--accent-transparent);
+}
+
 #AdminPortal .container.scopes div.row.header {
   background-color: var(--button-bg);
   font-weight: bold;
@@ -39,7 +43,7 @@
 #AdminPortal .container.scopes div.row div.segment.pages div.page {
   height: 18px;
   border-radius: 4px;
-  background-color: var(--button-bg);
+  background-color: var(--button-glass-bg);
   display: flex;
   align-items: center;
   gap: 5px;

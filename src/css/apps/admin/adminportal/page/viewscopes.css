@@ -1,0 +1,102 @@
+#AdminPortal .viewScopes {
+  height: 100%;
+}
+
+#AdminPortal .viewScopes > div.page-content {
+  overflow-y: scroll !important;
+}
+
+#AdminPortal .viewScopes > div.page-content::-webkit-scrollbar {
+  display: none;
+}
+
+#AdminPortal .viewScopes div.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 31px;
+  border-bottom: var(--win-border);
+}
+
+#AdminPortal .viewScopes div.header h1 {
+  padding: 0 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#AdminPortal .viewScopes div.header div.actions {
+  display: flex;
+  align-items: center;
+}
+
+#AdminPortal .viewScopes div.header div.actions button {
+  border-radius: 0;
+  height: 30px;
+  border-left: var(--win-border);
+}
+
+#AdminPortal .viewScopes div.access-pills {
+  display: flex;
+  align-items: start;
+}
+
+#AdminPortal .viewScopes div.pills-wrapper {
+  display: flex;
+  padding: 10px;
+  gap: 15px;
+  background-color: var(--button-bg);
+  flex-direction: column;
+  border-bottom: var(--win-border);
+}
+
+#AdminPortal .viewScopes div.access-pills > p {
+  width: 60px;
+  min-width: 60px;
+  font-weight: bold;
+  line-height: 20px;
+  opacity: 0.5;
+}
+
+#AdminPortal .viewScopes div.access-pills > div.pills {
+  flex-wrap: wrap;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: 20px;
+}
+
+#AdminPortal .viewScopes div.access-pills > div.pills button {
+  background-color: var(--bg);
+  height: 20px;
+  line-height: 20px;
+  padding: 0 8px;
+  border-radius: 6px;
+}
+
+#AdminPortal .viewScopes div.list {
+  padding: 10px 7px;
+}
+
+#AdminPortal .viewScopes div.list div.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  /* margin-bottom: 5px; */
+  padding: 3px;
+}
+
+#AdminPortal .viewScopes div.list div.item span.name {
+  font-weight: bold;
+}
+
+#AdminPortal .viewScopes div.list div.item span.id {
+  font-family: "Source Code Pro";
+  opacity: 0.5;
+  margin-left: auto;
+  width: 50%;
+}
+
+#AdminPortal .viewScopes div.list div.item:hover {
+  background-color: var(--button-bg);
+  border-radius: 4px;
+}
