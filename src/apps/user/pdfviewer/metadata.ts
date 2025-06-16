@@ -37,7 +37,6 @@ export const PdfViewerApp: App = {
   },
   opens: {
     extensions: [".pdf"],
-    mimeTypes: ["application/pdf"],
   },
   noSafeMode: true,
   id: "PdfViewer",
