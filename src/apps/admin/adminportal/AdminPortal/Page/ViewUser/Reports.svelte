@@ -17,7 +17,6 @@
         </div>
         <div class="segment title">Title</div>
         <div class="segment closed">CLO</div>
-        <div class="segment resolved">RES</div>
       </div>
       {#each userReports as report (report._id)}
         <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -27,7 +26,6 @@
           </div>
           <div class="segment title">{report.title}</div>
           <div class="segment closed">{report.closed ? "Yes" : "No"}</div>
-          <div class="segment resolved">{report.resolved ? "Yes" : "No"}</div>
         </div>
       {/each}
     {:else}

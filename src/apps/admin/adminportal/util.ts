@@ -1,5 +1,4 @@
 import { WarningIcon } from "$ts/images/dialog";
-import { FileIcon } from "$ts/images/filesystem";
 import { GoodStatusIcon } from "$ts/images/status";
 import type { BugReport } from "$types/bughunt";
 import { ShortLogLevelCaptions, type LogItem } from "$types/logging";
@@ -20,8 +19,5 @@ export function stringifyLogs(logs: LogItem[]) {
 
 export function getReportIcon(report: BugReport): string {
   if (report.closed) return WarningIcon;
-
-  if (!report.resolved) return FileIcon;
-
   return GoodStatusIcon;
 }

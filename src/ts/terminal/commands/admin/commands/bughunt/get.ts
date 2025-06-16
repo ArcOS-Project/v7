@@ -13,7 +13,6 @@ export const AdminBugHuntReportGet: AdminCommandType = async (term, admin, [id])
   if (!report) return 3;
 
   const opened = report.closed ? `${BRRED}Closed${RESET}` : `${BRGREEN}Open${RESET}`;
-  const resolved = report.resolved ? `${BRGREEN}Resolved${RESET}` : `${BRRED}Unresolved${RESET}`;
   const api = `${report.api || "No server"}`;
   const frontend = `${report.frontend}`;
   const date = `${dayjs(report.createdAt).format("D MMM YYYY, HH:mm:ss")}${RESET}`;
@@ -24,7 +23,7 @@ export const AdminBugHuntReportGet: AdminCommandType = async (term, admin, [id])
     [`${BOLD}Where${RESET}`, api, frontend],
     [`${BOLD}When${RESET}`, date, ""],
     [`${BOLD}Build${RESET}`, `${report.build} (${report.version})`, report.mode],
-    [`${BOLD}Status${RESET}`, opened, resolved],
+    [`${BOLD}Status${RESET}`, opened, ""],
   ]);
 
   term.rl?.println(`\r\nShowing report: ${BRGREEN}${report.title}${RESET}`);

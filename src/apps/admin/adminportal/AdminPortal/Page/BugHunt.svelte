@@ -11,10 +11,10 @@
 
   const { process, data }: { process: AdminPortalRuntime; data: BugHuntData } = $props();
   const { reports, stats } = data;
-  const pages: ("all" | "opened" | "closed" | "resolved")[] = ["all", "opened", "closed", "resolved"];
+  const pages: ("all" | "opened" | "closed")[] = ["all", "opened", "closed"];
 
   let store = Store<BugReport[]>([]);
-  let sortState = Store<"all" | "opened" | "closed" | "resolved">("all");
+  let sortState = Store<"all" | "opened" | "closed">("opened");
   let idEntry = Store("");
 
   onMount(() => {
@@ -28,8 +28,6 @@
               return !report.closed;
             case "closed":
               return report.closed;
-            case "resolved":
-              return report.resolved;
           }
         })
         .reverse();

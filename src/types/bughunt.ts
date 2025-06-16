@@ -6,7 +6,6 @@ export interface BugReport {
   body: string;
   logs: LogItem[];
   closed: boolean;
-  resolved: boolean;
   version: `${number}.${number}.${number}`;
   location: Location;
   userData?: Record<string, any>;
@@ -61,7 +60,6 @@ export interface MetaEnvironment {
 export interface ReportStatistics extends Record<string, number> {
   opened: number;
   closed: number;
-  resolved: number;
   total: number;
   apis: number;
 }

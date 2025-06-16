@@ -63,11 +63,8 @@
       <Segment title="Public">
         {report.public || !report.authorId ? "Yes" : "No"}
       </Segment>
-      <Segment title="Resolved">
-        {report.resolved ? "Yes" : "No"}
-      </Segment>
       <Segment title="Closed">
-        {report.resolved ? "Yes" : "No"}
+        {report.closed ? "Yes" : "No"}
       </Segment>
       <Segment title="User data">
         {report.userData ? "Included" : "Excluded"}
