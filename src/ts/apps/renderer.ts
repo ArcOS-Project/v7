@@ -291,7 +291,7 @@ export class AppRenderer extends Process {
     titlebar.className = "titlebar";
     titlebar.append(title, this._renderAltMenu(process));
 
-    if (BETA) {
+    if (BETA && !process.app.data.entrypoint && !process.app.data.workingDirectory && !!process.app.data.thirdParty) {
       feedbackButton.className = "link feedback";
       feedbackButton.innerText = "Feedback?";
       feedbackButton.addEventListener("click", () => {

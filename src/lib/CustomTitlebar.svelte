@@ -47,7 +47,7 @@
       <img src={$windowIcon || ComponentIcon} alt="" />
       <span>{$windowTitle}</span>
     {/if}
-    {#if BETA}
+    {#if BETA && !process.app.data.entrypoint && !process.app.data.workingDirectory && !!process.app.data.thirdParty}
       <span class="beta-pill">BETA</span>
     {/if}
   </div>
