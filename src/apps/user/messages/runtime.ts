@@ -280,7 +280,11 @@ export class MessagingAppRuntime extends AppProcess {
 
   Search(query: string) {
     if (this.messageWindow) return;
-    if (!query) return this.searchResults.set([]);
+    if (!query) {
+      this.searchResults.set([]);
+      this.refresh();
+      return;
+    }
 
     const messages = this.buffer().map((m) => ({ ...m, authorName: m.author?.displayName || m.author?.username }));
 

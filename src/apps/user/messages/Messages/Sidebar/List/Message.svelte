@@ -13,6 +13,8 @@
   let date = $state<string>();
 
   onMount(async () => {
+    if (!message) return;
+
     dayjs.extend(relativeTime);
     dayjs.extend(updateLocale);
     dayjs.updateLocale("en", RelativeTimeMod);
@@ -20,7 +22,7 @@
   });
 </script>
 
-{#if message.author}
+{#if message?.author}
   <button
     class="message"
     onclick={() => process.readMessage(message._id)}
