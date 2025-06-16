@@ -66,7 +66,7 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   async render({ page }: { page: string }) {
-    this.switchPage(page);
+    await this.switchPage(page);
 
     this.searchQuery.subscribe((v) => this.Search(v));
   }
