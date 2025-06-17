@@ -25,5 +25,6 @@ export default async function render(props: StateProps) {
     if (e.key === " ") {
       crashScreen?.classList.toggle("hidden");
     }
+    if (e.key.toLowerCase() === "r") location.reload();
   });
 }
