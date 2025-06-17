@@ -17,6 +17,7 @@ div.window > div.body div.titlebar.custom {
   font-size: 12px;
   position: relative;
   min-height: 40px;
+  transition: opacity 0.1s !important;
 }
 div.window > div.titlebar div.window-title,
 div.window > div.body div.titlebar.custom div.window-title {

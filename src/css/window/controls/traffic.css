@@ -1,0 +1,59 @@
+.traffic-lights div.window > div.body div.titlebar.custom div.controls,
+.traffic-lights div.window > div.titlebar div.controls {
+  margin-right: 3px;
+  gap: 7px !important;
+  height: 14px !important;
+}
+
+.traffic-lights div.window > div.body div.titlebar.custom button.feedback + div.controls,
+.traffic-lights div.window > div.titlebar button.feedback + div.controls {
+  margin-left: 10px;
+}
+
+.traffic-lights div.window:not(.focused):not(.core).shell-colored.colored::before {
+  opacity: 0;
+}
+
+.traffic-lights div.window > div.body div.titlebar.custom div.controls button,
+.traffic-lights div.window > div.titlebar div.controls button {
+  color: transparent !important;
+  font-size: 10px;
+  line-height: 12px;
+  border-radius: 50%;
+  background-color: var(--button-bg) !important;
+  width: 14px;
+  height: 14px;
+}
+
+.traffic-lights div.window.focused > div.body div.titlebar.custom div.controls button.close,
+.traffic-lights div.window.focused > div.titlebar div.controls button.close {
+  background-color: var(--clr-red-fg) !important;
+  border: var(--clr-red-bg) 1px solid;
+}
+
+.traffic-lights div.window.focused > div.body div.titlebar.custom div.controls button.minimize,
+.traffic-lights div.window.focused > div.titlebar div.controls button.minimize {
+  background-color: var(--clr-orange-fg) !important;
+  border: var(--clr-orange-bg) 1px solid;
+}
+
+.traffic-lights div.window.focused > div.body div.titlebar.custom div.controls button.maximize,
+.traffic-lights div.window.focused > div.titlebar div.controls button.maximize {
+  background-color: var(--clr-green-fg) !important;
+  border: var(--clr-green-bg) 1px solid;
+}
+
+.traffic-lights div.window.focused > div.body div.titlebar.custom div.controls button.maximize:hover,
+.traffic-lights div.window.focused > div.titlebar div.controls button.maximize:hover {
+  color: var(--clr-green-bg) !important;
+}
+
+.traffic-lights div.window.focused > div.body div.titlebar.custom div.controls button.minimize:hover,
+.traffic-lights div.window.focused > div.titlebar div.controls button.minimize:hover {
+  color: var(--clr-orange-bg) !important;
+}
+
+.traffic-lights div.window.focused > div.body div.titlebar.custom div.controls button.close:hover,
+.traffic-lights div.window.focused > div.titlebar div.controls button.close:hover {
+  color: var(--clr-red-bg) !important;
+}

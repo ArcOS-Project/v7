@@ -30,6 +30,7 @@ div.window:not(.core) {
 
 div.window:not(.core).shell-colored.colored::before {
   opacity: 0.1;
+  transition: opacity 0.1s !important;
 }
 
 div.window:not(.core).maximized {

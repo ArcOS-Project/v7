@@ -39,6 +39,12 @@
     </Option>
   </Section>
 
+  <Section caption="Windows">
+    <Option caption="Enable the traffic light controls">
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.visuals.trafficLights} />
+    </Option>
+  </Section>
+
   <Section caption="Additional tweaks">
     <Option caption="Show accent colors on glass surfaces">
       <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.taskbar.colored} />

@@ -1,3 +1,5 @@
+@import url("./controls/traffic.css");
+
 div.window > div.body div.titlebar.custom div.controls,
 div.window > div.titlebar div.controls {
   display: flex;

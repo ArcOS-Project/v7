@@ -228,6 +228,7 @@ export class UserDaemon extends Process {
     renderer.classList.toggle("noani", v.shell.visuals.noAnimations || this.safeMode);
     renderer.classList.toggle("noglass", v.shell.visuals.noGlass || this.safeMode);
     renderer.classList.toggle("safe-mode", this.safeMode);
+    renderer.classList.toggle("traffic-lights", v.shell.visuals.trafficLights);
   }
 
   setUserStyleLoader(style: CustomStylePreferences) {

@@ -116,6 +116,7 @@ export interface VisualPreferences {
   showHiddenApps: boolean;
   noGlass: boolean;
   userFont?: string;
+  trafficLights: boolean;
 }
 
 export interface SecurityPreferences {
