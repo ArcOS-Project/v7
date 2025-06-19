@@ -6,6 +6,7 @@ import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { adminService } from "$ts/server/admin";
 import { messagingService } from "$ts/server/messaging";
+import type { UserDaemon } from "$ts/server/user/daemon";
 import { globalDispatchService } from "$ts/server/ws";
 import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
@@ -16,9 +17,12 @@ export class ServiceHost extends Process {
   public Services: ReadableServiceStore = Store<ServiceStore>();
   public _holdRestart = false;
   private _storeLoaded = false;
+  public daemon: UserDaemon;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
+
+    this.daemon = handler.getProcess(+this.env.get("userdaemon_pid"))!;
   }
 
   readonly STORE = new Map([
