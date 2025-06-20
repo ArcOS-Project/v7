@@ -1,15 +1,189 @@
+import { arrayToBlob } from "$ts/fs/convert";
+import { join } from "$ts/fs/util";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
-import type { AppProcessData } from "$types/app";
-import type { ArcPackage, InstallStatusItem } from "$types/package";
+import { Backend } from "$ts/server/axios";
+import type { UserDaemon } from "$ts/server/user/daemon";
+import { UUID } from "$ts/uuid";
+import { Store, type ReadableStore } from "$ts/writable";
+import type {
+  ArcPackage,
+  InstallStatus,
+  InstallStatusMode,
+  InstallStatusType,
+  PartialStoreItem,
+  StoreItem,
+} from "$types/package";
+import { fromExtension } from "human-filetypes";
 import type JSZip from "jszip";
 
 export class InstallerProcess extends Process {
-  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
+  status = Store<InstallStatus>({});
+  failReason = Store<string>();
+  installing = Store<boolean>(false);
+  completed = Store<boolean>(false);
+  focused = Store<string>();
+  verboseLog: string[] = [];
+  metadata?: ArcPackage;
+  userDaemon: UserDaemon;
+  zip?: JSZip;
+
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, zip: JSZip, metadata: ReadableStore<ArcPackage>) {
     super(handler, pid, parentPid);
+
+    this.userDaemon = handler.getProcess(+this.env.get("userdaemon_pid"))!;
+
+    if (metadata && zip) {
+      this.metadata = metadata();
+      this.zip = zip;
+      this.verboseLog.push("Constructing process");
+    }
   }
 
-  async _installPackage(metadata: ArcPackage, zip: JSZip, onProgress?: (item: InstallStatusItem) => void) {
+  logStatus(content: string, type: InstallStatusType = "other", status: InstallStatusMode = "working") {
+    this.verboseLog.push(`${status}: ${type}: ${content}`);
+
+    const uuid = UUID();
+
+    this.setCurrentStatus("done");
+    this.status.update((v) => {
+      v[uuid] = { content, type, status };
+      return v;
+    });
+    this.focused.set(uuid);
+  }
+
+  async setCurrentStatus(status: InstallStatusMode) {
+    if (!this.focused()) return;
+
+    this.verboseLog.push(`Setting status ${this.focused()} to ${status}`);
+
+    this.status.update((v) => {
+      v[this.focused()].status = status;
+      return v;
+    });
+  }
+
+  async setCurrentContent(content: string) {
+    if (!this.focused()) return;
+
+    this.verboseLog.push(`Setting status ${this.focused()} to ${status}`);
+
+    this.status.update((v) => {
+      v[this.focused()].content = content;
+      return v;
+    });
+  }
+
+  async searchStoreItems(query: string): Promise<PartialStoreItem[]> {
+    try {
+      const result = await Backend.get(`/store/search/${query}`, {
+        headers: { Authorization: `Bearer ${this.userDaemon.token}` },
+      });
+
+      return result.data as PartialStoreItem[];
+    } catch {
+      return [];
+    }
+  }
+
+  async getStoreItem(id: string): Promise<StoreItem | undefined> {
+    try {
+      const result = await Backend.get(`/store/package/${id}`, {
+        headers: { Authorization: `Bearer ${this.userDaemon.token}` },
+      });
+
+      return result.data as StoreItem;
+    } catch {
+      return undefined;
+    }
+  }
+
+  async getFiles() {
+    const files = Object.fromEntries(
+      Object.entries(this.zip!.files)
+        .filter(([k]) => k.startsWith("payload/"))
+        .map(([k, v]) => [k.replace("payload/", ""), v])
+    );
+
+    // First, create all directories
+    const sortedPaths = Object.keys(files).sort((p) => (files[p].dir ? -1 : 0));
+
+    return { files, sortedPaths };
+  }
+
+  async createInstallLocation(): Promise<boolean> {
+    this.logStatus(this.metadata!.installLocation, "mkdir");
+    try {
+      await this.fs.createDirectory(this.metadata!.installLocation);
+      this.setCurrentStatus("done");
+      return true;
+    } catch {
+      this.fail(`Failed to create destination folder`);
+      return false;
+    }
+  }
+
+  async registerApp(): Promise<boolean> {
+    this.logStatus(this.metadata!.name, "registration");
+
+    try {
+      const result = await this.userDaemon?.installAppFromPath(join(this.metadata!.installLocation, "_app.tpa"));
+      if (!result) {
+        this.setCurrentStatus("done");
+        return true;
+      }
+
+      throw result;
+    } catch (e) {
+      this.fail(`Could not register: ${e}`);
+      return false;
+    }
+  }
+
+  async mkdir(path: string): Promise<boolean> {
+    const formattedPath = path.replace(`${this.metadata!.installLocation}/`, "");
+    this.logStatus(formattedPath, "mkdir");
+
+    try {
+      await this.fs.createDirectory(path);
+      this.setCurrentStatus("done");
+      return true;
+    } catch {
+      this.fail(`Failed to create folder ${formattedPath}`);
+      return false;
+    }
+  }
+
+  async writeFile(path: string, content: ArrayBuffer): Promise<boolean> {
+    const formattedPath = path.replace(`${this.metadata!.installLocation}/`, "");
+    this.logStatus(formattedPath, "file");
+
+    try {
+      await this.fs.writeFile(path, arrayToBlob(content, fromExtension(path)), (prog) => {
+        // this.setCurrentContent(`${formattedPath} (${((100 / prog.max) * prog.value).toFixed(1)}%)`);
+      });
+
+      // this.setCurrentContent(formattedPath);
+      // this.setCurrentStatus("done");
+      return true;
+    } catch {
+      this.fail(`Failed to write ${formattedPath}`);
+      return false;
+    }
+  }
+
+  fail(reason: string) {
+    this.installing.set(false);
+    this.verboseLog.push(`INSTALL FAILED: ${reason}`);
+
+    this.setCurrentStatus("failed");
+    this.failReason.set(reason);
+    this.killSelf();
+  }
+
+  async go() {
+    this.installing.set(true);
     if (!(await this.createInstallLocation())) return;
 
     const { files, sortedPaths } = await this.getFiles();
@@ -31,5 +205,6 @@ export class InstallerProcess extends Process {
 
     this.installing.set(false);
     this.completed.set(true);
+    this.killSelf();
   }
 }
