@@ -355,6 +355,7 @@ export const UserPaths = {
   Wallpapers: "U:/Home/Wallpapers",
   Desktop: "U:/Home/Desktop",
   Music: "U:/Home/Music",
+  Configuration: "U:/Config",
 };
 
 export const UserPathCaptions: Record<string, string> = {

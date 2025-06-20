@@ -5,7 +5,7 @@ import { Process } from "$ts/process/instance";
 import { Backend } from "$ts/server/axios";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { UUID } from "$ts/uuid";
-import { Store, type ReadableStore } from "$ts/writable";
+import { Store } from "$ts/writable";
 import type {
   ArcPackage,
   InstallStatus,
@@ -28,13 +28,13 @@ export class InstallerProcess extends Process {
   userDaemon: UserDaemon;
   zip?: JSZip;
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, zip: JSZip, metadata: ReadableStore<ArcPackage>) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, zip: JSZip, metadata: ArcPackage) {
     super(handler, pid, parentPid);
 
     this.userDaemon = handler.getProcess(+this.env.get("userdaemon_pid"))!;
 
     if (metadata && zip) {
-      this.metadata = metadata();
+      this.metadata = metadata;
       this.zip = zip;
       this.verboseLog.push("Constructing process");
     }

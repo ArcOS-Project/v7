@@ -11,6 +11,7 @@ import JSZip from "jszip";
 import type { InstallStatus, InstallStatusMode, InstallStatusType } from "./types";
 import { AppsIcon } from "$ts/images/general";
 import { MessageBox } from "$ts/dialog";
+import { UserPaths } from "$ts/server/user/store";
 
 export class AppInstallerRuntime extends AppProcess {
   status = Store<InstallStatus>({});
