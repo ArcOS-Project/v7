@@ -1,6 +1,7 @@
 import { appStoreService } from "$ts/apps/storage";
 import { bhuspService } from "$ts/bughunt/process";
 import { devEnvironmentService } from "$ts/devenv";
+import { distributionService } from "$ts/distrib";
 import { shareService } from "$ts/fs/shares";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
@@ -33,6 +34,7 @@ export class ServiceHost extends Process {
     ["GlobalDispatch", { ...globalDispatchService }],
     ["MessagingService", { ...messagingService }],
     ["DevEnvironment", { ...devEnvironmentService }],
+    ["DistribSvc", { ...distributionService }],
   ]);
 
   public loadStore(store: ServiceStore) {

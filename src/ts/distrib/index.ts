@@ -6,10 +6,11 @@ import { UserPaths } from "$ts/server/user/store";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import type { FilesystemProgressCallback } from "$types/fs";
-import type { ArcPackage, StoreItem } from "$types/package";
+import type { ArcPackage, PartialStoreItem, StoreItem } from "$types/package";
+import type { Service } from "$types/service";
 import JSZip from "jszip";
-import { join } from "path";
 import { InstallerProcess } from "./installer";
+import { join } from "$ts/fs/util";
 
 export class DistributionServiceProcess extends BaseService {
   private readonly dataFolder = join(UserPaths.Configuration, "DistribSvc");
@@ -135,4 +136,67 @@ export class DistributionServiceProcess extends BaseService {
 
     return await this.fs.writeFile(this.installedListPath, textToBlob(JSON.stringify(list, null, 2)));
   }
+
+  async publishPackage(data: Blob) {
+    try {
+      const response = await Backend.post("/store/publish", data, {
+        headers: { Authorization: `Bearer ${this.host.daemon.token}` },
+      });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async publishPackageFromPath(path: string): Promise<boolean> {
+    const content = await this.fs.readFile(path);
+
+    if (!content) return false;
+
+    return await this.publishPackage(arrayToBlob(content));
+  }
+
+  async getPublishedPackages(): Promise<StoreItem[]> {
+    try {
+      const response = await Backend.get("/store/publish/list", {
+        headers: { Authorization: `Bearer ${this.host.daemon.token}` },
+      });
+
+      return response.data as StoreItem[];
+    } catch {
+      return [];
+    }
+  }
+
+  async searchStoreItems(query: string) {
+    try {
+      const response = await Backend.get(`/store/search/${query}`, {
+        headers: { Authorization: `Bearer ${this.host.daemon.token}` },
+      });
+
+      return response.data as PartialStoreItem[];
+    } catch {
+      return [];
+    }
+  }
+
+  async updateStoreItem(itemId: string, newData: Blob) {
+    try {
+      const response = await Backend.patch(`/store/publish/${itemId}`, newData, {
+        headers: { Authorization: `Bearer ${this.host.daemon.token}` },
+      });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
 }
+
+export const distributionService: Service = {
+  name: "DistribSvc",
+  description: "Handles the installation and distribution of ArcOS packages",
+  process: DistributionServiceProcess,
+  initialState: "started",
+};
