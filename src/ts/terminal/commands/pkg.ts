@@ -5,7 +5,7 @@ import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
-import { BRBLUE, BRGREEN, RESET } from "../store";
+import { BRBLUE, BRGREEN, BRPURPLE, RESET } from "../store";
 
 export class PkgCommand extends TerminalProcess {
   public static keyword: string = "pkg";
@@ -59,12 +59,14 @@ export class PkgCommand extends TerminalProcess {
       return 1;
     }
 
-    this.term?.rl?.println(`\nInstalling ${BRGREEN}${pkg.name}${RESET} by ${BRGREEN}${pkg.pkg.author}${RESET}.`);
+    this.term?.rl?.println(
+      `\nInstalling ${BRGREEN}${pkg.name}${RESET} v${pkg.pkg.version} by ${BRGREEN}${pkg.pkg.author}${RESET}.`
+    );
     this.term?.rl?.println(`\n${BRBLUE}${pkg.pkg.description}${RESET}\n`);
-    this.term?.rl?.println(`Compressed size:   ${formatBytes(pkg.size)}`);
-    this.term?.rl?.println(`Last updated:      ${dayjs(pkg.lastUpdated).format("DD MMM YYYY, HH:mm:ss")}`);
-    this.term?.rl?.println(`Downloads:         ${pkg.installCount}`);
-    this.term?.rl?.println(`Installs to:       ${pkg.pkg.installLocation}`);
+    this.term?.rl?.println(`${BRPURPLE}Compressed size${RESET}:   ${formatBytes(pkg.size)}`);
+    this.term?.rl?.println(`${BRPURPLE}Last updated${RESET}:      ${dayjs(pkg.lastUpdated).format("DD MMM YYYY, HH:mm:ss")}`);
+    this.term?.rl?.println(`${BRPURPLE}Downloads${RESET}:         ${pkg.installCount}`);
+    this.term?.rl?.println(`${BRPURPLE}Installs to${RESET}:       ${pkg.pkg.installLocation}`);
 
     const confirm = await this.term?.rl?.read(`\nDo you want to install this package (y/n)? `);
 
