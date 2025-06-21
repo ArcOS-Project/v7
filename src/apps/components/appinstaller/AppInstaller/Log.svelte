@@ -5,7 +5,7 @@
   import type { AppInstallerRuntime } from "../runtime";
 
   const { process }: { process: AppInstallerRuntime } = $props();
-  const { status, focused, installing } = process;
+  const { status, focused, installing } = process.progress!;
 
   focused.subscribe(async (v) => {
     await Sleep(0);

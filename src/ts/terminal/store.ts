@@ -21,6 +21,7 @@ import { KillCommand } from "./commands/kill";
 import { LogoutCommand } from "./commands/logout";
 import { MkdirCommand } from "./commands/mkdir";
 import { OpenCommand } from "./commands/open";
+import { PkgCommand } from "./commands/pkg";
 import { QuotaCommand } from "./commands/quota";
 import { ReloadCommand } from "./commands/reload";
 import { RestartCommand } from "./commands/restart";
@@ -66,6 +67,7 @@ export const TerminalCommandStore: (typeof TerminalProcess)[] = [
   AdminCommand,
   DrivesCommand,
   DevenvCommand,
+  PkgCommand,
 ];
 
 export const ESC = `\x1b[`;

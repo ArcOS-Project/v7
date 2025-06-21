@@ -2,12 +2,11 @@
   import type { AppInstallerRuntime } from "../runtime";
 
   const { process }: { process: AppInstallerRuntime } = $props();
-  const { installing, completed, failReason } = process;
+  const { installing, completed, failReason } = process.progress!;
 </script>
 
 <div class="actions">
   {#if $failReason}
-    <button onclick={() => process.viewLog()}>View log</button>
     <button class="suggested" onclick={() => process.revert()}>Revert</button>
   {:else if $installing || $completed}
     <button onclick={() => process.runNow()} disabled={$installing}>Open now</button>

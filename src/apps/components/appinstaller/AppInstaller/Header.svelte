@@ -4,7 +4,8 @@
   import { GoodStatusIcon } from "$ts/images/status";
   import type { AppInstallerRuntime } from "../runtime";
   const { process }: { process: AppInstallerRuntime } = $props();
-  const { completed, failReason, installing, status, metadata } = process;
+  const { completed, failReason, installing, status } = process.progress!;
+  const { metadata } = process;
 </script>
 
 <div class="header">
@@ -18,18 +19,18 @@
       {:else if $failReason}
         Installation failed
       {:else}
-        {metadata.name}
+        {metadata?.name}
       {/if}
     </h1>
     <p>
       {#if $completed}
         Click <b>Open now</b> to launch the app
       {:else if $installing}
-        {metadata.name} by {metadata.author}
+        {metadata?.name} by {metadata?.author}
       {:else if $failReason}
         {$failReason}
       {:else}
-        {metadata.author} - {metadata.version}
+        {metadata?.author} - {metadata?.version}
       {/if}
     </p>
   </div>

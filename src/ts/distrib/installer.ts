@@ -16,6 +16,7 @@ import type {
 } from "$types/package";
 import { fromExtension } from "human-filetypes";
 import type JSZip from "jszip";
+import { DistributionServiceProcess } from ".";
 
 export class InstallerProcess extends Process {
   status = Store<InstallStatus>({});
@@ -26,9 +27,11 @@ export class InstallerProcess extends Process {
   verboseLog: string[] = [];
   metadata?: ArcPackage;
   userDaemon: UserDaemon;
+  parent: DistributionServiceProcess;
+  item?: StoreItem;
   zip?: JSZip;
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, zip: JSZip, metadata: ArcPackage) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, zip: JSZip, metadata: ArcPackage, item: StoreItem) {
     super(handler, pid, parentPid);
 
     this.userDaemon = handler.getProcess(+this.env.get("userdaemon_pid"))!;
@@ -38,6 +41,10 @@ export class InstallerProcess extends Process {
       this.zip = zip;
       this.verboseLog.push("Constructing process");
     }
+
+    if (item) this.item = item;
+
+    this.parent = this.userDaemon?.serviceHost?.getService<DistributionServiceProcess>("DistribSvc")!;
   }
 
   logStatus(content: string, type: InstallStatusType = "other", status: InstallStatusMode = "working") {
@@ -131,6 +138,7 @@ export class InstallerProcess extends Process {
       const result = await this.userDaemon?.installAppFromPath(join(this.metadata!.installLocation, "_app.tpa"));
       if (!result) {
         this.setCurrentStatus("done");
+        if (this.item) this.parent.addToInstalled(this.item!);
         return true;
       }
 
@@ -184,7 +192,7 @@ export class InstallerProcess extends Process {
 
   async go() {
     this.installing.set(true);
-    if (!(await this.createInstallLocation())) return;
+    if (!(await this.createInstallLocation())) return false;
 
     const { files, sortedPaths } = await this.getFiles();
 
@@ -195,16 +203,17 @@ export class InstallerProcess extends Process {
 
       if (!item) continue;
       if (item.dir) {
-        if (!(await this.mkdir(target))) return;
+        if (!(await this.mkdir(target))) return false;
       } else {
-        if (!(await this.writeFile(target, await item.async("arraybuffer")))) return;
+        if (!(await this.writeFile(target, await item.async("arraybuffer")))) return false;
       }
     }
 
-    if (!(await this.registerApp())) return;
+    if (!(await this.registerApp())) return false;
 
     this.installing.set(false);
     this.completed.set(true);
     this.killSelf();
+    return true;
   }
 }

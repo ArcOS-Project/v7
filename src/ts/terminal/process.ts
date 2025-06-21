@@ -7,6 +7,9 @@ export class TerminalProcess extends Process {
   public static keyword: string;
   public static description: string;
   public static hidden = false;
+  protected term?: ArcTerminal;
+  protected flags?: Arguments;
+  protected argv?: string[];
   private exitCode: number = 0;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
@@ -18,6 +21,9 @@ export class TerminalProcess extends Process {
   }
 
   public async _main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<any> {
+    this.term = term;
+    this.flags = flags;
+    this.argv = argv;
     const result = await this.main(term, flags, argv);
 
     await this.killSelf();

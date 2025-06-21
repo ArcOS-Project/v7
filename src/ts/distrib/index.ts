@@ -11,6 +11,7 @@ import type { Service } from "$types/service";
 import JSZip from "jszip";
 import { InstallerProcess } from "./installer";
 import { join } from "$ts/fs/util";
+import type { InstallerProcProgressNode } from "$types/distrib";
 
 export class DistributionServiceProcess extends BaseService {
   private readonly dataFolder = join(UserPaths.Configuration, "DistribSvc");
@@ -25,7 +26,7 @@ export class DistributionServiceProcess extends BaseService {
     await this.fs.createDirectory(this.tempFolder);
   }
 
-  async packageInstallerFromPath(path: string, progress?: FilesystemProgressCallback) {
+  async packageInstallerFromPath(path: string, progress?: FilesystemProgressCallback, item?: StoreItem) {
     const content = await this.host.daemon.fs.readFile(path, progress);
 
     if (!content) return undefined;
@@ -43,11 +44,11 @@ export class DistributionServiceProcess extends BaseService {
       return undefined;
     }
 
-    return await this.packageInstaller(zip, metadata);
+    return await this.packageInstaller(zip, metadata, item);
   }
 
-  async packageInstaller(zip: JSZip, metadata: ArcPackage) {
-    const proc = await this.handler.spawn<InstallerProcess>(InstallerProcess, undefined, this.pid, zip, metadata);
+  async packageInstaller(zip: JSZip, metadata: ArcPackage, item?: StoreItem): Promise<InstallerProcProgressNode> {
+    const proc = await this.handler.spawn<InstallerProcess>(InstallerProcess, undefined, this.pid, zip, metadata, item);
 
     return {
       proc,
@@ -62,7 +63,19 @@ export class DistributionServiceProcess extends BaseService {
 
   async getStoreItem(id: string): Promise<StoreItem | undefined> {
     try {
-      const response = await Backend.get(`/store/package/${id}`, {
+      const response = await Backend.get(`/store/package/id/${id}`, {
+        headers: { Authorization: `Bearer ${this.host.daemon.token}` },
+      });
+
+      return response.data as StoreItem;
+    } catch {
+      return undefined;
+    }
+  }
+
+  async getStoreItemByName(name: string): Promise<StoreItem | undefined> {
+    try {
+      const response = await Backend.get(`/store/package/name/${name}`, {
         headers: { Authorization: `Bearer ${this.host.daemon.token}` },
       });
 
@@ -92,15 +105,18 @@ export class DistributionServiceProcess extends BaseService {
     }
   }
 
-  async storeItemInstaller(id: string) {
-    const buffer = await this.downloadStoreItem(id);
+  async storeItemInstaller(id: string, onProgress?: FilesystemProgressCallback) {
+    const item = await this.getStoreItem(id);
+    if (!item) return false;
+
+    const buffer = await this.downloadStoreItem(id, onProgress);
     const path = join(this.tempFolder, `${id}.arc`);
     if (!buffer) return false;
 
     const result = await this.fs.writeFile(path, arrayToBlob(buffer));
     if (!result) return false;
 
-    return await this.packageInstallerFromPath(path);
+    return await this.packageInstallerFromPath(path, undefined, item);
   }
 
   async addToInstalled(item: StoreItem) {
@@ -191,6 +207,12 @@ export class DistributionServiceProcess extends BaseService {
     } catch {
       return false;
     }
+  }
+
+  async getInstalledPackage(id: string) {
+    const installed = await this.loadInstalledList();
+
+    return installed.filter((p) => p._id === id)[0];
   }
 }
 
