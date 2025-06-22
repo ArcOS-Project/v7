@@ -36,6 +36,8 @@ export class InstallerProcess extends Process {
 
     this.userDaemon = handler.getProcess(+this.env.get("userdaemon_pid"))!;
 
+    console.log(zip, metadata, item);
+
     if (metadata && zip) {
       this.metadata = metadata;
       this.zip = zip;

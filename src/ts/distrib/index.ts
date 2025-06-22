@@ -14,7 +14,7 @@ import { join } from "$ts/fs/util";
 import type { InstallerProcProgressNode } from "$types/distrib";
 import type { UserPreferencesStore } from "$types/user";
 import type { ApplicationStorage } from "$ts/apps/storage";
-import { compareVersion } from "$ts/terminal/commands/version";
+import { compareVersion } from "$ts/version";
 
 export class DistributionServiceProcess extends BaseService {
   private readonly dataFolder = join(UserPaths.Configuration, "DistribSvc");
@@ -201,7 +201,7 @@ export class DistributionServiceProcess extends BaseService {
         headers: { Authorization: `Bearer ${this.host.daemon.token}` },
       });
 
-      return response.data as PartialStoreItem[];
+      return response.data.results as PartialStoreItem[];
     } catch {
       return [];
     }
