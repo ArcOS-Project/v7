@@ -5,7 +5,15 @@ import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
-import { BRBLUE, BRGREEN, BRPURPLE, RESET } from "../store";
+import { BRBLACK, BRBLUE, BRGREEN, BRPURPLE, RESET } from "../store";
+import { Plural } from "$ts/util";
+
+const typeCaptions: Record<string, string> = {
+  mkdir: "Creating folder",
+  file: "Writing file   ",
+  registration: "Registering    ",
+  other: "Status         ",
+};
 
 export class PkgCommand extends TerminalProcess {
   public static keyword: string = "pkg";
@@ -27,6 +35,15 @@ export class PkgCommand extends TerminalProcess {
     switch (argv[0]) {
       case "install":
         return await this.installPackage(argv[1]);
+
+      case "updateall":
+        return await this.updateAll();
+
+      case "update":
+        return await this.update(argv[1]);
+
+      case "reinstall":
+        return await this.reinstall(argv[1]);
 
       case "remove":
         return await this.removePackage(argv[1]);
@@ -52,10 +69,7 @@ export class PkgCommand extends TerminalProcess {
     const installed = await this.distrib!.getInstalledPackage(pkg._id);
 
     if (installed) {
-      this.term?.Warning(
-        `is already installed.\n${" ".repeat(pkg.name.length + 2)}Use 'pkg update ${name}' to update it.`,
-        `\n${pkg.name}`
-      );
+      this.term?.Warning(`already installed.\n\nUse 'pkg update ${name}' to update it.`, `\n${pkg.name}`);
       return 1;
     }
 
@@ -82,13 +96,6 @@ export class PkgCommand extends TerminalProcess {
       return 1;
     }
 
-    const typeCaptions: Record<string, string> = {
-      mkdir: "Creating folder",
-      file: "Writing file   ",
-      registration: "Registering    ",
-      other: "Status         ",
-    };
-
     installer.status.subscribe((v) => {
       const entries = Object.entries(v);
       const last = entries[entries.length - 1];
@@ -99,9 +106,9 @@ export class PkgCommand extends TerminalProcess {
         case "done":
           break;
         case "failed":
-          this.term?.Error(`${last[1].content}`, `${typeCaptions[last[1].type]} Failed`);
+          this.term?.Error(last[1].content, `${typeCaptions[last[1].type]} Failed`);
         case "working":
-          this.term?.Info(`${last[1].content}`, typeCaptions[last[1].type]);
+          this.term?.Info(last[1].content, typeCaptions[last[1].type]);
       }
     });
 
@@ -121,10 +128,122 @@ export class PkgCommand extends TerminalProcess {
   }
 
   async removePackage(name: string): Promise<number> {
+    const local = await this.distrib?.getInstalledPackageByAppId(name);
+
+    if (!local) {
+      this.term?.Error(`not installed.`, name);
+      return 1;
+    }
+
+    const confirm = await this.term?.rl?.read(`\nDo you want to remove this package (y/n)? `);
+
+    if (confirm?.toLowerCase() !== "y") {
+      this.term?.Error("Abort.");
+      return 1;
+    }
+
+    this.term?.rl?.println(`\n${BRGREEN}Now uninstalling '${local.name}'...${RESET}\n`);
+
+    const result = await this.distrib?.uninstallApp(local.pkg.appId, true, (stage) => {
+      this.term?.Info(stage, `Stage`);
+    });
+
+    if (!result) {
+      this.term?.Error(`Uninstalling the package failed!`, `\nError`);
+      return 1;
+    }
+
     return 0;
   }
 
   async searchPackages(query: string): Promise<number> {
+    const result = await this.distrib!.searchStoreItems(query);
+
+    if (!result.length) {
+      this.term?.Error(`Your search for '${query}' returned no results.`);
+      return 1;
+    }
+
+    for (const item of result) {
+      this.term?.rl?.println(item.name);
+    }
+
+    return 0;
+  }
+
+  async updateAll(): Promise<number> {
+    this.term?.rl?.println("Checking for updates...");
+
+    const outdatedPackages = await this.distrib!.checkForAllUpdates();
+
+    if (!outdatedPackages.length) {
+      this.term?.Info(`There are no updates available.`);
+      return 0;
+    }
+
+    this.term?.rl?.println(
+      `\nGood news: ${BRBLUE}${outdatedPackages.length}${RESET} ${Plural("package", outdatedPackages.length)} can be updated.\n`
+    );
+
+    for (const outdated of outdatedPackages) {
+      this.term?.rl?.println(
+        ` - ${outdated.name} - from ${BRGREEN}${outdated.oldVer}${RESET} to ${BRGREEN}${outdated.newVer}${RESET}`
+      );
+    }
+
+    const confirm = await this.term?.rl?.read(`\nDo you want to update these packages (y/n)? `);
+
+    this.term?.rl?.println("");
+
+    if (confirm?.toLowerCase() !== "y") {
+      this.term?.Error("Abort.");
+      return 1;
+    }
+
+    for (const outdated of outdatedPackages) {
+      this.term?.rl?.println(`Updating ${BRBLUE}${outdated.name}${RESET}...\n`);
+      const installer = await this.distrib!.updatePackage(outdated.pkg._id, true);
+
+      if (!installer) {
+        this.term?.Warning("Failed start update", outdated.name);
+        continue;
+      }
+
+      installer.status.subscribe((v) => {
+        const entries = Object.entries(v);
+        const last = entries[entries.length - 1];
+
+        if (!last) return;
+
+        switch (last[1].status) {
+          case "done":
+            break;
+          case "failed":
+            this.term?.Error(last[1].content, `${typeCaptions[last[1].type]} Failed`);
+          case "working":
+            this.term?.Info(last[1].content, typeCaptions[last[1].type]);
+        }
+      });
+
+      const result = await installer.proc?.go();
+
+      this.term?.rl?.println("");
+
+      if (!result) {
+        this.term?.Error(`Failed to finish update`, outdated.name);
+      }
+    }
+
+    this.term?.Info("Done.");
+
+    return 0;
+  }
+
+  async update(name: string): Promise<number> {
+    return 0;
+  }
+
+  async reinstall(name: string): Promise<number> {
     return 0;
   }
 }
