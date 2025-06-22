@@ -12,14 +12,20 @@ import JSZip from "jszip";
 import { InstallerProcess } from "./installer";
 import { join } from "$ts/fs/util";
 import type { InstallerProcProgressNode } from "$types/distrib";
+import type { UserPreferencesStore } from "$types/user";
+import type { ApplicationStorage } from "$ts/apps/storage";
+import { compareVersion } from "$ts/terminal/commands/version";
 
 export class DistributionServiceProcess extends BaseService {
   private readonly dataFolder = join(UserPaths.Configuration, "DistribSvc");
   private readonly tempFolder = `T:/DistribSvcTemp`;
   private readonly installedListPath = join(this.dataFolder, "Installed.json");
+  preferences: UserPreferencesStore;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);
+
+    this.preferences = host.daemon.preferences;
   }
 
   async start() {
@@ -129,6 +135,10 @@ export class DistributionServiceProcess extends BaseService {
     return await this.writeInstalledList(list);
   }
 
+  async removeFromInstalled(id: string) {
+    return await this.writeInstalledList((await this.loadInstalledList()).filter((s) => s._id !== id));
+  }
+
   async loadInstalledList() {
     const contents = await this.fs.readFile(this.installedListPath);
 
@@ -209,10 +219,110 @@ export class DistributionServiceProcess extends BaseService {
     }
   }
 
-  async getInstalledPackage(id: string) {
-    const installed = await this.loadInstalledList();
+  async updateStoreItemFromPath(itemId: string, updatePath: string) {
+    const contents = await this.fs.readFile(updatePath);
+
+    if (!contents) return false;
+
+    try {
+      const newData = arrayToBlob(contents);
+      const response = await Backend.patch(`/store/publish/${itemId}`, newData, {
+        headers: { Authorization: `Bearer ${this.host.daemon.token}` },
+      });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async getInstalledPackage(id: string, installedList?: StoreItem[]) {
+    const installed = installedList || (await this.loadInstalledList());
 
     return installed.filter((p) => p._id === id)[0];
+  }
+
+  async getInstalledPackageByAppId(appId: string): Promise<StoreItem | undefined> {
+    return (await this.loadInstalledList()).filter((s) => s.pkg.appId === appId)[0];
+  }
+
+  async uninstallApp(appId: string, deleteFiles = false, onStage?: (stage: string) => void) {
+    const app = this.preferences().userApps[appId];
+    const appStore = this.host.getService<ApplicationStorage>("AppStorage");
+
+    if (!app) return false;
+
+    onStage?.("Getting installed package");
+
+    const installedPkg = await this.getInstalledPackageByAppId(appId);
+
+    if (installedPkg) {
+      onStage?.("Removing package from installed...");
+
+      await this.removeFromInstalled(installedPkg._id);
+    }
+
+    onStage?.("Updating user preferences");
+
+    this.preferences.update((v) => {
+      delete v.userApps[appId];
+      return v;
+    });
+
+    onStage?.("Refreshing app store...");
+
+    await appStore?.refresh();
+    if (deleteFiles) {
+      onStage?.("Deleting app files...");
+      await this.fs.deleteItem(app.workingDirectory!);
+    }
+
+    this.host.daemon.unpinApp(appId);
+
+    return true;
+  }
+
+  async checkForUpdate(
+    id: string,
+    installedList?: StoreItem[]
+  ): Promise<{ name: string; oldVer: string; newVer: string; pkg: StoreItem } | false> {
+    const installedPkg = await this.getInstalledPackage(id, installedList);
+    if (!installedPkg) return false;
+
+    const onlinePkg = await this.getStoreItem(id);
+    if (!onlinePkg) return false;
+
+    const isHigher = compareVersion(installedPkg.pkg.version, onlinePkg.pkg.version) === "higher";
+
+    return isHigher
+      ? { oldVer: installedPkg.pkg.version, newVer: onlinePkg.pkg.version, name: installedPkg.name, pkg: installedPkg }
+      : false;
+  }
+
+  async checkForAllUpdates() {
+    const installedList = await this.loadInstalledList();
+    const result: { name: string; oldVer: string; newVer: string; pkg: StoreItem }[] = [];
+
+    for (const item of installedList) {
+      const outdated = await this.checkForUpdate(item._id, installedList);
+      if (outdated) result.push(outdated);
+    }
+
+    return result;
+  }
+
+  async updatePackage(
+    id: string,
+    force = false,
+    progress?: FilesystemProgressCallback
+  ): Promise<InstallerProcProgressNode | false> {
+    const outdated = force ? false : await this.checkForUpdate(id);
+    if (outdated) return false;
+
+    const installer = await this.storeItemInstaller(id, progress);
+    if (!installer) return false;
+
+    return installer;
   }
 }
 

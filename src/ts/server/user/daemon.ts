@@ -270,7 +270,7 @@ export class UserDaemon extends Process {
     await this.fs.mountDrive<ServerDrive>("userfs", ServerDrive, "U", undefined, this.token);
 
     for (const dir of Object.values(UserPaths)) {
-      await this.fs.createDirectory(dir);
+      this.fs.createDirectory(dir, false);
     }
 
     await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${this.token}` } });
