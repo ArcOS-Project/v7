@@ -5,7 +5,7 @@ import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
-import { BRBLACK, BRBLUE, BRGREEN, BRPURPLE, RESET } from "../store";
+import { BRBLACK, BRBLUE, BRGREEN, BRPURPLE, CLRROW, CURUP, RESET } from "../store";
 import { Plural } from "$ts/util";
 
 const typeCaptions: Record<string, string> = {
@@ -26,6 +26,8 @@ export class PkgCommand extends TerminalProcess {
 
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     this.distrib = this.term!.daemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
+
+    term.rl?.println("");
 
     if (!argv[0]) {
       this.term?.Error("Missing arguments.");
@@ -74,7 +76,7 @@ export class PkgCommand extends TerminalProcess {
     }
 
     this.term?.rl?.println(
-      `\nInstalling ${BRGREEN}${pkg.name}${RESET} v${pkg.pkg.version} by ${BRGREEN}${pkg.pkg.author}${RESET}.`
+      `Installing ${BRGREEN}${pkg.name}${RESET} v${pkg.pkg.version} by ${BRGREEN}${pkg.pkg.author}${RESET}.`
     );
     this.term?.rl?.println(`\n${BRBLUE}${pkg.pkg.description}${RESET}\n`);
     this.term?.rl?.println(`${BRPURPLE}Compressed size${RESET}:   ${formatBytes(pkg.size)}`);
@@ -106,23 +108,24 @@ export class PkgCommand extends TerminalProcess {
         case "done":
           break;
         case "failed":
-          this.term?.Error(last[1].content, `${typeCaptions[last[1].type]} Failed`);
+          this.term?.Error(last[1].content, `${CURUP}${CLRROW}${typeCaptions[last[1].type]} Failed`);
         case "working":
-          this.term?.Info(last[1].content, typeCaptions[last[1].type]);
+          this.term?.Info(last[1].content, `${CURUP}${CLRROW}${typeCaptions[last[1].type]}`);
       }
     });
 
     this.term?.rl?.println("");
+    this.term?.rl?.println("Loading...");
 
     const result = await installer.proc?.go();
 
-    this.term?.rl?.println("");
-
     if (!result) {
       this.term?.Error(`Installation of '${name}' failed.`);
+
+      return 1;
     }
 
-    this.term?.Info(`Done.`);
+    this.term?.rl?.println(`${CURUP}${CLRROW}Done.`);
 
     return 0;
   }
@@ -135,7 +138,7 @@ export class PkgCommand extends TerminalProcess {
       return 1;
     }
 
-    const confirm = await this.term?.rl?.read(`\nDo you want to remove this package (y/n)? `);
+    const confirm = await this.term?.rl?.read(`Do you want to remove this package (y/n)? `);
 
     if (confirm?.toLowerCase() !== "y") {
       this.term?.Error("Abort.");
@@ -144,14 +147,18 @@ export class PkgCommand extends TerminalProcess {
 
     this.term?.rl?.println(`\n${BRGREEN}Now uninstalling '${local.name}'...${RESET}\n`);
 
+    this.term?.rl?.println("Loading...");
+
     const result = await this.distrib?.uninstallApp(local.pkg.appId, true, (stage) => {
-      this.term?.Info(stage, `Stage`);
+      this.term?.rl?.println(`${CURUP}${CLRROW}${stage}`);
     });
 
     if (!result) {
       this.term?.Error(`Uninstalling the package failed!`, `\nError`);
       return 1;
     }
+
+    this.term?.rl?.println(`${CURUP}${CLRROW}${CURUP}${CURUP}${CLRROW}Done.`);
 
     return 0;
   }
@@ -177,7 +184,7 @@ export class PkgCommand extends TerminalProcess {
     const outdatedPackages = await this.distrib!.checkForAllUpdates();
 
     if (!outdatedPackages.length) {
-      this.term?.Info(`There are no updates available.`);
+      this.term?.rl?.println(`${CURUP}${CLRROW}There are no updates available.`);
       return 0;
     }
 
@@ -201,13 +208,16 @@ export class PkgCommand extends TerminalProcess {
     }
 
     for (const outdated of outdatedPackages) {
-      this.term?.rl?.println(`Updating ${BRBLUE}${outdated.name}${RESET}...\n`);
+      this.term?.rl?.println(`Updating ${BRBLUE}${outdated.name}${RESET}...`);
+
       const installer = await this.distrib!.updatePackage(outdated.pkg._id, true);
 
       if (!installer) {
         this.term?.Warning("Failed start update", outdated.name);
         continue;
       }
+
+      await this.distrib!.removeFromInstalled(outdated.pkg._id);
 
       installer.status.subscribe((v) => {
         const entries = Object.entries(v);
@@ -219,22 +229,26 @@ export class PkgCommand extends TerminalProcess {
           case "done":
             break;
           case "failed":
-            this.term?.Error(last[1].content, `${typeCaptions[last[1].type]} Failed`);
+            this.term?.Error(last[1].content, `${CURUP}${CLRROW}${typeCaptions[last[1].type]} Failed`);
           case "working":
-            this.term?.Info(last[1].content, typeCaptions[last[1].type]);
+            this.term?.Info(last[1].content, `${CURUP}${CLRROW}${typeCaptions[last[1].type]}`);
         }
       });
 
-      const result = await installer.proc?.go();
+      this.term?.rl?.println("Loading...");
 
-      this.term?.rl?.println("");
+      const result = await installer.proc?.go();
 
       if (!result) {
         this.term?.Error(`Failed to finish update`, outdated.name);
       }
+
+      this.term?.rl?.println(
+        `${CURUP}${CLRROW}${CURUP}${CLRROW}Updated ${BRBLUE}${outdated.name}${RESET} to version ${outdated.newVer}.`
+      );
     }
 
-    this.term?.Info("Done.");
+    this.term?.rl?.println("\nDone.");
 
     return 0;
   }
