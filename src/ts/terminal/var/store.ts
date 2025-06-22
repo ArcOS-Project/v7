@@ -15,6 +15,10 @@ import {
   BRRED,
   BRWHITE,
   BRYELLOW,
+  CURDOWN,
+  CURLEFT,
+  CURRIGHT,
+  CURUP,
   CYAN,
   ESC,
   GREEN,
@@ -161,6 +165,26 @@ export function getArcTermStore(term: ArcTerminal): VariableStore {
     },
     RESULTCOLOR: {
       get: () => (term.lastCommandErrored ? BRRED : RESET),
+      readOnly: true,
+      canDelete: false,
+    },
+    CURUP: {
+      get: () => CURUP,
+      readOnly: true,
+      canDelete: false,
+    },
+    CURDOWN: {
+      get: () => CURDOWN,
+      readOnly: true,
+      canDelete: false,
+    },
+    CURLEFT: {
+      get: () => CURLEFT,
+      readOnly: true,
+      canDelete: false,
+    },
+    CURRIGHT: {
+      get: () => CURRIGHT,
       readOnly: true,
       canDelete: false,
     },

@@ -93,6 +93,11 @@ export const DIM = `${ESC}2m`;
 export const UNDERLINE = `${ESC}4m`;
 export const INVERTED = `${ESC}7m`;
 export const HIDDEN = `${ESC}8m`;
+export const CURUP = `${ESC}1A`;
+export const CURDOWN = `${ESC}1B`;
+export const CURLEFT = `${ESC}1C`;
+export const CURRIGHT = `${ESC}1D`;
+export const CLRROW = `${ESC}2K`;
 
 export const DefaultArcTermConfiguration: ArcTermConfiguration = {
   prompt: `$BRGREEN$username$RESET: $BRGREEN$pwd $RESULTCOLOR$ $RESET`,
