@@ -10,7 +10,7 @@ export class AtConfCommand extends TerminalProcess {
   }
 
   protected async main(term: ArcTerminal): Promise<number> {
-    await term.daemon?.openFile("U:/arcterm.conf");
+    await term.daemon?.openFile(term.CONFIG_PATH);
     return 0;
   }
 }

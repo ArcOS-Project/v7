@@ -29,6 +29,7 @@ import { ArcTermVariables } from "./var";
 import { UserPaths } from "$ts/server/user/store";
 
 export class ArcTerminal extends Process {
+  readonly CONFIG_PATH = join(UserPaths.Configuration, "ArcTerm/arcterm.conf");
   path: string;
   drive: FilesystemDrive | undefined;
   term: Terminal;
@@ -54,6 +55,9 @@ export class ArcTerminal extends Process {
 
   async start() {
     if (!this.term) return this.killSelf();
+
+    await this.fs.createDirectory(join(UserPaths.Configuration, "ArcTerm"));
+    await this.migrateConfigurationPath();
 
     const rl = await this.handler.spawn<Readline>(Readline, undefined, this.pid, this);
     await this.readConfig();
@@ -119,48 +123,64 @@ export class ArcTerminal extends Process {
   }
 
   async readDir(path?: string) {
+    this.Log(`FS: list: ${path}`);
+
     if (this._disposed) return;
 
     return await this.fs.readDir(this.join(path));
   }
 
   async createDirectory(path: string) {
+    this.Log(`FS: mkdir: ${path}`);
+
     if (this._disposed) return;
 
     return await this.fs.createDirectory(this.join(path));
   }
 
   async writeFile(path: string, data: Blob) {
+    this.Log(`FS: write: ${path}`);
+
     if (this._disposed) return;
 
     return await this.fs.writeFile(this.join(path), data);
   }
 
   async tree(path: string) {
+    this.Log(`FS: tree: ${path}`);
+
     if (this._disposed) return;
 
     return await this.fs.tree(this.join(path));
   }
 
   async copyItem(source: string, destination: string) {
+    this.Log(`FS: cp: ${source} -> ${destination}`);
+
     if (this._disposed) return;
 
     return await this.fs.copyItem(this.join(source), this.join(destination));
   }
 
   async moveItem(source: string, destination: string) {
+    this.Log(`FS: mv: ${source} -> destination`);
+
     if (this._disposed) return;
 
     return await this.fs.moveItem(this.join(source), this.join(destination));
   }
 
   async readFile(path: string) {
+    this.Log(`FS: read: ${path}`);
+
     if (this._disposed) return;
 
     return await this.fs.readFile(this.join(path));
   }
 
   async deleteItem(path: string) {
+    this.Log(`FS: rm: ${path}`);
+
     if (this._disposed) return;
 
     return await this.fs.deleteItem(this.join(path));
@@ -185,6 +205,8 @@ export class ArcTerminal extends Process {
   }
 
   async changeDirectory(path: string) {
+    this.Log(`FS: chdir: CWD to ${path}`);
+
     if (this._disposed) return;
 
     try {
@@ -249,6 +271,8 @@ export class ArcTerminal extends Process {
   }
 
   async elevate(data: ElevationData) {
+    this.Log("Starting ArcTerm elevation");
+
     if (this._disposed) return false;
     const color = data.level == ElevationLevel.low ? BRGREEN : data.level === ElevationLevel.medium ? BRYELLOW : BRRED;
     const pref = this.daemon?.preferences();
@@ -310,9 +334,11 @@ export class ArcTerminal extends Process {
   }
 
   async readConfig() {
+    this.Log("Reading configuration file");
+
     if (this._disposed) return;
     try {
-      const contents = await this.fs.readFile("U:/arcterm.conf");
+      const contents = await this.fs.readFile(this.CONFIG_PATH);
 
       if (!contents) throw "";
 
@@ -325,20 +351,37 @@ export class ArcTerminal extends Process {
   }
 
   async writeConfig() {
+    this.Log("Writing configuration file");
+
     if (this._disposed) return;
 
-    await this.fs.writeFile("U:/arcterm.conf", textToBlob(JSON.stringify(this.config, null, 2)));
+    await this.fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(this.config, null, 2)));
   }
 
   async reload() {
+    this.Log("Soft-reloading ArcTerm");
+
     await this.rl?.dispose();
     await this.killSelf();
     await this.handler.spawn(ArcTerminal, undefined, this.parentPid, this.term, this.path);
   }
 
   tryGetTermWindow() {
+    this.Log("Trying to get TermWindProc");
+
     const parent = this.handler.getProcess(this.parentPid);
 
     if (parent instanceof TerminalWindowRuntime) this.window = parent;
+  }
+
+  async migrateConfigurationPath() {
+    const oldPath = "U:/arcterm.conf";
+    const newFile = await this.fs.readFile(this.CONFIG_PATH);
+    const oldFile = newFile ? undefined : await this.fs.readFile(oldPath);
+
+    if (oldFile && !newFile) {
+      this.Log("Migrating old config path to " + this.CONFIG_PATH);
+      await this.fs.moveItem(oldPath, this.CONFIG_PATH);
+    }
   }
 }
