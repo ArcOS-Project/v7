@@ -8,6 +8,8 @@ import dayjs from "dayjs";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { BRBLUE, BRGREEN, BRPURPLE, CLRROW, CURUP, RESET } from "../store";
+import { ArcTermIcon } from "$ts/images/apps";
+import { ElevationLevel } from "$types/elevation";
 
 const typeCaptions: Record<string, string> = {
   mkdir: "Creating folder",
@@ -28,18 +30,16 @@ export class PkgCommand extends TerminalProcess {
   protected async main(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     this.distrib = this.term!.daemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
 
-    term.rl?.println("");
-
-    if (!this.distrib.preferences?.().security.enableThirdParty) {
-      this.term?.Error("You need to enable third-party applications\nbefore proceeding. It's in the Security Center.");
-    }
-
     if (!argv[0]) {
       this.term?.Error("Missing arguments.");
       return 1;
     }
 
-    switch (argv[0]) {
+    if (!this.distrib.preferences?.().security.enableThirdParty && argv[0].toLowerCase() !== "help") {
+      this.term?.Error("\nYou need to enable third-party applications\nbefore proceeding. It's in the Security Center.");
+    }
+
+    switch (argv[0].toLowerCase()) {
       case "install":
         return await this.installPackage(argv[1]);
 
@@ -59,6 +59,9 @@ export class PkgCommand extends TerminalProcess {
         argv.shift();
         return await this.searchPackages(argv.join(" ").trim());
 
+      case "help":
+        return await this.help();
+
       default:
         this.term?.Error(`Invalid operation '${argv[0]}'.`);
         return 1;
@@ -68,6 +71,10 @@ export class PkgCommand extends TerminalProcess {
   async installPackage(name: string): Promise<number> {
     const pkg = await this.distrib!.getStoreItemByName(name);
 
+    const elevated = await this.elevate();
+
+    if (!elevated) return 1;
+
     if (!pkg) {
       this.term?.Error(`Package '${name}' doesn't exist.`);
       return 1;
@@ -76,7 +83,7 @@ export class PkgCommand extends TerminalProcess {
     const installed = await this.distrib!.getInstalledPackage(pkg._id);
 
     if (installed) {
-      this.term?.Warning(`already installed.\n\nUse 'pkg update ${name}' to update it.`, `\n${pkg.name}`);
+      this.term?.Warning(`already installed.\n\nUse 'pkg update ${name}' to update it.`, `${pkg.name}`);
       return 1;
     }
 
@@ -138,6 +145,10 @@ export class PkgCommand extends TerminalProcess {
   async removePackage(name: string): Promise<number> {
     const local = await this.distrib?.getInstalledPackageByAppId(name);
 
+    const elevated = await this.elevate();
+
+    if (!elevated) return 1;
+
     if (!local) {
       this.term?.Error(`not installed.`, name);
       return 1;
@@ -185,6 +196,10 @@ export class PkgCommand extends TerminalProcess {
 
   async updateAll(): Promise<number> {
     this.term?.rl?.println("Checking for updates...");
+
+    const elevated = await this.elevate();
+
+    if (!elevated) return 1;
 
     const outdatedPackages = await this.distrib!.checkForAllUpdates();
 
@@ -261,6 +276,10 @@ export class PkgCommand extends TerminalProcess {
   async update(name: string): Promise<number> {
     const local = await this.distrib?.getInstalledPackageByAppId(name);
 
+    const elevated = await this.elevate();
+
+    if (!elevated) return 1;
+
     if (!local) {
       this.term?.Error(`not installed`, name);
       return 1;
@@ -308,6 +327,10 @@ export class PkgCommand extends TerminalProcess {
 
   async reinstall(name: string): Promise<number> {
     const local = await this.distrib?.getInstalledPackageByAppId(name);
+
+    const elevated = await this.elevate();
+
+    if (!elevated) return 1;
 
     if (!local) {
       this.term?.Error("not installed", name);
@@ -372,5 +395,32 @@ export class PkgCommand extends TerminalProcess {
     this.term?.rl?.println(`${CURUP}${CLRROW}Done.`);
 
     return 0;
+  }
+
+  async help(): Promise<number> {
+    this.term?.rl?.println("ArcOS Package Manager\n\nUsage: pkg <command> [...]\n");
+    this.term?.rl?.println("Commands:");
+    this.term?.rl?.println("- install <name>      Installs the specified package");
+    this.term?.rl?.println("- remove <name>       Removes a package, if installed");
+    this.term?.rl?.println("- update <name>       If available, updates the package");
+    this.term?.rl?.println("- updateall           Performs updates on all packages that have them");
+    this.term?.rl?.println("- reinstall <name>    Completely reinstalls a package, including configuration");
+    this.term?.rl?.println("- search <query>      Searches all packages for a string");
+    this.term?.rl?.println("- help                Shows this help listing.");
+    this.term?.rl?.println(
+      "\nThird-party applications have to be turned on in the Security Center in order to use this command."
+    );
+
+    return 0;
+  }
+
+  async elevate(): Promise<boolean> {
+    return await this.term!.elevate({
+      what: "ArcOS needs your permission to run the pkg command.",
+      image: ArcTermIcon,
+      title: "Package manager",
+      description: "ArcTerm command",
+      level: ElevationLevel.medium,
+    });
   }
 }
