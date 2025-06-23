@@ -1,12 +1,13 @@
 import { DistributionServiceProcess } from "$ts/distrib";
-import { formatBytes } from "$ts/fs/util";
+import { formatBytes, join } from "$ts/fs/util";
 import type { ProcessHandler } from "$ts/process/handler";
+import { UserPaths } from "$ts/server/user/store";
+import { Plural } from "$ts/util";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
-import { BRBLACK, BRBLUE, BRGREEN, BRPURPLE, CLRROW, CURUP, RESET } from "../store";
-import { Plural } from "$ts/util";
+import { BRBLUE, BRGREEN, BRPURPLE, CLRROW, CURUP, RESET } from "../store";
 
 const typeCaptions: Record<string, string> = {
   mkdir: "Creating folder",
@@ -24,10 +25,14 @@ export class PkgCommand extends TerminalProcess {
     super(handler, pid, parentPid);
   }
 
-  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     this.distrib = this.term!.daemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
 
     term.rl?.println("");
+
+    if (!this.distrib.preferences?.().security.enableThirdParty) {
+      this.term?.Error("You need to enable third-party applications\nbefore proceeding. It's in the Security Center.");
+    }
 
     if (!argv[0]) {
       this.term?.Error("Missing arguments.");
@@ -302,6 +307,70 @@ export class PkgCommand extends TerminalProcess {
   }
 
   async reinstall(name: string): Promise<number> {
+    const local = await this.distrib?.getInstalledPackageByAppId(name);
+
+    if (!local) {
+      this.term?.Error("not installed", name);
+      return 1;
+    }
+
+    this.term?.rl?.println("Deleting app preferences...");
+
+    this.distrib?.preferences.update((v) => {
+      v.appPreferences[name] = {};
+      return v;
+    });
+
+    this.term?.rl?.println(`${CURUP}${CLRROW}Deleting configuration...`);
+
+    await this.fs.deleteItem(join(UserPaths.Configuration, name));
+
+    this.term?.rl?.println(`${CURUP}${CLRROW}Uninstalling app...`);
+
+    const uninstallResult = await this.distrib?.uninstallApp(local.pkg.appId, true, (stage) => {
+      this.term?.rl?.println(`${CURUP}${CLRROW}${stage}`);
+    });
+
+    if (!uninstallResult) {
+      this.term?.Warning("Uninstall failed; proceeding anyway.");
+      this.term?.rl?.println("");
+    }
+
+    const installer = await this.distrib!.storeItemInstaller(local._id);
+
+    if (!installer) {
+      this.term?.Error("Failed to create installer process.");
+      return 1;
+    }
+
+    installer.status.subscribe((v) => {
+      const entries = Object.entries(v);
+      const last = entries[entries.length - 1];
+
+      if (!last) return;
+
+      switch (last[1].status) {
+        case "done":
+          break;
+        case "failed":
+          this.term?.Error(last[1].content, `${CURUP}${CLRROW}${typeCaptions[last[1].type]} Failed`);
+        case "working":
+          this.term?.Info(last[1].content, `${CURUP}${CLRROW}${typeCaptions[last[1].type]}`);
+      }
+    });
+
+    this.term?.rl?.println(`${CURUP}${CLRROW}Loading...`);
+
+    const installResult = await installer.proc?.go();
+
+    if (!installResult) {
+      this.term?.Error(`Installation of '${name}' failed.`);
+
+      return 1;
+    }
+
+    this.term?.rl?.println(`${CURUP}${CLRROW}Done.`);
+
     return 0;
   }
 }
