@@ -2,18 +2,10 @@ import { arrayToBlob } from "$ts/fs/convert";
 import { join } from "$ts/fs/util";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
-import { Backend } from "$ts/server/axios";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
-import type {
-  ArcPackage,
-  InstallStatus,
-  InstallStatusMode,
-  InstallStatusType,
-  PartialStoreItem,
-  StoreItem,
-} from "$types/package";
+import type { ArcPackage, InstallStatus, InstallStatusMode, InstallStatusType, StoreItem } from "$types/package";
 import { fromExtension } from "human-filetypes";
 import type JSZip from "jszip";
 import { DistributionServiceProcess } from ".";
@@ -50,6 +42,7 @@ export class InstallerProcess extends Process {
   }
 
   logStatus(content: string, type: InstallStatusType = "other", status: InstallStatusMode = "working") {
+    this.Log(`[${status} | ${type}] ${content}`);
     this.verboseLog.push(`${status}: ${type}: ${content}`);
 
     const uuid = UUID();
@@ -84,31 +77,9 @@ export class InstallerProcess extends Process {
     });
   }
 
-  async searchStoreItems(query: string): Promise<PartialStoreItem[]> {
-    try {
-      const result = await Backend.get(`/store/search/${query}`, {
-        headers: { Authorization: `Bearer ${this.userDaemon.token}` },
-      });
-
-      return result.data as PartialStoreItem[];
-    } catch {
-      return [];
-    }
-  }
-
-  async getStoreItem(id: string): Promise<StoreItem | undefined> {
-    try {
-      const result = await Backend.get(`/store/package/${id}`, {
-        headers: { Authorization: `Bearer ${this.userDaemon.token}` },
-      });
-
-      return result.data as StoreItem;
-    } catch {
-      return undefined;
-    }
-  }
-
   async getFiles() {
+    this.Log("getFiles");
+
     const files = Object.fromEntries(
       Object.entries(this.zip!.files)
         .filter(([k]) => k.startsWith("payload/"))
@@ -122,6 +93,8 @@ export class InstallerProcess extends Process {
   }
 
   async createInstallLocation(): Promise<boolean> {
+    this.Log("createInstallLocation");
+
     this.logStatus(this.metadata!.installLocation, "mkdir");
     try {
       await this.fs.createDirectory(this.metadata!.installLocation);
@@ -134,6 +107,8 @@ export class InstallerProcess extends Process {
   }
 
   async registerApp(): Promise<boolean> {
+    this.Log("registerApp");
+
     this.logStatus(this.metadata!.name, "registration");
 
     try {
@@ -152,6 +127,8 @@ export class InstallerProcess extends Process {
   }
 
   async mkdir(path: string): Promise<boolean> {
+    this.Log("mkdir: " + path);
+
     const formattedPath = path.replace(`${this.metadata!.installLocation}/`, "");
     this.logStatus(formattedPath, "mkdir");
 
@@ -166,6 +143,8 @@ export class InstallerProcess extends Process {
   }
 
   async writeFile(path: string, content: ArrayBuffer): Promise<boolean> {
+    this.Log(`writeFile: ${path} ${content.byteLength}`);
+
     const formattedPath = path.replace(`${this.metadata!.installLocation}/`, "");
     this.logStatus(formattedPath, "file");
 
@@ -184,6 +163,8 @@ export class InstallerProcess extends Process {
   }
 
   fail(reason: string) {
+    this.Log("fail: " + reason);
+
     this.installing.set(false);
     this.verboseLog.push(`INSTALL FAILED: ${reason}`);
 
@@ -193,8 +174,14 @@ export class InstallerProcess extends Process {
   }
 
   async go() {
+    this.Log("GO!");
+    this.parent!.BUSY = "InstallerProcess";
     this.installing.set(true);
-    if (!(await this.createInstallLocation())) return false;
+
+    if (!(await this.createInstallLocation())) {
+      this.parent!.BUSY = "";
+      return false;
+    }
 
     const { files, sortedPaths } = await this.getFiles();
 
@@ -205,13 +192,23 @@ export class InstallerProcess extends Process {
 
       if (!item) continue;
       if (item.dir) {
-        if (!(await this.mkdir(target))) return false;
+        if (!(await this.mkdir(target))) {
+          this.parent!.BUSY = "";
+          return false;
+        }
       } else {
-        if (!(await this.writeFile(target, await item.async("arraybuffer")))) return false;
+        if (!(await this.writeFile(target, await item.async("arraybuffer")))) {
+          this.parent!.BUSY = "";
+          return false;
+        }
       }
     }
 
-    if (!(await this.registerApp())) return false;
+    this.parent!.BUSY = "";
+
+    if (!(await this.registerApp())) {
+      return false;
+    }
 
     this.installing.set(false);
     this.completed.set(true);
