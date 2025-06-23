@@ -254,6 +254,50 @@ export class PkgCommand extends TerminalProcess {
   }
 
   async update(name: string): Promise<number> {
+    const local = await this.distrib?.getInstalledPackageByAppId(name);
+
+    if (!local) {
+      this.term?.Error(`not installed`, name);
+      return 1;
+    }
+
+    this.term?.rl?.println(`Updating ${BRBLUE}${local.name}${RESET}...`);
+
+    const installer = await this.distrib!.updatePackage(local._id);
+
+    if (!installer) {
+      this.term?.rl?.println(`${CURUP}${CLRROW}Already up to date.`);
+      return 1;
+    }
+
+    await this.distrib!.removeFromInstalled(local._id);
+
+    installer.status.subscribe((v) => {
+      const entries = Object.entries(v);
+      const last = entries[entries.length - 1];
+
+      if (!last) return;
+
+      switch (last[1].status) {
+        case "done":
+          break;
+        case "failed":
+          this.term?.Error(last[1].content, `${CURUP}${CLRROW}${typeCaptions[last[1].type]} Failed`);
+        case "working":
+          this.term?.Info(last[1].content, `${CURUP}${CLRROW}${typeCaptions[last[1].type]}`);
+      }
+    });
+
+    this.term?.rl?.println("Loading...");
+
+    const result = await installer.proc?.go();
+
+    if (!result) {
+      this.term?.Error(`Failed to finish update`, name);
+    }
+
+    this.term?.rl?.println(`${CURUP}${CLRROW}${CURUP}${CLRROW}Updated ${BRBLUE}${name}${RESET}.`);
+
     return 0;
   }
 

@@ -316,8 +316,8 @@ export class DistributionServiceProcess extends BaseService {
     force = false,
     progress?: FilesystemProgressCallback
   ): Promise<InstallerProcProgressNode | false> {
-    const outdated = force ? false : await this.checkForUpdate(id);
-    if (outdated) return false;
+    const outdated = await this.checkForUpdate(id);
+    if (!outdated && !force) return false;
 
     const installer = await this.storeItemInstaller(id, progress);
     if (!installer) return false;
