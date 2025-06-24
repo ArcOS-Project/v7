@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
+import { ErrorIcon } from "$ts/images/dialog";
 import { AppsIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { type ReadableStore } from "$ts/writable";
@@ -33,10 +34,24 @@ export class AppInstallerRuntime extends AppProcess {
   async start() {
     if (!(this.zip instanceof JSZip) || !this.metadata) return false;
 
-    this.progress = await this.userDaemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!.packageInstaller(
-      this.zip,
-      this.metadata
-    );
+    const distrib = this.userDaemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
+
+    if (!distrib) {
+      MessageBox(
+        {
+          title: "Can't install package",
+          message: "The Distribution Service isn't running anymore. Please restart ArcOS to fix this problem.",
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          image: ErrorIcon,
+          sound: "arcos.dialog.error",
+        },
+        +this.env.get("shell_pid"),
+        true
+      );
+      return false;
+    }
+
+    this.progress = await distrib.packageInstaller(this.zip, this.metadata);
   }
 
   async render() {
