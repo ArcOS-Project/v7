@@ -13,9 +13,9 @@ import { ElevationLevel } from "$types/elevation";
 
 const typeCaptions: Record<string, string> = {
   mkdir: "Creating folder",
-  file: "Writing file   ",
-  registration: "Registering    ",
-  other: "Status         ",
+  file: "Writing file",
+  registration: "Registering",
+  other: "Status",
 };
 
 export class PkgCommand extends TerminalProcess {
@@ -32,6 +32,11 @@ export class PkgCommand extends TerminalProcess {
 
     if (!argv[0]) {
       this.term?.Error("Missing arguments.");
+      return 1;
+    }
+
+    if (!this.distrib) {
+      term?.Error("DistribSvc isn't running");
       return 1;
     }
 
@@ -103,7 +108,16 @@ export class PkgCommand extends TerminalProcess {
       return 1;
     }
 
-    const installer = await this.distrib!.storeItemInstaller(pkg._id);
+    this.term?.rl?.println("");
+    this.term?.rl?.println("Loading...");
+
+    const installer = await this.distrib!.storeItemInstaller(pkg._id, (prog) => {
+      this.term?.rl?.println(
+        `${CURUP}${CLRROW}Downloading package: ${BRBLUE}${formatBytes(prog.value)}${RESET} of ${BRBLUE}${formatBytes(
+          prog.max
+        )}${RESET} (${((100 / prog.max) * prog.value).toFixed(2)}%)`
+      );
+    });
 
     if (!installer) {
       this.term?.Error("Failed to create installer process.");
@@ -125,9 +139,6 @@ export class PkgCommand extends TerminalProcess {
           this.term?.Info(last[1].content, `${CURUP}${CLRROW}${typeCaptions[last[1].type]}`);
       }
     });
-
-    this.term?.rl?.println("");
-    this.term?.rl?.println("Loading...");
 
     const result = await installer.proc?.go();
 
@@ -230,7 +241,15 @@ export class PkgCommand extends TerminalProcess {
     for (const outdated of outdatedPackages) {
       this.term?.rl?.println(`Updating ${BRBLUE}${outdated.name}${RESET}...`);
 
-      const installer = await this.distrib!.updatePackage(outdated.pkg._id, true);
+      this.term?.rl?.println("Loading...");
+
+      const installer = await this.distrib!.updatePackage(outdated.pkg._id, true, (prog) => {
+        this.term?.rl?.println(
+          `${CURUP}${CLRROW}Downloading package: ${BRBLUE}${formatBytes(prog.value)}${RESET} of ${BRBLUE}${formatBytes(
+            prog.max
+          )}${RESET} (${((100 / prog.max) * prog.value).toFixed(2)}%)`
+        );
+      });
 
       if (!installer) {
         this.term?.Warning("Failed start update", outdated.name);
@@ -255,7 +274,7 @@ export class PkgCommand extends TerminalProcess {
         }
       });
 
-      this.term?.rl?.println("Loading...");
+      this.term?.rl?.println(`${CURUP}${CLRROW}Loading...`);
 
       const result = await installer.proc?.go();
 
@@ -287,7 +306,13 @@ export class PkgCommand extends TerminalProcess {
 
     this.term?.rl?.println(`Updating ${BRBLUE}${local.name}${RESET}...`);
 
-    const installer = await this.distrib!.updatePackage(local._id);
+    const installer = await this.distrib!.updatePackage(local._id, false, (prog) => {
+      this.term?.rl?.println(
+        `${CURUP}${CLRROW}Downloading package: ${BRBLUE}${formatBytes(prog.value)}${RESET} of ${BRBLUE}${formatBytes(
+          prog.max
+        )}${RESET} (${((100 / prog.max) * prog.value).toFixed(2)}%)`
+      );
+    });
 
     if (!installer) {
       this.term?.rl?.println(`${CURUP}${CLRROW}Already up to date.`);
@@ -312,7 +337,7 @@ export class PkgCommand extends TerminalProcess {
       }
     });
 
-    this.term?.rl?.println("Loading...");
+    this.term?.rl?.println(`${CURUP}${CLRROW}Loading...`);
 
     const result = await installer.proc?.go();
 
@@ -359,7 +384,13 @@ export class PkgCommand extends TerminalProcess {
       this.term?.rl?.println("");
     }
 
-    const installer = await this.distrib!.storeItemInstaller(local._id);
+    const installer = await this.distrib!.storeItemInstaller(local._id, (prog) => {
+      this.term?.rl?.println(
+        `${CURUP}${CLRROW}Downloading package: ${BRBLUE}${formatBytes(prog.value)}${RESET} of ${BRBLUE}${formatBytes(
+          prog.max
+        )}${RESET} (${((100 / prog.max) * prog.value).toFixed(2)}%)`
+      );
+    });
 
     if (!installer) {
       this.term?.Error("Failed to create installer process.");
