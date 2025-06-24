@@ -20,6 +20,8 @@ export class InstallerProcess extends Process {
   metadata?: ArcPackage;
   userDaemon: UserDaemon;
   parent: DistributionServiceProcess;
+  TOTAL_COUNT = 2;
+  COUNT = 0;
   item?: StoreItem;
   zip?: JSZip;
 
@@ -41,6 +43,11 @@ export class InstallerProcess extends Process {
     this.parent = this.userDaemon?.serviceHost?.getService<DistributionServiceProcess>("DistribSvc")!;
   }
 
+  async start() {
+    this.TOTAL_COUNT += Object.keys((await this.getFiles()).files).length;
+    console.log(this.TOTAL_COUNT);
+  }
+
   logStatus(content: string, type: InstallStatusType = "other", status: InstallStatusMode = "working") {
     this.Log(`[${status} | ${type}] ${content}`);
     this.verboseLog.push(`${status}: ${type}: ${content}`);
@@ -53,6 +60,10 @@ export class InstallerProcess extends Process {
       return v;
     });
     this.focused.set(uuid);
+
+    this.COUNT++;
+
+    console.log(this.TOTAL_COUNT, this.COUNT, this.TOTAL_COUNT - this.COUNT);
   }
 
   async setCurrentStatus(status: InstallStatusMode) {
@@ -115,7 +126,7 @@ export class InstallerProcess extends Process {
       const result = await this.userDaemon?.installAppFromPath(join(this.metadata!.installLocation, "_app.tpa"));
       if (!result) {
         this.setCurrentStatus("done");
-        if (this.item) this.parent.addToInstalled(this.item!);
+        if (this.item) await this.parent.addToInstalled(this.item!);
         return true;
       }
 

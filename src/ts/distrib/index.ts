@@ -433,8 +433,6 @@ export class DistributionServiceProcess extends BaseService {
     this.Log(`updatePackage: ${id}`);
     if (this.checkBusy("updatePackage")) return false;
 
-    this.BUSY = "updatePackage";
-
     const outdated = await this.checkForUpdate(id);
     if (!outdated && !force) {
       this.BUSY = "";
