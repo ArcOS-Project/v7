@@ -2,7 +2,7 @@ import { DistributionServiceProcess } from "$ts/distrib";
 import { formatBytes, join } from "$ts/fs/util";
 import type { ProcessHandler } from "$ts/process/handler";
 import { UserPaths } from "$ts/server/user/store";
-import { Plural } from "$ts/util";
+import { maxLength, Plural } from "$ts/util";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
 import type { ArcTerminal } from "..";
@@ -66,6 +66,9 @@ export class PkgCommand extends TerminalProcess {
 
       case "help":
         return await this.help();
+
+      case "list":
+        return await this.listAll();
 
       default:
         this.term?.Error(`Invalid operation '${argv[0]}'.`);
@@ -438,9 +441,24 @@ export class PkgCommand extends TerminalProcess {
     this.term?.rl?.println("- reinstall <name>    Completely reinstalls a package, including configuration");
     this.term?.rl?.println("- search <query>      Searches all packages for a string");
     this.term?.rl?.println("- help                Shows this help listing.");
+    this.term?.rl?.println("- list                Lists all packages on the server. Installed apps are blue.");
     this.term?.rl?.println(
       "\nThird-party applications have to be turned on in the Security Center in order to use this command."
     );
+
+    return 0;
+  }
+
+  async listAll(): Promise<number> {
+    const all = await this.distrib!.getAllStoreItems();
+    const installed = await this.distrib!.loadInstalledList();
+
+    this.term?.rl?.println("");
+
+    for (const item of all) {
+      const color = installed.filter((i) => item._id === i._id)[0] ? BRBLUE : RESET;
+      this.term?.rl?.println(`- ${color}${item.name}${RESET}`);
+    }
 
     return 0;
   }

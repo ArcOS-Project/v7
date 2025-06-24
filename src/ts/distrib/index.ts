@@ -470,6 +470,18 @@ export class DistributionServiceProcess extends BaseService {
 
     this._BUSY = value;
   }
+
+  async getAllStoreItems(): Promise<PartialStoreItem[]> {
+    this.Log(`getAllStoreItems`);
+
+    try {
+      const response = await Backend.get("/store/list", { headers: { Authorization: `Bearer ${this.host.daemon.token}` } });
+
+      return response.data as PartialStoreItem[];
+    } catch {
+      return [];
+    }
+  }
 }
 
 export const distributionService: Service = {
