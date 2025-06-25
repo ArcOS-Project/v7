@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { getItemNameFromPath, getDriveLetter } from "$ts/fs/util";
+  import { FilesystemDrive } from "$ts/fs/drive";
+  import { getDriveLetter, getItemNameFromPath } from "$ts/fs/util";
   import { FolderIcon } from "$ts/images/filesystem";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../../runtime";
   import { DriveIcons } from "../../store";
-  import { FilesystemDrive } from "$ts/fs/drive";
 
   const { process }: { process: FileManagerRuntime } = $props();
   const { path, virtual } = process;

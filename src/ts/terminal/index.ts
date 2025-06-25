@@ -7,6 +7,7 @@ import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { LoginUser } from "$ts/server/user/auth";
 import type { UserDaemon } from "$ts/server/user/daemon";
+import { UserPaths } from "$ts/server/user/store";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
 import type { DirectoryReadReturn } from "$types/fs";
 import type { ArcTermConfiguration, Arguments } from "$types/terminal";
@@ -26,7 +27,6 @@ import {
   TerminalCommandStore,
 } from "./store";
 import { ArcTermVariables } from "./var";
-import { UserPaths } from "$ts/server/user/store";
 
 export class ArcTerminal extends Process {
   readonly CONFIG_PATH = join(UserPaths.Configuration, "ArcTerm/arcterm.conf");

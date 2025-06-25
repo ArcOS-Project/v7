@@ -1,8 +1,8 @@
 import { passwordStrength } from "check-password-strength";
+import { sha256 as sha256Fallback } from "js-sha256";
 import leoProfanity from "leo-profanity";
 import validator from "validator";
 import { getJsonHierarchy } from "./hierarchy";
-import { sha256 as sha256Fallback } from "js-sha256";
 
 leoProfanity.loadDictionary("en");
 

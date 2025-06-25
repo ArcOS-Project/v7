@@ -1,22 +1,22 @@
+import { ArcOSVersion } from "$ts/env";
+import { toForm } from "$ts/form";
+import { ArcBuild } from "$ts/metadata/build";
+import { ArcMode } from "$ts/metadata/mode";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { Backend } from "$ts/server/axios";
+import { LoginUser } from "$ts/server/user/auth";
 import { UserDaemon } from "$ts/server/user/daemon";
 import type { UserInfo } from "$types/user";
-import Cookies from "js-cookie";
 import { ClipboardAddon } from "@xterm/addon-clipboard";
 import { FitAddon } from "@xterm/addon-fit";
 import { ImageAddon } from "@xterm/addon-image";
 import { Unicode11Addon } from "@xterm/addon-unicode11";
 import { WebLinksAddon } from "@xterm/addon-web-links";
+import Cookies from "js-cookie";
 import { Terminal } from "xterm";
-import { Readline } from "../readline/readline";
-import { ArcOSVersion } from "$ts/env";
-import { ArcMode } from "$ts/metadata/mode";
-import { ArcBuild } from "$ts/metadata/build";
-import { LoginUser } from "$ts/server/user/auth";
-import { toForm } from "$ts/form";
 import { ArcTerminal } from "..";
+import { Readline } from "../readline/readline";
 
 export class TerminalMode extends Process {
   userDaemon?: UserDaemon;

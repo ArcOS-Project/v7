@@ -2,7 +2,6 @@
   import { MessageBox } from "$ts/dialog";
   import { WarningIcon } from "$ts/images/dialog";
   import { LockIcon } from "$ts/images/power";
-  import { AdminScopes } from "$ts/server/admin/store";
   import type { AdminPortalRuntime } from "../../runtime";
   import type { ViewShareData } from "../../types";
   import Accessors from "./ViewShare/Accessors.svelte";

@@ -7,8 +7,8 @@ import type { AppProcessData } from "$types/app";
 import type { UserPreferences } from "$types/user";
 import type { Component } from "svelte";
 import type { Unsubscriber } from "svelte/store";
-import General from "./AdvancedSystemSettings/General.svelte";
 import DispatchClients from "./AdvancedSystemSettings/DispatchClients.svelte";
+import General from "./AdvancedSystemSettings/General.svelte";
 import Startup from "./AdvancedSystemSettings/Startup.svelte";
 
 export class AdvSysSetRuntime extends AppProcess {

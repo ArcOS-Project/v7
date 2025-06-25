@@ -1,6 +1,8 @@
 import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
+import { __Console__ } from "$ts/console";
 import { contextProps } from "$ts/context/actions.svelte";
 import { MessageBox } from "$ts/dialog";
+import { BETA } from "$ts/env";
 import { BugReportIcon, ComponentIcon } from "$ts/images/general";
 import { Draggable } from "@neodrag/vanilla";
 import { unmount } from "svelte";
@@ -12,9 +14,6 @@ import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
 import { BuiltinApps } from "./store";
-import { ArcMode } from "$ts/metadata/mode";
-import { BETA } from "$ts/env";
-import { __Console__ } from "$ts/console";
 
 export class AppRenderer extends Process {
   currentState: number[] = [];

@@ -11,10 +11,12 @@ import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { BugHuntUserSpaceProcess } from "$ts/bughunt/process";
 import { darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 import { MessageBox } from "$ts/dialog";
+import { DistributionServiceProcess } from "$ts/distrib";
 import { toForm } from "$ts/form";
 import { Filesystem } from "$ts/fs";
 import { arrayToBlob, arrayToText, textToBlob } from "$ts/fs/convert";
 import { ServerDrive } from "$ts/fs/drives/server";
+import type { MemoryFilesystemDrive } from "$ts/fs/drives/temp";
 import { ZIPDrive } from "$ts/fs/drives/zipdrive";
 import { ShareManager } from "$ts/fs/shares/index";
 import { getDriveLetter, getItemNameFromPath, getParentDirectory, join } from "$ts/fs/util";
@@ -55,9 +57,6 @@ import { GlobalDispatch } from "../ws";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
-import { ShellRuntime } from "$apps/components/shell/runtime";
-import { DistributionServiceProcess } from "$ts/distrib";
-import type { MemoryFilesystemDrive } from "$ts/fs/drives/temp";
 
 export class UserDaemon extends Process {
   public initialized = false;

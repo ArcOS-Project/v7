@@ -3,7 +3,7 @@
   import { ServerPfp } from "$ts/images/pfp";
   import { DefaultUserPreferences } from "$ts/server/user/default";
   import { type AuditLog, AuditSeverity, AuditSeverityIcons } from "$types/admin";
-  import type { ExpandedUserInfo, UserInfo } from "$types/user";
+  import type { ExpandedUserInfo } from "$types/user";
   import dayjs from "dayjs";
 
   const { audit, users }: { audit: AuditLog; users: ExpandedUserInfo[] } = $props();

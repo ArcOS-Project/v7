@@ -2,18 +2,18 @@
   import Spinner from "$lib/Spinner.svelte";
   import { MessageBox } from "$ts/dialog";
   import { PasswordIcon, SecurityLowIcon, TrashIcon } from "$ts/images/general";
+  import { AdminScopes } from "$ts/server/admin/store";
   import type { UserStatistics } from "$types/admin";
   import { onMount } from "svelte";
   import type { AdminPortalRuntime } from "../../runtime";
   import type { ViewUserData } from "../../types";
   import ChangeEmail from "./ViewUser/ChangeEmail.svelte";
   import ChangePassword from "./ViewUser/ChangePassword.svelte";
+  import ChangeQuota from "./ViewUser/ChangeQuota.svelte";
   import Filesystem from "./ViewUser/Filesystem.svelte";
   import Identity from "./ViewUser/Identity.svelte";
-  import Shares from "./ViewUser/Shares.svelte";
   import Reports from "./ViewUser/Reports.svelte";
-  import { AdminScopes } from "$ts/server/admin/store";
-  import ChangeQuota from "./ViewUser/ChangeQuota.svelte";
+  import Shares from "./ViewUser/Shares.svelte";
   import TwoFactor from "./ViewUser/TwoFactor.svelte";
 
   const { process, data }: { process: AdminPortalRuntime; data: ViewUserData } = $props();

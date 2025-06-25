@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
-  import { UserDaemon } from "$ts/server/user/daemon";
   import type { BugReport } from "$types/bughunt";
   import dayjs from "dayjs";
 

@@ -1,9 +1,8 @@
 <script lang="ts">
-  import type { PartialStoreItem, StoreItem } from "$types/package";
-  import { onMount } from "svelte";
-  import type { AppStoreRuntime } from "../runtime";
   import { StoreItemBanner, StoreItemIcon } from "$ts/distrib/util";
+  import type { PartialStoreItem, StoreItem } from "$types/package";
   import PackageGrid from "../AppStore/PackageGrid.svelte";
+  import type { AppStoreRuntime } from "../runtime";
 
   interface Props {
     process: AppStoreRuntime;

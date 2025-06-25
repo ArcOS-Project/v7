@@ -3,7 +3,6 @@
   import { onMount } from "svelte";
   import type { ProcessManagerRuntime } from "../runtime";
   import Row from "./Tree/Row.svelte";
-  import { Sleep } from "$ts/sleep";
 
   const { process }: { process: ProcessManagerRuntime } = $props();
   const { handler, running } = process;

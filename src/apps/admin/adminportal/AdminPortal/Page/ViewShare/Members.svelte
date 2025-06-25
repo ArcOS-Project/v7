@@ -1,8 +1,6 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
-  import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { Logo } from "$ts/branding";
-  import { ProfilePictures } from "$ts/images/pfp";
   import type { SharedDriveType } from "$types/shares";
   import type { ExpandedUserInfo } from "$types/user";
   import MemberRow from "./Members/MemberRow.svelte";

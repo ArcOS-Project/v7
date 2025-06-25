@@ -1,18 +1,17 @@
-import type { ProcessHandler } from "$ts/process/handler";
-import type { ServiceHost } from "$ts/services";
-import { BaseService } from "$ts/services/base";
-import type { DevEnvActivationResult, ProjectMetadata } from "$types/devenv";
-import type { AxiosInstance } from "axios";
-import axios from "axios";
-import { io, Socket } from "socket.io-client";
-import { DevDrive } from "./drive";
-import type { Service } from "$types/service";
-import type { UserDaemon } from "$ts/server/user/daemon";
-import { AppProcess } from "$ts/apps/process";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { MessageBox } from "$ts/dialog";
 import { ErrorIcon } from "$ts/images/dialog";
 import { ArcBuild } from "$ts/metadata/build";
+import type { ProcessHandler } from "$ts/process/handler";
+import type { UserDaemon } from "$ts/server/user/daemon";
+import type { ServiceHost } from "$ts/services";
+import { BaseService } from "$ts/services/base";
+import type { DevEnvActivationResult, ProjectMetadata } from "$types/devenv";
+import type { Service } from "$types/service";
+import type { AxiosInstance } from "axios";
+import axios from "axios";
+import { io, Socket } from "socket.io-client";
+import { DevDrive } from "./drive";
 
 export class DevelopmentEnvironment extends BaseService {
   public connected = false;

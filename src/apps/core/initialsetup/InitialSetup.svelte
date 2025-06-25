@@ -1,10 +1,10 @@
 <script lang="ts">
+  import { BETA } from "$ts/env";
   import { Sleep } from "$ts/sleep";
   import type { AppComponentProps } from "$types/app";
   import type { Component } from "svelte";
   import Actions from "./InitialSetup/Actions.svelte";
   import type { InitialSetupRuntime } from "./runtime";
-  import { BETA } from "$ts/env";
 
   const { process }: AppComponentProps<InitialSetupRuntime> = $props();
   const { pageNumber, pageButtons, identityInfoValid, pages, actionsDisabled, showMainContent } = process;

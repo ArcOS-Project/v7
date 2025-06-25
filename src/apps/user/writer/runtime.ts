@@ -6,6 +6,7 @@ import { WarningIcon } from "$ts/images/dialog";
 import { DriveIcon } from "$ts/images/filesystem";
 import { DefaultMimeIcon, TextMimeIcon } from "$ts/images/mime";
 import type { ProcessHandler } from "$ts/process/handler";
+import { UserPaths } from "$ts/server/user/store";
 import { Store } from "$ts/writable";
 import type { AppKeyCombinations } from "$types/accelerator";
 import type { App, AppProcessData } from "$types/app";
@@ -13,7 +14,6 @@ import { fromExtension } from "human-filetypes";
 import { WriterAccelerators } from "./accelerators";
 import { WriterAltMenu } from "./altmenu";
 import { ReplaceOverlay } from "./replace/metadata";
-import { UserPaths } from "$ts/server/user/store";
 
 export class WriterRuntime extends AppProcess {
   buffer = Store<string>("");

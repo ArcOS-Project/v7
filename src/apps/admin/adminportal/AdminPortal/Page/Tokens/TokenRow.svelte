@@ -3,11 +3,11 @@
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { MessageBox } from "$ts/dialog";
   import { ElevationIcon } from "$ts/images/general";
+  import { Sleep } from "$ts/sleep";
   import type { ExpandedToken } from "$types/admin";
   import dayjs from "dayjs";
-  import { UAParser } from "ua-parser-js";
   import Cookies from "js-cookie";
-  import { Sleep } from "$ts/sleep";
+  import { UAParser } from "ua-parser-js";
 
   const { token, process }: { token: ExpandedToken; process: AdminPortalRuntime } = $props();
   const { redacted } = process;

@@ -1,6 +1,7 @@
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/metadata";
 import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
 import { ProfilePictures } from "$ts/images/pfp";
+import { tryJsonParse } from "$ts/json";
 import { ServerManager } from "$ts/server";
 import { Backend } from "$ts/server/axios";
 import { LoginUser } from "$ts/server/user/auth";
@@ -16,7 +17,6 @@ import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
 import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps, PersistenceInfo } from "./types";
-import { tryJsonParse } from "$ts/json";
 
 export class LoginAppRuntime extends AppProcess {
   public DEFAULT_WALLPAPER = Store<string>("");

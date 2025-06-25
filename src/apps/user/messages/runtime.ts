@@ -9,6 +9,7 @@ import { tryJsonParse } from "$ts/json";
 import type { ProcessHandler } from "$ts/process/handler";
 import { MessagingInterface } from "$ts/server/messaging";
 import { Sleep } from "$ts/sleep";
+import { sortByKey } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { ExpandedMessage, MessageAttachment, PartialMessage } from "$types/messaging";
@@ -17,7 +18,6 @@ import dayjs from "dayjs";
 import Fuse from "fuse.js";
 import { messagingPages } from "./store";
 import type { MessagingPage } from "./types";
-import { sortByKey } from "$ts/util";
 
 export class MessagingAppRuntime extends AppProcess {
   service: MessagingInterface;

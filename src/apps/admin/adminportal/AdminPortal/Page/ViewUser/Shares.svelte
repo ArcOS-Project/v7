@@ -1,12 +1,12 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import Spinner from "$lib/Spinner.svelte";
+  import { AdminScopes } from "$ts/server/admin/store";
   import { Store } from "$ts/writable";
   import type { SharedDriveType } from "$types/shares";
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";
   import ShareRow from "./Shares/ShareRow.svelte";
-  import { AdminScopes } from "$ts/server/admin/store";
 
   const { process, user }: { process: AdminPortalRuntime; user: ExpandedUserInfo } = $props();
   const selection = Store<string>();

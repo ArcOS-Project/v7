@@ -1,5 +1,4 @@
 <script lang="ts">
-  import CodeEditor from "$lib/CodeEditor.svelte";
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
   import type { BugHuntUserDataRuntime } from "./runtime";
 

@@ -1,14 +1,13 @@
+import { MessageBox } from "$ts/dialog";
+import { arrayToBlob } from "$ts/fs/convert";
+import { join } from "$ts/fs/util";
+import { ErrorIcon } from "$ts/images/dialog";
 import { ArcAppMimeIcon, CompressMimeIcon } from "$ts/images/mime";
+import { UUID } from "$ts/uuid";
 import type { FileHandler } from "$types/fs";
+import { fromExtension } from "human-filetypes";
 import JSZip from "jszip";
 import type { UserDaemon } from "../daemon";
-import { UUID } from "$ts/uuid";
-import { join } from "$ts/fs/util";
-import { arrayToBlob } from "$ts/fs/convert";
-import { MessageBox } from "$ts/dialog";
-import { ErrorIcon } from "$ts/images/dialog";
-import { AppsIcon } from "$ts/images/general";
-import { fromExtension } from "human-filetypes";
 
 const runTpaBundle: (d: UserDaemon) => FileHandler = (daemon) => ({
   opens: {

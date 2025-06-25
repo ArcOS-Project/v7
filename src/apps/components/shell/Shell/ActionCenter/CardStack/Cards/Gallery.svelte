@@ -3,10 +3,10 @@
   import { contextProps } from "$ts/context/actions.svelte";
   import { arrayToBlob } from "$ts/fs/convert";
   import { DesktopIcon } from "$ts/images/general";
+  import { UserPaths } from "$ts/server/user/store";
   import type { UserPreferencesStore } from "$types/user";
   import { onMount } from "svelte";
   import Spinner from "../../../../../../../lib/Spinner.svelte";
-  import { UserPaths } from "$ts/server/user/store";
 
   const { userPreferences, process }: { userPreferences: UserPreferencesStore; process: ShellRuntime } = $props();
 

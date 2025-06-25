@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { AdminScopeCaptions, AdminScopes } from "$ts/server/admin/store";
+  import { AdminScopes } from "$ts/server/admin/store";
+  import { scopeToScopeCaption } from "$ts/server/admin/util";
   import { onMount } from "svelte";
   import { AdminPortalRuntime } from "../../runtime";
   import type { ViewScopesData } from "../../types";
   import PagePills from "./ViewScopes/PagePills.svelte";
   import SpecificPills from "./ViewScopes/SpecificPills.svelte";
-  import { scopeToScopeCaption } from "$ts/server/admin/util";
 
   const { process, data }: { process: AdminPortalRuntime; data: ViewScopesData } = $props();
   const { admin, scopes } = data;

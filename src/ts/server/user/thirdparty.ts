@@ -1,13 +1,14 @@
 import { AppProcess } from "$ts/apps/process";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
+import { contextProps } from "$ts/context/actions.svelte";
 import { MessageBox } from "$ts/dialog";
 import { arrayToBlob, arrayToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/fs/convert";
 import { FilesystemDrive } from "$ts/fs/drive";
 import {
   DownloadFile,
   formatBytes,
-  getItemNameFromPath,
   getDriveLetter,
+  getItemNameFromPath,
   getParentDirectory,
   join,
   onFileChange,
@@ -20,18 +21,17 @@ import { KernelModule } from "$ts/kernel/module";
 import { Process } from "$ts/process/instance";
 import { BaseService } from "$ts/services/base";
 import { Sleep } from "$ts/sleep";
+import { CustomTitlebar } from "$ts/ui/thirdparty/titlebar";
 import { TrayIconProcess } from "$ts/ui/tray/process";
 import { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { App } from "$types/app";
+import type { ThirdPartyPropMap } from "$types/thirdparty";
 import axios from "axios";
 import dayjs from "dayjs";
 import { Backend } from "../axios";
 import type { UserDaemon } from "./daemon";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
-import type { ThirdPartyPropMap } from "$types/thirdparty";
-import { CustomTitlebar } from "$ts/ui/thirdparty/titlebar";
-import { contextProps } from "$ts/context/actions.svelte";
 
 export function ThirdPartyProps(
   daemon: UserDaemon,

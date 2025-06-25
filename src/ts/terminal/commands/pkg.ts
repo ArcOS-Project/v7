@@ -1,15 +1,15 @@
 import { DistributionServiceProcess } from "$ts/distrib";
 import { formatBytes, join } from "$ts/fs/util";
+import { ArcTermIcon } from "$ts/images/apps";
 import type { ProcessHandler } from "$ts/process/handler";
 import { UserPaths } from "$ts/server/user/store";
-import { maxLength, Plural } from "$ts/util";
+import { Plural } from "$ts/util";
+import { ElevationLevel } from "$types/elevation";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { BRBLUE, BRGREEN, BRPURPLE, CLRROW, CURUP, RESET } from "../store";
-import { ArcTermIcon } from "$ts/images/apps";
-import { ElevationLevel } from "$types/elevation";
 
 const typeCaptions: Record<string, string> = {
   mkdir: "Creating folder",
