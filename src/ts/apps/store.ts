@@ -31,6 +31,7 @@ import { TotpSetupGuiApp } from "$apps/components/totpsetupgui/metadata";
 import { TrayHost } from "$apps/components/trayhost/metadata";
 import { WallpaperApp } from "$apps/components/wallpaper/metadata";
 import { AdvSystemSettings } from "$apps/user/advsystemsettings/metadata";
+import { AppStoreApp } from "$apps/user/appstore/metadata";
 import { ArcTermApp } from "$apps/user/arcterm/metadata";
 import { BugHuntApp } from "$apps/user/bughunt/metadata";
 import { BugReportsCreatorApp } from "$apps/user/bughuntcreator/metadata";
@@ -104,6 +105,7 @@ export const BuiltinApps: AppStorage = [
   AppPreinstallApp,
   AppInstallerApp,
   ArcFind,
+  AppStoreApp,
 ];
 
 export const AdminApps: AppStorage = [AdminPortalApp];

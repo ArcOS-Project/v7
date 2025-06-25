@@ -1,0 +1,1 @@
+view store item
