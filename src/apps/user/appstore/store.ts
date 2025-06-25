@@ -1,5 +1,6 @@
 import { sortByKey } from "$ts/util";
 import Home from "./Pages/Home.svelte";
+import Installed from "./Pages/Installed.svelte";
 import type { StorePage, StorePages } from "./types";
 
 export const appStorePages: StorePages = new Map<string, StorePage>([
@@ -20,6 +21,20 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
         popular.length = 6;
 
         return { all, recentlyAdded, popular, mostPopular };
+      },
+    },
+  ],
+  [
+    "installed",
+    {
+      name: "Installed",
+      icon: "download",
+      content: Installed as any,
+      async props(process) {
+        const installed = await process.distrib.loadInstalledList();
+        const updates = await process.distrib.checkForAllUpdates();
+
+        return { installed, updates };
       },
     },
   ],
