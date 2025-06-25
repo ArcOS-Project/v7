@@ -1,17 +1,17 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
+import type { InstallerProcess } from "$ts/distrib/installer";
 import { ErrorIcon } from "$ts/images/dialog";
 import { AppsIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { type ReadableStore } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
-import type { InstallerProcProgressNode } from "$types/distrib";
 import type { ArcPackage } from "$types/package";
 import JSZip from "jszip";
 
 export class AppInstallerRuntime extends AppProcess {
-  progress?: InstallerProcProgressNode;
+  progress?: InstallerProcess;
   metadata?: ArcPackage;
   zip?: JSZip;
 
@@ -102,6 +102,6 @@ export class AppInstallerRuntime extends AppProcess {
   }
 
   async go() {
-    this.progress?.proc?.go();
+    this.progress?.go();
   }
 }

@@ -1,20 +1,19 @@
+import type { ApplicationStorage } from "$ts/apps/storage";
 import { arrayToBlob, arrayToText, textToBlob } from "$ts/fs/convert";
+import { join } from "$ts/fs/util";
 import { tryJsonParse } from "$ts/json";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Backend } from "$ts/server/axios";
 import { UserPaths } from "$ts/server/user/store";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
+import { compareVersion } from "$ts/version";
 import type { FilesystemProgressCallback } from "$types/fs";
 import type { ArcPackage, PartialStoreItem, StoreItem } from "$types/package";
 import type { Service } from "$types/service";
+import type { UserPreferencesStore } from "$types/user";
 import JSZip from "jszip";
 import { InstallerProcess } from "./installer";
-import { join } from "$ts/fs/util";
-import type { InstallerProcProgressNode } from "$types/distrib";
-import type { UserPreferencesStore } from "$types/user";
-import type { ApplicationStorage } from "$ts/apps/storage";
-import { compareVersion } from "$ts/version";
 
 export class DistributionServiceProcess extends BaseService {
   private readonly dataFolder = join(UserPaths.Configuration, "DistribSvc");
@@ -63,22 +62,14 @@ export class DistributionServiceProcess extends BaseService {
     return await this.packageInstaller(zip, metadata, item);
   }
 
-  async packageInstaller(zip: JSZip, metadata: ArcPackage, item?: StoreItem): Promise<InstallerProcProgressNode | undefined> {
+  async packageInstaller(zip: JSZip, metadata: ArcPackage, item?: StoreItem): Promise<InstallerProcess | undefined> {
     this.Log(`packageInstaller: ${metadata.appId}, ${item?._id || "no store item"}`);
 
     if (this.checkBusy("packageInstaller")) return undefined;
 
     const proc = await this.handler.spawn<InstallerProcess>(InstallerProcess, undefined, this.pid, zip, metadata, item);
 
-    return {
-      proc,
-      status: proc!.status,
-      failReason: proc!.failReason,
-      installing: proc!.installing,
-      completed: proc!.completed,
-      focused: proc!.focused,
-      verboseLog: proc!.verboseLog,
-    };
+    return proc;
   }
 
   async getStoreItem(id: string): Promise<StoreItem | undefined> {
@@ -425,11 +416,7 @@ export class DistributionServiceProcess extends BaseService {
     return result;
   }
 
-  async updatePackage(
-    id: string,
-    force = false,
-    progress?: FilesystemProgressCallback
-  ): Promise<InstallerProcProgressNode | false> {
+  async updatePackage(id: string, force = false, progress?: FilesystemProgressCallback): Promise<InstallerProcess | false> {
     this.Log(`updatePackage: ${id}`);
     if (this.checkBusy("updatePackage")) return false;
 

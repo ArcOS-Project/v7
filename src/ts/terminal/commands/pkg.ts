@@ -143,7 +143,7 @@ export class PkgCommand extends TerminalProcess {
       }
     });
 
-    const result = await installer.proc?.go();
+    const result = await installer?.go();
 
     if (!result) {
       this.term?.Error(`Installation of '${name}' failed.`);
@@ -279,7 +279,7 @@ export class PkgCommand extends TerminalProcess {
 
       this.term?.rl?.println(`${CURUP}${CLRROW}Loading...`);
 
-      const result = await installer.proc?.go();
+      const result = await installer?.go();
 
       if (!result) {
         this.term?.Error(`Failed to finish update`, outdated.name);
@@ -342,7 +342,7 @@ export class PkgCommand extends TerminalProcess {
 
     this.term?.rl?.println(`${CURUP}${CLRROW}Loading...`);
 
-    const result = await installer.proc?.go();
+    const result = await installer?.go();
 
     if (!result) {
       this.term?.Error(`Failed to finish update`, name);
@@ -418,7 +418,7 @@ export class PkgCommand extends TerminalProcess {
 
     this.term?.rl?.println(`${CURUP}${CLRROW}Loading...`);
 
-    const installResult = await installer.proc?.go();
+    const installResult = await installer?.go();
 
     if (!installResult) {
       this.term?.Error(`Installation of '${name}' failed.`);

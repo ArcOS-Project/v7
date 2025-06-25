@@ -20,8 +20,8 @@ export class InstallerProcess extends Process {
   metadata?: ArcPackage;
   userDaemon: UserDaemon;
   parent: DistributionServiceProcess;
-  TOTAL_COUNT = 2;
-  COUNT = 0;
+  TOTAL_COUNT = Store<number>(2);
+  COUNT = Store<number>(0);
   item?: StoreItem;
   zip?: JSZip;
 
@@ -44,8 +44,15 @@ export class InstallerProcess extends Process {
   }
 
   async start() {
-    this.TOTAL_COUNT += Object.keys((await this.getFiles()).files).length;
-    console.log(this.TOTAL_COUNT);
+    this.TOTAL_COUNT.set(this.TOTAL_COUNT() + Object.keys((await this.getFiles()).files).length);
+
+    this.TOTAL_COUNT.subscribe((v) => {
+      this.Log(`TOTAL_COUNT is now ${v}`);
+    });
+
+    this.COUNT.subscribe((v) => {
+      this.Log(`COUNT is now ${v} / ${this.TOTAL_COUNT()}`);
+    });
   }
 
   logStatus(content: string, type: InstallStatusType = "other", status: InstallStatusMode = "working") {
@@ -61,9 +68,7 @@ export class InstallerProcess extends Process {
     });
     this.focused.set(uuid);
 
-    this.COUNT++;
-
-    console.log(this.TOTAL_COUNT, this.COUNT, this.TOTAL_COUNT - this.COUNT);
+    this.COUNT.set(this.COUNT() + 1);
   }
 
   async setCurrentStatus(status: InstallStatusMode) {
@@ -223,6 +228,7 @@ export class InstallerProcess extends Process {
 
     this.installing.set(false);
     this.completed.set(true);
+    this.COUNT.set(this.COUNT() + 1);
     this.killSelf();
     return true;
   }
