@@ -1,7 +1,8 @@
-import { sortByKey } from "$ts/util";
+import { deepCopyWithBlobs, sortByKey } from "$ts/util";
 import { UUID } from "$ts/uuid";
 import type { DirectoryReadReturn, FileEntry, FolderEntry, RecursiveDirectoryReadReturn, UserQuota } from "$types/fs";
 import { FilesystemDrive } from "../drive";
+
 export class MemoryFilesystemDrive extends FilesystemDrive {
   private readonly data: Record<string, any> = {};
   public FIXED: boolean = true;
@@ -271,5 +272,19 @@ export class MemoryFilesystemDrive extends FilesystemDrive {
       free: 1024 * 1024 * 1024 - used,
       percentage: (used / (1024 * 1024 * 1024)) * 100,
     };
+  }
+
+  async takeSnapshot() {
+    return await deepCopyWithBlobs<Record<string, any>>(this.data);
+  }
+
+  restoreSnapshot(snapshot: Record<string, any>) {
+    for (const key in this.data) {
+      delete this.data[key];
+    }
+
+    for (const key in snapshot) {
+      this.data[key] = snapshot[key];
+    }
   }
 }

@@ -155,3 +155,28 @@ export function sortByHierarchy(array: any[], hierarchy: string) {
     return x < y ? -1 : x > y ? 1 : 0;
   });
 }
+export function deepCopyWithBlobs<T>(obj: T): Promise<T> {
+  const isObject = (val: any) => val && typeof val === "object";
+
+  async function recurse(value: any): Promise<any> {
+    if (value instanceof Blob) {
+      // Clone the Blob by reading and reconstructing it
+      const arrayBuffer = await value.arrayBuffer();
+      return new Blob([arrayBuffer], { type: value.type });
+    }
+
+    if (Array.isArray(value)) {
+      return Promise.all(value.map((item) => recurse(item)));
+    }
+
+    if (isObject(value)) {
+      const entries = await Promise.all(Object.entries(value).map(async ([k, v]) => [k, await recurse(v)]));
+      return Object.fromEntries(entries);
+    }
+
+    // primitive
+    return value;
+  }
+
+  return recurse(obj);
+}

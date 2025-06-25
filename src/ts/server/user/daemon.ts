@@ -57,6 +57,7 @@ import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons, U
 import { ThirdPartyProps } from "./thirdparty";
 import { ShellRuntime } from "$apps/components/shell/runtime";
 import { DistributionServiceProcess } from "$ts/distrib";
+import type { MemoryFilesystemDrive } from "$ts/fs/drives/temp";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -91,6 +92,8 @@ export class UserDaemon extends Process {
   public syncLock = false;
   public autoLoadComplete = false;
   public globalDispatch?: GlobalDispatch;
+  private TempFsSnapshot: Record<string, any> = {};
+  public TempFs?: MemoryFilesystemDrive;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, token: string, username: string, userInfo?: UserInfo) {
     super(handler, pid, parentPid);
@@ -102,6 +105,11 @@ export class UserDaemon extends Process {
 
     this.server = this.kernel.getModule<ServerManager>("server");
     this.safeMode = !!this.env.get("safemode");
+  }
+
+  async start() {
+    this.TempFs = this.fs.getDriveById("temp") as MemoryFilesystemDrive;
+    this.TempFsSnapshot = await this.TempFs.takeSnapshot();
   }
 
   async startApplicationStorage() {
@@ -283,6 +291,7 @@ export class UserDaemon extends Process {
 
     if (this.preferencesUnsubscribe) this.preferencesUnsubscribe();
 
+    this.TempFs?.restoreSnapshot(this.TempFsSnapshot!);
     this.fs.umountDrive(`userfs`, true);
   }
 
