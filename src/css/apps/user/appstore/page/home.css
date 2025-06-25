@@ -2,9 +2,6 @@
   padding: 30px 75px;
 }
 
-#AppStore div.page.home > * {
-  margin: 0 auto;
-}
 #AppStore div.page.home div.hero {
   width: 100%;
   /* aspect-ratio: 450 / 180; */

@@ -1,4 +1,5 @@
 @import url("./appstore/page/home.css");
+@import url("./appstore/page/installed.css");
 
 #AppStore > div.body {
   padding: 0;
@@ -63,6 +64,7 @@
   padding: 0 7px;
   width: 100%;
   background-color: transparent;
+  margin-bottom: 5px;
 }
 
 #AppStore > div.body div.sidebar div.pages button.selected {
@@ -72,6 +74,7 @@
 #AppStore > div.body div.sidebar div.pages span.lucide {
   font-size: 16px;
   color: var(--accent-lighter);
+  height: 16px;
 }
 
 #AppStore > div.body div.sidebar div.account {
@@ -95,13 +98,23 @@
   overflow-y: auto;
 }
 
-#AppStore > div.body > div.container section.package-grid {
-  width: 100%;
-  max-width: 600px;
-  margin-top: 25px;
+#AppStore > div.body > div.container div.page.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-#AppStore > div.body > div.container section.package-grid > h1 {
+#AppStore div.page > * {
+  margin: 0 auto;
+}
+
+#AppStore > div.body > div.container section {
+  width: 100%;
+  max-width: 600px;
+  margin-top: 30px;
+}
+
+#AppStore > div.body > div.container section > h1 {
   font-size: 20px;
   display: flex;
   align-items: center;
@@ -109,7 +122,7 @@
   margin-bottom: 10px;
 }
 
-#AppStore > div.body > div.container section.package-grid > h1 button.more {
+#AppStore > div.body > div.container section > h1 button {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -118,15 +131,15 @@
   background-color: transparent;
 }
 
-#AppStore > div.body > div.container section.package-grid > h1 button.more span {
+#AppStore > div.body > div.container section > h1 button span {
   color: var(--accent-lighter);
   font-size: 14px;
 }
-#AppStore > div.body > div.container section.package-grid > h1 button.more span.lucide {
+#AppStore > div.body > div.container section > h1 button span.lucide {
   font-size: 16px;
 }
 
-#AppStore > div.body > div.container section.package-grid button {
+#AppStore > div.body > div.container section.package-grid div.items button {
   display: flex;
   align-items: center;
   padding: 10px;
@@ -146,4 +159,61 @@
   display: grid;
   gap: 10px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+#AppStore > div.body div.app-listing {
+  background-color: var(--button-bg);
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: var(--secondary-box-shadow);
+}
+
+#AppStore > div.body div.app-listing div.app-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 46px;
+  padding: 0 10px;
+  border-bottom: var(--win-border);
+}
+
+#AppStore > div.body div.app-listing div.app-row:last-child {
+  border-bottom: none;
+  height: 45px;
+}
+
+#AppStore > div.body div.app-listing div.app-row img {
+  height: 24px;
+}
+
+#AppStore > div.body div.app-listing div.app-row p.name {
+  font-weight: bold;
+}
+
+#AppStore > div.body div.app-listing div.app-row p.author {
+  width: 40%;
+  margin-left: auto;
+}
+
+#AppStore > div.body div.app-listing div.app-row p.version {
+  opacity: 0.5;
+  width: 15%;
+  text-align: right;
+}
+
+#AppStore > div.body div.app-listing div.app-row div.actions {
+  width: 15%;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: end;
+}
+
+#AppStore > div.body div.app-listing div.app-row div.actions button.lucide {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  padding: 0;
+  font-size: 16px;
+  background-color: transparent;
 }

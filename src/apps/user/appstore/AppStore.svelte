@@ -4,12 +4,14 @@
   import Sidebar from "./AppStore/Sidebar.svelte";
   import type { AppStoreRuntime } from "./runtime";
   import { appStorePages } from "./store";
+  import Spinner from "$lib/Spinner.svelte";
 
   const { process }: { process: AppStoreRuntime } = $props();
-  const { currentPage, pageProps } = process;
+  const { currentPage, pageProps, loadingPage } = process;
 
   let Page: Component<any> = $state<any>();
   let id = $state<string>("");
+  let staticPageProps = $state<Record<string, any>>({});
 
   onMount(() => {
     currentPage.subscribe((v) => {
@@ -19,6 +21,7 @@
 
       Page = data.content;
       id = v;
+      staticPageProps = pageProps();
     });
   });
 </script>
@@ -26,9 +29,11 @@
 <Sidebar {process} />
 <div class="container">
   <CustomTitlebar {process} />
-  <div class="page {id}">
-    {#if Page}
-      <Page {process} {...$pageProps} />
+  <div class="page {id}" class:loading={$loadingPage}>
+    {#if $loadingPage}
+      <Spinner height={32} />
+    {:else if Page}
+      <Page {process} {...staticPageProps} />
     {/if}
   </div>
 </div>

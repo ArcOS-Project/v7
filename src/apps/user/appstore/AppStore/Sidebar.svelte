@@ -4,7 +4,7 @@
   import Account from "./Sidebar/Account.svelte";
 
   const { process }: { process: AppStoreRuntime } = $props();
-  const { searching, searchQuery, currentPage } = process;
+  const { searching, searchQuery, currentPage, loadingPage } = process;
 </script>
 
 <div class="sidebar">
@@ -25,7 +25,12 @@
         {#if page.groupName}
           <p class="group-name">{page.groupName}</p>
         {/if}
-        <button class="page {id}" class:selected={$currentPage === id} onclick={() => process.switchPage(id)}>
+        <button
+          class="page {id}"
+          class:selected={$currentPage === id}
+          onclick={() => process.switchPage(id)}
+          disabled={$loadingPage}
+        >
           <span class="lucide icon-{page.icon}"></span>
           <span>{page.name}</span>
         </button>
