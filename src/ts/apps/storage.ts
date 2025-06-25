@@ -77,9 +77,9 @@ export class ApplicationStorage extends BaseService {
 
     this.Log(`Refreshing store`);
 
-    this.buffer.set(await this.get());
+    const newBuffer = await this.get();
 
-    for (const app of this.buffer()) {
+    for (const app of newBuffer) {
       this.fs.createDirectory(`T:/Apps/${app.id}`, false);
 
       const icon = app.metadata.icon;
@@ -93,6 +93,8 @@ export class ApplicationStorage extends BaseService {
         } catch {}
       }
     }
+
+    this.buffer.set(newBuffer);
   }
 
   async get() {
