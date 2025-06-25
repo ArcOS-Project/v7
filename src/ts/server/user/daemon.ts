@@ -56,6 +56,7 @@ import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
 import { ShellRuntime } from "$apps/components/shell/runtime";
+import { DistributionServiceProcess } from "$ts/distrib";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -2175,20 +2176,16 @@ export class UserDaemon extends Process {
   }
 
   async deleteApp(id: string, deleteFiles = false) {
-    const app = this.preferences().userApps[id];
-    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const distrib = this.serviceHost?.getService<DistributionServiceProcess>("DistribSvc");
 
-    if (!app) return false;
+    if (!distrib) return false;
 
-    this.preferences.update((v) => {
-      delete v.userApps[id];
-      return v;
-    });
+    const prog = await this.GlobalLoadIndicator();
+    const result = await distrib.uninstallApp(id, deleteFiles, (s) => prog.caption.set(s));
 
-    await appStore?.refresh();
-    if (deleteFiles) await this.fs.deleteItem(app.workingDirectory!);
+    await prog.stop();
 
-    this.unpinApp(id);
+    return result;
   }
 
   async installAppFromPath(path: string) {
@@ -2221,8 +2218,8 @@ export class UserDaemon extends Process {
     const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage")!;
 
     appStore.loadOrigin("admin", () => AdminApps);
-    appStore.refresh();
-    admin._activate(this.token);
+    await appStore.refresh();
+    await admin._activate(this.token);
   }
 
   activateMessagingService() {
