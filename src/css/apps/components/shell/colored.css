@@ -35,3 +35,7 @@
 .theme-light .shell-colored::before {
   display: none;
 } */
+
+div.window:not(.focused):not(.core).shell-colored.colored::before {
+  opacity: 0.05;
+}

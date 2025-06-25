@@ -10,10 +10,6 @@
   margin-left: 10px;
 }
 
-.traffic-lights div.window:not(.focused):not(.core).shell-colored.colored::before {
-  opacity: 0;
-}
-
 .traffic-lights div.window > div.body div.titlebar.custom div.controls button,
 .traffic-lights div.window > div.titlebar div.controls button {
   color: transparent !important;
