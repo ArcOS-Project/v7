@@ -9,7 +9,7 @@ import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import { compareVersion } from "$ts/version";
 import type { FilesystemProgressCallback } from "$types/fs";
-import type { ArcPackage, PartialStoreItem, StoreItem } from "$types/package";
+import type { ArcPackage, PartialStoreItem, StoreItem, UpdateInfo } from "$types/package";
 import type { Service } from "$types/service";
 import type { UserPreferencesStore } from "$types/user";
 import JSZip from "jszip";
@@ -379,10 +379,7 @@ export class DistributionServiceProcess extends BaseService {
     return true;
   }
 
-  async checkForUpdate(
-    id: string,
-    installedList?: StoreItem[]
-  ): Promise<{ name: string; oldVer: string; newVer: string; pkg: StoreItem } | false> {
+  async checkForUpdate(id: string, installedList?: StoreItem[]): Promise<UpdateInfo | false> {
     this.Log(`checkForUpdate: ${id}`);
 
     if (this.checkBusy("checkForUpdate")) return false;
@@ -406,7 +403,7 @@ export class DistributionServiceProcess extends BaseService {
     if (this.checkBusy("checkForAllUpdates")) return [];
 
     const installedList = await this.loadInstalledList();
-    const result: { name: string; oldVer: string; newVer: string; pkg: StoreItem }[] = [];
+    const result: UpdateInfo[] = [];
 
     for (const item of installedList) {
       const outdated = await this.checkForUpdate(item._id, installedList);

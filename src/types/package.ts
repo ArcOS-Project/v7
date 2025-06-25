@@ -54,3 +54,10 @@ export interface InstallStatusItem {
 }
 
 export type InstallStatus = Record<string, InstallStatusItem>;
+
+export interface UpdateInfo {
+  name: string;
+  oldVer: string;
+  newVer: string;
+  pkg: StoreItem;
+}
