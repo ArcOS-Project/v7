@@ -1,3 +1,5 @@
+import type { PublicUserInfo } from "./user";
+
 export interface ArcPackage {
   name: string;
   author: string;
@@ -15,6 +17,7 @@ export interface ArcPackage {
 export interface StoreItem {
   name: string;
   userId: string;
+  user?: PublicUserInfo;
   pkg: ArcPackage;
   _id: string;
   official: boolean;
@@ -28,9 +31,17 @@ export interface PartialStoreItem {
   _id: string;
   name: string;
   userId: string;
+  user?: PublicUserInfo;
+  pkg: ArcPackage;
   official: boolean;
   installCount: number;
   lastUpdated: number;
+  store?: {
+    image?: string;
+    screenshots?: string[];
+    banner?: string;
+  };
+  description: string;
 }
 
 export type InstallStatusType = "mkdir" | "file" | "registration" | "other";
