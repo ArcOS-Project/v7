@@ -24,6 +24,7 @@ div.shell div.startmenu div.bottom form.search {
 div.shell div.startmenu div.bottom form.search input {
   margin: 0;
   padding: 0;
+  width: 0;
   flex-grow: 1;
   border: none;
   background-color: transparent;
@@ -37,6 +38,7 @@ div.shell div.startmenu div.bottom div.actions {
   padding-left: 10px;
   border-left: var(--button-glass-bg) 1px solid;
   height: 30px;
+  min-width: fit-content;
 }
 
 div.shell div.startmenu div.bottom div.actions button {
