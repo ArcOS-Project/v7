@@ -2,6 +2,15 @@ div.window:not(.core) div.body div.info-block {
   background-color: var(--button-bg);
   border-radius: var(--win-border-rad);
   box-shadow: var(--secondary-box-shadow);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+div.window:not(.core) div.body div.info-block * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .theme-light div.window:not(.core) div.body div.info-block {
@@ -40,6 +49,7 @@ div.window:not(.core) div.body div.info-block div.segment p.title {
   display: flex;
   gap: 5px;
   align-items: center;
+  min-width: fit-content;
 }
 
 div.window:not(.core) div.body div.info-block div.segment p.title button.help {
