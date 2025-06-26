@@ -1,6 +1,7 @@
 import { sortByKey } from "$ts/util";
 import Home from "./Pages/Home.svelte";
 import Installed from "./Pages/Installed.svelte";
+import MadeByYou from "./Pages/MadeByYou.svelte";
 import type { StorePage, StorePages } from "./types";
 
 export const appStorePages: StorePages = new Map<string, StorePage>([
@@ -35,6 +36,21 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
         const updates = await process.distrib.checkForAllUpdates();
 
         return { installed, updates };
+      },
+    },
+  ],
+  [
+    "madeByYou",
+    {
+      name: "Made by you",
+      icon: "user",
+      content: MadeByYou as any,
+      async props(process) {
+        const published = await process.distrib.getPublishedPackages();
+        const unblocked = published.filter((i) => !i.blocked);
+        const blocked = published.filter((i) => i.blocked);
+
+        return { published, unblocked, blocked };
       },
     },
   ],
