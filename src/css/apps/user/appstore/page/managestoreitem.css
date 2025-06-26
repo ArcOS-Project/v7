@@ -68,5 +68,5 @@
 
 #AppStore div.page.manageStoreItem section.danger-zone div.action button {
   background-color: var(--clr-red-fg);
-  color: var(--clr-red-bg);
+  color: var(--win-bg);
 }
