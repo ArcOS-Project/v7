@@ -25,6 +25,8 @@ export interface StoreItem {
   lastUpdated: number;
   blocked: boolean;
   size: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface PartialStoreItem {

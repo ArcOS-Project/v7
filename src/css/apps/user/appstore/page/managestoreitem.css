@@ -1,0 +1,72 @@
+#AppStore div.page.manageStoreItem {
+  padding: 30px;
+}
+
+#AppStore div.page.manageStoreItem div.header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+#AppStore div.page.manageStoreItem div.header img {
+  width: 64px;
+  height: 64px;
+}
+
+#AppStore div.page.manageStoreItem div.header h1 {
+  font-size: 22px;
+  margin-bottom: 5px;
+}
+#AppStore div.page.manageStoreItem div.header h1 span.version {
+  opacity: 0.8;
+  font-weight: normal;
+}
+
+#AppStore div.page.manageStoreItem div.header p {
+  opacity: 0.5;
+}
+
+#AppStore div.page.manageStoreItem div.header button.suggested {
+  margin-left: auto;
+}
+
+#AppStore div.page.manageStoreItem div.info-block + div.info-block {
+  margin-top: 20px;
+}
+
+#AppStore div.page.manageStoreItem section.danger-zone h1 {
+  margin-bottom: 10px;
+}
+
+#AppStore div.page.manageStoreItem section.danger-zone > p {
+  margin-bottom: 20px;
+}
+
+#AppStore div.page.manageStoreItem section.danger-zone div.actions {
+  border: var(--clr-red-fg) 1px solid;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+#AppStore div.page.manageStoreItem section.danger-zone div.action {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+}
+
+#AppStore div.page.manageStoreItem section.danger-zone div.action:first-child {
+  border-bottom: var(--win-border);
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+}
+
+#AppStore div.page.manageStoreItem section.danger-zone div.action h1 {
+  margin-bottom: 5px;
+  font-size: 16px;
+}
+
+#AppStore div.page.manageStoreItem section.danger-zone div.action button {
+  background-color: var(--clr-red-fg);
+  color: var(--clr-red-bg);
+}

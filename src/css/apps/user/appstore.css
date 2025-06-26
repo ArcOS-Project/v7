@@ -1,6 +1,7 @@
 @import url("./appstore/page/home.css");
 @import url("./appstore/page/installed.css");
 @import url("./appstore/page/madebyyou.css");
+@import url("./appstore/page/managestoreitem.css");
 
 #AppStore > div.body {
   padding: 0;

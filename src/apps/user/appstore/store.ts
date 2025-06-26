@@ -2,6 +2,7 @@ import { sortByKey } from "$ts/util";
 import Home from "./Pages/Home.svelte";
 import Installed from "./Pages/Installed.svelte";
 import MadeByYou from "./Pages/MadeByYou.svelte";
+import ManageStoreItem from "./Pages/ManageStoreItem.svelte";
 import type { StorePage, StorePages } from "./types";
 
 export const appStorePages: StorePages = new Map<string, StorePage>([
@@ -51,6 +52,23 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
         const blocked = published.filter((i) => i.blocked);
 
         return { published, unblocked, blocked };
+      },
+    },
+  ],
+  [
+    "manageStoreItem",
+    {
+      name: "Manage Store Item",
+      icon: "wrench",
+      hidden: true,
+      content: ManageStoreItem as any,
+      async props(process, { id }) {
+        const published = await process.distrib.getPublishedPackages();
+        const isOwnedBy = !!published.filter((pkg) => pkg._id === id)[0];
+
+        if (!isOwnedBy) {
+          return {};
+        } else return { pkg: await process.distrib.getStoreItem(id) };
       },
     },
   ],
