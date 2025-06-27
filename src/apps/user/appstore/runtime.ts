@@ -21,7 +21,10 @@ export class AppStoreRuntime extends AppProcess {
     this.distrib = this.userDaemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
 
     this.searchQuery.subscribe((v) => {
-      if (!v) this.searching.set(false);
+      if (!v) {
+        this.searching.set(false);
+        if (this.currentPage() === "search") this.switchPage("home");
+      }
     });
   }
 
@@ -49,6 +52,9 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async switchPage(id: string, props?: Record<string, any>) {
+    if (this.searching() && id !== "search") {
+      this.searchQuery.set("");
+    }
     props ||= {};
     this.Log(`Loading page '${id}'`);
 
@@ -64,5 +70,10 @@ export class AppStoreRuntime extends AppProcess {
     this.currentPage.set(id);
     this.windowTitle.set(`${page?.name} - App Store`);
     this.loadingPage.set(false);
+  }
+
+  async Search() {
+    this.searching.set(true);
+    this.switchPage("search", { query: this.searchQuery() });
   }
 }

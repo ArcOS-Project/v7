@@ -5,15 +5,22 @@
 
   const { process }: { process: AppStoreRuntime } = $props();
   const { searching, searchQuery, currentPage, loadingPage } = process;
+
+  function onkeydown(e: KeyboardEvent) {
+    if (e.key === "Enter" && $searchQuery) {
+      process.Search();
+    }
+  }
 </script>
 
 <div class="sidebar">
   <div class="search">
     <span class="lucide icon-search"></span>
-    <input type="text" placeholder="Search..." bind:value={$searchQuery} />
+    <input type="text" placeholder="Search..." bind:value={$searchQuery} {onkeydown} />
     {#if $searchQuery}
       {#if !$searching}
-        <button class="lucide icon-corner-down-left enter-indicator" aria-label="Search"></button>
+        <button class="lucide icon-corner-down-left enter-indicator" aria-label="Search" onclick={() => process.Search()}
+        ></button>
       {:else}
         <button class="lucide icon-x" onclick={() => ($searchQuery = "")} aria-label="Clear search"></button>
       {/if}
