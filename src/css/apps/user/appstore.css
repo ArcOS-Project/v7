@@ -2,6 +2,7 @@
 @import url("./appstore/page/installed.css");
 @import url("./appstore/page/madebyyou.css");
 @import url("./appstore/page/managestoreitem.css");
+@import url("./appstore/page/everything.css");
 
 #AppStore > div.body {
   padding: 0;
@@ -152,6 +153,16 @@
   white-space: nowrap;
 }
 
+#AppStore > div.body > div.container section.package-grid div.items button div.info {
+  max-width: calc(100% - 40px - 10px);
+}
+
+#AppStore > div.body > div.container section.package-grid div.items button * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 #AppStore > div.body > div.container section.package-grid button.item img {
   width: 40px;
   height: 40px;
@@ -230,4 +241,11 @@
   padding: 0;
   font-size: 16px;
   background-color: transparent;
+}
+
+#AppStore > div.body p.end {
+  text-align: center;
+  opacity: 0.5;
+  font-weight: bold;
+  padding: 20px 0;
 }
