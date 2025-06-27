@@ -379,7 +379,7 @@ export class DistributionServiceProcess extends BaseService {
     return true;
   }
 
-  async checkForUpdate(id: string, installedList?: StoreItem[]): Promise<UpdateInfo | false> {
+  async checkForUpdate(id: string, installedList?: StoreItem[], allPackages?: StoreItem[]): Promise<UpdateInfo | false> {
     this.Log(`checkForUpdate: ${id}`);
 
     if (this.checkBusy("checkForUpdate")) return false;
@@ -387,7 +387,7 @@ export class DistributionServiceProcess extends BaseService {
     const installedPkg = await this.getInstalledPackage(id, installedList);
     if (!installedPkg) return false;
 
-    const onlinePkg = await this.getStoreItem(id);
+    const onlinePkg = allPackages ? allPackages.filter((p) => p._id === id)[0] : await this.getStoreItem(id);
     if (!onlinePkg) return false;
 
     const isHigher = compareVersion(installedPkg.pkg.version, onlinePkg.pkg.version) === "higher";
@@ -397,16 +397,17 @@ export class DistributionServiceProcess extends BaseService {
       : false;
   }
 
-  async checkForAllUpdates() {
+  async checkForAllUpdates(list?: StoreItem[]) {
     this.Log(`checkForAllUpdates`);
 
     if (this.checkBusy("checkForAllUpdates")) return [];
 
-    const installedList = await this.loadInstalledList();
+    const allPackages = await this.getAllStoreItems();
+    const installedList = list || (await this.loadInstalledList());
     const result: UpdateInfo[] = [];
 
     for (const item of installedList) {
-      const outdated = await this.checkForUpdate(item._id, installedList);
+      const outdated = await this.checkForUpdate(item._id, installedList, allPackages);
       if (outdated) result.push(outdated);
     }
 
@@ -455,13 +456,13 @@ export class DistributionServiceProcess extends BaseService {
     this._BUSY = value;
   }
 
-  async getAllStoreItems(): Promise<PartialStoreItem[]> {
+  async getAllStoreItems(): Promise<StoreItem[]> {
     this.Log(`getAllStoreItems`);
 
     try {
       const response = await Backend.get("/store/list", { headers: { Authorization: `Bearer ${this.host.daemon.token}` } });
 
-      return response.data as PartialStoreItem[];
+      return response.data as StoreItem[];
     } catch {
       return [];
     }

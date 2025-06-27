@@ -1,4 +1,5 @@
 import { sortByKey } from "$ts/util";
+import Everything from "./Pages/Everything.svelte";
 import Home from "./Pages/Home.svelte";
 import Installed from "./Pages/Installed.svelte";
 import MadeByYou from "./Pages/MadeByYou.svelte";
@@ -34,7 +35,7 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
       content: Installed as any,
       async props(process) {
         const installed = await process.distrib.loadInstalledList();
-        const updates = await process.distrib.checkForAllUpdates();
+        const updates = await process.distrib.checkForAllUpdates(installed);
 
         return { installed, updates };
       },
@@ -69,6 +70,18 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
         if (!isOwnedBy) {
           return {};
         } else return { pkg: await process.distrib.getStoreItem(id) };
+      },
+    },
+  ],
+  [
+    "everything",
+    {
+      name: "Everything",
+      icon: "layout-grid",
+      groupName: "Apps",
+      content: Everything,
+      async props(process) {
+        return { all: await process.distrib.getAllStoreItems() };
       },
     },
   ],
