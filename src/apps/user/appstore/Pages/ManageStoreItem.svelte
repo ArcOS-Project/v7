@@ -21,8 +21,17 @@
       </h1>
       <p>{pkg.pkg.description}</p>
     </div>
-    <button class="suggested">Update...</button>
+    <button class="suggested" disabled={pkg.blocked}>Update...</button>
   </div>
+  {#if pkg.blocked}
+    <div class="notice warning">
+      <span class="lucide icon-triangle-alert"></span>
+      <p>
+        This package has been blocked by an ArcOS Administrator! It might violate our rules. You should have received a message in
+        your Messages App explaining the verdict. Contact us so that we can unblock your package.
+      </p>
+    </div>
+  {/if}
   <InfoBlock>
     <InfoRow>
       <Segment title="Official">{pkg.official ? "Yes" : "No"}</Segment>

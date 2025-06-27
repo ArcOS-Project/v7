@@ -71,3 +71,8 @@
   color: var(--win-bg);
   font-weight: bold;
 }
+
+#AppStore div.page.manageStoreItem section {
+  min-width: 100%;
+  width: 100%;
+}
