@@ -29,3 +29,4 @@
 
 <PackageGrid name="Popular" items={popular} {process} />
 <PackageGrid name="Recently Added" items={recentlyAdded} {process} more={() => process.switchPage("recentlyAdded")} />
+<p class="end">Looks like you've reached the end.</p>
