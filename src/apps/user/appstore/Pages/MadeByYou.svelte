@@ -22,7 +22,7 @@
         <div class="app-row" onclick={() => process.switchPage("manageStoreItem", { id: pkg._id })}>
           <img src={StoreItemIcon(pkg)} alt="" />
           <p class="name">{pkg.pkg?.name || pkg.name}</p>
-          <p class="author">{pkg.user?.displayName || pkg.user?.username || "Unknown"}</p>
+          <p class="author">{pkg.installCount} installs</p>
           <p class="version">v{pkg.pkg.version}</p>
         </div>
       {/each}
@@ -42,7 +42,7 @@
           <div class="app-row" onclick={() => process.switchPage("manageStoreItem", { id: pkg._id })}>
             <img src={StoreItemIcon(pkg)} alt="" />
             <p class="name">{pkg.pkg?.name || pkg.name}</p>
-            <p class="author">{pkg.user?.displayName || pkg.user?.username || "Unknown"}</p>
+            <p class="author">{pkg.installCount} installs</p>
             <p class="version">v{pkg.pkg.version}</p>
           </div>
         {/each}
