@@ -1,9 +1,8 @@
 <script lang="ts">
   import { StoreItemBanner, StoreItemIcon } from "$ts/distrib/util";
-  import type { StoreItem } from "$types/package";
-  import { spawn } from "child_process";
-  import type { AppStoreRuntime } from "../runtime";
   import { formatBytes } from "$ts/fs/util";
+  import type { StoreItem } from "$types/package";
+  import type { AppStoreRuntime } from "../runtime";
 
   const { process, pkg }: { process: AppStoreRuntime; pkg: StoreItem } = $props();
 </script>
