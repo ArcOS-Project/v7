@@ -4,6 +4,10 @@ import Home from "./Pages/Home.svelte";
 import Installed from "./Pages/Installed.svelte";
 import MadeByYou from "./Pages/MadeByYou.svelte";
 import ManageStoreItem from "./Pages/ManageStoreItem.svelte";
+import OfficialApps from "./Pages/OfficialApps.svelte";
+import RecentlyAdded from "./Pages/RecentlyAdded.svelte";
+import SearchResults from "./Pages/SearchResults.svelte";
+import ViewStoreItem from "./Pages/ViewStoreItem.svelte";
 import type { StorePage, StorePages } from "./types";
 
 export const appStorePages: StorePages = new Map<string, StorePage>([
@@ -82,6 +86,64 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
       content: Everything,
       async props(process) {
         return { all: await process.distrib.getAllStoreItems() };
+      },
+    },
+  ],
+  [
+    "officialApps",
+    {
+      name: "Official Apps",
+      icon: "badge-check",
+      content: OfficialApps,
+      async props(process) {
+        return { official: (await process.distrib.getAllStoreItems()).filter((pkg) => pkg.official) };
+      },
+    },
+  ],
+  [
+    "recentlyAdded",
+    {
+      name: "Recently Added",
+      icon: "flame",
+      content: RecentlyAdded,
+      async props(process) {
+        const all = await process.distrib.getAllStoreItems();
+        const now = Date.now();
+        const recent = all.filter((pkg) => {
+          const difference = now - new Date(pkg.createdAt).getTime();
+
+          return difference < 1000 * 60 * 60 * 24 * 7; // Published in the last 7 days
+        });
+
+        return { recent };
+      },
+    },
+  ],
+  [
+    "viewStoreItem",
+    {
+      name: "View Store Item",
+      icon: "wrench",
+      hidden: true,
+      content: ViewStoreItem as any,
+      async props(process, { id }) {
+        const pkg = await process.distrib.getStoreItem(id);
+
+        return { pkg };
+      },
+    },
+  ],
+  [
+    "search",
+    {
+      name: "Search",
+      icon: "search",
+      hidden: true,
+      content: SearchResults as any,
+      async props(process, { query }) {
+        const results = await process.distrib.searchStoreItems(query);
+
+        return { results };
       },
     },
   ],

@@ -1,1 +1,42 @@
-view store item
+<script lang="ts">
+  import { StoreItemBanner, StoreItemIcon } from "$ts/distrib/util";
+  import type { StoreItem } from "$types/package";
+  import { spawn } from "child_process";
+  import type { AppStoreRuntime } from "../runtime";
+  import { formatBytes } from "$ts/fs/util";
+
+  const { process, pkg }: { process: AppStoreRuntime; pkg: StoreItem } = $props();
+</script>
+
+{#if pkg}
+  <div class="header" class:has-banner={!!pkg.pkg.store?.banner}>
+    {#if pkg.pkg.store?.banner}
+      <img src={StoreItemBanner(pkg)} alt="" class="banner" />
+    {/if}
+    <div class="info">
+      <img src={StoreItemIcon(pkg)} alt="" />
+      <div class="metadata">
+        <h1>
+          <span class="name">{pkg.pkg.name}</span>
+          <span class="version">v{pkg.pkg.version}</span>
+        </h1>
+        <p class="description">{pkg.pkg.description}</p>
+        <p class="author">{pkg.user?.displayName || pkg.user?.username || pkg.pkg.author} · {pkg.installCount} downloads</p>
+      </div>
+      <div class="right">
+        <div class="size">
+          <span class="lucide icon-file-archive"></span>
+          <span>{formatBytes(pkg.size)}</span>
+        </div>
+        <button class="suggested">Install</button>
+      </div>
+    </div>
+  </div>
+{:else}
+  <div class="empty">
+    <span class="lucide icon-circle-slash"></span>
+    <h1>Package not found</h1>
+    <p>Sorry! Couldn't find the package you're looking for</p>
+    <button class="suggested" onclick={() => process.switchPage("home")}>Home</button>
+  </div>
+{/if}
