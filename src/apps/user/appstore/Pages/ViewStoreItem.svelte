@@ -2,6 +2,7 @@
   import { StoreItemBanner, StoreItemIcon } from "$ts/distrib/util";
   import { formatBytes } from "$ts/fs/util";
   import type { StoreItem } from "$types/package";
+  import PackageInstallAction from "../AppStore/PackageInstallAction.svelte";
   import type { AppStoreRuntime } from "../runtime";
 
   const { process, pkg }: { process: AppStoreRuntime; pkg: StoreItem } = $props();
@@ -27,7 +28,7 @@
           <span class="lucide icon-file-archive"></span>
           <span>{formatBytes(pkg.size)}</span>
         </div>
-        <button class="suggested">Install</button>
+        <PackageInstallAction {pkg} {process} />
       </div>
     </div>
   </div>

@@ -3,6 +3,8 @@
 @import url("./appstore/page/madebyyou.css");
 @import url("./appstore/page/managestoreitem.css");
 @import url("./appstore/page/everything.css");
+@import url("./appstore/page/viewstoreitem.css");
+@import url("./appstore/installaction.css");
 
 #AppStore > div.body {
   padding: 0;
