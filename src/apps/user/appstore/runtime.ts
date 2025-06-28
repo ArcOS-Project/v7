@@ -2,9 +2,14 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
 import { ErrorIcon } from "$ts/images/dialog";
+import { DownloadIcon } from "$ts/images/filesystem";
+import { UploadIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
+import { ElevationLevel } from "$types/elevation";
+import type { FilesystemProgressCallback } from "$types/fs";
+import type { StoreItem } from "$types/package";
 import { appStorePages } from "./store";
 
 export class AppStoreRuntime extends AppProcess {
@@ -75,5 +80,35 @@ export class AppStoreRuntime extends AppProcess {
   async Search() {
     this.searching.set(true);
     this.switchPage("search", { query: this.searchQuery() });
+  }
+
+  async installPackage(pkg: StoreItem, onDownloadProgress?: FilesystemProgressCallback) {
+    const elevated = await this.userDaemon!.manuallyElevate({
+      what: "ArcOS needs your permission to install a package",
+      title: pkg.pkg.name,
+      description: `By ${pkg.user?.displayName || pkg.user?.username || pkg.pkg.author}`,
+      image: DownloadIcon,
+      level: ElevationLevel.medium,
+    });
+
+    if (!elevated) return false;
+
+    return await this.distrib.storeItemInstaller(pkg._id, onDownloadProgress);
+  }
+
+  async updatePackage(pkg: StoreItem, onDownloadProgress?: FilesystemProgressCallback) {
+    const elevated = await this.userDaemon!.manuallyElevate({
+      what: "ArcOS needs your permission to update a package",
+      title: pkg.pkg.name,
+      description: `By ${pkg.user?.displayName || pkg.user?.username || pkg.pkg.author}`,
+      image: UploadIcon,
+      level: ElevationLevel.medium,
+    });
+
+    if (!elevated) return false;
+
+    await this.distrib!.removeFromInstalled(pkg._id);
+
+    return await this.distrib.updatePackage(pkg._id, true, onDownloadProgress);
   }
 }

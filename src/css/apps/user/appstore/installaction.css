@@ -1,0 +1,61 @@
+#AppStore > div.body div.package-install-action {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 10px;
+  height: 30px;
+  width: 130px;
+  border-radius: var(--button-border-rad);
+}
+
+#AppStore > div.body div.package-install-action.loading {
+  background-color: var(--button-glass-bg);
+  justify-content: center;
+}
+
+#AppStore > div.body div.package-install-action button.lucide {
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  padding: 0;
+}
+
+#AppStore > div.body div.package-install-action > button:not(.lucide) {
+  position: relative;
+  overflow: hidden;
+  height: 30px;
+  width: 90px;
+}
+
+#AppStore > div.body div.package-install-action > button:not(.lucide):disabled {
+  opacity: 1;
+}
+
+#AppStore > div.body div.package-install-action > button > div.progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#AppStore > div.body div.package-install-action > button > div.progress div.inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--w, 0%);
+  height: 100%;
+  background-color: var(--accent-transparent);
+  opacity: 0.5;
+}
+
+#AppStore > div.body div.package-install-action > button > div.content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  line-height: 30px;
+  padding: 0 15px;
+}
