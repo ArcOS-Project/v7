@@ -467,6 +467,16 @@ export class DistributionServiceProcess extends BaseService {
       return [];
     }
   }
+
+  async storeItemReadme(id: string): Promise<string> {
+    try {
+      const response = await Backend.get(`/store/assets/${id}/readme`, { responseType: "text" });
+
+      return response.data as string;
+    } catch {
+      return "";
+    }
+  }
 }
 
 export const distributionService: Service = {

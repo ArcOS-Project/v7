@@ -1,11 +1,19 @@
 <script lang="ts">
+  import MarkdownRenderingComponent from "$lib/MarkdownRenderingComponent.svelte";
   import { StoreItemBanner, StoreItemIcon } from "$ts/distrib/util";
   import { formatBytes } from "$ts/fs/util";
   import type { StoreItem } from "$types/package";
+  import { onMount } from "svelte";
   import PackageInstallAction from "../AppStore/PackageInstallAction.svelte";
   import type { AppStoreRuntime } from "../runtime";
 
   const { process, pkg }: { process: AppStoreRuntime; pkg: StoreItem } = $props();
+
+  let readme = $state<string>("");
+
+  onMount(async () => {
+    readme = await process.distrib.storeItemReadme(pkg._id);
+  });
 </script>
 
 {#if pkg}
@@ -32,6 +40,7 @@
       </div>
     </div>
   </div>
+  <MarkdownRenderingComponent source={readme} />
 {:else}
   <div class="empty">
     <span class="lucide icon-circle-slash"></span>
