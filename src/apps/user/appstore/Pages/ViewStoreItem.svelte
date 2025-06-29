@@ -9,7 +9,7 @@
 </script>
 
 {#if pkg}
-  <div class="header" class:has-banner={!!pkg.pkg.store?.banner}>
+  <div class="header" class:no-banner={!pkg.pkg.store?.banner}>
     {#if pkg.pkg.store?.banner}
       <img src={StoreItemBanner(pkg)} alt="" class="banner" />
     {/if}
