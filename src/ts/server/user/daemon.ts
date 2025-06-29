@@ -2579,7 +2579,10 @@ The information provided in this report is subject for review by me or another A
 
   startAnchorRedirectionIntercept() {
     this.Log("Starting anchor redirection intercept");
+
     const handle = () => {
+      if (this._disposed) return;
+
       const anchors = document.querySelectorAll("a");
 
       for (const anchor of anchors) {
