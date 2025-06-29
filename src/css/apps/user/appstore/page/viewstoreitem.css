@@ -7,6 +7,7 @@
   flex-direction: column;
   justify-content: end;
   align-items: center;
+  margin-bottom: 70px;
 }
 
 #AppStore div.page.viewStoreItem div.header img.banner {
@@ -82,10 +83,17 @@
   justify-content: start;
   height: fit-content;
   padding: 20px 40px;
+  margin-bottom: 20px;
 }
 
 #AppStore div.page.viewStoreItem div.header.no-banner div.info {
   translate: 0;
   box-shadow: none;
   max-width: unset;
+}
+#AppStore div.page.viewStoreItem div.markdown-body {
+  padding: 0 40px;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
 }

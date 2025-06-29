@@ -24,7 +24,15 @@ import { applyDefaults } from "$ts/hierarchy";
 import { getIconPath, iconIdFromPath, maybeIconId } from "$ts/images";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
-import { AccountIcon, AppsIcon, ComponentIcon, FirefoxIcon, PasswordIcon, PersonalizationIcon } from "$ts/images/general";
+import {
+  AccountIcon,
+  AppsIcon,
+  ComponentIcon,
+  FirefoxIcon,
+  GlobeIcon,
+  PasswordIcon,
+  PersonalizationIcon,
+} from "$ts/images/general";
 import { ImageMimeIcon } from "$ts/images/mime";
 import { RestartIcon } from "$ts/images/power";
 import { tryJsonParse } from "$ts/json";
@@ -93,6 +101,7 @@ export class UserDaemon extends Process {
   public globalDispatch?: GlobalDispatch;
   private TempFsSnapshot: Record<string, any> = {};
   public TempFs?: MemoryFilesystemDrive;
+  private registeredAnchors: HTMLAnchorElement[] = [];
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, token: string, username: string, userInfo?: UserInfo) {
     super(handler, pid, parentPid);
@@ -109,6 +118,8 @@ export class UserDaemon extends Process {
   async start() {
     this.TempFs = this.fs.getDriveById("temp") as MemoryFilesystemDrive;
     this.TempFsSnapshot = await this.TempFs.takeSnapshot();
+
+    this.startAnchorRedirectionIntercept();
   }
 
   async startApplicationStorage() {
@@ -2564,5 +2575,54 @@ The information provided in this report is subject for review by me or another A
 
       return v;
     });
+  }
+
+  startAnchorRedirectionIntercept() {
+    this.Log("Starting anchor redirection intercept");
+    const handle = () => {
+      const anchors = document.querySelectorAll("a");
+
+      for (const anchor of anchors) {
+        const href = anchor.getAttribute("href");
+
+        if (this.registeredAnchors.includes(anchor) || href?.startsWith("@client/")) continue;
+
+        this.registeredAnchors.push(anchor);
+
+        anchor.addEventListener("click", (e) => {
+          const currentState = this.kernel.state?.currentState;
+
+          e.preventDefault();
+
+          if (currentState !== "desktop") return;
+
+          MessageBox(
+            {
+              title: "Open this page?",
+              message: `You're about to leave ArcOS to navigate to <code>${anchor.href}</code> in a <b>new tab</b>. Are you sure you want to continue?`,
+              buttons: [
+                {
+                  caption: "Stay here",
+                  action() {},
+                },
+                {
+                  caption: "Proceed",
+                  action() {
+                    window.open(anchor.href, "_blank");
+                  },
+                  suggested: true,
+                },
+              ],
+              image: GlobeIcon,
+            },
+            +this.env.get("shell_pid"),
+            true
+          );
+        });
+      }
+    };
+
+    const observer = new MutationObserver(handle);
+    observer.observe(document.body, { childList: true, subtree: true });
   }
 }
