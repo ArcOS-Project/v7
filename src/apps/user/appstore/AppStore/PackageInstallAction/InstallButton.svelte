@@ -1,10 +1,21 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
   import { WarningIcon } from "$ts/images/dialog";
+  import type { ReadableStore } from "$ts/writable";
   import type { StoreItem } from "$types/package";
   import type { AppStoreRuntime } from "../../runtime";
 
-  const { process, pkg, compact = false }: { process: AppStoreRuntime; pkg: StoreItem; compact: boolean } = $props();
+  const {
+    process,
+    pkg,
+    installed,
+    compact = false,
+  }: {
+    process: AppStoreRuntime;
+    installed: ReadableStore<StoreItem | undefined>;
+    pkg: ReadableStore<StoreItem>;
+    compact: boolean;
+  } = $props();
   let working = $state<boolean>(false);
   let progMax = $state<number>(100);
   let progDone = $state<number>(0);
@@ -13,7 +24,7 @@
   async function go() {
     working = true;
     content = "Loading";
-    const installer = await process.installPackage(pkg, (prog) => {
+    const installer = await process.installPackage($pkg, (prog) => {
       progMax = prog.max;
       progDone = prog.value;
       content = `${((100 / prog.max) * prog.value).toFixed(0)}%`;
@@ -60,7 +71,7 @@
     await installer.go();
 
     content = "Done";
-    process.switchPage(process.currentPage(), process.pageProps());
+    $installed = $pkg;
   }
 
   function reset() {

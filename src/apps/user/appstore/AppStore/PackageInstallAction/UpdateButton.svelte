@@ -1,10 +1,21 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
   import { WarningIcon } from "$ts/images/dialog";
-  import type { StoreItem } from "$types/package";
+  import type { ReadableStore } from "$ts/writable";
+  import type { StoreItem, UpdateInfo } from "$types/package";
   import type { AppStoreRuntime } from "../../runtime";
 
-  const { process, pkg, compact = false }: { process: AppStoreRuntime; pkg: StoreItem; compact: boolean } = $props();
+  const {
+    process,
+    pkg,
+    compact = false,
+    update,
+  }: {
+    process: AppStoreRuntime;
+    update: ReadableStore<UpdateInfo | false>;
+    pkg: ReadableStore<StoreItem>;
+    compact: boolean;
+  } = $props();
   let working = $state<boolean>(false);
   let progMax = $state<number>(100);
   let progDone = $state<number>(0);
@@ -13,7 +24,7 @@
   async function go() {
     working = true;
     content = "Loading";
-    const installer = await process.updatePackage(pkg, (prog) => {
+    const installer = await process.updatePackage($pkg, (prog) => {
       progMax = prog.max;
       progDone = prog.value;
       content = `${((100 / prog.max) * prog.value).toFixed(0)}%`;
@@ -55,7 +66,7 @@
     await installer.go();
 
     content = "Done";
-    process.switchPage(process.currentPage(), process.pageProps());
+    $update = false;
   }
 
   function reset() {
@@ -72,3 +83,7 @@
   </div>
   <div class="content">{working && compact ? content : "..."}</div>
 </button>
+
+{working}
+{compact}
+{content}
