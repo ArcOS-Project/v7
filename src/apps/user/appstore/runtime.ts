@@ -1,9 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
+import { StoreItemIcon } from "$ts/distrib/util";
 import { ErrorIcon } from "$ts/images/dialog";
-import { DownloadIcon } from "$ts/images/filesystem";
-import { UploadIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -83,11 +82,22 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async installPackage(pkg: StoreItem, onDownloadProgress?: FilesystemProgressCallback) {
+    if (pkg.deprecated) {
+      const go = await this.userDaemon!.Confirm(
+        "Are you sure?",
+        "The author of this package marked it as <b>deprecated</b>. This means that the package is unmaintained and outdated. Are you sure you want to continue installing it?",
+        "Cancel",
+        "Install anyway"
+      );
+
+      if (!go) return 0;
+    }
+
     const elevated = await this.userDaemon!.manuallyElevate({
       what: "ArcOS needs your permission to install a package",
       title: pkg.pkg.name,
       description: `By ${pkg.user?.displayName || pkg.user?.username || pkg.pkg.author}`,
-      image: DownloadIcon,
+      image: StoreItemIcon(pkg),
       level: ElevationLevel.medium,
     });
 
@@ -97,11 +107,25 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async updatePackage(pkg: StoreItem, onDownloadProgress?: FilesystemProgressCallback) {
+    if (pkg.deprecated) {
+      const go = await this.userDaemon!.Confirm(
+        "Are you sure?",
+        "The author of this package marked it as <b>deprecated</b>. This means that the package is unmaintained and outdated. Do you want to uninstall it instead of updating?",
+        "Uninstall",
+        "Update anyway"
+      );
+
+      if (!go) {
+        await this.userDaemon?.deleteApp(pkg.pkg.appId, true);
+        return 0;
+      }
+    }
+
     const elevated = await this.userDaemon!.manuallyElevate({
       what: "ArcOS needs your permission to update a package",
       title: pkg.pkg.name,
       description: `By ${pkg.user?.displayName || pkg.user?.username || pkg.pkg.author}`,
-      image: UploadIcon,
+      image: StoreItemIcon(pkg),
       level: ElevationLevel.medium,
     });
 
@@ -110,5 +134,37 @@ export class AppStoreRuntime extends AppProcess {
     await this.distrib!.removeFromInstalled(pkg._id);
 
     return await this.distrib.updatePackage(pkg._id, true, onDownloadProgress);
+  }
+
+  async deprecatePackage(pkg: StoreItem) {
+    const elevated = await this.userDaemon!.manuallyElevate({
+      what: "ArcOS needs your permission to deprecate one of your packages",
+      title: pkg.pkg.name,
+      description: pkg.pkg.appId,
+      image: StoreItemIcon(pkg),
+      level: ElevationLevel.medium,
+    });
+
+    if (!elevated) return false;
+
+    await this.distrib!.deprecateStoreItem(pkg._id);
+
+    this.switchPage("manageStoreItem", { id: pkg._id });
+  }
+
+  async deletePackage(pkg: StoreItem) {
+    const elevated = await this.userDaemon!.manuallyElevate({
+      what: "ArcOS needs your permission to delete one of your packages",
+      title: pkg.pkg.name,
+      description: pkg.pkg.appId,
+      image: StoreItemIcon(pkg),
+      level: ElevationLevel.high,
+    });
+
+    if (!elevated) return false;
+
+    await this.distrib!.deleteStoreItem(pkg._id);
+
+    this.switchPage("madeByYou");
   }
 }

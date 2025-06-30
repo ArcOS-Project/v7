@@ -21,7 +21,7 @@
       </h1>
       <p>{pkg.pkg.description}</p>
     </div>
-    <button class="suggested" disabled={pkg.blocked}>Update...</button>
+    <button class="suggested" disabled={pkg.blocked || pkg.deprecated}>Update...</button>
   </div>
   {#if pkg.blocked}
     <div class="notice warning">
@@ -72,14 +72,14 @@
           <h1>Deprecate package</h1>
           <p>Mark this package as outdated and unmaintained.</p>
         </div>
-        <button onclick={() => process.notImplemented("Package deprecation")}>Deprecate</button>
+        <button onclick={() => process.deprecatePackage(pkg)} disabled={pkg.deprecated}>Deprecate</button>
       </div>
       <div class="action">
         <div class="info">
           <h1>Delete package</h1>
           <p>Completely remove this package from the store</p>
         </div>
-        <button onclick={() => process.notImplemented("Deleting packages")}>Delete...</button>
+        <button onclick={() => process.deletePackage(pkg)}>Delete...</button>
       </div>
     </div>
   </section>

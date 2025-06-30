@@ -40,6 +40,15 @@
       </div>
     </div>
   </div>
+  {#if pkg.deprecated}
+    <div class="notice warning">
+      <span class="lucide icon-triangle-alert"></span>
+      <p>
+        This package has been marked as deprecated by its author. This means that this package is unmaintained and outdated. We
+        strongly advise against installing deprecated packages.
+      </p>
+    </div>
+  {/if}
   <MarkdownRenderingComponent source={readme} />
 {:else}
   <div class="empty">
