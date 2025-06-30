@@ -2,8 +2,10 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
 import { StoreItemIcon } from "$ts/distrib/util";
+import { AppStoreIcon } from "$ts/images/apps";
 import { ErrorIcon } from "$ts/images/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
+import { UserPaths } from "$ts/server/user/store";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
@@ -68,7 +70,7 @@ export class AppStoreRuntime extends AppProcess {
     this.pageProps.set({});
 
     const page = appStorePages.get(id);
-    const pageProps = page?.props ? { ...(await page.props(this, props)), ...props } : props;
+    const pageProps = page?.props ? { ...props, ...(await page.props(this, props)) } : props;
 
     this.pageProps.set(pageProps);
     this.currentPage.set(id);
@@ -166,5 +168,39 @@ export class AppStoreRuntime extends AppProcess {
     await this.distrib!.deleteStoreItem(pkg._id);
 
     this.switchPage("madeByYou");
+  }
+
+  async publishPackage() {
+    const [path] = await this.userDaemon!.LoadSaveDialog({
+      title: "Select package to publish",
+      icon: AppStoreIcon,
+      extensions: [".arc"],
+      startDir: UserPaths.Documents,
+    });
+
+    if (!path) return;
+
+    const result = await this.distrib.publishPackageFromPath(path);
+
+    if (!result) {
+      MessageBox(
+        {
+          title: "Failed to publish package",
+          message:
+            "The server didn't accept your package. Maybe its format is incorrect or another package with the same name already exists.",
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          image: ErrorIcon,
+          sound: "arcos.dialog.error",
+        },
+        this.pid,
+        true
+      );
+
+      return false;
+    }
+
+    await this.switchPage(this.currentPage(), {});
+
+    return true;
   }
 }

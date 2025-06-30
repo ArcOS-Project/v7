@@ -10,7 +10,7 @@
   <section class="by-you">
     <h1>
       <span>Made by you</span>
-      <button>
+      <button onclick={() => process.publishPackage()}>
         <span>Upload</span>
         <span class="lucide icon-upload"></span>
       </button>
