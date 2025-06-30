@@ -180,7 +180,7 @@ export class DistributionServiceProcess extends BaseService {
   async loadInstalledList() {
     this.Log(`loadInstalledList`);
 
-    if (this.installListCache) return this.installListCache;
+    if (this.installListCache.length) return this.installListCache;
 
     const contents = await this.fs.readFile(this.installedListPath);
 

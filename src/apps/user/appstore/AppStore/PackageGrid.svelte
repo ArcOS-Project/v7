@@ -1,5 +1,6 @@
 <script lang="ts">
   import { StoreItemIcon } from "$ts/distrib/util";
+  import { UUID } from "$ts/uuid";
   import type { PartialStoreItem } from "$types/package";
   import type { AppStoreRuntime } from "../runtime";
   import PackageInstallAction from "./PackageInstallAction.svelte";
@@ -26,7 +27,7 @@
     {/if}
   </h1>
   <div class="items">
-    {#each items as item (item._id)}
+    {#each items.filter((i) => !!i) as item (item?._id || UUID())}
       <button class="item">
         <!-- svelte-ignore a11y_click_events_have_key_events -->
         <!-- svelte-ignore a11y_no_static_element_interactions -->

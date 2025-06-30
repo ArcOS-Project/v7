@@ -15,6 +15,7 @@
 
   onMount(() => {
     currentPage.subscribe((v) => {
+      staticPageProps = {};
       const data = appStorePages.get(v);
 
       if (!data) return (id = "");
