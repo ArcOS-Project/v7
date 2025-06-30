@@ -7,7 +7,7 @@
   import UpdateButton from "./PackageInstallAction/UpdateButton.svelte";
   import UninstallButton from "./PackageInstallAction/UninstallButton.svelte";
 
-  const { process, pkg }: { process: AppStoreRuntime; pkg: StoreItem } = $props();
+  const { process, pkg, compact = false }: { process: AppStoreRuntime; pkg: StoreItem; compact?: boolean } = $props();
   let loading = $state<boolean>(true);
   let installed = $state<StoreItem>();
   let update = $state<UpdateInfo | false>();
@@ -19,22 +19,24 @@
   });
 </script>
 
-<div class="package-install-action" class:loading>
+<div class="package-install-action" class:loading class:compact>
   {#if loading}
     <Spinner height={24} />
   {:else if installed}
-    <button
-      class="lucide icon-rocket"
-      aria-label="Launch"
-      title="Launch"
-      onclick={() => process.userDaemon!.spawnApp(pkg.pkg.appId, +process.env.get("shell_pid"))}
-    ></button>
+    {#if !compact}
+      <button
+        class="lucide icon-rocket"
+        aria-label="Launch"
+        title="Launch"
+        onclick={() => process.userDaemon!.spawnApp(pkg.pkg.appId, +process.env.get("shell_pid"))}
+      ></button>
+    {/if}
     {#if update}
-      <UpdateButton {pkg} {process} />
+      <UpdateButton {pkg} {process} {compact} />
     {:else}
-      <UninstallButton {pkg} {process} />
+      <UninstallButton {pkg} {process} {compact} />
     {/if}
   {:else}
-    <InstallButton {pkg} {process} />
+    <InstallButton {pkg} {process} {compact} />
   {/if}
 </div>

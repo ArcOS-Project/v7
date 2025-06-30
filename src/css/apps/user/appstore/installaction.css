@@ -39,16 +39,6 @@
   height: 100%;
 }
 
-#AppStore > div.body div.package-install-action > button > div.progress div.inner {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: var(--w, 0%);
-  height: 100%;
-  background-color: var(--accent-transparent);
-  opacity: 0.5;
-}
-
 #AppStore > div.body div.package-install-action > button > div.content {
   position: absolute;
   top: 0;
@@ -58,4 +48,72 @@
   text-align: center;
   line-height: 30px;
   padding: 0 15px;
+}
+
+#AppStore > div.body div.package-install-action > button:not(.lucide).working.compact div.inner {
+  opacity: 1;
+  background-color: var(--accent);
+}
+
+#AppStore > div.body div.package-install-action.compact.loading {
+  height: 20px;
+  border-radius: 10px;
+  margin-top: auto;
+  align-items: center;
+}
+
+#AppStore > div.body div.package-install-action.compact {
+  min-width: 60px;
+  width: 60px;
+  align-items: end;
+  /* height: 100%; */
+  margin-left: auto;
+  margin-top: auto;
+  position: relative;
+  z-index: 1000000;
+}
+
+#AppStore > div.body div.package-install-action > button:not(.lucide).compact {
+  height: 20px;
+  border-radius: 10px;
+  padding: 0 !important;
+  width: 60px !important;
+  min-width: unset;
+}
+
+#AppStore > div.body div.package-install-action > button:not(.lucide).compact div.content {
+  line-height: 20px;
+  padding: 0;
+  width: 100%;
+  text-align: center;
+  width: 60px !important;
+  font-size: 12px;
+  font-weight: normal;
+}
+
+#AppStore > div.body div.package-install-action.compact {
+  overflow: visible !important;
+}
+
+#AppStore > div.body div.package-install-action > button:not(.lucide).working.compact {
+  height: 5px;
+  width: 30px !important;
+  border-radius: 2.5px;
+  padding: 0;
+}
+
+#AppStore > div.body div.package-install-action > button > div.progress div.inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--w, 0%);
+  height: 100%;
+  background-color: var(--accent-transparent);
+  opacity: 0.5;
+  border-radius: 2.5px;
+}
+
+#AppStore > div.body div.package-install-action.compact img {
+  width: 12px !important;
+  height: 12px !important;
 }

@@ -4,7 +4,7 @@
   import type { StoreItem } from "$types/package";
   import type { AppStoreRuntime } from "../../runtime";
 
-  const { process, pkg }: { process: AppStoreRuntime; pkg: StoreItem } = $props();
+  const { process, pkg, compact = false }: { process: AppStoreRuntime; pkg: StoreItem; compact: boolean } = $props();
   let working = $state<boolean>(false);
   let progMax = $state<number>(100);
   let progDone = $state<number>(0);
@@ -19,7 +19,7 @@
       content = `${((100 / prog.max) * prog.value).toFixed(0)}%`;
     });
 
-    if (!installer) {
+    if (installer === false) {
       MessageBox(
         {
           title: "Failed to install item",
@@ -40,6 +40,11 @@
         true,
       );
 
+      return;
+    }
+
+    if (typeof installer !== "object") {
+      reset();
       return;
     }
 
@@ -66,9 +71,9 @@
   }
 </script>
 
-<button class="install" class:suggested={!working} onclick={go} disabled={working}>
+<button class="install" class:compact class:working class:suggested={!working} onclick={go} disabled={working}>
   <div class="progress">
     <div class="inner" style="--w: {(100 / progMax) * progDone}%;"></div>
   </div>
-  <div class="content">{content}</div>
+  <div class="content">{working && compact ? "..." : content}</div>
 </button>
