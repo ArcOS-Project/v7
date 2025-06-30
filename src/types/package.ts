@@ -27,6 +27,7 @@ export interface StoreItem {
   size: number;
   createdAt: string;
   updatedAt: string;
+  deprecated: boolean;
 }
 
 export interface PartialStoreItem {
@@ -44,6 +45,11 @@ export interface PartialStoreItem {
     banner?: string;
   };
   description: string;
+  blocked: boolean;
+  size: number;
+  createdAt: string;
+  updatedAt: string;
+  deprecated: boolean;
 }
 
 export type InstallStatusType = "mkdir" | "file" | "registration" | "other";

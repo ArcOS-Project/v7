@@ -20,6 +20,7 @@ export class DistributionServiceProcess extends BaseService {
   private readonly tempFolder = `T:/DistribSvcTemp`;
   private readonly installedListPath = join(this.dataFolder, "Installed.json");
   _BUSY: string = "";
+  private installListCache: StoreItem[] = [];
 
   preferences: UserPreferencesStore;
 
@@ -31,6 +32,7 @@ export class DistributionServiceProcess extends BaseService {
 
   async start() {
     await this.fs.createDirectory(this.tempFolder);
+    this.installListCache = await this.loadInstalledList();
   }
 
   async packageInstallerFromPath(path: string, progress?: FilesystemProgressCallback, item?: StoreItem) {
@@ -178,6 +180,8 @@ export class DistributionServiceProcess extends BaseService {
   async loadInstalledList() {
     this.Log(`loadInstalledList`);
 
+    if (this.installListCache) return this.installListCache;
+
     const contents = await this.fs.readFile(this.installedListPath);
 
     if (!contents) {
@@ -199,6 +203,8 @@ export class DistributionServiceProcess extends BaseService {
     this.Log(`writeInstalledList: ${list.length} items`);
 
     if (this.checkBusy("writeInstalledList")) return false;
+
+    this.installListCache = list;
 
     this.BUSY = "writeInstalledList";
 
@@ -303,6 +309,32 @@ export class DistributionServiceProcess extends BaseService {
     try {
       const newData = arrayToBlob(contents);
       const response = await Backend.patch(`/store/publish/${itemId}`, newData, {
+        headers: { Authorization: `Bearer ${this.host.daemon.token}` },
+      });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async deprecateStoreItem(id: string): Promise<boolean> {
+    try {
+      const response = await Backend.post(
+        `/store/publish/deprecate/${id}`,
+        {},
+        { headers: { Authorization: `Bearer ${this.host.daemon.token}` } }
+      );
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async deleteStoreItem(id: string): Promise<boolean> {
+    try {
+      const response = await Backend.delete(`/store/publish/${id}`, {
         headers: { Authorization: `Bearer ${this.host.daemon.token}` },
       });
 
