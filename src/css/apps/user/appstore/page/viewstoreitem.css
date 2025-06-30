@@ -18,6 +18,7 @@
   left: 0;
   object-fit: cover;
   opacity: 0.5;
+  border-bottom: var(--button-glass-hover-bg) 1px solid;
 }
 
 #AppStore div.page.viewStoreItem div.header div.info {
@@ -33,6 +34,7 @@
   translate: 0 50px;
   max-width: 600px;
   width: 100%;
+  border: var(--button-glass-bg) 1px solid;
 }
 
 #AppStore div.page.viewStoreItem div.header div.info > img {
@@ -90,6 +92,7 @@
   translate: 0;
   box-shadow: none;
   max-width: unset;
+  border: none;
 }
 #AppStore div.page.viewStoreItem div.markdown-body {
   padding: 0 40px;
