@@ -13,6 +13,6 @@
   <div class="empty">
     <span class="lucide icon-circle-slash"></span>
     <h1>No packages!</h1>
-    <p>That's odd... There aren't any packages here. Maybe come back later?</p>
+    <p>There haven't been any new packages published in the last week. Maybe you'll be the first?</p>
   </div>
 {/if}
