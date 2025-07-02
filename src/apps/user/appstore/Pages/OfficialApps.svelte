@@ -6,7 +6,7 @@
   const { official, process }: { official: PartialStoreItem[]; process: AppStoreRuntime } = $props();
 </script>
 
-{#if official.length}
+{#if official?.length}
   <PackageGrid items={official} name="Official Apps" {process} />
   <p class="end">Looks like you've reached the end.</p>
 {:else}

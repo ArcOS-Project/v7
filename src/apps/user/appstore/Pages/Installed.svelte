@@ -6,7 +6,7 @@
   const { process, updates, installed }: { process: AppStoreRuntime; updates: UpdateInfo[]; installed: StoreItem[] } = $props();
 </script>
 
-{#if updates.length || installed.length}
+{#if updates?.length || installed?.length}
   {#if updates.length}
     <section class="updates">
       <h1>

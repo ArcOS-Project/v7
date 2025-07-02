@@ -14,19 +14,21 @@
   const { process, all, recentlyAdded, popular, mostPopular }: Props = $props();
 </script>
 
-<div class="hero">
-  {#if StoreItemBanner(popular[0])}
-    <img src={StoreItemBanner(popular[0])} alt="" class="banner" />
-  {/if}
-  <div class="info">
-    <img src={StoreItemIcon(popular[0])} alt="" class="icon" />
-    <h1>{mostPopular.pkg.name}</h1>
-    <p class="description">{mostPopular.pkg.description}</p>
-    <p class="stats">{mostPopular.user?.displayName || mostPopular.user?.username} · {mostPopular.installCount} downloads</p>
+{#if all && recentlyAdded && popular && mostPopular}
+  <div class="hero">
+    {#if StoreItemBanner(popular[0])}
+      <img src={StoreItemBanner(popular[0])} alt="" class="banner" />
+    {/if}
+    <div class="info">
+      <img src={StoreItemIcon(popular[0])} alt="" class="icon" />
+      <h1>{mostPopular.pkg.name}</h1>
+      <p class="description">{mostPopular.pkg.description}</p>
+      <p class="stats">{mostPopular.user?.displayName || mostPopular.user?.username} · {mostPopular.installCount} downloads</p>
+    </div>
+    <button class="suggested" onclick={() => process.switchPage("viewStoreItem", { id: mostPopular._id })}>View</button>
   </div>
-  <button class="suggested" onclick={() => process.switchPage("viewStoreItem", { id: mostPopular._id })}>View</button>
-</div>
 
-<PackageGrid name="Popular" items={popular} {process} />
-<PackageGrid name="Recently Added" items={recentlyAdded} {process} more={() => process.switchPage("recentlyAdded")} />
-<p class="end">Looks like you've reached the end.</p>
+  <PackageGrid name="Popular" items={popular} {process} />
+  <PackageGrid name="Recently Added" items={recentlyAdded} {process} more={() => process.switchPage("recentlyAdded")} />
+  <p class="end">Looks like you've reached the end.</p>
+{/if}

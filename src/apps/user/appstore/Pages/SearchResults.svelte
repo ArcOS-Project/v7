@@ -6,4 +6,6 @@
   const { process, results, query }: { process: AppStoreRuntime; results: PartialStoreItem[]; query: string } = $props();
 </script>
 
-<PackageGrid {process} items={results} name="Searching for '{query}'" />
+{#if results && query}
+  <PackageGrid {process} items={results} name="Searching for '{query}'" />
+{/if}
