@@ -28,6 +28,7 @@ export interface StoreItem {
   createdAt: string;
   updatedAt: string;
   deprecated: boolean;
+  description: string;
 }
 
 export interface PartialStoreItem {

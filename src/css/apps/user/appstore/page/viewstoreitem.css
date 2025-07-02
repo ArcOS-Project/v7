@@ -85,7 +85,7 @@
   justify-content: start;
   height: fit-content;
   padding: 20px 40px;
-  margin-bottom: 20px;
+  margin-bottom: 0;
 }
 
 #AppStore div.page.viewStoreItem div.header.no-banner div.info {
@@ -93,6 +93,7 @@
   box-shadow: none;
   max-width: unset;
   border: none;
+  padding: 0;
 }
 #AppStore div.page.viewStoreItem div.markdown-body {
   padding: 0 40px;

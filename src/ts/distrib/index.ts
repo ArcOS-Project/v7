@@ -2,7 +2,7 @@ import type { ApplicationStorage } from "$ts/apps/storage";
 import { arrayToBlob, arrayToText, textToBlob } from "$ts/fs/convert";
 import { join } from "$ts/fs/util";
 import { tryJsonParse } from "$ts/json";
-import type { ProcessHandler } from "$ts/process/handler";
+import { ProcessHandler } from "$ts/process/handler";
 import { Backend } from "$ts/server/axios";
 import { UserPaths } from "$ts/server/user/store";
 import type { ServiceHost } from "$ts/services";
@@ -75,8 +75,6 @@ export class DistributionServiceProcess extends BaseService {
   }
 
   async getStoreItem(id: string): Promise<StoreItem | undefined> {
-    this.Log(`getStoreItem: ${id}`);
-
     try {
       const response = await Backend.get(`/store/package/id/${id}`, {
         headers: { Authorization: `Bearer ${this.host.daemon.token}` },
@@ -89,8 +87,6 @@ export class DistributionServiceProcess extends BaseService {
   }
 
   async getStoreItemByName(name: string): Promise<StoreItem | undefined> {
-    this.Log(`getStoreItemByName: ${name}`);
-
     try {
       const response = await Backend.get(`/store/package/name/${name}`, {
         headers: { Authorization: `Bearer ${this.host.daemon.token}` },
@@ -103,7 +99,6 @@ export class DistributionServiceProcess extends BaseService {
   }
 
   async downloadStoreItem(id: string, onProgress?: FilesystemProgressCallback): Promise<ArrayBuffer | undefined> {
-    this.Log(`downloadStoreItem: '${id}'`);
     if (this.checkBusy("downloadStoreItem")) return undefined;
 
     this.BUSY = "downloadStoreItem";
@@ -178,8 +173,6 @@ export class DistributionServiceProcess extends BaseService {
   }
 
   async loadInstalledList() {
-    this.Log(`loadInstalledList`);
-
     if (this.installListCache.length) return this.installListCache;
 
     const contents = await this.fs.readFile(this.installedListPath);
@@ -216,7 +209,7 @@ export class DistributionServiceProcess extends BaseService {
     return result;
   }
 
-  async publishPackage(data: Blob) {
+  async publishPackage(data: Blob, onProgress?: FilesystemProgressCallback) {
     this.Log(`publishPackage: ${data.size} bytes`);
 
     if (this.checkBusy("publishPackage")) return false;
@@ -225,6 +218,14 @@ export class DistributionServiceProcess extends BaseService {
     try {
       const response = await Backend.post("/store/publish", data, {
         headers: { Authorization: `Bearer ${this.host.daemon.token}` },
+        onUploadProgress: (ev) => {
+          onProgress?.({
+            max: ev.total || 0,
+            value: ev.loaded,
+            type: "size",
+            what: "Uploading package",
+          });
+        },
       });
 
       this.BUSY = "";
@@ -235,21 +236,21 @@ export class DistributionServiceProcess extends BaseService {
     }
   }
 
-  async publishPackageFromPath(path: string): Promise<boolean> {
+  async publishPackageFromPath(path: string, onProgress?: FilesystemProgressCallback): Promise<boolean> {
     this.Log(`publishPackageFromPath: ${path}`);
 
     if (this.checkBusy("publishPackageFromPath")) return false;
 
-    const content = await this.fs.readFile(path);
+    const content = await this.fs.readFile(path, (p) => {
+      onProgress?.({ ...p, what: "Loading package" });
+    });
 
     if (!content) return false;
 
-    return await this.publishPackage(arrayToBlob(content));
+    return await this.publishPackage(arrayToBlob(content), onProgress);
   }
 
   async getPublishedPackages(): Promise<StoreItem[]> {
-    this.Log(`getPublishedPackages`);
-
     try {
       const response = await Backend.get("/store/publish/list", {
         headers: { Authorization: `Bearer ${this.host.daemon.token}` },
@@ -275,7 +276,7 @@ export class DistributionServiceProcess extends BaseService {
     }
   }
 
-  async updateStoreItem(itemId: string, newData: Blob) {
+  async updateStoreItem(itemId: string, newData: Blob, onProgress?: FilesystemProgressCallback) {
     this.Log(`updateStoreItem: ${itemId} -> ${newData.size} bytes`);
 
     if (this.checkBusy("updateStoreItem")) return false;
@@ -285,6 +286,14 @@ export class DistributionServiceProcess extends BaseService {
     try {
       const response = await Backend.patch(`/store/publish/${itemId}`, newData, {
         headers: { Authorization: `Bearer ${this.host.daemon.token}` },
+        onUploadProgress: (ev) => {
+          onProgress?.({
+            max: ev.total || 0,
+            value: ev.loaded,
+            type: "size",
+            what: "Uploading update package",
+          });
+        },
       });
 
       this.BUSY = "";
@@ -297,12 +306,14 @@ export class DistributionServiceProcess extends BaseService {
     }
   }
 
-  async updateStoreItemFromPath(itemId: string, updatePath: string) {
+  async updateStoreItemFromPath(itemId: string, updatePath: string, onProgress?: FilesystemProgressCallback) {
     this.Log(`updateStoreItemFromPath: ${itemId} -> ${updatePath}`);
 
     if (this.checkBusy("updateStoreItemFromPath")) return false;
 
-    const contents = await this.fs.readFile(updatePath);
+    const contents = await this.fs.readFile(updatePath, (p) => {
+      onProgress?.({ ...p, what: "Loading update package" });
+    });
 
     if (!contents) return false;
 
@@ -310,6 +321,14 @@ export class DistributionServiceProcess extends BaseService {
       const newData = arrayToBlob(contents);
       const response = await Backend.patch(`/store/publish/${itemId}`, newData, {
         headers: { Authorization: `Bearer ${this.host.daemon.token}` },
+        onUploadProgress: (ev) => {
+          onProgress?.({
+            max: ev.total || 0,
+            value: ev.loaded,
+            type: "size",
+            what: "Uploading update package",
+          });
+        },
       });
 
       return response.status === 200;
@@ -319,6 +338,8 @@ export class DistributionServiceProcess extends BaseService {
   }
 
   async deprecateStoreItem(id: string): Promise<boolean> {
+    this.Log(`deprecateStoreItem: ${id}`);
+
     try {
       const response = await Backend.post(
         `/store/publish/deprecate/${id}`,
@@ -333,6 +354,8 @@ export class DistributionServiceProcess extends BaseService {
   }
 
   async deleteStoreItem(id: string): Promise<boolean> {
+    this.Log(`deleteStoreItem: ${id}`);
+
     try {
       const response = await Backend.delete(`/store/publish/${id}`, {
         headers: { Authorization: `Bearer ${this.host.daemon.token}` },
@@ -345,16 +368,12 @@ export class DistributionServiceProcess extends BaseService {
   }
 
   async getInstalledPackage(id: string, installedList?: StoreItem[]) {
-    this.Log(`getInstalledPackage: ${id}`);
-
     const installed = installedList || (await this.loadInstalledList());
 
     return installed.filter((p) => p._id === id)[0];
   }
 
   async getInstalledPackageByAppId(appId: string): Promise<StoreItem | undefined> {
-    this.Log(`getInstalledPackageByAppId: ${appId}`);
-
     return (await this.loadInstalledList()).filter((s) => s.pkg.appId === appId)[0];
   }
 
@@ -489,8 +508,6 @@ export class DistributionServiceProcess extends BaseService {
   }
 
   async getAllStoreItems(): Promise<StoreItem[]> {
-    this.Log(`getAllStoreItems`);
-
     try {
       const response = await Backend.get("/store/list", { headers: { Authorization: `Bearer ${this.host.daemon.token}` } });
 
