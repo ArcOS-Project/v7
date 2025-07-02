@@ -65,7 +65,7 @@ export class AppStoreRuntime extends AppProcess {
     props ||= {};
     this.Log(`Loading page '${id}'`);
 
-    if (!appStorePages.has(id)) return;
+    if (!appStorePages.has(id) || this.currentPage() === id) return;
 
     this.loadingPage.set(true);
     this.pageProps.set({});
