@@ -81,9 +81,5 @@
   <div class="progress">
     <div class="inner" style="--w: {(100 / progMax) * progDone}%;"></div>
   </div>
-  <div class="content">{working && compact ? content : "..."}</div>
+  <div class="content">{working && compact ? "..." : content}</div>
 </button>
-
-{working}
-{compact}
-{content}

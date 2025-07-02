@@ -16,7 +16,7 @@
 
   onMount(async () => {
     $installed = await process.distrib.getInstalledPackage($store._id);
-    $update = await process.distrib.checkForUpdate($store._id);
+    $update = await process.distrib.checkForUpdate($store._id, undefined, [$store]);
     loading = false;
   });
 </script>

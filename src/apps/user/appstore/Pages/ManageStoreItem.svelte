@@ -21,7 +21,9 @@
       </h1>
       <p>{pkg.pkg.description}</p>
     </div>
-    <button class="suggested" disabled={pkg.blocked || pkg.deprecated}>Update...</button>
+    <button class="suggested" disabled={pkg.blocked || pkg.deprecated} onclick={() => process.updateStoreItem(pkg)}
+      >Update...</button
+    >
   </div>
   {#if pkg.blocked}
     <div class="notice warning">
