@@ -1,4 +1,6 @@
+import { groupByTimeFrame } from "$ts/group";
 import { sortByKey } from "$ts/util";
+import type { StoreItem } from "$types/package";
 import Everything from "./Pages/Everything.svelte";
 import Home from "./Pages/Home.svelte";
 import Installed from "./Pages/Installed.svelte";
@@ -22,7 +24,7 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
         const all = await process.distrib.getAllStoreItems();
         let recentlyAdded = [...all.reverse()];
         let popular = [...sortByKey(all, "installCount")].reverse();
-        let mostPopular = await process.distrib.getStoreItem(popular[0]._id);
+        let mostPopular = popular[0];
 
         recentlyAdded.length = 6;
         popular.length = 6;
@@ -108,14 +110,11 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
       content: RecentlyAdded,
       async props(process) {
         const all = await process.distrib.getAllStoreItems();
-        const now = Date.now();
-        const recent = all.filter((pkg) => {
-          const difference = now - new Date(pkg.createdAt).getTime();
+        const groups = groupByTimeFrame<StoreItem>(all, "createdAt");
 
-          return difference < 1000 * 60 * 60 * 24 * 7; // Published in the last 7 days
-        });
+        console.log(groups);
 
-        return { recent };
+        return { groups };
       },
     },
   ],
