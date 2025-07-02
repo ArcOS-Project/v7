@@ -24,6 +24,10 @@
       id = v;
       staticPageProps = pageProps();
     });
+
+    pageProps.subscribe((v) => {
+      if ($loadingPage) staticPageProps = v;
+    });
   });
 </script>
 

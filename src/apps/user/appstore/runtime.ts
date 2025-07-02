@@ -4,6 +4,7 @@ import { DistributionServiceProcess } from "$ts/distrib";
 import { StoreItemIcon } from "$ts/distrib/util";
 import { AppStoreIcon } from "$ts/images/apps";
 import { ErrorIcon } from "$ts/images/dialog";
+import { UploadIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { UserPaths } from "$ts/server/user/store";
 import { Store } from "$ts/writable";
@@ -180,7 +181,26 @@ export class AppStoreRuntime extends AppProcess {
 
     if (!path) return;
 
-    const result = await this.distrib.publishPackageFromPath(path);
+    const prog = await this.userDaemon!.FileProgress(
+      {
+        waiting: true,
+        caption: "Publishing your package",
+        subtitle: path,
+        icon: UploadIcon,
+      },
+      this.pid
+    );
+
+    const result = await this.distrib.publishPackageFromPath(path, (progress) => {
+      prog.show();
+      prog.setMax(progress.max + 1);
+      prog.setDone(progress.value);
+      prog.setWork(true);
+      prog.setWait(false);
+      if (progress.what) prog.updSub(progress.what);
+    });
+
+    prog.stop();
 
     if (!result) {
       MessageBox(
@@ -202,5 +222,52 @@ export class AppStoreRuntime extends AppProcess {
     await this.switchPage(this.currentPage(), {});
 
     return true;
+  }
+
+  async updateStoreItem(pkg: StoreItem) {
+    const [path] = await this.userDaemon!.LoadSaveDialog({
+      title: `Select update for '${pkg.pkg.name}'`,
+      icon: StoreItemIcon(pkg),
+      extensions: [".arc"],
+      startDir: UserPaths.Documents,
+    });
+
+    if (!path) return;
+
+    const prog = await this.userDaemon!.FileProgress(
+      {
+        waiting: true,
+        caption: "Updating your store item",
+        subtitle: path,
+        icon: StoreItemIcon(pkg),
+      },
+      this.pid
+    );
+
+    const result = await this.distrib.updateStoreItemFromPath(pkg._id, path, (progress) => {
+      prog.show();
+      prog.setMax(progress.max + 1);
+      prog.setDone(progress.value);
+      prog.setWork(true);
+      prog.setWait(false);
+      if (progress.what) prog.updSub(progress.what);
+    });
+
+    prog.stop();
+
+    if (!result) {
+      MessageBox(
+        {
+          title: "Failed to update store item",
+          message:
+            "The server didn't accept your update package. Maybe its format is incorrect, the app ID differs, or the version isn't increased. Please check the package and try again.",
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          image: ErrorIcon,
+          sound: "arcos.dialog.error",
+        },
+        this.pid,
+        true
+      );
+    }
   }
 }
