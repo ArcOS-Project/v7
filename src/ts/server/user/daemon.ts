@@ -2196,11 +2196,14 @@ export class UserDaemon extends Process {
 
   async deleteApp(id: string, deleteFiles = false) {
     const distrib = this.serviceHost?.getService<DistributionServiceProcess>("DistribSvc");
+    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
 
     if (!distrib) return false;
 
     const prog = await this.GlobalLoadIndicator();
     const result = await distrib.uninstallApp(id, deleteFiles, (s) => prog.caption.set(s));
+
+    delete appStore!.appIconCache[id];
 
     await prog.stop();
 
