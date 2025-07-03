@@ -3,7 +3,7 @@ import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
 import { StoreItemIcon } from "$ts/distrib/util";
 import { AppStoreIcon } from "$ts/images/apps";
-import { ErrorIcon } from "$ts/images/dialog";
+import { ErrorIcon, InfoIcon } from "$ts/images/dialog";
 import { UploadIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { UserPaths } from "$ts/server/user/store";
@@ -16,6 +16,7 @@ import type { StoreItem } from "$types/package";
 import dayjs from "dayjs";
 import { appStorePages } from "./store";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+import TakenDown from "./AppStore/TakenDown.svelte";
 
 export class AppStoreRuntime extends AppProcess {
   searchQuery = Store<string>("");
@@ -58,6 +59,8 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async render() {
+    if (await this.closeIfSecondInstance()) return false;
+
     this.switchPage("home");
   }
 
@@ -296,5 +299,19 @@ The author hasn't provided a readme file themselves, so this one has been automa
     console.log(result);
 
     return result;
+  }
+
+  learnMoreBlocking() {
+    MessageBox(
+      {
+        title: "What is a blocked package?",
+        content: TakenDown as any,
+        image: InfoIcon,
+        sound: "arcos.dialog.info",
+        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+      },
+      this.pid,
+      true
+    );
   }
 }
