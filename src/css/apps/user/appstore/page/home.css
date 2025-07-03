@@ -32,6 +32,11 @@
   opacity: 0.3;
 }
 
+#AppStore div.page.home div.hero img.banner.fallback {
+  filter: blur(20px);
+  opacity: 0.5;
+}
+
 #AppStore div.page.home div.hero div.info {
   padding: 20px;
   background: linear-gradient(to top right, var(--win-bg) 0%, transparent 100%);

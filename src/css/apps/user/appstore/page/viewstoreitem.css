@@ -21,6 +21,11 @@
   border-bottom: var(--button-glass-hover-bg) 1px solid;
 }
 
+#AppStore div.page.viewStoreItem div.header img.banner.fallback {
+  filter: blur(30px);
+  border-bottom: none;
+}
+
 #AppStore div.page.viewStoreItem div.header div.info {
   height: 100px;
   border-radius: 15px;
@@ -40,6 +45,7 @@
 #AppStore div.page.viewStoreItem div.header div.info > img {
   height: 64px;
   object-fit: cover;
+  border-radius: 10px;
 }
 
 #AppStore div.page.viewStoreItem div.header div.info div.right {
@@ -63,6 +69,11 @@
   color: var(--accent-lighter);
 }
 
+#AppStore div.page.viewStoreItem div.header div.info div.metadata {
+  width: 0;
+  flex-grow: 1;
+}
+
 #AppStore div.page.viewStoreItem div.header div.info h1 {
   font-size: 18px;
   display: flex;
@@ -76,11 +87,17 @@
   font-weight: normal;
 }
 
+#AppStore div.page.viewStoreItem div.header p.description {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 #AppStore div.page.viewStoreItem div.header p.author {
   opacity: 0.5;
   font-size: 12px;
 }
-
+/* 
 #AppStore div.page.viewStoreItem div.header.no-banner {
   justify-content: start;
   height: fit-content;
@@ -94,7 +111,7 @@
   max-width: unset;
   border: none;
   padding: 0;
-}
+} */
 #AppStore div.page.viewStoreItem div.markdown-body {
   padding: 0 40px;
   max-width: 900px;
