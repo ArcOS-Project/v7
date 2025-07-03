@@ -40,7 +40,7 @@ export class TerminalWindowRuntime extends AppProcess {
         brightMagenta: "#d597ff",
         magenta: "#d597ff",
       },
-      scrollback: 0,
+      scrollback: 500,
     });
 
     const fitAddon = new FitAddon();
