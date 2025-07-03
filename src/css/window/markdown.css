@@ -21,9 +21,8 @@ div.markdown-body > *:first-child {
 }
 
 div.markdown-body h2 {
-  margin: 24px 0 16px;
-  padding: 0 0 6.3px;
-  border-bottom: var(--button-bg) 1px solid;
+  margin: 24px 0 5px;
+  padding: 0;
 }
 
 div.markdown-body ul {
@@ -53,11 +52,14 @@ div.markdown-body blockquote {
 }
 
 div.markdown-body pre {
-  padding: 16px;
-  background-color: var(--button-active-bg);
+  padding: 10px;
+  background-color: var(--button-bg);
   line-height: 1.45;
   overflow: auto;
-  border-radius: var(--win-border-rad);
+  border: var(--button-glass-bg) 1px solid;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  white-space: pre-wrap;
 }
 
 div.markdown-body pre code {
@@ -65,6 +67,7 @@ div.markdown-body pre code {
   border: none;
   border-radius: 0;
   padding: 0;
+  user-select: text !important;
 }
 
 div.markdown-body code {

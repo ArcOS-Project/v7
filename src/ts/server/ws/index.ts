@@ -25,6 +25,7 @@ export class GlobalDispatch extends BaseService {
     return new Promise<void>((resolve) => {
       this.client = io(import.meta.env.DW_SERVER_URL, { transports: ["websocket"] });
       this.client.on("connect", async () => {
+        await this.connected();
         resolve();
       });
 
