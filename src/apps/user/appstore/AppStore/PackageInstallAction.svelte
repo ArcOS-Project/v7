@@ -26,12 +26,21 @@
     <Spinner height={24} />
   {:else if $installed}
     {#if !compact}
-      <button
-        class="lucide icon-rocket"
-        aria-label="Launch"
-        title="Launch"
-        onclick={() => process.userDaemon!.spawnApp($store.pkg.appId, +process.env.get("shell_pid"))}
-      ></button>
+      {#if pkg.userId === process.userDaemon?.userInfo._id}
+        <button
+          class="lucide icon-cog"
+          aria-label="Manage"
+          title="Manage"
+          onclick={() => process.switchPage("manageStoreItem", { id: pkg._id })}
+        ></button>
+      {:else}
+        <button
+          class="lucide icon-rocket"
+          aria-label="Launch"
+          title="Launch"
+          onclick={() => process.userDaemon!.spawnApp($store.pkg.appId, +process.env.get("shell_pid"))}
+        ></button>
+      {/if}
     {/if}
     {#if $update}
       <UpdateButton pkg={store} {process} {compact} {update} />

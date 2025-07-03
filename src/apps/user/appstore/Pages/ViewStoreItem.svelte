@@ -12,6 +12,8 @@
   let readme = $state<string>("");
 
   onMount(async () => {
+    if (!pkg) return;
+
     readme = await process.distrib.storeItemReadme(pkg._id);
   });
 </script>

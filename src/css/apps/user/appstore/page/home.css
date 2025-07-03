@@ -5,9 +5,9 @@
 #AppStore div.page.home div.hero {
   width: 100%;
   /* aspect-ratio: 450 / 180; */
-  min-height: 180px;
+  min-height: 200px;
   max-width: 600px;
-  max-height: 230px;
+  max-height: 250px;
   overflow: hidden;
   border-radius: 15px;
   display: flex;
@@ -74,4 +74,8 @@
 #AppStore div.page.home div.hero p.stats {
   opacity: 0.5;
   font-size: 12px;
+}
+
+#AppStore div.page.home div.hero p.description {
+  max-width: calc(100% - 90px);
 }

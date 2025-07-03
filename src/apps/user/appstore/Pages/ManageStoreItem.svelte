@@ -38,7 +38,7 @@
     <InfoRow>
       <Segment title="Official">{pkg.official ? "Yes" : "No"}</Segment>
       <Segment title="Blocked">{pkg.official ? "Yes" : "No"}</Segment>
-      <Segment title="Deprecated">???</Segment>
+      <Segment title="Deprecated">{pkg.deprecated ? "Yes" : "No"}</Segment>
       <Segment title="Install count">{pkg.installCount} times</Segment>
       <Segment title="Compressed size">{formatBytes(pkg.size)}</Segment>
     </InfoRow>
@@ -74,7 +74,7 @@
           <h1>Deprecate package</h1>
           <p>Mark this package as outdated and unmaintained.</p>
         </div>
-        <button onclick={() => process.deprecatePackage(pkg)} disabled={pkg.deprecated}>Deprecate</button>
+        <button onclick={() => process.deprecatePackage(pkg)} disabled={pkg.deprecated || pkg.blocked}>Deprecate</button>
       </div>
       <div class="action">
         <div class="info">

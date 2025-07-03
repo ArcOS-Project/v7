@@ -300,3 +300,22 @@
   max-width: 250px;
   text-align: center;
 }
+
+#AppStore > div.body div.notice {
+  border-radius: 10px;
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  padding: 10px;
+  background-color: var(--clr-orange-bg);
+  margin-bottom: 20px;
+}
+
+#AppStore > div.body div.notice * {
+  color: var(--clr-orange-fg);
+}
+
+#AppStore > div.body div.notice > span {
+  height: 24px;
+  font-size: 24px;
+}

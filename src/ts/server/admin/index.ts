@@ -17,10 +17,12 @@ import type {
 } from "$types/admin";
 import type { BugReport, ReportStatistics } from "$types/bughunt";
 import type { FilesystemProgressCallback, UserQuota } from "$types/fs";
+import type { StoreItem } from "$types/package";
 import type { Service } from "$types/service";
 import type { SharedDriveType } from "$types/shares";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
 import { Backend } from "../axios";
+import { MessagingInterface } from "../messaging";
 import { AdminScopes } from "./store";
 
 export class AdminBootstrapper extends BaseService {
@@ -795,6 +797,162 @@ export class AdminBootstrapper extends BaseService {
       );
 
       return response.status === 2000;
+    } catch {
+      return false;
+    }
+  }
+
+  async deleteStoreItem(_id: string): Promise<boolean> {
+    try {
+      const response = await Backend.delete(`/admin/store/delete/one/${_id}`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async deleteUserStoreItems(userId: string): Promise<boolean> {
+    try {
+      const response = await Backend.delete(`/admin/store/delete/user/${userId}`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async getAllStoreItems() {
+    try {
+      const response = await Backend.get(`/admin/store/list`, { headers: { Authorization: `Bearer ${this.token}` } });
+
+      return response.data as StoreItem[];
+    } catch {
+      return [];
+    }
+  }
+
+  async getUserStoreItems(userId: string) {
+    try {
+      const response = await Backend.get(`/admin/storel/list/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+
+      return response.data as StoreItem[];
+    } catch {
+      return [];
+    }
+  }
+
+  async deprecatePackage(itemId: string) {
+    try {
+      const response = await Backend.post(
+        `/admin/store/deprecate/${itemId}`,
+        {},
+        { headers: { Authorization: `Bearer ${this.token}` } }
+      );
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async undeprecatePackage(itemId: string) {
+    try {
+      const response = await Backend.post(
+        `/admin/store/undeprecate/${itemId}`,
+        {},
+        { headers: { Authorization: `Bearer ${this.token}` } }
+      );
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async getStoreItem(id: string): Promise<StoreItem | undefined> {
+    try {
+      const response = await Backend.get(`/store/package/id/${id}`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.data as StoreItem;
+    } catch {
+      return undefined;
+    }
+  }
+
+  async getStoreItemByName(name: string): Promise<StoreItem | undefined> {
+    try {
+      const response = await Backend.get(`/store/package/name/${name}`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.data as StoreItem;
+    } catch {
+      return undefined;
+    }
+  }
+
+  async blockStoreItem(id: string, reason?: string): Promise<boolean> {
+    const item = await this.getStoreItem(id);
+    const messaging = this.host.getService<MessagingInterface>("MessagingService");
+
+    if (!item || item.blocked) return false;
+
+    if (messaging) {
+      await messaging.sendMessage(
+        `[ADMIN] Package has been blocked`,
+        [item.user!.username],
+        `Your package '${item.pkg.name}' (app ID \`${
+          item.pkg.appId
+        }\`) has been blocked by an administrator. This package is found to have copyrighted content, explicit depictions of sexual activity, or other inappropiate or illegal content.\n\nThe reason given by the administrator is:\n\n\`\`\`${
+          reason || "(no reason given)"
+        }\`\`\`\n\nReply to this message to negotiate to have your package unblocked.\n\nNOTE: this is an automatically generated message, sent by the ArcOS Admin Bootstrapper. The only input given by the administrator was the reason for this action (if any).`,
+        []
+      );
+    }
+
+    try {
+      const response = await Backend.post(`/admin/store/block/${id}`, {}, { headers: { Authorization: `Bearer ${this.token}` } });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async unblockStoreItem(id: string, reason?: string) {
+    const item = await this.getStoreItem(id);
+    const messaging = this.host.getService<MessagingInterface>("MessagingService");
+
+    if (!item || !item.blocked) return false;
+
+    if (messaging) {
+      await messaging.sendMessage(
+        `[ADMIN] Package has been unblocked!`,
+        [item.user!.username],
+        `Your package '${item.pkg.name}' (app ID \`${
+          item.pkg.appId
+        }\`) has been unblocked by an administrator, and can be installed by users again.\n\nThe reason given by the administrator is:\n\n\`\`\`${
+          reason || "(no reason given)"
+        }\`\`\`\n\nNOTE: this is an automatically generated message, sent by the ArcOS Admin Bootstrapper. The only input given by the administrator was the reason for this action (if any).`,
+        []
+      );
+    }
+
+    try {
+      const response = await Backend.post(
+        `/admin/store/unblock/${id}`,
+        {},
+        { headers: { Authorization: `Bearer ${this.token}` } }
+      );
+
+      return response.status === 200;
     } catch {
       return false;
     }

@@ -34,7 +34,7 @@
       <section class="blocked">
         <h1>
           <span>Taken down</span>
-          <button>Learn more</button>
+          <button onclick={() => process.learnMoreBlocking()}><span>Learn more</span></button>
         </h1>
         <div class="app-listing">
           {#each blocked as pkg}
