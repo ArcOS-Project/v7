@@ -12,18 +12,4 @@ export class BaseService extends Process {
     this.name = `svc#${name}`;
     this.host = host;
   }
-
-  async _activate(...args: any[]) {
-    this.Log("Activating service");
-
-    await this.activate(...args);
-    this.activated = true;
-    await this.afterActivate();
-  }
-
-  async afterActivate() {}
-
-  async activate(...args: any[]) {
-    /** */
-  }
 }

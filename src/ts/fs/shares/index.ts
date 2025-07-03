@@ -13,10 +13,8 @@ export class ShareManager extends BaseService {
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);
-  }
 
-  async activate(token: string) {
-    this.token = token;
+    this.token = host.daemon.token;
   }
 
   async getOwnedShares(): Promise<SharedDriveType[]> {

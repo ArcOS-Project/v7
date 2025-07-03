@@ -18,14 +18,13 @@ export class GlobalDispatch extends BaseService {
     window.addEventListener("beforeunload", () => {
       this.stop();
     });
+    this.token = host.daemon.token;
   }
 
-  async activate(token: string): Promise<void> {
+  async start() {
     return new Promise<void>((resolve) => {
       this.client = io(import.meta.env.DW_SERVER_URL, { transports: ["websocket"] });
       this.client.on("connect", async () => {
-        await this.connected(token);
-        this.token = token;
         resolve();
       });
 
@@ -36,9 +35,9 @@ export class GlobalDispatch extends BaseService {
     });
   }
 
-  async connected(token: string) {
+  async connected() {
     this.Log(`Connected, authorizing using token`);
-    this.client?.emit("authorize", token);
+    this.client?.emit("authorize", this.token);
 
     await new Promise<void>((resolve, reject) => {
       this.client?.once("authorized", () => {

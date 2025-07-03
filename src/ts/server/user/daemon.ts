@@ -8,7 +8,6 @@ import { AppProcess } from "$ts/apps/process";
 import { ApplicationStorage } from "$ts/apps/storage";
 import { AdminApps, BuiltinApps } from "$ts/apps/store";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { BugHuntUserSpaceProcess } from "$ts/bughunt/process";
 import { darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
@@ -128,7 +127,7 @@ export class UserDaemon extends Process {
     appStore?.loadOrigin("builtin", () => BuiltinApps);
     appStore?.loadOrigin("userApps", () => this.getUserApps());
 
-    await appStore?.refresh();
+    return appStore;
   }
 
   async getUserInfo(): Promise<UserInfo | undefined> {
@@ -287,10 +286,6 @@ export class UserDaemon extends Process {
     this.Log(`Starting filesystem supplier`);
 
     await this.fs.mountDrive<ServerDrive>("userfs", ServerDrive, "U", undefined, this.token);
-
-    for (const dir of Object.values(UserPaths)) {
-      this.fs.createDirectory(dir, false);
-    }
 
     await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${this.token}` } });
   }
@@ -2241,15 +2236,12 @@ export class UserDaemon extends Process {
 
     appStore.loadOrigin("admin", () => AdminApps);
     await appStore.refresh();
-    await admin._activate(this.token);
   }
 
   activateMessagingService() {
     if (this.safeMode) return;
 
     const messaging = this.serviceHost!.getService<MessagingInterface>("MessagingService");
-
-    messaging?._activate(this.token);
   }
 
   async startShareManager() {
@@ -2257,7 +2249,6 @@ export class UserDaemon extends Process {
 
     const share = this.serviceHost!.getService<ShareManager>("ShareMgmt");
 
-    await share?._activate(this.token);
     await share?.mountOwnedShares();
   }
 
@@ -2266,12 +2257,6 @@ export class UserDaemon extends Process {
 
     this.serviceHost = await this.handler.spawn<ServiceHost>(ServiceHost, undefined, this.pid);
     await this.serviceHost?.init();
-  }
-
-  async activateBugHuntUserSpaceProcess() {
-    const bhusp = this.serviceHost!.getService<BugHuntUserSpaceProcess>("BugHuntUsp");
-
-    await bhusp?._activate(this.token);
   }
 
   async GlobalLoadIndicator(caption?: string, pid?: number) {
@@ -2441,8 +2426,6 @@ The information provided in this report is subject for review by me or another A
 
   async activateGlobalDispatch() {
     this.globalDispatch = this.serviceHost!.getService<GlobalDispatch>("GlobalDispatch");
-
-    await this.globalDispatch?._activate(this.token);
 
     this.globalDispatch?.subscribe("update-preferences", async (preferences: UserPreferences) => {
       this.syncLock = true;

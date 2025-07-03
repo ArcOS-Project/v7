@@ -19,12 +19,12 @@ export class MessagingInterface extends BaseService {
 
     this.serverUrl = ServerManager.url();
     this.serverAuthCode = import.meta.env.DW_SERVER_AUTHCODE || "";
+    this.token = host.daemon.token;
   }
 
-  async activate(token: string): Promise<void> {
+  async start() {
     const daemon = this.handler.getProcess<UserDaemon>(+this.env.get("userdaemon_pid")!)!;
     const dispatch = daemon.serviceHost?.getService<GlobalDispatch>("GlobalDispatch")!;
-    this.token = token;
 
     dispatch.subscribe("incoming-message", (message: Message) => {
       daemon.sendNotification({

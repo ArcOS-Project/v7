@@ -208,15 +208,14 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.startShareManager();
 
     this.loadingStatus.set("Starting application storage");
-    await userDaemon.startApplicationStorage();
+    const storage = await userDaemon.startApplicationStorage();
 
     if (userDaemon.userInfo.admin) {
       this.loadingStatus.set("Activating admin bootstrapper");
       await userDaemon.activateAdminBootstrapper();
+    } else {
+      await storage?.refresh();
     }
-
-    this.loadingStatus.set("Activating user bug reports");
-    await userDaemon.activateBugHuntUserSpaceProcess();
 
     this.loadingStatus.set("Starting status refresh");
     await userDaemon.startSystemStatusRefresh();

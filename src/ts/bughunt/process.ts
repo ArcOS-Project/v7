@@ -18,10 +18,7 @@ export class BugHuntUserSpaceProcess extends BaseService {
     super(handler, pid, parentPid, name, host);
 
     this.module = this.kernel.getModule<BugHunt>("bughunt");
-  }
-
-  async activate(token: string) {
-    this.token = token;
+    this.token = host.daemon.token;
   }
 
   async afterActivate() {
