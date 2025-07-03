@@ -1,6 +1,7 @@
 <script lang="ts">
   import { StoreItemIcon } from "$ts/distrib/util";
   import type { StoreItem, UpdateInfo } from "$types/package";
+  import PackageGrid from "../AppStore/PackageGrid.svelte";
   import type { AppStoreRuntime } from "../runtime";
 
   const { process, updates, installed }: { process: AppStoreRuntime; updates: UpdateInfo[]; installed: StoreItem[] } = $props();
@@ -34,19 +35,7 @@
     </section>
   {/if}
 
-  <section class="installed">
-    <h1>Installed</h1>
-    <div class="app-listing">
-      {#each installed as pkg (pkg._id)}
-        <div class="app-row">
-          <img src={StoreItemIcon(pkg)} alt="" />
-          <p class="name">{pkg.pkg?.name || pkg.name}</p>
-          <p class="author">{pkg.user?.displayName || pkg.user?.username || "Unknown"}</p>
-          <p class="version">v{pkg.pkg.version}</p>
-        </div>
-      {/each}
-    </div>
-  </section>
+  <PackageGrid items={installed} name="Installed" {process} />
   <p class="end">Looks like you've reached the end.</p>
 {:else}
   <div class="empty">

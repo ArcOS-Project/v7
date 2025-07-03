@@ -16,9 +16,12 @@
 
 {#if all && recentlyAdded && popular && mostPopular}
   <div class="hero">
-    {#if StoreItemBanner(popular[0])}
-      <img src={StoreItemBanner(popular[0])} alt="" class="banner" />
-    {/if}
+    <img
+      src={StoreItemBanner(popular[0]) || StoreItemIcon(popular[0])}
+      alt=""
+      class="banner"
+      class:fallback={!StoreItemBanner(popular[0])}
+    />
     <div class="info">
       <img src={StoreItemIcon(popular[0])} alt="" class="icon" />
       <h1>{mostPopular.pkg.name}</h1>

@@ -7,12 +7,15 @@ import { ErrorIcon } from "$ts/images/dialog";
 import { UploadIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { UserPaths } from "$ts/server/user/store";
+import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
 import type { FilesystemProgressCallback } from "$types/fs";
 import type { StoreItem } from "$types/package";
+import dayjs from "dayjs";
 import { appStorePages } from "./store";
+import advancedFormat from "dayjs/plugin/advancedFormat";
 
 export class AppStoreRuntime extends AppProcess {
   searchQuery = Store<string>("");
@@ -269,5 +272,29 @@ export class AppStoreRuntime extends AppProcess {
         true
       );
     }
+  }
+
+  readmeFallback(pkg: StoreItem): string {
+    const times = Plural("time", pkg.installCount);
+    dayjs.extend(advancedFormat);
+
+    const updated = dayjs(pkg.lastUpdated).format("MMMM Do YYYY [at] HH:mm");
+    const installed = `${pkg.installCount} ${times}`;
+    const result = `# ${pkg.pkg.name}
+${pkg.pkg.description}
+
+This package is on version ${pkg.pkg.version}, and has been downloaded ${installed} since it was first published. ${
+      pkg.pkg.name
+    } has last been updated on ${updated}.
+
+## Author
+${pkg.user?.displayName || pkg.user?.username || pkg.pkg.author}
+
+## Disclaimer
+The author hasn't provided a readme file themselves, so this one has been automatically generated. If you're the author of this package, you can create \`src/README.md\` to act as the readme for your package. I encourage you to create this file, so that people know what this app is and what they can do with it.`;
+
+    console.log(result);
+
+    return result;
   }
 }
