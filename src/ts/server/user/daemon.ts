@@ -647,26 +647,30 @@ export class UserDaemon extends Process {
         thumb: URL.createObjectURL(this.localWallpaperCache[id]),
       };
 
-    const path = atob(id.replace("@local:", ""));
-    const parent = await this.fs.readDir(getParentDirectory(path));
-    const contents = await this.fs.readFile(path);
+    try {
+      const path = atob(id.replace("@local:", ""));
+      const parent = await this.fs.readDir(getParentDirectory(path));
+      const contents = await this.fs.readFile(path);
 
-    if (!contents || !parent) {
-      this.Log(`User wallpaper '${id}' doesn't exist on the filesystem anymore, defaulting to img04`, LogLevel.warning);
+      if (!contents || !parent) {
+        this.Log(`User wallpaper '${id}' doesn't exist on the filesystem anymore, defaulting to img04`, LogLevel.warning);
 
-      return Wallpapers.img04;
+        return Wallpapers.img04;
+      }
+
+      const blob = arrayToBlob(contents, parent.files.filter((f) => path.endsWith(f.name))[0]?.mimeType || "");
+      const blobUrl = URL.createObjectURL(blob);
+
+      this.localWallpaperCache[id] = blob;
+
+      return {
+        ...wallpaperData,
+        url: blobUrl,
+        thumb: blobUrl,
+      };
+    } catch {
+      return Wallpapers.img0;
     }
-
-    const blob = arrayToBlob(contents, parent.files.filter((f) => path.endsWith(f.name))[0]?.mimeType || "");
-    const blobUrl = URL.createObjectURL(blob);
-
-    this.localWallpaperCache[id] = blob;
-
-    return {
-      ...wallpaperData,
-      url: blobUrl,
-      thumb: blobUrl,
-    };
   }
 
   async logoff() {
