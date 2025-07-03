@@ -180,3 +180,7 @@ export function deepCopyWithBlobs<T>(obj: T): Promise<T> {
 
   return recurse(obj);
 }
+
+export function authcode() {
+  return import.meta.env.DW_SERVER_AUTHCODE ? `?authcode=${import.meta.env.DW_SERVER_AUTHCODE}` : "";
+}

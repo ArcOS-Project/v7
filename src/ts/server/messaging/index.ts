@@ -2,6 +2,7 @@ import { getItemNameFromPath, getParentDirectory } from "$ts/fs/util";
 import type { ProcessHandler } from "$ts/process/handler";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
+import { authcode } from "$ts/util";
 import type { FilesystemProgressCallback } from "$types/fs";
 import type { ExpandedMessage, Message, MessageNode, PartialMessage } from "$types/messaging";
 import type { Service } from "$types/service";
@@ -51,7 +52,7 @@ export class MessagingInterface extends BaseService {
       const response = await Backend.get("/messaging/sent", { headers: { Authorization: `Bearer ${this.token}` } });
       const data = (response.data as PartialMessage[]).map((message) => {
         if (message.author) {
-          message.author.profilePicture = `${this.serverUrl}/user/pfp/${message.authorId}?authcode=${this.serverAuthCode}`;
+          message.author.profilePicture = `${this.serverUrl}/user/pfp/${message.authorId}${authcode()}`;
         }
 
         return message;
@@ -69,7 +70,7 @@ export class MessagingInterface extends BaseService {
       const response = await Backend.get("/messaging/received", { headers: { Authorization: `Bearer ${this.token}` } });
       const data = (response.data as PartialMessage[]).map((message) => {
         if (message.author) {
-          message.author.profilePicture = `${this.serverUrl}/user/pfp/${message.authorId}?authcode=${this.serverAuthCode}`;
+          message.author.profilePicture = `${this.serverUrl}/user/pfp/${message.authorId}${authcode()}`;
         }
 
         return message;
@@ -138,7 +139,7 @@ export class MessagingInterface extends BaseService {
       const data = response.data as ExpandedMessage;
 
       if (data && data.author) {
-        data.author.profilePicture = `${this.serverUrl}/user/pfp/${data.authorId}?authcode=${this.serverAuthCode}`;
+        data.author.profilePicture = `${this.serverUrl}/user/pfp/${data.authorId}${authcode()}`;
       }
 
       return response.data as ExpandedMessage;

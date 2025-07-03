@@ -64,6 +64,7 @@ import { GlobalDispatch } from "../ws";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
+import { authcode } from "$ts/util";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -1047,9 +1048,7 @@ export class UserDaemon extends Process {
       await Backend.post(`/tpa/${app.id}/${filename}`, textToBlob(js), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
-      const dataUrl = `${import.meta.env.DW_SERVER_URL}/tpa/${app.id}@${filename}?authcode=${
-        import.meta.env.DW_SERVER_AUTHCODE
-      }&t=${Date.now()}`;
+      const dataUrl = `${import.meta.env.DW_SERVER_URL}/tpa/new/${Date.now()}/${app.id}@${filename}${authcode()}`;
       const code = await import(/* @vite-ignore */ dataUrl);
 
       if (!code.default || !(code.default instanceof Function)) throw new Error("Expected a default function");
@@ -2326,7 +2325,7 @@ export class UserDaemon extends Process {
       const response = await Backend.get(`/user/info/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
       const information = response.data as PublicUserInfo;
 
-      information.profilePicture = `${this.server.url}/user/pfp/${userId}?authcode=${import.meta.env.DW_SERVER_AUTHCODE || ""}`;
+      information.profilePicture = `${this.server.url}/user/pfp/${userId}${authcode()}`;
 
       return information;
     } catch {

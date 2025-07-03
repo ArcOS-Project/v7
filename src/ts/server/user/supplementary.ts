@@ -3,7 +3,7 @@ import type { Filesystem } from "$ts/fs";
 import { arrayToText, textToBlob } from "$ts/fs/convert";
 import { getItemNameFromPath, join } from "$ts/fs/util";
 import { tryJsonParse } from "$ts/json";
-import { detectJavaScript } from "$ts/util";
+import { authcode, detectJavaScript } from "$ts/util";
 import type { App } from "$types/app";
 import { Backend } from "../axios";
 import type { UserDaemon } from "./daemon";
@@ -32,9 +32,7 @@ export function SupplementaryThirdPartyPropFunctions(
       await Backend.post(`/tpa/${app.id}/${filename}`, textToBlob(contents), {
         headers: { Authorization: `Bearer ${daemon.token}` },
       });
-      const dataUrl = `${import.meta.env.DW_SERVER_URL}/tpa/${app.id}@${filename}?authcode=${
-        import.meta.env.DW_SERVER_AUTHCODE
-      }&t=${Date.now()}`;
+      const dataUrl = `${import.meta.env.DW_SERVER_URL}/tpa/new/${Date.now()}/${app.id}@${filename}${authcode()}`;
 
       try {
         const loaded = await import(/* @vite-ignore */ dataUrl);

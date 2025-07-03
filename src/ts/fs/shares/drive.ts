@@ -1,6 +1,7 @@
 import { toForm } from "$ts/form";
 import type { WaveKernel } from "$ts/kernel";
 import { Backend } from "$ts/server/axios";
+import { authcode } from "$ts/util";
 import type {
   DirectoryReadReturn,
   FilesystemProgressCallback,
@@ -201,9 +202,7 @@ export class SharedDrive extends FilesystemDrive {
 
       const data = response.data as FsAccess;
 
-      return `${this.server.url}/share/direct/${this.shareId}/${data.accessor}?authcode=${
-        import.meta.env.DW_SERVER_AUTHCODE || ""
-      }`;
+      return `${this.server.url}/share/direct/${this.shareId}/${data.accessor}${authcode()}`;
     } catch {
       return undefined;
     }

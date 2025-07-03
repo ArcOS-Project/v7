@@ -17,6 +17,7 @@ import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
 import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps, PersistenceInfo } from "./types";
+import { authcode } from "$ts/util";
 
 export class LoginAppRuntime extends AppProcess {
   public DEFAULT_WALLPAPER = Store<string>("");
@@ -37,11 +38,7 @@ export class LoginAppRuntime extends AppProcess {
 
     const server = this.kernel.getModule<ServerManager>("server");
 
-    this.DEFAULT_WALLPAPER.set(
-      server.serverInfo?.loginWallpaper
-        ? `${server.url}/loginbg?authcode=${import.meta.env.DW_SERVER_AUTHCODE}`
-        : Wallpapers.img18.url
-    );
+    this.DEFAULT_WALLPAPER.set(server.serverInfo?.loginWallpaper ? `${server.url}/loginbg${authcode()}` : Wallpapers.img18.url);
 
     this.errorMessage.subscribe((v) => {
       if (!v) {
@@ -154,9 +151,7 @@ export class LoginAppRuntime extends AppProcess {
       return;
     }
 
-    this.profileImage.set(
-      `${import.meta.env.DW_SERVER_URL}/user/pfp/${userInfo._id}?authcode=${import.meta.env.DW_SERVER_AUTHCODE}`
-    );
+    this.profileImage.set(`${import.meta.env.DW_SERVER_URL}/user/pfp/${userInfo._id}${authcode()}`);
 
     this.savePersistence(username, this.profileImage());
 
@@ -249,9 +244,7 @@ export class LoginAppRuntime extends AppProcess {
       }
     }
 
-    this.profileImage.set(
-      `${import.meta.env.DW_SERVER_URL}/user/pfp/${daemon.userInfo._id}?authcode=${import.meta.env.DW_SERVER_AUTHCODE}`
-    );
+    this.profileImage.set(`${import.meta.env.DW_SERVER_URL}/user/pfp/${daemon.userInfo._id}${authcode()}`);
 
     this.profileName.set(daemon.preferences().account.displayName || daemon.username);
     this.loginBackground.set((await daemon.getWallpaper(daemon.preferences().account.loginBackground)).url);
@@ -279,9 +272,7 @@ export class LoginAppRuntime extends AppProcess {
     this.type = "shutdown";
 
     if (daemon) {
-      this.profileImage.set(
-        `${import.meta.env.DW_SERVER_URL}/user/pfp/${daemon.userInfo._id}?authcode=${import.meta.env.DW_SERVER_AUTHCODE}`
-      );
+      this.profileImage.set(`${import.meta.env.DW_SERVER_URL}/user/pfp/${daemon.userInfo._id}${authcode()}`);
       this.loginBackground.set((await daemon.getWallpaper(daemon.preferences().account.loginBackground)).url);
 
       this.profileName.set(daemon.preferences().account.displayName || daemon.username);
@@ -302,9 +293,7 @@ export class LoginAppRuntime extends AppProcess {
     this.type = "restart";
 
     if (daemon) {
-      this.profileImage.set(
-        `${import.meta.env.DW_SERVER_URL}/user/pfp/${daemon.userInfo._id}?authcode=${import.meta.env.DW_SERVER_AUTHCODE}`
-      );
+      this.profileImage.set(`${import.meta.env.DW_SERVER_URL}/user/pfp/${daemon.userInfo._id}${authcode()}`);
       this.loginBackground.set((await daemon.getWallpaper(daemon.preferences().account.loginBackground)).url);
 
       this.profileName.set(daemon.preferences().account.displayName || daemon.username);

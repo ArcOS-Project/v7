@@ -9,7 +9,7 @@ import { unmount } from "svelte";
 import type { App, AppProcessData, WindowResizer } from "../../types/app";
 import type { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
-import { htmlspecialchars } from "../util";
+import { authcode, htmlspecialchars } from "../util";
 import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
@@ -651,7 +651,8 @@ export class AppRenderer extends Process {
         e.stack
           ?.replaceAll(location.href, "")
           .replaceAll(`${import.meta.env.DW_SERVER_URL}/tpa/`, "")
-          .replaceAll(`?authcode=${import.meta.env.DW_SERVER_AUTHCODE}`, "")
+          .replaceAll(authcode(), "")
+          .replaceAll(/new\/[0-9]+\//g, "")
           .replaceAll(/&t=[0-9]+/g, "") || ""
       )}</code></details>`,
     ];

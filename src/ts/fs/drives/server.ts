@@ -1,6 +1,7 @@
 import { toForm } from "$ts/form";
 import type { WaveKernel } from "$ts/kernel";
 import { Backend } from "$ts/server/axios";
+import { authcode } from "$ts/util";
 import type {
   DirectoryReadReturn,
   FilesystemProgressCallback,
@@ -181,7 +182,7 @@ export class ServerDrive extends FilesystemDrive {
 
       const data = response.data as FsAccess;
 
-      return `${this.server.url}/fs/direct/${data.userId}/${data.accessor}?authcode=${import.meta.env.DW_SERVER_AUTHCODE || ""}`;
+      return `${this.server.url}/fs/direct/${data.userId}/${data.accessor}${authcode()}`;
     } catch {
       return undefined;
     }

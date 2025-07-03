@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { UserDaemon } from "$ts/server/user/daemon";
+  import { authcode } from "$ts/util";
   import { onMount } from "svelte";
 
   interface Props {
@@ -23,9 +24,7 @@
     preferences?.subscribe((v) => {
       if (!fallback && currentPfp === (pfp || v.account.profilePicture!)) return;
 
-      url =
-        fallback ||
-        `${import.meta.env.DW_SERVER_URL}/user/pfp/${userDaemon?.userInfo._id}?authcode=${import.meta.env.DW_SERVER_AUTHCODE}`;
+      url = fallback || `${import.meta.env.DW_SERVER_URL}/user/pfp/${userDaemon?.userInfo._id}${authcode()}`;
 
       currentPfp = pfp || v.account.profilePicture!;
     });
