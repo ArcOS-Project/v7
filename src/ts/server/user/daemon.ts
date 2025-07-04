@@ -2233,18 +2233,10 @@ export class UserDaemon extends Process {
     this.Log("Activating admin bootstrapper");
 
     if (!this.userInfo.admin) return;
-
-    const admin = this.serviceHost?.getService<AdminBootstrapper>("AdminBootstrapper")!;
     const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage")!;
 
     appStore.loadOrigin("admin", () => AdminApps);
     await appStore.refresh();
-  }
-
-  activateMessagingService() {
-    if (this.safeMode) return;
-
-    const messaging = this.serviceHost!.getService<MessagingInterface>("MessagingService");
   }
 
   async startShareManager() {

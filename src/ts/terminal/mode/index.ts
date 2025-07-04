@@ -134,7 +134,6 @@ export class TerminalMode extends Process {
 
     this.rl?.println("Connecting global dispatch");
     await userDaemon.activateGlobalDispatch();
-    userDaemon.activateMessagingService();
 
     this.rl?.println("Starting drive notifier watcher");
     userDaemon.startDriveNotifierWatcher();
@@ -142,16 +141,10 @@ export class TerminalMode extends Process {
     this.rl?.println("Starting share management");
     await userDaemon.startShareManager();
 
-    // this.rl?.println("Starting application storage");
-    // await userDaemon.startApplicationStorage();
-
     if (userDaemon.userInfo.admin) {
       this.rl?.println("Activating admin bootstrapper");
       await userDaemon.activateAdminBootstrapper();
     }
-
-    this.rl?.println("Activating user bug reports");
-    await userDaemon.activateBugHuntUserSpaceProcess();
 
     this.rl?.println("Starting status refresh");
     await userDaemon.startSystemStatusRefresh();
