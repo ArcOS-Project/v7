@@ -14,7 +14,7 @@
   onMount(async () => {
     if (!pkg) return;
 
-    readme = await process.distrib.storeItemReadme(pkg._id);
+    readme = (await process.distrib.storeItemReadme(pkg._id)) || process.readmeFallback(pkg);
   });
 </script>
 
@@ -49,7 +49,7 @@
       </p>
     </div>
   {/if}
-  <MarkdownRenderingComponent source={readme || process.readmeFallback(pkg)} />
+  <MarkdownRenderingComponent source={readme} />
 {:else}
   <div class="empty">
     <span class="lucide icon-circle-slash"></span>

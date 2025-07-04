@@ -2,9 +2,14 @@
   import { StoreItemIcon } from "$ts/distrib/util";
   import type { StoreItem, UpdateInfo } from "$types/package";
   import PackageGrid from "../AppStore/PackageGrid.svelte";
+  import PackageInstallAction from "../AppStore/PackageInstallAction.svelte";
   import type { AppStoreRuntime } from "../runtime";
 
   const { process, updates, installed }: { process: AppStoreRuntime; updates: UpdateInfo[]; installed: StoreItem[] } = $props();
+
+  function updateAll() {
+    process.spawnOverlayApp("MultiUpdateGui", +process.env.get("shell_pid") || process.pid, updates);
+  }
 </script>
 
 {#if updates?.length || installed?.length}
@@ -12,7 +17,7 @@
     <section class="updates">
       <h1>
         <span>Updates</span>
-        <button onclick={() => process.notImplemented("Updating packages")}>
+        <button onclick={updateAll}>
           <span>Update all</span>
         </button>
       </h1>
@@ -23,11 +28,11 @@
             <p class="name">{update.pkg.pkg?.name || update.pkg.name}</p>
             <p class="author">{update.pkg.user?.displayName || update.pkg.user?.username || "Unknown"}</p>
             <div class="actions">
-              <button
-                class="lucide icon-refresh-cw"
-                aria-label="Update package"
-                onclick={() => process.notImplemented("Updating packages")}
-              ></button>
+              <PackageInstallAction
+                {process}
+                pkg={{ ...update.pkg, pkg: { ...update.pkg.pkg, version: update.newVer } }}
+                compact
+              />
             </div>
           </div>
         {/each}
