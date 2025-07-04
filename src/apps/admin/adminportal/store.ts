@@ -62,6 +62,11 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       ],
       icon: "",
       parent: "bugHunt",
+      props: async (process) => {
+        const id = process.switchPageProps().id;
+
+        return { report: await process.admin.getBugReport(id) };
+      },
     },
   ],
   [

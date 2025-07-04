@@ -147,7 +147,7 @@
         </div>
       {/each}
     {:else if !process.admin.canAccess(AdminScopes.adminStats)}
-      <p class="error-text">You can't view statistics.</p>
+      <p class="error-text">NO_BUGHUNT_STAT_PERMISSION</p>
     {:else}
       <Spinner height={32} />
     {/if}

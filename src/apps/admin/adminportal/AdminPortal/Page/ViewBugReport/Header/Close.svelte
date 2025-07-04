@@ -14,10 +14,8 @@
     loading = true;
     MessageBox(
       {
-        title: report.closed ? "Confirm Reopen?" : "Confirm Resolve?",
-        message: report.closed
-          ? "Are you sure you want to reopen this report?"
-          : "Are you sure you want to close the viewer and resolve this report?",
+        title: report.closed ? "Confirm Reopen?" : "Confirm Close?",
+        message: report.closed ? "Are you sure you want to reopen this report?" : "Are you sure you want to close this report?",
         buttons: [
           {
             caption: "Abort!",
@@ -29,7 +27,7 @@
               if (report.closed) {
                 await process.admin.reopenBugReport(report._id!);
                 report.closed = false;
-                process.switchPage("viewBugReport", { report }, true);
+                process.switchPage("viewBugReport", { id: report._id }, true);
 
                 return;
               }

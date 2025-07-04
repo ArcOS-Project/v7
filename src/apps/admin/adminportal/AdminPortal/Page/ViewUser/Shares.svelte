@@ -40,7 +40,7 @@
           <ShareRow {process} {selection} {share} />
         {/each}
       {:else}
-        <p class="error-text">No shares found.</p>
+        <p class="error-text">NO_SHARES</p>
       {/if}
     </div>
   </div>

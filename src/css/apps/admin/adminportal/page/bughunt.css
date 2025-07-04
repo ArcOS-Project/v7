@@ -87,6 +87,16 @@
   height: 30px;
 }
 
+#AdminPortal div.container.bughunt div.list-wrapper div.id-entry button.lucide {
+  width: 30px;
+  padding: 0;
+  font-size: 16px;
+}
+
+#AdminPortal div.container.bughunt div.list-wrapper div.id-entry button.lucide:disabled {
+  filter: brightness(50%);
+}
+
 #AdminPortal div.container.bughunt div.list-wrapper div.listing div.row {
   display: flex;
   align-items: center;

@@ -20,7 +20,7 @@
       </div>
       {#each userReports as report (report._id)}
         <!-- svelte-ignore a11y_no_static_element_interactions -->
-        <div class="report-row" ondblclick={() => process.switchPage("viewBugReport", { report })}>
+        <div class="report-row" ondblclick={() => process.switchPage("viewBugReport", { id: report._id })}>
           <div class="segment icon">
             <span class="lucide icon-bug"></span>
           </div>
@@ -29,7 +29,7 @@
         </div>
       {/each}
     {:else}
-      <p class="error-text">No bug reports!</p>
+      <p class="error-text">NO_REPORTS</p>
     {/if}
   </div>
 </div>

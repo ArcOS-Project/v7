@@ -9,8 +9,12 @@
   const { report } = data;
 </script>
 
-<Header {data} {process} />
-<div class="panels">
-  <LeftPanel {report} {process} />
-  <RightPanel {report} />
-</div>
+{#if report}
+  <Header {data} {process} />
+  <div class="panels">
+    <LeftPanel {report} {process} />
+    <RightPanel {report} />
+  </div>
+{:else}
+  <p class="error-text">REPORT_NOT_FOUND</p>
+{/if}

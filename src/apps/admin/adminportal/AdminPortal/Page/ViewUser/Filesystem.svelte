@@ -41,7 +41,7 @@
       </div>
       <button onclick={mountUser}>{process.fs.drives[btoa(user.username)] ? "Unmount" : "Mount"}</button>
     {:else}
-      <p class="error-text">Failed to get quota</p>
+      <p class="error-text">QUOTA_FAILED</p>
     {/if}
   </div>
 </div>

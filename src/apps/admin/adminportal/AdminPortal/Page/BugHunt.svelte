@@ -8,6 +8,7 @@
   import type { AdminPortalRuntime } from "../../runtime";
   import type { BugHuntData } from "../../types";
   import Row from "./BugHunt/Row.svelte";
+  import { TrashIcon } from "$ts/images/general";
 
   const { process, data }: { process: AdminPortalRuntime; data: BugHuntData } = $props();
   const { reports, stats } = data;
@@ -52,7 +53,38 @@
       return;
     }
 
-    process.switchPage("viewBugReport", { report });
+    process.switchPage("viewBugReport", { id: report._id });
+  }
+
+  async function closeSelected() {
+    const go = await process.userDaemon!.Confirm(
+      "Confirm Close?",
+      "Are you sure you want to close this report?",
+      "Abort!",
+      "Continue",
+    );
+
+    if (!go) return;
+
+    await process.admin.closeBugReport($idEntry);
+
+    process.switchPage("bughunt", {}, true);
+  }
+
+  async function deleteSelected() {
+    const go = await process.userDaemon!.Confirm(
+      "Confirm Delete?",
+      "Are you sure you want to delete this report?",
+      "Abort!",
+      "Continue",
+      TrashIcon,
+    );
+
+    if (!go) return;
+
+    await process.admin.deleteBugReport($idEntry);
+
+    process.switchPage("bughunt", {}, true);
   }
 </script>
 
@@ -83,6 +115,18 @@
     </div>
     <input type="text" placeholder="Enter ID..." bind:value={$idEntry} maxlength="24" />
     <button disabled={$idEntry.length !== 24} onclick={useIdEntry}>Go</button>
+    <button
+      class="lucide icon-lock-keyhole clr-orange"
+      disabled={$idEntry.length !== 24}
+      onclick={closeSelected}
+      aria-label="Close report"
+    ></button>
+    <button
+      class="lucide icon-trash-2 clr-red"
+      disabled={$idEntry.length !== 24}
+      onclick={deleteSelected}
+      aria-label="Delete report"
+    ></button>
   </div>
 </div>
 <div class="stats">

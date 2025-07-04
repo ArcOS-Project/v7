@@ -18,7 +18,7 @@
   class="row"
   onclick={() => ($idEntry = report._id!)}
   class:selected={$idEntry === report._id}
-  ondblclick={() => process.switchPage("viewBugReport", { report })}
+  ondblclick={() => process.switchPage("viewBugReport", { id: report._id })}
 >
   <div class="segment mode-icon"><img src={LogoTranslations[report.mode] || QuestionIcon} alt="" /></div>
   <div class="segment timestamp">{timestamp}</div>
