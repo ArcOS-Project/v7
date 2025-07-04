@@ -64,14 +64,14 @@ export class AppStoreRuntime extends AppProcess {
     this.switchPage("home");
   }
 
-  async switchPage(id: string, props?: Record<string, any>) {
+  async switchPage(id: string, props?: Record<string, any>, force = false) {
     if (this.searching() && id !== "search") {
       this.searchQuery.set("");
     }
     props ||= {};
     this.Log(`Loading page '${id}'`);
 
-    if (!appStorePages.has(id) || this.currentPage() === id) return;
+    if (!appStorePages.has(id) || (this.currentPage() === id && !force)) return;
 
     this.loadingPage.set(true);
     this.pageProps.set({});
@@ -158,7 +158,7 @@ export class AppStoreRuntime extends AppProcess {
 
     await this.distrib!.deprecateStoreItem(pkg._id);
 
-    this.switchPage("manageStoreItem", { id: pkg._id });
+    this.switchPage("manageStoreItem", { id: pkg._id }, true);
   }
 
   async deletePackage(pkg: StoreItem) {
@@ -225,7 +225,7 @@ export class AppStoreRuntime extends AppProcess {
       return false;
     }
 
-    await this.switchPage(this.currentPage(), {});
+    await this.switchPage(this.currentPage(), {}, true);
 
     return true;
   }
@@ -259,8 +259,6 @@ export class AppStoreRuntime extends AppProcess {
       if (progress.what) prog.updSub(progress.what);
     });
 
-    prog.stop();
-
     if (!result) {
       MessageBox(
         {
@@ -274,7 +272,13 @@ export class AppStoreRuntime extends AppProcess {
         this.pid,
         true
       );
+
+      return;
     }
+
+    await this.switchPage("manageStoreItem", { id: pkg._id }, true);
+
+    prog.stop();
   }
 
   readmeFallback(pkg: StoreItem): string {
