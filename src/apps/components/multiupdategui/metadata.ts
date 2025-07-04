@@ -1,3 +1,4 @@
+import "$css/apps/components/multiupdategui.css";
 import { UpdateIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import MultiUpdateGui from "./MultiUpdateGui.svelte";
@@ -13,15 +14,15 @@ export const MultiUpdateGuiApp: App = {
   position: { centered: true },
   size: {
     w: 450,
-    h: 240,
+    h: 230,
   },
   minSize: {
     w: 450,
-    h: 240,
+    h: 230,
   },
   maxSize: {
     w: 450,
-    h: 430,
+    h: 230,
   },
   state: {
     minimized: false,

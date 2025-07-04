@@ -1,0 +1,88 @@
+#MultiUpdateGui > div.body {
+  padding: 30px;
+}
+
+#MultiUpdateGui > div.body div.header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+#MultiUpdateGui > div.body div.header img {
+  width: 48px;
+  height: 40px;
+  border-radius: 5px;
+  object-fit: contain;
+}
+
+#MultiUpdateGui > div.body div.header h1 {
+  font-size: 22px;
+}
+
+#MultiUpdateGui > div.body div.header p.sub {
+  opacity: 0.5;
+}
+
+#MultiUpdateGui > div.body div.update-bar {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  margin-bottom: 30px;
+}
+
+#MultiUpdateGui > div.body div.update-bar div.bar {
+  width: 100%;
+  height: 6px;
+  background-color: var(--button-glass-active-bg);
+  border-radius: 3px;
+  margin-bottom: 10px;
+}
+
+#MultiUpdateGui > div.body div.update-bar div.bar div.inner {
+  width: var(--w);
+  height: 100%;
+  background-color: var(--accent-lighter);
+  border-radius: 3px;
+}
+
+#MultiUpdateGui > div.body div.update-bar span.lucide {
+  font-size: 16px;
+  height: 16px;
+}
+
+#MultiUpdateGui > div.body div.update-bar span.lucide.state-pending {
+  opacity: 0.5;
+}
+
+#MultiUpdateGui > div.body div.update-bar span.lucide.state-working::before {
+  animation: MultiUpdateGui_spin 1s linear infinite !important;
+}
+
+#MultiUpdateGui > div.body div.update-bar span.lucide.state-working,
+#MultiUpdateGui > div.body div.update-bar span.lucide.state-downloading {
+  color: var(--accent-lighter);
+}
+#MultiUpdateGui > div.body div.update-bar span.lucide.state-success {
+  color: var(--clr-green-fg);
+}
+#MultiUpdateGui > div.body div.update-bar span.lucide.state-failed {
+  color: var(--clr-red-fg);
+}
+
+#MultiUpdateGui > div.body div.actions {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 10px;
+}
+
+@keyframes MultiUpdateGui_spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
