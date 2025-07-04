@@ -259,6 +259,10 @@
   justify-content: end;
 }
 
+#AppStore > div.body div.app-listing div.app-row div.package-install-action {
+  height: fit-content;
+}
+
 #AppStore > div.body div.app-listing div.app-row div.actions button.lucide {
   width: 30px;
   height: 30px;

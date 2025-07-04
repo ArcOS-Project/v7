@@ -116,4 +116,5 @@ span.beta-pill {
   font-weight: bold;
   font-family: "Source Code Pro";
   line-height: 16px;
+  min-width: fit-content;
 }
