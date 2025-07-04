@@ -256,10 +256,9 @@ export class FileManagerRuntime extends AppProcess {
         message: `The location you tried to navigate to is unavailable. Maybe the specified drive isn't mounted or the folder itself is missing.`,
         buttons: [
           {
-            caption: "Go Home",
-            action: () => {
-              this.navigate(UserPaths.Home);
-            },
+            caption: "Okay",
+            action: () => {},
+            suggested: true,
           },
         ],
         sound: "arcos.dialog.error",
@@ -268,6 +267,8 @@ export class FileManagerRuntime extends AppProcess {
       this.pid,
       true
     );
+
+    this.navigate(UserPaths.Home);
   }
 
   parentDir() {
