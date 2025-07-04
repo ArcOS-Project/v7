@@ -1,4 +1,6 @@
+import { DistributionServiceProcess } from "$ts/distrib";
 import { toForm } from "$ts/form";
+import { arrayToBlob, arrayToText } from "$ts/fs/convert";
 import { AdminServerDrive } from "$ts/fs/drives/admin";
 import type { ProcessHandler } from "$ts/process/handler";
 import type { ServiceHost } from "$ts/services";
@@ -17,13 +19,17 @@ import type {
 } from "$types/admin";
 import type { BugReport, ReportStatistics } from "$types/bughunt";
 import type { FilesystemProgressCallback, UserQuota } from "$types/fs";
-import type { StoreItem } from "$types/package";
+import type { ArcPackage, StoreItem } from "$types/package";
 import type { Service } from "$types/service";
 import type { SharedDriveType } from "$types/shares";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
+import { fromExtension } from "human-filetypes";
+import JSZip from "jszip";
 import { Backend } from "../axios";
 import { MessagingInterface } from "../messaging";
 import { AdminScopes } from "./store";
+import { join } from "$ts/fs/util";
+import { tryJsonParse } from "$ts/json";
 
 export class AdminBootstrapper extends BaseService {
   private token: string | undefined;
@@ -38,6 +44,8 @@ export class AdminBootstrapper extends BaseService {
     await this.getUserInfo();
 
     if (!this.userInfo || !this.userInfo.admin) throw new Error("Invalid user or not an admin");
+
+    await this.fs.createDirectory("T:/AdminBootstrapper");
   }
 
   async getUserInfo(): Promise<UserInfo | undefined> {
@@ -956,6 +964,74 @@ export class AdminBootstrapper extends BaseService {
     } catch {
       return false;
     }
+  }
+
+  async readStoreItemFiles(id: string, onProgress?: FilesystemProgressCallback, onStatus?: (s: string) => void) {
+    const target = `T:/AdminBootstrapper/${id}`;
+    const pkg = await this.getStoreItem(id);
+    const distrib = this.host.getService<DistributionServiceProcess>("DistribSvc");
+
+    const status = (s: string) => {
+      this.Log(`readStoreItemFiles: ${id}: ${s}`);
+      onStatus?.(s);
+    };
+
+    if (!pkg || !distrib) {
+      console.log("No pkg or distrib");
+
+      return false;
+    }
+
+    status("Downloading store item");
+
+    const content = await distrib.downloadStoreItem(id, onProgress);
+
+    if (!content) {
+      console.log("No content");
+      return false;
+    }
+
+    const zip = new JSZip();
+    const buffer = await zip.loadAsync(content, {});
+
+    console.log(buffer);
+
+    if (!buffer.files["_metadata.json"] || !buffer.files["payload/_app.tpa"]) {
+      return false;
+    }
+
+    const metaBinary = await buffer.files["_metadata.json"].async("arraybuffer");
+    const metadata = tryJsonParse<ArcPackage>(arrayToText(metaBinary));
+
+    if (!metadata || typeof metadata === "string") return false;
+    if (metadata.appId.includes(".") || metadata.appId.includes("-")) return false;
+
+    status("Creating target directory");
+
+    await this.fs.createDirectory(target);
+    await this.fs.createDirectory(`${target}/payload`);
+
+    const sortedPaths = Object.keys(buffer.files).sort((p) => (buffer.files[p].dir ? -1 : 0));
+
+    for (const path of sortedPaths) {
+      const item = buffer.files[path];
+      const pathTarget = join(target, path);
+      if (item.dir) {
+        status(`Creating dir ${pathTarget}`);
+        await this.fs.createDirectory(pathTarget);
+      }
+    }
+
+    for (const path of sortedPaths) {
+      const item = buffer.files[path];
+      const pathTarget = join(target, path);
+      if (!item.dir) {
+        status(`Writing file ${pathTarget}`);
+        await this.fs.writeFile(pathTarget, arrayToBlob(await item.async("arraybuffer"), fromExtension(pathTarget)));
+      }
+    }
+
+    return target;
   }
 }
 
