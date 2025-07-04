@@ -27,7 +27,7 @@ export function getJsonHierarchy<T = any>(object: Object, hierarchy: string): T 
   return currentObj as T;
 }
 
-export function setJsonHierarchy<T = any>(object: Object, hierarchy: string, value: T): T | null {
+export function setJsonHierarchy<T = any>(object: Object, hierarchy: string, value: any): T | null {
   const parts = hierarchy.split(".");
   const lastIndex = parts.length - 1;
 
@@ -46,7 +46,7 @@ export function setJsonHierarchy<T = any>(object: Object, hierarchy: string, val
   if (!value) delete currentObj[parts[lastIndex]];
   else currentObj[parts[lastIndex]] = value;
 
-  return getJsonHierarchy(object, hierarchy);
+  return object as T;
 }
 
 type NestedObject = Record<string, any>;
