@@ -276,7 +276,7 @@ export class AppRenderer extends Process {
     titleIcon.src = process.userDaemon?.getAppIconByProcess(process) || ComponentIcon;
 
     title.className = "window-title";
-    title.append(titleIcon, titleCaption);
+    title.append(titleIcon, titleCaption, this._renderAltMenu(process));
 
     if (BETA) {
       const beta = document.createElement("span");
@@ -288,7 +288,7 @@ export class AppRenderer extends Process {
     }
 
     titlebar.className = "titlebar";
-    titlebar.append(title, this._renderAltMenu(process));
+    titlebar.append(title);
 
     if (BETA && !process.app.data.entrypoint && !process.app.data.workingDirectory && !process.app.data.thirdParty) {
       feedbackButton.className = "link feedback";

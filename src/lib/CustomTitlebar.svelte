@@ -49,8 +49,8 @@
     {#if BETA && !process.app.data.entrypoint && !process.app.data.workingDirectory && !process.app.data.thirdParty}
       <span class="beta-pill">BETA</span>
     {/if}
+    <AltMenu {process} />
   </div>
-  <AltMenu {process} />
   {#if BETA}
     <button class="link feedback" onclick={() => process.userDaemon?.iHaveFeedback(process)}>Feedback?</button>
   {/if}
