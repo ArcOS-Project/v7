@@ -26,7 +26,14 @@ export class AppStoreRuntime extends AppProcess {
   currentPage = Store<string>("");
   distrib: DistributionServiceProcess;
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
+  constructor(
+    handler: ProcessHandler,
+    pid: number,
+    parentPid: number,
+    app: AppProcessData,
+    page?: number,
+    props?: Record<string, any>
+  ) {
     super(handler, pid, parentPid, app);
 
     this.distrib = this.userDaemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
@@ -37,6 +44,8 @@ export class AppStoreRuntime extends AppProcess {
         if (this.currentPage() === "search") this.switchPage("home");
       }
     });
+
+    this.renderArgs = { page, props };
   }
 
   async start() {
@@ -56,12 +65,16 @@ export class AppStoreRuntime extends AppProcess {
 
       return false;
     }
+
+    this.systemDispatch.subscribe("mugui-done", () => {
+      this.switchPage(this.currentPage(), this.pageProps(), true);
+    });
   }
 
-  async render() {
+  async render({ page, props }: { page?: string; props?: Record<string, any> }) {
     if (await this.closeIfSecondInstance()) return false;
 
-    this.switchPage("home");
+    this.switchPage(page || "home", props || {});
   }
 
   async switchPage(id: string, props?: Record<string, any>, force = false) {

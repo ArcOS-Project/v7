@@ -2635,11 +2635,11 @@ The information provided in this report is subject for review by me or another A
             }),
         buttons: [
           {
-            caption: "Update",
+            caption: "View",
             action: () => {
               if (notif) this.deleteNotification(notif);
 
-              this.spawnOverlay("MultiUpdateGui", +this.env.get("shell_pid"), updates);
+              this.spawnApp("AppStore", +this.env.get("shell_pid"), "installed");
             },
             suggested: true,
           },
