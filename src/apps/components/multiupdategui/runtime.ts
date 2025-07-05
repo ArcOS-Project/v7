@@ -129,6 +129,12 @@ export class MultiUpdateGuiRuntime extends AppProcess {
     this.checkForErrors();
   }
 
+  async onClose(): Promise<boolean> {
+    this.systemDispatch.dispatch("mugui-done");
+
+    return true;
+  }
+
   checkForErrors() {
     const status = this.status();
 

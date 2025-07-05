@@ -97,6 +97,10 @@
   gap: 10px;
 }
 
+#MultiUpdateGui > div.body div.actions button.show-log {
+  margin-right: auto;
+}
+
 #MultiUpdateGui > div.body div.log {
   border-radius: 10px;
   border: var(--win-border);
