@@ -1,3 +1,15 @@
+#MultiUpdateGui {
+  transition: all 0.3s !important;
+}
+
+#MultiUpdateGui.expand {
+  height: 430px !important;
+}
+
+#MultiUpdateGui:not(.expand):has(.unified) {
+  height: 190px !important;
+}
+
 #MultiUpdateGui > div.body {
   padding: 30px;
 }
@@ -7,6 +19,7 @@
   align-items: center;
   gap: 15px;
   margin-bottom: 20px;
+  height: 50px;
 }
 
 #MultiUpdateGui > div.body div.header img {
@@ -28,22 +41,29 @@
   display: grid;
   gap: 8px;
   grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+  height: 40px;
+}
+
+#MultiUpdateGui > div.body div.update-bar.unified {
+  margin-bottom: 20px;
+  height: 5px;
 }
 
 #MultiUpdateGui > div.body div.update-bar div.bar {
   width: 100%;
-  height: 6px;
+  height: 5px;
   background-color: var(--button-glass-active-bg);
   border-radius: 3px;
   margin-bottom: 10px;
+  min-width: 20px;
 }
 
 #MultiUpdateGui > div.body div.update-bar div.bar div.inner {
   width: var(--w);
   height: 100%;
   background-color: var(--accent-lighter);
-  border-radius: 3px;
+  border-radius: 2.5px;
 }
 
 #MultiUpdateGui > div.body div.update-bar span.lucide {
@@ -75,6 +95,44 @@
   align-items: center;
   justify-content: end;
   gap: 10px;
+}
+
+#MultiUpdateGui > div.body div.log {
+  border-radius: 10px;
+  border: var(--win-border);
+  padding: 15px;
+  overflow-y: scroll;
+  height: calc(100% - 40px - 50px - 90px); /* actions - header - gapping */
+  margin: 20px 0;
+  transition: height 0.3s, border 0.3s, padding 0.3s, margin 0.3s;
+}
+
+#MultiUpdateGui > div.body div.log.unified {
+  height: calc(100% - 5px - 50px - 90px); /* actions - header - gapping */
+}
+
+#MultiUpdateGui > div.body div.log:not(.show) {
+  height: 0;
+  border-width: 0;
+  margin: 0;
+  padding: 0 15px;
+}
+
+#MultiUpdateGui > div.body div.log div.item {
+  height: 20px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#MultiUpdateGui > div.body div.log div.item img {
+  margin-left: auto;
+  height: 16px;
+}
+#MultiUpdateGui > div.body div.log div.item p.type {
+  opacity: 0.5;
+  font-weight: bold;
 }
 
 @keyframes MultiUpdateGui_spin {
