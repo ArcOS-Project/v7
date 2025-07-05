@@ -11,6 +11,7 @@ import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
+import { StoreItemIcon } from "$ts/distrib/util";
 import { toForm } from "$ts/form";
 import { Filesystem } from "$ts/fs";
 import { arrayToBlob, arrayToText, textToBlob } from "$ts/fs/convert";
@@ -21,6 +22,7 @@ import { ShareManager } from "$ts/fs/shares/index";
 import { getDriveLetter, getItemNameFromPath, getParentDirectory, join } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
 import { getIconPath, iconIdFromPath, maybeIconId } from "$ts/images";
+import { AppStoreIcon } from "$ts/images/apps";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import {
@@ -39,6 +41,7 @@ import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { ServiceHost } from "$ts/services";
 import { Sleep } from "$ts/sleep";
+import { authcode, Plural } from "$ts/util";
 import { UUID } from "$ts/uuid";
 import { Wallpapers } from "$ts/wallpaper/store";
 import { Store } from "$ts/writable";
@@ -57,14 +60,11 @@ import { fromExtension } from "human-filetypes";
 import Cookies from "js-cookie";
 import type { Unsubscriber } from "svelte/store";
 import type { ServerManager } from "..";
-import { AdminBootstrapper } from "../admin";
 import { Backend } from "../axios";
-import type { MessagingInterface } from "../messaging";
 import { GlobalDispatch } from "../ws";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
-import { authcode } from "$ts/util";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -2608,5 +2608,54 @@ The information provided in this report is subject for review by me or another A
 
     const observer = new MutationObserver(handle);
     observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  async checkForUpdates() {
+    if (this.preferences().globalSettings.noUpdateNotif) return;
+
+    const distrib = this.serviceHost?.getService<DistributionServiceProcess>("DistribSvc");
+    const updates = await distrib?.checkForAllUpdates();
+
+    if (updates?.length) {
+      const first = updates[0];
+      const notif = this.sendNotification({
+        ...(updates.length === 1
+          ? {
+              title: "Update available!",
+              message: `${first.pkg.pkg.name} can be updated from <b>v${first.oldVer}</b> to <b>v${first.newVer}</b>. Update now to get the latest features and security fixes.`,
+              image: StoreItemIcon(first.pkg),
+            }
+          : {
+              title: "Updates available!",
+              message: `${updates.length} ${Plural(
+                "package",
+                updates.length
+              )} can be updated. Update now to get the latest features and security fixes.`,
+              image: AppStoreIcon,
+            }),
+        buttons: [
+          {
+            caption: "Update",
+            action: () => {
+              if (notif) this.deleteNotification(notif);
+
+              this.spawnOverlay("MultiUpdateGui", +this.env.get("shell_pid"), updates);
+            },
+            suggested: true,
+          },
+          {
+            caption: "Don't show again",
+            action: () => {
+              if (notif) this.deleteNotification(notif);
+
+              this.preferences.update((v) => {
+                v.globalSettings.noUpdateNotif = true;
+                return v;
+              });
+            },
+          },
+        ],
+      });
+    }
   }
 }

@@ -227,6 +227,8 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.spawnAutoload();
 
     await this.appStore()?.refresh();
+
+    await userDaemon.checkForUpdates();
   }
 
   async logoff(daemon: UserDaemon) {
