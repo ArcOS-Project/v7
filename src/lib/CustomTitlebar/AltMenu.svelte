@@ -6,7 +6,7 @@
   const { altMenu } = process;
 </script>
 
-<div class="alt-menu">
+<div class="alt-menu nodrag">
   {#each $altMenu as menu}
     <AltMenuItem {menu} {process} />
   {/each}

@@ -308,7 +308,7 @@ export class AppRenderer extends Process {
   _renderAltMenu(process: AppProcess) {
     const menu = document.createElement("div");
 
-    menu.className = "alt-menu";
+    menu.className = "alt-menu nodrag";
 
     process.altMenu.subscribe((v) => {
       menu.classList.toggle("hidden", !v.length);

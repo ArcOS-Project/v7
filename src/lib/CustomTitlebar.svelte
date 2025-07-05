@@ -39,7 +39,7 @@
   data-contextmenu={process.app.data.overlay ? "" : "_window-titlebar"}
   use:contextProps={[process]}
 >
-  <div class="window-title nodrag">
+  <div class="window-title">
     {#if children}
       {@render children()}
     {:else}
