@@ -2,37 +2,43 @@
   import { Logo } from "$ts/branding";
   import { MessageBox } from "$ts/dialog";
   import { ErrorIcon } from "$ts/images/dialog";
+  import { TrashIcon } from "$ts/images/general";
   import { Store } from "$ts/writable";
   import type { BugReport } from "$types/bughunt";
   import { onMount } from "svelte";
   import type { AdminPortalRuntime } from "../../runtime";
   import type { BugHuntData } from "../../types";
   import Row from "./BugHunt/Row.svelte";
-  import { TrashIcon } from "$ts/images/general";
 
   const { process, data }: { process: AdminPortalRuntime; data: BugHuntData } = $props();
-  const { reports, stats } = data;
+  const { reports, stats, users } = data;
   const pages: ("all" | "opened" | "closed")[] = ["all", "opened", "closed"];
 
   let store = Store<BugReport[]>([]);
   let sortState = Store<"all" | "opened" | "closed">("opened");
+  let filterId = Store<string>("");
   let idEntry = Store("");
 
-  onMount(() => {
-    sortState.subscribe((v) => {
-      $store = reports
-        .filter((report) => {
-          switch (v) {
+  function updateStore() {
+    $store = $filterId
+      ? reports.filter((r) => r.authorId === $filterId)
+      : reports.filter((report) => {
+          switch ($sortState) {
             case "all":
               return true;
-            case "opened":
-              return !report.closed;
             case "closed":
               return report.closed;
+            case "opened":
+              return !report.closed;
           }
-        })
-        .reverse();
-    });
+        });
+
+    console.log($filterId, $sortState, $store);
+  }
+
+  onMount(() => {
+    sortState.subscribe(updateStore);
+    filterId.subscribe(updateStore);
   });
 
   function useIdEntry() {
@@ -91,6 +97,12 @@
 <div class="list-wrapper">
   <div class="tabs">
     <p>{$sortState} ({$store.length})</p>
+    <select name="" id="" bind:value={$filterId}>
+      <option value="">None</option>
+      {#each users as user (user._id)}
+        <option value={user._id}>{user.username}</option>
+      {/each}
+    </select>
     {#each pages as page}
       <button class:selected={page === $sortState} onclick={() => ($sortState = page)}>{page.toUpperCase()}</button>
     {/each}

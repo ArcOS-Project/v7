@@ -43,8 +43,9 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       props: async (process) => {
         const reports = await process.admin.getAllBugReports();
         const stats = await process.admin.getBugHuntStatistics();
+        const users = await process.admin.getAllUsers();
 
-        return { reports, stats };
+        return { reports, stats, users };
       },
     },
   ],

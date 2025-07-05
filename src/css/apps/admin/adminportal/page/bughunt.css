@@ -24,6 +24,14 @@
   border-right: var(--win-border);
 }
 
+#AdminPortal div.container.bughunt div.list-wrapper select {
+  background-color: var(--win-bg);
+  color: var(--fg);
+  border-radius: 0;
+  border: none;
+  border-left: var(--win-border);
+}
+
 #AdminPortal div.container.bughunt div.list-wrapper div.tabs {
   height: 30px;
   display: flex;
