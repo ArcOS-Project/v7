@@ -110,7 +110,7 @@ export class ArcFindRuntime extends AppProcess {
 
   async getAppSearchSupplier(preferences: UserPreferences) {
     const result: SearchItem[] = [];
-    const apps = (await this.appStore()?.get()) || [];
+    const apps = this.appStore()?.buffer() || [];
 
     for (const app of apps) {
       const populatable = isPopulatable(app);

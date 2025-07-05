@@ -59,6 +59,12 @@ div.shell div.startmenu div.top div.app-list.searching {
   overflow-y: hidden;
 }
 
+div.shell div.startmenu div.top div.app-list.searching.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 div.shell div.startmenu div.top div.app-list.searching button.selected {
   background-color: var(--accent-transparent);
 }

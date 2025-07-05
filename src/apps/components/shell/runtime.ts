@@ -264,6 +264,8 @@ export class ShellRuntime extends AppProcess {
 
   public async Trigger(result: SearchItem) {
     await result.action(result);
+
+    this.startMenuOpened.set(false);
   }
 
   public Submit() {

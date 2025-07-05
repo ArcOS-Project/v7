@@ -21,7 +21,7 @@
   });
 </script>
 
-<div class="app-list" class:searching={$searchQuery}>
+<div class="app-list" class:searching={$searchQuery} class:loading={$searching}>
   {#if $searchQuery}
     {#if $searching}
       <Spinner height={32} />
