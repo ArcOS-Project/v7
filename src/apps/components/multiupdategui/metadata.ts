@@ -18,11 +18,11 @@ export const MultiUpdateGuiApp: App = {
   },
   minSize: {
     w: 450,
-    h: 230,
+    h: 190,
   },
   maxSize: {
     w: 450,
-    h: 230,
+    h: 430,
   },
   state: {
     minimized: false,

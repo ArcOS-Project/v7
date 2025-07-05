@@ -6,17 +6,22 @@ import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
-import type { StoreItem, UpdateInfo } from "$types/package";
+import type { InstallStatus, StoreItem, UpdateInfo } from "$types/package";
 import type { MultiUpdateStatus, MultiUpdateStatusNode } from "./types";
 
 export class MultiUpdateGuiRuntime extends AppProcess {
   private updates: UpdateInfo[];
   private distrib: DistributionServiceProcess;
+  private win: HTMLDivElement | undefined;
   public status = Store<MultiUpdateStatus>([]);
   public currentPackage = Store<StoreItem | undefined>();
   public working = Store<boolean>(false);
   public done = Store<boolean>(false);
   public errored = Store<string[]>([]);
+  public logs = Store<Record<string, InstallStatus>>({});
+  public focused = Store<string>();
+  public showLog = Store<boolean>(false);
+  public unified = Store<boolean>(false);
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, updates: UpdateInfo[]) {
     super(handler, pid, parentPid, app);
@@ -40,6 +45,15 @@ export class MultiUpdateGuiRuntime extends AppProcess {
     }
 
     this.status.set(result);
+  }
+
+  async render() {
+    this.win = this.getWindow();
+
+    if (this.updates.length > 15) {
+      this.unified.set(true);
+      this.toggleLog();
+    }
   }
 
   updatePackageStatus(appId: string, newData: Partial<MultiUpdateStatusNode>) {
@@ -87,6 +101,16 @@ export class MultiUpdateGuiRuntime extends AppProcess {
 
       installer.TOTAL_COUNT.subscribe((v) => this.updatePackageStatus(id, { max: v }));
       installer.COUNT.subscribe((v) => this.updatePackageStatus(id, { done: v }));
+
+      installer.status.subscribe((v) => {
+        this.logs.update((l) => {
+          l[update.pkg._id] = v;
+          return l;
+        });
+      });
+
+      installer.focused.subscribe((v) => this.focused.set(v));
+
       this.updatePackageStatus(id, { state: "working" });
 
       const result = await installer.go();
@@ -114,5 +138,10 @@ export class MultiUpdateGuiRuntime extends AppProcess {
   mainAction() {
     if (this.done()) this.closeWindow();
     else this.go();
+  }
+
+  toggleLog() {
+    this.showLog.set(!this.showLog());
+    this.win?.classList.toggle("expand", this.showLog());
   }
 }
