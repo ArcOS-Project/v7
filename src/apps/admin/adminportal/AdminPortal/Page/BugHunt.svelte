@@ -9,6 +9,7 @@
   import type { AdminPortalRuntime } from "../../runtime";
   import type { BugHuntData } from "../../types";
   import Row from "./BugHunt/Row.svelte";
+  import { sortByKey } from "$ts/util";
 
   const { process, data }: { process: AdminPortalRuntime; data: BugHuntData } = $props();
   const { reports, stats, users } = data;
@@ -114,7 +115,7 @@
       <div class="segment title">Title</div>
       <div class="segment author">Author</div>
     </div>
-    {#each $store as report (report._id)}
+    {#each sortByKey($store, "createdAt", true) as report (report._id)}
       <Row {process} {report} {idEntry} />
     {/each}
     {#if !$store.length}
