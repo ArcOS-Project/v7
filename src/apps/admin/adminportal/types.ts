@@ -5,6 +5,7 @@ import type { SharedDriveType } from "$types/shares";
 import type { ExpandedUserInfo, UserInfo } from "$types/user";
 import type { Component } from "svelte";
 import type { AdminPortalRuntime } from "./runtime";
+import type { StoreItem } from "$types/package";
 
 export interface AdminPortalPage {
   name: string;
@@ -63,6 +64,11 @@ export type FilesystemsData = {
   users: ExpandedUserInfo[];
 };
 
+export type StoreData = {
+  items: StoreItem[];
+  users: ExpandedUserInfo[];
+};
+
 export type TokensData = {
   tokens: ExpandedToken[];
   users: ExpandedUserInfo[];
@@ -93,7 +99,7 @@ export type AuditLogData = {
 
 export type UsersPageFilters = "all" | "regular" | "admins" | "disapproved" | "online";
 export type SharesPageFilters = "all" | "resized" | "locked";
-
+export type StorePageFilters = "all" | "official" | "deprecated";
 export interface SpecificAdminAction {
   caption: string;
   scopes: string[];

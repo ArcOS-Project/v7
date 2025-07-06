@@ -8,6 +8,7 @@ import Filesystems from "./AdminPortal/Page/Filesystems.svelte";
 import Logs from "./AdminPortal/Page/Logs.svelte";
 import Scopes from "./AdminPortal/Page/Scopes.svelte";
 import Shares from "./AdminPortal/Page/Shares.svelte";
+import Store from "./AdminPortal/Page/Store.svelte";
 import Tokens from "./AdminPortal/Page/Tokens.svelte";
 import Users from "./AdminPortal/Page/Users.svelte";
 import ViewBugReport from "./AdminPortal/Page/ViewBugReport.svelte";
@@ -135,6 +136,18 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
         return { users: (await process.admin.getAllUsers()).reverse() };
       },
       scopes: [AdminScopes.adminUsersList, AdminScopes.adminUserfsQuota],
+    },
+  ],
+  [
+    "store",
+    {
+      name: "App Store",
+      icon: "shopping-bag",
+      content: Store,
+      props: async (process) => {
+        return { items: await process.admin.getAllStoreItems(), users: await process.admin.getAllUsers() };
+      },
+      scopes: [AdminScopes.adminStoreListAll, AdminScopes.adminUsersList],
       separator: true,
     },
   ],
