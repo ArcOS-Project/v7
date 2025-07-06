@@ -1,0 +1,27 @@
+body.slf > * {
+  background-color: rgb(28, 28, 51) !important;
+  color: #fff;
+  font-family: "Source Code Pro";
+}
+
+body.slf #stateLoader {
+  position: relative;
+  padding: 15px;
+}
+
+body.slf #stateLoader pre.system-load-fail {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding: 15px;
+  white-space: pre-wrap;
+  line-break: anywhere;
+  width: 100vw;
+}
+
+body.slf #stateLoader pre.system-load-fail a.troubleshooting {
+  opacity: 0.5;
+  color: #fff;
+  text-decoration-color: #fff5;
+  text-underline-offset: 3px;
+}
