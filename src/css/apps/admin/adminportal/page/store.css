@@ -1,0 +1,220 @@
+#AdminPortal div.container.store > div.page-content > div.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 30px;
+  padding-left: 10px;
+}
+
+#AdminPortal div.container.store > div.page-content button.lucide {
+  border-radius: 0;
+  border-left: var(--win-border);
+  background-color: var(--win-bg);
+  height: 30px;
+  width: 31px;
+  font-size: 16px;
+  padding: 0;
+}
+
+#AdminPortal div.container.store button.lucide:disabled {
+  opacity: 1;
+  color: var(--button-glass-hover-bg);
+}
+
+#AdminPortal div.container.store > div.page-content > div.header div.actions {
+  display: flex;
+}
+
+#AdminPortal div.container.store > div.page-content > div.header p {
+  font-weight: bold;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+#AdminPortal div.container.store div.item-list {
+  height: calc(100% - 30px - 30px);
+  border-top: var(--win-border);
+  border-bottom: var(--win-border);
+  overflow-y: auto;
+}
+
+#AdminPortal div.container.store div.id-entry {
+  display: flex;
+  align-items: center;
+}
+
+#AdminPortal div.container.store div.id-entry div.icon {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+}
+
+#AdminPortal div.container.store div.id-entry input {
+  flex-grow: 1;
+  border: none;
+  border-radius: 0;
+  border-left: var(--win-border);
+  border-right: var(--win-border);
+  height: 30px;
+  font-family: "Source Code Pro";
+}
+
+#AdminPortal div.container.store div.id-entry button:not(.lucide) {
+  border-radius: 0;
+  height: 30px;
+}
+
+#AdminPortal div.container.store div.id-entry div.actions {
+  display: flex;
+}
+
+#AdminPortal div.container.store div.item-list::-webkit-scrollbar {
+  display: none;
+}
+
+#AdminPortal div.container.store div.header div.tabs {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+
+#AdminPortal div.container.store div.header div.tabs button {
+  height: 30px;
+  border-radius: 0;
+  font-size: 12px;
+  min-width: 80px;
+  padding: 5px 15px;
+  border-left: var(--win-border);
+}
+#AdminPortal div.container.store div.header div.tabs p {
+  margin-right: auto;
+  padding: 0 10px;
+  font-weight: bold;
+  opacity: 0.5;
+  text-transform: uppercase;
+}
+
+#AdminPortal div.container.store div.header div.tabs button.selected {
+  background-color: var(--accent-transparent);
+}
+
+#AdminPortal div.container.store div.item-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  border-bottom: var(--win-border);
+  height: 36px;
+}
+
+#AdminPortal div.container.store div.item-row:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#AdminPortal div.container.store div.item-row.selected {
+  background-color: var(--accent-transparent);
+}
+
+#AdminPortal div.container.store div.item-row:last-child {
+  border-bottom: none;
+  height: 35px;
+}
+
+#AdminPortal div.container.store div.item-row div.segment {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#AdminPortal div.container.store div.item-row div.segment.author {
+  width: 100px;
+}
+#AdminPortal div.container.store div.item-row div.segment.name {
+  width: 200px;
+  margin-right: auto;
+}
+
+#AdminPortal div.container.store div.item-row div.segment.install-count,
+#AdminPortal div.container.store div.item-row div.segment.last-updated {
+  width: 80px;
+}
+
+#AdminPortal div.container.store div.item-row div.segment.official,
+#AdminPortal div.container.store div.item-row div.segment.deprecated {
+  width: 35px;
+  height: 35px;
+  line-height: 35px;
+  text-align: center;
+  border-left: var(--win-border);
+  margin-right: -10px;
+  background-color: var(--button-bg);
+}
+
+#AdminPortal div.container.store div.item-row div.segment.official.is-official {
+  background-color: var(--clr-green-bg);
+  color: var(--clr-green-fg);
+}
+
+#AdminPortal div.container.store div.item-row div.segment.deprecated.is-deprecated {
+  background-color: var(--clr-red-bg);
+  color: var(--clr-red-fg);
+}
+
+#AdminPortal div.container.store div.item-row img {
+  height: 20px;
+  width: 20px;
+  object-fit: cover;
+  border-radius: 100%;
+}
+
+#AdminPortal div.container.store div.item-row div.segment.name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#AdminPortal div.container.store div.item-row div.segment.name img {
+  height: 16px;
+  width: 16px;
+  border-radius: 2px;
+}
+
+#AdminPortal div.container.store div.item-row div.segment.version {
+  width: 60px;
+}
+
+#AdminPortal div.container.store div.item-row div.segment.install-count {
+  text-align: right;
+}
+
+#AdminPortal div.container.store div.item-row div.pfprenderer::after {
+  bottom: -1px;
+  right: -1px;
+}
+
+#AdminPortal div.container.store div.item-row.header {
+  font-weight: bold;
+  background-color: var(--button-bg);
+  position: sticky;
+  top: 0.5px;
+  z-index: 10000;
+}
+
+#AdminPortal div.container.store div.item-row.header div.segment {
+  overflow: visible;
+}
+
+#AdminPortal div.container.store div.item-row.header button {
+  padding: 3px 5px;
+  margin: 0 -5px;
+  background-color: transparent;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+#AdminPortal div.container.store div.item-row.header button.selected {
+  background-color: var(--button-glass-bg);
+}
