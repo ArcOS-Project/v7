@@ -7,7 +7,7 @@
     pre.innerHTML += r;
     pre.innerHTML += `<br><br><a class="troubleshooting" href="${url}" target="_blank">${url}</a>`;
     pre.className = "system-load-fail";
-    document.querySelector("#stateLoader")?.append(pre);
+    document.querySelector("#stateLoader").append(pre);
     document.body.classList.add("slf");
   }
 
@@ -16,9 +16,8 @@
 
     if (e instanceof ErrorEvent) {
       loadFail(e.error.stack);
-      console.warn(`${e.error.stack}`);
     } else if (e instanceof PromiseRejectionEvent) {
-      console.warn(`${e.reason}`);
+      loadFail(e.reason);
     }
   };
 
