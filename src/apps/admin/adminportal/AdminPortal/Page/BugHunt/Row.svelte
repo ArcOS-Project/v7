@@ -6,18 +6,47 @@
   import type { BugReport } from "$types/bughunt";
   import dayjs from "dayjs";
 
-  const { process, report, idEntry }: { process: AdminPortalRuntime; report: BugReport; idEntry: ReadableStore<string> } =
-    $props();
+  const {
+    process,
+    report,
+    idEntry,
+    quickView,
+    selectionList,
+  }: {
+    process: AdminPortalRuntime;
+    report: BugReport;
+    idEntry: ReadableStore<string>;
+    quickView: ReadableStore<string>;
+    selectionList: ReadableStore<string[]>;
+  } = $props();
   const { redacted } = process;
   const timestamp = dayjs(report.createdAt).format("D MMM YYYY, HH:mm");
+
+  function onclick(e: MouseEvent) {
+    if (e.shiftKey) {
+      selectionList.update((v) => {
+        if (v.includes(report._id!)) {
+          v.splice(v.indexOf(report._id!));
+        } else {
+          v.push(report._id!);
+        }
+        return v;
+      });
+    } else {
+      $idEntry = report._id!;
+      $selectionList = [$idEntry];
+    }
+  }
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
   class="row"
-  onclick={() => ($idEntry = report._id!)}
+  {onclick}
+  oncontextmenu={() => ($quickView = report._id!)}
   class:selected={$idEntry === report._id}
+  class:selected-multi={$selectionList.includes(report._id!) && $selectionList.length > 1}
   ondblclick={() => process.switchPage("viewBugReport", { id: report._id })}
 >
   <div class="segment mode-icon"><img src={LogoTranslations[report.mode] || QuestionIcon} alt="" /></div>

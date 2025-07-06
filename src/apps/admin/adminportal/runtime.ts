@@ -1,5 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
+import { MessageBox } from "$ts/dialog";
 import { ShareManager } from "$ts/fs/shares";
+import { ElevationIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { AdminBootstrapper } from "$ts/server/admin";
 import { Sleep } from "$ts/sleep";
@@ -31,7 +33,21 @@ export class AdminPortalRuntime extends AppProcess {
   async switchPage(pageId: string, props: Record<string, any> = {}, force = false) {
     this.Log(`Loading page '${pageId}'`);
 
-    if (!AdminPortalPageStore.has(pageId)) return;
+    if (!AdminPortalPageStore.has(pageId)) {
+      MessageBox(
+        {
+          title: "Broken link",
+          message:
+            "The page you tried to navigate to isn't registered in the Admin Portal's page store. If you didn't do this yourself, please check in with Izaak.",
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          image: ElevationIcon,
+          sound: "arcos.dialog.warning",
+        },
+        this.pid,
+        true
+      );
+      return;
+    }
 
     const page = AdminPortalPageStore.get(pageId);
 

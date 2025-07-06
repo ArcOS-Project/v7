@@ -63,7 +63,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
         AdminScopes.adminBugHuntClose,
       ],
       icon: "",
-      parent: "bugHunt",
+      parent: "bughunt",
       props: async (process) => {
         const id = process.switchPageProps().id;
 

@@ -1,5 +1,6 @@
 #AdminPortal div.container.bughunt > div.page-content {
   display: flex;
+  position: relative;
 }
 
 #AdminPortal div.container.bughunt div.stats {
@@ -157,6 +158,11 @@
   background-color: var(--accent-transparent);
 }
 
+#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row.selected-multi {
+  background-color: var(--accent-transparent);
+  font-weight: bold;
+}
+
 #AdminPortal div.container.bughunt div.list-wrapper div.listing div.row:last-child {
   border-bottom: none;
 }
@@ -179,4 +185,65 @@
   margin: 15px 0;
   font-weight: bold;
   opacity: 0.5;
+}
+
+#AdminPortal div.container.bughunt div.quick-view {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: calc(100% - 60px);
+  height: calc(100% - 60px);
+  border-radius: 0;
+  border: var(--accent-transparent) 2px solid;
+  background-color: var(--win-bg);
+  box-shadow: 0 5px 15px 5px #000a;
+  z-index: 10000;
+  overflow-y: auto;
+}
+
+#AdminPortal div.container.bughunt div.quick-view div.page-content {
+  height: 100%;
+}
+#AdminPortal div.container.bughunt div.quick-view button.go-back {
+  opacity: 0;
+  pointer-events: none;
+  width: 30px;
+  min-width: 30px;
+}
+
+#AdminPortal div.container.bughunt div.quick-view button.delete {
+  border-right: var(--win-border);
+}
+
+#AdminPortal div.container.bughunt div.quick-view button.icon-x.close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 31px;
+  height: 30px;
+  padding: 0;
+  line-height: 30px;
+  border-radius: 0;
+  background-color: var(--clr-red-fg);
+  color: var(--button-bg);
+  font-weight: 1000;
+  font-size: 16px;
+}
+
+#AdminPortal div.container.bughunt div.selection-status {
+  background-color: var(--clr-orange-fg);
+  color: var(--clr-orange-bg);
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  padding-right: 0;
+  flex-grow: 1;
+}
+
+#AdminPortal div.container.bughunt div.selection-status * {
+  color: var(--clr-orange-bg);
+}
+
+#AdminPortal div.container.bughunt div.selection-status button.lucide {
+  margin-left: auto;
 }

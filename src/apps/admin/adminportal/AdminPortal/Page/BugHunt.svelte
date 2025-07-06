@@ -3,13 +3,14 @@
   import { MessageBox } from "$ts/dialog";
   import { ErrorIcon } from "$ts/images/dialog";
   import { TrashIcon } from "$ts/images/general";
+  import { sortByKey } from "$ts/util";
   import { Store } from "$ts/writable";
   import type { BugReport } from "$types/bughunt";
   import { onMount } from "svelte";
   import type { AdminPortalRuntime } from "../../runtime";
   import type { BugHuntData } from "../../types";
+  import QuickView from "./BugHunt/QuickView.svelte";
   import Row from "./BugHunt/Row.svelte";
-  import { sortByKey } from "$ts/util";
 
   const { process, data }: { process: AdminPortalRuntime; data: BugHuntData } = $props();
   const { reports, stats, users } = data;
@@ -19,20 +20,20 @@
   let sortState = Store<"all" | "opened" | "closed">("opened");
   let filterId = Store<string>("");
   let idEntry = Store("");
+  let quickView = Store<string>("");
+  let selectionList = Store<string[]>([]);
 
   function updateStore() {
-    $store = $filterId
-      ? reports.filter((r) => r.authorId === $filterId)
-      : reports.filter((report) => {
-          switch ($sortState) {
-            case "all":
-              return true;
-            case "closed":
-              return report.closed;
-            case "opened":
-              return !report.closed;
-          }
-        });
+    $store = ($filterId ? reports.filter((r) => r.authorId === $filterId) : reports).filter((report) => {
+      switch ($sortState) {
+        case "all":
+          return true;
+        case "closed":
+          return report.closed;
+        case "opened":
+          return !report.closed;
+      }
+    });
 
     console.log($filterId, $sortState, $store);
   }
@@ -93,6 +94,38 @@
 
     process.switchPage("bughunt", {}, true);
   }
+
+  async function deleteSelectedMulti() {
+    const go = await process.userDaemon!.Confirm(
+      "Confirm Delete?",
+      `Are you sure you want to delete ${$selectionList.length} reports? This is a potentially destructive action!`,
+      "Abort!",
+      "Continue",
+      TrashIcon,
+    );
+
+    if (!go) return;
+
+    for (const report of $selectionList) {
+      await process.admin.deleteBugReport(report);
+    }
+
+    process.switchPage("bughunt", {}, true);
+  }
+  async function closeSelectedMulti() {
+    const go = await process.userDaemon!.Confirm(
+      "Confirm Close?",
+      `Are you sure you want to close ${$selectionList.length} reports? This is a potentially destructive action!`,
+      "Abort!",
+      "Continue",
+    );
+
+    if (!go) return;
+
+    await process.admin.closeBugReport($idEntry);
+
+    process.switchPage("bughunt", {}, true);
+  }
 </script>
 
 <div class="list-wrapper">
@@ -116,7 +149,7 @@
       <div class="segment author">Author</div>
     </div>
     {#each sortByKey($store, "createdAt", true) as report (report._id)}
-      <Row {process} {report} {idEntry} />
+      <Row {process} {report} {idEntry} {quickView} {selectionList} />
     {/each}
     {#if !$store.length}
       <p class="no-results">Logan ate them all.</p>
@@ -126,20 +159,29 @@
     <div class="icon">
       <span class="lucide icon-rectangle-ellipsis"></span>
     </div>
-    <input type="text" placeholder="Enter ID..." bind:value={$idEntry} maxlength="24" />
-    <button disabled={$idEntry.length !== 24} onclick={useIdEntry}>Go</button>
-    <button
-      class="lucide icon-lock-keyhole clr-orange"
-      disabled={$idEntry.length !== 24}
-      onclick={closeSelected}
-      aria-label="Close report"
-    ></button>
-    <button
-      class="lucide icon-trash-2 clr-red"
-      disabled={$idEntry.length !== 24}
-      onclick={deleteSelected}
-      aria-label="Delete report"
-    ></button>
+    {#if $selectionList.length < 2}
+      <input type="text" placeholder="Enter ID..." bind:value={$idEntry} maxlength="24" />
+      <button disabled={$idEntry.length !== 24} onclick={useIdEntry}>Go</button>
+      <button
+        class="lucide icon-lock-keyhole clr-orange"
+        disabled={$idEntry.length !== 24}
+        onclick={closeSelected}
+        aria-label="Close report"
+      ></button>
+      <button
+        class="lucide icon-trash-2 clr-red"
+        disabled={$idEntry.length !== 24}
+        onclick={deleteSelected}
+        aria-label="Delete report"
+      ></button>
+    {:else}
+      <div class="selection-status">
+        <span>
+          Selecting {$selectionList.length} of {$store.length} reports
+        </span>
+        <button class="lucide icon-trash-2" aria-label="Delete reports" onclick={deleteSelectedMulti}></button>
+      </div>
+    {/if}
   </div>
 </div>
 <div class="stats">
@@ -150,3 +192,6 @@
     </div>
   {/each}
 </div>
+{#if $quickView}
+  <QuickView {process} id={$quickView} {quickView} />
+{/if}
