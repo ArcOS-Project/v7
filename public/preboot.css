@@ -7,6 +7,7 @@ body.slf > * {
 body.slf #stateLoader {
   position: relative;
   padding: 15px;
+  height: 100vh;
 }
 
 body.slf #stateLoader pre.system-load-fail {
@@ -24,4 +25,8 @@ body.slf #stateLoader pre.system-load-fail a.troubleshooting {
   color: #fff;
   text-decoration-color: #fff5;
   text-underline-offset: 3px;
+}
+
+body.slf * {
+  box-sizing: border-box;
 }
