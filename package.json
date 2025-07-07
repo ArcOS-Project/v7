@@ -68,6 +68,7 @@
     "string-width": "^7.2.0",
     "svelte-dnd-action": "^0.9.57",
     "svelte-markdown": "^0.4.1",
+    "svelte-navigator": "^3.2.2",
     "svelte-pdf-simple": "^2.0.0",
     "ts-node": "^10.9.2",
     "tsparticles-engine": "^2.12.0",

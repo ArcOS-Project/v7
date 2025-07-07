@@ -10,6 +10,7 @@
 @import url("./window/code.css");
 @import url("./window/scrollbars.css");
 @import url("./window/snapping.css");
+@import url("./window/proto.css");
 
 div.window:not(.core) {
   position: absolute;

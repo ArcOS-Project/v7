@@ -1,0 +1,27 @@
+div.window:not(.core) > div.body button:not(.reset).arcos-protocol-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 2px;
+  gap: 5px;
+  border-radius: 5px;
+  outline: var(--button-glass-hover-bg) 1px solid !important;
+  outline-offset: -1px !important;
+
+  vertical-align: text-bottom;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+div.window:not(.core) > div.body button:not(.reset).arcos-protocol-link img {
+  width: 1em;
+  height: 1em;
+}
+
+div.window:not(.core) > div.body button:not(.reset).arcos-protocol-link span {
+  font-weight: inherit;
+}
+
+div.window:not(.core) > div.body button:not(.reset).arcos-protocol-link:hover {
+  background-color: var(--accent-transparent) !important;
+  outline: var(--accent-transparent) 1px solid !important;
+}
