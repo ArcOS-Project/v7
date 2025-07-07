@@ -194,7 +194,6 @@ export class LoginAppRuntime extends AppProcess {
 
     this.loadingStatus.set("Connecting global dispatch");
     await userDaemon.activateGlobalDispatch();
-    userDaemon.activateMessagingService();
 
     this.loadingStatus.set("Starting drive notifier watcher");
     userDaemon.startDriveNotifierWatcher();
