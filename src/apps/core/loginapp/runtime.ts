@@ -18,6 +18,7 @@ import type { ProcessHandler } from "../../../ts/process/handler";
 import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps, PersistenceInfo } from "./types";
 import { authcode } from "$ts/util";
+import { ProtocolServiceProcess } from "$ts/proto";
 
 export class LoginAppRuntime extends AppProcess {
   public DEFAULT_WALLPAPER = Store<string>("");
@@ -228,6 +229,7 @@ export class LoginAppRuntime extends AppProcess {
     await this.appStore()?.refresh();
 
     await userDaemon.checkForUpdates();
+    userDaemon.serviceHost?.getService<ProtocolServiceProcess>("ProtoService")?.parseProtoParam();
   }
 
   async logoff(daemon: UserDaemon) {
