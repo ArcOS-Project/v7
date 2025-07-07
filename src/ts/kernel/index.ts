@@ -76,6 +76,8 @@ export class WaveKernel {
   }
 
   async _init() {
+    (window as any).__DW_INIT__ = true;
+
     __Console__.time("** Kernel init");
     this.Log(`KERNEL`, `Called _init`);
 
