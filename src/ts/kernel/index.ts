@@ -1,4 +1,5 @@
 import { __Console__ } from "$ts/console";
+import { ArcOSVersion } from "$ts/env";
 import { getBuild } from "$ts/metadata/build";
 import { getLicense } from "$ts/metadata/license";
 import { getMode } from "$ts/metadata/mode";
@@ -21,7 +22,7 @@ export class WaveKernel {
   public init: InitProcess | undefined;
   public state: StateHandler | undefined;
   public initPid = -1;
-  public params = new URLSearchParams();
+  public params = new URLSearchParams(location.search);
   public ARCOS_MODE = "release";
   public ARCOS_BUILD = "unknown";
   public ARCOS_LICENSE = "not here yet";
@@ -87,7 +88,7 @@ export class WaveKernel {
     await getBuild();
     await getLicense();
 
-    this.Log(`ArcOS`, `***** [v7 -> ArcOS InDev v7.0.0-${this.ARCOS_MODE}_${this.ARCOS_BUILD}] *****`);
+    this.Log(`ArcOS`, `***** [v7 -> ArcOS InDev v${ArcOSVersion}-${this.ARCOS_MODE}_${this.ARCOS_BUILD}] *****`);
 
     await this._kernelModules();
 

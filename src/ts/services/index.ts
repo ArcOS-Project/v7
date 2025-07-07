@@ -5,6 +5,7 @@ import { distributionService } from "$ts/distrib";
 import { shareService } from "$ts/fs/shares";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
+import { protoService } from "$ts/proto";
 import { adminService } from "$ts/server/admin";
 import { messagingService } from "$ts/server/messaging";
 import type { UserDaemon } from "$ts/server/user/daemon";
@@ -35,6 +36,7 @@ export class ServiceHost extends Process {
     ["MessagingService", { ...messagingService }],
     ["DevEnvironment", { ...devEnvironmentService }],
     ["DistribSvc", { ...distributionService }],
+    ["ProtoService", { ...protoService }],
   ]);
 
   public loadStore(store: ServiceStore) {

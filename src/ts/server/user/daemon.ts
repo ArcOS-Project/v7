@@ -65,6 +65,8 @@ import { GlobalDispatch } from "../ws";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
+import type { ProtocolServiceProcess } from "$ts/proto";
+import { AdminProtocolHandlers } from "../admin/proto";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -2237,6 +2239,12 @@ export class UserDaemon extends Process {
 
     appStore.loadOrigin("admin", () => AdminApps);
     await appStore.refresh();
+
+    const proto = this.serviceHost?.getService<ProtocolServiceProcess>("ProtoService");
+
+    for (const key in AdminProtocolHandlers) {
+      proto?.registerHandler(key, AdminProtocolHandlers[key]);
+    }
   }
 
   async startShareManager() {
