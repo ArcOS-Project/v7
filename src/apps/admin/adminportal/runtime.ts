@@ -22,12 +22,19 @@ export class AdminPortalRuntime extends AppProcess {
     userdata: BugHuntUserDataApp,
   };
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, page?: string) {
+  constructor(
+    handler: ProcessHandler,
+    pid: number,
+    parentPid: number,
+    app: AppProcessData,
+    page?: string,
+    props?: Record<string, any>
+  ) {
     super(handler, pid, parentPid, app);
 
     this.admin = this.userDaemon!.serviceHost!.getService<AdminBootstrapper>("AdminBootstrapper")!;
     this.shares = this.userDaemon!.serviceHost!.getService<ShareManager>("ShareMgmt")!;
-    this.switchPage(page || "dashboard");
+    this.switchPage(page || "dashboard", props || {});
   }
 
   async switchPage(pageId: string, props: Record<string, any> = {}, force = false) {
