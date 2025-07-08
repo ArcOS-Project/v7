@@ -3,6 +3,7 @@
   import { WarningIcon } from "$ts/images/dialog";
   import type { ReadableStore } from "$ts/writable";
   import type { StoreItem } from "$types/package";
+  import { onMount } from "svelte";
   import type { AppStoreRuntime } from "../../runtime";
 
   const {
@@ -24,6 +25,7 @@
   async function go() {
     working = true;
     content = "Loading";
+
     const installer = await process.installPackage($pkg, (prog) => {
       progMax = prog.max;
       progDone = prog.value;
@@ -73,6 +75,30 @@
     content = "Done";
     $installed = $pkg;
   }
+
+  onMount(() => {
+    const existing = process.getRunningOperation($pkg);
+
+    if (existing) {
+      working = true;
+      content = "Loading";
+
+      existing.TOTAL_COUNT.subscribe((v) => {
+        progMax = v;
+        content = `${((100 / progMax) * progDone).toFixed(0)}%`;
+      });
+      existing.COUNT.subscribe((v) => {
+        progDone = v;
+        content = `${((100 / progMax) * progDone).toFixed(0)}%`;
+      });
+      existing.completed.subscribe((v) => {
+        if (v) {
+          content = "Done";
+          $installed = $pkg;
+        }
+      });
+    }
+  });
 
   function reset() {
     working = false;

@@ -17,6 +17,7 @@ import dayjs from "dayjs";
 import { appStorePages } from "./store";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import TakenDown from "./AppStore/TakenDown.svelte";
+import { InstallerProcess } from "$ts/distrib/installer";
 
 export class AppStoreRuntime extends AppProcess {
   searchQuery = Store<string>("");
@@ -24,6 +25,7 @@ export class AppStoreRuntime extends AppProcess {
   pageProps = Store<Record<string, any>>({});
   searching = Store<boolean>(false);
   currentPage = Store<string>("");
+  operations: Record<string, InstallerProcess> = {};
   distrib: DistributionServiceProcess;
 
   constructor(
@@ -125,7 +127,18 @@ export class AppStoreRuntime extends AppProcess {
 
     if (!elevated) return false;
 
-    return await this.distrib.storeItemInstaller(pkg._id, onDownloadProgress);
+    const result = await this.distrib.storeItemInstaller(pkg._id, onDownloadProgress);
+    if (!result) return false;
+
+    const permitted = this.registerOperation(pkg._id, result);
+    if (!permitted) return false;
+    await this.distrib!.removeFromInstalled(pkg._id);
+
+    result.onStop = async () => {
+      this.discardOperation(pkg._id);
+    };
+
+    return result;
   }
 
   async updatePackage(pkg: StoreItem, onDownloadProgress?: FilesystemProgressCallback) {
@@ -150,12 +163,20 @@ export class AppStoreRuntime extends AppProcess {
       image: StoreItemIcon(pkg),
       level: ElevationLevel.medium,
     });
-
     if (!elevated) return false;
 
+    const result = await this.distrib.updatePackage(pkg._id, true, onDownloadProgress);
+    if (!result) return false;
+
+    const permitted = this.registerOperation(pkg._id, result);
+    if (!permitted) return false;
     await this.distrib!.removeFromInstalled(pkg._id);
 
-    return await this.distrib.updatePackage(pkg._id, true, onDownloadProgress);
+    result.onStop = async () => {
+      this.discardOperation(pkg._id);
+    };
+
+    return result;
   }
 
   async deprecatePackage(pkg: StoreItem) {
@@ -330,5 +351,25 @@ The author hasn't provided a readme file themselves, so this one has been automa
       this.pid,
       true
     );
+  }
+
+  registerOperation(id: string, proc: InstallerProcess) {
+    if (this.operations[id]) return false;
+
+    this.operations[id] = proc;
+
+    return true;
+  }
+
+  discardOperation(id: string) {
+    if (!this.operations[id]) return false;
+
+    delete this.operations[id];
+
+    return true;
+  }
+
+  getRunningOperation(pkg: StoreItem) {
+    return this.operations[pkg._id];
   }
 }
