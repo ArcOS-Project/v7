@@ -232,4 +232,13 @@ export class InstallerProcess extends Process {
     this.killSelf();
     return true;
   }
+
+  async stop() {
+    await this.onStop();
+    return true;
+  }
+
+  public async onStop() {
+    /** */
+  }
 }
