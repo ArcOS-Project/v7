@@ -966,6 +966,34 @@ export class AdminBootstrapper extends BaseService {
     }
   }
 
+  async storeItemMakeOfficial(id: string) {
+    try {
+      const response = await Backend.post(
+        `/admin/store/official/on/${id}`,
+        {},
+        { headers: { Authorization: `Bearer ${this.token}` } }
+      );
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async storeItemMakeNotOfficial(id: string) {
+    try {
+      const response = await Backend.post(
+        `/admin/store/official/off/${id}`,
+        {},
+        { headers: { Authorization: `Bearer ${this.token}` } }
+      );
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
   async readStoreItemFiles(id: string, onProgress?: FilesystemProgressCallback, onStatus?: (s: string) => void) {
     const target = `T:/AdminBootstrapper/${id}`;
     const pkg = await this.getStoreItem(id);

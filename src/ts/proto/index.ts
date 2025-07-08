@@ -26,6 +26,7 @@ export class ProtocolServiceProcess extends BaseService {
   }
 
   parseProtoParam() {
+    this.Log("Attempting to execute proto param");
     const param = this.kernel.params.get("proto");
 
     if (param) {
@@ -44,7 +45,6 @@ export class ProtocolServiceProcess extends BaseService {
   }
 
   parseAnchor(anchor: HTMLAnchorElement) {
-    console.warn("PARSING ->", anchor);
     if (anchor.hasAttribute("data-no-proto")) return;
 
     const parsed = this.parseUrl(anchor.href);
@@ -53,6 +53,8 @@ export class ProtocolServiceProcess extends BaseService {
       anchor.setAttribute("data-no-proto", "true");
       return;
     }
+
+    this.Log(`Parsing a fresh anchor element`);
 
     const handler = this.store[parsed.command]!;
     const info = handler.info(parsed.payload, this.host.daemon);
@@ -98,6 +100,8 @@ export class ProtocolServiceProcess extends BaseService {
   }
 
   async executeUrl(url: string) {
+    this.Log(`Working to execute ${url}`);
+
     const parsed = this.parseUrl(url);
     const handler = this.store[parsed?.command || ""];
 
@@ -107,12 +111,16 @@ export class ProtocolServiceProcess extends BaseService {
   }
 
   registerHandler(command: string, handler: ProtocolHandler) {
+    this.Log(`Registering handler: ${command} (${handler.name})`);
+
     if (this.store[command]) return false;
     this.store[command] = handler;
     return true;
   }
 
   unregisterHandler(command: string) {
+    this.Log(`Unregistering handler: ${command}`);
+
     if (!this.store[command]) return false;
     delete this.store[command];
 
