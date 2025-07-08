@@ -65,6 +65,7 @@
     "path": "^0.12.7",
     "shell-quote": "^1.8.2",
     "socket.io-client": "^4.8.1",
+    "stacktrace-parser": "^0.1.11",
     "string-width": "^7.2.0",
     "svelte-dnd-action": "^0.9.57",
     "svelte-markdown": "^0.4.1",
