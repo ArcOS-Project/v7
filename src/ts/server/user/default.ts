@@ -40,6 +40,7 @@ export const DefaultUserPreferences: UserPreferences = {
       compactContext: false,
       showHiddenApps: false,
       noGlass: false,
+      trafficLights: false,
     },
     customStyle: {
       enabled: false,

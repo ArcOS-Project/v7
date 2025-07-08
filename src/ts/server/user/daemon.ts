@@ -34,7 +34,7 @@ import {
   PasswordIcon,
   PersonalizationIcon,
 } from "$ts/images/general";
-import { ImageMimeIcon } from "$ts/images/mime";
+import { ImageMimeIcon, ShortcutMimeIcon } from "$ts/images/mime";
 import { RestartIcon } from "$ts/images/power";
 import { tryJsonParse } from "$ts/json";
 import type { ProcessHandler } from "$ts/process/handler";
@@ -2089,25 +2089,39 @@ export class UserDaemon extends Process {
     this.Log(`Handling shortcut "${path}"`);
     const filename = getItemNameFromPath(path);
 
-    switch (shortcut.type) {
-      case "app":
-        return await this.spawnApp(shortcut.target, +this.env.get("shell_pid"));
-      case "file":
-        return await this.openFile(shortcut.target);
-      case "folder":
-        return await this.spawnApp("fileManager", +this.env.get("shell_pid"), shortcut.target);
-      default:
-        MessageBox(
-          {
-            title: "Broken Shortcut",
-            message: `ArcOS doesn't know how to open shortcut '${shortcut.name}' (${filename}) of type ${shortcut.type}.`,
-            buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-            sound: "arcos.dialog.warning",
-            image: WarningIcon,
-          },
-          +this.env.get("shell_pid"),
-          true
-        );
+    try {
+      switch (shortcut.type) {
+        case "app":
+          return await this.spawnApp(shortcut.target, +this.env.get("shell_pid"));
+        case "file":
+          return await this.openFile(shortcut.target);
+        case "folder":
+          return await this.spawnApp("fileManager", +this.env.get("shell_pid"), shortcut.target);
+        default:
+          MessageBox(
+            {
+              title: "Broken Shortcut",
+              message: `ArcOS doesn't know how to open shortcut '${shortcut.name}' (${filename}) of type ${shortcut.type}.`,
+              buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+              sound: "arcos.dialog.warning",
+              image: WarningIcon,
+            },
+            +this.env.get("shell_pid"),
+            true
+          );
+      }
+    } catch (e) {
+      MessageBox(
+        {
+          title: "Failed to open shortcut",
+          message: `ArcOS failed to open the shortcut you requested. Reason: ${e}`,
+          image: ShortcutMimeIcon,
+          sound: "arcos.dialog.error",
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        },
+        +this.env.get("shell_pid"),
+        true
+      );
     }
   }
 
