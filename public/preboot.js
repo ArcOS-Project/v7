@@ -1,6 +1,6 @@
 (() => {
   function loadFail(r) {
-    const url = "https://docs.arcapi.nl/reference/troubleshooting#the-dots-of-doom";
+    const url = "https://docs.arcapi.nl/general-information/troubleshooting#the-dots-of-doom";
     const pre = document.createElement("pre");
 
     pre.innerHTML = `Unable to load ArcOS: your browser might not be compatible.<br><br>`;
