@@ -109,3 +109,12 @@ export interface SpecificAdminAction {
 }
 
 export type SpecificAdminActions = Record<string, SpecificAdminAction>;
+
+export interface FilesystemsPageQuota extends Record<string, any> {
+  user: ExpandedUserInfo;
+  used: number;
+  max: number;
+  free: number;
+  percentage: number;
+  unknown?: boolean;
+}
