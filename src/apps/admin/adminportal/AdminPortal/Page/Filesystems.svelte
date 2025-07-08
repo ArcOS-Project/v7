@@ -1,12 +1,33 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
+  import { sortByKey } from "$ts/util";
+  import { Store } from "$ts/writable";
+  import { onMount } from "svelte";
   import type { AdminPortalRuntime } from "../../runtime";
-  import type { FilesystemsData } from "../../types";
+  import type { FilesystemsData, FilesystemsPageQuota } from "../../types";
   import FilesystemRow from "./Filesystems/FilesystemRow.svelte";
+  import Spinner from "$lib/Spinner.svelte";
 
   const { process, data }: { process: AdminPortalRuntime; data: FilesystemsData } = $props();
   const { users } = data;
   const { admin } = process;
+
+  const quotas = Store<FilesystemsPageQuota[]>([]);
+  let loading = $state<boolean>(true);
+
+  onMount(async () => {
+    for (const user of users) {
+      const quota = await process.admin.getQuotaOf(user.username);
+      quotas.update((v) => {
+        v.push({
+          user,
+          ...quota!,
+        });
+        return v;
+      });
+    }
+    loading = false;
+  });
 </script>
 
 <div class="fs-list">
@@ -22,7 +43,11 @@
     <div class="segment index">Index</div>
     <div class="segment mount">Mount</div>
   </div>
-  {#each users as user (user._id)}
-    <FilesystemRow {user} {admin} {process} />
+  {#each sortByKey($quotas, "used", true) as quota (quota.user._id)}
+    <FilesystemRow {quota} {admin} {process} />
   {/each}
+</div>
+<div class="loading-overlay" class:show={loading}>
+  <Spinner height={32} />
+  <p>Collecting information</p>
 </div>
