@@ -29,6 +29,9 @@ export interface StoreItem {
   updatedAt: string;
   deprecated: boolean;
   description: string;
+  verifiedBy?: string;
+  verifiedVer?: string;
+  verifiedNote?: string;
 }
 
 export interface PartialStoreItem {

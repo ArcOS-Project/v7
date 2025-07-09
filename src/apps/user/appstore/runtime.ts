@@ -117,6 +117,17 @@ export class AppStoreRuntime extends AppProcess {
       if (!go) return 0;
     }
 
+    if (pkg.verifiedVer !== pkg.pkg.version) {
+      const go = await this.userDaemon!.Confirm(
+        "Wait a minute!",
+        `The ArcOS administrators haven't yet verified version <b>${pkg.pkg.version}</b> of this package! Installing it now could open you up to security vulnerabilities or unstable code. Are you sure you want to install it now?`,
+        "Cancel",
+        "Install anyway"
+      );
+
+      if (!go) return 0;
+    }
+
     const elevated = await this.userDaemon!.manuallyElevate({
       what: "ArcOS needs your permission to install a package",
       title: pkg.pkg.name,
@@ -154,6 +165,17 @@ export class AppStoreRuntime extends AppProcess {
         await this.userDaemon?.deleteApp(pkg.pkg.appId, true);
         return 0;
       }
+    }
+
+    if (pkg.verifiedVer !== pkg.pkg.version) {
+      const go = await this.userDaemon!.Confirm(
+        "Wait a minute!",
+        `The ArcOS administrators haven't yet verified version <b>${pkg.pkg.version}</b> of this package! Updating now could open you up to security vulnerabilities or unstable code. Are you sure you want to install it now?`,
+        "Cancel",
+        "Install anyway"
+      );
+
+      if (!go) return 0;
     }
 
     const elevated = await this.userDaemon!.manuallyElevate({
