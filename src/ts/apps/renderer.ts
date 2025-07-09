@@ -22,6 +22,7 @@ export class AppRenderer extends Process {
   focusedPid = Store(-1);
   appStore = Store<Map<string, AppProcessData>>(new Map());
   defaultApps = BuiltinApps;
+  lastInteract?: AppProcess;
   override _criticalProcess: boolean = true;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, target: string) {
@@ -61,6 +62,9 @@ export class AppRenderer extends Process {
 
     window.className = "window shell-colored";
     window.setAttribute("data-pid", process.pid.toString());
+    window.addEventListener("click", () => {
+      this.lastInteract = process;
+    });
     window.id = data.id;
 
     process.userDaemon?.preferences.subscribe((v) => {
@@ -666,5 +670,13 @@ export class AppRenderer extends Process {
       },
       this.pid
     );
+  }
+
+  protected async start() {
+    this.focusedPid.subscribe((v) => {
+      if (this._disposed || !v) return;
+
+      this.lastInteract = this.handler.getProcess(v);
+    });
   }
 }
