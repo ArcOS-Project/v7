@@ -432,6 +432,8 @@ export class MessagingAppRuntime extends AppProcess {
             caption: "Delete",
             action: async () => {
               await this.service.deleteMessage(id);
+              this.message.set(undefined);
+              if (this.messageWindow) this.closeWindow();
             },
             suggested: true,
           },
