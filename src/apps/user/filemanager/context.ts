@@ -412,5 +412,29 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         },
       },
     ],
+    "place-my_arcos": [
+      {
+        caption: "Go here",
+        icon: "folder-open",
+        action: () => {
+          runtime.navigate(`::my_arcos`);
+        },
+      },
+      { sep: true },
+      {
+        caption: "Advanced system settings...",
+        icon: "monitor-cog",
+        action: () => {
+          runtime.userDaemon?.spawnApp("AdvSystemSettings", +runtime.env.get("shell_pid"));
+        },
+      },
+      {
+        caption: "Settings...",
+        icon: "settings-2",
+        action: () => {
+          runtime.userDaemon?.spawnApp("systemSettings", +runtime.env.get("shell_pid"));
+        },
+      },
+    ],
   };
 }

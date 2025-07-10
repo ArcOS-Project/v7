@@ -26,7 +26,12 @@
       <h1>Places</h1>
       {#each Object.entries(process.virtualLocations) as [id, location] (id)}
         {#if !location.hidden}
-          <button class="folder" onclick={() => process.navigate(`::${id}`)} class:selected={$path === `::${id}`}>
+          <button
+            class="folder"
+            onclick={() => process.navigate(`::${id}`)}
+            class:selected={$path === `::${id}`}
+            data-contextmenu="place-{id}"
+          >
             <span class="lucide icon-{location.icon}"></span>
             <span>{location.name}</span>
           </button>
