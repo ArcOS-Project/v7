@@ -10,6 +10,7 @@ export const AdvSystemSettings: App = {
     version: "1.0.0",
     author: "Izaak Kuipers",
     icon: WindowSettingsIcon,
+    appGroup: "systemTools",
   },
   position: { centered: true },
   size: { w: 450, h: 550 },
