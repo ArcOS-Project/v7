@@ -74,6 +74,8 @@ export class ContextMenuRuntime extends AppProcess {
     const items = this.getContextEntry(+pid, contextmenu);
     const proc = this.handler.getProcess(+pid);
 
+    if (!items.length) return this.closeContextMenu();
+
     this.createContextMenu({
       x: e.clientX,
       y: e.clientY,

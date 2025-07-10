@@ -109,40 +109,5 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
         disabled: (proc: AppProcess) => !proc.app.data.controls.close,
       },
     ],
-    "taskbar-clock": [
-      {
-        caption: "Show seconds",
-        icon: "loader",
-        action: () => {
-          runtime.userPreferences.update((v) => {
-            v.shell.taskbar.clockSecs = !v.shell.taskbar.clockSecs;
-            return v;
-          });
-        },
-        isActive: () => runtime.userPreferences().shell.taskbar.clockSecs,
-      },
-      {
-        caption: "Show date",
-        icon: "calendar",
-        action: () => {
-          runtime.userPreferences.update((v) => {
-            v.shell.taskbar.clockDate = !v.shell.taskbar.clockDate;
-            return v;
-          });
-        },
-        isActive: () => runtime.userPreferences().shell.taskbar.clockDate,
-      },
-      {
-        caption: "12-hour clock",
-        icon: "clock-12",
-        action: () => {
-          runtime.userPreferences.update((v) => {
-            v.shell.taskbar.clock12hr = !v.shell.taskbar.clock12hr;
-            return v;
-          });
-        },
-        isActive: () => runtime.userPreferences().shell.taskbar.clock12hr,
-      },
-    ],
   };
 }
