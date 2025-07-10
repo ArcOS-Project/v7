@@ -23,6 +23,7 @@ div.shell div.actioncenter {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  overflow: hidden;
 }
 
 div.shell.docked div.actioncenter {

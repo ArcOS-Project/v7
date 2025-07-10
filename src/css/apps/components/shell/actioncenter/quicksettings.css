@@ -9,6 +9,13 @@ div.shell div.actioncenter div.quick-settings {
   align-items: center;
   gap: 10px;
   padding: 0 10px;
+  transition: margin-bottom 0.2s, opacity 0.2s;
+}
+
+div.shell div.actioncenter div.quick-settings.hidden {
+  margin-bottom: -70px;
+  opacity: 0;
+  pointer-events: none !important;
 }
 
 div.shell div.actioncenter div.quick-settings button {

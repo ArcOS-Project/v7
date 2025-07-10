@@ -100,6 +100,7 @@ export class ShellRuntime extends AppProcess {
       const workspaceManager = document.querySelector("#arcShell div.virtual-desktops");
       const workspaceManagerButton = document.querySelector("#arcShell button.workspace-manager-button");
       const systemTray = document.querySelector("#arcShell div.tray-icons");
+      const contextMenu = document.querySelector("#contextMenu div.context-menu");
 
       const composed = e.composedPath();
 
@@ -108,21 +109,34 @@ export class ShellRuntime extends AppProcess {
       this.openedTrayPopup.subscribe((v) => v && this.handler.renderer?.focusedPid.set(-1));
 
       // Clicked outside the start menu? Then close it
-      if (startMenu && startButton && !composed.includes(startMenu) && !composed.includes(startButton))
+      if (
+        startMenu &&
+        startButton &&
+        !composed.includes(startMenu) &&
+        !composed.includes(startButton) &&
+        !composed.includes(contextMenu!)
+      )
         this.startMenuOpened.set(false);
 
       // Clicked outside the action center? Then close it
-      if (actionCenter && actionCenterButton && !composed.includes(actionCenter) && !composed.includes(actionCenterButton))
+      if (
+        actionCenter &&
+        actionCenterButton &&
+        !composed.includes(actionCenter) &&
+        !composed.includes(actionCenterButton) &&
+        !composed.includes(contextMenu!)
+      )
         this.actionCenterOpened.set(false);
 
       // Clicked outside a tray popup? Close it
-      if (systemTray && !composed.includes(systemTray)) this.openedTrayPopup.set("");
+      if (systemTray && !composed.includes(systemTray) && !composed.includes(contextMenu!)) this.openedTrayPopup.set("");
 
       if (
         workspaceManager &&
         workspaceManagerButton &&
         !composed.includes(workspaceManager) &&
-        !composed.includes(workspaceManagerButton)
+        !composed.includes(workspaceManagerButton) &&
+        !composed.includes(contextMenu!)
       )
         this.workspaceManagerOpened.set(false); // Clicked outside the wsman? close it
     });
@@ -283,5 +297,10 @@ export class ShellRuntime extends AppProcess {
   async exit() {
     this.startMenuOpened.set(false); // First close the start menu
     await this.spawnOverlayApp("ExitApp", this.pid); // Then spawn the exit overlay
+  }
+
+  async stop() {
+    this.env.delete("shell_pid");
+    return true;
   }
 }

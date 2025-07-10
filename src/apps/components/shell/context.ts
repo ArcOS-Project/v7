@@ -92,6 +92,22 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         disabled: (app: App) => !app.entrypoint && !app.thirdParty,
       },
     ],
+    "startmenu-list": [
+      {
+        caption: "Enable app groups",
+        action: () => {
+          runtime.userPreferences.update((v) => {
+            v.shell.start.noGroups = !v.shell.start.noGroups;
+            return v;
+          });
+          setTimeout(() => {
+            runtime.startMenuOpened.set(true);
+          }, 0);
+        },
+        isActive: () => !runtime.userPreferences().shell.start.noGroups,
+        icon: "folder-tree",
+      },
+    ],
     "taskbar-openedapp": [
       {
         caption: "Launch another",
@@ -210,6 +226,41 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         action: (desktop: Workspace) => {
           runtime.deleteWorkspace(desktop);
         },
+      },
+    ],
+    "taskbar-clock": [
+      {
+        caption: "Show seconds",
+        icon: "loader",
+        action: () => {
+          runtime.userPreferences.update((v) => {
+            v.shell.taskbar.clockSecs = !v.shell.taskbar.clockSecs;
+            return v;
+          });
+        },
+        isActive: () => runtime.userPreferences().shell.taskbar.clockSecs,
+      },
+      {
+        caption: "Show date",
+        icon: "calendar",
+        action: () => {
+          runtime.userPreferences.update((v) => {
+            v.shell.taskbar.clockDate = !v.shell.taskbar.clockDate;
+            return v;
+          });
+        },
+        isActive: () => runtime.userPreferences().shell.taskbar.clockDate,
+      },
+      {
+        caption: "12-hour clock",
+        icon: "clock-12",
+        action: () => {
+          runtime.userPreferences.update((v) => {
+            v.shell.taskbar.clock12hr = !v.shell.taskbar.clock12hr;
+            return v;
+          });
+        },
+        isActive: () => runtime.userPreferences().shell.taskbar.clock12hr,
       },
     ],
   };

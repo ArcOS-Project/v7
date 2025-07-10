@@ -8,6 +8,7 @@
   import Spinner from "../../../../../../../lib/Spinner.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
+  const { userPreferences } = process;
 
   let data = $state<WeatherInformation>();
   let loading = $state<boolean>(true);
@@ -38,12 +39,20 @@
   class="card weather partly-sunny"
   style={data && data.gradient ? `--gradient-start: ${data.gradient.start}; --gradient-end: ${data.gradient.end};` : ""}
   class:loading
-  class:errored={!data}
+  class:errored={$userPreferences.shell.actionCenter.weatherLocation.name === "unset" || !data}
   class:night={data && data.isNight}
   data-contextmenu="actioncenter-weather-card"
   use:contextProps={[changeLocation, refresh]}
 >
-  {#if !loading}
+  {#if $userPreferences.shell.actionCenter.weatherLocation.name === "unset"}
+    <p>Set-up weather</p>
+    <button
+      class="retry lucide icon-settings-2"
+      title="Set weather location"
+      aria-label="Set weather location"
+      onclick={() => changeLocation()}
+    ></button>
+  {:else if !loading}
     {#if data}
       {#if data.icon && data.iconColor}
         <span class="condition-icon lucide icon-{data.icon}" style="--color: {data.iconColor};"></span>

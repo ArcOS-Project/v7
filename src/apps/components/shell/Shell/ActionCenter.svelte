@@ -30,8 +30,8 @@
     {/if}
   </div>
   <Notifications {process} />
-  {#if !$userPreferences.shell.actionCenter.hideQuickSettings && !process.safeMode}
-    <div class="quick-settings">
+  {#if !process.safeMode}
+    <div class="quick-settings" class:hidden={$userPreferences.shell.actionCenter.hideQuickSettings}>
       <button
         class="lucide icon-settings-2 settings"
         aria-label="Open Settings"
