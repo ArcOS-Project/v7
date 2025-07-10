@@ -22,9 +22,10 @@ export const DefaultUserPreferences: UserPreferences = {
     },
     actionCenter: {
       weatherLocation: {
-        // new york
-        latitude: 40.7143,
-        longitude: -74.006,
+        // unset
+        latitude: Infinity,
+        longitude: Infinity,
+        name: "unset",
       },
       noteContent: "",
       galleryImage: "",

@@ -668,7 +668,7 @@ export class AppRenderer extends Process {
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
         image: BugReportIcon,
       },
-      this.pid
+      +this.env.get("shell_pid") || this.pid
     );
   }
 

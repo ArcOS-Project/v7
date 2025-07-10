@@ -13,7 +13,8 @@ export const CalculatorApp: App = {
     appGroup: "utilities",
   },
   position: {
-    centered: true,
+    x: 60,
+    y: 60,
   },
   size: {
     w: 347,
