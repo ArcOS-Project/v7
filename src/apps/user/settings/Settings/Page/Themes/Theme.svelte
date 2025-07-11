@@ -68,7 +68,7 @@
   onclick={apply}
   style="--url: url('{wallpaper}');"
   data-contextmenu={isUser ? "user-theme-option" : "builtin-theme-option"}
-  use:contextProps={[apply, deleteTheme]}
+  use:contextProps={[apply, deleteTheme, theme]}
 >
   <div class="fake-window shell-colored theme-{theme.desktopTheme}" style={css} class:colored={theme.taskbarColored}>
     <div class="fake-button"></div>

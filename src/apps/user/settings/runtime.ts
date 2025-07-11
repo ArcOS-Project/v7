@@ -21,6 +21,7 @@ import { htmlspecialchars } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { App, AppContextMenu, AppProcessData } from "$types/app";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
+import { SettingsContext } from "./context";
 import { ChangePasswordApp } from "./overlays/changePassword";
 import { ChangeUsernameApp } from "./overlays/changeUsername";
 import { SaveThemeApp } from "./overlays/saveTheme";
@@ -71,33 +72,7 @@ export class SettingsRuntime extends AppProcess {
     },
   };
 
-  override contextMenu: AppContextMenu = {
-    "user-theme-option": [
-      {
-        caption: "Apply",
-        action: (apply) => {
-          apply();
-        },
-        icon: "check",
-      },
-      { sep: true },
-      {
-        caption: "Delete Theme",
-        action: (_, deleteTheme) => {
-          deleteTheme();
-        },
-      },
-    ],
-    "builtin-theme-option": [
-      {
-        caption: "Apply",
-        action: (apply) => {
-          apply();
-        },
-        icon: "check",
-      },
-    ],
-  };
+  override contextMenu = SettingsContext(this);
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, page?: string, slide?: string) {
     super(handler, pid, parentPid, app);
