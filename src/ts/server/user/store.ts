@@ -368,7 +368,9 @@ export const UserPathCaptions: Record<string, string> = {
   Wallpapers: "Wallpapers",
   Desktop: "Desktop",
   Music: "Music",
+  Configuration: "Configuration",
 };
+
 export const UserPathIcons: Record<string, string> = {
   Root: "hard-drive",
   Home: "house",
@@ -379,6 +381,7 @@ export const UserPathIcons: Record<string, string> = {
   Wallpapers: "wallpaper",
   Desktop: "dock",
   Music: "music",
+  Configuration: "cog",
 };
 
 export const UserFonts: string[] = [
