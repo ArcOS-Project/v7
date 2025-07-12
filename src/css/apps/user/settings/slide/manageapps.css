@@ -45,7 +45,7 @@
   height: 30px;
   padding: 0 10px;
   border: none;
-  background-color: var(--button-glass-bg);
+  background-color: var(--button-bg);
 }
 #systemSettings div.apps_manageApps div.apps {
   display: grid;

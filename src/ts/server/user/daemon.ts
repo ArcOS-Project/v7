@@ -619,7 +619,13 @@ export class UserDaemon extends Process {
     this.Log(`Deleting local wallpaper '${id}'`);
 
     const path = atob(id.replace("@local:", ""));
-    const result = await this.fs.deleteItem(path);
+    let result: boolean = false;
+
+    try {
+      result = await this.fs.deleteItem(path);
+    } catch {
+      result = false;
+    }
 
     this.preferences.update((v) => {
       delete v.userWallpapers[id];
