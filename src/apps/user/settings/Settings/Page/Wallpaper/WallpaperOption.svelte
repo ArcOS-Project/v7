@@ -1,5 +1,6 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
+  import { contextProps } from "$ts/context/actions.svelte";
   import type { UserDaemon } from "$ts/server/user/daemon";
   import { Wallpapers } from "$ts/wallpaper/store";
   import type { UserPreferencesStore } from "$types/user";
@@ -26,6 +27,8 @@
     loading = true;
     wallpaper = await userDaemon.getWallpaper(id);
     loading = false;
+
+    console.log(id);
   }
 
   function apply() {
@@ -42,6 +45,8 @@
     title="{wallpaper.name} by {wallpaper.author}"
     onclick={apply}
     class:selected={isLogin ? $userPreferences.account.loginBackground === id : $userPreferences.desktop.wallpaper === id}
+    data-contextmenu={id.startsWith("@local:") ? "user-wallpaper" : ""}
+    use:contextProps={[id]}
   >
     {#if !loading}
       <div class="selected-overlay">

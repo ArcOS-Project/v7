@@ -1,4 +1,7 @@
+import { MessageBox } from "$ts/dialog";
 import { textToBlob } from "$ts/fs/convert";
+import { getParentDirectory } from "$ts/fs/util";
+import { WarningIcon } from "$ts/images/dialog";
 import { ThemesIcon } from "$ts/images/general";
 import { UserPaths } from "$ts/server/user/store";
 import type { AppContextMenu } from "$types/app";
@@ -65,6 +68,60 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
           await runtime.fs.writeFile(path, textToBlob(JSON.stringify(theme, null, 2)));
         },
         icon: "save",
+      },
+    ],
+    "user-wallpaper": [
+      {
+        caption: "Apply",
+        icon: "check",
+        action: (id: string) => {
+          runtime.userPreferences.update((v) => {
+            v.desktop.wallpaper = id;
+            return v;
+          });
+        },
+      },
+      {
+        caption: "Open file location",
+        icon: "folder-open",
+        action: (id: string) => {
+          runtime.userDaemon?.spawnApp(
+            "fileManager",
+            +runtime.env.get("shell_pid"),
+            getParentDirectory(atob(id.replace("@local:", "")))
+          );
+        },
+      },
+      { sep: true },
+      {
+        caption: "Delete wallpaper",
+        icon: "trash-2",
+        action: (id: string) => {
+          MessageBox(
+            {
+              title: "Delete wallpaper?",
+              message:
+                "Are you sure you want to delete this wallpaper? This will also delete the original file, and it cannot be brought back.",
+              image: WarningIcon,
+              sound: "arcos.dialog.warning",
+              buttons: [
+                {
+                  caption: "Cancel",
+                  action: () => {},
+                },
+                {
+                  caption: "Delete",
+                  action: async () => {
+                    await runtime.userDaemon?.deleteLocalWallpaper(id);
+                  },
+                  suggested: true,
+                },
+              ],
+            },
+            +runtime.env.get("shell_pid"),
+            true
+          );
+        },
       },
     ],
   };

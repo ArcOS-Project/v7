@@ -283,6 +283,7 @@ export class SettingsRuntime extends AppProcess {
     });
 
     if (!path) return;
+
     const id = `@local:${btoa(path)}`;
     const filename = getItemNameFromPath(path);
     const pref = this.userPreferences();
@@ -294,16 +295,10 @@ export class SettingsRuntime extends AppProcess {
         url: "",
         thumb: "",
       };
-      this.userPreferences.set(pref);
     }
 
-    this.userPreferences.update((v) => {
-      if (!v.userWallpapers[id]) {
-      }
-      v.desktop.wallpaper = `@local:${btoa(path)}`;
-
-      return v;
-    });
+    pref.desktop.wallpaper = `@local:${btoa(path)}`;
+    this.userPreferences.set(pref);
   }
 
   async chooseLoginBackground() {
