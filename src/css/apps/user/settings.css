@@ -31,7 +31,7 @@
 #systemSettings > div.body div.sidebar {
   width: 250px;
   height: 100%;
-  border-right: var(--win-border);
+  border-right: var(--button-glass-bg) 1px solid;
 }
 
 #systemSettings > div.body div.container {
