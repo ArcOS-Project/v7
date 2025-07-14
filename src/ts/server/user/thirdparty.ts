@@ -114,6 +114,13 @@ export function ThirdPartyProps(
     CustomTitlebar,
     contextProps,
     dayjs,
+    console: {
+      warn: (..._: any[]) => {},
+      log: (..._: any[]) => {},
+      info: (..._: any[]) => {},
+      debug: (..._: any[]) => {},
+      error: (..._: any[]) => {},
+    },
   };
 
   const supplementary = SupplementaryThirdPartyPropFunctions(daemon, daemon.fs, app, props, wrap, args, metaPath);

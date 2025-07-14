@@ -42,17 +42,22 @@ export function handleGlobalErrors() {
   window.addEventListener("error", Error, { passive: false });
   window.addEventListener("unhandledrejection", Error, { passive: false });
 
-  console.log(console.warn);
-  const originalWarn = console.warn;
-
-  Object.defineProperty(console, "warn", {
-    value: new Proxy(originalWarn, {
-      apply: (...args) => {
-        return WaveKernel.get().Log(`Console`, args.join(", "), LogLevel.warning);
-      },
-    }),
-    writable: false,
-    configurable: false,
+  window.console = new Proxy(console, {
+    get(target, prop) {
+      if (prop === "warn") {
+        return (...args: any[]) => {
+          WaveKernel.get().Log(`Console`, args.join(", "), LogLevel.warning);
+        };
+      }
+      return Reflect.get(target, prop);
+    },
+    set(target, prop, value) {
+      if (prop === "warn") {
+        // Silently ignore any attempts to override console.warn
+        return true;
+      }
+      return Reflect.set(target, prop, value);
+    },
   });
 }
 
