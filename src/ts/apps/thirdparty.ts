@@ -9,6 +9,7 @@ export class ThirdPartyAppProcess extends AppProcess {
   workingDirectory: string;
   mutationLock = false;
   urlCache: Record<string, string> = {};
+  elements: Record<string, Element> = {};
 
   constructor(
     handler: ProcessHandler,
@@ -61,6 +62,7 @@ export class ThirdPartyAppProcess extends AppProcess {
           const direct = this.urlCache[filePath] ?? (await this.fs.direct(filePath));
 
           if (!direct) continue;
+          if (!originalValue.includes(":/")) this.elements[originalValue] = element;
 
           // if (!this.urlCache[filePath]) this.urlCache[filePath] = direct;
 

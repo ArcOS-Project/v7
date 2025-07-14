@@ -21,6 +21,7 @@ export class DevelopmentEnvironment extends BaseService {
   private axios?: AxiosInstance;
   public meta?: ProjectMetadata;
   private daemon: UserDaemon;
+  private pids: number[] = [];
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);
@@ -64,7 +65,10 @@ export class DevelopmentEnvironment extends BaseService {
         .filter(([_, proc]) => proc instanceof ThirdPartyAppProcess && proc.app.id === this.meta?.metadata.appId)
         .map(([pid]) => pid);
 
-      if (this.connected) this.client?.emit("pids", procs);
+      if (this.connected) {
+        this.client?.emit("pids", procs);
+        this.pids = procs;
+      }
     });
 
     this.meta = await this.getProjectMeta();
@@ -113,6 +117,10 @@ export class DevelopmentEnvironment extends BaseService {
       this.client.on("restart-tpa", () => {
         if (this._disposed) return this.disconnect();
         this.restartTpa();
+      });
+      this.client.on("refresh-css", (filename: string) => {
+        console.log(filename);
+        this.refreshCSS(filename);
       });
       this.kernel.Logs.subscribe((v) => {
         if (this._disposed) return;
@@ -181,6 +189,23 @@ export class DevelopmentEnvironment extends BaseService {
 
   async stop() {
     await this.disconnect();
+  }
+
+  async refreshCSS(filename: string) {
+    const processes = this.pids.map((pid) => this.handler.getProcess<ThirdPartyAppProcess>(pid)).filter((proc) => !!proc);
+
+    for (const proc of processes) {
+      if (proc.elements[filename] && proc.elements[filename] instanceof HTMLLinkElement) {
+        console.log(`refreshCSS: ${filename}: ${proc.pid} ->`, proc.elements[filename]);
+        const link = proc.elements[filename];
+        const href = `${link.href}`;
+
+        link.href = "";
+        setTimeout(() => {
+          link.href = href;
+        }, 0);
+      }
+    }
   }
 }
 
