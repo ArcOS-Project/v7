@@ -3,6 +3,7 @@ import { Crash } from "./crash";
 import * as stackTraceParser from "stacktrace-parser";
 import { WaveKernel } from "./kernel";
 import { ProcessHandler } from "./process/handler";
+import { LogLevel } from "$types/logging";
 export function handleGlobalErrors() {
   let LOCKED = false;
   function Error(e: ErrorEvent | PromiseRejectionEvent) {
@@ -40,6 +41,19 @@ export function handleGlobalErrors() {
 
   window.addEventListener("error", Error, { passive: false });
   window.addEventListener("unhandledrejection", Error, { passive: false });
+
+  console.log(console.warn);
+  const originalWarn = console.warn;
+
+  Object.defineProperty(console, "warn", {
+    value: new Proxy(originalWarn, {
+      apply: (...args) => {
+        return WaveKernel.get().Log(`Console`, args.join(", "), LogLevel.warning);
+      },
+    }),
+    writable: false,
+    configurable: false,
+  });
 }
 
 export function checkIndevTpa(stack: string, e: Error): boolean {
