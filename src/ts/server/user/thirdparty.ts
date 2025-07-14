@@ -121,6 +121,12 @@ export function ThirdPartyProps(
       debug: (..._: any[]) => {},
       error: (..._: any[]) => {},
     },
+    LogLevel: {
+      info: 0,
+      warning: 1,
+      error: 2,
+      critical: 3,
+    },
   };
 
   const supplementary = SupplementaryThirdPartyPropFunctions(daemon, daemon.fs, app, props, wrap, args, metaPath);
