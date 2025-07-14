@@ -3,7 +3,7 @@
 #SecureContext div.actions {
   display: flex;
   margin-top: auto;
-  border-top: var(--win-border);
+  border-top: var(--button-glass-hover-bg) 1px solid;
   padding: 10px;
   background-color: var(--button-glass-bg);
   margin: 0;
