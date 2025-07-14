@@ -196,7 +196,6 @@ export class DevelopmentEnvironment extends BaseService {
 
     for (const proc of processes) {
       if (proc.elements[filename] && proc.elements[filename] instanceof HTMLLinkElement) {
-        console.log(`refreshCSS: ${filename}: ${proc.pid} ->`, proc.elements[filename]);
         const link = proc.elements[filename];
         const href = `${link.href}`;
 
