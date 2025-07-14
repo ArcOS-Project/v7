@@ -34,8 +34,6 @@
           return !report.closed;
       }
     });
-
-    console.log($filterId, $sortState, $store);
   }
 
   onMount(() => {

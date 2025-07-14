@@ -1005,8 +1005,6 @@ export class AdminBootstrapper extends BaseService {
     };
 
     if (!pkg || !distrib) {
-      console.log("No pkg or distrib");
-
       return false;
     }
 
@@ -1015,14 +1013,11 @@ export class AdminBootstrapper extends BaseService {
     const content = await distrib.downloadStoreItem(id, onProgress);
 
     if (!content) {
-      console.log("No content");
       return false;
     }
 
     const zip = new JSZip();
     const buffer = await zip.loadAsync(content, {});
-
-    console.log(buffer);
 
     if (!buffer.files["_metadata.json"] || !buffer.files["payload/_app.tpa"]) {
       return false;

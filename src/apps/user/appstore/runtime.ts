@@ -356,8 +356,6 @@ ${pkg.user?.displayName || pkg.user?.username || pkg.pkg.author}
 ## Disclaimer
 The author hasn't provided a readme file themselves, so this one has been automatically generated. If you're the author of this package, you can create \`src/README.md\` to act as the readme for your package. I encourage you to create this file, so that people know what this app is and what they can do with it.`;
 
-    console.log(result);
-
     return result;
   }
 

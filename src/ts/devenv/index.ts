@@ -119,7 +119,6 @@ export class DevelopmentEnvironment extends BaseService {
         this.restartTpa();
       });
       this.client.on("refresh-css", (filename: string) => {
-        console.log(filename);
         this.refreshCSS(filename);
       });
       this.kernel.Logs.subscribe((v) => {

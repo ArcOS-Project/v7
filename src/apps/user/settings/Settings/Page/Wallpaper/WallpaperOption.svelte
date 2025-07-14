@@ -27,8 +27,6 @@
     loading = true;
     wallpaper = await userDaemon.getWallpaper(id);
     loading = false;
-
-    console.log(id);
   }
 
   function apply() {
