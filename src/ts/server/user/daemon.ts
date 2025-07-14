@@ -575,6 +575,16 @@ export class UserDaemon extends Process {
     }
   }
 
+  changeProfilePicture(newValue: string | number) {
+    this.preferences.update((v) => {
+      v.account.profilePicture = newValue;
+      return v;
+    });
+
+    this.systemDispatch.dispatch("pfp-changed", [newValue]);
+    this.globalDispatch?.emit("pfp-changed", newValue);
+  }
+
   async uploadProfilePicture(): Promise<string | undefined> {
     if (this._disposed) return undefined;
 
@@ -584,11 +594,7 @@ export class UserDaemon extends Process {
     if (!result.length) return;
 
     const { path } = result[0];
-    this.preferences.update((v) => {
-      v.account.profilePicture = path;
-
-      return v;
-    });
+    this.changeProfilePicture(path);
 
     return path;
   }

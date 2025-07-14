@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { UserDaemon } from "$ts/server/user/daemon";
+  import { Sleep } from "$ts/sleep";
   import { authcode } from "$ts/util";
+  import type { UserPreferences } from "$types/user";
   import { onMount } from "svelte";
 
   interface Props {
@@ -17,29 +19,35 @@
 
   let url = $state<string | undefined>("");
   let currentPfp = $state<string | number>();
+  let loading = $state<boolean>(false);
 
   onMount(() => {
-    url = fallback;
+    // url = fallback;
 
-    preferences?.subscribe((v) => {
-      if (!fallback && currentPfp === (pfp || v.account.profilePicture!)) return;
-
-      url = fallback || `${import.meta.env.DW_SERVER_URL}/user/pfp/${userDaemon?.userInfo._id}${authcode()}`;
-
-      currentPfp = pfp || v.account.profilePicture!;
-    });
+    preferences?.subscribe(update);
+    userDaemon?.systemDispatch.subscribe("pfp-changed", () => update(preferences?.()!));
   });
+
+  async function update(v: UserPreferences) {
+    if (!fallback && currentPfp === (pfp || v.account.profilePicture!)) return;
+
+    if (url) await Sleep(100);
+
+    const code = authcode();
+    url =
+      fallback || `${import.meta.env.DW_SERVER_URL}/user/pfp/${userDaemon?.userInfo._id}${code}${code ? "&" : "?"}${Date.now()}`;
+
+    currentPfp = pfp || v.account.profilePicture!;
+  }
 </script>
 
-{#if url}
-  <!-- svelte-ignore element_invalid_self_closing_tag -->
-  <div
-    class="pfprenderer {className} pfp"
-    style="background-image:url('{url}'); --h: {height}px;"
-    class:is-online={online}
-    class:show-online={showOnline}
-  />
-{/if}
+<!-- svelte-ignore element_invalid_self_closing_tag -->
+<div
+  class="pfprenderer {className} pfp"
+  style="background-image:url('{loading ? '' : url}'); --h: {height}px;"
+  class:is-online={online}
+  class:show-online={showOnline}
+/>
 
 <style scoped>
   div.pfprenderer {
