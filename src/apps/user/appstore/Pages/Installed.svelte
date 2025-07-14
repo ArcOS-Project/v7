@@ -1,5 +1,6 @@
 <script lang="ts">
   import { StoreItemIcon } from "$ts/distrib/util";
+  import { Plural } from "$ts/util";
   import type { StoreItem, UpdateInfo } from "$types/package";
   import PackageGrid from "../AppStore/PackageGrid.svelte";
   import PackageInstallAction from "../AppStore/PackageInstallAction.svelte";
@@ -14,6 +15,32 @@
 
 {#if updates?.length || installed?.length}
   {#if updates.length}
+    <div class="updates-banner">
+      <img src={StoreItemIcon(updates[0].pkg)} alt="" class="banner" />
+      <div class="cta">
+        {#if updates.length > 1}
+          <h1>There are updates available!</h1>
+          <p>{updates.length} {Plural("app", updates.length)} have received new features and security improvements.</p>
+          <button class="suggested" onclick={updateAll}>Update</button>
+        {:else}
+          <h1>{updates[0].pkg.name} can be updated!</h1>
+          <p>Version <b>{updates[0].newVer}</b> can be installed. You currently have version <b>{updates[0].oldVer}</b>.</p>
+          <PackageInstallAction
+            pkg={{ ...updates[0].pkg, pkg: { ...updates[0].pkg.pkg, version: updates[0].newVer } }}
+            {process}
+          />
+        {/if}
+      </div>
+      <div class="icons">
+        {#each updates as update, i}
+          {#if i < 4}
+            <div class="icon">
+              <img src={StoreItemIcon(update.pkg)} alt={update.pkg.pkg.name} />
+            </div>
+          {/if}
+        {/each}
+      </div>
+    </div>
     <section class="updates">
       <h1>
         <span>Updates</span>

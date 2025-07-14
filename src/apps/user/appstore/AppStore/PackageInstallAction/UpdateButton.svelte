@@ -31,6 +31,11 @@
       content = `${((100 / prog.max) * prog.value).toFixed(0)}%`;
     });
 
+    if (installer === 0) {
+      reset();
+      return;
+    }
+
     if (!installer) {
       MessageBox(
         {

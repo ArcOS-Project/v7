@@ -34,6 +34,7 @@
   padding: 0;
   border: none;
   border-radius: 0;
+  background-color: transparent;
 }
 
 #AppStore > div.body div.sidebar div.search button.enter-indicator {
