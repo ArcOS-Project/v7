@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { WarningIcon } from "$ts/images/dialog";
   import { ElevationIcon, PasswordIcon, SecureIcon, SecurityHighIcon, WaveIcon } from "$ts/images/general";
   import { LogoutIcon } from "$ts/images/power";
@@ -11,6 +12,7 @@
   const { userInfo, preferences: userPreferences } = process.userDaemon || {}!;
 </script>
 
+<ProfilePicture className="backdrop" userDaemon={process.userDaemon!} height={0} />
 <div class="centered-layout">
   {#if userInfo && userPreferences}
     <Header {process} {userInfo} {userPreferences} userDaemon={process.userDaemon!} />

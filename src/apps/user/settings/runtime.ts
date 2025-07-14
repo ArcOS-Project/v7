@@ -267,11 +267,7 @@ export class SettingsRuntime extends AppProcess {
 
     if (!path) return;
 
-    this.userPreferences.update((v) => {
-      v.account.profilePicture = path;
-
-      return v;
-    });
+    this.userDaemon?.changeProfilePicture(path);
   }
 
   async chooseWallpaper() {

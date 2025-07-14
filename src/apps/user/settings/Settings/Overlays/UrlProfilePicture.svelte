@@ -39,7 +39,7 @@
   function apply() {
     if (!valid) return;
 
-    $userPreferences.account.profilePicture = pfp;
+    process.userDaemon?.changeProfilePicture(pfp);
     process.closeWindow();
   }
 

@@ -1,9 +1,49 @@
+#systemSettings div.container.account {
+  overflow: hidden;
+}
+
+#systemSettings div.container.account div.page-content {
+  /* transition: opacity 0.3s !important; */
+  scale: 1 !important;
+  /* height: calc(100% + 40px); */
+  /* translate: 0 -40px; */
+  /* padding-top: 40px; */
+  overflow: visible;
+}
+
 #systemSettings div.container.account div.header div.profile-picture {
   position: relative;
   width: 128px;
   height: 128px;
   margin: 0 auto;
   margin-bottom: 15px;
+}
+
+#systemSettings div.container.account div.header div.profile-picture div.pfprenderer {
+  mask-image: url(../../../../../assets/settings/account-header-cutout.svg);
+  border-radius: 0;
+}
+
+#systemSettings div.container.account div.pfprenderer.backdrop {
+  width: 100% !important;
+  height: 100% !important;
+  max-height: unset !important;
+  min-height: unset !important;
+  max-width: unset !important;
+  min-width: unset !important;
+  border-radius: 25%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0.3;
+  translate: 0 -50%;
+  z-index: 0;
+  filter: blur(40px);
+}
+
+#systemSettings div.container.account div.centered-layout {
+  position: relative;
+  z-index: 0;
 }
 
 #systemSettings div.container.account div.profile-picture div.change-menu {
@@ -14,11 +54,11 @@
   position: absolute;
   bottom: 5px;
   right: 4px;
-  outline: var(--win-bg) 3px solid !important;
   background-color: var(--button-bg) !important;
   outline-offset: -1px !important;
   transition: width 0.3s, margin-left 0.3s;
   overflow: hidden;
+  backdrop-filter: blur(10px);
 }
 
 #systemSettings div.container.account div.profile-picture div.change-menu:hover {
@@ -53,7 +93,7 @@
   text-align: center;
   border-radius: 15px;
   font-size: 16px;
-  background-color: var(--button-bg);
+  background-color: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -80,6 +120,7 @@
   text-align: center;
   border-bottom: var(--button-glass-hover-bg) 1px solid;
   border-radius: 0;
+  background-color: transparent;
 }
 
 #systemSettings div.container.account div.header h1.account-name > span {
