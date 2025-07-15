@@ -26,16 +26,12 @@ export class BugHuntUserSpaceProcess extends BaseService {
   }
 
   async sendBugReport(options: ReportOptions): Promise<boolean> {
-    if (!this.activated) return false;
-
     const data = this.module.createReport(options);
 
     return await this.module.sendReport(data, this.token, options);
   }
 
   async getPrivateReports(forceInvalidate = false) {
-    if (!this.activated) return [];
-
     if (this.privateCache.length) {
       this.cachedPrivateResponseCount++;
 
@@ -55,8 +51,6 @@ export class BugHuntUserSpaceProcess extends BaseService {
   }
 
   async getPublicReports(forceInvalidate = false) {
-    if (!this.activated) return [];
-
     if (this.publicCache.length) {
       this.cachedPublicResponseCount++;
 
@@ -76,24 +70,18 @@ export class BugHuntUserSpaceProcess extends BaseService {
   }
 
   async refreshPrivateCache() {
-    if (!this.activated) return false;
-
     this.Log("Refreshing private cache");
 
     await this.getPrivateReports(true);
   }
 
   async refreshPublicCache() {
-    if (!this.activated) return false;
-
     this.Log("Refreshing public cache");
 
     await this.getPublicReports(true);
   }
 
   async refreshAllCaches() {
-    if (!this.activated) return false;
-
     await this.refreshPublicCache();
     await this.refreshPrivateCache();
   }
