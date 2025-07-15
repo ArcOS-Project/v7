@@ -1,0 +1,132 @@
+#AdminPortal div.container.viewStoreItem > div.page-content {
+  display: flex;
+  align-items: start;
+}
+
+#AdminPortal div.container.viewStoreItem div.left {
+  width: 280px;
+}
+
+#AdminPortal div.container.viewStoreItem div.left div.header {
+  display: flex;
+  gap: 15px;
+  padding: 15px;
+  border-bottom: var(--win-border);
+}
+
+#AdminPortal div.container.viewStoreItem div.left div.header img {
+  height: 64px;
+  border-radius: 6px;
+}
+
+#AdminPortal div.container.viewStoreItem div.left div.header h1 {
+  font-size: 22px;
+}
+
+#AdminPortal div.container.viewStoreItem div.left div.header p {
+  margin-bottom: 10px;
+}
+
+#AdminPortal div.container.viewStoreItem div.left div.header div.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+#AdminPortal div.container.viewStoreItem div.left div.header div.pill {
+  padding: 2px 5px;
+  background-color: var(--button-bg);
+  border-radius: 5px;
+}
+
+#AdminPortal div.container.viewStoreItem div.left div.operations {
+  margin-left: auto;
+  border-left: var(--win-border);
+}
+
+#AdminPortal div.container.viewStoreItem div.left div.operations > div > div {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  padding-left: 5px;
+  border-top: var(--win-border);
+  border-bottom: var(--win-border);
+}
+
+#AdminPortal div.container.viewStoreItem div.left div.operations div.status {
+  padding: 0 10px;
+  height: 20px;
+  line-height: 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  margin-right: auto;
+}
+
+#AdminPortal div.container.viewStoreItem div.left div.operations div.status:not(.bad) {
+  background-color: var(--clr-green-fg);
+  color: var(--clr-green-bg);
+}
+
+#AdminPortal div.container.viewStoreItem div.left div.operations div.status.bad {
+  background-color: var(--clr-red-fg);
+  color: var(--clr-red-bg);
+}
+#AdminPortal div.container.viewStoreItem div.left div.operations > div > h1 {
+  font-weight: bold;
+  opacity: 0.5;
+  height: 30px;
+  padding: 0 10px;
+  background-color: var(--button-bg);
+  line-height: 30px;
+}
+
+#AdminPortal div.container.viewStoreItem div.left div.operations div.actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+#AdminPortal div.container.viewStoreItem div.left div.operations div.actions button {
+  border-radius: 0;
+  border-left: var(--win-border);
+}
+#AdminPortal div.container.viewStoreItem div.left div.verification div.note {
+  display: block;
+  padding: 15px;
+  border-top: none;
+}
+
+#AdminPortal div.container.viewStoreItem div.left div.verification div.note h1 {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+#AdminPortal div.container.viewStoreItem div.left div.verification textarea {
+  width: 100%;
+  height: 120px;
+  padding: 10px;
+  border: none;
+  resize: none;
+  background-color: var(--button-glass-active-bg);
+  color: var(--fg);
+  border-bottom: var(--win-border);
+}
+
+#AdminPortal div.container.viewStoreItem div.details {
+  width: calc(100% - 280px);
+  height: 100%;
+  border-left: var(--win-border);
+  overflow-y: auto;
+}
+
+#AdminPortal div.container.viewStoreItem div.info-block {
+  box-shadow: none;
+  border-radius: 0;
+  border-bottom: var(--win-border);
+  background-color: var(--win-bg);
+}
+
+#AdminPortal div.container.viewStoreItem div.user-list {
+  border-top: none;
+}
+#AdminPortal div.container.viewStoreItem div.installed-by {
+  border-bottom: var(--win-border);
+}

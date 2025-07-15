@@ -69,6 +69,10 @@ export type StoreData = {
   users: ExpandedUserInfo[];
 };
 
+export type ViewStoreItemData = {
+  item: StoreItem;
+};
+
 export type TokensData = {
   tokens: ExpandedToken[];
   users: ExpandedUserInfo[];

@@ -14,6 +14,7 @@ import Users from "./AdminPortal/Page/Users.svelte";
 import ViewBugReport from "./AdminPortal/Page/ViewBugReport.svelte";
 import ViewScopes from "./AdminPortal/Page/ViewScopes.svelte";
 import ViewShare from "./AdminPortal/Page/ViewShare.svelte";
+import ViewStoreItem from "./AdminPortal/Page/ViewStoreItem.svelte";
 import ViewUser from "./AdminPortal/Page/ViewUser.svelte";
 import type { AdminPortalPage, AdminPortalPages, SpecificAdminActions } from "./types";
 
@@ -149,6 +150,27 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       },
       scopes: [AdminScopes.adminStoreListAll, AdminScopes.adminUsersList],
       separator: true,
+    },
+  ],
+  [
+    "viewStoreItem",
+    {
+      name: "View Store Item",
+      icon: "",
+      hidden: true,
+      content: ViewStoreItem,
+      props: async (process) => {
+        const id = process.switchPageProps().id;
+
+        return { item: await process.admin.getStoreItem(id) };
+      },
+      scopes: [
+        AdminScopes.adminStoreBlock,
+        AdminScopes.adminStoreUnblock,
+        AdminScopes.adminStoreDeleteOne,
+        AdminScopes.adminStoreDeprecate,
+        AdminScopes.adminStoreUndeprecate,
+      ],
     },
   ],
   [
