@@ -4,6 +4,7 @@
 @import url("./adminportal/page/viewuser.css");
 @import url("./adminportal/page/users.css");
 @import url("./adminportal/page/store.css");
+@import url("./adminportal/page/viewstoreitem.css");
 @import url("./adminportal/page/shares.css");
 @import url("./adminportal/page/viewshare.css");
 @import url("./adminportal/page/filesystems.css");
@@ -18,6 +19,10 @@
 
 #AdminPortal {
   --font-size: 12px;
+}
+
+#AdminPortal > div.body *::-webkit-scrollbar {
+  display: none;
 }
 
 #AdminPortal > div.body div.titlebar.custom button.icon-arrow-up {

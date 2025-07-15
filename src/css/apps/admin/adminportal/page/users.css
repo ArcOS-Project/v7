@@ -141,6 +141,10 @@
   width: 80px;
 }
 
+#AdminPortal div.container.users div.user-list.compact div.segment.created {
+  margin-left: auto;
+}
+
 #AdminPortal div.container.users div.user-row div.segment.admin,
 #AdminPortal div.container.users div.user-row div.segment.approved,
 #AdminPortal div.container.users div.user-row div.segment.account-number {
