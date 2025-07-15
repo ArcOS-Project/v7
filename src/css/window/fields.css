@@ -9,7 +9,11 @@ div.window div.body select {
 
 div.window.glass > div.body input,
 div.window.glass > div.body select {
-  background-color: var(--glass-bg);
+  background-color: transparent;
+}
+
+div.window.glass > div.body select {
+  background-color: var(--win-bg);
 }
 
 div.window.glass > div.body select.flat {
