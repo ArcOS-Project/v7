@@ -12,8 +12,8 @@ export const AppStoreApp: App = {
     icon: AppStoreIcon,
   },
   position: { centered: true },
-  size: { w: 850, h: 500 },
-  minSize: { w: 850, h: 500 },
+  size: { w: 950, h: 500 },
+  minSize: { w: 950, h: 500 },
   maxSize: { w: NaN, h: NaN },
   state: {
     minimized: false,

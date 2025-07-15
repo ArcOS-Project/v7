@@ -22,7 +22,7 @@
   let loading = $state<boolean>(false);
 
   onMount(() => {
-    // url = fallback;
+    url = fallback;
 
     preferences?.subscribe(update);
     userDaemon?.systemDispatch.subscribe("pfp-changed", () => update(preferences?.()!));

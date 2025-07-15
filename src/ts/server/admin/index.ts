@@ -1,6 +1,6 @@
 import { DistributionServiceProcess } from "$ts/distrib";
 import { toForm } from "$ts/form";
-import { arrayToBlob, arrayToText } from "$ts/fs/convert";
+import { arrayToBlob, arrayToText, textToBlob } from "$ts/fs/convert";
 import { AdminServerDrive } from "$ts/fs/drives/admin";
 import { join } from "$ts/fs/util";
 import { tryJsonParse } from "$ts/json";
@@ -30,6 +30,7 @@ import JSZip from "jszip";
 import { Backend } from "../axios";
 import { MessagingInterface } from "../messaging";
 import { AdminScopes } from "./store";
+import { UserPaths } from "../user/store";
 
 export class AdminBootstrapper extends BaseService {
   private token: string | undefined;
@@ -1055,6 +1056,40 @@ export class AdminBootstrapper extends BaseService {
     }
 
     return target;
+  }
+
+  async deleteStoreItemVerification(id: string) {
+    try {
+      const response = await Backend.delete(`/admin/store/verification/${id}`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async verifyStoreItem(id: string, note: string) {
+    try {
+      const response = await Backend.post(`/admin/store/verification/${id}`, toForm({ note }), {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      if (response.status !== 200) {
+        return false;
+      }
+
+      await this.fs.createDirectory(join(UserPaths.Documents, `AdminBootstrapper`));
+      await this.fs.writeFile(
+        join(UserPaths.Documents, `AdminBootstrapper/Verification_${id}_${Date.now()}.txt`),
+        textToBlob(note)
+      );
+
+      return true;
+    } catch {
+      return false;
+    }
   }
 }
 
