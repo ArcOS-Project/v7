@@ -64,12 +64,17 @@ export function handleGlobalErrors() {
 export function checkIndevTpa(stack: string, e: Error): boolean {
   const parsed = stackTraceParser.parse(stack);
   const isTpa = !!parsed[0]?.file?.includes(`localhost:3128`) || !!parsed[0]?.file?.includes(`/tpa/new/`);
+  const isSvelte = stack.includes("https://svelte.dev/e/");
 
-  if (isTpa) {
-    const handler = WaveKernel?.get()?.getModule<ProcessHandler>?.("stack", true);
-    const renderer = handler?.renderer;
+  const handler = WaveKernel?.get()?.getModule<ProcessHandler>?.("stack", true);
+  const renderer = handler?.renderer;
 
-    if (renderer && renderer.lastInteract && parsed[0]?.file?.includes(`/${renderer.lastInteract.app.id}@`)) {
+  if (renderer && renderer.lastInteract && parsed[0]?.file?.includes(`/${renderer.lastInteract.app.id}@`)) {
+    if (isTpa) {
+      renderer.notifyCrash(renderer.lastInteract.app.data, e, renderer.lastInteract);
+      handler.kill(renderer.lastInteract.pid);
+      renderer.lastInteract = undefined;
+    } else if (isSvelte) {
       renderer.notifyCrash(renderer.lastInteract.app.data, e, renderer.lastInteract);
       handler.kill(renderer.lastInteract.pid);
       renderer.lastInteract = undefined;
