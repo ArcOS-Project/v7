@@ -24,7 +24,7 @@
   class="item-row"
   onclick={() => ($selection = item._id)}
   class:selected={$selection === item._id}
-  ondblclick={() => process.switchPage("viewStoreItem", { item })}
+  ondblclick={() => process.switchPage("viewStoreItem", { id: item._id })}
 >
   <ProfilePicture fallback={profile.profilePicture} height={20} showOnline online={profile.dispatchClients > 0} />
   <div class="segment author" class:redacted={$redacted}>

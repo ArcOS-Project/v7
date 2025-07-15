@@ -5,8 +5,12 @@
   import type { ExpandedUserInfo } from "$types/user";
   import dayjs from "dayjs";
 
-  const { process, user, selection }: { process: AdminPortalRuntime; user: ExpandedUserInfo; selection: ReadableStore<string> } =
-    $props();
+  const {
+    process,
+    user,
+    selection,
+    compact = false,
+  }: { process: AdminPortalRuntime; user: ExpandedUserInfo; selection: ReadableStore<string>; compact?: boolean } = $props();
   const { redacted } = process;
   const { profile } = user;
   const created = dayjs(user.createdAt).format("DD MMM YYYY");
@@ -22,7 +26,9 @@
 >
   <ProfilePicture fallback={profile.profilePicture} height={20} showOnline online={profile.dispatchClients > 0} />
   <div class="segment username" class:redacted={$redacted}>{profile.username}</div>
-  <div class="segment email" class:redacted={$redacted}>{user.email}</div>
+  {#if !compact}
+    <div class="segment email" class:redacted={$redacted}>{user.email}</div>
+  {/if}
   <div class="segment created">{created}</div>
   <div class="segment account-number">{user.accountNumber}</div>
   <div class="segment approved" class:is-approved={user.approved}>{user.approved ? "Yes" : "No"}</div>

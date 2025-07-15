@@ -7,7 +7,7 @@
   import type { UsersData, UsersPageFilters } from "../../types";
   import UserRow from "./Users/UserRow.svelte";
 
-  const { process, data }: { process: AdminPortalRuntime; data: UsersData } = $props();
+  const { process, data, compact = false }: { process: AdminPortalRuntime; data: UsersData; compact?: boolean } = $props();
   const { users } = data;
 
   const states: UsersPageFilters[] = ["all", "online", "regular", "admins", "disapproved"];
@@ -40,19 +40,23 @@
   });
 </script>
 
-<div class="header">
-  <p>{$sortState} ({$store.length})</p>
-  <div class="tabs">
-    {#each states as state}
-      <button onclick={() => ($sortState = state)} class:selected={$sortState === state}>{state.toUpperCase()}</button>
-    {/each}
+{#if !compact}
+  <div class="header">
+    <p>{$sortState} ({$store.length})</p>
+    <div class="tabs">
+      {#each states as state}
+        <button onclick={() => ($sortState = state)} class:selected={$sortState === state}>{state.toUpperCase()}</button>
+      {/each}
+    </div>
   </div>
-</div>
-<div class="user-list">
+{/if}
+<div class="user-list" class:compact>
   <div class="user-row header">
     <img src={Logo()} alt="" />
     <div class="segment username">Username</div>
-    <div class="segment email">Email</div>
+    {#if !compact}
+      <div class="segment email">Email</div>
+    {/if}
     <div class="segment created">Created</div>
     <div class="segment account-number">#</div>
     <div class="segment approved">APP</div>
@@ -60,7 +64,7 @@
   </div>
 
   {#each $store as user (user._id)}
-    <UserRow {process} {user} {selection} />
+    <UserRow {process} {user} {selection} {compact} />
   {/each}
 </div>
 <div class="id-entry">
