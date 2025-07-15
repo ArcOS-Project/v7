@@ -143,6 +143,7 @@
 }
 
 #AdminPortal div.container.store div.item-row div.segment.official,
+#AdminPortal div.container.store div.item-row div.segment.verified,
 #AdminPortal div.container.store div.item-row div.segment.deprecated {
   width: 35px;
   height: 35px;
@@ -161,6 +162,11 @@
 #AdminPortal div.container.store div.item-row div.segment.deprecated.is-deprecated {
   background-color: var(--clr-red-bg);
   color: var(--clr-red-fg);
+}
+
+#AdminPortal div.container.store div.item-row div.segment.verified.is-verified {
+  background-color: var(--clr-blue-bg);
+  color: var(--clr-blue-fg);
 }
 
 #AdminPortal div.container.store div.item-row img {

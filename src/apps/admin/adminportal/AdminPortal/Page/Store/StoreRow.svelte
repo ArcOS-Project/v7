@@ -37,6 +37,9 @@
   <div class="segment version">{item.pkg.version}</div>
   <div class="segment install-count">{item.installCount}</div>
   <div class="segment last-updated">{lastUpdated}</div>
+  <div class="segment verified" class:is-verified={item.verifiedVer === item.pkg.version}>
+    {item.verifiedVer === item.pkg.version ? "Yes" : "No"}
+  </div>
   <div class="segment official" class:is-official={item.official}>{item.official ? "Yes" : "No"}</div>
   <div class="segment deprecated" class:is-deprecated={item.deprecated}>{item.deprecated ? "Yes" : "No"}</div>
 </div>

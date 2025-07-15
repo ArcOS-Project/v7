@@ -62,6 +62,7 @@
         >Last updated</button
       >
     </div>
+    <div class="segment verified">VER</div>
     <div class="segment official">OFF</div>
     <div class="segment deprecated">DEP</div>
   </div>
