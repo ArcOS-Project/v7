@@ -136,20 +136,28 @@ export class ArcFindRuntime extends AppProcess {
   }
 
   async getFlatTree() {
-    const result: PathedFileEntry[] = [];
-    const tree = await this.fs.tree(UserPaths.Desktop);
+    try {
+      const result: PathedFileEntry[] = [];
+      const tree = await this.fs.tree(UserPaths.Home);
 
-    const recurse = (tree: RecursiveDirectoryReadReturn, path = "U:") => {
-      for (const file of tree.files) {
-        result.push({ ...file, path: `${path}/${file.name}`, shortcut: tree.shortcuts?.[file.name] }); // Add path to each file
-      }
-      for (const dir of tree.dirs) {
-        recurse(dir.children, `${path}/${dir.name}`); // Get the contents of the enclosed dir
-      }
-    };
+      const recurse = (tree: RecursiveDirectoryReadReturn, path = "U:") => {
+        try {
+          for (const file of tree.files) {
+            result.push({ ...file, path: `${path}/${file.name}`, shortcut: tree.shortcuts?.[file.name] }); // Add path to each file
+          }
+          for (const dir of tree.dirs) {
+            recurse(dir.children, `${path}/${dir.name}`); // Get the contents of the enclosed dir
+          }
+        } catch {
+          /** silently error */
+        }
+      };
 
-    recurse(tree!, "U:"); // Recurse the contents
+      recurse(tree!, UserPaths.Home); // Recurse the contents
 
-    return result;
+      return result;
+    } catch {
+      return [];
+    }
   }
 }
