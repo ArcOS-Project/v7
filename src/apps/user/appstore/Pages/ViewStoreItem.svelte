@@ -6,6 +6,7 @@
   import { onMount } from "svelte";
   import PackageInstallAction from "../AppStore/PackageInstallAction.svelte";
   import type { AppStoreRuntime } from "../runtime";
+  import Screenshots from "./ViewStoreItem/Screenshots.svelte";
 
   const { process, pkg }: { process: AppStoreRuntime; pkg: StoreItem } = $props();
 
@@ -49,6 +50,7 @@
       </p>
     </div>
   {/if}
+  <Screenshots {pkg} {process} />
   <MarkdownRenderingComponent source={readme} />
 {:else}
   <div class="empty">
