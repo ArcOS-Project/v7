@@ -90,13 +90,20 @@
   height: 100%;
   padding: 0 10px;
   line-height: 26px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: fit-content;
 }
 
 #writer > div.body div.status-bar > div.file {
-  display: flex;
-  align-items: center;
-  gap: 5px;
+  width: 0;
   flex-grow: 1;
+  min-width: unset;
+}
+
+#writer > div.body div.status-bar > div.file * {
+  vertical-align: middle;
 }
 
 #writer > div.body div.status-bar > div.file img {

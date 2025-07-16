@@ -103,6 +103,9 @@
 
 #OpenWith div.body > div.top p.location span {
   opacity: 0.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 #OpenWith div.body > div.bottom {
