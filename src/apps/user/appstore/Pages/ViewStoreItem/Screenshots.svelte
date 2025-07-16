@@ -14,7 +14,14 @@
     <div class="carriage">
       <div class="inner" style="--i: {index};">
         {#each pkg.pkg.store.screenshots as _, i}
-          <img src={StoreItemScreenshot(pkg, i)} alt="" class:selected={i === index} />
+          <!-- svelte-ignore a11y_click_events_have_key_events -->
+          <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+          <img
+            src={StoreItemScreenshot(pkg, i)}
+            alt=""
+            class:selected={i === index}
+            onclick={() => process.viewImage(StoreItemScreenshot(pkg, i), `Screenshot #${i + 1} of ${pkg.pkg.name}`)}
+          />
         {/each}
       </div>
     </div>

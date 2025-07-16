@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
+import { InstallerProcess } from "$ts/distrib/installer";
 import { StoreItemIcon } from "$ts/distrib/util";
 import { AppStoreIcon } from "$ts/images/apps";
 import { ErrorIcon, InfoIcon } from "$ts/images/dialog";
@@ -8,16 +9,18 @@ import { UploadIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { UserPaths } from "$ts/server/user/store";
 import { Plural } from "$ts/util";
+import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
 import type { FilesystemProgressCallback } from "$types/fs";
 import type { StoreItem } from "$types/package";
 import dayjs from "dayjs";
-import { appStorePages } from "./store";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import TakenDown from "./AppStore/TakenDown.svelte";
-import { InstallerProcess } from "$ts/distrib/installer";
+import { appStorePages } from "./store";
+import axios from "axios";
+import { arrayToBlob } from "$ts/fs/convert";
 
 export class AppStoreRuntime extends AppProcess {
   searchQuery = Store<string>("");
@@ -117,15 +120,20 @@ export class AppStoreRuntime extends AppProcess {
       if (!go) return 0;
     }
 
-    if (pkg.verifiedVer !== pkg.pkg.version) {
-      const go = await this.userDaemon!.Confirm(
-        "Wait a minute!",
-        `The ArcOS administrators haven't yet verified version <b>${pkg.pkg.version}</b> of this package! Installing it now could open you up to security vulnerabilities or unstable code. Are you sure you want to install it now?`,
-        "Cancel",
-        "Install anyway"
+    if (pkg.verifiedVer !== pkg.pkg.version && !this.userDaemon?.userInfo?.admin) {
+      MessageBox(
+        {
+          title: "Can't install package",
+          message: `The ArcOS administrators haven't yet verified version <b>${pkg.pkg.version}</b> of this package! This package has to be verified before you can install it.`,
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          sound: "arcos.dialog.error",
+          image: StoreItemIcon(pkg),
+        },
+        this.pid,
+        true
       );
 
-      if (!go) return 0;
+      return 0;
     }
 
     const elevated = await this.userDaemon!.manuallyElevate({
@@ -167,15 +175,20 @@ export class AppStoreRuntime extends AppProcess {
       }
     }
 
-    if (pkg.verifiedVer !== pkg.pkg.version) {
-      const go = await this.userDaemon!.Confirm(
-        "Wait a minute!",
-        `The ArcOS administrators haven't yet verified version <b>${pkg.pkg.version}</b> of this package! Updating now could open you up to security vulnerabilities or unstable code. Are you sure you want to install it now?`,
-        "Cancel",
-        "Install anyway"
+    if (pkg.verifiedVer !== pkg.pkg.version && !this.userDaemon?.userInfo?.admin) {
+      MessageBox(
+        {
+          title: "Can't update package",
+          message: `The ArcOS administrators haven't yet verified version <b>${pkg.pkg.version}</b> of this package! This package has to be verified before you can update it.`,
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          sound: "arcos.dialog.error",
+          image: StoreItemIcon(pkg),
+        },
+        this.pid,
+        true
       );
 
-      if (!go) return 0;
+      return 0;
     }
 
     const elevated = await this.userDaemon!.manuallyElevate({
@@ -391,5 +404,15 @@ The author hasn't provided a readme file themselves, so this one has been automa
 
   getRunningOperation(pkg: StoreItem) {
     return this.operations[pkg._id];
+  }
+
+  async viewImage(url: string, name?: string) {
+    const uuid = name || UUID();
+    const path = `T:/Apps/${this.app.id}/${uuid}`;
+    const array = await axios.get(url, { responseType: "arraybuffer" });
+
+    await this.fs.writeFile(path, arrayToBlob(array.data));
+
+    this.spawnApp("ImageViewer", +this.env.get("shell_pid"), path);
   }
 }

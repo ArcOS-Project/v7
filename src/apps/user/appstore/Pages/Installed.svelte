@@ -23,7 +23,7 @@
           <p>{updates.length} {Plural("app", updates.length)} have received new features and security improvements.</p>
           <button class="suggested" onclick={updateAll}>Update</button>
         {:else}
-          <h1>{updates[0].pkg.name} can be updated!</h1>
+          <h1>{updates[0].pkg.pkg.name} can be updated!</h1>
           <p>Version <b>{updates[0].newVer}</b> can be installed. You currently have version <b>{updates[0].oldVer}</b>.</p>
           <PackageInstallAction
             pkg={{ ...updates[0].pkg, pkg: { ...updates[0].pkg.pkg, version: updates[0].newVer } }}

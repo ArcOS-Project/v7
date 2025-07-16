@@ -41,6 +41,7 @@
       </div>
     </div>
   </div>
+  <Screenshots {pkg} {process} />
   {#if pkg.deprecated}
     <div class="notice warning">
       <span class="lucide icon-triangle-alert"></span>
@@ -49,8 +50,15 @@
         strongly advise against installing deprecated packages.
       </p>
     </div>
+  {:else if pkg.verifiedVer !== pkg.pkg.version}
+    <div class="notice warning">
+      <span class="lucide icon-triangle-alert"></span>
+      <p>
+        The current version of this package hasn't yet been verified by an ArcOS administrator! Unverified apps can contain bugs,
+        malicious code or security vulnerabilities.
+      </p>
+    </div>
   {/if}
-  <Screenshots {pkg} {process} />
   <MarkdownRenderingComponent source={readme} />
 {:else}
   <div class="empty">

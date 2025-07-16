@@ -28,7 +28,7 @@
   </h1>
   <div class="items">
     {#each items.filter((i) => !!i) as item (item?._id || UUID())}
-      <button class="item">
+      <button class="item" class:unverified={item.verifiedVer !== item.pkg.version}>
         <!-- svelte-ignore a11y_click_events_have_key_events -->
         <!-- svelte-ignore a11y_no_static_element_interactions -->
         <div class="trigger" onclick={() => process.switchPage("viewStoreItem", { id: item._id })}></div>
@@ -40,7 +40,9 @@
             <span>{item.user?.displayName || item.user?.username}</span>
           </p>
         </div>
-        <PackageInstallAction pkg={item} {process} compact />
+        {#if item.verifiedVer === item.pkg.version}
+          <PackageInstallAction pkg={item} {process} compact />
+        {/if}
       </button>
     {/each}
   </div>
