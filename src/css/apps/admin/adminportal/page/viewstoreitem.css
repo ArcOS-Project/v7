@@ -14,6 +14,12 @@
   border-bottom: var(--win-border);
 }
 
+#AdminPortal div.container.viewStoreItem div.left div.header div.info {
+  width: 0;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
 #AdminPortal div.container.viewStoreItem div.left div.header img {
   height: 64px;
   border-radius: 6px;
@@ -77,6 +83,7 @@
   padding: 0 10px;
   background-color: var(--button-bg);
   line-height: 30px;
+  text-transform: uppercase;
 }
 
 #AdminPortal div.container.viewStoreItem div.left div.operations div.actions {
@@ -99,7 +106,7 @@
   font-size: 14px;
 }
 
-#AdminPortal div.container.viewStoreItem div.left div.verification textarea {
+#AdminPortal div.container.viewStoreItem div.left div textarea {
   width: 100%;
   height: 120px;
   padding: 10px;

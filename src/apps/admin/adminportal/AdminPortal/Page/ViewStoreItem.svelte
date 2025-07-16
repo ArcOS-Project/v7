@@ -9,6 +9,8 @@
   const { process, data }: { process: AdminPortalRuntime; data: ViewStoreItemData } = $props();
   const { item } = data;
 
+  let blocking = $state<boolean>(false);
+  let blockingNote = $state<string>("");
   let verifying = $state<boolean>(false);
   let verificationNote = $state<string>("");
 
@@ -125,6 +127,7 @@
 
               await process.switchPage("viewStoreItem", { id: item._id }, true);
             },
+            suggested: true,
           },
         ],
         image: WarningIcon,
@@ -135,30 +138,62 @@
     );
   }
   async function block() {
-    MessageBox(
-      {
-        title: item.blocked ? `Unblock item?` : `Block item?`,
-        message: item.blocked
-          ? `Are you sure you want to unblock this store item?`
-          : `Are you sure you want to block this store item? This action should really only ever be performed if the package violates our rules.`,
-        buttons: [
-          { caption: "Cancel", action: () => {} },
-          {
-            caption: "Confirm",
-            async action() {
-              if (item.blocked) await process.admin.unblockStoreItem(item._id);
-              else await process.admin.blockStoreItem(item._id);
-
-              await process.switchPage("viewStoreItem", { id: item._id }, true);
+    if (!blocking) return (blocking = true);
+    if (item.blocked) {
+      MessageBox(
+        {
+          title: "Unblock item?",
+          message: `Are you sure you to unblock this item? This action should only be performed if the blockage has been acknowledged and the package changed to comply.<br><br>Given reason: ${blockingNote || "(none)"}`,
+          buttons: [
+            {
+              caption: "Cancel",
+              action: () => {
+                blocking = false;
+              },
             },
-          },
-        ],
-        image: WarningIcon,
-        sound: "arcos.dialog.warning",
-      },
-      process.pid,
-      true,
-    );
+            {
+              caption: "Confirm",
+              async action() {
+                await process.admin.unblockStoreItem(item._id, blockingNote);
+                await process.switchPage("viewStoreItem", { id: item._id }, true);
+              },
+              suggested: true,
+            },
+          ],
+          image: WarningIcon,
+          sound: "arcos.dialog.warning",
+        },
+        process.pid,
+        true,
+      );
+    } else {
+      MessageBox(
+        {
+          title: `Block item?`,
+          message: `Are you sure you want to block this store item? This action should really only ever be performed if the package violates our rules.<br><br>Given reason: ${blockingNote || "(none)"}`,
+          buttons: [
+            {
+              caption: "Cancel",
+              action: () => {
+                blocking = false;
+              },
+            },
+            {
+              caption: "Confirm",
+              async action() {
+                await process.admin.blockStoreItem(item._id, blockingNote);
+                await process.switchPage("viewStoreItem", { id: item._id }, true);
+              },
+              suggested: true,
+            },
+          ],
+          image: WarningIcon,
+          sound: "arcos.dialog.warning",
+        },
+        process.pid,
+        true,
+      );
+    }
   }
 </script>
 
@@ -194,16 +229,22 @@
         <div>
           <div class="status" class:bad={item.blocked}>{item.blocked ? "Blocked" : "Unblocked"}</div>
           <div class="actions">
-            <button class="clr-red" onclick={block}>{item.blocked ? "Unblock..." : "Block..."}</button>
+            <button class="clr-red" onclick={block} disabled={verifying}>{item.blocked ? "Unblock..." : "Block..."}</button>
           </div>
         </div>
+        {#if blocking}
+          <textarea name="" id="" bind:value={blockingNote} placeholder="Reason for {item.blocked ? 'unblock' : 'block'}..."
+          ></textarea>
+        {/if}
       </div>
       <div class="deprecation">
         <h1>Deprecation</h1>
         <div>
           <div class="status" class:bad={item.deprecated}>{item.deprecated ? "Deprecated" : "Maintained"}</div>
           <div class="actions">
-            <button class="clr-orange" onclick={deprecate}>{item.deprecated ? "Undeprecate" : "Deprecate"}</button>
+            <button class="clr-orange" onclick={deprecate} disabled={item.blocked || blocking || verifying}
+              >{item.deprecated ? "Undeprecate" : "Deprecate"}</button
+            >
           </div>
         </div>
       </div>
@@ -216,9 +257,11 @@
           <div class="actions">
             <button onclick={browseFiles}>Browse</button>
             {#if item.verifiedVer === item.pkg.version}
-              <button onclick={deleteVerification}>Unverify</button>
+              <button onclick={deleteVerification} disabled={item.blocked || blocking}>Unverify</button>
             {:else}
-              <button class="clr-green" onclick={verify}>{verifying ? "Confirm!" : "Verify"}</button>
+              <button class="clr-green" onclick={verify} disabled={item.blocked || blocking}
+                >{verifying ? "Confirm!" : "Verify"}</button
+              >
             {/if}
           </div>
         </div>

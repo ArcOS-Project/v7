@@ -157,3 +157,18 @@
 #AdminPortal .redacted:hover {
   filter: none;
 }
+
+#AdminPortal > div.body h1,
+#AdminPortal > div.body h2,
+#AdminPortal > div.body h3,
+#AdminPortal > div.body h4,
+#AdminPortal > div.body h5,
+#AdminPortal > div.body h1 *,
+#AdminPortal > div.body h2 *,
+#AdminPortal > div.body h3 *,
+#AdminPortal > div.body h4 *,
+#AdminPortal > div.body h5 * {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
