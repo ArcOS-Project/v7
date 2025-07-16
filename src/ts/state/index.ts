@@ -23,6 +23,12 @@ export class StateHandler extends Process {
     this.Log(`Constructing new StateHandler with a store containing ${Object.entries(store).length} states`);
   }
 
+  async start() {
+    const { htmlLoader } = this.getStateLoaders();
+
+    htmlLoader.innerText = "...";
+  }
+
   async loadState(id: string, props: Record<string, any> = {}, instant = false) {
     if (this._disposed) return;
 

@@ -1,4 +1,6 @@
-(() => {
+onload = function () {
+  const stateLoader = this.document.querySelector("#stateLoader");
+  stateLoader.innerText = "..";
   function loadFail(r) {
     const url = "https://docs.arcapi.nl/general-information/troubleshooting#the-dots-of-doom";
     const pre = document.createElement("pre");
@@ -7,7 +9,7 @@
     pre.innerHTML += r;
     pre.innerHTML += `<br><br><a class="troubleshooting" href="${url}" target="_blank">${url}</a>`;
     pre.className = "system-load-fail";
-    document.querySelector("#stateLoader").append(pre);
+    stateLoader.append(pre);
     document.body.classList.add("slf");
   }
 
@@ -21,6 +23,12 @@
     }
   };
 
+  setTimeout(() => {
+    if (this.window.__DW_INIT__) return;
+
+    loadFail(`Timeout for load process failed. Reload to try again.`);
+  }, 5000);
+
   window.addEventListener("unhandledrejection", event, { once: true });
   window.addEventListener("error", event, { once: true });
-})();
+};
