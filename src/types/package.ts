@@ -32,6 +32,7 @@ export interface StoreItem {
   verifiedBy?: string;
   verifiedVer?: string;
   verifiedNote?: string;
+  verificationAgent?: PublicUserInfo;
 }
 
 export interface PartialStoreItem {
@@ -54,6 +55,10 @@ export interface PartialStoreItem {
   createdAt: string;
   updatedAt: string;
   deprecated: boolean;
+  verifiedBy?: string;
+  verifiedVer?: string;
+  verifiedNote?: string;
+  verificationAgent?: PublicUserInfo;
 }
 
 export type InstallStatusType = "mkdir" | "file" | "registration" | "other";
