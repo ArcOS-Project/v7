@@ -197,11 +197,16 @@
   position: absolute;
   top: 0;
   backdrop-filter: blur(10px);
+  background-color: var(--button-glass-bg);
 }
 
 #AppStore div.page.viewStoreItem div.screenshots-wrapper button:disabled {
   opacity: 1;
   filter: brightness(0.6);
+}
+
+.theme-light #AppStore div.page.viewStoreItem div.screenshots-wrapper button:disabled {
+  filter: brightness(0.8);
 }
 
 #AppStore div.page.viewStoreItem div.screenshots-wrapper button.icon-arrow-left {
@@ -218,7 +223,7 @@
   width: 600px;
   height: 340px;
   object-fit: contain;
-  background-color: var(--glass-ultralight);
+  background-color: var(--button-glass-bg);
   border-radius: 10px;
 }
 

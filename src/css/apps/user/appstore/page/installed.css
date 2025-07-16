@@ -32,6 +32,11 @@
   z-index: 0;
   filter: blur(20px);
   opacity: 0.5;
+  filter: brightness(0.7) blur(20px);
+}
+
+.theme-light #AppStore div.page.installed div.updates-banner img.banner {
+  filter: blur(20px);
 }
 
 #AppStore div.page.installed div.updates-banner div.icons {
