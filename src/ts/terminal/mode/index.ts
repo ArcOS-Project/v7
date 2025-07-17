@@ -226,7 +226,7 @@ export class TerminalMode extends Process {
     this.Log(`Saving token of '${daemon.username}' to cookies`);
 
     const cookieOptions = {
-      expires: 2,
+      expires: 14,
       domain: import.meta.env.DEV ? "localhost" : "izkuipers.nl",
     };
 

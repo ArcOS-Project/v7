@@ -29,7 +29,7 @@
               await process.userDaemon?.logoff();
               await Sleep(3000);
               const cookieOptions = {
-                expires: 2,
+                expires: 14,
                 domain: import.meta.env.DEV ? "localhost" : "izkuipers.nl",
               };
               Cookies.set("arcToken", token.value, cookieOptions);

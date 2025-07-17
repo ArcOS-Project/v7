@@ -1365,7 +1365,7 @@ export class UserDaemon extends Process {
       this.systemDispatch.dispatch("change-username", [newUsername]);
 
       Cookies.set("arcUsername", newUsername, {
-        expires: 2,
+        expires: 14,
         domain: import.meta.env.DEV ? "localhost" : "izk-arcos.nl",
       });
 
