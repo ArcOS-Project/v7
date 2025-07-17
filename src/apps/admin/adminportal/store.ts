@@ -170,7 +170,13 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
         AdminScopes.adminStoreDeleteOne,
         AdminScopes.adminStoreDeprecate,
         AdminScopes.adminStoreUndeprecate,
+        AdminScopes.adminStoreVerificationGet,
+        AdminScopes.adminStoreVerificationSet,
+        AdminScopes.adminStoreUnverify,
+        AdminScopes.adminStoreOfficialOff,
+        AdminScopes.adminStoreOfficialOn,
       ],
+      parent: "store",
     },
   ],
   [

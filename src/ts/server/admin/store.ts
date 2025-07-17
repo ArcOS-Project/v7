@@ -1,6 +1,6 @@
 export const AdminScopes = {
   adminGod: "admin.god",
-  adminAuditLog: `admin.auditlog`,
+  adminAuditLog: "admin.auditlog",
   adminLogs: "admin.logs",
   adminGrant: "admin.grant",
   adminRevoke: "admin.revoke",
@@ -71,6 +71,11 @@ export const AdminScopes = {
   adminStoreDeleteUser: "admin.store.delete.user",
   adminStoreDeprecate: "admin.store.deprecate",
   adminStoreUndeprecate: "admin.store.undeprecate",
+  adminStoreOfficialOn: "admin.store.official.on",
+  adminStoreOfficialOff: "admin.store.official.off",
+  adminStoreVerificationGet: "admin.store.verification.get",
+  adminStoreVerificationSet: "admin.store.verification.set",
+  adminStoreUnverify: "admin.store.unverify",
 };
 
 export const AdminScopeCaptions: Record<string, string> = {
@@ -146,4 +151,9 @@ export const AdminScopeCaptions: Record<string, string> = {
   adminStoreDeleteUser: "delete a user's store items",
   adminStoreDeprecate: "deprecate a store item",
   adminStoreUndeprecate: "undeprecate a store item",
+  adminStoreOfficialOn: "mark a store item as official",
+  adminStoreOfficialOff: "mark a store item as not official",
+  adminStoreVerificationGet: "get store item verification status",
+  adminStoreVerificationSet: "set store item verification status",
+  adminStoreUnverify: "unverify store item",
 };

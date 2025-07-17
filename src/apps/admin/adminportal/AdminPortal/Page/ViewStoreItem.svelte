@@ -2,6 +2,7 @@
   import { MessageBox } from "$ts/dialog";
   import { StoreItemIcon } from "$ts/distrib/util";
   import { WarningIcon } from "$ts/images/dialog";
+  import { TrashIcon } from "$ts/images/general";
   import type { AdminPortalRuntime } from "../../runtime";
   import type { ViewStoreItemData } from "../../types";
   import Details from "./ViewStoreItem/Details.svelte";
@@ -195,6 +196,51 @@
       );
     }
   }
+
+  async function toggleOfficial() {
+    if (item.official) {
+      const confirm = await process.userDaemon?.Confirm(
+        "Mark store item?",
+        "Are you sure you want to mark this store item as NOT official? This implies that the package was not made by ArcOS administrators and does NOT act as an official utility or optional feature for ArcOS",
+        "Cancel",
+        "Mark unofficial",
+        WarningIcon,
+      );
+
+      if (confirm) {
+        await process.admin.storeItemMakeNotOfficial(item._id);
+        await process.switchPage("viewStoreItem", { id: item._id }, true);
+      }
+    } else {
+      const confirm = await process.userDaemon?.Confirm(
+        "Mark store item?",
+        "Are you sure you want to mark this store item as official? This implies that the package was made by ArcOS administrators and acts as an official utility or optional feature for ArcOS",
+        "Cancel",
+        "Mark official",
+        WarningIcon,
+      );
+
+      if (confirm) {
+        await process.admin.storeItemMakeOfficial(item._id);
+        await process.switchPage("viewStoreItem", { id: item._id }, true);
+      }
+    }
+  }
+
+  async function deleteItem() {
+    const confirm = await process.userDaemon?.Confirm(
+      "Delete store item?",
+      "Are you sure you want to delete this store item? This should only ever happen if the user has lost access to their account, or if the package conflicts with another package.",
+      "Cancel",
+      "Delete",
+      TrashIcon,
+    );
+
+    if (confirm) {
+      await process.admin.deleteStoreItem(item._id);
+      await process.switchPage("store");
+    }
+  }
 </script>
 
 {#if item}
@@ -224,8 +270,28 @@
       </div>
     </div>
     <div class="operations">
+      <div class="official">
+        <h1>Official marking</h1>
+        <div>
+          <div class="status" class:bad={!item.official}>{item.official ? "Official" : "Unofficial"}</div>
+          <div class="actions">
+            <button onclick={toggleOfficial}>{item.official ? "Disable" : "Enable"}</button>
+          </div>
+        </div>
+      </div>
+      <div class="deprecation">
+        <h1>Manual Deprecation</h1>
+        <div>
+          <div class="status" class:bad={item.deprecated}>{item.deprecated ? "Deprecated" : "Maintained"}</div>
+          <div class="actions">
+            <button class="clr-orange" onclick={deprecate} disabled={item.blocked || blocking || verifying}
+              >{item.deprecated ? "Undeprecate" : "Deprecate"}</button
+            >
+          </div>
+        </div>
+      </div>
       <div class="blocking">
-        <h1>Blocking</h1>
+        <h1>Disciplinary action</h1>
         <div>
           <div class="status" class:bad={item.blocked}>{item.blocked ? "Blocked" : "Unblocked"}</div>
           <div class="actions">
@@ -237,19 +303,8 @@
           ></textarea>
         {/if}
       </div>
-      <div class="deprecation">
-        <h1>Deprecation</h1>
-        <div>
-          <div class="status" class:bad={item.deprecated}>{item.deprecated ? "Deprecated" : "Maintained"}</div>
-          <div class="actions">
-            <button class="clr-orange" onclick={deprecate} disabled={item.blocked || blocking || verifying}
-              >{item.deprecated ? "Undeprecate" : "Deprecate"}</button
-            >
-          </div>
-        </div>
-      </div>
       <div class="verification">
-        <h1>Verification</h1>
+        <h1>Package verification</h1>
         <div>
           <div class="status" class:bad={item.verifiedVer !== item.pkg.version}>
             {item.verifiedVer === item.pkg.version ? "Verified" : "Pending"}
@@ -273,6 +328,14 @@
             <p>{item.verifiedNote}</p>
           </div>
         {/if}
+      </div>
+      <div class="item-actions">
+        <h1>Actions</h1>
+        <div>
+          <div class="actions">
+            <button onclick={deleteItem}>Delete...</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

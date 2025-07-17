@@ -5,6 +5,8 @@
 
 #AdminPortal div.container.viewStoreItem div.left {
   width: 280px;
+  height: 100%;
+  overflow-y: auto;
 }
 
 #AdminPortal div.container.viewStoreItem div.left div.header {
