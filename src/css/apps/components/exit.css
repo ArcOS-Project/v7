@@ -38,6 +38,10 @@
   background-color: transparent;
 }
 
+#ExitApp > div.body div.options button:not(.selected) {
+  outline: none;
+}
+
 #ExitApp > div.body div.options button:hover {
   background-color: var(--button-glass-bg);
 }

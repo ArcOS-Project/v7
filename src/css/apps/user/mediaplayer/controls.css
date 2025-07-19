@@ -11,6 +11,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  outline: none;
 }
 
 #MediaPlayer > div.body div.media-controls button.fullscreen-toggle {

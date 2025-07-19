@@ -18,6 +18,7 @@
   padding: 0 7px;
   margin-bottom: 5px;
   background-color: transparent;
+  outline: none;
 }
 
 #logging > div.body div.sidebar button > span:not(.lucide) {

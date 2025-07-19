@@ -22,6 +22,7 @@
   padding: 0 10px;
   background-color: transparent;
   border-radius: 0;
+  outline: none;
 }
 
 #AdminPortal > div.body div.sidebar button:disabled {

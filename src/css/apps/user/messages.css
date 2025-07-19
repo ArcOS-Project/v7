@@ -25,6 +25,7 @@
   font-size: 16px;
   margin-bottom: 5px;
   background-color: transparent;
+  outline: none;
 }
 
 #Messages > div.body div.pages button:hover {
@@ -68,6 +69,7 @@
   background-color: transparent;
   padding: 0;
   font-size: 16px;
+  outline: none;
 }
 
 #Messages > div.body div.messages {
@@ -100,6 +102,7 @@
   text-align: left;
   margin-bottom: 5px;
   background-color: transparent;
+  outline: none;
 }
 
 #Messages > div.body div.messages button.message:last-child {

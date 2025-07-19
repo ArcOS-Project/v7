@@ -38,6 +38,7 @@
   border-radius: 5px;
   background-color: transparent;
   min-height: 26px;
+  outline: none;
 }
 
 #fileManager div.directory-viewer.grid button div.segment.icon img {

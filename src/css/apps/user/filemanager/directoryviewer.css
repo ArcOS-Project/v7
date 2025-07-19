@@ -69,6 +69,7 @@
   transform: unset;
   transition: opacity 0.3s;
   scale: 1;
+  outline: none;
 }
 
 #fileManager div.directory-viewer button.hidden-file {

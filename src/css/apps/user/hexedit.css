@@ -58,6 +58,7 @@
   border-radius: 3px;
   text-align: center;
   text-transform: uppercase;
+  outline: none;
 }
 
 #HexEdit > div.body div.offsets {
@@ -76,6 +77,7 @@
   transition: none;
   margin: 0 -10px;
   padding: 0 10px;
+  outline: none;
 }
 
 #HexEdit > div.body div.offsets button:hover {
@@ -211,6 +213,7 @@
   width: 16px;
   height: 16px;
   font-size: 16px;
+  outline: none;
 }
 
 #HexEdit div.virtual-scrollbar div.track {

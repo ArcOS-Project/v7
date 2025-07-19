@@ -13,6 +13,7 @@
   border-radius: 0;
   border-bottom: var(--win-border);
   transition: none;
+  outline: none;
 }
 
 #fileManager > div.body div.my_arcos section button.expander:hover {
@@ -53,6 +54,7 @@
   background-color: transparent;
   width: 275px;
   transition: none;
+  outline: none;
 }
 #fileManager > div.body div.my_arcos section.drives > div.content button:hover {
   background-color: var(--accent-transparent);
@@ -111,6 +113,7 @@
   margin-bottom: 5px;
   background-color: transparent;
   transition: none;
+  outline: none;
 }
 
 #fileManager > div.body div.my_arcos section.user-paths > div button:hover {

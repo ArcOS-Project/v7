@@ -9,6 +9,19 @@ div.window div.body button:not(.reset) {
   text-align: center;
 }
 
+div.window:not(.core) > div.body button:not(.reset):not(.no-glass):not(.suggested):not(.link) {
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
+}
+
+div.window:not(.core) > div.body button:not(.reset):not(.no-glass):not(.suggested):not(.link):hover {
+  background-color: var(--button-glass-hover-bg);
+}
+
+div.window:not(.core) > div.body button:not(.reset):not(.no-glass):not(.suggested):not(.link):active {
+  background-color: var(--button-glass-active-bg);
+}
+
 div.window div.body button:not(.reset):hover {
   background-color: var(--button-hover-bg, #555555);
 }
@@ -26,6 +39,7 @@ div.window div.body button:not(.reset).link {
   text-decoration: underline;
   text-underline-offset: 2px;
   width: fit-content;
+  border-radius: 0;
 }
 
 div.window div.body button:not(.reset):disabled {
@@ -72,4 +86,16 @@ div.window.glass > div.body button:not(.reset):not(.suggested):not(.menu-item):n
 
 div.window.glass > div.body button:not(.reset):not(.suggested):not(.menu-item):not(.no-glass):active {
   background-color: var(--button-glass-active-bg, #0005);
+}
+
+div.window:not(.core) > div.body button:not(.reset):not(.no-glass):not(.suggested):not(.link).lucide {
+  background-color: transparent;
+}
+
+div.window:not(.core) > div.body button:not(.reset):not(.no-glass):not(.suggested):not(.link).lucide:hover {
+  background-color: var(--button-glass-bg);
+}
+
+div.window:not(.core) > div.body button:not(.reset):not(.no-glass):not(.suggested):not(.link).lucide:active {
+  background-color: var(--button-glass-active-bg);
 }

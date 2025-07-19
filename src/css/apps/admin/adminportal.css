@@ -172,3 +172,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+#AdminPortal > div.body button {
+  outline: none;
+}

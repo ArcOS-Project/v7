@@ -52,6 +52,7 @@
   width: 100%;
   padding: 10px;
   background-color: transparent;
+  outline: none;
 }
 
 #OpenWith div.body > div.top div.options button.option p {

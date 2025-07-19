@@ -54,6 +54,12 @@
   gap: 10px;
 }
 
+#logging div.options div.current-source * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 #logging div.options.archive div.current-source {
   background-color: var(--clr-orange-bg);
 }

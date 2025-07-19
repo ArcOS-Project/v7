@@ -30,6 +30,7 @@
   height: 30px;
   border-radius: 0;
   background-color: var(--win-bg);
+  width: 0;
 }
 #AdvSystemSettings > div.body div.startup-items div.list div.row input {
   flex-grow: 1;
@@ -39,6 +40,7 @@
 #AdvSystemSettings > div.body div.startup-items div.list div.row select {
   border-left: var(--win-border);
   padding: 0 5px;
+  width: fit-content;
 }
 
 #AdvSystemSettings > div.body div.startup-items div.list div.row button {
@@ -49,4 +51,5 @@
   height: 30px;
   font-size: 16px;
   padding: 0;
+  outline: none;
 }

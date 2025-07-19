@@ -13,6 +13,7 @@
   align-items: start;
   gap: 15px;
   margin-bottom: 5px;
+  outline: none;
 }
 
 #BugHunt > div.body div.sidebar div.selector > button:hover {

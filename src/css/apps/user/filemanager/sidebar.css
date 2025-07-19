@@ -17,6 +17,7 @@
   padding: 0 7px;
   margin-bottom: 5px;
   background-color: transparent;
+  outline: none;
 }
 
 #fileManager > div.body div.sidebar button > span:not(.lucide) {

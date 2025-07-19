@@ -133,6 +133,7 @@
   font-size: 16px;
   background-color: transparent;
   min-width: fit-content;
+  outline: none;
 }
 
 #MessageComposer > div.body div.action-bar {

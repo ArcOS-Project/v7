@@ -47,6 +47,7 @@
   padding: 0;
   height: 30px;
   border-radius: 0;
+  outline: none;
 }
 
 #AdvSystemSettings > div.body div.dispatch-clients div.loading {

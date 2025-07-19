@@ -74,8 +74,16 @@
   width: 100%;
   background-color: transparent;
   margin-bottom: 5px;
+  outline: none;
 }
 
+#AppStore > div.body div.sidebar div.pages button:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#AppStore > div.body div.sidebar div.pages button:active {
+  background-color: var(--button-glass-active-bg);
+}
 #AppStore > div.body div.sidebar div.pages button.selected {
   background-color: var(--accent-transparent);
 }
@@ -138,6 +146,7 @@
   margin: 0;
   padding: 0;
   background-color: transparent;
+  outline: none;
 }
 
 #AppStore > div.body > div.container section > h1 button span {

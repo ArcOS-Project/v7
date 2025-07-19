@@ -11,8 +11,8 @@
   font-family: "Source Code Pro", monospace;
   font-size: 16px;
   text-align: right;
-  background-color: var(--button-bg);
-  border: none;
+  background-color: var(--button-glass-bg);
+  border: var(--button-glass-bg) 1px solid;
   box-shadow: none;
 }
 
@@ -33,6 +33,7 @@
   position: relative;
   margin: 0;
   font-size: 16px;
+  background-color: var(--button-glass-bg);
 }
 
 #calculator div.keys button.empty {
@@ -40,12 +41,12 @@
 }
 
 #calculator div.keys button.clear {
-  background-color: rgba(228, 54, 54) !important;
-  color: #fff !important;
+  background-color: var(--clr-red-fg) !important;
+  color: var(--clr-red-bg) !important;
 }
 
 #calculator div.keys button.alt {
-  background-color: var(--button-hover-bg);
+  background-color: var(--button-glass-hover-bg);
 }
 
 #calculator div.keys button.clear:hover,
@@ -63,4 +64,5 @@
 #calculator div.keys button.process {
   background-color: var(--accent);
   color: var(--accent-darkest);
+  font-weight: bold;
 }

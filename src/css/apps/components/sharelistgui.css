@@ -54,6 +54,7 @@
   padding: 10px;
   width: 100%;
   background-color: transparent;
+  outline: none;
 }
 
 #ShareListGui > div.body div.listing button:hover {

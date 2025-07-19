@@ -16,6 +16,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  outline: none;
 }
 
 #systemSettings div.slide.shell_weatherLocation div.option.search-results button:hover {
@@ -42,6 +43,7 @@
 
 #systemSettings div.slide.shell_weatherLocation div.option.search-bar button {
   background-color: transparent;
+  outline: none;
 }
 
 #systemSettings div.slide.shell_weatherLocation section {
