@@ -31,10 +31,10 @@
   </div>
   <InfoBlock>
     <InfoRow>
-      <Segment title="Name">
+      <Segment title="Name" className="name">
         <input type="text" bind:value={$shortcutData.name} />
       </Segment>
-      <Segment title="Type" right>
+      <Segment title="Type" right className="type">
         <select name="" id="" bind:value={$shortcutData.type}>
           <option value="new" disabled>New</option>
           <option value="file">File</option>

@@ -33,5 +33,6 @@ export const AppStoreApp: App = {
   },
   glass: true,
   vital: true,
+  noSafeMode: true,
   id: "AppStore",
 };

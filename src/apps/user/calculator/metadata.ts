@@ -44,6 +44,7 @@ export const CalculatorApp: App = {
     runtime: CalculatorRuntime,
     component: Calculator as any,
   },
+  glass: true,
   noSafeMode: true,
   id: "calculator",
 };
