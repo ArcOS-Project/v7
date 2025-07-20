@@ -97,6 +97,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  outline: none;
 }
 
 #systemSettings div.change-menu button:hover {
