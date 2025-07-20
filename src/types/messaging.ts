@@ -13,6 +13,7 @@ export interface Message {
   createdAt: string;
   updatedAt: string;
   author?: PublicUserInfo;
+  read: boolean;
 }
 
 export interface MessageCreateData {
@@ -27,16 +28,17 @@ export interface MessageNode extends Message {
 }
 
 export interface PartialMessage {
+  _id: string;
   authorId: string;
   title: string;
   recipient: string;
   attachmentCount: number;
   deleted?: boolean;
-  _id: string;
   repliesTo?: string;
   createdAt: string;
   author?: PublicUserInfo;
   correlationId: string;
+  read: boolean;
 }
 
 export type ExpandedMessage = Omit<Message, "attachments"> & {

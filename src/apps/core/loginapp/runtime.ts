@@ -230,6 +230,7 @@ export class LoginAppRuntime extends AppProcess {
 
     await userDaemon.checkForUpdates();
     userDaemon.serviceHost?.getService<ProtocolServiceProcess>("ProtoService")?.parseProtoParam();
+    await userDaemon.checkForMissedMessages();
   }
 
   async logoff(daemon: UserDaemon) {

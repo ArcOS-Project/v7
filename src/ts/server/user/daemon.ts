@@ -22,7 +22,7 @@ import { ShareManager } from "$ts/fs/shares/index";
 import { getDriveLetter, getItemNameFromPath, getParentDirectory, join } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
 import { getIconPath, iconIdFromPath, maybeIconId } from "$ts/images";
-import { AppStoreIcon } from "$ts/images/apps";
+import { AppStoreIcon, MessagingIcon } from "$ts/images/apps";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import {
@@ -67,6 +67,7 @@ import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons, U
 import { ThirdPartyProps } from "./thirdparty";
 import type { ProtocolServiceProcess } from "$ts/proto";
 import { AdminProtocolHandlers } from "../admin/proto";
+import { MessagingInterface } from "../messaging";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -2686,6 +2687,46 @@ The information provided in this report is subject for review by me or another A
                 v.globalSettings.noUpdateNotif = true;
                 return v;
               });
+            },
+          },
+        ],
+      });
+    }
+  }
+
+  async checkForMissedMessages() {
+    const service = this.serviceHost!.getService<MessagingInterface>("MessagingService")!;
+    const archived = this.preferences().appPreferences?.Messages?.archive || [];
+    const messages = (await service.getReceivedMessages()).filter((m) => !m.read && !archived.includes(m._id));
+
+    if (!messages.length) return;
+
+    if (messages.length === 1) {
+      const message = messages[0];
+      this.sendNotification({
+        className: "incoming-message",
+        image: `${import.meta.env.DW_SERVER_URL}${message.author?.profilePicture}`,
+        title: message.author?.username || "New message",
+        message: message.title,
+        buttons: [
+          {
+            caption: "View message",
+            action: () => {
+              this.spawnApp("Messages", +this.env.get("shell_pid"), "inbox", message._id);
+            },
+          },
+        ],
+      });
+    } else {
+      this.sendNotification({
+        title: "Missed messages",
+        message: `You have ${messages.length} ${Plural("message", messages.length)} in your inbox that you haven't read yet.`,
+        image: MessagingIcon,
+        buttons: [
+          {
+            caption: "Open inbox",
+            action: () => {
+              this.spawnApp("Messages", +this.env.get("shell_pid"), "inbox");
             },
           },
         ],

@@ -103,6 +103,18 @@
   margin-bottom: 5px;
   background-color: transparent;
   outline: none;
+  position: relative;
+}
+#Messages > div.body div.messages button.message.unread h1::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 16px;
+  border-radius: 1px;
+  background-color: var(--accent-light);
+  position: absolute;
+  top: calc(50% - 8px);
+  left: 0;
 }
 
 #Messages > div.body div.messages button.message:last-child {
