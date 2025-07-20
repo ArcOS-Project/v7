@@ -64,7 +64,7 @@ export class ThirdPartyAppProcess extends AppProcess {
           if (!direct) continue;
           if (!originalValue.includes(":/")) this.elements[originalValue] = element;
 
-          // if (!this.urlCache[filePath]) this.urlCache[filePath] = direct;
+          if (!this.urlCache[filePath]) this.urlCache[filePath] = direct;
 
           element.setAttribute(attribute, direct);
           element.setAttribute("data-original-path", filePath);
