@@ -14,6 +14,8 @@ export function handleGlobalErrors() {
     LOCKED = true;
 
     e.preventDefault();
+    e.stopImmediatePropagation();
+    e.stopPropagation();
 
     if (e instanceof ErrorEvent) {
       if (checkIndevTpa(e.error.stack, e.error)) {
