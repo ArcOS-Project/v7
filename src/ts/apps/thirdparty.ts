@@ -53,24 +53,29 @@ export class ThirdPartyAppProcess extends AppProcess {
         const elements = container.querySelectorAll(tag);
 
         for (const element of elements) {
-          const originalValue = element.getAttribute(attribute);
-          const keep = element.getAttribute("data-arc-keep");
+          try {
+            const originalValue = element.getAttribute(attribute);
+            const keep = element.getAttribute("data-arc-keep");
 
-          if (!originalValue || keep || originalValue.startsWith("http") || element.getAttribute("data-original-path")) continue;
+            if (!originalValue || keep || originalValue.startsWith("http") || element.getAttribute("data-original-path"))
+              continue;
 
-          const filePath = originalValue.includes(":/") ? originalValue : join(this.workingDirectory, originalValue);
-          const direct = this.urlCache[filePath] ?? (await this.fs.direct(filePath));
+            const filePath = originalValue.includes(":/") ? originalValue : join(this.workingDirectory, originalValue);
+            const direct = this.urlCache[filePath] ?? (await this.fs.direct(filePath));
 
-          if (!direct) {
-            this.urlCache[filePath] = originalValue;
+            if (!direct) {
+              this.urlCache[filePath] = originalValue;
+              continue;
+            }
+            if (!originalValue.includes(":/")) this.elements[originalValue] = element;
+
+            if (!this.urlCache[filePath]) this.urlCache[filePath] = direct;
+
+            element.setAttribute(attribute, direct);
+            element.setAttribute("data-original-path", filePath);
+          } catch {
             continue;
           }
-          if (!originalValue.includes(":/")) this.elements[originalValue] = element;
-
-          if (!this.urlCache[filePath]) this.urlCache[filePath] = direct;
-
-          element.setAttribute(attribute, direct);
-          element.setAttribute("data-original-path", filePath);
         }
       }
 
