@@ -61,7 +61,10 @@ export class ThirdPartyAppProcess extends AppProcess {
           const filePath = originalValue.includes(":/") ? originalValue : join(this.workingDirectory, originalValue);
           const direct = this.urlCache[filePath] ?? (await this.fs.direct(filePath));
 
-          if (!direct) continue;
+          if (!direct) {
+            this.urlCache[filePath] = originalValue;
+            continue;
+          }
           if (!originalValue.includes(":/")) this.elements[originalValue] = element;
 
           if (!this.urlCache[filePath]) this.urlCache[filePath] = direct;
