@@ -29,7 +29,7 @@ export class SharedDrive extends FilesystemDrive {
     tree: true,
     copyItem: true,
     moveItem: true,
-    deleteItem: false,
+    deleteItem: true,
     direct: true,
     quota: true,
     bulk: true,
