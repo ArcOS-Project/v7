@@ -1,5 +1,5 @@
 import type { WaveKernel } from "$ts/kernel";
-import type { DirectoryReadReturn, FilesystemProgressCallback, RecursiveDirectoryReadReturn } from "$types/fs";
+import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback, RecursiveDirectoryReadReturn } from "$types/fs";
 import JSZip from "jszip";
 import { Filesystem } from "..";
 import { FilesystemDrive } from "../drive";
@@ -12,6 +12,19 @@ export class ZIPDrive extends FilesystemDrive {
   public IDENTIFIES_AS: string = "zip";
   public FILESYSTEM_SHORT: string = "ZipFS";
   public FILESYSTEM_LONG: string = "ZIP Filesystem";
+  protected override CAPABILITIES: Record<DriveCapabilities, boolean> = {
+    readDir: true,
+    makeDir: true,
+    readFile: true,
+    writeFile: true,
+    tree: true,
+    copyItem: true,
+    moveItem: true,
+    deleteItem: true,
+    direct: false,
+    quota: false,
+    bulk: false,
+  };
 
   constructor(kernel: WaveKernel, uuid: string, letter: string, path: string) {
     super(kernel, uuid, letter);

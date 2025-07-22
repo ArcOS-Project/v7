@@ -4,6 +4,7 @@ import { getItemNameFromPath, join } from "$ts/fs/util";
 import type { WaveKernel } from "$ts/kernel";
 import type {
   DirectoryReadReturn,
+  DriveCapabilities,
   FilesystemProgressCallback,
   FsAccess,
   RecursiveDirectoryReadReturn,
@@ -20,6 +21,19 @@ export class DevDrive extends FilesystemDrive {
   private axios: AxiosInstance;
   private url: string;
   public label: string = "Dev Drive";
+  protected override CAPABILITIES: Record<DriveCapabilities, boolean> = {
+    readDir: true,
+    makeDir: true,
+    readFile: true,
+    writeFile: true,
+    tree: true,
+    copyItem: true,
+    moveItem: true,
+    deleteItem: true,
+    direct: true,
+    quota: true,
+    bulk: true,
+  };
 
   constructor(kernel: WaveKernel, uuid: string, letter: string, axios: AxiosInstance, url: string) {
     super(kernel, uuid, letter);

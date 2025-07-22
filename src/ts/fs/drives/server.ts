@@ -4,6 +4,7 @@ import { Backend } from "$ts/server/axios";
 import { authcode } from "$ts/util";
 import type {
   DirectoryReadReturn,
+  DriveCapabilities,
   FilesystemProgressCallback,
   FsAccess,
   RecursiveDirectoryReadReturn,
@@ -19,6 +20,19 @@ export class ServerDrive extends FilesystemDrive {
   public IDENTIFIES_AS: string = "userfs";
   public FILESYSTEM_SHORT: string = "UFS";
   public FILESYSTEM_LONG: string = "User Filesystem";
+  protected override CAPABILITIES: Record<DriveCapabilities, boolean> = {
+    readDir: true,
+    makeDir: true,
+    readFile: true,
+    writeFile: true,
+    tree: true,
+    copyItem: true,
+    moveItem: true,
+    deleteItem: true,
+    direct: true,
+    quota: true,
+    bulk: true,
+  };
 
   constructor(kernel: WaveKernel, uuid: string, letter: string, token: string) {
     super(kernel, uuid, letter);

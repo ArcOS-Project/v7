@@ -3,6 +3,7 @@ import { Backend } from "$ts/server/axios";
 import { authcode } from "$ts/util";
 import type {
   DirectoryReadReturn,
+  DriveCapabilities,
   FilesystemProgressCallback,
   FsAccess,
   RecursiveDirectoryReadReturn,
@@ -15,9 +16,22 @@ export class AdminServerDrive extends FilesystemDrive {
   private token: string;
   override READONLY = true;
   override FIXED = false;
-  override IDENTIFIES_AS: string = "admin";
-  override FILESYSTEM_SHORT: string = "AFS";
-  override FILESYSTEM_LONG: string = "Admin Filesystem";
+  override IDENTIFIES_AS: string = "aefs";
+  override FILESYSTEM_SHORT: string = "AEFS";
+  override FILESYSTEM_LONG: string = "Admin Enforcement FS";
+  protected override CAPABILITIES: Record<DriveCapabilities, boolean> = {
+    readDir: true,
+    makeDir: false,
+    readFile: true,
+    writeFile: false,
+    tree: true,
+    copyItem: false,
+    moveItem: false,
+    deleteItem: false,
+    direct: true,
+    quota: true,
+    bulk: true,
+  };
 
   constructor(kernel: WaveKernel, uuid: string, letter: string, token: string, targetUsername: string) {
     super(kernel, uuid, letter);

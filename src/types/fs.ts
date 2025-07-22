@@ -97,3 +97,16 @@ export interface FileOpenerResult {
   handler?: FileHandler;
   id: string;
 }
+
+export type DriveCapabilities =
+  | "readDir"
+  | "makeDir"
+  | "readFile"
+  | "writeFile"
+  | "tree"
+  | "copyItem"
+  | "moveItem"
+  | "deleteItem"
+  | "direct"
+  | "quota"
+  | "bulk";

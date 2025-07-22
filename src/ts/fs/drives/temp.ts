@@ -1,6 +1,13 @@
 import { deepCopyWithBlobs, sortByKey } from "$ts/util";
 import { UUID } from "$ts/uuid";
-import type { DirectoryReadReturn, FileEntry, FolderEntry, RecursiveDirectoryReadReturn, UserQuota } from "$types/fs";
+import type {
+  DirectoryReadReturn,
+  DriveCapabilities,
+  FileEntry,
+  FolderEntry,
+  RecursiveDirectoryReadReturn,
+  UserQuota,
+} from "$types/fs";
 import { FilesystemDrive } from "../drive";
 
 export class MemoryFilesystemDrive extends FilesystemDrive {
@@ -11,6 +18,19 @@ export class MemoryFilesystemDrive extends FilesystemDrive {
   public override FILESYSTEM_SHORT: string = "TFS";
   public override HIDDEN: boolean = true;
   public label: string = "TEMP";
+  protected override CAPABILITIES: Record<DriveCapabilities, boolean> = {
+    readDir: true,
+    makeDir: true,
+    readFile: true,
+    writeFile: true,
+    tree: true,
+    copyItem: true,
+    moveItem: true,
+    deleteItem: true,
+    direct: true,
+    quota: true,
+    bulk: true,
+  };
 
   constructor(kernel: any, uuid: string, letter?: string) {
     super(kernel, uuid, letter);

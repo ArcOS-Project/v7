@@ -145,6 +145,8 @@ export class Filesystem extends KernelModule {
     this.validatePath(path);
     const drive = this.getDriveByPath(path);
 
+    drive.isCapable("readDir");
+
     return await drive.readDir(this.removeDriveLetter(path));
   }
 
@@ -156,6 +158,8 @@ export class Filesystem extends KernelModule {
     this.validatePath(path);
     const drive = this.getDriveByPath(path);
     const scopedPath = this.removeDriveLetter(path);
+
+    drive.isCapable("bulk");
 
     return await drive.bulk<T>(scopedPath, extension);
   }
@@ -173,6 +177,7 @@ export class Filesystem extends KernelModule {
     const result = await drive.createDirectory(scopedPath);
 
     if (dispatch) this.dispatch.dispatch("fs-flush-folder", parent);
+    drive.isCapable("makeDir");
 
     return result;
   }
@@ -187,6 +192,7 @@ export class Filesystem extends KernelModule {
 
     const drive = this.getDriveByPath(path);
     path = this.removeDriveLetter(path);
+    drive.isCapable("readFile");
 
     return await drive.readFile(path, onProgress);
   }
@@ -200,6 +206,7 @@ export class Filesystem extends KernelModule {
     this.validatePath(path);
 
     const drive = this.getDriveByPath(path);
+    drive.isCapable("writeFile");
     const scopedPath = this.removeDriveLetter(path);
     const parent = getParentDirectory(path);
     const result = await drive.writeFile(scopedPath, data, onProgress);
@@ -219,6 +226,7 @@ export class Filesystem extends KernelModule {
     this.validatePath(path);
 
     const drive = this.getDriveByPath(path);
+    drive.isCapable("tree");
 
     path = this.removeDriveLetter(path);
 
@@ -238,6 +246,7 @@ export class Filesystem extends KernelModule {
     if (sourceId !== destinationId) throw new Error("Copy operation across drives is not supported.");
 
     const drive = this.getDriveByPath(source);
+    drive.isCapable("copyItem");
 
     source = this.removeDriveLetter(source);
     destination = this.removeDriveLetter(destination);
@@ -265,6 +274,7 @@ export class Filesystem extends KernelModule {
     if (sourceId !== destinationId) throw new Error("Move operation across drives is not supported.");
 
     const drive = this.getDriveByPath(source);
+    drive.isCapable("moveItem");
 
     const scopedDestination = this.removeDriveLetter(destination);
     const scopedSource = this.removeDriveLetter(source);
@@ -287,6 +297,7 @@ export class Filesystem extends KernelModule {
     this.validatePath(path);
 
     const drive = this.getDriveByPath(path);
+    drive.isCapable("deleteItem");
     const scopedPath = this.removeDriveLetter(path);
     const parent = getParentDirectory(path);
     const result = await drive.deleteItem(scopedPath);
@@ -402,6 +413,8 @@ export class Filesystem extends KernelModule {
     this.validatePath(path);
 
     const drive = this.getDriveByPath(path);
+    drive.isCapable("direct");
+
     const scopedPath = this.removeDriveLetter(path);
     const result = await drive.direct(scopedPath);
 

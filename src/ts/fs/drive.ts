@@ -1,7 +1,7 @@
 import type { WaveKernel } from "$ts/kernel";
 import { Log } from "$ts/kernel/logging";
 import { ServerManager } from "$ts/server";
-import type { DirectoryReadReturn, FilesystemProgressCallback, RecursiveDirectoryReadReturn } from "$types/fs";
+import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback, RecursiveDirectoryReadReturn } from "$types/fs";
 import { LogLevel } from "$types/logging";
 import type { UserQuota } from "../../types/fs";
 
@@ -20,6 +20,20 @@ export class FilesystemDrive {
   public readonly FILESYSTEM_LONG: string = "Generic Filesystem";
   public BUSY: boolean = false;
   protected fileLocks: Record<string, number> = {};
+
+  protected CAPABILITIES: Record<DriveCapabilities, boolean> = {
+    readDir: false,
+    makeDir: false,
+    readFile: false,
+    writeFile: false,
+    tree: false,
+    copyItem: false,
+    moveItem: false,
+    deleteItem: false,
+    direct: false,
+    quota: false,
+    bulk: false,
+  };
 
   async lockFile(path: string, pid: number) {
     if (this.fileLocks[path]) throw new Error(`Can't lock ${path}: file is in use by process ${this.fileLocks[path]}`);
@@ -134,5 +148,10 @@ export class FilesystemDrive {
 
   async bulk<T = any>(path: string, extension: string): Promise<Record<string, T>> {
     return {};
+  }
+
+  isCapable(capability: DriveCapabilities) {
+    if (!this.CAPABILITIES[capability])
+      throw new Error(`Illegal operation '${capability}' on filesystem '${this.FILESYSTEM_SHORT}'`);
   }
 }

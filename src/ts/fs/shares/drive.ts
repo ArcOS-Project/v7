@@ -4,6 +4,7 @@ import { Backend } from "$ts/server/axios";
 import { authcode } from "$ts/util";
 import type {
   DirectoryReadReturn,
+  DriveCapabilities,
   FilesystemProgressCallback,
   FsAccess,
   RecursiveDirectoryReadReturn,
@@ -20,7 +21,19 @@ export class SharedDrive extends FilesystemDrive {
   public IDENTIFIES_AS: string = "share";
   public FILESYSTEM_SHORT: string = "SDFS";
   public FILESYSTEM_LONG: string = "Shared Drive Filesystem";
-
+  protected override CAPABILITIES: Record<DriveCapabilities, boolean> = {
+    readDir: true,
+    makeDir: true,
+    readFile: true,
+    writeFile: true,
+    tree: true,
+    copyItem: true,
+    moveItem: true,
+    deleteItem: false,
+    direct: true,
+    quota: true,
+    bulk: true,
+  };
   constructor(kernel: WaveKernel, uuid: string, letter: string, info: SharedDriveType, token: string) {
     super(kernel, uuid, letter);
 
