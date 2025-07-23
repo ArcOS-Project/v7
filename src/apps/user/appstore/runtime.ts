@@ -3,6 +3,7 @@ import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
 import { InstallerProcess } from "$ts/distrib/installer";
 import { StoreItemIcon } from "$ts/distrib/util";
+import { arrayToBlob } from "$ts/fs/convert";
 import { AppStoreIcon } from "$ts/images/apps";
 import { ErrorIcon, InfoIcon } from "$ts/images/dialog";
 import { UploadIcon } from "$ts/images/general";
@@ -15,12 +16,11 @@ import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
 import type { FilesystemProgressCallback } from "$types/fs";
 import type { StoreItem } from "$types/package";
+import axios from "axios";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import TakenDown from "./AppStore/TakenDown.svelte";
 import { appStorePages } from "./store";
-import axios from "axios";
-import { arrayToBlob } from "$ts/fs/convert";
 
 export class AppStoreRuntime extends AppProcess {
   searchQuery = Store<string>("");

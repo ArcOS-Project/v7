@@ -43,6 +43,6 @@ export const MultiUpdateGuiApp: App = {
   hidden: true,
   vital: true,
   glass: true,
-  elevated:true,
+  elevated: true,
   id: "MultiUpdateGui",
 };

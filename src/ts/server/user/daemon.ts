@@ -39,6 +39,7 @@ import { RestartIcon } from "$ts/images/power";
 import { tryJsonParse } from "$ts/json";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
+import type { ProtocolServiceProcess } from "$ts/proto";
 import { ServiceHost } from "$ts/services";
 import { Sleep } from "$ts/sleep";
 import { authcode, Plural } from "$ts/util";
@@ -60,14 +61,13 @@ import { fromExtension } from "human-filetypes";
 import Cookies from "js-cookie";
 import type { Unsubscriber } from "svelte/store";
 import type { ServerManager } from "..";
+import { AdminProtocolHandlers } from "../admin/proto";
 import { Backend } from "../axios";
+import { MessagingInterface } from "../messaging";
 import { GlobalDispatch } from "../ws";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
-import type { ProtocolServiceProcess } from "$ts/proto";
-import { AdminProtocolHandlers } from "../admin/proto";
-import { MessagingInterface } from "../messaging";
 
 export class UserDaemon extends Process {
   public initialized = false;

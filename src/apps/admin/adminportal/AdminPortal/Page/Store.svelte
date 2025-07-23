@@ -1,12 +1,12 @@
 <script lang="ts">
   import { Logo } from "$ts/branding";
+  import { sortByKey } from "$ts/util";
   import { Store } from "$ts/writable";
   import type { StoreItem } from "$types/package";
   import { onMount } from "svelte";
   import type { AdminPortalRuntime } from "../../runtime";
   import type { StoreData, StorePageFilters } from "../../types";
   import StoreRow from "./Store/StoreRow.svelte";
-  import { sortByKey } from "$ts/util";
 
   const { process, data }: { process: AdminPortalRuntime; data: StoreData } = $props();
   const { items, users } = data;

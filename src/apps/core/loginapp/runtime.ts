@@ -2,11 +2,13 @@ import { TotpAuthGuiApp } from "$apps/components/totpauthgui/metadata";
 import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
 import { ProfilePictures } from "$ts/images/pfp";
 import { tryJsonParse } from "$ts/json";
+import { ProtocolServiceProcess } from "$ts/proto";
 import { ServerManager } from "$ts/server";
 import { Backend } from "$ts/server/axios";
 import { LoginUser } from "$ts/server/user/auth";
 import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
+import { authcode } from "$ts/util";
 import { UUID } from "$ts/uuid";
 import { Wallpapers } from "$ts/wallpaper/store";
 import { Store } from "$ts/writable";
@@ -17,8 +19,6 @@ import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
 import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps, PersistenceInfo } from "./types";
-import { authcode } from "$ts/util";
-import { ProtocolServiceProcess } from "$ts/proto";
 
 export class LoginAppRuntime extends AppProcess {
   public DEFAULT_WALLPAPER = Store<string>("");

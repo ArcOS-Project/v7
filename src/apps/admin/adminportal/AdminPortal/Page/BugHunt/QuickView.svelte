@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import Spinner from "$lib/Spinner.svelte";
+  import type { ReadableStore } from "$ts/writable";
   import type { BugReport } from "$types/bughunt";
   import { onMount } from "svelte";
   import ViewBugReport from "../ViewBugReport.svelte";
-  import type { ReadableStore } from "$ts/writable";
 
   const { process, id, quickView }: { process: AdminPortalRuntime; id: string; quickView: ReadableStore<string> } = $props();
   let report = $state<BugReport>();

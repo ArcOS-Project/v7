@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import Spinner from "$lib/Spinner.svelte";
   import type { StoreItem } from "$types/package";
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";
   import Users from "../../Users.svelte";
-  import Spinner from "$lib/Spinner.svelte";
 
   const { item, process }: { item: StoreItem; process: AdminPortalRuntime } = $props();
 

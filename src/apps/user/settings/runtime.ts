@@ -19,7 +19,7 @@ import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { htmlspecialchars } from "$ts/util";
 import { Store } from "$ts/writable";
-import type { App, AppContextMenu, AppProcessData } from "$types/app";
+import type { App, AppProcessData } from "$types/app";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
 import { SettingsContext } from "./context";
 import { ChangePasswordApp } from "./overlays/changePassword";

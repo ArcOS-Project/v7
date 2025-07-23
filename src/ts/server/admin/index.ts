@@ -29,8 +29,8 @@ import { fromExtension } from "human-filetypes";
 import JSZip from "jszip";
 import { Backend } from "../axios";
 import { MessagingInterface } from "../messaging";
-import { AdminScopes } from "./store";
 import { UserPaths } from "../user/store";
+import { AdminScopes } from "./store";
 
 export class AdminBootstrapper extends BaseService {
   private token: string | undefined;

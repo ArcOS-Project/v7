@@ -1,4 +1,3 @@
-import { ApplicationStorage } from "$ts/apps/storage";
 import { tryJsonParse } from "$ts/json";
 import type { ProcessHandler } from "$ts/process/handler";
 import type { ServiceHost } from "$ts/services";

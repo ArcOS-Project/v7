@@ -1,9 +1,9 @@
+import { LogLevel } from "$types/logging";
+import * as stackTraceParser from "stacktrace-parser";
 import { __Console__ } from "./console";
 import { Crash } from "./crash";
-import * as stackTraceParser from "stacktrace-parser";
 import { WaveKernel } from "./kernel";
 import { ProcessHandler } from "./process/handler";
-import { LogLevel } from "$types/logging";
 export function handleGlobalErrors() {
   let LOCKED = false;
   function Error(e: ErrorEvent | PromiseRejectionEvent) {
