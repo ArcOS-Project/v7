@@ -19,8 +19,10 @@ export class NewFolderRuntime extends AppProcess {
 
   async createFolder() {
     try {
-    } catch {}
-    await this.fs.createDirectory(join(this.path, this.newFolder()));
+      await this.fs.createDirectory(join(this.path, this.newFolder()));
+    } catch {
+      // silently error
+    }
 
     this.closeWindow();
   }

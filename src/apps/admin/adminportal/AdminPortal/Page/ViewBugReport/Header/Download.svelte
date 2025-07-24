@@ -32,13 +32,17 @@
       process.pid,
     );
 
-    await process.fs.writeFile(path, textToBlob(JSON.stringify(report, null, 2)), (progress) => {
-      prog.show();
-      prog.setMax(progress.max);
-      prog.setDone(progress.value);
-      prog.setWait(false);
-      prog.setWork(true);
-    });
+    try {
+      await process.fs.writeFile(path, textToBlob(JSON.stringify(report, null, 2)), (progress) => {
+        prog.show();
+        prog.setMax(progress.max);
+        prog.setDone(progress.value);
+        prog.setWait(false);
+        prog.setWork(true);
+      });
+    } catch {
+      // silently error
+    }
 
     prog.stop();
   }

@@ -89,8 +89,13 @@ export class AppInstallerRuntime extends AppProcess {
   async revert() {
     const gli = await this.userDaemon?.GlobalLoadIndicator("Rolling back changes...", this.pid);
 
-    await this.fs.deleteItem(this.metadata!.installLocation);
-    await this.userDaemon?.deleteApp(this.metadata!.appId, false);
+    try {
+      await this.fs.deleteItem(this.metadata!.installLocation);
+      await this.userDaemon?.deleteApp(this.metadata!.appId, false);
+    } catch {
+      // Silently error
+    }
+
     await gli?.stop();
 
     this.closeWindow();

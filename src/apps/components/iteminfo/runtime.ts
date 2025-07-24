@@ -36,48 +36,56 @@ export class ItemInfoRuntime extends AppProcess {
 
     this.isDrive = getParentDirectory(this.renderArgs.path) === this.renderArgs.path;
 
-    if (this.isDrive) {
-      const id = this.renderArgs.path.split(":")[0]; // Drive discriminator
+    try {
+      if (this.isDrive) {
+        const id = this.renderArgs.path.split(":")[0]; // Drive discriminator
 
-      this.drive = this.fs.getDriveByLetter(id);
+        this.drive = this.fs.getDriveByLetter(id);
 
-      if (!this.drive) this.isDrive = false; // Verify the drive exists
+        if (!this.drive) this.isDrive = false; // Verify the drive exists
+      }
+    } catch {
+      return false;
     }
   }
 
   async render({ path, file }: RenderArgs) {
     file = file as FileEntry | FolderEntry;
 
-    const drive = this.fs.getDriveByPath(path);
-    const name = getItemNameFromPath(path);
-    const parent = getItemNameFromPath(getParentDirectory(path));
-    const split = path.split(".");
-    const extension = file.mimeType ? split[split.length - 1] : undefined;
-    const isShortcut = file?.name?.endsWith(".arclnk");
+    try {
+      const drive = this.fs.getDriveByPath(path);
+      const name = getItemNameFromPath(path);
+      const parent = getItemNameFromPath(getParentDirectory(path));
+      const split = path.split(".");
+      const extension = file.mimeType ? split[split.length - 1] : undefined;
+      const isShortcut = file?.name?.endsWith(".arclnk");
 
-    this.info.set({
-      meta: {
-        sort: file.mimeType ? "file" : "folder",
-        created: file.dateModified,
-        modified: file.dateCreated,
-        mimetype: file.mimeType,
-        size: file.mimeType ? file.size : undefined,
-      },
-      location: {
-        fullPath: path,
-        driveFs: drive.FILESYSTEM_SHORT,
-        drive: drive.driveLetter ? `${drive.driveLetter}:/` : undefined,
-        parent,
-        extension,
-      },
-      isFolder: !file.mimeType,
-      isShortcut,
-      name,
-    });
+      this.info.set({
+        meta: {
+          sort: file.mimeType ? "file" : "folder",
+          created: file.dateModified,
+          modified: file.dateCreated,
+          mimetype: file.mimeType,
+          size: file.mimeType ? file.size : undefined,
+        },
+        location: {
+          fullPath: path,
+          driveFs: drive.FILESYSTEM_SHORT,
+          drive: drive.driveLetter ? `${drive.driveLetter}:/` : undefined,
+          parent,
+          extension,
+        },
+        isFolder: !file.mimeType,
+        isShortcut,
+        name,
+      });
 
-    if (isShortcut) {
-      // Longwinded and godawful way to get the shortcut metadata in this file
-      this.shortcut.set(JSON.parse(arrayToText((await this.fs.readFile(this.info().location.fullPath))!)));
+      if (isShortcut) {
+        // Longwinded and godawful way to get the shortcut metadata in this file
+        this.shortcut.set(JSON.parse(arrayToText((await this.fs.readFile(this.info().location.fullPath))!)));
+      }
+    } catch {
+      this.closeWindow();
     }
   }
 
