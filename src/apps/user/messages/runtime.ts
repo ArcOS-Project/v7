@@ -223,19 +223,22 @@ export class MessagingAppRuntime extends AppProcess {
 
   async readAttachment(attachment: MessageAttachment, messageId: string, prog: FileProgressMutator) {
     const path = `T:/Apps/${this.app.id}/${messageId}/${attachment.filename}`;
-    const existing = await this.fs.readFile(path);
 
-    if (existing) return existing;
+    try {
+      const existing = await this.fs.readFile(path);
 
-    const contents = await this.service.readAttachment(messageId, attachment._id, (progress) => {
-      prog?.show();
-      prog?.setType("size");
-      prog?.setDone(0);
-      prog?.setMax(progress.max + 1);
-      prog?.setDone(progress.value);
-    });
+      if (existing) return existing;
 
-    return contents;
+      const contents = await this.service.readAttachment(messageId, attachment._id, (progress) => {
+        prog?.show();
+        prog?.setType("size");
+        prog?.setDone(0);
+        prog?.setMax(progress.max + 1);
+        prog?.setDone(progress.value);
+      });
+
+      return contents;
+    } catch {}
   }
 
   async openAttachment(attachment: MessageAttachment, messageId: string) {
@@ -273,8 +276,11 @@ export class MessagingAppRuntime extends AppProcess {
       return;
     }
 
-    await this.fs.createDirectory(getParentDirectory(path));
-    await this.fs.writeFile(path, arrayToBlob(contents, attachment.mimeType));
+    try {
+      await this.fs.createDirectory(getParentDirectory(path));
+      await this.fs.writeFile(path, arrayToBlob(contents, attachment.mimeType));
+    } catch {}
+
     await this.userDaemon?.openFile(path);
   }
 
@@ -334,11 +340,13 @@ export class MessagingAppRuntime extends AppProcess {
       this.pid
     );
 
-    await this.fs.writeFile(path, textToBlob(JSON.stringify(message, null, 2)), (progress) => {
-      prog?.show();
-      prog?.setDone(progress.value);
-      prog?.setMax(progress.max);
-    });
+    try {
+      await this.fs.writeFile(path, textToBlob(JSON.stringify(message, null, 2)), (progress) => {
+        prog?.show();
+        prog?.setDone(progress.value);
+        prog?.setMax(progress.max);
+      });
+    } catch {}
 
     await prog?.stop();
   }
@@ -346,14 +354,16 @@ export class MessagingAppRuntime extends AppProcess {
   async readMessageFromFile(path: string) {
     this.messageFromFile = true;
 
-    const contents = await this.fs.readFile(path);
-    if (!contents) return this.closeWindow();
+    try {
+      const contents = await this.fs.readFile(path);
+      if (!contents) return this.closeWindow();
 
-    const json = tryJsonParse(arrayToText(contents));
-    if (typeof json === "string") return this.closeWindow();
+      const json = tryJsonParse(arrayToText(contents));
+      if (typeof json === "string") return this.closeWindow();
 
-    this.message.set(json as ExpandedMessage);
-    this.windowTitle.set(path);
+      this.message.set(json as ExpandedMessage);
+      this.windowTitle.set(path);
+    } catch {}
   }
 
   compose() {

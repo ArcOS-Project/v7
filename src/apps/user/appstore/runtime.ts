@@ -411,7 +411,9 @@ The author hasn't provided a readme file themselves, so this one has been automa
     const path = `T:/Apps/${this.app.id}/${uuid}`;
     const array = await axios.get(url, { responseType: "arraybuffer" });
 
-    await this.fs.writeFile(path, arrayToBlob(array.data));
+    try {
+      await this.fs.writeFile(path, arrayToBlob(array.data));
+    } catch {}
 
     this.spawnApp("ImageViewer", +this.env.get("shell_pid"), path);
   }

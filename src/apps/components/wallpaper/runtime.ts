@@ -60,13 +60,17 @@ export class WallpaperRuntime extends AppProcess {
   async updateContents() {
     this.Log("Refreshing desktop icons!");
 
-    const contents = await this.fs.readDir(this.directory);
-    const shortcuts = contents?.shortcuts || {};
+    try {
+      const contents = await this.fs.readDir(this.directory);
+      const shortcuts = contents?.shortcuts || {};
 
-    this.shortcuts.set(shortcuts);
-    this.contents.set(contents);
+      this.shortcuts.set(shortcuts);
+      this.contents.set(contents);
 
-    this.findAndDeleteOrphans(this.contents());
+      this.findAndDeleteOrphans(this.contents());
+    } catch {
+      return;
+    }
   }
 
   findAndDeleteOrphans(contents: DirectoryReadReturn | undefined) {
@@ -167,7 +171,9 @@ export class WallpaperRuntime extends AppProcess {
           {
             caption: "Delete",
             action: () => {
-              this.fs.deleteItem(path, true);
+              try {
+                this.fs.deleteItem(path, true);
+              } catch {}
             },
             suggested: true,
           },

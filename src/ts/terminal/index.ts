@@ -56,7 +56,11 @@ export class ArcTerminal extends Process {
   async start() {
     if (!this.term) return this.killSelf();
 
-    await this.fs.createDirectory(join(UserPaths.Configuration, "ArcTerm"));
+    try {
+      await this.fs.createDirectory(join(UserPaths.Configuration, "ArcTerm"));
+    } catch {
+      return false;
+    }
     await this.migrateConfigurationPath();
 
     const rl = await this.handler.spawn<Readline>(Readline, undefined, this.pid, this);
@@ -355,7 +359,11 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    await this.fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(this.config, null, 2)));
+    try {
+      await this.fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(this.config, null, 2)));
+    } catch {
+      return;
+    }
   }
 
   async reload() {
@@ -375,13 +383,15 @@ export class ArcTerminal extends Process {
   }
 
   async migrateConfigurationPath() {
-    const oldPath = "U:/arcterm.conf";
-    const newFile = await this.fs.readFile(this.CONFIG_PATH);
-    const oldFile = newFile ? undefined : await this.fs.readFile(oldPath);
+    try {
+      const oldPath = "U:/arcterm.conf";
+      const newFile = await this.fs.readFile(this.CONFIG_PATH);
+      const oldFile = newFile ? undefined : await this.fs.readFile(oldPath);
 
-    if (oldFile && !newFile) {
-      this.Log("Migrating old config path to " + this.CONFIG_PATH);
-      await this.fs.moveItem(oldPath, this.CONFIG_PATH);
-    }
+      if (oldFile && !newFile) {
+        this.Log("Migrating old config path to " + this.CONFIG_PATH);
+        await this.fs.moveItem(oldPath, this.CONFIG_PATH);
+      }
+    } catch {}
   }
 }

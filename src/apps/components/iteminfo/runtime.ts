@@ -122,7 +122,11 @@ export class ItemInfoRuntime extends AppProcess {
           {
             caption: "Unmount",
             action: async () => {
-              await this.confirmUmountDrive(this.drive!, this.fs.getDriveIdByIdentifier(this.drive!.uuid));
+              try {
+                await this.confirmUmountDrive(this.drive!, this.fs.getDriveIdByIdentifier(this.drive!.uuid));
+              } catch {
+                // Silently error
+              }
             },
             suggested: true,
           },
@@ -148,13 +152,17 @@ export class ItemInfoRuntime extends AppProcess {
       this.pid
     );
 
-    await this.fs.umountDrive(id, false, (progress) => {
-      prog.show();
-      prog.setMax(progress.max);
-      prog.setDone(progress.value);
-      prog.setWait(false);
-      prog.setWork(true);
-    });
+    try {
+      await this.fs.umountDrive(id, false, (progress) => {
+        prog.show();
+        prog.setMax(progress.max);
+        prog.setDone(progress.value);
+        prog.setWait(false);
+        prog.setWork(true);
+      });
+    } catch {
+      // silently error
+    }
 
     prog.stop();
     this.closeWindow();

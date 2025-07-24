@@ -159,11 +159,13 @@ export class WriterRuntime extends AppProcess {
       this.pid
     );
 
-    await this.fs.writeFile(opened, textToBlob(buffer), async (progress) => {
-      await prog.show();
-      prog.setMax(progress.max);
-      prog.setDone(progress.value);
-    });
+    try {
+      await this.fs.writeFile(opened, textToBlob(buffer), async (progress) => {
+        await prog.show();
+        prog.setMax(progress.max);
+        prog.setDone(progress.value);
+      });
+    } catch {}
 
     await prog.stop();
     this.original.set(this.buffer());

@@ -25,15 +25,19 @@ export class PdfViewerRuntime extends AppProcess {
   }
 
   async readFile(path: string) {
-    const url = await this.fs.direct(path);
+    try {
+      const url = await this.fs.direct(path);
 
-    if (!url) {
+      if (!url) {
+        return await this.readFileIndirectFallback(path);
+      }
+
+      this.openedFile.set(path);
+      this.documentUrl.set(url);
+      this.windowTitle.set(getItemNameFromPath(path));
+    } catch {
       return await this.readFileIndirectFallback(path);
     }
-
-    this.openedFile.set(path);
-    this.documentUrl.set(url);
-    this.windowTitle.set(getItemNameFromPath(path));
   }
 
   async readFileIndirectFallback(path: string) {
@@ -47,38 +51,42 @@ export class PdfViewerRuntime extends AppProcess {
       this.pid
     );
 
-    const contents = await this.fs.readFile(path, (progress) => {
-      prog.setWait(false);
-      prog.setWork(true);
-      prog.show();
-      prog.setMax(progress.max);
-      prog.setDone(progress.value);
-    });
+    try {
+      const contents = await this.fs.readFile(path, (progress) => {
+        prog.setWait(false);
+        prog.setWork(true);
+        prog.show();
+        prog.setMax(progress.max);
+        prog.setDone(progress.value);
+      });
 
-    prog.stop();
+      prog.stop();
 
-    if (!contents) {
-      MessageBox(
-        {
-          title: "Failed to read PDF file",
-          message: "The file you tried to open could not be read.",
-          image: ErrorIcon,
-          sound: "arcos.dialog.error",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-        },
-        this.parentPid,
-        true
-      );
+      if (!contents) {
+        MessageBox(
+          {
+            title: "Failed to read PDF file",
+            message: "The file you tried to open could not be read.",
+            image: ErrorIcon,
+            sound: "arcos.dialog.error",
+            buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          },
+          this.parentPid,
+          true
+        );
+        this.closeWindow();
+
+        return;
+      }
+
+      const blob = arrayToBlob(contents);
+      const url = URL.createObjectURL(blob);
+
+      this.openedFile.set(path);
+      this.documentUrl.set(url);
+      this.windowTitle.set(getItemNameFromPath(path));
+    } catch {
       this.closeWindow();
-
-      return;
     }
-
-    const blob = arrayToBlob(contents);
-    const url = URL.createObjectURL(blob);
-
-    this.openedFile.set(path);
-    this.documentUrl.set(url);
-    this.windowTitle.set(getItemNameFromPath(path));
   }
 }

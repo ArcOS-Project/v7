@@ -716,16 +716,18 @@ export class FileManagerRuntime extends AppProcess {
     this.showNotice.set(false);
     this.notice.set(undefined);
 
-    const drive = this.fs.getDriveByPath(this.path());
+    try {
+      const drive = this.fs.getDriveByPath(this.path());
 
-    if (this.shareAccessIsAdministrative(drive)) {
-      this.notice.set({
-        icon: "shield-user",
-        text: "You're accessing a share as an administrator!",
-        className: "warning",
-      });
-      this.showNotice.set(true);
-    }
+      if (this.shareAccessIsAdministrative(drive)) {
+        this.notice.set({
+          icon: "shield-user",
+          text: "You're accessing a share as an administrator!",
+          className: "warning",
+        });
+        this.showNotice.set(true);
+      }
+    } catch {}
   }
 
   shareAccessIsAdministrative(drive: FilesystemDrive) {

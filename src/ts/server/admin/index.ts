@@ -46,7 +46,9 @@ export class AdminBootstrapper extends BaseService {
 
     if (!this.userInfo || !this.userInfo.admin) throw new Error("Invalid user or not an admin");
 
-    await this.fs.createDirectory("T:/AdminBootstrapper");
+    try {
+      await this.fs.createDirectory("T:/AdminBootstrapper");
+    } catch {}
   }
 
   async getUserInfo(): Promise<UserInfo | undefined> {
@@ -74,7 +76,9 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async mountUserDrive(username: string, driveLetter?: string, onProgress?: FilesystemProgressCallback) {
-    return await this.fs.mountDrive(btoa(username), AdminServerDrive, driveLetter, onProgress, this.token, username);
+    try {
+      return await this.fs.mountDrive(btoa(username), AdminServerDrive, driveLetter, onProgress, this.token, username);
+    } catch {}
   }
 
   async mountAllUsers() {
@@ -1032,8 +1036,10 @@ export class AdminBootstrapper extends BaseService {
 
     status("Creating target directory");
 
-    await this.fs.createDirectory(target);
-    await this.fs.createDirectory(`${target}/payload`);
+    try {
+      await this.fs.createDirectory(target);
+      await this.fs.createDirectory(`${target}/payload`);
+    } catch {}
 
     const sortedPaths = Object.keys(buffer.files).sort((p) => (buffer.files[p].dir ? -1 : 0));
 
@@ -1042,7 +1048,10 @@ export class AdminBootstrapper extends BaseService {
       const pathTarget = join(target, path);
       if (item.dir) {
         status(`Creating dir ${pathTarget}`);
-        await this.fs.createDirectory(pathTarget);
+
+        try {
+          await this.fs.createDirectory(pathTarget);
+        } catch {}
       }
     }
 
@@ -1051,7 +1060,10 @@ export class AdminBootstrapper extends BaseService {
       const pathTarget = join(target, path);
       if (!item.dir) {
         status(`Writing file ${pathTarget}`);
-        await this.fs.writeFile(pathTarget, arrayToBlob(await item.async("arraybuffer"), fromExtension(pathTarget)));
+
+        try {
+          await this.fs.writeFile(pathTarget, arrayToBlob(await item.async("arraybuffer"), fromExtension(pathTarget)));
+        } catch {}
       }
     }
 

@@ -142,7 +142,10 @@ export class ShareManager extends BaseService {
     const info = await this.getShareInfoByName(username, shareName);
 
     if (!info) return false;
-    return await this.fs.mountDrive(info._id, SharedDrive, letter, onProgress, info, this.token);
+
+    try {
+      return await this.fs.mountDrive(info._id, SharedDrive, letter, onProgress, info, this.token);
+    } catch {}
   }
 
   async mountShareById(shareId: string, letter?: string, onProgress?: FilesystemProgressCallback) {

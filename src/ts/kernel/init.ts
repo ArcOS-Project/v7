@@ -44,11 +44,13 @@ export class InitProcess extends Process {
   async initializeTempFs() {
     this.Log("Initializing TEMP");
 
-    await this.fs.mountDrive("temp", MemoryFilesystemDrive, "T");
-    await this.fs.createDirectory("T:/Apps");
-    await this.fs.createDirectory("T:/Meta");
-    await this.fs.writeFile("T:/Meta/ARCOS_BUILD", textToBlob(ArcBuild()));
-    await this.fs.writeFile("T:/Meta/ARCOS_MODE", textToBlob(ArcMode()));
-    await this.fs.writeFile("T:/Meta/ARCOS_VERSION", textToBlob(ArcOSVersion));
+    try {
+      await this.fs.mountDrive("temp", MemoryFilesystemDrive, "T");
+      await this.fs.createDirectory("T:/Apps");
+      await this.fs.createDirectory("T:/Meta");
+      await this.fs.writeFile("T:/Meta/ARCOS_BUILD", textToBlob(ArcBuild()));
+      await this.fs.writeFile("T:/Meta/ARCOS_MODE", textToBlob(ArcMode()));
+      await this.fs.writeFile("T:/Meta/ARCOS_VERSION", textToBlob(ArcOSVersion));
+    } catch {}
   }
 }

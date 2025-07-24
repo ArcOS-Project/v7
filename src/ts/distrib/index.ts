@@ -31,7 +31,11 @@ export class DistributionServiceProcess extends BaseService {
   }
 
   async start() {
-    await this.fs.createDirectory(this.tempFolder);
+    try {
+      await this.fs.createDirectory(this.tempFolder);
+    } catch {
+      return false;
+    }
     this.installListCache = await this.loadInstalledList();
   }
 
@@ -142,8 +146,12 @@ export class DistributionServiceProcess extends BaseService {
       return false;
     }
 
-    const result = await this.fs.writeFile(path, arrayToBlob(buffer));
-    if (!result) {
+    try {
+      const result = await this.fs.writeFile(path, arrayToBlob(buffer));
+      if (!result) {
+        return false;
+      }
+    } catch {
       return false;
     }
 
@@ -175,21 +183,25 @@ export class DistributionServiceProcess extends BaseService {
   async loadInstalledList() {
     if (this.installListCache.length) return this.installListCache;
 
-    const contents = await this.fs.readFile(this.installedListPath);
+    try {
+      const contents = await this.fs.readFile(this.installedListPath);
 
-    if (!contents) {
-      await this.writeInstalledList([]);
+      if (!contents) {
+        await this.writeInstalledList([]);
+        return [];
+      }
+
+      const json = tryJsonParse<StoreItem[]>(arrayToText(contents));
+
+      if (typeof json === "string") {
+        await this.writeInstalledList([]);
+        return [];
+      }
+
+      return json;
+    } catch {
       return [];
     }
-
-    const json = tryJsonParse<StoreItem[]>(arrayToText(contents));
-
-    if (typeof json === "string") {
-      await this.writeInstalledList([]);
-      return [];
-    }
-
-    return json;
   }
 
   async writeInstalledList(list: StoreItem[]) {
@@ -201,12 +213,16 @@ export class DistributionServiceProcess extends BaseService {
 
     this.BUSY = "writeInstalledList";
 
-    await this.fs.createDirectory(this.dataFolder);
-    const result = await this.fs.writeFile(this.installedListPath, textToBlob(JSON.stringify(list, null, 2)));
+    try {
+      await this.fs.createDirectory(this.dataFolder);
+      const result = await this.fs.writeFile(this.installedListPath, textToBlob(JSON.stringify(list, null, 2)));
 
-    this.BUSY = "";
+      this.BUSY = "";
 
-    return result;
+      return result;
+    } catch {
+      return false;
+    }
   }
 
   async publishPackage(data: Blob, onProgress?: FilesystemProgressCallback) {
@@ -241,13 +257,17 @@ export class DistributionServiceProcess extends BaseService {
 
     if (this.checkBusy("publishPackageFromPath")) return false;
 
-    const content = await this.fs.readFile(path, (p) => {
-      onProgress?.({ ...p, what: "Loading package" });
-    });
+    try {
+      const content = await this.fs.readFile(path, (p) => {
+        onProgress?.({ ...p, what: "Loading package" });
+      });
 
-    if (!content) return false;
+      if (!content) return false;
 
-    return await this.publishPackage(arrayToBlob(content), onProgress);
+      return await this.publishPackage(arrayToBlob(content), onProgress);
+    } catch {
+      return false;
+    }
   }
 
   async getPublishedPackages(): Promise<StoreItem[]> {
@@ -311,13 +331,13 @@ export class DistributionServiceProcess extends BaseService {
 
     if (this.checkBusy("updateStoreItemFromPath")) return false;
 
-    const contents = await this.fs.readFile(updatePath, (p) => {
-      onProgress?.({ ...p, what: "Loading update package" });
-    });
-
-    if (!contents) return false;
-
     try {
+      const contents = await this.fs.readFile(updatePath, (p) => {
+        onProgress?.({ ...p, what: "Loading update package" });
+      });
+
+      if (!contents) return false;
+
       const newData = arrayToBlob(contents);
       const response = await Backend.patch(`/store/publish/${itemId}`, newData, {
         headers: { Authorization: `Bearer ${this.host.daemon.token}` },
@@ -420,7 +440,9 @@ export class DistributionServiceProcess extends BaseService {
     await appStore?.refresh();
     if (deleteFiles) {
       stage("Deleting app files...");
-      await this.fs.deleteItem(app.workingDirectory!);
+      try {
+        await this.fs.deleteItem(app.workingDirectory!);
+      } catch {}
     }
 
     this.host.daemon.unpinApp(appId);

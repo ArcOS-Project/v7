@@ -119,10 +119,14 @@ export class UserDaemon extends Process {
   }
 
   async start() {
-    this.TempFs = this.fs.getDriveById("temp") as MemoryFilesystemDrive;
-    this.TempFsSnapshot = await this.TempFs.takeSnapshot();
+    try {
+      this.TempFs = this.fs.getDriveById("temp") as MemoryFilesystemDrive;
+      this.TempFsSnapshot = await this.TempFs.takeSnapshot();
 
-    this.startAnchorRedirectionIntercept();
+      this.startAnchorRedirectionIntercept();
+    } catch {
+      return false;
+    }
   }
 
   async startApplicationStorage() {
@@ -289,7 +293,11 @@ export class UserDaemon extends Process {
 
     this.Log(`Starting filesystem supplier`);
 
-    await this.fs.mountDrive<ServerDrive>("userfs", ServerDrive, "U", undefined, this.token);
+    try {
+      await this.fs.mountDrive<ServerDrive>("userfs", ServerDrive, "U", undefined, this.token);
+    } catch {
+      throw new Error("UserDaemon: Failed to start filesystem supplier");
+    }
 
     await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${this.token}` } });
   }
@@ -591,13 +599,17 @@ export class UserDaemon extends Process {
 
     this.Log(`Uploading profile picture to ${UserPaths.Pictures}`);
 
-    const result = await this.fs.uploadFiles(UserPaths.Pictures, "image/*");
-    if (!result.length) return;
+    try {
+      const result = await this.fs.uploadFiles(UserPaths.Pictures, "image/*");
+      if (!result.length) return;
 
-    const { path } = result[0];
-    this.changeProfilePicture(path);
+      const { path } = result[0];
+      this.changeProfilePicture(path);
 
-    return path;
+      return path;
+    } catch {
+      return;
+    }
   }
 
   public async getWallpaper(id: string, override?: string): Promise<Wallpaper> {
@@ -1645,30 +1657,33 @@ export class UserDaemon extends Process {
     this.systemDispatch.subscribe("fs-mount-drive", (id) => {
       if (this._disposed) return;
 
-      const drive = this.fs.getDriveById(id as unknown as string);
+      try {
+        const drive = this.fs.getDriveById(id as unknown as string);
+        if (!drive) return;
 
-      if (!drive) return;
+        this.mountedDrives.push(id as unknown as string);
 
-      this.mountedDrives.push(id as unknown as string);
+        if (!drive.REMOVABLE) return;
 
-      if (!drive.REMOVABLE) return;
+        const notificationId = this.sendNotification({
+          title: drive.driveLetter ? `${drive.label} (${drive.driveLetter}:)` : drive.label,
+          message: "This drive just got mounted! Click the button to view it in the file manager",
+          buttons: [
+            {
+              caption: "Open Drive",
+              action: () => {
+                this.spawnApp("fileManager", undefined, `${drive.driveLetter || drive.uuid}:/`);
 
-      const notificationId = this.sendNotification({
-        title: drive.driveLetter ? `${drive.label} (${drive.driveLetter}:)` : drive.label,
-        message: "This drive just got mounted! Click the button to view it in the file manager",
-        buttons: [
-          {
-            caption: "Open Drive",
-            action: () => {
-              this.spawnApp("fileManager", undefined, `${drive.driveLetter || drive.uuid}:/`);
-
-              if (notificationId) this.deleteNotification(notificationId);
+                if (notificationId) this.deleteNotification(notificationId);
+              },
             },
-          },
-        ],
-        image: DriveIcon,
-        timeout: 3000,
-      });
+          ],
+          image: DriveIcon,
+          timeout: 3000,
+        });
+      } catch {
+        return;
+      }
     });
   }
 
@@ -1885,7 +1900,12 @@ export class UserDaemon extends Process {
         continue;
       }
 
-      await this.fs.moveItem(source, `${destination}/${sourceName}`, false);
+      try {
+        await this.fs.moveItem(source, `${destination}/${sourceName}`, false);
+      } catch {
+        mutErr(`Failed to move ${source}`);
+        continue;
+      }
       setWait(true);
       mutDone(+1);
       await Sleep(100); // prevent rate limit
@@ -1928,7 +1948,11 @@ export class UserDaemon extends Process {
         continue;
       }
 
-      await this.fs.copyItem(source, destination, false);
+      try {
+        await this.fs.copyItem(source, destination, false);
+      } catch {
+        mutErr(`Failed to copy ${source}`);
+      }
       setWait(true);
       mutDone(+1);
 
@@ -2143,7 +2167,11 @@ export class UserDaemon extends Process {
 
     const string = JSON.stringify(data, null, 2);
 
-    return await this.fs.writeFile(path, textToBlob(string, "application/json"));
+    try {
+      return await this.fs.writeFile(path, textToBlob(string, "application/json"));
+    } catch {
+      return false;
+    }
   }
 
   getGlobalSetting(key: string) {
@@ -2238,9 +2266,10 @@ export class UserDaemon extends Process {
   }
 
   async installAppFromPath(path: string) {
-    const contents = await this.fs.readFile(path);
-    if (!contents) return "failed to read file";
     try {
+      const contents = await this.fs.readFile(path);
+      if (!contents) return "failed to read file";
+
       const text = arrayToText(contents);
       const json = tryJsonParse<InstalledApp>(text);
 

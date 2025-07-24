@@ -107,14 +107,15 @@ export class BugHuntRuntime extends AppProcess {
       },
       this.pid
     );
-
-    await this.fs.writeFile(path, textToBlob(JSON.stringify(report, null, 2)), (progress) => {
-      prog.show();
-      prog.setMax(progress.max);
-      prog.setDone(progress.value);
-      prog.setWait(false);
-      prog.setWork(true);
-    });
+    try {
+      await this.fs.writeFile(path, textToBlob(JSON.stringify(report, null, 2)), (progress) => {
+        prog.show();
+        prog.setMax(progress.max);
+        prog.setDone(progress.value);
+        prog.setWait(false);
+        prog.setWork(true);
+      });
+    } catch {}
 
     prog.stop();
   }

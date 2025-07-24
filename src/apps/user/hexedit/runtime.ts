@@ -242,11 +242,13 @@ export class HexEditRuntime extends AppProcess {
       this.pid
     );
 
-    await this.fs.writeFile(this.requestedFile, new Blob([this.view()]), async (progress) => {
-      await prog.show();
-      prog.setMax(progress.max);
-      prog.setDone(progress.value);
-    });
+    try {
+      await this.fs.writeFile(this.requestedFile, new Blob([this.view()]), async (progress) => {
+        await prog.show();
+        prog.setMax(progress.max);
+        prog.setDone(progress.value);
+      });
+    } catch {}
 
     await prog.stop();
   }

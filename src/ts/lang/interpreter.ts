@@ -70,7 +70,11 @@ export class Interpreter extends Process {
             readDir: {
               parameters: ["path"],
               body: async (path: string) => {
-                return await this.fs.readDir(path);
+                try {
+                  return await this.fs.readDir(path);
+                } catch {
+                  return undefined;
+                }
               },
               native: true,
             },

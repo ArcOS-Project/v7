@@ -27,16 +27,18 @@ export class ImageViewerRuntime extends AppProcess {
   }
 
   async readFile(path: string) {
-    const url = await this.fs.direct(path);
+    try {
+      const url = await this.fs.direct(path);
 
-    if (!url) {
-      return await this.readFileIndirectFallback(path);
-    }
+      if (!url) {
+        return await this.readFileIndirectFallback(path);
+      }
 
-    this.indirect.set(false);
-    this.openedFile.set(path);
-    this.imageUrl.set(url);
-    this.windowTitle.set(getItemNameFromPath(path));
+      this.indirect.set(false);
+      this.openedFile.set(path);
+      this.imageUrl.set(url);
+      this.windowTitle.set(getItemNameFromPath(path));
+    } catch {}
   }
 
   async readFileIndirectFallback(path: string) {

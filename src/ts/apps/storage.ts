@@ -80,7 +80,9 @@ export class ApplicationStorage extends BaseService {
     const newBuffer = await this.get();
 
     for (const app of newBuffer) {
-      this.fs.createDirectory(`T:/Apps/${app.id}`, false);
+      try {
+        this.fs.createDirectory(`T:/Apps/${app.id}`, false);
+      } catch {}
 
       const icon = app.metadata.icon;
 

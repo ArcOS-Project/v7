@@ -130,24 +130,31 @@ export class MessageComposerRuntime extends AppProcess {
 
       const mimetype = mime.getType(path);
       const filename = getItemNameFromPath(path);
-      const contents = await this.fs.readFile(path, (progress) => {
-        prog.show();
-        prog.updateCaption(progress.what ? `Reading ${progress.what}` : "Reading file...");
-        prog.updSub(path);
-        prog.setType("size");
-        prog.setDone(0);
-        prog.setMax(progress.max + 1);
-        prog.setDone(progress.value);
-        prog.setWait(false);
-        prog.setWork(true);
-      });
+      try {
+        const contents = await this.fs.readFile(path, (progress) => {
+          prog.show();
+          prog.updateCaption(progress.what ? `Reading ${progress.what}` : "Reading file...");
+          prog.updSub(path);
+          prog.setType("size");
+          prog.setDone(0);
+          prog.setMax(progress.max + 1);
+          prog.setDone(progress.value);
+          prog.setWait(false);
+          prog.setWork(true);
+        });
 
-      await Sleep(10);
+        await Sleep(10);
 
-      if (!contents) continue;
+        if (!contents) continue;
 
-      // Create a new NodeJS File based on what we got
-      attachments.push({ data: new File([contents], filename, { type: mimetype || "application/octet-stream" }), uuid: UUID() });
+        // Create a new NodeJS File based on what we got
+        attachments.push({
+          data: new File([contents], filename, { type: mimetype || "application/octet-stream" }),
+          uuid: UUID(),
+        });
+      } catch {
+        // silently error
+      }
     }
 
     prog.stop();

@@ -374,7 +374,9 @@ export class PkgCommand extends TerminalProcess {
 
     this.term?.rl?.println(`${CURUP}${CLRROW}Deleting configuration...`);
 
-    await this.fs.deleteItem(join(UserPaths.Configuration, name));
+    try {
+      await this.fs.deleteItem(join(UserPaths.Configuration, name));
+    } catch {}
 
     this.term?.rl?.println(`${CURUP}${CLRROW}Uninstalling app...`);
 

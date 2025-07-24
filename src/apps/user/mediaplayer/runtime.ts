@@ -256,41 +256,41 @@ export class MediaPlayerRuntime extends AppProcess {
 
     this.Loaded.set(false);
 
-    const url = await this.fs.direct(path);
-
-    if (!url) {
-      MessageBox(
-        {
-          title: "Failed to load file",
-          message:
-            "ArcOS failed to open the file you requested. It might be moved or the drive doesn't support direct file access.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: MediaPlayerIcon,
-          sound: "arcos.dialog.error",
-        },
-        this.pid,
-        true
-      );
-      return;
-    }
-
-    const split = path.split(".");
-
-    this.isVideo.set(DefaultMimeIcons[VideoMimeIcon].includes(`.${split[split.length - 1]}`));
-    this.url.set(url);
-    this.windowTitle.set(`${getItemNameFromPath(path)} - Media Player`);
-    this.windowIcon.set(this.userDaemon?.getMimeIconByFilename(path) || MediaPlayerIcon);
-
-    this.Reset();
-
-    await Sleep(10);
-
     try {
+      const url = await this.fs.direct(path);
+
+      if (!url) {
+        MessageBox(
+          {
+            title: "Failed to load file",
+            message:
+              "ArcOS failed to open the file you requested. It might be moved or the drive doesn't support direct file access.",
+            buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+            image: MediaPlayerIcon,
+            sound: "arcos.dialog.error",
+          },
+          this.pid,
+          true
+        );
+        return;
+      }
+
+      const split = path.split(".");
+
+      this.isVideo.set(DefaultMimeIcons[VideoMimeIcon].includes(`.${split[split.length - 1]}`));
+      this.url.set(url);
+      this.windowTitle.set(`${getItemNameFromPath(path)} - Media Player`);
+      this.windowIcon.set(this.userDaemon?.getMimeIconByFilename(path) || MediaPlayerIcon);
+
+      this.Reset();
+
+      await Sleep(10);
+
       await this.player?.play();
+      this.Loaded.set(true);
     } catch {
       this.failedToPlay();
     }
-    this.Loaded.set(true);
   }
 
   async addToQueue() {
@@ -336,7 +336,9 @@ export class MediaPlayerRuntime extends AppProcess {
 
     if (!path) return;
 
-    await this.fs.writeFile(path, textToBlob(playlist, "text/plain"));
+    try {
+      await this.fs.writeFile(path, textToBlob(playlist, "text/plain"));
+    } catch {}
   }
 
   async loadPlaylist() {
