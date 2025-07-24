@@ -168,7 +168,9 @@ export class FilesystemDrive {
   }
 
   isCapable(capability: DriveCapabilities) {
-    if (!this.CAPABILITIES[capability])
+    if (!this.CAPABILITIES[capability]) {
+      this.Log(`Detected illegal filesystem operation '${capability}'!`);
       throw new Error(`Illegal operation '${capability}' on filesystem '${this.FILESYSTEM_SHORT}'`);
+    }
   }
 }
