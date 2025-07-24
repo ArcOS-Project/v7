@@ -25,7 +25,7 @@ export function handleGlobalErrors() {
         return false;
       }
 
-      __Console__.log(e.error);
+      __Console__.warn(e.error);
     } else if (e instanceof PromiseRejectionEvent) {
       if (checkIndevTpa(e.reason.stack, e.reason)) {
         LOCKED = false;
@@ -34,7 +34,7 @@ export function handleGlobalErrors() {
         return false;
       }
 
-      __Console__.log(e.reason);
+      __Console__.warn(e.reason);
     }
 
     Crash(e);

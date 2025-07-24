@@ -36,13 +36,15 @@
   });
 
   async function mountShare() {
-    if (process.fs.drives[$selection]) await process.fs.umountDrive($selection, true);
-    else {
-      const drive = await process.shares.mountShareById($selection);
-      if (drive) await process.spawnApp("fileManager", +process.env.get("shell_pid"), `${drive.uuid}:/`);
-    }
+    try {
+      if (process.fs.drives[$selection]) await process.fs.umountDrive($selection, true);
+      else {
+        const drive = await process.shares.mountShareById($selection);
+        if (drive) await process.spawnApp("fileManager", +process.env.get("shell_pid"), `${drive.uuid}:/`);
+      }
 
-    process.switchPage("shares", {}, true);
+      process.switchPage("shares", {}, true);
+    } catch {}
   }
 
   function User(id: string) {

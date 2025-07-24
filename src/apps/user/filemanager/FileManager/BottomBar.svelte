@@ -20,9 +20,11 @@
       const driveIdentifier = getDriveLetter($path, true);
 
       if (driveIdentifier) {
-        const drive = process.fs.getDriveByLetter(driveIdentifier.slice(0, -1), false);
+        try {
+          const drive = process.fs.getDriveByLetter(driveIdentifier.slice(0, -1), false);
 
-        driveLabel = drive?.label || "";
+          driveLabel = drive?.label || "";
+        } catch {}
       }
     });
   });

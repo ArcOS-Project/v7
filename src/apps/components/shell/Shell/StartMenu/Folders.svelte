@@ -32,11 +32,13 @@
   });
 
   async function update() {
-    const root = await process.fs.readDir(UserPaths.Home);
+    try {
+      const root = await process.fs.readDir(UserPaths.Home);
 
-    if (!root) return;
+      if (!root) return;
 
-    dirs = root?.dirs;
+      dirs = root?.dirs;
+    } catch {}
   }
 </script>
 

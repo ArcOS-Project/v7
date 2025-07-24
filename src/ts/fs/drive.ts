@@ -68,6 +68,23 @@ export class FilesystemDrive {
 
     this.Log("Heads loaded.");
 
+    //
+    // UNCOMMENT THE BELOW PROPERTY ASSIGNMENT TO DISABLE **ALL** FILESYSTEM OEPRATIONS
+    //
+
+    // this.CAPABILITIES = {
+    //   readDir: false,
+    //   makeDir: false,
+    //   readFile: false,
+    //   writeFile: false,
+    //   tree: false,
+    //   copyItem: false,
+    //   moveItem: false,
+    //   deleteItem: false,
+    //   direct: false,
+    //   quota: false,
+    //   bulk: false,
+    // };
     return result;
   }
 
