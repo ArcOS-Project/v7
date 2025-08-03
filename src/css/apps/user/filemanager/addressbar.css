@@ -24,10 +24,9 @@
 #fileManager div.address-bar div.path {
   flex-grow: 1;
   max-width: calc(100% - 35px);
-  background-color: var(--button-bg);
+  border: var(--button-glass-bg) 1px solid;
   border-radius: var(--button-border-rad);
-  /* line-height: 30px; */
-  padding: 3px;
+  padding: 2px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
