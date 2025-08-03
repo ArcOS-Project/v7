@@ -1849,6 +1849,7 @@ export class UserDaemon extends Process {
 
     return {
       progress,
+      process: () => process,
       mutateMax,
       mutDone,
       updateCaption,
@@ -1870,10 +1871,9 @@ export class UserDaemon extends Process {
     this.Log(`Moving ${sources.length} items to ${destination}`);
 
     const destinationName = getItemNameFromPath(destination);
-    const destinationDrive = getDriveLetter(destination, true);
     const firstSourceParent = getParentDirectory(sources[0]);
 
-    const { updSub, setWait, setWork, mutErr, mutDone, show } = await this.FileProgress(
+    const progress = await this.FileProgress(
       {
         type: "quantity",
         max: sources.length,
@@ -1886,45 +1886,58 @@ export class UserDaemon extends Process {
     );
 
     for (const source of sources) {
-      const sourceDrive = getDriveLetter(source, true);
-      const sourceName = getItemNameFromPath(source);
+      await progress.show();
+      progress.updSub(source);
+      progress.setWait(false);
+      progress.setWork(true);
 
-      show();
-      updSub(source);
-      setWait(false);
-      setWork(true);
-
-      if (sourceDrive != destinationDrive) {
-        mutErr(`Not moving ${source}: source and destination drives are different`);
-
-        continue;
-      }
+      const childProgress = await this.FileProgress(
+        {
+          type: "none",
+          caption: `Moving ${getItemNameFromPath(source)} to ${destinationName || destination}`,
+          subtitle: source,
+          icon: FolderIcon,
+          done: 0,
+          max: 100,
+          working: true,
+        },
+        progress.process()?.pid || pid
+      );
 
       try {
-        await this.fs.moveItem(source, `${destination}/${sourceName}`, false);
+        await this.fs.moveItem(source, destination, false, (prog) => {
+          childProgress.setMax(prog.max + 1);
+          childProgress.setDone(prog.value);
+          childProgress.setType("quantity");
+          childProgress.show();
+        });
       } catch {
-        mutErr(`Failed to move ${source}`);
-        continue;
+        progress.mutErr(`Failed to move ${source}`);
       }
-      setWait(true);
-      mutDone(+1);
-      await Sleep(100); // prevent rate limit
+
+      progress.setWait(true);
+      progress.mutDone(+1);
+
+      await Sleep(200); // prevent rate limit
+      childProgress.stop();
     }
+    progress.stop();
 
     this.systemDispatch.dispatch("fs-flush-folder", firstSourceParent);
     if (firstSourceParent !== destination) this.systemDispatch.dispatch("fs-flush-folder", destination);
+    this.handler?.renderer?.focusPid(pid);
   }
 
   async copyMultiple(sources: string[], destination: string, pid: number) {
     this.Log(`Copying ${sources.length} items to ${destination}`);
 
     const destinationName = getItemNameFromPath(destination);
-    const destinationDrive = getDriveLetter(destination, true);
 
-    const { updSub, setWait, setWork, mutErr, mutDone, show } = await this.FileProgress(
+    const progress = await this.FileProgress(
       {
         type: "quantity",
         max: sources.length,
+        done: 0,
         waiting: true,
         icon: FolderIcon,
         caption: `Copying files to ${destinationName || destination}`,
@@ -1934,32 +1947,45 @@ export class UserDaemon extends Process {
     );
 
     for (const source of sources) {
-      const sourceDrive = getDriveLetter(source, true);
+      await progress.show();
+      progress.updSub(source);
+      progress.setWait(false);
+      progress.setWork(true);
 
-      show();
-      updSub(source);
-      setWait(false);
-      setWork(true);
-
-      if (sourceDrive != destinationDrive) {
-        mutErr(`Not copying ${source}: source and destination drives are different`);
-        mutDone(+1);
-
-        continue;
-      }
+      const childProgress = await this.FileProgress(
+        {
+          type: "none",
+          caption: `Copying ${getItemNameFromPath(source)} to ${destinationName || destination}`,
+          subtitle: source,
+          icon: FolderIcon,
+          done: 0,
+          max: 100,
+          working: true,
+        },
+        progress.process()?.pid || pid
+      );
 
       try {
-        await this.fs.copyItem(source, destination, false);
+        await this.fs.copyItem(source, destination, false, (prog) => {
+          childProgress.setMax(prog.max + 1);
+          childProgress.setDone(prog.value);
+          childProgress.setType("quantity");
+          childProgress.show();
+        });
       } catch {
-        mutErr(`Failed to copy ${source}`);
+        progress.mutErr(`Failed to copy ${source}`);
       }
-      setWait(true);
-      mutDone(+1);
+
+      progress.setWait(true);
+      progress.mutDone(+1);
 
       await Sleep(200); // prevent rate limit
+      childProgress.stop();
     }
+    progress.stop();
 
     this.systemDispatch.dispatch("fs-flush-folder", destination);
+    this.handler?.renderer?.focusPid(pid);
   }
 
   async findHandlerToOpenFile(path: string): Promise<FileOpenerResult[]> {

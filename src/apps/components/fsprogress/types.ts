@@ -1,4 +1,5 @@
 import { Store, type ReadableStore } from "$ts/writable";
+import type { FsProgressRuntime } from "./runtime";
 
 export interface FsProgressOperation {
   type: "quantity" | "size" | "none";
@@ -29,6 +30,7 @@ export interface FileProgressMutator {
   stop: () => Promise<any>;
   show: () => Promise<any>;
   setType: (type: "quantity" | "size" | "none") => void;
+  process: () => FsProgressRuntime | undefined;
 }
 
 export const DummyFileProgress: FileProgressMutator = {
@@ -47,4 +49,5 @@ export const DummyFileProgress: FileProgressMutator = {
   show: async () => {},
   setCancel: (_: (() => void) | undefined) => {},
   setType: (_: string) => {},
+  process: () => undefined,
 };
