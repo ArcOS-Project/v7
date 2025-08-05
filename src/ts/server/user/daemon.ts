@@ -96,7 +96,7 @@ export class UserDaemon extends Process {
   private firstSyncDone = false;
   public safeMode = false;
   public fileHandlers: Record<string, FileHandler> = DefaultFileHandlers(this);
-  override _criticalProcess: boolean = true;
+  override _criticalProcess: boolean = false;
   public mountedDrives: string[] = [];
   public server: ServerManager;
   public syncLock = false;
@@ -733,10 +733,12 @@ export class UserDaemon extends Process {
   }
 
   async toLogin(type: string, props: Record<string, any> = {}) {
+    this.Log(`toLogin: ${type}`);
     if (this._disposed) return;
     if (this.serviceHost) this.serviceHost._holdRestart = true;
 
     await this.handler._killSubProceses(this.pid);
+    console.log("Done killing subprocesses");
     await this.kernel.state?.loadState("login", {
       type,
       userDaemon: this,

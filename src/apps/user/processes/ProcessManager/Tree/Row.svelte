@@ -54,7 +54,14 @@
 {#if !proc._disposed}
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div class="row" class:closing onclick={() => ($selected = pid)} class:selected={$selected === pid} class:orphan>
+  <div
+    class="row"
+    class:closing
+    onclick={() => ($selected = pid)}
+    class:selected={$selected === pid}
+    class:orphan
+    class:critical={proc._criticalProcess}
+  >
     <div class="segment name">
       <img src={icon} alt="" />
       <span>{name}{orphan ? " (orphaned)" : ""}</span>

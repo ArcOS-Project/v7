@@ -14,10 +14,12 @@ export class ExitRuntime extends AppProcess {
     if (selected) this.selected.set(selected);
   }
 
-  go(action: ExitAction | undefined, alternate = false) {
+  async go(action: ExitAction | undefined, alternate = false) {
     const option = action || ExitActions[this.selected()];
 
     if (!option) return;
+
+    await this.closeWindow();
 
     if (alternate && option.alternateAction) option.alternateAction(this.userDaemon!); // Alternate: when shift key is pressed
     else option.action(this.userDaemon!);

@@ -145,7 +145,7 @@ export class ContextMenuRuntime extends AppProcess {
     return null;
   }
 
-  async onClose(): Promise<boolean> {
-    return false;
-  }
+  // async onClose(): Promise<boolean> {
+  //   return false;
+  // }
 }

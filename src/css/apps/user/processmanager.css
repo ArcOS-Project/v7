@@ -158,3 +158,7 @@
 #processManager > div.body div.row.orphan * {
   color: var(--clr-red-fg);
 }
+
+#processManager > div.body div.row.critical * {
+  color: var(--clr-orange-fg);
+}
