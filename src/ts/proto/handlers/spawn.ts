@@ -16,7 +16,6 @@ export const SpawnAppHandler: ProtocolHandler = {
     };
   },
   action: async (payload, daemon) => {
-    console.warn(payload);
     return !!(await daemon.spawnApp(
       payload.id,
       +daemon.env.get("shell_pid"),

@@ -32,6 +32,8 @@ import dayjs from "dayjs";
 import { Backend } from "../axios";
 import type { UserDaemon } from "./daemon";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
+import { DevelopmentEnvironment } from "$ts/devenv";
+import { __Console__ } from "$ts/console";
 
 export function ThirdPartyProps(
   daemon: UserDaemon,
@@ -114,13 +116,17 @@ export function ThirdPartyProps(
     CustomTitlebar,
     contextProps,
     dayjs,
-    console: {
-      warn: (..._: any[]) => {},
-      log: (..._: any[]) => {},
-      info: (..._: any[]) => {},
-      debug: (..._: any[]) => {},
-      error: (..._: any[]) => {},
-    },
+    console:
+      daemon.serviceHost?.getService<DevelopmentEnvironment>("DevEnvironment")?.meta?.metadata.appId !== app.id &&
+      !workingDirectory?.startsWith("V:")
+        ? {
+            warn: (..._: any[]) => {},
+            log: (..._: any[]) => {},
+            info: (..._: any[]) => {},
+            debug: (..._: any[]) => {},
+            error: (..._: any[]) => {},
+          }
+        : __Console__, // Enable the console global in the development environment ONLY
     LogLevel: {
       info: 0,
       warning: 1,

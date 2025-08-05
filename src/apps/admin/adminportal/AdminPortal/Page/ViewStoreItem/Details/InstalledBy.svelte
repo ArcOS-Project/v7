@@ -14,8 +14,6 @@
   onMount(async () => {
     const users = await process.admin.getAllUsers();
 
-    console.log(users);
-
     for (const user of users) {
       if (user?.preferences?.userApps?.[item.pkg.appId]?.workingDirectory === item.pkg.installLocation) installed.push(user);
     }

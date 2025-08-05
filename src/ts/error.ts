@@ -20,7 +20,6 @@ export function handleGlobalErrors() {
     if (e instanceof ErrorEvent) {
       if (checkIndevTpa(e.error.stack, e.error)) {
         LOCKED = false;
-        console.warn(`Refusing to crash ArcOS for ${e}: source is a tpa`);
 
         return false;
       }
@@ -29,7 +28,6 @@ export function handleGlobalErrors() {
     } else if (e instanceof PromiseRejectionEvent) {
       if (checkIndevTpa(e.reason.stack, e.reason)) {
         LOCKED = false;
-        console.warn(`Refusing to crash ArcOS for ${e}: source is a tpa`);
 
         return false;
       }
