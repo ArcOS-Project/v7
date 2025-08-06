@@ -26,7 +26,7 @@ export class WaveKernel {
   public ARCOS_MODE = "release";
   public ARCOS_BUILD = "unknown";
   public ARCOS_LICENSE = "not here yet";
-  public BUGREP_TITLE = "Premature kernel failure";
+  public PREMATURE = true;
 
   public static get(): WaveKernel {
     if (!CurrentKernel) {
@@ -97,7 +97,7 @@ export class WaveKernel {
     this.init = await stack.spawn<InitProcess>(InitProcess);
     this.initPid = this.init?.pid ?? 0;
 
-    this.BUGREP_TITLE = "Crash by irrecoverable unhandled exception";
+    this.PREMATURE = false;
 
     await this.init?.jumpstart();
     __Console__.timeEnd("** Kernel init");
