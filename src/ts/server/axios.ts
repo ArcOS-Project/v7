@@ -23,5 +23,8 @@ Backend.interceptors.request.use(
     config.headers.set("X-Request-ID", WaveKernel.get().getModule<Environment>("env").get("dispatch_sock_id"));
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    console.log(error);
+    return false;
+  }
 );
