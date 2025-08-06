@@ -31,7 +31,10 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         caption: "Launch",
         icon: "rocket",
         action: (app: App) => {
-          runtime.spawnApp(app.id, runtime.pid);
+          // BUG 687805735731d0b12b3115af
+          if (!app) return;
+
+          runtime.spawnApp(app?.id, runtime.pid);
         },
       },
       { sep: true },
@@ -64,15 +67,20 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       {
         caption: "Pin app",
         action: async (app: App) => {
-          if (runtime.userPreferences().pinnedApps?.includes(app.id)) runtime.unpinApp(app.id);
-          else await runtime.pinApp(app.id);
+          // BUG 687805735731d0b12b3115af
+          if (!app) return;
+
+          if (runtime.userPreferences().pinnedApps?.includes(app?.id)) runtime.unpinApp(app?.id);
+          else await runtime.pinApp(app?.id);
         },
         disabled: async (app: App) => {
-          const x = await runtime.appStore()?.getAppById(app.id);
+          // BUG 687805735731d0b12b3115af
+          const x = await runtime.appStore()?.getAppById(app?.id);
 
           return !x;
         },
-        isActive: (app: App) => runtime.userPreferences().pinnedApps?.includes(app.id),
+        // BUG 687805735731d0b12b3115af
+        isActive: (app: App) => runtime.userPreferences().pinnedApps?.includes(app?.id),
         icon: "pin",
       },
       { sep: true },
@@ -80,6 +88,9 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         caption: "App info",
         icon: "info",
         action: (app: App) => {
+          // BUG 687805735731d0b12b3115af
+          if (!app) return;
+
           runtime.spawnOverlayApp("AppInfo", runtime.pid, app.id);
         },
       },
@@ -87,9 +98,13 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         caption: "Uninstall",
         icon: "trash-2",
         action: (app: App) => {
+          // BUG 687805735731d0b12b3115af
+          if (!app) return;
+
           runtime.userDaemon?.uninstallAppWithAck(app);
         },
-        disabled: (app: App) => !app.entrypoint && !app.thirdParty,
+        // BUG 687805735731d0b12b3115af
+        disabled: (app: App) => !app?.entrypoint && !app?.thirdParty,
       },
     ],
     "startmenu-list": [
