@@ -107,7 +107,14 @@ export class ArcTerminal extends Process {
         this.lastCommandErrored = true;
       } else {
         const proc = await this.handler.spawn<TerminalProcess>(command, undefined, this.pid);
-        const result = await proc!._main(this, flags, argv);
+
+        // BUG 68798d6957684017c3e9a085
+        if (!proc) {
+          this.lastCommandErrored = true;
+          return;
+        }
+
+        const result = (await proc?._main(this, flags, argv)) || 0;
 
         if (result !== 0) this.lastCommandErrored = true;
         if (result <= -128) return this.rl?.dispose();
