@@ -44,7 +44,7 @@ export class ProcessManagerRuntime extends AppProcess {
           {
             caption: "End process",
             action: async () => {
-              const result = await this.handler.kill(proc.pid);
+              const result = await this.handler.kill(proc.pid, true);
 
               if (result !== "success") {
                 this.killError(name, result);
