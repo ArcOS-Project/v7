@@ -27,8 +27,8 @@ export class MessagingInterface extends BaseService {
     const daemon = this.handler.getProcess<UserDaemon>(+this.env.get("userdaemon_pid")!)!;
     const dispatch = daemon.serviceHost?.getService<GlobalDispatch>("GlobalDispatch")!;
 
-    dispatch.subscribe("incoming-message", (message: Message) => {
-      daemon.sendNotification({
+    dispatch?.subscribe("incoming-message", (message: Message) => {
+      daemon?.sendNotification({
         className: "incoming-message",
         image: `${import.meta.env.DW_SERVER_URL}${message.author?.profilePicture}`,
         title: message.author?.username || "New message",
@@ -37,7 +37,7 @@ export class MessagingInterface extends BaseService {
           {
             caption: "View message",
             action: () => {
-              daemon.spawnApp("Messages", +this.env.get("shell_pid"), "inbox", message._id);
+              daemon?.spawnApp("Messages", +this.env.get("shell_pid"), "inbox", message._id);
             },
           },
         ],
