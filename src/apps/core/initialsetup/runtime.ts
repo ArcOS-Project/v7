@@ -26,7 +26,7 @@ export class InitialSetupRuntime extends AppProcess {
   public email = Store<string>();
   public actionsDisabled = Store<boolean>(false);
   public showMainContent = Store<boolean>(false);
-  public fullName = Store<string>();
+  public displayName = Store<string>();
   public server: ServerManager;
   private token: string | undefined;
 
@@ -109,7 +109,7 @@ export class InitialSetupRuntime extends AppProcess {
 
     const update = () => {
       this.identityInfoValid.set(
-        !!this.newUsername() && !!this.password() && !!this.confirm() && !!this.email() && !!this.fullName()
+        !!this.newUsername() && !!this.password() && !!this.confirm() && !!this.email() && !!this.displayName()
       );
     };
 
@@ -117,7 +117,7 @@ export class InitialSetupRuntime extends AppProcess {
     this.password.subscribe(update);
     this.confirm.subscribe(update);
     this.email.subscribe(update);
-    this.fullName.subscribe(update);
+    this.displayName.subscribe(update);
 
     this.pageNumber.subscribe(() => {
       this.actionsDisabled.set(false);
@@ -292,7 +292,7 @@ export class InitialSetupRuntime extends AppProcess {
     await this.userDaemon?.startPreferencesSync();
     await this.userDaemon?.startFilesystemSupplier();
     this.userDaemon?.preferences.update((v) => {
-      v.account.displayName = this.fullName();
+      v.account.displayName = this.displayName();
 
       return v;
     });
