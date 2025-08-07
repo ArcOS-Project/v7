@@ -7,7 +7,7 @@
   import { appStorePages } from "./store";
 
   const { process }: { process: AppStoreRuntime } = $props();
-  const { currentPage, pageProps, loadingPage } = process;
+  const { currentPage, pageProps, loadingPage, userPreferences } = process;
 
   let Page: Component<any> = $state<any>();
   let id = $state<string>("");
@@ -31,14 +31,32 @@
   });
 </script>
 
-<Sidebar {process} />
-<div class="container">
-  <CustomTitlebar {process} />
-  <div class="page {id}" class:loading={$loadingPage}>
-    {#if $loadingPage}
-      <Spinner height={32} />
-    {:else if Page}
-      <Page {process} {...staticPageProps} />
-    {/if}
+{#if $userPreferences.security.enableThirdParty}
+  <Sidebar {process} />
+  <div class="container">
+    <CustomTitlebar {process} />
+    <div class="page {id}" class:loading={$loadingPage}>
+      {#if $loadingPage}
+        <Spinner height={32} />
+      {:else if Page}
+        <Page {process} {...staticPageProps} />
+      {/if}
+    </div>
   </div>
-</div>
+{:else}
+  <div class="tpa-disabled-notice">
+    <CustomTitlebar {process} />
+    <div class="content">
+      <span class="lucide icon-circle-alert"></span>
+      <h1>Third-party apps</h1>
+      <p>Sorry! You need to allow third-party apps to use the App Store.</p>
+
+      <button
+        class="suggested"
+        onclick={() => process.userDaemon?.spawnApp("systemSettings", +process.env.get("shell_pid"), "apps")}
+      >
+        Take me there
+      </button>
+    </div>
+  </div>
+{/if}

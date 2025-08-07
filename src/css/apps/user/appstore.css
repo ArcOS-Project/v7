@@ -5,6 +5,7 @@
 @import url("./appstore/page/everything.css");
 @import url("./appstore/page/viewstoreitem.css");
 @import url("./appstore/installaction.css");
+@import url("./appstore/tpadisabled.css");
 
 #AppStore > div.body {
   padding: 0;
