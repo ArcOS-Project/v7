@@ -34,6 +34,7 @@ export class AppRenderer extends Process {
 
     this.target = targetDiv;
     handler.rendererPid = this.pid;
+    this.name = "AppRenderer";
   }
 
   disposedCheck() {

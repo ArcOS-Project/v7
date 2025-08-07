@@ -29,6 +29,7 @@ export class TerminalMode extends Process {
     super(handler, pid, parentPid);
 
     this.target = target;
+    this.name = "TerminalMode";
   }
 
   async initializeTerminal() {

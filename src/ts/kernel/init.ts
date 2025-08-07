@@ -39,6 +39,7 @@ export class InitProcess extends Process {
 
     await kernel.state?.loadState(connected ? "boot" : "serverdown", {}, true);
     __Console__.timeEnd("** Init jumpstart");
+    this.name = "InitProcess";
   }
 
   async initializeTempFs() {

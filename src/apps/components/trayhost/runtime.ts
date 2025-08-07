@@ -15,6 +15,8 @@ export class TrayHostRuntime extends Process {
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, _: AppProcessData) {
     super(handler, pid, parentPid);
+
+    this.name = "TrayHostRuntime";
   }
 
   async start() {

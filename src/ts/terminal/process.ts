@@ -14,6 +14,7 @@ export class TerminalProcess extends Process {
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
+    this.name = "TerminalProcess";
   }
 
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {

@@ -39,6 +39,7 @@ export class InstallerProcess extends Process {
     if (item) this.item = item;
 
     this.parent = this.userDaemon?.serviceHost?.getService<DistributionServiceProcess>("DistribSvc")!;
+    this.name = "InstallerProcess";
   }
 
   async start() {

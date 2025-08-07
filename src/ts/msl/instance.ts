@@ -83,6 +83,8 @@ export class LanguageInstance extends Process {
     const daemonPid = this.env.get("userdaemon_pid");
 
     if (daemonPid) this.userDaemon = this.handler.getProcess(+daemonPid);
+
+    this.name = "LanguageInstance";
   }
 
   async stop() {

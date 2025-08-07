@@ -37,6 +37,8 @@ export class Interpreter extends Process {
     if (opt.workingDir) this.workingDir = opt.workingDir;
     if (opt.ast) this.ast = opt.ast;
 
+    this.name = "LanguageInterpreter";
+
     this.globalEnvironment = opt.globalEnvironment
       ? opt.globalEnvironment(this)
       : {

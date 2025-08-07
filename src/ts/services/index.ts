@@ -25,6 +25,7 @@ export class ServiceHost extends Process {
     super(handler, pid, parentPid);
 
     this.daemon = handler.getProcess(+this.env.get("userdaemon_pid"))!;
+    this.name = "ServiceHost";
   }
 
   readonly STORE = new Map([

@@ -116,6 +116,7 @@ export class UserDaemon extends Process {
 
     this.server = this.kernel.getModule<ServerManager>("server");
     this.safeMode = !!this.env.get("safemode");
+    this.name = "UserDaemon";
   }
 
   async start() {

@@ -25,6 +25,7 @@ export class TrayIconProcess extends Process {
     this.context = data.context;
     this.action = data.action;
     this.shell = this.handler.getProcess(+this.env.get("shell_pid"))!;
+    this.name = "TrayIconProcess";
   }
 
   async __render() {

@@ -22,6 +22,7 @@ export class ShellHostRuntime extends Process {
     this.userDaemon = this.handler.getProcess<UserDaemon>(+this.env.get("userdaemon_pid")); // Get the user daemon
     this.userPreferences = this.userDaemon!.preferences; // Get the preferences
     this.autoloadApps = autoloadApps; // Get the autoload (provided by the daemon)
+    this.name = "ShellHostRuntime";
   }
 
   async start() {

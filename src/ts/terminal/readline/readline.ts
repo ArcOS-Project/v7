@@ -57,6 +57,7 @@ export class Readline extends Process implements ITerminalAddon {
   constructor(handler: ProcessHandler, pid: number, parentPid: number, terminal?: ArcTerminal) {
     super(handler, pid, parentPid);
     this.terminal = terminal;
+    this.name = "Readline";
   }
 
   async start() {

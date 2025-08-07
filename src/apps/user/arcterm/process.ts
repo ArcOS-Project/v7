@@ -15,6 +15,8 @@ export class ArcTermRuntime extends Process {
 
     this.path = path;
     this.app = app;
+
+    this.name = "ArcTermRuntime";
   }
 
   protected async start(): Promise<any> {
