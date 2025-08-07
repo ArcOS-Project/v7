@@ -1,4 +1,6 @@
 <script>
+  import { onMount } from "svelte";
+
   export let length;
   let els = [];
   let values = [];
@@ -15,24 +17,28 @@
     })();
   }
 
+  onMount(() => {
+    els[0]?.focus();
+  });
+
   function handleMoveAndBackspace(e) {
     let targetIndex = +e.target.getAttribute("index");
 
     switch (e.key) {
       case "ArrowRight": //ArrowRight
         e.preventDefault();
-        els[min(length - 1, targetIndex + 1)].focus();
+        els[min(length - 1, targetIndex + 1)]?.focus();
         break;
       case "ArrowLeft": //ArrowLeft
         e.preventDefault();
-        els[max(0, targetIndex - 1)].focus();
+        els[max(0, targetIndex - 1)]?.focus();
         break;
       case "Backspace": //Backspace
         e.preventDefault();
 
         // if curent cell is empty we want to backspace the previous cell
         if (!values[targetIndex] && values[targetIndex] != 0) {
-          els[max(0, targetIndex - 1)].focus();
+          els[max(0, targetIndex - 1)]?.focus();
           values[targetIndex - 1] = null;
         } else {
           values[targetIndex] = null;
@@ -44,7 +50,7 @@
   function handleKey(e) {
     if (Number.isNaN(+e.key)) return;
     values[e.target.getAttribute("index")] = +e.key;
-    els[min(length - 1, +e.target.getAttribute("index") + 1)].focus();
+    els[min(length - 1, +e.target.getAttribute("index") + 1)]?.focus();
   }
 
   function handlePaste(e) {
@@ -55,7 +61,7 @@
   function waterfall(data) {
     let [first, ...rest] = data.arr;
     values[data.target.getAttribute("index")] = +first;
-    els[min(length - 1, +data.target.getAttribute("index") + 1)].focus();
+    els[min(length - 1, +data.target.getAttribute("index") + 1)]?.focus();
     if (data.target.getAttribute("index") == length - 1 || rest.length === 0) return;
     waterfall({ target: els[+data.target.getAttribute("index") + 1], arr: rest });
   }

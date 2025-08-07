@@ -10,6 +10,7 @@
 
   const code = Store<string>();
   let errored = $state(false);
+  let locked = $state(false);
 
   onMount(() => {
     code.subscribe((v) => {
@@ -21,6 +22,8 @@
 
   async function verify() {
     if (!process.validate($code)) return;
+    if (locked) return;
+    locked = true;
 
     const unlocked = await process.verifyTotp($code);
 
@@ -35,6 +38,7 @@
               caption: "Okay",
               action: () => {
                 errored = false;
+                locked = false;
               },
               suggested: true,
             },
