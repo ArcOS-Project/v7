@@ -81,6 +81,7 @@ export class UserDaemon extends Process {
   public Wallpaper = Store<Wallpaper>(Wallpapers.img0);
   public lastWallpaper = Store<string>("img0");
   public _elevating = false;
+  public _blockLeaveInvocations = true;
   private elevations: Record<string, ElevationData> = {};
   private preferencesUnsubscribe: Unsubscriber | undefined;
   private wallpaperGetters: WallpaperGetters = [
@@ -235,7 +236,7 @@ export class UserDaemon extends Process {
   }
 
   setAppRendererClasses(v: UserPreferences) {
-    if (this.kernel.state?.currentState !== "desktop") return;
+    // if (this.kernel.state?.currentState !== "desktop") return;
 
     const renderer = this.handler.renderer?.target;
 
@@ -735,6 +736,7 @@ export class UserDaemon extends Process {
 
   async toLogin(type: string, props: Record<string, any> = {}) {
     this.Log(`toLogin: ${type}`);
+    await this.waitForLeaveInvocationAllow();
     if (this._disposed) return;
     if (this.serviceHost) this.serviceHost._holdRestart = true;
 
@@ -2790,5 +2792,12 @@ The information provided in this report is subject for review by me or another A
         ],
       });
     }
+  }
+  async waitForLeaveInvocationAllow() {
+    return new Promise<void>((r) => {
+      const interval = setInterval(() => {
+        if (!this._blockLeaveInvocations) r(clearInterval(interval));
+      }, 1);
+    });
   }
 }
