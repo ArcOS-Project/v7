@@ -2799,6 +2799,34 @@ The information provided in this report is subject for review by me or another A
       });
     }
   }
+
+  async deleteAccount() {
+    MessageBox(
+      {
+        title: "Delete ArcOS Account",
+        content: DeleteUser,
+        image: TrashIcon,
+        buttons: [
+          {
+            caption: "Back to safety",
+            action: () => {},
+          },
+          {
+            caption: "Delete account",
+            action: async () => {
+              await Backend.delete(`/user`, { headers: { Authorization: `Bearer ${this.token}` } });
+              this.logoff();
+            },
+            suggested: true,
+          },
+        ],
+        sound: "arcos.dialog.warning",
+      },
+      +this.env.get("shell_pid"),
+      true
+    );
+  }
+
   async waitForLeaveInvocationAllow() {
     return new Promise<void>((r) => {
       const interval = setInterval(() => {

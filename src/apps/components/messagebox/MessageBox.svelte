@@ -5,8 +5,9 @@
 
   const { process }: AppComponentProps<MessageBoxRuntime> = $props();
   const { data } = process;
-
   const Component = data?.content;
+
+  let disabled = $state<boolean>(false);
 </script>
 
 {#if data}
@@ -20,14 +21,14 @@
         <p>{@html data.message}</p>
       {:else if Component}
         <div class="component">
-          <Component {process} {data} />
+          <Component {process} {data} bind:disabled />
         </div>
       {/if}
     </div>
   </div>
   <div class="bottom">
     {#each data.buttons as button}
-      <Button {button} {process} />
+      <Button {button} {process} suggestedDisabled={disabled} />
     {/each}
   </div>
 {/if}
