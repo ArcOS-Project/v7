@@ -28,6 +28,11 @@ export class AdvSysSetRuntime extends AppProcess {
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
+  }
+
+  async start() {
+    if (await this.closeIfSecondInstance()) return false;
+
     this.preferencesBuffer.set(this.userPreferences());
 
     this.bufferSub = this.preferencesBuffer.subscribe(() => {
