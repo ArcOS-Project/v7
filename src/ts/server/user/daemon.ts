@@ -2350,9 +2350,15 @@ export class UserDaemon extends Process {
   }
 
   async GlobalLoadIndicator(caption?: string, pid?: number) {
-    const process = await this.spawnOverlay<GlobalLoadIndicatorRuntime>(
-      "GlobalLoadIndicator",
-      pid ?? +this.env.get("shell_pid"),
+    const process = await this.handler.spawn<GlobalLoadIndicatorRuntime>(
+      GlobalLoadIndicatorRuntime,
+      undefined,
+      pid || +this.env.get("shell_pid"),
+      {
+        data: { ...GlobalLoadIndicatorApp, overlay: true },
+        id: GlobalLoadIndicatorApp.id,
+        desktop: undefined,
+      },
       caption
     );
 
