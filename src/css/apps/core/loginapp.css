@@ -137,6 +137,7 @@ div.window#loginApp > div.body div.login-form button.continue {
   font-size: 16px;
   backdrop-filter: blur(var(--blur));
   transition: background-color 0.2s, opacity 0.2s;
+  border: #fff2 1px solid;
 }
 
 div.window#loginApp > div.body div.login-form button.continue:hover:not(:disabled) {
@@ -145,9 +146,13 @@ div.window#loginApp > div.body div.login-form button.continue:hover:not(:disable
 
 div.window#loginApp > div.body div.login-form button.continue:disabled,
 div.window#loginApp > div.body div.login-form button.continue:active {
-  opacity: 0.5;
+  opacity: 1;
+  background-color: #fff1;
 }
-
+div.window#loginApp > div.body div.login-form button.continue:disabled span.lucide,
+div.window#loginApp > div.body div.login-form button.continue:active span.lucide {
+  color: #aaa !important;
+}
 div.window#loginApp > div.body p.error-message {
   font-size: 16px;
 }
@@ -184,6 +189,8 @@ div.window#loginApp > div.body div.power-options button {
   border: none;
   font-size: 16px;
   transition: opacity 0.2s, scale 0.2s;
+  outline: #fff3 1px solid;
+  outline-offset: -1px;
 }
 
 div.window#loginApp > div.body div.power-options button:hover {
