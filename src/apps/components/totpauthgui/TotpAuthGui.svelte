@@ -1,55 +1,52 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
   import { ErrorIcon } from "$ts/images/dialog";
+  import { Store } from "$ts/writable";
   import { onMount } from "svelte";
   import type { TotpAuthGuiRuntime } from "./runtime";
+  import Input from "./TotpAuthGui/Input.svelte";
 
   const { process }: { process: TotpAuthGuiRuntime } = $props();
-  const { inputs, digits } = process;
-  const PATTERN = "[0-9]{1}";
 
-  function handleKeydown(e: KeyboardEvent, i: number) {
-    const target = e.target as HTMLInputElement;
-
-    if (!target.value && e.key === "Backspace") {
-      $inputs[i - 1]?.focus();
-      $inputs[i - 1]?.select();
-    }
-
-    setTimeout(() => {
-      if (target.value.length === 1) {
-        $inputs[i + 1]?.focus();
-        $inputs[i + 1]?.select();
-      }
-
-      verify();
-    }, 10);
-  }
+  const code = Store<string>();
+  let errored = $state(false);
 
   onMount(() => {
-    setTimeout(() => {
-      $inputs[0]?.focus();
-    }, 200);
+    code.subscribe((v) => {
+      if (v?.length !== 6) return;
+
+      verify();
+    });
   });
 
   async function verify() {
-    if (!process.validate()) return;
+    if (!process.validate($code)) return;
 
-    const unlocked = await process.verifyTotp();
+    const unlocked = await process.verifyTotp($code);
 
     if (!unlocked) {
+      errored = true;
       MessageBox(
         {
           title: "ArcOS Security",
           message: "The 2FA code you entered is incorrect! Please try again.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [
+            {
+              caption: "Okay",
+              action: () => {
+                errored = false;
+              },
+              suggested: true,
+            },
+          ],
           sound: "arcos.dialog.error",
           image: ErrorIcon,
         },
         process.parentPid,
         true,
       );
-      $digits = [undefined, undefined, undefined, undefined, undefined, undefined];
+
+      $code = "";
     }
   }
 </script>
@@ -58,11 +55,11 @@
 <h1>Enter code to log in</h1>
 <p>Enter the 2FA code from your Authenticator app</p>
 
-<div class="inputs">
-  {#each $digits as _, i}
-    <input type="text" pattern={PATTERN} bind:value={$digits[i]} bind:this={$inputs[i]} onkeydown={(e) => handleKeydown(e, i)} />
-  {/each}
-</div>
+{#if !errored}
+  <Input bind:code={$code} length={6} />
+{:else}
+  <div class="inputs"></div>
+{/if}
 
 <div class="buttons">
   <button onclick={() => process.cancel()}>Cancel</button>

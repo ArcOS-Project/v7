@@ -4,15 +4,12 @@ import { toForm } from "$ts/form";
 import { InfoIcon } from "$ts/images/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Backend } from "$ts/server/axios";
-import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { RenderArgs } from "$types/process";
 
 export class TotpAuthGuiRuntime extends AppProcess {
   private token: string;
   private dispatchId: string;
-  public digits = Store<(number | undefined)[]>([undefined, undefined, undefined, undefined, undefined, undefined]);
-  public inputs = Store<HTMLInputElement[]>([]);
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, token: string, dispatchId: string) {
     super(handler, pid, parentPid, app);
@@ -28,8 +25,8 @@ export class TotpAuthGuiRuntime extends AppProcess {
     }
   }
 
-  validate() {
-    const digits = this.digits().map(Number);
+  validate(code: string) {
+    const digits = code.split("").map(Number);
 
     for (const digit of digits) {
       if (Number.isNaN(digit) || digit === null || digit === undefined) {
@@ -40,15 +37,13 @@ export class TotpAuthGuiRuntime extends AppProcess {
     return true;
   }
 
-  async verifyTotp() {
-    if (!this.validate()) return false;
+  async verifyTotp(code: string) {
+    if (!this.validate(code)) return false;
 
-    const string = this.digits().map(Number).join("");
-
-    if (string.length !== 6) return false;
+    if (code.length !== 6) return false;
 
     try {
-      const response = await Backend.post("/totp/unlock", toForm({ code: string }), {
+      const response = await Backend.post("/totp/unlock", toForm({ code }), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
