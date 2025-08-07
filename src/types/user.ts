@@ -27,6 +27,7 @@ export interface UserPreferences {
   appPreferences: ApplicationPreferences;
   account: AccountSettings;
   isDefault?: boolean;
+  firstRunDone?: boolean;
   desktop: DesktopPreferences;
   userThemes: ThemeStore;
   userWallpapers: Record<string, Wallpaper>;

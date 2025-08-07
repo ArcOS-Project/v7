@@ -6,7 +6,7 @@ export const DefaultUserPreferences: UserPreferences = {
     icons: true,
     theme: "dark",
     sharp: false,
-    accent: "008CFF",
+    accent: "FF6E54",
     noIconGrid: false,
     lockIcons: true,
   },
