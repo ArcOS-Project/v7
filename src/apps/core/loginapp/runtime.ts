@@ -19,6 +19,8 @@ import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
 import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps, PersistenceInfo } from "./types";
+import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
+import { FirstRunApp } from "$apps/components/firstrun/metadata";
 
 export class LoginAppRuntime extends AppProcess {
   public DEFAULT_WALLPAPER = Store<string>("");
@@ -97,7 +99,7 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async render() {
-    this.getWindow().classList.add("theme-dark");
+    this.getBody().classList.add("theme-dark");
 
     if (!this.type && !this.unexpectedInvocation) await this.loadToken();
 
@@ -195,6 +197,11 @@ export class LoginAppRuntime extends AppProcess {
 
     this.loadingStatus.set("Connecting global dispatch");
     await userDaemon.activateGlobalDispatch();
+
+    this.loadingStatus.set("Welcome to ArcOS");
+    if (!userDaemon.preferences().firstRunDone && !userDaemon.preferences().appPreferences.arcShell) {
+      await this.firstRun(userDaemon);
+    }
 
     this.loadingStatus.set("Starting drive notifier watcher");
     userDaemon.startDriveNotifierWatcher();
@@ -396,6 +403,25 @@ export class LoginAppRuntime extends AppProcess {
         returnId
       );
     });
+  }
+
+  async firstRun(daemon: UserDaemon) {
+    const process = await this.handler.spawn<FirstRunRuntime>(
+      FirstRunRuntime,
+      undefined,
+      this.pid,
+      { data: { ...FirstRunApp, overlay: true }, id: "FirstRun" },
+      daemon
+    );
+
+    if (!process) return;
+
+    await new Promise<void>((r) => process.done.subscribe((v) => v && r()));
+
+    // daemon.preferences.update((v) => {
+    //   v.firstRunDone = true;
+    //   return v;
+    // });
   }
 
   loadPersistence() {
