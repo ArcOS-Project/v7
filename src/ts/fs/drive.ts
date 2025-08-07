@@ -35,6 +35,18 @@ export class FilesystemDrive {
     bulk: false,
   };
 
+  constructor(kernel: WaveKernel, uuid: string, letter?: string, ...args: any[]) {
+    this.server = kernel.getModule<ServerManager>("server");
+
+    this.uuid = uuid;
+    this.driveLetter = letter;
+    this.kernel = kernel;
+  }
+
+  Log(message: string, level = LogLevel.info) {
+    Log(`FilesystemDrive::${this.uuid}`, message, level);
+  }
+
   async lockFile(path: string, pid: number) {
     if (this.fileLocks[path]) throw new Error(`Can't lock ${path}: file is in use by process ${this.fileLocks[path]}`);
 
@@ -47,18 +59,6 @@ export class FilesystemDrive {
       throw new Error(`Can't unlock '${path}': expected PID ${this.fileLocks[path]}, got ${pid}`);
 
     delete this.fileLocks[path];
-  }
-
-  constructor(kernel: WaveKernel, uuid: string, letter?: string, ...args: any[]) {
-    this.server = kernel.getModule<ServerManager>("server");
-
-    this.uuid = uuid;
-    this.driveLetter = letter;
-    this.kernel = kernel;
-  }
-
-  Log(message: string, level = LogLevel.info) {
-    Log(`FilesystemDrive::${this.uuid}`, message, level);
   }
 
   async __spinUp(onProgress?: FilesystemProgressCallback): Promise<boolean> {

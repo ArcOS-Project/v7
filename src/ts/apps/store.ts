@@ -6,6 +6,7 @@ import { AppPreinstallApp } from "$apps/components/apppreinstall/metadata";
 import { ArcFind } from "$apps/components/arcfind/metadata";
 import { ContextMenuApp } from "$apps/components/contextmenu/metadata";
 import { ExitApp } from "$apps/components/exit/metadata";
+import { FirstRunApp } from "$apps/components/firstrun/metadata";
 import { FsNewFileApp } from "$apps/components/fsnewfile/metadata";
 import { FsNewFolderApp } from "$apps/components/fsnewfolder/metadata";
 import { FsProgressApp } from "$apps/components/fsprogress/metadata";
@@ -102,6 +103,7 @@ export const BuiltinApps: AppStorage = [
   // BootScreen,
   // LoginApp,
   // InitialSetupWizard,
+  FirstRunApp,
   AdvSystemSettings,
   AppPreinstallApp,
   AppInstallerApp,
