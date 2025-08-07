@@ -85,7 +85,7 @@
 #initialSetupWizard div.actions button {
   border: none;
   background-color: var(--button-glass-bg);
-  border-radius: 8px;
+  border-radius: var(--button-border-rad);
   padding: 0 15px;
   height: 30px;
   transition: background-color 0.2s, opacity 0.2s, filter 0.2s, scale 0.2s;
