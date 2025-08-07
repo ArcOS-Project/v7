@@ -312,8 +312,9 @@
 
 #AppStore > div.body div.empty p {
   opacity: 0.5;
-  max-width: 250px;
+  max-width: 300px;
   text-align: center;
+  margin-bottom: 15px;
 }
 
 #AppStore > div.body div.notice {

@@ -31,6 +31,7 @@ import { Backend } from "../axios";
 import { MessagingInterface } from "../messaging";
 import { UserPaths } from "../user/store";
 import { AdminScopes } from "./store";
+import { AdminFileSystem } from "./fs";
 
 export class AdminBootstrapper extends BaseService {
   private token: string | undefined;
@@ -48,6 +49,7 @@ export class AdminBootstrapper extends BaseService {
 
     try {
       await this.fs.createDirectory("T:/AdminBootstrapper");
+      await this.fs.mountDrive("admin", AdminFileSystem, "A", undefined, this.token);
     } catch {}
   }
 

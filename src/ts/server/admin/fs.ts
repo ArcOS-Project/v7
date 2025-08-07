@@ -1,4 +1,5 @@
 import { toForm } from "$ts/form";
+import { arrayToBlob } from "$ts/fs/convert";
 import { FilesystemDrive } from "$ts/fs/drive";
 import { getItemNameFromPath, join } from "$ts/fs/util";
 import type { WaveKernel } from "$ts/kernel";
@@ -18,6 +19,7 @@ export class AdminFileSystem extends FilesystemDrive {
   override IDENTIFIES_AS: string = "admin";
   override FILESYSTEM_SHORT: string = "AFS";
   override FILESYSTEM_LONG: string = "Admin Filesystem";
+  public label: string = "Administrators";
   protected override CAPABILITIES: Record<DriveCapabilities, boolean> = {
     readDir: true,
     makeDir: true,
@@ -27,7 +29,7 @@ export class AdminFileSystem extends FilesystemDrive {
     copyItem: true,
     moveItem: true,
     deleteItem: true,
-    direct: false,
+    direct: true,
     quota: true,
     bulk: false,
   };
@@ -203,6 +205,10 @@ export class AdminFileSystem extends FilesystemDrive {
   }
 
   async direct(path: string): Promise<string | undefined> {
-    return "";
+    const content = await this.readFile(path, () => {});
+    if (!content) return undefined;
+
+    const blob = arrayToBlob(content);
+    return URL.createObjectURL(blob);
   }
 }
