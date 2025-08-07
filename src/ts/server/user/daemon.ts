@@ -2,7 +2,12 @@ import { FsProgressRuntime } from "$apps/components/fsprogress/runtime";
 import { DummyFileProgress, type FileProgressMutator, type FsProgressOperation } from "$apps/components/fsprogress/types";
 import { GlobalLoadIndicatorRuntime } from "$apps/components/globalloadindicator/runtime";
 import type { IconPickerData } from "$apps/components/iconpicker/types";
+import { AppStoreApp } from "$apps/user/appstore/metadata";
+import { FileManagerApp } from "$apps/user/filemanager/metadata";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
+import { MessagingApp } from "$apps/user/messages/metadata";
+import { ProcessesApp } from "$apps/user/processes/metadata";
+import { SystemSettings } from "$apps/user/settings/metadata";
 import SafeModeNotice from "$lib/Daemon/SafeModeNotice.svelte";
 import { AppProcess } from "$ts/apps/process";
 import { ApplicationStorage } from "$ts/apps/storage";
@@ -19,7 +24,7 @@ import { ServerDrive } from "$ts/fs/drives/server";
 import type { MemoryFilesystemDrive } from "$ts/fs/drives/temp";
 import { ZIPDrive } from "$ts/fs/drives/zipdrive";
 import { ShareManager } from "$ts/fs/shares/index";
-import { getDriveLetter, getItemNameFromPath, getParentDirectory, join } from "$ts/fs/util";
+import { getItemNameFromPath, getParentDirectory, join } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
 import { getIconPath, iconIdFromPath, maybeIconId } from "$ts/images";
 import { AppStoreIcon, MessagingIcon } from "$ts/images/apps";
@@ -33,6 +38,7 @@ import {
   GlobeIcon,
   PasswordIcon,
   PersonalizationIcon,
+  TrashIcon,
 } from "$ts/images/general";
 import { ImageMimeIcon, ShortcutMimeIcon } from "$ts/images/mime";
 import { RestartIcon } from "$ts/images/power";
@@ -68,6 +74,8 @@ import { GlobalDispatch } from "../ws";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
+import DeleteUser from "$lib/Daemon/DeleteUser.svelte";
+import { GlobalLoadIndicatorApp } from "$apps/components/globalloadindicator/metadata";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -335,7 +343,7 @@ export class UserDaemon extends Process {
       };
 
     if (!preferences.pinnedApps?.length)
-      preferences.pinnedApps = ["$", "fileManager", "processManager", "systemSettings", "Messages", "MediaPlayer"];
+      preferences.pinnedApps = ["$", FileManagerApp.id, MessagingApp.id, AppStoreApp.id, SystemSettings.id, ProcessesApp.id];
 
     const result = applyDefaults<UserPreferences>(preferences, {
       ...DefaultUserPreferences,
