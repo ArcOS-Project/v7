@@ -137,6 +137,7 @@
   opacity: 0.5;
   margin-right: -26px;
   opacity: 0;
+  outline: none;
 }
 
 #systemSettings div.container.account div.header h1.account-name.editing button,

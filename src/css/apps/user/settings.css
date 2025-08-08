@@ -42,9 +42,6 @@
   position: relative;
 }
 
-#systemSettings > div.body div.container > div.titlebar.custom.sliding {
-  background-color: var(--win-bg);
-}
 #systemSettings > div.body div.container > div.titlebar.custom button.lucide {
   font-size: 16px;
   width: 30px;
