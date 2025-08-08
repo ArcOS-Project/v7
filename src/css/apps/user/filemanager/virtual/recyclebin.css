@@ -1,0 +1,23 @@
+#fileManager > div.body div.recycle_bin {
+  padding: 0;
+  overflow: hidden;
+}
+
+#fileManager > div.body div.recycle_bin div.directory-viewer {
+  height: calc(100% - 53px);
+  padding-bottom: 15px;
+}
+
+#fileManager > div.body div.recycle_bin div.bottom button.lucide {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font-size: 16px;
+}
+
+#fileManager > div.body div.recycle_bin div.bottom div.sep {
+  width: 1px;
+  height: 20px;
+  background-color: var(--button-hover-bg);
+  margin: 0 5px;
+}

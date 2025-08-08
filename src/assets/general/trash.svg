@@ -1,8 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1">
-  <rect style="fill:#518140" width="12" height="14" x="2" y="2" rx=".8" ry=".824" />
-  <rect style="fill:#629c4d" width="4" height="1.6" x="6" y="0" />
-  <rect style="fill:#629c4d" width="14" height="3" x="1" y="1" rx=".778" ry=".75" />
-  <path style="opacity:0.3;fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round" d="m 8,7 v 6" />
-  <path style="opacity:0.3;fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round" d="m 5,7 v 6" />
-  <path style="opacity:0.3;fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round" d="m 11,7 v 6" />
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path
+    d="M13.2 2H2.8C2.35817 2 2 2.36892 2 2.824V15.176C2 15.6311 2.35817 16 2.8 16H13.2C13.6418 16 14 15.6311 14 15.176V2.824C14 2.36892 13.6418 2 13.2 2Z"
+    fill="#5C8FCC" />
+  <path d="M10 0H6V1.6H10V0Z" fill="#7FB8FB" />
+  <path
+    d="M14.222 1H1.778C1.34832 1 1 1.33579 1 1.75V3.25C1 3.66421 1.34832 4 1.778 4H14.222C14.6517 4 15 3.66421 15 3.25V1.75C15 1.33579 14.6517 1 14.222 1Z"
+    fill="#7FB8FB" />
+  <path opacity="0.3" d="M8 7V13" stroke="black" stroke-width="2" stroke-linecap="round" />
+  <path opacity="0.3" d="M5 7V13" stroke="black" stroke-width="2" stroke-linecap="round" />
+  <path opacity="0.3" d="M11 7V13" stroke="black" stroke-width="2" stroke-linecap="round" />
 </svg>

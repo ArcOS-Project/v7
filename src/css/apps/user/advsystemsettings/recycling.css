@@ -1,0 +1,37 @@
+#AdvSystemSettings > div.body div.recycling {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#AdvSystemSettings > div.body div.section-content {
+  padding: 10px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 5px;
+}
+
+#AdvSystemSettings > div.body div.section-content label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+/* 
+
+#AdvSystemSettings > div.body section.notification {
+  margin-top: auto;
+} */
+
+#AdvSystemSettings > div.body section.notification div.section-content {
+  padding: 0;
+  padding-top: 15px;
+}
+
+#AdvSystemSettings > div.body section.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: auto;
+  justify-content: end;
+}
