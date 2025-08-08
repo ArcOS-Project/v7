@@ -436,5 +436,20 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         },
       },
     ],
+    "place-recycle_bin": [
+      {
+        caption: "Go here",
+        icon: "folder-open",
+        action: () => {
+          runtime.navigate("::recycle_bin");
+        },
+      },
+      { sep: true },
+      {
+        caption: "Empty bin",
+        icon: "trash",
+        action: () => {},
+      },
+    ],
   };
 }
