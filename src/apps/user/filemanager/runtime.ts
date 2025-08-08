@@ -22,6 +22,7 @@ import { FileManagerAccelerators } from "./accelerators";
 import { FileManagerAltMenu } from "./altmenu";
 import { FileManagerContextMenu } from "./context";
 import MyArcOs from "./FileManager/Virtual/MyArcOS.svelte";
+import TrashCan from "./FileManager/Virtual/TrashCan.svelte";
 import type { FileManagerNotice, LoadSaveDialogData, QuotedDrive, VirtualFileManagerLocation } from "./types";
 
 export class FileManagerRuntime extends AppProcess {
@@ -47,6 +48,11 @@ export class FileManagerRuntime extends AppProcess {
       name: "My ArcOS",
       icon: "computer",
       component: MyArcOs as any,
+    },
+    recycle_bin: {
+      name: "Recycle Bin",
+      icon: "trash-2",
+      component: TrashCan as any,
     },
   };
   private _refreshLocked = false;
@@ -441,13 +447,17 @@ export class FileManagerRuntime extends AppProcess {
     const items = this.selection();
     if (!items.length) return;
 
+    const isUserFs = this.path().startsWith(UserPaths.Root) && this.userDaemon?.serviceHost?.getService("TrashSvc");
+
     MessageBox(
       {
         title: `Delete ${items.length} ${Plural("item", items.length)}?`,
-        message: `Are you sure you want to <b>permanently</b> delete the selected ${Plural(
-          "item",
-          items.length
-        )}? This cannot be undone.`,
+        message: isUserFs
+          ? `Are you sure you want to move the selected ${items.length} ${Plural("item", items.length)} to the Recycle Bin?`
+          : `Are you sure you want to <b>permanently</b> delete the selected ${Plural(
+              "item",
+              items.length
+            )}? This cannot be undone.`,
         buttons: [
           { caption: "Cancel", action: () => {} },
           {
@@ -466,6 +476,7 @@ export class FileManagerRuntime extends AppProcess {
 
   async confirmDeleteSelected() {
     if (this._disposed) return;
+    const isUserFs = this.path().startsWith(UserPaths.Root) && this.userDaemon?.serviceHost?.getService("TrashSvc");
     const items = this.selection();
     const prog = await this.userDaemon!.FileProgress(
       {
@@ -473,7 +484,9 @@ export class FileManagerRuntime extends AppProcess {
         waiting: true,
         type: "quantity",
         icon: TrashIcon,
-        caption: `Deleting ${items.length} ${Plural("item", items.length)}...`,
+        caption: isUserFs
+          ? `Moving ${items.length} ${Plural("item", items.length)} to the Recycle Bin...`
+          : `Deleting ${items.length} ${Plural("item", items.length)}...`,
         subtitle: "Working...",
       },
       this.pid

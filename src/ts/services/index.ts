@@ -9,6 +9,7 @@ import { protoService } from "$ts/proto";
 import { adminService } from "$ts/server/admin";
 import { messagingService } from "$ts/server/messaging";
 import type { UserDaemon } from "$ts/server/user/daemon";
+import { trashService } from "$ts/server/user/trash";
 import { globalDispatchService } from "$ts/server/ws";
 import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
@@ -29,6 +30,7 @@ export class ServiceHost extends Process {
   }
 
   readonly STORE = new Map([
+    ["TrashSvc", { ...trashService }],
     ["BugHuntUsp", { ...bhuspService }],
     ["AdminBootstrapper", { ...adminService }],
     ["ShareMgmt", { ...shareService }],
