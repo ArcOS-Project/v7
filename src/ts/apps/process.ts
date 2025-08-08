@@ -54,6 +54,8 @@ export class AppProcess extends Process {
       desktop: app.desktop,
     };
 
+    this.handler.renderer!.lastInteract = this;
+
     this.windowTitle.set(app.data.metadata.name || "Application");
     this.name = app.data.id;
     this.systemDispatch = this.kernel.getModule<SystemDispatch>("dispatch");
@@ -89,6 +91,27 @@ export class AppProcess extends Process {
         return v;
       });
     }
+
+    // Global interceptor for the Recycle Bin
+    const userDaemon = this.userDaemon;
+
+    this.fs = new Proxy(this.fs, {
+      get: (target, prop, receiver) => {
+        if (prop === "deleteItem" && typeof target[prop] === "function") {
+          return async (path: string, dispatch?: boolean) => {
+            if (!path.startsWith("U:/")) {
+              return await target[prop].call(this.fs, path, dispatch);
+            }
+
+            const trash = userDaemon?.serviceHost?.getService("TrashSvc") as any;
+            if (!trash) return await target[prop].call(this.fs, path, dispatch);
+
+            return await trash.moveToTrash(path);
+          };
+        }
+        return Reflect.get(target, prop, receiver);
+      },
+    });
   }
 
   // Conditional function that can prohibit closing if it returns false
