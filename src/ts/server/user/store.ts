@@ -363,6 +363,15 @@ export const UserPaths = {
   AppShortcuts: "U:/System/AppShortcuts",
 };
 
+export const SystemFolders = [
+  UserPaths.Applications,
+  UserPaths.Trashcan,
+  UserPaths.System,
+  UserPaths.Migrations,
+  UserPaths.Configuration,
+  UserPaths.AppShortcuts,
+];
+
 export const UserPathCaptions: Record<string, string> = {
   Home: "Home folder",
   Documents: "Documents",

@@ -4,13 +4,13 @@ import { FilesystemDrive } from "$ts/fs/drive";
 import { SharedDrive } from "$ts/fs/shares/drive";
 import { DownloadFile, getDriveLetter, getItemNameFromPath, getParentDirectory, join } from "$ts/fs/util";
 import { iconIdFromPath } from "$ts/images";
-import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
+import { ErrorIcon, InfoIcon, WarningIcon } from "$ts/images/dialog";
 import { DownloadIcon, DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import { TrashIcon, UploadIcon } from "$ts/images/general";
 import { DefaultMimeIcon } from "$ts/images/mime";
 import type { ProcessHandler } from "$ts/process/handler";
 import { AdminScopes } from "$ts/server/admin/store";
-import { UserPaths } from "$ts/server/user/store";
+import { SystemFolders, UserPathCaptions, UserPaths } from "$ts/server/user/store";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
@@ -447,7 +447,36 @@ export class FileManagerRuntime extends AppProcess {
     const items = this.selection();
     if (!items.length) return;
 
-    const isUserFs = this.path().startsWith(UserPaths.Root) && this.userDaemon?.serviceHost?.getService("TrashSvc");
+    for (const item of items) {
+      const entries = Object.entries(UserPaths);
+
+      for (let i = 0; i < entries.length; i++) {
+        const [key, path] = entries[i];
+
+        if (SystemFolders.includes(path) ? item === path || getParentDirectory(item) === path : item === path) {
+          const name = (UserPathCaptions as any)[key];
+
+          MessageBox(
+            {
+              title: `${name}`,
+              message: `This folder is required for ArcOS to run properly. If it or any of its files are missing, ArcOS might crash or become unstable. You cannot delete this item.<br><br><details><summary>Show path</summary><code class='block'>${path}</code></details>`,
+              buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+              sound: "arcos.dialog.warning",
+              image: InfoIcon,
+            },
+            this.pid,
+            true
+          );
+
+          return;
+        }
+      }
+    }
+
+    const isUserFs =
+      this.path().startsWith(UserPaths.Root) &&
+      this.userDaemon?.serviceHost?.getService("TrashSvc") &&
+      !this.userPreferences().globalSettings.disableTrashCan;
 
     MessageBox(
       {
@@ -476,7 +505,10 @@ export class FileManagerRuntime extends AppProcess {
 
   async confirmDeleteSelected() {
     if (this._disposed) return;
-    const isUserFs = this.path().startsWith(UserPaths.Root) && this.userDaemon?.serviceHost?.getService("TrashSvc");
+    const isUserFs =
+      this.path().startsWith(UserPaths.Root) &&
+      this.userDaemon?.serviceHost?.getService("TrashSvc") &&
+      !this.userPreferences().globalSettings.disableTrashCan;
     const items = this.selection();
     const prog = await this.userDaemon!.FileProgress(
       {
