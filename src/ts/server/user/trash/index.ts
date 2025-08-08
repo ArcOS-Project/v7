@@ -12,39 +12,44 @@ import type { TrashIndexNode } from "$types/trash";
 import { UserPaths } from "../store";
 
 export class TrashCanService extends BaseService {
-  CONFIG_PATH = join(UserPaths.System, `TrashIndex.json`);
-  ConfigBuffer = Store<Record<string, TrashIndexNode>>({});
+  INDEX_PATH = join(UserPaths.System, `TrashIndex.json`);
+  IndexBuffer = Store<Record<string, TrashIndexNode>>({});
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);
   }
 
   async start() {
-    this.ConfigBuffer.set(await this.readConfigFile());
-    this.ConfigBuffer.subscribe((v) => this.writeConfigFile(v));
+    this.IndexBuffer.set(await this.readIndex());
+    this.IndexBuffer.subscribe((v) => this.writeIndex(v));
   }
 
-  async readConfigFile(): Promise<Record<string, TrashIndexNode>> {
-    const content = await this.fs.readFile(this.CONFIG_PATH);
+  async readIndex(): Promise<Record<string, TrashIndexNode>> {
+    const content = await this.fs.readFile(this.INDEX_PATH);
 
-    if (!content) return await this.writeConfigFile({});
+    if (!content) return await this.writeIndex({});
 
     try {
       const parsed = JSON.parse(arrayToText(content));
 
       return parsed as Record<string, TrashIndexNode>;
     } catch {
-      return await this.writeConfigFile({});
+      return await this.writeIndex({});
     }
   }
 
-  async writeConfigFile(index: Record<string, TrashIndexNode>) {
-    await this.fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(index, null, 2)));
+  async writeIndex(index: Record<string, TrashIndexNode>) {
+    await this.fs.writeFile(this.INDEX_PATH, textToBlob(JSON.stringify(index, null, 2)));
 
     return index;
   }
 
   async moveToTrash(path: string): Promise<TrashIndexNode | undefined> {
-    if (!path.startsWith(UserPaths.Root) || path.startsWith(UserPaths.Trashcan) || path === this.CONFIG_PATH) return;
+    if (this.host.daemon?.preferences().globalSettings.disableTrashCan) {
+      await this.fs.deleteItem(path);
+      return undefined;
+    }
+
+    if (!path.startsWith(UserPaths.Root) || path.startsWith(UserPaths.Trashcan) || path === this.INDEX_PATH) return undefined;
 
     const uuid = UUID();
     const isDir = await this.fs.isDirectory(path);
@@ -60,11 +65,12 @@ export class TrashCanService extends BaseService {
       deletedPath: join(deletedPath, name),
       icon,
       name,
+      timestamp: Date.now(),
     };
 
     await this.fs.createDirectory(deletedPath);
 
-    this.ConfigBuffer.update((v) => {
+    this.IndexBuffer.update((v) => {
       v[uuid] = node;
 
       return v;
@@ -76,13 +82,13 @@ export class TrashCanService extends BaseService {
   }
 
   async restoreTrashItem(uuid: string) {
-    const index = this.ConfigBuffer()[uuid];
+    const index = this.IndexBuffer()[uuid];
 
     if (!index) return false;
 
     await this.fs.moveItem(index.deletedPath, index.originalPath);
 
-    this.ConfigBuffer.update((v) => {
+    this.IndexBuffer.update((v) => {
       delete v[uuid];
       return v;
     });
@@ -91,6 +97,35 @@ export class TrashCanService extends BaseService {
 
     return true;
   }
+
+  getIndex() {
+    return this.IndexBuffer();
+  }
+
+  async permanentlyDelete(uuid: string) {
+    const index = this.IndexBuffer()[uuid];
+
+    if (!index) return false;
+
+    await this.fs.deleteItem(join(UserPaths.Trashcan, uuid));
+
+    this.IndexBuffer.update((v) => {
+      delete v[uuid];
+      return v;
+    });
+
+    return true;
+  }
+
+  async emptyBin() {
+    const buffer = this.IndexBuffer();
+
+    for (const uuid in buffer) {
+      await this.fs.deleteItem(join(UserPaths.Trashcan, uuid));
+    }
+
+    this.IndexBuffer.set({});
+  }
 }
 
 export const trashService: Service = {
@@ -98,7 +133,4 @@ export const trashService: Service = {
   description: "Handles the Recycle Bin",
   process: TrashCanService,
   initialState: "started",
-  startCondition(daemon) {
-    return !daemon?.preferences().globalSettings.disableTrashCan;
-  },
 };

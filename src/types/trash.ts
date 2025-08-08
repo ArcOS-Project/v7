@@ -3,4 +3,5 @@ export interface TrashIndexNode {
   icon: string;
   originalPath: string;
   deletedPath: string;
+  timestamp: number;
 }
