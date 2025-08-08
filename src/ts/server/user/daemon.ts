@@ -305,6 +305,8 @@ export class UserDaemon extends Process {
 
     try {
       await this.fs.mountDrive<ServerDrive>("userfs", ServerDrive, "U", undefined, this.token);
+
+      await this.migrateFilesystemLayout();
     } catch {
       throw new Error("UserDaemon: Failed to start filesystem supplier");
     }
@@ -1918,7 +1920,8 @@ export class UserDaemon extends Process {
       );
 
       try {
-        await this.fs.moveItem(source, destination, false, (prog) => {
+        const sourceName = getItemNameFromPath(source);
+        await this.fs.moveItem(source, `${destination}/${sourceName}`, false, (prog) => {
           childProgress.setMax(prog.max + 1);
           childProgress.setDone(prog.value);
           childProgress.setType("quantity");
@@ -2207,7 +2210,7 @@ export class UserDaemon extends Process {
     const string = JSON.stringify(data, null, 2);
 
     try {
-      return await this.fs.writeFile(path, textToBlob(string, "application/json"));
+      return await this.fs.writeFile(path, textToBlob(string, "application/json"), undefined, false);
     } catch {
       return false;
     }
@@ -2841,5 +2844,27 @@ The information provided in this report is subject for review by me or another A
         if (!this._blockLeaveInvocations) r(clearInterval(interval));
       }, 1);
     });
+  }
+
+  async migrateFilesystemLayout() {
+    const migrationPath = join(UserPaths.Migrations, "FsMig-705.lock");
+    const migrationFile = !!(await this.fs.readFile(migrationPath));
+
+    if (migrationFile) return;
+
+    const oldConfigDir = await this.fs.readDir("U:/Config");
+
+    if (oldConfigDir) {
+      for (const dir of oldConfigDir.dirs) {
+        const target = join(UserPaths.Configuration, dir.name);
+
+        await this.fs.deleteItem(target);
+        await this.fs.moveItem(`U:/Config/${dir.name}`, target);
+      }
+
+      await this.fs.deleteItem("U:/Config");
+    }
+
+    await this.fs.writeFile(migrationPath, textToBlob(`${Date.now()}`));
   }
 }

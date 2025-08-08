@@ -345,43 +345,58 @@ export const AppGroups: Record<string, string> = {
   entertainment: "Entertainment",
 };
 
+// Record<oldLocation, newLocation>
 export const UserPaths = {
-  Root: "U:/",
   Home: "U:/Home",
-  Applications: "U:/Applications",
   Documents: "U:/Home/Documents",
   Pictures: "U:/Home/Pictures",
   Downloads: "U:/Home/Downloads",
   Wallpapers: "U:/Home/Wallpapers",
   Desktop: "U:/Home/Desktop",
   Music: "U:/Home/Music",
-  Configuration: "U:/Config",
+  Applications: "U:/Applications",
+  Trashcan: "U:/System/Trashcan",
+  Root: "U:/",
+  System: "U:/System",
+  Migrations: "U:/System/Migrations",
+  Configuration: "U:/System/Config",
+  AppShortcuts: "U:/System/AppShortcuts",
 };
 
 export const UserPathCaptions: Record<string, string> = {
-  Root: "Your Drive",
   Home: "Home folder",
-  Applications: "Applications",
   Documents: "Documents",
   Pictures: "Pictures",
   Downloads: "Downloads",
   Wallpapers: "Wallpapers",
   Desktop: "Desktop",
   Music: "Music",
+  Applications: "Applications",
+  Trashcan: "Recycle Bin",
+  Root: "Your Drive",
+  System: "System Folder",
+  Migrations: "Migration Files",
   Configuration: "Configuration",
+  AppShortcuts: "Application Shortcuts",
 };
 
+export const HiddenUserPaths: string[] = ["Migrations", "Configuration", "System", "Trashcan", "AppShortcuts"];
+
 export const UserPathIcons: Record<string, string> = {
-  Root: "hard-drive",
   Home: "house",
-  Applications: "app-window",
   Documents: "folder-dot",
   Pictures: "image",
   Downloads: "download",
   Wallpapers: "wallpaper",
   Desktop: "dock",
   Music: "music",
-  Configuration: "cog",
+  Applications: "app-window",
+  Trashcan: "trash-2",
+  Root: "hard-drive",
+  System: "cog",
+  Migrations: "chevrons-right",
+  Configuration: "folder-cog",
+  AppShortcuts: "arrow-up-right",
 };
 
 export const UserFonts: string[] = [
