@@ -2582,8 +2582,8 @@ The information provided in this report is subject for review by me or another A
     if (restartNow) await this.restart();
   }
 
-  async Confirm(title: string, message: string, no: string, yes: string, image = QuestionIcon) {
-    const shellPid = +this.env.get("shell_pid");
+  async Confirm(title: string, message: string, no: string, yes: string, image = QuestionIcon, pid?: number) {
+    const shellPid = pid || +this.env.get("shell_pid");
     return new Promise((r) => {
       MessageBox(
         {

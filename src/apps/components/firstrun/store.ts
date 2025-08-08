@@ -146,6 +146,12 @@ export const FirstRunThemes: Record<string, FirstRunTheme> = {
 };
 
 export const FirstRunShortcuts: Record<string, ArcShortcut> = {
+  [join(UserPaths.Desktop, "____recycle_bin.arclnk")]: {
+    icon: "TrashIcon",
+    name: "Recycle Bin",
+    type: "folder",
+    target: "::recycle_bin",
+  },
   [join(UserPaths.Desktop, "___my_arcos.arclnk")]: {
     icon: "DesktopIcon",
     name: "My ArcOS",
