@@ -8,13 +8,13 @@ import type { UserPreferences } from "$types/user";
 import type { Component } from "svelte";
 import type { Unsubscriber } from "svelte/store";
 import DispatchClients from "./AdvancedSystemSettings/DispatchClients.svelte";
-import General from "./AdvancedSystemSettings/General.svelte";
+import Recycling from "./AdvancedSystemSettings/Recycling.svelte";
 import Startup from "./AdvancedSystemSettings/Startup.svelte";
 
 export class AdvSysSetRuntime extends AppProcess {
   public currentTab = Store<string>("General");
   public tabs: Record<string, Component> = {
-    General,
+    Recycling: Recycling as any,
     "Startup Items": Startup as any,
     "Dispatch Clients": DispatchClients as any,
   };
