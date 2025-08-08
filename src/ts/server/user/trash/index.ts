@@ -43,7 +43,7 @@ export class TrashCanService extends BaseService {
     return index;
   }
 
-  async moveToTrash(path: string): Promise<TrashIndexNode | undefined> {
+  async moveToTrash(path: string, dispatch = false): Promise<TrashIndexNode | undefined> {
     if (this.host.daemon?.preferences().globalSettings.disableTrashCan) {
       await this.fs.deleteItem(path);
       return undefined;
@@ -53,10 +53,6 @@ export class TrashCanService extends BaseService {
 
     const uuid = UUID();
     const isDir = await this.fs.isDirectory(path);
-    const exists = isDir || !!(await this.fs.readFile(path));
-
-    if (!exists) return undefined;
-
     const name = getItemNameFromPath(path);
     const deletedPath = join(UserPaths.Trashcan, uuid);
     const icon = isDir ? FolderIcon : this.host.daemon?.getMimeIconByFilename(name) || DefaultMimeIcon;
@@ -68,7 +64,7 @@ export class TrashCanService extends BaseService {
       timestamp: Date.now(),
     };
 
-    await this.fs.createDirectory(deletedPath);
+    await this.fs.createDirectory(deletedPath, false);
 
     this.IndexBuffer.update((v) => {
       v[uuid] = node;
@@ -76,7 +72,7 @@ export class TrashCanService extends BaseService {
       return v;
     });
 
-    await this.fs.moveItem(path, `${deletedPath}/${name}`);
+    await this.fs.moveItem(path, `${deletedPath}/${name}`, dispatch);
 
     return node;
   }
@@ -86,14 +82,14 @@ export class TrashCanService extends BaseService {
 
     if (!index) return false;
 
-    await this.fs.moveItem(index.deletedPath, index.originalPath);
+    await this.fs.moveItem(index.deletedPath, index.originalPath, false);
 
     this.IndexBuffer.update((v) => {
       delete v[uuid];
       return v;
     });
 
-    await this.fs.deleteItem(join(UserPaths.Trashcan, uuid));
+    await this.fs.deleteItem(join(UserPaths.Trashcan, uuid), false);
 
     return true;
   }

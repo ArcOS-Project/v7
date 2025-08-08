@@ -22,6 +22,11 @@ export const KnownSystemDispatchers: string[] = [
   "window-minimize",
   "window-maximize",
   "window-unminimize",
+  "window-fullscreen",
+  "totp-unlock-success",
+  "totp-unlock-cancel",
+  "pfp-changed",
+  "mugui-done",
   "ls-confirm",
   "ls-cancel",
 ];

@@ -106,7 +106,7 @@ export class AppProcess extends Process {
             const trash = userDaemon?.serviceHost?.getService("TrashSvc") as any;
             if (!trash) return await target[prop].call(this.fs, path, dispatch);
 
-            return await trash.moveToTrash(path);
+            return await trash.moveToTrash(path, dispatch);
           };
         }
         return Reflect.get(target, prop, receiver);
