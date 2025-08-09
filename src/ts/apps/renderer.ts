@@ -14,6 +14,7 @@ import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
 import { BuiltinApps } from "./store";
+import { UUID } from "$ts/uuid";
 
 export class AppRenderer extends Process {
   currentState: number[] = [];
@@ -315,6 +316,10 @@ export class AppRenderer extends Process {
 
     menu.className = "alt-menu nodrag";
 
+    const contextMenuPid = this.env.get("contextmenu_pid");
+    const contextMenu = this.handler.getProcess<ContextMenuRuntime>(+contextMenuPid);
+    if (!contextMenu) return menu;
+
     process.altMenu.subscribe((v) => {
       menu.classList.toggle("hidden", !v.length);
       menu.innerHTML = "";
@@ -333,6 +338,11 @@ export class AppRenderer extends Process {
         if (!item.caption) continue;
 
         const button = document.createElement("button");
+        const uuid = UUID();
+
+        contextMenu?.currentMenu.subscribe((v) => {
+          button.classList.toggle("selected", uuid === v);
+        });
 
         button.className = "menu-item";
         button.innerText = item.caption;
@@ -344,13 +354,9 @@ export class AppRenderer extends Process {
           }
 
           const rect = button.getBoundingClientRect();
-          const contextMenuPid = this.env.get("contextmenu_pid");
-          if (!contextMenuPid) return;
 
-          const contextMenu = this.handler.getProcess<ContextMenuRuntime>(+contextMenuPid);
-          if (!contextMenu) return;
-
-          contextMenu.createContextMenu({
+          contextMenu?.currentMenu.set(uuid);
+          contextMenu?.createContextMenu({
             items: item.subItems || [],
             x: rect.x,
             y: rect.y + rect.height + 5,

@@ -9,6 +9,7 @@ export class ContextMenuRuntime extends AppProcess {
   public contextData = Store<ContextMenuInstance | null>();
   public CLICKLOCKED = false;
   public contextProps: Record<string, any[]> = {};
+  public currentMenu = Store<string>("");
   // Elements that can contain a contextmenu dataset key
   private readonly validContexMenuTags = ["button", "div", "span", "p", "h1", "h2", "h3", "h4", "h5", "img"];
 
@@ -37,6 +38,7 @@ export class ContextMenuRuntime extends AppProcess {
 
   closeContextMenu() {
     this.contextData.set(null);
+    this.currentMenu.set("");
   }
 
   assignContextMenuHooks() {
@@ -49,7 +51,7 @@ export class ContextMenuRuntime extends AppProcess {
 
       if (!el || e.button !== 0 || e.composedPath().includes(el)) return;
 
-      this.contextData.set(null);
+      this.closeContextMenu();
     });
 
     document.addEventListener("contextmenu", (e) => {
