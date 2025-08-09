@@ -10,7 +10,7 @@
 
 #fileManager div.address-bar div.portion.address {
   flex-grow: 1;
-  max-width: calc(100% - 207px);
+  width: 0;
 }
 
 #fileManager div.address-bar div.portion.address.virtual {
@@ -22,8 +22,9 @@
 }
 
 #fileManager div.address-bar div.path {
+  width: 0;
   flex-grow: 1;
-  max-width: calc(100% - 35px);
+  /* max-width: calc(100% - 35px); */
   border: var(--button-glass-bg) 1px solid;
   border-radius: var(--button-border-rad);
   padding: 2px;
@@ -34,6 +35,25 @@
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+#fileManager div.address-bar div.path div.current-dir {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 0;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#fileManager div.address-bar div.path div.current-dir span {
+  flex-grow: 1;
+  width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 #fileManager div.address-bar button.activated {
@@ -49,6 +69,15 @@
   background-color: var(--button-glass-bg);
   height: 24px;
   border-radius: 7px;
+}
+
+#fileManager div.address-bar div.path div.pill.readonly-notice {
+  background-color: var(--clr-orange-fg);
+  margin-left: auto;
+}
+
+#fileManager div.address-bar div.path div.pill.readonly-notice * {
+  color: var(--win-bg) !important;
 }
 
 #fileManager div.address-bar div.path div.pill span.lucide {
