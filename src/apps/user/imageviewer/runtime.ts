@@ -38,7 +38,9 @@ export class ImageViewerRuntime extends AppProcess {
       this.openedFile.set(path);
       this.imageUrl.set(url);
       this.windowTitle.set(getItemNameFromPath(path));
-    } catch {}
+    } catch {
+      return await this.readFileIndirectFallback(path);
+    }
   }
 
   async readFileIndirectFallback(path: string) {
