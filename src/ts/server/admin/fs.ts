@@ -15,7 +15,7 @@ import { Backend } from "../axios";
 export class AdminFileSystem extends FilesystemDrive {
   private token: string;
   override READONLY = false;
-  override FIXED = false;
+  override FIXED = true;
   override IDENTIFIES_AS: string = "admin";
   override FILESYSTEM_SHORT: string = "AFS";
   override FILESYSTEM_LONG: string = "Admin Filesystem";
@@ -40,16 +40,6 @@ export class AdminFileSystem extends FilesystemDrive {
     this.token = token;
   }
 
-  async _spinUp(onProgress?: FilesystemProgressCallback): Promise<boolean> {
-    try {
-      await this.readDir("");
-      await this.quota();
-      await this.tree("");
-      return true;
-    } catch {
-      return false;
-    }
-  }
   async writeFile(path: string, data: Blob, onProgress?: FilesystemProgressCallback): Promise<boolean> {
     try {
       const response = await Backend.post(`/admin/afs/file/${path}`, data, {

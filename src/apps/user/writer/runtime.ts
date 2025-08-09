@@ -46,17 +46,17 @@ export class WriterRuntime extends AppProcess {
   }
 
   async readFile(path: string) {
-    try {
-      const prog = await this.userDaemon!.FileProgress(
-        {
-          type: "size",
-          caption: `Reading file`,
-          subtitle: path,
-          icon: TextMimeIcon,
-        },
-        this.pid
-      );
+    const prog = await this.userDaemon!.FileProgress(
+      {
+        type: "size",
+        caption: `Reading file`,
+        subtitle: path,
+        icon: TextMimeIcon,
+      },
+      this.pid
+    );
 
+    try {
       const contents = await this.fs.readFile(path, (progress) => {
         prog.setWait(false);
         prog.setWork(true);
@@ -89,9 +89,10 @@ export class WriterRuntime extends AppProcess {
           image: WarningIcon,
           sound: "arcos.dialog.error",
         },
-        this.parentPid,
+        this.pid,
         true
       );
+      prog?.stop();
     }
   }
 
