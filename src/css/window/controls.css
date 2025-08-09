@@ -45,7 +45,7 @@ div.window div.titlebar div.alt-menu button {
   background-color: transparent;
   color: var(--fg);
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   transition: background-color 0.3s;
   min-width: unset;
 }
@@ -67,4 +67,8 @@ div.window > div.titlebar div.controls button:active {
 
 div.window div.titlebar div.alt-menu.hidden {
   display: none;
+}
+
+div.window div.titlebar div.alt-menu button.selected {
+  background-color: var(--accent-light-transparent) !important;
 }
