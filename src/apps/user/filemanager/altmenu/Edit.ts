@@ -11,7 +11,7 @@ export function EditMenu(runtime: FileManagerRuntime): ContextMenuItem {
           runtime.setCutFiles();
         },
         icon: "scissors",
-        disabled: () => !runtime.selection().length || !!runtime.virtual(),
+        disabled: () => !runtime.selection().length || !!runtime.virtual() || !!runtime.drive()?.READONLY,
       },
       {
         caption: "Copy",
@@ -25,7 +25,8 @@ export function EditMenu(runtime: FileManagerRuntime): ContextMenuItem {
         caption: "Paste",
         action: () => runtime.pasteFiles(),
         icon: "clipboard",
-        disabled: () => (!runtime.copyList().length && !runtime.cutList().length) || !!runtime.virtual(),
+        disabled: () =>
+          (!runtime.copyList().length && !runtime.cutList().length) || !!runtime.virtual() || !!runtime.drive()?.READONLY,
       },
     ],
   };

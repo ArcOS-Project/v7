@@ -3,7 +3,7 @@
 
   const { process }: { process: FileManagerRuntime } = $props();
 
-  const { cutList, copyList, selection } = process;
+  const { cutList, copyList, selection, drive } = process;
 </script>
 
 <div class="portion copy-paste">
@@ -11,7 +11,7 @@
     class="lucide icon-scissors"
     aria-label="Cut items"
     title="Cut items"
-    disabled={!$selection.length}
+    disabled={!$selection.length || $drive?.READONLY}
     class:activated={$cutList.length}
     onclick={() => process.setCutFiles()}
   ></button>
@@ -27,7 +27,7 @@
     class="lucide icon-clipboard"
     aria-label="Paste items"
     title="Paste items"
-    disabled={!$copyList.length && !$cutList.length}
+    disabled={(!$copyList.length && !$cutList.length) || $drive?.READONLY}
     onclick={() => process.pasteFiles()}
   ></button>
 </div>

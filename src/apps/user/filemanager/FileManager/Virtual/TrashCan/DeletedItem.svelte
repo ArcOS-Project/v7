@@ -1,12 +1,12 @@
 <script lang="ts">
   import type { FileManagerRuntime } from "$apps/user/filemanager/runtime";
+  import { RelativeTimeMod } from "$ts/dayjs";
   import { maybeIconId } from "$ts/images";
   import type { TrashIndexNode } from "$types/trash";
   import dayjs from "dayjs";
-  import { onMount } from "svelte";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
-  import { RelativeTimeMod } from "$ts/dayjs";
+  import { onMount } from "svelte";
 
   const { process, item, uuid }: { process: FileManagerRuntime; item: TrashIndexNode; uuid: string } = $props();
   const { selection } = process;
@@ -26,13 +26,7 @@
   }
 </script>
 
-<button
-  class="item file deleted"
-  {onclick}
-  class:selected={$selection.includes(uuid)}
-  data-path={uuid}
-  ondblclick={() => process.notImplemented("Viewing deleted item")}
->
+<button class="item file deleted" {onclick} class:selected={$selection.includes(uuid)} data-path={uuid}>
   <div class="segment icon"><img src={maybeIconId(item.icon)} alt="" /></div>
   <div class="segment name">{item.name}</div>
   <div class="segment type"></div>

@@ -22,7 +22,7 @@
 
       if (driveIdentifier) {
         try {
-          const drive = process.fs.getDriveByLetter(driveIdentifier.slice(0, -1), false);
+          drive = process.fs.getDriveByLetter(driveIdentifier.slice(0, -1), false);
 
           driveLabel = drive?.label || "";
         } catch {}
@@ -35,15 +35,23 @@
   });
 </script>
 
-<div class="path">
+<div class="path" class:read-only={drive?.READONLY}>
   <div class="pill">
     <span class="lucide icon-{$virtual?.icon || DriveIcons[drive?.IDENTIFIES_AS || ''] || 'hard-drive'}"></span>
     <span>{$virtual ? $virtual.name : driveLetter || driveLabel}</span>
   </div>
   {#if name && !$virtual}
-    <img src={FolderIcon} alt="" />
-    <span>
-      {name}
-    </span>
+    <div class="current-dir">
+      <img src={FolderIcon} alt="" />
+      <span>
+        {name}
+      </span>
+    </div>
+  {/if}
+  {#if drive?.READONLY}
+    <div class="pill readonly-notice">
+      <span class="lucide icon-pencil-off"></span>
+      <span>Read-only</span>
+    </div>
   {/if}
 </div>

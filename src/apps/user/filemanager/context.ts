@@ -146,7 +146,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       { sep: true },
       {
         caption: "Cut items",
-        disabled: () => !runtime.selection().length,
+        disabled: () => !runtime.selection().length || !!runtime.drive()?.READONLY,
         isActive: () => !!runtime.cutList().length,
         action: () => runtime.setCutFiles(),
         icon: "scissors",
@@ -160,7 +160,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       },
       {
         caption: "Paste items",
-        disabled: () => !runtime.cutList().length && !runtime.copyList().length,
+        disabled: () => (!runtime.cutList().length && !runtime.copyList().length) || !!runtime.drive()?.READONLY,
         action: () => runtime.pasteFiles(),
         icon: "clipboard",
       },
@@ -174,6 +174,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
             action: () => {
               runtime.spawnOverlayApp("FsNewFolder", runtime.pid, runtime.path());
             },
+            disabled: () => !!runtime.drive()?.READONLY,
             icon: "folder-plus",
           },
           {
@@ -181,6 +182,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
             action: () => {
               runtime.spawnOverlayApp("FsNewFile", runtime.pid, runtime.path());
             },
+            disabled: () => !!runtime.drive()?.READONLY,
             icon: "file-plus",
           },
           {
@@ -188,6 +190,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
             action: () => {
               runtime.uploadItems();
             },
+            disabled: () => !!runtime.drive()?.READONLY,
             icon: "upload",
           },
         ],
@@ -244,6 +247,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         action: (_, runtimePath) => {
           runtime.cutList.set([runtimePath]);
         },
+        disabled: () => !!runtime.drive()?.READONLY,
       },
       {
         caption: "Copy",
@@ -256,6 +260,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       {
         caption: "Rename...",
         icon: "file-pen",
+        disabled: () => !!runtime.drive()?.READONLY,
         action: (_, runtimePath) => runtime.spawnOverlayApp("FsRenameItem", runtime.pid, runtimePath),
       },
       {
@@ -265,6 +270,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
           runtime.selection.set([runtimePath]);
           runtime.deleteSelected();
         },
+        disabled: () => !!runtime.drive()?.READONLY,
       },
       { sep: true },
       {
@@ -294,6 +300,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         action: (_, runtimePath) => {
           runtime.cutList.set([runtimePath]);
         },
+        disabled: () => !!runtime.drive()?.READONLY,
       },
       {
         caption: "Copy",
@@ -309,11 +316,13 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         action: (_, path, __, shortcut) => {
           runtime.spawnOverlayApp("ShortcutProperties", runtime.pid, path, shortcut);
         },
+        disabled: () => !!runtime.drive()?.READONLY,
       },
       {
         caption: "Rename...",
         icon: "file-pen",
         action: (_, runtimePath) => runtime.spawnOverlayApp("FsRenameItem", runtime.pid, runtimePath),
+        disabled: () => !!runtime.drive()?.READONLY,
       },
       {
         caption: "Delete",
@@ -322,6 +331,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
           runtime.selection.set([runtimePath]);
           runtime.deleteSelected();
         },
+        disabled: () => !!runtime.drive()?.READONLY,
       },
       { sep: true },
       {
@@ -359,6 +369,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         action: (_, runtimePath) => {
           runtime.cutList.set([runtimePath]);
         },
+        disabled: () => !!runtime.drive()?.READONLY,
       },
       {
         caption: "Copy",
@@ -372,6 +383,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Rename...",
         icon: "folder-pen",
         action: (_, runtimePath) => runtime.spawnOverlayApp("FsRenameItem", runtime.pid, runtimePath),
+        disabled: () => !!runtime.drive()?.READONLY,
       },
       {
         caption: "Delete",
@@ -380,6 +392,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
           runtime.selection.set([runtimePath]);
           runtime.deleteSelected();
         },
+        disabled: () => !!runtime.drive()?.READONLY,
       },
       { sep: true },
       {

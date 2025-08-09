@@ -42,6 +42,7 @@ export class FileManagerRuntime extends AppProcess {
   loadSave: LoadSaveDialogData | undefined;
   saveName = Store<string>();
   virtual = Store<VirtualFileManagerLocation | undefined>();
+  drive = Store<FilesystemDrive | undefined>();
   directoryListing = Store<HTMLDivElement>();
   virtualLocations: Record<string, VirtualFileManagerLocation> = {
     my_arcos: {
@@ -236,6 +237,8 @@ export class FileManagerRuntime extends AppProcess {
 
         if (driveIdentifier) {
           const drive = this.fs.getDriveByLetter(driveIdentifier.slice(0, -1), false);
+
+          this.drive.set(drive);
 
           driveLabel = drive?.label || "";
         }

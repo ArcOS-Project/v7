@@ -2,11 +2,16 @@
   import type { FileManagerRuntime } from "../../runtime";
 
   const { process }: { process: FileManagerRuntime } = $props();
-  const { selection, contents } = process;
+  const { selection, contents, drive } = process;
 </script>
 
 <div class="portion">
-  <button class="lucide icon-upload" title="Upload files..." aria-label="Upload..." onclick={() => process.uploadItems()}
+  <button
+    class="lucide icon-upload"
+    title="Upload files..."
+    aria-label="Upload..."
+    onclick={() => process.uploadItems()}
+    disabled={$drive?.READONLY}
   ></button>
   {#if !process.loadSave}
     <button

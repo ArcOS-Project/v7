@@ -46,12 +46,14 @@
           <div>
             <h1>{drive.data.driveLetter ? `${drive.data.label} (${drive.data.driveLetter}:)` : drive.data.label}</h1>
             <p class="fs">{drive.data.FILESYSTEM_LONG}</p>
-            <div class="usage">
-              <div class="bar">
-                <div class="inner" style="--w: {(100 / drive.quota.max) * drive.quota.used}%"></div>
+            {#if !drive.quota.unknown}
+              <div class="usage">
+                <div class="bar">
+                  <div class="inner" style="--w: {(100 / drive.quota.max) * drive.quota.used}%"></div>
+                </div>
+                <p class="percent">{((100 / drive.quota.max) * drive.quota.used).toFixed(0)}%</p>
               </div>
-              <p class="percent">{((100 / drive.quota.max) * drive.quota.used).toFixed(0)}%</p>
-            </div>
+            {/if}
           </div>
         </button>
       {/each}
