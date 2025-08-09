@@ -9,18 +9,19 @@ export class ZIPDrive extends FilesystemDrive {
   private _buffer: JSZip | undefined;
   private _path: string;
   override REMOVABLE = true;
+  public READONLY: boolean = true;
   public IDENTIFIES_AS: string = "zip";
   public FILESYSTEM_SHORT: string = "ZipFS";
   public FILESYSTEM_LONG: string = "ZIP Filesystem";
   protected override CAPABILITIES: Record<DriveCapabilities, boolean> = {
     readDir: true,
-    makeDir: true,
+    makeDir: false,
     readFile: true,
-    writeFile: true,
+    writeFile: false,
     tree: true,
-    copyItem: true,
-    moveItem: true,
-    deleteItem: true,
+    copyItem: false,
+    moveItem: false,
+    deleteItem: false,
     direct: false,
     quota: false,
     bulk: false,
@@ -122,31 +123,15 @@ export class ZIPDrive extends FilesystemDrive {
   }
 
   async writeFile(path: string, data: Blob, onProgress?: FilesystemProgressCallback): Promise<boolean> {
-    if (!path || !data) return false;
-
-    this._buffer?.file(path, data);
-
-    await this._sync(onProgress);
-
-    return true;
+    return false;
   }
 
   async createDirectory(path: string): Promise<boolean> {
-    if (!path) return false;
-
-    this._buffer?.folder(path);
-
-    return true;
+    return false;
   }
 
   async deleteItem(path: string): Promise<boolean> {
-    if (!path) return false;
-
-    this._buffer?.remove(path);
-
-    await this._sync();
-
-    return true;
+    return false;
   }
 
   async tree(path: string): Promise<RecursiveDirectoryReadReturn | undefined> {
@@ -177,25 +162,11 @@ export class ZIPDrive extends FilesystemDrive {
   }
 
   async copyItem(source: string, destination: string): Promise<boolean> {
-    const sourceContents = await this.readFile(source);
-
-    if (!sourceContents) return false;
-
-    this._buffer?.file(destination, sourceContents);
-
-    await this._sync();
-
-    return true;
+    return false;
   }
 
   async moveItem(source: string, destination: string): Promise<boolean> {
-    this._buffer?.file(destination, await this._buffer.file(source)?.async("arraybuffer")!);
-
-    this._buffer?.remove(source);
-
-    await this._sync();
-
-    return true;
+    return false;
   }
 
   async _sync(progress?: FilesystemProgressCallback) {
