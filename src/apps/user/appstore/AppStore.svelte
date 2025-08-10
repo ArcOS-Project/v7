@@ -53,7 +53,7 @@
 
       <button
         class="suggested"
-        onclick={() => process.userDaemon?.spawnApp("systemSettings", +process.env.get("shell_pid"), "security")}
+        onclick={() => process.userDaemon?.spawnApp("systemSettings", +process.env.get("shell_pid"), "apps")}
       >
         Take me there
       </button>
