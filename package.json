@@ -1,7 +1,7 @@
 {
   "name": "waveos",
   "private": true,
-  "version": "7.0.4",
+  "version": "7.0.5",
   "type": "module",
   "scripts": {
     "dev": "git rev-parse --short HEAD > ./public/build && vite",
