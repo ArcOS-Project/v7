@@ -5,7 +5,7 @@
   bottom: 70px;
   left: 10px;
   background-color: var(--glass-bg);
-  border-radius: 10px;
+  border-radius: 15px;
   border: var(--border);
   backdrop-filter: blur(var(--blur));
   padding: 10px;

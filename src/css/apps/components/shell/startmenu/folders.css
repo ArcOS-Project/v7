@@ -32,6 +32,15 @@ div.shell div.startmenu div.top div.folders button img {
   height: 24px;
 }
 
+div.shell div.startmenu div.top div.folders button span {
+  display: block;
+  width: 0;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 div.shell div.startmenu div.top div.folders {
   width: 170px;
   background-color: var(--button-glass-bg);
