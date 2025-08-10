@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { BRBLACK, BRBLUE, BRGREEN, RESET } from "../store";
+import type { FilesystemDrive } from "$ts/fs/drive";
 
 export class DirCommand extends TerminalProcess {
   public static keyword = "dir";
@@ -18,8 +19,15 @@ export class DirCommand extends TerminalProcess {
     const dir = argv.join(" ") || "";
 
     try {
+      let drive: FilesystemDrive | undefined;
+      try {
+        drive = dir ? this.fs.getDriveByPath(dir) : term.drive;
+      } catch {
+        drive = term.drive;
+      }
+
       const contents = await term.readDir(dir);
-      const quota = await term.drive?.quota();
+      const quota = await drive?.quota();
 
       if (!contents || !quota) {
         throw "";
@@ -29,7 +37,7 @@ export class DirCommand extends TerminalProcess {
       const SIZELEN = 12;
 
       term.rl?.println(
-        `\n Reading drive ${term.drive?.label}\n Drive UUID is ${term.drive?.uuid}\n\n Directory of ${join(term.path, dir)}\n`
+        `\n Reading drive ${drive?.label}\n Drive UUID is ${drive?.uuid}\n\n Directory of ${join(term.path, dir)}\n`
       );
 
       for (const dir of contents.dirs) {

@@ -17,6 +17,7 @@ import Cookies from "js-cookie";
 import { Terminal } from "xterm";
 import { ArcTerminal } from "..";
 import { Readline } from "../readline/readline";
+import { BRRED, RESET } from "../store";
 
 export class TerminalMode extends Process {
   userDaemon?: UserDaemon;
@@ -37,8 +38,7 @@ export class TerminalMode extends Process {
       allowProposedApi: true,
       allowTransparency: true,
       cursorStyle: "bar",
-      fontSize: 13,
-      fontFamily: "Source Code Pro",
+      fontSize: 14,
       theme: {
         brightRed: "#ff7e7e",
         red: "#ff7e7e",
@@ -53,7 +53,7 @@ export class TerminalMode extends Process {
         brightMagenta: "#d597ff",
         magenta: "#d597ff",
       },
-      scrollback: -1,
+      scrollback: 999999,
     });
 
     const fitAddon = new FitAddon();
@@ -96,66 +96,86 @@ export class TerminalMode extends Process {
     return await this.loginPrompt();
   }
 
-  async startDaemon(token: string, username: string, info?: UserInfo) {
-    const userDaemon = await this.handler.spawn<UserDaemon>(UserDaemon, undefined, this.kernel.initPid, token, username, info);
+  async startDaemon(token: string, username: string): Promise<boolean> {
+    try {
+      const userDaemon = await this.handler.spawn<UserDaemon>(UserDaemon, undefined, this.kernel.initPid, token, username);
 
-    this.rl?.println("Starting daemon");
+      this.rl?.println("Starting daemon");
 
-    if (!userDaemon) {
-      this.rl?.println("Failed to start user daemon");
-      return;
-    }
-
-    // this.rl?.println("Saving token");
-    this.saveToken(userDaemon);
-
-    if (info?.hasTotp && info.restricted) {
-      const unlocked = await this.askForTotp(token);
-
-      if (!unlocked) {
-        this.rl?.println("2FA code invalid!");
-        await userDaemon.discontinueToken();
-        await userDaemon.killSelf();
-        this.resetCookies();
-        this.loginPrompt();
+      if (!userDaemon) {
+        this.rl?.println("Failed to start user daemon");
+        return false;
       }
+
+      this.saveToken(userDaemon);
+
+      const userInfo = await userDaemon.getUserInfo();
+
+      if (!userInfo) {
+        this.rl?.println("Failed to request user info");
+        return false;
+      }
+
+      if (userInfo.hasTotp && userInfo.restricted) {
+        const unlocked = await this.askForTotp(token);
+
+        if (!unlocked) {
+          this.rl?.println("2FA code invalid!");
+          await userDaemon.discontinueToken();
+          await userDaemon.killSelf();
+          return false;
+        }
+      }
+
+      this.rl?.println("Starting filesystem");
+      await userDaemon.startFilesystemSupplier();
+
+      this.rl?.println("Starting synchronization");
+      await userDaemon.startPreferencesSync();
+
+      this.rl?.println("Notifying login activity");
+      await userDaemon.logActivity("login");
+
+      this.rl?.println("Starting service host");
+      await userDaemon.startServiceHost();
+
+      this.rl?.println("Connecting global dispatch");
+      await userDaemon.activateGlobalDispatch();
+
+      this.rl?.println("Starting drive notifier watcher");
+      userDaemon.startDriveNotifierWatcher();
+
+      this.rl?.println("Starting share management");
+      await userDaemon.startShareManager();
+
+      userDaemon.startApplicationStorage();
+
+      if (userDaemon.userInfo.admin) {
+        this.rl?.println("Activating admin bootstrapper");
+        await userDaemon.activateAdminBootstrapper();
+      }
+
+      this.rl?.println("Starting status refresh");
+      await userDaemon.startSystemStatusRefresh();
+
+      this.rl?.println("Refreshing app storage");
+
+      this.systemDispatch.dispatch("app-store-refresh");
+      this.rl?.println("\nUser daemon is ready\n");
+
+      this.env.set("currentuser", username);
+      this.env.set("shell_pid", undefined);
+
+      this.arcTerm = await this.handler.spawn<ArcTerminal>(ArcTerminal, undefined, this.pid, this.term);
+      return true;
+    } catch (e) {
+      const stack = e instanceof PromiseRejectionEvent ? e.reason.stack : e instanceof Error ? e.stack : "Unknown error";
+
+      this.rl?.println(`\n${BRRED}Failed to start User Daemon:\n\n${stack}${RESET}`);
+      this.rl?.println(`\nArcTerm Mode couldn't start, and ArcOS has been halted.\nTo try again, please reload the page.`);
+
+      return false;
     }
-
-    this.rl?.println("Starting filesystem");
-    await userDaemon.startFilesystemSupplier();
-
-    this.rl?.println("Starting synchronization");
-    await userDaemon.startPreferencesSync();
-
-    this.rl?.println("Notifying login activity");
-    await userDaemon.logActivity("login");
-
-    this.rl?.println("Starting service host");
-    await userDaemon.startServiceHost();
-
-    this.rl?.println("Connecting global dispatch");
-    await userDaemon.activateGlobalDispatch();
-
-    this.rl?.println("Starting drive notifier watcher");
-    userDaemon.startDriveNotifierWatcher();
-
-    this.rl?.println("Starting share management");
-    await userDaemon.startShareManager();
-
-    if (userDaemon.userInfo.admin) {
-      this.rl?.println("Activating admin bootstrapper");
-      await userDaemon.activateAdminBootstrapper();
-    }
-
-    this.rl?.println("Starting status refresh");
-    await userDaemon.startSystemStatusRefresh();
-
-    this.rl?.println("\nUser daemon is ready\n");
-
-    this.env.set("currentuser", username);
-    this.env.set("shell_pid", undefined);
-
-    this.arcTerm = await this.handler.spawn<ArcTerminal>(ArcTerminal, undefined, this.pid, this.term);
   }
 
   private async loadToken() {
@@ -174,7 +194,7 @@ export class TerminalMode extends Process {
       return false;
     }
 
-    await this.startDaemon(token, username, userInfo);
+    await this.startDaemon(token, username);
 
     return true;
   }

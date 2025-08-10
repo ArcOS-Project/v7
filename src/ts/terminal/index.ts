@@ -250,7 +250,7 @@ export class ArcTerminal extends Process {
   parseFlags(args: string): [Arguments, string] {
     if (this._disposed) return [{}, ""];
 
-    const regex = /(?:--(?<nl>[a-z\-]+)(?:="(?<vl>.*?)"|(?:=(?<vs>.*?)(?: |$))|)|-(?<ns>[a-zA-Z]))/gm; //--name=?value
+    const regex = /(?: --(?<nl>[a-z\-]+)(?:="(?<vl>.*?)"|(?:=(?<vs>.*?)(?: |$))|)| -(?<ns>[a-zA-Z]))/gm; //--name=?value
     const matches: RegExpMatchArray[] = [];
 
     let match: RegExpExecArray | null;
