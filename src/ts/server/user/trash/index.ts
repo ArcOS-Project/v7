@@ -1,5 +1,5 @@
 import { arrayToText, textToBlob } from "$ts/fs/convert";
-import { getItemNameFromPath, join } from "$ts/fs/util";
+import { getItemNameFromPath, getParentDirectory, join } from "$ts/fs/util";
 import { FolderIcon } from "$ts/images/filesystem";
 import { DefaultMimeIcon } from "$ts/images/mime";
 import type { ProcessHandler } from "$ts/process/handler";
@@ -74,6 +74,8 @@ export class TrashCanService extends BaseService {
 
     await this.fs.moveItem(path, `${deletedPath}/${name}`, dispatch);
 
+    this.systemDispatch.dispatch("fs-flush-folder", getParentDirectory(path));
+
     return node;
   }
 
@@ -83,6 +85,8 @@ export class TrashCanService extends BaseService {
     if (!index) return false;
 
     await this.fs.moveItem(index.deletedPath, index.originalPath, false);
+
+    this.systemDispatch.dispatch("fs-flush-folder", getParentDirectory(index.originalPath));
 
     this.IndexBuffer.update((v) => {
       delete v[uuid];
