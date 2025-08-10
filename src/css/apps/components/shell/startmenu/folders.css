@@ -39,6 +39,7 @@ div.shell div.startmenu div.top div.folders button span {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-align: left;
 }
 
 div.shell div.startmenu div.top div.folders {
