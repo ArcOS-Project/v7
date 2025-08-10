@@ -12,3 +12,7 @@
   opacity: 0.5;
   margin-bottom: 15px;
 }
+
+#BugHunt > div.body > div.container > div.report-content code.block {
+  white-space: pre-wrap;
+}

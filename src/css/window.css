@@ -158,3 +158,8 @@ div.window:not(.core).resizing {
 div.window:not(.core).ummaximizing {
   transition: all 0.2s !important;
 }
+
+#SystemShortcutsProc,
+#ArcFindProc {
+  display: none;
+}

@@ -5,8 +5,17 @@
 }
 
 #initialSetupWizard * {
-  --accent: #ff6e54;
-  --accent-light: #ff6e54;
+  --accent: #ff6e54 !important;
+  --accent-transparent: #ff6e5444 !important;
+  --accent-light: #ff7c65 !important;
+  --accent-lighter: #ff846d !important;
+  --accent-dark: #550d00 !important;
+  --accent-darkest: #330800 !important;
+  --accent-light-transparent: #ff7c6577 !important;
+  --accent-light-invert: #00839a !important;
+  --accent-suggested-start: #ff6e54 !important;
+  --accent-suggested-end: #ff5132 !important;
+  --accent-suggested-fg: black !important;
 }
 
 #initialSetupWizard::before {

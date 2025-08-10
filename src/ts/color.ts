@@ -47,3 +47,11 @@ export function invertColor(hex: string) {
 
   return `#${(Number(`0x1${hex}`) ^ 0xffffff).toString(16).substring(1).toUpperCase()}`;
 }
+export function bestForeground(bgColor: string) {
+  const color1 = colorsea(`#${bgColor.replace("#", "")}`);
+  const color2 = colorsea("#FFFFFF");
+
+  const difference = color1.deltaE(color2, "CMC");
+
+  return difference > 40 ? "white" : "black";
+}

@@ -52,12 +52,18 @@ div.window div.body button:not(.reset):not(:disabled):active {
 }
 
 div.window div.body button:not(.reset).suggested {
-  background-color: var(--accent-light) !important;
-  color: var(--accent-darkest);
+  /* background-color: var(--accent-light) !important; */
+  background: linear-gradient(to bottom, var(--accent-suggested-start) 0%, var(--accent-suggested-end) 100%);
+  color: var(--accent-suggested-fg) !important;
   min-width: 80px;
   box-shadow: 0 1px 2px 1px #0000001c;
   opacity: 1 !important;
   font-weight: bold;
+}
+
+.suggested-color {
+  background: linear-gradient(to bottom, var(--accent-suggested-start) 0%, var(--accent-suggested-end) 100%);
+  color: var(--accent-suggested-fg) !important;
 }
 
 div.window div.body button:not(.reset).suggested * {
