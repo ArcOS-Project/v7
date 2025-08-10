@@ -29,10 +29,12 @@ export function SupplementaryThirdPartyPropFunctions(
       }
       const filename = getItemNameFromPath(path);
       const contents = wrap(arrayToText((await fs.readFile(join(app.workingDirectory!, path)))!));
-      await Backend.post(`/tpa/${app.id}/${filename}`, textToBlob(contents), {
+      await Backend.post(`/tpa/v2/${daemon.userInfo!._id}/${app.id}/${filename}`, textToBlob(contents), {
         headers: { Authorization: `Bearer ${daemon.token}` },
       });
-      const dataUrl = `${import.meta.env.DW_SERVER_URL}/tpa/new/${Date.now()}/${app.id}@${filename}${authcode()}`;
+      const dataUrl = `${import.meta.env.DW_SERVER_URL}/tpa/v3/${daemon.userInfo!._id}/${Date.now()}/${
+        app.id
+      }@${filename}${authcode()}`;
 
       try {
         const loaded = await import(/* @vite-ignore */ dataUrl);

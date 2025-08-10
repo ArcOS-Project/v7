@@ -209,8 +209,7 @@ export class LoginAppRuntime extends AppProcess {
     this.loadingStatus.set("Starting share management");
     await userDaemon.startShareManager();
 
-    this.loadingStatus.set("Starting application storage");
-    const storage = await userDaemon.startApplicationStorage();
+    const storage = userDaemon.startApplicationStorage();
 
     if (userDaemon.userInfo.admin) {
       this.loadingStatus.set("Activating admin bootstrapper");
@@ -238,6 +237,7 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.checkForUpdates();
     userDaemon.serviceHost?.getService<ProtocolServiceProcess>("ProtoService")?.parseProtoParam();
     await userDaemon.checkForMissedMessages();
+    await userDaemon.updateAppShortcutsDir();
 
     userDaemon._blockLeaveInvocations = false;
   }

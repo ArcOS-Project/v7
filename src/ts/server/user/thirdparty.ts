@@ -34,6 +34,7 @@ import type { UserDaemon } from "./daemon";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
 import { DevelopmentEnvironment } from "$ts/devenv";
 import { __Console__ } from "$ts/console";
+import { HiddenUserPaths, SystemFolders, UserPathCaptions, UserPathIcons, UserPaths } from "./store";
 
 export function ThirdPartyProps(
   daemon: UserDaemon,
@@ -133,6 +134,11 @@ export function ThirdPartyProps(
       error: 2,
       critical: 3,
     },
+    UserPaths,
+    UserPathCaptions,
+    UserPathIcons,
+    SystemFolders,
+    HiddenUserPaths,
   };
 
   const supplementary = SupplementaryThirdPartyPropFunctions(daemon, daemon.fs, app, props, wrap, args, metaPath);

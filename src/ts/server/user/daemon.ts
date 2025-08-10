@@ -13,7 +13,7 @@ import { AppProcess } from "$ts/apps/process";
 import { ApplicationStorage } from "$ts/apps/storage";
 import { AdminApps, BuiltinApps } from "$ts/apps/store";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
+import { bestForeground, darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
 import { StoreItemIcon } from "$ts/distrib/util";
@@ -105,7 +105,7 @@ export class UserDaemon extends Process {
   private firstSyncDone = false;
   public safeMode = false;
   public fileHandlers: Record<string, FileHandler> = DefaultFileHandlers(this);
-  override _criticalProcess: boolean = false;
+  override _criticalProcess: boolean = true;
   public mountedDrives: string[] = [];
   public server: ServerManager;
   public syncLock = false;
@@ -139,7 +139,7 @@ export class UserDaemon extends Process {
     }
   }
 
-  async startApplicationStorage() {
+  startApplicationStorage() {
     const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
 
     appStore?.loadOrigin("builtin", () => BuiltinApps);
@@ -239,6 +239,9 @@ export class UserDaemon extends Process {
     --accent-darkest: ${darkenColor(accent, 85)} !important;
     --accent-light-transparent: ${lightenColor(accent)}77 !important;
     --accent-light-invert: ${invertColor(lightenColor(accent))} !important;
+    --accent-suggested-start: #${accent} !important;
+    --accent-suggested-end: ${darkenColor(accent, 10)} !important;
+    --accent-suggested-fg: ${bestForeground(accent)} !important;
     --wallpaper: url('${this.Wallpaper()?.url || Wallpapers.img0.url}');
     --user-font: "${this.preferences().shell.visuals.userFont || ""}"`;
   }
@@ -984,12 +987,18 @@ export class UserDaemon extends Process {
 
     await this.handler.waitForAvailable();
 
+    const pid = parentPid || +this.env.get("shell_pid");
+
+    if (!pid) {
+      this.Log(`Spawning overlay app '${app.id}' as normal app: no suitable parent process`, LogLevel.warning);
+    }
+
     return await this.handler.spawn<T>(
       app.assets.runtime,
       renderTarget,
-      parentPid || this.pid,
+      pid || this.pid,
       {
-        data: { ...app, overlay: true },
+        data: { ...app, overlay: !!pid },
         id: app.id,
         desktop: renderTarget ? renderTarget.id : undefined,
       },
@@ -1091,10 +1100,12 @@ export class UserDaemon extends Process {
       );
       const props = ThirdPartyProps(this, args, app, wrap, metaPath);
       const js = wrap(contents);
-      await Backend.post(`/tpa/${app.id}/${filename}`, textToBlob(js), {
+      await Backend.post(`/tpa/v2/${this.userInfo!._id}/${app.id}/${filename}`, textToBlob(js), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
-      const dataUrl = `${import.meta.env.DW_SERVER_URL}/tpa/new/${Date.now()}/${app.id}@${filename}${authcode()}`;
+      const dataUrl = `${import.meta.env.DW_SERVER_URL}/tpa/v3/${this.userInfo!._id}/${Date.now()}/${
+        app.id
+      }@${filename}${authcode()}`;
       const code = await import(/* @vite-ignore */ dataUrl);
 
       if (!code.default || !(code.default instanceof Function)) throw new Error("Expected a default function");
@@ -1532,6 +1543,8 @@ export class UserDaemon extends Process {
 
     if (!workspaces.desktops.length) {
       this.createWorkspace("Default");
+      this.createWorkspace();
+      this.createWorkspace();
       return this.getCurrentDesktop();
     }
 
@@ -2866,5 +2879,29 @@ The information provided in this report is subject for review by me or another A
     }
 
     await this.fs.writeFile(migrationPath, textToBlob(`${Date.now()}`));
+  }
+
+  async updateAppShortcutsDir() {
+    const contents = await this.fs.readDir(UserPaths.AppShortcuts);
+    const storage = this.serviceHost?.getService<ApplicationStorage>("AppStorage")?.buffer();
+
+    if (!storage || !contents) return;
+
+    for (const app of storage) {
+      const existing = contents?.files.filter((f) => f.name === `${app.id}.arclnk`)[0];
+
+      if (existing) continue;
+
+      this.createShortcut(
+        {
+          name: app.id,
+          target: app.id,
+          type: "app",
+          icon: iconIdFromPath(app.metadata.icon),
+        },
+        join(UserPaths.AppShortcuts, `${app.id}.arclnk`)
+      );
+      await Sleep(50);
+    }
   }
 }
