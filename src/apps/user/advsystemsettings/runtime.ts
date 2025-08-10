@@ -10,10 +10,12 @@ import type { Unsubscriber } from "svelte/store";
 import DispatchClients from "./AdvancedSystemSettings/DispatchClients.svelte";
 import Recycling from "./AdvancedSystemSettings/Recycling.svelte";
 import Startup from "./AdvancedSystemSettings/Startup.svelte";
+import Main from "./AdvancedSystemSettings/Main.svelte";
 
 export class AdvSysSetRuntime extends AppProcess {
-  public currentTab = Store<string>("General");
+  public currentTab = Store<string>("Main");
   public tabs: Record<string, Component> = {
+    Main: Main as any,
     Recycling: Recycling as any,
     "Startup Items": Startup as any,
     "Dispatch Clients": DispatchClients as any,
@@ -26,8 +28,10 @@ export class AdvSysSetRuntime extends AppProcess {
   preferencesSub?: Unsubscriber;
   bufferSub?: Unsubscriber;
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
+  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, tab?: string) {
     super(handler, pid, parentPid, app);
+
+    if (tab && this.tabs[tab]) this.currentTab.set(tab);
   }
 
   async start() {

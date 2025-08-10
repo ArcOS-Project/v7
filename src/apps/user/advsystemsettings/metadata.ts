@@ -33,6 +33,7 @@ export const AdvSystemSettings: App = {
     component: AdvancedSystemSettings as any,
   },
   glass: true,
+  hidden: true,
   vital: true,
   id: "AdvSystemSettings",
 };

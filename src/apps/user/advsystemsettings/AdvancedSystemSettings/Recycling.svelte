@@ -3,6 +3,7 @@
   import { TrashIcon } from "$ts/images/general";
   import { TrashCanService } from "$ts/server/user/trash";
   import { Plural } from "$ts/util";
+  import { onMount } from "svelte";
   import type { AdvSysSetRuntime } from "../runtime";
 
   const { process }: { process: AdvSysSetRuntime } = $props();
@@ -10,6 +11,11 @@
 
   const trash = process.userDaemon?.serviceHost?.getService<TrashCanService>("TrashSvc");
   let size = $state(Object.entries(trash?.IndexBuffer() || {}).length);
+
+  onMount(() => {
+    if (typeof $preferencesBuffer.globalSettings.disableTrashCan !== "boolean")
+      $preferencesBuffer.globalSettings.disableTrashCan = false;
+  });
 
   async function emptyBin() {
     MessageBox(

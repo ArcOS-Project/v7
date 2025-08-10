@@ -1,0 +1,45 @@
+#AdvSystemSettings > div.body div.main {
+  display: flex;
+  align-items: start;
+  justify-content: start;
+  gap: 0;
+}
+
+#AdvSystemSettings > div.body div.main div.left {
+  display: flex;
+  flex-direction: column;
+  width: 140px;
+  height: 100%;
+  justify-content: space-between;
+  text-align: left;
+}
+
+#AdvSystemSettings > div.body div.main img {
+  height: 100px;
+  margin: 20px 0;
+  margin-right: 10px;
+}
+
+#AdvSystemSettings > div.body div.main li {
+  list-style: none;
+}
+
+#AdvSystemSettings > div.body div.main ul {
+  padding-left: 20px;
+}
+
+#AdvSystemSettings > div.body div.main h1 {
+  margin-bottom: 5px;
+}
+
+#AdvSystemSettings > div.body div.main section {
+  padding: 10px;
+  border: var(--win-border);
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+#AdvSystemSettings > div.body div.main div.info {
+  width: 0;
+  flex-grow: 1;
+}
