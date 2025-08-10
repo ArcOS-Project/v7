@@ -15,7 +15,7 @@ import { prematurePanic } from "./premature";
 let CurrentKernel: WaveKernel | undefined = undefined;
 
 export class WaveKernel {
-  private modules: string[] = [];
+  public modules: string[] = [];
   private PANICKED = false;
   public Logs: ReadableStore<LogItem[]> = Store([]);
   public startMs: number;

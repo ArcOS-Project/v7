@@ -463,6 +463,13 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         icon: "trash",
         action: () => {},
       },
+      {
+        caption: "Properties...",
+        icon: "wrench",
+        action: () => {
+          runtime.userDaemon?.spawnApp("AdvSystemSettings", +runtime.env.get("shell_pid"), "Recycling");
+        },
+      },
     ],
   };
 }
