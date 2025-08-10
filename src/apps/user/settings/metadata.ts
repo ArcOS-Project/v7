@@ -12,8 +12,8 @@ export const SystemSettings: App = {
     icon: SettingsIcon,
     appGroup: "systemTools",
   },
-  size: { w: 730, h: 520 },
-  minSize: { w: 730, h: 520 },
+  size: { w: 730, h: 560 },
+  minSize: { w: 730, h: 560 },
   maxSize: { w: 860, h: 650 },
   position: { centered: true },
   state: {
