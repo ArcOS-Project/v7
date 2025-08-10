@@ -23,9 +23,10 @@ import {
 import { Process } from "$ts/process/instance";
 import type { App } from "$types/app";
 import type { FileHandler } from "$types/fs";
-import type { ThemeStore } from "$types/theme";
+import type { ThemeStore, UserTheme } from "$types/theme";
 import type { UserDaemon } from "./daemon";
 import installArcPkg from "./handlers/arcpkg";
+import applyArcTheme from "./handlers/arctheme";
 import installTpaFile from "./handlers/installtpa";
 import mountZipFile from "./handlers/mountzip";
 import runTpaFile from "./handlers/runtpa";
@@ -258,6 +259,23 @@ export const DefaultMimeIcons: Record<string, string[]> = {
   [MessagingIcon]: [".msg"],
 };
 
+export const BlankUserTheme: UserTheme = {
+  author: "",
+  version: "",
+  name: "",
+  taskbarLabels: false,
+  taskbarDocked: false,
+  taskbarColored: false,
+  noAnimations: false,
+  sharpCorners: false,
+  compactContext: false,
+  noGlass: false,
+  desktopWallpaper: "",
+  desktopTheme: "",
+  desktopAccent: "",
+  loginBackground: "",
+};
+
 export function DefaultFileHandlers(daemon: UserDaemon): Record<string, FileHandler> {
   return {
     runTpaFile: runTpaFile(daemon),
@@ -265,6 +283,7 @@ export function DefaultFileHandlers(daemon: UserDaemon): Record<string, FileHand
     runTpaBundle: runTpaBundle(daemon),
     installArcPkg: installArcPkg(daemon),
     mountZipFile: mountZipFile(daemon),
+    applyArcTheme: applyArcTheme(daemon),
   };
 }
 
