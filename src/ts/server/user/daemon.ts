@@ -1202,7 +1202,7 @@ export class UserDaemon extends Process {
     const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
     const app = appStore?.buffer().filter((a) => a.id === appId)[0];
 
-    if (app && this.isVital(app)) return false;
+    if (app && this.isVital(app) && !noSafeMode) return false;
 
     return (disabledApps || []).includes(appId) || !!(this.safeMode && noSafeMode);
   }
