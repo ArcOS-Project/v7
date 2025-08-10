@@ -117,17 +117,7 @@ export function ThirdPartyProps(
     CustomTitlebar,
     contextProps,
     dayjs,
-    console:
-      daemon.serviceHost?.getService<DevelopmentEnvironment>("DevEnvironment")?.meta?.metadata.appId !== app.id &&
-      !workingDirectory?.startsWith("V:")
-        ? {
-            warn: (..._: any[]) => {},
-            log: (..._: any[]) => {},
-            info: (..._: any[]) => {},
-            debug: (..._: any[]) => {},
-            error: (..._: any[]) => {},
-          }
-        : __Console__, // Enable the console global in the development environment ONLY
+    console: __Console__, // Enable the console global in the development environment ONLY
     LogLevel: {
       info: 0,
       warning: 1,
