@@ -7,7 +7,6 @@ import {
   type DirectoryReadReturn,
   type FilesystemProgress,
   type FilesystemProgressCallback,
-  type RecursiveDirectory,
   type RecursiveDirectoryReadReturn,
   type UploadReturn,
 } from "$types/fs";
@@ -252,6 +251,8 @@ export class Filesystem extends KernelModule {
 
     if (sourceId !== destinationId) {
       const sourceDirectory = await this.isDirectory(source);
+
+      console.log(sourceDirectory);
 
       if (sourceDirectory) {
         const tree = await this.tree(source);

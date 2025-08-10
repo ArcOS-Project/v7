@@ -71,6 +71,8 @@ export class ZIPDrive extends FilesystemDrive {
       totalSize: 0,
     };
 
+    if (await this.readFile(path)) return undefined;
+
     const normalizedPath = path ? (path.endsWith("/") ? path : path + "/") : "";
     const seenDirs = new Set<string>();
 
