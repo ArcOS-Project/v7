@@ -19,6 +19,16 @@ export default defineConfig({
       $lib: resolve(__dirname, "./src/lib"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes("node_modules")) return "vendor";
+        },
+      },
+    },
+    assetsInlineLimit: 1,
+  },
 });
 function GenerateGlobalTypesPlugin(): Plugin {
   return {
