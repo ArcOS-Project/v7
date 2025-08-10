@@ -19,7 +19,7 @@ export function handleGlobalErrors() {
     e.stopPropagation();
 
     if (e instanceof ErrorEvent) {
-      if (checkIndevTpa(e.error.stack, e.error)) {
+      if (interceptTpaErrors(e.error.stack, e.error)) {
         LOCKED = false;
 
         return false;
@@ -27,7 +27,7 @@ export function handleGlobalErrors() {
 
       __Console__.warn(e.error);
     } else if (e instanceof PromiseRejectionEvent) {
-      if (checkIndevTpa(e.reason.stack, e.reason)) {
+      if (interceptTpaErrors(e.reason.stack, e.reason)) {
         LOCKED = false;
 
         return false;
@@ -62,16 +62,14 @@ export function handleGlobalErrors() {
   });
 }
 
-export function checkIndevTpa(stack: string, e: Error): boolean {
+export function interceptTpaErrors(stack: string, e: Error): boolean {
   const parsed = stackTraceParser.parse(stack);
-  const isTpa = !!parsed[0]?.file?.includes(`localhost:3128`) || !!parsed[0]?.file?.includes(`/tpa/new/`);
+  const isTpa = !!parsed[0]?.file?.includes(`localhost:3128`) || !!parsed[0]?.file?.includes(`/tpa/`);
   const handler = WaveKernel?.get()?.getModule<ProcessHandler>?.("stack", true);
   const renderer = handler?.renderer;
 
-  console.log();
-
   if (isTpa && renderer && renderer.lastInteract && parsed[0]?.file?.includes(`/${renderer.lastInteract.app.id}@`)) {
-    Log("checkIndevTpa", `Not crashing for ${e instanceof PromiseRejectionEvent ? e.reason : e}: source is a TPA`);
+    Log("interceptTpaErrors", `Not crashing for ${e instanceof PromiseRejectionEvent ? e.reason : e}: source is a TPA`);
     handler.BUSY = false;
     handler.dispatch.dispatch("stack-not-busy");
     renderer.notifyCrash(renderer.lastInteract.app.data, e, renderer.lastInteract);

@@ -2,6 +2,7 @@ import { AppProcess } from "$ts/apps/process";
 import { __Console__ } from "$ts/console";
 import { SystemDispatch } from "$ts/dispatch";
 import { Environment } from "$ts/kernel/env";
+import type { App } from "$types/app";
 import type { ProcessKillResult } from "$types/process";
 import { AppRenderer } from "../apps/renderer";
 import { WaveKernel } from "../kernel";
@@ -70,36 +71,50 @@ export class ProcessHandler extends KernelModule {
 
     const pid = this.getPid();
     __Console__.time(`process spawn: ${pid}`);
-    const proc = new (process as any)(this, pid, parentPid, ...args) as Process;
 
-    Log("ProcessHandler.spawn", `Spawning new ${proc.constructor.name} with PID ${pid}`);
+    try {
+      const proc = new (process as any)(this, pid, parentPid, ...args) as Process;
 
-    if (proc.__start) {
-      this.makeNotBusy(`Calling __start of ${pid}`);
-      const result = await proc.__start();
-      this.makeBusy(`Done calling __start of ${pid}`);
+      Log("ProcessHandler.spawn", `Spawning new ${proc.constructor.name} with PID ${pid}`);
 
-      if (result === false) {
-        this.makeNotBusy(`Stopped spawn of ${pid}: __start gave false`);
+      if (proc.__start) {
+        this.makeNotBusy(`Calling __start of ${pid}`);
+        const result = await proc.__start();
+        this.makeBusy(`Done calling __start of ${pid}`);
 
-        __Console__.timeEnd(`process spawn: ${pid}`);
-        return;
+        if (result === false) {
+          this.makeNotBusy(`Stopped spawn of ${pid}: __start gave false`);
+
+          __Console__.timeEnd(`process spawn: ${pid}`);
+          return;
+        }
       }
+
+      proc.name ||= proc.constructor.name;
+
+      const store = this.store.get();
+
+      store.set(pid, proc);
+
+      this.store.set(store);
+
+      if (this.renderer && proc instanceof AppProcess) this.renderer.render(proc, renderTarget);
+
+      this.makeNotBusy(`Stopped spawn of ${pid}: done`);
+      __Console__.timeEnd(`process spawn: ${pid}`);
+      return proc as T;
+    } catch (e) {
+      console.log(args);
+      if (args[0]?.data?.id && args[0]?.data?.id === args[0]?.id) {
+        this.renderer?.notifyCrash(args[0]?.data as App, e as Error);
+        console.log("it's an app proc");
+      }
+      this.makeNotBusy(`Stopped spawn of ${pid}: uncaught error during construct`);
+      __Console__.warn(e);
+      __Console__.timeEnd(`process spawn: ${pid}`);
+
+      return undefined;
     }
-
-    proc.name ||= proc.constructor.name;
-
-    const store = this.store.get();
-
-    store.set(pid, proc);
-
-    this.store.set(store);
-
-    if (this.renderer && proc instanceof AppProcess) this.renderer.render(proc, renderTarget);
-
-    this.makeNotBusy(`Stopped spawn of ${pid}: done`);
-    __Console__.timeEnd(`process spawn: ${pid}`);
-    return proc as T;
   }
 
   async kill(pid: number, force = false): Promise<ProcessKillResult> {

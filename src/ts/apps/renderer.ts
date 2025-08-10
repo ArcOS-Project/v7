@@ -15,6 +15,7 @@ import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
 import { BuiltinApps } from "./store";
 import { UUID } from "$ts/uuid";
+import * as stackTraceParser from "stacktrace-parser";
 
 export class AppRenderer extends Process {
   currentState: number[] = [];
@@ -651,7 +652,22 @@ export class AppRenderer extends Process {
     return result;
   }
 
-  notifyCrash(data: App, e: Error, process: AppProcess) {
+  async notifyCrash(data: App, e: Error, process?: AppProcess) {
+    const stack = e instanceof PromiseRejectionEvent ? e.reason.stack : e.stack;
+    const parsed = stackTraceParser.parse(stack);
+
+    for (const line of parsed) {
+      if (!line.file) continue;
+      const regex = new RegExp(
+        /http(s|)\:\/\/[a-zA-Z.\:0-9]+(\/tpa\/v3\/)(?<userId>[a-zA-Z0-9]+)\/(?<timestamp>[0-9]+)\/(?<appId>[A-Za-z0-9_-]+_[A-Za-z0-9_-]+)@(?<filename>[a-zA-Z0-9_-]+\.js)/gm
+      );
+      const parsedLine = regex.exec(line.file)?.groups;
+
+      console.log(parsedLine);
+    }
+
+    console.log(parsed);
+
     __Console__.warn(` - PID ${process?.pid} APPLICATION ERROR - `, e);
     const lines = [
       `<b><code>${data.id}::'${data.metadata.name}'</code> (PID ${
@@ -668,7 +684,8 @@ export class AppRenderer extends Process {
       )}</code></details>`,
     ];
 
-    MessageBox(
+    await this.handler.waitForAvailable();
+    await MessageBox(
       {
         title: `${data.metadata.name} - Application Error`,
         message: lines.join("<br><br>"),
