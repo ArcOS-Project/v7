@@ -2787,11 +2787,11 @@ The information provided in this report is subject for review by me or another A
   async checkForMissedMessages() {
     const service = this.serviceHost!.getService<MessagingInterface>("MessagingService")!;
     const archived = this.preferences().appPreferences?.Messages?.archive || [];
-    const messages = (await service.getReceivedMessages()).filter((m) => !m.read && !archived.includes(m._id));
+    const messages = (await service?.getReceivedMessages())?.filter((m) => !m.read && !archived.includes(m._id)) || [];
 
-    if (!messages.length) return;
+    if (!messages?.length) return;
 
-    if (messages.length === 1) {
+    if (messages?.length === 1) {
       const message = messages[0];
       this.sendNotification({
         className: "incoming-message",
