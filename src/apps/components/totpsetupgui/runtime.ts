@@ -6,8 +6,7 @@ import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
 export class TotpSetupGuiRuntime extends AppProcess {
-  public digits = Store<(number | undefined)[]>([undefined, undefined, undefined, undefined, undefined, undefined]);
-  public inputs = Store<HTMLInputElement[]>([]);
+  public code = Store<string>("");
   public url = Store<string>("");
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
@@ -27,9 +26,9 @@ export class TotpSetupGuiRuntime extends AppProcess {
   }
 
   validate() {
-    const digits = this.digits().map(Number);
+    const code = this.code();
 
-    for (const digit of digits) {
+    for (const digit of code) {
       if (Number.isNaN(digit) || digit === null || digit === undefined) {
         return false;
       }
@@ -41,7 +40,7 @@ export class TotpSetupGuiRuntime extends AppProcess {
   async activateTotp() {
     if (!this.validate()) return false;
 
-    const string = this.digits().map(Number).join("");
+    const string = this.code();
 
     if (string.length !== 6) return false;
 

@@ -3,49 +3,54 @@
   import { ErrorIcon } from "$ts/images/dialog";
   import { GoodStatusIcon } from "$ts/images/status";
   import QRCode from "@castlenine/svelte-qrcode";
+  import { onMount } from "svelte";
+  import Input from "../totpauthgui/TotpAuthGui/Input.svelte";
   import type { TotpSetupGuiRuntime } from "./runtime";
 
   const { process }: { process: TotpSetupGuiRuntime } = $props();
-  const { inputs, digits, url } = process;
-  const PATTERN = "[0-9]{1}";
+  const { code, url } = process;
+  let errored = $state(false);
+  let locked = $state(false);
 
-  function handleKeydown(e: KeyboardEvent, i: number) {
-    const target = e.target as HTMLInputElement;
-
-    if (!target.value && e.key === "Backspace") {
-      $inputs[i - 1]?.focus();
-      $inputs[i - 1]?.select();
-    }
-
-    setTimeout(() => {
-      if (target.value.length === 1) {
-        $inputs[i + 1]?.focus();
-        $inputs[i + 1]?.select();
-      }
+  onMount(() => {
+    code.subscribe((v) => {
+      if (v?.length !== 6) return;
 
       verify();
-    }, 10);
-  }
+    });
+  });
 
   async function verify() {
     if (!process.validate()) return;
+    if (locked) return;
+    locked = true;
 
     const activated = await process.activateTotp();
 
     if (!activated) {
+      errored = true;
       MessageBox(
         {
           title: "ArcOS Security",
           message:
             "The 2FA code you entered is incorrect! Please enter the code displayed in your authenticator app to enable two-factor authentication.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [
+            {
+              caption: "Okay",
+              action: () => {
+                errored = false;
+                locked = false;
+              },
+              suggested: true,
+            },
+          ],
           sound: "arcos.dialog.error",
           image: ErrorIcon,
         },
         process.parentPid,
         true,
       );
-      $digits = [undefined, undefined, undefined, undefined, undefined, undefined];
+      $code = "";
     } else {
       MessageBox(
         {
@@ -73,11 +78,11 @@
 <h1>Scan with an Authenticator app</h1>
 <p>Then enter the 2FA code you see on your device:</p>
 
-<div class="inputs">
-  {#each $digits as _, i}
-    <input type="text" pattern={PATTERN} bind:value={$digits[i]} bind:this={$inputs[i]} onkeydown={(e) => handleKeydown(e, i)} />
-  {/each}
-</div>
+{#if !errored}
+  <Input length={6} bind:code={$code} />
+{:else}
+  <div class="inputs"></div>
+{/if}
 
 <div class="buttons">
   <button onclick={() => process.closeWindow()}>Cancel</button>
