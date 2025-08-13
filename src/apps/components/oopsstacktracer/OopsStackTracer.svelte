@@ -44,11 +44,13 @@
         <p class="method" title={frame.methodName || ""} class:anonymous={!frame.methodName}>
           {frame.methodName || "(anonymous)"}
         </p>
-        <div class="location">
-          <span class="line">{frame.lineNumber}</span>
-          <span class="colon">:</span>
-          <span class="column">{frame.column}</span>
-        </div>
+        {#if frame.parsed}
+          <div class="location">
+            <span class="line">{frame.lineNumber}</span>
+            <span class="colon">:</span>
+            <span class="column">{frame.column}</span>
+          </div>
+        {/if}
       </div>
     {/each}
   {/if}

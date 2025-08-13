@@ -12,9 +12,9 @@ export const OopsStackTracerApp: App = {
     icon: ComponentIcon,
   },
   position: { centered: true },
-  size: { w: 500, h: 350 },
-  minSize: { w: 500, h: 350 },
-  maxSize: { w: 500, h: 350 },
+  size: { w: 500, h: 380 },
+  minSize: { w: 500, h: 380 },
+  maxSize: { w: 500, h: 380 },
   state: {
     minimized: false,
     maximized: false,
