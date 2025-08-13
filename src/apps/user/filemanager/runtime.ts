@@ -197,6 +197,7 @@ export class FileManagerRuntime extends AppProcess {
       this.path.set(path);
       this.showNotice.set(false);
       this.notice.set(undefined);
+      this.windowTitle.set(virtual.name);
 
       return;
     }
