@@ -1,0 +1,153 @@
+#OopsStackTracer > div.body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#OopsStackTracer > div.body div.process {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border: var(--win-border);
+  border-radius: 10px;
+  gap: 10px;
+}
+
+#OopsStackTracer > div.body div.process img {
+  width: 24px;
+  height: 24px;
+}
+
+#OopsStackTracer > div.body div.process p.name {
+  font-weight: bold;
+}
+
+#OopsStackTracer > div.body div.process p.pid {
+  opacity: 0.5;
+}
+
+#OopsStackTracer > div.body div.process p.path {
+  margin-left: auto;
+  opacity: 0.5;
+}
+
+#OopsStackTracer > div.body div.stack-trace {
+  height: 0;
+  flex-grow: 1;
+  padding: 15px;
+  border: var(--win-border);
+  border-radius: 10px;
+  margin-bottom: 5px;
+  overflow-y: scroll;
+}
+
+#OopsStackTracer > div.body div.stack-trace.original {
+  padding: 0;
+  overflow: hidden;
+}
+
+#OopsStackTracer > div.body div.stack-trace.original code {
+  overflow: scroll;
+  white-space: pre;
+  height: 100%;
+}
+
+#OopsStackTracer > div.body div.stack-trace hr {
+  margin: 10px 0;
+  border: none;
+  margin-top: 10px;
+}
+
+#OopsStackTracer > div.body div.stack-trace hr {
+  border-top: var(--button-glass-bg) 2px dotted;
+}
+
+#OopsStackTracer > div.body div.stack-trace hr:first-of-type {
+  border-top: var(--win-border);
+}
+
+#OopsStackTracer > div.body div.stack-frame {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+#OopsStackTracer > div.body div.stack-frame.first {
+  font-family: "Fira Code";
+  font-size: 12px;
+}
+
+#OopsStackTracer > div.body div.stack-frame img {
+  width: 16px;
+  height: 16px;
+}
+
+#OopsStackTracer > div.body div.stack-frame p.source {
+  width: 140px;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#OopsStackTracer > div.body div.stack-frame p.method {
+  font-family: "Fira Code";
+  font-size: 12px;
+  width: 0;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#OopsStackTracer > div.body div.stack-frame p.method.anonymous {
+  opacity: 0.5;
+}
+
+#OopsStackTracer > div.body div.stack-frame div.location {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 5px;
+  height: 16px;
+  background-color: var(--button-active-bg);
+  font-size: 12px;
+  border-radius: 5px;
+  margin-left: 20px;
+}
+
+#OopsStackTracer > div.body div.stack-frame div.location span.colon {
+  opacity: 0.5;
+}
+
+#OopsStackTracer > div.body div.actions {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 20px;
+}
+
+#OopsStackTracer > div.body div.no-trace {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+}
+
+#OopsStackTracer > div.body div.no-trace span.lucide {
+  font-size: 48px;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+#OopsStackTracer > div.body div.no-trace h1 {
+  margin-bottom: 5px;
+  font-size: 16px;
+}
+
+#OopsStackTracer > div.body div.no-trace p {
+  text-align: center;
+}
