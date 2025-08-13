@@ -1,8 +1,10 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { getItemNameFromPath } from "$ts/fs/util";
+import { arrayToText, textToBlob } from "$ts/fs/convert";
+import { getItemNameFromPath, join } from "$ts/fs/util";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { UploadIcon } from "$ts/images/general";
+import { tryJsonParse } from "$ts/json";
 import type { ProcessHandler } from "$ts/process/handler";
 import { UserPaths } from "$ts/server/user/store";
 import { Store } from "$ts/writable";
@@ -11,14 +13,18 @@ import type { DirectoryReadReturn } from "$types/fs";
 import { LogLevel } from "$types/logging";
 import type { ShortcutStore } from "$types/shortcut";
 import { WallpaperContextMenu } from "./context";
+import type { DesktopIcons } from "./types";
 
 export class WallpaperRuntime extends AppProcess {
+  CONFIG_PATH = join(UserPaths.System, "DesktopIcons.json");
   contents = Store<DirectoryReadReturn | undefined>();
   selected = Store<string>();
   shortcuts = Store<ShortcutStore>({});
   iconsElement = Store<HTMLDivElement>();
   orphaned = Store<string[]>([]);
+  loading = Store<boolean>(false);
   directory: string;
+  Configuration = Store<DesktopIcons>({});
 
   public contextMenu: AppContextMenu = WallpaperContextMenu(this);
 
@@ -26,7 +32,6 @@ export class WallpaperRuntime extends AppProcess {
     super(handler, pid, parentPid, app);
 
     this.directory = desktopDir || UserPaths.Desktop;
-    this.renderArgs = { desktopDir: this.directory };
     this.systemDispatch.subscribe<string>("fs-flush-folder", async (path) => {
       if (!path || this._disposed) return;
 
@@ -36,17 +41,31 @@ export class WallpaperRuntime extends AppProcess {
     });
   }
 
-  async render({ desktopDir }: { desktopDir: string }) {
+  async start() {
+    const migrated = await this.migrateDesktopIcons();
+    if (!migrated) await this.loadConfiguration();
+
+    let firstSub = false;
+
+    this.Configuration.subscribe((v) => {
+      if (!firstSub) {
+        firstSub = true;
+        return;
+      }
+      this.writeConfiguration(v);
+    });
+  }
+
+  async render() {
     this.closeIfSecondInstance();
 
     try {
-      await this.fs.createDirectory(desktopDir);
       await this.updateContents();
     } catch (e) {
       MessageBox(
         {
-          title: "Failed to create home directory",
-          message: "The desktop wasn't able to create the necessary desktop folder, which contains your desktop icons.",
+          title: "Failed to load the desktop",
+          message: "ArcOS wasn't able to load your desktop icons. Please restart to try again.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           image: ErrorIcon,
           sound: "arcos.dialog.error",
@@ -58,6 +77,7 @@ export class WallpaperRuntime extends AppProcess {
   }
 
   async updateContents() {
+    this.loading.set(true);
     this.Log("Refreshing desktop icons!");
 
     try {
@@ -71,6 +91,7 @@ export class WallpaperRuntime extends AppProcess {
     } catch {
       return;
     }
+    this.loading.set(false);
   }
 
   findAndDeleteOrphans(contents: DirectoryReadReturn | undefined) {
@@ -213,5 +234,44 @@ export class WallpaperRuntime extends AppProcess {
     }
 
     prog.mutDone(+1);
+  }
+
+  async loadConfiguration() {
+    const contents = await this.fs.readFile(this.CONFIG_PATH);
+    if (!contents) return await this.writeConfiguration({});
+
+    const json = tryJsonParse<DesktopIcons>(arrayToText(contents));
+    if (!json || typeof json === "string") return await this.writeConfiguration({});
+
+    this.Configuration.set(json);
+  }
+
+  async writeConfiguration(data: DesktopIcons) {
+    await this.fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(data, null, 2)));
+
+    return data;
+  }
+
+  // 7.0.5 -> 7.0.6+
+  // Migration of desktop icons from the preferences to a dedicated file in U:/System
+  async migrateDesktopIcons() {
+    const migrationPath = join(UserPaths.Migrations, "DeskIconMig-706.lock");
+    const pref = this.userPreferences().appPreferences.desktopIcons;
+    const migration = await this.fs.readFile(migrationPath);
+
+    if (pref && !migration) {
+      await this.writeConfiguration(pref);
+      this.Configuration.set(pref);
+
+      this.userPreferences.update((v) => {
+        delete v.appPreferences.desktopIcons;
+        return v;
+      });
+
+      await this.fs.writeFile(migrationPath, textToBlob(`${Date.now()}`));
+      return true;
+    }
+
+    return false;
   }
 }

@@ -203,6 +203,13 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
           },
         ],
       },
+      {
+        caption: "Refresh",
+        icon: "rotate-cw",
+        action: () => {
+          runtime.updateContents();
+        },
+      },
       { sep: true },
       {
         caption: "File manager",
