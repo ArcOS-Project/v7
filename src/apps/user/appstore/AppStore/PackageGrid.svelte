@@ -14,6 +14,7 @@
   }
 
   const { items, name, more, className, process }: Props = $props();
+  const { currentPage } = process;
 </script>
 
 <section class="package-grid">
@@ -40,7 +41,7 @@
             <span>{item.user?.displayName || item.user?.username}</span>
           </p>
         </div>
-        {#if item.verifiedVer === item.pkg.version}
+        {#if item.verifiedVer === item.pkg.version || $currentPage === "installed"}
           <PackageInstallAction pkg={item} {process} compact />
         {/if}
       </button>
