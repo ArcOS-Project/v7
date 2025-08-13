@@ -38,12 +38,10 @@
   let movingX = $state<number>();
   let movingY = $state<number>();
 
-  const { userPreferences, selected, orphaned } = process;
+  const { userPreferences, Configuration, selected, orphaned } = process;
 
   async function updatePos() {
-    if (!$userPreferences.appPreferences.desktopIcons) $userPreferences.appPreferences.desktopIcons = {};
-
-    const pos = $userPreferences.appPreferences.desktopIcons[`icon$${identifier}`] as {
+    const pos = $Configuration[`icon$${identifier}`] as {
       x: number;
       y: number;
     };
@@ -64,10 +62,8 @@
 
     const { x, y } = target.getBoundingClientRect();
 
-    if (!$userPreferences.appPreferences.desktopIcons) $userPreferences.appPreferences.desktopIcons = {};
-
-    if (!Object.values($userPreferences.appPreferences.desktopIcons).filter((pos) => pos.x === x && pos.y === y).length) {
-      $userPreferences.appPreferences.desktopIcons[`icon$${identifier}`] = {
+    if (!Object.values($Configuration).filter((pos) => pos.x === x && pos.y === y).length) {
+      $Configuration[`icon$${identifier}`] = {
         x,
         y,
       };
@@ -89,7 +85,7 @@
   }
 
   onMount(updatePos);
-  userPreferences.subscribe(updatePos);
+  Configuration.subscribe(updatePos);
 </script>
 
 <!-- svelte-ignore event_directive_deprecated -->
