@@ -75,7 +75,7 @@ div.window div.body button:not(.reset).suggested:disabled {
 }
 
 div.window div.body button:not(.reset).suggested:hover {
-  filter: brightness(1.3);
+  filter: brightness(1.2);
 }
 
 div.window div.body button:not(.reset).suggested:active {
