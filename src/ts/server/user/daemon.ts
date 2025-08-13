@@ -754,7 +754,6 @@ export class UserDaemon extends Process {
     if (this.serviceHost) this.serviceHost._holdRestart = true;
 
     await this.handler._killSubProceses(this.pid);
-    console.log("Done killing subprocesses");
     await this.kernel.state?.loadState("login", {
       type,
       userDaemon: this,

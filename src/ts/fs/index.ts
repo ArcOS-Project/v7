@@ -252,8 +252,6 @@ export class Filesystem extends KernelModule {
     if (sourceId !== destinationId) {
       const sourceDirectory = await this.isDirectory(source);
 
-      console.log(sourceDirectory);
-
       if (sourceDirectory) {
         const tree = await this.tree(source);
         const sourceName = getItemNameFromPath(source);

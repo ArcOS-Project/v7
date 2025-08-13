@@ -1,3 +1,4 @@
+import { __Console__ } from "$ts/console";
 import { WaveKernel } from "$ts/kernel";
 import { Environment } from "$ts/kernel/env";
 import axios from "axios";
@@ -24,7 +25,7 @@ Backend.interceptors.request.use(
     return config;
   },
   (error) => {
-    console.log(error);
+    __Console__.log(error);
     return false;
   }
 );

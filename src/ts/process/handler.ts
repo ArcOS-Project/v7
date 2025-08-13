@@ -104,10 +104,8 @@ export class ProcessHandler extends KernelModule {
       __Console__.timeEnd(`process spawn: ${pid}`);
       return proc as T;
     } catch (e) {
-      console.log(args);
       if (args[0]?.data?.id && args[0]?.data?.id === args[0]?.id) {
         this.renderer?.notifyCrash(args[0]?.data as App, e as Error);
-        console.log("it's an app proc");
       }
       this.makeNotBusy(`Stopped spawn of ${pid}: uncaught error during construct`);
       __Console__.warn(e);

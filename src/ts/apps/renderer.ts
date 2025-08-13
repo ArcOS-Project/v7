@@ -1,21 +1,20 @@
 import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
-import { __Console__ } from "$ts/console";
+import { OopsNotifierApp } from "$apps/components/oopsnotifier/metadata";
+import { OopsNotifierRuntime } from "$apps/components/oopsnotifier/runtime";
 import { contextProps } from "$ts/context/actions.svelte";
-import { MessageBox } from "$ts/dialog";
 import { BETA } from "$ts/env";
-import { BugReportIcon, ComponentIcon } from "$ts/images/general";
+import { ComponentIcon } from "$ts/images/general";
+import { UUID } from "$ts/uuid";
 import { Draggable } from "@neodrag/vanilla";
 import { unmount } from "svelte";
 import type { App, AppProcessData, WindowResizer } from "../../types/app";
 import type { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
-import { authcode, htmlspecialchars } from "../util";
 import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
 import { BuiltinApps } from "./store";
-import { UUID } from "$ts/uuid";
-import * as stackTraceParser from "stacktrace-parser";
+import { Sleep } from "$ts/sleep";
 
 export class AppRenderer extends Process {
   currentState: number[] = [];
@@ -653,47 +652,24 @@ export class AppRenderer extends Process {
   }
 
   async notifyCrash(data: App, e: Error, process?: AppProcess) {
-    const stack = e instanceof PromiseRejectionEvent ? e.reason.stack : e.stack;
-    const parsed = stackTraceParser.parse(stack);
-
-    for (const line of parsed) {
-      if (!line.file) continue;
-      const regex = new RegExp(
-        /http(s|)\:\/\/[a-zA-Z.\:0-9]+(\/tpa\/v3\/)(?<userId>[a-zA-Z0-9]+)\/(?<timestamp>[0-9]+)\/(?<appId>[A-Za-z0-9_-]+_[A-Za-z0-9_-]+)@(?<filename>[a-zA-Z0-9_-]+\.js)/gm
-      );
-      const parsedLine = regex.exec(line.file)?.groups;
-
-      console.log(parsedLine);
-    }
-
-    console.log(parsed);
-
-    __Console__.warn(` - PID ${process?.pid} APPLICATION ERROR - `, e);
-    const lines = [
-      `<b><code>${data.id}::'${data.metadata.name}'</code> (PID ${
-        process?.pid || "unknown"
-      }) has encountered a problem and needs to close. I am sorry for the inconvenience.</b>`,
-      `If you were in the middle of something, the information you were working on might be lost. You can choose to view the call stack, which may contain the reason for the crash.`,
-      `<details><summary>Show call stack</summary><code class='block'>${htmlspecialchars(
-        e.stack
-          ?.replaceAll(location.href, "")
-          .replaceAll(`${import.meta.env.DW_SERVER_URL}/tpa/`, "")
-          .replaceAll(authcode(), "")
-          .replaceAll(/new\/[0-9]+\//g, "")
-          .replaceAll(/&t=[0-9]+/g, "") || ""
-      )}</code></details>`,
-    ];
-
     await this.handler.waitForAvailable();
-    await MessageBox(
+    const proc = await this.handler.spawn<OopsNotifierRuntime>(
+      OopsNotifierRuntime,
+      undefined,
+      +this.env.get("shell_pid"),
       {
-        title: `${data.metadata.name} - Application Error`,
-        message: lines.join("<br><br>"),
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-        image: BugReportIcon,
+        data: { ...OopsNotifierApp, overlay: true },
+        id: OopsNotifierApp.id,
+        desktop: undefined,
       },
-      +this.env.get("shell_pid") || this.pid
+      data,
+      e,
+      process
     );
+
+    if (!proc) {
+      this.Log(`OOPS FALLBACK - ${e}`);
+    }
   }
 
   protected async start() {
