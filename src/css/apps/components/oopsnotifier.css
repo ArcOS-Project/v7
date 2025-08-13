@@ -1,0 +1,41 @@
+#OopsNotifier > div.body {
+  padding: 20px;
+  padding-top: 30px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+#OopsNotifier > div.body img {
+  height: 84px;
+  margin-bottom: 15px;
+}
+
+#OopsNotifier > div.body h1 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+#OopsNotifier > div.body div.actions {
+  margin-top: auto;
+}
+
+#OopsNotifier > div.body div.actions button {
+  text-align: center;
+  padding: 0 15px;
+  height: 36px;
+  line-height: 36px;
+}
+
+#OopsNotifier > div.body div.actions button.suggested {
+  margin-bottom: 10px;
+}
+
+#OopsNotifier > div.body div.actions > button {
+  width: 100%;
+}
+
+#OopsNotifier > div.body div.actions div.alternatives {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
