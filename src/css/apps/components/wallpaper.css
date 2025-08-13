@@ -152,3 +152,21 @@ div.desktop-wallpaper > div.wallpaper:not(.show) {
 #wallpaper div.desktop-icons button.moving.no-grid {
   opacity: 0;
 }
+
+#wallpaper div.loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: start;
+  justify-content: end;
+  padding: 20px;
+}
+
+#wallpaper div.loading div.html-spinner {
+  border: #fff2 var(--thickness) solid;
+  border-top: var(--thickness) solid currentColor;
+  box-shadow: var(--secondary-box-shadow);
+}

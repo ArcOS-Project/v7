@@ -156,8 +156,6 @@ export class LoginAppRuntime extends AppProcess {
 
     this.profileImage.set(`${import.meta.env.DW_SERVER_URL}/user/pfp/${userInfo._id}${authcode()}`);
 
-    this.savePersistence(username, this.profileImage());
-
     if (userInfo.hasTotp && userInfo.restricted) {
       this.loadingStatus.set("Requesting 2FA");
       const unlocked = await this.askForTotp(token);
@@ -171,6 +169,10 @@ export class LoginAppRuntime extends AppProcess {
         return;
       }
     }
+
+    this.loadPersistence();
+
+    this.savePersistence(username, this.profileImage());
 
     this.loadingStatus.set("Starting filesystem");
 

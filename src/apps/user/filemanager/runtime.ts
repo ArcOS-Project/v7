@@ -178,7 +178,7 @@ export class FileManagerRuntime extends AppProcess {
     if (this._disposed) return;
     this.Log(`Navigating to ${path}`);
 
-    if (this.path() === path) return;
+    if (this.path() === path || this.loading()) return;
 
     this.virtual.set(undefined);
 
