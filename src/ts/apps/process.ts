@@ -124,8 +124,6 @@ export class AppProcess extends Process {
 
     const canClose = this._disposed || (await this.onClose());
 
-    console.warn("DONE WITH ONCLOSE OF " + this.pid);
-
     if (!canClose) {
       this.Log(`Can't close`);
       return;

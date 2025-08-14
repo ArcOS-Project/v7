@@ -105,8 +105,6 @@ export class CodRuntime extends AppProcess {
     const original = this.original();
     const filename = this.filename() || "Untitled";
 
-    console.trace();
-
     if (original !== buffer) {
       return new Promise<boolean>((r) => {
         MessageBox(

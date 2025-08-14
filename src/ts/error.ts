@@ -44,14 +44,6 @@ export function handleGlobalErrors() {
   window.addEventListener("unhandledrejection", Error, { passive: false });
 
   window.console = new Proxy(console, {
-    get(target, prop) {
-      if (prop === "warn") {
-        return (...args: any[]) => {
-          WaveKernel.get().Log(`Console`, args.join(", "), LogLevel.warning);
-        };
-      }
-      return Reflect.get(target, prop);
-    },
     set(target, prop, value) {
       if (prop === "warn") {
         // Silently ignore any attempts to override console.warn
