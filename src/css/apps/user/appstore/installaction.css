@@ -20,6 +20,10 @@
   padding: 0;
 }
 
+#AppStore > div.body div.package-install-action button.suggested div.content {
+  color: var(--accent-suggested-fg);
+}
+
 #AppStore > div.body div.package-install-action > button:not(.lucide) {
   position: relative;
   overflow: hidden;
