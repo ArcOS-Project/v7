@@ -12,7 +12,6 @@ import type {
   onFileChange,
   onFolderChange,
 } from "$ts/fs/util";
-import type { WaveKernel } from "$ts/kernel";
 import type { Environment } from "$ts/kernel/env";
 import type { ProcessHandler } from "$ts/process/handler";
 import type { UserDaemon } from "$ts/server/user/daemon";
@@ -23,7 +22,6 @@ import type { AxiosInstance } from "./axios";
 import type { dayjs } from "./dayjs";
 
 export interface ThirdPartyPropMap {
-  kernel: WaveKernel;
   daemon: UserDaemon;
   handler: ProcessHandler;
   fs: Filesystem;

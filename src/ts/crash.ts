@@ -1,14 +1,15 @@
 import { LogLevel } from "../types/logging";
 import { BugHunt } from "./bughunt";
 import { WaveKernel } from "./kernel";
+import { KernelIsPanicked, KernelLogs, KernelPremature } from "./kernel/getters";
 import { ASCII_ART } from "./kernel/intro";
+import { getKMod } from "./kernel/module";
 import { ServerManager } from "./server";
 
 export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
-  const kernel = WaveKernel.get();
-  if (WaveKernel.isPanicked()) return;
+  if (KernelIsPanicked()) return;
 
-  const bughunt = kernel.getModule<BugHunt>("bughunt", true);
+  const bughunt = getKMod<BugHunt>("bughunt", true);
   const connected = ServerManager.isConnected();
 
   const HEADER = [
@@ -35,8 +36,7 @@ export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
   text += stack;
   text = text.replaceAll(location.href, "./");
 
-  text += `\n\n${kernel
-    .Logs()
+  text += `\n\n${KernelLogs()()
     .map(
       ({ level, kernelTime, source, message }) =>
         `[${kernelTime.toString().padStart(8, "0")}] ${LogLevel[level]} ${source}: ${message}`
@@ -47,7 +47,7 @@ export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
   if (!import.meta.env.DEV)
     bughunt?.sendReport(
       bughunt?.createReport({
-        title: !kernel.PREMATURE
+        title: !KernelPremature()
           ? `CRASH - ${reason instanceof PromiseRejectionEvent ? reason.reason : reason.error}`
           : `Premature kernel failure`,
         body: `${stack}`.replaceAll(location.href, "./"),

@@ -20,6 +20,7 @@ import { Filesystem } from "$ts/fs";
 import { join } from "$ts/fs/util";
 import { getJsonHierarchy, setJsonHierarchy } from "$ts/hierarchy";
 import { keysToLowerCase, tryJsonParse } from "$ts/json";
+import { getKMod } from "$ts/kernel/module";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import type { ProcessHandler } from "$ts/process/handler";
@@ -78,7 +79,7 @@ export class LanguageInstance extends Process {
 
     this.libraries = keysToLowerCase(libraries) as Libraries;
 
-    this.fs = this.kernel.getModule<Filesystem>("fs");
+    this.fs = getKMod<Filesystem>("fs");
 
     const daemonPid = this.env.get("userdaemon_pid");
 

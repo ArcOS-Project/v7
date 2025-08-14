@@ -1,4 +1,3 @@
-import type { WaveKernel } from "$ts/kernel";
 import { Backend } from "$ts/server/axios";
 import { authcode } from "$ts/util";
 import type {
@@ -33,8 +32,8 @@ export class AdminServerDrive extends FilesystemDrive {
     bulk: true,
   };
 
-  constructor(kernel: WaveKernel, uuid: string, letter: string, token: string, targetUsername: string) {
-    super(kernel, uuid, letter);
+  constructor(uuid: string, letter: string, token: string, targetUsername: string) {
+    super(uuid, letter);
 
     this.token = token;
     this.targetUsername = targetUsername;

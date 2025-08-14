@@ -8,9 +8,9 @@ import type { UserPreferences } from "$types/user";
 import type { Component } from "svelte";
 import type { Unsubscriber } from "svelte/store";
 import DispatchClients from "./AdvancedSystemSettings/DispatchClients.svelte";
+import Main from "./AdvancedSystemSettings/Main.svelte";
 import Recycling from "./AdvancedSystemSettings/Recycling.svelte";
 import Startup from "./AdvancedSystemSettings/Startup.svelte";
-import Main from "./AdvancedSystemSettings/Main.svelte";
 
 export class AdvSysSetRuntime extends AppProcess {
   public currentTab = Store<string>("Main");

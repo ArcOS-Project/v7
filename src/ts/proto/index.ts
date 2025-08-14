@@ -1,4 +1,5 @@
 import { tryJsonParse } from "$ts/json";
+import { KernelParams } from "$ts/kernel/getters";
 import type { ProcessHandler } from "$ts/process/handler";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
@@ -26,12 +27,12 @@ export class ProtocolServiceProcess extends BaseService {
 
   parseProtoParam() {
     this.Log("Attempting to execute proto param");
-    const param = this.kernel.params.get("proto");
+    const param = KernelParams().get("proto");
 
     if (param) {
       this.executeUrl(decodeURIComponent(param));
       navigate("./");
-      this.kernel.params.delete("proto");
+      KernelParams().delete("proto");
     }
   }
 

@@ -14,7 +14,6 @@ import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
 import { BuiltinApps } from "./store";
-import { Sleep } from "$ts/sleep";
 
 export class AppRenderer extends Process {
   currentState: number[] = [];

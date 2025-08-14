@@ -1,5 +1,6 @@
 import { FsProgressRuntime } from "$apps/components/fsprogress/runtime";
 import { DummyFileProgress, type FileProgressMutator, type FsProgressOperation } from "$apps/components/fsprogress/types";
+import { GlobalLoadIndicatorApp } from "$apps/components/globalloadindicator/metadata";
 import { GlobalLoadIndicatorRuntime } from "$apps/components/globalloadindicator/runtime";
 import type { IconPickerData } from "$apps/components/iconpicker/types";
 import { AppStoreApp } from "$apps/user/appstore/metadata";
@@ -8,6 +9,7 @@ import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import { MessagingApp } from "$apps/user/messages/metadata";
 import { ProcessesApp } from "$apps/user/processes/metadata";
 import { SystemSettings } from "$apps/user/settings/metadata";
+import DeleteUser from "$lib/Daemon/DeleteUser.svelte";
 import SafeModeNotice from "$lib/Daemon/SafeModeNotice.svelte";
 import { AppProcess } from "$ts/apps/process";
 import { ApplicationStorage } from "$ts/apps/storage";
@@ -43,6 +45,7 @@ import {
 import { ImageMimeIcon, ShortcutMimeIcon } from "$ts/images/mime";
 import { RestartIcon } from "$ts/images/power";
 import { tryJsonParse } from "$ts/json";
+import { getKMod } from "$ts/kernel/module";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import type { ProtocolServiceProcess } from "$ts/proto";
@@ -74,8 +77,7 @@ import { GlobalDispatch } from "../ws";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
-import DeleteUser from "$lib/Daemon/DeleteUser.svelte";
-import { GlobalLoadIndicatorApp } from "$apps/components/globalloadindicator/metadata";
+import { KernelStateHandler } from "$ts/kernel/getters";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -123,7 +125,7 @@ export class UserDaemon extends Process {
     this.env.set("userdaemon_pid", this.pid);
     if (userInfo) this.userInfo = userInfo;
 
-    this.server = this.kernel.getModule<ServerManager>("server");
+    this.server = getKMod<ServerManager>("server");
     this.safeMode = !!this.env.get("safemode");
     this.name = "UserDaemon";
   }
@@ -247,7 +249,7 @@ export class UserDaemon extends Process {
   }
 
   setAppRendererClasses(v: UserPreferences) {
-    // if (this.kernel.state?.currentState !== "desktop") return;
+    // if (KernelStateHandler()?.currentState !== "desktop") return;
 
     const renderer = this.handler.renderer?.target;
 
@@ -754,7 +756,7 @@ export class UserDaemon extends Process {
     if (this.serviceHost) this.serviceHost._holdRestart = true;
 
     await this.handler._killSubProceses(this.pid);
-    await this.kernel.state?.loadState("login", {
+    await KernelStateHandler()?.loadState("login", {
       type,
       userDaemon: this,
       ...props,
@@ -1039,7 +1041,7 @@ export class UserDaemon extends Process {
 
     this.Log(`Starting JS execution to run third-party app ${app.id}`);
 
-    const fs = this.kernel.getModule<Filesystem>("fs");
+    const fs = getKMod<Filesystem>("fs");
     const userDaemonPid = this.env.get("userdaemon_pid");
 
     app.workingDirectory ||= getParentDirectory(metaPath);
@@ -2698,7 +2700,7 @@ The information provided in this report is subject for review by me or another A
         this.registeredAnchors.push(anchor);
 
         anchor.addEventListener("click", (e) => {
-          const currentState = this.kernel.state?.currentState;
+          const currentState = KernelStateHandler()?.currentState;
 
           e.preventDefault();
 
@@ -2786,7 +2788,10 @@ The information provided in this report is subject for review by me or another A
   async checkForMissedMessages() {
     const service = this.serviceHost!.getService<MessagingInterface>("MessagingService")!;
     const archived = this.preferences().appPreferences?.Messages?.archive || [];
-    const messages = (await service?.getReceivedMessages())?.filter((m) => !m.read && !archived.includes(m._id)) || [];
+    const messages =
+      (await service?.getReceivedMessages())?.filter(
+        (m) => !m.read && !archived.includes(m._id) && m.authorId !== this.userInfo?._id
+      ) || [];
 
     if (!messages?.length) return;
 
@@ -2794,7 +2799,7 @@ The information provided in this report is subject for review by me or another A
       const message = messages[0];
       this.sendNotification({
         className: "incoming-message",
-        image: `${import.meta.env.DW_SERVER_URL}${message.author?.profilePicture}`,
+        image: message.author?.profilePicture,
         title: message.author?.username || "New message",
         message: message.title,
         buttons: [

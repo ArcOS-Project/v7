@@ -2,7 +2,7 @@ import { VALIDATION_STR } from "$ts/env";
 import type { ServerInfo } from "$types/server";
 import { LogLevel } from "../../types/logging";
 import { WaveKernel } from "../kernel";
-import { KernelModule } from "../kernel/module";
+import { getKMod, KernelModule } from "../kernel/module";
 import { Backend } from "./axios";
 
 export class ServerManager extends KernelModule {
@@ -11,20 +11,12 @@ export class ServerManager extends KernelModule {
   public serverInfo: ServerInfo | undefined;
 
   public static isConnected() {
-    const kernel = WaveKernel.get();
-
-    if (!kernel) return false;
-
-    const server = kernel.getModule<ServerManager>("server", true);
+    const server = getKMod<ServerManager>("server", true);
 
     return server && server.connected;
   }
   public static url() {
-    const kernel = WaveKernel.get();
-
-    if (!kernel) return false;
-
-    const server = kernel.getModule<ServerManager>("server", true);
+    const server = getKMod<ServerManager>("server", true);
 
     return server ? server.url : undefined;
   }

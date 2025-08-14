@@ -1,7 +1,6 @@
 import { toForm } from "$ts/form";
 import { FilesystemDrive } from "$ts/fs/drive";
 import { getItemNameFromPath, join } from "$ts/fs/util";
-import type { WaveKernel } from "$ts/kernel";
 import type {
   DirectoryReadReturn,
   DriveCapabilities,
@@ -35,8 +34,8 @@ export class DevDrive extends FilesystemDrive {
     bulk: true,
   };
 
-  constructor(kernel: WaveKernel, uuid: string, letter: string, axios: AxiosInstance, url: string) {
-    super(kernel, uuid, letter);
+  constructor(uuid: string, letter: string, axios: AxiosInstance, url: string) {
+    super(uuid, letter);
 
     this.axios = axios;
     this.url = url;

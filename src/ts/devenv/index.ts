@@ -1,6 +1,7 @@
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { MessageBox } from "$ts/dialog";
 import { ErrorIcon } from "$ts/images/dialog";
+import { KernelLogs } from "$ts/kernel/getters";
 import { ArcBuild } from "$ts/metadata/build";
 import type { ProcessHandler } from "$ts/process/handler";
 import type { UserDaemon } from "$ts/server/user/daemon";
@@ -121,7 +122,7 @@ export class DevelopmentEnvironment extends BaseService {
       this.client.on("refresh-css", (filename: string) => {
         this.refreshCSS(filename);
       });
-      this.kernel.Logs.subscribe((v) => {
+      KernelLogs().subscribe((v) => {
         if (this._disposed) return;
         this.client?.emit("log-item", v[v.length - 1]);
       });

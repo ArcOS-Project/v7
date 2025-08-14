@@ -1,7 +1,10 @@
 import { ArcOSVersion } from "$ts/env";
 import type { WaveKernel } from "$ts/kernel";
 import type { Environment } from "$ts/kernel/env";
+import { KernelLogs } from "$ts/kernel/getters";
 import { KernelModule } from "$ts/kernel/module";
+import { ArcBuild } from "$ts/metadata/build";
+import { ArcMode } from "$ts/metadata/mode";
 import { ProcessHandler } from "$ts/process/handler";
 import { ServerManager } from "$ts/server";
 import { Backend } from "$ts/server/axios";
@@ -30,15 +33,15 @@ export class BugHunt extends KernelModule {
     return {
       title: options.title,
       body: options.body || "No body",
-      logs: options.noLogs ? [] : this.kernel.Logs(),
+      logs: options.noLogs ? [] : KernelLogs()(),
       version: ArcOSVersion,
       location: window.location,
       userAgent: navigator.userAgent,
       api: server,
       frontend: location.host,
       meta: import.meta.env,
-      mode: this.kernel.ARCOS_MODE,
-      build: this.kernel.ARCOS_BUILD,
+      mode: ArcMode(),
+      build: ArcBuild(),
       public: options.public,
     };
   }

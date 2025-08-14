@@ -1,13 +1,13 @@
 import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
 import { WaveKernel } from "$ts/kernel";
 import { Environment } from "$ts/kernel/env";
+import { getKMod } from "$ts/kernel/module";
 import { ProcessHandler } from "$ts/process/handler";
 import { UUID } from "$ts/uuid";
 
 export function contextProps(node: HTMLElement, args: any[]) {
-  const kernel = WaveKernel.get();
-  const env = kernel.getModule<Environment>("env", true);
-  const stack = kernel.getModule<ProcessHandler>("stack", true);
+  const env = getKMod<Environment>("env", true);
+  const stack = getKMod<ProcessHandler>("stack", true);
   const contextMenuPid = env?.get("contextmenu_pid");
 
   if (!contextMenuPid) return;

@@ -1,4 +1,6 @@
 import { ArcOSVersion } from "$ts/env";
+import { ArcBuild } from "$ts/metadata/build";
+import { ArcMode } from "$ts/metadata/mode";
 import type { WaveKernel } from ".";
 import { KernelModule } from "./module";
 
@@ -15,8 +17,8 @@ export class Environment extends KernelModule {
 
     this.setMultiple([
       ["arcos_version", ArcOSVersion],
-      ["arcos_mode", this.kernel.ARCOS_MODE],
-      ["arcos_build", this.kernel.ARCOS_BUILD],
+      ["arcos_mode", ArcMode()],
+      ["arcos_build", ArcBuild()],
     ]);
   }
 

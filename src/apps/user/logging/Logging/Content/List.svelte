@@ -4,7 +4,6 @@
 
   const { process }: { process: LoggingRuntime } = $props();
   const { currentSource, selectedLevel, groups } = process;
-  const { Logs } = process.kernel;
 </script>
 
 <div class="log-list">

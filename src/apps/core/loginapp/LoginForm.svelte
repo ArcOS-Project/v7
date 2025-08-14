@@ -8,10 +8,6 @@
   const { process }: { process: LoginAppRuntime } = $props();
   const { serverInfo, persistence } = process;
 
-  function createUser() {
-    process.kernel.state?.loadState("initialSetup");
-  }
-
   function go() {
     process.proceed($persistence?.username || username, password);
   }
@@ -33,5 +29,5 @@
 {#if $persistence}
   <button class="switch-user" onclick={() => process.deletePersistence()}>Switch user</button>
 {:else if !serverInfo?.disableRegistration}
-  <button class="create-user" onclick={createUser}>No account?</button>
+  <button class="create-user" onclick={() => process.createUser()}>No account?</button>
 {/if}

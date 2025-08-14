@@ -41,7 +41,6 @@ export class TrayIconProcess extends Process {
           process: target,
           tray: this,
           pid: this.pid,
-          kernel: this.kernel,
           handler: this.handler,
         },
       });

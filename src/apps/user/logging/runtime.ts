@@ -1,4 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
+import { KernelLogs } from "$ts/kernel/getters";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -27,7 +28,7 @@ export class LoggingRuntime extends AppProcess {
     this.archive = archive || [];
     this.isArchive = this.archive.length > 0;
 
-    if (!this.archive.length) this.kernel.Logs.subscribe(() => this.updateGroups());
+    if (!this.archive.length) KernelLogs().subscribe(() => this.updateGroups());
     else {
       this.updateGroups();
     }
@@ -41,7 +42,7 @@ export class LoggingRuntime extends AppProcess {
   }
 
   public updateGroups() {
-    const logs = this.archive.length ? this.archive : this.kernel.Logs();
+    const logs = this.archive.length ? this.archive : KernelLogs()();
     const groupStore = this.groups.get();
     const { items, sources } = this.collectLogsBySource(logs, false);
     const entries = Object.entries(items);

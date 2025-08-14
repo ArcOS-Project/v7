@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
+import { __Console__ } from "$ts/console";
 import { contextProps } from "$ts/context/actions.svelte";
 import { MessageBox } from "$ts/dialog";
 import { arrayToBlob, arrayToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/fs/convert";
@@ -31,10 +32,8 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { Backend } from "../axios";
 import type { UserDaemon } from "./daemon";
-import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
-import { DevelopmentEnvironment } from "$ts/devenv";
-import { __Console__ } from "$ts/console";
 import { HiddenUserPaths, SystemFolders, UserPathCaptions, UserPathIcons, UserPaths } from "./store";
+import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
 
 export function ThirdPartyProps(
   daemon: UserDaemon,
@@ -45,13 +44,12 @@ export function ThirdPartyProps(
   workingDirectory?: string
 ): ThirdPartyPropMap {
   const props = {
-    kernel: daemon.kernel,
-    daemon,
-    handler: daemon.handler,
-    fs: daemon.fs,
-    env: daemon.env,
-    serviceHost: daemon.serviceHost,
-    dispatch: daemon.systemDispatch,
+    daemon, // ?
+    handler: daemon.handler, // ?
+    fs: daemon.fs, // ?
+    env: daemon.env, // ?
+    serviceHost: daemon.serviceHost, // ?
+    dispatch: daemon.systemDispatch, // ?
     MessageBox,
     icons: getAllImages(),
     util: {
@@ -83,7 +81,7 @@ export function ThirdPartyProps(
     AppProcess,
     ThirdPartyAppProcess,
     FilesystemDrive,
-    KernelModule,
+    KernelModule, // ?
     argv: args,
     app,
     Store,
@@ -117,7 +115,7 @@ export function ThirdPartyProps(
     CustomTitlebar,
     contextProps,
     dayjs,
-    console: __Console__, // Enable the console global in the development environment ONLY
+    console: __Console__,
     LogLevel: {
       info: 0,
       warning: 1,

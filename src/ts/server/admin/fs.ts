@@ -2,7 +2,6 @@ import { toForm } from "$ts/form";
 import { arrayToBlob } from "$ts/fs/convert";
 import { FilesystemDrive } from "$ts/fs/drive";
 import { getItemNameFromPath, join } from "$ts/fs/util";
-import type { WaveKernel } from "$ts/kernel";
 import type {
   DirectoryReadReturn,
   DriveCapabilities,
@@ -34,8 +33,8 @@ export class AdminFileSystem extends FilesystemDrive {
     bulk: false,
   };
 
-  constructor(kernel: WaveKernel, uuid: string, letter: string, token: string) {
-    super(kernel, uuid, letter);
+  constructor(uuid: string, letter: string, token: string) {
+    super(uuid, letter);
 
     this.token = token;
   }

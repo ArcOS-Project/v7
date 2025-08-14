@@ -1,4 +1,5 @@
 import { ScriptedAppProcess } from "$ts/apps/scripted";
+import { getKMod } from "$ts/kernel/module";
 import { ProcessHandler } from "$ts/process/handler";
 import type { ScriptedApp } from "$types/app";
 import type { Keyword } from "$types/msl";
@@ -14,7 +15,7 @@ export const create: Keyword = async (lang) => {
     return;
   }
 
-  const stack = lang.kernel.getModule<ProcessHandler>("stack");
+  const stack = getKMod<ProcessHandler>("stack");
   const result = await stack.spawn<ScriptedAppProcess>(
     ScriptedAppProcess,
     lang.userDaemon?.getCurrentDesktop(),

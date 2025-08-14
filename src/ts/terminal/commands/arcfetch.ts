@@ -1,6 +1,10 @@
 import { getDeviceInfo } from "$ts/device";
 import { ArcOSVersion } from "$ts/env";
 import { formatBytes } from "$ts/fs/util";
+import { KernelStateHandler } from "$ts/kernel/getters";
+import { getKMod } from "$ts/kernel/module";
+import { ArcBuild } from "$ts/metadata/build";
+import { ArcMode } from "$ts/metadata/mode";
 import type { ProcessHandler } from "$ts/process/handler";
 import { ServerManager } from "$ts/server";
 import type { ArcTerminal } from "..";
@@ -27,13 +31,12 @@ export class ArcFetchCommand extends TerminalProcess {
   }
 
   getItems(term: ArcTerminal) {
-    const kernel = term.kernel;
-    const server = kernel.getModule<ServerManager>("server", true);
+    const server = getKMod<ServerManager>("server", true);
     const info = getDeviceInfo();
-    const state = term.kernel.state?.currentState;
+    const state = KernelStateHandler()?.currentState;
 
     return Object.entries({
-      OS: `ArcOS ${ArcOSVersion}-${term.kernel.ARCOS_MODE} (${term.kernel.ARCOS_BUILD})`,
+      OS: `ArcOS ${ArcOSVersion}-${ArcMode()} (${ArcBuild})`,
       Host: `${server?.url} ${BRBLACK}(${import.meta.env.DW_SERVER_AUTHCODE ? "Protected" : "Open"})${RESET}`,
       Username: `${term.env.get("currentuser")} ${BRBLACK}(${
         term.env.get("administrator") ? "Administrator" : "Regular User"

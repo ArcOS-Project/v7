@@ -7,15 +7,15 @@ import { WarningIcon } from "$ts/images/dialog";
 import { DefaultMimeIcon } from "$ts/images/mime";
 import type { ProcessHandler } from "$ts/process/handler";
 import { UserPaths } from "$ts/server/user/store";
+import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import type { AppKeyCombinations } from "$types/accelerator";
 import type { AppProcessData } from "$types/app";
 import { fromExtension } from "human-filetypes";
 import { CodAccelerators } from "./accelerators";
 import { CodAltMenu } from "./altmenu";
-import type { CodLang } from "./types";
 import { CodTranslations } from "./store";
-import { Sleep } from "$ts/sleep";
+import type { CodLang } from "./types";
 
 export class CodRuntime extends AppProcess {
   language = Store<CodLang>("plaintext");

@@ -1,7 +1,10 @@
+import { FirstRunApp } from "$apps/components/firstrun/metadata";
+import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/metadata";
 import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
 import { ProfilePictures } from "$ts/images/pfp";
 import { tryJsonParse } from "$ts/json";
+import { getKMod } from "$ts/kernel/module";
 import { ProtocolServiceProcess } from "$ts/proto";
 import { ServerManager } from "$ts/server";
 import { Backend } from "$ts/server/axios";
@@ -19,8 +22,7 @@ import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
 import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps, PersistenceInfo } from "./types";
-import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
-import { FirstRunApp } from "$apps/components/firstrun/metadata";
+import { KernelStateHandler } from "$ts/kernel/getters";
 
 export class LoginAppRuntime extends AppProcess {
   public DEFAULT_WALLPAPER = Store<string>("");
@@ -39,7 +41,7 @@ export class LoginAppRuntime extends AppProcess {
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, props?: LoginAppProps) {
     super(handler, pid, parentPid, app);
 
-    const server = this.kernel.getModule<ServerManager>("server");
+    const server = getKMod<ServerManager>("server");
 
     this.DEFAULT_WALLPAPER.set(server.serverInfo?.loginWallpaper ? `${server.url}/loginbg${authcode()}` : Wallpapers.img18.url);
 
@@ -51,7 +53,7 @@ export class LoginAppRuntime extends AppProcess {
     });
 
     this.unexpectedInvocation =
-      this.kernel.state?.currentState !== "boot" && this.kernel.state?.currentState !== "initialSetup" && !props?.type;
+      KernelStateHandler()?.currentState !== "boot" && KernelStateHandler()?.currentState !== "initialSetup" && !props?.type;
     this.serverInfo = server.serverInfo;
     this.safeMode = !!(props?.safeMode || this.env.get("safemode"));
     if (this.safeMode) this.env.set("safemode", true);
@@ -130,7 +132,7 @@ export class LoginAppRuntime extends AppProcess {
 
     this.loadingStatus.set("Starting daemon");
 
-    const userDaemon = await this.handler.spawn<UserDaemon>(UserDaemon, undefined, this.kernel.initPid, token, username, info);
+    const userDaemon = await this.handler.spawn<UserDaemon>(UserDaemon, undefined, 1, token, username, info);
 
     if (!userDaemon) {
       this.loadingStatus.set("");
@@ -224,7 +226,7 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.startSystemStatusRefresh();
 
     this.loadingStatus.set("Let's go!");
-    await this.kernel.state?.loadState("desktop", { userDaemon });
+    await KernelStateHandler()?.loadState("desktop", { userDaemon });
     this.soundBus.playSound("arcos.system.logon");
     userDaemon.setAppRendererClasses(userDaemon.preferences());
 
@@ -299,7 +301,7 @@ export class LoginAppRuntime extends AppProcess {
     await Sleep(2000);
 
     if (daemon) await daemon.killSelf();
-    this.kernel.state?.loadState("turnedOff");
+    KernelStateHandler()?.loadState("turnedOff");
   }
 
   async restart(daemon?: UserDaemon) {
@@ -447,5 +449,9 @@ export class LoginAppRuntime extends AppProcess {
     this.profileImage.set(ProfilePictures.def);
     this.loginBackground.set(this.DEFAULT_WALLPAPER());
     this.profileName.set("");
+  }
+
+  createUser() {
+    KernelStateHandler()?.loadState("initialSetup");
   }
 }

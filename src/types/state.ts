@@ -1,4 +1,3 @@
-import type { WaveKernel } from "../ts/kernel";
 import type { ProcessHandler } from "../ts/process/handler";
 import type { StateHandler } from "../ts/state";
 import type { App } from "./app";
@@ -13,7 +12,6 @@ export interface State {
 
 export interface StateRendererAccessors {
   state: StateHandler;
-  kernel: WaveKernel;
   stack: ProcessHandler;
 }
 

@@ -2,6 +2,8 @@ import type { ShellRuntime } from "$apps/components/shell/runtime";
 import { SystemDispatch } from "$ts/dispatch";
 import { ArcOSVersion } from "$ts/env";
 import { BugReportIcon, ComponentIcon, SecurityHighIcon } from "$ts/images/general";
+import { Kernel, KernelStateHandler } from "$ts/kernel/getters";
+import { getKMod } from "$ts/kernel/module";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import type { UserDaemon } from "$ts/server/user/daemon";
@@ -14,7 +16,6 @@ import type { UserPreferences } from "$types/user";
 import type { Draggable } from "@neodrag/vanilla";
 import { mount } from "svelte";
 import { type App, type AppContextMenu, type AppProcessData, type ContextMenuItem } from "../../types/app";
-import { WaveKernel } from "../kernel";
 import type { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
@@ -58,10 +59,10 @@ export class AppProcess extends Process {
 
     this.windowTitle.set(app.data.metadata.name || "Application");
     this.name = app.data.id;
-    this.systemDispatch = this.kernel.getModule<SystemDispatch>("dispatch");
+    this.systemDispatch = getKMod<SystemDispatch>("dispatch");
     this.shell = this.handler.getProcess(+this.env.get("shell_pid"));
 
-    const desktopProps = this.kernel.state?.stateProps["desktop"];
+    const desktopProps = KernelStateHandler()?.stateProps["desktop"];
     const daemon: UserDaemon | undefined = desktopProps?.userDaemon || this.handler.getProcess(+this.env.get("userdaemon_pid"));
 
     if (daemon) {
@@ -209,7 +210,7 @@ export class AppProcess extends Process {
         props: {
           process: this,
           pid: this.pid,
-          kernel: WaveKernel.get(),
+          kernel: Kernel(),
           handler: this.handler,
           app: this.app.data,
           windowTitle: this.windowTitle,
@@ -292,7 +293,7 @@ export class AppProcess extends Process {
       if (document.activeElement === textarea) focusingTextArea = true;
     }
 
-    if (!focusingTextArea && bannedKeys.includes(e.key.toLowerCase()) && this.kernel.state?.currentState === "desktop") {
+    if (!focusingTextArea && bannedKeys.includes(e.key.toLowerCase()) && KernelStateHandler()?.currentState === "desktop") {
       e.preventDefault();
 
       return false;
@@ -300,7 +301,7 @@ export class AppProcess extends Process {
 
     this.unfocusActiveElement();
 
-    const state = this.kernel.state?.currentState;
+    const state = KernelStateHandler()?.currentState;
 
     if (state != "desktop" || this._disposed) return;
 

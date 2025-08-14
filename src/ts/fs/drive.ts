@@ -1,5 +1,5 @@
-import type { WaveKernel } from "$ts/kernel";
 import { Log } from "$ts/kernel/logging";
+import { getKMod } from "$ts/kernel/module";
 import { ServerManager } from "$ts/server";
 import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback, RecursiveDirectoryReadReturn } from "$types/fs";
 import { LogLevel } from "$types/logging";
@@ -10,7 +10,6 @@ export class FilesystemDrive {
   public driveLetter: string | undefined;
   public label = "";
   public uuid = "";
-  public kernel: WaveKernel;
   public readonly FIXED: boolean = false;
   public readonly REMOVABLE: boolean = false;
   public readonly READONLY: boolean = false;
@@ -35,12 +34,11 @@ export class FilesystemDrive {
     bulk: false,
   };
 
-  constructor(kernel: WaveKernel, uuid: string, letter?: string, ...args: any[]) {
-    this.server = kernel.getModule<ServerManager>("server");
+  constructor(uuid: string, letter?: string, ...args: any[]) {
+    this.server = getKMod("server");
 
     this.uuid = uuid;
     this.driveLetter = letter;
-    this.kernel = kernel;
   }
 
   Log(message: string, level = LogLevel.info) {

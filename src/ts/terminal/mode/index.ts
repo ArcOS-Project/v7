@@ -98,7 +98,7 @@ export class TerminalMode extends Process {
 
   async startDaemon(token: string, username: string): Promise<boolean> {
     try {
-      const userDaemon = await this.handler.spawn<UserDaemon>(UserDaemon, undefined, this.kernel.initPid, token, username);
+      const userDaemon = await this.handler.spawn<UserDaemon>(UserDaemon, undefined, 1, token, username);
 
       this.rl?.println("Starting daemon");
 

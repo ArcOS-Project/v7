@@ -1,4 +1,5 @@
 <script lang="ts">
+  import UserLink from "$lib/UserLink.svelte";
   import { StoreItemIcon } from "$ts/distrib/util";
   import { SpinnerIcon, UpdateIcon } from "$ts/images/general";
   import { BadStatusIcon, GoodStatusIcon } from "$ts/images/status";
@@ -37,8 +38,10 @@
     </h1>
     <p class="sub">
       {#if $working}
-        {#if $currentPackage}
-          By {$currentPackage.user?.displayName || $currentPackage.user?.username || $currentPackage.pkg.author}
+        {#if $currentPackage && $currentPackage.user}
+          <span title={$currentPackage.user?.username || ""}>
+            By <UserLink user={$currentPackage.user} fallback={$currentPackage.pkg.author} />
+          </span>
         {:else}
           Loading...
         {/if}

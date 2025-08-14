@@ -1,11 +1,12 @@
+import type { StateHandler } from "$ts/state";
 import { WaveKernel } from "..";
 import { LogLevel } from "../../../types/logging";
 import { Log } from "../logging";
 
 export class KernelModule {
   protected readonly IS_KMOD = true;
-  protected kernel: WaveKernel;
   public id: string;
+  protected state?: StateHandler;
 
   constructor(kernel: WaveKernel, id: string) {
     this.id = id;
@@ -13,8 +14,6 @@ export class KernelModule {
     this.Log(`Constructing`);
 
     if (kernel.getModule(id, true)) throw new Error(`KernelModule::${id} is already loaded`);
-
-    this.kernel = kernel;
   }
 
   async _init() {
@@ -32,4 +31,10 @@ export class KernelModule {
 
     Log(source, message, level);
   }
+}
+
+export function getKMod<T = KernelModule>(id: string, dontCrash = false): T {
+  const kernel = WaveKernel.get();
+
+  return kernel.getModule<T>(id, dontCrash) as T;
 }

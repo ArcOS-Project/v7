@@ -13,6 +13,7 @@ import {
   WaveIcon,
 } from "$ts/images/general";
 import { GoodStatusIcon } from "$ts/images/status";
+import { ArcLicense } from "$ts/metadata/license";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Backend } from "$ts/server/axios";
 import { UserPaths } from "$ts/server/user/store";
@@ -215,7 +216,7 @@ export class SettingsRuntime extends AppProcess {
         image: SecurityMediumIcon,
         title: "ArcOS License - GPLv3",
         message: `By using ArcOS, you agree to the GPLv3 License contained within: <code class='block'>${htmlspecialchars(
-          this.kernel.ARCOS_LICENSE
+          ArcLicense()
         )}</code>`,
         buttons: [
           {

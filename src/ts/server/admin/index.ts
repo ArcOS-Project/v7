@@ -30,8 +30,8 @@ import JSZip from "jszip";
 import { Backend } from "../axios";
 import { MessagingInterface } from "../messaging";
 import { UserPaths } from "../user/store";
-import { AdminScopes } from "./store";
 import { AdminFileSystem } from "./fs";
+import { AdminScopes } from "./store";
 
 export class AdminBootstrapper extends BaseService {
   private token: string | undefined;

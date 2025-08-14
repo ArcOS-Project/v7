@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { WaveKernel } from "$ts/kernel";
+  import { KernelLogs } from "$ts/kernel/getters";
   import { ArcMode } from "$ts/metadata/mode";
   import { htmlspecialchars } from "$ts/util";
   import type { ReadableStore } from "$ts/writable";
@@ -12,8 +12,7 @@
   let currentLogItem = $state("");
 
   onMount(() => {
-    const kernel = WaveKernel.get();
-    const sub = kernel.Logs.subscribe((v) => {
+    const sub = KernelLogs().subscribe((v) => {
       const last = v[v.length - 1];
 
       currentLogItem = htmlspecialchars(`${ShortLogLevelCaptions[last.level]} ${last.source}%%br${last.message}`).replace(

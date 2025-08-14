@@ -1,5 +1,5 @@
 import type { WaveKernel } from "$ts/kernel";
-import { KernelModule } from "$ts/kernel/module";
+import { getKMod, KernelModule } from "$ts/kernel/module";
 import { ProcessHandler } from "$ts/process/handler";
 import type { LanguageOptions } from "$types/msl";
 import { PrematureLanguageError } from "./error";
@@ -15,7 +15,7 @@ export class ArcMSL extends KernelModule {
   }
 
   async _init() {
-    const stack = this.kernel.getModule<ProcessHandler>("stack");
+    const stack = getKMod<ProcessHandler>("stack");
 
     this.stack = stack;
   }

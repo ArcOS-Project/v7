@@ -2,6 +2,7 @@
   import { ApplicationStorage } from "$ts/apps/storage";
   import { ArcOSVersion } from "$ts/env";
   import { ArcSystemIcon } from "$ts/images/general";
+  import { KernelModules, KernelStateHandler } from "$ts/kernel/getters";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
   import type { AdvSysSetRuntime } from "../runtime";
@@ -33,9 +34,9 @@
   <section>
     <h1>ArcOS System:</h1>
     <ul>
-      <li title={process.kernel.modules.join(", ")}>Kernel modules: {process.kernel.modules.length} loaded</li>
-      <li title={Object.keys(process.kernel.state?.store || {}).join(", ")}>
-        States: {Object.entries(process.kernel.state?.store || {}).length} loaded
+      <li title={KernelModules().join(", ")}>Kernel modules: {KernelModules().length} loaded</li>
+      <li title={Object.keys(KernelStateHandler()?.store || {}).join(", ")}>
+        States: {Object.entries(KernelStateHandler()?.store || {}).length} loaded
       </li>
       <li>Process count: {process.handler.store().size} running</li>
       <li>Installed apps: {appStore?.length} loaded</li>

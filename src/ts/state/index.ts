@@ -1,4 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
+import { getKMod } from "$ts/kernel/module";
 import { LogLevel } from "$types/logging";
 import type { State } from "../../types/state";
 import { WaveKernel } from "../kernel";
@@ -96,7 +97,7 @@ export class StateHandler extends Process {
 
         await data.render(props || {}, {
           state: this,
-          kernel: this.kernel,
+          kernel: WaveKernel.get(),
           stack: this.handler,
         });
       } catch (e) {
@@ -130,7 +131,7 @@ export class StateHandler extends Process {
 
     this.Log(`BEGINNING LOAD OF ${data.name} (${data.identifier}) IN APP MODE`);
 
-    const stack = this.kernel.getModule<ProcessHandler>("stack");
+    const stack = getKMod<ProcessHandler>("stack");
 
     if (!data.app) return;
 

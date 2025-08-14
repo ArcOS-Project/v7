@@ -1,4 +1,4 @@
-import type { WaveKernel } from "$ts/kernel";
+import { getKMod } from "$ts/kernel/module";
 import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback, RecursiveDirectoryReadReturn } from "$types/fs";
 import JSZip from "jszip";
 import { Filesystem } from "..";
@@ -27,14 +27,14 @@ export class ZIPDrive extends FilesystemDrive {
     bulk: false,
   };
 
-  constructor(kernel: WaveKernel, uuid: string, letter: string, path: string) {
-    super(kernel, uuid, letter);
+  constructor(uuid: string, letter: string, path: string) {
+    super(uuid, letter);
 
     this._path = path;
   }
 
   async _spinUp(onProgress?: FilesystemProgressCallback): Promise<boolean> {
-    const fs = this.kernel.getModule<Filesystem>("fs");
+    const fs = getKMod<Filesystem>("fs");
     const contents = await fs.readFile(this._path, onProgress);
 
     if (!contents) {
@@ -174,7 +174,7 @@ export class ZIPDrive extends FilesystemDrive {
   async _sync(progress?: FilesystemProgressCallback) {
     this.Log("Syncing " + this._path);
     const file = await this._buffer?.generateAsync({ type: "blob" });
-    const fs = this.kernel.getModule<Filesystem>("fs");
+    const fs = getKMod<Filesystem>("fs");
 
     if (!file) throw new Error(`Failed to sync to file '${this._path}'`);
 

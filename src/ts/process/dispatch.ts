@@ -1,17 +1,14 @@
 import type { DispatchCallback } from "../../types/dispatch";
-import type { WaveKernel } from "../kernel";
 import { Log } from "../kernel/logging";
 import { Process } from "./instance";
 
 export class ProcessDispatch {
   private store: Record<string, DispatchCallback[]> = {};
   private parent: Process;
-  private kernel: WaveKernel;
 
   constructor(process: Process) {
     Log(`ProcessDispatch::'${process.name}'`, `Constructing new dispatch for ${process.name}`);
     this.parent = process;
-    this.kernel = process.kernel;
   }
 
   subscribe(event: string, callback: DispatchCallback) {

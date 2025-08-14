@@ -1,7 +1,10 @@
 import { MessageBox } from "$ts/dialog";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { SecurityMediumIcon } from "$ts/images/general";
-import type { ServerManager } from "$ts/server";
+import { KernelStateHandler } from "$ts/kernel/getters";
+import { getKMod } from "$ts/kernel/module";
+import { ArcLicense } from "$ts/metadata/license";
+import { ServerManager } from "$ts/server";
 import { LoginUser, RegisterUser } from "$ts/server/user/auth";
 import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
@@ -37,7 +40,7 @@ export class InitialSetupRuntime extends AppProcess {
       left: {
         caption: "Cancel",
         action: async () => {
-          this.kernel.state?.loadState("login");
+          KernelStateHandler()?.loadState("login");
         },
       },
       previous: {
@@ -123,7 +126,7 @@ export class InitialSetupRuntime extends AppProcess {
       this.actionsDisabled.set(false);
     });
 
-    this.server = this.kernel.getModule<ServerManager>("server");
+    this.server = getKMod<ServerManager>("server");
   }
 
   async render() {
@@ -175,13 +178,13 @@ export class InitialSetupRuntime extends AppProcess {
         image: SecurityMediumIcon,
         title: "ArcOS License - GPLv3",
         message: `By using ArcOS, you agree to the GPLv3 License contained within: <code class='block'>${htmlspecialchars(
-          this.kernel.ARCOS_LICENSE
+          ArcLicense()
         )}</code>`,
         buttons: [
           {
             caption: "Decline",
             action: () => {
-              this.kernel.state?.loadState("licenseDeclined");
+              KernelStateHandler()?.loadState("licenseDeclined");
             },
           },
           {

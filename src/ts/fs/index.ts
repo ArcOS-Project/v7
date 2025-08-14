@@ -1,6 +1,6 @@
 import { SystemDispatch } from "$ts/dispatch";
 import type { WaveKernel } from "$ts/kernel";
-import { KernelModule } from "$ts/kernel/module";
+import { getKMod, KernelModule } from "$ts/kernel/module";
 import { Sleep } from "$ts/sleep";
 import { sha256, sliceIntoChunks } from "$ts/util";
 import {
@@ -21,7 +21,7 @@ export class Filesystem extends KernelModule {
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);
 
-    this.dispatch = this.kernel.getModule<SystemDispatch>("dispatch");
+    this.dispatch = getKMod<SystemDispatch>("dispatch");
   }
 
   async _init() {}
@@ -50,7 +50,7 @@ export class Filesystem extends KernelModule {
     const uuid = sliceIntoChunks((await sha256(id)).slice(0, 16).split(""), 4)
       .map((c) => c.join("").toUpperCase())
       .join("-");
-    const instance = new supplier(this.kernel, uuid, letter, ...args);
+    const instance = new supplier(uuid, letter, ...args);
 
     const ready = await instance.__spinUp(onProgress);
 

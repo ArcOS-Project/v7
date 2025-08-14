@@ -376,7 +376,7 @@ export class MessagingAppRuntime extends AppProcess {
       "MessageComposer",
       this.pid,
       {
-        title: `Re: ${message.title}`,
+        title: message.title.startsWith("Re: ") ? message.title : `Re: ${message.title}`,
         body: `\n\n------\n\nOn ${originalDate}, ${
           message.author?.displayName || message.author?.username || "unknown user"
         } wrote:\n\n${message.body}`,

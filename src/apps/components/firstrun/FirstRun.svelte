@@ -1,7 +1,7 @@
 <script lang="ts">
+  import Spinner from "$lib/Spinner.svelte";
   import { onMount, type Snippet } from "svelte";
   import type { FirstRunRuntime } from "./runtime";
-  import Spinner from "$lib/Spinner.svelte";
 
   const { process }: { process: FirstRunRuntime } = $props();
   const { currentPage } = process;

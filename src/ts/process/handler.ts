@@ -2,12 +2,14 @@ import { AppProcess } from "$ts/apps/process";
 import { __Console__ } from "$ts/console";
 import { SystemDispatch } from "$ts/dispatch";
 import { Environment } from "$ts/kernel/env";
+import { KernelStateHandler } from "$ts/kernel/getters";
 import type { App } from "$types/app";
 import type { ProcessKillResult } from "$types/process";
+import { parse } from "stacktrace-parser";
 import { AppRenderer } from "../apps/renderer";
 import { WaveKernel } from "../kernel";
 import { Log } from "../kernel/logging";
-import { KernelModule } from "../kernel/module";
+import { getKMod, KernelModule } from "../kernel/module";
 import { Store } from "../writable";
 import type { Process } from "./instance";
 
@@ -23,8 +25,8 @@ export class ProcessHandler extends KernelModule {
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);
 
-    this.env = this.kernel.getModule<Environment>("env");
-    this.dispatch = this.kernel.getModule<SystemDispatch>("dispatch");
+    this.env = getKMod<Environment>("env");
+    this.dispatch = getKMod<SystemDispatch>("dispatch");
   }
 
   async _init() {
@@ -65,7 +67,7 @@ export class ProcessHandler extends KernelModule {
 
     const userDaemonPid = this.env.get("userdaemon_pid");
 
-    if (this.kernel.state?.currentState === "desktop" && userDaemonPid) {
+    if (KernelStateHandler()?.currentState === "desktop" && userDaemonPid) {
       parentPid ??= +userDaemonPid;
     }
 
@@ -104,9 +106,12 @@ export class ProcessHandler extends KernelModule {
       __Console__.timeEnd(`process spawn: ${pid}`);
       return proc as T;
     } catch (e) {
-      if (args[0]?.data?.id && args[0]?.data?.id === args[0]?.id) {
+      const parsed = parse(e instanceof PromiseRejectionEvent ? e.reason.stack : e instanceof Error ? e.stack : "");
+
+      if (parsed?.[0]?.file?.includes("/tpa/v3/") || (args[0]?.data?.id && args[0]?.data?.id === args[0]?.id)) {
         this.renderer?.notifyCrash(args[0]?.data as App, e as Error);
       }
+
       this.makeNotBusy(`Stopped spawn of ${pid}: uncaught error during construct`);
       __Console__.warn(e);
       __Console__.timeEnd(`process spawn: ${pid}`);

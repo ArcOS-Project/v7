@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { tsParticles } from "@tsparticles/engine";
   import { loadFirePreset } from "@tsparticles/preset-fire";
+  import { onMount } from "svelte";
 
   onMount(async () => {
     await loadFirePreset(tsParticles);

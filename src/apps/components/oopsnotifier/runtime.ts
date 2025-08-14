@@ -33,11 +33,16 @@ export class OopsNotifierRuntime extends AppProcess {
   }
 
   async start() {
-    this.installed = !!(await this.userDaemon?.serviceHost
-      ?.getService<ApplicationStorage>("AppStorage")
-      ?.getAppById(this.data.id));
-
     this.parseStack();
+
+    const storage = this.userDaemon?.serviceHost?.getService<ApplicationStorage>("AppStorage");
+
+    if (storage && this.stackFrames[0].parsed?.appId) {
+      const app = await storage.getAppById(this.stackFrames[0].parsed.appId);
+      if (app) this.data ||= app;
+    }
+
+    this.installed = !!(await storage?.getAppById(this.data.id));
 
     this.soundBus.playSound("arcos.dialog.error");
   }

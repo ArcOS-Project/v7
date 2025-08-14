@@ -1,5 +1,4 @@
 import { toForm } from "$ts/form";
-import type { WaveKernel } from "$ts/kernel";
 import { Backend } from "$ts/server/axios";
 import { authcode } from "$ts/util";
 import type {
@@ -34,8 +33,8 @@ export class SharedDrive extends FilesystemDrive {
     quota: true,
     bulk: true,
   };
-  constructor(kernel: WaveKernel, uuid: string, letter: string, info: SharedDriveType, token: string) {
-    super(kernel, uuid, letter);
+  constructor(uuid: string, letter: string, info: SharedDriveType, token: string) {
+    super(uuid, letter);
 
     this.token = token;
     this.shareInfo = info;

@@ -1,5 +1,5 @@
 import type { WaveKernel } from "$ts/kernel";
-import { KernelModule } from "$ts/kernel/module";
+import { getKMod, KernelModule } from "$ts/kernel/module";
 import { ProcessHandler } from "$ts/process/handler";
 import type { ArcLangOptions } from "$types/lang";
 import { LangError } from "./error";
@@ -7,7 +7,7 @@ import { Interpreter } from "./interpreter";
 import { DefaultArcLangOptions } from "./store";
 
 export class ArcLang extends KernelModule {
-  stack = this.kernel.getModule<ProcessHandler>("stack");
+  stack = getKMod<ProcessHandler>("stack");
   locked = false;
 
   constructor(kernel: WaveKernel, id: string) {

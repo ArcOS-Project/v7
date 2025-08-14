@@ -1,7 +1,9 @@
 import { SystemDispatch } from "$ts/dispatch";
 import { Filesystem } from "$ts/fs";
 import { Environment } from "$ts/kernel/env";
+import { getKMod } from "$ts/kernel/module";
 import { SoundBus } from "$ts/soundbus";
+import type { StateHandler } from "$ts/state";
 import { LogLevel } from "../../types/logging";
 import { WaveKernel } from "../kernel";
 import { Log } from "../kernel/logging";
@@ -14,7 +16,6 @@ export class Process {
   public handler: ProcessHandler;
   public dispatch: ProcessDispatch;
   public systemDispatch: SystemDispatch;
-  public kernel: WaveKernel;
   public pid: number;
   public parentPid: number;
   public name = "";
@@ -28,13 +29,12 @@ export class Process {
     this._disposed = false;
     this.pid = pid;
     this.parentPid = parentPid || 0;
-    this.kernel = WaveKernel.get();
     this.name ||= this.constructor.name;
     this.dispatch = new ProcessDispatch(this);
-    this.systemDispatch = this.kernel.getModule<SystemDispatch>("dispatch");
-    this.env = this.kernel.getModule<Environment>("env");
-    this.soundBus = this.kernel.getModule<SoundBus>("soundbus");
-    this.fs = this.kernel.getModule<Filesystem>("fs");
+    this.systemDispatch = getKMod<SystemDispatch>("dispatch");
+    this.env = getKMod<Environment>("env");
+    this.soundBus = getKMod<SoundBus>("soundbus");
+    this.fs = getKMod<Filesystem>("fs");
   }
 
   protected async stop(): Promise<any> {

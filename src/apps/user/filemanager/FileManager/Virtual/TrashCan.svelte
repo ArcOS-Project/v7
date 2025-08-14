@@ -1,12 +1,12 @@
 <script lang="ts">
+  import { MessageBox } from "$ts/dialog";
+  import { TrashIcon } from "$ts/images/general";
   import { TrashCanService } from "$ts/server/user/trash";
   import { Plural } from "$ts/util";
+  import type { TrashIndexNode } from "$types/trash";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../../runtime";
   import DeletedItem from "./TrashCan/DeletedItem.svelte";
-  import { MessageBox } from "$ts/dialog";
-  import type { TrashIndexNode } from "$types/trash";
-  import { TrashIcon } from "$ts/images/general";
 
   const { process }: { process: FileManagerRuntime } = $props();
   const { selection } = process;
