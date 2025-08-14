@@ -7,6 +7,7 @@ import { DriveIcon } from "$ts/images/filesystem";
 import { DefaultMimeIcon, TextMimeIcon } from "$ts/images/mime";
 import type { ProcessHandler } from "$ts/process/handler";
 import { UserPaths } from "$ts/server/user/store";
+import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import type { AppKeyCombinations } from "$types/accelerator";
 import type { App, AppProcessData } from "$types/app";
@@ -56,11 +57,12 @@ export class WriterRuntime extends AppProcess {
       this.pid
     );
 
+    prog.show();
+
     try {
       const contents = await this.fs.readFile(path, (progress) => {
         prog.setWait(false);
         prog.setWork(true);
-        prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);
       });
@@ -81,7 +83,10 @@ export class WriterRuntime extends AppProcess {
       this.windowTitle.set(this.filename());
       this.windowIcon.set(this.mimeIcon());
     } catch (e) {
-      MessageBox(
+      await Sleep(0);
+      await prog?.stop();
+
+      await MessageBox(
         {
           title: "Failed to read file",
           message: `Writer was unable to open the file you requested: ${e}`,
@@ -92,7 +97,6 @@ export class WriterRuntime extends AppProcess {
         this.pid,
         true
       );
-      prog?.stop();
     }
   }
 

@@ -15,6 +15,7 @@ import { CodAccelerators } from "./accelerators";
 import { CodAltMenu } from "./altmenu";
 import type { CodLang } from "./types";
 import { CodTranslations } from "./store";
+import { Sleep } from "$ts/sleep";
 
 export class CodRuntime extends AppProcess {
   language = Store<CodLang>("plaintext");
@@ -33,13 +34,6 @@ export class CodRuntime extends AppProcess {
   }
 
   public acceleratorStore: AppKeyCombinations = CodAccelerators(this);
-
-  async start() {
-    const split = this.renderArgs?.path?.split?.(".");
-    const extension = split?.[split?.length - 1];
-
-    if (extension && CodTranslations[extension]) this.language.set(CodTranslations[extension]);
-  }
 
   async render({ path }: { path: string }) {
     this.altMenu.set(CodAltMenu(this));
@@ -60,16 +54,17 @@ export class CodRuntime extends AppProcess {
       this.pid
     );
 
+    prog.show();
+
     try {
       const contents = await this.fs.readFile(path, (progress) => {
         prog.setWait(false);
         prog.setWork(true);
-        prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);
       });
 
-      prog.stop();
+      await prog.stop();
 
       if (!contents) {
         throw new Error("Failed to get the contents of the file.");
@@ -84,11 +79,19 @@ export class CodRuntime extends AppProcess {
       this.mimeIcon.set(this.userDaemon?.getMimeIconByFilename(path) || DefaultMimeIcon);
       this.windowTitle.set(this.filename());
       this.windowIcon.set(this.mimeIcon());
+
+      const split = path.split(".");
+      const extension = split[split.length - 1];
+
+      if (extension && CodTranslations[extension]) this.language.set(CodTranslations[extension]);
     } catch (e) {
-      MessageBox(
+      await Sleep(0);
+      await prog?.stop();
+
+      await MessageBox(
         {
           title: "Failed to read file",
-          message: `Writer was unable to open the file you requested: ${e}`,
+          message: `Cod was unable to open the file you requested: ${e}`,
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           image: WarningIcon,
           sound: "arcos.dialog.error",
@@ -96,7 +99,6 @@ export class CodRuntime extends AppProcess {
         this.pid,
         true
       );
-      prog?.stop();
     }
   }
 
