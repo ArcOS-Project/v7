@@ -77,6 +77,8 @@
 #OopsStackTracer > div.body div.stack-frame.first {
   font-family: "Fira Code";
   font-size: 12px;
+  line-height: 16px;
+  align-items: start;
 }
 
 #OopsStackTracer > div.body div.stack-frame img {

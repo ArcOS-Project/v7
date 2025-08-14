@@ -1,17 +1,17 @@
-import "$css/apps/user/writer.css";
-import { TextMimeIcon } from "$ts/images/mime";
+import "$css/apps/user/cod.css";
+import { CodIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
-import { WriterRuntime } from "./runtime";
-import Writer from "./Writer.svelte";
+import Cod from "./Cod.svelte";
+import { CodRuntime } from "./runtime";
 
-export const WriterApp: App = {
+export const CodApp: App = {
   metadata: {
-    name: "Writer",
+    name: "Cod",
     author: "Izaak Kuipers",
-    version: "5.0.0",
-    icon: TextMimeIcon,
-    appGroup: "utilities",
+    version: "1.0.0",
+    icon: CodIcon,
   },
+  position: { centered: true },
   size: {
     w: 700,
     h: 500,
@@ -23,9 +23,6 @@ export const WriterApp: App = {
   maxSize: {
     w: 1800,
     h: 1000,
-  },
-  position: {
-    centered: true,
   },
   controls: {
     maximize: true,
@@ -40,17 +37,16 @@ export const WriterApp: App = {
     fullscreen: false,
   },
   opens: {
-    extensions: [".txt", ".msl"],
+    extensions: [".json", ".svg", ".html", ".css", ".js", ".tpa", "arcterm.conf", ".md", ".ini", ".xml"],
   },
   assets: {
-    component: Writer as any,
-    runtime: WriterRuntime,
+    runtime: CodRuntime,
+    component: Cod as any,
   },
-  id: "writer",
   acceleratorDescriptions: {
     "Alt+O": "Select a file to edit",
     "Alt+Shift+S": "Save file under a different name",
     "Alt+S": "Save file",
-    F3: "Open Search & Replace",
   },
+  id: "cod",
 };

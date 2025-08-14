@@ -1,0 +1,57 @@
+#cod > div.body {
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+}
+
+#cod > div.body textarea.zen {
+  padding: 60px 20%;
+}
+
+#cod > div.body textarea.monospace {
+  font-family: "Source Code Pro";
+}
+
+#cod > div.body textarea.wrap {
+  white-space: pre-wrap;
+}
+
+#cod > div.body textarea.no-statusbar {
+  height: 100%;
+}
+
+#cod > div.body div.status-bar {
+  display: flex;
+  align-items: center;
+  height: 27px;
+  border-top: var(--win-border);
+}
+
+#cod > div.body div.status-bar > div {
+  height: 100%;
+  padding: 0 10px;
+  line-height: 26px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: fit-content;
+}
+
+#cod > div.body div.status-bar > div.file {
+  width: 0;
+  flex-grow: 1;
+  min-width: unset;
+}
+
+#cod > div.body div.status-bar > div.file * {
+  vertical-align: middle;
+}
+
+#cod > div.body div.status-bar > div.file img {
+  height: 16px;
+}
+
+#cod > div.body div.status-bar > div + div {
+  border-left: var(--win-border);
+}

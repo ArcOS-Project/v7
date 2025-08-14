@@ -6,6 +6,7 @@
   import markdown from "highlight.js/lib/languages/markdown";
   import xml from "highlight.js/lib/languages/xml";
   import yaml from "highlight.js/lib/languages/yaml";
+  import plaintext from "highlight.js/lib/languages/plaintext";
 
   import type { ReadableStore } from "$ts/writable";
   import hljs from "highlight.js";
@@ -30,6 +31,7 @@
     hljs.registerLanguage("markdown", markdown);
     hljs.registerLanguage("yaml", yaml);
     hljs.registerLanguage("xml", xml);
+    hljs.registerLanguage("plaintext", plaintext);
 
     value.subscribe(update);
     update($value);
@@ -45,6 +47,10 @@
 
     highlight = hljs.highlight(v, { language }).value;
   }
+
+  $effect(() => {
+    update($value);
+  });
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->

@@ -40,6 +40,7 @@ import { ArcTermApp } from "$apps/user/arcterm/metadata";
 import { BugHuntApp } from "$apps/user/bughunt/metadata";
 import { BugReportsCreatorApp } from "$apps/user/bughuntcreator/metadata";
 import { CalculatorApp } from "$apps/user/calculator/metadata";
+import { CodApp } from "$apps/user/cod/metadata";
 import { FileManagerApp } from "$apps/user/filemanager/metadata";
 import { HexEditorApp } from "$apps/user/hexedit/metadata";
 import { ImageViewerApp } from "$apps/user/imageviewer/metadata";
@@ -114,6 +115,7 @@ export const BuiltinApps: AppStorage = [
   ArcFind,
   AppStoreApp,
   MultiUpdateGuiApp,
+  CodApp,
 ];
 
 export const AdminApps: AppStorage = [AdminPortalApp];

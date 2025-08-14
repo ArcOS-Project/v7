@@ -18,3 +18,4 @@ export { default as ServiceInfoIcon } from "$assets/apps/serviceinfo.svg";
 export { default as SettingsIcon } from "$assets/apps/settings.svg";
 export { default as TerminalWindowIcon } from "$assets/apps/terminalwindow.svg";
 export { default as TextEditorIcon } from "$assets/apps/texteditor.svg";
+export { default as CodIcon } from "$assets/apps/cod.svg";
