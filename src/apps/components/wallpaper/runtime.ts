@@ -96,12 +96,10 @@ export class WallpaperRuntime extends AppProcess {
 
   findAndDeleteOrphans(contents: DirectoryReadReturn | undefined) {
     const orphaned = this.orphaned();
-    const udata = this.userPreferences();
-    udata.appPreferences.desktopIcons ||= {};
-    const desktopIcons = udata.appPreferences.desktopIcons;
+    const config = this.Configuration();
     let orphanedCount = 0;
 
-    for (const id of Object.keys(desktopIcons)) {
+    for (const id of Object.keys(config)) {
       const items = [
         ...(contents?.files.filter((f) => id === `icon$${f.itemId}`) || []),
         ...(contents?.dirs.filter((d) => id === `icon$${d.itemId}`) || []),
@@ -111,12 +109,12 @@ export class WallpaperRuntime extends AppProcess {
         this.Log(`Found orphaned icon position '${id}' in user preferences, deleting`, LogLevel.warning);
 
         orphaned.push(id);
-        delete udata.appPreferences.desktopIcons[id];
+        delete config[id];
         orphanedCount++;
       }
     }
 
-    if (orphanedCount) this.userPreferences.set(udata);
+    if (orphanedCount) this.Configuration.set(config);
     this.orphaned.set(orphaned);
   }
 
@@ -126,27 +124,24 @@ export class WallpaperRuntime extends AppProcess {
     if (!wrapper) return { x: 0, y: 0 };
 
     return new Promise((r) => {
-      this.userPreferences.update((v) => {
+      this.Configuration.update((v) => {
         function resolve(x: number, y: number) {
           r({ x, y });
-          v.appPreferences.desktopIcons[`icon$${identifier}`] = { x, y };
+          v[`icon$${identifier}`] = { x, y };
           return v;
         }
 
         let x = 0;
         let y = 0;
 
-        const desktopIcons = v?.appPreferences?.desktopIcons || {};
-
         function taken(x: number, y: number): boolean {
-          const appdata = desktopIcons as Record<string, { x: number; y: number }>;
-          const values = Object.values(appdata);
+          const values = Object.values(v);
           const filtered = values.filter((v) => v.x == x * 80 && v.y == y * 85);
 
           return !!filtered.length;
         }
 
-        if (!Object.keys(desktopIcons).join(",").includes("icon$")) {
+        if (!Object.keys(v).join(",").includes("icon$")) {
           return resolve(x, y);
         }
 
