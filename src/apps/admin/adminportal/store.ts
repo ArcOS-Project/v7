@@ -1,5 +1,6 @@
 import { DevelopmentLogo, EsrLogo, RcLogo, ReleaseLogo, UnstableLogo } from "$ts/images/branding";
 import { AdminScopes } from "$ts/server/admin/store";
+import { sliceIntoChunks } from "$ts/util";
 import Activities from "./AdminPortal/Page/Activities.svelte";
 import AuditLog from "./AdminPortal/Page/AuditLog.svelte";
 import BugHunt from "./AdminPortal/Page/BugHunt.svelte";
@@ -242,7 +243,10 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       icon: "scroll-text",
       content: AuditLog,
       props: async (process) => {
-        return { audits: (await process.admin.getAuditLog()).reverse(), users: await process.admin.getAllUsers() };
+        return {
+          audits: sliceIntoChunks((await process.admin.getAuditLog()).reverse(), 20),
+          users: await process.admin.getAllUsers(),
+        };
       },
       scopes: [AdminScopes.adminAuditLog, AdminScopes.adminUsersList],
     },

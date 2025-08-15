@@ -15,6 +15,7 @@ export class AdminPortalRuntime extends AppProcess {
   currentPage = Store<string>("");
   switchPageProps = Store<Record<string, any>>({});
   redacted = Store<boolean>(true);
+  propSize = Store<number>(0);
   shares: ShareManager;
   admin: AdminBootstrapper;
 

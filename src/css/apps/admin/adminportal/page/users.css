@@ -146,8 +146,7 @@
 }
 
 #AdminPortal div.container.users div.user-row div.segment.admin,
-#AdminPortal div.container.users div.user-row div.segment.approved,
-#AdminPortal div.container.users div.user-row div.segment.account-number {
+#AdminPortal div.container.users div.user-row div.segment.approved {
   width: 35px;
   height: 35px;
   line-height: 35px;

@@ -19,7 +19,6 @@
         </div>
         <div class="segment username">Username</div>
         <div class="segment created">Created</div>
-        <div class="segment account-number">#</div>
         <div class="segment approved">APP</div>
         <div class="segment admin">ADM</div>
         <div class="segment kick">KCK</div>

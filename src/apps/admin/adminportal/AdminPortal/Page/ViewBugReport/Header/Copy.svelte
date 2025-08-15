@@ -20,7 +20,7 @@
             action: () => {
               const message: MessageCreateData = {
                 title: `Report ${report._id}`,
-                body: `Please refer to the report in the attachments.`,
+                body: `Please refer to the below bug report.\n\n[arc://admin_bugrep?id=${report._id}](arc://admin_bugrep?id=${report._id})`,
                 attachments: [],
                 recipients: [],
               };
@@ -37,6 +37,14 @@
             caption: "Copy ID",
             action: () => {
               navigator.clipboard.writeText(report._id!);
+            },
+          },
+          {
+            caption: "Copy Proto",
+            action: () => {
+              navigator.clipboard.writeText(
+                `[\`${report._id}\`](https://v7.izkuipers.nl/?proto=arc://admin_bugrep?id=${report._id})`,
+              );
             },
             suggested: true,
           },

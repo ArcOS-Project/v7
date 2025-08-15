@@ -78,6 +78,7 @@ import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
 import { KernelStateHandler } from "$ts/kernel/getters";
+import { BETA } from "$ts/env";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -1159,21 +1160,22 @@ export class UserDaemon extends Process {
 
     if (this.safeMode) this.safeModeNotice();
 
-    this.sendNotification({
-      title: "Have any feedback?",
-      message:
-        "I'd love to hear it! There's a feedback button in the titlebar of every window. Don't hesitate to tell me how I'm doing stuff wrong, what you want to see or what I forgot. I want to hear all of it.",
-      buttons: [
-        {
-          caption: "Send feedback",
-          action: () => {
-            this.iHaveFeedback(this.handler.getProcess(+this.env.get("shell_pid"))!);
+    if (BETA)
+      this.sendNotification({
+        title: "Have any feedback?",
+        message:
+          "I'd love to hear it! There's a feedback button in the titlebar of every window. Don't hesitate to tell me how I'm doing stuff wrong, what you want to see or what I forgot. I want to hear all of it.",
+        buttons: [
+          {
+            caption: "Send feedback",
+            action: () => {
+              this.iHaveFeedback(this.handler.getProcess(+this.env.get("shell_pid"))!);
+            },
           },
-        },
-      ],
-      icon: "message-square-heart",
-      timeout: 6000,
-    });
+        ],
+        icon: "message-square-heart",
+        timeout: 6000,
+      });
 
     if (navigator.userAgent.toLowerCase().includes("firefox")) {
       await MessageBox(
@@ -2527,7 +2529,6 @@ export class UserDaemon extends Process {
 
 ------
 
-- Account number #${this.userInfo?.accountNumber}
 - Username: ${this.userInfo?.username}
 - User ID: ${this.userInfo?._id}
 

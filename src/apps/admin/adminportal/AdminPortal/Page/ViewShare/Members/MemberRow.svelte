@@ -48,7 +48,6 @@
   </div>
   <div class="segment username">{profile.username}</div>
   <div class="segment created">{created}</div>
-  <div class="segment account-number">{profile.accountNumber}</div>
   <div class="segment approved">{member.approved ? "Yes" : "No"}</div>
   <div class="segment admin">{member.admin ? "Yes" : "No"}</div>
   <div class="segment kick">

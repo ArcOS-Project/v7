@@ -20,12 +20,10 @@
     email: "",
     hasTotp: false,
     restricted: false,
-    accountNumber: -1,
     storageSize: 0,
     profile: {
       username: "ArcOS",
       profilePicture: ServerPfp,
-      accountNumber: -1,
       admin: true,
       dispatchClients: 0,
     },

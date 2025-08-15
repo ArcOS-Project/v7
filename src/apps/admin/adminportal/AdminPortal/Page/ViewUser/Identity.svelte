@@ -18,7 +18,6 @@
       {#if user.approved}
         <div class="badge approved">Approved</div>
       {/if}
-      <div class="badge account-number">#{user.accountNumber}</div>
     </div>
   </div>
 </div>

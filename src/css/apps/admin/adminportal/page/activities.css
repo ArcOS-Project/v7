@@ -1,6 +1,18 @@
+#AdminPortal .container.activities div.header {
+  height: 30px;
+  padding-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#AdminPortal .container.activities div.header h1 {
+  opacity: 0.5;
+}
 #AdminPortal .container.activities div.activities-list {
   overflow-y: scroll;
-  height: 100%;
+  height: calc(100% - 30px);
+  border-top: var(--win-border);
 }
 
 #AdminPortal .container.activities div.row.header {

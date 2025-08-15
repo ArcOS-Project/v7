@@ -94,7 +94,7 @@ export type ViewScopesData = {
 
 export type AuditLogData = {
   users: ExpandedUserInfo[];
-  audits: AuditLog[];
+  audits: AuditLog[][];
 };
 
 //

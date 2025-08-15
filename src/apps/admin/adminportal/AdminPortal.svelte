@@ -20,6 +20,7 @@
 
   onMount(() => {
     const sub = currentPage.subscribe(async (v) => {
+      process.propSize.set(-1);
       $ready = false;
       loading = true;
       noAccess = false;
@@ -37,6 +38,7 @@
 
       Page = pageData?.content;
       pageProps = pageData?.props ? { ...$switchPageProps, ...(await pageData.props(process)) } : $switchPageProps;
+      process.propSize.set(JSON.stringify(pageProps).length);
       loading = false;
       className = v;
       $ready = true;

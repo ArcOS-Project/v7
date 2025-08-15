@@ -94,6 +94,5 @@ export const DefaultUserInfo: UserInfo = {
   updatedAt: new Date().toLocaleString(),
   restricted: false,
   hasTotp: false,
-  accountNumber: -1,
   storageSize: 1024 ** 3, // 1GB
 };

@@ -58,7 +58,6 @@
       <div class="segment email">Email</div>
     {/if}
     <div class="segment created">Created</div>
-    <div class="segment account-number">#</div>
     <div class="segment approved">APP</div>
     <div class="segment admin">ADM</div>
   </div>

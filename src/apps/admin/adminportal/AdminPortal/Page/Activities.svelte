@@ -5,6 +5,8 @@
   import dayjs from "dayjs";
   import type { AdminPortalRuntime } from "../../runtime";
   import type { ActivitiesData } from "../../types";
+  import Pagination from "../Pagination.svelte";
+  import { sliceIntoChunks } from "$ts/util";
 
   const { process, data }: { process: AdminPortalRuntime; data: ActivitiesData } = $props();
   const { redacted } = process;
@@ -15,8 +17,16 @@
       user: users.filter((u) => u._id === a.authorId)[0],
     }))
     .reverse();
+  const chunks = sliceIntoChunks(activities, 50) as ExpandedActivity[][];
+  const total = activities.length;
+
+  let currentChunk = $state(0);
 </script>
 
+<div class="header">
+  <h1>ACTIVITIES ({activities.length})</h1>
+  <Pagination bind:currentChunk chunkSize={50} totalChunks={chunks.length - 1} totalItems={total} />
+</div>
 <div class="activities-list">
   <div class="row header">
     <div class="segment icon">
@@ -28,25 +38,27 @@
     <div class="segment frontend">Frontend</div>
     <div class="segment timestamp">Timestamp</div>
   </div>
-  {#each activities as activity (activity._id)}
-    <div class="row">
-      <div class="segment icon">
-        <span class="lucide icon-{ActivityIconTranslations[activity.action]}"></span>
+  {#if chunks[currentChunk]}
+    {#each chunks[currentChunk] as activity (activity._id)}
+      <div class="row">
+        <div class="segment icon">
+          <span class="lucide icon-{ActivityIconTranslations[activity.action]}"></span>
+        </div>
+        <div class="segment username" class:redacted={$redacted}>
+          {#if activity.user}
+            <ProfilePicture height={20} fallback={activity.user.profile.profilePicture} />
+            <button class="link" onclick={() => process.switchPage("viewUser", { user: activity.user })}>
+              {activity.user.username}
+            </button>
+          {:else}
+            Stranger
+          {/if}
+        </div>
+        <div class="segment action">{ActivityCaptionTranslations[activity.action]}</div>
+        <div class="segment user-agent" title={activity.userAgent}>{activity.userAgent}</div>
+        <div class="segment frontend">{activity.location?.hostname || "Unknown"}</div>
+        <div class="segment timestamp">{dayjs(activity.createdAt).format("D MMM YYYY, HH:mm")}</div>
       </div>
-      <div class="segment username" class:redacted={$redacted}>
-        {#if activity.user}
-          <ProfilePicture height={20} fallback={activity.user.profile.profilePicture} />
-          <button class="link" onclick={() => process.switchPage("viewUser", { user: activity.user })}>
-            {activity.user.username}
-          </button>
-        {:else}
-          Stranger
-        {/if}
-      </div>
-      <div class="segment action">{ActivityCaptionTranslations[activity.action]}</div>
-      <div class="segment user-agent" title={activity.userAgent}>{activity.userAgent}</div>
-      <div class="segment frontend">{activity.location?.hostname || "Unknown"}</div>
-      <div class="segment timestamp">{dayjs(activity.createdAt).format("D MMM YYYY, HH:mm")}</div>
-    </div>
-  {/each}
+    {/each}
+  {/if}
 </div>

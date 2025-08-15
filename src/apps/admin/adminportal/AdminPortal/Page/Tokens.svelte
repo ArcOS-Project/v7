@@ -1,15 +1,32 @@
 <script lang="ts">
-  import { sortByKey } from "$ts/util";
+  import { sliceIntoChunks, sortByKey } from "$ts/util";
   import { Store } from "$ts/writable";
+  import type { ExpandedToken } from "$types/admin";
+  import { onMount } from "svelte";
   import type { AdminPortalRuntime } from "../../runtime";
   import type { TokensData } from "../../types";
+  import Pagination from "../Pagination.svelte";
   import TokenRow from "./Tokens/TokenRow.svelte";
 
   const { process, data }: { process: AdminPortalRuntime; data: TokensData } = $props();
-  const { users } = data;
+  const { users, tokens } = data;
   const sortMode = Store<string>("lastUsed");
+  const total = tokens.flat().length;
+  let chunks = $state<ExpandedToken[][]>([]);
+
+  onMount(() => {
+    sortMode.subscribe((v) => {
+      chunks = sliceIntoChunks(sortByKey(tokens, v, true), 50);
+    });
+  });
+
+  let currentChunk = $state(0);
 </script>
 
+<div class="header">
+  <h1>TOKENS ({tokens.length})</h1>
+  <Pagination bind:currentChunk chunkSize={50} totalChunks={chunks.length - 1} totalItems={total} />
+</div>
 <div class="token-list">
   <div class="row header">
     <div class="segment icon">
@@ -22,7 +39,10 @@
     <div class="segment times-used"><button class="sort-mode" onclick={() => ($sortMode = "timesUsed")}>Times used</button></div>
     <div class="segment actions">Actions</div>
   </div>
-  {#each sortByKey( data.tokens.map( (t) => ({ ...t, user: users.filter((u) => u._id === t.userId)[0] }), ), $sortMode, true, ) as token (token._id)}
-    <TokenRow {token} {process} />
-  {/each}
+
+  {#if chunks[currentChunk]}
+    {#each sortByKey( chunks[currentChunk].map( (t) => ({ ...t, user: users.filter((u) => u._id === t.userId)[0] }), ), $sortMode, true, ) as token (token._id)}
+      <TokenRow {token} {process} />
+    {/each}
+  {/if}
 </div>

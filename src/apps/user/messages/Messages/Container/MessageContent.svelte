@@ -20,7 +20,6 @@
 
     user = (isSent ? await process.userInfo($message.recipient) : $message.author!) || {
       username: "(deleted user)",
-      accountNumber: -1,
       profilePicture: ProfilePictures.def,
       admin: false,
       dispatchClients: 0,

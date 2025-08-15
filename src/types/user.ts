@@ -15,7 +15,6 @@ export interface UserInfo {
   createdAt: string;
   hasTotp: boolean;
   restricted: boolean;
-  accountNumber: number;
   storageSize: number;
 }
 
@@ -157,7 +156,6 @@ export interface PublicUserInfo {
   username: string;
   displayName?: string;
   profilePicture: string;
-  accountNumber: number;
   admin: boolean;
   dispatchClients: number;
 }

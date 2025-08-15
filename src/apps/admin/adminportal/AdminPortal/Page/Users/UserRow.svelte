@@ -30,7 +30,6 @@
     <div class="segment email" class:redacted={$redacted}>{user.email}</div>
   {/if}
   <div class="segment created">{created}</div>
-  <div class="segment account-number">{user.accountNumber}</div>
   <div class="segment approved" class:is-approved={user.approved}>{user.approved ? "Yes" : "No"}</div>
   <div class="segment admin" class:is-admin={user.admin}>{user.admin ? "Yes" : "No"}</div>
 </div>

@@ -79,7 +79,6 @@
 }
 
 #AdminPortal > div.body div.status-bar button.lock {
-  margin-left: auto;
   width: 20px;
   height: 20px;
   padding: 0;
@@ -92,6 +91,15 @@
   color: var(--clr-red-bg);
 }
 
+#AdminPortal > div.body div.status-bar div.prop-size {
+  padding: 0 10px;
+  border-left: var(--win-border);
+  border-right: var(--win-border);
+  height: 30px;
+  line-height: 30px;
+  background-color: var(--button-glass-active-bg);
+}
+
 #AdminPortal > div.body div.status-bar div.sep {
   width: 1px;
   height: 20px;
@@ -102,6 +110,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
+  margin-right: auto;
 }
 
 #AdminPortal > div.body div.status-bar div.crumbs p {
@@ -175,4 +184,28 @@
 
 #AdminPortal > div.body button {
   outline: none;
+}
+
+#AdminPortal .header div.pagination {
+  height: 30px;
+  display: flex;
+  align-items: center;
+}
+
+#AdminPortal .header div.pagination button {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-left: var(--win-border);
+  font-size: 16px;
+  padding: 0;
+  border-radius: 0;
+}
+
+#AdminPortal .header div.pagination span.current {
+  display: block;
+  height: 30px;
+  line-height: 30px;
+  padding: 0 10px;
+  border-left: var(--win-border);
 }

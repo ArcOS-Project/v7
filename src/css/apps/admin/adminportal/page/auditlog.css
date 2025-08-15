@@ -3,8 +3,26 @@
 }
 
 #AdminPortal .auditLog > div.page-content {
+  padding: 0;
+}
+
+#AdminPortal .auditLog div.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 30px;
+  padding-left: 10px;
+}
+#AdminPortal .auditLog div.header h1 {
+  font-weight: bold;
+  opacity: 0.5;
+}
+
+#AdminPortal .auditLog div.audit-list {
   padding: 10px;
-  overflow-y: scroll !important;
+  height: calc(100% - 30px);
+  border-top: var(--win-border);
+  overflow-y: scroll;
 }
 
 details.audit-log {
@@ -64,6 +82,7 @@ details.audit-log.has-data[open] > summary::after {
 details.audit-log div.context {
   background-color: var(--button-bg);
   padding: 10px;
+  overflow-x: scroll;
 }
 
 details.audit-log td {
