@@ -1,4 +1,6 @@
+import type { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import type { ArcTerminal } from "$ts/terminal";
+import type { Terminal } from "xterm";
 
 export interface TerminalCommand {
   keyword: string;
@@ -27,3 +29,4 @@ export interface ArcTermConfiguration {
   noLogo?: boolean;
   gooseBumps?: boolean;
 }
+export type ExpandedTerminal = Terminal & { process?: TerminalWindowRuntime };

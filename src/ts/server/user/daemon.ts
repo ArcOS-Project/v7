@@ -77,8 +77,13 @@ import { GlobalDispatch } from "../ws";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
-import { KernelStateHandler } from "$ts/kernel/getters";
+import { KernelLogs, KernelStateHandler } from "$ts/kernel/getters";
 import { BETA } from "$ts/env";
+import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
+import { Readline } from "$ts/terminal/readline/readline";
+import { TerminalWindowApp } from "$apps/components/terminalwindow/metadata";
+import type { Terminal } from "xterm";
+import type { ExpandedTerminal } from "$types/terminal";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -2908,5 +2913,20 @@ The information provided in this report is subject for review by me or another A
       );
       await Sleep(50);
     }
+  }
+
+  async TerminalWindow(pid = +this.env.get("shell_pid")): Promise<ExpandedTerminal | undefined> {
+    const process = await this.handler.spawn<TerminalWindowRuntime>(TerminalWindowRuntime, undefined, pid, {
+      data: { ...TerminalWindowApp },
+      id: TerminalWindowApp.id,
+      desktop: undefined,
+    });
+
+    if (!process?.term) return undefined;
+
+    const term: ExpandedTerminal = process.term;
+    term.process = process;
+
+    return term;
   }
 }

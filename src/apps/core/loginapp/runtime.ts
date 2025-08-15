@@ -4,6 +4,7 @@ import { TotpAuthGuiApp } from "$apps/components/totpauthgui/metadata";
 import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
 import { ProfilePictures } from "$ts/images/pfp";
 import { tryJsonParse } from "$ts/json";
+import { KernelStateHandler } from "$ts/kernel/getters";
 import { getKMod } from "$ts/kernel/module";
 import { ProtocolServiceProcess } from "$ts/proto";
 import { ServerManager } from "$ts/server";
@@ -22,7 +23,6 @@ import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
 import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps, PersistenceInfo } from "./types";
-import { KernelStateHandler } from "$ts/kernel/getters";
 
 export class LoginAppRuntime extends AppProcess {
   public DEFAULT_WALLPAPER = Store<string>("");
