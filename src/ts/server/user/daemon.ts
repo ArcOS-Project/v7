@@ -321,8 +321,6 @@ export class UserDaemon extends Process {
     } catch {
       throw new Error("UserDaemon: Failed to start filesystem supplier");
     }
-
-    await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${this.token}` } });
   }
 
   async stop() {
