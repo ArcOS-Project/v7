@@ -410,7 +410,7 @@ export const UserPathCaptions: Record<string, string> = {
   AppShortcuts: "Application Shortcuts",
 };
 
-export const HiddenUserPaths: string[] = ["Migrations", "Configuration", "System", "Trashcan", "AppShortcuts"];
+export const HiddenUserPaths: string[] = ["Migrations", "Configuration", "System", "Trashcan", "AppShortcuts", "Applications"];
 
 export const UserPathIcons: Record<string, string> = {
   Home: "house",
