@@ -1,3 +1,4 @@
+import type { ApplicationStorage } from "$ts/apps/storage";
 import { arrayToBlob } from "$ts/fs/convert";
 import { join } from "$ts/fs/util";
 import type { ProcessHandler } from "$ts/process/handler";
@@ -225,6 +226,8 @@ export class InstallerProcess extends Process {
       return false;
     }
 
+    this.checkDesktopIcon();
+
     this.installing.set(false);
     this.completed.set(true);
     this.COUNT.set(this.COUNT() + 1);
@@ -235,6 +238,29 @@ export class InstallerProcess extends Process {
   async stop() {
     await this.onStop();
     return true;
+  }
+
+  async checkDesktopIcon() {
+    if (!this.item) return;
+
+    const existing = this.userDaemon.preferences().pinnedApps.includes(this.metadata?.appId!);
+    const appStore = this.userDaemon.serviceHost?.getService<ApplicationStorage>("AppStorage");
+
+    if (existing) return;
+
+    this.userDaemon?.sendNotification({
+      title: "Pin to taskbar?",
+      message: `Do you want to pin ${this.metadata?.name} to the taskbar?`,
+      image: this.userDaemon.getAppIcon((await appStore?.getAppById(this.metadata?.appId!))!),
+      buttons: [
+        {
+          caption: "Pin to taskbar",
+          action: () => {
+            this.userDaemon.pinApp(this.metadata?.appId!);
+          },
+        },
+      ],
+    });
   }
 
   public async onStop() {
