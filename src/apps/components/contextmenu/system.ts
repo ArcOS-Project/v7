@@ -10,92 +10,92 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
         caption: "App Info",
         icon: "info",
         action: (proc: AppProcess) => {
-          proc.spawnOverlayApp("AppInfo", +proc.env.get("shell_pid"), proc.app.id);
+          proc.spawnOverlayApp("AppInfo", +proc.env.get("shell_pid"), proc?.app.id);
         },
       },
       { sep: true },
       {
         caption: "Minimize",
         action: (proc: AppProcess) => {
-          proc.handler.renderer?.toggleMinimize(proc.pid);
+          proc.handler.renderer?.toggleMinimize(proc?.pid);
         },
         icon: "chevron-down",
-        disabled: (proc: AppProcess) => !proc.app.data.controls.minimize,
-        isActive: (proc: AppProcess) => !!proc.getWindow()?.classList.contains("minimized"),
+        disabled: (proc: AppProcess) => !proc?.app.data.controls.minimize,
+        isActive: (proc: AppProcess) => !!proc?.getWindow()?.classList.contains("minimized"),
       },
       {
         caption: "Maximize",
         action: (proc: AppProcess) => {
-          proc.handler.renderer?.unsnapWindow(proc.pid);
-          proc.handler.renderer?.toggleMaximize(proc.pid);
+          proc.handler.renderer?.unsnapWindow(proc?.pid);
+          proc.handler.renderer?.toggleMaximize(proc?.pid);
         },
         icon: "chevron-up",
-        disabled: (proc: AppProcess) => !proc.app.data.controls.maximize,
-        isActive: (proc: AppProcess) => !!proc.getWindow()?.classList.contains("maximized"),
+        disabled: (proc: AppProcess) => !proc?.app.data.controls.maximize,
+        isActive: (proc: AppProcess) => !!proc?.getWindow()?.classList.contains("maximized"),
       },
       { sep: true },
       {
         caption: "Window snapping",
         icon: "fullscreen",
-        disabled: (proc: AppProcess) => !proc.app.data.controls.maximize,
-        isActive: (proc: AppProcess) => !!proc.getWindow()?.classList.contains("snapped"),
+        disabled: (proc: AppProcess) => !proc?.app.data.controls.maximize,
+        isActive: (proc: AppProcess) => !!proc?.getWindow()?.classList.contains("snapped"),
         subItems: [
           {
             caption: "None",
             icon: "x",
-            action: (proc: AppProcess) => runtime.handler.renderer?.unsnapWindow(proc.pid),
+            action: (proc: AppProcess) => runtime.handler.renderer?.unsnapWindow(proc?.pid),
           },
           { sep: true },
           {
             caption: "Left",
             icon: "arrow-left",
-            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc.pid, "left"),
-            isActive: (proc: AppProcess) => proc.getWindow()?.dataset.snapstate === "left",
+            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc?.pid, "left"),
+            isActive: (proc: AppProcess) => proc?.getWindow()?.dataset.snapstate === "left",
           },
           {
             caption: "Right",
             icon: "arrow-right",
-            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc.pid, "right"),
-            isActive: (proc: AppProcess) => proc.getWindow()?.dataset.snapstate === "right",
+            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc?.pid, "right"),
+            isActive: (proc: AppProcess) => proc?.getWindow()?.dataset.snapstate === "right",
           },
           { sep: true },
           {
             caption: "Top",
             icon: "arrow-up",
-            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc.pid, "top"),
-            isActive: (proc: AppProcess) => proc.getWindow()?.dataset.snapstate === "top",
+            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc?.pid, "top"),
+            isActive: (proc: AppProcess) => proc?.getWindow()?.dataset.snapstate === "top",
           },
           {
             caption: "Bottom",
             icon: "arrow-down",
-            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc.pid, "bottom"),
-            isActive: (proc: AppProcess) => proc.getWindow()?.dataset.snapstate === "bottom",
+            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc?.pid, "bottom"),
+            isActive: (proc: AppProcess) => proc?.getWindow()?.dataset.snapstate === "bottom",
           },
           { sep: true },
           {
             caption: "Top Left",
             icon: "arrow-up-left",
-            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc.pid, "top-left"),
-            isActive: (proc: AppProcess) => proc.getWindow()?.dataset.snapstate === "top-left",
+            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc?.pid, "top-left"),
+            isActive: (proc: AppProcess) => proc?.getWindow()?.dataset.snapstate === "top-left",
           },
           {
             caption: "Top Right",
             icon: "arrow-up-right",
-            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc.pid, "top-right"),
-            isActive: (proc: AppProcess) => proc.getWindow()?.dataset.snapstate === "top-right",
+            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc?.pid, "top-right"),
+            isActive: (proc: AppProcess) => proc?.getWindow()?.dataset.snapstate === "top-right",
           },
           { sep: true },
           {
             caption: "Bottom Left",
             icon: "arrow-down-left",
-            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc.pid, "bottom-left"),
-            isActive: (proc: AppProcess) => proc.getWindow()?.dataset.snapstate === "bottom-left",
+            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc?.pid, "bottom-left"),
+            isActive: (proc: AppProcess) => proc?.getWindow()?.dataset.snapstate === "bottom-left",
           },
           {
             caption: "Bottom Right",
             icon: "arrow-down-right",
-            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc.pid, "bottom-right"),
-            isActive: (proc: AppProcess) => proc.getWindow()?.dataset.snapstate === "bottom-right",
+            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc?.pid, "bottom-right"),
+            isActive: (proc: AppProcess) => proc?.getWindow()?.dataset.snapstate === "bottom-right",
           },
         ],
       },
@@ -106,7 +106,7 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
           proc.closeWindow();
         },
         image: ShutdownIcon,
-        disabled: (proc: AppProcess) => !proc.app.data.controls.close,
+        disabled: (proc: AppProcess) => !proc?.app.data.controls.close,
       },
     ],
   };
