@@ -52,6 +52,10 @@ div.window:not(.core).maximized {
   transition: all 0.3s !important;
 }
 
+div.window:not(.core).maximized.no-shell {
+  --taskbar-allocation: 0px;
+}
+
 div.window:not(.core).fullscreen {
   top: 0 !important;
   left: 0 !important;
@@ -92,7 +96,7 @@ div.window:not(.core):not(.glass) > div.body {
   background-color: var(--win-bg);
 }
 
-div.window:not(.core).minimized {
+div.window:not(.core).minimized:not(.no-shell) {
   opacity: 0 !important;
   visibility: hidden !important;
   transform-origin: top !important;
@@ -162,4 +166,21 @@ div.window:not(.core).ummaximizing {
 #SystemShortcutsProc,
 #ArcFindProc {
   display: none;
+}
+
+div.window.minimized.no-shell {
+  width: 200px !important;
+  min-width: 200px !important;
+  max-width: 200px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  opacity: 0.5 !important;
+  position: fixed !important;
+  bottom: 5px !important;
+  right: 5px !important;
+  top: unset !important;
+  left: unset !important;
+  transform: none !important;
+  translate: none !important;
 }

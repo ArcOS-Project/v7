@@ -61,12 +61,15 @@ export class AppRenderer extends Process {
 
     body.className = "body";
 
+    const shell = this.handler.getProcess(+this.env.get("shell_pid"));
+
     window.className = "window shell-colored";
     window.setAttribute("data-pid", process.pid.toString());
     window.addEventListener("click", () => {
       this.lastInteract = process;
     });
     window.id = data.id;
+    window.classList.toggle("no-shell", !shell);
 
     process.userDaemon?.preferences.subscribe((v) => {
       window.classList.toggle("colored", v.shell.taskbar.colored && !app.data.core);
