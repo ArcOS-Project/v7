@@ -243,6 +243,8 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.checkForMissedMessages();
     await userDaemon.updateAppShortcutsDir();
 
+    await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
+
     userDaemon._blockLeaveInvocations = false;
   }
 
