@@ -5,8 +5,9 @@ import { ElevationIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { AdminBootstrapper } from "$ts/server/admin";
 import { Sleep } from "$ts/sleep";
-import { Store } from "$ts/writable";
-import type { App, AppProcessData } from "$types/app";
+import { Store, type ReadableStore } from "$ts/writable";
+import type { App, AppProcessData, ContextMenuItem } from "$types/app";
+import { AdminPortalAltMenu } from "./altmenu";
 import { AdminPortalPageStore } from "./store";
 import { BugHuntUserDataApp } from "./userdata/metadata";
 
@@ -36,6 +37,7 @@ export class AdminPortalRuntime extends AppProcess {
     this.admin = this.userDaemon!.serviceHost!.getService<AdminBootstrapper>("AdminBootstrapper")!;
     this.shares = this.userDaemon!.serviceHost!.getService<ShareManager>("ShareMgmt")!;
     this.switchPage(page || "dashboard", props || {});
+    this.altMenu.set(AdminPortalAltMenu(this));
   }
 
   async switchPage(pageId: string, props: Record<string, any> = {}, force = false) {
