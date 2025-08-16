@@ -44,6 +44,29 @@
   margin-left: auto;
 }
 
+#fileManager > div.body div.bottom.save div.save-name {
+  display: flex;
+  align-items: center;
+  border: var(--win-border);
+  border-radius: var(--button-border-rad);
+  width: 0;
+  flex-grow: 1;
+  height: 33px;
+  padding: 0 8px;
+}
+
+#fileManager > div.body div.bottom.save div.save-name input {
+  flex-grow: 1;
+  border: none;
+  padding: 0;
+  border-radius: 0;
+  height: 31px;
+}
+
+#fileManager > div.body div.bottom.save div.save-name span {
+  opacity: 0.5;
+}
+
 #fileManager > div.body div.bottom div.notice {
   height: 30px;
   padding: 0 10px;

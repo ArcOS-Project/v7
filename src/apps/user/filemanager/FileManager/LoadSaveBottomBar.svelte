@@ -32,7 +32,12 @@
 <div class="bottom save">
   {#if $contents}
     {#if process.loadSave?.isSave}
-      <input type="text" bind:value={$saveName} />
+      <div class="save-name">
+        <input type="text" bind:value={$saveName} />
+        {#if process.loadSave?.extensions?.[0]}
+          <span class="extension">{process.loadSave?.extensions?.[0]}</span>
+        {/if}
+      </div>
     {:else}
       {$contents.dirs.length + $contents.files.length}
       {Plural("item", $contents.dirs.length + $contents.files.length)} in {dirName || driveLetter || driveLabel}

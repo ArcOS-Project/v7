@@ -727,7 +727,7 @@ export class FileManagerRuntime extends AppProcess {
   async confirmLoadSave() {
     if (this._disposed) return;
     const selection = this.selection();
-    const saveName = this.saveName();
+    const saveName = `${this.saveName()}${this.loadSave?.extensions?.[0] || ""}`;
     const path = this.path();
     const result = this.loadSave?.multiple
       ? this.selection()
