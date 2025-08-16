@@ -6,6 +6,7 @@
   import dayjs from "dayjs";
   import { onMount } from "svelte";
   import type { MessagingAppRuntime } from "../../runtime";
+  import UserLink from "$lib/UserLink.svelte";
 
   const { process }: { process: MessagingAppRuntime } = $props();
   const { message } = process;
@@ -41,9 +42,9 @@
         <h1>{$message.title}</h1>
         <p>
           {#if isSent}
-            To {user.displayName || user.username} on {date}
+            To <UserLink {user} /> on {date}
           {:else}
-            From {user.displayName || user.username} on {date}
+            From <UserLink {user} /> on {date}
           {/if}
         </p>
       </div>

@@ -1,0 +1,14 @@
+div.window:not(.core) button.link.user-link {
+  display: inline-flex;
+  align-items: baseline;
+  text-decoration: none !important;
+  gap: 5px;
+}
+
+div.window:not(.core) button.user-link span {
+  text-decoration: none;
+}
+
+div.window:not(.core) button.user-link div.pfprenderer {
+  translate: 0 2px;
+}

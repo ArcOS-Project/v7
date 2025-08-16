@@ -9,7 +9,7 @@
   function dialog() {
     MessageBox(
       {
-        title: "src/lib/UserLink.svelte",
+        title: new URL(import.meta.url).pathname,
         message: "Not implemented",
         image: DefaultIcon,
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
@@ -20,9 +20,9 @@
 </script>
 
 {#if user.displayName || user.username || fallback}
-  <button class="user-link" onclick={dialog} title={user.username || fallback}>
+  <button class="link user-link" onclick={dialog} title={user.username || fallback}>
     {#if !noPfp}
-      <ProfilePicture height={14} fallback={user.profilePicture} online={user.dispatchClients > 0} showOnline />
+      <ProfilePicture height={14} fallback={user.profilePicture} />
     {/if}
     <span>{user.displayName || user.username || fallback}</span>
   </button>

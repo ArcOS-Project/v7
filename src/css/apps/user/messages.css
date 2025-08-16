@@ -295,8 +295,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: var(--accent-darkest);
-  font-weight: normal;
+  color: var(--accent-suggested-fg);
+  font-weight: bold;
   padding: 0 15px;
   padding-left: 10px;
   height: 30px;
@@ -308,6 +308,7 @@
 
 #Messages > div.body div.container div.action-bar button.compose span.lucide {
   font-size: 16px;
+  font-weight: normal;
 }
 
 #Messages > div.body div.container div.action-bar button.lucide {
