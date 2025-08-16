@@ -14,6 +14,17 @@ div.shell div.startmenu div.bottom span.lucide {
   font-size: 20px;
 }
 
+div.shell div.startmenu div.bottom form.search div.loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.5;
+}
+
+div.shell div.startmenu div.bottom form.search div.html-spinner {
+  animation-duration: 0.5s;
+}
+
 div.shell div.startmenu div.bottom form.search {
   flex-grow: 1;
   display: flex;

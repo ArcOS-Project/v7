@@ -2,9 +2,11 @@
   import { Sleep } from "$ts/sleep";
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../../runtime";
+  import Spinner from "$lib/Spinner.svelte";
+  import HtmlSpinner from "$lib/HtmlSpinner.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
-  const { searchQuery, startMenuOpened } = process;
+  const { searchQuery, startMenuOpened, searchLoading } = process;
 
   let searchBar = $state<HTMLInputElement>();
 
@@ -28,7 +30,12 @@
     }}
     autocomplete="off"
   >
-    {#if !process.safeMode}
+    {#if $searchLoading}
+      <div class="loading">
+        <HtmlSpinner height={16} thickness={2} />
+        <span>Refreshing</span>
+      </div>
+    {:else if !process.safeMode}
       <span class="lucide icon-search"></span>
       <input
         type="text"

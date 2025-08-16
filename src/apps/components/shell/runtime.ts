@@ -26,6 +26,7 @@ export class ShellRuntime extends AppProcess {
   public SelectionIndex = Store<number>(0);
   public FullscreenCount = Store<Record<string, number>>({});
   public openedTrayPopup = Store<string>();
+  public searchLoading = Store<boolean>(true);
   public trayHost?: TrayHostRuntime;
   public arcFind?: ArcFindRuntime;
   public ready = Store<boolean>(false);
@@ -86,8 +87,10 @@ export class ShellRuntime extends AppProcess {
   }
 
   async gotReadySignal() {
+    this.Log("Got ready signal!");
     this.trayHost = this.handler.getProcess(+this.env.get("trayhost_pid"))!;
     this.arcFind = this.handler.getProcess(+this.env.get("arcfind_pid"))!;
+    this.arcFind.loading.subscribe((v) => this.searchLoading.set(v));
     this.ready.set(true);
   }
 

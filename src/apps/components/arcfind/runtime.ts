@@ -6,6 +6,7 @@ import { LogoutIcon, RestartIcon, ShutdownIcon } from "$ts/images/power";
 import type { ProcessHandler } from "$ts/process/handler";
 import { UserPaths } from "$ts/server/user/store";
 import { UUID } from "$ts/uuid";
+import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { PathedFileEntry, RecursiveDirectoryReadReturn } from "$types/fs";
 import type { SearchItem } from "$types/search";
@@ -14,23 +15,26 @@ import Fuse from "fuse.js";
 
 export class ArcFindRuntime extends AppProcess {
   private fileSystemIndex: PathedFileEntry[] = [];
+  private searchItems: SearchItem[] = [];
+  public loading = Store<boolean>(false);
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
 
-    this.systemDispatch.subscribe("fs-flush-file", () => {
-      this.fileSystemIndex = []; // Clear the filesystem cache if a file has changed
-    });
-
-    this.getFilesystemSearchSupplier(this.userPreferences());
+    this.systemDispatch.subscribe("fs-flush-file", () => this.refresh());
   }
 
   async start() {
     this.env.set("arcfind_pid", this.pid);
+    this.refresh();
   }
 
-  async Search(query: string) {
-    if (this.safeMode) return [];
+  async refresh() {
+    this.Log("Refreshing ArcTerm");
+
+    if (this.loading()) return;
+
+    this.loading.set(true);
 
     const preferences = this.userPreferences();
     const sources = {
@@ -41,9 +45,7 @@ export class ArcFindRuntime extends AppProcess {
     const items: SearchItem[] = [];
 
     if (sources.filesystem) items.push(...(await this.getFilesystemSearchSupplier(preferences)));
-
     if (sources.apps) items.push(...(await this.getAppSearchSupplier(preferences)));
-
     if (sources.power)
       items.push(
         {
@@ -72,12 +74,20 @@ export class ArcFindRuntime extends AppProcess {
         }
       );
 
+    this.searchItems = items;
+    this.loading.set(false);
+    return items;
+  }
+
+  async Search(query: string) {
+    if (this.safeMode || this.loading()) return [];
+
     const options = {
       includeScore: true,
       keys: ["caption", "description"],
     };
 
-    const fuse = new Fuse(items, options);
+    const fuse = new Fuse(this.searchItems, options);
     const result = fuse.search(query);
 
     return result.map((r) => ({ ...r, id: UUID() })); // Add a UUID to each search result
