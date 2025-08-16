@@ -46,7 +46,7 @@
   input[type="checkbox"]:disabled,
   input[type="radio"]:disabled {
     --b: var(--disabled);
-    cursor: url("../../../../assets/cursors/forbidden.cur"), auto;
+    cursor: not-allowed;
     opacity: 0.9 !important;
   }
 
@@ -58,7 +58,7 @@
 
   input[type="checkbox"]:disabled + label,
   input[type="radio"]:disabled + label {
-    cursor: url("../../../../assets/cursors/forbidden.cur");
+    cursor: not-allowed;
   }
 
   input[type="checkbox"]:hover:not(:checked):not(:disabled),

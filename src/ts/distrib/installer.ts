@@ -249,8 +249,8 @@ export class InstallerProcess extends Process {
     if (existing) return;
 
     this.userDaemon?.sendNotification({
-      title: "Pin to taskbar?",
-      message: `Do you want to pin ${this.metadata?.name} to the taskbar?`,
+      title: `Pin ${this.metadata?.name}`,
+      message: `Do you want to pin ${this.metadata?.name} to the taskbar so that you can easily launch it in the future?`,
       image: this.userDaemon.getAppIcon((await appStore?.getAppById(this.metadata?.appId!))!),
       buttons: [
         {
