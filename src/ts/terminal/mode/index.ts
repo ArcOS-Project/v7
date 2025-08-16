@@ -148,7 +148,7 @@ export class TerminalMode extends Process {
       this.rl?.println("Starting share management");
       await userDaemon.startShareManager();
 
-      userDaemon.startApplicationStorage();
+      userDaemon.appStorage();
 
       if (userDaemon.userInfo.admin) {
         this.rl?.println("Activating admin bootstrapper");

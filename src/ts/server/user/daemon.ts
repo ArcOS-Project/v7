@@ -147,13 +147,13 @@ export class UserDaemon extends Process {
     }
   }
 
-  startApplicationStorage() {
-    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+  appStorage() {
+    return this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+  }
 
-    appStore?.loadOrigin("builtin", () => BuiltinApps);
-    appStore?.loadOrigin("userApps", () => this.getUserApps());
-
-    return appStore;
+  initAppStorage(storage: ApplicationStorage) {
+    storage.loadOrigin("builtin", () => BuiltinApps);
+    storage.loadOrigin("userApps", () => this.getUserApps());
   }
 
   async getUserInfo(): Promise<UserInfo | undefined> {
@@ -839,7 +839,7 @@ export class UserDaemon extends Process {
     this.battery.set(await this.batteryInfo());
   }
 
-  async getUserApps(): Promise<AppStorage> {
+  getUserApps(): AppStorage {
     if (this._disposed) return [];
     if (!this.preferences()) return [];
 
@@ -868,7 +868,7 @@ export class UserDaemon extends Process {
   ): Promise<T | undefined> {
     if (this._disposed) return;
 
-    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const appStore = this.appStorage();
     const app = await appStore?.getAppById(id);
 
     if (this.checkDisabled(id, app?.noSafeMode)) return;
@@ -943,7 +943,7 @@ export class UserDaemon extends Process {
   ): Promise<T | undefined> {
     if (this._disposed) return;
 
-    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const appStore = this.appStorage();
     const app = await appStore?.getAppById(id);
 
     if (this.checkDisabled(id, app?.noSafeMode)) return;
@@ -1205,7 +1205,7 @@ export class UserDaemon extends Process {
 
     const { disabledApps } = this.preferences();
 
-    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const appStore = this.appStorage();
     const app = appStore?.buffer().filter((a) => a.id === appId)[0];
 
     if (app && this.isVital(app) && !noSafeMode) return false;
@@ -1223,7 +1223,7 @@ export class UserDaemon extends Process {
 
     this.Log(`Disabling application ${appId}`);
 
-    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const appStore = this.appStorage();
     const app = await appStore?.getAppById(appId);
 
     if (!app || this.isVital(app)) return;
@@ -1259,7 +1259,7 @@ export class UserDaemon extends Process {
 
     this.Log(`Enabling application ${appId}`);
 
-    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const appStore = this.appStorage();
     const app = await appStore?.getAppById(appId);
 
     if (!app) return;
@@ -2026,7 +2026,7 @@ export class UserDaemon extends Process {
   async findHandlerToOpenFile(path: string): Promise<FileOpenerResult[]> {
     this.Log(`Finding a handler to open ${path}`);
 
-    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const appStore = this.appStorage();
     const apps = await appStore?.get();
     const split = path.split(".");
     const filename = getItemNameFromPath(path);
@@ -2065,7 +2065,7 @@ export class UserDaemon extends Process {
   }
 
   async getAllFileHandlers() {
-    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const appStore = this.appStorage();
     const apps = await appStore?.get();
     const result: FileOpenerResult[] = [];
 
@@ -2300,7 +2300,7 @@ export class UserDaemon extends Process {
   }
 
   async installApp(data: InstalledApp) {
-    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const appStore = this.appStorage();
 
     this.preferences.update((v) => {
       v.userApps[data.id] = applyDefaults(data, DefaultAppData);
@@ -2312,7 +2312,7 @@ export class UserDaemon extends Process {
 
   async deleteApp(id: string, deleteFiles = false) {
     const distrib = this.serviceHost?.getService<DistributionServiceProcess>("DistribSvc");
-    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const appStore = this.appStorage();
 
     if (!distrib) return false;
 
@@ -2352,7 +2352,7 @@ export class UserDaemon extends Process {
     this.Log("Activating admin bootstrapper");
 
     if (!this.userInfo.admin) return;
-    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage")!;
+    const appStore = this.appStorage()!;
 
     appStore.loadOrigin("admin", () => AdminApps);
     await appStore.refresh();
@@ -2464,7 +2464,7 @@ export class UserDaemon extends Process {
     const { icon } = app.metadata;
     try {
       const maybe = maybeIconId(icon);
-      const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+      const appStore = this.appStorage();
 
       if (icon.startsWith("http")) return icon;
       if (maybe !== icon) return maybe;
@@ -2570,7 +2570,7 @@ The information provided in this report is subject for review by me or another A
   }
 
   async changeShell(id: string) {
-    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const appStore = this.appStorage();
     const newShell = await appStore?.getAppById(id);
 
     if (!newShell) return false;
@@ -2891,7 +2891,7 @@ The information provided in this report is subject for review by me or another A
 
   async updateAppShortcutsDir() {
     const contents = await this.fs.readDir(UserPaths.AppShortcuts);
-    const storage = this.serviceHost?.getService<ApplicationStorage>("AppStorage")?.buffer();
+    const storage = this.appStorage()?.buffer();
 
     if (!storage || !contents) return;
 

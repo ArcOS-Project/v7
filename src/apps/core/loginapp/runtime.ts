@@ -213,7 +213,7 @@ export class LoginAppRuntime extends AppProcess {
     this.loadingStatus.set("Starting share management");
     await userDaemon.startShareManager();
 
-    const storage = userDaemon.startApplicationStorage();
+    const storage = userDaemon.appStorage();
 
     if (userDaemon.userInfo.admin) {
       this.loadingStatus.set("Activating admin bootstrapper");

@@ -27,6 +27,8 @@ export class ApplicationStorage extends BaseService {
 
   async start() {
     await this.refresh();
+
+    this.host.daemon.initAppStorage(this);
   }
 
   loadOrigin(id: string, store: AppStoreCb) {
@@ -78,23 +80,28 @@ export class ApplicationStorage extends BaseService {
     this.Log(`Refreshing store`);
 
     const newBuffer = await this.get();
+    const tasks: Promise<void>[] = [];
 
     for (const app of newBuffer) {
-      try {
-        await this.fs.createDirectory(`T:/Apps/${app.id}`, false);
-      } catch {}
-
       const icon = app.metadata.icon;
 
       if (icon.startsWith("@local:")) {
-        try {
-          const path = join(app.workingDirectory || "", app.metadata.icon.replace("@local:", ""));
-          const direct = await this.fs.direct(path);
-
-          if (direct) this.appIconCache[path] = direct;
-        } catch {}
+        tasks.push(
+          (async () => {
+            try {
+              const path = join(app.workingDirectory || "", icon.replace("@local:", ""));
+              const direct = await this.fs.direct(path);
+              if (direct) this.appIconCache[path] = direct;
+            } catch {
+              // ignore quietly
+            }
+          })()
+        );
       }
     }
+
+    // Run in parallel
+    await Promise.all(tasks);
 
     this.buffer.set(newBuffer);
   }
@@ -118,6 +125,10 @@ export class ApplicationStorage extends BaseService {
       result.sort((a) => (a.hidden ? 0 : -1)),
       "metadata.name"
     );
+  }
+
+  getAppSynchronous(id: string): App | undefined {
+    return this.buffer().filter((a) => a.id === id)[0];
   }
 
   async getAppById(id: string, fromBuffer = false): Promise<App | undefined> {
