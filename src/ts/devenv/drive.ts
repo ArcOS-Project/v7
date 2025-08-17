@@ -32,6 +32,7 @@ export class DevDrive extends FilesystemDrive {
     direct: true,
     quota: true,
     bulk: true,
+    stat: false,
   };
 
   constructor(uuid: string, letter: string, axios: AxiosInstance, url: string) {

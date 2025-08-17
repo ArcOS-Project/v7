@@ -4,6 +4,7 @@ import type {
   DirectoryReadReturn,
   DriveCapabilities,
   FilesystemProgressCallback,
+  FilesystemStat,
   FsAccess,
   RecursiveDirectoryReadReturn,
   UserQuota,
@@ -30,6 +31,7 @@ export class AdminServerDrive extends FilesystemDrive {
     direct: true,
     quota: true,
     bulk: true,
+    stat: true,
   };
 
   constructor(uuid: string, letter: string, token: string, targetUsername: string) {
@@ -173,6 +175,18 @@ export class AdminServerDrive extends FilesystemDrive {
       return data;
     } catch {
       return {};
+    }
+  }
+
+  async stat(path: string): Promise<FilesystemStat | undefined> {
+    try {
+      const response = await Backend.get(`/admin/fs/stat/${this.targetUsername}/${path}`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.data as FilesystemStat;
+    } catch {
+      return undefined;
     }
   }
 }

@@ -109,4 +109,13 @@ export type DriveCapabilities =
   | "deleteItem"
   | "direct"
   | "quota"
-  | "bulk";
+  | "bulk"
+  | "stat";
+
+export interface FilesystemStat {
+  isFile: boolean;
+  isDirectory: boolean;
+  size: number;
+  created: number;
+  modified: number;
+}

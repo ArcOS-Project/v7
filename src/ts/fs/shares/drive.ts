@@ -5,6 +5,7 @@ import type {
   DirectoryReadReturn,
   DriveCapabilities,
   FilesystemProgressCallback,
+  FilesystemStat,
   FsAccess,
   RecursiveDirectoryReadReturn,
   UserQuota,
@@ -32,6 +33,7 @@ export class SharedDrive extends FilesystemDrive {
     direct: true,
     quota: true,
     bulk: true,
+    stat: true,
   };
   constructor(uuid: string, letter: string, info: SharedDriveType, token: string) {
     super(uuid, letter);
@@ -233,6 +235,18 @@ export class SharedDrive extends FilesystemDrive {
       return data;
     } catch {
       return {};
+    }
+  }
+
+  async stat(path: string): Promise<FilesystemStat | undefined> {
+    try {
+      const response = await Backend.get(`/share/stat/${this.shareId}/${path}`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.data as FilesystemStat;
+    } catch {
+      return undefined;
     }
   }
 }

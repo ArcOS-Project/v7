@@ -7,6 +7,7 @@ import {
   type DirectoryReadReturn,
   type FilesystemProgress,
   type FilesystemProgressCallback,
+  type FilesystemStat,
   type RecursiveDirectoryReadReturn,
   type UploadReturn,
 } from "$types/fs";
@@ -592,5 +593,18 @@ export class Filesystem extends KernelModule {
     } catch {
       return false;
     }
+  }
+
+  async stat(path: string): Promise<FilesystemStat | undefined> {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
+    this.Log(`stat '${path}'`);
+    this.validatePath(path);
+
+    const drive = this.getDriveByPath(path);
+    drive.isCapable("stat");
+    const scopedPath = this.removeDriveLetter(path);
+
+    return await drive.stat(scopedPath);
   }
 }

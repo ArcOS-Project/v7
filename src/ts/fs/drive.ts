@@ -1,7 +1,13 @@
 import { Log } from "$ts/kernel/logging";
 import { getKMod } from "$ts/kernel/module";
 import { ServerManager } from "$ts/server";
-import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback, RecursiveDirectoryReadReturn } from "$types/fs";
+import type {
+  DirectoryReadReturn,
+  DriveCapabilities,
+  FilesystemProgressCallback,
+  FilesystemStat,
+  RecursiveDirectoryReadReturn,
+} from "$types/fs";
 import { LogLevel } from "$types/logging";
 import type { UserQuota } from "../../types/fs";
 
@@ -32,6 +38,7 @@ export class FilesystemDrive {
     direct: false,
     quota: false,
     bulk: false,
+    stat: false,
   };
 
   constructor(uuid: string, letter?: string, ...args: any[]) {
@@ -163,6 +170,10 @@ export class FilesystemDrive {
 
   async bulk<T = any>(path: string, extension: string): Promise<Record<string, T>> {
     return {};
+  }
+
+  async stat(path: string): Promise<FilesystemStat | undefined> {
+    return undefined;
   }
 
   isCapable(capability: DriveCapabilities) {

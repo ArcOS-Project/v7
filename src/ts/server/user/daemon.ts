@@ -2869,7 +2869,7 @@ The information provided in this report is subject for review by me or another A
 
   async migrateFilesystemLayout() {
     const migrationPath = join(UserPaths.Migrations, "FsMig-705.lock");
-    const migrationFile = !!(await this.fs.readFile(migrationPath));
+    const migrationFile = !!(await this.fs.stat(migrationPath));
 
     if (migrationFile) return;
 
