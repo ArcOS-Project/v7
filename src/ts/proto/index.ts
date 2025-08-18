@@ -83,20 +83,25 @@ export class ProtocolServiceProcess extends BaseService {
   }
 
   parseUrl(str: string): ArcProtocol | undefined {
-    const url = new URL(str);
+    // BUG 68a344836c65fe520ebfba59
+    try {
+      const url = new URL(str);
 
-    if (url.protocol !== "arc:") return;
+      if (url.protocol !== "arc:") return;
 
-    const parsed = {
-      subCommand: url.username || "",
-      command: url.hostname,
-      payload: Object.fromEntries(url.searchParams.entries().map(([k, v]) => [k, tryJsonParse(v)])),
-      path: url.pathname,
-    };
+      const parsed = {
+        subCommand: url.username || "",
+        command: url.hostname,
+        payload: Object.fromEntries(url.searchParams.entries().map(([k, v]) => [k, tryJsonParse(v)])),
+        path: url.pathname,
+      };
 
-    if (!this.store[parsed.command]) return;
+      if (!this.store[parsed.command]) return;
 
-    return parsed;
+      return parsed;
+    } catch {
+      return;
+    }
   }
 
   async executeUrl(url: string) {
