@@ -106,7 +106,6 @@ export enum ServerLogLevel {
 
 export interface ServerStatistics {
   counts: ServerStatGroup;
-  sizes: ServerStatGroup;
   endpoints: number;
 }
 

@@ -8,11 +8,10 @@
 </script>
 
 <div class="statistics">
-  {#each Object.entries(stats.sizes) as [id, size] (id)}
+  {#each Object.entries(stats.counts) as [id, value] (id)}
     <div class="statistic">
       <p class="name">{id}</p>
-      <p class="big-value">{stats.counts[id]}</p>
-      <p class="size">{formatBytes(size)}</p>
+      <p class="big-value">{value}</p>
     </div>
   {/each}
 </div>
