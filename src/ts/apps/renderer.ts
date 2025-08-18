@@ -562,7 +562,7 @@ export class AppRenderer extends Process {
 
     if (!process || !process.app) return;
 
-    this.systemDispatch.dispatch("window-unmaximize", [pid]);
+    this.systemDispatch.dispatch("window-unminimize", [pid, process.app.desktop]);
 
     this.updateDraggableDisabledState(pid, window);
   }
@@ -615,7 +615,11 @@ export class AppRenderer extends Process {
     const minimized = window.classList.contains("minimized");
     if (minimized) this.focusedPid.set(-1);
 
-    this.systemDispatch.dispatch(minimized ? "window-minimize" : "window-unminimize", [pid]);
+    const process = this.handler.getProcess<AppProcess>(+pid);
+
+    if (!process || !process.app) return;
+
+    this.systemDispatch.dispatch(minimized ? "window-minimize" : "window-unminimize", [pid, process.app.desktop]);
     this.updateDraggableDisabledState(pid, window);
   }
 

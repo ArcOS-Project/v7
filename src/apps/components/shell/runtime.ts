@@ -24,7 +24,7 @@ export class ShellRuntime extends AppProcess {
   public searchResults = Store<FuseResult<SearchItem>[]>([]);
   public searching = Store<boolean>(false);
   public SelectionIndex = Store<number>(0);
-  public FullscreenCount = Store<Record<string, number>>({});
+  public FullscreenCount = Store<Record<string, Set<number>>>({});
   public openedTrayPopup = Store<string>();
   public searchLoading = Store<boolean>(true);
   public trayHost?: TrayHostRuntime;
@@ -43,26 +43,58 @@ export class ShellRuntime extends AppProcess {
     this.systemDispatch.subscribe("stack-busy", () => this.stackBusy.set(true)); // Subscribe to stack-busy
     this.systemDispatch.subscribe("stack-not-busy", () => this.stackBusy.set(false)); // Subscribe to stack-not-busy
 
-    this.systemDispatch.subscribe("window-fullscreen", ([_, desktop]) => {
-      desktop = `${desktop}`; // Ugly way to stringify
+    const minimizedFullscreens: Record<string, Set<number>> = {};
 
+    this.systemDispatch.subscribe("window-fullscreen", ([pid, desktop]) =>
       this.FullscreenCount.update((v) => {
-        v[desktop] ??= 0; // Set to zero if null or undefined
-        v[desktop]++; // Increment
+        minimizedFullscreens[desktop] ??= new Set();
+        v[desktop] ??= new Set();
+
+        v[desktop].add(pid);
+
         return v;
-      });
-    });
+      })
+    );
 
-    this.systemDispatch.subscribe("window-unfullscreen", ([_, desktop]) => {
-      desktop = `${desktop}`;
-
+    this.systemDispatch.subscribe("window-unfullscreen", ([pid, desktop]) =>
       this.FullscreenCount.update((v) => {
-        v[desktop] ??= 0; // Set to zero if null or undefined
-        if (v[desktop] <= 0) return v; // If 0, return
-        v[desktop]--; // Decrement
+        minimizedFullscreens[desktop] ??= new Set();
+        v[desktop] ??= new Set();
+
+        v[desktop].delete(pid);
+        minimizedFullscreens[desktop].delete(pid);
+
         return v;
-      });
-    });
+      })
+    );
+
+    this.systemDispatch.subscribe("window-minimize", ([pid, desktop]) =>
+      this.FullscreenCount.update((v) => {
+        minimizedFullscreens[desktop] ??= new Set();
+        v[desktop] ??= new Set();
+
+        if (v[desktop].has(pid)) {
+          minimizedFullscreens[desktop].add(pid);
+          v[desktop].delete(pid);
+        }
+
+        return v;
+      })
+    );
+
+    this.systemDispatch.subscribe("window-unminimize", ([pid, desktop]) =>
+      this.FullscreenCount.update((v) => {
+        minimizedFullscreens[desktop] ??= new Set();
+        v[desktop] ??= new Set();
+
+        if (minimizedFullscreens[desktop].has(pid)) {
+          v[desktop].add(pid);
+          minimizedFullscreens[desktop].delete(pid);
+        }
+
+        return v;
+      })
+    );
 
     this.searchQuery.subscribe(async (v) => {
       if (!v) {

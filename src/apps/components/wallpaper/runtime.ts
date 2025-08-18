@@ -106,7 +106,7 @@ export class WallpaperRuntime extends AppProcess {
       ];
 
       if (!items.length) {
-        this.Log(`Found orphaned icon position '${id}' in user preferences, deleting`, LogLevel.warning);
+        this.Log(`Found orphaned icon position '${id}' in config, deleting`, LogLevel.warning);
 
         orphaned.push(id);
         delete config[id];
@@ -252,7 +252,7 @@ export class WallpaperRuntime extends AppProcess {
   async migrateDesktopIcons() {
     const migrationPath = join(UserPaths.Migrations, "DeskIconMig-706.lock");
     const pref = this.userPreferences().appPreferences.desktopIcons;
-    const migration = await this.fs.readFile(migrationPath);
+    const migration = await this.fs.stat(migrationPath);
 
     if (pref && !migration) {
       await this.writeConfiguration(pref);

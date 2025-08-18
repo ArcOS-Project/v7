@@ -29,7 +29,7 @@
   <div
     class="shell taskbar-bounds fullscreen"
     class:docked={$userPreferences.shell.taskbar.docked}
-    class:has-fullscreen={currentDesktop && $FullscreenCount[currentDesktop] > 0}
+    class:has-fullscreen={currentDesktop && $FullscreenCount[currentDesktop]?.size > 0}
   >
     <div class="primary">
       <VirtualDesktops {process} />
