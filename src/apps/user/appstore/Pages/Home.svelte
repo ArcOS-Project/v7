@@ -31,7 +31,21 @@
     <button class="suggested" onclick={() => process.switchPage("viewStoreItem", { id: mostPopular._id })}>View</button>
   </div>
 
-  <PackageGrid name="Popular" items={popular} {process} />
+  <div class="popular">
+    {#each [popular[1], popular[2]].filter(Boolean) as item}
+      <button class="item" onclick={() => process.switchPage("viewStoreItem", { id: item._id })}>
+        <img src={StoreItemBanner(item) || StoreItemIcon(item)} alt="" class="backdrop" class:fallback={!StoreItemBanner(item)} />
+        <div class="content">
+          <img src={StoreItemIcon(item)} alt="" class="icon" />
+          <h1>{item.pkg.name}</h1>
+          <p class="description">{item.pkg.description}</p>
+          <p class="stats">{item.user?.displayName || item.user?.username} · {item.installCount} downloads</p>
+        </div>
+      </button>
+    {/each}
+  </div>
+
+  <!-- <PackageGrid name="Popular" items={popular} {process} /> -->
   <PackageGrid name="Recently Added" items={recentlyAdded} {process} more={() => process.switchPage("recentlyAdded")} />
   <p class="end">Looks like you've reached the end.</p>
 {/if}
