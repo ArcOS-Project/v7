@@ -146,7 +146,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 25%;
+  width: 20px;
   height: 100%;
   background: linear-gradient(to right, var(--win-bg) 0%, var(--win-bg) 30%, transparent 100%);
   z-index: 10000;
@@ -157,7 +157,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 25%;
+  width: 20px;
   height: 100%;
   background: linear-gradient(to left, var(--win-bg) 0%, var(--win-bg) 30%, transparent 100%);
   z-index: 10000;
@@ -180,7 +180,7 @@
   align-items: center;
   gap: 20px;
   margin-left: calc(-620px * var(--i, 0));
-  transition: margin-left 0.2s;
+  transition: margin-left 0.3s;
 }
 
 #AppStore div.page.viewStoreItem div.screenshots-wrapper button {
@@ -198,6 +198,8 @@
   top: 0;
   backdrop-filter: blur(10px);
   background-color: var(--button-glass-bg);
+  border: var(--button-glass-bg) 1px solid;
+  box-shadow: var(--secondary-box-shadow);
 }
 
 #AppStore div.page.viewStoreItem div.screenshots-wrapper button:disabled {
@@ -223,10 +225,18 @@
   width: 600px;
   height: 340px;
   object-fit: contain;
-  background-color: var(--button-glass-bg);
+  background-color: var(--button-bg);
   border-radius: 10px;
+  border: var(--button-glass-bg) 1px solid;
+  box-shadow: var(--secondary-box-shadow);
+  transition: all 0.3s !important;
 }
 
 #AppStore div.page.viewStoreItem div.screenshots-wrapper img.selected {
   z-index: 100000;
+}
+
+#AppStore div.page.viewStoreItem div.screenshots-wrapper img:not(.selected) {
+  opacity: 0.5;
+  scale: 0.9;
 }
