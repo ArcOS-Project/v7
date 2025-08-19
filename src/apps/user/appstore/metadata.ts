@@ -8,7 +8,7 @@ export const AppStoreApp: App = {
   metadata: {
     name: "App Store",
     author: "Izaak Kuipers",
-    version: "1.0.0",
+    version: "1.0.1",
     icon: AppStoreIcon,
   },
   position: { centered: true },
