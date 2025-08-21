@@ -15,7 +15,7 @@ import { AppProcess } from "$ts/apps/process";
 import { ApplicationStorage } from "$ts/apps/storage";
 import { AdminApps, BuiltinApps } from "$ts/apps/store";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { bestForeground, darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
+import { bestForeground, darkenColor, getReadableVibrantColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
 import { StoreItemIcon } from "$ts/distrib/util";
@@ -254,14 +254,14 @@ export class UserDaemon extends Process {
     --user-font: "${this.preferences().shell.visuals.userFont || ""}"`;
   }
 
-  setAppRendererClasses(v: UserPreferences) {
+  async setAppRendererClasses(v: UserPreferences) {
     // if (KernelStateHandler()?.currentState !== "desktop") return;
 
     const renderer = this.handler.renderer?.target;
 
     if (!renderer) throw new Error("UserDaemon: Tried to set renderer classes without renderer");
 
-    const accent = v.desktop.accent;
+    const accent = await getReadableVibrantColor((await this.getWallpaper(v.desktop.wallpaper)).url);
     const theme = v.desktop.theme;
 
     let style = this.getAppRendererStyle(accent);

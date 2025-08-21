@@ -35,11 +35,6 @@ export function darkenColor(color: string, modifier: number = 5) {
   return colorsea(`#${color}`).darken(modifier, "relative").hex();
 }
 
-/**
- * Inverts the incoming color
- * @param color The color
- * @returns The inverted color
- */
 export function invertColor(hex: string) {
   hex = hex.replace("#", "");
 
@@ -47,6 +42,7 @@ export function invertColor(hex: string) {
 
   return `#${(Number(`0x1${hex}`) ^ 0xffffff).toString(16).substring(1).toUpperCase()}`;
 }
+
 export function bestForeground(bgColor: string) {
   const color1 = colorsea(`#${bgColor.replace("#", "")}`);
   const color2 = colorsea("#FFFFFF");
@@ -55,6 +51,7 @@ export function bestForeground(bgColor: string) {
 
   return difference > 40 ? "white" : "black";
 }
+
 export async function getReadableVibrantColor(url: string): Promise<string> {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -70,7 +67,6 @@ export async function getReadableVibrantColor(url: string): Promise<string> {
         return;
       }
 
-      // Downscale for performance
       const width = 50;
       const height = 50;
       canvas.width = width;
@@ -79,7 +75,10 @@ export async function getReadableVibrantColor(url: string): Promise<string> {
       ctx.drawImage(img, 0, 0, width, height);
       const data = ctx.getImageData(0, 0, width, height).data;
 
-      let bestColor = "#ffffff"; // fallback
+      const bgColor = "#111111";
+      const minContrast = 4.5;
+
+      let bestColor = "#ffffff";
       let bestScore = -1;
 
       for (let i = 0; i < data.length; i += 4) {
@@ -88,25 +87,45 @@ export async function getReadableVibrantColor(url: string): Promise<string> {
         const b = data[i + 2];
         const a = data[i + 3];
 
-        if (a < 128) continue; // skip transparent
+        if (a < 128) continue;
 
         const [h, s, l] = rgbToHsl(r, g, b);
-
-        // brightness = avg(R,G,B), normalized
         const brightness = (r + g + b) / (255 * 3);
 
-        // Filter unwanted ranges
-        if (brightness > 0.9) continue; // too close to white
-        if (s < 0.2) continue; // too gray
-        if (l < 0.3) continue; // too dark for readability
+        if (brightness > 0.9) continue;
+        if (s < 0.2) continue;
 
-        // Score: prioritize saturation, then brightness
+        // Vibrancy score
         const score = s * s * brightness;
 
-        if (score > bestScore) {
+        const hex = rgbToHex(r, g, b);
+        const contrast = getContrastRatio(hex, bgColor);
+
+        if (contrast >= minContrast && score > bestScore) {
           bestScore = score;
-          bestColor = rgbToHex(r, g, b);
+          bestColor = hex;
         }
+      }
+
+      if (bestScore < 0) {
+        let fallbackScore = -1;
+        let fallbackColor = "#ffffff";
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i];
+          const g = data[i + 1];
+          const b = data[i + 2];
+          const a = data[i + 3];
+          if (a < 128) continue;
+          const [h, s, l] = rgbToHsl(r, g, b);
+          const brightness = (r + g + b) / (255 * 3);
+          if (s < 0.2) continue;
+          const score = s * s * brightness;
+          if (score > fallbackScore) {
+            fallbackScore = score;
+            fallbackColor = rgbToHex(r, g, b);
+          }
+        }
+        bestColor = ensureContrast(fallbackColor, bgColor, minContrast);
       }
 
       resolve(bestColor);
@@ -117,32 +136,54 @@ export async function getReadableVibrantColor(url: string): Promise<string> {
 }
 
 function rgbToHex(r: number, g: number, b: number): string {
-  return (
-    "#" +
-    [r, g, b]
-      .map((x) => {
-        const hex = x.toString(16);
-        return hex.length === 1 ? "0" + hex : hex;
-      })
-      .join("")
-  );
+  return "#" + [r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("");
+}
+
+function hexToRgb(hex: string): [number, number, number] {
+  const bigint = parseInt(hex.slice(1), 16);
+  return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
+}
+
+function relativeLuminance([r, g, b]: [number, number, number]): number {
+  const srgb = [r, g, b].map((v) => {
+    v /= 255;
+    return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * srgb[0] + 0.7152 * srgb[1] + 0.0722 * srgb[2];
+}
+
+function getContrastRatio(hex1: string, hex2: string): number {
+  const lum1 = relativeLuminance(hexToRgb(hex1));
+  const lum2 = relativeLuminance(hexToRgb(hex2));
+  const lighter = Math.max(lum1, lum2);
+  const darker = Math.min(lum1, lum2);
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+function ensureContrast(hex: string, bg: string, minContrast: number): string {
+  let [r, g, b] = hexToRgb(hex);
+  let [h, s, l] = rgbToHsl(r, g, b);
+
+  while (getContrastRatio(rgbToHex(...hslToRgb(h, s, l)), bg) < minContrast && l < 1) {
+    l += 0.02;
+  }
+
+  const [nr, ng, nb] = hslToRgb(h, s, l);
+  return rgbToHex(nr, ng, nb);
 }
 
 function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
   r /= 255;
   g /= 255;
   b /= 255;
-
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
   let h = 0,
     s = 0;
   const l = (max + min) / 2;
-
   if (max !== min) {
     const d = max - min;
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-
     switch (max) {
       case r:
         h = (g - b) / d + (g < b ? 6 : 0);
@@ -156,6 +197,27 @@ function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
     }
     h /= 6;
   }
-
   return [h, s, l];
+}
+
+function hslToRgb(h: number, s: number, l: number): [number, number, number] {
+  let r: number, g: number, b: number;
+  if (s === 0) {
+    r = g = b = l; // gray
+  } else {
+    const hue2rgb = (p: number, q: number, t: number): number => {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1 / 6) return p + (q - p) * 6 * t;
+      if (t < 1 / 2) return q;
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+      return p;
+    };
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    r = hue2rgb(p, q, h + 1 / 3);
+    g = hue2rgb(p, q, h);
+    b = hue2rgb(p, q, h - 1 / 3);
+  }
+  return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
