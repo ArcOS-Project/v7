@@ -33,6 +33,7 @@ import { TerminalWindowApp } from "$apps/components/terminalwindow/metadata";
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/metadata";
 import { TotpSetupGuiApp } from "$apps/components/totpsetupgui/metadata";
 import { TrayHost } from "$apps/components/trayhost/metadata";
+import { UpdateNotifierApp } from "$apps/components/updatenotifier/metadata";
 import { WallpaperApp } from "$apps/components/wallpaper/metadata";
 import { AdvSystemSettings } from "$apps/user/advsystemsettings/metadata";
 import { AppStoreApp } from "$apps/user/appstore/metadata";
@@ -116,6 +117,7 @@ export const BuiltinApps: AppStorage = [
   AppStoreApp,
   MultiUpdateGuiApp,
   CodApp,
+  UpdateNotifierApp,
 ];
 
 export const AdminApps: AppStorage = [AdminPortalApp];

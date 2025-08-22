@@ -54,6 +54,8 @@ export class ShellHostRuntime extends Process {
 
     proc?.dispatch?.dispatch("ready"); // Dispatch ready command to the shell
 
+    await this.userDaemon?.checkForNewVersion();
+
     for (const app of this.autoloadApps) {
       if (app === "shellHost") continue; // Ignore the shellHost in autoload
 
