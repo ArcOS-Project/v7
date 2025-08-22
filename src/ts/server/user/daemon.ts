@@ -3,6 +3,8 @@ import { DummyFileProgress, type FileProgressMutator, type FsProgressOperation }
 import { GlobalLoadIndicatorApp } from "$apps/components/globalloadindicator/metadata";
 import { GlobalLoadIndicatorRuntime } from "$apps/components/globalloadindicator/runtime";
 import type { IconPickerData } from "$apps/components/iconpicker/types";
+import { TerminalWindowApp } from "$apps/components/terminalwindow/metadata";
+import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import { AppStoreApp } from "$apps/user/appstore/metadata";
 import { FileManagerApp } from "$apps/user/filemanager/metadata";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
@@ -15,10 +17,11 @@ import { AppProcess } from "$ts/apps/process";
 import { ApplicationStorage } from "$ts/apps/storage";
 import { AdminApps, BuiltinApps } from "$ts/apps/store";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { bestForeground, darkenColor, getReadableVibrantColor, hex3to6, invertColor, lightenColor } from "$ts/color";
+import { bestForeground, darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
 import { StoreItemIcon } from "$ts/distrib/util";
+import { ArcOSVersion, BETA } from "$ts/env";
 import { toForm } from "$ts/form";
 import { Filesystem } from "$ts/fs";
 import { arrayToBlob, arrayToText, textToBlob } from "$ts/fs/convert";
@@ -45,6 +48,7 @@ import {
 import { ImageMimeIcon, ShortcutMimeIcon } from "$ts/images/mime";
 import { RestartIcon } from "$ts/images/power";
 import { tryJsonParse } from "$ts/json";
+import { KernelStateHandler } from "$ts/kernel/getters";
 import { getKMod } from "$ts/kernel/module";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
@@ -63,6 +67,7 @@ import { LogLevel } from "$types/logging";
 import type { BatteryType } from "$types/navigator";
 import type { Notification } from "$types/notification";
 import type { ArcShortcut } from "$types/shortcut";
+import type { ExpandedTerminal } from "$types/terminal";
 import { UserThemeKeys, type UserTheme } from "$types/theme";
 import type { CustomStylePreferences, PublicUserInfo, UserInfo, UserPreferences, WallpaperGetters } from "$types/user";
 import type { Wallpaper } from "$types/wallpaper";
@@ -77,13 +82,6 @@ import { GlobalDispatch } from "../ws";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
-import { KernelLogs, KernelStateHandler } from "$ts/kernel/getters";
-import { BETA } from "$ts/env";
-import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
-import { Readline } from "$ts/terminal/readline/readline";
-import { TerminalWindowApp } from "$apps/components/terminalwindow/metadata";
-import type { Terminal } from "xterm";
-import type { ExpandedTerminal } from "$types/terminal";
 
 export class UserDaemon extends Process {
   public initialized = false;
@@ -261,7 +259,7 @@ export class UserDaemon extends Process {
 
     if (!renderer) throw new Error("UserDaemon: Tried to set renderer classes without renderer");
 
-    const accent = await getReadableVibrantColor((await this.getWallpaper(v.desktop.wallpaper)).url);
+    const accent = v.desktop.accent;
     const theme = v.desktop.theme;
 
     let style = this.getAppRendererStyle(accent);
@@ -2926,5 +2924,24 @@ The information provided in this report is subject for review by me or another A
     term.process = process;
 
     return term;
+  }
+
+  async isRegisteredVersionOutdated() {
+    const contents = await this.fs.readFile(join(UserPaths.System, "RegisteredVersion"));
+    const isOutdated = !contents || arrayToText(contents) !== ArcOSVersion;
+
+    return isOutdated;
+  }
+
+  async updateRegisteredVersion() {
+    await this.fs.writeFile(join(UserPaths.System, "RegisteredVersion"), textToBlob(ArcOSVersion));
+  }
+
+  async checkForNewVersion() {
+    const isOutdated = await this.isRegisteredVersionOutdated();
+
+    if (!isOutdated) return;
+
+    this.spawnOverlay("UpdateNotifierApp", +this.env.get("shell_pid"));
   }
 }

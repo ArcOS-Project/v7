@@ -1,6 +1,7 @@
 import { __Console__ } from "$ts/console";
 import { ArcOSVersion } from "$ts/env";
 import { getBuild } from "$ts/metadata/build";
+import { ChangeLogs } from "$ts/metadata/changelog";
 import { getLicense } from "$ts/metadata/license";
 import { getMode } from "$ts/metadata/mode";
 import { Store, type ReadableStore } from "$ts/writable";
@@ -87,6 +88,7 @@ export class WaveKernel {
     await getMode();
     await getBuild();
     await getLicense();
+    await ChangeLogs.refreshChangelogs();
 
     this.Log(`ArcOS`, `***** [v7 -> ArcOS InDev v${ArcOSVersion}-${this.ARCOS_MODE}_${this.ARCOS_BUILD}] *****`);
 
