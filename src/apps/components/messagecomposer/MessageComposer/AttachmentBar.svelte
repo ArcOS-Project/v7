@@ -11,7 +11,7 @@
   <div class="attachment-bar">
     {#each $attachments as attachment, i (`${attachment.uuid}-${i}`)}
       <div class="attachment">
-        <img src={process.userDaemon?.getMimeIconByFilename(attachment.data.name) || DefaultMimeIcon} alt="" />
+        <img src={process.userDaemon?.assoc?.getFileAssociation(attachment.data.name)?.icon || DefaultMimeIcon} alt="" />
         <span>{attachment.data.name}</span>
         <span class="size">({formatBytes(attachment.data.size)})</span>
         <button

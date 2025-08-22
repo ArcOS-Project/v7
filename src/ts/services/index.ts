@@ -8,6 +8,7 @@ import { Process } from "$ts/process/instance";
 import { protoService } from "$ts/proto";
 import { adminService } from "$ts/server/admin";
 import { messagingService } from "$ts/server/messaging";
+import { fileAssocService } from "$ts/server/user/assoc";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { trashService } from "$ts/server/user/trash";
 import { globalDispatchService } from "$ts/server/ws";
@@ -35,6 +36,7 @@ export class ServiceHost extends Process {
     ["AdminBootstrapper", { ...adminService }],
     ["ShareMgmt", { ...shareService }],
     ["AppStorage", { ...appStoreService }],
+    ["FileAssocSvc", { ...fileAssocService }],
     ["GlobalDispatch", { ...globalDispatchService }],
     ["MessagingService", { ...messagingService }],
     ["DevEnvironment", { ...devEnvironmentService }],

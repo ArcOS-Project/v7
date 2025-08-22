@@ -27,7 +27,7 @@
     <Segment title="Sort">
       {$info.name ? $info.meta.sort : "drive"}
     </Segment>
-    <Segment title="Mimetype">
+    <Segment title="Type">
       {$info.meta.mimetype || "-"}
     </Segment>
     <Segment title="Size" right>

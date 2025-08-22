@@ -4,7 +4,6 @@
   import { formatBytes, join } from "$ts/fs/util";
   import { getIconPath } from "$ts/images";
   import { DefaultMimeIcon } from "$ts/images/mime";
-  import { DefaultFileTypes } from "$ts/server/user/store";
   import type { FileEntry } from "$types/fs";
   import type { ArcShortcut } from "$types/shortcut";
   import dayjs from "dayjs";
@@ -14,7 +13,7 @@
   import type { FileManagerRuntime } from "../../runtime";
 
   const { process, file }: { process: FileManagerRuntime; file: FileEntry } = $props();
-  const { selection, userDaemon, shortcuts } = process;
+  const { selection, shortcuts } = process;
 
   let date = $state<string>();
   let icon = $state<string>();
@@ -29,13 +28,13 @@
     dayjs.updateLocale("en", RelativeTimeMod);
 
     date = dayjs(new Date(file.dateModified).getTime() - 2000).fromNow();
+    thisPath = join(process.path(), file.name);
 
     const split = file.name.split(".");
-
+    const info = process.userDaemon?.assoc?.getFileAssociation(thisPath);
     extension = `.${split[split.length - 1]}`;
-    mime = DefaultFileTypes[extension] || DefaultFileTypes[extension.replace(".", "")] || "Unknown";
-    icon = userDaemon?.getMimeIconByFilename(file.name) || DefaultMimeIcon;
-    thisPath = join(process.path(), file.name);
+    mime = info?.friendlyName || "Unknown";
+    icon = info?.icon || DefaultMimeIcon;
   });
 
   function onclick(e: MouseEvent) {

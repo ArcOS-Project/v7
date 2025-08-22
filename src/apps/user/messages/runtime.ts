@@ -5,6 +5,7 @@ import { arrayToBlob, arrayToText, textToBlob } from "$ts/fs/convert";
 import { getParentDirectory } from "$ts/fs/util";
 import { MessagingIcon } from "$ts/images/apps";
 import { WarningIcon } from "$ts/images/dialog";
+import { DefaultMimeIcon } from "$ts/images/mime";
 import { tryJsonParse } from "$ts/json";
 import type { ProcessHandler } from "$ts/process/handler";
 import { MessagingInterface } from "$ts/server/messaging";
@@ -261,12 +262,13 @@ export class MessagingAppRuntime extends AppProcess {
     await prog?.stop();
 
     if (!contents) {
+      const info = this.userDaemon?.assoc?.getFileAssociation(attachment.filename);
       MessageBox(
         {
           title: `'${attachment.filename}' unavailable`,
           message:
             "The attachment you tried to open could not be found, it may have been deleted. Please ask the sender of the message to send the attachment again.",
-          image: this.userDaemon!.getMimeIconByFilename(attachment.filename),
+          image: info?.icon || DefaultMimeIcon,
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           sound: "arcos.dialog.error",
         },

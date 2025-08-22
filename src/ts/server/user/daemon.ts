@@ -32,7 +32,7 @@ import { ShareManager } from "$ts/fs/shares/index";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
 import { getIconPath, iconIdFromPath, maybeIconId } from "$ts/images";
-import { AppStoreIcon, MessagingIcon } from "$ts/images/apps";
+import { AppStoreIcon, DefaultIcon, MessagingIcon } from "$ts/images/apps";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import {
@@ -71,7 +71,6 @@ import type { ExpandedTerminal } from "$types/terminal";
 import { UserThemeKeys, type UserTheme } from "$types/theme";
 import type { CustomStylePreferences, PublicUserInfo, UserInfo, UserPreferences, WallpaperGetters } from "$types/user";
 import type { Wallpaper } from "$types/wallpaper";
-import { fromExtension } from "human-filetypes";
 import Cookies from "js-cookie";
 import type { Unsubscriber } from "svelte/store";
 import type { ServerManager } from "..";
@@ -79,8 +78,9 @@ import { AdminProtocolHandlers } from "../admin/proto";
 import { Backend } from "../axios";
 import { MessagingInterface } from "../messaging";
 import { GlobalDispatch } from "../ws";
+import { FileAssocService } from "./assoc";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
-import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, DefaultMimeIcons, UserPaths } from "./store";
+import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
 
 export class UserDaemon extends Process {
@@ -106,7 +106,6 @@ export class UserDaemon extends Process {
   private virtualDesktops: Record<string, HTMLDivElement> = {};
   private virtualDesktop: HTMLDivElement | undefined;
   private virtualDesktopIndex = -1;
-  private mimeIcons: Record<string, string[]> = DefaultMimeIcons;
   private virtualdesktopChangingTimeout: NodeJS.Timeout | undefined;
   private firstSyncDone = false;
   public safeMode = false;
@@ -120,6 +119,7 @@ export class UserDaemon extends Process {
   private TempFsSnapshot: Record<string, any> = {};
   public TempFs?: MemoryFilesystemDrive;
   private registeredAnchors: HTMLAnchorElement[] = [];
+  public assoc?: FileAssocService;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, token: string, username: string, userInfo?: UserInfo) {
     super(handler, pid, parentPid);
@@ -2024,37 +2024,36 @@ export class UserDaemon extends Process {
   async findHandlerToOpenFile(path: string): Promise<FileOpenerResult[]> {
     this.Log(`Finding a handler to open ${path}`);
 
-    const appStore = this.appStorage();
-    const apps = await appStore?.get();
     const split = path.split(".");
     const filename = getItemNameFromPath(path);
     const extension = `.${split[split.length - 1]}`;
-    const mimeType = fromExtension(path);
+    const config = this.assoc?.getConfiguration();
+    const apps = config?.associations.apps;
+    const handlers = config?.associations.handlers;
     const result: FileOpenerResult[] = [];
+    const appStore = this.appStorage();
 
-    for (const id in this.fileHandlers) {
-      const handler = this.fileHandlers[id];
+    for (const handlerId in handlers) {
+      const handler = this.fileHandlers[handlerId];
+      const extensions = handlers[handlerId];
 
-      if (handler.opens.extensions?.includes(extension)) {
+      if (extensions.includes(extension)) {
         result.push({
           type: "handler",
           handler,
-          id,
+          id: handlerId,
         });
       }
     }
 
-    for (const app of apps!) {
-      const extensions = app.opens?.extensions || [];
-      if (
-        extensions.includes(extension) ||
-        extensions.includes(filename) ||
-        (app.opens?.mimeTypes || [])?.join("||").includes(mimeType)
-      ) {
+    for (const appId in apps) {
+      const extensions = apps[appId];
+
+      if (extensions.includes(extension) || extensions.includes(filename)) {
         result.push({
           type: "app",
-          app,
-          id: app.id,
+          app: appStore?.getAppSynchronous(appId),
+          id: appId,
         });
       }
     }
@@ -2088,33 +2087,6 @@ export class UserDaemon extends Process {
     return result;
   }
 
-  getMimeIconByFilename(filename: string): string | undefined {
-    if (!filename) return;
-
-    const split = filename.split(".");
-
-    return this.getMimeIconByExtension(`.${split[split.length - 1]}`) || this.getMimeIconByExtension(filename);
-  }
-
-  getMimeIconByExtension(extension: string): string | undefined {
-    return Object.entries(this.mimeIcons)
-      .filter(([_, ext]) => ext.includes(extension))
-      .map(([icn]) => icn)[0];
-  }
-
-  loadMimeIcon(extension: string, icon: string) {
-    this.Log(`Loading mime icon for extension ${extension}`);
-
-    if (this.getMimeIconByExtension(icon)) return;
-
-    if (this.mimeIcons[icon] && !this.mimeIcons[icon].includes(extension)) {
-      this.mimeIcons[icon].push(extension);
-      return;
-    }
-
-    if (!this.mimeIcons[icon]) this.mimeIcons[icon] = [extension];
-  }
-
   async LoadSaveDialog(data: Omit<LoadSaveDialogData, "returnId">): Promise<string[] | [undefined]> {
     const uuid = UUID();
 
@@ -2143,9 +2115,9 @@ export class UserDaemon extends Process {
     if (shortcut) return await this.handleShortcut(path, shortcut);
 
     const filename = getItemNameFromPath(path);
-    const results = await this.findHandlerToOpenFile(path)!;
+    const result = this.assoc?.getFileAssociation(path);
 
-    if (!results.length) {
+    if (!result?.handledBy.app && !result?.handledBy?.handler) {
       await MessageBox(
         {
           title: `Unknown file type`,
@@ -2169,9 +2141,9 @@ export class UserDaemon extends Process {
       return;
     }
 
-    if (results[0].type === "handler") return await results[0]?.handler?.handle(path);
+    if (result.handledBy.handler) return await result.handledBy.handler.handle(path);
 
-    return await this.spawnApp(results[0]?.app?.id!, +this.env.get("shell_pid"), path);
+    return await this.spawnApp(result.handledBy.app?.id!, +this.env.get("shell_pid"), path);
   }
 
   async openWith(path: string) {
@@ -2375,6 +2347,8 @@ export class UserDaemon extends Process {
 
     this.serviceHost = await this.handler.spawn<ServiceHost>(ServiceHost, undefined, this.pid);
     await this.serviceHost?.init();
+
+    this.assoc = this.serviceHost?.getService<FileAssocService>("FileAssocSvc");
   }
 
   async GlobalLoadIndicator(caption?: string, pid?: number) {

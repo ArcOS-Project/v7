@@ -11,7 +11,8 @@
   let icon = $state<string>();
 
   onMount(() => {
-    icon = $info.isFolder ? FolderIcon : process.userDaemon?.getMimeIconByFilename($info.name);
+    const assoc = process.userDaemon?.assoc?.getFileAssociation($info.name);
+    icon = $info.isFolder ? FolderIcon : assoc?.icon || DefaultMimeIcon;
   });
 </script>
 

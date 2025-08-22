@@ -103,15 +103,14 @@ export class ArcFindRuntime extends AppProcess {
     this.fileSystemIndex = index; // Set the cache
 
     for (const file of index) {
+      const info = this.userDaemon?.assoc?.getFileAssociation(file.name);
       result.push({
         caption: file.shortcut ? file.shortcut.name : file.name,
         description: file.shortcut ? `Shortcut - ${file.path}` : file.path,
         action: () => {
           this.userDaemon?.openFile(file.path, file.shortcut);
         },
-        image:
-          (file.shortcut ? getIconPath(file.shortcut.icon) : this.userDaemon?.getMimeIconByFilename(file.name)) ||
-          DefaultMimeIcon,
+        image: (file.shortcut ? getIconPath(file.shortcut.icon) : info?.icon) || DefaultMimeIcon,
       });
     }
 

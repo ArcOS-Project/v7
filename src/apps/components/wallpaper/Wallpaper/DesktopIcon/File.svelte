@@ -18,8 +18,9 @@
   let render = $state<boolean>(false);
 
   onMount(() => {
+    const info = process.userDaemon?.assoc?.getFileAssociation(file.name);
     shortcut = $shortcuts[file.name];
-    icon = process.userDaemon?.getMimeIconByFilename(file.name);
+    icon = info?.icon || DefaultMimeIcon;
     render = true;
   });
 </script>

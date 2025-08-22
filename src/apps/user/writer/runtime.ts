@@ -11,7 +11,6 @@ import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import type { AppKeyCombinations } from "$types/accelerator";
 import type { App, AppProcessData } from "$types/app";
-import { fromExtension } from "human-filetypes";
 import { WriterAccelerators } from "./accelerators";
 import { WriterAltMenu } from "./altmenu";
 import { ReplaceOverlay } from "./replace/metadata";
@@ -73,13 +72,15 @@ export class WriterRuntime extends AppProcess {
         throw new Error("Failed to get the contents of the file.");
       }
 
+      const info = this.userDaemon?.assoc?.getFileAssociation(path);
+
       this.buffer.set(arrayToText(contents));
       this.openedFile.set(path);
       this.filename.set(getItemNameFromPath(path));
       this.directoryName.set(getItemNameFromPath(getParentDirectory(path)));
       this.original.set(`${this.buffer()}`);
-      this.mimetype.set(fromExtension(this.filename()));
-      this.mimeIcon.set(this.userDaemon?.getMimeIconByFilename(path) || DefaultMimeIcon);
+      this.mimetype.set(info?.friendlyName || "Unknown");
+      this.mimeIcon.set(info?.icon || DefaultMimeIcon);
       this.windowTitle.set(this.filename());
       this.windowIcon.set(this.mimeIcon());
     } catch (e) {
@@ -187,12 +188,14 @@ export class WriterRuntime extends AppProcess {
 
     if (!path) return;
 
+    const info = this.userDaemon?.assoc?.getFileAssociation(path);
+
     this.openedFile.set(path);
     this.filename.set(getItemNameFromPath(path));
     this.directoryName.set(getItemNameFromPath(getParentDirectory(path)));
     this.original.set(`${this.buffer()}`);
-    this.mimetype.set(fromExtension(this.filename()));
-    this.mimeIcon.set(this.userDaemon?.getMimeIconByFilename(path) || DefaultMimeIcon);
+    this.mimetype.set(info?.friendlyName || "Unknown");
+    this.mimeIcon.set(info?.icon || DefaultMimeIcon);
     this.windowTitle.set(this.filename());
     this.windowIcon.set(this.mimeIcon());
     await this.saveChanges(true);

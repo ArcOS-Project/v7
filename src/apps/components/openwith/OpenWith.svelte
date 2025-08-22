@@ -11,7 +11,7 @@
   <div class="header">
     <h1>Select an app to open {$filename}</h1>
     <p class="location">
-      <img src={userDaemon!.getMimeIconByFilename($path) || DefaultMimeIcon} alt="" /><span>{$path}</span>
+      <img src={process.userDaemon?.assoc?.getFileAssociation($path)?.icon || DefaultMimeIcon} alt="" /><span>{$path}</span>
     </p>
   </div>
   <div class="options">

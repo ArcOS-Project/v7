@@ -59,13 +59,14 @@ export class ItemInfoRuntime extends AppProcess {
       const split = path.split(".");
       const extension = file.mimeType ? split[split.length - 1] : undefined;
       const isShortcut = file?.name?.endsWith(".arclnk");
+      const info = this.userDaemon?.assoc?.getFileAssociation(path);
 
       this.info.set({
         meta: {
           sort: file.mimeType ? "file" : "folder",
           created: file.dateModified,
           modified: file.dateCreated,
-          mimetype: file.mimeType,
+          mimetype: info?.friendlyName || file.mimeType,
           size: file.mimeType ? file.size : undefined,
         },
         location: {

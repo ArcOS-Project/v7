@@ -26,9 +26,9 @@ export class ApplicationStorage extends BaseService {
   }
 
   async start() {
-    await this.refresh();
-
     this.host.daemon.initAppStorage(this);
+
+    await this.refresh();
   }
 
   loadOrigin(id: string, store: AppStoreCb) {

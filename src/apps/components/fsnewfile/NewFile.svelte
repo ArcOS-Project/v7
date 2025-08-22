@@ -10,7 +10,8 @@
 
   onMount(() => {
     newFile.subscribe((v) => {
-      icon = process.userDaemon?.getMimeIconByFilename(v) || DefaultMimeIcon;
+      const info = process.userDaemon?.assoc?.getFileAssociation(v);
+      icon = info?.icon || DefaultMimeIcon;
     });
   });
 </script>

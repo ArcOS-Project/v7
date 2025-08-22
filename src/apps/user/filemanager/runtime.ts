@@ -750,11 +750,13 @@ export class FileManagerRuntime extends AppProcess {
 
     if (!paths?.[0]) return;
 
+    const info = this.userDaemon?.assoc?.getFileAssociation(name);
+
     this.userDaemon?.createShortcut(
       {
         type: folder ? "folder" : "file",
         target: path,
-        icon: folder ? "FolderIcon" : iconIdFromPath(this.userDaemon?.getMimeIconByFilename(name) || DefaultMimeIcon),
+        icon: folder ? "FolderIcon" : info?.icon || DefaultMimeIcon,
         name: `${name} - Shortcut`,
       },
       join(paths[0], `${name}.arclnk`)

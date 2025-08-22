@@ -12,7 +12,8 @@
 
   onMount(() => {
     filename = getItemNameFromPath(path);
-    icon = process.userDaemon?.getMimeIconByFilename(filename) || DefaultMimeIcon;
+    const info = process.userDaemon?.assoc?.getFileAssociation(filename);
+    icon = info?.icon || DefaultMimeIcon;
   });
 
   function playThis() {
