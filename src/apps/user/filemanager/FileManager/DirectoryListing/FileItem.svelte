@@ -4,12 +4,12 @@
   import { formatBytes, join } from "$ts/fs/util";
   import { getIconPath } from "$ts/images";
   import { DefaultMimeIcon } from "$ts/images/mime";
+  import { DefaultFileTypes } from "$ts/server/user/store";
   import type { FileEntry } from "$types/fs";
   import type { ArcShortcut } from "$types/shortcut";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
-  import { fromMime } from "human-filetypes";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../../runtime";
 
@@ -30,13 +30,12 @@
 
     date = dayjs(new Date(file.dateModified).getTime() - 2000).fromNow();
 
-    const m = fromMime(file.mimeType);
     const split = file.name.split(".");
 
-    mime = m.replace(m[0], m[0].toUpperCase());
+    extension = `.${split[split.length - 1]}`;
+    mime = DefaultFileTypes[extension] || DefaultFileTypes[extension.replace(".", "")] || "Unknown";
     icon = userDaemon?.getMimeIconByFilename(file.name) || DefaultMimeIcon;
     thisPath = join(process.path(), file.name);
-    extension = `.${split[split.length - 1]}`;
   });
 
   function onclick(e: MouseEvent) {
@@ -83,7 +82,7 @@
       {/if}
     </div>
     <div class="segment name">{shortcut?.name || file.name}</div>
-    <div class="segment type">{shortcut ? "Shortcut" : mime}</div>
+    <div class="segment type" title={mime}>{mime}</div>
     <div class="segment size">{shortcut ? "-" : formatBytes(file.size)}</div>
     <div class="segment modified">{shortcut ? "-" : date}</div>
   </button>

@@ -38,8 +38,11 @@
 
 #fileManager div.directory-viewer button div.segment.type {
   margin-left: auto;
-  width: 80px;
-  min-width: 80px;
+  width: 140px;
+  min-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 #fileManager div.directory-viewer button div.segment.size {
