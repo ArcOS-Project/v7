@@ -91,8 +91,8 @@ export class FileAssocService extends BaseService {
 
     const storage = this.host.getService<ApplicationStorage>("AppStorage");
     const config = this.Configuration();
-    const associations = config.associations;
-    const definitions = config.definitions;
+    const associations = config?.associations;
+    const definitions = config?.definitions;
     const split = path.split(".");
     const filename = getItemNameFromPath(path);
     const extension = `.${split[split.length - 1]}`;
