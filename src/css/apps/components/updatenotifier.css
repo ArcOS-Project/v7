@@ -1,0 +1,63 @@
+#UpdateNotifierApp > div.body {
+  padding: 30px;
+  padding-top: 50px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+#UpdateNotifierApp > div.body img.backdrop {
+  filter: blur(100px);
+  width: 100%;
+  aspect-ratio: 1/1;
+  position: fixed;
+  top: -50%;
+  left: 0;
+  z-index: -1;
+  animation: UpdateNotifier_backdrop_rotate 20s linear infinite;
+}
+
+#UpdateNotifierApp > div.body div.header img {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 30px;
+}
+#UpdateNotifierApp > div.body div.header h1 {
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+#UpdateNotifierApp > div.body div.header p {
+  opacity: 0.5;
+  margin-bottom: 40px;
+}
+
+#UpdateNotifierApp > div.body > p {
+  margin-bottom: 40px;
+}
+#UpdateNotifierApp > div.body div.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: auto;
+}
+#UpdateNotifierApp > div.body div.actions button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 40px;
+}
+
+@keyframes UpdateNotifier_backdrop_rotate {
+  0% {
+    rotate: 0deg;
+  }
+
+  50% {
+    rotate: 180deg;
+  }
+
+  100% {
+    rotate: 360deg;
+  }
+}
