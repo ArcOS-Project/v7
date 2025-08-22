@@ -306,6 +306,7 @@ export const DefaultFileTypes: Record<string, string> = {
   ".mig": "Migration status",
   ".lock": "Migration Lockfile",
   ".json": "JSON file",
+
   RegisteredVersion: "Version Registration",
   // Unsupported
   ".arcterm": "ArcTerm script (unsupported)",
@@ -316,6 +317,8 @@ export const DefaultFileTypes: Record<string, string> = {
   ".iso": "CD-ROM image (unsupported)",
   ".msl": "ArcMSL script (legacy)",
   ".osl": "OriginOS script (unsupported)",
+  ".wasm": "WebAssembly (unsupported)",
+  ".bin": "Binary (unsupported)",
 };
 
 export const BlankUserTheme: UserTheme = {
