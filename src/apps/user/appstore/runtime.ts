@@ -109,7 +109,8 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async installPackage(pkg: StoreItem, onDownloadProgress?: FilesystemProgressCallback) {
-    if (pkg.deprecated) {
+    const freshPkg = (await this.distrib.getStoreItem(pkg._id))!;
+    if (freshPkg.deprecated) {
       const go = await this.userDaemon!.Confirm(
         "Are you sure?",
         "The author of this package marked it as <b>deprecated</b>. This means that the package is unmaintained and outdated. Are you sure you want to continue installing it?",
@@ -120,14 +121,14 @@ export class AppStoreRuntime extends AppProcess {
       if (!go) return 0;
     }
 
-    if (pkg.verifiedVer !== pkg.pkg.version && !this.userDaemon?.userInfo?.admin) {
+    if (freshPkg.verifiedVer !== freshPkg.pkg.version && !this.userDaemon?.userInfo?.admin) {
       MessageBox(
         {
           title: "Can't install package",
-          message: `The ArcOS administrators haven't yet verified version <b>${pkg.pkg.version}</b> of this package! This package has to be verified before you can install it.`,
+          message: `The ArcOS administrators haven't yet verified version <b>${freshPkg.pkg.version}</b> of this package! This package has to be verified before you can install it.`,
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           sound: "arcos.dialog.error",
-          image: StoreItemIcon(pkg),
+          image: StoreItemIcon(freshPkg),
         },
         this.pid,
         true
@@ -138,30 +139,31 @@ export class AppStoreRuntime extends AppProcess {
 
     const elevated = await this.userDaemon!.manuallyElevate({
       what: "ArcOS needs your permission to install a package",
-      title: pkg.pkg.name,
-      description: `By ${pkg.user?.displayName || pkg.user?.username || pkg.pkg.author}`,
-      image: StoreItemIcon(pkg),
+      title: freshPkg.pkg.name,
+      description: `By ${freshPkg.user?.displayName || freshPkg.user?.username || freshPkg.pkg.author}`,
+      image: StoreItemIcon(freshPkg),
       level: ElevationLevel.medium,
     });
 
     if (!elevated) return false;
 
-    const result = await this.distrib.storeItemInstaller(pkg._id, onDownloadProgress);
+    const result = await this.distrib.storeItemInstaller(freshPkg._id, onDownloadProgress);
     if (!result) return false;
 
-    const permitted = this.registerOperation(pkg._id, result);
+    const permitted = this.registerOperation(freshPkg._id, result);
     if (!permitted) return false;
-    await this.distrib!.removeFromInstalled(pkg._id);
+    await this.distrib!.removeFromInstalled(freshPkg._id);
 
     result.onStop = async () => {
-      this.discardOperation(pkg._id);
+      this.discardOperation(freshPkg._id);
     };
 
     return result;
   }
 
   async updatePackage(pkg: StoreItem, onDownloadProgress?: FilesystemProgressCallback) {
-    if (pkg.deprecated) {
+    const freshPkg = (await this.distrib.getStoreItem(pkg._id))!;
+    if (freshPkg.deprecated) {
       const go = await this.userDaemon!.Confirm(
         "Are you sure?",
         "The author of this package marked it as <b>deprecated</b>. This means that the package is unmaintained and outdated. Do you want to uninstall it instead of updating?",
@@ -175,14 +177,14 @@ export class AppStoreRuntime extends AppProcess {
       }
     }
 
-    if (pkg.verifiedVer !== pkg.pkg.version && !this.userDaemon?.userInfo?.admin) {
+    if (freshPkg.verifiedVer !== freshPkg.pkg.version && !this.userDaemon?.userInfo?.admin) {
       MessageBox(
         {
           title: "Can't update package",
-          message: `The ArcOS administrators haven't yet verified version <b>${pkg.pkg.version}</b> of this package! This package has to be verified before you can update it.`,
+          message: `The ArcOS administrators haven't yet verified version <b>${freshPkg.pkg.version}</b> of this package! This package has to be verified before you can update it.`,
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           sound: "arcos.dialog.error",
-          image: StoreItemIcon(pkg),
+          image: StoreItemIcon(freshPkg),
         },
         this.pid,
         true
@@ -193,22 +195,22 @@ export class AppStoreRuntime extends AppProcess {
 
     const elevated = await this.userDaemon!.manuallyElevate({
       what: "ArcOS needs your permission to update a package",
-      title: pkg.pkg.name,
-      description: `By ${pkg.user?.displayName || pkg.user?.username || pkg.pkg.author}`,
+      title: freshPkg.pkg.name,
+      description: `By ${freshPkg.user?.displayName || freshPkg.user?.username || freshPkg.pkg.author}`,
       image: StoreItemIcon(pkg),
       level: ElevationLevel.medium,
     });
     if (!elevated) return false;
 
-    const result = await this.distrib.updatePackage(pkg._id, true, onDownloadProgress);
+    const result = await this.distrib.updatePackage(freshPkg._id, true, onDownloadProgress);
     if (!result) return false;
 
-    const permitted = this.registerOperation(pkg._id, result);
+    const permitted = this.registerOperation(freshPkg._id, result);
     if (!permitted) return false;
-    await this.distrib!.removeFromInstalled(pkg._id);
+    await this.distrib!.removeFromInstalled(freshPkg._id);
 
     result.onStop = async () => {
-      this.discardOperation(pkg._id);
+      this.discardOperation(freshPkg._id);
     };
 
     return result;
