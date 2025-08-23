@@ -1,0 +1,169 @@
+#DriveInfo > div.body {
+  padding: 20px;
+  padding-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+#DriveInfo > div.body div.header {
+  text-align: center;
+}
+
+#DriveInfo > div.body div.header svg.circular-progress {
+  margin-bottom: 15px;
+}
+
+#DriveInfo > div.body div.header h1 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+#DriveInfo > div.body div.header p {
+  opacity: 0.5;
+}
+
+#DriveInfo > div.body div.quota {
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: var(--win-border);
+  width: 100%;
+  border-radius: 10px;
+  height: 55px;
+}
+
+#DriveInfo > div.body div.quota h1 {
+  font-weight: normal;
+}
+
+#DriveInfo > div.body div.quota p {
+  opacity: 0.5;
+  font-size: 12px;
+}
+
+#DriveInfo > div.body div.quota div.part {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#DriveInfo > div.body div.quota div.dot {
+  background-color: var(--accent);
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  border: var(--win-border);
+}
+
+#DriveInfo > div.body div.quota div.part.free div.dot {
+  background-color: var(--accent-transparent);
+}
+
+#DriveInfo > div.body div.usage {
+  width: 100%;
+}
+
+#DriveInfo > div.body div.usage div.bar {
+  width: 100%;
+  height: 10px;
+  border-radius: 5px;
+  background-color: var(--button-bg);
+  margin-bottom: 15px;
+  display: flex;
+  overflow: hidden;
+  border: var(--button-hover-bg) 1px solid;
+}
+
+#DriveInfo > div.body div.usage div.bar div.part {
+  width: var(--percent);
+  height: 100%;
+  min-width: 2px;
+  flex-shrink: 1;
+  border-right: var(--button-bg) 1px solid;
+}
+
+#DriveInfo > div.body div.usage div.legend div.part.home div.dot,
+#DriveInfo > div.body div.usage div.bar div.part.home {
+  background-color: var(--clr-orange-fg);
+}
+
+#DriveInfo > div.body div.usage div.legend div.part.system div.dot,
+#DriveInfo > div.body div.usage div.bar div.part.system {
+  background-color: var(--clr-magenta-fg);
+}
+#DriveInfo > div.body div.usage div.legend div.part.apps div.dot,
+#DriveInfo > div.body div.usage div.bar div.part.apps {
+  background-color: var(--clr-green-fg);
+}
+#DriveInfo > div.body div.usage div.legend div.part.trash div.dot,
+#DriveInfo > div.body div.usage div.bar div.part.trash {
+  background-color: var(--clr-red-fg);
+}
+
+#DriveInfo > div.body div.usage div.legend {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, auto);
+  gap: 10px;
+  padding: 0 15px;
+}
+
+#DriveInfo > div.body div.usage div.legend div.part {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+}
+
+#DriveInfo > div.body div.usage div.legend div.dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 7px;
+  background-color: #f0f;
+}
+
+#DriveInfo > div.body div.usage div.legend div.part h1 {
+  line-height: 14px;
+  font-weight: normal;
+  margin-bottom: 2px;
+}
+
+#DriveInfo > div.body div.usage div.legend div.part p {
+  opacity: 0.5;
+  font-size: 12px;
+}
+
+#DriveInfo > div.body div.actions {
+  width: 100%;
+  height: 50px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--button-bg);
+  border-radius: 15px;
+  margin-top: auto;
+}
+
+#DriveInfo > div.body div.actions button.suggested {
+  margin-left: auto;
+}
+
+#DriveInfo > div.body div.advanced-info {
+  padding: 10px;
+  border: var(--win-border);
+  width: 100%;
+  height: 0;
+  flex-grow: 1;
+  border-radius: 10px;
+  overflow-y: auto;
+}
+
+#DriveInfo > div.body div.advanced-info div.row {
+  display: flex;
+}
+#DriveInfo > div.body div.advanced-info div.row h1 {
+  width: 100px;
+  opacity: 0.5;
+}
