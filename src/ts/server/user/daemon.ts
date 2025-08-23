@@ -69,7 +69,14 @@ import type { Notification } from "$types/notification";
 import type { ArcShortcut } from "$types/shortcut";
 import type { ExpandedTerminal } from "$types/terminal";
 import { UserThemeKeys, type UserTheme } from "$types/theme";
-import type { CustomStylePreferences, PublicUserInfo, UserInfo, UserPreferences, WallpaperGetters } from "$types/user";
+import type {
+  CategorizedDiskUsage,
+  CustomStylePreferences,
+  PublicUserInfo,
+  UserInfo,
+  UserPreferences,
+  WallpaperGetters,
+} from "$types/user";
 import type { Wallpaper } from "$types/wallpaper";
 import Cookies from "js-cookie";
 import type { Unsubscriber } from "svelte/store";
@@ -562,7 +569,6 @@ export class UserDaemon extends Process {
         icon: ImageMimeIcon,
         caption: "Uploading a wallpaper of your choosing",
         subtitle: `To U:/Wallpapers`,
-        waiting: true,
       },
       pid
     );
@@ -572,8 +578,6 @@ export class UserDaemon extends Process {
         prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);
-        prog.setWork(true);
-        prog.setWait(false);
       });
 
       if (!result.length) {
@@ -790,7 +794,6 @@ export class UserDaemon extends Process {
         caption: "Mounting drive",
         subtitle: `${path}${letter ? ` as ${letter}:/` : ""}`,
         icon: DriveIcon,
-        waiting: true,
       },
       +this.env.get("shell_pid") || undefined
     );
@@ -803,8 +806,6 @@ export class UserDaemon extends Process {
         prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);
-        prog.setWait(false);
-        prog.setWork(true);
       },
       path
     );
@@ -1737,8 +1738,6 @@ export class UserDaemon extends Process {
         caption: ``,
         subtitle: ``,
         icon: "",
-        waiting: false,
-        working: false,
         errors: [],
       })
     );
@@ -1819,24 +1818,6 @@ export class UserDaemon extends Process {
       });
     };
 
-    const setWait = (waiting: boolean) => {
-      Log(`Setting wait: ${waiting}`);
-
-      progress.update((v) => {
-        v.waiting = waiting;
-        return v;
-      });
-    };
-
-    const setWork = (working: boolean) => {
-      Log(`Setting working: ${working}`);
-
-      progress.update((v) => {
-        v.working = working;
-        return v;
-      });
-    };
-
     const mutErr = (error: string) => {
       Log(`Mutating error: ${error}`);
 
@@ -1888,8 +1869,6 @@ export class UserDaemon extends Process {
       updSub,
       setMax,
       setDone,
-      setWait,
-      setWork,
       mutErr,
       setErrors,
       stop,
@@ -1909,7 +1888,6 @@ export class UserDaemon extends Process {
       {
         type: "quantity",
         max: sources.length,
-        waiting: true,
         icon: FolderIcon,
         caption: `Moving files to ${destinationName || destination}`,
         subtitle: "Working...",
@@ -1920,8 +1898,6 @@ export class UserDaemon extends Process {
     for (const source of sources) {
       await progress.show();
       progress.updSub(source);
-      progress.setWait(false);
-      progress.setWork(true);
 
       const childProgress = await this.FileProgress(
         {
@@ -1931,7 +1907,6 @@ export class UserDaemon extends Process {
           icon: FolderIcon,
           done: 0,
           max: 100,
-          working: true,
         },
         progress.process()?.pid || pid
       );
@@ -1948,7 +1923,6 @@ export class UserDaemon extends Process {
         progress.mutErr(`Failed to move ${source}`);
       }
 
-      progress.setWait(true);
       progress.mutDone(+1);
 
       await Sleep(200); // prevent rate limit
@@ -1971,7 +1945,6 @@ export class UserDaemon extends Process {
         type: "quantity",
         max: sources.length,
         done: 0,
-        waiting: true,
         icon: FolderIcon,
         caption: `Copying files to ${destinationName || destination}`,
         subtitle: "Working...",
@@ -1982,8 +1955,6 @@ export class UserDaemon extends Process {
     for (const source of sources) {
       await progress.show();
       progress.updSub(source);
-      progress.setWait(false);
-      progress.setWork(true);
 
       const childProgress = await this.FileProgress(
         {
@@ -1993,7 +1964,6 @@ export class UserDaemon extends Process {
           icon: FolderIcon,
           done: 0,
           max: 100,
-          working: true,
         },
         progress.process()?.pid || pid
       );
@@ -2009,7 +1979,6 @@ export class UserDaemon extends Process {
         progress.mutErr(`Failed to copy ${source}`);
       }
 
-      progress.setWait(true);
       progress.mutDone(+1);
 
       await Sleep(200); // prevent rate limit
@@ -2917,5 +2886,39 @@ The information provided in this report is subject for review by me or another A
     if (!isOutdated) return;
 
     this.spawnOverlay("UpdateNotifierApp", +this.env.get("shell_pid"));
+  }
+
+  async determineCategorizedDiskUsage(): Promise<CategorizedDiskUsage> {
+    const total = this.userInfo!.storageSize;
+    const apps = (await this.fs.readDir(UserPaths.Applications))?.totalSize || 0;
+    const system = (await this.fs.readDir(UserPaths.System))?.totalSize || 0;
+    const trash = (await this.fs.readDir(UserPaths.Trashcan))?.totalSize || 0;
+    const home = (await this.fs.readDir(UserPaths.Home))?.totalSize || 0;
+    const used = apps + system + home;
+    const result: CategorizedDiskUsage = {
+      sizes: {
+        apps,
+        system: system - trash,
+        trash,
+        home,
+      },
+      absolutePercentages: {
+        apps: (100 / total) * apps,
+        system: (100 / total) * (system - trash),
+        trash: (100 / total) * trash,
+        home: (100 / total) * home,
+      },
+      relativePercentages: {
+        apps: (100 / used) * apps,
+        system: (100 / used) * (system - trash),
+        trash: (100 / used) * trash,
+        home: (100 / used) * home,
+      },
+      total,
+      used,
+      free: total - (apps + system + home),
+    };
+
+    return result;
   }
 }
