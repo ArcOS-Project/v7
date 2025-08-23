@@ -159,3 +159,27 @@ export interface PublicUserInfo {
   admin: boolean;
   dispatchClients: number;
 }
+
+export interface CategorizedDiskUsage {
+  sizes: {
+    system: number;
+    trash: number;
+    home: number;
+    apps: number;
+  };
+  absolutePercentages: {
+    system: number;
+    trash: number;
+    home: number;
+    apps: number;
+  };
+  relativePercentages: {
+    system: number;
+    trash: number;
+    home: number;
+    apps: number;
+  };
+  used: number;
+  free: number;
+  total: number;
+}

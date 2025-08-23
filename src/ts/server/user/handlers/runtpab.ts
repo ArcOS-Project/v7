@@ -23,15 +23,12 @@ const runTpaBundle: (d: UserDaemon) => FileHandler = (daemon) => ({
         icon: ArcAppMimeIcon,
         caption: "Reading TPA archive",
         subtitle: path,
-        waiting: true,
       },
       +daemon.env.get("shell_pid")
     );
 
     const content = await daemon.fs.readFile(path, (progress) => {
       prog.show();
-      prog.setWork(true);
-      prog.setWait(false);
       prog.setMax(progress.max);
       prog.setDone(progress.value);
     });

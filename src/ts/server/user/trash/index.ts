@@ -1,6 +1,7 @@
 import { arrayToText, textToBlob } from "$ts/fs/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/fs/util";
 import { FolderIcon } from "$ts/images/filesystem";
+import { TrashIcon } from "$ts/images/general";
 import { DefaultMimeIcon } from "$ts/images/mime";
 import type { ProcessHandler } from "$ts/process/handler";
 import type { ServiceHost } from "$ts/services";
@@ -119,11 +120,24 @@ export class TrashCanService extends BaseService {
 
   async emptyBin() {
     const buffer = this.IndexBuffer();
+    const prog = await this.host.daemon.FileProgress(
+      {
+        caption: "Emptying recycle bin",
+        subtitle: "Please wait...",
+        max: Object.entries(buffer).length,
+        icon: TrashIcon,
+      },
+      +this.env.get("shell_pid")
+    );
+
+    prog.show();
 
     for (const uuid in buffer) {
       await this.fs.deleteItem(join(UserPaths.Trashcan, uuid));
+      prog.mutDone(+1);
     }
 
+    prog.stop();
     this.IndexBuffer.set({});
   }
 }
