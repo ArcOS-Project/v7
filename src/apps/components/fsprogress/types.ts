@@ -9,8 +9,6 @@ export interface FsProgressOperation {
   done: number;
   max: number;
   cancel?: () => void;
-  waiting: boolean;
-  working: boolean;
   errors: string[];
 }
 
@@ -25,8 +23,6 @@ export interface FileProgressMutator {
   setCancel: (cancel: (() => void) | undefined) => void;
   updateCaption: (caption: string) => void;
   updSub: (subtitle: string) => void;
-  setWait: (waiting: boolean) => void;
-  setWork: (waiting: boolean) => void;
   stop: () => Promise<any>;
   show: () => Promise<any>;
   setType: (type: "quantity" | "size" | "none") => void;
@@ -41,8 +37,6 @@ export const DummyFileProgress: FileProgressMutator = {
   setDone: (_: number) => {},
   updateCaption: (_: string) => {},
   updSub: (_: string) => {},
-  setWait: (_: boolean) => {},
-  setWork: (_: boolean) => {},
   mutErr: (_: string) => {},
   setErrors: (_: string[]) => {},
   stop: async () => {},

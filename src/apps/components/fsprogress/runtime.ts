@@ -43,30 +43,8 @@ export class FsProgressRuntime extends AppProcess {
         // Errors occured
         errorNotified = true;
 
-        const message = [
-          `${v.errors.length} ${P("Error", v.errors.length)} occured while <b>${v.caption}</b> was running.`,
-          `<code class='block'> - ${v.errors.join("<br> - ")}</code>`,
-        ];
-
         await this.closeWindow();
-
-        await MessageBox(
-          {
-            title: "Errors Occured",
-            message: message.join("<br>"),
-            buttons: [
-              {
-                caption: "Okay",
-                action: async () => {},
-                suggested: true,
-              },
-            ],
-            image: WarningIcon,
-            sound: "arcos.dialog.warning",
-          },
-          this.parentPid || 0,
-          !!this.parentPid
-        );
+        await this.spawnOverlayApp("FsProgressFail", this.parentPid || 0, this);
       }
     });
   }

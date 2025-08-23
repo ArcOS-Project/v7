@@ -1,7 +1,6 @@
 <script lang="ts">
   import { formatBytes } from "$ts/fs/util";
   import type { FsProgressRuntime } from "../runtime";
-  import Status from "./Bottom/Status.svelte";
 
   const { process }: { process: FsProgressRuntime } = $props();
   const { Progress } = process;
@@ -27,7 +26,5 @@
       {/if}
     </p>
   {/if}
-  <Status {process} />
-
   <button class="cancel" disabled={!$Progress.cancel || canceling} onclick={cancel}> Cancel </button>
 </div>
