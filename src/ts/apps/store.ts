@@ -5,11 +5,13 @@ import { AppInstallerApp } from "$apps/components/appinstaller/metadata";
 import { AppPreinstallApp } from "$apps/components/apppreinstall/metadata";
 import { ArcFind } from "$apps/components/arcfind/metadata";
 import { ContextMenuApp } from "$apps/components/contextmenu/metadata";
+import { DriveInfoApp } from "$apps/components/driveinfo/metadata";
 import { ExitApp } from "$apps/components/exit/metadata";
 import { FirstRunApp } from "$apps/components/firstrun/metadata";
 import { FsNewFileApp } from "$apps/components/fsnewfile/metadata";
 import { FsNewFolderApp } from "$apps/components/fsnewfolder/metadata";
 import { FsProgressApp } from "$apps/components/fsprogress/metadata";
+import { FsProgressFailApp } from "$apps/components/fsprogressfail/metadata";
 import { FsRenameItemApp } from "$apps/components/fsrenameitem/metadata";
 import { GlobalLoadIndicatorApp } from "$apps/components/globalloadindicator/metadata";
 import { IconPickerApp } from "$apps/components/iconpicker/metadata";
@@ -81,6 +83,8 @@ export const BuiltinApps: AppStorage = [
   FsRenameItemApp,
   FsNewFolderApp,
   FsNewFileApp,
+  FsProgressFailApp,
+  DriveInfoApp,
   WriterApp,
   ImageViewerApp,
   PdfViewerApp,
