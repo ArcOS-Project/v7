@@ -58,6 +58,7 @@ export class FirstRunRuntime extends AppProcess {
       await Sleep(50);
     }
 
+    await this.userDaemon?.updateRegisteredVersion();
     await stop();
 
     this.done.set(true);

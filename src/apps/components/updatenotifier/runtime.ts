@@ -26,6 +26,7 @@ export class UpdateNotifierRuntime extends AppProcess {
     const storage = this.appStore();
     const apps = storage.buffer();
     await this.userDaemon?.assoc?.updateConfiguration((config) => {
+      config ||= { associations: { apps: {}, handlers: {} }, definitions: {} };
       config.associations ||= {
         apps: {},
         handlers: {},
