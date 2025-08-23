@@ -258,7 +258,6 @@ export class AppStoreRuntime extends AppProcess {
 
     const prog = await this.userDaemon!.FileProgress(
       {
-        waiting: true,
         caption: "Publishing your package",
         subtitle: path,
         icon: UploadIcon,
@@ -270,8 +269,6 @@ export class AppStoreRuntime extends AppProcess {
       prog.show();
       prog.setMax(progress.max + 1);
       prog.setDone(progress.value);
-      prog.setWork(true);
-      prog.setWait(false);
       if (progress.what) prog.updSub(progress.what);
     });
 
@@ -311,7 +308,6 @@ export class AppStoreRuntime extends AppProcess {
 
     const prog = await this.userDaemon!.FileProgress(
       {
-        waiting: true,
         caption: "Updating your store item",
         subtitle: path,
         icon: StoreItemIcon(pkg),
@@ -323,8 +319,6 @@ export class AppStoreRuntime extends AppProcess {
       prog.show();
       prog.setMax(progress.max + 1);
       prog.setDone(progress.value);
-      prog.setWork(true);
-      prog.setWait(false);
       if (progress.what) prog.updSub(progress.what);
     });
 

@@ -60,8 +60,6 @@ export class WriterRuntime extends AppProcess {
 
     try {
       const contents = await this.fs.readFile(path, (progress) => {
-        prog.setWait(false);
-        prog.setWork(true);
         prog.setMax(progress.max);
         prog.setDone(progress.value);
       });

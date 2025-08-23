@@ -65,7 +65,6 @@ export class AppPreInstallRuntime extends AppProcess {
         icon: DownloadIcon,
         caption: "Reading ArcOS package",
         subtitle: this.pkgPath,
-        waiting: true,
       },
       +this.env.get("shell_pid")
     );
@@ -73,8 +72,6 @@ export class AppPreInstallRuntime extends AppProcess {
     try {
       const content = await this.userDaemon?.fs.readFile(this.pkgPath, (progress) => {
         prog?.show();
-        prog?.setWork(true);
-        prog?.setWait(false);
         prog?.setMax(progress.max);
         prog?.setDone(progress.value);
       });

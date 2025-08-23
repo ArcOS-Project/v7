@@ -59,7 +59,6 @@
         icon: TrashIcon,
         type: "quantity",
         max: $selection.length,
-        waiting: false,
       },
       process.pid,
     );
@@ -67,7 +66,6 @@
     progress?.show();
 
     for (const uuid of $selection) {
-      progress?.setWork(true);
       await trash?.restoreTrashItem(uuid);
       progress?.mutDone(+1);
     }
@@ -109,7 +107,6 @@
         icon: TrashIcon,
         type: "quantity",
         max: $selection.length,
-        waiting: false,
       },
       process.pid,
     );
@@ -117,7 +114,6 @@
     progress?.show();
 
     for (const uuid of $selection) {
-      progress?.setWork(true);
       await trash?.permanentlyDelete(uuid);
       progress?.mutDone(+1);
     }

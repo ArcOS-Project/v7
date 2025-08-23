@@ -24,7 +24,6 @@
     const prog = await process.userDaemon!.FileProgress(
       {
         type: "size",
-        waiting: true,
         icon: SaveIcon,
         caption: "Exporting report...",
         subtitle: `${getItemNameFromPath(path)}`,
@@ -37,8 +36,6 @@
         prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);
-        prog.setWait(false);
-        prog.setWork(true);
       });
     } catch {
       // silently error

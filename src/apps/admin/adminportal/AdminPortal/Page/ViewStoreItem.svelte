@@ -24,7 +24,6 @@
         icon: StoreItemIcon(item),
         max: 100,
         done: 0,
-        waiting: true,
       },
       process.pid,
     );
@@ -35,8 +34,6 @@
         progress.show();
         progress.setMax(prog.max + 1);
         progress.setDone(prog.value);
-        progress.setWait(false);
-        progress.setWork(true);
         progress.setType("size");
       },
       (status) => {

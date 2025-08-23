@@ -56,7 +56,6 @@ export class MessageComposerRuntime extends AppProcess {
         caption: "Sending message",
         subtitle: "Preparing...",
         icon: MessagingIcon,
-        waiting: true,
       },
       this.pid
     );
@@ -73,13 +72,8 @@ export class MessageComposerRuntime extends AppProcess {
         prog?.setMax(progress.max);
         prog?.setDone(progress.value);
         prog?.updSub("Uploading...");
-        prog?.setWait(false);
-        prog?.setWork(true);
       }
     );
-
-    prog?.setWait(true);
-    prog?.setWork(false);
 
     await Sleep(500);
 
@@ -117,7 +111,6 @@ export class MessageComposerRuntime extends AppProcess {
     const prog = await this.userDaemon!.FileProgress(
       {
         max: 100,
-        waiting: true,
         type: "none",
         caption: "Just a moment...",
         icon: MemoryIcon,
@@ -139,8 +132,6 @@ export class MessageComposerRuntime extends AppProcess {
           prog.setDone(0);
           prog.setMax(progress.max + 1);
           prog.setDone(progress.value);
-          prog.setWait(false);
-          prog.setWork(true);
         });
 
         await Sleep(10);

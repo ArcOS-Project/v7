@@ -53,8 +53,6 @@ export class PdfViewerRuntime extends AppProcess {
 
     try {
       const contents = await this.fs.readFile(path, (progress) => {
-        prog.setWait(false);
-        prog.setWork(true);
         prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);

@@ -97,8 +97,6 @@ export class HexEditRuntime extends AppProcess {
     );
     try {
       const contents = await this.fs.readFile(this.requestedFile, (progress) => {
-        prog.setWait(false);
-        prog.setWork(true);
         prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);

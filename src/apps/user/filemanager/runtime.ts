@@ -376,7 +376,6 @@ export class FileManagerRuntime extends AppProcess {
 
     const prog = await this.userDaemon!.FileProgress(
       {
-        waiting: true,
         icon: DriveIcon,
         caption: `Unmounting ${drive.label || "drive"}...`,
         subtitle: `${drive.driveLetter || drive.uuid}:/`,
@@ -388,8 +387,6 @@ export class FileManagerRuntime extends AppProcess {
       prog.show();
       prog.setMax(progress.max);
       prog.setDone(progress.value);
-      prog.setWait(false);
-      prog.setWork(true);
     });
 
     prog.stop();
@@ -402,7 +399,6 @@ export class FileManagerRuntime extends AppProcess {
       {
         type: "size",
         icon: UploadIcon,
-        waiting: true,
         caption: "Uploading your files...",
         subtitle: `To ${getItemNameFromPath(this.path())}`,
       },
@@ -417,8 +413,9 @@ export class FileManagerRuntime extends AppProcess {
         prog.setDone(progress.value);
         if (progress.what) prog.updSub(progress.what);
       });
-    } catch {
-      prog.mutErr(`Failed to upload files! One of the files you tried to upload might be too big.`);
+    } catch (e) {
+      const err = `${e}`.split(": ")[1];
+      prog.mutErr(err);
     }
 
     prog.mutDone(+1);
@@ -517,7 +514,6 @@ export class FileManagerRuntime extends AppProcess {
     const prog = await this.userDaemon!.FileProgress(
       {
         max: items.length,
-        waiting: true,
         type: "quantity",
         icon: TrashIcon,
         caption: isUserFs
@@ -531,8 +527,6 @@ export class FileManagerRuntime extends AppProcess {
     prog.show();
 
     for (const item of items) {
-      prog.setWait(false);
-      prog.setWork(true);
       prog.updSub(item);
 
       try {
@@ -567,8 +561,6 @@ export class FileManagerRuntime extends AppProcess {
 
     try {
       const file = await this.fs.readFile(selected[0], (progress) => {
-        prog.setWait(false);
-        prog.setWork(true);
         prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);

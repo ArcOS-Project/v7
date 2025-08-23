@@ -213,7 +213,6 @@ export class WallpaperRuntime extends AppProcess {
       {
         type: "size",
         icon: UploadIcon,
-        waiting: true,
         caption: "Uploading your files...",
         subtitle: `To ${getItemNameFromPath(this.directory)}`,
       },
