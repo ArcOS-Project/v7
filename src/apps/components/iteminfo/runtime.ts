@@ -15,8 +15,6 @@ import type { ItemInfo } from "./types";
 export class ItemInfoRuntime extends AppProcess {
   info = Store<ItemInfo>();
   shortcut = Store<ArcShortcut>();
-  drive: FilesystemDrive | undefined;
-  isDrive = false;
 
   constructor(
     handler: ProcessHandler,
@@ -33,20 +31,6 @@ export class ItemInfoRuntime extends AppProcess {
 
   async start() {
     if (!this.renderArgs.path || !this.renderArgs.file) return false;
-
-    this.isDrive = getParentDirectory(this.renderArgs.path) === this.renderArgs.path;
-
-    try {
-      if (this.isDrive) {
-        const id = this.renderArgs.path.split(":")[0]; // Drive discriminator
-
-        this.drive = this.fs.getDriveByLetter(id);
-
-        if (!this.drive) this.isDrive = false; // Verify the drive exists
-      }
-    } catch {
-      return false;
-    }
   }
 
   async render({ path, file }: RenderArgs) {
@@ -109,63 +93,5 @@ export class ItemInfoRuntime extends AppProcess {
 
   async renameItem() {
     this.spawnOverlayApp("FsRenameItem", this.pid, this.info().location.fullPath);
-  }
-
-  unmount() {
-    const identifier = `${this.drive!.driveLetter || this.drive!.uuid}:`;
-
-    MessageBox(
-      {
-        title: `Unmount ${this.drive!.label || identifier}`,
-        message: `Are you sure you want to unmount this drive?`,
-        buttons: [
-          { caption: "Cancel", action: () => {} },
-          {
-            caption: "Unmount",
-            action: async () => {
-              try {
-                await this.confirmUmountDrive(this.drive!, this.fs.getDriveIdByIdentifier(this.drive!.uuid));
-              } catch {
-                // Silently error
-              }
-            },
-            suggested: true,
-          },
-        ],
-        image: DriveIcon,
-        sound: "arcos.dialog.warning",
-      },
-      this.pid,
-      true
-    );
-  }
-
-  async confirmUmountDrive(drive: FilesystemDrive, id: string) {
-    if (this._disposed) return;
-
-    const prog = await this.userDaemon!.FileProgress(
-      {
-        waiting: true,
-        icon: DriveIcon,
-        caption: `Unmounting ${drive.label || "drive"}...`,
-        subtitle: `${drive.driveLetter || drive.uuid}:/`,
-      },
-      this.pid
-    );
-
-    try {
-      await this.fs.umountDrive(id, false, (progress) => {
-        prog.show();
-        prog.setMax(progress.max);
-        prog.setDone(progress.value);
-        prog.setWait(false);
-        prog.setWork(true);
-      });
-    } catch {
-      // silently error
-    }
-
-    prog.stop();
-    this.closeWindow();
   }
 }
