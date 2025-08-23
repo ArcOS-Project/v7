@@ -508,7 +508,7 @@ export class Filesystem extends KernelModule {
             const written = await this.writeFile(path, content, onProgress, false);
 
             if (!written) {
-              throw new Error(`Failed to write file "${path}"`);
+              throw new Error(`Failed to upload ${getItemNameFromPath(path)}`);
             }
 
             result.push({
@@ -523,7 +523,7 @@ export class Filesystem extends KernelModule {
           this.dispatch.dispatch("fs-flush-folder", target);
           resolve(result);
         } catch (e) {
-          return reject(e);
+          return reject(`${e}`);
         }
       };
 

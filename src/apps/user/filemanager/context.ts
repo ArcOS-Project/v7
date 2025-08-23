@@ -31,7 +31,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       {
         caption: "Properties...",
         action: (drive: QuotedDrive) => {
-          runtime.spawnOverlayApp("ItemInfo", runtime.pid, `${drive.data.uuid}:/`, drive.data);
+          runtime.spawnOverlayApp("DriveInfo", runtime.pid, drive.data);
         },
       },
     ],
@@ -103,7 +103,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       {
         caption: "Properties...",
         action: (drive: QuotedDrive) => {
-          runtime.spawnOverlayApp("ItemInfo", runtime.pid, `${drive.data.uuid}:/`, drive.data);
+          runtime.spawnOverlayApp("DriveInfo", runtime.pid, drive.data);
         },
       },
     ],
