@@ -55,7 +55,6 @@ import { PdfViewerApp } from "$apps/user/pdfviewer/metadata";
 import { ProcessesApp } from "$apps/user/processes/metadata";
 import { QlorbApp } from "$apps/user/qlorb/metadata";
 import { SystemSettings } from "$apps/user/settings/metadata";
-import { TestApp } from "$apps/user/test/metadata";
 import { WriterApp } from "$apps/user/writer/metadata";
 import type { AppKeyCombinations } from "$types/accelerator";
 import type { AppStorage } from "$types/app";
@@ -79,7 +78,6 @@ export const BuiltinApps: AppStorage = [
   MediaPlayerApp,
   ProcessesApp,
   SystemSettings,
-  TestApp,
   FsRenameItemApp,
   FsNewFolderApp,
   FsNewFileApp,
