@@ -82,7 +82,7 @@
         class:empty={!$userPreferences?.userWallpapers || !Object.values($userPreferences?.userWallpapers).length}
       >
         {#if $userPreferences?.userWallpapers && Object.values($userPreferences?.userWallpapers).length}
-          {#each Object.keys($userPreferences?.userWallpapers) as id}
+          {#each Object.keys($userPreferences?.userWallpapers) as id (id)}
             <WallpaperOption {id} {userPreferences} {userDaemon} />
           {/each}
         {:else}
