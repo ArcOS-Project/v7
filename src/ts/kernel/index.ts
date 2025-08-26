@@ -4,6 +4,7 @@ import { getBuild } from "$ts/metadata/build";
 import { ChangeLogs } from "$ts/metadata/changelog";
 import { getLicense } from "$ts/metadata/license";
 import { getMode } from "$ts/metadata/mode";
+import { SqlInterfaceProcess } from "$ts/sql";
 import { Store, type ReadableStore } from "$ts/writable";
 import { LogLevel, ShortLogLevelCaptions, type LogItem } from "../../types/logging";
 import { handleGlobalErrors } from "../error";
@@ -52,7 +53,10 @@ export class WaveKernel {
 
     CurrentKernel = this;
 
-    if (import.meta.env.DEV) (window as any)["kernel"] = CurrentKernel;
+    if (import.meta.env.DEV) {
+      (window as any)["kernel"] = CurrentKernel;
+      (window as any).SqlInterfaceProcess = SqlInterfaceProcess;
+    }
   }
 
   static async panic(reason: string) {
