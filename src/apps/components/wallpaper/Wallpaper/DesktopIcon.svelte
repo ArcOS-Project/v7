@@ -90,7 +90,7 @@
 
 <!-- svelte-ignore event_directive_deprecated -->
 <button
-  class="icon {className}"
+  class="icon {className} {position.x}-{position.y}"
   class:moving={$moving}
   class:no-grid={$userPreferences.desktop.noIconGrid}
   class:selected={$selected === identifier}
@@ -108,6 +108,7 @@
     threshold: { delay: 300 },
     position,
     disabled: $userPreferences.desktop.lockIcons,
+    legacyTranslate: true,
   }}
   on:neodrag:start={startDrag}
   on:neodrag:end={endDrag}

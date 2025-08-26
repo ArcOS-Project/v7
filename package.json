@@ -23,7 +23,7 @@
   "dependencies": {
     "@castlenine/svelte-qrcode": "^2.3.0",
     "@neodrag/svelte": "^2.3.1",
-    "@neodrag/vanilla": "^2.2.0",
+    "@neodrag/vanilla": "2.3.0",
     "@tsparticles/engine": "^3.9.1",
     "@tsparticles/preset-fire": "^3.2.0",
     "@types/ansi-escapes": "^4.0.4",
