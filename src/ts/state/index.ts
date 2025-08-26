@@ -97,7 +97,6 @@ export class StateHandler extends Process {
 
         await data.render(props || {}, {
           state: this,
-          kernel: WaveKernel.get(),
           stack: this.handler,
         });
       } catch (e) {
