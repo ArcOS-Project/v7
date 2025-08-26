@@ -1,5 +1,4 @@
 import { AppProcess } from "$ts/apps/process";
-import { getReadableVibrantColor } from "$ts/color";
 import { MessageBox } from "$ts/dialog";
 import { arrayToText, textToBlob } from "$ts/fs/convert";
 import { getItemNameFromPath, join } from "$ts/fs/util";
@@ -39,9 +38,6 @@ export class WallpaperRuntime extends AppProcess {
       if (path.startsWith(this.directory)) {
         await this.updateContents();
       }
-    });
-    this.userPreferences.subscribe(async (v) => {
-      getReadableVibrantColor((await this.userDaemon?.getWallpaper(v.desktop.wallpaper))!.url).then((c) => console.log(c));
     });
   }
 
