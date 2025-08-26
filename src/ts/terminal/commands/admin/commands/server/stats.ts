@@ -11,7 +11,7 @@ export const AdminServerStats: AdminCommandType = async (term, admin) => {
   if (!stats) return 1;
 
   for (const key in stats.counts) {
-    term.rl?.println(`${BRPURPLE}${key.padEnd(12, " ")}${RESET}: ${stats.counts[key]} (${formatBytes(stats.sizes[key])})`);
+    term.rl?.println(`${BRPURPLE}${key.padEnd(12, " ")}${RESET}: ${stats.counts[key]}`);
   }
 
   term.rl?.println(
