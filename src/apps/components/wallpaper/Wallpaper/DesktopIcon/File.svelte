@@ -17,10 +17,11 @@
   let icon = $state<string>();
   let render = $state<boolean>(false);
 
-  onMount(() => {
+  onMount(async () => {
     const info = process.userDaemon?.assoc?.getFileAssociation(file.name);
     shortcut = $shortcuts[file.name];
     icon = info?.icon || DefaultMimeIcon;
+    if (info?.friendlyName === "Image file") icon = (await process.userDaemon?.getThumbnailFor(path)) || icon;
     render = true;
   });
 </script>
