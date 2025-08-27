@@ -36,7 +36,7 @@ export class ArcFetchCommand extends TerminalProcess {
     const state = KernelStateHandler()?.currentState;
 
     return Object.entries({
-      OS: `ArcOS ${ArcOSVersion}-${ArcMode()} (${ArcBuild})`,
+      OS: `ArcOS ${ArcOSVersion}-${ArcMode()} (${ArcBuild()})`,
       Host: `${server?.url} ${BRBLACK}(${import.meta.env.DW_SERVER_AUTHCODE ? "Protected" : "Open"})${RESET}`,
       Username: `${term.env.get("currentuser")} ${BRBLACK}(${
         term.env.get("administrator") ? "Administrator" : "Regular User"
