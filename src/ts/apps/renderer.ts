@@ -355,6 +355,8 @@ export class AppRenderer extends Process {
             return;
           }
 
+          if (contextMenu?.currentMenu() === uuid) return;
+
           const rect = button.getBoundingClientRect();
 
           contextMenu?.currentMenu.set(uuid);

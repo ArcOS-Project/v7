@@ -27,6 +27,8 @@
       return;
     }
 
+    if (contextMenu?.currentMenu() === uuid) return;
+
     const rect = button?.getBoundingClientRect();
     if (!rect || !contextMenu) return;
 
