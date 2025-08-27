@@ -37,7 +37,8 @@
     mime = info?.friendlyName || "Unknown";
     icon = info?.icon || DefaultMimeIcon;
 
-    if (info?.friendlyName === "Image file") thumbnail = await process.fs.imageThumbnail(thisPath, 48);
+    if (info?.friendlyName === "Image file" && process.userPreferences().appPreferences.fileManager?.renderThumbnails)
+      thumbnail = await process.userDaemon?.getThumbnailFor(thisPath);
   });
 
   function onclick(e: MouseEvent) {

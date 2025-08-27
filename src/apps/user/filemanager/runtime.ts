@@ -3,7 +3,6 @@ import { GetConfirmation, MessageBox } from "$ts/dialog";
 import { FilesystemDrive } from "$ts/fs/drive";
 import { SharedDrive } from "$ts/fs/shares/drive";
 import { DownloadFile, getDriveLetter, getItemNameFromPath, getParentDirectory, join } from "$ts/fs/util";
-import { iconIdFromPath } from "$ts/images";
 import { ErrorIcon, InfoIcon, WarningIcon } from "$ts/images/dialog";
 import { DownloadIcon, DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import { TrashIcon, UploadIcon } from "$ts/images/general";
@@ -11,7 +10,7 @@ import { DefaultMimeIcon } from "$ts/images/mime";
 import type { ProcessHandler } from "$ts/process/handler";
 import { AdminScopes } from "$ts/server/admin/store";
 import { SystemFolders, UserPathCaptions, UserPaths } from "$ts/server/user/store";
-import { Plural } from "$ts/util";
+import { Plural, sortByKey } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { DirectoryReadReturn, FolderEntry } from "$types/fs";
@@ -202,7 +201,6 @@ export class FileManagerRuntime extends AppProcess {
       return;
     }
 
-    this.loading.set(true);
     this.errored.set(false);
     this.path.set(path);
     this.selection.set([]);
@@ -210,7 +208,6 @@ export class FileManagerRuntime extends AppProcess {
 
     await this.refresh();
 
-    this.loading.set(false);
     this.updateAltMenu();
   }
 
@@ -224,12 +221,19 @@ export class FileManagerRuntime extends AppProcess {
 
     if (!path) return;
 
+    this.loading.set(true);
+
     try {
       const contents = await this.fs.readDir(path);
       const shortcuts = contents?.shortcuts;
 
       if (!contents) this.DirectoryNotFound();
       else {
+        contents.files = sortByKey(
+          contents.files.map((f) => ({ ...f, nameLower: f.name.toLowerCase() })),
+          "nameLower"
+        );
+
         this.contents.set(contents);
         this.shortcuts.set(shortcuts || {});
         let driveLabel: string = "";
@@ -251,10 +255,12 @@ export class FileManagerRuntime extends AppProcess {
     } catch {
       this.DirectoryNotFound();
     }
+
+    this.loading.set(false);
   }
 
   DirectoryNotFound() {
-    if (this._disposed) return;
+    if (this._disposed || this.errored()) return;
     this.Log(`Directory Not Found!`);
 
     this.errored.set(true);
