@@ -5,6 +5,7 @@ import { getItemNameFromPath } from "$ts/fs/util";
 import { ImageViewerIcon } from "$ts/images/apps";
 import { ErrorIcon } from "$ts/images/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
+import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
@@ -60,6 +61,7 @@ export class ImageViewerRuntime extends AppProcess {
       prog.setDone(progress.value);
     });
 
+    await Sleep(0);
     prog.stop();
 
     if (!contents) {

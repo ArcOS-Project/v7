@@ -61,6 +61,7 @@ export class CodRuntime extends AppProcess {
         prog.setDone(progress.value);
       });
 
+      await Sleep(0);
       await prog.stop();
 
       if (!contents) {

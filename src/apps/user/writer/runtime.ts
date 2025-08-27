@@ -64,6 +64,7 @@ export class WriterRuntime extends AppProcess {
         prog.setDone(progress.value);
       });
 
+      await Sleep(0);
       prog.stop();
 
       if (!contents) {
