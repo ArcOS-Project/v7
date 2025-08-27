@@ -21,6 +21,7 @@
 #fileManager div.directory-viewer button div.segment.icon img {
   width: 24px;
   height: 24px;
+  border-radius: 8%;
 }
 
 #fileManager div.directory-viewer button div.segment.icon span {
