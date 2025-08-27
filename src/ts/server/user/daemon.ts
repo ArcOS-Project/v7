@@ -1,3 +1,4 @@
+//#region IMPORTS
 import { FsProgressRuntime } from "$apps/components/fsprogress/runtime";
 import { DummyFileProgress, type FileProgressMutator, type FsProgressOperation } from "$apps/components/fsprogress/types";
 import { GlobalLoadIndicatorApp } from "$apps/components/globalloadindicator/metadata";
@@ -32,7 +33,7 @@ import { ShareManager } from "$ts/fs/shares/index";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
 import { getIconPath, iconIdFromPath, maybeIconId } from "$ts/images";
-import { AppStoreIcon, DefaultIcon, MessagingIcon } from "$ts/images/apps";
+import { AppStoreIcon, MessagingIcon } from "$ts/images/apps";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import {
@@ -89,44 +90,59 @@ import { FileAssocService } from "./assoc";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
+//#endregion
 
 export class UserDaemon extends Process {
-  public initialized = false;
+  //#region USER DAEMON PROPERTIES
+
+  // USER
   public username: string;
   public token: string;
-  public preferences = Store<UserPreferences>(DefaultUserPreferences);
-  public notifications = new Map<string, Notification>([]);
   public userInfo: UserInfo = DefaultUserInfo;
-  public battery = Store<BatteryType | undefined>();
-  public serviceHost: ServiceHost | undefined;
-  public Wallpaper = Store<Wallpaper>(Wallpapers.img0);
-  public lastWallpaper = Store<string>("img0");
+  // CACHING
+  private localWallpaperCache: Record<string, Blob> = {};
+  private thumbnailCache: Record<string, string> = {};
+  private TempFsSnapshot: Record<string, any> = {};
+  // WORKSPACES
+  private virtualDesktops: Record<string, HTMLDivElement> = {};
+  private virtualDesktop: HTMLDivElement | undefined;
+  private virtualDesktopIndex = -1;
+  private virtualdesktopChangingTimeout: NodeJS.Timeout | undefined;
+  // USER DAEMON STATE - BOOLEANISH
+  private firstSyncDone = false;
+  public autoLoadComplete = false;
+  public safeMode = false;
+  public syncLock = false;
+  public initialized = false;
   public _elevating = false;
   public _blockLeaveInvocations = true;
+  override _criticalProcess: boolean = true;
+  // FILESYSTEM
+  public TempFs?: MemoryFilesystemDrive;
+  public fileHandlers: Record<string, FileHandler> = DefaultFileHandlers(this);
+  public mountedDrives: string[] = [];
+  // STORES - WRITABLE
+  public Wallpaper = Store<Wallpaper>(Wallpapers.img0);
+  public lastWallpaper = Store<string>("img0");
+  public battery = Store<BatteryType | undefined>();
+  public preferences = Store<UserPreferences>(DefaultUserPreferences);
+  // STORES - CLASSIC
   private elevations: Record<string, ElevationData> = {};
   private preferencesUnsubscribe: Unsubscriber | undefined;
   private wallpaperGetters: WallpaperGetters = [
     ["@local:", async (id: string) => await this.getLocalWallpaper(id)],
     ["img", (id) => Wallpapers[id] || Wallpapers["img04"]],
   ];
-  private localWallpaperCache: Record<string, Blob> = {};
-  private virtualDesktops: Record<string, HTMLDivElement> = {};
-  private virtualDesktop: HTMLDivElement | undefined;
-  private virtualDesktopIndex = -1;
-  private virtualdesktopChangingTimeout: NodeJS.Timeout | undefined;
-  private firstSyncDone = false;
-  public safeMode = false;
-  public fileHandlers: Record<string, FileHandler> = DefaultFileHandlers(this);
-  override _criticalProcess: boolean = true;
-  public mountedDrives: string[] = [];
-  public server: ServerManager;
-  public syncLock = false;
-  public autoLoadComplete = false;
-  public globalDispatch?: GlobalDispatch;
-  private TempFsSnapshot: Record<string, any> = {};
-  public TempFs?: MemoryFilesystemDrive;
   private registeredAnchors: HTMLAnchorElement[] = [];
+  public notifications = new Map<string, Notification>([]);
+  // KERNEL MODULES
+  public server: ServerManager;
+  public globalDispatch?: GlobalDispatch;
+  // SERVICES
   public assoc?: FileAssocService;
+  public serviceHost: ServiceHost | undefined;
+
+  //#endregion
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, token: string, username: string, userInfo?: UserInfo) {
     super(handler, pid, parentPid);
@@ -141,678 +157,186 @@ export class UserDaemon extends Process {
     this.name = "UserDaemon";
   }
 
-  async start() {
-    try {
-      this.TempFs = this.fs.getDriveById("temp") as MemoryFilesystemDrive;
-      this.TempFsSnapshot = await this.TempFs.takeSnapshot();
+  //#region INIT
 
-      this.startAnchorRedirectionIntercept();
-    } catch {
-      return false;
+  async activateAdminBootstrapper() {
+    this.Log("Activating admin bootstrapper");
+
+    if (!this.userInfo.admin) return;
+    const appStore = this.appStorage()!;
+
+    appStore.loadOrigin("admin", () => AdminApps);
+    await appStore.refresh();
+
+    const proto = this.serviceHost?.getService<ProtocolServiceProcess>("ProtoService");
+
+    for (const key in AdminProtocolHandlers) {
+      proto?.registerHandler(key, AdminProtocolHandlers[key]);
     }
   }
 
-  appStorage() {
-    return this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+  async startShareManager() {
+    this.Log("Starting share manager");
+
+    const share = this.serviceHost!.getService<ShareManager>("ShareMgmt");
+
+    await share?.mountOwnedShares();
   }
 
-  initAppStorage(storage: ApplicationStorage) {
-    storage.loadOrigin("builtin", () => BuiltinApps);
-    storage.loadOrigin("userApps", () => this.getUserApps());
+  async startServiceHost() {
+    this.Log("Starting service host");
+
+    this.serviceHost = await this.handler.spawn<ServiceHost>(ServiceHost, undefined, this.pid);
+    await this.serviceHost?.init();
+
+    this.assoc = this.serviceHost?.getService<FileAssocService>("FileAssocSvc");
   }
 
-  async getUserInfo(): Promise<UserInfo | undefined> {
-    if (this._disposed) return;
-
-    if (this.initialized) {
-      this.Log(`Tried to get user info while initialization is already complete`, LogLevel.warning);
-
-      return;
-    }
-
-    this.Log("Getting user information");
-
-    try {
-      const response = this.userInfo._id
-        ? {
-            status: 200,
-            data: this.userInfo,
-          }
-        : await Backend.get(`/user/self`, {
-            headers: { Authorization: `Bearer ${this.token}` },
-          });
-
-      const data = response.status === 200 ? (response.data as UserInfo) : undefined;
-
-      if (!data) return undefined;
-
-      this.preferences.set(data.preferences);
-
-      this.sanitizeUserPreferences();
-
-      this.initialized = true;
-      this.userInfo = data;
-      this.env.set("currentuser", this.username);
-      if (data.admin) this.env.set("administrator", data.admin);
-
-      return response.status === 200 ? (response.data as UserInfo) : undefined;
-    } catch {
-      await this.killSelf();
-
-      return undefined;
-    }
-  }
-
-  async startPreferencesSync() {
-    if (this._disposed) return;
-
-    this.Log(`Starting user preferences commit sync`);
-
-    const unsubscribe = this.preferences.subscribe(async (v) => {
-      if (this._disposed) return unsubscribe();
-      if (!v || v.isDefault) return;
-
-      v = this.checkCurrentThemeIdValidity(v);
-
-      if (!this.firstSyncDone) this.firstSyncDone = true;
-      else if (!this.syncLock) this.commitPreferences(v);
-
-      this.setAppRendererClasses(v);
-      this.updateWallpaper(v);
-      this.syncVirtualDesktops(v);
-    });
-
-    this.preferencesUnsubscribe = unsubscribe;
-  }
-
-  async updateWallpaper(v: UserPreferences) {
-    if (this._disposed) return;
-
-    const incoming = v.desktop.wallpaper;
-
-    if (incoming === this.lastWallpaper()) return;
-
-    this.lastWallpaper.set(incoming);
-
-    const wallpaper = await this.getWallpaper(incoming);
-
-    if (!wallpaper) return;
-
-    this.Wallpaper.set(wallpaper);
-  }
-
-  getAppRendererStyle(accent: string) {
-    if (this._disposed) return "";
-
-    return `--accent: ${hex3to6(accent)} !important;
-    --accent-transparent: ${hex3to6(accent)}44 !important;
-    --accent-light: ${lightenColor(accent)} !important;
-    --accent-lighter: ${lightenColor(accent, 7.5)} !important;
-    --accent-dark: ${darkenColor(accent, 75)} !important;
-    --accent-darkest: ${darkenColor(accent, 85)} !important;
-    --accent-light-transparent: ${lightenColor(accent)}77 !important;
-    --accent-light-invert: ${invertColor(lightenColor(accent))} !important;
-    --accent-suggested-start: #${accent} !important;
-    --accent-suggested-end: ${darkenColor(accent, 10)} !important;
-    --accent-suggested-fg: ${bestForeground(accent)} !important;
-    --wallpaper: url('${this.Wallpaper()?.url || Wallpapers.img0.url}');
-    --user-font: "${this.preferences().shell.visuals.userFont || ""}"`;
-  }
-
-  async setAppRendererClasses(v: UserPreferences) {
-    // if (KernelStateHandler()?.currentState !== "desktop") return;
-
-    const renderer = this.handler.renderer?.target;
-
-    if (!renderer) throw new Error("UserDaemon: Tried to set renderer classes without renderer");
-
-    const accent = v.desktop.accent;
-    const theme = v.desktop.theme;
-
-    let style = this.getAppRendererStyle(accent);
-
-    this.setUserStyleLoader(v.shell.customStyle);
-
-    renderer.removeAttribute("class");
-    renderer.setAttribute("style", style);
-    renderer.classList.add(`theme-${theme}`);
-    renderer.classList.toggle("sharp", v.shell.visuals.sharpCorners);
-    renderer.classList.toggle("noani", v.shell.visuals.noAnimations || this.safeMode);
-    renderer.classList.toggle("noglass", v.shell.visuals.noGlass || this.safeMode);
-    renderer.classList.toggle("safe-mode", this.safeMode);
-    renderer.classList.toggle("traffic-lights", v.shell.visuals.trafficLights);
-  }
-
-  setUserStyleLoader(style: CustomStylePreferences) {
-    if (this._disposed || this.safeMode) return;
-
-    let styleLoader = this.handler.renderer?.target.querySelector("#userStyleLoader");
-
-    if (!styleLoader) {
-      styleLoader = document.createElement("style");
-      styleLoader.id = "userStyleLoader";
-
-      this.handler.renderer?.target.append(styleLoader);
-    }
-
-    styleLoader.textContent = style.enabled && !this._elevating ? style.content || "" : "";
-  }
-
-  async commitPreferences(preferences: UserPreferences) {
-    if (this._disposed) return;
-
-    this.Log(`Committing user preferences`);
-
-    try {
-      const response = await Backend.put(`/user/preferences`, preferences, {
-        headers: { Authorization: `Bearer ${this.token}` },
-      });
-
-      return response.status === 200;
-    } catch {
-      this.Log(`Failed to commit user preferences!`, LogLevel.error);
-    }
-  }
-
-  async startFilesystemSupplier() {
-    if (this._disposed) return;
-
-    this.Log(`Starting filesystem supplier`);
-
-    try {
-      await this.fs.mountDrive<ServerDrive>("userfs", ServerDrive, "U", undefined, this.token);
-
-      await this.migrateFilesystemLayout();
-    } catch {
-      throw new Error("UserDaemon: Failed to start filesystem supplier");
-    }
-  }
-
-  async stop() {
-    if (this.serviceHost) this.serviceHost._holdRestart = true;
-    if (this._disposed) return;
-
-    if (this.preferencesUnsubscribe) this.preferencesUnsubscribe();
-
-    this.TempFs?.restoreSnapshot(this.TempFsSnapshot!);
-    this.fs.umountDrive(`userfs`, true);
-  }
-
-  async sanitizeUserPreferences() {
-    if (this._disposed) return;
-
-    if (this.initialized) {
-      this.Log(`Tried to sanitize user preferences while initialization is already complete`);
-
-      return;
-    }
-
-    const preferences = this.preferences() || {};
-
-    if (preferences.isDefault) {
-      this.Log(`Not sanitizing default preferences`, LogLevel.warning);
-    }
-
-    if (!preferences.startup)
-      preferences.startup = {
-        wallpaper: "app",
-      };
-
-    if (!preferences.pinnedApps?.length)
-      preferences.pinnedApps = ["$", FileManagerApp.id, MessagingApp.id, AppStoreApp.id, SystemSettings.id, ProcessesApp.id];
-
-    const result = applyDefaults<UserPreferences>(preferences, {
-      ...DefaultUserPreferences,
-      isDefault: undefined,
-    });
-
-    if (!result.globalSettings.shellExec) result.globalSettings.shellExec = "arcShell";
-
-    this.preferences.set(result);
-    this.commitPreferences(result);
-  }
-
-  async discontinueToken(token = this.token) {
-    if (this._disposed) return;
-
-    this.Log(`Discontinuing token`);
-
-    try {
-      const response = await Backend.post(`/logout`, {}, { headers: { Authorization: `Bearer ${token}` } });
-
-      return response.status === 200;
-    } catch {
-      return false;
-    }
-  }
-
-  sendNotification(data: Notification) {
-    if (this._disposed) return;
-
-    this.Log(`Sending notification: ${data.title} -> ${data.message.length} body bytes`);
-
-    const id = `${Math.floor(Math.random() * 1e9)}`;
-
-    data.timestamp = Date.now();
-
-    this.notifications.set(id, data);
-    this.systemDispatch.dispatch("update-notifications", [this.notifications]);
-    this.systemDispatch.dispatch("send-notification", [data]);
-
-    return id;
-  }
-
-  deleteNotification(id: string) {
-    if (this._disposed) return;
-
-    this.Log(`Deleting notification '${id}'`);
-
-    const notification = this.notifications.get(id);
-
-    if (!notification) return;
-
-    notification.deleted = true;
-
-    this.notifications.set(id, notification);
-
-    this.systemDispatch.dispatch("delete-notification", [id]);
-    this.systemDispatch.dispatch("update-notifications", [this.notifications]);
-  }
-
-  clearNotifications() {
-    if (this._disposed) return;
-
-    this.Log(`Clearing notifications`);
-
-    this.notifications = new Map<string, Notification>([]);
-    this.systemDispatch.dispatch("update-notifications", [this.notifications]);
-  }
-
-  themeFromUserPreferences(data: UserPreferences, name: string, author: string, version: string): UserTheme {
-    if (this._disposed) return {} as UserTheme;
-
-    return {
-      author,
-      version,
-      name,
-      taskbarLabels: data.shell.taskbar.labels,
-      taskbarDocked: data.shell.taskbar.docked,
-      taskbarColored: data.shell.taskbar.colored,
-      noAnimations: data.shell.visuals.noAnimations,
-      sharpCorners: data.shell.visuals.sharpCorners,
-      compactContext: data.shell.visuals.compactContext,
-      noGlass: data.shell.visuals.noGlass,
-      desktopWallpaper: data.desktop.wallpaper,
-      desktopTheme: data.desktop.theme,
-      desktopAccent: data.desktop.accent,
-      loginBackground: data.account.loginBackground || "img18",
+  startAnchorRedirectionIntercept() {
+    this.Log("Starting anchor redirection intercept");
+
+    const handle = () => {
+      if (this._disposed) return;
+
+      const anchors = document.querySelectorAll("a");
+
+      for (const anchor of anchors) {
+        const href = anchor.getAttribute("href");
+
+        if (this.registeredAnchors.includes(anchor) || href?.startsWith("@client/")) continue;
+
+        this.registeredAnchors.push(anchor);
+
+        anchor.addEventListener("click", (e) => {
+          const currentState = KernelStateHandler()?.currentState;
+
+          e.preventDefault();
+
+          if (currentState !== "desktop") return;
+
+          MessageBox(
+            {
+              title: "Open this page?",
+              message: `You're about to leave ArcOS to navigate to <code>${anchor.href}</code> in a <b>new tab</b>. Are you sure you want to continue?`,
+              buttons: [
+                {
+                  caption: "Stay here",
+                  action() {},
+                },
+                {
+                  caption: "Proceed",
+                  action() {
+                    window.open(anchor.href, "_blank");
+                  },
+                  suggested: true,
+                },
+              ],
+              image: GlobeIcon,
+            },
+            +this.env.get("shell_pid"),
+            true
+          );
+        });
+      }
     };
+
+    const observer = new MutationObserver(handle);
+    observer.observe(document.body, { childList: true, subtree: true });
   }
 
-  saveCurrentTheme(name: string) {
-    if (this._disposed) return;
+  async activateGlobalDispatch() {
+    this.globalDispatch = this.serviceHost!.getService<GlobalDispatch>("GlobalDispatch");
 
-    this.Log(`Saving current theme as '${name}'`);
+    this.globalDispatch?.subscribe("update-preferences", async (preferences: UserPreferences) => {
+      this.syncLock = true;
+      await Sleep(0);
+      this.preferences.set(preferences);
+      await Sleep(0);
+      this.syncLock = false;
+    });
 
-    const id = `${Math.floor(Math.random() * 1e6)}`;
+    this.globalDispatch?.subscribe("fs-flush-folder", (path) => {
+      this.systemDispatch.dispatch("fs-flush-folder", path);
+    });
 
-    this.preferences.update((userPreferences) => {
-      const context = this.themeFromUserPreferences(userPreferences, name, this.username, "1.0");
-
-      userPreferences.userThemes[id] = context;
-
-      return userPreferences;
+    this.globalDispatch?.subscribe("fs-flush-file", (path) => {
+      this.systemDispatch.dispatch("fs-flush-file", path);
     });
   }
 
-  applyThemeData(data: UserTheme, id?: string) {
-    if (this._disposed || !data) return;
+  //#endregion
+  //#region MIGRATIONS
 
-    this.Log(`Apply theme data, ID='${id}'`);
+  async migrateFilesystemLayout() {
+    const migrationPath = join(UserPaths.Migrations, "FsMig-705.lock");
+    const migrationFile = !!(await this.fs.stat(migrationPath));
 
-    const verifier = this.verifyTheme(data);
+    if (migrationFile) return;
 
-    if (verifier !== "themeIsValid") {
-      this.Log(`Not loading invalid theme! Missing ${verifier}`, LogLevel.error);
+    const oldConfigDir = await this.fs.readDir("U:/Config");
 
-      return false;
-    }
+    if (oldConfigDir) {
+      for (const dir of oldConfigDir.dirs) {
+        const target = join(UserPaths.Configuration, dir.name);
 
-    this.preferences.update((userPreferences) => {
-      userPreferences.shell.taskbar.labels = !!data.taskbarLabels;
-      userPreferences.shell.taskbar.docked = !!data.taskbarDocked;
-      userPreferences.shell.taskbar.colored = !!data.taskbarColored;
-      userPreferences.shell.visuals.noAnimations = !!data.noAnimations;
-      userPreferences.shell.visuals.sharpCorners = !!data.sharpCorners;
-      userPreferences.shell.visuals.compactContext = !!data.compactContext;
-      userPreferences.shell.visuals.noGlass = !!data.noGlass;
-      userPreferences.desktop.wallpaper = data.desktopWallpaper;
-      userPreferences.desktop.accent = data.desktopAccent;
-      userPreferences.desktop.theme = data.desktopTheme;
-      userPreferences.account.loginBackground = data.loginBackground || "img18";
-
-      if (id) userPreferences.currentThemeId = id;
-
-      return userPreferences;
-    });
-  }
-
-  applySavedTheme(id: string) {
-    if (this._disposed) return;
-
-    this.Log(`Applying saved theme '${id}'`);
-
-    const userPreferences = this.preferences();
-
-    if (!userPreferences.userThemes[id]) return;
-
-    this.applyThemeData(userPreferences.userThemes[id], id);
-  }
-
-  verifyTheme(data: UserTheme) {
-    if (this._disposed) return;
-
-    const keys = Object.keys(data);
-
-    for (const key of UserThemeKeys) {
-      if (!keys.includes(key)) return key;
-    }
-
-    return "themeIsValid";
-  }
-
-  checkCurrentThemeIdValidity(data: UserPreferences): UserPreferences {
-    if (this._disposed) return DefaultUserPreferences;
-
-    const { currentThemeId } = data;
-
-    if (!currentThemeId) return data;
-
-    const retrievedThemeData = BuiltinThemes[currentThemeId] || (data.userThemes || {})[currentThemeId];
-
-    if (!retrievedThemeData) return data;
-
-    const theme = this.themeFromUserPreferences(
-      data,
-      retrievedThemeData.name,
-      retrievedThemeData.author,
-      retrievedThemeData.version
-    );
-
-    if (JSON.stringify(theme) !== JSON.stringify(retrievedThemeData)) data.currentThemeId = undefined;
-
-    return data;
-  }
-
-  deleteUserTheme(id: string) {
-    if (this._disposed) return;
-
-    this.Log(`Deleting user theme '${id}'`);
-
-    this.preferences.update((udata) => {
-      if (!udata.userThemes) return udata;
-
-      delete udata.userThemes[id];
-
-      return udata;
-    });
-  }
-
-  async uploadWallpaper(pid?: number): Promise<Wallpaper | undefined> {
-    if (this._disposed) return;
-
-    this.Log(`Uploading wallpaper to U:/Wallpapers`);
-
-    const prog = await this.FileProgress(
-      {
-        type: "size",
-        icon: ImageMimeIcon,
-        caption: "Uploading a wallpaper of your choosing",
-        subtitle: `To U:/Wallpapers`,
-      },
-      pid
-    );
-
-    try {
-      const result = await this.fs.uploadFiles(UserPaths.Wallpapers, "image/*", false, (progress) => {
-        prog.show();
-        prog.setMax(progress.max);
-        prog.setDone(progress.value);
-      });
-
-      if (!result.length) {
-        prog.stop();
-        return {} as Wallpaper;
+        await this.fs.deleteItem(target);
+        await this.fs.moveItem(`U:/Config/${dir.name}`, target);
       }
 
-      const { path, file } = result[0];
+      await this.fs.deleteItem("U:/Config");
+    }
 
-      const wallpaper: Wallpaper = {
-        author: this.username,
-        name: file.name,
-        url: "",
-        thumb: "",
-      };
+    await this.fs.writeFile(migrationPath, textToBlob(`${Date.now()}`));
+  }
 
-      this.preferences.update((v) => {
-        v.userWallpapers ||= {};
-        v.userWallpapers[`@local:${btoa(path)}`] = wallpaper;
+  async updateAppShortcutsDir() {
+    const contents = await this.fs.readDir(UserPaths.AppShortcuts);
+    const storage = this.appStorage()?.buffer();
 
-        return v;
-      });
+    if (!storage || !contents) return;
 
-      return wallpaper;
-    } catch {
-      prog.stop();
+    for (const app of storage) {
+      const existing = contents?.files.filter((f) => f.name === `${app.id}.arclnk`)[0];
+
+      if (existing) continue;
+
+      this.createShortcut(
+        {
+          name: app.id,
+          target: app.id,
+          type: "app",
+          icon: iconIdFromPath(app.metadata.icon),
+        },
+        join(UserPaths.AppShortcuts, `${app.id}.arclnk`)
+      );
+      await Sleep(50);
     }
   }
 
-  changeProfilePicture(newValue: string | number) {
-    this.preferences.update((v) => {
-      v.account.profilePicture = newValue;
-      return v;
-    });
+  //#endregion
+  //#region ARCOS VERSION
 
-    this.systemDispatch.dispatch("pfp-changed", [newValue]);
-    this.globalDispatch?.emit("pfp-changed", newValue);
+  async isRegisteredVersionOutdated() {
+    const contents = await this.fs.readFile(join(UserPaths.System, "RegisteredVersion"));
+    const isOutdated = !contents || arrayToText(contents) !== ArcOSVersion;
+
+    return isOutdated;
   }
 
-  async uploadProfilePicture(): Promise<string | undefined> {
-    if (this._disposed) return undefined;
-
-    this.Log(`Uploading profile picture to ${UserPaths.Pictures}`);
-
-    try {
-      const result = await this.fs.uploadFiles(UserPaths.Pictures, "image/*");
-      if (!result.length) return;
-
-      const { path } = result[0];
-      this.changeProfilePicture(path);
-
-      return path;
-    } catch {
-      return;
-    }
+  async updateRegisteredVersion() {
+    await this.fs.writeFile(join(UserPaths.System, "RegisteredVersion"), textToBlob(ArcOSVersion));
   }
 
-  public async getWallpaper(id: string, override?: string): Promise<Wallpaper> {
-    if (this._disposed) return Wallpapers["img0"];
+  async checkForNewVersion() {
+    const isOutdated = await this.isRegisteredVersionOutdated();
 
-    if (!id) return Wallpapers[override || "img0"];
+    if (!isOutdated) return;
 
-    if (id.startsWith("http"))
-      return {
-        author: "The Web",
-        name: "From the Internet",
-        url: id,
-        thumb: id,
-      };
-
-    for (const [prefix, getter] of this.wallpaperGetters) {
-      if (id.startsWith(prefix)) return await getter(id);
-    }
-
-    return Wallpapers[override || "img0"];
+    this.spawnOverlay("UpdateNotifierApp", +this.env.get("shell_pid"));
   }
 
-  async deleteLocalWallpaper(id: string): Promise<boolean> {
-    if (this._disposed) return false;
-
-    this.Log(`Deleting local wallpaper '${id}'`);
-
-    const path = atob(id.replace("@local:", ""));
-    let result: boolean = false;
-
-    try {
-      result = await this.fs.deleteItem(path);
-    } catch {
-      result = false;
-    }
-
-    this.preferences.update((v) => {
-      delete v.userWallpapers[id];
-
-      return v;
-    });
-
-    delete this.localWallpaperCache[id];
-
-    return result;
-  }
-
-  async getLocalWallpaper(id: string): Promise<Wallpaper> {
-    if (this._disposed) return Wallpapers.img0;
-
-    const wallpaperData = this.preferences().userWallpapers[id];
-
-    if (!wallpaperData) {
-      this.Log(`Tried to get unknown user wallpaper '${id}', defaulting to img04`, LogLevel.warning);
-
-      return Wallpapers.img04;
-    }
-    if (this.localWallpaperCache[id])
-      return {
-        ...wallpaperData,
-        url: URL.createObjectURL(this.localWallpaperCache[id]),
-        thumb: URL.createObjectURL(this.localWallpaperCache[id]),
-      };
-
-    try {
-      const path = atob(id.replace("@local:", ""));
-      const parent = await this.fs.readDir(getParentDirectory(path));
-      const contents = await this.fs.readFile(path);
-
-      if (!contents || !parent) {
-        this.Log(`User wallpaper '${id}' doesn't exist on the filesystem anymore, defaulting to img04`, LogLevel.warning);
-
-        return Wallpapers.img04;
-      }
-
-      const blob = arrayToBlob(contents, parent.files.filter((f) => path.endsWith(f.name))[0]?.mimeType || "");
-      const blobUrl = URL.createObjectURL(blob);
-
-      this.localWallpaperCache[id] = blob;
-
-      return {
-        ...wallpaperData,
-        url: blobUrl,
-        thumb: blobUrl,
-      };
-    } catch {
-      return Wallpapers.img0;
-    }
-  }
-
-  async logoff() {
-    if (this._disposed) return;
-
-    this.Log(`Logging off NOW`);
-
-    await this.toLogin("logoff");
-  }
-
-  async shutdown() {
-    if (this._disposed) return;
-
-    this.Log(`Shutting down NOW`);
-
-    await this.toLogin("shutdown");
-  }
-
-  async restart() {
-    if (this._disposed) return;
-
-    this.Log(`Restarting NOW`);
-
-    await this.toLogin("restart");
-  }
-
-  async logoffSafeMode() {
-    this.Log(`Logging off NOW (safe mode)`);
-
-    this.env.set("safemode", true);
-
-    await this.toLogin("logoff", { safeMode: true });
-  }
-
-  async toLogin(type: string, props: Record<string, any> = {}) {
-    this.Log(`toLogin: ${type}`);
-    await this.waitForLeaveInvocationAllow();
-    if (this._disposed) return;
-    if (this.serviceHost) this.serviceHost._holdRestart = true;
-
-    await this.handler._killSubProceses(this.pid);
-    await KernelStateHandler()?.loadState("login", {
-      type,
-      userDaemon: this,
-      ...props,
-    });
-    await this.serviceHost?.killSelf?.();
-    await this.unmountMountedDrives();
-  }
-
-  async mountZip(path: string, letter?: string, fromSystem = false) {
-    if (this._disposed) return;
-
-    this.Log(`Mounting ZIP file at ${path} as ${letter || "?"}:/`);
-
-    const elevated =
-      fromSystem ||
-      (await this.manuallyElevate({
-        what: "ArcOS needs your permission to mount a ZIP file",
-        title: getItemNameFromPath(path),
-        description: letter ? `As ${letter}:/` : "As a drive",
-        image: DriveIcon,
-        level: ElevationLevel.medium,
-      }));
-
-    if (!elevated) return;
-
-    const prog = await this.FileProgress(
-      {
-        type: "size",
-        caption: "Mounting drive",
-        subtitle: `${path}${letter ? ` as ${letter}:/` : ""}`,
-        icon: DriveIcon,
-      },
-      +this.env.get("shell_pid") || undefined
-    );
-
-    const mount = await this.fs.mountDrive(
-      btoa(path),
-      ZIPDrive,
-      letter,
-      (progress) => {
-        prog.show();
-        prog.setMax(progress.max);
-        prog.setDone(progress.value);
-      },
-      path
-    );
-
-    prog.stop();
-    return mount;
-  }
+  //#endregion
+  //#region SYSTEM STATUS
 
   async batteryInfo(): Promise<BatteryType | undefined> {
     if (this._disposed) return;
@@ -838,14 +362,8 @@ export class UserDaemon extends Process {
     this.battery.set(await this.batteryInfo());
   }
 
-  getUserApps(): AppStorage {
-    if (this._disposed) return [];
-    if (!this.preferences()) return [];
-
-    const apps = this.preferences().userApps;
-
-    return Object.values(apps) as unknown as AppStorage;
-  }
+  //#endregion
+  //#region PROCESS HELPERS
 
   async spawnApp<T>(id: string, parentPid?: number, ...args: any[]) {
     if (this._disposed) return;
@@ -1124,164 +642,80 @@ export class UserDaemon extends Process {
     }
   }
 
-  async spawnAutoload() {
-    if (this._disposed) return;
+  //#endregion
+  //#region CONTROLLING
 
-    const shares = this.serviceHost?.getService<ShareManager>("ShareMgmt");
-    const autoloadApps: string[] = [];
+  async start() {
+    try {
+      this.TempFs = this.fs.getDriveById("temp") as MemoryFilesystemDrive;
+      this.TempFsSnapshot = await this.TempFs.takeSnapshot();
 
-    this.Log(`Spawning autoload applications`);
-
-    let { startup } = this.preferences();
-    startup ||= {};
-
-    for (const payload in startup) {
-      const type = startup[payload];
-
-      switch (type.toLowerCase()) {
-        case "app":
-          autoloadApps.push(payload);
-          break;
-        case "file":
-          if (!this.safeMode) await this.openFile(payload);
-          break;
-        case "folder":
-          if (!this.safeMode) await this.spawnApp("fileManager", undefined, payload);
-          break;
-        case "share":
-          await shares?.mountShareById(payload);
-          break;
-        case "disabled":
-          break;
-        default:
-          this.Log(`Unknown startup type: ${type.toUpperCase()} (payload: '${payload}')`);
-      }
-    }
-
-    await this._spawnApp("shellHost", undefined, this.pid, autoloadApps);
-
-    if (this.safeMode) this.safeModeNotice();
-
-    if (BETA)
-      this.sendNotification({
-        title: "Have any feedback?",
-        message:
-          "I'd love to hear it! There's a feedback button in the titlebar of every window. Don't hesitate to tell me how I'm doing stuff wrong, what you want to see or what I forgot. I want to hear all of it.",
-        buttons: [
-          {
-            caption: "Send feedback",
-            action: () => {
-              this.iHaveFeedback(this.handler.getProcess(+this.env.get("shell_pid"))!);
-            },
-          },
-        ],
-        icon: "message-square-heart",
-        timeout: 6000,
-      });
-
-    if (navigator.userAgent.toLowerCase().includes("firefox")) {
-      await MessageBox(
-        {
-          title: "Firefox support",
-          message:
-            "Beware! ArcOS doesn't work correctly on Firefox. It's unsure when and if support for Firefox will improve. Please be sure to give feedback to me about anything that doesn't work quite right on Firefox, okay?",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: FirefoxIcon,
-        },
-        +this.env.get("shell_pid"),
-        true
-      );
-    }
-
-    this.autoLoadComplete = true;
-  }
-
-  checkDisabled(appId: string, noSafeMode?: boolean): boolean {
-    if (this._disposed) return false;
-    if (this.safeMode && !noSafeMode) {
+      this.startAnchorRedirectionIntercept();
+    } catch {
       return false;
     }
-
-    const { disabledApps } = this.preferences();
-
-    const appStore = this.appStorage();
-    const app = appStore?.buffer().filter((a) => a.id === appId)[0];
-
-    if (app && this.isVital(app) && !noSafeMode) return false;
-
-    return (disabledApps || []).includes(appId) || !!(this.safeMode && noSafeMode);
   }
 
-  isVital(app: App) {
-    return app.vital && !app.entrypoint && !app.workingDirectory && !app.thirdParty;
+  async stop() {
+    if (this.serviceHost) this.serviceHost._holdRestart = true;
+    if (this._disposed) return;
+
+    if (this.preferencesUnsubscribe) this.preferencesUnsubscribe();
+
+    this.TempFs?.restoreSnapshot(this.TempFsSnapshot!);
+    this.fs.umountDrive(`userfs`, true);
   }
 
-  async disableApp(appId: string) {
-    if (this._disposed) return false;
-    if (this.checkDisabled(appId)) return false;
+  async logoff() {
+    if (this._disposed) return;
 
-    this.Log(`Disabling application ${appId}`);
+    this.Log(`Logging off NOW`);
 
-    const appStore = this.appStorage();
-    const app = await appStore?.getAppById(appId);
-
-    if (!app || this.isVital(app)) return;
-
-    const elevated = await this.manuallyElevate({
-      what: "ArcOS needs your permission to disable an application",
-      image: this.getAppIcon(app, app.workingDirectory),
-      title: app.metadata.name,
-      description: `By ${app.metadata.author}`,
-      level: ElevationLevel.medium,
-    });
-    if (!elevated) return;
-
-    this.preferences.update((v) => {
-      v.disabledApps.push(appId);
-
-      return v;
-    });
-
-    const instances = this.handler.renderer?.getAppInstances(appId);
-
-    if (instances)
-      for (const instance of instances) {
-        this.handler.kill(instance.pid, true);
-      }
-
-    this.systemDispatch.dispatch("app-store-refresh");
+    await this.toLogin("logoff");
   }
 
-  async enableApp(appId: string) {
-    if (this._disposed) return false;
-    if (!this.checkDisabled(appId)) return false;
+  async shutdown() {
+    if (this._disposed) return;
 
-    this.Log(`Enabling application ${appId}`);
+    this.Log(`Shutting down NOW`);
 
-    const appStore = this.appStorage();
-    const app = await appStore?.getAppById(appId);
-
-    if (!app) return;
-
-    const elevated = await this.manuallyElevate({
-      what: "ArcOS needs your permission to enable an application",
-      image: this.getAppIcon(app, app.workingDirectory),
-      title: app.metadata.name,
-      description: `By ${app.metadata.author}`,
-      level: ElevationLevel.medium,
-    });
-    if (!elevated) return;
-
-    this.preferences.update((v) => {
-      if (!v.disabledApps.includes(appId)) return v;
-
-      v.disabledApps.splice(v.disabledApps.indexOf(appId));
-
-      return v;
-    });
-
-    this.systemDispatch.dispatch("app-store-refresh");
+    await this.toLogin("shutdown");
   }
+
+  async restart() {
+    if (this._disposed) return;
+
+    this.Log(`Restarting NOW`);
+
+    await this.toLogin("restart");
+  }
+
+  async logoffSafeMode() {
+    this.Log(`Logging off NOW (safe mode)`);
+
+    this.env.set("safemode", true);
+
+    await this.toLogin("logoff", { safeMode: true });
+  }
+
+  async toLogin(type: string, props: Record<string, any> = {}) {
+    this.Log(`toLogin: ${type}`);
+    await this.waitForLeaveInvocationAllow();
+    if (this._disposed) return;
+    if (this.serviceHost) this.serviceHost._holdRestart = true;
+
+    await this.handler._killSubProceses(this.pid);
+    await KernelStateHandler()?.loadState("login", {
+      type,
+      userDaemon: this,
+      ...props,
+    });
+    await this.serviceHost?.killSelf?.();
+    await this.unmountMountedDrives();
+  }
+
+  //#endregion
+  //#region LOGIN ACTIVITY
 
   async getLoginActivity(): Promise<LoginActivity[]> {
     if (this._disposed) return [];
@@ -1319,367 +753,64 @@ export class UserDaemon extends Process {
     }
   }
 
-  async elevate(id: string) {
-    if (this._disposed) return false;
+  //#endregion LOGIN ACTIVITY
+  //#region FILESYSTEM
 
-    this.Log(`Elevating for "${id}"`);
-
-    const data = this.elevations[id];
-
-    if (!data) return false;
-
-    return await this.manuallyElevate(data);
-  }
-
-  async manuallyElevate(data: ElevationData) {
-    if (this._disposed) return false;
-
-    this.Log(`Manually elevating "${data.what}"`);
-
-    const id = UUID();
-    const key = UUID();
-    const shellPid = this.env.get("shell_pid");
-
-    if (this.preferences().security.disabled) return true;
-    if (this.preferences().disabledApps.includes("SecureContext")) return true;
-
-    this._elevating = true;
-    this.setAppRendererClasses(this.preferences());
-
-    if (shellPid) {
-      const proc = await this._spawnOverlay("SecureContext", undefined, +shellPid, id, key, data);
-
-      if (!proc) return false;
-    } else {
-      const proc = await this._spawnApp("SecureContext", undefined, this.pid, id, key, data);
-
-      if (!proc) return false;
-    }
-
-    return new Promise((r) => {
-      this.systemDispatch.subscribe("elevation-approve", (data) => {
-        if (data[0] === id && data[1] === key) {
-          r(true);
-          this._elevating = false;
-          this.setAppRendererClasses(this.preferences());
-        }
-      });
-
-      this.systemDispatch.subscribe("elevation-deny", (data) => {
-        if (data[0] === id && data[1] === key) {
-          r(false);
-          this._elevating = false;
-          this.setAppRendererClasses(this.preferences());
-        }
-      });
-    });
-  }
-
-  loadElevation(id: string, data: ElevationData) {
+  async startFilesystemSupplier() {
     if (this._disposed) return;
 
-    this.Log(`Loading elevation "${id}"`);
-
-    this.elevations[id] = data;
-  }
-
-  async changeUsername(newUsername: string): Promise<boolean> {
-    if (this._disposed) return false;
-
-    this.Log(`Changing username to "${newUsername}"`);
-
-    const elevated = await this.manuallyElevate({
-      what: "ArcOS needs your permission to change your username:",
-      image: AccountIcon,
-      title: "Change username",
-      description: `To ${newUsername}`,
-      level: ElevationLevel.medium,
-    });
-
-    if (!elevated) return false;
+    this.Log(`Starting filesystem supplier`);
 
     try {
-      const response = await Backend.patch("/user/rename", toForm({ newUsername }), {
-        headers: { Authorization: `Bearer ${this.token}` },
-      });
+      await this.fs.mountDrive<ServerDrive>("userfs", ServerDrive, "U", undefined, this.token);
 
-      if (response.status !== 200) return false;
-
-      this.username = newUsername;
-      this.systemDispatch.dispatch("change-username", [newUsername]);
-
-      Cookies.set("arcUsername", newUsername, {
-        expires: 14,
-        domain: import.meta.env.DEV ? "localhost" : "izk-arcos.nl",
-      });
-
-      return true;
+      await this.migrateFilesystemLayout();
     } catch {
-      return false;
+      throw new Error("UserDaemon: Failed to start filesystem supplier");
     }
   }
 
-  async changePassword(newPassword: string): Promise<boolean> {
-    if (this._disposed) return false;
-
-    this.Log(`Changing password to [REDACTED]`);
-
-    const elevated = await this.manuallyElevate({
-      what: "ArcOS needs your permission to change your password:",
-      image: PasswordIcon,
-      title: "Change password",
-      description: `of ${this.username}`,
-      level: ElevationLevel.medium,
-    });
-
-    if (!elevated) return false;
-
-    try {
-      const response = await Backend.post("/user/changepswd", toForm({ newPassword }), {
-        headers: { Authorization: `Bearer ${this.token}` },
-      });
-
-      if (response.status !== 200) return false;
-
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  async syncVirtualDesktops(v: UserPreferences) {
-    if (this._disposed) return;
-    if (!this.virtualDesktop) return;
-
-    this.Log(`Syncing virtual desktop render state`);
-
-    const { desktops, index } = v.workspaces;
-
-    for (const { uuid } of desktops) {
-      this.virtualDesktop?.querySelector(`[id*="${uuid}"]`)?.classList.remove("selected");
-      if (!this.virtualDesktops[uuid]) this.renderVirtualDesktop(uuid);
-    }
-
-    if (this.virtualDesktopIndex === index) return;
-
-    if (v.shell.visuals.noAnimations) {
-      this.virtualDesktop.setAttribute("style", `--index: ${index};`);
-    } else {
-      this.virtualDesktop.classList.add("changing");
-      this.virtualDesktop.setAttribute("style", `--index: ${index};`);
-
-      this.virtualDesktop?.children[index]?.classList.add("selected");
-
-      if (this.virtualdesktopChangingTimeout) clearTimeout(this.virtualdesktopChangingTimeout);
-
-      this.virtualdesktopChangingTimeout = setTimeout(() => {
-        this.virtualDesktop?.classList.remove("changing");
-      }, 300);
-    }
-
-    this.virtualDesktopIndex = index;
-  }
-
-  renderVirtualDesktop(uuid: string) {
+  async mountZip(path: string, letter?: string, fromSystem = false) {
     if (this._disposed) return;
 
-    this.Log(`Rendering virtual desktop "${uuid}"`);
-
-    const desktop = document.createElement("div");
-
-    desktop.className = "workspace";
-    desktop.id = uuid;
-
-    this.virtualDesktop?.append(desktop);
-    this.virtualDesktops[uuid] = desktop;
-  }
-
-  async deleteVirtualDesktop(uuid: string) {
-    if (this._disposed) return;
-
-    this.Log(`Deleting virtual desktop "${uuid}"`);
-
-    const index = this.getDesktopIndexByUuid(uuid);
-
-    if (this.getCurrentDesktop()?.id === uuid) {
-      this.previousDesktop();
-    }
-
-    if (index < 0) return;
-
-    this.preferences.update((v) => {
-      v.workspaces.desktops.splice(index, 1);
-
-      return v;
-    });
-
-    const desktop = this.virtualDesktop?.querySelector(`[id*="${uuid}"]`);
-
-    if (!desktop) return;
-
-    await this.killWindowsOfDesktop(uuid);
-
-    desktop.remove();
-    delete this.virtualDesktops[uuid];
-  }
-
-  async startVirtualDesktops() {
-    if (this._disposed) return;
-
-    this.Log(`Starting virtual desktop system`);
-
-    const outer = document.createElement("div");
-    const inner = document.createElement("div");
-
-    outer.className = "virtual-desktop-container";
-    inner.className = "inner";
-
-    outer.append(inner);
-    this.handler.renderer?.target.append(outer);
-    this.virtualDesktop = inner;
-
-    this.syncVirtualDesktops(this.preferences());
-  }
-
-  getCurrentDesktop(): HTMLDivElement | undefined {
-    if (this._disposed) return;
-
-    const { workspaces } = this.preferences();
-
-    if (!workspaces.desktops.length) {
-      this.createWorkspace("Default");
-      this.createWorkspace();
-      this.createWorkspace();
-      return this.getCurrentDesktop();
-    }
-
-    const uuid = workspaces.desktops[workspaces.index]?.uuid;
-
-    if (!uuid) return undefined;
-
-    return this.virtualDesktops[uuid];
-  }
-
-  createWorkspace(name?: string) {
-    if (this._disposed) return;
-
-    this.Log(`Creating new workspace "${name || "<NO NAME>"}"`);
-
-    const uuid = UUID();
-
-    this.preferences.update((v) => {
-      v.workspaces.desktops.push({ uuid, name });
-      return v;
-    });
-  }
-
-  getDesktopIndexByUuid(uuid: string) {
-    if (this._disposed) return -1;
-
-    const {
-      workspaces: { desktops },
-    } = this.preferences();
-
-    for (let i = 0; i < desktops.length; i++) {
-      if (uuid === desktops[i].uuid) return i;
-    }
-
-    return -1;
-  }
-
-  switchToDesktopByUuid(uuid: string) {
-    if (this._disposed) return;
-
-    this.Log(`Switching to workspace with UUID "${uuid}"`);
-
-    const i = this.getDesktopIndexByUuid(uuid);
-
-    if (i < 0) return;
-
-    this.preferences.update((v) => {
-      v.workspaces.index = i;
-      return v;
-    });
-  }
-
-  async killWindowsOfDesktop(uuid: string) {
-    if (this._disposed) return;
-
-    this.Log(`Killing processes on workspace with UUID "${uuid}"`);
-
-    const processes = this.handler.store();
-
-    for (const [_, proc] of [...processes]) {
-      if (!(proc instanceof AppProcess)) continue;
-
-      if (proc.app.desktop === uuid) await proc.closeWindow();
-
-      return true;
-    }
-
-    return false;
-  }
-
-  nextDesktop() {
-    this.Log(`Switching to the next available workspace`);
-
-    const {
-      workspaces: { desktops, index },
-    } = this.preferences();
-
-    if (desktops.length - 1 >= index + 1) {
-      this.preferences.update((v) => {
-        v.workspaces.index++;
-
-        return v;
-      });
-
-      return true;
-    }
-
-    return false;
-  }
-
-  previousDesktop() {
-    this.Log(`Switching to the previous available workspace`);
-
-    const {
-      workspaces: { index },
-    } = this.preferences();
-
-    if (index - 1 >= 0) {
-      this.preferences.update((v) => {
-        v.workspaces.index--;
-
-        return v;
-      });
-    }
-  }
-
-  async moveWindow(pid: number, destination: string) {
-    this.Log(`Moving window ${pid} to destination ${destination}`);
-
-    const proc = this.handler.getProcess(pid);
-    const destinationWorkspace = this.virtualDesktops[destination];
-    const window = document.querySelector(`#appRenderer div.window[data-pid*='${pid}']`);
-
-    if (!proc || !(proc instanceof AppProcess) || !destinationWorkspace || !window) return;
-
-    const currentWorkspace = proc.app.desktop;
-
-    if (currentWorkspace && this.getCurrentDesktop()?.id === currentWorkspace && this.handler.renderer?.focusedPid() === pid) {
-      this.switchToDesktopByUuid(destination);
-    }
-
-    await Sleep(100);
-
-    destinationWorkspace.appendChild(window);
-    proc.app.desktop = destination;
-    this.handler.store.update((v) => {
-      v.set(pid, proc);
-
-      return v;
-    });
+    this.Log(`Mounting ZIP file at ${path} as ${letter || "?"}:/`);
+
+    const elevated =
+      fromSystem ||
+      (await this.manuallyElevate({
+        what: "ArcOS needs your permission to mount a ZIP file",
+        title: getItemNameFromPath(path),
+        description: letter ? `As ${letter}:/` : "As a drive",
+        image: DriveIcon,
+        level: ElevationLevel.medium,
+      }));
+
+    if (!elevated) return;
+
+    const prog = await this.FileProgress(
+      {
+        type: "size",
+        caption: "Mounting drive",
+        subtitle: `${path}${letter ? ` as ${letter}:/` : ""}`,
+        icon: DriveIcon,
+      },
+      +this.env.get("shell_pid") || undefined
+    );
+
+    const mount = await this.fs.mountDrive(
+      btoa(path),
+      ZIPDrive,
+      letter,
+      (progress) => {
+        prog.show();
+        prog.setMax(progress.max);
+        prog.setDone(progress.value);
+      },
+      path
+    );
+
+    prog.stop();
+    return mount;
   }
 
   startDriveNotifierWatcher() {
@@ -2174,68 +1305,270 @@ export class UserDaemon extends Process {
     }
   }
 
-  getGlobalSetting(key: string) {
-    return this.preferences().globalSettings[key];
+  async determineCategorizedDiskUsage(): Promise<CategorizedDiskUsage> {
+    const total = this.userInfo!.storageSize;
+    const apps = (await this.fs.readDir(UserPaths.Applications))?.totalSize || 0;
+    const system = (await this.fs.readDir(UserPaths.System))?.totalSize || 0;
+    const trash = (await this.fs.readDir(UserPaths.Trashcan))?.totalSize || 0;
+    const home = (await this.fs.readDir(UserPaths.Home))?.totalSize || 0;
+    const used = apps + system + home;
+    const result: CategorizedDiskUsage = {
+      sizes: {
+        apps,
+        system: system - trash,
+        trash,
+        home,
+      },
+      absolutePercentages: {
+        apps: (100 / total) * apps,
+        system: (100 / total) * (system - trash),
+        trash: (100 / total) * trash,
+        home: (100 / total) * home,
+      },
+      relativePercentages: {
+        apps: (100 / used) * apps,
+        system: (100 / used) * (system - trash),
+        trash: (100 / used) * trash,
+        home: (100 / used) * home,
+      },
+      total,
+      used,
+      free: total - (apps + system + home),
+    };
+
+    return result;
   }
 
-  setGlobalSetting(key: string, value: any) {
-    this.preferences.update((v) => {
-      v.globalSettings[key] = value;
+  async getThumbnailFor(path: string): Promise<string | undefined> {
+    if (this.thumbnailCache[path]) return this.thumbnailCache[path];
 
+    const dataUrl = await this.fs.imageThumbnail(path, 64);
+    if (dataUrl) this.thumbnailCache[path] = dataUrl;
+
+    return dataUrl;
+  }
+
+  //#endregion
+  //#region APPLICATIONS
+
+  async spawnAutoload() {
+    if (this._disposed) return;
+
+    const shares = this.serviceHost?.getService<ShareManager>("ShareMgmt");
+    const autoloadApps: string[] = [];
+
+    this.Log(`Spawning autoload applications`);
+
+    let { startup } = this.preferences();
+    startup ||= {};
+
+    for (const payload in startup) {
+      const type = startup[payload];
+
+      switch (type.toLowerCase()) {
+        case "app":
+          autoloadApps.push(payload);
+          break;
+        case "file":
+          if (!this.safeMode) await this.openFile(payload);
+          break;
+        case "folder":
+          if (!this.safeMode) await this.spawnApp("fileManager", undefined, payload);
+          break;
+        case "share":
+          await shares?.mountShareById(payload);
+          break;
+        case "disabled":
+          break;
+        default:
+          this.Log(`Unknown startup type: ${type.toUpperCase()} (payload: '${payload}')`);
+      }
+    }
+
+    await this._spawnApp("shellHost", undefined, this.pid, autoloadApps);
+
+    if (this.safeMode) this.safeModeNotice();
+
+    if (BETA)
+      this.sendNotification({
+        title: "Have any feedback?",
+        message:
+          "I'd love to hear it! There's a feedback button in the titlebar of every window. Don't hesitate to tell me how I'm doing stuff wrong, what you want to see or what I forgot. I want to hear all of it.",
+        buttons: [
+          {
+            caption: "Send feedback",
+            action: () => {
+              this.iHaveFeedback(this.handler.getProcess(+this.env.get("shell_pid"))!);
+            },
+          },
+        ],
+        icon: "message-square-heart",
+        timeout: 6000,
+      });
+
+    if (navigator.userAgent.toLowerCase().includes("firefox")) {
+      await MessageBox(
+        {
+          title: "Firefox support",
+          message:
+            "Beware! ArcOS doesn't work correctly on Firefox. It's unsure when and if support for Firefox will improve. Please be sure to give feedback to me about anything that doesn't work quite right on Firefox, okay?",
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          image: FirefoxIcon,
+        },
+        +this.env.get("shell_pid"),
+        true
+      );
+    }
+
+    this.autoLoadComplete = true;
+  }
+
+  checkDisabled(appId: string, noSafeMode?: boolean): boolean {
+    if (this._disposed) return false;
+    if (this.safeMode && !noSafeMode) {
+      return false;
+    }
+
+    const { disabledApps } = this.preferences();
+
+    const appStore = this.appStorage();
+    const app = appStore?.buffer().filter((a) => a.id === appId)[0];
+
+    if (app && this.isVital(app) && !noSafeMode) return false;
+
+    return (disabledApps || []).includes(appId) || !!(this.safeMode && noSafeMode);
+  }
+
+  isVital(app: App) {
+    return app.vital && !app.entrypoint && !app.workingDirectory && !app.thirdParty;
+  }
+
+  async disableApp(appId: string) {
+    if (this._disposed) return false;
+    if (this.checkDisabled(appId)) return false;
+
+    this.Log(`Disabling application ${appId}`);
+
+    const appStore = this.appStorage();
+    const app = await appStore?.getAppById(appId);
+
+    if (!app || this.isVital(app)) return;
+
+    const elevated = await this.manuallyElevate({
+      what: "ArcOS needs your permission to disable an application",
+      image: this.getAppIcon(app, app.workingDirectory),
+      title: app.metadata.name,
+      description: `By ${app.metadata.author}`,
+      level: ElevationLevel.medium,
+    });
+    if (!elevated) return;
+
+    this.preferences.update((v) => {
+      v.disabledApps.push(appId);
+
+      return v;
+    });
+
+    const instances = this.handler.renderer?.getAppInstances(appId);
+
+    if (instances)
+      for (const instance of instances) {
+        this.handler.kill(instance.pid, true);
+      }
+
+    this.systemDispatch.dispatch("app-store-refresh");
+  }
+
+  async enableApp(appId: string) {
+    if (this._disposed) return false;
+    if (!this.checkDisabled(appId)) return false;
+
+    this.Log(`Enabling application ${appId}`);
+
+    const appStore = this.appStorage();
+    const app = await appStore?.getAppById(appId);
+
+    if (!app) return;
+
+    const elevated = await this.manuallyElevate({
+      what: "ArcOS needs your permission to enable an application",
+      image: this.getAppIcon(app, app.workingDirectory),
+      title: app.metadata.name,
+      description: `By ${app.metadata.author}`,
+      level: ElevationLevel.medium,
+    });
+    if (!elevated) return;
+
+    this.preferences.update((v) => {
+      if (!v.disabledApps.includes(appId)) return v;
+
+      v.disabledApps.splice(v.disabledApps.indexOf(appId));
+
+      return v;
+    });
+
+    this.systemDispatch.dispatch("app-store-refresh");
+  }
+
+  async enableThirdParty() {
+    const elevated = await this.manuallyElevate({
+      what: "ArcOS wants to enable third-party applications",
+      title: "Enable Third-party",
+      description: "ArcOS System",
+      image: AppsIcon,
+      level: ElevationLevel.medium,
+    });
+
+    if (!elevated) return;
+
+    this.preferences.update((v) => {
+      v.security.enableThirdParty = true;
       return v;
     });
   }
 
-  checkReducedMotion() {
-    if (this.getGlobalSetting("reducedMotionDetection_disable") || this.preferences().shell.visuals.noAnimations) return;
+  async disableThirdParty() {
+    const elevated = await this.manuallyElevate({
+      what: "ArcOS wants to disable third-party applications and kill any running third-party apps",
+      title: "Disable Third-party",
+      description: "ArcOS System",
+      image: AppsIcon,
+      level: ElevationLevel.medium,
+    });
 
-    if (window.matchMedia("(prefers-reduced-motion)").matches) {
-      this.sendNotification({
-        title: "Disable animations?",
-        message: "ArcOS has detected that your device has Reduced Motion activated. Do you want ArcOS to reduce animations also?",
-        buttons: [
-          {
-            caption: "Don't show again",
-            action: () => {
-              this.setGlobalSetting("reducedMotionDetection_disable", true);
-            },
-          },
-          {
-            caption: "Reduce",
-            action: () => {
-              this.preferences.update((v) => {
-                v.shell.visuals.noAnimations = true;
-                return v;
-              });
-            },
-          },
-        ],
-        image: PersonalizationIcon,
-        timeout: 6000,
-      });
+    if (!elevated) return;
+
+    this.preferences.update((v) => {
+      v.security.enableThirdParty = false;
+      return v;
+    });
+
+    const store = this.handler.store();
+
+    for (const [pid, proc] of [...store]) {
+      if (!proc._disposed && proc instanceof ThirdPartyAppProcess) this.handler.kill(pid, true);
     }
   }
 
-  async IconPicker(data: Omit<IconPickerData, "returnId">) {
-    if (this._disposed) return;
+  //#endregion
+  //#region APP STORAGE
 
-    this.Log(`Opening OpenWith for ${data.forWhat}`);
+  appStorage() {
+    return this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+  }
 
-    const uuid = UUID();
+  initAppStorage(storage: ApplicationStorage) {
+    storage.loadOrigin("builtin", () => BuiltinApps);
+    storage.loadOrigin("userApps", () => this.getUserApps());
+  }
 
-    await this.spawnOverlay("IconPicker", +this.env.get("shell_pid"), {
-      ...data,
-      returnId: uuid,
-    });
+  getUserApps(): AppStorage {
+    if (this._disposed) return [];
+    if (!this.preferences()) return [];
 
-    return new Promise<string>(async (r) => {
-      this.systemDispatch.subscribe<[string, string]>("ip-confirm", ([id, icon]) => {
-        if (id === uuid) r(icon);
-      });
-      this.systemDispatch.subscribe("ip-cancel", ([id]) => {
-        if (id === uuid) r(data.defaultIcon);
-      });
-    });
+    const apps = this.preferences().userApps;
+
+    return Object.values(apps) as unknown as AppStorage;
   }
 
   async installApp(data: InstalledApp) {
@@ -2287,67 +1620,6 @@ export class UserDaemon extends Process {
     }
   }
 
-  async activateAdminBootstrapper() {
-    this.Log("Activating admin bootstrapper");
-
-    if (!this.userInfo.admin) return;
-    const appStore = this.appStorage()!;
-
-    appStore.loadOrigin("admin", () => AdminApps);
-    await appStore.refresh();
-
-    const proto = this.serviceHost?.getService<ProtocolServiceProcess>("ProtoService");
-
-    for (const key in AdminProtocolHandlers) {
-      proto?.registerHandler(key, AdminProtocolHandlers[key]);
-    }
-  }
-
-  async startShareManager() {
-    this.Log("Starting share manager");
-
-    const share = this.serviceHost!.getService<ShareManager>("ShareMgmt");
-
-    await share?.mountOwnedShares();
-  }
-
-  async startServiceHost() {
-    this.Log("Starting service host");
-
-    this.serviceHost = await this.handler.spawn<ServiceHost>(ServiceHost, undefined, this.pid);
-    await this.serviceHost?.init();
-
-    this.assoc = this.serviceHost?.getService<FileAssocService>("FileAssocSvc");
-  }
-
-  async GlobalLoadIndicator(caption?: string, pid?: number) {
-    const process = await this.handler.spawn<GlobalLoadIndicatorRuntime>(
-      GlobalLoadIndicatorRuntime,
-      undefined,
-      pid || +this.env.get("shell_pid"),
-      {
-        data: { ...GlobalLoadIndicatorApp, overlay: true },
-        id: GlobalLoadIndicatorApp.id,
-        desktop: undefined,
-      },
-      caption
-    );
-
-    if (!process)
-      return {
-        caption: Store<string>(),
-        stop: async () => {},
-      };
-
-    return {
-      caption: process.caption,
-      stop: async () => {
-        await Sleep(500);
-        await process.closeWindow();
-      },
-    };
-  }
-
   async uninstallAppWithAck(app: App): Promise<boolean> {
     return new Promise<boolean>((r) => {
       MessageBox(
@@ -2388,19 +1660,6 @@ export class UserDaemon extends Process {
     });
   }
 
-  async getPublicUserInfoOf(userId: string): Promise<PublicUserInfo | undefined> {
-    try {
-      const response = await Backend.get(`/user/info/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
-      const information = response.data as PublicUserInfo;
-
-      information.profilePicture = `${this.server.url}/user/pfp/${userId}${authcode()}`;
-
-      return information;
-    } catch {
-      return undefined;
-    }
-  }
-
   getAppIcon(app: App, workingDirectory?: string) {
     const { icon } = app.metadata;
     try {
@@ -2427,177 +1686,6 @@ export class UserDaemon extends Process {
     const workingDir = (process as any).workingDirectory;
 
     return this.getAppIcon(process.app?.data, workingDir);
-  }
-
-  safeModeNotice() {
-    MessageBox(
-      {
-        title: "ArcOS is running in safe mode",
-        content: SafeModeNotice,
-        image: WarningIcon,
-        sound: "arcos.dialog.warning",
-        buttons: [
-          { caption: "Restart now", action: () => this.restart() },
-          { caption: "Okay", action: () => {}, suggested: true },
-        ],
-      },
-      +this.env.get("shell_pid"),
-      true
-    );
-  }
-
-  iHaveFeedback(process: AppProcess) {
-    this.spawnApp(
-      "BugHuntCreator",
-      undefined,
-      `[${process.app.id}] Feedback report - ${process.windowTitle()}`,
-      `Thank you for submitting feedback to ArcOS! Any feedback is of great help to make ArcOS the best I can. Please be so kind and fill out the following form:
-
-1. Do you want to submit a new 'app', 'feature', or 'other'? Please answer one.
-   - Your answer:
-
-2. What do you want me to implement?
-   - Your answer:
-
-3. How should I go about this? Any ideas?
-   - Your answer:
-
-4. Did a previous version of ArcOS include this (v5 or v6)?
-   - Your answer:
-
-5. Convince me why I should implement this feature.
-   - Your answer:
-
-
-**Do not change any of the information below this line.**
-
-------
-
-- Username: ${this.userInfo?.username}
-- User ID: ${this.userInfo?._id}
-
-------
-
-
-# DISCLAIMER 
-
-The information provided in this report is subject for review by me or another ArcOS acquaintance. We may contact you using the ArcOS Messages app if we have any additional questions. It's also possible that the feedback you've provided will be converted into a GitHub issue for communication with other developers. By submitting this feedback, you agree to that. The issue will not contain any personal information, any personal information will be filtered out by a human being.`,
-      {
-        sendAnonymously: true,
-        excludeLogs: true,
-        makePublic: true,
-      }
-    );
-  }
-
-  async activateGlobalDispatch() {
-    this.globalDispatch = this.serviceHost!.getService<GlobalDispatch>("GlobalDispatch");
-
-    this.globalDispatch?.subscribe("update-preferences", async (preferences: UserPreferences) => {
-      this.syncLock = true;
-      await Sleep(0);
-      this.preferences.set(preferences);
-      await Sleep(0);
-      this.syncLock = false;
-    });
-
-    this.globalDispatch?.subscribe("fs-flush-folder", (path) => {
-      this.systemDispatch.dispatch("fs-flush-folder", path);
-    });
-
-    this.globalDispatch?.subscribe("fs-flush-file", (path) => {
-      this.systemDispatch.dispatch("fs-flush-file", path);
-    });
-  }
-
-  async changeShell(id: string) {
-    const appStore = this.appStorage();
-    const newShell = await appStore?.getAppById(id);
-
-    if (!newShell) return false;
-
-    const proceed = await this.Confirm(
-      "Change your shell",
-      `${newShell.metadata.name} by ${newShell.metadata.author} wants to act as your ArcOS shell. Do you allow this?`,
-      "Deny",
-      "Allow"
-    );
-
-    if (!proceed) return false;
-
-    this.preferences.update((v) => {
-      v.globalSettings.shellExec = id;
-      return v;
-    });
-
-    const restartNow = await this.Confirm(
-      "Restart now?",
-      "ArcOS has to restart before the changes will apply. Do you want to restart now?",
-      "Not now",
-      "Restart",
-      RestartIcon
-    );
-
-    if (restartNow) await this.restart();
-  }
-
-  async Confirm(title: string, message: string, no: string, yes: string, image = QuestionIcon, pid?: number) {
-    const shellPid = pid || +this.env.get("shell_pid");
-    return new Promise((r) => {
-      MessageBox(
-        {
-          title,
-          message,
-          image,
-          buttons: [
-            { caption: no, action: () => r(false) },
-            { caption: yes, action: () => r(true), suggested: true },
-          ],
-        },
-        shellPid,
-        !!shellPid
-      );
-    });
-  }
-
-  async enableThirdParty() {
-    const elevated = await this.manuallyElevate({
-      what: "ArcOS wants to enable third-party applications",
-      title: "Enable Third-party",
-      description: "ArcOS System",
-      image: AppsIcon,
-      level: ElevationLevel.medium,
-    });
-
-    if (!elevated) return;
-
-    this.preferences.update((v) => {
-      v.security.enableThirdParty = true;
-      return v;
-    });
-  }
-
-  async disableThirdParty() {
-    const elevated = await this.manuallyElevate({
-      what: "ArcOS wants to disable third-party applications and kill any running third-party apps",
-      title: "Disable Third-party",
-      description: "ArcOS System",
-      image: AppsIcon,
-      level: ElevationLevel.medium,
-    });
-
-    if (!elevated) return;
-
-    this.preferences.update((v) => {
-      v.security.enableThirdParty = false;
-      return v;
-    });
-
-    const store = this.handler.store();
-
-    for (const [pid, proc] of [...store]) {
-      if (!proc._disposed && proc instanceof ThirdPartyAppProcess) this.handler.kill(pid, true);
-    }
   }
 
   async pinApp(appId: string) {
@@ -2629,56 +1717,1013 @@ The information provided in this report is subject for review by me or another A
     });
   }
 
-  startAnchorRedirectionIntercept() {
-    this.Log("Starting anchor redirection intercept");
+  //#endregion
+  //#region APP RENDERER
+  getAppRendererStyle(accent: string) {
+    if (this._disposed) return "";
 
-    const handle = () => {
-      if (this._disposed) return;
+    return `--accent: ${hex3to6(accent)} !important;
+    --accent-transparent: ${hex3to6(accent)}44 !important;
+    --accent-light: ${lightenColor(accent)} !important;
+    --accent-lighter: ${lightenColor(accent, 7.5)} !important;
+    --accent-dark: ${darkenColor(accent, 75)} !important;
+    --accent-darkest: ${darkenColor(accent, 85)} !important;
+    --accent-light-transparent: ${lightenColor(accent)}77 !important;
+    --accent-light-invert: ${invertColor(lightenColor(accent))} !important;
+    --accent-suggested-start: #${accent} !important;
+    --accent-suggested-end: ${darkenColor(accent, 10)} !important;
+    --accent-suggested-fg: ${bestForeground(accent)} !important;
+    --wallpaper: url('${this.Wallpaper()?.url || Wallpapers.img0.url}');
+    --user-font: "${this.preferences().shell.visuals.userFont || ""}"`;
+  }
 
-      const anchors = document.querySelectorAll("a");
+  async setAppRendererClasses(v: UserPreferences) {
+    const renderer = this.handler.renderer?.target;
 
-      for (const anchor of anchors) {
-        const href = anchor.getAttribute("href");
+    if (!renderer) throw new Error("UserDaemon: Tried to set renderer classes without renderer");
 
-        if (this.registeredAnchors.includes(anchor) || href?.startsWith("@client/")) continue;
+    const accent = v.desktop.accent;
+    const theme = v.desktop.theme;
 
-        this.registeredAnchors.push(anchor);
+    let style = this.getAppRendererStyle(accent);
 
-        anchor.addEventListener("click", (e) => {
-          const currentState = KernelStateHandler()?.currentState;
+    this.setUserStyleLoader(v.shell.customStyle);
 
-          e.preventDefault();
+    renderer.removeAttribute("class");
+    renderer.setAttribute("style", style);
+    renderer.classList.add(`theme-${theme}`);
+    renderer.classList.toggle("sharp", v.shell.visuals.sharpCorners);
+    renderer.classList.toggle("noani", v.shell.visuals.noAnimations || this.safeMode);
+    renderer.classList.toggle("noglass", v.shell.visuals.noGlass || this.safeMode);
+    renderer.classList.toggle("safe-mode", this.safeMode);
+    renderer.classList.toggle("traffic-lights", v.shell.visuals.trafficLights);
+  }
 
-          if (currentState !== "desktop") return;
+  setUserStyleLoader(style: CustomStylePreferences) {
+    if (this._disposed || this.safeMode) return;
 
-          MessageBox(
-            {
-              title: "Open this page?",
-              message: `You're about to leave ArcOS to navigate to <code>${anchor.href}</code> in a <b>new tab</b>. Are you sure you want to continue?`,
-              buttons: [
-                {
-                  caption: "Stay here",
-                  action() {},
-                },
-                {
-                  caption: "Proceed",
-                  action() {
-                    window.open(anchor.href, "_blank");
-                  },
-                  suggested: true,
-                },
-              ],
-              image: GlobeIcon,
+    let styleLoader = this.handler.renderer?.target.querySelector("#userStyleLoader");
+
+    if (!styleLoader) {
+      styleLoader = document.createElement("style");
+      styleLoader.id = "userStyleLoader";
+
+      this.handler.renderer?.target.append(styleLoader);
+    }
+
+    styleLoader.textContent = style.enabled && !this._elevating ? style.content || "" : "";
+  }
+
+  //#endregion
+  //#region USER ACCOUNT
+
+  async discontinueToken(token = this.token) {
+    if (this._disposed) return;
+
+    this.Log(`Discontinuing token`);
+
+    try {
+      const response = await Backend.post(`/logout`, {}, { headers: { Authorization: `Bearer ${token}` } });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async getUserInfo(): Promise<UserInfo | undefined> {
+    if (this._disposed) return;
+
+    if (this.initialized) {
+      this.Log(`Tried to get user info while initialization is already complete`, LogLevel.warning);
+
+      return;
+    }
+
+    this.Log("Getting user information");
+
+    try {
+      const response = this.userInfo._id
+        ? {
+            status: 200,
+            data: this.userInfo,
+          }
+        : await Backend.get(`/user/self`, {
+            headers: { Authorization: `Bearer ${this.token}` },
+          });
+
+      const data = response.status === 200 ? (response.data as UserInfo) : undefined;
+
+      if (!data) return undefined;
+
+      this.preferences.set(data.preferences);
+
+      this.sanitizeUserPreferences();
+
+      this.initialized = true;
+      this.userInfo = data;
+      this.env.set("currentuser", this.username);
+      if (data.admin) this.env.set("administrator", data.admin);
+
+      return response.status === 200 ? (response.data as UserInfo) : undefined;
+    } catch {
+      await this.killSelf();
+
+      return undefined;
+    }
+  }
+
+  async changeUsername(newUsername: string): Promise<boolean> {
+    if (this._disposed) return false;
+
+    this.Log(`Changing username to "${newUsername}"`);
+
+    const elevated = await this.manuallyElevate({
+      what: "ArcOS needs your permission to change your username:",
+      image: AccountIcon,
+      title: "Change username",
+      description: `To ${newUsername}`,
+      level: ElevationLevel.medium,
+    });
+
+    if (!elevated) return false;
+
+    try {
+      const response = await Backend.patch("/user/rename", toForm({ newUsername }), {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      if (response.status !== 200) return false;
+
+      this.username = newUsername;
+      this.systemDispatch.dispatch("change-username", [newUsername]);
+
+      Cookies.set("arcUsername", newUsername, {
+        expires: 14,
+        domain: import.meta.env.DEV ? "localhost" : "izk-arcos.nl",
+      });
+
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async changePassword(newPassword: string): Promise<boolean> {
+    if (this._disposed) return false;
+
+    this.Log(`Changing password to [REDACTED]`);
+
+    const elevated = await this.manuallyElevate({
+      what: "ArcOS needs your permission to change your password:",
+      image: PasswordIcon,
+      title: "Change password",
+      description: `of ${this.username}`,
+      level: ElevationLevel.medium,
+    });
+
+    if (!elevated) return false;
+
+    try {
+      const response = await Backend.post("/user/changepswd", toForm({ newPassword }), {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      if (response.status !== 200) return false;
+
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async getPublicUserInfoOf(userId: string): Promise<PublicUserInfo | undefined> {
+    try {
+      const response = await Backend.get(`/user/info/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const information = response.data as PublicUserInfo;
+
+      information.profilePicture = `${this.server.url}/user/pfp/${userId}${authcode()}`;
+
+      return information;
+    } catch {
+      return undefined;
+    }
+  }
+
+  async deleteAccount() {
+    MessageBox(
+      {
+        title: "Delete ArcOS Account",
+        content: DeleteUser,
+        image: TrashIcon,
+        buttons: [
+          {
+            caption: "Back to safety",
+            action: () => {},
+          },
+          {
+            caption: "Delete account",
+            action: async () => {
+              await Backend.delete(`/user`, { headers: { Authorization: `Bearer ${this.token}` } });
+              this.logoff();
             },
-            +this.env.get("shell_pid"),
-            true
-          );
-        });
-      }
-    };
+            suggested: true,
+          },
+        ],
+        sound: "arcos.dialog.warning",
+      },
+      +this.env.get("shell_pid"),
+      true
+    );
+  }
 
-    const observer = new MutationObserver(handle);
-    observer.observe(document.body, { childList: true, subtree: true });
+  //#endregion
+  //#region USER PREFERENCES
+
+  async startPreferencesSync() {
+    if (this._disposed) return;
+
+    this.Log(`Starting user preferences commit sync`);
+
+    const unsubscribe = this.preferences.subscribe(async (v) => {
+      if (this._disposed) return unsubscribe();
+      if (!v || v.isDefault) return;
+
+      v = this.checkCurrentThemeIdValidity(v);
+
+      if (!this.firstSyncDone) this.firstSyncDone = true;
+      else if (!this.syncLock) this.commitPreferences(v);
+
+      this.setAppRendererClasses(v);
+      this.updateWallpaper(v);
+      this.syncVirtualDesktops(v);
+    });
+
+    this.preferencesUnsubscribe = unsubscribe;
+  }
+
+  async commitPreferences(preferences: UserPreferences) {
+    if (this._disposed) return;
+
+    this.Log(`Committing user preferences`);
+
+    try {
+      const response = await Backend.put(`/user/preferences`, preferences, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.status === 200;
+    } catch {
+      this.Log(`Failed to commit user preferences!`, LogLevel.error);
+    }
+  }
+
+  async sanitizeUserPreferences() {
+    if (this._disposed) return;
+
+    if (this.initialized) {
+      this.Log(`Tried to sanitize user preferences while initialization is already complete`);
+
+      return;
+    }
+
+    const preferences = this.preferences() || {};
+
+    if (preferences.isDefault) {
+      this.Log(`Not sanitizing default preferences`, LogLevel.warning);
+    }
+
+    if (!preferences.startup)
+      preferences.startup = {
+        wallpaper: "app",
+      };
+
+    if (!preferences.pinnedApps?.length)
+      preferences.pinnedApps = ["$", FileManagerApp.id, MessagingApp.id, AppStoreApp.id, SystemSettings.id, ProcessesApp.id];
+
+    const result = applyDefaults<UserPreferences>(preferences, {
+      ...DefaultUserPreferences,
+      isDefault: undefined,
+    });
+
+    if (!result.globalSettings.shellExec) result.globalSettings.shellExec = "arcShell";
+
+    this.preferences.set(result);
+    this.commitPreferences(result);
+  }
+
+  getGlobalSetting(key: string) {
+    return this.preferences().globalSettings[key];
+  }
+
+  setGlobalSetting(key: string, value: any) {
+    this.preferences.update((v) => {
+      v.globalSettings[key] = value;
+
+      return v;
+    });
+  }
+
+  //#endregion
+  //#region WALLPAPERS
+
+  async updateWallpaper(v: UserPreferences) {
+    if (this._disposed) return;
+
+    const incoming = v.desktop.wallpaper;
+
+    if (incoming === this.lastWallpaper()) return;
+
+    this.lastWallpaper.set(incoming);
+
+    const wallpaper = await this.getWallpaper(incoming);
+
+    if (!wallpaper) return;
+
+    this.Wallpaper.set(wallpaper);
+  }
+
+  async uploadWallpaper(pid?: number): Promise<Wallpaper | undefined> {
+    if (this._disposed) return;
+
+    this.Log(`Uploading wallpaper to U:/Wallpapers`);
+
+    const prog = await this.FileProgress(
+      {
+        type: "size",
+        icon: ImageMimeIcon,
+        caption: "Uploading a wallpaper of your choosing",
+        subtitle: `To U:/Wallpapers`,
+      },
+      pid
+    );
+
+    try {
+      const result = await this.fs.uploadFiles(UserPaths.Wallpapers, "image/*", false, (progress) => {
+        prog.show();
+        prog.setMax(progress.max);
+        prog.setDone(progress.value);
+      });
+
+      if (!result.length) {
+        prog.stop();
+        return {} as Wallpaper;
+      }
+
+      const { path, file } = result[0];
+
+      const wallpaper: Wallpaper = {
+        author: this.username,
+        name: file.name,
+        url: "",
+        thumb: "",
+      };
+
+      this.preferences.update((v) => {
+        v.userWallpapers ||= {};
+        v.userWallpapers[`@local:${btoa(path)}`] = wallpaper;
+
+        return v;
+      });
+
+      return wallpaper;
+    } catch {
+      prog.stop();
+    }
+  }
+
+  public async getWallpaper(id: string, override?: string): Promise<Wallpaper> {
+    if (this._disposed) return Wallpapers["img0"];
+
+    if (!id) return Wallpapers[override || "img0"];
+
+    if (id.startsWith("http"))
+      return {
+        author: "The Web",
+        name: "From the Internet",
+        url: id,
+        thumb: id,
+      };
+
+    for (const [prefix, getter] of this.wallpaperGetters) {
+      if (id.startsWith(prefix)) return await getter(id);
+    }
+
+    return Wallpapers[override || "img0"];
+  }
+
+  async deleteLocalWallpaper(id: string): Promise<boolean> {
+    if (this._disposed) return false;
+
+    this.Log(`Deleting local wallpaper '${id}'`);
+
+    const path = atob(id.replace("@local:", ""));
+    let result: boolean = false;
+
+    try {
+      result = await this.fs.deleteItem(path);
+    } catch {
+      result = false;
+    }
+
+    this.preferences.update((v) => {
+      delete v.userWallpapers[id];
+
+      return v;
+    });
+
+    delete this.localWallpaperCache[id];
+
+    return result;
+  }
+
+  async getLocalWallpaper(id: string): Promise<Wallpaper> {
+    if (this._disposed) return Wallpapers.img0;
+
+    const wallpaperData = this.preferences().userWallpapers[id];
+
+    if (!wallpaperData) {
+      this.Log(`Tried to get unknown user wallpaper '${id}', defaulting to img04`, LogLevel.warning);
+
+      return Wallpapers.img04;
+    }
+    if (this.localWallpaperCache[id])
+      return {
+        ...wallpaperData,
+        url: URL.createObjectURL(this.localWallpaperCache[id]),
+        thumb: URL.createObjectURL(this.localWallpaperCache[id]),
+      };
+
+    try {
+      const path = atob(id.replace("@local:", ""));
+      const parent = await this.fs.readDir(getParentDirectory(path));
+      const contents = await this.fs.readFile(path);
+
+      if (!contents || !parent) {
+        this.Log(`User wallpaper '${id}' doesn't exist on the filesystem anymore, defaulting to img04`, LogLevel.warning);
+
+        return Wallpapers.img04;
+      }
+
+      const blob = arrayToBlob(contents, parent.files.filter((f) => path.endsWith(f.name))[0]?.mimeType || "");
+      const blobUrl = URL.createObjectURL(blob);
+
+      this.localWallpaperCache[id] = blob;
+
+      return {
+        ...wallpaperData,
+        url: blobUrl,
+        thumb: blobUrl,
+      };
+    } catch {
+      return Wallpapers.img0;
+    }
+  }
+  //#endregion
+  //#region THEMES
+
+  themeFromUserPreferences(data: UserPreferences, name: string, author: string, version: string): UserTheme {
+    if (this._disposed) return {} as UserTheme;
+
+    return {
+      author,
+      version,
+      name,
+      taskbarLabels: data.shell.taskbar.labels,
+      taskbarDocked: data.shell.taskbar.docked,
+      taskbarColored: data.shell.taskbar.colored,
+      noAnimations: data.shell.visuals.noAnimations,
+      sharpCorners: data.shell.visuals.sharpCorners,
+      compactContext: data.shell.visuals.compactContext,
+      noGlass: data.shell.visuals.noGlass,
+      desktopWallpaper: data.desktop.wallpaper,
+      desktopTheme: data.desktop.theme,
+      desktopAccent: data.desktop.accent,
+      loginBackground: data.account.loginBackground || "img18",
+    };
+  }
+
+  saveCurrentTheme(name: string) {
+    if (this._disposed) return;
+
+    this.Log(`Saving current theme as '${name}'`);
+
+    const id = `${Math.floor(Math.random() * 1e6)}`;
+
+    this.preferences.update((userPreferences) => {
+      const context = this.themeFromUserPreferences(userPreferences, name, this.username, "1.0");
+
+      userPreferences.userThemes[id] = context;
+
+      return userPreferences;
+    });
+  }
+
+  applyThemeData(data: UserTheme, id?: string) {
+    if (this._disposed || !data) return;
+
+    this.Log(`Apply theme data, ID='${id}'`);
+
+    const verifier = this.verifyTheme(data);
+
+    if (verifier !== "themeIsValid") {
+      this.Log(`Not loading invalid theme! Missing ${verifier}`, LogLevel.error);
+
+      return false;
+    }
+
+    this.preferences.update((userPreferences) => {
+      userPreferences.shell.taskbar.labels = !!data.taskbarLabels;
+      userPreferences.shell.taskbar.docked = !!data.taskbarDocked;
+      userPreferences.shell.taskbar.colored = !!data.taskbarColored;
+      userPreferences.shell.visuals.noAnimations = !!data.noAnimations;
+      userPreferences.shell.visuals.sharpCorners = !!data.sharpCorners;
+      userPreferences.shell.visuals.compactContext = !!data.compactContext;
+      userPreferences.shell.visuals.noGlass = !!data.noGlass;
+      userPreferences.desktop.wallpaper = data.desktopWallpaper;
+      userPreferences.desktop.accent = data.desktopAccent;
+      userPreferences.desktop.theme = data.desktopTheme;
+      userPreferences.account.loginBackground = data.loginBackground || "img18";
+
+      if (id) userPreferences.currentThemeId = id;
+
+      return userPreferences;
+    });
+  }
+
+  applySavedTheme(id: string) {
+    if (this._disposed) return;
+
+    this.Log(`Applying saved theme '${id}'`);
+
+    const userPreferences = this.preferences();
+
+    if (!userPreferences.userThemes[id]) return;
+
+    this.applyThemeData(userPreferences.userThemes[id], id);
+  }
+
+  verifyTheme(data: UserTheme) {
+    if (this._disposed) return;
+
+    const keys = Object.keys(data);
+
+    for (const key of UserThemeKeys) {
+      if (!keys.includes(key)) return key;
+    }
+
+    return "themeIsValid";
+  }
+
+  checkCurrentThemeIdValidity(data: UserPreferences): UserPreferences {
+    if (this._disposed) return DefaultUserPreferences;
+
+    const { currentThemeId } = data;
+
+    if (!currentThemeId) return data;
+
+    const retrievedThemeData = BuiltinThemes[currentThemeId] || (data.userThemes || {})[currentThemeId];
+
+    if (!retrievedThemeData) return data;
+
+    const theme = this.themeFromUserPreferences(
+      data,
+      retrievedThemeData.name,
+      retrievedThemeData.author,
+      retrievedThemeData.version
+    );
+
+    if (JSON.stringify(theme) !== JSON.stringify(retrievedThemeData)) data.currentThemeId = undefined;
+
+    return data;
+  }
+
+  deleteUserTheme(id: string) {
+    if (this._disposed) return;
+
+    this.Log(`Deleting user theme '${id}'`);
+
+    this.preferences.update((udata) => {
+      if (!udata.userThemes) return udata;
+
+      delete udata.userThemes[id];
+
+      return udata;
+    });
+  }
+
+  //#endregion
+  //#region PROFILE PICTURES
+
+  changeProfilePicture(newValue: string | number) {
+    this.preferences.update((v) => {
+      v.account.profilePicture = newValue;
+      return v;
+    });
+
+    this.systemDispatch.dispatch("pfp-changed", [newValue]);
+    this.globalDispatch?.emit("pfp-changed", newValue);
+  }
+
+  async uploadProfilePicture(): Promise<string | undefined> {
+    if (this._disposed) return undefined;
+
+    this.Log(`Uploading profile picture to ${UserPaths.Pictures}`);
+
+    try {
+      const result = await this.fs.uploadFiles(UserPaths.Pictures, "image/*");
+      if (!result.length) return;
+
+      const { path } = result[0];
+      this.changeProfilePicture(path);
+
+      return path;
+    } catch {
+      return;
+    }
+  }
+
+  //#endregion
+  //#region WORKSPACES
+
+  async syncVirtualDesktops(v: UserPreferences) {
+    if (this._disposed) return;
+    if (!this.virtualDesktop) return;
+
+    this.Log(`Syncing virtual desktop render state`);
+
+    const { desktops, index } = v.workspaces;
+
+    for (const { uuid } of desktops) {
+      this.virtualDesktop?.querySelector(`[id*="${uuid}"]`)?.classList.remove("selected");
+      if (!this.virtualDesktops[uuid]) this.renderVirtualDesktop(uuid);
+    }
+
+    if (this.virtualDesktopIndex === index) return;
+
+    if (v.shell.visuals.noAnimations) {
+      this.virtualDesktop.setAttribute("style", `--index: ${index};`);
+    } else {
+      this.virtualDesktop.classList.add("changing");
+      this.virtualDesktop.setAttribute("style", `--index: ${index};`);
+
+      this.virtualDesktop?.children[index]?.classList.add("selected");
+
+      if (this.virtualdesktopChangingTimeout) clearTimeout(this.virtualdesktopChangingTimeout);
+
+      this.virtualdesktopChangingTimeout = setTimeout(() => {
+        this.virtualDesktop?.classList.remove("changing");
+      }, 300);
+    }
+
+    this.virtualDesktopIndex = index;
+  }
+
+  renderVirtualDesktop(uuid: string) {
+    if (this._disposed) return;
+
+    this.Log(`Rendering virtual desktop "${uuid}"`);
+
+    const desktop = document.createElement("div");
+
+    desktop.className = "workspace";
+    desktop.id = uuid;
+
+    this.virtualDesktop?.append(desktop);
+    this.virtualDesktops[uuid] = desktop;
+  }
+
+  async deleteVirtualDesktop(uuid: string) {
+    if (this._disposed) return;
+
+    this.Log(`Deleting virtual desktop "${uuid}"`);
+
+    const index = this.getDesktopIndexByUuid(uuid);
+
+    if (this.getCurrentDesktop()?.id === uuid) {
+      this.previousDesktop();
+    }
+
+    if (index < 0) return;
+
+    this.preferences.update((v) => {
+      v.workspaces.desktops.splice(index, 1);
+
+      return v;
+    });
+
+    const desktop = this.virtualDesktop?.querySelector(`[id*="${uuid}"]`);
+
+    if (!desktop) return;
+
+    await this.killWindowsOfDesktop(uuid);
+
+    desktop.remove();
+    delete this.virtualDesktops[uuid];
+  }
+
+  async startVirtualDesktops() {
+    if (this._disposed) return;
+
+    this.Log(`Starting virtual desktop system`);
+
+    const outer = document.createElement("div");
+    const inner = document.createElement("div");
+
+    outer.className = "virtual-desktop-container";
+    inner.className = "inner";
+
+    outer.append(inner);
+    this.handler.renderer?.target.append(outer);
+    this.virtualDesktop = inner;
+
+    this.syncVirtualDesktops(this.preferences());
+  }
+
+  getCurrentDesktop(): HTMLDivElement | undefined {
+    if (this._disposed) return;
+
+    const { workspaces } = this.preferences();
+
+    if (!workspaces.desktops.length) {
+      this.createWorkspace("Default");
+      this.createWorkspace();
+      this.createWorkspace();
+      return this.getCurrentDesktop();
+    }
+
+    const uuid = workspaces.desktops[workspaces.index]?.uuid;
+
+    if (!uuid) return undefined;
+
+    return this.virtualDesktops[uuid];
+  }
+
+  createWorkspace(name?: string) {
+    if (this._disposed) return;
+
+    this.Log(`Creating new workspace "${name || "<NO NAME>"}"`);
+
+    const uuid = UUID();
+
+    this.preferences.update((v) => {
+      v.workspaces.desktops.push({ uuid, name });
+      return v;
+    });
+  }
+
+  getDesktopIndexByUuid(uuid: string) {
+    if (this._disposed) return -1;
+
+    const {
+      workspaces: { desktops },
+    } = this.preferences();
+
+    for (let i = 0; i < desktops.length; i++) {
+      if (uuid === desktops[i].uuid) return i;
+    }
+
+    return -1;
+  }
+
+  switchToDesktopByUuid(uuid: string) {
+    if (this._disposed) return;
+
+    this.Log(`Switching to workspace with UUID "${uuid}"`);
+
+    const i = this.getDesktopIndexByUuid(uuid);
+
+    if (i < 0) return;
+
+    this.preferences.update((v) => {
+      v.workspaces.index = i;
+      return v;
+    });
+  }
+
+  async killWindowsOfDesktop(uuid: string) {
+    if (this._disposed) return;
+
+    this.Log(`Killing processes on workspace with UUID "${uuid}"`);
+
+    const processes = this.handler.store();
+
+    for (const [_, proc] of [...processes]) {
+      if (!(proc instanceof AppProcess)) continue;
+
+      if (proc.app.desktop === uuid) await proc.closeWindow();
+
+      return true;
+    }
+
+    return false;
+  }
+
+  nextDesktop() {
+    this.Log(`Switching to the next available workspace`);
+
+    const {
+      workspaces: { desktops, index },
+    } = this.preferences();
+
+    if (desktops.length - 1 >= index + 1) {
+      this.preferences.update((v) => {
+        v.workspaces.index++;
+
+        return v;
+      });
+
+      return true;
+    }
+
+    return false;
+  }
+
+  previousDesktop() {
+    this.Log(`Switching to the previous available workspace`);
+
+    const {
+      workspaces: { index },
+    } = this.preferences();
+
+    if (index - 1 >= 0) {
+      this.preferences.update((v) => {
+        v.workspaces.index--;
+
+        return v;
+      });
+    }
+  }
+
+  async moveWindow(pid: number, destination: string) {
+    this.Log(`Moving window ${pid} to destination ${destination}`);
+
+    const proc = this.handler.getProcess(pid);
+    const destinationWorkspace = this.virtualDesktops[destination];
+    const window = document.querySelector(`#appRenderer div.window[data-pid*='${pid}']`);
+
+    if (!proc || !(proc instanceof AppProcess) || !destinationWorkspace || !window) return;
+
+    const currentWorkspace = proc.app.desktop;
+
+    if (currentWorkspace && this.getCurrentDesktop()?.id === currentWorkspace && this.handler.renderer?.focusedPid() === pid) {
+      this.switchToDesktopByUuid(destination);
+    }
+
+    await Sleep(100);
+
+    destinationWorkspace.appendChild(window);
+    proc.app.desktop = destination;
+    this.handler.store.update((v) => {
+      v.set(pid, proc);
+
+      return v;
+    });
+  }
+
+  //#endregion
+  //#region NOTIFICATIONS
+
+  sendNotification(data: Notification) {
+    if (this._disposed) return;
+
+    this.Log(`Sending notification: ${data.title} -> ${data.message.length} body bytes`);
+
+    const id = `${Math.floor(Math.random() * 1e9)}`;
+
+    data.timestamp = Date.now();
+
+    this.notifications.set(id, data);
+    this.systemDispatch.dispatch("update-notifications", [this.notifications]);
+    this.systemDispatch.dispatch("send-notification", [data]);
+
+    return id;
+  }
+
+  deleteNotification(id: string) {
+    if (this._disposed) return;
+
+    this.Log(`Deleting notification '${id}'`);
+
+    const notification = this.notifications.get(id);
+
+    if (!notification) return;
+
+    notification.deleted = true;
+
+    this.notifications.set(id, notification);
+
+    this.systemDispatch.dispatch("delete-notification", [id]);
+    this.systemDispatch.dispatch("update-notifications", [this.notifications]);
+  }
+
+  clearNotifications() {
+    if (this._disposed) return;
+
+    this.Log(`Clearing notifications`);
+
+    this.notifications = new Map<string, Notification>([]);
+    this.systemDispatch.dispatch("update-notifications", [this.notifications]);
+  }
+
+  //#endregion
+  //#region ELEVATION
+
+  async elevate(id: string) {
+    if (this._disposed) return false;
+
+    this.Log(`Elevating for "${id}"`);
+
+    const data = this.elevations[id];
+
+    if (!data) return false;
+
+    return await this.manuallyElevate(data);
+  }
+
+  async manuallyElevate(data: ElevationData) {
+    if (this._disposed) return false;
+
+    this.Log(`Manually elevating "${data.what}"`);
+
+    const id = UUID();
+    const key = UUID();
+    const shellPid = this.env.get("shell_pid");
+
+    if (this.preferences().security.disabled) return true;
+    if (this.preferences().disabledApps.includes("SecureContext")) return true;
+
+    this._elevating = true;
+    this.setAppRendererClasses(this.preferences());
+
+    if (shellPid) {
+      const proc = await this._spawnOverlay("SecureContext", undefined, +shellPid, id, key, data);
+
+      if (!proc) return false;
+    } else {
+      const proc = await this._spawnApp("SecureContext", undefined, this.pid, id, key, data);
+
+      if (!proc) return false;
+    }
+
+    return new Promise((r) => {
+      this.systemDispatch.subscribe("elevation-approve", (data) => {
+        if (data[0] === id && data[1] === key) {
+          r(true);
+          this._elevating = false;
+          this.setAppRendererClasses(this.preferences());
+        }
+      });
+
+      this.systemDispatch.subscribe("elevation-deny", (data) => {
+        if (data[0] === id && data[1] === key) {
+          r(false);
+          this._elevating = false;
+          this.setAppRendererClasses(this.preferences());
+        }
+      });
+    });
+  }
+
+  loadElevation(id: string, data: ElevationData) {
+    if (this._disposed) return;
+
+    this.Log(`Loading elevation "${id}"`);
+
+    this.elevations[id] = data;
+  }
+
+  //#endregion
+  //#region GENERIC CHECKS
+
+  checkReducedMotion() {
+    if (this.getGlobalSetting("reducedMotionDetection_disable") || this.preferences().shell.visuals.noAnimations) return;
+
+    if (window.matchMedia("(prefers-reduced-motion)").matches) {
+      this.sendNotification({
+        title: "Disable animations?",
+        message: "ArcOS has detected that your device has Reduced Motion activated. Do you want ArcOS to reduce animations also?",
+        buttons: [
+          {
+            caption: "Don't show again",
+            action: () => {
+              this.setGlobalSetting("reducedMotionDetection_disable", true);
+            },
+          },
+          {
+            caption: "Reduce",
+            action: () => {
+              this.preferences.update((v) => {
+                v.shell.visuals.noAnimations = true;
+                return v;
+              });
+            },
+          },
+        ],
+        image: PersonalizationIcon,
+        timeout: 6000,
+      });
+    }
   }
 
   async checkForUpdates() {
@@ -2773,85 +2818,54 @@ The information provided in this report is subject for review by me or another A
     }
   }
 
-  async deleteAccount() {
-    MessageBox(
+  //#endregion
+  //#region GENERIC HELPERS
+
+  async GlobalLoadIndicator(caption?: string, pid?: number) {
+    const process = await this.handler.spawn<GlobalLoadIndicatorRuntime>(
+      GlobalLoadIndicatorRuntime,
+      undefined,
+      pid || +this.env.get("shell_pid"),
       {
-        title: "Delete ArcOS Account",
-        content: DeleteUser,
-        image: TrashIcon,
-        buttons: [
-          {
-            caption: "Back to safety",
-            action: () => {},
-          },
-          {
-            caption: "Delete account",
-            action: async () => {
-              await Backend.delete(`/user`, { headers: { Authorization: `Bearer ${this.token}` } });
-              this.logoff();
-            },
-            suggested: true,
-          },
-        ],
-        sound: "arcos.dialog.warning",
+        data: { ...GlobalLoadIndicatorApp, overlay: true },
+        id: GlobalLoadIndicatorApp.id,
+        desktop: undefined,
       },
-      +this.env.get("shell_pid"),
-      true
+      caption
     );
+
+    if (!process)
+      return {
+        caption: Store<string>(),
+        stop: async () => {},
+      };
+
+    return {
+      caption: process.caption,
+      stop: async () => {
+        await Sleep(500);
+        await process.closeWindow();
+      },
+    };
   }
 
-  async waitForLeaveInvocationAllow() {
-    return new Promise<void>((r) => {
-      const interval = setInterval(() => {
-        if (!this._blockLeaveInvocations) r(clearInterval(interval));
-      }, 1);
-    });
-  }
-
-  async migrateFilesystemLayout() {
-    const migrationPath = join(UserPaths.Migrations, "FsMig-705.lock");
-    const migrationFile = !!(await this.fs.stat(migrationPath));
-
-    if (migrationFile) return;
-
-    const oldConfigDir = await this.fs.readDir("U:/Config");
-
-    if (oldConfigDir) {
-      for (const dir of oldConfigDir.dirs) {
-        const target = join(UserPaths.Configuration, dir.name);
-
-        await this.fs.deleteItem(target);
-        await this.fs.moveItem(`U:/Config/${dir.name}`, target);
-      }
-
-      await this.fs.deleteItem("U:/Config");
-    }
-
-    await this.fs.writeFile(migrationPath, textToBlob(`${Date.now()}`));
-  }
-
-  async updateAppShortcutsDir() {
-    const contents = await this.fs.readDir(UserPaths.AppShortcuts);
-    const storage = this.appStorage()?.buffer();
-
-    if (!storage || !contents) return;
-
-    for (const app of storage) {
-      const existing = contents?.files.filter((f) => f.name === `${app.id}.arclnk`)[0];
-
-      if (existing) continue;
-
-      this.createShortcut(
+  async Confirm(title: string, message: string, no: string, yes: string, image = QuestionIcon, pid?: number) {
+    const shellPid = pid || +this.env.get("shell_pid");
+    return new Promise((r) => {
+      MessageBox(
         {
-          name: app.id,
-          target: app.id,
-          type: "app",
-          icon: iconIdFromPath(app.metadata.icon),
+          title,
+          message,
+          image,
+          buttons: [
+            { caption: no, action: () => r(false) },
+            { caption: yes, action: () => r(true), suggested: true },
+          ],
         },
-        join(UserPaths.AppShortcuts, `${app.id}.arclnk`)
+        shellPid,
+        !!shellPid
       );
-      await Sleep(50);
-    }
+    });
   }
 
   async TerminalWindow(pid = +this.env.get("shell_pid")): Promise<ExpandedTerminal | undefined> {
@@ -2869,56 +2883,130 @@ The information provided in this report is subject for review by me or another A
     return term;
   }
 
-  async isRegisteredVersionOutdated() {
-    const contents = await this.fs.readFile(join(UserPaths.System, "RegisteredVersion"));
-    const isOutdated = !contents || arrayToText(contents) !== ArcOSVersion;
+  async IconPicker(data: Omit<IconPickerData, "returnId">) {
+    if (this._disposed) return;
 
-    return isOutdated;
+    this.Log(`Opening OpenWith for ${data.forWhat}`);
+
+    const uuid = UUID();
+
+    await this.spawnOverlay("IconPicker", +this.env.get("shell_pid"), {
+      ...data,
+      returnId: uuid,
+    });
+
+    return new Promise<string>(async (r) => {
+      this.systemDispatch.subscribe<[string, string]>("ip-confirm", ([id, icon]) => {
+        if (id === uuid) r(icon);
+      });
+      this.systemDispatch.subscribe("ip-cancel", ([id]) => {
+        if (id === uuid) r(data.defaultIcon);
+      });
+    });
   }
 
-  async updateRegisteredVersion() {
-    await this.fs.writeFile(join(UserPaths.System, "RegisteredVersion"), textToBlob(ArcOSVersion));
-  }
+  //#endregion
+  //#region MISCELLANEOUS STUFF
 
-  async checkForNewVersion() {
-    const isOutdated = await this.isRegisteredVersionOutdated();
-
-    if (!isOutdated) return;
-
-    this.spawnOverlay("UpdateNotifierApp", +this.env.get("shell_pid"));
-  }
-
-  async determineCategorizedDiskUsage(): Promise<CategorizedDiskUsage> {
-    const total = this.userInfo!.storageSize;
-    const apps = (await this.fs.readDir(UserPaths.Applications))?.totalSize || 0;
-    const system = (await this.fs.readDir(UserPaths.System))?.totalSize || 0;
-    const trash = (await this.fs.readDir(UserPaths.Trashcan))?.totalSize || 0;
-    const home = (await this.fs.readDir(UserPaths.Home))?.totalSize || 0;
-    const used = apps + system + home;
-    const result: CategorizedDiskUsage = {
-      sizes: {
-        apps,
-        system: system - trash,
-        trash,
-        home,
+  safeModeNotice() {
+    MessageBox(
+      {
+        title: "ArcOS is running in safe mode",
+        content: SafeModeNotice,
+        image: WarningIcon,
+        sound: "arcos.dialog.warning",
+        buttons: [
+          { caption: "Restart now", action: () => this.restart() },
+          { caption: "Okay", action: () => {}, suggested: true },
+        ],
       },
-      absolutePercentages: {
-        apps: (100 / total) * apps,
-        system: (100 / total) * (system - trash),
-        trash: (100 / total) * trash,
-        home: (100 / total) * home,
-      },
-      relativePercentages: {
-        apps: (100 / used) * apps,
-        system: (100 / used) * (system - trash),
-        trash: (100 / used) * trash,
-        home: (100 / used) * home,
-      },
-      total,
-      used,
-      free: total - (apps + system + home),
-    };
-
-    return result;
+      +this.env.get("shell_pid"),
+      true
+    );
   }
+
+  iHaveFeedback(process: AppProcess) {
+    this.spawnApp(
+      "BugHuntCreator",
+      undefined,
+      `[${process.app.id}] Feedback report - ${process.windowTitle()}`,
+      `Thank you for submitting feedback to ArcOS! Any feedback is of great help to make ArcOS the best I can. Please be so kind and fill out the following form:
+
+1. Do you want to submit a new 'app', 'feature', or 'other'? Please answer one.
+   - Your answer:
+
+2. What do you want me to implement?
+   - Your answer:
+
+3. How should I go about this? Any ideas?
+   - Your answer:
+
+4. Did a previous version of ArcOS include this (v5 or v6)?
+   - Your answer:
+
+5. Convince me why I should implement this feature.
+   - Your answer:
+
+
+**Do not change any of the information below this line.**
+
+------
+
+- Username: ${this.userInfo?.username}
+- User ID: ${this.userInfo?._id}
+
+------
+
+
+# DISCLAIMER 
+
+The information provided in this report is subject for review by me or another ArcOS acquaintance. We may contact you using the ArcOS Messages app if we have any additional questions. It's also possible that the feedback you've provided will be converted into a GitHub issue for communication with other developers. By submitting this feedback, you agree to that. The issue will not contain any personal information, any personal information will be filtered out by a human being.`,
+      {
+        sendAnonymously: true,
+        excludeLogs: true,
+        makePublic: true,
+      }
+    );
+  }
+
+  async changeShell(id: string) {
+    const appStore = this.appStorage();
+    const newShell = await appStore?.getAppById(id);
+
+    if (!newShell) return false;
+
+    const proceed = await this.Confirm(
+      "Change your shell",
+      `${newShell.metadata.name} by ${newShell.metadata.author} wants to act as your ArcOS shell. Do you allow this?`,
+      "Deny",
+      "Allow"
+    );
+
+    if (!proceed) return false;
+
+    this.preferences.update((v) => {
+      v.globalSettings.shellExec = id;
+      return v;
+    });
+
+    const restartNow = await this.Confirm(
+      "Restart now?",
+      "ArcOS has to restart before the changes will apply. Do you want to restart now?",
+      "Not now",
+      "Restart",
+      RestartIcon
+    );
+
+    if (restartNow) await this.restart();
+  }
+
+  async waitForLeaveInvocationAllow() {
+    return new Promise<void>((r) => {
+      const interval = setInterval(() => {
+        if (!this._blockLeaveInvocations) r(clearInterval(interval));
+      }, 1);
+    });
+  }
+
+  //#endregion
 }
