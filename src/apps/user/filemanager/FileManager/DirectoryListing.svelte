@@ -15,6 +15,7 @@
   class:loading={$loading}
   class:grid={$userPreferences.appPreferences.fileManager?.grid}
   class:compact={$userPreferences.appPreferences.fileManager?.compact}
+  class:thumbnail={$userPreferences.appPreferences.fileManager?.thumbnails}
   bind:this={$directoryListing}
   data-contextmenu={loadSave ? "" : "directory-listing"}
 >

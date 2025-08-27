@@ -10,6 +10,7 @@ import type {
   RecursiveDirectoryReadReturn,
   UserQuota,
 } from "$types/fs";
+import { arrayToBlob } from "../convert";
 import { FilesystemDrive } from "../drive";
 import { getItemNameFromPath, join } from "../util";
 
@@ -224,6 +225,24 @@ export class ServerDrive extends FilesystemDrive {
       const response = await Backend.get(`/fs/stat/${path}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
       return response.data as FilesystemStat;
+    } catch {
+      return undefined;
+    }
+  }
+
+  async imageThumbnail(path: string, width: number, height?: number): Promise<string | undefined> {
+    try {
+      const response = await Backend.get(`/fs/thumbnail/${width}x${height ?? width}/${path}`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+        responseType: "arraybuffer",
+      });
+
+      if (response.status !== 200) return undefined;
+
+      const blob = arrayToBlob(response.data, response.headers["Content-Type"]?.toString());
+      const url = URL.createObjectURL(blob);
+
+      return url;
     } catch {
       return undefined;
     }

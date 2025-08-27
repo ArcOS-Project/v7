@@ -11,6 +11,7 @@ import type {
   UserQuota,
 } from "$types/fs";
 import type { SharedDriveType } from "$types/shares";
+import { arrayToBlob } from "../convert";
 import { FilesystemDrive } from "../drive";
 import { getItemNameFromPath, join } from "../util";
 
@@ -245,6 +246,24 @@ export class SharedDrive extends FilesystemDrive {
       });
 
       return response.data as FilesystemStat;
+    } catch {
+      return undefined;
+    }
+  }
+
+  async imageThumbnail(path: string, width: number, height?: number): Promise<string | undefined> {
+    try {
+      const response = await Backend.get(`/share/thumbnail/${this.shareId}/${width}x${height ?? width}/${path}`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+        responseType: "arraybuffer",
+      });
+
+      if (response.status !== 200) return undefined;
+
+      const blob = arrayToBlob(response.data, response.headers["Content-Type"]?.toString());
+      const url = URL.createObjectURL(blob);
+
+      return url;
     } catch {
       return undefined;
     }

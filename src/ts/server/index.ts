@@ -36,9 +36,11 @@ export class ServerManager extends KernelModule {
 
     this.Log("Getting server URL from environment");
 
-    const serverUrl = import.meta.env.DW_SERVER_URL;
+    const serverUrl = `${import.meta.env.DW_SERVER_URL || ""}`;
 
     if (!serverUrl) throw new Error("Didn't get a server URL!");
+
+    if (!serverUrl.startsWith("http") || serverUrl.endsWith("/")) throw new Error("Rejecting malformed server URL");
 
     this.url = serverUrl;
   }

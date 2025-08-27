@@ -28,6 +28,33 @@
       }
     });
   });
+
+  function thumbnails() {
+    process.userPreferences.update((v) => {
+      v.appPreferences.fileManager.grid = false;
+      v.appPreferences.fileManager.compact = false;
+      v.appPreferences.fileManager.thumbnails = true;
+      return v;
+    });
+  }
+
+  function grid() {
+    process.userPreferences.update((v) => {
+      v.appPreferences.fileManager.grid = true;
+      v.appPreferences.fileManager.compact = false;
+      v.appPreferences.fileManager.thumbnails = false;
+      return v;
+    });
+  }
+
+  function list() {
+    process.userPreferences.update((v) => {
+      v.appPreferences.fileManager.grid = false;
+      v.appPreferences.fileManager.compact = false;
+      v.appPreferences.fileManager.thumbnails = false;
+      return v;
+    });
+  }
 </script>
 
 <div class="bottom">
@@ -51,18 +78,27 @@
   {/if}
   <div class="view-toggle">
     <button
+      class="lucide icon-file-image"
+      aria-label="Thumbnail view"
+      class:suggested={$userPreferences.appPreferences.fileManager!.thumbnails}
+      onclick={thumbnails}
+      disabled={!!$virtual}
+      title="Thumbnail view"
+    ></button>
+    <button
       class="lucide icon-columns-3"
       aria-label="Grid view"
       class:suggested={$userPreferences.appPreferences.fileManager!.grid}
-      onclick={() => ($userPreferences.appPreferences.fileManager!.grid = true)}
+      onclick={grid}
       disabled={!!$virtual}
       title="Compact view"
     ></button>
     <button
       class="lucide icon-list"
       aria-label="List view"
-      class:suggested={!$userPreferences.appPreferences.fileManager!.grid}
-      onclick={() => ($userPreferences.appPreferences.fileManager!.grid = false)}
+      class:suggested={!$userPreferences.appPreferences.fileManager!.grid &&
+        !$userPreferences.appPreferences.fileManager!.thumbnails}
+      onclick={list}
       disabled={!!$virtual}
       title="List view"
     ></button>

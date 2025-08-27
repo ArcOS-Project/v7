@@ -20,9 +20,10 @@
   let mime = $state<string>();
   let thisPath = $state<string>("");
   let extension = $state<string>();
+  let thumbnail = $state<string>();
   let shortcut: ArcShortcut | undefined = $shortcuts[file.name];
 
-  onMount(() => {
+  onMount(async () => {
     dayjs.extend(relativeTime);
     dayjs.extend(updateLocale);
     dayjs.updateLocale("en", RelativeTimeMod);
@@ -35,6 +36,8 @@
     extension = `.${split[split.length - 1]}`;
     mime = info?.friendlyName || "Unknown";
     icon = info?.icon || DefaultMimeIcon;
+
+    if (info?.friendlyName === "Image file") thumbnail = await process.fs.imageThumbnail(thisPath, 48);
   });
 
   function onclick(e: MouseEvent) {
@@ -75,7 +78,7 @@
     class:is-shortcut={shortcut}
   >
     <div class="segment icon">
-      <img src={shortcut ? getIconPath(shortcut.icon) : icon} alt="" />
+      <img src={shortcut ? getIconPath(shortcut.icon) : thumbnail || icon} alt="" />
       {#if shortcut}
         <span class="icon-arrow-up-right"></span>
       {/if}

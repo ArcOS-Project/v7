@@ -607,4 +607,16 @@ export class Filesystem extends KernelModule {
 
     return await drive.stat(scopedPath);
   }
+
+  async imageThumbnail(path: string, width: number, height?: number): Promise<string | undefined> {
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+
+    this.Log(`stat '${path}'`);
+    this.validatePath(path);
+
+    const drive = this.getDriveByPath(path);
+    const scopedPath = this.removeDriveLetter(path);
+
+    return await drive.imageThumbnail(scopedPath, width, height);
+  }
 }

@@ -182,4 +182,8 @@ export class FilesystemDrive {
       throw new Error(`Illegal operation '${capability}' on filesystem '${this.FILESYSTEM_SHORT}'`);
     }
   }
+
+  async imageThumbnail(path: string, width: number, height?: number): Promise<string | undefined> {
+    return undefined;
+  }
 }

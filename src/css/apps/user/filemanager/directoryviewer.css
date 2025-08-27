@@ -1,4 +1,5 @@
 @import url("./directoryviewer/grid.css");
+@import url("./directoryviewer/thumbnail.css");
 
 #fileManager div.directory-viewer button div.segment {
   text-align: left;
