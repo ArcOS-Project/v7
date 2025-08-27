@@ -1,25 +1,4 @@
-import { MessagingIcon } from "$ts/images/apps";
 import { QuestionIcon } from "$ts/images/dialog";
-import { DownloadIcon } from "$ts/images/filesystem";
-import {
-  ArcAppMimeIcon,
-  ArcTermMimeIcon,
-  ArcThemeMimeIcon,
-  AudioMimeIcon,
-  CompressMimeIcon,
-  ImageMimeIcon,
-  JavascriptMimeIcon,
-  JsonMimeIcon,
-  MarkdownMimeIcon,
-  PdfMimeIcon,
-  PlaylistMimeIcon,
-  ShortcutMimeIcon,
-  SvgMimeIcon,
-  TextMimeIcon,
-  VideoMimeIcon,
-  WebpageMimeIcon,
-  XmlMimeIcon,
-} from "$ts/images/mime";
 import { Process } from "$ts/process/instance";
 import type { App } from "$types/app";
 import type { FileHandler } from "$types/fs";
