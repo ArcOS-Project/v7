@@ -4,6 +4,7 @@ import { authcode } from "$ts/util";
 import type {
   DirectoryReadReturn,
   DriveCapabilities,
+  ExtendedStat,
   FilesystemProgressCallback,
   FilesystemStat,
   FsAccess,
@@ -220,11 +221,23 @@ export class ServerDrive extends FilesystemDrive {
     }
   }
 
-  async stat(path: string): Promise<FilesystemStat | undefined> {
+  async stat(path: string): Promise<ExtendedStat | undefined> {
     try {
       const response = await Backend.get(`/fs/stat/${path}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const data = response.data as ExtendedStat;
 
-      return response.data as FilesystemStat;
+      if (data.modifiers?.createdBy?.user) {
+        data.modifiers.createdBy.user.profilePicture = `${import.meta.env.DW_SERVER_URL}${
+          data.modifiers.createdBy.user.profilePicture
+        }`;
+      }
+      if (data.modifiers?.lastWrite?.user) {
+        data.modifiers.lastWrite.user.profilePicture = `${import.meta.env.DW_SERVER_URL}${
+          data.modifiers.lastWrite.user.profilePicture
+        }`;
+      }
+
+      return data as ExtendedStat;
     } catch {
       return undefined;
     }

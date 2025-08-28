@@ -95,6 +95,8 @@ export class FileManagerRuntime extends AppProcess {
     this.dispatch.subscribe("navigate", (path) => {
       this.navigate(path);
     });
+
+    console.log(this.virtualLocations);
   }
 
   override contextMenu: AppContextMenu = FileManagerContextMenu(this);

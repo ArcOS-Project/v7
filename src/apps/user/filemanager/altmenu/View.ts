@@ -57,6 +57,16 @@ export function ViewMenu(runtime: FileManagerRuntime): ContextMenuItem {
             return v;
           }),
       },
+      {
+        caption: "Show info pane",
+        isActive: () => runtime.userPreferences().appPreferences.fileManager?.showInfoPane,
+        icon: "info",
+        action: () =>
+          runtime.userPreferences.update((v) => {
+            v.appPreferences.fileManager.showInfoPane = !v.appPreferences.fileManager.showInfoPane;
+            return v;
+          }),
+      },
     ],
   };
 }

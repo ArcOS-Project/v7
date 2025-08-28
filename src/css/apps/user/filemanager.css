@@ -3,6 +3,7 @@
 @import url("./filemanager/directoryviewer.css");
 @import url("./filemanager/virtual/myarcos.css");
 @import url("./filemanager/virtual/recyclebin.css");
+@import url("./filemanager/infopane.css");
 @import url("./filemanager/splash.css");
 @import url("./filemanager/bottom.css");
 
@@ -42,9 +43,19 @@
 }
 
 #fileManager div.virtual-page {
-  height: calc(100% - 30px - 0px);
+  height: calc(100% - 40px - 0px);
   overflow-y: scroll;
   padding: 15px;
   position: relative;
   transition: height 0.3s;
+}
+
+#fileManager div.virtual-page div.directory-viewer {
+  width: 100%;
+}
+
+#fileManager div.viewer-wrapper {
+  width: 100%;
+  height: calc(100% - 40px - 53px);
+  display: flex;
 }

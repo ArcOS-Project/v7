@@ -75,6 +75,7 @@
   transition: opacity 0.3s;
   scale: 1;
   outline: none;
+  min-width: 590px;
 }
 
 #fileManager div.directory-viewer button.hidden-file {
@@ -160,12 +161,14 @@
 #fileManager div.directory-viewer {
   display: flex;
   flex-direction: column;
-  height: calc(100% - 30px - 53px);
+  height: 100%;
   overflow-y: scroll;
   padding: 15px;
   padding-top: 0;
   gap: 5px;
   position: relative;
+  width: 0;
+  flex-grow: 1;
 }
 
 #fileManager div.directory-viewer button.header-row {

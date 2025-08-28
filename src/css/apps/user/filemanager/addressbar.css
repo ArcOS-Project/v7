@@ -1,11 +1,12 @@
 #fileManager div.address-bar {
   display: flex;
   gap: 10px;
-  height: 30px;
-  margin: 5px 15px;
-  margin-bottom: 0;
+  height: 45px;
+  padding: 5px 10px;
+  padding-bottom: 10px;
   align-items: center;
   position: relative;
+  border-bottom: var(--win-border);
 }
 
 #fileManager div.address-bar div.portion.address {

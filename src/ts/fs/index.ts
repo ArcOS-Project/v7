@@ -5,6 +5,7 @@ import { Sleep } from "$ts/sleep";
 import { sha256, sliceIntoChunks } from "$ts/util";
 import {
   type DirectoryReadReturn,
+  type ExtendedStat,
   type FilesystemProgress,
   type FilesystemProgressCallback,
   type FilesystemStat,
@@ -595,7 +596,7 @@ export class Filesystem extends KernelModule {
     }
   }
 
-  async stat(path: string): Promise<FilesystemStat | undefined> {
+  async stat(path: string): Promise<ExtendedStat | undefined> {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
 
     this.Log(`stat '${path}'`);

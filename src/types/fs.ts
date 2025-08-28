@@ -1,5 +1,6 @@
 import type { App } from "./app";
 import type { ArcShortcut, ShortcutStore } from "./shortcut";
+import type { PublicUserInfo } from "./user";
 
 export interface FileEntry {
   name: string;
@@ -10,6 +11,7 @@ export interface FileEntry {
   itemId: string;
   shortcut?: ArcShortcut;
   action?: () => void;
+  modifiers?: SummarizedFsModifiers;
 }
 
 export interface FsAccess {
@@ -32,6 +34,7 @@ export interface FolderEntry {
   dateCreated: Date;
   dateModified: Date;
   itemId: string;
+  modifiers?: SummarizedFsModifiers;
 }
 
 export interface DirectoryReadReturn {
@@ -118,4 +121,37 @@ export interface FilesystemStat {
   size: number;
   created: number;
   modified: number;
+}
+
+export interface FsModifier {
+  _id?: string;
+  userId: string;
+  itemId: string;
+  kind: FsModifierKind;
+  isAdmin?: boolean;
+  isDir?: boolean;
+  createdAt?: string;
+  modifiedAt?: string;
+}
+
+export interface ExtendedFsModifier extends FsModifier {
+  user?: PublicUserInfo;
+}
+
+export interface SummarizedFsModifiers {
+  itemId: string;
+  lastWrite: ExtendedFsModifier | null;
+  createdBy: ExtendedFsModifier | null;
+}
+
+export type FsModifierKind = "create" | "write";
+
+export interface FsModifierOptions {
+  kind: FsModifierKind;
+  isAdmin?: boolean;
+  isDir?: boolean;
+}
+
+export interface ExtendedStat extends FilesystemStat {
+  modifiers?: SummarizedFsModifiers;
 }

@@ -212,6 +212,15 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
           const name = getItemNameFromPath(path);
           const parent = await runtime.fs.readDir(parentPath);
           const dir = parent?.dirs.filter((d) => d.name === name)[0] || parent;
+          const isRoot = parentPath === path;
+
+          if (isRoot) {
+            try {
+              const drive = runtime.fs.getDriveByPath(path);
+              runtime.spawnOverlayApp("DriveInfo", runtime.pid, drive);
+              return;
+            } catch {}
+          }
 
           if (!dir) return;
 

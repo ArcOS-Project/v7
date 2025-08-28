@@ -1,0 +1,102 @@
+#fileManager > div.body div.info-pane {
+  width: 200px;
+  height: 100%;
+  background-color: var(--win-bg);
+  border-left: var(--win-border);
+  min-width: 200px;
+  overflow-y: auto;
+}
+
+#fileManager > div.body div.info-pane * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#fileManager > div.body div.info-pane div.header {
+  text-align: center;
+}
+
+#fileManager > div.body div.info-pane div.header img {
+  height: 64px;
+  margin-bottom: 5px;
+}
+
+#fileManager > div.body div.info-pane div.header svg.circular-progress {
+  margin-bottom: 5px;
+}
+
+#fileManager > div.body div.info-pane div.header h1 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+#fileManager > div.body div.info-pane div.header p {
+  opacity: 0.5;
+}
+
+#fileManager > div.body div.info-pane div.drive,
+#fileManager > div.body div.info-pane div.single-file,
+#fileManager > div.body div.info-pane div.multi-file {
+  padding: 15px;
+  padding-top: 30px;
+}
+
+#fileManager > div.body div.info-pane div.drive div.header,
+#fileManager > div.body div.info-pane div.single-file div.header,
+#fileManager > div.body div.info-pane div.multi-file div.header {
+  margin-bottom: 18px;
+}
+
+#fileManager > div.body div.info-pane div.drive div.legend h1 {
+  font-weight: normal;
+}
+
+#fileManager > div.body div.info-pane div.drive div.legend p {
+  opacity: 0.5;
+  font-size: 12px;
+}
+
+#fileManager > div.body div.info-pane div.drive div.legend div.part {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+#fileManager > div.body div.info-pane div.drive div.legend div.dot {
+  background-color: var(--accent);
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  border: var(--win-border);
+}
+
+#fileManager > div.body div.info-pane div.drive div.legend div.part.free div.dot {
+  background-color: var(--accent-transparent);
+}
+
+#fileManager > div.body div.info-pane div.single-file div.timestamps h1 {
+  opacity: 0.5;
+  margin-bottom: 5px;
+}
+
+#fileManager > div.body div.info-pane div.single-file div.timestamps {
+  margin-bottom: 10px;
+}
+
+#fileManager > div.body div.info-pane div.single-file div.modifiers {
+  margin-top: 20px;
+}
+
+#fileManager > div.body div.info-pane div.single-file div.modifier {
+  margin-bottom: 10px;
+}
+
+#fileManager > div.body div.info-pane div.single-file div.modifier h1 {
+  opacity: 0.5;
+  margin-bottom: 5px;
+}
+
+#fileManager > div.body div.info-pane div.multi-file > p {
+  text-align: center;
+}
