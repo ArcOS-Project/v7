@@ -5,7 +5,7 @@
   import type { WallpaperRuntime } from "../../runtime";
   import DesktopIcon from "../DesktopIcon.svelte";
 
-  const { process, folder }: { process: WallpaperRuntime; folder: FolderEntry } = $props();
+  const { process, folder, i }: { process: WallpaperRuntime; folder: FolderEntry; i: number } = $props();
 
   const path = join(process.directory, folder.name);
 </script>
@@ -20,5 +20,6 @@
     contextMenu="folder-icon"
     icon={FolderIcon}
     action={() => process.spawnApp("fileManager", +process.env.get("shell_pid"), path)}
+    {i}
   />
 {/if}

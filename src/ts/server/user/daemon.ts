@@ -1211,7 +1211,6 @@ export class UserDaemon extends Process {
     this.Log(`Opening file "${path}" (${shortcut ? "Shortcut" : "File"})`);
 
     if (this._disposed) return;
-
     if (shortcut) return await this.handleShortcut(path, shortcut);
 
     const filename = getItemNameFromPath(path);

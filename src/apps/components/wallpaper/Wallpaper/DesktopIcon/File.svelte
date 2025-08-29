@@ -8,7 +8,7 @@
   import type { WallpaperRuntime } from "../../runtime";
   import DesktopIcon from "../DesktopIcon.svelte";
 
-  const { process, file }: { process: WallpaperRuntime; file: FileEntry } = $props();
+  const { process, file, i }: { process: WallpaperRuntime; file: FileEntry; i: number } = $props();
   const { shortcuts } = process;
 
   const path = join(process.directory, file.name);
@@ -41,5 +41,6 @@
     action={() => {
       process.userDaemon?.openFile(path, shortcut);
     }}
+    {i}
   />
 {/if}

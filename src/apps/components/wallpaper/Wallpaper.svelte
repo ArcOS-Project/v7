@@ -25,10 +25,10 @@
     <div class="desktop-icons" bind:this={$iconsElement} class:hide={!$userPreferences.desktop.icons}>
       {#if $contents}
         {#each $contents.dirs as folder, i (`${i}-${folder.itemId}-${folder.dateCreated}-${folder.dateModified}`)}
-          <Folder {folder} {process} />
+          <Folder {folder} {process} {i} />
         {/each}
         {#each $contents.files as file, i (`${i}-${file.name}-${file.dateCreated}-${file.dateModified}`)}
-          <File {file} {process} />
+          <File {file} {process} {i} />
         {/each}
       {/if}
     </div>

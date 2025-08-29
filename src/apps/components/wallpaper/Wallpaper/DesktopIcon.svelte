@@ -20,6 +20,7 @@
     action: () => void;
     contextMenu?: string;
     props?: any[];
+    i: number;
   }
 
   const {
@@ -33,6 +34,7 @@
     action,
     identifier,
     props = [],
+    i,
   }: Props = $props();
 
   let movingX = $state<number>();
@@ -91,6 +93,7 @@
 <!-- svelte-ignore event_directive_deprecated -->
 <button
   class="icon {className} {position.x}-{position.y}"
+  style="--i: {i};"
   class:moving={$moving}
   class:no-grid={$userPreferences.desktop.noIconGrid}
   class:selected={$selected === identifier}
