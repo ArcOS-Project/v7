@@ -37,7 +37,7 @@
   <InfoBlock>
     <InfoRow>
       <Segment title="Official">{pkg.official ? "Yes" : "No"}</Segment>
-      <Segment title="Blocked">{pkg.official ? "Yes" : "No"}</Segment>
+      <Segment title="Blocked">{pkg.blocked ? "Yes" : "No"}</Segment>
       <Segment title="Deprecated">{pkg.deprecated ? "Yes" : "No"}</Segment>
       <Segment title="Install count">{pkg.installCount} times</Segment>
       <Segment title="Compressed size">{formatBytes(pkg.size)}</Segment>
