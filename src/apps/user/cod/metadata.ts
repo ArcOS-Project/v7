@@ -10,6 +10,7 @@ export const CodApp: App = {
     author: "Izaak Kuipers",
     version: "1.0.0",
     icon: CodIcon,
+    appGroup: "utilities",
   },
   position: { centered: true },
   size: {
