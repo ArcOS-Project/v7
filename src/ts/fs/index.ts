@@ -586,9 +586,17 @@ export class Filesystem extends KernelModule {
     }
   }
 
+  // COMPAT: not using stat calls here because we don't
+  // know if the designated drive will have such capability
+
+  // TODO: Add support for both stat-based checks and a
+  // fallback for drives that can't stat
   async isDirectory(path: string) {
     try {
       const contents = await this.readDir(path);
+      const fileContents = await this.readFile(path);
+
+      if (fileContents) return false;
 
       return contents;
     } catch {
