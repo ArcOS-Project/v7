@@ -101,6 +101,11 @@
 }
 
 #fileManager > div.body div.bottom div.stat {
-  min-width: fit-content;
+  /* min-width: fit-content; */
   margin-right: auto;
+  width: 0;
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
