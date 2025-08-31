@@ -7,9 +7,15 @@ import { AdminBootstrapper } from "$ts/server/admin";
 import { Sleep } from "$ts/sleep";
 import { Store, type ReadableStore } from "$ts/writable";
 import type { App, AppProcessData, ContextMenuItem } from "$types/app";
+import type { BugReport } from "$types/bughunt";
+import axios from "axios";
 import { AdminPortalAltMenu } from "./altmenu";
 import { AdminPortalPageStore } from "./store";
+import type { BugReportFileUrlParseResult, BugReportTpaFile } from "./types";
 import { BugHuntUserDataApp } from "./userdata/metadata";
+import { join } from "$ts/fs/util";
+import { UUID } from "$ts/uuid";
+import { textToBlob } from "$ts/fs/convert";
 
 export class AdminPortalRuntime extends AppProcess {
   ready = Store<boolean>(false);
@@ -38,6 +44,10 @@ export class AdminPortalRuntime extends AppProcess {
     this.shares = this.userDaemon!.serviceHost!.getService<ShareManager>("ShareMgmt")!;
     this.switchPage(page || "dashboard", props || {});
     this.altMenu.set(AdminPortalAltMenu(this));
+  }
+
+  async start() {
+    await this.fs.createDirectory("T:/Apps/AdminPortal");
   }
 
   async switchPage(pageId: string, props: Record<string, any> = {}, force = false) {
@@ -69,5 +79,41 @@ export class AdminPortalRuntime extends AppProcess {
     this.currentPage.set(pageId);
 
     this.windowTitle.set(`${page?.name} - Admin Portal`);
+  }
+
+  async saveTpaFilesOfBugReport(report: BugReport) {
+    const regex =
+      /http(s|):\/\/[a-zA-Z.-]+\/tpa\/v3\/(?<userId>[a-z0-9+]+)\/(?<timestamp>[0-9]+)\/(?<appId>.*?)@(?<filename>.*?\.js)/gm;
+    const result: BugReportTpaFile[] = [];
+    const tpaFiles = report.body
+      .matchAll(regex)
+      .toArray()
+      .map((r) => ({ ...r.groups, url: r[0] }))
+      .filter(Boolean) as BugReportFileUrlParseResult[];
+
+    for (const file of tpaFiles) {
+      const filePath = join(`T:/Apps/AdminPortal/${file.userId}-${file.timestamp}@${file.appId}/${file.filename}`);
+
+      try {
+        const content = await axios.get(file.url, { responseType: "text" });
+        const source = content.data as string;
+        await this.fs.writeFile(filePath, textToBlob(source, "text/javascript"));
+
+        result.push({
+          filename: file.filename,
+          filePath,
+          size: source.length,
+        });
+      } catch {
+        result.push({
+          filename: file.filename,
+          size: -1,
+          filePath,
+          unavailable: true,
+        });
+      }
+    }
+
+    return result;
   }
 }

@@ -195,17 +195,53 @@
 
 #AdminPortal div.viewBugReport div.leftpanel div.report-body {
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 #AdminPortal div.viewBugReport div.leftpanel div.report-body textarea {
   width: 100%;
-  height: 100%;
+  height: 0;
+  flex-grow: 1;
   padding: 10px;
   font-family: "Source Code Pro";
   font-size: 12px;
   background-color: var(--win-bg);
   border: none;
   resize: none;
+  border-bottom: var(--win-border);
+}
+
+#AdminPortal div.viewBugReport div.leftpanel div.report-body div.tpa-files {
+  padding: 5px;
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  min-height: 36px;
+}
+
+#AdminPortal div.viewBugReport div.leftpanel div.report-body div.tpa-files button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 5px;
+  border-radius: 5px;
+}
+
+#AdminPortal div.viewBugReport div.leftpanel div.report-body div.tpa-files button img {
+  height: 16px;
+}
+
+#AdminPortal div.viewBugReport div.leftpanel div.report-body div.tpa-files button span.size {
+  opacity: 0.5;
+}
+
+#AdminPortal div.viewBugReport div.leftpanel div.report-body div.tpa-files span.loading {
+  line-height: 26px;
+  padding: 0 10px;
+  opacity: 0.5;
+  animation: adminPortal_viewBugReport_tpaFiles_loading 0.3s linear infinite;
 }
 
 #AdminPortal div.viewBugReport div.rightpanel div.tabs {
@@ -251,4 +287,18 @@
   font-size: 16px;
   font-weight: bold;
   color: var(--clr-red-fg);
+}
+
+@keyframes adminPortal_viewBugReport_tpaFiles_loading {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }

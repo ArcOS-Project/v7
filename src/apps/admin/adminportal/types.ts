@@ -122,3 +122,18 @@ export interface FilesystemsPageQuota extends Record<string, any> {
   percentage: number;
   unknown?: boolean;
 }
+
+export interface BugReportFileUrlParseResult extends Record<string, string> {
+  appId: string;
+  filename: string;
+  timestamp: string;
+  userId: string;
+  url: string;
+}
+
+export interface BugReportTpaFile {
+  unavailable?: boolean;
+  filePath: string;
+  filename: string;
+  size: number;
+}
