@@ -1,42 +1,57 @@
 <script lang="ts">
   import CodeEditor from "$lib/CodeEditor.svelte";
+  import { Store } from "$ts/writable";
+  import { onMount } from "svelte";
   import type { SqeletonRuntime } from "./runtime";
   import Intro from "./Sqeleton/Intro.svelte";
+  import Sidebar from "./Sqeleton/Sidebar.svelte";
+  import ResultList from "./Sqeleton/ResultList.svelte";
+  import ErrorList from "./Sqeleton/ErrorList.svelte";
+  import HistoryList from "./Sqeleton/HistoryList.svelte";
+  import Tabs from "./Sqeleton/Tabs.svelte";
 
   const { process }: { process: SqeletonRuntime } = $props();
-  const { sqlCode, openedFile, errors } = process;
+  const { queries, queryIndex, openedFile, currentTab } = process;
 
-  let tab = $state("result");
+  let sqlCode = Store<string>("");
+  let syncLock = $state(false);
+
+  onMount(() => {
+    sqlCode.subscribe((v) => {
+      if (syncLock) return (syncLock = false);
+      $queries[$queryIndex] = v ?? "";
+    });
+
+    queryIndex.subscribe((v) => {
+      $sqlCode = $queries[v] ?? "";
+    });
+
+    queries.subscribe((v) => {
+      if (v[$queryIndex] !== $sqlCode) $sqlCode = v[$queryIndex] ?? "";
+    });
+  });
 </script>
 
 {#if $openedFile}
   <div class="main-content">
-    <div class="sidebar">
-      <div class="tables">
-        <h1>Tables</h1>
-      </div>
-      <div class="queries">
-        <h1>Queries</h1>
-      </div>
-    </div>
+    <Sidebar {process} />
     <div class="editor">
-      <div class="action-bar"></div>
+      <div class="action-bar">
+        <button class="run" disabled={!$sqlCode} onclick={() => process.execute($sqlCode)}>
+          <span class="lucide icon-play"></span>
+          <span>Run SQL</span>
+        </button>
+      </div>
       <CodeEditor language="sql" value={sqlCode} />
       <div class="bottom-pane">
-        <div class="tabs">
-          <button class:active={tab === "result"} onclick={() => (tab = "result")}>Result</button>
-          <button class:active={tab === "errors"} onclick={() => (tab = "errors")}>
-            <span>Errors</span>
-            {#if $errors.length}
-              <span class="count">{$errors.length}</span>
-            {/if}
-          </button>
-        </div>
-        <div class="pane-content">
-          {#if tab === "result"}
-            result
-          {:else if tab === "errors"}
-            errors
+        <Tabs {process} />
+        <div class="pane-content {$currentTab}">
+          {#if $currentTab === "result"}
+            <ResultList {process} />
+          {:else if $currentTab === "errors"}
+            <ErrorList {process} />
+          {:else if $currentTab === "history"}
+            <HistoryList {process} />
           {/if}
         </div>
       </div>

@@ -56,7 +56,7 @@ export class SqlInterfaceProcess extends Process {
     await this.unlockFile(this.filePath);
   }
 
-  exec(sql: string, params?: initSqlJs.BindParams | undefined): Record<string, any> | string {
+  exec(sql: string, params?: initSqlJs.BindParams | undefined): Record<string, any>[][] | string {
     try {
       const result = this.db?.exec(sql, params);
 

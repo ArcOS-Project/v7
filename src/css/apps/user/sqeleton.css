@@ -1,5 +1,7 @@
 @import url("./sqeleton/intro.css");
 @import url("./sqeleton/layout.css");
+@import url("./sqeleton/sidebar.css");
+@import url("./sqeleton/bottompane.css");
 #Sqeleton > div.body {
   padding: 0;
 }
