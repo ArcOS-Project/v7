@@ -1,0 +1,16 @@
+<svg width="135" height="129" viewBox="0 0 135 129" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="23.5" cy="37" rx="23.5" ry="26" fill="#D4AB46" />
+  <ellipse cx="44.5" cy="51" rx="23.5" ry="26" fill="#FFCD54" />
+  <ellipse cx="95.5" cy="29" rx="23.5" ry="26" fill="#9DD3FF" />
+  <ellipse cx="72.5" cy="37" rx="23.5" ry="26" fill="#F8C44E" />
+  <ellipse cx="102.5" cy="47" rx="23.5" ry="26" fill="#FF9F05" />
+  <ellipse cx="81.5" cy="26" rx="23.5" ry="26" fill="#FFC968" />
+  <ellipse cx="51.5" cy="26" rx="23.5" ry="18" fill="#008DFF" />
+  <ellipse cx="23.5" cy="26" rx="23.5" ry="26" transform="matrix(-1 0 0 1 135 63)" fill="#D4AB46" />
+  <ellipse cx="23.5" cy="26" rx="23.5" ry="26" transform="matrix(-1 0 0 1 114 77)" fill="#FFCD54" />
+  <ellipse cx="23.5" cy="26" rx="23.5" ry="26" transform="matrix(-1 0 0 1 63 55)" fill="#9DD3FF" />
+  <ellipse cx="23.5" cy="26" rx="23.5" ry="26" transform="matrix(-1 0 0 1 86 63)" fill="#F8C44E" />
+  <ellipse cx="23.5" cy="26" rx="23.5" ry="26" transform="matrix(-1 0 0 1 56 73)" fill="#00BBFF" />
+  <ellipse cx="23.5" cy="26" rx="23.5" ry="26" transform="matrix(-1 0 0 1 77 52)" fill="#FFC968" />
+  <ellipse cx="23.5" cy="18" rx="23.5" ry="18" transform="matrix(-1 0 0 1 107 60)" fill="#008DFF" />
+</svg>

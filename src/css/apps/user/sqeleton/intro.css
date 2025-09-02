@@ -1,0 +1,100 @@
+#Sqeleton > div.body img.backdrop {
+  width: 100%;
+  position: absolute;
+  top: -50%;
+  left: 0;
+  opacity: 0.3;
+  z-index: 0;
+  filter: blur(250px);
+}
+
+#Sqeleton > div.body div.intro-screen {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#Sqeleton > div.body div.intro-screen > div {
+  position: relative;
+  z-index: 100;
+}
+
+#Sqeleton > div.body div.intro-screen h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+#Sqeleton > div.body div.intro-screen div.header img {
+  height: 48px;
+  margin-right: 10px;
+}
+
+#Sqeleton > div.body div.intro-screen h1 span.version {
+  font-weight: 100;
+  opacity: 0.5;
+}
+
+#Sqeleton > div.body div.intro-screen div.header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+#Sqeleton > div.body div.intro-screen div.header p {
+  opacity: 0.5;
+}
+
+#Sqeleton > div.body div.intro-screen div.actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+#Sqeleton > div.body div.intro-screen div.actions button {
+  border: none;
+  background-color: transparent;
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  width: 92px;
+}
+
+#Sqeleton > div.body div.intro-screen div.actions button span.lucide {
+  display: block;
+  font-size: 24px;
+  width: 50px;
+  height: 50px;
+  background-color: var(--button-glass-active-bg);
+  outline: var(--button-glass-hover-bg) 1px solid !important;
+  outline-offset: -1px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  transition: background-color 0.1s, scale 0.1s;
+}
+
+#Sqeleton > div.body div.intro-screen div.actions button:hover p {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+#Sqeleton > div.body div.intro-screen div.actions button:hover span.lucide {
+  background-color: var(--button-glass-bg);
+  scale: 1.2;
+}
+
+#Sqeleton > div.body div.intro-screen p.powered-by {
+  position: absolute;
+  left: 0;
+  bottom: 20px;
+  width: 100%;
+  text-align: center;
+  opacity: 0.5;
+}
