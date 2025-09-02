@@ -7,6 +7,7 @@
   import plaintext from "highlight.js/lib/languages/plaintext";
   import xml from "highlight.js/lib/languages/xml";
   import yaml from "highlight.js/lib/languages/yaml";
+  import sql from "highlight.js/lib/languages/sql";
 
   import type { ReadableStore } from "$ts/writable";
   import hljs from "highlight.js";
@@ -32,6 +33,7 @@
     hljs.registerLanguage("yaml", yaml);
     hljs.registerLanguage("xml", xml);
     hljs.registerLanguage("plaintext", plaintext);
+    hljs.registerLanguage("sql", sql);
 
     value.subscribe(update);
     update($value);

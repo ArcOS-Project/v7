@@ -46,6 +46,11 @@ export function LanguageMenu(runtime: CodRuntime): ContextMenuItem {
         action: () => runtime.language.set("yaml"),
         isActive: () => runtime.language() === "yaml",
       },
+      {
+        caption: "SQL",
+        action: () => runtime.language.set("sql"),
+        isActive: () => runtime.language() === "sql",
+      },
     ],
   };
 }

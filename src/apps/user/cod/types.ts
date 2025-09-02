@@ -1,1 +1,1 @@
-export type CodLang = "css" | "ini" | "javascript" | "json" | "markdown" | "xml" | "yaml" | "plaintext";
+export type CodLang = "css" | "ini" | "javascript" | "json" | "markdown" | "xml" | "yaml" | "plaintext" | "sql";
