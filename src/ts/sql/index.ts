@@ -1,11 +1,13 @@
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import initSqlJs from "sql.js";
+import { sqljsResultToJSON } from "./util";
 
 export class SqlInterfaceProcess extends Process {
   private filePath: string;
   private sql?: initSqlJs.SqlJsStatic;
   public db?: initSqlJs.Database;
+  public isFresh = false;
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, path: string) {
     super(handler, pid, parentPid);
@@ -26,6 +28,7 @@ export class SqlInterfaceProcess extends Process {
     } catch {
       this.db = new this.sql!.Database();
       await this.writeFile();
+      this.isFresh = true;
     }
   }
 
@@ -51,5 +54,17 @@ export class SqlInterfaceProcess extends Process {
 
   async stop() {
     await this.unlockFile(this.filePath);
+  }
+
+  exec(sql: string, params?: initSqlJs.BindParams | undefined): Record<string, any> | string {
+    try {
+      const result = this.db?.exec(sql, params);
+
+      if (!result) return [];
+
+      return sqljsResultToJSON(result);
+    } catch (e) {
+      return `${e}`;
+    }
   }
 }
