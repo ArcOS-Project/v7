@@ -32,7 +32,7 @@ export class ServerManager extends KernelModule {
   }
 
   private getServerUrl() {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.Log("Getting server URL from environment");
 
@@ -46,7 +46,7 @@ export class ServerManager extends KernelModule {
   }
 
   private async testConnection() {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.Log("Testing server connection...");
     try {
@@ -75,7 +75,7 @@ export class ServerManager extends KernelModule {
   }
 
   async checkUsernameAvailability(username: string) {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     try {
       const response = await Backend.get(`/user/availability/username?name=${username}`);
@@ -87,7 +87,7 @@ export class ServerManager extends KernelModule {
   }
 
   async checkEmailAvailability(email: string) {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     try {
       const response = await Backend.get(`/user/availability/email?email=${email}`);

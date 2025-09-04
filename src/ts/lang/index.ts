@@ -15,7 +15,7 @@ export class ArcLang extends KernelModule {
   }
 
   async run(code: string, parentPid: number, options: ArcLangOptions = DefaultArcLangOptions) {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
     if (this.locked) throw new LangError("ArcLang is busy");
 
     return new Promise(async (resolve, reject) => {

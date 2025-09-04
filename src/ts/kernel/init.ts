@@ -21,6 +21,8 @@ export class InitProcess extends Process {
   }
 
   async jumpstart() {
+    WaveKernel.AssertEq(this.pid, 1, "init pid");
+
     __Console__.time("** Init jumpstart");
     this.Log("Jumpstarting init process!");
 

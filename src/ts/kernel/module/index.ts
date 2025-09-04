@@ -31,6 +31,10 @@ export class KernelModule {
 
     Log(source, message, level);
   }
+
+  isKmod() {
+    WaveKernel.Assert(this.IS_KMOD, `isKmod ${this.id}`);
+  }
 }
 
 export function getKMod<T = KernelModule>(id: string, dontCrash = false): T {

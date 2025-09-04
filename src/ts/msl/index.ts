@@ -21,7 +21,7 @@ export class ArcMSL extends KernelModule {
   }
 
   async run(source: string, parent: number, options: LanguageOptions = DefaultLanguageOptions) {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     if (this.locked) throw new PrematureLanguageError("Language is busy");
 

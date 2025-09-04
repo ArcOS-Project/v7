@@ -14,7 +14,7 @@ export class SystemDispatch extends KernelModule {
   }
 
   subscribe<T = any[]>(event: string, callback: (data: T) => void): number {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     const id = Math.floor(Math.random() * 1e6);
 
@@ -34,7 +34,7 @@ export class SystemDispatch extends KernelModule {
   }
 
   unsubscribeId(event: string, id: number) {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.Log(`Unsubscribing ID ${id} of event ${event}`);
 
@@ -42,7 +42,7 @@ export class SystemDispatch extends KernelModule {
   }
 
   discardEvent(event: string) {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.Log(`Discarding event ${event}`);
 
@@ -50,7 +50,7 @@ export class SystemDispatch extends KernelModule {
   }
 
   dispatch<T = any[]>(caller: string, data?: T, system = true): SystemDispatchResult {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.Log(`Dispatching ${caller}`);
 

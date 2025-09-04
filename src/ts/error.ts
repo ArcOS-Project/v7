@@ -4,9 +4,14 @@ import { Crash } from "./crash";
 import { WaveKernel } from "./kernel";
 import { Log } from "./kernel/logging";
 import { ProcessHandler } from "./process/handler";
+import { getKMod } from "./kernel/module";
+import { Environment } from "./kernel/env";
+import { UserDaemon } from "./server/user/daemon";
+import { WarningIcon } from "./images/dialog";
+import { ArcOSApp } from "$apps/arcos";
 export function handleGlobalErrors() {
   let LOCKED = false;
-  function Error(e: ErrorEvent | PromiseRejectionEvent) {
+  function DoError(e: ErrorEvent | PromiseRejectionEvent) {
     if (LOCKED) {
       e.preventDefault();
       return false;
@@ -35,12 +40,34 @@ export function handleGlobalErrors() {
       __Console__.warn(e.reason);
     }
 
-    Crash(e);
+    // Crash(e);
+    const stack = getKMod<ProcessHandler>("stack");
+    const env = getKMod<Environment>("env");
+    const daemon = stack.getProcess<UserDaemon>(+env.get("userdaemon_pid"));
+    const lastInteract = stack.renderer?.lastInteract;
+
+    if (daemon && lastInteract) {
+      stack.BUSY = false;
+      stack.dispatch.dispatch("stack-not-busy");
+      daemon.spawnApp(
+        "OopsNotifier",
+        daemon.pid,
+        lastInteract?.app?.data || ArcOSApp,
+        e instanceof PromiseRejectionEvent ? e.reason : e,
+        lastInteract
+      );
+      stack.kill(lastInteract?.pid, true);
+
+      LOCKED = false;
+    } else {
+      Crash(e);
+    }
+
     return false;
   }
 
-  window.addEventListener("error", Error, { passive: false });
-  window.addEventListener("unhandledrejection", Error, { passive: false });
+  window.addEventListener("error", DoError, { passive: false });
+  window.addEventListener("unhandledrejection", DoError, { passive: false });
 
   window.console = new Proxy(console, {
     set(target, prop, value) {

@@ -29,7 +29,7 @@ export class Filesystem extends KernelModule {
   async _init() {}
 
   getDriveById(id: string) {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     return this.drives[id];
   }
@@ -41,7 +41,7 @@ export class Filesystem extends KernelModule {
     onProgress?: FilesystemProgressCallback,
     ...args: any[]
   ): Promise<T | false> {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.Log(`Mounting drive '${id}' as letter ${letter || "<NONE>"}`);
 
@@ -73,7 +73,7 @@ export class Filesystem extends KernelModule {
   }
 
   async umountDrive(id: string, fromSystem = false, onProgress?: FilesystemProgressCallback) {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.Log(`Unmounting drive '${id}'`);
 
@@ -90,7 +90,7 @@ export class Filesystem extends KernelModule {
   }
 
   getDriveByLetter(letter: string, error = true) {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.validateDriveLetter(letter);
 
@@ -102,7 +102,7 @@ export class Filesystem extends KernelModule {
   }
 
   getDriveIdentifier(path: string) {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.validatePath(path);
 
@@ -110,19 +110,19 @@ export class Filesystem extends KernelModule {
   }
 
   getDriveByPath(path: string) {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     return this.getDriveByLetter(this.getDriveIdentifier(path));
   }
 
   validatePath(p: string) {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     if (!/^([A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}|[a-zA-Z]):\/(.*?)$/g.test(p)) throw new Error(`Invalid path "${p}"`);
   }
 
   removeDriveLetter(p: string) {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.validatePath(p);
 
@@ -133,14 +133,14 @@ export class Filesystem extends KernelModule {
   }
 
   validateDriveLetter(letter: string) {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     if (!/^([A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}|[a-zA-Z])$/g.test(letter))
       throw new Error(`Invalid drive letter or UUID "${letter}"`);
   }
 
   async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.Log(`Reading directory '${path}'`);
 
@@ -153,7 +153,7 @@ export class Filesystem extends KernelModule {
   }
 
   async bulk<T = any>(path: string, extension: string) {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.Log(`Getting .${extension} files in bulk from '${path}'`);
 
@@ -167,7 +167,7 @@ export class Filesystem extends KernelModule {
   }
 
   async createDirectory(path: string, dispatch = true): Promise<boolean> {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.Log(`Creating directory '${path}'`);
     this.validatePath(path);
@@ -187,7 +187,7 @@ export class Filesystem extends KernelModule {
   async readFile(path: string, onProgress?: FilesystemProgressCallback): Promise<ArrayBuffer | undefined> {
     onProgress ||= this.defaultProgress.bind(this);
 
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.Log(`Reading file '${path}'`);
     this.validatePath(path);
@@ -202,7 +202,7 @@ export class Filesystem extends KernelModule {
   async writeFile(path: string, data: Blob, onProgress?: FilesystemProgressCallback, dispatch = true): Promise<boolean> {
     onProgress ||= this.defaultProgress.bind(this);
 
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.Log(`Writing ${data.size} bytes to file '${path}'`);
     this.validatePath(path);
@@ -222,7 +222,7 @@ export class Filesystem extends KernelModule {
   }
 
   async tree(path: string): Promise<RecursiveDirectoryReadReturn | undefined> {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.Log(`Getting tree of '${path}'`);
     this.validatePath(path);
@@ -241,7 +241,7 @@ export class Filesystem extends KernelModule {
     dispatch = true,
     onProgress?: FilesystemProgressCallback
   ): Promise<boolean> {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.Log(`Copying '${source}' to '${destination}'`);
     this.validatePath(source);
@@ -340,7 +340,7 @@ export class Filesystem extends KernelModule {
     dispatch = true,
     onProgress?: FilesystemProgressCallback
   ): Promise<boolean> {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.Log(`Moving '${source}' to '${destination}'`);
     this.validatePath(source);
@@ -445,7 +445,7 @@ export class Filesystem extends KernelModule {
   }
 
   async deleteItem(path: string, dispatch = true): Promise<boolean> {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.Log(`Deleting item '${path}'`);
     this.validatePath(path);
@@ -469,7 +469,7 @@ export class Filesystem extends KernelModule {
   ): Promise<UploadReturn> {
     onProgress ||= this.defaultProgress.bind(this);
 
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     await this.createDirectory(target);
 
@@ -537,7 +537,7 @@ export class Filesystem extends KernelModule {
   }
 
   async lockFile(path: string, pid: number) {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.Log(`Locking file '${path}' for process ${pid}`);
     this.validatePath(path);
@@ -549,7 +549,7 @@ export class Filesystem extends KernelModule {
   }
 
   async releaseLock(path: string, pid: number) {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.Log(`Unlocking file '${path}'`);
     this.validatePath(path);
@@ -561,7 +561,7 @@ export class Filesystem extends KernelModule {
   }
 
   async direct(path: string): Promise<string | undefined> {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.Log(`Requesting direct access of '${path}'`);
     this.validatePath(path);
@@ -605,7 +605,7 @@ export class Filesystem extends KernelModule {
   }
 
   async stat(path: string): Promise<ExtendedStat | undefined> {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.Log(`stat '${path}'`);
     this.validatePath(path);
@@ -618,7 +618,7 @@ export class Filesystem extends KernelModule {
   }
 
   async imageThumbnail(path: string, width: number, height?: number): Promise<string | undefined> {
-    if (!this.IS_KMOD) throw new Error("Not a kernel module");
+    this.isKmod();
 
     this.Log(`stat '${path}'`);
     this.validatePath(path);

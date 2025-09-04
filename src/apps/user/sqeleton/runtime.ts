@@ -52,6 +52,10 @@ export class SqeletonRuntime extends AppProcess {
     super(handler, pid, parentPid, app);
 
     this.renderArgs.path = path;
+    (() =>
+      (() => {
+        throw new Error("asdfasdfadsf");
+      })())();
   }
 
   async render({ path }: { path?: string }) {

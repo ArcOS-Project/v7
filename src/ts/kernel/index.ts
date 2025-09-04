@@ -151,4 +151,36 @@ export class WaveKernel {
       `[${(timestamp - this.startMs).toString().padStart(10, "0")}] ${ShortLogLevelCaptions[level]} ${source}: ${message}`
     );
   }
+
+  public static AssertLessOrEq(left: any, right: any, name = "<unknown LEQ>") {
+    this.Assert(left <= right, `LEQ ${name}`, left, right);
+  }
+
+  public static AssertMoreOrEq(left: any, right: any, name = "<unknown GEQ>") {
+    this.Assert(left >= right, `GEQ ${name}`, left, right);
+  }
+
+  public static AssertLess(left: any, right: any, name = "<unknown LESS>") {
+    this.Assert(left < right, `LESS ${name}`, left, right);
+  }
+
+  public static AssertMore(left: any, right: any, name = "<unknown MORE>") {
+    this.Assert(left > right, `MORE ${name}`, left, right);
+  }
+
+  public static AssertEq(left: any, right: any, name = "<unknown EQ>") {
+    this.Assert(left === right, `EQ ${name}`, left, right);
+  }
+
+  public static AssertNeq(left: any, right: any, name = "<unknown NEQ>") {
+    this.Assert(left !== right, `NEQ ${name}`, left, right);
+  }
+
+  public static AssertDef(val: any, name = "<unknown DEF>") {
+    this.Assert(!!val, `DEF ${name}`);
+  }
+
+  public static Assert(expr: boolean, name = "<unknown>", expected: any = "?", got: any = "?") {
+    if (!expr) throw new Error(`Assertion failed: ${name}: ${expected}, ${got}`);
+  }
 }
