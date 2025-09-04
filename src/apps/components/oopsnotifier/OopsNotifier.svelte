@@ -8,20 +8,23 @@
 
 <div class="header">
   <img src={process.userDaemon?.getAppIcon(data) || ComponentIcon} alt="" />
-  <h1>{data.id === "ArcOS" ? "System error occured" : `${data.metadata.name} crashed`}</h1>
+  <h1>{data?.id === "ArcOS" ? "System error occured" : `${data?.metadata?.name || "Something"} crashed`}</h1>
   <p>
-    {#if data.id === "ArcOS"}
+    {#if data?.id === "ArcOS"}
       An error occured while running some system code. ArcOS might be unstable until you restart, the stack trace might tell you
       why the error occurred.
-    {:else}
+    {:else if !process.parseFailed}
       If you were in the middle of something, the information you were working on might be lost. You can view the stack trace,
       which can tell you why the app crashed.
+    {:else}
+      An unknown error occured that wasn't handled properly. Unsaved information might have been lost. That's all I could figure
+      out.
     {/if}
   </p>
 </div>
 
 <div class="actions">
-  {#if process.stackFrames.length}
+  {#if process.stackFrames.length && !process.parseFailed}
     <button class="suggested" onclick={() => process.details()}>View stack trace</button>
     <div class="alternatives">
       <button onclick={() => process.reopen()} disabled={!process.installed}>Restart app</button>

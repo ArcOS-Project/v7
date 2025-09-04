@@ -1660,6 +1660,8 @@ export class UserDaemon extends Process {
   }
 
   getAppIcon(app: App, workingDirectory?: string) {
+    if (!app) return QuestionIcon;
+
     const { icon } = app.metadata;
     try {
       const maybe = maybeIconId(icon);

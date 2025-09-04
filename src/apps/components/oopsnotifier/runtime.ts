@@ -12,6 +12,7 @@ export class OopsNotifierRuntime extends AppProcess {
   exception: Error | PromiseRejectionEvent;
   process?: AppProcess;
   installed = false;
+  parseFailed = false;
   stackFrames: ParsedStackFrame[] = [];
   URL_REGEX =
     /http(s|)\:\/\/[a-zA-Z.\:0-9]+(\/tpa\/v3\/)(?<userId>[a-zA-Z0-9]+)\/(?<timestamp>[0-9]+)\/(?<appId>[A-Za-z0-9_-]+(_|)[A-Za-z0-9_-]+)@(?<filename>[a-zA-Z0-9_-]+\.js)/gm;
@@ -33,18 +34,23 @@ export class OopsNotifierRuntime extends AppProcess {
   }
 
   async start() {
-    this.parseStack();
-
-    const storage = this.userDaemon?.serviceHost?.getService<ApplicationStorage>("AppStorage");
-
-    if (storage && this.stackFrames[0].parsed?.appId) {
-      const app = await storage.getAppById(this.stackFrames[0].parsed.appId);
-      if (app) this.data ||= app;
-    }
-
-    this.installed = !!(await storage?.getAppById(this.data.id));
-
     this.soundBus.playSound("arcos.dialog.error");
+
+    try {
+      this.parseStack();
+
+      const storage = this.userDaemon?.serviceHost?.getService<ApplicationStorage>("AppStorage");
+
+      if (storage && this.stackFrames[0].parsed?.appId) {
+        const app = await storage.getAppById(this.stackFrames[0].parsed.appId);
+        if (app) this.data ||= app;
+      }
+
+      this.installed = !!(await storage?.getAppById(this.data.id));
+    } catch {
+      this.stackFrames = [];
+      this.parseFailed = true;
+    }
   }
 
   async details() {
