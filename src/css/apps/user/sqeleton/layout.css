@@ -8,6 +8,7 @@
   width: 250px;
   height: 100%;
 }
+
 #Sqeleton > div.body div.main-content div.editor {
   border-left: var(--win-border);
   width: 0;
@@ -31,6 +32,10 @@
   flex-grow: 1;
   border-top: var(--win-border);
   border-bottom: var(--win-border);
+}
+
+#Sqeleton > div.body div.main-content div.editor.maximize-bottom div.code-editor-wrapper {
+  display: none;
 }
 
 #Sqeleton > div.body div.main-content div.bottom-pane {

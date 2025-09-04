@@ -11,7 +11,7 @@
   import Tabs from "./Sqeleton/Tabs.svelte";
 
   const { process }: { process: SqeletonRuntime } = $props();
-  const { queries, queryIndex, openedFile, currentTab } = process;
+  const { queries, queryIndex, openedFile, currentTab, maximizeBottom } = process;
 
   let sqlCode = Store<string>("");
   let syncLock = $state(false);
@@ -35,7 +35,7 @@
 {#if $openedFile}
   <div class="main-content">
     <Sidebar {process} />
-    <div class="editor">
+    <div class="editor" class:maximize-bottom={$maximizeBottom}>
       <div class="action-bar">
         <button class="run" disabled={!$sqlCode} onclick={() => process.execute($sqlCode)}>
           <span class="lucide icon-play"></span>
@@ -43,7 +43,7 @@
         </button>
       </div>
       <CodeEditor language="sql" value={sqlCode} />
-      <div class="bottom-pane">
+      <div class="bottom-pane" class:maximized={$maximizeBottom}>
         <Tabs {process} />
         <div class="pane-content {$currentTab}">
           {#if $currentTab === "result"}

@@ -88,13 +88,15 @@
 }
 #Sqeleton > div.body div.bottom-pane div.pane-content button.query-row {
   display: flex;
-  align-items: center;
+  align-items: start;
   gap: 10px;
   padding: 3px 5px;
   border-radius: 6px;
   width: 100%;
   outline: none;
   background-color: transparent;
+  min-height: fit-content;
+  height: 22px;
 }
 
 #Sqeleton > div.body div.bottom-pane div.pane-content button.query-row:hover {
@@ -109,9 +111,23 @@
   font-family: "Fira Code";
   font-size: 12px;
   text-align: left;
+  line-height: 16px;
+  width: 0;
+  flex-grow: 1;
 }
 
 #Sqeleton > div.body div.bottom-pane div.pane-content button.query-row span.index {
   margin-left: auto;
   opacity: 0.5;
+  line-height: 16px;
+}
+
+#Sqeleton > div.body div.bottom-pane button.maximize {
+  margin-left: auto;
+}
+
+#Sqeleton > div.body div.bottom-pane.maximized {
+  height: 100%;
+  flex-grow: 1;
+  border-top: var(--win-border);
 }

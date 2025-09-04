@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { contextMenu } from "$ts/context/actions.svelte";
   import { UUID } from "$ts/uuid";
   import type { SqeletonRuntime } from "../runtime";
 
@@ -19,7 +20,57 @@
         ></button>
       </h1>
       {#each $tables as table}
-        <button ondblclick={() => process.newQuery(`SELECT * FROM ${table.name} WHERE 1;`)}>
+        <button
+          ondblclick={() => process.newQuery(`SELECT * FROM ${table.name} WHERE 1;`)}
+          use:contextMenu={[
+            [
+              {
+                caption: "View top 200 rows",
+                action: () => {
+                  process.execute(`SELECT * FROM ${table.name} LIMIT 200`);
+                  process.maximizeBottom.set(true);
+                  process.currentTab.set("result");
+                },
+                icon: "eye",
+              },
+              {
+                caption: "View top 1000 rows",
+                action: () => process.execute(`SELECT * FROM ${table.name} LIMIT 1000`),
+                icon: "view",
+              },
+              { sep: true },
+              {
+                caption: "Export as SQL",
+                subItems: [
+                  {
+                    caption: "Drop existing table first",
+                    action: async () => {
+                      const sql = await process.tableToSql(table, true, true);
+                      if (sql) process.newQuery(sql);
+                    },
+                    icon: "eraser",
+                  },
+                  {
+                    caption: "Keep existing table",
+                    action: async () => {
+                      const sql = await process.tableToSql(table, true, false);
+                      if (sql) process.newQuery(sql);
+                    },
+                    icon: "check-check",
+                  },
+                ],
+                icon: "hard-drive-upload",
+              },
+              { sep: true },
+              {
+                caption: "Drop table...",
+                action: () => process.dropTableInteractively(table.name),
+                icon: "bomb",
+              },
+            ],
+            process,
+          ]}
+        >
           <span class="lucide icon-database"></span>
           <span>{table.name}</span>
         </button>

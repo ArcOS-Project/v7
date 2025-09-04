@@ -19,6 +19,7 @@ export class SqeletonRuntime extends AppProcess {
   working = Store<boolean>(false);
   errored = Store<boolean>(false);
   result = Store<Record<string, any>[][] | undefined>();
+  maximizeBottom = Store<boolean>(false);
   tables = Store<SqlTable[]>(); // TODO: dedicated type
   currentTab = Store<string>("result");
   tabs: SqeletonTabs = {
@@ -52,10 +53,6 @@ export class SqeletonRuntime extends AppProcess {
     super(handler, pid, parentPid, app);
 
     this.renderArgs.path = path;
-    (() =>
-      (() => {
-        throw new Error("asdfasdfadsf");
-      })())();
   }
 
   async render({ path }: { path?: string }) {
@@ -80,56 +77,6 @@ export class SqeletonRuntime extends AppProcess {
     } catch (e) {
       this.DbOpenError(`${e}`);
     }
-  }
-
-  ExistingConnectionError() {
-    MessageBox(
-      {
-        title: "Existing connection",
-        message: "Sqeleton is already connected to a file. To open another file, close the existing connection first.",
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-        image: SqeletonIcon,
-        sound: "arcos.dialog.warning",
-      },
-      this.pid,
-      true
-    );
-  }
-
-  DbOpenError(e: string) {
-    MessageBox(
-      {
-        title: "Failed to open database",
-        message: `Sqeleton was unable to open this database. ${e}`,
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-        image: ErrorIcon,
-        sound: "arcos.dialog.error",
-      },
-      this.pid,
-      true
-    );
-  }
-
-  TablesUpdateError(e: string) {
-    MessageBox(
-      {
-        title: "Failed to update tables",
-        message: `Sqeleton was unable to update the sidebar table listing. ${e}`,
-        buttons: [
-          { caption: "Ignore", action: () => {} },
-          {
-            caption: "Retry",
-            action: () => {
-              this.updateTables();
-            },
-          },
-        ],
-        sound: "arcos.dialog.warning",
-        image: WarningIcon,
-      },
-      this.pid,
-      true
-    );
   }
 
   async openFile() {
@@ -210,6 +157,7 @@ export class SqeletonRuntime extends AppProcess {
       v[this.queryIndex()] = value;
       return v;
     });
+    this.maximizeBottom.set(false);
   }
 
   deleteQuery(index = this.queryIndex()) {
@@ -218,4 +166,120 @@ export class SqeletonRuntime extends AppProcess {
       return v;
     });
   }
+
+  async tableToSql(table: SqlTable, pretty = true, dropFirst = false) {
+    const items = (await this.execute(`SELECT * FROM ${table.name} WHERE 1;`))?.[0];
+    if (!items) return undefined;
+
+    let result = ``;
+    const delimiter = pretty ? ", " : ",";
+    const nl = pretty ? "\n" : "";
+
+    if (dropFirst) result += `DROP TABLE IF EXISTS ${table.name};${nl}`;
+
+    const columns = Object.keys(items[0]).join(delimiter);
+
+    result += `${table.sql}${table.sql.endsWith(";") ? "" : ";"}${nl}${nl}INSERT INTO ${table.name} (${columns}) VALUES${nl}`;
+
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      let columns: string[] = [];
+      result += `  (`;
+      const values = Object.values(item);
+
+      for (const value of values) {
+        switch (typeof value) {
+          case "number":
+            columns.push(`${value}`);
+            break;
+          case "string":
+          default:
+            columns.push(`'${value}'`);
+            break;
+        }
+      }
+      result += `${columns.join(delimiter)})${items.length - 1 <= i ? ";" : ","}${nl}`;
+    }
+
+    return result;
+  }
+
+  //#region MESSAGES
+
+  dropTableInteractively(table: string) {
+    MessageBox(
+      {
+        title: "Are you sure?",
+        message:
+          "You are about to drop a table from this database. This is an action you cannot revert without discarding all changes made to the database. Are you sure you want to continue?",
+        buttons: [
+          { caption: "Cancel", action: () => {} },
+          {
+            caption: "Drop",
+            action: () => {
+              this.execute(`DROP TABLE IF EXISTS ${table};`);
+            },
+            suggested: true,
+          },
+        ],
+        image: WarningIcon,
+        sound: "arcos.dialog.warning",
+      },
+      this.pid,
+      true
+    );
+  }
+
+  ExistingConnectionError() {
+    MessageBox(
+      {
+        title: "Existing connection",
+        message: "Sqeleton is already connected to a file. To open another file, close the existing connection first.",
+        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        image: SqeletonIcon,
+        sound: "arcos.dialog.warning",
+      },
+      this.pid,
+      true
+    );
+  }
+
+  DbOpenError(e: string) {
+    MessageBox(
+      {
+        title: "Failed to open database",
+        message: `Sqeleton was unable to open this database. ${e}`,
+        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        image: ErrorIcon,
+        sound: "arcos.dialog.error",
+      },
+      this.pid,
+      true
+    );
+  }
+
+  TablesUpdateError(e: string) {
+    MessageBox(
+      {
+        title: "Failed to update tables",
+        message: `Sqeleton was unable to update the sidebar table listing. ${e}`,
+        buttons: [
+          { caption: "Ignore", action: () => {} },
+          {
+            caption: "Retry",
+            action: () => {
+              this.updateTables();
+            },
+            suggested: true,
+          },
+        ],
+        sound: "arcos.dialog.warning",
+        image: WarningIcon,
+      },
+      this.pid,
+      true
+    );
+  }
+
+  //#endregion
 }
