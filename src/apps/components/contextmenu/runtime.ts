@@ -31,8 +31,8 @@ export class ContextMenuRuntime extends AppProcess {
     this.Log(`Spawning context menu with ${data.items.length} items at ${data.x}, ${data.y}`);
 
     this.CLICKLOCKED = true;
-    this.contextData.set(data);
     await Sleep(10);
+    this.contextData.set(data);
     this.CLICKLOCKED = false;
   }
 
