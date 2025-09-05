@@ -13,6 +13,7 @@ export class SqlInterfaceProcess extends Process {
     super(handler, pid, parentPid);
 
     this.filePath = path;
+    this.name = "SqlInterfaceProcess";
   }
 
   async start() {
@@ -23,12 +24,15 @@ export class SqlInterfaceProcess extends Process {
   }
 
   reset() {
+    if (this._disposed) return;
+
     this.db?.close();
     this.db = new this.sql!.Database();
     this.isFresh = true;
   }
 
   async initialize() {
+    if (this._disposed) return;
     try {
       await this.readFile();
     } catch {
@@ -39,6 +43,8 @@ export class SqlInterfaceProcess extends Process {
   }
 
   async readFile() {
+    if (this._disposed) return;
+
     const ab = await this.fs.readFile(this.filePath);
 
     if (!ab) throw new Error("Failed to read SQL: file not found");
@@ -49,6 +55,8 @@ export class SqlInterfaceProcess extends Process {
   }
 
   async writeFile() {
+    if (this._disposed) return;
+
     const ab = this.db?.export() as Uint8Array<ArrayBuffer>;
 
     if (!ab) return;
@@ -58,9 +66,12 @@ export class SqlInterfaceProcess extends Process {
 
   async stop() {
     await this.unlockFile(this.filePath);
+    this.db = undefined;
   }
 
   exec(sql: string, params?: initSqlJs.BindParams | undefined): Record<string, any>[][] | string {
+    if (this._disposed) throw new Error("SqlInterfaceProcess gone");
+
     try {
       const result = this.db?.exec(sql, params);
 
