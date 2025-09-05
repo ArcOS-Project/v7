@@ -7,7 +7,7 @@
   let expand = $state(false);
 </script>
 
-<div class="error-row">
+<div class="error-row" class:system={error.system}>
   <div class="text">
     <button
       class="lucide"
@@ -16,7 +16,7 @@
       aria-label="Expand error"
       onclick={() => (expand = !expand)}
     ></button>
-    <span class="lucide icon-circle-alert"></span>
+    <span class="lucide" class:icon-circle-alert={!error.system} class:icon-triangle-alert={error.system}></span>
     <span class="error-text">{error.text}</span>
     <span class="timestamp">{dayjs(error.timestamp).format("DD MMM YYYY - HH:mm:ss")}</span>
   </div>

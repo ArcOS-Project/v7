@@ -1,4 +1,5 @@
 <script lang="ts">
+  import HighlightComponent from "$lib/HighlightComponent.svelte";
   import { UUID } from "$ts/uuid";
   import type { SqeletonRuntime } from "../../runtime";
 
@@ -19,7 +20,9 @@
       <div class="query" class:selected={$queryIndex === i}>
         <button onclick={() => ($queryIndex = i)}>
           <span class="lucide icon-scroll-text"></span>
-          <span>{query || "New query"}</span>
+          <span>
+            <HighlightComponent language="sql" src={query.trim() || "New query"} />
+          </span>
         </button>
         <button
           class="lucide icon-x"

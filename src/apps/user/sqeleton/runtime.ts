@@ -25,6 +25,9 @@ export class SqeletonRuntime extends AppProcess {
   maximizeBottom = Store<boolean>(false);
   tables = Store<SqlTable[]>(); // TODO: dedicated type
   currentTab = Store<string>("result");
+  syntaxError = Store<boolean>(false);
+  tempDbPath = `T:/${UUID()}.db.tmp`;
+  tempDb?: SqlInterfaceProcess;
   tabs: SqeletonTabs = {
     result: {
       name: "Result",
@@ -56,6 +59,10 @@ export class SqeletonRuntime extends AppProcess {
     super(handler, pid, parentPid, app);
 
     this.renderArgs.path = path;
+  }
+
+  async start() {
+    this.tempDb = await this.handler.spawn(SqlInterfaceProcess, undefined, this.pid, this.tempDbPath);
   }
 
   async render({ path }: { path?: string }) {
@@ -159,7 +166,11 @@ export class SqeletonRuntime extends AppProcess {
   }
 
   async updateTables() {
-    const query = await this.execute(`SELECT * FROM sqlite_master;`, true, true);
+    const query = await this.execute(
+      `SELECT * FROM sqlite_master WHERE NAME NOT LIKE "sqlite%" AND type IS NOT 'trigger';`,
+      true,
+      true
+    );
     const result: SqlTable[] = [];
 
     if (typeof query === "string") {
@@ -167,18 +178,26 @@ export class SqeletonRuntime extends AppProcess {
     } else if (!query?.[0]) {
       this.tables.set([]);
     } else {
-      for (const table of query[0]) {
-        const columns = await this.execute(`PRAGMA table_info(${(table as SqlTable).name});`, true, true);
-        result.push({
-          ...(table as SqlTable),
-          columns:
-            typeof columns === "string" || !columns?.[0]
-              ? []
-              : (columns[0] as SqlTableColumn[]).map((c) => ({ ...c, uuid: UUID() })),
-          uuid: UUID(),
-        });
+      const columnQueryStr = (query[0] as SqlTable[]).map((table) => `PRAGMA table_info(${table.name});`).join("\n") + "\n";
+      const columns = await this.execute(columnQueryStr, true, true);
+
+      console.log(columns, columnQueryStr);
+
+      if (typeof columns === "string" || !columns?.length) {
+        this.tables.set([]);
+      } else {
+        for (let i = 0; i < query[0].length; i++) {
+          const table = query[0][i] as SqlTable;
+          const columnDefs = columns[i] as SqlTableColumn[];
+
+          result.push({
+            ...(table as SqlTable),
+            columns: columnDefs ? columnDefs.map((c) => ({ ...c, uuid: UUID() })) : [],
+            uuid: UUID(),
+          });
+        }
+        this.tables.set(result);
       }
-      this.tables.set(result);
     }
   }
 
@@ -242,6 +261,16 @@ export class SqeletonRuntime extends AppProcess {
     }
 
     return result;
+  }
+
+  async hasSyntaxError(input: string) {
+    const result = this.tempDb?.exec(input);
+    this.tempDb?.reset();
+    return typeof result === "string" && result?.includes("syntax");
+  }
+
+  async stop() {
+    await this.fs.deleteItem(this.tempDbPath);
   }
 
   //#region MESSAGES

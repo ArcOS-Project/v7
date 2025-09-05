@@ -11,6 +11,7 @@
   import Tabs from "./Sqeleton/Tabs.svelte";
   import { DbMimeIcon } from "$ts/images/mime";
   import { Plural } from "$ts/util";
+  import { formatBytes } from "$ts/fs/util";
 
   const { process }: { process: SqeletonRuntime } = $props();
   const {
@@ -29,11 +30,13 @@
 
   let sqlCode = Store<string>("");
   let syncLock = $state(false);
+  let syntaxError = $state(false);
 
   onMount(() => {
-    sqlCode.subscribe((v) => {
+    sqlCode.subscribe(async (v) => {
       if (syncLock) return (syncLock = false);
       $queries[$queryIndex] = v ?? "";
+      syntaxError = await process.hasSyntaxError(v);
     });
 
     queryIndex.subscribe((v) => {
@@ -41,7 +44,9 @@
     });
 
     queries.subscribe((v) => {
-      if (v[$queryIndex] !== $sqlCode) $sqlCode = v[$queryIndex] ?? "";
+      if (v[$queryIndex] !== $sqlCode) {
+        $sqlCode = v[$queryIndex] ?? "";
+      }
     });
   });
 </script>
@@ -77,7 +82,19 @@
       <span>{$openedFileName}</span>
     </div>
     <div class="segment query-index">
-      Working in query #{$queryIndex}
+      In query #{$queryIndex}
+    </div>
+    <div class="segment query-size">
+      {formatBytes($sqlCode.length)}
+    </div>
+    <div class="segment syntax">
+      {#if syntaxError}
+        <span class="lucide icon-circle-alert"></span>
+        <span>Syntax error in query!</span>
+      {:else}
+        <span class="lucide icon-check"></span>
+        <span>Query is valid.</span>
+      {/if}
     </div>
     <div class="segment stats">
       <div class="stat" title="{$result?.length || 0} {Plural('result', $result?.length || 0)}">

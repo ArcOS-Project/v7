@@ -22,6 +22,12 @@ export class SqlInterfaceProcess extends Process {
     await this.initialize();
   }
 
+  reset() {
+    this.db?.close();
+    this.db = new this.sql!.Database();
+    this.isFresh = true;
+  }
+
   async initialize() {
     try {
       await this.readFile();
@@ -40,8 +46,6 @@ export class SqlInterfaceProcess extends Process {
     await this.requestFileLock(this.filePath);
 
     this.db = new this.sql!.Database(new Uint8Array(ab));
-
-    console.log(this.db);
   }
 
   async writeFile() {

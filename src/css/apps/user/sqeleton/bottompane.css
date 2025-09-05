@@ -69,6 +69,10 @@
   padding: 3px 5px;
   margin-bottom: 3px;
 }
+#Sqeleton > div.body div.bottom-pane div.pane-content div.error-row.system {
+  background-color: var(--clr-orange-bg);
+}
+
 #Sqeleton > div.body div.bottom-pane div.pane-content div.error-row div.text {
   display: flex;
   align-items: center;
@@ -83,6 +87,11 @@
 #Sqeleton > div.body div.bottom-pane div.pane-content div.error-row span.error-text {
   width: 0;
   flex-grow: 1;
+}
+
+#Sqeleton > div.body div.bottom-pane div.pane-content div.error-row.system span.error-text {
+  font-weight: normal !important;
+  color: var(--clr-orange-fg) !important;
 }
 
 #Sqeleton > div.body div.bottom-pane div.pane-content div.query-row button.lucide,
@@ -115,6 +124,10 @@
 
 #Sqeleton > div.body div.bottom-pane div.pane-content div.error-row span.lucide {
   color: var(--clr-red-fg);
+}
+
+#Sqeleton > div.body div.bottom-pane div.pane-content div.error-row.system span.lucide {
+  color: var(--clr-orange-fg);
 }
 
 #Sqeleton > div.body div.bottom-pane div.pane-content div.error-row span.index {
