@@ -8,7 +8,7 @@
 </script>
 
 {#if $queries.length}
-  <details class="queries">
+  <details class="queries" open>
     <summary>
       <span class="lucide icon-chevron-right"></span>
       <h1>
@@ -21,7 +21,7 @@
         <button onclick={() => ($queryIndex = i)}>
           <span class="lucide icon-scroll-text"></span>
           <span>
-            <HighlightComponent language="sql" src={query.trim() || "New query"} />
+            <HighlightComponent language="sql" src={query.trim() || "Fresh query"} />
           </span>
         </button>
         <button
