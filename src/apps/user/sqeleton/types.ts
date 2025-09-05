@@ -34,6 +34,7 @@ export interface SqeletonError {
   sql: string;
   timestamp: number;
   text: string;
+  system: boolean;
 }
 
 export interface SqeletonHistoryItem {

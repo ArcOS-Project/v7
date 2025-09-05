@@ -128,6 +128,7 @@ export class SqeletonRuntime extends AppProcess {
           sql: code,
           text: result,
           timestamp: Date.now(),
+          system,
         });
         return v;
       });
