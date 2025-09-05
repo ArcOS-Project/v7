@@ -64,13 +64,53 @@
   overflow-y: auto;
 }
 #Sqeleton > div.body div.bottom-pane div.pane-content div.error-row {
+  background-color: var(--clr-red-bg);
+  border-radius: 6px;
+  padding: 3px 5px;
+  margin-bottom: 3px;
+}
+#Sqeleton > div.body div.bottom-pane div.pane-content div.error-row div.text {
   display: flex;
   align-items: center;
   gap: 10px;
-  background-color: var(--clr-red-bg);
-  border-radius: 10px;
-  padding: 3px 5px;
-  margin-bottom: 3px;
+}
+
+#Sqeleton > div.body div.bottom-pane div.pane-content div.error-row div.text * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#Sqeleton > div.body div.bottom-pane div.pane-content div.error-row span.error-text {
+  width: 0;
+  flex-grow: 1;
+}
+
+#Sqeleton > div.body div.bottom-pane div.pane-content div.query-row button.lucide,
+#Sqeleton > div.body div.bottom-pane div.pane-content div.error-row button.lucide {
+  width: 12px;
+  height: 12px;
+  font-size: 12px;
+  padding: 0;
+  margin: 0;
+  outline: none;
+}
+
+#Sqeleton > div.body div.bottom-pane div.pane-content div.query-row button.lucide {
+  margin: 2px 0;
+}
+
+#Sqeleton > div.body div.bottom-pane div.pane-content div.error-row div.sql-query {
+  padding: 8px 22px;
+  padding-bottom: 5px;
+  font-family: "Fira Mono";
+  font-size: 12px;
+  white-space: pre-wrap;
+}
+
+#Sqeleton > div.body div.bottom-pane div.pane-content div.error-row div.text span.timestamp {
+  font-size: 12px;
+  opacity: 0.5;
+  min-width: fit-content;
 }
 
 #Sqeleton > div.body div.bottom-pane div.pane-content div.error-row span.lucide {
@@ -86,7 +126,7 @@
   font-size: 16px;
   height: 16px;
 }
-#Sqeleton > div.body div.bottom-pane div.pane-content button.query-row {
+#Sqeleton > div.body div.bottom-pane div.pane-content div.query-row {
   display: flex;
   align-items: start;
   gap: 10px;
@@ -99,24 +139,31 @@
   height: 22px;
 }
 
-#Sqeleton > div.body div.bottom-pane div.pane-content button.query-row:hover {
+#Sqeleton > div.body div.bottom-pane div.pane-content div.query-row:hover {
   background-color: var(--button-bg);
 }
 
-#Sqeleton > div.body div.bottom-pane div.pane-content button.query-row span.lucide {
+#Sqeleton > div.body div.bottom-pane div.pane-content div.query-row span.lucide {
   color: var(--accent);
 }
 
-#Sqeleton > div.body div.bottom-pane div.pane-content button.query-row span.query {
+#Sqeleton > div.body div.bottom-pane div.pane-content div.query-row span.query {
   font-family: "Fira Code";
   font-size: 12px;
   text-align: left;
   line-height: 16px;
   width: 0;
   flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-#Sqeleton > div.body div.bottom-pane div.pane-content button.query-row span.index {
+#Sqeleton > div.body div.bottom-pane div.pane-content div.query-row.expand span.query {
+  white-space: pre-wrap;
+}
+
+#Sqeleton > div.body div.bottom-pane div.pane-content div.query-row span.index {
   margin-left: auto;
   opacity: 0.5;
   line-height: 16px;
@@ -130,4 +177,74 @@
   height: 100%;
   flex-grow: 1;
   border-top: var(--win-border);
+}
+#Sqeleton > div.body div.bottom-pane div.filter-row {
+  padding: 0 5px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 10px;
+}
+#Sqeleton > div.body div.bottom-pane div.filter-row label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#Sqeleton > div.body div.bottom-pane div.filter-row button {
+  height: 21px;
+  padding: 0 5px;
+  border-radius: 6px;
+}
+
+#Sqeleton > div.body div.bottom-pane div.filter-row div.sep {
+  width: 1px;
+  height: 21px;
+  background-color: var(--button-hover-bg);
+}
+
+#Sqeleton > div.body div.bottom-pane div.pane-content.result {
+  padding: 0;
+}
+
+#Sqeleton > div.body div.bottom-pane div.pane-content div.result {
+  border-bottom: var(--win-border);
+  border-right: var(--win-border);
+}
+
+#Sqeleton > div.body div.bottom-pane div.result h1 {
+  padding: 0 10px;
+  height: 26px;
+  line-height: 26px;
+  border-bottom: var(--win-border);
+  text-transform: uppercase;
+  opacity: 0.5;
+  background-color: var(--button-bg);
+}
+
+#Sqeleton > div.body div.bottom-pane table {
+  display: block;
+  width: 100%;
+  width: max-content;
+  max-width: 100%;
+  overflow: auto;
+  border-spacing: 0;
+  border-collapse: collapse;
+  margin: 1px;
+}
+
+#Sqeleton > div.body div.bottom-pane table tr {
+  background-color: var(--button-bg);
+  border-top: var(--win-border);
+}
+#Sqeleton > div.body div.bottom-pane table th,
+#Sqeleton > div.body div.bottom-pane table td {
+  padding: 2px 6px;
+  border: var(--win-border);
+  text-align: left !important;
+}
+
+#Sqeleton > div.body div.bottom-pane table tr:nth-child(2n) {
+  background-color: var(--button-bg) 1px solid;
 }

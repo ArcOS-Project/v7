@@ -1,0 +1,44 @@
+#Sqeleton > div.body div.status-bar div.segment {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 10px;
+  height: 26px;
+  line-height: 16px;
+}
+
+#Sqeleton > div.body div.status-bar div.segment + div.segment {
+  border-left: var(--win-border);
+}
+
+#Sqeleton > div.body div.status-bar img {
+  height: 16px;
+}
+
+#Sqeleton > div.body div.status-bar div.stats {
+  gap: 10px;
+  padding: 0 10px;
+  background-color: var(--button-active-bg);
+  margin-left: auto;
+}
+
+#Sqeleton > div.body div.status-bar div.sep {
+  width: 1px;
+  height: 20px;
+  background-color: var(--button-bg);
+}
+
+#Sqeleton > div.body div.status-bar div.stat {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#Sqeleton > div.body div.status-bar div.stat span {
+  height: 16px;
+  line-height: 16px;
+}
+
+#Sqeleton > div.body div.status-bar div.stat span.lucide {
+  font-size: 16px;
+}

@@ -1,0 +1,62 @@
+.theme-light .hljs-component .hljs {
+  color: var(--fg);
+}
+.theme-light .hljs-component .hljs-comment,
+.theme-light .hljs-component .hljs-quote {
+  color: #a0a1a7;
+  font-style: italic;
+}
+.theme-light .hljs-component .hljs-doctag,
+.theme-light .hljs-component .hljs-keyword,
+.theme-light .hljs-component .hljs-formula {
+  color: #a626a4;
+}
+.theme-light .hljs-component .hljs-section,
+.theme-light .hljs-component .hljs-name,
+.theme-light .hljs-component .hljs-selector-tag,
+.theme-light .hljs-component .hljs-deletion,
+.theme-light .hljs-component .hljs-subst {
+  color: #e45649;
+}
+.theme-light .hljs-component .hljs-literal {
+  color: #0184bb;
+}
+.theme-light .hljs-component .hljs-string,
+.theme-light .hljs-component .hljs-regexp,
+.theme-light .hljs-component .hljs-addition,
+.theme-light .hljs-component .hljs-attribute,
+.theme-light .hljs-component .hljs-meta .hljs-string {
+  color: #50a14f;
+}
+.theme-light .hljs-component .hljs-attr,
+.theme-light .hljs-component .hljs-variable,
+.theme-light .hljs-component .hljs-template-variable,
+.theme-light .hljs-component .hljs-type,
+.theme-light .hljs-component .hljs-selector-class,
+.theme-light .hljs-component .hljs-selector-attr,
+.theme-light .hljs-component .hljs-selector-pseudo,
+.theme-light .hljs-component .hljs-number {
+  color: #986801;
+}
+.theme-light .hljs-component .hljs-symbol,
+.theme-light .hljs-component .hljs-bullet,
+.theme-light .hljs-component .hljs-link,
+.theme-light .hljs-component .hljs-meta,
+.theme-light .hljs-component .hljs-selector-id,
+.theme-light .hljs-component .hljs-title {
+  color: #4078f2;
+}
+.theme-light .hljs-component .hljs-built_in,
+.theme-light .hljs-component .hljs-title.class_,
+.theme-light .hljs-component .hljs-class .hljs-title {
+  color: #c18401;
+}
+.theme-light .hljs-component .hljs-emphasis {
+  font-style: italic;
+}
+.theme-light .hljs-component .hljs-strong {
+  font-weight: bold;
+}
+.theme-light .hljs-component .hljs-link {
+  text-decoration: underline;
+}

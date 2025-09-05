@@ -1,4 +1,6 @@
 <script lang="ts">
+  import HighlightComponent from "$lib/HighlightComponent.svelte";
+  import { tryJsonStringify } from "$ts/json";
   import type { SqeletonRuntime } from "../runtime";
 
   const { process }: { process: SqeletonRuntime } = $props();
@@ -23,7 +25,7 @@
           {#each queryResult as row}
             <tr>
               {#each Object.values(row) as val}
-                <td>{val}</td>
+                <td><HighlightComponent language="sql" src={`${tryJsonStringify(val, 2).replaceAll('"', "'")}`} /></td>
               {/each}
             </tr>
           {/each}

@@ -15,6 +15,7 @@
 @import url("./virtualdesktop.css");
 @import url("./infoblock.css");
 @import url("./codeeditor.css");
+@import url("./hljs.css");
 @import url("./state/crash.css");
 @import url("./state/desktop.css");
 @import url("./state/licensedeclined.css");

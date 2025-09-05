@@ -9,9 +9,23 @@
   import ErrorList from "./Sqeleton/ErrorList.svelte";
   import HistoryList from "./Sqeleton/HistoryList.svelte";
   import Tabs from "./Sqeleton/Tabs.svelte";
+  import { DbMimeIcon } from "$ts/images/mime";
+  import { Plural } from "$ts/util";
 
   const { process }: { process: SqeletonRuntime } = $props();
-  const { queries, queryIndex, openedFile, currentTab, maximizeBottom } = process;
+  const {
+    queries,
+    queryIndex,
+    openedFile,
+    currentTab,
+    maximizeBottom,
+    openedFileName,
+    result,
+    errors,
+    tables,
+    queryHistory,
+    working,
+  } = process;
 
   let sqlCode = Store<string>("");
   let syncLock = $state(false);
@@ -56,6 +70,39 @@
         </div>
       </div>
     </div>
+  </div>
+  <div class="status-bar">
+    <div class="segment filename">
+      <img src={DbMimeIcon} alt="" />
+      <span>{$openedFileName}</span>
+    </div>
+    <div class="segment query-index">
+      Working in query #{$queryIndex}
+    </div>
+    <div class="segment stats">
+      <div class="stat" title="{$result?.length || 0} {Plural('result', $result?.length || 0)}">
+        <span class="lucide icon-circle-arrow-up"></span>
+        <span>{$result?.length || 0}</span>
+      </div>
+      <div class="stat" title="{$errors?.length || 0} {Plural('error', $errors?.length || 0)}">
+        <span class="lucide icon-triangle-alert"></span>
+        <span>{$errors?.length || 0}</span>
+      </div>
+      <div class="stat" title="{$tables?.length || 0} {Plural('table', $tables?.length || 0)}">
+        <span class="lucide icon-table"></span>
+        <span>{$tables?.length || 0}</span>
+      </div>
+      <div class="sep"></div>
+      <div class="stat" title="{$queryHistory?.length || 0} {Plural('execution', $queryHistory?.length || 0)}">
+        <span class="lucide icon-history"></span>
+        <span>{$queryHistory?.length || 0}</span>
+      </div>
+      <div class="stat" title="{$tables?.length || 0} queries">
+        <span class="lucide icon-scroll-text"></span>
+        <span>{$queries.length}</span>
+      </div>
+    </div>
+    <div class="segment status">{$working ? "Working..." : "Ready!"}</div>
   </div>
 {:else}
   <Intro {process} />

@@ -3,13 +3,59 @@
   overflow-y: auto;
 }
 
+#Sqeleton > div.body div.sidebar summary {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+}
+
+#Sqeleton > div.body div.sidebar > details {
+  margin-bottom: 5px;
+}
+
+#Sqeleton > div.body div.sidebar details {
+  width: 100%;
+}
+
+#Sqeleton > div.body div.sidebar details summary span.lucide:first-of-type {
+  font-size: 12px;
+  width: 12px;
+  height: 12px;
+  color: var(--fg);
+  opacity: 0.5;
+}
+
+#Sqeleton > div.body div.sidebar .tables button > span.lucide {
+  margin-left: 17px;
+}
+
+#Sqeleton > div.body div.sidebar .tables details summary span:last-child,
+#Sqeleton > div.body div.sidebar .tables details div.table-column span:last-child,
+#Sqeleton > div.body div.sidebar .tables button > span:last-child {
+  width: 0;
+  flex-grow: 1;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+#Sqeleton > div.body div.sidebar details[open] > summary span.lucide:first-of-type {
+  rotate: 90deg;
+}
+
 #Sqeleton > div.body div.sidebar h1 {
   opacity: 1;
-  padding: 5px 7px;
+  padding: 0 7px;
+  padding-left: 0;
   font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 0;
+  flex-grow: 1;
 }
 
 #Sqeleton > div.body div.sidebar h1 > span:first-child {
@@ -23,26 +69,36 @@
   outline: none;
 }
 
-#Sqeleton > div.body div.sidebar div.tables > button,
-#Sqeleton > div.body div.sidebar div.queries div.query {
+#Sqeleton > div.body div.sidebar .tables details {
+  text-align: left;
+}
+
+#Sqeleton > div.body div.sidebar div.table-column {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 25px;
+  margin-top: 5px;
+}
+#Sqeleton > div.body div.sidebar .tables > button,
+#Sqeleton > div.body div.sidebar .queries div.query {
   display: flex;
   width: 100%;
   align-items: center;
   outline: none;
   background-color: transparent;
-  padding: 0 7px;
-  gap: 15px;
-  margin-bottom: 5px;
-  border-radius: 10px;
+  padding: 0 5px;
+  gap: 5px;
+  border-radius: 4px;
 }
 
-#Sqeleton > div.body div.sidebar div.tables > button:hover,
-#Sqeleton > div.body div.sidebar div.queries div.query:hover {
+#Sqeleton > div.body div.sidebar .tables > button:hover,
+#Sqeleton > div.body div.sidebar .queries div.query:hover {
   background-color: var(--button-glass-bg);
 }
 
-#Sqeleton > div.body div.sidebar div.tables > button {
-  padding: 5px 7px;
+#Sqeleton > div.body div.sidebar .tables > button {
+  padding: 2px 5px;
 }
 
 #Sqeleton > div.body div.sidebar span.lucide {
@@ -72,7 +128,7 @@
   flex-grow: 1;
   outline: none;
   background-color: transparent;
-  padding: 5px 0;
+  padding: 2px 0;
 }
 
 #Sqeleton > div.body div.sidebar div.query > button.lucide {

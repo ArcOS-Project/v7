@@ -1,14 +1,24 @@
 <script lang="ts">
+  import { sortByKey } from "$ts/util";
   import type { SqeletonRuntime } from "../runtime";
+  import HistoryItem from "./HistoryList/HistoryItem.svelte";
 
   const { process }: { process: SqeletonRuntime } = $props();
   const { queryHistory } = process;
+
+  let showSystem = $state(false);
 </script>
 
-{#each $queryHistory.reverse() as query, i}
-  <button class="query-row" ondblclick={() => process.newQuery(query)}>
-    <span class="lucide icon-scroll-text"></span>
-    <span class="query">{query}</span>
-    <span class="index">#{$queryHistory.length - i}</span>
-  </button>
+<div class="filter-row">
+  <button onclick={() => ($queryHistory = [])}>Clear history</button>
+  <div class="sep"></div>
+  <label>
+    <input type="checkbox" name="" id="" bind:checked={showSystem} />
+    Show system queries
+  </label>
+</div>
+{#each sortByKey($queryHistory, "timestamp")
+  .reverse()
+  .filter((q) => (showSystem ? true : !q.system)) as query, i (query.uuid)}
+  <HistoryItem {query} {process} {i} />
 {/each}

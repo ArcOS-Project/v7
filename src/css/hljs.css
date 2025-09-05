@@ -1,0 +1,11 @@
+@import url("./hljs/dark.css");
+@import url("./hljs/light.css");
+
+.hljs-component {
+  position: relative;
+  font-family: "Fira Mono";
+}
+
+.hljs-component * {
+  font-family: inherit;
+}

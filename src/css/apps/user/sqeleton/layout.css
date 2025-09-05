@@ -1,7 +1,8 @@
 #Sqeleton > div.body div.main-content {
-  height: 100%;
+  height: calc(100% - 26px);
   display: flex;
   align-items: center;
+  border-bottom: var(--win-border);
 }
 
 #Sqeleton > div.body div.main-content div.sidebar {
@@ -27,17 +28,23 @@
   height: 40px;
 }
 
-#Sqeleton > div.body div.main-content div.code-editor-wrapper {
+#Sqeleton > div.body div.main-content div.editor > div.code-editor-wrapper {
   height: 0;
   flex-grow: 1;
   border-top: var(--win-border);
   border-bottom: var(--win-border);
 }
 
-#Sqeleton > div.body div.main-content div.editor.maximize-bottom div.code-editor-wrapper {
+#Sqeleton > div.body div.main-content div.editor.maximize-bottom > div.code-editor-wrapper {
   display: none;
 }
 
 #Sqeleton > div.body div.main-content div.bottom-pane {
   height: 250px;
+}
+
+#Sqeleton > div.body div.status-bar {
+  height: 26px;
+  display: flex;
+  align-items: center;
 }

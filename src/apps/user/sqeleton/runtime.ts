@@ -1,21 +1,24 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { getItemNameFromPath } from "$ts/fs/util";
 import { SqeletonIcon } from "$ts/images/apps";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
 import { UserPaths } from "$ts/server/user/store";
 import { SqlInterfaceProcess } from "$ts/sql";
+import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
-import type { SqeletonTabs, SqlTable } from "./types";
+import type { SqeletonError, SqeletonHistoryItem, SqeletonTabs, SqlTable, SqlTableColumn } from "./types";
 
 export class SqeletonRuntime extends AppProcess {
   openedFile = Store<string>("");
+  openedFileName = Store<string>("");
   _intf = Store<SqlInterfaceProcess | undefined>();
   queries = Store<string[]>([""]);
   queryIndex = Store<number>(0);
-  errors = Store<string[]>([]);
-  queryHistory = Store<string[]>([]);
+  errors = Store<SqeletonError[]>([]);
+  queryHistory = Store<SqeletonHistoryItem[]>([]);
   working = Store<boolean>(false);
   errored = Store<boolean>(false);
   result = Store<Record<string, any>[][] | undefined>();
@@ -74,6 +77,7 @@ export class SqeletonRuntime extends AppProcess {
 
       this.updateTables();
       this.openedFile.set(path);
+      this.openedFileName.set(getItemNameFromPath(path));
     } catch (e) {
       this.DbOpenError(`${e}`);
     }
@@ -111,26 +115,40 @@ export class SqeletonRuntime extends AppProcess {
     this.readFile(path);
   }
 
-  async execute(code: string, simple = false) {
+  async execute(code: string, simple = false, system = false) {
     this.working.set(true);
     this.errored.set(false);
 
-    this.queryHistory.update((v) => {
-      v.push(code);
-      return v;
-    });
     const result = await this.Interface?.exec(code);
 
     if (typeof result === "string") {
       this.errors.update((v) => {
-        v.push(result);
+        v.push({
+          uuid: UUID(),
+          sql: code,
+          text: result,
+          timestamp: Date.now(),
+        });
         return v;
       });
-      this.errored.set(true);
-      this.soundBus.playSound("arcos.dialog.error");
-      this.currentTab.set("errors");
-    } else if (!simple) {
-      this.result.set(result);
+      if (!simple) {
+        this.errored.set(true);
+        this.soundBus.playSound("arcos.dialog.error");
+        this.currentTab.set("errors");
+      }
+    } else {
+      if (!simple) this.result.set(result);
+
+      this.queryHistory.update((v) => {
+        v.push({
+          uuid: UUID(),
+          system,
+          sql: code,
+          result: result || [],
+          timestamp: Date.now(),
+        });
+        return v;
+      });
     }
 
     if (!simple) this.updateTables();
@@ -140,14 +158,26 @@ export class SqeletonRuntime extends AppProcess {
   }
 
   async updateTables() {
-    const result = await this.execute(`SELECT * FROM sqlite_master;`, true);
+    const query = await this.execute(`SELECT * FROM sqlite_master;`, true, true);
+    const result: SqlTable[] = [];
 
-    if (typeof result === "string") {
-      this.TablesUpdateError(result as string);
-    } else if (!result?.[0]) {
+    if (typeof query === "string") {
+      this.TablesUpdateError(query as string);
+    } else if (!query?.[0]) {
       this.tables.set([]);
     } else {
-      this.tables.set(result[0] as SqlTable[]);
+      for (const table of query[0]) {
+        const columns = await this.execute(`PRAGMA table_info(${(table as SqlTable).name});`, true, true);
+        result.push({
+          ...(table as SqlTable),
+          columns:
+            typeof columns === "string" || !columns?.[0]
+              ? []
+              : (columns[0] as SqlTableColumn[]).map((c) => ({ ...c, uuid: UUID() })),
+          uuid: UUID(),
+        });
+      }
+      this.tables.set(result);
     }
   }
 
@@ -160,6 +190,15 @@ export class SqeletonRuntime extends AppProcess {
     this.maximizeBottom.set(false);
   }
 
+  openOrCreateQuery(value: string) {
+    const index = this.queries().indexOf(value);
+
+    if (index < 0) return this.newQuery(value);
+
+    this.queryIndex.set(index);
+    this.maximizeBottom.set(false);
+  }
+
   deleteQuery(index = this.queryIndex()) {
     this.queries.update((v) => {
       v.splice(index, 1);
@@ -168,7 +207,7 @@ export class SqeletonRuntime extends AppProcess {
   }
 
   async tableToSql(table: SqlTable, pretty = true, dropFirst = false) {
-    const items = (await this.execute(`SELECT * FROM ${table.name} WHERE 1;`))?.[0];
+    const items = (await this.execute(`SELECT * FROM ${table.name} WHERE 1;`, true, true))?.[0];
     if (!items) return undefined;
 
     let result = ``;
@@ -216,8 +255,9 @@ export class SqeletonRuntime extends AppProcess {
           { caption: "Cancel", action: () => {} },
           {
             caption: "Drop",
-            action: () => {
-              this.execute(`DROP TABLE IF EXISTS ${table};`);
+            action: async () => {
+              await this.execute(`DROP TABLE IF EXISTS ${table};`, true, true);
+              this.updateTables();
             },
             suggested: true,
           },
