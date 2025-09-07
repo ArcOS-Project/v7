@@ -114,6 +114,7 @@
   font-family: "Fira Mono";
   font-size: 12px;
   white-space: pre-wrap;
+  word-break: break-all;
 }
 
 #Sqeleton > div.body div.bottom-pane div.pane-content div.error-row div.text span.timestamp {
@@ -260,4 +261,13 @@
 
 #Sqeleton > div.body div.bottom-pane table tr:nth-child(2n) {
   background-color: var(--button-bg) 1px solid;
+}
+
+#Sqeleton > div.body div.bottom-pane p.empty {
+  padding: 10px;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

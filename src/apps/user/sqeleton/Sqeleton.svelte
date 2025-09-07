@@ -12,21 +12,10 @@
   import { DbMimeIcon } from "$ts/images/mime";
   import { Plural } from "$ts/util";
   import { formatBytes } from "$ts/fs/util";
+  import { Pane, Splitpanes } from "svelte-splitpanes";
 
   const { process }: { process: SqeletonRuntime } = $props();
-  const {
-    queries,
-    queryIndex,
-    openedFile,
-    currentTab,
-    maximizeBottom,
-    openedFileName,
-    result,
-    errors,
-    tables,
-    queryHistory,
-    working,
-  } = process;
+  const { queries, queryIndex, openedFile, currentTab, openedFileName, result, errors, tables, queryHistory, working } = process;
 
   let sqlCode = Store<string>("");
   let syncLock = $state(false);
@@ -53,28 +42,49 @@
 
 {#if $openedFile}
   <div class="main-content">
-    <Sidebar {process} />
-    <div class="editor" class:maximize-bottom={$maximizeBottom}>
-      <div class="action-bar">
-        <button class="run" disabled={!$sqlCode} onclick={() => process.execute($sqlCode)}>
-          <span class="lucide icon-play"></span>
-          <span>Run SQL</span>
-        </button>
-      </div>
-      <CodeEditor language="sql" value={sqlCode} />
-      <div class="bottom-pane" class:maximized={$maximizeBottom}>
-        <Tabs {process} />
-        <div class="pane-content {$currentTab}">
-          {#if $currentTab === "result"}
-            <ResultList {process} />
-          {:else if $currentTab === "errors"}
-            <ErrorList {process} />
-          {:else if $currentTab === "history"}
-            <HistoryList {process} />
-          {/if}
+    <Splitpanes>
+      <Pane size={20} minSize={15} maxSize={80}>
+        <Sidebar {process} />
+      </Pane>
+      <Pane size={80} maxSize={85} minSize={20}>
+        <div class="editor">
+          <Splitpanes horizontal>
+            <Pane size={75}>
+              <div class="action-bar">
+                <button class="run" disabled={!$sqlCode} onclick={() => process.execute($sqlCode)}>
+                  <span class="lucide icon-play"></span>
+                  <span>Run SQL</span>
+                </button>
+                <div class="syntax-check" class:problem={syntaxError}>
+                  {#if syntaxError}
+                    <span class="lucide icon-circle-alert"></span>
+                    <span>Syntax error in query!</span>
+                  {:else}
+                    <span class="lucide icon-check"></span>
+                    <span>Query is valid.</span>
+                  {/if}
+                </div>
+              </div>
+              <CodeEditor language="sql" value={sqlCode} />
+            </Pane>
+            <Pane size={25}>
+              <div class="bottom-pane">
+                <Tabs {process} />
+                <div class="pane-content {$currentTab}">
+                  {#if $currentTab === "result"}
+                    <ResultList {process} />
+                  {:else if $currentTab === "errors"}
+                    <ErrorList {process} />
+                  {:else if $currentTab === "history"}
+                    <HistoryList {process} />
+                  {/if}
+                </div>
+              </div>
+            </Pane>
+          </Splitpanes>
         </div>
-      </div>
-    </div>
+      </Pane>
+    </Splitpanes>
   </div>
   <div class="status-bar">
     <div class="segment filename">
@@ -87,15 +97,7 @@
     <div class="segment query-size">
       {formatBytes($sqlCode.length)}
     </div>
-    <div class="segment syntax">
-      {#if syntaxError}
-        <span class="lucide icon-circle-alert"></span>
-        <span>Syntax error in query!</span>
-      {:else}
-        <span class="lucide icon-check"></span>
-        <span>Query is valid.</span>
-      {/if}
-    </div>
+
     <div class="segment stats">
       <div class="stat" title="{$result?.length || 0} {Plural('result', $result?.length || 0)}">
         <span class="lucide icon-circle-arrow-up"></span>

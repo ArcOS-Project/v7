@@ -5,6 +5,7 @@ import { SqeletonIcon } from "$ts/images/apps";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
 import { UserPaths } from "$ts/server/user/store";
+import { Sleep } from "$ts/sleep";
 import { SqlInterfaceProcess } from "$ts/sql";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
@@ -22,8 +23,8 @@ export class SqeletonRuntime extends AppProcess {
   working = Store<boolean>(false);
   errored = Store<boolean>(false);
   result = Store<Record<string, any>[][] | undefined>();
-  maximizeBottom = Store<boolean>(false);
   tables = Store<SqlTable[]>(); // TODO: dedicated type
+  busy = false;
   currentTab = Store<string>("result");
   syntaxError = Store<boolean>(false);
   tempDbPath = `T:/${UUID()}.db.tmp`;
@@ -123,6 +124,8 @@ export class SqeletonRuntime extends AppProcess {
   }
 
   async execute(code: string, simple = false, system = false) {
+    await this.waitForAvailable();
+    this.busy = true;
     this.working.set(true);
     this.errored.set(false);
 
@@ -162,6 +165,7 @@ export class SqeletonRuntime extends AppProcess {
     if (!simple) this.updateTables();
 
     this.working.set(false);
+    this.busy = false;
     return result;
   }
 
@@ -207,7 +211,6 @@ export class SqeletonRuntime extends AppProcess {
       v[this.queryIndex()] = value;
       return v;
     });
-    this.maximizeBottom.set(false);
   }
 
   openOrCreateQuery(value: string) {
@@ -216,7 +219,6 @@ export class SqeletonRuntime extends AppProcess {
     if (index < 0) return this.newQuery(value);
 
     this.queryIndex.set(index);
-    this.maximizeBottom.set(false);
   }
 
   deleteQuery(index = this.queryIndex()) {
@@ -271,6 +273,13 @@ export class SqeletonRuntime extends AppProcess {
 
   async stop() {
     await this.fs.deleteItem(this.tempDbPath);
+  }
+
+  async waitForAvailable() {
+    return new Promise<void>(async (r) => {
+      if (!this.busy) r();
+      await Sleep(1);
+    });
   }
 
   //#region MESSAGES

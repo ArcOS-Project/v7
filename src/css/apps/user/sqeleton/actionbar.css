@@ -1,0 +1,39 @@
+#Sqeleton > div.body div.main-content div.action-bar {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+#Sqeleton > div.body div.main-content div.action-bar button {
+  height: 21px;
+  padding: 0 8px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+#Sqeleton > div.body div.main-content div.action-bar button span.lucide {
+  font-size: 12px;
+}
+
+#Sqeleton > div.body div.main-content div.action-bar div.syntax-check {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  color: var(--clr-green-fg);
+}
+
+#Sqeleton > div.body div.main-content div.action-bar div.syntax-check.problem {
+  color: var(--clr-red-fg);
+}
+
+#Sqeleton > div.body div.main-content div.action-bar div.syntax-check span.lucide {
+  font-size: 16px;
+}
+
+#Sqeleton > div.body div.main-content div.action-bar div.syntax-check * {
+  color: inherit;
+}
