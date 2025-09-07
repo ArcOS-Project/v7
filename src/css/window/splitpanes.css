@@ -1,0 +1,22 @@
+div.window div.splitpanes {
+  background-color: inherit;
+}
+
+div.window div.splitpanes.default-theme > div.splitpanes__pane {
+  background-color: inherit;
+  transition: none !important;
+  animation: none !important;
+}
+
+div.window div.splitpanes.default-theme > div.splitpanes__splitter {
+  width: 2px;
+  /* border-left: var(--win-border) !important; */
+  background-color: var(--button-hover-bg);
+  border: none !important;
+}
+
+div.window div.splitpanes.default-theme.splitpanes--horizontal > div.splitpanes__splitter {
+  width: initial;
+  height: 2px;
+  /* border-top: var(--win-border) !important; */
+}

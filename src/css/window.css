@@ -12,6 +12,7 @@
 @import url("./window/snapping.css");
 @import url("./window/proto.css");
 @import url("./window/userlink.css");
+@import url("./window/splitpanes.css");
 
 div.window:not(.core) {
   position: absolute;
