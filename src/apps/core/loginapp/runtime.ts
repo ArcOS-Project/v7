@@ -229,6 +229,7 @@ export class LoginAppRuntime extends AppProcess {
     await KernelStateHandler()?.loadState("desktop", { userDaemon });
     this.soundBus.playSound("arcos.system.logon");
     userDaemon.setAppRendererClasses(userDaemon.preferences());
+    userDaemon.checkNightly();
 
     this.loadingStatus.set("Starting Workspaces");
     await userDaemon.startVirtualDesktops();

@@ -1,4 +1,7 @@
 import { toForm } from "$ts/form";
+import { Environment } from "$ts/kernel/env";
+import { getKMod } from "$ts/kernel/module";
+import { ArcBuild } from "$ts/metadata/build";
 import { Backend } from "$ts/server/axios";
 import { authcode } from "$ts/util";
 import type {
@@ -17,6 +20,7 @@ import { getItemNameFromPath, join } from "../util";
 
 export class ServerDrive extends FilesystemDrive {
   private token = "";
+  private isNightly = false;
   override label = "Your Drive";
   override FIXED = true;
   public IDENTIFIES_AS: string = "userfs";
@@ -41,6 +45,7 @@ export class ServerDrive extends FilesystemDrive {
     super(uuid, letter);
 
     this.token = token;
+    this.isNightly = !!getKMod<Environment>("env").get(`NIGHTLY_WHODIS_${ArcBuild()}`);
   }
 
   async readDir(path: string = ""): Promise<DirectoryReadReturn | undefined> {
@@ -56,6 +61,12 @@ export class ServerDrive extends FilesystemDrive {
   }
 
   async createDirectory(path: string): Promise<boolean> {
+    if (this.isNightly) {
+      this.Log(`userfs createDirectory prohibited: nightly build`);
+
+      return true;
+    }
+
     try {
       const response = await Backend.post<DirectoryReadReturn>(
         `/fs/dir/${path}`,
@@ -92,6 +103,12 @@ export class ServerDrive extends FilesystemDrive {
   }
 
   async writeFile(path: string, blob: Blob, onProgress: FilesystemProgressCallback): Promise<boolean> {
+    if (this.isNightly) {
+      this.Log(`userfs writeFile prohibited: nightly build`);
+
+      return true;
+    }
+
     try {
       const response = await Backend.post(`/fs/file/${path}`, blob, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -123,6 +140,12 @@ export class ServerDrive extends FilesystemDrive {
   }
 
   async copyItem(source: string, destination: string): Promise<boolean> {
+    if (this.isNightly) {
+      this.Log(`userfs copyItem prohibited: nightly build`);
+
+      return true;
+    }
+
     const sourceFilename = getItemNameFromPath(source);
 
     try {
@@ -143,6 +166,12 @@ export class ServerDrive extends FilesystemDrive {
   }
 
   async moveItem(source: string, destination: string): Promise<boolean> {
+    if (this.isNightly) {
+      this.Log(`userfs moveItem prohibited: nightly build`);
+
+      return true;
+    }
+
     if (this.fileLocks[source]) throw new Error(`Not moving locked file '${source}'`);
 
     try {
@@ -163,6 +192,12 @@ export class ServerDrive extends FilesystemDrive {
   }
 
   async deleteItem(path: string): Promise<boolean> {
+    if (this.isNightly) {
+      this.Log(`userfs deleteItem prohibited: nightly build`);
+
+      return true;
+    }
+
     if (this.fileLocks[path]) throw new Error(`Not deleting locked file '${path}'`);
 
     try {

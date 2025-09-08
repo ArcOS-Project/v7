@@ -4,6 +4,7 @@ import {
   RcLogo as rc,
   ReleaseLogo as release,
   UnstableLogo as unstable,
+  NightlyLogo as nightly,
 } from "$ts/images/branding";
 
 export const MODES: Record<string, string> = {
@@ -12,4 +13,5 @@ export const MODES: Record<string, string> = {
   unstable,
   rc,
   esr,
+  nightly,
 };

@@ -42,6 +42,8 @@ export class InitProcess extends Process {
     await kernel.state?.loadState(connected ? "boot" : "serverdown", {}, true);
     __Console__.timeEnd("** Init jumpstart");
     this.name = "InitProcess";
+
+    if (ArcMode() === "nightly") this.nightly();
   }
 
   async initializeTempFs() {
@@ -55,5 +57,10 @@ export class InitProcess extends Process {
       await this.fs.writeFile("T:/Meta/ARCOS_MODE", textToBlob(ArcMode()));
       await this.fs.writeFile("T:/Meta/ARCOS_VERSION", textToBlob(ArcOSVersion));
     } catch {}
+  }
+
+  nightly() {
+    document.title = `NIGHTLY - ArcOS v${ArcOSVersion}-${ArcMode()}_${ArcBuild()}`;
+    this.env.set(`NIGHTLY_WHODIS_${ArcBuild()}`, 1);
   }
 }

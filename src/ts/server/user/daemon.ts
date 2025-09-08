@@ -90,6 +90,8 @@ import { FileAssocService } from "./assoc";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
+import { ArcBuild } from "$ts/metadata/build";
+import { NightlyLogo } from "$ts/images/branding";
 //#endregion
 
 export class UserDaemon extends Process {
@@ -141,6 +143,7 @@ export class UserDaemon extends Process {
   // SERVICES
   public assoc?: FileAssocService;
   public serviceHost: ServiceHost | undefined;
+  public NIGHTLY = false;
 
   //#endregion
 
@@ -1966,6 +1969,10 @@ export class UserDaemon extends Process {
   async commitPreferences(preferences: UserPreferences) {
     if (this._disposed) return;
 
+    if (this.NIGHTLY) {
+      this.Log("User preference commit prohibited: nightly build");
+      return true;
+    }
     this.Log(`Committing user preferences`);
 
     try {
@@ -3007,6 +3014,32 @@ The information provided in this report is subject for review by me or another A
         if (!this._blockLeaveInvocations) r(clearInterval(interval));
       }, 1);
     });
+  }
+
+  //#endregion
+  //#region NIGHTLY
+
+  checkNightly() {
+    const isNightly = !!this.env.get(`NIGHTLY_WHODIS_${ArcBuild()}`);
+    if (!isNightly) return;
+
+    this.Log("NIGHTLY DETECTED. OPERATIONS MIGHT BE RESTRICTED.");
+
+    MessageBox(
+      {
+        title: "ArcOS Nightly",
+        message:
+          "You're running a nightly build of ArcOS. Because of potentially major changes, user preference committing and file writes have been disabled to prevent your account from breaking when you return to the stable release.<br><br>Just a reminder: ArcOS developers cannot be held accountable for breakages when using unstable ArcOS builds. We can however assist and resolve problems when something does go wrong.",
+        buttons: [
+          { caption: "Jump to stable", action: () => (location.href = "/") },
+          { caption: "Okay", action: () => {}, suggested: true },
+        ],
+        image: NightlyLogo,
+        sound: "arcos.dialog.warning",
+      },
+      this.pid
+    );
+    this.NIGHTLY = true;
   }
 
   //#endregion
