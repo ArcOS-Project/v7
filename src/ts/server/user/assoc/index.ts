@@ -95,7 +95,7 @@ export class FileAssocService extends BaseService {
     const definitions = config?.definitions;
     const split = path.split(".");
     const filename = getItemNameFromPath(path);
-    const extension = `.${split[split.length - 1]}`;
+    const extension = `.${split[split.length - 1]}`.toLowerCase();
 
     if (!associations || !definitions) return undefined;
 

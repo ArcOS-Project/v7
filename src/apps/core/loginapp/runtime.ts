@@ -23,6 +23,7 @@ import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
 import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps, PersistenceInfo } from "./types";
+import type { MaybePromise } from "$types/common";
 
 export class LoginAppRuntime extends AppProcess {
   public DEFAULT_WALLPAPER = Store<string>("");
@@ -127,6 +128,15 @@ export class LoginAppRuntime extends AppProcess {
     await this.startDaemon(token, username);
   }
 
+  async loginStage(caption: string, callback: () => MaybePromise<boolean>) {
+    this.loadingStatus.set(caption);
+    const result = await callback();
+
+    if (!result) {
+      throw new Error(`Stage '${caption}' failed!`);
+    }
+  }
+
   async startDaemon(token: string, username: string, info?: UserInfo) {
     this.Log(`Starting user daemon for '${username}'`);
 
@@ -198,6 +208,9 @@ export class LoginAppRuntime extends AppProcess {
 
     this.loadingStatus.set("Starting service host");
     await userDaemon.startServiceHost();
+
+    this.loadingStatus.set("Checking associations");
+    await userDaemon.updateFileAssociations();
 
     this.loadingStatus.set("Connecting global dispatch");
     await userDaemon.activateGlobalDispatch();

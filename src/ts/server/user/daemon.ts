@@ -34,6 +34,7 @@ import { getItemNameFromPath, getParentDirectory, join } from "$ts/fs/util";
 import { applyDefaults } from "$ts/hierarchy";
 import { getIconPath, iconIdFromPath, maybeIconId } from "$ts/images";
 import { AppStoreIcon, MessagingIcon } from "$ts/images/apps";
+import { NightlyLogo } from "$ts/images/branding";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import {
@@ -51,6 +52,7 @@ import { RestartIcon } from "$ts/images/power";
 import { tryJsonParse } from "$ts/json";
 import { KernelStateHandler } from "$ts/kernel/getters";
 import { getKMod } from "$ts/kernel/module";
+import { ArcBuild } from "$ts/metadata/build";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import type { ProtocolServiceProcess } from "$ts/proto";
@@ -90,8 +92,7 @@ import { FileAssocService } from "./assoc";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
-import { ArcBuild } from "$ts/metadata/build";
-import { NightlyLogo } from "$ts/images/branding";
+import { DefaultFileDefinitions } from "./assoc/store";
 //#endregion
 
 export class UserDaemon extends Process {
@@ -3013,6 +3014,36 @@ The information provided in this report is subject for review by me or another A
       const interval = setInterval(() => {
         if (!this._blockLeaveInvocations) r(clearInterval(interval));
       }, 1);
+    });
+  }
+
+  async updateFileAssociations() {
+    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const apps = await appStore?.get();
+
+    if (!apps) return;
+
+    this.assoc?.updateConfiguration((config) => {
+      for (const app of apps) {
+        if (!app.opens?.extensions) continue;
+
+        for (const extension of app.opens.extensions) {
+          const existingAssociation = this.assoc?.getFileAssociation(`dummy${extension}`);
+
+          if (existingAssociation) continue;
+
+          config.associations.apps[app.id] ||= [];
+          config.associations.apps[app.id].push(extension);
+        }
+      }
+
+      for (const definitionKey in DefaultFileDefinitions) {
+        const definitionValue = DefaultFileDefinitions[definitionKey];
+
+        if (!config.definitions[definitionKey]) config.definitions[definitionKey] = definitionValue;
+      }
+
+      return config;
     });
   }
 

@@ -23,30 +23,6 @@ export class UpdateNotifierRuntime extends AppProcess {
   }
 
   async updateFileDefinitions() {
-    const storage = this.appStore();
-    const apps = storage.buffer();
-    await this.userDaemon?.assoc?.updateConfiguration((config) => {
-      config ||= { associations: { apps: {}, handlers: {} }, definitions: {} };
-      config.associations ||= {
-        apps: {},
-        handlers: {},
-      };
-      config.definitions ||= {};
-
-      for (const extension in DefaultFileDefinitions) {
-        if (!config.definitions[extension]) config.definitions[extension] = DefaultFileDefinitions[extension];
-      }
-
-      for (const app of apps) {
-        if (!config.associations.apps[app.id]) config.associations.apps[app.id] = app.opens?.extensions || [];
-      }
-
-      for (const handlerId in this.userDaemon?.fileHandlers) {
-        if (!config.associations.handlers[handlerId])
-          config.associations.handlers[handlerId] = this.userDaemon?.fileHandlers[handlerId]?.opens.extensions || [];
-      }
-
-      return config;
-    });
+    this.userDaemon?.updateFileAssociations();
   }
 }
