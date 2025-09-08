@@ -29,6 +29,7 @@ export default defineConfig({
     },
     assetsInlineLimit: 1,
   },
+  base: "",
 });
 function GenerateGlobalTypesPlugin(): Plugin {
   return {
