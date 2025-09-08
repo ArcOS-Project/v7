@@ -26,7 +26,7 @@ export class WaveKernel {
   public initPid = -1;
   public params = new URLSearchParams(location.search);
   public ARCOS_MODE = "release";
-  public ARCOS_BUILD = "unknown";
+  public ARCOS_BUILD = "";
   public ARCOS_LICENSE = "not here yet";
   public PREMATURE = true;
 
@@ -44,7 +44,7 @@ export class WaveKernel {
   }
 
   constructor() {
-    if (CurrentKernel) throw new Error("Attempted to reinitialize the kernel");
+    WaveKernel.AssertNDef(CurrentKernel, "WaveKernel");
 
     this.startMs = Date.now();
     this.Log("KERNEL", "Constructing new Kernel. Have fun zottel.");
@@ -113,7 +113,7 @@ export class WaveKernel {
     const mod = (this as any)[id];
     const result = this.modules.includes(id) && mod && mod.id === id ? (mod as T) : undefined;
 
-    if (!result && !dontCrash) throw new Error(`No such kernel module ${id}`);
+    WaveKernel.Assert(!result && dontCrash, `Kernel module ${id}`);
 
     return result as T;
   }
@@ -152,35 +152,39 @@ export class WaveKernel {
     );
   }
 
-  public static AssertLessOrEq(left: any, right: any, name = "<unknown LEQ>") {
+  public static AssertLessOrEq<T extends number | bigint>(left: T, right: T, name = "<LEQ>"): asserts left {
     this.Assert(left <= right, `LEQ ${name}`, left, right);
   }
 
-  public static AssertMoreOrEq(left: any, right: any, name = "<unknown GEQ>") {
+  public static AssertMoreOrEq<T extends number | bigint>(left: T, right: T, name = "<GEQ>"): asserts left {
     this.Assert(left >= right, `GEQ ${name}`, left, right);
   }
 
-  public static AssertLess(left: any, right: any, name = "<unknown LESS>") {
+  public static AssertLess<T extends number | bigint>(left: T, right: T, name = "<LESS>"): asserts left {
     this.Assert(left < right, `LESS ${name}`, left, right);
   }
 
-  public static AssertMore(left: any, right: any, name = "<unknown MORE>") {
+  public static AssertMore<T extends number | bigint>(left: T, right: T, name = "<MORE>"): asserts left {
     this.Assert(left > right, `MORE ${name}`, left, right);
   }
 
-  public static AssertEq(left: any, right: any, name = "<unknown EQ>") {
+  public static AssertEq<T>(left: T, right: T, name = "<EQ>"): asserts left is T {
     this.Assert(left === right, `EQ ${name}`, left, right);
   }
 
-  public static AssertNeq(left: any, right: any, name = "<unknown NEQ>") {
+  public static AssertNeq<T>(left: T, right: T, name = "<NEQ>"): asserts left is T {
     this.Assert(left !== right, `NEQ ${name}`, left, right);
   }
 
-  public static AssertDef(val: any, name = "<unknown DEF>") {
-    this.Assert(!!val, `DEF ${name}`);
+  public static AssertDef<T>(val: T, name = "<DEF>"): asserts val is NonNullable<T> {
+    this.Assert(val !== undefined && val !== null, `DEF ${name}`);
   }
 
-  public static Assert(expr: boolean, name = "<unknown>", expected: any = "?", got: any = "?") {
+  public static AssertNDef<T>(val: T, name = "<NDEF>"): asserts val is NonNullable<T> {
+    this.Assert(val === undefined || val === null, `NDEF ${name}`);
+  }
+
+  public static Assert(expr: boolean, name = "<>", expected: unknown = "?", got: unknown = "?"): asserts expr {
     if (!expr) throw new Error(`Assertion failed: ${name}: ${expected}, ${got}`);
   }
 }
