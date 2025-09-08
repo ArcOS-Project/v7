@@ -3029,7 +3029,7 @@ The information provided in this report is subject for review by me or another A
       {
         title: "ArcOS Nightly",
         message:
-          "You're running a nightly build of ArcOS. Because of potentially major changes, user preference committing and file writes have been disabled to prevent your account from breaking when you return to the stable release.<br><br>Just a reminder: ArcOS developers cannot be held accountable for breakages when using unstable ArcOS builds. We can however assist and resolve problems when something does go wrong.",
+          "You're running a nightly build of ArcOS. Because of potentially major changes, user preference committing and file writes have been disabled to prevent your account from breaking when you return to the stable release. Nightly is NOT recommended for daily use (looking at you, Nik).<br><br>Just a reminder: ArcOS developers cannot be held accountable for breakages when using unstable ArcOS builds. We can however assist and resolve problems when something does go wrong.",
         buttons: [
           { caption: "Jump to stable", action: () => (location.href = "/") },
           { caption: "Okay", action: () => {}, suggested: true },
