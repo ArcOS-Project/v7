@@ -6,6 +6,7 @@
   import type { ViewScopesData } from "../../types";
   import PagePills from "./ViewScopes/PagePills.svelte";
   import SpecificPills from "./ViewScopes/SpecificPills.svelte";
+  import GlobalPills from "./ViewScopes/GlobalPills.svelte";
 
   const { process, data }: { process: AdminPortalRuntime; data: ViewScopesData } = $props();
   const { admin, scopes } = data;
@@ -76,6 +77,7 @@
 <div class="pills-wrapper">
   <PagePills {canAccess} {append} {process} {scopeList} />
   <SpecificPills {canAccess} {append} {process} {scopeList} />
+  <GlobalPills {canAccess} {append} {process} {scopeList} />
 </div>
 <div class="list">
   {#each Object.entries(scopes) as [id, scope]}

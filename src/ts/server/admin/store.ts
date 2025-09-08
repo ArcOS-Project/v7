@@ -76,6 +76,9 @@ export const AdminScopes = {
   adminStoreVerificationGet: "admin.store.verification.get",
   adminStoreVerificationSet: "admin.store.verification.set",
   adminStoreUnverify: "admin.store.unverify",
+  adminAfsRead: "admin.afs.read",
+  adminAfsWrite: "admin.afs.write",
+  adminAfsQuota: "admin.afs.quota",
 };
 
 export const AdminScopeCaptions: Record<string, string> = {
@@ -156,4 +159,7 @@ export const AdminScopeCaptions: Record<string, string> = {
   adminStoreVerificationGet: "get store item verification status",
   adminStoreVerificationSet: "set store item verification status",
   adminStoreUnverify: "unverify store item",
+  adminAfsRead: "read admin resource drive",
+  adminAfsWrite: "write admin resource drive",
+  adminAfsQuota: "get admin resource drive quota",
 };

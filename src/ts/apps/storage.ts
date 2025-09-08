@@ -124,7 +124,7 @@ export class ApplicationStorage extends BaseService {
     return sortByHierarchy(
       result.sort((a) => (a.hidden ? 0 : -1)),
       "metadata.name"
-    );
+    ) as AppStorage;
   }
 
   getAppSynchronous(id: string): App | undefined {

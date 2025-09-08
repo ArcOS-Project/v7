@@ -424,4 +424,173 @@ export const specificAdminActions: SpecificAdminActions = {
     caption: "Manage share quota",
     scopes: [AdminScopes.adminShareQuotaGet, AdminScopes.adminShareQuotaPut],
   },
+  adminDrive: {
+    caption: "Access ARD",
+    scopes: [AdminScopes.adminAfsRead, AdminScopes.adminAfsWrite, AdminScopes.adminAfsQuota],
+  },
+  storeBlockUnblock: {
+    caption: "Store (un)block",
+    scopes: [AdminScopes.adminStoreBlock, AdminScopes.adminStoreUnblock],
+  },
+  storeDelete: {
+    caption: "Store deletion",
+    scopes: [AdminScopes.adminStoreDeleteOne, AdminScopes.adminStoreDeleteUser],
+  },
+  storeDeprecate: {
+    caption: "Store deprecation",
+    scopes: [AdminScopes.adminStoreDeprecate, AdminScopes.adminStoreUndeprecate],
+  },
+  storeOfficial: {
+    caption: "Store set official",
+    scopes: [AdminScopes.adminStoreOfficialOff, AdminScopes.adminStoreOfficialOn],
+  },
+  storeVerification: {
+    caption: "Manage store verification",
+    scopes: [AdminScopes.adminStoreVerificationGet, AdminScopes.adminStoreVerificationSet, AdminScopes.adminScopesAvailable],
+  },
+};
+
+export const globalAdminActions: SpecificAdminActions = {
+  god: {
+    caption: "God Admin",
+    scopes: [...Object.values(AdminScopes)],
+  },
+  logStat: {
+    caption: "Logs & Stats",
+    scopes: [AdminScopes.adminLogs, AdminScopes.adminAuditLog, AdminScopes.adminStats],
+  },
+  admins: {
+    caption: "Administrators",
+    scopes: [
+      AdminScopes.adminGrant,
+      AdminScopes.adminRevoke,
+      AdminScopes.adminScopesAvailable,
+      AdminScopes.adminScopesGet,
+      AdminScopes.adminScopesPut,
+    ],
+  },
+  preferences: {
+    caption: "Preferences",
+    scopes: [AdminScopes.adminPreferencesGet, AdminScopes.adminPreferencesPut],
+  },
+  userfs: {
+    caption: "User FS",
+    scopes: [
+      AdminScopes.adminUserfsDirect,
+      AdminScopes.adminUserfsFile,
+      AdminScopes.adminUserfsFolder,
+      AdminScopes.adminUserfsQuota,
+      AdminScopes.adminUserfsTree,
+    ],
+  },
+  users: {
+    caption: "Users",
+    scopes: [
+      AdminScopes.adminUsersApprove,
+      AdminScopes.adminUsersChangeEmail,
+      AdminScopes.adminUsersChangePswd,
+      AdminScopes.adminUsersDelete,
+      AdminScopes.adminUsersDisapprove,
+      AdminScopes.adminUsersApprove,
+    ],
+  },
+  tokens: {
+    caption: "Tokens",
+    scopes: [
+      AdminScopes.adminTokenDelete,
+      AdminScopes.adminTokensGet,
+      AdminScopes.adminTokensPurgeAllDelete,
+      AdminScopes.adminTokensPurgeOneDelete,
+      AdminScopes.adminTokensPurgeUserDelete,
+      AdminScopes.adminLogout,
+    ],
+  },
+  bughunt: {
+    caption: "Bug hunt",
+    scopes: [
+      AdminScopes.adminBugHuntClose,
+      AdminScopes.adminBugHuntDelete,
+      AdminScopes.adminBugHuntGet,
+      AdminScopes.adminBugHuntList,
+      AdminScopes.adminBugHuntOpen,
+      AdminScopes.adminBugHuntStats,
+    ],
+  },
+  activities: {
+    caption: "Activities",
+    scopes: [
+      AdminScopes.adminActivitiesDelete,
+      AdminScopes.adminActivitiesDeleteUser,
+      AdminScopes.adminActivitiesList,
+      AdminScopes.adminActivitiesUserGet,
+    ],
+  },
+  totp: {
+    caption: "2FA",
+    scopes: [
+      AdminScopes.adminTotpDeactivateUser,
+      AdminScopes.adminTotpDeleteUser,
+      AdminScopes.adminTotpGet,
+      AdminScopes.adminTotpGetUser,
+    ],
+  },
+  accessors: {
+    caption: "Accessors",
+    scopes: [
+      AdminScopes.adminAccessorsDelete,
+      AdminScopes.adminAccessorsDeleteUser,
+      AdminScopes.adminAccessorsGet,
+      AdminScopes.adminAccessorsGetUser,
+    ],
+  },
+  indexing: {
+    caption: "Indexing",
+    scopes: [
+      AdminScopes.adminIndexDeleteUser,
+      AdminScopes.adminIndexGet,
+      AdminScopes.adminIndexGetUser,
+      AdminScopes.adminIndexUser,
+    ],
+  },
+  shares: {
+    caption: "Shares",
+    scopes: [
+      AdminScopes.adminShareAccessorsDelete,
+      AdminScopes.adminShareAccessorsGet,
+      AdminScopes.adminShareAddUser,
+      AdminScopes.adminShareChangePswd,
+      AdminScopes.adminShareChown,
+      AdminScopes.adminShareDelete,
+      AdminScopes.adminShareInteract,
+      AdminScopes.adminShareKick,
+      AdminScopes.adminShareList,
+      AdminScopes.adminShareListUser,
+      AdminScopes.adminShareMembersGet,
+      AdminScopes.adminShareQuotaGet,
+      AdminScopes.adminShareQuotaPut,
+      AdminScopes.adminShareRename,
+    ],
+  },
+  store: {
+    caption: "Store",
+    scopes: [
+      AdminScopes.adminStoreBlock,
+      AdminScopes.adminStoreDeleteOne,
+      AdminScopes.adminStoreDeleteUser,
+      AdminScopes.adminStoreDeprecate,
+      AdminScopes.adminStoreListAll,
+      AdminScopes.adminStoreListUser,
+      AdminScopes.adminStoreOfficialOff,
+      AdminScopes.adminStoreOfficialOn,
+      AdminScopes.adminStoreUnblock,
+      AdminScopes.adminStoreUndeprecate,
+      AdminScopes.adminStoreUnverify,
+      AdminScopes.adminStoreVerificationGet,
+      AdminScopes.adminStoreVerificationSet,
+    ],
+  },
+  afs: {
+    caption: "ARD",
+    scopes: [AdminScopes.adminAfsQuota, AdminScopes.adminAfsRead, AdminScopes.adminAfsWrite],
+  },
 };
