@@ -23,7 +23,6 @@ import { AppProcess } from "../../../ts/apps/process";
 import type { ProcessHandler } from "../../../ts/process/handler";
 import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps, PersistenceInfo } from "./types";
-import type { MaybePromise } from "$types/common";
 
 export class LoginAppRuntime extends AppProcess {
   public DEFAULT_WALLPAPER = Store<string>("");
@@ -126,15 +125,6 @@ export class LoginAppRuntime extends AppProcess {
     }
 
     await this.startDaemon(token, username);
-  }
-
-  async loginStage(caption: string, callback: () => MaybePromise<boolean>) {
-    this.loadingStatus.set(caption);
-    const result = await callback();
-
-    if (!result) {
-      throw new Error(`Stage '${caption}' failed!`);
-    }
   }
 
   async startDaemon(token: string, username: string, info?: UserInfo) {
