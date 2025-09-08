@@ -1,9 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
 import { arrayToText } from "$ts/fs/convert";
-import type { FilesystemDrive } from "$ts/fs/drive";
 import { getItemNameFromPath, getParentDirectory } from "$ts/fs/util";
-import { DriveIcon } from "$ts/images/filesystem";
 import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -15,6 +12,8 @@ import type { ItemInfo } from "./types";
 export class ItemInfoRuntime extends AppProcess {
   info = Store<ItemInfo>();
   shortcut = Store<ArcShortcut>();
+
+  //#region CONTROL FLOW
 
   constructor(
     handler: ProcessHandler,
@@ -74,6 +73,9 @@ export class ItemInfoRuntime extends AppProcess {
     }
   }
 
+  //#endregion
+  //#region ACTIONS
+
   async open() {
     const info = this.info();
     await this.closeWindow(); // First get the process out of here
@@ -94,4 +96,6 @@ export class ItemInfoRuntime extends AppProcess {
   async renameItem() {
     this.spawnOverlayApp("FsRenameItem", this.pid, this.info().location.fullPath);
   }
+
+  //#endregion
 }

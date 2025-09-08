@@ -1,21 +1,20 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { textToBlob } from "$ts/fs/convert";
 import { ShareManager } from "$ts/fs/shares";
+import { join } from "$ts/fs/util";
 import { ElevationIcon } from "$ts/images/general";
 import type { ProcessHandler } from "$ts/process/handler";
 import { AdminBootstrapper } from "$ts/server/admin";
 import { Sleep } from "$ts/sleep";
-import { Store, type ReadableStore } from "$ts/writable";
-import type { App, AppProcessData, ContextMenuItem } from "$types/app";
+import { Store } from "$ts/writable";
+import type { App, AppProcessData } from "$types/app";
 import type { BugReport } from "$types/bughunt";
 import axios from "axios";
 import { AdminPortalAltMenu } from "./altmenu";
 import { AdminPortalPageStore } from "./store";
 import type { BugReportFileUrlParseResult, BugReportTpaFile } from "./types";
 import { BugHuntUserDataApp } from "./userdata/metadata";
-import { join } from "$ts/fs/util";
-import { UUID } from "$ts/uuid";
-import { textToBlob } from "$ts/fs/convert";
 
 export class AdminPortalRuntime extends AppProcess {
   ready = Store<boolean>(false);
@@ -29,6 +28,8 @@ export class AdminPortalRuntime extends AppProcess {
   protected overlayStore: Record<string, App> = {
     userdata: BugHuntUserDataApp,
   };
+
+  //#region CONTROL FLOW
 
   constructor(
     handler: ProcessHandler,
@@ -49,6 +50,9 @@ export class AdminPortalRuntime extends AppProcess {
   async start() {
     await this.fs.createDirectory("T:/Apps/AdminPortal");
   }
+
+  //#endregion
+  //#region PAGINATION
 
   async switchPage(pageId: string, props: Record<string, any> = {}, force = false) {
     this.Log(`Loading page '${pageId}'`);
@@ -80,6 +84,9 @@ export class AdminPortalRuntime extends AppProcess {
 
     this.windowTitle.set(`${page?.name} - Admin Portal`);
   }
+
+  //#endregion
+  //#region TPA
 
   async saveTpaFilesOfBugReport(report: BugReport) {
     const regex =
@@ -116,4 +123,6 @@ export class AdminPortalRuntime extends AppProcess {
 
     return result;
   }
+
+  //#endregion
 }

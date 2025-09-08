@@ -1,8 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import { WarningIcon } from "$ts/images/dialog";
 import type { ProcessHandler } from "$ts/process/handler";
-import { Plural as P } from "$ts/util";
 import { Store, type ReadableStore } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { RenderArgs } from "$types/process";
@@ -10,6 +7,8 @@ import type { FsProgressOperation } from "./types";
 
 export class FsProgressRuntime extends AppProcess {
   public Progress = Store<FsProgressOperation>();
+
+  //#region CONTROL FLOW
 
   constructor(
     handler: ProcessHandler,
@@ -54,4 +53,6 @@ export class FsProgressRuntime extends AppProcess {
 
     return true;
   }
+
+  //#endregion
 }

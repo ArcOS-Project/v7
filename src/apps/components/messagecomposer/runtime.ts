@@ -24,6 +24,8 @@ export class MessageComposerRuntime extends AppProcess {
   replyId: string | undefined;
   service: MessagingInterface;
 
+  //#region CONTROL FLOW
+
   constructor(
     handler: ProcessHandler,
     pid: number,
@@ -44,6 +46,9 @@ export class MessageComposerRuntime extends AppProcess {
 
     this.service = this.userDaemon!.serviceHost!.getService<MessagingInterface>("MessagingService")!;
   }
+
+  //#endregion
+  //#region SENDING
 
   async send() {
     const { recipients, attachments, title, body } = this;
@@ -83,6 +88,24 @@ export class MessageComposerRuntime extends AppProcess {
     else this.closeWindow();
   }
 
+  async discard() {
+    if (!this.isModified()) return this.closeWindow();
+    MessageBox(
+      {
+        title: "Discard message?",
+        message: "Are you sure you want to discard this message? This cannot be undone.",
+        buttons: [
+          { caption: "Cancel", action: () => {} },
+          { caption: "Discard", action: () => this.closeWindow(), suggested: true },
+        ],
+        image: WarningIcon,
+        sound: "arcos.dialog.warning",
+      },
+      this.pid,
+      true
+    );
+  }
+
   sendFailed() {
     this.sending.set(false);
     MessageBox(
@@ -98,6 +121,9 @@ export class MessageComposerRuntime extends AppProcess {
       true
     );
   }
+
+  //#endregion
+  //#region ATTACHMENTS
 
   async addAttachment() {
     const attachments: Attachment[] = [];
@@ -156,18 +182,21 @@ export class MessageComposerRuntime extends AppProcess {
     });
   }
 
-  removeRecipient(recipient: string) {
-    this.recipients.update((v) => {
-      return v.filter((r) => r !== recipient);
-    });
-  }
-
   filesToAttachments(...files: File[]): Attachment[] {
     return files.map((f) => ({ data: f, uuid: UUID() })); // Give each Node file a UUID
   }
 
   removeAttachment(uuid: string) {
     this.attachments.update((v) => v.filter((a) => a.uuid !== uuid));
+  }
+
+  //#endregion
+  //#region MISC
+
+  removeRecipient(recipient: string) {
+    this.recipients.update((v) => {
+      return v.filter((r) => r !== recipient);
+    });
   }
 
   isModified() {
@@ -179,21 +208,5 @@ export class MessageComposerRuntime extends AppProcess {
     return title.length || body.length || recipients.length || attachments.length;
   }
 
-  async discard() {
-    if (!this.isModified()) return this.closeWindow();
-    MessageBox(
-      {
-        title: "Discard message?",
-        message: "Are you sure you want to discard this message? This cannot be undone.",
-        buttons: [
-          { caption: "Cancel", action: () => {} },
-          { caption: "Discard", action: () => this.closeWindow(), suggested: true },
-        ],
-        image: WarningIcon,
-        sound: "arcos.dialog.warning",
-      },
-      this.pid,
-      true
-    );
-  }
+  //#endregion
 }

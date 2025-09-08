@@ -7,6 +7,9 @@ import type { AppProcessData } from "$types/app";
 export class NewFolderRuntime extends AppProcess {
   newFolder = Store<string>();
   path: string;
+
+  //#region CONTROL FLOW
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path: string) {
     super(handler, pid, parentPid, app);
 
@@ -14,8 +17,10 @@ export class NewFolderRuntime extends AppProcess {
   }
 
   render() {
-    if (!this.path) return this.closeWindow();
+    if (!this.path) this.closeWindow();
   }
+
+  //#endregion
 
   async createFolder() {
     try {

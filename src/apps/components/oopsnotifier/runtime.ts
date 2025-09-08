@@ -17,6 +17,8 @@ export class OopsNotifierRuntime extends AppProcess {
   URL_REGEX =
     /http(s|)\:\/\/[a-zA-Z.\:0-9]+(\/tpa\/v3\/)(?<userId>[a-zA-Z0-9]+)\/(?<timestamp>[0-9]+)\/(?<appId>[A-Za-z0-9_-]+(_|)[A-Za-z0-9_-]+)@(?<filename>[a-zA-Z0-9_-]+\.js)/gm;
 
+  //#region CONTROL FLOW
+
   constructor(
     handler: ProcessHandler,
     pid: number,
@@ -53,6 +55,24 @@ export class OopsNotifierRuntime extends AppProcess {
     }
   }
 
+  parseStack() {
+    const stack = this.exception instanceof PromiseRejectionEvent ? this.exception.reason : this.exception.stack;
+    if (!stack) return;
+
+    const parsed = parse(stack);
+    const regex = new RegExp(this.URL_REGEX);
+
+    for (const frame of parsed) {
+      this.stackFrames.push({
+        ...frame,
+        parsed: regex.exec(frame?.file || "")?.groups as ParsedStackUrl,
+      });
+    }
+  }
+
+  //#endregion
+  //#region ACTIONS
+
   async details() {
     const proc = await this.handler.spawn<OopsStackTracerRuntime>(
       OopsStackTracerRuntime,
@@ -79,18 +99,5 @@ export class OopsNotifierRuntime extends AppProcess {
     this.closeWindow();
   }
 
-  parseStack() {
-    const stack = this.exception instanceof PromiseRejectionEvent ? this.exception.reason : this.exception.stack;
-    if (!stack) return;
-
-    const parsed = parse(stack);
-    const regex = new RegExp(this.URL_REGEX);
-
-    for (const frame of parsed) {
-      this.stackFrames.push({
-        ...frame,
-        parsed: regex.exec(frame?.file || "")?.groups as ParsedStackUrl,
-      });
-    }
-  }
+  //#endregion
 }

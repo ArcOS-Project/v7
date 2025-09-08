@@ -21,6 +21,8 @@ import Welcome from "./InitialSetup/Page/Welcome.svelte";
 import type { PageButtons } from "./types";
 
 export class InitialSetupRuntime extends AppProcess {
+  //#region VARIABLES
+
   public pageNumber = Store<number>();
   public identityInfoValid = Store<boolean>(false);
   public newUsername = Store<string>();
@@ -107,6 +109,9 @@ export class InitialSetupRuntime extends AppProcess {
     },
   ];
 
+  //#endregion
+  //#region CONTROL FLOW
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
 
@@ -139,6 +144,19 @@ export class InitialSetupRuntime extends AppProcess {
 
     this.showMainContent.set(true);
   }
+
+  async finish() {
+    this.Log(`Finishing`);
+
+    this.showMainContent.set(false);
+
+    await Sleep(1000);
+
+    location.reload();
+  }
+
+  //#endregion
+  //#region LICENSE
 
   async licenseConfirmation() {
     this.Log("Showing license confirmation");
@@ -200,6 +218,9 @@ export class InitialSetupRuntime extends AppProcess {
       true
     );
   }
+
+  //#endregion
+  //#region ACCOUNT CREATE
 
   async createAccount() {
     const username = this.newUsername();
@@ -302,15 +323,5 @@ export class InitialSetupRuntime extends AppProcess {
 
     this.token = token;
     this.pageNumber.set(this.pageNumber() + 1);
-  }
-
-  async finish() {
-    this.Log(`Finishing`);
-
-    this.showMainContent.set(false);
-
-    await Sleep(1000);
-
-    location.reload();
   }
 }

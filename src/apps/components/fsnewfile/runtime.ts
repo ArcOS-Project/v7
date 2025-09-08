@@ -7,6 +7,9 @@ import type { AppProcessData } from "$types/app";
 export class NewFileRuntime extends AppProcess {
   newFile = Store<string>();
   path: string;
+
+  //#region CONTROL FLOW
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path: string) {
     super(handler, pid, parentPid, app);
 
@@ -16,6 +19,8 @@ export class NewFileRuntime extends AppProcess {
   render() {
     if (!this.path) this.closeWindow();
   }
+
+  //#endregion
 
   async createFile() {
     const blob = new Blob(); // Empty blob === empty file contents

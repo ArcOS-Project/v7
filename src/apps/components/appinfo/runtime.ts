@@ -9,6 +9,8 @@ import { ElevationLevel } from "$types/elevation";
 export class AppInfoRuntime extends AppProcess {
   targetApp = Store<App>();
   targetAppId: string;
+
+  //#region CONTROL FLOW
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, appId: string) {
     super(handler, pid, parentPid, app);
 
@@ -37,6 +39,8 @@ export class AppInfoRuntime extends AppProcess {
 
     this.targetApp.set(targetApp);
   }
+
+  //#endregion
 
   async killAll() {
     const elevated = await this.userDaemon?.manuallyElevate({

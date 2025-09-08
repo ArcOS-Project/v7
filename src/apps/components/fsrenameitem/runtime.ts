@@ -8,6 +8,9 @@ export class RenameItemRuntime extends AppProcess {
   newName = Store<string>();
   parentDir: string;
   path: string;
+
+  //#region CONTROL FLOW
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path: string) {
     super(handler, pid, parentPid, app);
 
@@ -21,6 +24,8 @@ export class RenameItemRuntime extends AppProcess {
   render() {
     if (!this.path) this.closeWindow(); // Probably unexpected invocation
   }
+
+  //#endregion
 
   async rename() {
     try {

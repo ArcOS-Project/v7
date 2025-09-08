@@ -8,11 +8,15 @@ import type { ExitAction } from "./types";
 export class ExitRuntime extends AppProcess {
   selected = Store<string>();
 
+  //#region CONTROL FLOW
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, selected?: string) {
     super(handler, pid, parentPid, app);
 
     if (selected) this.selected.set(selected);
   }
+
+  //#endregion
 
   async go(action: ExitAction | undefined, alternate = false) {
     const option = action || ExitActions[this.selected()];

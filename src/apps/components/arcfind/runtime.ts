@@ -18,6 +18,8 @@ export class ArcFindRuntime extends AppProcess {
   private searchItems: SearchItem[] = [];
   public loading = Store<boolean>(false);
 
+  //#region CONTROL FLOW
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
 
@@ -28,6 +30,9 @@ export class ArcFindRuntime extends AppProcess {
     this.env.set("arcfind_pid", this.pid);
     this.refresh();
   }
+
+  //#endregion
+  //#region REFRESHING
 
   async refresh() {
     this.Log("Refreshing ArcTerm");
@@ -77,20 +82,6 @@ export class ArcFindRuntime extends AppProcess {
     this.searchItems = items;
     this.loading.set(false);
     return items;
-  }
-
-  async Search(query: string) {
-    if (this.safeMode || this.loading()) return [];
-
-    const options = {
-      includeScore: true,
-      keys: ["caption", "description"],
-    };
-
-    const fuse = new Fuse(this.searchItems, options);
-    const result = fuse.search(query);
-
-    return result.map((r) => ({ ...r, id: UUID() })); // Add a UUID to each search result
   }
 
   async getFilesystemSearchSupplier(preferences: UserPreferences) {
@@ -169,4 +160,23 @@ export class ArcFindRuntime extends AppProcess {
       return [];
     }
   }
+
+  //#endregion
+  //#region ARCFIND
+
+  async Search(query: string) {
+    if (this.safeMode || this.loading()) return [];
+
+    const options = {
+      includeScore: true,
+      keys: ["caption", "description"],
+    };
+
+    const fuse = new Fuse(this.searchItems, options);
+    const result = fuse.search(query);
+
+    return result.map((r) => ({ ...r, id: UUID() })); // Add a UUID to each search result
+  }
+
+  //#endregion
 }

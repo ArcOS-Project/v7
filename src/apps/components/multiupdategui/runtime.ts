@@ -23,6 +23,8 @@ export class MultiUpdateGuiRuntime extends AppProcess {
   public showLog = Store<boolean>(false);
   public unified = Store<boolean>(false);
 
+  //#region CONTROL FLOW
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, updates: UpdateInfo[]) {
     super(handler, pid, parentPid, app);
 
@@ -56,6 +58,15 @@ export class MultiUpdateGuiRuntime extends AppProcess {
     }
   }
 
+  async onClose(): Promise<boolean> {
+    this.systemDispatch.dispatch("mugui-done");
+
+    return true;
+  }
+
+  //#endregion
+  //#region PACKAGE
+
   updatePackageStatus(appId: string, newData: Partial<MultiUpdateStatusNode>) {
     this.status.update((v) => {
       const index = v.map((n) => n.pkg.pkg.appId).indexOf(appId);
@@ -68,6 +79,9 @@ export class MultiUpdateGuiRuntime extends AppProcess {
   packageFailed(appId: string) {
     this.updatePackageStatus(appId, { state: "failed", done: 100, max: 100 });
   }
+
+  //#endregion
+  //#region ACTIONS
 
   async go() {
     this.working.set(true);
@@ -129,12 +143,6 @@ export class MultiUpdateGuiRuntime extends AppProcess {
     this.checkForErrors();
   }
 
-  async onClose(): Promise<boolean> {
-    this.systemDispatch.dispatch("mugui-done");
-
-    return true;
-  }
-
   checkForErrors() {
     const status = this.status();
 
@@ -150,4 +158,6 @@ export class MultiUpdateGuiRuntime extends AppProcess {
     this.showLog.set(!this.showLog());
     this.win?.classList.toggle("expand", this.showLog());
   }
+
+  //#endregion
 }

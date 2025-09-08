@@ -13,6 +13,8 @@ export class DriveInfoRuntime extends AppProcess {
   usage?: CategorizedDiskUsage;
   quota?: UserQuota;
 
+  //#region CONTROL FLOW
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, drive: FilesystemDrive) {
     super(handler, pid, parentPid, app);
 
@@ -27,4 +29,6 @@ export class DriveInfoRuntime extends AppProcess {
 
     if (this.isUserFs) this.usage = await this.userDaemon?.determineCategorizedDiskUsage();
   }
+
+  //#endregion
 }

@@ -38,6 +38,8 @@ export class AcceleratorOverviewRuntime extends AppProcess {
   store = Store<[string, [string[], string][]][]>(); // Record<appId, Record<Accelerator, Description>> (ugly, I know)
   apps = Store<AppStorage>();
 
+  //#region CONTROL FLOW
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
 
@@ -74,6 +76,8 @@ export class AcceleratorOverviewRuntime extends AppProcess {
     this.apps.set(apps);
     this.store.set(result);
   }
+
+  //#endregion
 
   splitAcceleratorString(accelerator: string): string[] {
     const result = [];

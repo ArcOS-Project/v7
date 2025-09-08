@@ -13,6 +13,8 @@ export class ContextMenuRuntime extends AppProcess {
   // Elements that can contain a contextmenu dataset key
   private readonly validContexMenuTags = ["button", "div", "span", "p", "h1", "h2", "h3", "h4", "h5", "img"];
 
+  //#region CONTROL FLOW
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
 
@@ -25,20 +27,6 @@ export class ContextMenuRuntime extends AppProcess {
 
   async render() {
     this.assignContextMenuHooks();
-  }
-
-  async createContextMenu(data: ContextMenuInstance) {
-    this.Log(`Spawning context menu with ${data.items.length} items at ${data.x}, ${data.y}`);
-
-    this.CLICKLOCKED = true;
-    await Sleep(10);
-    this.contextData.set(data);
-    this.CLICKLOCKED = false;
-  }
-
-  closeContextMenu() {
-    this.contextData.set(null);
-    this.currentMenu.set("");
   }
 
   assignContextMenuHooks() {
@@ -59,6 +47,27 @@ export class ContextMenuRuntime extends AppProcess {
       this.handleContext(e);
     });
   }
+
+  //#endregion
+
+  //#region CREATION
+
+  async createContextMenu(data: ContextMenuInstance) {
+    this.Log(`Spawning context menu with ${data.items.length} items at ${data.x}, ${data.y}`);
+
+    this.CLICKLOCKED = true;
+    await Sleep(10);
+    this.contextData.set(data);
+    this.CLICKLOCKED = false;
+  }
+
+  closeContextMenu() {
+    this.contextData.set(null);
+    this.currentMenu.set("");
+  }
+
+  //#endregion
+  //#region EVENT HANDLING
 
   async handleContext(e: MouseEvent) {
     const window = this.getWindowByEventTarget(e.composedPath());
@@ -99,21 +108,8 @@ export class ContextMenuRuntime extends AppProcess {
     return null;
   }
 
-  composePosition(x: number, y: number, mW: number, mH: number): [number, number] {
-    const dW = window.innerWidth;
-    const dH = window.innerHeight;
-
-    let newX = x;
-    let newY = y;
-
-    // Position corrections to adhere to screen bounds
-    if (newX + mW > dW) newX = dW - mW - 10;
-    if (newY + mH > dH) newY = dH - mH - 10;
-    if (newX < 0) x = 10;
-    if (newY < 0) y = 10;
-
-    return [newX, newY];
-  }
+  //#endregion
+  //#region GETTERS
 
   getContextEntry(pid: number, scope: string): ContextMenuItem[] {
     const proc = this.handler.getProcess(pid);
@@ -147,7 +143,21 @@ export class ContextMenuRuntime extends AppProcess {
     return null;
   }
 
-  // async onClose(): Promise<boolean> {
-  //   return false;
-  // }
+  composePosition(x: number, y: number, mW: number, mH: number): [number, number] {
+    const dW = window.innerWidth;
+    const dH = window.innerHeight;
+
+    let newX = x;
+    let newY = y;
+
+    // Position corrections to adhere to screen bounds
+    if (newX + mW > dW) newX = dW - mW - 10;
+    if (newY + mH > dH) newY = dH - mH - 10;
+    if (newX < 0) x = 10;
+    if (newY < 0) y = 10;
+
+    return [newX, newY];
+  }
+
+  //#endregion
 }

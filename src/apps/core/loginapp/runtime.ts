@@ -38,6 +38,8 @@ export class LoginAppRuntime extends AppProcess {
   public safeMode = false;
   private type = "";
 
+  //#region INIT
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, props?: LoginAppProps) {
     super(handler, pid, parentPid, app);
 
@@ -110,22 +112,8 @@ export class LoginAppRuntime extends AppProcess {
     }
   }
 
-  async proceed(username: string, password: string) {
-    this.Log(`Trying login of '${username}'`);
-
-    this.loadingStatus.set(`Hi, ${username}!`);
-
-    const token = await LoginUser(username, password);
-
-    if (!token) {
-      this.loadingStatus.set("");
-      this.errorMessage.set("Username or password incorrect.");
-
-      return;
-    }
-
-    await this.startDaemon(token, username);
-  }
+  //#endregion
+  //#region DAEMON
 
   async startDaemon(token: string, username: string, info?: UserInfo) {
     this.Log(`Starting user daemon for '${username}'`);
@@ -251,6 +239,9 @@ export class LoginAppRuntime extends AppProcess {
     userDaemon._blockLeaveInvocations = false;
   }
 
+  //#endregion
+  //#region POWER
+
   async logoff(daemon: UserDaemon) {
     this.Log(`Logging off user '${daemon.username}'`);
 
@@ -328,6 +319,26 @@ export class LoginAppRuntime extends AppProcess {
 
     if (daemon) await daemon.killSelf();
     location.reload();
+  }
+
+  //#endregion
+  //#region CREDENTIALS
+
+  async proceed(username: string, password: string) {
+    this.Log(`Trying login of '${username}'`);
+
+    this.loadingStatus.set(`Hi, ${username}!`);
+
+    const token = await LoginUser(username, password);
+
+    if (!token) {
+      this.loadingStatus.set("");
+      this.errorMessage.set("Username or password incorrect.");
+
+      return;
+    }
+
+    await this.startDaemon(token, username);
   }
 
   private saveToken(daemon: UserDaemon) {
@@ -433,6 +444,14 @@ export class LoginAppRuntime extends AppProcess {
     // });
   }
 
+  createUser() {
+    KernelStateHandler()?.loadState("initialSetup");
+  }
+
+  //#endregion
+
+  //#region PERSISTENCE
+
   loadPersistence() {
     const persistence = tryJsonParse<PersistenceInfo>(localStorage.getItem("arcLoginPersistence"));
 
@@ -456,7 +475,5 @@ export class LoginAppRuntime extends AppProcess {
     this.profileName.set("");
   }
 
-  createUser() {
-    KernelStateHandler()?.loadState("initialSetup");
-  }
+  //#endregion
 }

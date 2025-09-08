@@ -20,6 +20,8 @@ export class FirstRunRuntime extends AppProcess {
     chooseProfilePicture: ChooseProfilePictureApp,
   };
 
+  //#region CONTROL FLOW
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, daemon: UserDaemon) {
     super(handler, pid, parentPid, app);
 
@@ -64,6 +66,8 @@ export class FirstRunRuntime extends AppProcess {
     this.done.set(true);
     return true;
   }
+
+  //#endregion
 
   switchPage(id: string) {
     if (!FirstRunPages.has(id)) this.notImplemented(`Page ${id}`);

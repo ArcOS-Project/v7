@@ -18,6 +18,8 @@ export class AppPreInstallRuntime extends AppProcess {
   zip: JSZip | undefined;
   metadata = Store<ArcPackage>();
 
+  //#region CONTROL FLOW
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, pkgPath: string) {
     super(handler, pid, parentPid, app);
 
@@ -108,6 +110,9 @@ export class AppPreInstallRuntime extends AppProcess {
     }
   }
 
+  //#endregion
+  //#region DISTRIB
+
   fail(reason: string) {
     MessageBox(
       {
@@ -138,4 +143,6 @@ export class AppPreInstallRuntime extends AppProcess {
     await this.closeWindow();
     this.spawnOverlayApp("AppInstaller", +this.env.get("shell_pid"), this.metadata, this.zip);
   }
+
+  //#endregion
 }

@@ -15,6 +15,7 @@ export class AppInstallerRuntime extends AppProcess {
   metadata?: ArcPackage;
   zip?: JSZip;
 
+  //#region CONTROL FLOW
   constructor(
     handler: ProcessHandler,
     pid: number,
@@ -86,6 +87,9 @@ export class AppInstallerRuntime extends AppProcess {
     }
   }
 
+  //#endregion
+  //#region DISTRIB
+
   async revert() {
     const gli = await this.userDaemon?.GlobalLoadIndicator("Rolling back changes...", this.pid);
 
@@ -109,4 +113,6 @@ export class AppInstallerRuntime extends AppProcess {
   async go() {
     this.progress?.go();
   }
+
+  //#endregion
 }
