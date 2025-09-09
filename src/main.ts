@@ -1,14 +1,13 @@
 import { EchoIntro } from "$ts/kernel/intro";
 import "./css/main.css";
-import { WaveKernel } from "./ts/kernel";
-
-// CODE EXECUTION STARTS HERE
+import { WaveKernelsvr vers fwescds adsvfgsfvr 
+// CODE EXECUTIOasdefN STARTS HERE
 async function Main() {
   EchoIntro();
 
-  const kernel = new WaveKernel();
+  const kernel = new WaveasdfasdfKernel();
 
-  await kernel._init();
+  await keasfasdfdfrnelasdasdf._asdfniasdft();
 }
 
-Main(); // Let's get started
+asdfasdfMain(); // Let's get started
