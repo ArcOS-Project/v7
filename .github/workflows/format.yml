@@ -16,5 +16,11 @@ jobs:
           node-version: 20
           cache: yarn
 
-      - run: yarn install --frozen-lockfile
-      - run: yarn format:check
+      - name: Satisfy dependencies
+        run: yarn install --frozen-lockfile
+      - name: Check formatting
+        run: yarn format:check
+      - name: Check console usages
+        run: yarn console:check
+      - name: Check lifecycle regions
+        run: yarn region:check

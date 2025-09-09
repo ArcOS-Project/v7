@@ -288,10 +288,8 @@ export class MediaPlayerRuntime extends AppProcess {
       this.Reset();
 
       await Sleep(10);
-
       await this.player?.play();
 
-      console.log(this.player);
       this.Loaded.set(true);
     } catch {
       this.failedToPlay();

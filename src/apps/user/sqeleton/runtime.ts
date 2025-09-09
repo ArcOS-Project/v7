@@ -193,8 +193,6 @@ export class SqeletonRuntime extends AppProcess {
       const columnQueryStr = (query[0] as SqlTable[]).map((table) => `PRAGMA table_info(${table.name});`).join("\n") + "\n";
       const columns = await this.execute(columnQueryStr, true, true);
 
-      console.log(columns, columnQueryStr);
-
       if (typeof columns === "string" || !columns?.length) {
         this.tables.set([]);
       } else {

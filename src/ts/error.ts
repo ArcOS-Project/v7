@@ -1,14 +1,13 @@
+import { ArcOSApp } from "$apps/arcos";
 import * as stackTraceParser from "stacktrace-parser";
 import { __Console__ } from "./console";
 import { Crash } from "./crash";
 import { WaveKernel } from "./kernel";
-import { Log } from "./kernel/logging";
-import { ProcessHandler } from "./process/handler";
-import { getKMod } from "./kernel/module";
 import { Environment } from "./kernel/env";
+import { Log } from "./kernel/logging";
+import { getKMod } from "./kernel/module";
+import { ProcessHandler } from "./process/handler";
 import { UserDaemon } from "./server/user/daemon";
-import { WarningIcon } from "./images/dialog";
-import { ArcOSApp } from "$apps/arcos";
 export function handleGlobalErrors() {
   let LOCKED = false;
   function DoError(e: ErrorEvent | PromiseRejectionEvent) {
@@ -72,7 +71,6 @@ export function handleGlobalErrors() {
   window.console = new Proxy(console, {
     set(target, prop, value) {
       if (prop === "warn") {
-        // Silently ignore any attempts to override console.warn
         return true;
       }
       return Reflect.set(target, prop, value);

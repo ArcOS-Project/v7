@@ -14,8 +14,6 @@ class changeLogs {
       });
 
       this.ChangeLogUrls = this.parseChangeLogsRepoFile(response.data);
-
-      console.log(this.ChangeLogUrls);
     } catch {
       return false;
     }
