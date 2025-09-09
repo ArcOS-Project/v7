@@ -5,7 +5,7 @@ on:
     branches: [main] # or whatever branch you protect
   workflow_dispatch:
     branches: [main]
-  commit:
+  push:
     branches: [main]
 
 jobs:
