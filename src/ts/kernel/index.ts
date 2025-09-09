@@ -44,7 +44,7 @@ export class WaveKernel {
   }
 
   constructor() {
-    WaveKernel.AssertNDef(CurrentKernel, "WaveKernel");
+    if (CurrentKernel) throw new Error("Tried to reinitialize the kernel");
 
     this.startMs = Date.now();
     this.Log("KERNEL", "Constructing new Kernel. Have fun zottel.");
@@ -113,7 +113,7 @@ export class WaveKernel {
     const mod = (this as any)[id];
     const result = this.modules.includes(id) && mod && mod.id === id ? (mod as T) : undefined;
 
-    WaveKernel.Assert(!result && dontCrash, `Kernel module ${id}`);
+    if (!result && !dontCrash) throw new Error(`No such kernel module '${id}'`);
 
     return result as T;
   }
@@ -150,41 +150,5 @@ export class WaveKernel {
     __Console__.log(
       `[${(timestamp - this.startMs).toString().padStart(10, "0")}] ${ShortLogLevelCaptions[level]} ${source}: ${message}`
     );
-  }
-
-  public static AssertLessOrEq<T extends number | bigint>(left: T, right: T, name = "<LEQ>"): asserts left {
-    this.Assert(left <= right, `LEQ ${name}`, left, right);
-  }
-
-  public static AssertMoreOrEq<T extends number | bigint>(left: T, right: T, name = "<GEQ>"): asserts left {
-    this.Assert(left >= right, `GEQ ${name}`, left, right);
-  }
-
-  public static AssertLess<T extends number | bigint>(left: T, right: T, name = "<LESS>"): asserts left {
-    this.Assert(left < right, `LESS ${name}`, left, right);
-  }
-
-  public static AssertMore<T extends number | bigint>(left: T, right: T, name = "<MORE>"): asserts left {
-    this.Assert(left > right, `MORE ${name}`, left, right);
-  }
-
-  public static AssertEq<T>(left: T, right: T, name = "<EQ>"): asserts left is T {
-    this.Assert(left === right, `EQ ${name}`, left, right);
-  }
-
-  public static AssertNeq<T>(left: T, right: T, name = "<NEQ>"): asserts left is T {
-    this.Assert(left !== right, `NEQ ${name}`, left, right);
-  }
-
-  public static AssertDef<T>(val: T, name = "<DEF>"): asserts val is NonNullable<T> {
-    this.Assert(val !== undefined && val !== null, `DEF ${name}`);
-  }
-
-  public static AssertNDef<T>(val: T, name = "<NDEF>"): asserts val is NonNullable<T> {
-    this.Assert(val === undefined || val === null, `NDEF ${name}`);
-  }
-
-  public static Assert(expr: boolean, name = "<>", expected: unknown = "?", got: unknown = "?"): asserts expr {
-    if (!expr) throw new Error(`Assertion failed: ${name}: ${expected}, ${got}`);
   }
 }

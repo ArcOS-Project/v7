@@ -1,13 +1,20 @@
-import { ArcOSApp } from "$apps/arcos";
 import * as stackTraceParser from "stacktrace-parser";
 import { __Console__ } from "./console";
+//
+// !! DO NOT MOVE THE BELOW LINE !!
 import { Crash } from "./crash";
+// THIS IMPORT NEEDS TO BE BELOW THE
+// CRASH ONE OR ARCOS WON'T LOAD DUE TO CIRCULAR IMPORTS
+import { ArcOSApp } from "$apps/arcos";
+// !! DO NOT MOVE THE ABOVE TWO IMPORTS !!
+//
 import { WaveKernel } from "./kernel";
 import { Environment } from "./kernel/env";
 import { Log } from "./kernel/logging";
 import { getKMod } from "./kernel/module";
 import { ProcessHandler } from "./process/handler";
 import { UserDaemon } from "./server/user/daemon";
+
 export function handleGlobalErrors() {
   let LOCKED = false;
   function DoError(e: ErrorEvent | PromiseRejectionEvent) {

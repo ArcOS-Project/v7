@@ -33,7 +33,7 @@ export class KernelModule {
   }
 
   isKmod() {
-    WaveKernel.Assert(this.IS_KMOD, `isKmod ${this.id}`);
+    if (!this.IS_KMOD) throw new Error("Not a kernel module");
   }
 }
 
