@@ -19,7 +19,7 @@ export class Filesystem extends KernelModule {
   private dispatch: SystemDispatch;
   public drives: Record<string, FilesystemDrive> = {};
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);

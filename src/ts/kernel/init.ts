@@ -12,7 +12,7 @@ import { Process } from "../process/instance";
 import { StateHandler } from "../state";
 
 export class InitProcess extends Process {
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
   constructor(handler: ProcessHandler, pid: number, parentPid = undefined) {
     super(handler, pid, parentPid);
   }

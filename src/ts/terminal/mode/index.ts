@@ -26,7 +26,7 @@ export class TerminalMode extends Process {
   rl?: Readline;
   arcTerm?: ArcTerminal;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, target: HTMLDivElement) {
     super(handler, pid, parentPid);

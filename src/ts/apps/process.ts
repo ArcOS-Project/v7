@@ -46,7 +46,7 @@ export class AppProcess extends Process {
   public windowFullscreen = Store<boolean>(false);
   draggable: Draggable | undefined;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, ...args: any[]) {
     super(handler, pid, parentPid);

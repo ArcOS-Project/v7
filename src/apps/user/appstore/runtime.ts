@@ -31,7 +31,7 @@ export class AppStoreRuntime extends AppProcess {
   operations: Record<string, InstallerProcess> = {};
   distrib: DistributionServiceProcess;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(
     handler: ProcessHandler,

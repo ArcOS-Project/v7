@@ -14,7 +14,7 @@ export class SecureContextRuntime extends AppProcess {
   public password = Store<string>("");
   public loading = Store<boolean>(false);
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(
     handler: ProcessHandler,

@@ -12,7 +12,7 @@ export class TerminalWindowRuntime extends AppProcess {
   term: Terminal | undefined;
   overridePopulatable: boolean = true;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);

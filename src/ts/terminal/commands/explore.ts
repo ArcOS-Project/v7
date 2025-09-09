@@ -7,7 +7,7 @@ export class ExploreCommand extends TerminalProcess {
   public static keyword = "explore";
   public static description = "Open a folder in the File manager";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

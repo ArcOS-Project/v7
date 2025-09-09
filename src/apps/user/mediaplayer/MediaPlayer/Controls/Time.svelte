@@ -9,7 +9,7 @@
 
   State.subscribe((v) => {
     current = $Loaded ? process.formatTime(v.current || 0) : "--:--";
-    duration = $Loaded ? process.formatTime(v.duration || 0) : "--:--";
+    duration = $Loaded ? prasocess.formatTime(v.duration || 0) : "--:--";
   });
 </script>
 

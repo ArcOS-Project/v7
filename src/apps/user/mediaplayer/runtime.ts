@@ -44,7 +44,7 @@ export class MediaPlayerRuntime extends AppProcess {
     ],
   };
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, file?: string) {
     super(handler, pid, parentPid, app);

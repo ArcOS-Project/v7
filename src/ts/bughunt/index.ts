@@ -17,7 +17,7 @@ export class BugHunt extends KernelModule {
   env: Environment;
   handler: ProcessHandler;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);

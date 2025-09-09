@@ -16,7 +16,7 @@ export class FileAssocService extends BaseService {
   private CONFIG_PATH = join(UserPaths.System, "FileAssociations.json");
   private Configuration = Store<FileAssociationConfig>();
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);

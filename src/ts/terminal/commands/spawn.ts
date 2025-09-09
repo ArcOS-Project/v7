@@ -8,7 +8,7 @@ export class SpawnCommand extends TerminalProcess {
   public static keyword = "spawn";
   public static description = "Spawn an app with specified arguments";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

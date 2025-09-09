@@ -22,7 +22,7 @@ export class ProcessHandler extends KernelModule {
   public env: Environment;
   public dispatch: SystemDispatch;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);

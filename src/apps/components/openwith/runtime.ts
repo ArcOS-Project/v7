@@ -16,7 +16,7 @@ export class OpenWithRuntime extends AppProcess {
   selectedId = Store<string>();
   viewMode = Store<"all" | "apps" | "compatible">("compatible");
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path: string) {
     super(handler, pid, parentPid, app);

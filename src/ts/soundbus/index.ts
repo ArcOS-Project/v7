@@ -9,7 +9,7 @@ export class SoundBus extends KernelModule {
   private _bus: SoundBusStore = {};
   private env: Environment;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);

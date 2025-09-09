@@ -38,7 +38,7 @@ export class LoginAppRuntime extends AppProcess {
   public safeMode = false;
   private type = "";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, props?: LoginAppProps) {
     super(handler, pid, parentPid, app);

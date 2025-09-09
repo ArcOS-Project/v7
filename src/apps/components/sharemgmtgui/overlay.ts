@@ -6,7 +6,7 @@ import type { ShareMgmtGuiRuntime } from "./runtime";
 export class OverlayRuntime extends AppProcess {
   parentProcess: ShareMgmtGuiRuntime;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);

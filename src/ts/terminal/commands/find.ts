@@ -9,7 +9,7 @@ export class FindCommand extends TerminalProcess {
   public static keyword = "find";
   public static description = "Find files, folders and shortcuts in ArcOS";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

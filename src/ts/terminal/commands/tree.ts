@@ -11,7 +11,7 @@ export class TreeCommand extends TerminalProcess {
   public static keyword = "tree";
   public static description = "Print a recursive tree of the current or specified folder";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

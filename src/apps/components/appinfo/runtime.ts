@@ -10,7 +10,7 @@ export class AppInfoRuntime extends AppProcess {
   targetApp = Store<App>();
   targetAppId: string;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, appId: string) {
     super(handler, pid, parentPid, app);
 

@@ -8,7 +8,7 @@ export class DrivesCommand extends TerminalProcess {
   public static keyword = "drives";
   public static description = "Returns the drive mount table";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

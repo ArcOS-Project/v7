@@ -16,7 +16,7 @@ export class BugHuntCreatorRuntime extends AppProcess {
   overrideOptions: BugHuntCreatorOptions | undefined;
   bughunt: BugHuntUserSpaceProcess;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(
     handler: ProcessHandler,

@@ -28,7 +28,7 @@ export class AdvSysSetRuntime extends AppProcess {
   preferencesSub?: Unsubscriber;
   bufferSub?: Unsubscriber;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, tab?: string) {
     super(handler, pid, parentPid, app);

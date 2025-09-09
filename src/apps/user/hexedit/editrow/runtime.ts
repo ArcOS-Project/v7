@@ -13,7 +13,7 @@ export class EditRowRuntime extends AppProcess {
   rows = Store<[number, [number, number][]][]>([]);
   editorInputs = Store<HTMLInputElement[]>([]);
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(
     handler: ProcessHandler,

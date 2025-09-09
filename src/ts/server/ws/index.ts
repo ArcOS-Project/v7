@@ -12,7 +12,7 @@ export class GlobalDispatch extends BaseService {
   token?: string;
   authorized = false;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);

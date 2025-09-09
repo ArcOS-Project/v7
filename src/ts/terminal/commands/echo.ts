@@ -9,7 +9,7 @@ export class EchoCommand extends TerminalProcess {
   public static keyword: string = "echo";
   public static description: string = "Echoes back the input";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

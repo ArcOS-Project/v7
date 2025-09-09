@@ -57,7 +57,7 @@ export class FileManagerRuntime extends AppProcess {
   };
   private _refreshLocked = false;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(
     handler: ProcessHandler,

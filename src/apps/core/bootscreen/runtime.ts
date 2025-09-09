@@ -9,7 +9,7 @@ export class BootScreenRuntime extends AppProcess {
   public progress = Store<boolean>(false);
   public status = Store<string>("");
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);

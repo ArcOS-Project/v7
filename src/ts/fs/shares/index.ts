@@ -11,7 +11,7 @@ import { SharedDrive } from "./drive";
 export class ShareManager extends BaseService {
   token: string | undefined;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);

@@ -12,7 +12,7 @@ export class DirCommand extends TerminalProcess {
   public static keyword = "dir";
   public static description = "List the contents of the current or specified directory";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

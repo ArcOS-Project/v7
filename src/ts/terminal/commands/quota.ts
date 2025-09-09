@@ -9,7 +9,7 @@ export class QuotaCommand extends TerminalProcess {
   public static keyword = "quota";
   public static description = "Display your ArcOS filesystem quota";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

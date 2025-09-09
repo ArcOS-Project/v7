@@ -13,7 +13,7 @@ export class DriveInfoRuntime extends AppProcess {
   usage?: CategorizedDiskUsage;
   quota?: UserQuota;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, drive: FilesystemDrive) {
     super(handler, pid, parentPid, app);

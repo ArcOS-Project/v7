@@ -16,7 +16,7 @@ export class StateHandler extends Process {
   stateAppProcess: AppProcess | undefined;
   public _criticalProcess: boolean = true;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, instanceName: string, store = States) {
     super(handler, pid, parentPid);

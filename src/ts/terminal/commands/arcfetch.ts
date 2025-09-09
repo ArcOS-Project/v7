@@ -15,7 +15,7 @@ export class ArcFetchCommand extends TerminalProcess {
   static keyword: string = "arcfetch";
   static description: string = "View information about your device and ArcOS";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

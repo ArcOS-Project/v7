@@ -57,7 +57,7 @@ export class LanguageInstance extends Process {
   public appProcess: AppProcess | undefined;
   public userDaemon: UserDaemon | undefined;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(
     handler: ProcessHandler,

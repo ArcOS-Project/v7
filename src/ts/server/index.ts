@@ -21,7 +21,7 @@ export class ServerManager extends KernelModule {
     return server ? server.url : undefined;
   }
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);

@@ -11,7 +11,7 @@ export class CalculatorRuntime extends AppProcess {
   public Value = Store<string>("");
   public Store = new CalculatorStore();
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);

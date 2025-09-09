@@ -14,7 +14,7 @@ export class LoggingRuntime extends AppProcess {
   private archive: LogItem[] = [];
   public isArchive = false;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(
     handler: ProcessHandler,

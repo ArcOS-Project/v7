@@ -18,7 +18,7 @@ export class AppPreInstallRuntime extends AppProcess {
   zip: JSZip | undefined;
   metadata = Store<ArcPackage>();
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, pkgPath: string) {
     super(handler, pid, parentPid, app);

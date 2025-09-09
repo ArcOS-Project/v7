@@ -16,7 +16,7 @@ export class MessagingInterface extends BaseService {
   serverUrl: string | false | undefined;
   serverAuthCode: string;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);
 

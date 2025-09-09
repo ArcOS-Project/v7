@@ -7,7 +7,7 @@ export class TestCommand extends TerminalProcess {
   public static description: string = "test";
   public static hidden: boolean = true;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

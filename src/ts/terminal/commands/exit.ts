@@ -7,7 +7,7 @@ export class ExitCommand extends TerminalProcess {
   public static keyword = "exit";
   public static description = "Exit the terminal process";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

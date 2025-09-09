@@ -9,7 +9,7 @@ export class RenameItemRuntime extends AppProcess {
   parentDir: string;
   path: string;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path: string) {
     super(handler, pid, parentPid, app);

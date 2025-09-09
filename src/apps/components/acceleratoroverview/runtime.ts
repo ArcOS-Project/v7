@@ -38,7 +38,7 @@ export class AcceleratorOverviewRuntime extends AppProcess {
   store = Store<[string, [string[], string][]][]>(); // Record<appId, Record<Accelerator, Description>> (ugly, I know)
   apps = Store<AppStorage>();
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);

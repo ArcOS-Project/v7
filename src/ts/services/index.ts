@@ -23,7 +23,7 @@ export class ServiceHost extends Process {
   private _storeLoaded = false;
   public daemon: UserDaemon;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

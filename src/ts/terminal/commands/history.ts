@@ -7,7 +7,7 @@ export class HistoryCommand extends TerminalProcess {
   public static keyword = "history";
   public static description = "Show your ArcTerm history";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

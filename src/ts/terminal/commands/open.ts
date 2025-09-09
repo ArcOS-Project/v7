@@ -7,7 +7,7 @@ export class OpenCommand extends TerminalProcess {
   public static description = "Opens the specified file";
   public static keyword = "open";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

@@ -11,7 +11,7 @@ export class OopsStackTracerRuntime extends AppProcess {
   trace: string = "";
   string: string;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(
     handler: ProcessHandler,

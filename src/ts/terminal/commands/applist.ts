@@ -11,7 +11,7 @@ export class AppListCommand extends TerminalProcess {
   public static keyword = "applist";
   public static description = "Display a list of installed applications";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

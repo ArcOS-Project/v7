@@ -16,7 +16,7 @@ export class ShellHostRuntime extends Process {
   userDaemon: UserDaemon | undefined;
   userPreferences: UserPreferencesStore;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, _: AppProcessData, autoloadApps: string[]) {
     super(handler, pid, parentPid);

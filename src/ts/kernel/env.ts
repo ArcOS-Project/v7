@@ -8,7 +8,7 @@ export class Environment extends KernelModule {
   private store: Map<string, any> = new Map([]);
   private readOnlyValues: string[] = [];
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);

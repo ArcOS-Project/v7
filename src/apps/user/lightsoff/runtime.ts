@@ -23,7 +23,7 @@ export class LightsOffRuntime extends AppProcess {
   LEVEL = Store<number>(0);
   Levels: LightsOffLevels;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);

@@ -22,7 +22,7 @@ export class History extends Process {
   public cursor = -1;
   private terminal: ArcTerminal | undefined;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, maxEntries: number, terminal?: ArcTerminal) {
     super(handler, pid, parentPid);

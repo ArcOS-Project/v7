@@ -28,7 +28,7 @@ export class WallpaperRuntime extends AppProcess {
 
   public contextMenu: AppContextMenu = WallpaperContextMenu(this);
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, desktopDir?: string) {
     super(handler, pid, parentPid, app);

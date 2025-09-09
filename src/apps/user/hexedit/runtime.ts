@@ -28,7 +28,7 @@ export class HexEditRuntime extends AppProcess {
     editRow: EditRow,
   };
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, file: string) {
     super(handler, pid, parentPid, app);

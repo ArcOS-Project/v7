@@ -26,7 +26,7 @@ export class InstallerProcess extends Process {
   item?: StoreItem;
   zip?: JSZip;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, zip: JSZip, metadata: ArcPackage, item: StoreItem) {
     super(handler, pid, parentPid);

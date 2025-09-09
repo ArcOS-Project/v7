@@ -10,7 +10,7 @@ export class ArcLang extends KernelModule {
   stack = getKMod<ProcessHandler>("stack");
   locked = false;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);

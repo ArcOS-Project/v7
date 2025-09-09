@@ -23,7 +23,7 @@ export class PkgCommand extends TerminalProcess {
   public static description: string = "ArcOS package manager commandline";
   private distrib?: DistributionServiceProcess;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

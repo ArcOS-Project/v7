@@ -17,7 +17,7 @@ export class AdminCommand extends TerminalProcess {
   public static description = "";
   public static hidden = true;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

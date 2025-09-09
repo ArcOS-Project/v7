@@ -13,7 +13,7 @@ export class IconPickerRuntime extends AppProcess {
   store = getAllImages();
   returnId?: string;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, data: IconPickerData) {
     super(handler, pid, parentPid, app);

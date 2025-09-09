@@ -11,7 +11,7 @@ export class KillCommand extends TerminalProcess {
   public static keyword = "kill";
   public static description = "Kill a process using its PID";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

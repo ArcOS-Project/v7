@@ -15,7 +15,7 @@ export class DevenvCommand extends TerminalProcess {
     disconnect: this.disconnect.bind(this),
   };
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

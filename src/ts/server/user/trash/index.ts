@@ -16,7 +16,7 @@ export class TrashCanService extends BaseService {
   INDEX_PATH = join(UserPaths.System, `TrashIndex.json`);
   IndexBuffer = Store<Record<string, TrashIndexNode>>({});
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);

@@ -15,7 +15,7 @@ export class ApplicationStorage extends BaseService {
   public buffer = Store<AppStorage>([]);
   public appIconCache: Record<string, string> = {};
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);

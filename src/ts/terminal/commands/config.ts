@@ -7,7 +7,7 @@ export class ConfigCommand extends TerminalProcess {
   public static keyword = "config";
   public static description = "List the ArcTerm configuration";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

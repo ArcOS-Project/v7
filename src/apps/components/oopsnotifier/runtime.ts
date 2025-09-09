@@ -17,7 +17,7 @@ export class OopsNotifierRuntime extends AppProcess {
   URL_REGEX =
     /http(s|)\:\/\/[a-zA-Z.\:0-9]+(\/tpa\/v3\/)(?<userId>[a-zA-Z0-9]+)\/(?<timestamp>[0-9]+)\/(?<appId>[A-Za-z0-9_-]+(_|)[A-Za-z0-9_-]+)@(?<filename>[a-zA-Z0-9_-]+\.js)/gm;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(
     handler: ProcessHandler,

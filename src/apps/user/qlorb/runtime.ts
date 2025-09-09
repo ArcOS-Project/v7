@@ -17,7 +17,7 @@ export class QlorbRuntime extends AppProcess {
   public readonly PAGES = ["intro", "start", "game"];
   public readonly CurrentPage = Store<string>("");
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);

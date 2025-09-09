@@ -7,7 +7,7 @@ export class ClearCommand extends TerminalProcess {
   public static keyword = "clear";
   public static description = "Clear the terminal";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

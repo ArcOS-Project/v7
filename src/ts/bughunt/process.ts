@@ -15,7 +15,7 @@ export class BugHuntUserSpaceProcess extends BaseService {
   token: string | undefined;
   module: BugHunt;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);

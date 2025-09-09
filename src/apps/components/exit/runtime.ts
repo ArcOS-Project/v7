@@ -8,7 +8,7 @@ import type { ExitAction } from "./types";
 export class ExitRuntime extends AppProcess {
   selected = Store<string>();
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, selected?: string) {
     super(handler, pid, parentPid, app);

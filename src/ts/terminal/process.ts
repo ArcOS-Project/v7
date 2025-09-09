@@ -12,7 +12,7 @@ export class TerminalProcess extends Process {
   protected argv?: string[];
   private exitCode: number = 0;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

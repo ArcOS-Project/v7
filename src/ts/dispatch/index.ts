@@ -7,7 +7,7 @@ import { KnownSystemDispatchers, SystemOnlyDispatches } from "./store";
 export class SystemDispatch extends KernelModule {
   public subscribers: Record<string, Record<number, (data: any) => void>> = {};
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);

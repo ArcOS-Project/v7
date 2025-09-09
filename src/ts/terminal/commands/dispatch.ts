@@ -11,7 +11,7 @@ export class DispatchCommand extends TerminalProcess {
   public static keyword: string = "dispatch";
   public static description: string = "Dispatch events to ArcOS or a specific process";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

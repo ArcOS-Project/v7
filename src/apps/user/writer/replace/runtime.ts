@@ -6,7 +6,7 @@ import type { WriterRuntime } from "../runtime";
 export class ReplaceRuntime extends AppProcess {
   parent: WriterRuntime;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);

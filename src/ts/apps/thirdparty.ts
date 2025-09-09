@@ -11,7 +11,7 @@ export class ThirdPartyAppProcess extends AppProcess {
   urlCache: Record<string, string> = {};
   elements: Record<string, Element> = {};
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(
     handler: ProcessHandler,

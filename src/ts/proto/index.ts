@@ -15,7 +15,7 @@ export class ProtocolServiceProcess extends BaseService {
     spawn_app: SpawnAppHandler,
   };
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);

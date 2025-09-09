@@ -147,7 +147,7 @@ export class UserDaemon extends Process {
   public NIGHTLY = false;
 
   //#endregion
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, token: string, username: string, userInfo?: UserInfo) {
     super(handler, pid, parentPid);
@@ -300,7 +300,7 @@ export class UserDaemon extends Process {
 
     if (migrationFile) return;
 
-    const oldConfigDir = await this.fs.readDir("U:/Config");
+    const oldConfigDir = await this.fs.readsDir("U:/Config");
 
     if (oldConfigDir) {
       for (const dir of oldConfigDir.dirs) {

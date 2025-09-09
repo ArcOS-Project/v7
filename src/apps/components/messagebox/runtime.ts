@@ -10,7 +10,7 @@ export class MessageBoxRuntime extends AppProcess {
   data: MessageBoxData | undefined;
   acted = Store<boolean>(false);
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, data: MessageBoxData) {
     super(handler, pid, parentPid, app);

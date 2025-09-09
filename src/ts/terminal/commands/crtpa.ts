@@ -6,7 +6,7 @@ export class CrTpaCommand extends TerminalProcess {
   public static keyword: string = "crtpa";
   public static description: string = "Create an ArcOS Third Party Application (TPA) project";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

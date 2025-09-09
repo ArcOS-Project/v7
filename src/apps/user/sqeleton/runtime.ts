@@ -56,7 +56,7 @@ export class SqeletonRuntime extends AppProcess {
     this._intf.set(value);
   }
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path?: string) {
     super(handler, pid, parentPid, app);

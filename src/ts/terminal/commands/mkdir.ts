@@ -7,7 +7,7 @@ export class MkdirCommand extends TerminalProcess {
   public static keyword: string = "mkdir";
   public static description: string = "Create the specified directory";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

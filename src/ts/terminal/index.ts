@@ -42,7 +42,7 @@ export class ArcTerminal extends Process {
   config: ArcTermConfiguration = DefaultArcTermConfiguration;
   window: TerminalWindowRuntime | undefined;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, term: Terminal, path?: string) {
     super(handler, pid, parentPid);

@@ -37,7 +37,7 @@ export class MessagingAppRuntime extends AppProcess {
   messageWindow = false;
   messageFromFile = false;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(
     handler: ProcessHandler,

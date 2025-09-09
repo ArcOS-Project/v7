@@ -9,7 +9,7 @@ export class HelpCommand extends TerminalProcess {
   public static description: string = "Shows a list of built-in ArcTerm commands";
   public static keyword: string = "help";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

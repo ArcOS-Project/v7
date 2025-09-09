@@ -5,7 +5,7 @@ export class ShutdownCommand extends TerminalProcess {
   public static keyword = "shutdown";
   public static description = "Shut down ArcOS";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   protected async main(term: ArcTerminal) {
     term.daemon?.shutdown();

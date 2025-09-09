@@ -3,7 +3,7 @@ import type { ProcessHandler } from "$ts/process/handler";
 import type { AppProcessData } from "$types/app";
 
 export class SystemShortcutsRuntime extends AppProcess {
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
   }

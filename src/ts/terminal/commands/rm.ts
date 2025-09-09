@@ -7,7 +7,7 @@ export class RmCommand extends TerminalProcess {
   public static keyword = "rm";
   public static description = "Delete the specified file or folder";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

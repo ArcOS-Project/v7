@@ -9,7 +9,7 @@ export class SqlInterfaceProcess extends Process {
   public db?: initSqlJs.Database;
   public isFresh = false;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, path: string) {
     super(handler, pid, parentPid);

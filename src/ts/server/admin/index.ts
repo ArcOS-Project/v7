@@ -37,7 +37,7 @@ export class AdminBootstrapper extends BaseService {
   private token: string | undefined;
   private userInfo: UserInfo | undefined;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);

@@ -10,7 +10,7 @@ export class ArcMSL extends KernelModule {
   private stack: ProcessHandler | undefined;
   private locked = false;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);

@@ -7,7 +7,7 @@ export class LogoutCommand extends TerminalProcess {
   public static keyword = "logout";
   public static description = "Log out of ArcOS";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

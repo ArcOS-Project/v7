@@ -62,7 +62,7 @@ export class State extends Process {
   private history: History | undefined;
   private conceiled: boolean;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(
     handler: ProcessHandler,

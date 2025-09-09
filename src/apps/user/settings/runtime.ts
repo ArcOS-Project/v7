@@ -75,7 +75,7 @@ export class SettingsRuntime extends AppProcess {
 
   override contextMenu = SettingsContext(this);
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, page?: string, slide?: string) {
     super(handler, pid, parentPid, app);

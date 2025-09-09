@@ -15,7 +15,7 @@ export class TrayIconProcess extends Process {
   icon: string;
   shell: ShellRuntime;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, data: ShellTrayIcon) {
     super(handler, pid, parentPid);

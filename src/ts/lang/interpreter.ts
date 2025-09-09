@@ -21,7 +21,7 @@ export class Interpreter extends Process {
   arguments: any[] = [];
   workingDir: string = "U:/";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, options?: ArcLangOptions) {
     options ||= DefaultArcLangOptions;

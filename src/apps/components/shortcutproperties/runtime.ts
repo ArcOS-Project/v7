@@ -13,7 +13,7 @@ export class ShortcutPropertiesRuntime extends AppProcess {
   iconStore = getAllImages();
   path?: string;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path: string, data: ArcShortcut) {
     super(handler, pid, parentPid, app);

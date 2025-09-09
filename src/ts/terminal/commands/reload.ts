@@ -6,7 +6,7 @@ export class ReloadCommand extends TerminalProcess {
   public static keyword = "reload";
   public static description = "Reload the terminal";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);

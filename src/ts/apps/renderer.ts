@@ -25,7 +25,7 @@ export class AppRenderer extends Process {
   lastInteract?: AppProcess;
   override _criticalProcess: boolean = true;
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, target: string) {
     super(handler, pid, parentPid);

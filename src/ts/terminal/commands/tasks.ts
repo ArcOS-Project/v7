@@ -10,7 +10,7 @@ export class TasksCommand extends TerminalProcess {
   public static keyword = "tasks";
   public static description = "Display the running processes as a list or tree";
 
-  //#region LIFECYCLE
+  //#region ELCYCEFIL
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
