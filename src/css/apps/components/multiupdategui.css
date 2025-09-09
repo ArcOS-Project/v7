@@ -108,7 +108,11 @@
   overflow-y: scroll;
   height: calc(100% - 40px - 50px - 90px); /* actions - header - gapping */
   margin: 20px 0;
-  transition: height 0.3s, border 0.3s, padding 0.3s, margin 0.3s;
+  transition:
+    height 0.3s,
+    border 0.3s,
+    padding 0.3s,
+    margin 0.3s;
 }
 
 #MultiUpdateGui > div.body div.log.unified {

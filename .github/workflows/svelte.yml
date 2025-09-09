@@ -1,0 +1,24 @@
+name: Svelte code check
+
+on:
+  pull_request:
+    branches: [main] # or whatever branch you protect
+  workflow_dispatch:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Run svelte check
+        run: yarn run check

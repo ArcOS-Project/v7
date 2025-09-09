@@ -28,7 +28,9 @@ div.window#loginApp > div.body button:not(.continue) {
   border: none;
   border-radius: 10px;
   backdrop-filter: blur(var(--blur));
-  transition: scale 0.2s, background-color 0.2s;
+  transition:
+    scale 0.2s,
+    background-color 0.2s;
   border: var(--button-glass-bg) 1px solid;
 }
 
@@ -48,7 +50,9 @@ div.window#loginApp > div.body div.container {
   justify-content: center;
   flex-direction: column;
   gap: 30px;
-  transition: opacity 0.3s, pointer-events 0s;
+  transition:
+    opacity 0.3s,
+    pointer-events 0s;
 }
 
 div.window#loginApp > div.body div.container.full {
@@ -136,7 +140,9 @@ div.window#loginApp > div.body div.login-form button.continue {
   justify-content: center;
   font-size: 16px;
   backdrop-filter: blur(var(--blur));
-  transition: background-color 0.2s, opacity 0.2s;
+  transition:
+    background-color 0.2s,
+    opacity 0.2s;
   border: #fff2 1px solid;
 }
 
@@ -188,7 +194,9 @@ div.window#loginApp > div.body div.power-options button {
   background-color: #fff2;
   border: none;
   font-size: 16px;
-  transition: opacity 0.2s, scale 0.2s;
+  transition:
+    opacity 0.2s,
+    scale 0.2s;
   outline: #fff3 1px solid;
   outline-offset: -1px;
 }

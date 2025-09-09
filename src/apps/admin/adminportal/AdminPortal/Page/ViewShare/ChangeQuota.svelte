@@ -18,7 +18,7 @@
       `Are you sure you want to change the quota of '${share.shareName}' to ${formatBytes(newQuota)}?`,
       "Cancel",
       "Change",
-      QuestionIcon,
+      QuestionIcon
     );
 
     if (!confirm) return;

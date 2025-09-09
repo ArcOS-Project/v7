@@ -8,7 +8,7 @@ import type { FsProgressOperation } from "./types";
 export class FsProgressRuntime extends AppProcess {
   public Progress = Store<FsProgressOperation>();
 
-  //#region CONTROL FLOW
+  //#region LIFECYCLE
 
   constructor(
     handler: ProcessHandler,

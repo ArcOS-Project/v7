@@ -17,8 +17,8 @@ export const AdminUserQuotaGet: AdminCommandType = async (term, admin, argv) => 
       key !== "percentage" && typeof value === "number"
         ? formatBytes(value as number)
         : key === "percentage"
-        ? parseInt(value as any).toFixed(2) + "%"
-        : value;
+          ? parseInt(value as any).toFixed(2) + "%"
+          : value;
 
     term.rl?.println(`${key}: ${formatted}`);
   }

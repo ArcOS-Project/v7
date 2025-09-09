@@ -52,7 +52,7 @@
         image: QuestionIcon,
       },
       process.pid,
-      true,
+      true
     );
   }
 </script>

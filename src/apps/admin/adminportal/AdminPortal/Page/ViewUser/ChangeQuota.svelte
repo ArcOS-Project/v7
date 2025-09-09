@@ -18,7 +18,7 @@
       `Are you sure you want to change the quota of '${user.username}' to ${formatBytes(newQuota)}?`,
       "Cancel",
       "Change",
-      QuestionIcon,
+      QuestionIcon
     );
 
     if (!confirm) return;

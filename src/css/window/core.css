@@ -14,7 +14,9 @@ div.window.core {
   position: absolute;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s, pointer-events 0s;
+  transition:
+    opacity 0.2s,
+    pointer-events 0s;
 }
 
 div.window.core.visible:not(.closing) {

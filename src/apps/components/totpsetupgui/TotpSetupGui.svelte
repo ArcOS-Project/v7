@@ -48,7 +48,7 @@
           image: ErrorIcon,
         },
         process.parentPid,
-        true,
+        true
       );
       $code = "";
     } else {
@@ -65,7 +65,7 @@
           image: GoodStatusIcon,
         },
         process.parentPid,
-        true,
+        true
       );
     }
   }

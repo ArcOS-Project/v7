@@ -21,7 +21,7 @@
         buttons: [{ caption: "Understood", action() {}, suggested: true }],
       },
       process.pid,
-      true,
+      true
     );
   }
 

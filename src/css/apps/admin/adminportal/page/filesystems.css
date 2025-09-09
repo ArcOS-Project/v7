@@ -89,7 +89,9 @@
   gap: 10px;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.3s, pointer-events 0s !important;
+  transition:
+    opacity 0.3s,
+    pointer-events 0s !important;
 }
 
 #AdminPortal .container.filesystems div.loading-overlay.show {

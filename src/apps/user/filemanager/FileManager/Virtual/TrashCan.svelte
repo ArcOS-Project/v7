@@ -43,7 +43,7 @@
         sound: "arcos.dialog.warning",
       },
       process.pid,
-      true,
+      true
     );
   }
 
@@ -60,7 +60,7 @@
         type: "quantity",
         max: $selection.length,
       },
-      process.pid,
+      process.pid
     );
 
     progress?.show();
@@ -81,7 +81,7 @@
         "Cancel",
         "Delete",
         TrashIcon,
-        process.pid,
+        process.pid
       );
 
       if (!proceed) return;
@@ -95,7 +95,7 @@
       "Cancel",
       "Delete",
       TrashIcon,
-      process.pid,
+      process.pid
     );
 
     if (!proceed) return;
@@ -108,7 +108,7 @@
         type: "quantity",
         max: $selection.length,
       },
-      process.pid,
+      process.pid
     );
 
     progress?.show();

@@ -13,6 +13,8 @@ export class ShortcutPropertiesRuntime extends AppProcess {
   iconStore = getAllImages();
   path?: string;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path: string, data: ArcShortcut) {
     super(handler, pid, parentPid, app);
 
@@ -25,6 +27,9 @@ export class ShortcutPropertiesRuntime extends AppProcess {
   async start() {
     if (!this.path) return false;
   }
+
+  //#endregion
+  //#region ACTIONS
 
   async save() {
     const result = await this.userDaemon?.createShortcut(this.shortcutData(), this.path!);
@@ -95,4 +100,6 @@ export class ShortcutPropertiesRuntime extends AppProcess {
     data.target = path;
     this.shortcutData.set(data);
   }
+
+  //#endregion
 }

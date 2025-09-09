@@ -43,7 +43,7 @@
         sound: "arcos.dialog.warning",
       },
       process.pid,
-      true,
+      true
     );
   }
 </script>

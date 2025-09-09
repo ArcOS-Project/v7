@@ -41,7 +41,7 @@
   </div>
 
   {#if chunks[currentChunk]}
-    {#each sortByKey( chunks[currentChunk].map( (t) => ({ ...t, user: users.filter((u) => u._id === t.userId)[0] }), ), $sortMode, true, ) as token (token._id)}
+    {#each sortByKey( chunks[currentChunk].map( (t) => ({ ...t, user: users.filter((u) => u._id === t.userId)[0] }) ), $sortMode, true ) as token (token._id)}
       <TokenRow {token} {process} />
     {/each}
   {/if}

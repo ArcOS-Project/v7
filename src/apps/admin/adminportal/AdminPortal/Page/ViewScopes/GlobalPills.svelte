@@ -27,7 +27,7 @@
         sound: "arcos.dialog.info",
       },
       process.pid,
-      true,
+      true
     );
   }
 </script>

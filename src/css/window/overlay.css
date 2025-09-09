@@ -10,7 +10,10 @@ div.window > div.overlay-wrapper {
   justify-content: center;
   align-items: center;
   z-index: 100000000000000000;
-  transition: opacity 0.3s, pointer-events 0s, visiblity 0.3s;
+  transition:
+    opacity 0.3s,
+    pointer-events 0s,
+    visiblity 0.3s;
   opacity: 0;
 }
 

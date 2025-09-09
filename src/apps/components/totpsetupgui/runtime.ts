@@ -9,7 +9,7 @@ export class TotpSetupGuiRuntime extends AppProcess {
   public code = Store<string>("");
   public url = Store<string>("");
 
-  //#region CONTROL FLOW
+  //#region LIFECYCLE
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);

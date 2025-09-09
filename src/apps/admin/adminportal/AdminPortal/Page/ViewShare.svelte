@@ -37,7 +37,7 @@
               process.switchPage(
                 "viewShare",
                 { share: (await process.admin.getAllShares()).filter((s) => s._id === share._id)[0] },
-                true,
+                true
               );
             },
             suggested: true,
@@ -45,7 +45,7 @@
         ],
       },
       process.pid,
-      true,
+      true
     );
   }
 
@@ -69,7 +69,7 @@
         sound: "arcos.dialog.warning",
       },
       process.pid,
-      true,
+      true
     );
   }
 </script>

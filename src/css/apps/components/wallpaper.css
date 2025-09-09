@@ -115,7 +115,11 @@ div.desktop-wallpaper > div.wallpaper:not(.show) {
   margin: 0;
   height: fit-content;
   max-height: 2.6em;
-  text-shadow: #000 -1px -1px 2px, #000 -1px 1px 2px, #000 1px -1px 2px, #000 1px 1px 2px;
+  text-shadow:
+    #000 -1px -1px 2px,
+    #000 -1px 1px 2px,
+    #000 1px -1px 2px,
+    #000 1px 1px 2px;
   color: #eee;
   overflow: hidden;
   text-overflow: ellipsis;

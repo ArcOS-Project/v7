@@ -29,7 +29,7 @@ export class AdminPortalRuntime extends AppProcess {
     userdata: BugHuntUserDataApp,
   };
 
-  //#region CONTROL FLOW
+  //#region LIFECYCLE
 
   constructor(
     handler: ProcessHandler,

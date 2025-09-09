@@ -7,7 +7,13 @@ div.shell div.startmenu {
   height: 490px;
   background-color: var(--glass-bg);
   border-radius: 15px;
-  transition: translate 0.3s, opacity 0.2s, pointer-events 0s, visibility 0.3s, width 0.3s, height 0.3s;
+  transition:
+    translate 0.3s,
+    opacity 0.2s,
+    pointer-events 0s,
+    visibility 0.3s,
+    width 0.3s,
+    height 0.3s;
   z-index: 10;
   border: var(--border);
   max-height: 100%;

@@ -15,7 +15,7 @@ export class AppInstallerRuntime extends AppProcess {
   metadata?: ArcPackage;
   zip?: JSZip;
 
-  //#region CONTROL FLOW
+  //#region LIFECYCLE
   constructor(
     handler: ProcessHandler,
     pid: number,

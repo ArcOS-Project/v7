@@ -51,7 +51,7 @@
         "Are you sure?",
         "This user has the <code>admin.god</code> scope applied. This means that they can access all administrative functions of Sacruda, regardless of any other scopes. Are you sure you want to save these changes?",
         "Cancel",
-        "Save them",
+        "Save them"
       ))
     )
       return;

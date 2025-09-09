@@ -15,7 +15,7 @@
       `Are you sure you want to change the password of '${user.username}'?`,
       "Cancel",
       "Change",
-      QuestionIcon,
+      QuestionIcon
     );
 
     if (!confirm || !newPassword) return;

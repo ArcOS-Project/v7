@@ -38,7 +38,7 @@
         sound: "arcos.dialog.warning",
       },
       process.pid,
-      true,
+      true
     );
   }
 
@@ -63,7 +63,7 @@
         sound: "arcos.dialog.warning",
       },
       process.pid,
-      true,
+      true
     );
   }
 
@@ -81,7 +81,7 @@
         ],
       },
       process.pid,
-      true,
+      true
     );
   }
 </script>

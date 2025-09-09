@@ -23,7 +23,7 @@ export class MultiUpdateGuiRuntime extends AppProcess {
   public showLog = Store<boolean>(false);
   public unified = Store<boolean>(false);
 
-  //#region CONTROL FLOW
+  //#region LIFECYCLE
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, updates: UpdateInfo[]) {
     super(handler, pid, parentPid, app);

@@ -79,7 +79,9 @@
   color: var(--accent-dark);
   background-color: var(--accent);
   opacity: 0;
-  transition: opacity 0.3s, scale 0.3s;
+  transition:
+    opacity 0.3s,
+    scale 0.3s;
 }
 
 #systemSettings div.loginBackground button.wallpaper-option div.selected-overlay span {

@@ -28,6 +28,8 @@ export class WallpaperRuntime extends AppProcess {
 
   public contextMenu: AppContextMenu = WallpaperContextMenu(this);
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, desktopDir?: string) {
     super(handler, pid, parentPid, app);
 
@@ -76,6 +78,9 @@ export class WallpaperRuntime extends AppProcess {
     }
   }
 
+  //#endregion
+  //#region ACTIONS
+
   async updateContents() {
     this.loading.set(true);
     this.Log("Refreshing desktop icons!");
@@ -93,6 +98,9 @@ export class WallpaperRuntime extends AppProcess {
     }
     this.loading.set(false);
   }
+
+  //#endregion
+  //#region DESKTOP ICONS
 
   findAndDeleteOrphans(contents: DirectoryReadReturn | undefined) {
     const orphaned = this.orphaned();
@@ -175,6 +183,9 @@ export class WallpaperRuntime extends AppProcess {
     });
   }
 
+  //#endregion
+  //#region FILESYSTEM
+
   async deleteItem(path: string) {
     const filename = getItemNameFromPath(path);
 
@@ -230,6 +241,9 @@ export class WallpaperRuntime extends AppProcess {
     prog.mutDone(+1);
   }
 
+  //#endregion
+  //#region CONFIGURATION
+
   async loadConfiguration() {
     const contents = await this.fs.readFile(this.CONFIG_PATH);
     if (!contents) return await this.writeConfiguration({});
@@ -268,4 +282,6 @@ export class WallpaperRuntime extends AppProcess {
 
     return false;
   }
+
+  //#endregion
 }

@@ -9,7 +9,7 @@ export class FsProgressFailRuntime extends AppProcess {
   icon: string = "";
   title: string = "";
 
-  //#region CONTROL FLOW
+  //#region LIFECYCLE
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, prog: FsProgressRuntime) {
     super(handler, pid, parentPid, app);

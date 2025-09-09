@@ -295,8 +295,8 @@ export class ArcTerminal extends Process {
     const continueCaption = lockdown
       ? `allow elevation in Settings.`
       : noPassword
-      ? `type "yes", and hit ${BRBLUE}Enter${RESET}.`
-      : `type in your password, and hit ${BRBLUE}Enter${RESET}.`;
+        ? `type "yes", and hit ${BRBLUE}Enter${RESET}.`
+        : `type in your password, and hit ${BRBLUE}Enter${RESET}.`;
 
     if (disabled) return true;
 

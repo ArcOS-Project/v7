@@ -20,7 +20,7 @@
 
       for (const workspace of workspaces) {
         $windowCounts[workspace.uuid] = [...v].filter(
-          ([_, p]) => p instanceof AppProcess && p.app.desktop === workspace.uuid,
+          ([_, p]) => p instanceof AppProcess && p.app.desktop === workspace.uuid
         ).length;
       }
     });

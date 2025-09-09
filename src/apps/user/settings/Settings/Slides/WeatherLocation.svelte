@@ -31,7 +31,7 @@
           buttons: [{ caption: "Okay", suggested: true, action: () => {} }],
         },
         process.pid,
-        true,
+        true
       );
       process.slideVisible.set(false);
     }

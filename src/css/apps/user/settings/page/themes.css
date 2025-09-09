@@ -78,7 +78,9 @@
   color: var(--accent-dark);
   background-color: var(--accent);
   opacity: 0;
-  transition: opacity 0.3s, scale 0.3s;
+  transition:
+    opacity 0.3s,
+    scale 0.3s;
 }
 
 #systemSettings div.container.themes button.user-theme div.selected-overlay span {

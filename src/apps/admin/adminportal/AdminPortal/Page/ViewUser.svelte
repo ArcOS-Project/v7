@@ -47,7 +47,7 @@
         sound: "arcos.dialog.warning",
       },
       process.pid,
-      true,
+      true
     );
   }
 
@@ -75,7 +75,7 @@
         sound: "arcos.dialog.warning",
       },
       process.pid,
-      true,
+      true
     );
   }
   function toggleAdmin() {
@@ -102,7 +102,7 @@
         sound: "arcos.dialog.warning",
       },
       process.pid,
-      true,
+      true
     );
   }
 
@@ -126,7 +126,7 @@
         sound: "arcos.dialog.warning",
       },
       process.pid,
-      true,
+      true
     );
   }
 </script>

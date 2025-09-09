@@ -24,7 +24,7 @@
           sound: "arcos.dialog.warning",
         },
         process.parentPid,
-        true,
+        true
       );
     } else {
       MessageBox(
@@ -37,7 +37,7 @@
           sound: "arcos.dialog.info",
         },
         process.parentPid,
-        true,
+        true
       );
     }
   }

@@ -28,7 +28,7 @@
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
       },
       process.parentPid,
-      true,
+      true
     );
   }
 </script>

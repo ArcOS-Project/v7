@@ -28,7 +28,10 @@
   padding: 10px;
   width: 250px;
   height: 100px;
-  transition: scale 0.3s, box-shadow 0.3s, background-color 0.3s;
+  transition:
+    scale 0.3s,
+    box-shadow 0.3s,
+    background-color 0.3s;
 }
 
 #AcceleratorOverview > div.body div.shortcut:hover {

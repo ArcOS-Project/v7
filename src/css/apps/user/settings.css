@@ -38,7 +38,9 @@
   flex-grow: 1;
   max-width: calc(100% - 250px);
   background-color: var(--win-bg);
-  transition: background-color 0.2s, color 0.2s;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
   position: relative;
 }
 
@@ -66,7 +68,10 @@ button.lucide:active {
   padding: 15px;
   padding-top: 10px;
   height: calc(100% - 40px);
-  transition: pointer-events 0s, scale 0.3s, opacity 0.3s;
+  transition:
+    pointer-events 0s,
+    scale 0.3s,
+    opacity 0.3s;
   overflow-y: scroll;
 }
 

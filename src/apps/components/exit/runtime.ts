@@ -8,7 +8,7 @@ import type { ExitAction } from "./types";
 export class ExitRuntime extends AppProcess {
   selected = Store<string>();
 
-  //#region CONTROL FLOW
+  //#region LIFECYCLE
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, selected?: string) {
     super(handler, pid, parentPid, app);
@@ -25,7 +25,8 @@ export class ExitRuntime extends AppProcess {
 
     await this.closeWindow();
 
-    if (alternate && option.alternateAction) option.alternateAction(this.userDaemon!); // Alternate: when shift key is pressed
+    if (alternate && option.alternateAction)
+      option.alternateAction(this.userDaemon!); // Alternate: when shift key is pressed
     else option.action(this.userDaemon!);
   }
 }

@@ -23,7 +23,10 @@ div.virtual-desktop-container > div.inner > div.workspace {
   width: 100vw;
   height: 100vh;
   position: relative;
-  transition: scale 0.3s, border-radius 0.3s, background-color 0.3s;
+  transition:
+    scale 0.3s,
+    border-radius 0.3s,
+    background-color 0.3s;
   overflow: hidden;
   display: grid;
   grid-template-rows: [top] 50% [bottom] calc(50% - var(--taskbar-allocation));
@@ -31,7 +34,9 @@ div.virtual-desktop-container > div.inner > div.workspace {
 }
 
 div.virtual-desktop-container > div.inner.changing {
-  transition: margin-left 0.3s, background-color 0.3s;
+  transition:
+    margin-left 0.3s,
+    background-color 0.3s;
 }
 
 div.virtual-desktop-container > div.inner.changing > div.workspace {

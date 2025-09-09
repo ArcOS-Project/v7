@@ -13,7 +13,7 @@
       `Are you sure you want to change the name of share '${share.shareName}' to '${newName}'?`,
       "Cancel",
       "Rename",
-      QuestionIcon,
+      QuestionIcon
     );
 
     if (!confirm || !newName) return;

@@ -24,7 +24,7 @@ export class MessageComposerRuntime extends AppProcess {
   replyId: string | undefined;
   service: MessagingInterface;
 
-  //#region CONTROL FLOW
+  //#region LIFECYCLE
 
   constructor(
     handler: ProcessHandler,

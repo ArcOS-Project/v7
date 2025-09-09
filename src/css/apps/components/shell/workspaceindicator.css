@@ -18,7 +18,10 @@
   translate: 0 30px;
   pointer-events: none !important;
   box-shadow: var(--secondary-box-shadow);
-  transition: opacity 0.3s, visibility 0.3s, translate 0.3s;
+  transition:
+    opacity 0.3s,
+    visibility 0.3s,
+    translate 0.3s;
 }
 
 #arcShell div.workspace-indicator.show {

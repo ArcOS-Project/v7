@@ -21,7 +21,10 @@
     padding: 0 !important;
     border: 1px solid var(--bc, var(--border)) !important;
     background: var(--b, var(--background)) !important;
-    transition: background 0.3s, border-color 0.3s, box-shadow 0.2s;
+    transition:
+      background 0.3s,
+      border-color 0.3s,
+      box-shadow 0.2s;
   }
 
   input[type="checkbox"]:after,
@@ -31,7 +34,9 @@
     left: 0;
     top: 0;
     position: absolute;
-    transition: transform var(--d-t, 0.3s) var(--d-t-e, ease), opacity var(--d-o, 0.2s) !important;
+    transition:
+      transform var(--d-t, 0.3s) var(--d-t-e, ease),
+      opacity var(--d-o, 0.2s) !important;
   }
 
   input[type="checkbox"]:checked,

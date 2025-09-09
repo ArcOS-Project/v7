@@ -17,7 +17,7 @@
 
   drives.subscribe((v) => {
     sorted = Object.entries(v).sort((a, b) =>
-      a[1].data.driveLetter?.toLowerCase() || "~" > (b[1].data.driveLetter?.toLowerCase() || "~") ? -1 : 0,
+      a[1].data.driveLetter?.toLowerCase() || "~" > (b[1].data.driveLetter?.toLowerCase() || "~") ? -1 : 0
     );
   });
 </script>

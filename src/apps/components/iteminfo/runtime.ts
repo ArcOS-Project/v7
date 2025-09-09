@@ -13,7 +13,7 @@ export class ItemInfoRuntime extends AppProcess {
   info = Store<ItemInfo>();
   shortcut = Store<ArcShortcut>();
 
-  //#region CONTROL FLOW
+  //#region LIFECYCLE
 
   constructor(
     handler: ProcessHandler,

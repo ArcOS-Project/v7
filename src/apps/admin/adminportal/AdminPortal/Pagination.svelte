@@ -25,7 +25,7 @@
   <span class="current">
     ({currentChunk + 1} / {totalChunks + 1}) Showing {currentChunk * chunkSize + 1}-{Math.min(
       currentChunk * chunkSize + chunkSize,
-      totalItems,
+      totalItems
     )} of {totalItems}
   </span>
   <button

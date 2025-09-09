@@ -10,11 +10,14 @@
     "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
     "build:types": "tsc -p tsconfig.app.json --emitDeclarationOnly --declaration --outFile dist/types.d.ts --verbatimModuleSyntax false --isolatedModules false --removeComments",
     "build:globals": "node tools/build-globals.mjs && node tools/convert-global.mjs",
-    "build:types:all": "npm run build:types && npm run build:globals"
+    "build:types:all": "npm run build:types && npm run build:globals",
+    "format:check": "prettier --check ./src"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "5.1.0",
     "@tsconfig/svelte": "5.0.4",
+    "prettier": "^3.6.2",
+    "prettier-plugin-svelte": "^3.4.0",
     "svelte": "5.33.14",
     "svelte-check": "^4.1.1",
     "typescript": "^5.8.3",

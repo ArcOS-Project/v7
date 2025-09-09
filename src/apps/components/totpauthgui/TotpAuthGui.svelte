@@ -47,7 +47,7 @@
           image: ErrorIcon,
         },
         process.parentPid,
-        true,
+        true
       );
 
       $code = "";

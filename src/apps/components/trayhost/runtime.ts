@@ -13,7 +13,7 @@ export class TrayHostRuntime extends Process {
   userPreferences?: UserPreferencesStore;
   public trayIcons = Store<Record<TrayIconDiscriminator, TrayIconProcess>>({});
 
-  //#region CONTROL FLOW
+  //#region LIFECYCLE
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, _: AppProcessData) {
     super(handler, pid, parentPid);

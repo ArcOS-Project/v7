@@ -54,7 +54,7 @@
           sound: "arcos.dialog.error",
         },
         process.pid,
-        true,
+        true
       );
       return;
     }
@@ -67,7 +67,7 @@
       "Confirm Close?",
       "Are you sure you want to close this report?",
       "Abort!",
-      "Continue",
+      "Continue"
     );
 
     if (!go) return;
@@ -83,7 +83,7 @@
       "Are you sure you want to delete this report?",
       "Abort!",
       "Continue",
-      TrashIcon,
+      TrashIcon
     );
 
     if (!go) return;
@@ -99,7 +99,7 @@
       `Are you sure you want to delete ${$selectionList.length} reports? This is a potentially destructive action!`,
       "Abort!",
       "Continue",
-      TrashIcon,
+      TrashIcon
     );
 
     if (!go) return;
@@ -115,7 +115,7 @@
       "Confirm Close?",
       `Are you sure you want to close ${$selectionList.length} reports? This is a potentially destructive action!`,
       "Abort!",
-      "Continue",
+      "Continue"
     );
 
     if (!go) return;

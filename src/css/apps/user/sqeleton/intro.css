@@ -78,7 +78,9 @@
   justify-content: center;
   align-items: center;
   border-radius: 10px;
-  transition: background-color 0.1s, scale 0.1s;
+  transition:
+    background-color 0.1s,
+    scale 0.1s;
 }
 
 #Sqeleton > div.body div.intro-screen div.actions button:hover p {

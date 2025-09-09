@@ -17,7 +17,7 @@
 
       currentLogItem = htmlspecialchars(`${ShortLogLevelCaptions[last.level]} ${last.source}%%br${last.message}`).replace(
         "%%br",
-        "<br>",
+        "<br>"
       );
     });
 

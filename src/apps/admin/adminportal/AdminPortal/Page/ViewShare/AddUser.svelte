@@ -15,7 +15,7 @@
       `Are you sure you want to add this user to '${share.shareName}'?`,
       "Cancel",
       "Add",
-      QuestionIcon,
+      QuestionIcon
     );
 
     if (!confirm || !contestant) return;

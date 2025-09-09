@@ -28,7 +28,7 @@
         caption: "Exporting report...",
         subtitle: `${getItemNameFromPath(path)}`,
       },
-      process.pid,
+      process.pid
     );
 
     try {

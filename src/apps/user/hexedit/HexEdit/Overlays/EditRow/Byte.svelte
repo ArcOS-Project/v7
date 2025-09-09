@@ -67,7 +67,7 @@
               ],
             },
             process.parentPid,
-            true,
+            true
           );
         }
       }

@@ -15,7 +15,9 @@ div.shell div.actioncenter {
   max-height: 100%;
   translate: 420px 0;
   opacity: 0;
-  transition: translate 0.3s, opacity 0.2s;
+  transition:
+    translate 0.3s,
+    opacity 0.2s;
   backdrop-filter: blur(var(--blur));
   -webkit-backdrop-filter: blur(var(--blur));
   box-shadow: 0 5px 15px 5px #0003;

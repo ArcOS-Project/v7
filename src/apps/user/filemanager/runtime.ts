@@ -732,8 +732,8 @@ export class FileManagerRuntime extends AppProcess {
     const result = this.loadSave?.multiple
       ? this.selection()
       : this.loadSave?.folder
-      ? [selection[0] || path]
-      : [!this.loadSave?.isSave ? selection[0] : join(path, saveName)];
+        ? [selection[0] || path]
+        : [!this.loadSave?.isSave ? selection[0] : join(path, saveName)];
 
     this.systemDispatch.dispatch("ls-confirm", [this.loadSave?.returnId, result]);
 

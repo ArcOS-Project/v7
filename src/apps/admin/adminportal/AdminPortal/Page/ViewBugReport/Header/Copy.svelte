@@ -43,7 +43,7 @@
             caption: "Copy Proto",
             action: () => {
               navigator.clipboard.writeText(
-                `[\`${report._id}\`](https://v7.izkuipers.nl/?proto=arc://admin_bugrep?id=${report._id})`,
+                `[\`${report._id}\`](https://v7.izkuipers.nl/?proto=arc://admin_bugrep?id=${report._id})`
               );
             },
             suggested: true,
@@ -53,7 +53,7 @@
         sound: "arcos.dialog.info",
       },
       process.pid,
-      true,
+      true
     );
   }
 </script>

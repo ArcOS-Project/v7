@@ -18,7 +18,7 @@ export class ArcFindRuntime extends AppProcess {
   private searchItems: SearchItem[] = [];
   public loading = Store<boolean>(false);
 
-  //#region CONTROL FLOW
+  //#region LIFECYCLE
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);

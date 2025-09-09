@@ -13,7 +13,7 @@ export class ContextMenuRuntime extends AppProcess {
   // Elements that can contain a contextmenu dataset key
   private readonly validContexMenuTags = ["button", "div", "span", "p", "h1", "h2", "h3", "h4", "h5", "img"];
 
-  //#region CONTROL FLOW
+  //#region LIFECYCLE
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);

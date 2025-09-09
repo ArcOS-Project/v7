@@ -53,7 +53,10 @@
   scale: 0.9;
   opacity: 0;
   pointer-events: none;
-  transition: scale 0.3s, opacity 0.3s, pointer-events 0s;
+  transition:
+    scale 0.3s,
+    opacity 0.3s,
+    pointer-events 0s;
   overflow: hidden;
 }
 
@@ -64,7 +67,9 @@
 }
 
 #initialSetupWizard div.container > div {
-  transition: opacity 0.2s, pointer-events 0s;
+  transition:
+    opacity 0.2s,
+    pointer-events 0s;
 }
 
 #initialSetupWizard div.container > .hide {
@@ -97,7 +102,11 @@
   border-radius: var(--button-border-rad);
   padding: 0 15px;
   height: 30px;
-  transition: background-color 0.2s, opacity 0.2s, filter 0.2s, scale 0.2s;
+  transition:
+    background-color 0.2s,
+    opacity 0.2s,
+    filter 0.2s,
+    scale 0.2s;
 }
 
 #initialSetupWizard div.actions button {

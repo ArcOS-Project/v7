@@ -56,7 +56,9 @@
   right: 4px;
   background-color: var(--button-bg) !important;
   outline-offset: -1px !important;
-  transition: width 0.3s, margin-left 0.3s;
+  transition:
+    width 0.3s,
+    margin-left 0.3s;
   overflow: hidden;
   backdrop-filter: blur(10px);
 }
