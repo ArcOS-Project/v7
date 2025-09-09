@@ -18,6 +18,6 @@ jobs:
           node-version: 20
           cache: npm
 
-      - run: npm install
+      - run: npm install --force
       - run: npm ci
       - run: npm run build
