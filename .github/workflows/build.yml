@@ -18,5 +18,9 @@ jobs:
           node-version: 20
           cache: yarn
 
-      - run: yarn install --frozen-lockfile
-      - run: yarn build
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Build the frontend
+        run: yarn build
+      - name: Generate type definitions
+        run: yarn build:types:all
