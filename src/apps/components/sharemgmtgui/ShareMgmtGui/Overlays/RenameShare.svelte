@@ -1,5 +1,6 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
+  import { ShareManager } from "$ts/fs/shares";
   import { WarningIcon } from "$ts/images/dialog";
   import { ShareIcon } from "$ts/images/filesystem";
   import { GoodStatusIcon } from "$ts/images/status";
@@ -9,7 +10,8 @@
   let newName = $state<string>();
 
   async function changeIt() {
-    const result = await process.userDaemon?.shares?.renameShare(process.parentProcess.shareId, newName!);
+    const shares = process.userDaemon?.serviceHost?.getService<ShareManager>("ShareMgmt")!;
+    const result = await shares?.renameShare(process.parentProcess.shareId, newName!);
 
     process.closeWindow();
 

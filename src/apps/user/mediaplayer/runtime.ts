@@ -171,7 +171,7 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   public formatTime(seconds: number) {
-    if (this._disposed) return;
+    if (this._disposed) return "--:--";
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;

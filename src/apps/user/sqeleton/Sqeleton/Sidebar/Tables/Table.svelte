@@ -15,7 +15,6 @@
         caption: "View top 200 rows",
         action: () => {
           process.execute(`SELECT * FROM ${table.name} LIMIT 200`);
-          process.maximizeBottom.set(true);
           process.currentTab.set("result");
         },
         icon: "eye",

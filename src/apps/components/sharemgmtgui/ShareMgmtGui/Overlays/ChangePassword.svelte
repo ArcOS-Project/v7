@@ -1,5 +1,6 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
+  import { ShareManager } from "$ts/fs/shares";
   import { WarningIcon } from "$ts/images/dialog";
   import { PasswordIcon } from "$ts/images/general";
   import { GoodStatusIcon } from "$ts/images/status";
@@ -27,7 +28,8 @@
       return;
     }
 
-    const result = await process.userDaemon?.shares?.changeSharePassword(process.parentProcess.shareId, newPassword);
+    const shares = process.userDaemon?.serviceHost?.getService<ShareManager>("ShareMgmt")!;
+    const result = shares?.changeSharePassword(process.parentProcess.shareId, newPassword);
 
     process.closeWindow();
 

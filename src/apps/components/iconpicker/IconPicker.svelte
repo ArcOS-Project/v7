@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { DefaultIcon } from "$ts/images/apps";
   import Header from "./IconPicker/Header.svelte";
   import Icon from "./IconPicker/Icon.svelte";
   import type { IconPickerRuntime } from "./runtime";
@@ -25,7 +26,9 @@
 
 <div class="actions">
   <div class="left">
-    <button class="reset-icon" onclick={() => ($selected = defaultIcon)} disabled={$selected === defaultIcon}>Reset</button>
+    <button class="reset-icon" onclick={() => ($selected = defaultIcon || DefaultIcon)} disabled={$selected === defaultIcon}
+      >Reset</button
+    >
     <button class="random">Random</button>
   </div>
   <div class="right">
