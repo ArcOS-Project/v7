@@ -5,6 +5,8 @@ on:
     branches: [main] # or whatever branch you protect
   workflow_dispatch:
     branches: [main]
+  commit:
+    branches: [main]
 
 jobs:
   sveltecheck:
