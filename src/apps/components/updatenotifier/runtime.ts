@@ -1,6 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
 import type { ProcessHandler } from "$ts/process/handler";
-import { DefaultFileDefinitions } from "$ts/server/user/assoc/store";
 import type { AppProcessData } from "$types/app";
 
 export class UpdateNotifierRuntime extends AppProcess {

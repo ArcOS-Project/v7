@@ -33,6 +33,8 @@ export class ShellRuntime extends AppProcess {
 
   override contextMenu: AppContextMenu = ShellContextMenu(this);
 
+  //#region CONTROL FLOW
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
   }
@@ -118,14 +120,6 @@ export class ShellRuntime extends AppProcess {
     this.env.set("shell_pid", this.pid); // Set the shell PID
   }
 
-  async gotReadySignal() {
-    this.Log("Got ready signal!");
-    this.trayHost = this.handler.getProcess(+this.env.get("trayhost_pid"))!;
-    this.arcFind = this.handler.getProcess(+this.env.get("arcfind_pid"))!;
-    this.arcFind.loading.subscribe((v) => this.searchLoading.set(v));
-    this.ready.set(true);
-  }
-
   async render() {
     document.body.addEventListener("click", (e) => {
       const startMenu = document.querySelector("#arcShell div.startmenu");
@@ -193,41 +187,21 @@ export class ShellRuntime extends AppProcess {
     this.userDaemon?.checkReducedMotion();
   }
 
-  async getWeather(): Promise<WeatherInformation> {
-    this.Log(`Retrieving weather`);
-
-    const preferences = this.userPreferences();
-    const params = {
-      latitude: preferences.shell.actionCenter.weatherLocation.latitude,
-      longitude: preferences.shell.actionCenter.weatherLocation.longitude,
-      current: ["temperature_2m", "weather_code", "is_day"],
-    };
-    const url = "https://api.open-meteo.com/v1/forecast";
-
-    try {
-      const responses = await fetchWeatherApi(url, params); // Fetch some weather stuff
-
-      const response = responses[0];
-      const current = response.current()!;
-      const temperature_2m = current.variables(0)!.value();
-      const weather_code = current.variables(1)!.value();
-      const is_day = current.variables(2)!.value();
-      const metadata = weatherMetadata[weather_code]!;
-
-      return {
-        code: weather_code,
-        condition: metadata.caption,
-        temperature: temperature_2m,
-        className: weatherClasses[weather_code],
-        gradient: metadata.gradient,
-        icon: metadata.icon,
-        iconColor: metadata.iconColor,
-        isNight: !is_day,
-      };
-    } catch {
-      return false;
-    }
+  async stop() {
+    this.env.delete("shell_pid");
+    return true;
   }
+
+  async gotReadySignal() {
+    this.Log("Got ready signal!");
+    this.trayHost = this.handler.getProcess(+this.env.get("trayhost_pid"))!;
+    this.arcFind = this.handler.getProcess(+this.env.get("arcfind_pid"))!;
+    this.arcFind.loading.subscribe((v) => this.searchLoading.set(v));
+    this.ready.set(true);
+  }
+
+  //#endregion
+  //#region PINNING
 
   async pinApp(appId: string) {
     this.Log(`Pinning ${appId}`);
@@ -257,6 +231,9 @@ export class ShellRuntime extends AppProcess {
     });
   }
 
+  //#endregion
+  //#region WORKSPACES
+
   async deleteWorkspace(workspace: Workspace) {
     const windowCount = [...this.handler.store()].filter(
       ([_, p]) => p instanceof AppProcess && p.app.desktop === workspace.uuid
@@ -283,6 +260,9 @@ export class ShellRuntime extends AppProcess {
     await Sleep(0); // Then wait for the next frame
     this.workspaceManagerOpened.set(true); // (ugly) and re-open the workspace manager
   }
+
+  //#endregion
+  //#region ARCFIND
 
   public MutateIndex(e: KeyboardEvent) {
     if (!e?.key) return;
@@ -329,13 +309,49 @@ export class ShellRuntime extends AppProcess {
     this.Trigger(results[index == -1 ? 0 : index].item); // Default to index 0
   }
 
+  //#endregion
+  //#region MISCELLANEOUS
+
+  async getWeather(): Promise<WeatherInformation> {
+    this.Log(`Retrieving weather`);
+
+    const preferences = this.userPreferences();
+    const params = {
+      latitude: preferences.shell.actionCenter.weatherLocation.latitude,
+      longitude: preferences.shell.actionCenter.weatherLocation.longitude,
+      current: ["temperature_2m", "weather_code", "is_day"],
+    };
+    const url = "https://api.open-meteo.com/v1/forecast";
+
+    try {
+      const responses = await fetchWeatherApi(url, params); // Fetch some weather stuff
+
+      const response = responses[0];
+      const current = response.current()!;
+      const temperature_2m = current.variables(0)!.value();
+      const weather_code = current.variables(1)!.value();
+      const is_day = current.variables(2)!.value();
+      const metadata = weatherMetadata[weather_code]!;
+
+      return {
+        code: weather_code,
+        condition: metadata.caption,
+        temperature: temperature_2m,
+        className: weatherClasses[weather_code],
+        gradient: metadata.gradient,
+        icon: metadata.icon,
+        iconColor: metadata.iconColor,
+        isNight: !is_day,
+      };
+    } catch {
+      return false;
+    }
+  }
+
   async exit() {
     this.startMenuOpened.set(false); // First close the start menu
     await this.spawnOverlayApp("ExitApp", this.pid); // Then spawn the exit overlay
   }
 
-  async stop() {
-    this.env.delete("shell_pid");
-    return true;
-  }
+  //#endregion
 }

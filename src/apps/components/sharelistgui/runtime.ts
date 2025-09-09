@@ -20,6 +20,8 @@ export class ShareListGuiRuntime extends AppProcess {
   shares: ShareManager;
   thisUserId: string;
 
+  //#region CONTROL FLOW
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
 
@@ -38,6 +40,9 @@ export class ShareListGuiRuntime extends AppProcess {
     this.joinedShares.set(await this.shares.getJoinedShares()); // Get joined shares from manager
     this.loading.set(false);
   }
+
+  //#endregion
+  //#region ACTIONS
 
   async manageShare() {
     this.closeWindow(); // Close the listgui
@@ -136,4 +141,6 @@ export class ShareListGuiRuntime extends AppProcess {
     await this.closeWindow(); // First close the listgui
     this.spawnOverlayApp("ShareCreateGui", this.parentPid); // Then spawn the creategui
   }
+
+  //#endregion
 }

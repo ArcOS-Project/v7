@@ -13,6 +13,8 @@ export class TrayHostRuntime extends Process {
   userPreferences?: UserPreferencesStore;
   public trayIcons = Store<Record<TrayIconDiscriminator, TrayIconProcess>>({});
 
+  //#region CONTROL FLOW
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, _: AppProcessData) {
     super(handler, pid, parentPid);
 
@@ -27,6 +29,9 @@ export class TrayHostRuntime extends Process {
 
     this.env.set("trayhost_pid", this.pid);
   }
+
+  //#endregion
+  //#region ACTIONS
 
   async createTrayIcon(
     pid: number,
@@ -85,4 +90,6 @@ export class TrayHostRuntime extends Process {
     this.trayIcons.set(trayIcons);
     this.systemDispatch.dispatch("tray-icon-dispose", [pid]);
   }
+
+  //#endregion
 }

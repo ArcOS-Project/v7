@@ -11,6 +11,8 @@ export class TotpAuthGuiRuntime extends AppProcess {
   private token: string;
   private dispatchId: string;
 
+  //#region CONTROL FLOW
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, token: string, dispatchId: string) {
     super(handler, pid, parentPid, app);
 
@@ -24,6 +26,9 @@ export class TotpAuthGuiRuntime extends AppProcess {
       return false;
     }
   }
+
+  //#endregion
+  //#region ACCESS
 
   validate(code: string) {
     const digits = code.split("").map(Number);
@@ -61,15 +66,6 @@ export class TotpAuthGuiRuntime extends AppProcess {
     }
   }
 
-  async doDispatch() {
-    this.systemDispatch.dispatch("totp-unlock-success", [this.dispatchId]);
-  }
-
-  async cancel() {
-    this.systemDispatch.dispatch("totp-unlock-cancel", [this.dispatchId]);
-    this.closeWindow();
-  }
-
   cantAccess() {
     MessageBox(
       {
@@ -84,4 +80,18 @@ export class TotpAuthGuiRuntime extends AppProcess {
       true
     );
   }
+
+  //#endregion
+  //#region ACTIONS
+
+  async doDispatch() {
+    this.systemDispatch.dispatch("totp-unlock-success", [this.dispatchId]);
+  }
+
+  async cancel() {
+    this.systemDispatch.dispatch("totp-unlock-cancel", [this.dispatchId]);
+    this.closeWindow();
+  }
+
+  //#endregion
 }

@@ -9,6 +9,8 @@ export class TotpSetupGuiRuntime extends AppProcess {
   public code = Store<string>("");
   public url = Store<string>("");
 
+  //#region CONTROL FLOW
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
   }
@@ -24,6 +26,9 @@ export class TotpSetupGuiRuntime extends AppProcess {
       this.closeWindow();
     }
   }
+
+  //#endregion
+  //#region ACCESS
 
   validate() {
     const code = this.code();
@@ -62,4 +67,6 @@ export class TotpSetupGuiRuntime extends AppProcess {
       return false;
     }
   }
+
+  //#endregion
 }

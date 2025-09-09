@@ -14,6 +14,8 @@ export class SecureContextRuntime extends AppProcess {
   public password = Store<string>("");
   public loading = Store<boolean>(false);
 
+  //#region CONTROL FLOW
+
   constructor(
     handler: ProcessHandler,
     pid: number,
@@ -39,6 +41,9 @@ export class SecureContextRuntime extends AppProcess {
 
     this.soundBus.playSound("arcos.dialog.info");
   }
+
+  //#endregion
+  //#region MASTER
 
   async validate() {
     this.Log("Validating elevation request");
@@ -103,6 +108,9 @@ export class SecureContextRuntime extends AppProcess {
     });
   }
 
+  //#endregion
+  //#region EXTERNAL
+
   async settings() {
     this.Log("Displaying confirmation for Security Settings");
 
@@ -131,4 +139,6 @@ export class SecureContextRuntime extends AppProcess {
       true
     );
   }
+
+  //#endregion
 }

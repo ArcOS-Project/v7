@@ -23,6 +23,8 @@ export class ShareMgmtGuiRuntime extends AppProcess {
     renameShare: RenameShareApp,
   };
 
+  //#region CONTROL FLOW
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, shareId: string) {
     super(handler, pid, parentPid, app);
 
@@ -38,6 +40,9 @@ export class ShareMgmtGuiRuntime extends AppProcess {
 
     await this.updateMembers();
   }
+
+  //#endregion
+  //#region ACTIONS
 
   async updateMembers() {
     this.members.set(await this.shares.getShareMembers(this.shareId));
@@ -93,4 +98,6 @@ export class ShareMgmtGuiRuntime extends AppProcess {
       true
     );
   }
+
+  //#endregion
 }

@@ -18,6 +18,8 @@ export class ShareCreateGuiRuntime extends AppProcess {
     this.shares = this.userDaemon?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
   }
 
+  //#region MASTER
+
   async go() {
     const name = this.shareName();
     const password = this.sharePassword();
@@ -69,4 +71,6 @@ export class ShareCreateGuiRuntime extends AppProcess {
     await this.closeWindow(); // Close the creategui
     this.spawnOverlayApp("ShareListGui", this.parentPid); // Spawn the listgui
   }
+
+  //#endregion
 }
