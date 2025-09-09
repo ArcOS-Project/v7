@@ -15,6 +15,8 @@ export class ApplicationStorage extends BaseService {
   public buffer = Store<AppStorage>([]);
   public appIconCache: Record<string, string> = {};
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);
 
@@ -30,6 +32,8 @@ export class ApplicationStorage extends BaseService {
 
     await this.refresh();
   }
+
+  //#endregion
 
   loadOrigin(id: string, store: AppStoreCb) {
     if (this._disposed) return false;

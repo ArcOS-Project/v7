@@ -10,9 +10,13 @@ export class TasksCommand extends TerminalProcess {
   public static keyword = "tasks";
   public static description = "Display the running processes as a list or tree";
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const tree = flags.tree || flags.t;

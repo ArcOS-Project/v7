@@ -16,6 +16,8 @@ export class OpenWithRuntime extends AppProcess {
   selectedId = Store<string>();
   viewMode = Store<"all" | "apps" | "compatible">("compatible");
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path: string) {
     super(handler, pid, parentPid, app);
 
@@ -39,6 +41,8 @@ export class OpenWithRuntime extends AppProcess {
 
     if (!available || !available.length) this.viewMode.set("apps");
   }
+
+  //#endregion
 
   async go(id = this.selectedId()) {
     if (!id) return;

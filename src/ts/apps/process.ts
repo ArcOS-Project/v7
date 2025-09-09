@@ -46,6 +46,8 @@ export class AppProcess extends Process {
   public windowFullscreen = Store<boolean>(false);
   draggable: Draggable | undefined;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, ...args: any[]) {
     super(handler, pid, parentPid);
 
@@ -159,20 +161,6 @@ export class AppProcess extends Process {
     }
   }
 
-  async CrashDetection() {
-    while (true) {
-      if (this.crashReason) {
-        throw new AppRuntimeError(this.crashReason);
-      }
-
-      // if (this._disposed) {
-      //   throw new Error("Disposed.");
-      // }
-
-      await Sleep(1); // prevent hanging bleh
-    }
-  }
-
   render(args: RenderArgs): any {
     /** */
   }
@@ -219,6 +207,22 @@ export class AppProcess extends Process {
       });
 
     this.render(this.renderArgs);
+  }
+
+  //#endregion
+
+  async CrashDetection() {
+    while (true) {
+      if (this.crashReason) {
+        throw new AppRuntimeError(this.crashReason);
+      }
+
+      // if (this._disposed) {
+      //   throw new Error("Disposed.");
+      // }
+
+      await Sleep(1); // prevent hanging bleh
+    }
   }
 
   getSingleton() {

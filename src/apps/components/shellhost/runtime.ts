@@ -16,6 +16,8 @@ export class ShellHostRuntime extends Process {
   userDaemon: UserDaemon | undefined;
   userPreferences: UserPreferencesStore;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, _: AppProcessData, autoloadApps: string[]) {
     super(handler, pid, parentPid);
 
@@ -71,4 +73,6 @@ export class ShellHostRuntime extends Process {
     await Sleep(1000); // Wait a second...
     await trayHost?.disposeTrayIcon(this.pid, "shellHost_loading"); // ...then dispose the tray icon
   }
+
+  //#endregion
 }

@@ -9,9 +9,13 @@ export class HelpCommand extends TerminalProcess {
   public static description: string = "Shows a list of built-in ArcTerm commands";
   public static keyword: string = "help";
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal, flags: Arguments): Promise<number> {
     const showHidden = flags.a || flags.all;

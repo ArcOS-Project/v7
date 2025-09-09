@@ -15,6 +15,8 @@ export class ImageViewerRuntime extends AppProcess {
   indirect = Store<boolean>(false);
   overridePopulatable: boolean = true;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path?: string) {
     super(handler, pid, parentPid, app);
 
@@ -26,6 +28,8 @@ export class ImageViewerRuntime extends AppProcess {
 
     await this.readFile(path);
   }
+
+  //#endregion
 
   async readFile(path: string) {
     try {

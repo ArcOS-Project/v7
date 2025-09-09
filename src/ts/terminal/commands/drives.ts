@@ -8,9 +8,13 @@ export class DrivesCommand extends TerminalProcess {
   public static keyword = "drives";
   public static description = "Returns the drive mount table";
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const drives = term.fs.drives;

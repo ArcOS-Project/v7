@@ -9,12 +9,16 @@ export class SoundBus extends KernelModule {
   private _bus: SoundBusStore = {};
   private env: Environment;
 
+  //#region LIFECYCLE
+
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);
 
     this.store = ArcSounds;
     this.env = kernel.getModule<Environment>("env");
   }
+
+  //#endregion
 
   public playSound(id: string, volume = 1) {
     this.isKmod();

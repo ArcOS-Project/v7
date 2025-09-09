@@ -11,11 +11,15 @@ import { SharedDrive } from "./drive";
 export class ShareManager extends BaseService {
   token: string | undefined;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);
 
     this.token = host.daemon.token;
   }
+
+  //#endregion
 
   async getOwnedShares(): Promise<SharedDriveType[]> {
     try {

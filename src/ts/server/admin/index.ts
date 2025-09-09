@@ -37,6 +37,8 @@ export class AdminBootstrapper extends BaseService {
   private token: string | undefined;
   private userInfo: UserInfo | undefined;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);
     this.token = host.daemon.token;
@@ -52,6 +54,8 @@ export class AdminBootstrapper extends BaseService {
       await this.fs.mountDrive("admin", AdminFileSystem, "A", undefined, this.token);
     } catch {}
   }
+
+  //#endregion
 
   async getUserInfo(): Promise<UserInfo | undefined> {
     if (this._disposed) return;

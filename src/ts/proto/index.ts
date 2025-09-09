@@ -15,6 +15,8 @@ export class ProtocolServiceProcess extends BaseService {
     spawn_app: SpawnAppHandler,
   };
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);
   }
@@ -24,6 +26,8 @@ export class ProtocolServiceProcess extends BaseService {
 
     this.observer.observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
   }
+
+  //#endregion
 
   parseProtoParam() {
     this.Log("Attempting to execute proto param");

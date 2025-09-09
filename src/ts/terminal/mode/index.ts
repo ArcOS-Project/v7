@@ -26,12 +26,24 @@ export class TerminalMode extends Process {
   rl?: Readline;
   arcTerm?: ArcTerminal;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, target: HTMLDivElement) {
     super(handler, pid, parentPid);
 
     this.target = target;
     this.name = "TerminalMode";
   }
+
+  async start() {
+    await this.initializeTerminal();
+
+    if (await this.loadToken()) return;
+
+    return await this.loginPrompt();
+  }
+
+  //#endregion
 
   async initializeTerminal() {
     const term = new Terminal({
@@ -86,14 +98,6 @@ export class TerminalMode extends Process {
     if (!token) return false;
 
     return await this.startDaemon(token, username);
-  }
-
-  async start() {
-    await this.initializeTerminal();
-
-    if (await this.loadToken()) return;
-
-    return await this.loginPrompt();
   }
 
   async startDaemon(token: string, username: string): Promise<boolean> {

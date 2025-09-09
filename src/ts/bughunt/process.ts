@@ -15,6 +15,8 @@ export class BugHuntUserSpaceProcess extends BaseService {
   token: string | undefined;
   module: BugHunt;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);
 
@@ -25,6 +27,8 @@ export class BugHuntUserSpaceProcess extends BaseService {
   async afterActivate() {
     await this.refreshAllCaches();
   }
+
+  //#endregion
 
   async sendBugReport(options: ReportOptions): Promise<boolean> {
     const data = this.module.createReport(options);

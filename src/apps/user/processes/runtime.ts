@@ -15,9 +15,13 @@ export class ProcessManagerRuntime extends AppProcess {
   public selected = Store<number>();
   public running = Store<number>(0);
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
   }
+
+  //#endregion
 
   async kill(proc: Process) {
     const elevated = await this.userDaemon?.manuallyElevate({

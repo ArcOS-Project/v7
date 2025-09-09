@@ -15,6 +15,8 @@ export class MessagingInterface extends BaseService {
   token: string | undefined;
   serverUrl: string | false | undefined;
   serverAuthCode: string;
+
+  //#region LIFECYCLE
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);
 
@@ -44,6 +46,8 @@ export class MessagingInterface extends BaseService {
       });
     });
   }
+
+  //#endregion
 
   async getSentMessages(): Promise<PartialMessage[]> {
     if (this._disposed) return [];

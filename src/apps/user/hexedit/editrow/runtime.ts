@@ -13,6 +13,8 @@ export class EditRowRuntime extends AppProcess {
   rows = Store<[number, [number, number][]][]>([]);
   editorInputs = Store<HTMLInputElement[]>([]);
 
+  //#region LIFECYCLE
+
   constructor(
     handler: ProcessHandler,
     pid: number,
@@ -47,6 +49,8 @@ export class EditRowRuntime extends AppProcess {
       [offset + 1, rows[offset + 1] ?? undefined],
     ]);
   }
+
+  //#endregion
 
   getByteClass(byte: number) {
     if (byte === 0) {

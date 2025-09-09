@@ -28,6 +28,8 @@ export class AdvSysSetRuntime extends AppProcess {
   preferencesSub?: Unsubscriber;
   bufferSub?: Unsubscriber;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, tab?: string) {
     super(handler, pid, parentPid, app);
 
@@ -82,6 +84,8 @@ export class AdvSysSetRuntime extends AppProcess {
       );
     });
   }
+
+  //#endregion
 
   apply(close?: boolean) {
     this.syncInitialized = false;

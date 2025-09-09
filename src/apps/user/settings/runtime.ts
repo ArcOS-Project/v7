@@ -75,6 +75,8 @@ export class SettingsRuntime extends AppProcess {
 
   override contextMenu = SettingsContext(this);
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, page?: string, slide?: string) {
     super(handler, pid, parentPid, app);
 
@@ -109,6 +111,8 @@ export class SettingsRuntime extends AppProcess {
 
     if (this.requestedSlide) this.showSlide(this.requestedSlide);
   }
+
+  //#endregion
 
   switchPage(pageId: string) {
     this.Log(`Loading page '${pageId}'`);

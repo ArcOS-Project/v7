@@ -11,6 +11,8 @@ export class CalculatorRuntime extends AppProcess {
   public Value = Store<string>("");
   public Store = new CalculatorStore();
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
 
@@ -20,6 +22,8 @@ export class CalculatorRuntime extends AppProcess {
   async render(args: RenderArgs) {
     this.acceleratorStore.push(...this.generateKeyboardShortcuts());
   }
+
+  //#endregion
 
   public keys: CalculatorKeys = [];
   public Functions: { [key: string]: [string, () => void, string] } = {

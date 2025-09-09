@@ -42,6 +42,8 @@ export class ArcTerminal extends Process {
   config: ArcTermConfiguration = DefaultArcTermConfiguration;
   window: TerminalWindowRuntime | undefined;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, term: Terminal, path?: string) {
     super(handler, pid, parentPid);
 
@@ -72,6 +74,8 @@ export class ArcTerminal extends Process {
     this.var = new ArcTermVariables(this);
     this.readline();
   }
+
+  //#endregion
 
   async readline() {
     if (this._disposed) return;

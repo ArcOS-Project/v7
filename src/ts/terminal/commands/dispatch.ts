@@ -11,9 +11,13 @@ export class DispatchCommand extends TerminalProcess {
   public static keyword: string = "dispatch";
   public static description: string = "Dispatch events to ArcOS or a specific process";
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal, flags: Arguments): Promise<number> {
     const command = flags.cmd;

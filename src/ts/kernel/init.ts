@@ -12,6 +12,7 @@ import { Process } from "../process/instance";
 import { StateHandler } from "../state";
 
 export class InitProcess extends Process {
+  //#region LIFECYCLE
   constructor(handler: ProcessHandler, pid: number, parentPid = undefined) {
     super(handler, pid, parentPid);
   }
@@ -45,6 +46,8 @@ export class InitProcess extends Process {
 
     if (ArcMode() === "nightly") this.nightly();
   }
+
+  //#endregion
 
   async initializeTempFs() {
     this.Log("Initializing TEMP");

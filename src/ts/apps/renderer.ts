@@ -25,6 +25,8 @@ export class AppRenderer extends Process {
   lastInteract?: AppProcess;
   override _criticalProcess: boolean = true;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, target: string) {
     super(handler, pid, parentPid);
 
@@ -37,11 +39,21 @@ export class AppRenderer extends Process {
     this.name = "AppRenderer";
   }
 
+  protected async start() {
+    this.focusedPid.subscribe((v) => {
+      if (this._disposed || !v) return;
+
+      this.lastInteract = this.handler.getProcess(v);
+    });
+  }
+
   disposedCheck() {
     if (this._disposed) {
       throw new AppRendererError(`AppRenderer with PID ${this.pid} was killed`);
     }
   }
+
+  //#endregion
 
   async render(process: AppProcess, renderTarget: HTMLDivElement | undefined) {
     this.disposedCheck();
@@ -678,13 +690,5 @@ export class AppRenderer extends Process {
     if (!proc) {
       this.Log(`OOPS FALLBACK - ${e}`);
     }
-  }
-
-  protected async start() {
-    this.focusedPid.subscribe((v) => {
-      if (this._disposed || !v) return;
-
-      this.lastInteract = this.handler.getProcess(v);
-    });
   }
 }

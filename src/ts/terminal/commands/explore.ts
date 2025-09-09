@@ -7,9 +7,13 @@ export class ExploreCommand extends TerminalProcess {
   public static keyword = "explore";
   public static description = "Open a folder in the File manager";
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const path = argv.join(" ");

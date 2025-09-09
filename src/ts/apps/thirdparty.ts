@@ -11,6 +11,8 @@ export class ThirdPartyAppProcess extends AppProcess {
   urlCache: Record<string, string> = {};
   elements: Record<string, Element> = {};
 
+  //#region LIFECYCLE
+
   constructor(
     handler: ProcessHandler,
     pid: number,
@@ -94,4 +96,6 @@ export class ThirdPartyAppProcess extends AppProcess {
     await this.render(this.renderArgs);
     await processElements(body);
   }
+
+  //#endregion
 }

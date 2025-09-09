@@ -6,9 +6,14 @@ import { TerminalProcess } from "../process";
 export class OpenCommand extends TerminalProcess {
   public static description = "Opens the specified file";
   public static keyword = "open";
+
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const filename = argv.join(" ");

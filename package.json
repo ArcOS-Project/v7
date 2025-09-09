@@ -11,7 +11,8 @@
     "build:types": "tsc -p tsconfig.app.json --emitDeclarationOnly --declaration --outFile dist/types.d.ts --verbatimModuleSyntax false --isolatedModules false --removeComments",
     "build:globals": "node tools/build-globals.mjs && node tools/convert-global.mjs",
     "build:types:all": "npm run build:types && npm run build:globals",
-    "format:check": "prettier --check ./src"
+    "format:check": "prettier --check ./src",
+    "region:check": "node tools/validate-regions.mjs"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "5.1.0",

@@ -62,6 +62,8 @@ export class State extends Process {
   private history: History | undefined;
   private conceiled: boolean;
 
+  //#region LIFECYCLE
+
   constructor(
     handler: ProcessHandler,
     pid: number,
@@ -83,6 +85,8 @@ export class State extends Process {
     this.conceiled = conceiled;
     this.name = `TerminalState[${this.pid}P:${prompt.length}L]`;
   }
+
+  //#endregion
 
   public buffer(): string {
     return this.line.buffer();

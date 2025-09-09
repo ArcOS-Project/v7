@@ -7,9 +7,13 @@ export class TestCommand extends TerminalProcess {
   public static description: string = "test";
   public static hidden: boolean = true;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal): Promise<number> {
     const result = await term.rl?.read("[sudo] Password for izkuipers: ", true);

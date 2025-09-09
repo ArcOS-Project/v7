@@ -22,6 +22,8 @@ export class History extends Process {
   public cursor = -1;
   private terminal: ArcTerminal | undefined;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, maxEntries: number, terminal?: ArcTerminal) {
     super(handler, pid, parentPid);
 
@@ -29,6 +31,8 @@ export class History extends Process {
     this.terminal = terminal;
     this.name = `TerminalHistory[${this.pid}P:${maxEntries}M]`;
   }
+
+  //#endregion
 
   async start() {
     if (!this.terminal) {

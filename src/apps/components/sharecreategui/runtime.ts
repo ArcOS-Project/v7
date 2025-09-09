@@ -12,12 +12,15 @@ export class ShareCreateGuiRuntime extends AppProcess {
   sharePassword = Store<string>();
   shares: ShareManager;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
 
     this.shares = this.userDaemon?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
   }
 
+  //#endregion
   //#region MASTER
 
   async go() {

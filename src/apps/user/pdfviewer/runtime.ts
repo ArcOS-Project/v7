@@ -12,6 +12,8 @@ export class PdfViewerRuntime extends AppProcess {
   openedFile = Store<string>();
   documentUrl = Store<string>();
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path?: string) {
     super(handler, pid, parentPid, app);
 
@@ -23,6 +25,8 @@ export class PdfViewerRuntime extends AppProcess {
 
     await this.readFile(path);
   }
+
+  //#endregion
 
   async readFile(path: string) {
     try {

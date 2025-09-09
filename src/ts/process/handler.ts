@@ -22,6 +22,8 @@ export class ProcessHandler extends KernelModule {
   public env: Environment;
   public dispatch: SystemDispatch;
 
+  //#region LIFECYCLE
+
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);
 
@@ -38,6 +40,8 @@ export class ProcessHandler extends KernelModule {
 
     this.renderer = await this.spawn(AppRenderer, undefined, initPid, "appRenderer");
   }
+
+  //#endregion
 
   private makeBusy(reason: string) {
     this.isKmod();

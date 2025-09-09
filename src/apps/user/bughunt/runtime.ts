@@ -24,6 +24,8 @@ export class BugHuntRuntime extends AppProcess {
     userdata: BugHuntUserDataApp,
   };
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
 
@@ -34,6 +36,8 @@ export class BugHuntRuntime extends AppProcess {
   async render() {
     await this.changeTab("private");
   }
+
+  //#endregion
 
   async changeTab(tab: string) {
     if (this.currentTab() === tab) return;

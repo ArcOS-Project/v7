@@ -8,6 +8,8 @@ export class Environment extends KernelModule {
   private store: Map<string, any> = new Map([]);
   private readOnlyValues: string[] = [];
 
+  //#region LIFECYCLE
+
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);
   }
@@ -21,6 +23,8 @@ export class Environment extends KernelModule {
       ["arcos_build", ArcBuild()],
     ]);
   }
+
+  //#endregion
 
   set(key: string, value: any): boolean {
     this.isKmod();

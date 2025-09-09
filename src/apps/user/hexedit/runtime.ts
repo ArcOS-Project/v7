@@ -28,6 +28,8 @@ export class HexEditRuntime extends AppProcess {
     editRow: EditRow,
   };
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, file: string) {
     super(handler, pid, parentPid, app);
 
@@ -37,35 +39,6 @@ export class HexEditRuntime extends AppProcess {
       this.updateVariables(v);
       this.modified.set(this.requestedFile && this.original() ? this.isModified() : false);
     });
-  }
-
-  updateVariables(view: Uint8Array) {
-    const array = Array.from(view);
-    const offsetLength = Math.ceil(view.length / 16);
-    const offsets: number[] = [];
-
-    for (let i = 0; i < offsetLength; i++) {
-      offsets.push(i * 16);
-    }
-
-    const hexRows = sliceIntoChunks(
-      array.map((b, i) => [b, i]),
-      16
-    );
-
-    const decoded = sliceIntoChunks(
-      array.map((b, i) => [this.sanitizeDecoded(String.fromCharCode(b)), i]),
-      16
-    );
-
-    this.saveVariables(hexRows, decoded, offsetLength, offsets);
-  }
-
-  saveVariables(hexRows: [number, number][][], decoded: [string, number][][], offsetLength: number, offsets: number[]) {
-    this.hexRows.set(hexRows);
-    this.decoded.set(decoded);
-    this.offsetLength.set(offsetLength);
-    this.offsets.set(offsets);
   }
 
   async render() {
@@ -148,41 +121,6 @@ export class HexEditRuntime extends AppProcess {
     }
   }
 
-  sanitizeDecoded(input: string) {
-    return input.replace(/[^\x21-\x7E]/g, ".");
-  }
-
-  getByteClass(byte: number) {
-    if (byte === 0) {
-      return "nul"; // Black (0x00)
-    } else if (byte === 0x0d || byte === 0x0a || byte === 0x09) {
-      return "ascii-control"; // Green (0D, 0A, 09)
-    } else if ((byte >= 0x00 && byte <= 0x1f) || byte === 0x7f) {
-      return "ascii-control"; // Green (00–1F, 7F)
-    } else if (byte >= 0x20 && byte <= 0x7e) {
-      return "printable-ascii"; // Blue (printable ASCII)
-    } else {
-      return "rest"; // Orange (everything else)
-    }
-  }
-
-  newByte() {
-    const view = this.view();
-    const newView = new Uint8Array(view.length + 1);
-
-    newView.set(view);
-
-    this.view.set(newView);
-  }
-
-  async alterRow(rowIndex: number) {
-    this.spawnOverlay("editRow", this.view, rowIndex);
-  }
-
-  isModified() {
-    return !!(this.requestedFile && this.filename() && this.original()?.toString() !== this.view().toString());
-  }
-
   async onClose(): Promise<boolean> {
     this.Log("onClose");
     const modified = this.isModified();
@@ -225,6 +163,72 @@ export class HexEditRuntime extends AppProcess {
 
     await this.unlockFile(this.requestedFile);
     return true;
+  }
+
+  //#endregion
+
+  updateVariables(view: Uint8Array) {
+    const array = Array.from(view);
+    const offsetLength = Math.ceil(view.length / 16);
+    const offsets: number[] = [];
+
+    for (let i = 0; i < offsetLength; i++) {
+      offsets.push(i * 16);
+    }
+
+    const hexRows = sliceIntoChunks(
+      array.map((b, i) => [b, i]),
+      16
+    );
+
+    const decoded = sliceIntoChunks(
+      array.map((b, i) => [this.sanitizeDecoded(String.fromCharCode(b)), i]),
+      16
+    );
+
+    this.saveVariables(hexRows, decoded, offsetLength, offsets);
+  }
+
+  saveVariables(hexRows: [number, number][][], decoded: [string, number][][], offsetLength: number, offsets: number[]) {
+    this.hexRows.set(hexRows);
+    this.decoded.set(decoded);
+    this.offsetLength.set(offsetLength);
+    this.offsets.set(offsets);
+  }
+
+  sanitizeDecoded(input: string) {
+    return input.replace(/[^\x21-\x7E]/g, ".");
+  }
+
+  getByteClass(byte: number) {
+    if (byte === 0) {
+      return "nul"; // Black (0x00)
+    } else if (byte === 0x0d || byte === 0x0a || byte === 0x09) {
+      return "ascii-control"; // Green (0D, 0A, 09)
+    } else if ((byte >= 0x00 && byte <= 0x1f) || byte === 0x7f) {
+      return "ascii-control"; // Green (00–1F, 7F)
+    } else if (byte >= 0x20 && byte <= 0x7e) {
+      return "printable-ascii"; // Blue (printable ASCII)
+    } else {
+      return "rest"; // Orange (everything else)
+    }
+  }
+
+  newByte() {
+    const view = this.view();
+    const newView = new Uint8Array(view.length + 1);
+
+    newView.set(view);
+
+    this.view.set(newView);
+  }
+
+  async alterRow(rowIndex: number) {
+    this.spawnOverlay("editRow", this.view, rowIndex);
+  }
+
+  isModified() {
+    return !!(this.requestedFile && this.filename() && this.original()?.toString() !== this.view().toString());
   }
 
   async saveFile() {

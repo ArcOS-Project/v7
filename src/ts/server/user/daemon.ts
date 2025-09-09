@@ -147,6 +147,7 @@ export class UserDaemon extends Process {
   public NIGHTLY = false;
 
   //#endregion
+  //#region LIFECYCLE
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, token: string, username: string, userInfo?: UserInfo) {
     super(handler, pid, parentPid);
@@ -161,6 +162,28 @@ export class UserDaemon extends Process {
     this.name = "UserDaemon";
   }
 
+  async start() {
+    try {
+      this.TempFs = this.fs.getDriveById("temp") as MemoryFilesystemDrive;
+      this.TempFsSnapshot = await this.TempFs.takeSnapshot();
+
+      this.startAnchorRedirectionIntercept();
+    } catch {
+      return false;
+    }
+  }
+
+  async stop() {
+    if (this.serviceHost) this.serviceHost._holdRestart = true;
+    if (this._disposed) return;
+
+    if (this.preferencesUnsubscribe) this.preferencesUnsubscribe();
+
+    this.TempFs?.restoreSnapshot(this.TempFsSnapshot!);
+    this.fs.umountDrive(`userfs`, true);
+  }
+
+  //#endregion
   //#region INIT
 
   async activateAdminBootstrapper() {
@@ -648,27 +671,6 @@ export class UserDaemon extends Process {
 
   //#endregion
   //#region CONTROLLING
-
-  async start() {
-    try {
-      this.TempFs = this.fs.getDriveById("temp") as MemoryFilesystemDrive;
-      this.TempFsSnapshot = await this.TempFs.takeSnapshot();
-
-      this.startAnchorRedirectionIntercept();
-    } catch {
-      return false;
-    }
-  }
-
-  async stop() {
-    if (this.serviceHost) this.serviceHost._holdRestart = true;
-    if (this._disposed) return;
-
-    if (this.preferencesUnsubscribe) this.preferencesUnsubscribe();
-
-    this.TempFs?.restoreSnapshot(this.TempFsSnapshot!);
-    this.fs.umountDrive(`userfs`, true);
-  }
 
   async logoff() {
     if (this._disposed) return;

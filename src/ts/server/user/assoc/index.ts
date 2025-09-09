@@ -16,6 +16,8 @@ export class FileAssocService extends BaseService {
   private CONFIG_PATH = join(UserPaths.System, "FileAssociations.json");
   private Configuration = Store<FileAssociationConfig>();
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);
   }
@@ -25,6 +27,8 @@ export class FileAssocService extends BaseService {
 
     this.host.daemon.assoc = this;
   }
+
+  //#endregion
 
   private async loadConfiguration() {
     if (this._disposed) return;

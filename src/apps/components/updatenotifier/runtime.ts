@@ -3,6 +3,7 @@ import type { ProcessHandler } from "$ts/process/handler";
 import type { AppProcessData } from "$types/app";
 
 export class UpdateNotifierRuntime extends AppProcess {
+  //#region LIFECYCLE
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
   }
@@ -20,6 +21,8 @@ export class UpdateNotifierRuntime extends AppProcess {
 
     return true;
   }
+
+  //#endregion
 
   async updateFileDefinitions() {
     this.userDaemon?.updateFileAssociations();

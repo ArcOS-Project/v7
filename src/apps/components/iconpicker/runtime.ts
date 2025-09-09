@@ -13,6 +13,8 @@ export class IconPickerRuntime extends AppProcess {
   store = getAllImages();
   returnId?: string;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, data: IconPickerData) {
     super(handler, pid, parentPid, app);
 
@@ -29,6 +31,8 @@ export class IconPickerRuntime extends AppProcess {
   async start() {
     if (!this.forWhat) return false;
   }
+
+  //#endregion
 
   async confirm() {
     this.systemDispatch.dispatch("ip-confirm", [this.returnId, this.selected()]); // Return selection to invocator

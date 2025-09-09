@@ -6,9 +6,13 @@ import type { AppProcessData } from "$types/app";
 export class GlobalLoadIndicatorRuntime extends AppProcess {
   caption = Store<string>("Just a moment...");
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, caption: string) {
     super(handler, pid, parentPid, app);
 
     if (caption) this.caption.set(caption);
   }
+
+  //#endregion
 }

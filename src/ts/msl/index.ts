@@ -10,6 +10,8 @@ export class ArcMSL extends KernelModule {
   private stack: ProcessHandler | undefined;
   private locked = false;
 
+  //#region LIFECYCLE
+
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);
   }
@@ -19,6 +21,8 @@ export class ArcMSL extends KernelModule {
 
     this.stack = stack;
   }
+
+  //#endregion
 
   async run(source: string, parent: number, options: LanguageOptions = DefaultLanguageOptions) {
     this.isKmod();

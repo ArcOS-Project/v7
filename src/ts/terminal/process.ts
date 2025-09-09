@@ -12,10 +12,14 @@ export class TerminalProcess extends Process {
   protected argv?: string[];
   private exitCode: number = 0;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
     this.name = "TerminalProcess";
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     return 0;

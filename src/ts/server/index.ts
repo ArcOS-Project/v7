@@ -21,6 +21,8 @@ export class ServerManager extends KernelModule {
     return server ? server.url : undefined;
   }
 
+  //#region LIFECYCLE
+
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);
   }
@@ -30,6 +32,8 @@ export class ServerManager extends KernelModule {
 
     await this.testConnection();
   }
+
+  //#endregion
 
   private getServerUrl() {
     this.isKmod();

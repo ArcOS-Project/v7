@@ -10,6 +10,8 @@ export class MessageBoxRuntime extends AppProcess {
   data: MessageBoxData | undefined;
   acted = Store<boolean>(false);
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, data: MessageBoxData) {
     super(handler, pid, parentPid, app);
 
@@ -50,4 +52,6 @@ export class MessageBoxRuntime extends AppProcess {
 
     return true;
   }
+
+  //#endregion
 }

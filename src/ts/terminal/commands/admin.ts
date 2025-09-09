@@ -17,9 +17,13 @@ export class AdminCommand extends TerminalProcess {
   public static description = "";
   public static hidden = true;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const elevated = await term.elevate({

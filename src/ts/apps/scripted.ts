@@ -9,6 +9,8 @@ export class ScriptedAppProcess extends AppProcess {
   public bodyStore = Store<HTMLDivElement>();
   public body: HTMLDivElement | undefined;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, lang: LanguageInstance) {
     super(handler, pid, parentPid, app);
 
@@ -36,4 +38,6 @@ export class ScriptedAppProcess extends AppProcess {
       if (!children.size) this.lang.killSelf();
     }, 1000);
   }
+
+  //#endregion
 }

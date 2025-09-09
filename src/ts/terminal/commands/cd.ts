@@ -7,9 +7,13 @@ export class CdCommand extends TerminalProcess {
   public static keyword = "cd";
   public static description = "Change the current directory";
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const path = argv.join(" ");

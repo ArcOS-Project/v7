@@ -31,6 +31,8 @@ export class AppStoreRuntime extends AppProcess {
   operations: Record<string, InstallerProcess> = {};
   distrib: DistributionServiceProcess;
 
+  //#region LIFECYCLE
+
   constructor(
     handler: ProcessHandler,
     pid: number,
@@ -81,6 +83,8 @@ export class AppStoreRuntime extends AppProcess {
 
     this.switchPage(page || "home", props || {});
   }
+
+  //#endregion
 
   async switchPage(id: string, props?: Record<string, any>, force = false) {
     if (this.searching() && id !== "search") {

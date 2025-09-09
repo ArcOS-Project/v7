@@ -6,11 +6,15 @@ import type { WriterRuntime } from "../runtime";
 export class ReplaceRuntime extends AppProcess {
   parent: WriterRuntime;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
 
     this.parent = this.handler.getProcess(parentPid)!;
   }
+
+  //#endregion
 
   public replaceOnce(text: string, replacer: string) {
     const buffer = this.parent.buffer();

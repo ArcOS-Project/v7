@@ -10,9 +10,14 @@ import { BRBLUE, BRYELLOW, RESET } from "../store";
 export class AppListCommand extends TerminalProcess {
   public static keyword = "applist";
   public static description = "Display a list of installed applications";
+
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   async main(term: ArcTerminal, flags: Arguments) {
     const all = flags.a || flags.all;

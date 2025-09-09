@@ -24,6 +24,8 @@ export class DevelopmentEnvironment extends BaseService {
   private daemon: UserDaemon;
   private pids: number[] = [];
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);
 
@@ -33,6 +35,12 @@ export class DevelopmentEnvironment extends BaseService {
 
     this.daemon = this.handler.getProcess(+this.env.get("userdaemon_pid"))!;
   }
+
+  async stop() {
+    await this.disconnect();
+  }
+
+  //#endregion
 
   async connect(port: number): Promise<DevEnvActivationResult> {
     const abort = (code: DevEnvActivationResult) => {
@@ -185,10 +193,6 @@ export class DevelopmentEnvironment extends BaseService {
     for (const pid of procs) {
       await this.handler.kill(pid, true);
     }
-  }
-
-  async stop() {
-    await this.disconnect();
   }
 
   async refreshCSS(filename: string) {

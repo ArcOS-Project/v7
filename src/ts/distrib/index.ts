@@ -24,6 +24,8 @@ export class DistributionServiceProcess extends BaseService {
 
   preferences: UserPreferencesStore;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);
 
@@ -38,6 +40,8 @@ export class DistributionServiceProcess extends BaseService {
     }
     this.installListCache = await this.loadInstalledList();
   }
+
+  //#endregion
 
   async packageInstallerFromPath(path: string, progress?: FilesystemProgressCallback, item?: StoreItem) {
     this.Log(`packageInstallerFromPath: ${path}, ${item?._id || "no store item"}`);

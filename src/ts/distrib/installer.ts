@@ -26,6 +26,8 @@ export class InstallerProcess extends Process {
   item?: StoreItem;
   zip?: JSZip;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, zip: JSZip, metadata: ArcPackage, item: StoreItem) {
     super(handler, pid, parentPid);
 
@@ -54,6 +56,13 @@ export class InstallerProcess extends Process {
       this.Log(`COUNT is now ${v} / ${this.TOTAL_COUNT()}`);
     });
   }
+
+  async stop() {
+    await this.onStop();
+    return true;
+  }
+
+  //#endregion
 
   logStatus(content: string, type: InstallStatusType = "other", status: InstallStatusMode = "working") {
     this.Log(`[${status} | ${type}] ${content}`);
@@ -232,11 +241,6 @@ export class InstallerProcess extends Process {
     this.completed.set(true);
     this.COUNT.set(this.COUNT() + 1);
     this.killSelf();
-    return true;
-  }
-
-  async stop() {
-    await this.onStop();
     return true;
   }
 

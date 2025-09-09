@@ -7,9 +7,13 @@ export class HistoryCommand extends TerminalProcess {
   public static keyword = "history";
   public static description = "Show your ArcTerm history";
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal): Promise<number> {
     const pref = term.daemon?.preferences();

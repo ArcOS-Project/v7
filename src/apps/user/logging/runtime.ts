@@ -14,6 +14,8 @@ export class LoggingRuntime extends AppProcess {
   private archive: LogItem[] = [];
   public isArchive = false;
 
+  //#region LIFECYCLE
+
   constructor(
     handler: ProcessHandler,
     pid: number,
@@ -40,6 +42,8 @@ export class LoggingRuntime extends AppProcess {
     if (source) this.currentSource.set(source);
     if (level !== undefined) this.selectedLevel.set(level);
   }
+
+  //#endregion
 
   public updateGroups() {
     const logs = this.archive.length ? this.archive : KernelLogs()();

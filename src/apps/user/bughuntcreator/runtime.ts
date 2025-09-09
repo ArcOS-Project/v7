@@ -16,6 +16,8 @@ export class BugHuntCreatorRuntime extends AppProcess {
   overrideOptions: BugHuntCreatorOptions | undefined;
   bughunt: BugHuntUserSpaceProcess;
 
+  //#region LIFECYCLE
+
   constructor(
     handler: ProcessHandler,
     pid: number,
@@ -39,6 +41,8 @@ export class BugHuntCreatorRuntime extends AppProcess {
     if (options) this.overrideOptions = options;
     this.bughunt = this.userDaemon?.serviceHost?.getService<BugHuntUserSpaceProcess>("BugHuntUsp")!;
   }
+
+  //#endregion
 
   async Send() {
     const options = this.overrideOptions || (this.userPreferences().appPreferences.BugHunt! as BugHuntCreatorOptions);

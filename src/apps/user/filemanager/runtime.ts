@@ -57,6 +57,8 @@ export class FileManagerRuntime extends AppProcess {
   };
   private _refreshLocked = false;
 
+  //#region LIFECYCLE
+
   constructor(
     handler: ProcessHandler,
     pid: number,
@@ -95,16 +97,6 @@ export class FileManagerRuntime extends AppProcess {
     this.dispatch.subscribe("navigate", (path) => {
       this.navigate(path);
     });
-
-    console.log(this.virtualLocations);
-  }
-
-  override contextMenu: AppContextMenu = FileManagerContextMenu(this);
-
-  updateAltMenu() {
-    if (this.loadSave) return;
-
-    this.altMenu.set(FileManagerAltMenu(this));
   }
 
   async render({ path }: RenderArgs) {
@@ -135,6 +127,16 @@ export class FileManagerRuntime extends AppProcess {
     const startDuration = performance.now() - startTime;
 
     this.Log(`Starting file manager took ${startDuration}ms`);
+  }
+
+  //#endregion
+
+  override contextMenu: AppContextMenu = FileManagerContextMenu(this);
+
+  updateAltMenu() {
+    if (this.loadSave) return;
+
+    this.altMenu.set(FileManagerAltMenu(this));
   }
 
   async updateDrives() {

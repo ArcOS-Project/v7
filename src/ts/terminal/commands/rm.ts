@@ -7,9 +7,13 @@ export class RmCommand extends TerminalProcess {
   public static keyword = "rm";
   public static description = "Delete the specified file or folder";
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const recursive = flags.recursive || flags.r;

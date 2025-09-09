@@ -23,12 +23,39 @@ export class ServiceHost extends Process {
   private _storeLoaded = false;
   public daemon: UserDaemon;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
 
     this.daemon = handler.getProcess(+this.env.get("userdaemon_pid"))!;
     this.name = "ServiceHost";
   }
+
+  public async initialRun() {
+    const services = this.Services.get();
+
+    for (const [id, service] of [...services]) {
+      if (!service.initialState || service.initialState != "started") continue;
+
+      await this.startService(id);
+    }
+  }
+
+  async init() {
+    this.loadStore(this.STORE);
+    await this.initialRun();
+
+    this.handler.store.subscribe(() => this.verifyServicesProcesses());
+
+    this.Services.subscribe(() => this.systemDispatch.dispatch("services-flush"));
+  }
+
+  async stop() {
+    this._holdRestart = true;
+  }
+
+  //#endregion
 
   readonly STORE = new Map([
     ["TrashSvc", { ...trashService }],
@@ -135,25 +162,6 @@ export class ServiceHost extends Process {
     return started;
   }
 
-  public async initialRun() {
-    const services = this.Services.get();
-
-    for (const [id, service] of [...services]) {
-      if (!service.initialState || service.initialState != "started") continue;
-
-      await this.startService(id);
-    }
-  }
-
-  async init() {
-    this.loadStore(this.STORE);
-    await this.initialRun();
-
-    this.handler.store.subscribe(() => this.verifyServicesProcesses());
-
-    this.Services.subscribe(() => this.systemDispatch.dispatch("services-flush"));
-  }
-
   public async verifyServicesProcesses() {
     if (this._holdRestart) return;
 
@@ -175,9 +183,5 @@ export class ServiceHost extends Process {
     if (!store.has(id) || !service || !service.pid) return undefined;
 
     return this.handler.getProcess(service.pid) as T;
-  }
-
-  async stop() {
-    this._holdRestart = true;
   }
 }

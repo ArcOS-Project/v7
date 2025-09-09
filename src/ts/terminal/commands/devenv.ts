@@ -15,9 +15,13 @@ export class DevenvCommand extends TerminalProcess {
     disconnect: this.disconnect.bind(this),
   };
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const command = argv.shift() || "";

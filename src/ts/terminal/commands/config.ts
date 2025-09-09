@@ -7,9 +7,13 @@ export class ConfigCommand extends TerminalProcess {
   public static keyword = "config";
   public static description = "List the ArcTerm configuration";
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal): Promise<number> {
     for (const [key, value] of Object.entries(term.config)) {

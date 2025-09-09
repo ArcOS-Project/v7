@@ -8,7 +8,6 @@ import {
   type ExtendedStat,
   type FilesystemProgress,
   type FilesystemProgressCallback,
-  type FilesystemStat,
   type RecursiveDirectoryReadReturn,
   type UploadReturn,
 } from "$types/fs";
@@ -20,6 +19,8 @@ export class Filesystem extends KernelModule {
   private dispatch: SystemDispatch;
   public drives: Record<string, FilesystemDrive> = {};
 
+  //#region LIFECYCLE
+
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);
 
@@ -27,6 +28,8 @@ export class Filesystem extends KernelModule {
   }
 
   async _init() {}
+
+  //#endregion
 
   getDriveById(id: string) {
     this.isKmod();

@@ -9,9 +9,13 @@ export class EchoCommand extends TerminalProcess {
   public static keyword: string = "echo";
   public static description: string = "Echoes back the input";
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const thing = tryJsonParse(argv.join(" "));

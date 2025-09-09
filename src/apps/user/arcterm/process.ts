@@ -10,6 +10,8 @@ export class ArcTermRuntime extends Process {
   path: string | undefined;
   app: AppProcessData;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path?: string) {
     super(handler, pid, parentPid);
 
@@ -35,4 +37,6 @@ export class ArcTermRuntime extends Process {
 
     this.term = await this.handler.spawn<ArcTerminal>(ArcTerminal, daemon.getCurrentDesktop(), proc.pid, proc.term, this.path);
   }
+
+  //#endregion
 }

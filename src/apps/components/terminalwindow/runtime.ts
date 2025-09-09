@@ -12,6 +12,8 @@ export class TerminalWindowRuntime extends AppProcess {
   term: Terminal | undefined;
   overridePopulatable: boolean = true;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
   }
@@ -73,4 +75,6 @@ export class TerminalWindowRuntime extends AppProcess {
       if (!children.size) this.handler.kill(this.parentPid);
     });
   }
+
+  //#endregion
 }

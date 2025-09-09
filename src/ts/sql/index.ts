@@ -9,6 +9,8 @@ export class SqlInterfaceProcess extends Process {
   public db?: initSqlJs.Database;
   public isFresh = false;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, path: string) {
     super(handler, pid, parentPid);
 
@@ -22,6 +24,8 @@ export class SqlInterfaceProcess extends Process {
     });
     await this.initialize();
   }
+
+  //#endregion
 
   reset() {
     if (this._disposed) return;

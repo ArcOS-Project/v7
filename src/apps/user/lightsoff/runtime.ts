@@ -23,6 +23,8 @@ export class LightsOffRuntime extends AppProcess {
   LEVEL = Store<number>(0);
   Levels: LightsOffLevels;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
     super(handler, pid, parentPid, app);
 
@@ -39,6 +41,8 @@ export class LightsOffRuntime extends AppProcess {
 
     this.loadData();
   }
+
+  //#endregion
 
   containsLights() {
     this.Log("Checking lights");

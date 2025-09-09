@@ -9,9 +9,13 @@ export class QuotaCommand extends TerminalProcess {
   public static keyword = "quota";
   public static description = "Display your ArcOS filesystem quota";
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const BAR_LENGTH = 50;

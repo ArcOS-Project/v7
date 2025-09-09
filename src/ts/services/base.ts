@@ -6,10 +6,14 @@ export class BaseService extends Process {
   host: ServiceHost;
   activated: boolean = false;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid);
 
     this.name = `svc#${name}`;
     this.host = host;
   }
+
+  //#endregion
 }

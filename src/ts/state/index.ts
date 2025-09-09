@@ -16,6 +16,8 @@ export class StateHandler extends Process {
   stateAppProcess: AppProcess | undefined;
   public _criticalProcess: boolean = true;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, instanceName: string, store = States) {
     super(handler, pid, parentPid);
     this.store = store;
@@ -29,6 +31,12 @@ export class StateHandler extends Process {
 
     htmlLoader.innerText = "...";
   }
+
+  protected async stop(): Promise<any> {
+    throw new Error("Tried to kill StateHandler!");
+  }
+
+  //#endregion
 
   async loadState(id: string, props: Record<string, any> = {}, instant = false) {
     if (this._disposed) return;
@@ -164,9 +172,5 @@ export class StateHandler extends Process {
     if (!cssLoader || !htmlLoader || !main) throw new StateError("Missing elements of state handling.");
 
     return { htmlLoader, cssLoader, main };
-  }
-
-  protected async stop(): Promise<any> {
-    throw new Error("Tried to kill StateHandler!");
   }
 }

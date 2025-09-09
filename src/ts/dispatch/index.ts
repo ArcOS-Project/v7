@@ -7,11 +7,15 @@ import { KnownSystemDispatchers, SystemOnlyDispatches } from "./store";
 export class SystemDispatch extends KernelModule {
   public subscribers: Record<string, Record<number, (data: any) => void>> = {};
 
+  //#region LIFECYCLE
+
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);
 
     this.Log("Creating new SystemDispatch");
   }
+
+  //#endregion
 
   subscribe<T = any[]>(event: string, callback: (data: T) => void): number {
     this.isKmod();

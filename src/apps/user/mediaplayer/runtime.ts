@@ -44,6 +44,8 @@ export class MediaPlayerRuntime extends AppProcess {
     ],
   };
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, file?: string) {
     super(handler, pid, parentPid, app);
 
@@ -96,6 +98,8 @@ export class MediaPlayerRuntime extends AppProcess {
       },
     });
   }
+
+  //#endregion
 
   public setPlayer(player: HTMLVideoElement) {
     this.player = player;

@@ -13,9 +13,13 @@ export class VerCommand extends TerminalProcess {
     super(handler, pid, parentPid);
   }
 
+  //#region LIFECYCLE
+
   protected async main(term: ArcTerminal): Promise<number> {
     term.rl?.println(`ArcTerm & ArcOS ${BRBLUE}v${ArcOSVersion}${RESET}-${ArcMode()} (${ArcBuild()})\n`);
 
     return 0;
   }
+
+  //#endregion
 }

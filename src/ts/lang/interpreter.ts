@@ -21,6 +21,8 @@ export class Interpreter extends Process {
   arguments: any[] = [];
   workingDir: string = "U:/";
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, options?: ArcLangOptions) {
     options ||= DefaultArcLangOptions;
 
@@ -94,6 +96,8 @@ export class Interpreter extends Process {
   protected async stop(): Promise<any> {
     this.onExit(this);
   }
+
+  //#endregion
 
   async interpret(ast: ASTNode | undefined = this.ast) {
     if (!ast) return;

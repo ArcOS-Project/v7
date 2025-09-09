@@ -11,9 +11,13 @@ export class KillCommand extends TerminalProcess {
   public static keyword = "kill";
   public static description = "Kill a process using its PID";
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const force = flags.force || flags.f;

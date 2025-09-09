@@ -11,6 +11,8 @@ export class BugHuntUserDataRuntime extends AppProcess {
   hljs: HLJSApi;
   html: string;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, data: UserInfo) {
     super(handler, pid, parentPid, app);
 
@@ -20,4 +22,6 @@ export class BugHuntUserDataRuntime extends AppProcess {
     this.hljs.registerLanguage("json", json);
     this.html = this.hljs.highlight(JSON.stringify(this.data, null, 2), { language: "json" }).value;
   }
+
+  //#endregion
 }

@@ -15,6 +15,8 @@ export class TrayIconProcess extends Process {
   icon: string;
   shell: ShellRuntime;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, data: ShellTrayIcon) {
     super(handler, pid, parentPid);
 
@@ -56,6 +58,8 @@ export class TrayIconProcess extends Process {
   }
 
   async renderPopup(popup: HTMLDivElement, target: Process) {}
+
+  //#endregion
 
   getPopupBody() {
     const body = document.querySelector(`[data-selector="${this.targetPid}#${this.identifier}"]`);

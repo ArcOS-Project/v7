@@ -7,9 +7,13 @@ export class ExitCommand extends TerminalProcess {
   public static keyword = "exit";
   public static description = "Exit the terminal process";
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal): Promise<number> {
     const proc = term.handler.getProcess<AppProcess>(term.parentPid);

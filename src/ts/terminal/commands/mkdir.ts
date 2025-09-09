@@ -6,9 +6,14 @@ import { TerminalProcess } from "../process";
 export class MkdirCommand extends TerminalProcess {
   public static keyword: string = "mkdir";
   public static description: string = "Create the specified directory";
+
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const path = argv.join(" ");

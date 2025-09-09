@@ -10,9 +10,13 @@ export class ArcLang extends KernelModule {
   stack = getKMod<ProcessHandler>("stack");
   locked = false;
 
+  //#region LIFECYCLE
+
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);
   }
+
+  //#endregion
 
   async run(code: string, parentPid: number, options: ArcLangOptions = DefaultArcLangOptions) {
     this.isKmod();

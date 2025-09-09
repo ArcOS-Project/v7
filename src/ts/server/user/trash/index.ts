@@ -15,6 +15,9 @@ import { UserPaths } from "../store";
 export class TrashCanService extends BaseService {
   INDEX_PATH = join(UserPaths.System, `TrashIndex.json`);
   IndexBuffer = Store<Record<string, TrashIndexNode>>({});
+
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);
   }
@@ -23,6 +26,8 @@ export class TrashCanService extends BaseService {
     this.IndexBuffer.set(await this.readIndex());
     this.IndexBuffer.subscribe((v) => this.writeIndex(v));
   }
+
+  //#endregion
 
   async readIndex(): Promise<Record<string, TrashIndexNode>> {
     const content = await this.fs.readFile(this.INDEX_PATH);

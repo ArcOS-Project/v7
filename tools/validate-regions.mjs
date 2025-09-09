@@ -3,7 +3,7 @@ import path from "path";
 
 const SRC_DIR = "./src"; // adjust if your code lives elsewhere
 const PROCESS_CLASS_REGEX = /class\s+(\w*)\s+extends\s+(\w*Process\w*|KernelModule|BaseService)\s*{/g;
-const CONTROL_FLOW_REGEX = /LIFECYCLE/;
+const CONTROL_FLOW_REGEX = /#region LIFECYCLE/gm;
 
 /**
  * Recursively collect .ts and .svelte files
@@ -15,7 +15,7 @@ function collectFiles(dir) {
     const full = path.join(dir, e.name);
     if (e.isDirectory()) {
       files = files.concat(collectFiles(full));
-    } else if (/\.(ts|svelte)$/.test(e.name)) {
+    } else if (/\.ts$/.test(e.name)) {
       files.push(full);
     }
   }
@@ -31,7 +31,7 @@ for (const file of files) {
   // Look for process classes
   let match;
   while ((match = PROCESS_CLASS_REGEX.exec(code)) !== null) {
-    if (!CONTROL_FLOW_REGEX.test(code)) {
+    if (!code.includes(`//#region LIFECYCLE`)) {
       violations.push(`LIFECYCLE: not defined in ${match[1]} (${file})`);
     }
   }

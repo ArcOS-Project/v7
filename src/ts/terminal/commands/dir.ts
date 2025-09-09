@@ -11,9 +11,14 @@ import { BRBLACK, BRBLUE, BRGREEN, RESET } from "../store";
 export class DirCommand extends TerminalProcess {
   public static keyword = "dir";
   public static description = "List the contents of the current or specified directory";
+
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const dir = argv.join(" ") || "";

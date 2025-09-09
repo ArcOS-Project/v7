@@ -11,9 +11,13 @@ export class TreeCommand extends TerminalProcess {
   public static keyword = "tree";
   public static description = "Print a recursive tree of the current or specified folder";
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const noColor = flags["no-color"];

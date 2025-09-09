@@ -37,6 +37,8 @@ export class MessagingAppRuntime extends AppProcess {
   messageWindow = false;
   messageFromFile = false;
 
+  //#region LIFECYCLE
+
   constructor(
     handler: ProcessHandler,
     pid: number,
@@ -71,6 +73,8 @@ export class MessagingAppRuntime extends AppProcess {
 
     this.searchQuery.subscribe((v) => this.Search(v));
   }
+
+  //#endregion
 
   async getInbox() {
     if (this.messageWindow) return [];

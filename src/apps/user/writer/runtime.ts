@@ -28,14 +28,15 @@ export class WriterRuntime extends AppProcess {
   protected overlayStore: Record<string, App> = {
     replace: ReplaceOverlay,
   };
+  public acceleratorStore: AppKeyCombinations = WriterAccelerators(this);
+
+  //#region LIFECYCLE
 
   constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path?: string) {
     super(handler, pid, parentPid, app);
 
     this.renderArgs.path = path;
   }
-
-  public acceleratorStore: AppKeyCombinations = WriterAccelerators(this);
 
   async render({ path }: { path: string }) {
     this.altMenu.set(WriterAltMenu(this));
@@ -44,6 +45,53 @@ export class WriterRuntime extends AppProcess {
 
     await this.readFile(path);
   }
+
+  async onClose(): Promise<boolean> {
+    const buffer = this.buffer();
+    const original = this.original();
+    const filename = this.filename() || "Untitled";
+
+    if (original !== buffer) {
+      return new Promise<boolean>((r) => {
+        MessageBox(
+          {
+            title: "Save changes?",
+            message: `Do you want to save the changes you made to ${filename}?`,
+            image: WarningIcon,
+            sound: "arcos.dialog.warning",
+            buttons: [
+              {
+                caption: "Cancel",
+                action: () => {
+                  r(false);
+                },
+              },
+              {
+                caption: "No",
+                action: () => {
+                  r(true);
+                },
+              },
+              {
+                caption: "Yes",
+                action: async () => {
+                  await this.saveChanges();
+                  r(true);
+                },
+                suggested: true,
+              },
+            ],
+          },
+          this.pid,
+          true
+        );
+      });
+    }
+
+    return true;
+  }
+
+  //#endregion
 
   async readFile(path: string) {
     const prog = await this.userDaemon!.FileProgress(
@@ -98,51 +146,6 @@ export class WriterRuntime extends AppProcess {
         true
       );
     }
-  }
-
-  async onClose(): Promise<boolean> {
-    const buffer = this.buffer();
-    const original = this.original();
-    const filename = this.filename() || "Untitled";
-
-    if (original !== buffer) {
-      return new Promise<boolean>((r) => {
-        MessageBox(
-          {
-            title: "Save changes?",
-            message: `Do you want to save the changes you made to ${filename}?`,
-            image: WarningIcon,
-            sound: "arcos.dialog.warning",
-            buttons: [
-              {
-                caption: "Cancel",
-                action: () => {
-                  r(false);
-                },
-              },
-              {
-                caption: "No",
-                action: () => {
-                  r(true);
-                },
-              },
-              {
-                caption: "Yes",
-                action: async () => {
-                  await this.saveChanges();
-                  r(true);
-                },
-                suggested: true,
-              },
-            ],
-          },
-          this.pid,
-          true
-        );
-      });
-    }
-
-    return true;
   }
 
   async saveChanges(force = false) {

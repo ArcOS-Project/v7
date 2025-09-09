@@ -9,9 +9,13 @@ export class FindCommand extends TerminalProcess {
   public static keyword = "find";
   public static description = "Find files, folders and shortcuts in ArcOS";
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const query = argv.join(" ");

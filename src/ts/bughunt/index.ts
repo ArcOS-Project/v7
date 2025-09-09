@@ -17,6 +17,8 @@ export class BugHunt extends KernelModule {
   env: Environment;
   handler: ProcessHandler;
 
+  //#region LIFECYCLE
+
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);
 
@@ -26,6 +28,8 @@ export class BugHunt extends KernelModule {
   }
 
   async _init(): Promise<void> {}
+
+  //#endregion
 
   createReport(options = defaultReportOptions): OutgoingBugReport {
     const server = URL.parse(this.server.url)?.host;

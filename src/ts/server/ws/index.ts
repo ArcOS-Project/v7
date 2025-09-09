@@ -12,6 +12,8 @@ export class GlobalDispatch extends BaseService {
   token?: string;
   authorized = false;
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(handler, pid, parentPid, name, host);
 
@@ -35,6 +37,13 @@ export class GlobalDispatch extends BaseService {
       });
     });
   }
+
+  async stop() {
+    this.Log(`Disconnecting websocket`);
+    this.client?.disconnect();
+  }
+
+  //#endregion
 
   async connected() {
     this.Log(`Connected, authorizing using token`);
@@ -62,11 +71,6 @@ export class GlobalDispatch extends BaseService {
   emit(event: string, ...data: any[]) {
     this.Log(`Emitting event ${event} to all other user clients`);
     this.client?.emit("user-dispatch", event, ...data);
-  }
-
-  async stop() {
-    this.Log(`Disconnecting websocket`);
-    this.client?.disconnect();
   }
 
   async getClients(): Promise<GlobalDispatchClient[]> {

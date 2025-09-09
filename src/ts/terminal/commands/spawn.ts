@@ -8,9 +8,13 @@ export class SpawnCommand extends TerminalProcess {
   public static keyword = "spawn";
   public static description = "Spawn an app with specified arguments";
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const id = argv.shift();

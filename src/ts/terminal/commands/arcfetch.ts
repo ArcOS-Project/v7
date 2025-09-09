@@ -15,9 +15,13 @@ export class ArcFetchCommand extends TerminalProcess {
   static keyword: string = "arcfetch";
   static description: string = "View information about your device and ArcOS";
 
+  //#region LIFECYCLE
+
   constructor(handler: ProcessHandler, pid: number, parentPid: number) {
     super(handler, pid, parentPid);
   }
+
+  //#endregion
 
   protected async main(term: ArcTerminal): Promise<number> {
     term.rl?.println("");

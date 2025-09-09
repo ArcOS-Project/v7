@@ -57,6 +57,8 @@ export class LanguageInstance extends Process {
   public appProcess: AppProcess | undefined;
   public userDaemon: UserDaemon | undefined;
 
+  //#region LIFECYCLE
+
   constructor(
     handler: ProcessHandler,
     pid: number,
@@ -93,6 +95,8 @@ export class LanguageInstance extends Process {
 
     await Sleep(10);
   }
+
+  //#endregion
 
   private parseSource(source: string): InterpreterCommand[] {
     const lines = `${source}\n:*idle\njump :*idle\n:EOF`.split("\n");
