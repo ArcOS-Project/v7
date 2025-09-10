@@ -216,9 +216,9 @@ export class AppProcess extends Process {
         throw new AppRuntimeError(this.crashReason);
       }
 
-      // if (this._disposed) {
-      //   throw new Error("Disposed.");
-      // }
+      if (this._disposed) {
+        break;
+      }
 
       await Sleep(1); // prevent hanging bleh
     }
