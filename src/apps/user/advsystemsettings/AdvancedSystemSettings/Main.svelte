@@ -5,6 +5,7 @@
   import { KernelModules, KernelStateHandler } from "$ts/kernel/getters";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
+  import { KernelStack } from "$ts/process/handler";
   import type { AdvSysSetRuntime } from "../runtime";
 
   const { process }: { process: AdvSysSetRuntime } = $props();
@@ -40,7 +41,7 @@
       <li title={Object.keys(KernelStateHandler()?.store || {}).join(", ")}>
         States: {Object.entries(KernelStateHandler()?.store || {}).length} loaded
       </li>
-      <li>Process count: {process.handler.store().size} running</li>
+      <li>Process count: {KernelStack().store().size} running</li>
       <li>Installed apps: {appStore?.length} loaded</li>
     </ul>
   </section>

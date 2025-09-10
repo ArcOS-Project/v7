@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import type { AppProcessData } from "$types/app";
 import { ClipboardAddon } from "@xterm/addon-clipboard";
 import { FitAddon } from "@xterm/addon-fit";
@@ -14,8 +14,8 @@ export class TerminalWindowRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData) {
+    super(pid, parentPid, app);
   }
 
   async render() {
@@ -66,13 +66,13 @@ export class TerminalWindowRuntime extends AppProcess {
 
   protected async stop() {
     setTimeout(() => {
-      const parent = this.handler.getProcess(this.parentPid);
+      const parent = KernelStack().getProcess(this.parentPid);
 
       if (!parent || parent instanceof AppProcess) return;
 
-      const children = this.handler.getSubProcesses(this.parentPid);
+      const children = KernelStack().getSubProcesses(this.parentPid);
 
-      if (!children.size) this.handler.kill(this.parentPid);
+      if (!children.size) KernelStack().kill(this.parentPid);
     });
   }
 

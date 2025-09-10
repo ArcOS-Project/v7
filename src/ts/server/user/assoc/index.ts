@@ -3,7 +3,6 @@ import { arrayToText, textToBlob } from "$ts/fs/convert";
 import { getItemNameFromPath, join } from "$ts/fs/util";
 import { maybeIconId } from "$ts/images";
 import { tryJsonParse } from "$ts/json";
-import type { ProcessHandler } from "$ts/process/handler";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import { Store } from "$ts/writable";
@@ -18,8 +17,8 @@ export class FileAssocService extends BaseService {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
-    super(handler, pid, parentPid, name, host);
+  constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
+    super(pid, parentPid, name, host);
   }
 
   async start() {

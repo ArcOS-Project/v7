@@ -5,7 +5,6 @@ import { getItemNameFromPath, join } from "$ts/fs/util";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { UploadIcon } from "$ts/images/general";
 import { tryJsonParse } from "$ts/json";
-import type { ProcessHandler } from "$ts/process/handler";
 import { UserPaths } from "$ts/server/user/store";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
@@ -30,8 +29,8 @@ export class WallpaperRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, desktopDir?: string) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, desktopDir?: string) {
+    super(pid, parentPid, app);
 
     this.directory = desktopDir || UserPaths.Desktop;
     this.systemDispatch.subscribe<string>("fs-flush-folder", async (path) => {

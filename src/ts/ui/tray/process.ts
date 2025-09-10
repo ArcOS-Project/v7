@@ -1,6 +1,6 @@
 import type { ShellRuntime } from "$apps/components/shell/runtime";
 import type { ShellTrayIcon, TrayPopup } from "$apps/components/shell/types";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import type { ContextMenuItem } from "$types/app";
 import { mount, unmount } from "svelte";
@@ -17,8 +17,8 @@ export class TrayIconProcess extends Process {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, data: ShellTrayIcon) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number, data: ShellTrayIcon) {
+    super(pid, parentPid);
 
     this.targetPid = data.pid;
     this.identifier = data.identifier;
@@ -26,13 +26,13 @@ export class TrayIconProcess extends Process {
     this.icon = data.icon;
     this.context = data.context;
     this.action = data.action;
-    this.shell = this.handler.getProcess(+this.env.get("shell_pid"))!;
+    this.shell = KernelStack().getProcess(+this.env.get("shell_pid"))!;
     this.name = "TrayIconProcess";
   }
 
   async __render() {
     const popupBody = this.getPopupBody();
-    const target = this.handler.getProcess(this.targetPid)!;
+    const target = KernelStack().getProcess(this.targetPid)!;
 
     if (this.popup?.component) {
       this.Log("Mounting tray popup component");
@@ -43,7 +43,6 @@ export class TrayIconProcess extends Process {
           process: target,
           tray: this,
           pid: this.pid,
-          handler: this.handler,
         },
       });
     }

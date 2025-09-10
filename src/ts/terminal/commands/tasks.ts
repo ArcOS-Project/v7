@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import type { Process } from "$ts/process/instance";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";
@@ -12,15 +12,15 @@ export class TasksCommand extends TerminalProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number) {
+    super(pid, parentPid);
   }
 
   //#endregion
 
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const tree = flags.tree || flags.t;
-    const store = term.handler.store();
+    const store = KernelStack().store();
 
     if (!tree) {
       term.rl?.println("");
@@ -35,7 +35,7 @@ export class TasksCommand extends TerminalProcess {
     }
 
     function branch(proc: Process, indent = "", isLast = true) {
-      const subProcesses = term.handler.getSubProcesses(proc.pid);
+      const subProcesses = KernelStack().getSubProcesses(proc.pid);
       const prefix = indent + (isLast ? "└── " : "├── ");
 
       term.rl?.println(

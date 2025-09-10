@@ -4,7 +4,6 @@ import { arrayToBlob } from "$ts/fs/convert";
 import { getItemNameFromPath } from "$ts/fs/util";
 import { ErrorIcon } from "$ts/images/dialog";
 import { PdfMimeIcon } from "$ts/images/mime";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
@@ -14,8 +13,8 @@ export class PdfViewerRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path?: string) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, path?: string) {
+    super(pid, parentPid, app);
 
     this.renderArgs.path = path;
   }

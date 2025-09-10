@@ -1,11 +1,11 @@
 import { AppProcess } from "$ts/apps/process";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import type { AppProcessData } from "$types/app";
 
 export class SystemShortcutsRuntime extends AppProcess {
   //#region LIFECYCLE
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData) {
+    super(pid, parentPid, app);
   }
 
   async start() {
@@ -52,17 +52,17 @@ export class SystemShortcutsRuntime extends AppProcess {
   async closeFocused() {
     this.Log("Attempting to close focused window");
 
-    const focusedPid = this.handler.renderer?.focusedPid();
+    const focusedPid = KernelStack().renderer?.focusedPid();
     if (!focusedPid) return;
 
-    const focusedProc = this.handler.getProcess(focusedPid);
+    const focusedProc = KernelStack().getProcess(focusedPid);
 
     if (!focusedProc || !(focusedProc instanceof AppProcess)) return;
 
     await focusedProc?.closeWindow();
 
-    const appProcesses = (this.handler.renderer?.currentState || [])
-      .map((pid) => this.handler.getProcess(pid))
+    const appProcesses = (KernelStack().renderer?.currentState || [])
+      .map((pid) => KernelStack().getProcess(pid))
       .filter((proc) => proc && !proc._disposed && proc instanceof AppProcess && !proc.app.data.core && !proc.app.data.overlay)
       .filter((proc) => !!proc);
 
@@ -70,6 +70,6 @@ export class SystemShortcutsRuntime extends AppProcess {
 
     if (!targetProcess) return;
 
-    this.handler.renderer?.focusPid(targetProcess.pid);
+    KernelStack().renderer?.focusPid(targetProcess.pid);
   }
 }

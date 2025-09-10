@@ -1,6 +1,5 @@
 import { tryJsonParse } from "$ts/json";
 import { KernelParams } from "$ts/kernel/getters";
-import type { ProcessHandler } from "$ts/process/handler";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import type { ArcProtocol, ProtocolHandler } from "$types/proto";
@@ -17,8 +16,8 @@ export class ProtocolServiceProcess extends BaseService {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
-    super(handler, pid, parentPid, name, host);
+  constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
+    super(pid, parentPid, name, host);
   }
 
   async start() {

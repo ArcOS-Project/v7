@@ -1,6 +1,6 @@
 import { SpinnerIcon } from "$ts/images/general";
 import { GoodStatusIcon } from "$ts/images/status";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
@@ -18,10 +18,10 @@ export class ShellHostRuntime extends Process {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, _: AppProcessData, autoloadApps: string[]) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number, _: AppProcessData, autoloadApps: string[]) {
+    super(pid, parentPid);
 
-    this.userDaemon = this.handler.getProcess<UserDaemon>(+this.env.get("userdaemon_pid")); // Get the user daemon
+    this.userDaemon = KernelStack().getProcess<UserDaemon>(+this.env.get("userdaemon_pid")); // Get the user daemon
     this.userPreferences = this.userDaemon!.preferences; // Get the preferences
     this.autoloadApps = autoloadApps || []; // Get the autoload (provided by the daemon)
     this.name = "ShellHostRuntime";

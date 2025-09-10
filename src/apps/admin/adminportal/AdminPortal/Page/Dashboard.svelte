@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { formatBytes } from "$ts/fs/util";
   import type { AdminPortalRuntime } from "../../runtime";
   import type { DashboardData } from "../../types";
 

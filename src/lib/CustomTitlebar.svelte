@@ -4,6 +4,7 @@
   import { contextProps } from "$ts/context/actions.svelte";
   import { BETA } from "$ts/env";
   import { ComponentIcon } from "$ts/images/general";
+  import { KernelStack } from "$ts/process/handler";
   import { onMount, type Snippet } from "svelte";
   import AltMenu from "./CustomTitlebar/AltMenu.svelte";
 
@@ -14,7 +15,7 @@
   let renderer: AppRenderer | undefined;
 
   onMount(() => {
-    renderer = process.handler.renderer;
+    renderer = KernelStack().renderer;
   });
 
   function maximize() {

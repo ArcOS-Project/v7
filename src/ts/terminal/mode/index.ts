@@ -1,8 +1,8 @@
 import { ArcOSVersion } from "$ts/env";
 import { toForm } from "$ts/form";
+import { KernelStack } from "$ts/process/handler";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { Backend } from "$ts/server/axios";
 import { LoginUser } from "$ts/server/user/auth";
@@ -28,8 +28,8 @@ export class TerminalMode extends Process {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, target: HTMLDivElement) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number, target: HTMLDivElement) {
+    super(pid, parentPid);
 
     this.target = target;
     this.name = "TerminalMode";
@@ -86,7 +86,7 @@ export class TerminalMode extends Process {
 
     new ResizeObserver(() => fitAddon.fit()).observe(this.target);
 
-    const rl = await this.handler.spawn<Readline>(Readline, undefined, this.pid, this);
+    const rl = await KernelStack().spawn<Readline>(Readline, undefined, this.userDaemon?.userInfo?._id, this.pid, this);
     this.term.loadAddon(rl!);
     this.rl = rl;
   }
@@ -102,7 +102,7 @@ export class TerminalMode extends Process {
 
   async startDaemon(token: string, username: string): Promise<boolean> {
     try {
-      const userDaemon = await this.handler.spawn<UserDaemon>(UserDaemon, undefined, 1, token, username);
+      const userDaemon = await KernelStack().spawn<UserDaemon>(UserDaemon, undefined, "SYSTEM", 1, token, username);
 
       this.rl?.println("Starting daemon");
 
@@ -170,7 +170,13 @@ export class TerminalMode extends Process {
       this.env.set("currentuser", username);
       this.env.set("shell_pid", undefined);
 
-      this.arcTerm = await this.handler.spawn<ArcTerminal>(ArcTerminal, undefined, this.pid, this.term);
+      this.arcTerm = await KernelStack().spawn<ArcTerminal>(
+        ArcTerminal,
+        undefined,
+        userDaemon.userInfo?._id,
+        this.pid,
+        this.term
+      );
       return true;
     } catch (e) {
       const stack = e instanceof PromiseRejectionEvent ? e.reason.stack : e instanceof Error ? e.stack : "Unknown error";

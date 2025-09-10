@@ -1,7 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { WarningIcon } from "$ts/images/dialog";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { UserPreferences } from "$types/user";
@@ -30,8 +29,8 @@ export class AdvSysSetRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, tab?: string) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, tab?: string) {
+    super(pid, parentPid, app);
 
     if (tab && this.tabs[tab]) this.currentTab.set(tab);
   }

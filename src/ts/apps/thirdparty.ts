@@ -1,6 +1,5 @@
 import { join } from "$ts/fs/util";
 import { ComponentIcon } from "$ts/images/general";
-import type { ProcessHandler } from "$ts/process/handler";
 import type { AppProcessData } from "$types/app";
 import { AppProcess } from "./process";
 
@@ -13,15 +12,8 @@ export class ThirdPartyAppProcess extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    workingDirectory: string,
-    ...args: any[]
-  ) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, workingDirectory: string, ...args: any[]) {
+    super(pid, parentPid, app);
 
     this.workingDirectory = workingDirectory;
     this.windowIcon.set(this.userDaemon?.getAppIconByProcess(this) || ComponentIcon);

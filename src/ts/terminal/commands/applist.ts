@@ -1,6 +1,5 @@
 import { ApplicationStorage } from "$ts/apps/storage";
 import { isPopulatable } from "$ts/apps/util";
-import type { ProcessHandler } from "$ts/process/handler";
 import type { App, InstalledApp } from "$types/app";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";
@@ -13,8 +12,8 @@ export class AppListCommand extends TerminalProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number) {
+    super(pid, parentPid);
   }
 
   //#endregion

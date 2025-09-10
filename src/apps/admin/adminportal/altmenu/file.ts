@@ -1,4 +1,3 @@
-import type { AppStoreRuntime } from "$apps/user/appstore/runtime";
 import { ShutdownIcon } from "$ts/images/power";
 import type { ContextMenuItem } from "$types/app";
 import type { AdminPortalRuntime } from "../runtime";

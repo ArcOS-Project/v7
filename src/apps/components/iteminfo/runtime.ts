@@ -1,7 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { arrayToText } from "$ts/fs/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/fs/util";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { FileEntry, FolderEntry } from "$types/fs";
@@ -15,15 +14,8 @@ export class ItemInfoRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    path: string,
-    file: FileEntry | FolderEntry
-  ) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, path: string, file: FileEntry | FolderEntry) {
+    super(pid, parentPid, app);
 
     this.renderArgs = { path, file };
   }

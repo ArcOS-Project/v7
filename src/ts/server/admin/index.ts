@@ -4,7 +4,6 @@ import { arrayToBlob, arrayToText, textToBlob } from "$ts/fs/convert";
 import { AdminServerDrive } from "$ts/fs/drives/admin";
 import { join } from "$ts/fs/util";
 import { tryJsonParse } from "$ts/json";
-import type { ProcessHandler } from "$ts/process/handler";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import type {
@@ -39,8 +38,8 @@ export class AdminBootstrapper extends BaseService {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
-    super(handler, pid, parentPid, name, host);
+  constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
+    super(pid, parentPid, name, host);
     this.token = host.daemon.token;
   }
 

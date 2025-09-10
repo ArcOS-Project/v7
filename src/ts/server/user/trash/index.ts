@@ -3,7 +3,6 @@ import { getItemNameFromPath, getParentDirectory, join } from "$ts/fs/util";
 import { FolderIcon } from "$ts/images/filesystem";
 import { TrashIcon } from "$ts/images/general";
 import { DefaultMimeIcon } from "$ts/images/mime";
-import type { ProcessHandler } from "$ts/process/handler";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import { UUID } from "$ts/uuid";
@@ -18,8 +17,8 @@ export class TrashCanService extends BaseService {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
-    super(handler, pid, parentPid, name, host);
+  constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
+    super(pid, parentPid, name, host);
   }
 
   async start() {

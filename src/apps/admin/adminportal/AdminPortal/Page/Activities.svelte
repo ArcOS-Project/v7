@@ -1,12 +1,12 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { ActivityCaptionTranslations, ActivityIconTranslations } from "$ts/server/user/store";
+  import { sliceIntoChunks } from "$ts/util";
   import type { ExpandedActivity } from "$types/admin";
   import dayjs from "dayjs";
   import type { AdminPortalRuntime } from "../../runtime";
   import type { ActivitiesData } from "../../types";
   import Pagination from "../Pagination.svelte";
-  import { sliceIntoChunks } from "$ts/util";
 
   const { process, data }: { process: AdminPortalRuntime; data: ActivitiesData } = $props();
   const { redacted } = process;

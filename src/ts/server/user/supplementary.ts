@@ -3,6 +3,7 @@ import type { Filesystem } from "$ts/fs";
 import { arrayToText, textToBlob } from "$ts/fs/convert";
 import { getItemNameFromPath, join } from "$ts/fs/util";
 import { tryJsonParse } from "$ts/json";
+import { KernelStack } from "$ts/process/handler";
 import { authcode, detectJavaScript } from "$ts/util";
 import type { App } from "$types/app";
 import { Backend } from "../axios";
@@ -56,9 +57,10 @@ export function SupplementaryThirdPartyPropFunctions(
 
         if (typeof metadata === "string") throw new Error("Failed to parse metadata");
 
-        const proc = await daemon.handler.spawn<ThirdPartyAppProcess>(
+        const proc = await KernelStack().spawn<ThirdPartyAppProcess>(
           process,
           renderTarget,
+          daemon.userInfo!._id,
           parentPid,
           {
             data: metadata,
@@ -83,9 +85,10 @@ export function SupplementaryThirdPartyPropFunctions(
 
         if (typeof metadata === "string") throw new Error("Failed to parse metadata");
 
-        const proc = await daemon.handler.spawn<ThirdPartyAppProcess>(
+        const proc = await KernelStack().spawn<ThirdPartyAppProcess>(
           process,
           undefined,
+          daemon.userInfo!._id,
           parentPid,
           {
             data: metadata,

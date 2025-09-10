@@ -3,7 +3,7 @@ import { MessageBox } from "$ts/dialog";
 import { getItemNameFromPath } from "$ts/fs/util";
 import { SqeletonIcon } from "$ts/images/apps";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { SqlInterfaceProcess } from "$ts/sql";
@@ -58,14 +58,20 @@ export class SqeletonRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path?: string) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, path?: string) {
+    super(pid, parentPid, app);
 
     this.renderArgs.path = path;
   }
 
   async start() {
-    this.tempDb = await this.handler.spawn(SqlInterfaceProcess, undefined, this.pid, this.tempDbPath);
+    this.tempDb = await KernelStack().spawn(
+      SqlInterfaceProcess,
+      undefined,
+      this.userDaemon?.userInfo?._id,
+      this.pid,
+      this.tempDbPath
+    );
   }
 
   async stop() {
@@ -87,7 +93,7 @@ export class SqeletonRuntime extends AppProcess {
     }
 
     try {
-      this.Interface = await this.handler.spawn(SqlInterfaceProcess, undefined, this.pid, path);
+      this.Interface = await KernelStack().spawn(SqlInterfaceProcess, undefined, this.userDaemon?.userInfo?._id, this.pid, path);
 
       if (!this.Interface?.db) throw "Failed to open database. The resource might be locked.";
 
@@ -124,7 +130,13 @@ export class SqeletonRuntime extends AppProcess {
 
     if (!path) return;
 
-    const db = await this.handler.spawn<SqlInterfaceProcess>(SqlInterfaceProcess, undefined, this.pid, path);
+    const db = await KernelStack().spawn<SqlInterfaceProcess>(
+      SqlInterfaceProcess,
+      undefined,
+      this.userDaemon?.userInfo?._id,
+      this.pid,
+      path
+    );
     await db?.writeFile();
     await db?.killSelf();
 

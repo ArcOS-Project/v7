@@ -1,5 +1,4 @@
 import { DevelopmentEnvironment } from "$ts/devenv";
-import type { ProcessHandler } from "$ts/process/handler";
 import { DevEnvActivationResultCaptions } from "$types/devenv";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";
@@ -17,8 +16,8 @@ export class DevenvCommand extends TerminalProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number) {
+    super(pid, parentPid);
   }
 
   //#endregion

@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 
@@ -9,14 +9,14 @@ export class ExitCommand extends TerminalProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number) {
+    super(pid, parentPid);
   }
 
   //#endregion
 
   protected async main(term: ArcTerminal): Promise<number> {
-    const proc = term.handler.getProcess<AppProcess>(term.parentPid);
+    const proc = KernelStack().getProcess<AppProcess>(term.parentPid);
 
     if (!(proc instanceof AppProcess)) {
       return 1;

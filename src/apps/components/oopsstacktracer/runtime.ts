@@ -1,5 +1,4 @@
 import { AppProcess } from "$ts/apps/process";
-import type { ProcessHandler } from "$ts/process/handler";
 import type { App, AppProcessData } from "$types/app";
 import type { ParsedStackFrame } from "../oopsnotifier/types";
 
@@ -14,7 +13,6 @@ export class OopsStackTracerRuntime extends AppProcess {
   //#region LIFECYCLE
 
   constructor(
-    handler: ProcessHandler,
     pid: number,
     parentPid: number,
     app: AppProcessData,
@@ -23,7 +21,7 @@ export class OopsStackTracerRuntime extends AppProcess {
     process: AppProcess | undefined,
     stackFrames: ParsedStackFrame[]
   ) {
-    super(handler, pid, parentPid, app);
+    super(pid, parentPid, app);
 
     this.data = data;
     this.exception = exception;

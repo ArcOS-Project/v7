@@ -5,9 +5,9 @@
   import json from "highlight.js/lib/languages/json";
   import markdown from "highlight.js/lib/languages/markdown";
   import plaintext from "highlight.js/lib/languages/plaintext";
+  import sql from "highlight.js/lib/languages/sql";
   import xml from "highlight.js/lib/languages/xml";
   import yaml from "highlight.js/lib/languages/yaml";
-  import sql from "highlight.js/lib/languages/sql";
 
   import type { ReadableStore } from "$ts/writable";
   import hljs from "highlight.js";

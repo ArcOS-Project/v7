@@ -1,5 +1,4 @@
 import { AppProcess } from "$ts/apps/process";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { ExitActions } from "./store";
@@ -10,8 +9,8 @@ export class ExitRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, selected?: string) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, selected?: string) {
+    super(pid, parentPid, app);
 
     if (selected) this.selected.set(selected);
   }

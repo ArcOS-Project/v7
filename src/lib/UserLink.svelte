@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { DefaultIcon } from "$ts/images/apps";
   import type { PublicUserInfo } from "$types/user";
   import ProfilePicture from "./ProfilePicture.svelte";
 

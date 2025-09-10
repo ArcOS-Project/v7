@@ -4,7 +4,6 @@ import { DistributionServiceProcess } from "$ts/distrib";
 import type { InstallerProcess } from "$ts/distrib/installer";
 import { ErrorIcon } from "$ts/images/dialog";
 import { AppsIcon } from "$ts/images/general";
-import type { ProcessHandler } from "$ts/process/handler";
 import { type ReadableStore } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { ArcPackage } from "$types/package";
@@ -16,15 +15,8 @@ export class AppInstallerRuntime extends AppProcess {
   zip?: JSZip;
 
   //#region LIFECYCLE
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    metadata: ReadableStore<ArcPackage>,
-    zip: JSZip
-  ) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, metadata: ReadableStore<ArcPackage>, zip: JSZip) {
+    super(pid, parentPid, app);
 
     if (metadata && zip) {
       this.metadata = metadata();

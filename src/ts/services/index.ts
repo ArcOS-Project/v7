@@ -3,7 +3,7 @@ import { bhuspService } from "$ts/bughunt/process";
 import { devEnvironmentService } from "$ts/devenv";
 import { distributionService } from "$ts/distrib";
 import { shareService } from "$ts/fs/shares";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { protoService } from "$ts/proto";
 import { adminService } from "$ts/server/admin";
@@ -25,10 +25,10 @@ export class ServiceHost extends Process {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number) {
+    super(pid, parentPid);
 
-    this.daemon = handler.getProcess(+this.env.get("userdaemon_pid"))!;
+    this.daemon = KernelStack().getProcess(+this.env.get("userdaemon_pid"))!;
     this.name = "ServiceHost";
   }
 
@@ -46,7 +46,7 @@ export class ServiceHost extends Process {
     this.loadStore(this.STORE);
     await this.initialRun();
 
-    this.handler.store.subscribe(() => this.verifyServicesProcesses());
+    KernelStack().store.subscribe(() => this.verifyServicesProcesses());
 
     this.Services.subscribe(() => this.systemDispatch.dispatch("services-flush"));
   }
@@ -108,12 +108,12 @@ export class ServiceHost extends Process {
 
     if (!services.has(id) || !service) return "err_noExist";
 
-    const canStart = service.startCondition ? await service.startCondition(this.handler.getProcess(this.parentPid)!) : true;
+    const canStart = service.startCondition ? await service.startCondition(KernelStack().getProcess(this.parentPid)!) : true;
 
     if (!canStart) return "err_startCondition";
     if (service.pid) return "err_alreadyRunning";
 
-    const instance = await this.handler.spawn(service.process, undefined, this.pid, id, this);
+    const instance = await KernelStack().spawn(service.process, undefined, this.daemon.userInfo?._id, this.pid, id, this);
 
     if (!instance) return "err_spawnFailed";
 
@@ -138,7 +138,7 @@ export class ServiceHost extends Process {
 
     this._holdRestart = true;
 
-    await this.handler.kill(service.pid, true);
+    await KernelStack().kill(service.pid, true);
 
     service.pid = undefined;
     service.changedAt = new Date().getTime();
@@ -168,7 +168,7 @@ export class ServiceHost extends Process {
     const services = this.Services.get();
 
     for (const [id, service] of [...services]) {
-      if (!service.pid || this.handler.isPid(service.pid)) continue;
+      if (!service.pid || KernelStack().isPid(service.pid)) continue;
 
       this.Log(`Process of ${id} doesn't exist anymore! Restarting service...`, LogLevel.warning);
 
@@ -182,6 +182,6 @@ export class ServiceHost extends Process {
 
     if (!store.has(id) || !service || !service.pid) return undefined;
 
-    return this.handler.getProcess(service.pid) as T;
+    return KernelStack().getProcess(service.pid) as T;
   }
 }

@@ -1,5 +1,5 @@
 import { getItemNameFromPath, getParentDirectory } from "$ts/fs/util";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import { authcode } from "$ts/util";
@@ -17,8 +17,8 @@ export class MessagingInterface extends BaseService {
   serverAuthCode: string;
 
   //#region LIFECYCLE
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
-    super(handler, pid, parentPid, name, host);
+  constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
+    super(pid, parentPid, name, host);
 
     this.serverUrl = ServerManager.url();
     this.serverAuthCode = import.meta.env.DW_SERVER_AUTHCODE || "";
@@ -26,7 +26,7 @@ export class MessagingInterface extends BaseService {
   }
 
   async start() {
-    const daemon = this.handler.getProcess<UserDaemon>(+this.env.get("userdaemon_pid")!)!;
+    const daemon = KernelStack().getProcess<UserDaemon>(+this.env.get("userdaemon_pid")!)!;
     const dispatch = daemon.serviceHost?.getService<GlobalDispatch>("GlobalDispatch")!;
 
     dispatch?.subscribe("incoming-message", (message: Message) => {

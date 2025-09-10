@@ -4,9 +4,9 @@
   import { onMount } from "svelte";
   import { AdminPortalRuntime } from "../../runtime";
   import type { ViewScopesData } from "../../types";
+  import GlobalPills from "./ViewScopes/GlobalPills.svelte";
   import PagePills from "./ViewScopes/PagePills.svelte";
   import SpecificPills from "./ViewScopes/SpecificPills.svelte";
-  import GlobalPills from "./ViewScopes/GlobalPills.svelte";
 
   const { process, data }: { process: AdminPortalRuntime; data: ViewScopesData } = $props();
   const { admin, scopes } = data;

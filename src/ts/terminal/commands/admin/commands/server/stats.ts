@@ -1,4 +1,3 @@
-import { formatBytes } from "$ts/fs/util";
 import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { BOLD, BRGREEN, BRPURPLE, BRYELLOW, RESET } from "$ts/terminal/store";

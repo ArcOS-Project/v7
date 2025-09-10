@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { contextMenu } from "$ts/context/actions.svelte";
   import type { SqeletonRuntime } from "../../runtime";
   import Table from "./Tables/Table.svelte";
 

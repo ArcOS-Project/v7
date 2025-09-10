@@ -6,6 +6,7 @@ import { Kernel, KernelStateHandler } from "$ts/kernel/getters";
 import { getKMod } from "$ts/kernel/module";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
+import { KernelStack } from "$ts/process/handler";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { DefaultUserPreferences } from "$ts/server/user/default";
 import type { AppKeyCombinations } from "$types/accelerator";
@@ -16,7 +17,6 @@ import type { UserPreferences } from "$types/user";
 import type { Draggable } from "@neodrag/vanilla";
 import { mount } from "svelte";
 import { type App, type AppContextMenu, type AppProcessData, type ContextMenuItem } from "../../types/app";
-import type { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
 import { Store, type ReadableStore } from "../writable";
@@ -48,8 +48,8 @@ export class AppProcess extends Process {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, ...args: any[]) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number, app: AppProcessData, ...args: any[]) {
+    super(pid, parentPid);
 
     this.app = {
       data: { ...app.data },
@@ -57,15 +57,15 @@ export class AppProcess extends Process {
       desktop: app.desktop,
     };
 
-    this.handler.renderer!.lastInteract = this;
+    KernelStack().renderer!.lastInteract = this;
 
     this.windowTitle.set(app.data.metadata.name || "Application");
     this.name = app.data.id;
     this.systemDispatch = getKMod<SystemDispatch>("dispatch");
-    this.shell = this.handler.getProcess(+this.env.get("shell_pid"));
+    this.shell = KernelStack().getProcess(+this.env.get("shell_pid"));
 
     const desktopProps = KernelStateHandler()?.stateProps["desktop"];
-    const daemon: UserDaemon | undefined = desktopProps?.userDaemon || this.handler.getProcess(+this.env.get("userdaemon_pid"));
+    const daemon: UserDaemon | undefined = desktopProps?.userDaemon || KernelStack().getProcess(+this.env.get("userdaemon_pid"));
 
     if (daemon) {
       this.userPreferences = daemon.preferences;
@@ -199,7 +199,6 @@ export class AppProcess extends Process {
           process: this,
           pid: this.pid,
           kernel: Kernel(),
-          handler: this.handler,
           app: this.app.data,
           windowTitle: this.windowTitle,
           windowIcon: this.windowIcon,
@@ -226,7 +225,7 @@ export class AppProcess extends Process {
   }
 
   getSingleton() {
-    const { renderer } = this.handler;
+    const { renderer } = KernelStack();
 
     return renderer?.getAppInstances(this.app.data.id, this.pid) || [];
   }
@@ -239,7 +238,7 @@ export class AppProcess extends Process {
     if (instances.length) {
       await this.killSelf();
 
-      if (!this.app.data.core) this.handler.renderer?.focusPid(instances[0].pid);
+      if (!this.app.data.core) KernelStack().renderer?.focusPid(instances[0].pid);
 
       if (instances[0].app.desktop) this.userDaemon?.switchToDesktopByUuid(instances[0].app.desktop);
     }
@@ -320,7 +319,7 @@ export class AppProcess extends Process {
       const key = combo.key?.trim().toLowerCase();
       const codedKey = String.fromCharCode(e.keyCode).toLowerCase();
       /** */
-      const isFocused = this.handler.renderer?.focusedPid() == this.pid || combo.global;
+      const isFocused = KernelStack().renderer?.focusedPid() == this.pid || combo.global;
 
       if (!modifiers || (key != pK && key && key != codedKey) || !isFocused) continue;
 
@@ -347,9 +346,10 @@ export class AppProcess extends Process {
       return false;
     }
 
-    const proc = await this.handler.spawn<AppProcess>(
+    const proc = await KernelStack().spawn<AppProcess>(
       metadata.assets.runtime,
       undefined,
+      this.userDaemon?.userInfo?._id,
       this.pid,
       {
         data: { ...metadata, overlay: true },
@@ -358,7 +358,7 @@ export class AppProcess extends Process {
       ...args
     );
 
-    if (proc) this.handler.renderer?.focusPid(proc?.pid);
+    if (proc) KernelStack().renderer?.focusPid(proc?.pid);
 
     return !!proc;
   }

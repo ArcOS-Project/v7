@@ -20,9 +20,9 @@ import type { ServerInfo } from "$types/server";
 import type { UserInfo } from "$types/user";
 import Cookies from "js-cookie";
 import { AppProcess } from "../../../ts/apps/process";
-import type { ProcessHandler } from "../../../ts/process/handler";
 import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps, PersistenceInfo } from "./types";
+import { KernelStack } from "$ts/process/handler";
 
 export class LoginAppRuntime extends AppProcess {
   public DEFAULT_WALLPAPER = Store<string>("");
@@ -40,8 +40,8 @@ export class LoginAppRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, props?: LoginAppProps) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, props?: LoginAppProps) {
+    super(pid, parentPid, app);
 
     const server = getKMod<ServerManager>("server");
 
@@ -120,7 +120,15 @@ export class LoginAppRuntime extends AppProcess {
 
     this.loadingStatus.set("Starting daemon");
 
-    const userDaemon = await this.handler.spawn<UserDaemon>(UserDaemon, undefined, 1, token, username, info);
+    const userDaemon = await KernelStack().spawn<UserDaemon>(
+      UserDaemon,
+      undefined,
+      info?._id || "SYSTEM",
+      1,
+      token,
+      username,
+      info
+    );
 
     if (!userDaemon) {
       this.loadingStatus.set("");
@@ -148,7 +156,7 @@ export class LoginAppRuntime extends AppProcess {
 
     if (userInfo.hasTotp && userInfo.restricted) {
       this.loadingStatus.set("Requesting 2FA");
-      const unlocked = await this.askForTotp(token);
+      const unlocked = await this.askForTotp(token, userDaemon.userInfo?._id);
 
       if (!unlocked) {
         await userDaemon.discontinueToken();
@@ -251,7 +259,7 @@ export class LoginAppRuntime extends AppProcess {
     this.loadingStatus.set(`Goodbye, ${daemon.username}!`);
     this.errorMessage.set("");
 
-    for (const [_, proc] of [...this.handler.store()]) {
+    for (const [_, proc] of [...KernelStack().store()]) {
       if (proc && !proc._disposed && proc instanceof AppProcess && proc.pid !== this.pid) {
         await proc.killSelf();
       }
@@ -402,7 +410,7 @@ export class LoginAppRuntime extends AppProcess {
     Cookies.remove("arcUsername");
   }
 
-  private async askForTotp(token: string) {
+  private async askForTotp(token: string, userId: string | undefined) {
     const returnId = UUID();
 
     return new Promise(async (r) => {
@@ -414,9 +422,10 @@ export class LoginAppRuntime extends AppProcess {
         if (id === returnId) r(false);
       });
 
-      await this.handler.spawn(
+      await KernelStack().spawn(
         TotpAuthGuiRuntime,
         undefined,
+        userId,
         this.pid,
         { data: { ...TotpAuthGuiApp, overlay: true }, id: "TotpAuthGuiApp" },
         token,
@@ -426,9 +435,10 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async firstRun(daemon: UserDaemon) {
-    const process = await this.handler.spawn<FirstRunRuntime>(
+    const process = await KernelStack().spawn<FirstRunRuntime>(
       FirstRunRuntime,
       undefined,
+      daemon.userInfo?._id,
       this.pid,
       { data: { ...FirstRunApp, overlay: true }, id: "FirstRun" },
       daemon

@@ -5,7 +5,6 @@ import { KernelStateHandler } from "$ts/kernel/getters";
 import { getKMod } from "$ts/kernel/module";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import type { ProcessHandler } from "$ts/process/handler";
 import { ServerManager } from "$ts/server";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
@@ -17,8 +16,8 @@ export class ArcFetchCommand extends TerminalProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number) {
+    super(pid, parentPid);
   }
 
   //#endregion

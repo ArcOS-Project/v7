@@ -1,9 +1,8 @@
 <script lang="ts">
+  import HtmlSpinner from "$lib/HtmlSpinner.svelte";
   import { Sleep } from "$ts/sleep";
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../../runtime";
-  import Spinner from "$lib/Spinner.svelte";
-  import HtmlSpinner from "$lib/HtmlSpinner.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
   const { searchQuery, startMenuOpened, searchLoading } = process;

@@ -9,6 +9,12 @@ export interface TypedProcess {
   _criticalProcess: boolean;
 }
 
+export interface ProcessContext {
+  pid: number;
+  userId: string | "SYSTEM";
+  appId?: string;
+}
+
 export type RenderArgs = Record<string, any>;
 export type ProcessSpawnResult = "success" | "err_disabled" | "err_aboveLimit";
 export type ProcessKillResult =

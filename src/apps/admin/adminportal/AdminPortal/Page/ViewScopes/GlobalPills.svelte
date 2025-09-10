@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
-  import { globalAdminActions, specificAdminActions } from "$apps/admin/adminportal/store";
+  import { globalAdminActions } from "$apps/admin/adminportal/store";
   import { MessageBox } from "$ts/dialog";
   import { InfoIcon } from "$ts/images/dialog";
   import { scopeToScopeCaption } from "$ts/server/admin/util";

@@ -1,6 +1,5 @@
 import { BugHunt } from "$ts/bughunt";
 import { getKMod } from "$ts/kernel/module";
-import type { ProcessHandler } from "$ts/process/handler";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import type { BugReport, ReportOptions } from "$types/bughunt";
@@ -17,8 +16,8 @@ export class BugHuntUserSpaceProcess extends BaseService {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
-    super(handler, pid, parentPid, name, host);
+  constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
+    super(pid, parentPid, name, host);
 
     this.module = getKMod<BugHunt>("bughunt");
     this.token = host.daemon.token;

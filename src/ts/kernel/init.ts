@@ -4,17 +4,17 @@ import { textToBlob } from "$ts/fs/convert";
 import { MemoryFilesystemDrive } from "$ts/fs/drives/temp";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
+import { KernelStack } from "$ts/process/handler";
 import { ServerManager } from "$ts/server";
 import { States } from "$ts/state/store";
 import { WaveKernel } from ".";
-import type { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
 import { StateHandler } from "../state";
 
 export class InitProcess extends Process {
   //#region LIFECYCLE
-  constructor(handler: ProcessHandler, pid: number, parentPid = undefined) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid = undefined) {
+    super(pid, parentPid);
   }
 
   async stop() {
@@ -25,11 +25,10 @@ export class InitProcess extends Process {
     __Console__.time("** Init jumpstart");
     this.Log("Jumpstarting init process!");
 
-    await this.handler.startRenderer(this.pid);
+    await KernelStack().startRenderer(this.pid);
+
     const connected = ServerManager.isConnected();
-
-    const state = await this.handler.spawn<StateHandler>(StateHandler, undefined, this.pid, "ArcOS", States);
-
+    const state = await KernelStack().spawn<StateHandler>(StateHandler, undefined, "SYSTEM", this.pid, "ArcOS", States);
     const kernel = WaveKernel.get();
 
     if (!state) throw new Error("State handler failed to spawn");
@@ -37,7 +36,6 @@ export class InitProcess extends Process {
     kernel.state = state;
 
     await this.initializeTempFs();
-
     await kernel.state?.loadState(connected ? "boot" : "serverdown", {}, true);
     __Console__.timeEnd("** Init jumpstart");
     this.name = "InitProcess";

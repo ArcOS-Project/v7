@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { ApplicationStorage } from "$ts/apps/storage";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import type { App, AppProcessData } from "$types/app";
 import { parse } from "stacktrace-parser";
 import { OopsStackTracerApp } from "../oopsstacktracer/metadata";
@@ -20,7 +20,6 @@ export class OopsNotifierRuntime extends AppProcess {
   //#region LIFECYCLE
 
   constructor(
-    handler: ProcessHandler,
     pid: number,
     parentPid: number,
     app: AppProcessData,
@@ -28,7 +27,7 @@ export class OopsNotifierRuntime extends AppProcess {
     exception: Error | PromiseRejectionEvent,
     process?: AppProcess
   ) {
-    super(handler, pid, parentPid, app);
+    super(pid, parentPid, app);
 
     this.data = data;
     this.exception = exception;
@@ -74,9 +73,10 @@ export class OopsNotifierRuntime extends AppProcess {
   //#region ACTIONS
 
   async details() {
-    const proc = await this.handler.spawn<OopsStackTracerRuntime>(
+    const proc = await KernelStack().spawn<OopsStackTracerRuntime>(
       OopsStackTracerRuntime,
       undefined,
+      this.userDaemon?.userInfo?._id,
       +this.env.get("shell_pid"),
       {
         data: { ...OopsStackTracerApp, overlay: true },

@@ -4,7 +4,7 @@ import { MessageBox } from "$ts/dialog";
 import type { ShareManager } from "$ts/fs/shares";
 import { SharedDrive } from "$ts/fs/shares/drive";
 import { ErrorIcon } from "$ts/images/dialog";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
@@ -15,8 +15,8 @@ export class ShareConnGuiRuntime extends AppProcess {
   shares: ShareManager;
 
   //#region LIFECYCLE
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData) {
+    super(pid, parentPid, app);
 
     this.shares = this.userDaemon?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
   }
@@ -48,11 +48,11 @@ export class ShareConnGuiRuntime extends AppProcess {
 
     if (result instanceof SharedDrive) {
       const path = `${result.uuid}:/`;
-      const parent = this.handler.getProcess(this.parentPid);
+      const parent = KernelStack().getProcess(this.parentPid);
 
       if (parent && parent instanceof FileManagerRuntime) {
         // Is the parent a file manager? Then navigate it instead of spawning one
-        const dispatch = this.handler.ConnectDispatch(this.parentPid);
+        const dispatch = KernelStack().ConnectDispatch(this.parentPid);
         dispatch?.dispatch("navigate", path);
       } else {
         // Spawn a file manager instead

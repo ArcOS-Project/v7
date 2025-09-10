@@ -1,5 +1,4 @@
 import { AppProcess } from "$ts/apps/process";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { LogLevel } from "$types/logging";
@@ -19,8 +18,8 @@ export class QlorbRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData) {
+    super(pid, parentPid, app);
 
     setInterval(() => {
       if (this.Boxes.get().length - this.Clicks.get() < 21 && this.CurrentPage.get() == "game") this.spawnBox();

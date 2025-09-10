@@ -100,7 +100,7 @@ export class WaveKernel {
 
     const stack = this.getModule<ProcessHandler>("stack");
 
-    this.init = await stack.spawn<InitProcess>(InitProcess);
+    this.init = await stack.spawn<InitProcess>(InitProcess, undefined, "SYSTEM");
     this.initPid = this.init?.pid ?? 0;
 
     this.PREMATURE = false;

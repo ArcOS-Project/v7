@@ -1,5 +1,5 @@
+import { KernelStack } from "$ts/process/handler";
 import type { LanguageInstance } from "$ts/msl/instance";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { AppProcess } from "./process";
@@ -11,15 +11,15 @@ export class ScriptedAppProcess extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, lang: LanguageInstance) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, lang: LanguageInstance) {
+    super(pid, parentPid, app);
 
     this.lang = lang;
     this.lang.app = app;
     this.lang.appProcess = this;
 
-    if (!this.handler.renderer?.currentState.includes(this.lang.pid)) {
-      this.handler.renderer?.currentState.push(this.lang.pid);
+    if (!KernelStack().renderer?.currentState.includes(this.lang.pid)) {
+      KernelStack().renderer?.currentState.push(this.lang.pid);
     }
   }
 
@@ -33,7 +33,7 @@ export class ScriptedAppProcess extends AppProcess {
 
   protected async stop() {
     setTimeout(() => {
-      const children = this.handler.getSubProcesses(this.lang.pid);
+      const children = KernelStack().getSubProcesses(this.lang.pid);
 
       if (!children.size) this.lang.killSelf();
     }, 1000);

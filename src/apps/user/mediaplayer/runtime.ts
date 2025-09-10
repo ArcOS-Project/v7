@@ -4,7 +4,7 @@ import { arrayToText, textToBlob } from "$ts/fs/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/fs/util";
 import { MediaPlayerIcon } from "$ts/images/apps";
 import { FolderIcon } from "$ts/images/filesystem";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
@@ -31,14 +31,14 @@ export class MediaPlayerRuntime extends AppProcess {
         caption: "Enter fullscreen",
         disabled: async () => !!this.getWindow()?.classList.contains("fullscreen"),
         action: () => {
-          this.handler.renderer?.toggleFullscreen(this.pid);
+          KernelStack().renderer?.toggleFullscreen(this.pid);
         },
       },
       {
         caption: "Exit fullscreen",
         disabled: async () => !this.getWindow()?.classList.contains("fullscreen"),
         action: () => {
-          this.handler.renderer?.toggleFullscreen(this.pid);
+          KernelStack().renderer?.toggleFullscreen(this.pid);
         },
       },
     ],
@@ -46,8 +46,8 @@ export class MediaPlayerRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, file?: string) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, file?: string) {
+    super(pid, parentPid, app);
 
     this.altMenu.set(MediaPlayerAltMenu(this));
     this.acceleratorStore.push(...MediaPlayerAccelerators(this));

@@ -2,7 +2,6 @@ import { AppProcess } from "$ts/apps/process";
 import { USERFS_UUID } from "$ts/env";
 import { FilesystemDrive } from "$ts/fs/drive";
 import { ServerDrive } from "$ts/fs/drives/server";
-import type { ProcessHandler } from "$ts/process/handler";
 import type { AppProcessData } from "$types/app";
 import type { UserQuota } from "$types/fs";
 import type { CategorizedDiskUsage } from "$types/user";
@@ -15,8 +14,8 @@ export class DriveInfoRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, drive: FilesystemDrive) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, drive: FilesystemDrive) {
+    super(pid, parentPid, app);
 
     if (drive && drive instanceof FilesystemDrive) this.drive = drive;
   }

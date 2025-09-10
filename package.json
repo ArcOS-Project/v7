@@ -13,7 +13,8 @@
     "build:types:all": "npm run build:types && npm run build:globals",
     "format:check": "prettier --check ./src",
     "region:check": "node tools/validate-regions.mjs",
-    "console:check": "node tools/console-usage.mjs"
+    "console:check": "node tools/console-usage.mjs",
+    "check:everything": "yarn run check && yarn format:check && yarn console:check && yarn region:check"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "5.1.0",

@@ -1,4 +1,3 @@
-import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import initSqlJs from "sql.js";
 import { sqljsResultToJSON } from "./util";
@@ -11,8 +10,8 @@ export class SqlInterfaceProcess extends Process {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, path: string) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number, path: string) {
+    super(pid, parentPid);
 
     this.filePath = path;
     this.name = "SqlInterfaceProcess";

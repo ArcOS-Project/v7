@@ -1,3 +1,4 @@
+import { KernelStack } from "$ts/process/handler";
 import { ArcOSVersion } from "$ts/env";
 import type { WaveKernel } from "$ts/kernel";
 import type { Environment } from "$ts/kernel/env";
@@ -5,7 +6,6 @@ import { KernelLogs } from "$ts/kernel/getters";
 import { KernelModule } from "$ts/kernel/module";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { ProcessHandler } from "$ts/process/handler";
 import { ServerManager } from "$ts/server";
 import { Backend } from "$ts/server/axios";
 import { UserDaemon } from "$ts/server/user/daemon";
@@ -15,7 +15,6 @@ import { defaultReportOptions } from "./store";
 export class BugHunt extends KernelModule {
   server: ServerManager;
   env: Environment;
-  handler: ProcessHandler;
 
   //#region LIFECYCLE
 
@@ -24,7 +23,6 @@ export class BugHunt extends KernelModule {
 
     this.server = kernel.getModule<ServerManager>("server");
     this.env = kernel.getModule<Environment>("env");
-    this.handler = kernel.getModule<ProcessHandler>("stack");
   }
 
   async _init(): Promise<void> {}
@@ -64,7 +62,7 @@ export class BugHunt extends KernelModule {
 
   getToken() {
     const daemonPid = +this.env.get("userdaemon_pid");
-    const userDaemon = this.handler.getProcess<UserDaemon>(daemonPid);
+    const userDaemon = KernelStack().getProcess<UserDaemon>(daemonPid);
 
     if (!daemonPid || !userDaemon) return "";
 

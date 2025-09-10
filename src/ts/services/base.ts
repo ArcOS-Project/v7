@@ -1,4 +1,3 @@
-import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import type { ServiceHost } from ".";
 
@@ -8,8 +7,8 @@ export class BaseService extends Process {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
+    super(pid, parentPid);
 
     this.name = `svc#${name}`;
     this.host = host;

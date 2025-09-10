@@ -1,7 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
-import type { ProcessHandler } from "$ts/process/handler";
 import { LoginUser } from "$ts/server/user/auth";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -16,16 +15,8 @@ export class SecureContextRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    id: string,
-    key: string,
-    data: ElevationData
-  ) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, id: string, key: string, data: ElevationData) {
+    super(pid, parentPid, app);
 
     this.id = id;
     this.key = key;

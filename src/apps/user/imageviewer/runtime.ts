@@ -4,7 +4,6 @@ import { arrayToBlob } from "$ts/fs/convert";
 import { getItemNameFromPath } from "$ts/fs/util";
 import { ImageViewerIcon } from "$ts/images/apps";
 import { ErrorIcon } from "$ts/images/dialog";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -17,8 +16,8 @@ export class ImageViewerRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path?: string) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, path?: string) {
+    super(pid, parentPid, app);
 
     this.renderArgs.path = path;
   }

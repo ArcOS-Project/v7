@@ -1,3 +1,4 @@
+import { KernelStack } from "$ts/process/handler";
 import { UserDaemon } from "$ts/server/user/daemon";
 import type { Keyword } from "$types/msl";
 
@@ -7,7 +8,7 @@ export const mount: Keyword = async (lang) => {
   const [path, letter] = lang.tokens;
 
   const daemonPid = lang.env.get("userdaemon_pid");
-  const daemon = lang.handler.getProcess<UserDaemon>(+daemonPid);
+  const daemon = KernelStack().getProcess<UserDaemon>(+daemonPid);
 
   if (!daemonPid || !daemon) {
     lang.error("Can't mount without a user daemon", "mount");

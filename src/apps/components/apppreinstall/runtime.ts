@@ -6,7 +6,6 @@ import { DownloadIcon } from "$ts/images/filesystem";
 import { AppsIcon } from "$ts/images/general";
 import { ArcAppMimeIcon } from "$ts/images/mime";
 import { tryJsonParse } from "$ts/json";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
@@ -20,8 +19,8 @@ export class AppPreInstallRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, pkgPath: string) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, pkgPath: string) {
+    super(pid, parentPid, app);
 
     this.pkgPath = pkgPath;
   }

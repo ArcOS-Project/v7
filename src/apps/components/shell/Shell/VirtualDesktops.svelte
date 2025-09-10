@@ -1,6 +1,7 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
   import { contextProps } from "$ts/context/actions.svelte";
+  import { KernelStack } from "$ts/process/handler";
   import { Wallpapers } from "$ts/wallpaper/store";
   import { Store } from "$ts/writable";
   import type { Workspace } from "$types/user";
@@ -15,7 +16,7 @@
   let windowCounts = Store<Record<string, number>>({});
 
   onMount(() => {
-    const sub = process.handler.store.subscribe((v) => {
+    const sub = KernelStack().store.subscribe((v) => {
       $windowCounts = {};
 
       for (const workspace of workspaces) {

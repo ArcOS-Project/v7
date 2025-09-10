@@ -19,6 +19,7 @@ export const create: Keyword = async (lang) => {
   const result = await stack.spawn<ScriptedAppProcess>(
     ScriptedAppProcess,
     lang.userDaemon?.getCurrentDesktop(),
+    lang.userDaemon?.userInfo?._id,
     lang.pid,
     {
       data: metadata,

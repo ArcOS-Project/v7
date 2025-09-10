@@ -2,7 +2,6 @@ import { KernelStateHandler } from "$ts/kernel/getters";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import { AppProcess } from "../../../ts/apps/process";
-import type { ProcessHandler } from "../../../ts/process/handler";
 import type { AppProcessData } from "../../../types/app";
 
 export class BootScreenRuntime extends AppProcess {
@@ -11,8 +10,8 @@ export class BootScreenRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData) {
+    super(pid, parentPid, app);
   }
 
   //#endregion

@@ -1,4 +1,3 @@
-import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from ".";
@@ -14,8 +13,8 @@ export class TerminalProcess extends Process {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number) {
+    super(pid, parentPid);
     this.name = "TerminalProcess";
   }
 

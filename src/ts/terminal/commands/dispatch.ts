@@ -1,6 +1,6 @@
 import { KnownSystemDispatchers, SystemOnlyDispatches } from "$ts/dispatch/store";
 import { tryJsonParse } from "$ts/json";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import { tryParseInt } from "$ts/util";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";
@@ -13,8 +13,8 @@ export class DispatchCommand extends TerminalProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number) {
+    super(pid, parentPid);
   }
 
   //#endregion
@@ -55,7 +55,7 @@ export class DispatchCommand extends TerminalProcess {
 
       return 0;
     } else {
-      const dispatch = term.handler.ConnectDispatch(+pid);
+      const dispatch = KernelStack().ConnectDispatch(+pid);
 
       if (!dispatch) {
         term.Error(`Failed to connect to dispatch of PID ${pid}`);

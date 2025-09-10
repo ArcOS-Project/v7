@@ -2,7 +2,6 @@ import { getAllJsonPaths, getJsonHierarchy } from "$ts/hierarchy";
 import { ElevationIcon } from "$ts/images/general";
 import { tryJsonParse } from "$ts/json";
 import { getKMod } from "$ts/kernel/module";
-import type { ProcessHandler } from "$ts/process/handler";
 import { ServerManager } from "$ts/server";
 import { AdminBootstrapper } from "$ts/server/admin";
 import { ElevationLevel } from "$types/elevation";
@@ -19,8 +18,8 @@ export class AdminCommand extends TerminalProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number) {
+    super(pid, parentPid);
   }
 
   //#endregion

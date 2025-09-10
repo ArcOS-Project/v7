@@ -1,7 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { DistributionServiceProcess } from "$ts/distrib";
 import { UpdateIcon } from "$ts/images/general";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -25,8 +24,8 @@ export class MultiUpdateGuiRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, updates: UpdateInfo[]) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, updates: UpdateInfo[]) {
+    super(pid, parentPid, app);
 
     this.distrib = this.userDaemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
     this.updates = Array.isArray(updates) ? updates : [];

@@ -1,7 +1,7 @@
 <script lang="ts">
+  import HighlightComponent from "$lib/HighlightComponent.svelte";
   import dayjs from "dayjs";
   import type { SqeletonError } from "../../types";
-  import HighlightComponent from "$lib/HighlightComponent.svelte";
 
   const { error }: { error: SqeletonError } = $props();
   let expand = $state(false);

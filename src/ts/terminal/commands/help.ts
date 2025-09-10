@@ -1,4 +1,3 @@
-import type { ProcessHandler } from "$ts/process/handler";
 import { maxLength } from "$ts/util";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";
@@ -11,8 +10,8 @@ export class HelpCommand extends TerminalProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number) {
+    super(pid, parentPid);
   }
 
   //#endregion

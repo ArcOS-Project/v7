@@ -1,4 +1,3 @@
-import type { ProcessHandler } from "../ts/process/handler";
 import type { StateHandler } from "../ts/state";
 import type { App } from "./app";
 
@@ -12,7 +11,6 @@ export interface State {
 
 export interface StateRendererAccessors {
   state: StateHandler;
-  stack: ProcessHandler;
 }
 
 export type StateProps = Record<string, any>;

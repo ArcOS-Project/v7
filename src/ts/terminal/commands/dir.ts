@@ -1,6 +1,5 @@
 import type { FilesystemDrive } from "$ts/fs/drive";
 import { formatBytes, join } from "$ts/fs/util";
-import type { ProcessHandler } from "$ts/process/handler";
 import { FormatLargeNumber, Gap, maxLength, Plural, Truncate } from "$ts/util";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
@@ -14,8 +13,8 @@ export class DirCommand extends TerminalProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number) {
+    super(pid, parentPid);
   }
 
   //#endregion

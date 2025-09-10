@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { WarningIcon } from "$ts/images/dialog";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
@@ -35,8 +35,8 @@ export class ShellRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData) {
+    super(pid, parentPid, app);
   }
 
   async start() {
@@ -133,9 +133,9 @@ export class ShellRuntime extends AppProcess {
 
       const composed = e.composedPath();
 
-      this.startMenuOpened.subscribe((v) => v && this.handler.renderer?.focusedPid.set(-1));
-      this.actionCenterOpened.subscribe((v) => v && this.handler.renderer?.focusedPid.set(-1));
-      this.openedTrayPopup.subscribe((v) => v && this.handler.renderer?.focusedPid.set(-1));
+      this.startMenuOpened.subscribe((v) => v && KernelStack().renderer?.focusedPid.set(-1));
+      this.actionCenterOpened.subscribe((v) => v && KernelStack().renderer?.focusedPid.set(-1));
+      this.openedTrayPopup.subscribe((v) => v && KernelStack().renderer?.focusedPid.set(-1));
 
       // Clicked outside the start menu? Then close it
       if (
@@ -181,7 +181,7 @@ export class ShellRuntime extends AppProcess {
     this.startMenuOpened.subscribe((v) => {
       if (!v) this.searchQuery.set(""); // Remove search query on close
 
-      if (v) this.handler.renderer?.focusedPid.set(-1); // Unfocus window on start menu invocation
+      if (v) KernelStack().renderer?.focusedPid.set(-1); // Unfocus window on start menu invocation
     });
 
     this.userDaemon?.checkReducedMotion();
@@ -194,8 +194,8 @@ export class ShellRuntime extends AppProcess {
 
   async gotReadySignal() {
     this.Log("Got ready signal!");
-    this.trayHost = this.handler.getProcess(+this.env.get("trayhost_pid"))!;
-    this.arcFind = this.handler.getProcess(+this.env.get("arcfind_pid"))!;
+    this.trayHost = KernelStack().getProcess(+this.env.get("trayhost_pid"))!;
+    this.arcFind = KernelStack().getProcess(+this.env.get("arcfind_pid"))!;
     this.arcFind.loading.subscribe((v) => this.searchLoading.set(v));
     this.ready.set(true);
   }
@@ -235,7 +235,7 @@ export class ShellRuntime extends AppProcess {
   //#region WORKSPACES
 
   async deleteWorkspace(workspace: Workspace) {
-    const windowCount = [...this.handler.store()].filter(
+    const windowCount = [...KernelStack().store()].filter(
       ([_, p]) => p instanceof AppProcess && p.app.desktop === workspace.uuid
     ).length; // Get the window count using some arguably unreadable code
 

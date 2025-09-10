@@ -13,8 +13,8 @@ import {
   WaveIcon,
 } from "$ts/images/general";
 import { GoodStatusIcon } from "$ts/images/status";
+import { KernelStack } from "$ts/process/handler";
 import { ArcLicense } from "$ts/metadata/license";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Backend } from "$ts/server/axios";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
@@ -77,8 +77,8 @@ export class SettingsRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, page?: string, slide?: string) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, page?: string, slide?: string) {
+    super(pid, parentPid, app);
 
     this.switchPage(page || "account");
 
@@ -89,7 +89,7 @@ export class SettingsRuntime extends AppProcess {
     const firstInstance = await this.closeIfSecondInstance();
 
     if (firstInstance) {
-      const dispatch = this.handler.ConnectDispatch(firstInstance.pid);
+      const dispatch = KernelStack().ConnectDispatch(firstInstance.pid);
 
       dispatch?.dispatch("switch-page", this.currentPage());
       if (this.requestedSlide) dispatch?.dispatch("show-slide", this.requestedSlide);

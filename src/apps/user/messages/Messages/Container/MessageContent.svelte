@@ -1,12 +1,12 @@
 <script lang="ts">
   import MarkdownRenderingComponent from "$lib/MarkdownRenderingComponent.svelte";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
+  import UserLink from "$lib/UserLink.svelte";
   import { ProfilePictures } from "$ts/images/pfp";
   import type { PublicUserInfo } from "$types/user";
   import dayjs from "dayjs";
   import { onMount } from "svelte";
   import type { MessagingAppRuntime } from "../../runtime";
-  import UserLink from "$lib/UserLink.svelte";
 
   const { process }: { process: MessagingAppRuntime } = $props();
   const { message } = process;

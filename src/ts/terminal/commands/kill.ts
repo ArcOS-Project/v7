@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { tryJsonParse } from "$ts/json";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import { ElevationLevel } from "$types/elevation";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";
@@ -13,8 +13,8 @@ export class KillCommand extends TerminalProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number) {
+    super(pid, parentPid);
   }
 
   //#endregion
@@ -22,7 +22,7 @@ export class KillCommand extends TerminalProcess {
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const force = flags.force || flags.f;
     const pid = tryJsonParse<number>(argv[0]) as number;
-    const process = term.handler.getProcess(pid);
+    const process = KernelStack().getProcess(pid);
 
     if (!pid) {
       term.Error("Missing process ID.");
@@ -52,7 +52,7 @@ export class KillCommand extends TerminalProcess {
       if (select.selectedIndex !== 0) return 1;
     }
 
-    const result = await term.handler.kill(process.pid, !!force);
+    const result = await KernelStack().kill(process.pid, !!force);
 
     if (result !== "success") {
       term.Error(result);

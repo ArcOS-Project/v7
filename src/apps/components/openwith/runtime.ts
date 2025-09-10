@@ -1,7 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { isPopulatable } from "$ts/apps/util";
 import { getItemNameFromPath } from "$ts/fs/util";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { FileOpenerResult } from "$types/fs";
@@ -18,8 +17,8 @@ export class OpenWithRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path: string) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, path: string) {
+    super(pid, parentPid, app);
 
     this.renderArgs.path = path;
   }

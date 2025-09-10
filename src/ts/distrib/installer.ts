@@ -1,7 +1,6 @@
 import type { ApplicationStorage } from "$ts/apps/storage";
 import { arrayToBlob } from "$ts/fs/convert";
 import { join } from "$ts/fs/util";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { UUID } from "$ts/uuid";
@@ -10,6 +9,7 @@ import type { ArcPackage, InstallStatus, InstallStatusMode, InstallStatusType, S
 import { fromExtension } from "human-filetypes";
 import type JSZip from "jszip";
 import { DistributionServiceProcess } from ".";
+import { KernelStack } from "$ts/process/handler";
 
 export class InstallerProcess extends Process {
   status = Store<InstallStatus>({});
@@ -28,10 +28,10 @@ export class InstallerProcess extends Process {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, zip: JSZip, metadata: ArcPackage, item: StoreItem) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number, zip: JSZip, metadata: ArcPackage, item: StoreItem) {
+    super(pid, parentPid);
 
-    this.userDaemon = handler.getProcess(+this.env.get("userdaemon_pid"))!;
+    this.userDaemon = KernelStack().getProcess(+this.env.get("userdaemon_pid"))!;
 
     if (metadata && zip) {
       this.metadata = metadata;

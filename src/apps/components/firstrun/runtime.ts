@@ -2,7 +2,6 @@ import { AppProcess } from "$ts/apps/process";
 import { BuiltinApps } from "$ts/apps/store";
 import { join } from "$ts/fs/util";
 import { iconIdFromPath } from "$ts/images";
-import type { ProcessHandler } from "$ts/process/handler";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
@@ -22,8 +21,8 @@ export class FirstRunRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, daemon: UserDaemon) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, daemon: UserDaemon) {
+    super(pid, parentPid, app);
 
     if (daemon) this.userDaemon = daemon;
   }

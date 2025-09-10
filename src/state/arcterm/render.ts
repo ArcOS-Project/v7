@@ -1,8 +1,9 @@
 import { KernelInitPid } from "$ts/kernel/getters";
+import { KernelStack } from "$ts/process/handler";
 import { TerminalMode } from "$ts/terminal/mode";
-import type { StateProps, StateRendererAccessors } from "$types/state";
+import type { StateProps } from "$types/state";
 
-export default async function render(_: StateProps, { stack }: StateRendererAccessors) {
+export default async function render(_: StateProps) {
   const target = document.querySelector("#arcTermMode");
-  await stack.spawn(TerminalMode, undefined, KernelInitPid(), target);
+  await KernelStack().spawn(TerminalMode, undefined, "SYSTEM", KernelInitPid(), target);
 }

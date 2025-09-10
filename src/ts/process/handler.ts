@@ -4,14 +4,16 @@ import { SystemDispatch } from "$ts/dispatch";
 import { Environment } from "$ts/kernel/env";
 import { KernelStateHandler } from "$ts/kernel/getters";
 import type { App } from "$types/app";
-import type { ProcessKillResult } from "$types/process";
+import type { ProcessContext, ProcessKillResult } from "$types/process";
 import { parse } from "stacktrace-parser";
 import { AppRenderer } from "../apps/renderer";
 import { WaveKernel } from "../kernel";
 import { Log } from "../kernel/logging";
-import { getKMod, KernelModule } from "../kernel/module";
+import { KernelModule } from "../kernel/module";
 import { Store } from "../writable";
 import type { Process } from "./instance";
+
+export const KernelStack = () => WaveKernel.get().getModule<ProcessHandler>("stack");
 
 export class ProcessHandler extends KernelModule {
   public BUSY = false;
@@ -21,14 +23,15 @@ export class ProcessHandler extends KernelModule {
   public renderer: AppRenderer | undefined;
   public env: Environment;
   public dispatch: SystemDispatch;
+  public processContexts = new Map<number, ProcessContext>([]);
 
   //#region LIFECYCLE
 
   constructor(kernel: WaveKernel, id: string) {
     super(kernel, id);
 
-    this.env = getKMod<Environment>("env");
-    this.dispatch = getKMod<SystemDispatch>("dispatch");
+    this.env = WaveKernel.get().getModule<Environment>("env");
+    this.dispatch = WaveKernel.get().getModule<SystemDispatch>("dispatch");
   }
 
   async _init() {
@@ -38,7 +41,7 @@ export class ProcessHandler extends KernelModule {
   async startRenderer(initPid: number) {
     this.isKmod();
 
-    this.renderer = await this.spawn(AppRenderer, undefined, initPid, "appRenderer");
+    this.renderer = await this.spawn(AppRenderer, undefined, "SYSTEM", initPid, "appRenderer");
   }
 
   //#endregion
@@ -62,6 +65,7 @@ export class ProcessHandler extends KernelModule {
   async spawn<T = Process>(
     process: typeof Process,
     renderTarget: HTMLDivElement | undefined = undefined,
+    userId: string | undefined,
     parentPid: number | undefined = undefined,
     ...args: any[]
   ): Promise<T | undefined> {
@@ -81,7 +85,7 @@ export class ProcessHandler extends KernelModule {
     __Console__.time(`process spawn: ${pid}`);
 
     try {
-      const proc = new (process as any)(this, pid, parentPid, ...args) as Process;
+      const proc = new (process as any)(pid, parentPid, ...args) as Process;
 
       Log("ProcessHandler.spawn", `Spawning new ${proc.constructor.name} with PID ${pid}`);
 
@@ -99,6 +103,12 @@ export class ProcessHandler extends KernelModule {
       }
 
       proc.name ||= proc.constructor.name;
+
+      this.processContexts.set(pid, {
+        pid,
+        userId: userId || "NOBODY",
+        appId: proc instanceof AppProcess ? proc.app.id : undefined,
+      });
 
       const store = this.store.get();
 
@@ -124,6 +134,22 @@ export class ProcessHandler extends KernelModule {
 
       return undefined;
     }
+  }
+
+  getProcessContext(pid: number) {
+    return this.processContexts.get(pid);
+  }
+
+  setProcessContext(pid: number, context: ProcessContext) {
+    this.processContexts.set(pid, context);
+  }
+
+  async updateProcessContext(pid: number, cb: (context: ProcessContext) => ProcessContext) {
+    const context = this.getProcessContext(pid);
+
+    if (!context) return false;
+
+    this.setProcessContext(pid, cb(context));
   }
 
   async kill(pid: number, force = false): Promise<ProcessKillResult> {

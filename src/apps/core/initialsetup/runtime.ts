@@ -4,6 +4,7 @@ import { SecurityMediumIcon } from "$ts/images/general";
 import { KernelStateHandler } from "$ts/kernel/getters";
 import { getKMod } from "$ts/kernel/module";
 import { ArcLicense } from "$ts/metadata/license";
+import { KernelStack } from "$ts/process/handler";
 import { ServerManager } from "$ts/server";
 import { LoginUser, RegisterUser } from "$ts/server/user/auth";
 import { UserDaemon } from "$ts/server/user/daemon";
@@ -11,7 +12,6 @@ import { Sleep } from "$ts/sleep";
 import { htmlspecialchars } from "$ts/util";
 import { Store } from "$ts/writable";
 import { AppProcess } from "../../../ts/apps/process";
-import type { ProcessHandler } from "../../../ts/process/handler";
 import type { AppProcessData } from "../../../types/app";
 import CheckInbox from "./InitialSetup/Page/CheckInbox.svelte";
 import Finish from "./InitialSetup/Page/Finish.svelte";
@@ -112,8 +112,8 @@ export class InitialSetupRuntime extends AppProcess {
   //#endregion
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData) {
+    super(pid, parentPid, app);
 
     const update = () => {
       this.identityInfoValid.set(
@@ -310,7 +310,14 @@ export class InitialSetupRuntime extends AppProcess {
       return;
     }
 
-    this.userDaemon = await this.handler.spawn(UserDaemon, undefined, this.pid, token, this.newUsername());
+    this.userDaemon = await KernelStack().spawn(
+      UserDaemon,
+      undefined,
+      this.userDaemon?.userInfo?._id,
+      this.pid,
+      token,
+      this.newUsername()
+    );
 
     await this.userDaemon?.getUserInfo();
     await this.userDaemon?.startPreferencesSync();
@@ -324,4 +331,6 @@ export class InitialSetupRuntime extends AppProcess {
     this.token = token;
     this.pageNumber.set(this.pageNumber() + 1);
   }
+
+  //#endregion
 }

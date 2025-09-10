@@ -3,7 +3,7 @@ import { MessageBox } from "$ts/dialog";
 import { DefaultIcon } from "$ts/images/apps";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { ComponentIcon } from "$ts/images/general";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import type { Process } from "$ts/process/instance";
 import { ProcessKillResultCaptions } from "$ts/process/store";
 import { Store } from "$ts/writable";
@@ -17,8 +17,8 @@ export class ProcessManagerRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData) {
+    super(pid, parentPid, app);
   }
 
   //#endregion
@@ -48,7 +48,7 @@ export class ProcessManagerRuntime extends AppProcess {
           {
             caption: "End process",
             action: async () => {
-              const result = await this.handler.kill(proc.pid, true);
+              const result = await KernelStack().kill(proc.pid, true);
 
               if (result !== "success") {
                 this.killError(name, result);

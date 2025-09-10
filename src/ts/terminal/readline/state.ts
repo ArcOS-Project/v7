@@ -13,7 +13,6 @@
  * © IzKuipers 2025
  */
 /* tslint:disable:max-classes-per-file */
-import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import stringWidth from "string-width";
 import type { Highlighter } from "./highlight";
@@ -65,7 +64,6 @@ export class State extends Process {
   //#region LIFECYCLE
 
   constructor(
-    handler: ProcessHandler,
     pid: number,
     parentPid: number,
     prompt: string,
@@ -74,7 +72,7 @@ export class State extends Process {
     history?: History,
     conceiled = false
   ) {
-    super(handler, pid, parentPid);
+    super(pid, parentPid);
 
     this.prompt = prompt;
     this.tty = tty;

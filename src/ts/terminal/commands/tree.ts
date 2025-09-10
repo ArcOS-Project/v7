@@ -1,5 +1,4 @@
 import { join } from "$ts/fs/util";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Plural } from "$ts/util";
 import type { RecursiveDirectory } from "$types/fs";
 import type { Arguments } from "$types/terminal";
@@ -13,8 +12,8 @@ export class TreeCommand extends TerminalProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number) {
+    super(pid, parentPid);
   }
 
   //#endregion

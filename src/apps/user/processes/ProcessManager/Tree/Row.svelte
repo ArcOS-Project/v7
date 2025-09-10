@@ -2,7 +2,9 @@
   import { AppProcess } from "$ts/apps/process";
   import { DefaultIcon } from "$ts/images/apps";
   import { FlagIcon } from "$ts/images/general";
+  import { KernelStack } from "$ts/process/handler";
   import type { Process } from "$ts/process/instance";
+  import type { ProcessContext } from "$types/process";
   import { onMount } from "svelte";
   import type { ProcessManagerRuntime } from "../../runtime";
   import Row from "./Row.svelte";
@@ -15,19 +17,21 @@
   }: { pid: number; proc: Process; process: ProcessManagerRuntime; orphan?: boolean } = $props();
 
   const { selected } = process;
-  const { handler } = process;
-  const { focusedPid } = handler.renderer!;
+  const { focusedPid } = KernelStack().renderer!;
 
   let name = $state<string>();
   let icon = $state<string>();
   let appId = $state<string>();
   let children = $state<Map<number, Process>>(new Map());
   let closing = $state<boolean>(false);
+  let context = $state<ProcessContext>();
 
   onMount(() => {
-    handler.store.subscribe(async () => {
-      children = await handler.getSubProcesses(proc.pid);
+    KernelStack().store.subscribe(async () => {
+      children = await KernelStack().getSubProcesses(proc.pid);
     });
+
+    context = KernelStack().getProcessContext(pid);
 
     if (proc instanceof AppProcess) {
       const { app } = proc;
@@ -70,6 +74,7 @@
       <img src={FlagIcon} alt="" class="flag" />
       <span>{proc.pid}</span>
     </div>
+    <div class="segment user">{context?.userId || "-"}</div>
     <div class="segment app-id">{appId || "-"}</div>
   </div>
   {#if children.size}

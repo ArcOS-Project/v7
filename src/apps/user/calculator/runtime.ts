@@ -1,5 +1,4 @@
 import { AppProcess } from "$ts/apps/process";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppKeyCombinations } from "$types/accelerator";
 import type { AppProcessData } from "$types/app";
@@ -13,8 +12,8 @@ export class CalculatorRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData) {
+    super(pid, parentPid, app);
 
     this.keys = this.compileKeys(this.Store.AllowedKeys, this.Store.Overrides);
   }

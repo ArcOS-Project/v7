@@ -1,7 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { LightsOffIcon } from "$ts/images/apps";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Store, type ReadableStore } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { LogLevel } from "$types/logging";
@@ -25,8 +24,8 @@ export class LightsOffRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData) {
+    super(pid, parentPid, app);
 
     this.Levels = new LightsOffLevels(this);
 

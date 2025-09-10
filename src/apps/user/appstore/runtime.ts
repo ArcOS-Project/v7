@@ -7,7 +7,6 @@ import { arrayToBlob } from "$ts/fs/convert";
 import { AppStoreIcon } from "$ts/images/apps";
 import { ErrorIcon, InfoIcon } from "$ts/images/dialog";
 import { UploadIcon } from "$ts/images/general";
-import type { ProcessHandler } from "$ts/process/handler";
 import { UserPaths } from "$ts/server/user/store";
 import { Plural } from "$ts/util";
 import { UUID } from "$ts/uuid";
@@ -33,15 +32,8 @@ export class AppStoreRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    page?: number,
-    props?: Record<string, any>
-  ) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, page?: number, props?: Record<string, any>) {
+    super(pid, parentPid, app);
 
     this.distrib = this.userDaemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
 

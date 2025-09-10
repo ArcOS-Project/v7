@@ -13,7 +13,6 @@ import type {
   onFolderChange,
 } from "$ts/fs/util";
 import type { Environment } from "$ts/kernel/env";
-import type { ProcessHandler } from "$ts/process/handler";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import type { ServiceHost } from "$ts/services";
 import type { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";
@@ -23,7 +22,6 @@ import type { dayjs } from "./dayjs";
 
 export interface ThirdPartyPropMap {
   daemon: UserDaemon;
-  handler: ProcessHandler;
   fs: Filesystem;
   env: Environment;
   serviceHost: ServiceHost | undefined;

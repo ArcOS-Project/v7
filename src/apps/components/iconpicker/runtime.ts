@@ -1,6 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
 import { getAllImages, getGroupedIcons } from "$ts/images";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { IconPickerData } from "./types";
@@ -15,8 +14,8 @@ export class IconPickerRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, data: IconPickerData) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, data: IconPickerData) {
+    super(pid, parentPid, app);
 
     if (data) {
       const { forWhat, defaultIcon, returnId } = data;

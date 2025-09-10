@@ -12,7 +12,7 @@
  *
  * © IzKuipers 2025
  */
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { type IDisposable, type ITerminalAddon, Terminal } from "@xterm/xterm";
 import type { ArcTerminal } from "..";
@@ -54,14 +54,21 @@ export class Readline extends Process implements ITerminalAddon {
     return;
   };
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, terminal?: ArcTerminal) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number, terminal?: ArcTerminal) {
+    super(pid, parentPid);
     this.terminal = terminal;
     this.name = "Readline";
   }
 
   async start() {
-    this.history = await this.handler.spawn(History, undefined, this.pid, 50, this.terminal);
+    this.history = await KernelStack().spawn(
+      History,
+      undefined,
+      this.terminal?.daemon?.userInfo?._id,
+      this.pid,
+      50,
+      this.terminal
+    );
     this.history?.restore();
   }
 
@@ -232,9 +239,10 @@ export class Readline extends Process implements ITerminalAddon {
 
       this.state?.killSelf();
 
-      this.state = await this.handler.spawn(
+      this.state = await KernelStack().spawn(
         State,
         undefined,
+        this.terminal?.daemon?.userInfo?._id,
         this.pid,
         prompt,
         this.tty(),
@@ -326,9 +334,10 @@ export class Readline extends Process implements ITerminalAddon {
         this.state.moveCursorToEnd();
         this.term?.write("^C\r\n");
         this.state?.killSelf();
-        this.state = await this.handler.spawn(
+        this.state = await KernelStack().spawn(
           State,
           undefined,
+          this.terminal?.daemon?.userInfo?._id,
           this.pid,
           this.activeRead.prompt,
           this.tty(),

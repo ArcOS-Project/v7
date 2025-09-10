@@ -2,6 +2,7 @@
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
+  import { KernelStack } from "$ts/process/handler";
   import { Sleep } from "$ts/sleep";
   import { onMount } from "svelte";
   import type { AppInfoRuntime } from "../runtime";
@@ -13,14 +14,16 @@
 
   async function update() {
     await Sleep(10);
-    const pids = process.handler.renderer?.getAppInstances(appId).map((p) => p.pid);
+    const pids = KernelStack()
+      .renderer?.getAppInstances(appId)
+      .map((p) => p.pid);
 
     count = pids?.length || 0;
     pid = pids?.length ? pids[0] : -1;
   }
 
   onMount(() => {
-    const sub = process.handler.store.subscribe(update);
+    const sub = KernelStack().store.subscribe(update);
 
     return () => sub();
   });

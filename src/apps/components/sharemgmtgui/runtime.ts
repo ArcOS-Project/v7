@@ -3,7 +3,6 @@ import { MessageBox } from "$ts/dialog";
 import type { ShareManager } from "$ts/fs/shares";
 import { QuestionIcon } from "$ts/images/dialog";
 import { TrashIcon } from "$ts/images/general";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import type { SharedDriveType } from "$types/shares";
@@ -25,8 +24,8 @@ export class ShareMgmtGuiRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, shareId: string) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, shareId: string) {
+    super(pid, parentPid, app);
 
     this.shareId = shareId;
     this.shares = this.userDaemon?.serviceHost?.getService("ShareMgmt")!;

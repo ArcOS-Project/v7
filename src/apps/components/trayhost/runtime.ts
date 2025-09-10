@@ -1,4 +1,4 @@
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
@@ -15,16 +15,16 @@ export class TrayHostRuntime extends Process {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, _: AppProcessData) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number, _: AppProcessData) {
+    super(pid, parentPid);
 
     this.name = "TrayHostRuntime";
   }
 
   async start() {
-    if (this.env.get("trayhost_pid") && this.handler.getProcess(+this.env.get("trayhost_pid"))) return false;
+    if (this.env.get("trayhost_pid") && KernelStack().getProcess(+this.env.get("trayhost_pid"))) return false;
 
-    this.userDaemon = this.handler.getProcess<UserDaemon>(+this.env.get("userdaemon_pid"));
+    this.userDaemon = KernelStack().getProcess<UserDaemon>(+this.env.get("userdaemon_pid"));
     this.userPreferences = this.userDaemon!.preferences;
 
     this.env.set("trayhost_pid", this.pid);
@@ -39,12 +39,12 @@ export class TrayHostRuntime extends Process {
     options: TrayIconOptions,
     process: typeof TrayIconProcess = TrayIconProcess
   ) {
-    await this.handler.waitForAvailable();
+    await KernelStack().waitForAvailable();
     const trayIcons = this.trayIcons();
 
     if (trayIcons[`${pid}#${identifier}`]) return false;
 
-    const proc = await this.handler.spawn<TrayIconProcess>(process, undefined, pid, {
+    const proc = await KernelStack().spawn<TrayIconProcess>(process, undefined, this.userDaemon?.userInfo?._id, pid, {
       ...options,
       pid,
       identifier,
@@ -70,7 +70,7 @@ export class TrayHostRuntime extends Process {
 
     if (!trayIcons[discriminator]) return false;
 
-    await this.handler.kill(trayIcons[discriminator].pid);
+    await KernelStack().kill(trayIcons[discriminator].pid);
 
     delete trayIcons[discriminator];
 

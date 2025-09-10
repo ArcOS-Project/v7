@@ -3,7 +3,6 @@ import type { BugHuntUserSpaceProcess } from "$ts/bughunt/process";
 import { textToBlob } from "$ts/fs/convert";
 import { getItemNameFromPath } from "$ts/fs/util";
 import { SaveIcon } from "$ts/images/general";
-import type { ProcessHandler } from "$ts/process/handler";
 import { UserPaths } from "$ts/server/user/store";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
@@ -26,8 +25,8 @@ export class BugHuntRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData) {
+    super(pid, parentPid, app);
 
     this.bughunt = this.userDaemon?.serviceHost?.getService<BugHuntUserSpaceProcess>("BugHuntUsp")!;
     this.altMenu.set(BugHuntAltMenu(this));

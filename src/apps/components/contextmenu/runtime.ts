@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import type { AppProcessData, ContextMenuInstance, ContextMenuItem } from "$types/app";
@@ -15,8 +15,8 @@ export class ContextMenuRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData) {
+    super(pid, parentPid, app);
 
     this.env.set("contextmenu_pid", this.pid);
   }
@@ -83,7 +83,7 @@ export class ContextMenuRuntime extends AppProcess {
     const contextProps = scope.dataset.contextprops || "";
 
     const items = this.getContextEntry(+pid, contextmenu);
-    const proc = this.handler.getProcess(+pid);
+    const proc = KernelStack().getProcess(+pid);
 
     if (!items.length) return this.closeContextMenu();
 
@@ -112,7 +112,7 @@ export class ContextMenuRuntime extends AppProcess {
   //#region GETTERS
 
   getContextEntry(pid: number, scope: string): ContextMenuItem[] {
-    const proc = this.handler.getProcess(pid);
+    const proc = KernelStack().getProcess(pid);
 
     if (!(proc instanceof AppProcess)) return [];
 

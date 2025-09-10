@@ -1,6 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
 import { KernelLogs } from "$ts/kernel/getters";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { LogItem } from "$types/logging";
@@ -16,16 +15,8 @@ export class LoggingRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    source?: string,
-    level?: FilterLevel,
-    archive?: LogItem[]
-  ) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, source?: string, level?: FilterLevel, archive?: LogItem[]) {
+    super(pid, parentPid, app);
 
     this.archive = archive || [];
     this.isArchive = this.archive.length > 0;

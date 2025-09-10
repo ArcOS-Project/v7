@@ -1,6 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
 import { ComponentIcon } from "$ts/images/general";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { LogLevel } from "$types/logging";
@@ -12,8 +11,8 @@ export class MessageBoxRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, data: MessageBoxData) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, data: MessageBoxData) {
+    super(pid, parentPid, app);
 
     // Fallback to default data if missing
     this.data = data || {

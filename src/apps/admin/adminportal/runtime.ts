@@ -4,7 +4,6 @@ import { textToBlob } from "$ts/fs/convert";
 import { ShareManager } from "$ts/fs/shares";
 import { join } from "$ts/fs/util";
 import { ElevationIcon } from "$ts/images/general";
-import type { ProcessHandler } from "$ts/process/handler";
 import { AdminBootstrapper } from "$ts/server/admin";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
@@ -31,15 +30,8 @@ export class AdminPortalRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    page?: string,
-    props?: Record<string, any>
-  ) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, page?: string, props?: Record<string, any>) {
+    super(pid, parentPid, app);
 
     this.admin = this.userDaemon!.serviceHost!.getService<AdminBootstrapper>("AdminBootstrapper")!;
     this.shares = this.userDaemon!.serviceHost!.getService<ShareManager>("ShareMgmt")!;

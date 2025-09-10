@@ -9,7 +9,6 @@ import type {
   DriveCapabilities,
   ExtendedStat,
   FilesystemProgressCallback,
-  FilesystemStat,
   FsAccess,
   RecursiveDirectoryReadReturn,
   UserQuota,

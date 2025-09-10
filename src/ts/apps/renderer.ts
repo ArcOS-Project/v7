@@ -4,11 +4,11 @@ import { OopsNotifierRuntime } from "$apps/components/oopsnotifier/runtime";
 import { contextProps } from "$ts/context/actions.svelte";
 import { BETA } from "$ts/env";
 import { ComponentIcon } from "$ts/images/general";
+import { KernelStack } from "$ts/process/handler";
 import { UUID } from "$ts/uuid";
 import { Draggable } from "@neodrag/vanilla";
 import { unmount } from "svelte";
 import type { App, AppProcessData, WindowResizer } from "../../types/app";
-import type { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
 import { Store } from "../writable";
 import { AppRendererError } from "./error";
@@ -27,15 +27,15 @@ export class AppRenderer extends Process {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, target: string) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number, target: string) {
+    super(pid, parentPid);
 
     const targetDiv = document.getElementById(target) as HTMLDivElement;
 
     if (!targetDiv) throw new AppRendererError("Tried to create an app renderer on a non existent element");
 
     this.target = targetDiv;
-    handler.rendererPid = this.pid;
+    KernelStack().rendererPid = this.pid;
     this.name = "AppRenderer";
   }
 
@@ -43,7 +43,7 @@ export class AppRenderer extends Process {
     this.focusedPid.subscribe((v) => {
       if (this._disposed || !v) return;
 
-      this.lastInteract = this.handler.getProcess(v);
+      this.lastInteract = KernelStack().getProcess(v);
     });
   }
 
@@ -73,7 +73,7 @@ export class AppRenderer extends Process {
 
     body.className = "body";
 
-    const shell = this.handler.getProcess(+this.env.get("shell_pid"));
+    const shell = KernelStack().getProcess(+this.env.get("shell_pid"));
 
     window.className = "window shell-colored";
     window.setAttribute("data-pid", process.pid.toString());
@@ -140,7 +140,7 @@ export class AppRenderer extends Process {
         this.notifyCrash(data, e as Error, process);
       }
 
-      await this.handler.kill(process.pid);
+      await KernelStack().kill(process.pid);
     }
   }
 
@@ -331,7 +331,7 @@ export class AppRenderer extends Process {
     menu.className = "alt-menu nodrag";
 
     const contextMenuPid = this.env.get("contextmenu_pid");
-    const contextMenu = this.handler.getProcess<ContextMenuRuntime>(+contextMenuPid);
+    const contextMenu = KernelStack().getProcess<ContextMenuRuntime>(+contextMenuPid);
     if (!contextMenu) return menu;
 
     process.altMenu.subscribe((v) => {
@@ -507,7 +507,7 @@ export class AppRenderer extends Process {
 
     if (!pid) return;
 
-    const process = this.handler.getProcess<AppProcess>(pid, true);
+    const process = KernelStack().getProcess<AppProcess>(pid, true);
 
     if (process?.componentMount && Object.entries(process.componentMount).length) unmount(process?.componentMount);
 
@@ -549,7 +549,7 @@ export class AppRenderer extends Process {
   }
 
   updateDraggableDisabledState(pid: number, window: HTMLDivElement) {
-    const process = this.handler.getProcess<AppProcess>(pid);
+    const process = KernelStack().getProcess<AppProcess>(pid);
 
     if (!process || !process.draggable) return;
 
@@ -572,7 +572,7 @@ export class AppRenderer extends Process {
     if (!window || !window.classList.contains("minimized")) return;
 
     window.classList.remove("minimized");
-    const process = this.handler.getProcess<AppProcess>(+pid);
+    const process = KernelStack().getProcess<AppProcess>(+pid);
 
     if (!process || !process.app) return;
 
@@ -629,7 +629,7 @@ export class AppRenderer extends Process {
     const minimized = window.classList.contains("minimized");
     if (minimized) this.focusedPid.set(-1);
 
-    const process = this.handler.getProcess<AppProcess>(+pid);
+    const process = KernelStack().getProcess<AppProcess>(+pid);
 
     if (!process || !process.app) return;
 
@@ -646,7 +646,7 @@ export class AppRenderer extends Process {
 
     window.classList.toggle("fullscreen");
 
-    const process = this.handler.getProcess<AppProcess>(+pid);
+    const process = KernelStack().getProcess<AppProcess>(+pid);
 
     if (!process || !process.app) return;
 
@@ -663,7 +663,7 @@ export class AppRenderer extends Process {
     for (const pid of this.currentState) {
       if (pid === originPid) continue;
 
-      const proc = this.handler.getProcess<AppProcess>(pid);
+      const proc = KernelStack().getProcess<AppProcess>(pid);
 
       if (proc && proc.app && proc.app.data && proc.app.data.id === id) result.push(proc);
     }
@@ -672,10 +672,11 @@ export class AppRenderer extends Process {
   }
 
   async notifyCrash(data: App, e: Error, process?: AppProcess) {
-    await this.handler.waitForAvailable();
-    const proc = await this.handler.spawn<OopsNotifierRuntime>(
+    await KernelStack().waitForAvailable();
+    const proc = await KernelStack().spawn<OopsNotifierRuntime>(
       OopsNotifierRuntime,
       undefined,
+      "SYSTEM",
       +this.env.get("shell_pid"),
       {
         data: { ...OopsNotifierApp, overlay: true },

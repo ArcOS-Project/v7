@@ -1,5 +1,4 @@
 import { toForm } from "$ts/form";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Backend } from "$ts/server/axios";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
@@ -13,8 +12,8 @@ export class ShareManager extends BaseService {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
-    super(handler, pid, parentPid, name, host);
+  constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
+    super(pid, parentPid, name, host);
 
     this.token = host.daemon.token;
   }

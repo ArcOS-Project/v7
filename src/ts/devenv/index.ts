@@ -3,7 +3,6 @@ import { MessageBox } from "$ts/dialog";
 import { ErrorIcon } from "$ts/images/dialog";
 import { KernelLogs } from "$ts/kernel/getters";
 import { ArcBuild } from "$ts/metadata/build";
-import type { ProcessHandler } from "$ts/process/handler";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
@@ -13,6 +12,7 @@ import type { AxiosInstance } from "axios";
 import axios from "axios";
 import { io, Socket } from "socket.io-client";
 import { DevDrive } from "./drive";
+import { KernelStack } from "$ts/process/handler";
 
 export class DevelopmentEnvironment extends BaseService {
   public connected = false;
@@ -26,14 +26,14 @@ export class DevelopmentEnvironment extends BaseService {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
-    super(handler, pid, parentPid, name, host);
+  constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
+    super(pid, parentPid, name, host);
 
     window.addEventListener("onbeforeunload", () => {
       this.stop();
     });
 
-    this.daemon = this.handler.getProcess(+this.env.get("userdaemon_pid"))!;
+    this.daemon = KernelStack().getProcess(+this.env.get("userdaemon_pid"))!;
   }
 
   async stop() {
@@ -67,7 +67,7 @@ export class DevelopmentEnvironment extends BaseService {
       },
     });
 
-    this.handler.store.subscribe((v) => {
+    KernelStack().store.subscribe((v) => {
       if (this._disposed) return;
 
       const procs = [...v]
@@ -186,17 +186,17 @@ export class DevelopmentEnvironment extends BaseService {
   async killTpa() {
     if (this._disposed) return this.disconnect();
 
-    const procs = [...this.handler.store()]
+    const procs = [...KernelStack().store()]
       .filter(([_, proc]) => proc instanceof ThirdPartyAppProcess && proc.app.id === this.meta?.metadata.appId)
       .map(([pid]) => pid);
 
     for (const pid of procs) {
-      await this.handler.kill(pid, true);
+      await KernelStack().kill(pid, true);
     }
   }
 
   async refreshCSS(filename: string) {
-    const processes = this.pids.map((pid) => this.handler.getProcess<ThirdPartyAppProcess>(pid)).filter((proc) => !!proc);
+    const processes = this.pids.map((pid) => KernelStack().getProcess<ThirdPartyAppProcess>(pid)).filter((proc) => !!proc);
 
     for (const proc of processes) {
       if (proc.elements[filename] && proc.elements[filename] instanceof HTMLLinkElement) {

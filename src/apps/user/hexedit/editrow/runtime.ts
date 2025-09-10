@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import { Sleep } from "$ts/sleep";
 import { sliceIntoChunks } from "$ts/util";
 import { Store, type ReadableStore } from "$ts/writable";
@@ -15,15 +15,8 @@ export class EditRowRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    view: ReadableStore<Uint8Array>,
-    offset: number
-  ) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, view: ReadableStore<Uint8Array>, offset: number) {
+    super(pid, parentPid, app);
 
     this.view = Store(new Uint8Array(view()));
     this.output = view;
@@ -31,7 +24,7 @@ export class EditRowRuntime extends AppProcess {
   }
 
   async render() {
-    const parent = this.handler.getProcess(this.parentPid)!;
+    const parent = KernelStack().getProcess(this.parentPid)!;
 
     if (!(parent instanceof HexEditRuntime)) throw new Error("Invalid invocation");
 

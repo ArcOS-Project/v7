@@ -5,7 +5,6 @@ import { getItemNameFromPath, getParentDirectory } from "$ts/fs/util";
 import { WarningIcon } from "$ts/images/dialog";
 import { DriveIcon } from "$ts/images/filesystem";
 import { DefaultMimeIcon, TextMimeIcon } from "$ts/images/mime";
-import type { ProcessHandler } from "$ts/process/handler";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
@@ -32,8 +31,8 @@ export class WriterRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path?: string) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, path?: string) {
+    super(pid, parentPid, app);
 
     this.renderArgs.path = path;
   }

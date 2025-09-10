@@ -23,7 +23,7 @@ export class ArcLang extends KernelModule {
     if (this.locked) throw new LangError("ArcLang is busy");
 
     return new Promise(async (resolve, reject) => {
-      const proc = await this.stack.spawn<Interpreter>(Interpreter, undefined, parentPid, options);
+      const proc = await this.stack.spawn<Interpreter>(Interpreter, undefined, "SYSTEM", parentPid, options);
 
       if (!proc) throw new LangError("Failed to spawn language instance");
 

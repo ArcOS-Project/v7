@@ -59,15 +59,8 @@ export class FileManagerRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    path?: string,
-    loadSave?: LoadSaveDialogData
-  ) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, path?: string, loadSave?: LoadSaveDialogData) {
+    super(pid, parentPid, app);
 
     this.renderArgs.path = path;
     this.loadSave = loadSave;

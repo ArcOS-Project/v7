@@ -3,7 +3,7 @@ import TerminalWindow from "$apps/components/terminalwindow/TerminalWindow.svelt
 import { arrayToText, textToBlob } from "$ts/fs/convert";
 import type { FilesystemDrive } from "$ts/fs/drive";
 import { join } from "$ts/fs/util";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { LoginUser } from "$ts/server/user/auth";
 import type { UserDaemon } from "$ts/server/user/daemon";
@@ -44,12 +44,12 @@ export class ArcTerminal extends Process {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, term: Terminal, path?: string) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number, term: Terminal, path?: string) {
+    super(pid, parentPid);
 
     this.path = path || UserPaths.Home;
     this.changeDirectory(this.path);
-    this.daemon = handler.getProcess(+this.env.get("userdaemon_pid"));
+    this.daemon = KernelStack().getProcess(+this.env.get("userdaemon_pid"));
 
     this.term = term;
     this.tryGetTermWindow();
@@ -66,7 +66,7 @@ export class ArcTerminal extends Process {
     }
     await this.migrateConfigurationPath();
 
-    const rl = await this.handler.spawn<Readline>(Readline, undefined, this.pid, this);
+    const rl = await KernelStack().spawn<Readline>(Readline, undefined, this.window?.userDaemon?.userInfo?._id, this.pid, this);
     await this.readConfig();
 
     this.term.loadAddon(rl!);
@@ -111,7 +111,12 @@ export class ArcTerminal extends Process {
         this.Error("Command not found.");
         this.lastCommandErrored = true;
       } else {
-        const proc = await this.handler.spawn<TerminalProcess>(command, undefined, this.pid);
+        const proc = await KernelStack().spawn<TerminalProcess>(
+          command,
+          undefined,
+          this.window?.userDaemon?.userInfo?._id,
+          this.pid
+        );
 
         // BUG 68798d6957684017c3e9a085
         if (!proc) {
@@ -279,10 +284,10 @@ export class ArcTerminal extends Process {
   }
 
   async stop(): Promise<any> {
-    const parent = this.handler.getProcess(this.parentPid);
+    const parent = KernelStack().getProcess(this.parentPid);
 
     if (parent instanceof TerminalWindow) {
-      this.handler.kill(this.parentPid);
+      KernelStack().kill(this.parentPid);
     }
   }
 
@@ -383,13 +388,20 @@ export class ArcTerminal extends Process {
 
     await this.rl?.dispose();
     await this.killSelf();
-    await this.handler.spawn(ArcTerminal, undefined, this.parentPid, this.term, this.path);
+    await KernelStack().spawn(
+      ArcTerminal,
+      undefined,
+      this.window?.userDaemon?.userInfo?._id,
+      this.parentPid,
+      this.term,
+      this.path
+    );
   }
 
   tryGetTermWindow() {
     this.Log("Trying to get TermWindProc");
 
-    const parent = this.handler.getProcess(this.parentPid);
+    const parent = KernelStack().getProcess(this.parentPid);
 
     if (parent instanceof TerminalWindowRuntime) this.window = parent;
   }

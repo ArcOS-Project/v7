@@ -2,7 +2,6 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { toForm } from "$ts/form";
 import { InfoIcon } from "$ts/images/dialog";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Backend } from "$ts/server/axios";
 import type { AppProcessData } from "$types/app";
 import type { RenderArgs } from "$types/process";
@@ -13,8 +12,8 @@ export class TotpAuthGuiRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, token: string, dispatchId: string) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, token: string, dispatchId: string) {
+    super(pid, parentPid, app);
 
     this.token = token;
     this.dispatchId = dispatchId;

@@ -2,7 +2,7 @@ import type { ApplicationStorage } from "$ts/apps/storage";
 import { arrayToBlob, arrayToText, textToBlob } from "$ts/fs/convert";
 import { join } from "$ts/fs/util";
 import { tryJsonParse } from "$ts/json";
-import { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import { Backend } from "$ts/server/axios";
 import { UserPaths } from "$ts/server/user/store";
 import type { ServiceHost } from "$ts/services";
@@ -26,8 +26,8 @@ export class DistributionServiceProcess extends BaseService {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, name: string, host: ServiceHost) {
-    super(handler, pid, parentPid, name, host);
+  constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
+    super(pid, parentPid, name, host);
 
     this.preferences = host.daemon.preferences;
   }
@@ -77,7 +77,15 @@ export class DistributionServiceProcess extends BaseService {
 
     if (this.checkBusy("packageInstaller")) return undefined;
 
-    const proc = await this.handler.spawn<InstallerProcess>(InstallerProcess, undefined, this.pid, zip, metadata, item);
+    const proc = await KernelStack().spawn<InstallerProcess>(
+      InstallerProcess,
+      undefined,
+      this.host.daemon.userInfo?._id,
+      this.pid,
+      zip,
+      metadata,
+      item
+    );
 
     return proc;
   }

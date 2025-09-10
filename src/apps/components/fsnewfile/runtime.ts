@@ -1,6 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
 import { join } from "$ts/fs/util";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
@@ -10,8 +9,8 @@ export class NewFileRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path: string) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, path: string) {
+    super(pid, parentPid, app);
 
     this.path = path;
   }

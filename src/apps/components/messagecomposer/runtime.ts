@@ -4,7 +4,6 @@ import { getItemNameFromPath } from "$ts/fs/util";
 import { MessagingIcon } from "$ts/images/apps";
 import { WarningIcon } from "$ts/images/dialog";
 import { MemoryIcon, UploadIcon } from "$ts/images/general";
-import type { ProcessHandler } from "$ts/process/handler";
 import { MessagingInterface } from "$ts/server/messaging";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
@@ -26,15 +25,8 @@ export class MessageComposerRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    initialData?: MessageCreateData,
-    replyId?: string
-  ) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, initialData?: MessageCreateData, replyId?: string) {
+    super(pid, parentPid, app);
 
     if (initialData) {
       this.recipients.set(initialData.recipients);

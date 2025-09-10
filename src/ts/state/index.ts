@@ -1,4 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
+import { KernelStack } from "$ts/process/handler";
 import { getKMod } from "$ts/kernel/module";
 import { LogLevel } from "$types/logging";
 import type { State } from "../../types/state";
@@ -18,8 +19,8 @@ export class StateHandler extends Process {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, instanceName: string, store = States) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number, instanceName: string, store = States) {
+    super(pid, parentPid);
     this.store = store;
     this.name = `StateHandler::${instanceName}`;
 
@@ -72,7 +73,7 @@ export class StateHandler extends Process {
       await Sleep(400);
     }
 
-    const appRenderer = this.handler.renderer?.target;
+    const appRenderer = KernelStack().renderer?.target;
 
     if (appRenderer) {
       appRenderer.className = "";
@@ -105,7 +106,6 @@ export class StateHandler extends Process {
 
         await data.render(props || {}, {
           state: this,
-          stack: this.handler,
         });
       } catch (e) {
         throw new StateError(`${id}: ${(e as any).stack}`);
@@ -147,6 +147,7 @@ export class StateHandler extends Process {
     const proc = await stack.spawn<AppProcess>(
       app.assets.runtime,
       undefined,
+      "SYSTEM",
       this.pid,
       {
         ...{

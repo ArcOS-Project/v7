@@ -4,7 +4,6 @@ import { getItemNameFromPath } from "$ts/fs/util";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { DriveIcon } from "$ts/images/filesystem";
 import { MemoryIcon } from "$ts/images/general";
-import type { ProcessHandler } from "$ts/process/handler";
 import { sliceIntoChunks } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
@@ -30,8 +29,8 @@ export class HexEditRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, file: string) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, file: string) {
+    super(pid, parentPid, app);
 
     this.requestedFile = file;
     this.view.subscribe((v) => {

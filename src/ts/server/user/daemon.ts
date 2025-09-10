@@ -53,7 +53,6 @@ import { tryJsonParse } from "$ts/json";
 import { KernelStateHandler } from "$ts/kernel/getters";
 import { getKMod } from "$ts/kernel/module";
 import { ArcBuild } from "$ts/metadata/build";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import type { ProtocolServiceProcess } from "$ts/proto";
 import { ServiceHost } from "$ts/services";
@@ -89,10 +88,11 @@ import { Backend } from "../axios";
 import { MessagingInterface } from "../messaging";
 import { GlobalDispatch } from "../ws";
 import { FileAssocService } from "./assoc";
+import { DefaultFileDefinitions } from "./assoc/store";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
-import { DefaultFileDefinitions } from "./assoc/store";
+import { KernelStack } from "$ts/process/handler";
 //#endregion
 
 export class UserDaemon extends Process {
@@ -149,8 +149,8 @@ export class UserDaemon extends Process {
   //#endregion
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, token: string, username: string, userInfo?: UserInfo) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number, token: string, username: string, userInfo?: UserInfo) {
+    super(pid, parentPid);
 
     this.token = token;
     this.username = username;
@@ -213,7 +213,7 @@ export class UserDaemon extends Process {
   async startServiceHost() {
     this.Log("Starting service host");
 
-    this.serviceHost = await this.handler.spawn<ServiceHost>(ServiceHost, undefined, this.pid);
+    this.serviceHost = await KernelStack().spawn<ServiceHost>(ServiceHost, undefined, this.userInfo!._id, this.pid);
     await this.serviceHost?.init();
 
     this.assoc = this.serviceHost?.getService<FileAssocService>("FileAssocSvc");
@@ -457,18 +457,19 @@ export class UserDaemon extends Process {
       if (!elevated) return;
     }
 
-    const shellDispatch = this.handler.ConnectDispatch(+this.env.get("shell_pid"));
+    const shellDispatch = KernelStack().ConnectDispatch(+this.env.get("shell_pid"));
 
     if (shellDispatch) {
       shellDispatch?.dispatch("close-start-menu");
       shellDispatch?.dispatch("close-action-center");
     }
 
-    await this.handler.waitForAvailable();
+    await KernelStack().waitForAvailable();
 
-    return await this.handler.spawn<T>(
+    return await KernelStack().spawn<T>(
       app.assets.runtime,
       renderTarget,
+      this.userInfo!._id,
       parentPid || this.pid,
       {
         data: app,
@@ -534,7 +535,7 @@ export class UserDaemon extends Process {
       if (!elevated) return;
     }
 
-    await this.handler.waitForAvailable();
+    await KernelStack().waitForAvailable();
 
     const pid = parentPid || +this.env.get("shell_pid");
 
@@ -542,9 +543,10 @@ export class UserDaemon extends Process {
       this.Log(`Spawning overlay app '${app.id}' as normal app: no suitable parent process`, LogLevel.warning);
     }
 
-    return await this.handler.spawn<T>(
+    return await KernelStack().spawn<T>(
       app.assets.runtime,
       renderTarget,
+      this.userInfo!._id,
       pid || this.pid,
       {
         data: { ...app, overlay: !!pid },
@@ -663,7 +665,7 @@ export class UserDaemon extends Process {
 
       return await code.default(props);
     } catch (e) {
-      this.handler.renderer?.notifyCrash(app as any, e as Error, app.process!);
+      KernelStack().renderer?.notifyCrash(app as any, e as Error, app.process!);
       this.Log(`Execution error in third-party application "${app.id}": ${(e as any).stack}`);
       stop?.();
     }
@@ -710,7 +712,7 @@ export class UserDaemon extends Process {
     if (this._disposed) return;
     if (this.serviceHost) this.serviceHost._holdRestart = true;
 
-    await this.handler._killSubProceses(this.pid);
+    await KernelStack()._killSubProceses(this.pid);
     await KernelStateHandler()?.loadState("login", {
       type,
       userDaemon: this,
@@ -1069,7 +1071,7 @@ export class UserDaemon extends Process {
 
     this.systemDispatch.dispatch("fs-flush-folder", firstSourceParent);
     if (firstSourceParent !== destination) this.systemDispatch.dispatch("fs-flush-folder", destination);
-    this.handler?.renderer?.focusPid(pid);
+    KernelStack()?.renderer?.focusPid(pid);
   }
 
   async copyMultiple(sources: string[], destination: string, pid: number) {
@@ -1124,7 +1126,7 @@ export class UserDaemon extends Process {
     progress.stop();
 
     this.systemDispatch.dispatch("fs-flush-folder", destination);
-    this.handler?.renderer?.focusPid(pid);
+    KernelStack()?.renderer?.focusPid(pid);
   }
 
   async findHandlerToOpenFile(path: string): Promise<FileOpenerResult[]> {
@@ -1403,7 +1405,7 @@ export class UserDaemon extends Process {
           {
             caption: "Send feedback",
             action: () => {
-              this.iHaveFeedback(this.handler.getProcess(+this.env.get("shell_pid"))!);
+              this.iHaveFeedback(KernelStack().getProcess(+this.env.get("shell_pid"))!);
             },
           },
         ],
@@ -1474,11 +1476,11 @@ export class UserDaemon extends Process {
       return v;
     });
 
-    const instances = this.handler.renderer?.getAppInstances(appId);
+    const instances = KernelStack().renderer?.getAppInstances(appId);
 
     if (instances)
       for (const instance of instances) {
-        this.handler.kill(instance.pid, true);
+        KernelStack().kill(instance.pid, true);
       }
 
     this.systemDispatch.dispatch("app-store-refresh");
@@ -1548,10 +1550,10 @@ export class UserDaemon extends Process {
       return v;
     });
 
-    const store = this.handler.store();
+    const store = KernelStack().store();
 
     for (const [pid, proc] of [...store]) {
-      if (!proc._disposed && proc instanceof ThirdPartyAppProcess) this.handler.kill(pid, true);
+      if (!proc._disposed && proc instanceof ThirdPartyAppProcess) KernelStack().kill(pid, true);
     }
   }
 
@@ -1745,7 +1747,7 @@ export class UserDaemon extends Process {
   }
 
   async setAppRendererClasses(v: UserPreferences) {
-    const renderer = this.handler.renderer?.target;
+    const renderer = KernelStack().renderer?.target;
 
     if (!renderer) throw new Error("UserDaemon: Tried to set renderer classes without renderer");
 
@@ -1769,13 +1771,13 @@ export class UserDaemon extends Process {
   setUserStyleLoader(style: CustomStylePreferences) {
     if (this._disposed || this.safeMode) return;
 
-    let styleLoader = this.handler.renderer?.target.querySelector("#userStyleLoader");
+    let styleLoader = KernelStack().renderer?.target.querySelector("#userStyleLoader");
 
     if (!styleLoader) {
       styleLoader = document.createElement("style");
       styleLoader.id = "userStyleLoader";
 
-      this.handler.renderer?.target.append(styleLoader);
+      KernelStack().renderer?.target.append(styleLoader);
     }
 
     styleLoader.textContent = style.enabled && !this._elevating ? style.content || "" : "";
@@ -2445,7 +2447,7 @@ export class UserDaemon extends Process {
     inner.className = "inner";
 
     outer.append(inner);
-    this.handler.renderer?.target.append(outer);
+    KernelStack().renderer?.target.append(outer);
     this.virtualDesktop = inner;
 
     this.syncVirtualDesktops(this.preferences());
@@ -2517,7 +2519,7 @@ export class UserDaemon extends Process {
 
     this.Log(`Killing processes on workspace with UUID "${uuid}"`);
 
-    const processes = this.handler.store();
+    const processes = KernelStack().store();
 
     for (const [_, proc] of [...processes]) {
       if (!(proc instanceof AppProcess)) continue;
@@ -2569,7 +2571,7 @@ export class UserDaemon extends Process {
   async moveWindow(pid: number, destination: string) {
     this.Log(`Moving window ${pid} to destination ${destination}`);
 
-    const proc = this.handler.getProcess(pid);
+    const proc = KernelStack().getProcess(pid);
     const destinationWorkspace = this.virtualDesktops[destination];
     const window = document.querySelector(`#appRenderer div.window[data-pid*='${pid}']`);
 
@@ -2577,7 +2579,7 @@ export class UserDaemon extends Process {
 
     const currentWorkspace = proc.app.desktop;
 
-    if (currentWorkspace && this.getCurrentDesktop()?.id === currentWorkspace && this.handler.renderer?.focusedPid() === pid) {
+    if (currentWorkspace && this.getCurrentDesktop()?.id === currentWorkspace && KernelStack().renderer?.focusedPid() === pid) {
       this.switchToDesktopByUuid(destination);
     }
 
@@ -2585,7 +2587,7 @@ export class UserDaemon extends Process {
 
     destinationWorkspace.appendChild(window);
     proc.app.desktop = destination;
-    this.handler.store.update((v) => {
+    KernelStack().store.update((v) => {
       v.set(pid, proc);
 
       return v;
@@ -2833,9 +2835,10 @@ export class UserDaemon extends Process {
   //#region GENERIC HELPERS
 
   async GlobalLoadIndicator(caption?: string, pid?: number) {
-    const process = await this.handler.spawn<GlobalLoadIndicatorRuntime>(
+    const process = await KernelStack().spawn<GlobalLoadIndicatorRuntime>(
       GlobalLoadIndicatorRuntime,
       undefined,
+      this.userInfo!._id,
       pid || +this.env.get("shell_pid"),
       {
         data: { ...GlobalLoadIndicatorApp, overlay: true },
@@ -2880,7 +2883,7 @@ export class UserDaemon extends Process {
   }
 
   async TerminalWindow(pid = +this.env.get("shell_pid")): Promise<ExpandedTerminal | undefined> {
-    const process = await this.handler.spawn<TerminalWindowRuntime>(TerminalWindowRuntime, undefined, pid, {
+    const process = await KernelStack().spawn<TerminalWindowRuntime>(TerminalWindowRuntime, undefined, this.userInfo!._id, pid, {
       data: { ...TerminalWindowApp },
       id: TerminalWindowApp.id,
       desktop: undefined,

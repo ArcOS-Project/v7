@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { AppInfoIcon } from "$ts/images/apps";
 import { ComponentIcon } from "$ts/images/general";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
@@ -11,8 +11,8 @@ export class AppInfoRuntime extends AppProcess {
   targetAppId: string;
 
   //#region LIFECYCLE
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, appId: string) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, appId: string) {
+    super(pid, parentPid, app);
 
     this.targetAppId = appId;
   }
@@ -53,7 +53,7 @@ export class AppInfoRuntime extends AppProcess {
 
     if (!elevated) return;
 
-    const instances = this.handler.renderer?.getAppInstances(this.targetAppId);
+    const instances = KernelStack().renderer?.getAppInstances(this.targetAppId);
 
     for (const instance of instances || []) {
       instance.killSelf();

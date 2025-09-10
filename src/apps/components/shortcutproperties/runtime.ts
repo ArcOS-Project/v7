@@ -3,7 +3,6 @@ import { MessageBox } from "$ts/dialog";
 import { getParentDirectory } from "$ts/fs/util";
 import { getAllImages } from "$ts/images";
 import { ErrorIcon } from "$ts/images/dialog";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { ArcShortcut } from "$types/shortcut";
@@ -15,8 +14,8 @@ export class ShortcutPropertiesRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path: string, data: ArcShortcut) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, path: string, data: ArcShortcut) {
+    super(pid, parentPid, app);
 
     if (data && path) {
       this.shortcutData.set(JSON.parse(JSON.stringify(data)));

@@ -2,7 +2,6 @@ import type { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import type { Process } from "$ts/process/instance";
 import type { SvelteComponent } from "svelte";
 import type { AppProcess } from "../ts/apps/process";
-import type { ProcessHandler } from "../ts/process/handler";
 import type { ReadableStore } from "../ts/writable";
 import type { MaybePromise } from "./common";
 
@@ -84,7 +83,6 @@ export interface AppAssets {
 export interface AppComponentProps<T = AppProcess> {
   process: T;
   pid: number;
-  handler: ProcessHandler;
   app: App;
   windowTitle: ReadableStore<string>;
   windowIcon: ReadableStore<string>;

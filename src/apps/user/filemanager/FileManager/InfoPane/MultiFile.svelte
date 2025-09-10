@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { FilesystemDrive } from "$ts/fs/drive";
   import { FolderIcon } from "$ts/images/filesystem";
   import { Plural } from "$ts/util";
   import type { QuotedDrive } from "../../types";

@@ -1,5 +1,4 @@
 import { applyDefaults } from "$ts/hierarchy";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import type { ArcLangOptions, LangErrorCallback, LangExitCallback, LangStdinCallback, LangStdoutCallback } from "$types/lang";
 import type { ASTNode } from "./ast";
@@ -23,10 +22,10 @@ export class Interpreter extends Process {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, options?: ArcLangOptions) {
+  constructor(pid: number, parentPid: number, options?: ArcLangOptions) {
     options ||= DefaultArcLangOptions;
 
-    super(handler, pid, parentPid);
+    super(pid, parentPid);
 
     const opt = applyDefaults<ArcLangOptions>(options || {}, DefaultArcLangOptions);
 

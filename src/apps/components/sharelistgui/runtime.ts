@@ -5,7 +5,7 @@ import type { ShareManager } from "$ts/fs/shares";
 import type { SharedDrive } from "$ts/fs/shares/drive";
 import { WarningIcon } from "$ts/images/dialog";
 import { ShareIcon } from "$ts/images/filesystem";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { SharedDriveType } from "$types/shares";
@@ -22,8 +22,8 @@ export class ShareListGuiRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData) {
+    super(pid, parentPid, app);
 
     this.shares = this.userDaemon?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
     this.thisUserId = this.userDaemon?.userInfo?._id!; // Get the user's ID using a lot of questionmarks (damn)
@@ -123,11 +123,11 @@ export class ShareListGuiRuntime extends AppProcess {
     if (!drive) return; // No mount? return
 
     const path = `${drive.uuid}:/`;
-    const parent = this.handler.getProcess(this.parentPid);
+    const parent = KernelStack().getProcess(this.parentPid);
 
     if (parent && parent instanceof FileManagerRuntime) {
       // In case the parent is a file manager; navigate it instead
-      const dispatch = this.handler.ConnectDispatch(this.parentPid);
+      const dispatch = KernelStack().ConnectDispatch(this.parentPid);
       dispatch?.dispatch("navigate", path);
     } else {
       // Otherwise spawn a fresh file manager

@@ -1,6 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
 import type { ApplicationStorage } from "$ts/apps/storage";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData, AppStorage } from "$types/app";
 
@@ -40,8 +39,8 @@ export class AcceleratorOverviewRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData) {
+    super(pid, parentPid, app);
 
     this.acceleratorStore.push({
       key: "escape",

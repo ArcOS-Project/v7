@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import type { BugHuntUserSpaceProcess } from "$ts/bughunt/process";
 import { MessageBox } from "$ts/dialog";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { BugHuntRuntime } from "../bughunt/runtime";
@@ -19,7 +19,6 @@ export class BugHuntCreatorRuntime extends AppProcess {
   //#region LIFECYCLE
 
   constructor(
-    handler: ProcessHandler,
     pid: number,
     parentPid: number,
     app: AppProcessData,
@@ -27,9 +26,9 @@ export class BugHuntCreatorRuntime extends AppProcess {
     body?: string,
     options?: BugHuntCreatorOptions
   ) {
-    super(handler, pid, parentPid, app);
+    super(pid, parentPid, app);
 
-    const parent = this.handler.getProcess(this.parentPid);
+    const parent = KernelStack().getProcess(this.parentPid);
 
     if (parent && parent instanceof BugHuntRuntime) this.parent = parent;
 

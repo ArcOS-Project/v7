@@ -20,10 +20,10 @@ import { Filesystem } from "$ts/fs";
 import { join } from "$ts/fs/util";
 import { getJsonHierarchy, setJsonHierarchy } from "$ts/hierarchy";
 import { keysToLowerCase, tryJsonParse } from "$ts/json";
+import { KernelStack } from "$ts/process/handler";
 import { getKMod } from "$ts/kernel/module";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
@@ -60,14 +60,13 @@ export class LanguageInstance extends Process {
   //#region LIFECYCLE
 
   constructor(
-    handler: ProcessHandler,
     pid: number,
     parentPid: number,
     source: string,
     options: LanguageOptions = DefaultLanguageOptions,
     libraries: Libraries = BaseLibraries
   ) {
-    super(handler, pid, parentPid);
+    super(pid, parentPid);
 
     this.options = options;
 
@@ -85,7 +84,7 @@ export class LanguageInstance extends Process {
 
     const daemonPid = this.env.get("userdaemon_pid");
 
-    if (daemonPid) this.userDaemon = this.handler.getProcess(+daemonPid);
+    if (daemonPid) this.userDaemon = KernelStack().getProcess(+daemonPid);
 
     this.name = "LanguageInstance";
   }

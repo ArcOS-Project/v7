@@ -1,5 +1,5 @@
 import { ShellRuntime } from "$apps/components/shell/runtime";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
@@ -11,8 +11,8 @@ export class FindCommand extends TerminalProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number) {
+    super(pid, parentPid);
   }
 
   //#endregion
@@ -20,7 +20,7 @@ export class FindCommand extends TerminalProcess {
   protected async main(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const query = argv.join(" ");
     const shellPid = +term.env.get("shell_pid");
-    const shellProc = term.handler.getProcess<ShellRuntime>(shellPid);
+    const shellProc = KernelStack().getProcess<ShellRuntime>(shellPid);
 
     if (!query) {
       term.Info("What do you want me to search for?");

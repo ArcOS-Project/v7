@@ -31,7 +31,7 @@ export class ArcMSL extends KernelModule {
 
     this.locked = !options.continuous;
 
-    const process = await this.stack?.spawn<LanguageInstance>(LanguageInstance, undefined, parent, source, options);
+    const process = await this.stack?.spawn<LanguageInstance>(LanguageInstance, undefined, "SYSTEM", parent, source, options);
 
     if (!process) throw new PrematureLanguageError("Failed to spawn language instance");
 

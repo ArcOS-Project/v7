@@ -1,5 +1,6 @@
 import type { AppProcess } from "$ts/apps/process";
 import { ShutdownIcon } from "$ts/images/power";
+import { KernelStack } from "$ts/process/handler";
 import type { AppContextMenu } from "$types/app";
 import type { ContextMenuRuntime } from "./runtime";
 
@@ -17,7 +18,7 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
       {
         caption: "Minimize",
         action: (proc: AppProcess) => {
-          proc.handler.renderer?.toggleMinimize(proc?.pid);
+          KernelStack().renderer?.toggleMinimize(proc?.pid);
         },
         icon: "chevron-down",
         disabled: (proc: AppProcess) => !proc?.app.data.controls.minimize,
@@ -26,8 +27,8 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
       {
         caption: "Maximize",
         action: (proc: AppProcess) => {
-          proc.handler.renderer?.unsnapWindow(proc?.pid);
-          proc.handler.renderer?.toggleMaximize(proc?.pid);
+          KernelStack().renderer?.unsnapWindow(proc?.pid);
+          KernelStack().renderer?.toggleMaximize(proc?.pid);
         },
         icon: "chevron-up",
         disabled: (proc: AppProcess) => !proc?.app.data.controls.maximize,
@@ -43,58 +44,58 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
           {
             caption: "None",
             icon: "x",
-            action: (proc: AppProcess) => runtime.handler.renderer?.unsnapWindow(proc?.pid),
+            action: (proc: AppProcess) => KernelStack().renderer?.unsnapWindow(proc?.pid),
           },
           { sep: true },
           {
             caption: "Left",
             icon: "arrow-left",
-            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc?.pid, "left"),
+            action: (proc: AppProcess) => KernelStack().renderer?.snapWindow(proc?.pid, "left"),
             isActive: (proc: AppProcess) => proc?.getWindow()?.dataset.snapstate === "left",
           },
           {
             caption: "Right",
             icon: "arrow-right",
-            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc?.pid, "right"),
+            action: (proc: AppProcess) => KernelStack().renderer?.snapWindow(proc?.pid, "right"),
             isActive: (proc: AppProcess) => proc?.getWindow()?.dataset.snapstate === "right",
           },
           { sep: true },
           {
             caption: "Top",
             icon: "arrow-up",
-            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc?.pid, "top"),
+            action: (proc: AppProcess) => KernelStack().renderer?.snapWindow(proc?.pid, "top"),
             isActive: (proc: AppProcess) => proc?.getWindow()?.dataset.snapstate === "top",
           },
           {
             caption: "Bottom",
             icon: "arrow-down",
-            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc?.pid, "bottom"),
+            action: (proc: AppProcess) => KernelStack().renderer?.snapWindow(proc?.pid, "bottom"),
             isActive: (proc: AppProcess) => proc?.getWindow()?.dataset.snapstate === "bottom",
           },
           { sep: true },
           {
             caption: "Top Left",
             icon: "arrow-up-left",
-            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc?.pid, "top-left"),
+            action: (proc: AppProcess) => KernelStack().renderer?.snapWindow(proc?.pid, "top-left"),
             isActive: (proc: AppProcess) => proc?.getWindow()?.dataset.snapstate === "top-left",
           },
           {
             caption: "Top Right",
             icon: "arrow-up-right",
-            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc?.pid, "top-right"),
+            action: (proc: AppProcess) => KernelStack().renderer?.snapWindow(proc?.pid, "top-right"),
             isActive: (proc: AppProcess) => proc?.getWindow()?.dataset.snapstate === "top-right",
           },
           { sep: true },
           {
             caption: "Bottom Left",
             icon: "arrow-down-left",
-            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc?.pid, "bottom-left"),
+            action: (proc: AppProcess) => KernelStack().renderer?.snapWindow(proc?.pid, "bottom-left"),
             isActive: (proc: AppProcess) => proc?.getWindow()?.dataset.snapstate === "bottom-left",
           },
           {
             caption: "Bottom Right",
             icon: "arrow-down-right",
-            action: (proc: AppProcess) => runtime.handler.renderer?.snapWindow(proc?.pid, "bottom-right"),
+            action: (proc: AppProcess) => KernelStack().renderer?.snapWindow(proc?.pid, "bottom-right"),
             isActive: (proc: AppProcess) => proc?.getWindow()?.dataset.snapstate === "bottom-right",
           },
         ],

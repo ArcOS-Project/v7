@@ -7,7 +7,6 @@ import { MessagingIcon } from "$ts/images/apps";
 import { WarningIcon } from "$ts/images/dialog";
 import { DefaultMimeIcon } from "$ts/images/mime";
 import { tryJsonParse } from "$ts/json";
-import type { ProcessHandler } from "$ts/process/handler";
 import { MessagingInterface } from "$ts/server/messaging";
 import { Sleep } from "$ts/sleep";
 import { sortByKey } from "$ts/util";
@@ -39,15 +38,8 @@ export class MessagingAppRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    pageOrMessagePath = "inbox",
-    messageId?: string
-  ) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, pageOrMessagePath = "inbox", messageId?: string) {
+    super(pid, parentPid, app);
 
     this.service = this.userDaemon?.serviceHost?.getService<MessagingInterface>("MessagingService")!;
 

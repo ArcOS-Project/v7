@@ -1,7 +1,6 @@
 import { DistributionServiceProcess } from "$ts/distrib";
 import { formatBytes, join } from "$ts/fs/util";
 import { ArcTermIcon } from "$ts/images/apps";
-import type { ProcessHandler } from "$ts/process/handler";
 import { UserPaths } from "$ts/server/user/store";
 import { Plural } from "$ts/util";
 import { ElevationLevel } from "$types/elevation";
@@ -25,8 +24,8 @@ export class PkgCommand extends TerminalProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number) {
+    super(pid, parentPid);
   }
 
   //#endregion

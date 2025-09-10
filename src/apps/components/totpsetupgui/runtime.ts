@@ -1,6 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
 import { toForm } from "$ts/form";
-import type { ProcessHandler } from "$ts/process/handler";
 import { Backend } from "$ts/server/axios";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -11,8 +10,8 @@ export class TotpSetupGuiRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData) {
+    super(pid, parentPid, app);
   }
 
   async render() {

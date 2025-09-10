@@ -5,7 +5,6 @@ import { getItemNameFromPath, getParentDirectory } from "$ts/fs/util";
 import { CodIcon } from "$ts/images/apps";
 import { WarningIcon } from "$ts/images/dialog";
 import { DefaultMimeIcon } from "$ts/images/mime";
-import type { ProcessHandler } from "$ts/process/handler";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
@@ -29,8 +28,8 @@ export class CodRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData, path?: string) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, path?: string) {
+    super(pid, parentPid, app);
 
     this.renderArgs.path = path;
   }

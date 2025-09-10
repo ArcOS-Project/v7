@@ -45,7 +45,6 @@ export function ThirdPartyProps(
 ): ThirdPartyPropMap {
   const props = {
     daemon, // ?
-    handler: daemon.handler, // ?
     fs: daemon.fs, // ?
     env: daemon.env, // ?
     serviceHost: daemon.serviceHost, // ?

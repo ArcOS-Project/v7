@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import type { ProcessHandler } from "$ts/process/handler";
+import { KernelStack } from "$ts/process/handler";
 import { Store, type ReadableStore } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { RenderArgs } from "$types/process";
@@ -10,14 +10,8 @@ export class FsProgressRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(
-    handler: ProcessHandler,
-    pid: number,
-    parentPid: number,
-    app: AppProcessData,
-    store: ReadableStore<FsProgressOperation>
-  ) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData, store: ReadableStore<FsProgressOperation>) {
+    super(pid, parentPid, app);
 
     this.renderArgs.store = store;
   }
@@ -49,7 +43,7 @@ export class FsProgressRuntime extends AppProcess {
   }
 
   async onClose(): Promise<boolean> {
-    if (this.parentPid) this.handler.renderer?.focusedPid.set(this.parentPid); // Focus the parent PID upon close
+    if (this.parentPid) KernelStack().renderer?.focusedPid.set(this.parentPid); // Focus the parent PID upon close
 
     return true;
   }

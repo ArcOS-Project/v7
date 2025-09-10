@@ -1,4 +1,3 @@
-import type { ProcessHandler } from "$ts/process/handler";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
@@ -9,8 +8,8 @@ export class MkdirCommand extends TerminalProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number) {
-    super(handler, pid, parentPid);
+  constructor(pid: number, parentPid: number) {
+    super(pid, parentPid);
   }
 
   //#endregion

@@ -1,12 +1,12 @@
 <script lang="ts">
   import HtmlSpinner from "$lib/HtmlSpinner.svelte";
+  import { MessageBox } from "$ts/dialog";
   import { ArcOSVersion } from "$ts/env";
   import { PersonalizationIcon, UpdateIcon } from "$ts/images/general";
   import { ChangeLogs } from "$ts/metadata/changelog";
   import { onMount } from "svelte";
-  import type { UpdateNotifierRuntime } from "./runtime";
-  import { MessageBox } from "$ts/dialog";
   import Dialog from "./Dialog.svelte";
+  import type { UpdateNotifierRuntime } from "./runtime";
 
   const { process }: { process: UpdateNotifierRuntime } = $props();
 

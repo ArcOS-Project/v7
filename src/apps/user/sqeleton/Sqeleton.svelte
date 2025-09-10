@@ -1,18 +1,18 @@
 <script lang="ts">
   import CodeEditor from "$lib/CodeEditor.svelte";
-  import { Store } from "$ts/writable";
-  import { onMount } from "svelte";
-  import type { SqeletonRuntime } from "./runtime";
-  import Intro from "./Sqeleton/Intro.svelte";
-  import Sidebar from "./Sqeleton/Sidebar.svelte";
-  import ResultList from "./Sqeleton/ResultList.svelte";
-  import ErrorList from "./Sqeleton/ErrorList.svelte";
-  import HistoryList from "./Sqeleton/HistoryList.svelte";
-  import Tabs from "./Sqeleton/Tabs.svelte";
+  import { formatBytes } from "$ts/fs/util";
   import { DbMimeIcon } from "$ts/images/mime";
   import { Plural } from "$ts/util";
-  import { formatBytes } from "$ts/fs/util";
+  import { Store } from "$ts/writable";
+  import { onMount } from "svelte";
   import { Pane, Splitpanes } from "svelte-splitpanes";
+  import type { SqeletonRuntime } from "./runtime";
+  import ErrorList from "./Sqeleton/ErrorList.svelte";
+  import HistoryList from "./Sqeleton/HistoryList.svelte";
+  import Intro from "./Sqeleton/Intro.svelte";
+  import ResultList from "./Sqeleton/ResultList.svelte";
+  import Sidebar from "./Sqeleton/Sidebar.svelte";
+  import Tabs from "./Sqeleton/Tabs.svelte";
 
   const { process }: { process: SqeletonRuntime } = $props();
   const { queries, queryIndex, openedFile, currentTab, openedFileName, result, errors, tables, queryHistory, working } = process;

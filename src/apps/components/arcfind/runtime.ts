@@ -3,7 +3,6 @@ import { isPopulatable } from "$ts/apps/util";
 import { getIconPath } from "$ts/images";
 import { DefaultMimeIcon } from "$ts/images/mime";
 import { LogoutIcon, RestartIcon, ShutdownIcon } from "$ts/images/power";
-import type { ProcessHandler } from "$ts/process/handler";
 import { UserPaths } from "$ts/server/user/store";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
@@ -20,8 +19,8 @@ export class ArcFindRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(handler: ProcessHandler, pid: number, parentPid: number, app: AppProcessData) {
-    super(handler, pid, parentPid, app);
+  constructor(pid: number, parentPid: number, app: AppProcessData) {
+    super(pid, parentPid, app);
 
     this.systemDispatch.subscribe("fs-flush-file", () => this.refresh());
   }

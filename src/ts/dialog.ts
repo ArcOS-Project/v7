@@ -12,6 +12,7 @@ export async function MessageBox(data: MessageBoxData, parentPid: number, overla
   await stack.spawn(
     MessageBoxRuntime,
     undefined,
+    "SYSTEM",
     parentPid,
     {
       ...{ data: appData, id: appData.id },
