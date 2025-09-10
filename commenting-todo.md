@@ -8,548 +8,502 @@ This file illustrates the source code that still has to be commented. When comme
 - When encountering code with critical bugs or broken imports (despite the workflows not picking them up), report to Izaak or fix it yourself with a pull request.
 - Do not change comments that are marked 'frozen' or that say they should not be changed. These comments contain critical information that could cause problems if left out.
 - If a piece of code is hard to understand just by reading it, write a comment explaining the unclear parts of the code so that we _do_ understand it.
-- After commenting an entire file, add the current date to the end of the file path in this file. For reference, this is the expected layout:
 
-  ```md
-  - [x] <path> -- DD-MM-YYYY <initials>, DD-MM-YYYY <initials>, etc...
-  ```
-
----
-
-- [x] src/main.ts -- 10-09-2025 izk
-- [x] src/vite-env.d.ts -- 10-09-2025 izk
-- [x] src/apps/arcos.ts -- 10-09-2025 izk
-- [x] src/apps/admin/adminportal/altmenu.ts -- 10-09-2025 izk
-- [x] src/apps/admin/adminportal/metadata.ts -- 10-09-2025 izk
-- [x] src/apps/admin/adminportal/runtime.ts -- 10-09-2025 izk
-- [x] src/apps/admin/adminportal/store.ts -- 10-09-2025 izk
-- [x] src/apps/admin/adminportal/types.ts -- 10-09-2025 izk
-- [x] src/apps/admin/adminportal/util.ts -- 10-09-2025 izk
-- [x] src/apps/admin/adminportal/altmenu/file.ts -- 10-09-2025 izk
-- [x] src/apps/admin/adminportal/altmenu/page.ts -- 10-09-2025 izk
-- [x] src/apps/admin/adminportal/userdata/highlight.d.ts -- 10-09-2025 izk
-- [x] src/apps/admin/adminportal/userdata/metadata.ts -- 10-09-2025 izk
-- [x] src/apps/admin/adminportal/userdata/runtime.ts -- 10-09-2025 izk
-- [x] src/apps/components/acceleratoroverview/metadata.ts -- 10-09-2025 izk
-- [x] src/apps/components/acceleratoroverview/runtime.ts -- 10-09-2025 izk
-- [x] src/apps/components/appinfo/metadata.ts -- 10-09-2025 izk
-- [x] src/apps/components/appinfo/runtime.ts -- 10-09-2025 izk
-- [x] src/apps/components/appinstaller/metadata.ts -- 10-09-2025 izk
-- [x] src/apps/components/appinstaller/runtime.ts -- 10-09-2025 izk
-- [ ] src/apps/components/apppreinstall/metadata.ts
-- [ ] src/apps/components/apppreinstall/runtime.ts
-- [ ] src/apps/components/arcfind/metadata.ts
-- [ ] src/apps/components/arcfind/runtime.ts
-- [ ] src/apps/components/contextmenu/metadata.ts
-- [ ] src/apps/components/contextmenu/runtime.ts
-- [ ] src/apps/components/contextmenu/system.ts
-- [ ] src/apps/components/driveinfo/metadata.ts
-- [ ] src/apps/components/driveinfo/runtime.ts
-- [ ] src/apps/components/exit/metadata.ts
-- [ ] src/apps/components/exit/runtime.ts
-- [ ] src/apps/components/exit/store.ts
-- [ ] src/apps/components/firstrun/images.ts
-- [ ] src/apps/components/firstrun/metadata.ts
-- [ ] src/apps/components/firstrun/runtime.ts
-- [ ] src/apps/components/firstrun/store.ts
-- [ ] src/apps/components/firstrun/ChooseProfilePicture/metadata.ts
-- [ ] src/apps/components/firstrun/ChooseProfilePicture/runtime.ts
-- [ ] src/apps/components/fsnewfile/metadata.ts
-- [ ] src/apps/components/fsnewfile/runtime.ts
-- [ ] src/apps/components/fsnewfolder/metadata.ts
-- [ ] src/apps/components/fsnewfolder/runtime.ts
-- [ ] src/apps/components/fsprogress/metadata.ts
-- [ ] src/apps/components/fsprogress/runtime.ts
-- [ ] src/apps/components/fsprogressfail/metadata.ts
-- [ ] src/apps/components/fsprogressfail/runtime.ts
-- [ ] src/apps/components/fsrenameitem/metadata.ts
-- [ ] src/apps/components/fsrenameitem/runtime.ts
-- [ ] src/apps/components/globalloadindicator/metadata.ts
-- [ ] src/apps/components/globalloadindicator/runtime.ts
-- [ ] src/apps/components/iconpicker/metadata.ts
-- [ ] src/apps/components/iconpicker/runtime.ts
-- [ ] src/apps/components/iconpicker/store.ts
-- [ ] src/apps/components/iteminfo/metadata.ts
-- [ ] src/apps/components/iteminfo/runtime.ts
-- [ ] src/apps/components/messagebox/metadata.ts
-- [ ] src/apps/components/messagebox/runtime.ts
-- [ ] src/apps/components/messagecomposer/metadata.ts
-- [ ] src/apps/components/messagecomposer/runtime.ts
-- [ ] src/apps/components/multiupdategui/metadata.ts
-- [ ] src/apps/components/multiupdategui/runtime.ts
-- [ ] src/apps/components/oopsnotifier/metadata.ts
-- [ ] src/apps/components/oopsnotifier/runtime.ts
-- [ ] src/apps/components/oopsstacktracer/metadata.ts
-- [ ] src/apps/components/oopsstacktracer/runtime.ts
-- [ ] src/apps/components/openwith/metadata.ts
-- [ ] src/apps/components/openwith/runtime.ts
-- [ ] src/apps/components/securecontext/metadata.ts
-- [ ] src/apps/components/securecontext/runtime.ts
-- [ ] src/apps/components/securecontext/store.ts
-- [ ] src/apps/components/shareconngui/metadata.ts
-- [ ] src/apps/components/shareconngui/runtime.ts
-- [ ] src/apps/components/sharecreategui/metadata.ts
-- [ ] src/apps/components/sharecreategui/runtime.ts
-- [ ] src/apps/components/sharelistgui/metadata.ts
-- [ ] src/apps/components/sharelistgui/runtime.ts
-- [ ] src/apps/components/sharemgmtgui/metadata.ts
-- [ ] src/apps/components/sharemgmtgui/overlay.ts
-- [ ] src/apps/components/sharemgmtgui/runtime.ts
-- [ ] src/apps/components/sharemgmtgui/overlays/changepassword.ts
-- [ ] src/apps/components/sharemgmtgui/overlays/renameShare.ts
-- [ ] src/apps/components/shell/context.ts
-- [ ] src/apps/components/shell/metadata.ts
-- [ ] src/apps/components/shell/runtime.ts
-- [ ] src/apps/components/shell/store.ts
-- [ ] src/apps/components/shellhost/metadata.ts
-- [ ] src/apps/components/shellhost/runtime.ts
-- [ ] src/apps/components/shortcutproperties/metadata.ts
-- [ ] src/apps/components/shortcutproperties/runtime.ts
-- [ ] src/apps/components/systemshortcuts/metadata.ts
-- [ ] src/apps/components/systemshortcuts/runtime.ts
-- [ ] src/apps/components/terminalwindow/metadata.ts
-- [ ] src/apps/components/terminalwindow/runtime.ts
-- [ ] src/apps/components/totpauthgui/metadata.ts
-- [ ] src/apps/components/totpauthgui/runtime.ts
-- [ ] src/apps/components/totpsetupgui/metadata.ts
-- [ ] src/apps/components/totpsetupgui/runtime.ts
-- [ ] src/apps/components/trayhost/metadata.ts
-- [ ] src/apps/components/trayhost/runtime.ts
-- [ ] src/apps/components/updatenotifier/metadata.ts
-- [ ] src/apps/components/updatenotifier/runtime.ts
-- [ ] src/apps/components/wallpaper/context.ts
-- [ ] src/apps/components/wallpaper/metadata.ts
-- [ ] src/apps/components/wallpaper/runtime.ts
-- [ ] src/apps/core/bootscreen/metadata.ts
-- [ ] src/apps/core/bootscreen/runtime.ts
-- [ ] src/apps/core/initialsetup/metadata.ts
-- [ ] src/apps/core/initialsetup/runtime.ts
-- [ ] src/apps/core/loginapp/metadata.ts
-- [ ] src/apps/core/loginapp/runtime.ts
-- [ ] src/apps/user/advsystemsettings/metadata.ts
-- [ ] src/apps/user/advsystemsettings/runtime.ts
-- [ ] src/apps/user/appstore/metadata.ts
-- [ ] src/apps/user/appstore/runtime.ts
-- [ ] src/apps/user/appstore/store.ts
-- [ ] src/apps/user/arcterm/metadata.ts
-- [ ] src/apps/user/arcterm/process.ts
-- [ ] src/apps/user/bughunt/context.ts
-- [ ] src/apps/user/bughunt/metadata.ts
-- [ ] src/apps/user/bughunt/runtime.ts
-- [ ] src/apps/user/bughunt/userdata/highlight.d.ts
-- [ ] src/apps/user/bughunt/userdata/metadata.ts
-- [ ] src/apps/user/bughunt/userdata/runtime.ts
-- [ ] src/apps/user/bughuntcreator/metadata.ts
-- [ ] src/apps/user/bughuntcreator/runtime.ts
-- [ ] src/apps/user/calculator/metadata.ts
-- [ ] src/apps/user/calculator/runtime.ts
-- [ ] src/apps/user/calculator/store.ts
-- [ ] src/apps/user/cod/accelerators.ts
-- [ ] src/apps/user/cod/altmenu.ts
-- [ ] src/apps/user/cod/metadata.ts
-- [ ] src/apps/user/cod/runtime.ts
-- [ ] src/apps/user/cod/store.ts
-- [ ] src/apps/user/cod/altmenu/File.ts
-- [ ] src/apps/user/cod/altmenu/Language.ts
-- [ ] src/apps/user/filemanager/accelerators.ts
-- [ ] src/apps/user/filemanager/altmenu.ts
-- [ ] src/apps/user/filemanager/context.ts
-- [ ] src/apps/user/filemanager/metadata.ts
-- [ ] src/apps/user/filemanager/runtime.ts
-- [ ] src/apps/user/filemanager/store.ts
-- [ ] src/apps/user/filemanager/altmenu/Edit.ts
-- [ ] src/apps/user/filemanager/altmenu/File.ts
-- [ ] src/apps/user/filemanager/altmenu/Go.ts
-- [ ] src/apps/user/filemanager/altmenu/View.ts
-- [ ] src/apps/user/hexedit/metadata.ts
-- [ ] src/apps/user/hexedit/runtime.ts
-- [ ] src/apps/user/hexedit/editrow/metadata.ts
-- [ ] src/apps/user/hexedit/editrow/runtime.ts
-- [ ] src/apps/user/imageviewer/metadata.ts
-- [ ] src/apps/user/imageviewer/runtime.ts
-- [ ] src/apps/user/lightsoff/levels.ts
-- [ ] src/apps/user/lightsoff/metadata.ts
-- [ ] src/apps/user/lightsoff/runtime.ts
-- [ ] src/apps/user/logging/metadata.ts
-- [ ] src/apps/user/logging/runtime.ts
-- [ ] src/apps/user/logging/store.ts
-- [ ] src/apps/user/mediaplayer/accelerators.ts
-- [ ] src/apps/user/mediaplayer/altmenu.ts
-- [ ] src/apps/user/mediaplayer/metadata.ts
-- [ ] src/apps/user/mediaplayer/runtime.ts
-- [ ] src/apps/user/mediaplayer/altmenu/file.ts
-- [ ] src/apps/user/mediaplayer/altmenu/playlist.ts
-- [ ] src/apps/user/messages/metadata.ts
-- [ ] src/apps/user/messages/runtime.ts
-- [ ] src/apps/user/messages/store.ts
-- [ ] src/apps/user/pdfviewer/metadata.ts
-- [ ] src/apps/user/pdfviewer/runtime.ts
-- [ ] src/apps/user/processes/metadata.ts
-- [ ] src/apps/user/processes/runtime.ts
-- [ ] src/apps/user/qlorb/metadata.ts
-- [ ] src/apps/user/qlorb/runtime.ts
-- [ ] src/apps/user/settings/context.ts
-- [ ] src/apps/user/settings/metadata.ts
-- [ ] src/apps/user/settings/overlay.ts
-- [ ] src/apps/user/settings/runtime.ts
-- [ ] src/apps/user/settings/overlays/changePassword.ts
-- [ ] src/apps/user/settings/overlays/changeUsername.ts
-- [ ] src/apps/user/settings/overlays/saveTheme.ts
-- [ ] src/apps/user/settings/overlays/urlLoginBackground.ts
-- [ ] src/apps/user/settings/overlays/urlProfilePicture.ts
-- [ ] src/apps/user/settings/overlays/urlWallpaper.ts
-- [ ] src/apps/user/settings/overlays/userFont.ts
-- [ ] src/apps/user/settings/store/index.ts
-- [ ] src/apps/user/settings/store/slides.ts
-- [ ] src/apps/user/sqeleton/metadata.ts
-- [ ] src/apps/user/sqeleton/runtime.ts
-- [ ] src/apps/user/writer/accelerators.ts
-- [ ] src/apps/user/writer/altmenu.ts
-- [ ] src/apps/user/writer/metadata.ts
-- [ ] src/apps/user/writer/runtime.ts
-- [ ] src/apps/user/writer/altmenu/Edit.ts
-- [ ] src/apps/user/writer/altmenu/File.ts
-- [ ] src/apps/user/writer/altmenu/View.ts
-- [ ] src/apps/user/writer/replace/metadata.ts
-- [ ] src/apps/user/writer/replace/runtime.ts
-- [ ] src/state/arcterm/render.ts
-- [ ] src/state/crash/render.ts
-- [ ] src/state/desktop/render.ts
-- [ ] src/state/licensedeclined/render.ts
-- [ ] src/state/serverdown/render.ts
-- [ ] src/state/turnedoff/render.ts
-- [ ] src/ts/base64.ts
-- [ ] src/ts/color.ts
-- [ ] src/ts/console.ts
-- [ ] src/ts/crash.ts
-- [ ] src/ts/dayjs.ts
-- [ ] src/ts/dialog.ts
-- [ ] src/ts/env.ts
-- [ ] src/ts/error.ts
-- [ ] src/ts/form.ts
-- [ ] src/ts/group.ts
-- [ ] src/ts/hierarchy.ts
-- [ ] src/ts/json.ts
-- [ ] src/ts/sleep.ts
-- [ ] src/ts/util.ts
-- [ ] src/ts/uuid.ts
-- [ ] src/ts/version.ts
-- [ ] src/ts/writable.ts
-- [ ] src/ts/apps/error.ts
-- [ ] src/ts/apps/process.ts
-- [ ] src/ts/apps/renderer.ts
-- [ ] src/ts/apps/scripted.ts
-- [ ] src/ts/apps/storage.ts
-- [ ] src/ts/apps/store.ts
-- [ ] src/ts/apps/thirdparty.ts
-- [ ] src/ts/apps/util.ts
-- [ ] src/ts/branding/index.ts
-- [ ] src/ts/branding/stores.ts
-- [ ] src/ts/bughunt/index.ts
-- [ ] src/ts/bughunt/process.ts
-- [ ] src/ts/bughunt/store.ts
-- [ ] src/ts/context/actions.svelte.ts
-- [ ] src/ts/devenv/drive.ts
-- [ ] src/ts/devenv/index.ts
-- [ ] src/ts/device/cpu.ts
-- [ ] src/ts/device/gpu.ts
-- [ ] src/ts/device/index.ts
-- [ ] src/ts/device/mem.ts
-- [ ] src/ts/device/net.ts
-- [ ] src/ts/dispatch/index.ts
-- [ ] src/ts/dispatch/store.ts
-- [ ] src/ts/distrib/index.ts
-- [ ] src/ts/distrib/installer.ts
-- [ ] src/ts/distrib/util.ts
-- [ ] src/ts/fs/context.ts
-- [ ] src/ts/fs/convert.ts
-- [ ] src/ts/fs/drive.ts
-- [ ] src/ts/fs/index.ts
-- [ ] src/ts/fs/util.ts
-- [ ] src/ts/fs/drives/admin.ts
-- [ ] src/ts/fs/drives/server.ts
-- [ ] src/ts/fs/drives/temp.ts
-- [ ] src/ts/fs/drives/zipdrive.ts
-- [ ] src/ts/fs/shares/drive.ts
-- [ ] src/ts/fs/shares/index.ts
-- [ ] src/ts/images/apps.ts
-- [ ] src/ts/images/branding.ts
-- [ ] src/ts/images/dialog.ts
-- [ ] src/ts/images/filesystem.ts
-- [ ] src/ts/images/general.ts
-- [ ] src/ts/images/index.ts
-- [ ] src/ts/images/mime.ts
-- [ ] src/ts/images/pfp.ts
-- [ ] src/ts/images/power.ts
-- [ ] src/ts/images/status.ts
-- [ ] src/ts/kernel/env.ts
-- [ ] src/ts/kernel/getters.ts
-- [ ] src/ts/kernel/index.ts
-- [ ] src/ts/kernel/init.ts
-- [ ] src/ts/kernel/intro.ts
-- [ ] src/ts/kernel/logging.ts
-- [ ] src/ts/kernel/premature.ts
-- [ ] src/ts/kernel/module/index.ts
-- [ ] src/ts/kernel/module/store.ts
-- [ ] src/ts/lang/ast.ts
-- [ ] src/ts/lang/error.ts
-- [ ] src/ts/lang/index.ts
-- [ ] src/ts/lang/interpreter.ts
-- [ ] src/ts/lang/lexer.ts
-- [ ] src/ts/lang/parser.ts
-- [ ] src/ts/lang/store.ts
-- [ ] src/ts/lang/token.ts
-- [ ] src/ts/metadata/build.ts
-- [ ] src/ts/metadata/license.ts
-- [ ] src/ts/metadata/mode.ts
-- [ ] src/ts/metadata/changelog/index.ts
-- [ ] src/ts/msl/error.ts
-- [ ] src/ts/msl/index.ts
-- [ ] src/ts/msl/instance.ts
-- [ ] src/ts/msl/store.ts
-- [ ] src/ts/msl/libraries/base64.ts
-- [ ] src/ts/msl/libraries/convert.ts
-- [ ] src/ts/msl/libraries/data.ts
-- [ ] src/ts/msl/libraries/env.ts
-- [ ] src/ts/msl/libraries/exec.ts
-- [ ] src/ts/msl/libraries/gui.ts
-- [ ] src/ts/msl/libraries/json.ts
-- [ ] src/ts/msl/libraries/keyword.ts
-- [ ] src/ts/msl/libraries/source.ts
-- [ ] src/ts/msl/libraries/\_base.ts
-- [ ] src/ts/msl/libraries/base64/atob.ts
-- [ ] src/ts/msl/libraries/base64/btoa.ts
-- [ ] src/ts/msl/libraries/convert/abtostr.ts
-- [ ] src/ts/msl/libraries/convert/dataurl.ts
-- [ ] src/ts/msl/libraries/data/calc.ts
-- [ ] src/ts/msl/libraries/data/chr.ts
-- [ ] src/ts/msl/libraries/data/length.ts
-- [ ] src/ts/msl/libraries/data/push.ts
-- [ ] src/ts/msl/libraries/env/get.ts
-- [ ] src/ts/msl/libraries/env/set.ts
-- [ ] src/ts/msl/libraries/json/get.ts
-- [ ] src/ts/msl/libraries/json/load.ts
-- [ ] src/ts/msl/libraries/json/parse.ts
-- [ ] src/ts/msl/libraries/json/set.ts
-- [ ] src/ts/msl/libraries/source/cat.ts
-- [ ] src/ts/msl/libraries/source/css.ts
-- [ ] src/ts/msl/libraries/source/html.ts
-- [ ] src/ts/msl/libraries/source/img.ts
-- [ ] src/ts/msl/libraries/source/import.ts
-- [ ] src/ts/msl/libraries/source/unsafe.ts
-- [ ] src/ts/msl/libraries/window/action.ts
-- [ ] src/ts/msl/libraries/window/create.ts
-- [ ] src/ts/msl/libraries/window/element/append.ts
-- [ ] src/ts/msl/libraries/window/element/button.ts
-- [ ] src/ts/msl/libraries/window/element/create.ts
-- [ ] src/ts/msl/libraries/window/element/div.ts
-- [ ] src/ts/msl/libraries/window/element/get.ts
-- [ ] src/ts/msl/libraries/window/element/h1.ts
-- [ ] src/ts/msl/libraries/\_base/clear.ts
-- [ ] src/ts/msl/libraries/\_base/echo.ts
-- [ ] src/ts/msl/libraries/\_base/exit.ts
-- [ ] src/ts/msl/libraries/\_base/idle.ts
-- [ ] src/ts/msl/libraries/\_base/if.ts
-- [ ] src/ts/msl/libraries/\_base/input.ts
-- [ ] src/ts/msl/libraries/\_base/jump.ts
-- [ ] src/ts/msl/libraries/\_base/mount.ts
-- [ ] src/ts/msl/libraries/\_base/msgbox.ts
-- [ ] src/ts/msl/libraries/\_base/return.ts
-- [ ] src/ts/msl/libraries/\_base/sleep.ts
-- [ ] src/ts/msl/libraries/\_base/umount.ts
-- [ ] src/ts/process/dispatch.ts
-- [ ] src/ts/process/handler.ts
-- [ ] src/ts/process/instance.ts
-- [ ] src/ts/process/store.ts
-- [ ] src/ts/proto/index.ts
-- [ ] src/ts/proto/handlers/spawn.ts
-- [ ] src/ts/server/axios.ts
-- [ ] src/ts/server/index.ts
-- [ ] src/ts/server/admin/fs.ts
-- [ ] src/ts/server/admin/index.ts
-- [ ] src/ts/server/admin/proto.ts
-- [ ] src/ts/server/admin/store.ts
-- [ ] src/ts/server/admin/util.ts
-- [ ] src/ts/server/messaging/index.ts
-- [ ] src/ts/server/user/activity.ts
-- [ ] src/ts/server/user/auth.ts
-- [ ] src/ts/server/user/daemon.ts
-- [ ] src/ts/server/user/default.ts
-- [ ] src/ts/server/user/store.ts
-- [ ] src/ts/server/user/supplementary.ts
-- [ ] src/ts/server/user/thirdparty.ts
-- [ ] src/ts/server/user/assoc/index.ts
-- [ ] src/ts/server/user/assoc/store/audio.ts
-- [ ] src/ts/server/user/assoc/store/image.ts
-- [ ] src/ts/server/user/assoc/store/index.ts
-- [ ] src/ts/server/user/assoc/store/video.ts
-- [ ] src/ts/server/user/handlers/arcpkg.ts
-- [ ] src/ts/server/user/handlers/arctheme.ts
-- [ ] src/ts/server/user/handlers/installtpa.ts
-- [ ] src/ts/server/user/handlers/mountzip.ts
-- [ ] src/ts/server/user/handlers/runtpa.ts
-- [ ] src/ts/server/user/handlers/runtpab.ts
-- [ ] src/ts/server/user/trash/index.ts
-- [ ] src/ts/server/ws/index.ts
-- [ ] src/ts/services/base.ts
-- [ ] src/ts/services/index.ts
-- [ ] src/ts/soundbus/index.ts
-- [ ] src/ts/soundbus/store.ts
-- [ ] src/ts/sql/index.ts
-- [ ] src/ts/sql/util.ts
-- [ ] src/ts/state/error.ts
-- [ ] src/ts/state/index.ts
-- [ ] src/ts/state/store.ts
-- [ ] src/ts/terminal/index.ts
-- [ ] src/ts/terminal/process.ts
-- [ ] src/ts/terminal/select.ts
-- [ ] src/ts/terminal/store.ts
-- [ ] src/ts/terminal/util.ts
-- [ ] src/ts/terminal/var.ts
-- [ ] src/ts/terminal/commands/admin.ts
-- [ ] src/ts/terminal/commands/applist.ts
-- [ ] src/ts/terminal/commands/arcfetch.ts
-- [ ] src/ts/terminal/commands/atconf.ts
-- [ ] src/ts/terminal/commands/cd.ts
-- [ ] src/ts/terminal/commands/clear.ts
-- [ ] src/ts/terminal/commands/config.ts
-- [ ] src/ts/terminal/commands/crtpa.ts
-- [ ] src/ts/terminal/commands/devenv.ts
-- [ ] src/ts/terminal/commands/dir.ts
-- [ ] src/ts/terminal/commands/dispatch.ts
-- [ ] src/ts/terminal/commands/drives.ts
-- [ ] src/ts/terminal/commands/echo.ts
-- [ ] src/ts/terminal/commands/exit.ts
-- [ ] src/ts/terminal/commands/explore.ts
-- [ ] src/ts/terminal/commands/find.ts
-- [ ] src/ts/terminal/commands/help.ts
-- [ ] src/ts/terminal/commands/history.ts
-- [ ] src/ts/terminal/commands/kill.ts
-- [ ] src/ts/terminal/commands/logout.ts
-- [ ] src/ts/terminal/commands/mkdir.ts
-- [ ] src/ts/terminal/commands/open.ts
-- [ ] src/ts/terminal/commands/pkg.ts
-- [ ] src/ts/terminal/commands/quota.ts
-- [ ] src/ts/terminal/commands/reload.ts
-- [ ] src/ts/terminal/commands/restart.ts
-- [ ] src/ts/terminal/commands/rm.ts
-- [ ] src/ts/terminal/commands/shutdown.ts
-- [ ] src/ts/terminal/commands/spawn.ts
-- [ ] src/ts/terminal/commands/tasks.ts
-- [ ] src/ts/terminal/commands/test.ts
-- [ ] src/ts/terminal/commands/tree.ts
-- [ ] src/ts/terminal/commands/ver.ts
-- [ ] src/ts/terminal/commands/admin/store.ts
-- [ ] src/ts/terminal/commands/admin/commands/help.ts
-- [ ] src/ts/terminal/commands/admin/commands/mount.ts
-- [ ] src/ts/terminal/commands/admin/commands/accessors/delete/all.ts
-- [ ] src/ts/terminal/commands/admin/commands/accessors/delete/user.ts
-- [ ] src/ts/terminal/commands/admin/commands/accessors/list/all.ts
-- [ ] src/ts/terminal/commands/admin/commands/accessors/list/user.ts
-- [ ] src/ts/terminal/commands/admin/commands/activities/delete/all.ts
-- [ ] src/ts/terminal/commands/admin/commands/activities/delete/user.ts
-- [ ] src/ts/terminal/commands/admin/commands/activities/list/all.ts
-- [ ] src/ts/terminal/commands/admin/commands/activities/list/user.ts
-- [ ] src/ts/terminal/commands/admin/commands/admin/grant.ts
-- [ ] src/ts/terminal/commands/admin/commands/admin/revoke.ts
-- [ ] src/ts/terminal/commands/admin/commands/bughunt/get.ts
-- [ ] src/ts/terminal/commands/admin/commands/bughunt/stats.ts
-- [ ] src/ts/terminal/commands/admin/commands/bughunt/list/all.ts
-- [ ] src/ts/terminal/commands/admin/commands/bughunt/report/close.ts
-- [ ] src/ts/terminal/commands/admin/commands/bughunt/report/delete.ts
-- [ ] src/ts/terminal/commands/admin/commands/bughunt/report/open.ts
-- [ ] src/ts/terminal/commands/admin/commands/indexing/delete.ts
-- [ ] src/ts/terminal/commands/admin/commands/indexing/force.ts
-- [ ] src/ts/terminal/commands/admin/commands/indexing/list/all.ts
-- [ ] src/ts/terminal/commands/admin/commands/indexing/list/user.ts
-- [ ] src/ts/terminal/commands/admin/commands/scopes/add.ts
-- [ ] src/ts/terminal/commands/admin/commands/scopes/available.ts
-- [ ] src/ts/terminal/commands/admin/commands/scopes/get.ts
-- [ ] src/ts/terminal/commands/admin/commands/scopes/remove.ts
-- [ ] src/ts/terminal/commands/admin/commands/server/auditlog.ts
-- [ ] src/ts/terminal/commands/admin/commands/server/logs.ts
-- [ ] src/ts/terminal/commands/admin/commands/server/ping.ts
-- [ ] src/ts/terminal/commands/admin/commands/server/stats.ts
-- [ ] src/ts/terminal/commands/admin/commands/share/adduser.ts
-- [ ] src/ts/terminal/commands/admin/commands/share/chown.ts
-- [ ] src/ts/terminal/commands/admin/commands/share/delete.ts
-- [ ] src/ts/terminal/commands/admin/commands/share/kick.ts
-- [ ] src/ts/terminal/commands/admin/commands/share/rename.ts
-- [ ] src/ts/terminal/commands/admin/commands/share/accessors/delete.ts
-- [ ] src/ts/terminal/commands/admin/commands/share/accessors/list.ts
-- [ ] src/ts/terminal/commands/admin/commands/share/changepswd/generated.ts
-- [ ] src/ts/terminal/commands/admin/commands/share/changepswd/manual.ts
-- [ ] src/ts/terminal/commands/admin/commands/share/list/all.ts
-- [ ] src/ts/terminal/commands/admin/commands/share/list/user.ts
-- [ ] src/ts/terminal/commands/admin/commands/tokens/list/all.ts
-- [ ] src/ts/terminal/commands/admin/commands/tokens/purge/all.ts
-- [ ] src/ts/terminal/commands/admin/commands/tokens/purge/one.ts
-- [ ] src/ts/terminal/commands/admin/commands/tokens/purge/user.ts
-- [ ] src/ts/terminal/commands/admin/commands/totp/deactivate.ts
-- [ ] src/ts/terminal/commands/admin/commands/totp/delete.ts
-- [ ] src/ts/terminal/commands/admin/commands/totp/get.ts
-- [ ] src/ts/terminal/commands/admin/commands/totp/list/all.ts
-- [ ] src/ts/terminal/commands/admin/commands/user/approve.ts
-- [ ] src/ts/terminal/commands/admin/commands/user/changeemail.ts
-- [ ] src/ts/terminal/commands/admin/commands/user/delete.ts
-- [ ] src/ts/terminal/commands/admin/commands/user/disapprove.ts
-- [ ] src/ts/terminal/commands/admin/commands/user/list.ts
-- [ ] src/ts/terminal/commands/admin/commands/user/changepswd/generated.ts
-- [ ] src/ts/terminal/commands/admin/commands/user/changepswd/manual.ts
-- [ ] src/ts/terminal/commands/admin/commands/user/preferences/delete.ts
-- [ ] src/ts/terminal/commands/admin/commands/user/preferences/get.ts
-- [ ] src/ts/terminal/commands/admin/commands/user/preferences/set.ts
-- [ ] src/ts/terminal/commands/admin/commands/user/quota/get.ts
-- [ ] src/ts/terminal/commands/admin/commands/user/quota/set.ts
-- [ ] src/ts/terminal/mode/index.ts
-- [ ] src/ts/terminal/readline/highlight.ts
-- [ ] src/ts/terminal/readline/history.ts
-- [ ] src/ts/terminal/readline/keymap.ts
-- [ ] src/ts/terminal/readline/line.ts
-- [ ] src/ts/terminal/readline/readline.ts
-- [ ] src/ts/terminal/readline/state.ts
-- [ ] src/ts/terminal/readline/tty.ts
-- [ ] src/ts/terminal/var/store.ts
-- [ ] src/ts/ui/thirdparty/titlebar.ts
-- [ ] src/ts/ui/tray/process.ts
-- [ ] src/ts/wallpaper/store.ts
-- [ ] src/types/accelerator.ts
-- [ ] src/types/activity.ts
-- [ ] src/types/admin.ts
-- [ ] src/types/app.ts
-- [ ] src/types/assoc.ts
-- [ ] src/types/axios.ts
-- [ ] src/types/bughunt.ts
-- [ ] src/types/common.ts
-- [ ] src/types/dayjs.ts
-- [ ] src/types/devenv.ts
-- [ ] src/types/device.ts
-- [ ] src/types/dispatch.ts
-- [ ] src/types/distrib.ts
-- [ ] src/types/elevation.ts
-- [ ] src/types/fs.ts
-- [ ] src/types/lang.ts
-- [ ] src/types/logging.ts
-- [ ] src/types/messagebox.ts
-- [ ] src/types/messaging.ts
-- [ ] src/types/msl.ts
-- [ ] src/types/navigator.ts
-- [ ] src/types/notification.ts
-- [ ] src/types/package.ts
-- [ ] src/types/process.ts
-- [ ] src/types/proto.ts
-- [ ] src/types/search.ts
-- [ ] src/types/server.ts
-- [ ] src/types/service.ts
-- [ ] src/types/shares.ts
-- [ ] src/types/shortcut.ts
-- [ ] src/types/soundbus.ts
-- [ ] src/types/state.ts
-- [ ] src/types/terminal.ts
-- [ ] src/types/theme.ts
-- [ ] src/types/thirdparty.ts
-- [ ] src/types/trash.ts
-- [ ] src/types/user.ts
-- [ ] src/types/wallpaper.ts
-- [ ] src/types/weather.ts
-- [ ] src/types/dayjs/locale.ts
+| ✓   | File path                                                             | Commenting history |
+| --- | --------------------------------------------------------------------- | ------------------ |
+| [x] | src\apps\admin\adminportal\altmenu.ts                                 | 10-09-2025 izk     |
+| [x] | src\apps\admin\adminportal\altmenu\file.ts                            | 10-09-2025 izk     |
+| [x] | src\apps\admin\adminportal\altmenu\page.ts                            | 10-09-2025 izk     |
+| [x] | src\apps\admin\adminportal\metadata.ts                                | 10-09-2025 izk     |
+| [x] | src\apps\admin\adminportal\runtime.ts                                 | 10-09-2025 izk     |
+| [x] | src\apps\admin\adminportal\store.ts                                   | 10-09-2025 izk     |
+| [x] | src\apps\admin\adminportal\userdata\highlight.d.ts                    | 10-09-2025 izk     |
+| [x] | src\apps\admin\adminportal\userdata\metadata.ts                       | 10-09-2025 izk     |
+| [x] | src\apps\admin\adminportal\userdata\runtime.ts                        | 10-09-2025 izk     |
+| [x] | src\apps\admin\adminportal\util.ts                                    | 10-09-2025 izk     |
+| [x] | src\apps\arcos.ts                                                     | 10-09-2025 izk     |
+| [x] | src\apps\components\acceleratoroverview\metadata.ts                   | 10-09-2025 izk     |
+| [x] | src\apps\components\acceleratoroverview\runtime.ts                    | 10-09-2025 izk     |
+| [x] | src\apps\components\appinfo\metadata.ts                               | 10-09-2025 izk     |
+| [x] | src\apps\components\appinfo\runtime.ts                                | 10-09-2025 izk     |
+| [x] | src\apps\components\appinstaller\metadata.ts                          | 10-09-2025 izk     |
+| [x] | src\apps\components\appinstaller\runtime.ts                           | 10-09-2025 izk     |
+| [x] | src\apps\components\apppreinstall\metadata.ts                         | 10-09-2025 izk     |
+| [x] | src\apps\components\apppreinstall\runtime.ts                          | 10-09-2025 izk     |
+| [x] | src\apps\components\arcfind\metadata.ts                               | 10-09-2025 izk     |
+| [x] | src\apps\components\arcfind\runtime.ts                                | 10-09-2025 izk     |
+| [ ] | src\apps\components\contextmenu\metadata.ts                           |                    |
+| [ ] | src\apps\components\contextmenu\runtime.ts                            |                    |
+| [ ] | src\apps\components\contextmenu\system.ts                             |                    |
+| [ ] | src\apps\components\driveinfo\metadata.ts                             |                    |
+| [ ] | src\apps\components\driveinfo\runtime.ts                              |                    |
+| [ ] | src\apps\components\exit\metadata.ts                                  |                    |
+| [ ] | src\apps\components\exit\runtime.ts                                   |                    |
+| [ ] | src\apps\components\exit\store.ts                                     |                    |
+| [ ] | src\apps\components\firstrun\ChooseProfilePicture\metadata.ts         |                    |
+| [ ] | src\apps\components\firstrun\ChooseProfilePicture\runtime.ts          |                    |
+| [ ] | src\apps\components\firstrun\images.ts                                |                    |
+| [ ] | src\apps\components\firstrun\metadata.ts                              |                    |
+| [ ] | src\apps\components\firstrun\runtime.ts                               |                    |
+| [ ] | src\apps\components\firstrun\store.ts                                 |                    |
+| [ ] | src\apps\components\fsnewfile\metadata.ts                             |                    |
+| [ ] | src\apps\components\fsnewfile\runtime.ts                              |                    |
+| [ ] | src\apps\components\fsnewfolder\metadata.ts                           |                    |
+| [ ] | src\apps\components\fsnewfolder\runtime.ts                            |                    |
+| [ ] | src\apps\components\fsprogress\metadata.ts                            |                    |
+| [ ] | src\apps\components\fsprogress\runtime.ts                             |                    |
+| [ ] | src\apps\components\fsprogressfail\metadata.ts                        |                    |
+| [ ] | src\apps\components\fsprogressfail\runtime.ts                         |                    |
+| [ ] | src\apps\components\fsrenameitem\metadata.ts                          |                    |
+| [ ] | src\apps\components\fsrenameitem\runtime.ts                           |                    |
+| [ ] | src\apps\components\globalloadindicator\metadata.ts                   |                    |
+| [ ] | src\apps\components\globalloadindicator\runtime.ts                    |                    |
+| [ ] | src\apps\components\iconpicker\metadata.ts                            |                    |
+| [ ] | src\apps\components\iconpicker\runtime.ts                             |                    |
+| [ ] | src\apps\components\iconpicker\store.ts                               |                    |
+| [ ] | src\apps\components\iteminfo\metadata.ts                              |                    |
+| [ ] | src\apps\components\iteminfo\runtime.ts                               |                    |
+| [ ] | src\apps\components\messagebox\metadata.ts                            |                    |
+| [ ] | src\apps\components\messagebox\runtime.ts                             |                    |
+| [ ] | src\apps\components\messagecomposer\metadata.ts                       |                    |
+| [ ] | src\apps\components\messagecomposer\runtime.ts                        |                    |
+| [ ] | src\apps\components\multiupdategui\metadata.ts                        |                    |
+| [ ] | src\apps\components\multiupdategui\runtime.ts                         |                    |
+| [ ] | src\apps\components\oopsnotifier\metadata.ts                          |                    |
+| [ ] | src\apps\components\oopsnotifier\runtime.ts                           |                    |
+| [ ] | src\apps\components\oopsstacktracer\metadata.ts                       |                    |
+| [ ] | src\apps\components\oopsstacktracer\runtime.ts                        |                    |
+| [ ] | src\apps\components\openwith\metadata.ts                              |                    |
+| [ ] | src\apps\components\openwith\runtime.ts                               |                    |
+| [ ] | src\apps\components\securecontext\metadata.ts                         |                    |
+| [ ] | src\apps\components\securecontext\runtime.ts                          |                    |
+| [ ] | src\apps\components\securecontext\store.ts                            |                    |
+| [ ] | src\apps\components\shareconngui\metadata.ts                          |                    |
+| [ ] | src\apps\components\shareconngui\runtime.ts                           |                    |
+| [ ] | src\apps\components\sharecreategui\metadata.ts                        |                    |
+| [ ] | src\apps\components\sharecreategui\runtime.ts                         |                    |
+| [ ] | src\apps\components\sharelistgui\metadata.ts                          |                    |
+| [ ] | src\apps\components\sharelistgui\runtime.ts                           |                    |
+| [ ] | src\apps\components\sharemgmtgui\metadata.ts                          |                    |
+| [ ] | src\apps\components\sharemgmtgui\overlay.ts                           |                    |
+| [ ] | src\apps\components\sharemgmtgui\overlays\changepassword.ts           |                    |
+| [ ] | src\apps\components\sharemgmtgui\overlays\renameShare.ts              |                    |
+| [ ] | src\apps\components\sharemgmtgui\runtime.ts                           |                    |
+| [ ] | src\apps\components\shell\context.ts                                  |                    |
+| [ ] | src\apps\components\shell\metadata.ts                                 |                    |
+| [ ] | src\apps\components\shell\runtime.ts                                  |                    |
+| [ ] | src\apps\components\shell\store.ts                                    |                    |
+| [ ] | src\apps\components\shellhost\metadata.ts                             |                    |
+| [ ] | src\apps\components\shellhost\runtime.ts                              |                    |
+| [ ] | src\apps\components\shortcutproperties\metadata.ts                    |                    |
+| [ ] | src\apps\components\shortcutproperties\runtime.ts                     |                    |
+| [ ] | src\apps\components\systemshortcuts\metadata.ts                       |                    |
+| [ ] | src\apps\components\systemshortcuts\runtime.ts                        |                    |
+| [ ] | src\apps\components\terminalwindow\metadata.ts                        |                    |
+| [ ] | src\apps\components\terminalwindow\runtime.ts                         |                    |
+| [ ] | src\apps\components\totpauthgui\metadata.ts                           |                    |
+| [ ] | src\apps\components\totpauthgui\runtime.ts                            |                    |
+| [ ] | src\apps\components\totpsetupgui\metadata.ts                          |                    |
+| [ ] | src\apps\components\totpsetupgui\runtime.ts                           |                    |
+| [ ] | src\apps\components\trayhost\metadata.ts                              |                    |
+| [ ] | src\apps\components\trayhost\runtime.ts                               |                    |
+| [ ] | src\apps\components\updatenotifier\metadata.ts                        |                    |
+| [ ] | src\apps\components\updatenotifier\runtime.ts                         |                    |
+| [ ] | src\apps\components\wallpaper\context.ts                              |                    |
+| [ ] | src\apps\components\wallpaper\metadata.ts                             |                    |
+| [ ] | src\apps\components\wallpaper\runtime.ts                              |                    |
+| [ ] | src\apps\core\bootscreen\metadata.ts                                  |                    |
+| [ ] | src\apps\core\bootscreen\runtime.ts                                   |                    |
+| [ ] | src\apps\core\initialsetup\metadata.ts                                |                    |
+| [ ] | src\apps\core\initialsetup\runtime.ts                                 |                    |
+| [ ] | src\apps\core\loginapp\metadata.ts                                    |                    |
+| [ ] | src\apps\core\loginapp\runtime.ts                                     |                    |
+| [ ] | src\apps\user\advsystemsettings\metadata.ts                           |                    |
+| [ ] | src\apps\user\advsystemsettings\runtime.ts                            |                    |
+| [ ] | src\apps\user\appstore\metadata.ts                                    |                    |
+| [ ] | src\apps\user\appstore\runtime.ts                                     |                    |
+| [ ] | src\apps\user\appstore\store.ts                                       |                    |
+| [ ] | src\apps\user\arcterm\metadata.ts                                     |                    |
+| [ ] | src\apps\user\arcterm\process.ts                                      |                    |
+| [ ] | src\apps\user\bughunt\context.ts                                      |                    |
+| [ ] | src\apps\user\bughunt\metadata.ts                                     |                    |
+| [ ] | src\apps\user\bughunt\runtime.ts                                      |                    |
+| [ ] | src\apps\user\bughunt\userdata\highlight.d.ts                         |                    |
+| [ ] | src\apps\user\bughunt\userdata\metadata.ts                            |                    |
+| [ ] | src\apps\user\bughunt\userdata\runtime.ts                             |                    |
+| [ ] | src\apps\user\bughuntcreator\metadata.ts                              |                    |
+| [ ] | src\apps\user\bughuntcreator\runtime.ts                               |                    |
+| [ ] | src\apps\user\calculator\metadata.ts                                  |                    |
+| [ ] | src\apps\user\calculator\runtime.ts                                   |                    |
+| [ ] | src\apps\user\calculator\store.ts                                     |                    |
+| [ ] | src\apps\user\cod\accelerators.ts                                     |                    |
+| [ ] | src\apps\user\cod\altmenu.ts                                          |                    |
+| [ ] | src\apps\user\cod\altmenu\File.ts                                     |                    |
+| [ ] | src\apps\user\cod\altmenu\Language.ts                                 |                    |
+| [ ] | src\apps\user\cod\metadata.ts                                         |                    |
+| [ ] | src\apps\user\cod\runtime.ts                                          |                    |
+| [ ] | src\apps\user\cod\store.ts                                            |                    |
+| [ ] | src\apps\user\filemanager\accelerators.ts                             |                    |
+| [ ] | src\apps\user\filemanager\altmenu.ts                                  |                    |
+| [ ] | src\apps\user\filemanager\altmenu\Edit.ts                             |                    |
+| [ ] | src\apps\user\filemanager\altmenu\File.ts                             |                    |
+| [ ] | src\apps\user\filemanager\altmenu\Go.ts                               |                    |
+| [ ] | src\apps\user\filemanager\altmenu\View.ts                             |                    |
+| [ ] | src\apps\user\filemanager\context.ts                                  |                    |
+| [ ] | src\apps\user\filemanager\metadata.ts                                 |                    |
+| [ ] | src\apps\user\filemanager\runtime.ts                                  |                    |
+| [ ] | src\apps\user\filemanager\store.ts                                    |                    |
+| [ ] | src\apps\user\hexedit\editrow\metadata.ts                             |                    |
+| [ ] | src\apps\user\hexedit\editrow\runtime.ts                              |                    |
+| [ ] | src\apps\user\hexedit\metadata.ts                                     |                    |
+| [ ] | src\apps\user\hexedit\runtime.ts                                      |                    |
+| [ ] | src\apps\user\imageviewer\metadata.ts                                 |                    |
+| [ ] | src\apps\user\imageviewer\runtime.ts                                  |                    |
+| [ ] | src\apps\user\lightsoff\levels.ts                                     |                    |
+| [ ] | src\apps\user\lightsoff\metadata.ts                                   |                    |
+| [ ] | src\apps\user\lightsoff\runtime.ts                                    |                    |
+| [ ] | src\apps\user\logging\metadata.ts                                     |                    |
+| [ ] | src\apps\user\logging\runtime.ts                                      |                    |
+| [ ] | src\apps\user\logging\store.ts                                        |                    |
+| [ ] | src\apps\user\mediaplayer\accelerators.ts                             |                    |
+| [ ] | src\apps\user\mediaplayer\altmenu.ts                                  |                    |
+| [ ] | src\apps\user\mediaplayer\altmenu\file.ts                             |                    |
+| [ ] | src\apps\user\mediaplayer\altmenu\playlist.ts                         |                    |
+| [ ] | src\apps\user\mediaplayer\metadata.ts                                 |                    |
+| [ ] | src\apps\user\mediaplayer\runtime.ts                                  |                    |
+| [ ] | src\apps\user\messages\metadata.ts                                    |                    |
+| [ ] | src\apps\user\messages\runtime.ts                                     |                    |
+| [ ] | src\apps\user\messages\store.ts                                       |                    |
+| [ ] | src\apps\user\pdfviewer\metadata.ts                                   |                    |
+| [ ] | src\apps\user\pdfviewer\runtime.ts                                    |                    |
+| [ ] | src\apps\user\processes\metadata.ts                                   |                    |
+| [ ] | src\apps\user\processes\runtime.ts                                    |                    |
+| [ ] | src\apps\user\qlorb\metadata.ts                                       |                    |
+| [ ] | src\apps\user\qlorb\runtime.ts                                        |                    |
+| [ ] | src\apps\user\settings\context.ts                                     |                    |
+| [ ] | src\apps\user\settings\metadata.ts                                    |                    |
+| [ ] | src\apps\user\settings\overlay.ts                                     |                    |
+| [ ] | src\apps\user\settings\overlays\changePassword.ts                     |                    |
+| [ ] | src\apps\user\settings\overlays\changeUsername.ts                     |                    |
+| [ ] | src\apps\user\settings\overlays\saveTheme.ts                          |                    |
+| [ ] | src\apps\user\settings\overlays\urlLoginBackground.ts                 |                    |
+| [ ] | src\apps\user\settings\overlays\urlProfilePicture.ts                  |                    |
+| [ ] | src\apps\user\settings\overlays\urlWallpaper.ts                       |                    |
+| [ ] | src\apps\user\settings\overlays\userFont.ts                           |                    |
+| [ ] | src\apps\user\settings\runtime.ts                                     |                    |
+| [ ] | src\apps\user\settings\store\index.ts                                 |                    |
+| [ ] | src\apps\user\settings\store\slides.ts                                |                    |
+| [ ] | src\apps\user\sqeleton\metadata.ts                                    |                    |
+| [ ] | src\apps\user\sqeleton\runtime.ts                                     |                    |
+| [ ] | src\apps\user\writer\accelerators.ts                                  |                    |
+| [ ] | src\apps\user\writer\altmenu.ts                                       |                    |
+| [ ] | src\apps\user\writer\altmenu\Edit.ts                                  |                    |
+| [ ] | src\apps\user\writer\altmenu\File.ts                                  |                    |
+| [ ] | src\apps\user\writer\altmenu\View.ts                                  |                    |
+| [ ] | src\apps\user\writer\metadata.ts                                      |                    |
+| [ ] | src\apps\user\writer\replace\metadata.ts                              |                    |
+| [ ] | src\apps\user\writer\replace\runtime.ts                               |                    |
+| [ ] | src\apps\user\writer\runtime.ts                                       |                    |
+| [ ] | src\main.ts                                                           |                    |
+| [ ] | src\state\arcterm\render.ts                                           |                    |
+| [ ] | src\state\crash\render.ts                                             |                    |
+| [ ] | src\state\desktop\render.ts                                           |                    |
+| [ ] | src\state\licensedeclined\render.ts                                   |                    |
+| [ ] | src\state\serverdown\render.ts                                        |                    |
+| [ ] | src\state\turnedoff\render.ts                                         |                    |
+| [ ] | src\ts\apps\error.ts                                                  |                    |
+| [ ] | src\ts\apps\process.ts                                                |                    |
+| [ ] | src\ts\apps\renderer.ts                                               |                    |
+| [ ] | src\ts\apps\scripted.ts                                               |                    |
+| [ ] | src\ts\apps\storage.ts                                                |                    |
+| [ ] | src\ts\apps\store.ts                                                  |                    |
+| [ ] | src\ts\apps\thirdparty.ts                                             |                    |
+| [ ] | src\ts\apps\util.ts                                                   |                    |
+| [ ] | src\ts\base64.ts                                                      |                    |
+| [ ] | src\ts\branding\index.ts                                              |                    |
+| [ ] | src\ts\branding\stores.ts                                             |                    |
+| [ ] | src\ts\bughunt\index.ts                                               |                    |
+| [ ] | src\ts\bughunt\process.ts                                             |                    |
+| [ ] | src\ts\bughunt\store.ts                                               |                    |
+| [ ] | src\ts\color.ts                                                       |                    |
+| [ ] | src\ts\console.ts                                                     |                    |
+| [ ] | src\ts\context\actions.svelte.ts                                      |                    |
+| [ ] | src\ts\crash.ts                                                       |                    |
+| [ ] | src\ts\dayjs.ts                                                       |                    |
+| [ ] | src\ts\devenv\drive.ts                                                |                    |
+| [ ] | src\ts\devenv\index.ts                                                |                    |
+| [ ] | src\ts\device\cpu.ts                                                  |                    |
+| [ ] | src\ts\device\gpu.ts                                                  |                    |
+| [ ] | src\ts\device\index.ts                                                |                    |
+| [ ] | src\ts\device\mem.ts                                                  |                    |
+| [ ] | src\ts\device\net.ts                                                  |                    |
+| [ ] | src\ts\dialog.ts                                                      |                    |
+| [ ] | src\ts\dispatch\index.ts                                              |                    |
+| [ ] | src\ts\dispatch\store.ts                                              |                    |
+| [ ] | src\ts\distrib\index.ts                                               |                    |
+| [ ] | src\ts\distrib\installer.ts                                           |                    |
+| [ ] | src\ts\distrib\util.ts                                                |                    |
+| [ ] | src\ts\env.ts                                                         |                    |
+| [ ] | src\ts\error.ts                                                       |                    |
+| [ ] | src\ts\form.ts                                                        |                    |
+| [ ] | src\ts\fs\context.ts                                                  |                    |
+| [ ] | src\ts\fs\convert.ts                                                  |                    |
+| [ ] | src\ts\fs\drive.ts                                                    |                    |
+| [ ] | src\ts\fs\drives\admin.ts                                             |                    |
+| [ ] | src\ts\fs\drives\server.ts                                            |                    |
+| [ ] | src\ts\fs\drives\temp.ts                                              |                    |
+| [ ] | src\ts\fs\drives\zipdrive.ts                                          |                    |
+| [ ] | src\ts\fs\index.ts                                                    |                    |
+| [ ] | src\ts\fs\shares\drive.ts                                             |                    |
+| [ ] | src\ts\fs\shares\index.ts                                             |                    |
+| [ ] | src\ts\fs\util.ts                                                     |                    |
+| [ ] | src\ts\group.ts                                                       |                    |
+| [ ] | src\ts\hierarchy.ts                                                   |                    |
+| [ ] | src\ts\images\apps.ts                                                 |                    |
+| [ ] | src\ts\images\branding.ts                                             |                    |
+| [ ] | src\ts\images\dialog.ts                                               |                    |
+| [ ] | src\ts\images\filesystem.ts                                           |                    |
+| [ ] | src\ts\images\general.ts                                              |                    |
+| [ ] | src\ts\images\index.ts                                                |                    |
+| [ ] | src\ts\images\mime.ts                                                 |                    |
+| [ ] | src\ts\images\pfp.ts                                                  |                    |
+| [ ] | src\ts\images\power.ts                                                |                    |
+| [ ] | src\ts\images\status.ts                                               |                    |
+| [ ] | src\ts\json.ts                                                        |                    |
+| [ ] | src\ts\kernel\env.ts                                                  |                    |
+| [ ] | src\ts\kernel\getters.ts                                              |                    |
+| [ ] | src\ts\kernel\index.ts                                                |                    |
+| [ ] | src\ts\kernel\init.ts                                                 |                    |
+| [ ] | src\ts\kernel\intro.ts                                                |                    |
+| [ ] | src\ts\kernel\logging.ts                                              |                    |
+| [ ] | src\ts\kernel\module\index.ts                                         |                    |
+| [ ] | src\ts\kernel\module\store.ts                                         |                    |
+| [ ] | src\ts\kernel\premature.ts                                            |                    |
+| [ ] | src\ts\lang\ast.ts                                                    |                    |
+| [ ] | src\ts\lang\error.ts                                                  |                    |
+| [ ] | src\ts\lang\index.ts                                                  |                    |
+| [ ] | src\ts\lang\interpreter.ts                                            |                    |
+| [ ] | src\ts\lang\lexer.ts                                                  |                    |
+| [ ] | src\ts\lang\parser.ts                                                 |                    |
+| [ ] | src\ts\lang\store.ts                                                  |                    |
+| [ ] | src\ts\lang\token.ts                                                  |                    |
+| [ ] | src\ts\metadata\build.ts                                              |                    |
+| [ ] | src\ts\metadata\changelog\index.ts                                    |                    |
+| [ ] | src\ts\metadata\license.ts                                            |                    |
+| [ ] | src\ts\metadata\mode.ts                                               |                    |
+| [ ] | src\ts\msl\error.ts                                                   |                    |
+| [ ] | src\ts\msl\index.ts                                                   |                    |
+| [ ] | src\ts\msl\instance.ts                                                |                    |
+| [ ] | src\ts\msl\libraries_base.ts                                          |                    |
+| [ ] | src\ts\msl\libraries_base\clear.ts                                    |                    |
+| [ ] | src\ts\msl\libraries_base\echo.ts                                     |                    |
+| [ ] | src\ts\msl\libraries_base\exit.ts                                     |                    |
+| [ ] | src\ts\msl\libraries_base\idle.ts                                     |                    |
+| [ ] | src\ts\msl\libraries_base\if.ts                                       |                    |
+| [ ] | src\ts\msl\libraries_base\input.ts                                    |                    |
+| [ ] | src\ts\msl\libraries_base\jump.ts                                     |                    |
+| [ ] | src\ts\msl\libraries_base\mount.ts                                    |                    |
+| [ ] | src\ts\msl\libraries_base\msgbox.ts                                   |                    |
+| [ ] | src\ts\msl\libraries_base\return.ts                                   |                    |
+| [ ] | src\ts\msl\libraries_base\sleep.ts                                    |                    |
+| [ ] | src\ts\msl\libraries_base\umount.ts                                   |                    |
+| [ ] | src\ts\msl\libraries\base64.ts                                        |                    |
+| [ ] | src\ts\msl\libraries\base64\atob.ts                                   |                    |
+| [ ] | src\ts\msl\libraries\base64\btoa.ts                                   |                    |
+| [ ] | src\ts\msl\libraries\convert.ts                                       |                    |
+| [ ] | src\ts\msl\libraries\convert\abtostr.ts                               |                    |
+| [ ] | src\ts\msl\libraries\convert\dataurl.ts                               |                    |
+| [ ] | src\ts\msl\libraries\data.ts                                          |                    |
+| [ ] | src\ts\msl\libraries\data\calc.ts                                     |                    |
+| [ ] | src\ts\msl\libraries\data\chr.ts                                      |                    |
+| [ ] | src\ts\msl\libraries\data\length.ts                                   |                    |
+| [ ] | src\ts\msl\libraries\data\push.ts                                     |                    |
+| [ ] | src\ts\msl\libraries\env.ts                                           |                    |
+| [ ] | src\ts\msl\libraries\env\get.ts                                       |                    |
+| [ ] | src\ts\msl\libraries\env\set.ts                                       |                    |
+| [ ] | src\ts\msl\libraries\exec.ts                                          |                    |
+| [ ] | src\ts\msl\libraries\gui.ts                                           |                    |
+| [ ] | src\ts\msl\libraries\json.ts                                          |                    |
+| [ ] | src\ts\msl\libraries\json\get.ts                                      |                    |
+| [ ] | src\ts\msl\libraries\json\load.ts                                     |                    |
+| [ ] | src\ts\msl\libraries\json\parse.ts                                    |                    |
+| [ ] | src\ts\msl\libraries\json\set.ts                                      |                    |
+| [ ] | src\ts\msl\libraries\keyword.ts                                       |                    |
+| [ ] | src\ts\msl\libraries\source.ts                                        |                    |
+| [ ] | src\ts\msl\libraries\source\cat.ts                                    |                    |
+| [ ] | src\ts\msl\libraries\source\css.ts                                    |                    |
+| [ ] | src\ts\msl\libraries\source\html.ts                                   |                    |
+| [ ] | src\ts\msl\libraries\source\img.ts                                    |                    |
+| [ ] | src\ts\msl\libraries\source\import.ts                                 |                    |
+| [ ] | src\ts\msl\libraries\source\unsafe.ts                                 |                    |
+| [ ] | src\ts\msl\libraries\window\action.ts                                 |                    |
+| [ ] | src\ts\msl\libraries\window\create.ts                                 |                    |
+| [ ] | src\ts\msl\libraries\window\element\append.ts                         |                    |
+| [ ] | src\ts\msl\libraries\window\element\button.ts                         |                    |
+| [ ] | src\ts\msl\libraries\window\element\create.ts                         |                    |
+| [ ] | src\ts\msl\libraries\window\element\div.ts                            |                    |
+| [ ] | src\ts\msl\libraries\window\element\get.ts                            |                    |
+| [ ] | src\ts\msl\libraries\window\element\h1.ts                             |                    |
+| [ ] | src\ts\msl\store.ts                                                   |                    |
+| [ ] | src\ts\process\dispatch.ts                                            |                    |
+| [ ] | src\ts\process\handler.ts                                             |                    |
+| [ ] | src\ts\process\instance.ts                                            |                    |
+| [ ] | src\ts\process\store.ts                                               |                    |
+| [ ] | src\ts\proto\handlers\spawn.ts                                        |                    |
+| [ ] | src\ts\proto\index.ts                                                 |                    |
+| [ ] | src\ts\server\admin\fs.ts                                             |                    |
+| [ ] | src\ts\server\admin\index.ts                                          |                    |
+| [ ] | src\ts\server\admin\proto.ts                                          |                    |
+| [ ] | src\ts\server\admin\store.ts                                          |                    |
+| [ ] | src\ts\server\admin\util.ts                                           |                    |
+| [ ] | src\ts\server\axios.ts                                                |                    |
+| [ ] | src\ts\server\index.ts                                                |                    |
+| [ ] | src\ts\server\messaging\index.ts                                      |                    |
+| [ ] | src\ts\server\user\activity.ts                                        |                    |
+| [ ] | src\ts\server\user\assoc\index.ts                                     |                    |
+| [ ] | src\ts\server\user\assoc\store\audio.ts                               |                    |
+| [ ] | src\ts\server\user\assoc\store\image.ts                               |                    |
+| [ ] | src\ts\server\user\assoc\store\index.ts                               |                    |
+| [ ] | src\ts\server\user\assoc\store\video.ts                               |                    |
+| [ ] | src\ts\server\user\auth.ts                                            |                    |
+| [ ] | src\ts\server\user\daemon.ts                                          |                    |
+| [ ] | src\ts\server\user\default.ts                                         |                    |
+| [ ] | src\ts\server\user\handlers\arcpkg.ts                                 |                    |
+| [ ] | src\ts\server\user\handlers\arctheme.ts                               |                    |
+| [ ] | src\ts\server\user\handlers\installtpa.ts                             |                    |
+| [ ] | src\ts\server\user\handlers\mountzip.ts                               |                    |
+| [ ] | src\ts\server\user\handlers\runtpa.ts                                 |                    |
+| [ ] | src\ts\server\user\handlers\runtpab.ts                                |                    |
+| [ ] | src\ts\server\user\store.ts                                           |                    |
+| [ ] | src\ts\server\user\supplementary.ts                                   |                    |
+| [ ] | src\ts\server\user\thirdparty.ts                                      |                    |
+| [ ] | src\ts\server\user\trash\index.ts                                     |                    |
+| [ ] | src\ts\server\ws\index.ts                                             |                    |
+| [ ] | src\ts\services\base.ts                                               |                    |
+| [ ] | src\ts\services\index.ts                                              |                    |
+| [ ] | src\ts\sleep.ts                                                       |                    |
+| [ ] | src\ts\soundbus\index.ts                                              |                    |
+| [ ] | src\ts\soundbus\store.ts                                              |                    |
+| [ ] | src\ts\sql\index.ts                                                   |                    |
+| [ ] | src\ts\sql\util.ts                                                    |                    |
+| [ ] | src\ts\state\error.ts                                                 |                    |
+| [ ] | src\ts\state\index.ts                                                 |                    |
+| [ ] | src\ts\state\store.ts                                                 |                    |
+| [ ] | src\ts\terminal\commands\admin.ts                                     |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\accessors\delete\all.ts       |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\accessors\delete\user.ts      |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\accessors\list\all.ts         |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\accessors\list\user.ts        |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\activities\delete\all.ts      |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\activities\delete\user.ts     |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\activities\list\all.ts        |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\activities\list\user.ts       |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\admin\grant.ts                |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\admin\revoke.ts               |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\bughunt\get.ts                |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\bughunt\list\all.ts           |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\bughunt\report\close.ts       |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\bughunt\report\delete.ts      |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\bughunt\report\open.ts        |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\bughunt\stats.ts              |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\help.ts                       |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\indexing\delete.ts            |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\indexing\force.ts             |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\indexing\list\all.ts          |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\indexing\list\user.ts         |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\mount.ts                      |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\scopes\add.ts                 |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\scopes\available.ts           |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\scopes\get.ts                 |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\scopes\remove.ts              |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\server\auditlog.ts            |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\server\logs.ts                |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\server\ping.ts                |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\server\stats.ts               |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\share\accessors\delete.ts     |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\share\accessors\list.ts       |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\share\adduser.ts              |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\share\changepswd\generated.ts |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\share\changepswd\manual.ts    |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\share\chown.ts                |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\share\delete.ts               |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\share\kick.ts                 |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\share\list\all.ts             |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\share\list\user.ts            |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\share\rename.ts               |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\tokens\list\all.ts            |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\tokens\purge\all.ts           |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\tokens\purge\one.ts           |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\tokens\purge\user.ts          |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\totp\deactivate.ts            |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\totp\delete.ts                |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\totp\get.ts                   |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\totp\list\all.ts              |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\user\approve.ts               |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\user\changeemail.ts           |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\user\changepswd\generated.ts  |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\user\changepswd\manual.ts     |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\user\delete.ts                |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\user\disapprove.ts            |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\user\list.ts                  |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\user\preferences\delete.ts    |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\user\preferences\get.ts       |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\user\preferences\set.ts       |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\user\quota\get.ts             |                    |
+| [ ] | src\ts\terminal\commands\admin\commands\user\quota\set.ts             |                    |
+| [ ] | src\ts\terminal\commands\admin\store.ts                               |                    |
+| [ ] | src\ts\terminal\commands\applist.ts                                   |                    |
+| [ ] | src\ts\terminal\commands\arcfetch.ts                                  |                    |
+| [ ] | src\ts\terminal\commands\atconf.ts                                    |                    |
+| [ ] | src\ts\terminal\commands\cd.ts                                        |                    |
+| [ ] | src\ts\terminal\commands\clear.ts                                     |                    |
+| [ ] | src\ts\terminal\commands\config.ts                                    |                    |
+| [ ] | src\ts\terminal\commands\crtpa.ts                                     |                    |
+| [ ] | src\ts\terminal\commands\devenv.ts                                    |                    |
+| [ ] | src\ts\terminal\commands\dir.ts                                       |                    |
+| [ ] | src\ts\terminal\commands\dispatch.ts                                  |                    |
+| [ ] | src\ts\terminal\commands\drives.ts                                    |                    |
+| [ ] | src\ts\terminal\commands\echo.ts                                      |                    |
+| [ ] | src\ts\terminal\commands\exit.ts                                      |                    |
+| [ ] | src\ts\terminal\commands\explore.ts                                   |                    |
+| [ ] | src\ts\terminal\commands\find.ts                                      |                    |
+| [ ] | src\ts\terminal\commands\help.ts                                      |                    |
+| [ ] | src\ts\terminal\commands\history.ts                                   |                    |
+| [ ] | src\ts\terminal\commands\kill.ts                                      |                    |
+| [ ] | src\ts\terminal\commands\logout.ts                                    |                    |
+| [ ] | src\ts\terminal\commands\mkdir.ts                                     |                    |
+| [ ] | src\ts\terminal\commands\open.ts                                      |                    |
+| [ ] | src\ts\terminal\commands\pkg.ts                                       |                    |
+| [ ] | src\ts\terminal\commands\quota.ts                                     |                    |
+| [ ] | src\ts\terminal\commands\reload.ts                                    |                    |
+| [ ] | src\ts\terminal\commands\restart.ts                                   |                    |
+| [ ] | src\ts\terminal\commands\rm.ts                                        |                    |
+| [ ] | src\ts\terminal\commands\shutdown.ts                                  |                    |
+| [ ] | src\ts\terminal\commands\spawn.ts                                     |                    |
+| [ ] | src\ts\terminal\commands\tasks.ts                                     |                    |
+| [ ] | src\ts\terminal\commands\test.ts                                      |                    |
+| [ ] | src\ts\terminal\commands\tree.ts                                      |                    |
+| [ ] | src\ts\terminal\commands\ver.ts                                       |                    |
+| [ ] | src\ts\terminal\index.ts                                              |                    |
+| [ ] | src\ts\terminal\mode\index.ts                                         |                    |
+| [ ] | src\ts\terminal\process.ts                                            |                    |
+| [ ] | src\ts\terminal\readline\highlight.ts                                 |                    |
+| [ ] | src\ts\terminal\readline\history.ts                                   |                    |
+| [ ] | src\ts\terminal\readline\keymap.ts                                    |                    |
+| [ ] | src\ts\terminal\readline\line.ts                                      |                    |
+| [ ] | src\ts\terminal\readline\readline.ts                                  |                    |
+| [ ] | src\ts\terminal\readline\state.ts                                     |                    |
+| [ ] | src\ts\terminal\readline\tty.ts                                       |                    |
+| [ ] | src\ts\terminal\select.ts                                             |                    |
+| [ ] | src\ts\terminal\store.ts                                              |                    |
+| [ ] | src\ts\terminal\util.ts                                               |                    |
+| [ ] | src\ts\terminal\var.ts                                                |                    |
+| [ ] | src\ts\terminal\var\store.ts                                          |                    |
+| [ ] | src\ts\ui\thirdparty\titlebar.ts                                      |                    |
+| [ ] | src\ts\ui\tray\process.ts                                             |                    |
+| [ ] | src\ts\util.ts                                                        |                    |
+| [ ] | src\ts\uuid.ts                                                        |                    |
+| [ ] | src\ts\version.ts                                                     |                    |
+| [ ] | src\ts\wallpaper\store.ts                                             |                    |
+| [ ] | src\ts\writable.ts                                                    |                    |
+| [ ] | src\vite-env.d.ts                                                     |                    |
