@@ -99,7 +99,7 @@ export class Filesystem extends KernelModule {
 
     const result = Object.values(this.drives).filter((s) => s.driveLetter == letter || s.uuid == letter)[0];
 
-    if (!result && error) throw new Error(`Not mounted: ${letter}:/`);
+    if (!result && error) throw new Error(`FilesystemGetDriveByLetter: Not mounted: ${letter}:/`);
 
     return result;
   }
@@ -121,7 +121,8 @@ export class Filesystem extends KernelModule {
   validatePath(p: string) {
     this.isKmod();
 
-    if (!/^([A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}|[a-zA-Z]):\/(.*?)$/g.test(p)) throw new Error(`Invalid path "${p}"`);
+    if (!/^([A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}|[a-zA-Z]):\/(.*?)$/g.test(p))
+      throw new Error(`FilesystemValidatePath: Invalid path "${p}"`);
   }
 
   removeDriveLetter(p: string) {
@@ -139,7 +140,7 @@ export class Filesystem extends KernelModule {
     this.isKmod();
 
     if (!/^([A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}|[a-zA-Z])$/g.test(letter))
-      throw new Error(`Invalid drive letter or UUID "${letter}"`);
+      throw new Error(`FilesystemValidateDriveLetter: Invalid drive letter or UUID "${letter}"`);
   }
 
   async readDir(path: string): Promise<DirectoryReadReturn | undefined> {

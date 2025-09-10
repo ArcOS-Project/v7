@@ -4,7 +4,7 @@ import type { App } from "$types/app";
 import AdminPortal from "./AdminPortal.svelte";
 import { AdminPortalRuntime } from "./runtime";
 
-export const AdminPortalApp: App = {
+const AdminPortalApp: App = {
   metadata: {
     name: "Admin Portal",
     version: "1.0.0",
@@ -35,3 +35,5 @@ export const AdminPortalApp: App = {
   elevated: true, // Making sure the admin has to approve the opening of this app
   id: "AdminPortal",
 };
+
+export default AdminPortalApp;

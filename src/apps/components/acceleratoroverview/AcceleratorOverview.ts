@@ -4,7 +4,7 @@ import type { App } from "$types/app";
 import AcceleratorOverview from "./AcceleratorOverview.svelte";
 import { AcceleratorOverviewRuntime } from "./runtime";
 
-export const AcceleratorOverviewApp: App = {
+const AcceleratorOverviewApp: App = {
   metadata: {
     name: "Keyboard Shortcuts",
     author: "Izaak Kuipers",
@@ -44,3 +44,5 @@ export const AcceleratorOverviewApp: App = {
   id: "AcceleratorOverview",
   hidden: true,
 };
+
+export default AcceleratorOverviewApp;

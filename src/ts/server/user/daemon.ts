@@ -16,7 +16,7 @@ import DeleteUser from "$lib/Daemon/DeleteUser.svelte";
 import SafeModeNotice from "$lib/Daemon/SafeModeNotice.svelte";
 import { AppProcess } from "$ts/apps/process";
 import { ApplicationStorage } from "$ts/apps/storage";
-import { AdminApps, BuiltinApps } from "$ts/apps/store";
+import { AdminApps, BuiltinAppImportPaths } from "$ts/apps/store";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { bestForeground, darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 import { MessageBox } from "$ts/dialog";
@@ -1564,8 +1564,18 @@ export class UserDaemon extends Process {
     return this.serviceHost?.getService<ApplicationStorage>("AppStorage");
   }
 
-  initAppStorage(storage: ApplicationStorage) {
-    storage.loadOrigin("builtin", () => BuiltinApps);
+  async initAppStorage(storage: ApplicationStorage) {
+    const builtins: App[] = [];
+
+    for (const path of BuiltinAppImportPaths) {
+      try {
+        builtins.push((await import(path)).default);
+      } catch {
+        this.Log(`Failed to load app ${path}: The file could not be found`);
+      }
+    }
+
+    storage.loadOrigin("builtin", () => builtins);
     storage.loadOrigin("userApps", () => this.getUserApps());
   }
 

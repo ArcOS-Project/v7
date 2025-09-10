@@ -31,7 +31,7 @@
 
     $buttons = pageButtons[v];
 
-    if (!buttons) throw new Error("Page buttons out of bounds");
+    if (!$buttons) throw new Error("InitialSetupWizardActions: Out of bounds");
   });
 </script>
 

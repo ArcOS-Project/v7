@@ -89,7 +89,7 @@ export class OopsNotifierRuntime extends AppProcess {
       this.stackFrames
     );
 
-    if (!proc) throw new Error("Failed to spawn OopsStackTracer");
+    if (!proc) throw new Error("OopsStackTracer: invocation failed");
   }
 
   async reopen() {

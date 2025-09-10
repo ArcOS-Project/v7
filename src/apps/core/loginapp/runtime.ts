@@ -82,7 +82,7 @@ export class LoginAppRuntime extends AppProcess {
     } else if (props?.type) {
       this.hideProfileImage.set(true);
 
-      if (!props.userDaemon) throw new Error(`Irregular login type without a user daemon`);
+      if (!props.userDaemon) throw new Error(`LoginAppRuntimeConstructor: Irregular login type without daemon`);
 
       this.soundBus.playSound("arcos.system.logoff");
 
@@ -97,7 +97,7 @@ export class LoginAppRuntime extends AppProcess {
           this.restart(props.userDaemon);
           break;
         default:
-          throw new Error(`Invalid login type "${props.type}"`);
+          throw new Error(`LoginAppRuntimeConstructor: invalid login type '${props.type}'`);
       }
     }
   }

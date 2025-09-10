@@ -28,6 +28,7 @@ export default defineConfig({
       },
     },
     assetsInlineLimit: 1,
+    minify: false,
   },
   base: "",
 });

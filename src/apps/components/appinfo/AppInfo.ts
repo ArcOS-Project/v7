@@ -4,7 +4,7 @@ import type { App } from "$types/app";
 import AppInfo from "./AppInfo.svelte";
 import { AppInfoRuntime } from "./runtime";
 
-export const AppInfoApp: App = {
+const AppInfoApp: App = {
   metadata: {
     name: "App Info",
     author: "Izaak Kuipers",
@@ -48,3 +48,5 @@ export const AppInfoApp: App = {
   id: "AppInfo",
   glass: false,
 };
+
+export default AppInfoApp;

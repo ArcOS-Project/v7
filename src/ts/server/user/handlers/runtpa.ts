@@ -15,7 +15,7 @@ const runTpaFile: (d: UserDaemon) => FileHandler = (daemon) => ({
     const text = arrayToText((await daemon.fs.readFile(path))!);
     const json = tryJsonParse(text);
 
-    if (typeof json !== "object") return;
+    if (typeof json !== "object") throw new Error(`RunTpaFileHandler: JSON parse failed`);
 
     await daemon.spawnThirdParty(json, path);
   },

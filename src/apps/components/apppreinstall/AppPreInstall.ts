@@ -4,7 +4,7 @@ import type { App } from "$types/app";
 import AppPreinstall from "./AppPreinstall.svelte";
 import { AppPreInstallRuntime } from "./runtime";
 
-export const AppPreinstallApp: App = {
+const AppPreinstallApp: App = {
   metadata: {
     name: "AppPreInstallApp",
     author: "Izaak Kuipers",
@@ -34,3 +34,5 @@ export const AppPreinstallApp: App = {
   hidden: true,
   id: "AppPreInstall",
 };
+
+export default AppPreinstallApp;

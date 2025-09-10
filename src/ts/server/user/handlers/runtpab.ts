@@ -35,7 +35,7 @@ const runTpaBundle: (d: UserDaemon) => FileHandler = (daemon) => ({
 
     await prog.stop();
 
-    if (!content) return;
+    if (!content) throw new Error(`RunTpaBundleHandler: content read failure`);
 
     const zip = new JSZip();
     const buffer = await zip.loadAsync(content, {});

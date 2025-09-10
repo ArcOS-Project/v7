@@ -4,7 +4,7 @@ import type { App } from "$types/app";
 import AppInstaller from "./AppInstaller.svelte";
 import { AppInstallerRuntime } from "./runtime";
 
-export const AppInstallerApp: App = {
+const AppInstallerApp: App = {
   metadata: {
     name: "AppInstaller",
     author: "Izaak Kuipers",
@@ -34,3 +34,5 @@ export const AppInstallerApp: App = {
   hidden: true,
   id: "AppInstaller",
 };
+
+export default AppInstallerApp;

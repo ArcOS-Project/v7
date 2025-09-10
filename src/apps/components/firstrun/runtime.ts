@@ -1,5 +1,4 @@
 import { AppProcess } from "$ts/apps/process";
-import { BuiltinApps } from "$ts/apps/store";
 import { join } from "$ts/fs/util";
 import { iconIdFromPath } from "$ts/images";
 import type { UserDaemon } from "$ts/server/user/daemon";
@@ -43,21 +42,22 @@ export class FirstRunRuntime extends AppProcess {
       await this.userDaemon?.createShortcut(payload, path);
     }
 
-    for (const app of BuiltinApps) {
-      const path = join(UserPaths.AppShortcuts, `${app.id}.arclnk`);
-      caption.set(`Preparing ${app.id}`);
+    // TODO: fix me
+    // for (const app of BuiltinApps) {
+    //   const path = join(UserPaths.AppShortcuts, `${app.id}.arclnk`);
+    //   caption.set(`Preparing ${app.id}`);
 
-      this.userDaemon?.createShortcut(
-        {
-          name: app.id,
-          type: "app",
-          target: app.id,
-          icon: iconIdFromPath(app.metadata.icon),
-        },
-        path
-      );
-      await Sleep(50);
-    }
+    //   this.userDaemon?.createShortcut(
+    //     {
+    //       name: app.id,
+    //       type: "app",
+    //       target: app.id,
+    //       icon: iconIdFromPath(app.metadata.icon),
+    //     },
+    //     path
+    //   );
+    //   await Sleep(50);
+    // }
 
     await this.userDaemon?.updateRegisteredVersion();
     await stop();

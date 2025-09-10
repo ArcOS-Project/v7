@@ -82,6 +82,8 @@ export class SqeletonRuntime extends AppProcess {
     if (path) {
       await this.readFile(path);
     }
+
+    await import("$css/apps/user/sqeleton.css");
   }
 
   //#endregion

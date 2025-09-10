@@ -30,6 +30,10 @@ export class ApplicationStorage extends BaseService {
     this.host.daemon.initAppStorage(this);
 
     await this.refresh();
+
+    const { SqeletonApp } = await import("$apps/user/sqeleton/metadata");
+
+    await this.loadApp(SqeletonApp);
   }
 
   //#endregion

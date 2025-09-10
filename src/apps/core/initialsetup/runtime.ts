@@ -136,7 +136,7 @@ export class InitialSetupRuntime extends AppProcess {
 
   async render() {
     if (this.server.serverInfo?.disableRegistration) {
-      throw new Error("Registration is disabled on this server");
+      throw new Error("InitialSetupWizardRender: Registration is disabled on this server");
     }
 
     // TODO: some kind of intro animation

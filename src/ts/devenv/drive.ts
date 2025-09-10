@@ -63,7 +63,7 @@ export class DevDrive extends FilesystemDrive {
   }
 
   async readFile(path: string, onProgress?: FilesystemProgressCallback): Promise<ArrayBuffer | undefined> {
-    if (this.fileLocks[path]) throw new Error(`Not reading locked file '${path}'`);
+    if (this.fileLocks[path]) throw new Error(`DevDriveFilesystemDrive: resource is locked`);
 
     try {
       const response = await this.axios.get(`/fs/file/${path}`, {
@@ -128,7 +128,7 @@ export class DevDrive extends FilesystemDrive {
   }
 
   async moveItem(source: string, destination: string): Promise<boolean> {
-    if (this.fileLocks[source]) throw new Error(`Not moving locked file '${source}'`);
+    if (this.fileLocks[source]) throw new Error(`DevDriveFilesystemDrive: resource is locked`);
 
     try {
       const response = await this.axios.post(
@@ -145,7 +145,7 @@ export class DevDrive extends FilesystemDrive {
   }
 
   async deleteItem(path: string): Promise<boolean> {
-    if (this.fileLocks[path]) throw new Error(`Not deleting locked file '${path}'`);
+    if (this.fileLocks[path]) throw new Error(`DevDriveFilesystemDrive: resource is locked`);
 
     try {
       const response = await this.axios.delete(`/fs/rm/${path}`);

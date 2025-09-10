@@ -1,4 +1,3 @@
-import "$css/apps/user/sqeleton.css";
 import { SqeletonIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import { SqeletonRuntime } from "./runtime";

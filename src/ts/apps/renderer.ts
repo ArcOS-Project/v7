@@ -13,7 +13,6 @@ import { Process } from "../process/instance";
 import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
-import { BuiltinApps } from "./store";
 
 export class AppRenderer extends Process {
   currentState: number[] = [];
@@ -21,7 +20,6 @@ export class AppRenderer extends Process {
   maxZIndex = 1e6;
   focusedPid = Store(-1);
   appStore = Store<Map<string, AppProcessData>>(new Map());
-  defaultApps = BuiltinApps;
   lastInteract?: AppProcess;
   override _criticalProcess: boolean = true;
 

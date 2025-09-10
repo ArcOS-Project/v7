@@ -3,7 +3,7 @@ import { ArcFindIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import { ArcFindRuntime } from "./runtime";
 
-export const ArcFind: App = RegisteredProcess({
+const ArcFind: App = RegisteredProcess({
   metadata: {
     name: "ArcFind",
     version: "1.0.0",
@@ -15,3 +15,5 @@ export const ArcFind: App = RegisteredProcess({
   },
   id: "ArcFindProc",
 });
+
+export default ArcFind;

@@ -4,7 +4,7 @@ import type { App } from "$types/app";
 import ContextMenuRenderer from "./ContextMenuRenderer.svelte";
 import { ContextMenuRuntime } from "./runtime";
 
-export const ContextMenuApp: App = {
+const ContextMenuApp: App = {
   metadata: {
     name: "Context Menu",
     author: "Izaak Kuipers",
@@ -37,3 +37,5 @@ export const ContextMenuApp: App = {
   vital: true,
   hidden: true,
 };
+
+export default ContextMenuApp;

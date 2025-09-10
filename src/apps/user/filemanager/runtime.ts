@@ -82,9 +82,9 @@ export class FileManagerRuntime extends AppProcess {
 
       this.contextMenu = {};
 
-      if (loadSave.isSave && loadSave.multiple) throw new Error("LoadSave: can't have both isSave and multiple");
-      if (loadSave.folder && loadSave.isSave) throw new Error("LoadSave: can't have both folder and isSave");
-      if (loadSave.folder && loadSave.multiple) throw new Error("LoadSave: can't have both folder and multiple");
+      if (loadSave.isSave && loadSave.multiple) throw new Error("FileManagerLoadSave: both isSave and multiple is illegal");
+      if (loadSave.folder && loadSave.isSave) throw new Error("FileManagerLoadSave: both folder and isSave is illegal");
+      if (loadSave.folder && loadSave.multiple) throw new Error("FileManagerLoadSave: both folder and multiple is illegal");
     }
 
     this.dispatch.subscribe("navigate", (path) => {
