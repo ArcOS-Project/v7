@@ -1,3 +1,21 @@
+# COMMENTING TODO
+
+This file illustrates the source code that still has to be commented. When commenting code for ArcOS v7, follow these simple guidelines:
+
+- If the code can be understood by anybody, don't comment it
+- If there's already a comment in place that isn't correct anymore, change it
+- If a comment is unnecessary or can otherwise be omitted, remove it
+- When encountering code with critical bugs or broken imports (despite the workflows not picking them up), report to Izaak or fix it yourself with a pull request.
+- Do not change comments that are marked 'frozen' or that say they should not be changed. These comments contain critical information that could cause problems if left out.
+- If a piece of code is hard to understand just by reading it, write a comment explaining the unclear parts of the code so that we _do_ understand it.
+- After commenting an entire file, add the current date to the end of the file path in this file. For reference, this is the expected layout:
+
+  ```md
+  - [x] <path> DD-MM-YYYY
+  ```
+
+---
+
 - [ ] src/main.ts
 - [ ] src/vite-env.d.ts
 - [ ] src/apps/arcos.ts
