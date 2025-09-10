@@ -40,7 +40,7 @@ export class AdminPortalRuntime extends AppProcess {
   }
 
   async start() {
-    await this.fs.createDirectory("T:/Apps/AdminPortal");
+    await this.fs.createDirectory("T:/Apps/AdminPortal"); // temp folder for saveTpaFilesOfBugReport
   }
 
   //#endregion
@@ -50,6 +50,7 @@ export class AdminPortalRuntime extends AppProcess {
     this.Log(`Loading page '${pageId}'`);
 
     if (!AdminPortalPageStore.has(pageId)) {
+      // This probably won't ever happen, but just in case
       MessageBox(
         {
           title: "Broken link",
@@ -68,12 +69,14 @@ export class AdminPortalRuntime extends AppProcess {
     const page = AdminPortalPageStore.get(pageId);
 
     this.switchPageProps.set(props);
+
+    // If forced, invoke a complete rerender by setting the page to nothing
     if (force) {
       this.currentPage.set("");
       await Sleep(0); // Wait a frame for the store change to process
     }
-    this.currentPage.set(pageId);
 
+    this.currentPage.set(pageId);
     this.windowTitle.set(`${page?.name} - Admin Portal`);
   }
 
@@ -81,29 +84,34 @@ export class AdminPortalRuntime extends AppProcess {
   //#region TPA
 
   async saveTpaFilesOfBugReport(report: BugReport) {
+    // Regular expression assumes URL format:
+    // https://domain.tld/tpa/v3/userId/timestamp/appId@filename.js
     const regex =
       /http(s|):\/\/[a-zA-Z.-]+\/tpa\/v3\/(?<userId>[a-z0-9+]+)\/(?<timestamp>[0-9]+)\/(?<appId>.*?)@(?<filename>.*?\.js)/gm;
     const result: BugReportTpaFile[] = [];
     const tpaFiles = report.body
-      .matchAll(regex)
+      .matchAll(regex) // Gather all the TPA file URLs
       .toArray()
-      .map((r) => ({ ...r.groups, url: r[0] }))
-      .filter(Boolean) as BugReportFileUrlParseResult[];
+      .map((r) => ({ ...r.groups, url: r[0] })) // The named groups (as seen in the regex) along with the URL
+      .filter(Boolean) as BugReportFileUrlParseResult[]; // Filter empty shit
 
     for (const file of tpaFiles) {
+      // Had to choose a unique-ish filename that still made sense... Oh well.
       const filePath = join(`T:/Apps/AdminPortal/${file.userId}-${file.timestamp}@${file.appId}/${file.filename}`);
 
       try {
-        const content = await axios.get(file.url, { responseType: "text" });
+        const content = await axios.get(file.url, { responseType: "text" }); // responseType ensures we get a string back
         const source = content.data as string;
-        await this.fs.writeFile(filePath, textToBlob(source, "text/javascript"));
+        await this.fs.writeFile(filePath, textToBlob(source, "text/javascript")); // Now we write the code to temp
 
+        // Finally save it
         result.push({
           filename: file.filename,
           filePath,
           size: source.length,
         });
       } catch {
+        // File no longer in the server's RAM, so mark as unavailable
         result.push({
           filename: file.filename,
           size: -1,

@@ -8,11 +8,13 @@ export function FileMenu(process: AdminPortalRuntime): ContextMenuItem {
     subItems: [
       {
         caption: "New window",
-        action: () => process.spawnApp("AdminPortal", process.parentPid, process.currentPage()),
+        // Passing in the current page and its props
+        action: () => process.spawnApp("AdminPortal", process.parentPid, process.currentPage(), process.switchPageProps()),
         icon: "plus",
       },
       {
         caption: "Refresh",
+        // Just a force refresh with the exact same data as already present
         action: () => process.switchPage(process.currentPage(), process.switchPageProps(), true),
         icon: "rotate-cw",
       },

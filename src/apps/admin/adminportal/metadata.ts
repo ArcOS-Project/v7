@@ -32,6 +32,6 @@ export const AdminPortalApp: App = {
     component: AdminPortal as any,
   },
   glass: true,
-  elevated: true,
+  elevated: true, // Making sure the admin has to approve the opening of this app
   id: "AdminPortal",
 };

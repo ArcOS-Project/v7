@@ -28,7 +28,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       content: Dashboard,
       props: async (process) => {
         const stats = await process.admin.getStatistics();
-        const logs = (await process.admin.getServerLogs()).reverse();
+        const logs = (await process.admin.getServerLogs()).reverse(); // Newest log first
 
         return { stats, logs };
       },
@@ -135,7 +135,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       icon: "server",
       content: Filesystems,
       props: async (process) => {
-        return { users: (await process.admin.getAllUsers()).reverse() };
+        return { users: (await process.admin.getAllUsers()).reverse() }; // Newest users first
       },
       scopes: [AdminScopes.adminUsersList, AdminScopes.adminUserfsQuota],
     },
@@ -212,7 +212,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       content: Scopes,
       separator: true,
       props: async (process) => {
-        return { admins: (await process.admin.getAllUsers()).filter((u) => u.admin) };
+        return { admins: (await process.admin.getAllUsers()).filter((u) => u.admin) }; // Filter
       },
       scopes: [
         AdminScopes.adminScopesAvailable,
@@ -244,6 +244,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       content: AuditLog,
       props: async (process) => {
         return {
+          // Chunk the logs into 20 items to reduce lag, and have the newest presented first.
           audits: sliceIntoChunks((await process.admin.getAuditLog()).reverse(), 20),
           users: await process.admin.getAllUsers(),
         };
@@ -259,9 +260,9 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       content: Logs,
       scopes: [AdminScopes.adminLogs],
       props: async (process) => {
-        const logs = (await process.admin.getServerLogs()).reverse();
+        const logs = (await process.admin.getServerLogs()).reverse(); // Newest first
 
-        logs.length = 1024;
+        logs.length = 1024; // Cap off at 1024 because server logs accumulate REALLY fast
 
         return { logs };
       },
@@ -269,6 +270,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
   ],
 ]);
 
+// report's mode -> LogoTranslations -> url to corresponding logo
 export const LogoTranslations: Record<string, string> = {
   release: ReleaseLogo,
   development: DevelopmentLogo,
@@ -277,6 +279,7 @@ export const LogoTranslations: Record<string, string> = {
   unstable: UnstableLogo,
 };
 
+// TODO: MOVE TO ADMIN RESOURCE DRIVE
 export const specificAdminActions: SpecificAdminActions = {
   logs: {
     caption: "View logs",
@@ -450,6 +453,7 @@ export const specificAdminActions: SpecificAdminActions = {
   },
 };
 
+// TODO: MOVE TO ADMIN RESOURCE DRIVE
 export const globalAdminActions: SpecificAdminActions = {
   god: {
     caption: "God Admin",

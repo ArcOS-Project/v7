@@ -25,11 +25,13 @@ export class AppInstallerRuntime extends AppProcess {
   }
 
   async start() {
-    if (!(this.zip instanceof JSZip) || !this.metadata) return false;
+    if (!(this.zip instanceof JSZip) || !this.metadata) return false; // No ZIP object? Then die.
 
+    // Get the distribution service
     const distrib = this.userDaemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
 
     if (!distrib) {
+      // Should never happen unless nik fucked something up (yes, nik)
       MessageBox(
         {
           title: "Can't install package",
@@ -44,11 +46,12 @@ export class AppInstallerRuntime extends AppProcess {
       return false;
     }
 
-    this.progress = await distrib.packageInstaller(this.zip, this.metadata);
+    this.progress = await distrib.packageInstaller(this.zip, this.metadata); // Spawn the actual package installer proc
   }
 
   async render() {
     if (!this.userPreferences().security.enableThirdParty) {
+      // The user has to allow TPAs explicitly
       MessageBox(
         {
           title: "Can't install app",
@@ -83,6 +86,8 @@ export class AppInstallerRuntime extends AppProcess {
   //#region DISTRIB
 
   async revert() {
+    // I don't know how well this revert works because a package install
+    // has never really errored for me before.
     const gli = await this.userDaemon?.GlobalLoadIndicator("Rolling back changes...", this.pid);
 
     try {
@@ -102,6 +107,7 @@ export class AppInstallerRuntime extends AppProcess {
     this.spawnApp(this.metadata!.appId, +this.env.get("shell_pid"));
   }
 
+  // More of a middleman than a method imho
   async go() {
     this.progress?.go();
   }

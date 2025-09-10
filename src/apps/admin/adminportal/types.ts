@@ -13,9 +13,11 @@ export interface AdminPortalPage {
   content: Component<any>;
   hidden?: boolean;
   separator?: boolean;
+  // Only the scopes necessary for the props call
+  // should go in here, rest is handled in the UI.
   scopes?: string[];
   parent?: string;
-  props?: (process: AdminPortalRuntime) => Promise<Record<string, any>> | Record<string, any>; // = any data to be gathered before rendering
+  props?: (process: AdminPortalRuntime) => Promise<Record<string, any>> | Record<string, any>; // = any data to be gathered before rendering ('Loading <page>...' spinner)
 }
 
 export type AdminPortalPages = Map<string, AdminPortalPage>;

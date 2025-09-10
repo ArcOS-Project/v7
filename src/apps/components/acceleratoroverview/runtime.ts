@@ -32,7 +32,7 @@ export class AcceleratorOverviewRuntime extends AppProcess {
     "f12",
     ..."/[]".split(""),
     "enter",
-  ];
+  ]; // All the fucking keys that are allowed by the accelerator handlers
 
   store = Store<[string, [string[], string][]][]>(); // Record<appId, Record<Accelerator, Description>> (ugly, I know)
   apps = Store<AppStorage>();
@@ -88,7 +88,7 @@ export class AcceleratorOverviewRuntime extends AppProcess {
       if (!this.KnownAcceleratorKeys.includes(segment.toLowerCase())) continue;
 
       result.push(segment);
-      if (i + 1 != split.length) result.push("+"); // Ugly way to concatenate
+      if (i + 1 != split.length) result.push("+"); // Ugly way to concatenate (I swear can't I just join this shit?)
     }
 
     return result;

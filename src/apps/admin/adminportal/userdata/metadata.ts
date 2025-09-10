@@ -3,6 +3,8 @@ import type { App } from "$types/app";
 import { BugHuntUserDataRuntime } from "./runtime";
 import UserData from "./UserData.svelte";
 
+// I'm not even sure this is still in use, but it's a code viewer.
+// That's all. It's also stolen from BugHunt
 export const BugHuntUserDataApp: App = {
   metadata: {
     name: "User Data",
