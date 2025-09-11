@@ -2,15 +2,15 @@ import AdminPortalApp from "$apps/admin/adminportal/AdminPortal";
 import type { AppKeyCombinations } from "$types/accelerator";
 import type { AppStorage } from "$types/app";
 
-export const BuiltinAppImportPaths: string[] = [
+export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/components/acceleratoroverview/AcceleratorOverview",
   "$apps/components/appinfo/AppInfo",
   "$apps/components/appinstaller/AppInstaller",
   "$apps/components/apppreinstall/AppPreinstall",
-  "$apps/components/arcfind/ArcFind",
+  "$apps/components/arcfind/ArcFindProc",
   "$apps/components/contextmenu/ContextMenu",
   "$apps/components/driveinfo/DriveInfo",
-  "$apps/components/exit/Exit",
+  "$apps/components/exit/ExitApp",
   "$apps/components/firstrun/FirstRun",
   "$apps/components/fsnewfile/FsNewFile",
   "$apps/components/fsnewfolder/FsNewFolder",
@@ -31,41 +31,38 @@ export const BuiltinAppImportPaths: string[] = [
   "$apps/components/sharecreategui/ShareCreateGui",
   "$apps/components/sharelistgui/ShareListGui",
   "$apps/components/sharemgmtgui/ShareMgmtGui",
-  "$apps/components/shell/Shell",
-  "$apps/components/shellhost/ShellHost",
+  "$apps/components/shell/arcShell",
+  "$apps/components/shellhost/shellHost",
   "$apps/components/shortcutproperties/ShortcutProperties",
-  "$apps/components/systemshortcuts/SystemShortcuts",
+  "$apps/components/systemshortcuts/SystemShortcutsProc",
   "$apps/components/terminalwindow/TerminalWindow",
   "$apps/components/totpauthgui/TotpAuthGui",
   "$apps/components/totpsetupgui/TotpSetupGui",
-  "$apps/components/trayhost/TrayHost",
-  "$apps/components/updatenotifier/UpdateNotifier",
-  "$apps/components/wallpaper/Wallpaper",
+  "$apps/components/trayhost/TrayHostProc",
+  "$apps/components/updatenotifier/UpdateNotifierApp",
+  "$apps/components/wallpaper/wallpaper",
   "$apps/user/advsystemsettings/AdvSystemSettings",
   "$apps/user/appstore/AppStore",
   "$apps/user/arcterm/ArcTerm",
   "$apps/user/bughunt/BugHunt",
   "$apps/user/bughuntcreator/BugHuntCreator",
-  "$apps/user/calculator/Calculator",
-  "$apps/user/cod/Cod",
+  "$apps/user/calculator/calculator",
+  "$apps/user/cod/cod",
   "$apps/user/filemanager/fileManager",
-  "$apps/user/hexedit/hexEdit",
-  "$apps/user/imageviewer/imageViewer",
-  "$apps/user/lightsoff/lightsOff",
+  "$apps/user/hexedit/HexEdit",
+  "$apps/user/imageviewer/ImageViewer",
+  "$apps/user/lightsoff/LightsOff",
   "$apps/user/logging/logging",
-  "$apps/user/mediaplayer/mediaPlayer",
-  "$apps/user/messages/messages",
-  "$apps/user/pdfviewer/pdfViewer",
-  "$apps/user/processes/processes",
-  "$apps/user/qlorb/qlorb",
+  "$apps/user/mediaplayer/MediaPlayer",
+  "$apps/user/messages/Messages",
+  "$apps/user/pdfviewer/PdfViewer",
+  "$apps/user/processes/processManager",
+  "$apps/user/qlorb/QlorbApp",
   "$apps/user/settings/systemSettings",
   "$apps/user/writer/writer",
-];
-
+]);
 export const AdminApps: AppStorage = [AdminPortalApp];
-
 export const appShortcuts: [number, AppKeyCombinations][] = [];
-
 export const AppOrigins: Record<string, string> = {
   builtin: "Built-in",
   userApps: "Third-party",

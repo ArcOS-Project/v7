@@ -7,7 +7,7 @@ import { UserPaths } from "$ts/server/user/store";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import type { BugReport } from "$types/bughunt";
-import { BugReportsCreatorApp } from "../bughuntcreator/metadata";
+import { BugReportsCreatorApp } from "../bughuntcreator/BugHuntCreator";
 import { BugHuntAltMenu } from "./context";
 import { BugHuntUserDataApp } from "./userdata/metadata";
 

@@ -1,22 +1,17 @@
 //#region IMPORTS
-import { FsProgressRuntime } from "$apps/components/fsprogress/runtime";
+import type { FsProgressRuntime } from "$apps/components/fsprogress/runtime";
 import { DummyFileProgress, type FileProgressMutator, type FsProgressOperation } from "$apps/components/fsprogress/types";
-import { GlobalLoadIndicatorApp } from "$apps/components/globalloadindicator/metadata";
+import { GlobalLoadIndicatorApp } from "$apps/components/globalloadindicator/GlobalLoadIndicator";
 import { GlobalLoadIndicatorRuntime } from "$apps/components/globalloadindicator/runtime";
 import type { IconPickerData } from "$apps/components/iconpicker/types";
-import { TerminalWindowApp } from "$apps/components/terminalwindow/metadata";
+import { TerminalWindowApp } from "$apps/components/terminalwindow/TerminalWindow";
 import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
-import { AppStoreApp } from "$apps/user/appstore/metadata";
-import { FileManagerApp } from "$apps/user/filemanager/metadata";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
-import { MessagingApp } from "$apps/user/messages/metadata";
-import { ProcessesApp } from "$apps/user/processes/metadata";
-import { SystemSettings } from "$apps/user/settings/metadata";
 import DeleteUser from "$lib/Daemon/DeleteUser.svelte";
 import SafeModeNotice from "$lib/Daemon/SafeModeNotice.svelte";
 import { AppProcess } from "$ts/apps/process";
 import { ApplicationStorage } from "$ts/apps/storage";
-import { AdminApps, BuiltinAppImportPaths } from "$ts/apps/store";
+import { AdminApps, BuiltinAppImportPathAbsolutes } from "$ts/apps/store";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { bestForeground, darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 import { MessageBox } from "$ts/dialog";
@@ -53,6 +48,7 @@ import { tryJsonParse } from "$ts/json";
 import { KernelStateHandler } from "$ts/kernel/getters";
 import { getKMod } from "$ts/kernel/module";
 import { ArcBuild } from "$ts/metadata/build";
+import { KernelStack } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import type { ProtocolServiceProcess } from "$ts/proto";
 import { ServiceHost } from "$ts/services";
@@ -92,7 +88,6 @@ import { DefaultFileDefinitions } from "./assoc/store";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
-import { KernelStack } from "$ts/process/handler";
 //#endregion
 
 export class UserDaemon extends Process {
@@ -1567,9 +1562,11 @@ export class UserDaemon extends Process {
   async initAppStorage(storage: ApplicationStorage) {
     const builtins: App[] = [];
 
-    for (const path of BuiltinAppImportPaths) {
+    for (const path in BuiltinAppImportPathAbsolutes) {
       try {
-        builtins.push((await import(path)).default);
+        const mod = await BuiltinAppImportPathAbsolutes[path]();
+        builtins.push((mod as any).default);
+        console.log(builtins);
       } catch {
         this.Log(`Failed to load app ${path}: The file could not be found`);
       }
@@ -2022,7 +2019,7 @@ export class UserDaemon extends Process {
       };
 
     if (!preferences.pinnedApps?.length)
-      preferences.pinnedApps = ["$", FileManagerApp.id, MessagingApp.id, AppStoreApp.id, SystemSettings.id, ProcessesApp.id];
+      preferences.pinnedApps = ["$", "fileManager", "Messages", "AppStore", "systemSettings", "processManager"];
 
     const result = applyDefaults<UserPreferences>(preferences, {
       ...DefaultUserPreferences,

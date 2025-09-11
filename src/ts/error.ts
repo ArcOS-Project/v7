@@ -1,19 +1,9 @@
 import * as stackTraceParser from "stacktrace-parser";
 import { __Console__ } from "./console";
-//
-// !! DO NOT MOVE THE BELOW LINE !!
 import { Crash } from "./crash";
-// THIS IMPORT NEEDS TO BE BELOW THE
-// CRASH ONE OR ARCOS WON'T LOAD DUE TO CIRCULAR IMPORTS
-import { ArcOSApp } from "$apps/arcos";
-// !! DO NOT MOVE THE ABOVE TWO IMPORTS !!
-//
 import { WaveKernel } from "./kernel";
-import { Environment } from "./kernel/env";
 import { Log } from "./kernel/logging";
-import { getKMod } from "./kernel/module";
 import { ProcessHandler } from "./process/handler";
-import { UserDaemon } from "./server/user/daemon";
 
 export function handleGlobalErrors() {
   let LOCKED = false;
@@ -46,28 +36,7 @@ export function handleGlobalErrors() {
       __Console__.warn(e.reason);
     }
 
-    // Crash(e);
-    const stack = getKMod<ProcessHandler>("stack");
-    const env = getKMod<Environment>("env");
-    const daemon = stack.getProcess<UserDaemon>(+env.get("userdaemon_pid"));
-    const lastInteract = stack.renderer?.lastInteract;
-
-    if (daemon && lastInteract) {
-      stack.BUSY = false;
-      stack.dispatch.dispatch("stack-not-busy");
-      daemon.spawnApp(
-        "OopsNotifier",
-        daemon.pid,
-        lastInteract?.app?.data || ArcOSApp,
-        e instanceof PromiseRejectionEvent ? e.reason : e,
-        lastInteract
-      );
-      stack.kill(lastInteract?.pid, true);
-
-      LOCKED = false;
-    } else {
-      Crash(e);
-    }
+    Crash(e);
 
     return false;
   }
@@ -86,19 +55,33 @@ export function handleGlobalErrors() {
 }
 
 export function interceptTpaErrors(stack: string, e: Error): boolean {
+  const FPA_TEST_REGEXP = /http(s|):\/\/[a-zA-Z.0-9\/]+\/assets\/(?<appId>[a-zA-Z]+)-[a-f0-9A-F\-_]+\.js/gm;
   const parsed = stackTraceParser.parse(stack);
   const isTpa = !!parsed[0]?.file?.includes(`localhost:3128`) || !!parsed[0]?.file?.includes(`/tpa/`);
+  const isFpa = parsed[0]?.file && FPA_TEST_REGEXP.test(parsed[0].file);
   const handler = WaveKernel?.get()?.getModule<ProcessHandler>?.("stack", true);
   const renderer = handler?.renderer;
 
-  if (isTpa && renderer && renderer.lastInteract && parsed[0]?.file?.includes(`/${renderer.lastInteract.app.id}@`)) {
-    Log("interceptTpaErrors", `Not crashing for ${e instanceof PromiseRejectionEvent ? e.reason : e}: source is a TPA`);
-    handler.BUSY = false;
-    handler.dispatch.dispatch("stack-not-busy");
-    renderer.notifyCrash(renderer.lastInteract.app.data, e, renderer.lastInteract);
-    handler.kill(renderer.lastInteract.pid);
-    renderer.lastInteract = undefined;
+  if (renderer?.lastInteract) {
+    if (isTpa && parsed[0]?.file?.includes(`/${renderer.lastInteract.app.id}@`)) {
+      Log("interceptTpaErrors", `Not crashing for ${e instanceof PromiseRejectionEvent ? e.reason : e}: source is a TPA`);
+      handler.BUSY = false;
+      handler.dispatch.dispatch("stack-not-busy");
+      renderer.notifyCrash(renderer.lastInteract.app.data, e, renderer.lastInteract);
+      handler.kill(renderer.lastInteract.pid);
+      renderer.lastInteract = undefined;
+    } else if (!isTpa && isFpa) {
+      const parsedAppId = parsed[0]?.file?.match(FPA_TEST_REGEXP)?.groups?.appId;
+
+      if (parsedAppId) {
+        handler.BUSY = false;
+        handler.dispatch.dispatch("stack-not-busy");
+        renderer.notifyCrash(renderer.lastInteract.app.data, e, renderer.lastInteract);
+        handler.kill(renderer.lastInteract.pid);
+        renderer.lastInteract = undefined;
+      }
+    }
   }
 
-  return isTpa;
+  return !!(isTpa || isFpa);
 }

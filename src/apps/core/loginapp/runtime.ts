@@ -1,6 +1,6 @@
-import { FirstRunApp } from "$apps/components/firstrun/metadata";
+import { FirstRunApp } from "$apps/components/firstrun/FirstRun";
 import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
-import { TotpAuthGuiApp } from "$apps/components/totpauthgui/metadata";
+import { TotpAuthGuiApp } from "$apps/components/totpauthgui/TotpAuthGui";
 import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
 import { ProfilePictures } from "$ts/images/pfp";
 import { tryJsonParse } from "$ts/json";

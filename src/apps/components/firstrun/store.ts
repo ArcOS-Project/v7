@@ -1,4 +1,3 @@
-import { AppStoreApp } from "$apps/user/appstore/metadata";
 import { join } from "$ts/fs/util";
 import { UserPaths } from "$ts/server/user/store";
 import type { ArcShortcut } from "$types/shortcut";
@@ -168,7 +167,7 @@ export const FirstRunShortcuts: Record<string, ArcShortcut> = {
     icon: "AppStoreIcon",
     name: "App Store",
     type: "app",
-    target: AppStoreApp.id,
+    target: "AppStore",
   },
   [join(UserPaths.Documents, "pictures.arclnk")]: {
     icon: "WallpapersFolderIcon",

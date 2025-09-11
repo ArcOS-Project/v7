@@ -1,5 +1,5 @@
 import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
-import { OopsNotifierApp } from "$apps/components/oopsnotifier/metadata";
+import { OopsNotifierApp } from "$apps/components/oopsnotifier/OopsNotifier";
 import { OopsNotifierRuntime } from "$apps/components/oopsnotifier/runtime";
 import { contextProps } from "$ts/context/actions.svelte";
 import { BETA } from "$ts/env";

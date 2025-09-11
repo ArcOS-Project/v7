@@ -1,4 +1,4 @@
-import { MessageBoxApp } from "$apps/components/messagebox/metadata";
+import { MessageBoxApp } from "$apps/components/messagebox/messageBox";
 import { MessageBoxRuntime } from "$apps/components/messagebox/runtime";
 import type { ConfirmationData, MessageBoxData } from "$types/messagebox";
 import { getKMod } from "./kernel/module";

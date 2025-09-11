@@ -27,11 +27,11 @@ export class ApplicationStorage extends BaseService {
   }
 
   async start() {
-    this.host.daemon.initAppStorage(this);
+    await this.host.daemon.initAppStorage(this);
 
     await this.refresh();
 
-    const { SqeletonApp } = await import("$apps/user/sqeleton/metadata");
+    const { SqeletonApp } = await import("$apps/user/sqeleton/Sqeleton");
 
     await this.loadApp(SqeletonApp);
   }
@@ -73,6 +73,24 @@ export class ApplicationStorage extends BaseService {
     this.injectedStore.set(app.id, app);
 
     return app;
+  }
+
+  async loadAppModuleFile(path: string) {
+    try {
+      const module = await import(path);
+      const app = module?.default as App;
+
+      if (!app) return false;
+      if (this.getAppSynchronous(app.id)) return false;
+
+      this.loadApp(app);
+
+      await this.refresh();
+
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   injected() {

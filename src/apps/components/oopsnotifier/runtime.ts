@@ -3,7 +3,6 @@ import { ApplicationStorage } from "$ts/apps/storage";
 import { KernelStack } from "$ts/process/handler";
 import type { App, AppProcessData } from "$types/app";
 import { parse } from "stacktrace-parser";
-import { OopsStackTracerApp } from "../oopsstacktracer/metadata";
 import { OopsStackTracerRuntime } from "../oopsstacktracer/runtime";
 import type { ParsedStackFrame, ParsedStackUrl } from "./types";
 
@@ -73,21 +72,7 @@ export class OopsNotifierRuntime extends AppProcess {
   //#region ACTIONS
 
   async details() {
-    const proc = await KernelStack().spawn<OopsStackTracerRuntime>(
-      OopsStackTracerRuntime,
-      undefined,
-      this.userDaemon?.userInfo?._id,
-      +this.env.get("shell_pid"),
-      {
-        data: { ...OopsStackTracerApp, overlay: true },
-        id: OopsStackTracerApp.id,
-        desktop: undefined,
-      },
-      this.data,
-      this.exception,
-      this.process,
-      this.stackFrames
-    );
+    const proc = await this.userDaemon?.spawnApp("OopsStackTracer", +this.env.get("shell_pid"), this.data, this.exception);
 
     if (!proc) throw new Error("OopsStackTracer: invocation failed");
   }
