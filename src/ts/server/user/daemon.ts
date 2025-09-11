@@ -1559,14 +1559,16 @@ export class UserDaemon extends Process {
     return this.serviceHost?.getService<ApplicationStorage>("AppStorage");
   }
 
-  async initAppStorage(storage: ApplicationStorage) {
+  async initAppStorage(storage: ApplicationStorage, cb: (app: App) => void) {
     const builtins: App[] = [];
 
     for (const path in BuiltinAppImportPathAbsolutes) {
       try {
         const mod = await BuiltinAppImportPathAbsolutes[path]();
-        builtins.push((mod as any).default);
-        console.log(builtins);
+        const app = (mod as any).default;
+
+        builtins.push(app);
+        cb(app);
       } catch {
         this.Log(`Failed to load app ${path}: The file could not be found`);
       }

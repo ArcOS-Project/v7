@@ -26,16 +26,6 @@ export class ApplicationStorage extends BaseService {
     });
   }
 
-  async start() {
-    await this.host.daemon.initAppStorage(this);
-
-    await this.refresh();
-
-    const { SqeletonApp } = await import("$apps/user/sqeleton/Sqeleton");
-
-    await this.loadApp(SqeletonApp);
-  }
-
   //#endregion
 
   loadOrigin(id: string, store: AppStoreCb) {

@@ -18,6 +18,7 @@ import { Terminal } from "xterm";
 import { ArcTerminal } from "..";
 import { Readline } from "../readline/readline";
 import { BRRED, RESET } from "../store";
+import { Sleep } from "$ts/sleep";
 
 export class TerminalMode extends Process {
   userDaemon?: UserDaemon;
@@ -146,6 +147,11 @@ export class TerminalMode extends Process {
       this.rl?.println("Connecting global dispatch");
       await userDaemon.activateGlobalDispatch();
 
+      this.rl?.println("Loading apps");
+      await userDaemon.initAppStorage(userDaemon.appStorage()!, (app) => {
+        this.rl?.println(`Loaded ${app.metadata.name}`);
+      });
+
       this.rl?.println("Starting drive notifier watcher");
       userDaemon.startDriveNotifierWatcher();
 
@@ -169,6 +175,10 @@ export class TerminalMode extends Process {
 
       this.env.set("currentuser", username);
       this.env.set("shell_pid", undefined);
+
+      await Sleep(10);
+
+      this.term?.clear();
 
       this.arcTerm = await KernelStack().spawn<ArcTerminal>(
         ArcTerminal,
