@@ -61,6 +61,8 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/user/settings/systemSettings",
   "$apps/user/writer/writer",
 ]);
+console.log(BuiltinAppImportPathAbsolutes);
+
 export const AdminApps: AppStorage = [AdminPortalApp];
 export const appShortcuts: [number, AppKeyCombinations][] = [];
 export const AppOrigins: Record<string, string> = {

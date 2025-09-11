@@ -1,15 +1,15 @@
-import "$css/apps/core/bootscreen.css";
-import { ComponentIcon } from "$ts/images/general";
+import "$css/apps/core/loginapp.css";
+import { PasswordIcon } from "$ts/images/general";
 import type { App } from "../../../types/app";
-import Boot from "./Boot.svelte";
-import { BootScreenRuntime } from "./runtime";
+import Login from "./LoginApp.svelte";
+import { LoginAppRuntime } from "./runtime";
 
-export const BootScreen: App = {
+export const LoginApp: App = {
   metadata: {
-    name: "Boot App",
+    name: "LogonUI",
     author: "Izaak Kuipers",
     version: "9.0.0",
-    icon: ComponentIcon,
+    icon: PasswordIcon,
     appGroup: "coreApps",
   },
   size: { w: NaN, h: NaN },
@@ -29,11 +29,13 @@ export const BootScreen: App = {
     close: false,
   },
   assets: {
-    component: Boot as any,
-    runtime: BootScreenRuntime,
+    component: Login as any,
+    runtime: LoginAppRuntime,
   },
   core: true,
   hidden: true,
   vital: true,
-  id: "bootScreen",
+  id: "loginApp",
 };
+
+export default LoginApp;

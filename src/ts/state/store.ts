@@ -1,6 +1,3 @@
-import { BootScreen } from "$apps/core/bootscreen/metadata";
-import { InitialSetupWizard } from "$apps/core/initialsetup/metadata";
-import { LoginApp } from "$apps/core/loginapp/metadata";
 import TurnedOff from "$state/turnedoff/render";
 import ArcTermHtml from "../../state/arcterm/arcterm.html?url";
 import ArcTermRender from "../../state/arcterm/render";
@@ -13,18 +10,28 @@ import LicenseDeclinedRender from "../../state/licensedeclined/render";
 import ServerDownRender from "../../state/serverdown/render";
 import ServerDownHtml from "../../state/serverdown/serverdown.html?url";
 import TurnedOffHtml from "../../state/turnedoff/turnedoff.html?url";
-import type { State } from "../../types/state";
+import type { AppModuleLoader, State } from "../../types/state";
+
+const globs = Object.values(
+  import.meta.glob([
+    "$apps/core/bootscreen/bootScreen",
+    "$apps/core/initialsetup/initialSetupWizard",
+    "$apps/core/loginapp/loginApp",
+  ])
+);
+
+console.log(globs);
 
 export const States: Record<string, State> = {
   boot: {
     name: "Boot",
     identifier: "boot",
-    app: BootScreen,
+    appModule: globs[0] as AppModuleLoader,
   },
   login: {
     name: "Login",
     identifier: "login",
-    app: LoginApp,
+    appModule: globs[2] as AppModuleLoader,
   },
   serverdown: {
     name: "Server down",
@@ -53,7 +60,7 @@ export const States: Record<string, State> = {
   initialSetup: {
     name: "Initial Setup Wizard",
     identifier: "initialSetup",
-    app: InitialSetupWizard,
+    appModule: globs[1] as AppModuleLoader,
   },
   turnedOff: {
     name: "Turned off",

@@ -1,15 +1,15 @@
-import "$css/apps/core/initialsetup.css";
-import { WaveIcon } from "$ts/images/general";
+import "$css/apps/core/bootscreen.css";
+import { ComponentIcon } from "$ts/images/general";
 import type { App } from "../../../types/app";
-import InitialSetup from "./InitialSetup.svelte";
-import { InitialSetupRuntime } from "./runtime";
+import Boot from "./Boot.svelte";
+import { BootScreenRuntime } from "./runtime";
 
-export const InitialSetupWizard: App = {
+export const BootScreen: App = {
   metadata: {
-    name: "Initial Setup Wizard",
+    name: "Boot App",
     author: "Izaak Kuipers",
-    version: "7.0.0",
-    icon: WaveIcon,
+    version: "9.0.0",
+    icon: ComponentIcon,
     appGroup: "coreApps",
   },
   size: { w: NaN, h: NaN },
@@ -29,11 +29,13 @@ export const InitialSetupWizard: App = {
     close: false,
   },
   assets: {
-    component: InitialSetup as any,
-    runtime: InitialSetupRuntime,
+    component: Boot as any,
+    runtime: BootScreenRuntime,
   },
   core: true,
   hidden: true,
   vital: true,
-  id: "initialSetupWizard",
+  id: "bootScreen",
 };
+
+export default BootScreen;

@@ -61,7 +61,7 @@ export class StateHandler extends Process {
     htmlLoader.innerHTML = "";
     cssLoader.href = "";
 
-    if (!data.app && !data.html) {
+    if (!data.appModule && !data.html) {
       throw new StateError(`${id}: Tried to load a state without any valid code.`);
     }
 
@@ -82,7 +82,7 @@ export class StateHandler extends Process {
       appRenderer.querySelector(".virtual-desktop-container")?.remove();
     }
 
-    if (data.app) {
+    if (data.appModule) {
       await this.loadStateAsApp(data, props);
     } else {
       await this.loadStateNormally(id, data, htmlLoader, cssLoader);
@@ -96,7 +96,7 @@ export class StateHandler extends Process {
 
     this.currentState = id;
 
-    if (!data.app) {
+    if (!data.appModule) {
       try {
         if (!data.render) {
           throw new StateError(`${id}: No render function`);
@@ -140,9 +140,14 @@ export class StateHandler extends Process {
 
     const stack = getKMod<ProcessHandler>("stack");
 
-    if (!data.app) return;
+    if (!data.appModule) return;
 
-    const { app } = data;
+    const mod = await data.appModule();
+
+    console.log(mod);
+    const app = mod.default;
+
+    console.log(app);
 
     const proc = await stack.spawn<AppProcess>(
       app.assets.runtime,

@@ -1,15 +1,15 @@
-import "$css/apps/core/loginapp.css";
-import { PasswordIcon } from "$ts/images/general";
+import "$css/apps/core/initialsetup.css";
+import { WaveIcon } from "$ts/images/general";
 import type { App } from "../../../types/app";
-import Login from "./LoginApp.svelte";
-import { LoginAppRuntime } from "./runtime";
+import InitialSetup from "./InitialSetup.svelte";
+import { InitialSetupRuntime } from "./runtime";
 
-export const LoginApp: App = {
+export const InitialSetupWizard: App = {
   metadata: {
-    name: "LogonUI",
+    name: "Initial Setup Wizard",
     author: "Izaak Kuipers",
-    version: "9.0.0",
-    icon: PasswordIcon,
+    version: "7.0.0",
+    icon: WaveIcon,
     appGroup: "coreApps",
   },
   size: { w: NaN, h: NaN },
@@ -29,11 +29,13 @@ export const LoginApp: App = {
     close: false,
   },
   assets: {
-    component: Login as any,
-    runtime: LoginAppRuntime,
+    component: InitialSetup as any,
+    runtime: InitialSetupRuntime,
   },
   core: true,
   hidden: true,
   vital: true,
-  id: "loginApp",
+  id: "initialSetupWizard",
 };
+
+export default InitialSetupWizard;
