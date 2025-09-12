@@ -4,7 +4,7 @@
   import { GoodStatusIcon } from "$ts/images/status";
   import QRCode from "@castlenine/svelte-qrcode";
   import { onMount } from "svelte";
-  import Input from "../totpauthgui/TotpAuthGui/Input.svelte";
+  import Input from "./TotpSetupGui/Input.svelte";
   import type { TotpSetupGuiRuntime } from "./runtime";
 
   const { process }: { process: TotpSetupGuiRuntime } = $props();

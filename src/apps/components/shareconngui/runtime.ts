@@ -1,4 +1,3 @@
-import { FileManagerRuntime } from "$apps/user/filemanager/runtime";
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import type { ShareManager } from "$ts/fs/shares";
@@ -50,7 +49,7 @@ export class ShareConnGuiRuntime extends AppProcess {
       const path = `${result.uuid}:/`;
       const parent = KernelStack().getProcess(this.parentPid);
 
-      if (parent && parent instanceof FileManagerRuntime) {
+      if (parent && this.userDaemon?.ParentIs(this, "fileManager")) {
         // Is the parent a file manager? Then navigate it instead of spawning one
         const dispatch = KernelStack().ConnectDispatch(this.parentPid);
         dispatch?.dispatch("navigate", path);

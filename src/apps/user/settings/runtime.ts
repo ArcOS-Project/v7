@@ -13,8 +13,8 @@ import {
   WaveIcon,
 } from "$ts/images/general";
 import { GoodStatusIcon } from "$ts/images/status";
-import { KernelStack } from "$ts/process/handler";
 import { ArcLicense } from "$ts/metadata/license";
+import { KernelStack } from "$ts/process/handler";
 import { Backend } from "$ts/server/axios";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";

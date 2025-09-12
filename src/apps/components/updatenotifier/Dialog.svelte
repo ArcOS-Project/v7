@@ -1,8 +1,8 @@
 <script lang="ts">
-  import MarkdownRenderingComponent from "$lib/MarkdownRenderingComponent.svelte";
   import { ArcOSVersion } from "$ts/env";
   import { ChangeLogs } from "$ts/metadata/changelog";
   import { onMount } from "svelte";
+  import SvelteMarkdown from "svelte-markdown";
 
   let source = $state<string>("");
 
@@ -11,8 +11,8 @@
   });
 </script>
 
-<div class="md">
-  <MarkdownRenderingComponent {source} />
+<div class="md markdown-body">
+  <SvelteMarkdown {source} />
 </div>
 
 <style scoped>

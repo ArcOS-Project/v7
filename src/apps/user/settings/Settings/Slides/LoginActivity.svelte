@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { groupByTimeFrame } from "$ts/group";
   import { SecurityLowIcon } from "$ts/images/general";
   import { TimeFrames } from "$ts/server/user/store";
   import type { LoginActivity } from "$types/activity";
@@ -7,6 +6,7 @@
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
   import Activity from "./LoginActivity/Activity.svelte";
+  import { groupByTimeFrame } from "$ts/util";
 
   const { process }: { process: SettingsRuntime } = $props();
   const { userDaemon } = process;

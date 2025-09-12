@@ -1,11 +1,11 @@
 <script lang="ts">
-  import MarkdownRenderingComponent from "$lib/MarkdownRenderingComponent.svelte";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import UserLink from "$lib/UserLink.svelte";
   import { ProfilePictures } from "$ts/images/pfp";
   import type { PublicUserInfo } from "$types/user";
   import dayjs from "dayjs";
   import { onMount } from "svelte";
+  import SvelteMarkdown from "svelte-markdown";
   import type { MessagingAppRuntime } from "../../runtime";
 
   const { process }: { process: MessagingAppRuntime } = $props();
@@ -49,8 +49,8 @@
         </p>
       </div>
     </div>
-    <p class="message-body">
-      <MarkdownRenderingComponent source={$message.body} />
+    <p class="message-body markdown-body">
+      <SvelteMarkdown source={$message.body} />
     </p>
   {/if}
 </div>

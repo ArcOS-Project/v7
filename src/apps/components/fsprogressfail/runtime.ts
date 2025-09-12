@@ -1,19 +1,19 @@
 import { AppProcess } from "$ts/apps/process";
 import type { AppProcessData } from "$types/app";
-import { FsProgressRuntime } from "../fsprogress/runtime";
+import type { FsProgressProc } from "../fsprogress/types";
 
 export class FsProgressFailRuntime extends AppProcess {
-  prog?: FsProgressRuntime;
+  prog?: FsProgressProc;
   errors: string[] = [];
   icon: string = "";
   title: string = "";
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, app: AppProcessData, prog: FsProgressRuntime) {
+  constructor(pid: number, parentPid: number, app: AppProcessData, prog: FsProgressProc) {
     super(pid, parentPid, app);
 
-    if (prog && prog instanceof FsProgressRuntime) this.prog = prog;
+    if (prog && prog?.app && prog?.Progress?.()) this.prog = prog;
   }
 
   async start() {

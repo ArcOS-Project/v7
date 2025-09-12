@@ -1,4 +1,3 @@
-import { FileManagerRuntime } from "$apps/user/filemanager/runtime";
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import type { ShareManager } from "$ts/fs/shares";
@@ -125,7 +124,7 @@ export class ShareListGuiRuntime extends AppProcess {
     const path = `${drive.uuid}:/`;
     const parent = KernelStack().getProcess(this.parentPid);
 
-    if (parent && parent instanceof FileManagerRuntime) {
+    if (parent && this.userDaemon?.ParentIs(this, "fileManager")) {
       // In case the parent is a file manager; navigate it instead
       const dispatch = KernelStack().ConnectDispatch(this.parentPid);
       dispatch?.dispatch("navigate", path);

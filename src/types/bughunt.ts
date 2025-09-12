@@ -1,3 +1,4 @@
+import type { AppProcess } from "$ts/apps/process";
 import type { LogItem } from "./logging";
 
 export interface BugReport {
@@ -70,4 +71,8 @@ export interface ReportOptions {
   noLogs?: boolean;
   anonymous?: boolean;
   public?: boolean;
+}
+
+export interface BugHuntProc extends AppProcess {
+  invalidateCaches: (restoreSelected?: boolean) => Promise<void>;
 }

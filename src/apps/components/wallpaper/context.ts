@@ -1,4 +1,3 @@
-import type { SettingsRuntime } from "$apps/user/settings/runtime";
 import { MessageBox } from "$ts/dialog";
 import { getParentDirectory, join } from "$ts/fs/util";
 import { FileManagerIcon, ProcessManagerIcon, SettingsIcon } from "$ts/images/apps";
@@ -305,7 +304,7 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
         caption: "Personalize...",
         image: PersonalizationIcon,
         action: async () => {
-          await runtime.spawnApp<SettingsRuntime>("systemSettings", shellPid(), "visuals");
+          await runtime.spawnApp("systemSettings", shellPid(), "visuals");
         },
       },
     ],

@@ -1,5 +1,4 @@
-import { groupByTimeFrame } from "$ts/group";
-import { sortByKey } from "$ts/util";
+import { groupByTimeFrame, sortByKey } from "$ts/util";
 import type { StoreItem } from "$types/package";
 import Everything from "./Pages/Everything.svelte";
 import Home from "./Pages/Home.svelte";

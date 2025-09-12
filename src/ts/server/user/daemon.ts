@@ -1,6 +1,10 @@
 //#region IMPORTS
-import type { FsProgressRuntime } from "$apps/components/fsprogress/runtime";
-import { DummyFileProgress, type FileProgressMutator, type FsProgressOperation } from "$apps/components/fsprogress/types";
+import {
+  DummyFileProgress,
+  type FileProgressMutator,
+  type FsProgressOperation,
+  type FsProgressProc,
+} from "$apps/components/fsprogress/types";
 import { GlobalLoadIndicatorApp } from "$apps/components/globalloadindicator/GlobalLoadIndicator";
 import { GlobalLoadIndicatorRuntime } from "$apps/components/globalloadindicator/runtime";
 import type { IconPickerData } from "$apps/components/iconpicker/types";
@@ -88,6 +92,7 @@ import { DefaultFileDefinitions } from "./assoc/store";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
+import { ArcMode } from "$ts/metadata/mode";
 //#endregion
 
 export class UserDaemon extends Process {
@@ -875,7 +880,7 @@ export class UserDaemon extends Process {
         errors: [],
       })
     );
-    let process: FsProgressRuntime | undefined;
+    let process: FsProgressProc | undefined;
     let shown = false;
 
     const Log = (m: string) => /*this.Log(`FileProgress::${uuid}: ${m}`)*/ m;
@@ -888,11 +893,11 @@ export class UserDaemon extends Process {
       shown = true;
 
       if (!parentPid) {
-        process = await this.spawnApp<FsProgressRuntime>("FsProgress", 0, progress);
+        process = await this.spawnApp<FsProgressProc>("FsProgress", 0, progress);
 
         if (typeof process == "string") return DummyFileProgress;
       } else {
-        process = await this.spawnOverlay<FsProgressRuntime>("FsProgress", parentPid, progress);
+        process = await this.spawnOverlay<FsProgressProc>("FsProgress", parentPid, progress);
 
         if (typeof process == "string") return DummyFileProgress;
       }
@@ -1565,7 +1570,13 @@ export class UserDaemon extends Process {
     for (const path in BuiltinAppImportPathAbsolutes) {
       try {
         const mod = await BuiltinAppImportPathAbsolutes[path]();
-        const app = (mod as any).default;
+        const app = (mod as any).default as App;
+
+        if (app._internalSysVer || app._internalImportPath)
+          throw new Error(`Tried to load dubious built-in app '${app.id}': runtime-level properties set before runtime`);
+
+        app._internalSysVer = `v${ArcOSVersion}-${ArcMode()}_${ArcBuild()}}`;
+        app._internalImportPath = path;
 
         builtins.push(app);
         cb(app);
@@ -2926,6 +2937,14 @@ export class UserDaemon extends Process {
         if (id === uuid) r(data.defaultIcon);
       });
     });
+  }
+
+  ParentIs(proc: AppProcess, appId: string) {
+    const targetAppInstances = KernelStack()
+      .renderer?.getAppInstances(appId)
+      .map((p) => p.pid);
+
+    return targetAppInstances?.includes(proc.parentPid);
   }
 
   //#endregion

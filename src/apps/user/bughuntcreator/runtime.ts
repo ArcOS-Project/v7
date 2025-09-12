@@ -4,12 +4,12 @@ import { MessageBox } from "$ts/dialog";
 import { KernelStack } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
-import { BugHuntRuntime } from "../bughunt/runtime";
+import type { BugHuntProc } from "$types/bughunt";
 import DataPrivacy from "./Creator/DataPrivacy.svelte";
 import type { BugHuntCreatorOptions } from "./types";
 
 export class BugHuntCreatorRuntime extends AppProcess {
-  parent: BugHuntRuntime | undefined;
+  parent: BugHuntProc | undefined;
   title = Store<string>();
   body = Store<string>();
   loading = Store<boolean>();
@@ -29,8 +29,11 @@ export class BugHuntCreatorRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     const parent = KernelStack().getProcess(this.parentPid);
+    const bugHuntInstances = KernelStack()
+      .renderer?.getAppInstances("BugHunt")
+      .map((p) => p.pid);
 
-    if (parent && parent instanceof BugHuntRuntime) this.parent = parent;
+    if (parent && bugHuntInstances?.includes(parent.pid)) this.parent = parent as any;
 
     if (title && body) {
       this.title.set(title);

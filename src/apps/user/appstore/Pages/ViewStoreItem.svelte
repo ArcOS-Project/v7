@@ -1,9 +1,9 @@
 <script lang="ts">
-  import MarkdownRenderingComponent from "$lib/MarkdownRenderingComponent.svelte";
   import { StoreItemBanner, StoreItemIcon } from "$ts/distrib/util";
   import { formatBytes } from "$ts/fs/util";
   import type { StoreItem } from "$types/package";
   import { onMount } from "svelte";
+  import SvelteMarkdown from "svelte-markdown";
   import PackageInstallAction from "../AppStore/PackageInstallAction.svelte";
   import type { AppStoreRuntime } from "../runtime";
   import Screenshots from "./ViewStoreItem/Screenshots.svelte";
@@ -59,7 +59,9 @@
       </p>
     </div>
   {/if}
-  <MarkdownRenderingComponent source={readme} />
+  <div class="markdown-body">
+    <SvelteMarkdown source={readme} />
+  </div>
 {:else}
   <div class="empty">
     <span class="lucide icon-circle-slash"></span>
