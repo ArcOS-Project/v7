@@ -15,7 +15,7 @@ import DeleteUser from "$lib/Daemon/DeleteUser.svelte";
 import SafeModeNotice from "$lib/Daemon/SafeModeNotice.svelte";
 import { AppProcess } from "$ts/apps/process";
 import { ApplicationStorage } from "$ts/apps/storage";
-import { AdminApps, BuiltinAppImportPathAbsolutes } from "$ts/apps/store";
+import { BuiltinAppImportPathAbsolutes } from "$ts/apps/store";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { bestForeground, darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 import { MessageBox } from "$ts/dialog";
@@ -188,8 +188,9 @@ export class UserDaemon extends Process {
 
     if (!this.userInfo.admin) return;
     const appStore = this.appStorage()!;
+    const adminPortal = (await (await import("$apps/admin/adminportal/AdminPortal")).default) as App;
 
-    appStore.loadOrigin("admin", () => AdminApps);
+    appStore.loadOrigin("admin", () => [adminPortal]);
     await appStore.refresh();
 
     const proto = this.serviceHost?.getService<ProtocolServiceProcess>("ProtoService");

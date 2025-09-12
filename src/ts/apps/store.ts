@@ -1,6 +1,4 @@
-import AdminPortalApp from "$apps/admin/adminportal/AdminPortal";
 import type { AppKeyCombinations } from "$types/accelerator";
-import type { AppStorage } from "$types/app";
 
 export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/components/acceleratoroverview/AcceleratorOverview",
@@ -62,7 +60,6 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/user/writer/writer",
 ]);
 
-export const AdminApps: AppStorage = [AdminPortalApp];
 export const appShortcuts: [number, AppKeyCombinations][] = [];
 export const AppOrigins: Record<string, string> = {
   builtin: "Built-in",

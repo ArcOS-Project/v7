@@ -1,5 +1,9 @@
 import { __Console__ } from "$ts/console";
 import { ArcOSVersion, SetCurrentKernel } from "$ts/env";
+import { getBuild } from "$ts/metadata/build";
+import { ChangeLogs } from "$ts/metadata/changelog";
+import { getLicense } from "$ts/metadata/license";
+import { getMode } from "$ts/metadata/mode";
 import type { ProcessHandlerType } from "$types/kernel";
 import { LogLevel, ShortLogLevelCaptions, type LogItem } from "../../types/logging";
 import { handleGlobalErrors } from "../error";
@@ -60,6 +64,11 @@ export class WaveKernel {
     this.Log(`KERNEL`, `Called _init`);
 
     // KERNEL AREA STARTS HERE
+
+    await getMode();
+    await getBuild();
+    await getLicense();
+    await ChangeLogs.refreshChangelogs();
 
     this.Log(`ArcOS`, `***** [v7 -> ArcOS InDev v${ArcOSVersion}-${this.ARCOS_MODE}_${this.ARCOS_BUILD}] *****`);
 

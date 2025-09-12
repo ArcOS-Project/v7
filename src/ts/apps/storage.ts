@@ -67,7 +67,7 @@ export class ApplicationStorage extends BaseService {
 
   async loadAppModuleFile(path: string) {
     try {
-      const module = await import(path);
+      const module = await import(/* @vite-ignore */ path);
       const app = module?.default as App;
 
       if (!app) return false;
