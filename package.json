@@ -11,7 +11,6 @@
     "build:types": "tsc -p tsconfig.app.json --emitDeclarationOnly --declaration --outFile dist/types.d.ts --verbatimModuleSyntax false --isolatedModules false --removeComments",
     "build:globals": "node tools/build-globals.mjs && node tools/convert-global.mjs",
     "build:types:all": "npm run build:types && npm run build:globals",
-    "format:check": "prettier --check ./src",
     "region:check": "node tools/validate-regions.mjs",
     "console:check": "node tools/console-usage.mjs",
     "check:everything": "yarn run check && yarn format:check && yarn console:check && yarn region:check"

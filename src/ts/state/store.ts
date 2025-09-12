@@ -20,8 +20,6 @@ const globs = Object.values(
   ])
 );
 
-console.log(globs);
-
 export const States: Record<string, State> = {
   boot: {
     name: "Boot",

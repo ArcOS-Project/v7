@@ -143,12 +143,7 @@ export class StateHandler extends Process {
     if (!data.appModule) return;
 
     const mod = await data.appModule();
-
-    console.log(mod);
     const app = mod.default;
-
-    console.log(app);
-
     const proc = await stack.spawn<AppProcess>(
       app.assets.runtime,
       undefined,

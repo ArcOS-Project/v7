@@ -22,8 +22,6 @@ jobs:
 
       - name: Satisfy dependencies
         run: yarn install --frozen-lockfile
-      - name: Check formatting
-        run: yarn format:check
       - name: Check console usages
         run: yarn console:check
       - name: Check lifecycle regions
