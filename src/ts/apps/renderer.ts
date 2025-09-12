@@ -669,7 +669,7 @@ export class AppRenderer extends Process {
   }
 
   async notifyCrash(data: App, e: Error, process?: AppProcess) {
-    const mod = await BuiltinAppImportPathAbsolutes["$apps/components/oopsnotifier/OopsNotifier.ts"]();
+    const mod = await BuiltinAppImportPathAbsolutes["/src/apps/components/oopsnotifier/OopsNotifier.ts"]();
     const app = (mod as any).default as App;
 
     await KernelStack().waitForAvailable();
