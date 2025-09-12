@@ -80,6 +80,7 @@ export const DefaultUserPreferences: UserPreferences = {
     index: 0,
   },
   globalSettings: {},
+  _internalImportBlocklist: [],
 };
 
 export const DefaultUserInfo: UserInfo = {

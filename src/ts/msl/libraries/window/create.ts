@@ -1,7 +1,7 @@
 import { ScriptedAppProcess } from "$ts/apps/scripted";
-import { getKMod } from "$ts/kernel/module";
-import { ProcessHandler } from "$ts/process/handler";
+import { getKMod } from "$ts/env";
 import type { ScriptedApp } from "$types/app";
+import type { ProcessHandlerType } from "$types/kernel";
 import type { Keyword } from "$types/msl";
 
 export const create: Keyword = async (lang) => {
@@ -15,7 +15,7 @@ export const create: Keyword = async (lang) => {
     return;
   }
 
-  const stack = getKMod<ProcessHandler>("stack");
+  const stack = getKMod<ProcessHandlerType>("stack");
   const result = await stack.spawn<ScriptedAppProcess>(
     ScriptedAppProcess,
     lang.userDaemon?.getCurrentDesktop(),

@@ -1,23 +1,20 @@
-import { SystemDispatch } from "$ts/dispatch";
-import { Filesystem } from "$ts/fs";
-import { Environment } from "$ts/kernel/env";
-import { getKMod } from "$ts/kernel/module";
-import { SoundBus } from "$ts/soundbus";
+import { getKMod } from "$ts/env";
+import type { EnvironmentType, FilesystemType, SoundbusType, SystemDispatchType } from "$types/kernel";
 import { LogLevel } from "../../types/logging";
 import { Log } from "../kernel/logging";
 import { ProcessDispatch } from "./dispatch";
 
 export class Process {
-  public env: Environment;
-  public soundBus: SoundBus;
+  public env: EnvironmentType;
+  public soundBus: SoundbusType;
   public dispatch: ProcessDispatch;
-  public systemDispatch: SystemDispatch;
+  public systemDispatch: SystemDispatchType;
   public pid: number;
   public parentPid: number;
   public name = "";
   public _disposed = false;
   public _criticalProcess = false;
-  public fs: Filesystem;
+  public fs: FilesystemType;
   private fileLocks: string[] = [];
 
   constructor(pid: number, parentPid?: number, ...args: any[]) {
@@ -26,10 +23,10 @@ export class Process {
     this.parentPid = parentPid || 0;
     this.name ||= this.constructor.name;
     this.dispatch = new ProcessDispatch(this);
-    this.systemDispatch = getKMod<SystemDispatch>("dispatch");
-    this.env = getKMod<Environment>("env");
-    this.soundBus = getKMod<SoundBus>("soundbus");
-    this.fs = getKMod<Filesystem>("fs");
+    this.systemDispatch = getKMod<SystemDispatchType>("dispatch");
+    this.env = getKMod<EnvironmentType>("env");
+    this.soundBus = getKMod<SoundbusType>("soundbus");
+    this.fs = getKMod<FilesystemType>("fs");
   }
 
   protected async stop(): Promise<any> {

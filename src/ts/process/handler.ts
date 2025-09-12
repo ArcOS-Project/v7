@@ -1,19 +1,18 @@
 import { AppProcess } from "$ts/apps/process";
 import { __Console__ } from "$ts/console";
-import { SystemDispatch } from "$ts/dispatch";
-import { Environment } from "$ts/kernel/env";
-import { KernelStateHandler } from "$ts/kernel/getters";
+import { Kernel } from "$ts/env";
+import { KernelStateHandler } from "$ts/getters";
 import type { App } from "$types/app";
+import type { ConstructedWaveKernel, EnvironmentType, SystemDispatchType } from "$types/kernel";
 import type { ProcessContext, ProcessKillResult } from "$types/process";
 import { parse } from "stacktrace-parser";
 import { AppRenderer } from "../apps/renderer";
-import { WaveKernel } from "../kernel";
 import { Log } from "../kernel/logging";
 import { KernelModule } from "../kernel/module";
 import { Store } from "../writable";
 import type { Process } from "./instance";
 
-export const KernelStack = () => WaveKernel.get().getModule<ProcessHandler>("stack");
+export const KernelStack = () => Kernel()!.getModule<ProcessHandler>("stack");
 
 export class ProcessHandler extends KernelModule {
   public BUSY = false;
@@ -21,21 +20,17 @@ export class ProcessHandler extends KernelModule {
   public store = Store<Map<number, Process>>(new Map([]));
   public rendererPid = -1;
   public renderer: AppRenderer | undefined;
-  public env: Environment;
-  public dispatch: SystemDispatch;
+  public env: EnvironmentType;
+  public dispatch: SystemDispatchType;
   public processContexts = new Map<number, ProcessContext>([]);
 
   //#region LIFECYCLE
 
-  constructor(kernel: WaveKernel, id: string) {
+  constructor(kernel: ConstructedWaveKernel, id: string) {
     super(kernel, id);
 
-    this.env = WaveKernel.get().getModule<Environment>("env");
-    this.dispatch = WaveKernel.get().getModule<SystemDispatch>("dispatch");
-  }
-
-  async _init() {
-    // await this.startRenderer();
+    this.env = Kernel()!.getModule<EnvironmentType>("env");
+    this.dispatch = Kernel()!.getModule<SystemDispatchType>("dispatch");
   }
 
   async startRenderer(initPid: number) {
@@ -71,7 +66,7 @@ export class ProcessHandler extends KernelModule {
   ): Promise<T | undefined> {
     this.isKmod();
 
-    if (WaveKernel.isPanicked() || this.BUSY) return;
+    if (Kernel()?.PANICKED || this.BUSY) return;
 
     this.makeBusy("Spawning process");
 
@@ -155,7 +150,7 @@ export class ProcessHandler extends KernelModule {
   async kill(pid: number, force = false): Promise<ProcessKillResult> {
     this.isKmod();
 
-    if (this.BUSY || WaveKernel.isPanicked()) return "err_disposed";
+    if (this.BUSY || Kernel()?.PANICKED) return "err_disposed";
 
     Log("ProcessHandler.kill", `Attempting to kill ${pid}`);
 
@@ -204,7 +199,7 @@ export class ProcessHandler extends KernelModule {
   public async _killSubProceses(pid: number, force = false) {
     this.isKmod();
 
-    if (WaveKernel.isPanicked()) return;
+    if (Kernel()?.PANICKED) return;
 
     const procs = this.getSubProcesses(pid);
 

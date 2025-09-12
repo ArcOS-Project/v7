@@ -1,8 +1,8 @@
 <script lang="ts">
   import { ApplicationStorage } from "$ts/apps/storage";
   import { ArcOSVersion } from "$ts/env";
+  import { KernelModules, KernelStateHandler } from "$ts/getters";
   import { ArcSystemIcon } from "$ts/images/general";
-  import { KernelModules, KernelStateHandler } from "$ts/kernel/getters";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
   import { KernelStack } from "$ts/process/handler";

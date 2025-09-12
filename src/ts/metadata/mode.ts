@@ -1,9 +1,9 @@
 import { __Console__ } from "$ts/console";
-import { WaveKernel } from "$ts/kernel";
+import { Kernel } from "$ts/env";
 
 export async function getMode() {
   __Console__.time("Get Mode");
-  const kernel = WaveKernel.get();
+  const kernel = Kernel()!;
 
   kernel.Log("branding", "Attempting to retrieve mode from /mode");
 
@@ -18,4 +18,4 @@ export async function getMode() {
   }
 }
 
-export const ArcMode = () => WaveKernel.get().ARCOS_MODE;
+export const ArcMode = () => Kernel()!.ARCOS_MODE;

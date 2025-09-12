@@ -1,9 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { join } from "$ts/fs/util";
-import { iconIdFromPath } from "$ts/images";
 import type { UserDaemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
-import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import { ChooseProfilePictureApp } from "./ChooseProfilePicture/metadata";

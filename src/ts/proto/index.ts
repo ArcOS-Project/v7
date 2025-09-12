@@ -1,5 +1,5 @@
+import { KernelParams } from "$ts/getters";
 import { tryJsonParse } from "$ts/json";
-import { KernelParams } from "$ts/kernel/getters";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import type { ArcProtocol, ProtocolHandler } from "$types/proto";

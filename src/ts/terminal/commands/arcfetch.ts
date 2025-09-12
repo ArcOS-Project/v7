@@ -1,11 +1,10 @@
 import { getDeviceInfo } from "$ts/device";
-import { ArcOSVersion } from "$ts/env";
+import { ArcOSVersion, getKMod } from "$ts/env";
 import { formatBytes } from "$ts/fs/util";
-import { KernelStateHandler } from "$ts/kernel/getters";
-import { getKMod } from "$ts/kernel/module";
+import { KernelStateHandler } from "$ts/getters";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { ServerManager } from "$ts/server";
+import type { ServerManagerType } from "$types/kernel";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { BRBLACK, BRBLUE, BRCYAN, BRGREEN, BRPURPLE, BRRED, BRYELLOW, RESET } from "../store";
@@ -34,7 +33,7 @@ export class ArcFetchCommand extends TerminalProcess {
   }
 
   getItems(term: ArcTerminal) {
-    const server = getKMod<ServerManager>("server", true);
+    const server = getKMod<ServerManagerType>("server", true);
     const info = getDeviceInfo();
     const state = KernelStateHandler()?.currentState;
 

@@ -1,16 +1,15 @@
+import type { BugHuntType, ServerManagerType } from "$types/kernel";
 import { LogLevel } from "../types/logging";
-import { BugHunt } from "./bughunt";
-import { WaveKernel } from "./kernel";
-import { KernelIsPanicked, KernelLogs, KernelPremature } from "./kernel/getters";
+import { getKMod, Kernel } from "./env";
+import { KernelIsPanicked, KernelLogs, KernelPremature } from "./getters";
 import { ASCII_ART } from "./kernel/intro";
-import { getKMod } from "./kernel/module";
-import { ServerManager } from "./server";
 
 export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
   if (KernelIsPanicked()) return;
 
-  const bughunt = getKMod<BugHunt>("bughunt", true);
-  const connected = ServerManager.isConnected();
+  const bughunt = getKMod<BugHuntType>("bughunt", true);
+  const serverManager = getKMod<ServerManagerType>("server", true);
+  const connected = serverManager?.connected;
 
   const HEADER = [
     ...ASCII_ART,
@@ -54,5 +53,5 @@ export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
       })
     );
 
-  WaveKernel.panic(text);
+  Kernel()?.panic(text);
 }

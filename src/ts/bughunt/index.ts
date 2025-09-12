@@ -1,28 +1,26 @@
-import { KernelStack } from "$ts/process/handler";
 import { ArcOSVersion } from "$ts/env";
-import type { WaveKernel } from "$ts/kernel";
-import type { Environment } from "$ts/kernel/env";
-import { KernelLogs } from "$ts/kernel/getters";
+import { KernelLogs } from "$ts/getters";
 import { KernelModule } from "$ts/kernel/module";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { ServerManager } from "$ts/server";
+import { KernelStack } from "$ts/process/handler";
 import { Backend } from "$ts/server/axios";
 import { UserDaemon } from "$ts/server/user/daemon";
 import type { BugReport, OutgoingBugReport } from "$types/bughunt";
+import type { ConstructedWaveKernel, EnvironmentType, ServerManagerType } from "$types/kernel";
 import { defaultReportOptions } from "./store";
 
 export class BugHunt extends KernelModule {
-  server: ServerManager;
-  env: Environment;
+  server: ServerManagerType;
+  env: EnvironmentType;
 
   //#region LIFECYCLE
 
-  constructor(kernel: WaveKernel, id: string) {
+  constructor(kernel: ConstructedWaveKernel, id: string) {
     super(kernel, id);
 
-    this.server = kernel.getModule<ServerManager>("server");
-    this.env = kernel.getModule<Environment>("env");
+    this.server = kernel.getModule<ServerManagerType>("server");
+    this.env = kernel.getModule<EnvironmentType>("env");
   }
 
   async _init(): Promise<void> {}

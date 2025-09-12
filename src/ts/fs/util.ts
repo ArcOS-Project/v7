@@ -1,5 +1,5 @@
-import { SystemDispatch } from "$ts/dispatch";
-import { getKMod } from "$ts/kernel/module";
+import { getKMod } from "$ts/env";
+import type { SystemDispatchType } from "$types/kernel";
 import { arrayToBlob } from "./convert";
 
 export const sizeUnits = ["bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
@@ -67,7 +67,7 @@ export function getParentDirectory(p: string): string {
 }
 
 export function onFileChange(path: string, callback: () => void) {
-  const dispatch = getKMod<SystemDispatch>("dispatch");
+  const dispatch = getKMod<SystemDispatchType>("dispatch");
 
   dispatch.subscribe("fs-flush-file", (data) => {
     if (data[0] === path) callback();
@@ -77,7 +77,7 @@ export function onFileChange(path: string, callback: () => void) {
 }
 
 export function onFolderChange(path: string, callback: () => void) {
-  const dispatch = getKMod<SystemDispatch>("dispatch");
+  const dispatch = getKMod<SystemDispatchType>("dispatch");
 
   dispatch.subscribe<string>("fs-flush-folder", (data) => {
     if (!path || data === path) callback();

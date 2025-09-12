@@ -1,9 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { ApplicationStorage } from "$ts/apps/storage";
-import { KernelStack } from "$ts/process/handler";
 import type { App, AppProcessData } from "$types/app";
 import { parse } from "stacktrace-parser";
-import { OopsStackTracerRuntime } from "../oopsstacktracer/runtime";
 import type { ParsedStackFrame, ParsedStackUrl } from "./types";
 
 export class OopsNotifierRuntime extends AppProcess {

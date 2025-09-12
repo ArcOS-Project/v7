@@ -1,23 +1,23 @@
-import type { WaveKernel } from "$ts/kernel";
-import { getKMod, KernelModule } from "$ts/kernel/module";
-import { ProcessHandler } from "$ts/process/handler";
+import { getKMod } from "$ts/env";
+import { KernelModule } from "$ts/kernel/module";
+import type { ConstructedWaveKernel, ProcessHandlerType } from "$types/kernel";
 import type { LanguageOptions } from "$types/msl";
 import { PrematureLanguageError } from "./error";
 import { LanguageInstance } from "./instance";
 import { DefaultLanguageOptions } from "./store";
 
 export class ArcMSL extends KernelModule {
-  private stack: ProcessHandler | undefined;
+  private stack: ProcessHandlerType | undefined;
   private locked = false;
 
   //#region LIFECYCLE
 
-  constructor(kernel: WaveKernel, id: string) {
+  constructor(kernel: ConstructedWaveKernel, id: string) {
     super(kernel, id);
   }
 
   async _init() {
-    const stack = getKMod<ProcessHandler>("stack");
+    const stack = getKMod<ProcessHandlerType>("stack");
 
     this.stack = stack;
   }

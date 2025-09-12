@@ -1,5 +1,5 @@
-import { KernelStack } from "$ts/process/handler";
 import type { LanguageInstance } from "$ts/msl/instance";
+import { KernelStack } from "$ts/process/handler";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { AppProcess } from "./process";

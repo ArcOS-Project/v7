@@ -1,6 +1,6 @@
 import type { SystemDispatchResult } from "$types/dispatch";
+import type { ConstructedWaveKernel } from "$types/kernel";
 import { LogLevel } from "$types/logging";
-import type { WaveKernel } from "../kernel";
 import { KernelModule } from "../kernel/module";
 import { KnownSystemDispatchers, SystemOnlyDispatches } from "./store";
 
@@ -9,7 +9,7 @@ export class SystemDispatch extends KernelModule {
 
   //#region LIFECYCLE
 
-  constructor(kernel: WaveKernel, id: string) {
+  constructor(kernel: ConstructedWaveKernel, id: string) {
     super(kernel, id);
 
     this.Log("Creating new SystemDispatch");

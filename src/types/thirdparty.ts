@@ -1,6 +1,4 @@
 import type { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import type { SystemDispatch } from "$ts/dispatch";
-import type { Filesystem } from "$ts/fs";
 import type { arrayToBlob, arrayToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/fs/convert";
 import type {
   DownloadFile,
@@ -12,20 +10,20 @@ import type {
   onFileChange,
   onFolderChange,
 } from "$ts/fs/util";
-import type { Environment } from "$ts/kernel/env";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import type { ServiceHost } from "$ts/services";
 import type { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";
 import type { App } from "./app";
 import type { AxiosInstance } from "./axios";
 import type { dayjs } from "./dayjs";
+import type { EnvironmentType, FilesystemType, SystemDispatchType } from "./kernel";
 
 export interface ThirdPartyPropMap {
   daemon: UserDaemon;
-  fs: Filesystem;
-  env: Environment;
+  fs: FilesystemType;
+  env: EnvironmentType;
   serviceHost: ServiceHost | undefined;
-  dispatch: SystemDispatch;
+  dispatch: SystemDispatchType;
   icons: Record<string, string>;
   util: {
     htmlspecialchars: typeof htmlspecialchars;

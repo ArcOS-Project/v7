@@ -15,20 +15,19 @@
 
 import type { AppProcess } from "$ts/apps/process";
 import { __Console__ } from "$ts/console";
-import { ArcOSVersion } from "$ts/env";
-import { Filesystem } from "$ts/fs";
+import { ArcOSVersion, getKMod } from "$ts/env";
 import { join } from "$ts/fs/util";
 import { getJsonHierarchy, setJsonHierarchy } from "$ts/hierarchy";
 import { keysToLowerCase, tryJsonParse } from "$ts/json";
-import { KernelStack } from "$ts/process/handler";
-import { getKMod } from "$ts/kernel/module";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
+import { KernelStack } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import type { AppProcessData } from "$types/app";
 import type { DirectoryReadReturn, RecursiveDirectoryReadReturn } from "$types/fs";
+import type { FilesystemType } from "$types/kernel";
 import type { InterpreterCommand, LanguageOptions, Libraries } from "$types/msl";
 import { LanguageExecutionError } from "./error";
 import { BaseLibraries, DefaultLanguageOptions } from "./store";
@@ -51,7 +50,7 @@ export class LanguageInstance extends Process {
   public executionCount = -1;
   public workingDir: string;
   public options: LanguageOptions;
-  public fs: Filesystem;
+  public fs: FilesystemType;
   private exception: LanguageExecutionError | null = null;
   public app: AppProcessData | undefined;
   public appProcess: AppProcess | undefined;
@@ -80,7 +79,7 @@ export class LanguageInstance extends Process {
 
     this.libraries = keysToLowerCase(libraries) as Libraries;
 
-    this.fs = getKMod<Filesystem>("fs");
+    this.fs = getKMod<FilesystemType>("fs");
 
     const daemonPid = this.env.get("userdaemon_pid");
 

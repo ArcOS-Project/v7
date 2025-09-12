@@ -2,12 +2,12 @@ import { FirstRunApp } from "$apps/components/firstrun/FirstRun";
 import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/TotpAuthGui";
 import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
+import { getKMod } from "$ts/env";
+import { KernelStateHandler } from "$ts/getters";
 import { ProfilePictures } from "$ts/images/pfp";
 import { tryJsonParse } from "$ts/json";
-import { KernelStateHandler } from "$ts/kernel/getters";
-import { getKMod } from "$ts/kernel/module";
+import { KernelStack } from "$ts/process/handler";
 import { ProtocolServiceProcess } from "$ts/proto";
-import { ServerManager } from "$ts/server";
 import { Backend } from "$ts/server/axios";
 import { LoginUser } from "$ts/server/user/auth";
 import { UserDaemon } from "$ts/server/user/daemon";
@@ -16,13 +16,13 @@ import { authcode } from "$ts/util";
 import { UUID } from "$ts/uuid";
 import { Wallpapers } from "$ts/wallpaper/store";
 import { Store } from "$ts/writable";
+import type { ServerManagerType } from "$types/kernel";
 import type { ServerInfo } from "$types/server";
 import type { UserInfo } from "$types/user";
 import Cookies from "js-cookie";
 import { AppProcess } from "../../../ts/apps/process";
 import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps, PersistenceInfo } from "./types";
-import { KernelStack } from "$ts/process/handler";
 
 export class LoginAppRuntime extends AppProcess {
   public DEFAULT_WALLPAPER = Store<string>("");
@@ -43,7 +43,7 @@ export class LoginAppRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData, props?: LoginAppProps) {
     super(pid, parentPid, app);
 
-    const server = getKMod<ServerManager>("server");
+    const server = getKMod<ServerManagerType>("server");
 
     this.DEFAULT_WALLPAPER.set(server.serverInfo?.loginWallpaper ? `${server.url}/loginbg${authcode()}` : Wallpapers.img18.url);
 

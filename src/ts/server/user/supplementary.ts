@@ -1,18 +1,18 @@
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import type { Filesystem } from "$ts/fs";
 import { arrayToText, textToBlob } from "$ts/fs/convert";
 import { getItemNameFromPath, join } from "$ts/fs/util";
 import { tryJsonParse } from "$ts/json";
 import { KernelStack } from "$ts/process/handler";
 import { authcode, detectJavaScript } from "$ts/util";
 import type { App } from "$types/app";
+import type { FilesystemType } from "$types/kernel";
 import { Backend } from "../axios";
 import type { UserDaemon } from "./daemon";
 import { ThirdPartyProps } from "./thirdparty";
 
 export function SupplementaryThirdPartyPropFunctions(
   daemon: UserDaemon,
-  fs: Filesystem,
+  fs: FilesystemType,
   app: App,
   props: any,
   wrap: (c: string) => string,

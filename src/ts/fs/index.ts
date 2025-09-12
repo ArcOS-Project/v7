@@ -1,6 +1,5 @@
-import { SystemDispatch } from "$ts/dispatch";
-import type { WaveKernel } from "$ts/kernel";
-import { getKMod, KernelModule } from "$ts/kernel/module";
+import { getKMod } from "$ts/env";
+import { KernelModule } from "$ts/kernel/module";
 import { Sleep } from "$ts/sleep";
 import { sha256, sliceIntoChunks } from "$ts/util";
 import {
@@ -11,20 +10,21 @@ import {
   type RecursiveDirectoryReadReturn,
   type UploadReturn,
 } from "$types/fs";
+import type { ConstructedWaveKernel, SystemDispatchType } from "$types/kernel";
 import { arrayToBlob } from "./convert";
 import type { FilesystemDrive } from "./drive";
 import { getItemNameFromPath, getParentDirectory, join } from "./util";
 
 export class Filesystem extends KernelModule {
-  private dispatch: SystemDispatch;
+  private dispatch: SystemDispatchType;
   public drives: Record<string, FilesystemDrive> = {};
 
   //#region LIFECYCLE
 
-  constructor(kernel: WaveKernel, id: string) {
+  constructor(kernel: ConstructedWaveKernel, id: string) {
     super(kernel, id);
 
-    this.dispatch = getKMod<SystemDispatch>("dispatch");
+    this.dispatch = getKMod<SystemDispatchType>("dispatch");
   }
 
   async _init() {}

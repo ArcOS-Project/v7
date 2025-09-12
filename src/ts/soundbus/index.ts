@@ -1,21 +1,20 @@
-import type { WaveKernel } from "$ts/kernel";
-import { Environment } from "$ts/kernel/env";
 import { KernelModule } from "$ts/kernel/module";
+import type { ConstructedWaveKernel, EnvironmentType } from "$types/kernel";
 import type { SoundBusStore, SoundStore } from "$types/soundbus";
 import { ArcSounds } from "./store";
 
 export class SoundBus extends KernelModule {
   private store: SoundStore = {};
   private _bus: SoundBusStore = {};
-  private env: Environment;
+  private env: EnvironmentType;
 
   //#region LIFECYCLE
 
-  constructor(kernel: WaveKernel, id: string) {
+  constructor(kernel: ConstructedWaveKernel, id: string) {
     super(kernel, id);
 
     this.store = ArcSounds;
-    this.env = kernel.getModule<Environment>("env");
+    this.env = kernel.getModule<EnvironmentType>("env");
   }
 
   //#endregion

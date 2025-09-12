@@ -1,12 +1,12 @@
 <script lang="ts">
   import { SecurityLowIcon } from "$ts/images/general";
   import { TimeFrames } from "$ts/server/user/store";
+  import { groupByTimeFrame } from "$ts/util";
   import type { LoginActivity } from "$types/activity";
   import { onMount } from "svelte";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
   import Activity from "./LoginActivity/Activity.svelte";
-  import { groupByTimeFrame } from "$ts/util";
 
   const { process }: { process: SettingsRuntime } = $props();
   const { userDaemon } = process;

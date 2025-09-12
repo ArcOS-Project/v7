@@ -3,10 +3,19 @@ import { defineConfig, Plugin } from "vite";
 import path, { resolve } from "path";
 import ts from "typescript";
 import { writeFile } from "fs/promises";
+import importGraph from "vite-plugin-import-graph";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [svelte(), GenerateGlobalTypesPlugin()],
+  plugins: [
+    svelte(),
+    GenerateGlobalTypesPlugin(),
+    importGraph({
+      filename: "import-graph.json",
+      absoluteModuleIds: false,
+      usePrefix: false,
+    }),
+  ],
   envPrefix: "DW_",
   resolve: {
     alias: {

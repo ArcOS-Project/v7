@@ -1,6 +1,5 @@
+import { getKMod } from "$ts/env";
 import { Log } from "$ts/kernel/logging";
-import { getKMod } from "$ts/kernel/module";
-import { ServerManager } from "$ts/server";
 import type {
   DirectoryReadReturn,
   DriveCapabilities,
@@ -8,11 +7,12 @@ import type {
   FilesystemStat,
   RecursiveDirectoryReadReturn,
 } from "$types/fs";
+import type { ServerManagerType } from "$types/kernel";
 import { LogLevel } from "$types/logging";
 import type { UserQuota } from "../../types/fs";
 
 export class FilesystemDrive {
-  server: ServerManager;
+  server: ServerManagerType;
   public driveLetter: string | undefined;
   public label = "";
   public uuid = "";

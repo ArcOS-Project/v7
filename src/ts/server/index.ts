@@ -1,8 +1,8 @@
-import { VALIDATION_STR } from "$ts/env";
+import { getKMod, VALIDATION_STR } from "$ts/env";
+import type { ConstructedWaveKernel, ServerManagerType } from "$types/kernel";
 import type { ServerInfo } from "$types/server";
 import { LogLevel } from "../../types/logging";
-import { WaveKernel } from "../kernel";
-import { getKMod, KernelModule } from "../kernel/module";
+import { KernelModule } from "../kernel/module";
 import { Backend } from "./axios";
 
 export class ServerManager extends KernelModule {
@@ -11,19 +11,19 @@ export class ServerManager extends KernelModule {
   public serverInfo: ServerInfo | undefined;
 
   public static isConnected() {
-    const server = getKMod<ServerManager>("server", true);
+    const server = getKMod<ServerManagerType>("server", true);
 
     return server && server.connected;
   }
   public static url() {
-    const server = getKMod<ServerManager>("server", true);
+    const server = getKMod<ServerManagerType>("server", true);
 
     return server ? server.url : undefined;
   }
 
   //#region LIFECYCLE
 
-  constructor(kernel: WaveKernel, id: string) {
+  constructor(kernel: ConstructedWaveKernel, id: string) {
     super(kernel, id);
   }
 

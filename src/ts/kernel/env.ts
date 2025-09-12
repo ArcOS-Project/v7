@@ -1,7 +1,7 @@
 import { ArcOSVersion } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import type { WaveKernel } from ".";
+import type { ConstructedWaveKernel } from "$types/kernel";
 import { KernelModule } from "./module";
 
 export class Environment extends KernelModule {
@@ -10,7 +10,7 @@ export class Environment extends KernelModule {
 
   //#region LIFECYCLE
 
-  constructor(kernel: WaveKernel, id: string) {
+  constructor(kernel: ConstructedWaveKernel, id: string) {
     super(kernel, id);
   }
 

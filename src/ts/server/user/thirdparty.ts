@@ -18,7 +18,6 @@ import {
 import { getAllImages } from "$ts/images";
 import { WindowSettingsIcon } from "$ts/images/general";
 import { tryJsonStringify } from "$ts/json";
-import { KernelModule } from "$ts/kernel/module";
 import { Process } from "$ts/process/instance";
 import { BaseService } from "$ts/services/base";
 import { Sleep } from "$ts/sleep";
@@ -80,7 +79,6 @@ export function ThirdPartyProps(
     AppProcess,
     ThirdPartyAppProcess,
     FilesystemDrive,
-    KernelModule, // ?
     argv: args,
     app,
     Store,

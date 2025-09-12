@@ -1,9 +1,9 @@
 <script lang="ts">
+  import { KernelStack } from "$ts/process/handler";
   import type { Process } from "$ts/process/instance";
   import { onMount } from "svelte";
   import type { ProcessManagerRuntime } from "../runtime";
   import Row from "./Tree/Row.svelte";
-  import { KernelStack } from "$ts/process/handler";
 
   const { process }: { process: ProcessManagerRuntime } = $props();
   const { running } = process;

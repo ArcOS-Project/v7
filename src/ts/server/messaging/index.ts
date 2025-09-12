@@ -1,12 +1,13 @@
+import { getKMod } from "$ts/env";
 import { getItemNameFromPath, getParentDirectory } from "$ts/fs/util";
 import { KernelStack } from "$ts/process/handler";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import { authcode } from "$ts/util";
 import type { FilesystemProgressCallback } from "$types/fs";
+import type { ServerManagerType } from "$types/kernel";
 import type { ExpandedMessage, Message, MessageNode, PartialMessage } from "$types/messaging";
 import type { Service } from "$types/service";
-import { ServerManager } from "..";
 import { Backend } from "../axios";
 import { UserDaemon } from "../user/daemon";
 import { GlobalDispatch } from "../ws";
@@ -20,7 +21,8 @@ export class MessagingInterface extends BaseService {
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(pid, parentPid, name, host);
 
-    this.serverUrl = ServerManager.url();
+    const server = getKMod<ServerManagerType>("server");
+    this.serverUrl = server.url;
     this.serverAuthCode = import.meta.env.DW_SERVER_AUTHCODE || "";
     this.token = host.daemon.token;
   }

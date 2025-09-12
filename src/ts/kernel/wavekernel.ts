@@ -1,24 +1,22 @@
 import { __Console__ } from "$ts/console";
-import { ArcOSVersion } from "$ts/env";
+import { ArcOSVersion, CurrentKernel, SetCurrentKernel } from "$ts/env";
 import { getBuild } from "$ts/metadata/build";
 import { ChangeLogs } from "$ts/metadata/changelog";
 import { getLicense } from "$ts/metadata/license";
 import { getMode } from "$ts/metadata/mode";
 import { SqlInterfaceProcess } from "$ts/sql";
 import { Store, type ReadableStore } from "$ts/writable";
+import type { ProcessHandlerType } from "$types/kernel";
 import { LogLevel, ShortLogLevelCaptions, type LogItem } from "../../types/logging";
 import { handleGlobalErrors } from "../error";
-import { ProcessHandler } from "../process/handler";
 import { StateHandler } from "../state";
 import { InitProcess } from "./init";
 import { KernelModules } from "./module/store";
 import { prematurePanic } from "./premature";
 
-let CurrentKernel: WaveKernel | undefined = undefined;
-
 export class WaveKernel {
   public modules: string[] = [];
-  private PANICKED = false;
+  public PANICKED = false;
   public Logs: ReadableStore<LogItem[]> = Store([]);
   public startMs: number;
   public init: InitProcess | undefined;
@@ -36,7 +34,7 @@ export class WaveKernel {
       throw new Error("Tried to get kernel while it doesn't exist yet");
     }
 
-    return CurrentKernel;
+    return CurrentKernel as WaveKernel;
   }
 
   public static isPanicked(): boolean {
@@ -51,7 +49,7 @@ export class WaveKernel {
 
     handleGlobalErrors();
 
-    CurrentKernel = this;
+    SetCurrentKernel(this);
 
     if (import.meta.env.DEV) {
       (window as any)["kernel"] = CurrentKernel;
@@ -59,17 +57,15 @@ export class WaveKernel {
     }
   }
 
-  static async panic(reason: string) {
-    const kernel = this.get();
+  async panic(reason: string) {
+    if (this.PANICKED) return;
 
-    if (!kernel || kernel.PANICKED) return;
+    this.PANICKED = true;
 
-    kernel.PANICKED = true;
-
-    const state = kernel.state;
+    const state = this.state;
 
     if (!state) {
-      kernel.Log(`WaveKernel::panic`, `\n\n${reason}`);
+      this.Log(`WaveKernel::panic`, `\n\n${reason}`);
 
       prematurePanic();
 
@@ -98,7 +94,7 @@ export class WaveKernel {
 
     await this._kernelModules();
 
-    const stack = this.getModule<ProcessHandler>("stack");
+    const stack = this.getModule<ProcessHandlerType>("stack");
 
     this.init = await stack.spawn<InitProcess>(InitProcess, undefined, "SYSTEM");
     this.initPid = this.init?.pid ?? 0;

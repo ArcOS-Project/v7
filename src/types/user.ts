@@ -38,6 +38,7 @@ export interface UserPreferences {
   workspaces: WorkspacesOptions;
   globalSettings: Record<string, any>;
   startup?: Record<string, "app" | "file" | "folder" | "share" | "disabled">;
+  _internalImportBlocklist: string[];
 }
 
 export type ExpandedUserInfo = UserInfo & { profile: PublicUserInfo };

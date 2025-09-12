@@ -1,4 +1,4 @@
-import { getKMod } from "$ts/kernel/module";
+import { getKMod } from "$ts/env";
 import type {
   DirectoryReadReturn,
   ExtendedStat,
@@ -7,7 +7,7 @@ import type {
   RecursiveDirectoryReadReturn,
   UploadReturn,
 } from "$types/fs";
-import { Filesystem } from ".";
+import type { FilesystemType } from "$types/kernel";
 import type { FilesystemDrive } from "./drive";
 
 export class FilesystemContext {
@@ -17,7 +17,7 @@ export class FilesystemContext {
   get #fs() {
     if (!this.#PERMITTED) throw new Error("Access is denied");
 
-    return getKMod<Filesystem>("fs");
+    return getKMod<FilesystemType>("fs");
   }
 
   //#region LIFECYCLE

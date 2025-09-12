@@ -1,11 +1,11 @@
 import { MessageBoxApp } from "$apps/components/messagebox/messageBox";
 import { MessageBoxRuntime } from "$apps/components/messagebox/runtime";
+import type { ProcessHandlerType } from "$types/kernel";
 import type { ConfirmationData, MessageBoxData } from "$types/messagebox";
-import { getKMod } from "./kernel/module";
-import { ProcessHandler } from "./process/handler";
+import { getKMod } from "./env";
 
 export async function MessageBox(data: MessageBoxData, parentPid: number, overlay = false) {
-  const stack = getKMod<ProcessHandler>("stack");
+  const stack = getKMod<ProcessHandlerType>("stack");
 
   const appData = { ...MessageBoxApp, overlay: overlay && !!stack.getProcess(parentPid) };
 

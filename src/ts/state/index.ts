@@ -1,10 +1,9 @@
 import { AppProcess } from "$ts/apps/process";
+import { getKMod, Kernel } from "$ts/env";
 import { KernelStack } from "$ts/process/handler";
-import { getKMod } from "$ts/kernel/module";
+import type { ProcessHandlerType } from "$types/kernel";
 import { LogLevel } from "$types/logging";
 import type { State } from "../../types/state";
-import { WaveKernel } from "../kernel";
-import { ProcessHandler } from "../process/handler";
 import { Process } from "../process/instance";
 import { Sleep } from "../sleep";
 import { StateError } from "./error";
@@ -42,7 +41,7 @@ export class StateHandler extends Process {
   async loadState(id: string, props: Record<string, any> = {}, instant = false) {
     if (this._disposed) return;
 
-    if (WaveKernel.isPanicked() && id !== "crash-screen") return;
+    if (Kernel()?.PANICKED && id !== "crash-screen") return;
 
     const data = this.store[id];
 
@@ -138,7 +137,7 @@ export class StateHandler extends Process {
 
     this.Log(`BEGINNING LOAD OF ${data.name} (${data.identifier}) IN APP MODE`);
 
-    const stack = getKMod<ProcessHandler>("stack");
+    const stack = getKMod<ProcessHandlerType>("stack");
 
     if (!data.appModule) return;
 

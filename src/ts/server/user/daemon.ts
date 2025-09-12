@@ -21,15 +21,15 @@ import { bestForeground, darkenColor, hex3to6, invertColor, lightenColor } from 
 import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
 import { StoreItemIcon } from "$ts/distrib/util";
-import { ArcOSVersion, BETA } from "$ts/env";
+import { ArcOSVersion, BETA, getKMod } from "$ts/env";
 import { toForm } from "$ts/form";
-import { Filesystem } from "$ts/fs";
 import { arrayToBlob, arrayToText, textToBlob } from "$ts/fs/convert";
 import { ServerDrive } from "$ts/fs/drives/server";
 import type { MemoryFilesystemDrive } from "$ts/fs/drives/temp";
 import { ZIPDrive } from "$ts/fs/drives/zipdrive";
 import { ShareManager } from "$ts/fs/shares/index";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/fs/util";
+import { KernelStateHandler } from "$ts/getters";
 import { applyDefaults } from "$ts/hierarchy";
 import { getIconPath, iconIdFromPath, maybeIconId } from "$ts/images";
 import { AppStoreIcon, MessagingIcon } from "$ts/images/apps";
@@ -49,9 +49,8 @@ import {
 import { ImageMimeIcon, ShortcutMimeIcon } from "$ts/images/mime";
 import { RestartIcon } from "$ts/images/power";
 import { tryJsonParse } from "$ts/json";
-import { KernelStateHandler } from "$ts/kernel/getters";
-import { getKMod } from "$ts/kernel/module";
 import { ArcBuild } from "$ts/metadata/build";
+import { ArcMode } from "$ts/metadata/mode";
 import { KernelStack } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import type { ProtocolServiceProcess } from "$ts/proto";
@@ -65,6 +64,7 @@ import type { LoginActivity } from "$types/activity";
 import type { App, AppStorage, InstalledApp } from "$types/app";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
 import type { FileHandler, FileOpenerResult } from "$types/fs";
+import type { FilesystemType, ServerManagerType } from "$types/kernel";
 import { LogLevel } from "$types/logging";
 import type { BatteryType } from "$types/navigator";
 import type { Notification } from "$types/notification";
@@ -82,7 +82,6 @@ import type {
 import type { Wallpaper } from "$types/wallpaper";
 import Cookies from "js-cookie";
 import type { Unsubscriber } from "svelte/store";
-import type { ServerManager } from "..";
 import { AdminProtocolHandlers } from "../admin/proto";
 import { Backend } from "../axios";
 import { MessagingInterface } from "../messaging";
@@ -92,7 +91,6 @@ import { DefaultFileDefinitions } from "./assoc/store";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
-import { ArcMode } from "$ts/metadata/mode";
 //#endregion
 
 export class UserDaemon extends Process {
@@ -139,7 +137,7 @@ export class UserDaemon extends Process {
   private registeredAnchors: HTMLAnchorElement[] = [];
   public notifications = new Map<string, Notification>([]);
   // KERNEL MODULES
-  public server: ServerManager;
+  public server: ServerManagerType;
   public globalDispatch?: GlobalDispatch;
   // SERVICES
   public assoc?: FileAssocService;
@@ -157,7 +155,7 @@ export class UserDaemon extends Process {
     this.env.set("userdaemon_pid", this.pid);
     if (userInfo) this.userInfo = userInfo;
 
-    this.server = getKMod<ServerManager>("server");
+    this.server = getKMod<ServerManagerType>("server");
     this.safeMode = !!this.env.get("safemode");
     this.name = "UserDaemon";
   }
@@ -591,7 +589,7 @@ export class UserDaemon extends Process {
 
     this.Log(`Starting JS execution to run third-party app ${app.id}`);
 
-    const fs = getKMod<Filesystem>("fs");
+    const fs = getKMod<FilesystemType>("fs");
     const userDaemonPid = this.env.get("userdaemon_pid");
 
     app.workingDirectory ||= getParentDirectory(metaPath);
@@ -1565,9 +1563,13 @@ export class UserDaemon extends Process {
   }
 
   async initAppStorage(storage: ApplicationStorage, cb: (app: App) => void) {
+    this.Log(`Now trying to load built-in applications...`);
+
     const builtins: App[] = [];
+    const blocklist = this.preferences()._internalImportBlocklist || [];
 
     for (const path in BuiltinAppImportPathAbsolutes) {
+      if (!this.safeMode && blocklist.includes(path)) continue;
       try {
         const mod = await BuiltinAppImportPathAbsolutes[path]();
         const app = (mod as any).default as App;
@@ -1580,6 +1582,7 @@ export class UserDaemon extends Process {
 
         builtins.push(app);
         cb(app);
+        this.Log(`Loaded app: ${path}: ${app.metadata.name} by ${app.metadata.author}, version ${app.metadata.version}`);
       } catch {
         this.Log(`Failed to load app ${path}: The file could not be found`);
       }

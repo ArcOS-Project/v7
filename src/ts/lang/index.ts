@@ -1,18 +1,18 @@
-import type { WaveKernel } from "$ts/kernel";
-import { getKMod, KernelModule } from "$ts/kernel/module";
-import { ProcessHandler } from "$ts/process/handler";
+import { getKMod } from "$ts/env";
+import { KernelModule } from "$ts/kernel/module";
+import type { ConstructedWaveKernel, ProcessHandlerType } from "$types/kernel";
 import type { ArcLangOptions } from "$types/lang";
 import { LangError } from "./error";
 import { Interpreter } from "./interpreter";
 import { DefaultArcLangOptions } from "./store";
 
 export class ArcLang extends KernelModule {
-  stack = getKMod<ProcessHandler>("stack");
+  stack = getKMod<ProcessHandlerType>("stack");
   locked = false;
 
   //#region LIFECYCLE
 
-  constructor(kernel: WaveKernel, id: string) {
+  constructor(kernel: ConstructedWaveKernel, id: string) {
     super(kernel, id);
   }
 

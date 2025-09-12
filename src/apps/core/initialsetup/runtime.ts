@@ -1,16 +1,16 @@
 import { MessageBox } from "$ts/dialog";
+import { getKMod } from "$ts/env";
+import { KernelStateHandler } from "$ts/getters";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { SecurityMediumIcon } from "$ts/images/general";
-import { KernelStateHandler } from "$ts/kernel/getters";
-import { getKMod } from "$ts/kernel/module";
 import { ArcLicense } from "$ts/metadata/license";
 import { KernelStack } from "$ts/process/handler";
-import { ServerManager } from "$ts/server";
 import { LoginUser, RegisterUser } from "$ts/server/user/auth";
 import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import { htmlspecialchars } from "$ts/util";
 import { Store } from "$ts/writable";
+import type { ServerManagerType } from "$types/kernel";
 import { AppProcess } from "../../../ts/apps/process";
 import type { AppProcessData } from "../../../types/app";
 import CheckInbox from "./InitialSetup/Page/CheckInbox.svelte";
@@ -32,7 +32,7 @@ export class InitialSetupRuntime extends AppProcess {
   public actionsDisabled = Store<boolean>(false);
   public showMainContent = Store<boolean>(false);
   public displayName = Store<string>();
-  public server: ServerManager;
+  public server: ServerManagerType;
   private token: string | undefined;
 
   public readonly pages = [Welcome, License, Identity, CheckInbox, Finish];
@@ -131,7 +131,7 @@ export class InitialSetupRuntime extends AppProcess {
       this.actionsDisabled.set(false);
     });
 
-    this.server = getKMod<ServerManager>("server");
+    this.server = getKMod<ServerManagerType>("server");
   }
 
   async render() {

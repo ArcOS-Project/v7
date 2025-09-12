@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { KernelLogs } from "$ts/kernel/getters";
+  import { KernelLogs } from "$ts/getters";
   import { ArcMode } from "$ts/metadata/mode";
   import { htmlspecialchars } from "$ts/util";
   import type { ReadableStore } from "$ts/writable";

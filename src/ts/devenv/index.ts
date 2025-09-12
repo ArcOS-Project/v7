@@ -1,8 +1,9 @@
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { MessageBox } from "$ts/dialog";
+import { KernelLogs } from "$ts/getters";
 import { ErrorIcon } from "$ts/images/dialog";
-import { KernelLogs } from "$ts/kernel/getters";
 import { ArcBuild } from "$ts/metadata/build";
+import { KernelStack } from "$ts/process/handler";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
@@ -12,7 +13,6 @@ import type { AxiosInstance } from "axios";
 import axios from "axios";
 import { io, Socket } from "socket.io-client";
 import { DevDrive } from "./drive";
-import { KernelStack } from "$ts/process/handler";
 
 export class DevelopmentEnvironment extends BaseService {
   public connected = false;

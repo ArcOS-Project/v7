@@ -1,5 +1,5 @@
 import type { StateHandler } from "$ts/state";
-import { WaveKernel } from "..";
+import type { ConstructedWaveKernel } from "$types/kernel";
 import { LogLevel } from "../../../types/logging";
 import { Log } from "../logging";
 
@@ -8,7 +8,7 @@ export class KernelModule {
   public id: string;
   protected state?: StateHandler;
 
-  constructor(kernel: WaveKernel, id: string) {
+  constructor(kernel: ConstructedWaveKernel, id: string) {
     this.id = id;
 
     this.Log(`Constructing`);
@@ -35,10 +35,4 @@ export class KernelModule {
   isKmod() {
     if (!this.IS_KMOD) throw new Error("Not a kernel module");
   }
-}
-
-export function getKMod<T = KernelModule>(id: string, dontCrash = false): T {
-  const kernel = WaveKernel.get();
-
-  return kernel.getModule<T>(id, dontCrash) as T;
 }

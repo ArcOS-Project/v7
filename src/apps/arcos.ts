@@ -1,7 +1,7 @@
 import { RegisteredProcess } from "$ts/apps/util";
 import { ArcOSVersion } from "$ts/env";
 import { ReleaseLogo } from "$ts/images/branding";
-import { InitProcess } from "$ts/kernel/init";
+import { Process } from "$ts/process/instance";
 import type { App } from "$types/app";
 
 // Dummy app metadata that can be used when ArcOS encounters
@@ -15,7 +15,7 @@ export const ArcOSApp: App = RegisteredProcess({
   },
   assets: {
     // We need something, so might as well use the init
-    runtime: InitProcess,
+    runtime: Process,
   },
   id: "ArcOS", // Note: might confict with older versions of NikN_ArcOS
 });

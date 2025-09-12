@@ -1,9 +1,7 @@
 import type { ShellRuntime } from "$apps/components/shell/runtime";
-import { SystemDispatch } from "$ts/dispatch";
-import { ArcOSVersion } from "$ts/env";
+import { ArcOSVersion, getKMod, Kernel } from "$ts/env";
+import { KernelStateHandler } from "$ts/getters";
 import { BugReportIcon, ComponentIcon, SecurityHighIcon } from "$ts/images/general";
-import { Kernel, KernelStateHandler } from "$ts/kernel/getters";
-import { getKMod } from "$ts/kernel/module";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { KernelStack } from "$ts/process/handler";
@@ -11,6 +9,7 @@ import type { UserDaemon } from "$ts/server/user/daemon";
 import { DefaultUserPreferences } from "$ts/server/user/default";
 import type { AppKeyCombinations } from "$types/accelerator";
 import type { ElevationData } from "$types/elevation";
+import type { SystemDispatchType } from "$types/kernel";
 import { LogLevel } from "$types/logging";
 import type { RenderArgs } from "$types/process";
 import type { UserPreferences } from "$types/user";
@@ -32,7 +31,7 @@ export class AppProcess extends Process {
   componentMount: Record<string, any> = {};
   userPreferences: ReadableStore<UserPreferences> = Store<UserPreferences>(DefaultUserPreferences);
   username: string = "";
-  systemDispatch: SystemDispatch;
+  systemDispatch: SystemDispatchType;
   userDaemon: UserDaemon | undefined;
   shell: ShellRuntime | undefined;
   overridePopulatable: boolean = false;
@@ -61,7 +60,7 @@ export class AppProcess extends Process {
 
     this.windowTitle.set(app.data.metadata.name || "Application");
     this.name = app.data.id;
-    this.systemDispatch = getKMod<SystemDispatch>("dispatch");
+    this.systemDispatch = getKMod<SystemDispatchType>("dispatch");
     this.shell = KernelStack().getProcess(+this.env.get("shell_pid"));
 
     const desktopProps = KernelStateHandler()?.stateProps["desktop"];

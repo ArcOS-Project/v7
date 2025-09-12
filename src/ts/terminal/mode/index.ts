@@ -1,12 +1,13 @@
 import { ArcOSVersion } from "$ts/env";
 import { toForm } from "$ts/form";
-import { KernelStack } from "$ts/process/handler";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
+import { KernelStack } from "$ts/process/handler";
 import { Process } from "$ts/process/instance";
 import { Backend } from "$ts/server/axios";
 import { LoginUser } from "$ts/server/user/auth";
 import { UserDaemon } from "$ts/server/user/daemon";
+import { Sleep } from "$ts/sleep";
 import type { UserInfo } from "$types/user";
 import { ClipboardAddon } from "@xterm/addon-clipboard";
 import { FitAddon } from "@xterm/addon-fit";
@@ -18,7 +19,6 @@ import { Terminal } from "xterm";
 import { ArcTerminal } from "..";
 import { Readline } from "../readline/readline";
 import { BRRED, RESET } from "../store";
-import { Sleep } from "$ts/sleep";
 
 export class TerminalMode extends Process {
   userDaemon?: UserDaemon;

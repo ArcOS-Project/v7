@@ -1,10 +1,10 @@
+import { getKMod } from "$ts/env";
 import { getAllJsonPaths, getJsonHierarchy } from "$ts/hierarchy";
 import { ElevationIcon } from "$ts/images/general";
 import { tryJsonParse } from "$ts/json";
-import { getKMod } from "$ts/kernel/module";
-import { ServerManager } from "$ts/server";
 import { AdminBootstrapper } from "$ts/server/admin";
 import { ElevationLevel } from "$types/elevation";
+import type { ServerManagerType } from "$types/kernel";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
@@ -37,7 +37,7 @@ export class AdminCommand extends TerminalProcess {
 
     const paths = getAllJsonPaths(AdminCommandStore).map((a) => a.replaceAll(".", " "));
     const admin = term.daemon?.serviceHost?.getService<AdminBootstrapper>("AdminBootstrapper");
-    const server = getKMod<ServerManager>("server");
+    const server = getKMod<ServerManagerType>("server");
 
     term.term.clear();
     term.rl?.println(`ArcOS Administrator Console version 1.0.0\r\n\r\n© 2025 Izaak Z. Kuipers\r\nOn server: ${server.url}\r\n`);

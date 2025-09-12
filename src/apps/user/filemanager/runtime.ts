@@ -7,7 +7,6 @@ import { ErrorIcon, InfoIcon, WarningIcon } from "$ts/images/dialog";
 import { DownloadIcon, DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import { TrashIcon, UploadIcon } from "$ts/images/general";
 import { DefaultMimeIcon } from "$ts/images/mime";
-import type { ProcessHandler } from "$ts/process/handler";
 import { AdminScopes } from "$ts/server/admin/store";
 import { SystemFolders, UserPathCaptions, UserPaths } from "$ts/server/user/store";
 import { Plural, sortByKey } from "$ts/util";

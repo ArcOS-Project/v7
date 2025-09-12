@@ -1,9 +1,9 @@
+import type { ProcessHandlerType } from "$types/kernel";
 import * as stackTraceParser from "stacktrace-parser";
 import { __Console__ } from "./console";
 import { Crash } from "./crash";
-import { WaveKernel } from "./kernel";
+import { Kernel } from "./env";
 import { Log } from "./kernel/logging";
-import { ProcessHandler } from "./process/handler";
 
 export function handleGlobalErrors() {
   let LOCKED = false;
@@ -59,7 +59,7 @@ export function interceptTpaErrors(stack: string, e: Error): boolean {
   const parsed = stackTraceParser.parse(stack);
   const isTpa = !!parsed[0]?.file?.includes(`localhost:3128`) || !!parsed[0]?.file?.includes(`/tpa/`);
   const isFpa = parsed[0]?.file && FPA_TEST_REGEXP.test(parsed[0].file);
-  const handler = WaveKernel?.get()?.getModule<ProcessHandler>?.("stack", true);
+  const handler = Kernel()!.getModule<ProcessHandlerType>?.("stack", true);
   const renderer = handler?.renderer;
 
   if (renderer?.lastInteract) {
