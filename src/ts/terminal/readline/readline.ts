@@ -12,7 +12,7 @@
  *
  * © IzKuipers 2025
  */
-import { KernelStack } from "$ts/process/handler";
+import { KernelStack } from "$ts/kernel/mods/stack";
 import { Process } from "$ts/process/instance";
 import { type IDisposable, type ITerminalAddon, Terminal } from "@xterm/xterm";
 import type { ArcTerminal } from "..";

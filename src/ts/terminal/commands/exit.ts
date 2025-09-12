@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { KernelStack } from "$ts/process/handler";
+import { KernelStack } from "$ts/kernel/mods/stack";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 

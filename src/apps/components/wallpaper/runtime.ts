@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { arrayToText, textToBlob } from "$ts/fs/convert";
-import { getItemNameFromPath, join } from "$ts/fs/util";
+import { arrayToText, textToBlob } from "$ts/kernel/mods/fs/convert";
+import { getItemNameFromPath, join } from "$ts/kernel/mods/fs/util";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { UploadIcon } from "$ts/images/general";
 import { tryJsonParse } from "$ts/json";

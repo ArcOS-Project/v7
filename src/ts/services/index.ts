@@ -1,9 +1,9 @@
 import { appStoreService } from "$ts/apps/storage";
-import { bhuspService } from "$ts/bughunt/process";
+import { bhuspService } from "$ts/kernel/mods/bughunt/process";
 import { devEnvironmentService } from "$ts/devenv";
 import { distributionService } from "$ts/distrib";
-import { shareService } from "$ts/fs/shares";
-import { KernelStack } from "$ts/process/handler";
+import { shareService } from "$ts/kernel/mods/fs/shares";
+import { KernelStack } from "$ts/kernel/mods/stack";
 import { Process } from "$ts/process/instance";
 import { protoService } from "$ts/proto";
 import { adminService } from "$ts/server/admin";

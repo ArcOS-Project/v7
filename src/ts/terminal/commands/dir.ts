@@ -1,5 +1,5 @@
-import type { FilesystemDrive } from "$ts/fs/drive";
-import { formatBytes, join } from "$ts/fs/util";
+import type { FilesystemDrive } from "$ts/kernel/mods/fs/drive";
+import { formatBytes, join } from "$ts/kernel/mods/fs/util";
 import { FormatLargeNumber, Gap, maxLength, Plural, Truncate } from "$ts/util";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";

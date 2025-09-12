@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { FilesystemDrive } from "$ts/fs/drive";
-  import { getDriveLetter, getItemNameFromPath } from "$ts/fs/util";
+  import { FilesystemDrive } from "$ts/kernel/mods/fs/drive";
+  import { getDriveLetter, getItemNameFromPath } from "$ts/kernel/mods/fs/util";
   import { FolderIcon } from "$ts/images/filesystem";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../../runtime";

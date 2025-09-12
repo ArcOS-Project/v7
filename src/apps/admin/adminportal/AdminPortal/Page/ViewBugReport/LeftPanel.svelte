@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import type { BugReportTpaFile } from "$apps/admin/adminportal/types";
-  import { formatBytes } from "$ts/fs/util";
+  import { formatBytes } from "$ts/kernel/mods/fs/util";
   import { DefaultMimeIcon } from "$ts/images/mime";
   import type { BugReport } from "$types/bughunt";
   import { onMount } from "svelte";

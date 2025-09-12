@@ -1,7 +1,7 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
   import { isPopulatable } from "$ts/apps/util";
-  import { KernelStack } from "$ts/process/handler";
+  import { KernelStack } from "$ts/kernel/mods/stack";
   import type { ShellRuntime } from "../../runtime";
   import OpenedApp from "./OpenedApps/OpenedApp.svelte";
 

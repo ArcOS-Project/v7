@@ -1,5 +1,5 @@
 import { DistributionServiceProcess } from "$ts/distrib";
-import { formatBytes, join } from "$ts/fs/util";
+import { formatBytes, join } from "$ts/kernel/mods/fs/util";
 import { ArcTermIcon } from "$ts/images/apps";
 import { UserPaths } from "$ts/server/user/store";
 import { Plural } from "$ts/util";

@@ -1,4 +1,4 @@
-import { join } from "$ts/fs/util";
+import { join } from "$ts/kernel/mods/fs/util";
 import { ComponentIcon } from "$ts/images/general";
 import type { AppProcessData } from "$types/app";
 import { AppProcess } from "./process";

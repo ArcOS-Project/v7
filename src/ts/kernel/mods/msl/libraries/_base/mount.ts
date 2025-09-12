@@ -1,4 +1,4 @@
-import { KernelStack } from "$ts/process/handler";
+import { KernelStack } from "$ts/kernel/mods/stack";
 import { UserDaemon } from "$ts/server/user/daemon";
 import type { Keyword } from "$types/msl";
 

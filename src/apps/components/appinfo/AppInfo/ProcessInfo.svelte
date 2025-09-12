@@ -2,7 +2,7 @@
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
-  import { KernelStack } from "$ts/process/handler";
+  import { KernelStack } from "$ts/kernel/mods/stack";
   import { Sleep } from "$ts/sleep";
   import { onMount } from "svelte";
   import type { AppInfoRuntime } from "../runtime";

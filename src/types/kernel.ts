@@ -1,5 +1,5 @@
 import type { AppRenderer } from "$ts/apps/renderer";
-import type { FilesystemDrive } from "$ts/fs/drive";
+import type { FilesystemDrive } from "$ts/kernel/mods/fs/drive";
 import type { ProcessDispatch } from "$ts/process/dispatch";
 import type { Process } from "$ts/process/instance";
 import type { StateHandler } from "$ts/state";

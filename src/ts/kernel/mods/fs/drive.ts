@@ -9,7 +9,7 @@ import type {
 } from "$types/fs";
 import type { ServerManagerType } from "$types/kernel";
 import { LogLevel } from "$types/logging";
-import type { UserQuota } from "../../types/fs";
+import type { UserQuota } from "../../../../types/fs";
 
 export class FilesystemDrive {
   server: ServerManagerType;

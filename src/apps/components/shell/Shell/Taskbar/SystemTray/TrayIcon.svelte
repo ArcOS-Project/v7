@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
-  import { KernelStack } from "$ts/process/handler";
+  import { KernelStack } from "$ts/kernel/mods/stack";
   import type { TrayIconProcess } from "$ts/ui/tray/process";
   import { onMount } from "svelte";
   import Popup from "./TrayIcon/Popup.svelte";

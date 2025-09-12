@@ -1,6 +1,6 @@
 <script lang="ts">
   import { StoreItemBanner, StoreItemIcon } from "$ts/distrib/util";
-  import { formatBytes } from "$ts/fs/util";
+  import { formatBytes } from "$ts/kernel/mods/fs/util";
   import type { StoreItem } from "$types/package";
   import { onMount } from "svelte";
   import SvelteMarkdown from "svelte-markdown";

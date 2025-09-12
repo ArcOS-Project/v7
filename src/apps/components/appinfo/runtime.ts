@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { AppInfoIcon } from "$ts/images/apps";
 import { ComponentIcon } from "$ts/images/general";
-import { KernelStack } from "$ts/process/handler";
+import { KernelStack } from "$ts/kernel/mods/stack";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";

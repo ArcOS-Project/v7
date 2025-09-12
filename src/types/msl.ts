@@ -1,5 +1,5 @@
-import type { LanguageExecutionError } from "$ts/msl/error";
-import type { LanguageInstance } from "$ts/msl/instance";
+import type { LanguageExecutionError } from "$ts/kernel/mods/msl/error";
+import type { LanguageInstance } from "$ts/kernel/mods/msl/instance";
 
 export type StdIn = (p?: string) => Promise<string>;
 export type StdOut = (m: string) => void;

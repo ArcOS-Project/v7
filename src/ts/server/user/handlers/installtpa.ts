@@ -1,5 +1,5 @@
-import { arrayToText } from "$ts/fs/convert";
-import { getParentDirectory } from "$ts/fs/util";
+import { arrayToText } from "$ts/kernel/mods/fs/convert";
+import { getParentDirectory } from "$ts/kernel/mods/fs/util";
 import { DownloadIcon } from "$ts/images/filesystem";
 import { tryJsonParse } from "$ts/json";
 import type { FileHandler } from "$types/fs";

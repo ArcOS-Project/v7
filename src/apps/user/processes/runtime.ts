@@ -3,7 +3,7 @@ import { MessageBox } from "$ts/dialog";
 import { DefaultIcon } from "$ts/images/apps";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { ComponentIcon } from "$ts/images/general";
-import { KernelStack } from "$ts/process/handler";
+import { KernelStack } from "$ts/kernel/mods/stack";
 import type { Process } from "$ts/process/instance";
 import { ProcessKillResultCaptions } from "$ts/process/store";
 import { Store } from "$ts/writable";

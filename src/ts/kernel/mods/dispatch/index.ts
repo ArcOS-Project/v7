@@ -1,7 +1,7 @@
 import type { SystemDispatchResult } from "$types/dispatch";
 import type { ConstructedWaveKernel } from "$types/kernel";
 import { LogLevel } from "$types/logging";
-import { KernelModule } from "../kernel/module";
+import { KernelModule } from "../../module";
 import { KnownSystemDispatchers, SystemOnlyDispatches } from "./store";
 
 export class SystemDispatch extends KernelModule {

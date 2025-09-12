@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { MessagingAppRuntime } from "$apps/user/messages/runtime";
-  import { formatBytes } from "$ts/fs/util";
+  import { formatBytes } from "$ts/kernel/mods/fs/util";
   import { DefaultMimeIcon } from "$ts/images/mime";
   import type { MessageAttachment } from "$types/messaging";
 

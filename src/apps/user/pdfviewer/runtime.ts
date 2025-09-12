@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { arrayToBlob } from "$ts/fs/convert";
-import { getItemNameFromPath } from "$ts/fs/util";
+import { arrayToBlob } from "$ts/kernel/mods/fs/convert";
+import { getItemNameFromPath } from "$ts/kernel/mods/fs/util";
 import { ErrorIcon } from "$ts/images/dialog";
 import { PdfMimeIcon } from "$ts/images/mime";
 import { Store } from "$ts/writable";

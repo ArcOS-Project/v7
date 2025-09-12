@@ -1,6 +1,6 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
-  import { getDriveLetter, getItemNameFromPath } from "$ts/fs/util";
+  import { getDriveLetter, getItemNameFromPath } from "$ts/kernel/mods/fs/util";
   import { Plural } from "$ts/util";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../runtime";

@@ -1,10 +1,10 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import type { ShareManager } from "$ts/fs/shares";
-import type { SharedDrive } from "$ts/fs/shares/drive";
+import type { ShareManager } from "$ts/kernel/mods/fs/shares";
+import type { SharedDrive } from "$ts/kernel/mods/fs/shares/drive";
 import { WarningIcon } from "$ts/images/dialog";
 import { ShareIcon } from "$ts/images/filesystem";
-import { KernelStack } from "$ts/process/handler";
+import { KernelStack } from "$ts/kernel/mods/stack";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { SharedDriveType } from "$types/shares";

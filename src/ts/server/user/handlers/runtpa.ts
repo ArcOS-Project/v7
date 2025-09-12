@@ -1,4 +1,4 @@
-import { arrayToText } from "$ts/fs/convert";
+import { arrayToText } from "$ts/kernel/mods/fs/convert";
 import { ArcAppMimeIcon } from "$ts/images/mime";
 import { tryJsonParse } from "$ts/json";
 import type { FileHandler } from "$types/fs";

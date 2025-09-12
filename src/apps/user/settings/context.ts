@@ -1,6 +1,6 @@
 import { MessageBox } from "$ts/dialog";
-import { textToBlob } from "$ts/fs/convert";
-import { getParentDirectory } from "$ts/fs/util";
+import { textToBlob } from "$ts/kernel/mods/fs/convert";
+import { getParentDirectory } from "$ts/kernel/mods/fs/util";
 import { WarningIcon } from "$ts/images/dialog";
 import { ThemesIcon } from "$ts/images/general";
 import { UserPaths } from "$ts/server/user/store";

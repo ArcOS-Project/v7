@@ -1,6 +1,6 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import { formatBytes } from "$ts/fs/util";
+  import { formatBytes } from "$ts/kernel/mods/fs/util";
   import type { AdminPortalRuntime } from "../runtime";
   import { AdminPortalPageStore } from "../store";
   import type { AdminPortalPage } from "../types";

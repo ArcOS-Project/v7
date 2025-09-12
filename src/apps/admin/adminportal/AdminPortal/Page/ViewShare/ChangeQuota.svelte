@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
-  import { formatBytes } from "$ts/fs/util";
+  import { formatBytes } from "$ts/kernel/mods/fs/util";
   import { QuestionIcon } from "$ts/images/dialog";
   import type { SharedDriveType } from "$types/shares";
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { formatBytes } from "$ts/fs/util";
+  import { formatBytes } from "$ts/kernel/mods/fs/util";
   import type { CategorizedDiskUsage } from "$types/user";
 
   const { usage }: { usage: CategorizedDiskUsage } = $props();

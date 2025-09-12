@@ -1,4 +1,4 @@
-import { arrayToText } from "$ts/fs/convert";
+import { arrayToText } from "$ts/kernel/mods/fs/convert";
 import { detectJavaScript } from "$ts/util";
 import type { Keyword } from "$types/msl";
 

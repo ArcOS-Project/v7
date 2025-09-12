@@ -1,6 +1,6 @@
-import type { ASTNode } from "$ts/lang/ast";
-import type { LangError } from "$ts/lang/error";
-import type { Interpreter } from "$ts/lang/interpreter";
+import type { ASTNode } from "$ts/kernel/mods/lang/ast";
+import type { LangError } from "$ts/kernel/mods/lang/error";
+import type { Interpreter } from "$ts/kernel/mods/lang/interpreter";
 
 export interface NativeFunction {
   parameters: string[];

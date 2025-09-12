@@ -1,7 +1,7 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
   import { contextProps } from "$ts/context/actions.svelte";
-  import { KernelStack } from "$ts/process/handler";
+  import { KernelStack } from "$ts/kernel/mods/stack";
   import { Wallpapers } from "$ts/wallpaper/store";
   import { Store } from "$ts/writable";
   import type { Workspace } from "$types/user";

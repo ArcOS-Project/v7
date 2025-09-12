@@ -1,7 +1,7 @@
 import { toForm } from "$ts/form";
-import { arrayToBlob } from "$ts/fs/convert";
-import { FilesystemDrive } from "$ts/fs/drive";
-import { getItemNameFromPath, join } from "$ts/fs/util";
+import { arrayToBlob } from "$ts/kernel/mods/fs/convert";
+import { FilesystemDrive } from "$ts/kernel/mods/fs/drive";
+import { getItemNameFromPath, join } from "$ts/kernel/mods/fs/util";
 import type {
   DirectoryReadReturn,
   DriveCapabilities,

@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { getKMod, Kernel } from "$ts/env";
-import { KernelStack } from "$ts/process/handler";
+import { KernelStack } from "$ts/kernel/mods/stack";
 import type { ProcessHandlerType } from "$types/kernel";
 import { LogLevel } from "$types/logging";
 import type { State } from "../../types/state";

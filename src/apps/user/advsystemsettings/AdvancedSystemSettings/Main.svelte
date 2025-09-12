@@ -5,7 +5,7 @@
   import { ArcSystemIcon } from "$ts/images/general";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
-  import { KernelStack } from "$ts/process/handler";
+  import { KernelStack } from "$ts/kernel/mods/stack";
   import type { AdvSysSetRuntime } from "../runtime";
 
   const { process }: { process: AdvSysSetRuntime } = $props();

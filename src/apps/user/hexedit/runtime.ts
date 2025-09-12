@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { getItemNameFromPath } from "$ts/fs/util";
+import { getItemNameFromPath } from "$ts/kernel/mods/fs/util";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { DriveIcon } from "$ts/images/filesystem";
 import { MemoryIcon } from "$ts/images/general";

@@ -1,4 +1,4 @@
-import { join } from "$ts/fs/util";
+import { join } from "$ts/kernel/mods/fs/util";
 import { UserPaths } from "$ts/server/user/store";
 import type { ArcShortcut } from "$types/shortcut";
 import Finish from "./FirstRun/Page/Finish.svelte";

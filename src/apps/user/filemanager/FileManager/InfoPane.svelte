@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getItemNameFromPath } from "$ts/fs/util";
+  import { getItemNameFromPath } from "$ts/kernel/mods/fs/util";
   import { FolderIcon } from "$ts/images/filesystem";
   import type { ExpandedFileAssociationInfo } from "$types/assoc";
   import type { ExtendedStat, SummarizedFsModifiers } from "$types/fs";

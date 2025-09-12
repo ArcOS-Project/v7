@@ -1,10 +1,10 @@
 import { __Console__ } from "$ts/console";
 import { ArcOSVersion, getKMod, Kernel } from "$ts/env";
-import { textToBlob } from "$ts/fs/convert";
-import { MemoryFilesystemDrive } from "$ts/fs/drives/temp";
+import { textToBlob } from "$ts/kernel/mods/fs/convert";
+import { MemoryFilesystemDrive } from "$ts/kernel/mods/fs/drives/temp";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { KernelStack } from "$ts/process/handler";
+import { KernelStack } from "$ts/kernel/mods/stack";
 import { States } from "$ts/state/store";
 import type { ServerManagerType } from "$types/kernel";
 import { Process } from "../process/instance";

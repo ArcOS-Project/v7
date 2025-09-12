@@ -1,5 +1,5 @@
 import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
-import { KernelStack } from "$ts/process/handler";
+import { KernelStack } from "$ts/kernel/mods/stack";
 import { Process } from "$ts/process/instance";
 import { UserDaemon } from "$ts/server/user/daemon";
 import { ArcTerminal } from "$ts/terminal";

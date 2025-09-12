@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { formatBytes } from "$ts/fs/util";
+  import { formatBytes } from "$ts/kernel/mods/fs/util";
   import type { MessageComposerRuntime } from "../runtime";
 
   const { process }: { process: MessageComposerRuntime } = $props();

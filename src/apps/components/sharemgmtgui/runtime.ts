@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import type { ShareManager } from "$ts/fs/shares";
+import type { ShareManager } from "$ts/kernel/mods/fs/shares";
 import { QuestionIcon } from "$ts/images/dialog";
 import { TrashIcon } from "$ts/images/general";
 import { Store } from "$ts/writable";

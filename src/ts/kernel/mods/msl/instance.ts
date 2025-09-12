@@ -16,12 +16,12 @@
 import type { AppProcess } from "$ts/apps/process";
 import { __Console__ } from "$ts/console";
 import { ArcOSVersion, getKMod } from "$ts/env";
-import { join } from "$ts/fs/util";
+import { join } from "$ts/kernel/mods/fs/util";
 import { getJsonHierarchy, setJsonHierarchy } from "$ts/hierarchy";
 import { keysToLowerCase, tryJsonParse } from "$ts/json";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { KernelStack } from "$ts/process/handler";
+import { KernelStack } from "$ts/kernel/mods/stack";
 import { Process } from "$ts/process/instance";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";

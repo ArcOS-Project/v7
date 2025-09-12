@@ -4,7 +4,7 @@
   import { contextProps } from "$ts/context/actions.svelte";
   import { BETA } from "$ts/env";
   import { ComponentIcon } from "$ts/images/general";
-  import { KernelStack } from "$ts/process/handler";
+  import { KernelStack } from "$ts/kernel/mods/stack";
   import { onMount, type Snippet } from "svelte";
   import AltMenu from "./CustomTitlebar/AltMenu.svelte";
 

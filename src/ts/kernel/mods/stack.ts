@@ -6,11 +6,11 @@ import type { App } from "$types/app";
 import type { ConstructedWaveKernel, EnvironmentType, SystemDispatchType } from "$types/kernel";
 import type { ProcessContext, ProcessKillResult } from "$types/process";
 import { parse } from "stacktrace-parser";
-import { AppRenderer } from "../apps/renderer";
-import { Log } from "../kernel/logging";
-import { KernelModule } from "../kernel/module";
-import { Store } from "../writable";
-import type { Process } from "./instance";
+import { AppRenderer } from "../../apps/renderer";
+import { Log } from "../logging";
+import { KernelModule } from "../module";
+import { Store } from "../../writable";
+import type { Process } from "../../process/instance";
 
 export const KernelStack = () => Kernel()!.getModule<ProcessHandler>("stack");
 

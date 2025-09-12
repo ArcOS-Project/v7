@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { tryJsonParse } from "$ts/json";
-import { KernelStack } from "$ts/process/handler";
+import { KernelStack } from "$ts/kernel/mods/stack";
 import { ElevationLevel } from "$types/elevation";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";

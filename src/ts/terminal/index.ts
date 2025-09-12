@@ -1,9 +1,9 @@
 import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import TerminalWindow from "$apps/components/terminalwindow/TerminalWindow.svelte";
-import { arrayToText, textToBlob } from "$ts/fs/convert";
-import type { FilesystemDrive } from "$ts/fs/drive";
-import { join } from "$ts/fs/util";
-import { KernelStack } from "$ts/process/handler";
+import { arrayToText, textToBlob } from "$ts/kernel/mods/fs/convert";
+import type { FilesystemDrive } from "$ts/kernel/mods/fs/drive";
+import { join } from "$ts/kernel/mods/fs/util";
+import { KernelStack } from "$ts/kernel/mods/stack";
 import { Process } from "$ts/process/instance";
 import { LoginUser } from "$ts/server/user/auth";
 import type { UserDaemon } from "$ts/server/user/daemon";

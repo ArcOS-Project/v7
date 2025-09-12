@@ -1,5 +1,5 @@
 import { MessageBox } from "$ts/dialog";
-import { arrayToText } from "$ts/fs/convert";
+import { arrayToText } from "$ts/kernel/mods/fs/convert";
 import { ThemesIcon } from "$ts/images/general";
 import { tryJsonParse } from "$ts/json";
 import type { FileHandler } from "$types/fs";

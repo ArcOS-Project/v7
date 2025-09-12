@@ -2,7 +2,7 @@
   import type { FileManagerRuntime } from "$apps/user/filemanager/runtime";
   import type { QuotedDrive } from "$apps/user/filemanager/types";
   import { contextProps } from "$ts/context/actions.svelte";
-  import { SharedDrive } from "$ts/fs/shares/drive";
+  import { SharedDrive } from "$ts/kernel/mods/fs/shares/drive";
   import { DriveIcon } from "$ts/images/filesystem";
   import { onMount } from "svelte";
 

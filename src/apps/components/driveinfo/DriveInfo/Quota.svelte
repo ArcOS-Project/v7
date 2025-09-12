@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { formatBytes } from "$ts/fs/util";
+  import { formatBytes } from "$ts/kernel/mods/fs/util";
   import type { UserQuota } from "$types/fs";
 
   const { quota }: { quota: UserQuota } = $props();

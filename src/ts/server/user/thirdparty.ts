@@ -3,8 +3,8 @@ import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { __Console__ } from "$ts/console";
 import { contextProps } from "$ts/context/actions.svelte";
 import { MessageBox } from "$ts/dialog";
-import { arrayToBlob, arrayToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/fs/convert";
-import { FilesystemDrive } from "$ts/fs/drive";
+import { arrayToBlob, arrayToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/kernel/mods/fs/convert";
+import { FilesystemDrive } from "$ts/kernel/mods/fs/drive";
 import {
   DownloadFile,
   formatBytes,
@@ -14,7 +14,7 @@ import {
   join,
   onFileChange,
   onFolderChange,
-} from "$ts/fs/util";
+} from "$ts/kernel/mods/fs/util";
 import { getAllImages } from "$ts/images";
 import { WindowSettingsIcon } from "$ts/images/general";
 import { tryJsonStringify } from "$ts/json";

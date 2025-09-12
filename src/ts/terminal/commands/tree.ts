@@ -1,4 +1,4 @@
-import { join } from "$ts/fs/util";
+import { join } from "$ts/kernel/mods/fs/util";
 import { Plural } from "$ts/util";
 import type { RecursiveDirectory } from "$types/fs";
 import type { Arguments } from "$types/terminal";

@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { USERFS_UUID } from "$ts/env";
-import { FilesystemDrive } from "$ts/fs/drive";
-import { ServerDrive } from "$ts/fs/drives/server";
+import { FilesystemDrive } from "$ts/kernel/mods/fs/drive";
+import { ServerDrive } from "$ts/kernel/mods/fs/drives/server";
 import type { AppProcessData } from "$types/app";
 import type { UserQuota } from "$types/fs";
 import type { CategorizedDiskUsage } from "$types/user";

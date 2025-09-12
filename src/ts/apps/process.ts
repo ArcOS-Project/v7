@@ -4,7 +4,7 @@ import { KernelStateHandler } from "$ts/getters";
 import { BugReportIcon, ComponentIcon, SecurityHighIcon } from "$ts/images/general";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { KernelStack } from "$ts/process/handler";
+import { KernelStack } from "$ts/kernel/mods/stack";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { DefaultUserPreferences } from "$ts/server/user/default";
 import type { AppKeyCombinations } from "$types/accelerator";

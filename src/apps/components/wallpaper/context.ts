@@ -1,5 +1,5 @@
 import { MessageBox } from "$ts/dialog";
-import { getParentDirectory, join } from "$ts/fs/util";
+import { getParentDirectory, join } from "$ts/kernel/mods/fs/util";
 import { FileManagerIcon, ProcessManagerIcon, SettingsIcon } from "$ts/images/apps";
 import { QuestionIcon } from "$ts/images/dialog";
 import { PersonalizationIcon } from "$ts/images/general";

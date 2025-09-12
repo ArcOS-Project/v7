@@ -1,7 +1,7 @@
 import { MessageBox } from "$ts/dialog";
-import { ShareManager } from "$ts/fs/shares";
-import type { SharedDrive } from "$ts/fs/shares/drive";
-import { getItemNameFromPath, getParentDirectory, join } from "$ts/fs/util";
+import { ShareManager } from "$ts/kernel/mods/fs/shares";
+import type { SharedDrive } from "$ts/kernel/mods/fs/shares/drive";
+import { getItemNameFromPath, getParentDirectory, join } from "$ts/kernel/mods/fs/util";
 import { WarningIcon } from "$ts/images/dialog";
 import { UserPaths } from "$ts/server/user/store";
 import type { AppContextMenu } from "$types/app";

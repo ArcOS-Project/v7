@@ -1,6 +1,6 @@
 import { SpinnerIcon } from "$ts/images/general";
 import { GoodStatusIcon } from "$ts/images/status";
-import { KernelStack } from "$ts/process/handler";
+import { KernelStack } from "$ts/kernel/mods/stack";
 import { Process } from "$ts/process/instance";
 import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";

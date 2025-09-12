@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { FilesystemDrive } from "$ts/fs/drive";
+  import type { FilesystemDrive } from "$ts/kernel/mods/fs/drive";
 
   const { drive }: { drive: FilesystemDrive } = $props();
 </script>

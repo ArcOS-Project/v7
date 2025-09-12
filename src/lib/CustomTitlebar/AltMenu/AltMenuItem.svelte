@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
   import type { AppProcess } from "$ts/apps/process";
-  import { KernelStack } from "$ts/process/handler";
+  import { KernelStack } from "$ts/kernel/mods/stack";
   import { UUID } from "$ts/uuid";
   import type { ContextMenuItem } from "$types/app";
   import { onMount } from "svelte";

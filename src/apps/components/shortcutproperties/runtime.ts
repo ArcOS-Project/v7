@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { getParentDirectory } from "$ts/fs/util";
+import { getParentDirectory } from "$ts/kernel/mods/fs/util";
 import { getAllImages } from "$ts/images";
 import { ErrorIcon } from "$ts/images/dialog";
 import { Store } from "$ts/writable";

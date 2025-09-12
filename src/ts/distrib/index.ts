@@ -1,8 +1,8 @@
 import type { ApplicationStorage } from "$ts/apps/storage";
-import { arrayToBlob, arrayToText, textToBlob } from "$ts/fs/convert";
-import { join } from "$ts/fs/util";
+import { arrayToBlob, arrayToText, textToBlob } from "$ts/kernel/mods/fs/convert";
+import { join } from "$ts/kernel/mods/fs/util";
 import { tryJsonParse } from "$ts/json";
-import { KernelStack } from "$ts/process/handler";
+import { KernelStack } from "$ts/kernel/mods/stack";
 import { Backend } from "$ts/server/axios";
 import { UserPaths } from "$ts/server/user/store";
 import type { ServiceHost } from "$ts/services";

@@ -4,7 +4,7 @@
   import CircularProgress from "$lib/CircularProgress.svelte";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import Spinner from "$lib/Spinner.svelte";
-  import { formatBytes } from "$ts/fs/util";
+  import { formatBytes } from "$ts/kernel/mods/fs/util";
   import { GoodStatusIcon } from "$ts/images/status";
   import type { AdminBootstrapper } from "$ts/server/admin";
 

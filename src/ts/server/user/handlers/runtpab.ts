@@ -1,6 +1,6 @@
 import { MessageBox } from "$ts/dialog";
-import { arrayToBlob } from "$ts/fs/convert";
-import { join } from "$ts/fs/util";
+import { arrayToBlob } from "$ts/kernel/mods/fs/convert";
+import { join } from "$ts/kernel/mods/fs/util";
 import { ErrorIcon } from "$ts/images/dialog";
 import { ArcAppMimeIcon, CompressMimeIcon } from "$ts/images/mime";
 import { UUID } from "$ts/uuid";

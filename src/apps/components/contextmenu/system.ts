@@ -1,6 +1,6 @@
 import type { AppProcess } from "$ts/apps/process";
 import { ShutdownIcon } from "$ts/images/power";
-import { KernelStack } from "$ts/process/handler";
+import { KernelStack } from "$ts/kernel/mods/stack";
 import type { AppContextMenu } from "$types/app";
 import type { ContextMenuRuntime } from "./runtime";
 

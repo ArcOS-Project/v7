@@ -1,4 +1,4 @@
-import { getParentDirectory } from "$ts/fs/util";
+import { getParentDirectory } from "$ts/kernel/mods/fs/util";
 import type { ContextMenuItem } from "$types/app";
 import type { CodRuntime } from "../runtime";
 

@@ -1,4 +1,4 @@
-import { arrayToText } from "$ts/fs/convert";
+import { arrayToText } from "$ts/kernel/mods/fs/convert";
 import type { Keyword } from "$types/msl";
 
 export const Import: Keyword = async (lang) => {

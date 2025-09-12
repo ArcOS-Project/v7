@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getDriveLetter, getItemNameFromPath } from "$ts/fs/util";
+  import { getDriveLetter, getItemNameFromPath } from "$ts/kernel/mods/fs/util";
   import { Plural } from "$ts/util";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../runtime";

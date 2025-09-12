@@ -2,7 +2,7 @@ import { ArcOSVersion } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import type { ConstructedWaveKernel } from "$types/kernel";
-import { KernelModule } from "./module";
+import { KernelModule } from "../module";
 
 export class Environment extends KernelModule {
   private store: Map<string, any> = new Map([]);

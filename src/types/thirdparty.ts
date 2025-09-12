@@ -1,5 +1,12 @@
 import type { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import type { arrayToBlob, arrayToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/fs/convert";
+import type {
+  arrayToBlob,
+  arrayToText,
+  blobToDataURL,
+  blobToText,
+  textToArrayBuffer,
+  textToBlob,
+} from "$ts/kernel/mods/fs/convert";
 import type {
   DownloadFile,
   formatBytes,
@@ -9,7 +16,7 @@ import type {
   join,
   onFileChange,
   onFolderChange,
-} from "$ts/fs/util";
+} from "$ts/kernel/mods/fs/util";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import type { ServiceHost } from "$ts/services";
 import type { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";

@@ -3,7 +3,7 @@
   import { MessageBox } from "$ts/dialog";
   import { ErrorIcon } from "$ts/images/dialog";
   import { GlobeIcon } from "$ts/images/general";
-  import { KernelStack } from "$ts/process/handler";
+  import { KernelStack } from "$ts/kernel/mods/stack";
   import type { WeatherSearchResponse, WeatherSearchResult } from "$types/weather";
   import axios from "axios";
   import Section from "../Section.svelte";
