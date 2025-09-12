@@ -4,7 +4,7 @@ import { textToBlob } from "$ts/kernel/mods/fs/convert";
 import { MemoryFilesystemDrive } from "$ts/kernel/mods/fs/drives/temp";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { KernelStack } from "$ts/kernel/mods/stack";
+import { KernelStack } from "$ts/env";
 import { States } from "$ts/state/store";
 import type { ServerManagerType } from "$types/kernel";
 import { Process } from "../process/instance";

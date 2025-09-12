@@ -1,4 +1,4 @@
-import { KernelStack } from "$ts/kernel/mods/stack";
+import { KernelStack } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";

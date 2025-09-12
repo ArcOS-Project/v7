@@ -1,6 +1,6 @@
 <script lang="ts">
   import CodeEditor from "$lib/CodeEditor.svelte";
-  import { formatBytes } from "$ts/kernel/mods/fs/util";
+  import { formatBytes } from "$ts/util/fs";
   import { DbMimeIcon } from "$ts/images/mime";
   import { Plural } from "$ts/util";
   import { Store } from "$ts/writable";

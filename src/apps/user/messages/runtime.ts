@@ -2,7 +2,7 @@ import type { FileProgressMutator } from "$apps/components/fsprogress/types";
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { arrayToBlob, arrayToText, textToBlob } from "$ts/kernel/mods/fs/convert";
-import { getParentDirectory } from "$ts/kernel/mods/fs/util";
+import { getParentDirectory } from "$ts/util/fs";
 import { MessagingIcon } from "$ts/images/apps";
 import { WarningIcon } from "$ts/images/dialog";
 import { DefaultMimeIcon } from "$ts/images/mime";

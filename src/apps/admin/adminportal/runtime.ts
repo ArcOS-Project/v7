@@ -2,7 +2,7 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { textToBlob } from "$ts/kernel/mods/fs/convert";
 import { ShareManager } from "$ts/kernel/mods/fs/shares";
-import { join } from "$ts/kernel/mods/fs/util";
+import { join } from "$ts/util/fs";
 import { ElevationIcon } from "$ts/images/general";
 import { AdminBootstrapper } from "$ts/server/admin";
 import { Sleep } from "$ts/sleep";

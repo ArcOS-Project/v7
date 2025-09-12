@@ -12,8 +12,6 @@ import { KernelModule } from "../module";
 import { Store } from "../../writable";
 import type { Process } from "../../process/instance";
 
-export const KernelStack = () => Kernel()!.getModule<ProcessHandler>("stack");
-
 export class ProcessHandler extends KernelModule {
   public BUSY = false;
   private lastPid: number = 0;

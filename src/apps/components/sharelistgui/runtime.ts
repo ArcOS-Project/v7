@@ -4,7 +4,7 @@ import type { ShareManager } from "$ts/kernel/mods/fs/shares";
 import type { SharedDrive } from "$ts/kernel/mods/fs/shares/drive";
 import { WarningIcon } from "$ts/images/dialog";
 import { ShareIcon } from "$ts/images/filesystem";
-import { KernelStack } from "$ts/kernel/mods/stack";
+import { KernelStack } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { SharedDriveType } from "$types/shares";

@@ -2,7 +2,7 @@ import { DistributionServiceProcess } from "$ts/distrib";
 import { toForm } from "$ts/form";
 import { arrayToBlob, arrayToText, textToBlob } from "$ts/kernel/mods/fs/convert";
 import { AdminServerDrive } from "$ts/kernel/mods/fs/drives/admin";
-import { join } from "$ts/kernel/mods/fs/util";
+import { join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/json";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";

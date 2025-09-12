@@ -2,7 +2,7 @@ import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
 import { contextProps } from "$ts/context/actions.svelte";
 import { BETA } from "$ts/env";
 import { ComponentIcon } from "$ts/images/general";
-import { KernelStack } from "$ts/kernel/mods/stack";
+import { KernelStack } from "$ts/env";
 import { UUID } from "$ts/uuid";
 import { Draggable } from "@neodrag/vanilla";
 import { unmount } from "svelte";

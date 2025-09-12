@@ -2,7 +2,7 @@
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import CircularProgress from "$lib/CircularProgress.svelte";
   import Spinner from "$lib/Spinner.svelte";
-  import { formatBytes } from "$ts/kernel/mods/fs/util";
+  import { formatBytes } from "$ts/util/fs";
   import type { UserQuota } from "$types/fs";
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { formatBytes } from "$ts/kernel/mods/fs/util";
+  import { formatBytes } from "$ts/util/fs";
   import type { WriterRuntime } from "./runtime";
 
   const { process }: { process: WriterRuntime } = $props();

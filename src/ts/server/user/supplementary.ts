@@ -1,8 +1,8 @@
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { arrayToText, textToBlob } from "$ts/kernel/mods/fs/convert";
-import { getItemNameFromPath, join } from "$ts/kernel/mods/fs/util";
+import { getItemNameFromPath, join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/json";
-import { KernelStack } from "$ts/kernel/mods/stack";
+import { KernelStack } from "$ts/env";
 import { authcode, detectJavaScript } from "$ts/util";
 import type { App } from "$types/app";
 import type { FilesystemType } from "$types/kernel";

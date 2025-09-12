@@ -3,7 +3,7 @@
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
   import { StoreItemIcon } from "$ts/distrib/util";
-  import { formatBytes } from "$ts/kernel/mods/fs/util";
+  import { formatBytes } from "$ts/util/fs";
   import type { StoreItem } from "$types/package";
   import dayjs from "dayjs";
   import type { AppStoreRuntime } from "../runtime";

@@ -14,7 +14,7 @@ import {
   join,
   onFileChange,
   onFolderChange,
-} from "$ts/kernel/mods/fs/util";
+} from "$ts/util/fs";
 import { getAllImages } from "$ts/images";
 import { WindowSettingsIcon } from "$ts/images/general";
 import { tryJsonStringify } from "$ts/json";

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
-  import { formatBytes } from "$ts/kernel/mods/fs/util";
+  import { formatBytes } from "$ts/util/fs";
   import type { ReadableStore } from "$ts/writable";
   import type { SharedDriveType } from "$types/shares";
 

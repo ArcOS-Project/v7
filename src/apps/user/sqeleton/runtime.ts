@@ -1,9 +1,9 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { getItemNameFromPath } from "$ts/kernel/mods/fs/util";
+import { getItemNameFromPath } from "$ts/util/fs";
 import { SqeletonIcon } from "$ts/images/apps";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
-import { KernelStack } from "$ts/kernel/mods/stack";
+import { KernelStack } from "$ts/env";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { SqlInterfaceProcess } from "$ts/sql";

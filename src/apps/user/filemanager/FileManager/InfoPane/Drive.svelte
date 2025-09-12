@@ -1,6 +1,6 @@
 <script lang="ts">
   import CircularProgress from "$lib/CircularProgress.svelte";
-  import { formatBytes } from "$ts/kernel/mods/fs/util";
+  import { formatBytes } from "$ts/util/fs";
   import type { QuotedDrive } from "../../types";
   const { drive }: { drive: QuotedDrive } = $props();
 </script>

@@ -6,7 +6,7 @@ import { getKMod } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { ProfilePictures } from "$ts/images/pfp";
 import { tryJsonParse } from "$ts/json";
-import { KernelStack } from "$ts/kernel/mods/stack";
+import { KernelStack } from "$ts/env";
 import { ProtocolServiceProcess } from "$ts/proto";
 import { Backend } from "$ts/server/axios";
 import { LoginUser } from "$ts/server/user/auth";

@@ -1,7 +1,7 @@
 import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
 import type { AppProcess } from "$ts/apps/process";
 import { getKMod } from "$ts/env";
-import { KernelStack } from "$ts/kernel/mods/stack";
+import { KernelStack } from "$ts/env";
 import { UUID } from "$ts/uuid";
 import type { ContextMenuItem } from "$types/app";
 import type { EnvironmentType, ProcessHandlerType } from "$types/kernel";

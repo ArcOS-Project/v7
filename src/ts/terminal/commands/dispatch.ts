@@ -1,6 +1,6 @@
 import { KnownSystemDispatchers, SystemOnlyDispatches } from "$ts/kernel/mods/dispatch/store";
 import { tryJsonParse } from "$ts/json";
-import { KernelStack } from "$ts/kernel/mods/stack";
+import { KernelStack } from "$ts/env";
 import { tryParseInt } from "$ts/util";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";

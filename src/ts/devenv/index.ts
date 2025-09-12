@@ -3,7 +3,7 @@ import { MessageBox } from "$ts/dialog";
 import { KernelLogs } from "$ts/getters";
 import { ErrorIcon } from "$ts/images/dialog";
 import { ArcBuild } from "$ts/metadata/build";
-import { KernelStack } from "$ts/kernel/mods/stack";
+import { KernelStack } from "$ts/env";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";

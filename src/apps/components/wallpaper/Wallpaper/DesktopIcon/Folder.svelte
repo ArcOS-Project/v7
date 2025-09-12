@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { join } from "$ts/kernel/mods/fs/util";
+  import { join } from "$ts/util/fs";
   import { FolderIcon } from "$ts/images/filesystem";
   import type { FolderEntry } from "$types/fs";
   import type { WallpaperRuntime } from "../../runtime";

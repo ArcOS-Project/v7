@@ -1,7 +1,7 @@
 <script lang="ts">
   import { contextProps } from "$ts/context/actions.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
-  import { formatBytes, join } from "$ts/kernel/mods/fs/util";
+  import { formatBytes, join } from "$ts/util/fs";
   import { getIconPath } from "$ts/images";
   import { DefaultMimeIcon } from "$ts/images/mime";
   import type { FileEntry } from "$types/fs";

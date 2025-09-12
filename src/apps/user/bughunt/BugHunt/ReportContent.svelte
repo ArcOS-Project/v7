@@ -2,7 +2,7 @@
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
-  import { formatBytes } from "$ts/kernel/mods/fs/util";
+  import { formatBytes } from "$ts/util/fs";
   import type { BugReport } from "$types/bughunt";
   import type { BugHuntRuntime } from "../runtime";
   import ReportNotFound from "./ReportContent/ReportNotFound.svelte";

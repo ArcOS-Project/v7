@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getItemNameFromPath } from "$ts/kernel/mods/fs/util";
+  import { getItemNameFromPath } from "$ts/util/fs";
   import { DefaultMimeIcon } from "$ts/images/mime";
   import { onMount } from "svelte";
   import type { MediaPlayerRuntime } from "../runtime";

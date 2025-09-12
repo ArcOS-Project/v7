@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { join } from "$ts/kernel/mods/fs/util";
+import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 

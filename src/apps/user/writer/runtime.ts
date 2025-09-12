@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { arrayToText, textToBlob } from "$ts/kernel/mods/fs/convert";
-import { getItemNameFromPath, getParentDirectory } from "$ts/kernel/mods/fs/util";
+import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { WarningIcon } from "$ts/images/dialog";
 import { DriveIcon } from "$ts/images/filesystem";
 import { DefaultMimeIcon, TextMimeIcon } from "$ts/images/mime";

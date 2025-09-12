@@ -2,7 +2,7 @@
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import type { AppProcess } from "$ts/apps/process";
   import { contextProps } from "$ts/context/actions.svelte";
-  import { KernelStack } from "$ts/kernel/mods/stack";
+  import { KernelStack } from "$ts/env";
 
   const { openedProcess, pid, process }: { openedProcess: AppProcess; pid: number; process: ShellRuntime } = $props();
   const { windowTitle, windowIcon } = openedProcess;

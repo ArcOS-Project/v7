@@ -1,6 +1,6 @@
 <script lang="ts">
   import CodeEditor from "$lib/CodeEditor.svelte";
-  import { formatBytes } from "$ts/kernel/mods/fs/util";
+  import { formatBytes } from "$ts/util/fs";
   import type { CodRuntime } from "./runtime";
 
   const { process }: { process: CodRuntime } = $props();

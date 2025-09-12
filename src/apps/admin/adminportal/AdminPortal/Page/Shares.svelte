@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { formatBytes } from "$ts/kernel/mods/fs/util";
+  import { formatBytes } from "$ts/util/fs";
   import { Store } from "$ts/writable";
   import type { SharedDriveType } from "$types/shares";
   import { onMount } from "svelte";

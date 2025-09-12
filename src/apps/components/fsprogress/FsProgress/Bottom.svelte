@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { formatBytes } from "$ts/kernel/mods/fs/util";
+  import { formatBytes } from "$ts/util/fs";
   import type { FsProgressRuntime } from "../runtime";
 
   const { process }: { process: FsProgressRuntime } = $props();

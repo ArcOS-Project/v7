@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { KernelStack } from "$ts/kernel/mods/stack";
+import { KernelStack } from "$ts/env";
 import { Store, type ReadableStore } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { RenderArgs } from "$types/process";

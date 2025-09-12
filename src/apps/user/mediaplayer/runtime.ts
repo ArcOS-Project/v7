@@ -1,10 +1,10 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { arrayToText, textToBlob } from "$ts/kernel/mods/fs/convert";
-import { getItemNameFromPath, getParentDirectory, join } from "$ts/kernel/mods/fs/util";
+import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { MediaPlayerIcon } from "$ts/images/apps";
 import { FolderIcon } from "$ts/images/filesystem";
-import { KernelStack } from "$ts/kernel/mods/stack";
+import { KernelStack } from "$ts/env";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";

@@ -3,7 +3,7 @@ import { bhuspService } from "$ts/kernel/mods/bughunt/process";
 import { devEnvironmentService } from "$ts/devenv";
 import { distributionService } from "$ts/distrib";
 import { shareService } from "$ts/kernel/mods/fs/shares";
-import { KernelStack } from "$ts/kernel/mods/stack";
+import { KernelStack } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import { protoService } from "$ts/proto";
 import { adminService } from "$ts/server/admin";

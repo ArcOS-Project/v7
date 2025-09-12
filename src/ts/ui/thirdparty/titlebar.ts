@@ -1,6 +1,6 @@
 import type { AppProcess } from "$ts/apps/process";
 import { contextProps } from "$ts/context/actions.svelte";
-import { KernelStack } from "$ts/kernel/mods/stack";
+import { KernelStack } from "$ts/env";
 
 export class CustomTitlebar {
   #className = "";

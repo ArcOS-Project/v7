@@ -1,7 +1,7 @@
 import type { ApplicationStorage } from "$ts/apps/storage";
 import { arrayToBlob } from "$ts/kernel/mods/fs/convert";
-import { join } from "$ts/kernel/mods/fs/util";
-import { KernelStack } from "$ts/kernel/mods/stack";
+import { join } from "$ts/util/fs";
+import { KernelStack } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { UUID } from "$ts/uuid";

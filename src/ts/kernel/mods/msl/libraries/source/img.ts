@@ -1,4 +1,4 @@
-import { join } from "$ts/kernel/mods/fs/util";
+import { join } from "$ts/util/fs";
 import type { Keyword } from "$types/msl";
 
 export const Img: Keyword = async (lang) => {

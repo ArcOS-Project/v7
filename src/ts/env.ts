@@ -1,4 +1,4 @@
-import type { ConstructedWaveKernel } from "$types/kernel";
+import type { ProcessHandlerType, ConstructedWaveKernel } from "$types/kernel";
 
 export const ArcOSVersion = "7.0.6";
 export const VALIDATION_STR = "thisWonderfulArcOSServerIdentifiedByTheseWordsPleaseDontSteal(c)IzKuipers";
@@ -13,6 +13,7 @@ export function SetCurrentKernel(kernel: ConstructedWaveKernel) {
 }
 
 export const Kernel = () => CurrentKernel;
+export const KernelStack = () => getKMod<ProcessHandlerType>("stack");
 
 export function getKMod<T = any>(id: string, dontCrash = false): T {
   const kernel = Kernel()!;

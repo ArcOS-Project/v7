@@ -1,5 +1,5 @@
 import { ShellRuntime } from "$apps/components/shell/runtime";
-import { KernelStack } from "$ts/kernel/mods/stack";
+import { KernelStack } from "$ts/env";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";

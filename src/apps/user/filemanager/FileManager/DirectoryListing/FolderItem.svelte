@@ -1,7 +1,7 @@
 <script lang="ts">
   import { contextProps } from "$ts/context/actions.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
-  import { join } from "$ts/kernel/mods/fs/util";
+  import { join } from "$ts/util/fs";
   import { FolderIcon } from "$ts/images/filesystem";
   import type { FolderEntry } from "$types/fs";
   import dayjs from "dayjs";

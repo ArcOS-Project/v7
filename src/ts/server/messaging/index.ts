@@ -1,6 +1,6 @@
 import { getKMod } from "$ts/env";
-import { getItemNameFromPath, getParentDirectory } from "$ts/kernel/mods/fs/util";
-import { KernelStack } from "$ts/kernel/mods/stack";
+import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
+import { KernelStack } from "$ts/env";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import { authcode } from "$ts/util";

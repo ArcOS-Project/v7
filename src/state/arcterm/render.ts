@@ -1,5 +1,5 @@
 import { KernelInitPid } from "$ts/getters";
-import { KernelStack } from "$ts/kernel/mods/stack";
+import { KernelStack } from "$ts/env";
 import { TerminalMode } from "$ts/terminal/mode";
 import type { StateProps } from "$types/state";
 

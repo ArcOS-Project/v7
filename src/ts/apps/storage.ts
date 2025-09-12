@@ -1,5 +1,5 @@
 import { arrayToText } from "$ts/kernel/mods/fs/convert";
-import { getParentDirectory, join } from "$ts/kernel/mods/fs/util";
+import { getParentDirectory, join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/json";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";

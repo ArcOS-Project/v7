@@ -13,7 +13,7 @@ import {
 import type { ConstructedWaveKernel, SystemDispatchType } from "$types/kernel";
 import { arrayToBlob } from "./convert";
 import type { FilesystemDrive } from "./drive";
-import { getItemNameFromPath, getParentDirectory, join } from "./util";
+import { getItemNameFromPath, getParentDirectory, join } from "../../../util/fs";
 
 export class Filesystem extends KernelModule {
   private dispatch: SystemDispatchType;

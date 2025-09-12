@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { KernelStack } from "$ts/kernel/mods/stack";
+  import { KernelStack } from "$ts/env";
   import type { Process } from "$ts/process/instance";
   import { onMount } from "svelte";
   import type { ProcessManagerRuntime } from "../runtime";

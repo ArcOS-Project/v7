@@ -1,6 +1,6 @@
 import { toForm } from "$ts/form";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drive";
-import { getItemNameFromPath, join } from "$ts/kernel/mods/fs/util";
+import { getItemNameFromPath, join } from "$ts/util/fs";
 import type {
   DirectoryReadReturn,
   DriveCapabilities,

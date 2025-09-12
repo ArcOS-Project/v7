@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { KernelStack } from "$ts/kernel/mods/stack";
+  import { KernelStack } from "$ts/env";
   import type { MediaPlayerRuntime } from "../runtime";
   import Forward from "./Controls/Forward.svelte";
   import Next from "./Controls/Next.svelte";

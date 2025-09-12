@@ -13,7 +13,7 @@ import type {
 import type { SharedDriveType } from "$types/shares";
 import { arrayToBlob } from "../convert";
 import { FilesystemDrive } from "../drive";
-import { getItemNameFromPath, join } from "../util";
+import { getItemNameFromPath, join } from "../../../../util/fs";
 
 export class SharedDrive extends FilesystemDrive {
   shareId: string | undefined;

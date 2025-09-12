@@ -16,7 +16,7 @@ import type {
   join,
   onFileChange,
   onFolderChange,
-} from "$ts/kernel/mods/fs/util";
+} from "$ts/util/fs";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import type { ServiceHost } from "$ts/services";
 import type { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";

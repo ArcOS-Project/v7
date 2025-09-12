@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { arrayToBlob } from "$ts/kernel/mods/fs/convert";
-import { getItemNameFromPath } from "$ts/kernel/mods/fs/util";
+import { getItemNameFromPath } from "$ts/util/fs";
 import { ImageViewerIcon } from "$ts/images/apps";
 import { ErrorIcon } from "$ts/images/dialog";
 import { Sleep } from "$ts/sleep";

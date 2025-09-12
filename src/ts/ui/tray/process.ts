@@ -1,6 +1,6 @@
 import type { ShellRuntime } from "$apps/components/shell/runtime";
 import type { ShellTrayIcon, TrayPopup } from "$apps/components/shell/types";
-import { KernelStack } from "$ts/kernel/mods/stack";
+import { KernelStack } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import type { ContextMenuItem } from "$types/app";
 import { mount, unmount } from "svelte";

@@ -1,4 +1,4 @@
-import { KernelStack } from "$ts/kernel/mods/stack";
+import { KernelStack } from "$ts/env";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import type { GlobalDispatchClient } from "$types/dispatch";

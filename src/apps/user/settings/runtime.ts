@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { getItemNameFromPath } from "$ts/kernel/mods/fs/util";
+import { getItemNameFromPath } from "$ts/util/fs";
 import { SettingsIcon } from "$ts/images/apps";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import {
@@ -14,7 +14,7 @@ import {
 } from "$ts/images/general";
 import { GoodStatusIcon } from "$ts/images/status";
 import { ArcLicense } from "$ts/metadata/license";
-import { KernelStack } from "$ts/kernel/mods/stack";
+import { KernelStack } from "$ts/env";
 import { Backend } from "$ts/server/axios";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";

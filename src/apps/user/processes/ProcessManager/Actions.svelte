@@ -1,6 +1,6 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
-  import { KernelStack } from "$ts/kernel/mods/stack";
+  import { KernelStack } from "$ts/env";
   import { Process } from "$ts/process/instance";
   import { Plural } from "$ts/util";
   import type { ProcessManagerRuntime } from "../runtime";

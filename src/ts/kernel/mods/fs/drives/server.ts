@@ -15,7 +15,7 @@ import type {
 import type { EnvironmentType } from "$types/kernel";
 import { arrayToBlob } from "../convert";
 import { FilesystemDrive } from "../drive";
-import { getItemNameFromPath, join } from "../util";
+import { getItemNameFromPath, join } from "../../../../util/fs";
 
 export class ServerDrive extends FilesystemDrive {
   private token = "";

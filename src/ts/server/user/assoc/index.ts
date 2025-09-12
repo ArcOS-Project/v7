@@ -1,6 +1,6 @@
 import { ApplicationStorage } from "$ts/apps/storage";
 import { arrayToText, textToBlob } from "$ts/kernel/mods/fs/convert";
-import { getItemNameFromPath, join } from "$ts/kernel/mods/fs/util";
+import { getItemNameFromPath, join } from "$ts/util/fs";
 import { maybeIconId } from "$ts/images";
 import { tryJsonParse } from "$ts/json";
 import type { ServiceHost } from "$ts/services";

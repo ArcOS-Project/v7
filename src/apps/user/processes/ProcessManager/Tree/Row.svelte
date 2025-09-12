@@ -2,7 +2,7 @@
   import { AppProcess } from "$ts/apps/process";
   import { DefaultIcon } from "$ts/images/apps";
   import { FlagIcon } from "$ts/images/general";
-  import { KernelStack } from "$ts/kernel/mods/stack";
+  import { KernelStack } from "$ts/env";
   import type { Process } from "$ts/process/instance";
   import type { ProcessContext } from "$types/process";
   import { onMount } from "svelte";
