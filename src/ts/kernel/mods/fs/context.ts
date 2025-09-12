@@ -8,7 +8,7 @@ import type {
   UploadReturn,
 } from "$types/fs";
 import type { FilesystemType } from "$types/kernel";
-import type { FilesystemDrive } from "./drive";
+import type { FilesystemDrive } from "../../../drives/drive";
 
 export class FilesystemContext {
   #pid: number;

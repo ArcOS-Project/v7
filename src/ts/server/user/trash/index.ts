@@ -1,4 +1,4 @@
-import { arrayToText, textToBlob } from "$ts/kernel/mods/fs/convert";
+import { arrayToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { FolderIcon } from "$ts/images/filesystem";
 import { TrashIcon } from "$ts/images/general";

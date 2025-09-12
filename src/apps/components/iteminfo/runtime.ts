@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { arrayToText } from "$ts/kernel/mods/fs/convert";
+import { arrayToText } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";

@@ -1,7 +1,7 @@
 import type { StateHandler } from "$ts/state";
 import type { ConstructedWaveKernel } from "$types/kernel";
 import { LogLevel } from "../../../types/logging";
-import { Log } from "../logging";
+import { Log } from "../../logging";
 
 export class KernelModule {
   protected readonly IS_KMOD = true;

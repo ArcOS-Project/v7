@@ -3,7 +3,7 @@ import * as stackTraceParser from "stacktrace-parser";
 import { __Console__ } from "./console";
 import { Crash } from "./crash";
 import { Kernel } from "./env";
-import { Log } from "./kernel/logging";
+import { Log } from "./logging";
 
 export function handleGlobalErrors() {
   let LOCKED = false;

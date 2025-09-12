@@ -11,9 +11,9 @@ import type {
   UserQuota,
 } from "$types/fs";
 import type { SharedDriveType } from "$types/shares";
-import { arrayToBlob } from "../convert";
-import { FilesystemDrive } from "../drive";
-import { getItemNameFromPath, join } from "../../../../util/fs";
+import { arrayToBlob } from "../util/convert";
+import { FilesystemDrive } from "../drives/drive";
+import { getItemNameFromPath, join } from "../util/fs";
 
 export class SharedDrive extends FilesystemDrive {
   shareId: string | undefined;

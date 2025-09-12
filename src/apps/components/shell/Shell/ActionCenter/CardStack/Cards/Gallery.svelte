@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import { contextProps } from "$ts/context/actions.svelte";
-  import { arrayToBlob } from "$ts/kernel/mods/fs/convert";
+  import { arrayToBlob } from "$ts/util/convert";
   import { DesktopIcon } from "$ts/images/general";
   import { UserPaths } from "$ts/server/user/store";
   import type { UserPreferencesStore } from "$types/user";

@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
-import type { BugHuntUserSpaceProcess } from "$ts/kernel/mods/bughunt/process";
-import { textToBlob } from "$ts/kernel/mods/fs/convert";
+import type { BugHuntUserSpaceProcess } from "$ts/bughunt/process";
+import { textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath } from "$ts/util/fs";
 import { SaveIcon } from "$ts/images/general";
 import { UserPaths } from "$ts/server/user/store";

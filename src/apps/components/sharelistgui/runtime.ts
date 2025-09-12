@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import type { ShareManager } from "$ts/kernel/mods/fs/shares";
-import type { SharedDrive } from "$ts/kernel/mods/fs/shares/drive";
+import type { ShareManager } from "$ts/shares";
+import type { SharedDrive } from "$ts/shares/drive";
 import { WarningIcon } from "$ts/images/dialog";
 import { ShareIcon } from "$ts/images/filesystem";
 import { KernelStack } from "$ts/env";

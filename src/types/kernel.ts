@@ -1,5 +1,5 @@
 import type { AppRenderer } from "$ts/apps/renderer";
-import type { FilesystemDrive } from "$ts/kernel/mods/fs/drive";
+import type { FilesystemDrive } from "$ts/drives/drive";
 import type { ProcessDispatch } from "$ts/process/dispatch";
 import type { Process } from "$ts/process/instance";
 import type { StateHandler } from "$ts/state";
@@ -8,21 +8,19 @@ import type { BugReport, OutgoingBugReport, ReportOptions } from "./bughunt";
 import type { SystemDispatchResult } from "./dispatch";
 import type {
   DirectoryReadReturn,
+  ExtendedStat,
   FilesystemProgress,
   FilesystemProgressCallback,
-  FilesystemStat,
   RecursiveDirectoryReadReturn,
   UploadReturn,
 } from "./fs";
-import type { ArcLangOptions } from "./lang";
 import type { LogItem, LogLevel } from "./logging";
-import type { LanguageOptions } from "./msl";
-import type { ProcessKillResult } from "./process";
+import type { ProcessContext, ProcessKillResult } from "./process";
 import type { ServerInfo } from "./server";
 
 export type ConstructedWaveKernel = {
   modules: string[];
-  Logs: ReadableStore<LogItem[]>;
+  Logs: LogItem[];
   PANICKED: boolean;
   startMs: number;
   init: Process | undefined;
@@ -100,7 +98,7 @@ export interface FilesystemType {
   direct(path: string): Promise<string | undefined>;
   nextAvailableDriveLetter(): string | undefined;
   isDirectory(path: string): Promise<false | DirectoryReadReturn | undefined>;
-  stat(path: string): Promise<FilesystemStat | undefined>;
+  stat(path: string): Promise<ExtendedStat | undefined>;
   imageThumbnail(path: string, width: number, height?: number): Promise<string | undefined>;
 }
 
@@ -140,6 +138,7 @@ export interface ProcessHandlerType {
   isPid(pid: number): boolean;
   ConnectDispatch(pid: number): ProcessDispatch | undefined;
   waitForAvailable(): Promise<void>;
+  getProcessContext(pid: number): ProcessContext | undefined;
 }
 
 export interface SystemDispatchType {
@@ -156,15 +155,4 @@ export interface SoundbusType {
   stopSound(id: string): boolean;
   getStore(): [string, string][];
   loadExternal(source: string, play?: boolean): void;
-}
-
-export interface ArcLangType {
-  stack: ProcessHandlerType;
-  locked: boolean;
-  run(code: string, parentPid: number, options?: ArcLangOptions): Promise<unknown>;
-}
-
-export interface ArcMslType {
-  _init(): Promise<void>;
-  run(source: string, parent: number, options?: LanguageOptions): Promise<string[] | undefined>;
 }

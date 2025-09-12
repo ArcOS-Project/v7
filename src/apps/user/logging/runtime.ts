@@ -21,8 +21,8 @@ export class LoggingRuntime extends AppProcess {
     this.archive = archive || [];
     this.isArchive = this.archive.length > 0;
 
-    if (!this.archive.length) KernelLogs().subscribe(() => this.updateGroups());
-    else {
+    if (this.archive.length) {
+      // TODO: MAKE REACTIVE AGAIN
       this.updateGroups();
     }
 
@@ -37,7 +37,7 @@ export class LoggingRuntime extends AppProcess {
   //#endregion
 
   public updateGroups() {
-    const logs = this.archive.length ? this.archive : KernelLogs()();
+    const logs = this.archive.length ? this.archive : KernelLogs();
     const groupStore = this.groups.get();
     const { items, sources } = this.collectLogsBySource(logs, false);
     const entries = Object.entries(items);

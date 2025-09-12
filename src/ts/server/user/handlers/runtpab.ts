@@ -1,5 +1,5 @@
 import { MessageBox } from "$ts/dialog";
-import { arrayToBlob } from "$ts/kernel/mods/fs/convert";
+import { arrayToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
 import { ErrorIcon } from "$ts/images/dialog";
 import { ArcAppMimeIcon, CompressMimeIcon } from "$ts/images/mime";

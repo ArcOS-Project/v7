@@ -7,7 +7,7 @@ import type { ConstructedWaveKernel, EnvironmentType, SystemDispatchType } from 
 import type { ProcessContext, ProcessKillResult } from "$types/process";
 import { parse } from "stacktrace-parser";
 import { AppRenderer } from "../../apps/renderer";
-import { Log } from "../logging";
+import { Log } from "../../logging";
 import { KernelModule } from "../module";
 import { Store } from "../../writable";
 import type { Process } from "../../process/instance";

@@ -128,10 +128,6 @@ export const DefaultFileDefinitions: Record<string, FileDefinition> = {
     friendlyName: "CD-ROM image (unsupported)",
     icon: "UnknownFileIcon",
   },
-  ".msl": {
-    friendlyName: "ArcMSL script (legacy)",
-    icon: "UnknownFileIcon",
-  },
   ".osl": {
     friendlyName: "OriginOS script (unsupported)",
     icon: "UnknownFileIcon",

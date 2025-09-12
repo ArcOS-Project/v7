@@ -1,8 +1,11 @@
 import { getKMod } from "$ts/env";
 import { toForm } from "$ts/form";
+import { FilesystemDrive } from "$ts/drives/drive";
 import { ArcBuild } from "$ts/metadata/build";
 import { Backend } from "$ts/server/axios";
 import { authcode } from "$ts/util";
+import { arrayToBlob } from "$ts/util/convert";
+import { getItemNameFromPath, join } from "$ts/util/fs";
 import type {
   DirectoryReadReturn,
   DriveCapabilities,
@@ -13,9 +16,6 @@ import type {
   UserQuota,
 } from "$types/fs";
 import type { EnvironmentType } from "$types/kernel";
-import { arrayToBlob } from "../convert";
-import { FilesystemDrive } from "../drive";
-import { getItemNameFromPath, join } from "../../../../util/fs";
 
 export class ServerDrive extends FilesystemDrive {
   private token = "";

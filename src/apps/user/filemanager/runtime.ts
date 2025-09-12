@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { GetConfirmation, MessageBox } from "$ts/dialog";
-import { FilesystemDrive } from "$ts/kernel/mods/fs/drive";
-import { SharedDrive } from "$ts/kernel/mods/fs/shares/drive";
+import { FilesystemDrive } from "$ts/drives/drive";
+import { SharedDrive } from "$ts/shares/drive";
 import { DownloadFile, getDriveLetter, getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { ErrorIcon, InfoIcon, WarningIcon } from "$ts/images/dialog";
 import { DownloadIcon, DriveIcon, FolderIcon } from "$ts/images/filesystem";

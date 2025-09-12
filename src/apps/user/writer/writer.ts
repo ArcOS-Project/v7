@@ -40,7 +40,7 @@ export const WriterApp: App = {
     fullscreen: false,
   },
   opens: {
-    extensions: [".txt", ".msl"],
+    extensions: [".txt"],
   },
   assets: {
     component: Writer as any,

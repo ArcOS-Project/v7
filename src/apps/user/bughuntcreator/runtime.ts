@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import type { BugHuntUserSpaceProcess } from "$ts/kernel/mods/bughunt/process";
+import type { BugHuntUserSpaceProcess } from "$ts/bughunt/process";
 import { MessageBox } from "$ts/dialog";
 import { KernelStack } from "$ts/env";
 import { Store } from "$ts/writable";

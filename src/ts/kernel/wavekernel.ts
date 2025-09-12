@@ -1,11 +1,5 @@
 import { __Console__ } from "$ts/console";
-import { ArcOSVersion, CurrentKernel, SetCurrentKernel } from "$ts/env";
-import { getBuild } from "$ts/metadata/build";
-import { ChangeLogs } from "$ts/metadata/changelog";
-import { getLicense } from "$ts/metadata/license";
-import { getMode } from "$ts/metadata/mode";
-import { SqlInterfaceProcess } from "$ts/sql";
-import { Store, type ReadableStore } from "$ts/writable";
+import { ArcOSVersion, SetCurrentKernel } from "$ts/env";
 import type { ProcessHandlerType } from "$types/kernel";
 import { LogLevel, ShortLogLevelCaptions, type LogItem } from "../../types/logging";
 import { handleGlobalErrors } from "../error";
@@ -17,7 +11,7 @@ import { prematurePanic } from "./premature";
 export class WaveKernel {
   public modules: string[] = [];
   public PANICKED = false;
-  public Logs: ReadableStore<LogItem[]> = Store([]);
+  public Logs: LogItem[] = [];
   public startMs: number;
   public init: InitProcess | undefined;
   public state: StateHandler | undefined;
@@ -28,22 +22,7 @@ export class WaveKernel {
   public ARCOS_LICENSE = "not here yet";
   public PREMATURE = true;
 
-  public static get(): WaveKernel {
-    if (!CurrentKernel) {
-      prematurePanic();
-      throw new Error("Tried to get kernel while it doesn't exist yet");
-    }
-
-    return CurrentKernel as WaveKernel;
-  }
-
-  public static isPanicked(): boolean {
-    return this.get().PANICKED;
-  }
-
   constructor() {
-    if (CurrentKernel) throw new Error("Tried to reinitialize the kernel");
-
     this.startMs = Date.now();
     this.Log("KERNEL", "Constructing new Kernel. Have fun zottel.");
 
@@ -51,10 +30,7 @@ export class WaveKernel {
 
     SetCurrentKernel(this);
 
-    if (import.meta.env.DEV) {
-      (window as any)["kernel"] = CurrentKernel;
-      (window as any).SqlInterfaceProcess = SqlInterfaceProcess;
-    }
+    if (import.meta.env.DEV) (window as any)["kernel"] = this;
   }
 
   async panic(reason: string) {
@@ -84,11 +60,6 @@ export class WaveKernel {
     this.Log(`KERNEL`, `Called _init`);
 
     // KERNEL AREA STARTS HERE
-
-    await getMode();
-    await getBuild();
-    await getLicense();
-    await ChangeLogs.refreshChangelogs();
 
     this.Log(`ArcOS`, `***** [v7 -> ArcOS InDev v${ArcOSVersion}-${this.ARCOS_MODE}_${this.ARCOS_BUILD}] *****`);
 
@@ -131,16 +102,12 @@ export class WaveKernel {
   public Log(source: string, message: string, level = LogLevel.info) {
     const timestamp = Date.now();
 
-    this.Logs.update((v) => {
-      v.push({
-        timestamp,
-        source,
-        message,
-        level,
-        kernelTime: timestamp - this.startMs,
-      });
-
-      return v;
+    this.Logs.push({
+      timestamp,
+      source,
+      message,
+      level,
+      kernelTime: timestamp - this.startMs,
     });
 
     __Console__.log(

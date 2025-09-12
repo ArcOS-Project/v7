@@ -1,5 +1,5 @@
 import { toForm } from "$ts/form";
-import { Log } from "$ts/kernel/logging";
+import { Log } from "$ts/logging";
 import { LogLevel } from "$types/logging";
 import { AxiosError } from "axios";
 import { Backend } from "../axios";

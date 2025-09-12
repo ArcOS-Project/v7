@@ -1,6 +1,5 @@
 import { getKMod } from "$ts/env";
 import { KernelModule } from "$ts/kernel/module";
-import { Sleep } from "$ts/sleep";
 import { sha256, sliceIntoChunks } from "$ts/util";
 import {
   type DirectoryReadReturn,
@@ -11,8 +10,8 @@ import {
   type UploadReturn,
 } from "$types/fs";
 import type { ConstructedWaveKernel, SystemDispatchType } from "$types/kernel";
-import { arrayToBlob } from "./convert";
-import type { FilesystemDrive } from "./drive";
+import type { FilesystemDrive } from "../../../drives/drive";
+import { arrayToBlob } from "../../../util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "../../../util/fs";
 
 export class Filesystem extends KernelModule {
@@ -521,8 +520,6 @@ export class Filesystem extends KernelModule {
               file,
               content,
             });
-
-            await Sleep(100); // prevent rate limit
           }
 
           this.dispatch.dispatch("fs-flush-folder", target);

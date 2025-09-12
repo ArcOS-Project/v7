@@ -1,4 +1,4 @@
-import type { FilesystemDrive } from "$ts/kernel/mods/fs/drive";
+import type { FilesystemDrive } from "$ts/drives/drive";
 import { formatBytes, join } from "$ts/util/fs";
 import { FormatLargeNumber, Gap, maxLength, Plural, Truncate } from "$ts/util";
 import type { Arguments } from "$types/terminal";

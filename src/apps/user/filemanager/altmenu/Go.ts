@@ -1,4 +1,4 @@
-import type { FilesystemDrive } from "$ts/kernel/mods/fs/drive";
+import type { FilesystemDrive } from "$ts/drives/drive";
 import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import { UserPaths } from "$ts/server/user/store";
 import type { ContextMenuItem } from "$types/app";

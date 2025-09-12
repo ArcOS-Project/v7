@@ -1,7 +1,7 @@
 import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import TerminalWindow from "$apps/components/terminalwindow/TerminalWindow.svelte";
-import { arrayToText, textToBlob } from "$ts/kernel/mods/fs/convert";
-import type { FilesystemDrive } from "$ts/kernel/mods/fs/drive";
+import { arrayToText, textToBlob } from "$ts/util/convert";
+import type { FilesystemDrive } from "$ts/drives/drive";
 import { join } from "$ts/util/fs";
 import { KernelStack } from "$ts/env";
 import { Process } from "$ts/process/instance";

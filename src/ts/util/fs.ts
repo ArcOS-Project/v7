@@ -1,6 +1,6 @@
 import { getKMod } from "$ts/env";
 import type { SystemDispatchType } from "$types/kernel";
-import { arrayToBlob } from "../kernel/mods/fs/convert";
+import { arrayToBlob } from "./convert";
 
 export const sizeUnits = ["bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 

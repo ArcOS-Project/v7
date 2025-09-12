@@ -2,7 +2,7 @@ import type { BugHuntType, ServerManagerType } from "$types/kernel";
 import { LogLevel } from "../types/logging";
 import { getKMod, Kernel } from "./env";
 import { KernelIsPanicked, KernelLogs, KernelPremature } from "./getters";
-import { ASCII_ART } from "./kernel/intro";
+import { ASCII_ART } from "./intro";
 
 export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
   if (KernelIsPanicked()) return;
@@ -35,7 +35,7 @@ export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
   text += stack;
   text = text.replaceAll(location.href, "./");
 
-  text += `\n\n${KernelLogs()()
+  text += `\n\n${KernelLogs()
     .map(
       ({ level, kernelTime, source, message }) =>
         `[${kernelTime.toString().padStart(8, "0")}] ${LogLevel[level]} ${source}: ${message}`

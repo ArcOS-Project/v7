@@ -1,7 +1,7 @@
 import { getKMod } from "$ts/env";
 import type { EnvironmentType, FilesystemType, SoundbusType, SystemDispatchType } from "$types/kernel";
 import { LogLevel } from "../../types/logging";
-import { Log } from "../kernel/logging";
+import { Log } from "../logging";
 import { ProcessDispatch } from "./dispatch";
 
 export class Process {

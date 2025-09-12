@@ -1,3 +1,4 @@
+import { FilesystemDrive } from "$ts/drives/drive";
 import { Backend } from "$ts/server/axios";
 import { authcode } from "$ts/util";
 import type {
@@ -9,7 +10,6 @@ import type {
   RecursiveDirectoryReadReturn,
   UserQuota,
 } from "$types/fs";
-import { FilesystemDrive } from "../drive";
 
 export class AdminServerDrive extends FilesystemDrive {
   private targetUsername: string;

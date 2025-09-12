@@ -1,5 +1,5 @@
 import { LogLevel } from "$types/logging";
-import { Log } from "./kernel/logging";
+import { Log } from "./logging";
 
 /**
  * Converts the input to Base64

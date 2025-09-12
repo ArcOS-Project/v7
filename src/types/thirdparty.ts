@@ -1,12 +1,5 @@
 import type { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import type {
-  arrayToBlob,
-  arrayToText,
-  blobToDataURL,
-  blobToText,
-  textToArrayBuffer,
-  textToBlob,
-} from "$ts/kernel/mods/fs/convert";
+import type { arrayToBlob, arrayToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/util/convert";
 import type {
   DownloadFile,
   formatBytes,

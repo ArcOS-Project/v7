@@ -1,5 +1,5 @@
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { arrayToText, textToBlob } from "$ts/kernel/mods/fs/convert";
+import { arrayToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/json";
 import { KernelStack } from "$ts/env";

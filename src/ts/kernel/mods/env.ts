@@ -1,6 +1,3 @@
-import { ArcOSVersion } from "$ts/env";
-import { ArcBuild } from "$ts/metadata/build";
-import { ArcMode } from "$ts/metadata/mode";
 import type { ConstructedWaveKernel } from "$types/kernel";
 import { KernelModule } from "../module";
 
@@ -16,12 +13,6 @@ export class Environment extends KernelModule {
 
   async _init() {
     this.reset();
-
-    this.setMultiple([
-      ["arcos_version", ArcOSVersion],
-      ["arcos_mode", ArcMode()],
-      ["arcos_build", ArcBuild()],
-    ]);
   }
 
   //#endregion

@@ -1,3 +1,4 @@
+import { FilesystemDrive } from "$ts/drives/drive";
 import { deepCopyWithBlobs, sortByKey } from "$ts/util";
 import { UUID } from "$ts/uuid";
 import type {
@@ -8,7 +9,6 @@ import type {
   RecursiveDirectoryReadReturn,
   UserQuota,
 } from "$types/fs";
-import { FilesystemDrive } from "../drive";
 
 export class MemoryFilesystemDrive extends FilesystemDrive {
   private readonly data: Record<string, any> = {};

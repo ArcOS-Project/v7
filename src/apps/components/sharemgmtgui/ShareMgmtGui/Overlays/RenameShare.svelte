@@ -1,6 +1,6 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
-  import { ShareManager } from "$ts/kernel/mods/fs/shares";
+  import { ShareManager } from "$ts/shares";
   import { WarningIcon } from "$ts/images/dialog";
   import { ShareIcon } from "$ts/images/filesystem";
   import { GoodStatusIcon } from "$ts/images/status";

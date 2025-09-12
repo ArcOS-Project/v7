@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import type { ViewBugReportData } from "$apps/admin/adminportal/types";
-  import { textToBlob } from "$ts/kernel/mods/fs/convert";
+  import { textToBlob } from "$ts/util/convert";
   import { getItemNameFromPath } from "$ts/util/fs";
   import { SaveIcon } from "$ts/images/general";
   import { UserPaths } from "$ts/server/user/store";

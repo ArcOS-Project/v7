@@ -1,9 +1,11 @@
-import { getKMod, VALIDATION_STR } from "$ts/env";
+import { getKMod } from "$ts/env";
 import type { ConstructedWaveKernel, ServerManagerType } from "$types/kernel";
 import type { ServerInfo } from "$types/server";
 import { LogLevel } from "../../../types/logging";
-import { KernelModule } from "../module";
 import { Backend } from "../../server/axios";
+import { KernelModule } from "../module";
+
+export const VALIDATION_STR = "thisWonderfulArcOSServerIdentifiedByTheseWordsPleaseDontSteal(c)IzKuipers";
 
 export class ServerManager extends KernelModule {
   public url: string = "";

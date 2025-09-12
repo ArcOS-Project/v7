@@ -1,5 +1,5 @@
 import { getKMod } from "$ts/env";
-import { Log } from "$ts/kernel/logging";
+import { Log } from "$ts/logging";
 import type {
   DirectoryReadReturn,
   DriveCapabilities,
@@ -9,7 +9,7 @@ import type {
 } from "$types/fs";
 import type { ServerManagerType } from "$types/kernel";
 import { LogLevel } from "$types/logging";
-import type { UserQuota } from "../../../../types/fs";
+import type { UserQuota } from "../../types/fs";
 
 export class FilesystemDrive {
   server: ServerManagerType;

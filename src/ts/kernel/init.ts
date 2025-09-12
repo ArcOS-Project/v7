@@ -1,7 +1,6 @@
 import { __Console__ } from "$ts/console";
 import { ArcOSVersion, getKMod, Kernel } from "$ts/env";
-import { textToBlob } from "$ts/kernel/mods/fs/convert";
-import { MemoryFilesystemDrive } from "$ts/kernel/mods/fs/drives/temp";
+import { textToBlob } from "$ts/util/convert";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { KernelStack } from "$ts/env";
@@ -9,6 +8,7 @@ import { States } from "$ts/state/store";
 import type { ServerManagerType } from "$types/kernel";
 import { Process } from "../process/instance";
 import { StateHandler } from "../state";
+import { MemoryFilesystemDrive } from "$ts/drives/temp";
 
 export class InitProcess extends Process {
   //#region LIFECYCLE

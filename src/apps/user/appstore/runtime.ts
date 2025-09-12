@@ -3,7 +3,7 @@ import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
 import { InstallerProcess } from "$ts/distrib/installer";
 import { StoreItemIcon } from "$ts/distrib/util";
-import { arrayToBlob } from "$ts/kernel/mods/fs/convert";
+import { arrayToBlob } from "$ts/util/convert";
 import { AppStoreIcon } from "$ts/images/apps";
 import { ErrorIcon, InfoIcon } from "$ts/images/dialog";
 import { UploadIcon } from "$ts/images/general";

@@ -1,5 +1,5 @@
 import type { DispatchCallback } from "../../types/dispatch";
-import { Log } from "../kernel/logging";
+import { Log } from "../logging";
 import { Process } from "./instance";
 
 export class ProcessDispatch {

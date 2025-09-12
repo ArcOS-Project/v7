@@ -1,5 +1,5 @@
 import type { ApplicationStorage } from "$ts/apps/storage";
-import { arrayToBlob, arrayToText, textToBlob } from "$ts/kernel/mods/fs/convert";
+import { arrayToBlob, arrayToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/json";
 import { KernelStack } from "$ts/env";

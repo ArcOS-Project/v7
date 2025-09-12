@@ -33,7 +33,7 @@ export class BugHunt extends KernelModule {
     return {
       title: options.title,
       body: options.body || "No body",
-      logs: options.noLogs ? [] : KernelLogs()(),
+      logs: options.noLogs ? [] : KernelLogs(),
       version: ArcOSVersion,
       location: window.location,
       userAgent: navigator.userAgent,

@@ -1,8 +1,8 @@
 import { getKMod } from "$ts/env";
+import { FilesystemDrive } from "$ts/drives/drive";
 import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback, RecursiveDirectoryReadReturn } from "$types/fs";
 import type { FilesystemType } from "$types/kernel";
 import JSZip from "jszip";
-import { FilesystemDrive } from "../drive";
 
 export class ZIPDrive extends FilesystemDrive {
   override label = "";

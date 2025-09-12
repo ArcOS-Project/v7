@@ -2,7 +2,7 @@
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import CircularProgress from "$lib/CircularProgress.svelte";
   import Spinner from "$lib/Spinner.svelte";
-  import { ShareManager } from "$ts/kernel/mods/fs/shares";
+  import { ShareManager } from "$ts/shares";
   import { formatBytes } from "$ts/util/fs";
   import type { UserQuota } from "$types/fs";
   import type { SharedDriveType } from "$types/shares";

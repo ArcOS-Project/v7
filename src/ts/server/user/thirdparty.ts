@@ -3,8 +3,8 @@ import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { __Console__ } from "$ts/console";
 import { contextProps } from "$ts/context/actions.svelte";
 import { MessageBox } from "$ts/dialog";
-import { arrayToBlob, arrayToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/kernel/mods/fs/convert";
-import { FilesystemDrive } from "$ts/kernel/mods/fs/drive";
+import { arrayToBlob, arrayToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/util/convert";
+import { FilesystemDrive } from "$ts/drives/drive";
 import {
   DownloadFile,
   formatBytes,

@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { arrayToText, textToBlob } from "$ts/kernel/mods/fs/convert";
+import { arrayToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { MediaPlayerIcon } from "$ts/images/apps";
 import { FolderIcon } from "$ts/images/filesystem";
