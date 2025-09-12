@@ -8,7 +8,7 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/components/appinstaller/AppInstaller",
   "$apps/components/apppreinstall/AppPreinstall",
   "$apps/components/arcfind/ArcFindProc",
-  "$apps/components/contextmenu/ContextMenu",
+  "$apps/components/contextmenu/contextMenu",
   "$apps/components/driveinfo/DriveInfo",
   "$apps/components/exit/ExitApp",
   "$apps/components/firstrun/FirstRun",
