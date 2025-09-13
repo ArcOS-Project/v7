@@ -35,9 +35,11 @@ export interface App {
   tpaRevision?: number;
   noSafeMode?: boolean;
   vital?: boolean;
-  _internalImportPath?: string;
+  _internalOriginalPath?: string;
+  _internalResolvedPath?: string;
   _internalMinVer?: string;
   _internalSysVer?: string;
+  _internalLoadTime?: number;
 }
 
 export type RegisteredProcess = {

@@ -12,15 +12,15 @@
 <InfoBlock>
   <InfoRow>
     <Segment title="Size">
-      {target.size?.w || "FIT"}x{target.size?.h || "FIT"}
+      {Math.max(0, target.size?.w || 0) || "F"} x {Math.max(0, target.size?.h || 0) || "F"}
     </Segment>
 
     <Segment title="Minimal Size">
-      {target.minSize?.w || "FIT"}x{target.minSize?.h || "FIT"}
+      {Math.max(0, target.minSize?.w || 0) || "F"} x {Math.max(0, target.minSize?.h || 0) || "F"}
     </Segment>
 
     <Segment title="Maximal Size">
-      {target.maxSize?.w || "FIT"}x{target.maxSize?.h || "FIT"}
+      {Math.max(0, target.maxSize?.w || 0) || "F"} x {Math.max(0, target.maxSize?.h || 0) || "F"}
     </Segment>
     <Segment title="Controls" right>
       <div class="controls">
@@ -34,8 +34,10 @@
     <Segment title="Initial Position">
       {#if target?.position?.centered}
         Centered
-      {:else}
+      {:else if target?.position?.x || target.position?.y}
         {target?.position?.x}, {target?.position?.y}
+      {:else}
+        Corner of screen
       {/if}
     </Segment>
     <Segment title="Origin">

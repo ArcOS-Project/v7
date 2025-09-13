@@ -8,13 +8,13 @@ const AppInfoApp: App = {
   metadata: {
     name: "App Info",
     author: "Izaak Kuipers",
-    version: "3.0.0",
+    version: "3.0.1",
     icon: AppInfoIcon,
     appGroup: "components",
   },
   size: {
     w: 500,
-    h: NaN,
+    h: 450,
   },
   minSize: {
     w: 500,
@@ -22,7 +22,7 @@ const AppInfoApp: App = {
   },
   maxSize: {
     w: 500,
-    h: 460,
+    h: 600,
   },
   position: {
     centered: true,

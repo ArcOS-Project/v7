@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   /* overflow: visible; */
+  height: fit-content !important;
 }
 
 #AppInfo > div.body {
@@ -30,6 +31,7 @@
   padding: 0;
   background-color: transparent;
   font-size: 16px;
+  outline: none;
 }
 
 #AppInfo > div.body div.info-block div.controls {
@@ -117,4 +119,8 @@
 
 #AppInfo div.info-block.process-info div.row button.processes {
   margin-left: auto;
+}
+
+#AppInfo div.info-block.internal-info {
+  margin-bottom: 20px;
 }

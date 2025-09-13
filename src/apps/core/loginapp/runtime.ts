@@ -207,8 +207,11 @@ export class LoginAppRuntime extends AppProcess {
     }
 
     this.loadingStatus.set("Loading apps");
+    let appCount = 0;
     await userDaemon.initAppStorage(userDaemon.appStorage()!, (app) => {
-      if (!app.hidden) this.loadingStatus.set(`Loaded ${app.metadata.name}`);
+      appCount++;
+      if (!app.hidden) this.loadingStatus.set(`Loaded ${app.id}`);
+      else this.loadingStatus.set(`Loading apps (${appCount})`);
     });
 
     this.loadingStatus.set("Starting drive notifier watcher");

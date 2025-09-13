@@ -188,7 +188,7 @@ export class UserDaemon extends Process {
 
     if (!this.userInfo.admin) return;
     const appStore = this.appStorage()!;
-    const adminPortal = (await (await import("$apps/admin/adminportal/AdminPortal")).default) as App;
+    const adminPortal = (await import("$apps/admin/adminportal/AdminPortal")).default as App;
 
     appStore.loadOrigin("admin", () => [adminPortal]);
     await appStore.refresh();
@@ -1571,18 +1571,26 @@ export class UserDaemon extends Process {
     for (const path in BuiltinAppImportPathAbsolutes) {
       if (!this.safeMode && blocklist.includes(path)) continue;
       try {
+        const start = performance.now();
         const mod = await BuiltinAppImportPathAbsolutes[path]();
-        const app = (mod as any).default as App;
+        const appUrl = (mod as any).default as string;
+        const app = (await import(/* @vite-ignore */ appUrl)).default as App;
 
-        if (app._internalSysVer || app._internalImportPath)
+        if (app._internalSysVer || app._internalOriginalPath || app._internalResolvedPath)
           throw new Error(`Tried to load dubious built-in app '${app.id}': runtime-level properties set before runtime`);
 
+        const end = performance.now() - start;
+
         app._internalSysVer = `v${ArcOSVersion}-${ArcMode()}_${ArcBuild()}}`;
-        app._internalImportPath = path;
+        app._internalOriginalPath = path;
+        app._internalResolvedPath = appUrl;
+        app._internalLoadTime = end;
 
         builtins.push(app);
         cb(app);
-        this.Log(`Loaded app: ${path}: ${app.metadata.name} by ${app.metadata.author}, version ${app.metadata.version}`);
+        this.Log(
+          `Loaded app: ${path}: ${app.metadata.name} by ${app.metadata.author}, version ${app.metadata.version} (${end.toFixed(2)}ms)`
+        );
       } catch {
         this.Log(`Failed to load app ${path}: The file could not be found`);
       }
