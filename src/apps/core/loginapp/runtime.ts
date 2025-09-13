@@ -102,6 +102,14 @@ export class LoginAppRuntime extends AppProcess {
     }
   }
 
+  async start() {
+    this.env.set("loginapp_pid", this.pid);
+  }
+
+  async stop() {
+    this.env.delete("loginapp_pid");
+  }
+
   async render() {
     this.getBody().classList.add("theme-dark");
 
@@ -207,11 +215,9 @@ export class LoginAppRuntime extends AppProcess {
     }
 
     this.loadingStatus.set("Loading apps");
-    let appCount = 0;
     await userDaemon.initAppStorage(userDaemon.appStorage()!, (app) => {
-      appCount++;
-      if (!app.hidden) this.loadingStatus.set(`Loaded ${app.id}`);
-      else this.loadingStatus.set(`Loading apps (${appCount})`);
+      if (!app.hidden || userDaemon.preferences().shell.visuals.showHiddenApps)
+        this.loadingStatus.set(`Loaded ${app.metadata.name}`);
     });
 
     this.loadingStatus.set("Starting drive notifier watcher");

@@ -90,6 +90,7 @@ import { DefaultFileDefinitions } from "./assoc/store";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
+import { compareVersion } from "$ts/version";
 //#endregion
 
 export class UserDaemon extends Process {
@@ -1573,17 +1574,18 @@ export class UserDaemon extends Process {
       try {
         const start = performance.now();
         const mod = await BuiltinAppImportPathAbsolutes[path]();
-        const appUrl = (mod as any).default as string;
-        const app = (await import(/* @vite-ignore */ appUrl)).default as App;
+        const app = (mod as any).default as App;
 
-        if (app._internalSysVer || app._internalOriginalPath || app._internalResolvedPath)
-          throw new Error(`Tried to load dubious built-in app '${app.id}': runtime-level properties set before runtime`);
+        if (app._internalMinVer && compareVersion(ArcOSVersion, app._internalMinVer) === "higher")
+          throw `Not loading ${app.metadata.name} because this app requires a newer version of ArcOS`;
+
+        if (app._internalSysVer || app._internalOriginalPath)
+          throw `Can't load dubious built-in app '${app.id}' because it contains runtime-level properties set before runtime`;
 
         const end = performance.now() - start;
 
-        app._internalSysVer = `v${ArcOSVersion}-${ArcMode()}_${ArcBuild()}}`;
+        app._internalSysVer = `v${ArcOSVersion}-${ArcMode()}_${ArcBuild()}`;
         app._internalOriginalPath = path;
-        app._internalResolvedPath = appUrl;
         app._internalLoadTime = end;
 
         builtins.push(app);
@@ -1591,8 +1593,20 @@ export class UserDaemon extends Process {
         this.Log(
           `Loaded app: ${path}: ${app.metadata.name} by ${app.metadata.author}, version ${app.metadata.version} (${end.toFixed(2)}ms)`
         );
-      } catch {
-        this.Log(`Failed to load app ${path}: The file could not be found`);
+      } catch (e) {
+        await new Promise<void>((r) => {
+          MessageBox(
+            {
+              title: "App load error",
+              message: `ArcOS failed to load a built-in app because of an error. ${e}.`,
+              buttons: [{ caption: "Okay", action: () => r(), suggested: true }],
+              image: WarningIcon,
+            },
+            +this.env.get("loginapp_pid"),
+            true
+          );
+        });
+        this.Log(`Failed to load app ${path}: ${e}`);
       }
     }
 

@@ -36,7 +36,6 @@ export interface App {
   noSafeMode?: boolean;
   vital?: boolean;
   _internalOriginalPath?: string;
-  _internalResolvedPath?: string;
   _internalMinVer?: string;
   _internalSysVer?: string;
   _internalLoadTime?: number;
@@ -49,6 +48,7 @@ export type RegisteredProcess = {
     runtime: typeof Process;
   };
   vital?: boolean;
+  _internalMinVer?: string;
 };
 
 export interface InstalledApp extends App {
