@@ -27,6 +27,5 @@ export interface ArcTermConfiguration {
   prompt?: string;
   greeting?: string;
   noLogo?: boolean;
-  gooseBumps?: boolean;
 }
 export type ExpandedTerminal = Terminal & { process?: TerminalWindowRuntime };

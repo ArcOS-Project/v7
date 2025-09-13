@@ -74,7 +74,6 @@
       <img src={FlagIcon} alt="" class="flag" />
       <span>{proc.pid}</span>
     </div>
-    <div class="segment user">{context?.userId || "-"}</div>
     <div class="segment app-id">{appId || "-"}</div>
   </div>
   {#if children.size}

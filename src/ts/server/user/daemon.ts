@@ -339,6 +339,23 @@ export class UserDaemon extends Process {
     }
   }
 
+  async migrateUserAppsToFs() {
+    const apps = this.preferences().userApps;
+
+    if (!Object.entries(apps).length) return;
+
+    this.Log(`Migrating user apps to filesystem...`);
+
+    for (const id in apps) {
+      await this.fs.writeFile(join(UserPaths.AppRepository, `${id}.json`), textToBlob(JSON.stringify(apps[id], null, 2)));
+    }
+
+    this.preferences.update((v) => {
+      v.userApps = {};
+      return v;
+    });
+  }
+
   //#endregion
   //#region ARCOS VERSION
 
@@ -412,7 +429,7 @@ export class UserDaemon extends Process {
     if (this._disposed) return;
 
     const appStore = this.appStorage();
-    const app = await appStore?.getAppById(id);
+    const app = appStore?.getAppSynchronous(id);
 
     if (this.checkDisabled(id, app?.noSafeMode)) return;
 
@@ -488,7 +505,7 @@ export class UserDaemon extends Process {
     if (this._disposed) return;
 
     const appStore = this.appStorage();
-    const app = await appStore?.getAppById(id);
+    const app = await appStore?.getAppSynchronous(id);
 
     if (this.checkDisabled(id, app?.noSafeMode)) return;
 
@@ -1456,7 +1473,7 @@ export class UserDaemon extends Process {
     this.Log(`Disabling application ${appId}`);
 
     const appStore = this.appStorage();
-    const app = await appStore?.getAppById(appId);
+    const app = await appStore?.getAppSynchronous(appId);
 
     if (!app || this.isVital(app)) return;
 
@@ -1492,7 +1509,7 @@ export class UserDaemon extends Process {
     this.Log(`Enabling application ${appId}`);
 
     const appStore = this.appStorage();
-    const app = await appStore?.getAppById(appId);
+    const app = await appStore?.getAppSynchronous(appId);
 
     if (!app) return;
 
@@ -1611,26 +1628,28 @@ export class UserDaemon extends Process {
     }
 
     storage.loadOrigin("builtin", () => builtins);
-    storage.loadOrigin("userApps", () => this.getUserApps());
+    storage.loadOrigin("userApps", async () => await this.getUserApps());
   }
 
-  getUserApps(): AppStorage {
+  async getUserApps(): Promise<AppStorage> {
     if (this._disposed) return [];
     if (!this.preferences()) return [];
 
-    const apps = this.preferences().userApps;
+    await this.migrateUserAppsToFs();
 
-    return Object.values(apps) as unknown as AppStorage;
+    const bulk = Object.fromEntries(
+      Object.entries(await this.fs.bulk(UserPaths.AppRepository, "json")).map(([k, v]) => [k.replace(".json", ""), v])
+    );
+
+    console.trace();
+
+    return Object.values(bulk) as AppStorage;
   }
 
   async installApp(data: InstalledApp) {
     const appStore = this.appStorage();
 
-    this.preferences.update((v) => {
-      v.userApps[data.id] = applyDefaults(data, DefaultAppData);
-      return v;
-    });
-
+    await this.fs.writeFile(join(UserPaths.AppRepository, `${data.id}.json`), textToBlob(JSON.stringify(data, null, 2)));
     await appStore?.refresh();
   }
 
@@ -1746,7 +1765,7 @@ export class UserDaemon extends Process {
     this.Log(`Pinning ${appId}`);
 
     const appStore = this.serviceHost?.getService("AppStorage") as ApplicationStorage;
-    const app = await appStore?.getAppById(appId);
+    const app = await appStore?.getAppSynchronous(appId);
 
     if (!app) return;
 
@@ -3038,7 +3057,7 @@ The information provided in this report is subject for review by me or another A
 
   async changeShell(id: string) {
     const appStore = this.appStorage();
-    const newShell = await appStore?.getAppById(id);
+    const newShell = appStore?.getAppSynchronous(id);
 
     if (!newShell) return false;
 

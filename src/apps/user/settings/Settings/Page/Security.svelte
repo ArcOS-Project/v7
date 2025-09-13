@@ -48,6 +48,9 @@
     <Option caption="Reject all elevation requests">
       <input type="checkbox" class="switch" bind:checked={$userPreferences.security.lockdown} />
     </Option>
+    <Option caption="Restrict changes to system folders">
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.security.restrictSystemFolders} />
+    </Option>
   </Section>
   <Section caption="Danger Zone">
     <Option

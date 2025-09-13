@@ -14,7 +14,7 @@
   });
 
   async function getApp() {
-    app = await process?.appStore()?.getAppById(appId);
+    app = process?.appStore()?.getAppSynchronous(appId);
   }
 
   function spawn() {

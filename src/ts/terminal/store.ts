@@ -101,5 +101,7 @@ export const CLRROW = `${ESC}2K`;
 
 export const DefaultArcTermConfiguration: ArcTermConfiguration = {
   prompt: `$BRGREEN$username$RESET: $BRGREEN$pwd $RESULTCOLOR$ $RESET`,
-  greeting: "ArcTerm & ArcOS v$version\r\n\r\nLicensed under GPLv3. Created by Izaak Kuipers.",
+  greeting:
+    "ArcTerm & ArcOS $BRBLUEv$version$RESET\r\n\r\nLicensed under $BRBLUEGPLv3$RESET. Created by Izaak Kuipers.\r\nType $BRBLUEHELP$RESET for a list of commands.",
+  noLogo: false,
 };

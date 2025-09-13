@@ -61,6 +61,7 @@ export const DefaultUserPreferences: UserPreferences = {
     noPassword: false,
     disabled: false,
     enableThirdParty: false,
+    restrictSystemFolders: true,
   },
   appPreferences: {
     experiments: {},

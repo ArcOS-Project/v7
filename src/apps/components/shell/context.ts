@@ -75,7 +75,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         },
         disabled: async (app: App) => {
           // BUG 687805735731d0b12b3115af
-          const x = await runtime.appStore()?.getAppById(app?.id);
+          const x = runtime.appStore()?.getAppSynchronous(app?.id);
 
           return !x;
         },
@@ -167,7 +167,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
           else await runtime.pinApp(proc.app.id);
         },
         disabled: async (proc: AppProcess) => {
-          const x = await runtime.appStore()?.getAppById(proc.app.id);
+          const x = await runtime.appStore()?.getAppSynchronous(proc.app.id);
 
           return !x;
         },

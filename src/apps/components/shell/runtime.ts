@@ -206,7 +206,7 @@ export class ShellRuntime extends AppProcess {
   async pinApp(appId: string) {
     this.Log(`Pinning ${appId}`);
 
-    const app = await this.appStore()?.getAppById(appId);
+    const app = this.appStore()?.getAppSynchronous(appId);
 
     if (!app) return;
 

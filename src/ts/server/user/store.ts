@@ -338,6 +338,7 @@ export const UserPaths = {
   Migrations: "U:/System/Migrations",
   Configuration: "U:/System/Config",
   AppShortcuts: "U:/System/AppShortcuts",
+  AppRepository: "U:/System/AppRepository",
 };
 
 export const SystemFolders = [
@@ -347,6 +348,7 @@ export const SystemFolders = [
   UserPaths.Migrations,
   UserPaths.Configuration,
   UserPaths.AppShortcuts,
+  UserPaths.AppRepository,
 ];
 
 export const UserPathCaptions: Record<string, string> = {
@@ -364,9 +366,18 @@ export const UserPathCaptions: Record<string, string> = {
   Migrations: "Migration Files",
   Configuration: "Configuration",
   AppShortcuts: "Application Shortcuts",
+  AppRepository: "Application Repository",
 };
 
-export const HiddenUserPaths: string[] = ["Migrations", "Configuration", "System", "Trashcan", "AppShortcuts", "Applications"];
+export const HiddenUserPaths: string[] = [
+  "Migrations",
+  "Configuration",
+  "System",
+  "Trashcan",
+  "AppShortcuts",
+  "Applications",
+  "AppRepository",
+];
 
 export const UserPathIcons: Record<string, string> = {
   Home: "house",
@@ -383,6 +394,7 @@ export const UserPathIcons: Record<string, string> = {
   Migrations: "chevrons-right",
   Configuration: "folder-cog",
   AppShortcuts: "arrow-up-right",
+  AppRepository: "cog",
 };
 
 export const UserFonts: string[] = [

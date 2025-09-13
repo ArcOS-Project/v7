@@ -18,7 +18,7 @@ import Cookies from "js-cookie";
 import { Terminal } from "xterm";
 import { ArcTerminal } from "..";
 import { Readline } from "../readline/readline";
-import { BRRED, RESET } from "../store";
+import { BRRED, CLRROW, CURUP, RESET } from "../store";
 
 export class TerminalMode extends Process {
   userDaemon?: UserDaemon;
@@ -105,10 +105,10 @@ export class TerminalMode extends Process {
     try {
       const userDaemon = await KernelStack().spawn<UserDaemon>(UserDaemon, undefined, "SYSTEM", 1, token, username);
 
-      this.rl?.println("Starting daemon");
+      this.rl?.println(`Starting daemon`);
 
       if (!userDaemon) {
-        this.rl?.println("Failed to start user daemon");
+        this.rl?.println(`Failed to start user daemon`);
         return false;
       }
 
@@ -117,7 +117,7 @@ export class TerminalMode extends Process {
       const userInfo = await userDaemon.getUserInfo();
 
       if (!userInfo) {
-        this.rl?.println("Failed to request user info");
+        this.rl?.println(`Failed to request user info`);
         return false;
       }
 
@@ -125,53 +125,52 @@ export class TerminalMode extends Process {
         const unlocked = await this.askForTotp(token);
 
         if (!unlocked) {
-          this.rl?.println("2FA code invalid!");
+          this.rl?.println(`2FA code invalid!`);
           await userDaemon.discontinueToken();
           await userDaemon.killSelf();
           return false;
         }
       }
 
-      this.rl?.println("Starting filesystem");
+      this.rl?.println(`${CURUP}${CLRROW}Starting filesystem`);
       await userDaemon.startFilesystemSupplier();
 
-      this.rl?.println("Starting synchronization");
+      this.rl?.println(`${CURUP}${CLRROW}Starting synchronization`);
       await userDaemon.startPreferencesSync();
 
-      this.rl?.println("Notifying login activity");
-      await userDaemon.logActivity("login");
+      this.rl?.println(`${CURUP}${CLRROW}Notifying login activity`);
+      await userDaemon.logActivity(`login`);
 
-      this.rl?.println("Starting service host");
+      this.rl?.println(`${CURUP}${CLRROW}Starting service host`);
       await userDaemon.startServiceHost();
 
-      this.rl?.println("Connecting global dispatch");
+      this.rl?.println(`${CURUP}${CLRROW}Connecting global dispatch`);
       await userDaemon.activateGlobalDispatch();
 
-      this.rl?.println("Loading apps");
+      this.rl?.println(`${CURUP}${CLRROW}Loading apps...`);
       await userDaemon.initAppStorage(userDaemon.appStorage()!, (app) => {
-        this.rl?.println(`Loaded ${app.metadata.name}`);
+        this.rl?.println(`${CURUP}${CLRROW}Loading apps... ${app.id}`);
       });
 
-      this.rl?.println("Starting drive notifier watcher");
+      this.rl?.println(`${CURUP}${CLRROW}Starting drive notifier watcher`);
       userDaemon.startDriveNotifierWatcher();
 
-      this.rl?.println("Starting share management");
+      this.rl?.println(`${CURUP}${CLRROW}Starting share management`);
       await userDaemon.startShareManager();
 
       userDaemon.appStorage();
 
       if (userDaemon.userInfo.admin) {
-        this.rl?.println("Activating admin bootstrapper");
+        this.rl?.println(`${CURUP}${CLRROW}Activating admin bootstrapper`);
         await userDaemon.activateAdminBootstrapper();
       }
 
-      this.rl?.println("Starting status refresh");
+      this.rl?.println(`${CURUP}${CLRROW}Starting status refresh`);
       await userDaemon.startSystemStatusRefresh();
 
-      this.rl?.println("Refreshing app storage");
+      this.rl?.println(`${CURUP}${CLRROW}Refreshing app storage`);
 
-      this.systemDispatch.dispatch("app-store-refresh");
-      this.rl?.println("\nUser daemon is ready\n");
+      this.systemDispatch.dispatch(`app-store-refresh`);
 
       this.env.set("currentuser", username);
       this.env.set("shell_pid", undefined);
@@ -187,6 +186,9 @@ export class TerminalMode extends Process {
         this.pid,
         this.term
       );
+
+      this.term?.focus();
+
       return true;
     } catch (e) {
       const stack = e instanceof PromiseRejectionEvent ? e.reason.stack : e instanceof Error ? e.stack : "Unknown error";
@@ -201,8 +203,8 @@ export class TerminalMode extends Process {
   private async loadToken() {
     this.Log(`Loading token from cookies`);
 
-    const token = Cookies.get("arcToken");
-    const username = Cookies.get("arcUsername");
+    const token = Cookies.get(`arcToken`);
+    const username = Cookies.get(`arcUsername`);
 
     if (!token || !username) return false;
 
@@ -236,24 +238,24 @@ export class TerminalMode extends Process {
   resetCookies() {
     this.Log(`Resetting stored cookie state`);
 
-    Cookies.remove("arcToken");
-    Cookies.remove("arcUsername");
+    Cookies.remove(`arcToken`);
+    Cookies.remove(`arcUsername`);
   }
 
   async loginPrompt(): Promise<boolean> {
     this.rl?.println(`ArcTerm ${ArcOSVersion}-${ArcMode()}_${ArcBuild()}\n`);
-    const username = await this.rl?.read("arcapi.nl login: ");
-    const password = await this.rl?.read("Password:");
+    const username = await this.rl?.read(`arcapi.nl login: `);
+    const password = await this.rl?.read(`Password:`);
 
     if (!username || !password) {
-      this.rl?.println("\nLogin incorrect");
+      this.rl?.println(`\nLogin incorrect`);
       return await this.loginPrompt();
     }
 
     const valid = await this.proceed(username, password);
 
     if (!valid) {
-      this.rl?.println("\nLogin incorrect");
+      this.rl?.println(`\nLogin incorrect`);
       return await this.loginPrompt();
     }
 
@@ -276,7 +278,7 @@ export class TerminalMode extends Process {
   }
 
   async askForTotp(token: string): Promise<boolean> {
-    const code = await this.rl?.read("Enter 2FA code: ");
+    const code = await this.rl?.read(`Enter 2FA code: `);
 
     if (!Number(code) || code?.length !== 6) {
       return await this.askForTotp(token);

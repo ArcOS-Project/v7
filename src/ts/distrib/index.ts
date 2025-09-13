@@ -419,8 +419,8 @@ export class DistributionServiceProcess extends BaseService {
 
     if (this.checkBusy("uninstallApp")) return false;
 
-    const app = this.preferences().userApps[appId];
     const appStore = this.host.getService<ApplicationStorage>("AppStorage");
+    const app = appStore?.getAppSynchronous(appId);
 
     if (!app) {
       this.Log(`uninstallApp: ${appId}: no such app`);
@@ -442,10 +442,7 @@ export class DistributionServiceProcess extends BaseService {
 
     stage("Updating user preferences");
 
-    this.preferences.update((v) => {
-      delete v.userApps[appId];
-      return v;
-    });
+    await this.fs.deleteItem(join(UserPaths.AppRepository, `${appId}.json`));
 
     stage("Refreshing app store...");
 

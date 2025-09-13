@@ -125,6 +125,7 @@ export interface SecurityPreferences {
   noPassword: boolean;
   disabled: boolean;
   enableThirdParty: boolean;
+  restrictSystemFolders: boolean;
 }
 
 export interface AccountSettings {

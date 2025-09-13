@@ -27,6 +27,7 @@ import {
   TerminalCommandStore,
 } from "./store";
 import { ArcTermVariables } from "./var";
+import { ASCII_ART } from "$ts/intro";
 
 export class ArcTerminal extends Process {
   readonly CONFIG_PATH = join(UserPaths.Configuration, "ArcTerm/arcterm.conf");
@@ -72,6 +73,14 @@ export class ArcTerminal extends Process {
     this.term.loadAddon(rl!);
     this.rl = rl;
     this.var = new ArcTermVariables(this);
+
+    if (!this.config.noLogo) {
+      rl?.println(ASCII_ART.join("\n") + "\n");
+    }
+    if (this.config.greeting) {
+      this.rl?.println(this.var.replace(`${this.config.greeting}`));
+    }
+    this.term.focus();
     this.readline();
   }
 

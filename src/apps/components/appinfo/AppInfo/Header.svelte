@@ -13,6 +13,8 @@
   const { target, id, process }: Props = $props();
   const { userPreferences } = process;
 
+  const installed = !!process.appStore().getAppSynchronous(id);
+
   let disabled = $state(false);
 
   onMount(() => {
@@ -56,7 +58,7 @@
     <button class="disable" onclick={toggleDisabledState} class:disabled disabled={process.userDaemon?.isVital(target!)}
       >{disabled ? "Enable" : "Disable"}</button
     >
-    {#if (target?.entrypoint || target?.workingDirectory) && $userPreferences.userApps[target?.id]}
+    {#if (target?.entrypoint || target?.workingDirectory) && installed}
       <button class="lucide icon-trash-2" onclick={deleteApp} title="Delete app" aria-label="Delete app"></button>
     {/if}
     <button class="lucide icon-rocket" onclick={launch} title="Launch" aria-label="Launch"></button>

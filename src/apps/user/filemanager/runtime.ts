@@ -456,7 +456,10 @@ export class FileManagerRuntime extends AppProcess {
       for (let i = 0; i < entries.length; i++) {
         const [key, path] = entries[i];
 
-        if (SystemFolders.includes(path) ? item === path || getParentDirectory(item) === path : item === path) {
+        if (
+          this.userPreferences().security.restrictSystemFolders &&
+          (SystemFolders.includes(path) ? item === path || getParentDirectory(item) === path : item === path)
+        ) {
           const name = (UserPathCaptions as any)[key];
 
           MessageBox(
@@ -768,6 +771,15 @@ export class FileManagerRuntime extends AppProcess {
         this.notice.set({
           icon: "shield-user",
           text: "You're accessing a share as an administrator!",
+          className: "warning",
+        });
+        this.showNotice.set(true);
+      }
+
+      if (SystemFolders.includes(this.path())) {
+        this.notice.set({
+          icon: "cog",
+          text: "This is a system folder",
           className: "warning",
         });
         this.showNotice.set(true);

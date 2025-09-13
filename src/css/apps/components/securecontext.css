@@ -11,6 +11,7 @@
 
 #SecureContext {
   z-index: 100000000000;
+  min-height: fit-content !important;
 }
 
 #SecureContext > div.body {

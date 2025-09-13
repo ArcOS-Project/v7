@@ -22,7 +22,7 @@ export class AppInfoRuntime extends AppProcess {
   }
 
   async render() {
-    const targetApp = await this.appStore()?.getAppById(this.targetAppId);
+    const targetApp = this.appStore()?.getAppSynchronous(this.targetAppId);
 
     if (!targetApp) {
       this.userDaemon?.sendNotification({
