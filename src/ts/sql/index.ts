@@ -15,6 +15,8 @@ export class SqlInterfaceProcess extends Process {
 
     this.filePath = path;
     this.name = "SqlInterfaceProcess";
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

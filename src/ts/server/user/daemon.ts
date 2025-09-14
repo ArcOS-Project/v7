@@ -159,6 +159,8 @@ export class UserDaemon extends Process {
     this.server = getKMod<ServerManagerType>("server");
     this.safeMode = !!this.env.get("safemode");
     this.name = "UserDaemon";
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

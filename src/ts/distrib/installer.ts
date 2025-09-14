@@ -43,6 +43,8 @@ export class InstallerProcess extends Process {
 
     this.parent = this.userDaemon?.serviceHost?.getService<DistributionServiceProcess>("DistribSvc")!;
     this.name = "InstallerProcess";
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {
@@ -137,7 +139,7 @@ export class InstallerProcess extends Process {
     this.logStatus(this.metadata!.name, "registration");
 
     try {
-      const result = await this.userDaemon?.installAppFromPath(join(this.metadata!.installLocation, "_app.tpa"));
+      const result = await this.userDaemon?.registerAppFromPath(join(this.metadata!.installLocation, "_app.tpa"));
       if (!result) {
         this.setCurrentStatus("done");
         if (this.item) await this.parent.addToInstalled(this.item!);

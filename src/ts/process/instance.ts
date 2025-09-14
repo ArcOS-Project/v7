@@ -1,5 +1,5 @@
 import { getKMod } from "$ts/env";
-import type { EnvironmentType, FilesystemType, SoundbusType, SystemDispatchType } from "$types/kernel";
+import type { EnvironmentType, FilesystemType, ProcessHandlerType, SoundbusType, SystemDispatchType } from "$types/kernel";
 import { LogLevel } from "../../types/logging";
 import { Log } from "../logging";
 import { ProcessDispatch } from "./dispatch";
@@ -9,12 +9,14 @@ export class Process {
   public soundBus: SoundbusType;
   public dispatch: ProcessDispatch;
   public systemDispatch: SystemDispatchType;
+  public handler: ProcessHandlerType;
   public pid: number;
   public parentPid: number;
   public name = "";
   public _disposed = false;
   public _criticalProcess = false;
   public fs: FilesystemType;
+  public sourceUrl: string = "undetermined";
   private fileLocks: string[] = [];
 
   constructor(pid: number, parentPid?: number, ...args: any[]) {
@@ -27,6 +29,7 @@ export class Process {
     this.env = getKMod<EnvironmentType>("env");
     this.soundBus = getKMod<SoundbusType>("soundbus");
     this.fs = getKMod<FilesystemType>("fs");
+    this.handler = getKMod<ProcessHandlerType>("stack");
   }
 
   protected async stop(): Promise<any> {
@@ -84,5 +87,11 @@ export class Process {
     } catch {
       return false;
     }
+  }
+
+  setSource(source: string) {
+    this.sourceUrl = `src/${source.split("/src/")[1]}`;
+
+    console.log(this.sourceUrl);
   }
 }

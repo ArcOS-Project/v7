@@ -33,6 +33,8 @@ export class AdvSysSetRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     if (tab && this.tabs[tab]) this.currentTab.set(tab);
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

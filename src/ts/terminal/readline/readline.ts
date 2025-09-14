@@ -58,6 +58,8 @@ export class Readline extends Process implements ITerminalAddon {
     super(pid, parentPid);
     this.terminal = terminal;
     this.name = "Readline";
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

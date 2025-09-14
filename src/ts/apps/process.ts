@@ -114,6 +114,8 @@ export class AppProcess extends Process {
         return Reflect.get(target, prop, receiver);
       },
     });
+
+    this.setSource(__SOURCE__);
   }
 
   // Conditional function that can prohibit closing if it returns false

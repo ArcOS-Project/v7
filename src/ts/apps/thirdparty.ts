@@ -17,6 +17,8 @@ export class ThirdPartyAppProcess extends AppProcess {
 
     this.workingDirectory = workingDirectory;
     this.windowIcon.set(this.userDaemon?.getAppIconByProcess(this) || ComponentIcon);
+
+    this.setSource(__SOURCE__);
   }
 
   async __render__(body: HTMLDivElement): Promise<void> {

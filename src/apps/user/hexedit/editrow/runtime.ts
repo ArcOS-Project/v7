@@ -21,6 +21,8 @@ export class EditRowRuntime extends AppProcess {
     this.view = Store(new Uint8Array(view()));
     this.output = view;
     this.offset.set(offset);
+
+    this.setSource(__SOURCE__);
   }
 
   async render() {

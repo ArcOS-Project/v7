@@ -12,6 +12,8 @@ export class OverlayRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.parentProcess = KernelStack().getProcess(this.parentPid)!; // Get the parent process
+
+    this.setSource(__SOURCE__);
   }
 
   //#endregion

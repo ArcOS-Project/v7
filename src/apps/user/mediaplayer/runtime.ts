@@ -70,6 +70,8 @@ export class MediaPlayerRuntime extends AppProcess {
         this.getWindow()?.classList.remove("fullscreen");
       }
     });
+
+    this.setSource(__SOURCE__);
   }
 
   async onClose() {

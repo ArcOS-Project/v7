@@ -21,6 +21,8 @@ export class SecureContextRuntime extends AppProcess {
     this.id = id;
     this.key = key;
     this.data = data;
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

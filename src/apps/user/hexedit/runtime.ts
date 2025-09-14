@@ -38,6 +38,8 @@ export class HexEditRuntime extends AppProcess {
       this.updateVariables(v);
       this.modified.set(this.requestedFile && this.original() ? this.isModified() : false);
     });
+
+    this.setSource(__SOURCE__);
   }
 
   async render() {

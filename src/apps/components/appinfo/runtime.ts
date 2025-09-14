@@ -15,6 +15,8 @@ export class AppInfoRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.targetAppId = appId;
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

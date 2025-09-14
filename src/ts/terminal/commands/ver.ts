@@ -10,6 +10,8 @@ export class VerCommand extends TerminalProcess {
   public static description: string = "Reports the ArcOS version number";
   constructor(pid: number, parentPid: number) {
     super(pid, parentPid);
+
+    this.setSource(__SOURCE__);
   }
 
   //#region LIFECYCLE

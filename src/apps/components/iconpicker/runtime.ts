@@ -25,6 +25,8 @@ export class IconPickerRuntime extends AppProcess {
       this.selected.set(defaultIcon);
       this.returnId = returnId; // Identifying string from invocator
     }
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

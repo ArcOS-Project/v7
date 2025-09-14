@@ -14,6 +14,8 @@ export class TasksCommand extends TerminalProcess {
 
   constructor(pid: number, parentPid: number) {
     super(pid, parentPid);
+
+    this.setSource(__SOURCE__);
   }
 
   //#endregion

@@ -29,6 +29,8 @@ export class ShareMgmtGuiRuntime extends AppProcess {
 
     this.shareId = shareId;
     this.shares = this.userDaemon?.serviceHost?.getService("ShareMgmt")!;
+
+    this.setSource(__SOURCE__);
   }
 
   async start(): Promise<any> {

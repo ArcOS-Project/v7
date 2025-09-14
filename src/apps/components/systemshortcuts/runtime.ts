@@ -6,6 +6,8 @@ export class SystemShortcutsRuntime extends AppProcess {
   //#region LIFECYCLE
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

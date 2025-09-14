@@ -23,6 +23,8 @@ export class ArcFindRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.systemDispatch.subscribe("fs-flush-file", () => this.refresh());
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

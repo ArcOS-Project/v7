@@ -132,6 +132,8 @@ export class InitialSetupRuntime extends AppProcess {
     });
 
     this.server = getKMod<ServerManagerType>("server");
+
+    this.setSource(__SOURCE__);
   }
 
   async render() {

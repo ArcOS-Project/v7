@@ -24,6 +24,8 @@ export class QlorbRuntime extends AppProcess {
     setInterval(() => {
       if (this.Boxes.get().length - this.Clicks.get() < 21 && this.CurrentPage.get() == "game") this.spawnBox();
     }, 300);
+
+    this.setSource(__SOURCE__);
   }
 
   async render() {

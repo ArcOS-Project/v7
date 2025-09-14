@@ -40,6 +40,8 @@ export class WallpaperRuntime extends AppProcess {
         await this.updateContents();
       }
     });
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

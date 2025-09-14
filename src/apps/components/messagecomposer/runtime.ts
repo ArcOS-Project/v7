@@ -37,6 +37,8 @@ export class MessageComposerRuntime extends AppProcess {
     if (replyId) this.replyId = replyId;
 
     this.service = this.userDaemon!.serviceHost!.getService<MessagingInterface>("MessagingService")!;
+
+    this.setSource(__SOURCE__);
   }
 
   //#endregion

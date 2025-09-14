@@ -24,6 +24,8 @@ export class StateHandler extends Process {
     this.name = `StateHandler::${instanceName}`;
 
     this.Log(`Constructing new StateHandler with a store containing ${Object.entries(store).length} states`);
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

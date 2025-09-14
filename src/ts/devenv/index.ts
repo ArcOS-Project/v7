@@ -33,6 +33,8 @@ export class DevelopmentEnvironment extends BaseService {
     });
 
     this.daemon = KernelStack().getProcess(+this.env.get("userdaemon_pid"))!;
+
+    this.setSource(__SOURCE__);
   }
 
   async stop() {

@@ -18,6 +18,8 @@ export class ShareConnGuiRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.shares = this.userDaemon?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
+
+    this.setSource(__SOURCE__);
   }
 
   //#endregion

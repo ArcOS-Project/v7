@@ -45,6 +45,8 @@ export class AppStoreRuntime extends AppProcess {
     });
 
     this.renderArgs = { page, props };
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

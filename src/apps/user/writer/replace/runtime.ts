@@ -12,6 +12,8 @@ export class ReplaceRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.parent = KernelStack().getProcess(parentPid)!;
+
+    this.setSource(__SOURCE__);
   }
 
   //#endregion

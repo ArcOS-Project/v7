@@ -100,6 +100,8 @@ export class LoginAppRuntime extends AppProcess {
           throw new Error(`LoginAppRuntimeConstructor: invalid login type '${props.type}'`);
       }
     }
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

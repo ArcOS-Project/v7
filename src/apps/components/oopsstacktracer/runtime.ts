@@ -30,6 +30,8 @@ export class OopsStackTracerRuntime extends AppProcess {
     this.trace =
       this.exception instanceof PromiseRejectionEvent ? this.exception.reason.stack : this.exception?.stack || "No stack";
     this.string = this.exception ? `${this.exception}` : "";
+
+    this.setSource(__SOURCE__);
   }
 
   //#endregion

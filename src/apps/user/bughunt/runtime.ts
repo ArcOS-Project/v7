@@ -30,6 +30,8 @@ export class BugHuntRuntime extends AppProcess {
 
     this.bughunt = this.userDaemon?.serviceHost?.getService<BugHuntUserSpaceProcess>("BugHuntUsp")!;
     this.altMenu.set(BugHuntAltMenu(this));
+
+    this.setSource(__SOURCE__);
   }
 
   async render() {

@@ -34,6 +34,8 @@ export class TerminalMode extends Process {
 
     this.target = target;
     this.name = "TerminalMode";
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

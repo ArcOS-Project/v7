@@ -22,6 +22,8 @@ export class AppInstallerRuntime extends AppProcess {
       this.metadata = metadata();
       this.zip = zip;
     }
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

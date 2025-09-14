@@ -31,6 +31,8 @@ export class ShareListGuiRuntime extends AppProcess {
       this.selectedIsOwn.set(!!this.ownedShares().filter((s) => s._id === v)[0]); // Filter the owned shares to determine if the selection is owned
       this.selectedIsMounted.set(!!this.fs.drives[v]); // Check if the selected share is mounted
     });
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

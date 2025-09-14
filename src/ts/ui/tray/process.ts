@@ -28,6 +28,8 @@ export class TrayIconProcess extends Process {
     this.action = data.action;
     this.shell = KernelStack().getProcess(+this.env.get("shell_pid"))!;
     this.name = "TrayIconProcess";
+
+    this.setSource(__SOURCE__);
   }
 
   async __render() {

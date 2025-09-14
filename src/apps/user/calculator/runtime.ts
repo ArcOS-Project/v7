@@ -16,6 +16,8 @@ export class CalculatorRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.keys = this.compileKeys(this.Store.AllowedKeys, this.Store.Overrides);
+
+    this.setSource(__SOURCE__);
   }
 
   async render(args: RenderArgs) {

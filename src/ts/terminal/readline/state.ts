@@ -82,6 +82,8 @@ export class State extends Process {
     this.layout = new Layout(this.promptSize);
     this.conceiled = conceiled;
     this.name = `TerminalState[${this.pid}P:${prompt.length}L]`;
+
+    this.setSource(__SOURCE__);
   }
 
   //#endregion

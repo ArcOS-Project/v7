@@ -19,6 +19,8 @@ export class TrashCanService extends BaseService {
 
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(pid, parentPid, name, host);
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

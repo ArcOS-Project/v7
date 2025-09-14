@@ -58,6 +58,8 @@ export class MessagingAppRuntime extends AppProcess {
       this.app.data.size.w = 850;
       this.app.data.size.h = 500;
     }
+
+    this.setSource(__SOURCE__);
   }
 
   async render({ page }: { page: string }) {

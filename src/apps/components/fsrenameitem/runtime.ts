@@ -18,6 +18,8 @@ export class RenameItemRuntime extends AppProcess {
     this.parentDir = getParentDirectory(path);
     this.newName.set(getItemNameFromPath(path));
     this.path = path;
+
+    this.setSource(__SOURCE__);
   }
 
   render() {

@@ -21,6 +21,8 @@ export class BugHuntUserSpaceProcess extends BaseService {
 
     this.module = getKMod<BugHuntType>("bughunt");
     this.token = host.daemon.token;
+
+    this.setSource(__SOURCE__);
   }
 
   async afterActivate() {

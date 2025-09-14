@@ -32,6 +32,8 @@ export class LoggingRuntime extends AppProcess {
 
     if (source) this.currentSource.set(source);
     if (level !== undefined) this.selectedLevel.set(level);
+
+    this.setSource(__SOURCE__);
   }
 
   //#endregion

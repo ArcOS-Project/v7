@@ -17,6 +17,8 @@ export class TotpAuthGuiRuntime extends AppProcess {
 
     this.token = token;
     this.dispatchId = dispatchId;
+
+    this.setSource(__SOURCE__);
   }
 
   render(args: RenderArgs) {

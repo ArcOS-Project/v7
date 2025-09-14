@@ -25,6 +25,8 @@ export class MessagingInterface extends BaseService {
     this.serverUrl = server.url;
     this.serverAuthCode = import.meta.env.DW_SERVER_AUTHCODE || "";
     this.token = host.daemon.token;
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

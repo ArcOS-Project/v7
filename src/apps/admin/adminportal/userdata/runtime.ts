@@ -19,6 +19,8 @@ export class BugHuntUserDataRuntime extends AppProcess {
 
     this.hljs.registerLanguage("json", json);
     this.html = this.hljs.highlight(JSON.stringify(this.data, null, 2), { language: "json" }).value; // Stringify and syntax highlight user info
+
+    this.setSource(__SOURCE__);
   }
 
   //#endregion

@@ -11,6 +11,8 @@ export class GlobalLoadIndicatorRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     if (caption) this.caption.set(caption);
+
+    this.setSource(__SOURCE__);
   }
 
   //#endregion

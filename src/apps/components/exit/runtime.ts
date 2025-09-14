@@ -13,6 +13,8 @@ export class ExitRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     if (selected) this.selected.set(selected);
+
+    this.setSource(__SOURCE__);
   }
 
   //#endregion

@@ -14,6 +14,8 @@ export class FsProgressFailRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     if (prog && prog?.app && prog?.Progress?.()) this.prog = prog;
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

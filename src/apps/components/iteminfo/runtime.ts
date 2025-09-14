@@ -18,6 +18,8 @@ export class ItemInfoRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.renderArgs = { path, file };
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

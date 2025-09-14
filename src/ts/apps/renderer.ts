@@ -34,6 +34,8 @@ export class AppRenderer extends Process {
     this.target = targetDiv;
     KernelStack().rendererPid = this.pid;
     this.name = "AppRenderer";
+
+    this.setSource(__SOURCE__);
   }
 
   protected async start() {

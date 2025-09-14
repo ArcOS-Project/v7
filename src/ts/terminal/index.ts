@@ -55,6 +55,8 @@ export class ArcTerminal extends Process {
     this.term = term;
     this.tryGetTermWindow();
     this.name = "ArcTerminal";
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

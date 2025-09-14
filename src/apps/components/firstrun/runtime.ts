@@ -20,6 +20,8 @@ export class FirstRunRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     if (daemon) this.userDaemon = daemon;
+
+    this.setSource(__SOURCE__);
   }
 
   async render() {

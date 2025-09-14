@@ -39,6 +39,8 @@ export class LightsOffRuntime extends AppProcess {
     this.Clicks.subscribe(() => this.saveData());
 
     this.loadData();
+
+    this.setSource(__SOURCE__);
   }
 
   //#endregion

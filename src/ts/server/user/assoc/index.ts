@@ -19,6 +19,8 @@ export class FileAssocService extends BaseService {
 
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(pid, parentPid, name, host);
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {
@@ -47,6 +49,8 @@ export class FileAssocService extends BaseService {
     this.Log("Writing configuration");
 
     await this.fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(configuration, null, 2)));
+
+    this.Configuration.set(configuration);
 
     return configuration;
   }

@@ -16,6 +16,8 @@ export class ShareManager extends BaseService {
     super(pid, parentPid, name, host);
 
     this.token = host.daemon.token;
+
+    this.setSource(__SOURCE__);
   }
 
   //#endregion

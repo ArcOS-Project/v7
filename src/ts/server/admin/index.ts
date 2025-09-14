@@ -41,6 +41,8 @@ export class AdminBootstrapper extends BaseService {
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(pid, parentPid, name, host);
     this.token = host.daemon.token;
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

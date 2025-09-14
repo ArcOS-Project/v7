@@ -30,6 +30,7 @@ export class ServiceHost extends Process {
 
     this.daemon = KernelStack().getProcess(+this.env.get("userdaemon_pid"))!;
     this.name = "ServiceHost";
+    console.warn(__SOURCE__);
   }
 
   public async initialRun() {

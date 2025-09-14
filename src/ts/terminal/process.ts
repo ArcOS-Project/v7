@@ -16,6 +16,8 @@ export class TerminalProcess extends Process {
   constructor(pid: number, parentPid: number) {
     super(pid, parentPid);
     this.name = "TerminalProcess";
+
+    this.setSource(__SOURCE__);
   }
 
   //#endregion

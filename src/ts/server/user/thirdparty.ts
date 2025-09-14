@@ -33,6 +33,8 @@ import { Backend } from "../axios";
 import type { UserDaemon } from "./daemon";
 import { HiddenUserPaths, SystemFolders, UserPathCaptions, UserPathIcons, UserPaths } from "./store";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
+import { getKMod } from "$ts/env";
+import type { ProcessHandlerType } from "$types/kernel";
 
 export function ThirdPartyProps(
   daemon: UserDaemon,
@@ -48,6 +50,7 @@ export function ThirdPartyProps(
     env: daemon.env, // ?
     serviceHost: daemon.serviceHost, // ?
     dispatch: daemon.systemDispatch, // ?
+    handler: getKMod<ProcessHandlerType>("stack"),
     MessageBox,
     icons: getAllImages(),
     util: {

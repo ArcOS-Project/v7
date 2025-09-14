@@ -21,6 +21,8 @@ export class ShortcutPropertiesRuntime extends AppProcess {
       this.shortcutData.set(JSON.parse(JSON.stringify(data)));
       this.path = path.toString();
     }
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

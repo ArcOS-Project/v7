@@ -30,6 +30,8 @@ export class DistributionServiceProcess extends BaseService {
     super(pid, parentPid, name, host);
 
     this.preferences = host.daemon.preferences;
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

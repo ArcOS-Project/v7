@@ -83,6 +83,8 @@ export class SettingsRuntime extends AppProcess {
     this.switchPage(page || "account");
 
     this.requestedSlide = slide;
+
+    this.setSource(__SOURCE__);
   }
 
   async render() {

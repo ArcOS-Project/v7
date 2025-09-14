@@ -19,6 +19,8 @@ export class ContextMenuRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.env.set("contextmenu_pid", this.pid);
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

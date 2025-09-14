@@ -21,6 +21,8 @@ export class GlobalDispatch extends BaseService {
       this.stop();
     });
     this.token = host.daemon.token;
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

@@ -89,6 +89,8 @@ export class FileManagerRuntime extends AppProcess {
     this.dispatch.subscribe("navigate", (path) => {
       this.navigate(path);
     });
+
+    this.setSource(__SOURCE__);
   }
 
   async render({ path }: RenderArgs) {

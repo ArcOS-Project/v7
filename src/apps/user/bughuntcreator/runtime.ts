@@ -42,6 +42,8 @@ export class BugHuntCreatorRuntime extends AppProcess {
 
     if (options) this.overrideOptions = options;
     this.bughunt = this.userDaemon?.serviceHost?.getService<BugHuntUserSpaceProcess>("BugHuntUsp")!;
+
+    this.setSource(__SOURCE__);
   }
 
   //#endregion

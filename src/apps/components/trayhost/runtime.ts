@@ -19,6 +19,8 @@ export class TrayHostRuntime extends Process {
     super(pid, parentPid);
 
     this.name = "TrayHostRuntime";
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

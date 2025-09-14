@@ -14,6 +14,8 @@ export class InitProcess extends Process {
   //#region LIFECYCLE
   constructor(pid: number, parentPid = undefined) {
     super(pid, parentPid);
+
+    this.setSource(__SOURCE__);
   }
 
   async stop() {
@@ -41,6 +43,8 @@ export class InitProcess extends Process {
     this.name = "InitProcess";
 
     if (ArcMode() === "nightly") this.nightly();
+
+    this.setSource(__SOURCE__);
   }
 
   //#endregion

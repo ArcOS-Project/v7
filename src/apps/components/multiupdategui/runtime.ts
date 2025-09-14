@@ -29,6 +29,8 @@ export class MultiUpdateGuiRuntime extends AppProcess {
 
     this.distrib = this.userDaemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
     this.updates = Array.isArray(updates) ? updates : [];
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

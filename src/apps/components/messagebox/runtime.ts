@@ -23,6 +23,8 @@ export class MessageBoxRuntime extends AppProcess {
     };
 
     if (this.data.sound) this.soundBus.playSound(this.data.sound); // Play the sound
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

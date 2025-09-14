@@ -12,6 +12,8 @@ export class TotpSetupGuiRuntime extends AppProcess {
 
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
+
+    this.setSource(__SOURCE__);
   }
 
   async render() {

@@ -48,6 +48,8 @@ export class AcceleratorOverviewRuntime extends AppProcess {
         this.closeWindow();
       },
     });
+
+    this.setSource(__SOURCE__);
   }
 
   async render() {

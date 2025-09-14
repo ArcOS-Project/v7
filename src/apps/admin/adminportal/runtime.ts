@@ -37,6 +37,8 @@ export class AdminPortalRuntime extends AppProcess {
     this.shares = this.userDaemon!.serviceHost!.getService<ShareManager>("ShareMgmt")!;
     this.switchPage(page || "dashboard", props || {});
     this.altMenu.set(AdminPortalAltMenu(this));
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

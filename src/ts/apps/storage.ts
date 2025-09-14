@@ -24,6 +24,8 @@ export class ApplicationStorage extends BaseService {
     this.systemDispatch.subscribe("app-store-refresh", async () => {
       await this.refresh();
     });
+
+    this.setSource(__SOURCE__);
   }
 
   //#endregion

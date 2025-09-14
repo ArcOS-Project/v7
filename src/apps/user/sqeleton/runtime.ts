@@ -62,6 +62,8 @@ export class SqeletonRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.renderArgs.path = path;
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

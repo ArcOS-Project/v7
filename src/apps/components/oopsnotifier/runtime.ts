@@ -29,6 +29,8 @@ export class OopsNotifierRuntime extends AppProcess {
     this.data = data;
     this.exception = exception;
     this.process = process;
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

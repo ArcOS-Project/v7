@@ -14,6 +14,8 @@ export class FsProgressRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.renderArgs.store = store;
+
+    this.setSource(__SOURCE__);
   }
 
   render({ store }: RenderArgs) {

@@ -23,6 +23,8 @@ export class AppPreInstallRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.pkgPath = pkgPath;
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {

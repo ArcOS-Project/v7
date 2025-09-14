@@ -17,6 +17,8 @@ export class PdfViewerRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.renderArgs.path = path;
+
+    this.setSource(__SOURCE__);
   }
 
   async render({ path }: { path: string }) {

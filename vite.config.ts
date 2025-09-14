@@ -6,7 +6,16 @@ import { writeFile } from "fs/promises";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [svelte(), GenerateGlobalTypesPlugin()],
+  plugins: [
+    svelte(),
+    GenerateGlobalTypesPlugin(),
+    {
+      name: "inject-source-path",
+      transform(code, id) {
+        return code.replace(/__SOURCE__/g, JSON.stringify(id));
+      },
+    },
+  ],
   envPrefix: "DW_",
   resolve: {
     alias: {
