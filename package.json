@@ -11,6 +11,9 @@
     "build:types": "tsc -p tsconfig.app.json --emitDeclarationOnly --declaration --outFile dist/types.d.ts --verbatimModuleSyntax false --isolatedModules false --removeComments",
     "build:globals": "node tools/build-globals.mjs && node tools/convert-global.mjs",
     "build:types:all": "npm run build:types && npm run build:globals",
+    "build:nominify": "git rev-parse --short HEAD > ./public/build && vite build --minify false",
+    "build:nogit": "vite build",
+    "build:nogit:nominify": "vite build --minify false",
     "region:check": "node tools/validate-regions.mjs",
     "console:check": "node tools/console-usage.mjs",
     "check:everything": "yarn run check && yarn console:check && yarn region:check"

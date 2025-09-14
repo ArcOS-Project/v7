@@ -60,8 +60,6 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/user/writer/writer",
 ]);
 
-console.log(BuiltinAppImportPathAbsolutes);
-
 export const appShortcuts: [number, AppKeyCombinations][] = [];
 export const AppOrigins: Record<string, string> = {
   builtin: "Built-in",

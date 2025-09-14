@@ -53,7 +53,7 @@ import type { ProtocolServiceProcess } from "$ts/proto";
 import { ServiceHost } from "$ts/services";
 import { ShareManager } from "$ts/shares/index";
 import { Sleep } from "$ts/sleep";
-import { authcode, Plural } from "$ts/util";
+import { authcode, deepCopyWithBlobs, Plural } from "$ts/util";
 import { arrayToBlob, arrayToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { UUID } from "$ts/uuid";
@@ -117,6 +117,7 @@ export class UserDaemon extends Process {
   public initialized = false;
   public _elevating = false;
   public _blockLeaveInvocations = true;
+  public _toLoginInvoked = false;
   override _criticalProcess: boolean = true;
   // FILESYSTEM
   public TempFs?: MemoryFilesystemDrive;
@@ -172,9 +173,14 @@ export class UserDaemon extends Process {
   }
 
   async stop() {
-    if (this.serviceHost) this.serviceHost._holdRestart = true;
     if (this._disposed) return;
 
+    if (!this._toLoginInvoked && KernelStateHandler()?.currentState === "desktop") {
+      KernelStateHandler()?.loadState("login", { type: "restart", userDaemon: this });
+      return false;
+    }
+
+    if (this.serviceHost) this.serviceHost._holdRestart = true;
     if (this.preferencesUnsubscribe) this.preferencesUnsubscribe();
 
     this.TempFs?.restoreSnapshot(this.TempFsSnapshot!);
@@ -448,7 +454,7 @@ export class UserDaemon extends Process {
     if (!app) {
       this.sendNotification({
         title: "Application not found",
-        message: `ArcOS can't find an application with ID '${id}'. Is it installed?`,
+        message: `ArcOS tried to launch an application with ID '${id}', but it could not be found. Is it installed?`,
         timeout: 3000,
         image: QuestionIcon,
       });
@@ -1600,15 +1606,16 @@ export class UserDaemon extends Process {
           throw `Can't load dubious built-in app '${app.id}' because it contains runtime-level properties set before runtime`;
 
         const end = performance.now() - start;
+        const appCopy = await deepCopyWithBlobs<App>(app);
 
-        app._internalSysVer = `v${ArcOSVersion}-${ArcMode()}_${ArcBuild()}`;
-        app._internalOriginalPath = path;
-        app._internalLoadTime = end;
+        appCopy._internalSysVer = `v${ArcOSVersion}-${ArcMode()}_${ArcBuild()}`;
+        appCopy._internalOriginalPath = path;
+        appCopy._internalLoadTime = end;
 
-        builtins.push(app);
-        cb(app);
+        builtins.push(appCopy);
+        cb(appCopy);
         this.Log(
-          `Loaded app: ${path}: ${app.metadata.name} by ${app.metadata.author}, version ${app.metadata.version} (${end.toFixed(2)}ms)`
+          `Loaded app: ${path}: ${appCopy.metadata.name} by ${appCopy.metadata.author}, version ${app.metadata.version} (${end.toFixed(2)}ms)`
         );
       } catch (e) {
         await new Promise<void>((r) => {
@@ -1641,12 +1648,11 @@ export class UserDaemon extends Process {
       Object.entries(await this.fs.bulk(UserPaths.AppRepository, "json")).map(([k, v]) => [k.replace(".json", ""), v])
     );
 
-    console.trace();
-
     return Object.values(bulk) as AppStorage;
   }
 
-  async installApp(data: InstalledApp) {
+  async registerApp(data: InstalledApp) {
+    this.Log(`Registering ${data.id}: writing ${data.id}.json to AppRepository`);
     const appStore = this.appStorage();
 
     await this.fs.writeFile(join(UserPaths.AppRepository, `${data.id}.json`), textToBlob(JSON.stringify(data, null, 2)));
@@ -1654,6 +1660,7 @@ export class UserDaemon extends Process {
   }
 
   async deleteApp(id: string, deleteFiles = false) {
+    this.Log(`Attempting to uninstall app '${id}'`);
     const distrib = this.serviceHost?.getService<DistributionServiceProcess>("DistribSvc");
     const appStore = this.appStorage();
 
@@ -1669,7 +1676,7 @@ export class UserDaemon extends Process {
     return result;
   }
 
-  async installAppFromPath(path: string) {
+  async registerAppFromPath(path: string) {
     try {
       const contents = await this.fs.readFile(path);
       if (!contents) return "failed to read file";
@@ -1685,7 +1692,7 @@ export class UserDaemon extends Process {
       json.tpaPath = path;
       json.workingDirectory = getParentDirectory(path);
 
-      await this.installApp(json);
+      await this.registerApp(json);
     } catch (e) {
       this.Log(`Failed to install app from "${path}": ${e}`, LogLevel.error);
     }
