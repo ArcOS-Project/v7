@@ -14,6 +14,13 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
           proc.spawnOverlayApp("AppInfo", +proc.env.get("shell_pid"), proc?.app.id);
         },
       },
+      {
+        caption: "Process info",
+        icon: "cog",
+        action: (proc: AppProcess) => {
+          proc.spawnOverlayApp("ProcessInfoApp", +proc.env.get("shell_pid"), proc);
+        },
+      },
       { sep: true },
       {
         caption: "Minimize",

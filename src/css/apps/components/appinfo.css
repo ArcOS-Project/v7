@@ -83,6 +83,7 @@
 #AppInfo div.header div.right button.disable {
   background-color: var(--clr-red-fg);
   color: var(--clr-red-bg);
+  font-weight: bold;
 }
 
 #AppInfo div.header div.right button.disable.disabled {

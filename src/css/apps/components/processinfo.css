@@ -1,0 +1,50 @@
+#ProcessInfoApp > div.body {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  overflow: hidden;
+}
+
+#ProcessInfoApp > div.body div.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#ProcessInfoApp > div.body div.header h1 {
+  font-size: 22px;
+  font-weight: bold;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#ProcessInfoApp > div.body div.header p {
+  opacity: 0.5;
+  margin: 0;
+}
+
+#ProcessInfoApp > div.body div.header img {
+  height: 64px;
+  margin-right: 5px;
+}
+
+#ProcessInfoApp > div.body div.actions {
+  padding: 10px;
+  border-radius: 15px;
+  background-color: var(--button-bg);
+  box-shadow: var(--secondary-box-shadow);
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#ProcessInfoApp > div.body div.actions button.kill {
+  background-color: var(--clr-red-fg) !important;
+  color: var(--win-bg) !important;
+  font-weight: bold;
+  margin-right: auto;
+}
