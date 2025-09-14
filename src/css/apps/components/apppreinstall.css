@@ -1,7 +1,14 @@
+#AppPreInstall {
+  display: flex;
+  flex-direction: column;
+}
+
 #AppPreInstall > div.body {
   padding: 20px;
   padding-top: 30px;
   text-align: center;
+  flex-grow: 1;
+  height: 100%;
 }
 
 #AppPreInstall > div.body div.header img {
@@ -23,6 +30,7 @@
   align-items: center;
   justify-content: center;
   height: 100%;
+  height: 378px;
 }
 #AppPreInstall > div.body div.info {
   margin: 20px 0;

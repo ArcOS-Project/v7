@@ -48,9 +48,9 @@
   {#if proc instanceof AppProcess}
     <InfoBlock>
       <InfoRow>
-        <Segment title="App ID">{proc.app.id}</Segment>
-        <Segment title="Origin">{proc.app.data.originId}</Segment>
-        <Segment title="Desktop">{proc.app.desktop || "-"}</Segment>
+        <Segment title="App ID" alt={proc.app.id}>{proc.app.id}</Segment>
+        <Segment title="Origin" alt={proc.app.data.originId}>{proc.app.data.originId}</Segment>
+        <Segment title="Desktop" alt={proc.app.desktop}>{proc.app.desktop || "-"}</Segment>
       </InfoRow>
     </InfoBlock>
   {/if}

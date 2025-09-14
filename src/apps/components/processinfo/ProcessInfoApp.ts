@@ -31,6 +31,8 @@ export const ProcessInfoApp: App = {
     runtime: ProcessInfoRuntime,
     component: ProcessInfo as any,
   },
+  vital: true,
+  hidden: true,
   id: "ProcessInfoApp",
 };
 

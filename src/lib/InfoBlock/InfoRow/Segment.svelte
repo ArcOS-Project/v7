@@ -8,9 +8,10 @@
     className?: string;
     children: Snippet;
     grow?: boolean;
+    alt?: string;
   }
 
-  const { title, help, right = false, className = "", children, grow }: Props = $props();
+  const { title, help, right = false, className = "", alt = "", children, grow }: Props = $props();
 </script>
 
 <div class="segment {className}" class:right class:grow>
@@ -20,7 +21,7 @@
       <button class="lucide icon-hand-helping" title="What's this?" aria-label="What's this?"></button>
     {/if}
   </p>
-  <p class="value">
+  <p class="value" title={alt}>
     {@render children()}
   </p>
 </div>
