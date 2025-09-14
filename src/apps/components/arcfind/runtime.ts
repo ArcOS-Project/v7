@@ -34,7 +34,7 @@ export class ArcFindRuntime extends AppProcess {
   //#region REFRESHING
 
   async refresh() {
-    this.Log("Refreshing ArcTerm");
+    this.Log("Refreshing ArcFind");
 
     if (this.loading()) return;
 

@@ -497,7 +497,7 @@ export class FileManagerRuntime extends AppProcess {
           { caption: "Cancel", action: () => {} },
           {
             caption: "Delete",
-            action: () => this.confirmDeleteSelected(),
+            action: () => this.confirmDeleteSelected(isUserFs),
             suggested: true,
           },
         ],
@@ -509,12 +509,9 @@ export class FileManagerRuntime extends AppProcess {
     );
   }
 
-  async confirmDeleteSelected() {
+  async confirmDeleteSelected(isUserFs = false) {
     if (this._disposed) return;
-    const isUserFs =
-      this.path().startsWith(UserPaths.Root) &&
-      this.userDaemon?.serviceHost?.getService("TrashSvc") &&
-      !this.userPreferences().globalSettings.disableTrashCan;
+
     const items = this.selection();
     const prog = await this.userDaemon!.FileProgress(
       {
