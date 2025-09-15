@@ -39,6 +39,7 @@ export interface UserPreferences {
   globalSettings: Record<string, any>;
   startup?: Record<string, "app" | "file" | "folder" | "share" | "disabled">;
   _internalImportBlocklist: string[];
+  enableVerboseLogin?: boolean;
 }
 
 export type ExpandedUserInfo = UserInfo & { profile: PublicUserInfo };

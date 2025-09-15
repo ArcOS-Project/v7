@@ -1,10 +1,10 @@
-#AdvSystemSettings > div.body div.startup-items {
+#AdvSystemSettings > div.body div.login {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-#AdvSystemSettings > div.body div.startup-items div.list {
+#AdvSystemSettings > div.body div.login div.list {
   border: var(--win-border);
   flex-grow: 1;
   overflow-y: auto;
@@ -12,18 +12,18 @@
   background-color: var(--win-bg);
 }
 
-#AdvSystemSettings > div.body div.startup-items div.list::-webkit-scrollbar {
+#AdvSystemSettings > div.body div.login div.list::-webkit-scrollbar {
   display: none;
 }
 
-#AdvSystemSettings > div.body div.startup-items div.list div.row {
+#AdvSystemSettings > div.body div.login div.list div.row {
   display: flex;
   align-items: center;
   border-bottom: var(--win-border);
 }
 
-#AdvSystemSettings > div.body div.startup-items div.list div.row input,
-#AdvSystemSettings > div.body div.startup-items div.list div.row select {
+#AdvSystemSettings > div.body div.login div.list div.row input,
+#AdvSystemSettings > div.body div.login div.list div.row select {
   margin: 0;
   padding: 0;
   border: none;
@@ -32,18 +32,18 @@
   background-color: var(--win-bg);
   width: 0;
 }
-#AdvSystemSettings > div.body div.startup-items div.list div.row input {
+#AdvSystemSettings > div.body div.login div.list div.row input {
   flex-grow: 1;
   padding: 0 10px;
 }
 
-#AdvSystemSettings > div.body div.startup-items div.list div.row select {
+#AdvSystemSettings > div.body div.login div.list div.row select {
   border-left: var(--win-border);
   padding: 0 5px;
   width: fit-content;
 }
 
-#AdvSystemSettings > div.body div.startup-items div.list div.row button {
+#AdvSystemSettings > div.body div.login div.list div.row button {
   border-radius: 0;
   border-left: var(--win-border);
   background-color: var(--button-bg);
@@ -52,4 +52,15 @@
   font-size: 16px;
   padding: 0;
   outline: none;
+}
+
+#AdvSystemSettings > div.body div.login hr {
+  border: none;
+  border-bottom: var(--win-border);
+}
+
+#AdvSystemSettings > div.body div.login label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }

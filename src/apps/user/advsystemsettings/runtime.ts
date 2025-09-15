@@ -16,7 +16,7 @@ export class AdvSysSetRuntime extends AppProcess {
   public tabs: Record<string, Component> = {
     Main: Main as any,
     Recycling: Recycling as any,
-    "Startup Items": Startup as any,
+    Login: Startup as any,
     "Dispatch Clients": DispatchClients as any,
   };
   public preferencesBuffer = Store<UserPreferences>();

@@ -70,3 +70,7 @@
     be changed.
   </p>
 </div>
+<hr />
+<label for="">
+  <input type="checkbox" bind:checked={$preferencesBuffer.enableVerboseLogin} /><span>Enable verbose login messages</span>
+</label>

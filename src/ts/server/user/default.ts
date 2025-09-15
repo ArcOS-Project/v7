@@ -82,6 +82,7 @@ export const DefaultUserPreferences: UserPreferences = {
   },
   globalSettings: {},
   _internalImportBlocklist: [],
+  enableVerboseLogin: false,
 };
 
 export const DefaultUserInfo: UserInfo = {
