@@ -19,6 +19,7 @@ import Identity from "./InitialSetup/Page/Identity.svelte";
 import License from "./InitialSetup/Page/License.svelte";
 import Welcome from "./InitialSetup/Page/Welcome.svelte";
 import type { PageButtons } from "./types";
+import FreshDeployment from "./InitialSetup/Page/FreshDeployment.svelte";
 
 export class InitialSetupRuntime extends AppProcess {
   //#region VARIABLES
@@ -33,9 +34,8 @@ export class InitialSetupRuntime extends AppProcess {
   public showMainContent = Store<boolean>(false);
   public displayName = Store<string>();
   public server: ServerManagerType;
-  private token: string | undefined;
 
-  public readonly pages = [Welcome, License, Identity, CheckInbox, Finish];
+  public readonly pages = [Welcome, License, Identity, CheckInbox, Finish, FreshDeployment];
 
   public readonly pageButtons: PageButtons = [
     {
@@ -44,6 +44,7 @@ export class InitialSetupRuntime extends AppProcess {
         action: async () => {
           KernelStateHandler()?.loadState("login");
         },
+        disabled: () => !!this.server?.serverInfo?.freshBackend,
       },
       previous: {
         disabled: () => true,
@@ -107,6 +108,21 @@ export class InitialSetupRuntime extends AppProcess {
         suggested: true,
       },
     },
+    {
+      left: {
+        caption: "Cancel",
+        disabled: () => true,
+      },
+      previous: {
+        caption: "Previous",
+        disabled: () => true,
+      },
+      next: {
+        caption: "Server's all good",
+        to: 0,
+        suggested: true,
+      },
+    },
   ];
 
   //#endregion
@@ -132,6 +148,8 @@ export class InitialSetupRuntime extends AppProcess {
     });
 
     this.server = getKMod<ServerManagerType>("server");
+
+    this.pageNumber.set(this.server.serverInfo?.freshBackend ? this.pages.length - 1 : 0);
 
     this.setSource(__SOURCE__);
   }
@@ -330,7 +348,6 @@ export class InitialSetupRuntime extends AppProcess {
       return v;
     });
 
-    this.token = token;
     this.pageNumber.set(this.pageNumber() + 1);
   }
 

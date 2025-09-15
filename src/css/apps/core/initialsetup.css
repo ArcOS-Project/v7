@@ -284,6 +284,38 @@
   margin-top: 0;
 }
 
+#initialSetupWizard div.fresh-deployment {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+#initialSetupWizard div.fresh-deployment h1 {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+#initialSetupWizard div.fresh-deployment p.message {
+  line-height: 22px;
+}
+
+#initialSetupWizard div.fresh-deployment p.note {
+  margin-top: auto;
+  opacity: 0.5;
+  font-size: 12px;
+}
+
+#initialSetupWizard div.fresh-deployment ul {
+  padding: 10px 15px;
+  border: var(--button-glass-hover-bg) 1px solid;
+  border-radius: 10px;
+  list-style: none;
+  overflow: scroll;
+  white-space: nowrap;
+  margin: 10px 0;
+  height: 0;
+  flex-grow: 1;
+}
+
 @keyframes draw {
   to {
     stroke-dashoffset: 0;

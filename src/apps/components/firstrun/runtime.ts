@@ -40,23 +40,6 @@ export class FirstRunRuntime extends AppProcess {
       await this.userDaemon?.createShortcut(payload, path);
     }
 
-    // TODO: fix me
-    // for (const app of BuiltinApps) {
-    //   const path = join(UserPaths.AppShortcuts, `${app.id}.arclnk`);
-    //   caption.set(`Preparing ${app.id}`);
-
-    //   this.userDaemon?.createShortcut(
-    //     {
-    //       name: app.id,
-    //       type: "app",
-    //       target: app.id,
-    //       icon: iconIdFromPath(app.metadata.icon),
-    //     },
-    //     path
-    //   );
-    //   await Sleep(50);
-    // }
-
     await this.userDaemon?.updateRegisteredVersion();
     await stop();
 

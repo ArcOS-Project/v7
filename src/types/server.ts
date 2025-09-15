@@ -5,4 +5,5 @@ export interface ServerInfo {
   loginBottomText: string;
   loginNotice: string;
   disableRegistration: boolean;
+  freshBackend: boolean;
 }
