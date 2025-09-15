@@ -23,6 +23,7 @@ import Cookies from "js-cookie";
 import { AppProcess } from "../../../ts/apps/process";
 import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps, PersistenceInfo } from "./types";
+import dayjs from "dayjs";
 
 export class LoginAppRuntime extends AppProcess {
   public DEFAULT_WALLPAPER = Store<string>("");
@@ -46,7 +47,6 @@ export class LoginAppRuntime extends AppProcess {
     const server = getKMod<ServerManagerType>("server");
 
     this.DEFAULT_WALLPAPER.set(server.serverInfo?.loginWallpaper ? `${server.url}/loginbg${authcode()}` : Wallpapers.img18.url);
-
     this.errorMessage.subscribe((v) => {
       if (!v) {
         this.profileImage.set(ProfilePictures.def);
@@ -85,6 +85,7 @@ export class LoginAppRuntime extends AppProcess {
       if (!props.userDaemon) throw new Error(`LoginAppRuntimeConstructor: Irregular login type without daemon`);
 
       this.soundBus.playSound("arcos.system.logoff");
+      props.userDaemon?.setAppRendererClasses(props.userDaemon.preferences());
 
       switch (props.type) {
         case "logoff":
@@ -115,11 +116,24 @@ export class LoginAppRuntime extends AppProcess {
   async render() {
     this.getBody().classList.add("theme-dark");
 
+    if (this.serverInfo?.freshBackend) {
+      KernelStateHandler()?.loadState("initialSetup");
+      return false;
+    }
+
     if (!this.type && !this.unexpectedInvocation) await this.loadToken();
 
     if (this.serverInfo?.loginNotice) {
       this.errorMessage.set(this.serverInfo.loginNotice);
     }
+  }
+
+  getWelcomeString(): string {
+    const hour = dayjs().hour();
+
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
   }
 
   //#endregion
@@ -128,7 +142,7 @@ export class LoginAppRuntime extends AppProcess {
   async startDaemon(token: string, username: string, info?: UserInfo) {
     this.Log(`Starting user daemon for '${username}'`);
 
-    this.loadingStatus.set("Starting daemon");
+    this.loadingStatus.set(this.getWelcomeString());
 
     const userDaemon = await KernelStack().spawn<UserDaemon>(
       UserDaemon,
@@ -178,19 +192,27 @@ export class LoginAppRuntime extends AppProcess {
       }
     }
 
+    this.loadingStatus.set(this.getWelcomeString());
+
+    const verbose = userDaemon.preferences().enableVerboseLogin;
+    const broadcast = (message: string) => {
+      if (!verbose) return;
+      this.loadingStatus.set(message);
+    };
+
     this.loadPersistence();
 
     this.savePersistence(username, this.profileImage());
 
-    this.loadingStatus.set("Starting filesystem");
+    broadcast("Starting filesystem");
 
     await userDaemon.startFilesystemSupplier();
 
-    this.loadingStatus.set("Starting synchronization");
+    broadcast("Starting synchronization");
 
     await userDaemon.startPreferencesSync();
 
-    this.loadingStatus.set("Reading profile customization");
+    broadcast("Reading profile customization");
 
     this.profileName.set(userDaemon.preferences().account.displayName || username);
     if (!this.safeMode) {
@@ -199,57 +221,58 @@ export class LoginAppRuntime extends AppProcess {
       this.savePersistence(username, this.profileImage(), this.loginBackground());
     }
 
-    this.loadingStatus.set("Notifying login activity");
+    broadcast("Notifying login activity");
     await userDaemon.logActivity("login");
 
-    this.loadingStatus.set("Starting service host");
-    await userDaemon.startServiceHost();
+    broadcast("Starting service host");
+    await userDaemon.startServiceHost(async (serviceStep) => {
+      if (serviceStep.id === "AppStorage") {
+        broadcast("Loading apps");
+        await userDaemon.initAppStorage(userDaemon.appStorage()!, (app) => broadcast(`Loaded ${app.metadata.name}`));
+      } else {
+        broadcast(`Started ${serviceStep.name}`);
+      }
+    });
 
-    this.loadingStatus.set("Checking associations");
+    broadcast("Checking associations");
     await userDaemon.updateFileAssociations();
 
-    this.loadingStatus.set("Connecting global dispatch");
+    broadcast("Connecting global dispatch");
     await userDaemon.activateGlobalDispatch();
 
-    this.loadingStatus.set("Welcome to ArcOS");
+    broadcast("Welcome to ArcOS");
     if (!userDaemon.preferences().firstRunDone && !userDaemon.preferences().appPreferences.arcShell) {
       await this.firstRun(userDaemon);
     }
 
-    this.loadingStatus.set("Loading apps");
-    await userDaemon.initAppStorage(userDaemon.appStorage()!, (app) => {
-      if (!app.hidden || userDaemon.preferences().shell.visuals.showHiddenApps)
-        this.loadingStatus.set(`Loaded ${app.metadata.name}`);
-    });
-
-    this.loadingStatus.set("Starting drive notifier watcher");
+    broadcast("Starting drive notifier watcher");
     userDaemon.startDriveNotifierWatcher();
 
-    this.loadingStatus.set("Starting share management");
+    broadcast("Starting share management");
     await userDaemon.startShareManager();
 
     const storage = userDaemon.appStorage();
 
     if (userDaemon.userInfo.admin) {
-      this.loadingStatus.set("Activating admin bootstrapper");
+      broadcast("Activating admin bootstrapper");
       await userDaemon.activateAdminBootstrapper();
     } else {
       await storage?.refresh();
     }
 
-    this.loadingStatus.set("Starting status refresh");
+    broadcast("Starting status refresh");
     await userDaemon.startSystemStatusRefresh();
 
-    this.loadingStatus.set("Let's go!");
+    broadcast("Let's go!");
     await KernelStateHandler()?.loadState("desktop", { userDaemon });
     this.soundBus.playSound("arcos.system.logon");
     userDaemon.setAppRendererClasses(userDaemon.preferences());
     userDaemon.checkNightly();
 
-    this.loadingStatus.set("Starting Workspaces");
+    broadcast("Starting Workspaces");
     await userDaemon.startVirtualDesktops();
 
-    this.loadingStatus.set("Running autorun");
+    broadcast("Running autorun");
     await userDaemon.spawnAutoload();
 
     await this.appStore()?.refresh();

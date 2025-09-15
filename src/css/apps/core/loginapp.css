@@ -56,8 +56,15 @@ div.window#loginApp > div.body div.container {
 }
 
 div.window#loginApp > div.body div.container.full {
-  background-color: #000;
+  background-image: unset;
+  background-color: var(--accent-dark);
 }
+
+div.window#loginApp > div.body div.container.full p.loading {
+  font-weight: bold;
+  font-size: 20px;
+}
+
 div.window#loginApp > div.body div.container.hide {
   opacity: 0;
   pointer-events: none;
@@ -171,6 +178,10 @@ div.window#loginApp > div.body p.loading {
   font-size: 18px;
   color: #fff;
   text-align: center;
+}
+
+div.window#loginApp > div.body p.loading img.spinner-svg {
+  filter: none !important;
 }
 
 div.window#loginApp > div.body div.power-options {
