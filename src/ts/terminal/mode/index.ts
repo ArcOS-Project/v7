@@ -144,15 +144,19 @@ export class TerminalMode extends Process {
       await userDaemon.logActivity(`login`);
 
       this.rl?.println(`${CURUP}${CLRROW}Starting service host`);
-      await userDaemon.startServiceHost();
+      await userDaemon.startServiceHost(async (serviceStep) => {
+        if (serviceStep.id === "AppStorage") {
+          this.rl?.println(`${CURUP}${CLRROW}Loading apps...`);
+          await userDaemon.initAppStorage(userDaemon.appStorage()!, (app) => {
+            this.rl?.println(`${CURUP}${CLRROW}Loading apps... ${app.id}`);
+          });
+        } else {
+          this.rl?.println(`${CURUP}${CLRROW}Started ${serviceStep.id}`);
+        }
+      });
 
       this.rl?.println(`${CURUP}${CLRROW}Connecting global dispatch`);
       await userDaemon.activateGlobalDispatch();
-
-      this.rl?.println(`${CURUP}${CLRROW}Loading apps...`);
-      await userDaemon.initAppStorage(userDaemon.appStorage()!, (app) => {
-        this.rl?.println(`${CURUP}${CLRROW}Loading apps... ${app.id}`);
-      });
 
       this.rl?.println(`${CURUP}${CLRROW}Starting drive notifier watcher`);
       userDaemon.startDriveNotifierWatcher();

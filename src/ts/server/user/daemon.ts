@@ -91,6 +91,7 @@ import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
 import { compareVersion } from "$ts/version";
+import type { Service } from "$types/service";
 //#endregion
 
 export class UserDaemon extends Process {
@@ -217,11 +218,11 @@ export class UserDaemon extends Process {
     await share?.mountOwnedShares();
   }
 
-  async startServiceHost() {
+  async startServiceHost(svcPreRun?: (service: Service) => void) {
     this.Log("Starting service host");
 
     this.serviceHost = await KernelStack().spawn<ServiceHost>(ServiceHost, undefined, this.userInfo!._id, this.pid);
-    await this.serviceHost?.init();
+    await this.serviceHost?.init(svcPreRun);
 
     this.assoc = this.serviceHost?.getService<FileAssocService>("FileAssocSvc");
   }
@@ -1638,6 +1639,7 @@ export class UserDaemon extends Process {
 
     storage.loadOrigin("builtin", () => builtins);
     storage.loadOrigin("userApps", async () => await this.getUserApps());
+    await storage.refresh();
   }
 
   async getUserApps(): Promise<AppStorage> {

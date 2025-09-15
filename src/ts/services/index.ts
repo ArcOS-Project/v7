@@ -2,7 +2,6 @@ import { appStoreService } from "$ts/apps/storage";
 import { bhuspService } from "$ts/bughunt/process";
 import { devEnvironmentService } from "$ts/devenv";
 import { distributionService } from "$ts/distrib";
-import { shareService } from "$ts/shares";
 import { KernelStack } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import { protoService } from "$ts/proto";
@@ -12,9 +11,10 @@ import { fileAssocService } from "$ts/server/user/assoc";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { trashService } from "$ts/server/user/trash";
 import { globalDispatchService } from "$ts/server/ws";
+import { shareService } from "$ts/shares";
 import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
-import type { ReadableServiceStore, ServiceChangeResult, ServiceStore } from "$types/service";
+import type { ReadableServiceStore, Service, ServiceChangeResult, ServiceStore } from "$types/service";
 import type { BaseService } from "./base";
 
 export class ServiceHost extends Process {
@@ -33,19 +33,23 @@ export class ServiceHost extends Process {
     console.warn(__SOURCE__);
   }
 
-  public async initialRun() {
+  public async initialRun(svcPreRun?: (service: Service) => void) {
     const services = this.Services.get();
 
     for (const [id, service] of [...services]) {
       if (!service.initialState || service.initialState != "started") continue;
 
+      service.id = id;
+
       await this.startService(id);
+
+      await svcPreRun?.(service);
     }
   }
 
-  async init() {
+  async init(svcPreRun?: (service: Service) => void) {
     this.loadStore(this.STORE);
-    await this.initialRun();
+    await this.initialRun(svcPreRun);
 
     KernelStack().store.subscribe(() => this.verifyServicesProcesses());
 
