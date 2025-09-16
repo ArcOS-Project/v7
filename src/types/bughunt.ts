@@ -14,6 +14,7 @@ export interface BugReport {
   api?: string;
   frontend: string;
   meta: MetaEnvironment;
+  env: Record<string, string>;
   _id?: string;
   createdAt: string;
   mode: string;
