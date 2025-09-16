@@ -100,6 +100,8 @@ export class LoginAppRuntime extends AppProcess {
         default:
           throw new Error(`LoginAppRuntimeConstructor: invalid login type '${props.type}'`);
       }
+    } else {
+      KernelStateHandler()?.getStateLoaders()?.main?.removeAttribute("style");
     }
 
     this.setSource(__SOURCE__);
@@ -323,6 +325,7 @@ export class LoginAppRuntime extends AppProcess {
       this.profileImage.set(ProfilePictures.def);
       this.profileName.set("");
       this.loginBackground.set(this.DEFAULT_WALLPAPER());
+      KernelStateHandler()?.getStateLoaders()?.main?.removeAttribute("style");
     }, 600);
   }
 

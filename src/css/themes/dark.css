@@ -56,6 +56,9 @@
   --accent-light: #80dfff;
   --accent-darkest: rgb(0, 46, 61);
   --elevated-accent-filter: brightness(300%) saturate(150%);
+  --accent-suggested-start: var(--accent) !important;
+  --accent-suggested-end: var(--accent) !important;
+  --accent-suggested-fg: #000 !important;
 }
 
 :root .theme-dark.noglass {
