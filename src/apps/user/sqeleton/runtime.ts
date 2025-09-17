@@ -1,8 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { getItemNameFromPath } from "$ts/util/fs";
-import { SqeletonIcon } from "$ts/images/apps";
-import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { KernelStack } from "$ts/env";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
@@ -112,7 +110,7 @@ export class SqeletonRuntime extends AppProcess {
   async openFile() {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Select a database to open",
-      icon: SqeletonIcon,
+      icon: this.getIconCached("SqeletonIcon"),
       startDir: UserPaths.Documents,
       extensions: [".db"],
     });
@@ -125,7 +123,7 @@ export class SqeletonRuntime extends AppProcess {
   async newFile() {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Choose where to save the new database",
-      icon: SqeletonIcon,
+      icon: this.getIconCached("SqeletonIcon"),
       startDir: UserPaths.Documents,
       extensions: [".db"],
       isSave: true,
@@ -319,7 +317,7 @@ export class SqeletonRuntime extends AppProcess {
             suggested: true,
           },
         ],
-        image: WarningIcon,
+        image: this.getIconCached("WarningIcon"),
         sound: "arcos.dialog.warning",
       },
       this.pid,
@@ -333,7 +331,7 @@ export class SqeletonRuntime extends AppProcess {
         title: "Existing connection",
         message: "Sqeleton is already connected to a file. To open another file, close the existing connection first.",
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-        image: SqeletonIcon,
+        image: this.getIconCached("SqeletonIcon"),
         sound: "arcos.dialog.warning",
       },
       this.pid,
@@ -347,7 +345,7 @@ export class SqeletonRuntime extends AppProcess {
         title: "Failed to open database",
         message: `Sqeleton was unable to open this database. ${e}`,
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-        image: ErrorIcon,
+        image: this.getIconCached("ErrorIcon"),
         sound: "arcos.dialog.error",
       },
       this.pid,
@@ -371,7 +369,7 @@ export class SqeletonRuntime extends AppProcess {
           },
         ],
         sound: "arcos.dialog.warning",
-        image: WarningIcon,
+        image: this.getIconCached("WarningIcon"),
       },
       this.pid,
       true

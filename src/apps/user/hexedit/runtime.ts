@@ -1,9 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { getItemNameFromPath } from "$ts/util/fs";
-import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
-import { DriveIcon } from "$ts/images/filesystem";
-import { MemoryIcon } from "$ts/images/general";
 import { sliceIntoChunks } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
@@ -49,7 +46,7 @@ export class HexEditRuntime extends AppProcess {
           title: "No file",
           message: "HexEdit was launched without a file to read. This shouldn't happen.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: WarningIcon,
+          image: this.getIconCached("WarningIcon"),
           sound: "arcos.dialog.warning",
         },
         this.parentPid,
@@ -65,7 +62,7 @@ export class HexEditRuntime extends AppProcess {
         type: "size",
         caption: `Reading file`,
         subtitle: this.requestedFile,
-        icon: MemoryIcon,
+        icon: this.getIconCached("MemoryIcon"),
       },
       this.pid
     );
@@ -88,7 +85,7 @@ export class HexEditRuntime extends AppProcess {
             title: "File too big",
             message: `HexEdit can't open files larger than 10MB at this time. Please choose another application.`,
             buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-            image: ErrorIcon,
+            image: this.getIconCached("ErrorIcon"),
             sound: "arcos.dialog.error",
           },
           this.parentPid,
@@ -112,7 +109,7 @@ export class HexEditRuntime extends AppProcess {
           title: "Failed to read file",
           message: `HexEdit was unable to open the file you requested: ${e}`,
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: WarningIcon,
+          image: this.getIconCached("WarningIcon"),
           sound: "arcos.dialog.error",
         },
         this.parentPid,
@@ -240,7 +237,7 @@ export class HexEditRuntime extends AppProcess {
         type: "size",
         caption: `Saving ${this.filename()}`,
         subtitle: `Writing ${this.requestedFile}`,
-        icon: DriveIcon,
+        icon: this.getIconCached("DriveIcon"),
       },
       this.pid
     );

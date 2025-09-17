@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { DefaultMimeIcon } from "$ts/images/mime";
   import Options from "./OpenWith/Options.svelte";
   import type { OpenWithRuntime } from "./runtime";
 
@@ -11,7 +10,10 @@
   <div class="header">
     <h1>Select an app to open {$filename}</h1>
     <p class="location">
-      <img src={process.userDaemon?.assoc?.getFileAssociation($path)?.icon || DefaultMimeIcon} alt="" /><span>{$path}</span>
+      <img
+        src={process.userDaemon?.assoc?.getFileAssociation($path)?.icon || process.getIconCached("DefaultMimeIcon")}
+        alt=""
+      /><span>{$path}</span>
     </p>
   </div>
   <div class="options">

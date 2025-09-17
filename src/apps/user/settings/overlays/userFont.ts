@@ -1,4 +1,3 @@
-import { ComponentIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import { OverlayRuntime } from "../overlay";
 import UserFont from "../Settings/Overlays/UserFont.svelte";
@@ -8,7 +7,7 @@ export const UserFontApp: App = {
     name: "Change Font",
     author: "ArcOS Team",
     version: "1.0.0",
-    icon: ComponentIcon,
+    icon: "ComponentIcon",
   },
   size: { w: 350, h: 380 },
   minSize: { w: 350, h: 380 },

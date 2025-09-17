@@ -3,7 +3,6 @@
   import type { QuotedDrive } from "$apps/user/filemanager/types";
   import { contextProps } from "$ts/context/actions.svelte";
   import { SharedDrive } from "$ts/shares/drive";
-  import { DriveIcon } from "$ts/images/filesystem";
   import { onMount } from "svelte";
 
   const { process }: { process: FileManagerRuntime } = $props();
@@ -42,7 +41,7 @@
           use:contextProps={[drive, `${drive.data.driveLetter || drive.data.uuid}:`, () => process.unmountDrive(drive.data, id)]}
           disabled={drive.data.IDENTIFIES_AS === "share" && (drive.data as SharedDrive).shareInfo?.locked}
         >
-          <img src={DriveIcon} alt="" />
+          <img src={process.getIconCached("DriveIcon")} alt="" />
           <div>
             <h1>{drive.data.driveLetter ? `${drive.data.label} (${drive.data.driveLetter}:)` : drive.data.label}</h1>
             <p class="fs">{drive.data.FILESYSTEM_LONG}</p>

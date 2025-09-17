@@ -2,7 +2,6 @@
   import type { SettingsRuntime } from "$apps/user/settings/runtime";
   import { contextProps } from "$ts/context/actions.svelte";
   import { MessageBox } from "$ts/dialog";
-  import { QuestionIcon } from "$ts/images/dialog";
   import type { UserDaemon } from "$ts/server/user/daemon";
   import type { UserTheme } from "$types/theme";
   import { onMount } from "svelte";
@@ -49,7 +48,7 @@
             suggested: true,
           },
         ],
-        image: QuestionIcon,
+        image: process.getIconCached("QuestionIcon"),
       },
       process.pid,
       true

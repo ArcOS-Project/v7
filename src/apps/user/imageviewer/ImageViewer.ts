@@ -1,5 +1,4 @@
 import "$css/apps/user/imageviewer.css";
-import { ImageViewerIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import ImageViewer from "./ImageViewer.svelte";
 import { ImageViewerRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const ImageViewerApp: App = {
     name: "Image Viewer",
     version: "4.0.0",
     author: "Izaak Kuipers",
-    icon: ImageViewerIcon,
+    icon: "ImageViewerIcon",
     appGroup: "multimedia",
   },
   size: { w: 640, h: 480 },

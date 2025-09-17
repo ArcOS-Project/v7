@@ -1,8 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import type { ShareManager } from "$ts/shares";
-import { QuestionIcon } from "$ts/images/dialog";
-import { TrashIcon } from "$ts/images/general";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import type { SharedDriveType } from "$types/shares";
@@ -66,7 +64,7 @@ export class ShareMgmtGuiRuntime extends AppProcess {
             suggested: true,
           },
         ],
-        image: QuestionIcon,
+        image: this.getIconCached("QuestionIcon"),
         sound: "arcos.dialog.warning",
       },
       this.pid,
@@ -92,7 +90,7 @@ export class ShareMgmtGuiRuntime extends AppProcess {
             suggested: true,
           },
         ],
-        image: TrashIcon,
+        image: this.getIconCached("TrashIcon"),
         sound: "arcos.dialog.warning",
       },
       this.pid,

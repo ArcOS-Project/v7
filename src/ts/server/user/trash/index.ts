@@ -1,10 +1,7 @@
-import { arrayToText, textToBlob } from "$ts/util/convert";
-import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
-import { FolderIcon } from "$ts/images/filesystem";
-import { TrashIcon } from "$ts/images/general";
-import { DefaultMimeIcon } from "$ts/images/mime";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
+import { arrayToText, textToBlob } from "$ts/util/convert";
+import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
 import type { Service } from "$types/service";
@@ -62,7 +59,9 @@ export class TrashCanService extends BaseService {
     const isDir = await this.fs.isDirectory(path);
     const name = getItemNameFromPath(path);
     const deletedPath = join(UserPaths.Trashcan, uuid);
-    const icon = isDir ? FolderIcon : this.host.daemon?.assoc?.getFileAssociation(name)?.icon || DefaultMimeIcon;
+    const icon = this.host.daemon.getIconCached(
+      isDir ? "FolderIcon" : this.host.daemon?.assoc?.getFileAssociation(name)?.icon || "DefaultMimeIcon"
+    );
     const node = {
       originalPath: path,
       deletedPath: join(deletedPath, name),
@@ -131,7 +130,7 @@ export class TrashCanService extends BaseService {
         caption: "Emptying recycle bin",
         subtitle: "Please wait...",
         max: Object.entries(buffer).length,
-        icon: TrashIcon,
+        icon: this.host.daemon.getIconCached("TrashIcon"),
       },
       +this.env.get("shell_pid")
     );

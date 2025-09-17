@@ -1,5 +1,4 @@
 import "$css/apps/components/fsrenameitem.css";
-import { ComponentIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import RenameItem from "./RenameItem.svelte";
 import { RenameItemRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const FsRenameItemApp: App = {
     name: "Rename Item",
     version: "4.0.0",
     author: "Izaak Kuipers",
-    icon: ComponentIcon,
+    icon: "ComponentIcon",
     appGroup: "components",
   },
   size: {

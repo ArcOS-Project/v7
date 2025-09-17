@@ -31,7 +31,6 @@ export class GoogleDriveIntegration extends BaseService {
           this.ready = true;
           resolve(true);
         } catch (e) {
-          console.log(e);
           resolve(false);
         }
       });
@@ -125,9 +124,7 @@ export class GoogleDriveIntegration extends BaseService {
       const authInstance = gapi?.auth2.getAuthInstance();
       await authInstance?.signOut();
       this.clearCredentials();
-    } catch (error) {
-      console.error("Sign-out failed:", error);
-    }
+    } catch (error) {}
   }
 
   isSignedIn(): boolean {
@@ -162,7 +159,6 @@ export class GoogleDriveIntegration extends BaseService {
       const isExpired = Date.now() > authResponse.expires_at - 5 * 60 * 1000; // 5 min buffer
 
       if (isExpired) {
-        console.log("Token expired, refreshing...");
         const newAuthResponse = await currentUser.reloadAuthResponse();
         this.saveCredentials(newAuthResponse);
         return true;
@@ -170,7 +166,6 @@ export class GoogleDriveIntegration extends BaseService {
 
       return true;
     } catch (error) {
-      console.error("Token refresh failed:", error);
       this.clearCredentials();
       return false;
     }

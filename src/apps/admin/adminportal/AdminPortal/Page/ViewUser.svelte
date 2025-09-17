@@ -1,7 +1,6 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
   import { MessageBox } from "$ts/dialog";
-  import { PasswordIcon, SecurityLowIcon, TrashIcon } from "$ts/images/general";
   import { AdminScopes } from "$ts/server/admin/store";
   import type { UserStatistics } from "$types/admin";
   import { onMount } from "svelte";
@@ -43,7 +42,7 @@
             suggested: true,
           },
         ],
-        image: PasswordIcon,
+        image: process.getIconCached("PasswordIcon"),
         sound: "arcos.dialog.warning",
       },
       process.pid,
@@ -71,7 +70,7 @@
             },
           },
         ],
-        image: SecurityLowIcon,
+        image: process.getIconCached("SecurityLowIcon"),
         sound: "arcos.dialog.warning",
       },
       process.pid,
@@ -98,7 +97,7 @@
             },
           },
         ],
-        image: SecurityLowIcon,
+        image: process.getIconCached("SecurityLowIcon"),
         sound: "arcos.dialog.warning",
       },
       process.pid,
@@ -122,7 +121,7 @@
             suggested: true,
           },
         ],
-        image: TrashIcon,
+        image: process.getIconCached("TrashIcon"),
         sound: "arcos.dialog.warning",
       },
       process.pid,

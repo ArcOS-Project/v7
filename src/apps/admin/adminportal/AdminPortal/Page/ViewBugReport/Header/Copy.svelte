@@ -2,7 +2,6 @@
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import type { ViewBugReportData } from "$apps/admin/adminportal/types";
   import { MessageBox } from "$ts/dialog";
-  import { MemoryIcon } from "$ts/images/general";
   import type { MessageCreateData } from "$types/messaging";
 
   const { data, process }: { data: ViewBugReportData; process: AdminPortalRuntime } = $props();
@@ -49,7 +48,7 @@
             suggested: true,
           },
         ],
-        image: MemoryIcon,
+        image: process.getIconCached("MemoryIcon"),
         sound: "arcos.dialog.info",
       },
       process.pid,

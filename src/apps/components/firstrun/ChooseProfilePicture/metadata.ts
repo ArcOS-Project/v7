@@ -1,5 +1,4 @@
 import { AppProcess } from "$ts/apps/process";
-import { AccountIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import ChooseProfilePicture from "./ChooseProfilePicture.svelte";
 
@@ -8,7 +7,7 @@ export const ChooseProfilePictureApp: App = {
     name: "Choose Profile Picture",
     author: "Izaak Kuipers",
     version: "1.0.0",
-    icon: AccountIcon,
+    icon: "AccountIcon",
   },
   position: { centered: true },
   size: { w: 348, h: 416 },

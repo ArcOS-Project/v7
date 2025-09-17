@@ -1,5 +1,4 @@
 import "$css/apps/components/contextmenu.css";
-import { StartMenuIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import ContextMenuRenderer from "./ContextMenuRenderer.svelte";
 import { ContextMenuRuntime } from "./runtime";
@@ -9,7 +8,7 @@ const ContextMenuApp: App = {
     name: "Context Menu",
     author: "Izaak Kuipers",
     version: "5.0.0",
-    icon: StartMenuIcon,
+    icon: "StartMenuIcon",
     appGroup: "components",
   },
   size: { w: NaN, h: NaN },

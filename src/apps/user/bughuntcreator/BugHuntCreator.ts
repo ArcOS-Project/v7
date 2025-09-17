@@ -1,4 +1,3 @@
-import { BugReportIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import Creator from "./Creator.svelte";
 import { BugHuntCreatorRuntime } from "./runtime";
@@ -8,7 +7,7 @@ export const BugReportsCreatorApp: App = {
     name: "Submit a bug report",
     author: "Izaak Kuipers",
     version: "3.0.0",
-    icon: BugReportIcon,
+    icon: "BugReportIcon",
     appGroup: "systemTools",
   },
   position: { centered: true },

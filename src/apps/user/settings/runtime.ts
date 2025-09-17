@@ -1,24 +1,12 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { getItemNameFromPath } from "$ts/util/fs";
-import { SettingsIcon } from "$ts/images/apps";
-import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
-import {
-  AccountIcon,
-  DesktopIcon,
-  ElevationIcon,
-  PasswordIcon,
-  SecurityHighIcon,
-  SecurityMediumIcon,
-  WaveIcon,
-} from "$ts/images/general";
-import { GoodStatusIcon } from "$ts/images/status";
-import { ArcLicense } from "$ts/metadata/license";
 import { KernelStack } from "$ts/env";
+import { ArcLicense } from "$ts/metadata/license";
 import { Backend } from "$ts/server/axios";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { htmlspecialchars } from "$ts/util";
+import { getItemNameFromPath } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
@@ -54,19 +42,19 @@ export class SettingsRuntime extends AppProcess {
       what: "ArcOS needs your permission to view security activity",
       title: "View security activity",
       description: "System Settings",
-      image: WaveIcon,
+      image: this.getIconCached("WaveIcon"),
       level: ElevationLevel.medium,
     },
     disableSecurityPassword: {
       what: "ArcOS needs your permission to disable passwords in the <b>Secure Context</b>:",
-      image: PasswordIcon,
+      image: this.getIconCached("PasswordIcon"),
       title: "Disable secure context password",
       description: "This will make your account less secure",
       level: ElevationLevel.medium,
     },
     turnOffSysSec: {
       what: "ArcOS needs your permission to turn off System Security. We strongly advise against this.",
-      image: SecurityHighIcon,
+      image: this.getIconCached("SecurityHighIcon"),
       title: "Disable System Security",
       description: "We do NOT recommend this",
       level: ElevationLevel.high,
@@ -126,7 +114,7 @@ export class SettingsRuntime extends AppProcess {
     this.currentPage.set(pageId);
 
     this.windowTitle.set(`${page?.name}`);
-    this.windowIcon.set(page?.icon || SettingsIcon);
+    this.windowIcon.set(this.getIconCached(page?.icon || "SettingsIcon"));
   }
 
   async showSlide(id: string) {
@@ -184,7 +172,7 @@ export class SettingsRuntime extends AppProcess {
             suggested: true,
           },
         ],
-        image: WarningIcon,
+        image: this.getIconCached("WarningIcon"),
         sound: "arcos.dialog.warning",
       },
       this.pid,
@@ -204,7 +192,7 @@ export class SettingsRuntime extends AppProcess {
         {
           title: "Failed to upload wallpaper",
           message: `An error occured while uploading a wallpaper from your device: ${message}`,
-          image: ErrorIcon,
+          image: this.getIconCached("ErrorIcon"),
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           sound: "arcos.dialog.error",
         },
@@ -219,7 +207,7 @@ export class SettingsRuntime extends AppProcess {
 
     MessageBox(
       {
-        image: SecurityMediumIcon,
+        image: this.getIconCached("SecurityMediumIcon"),
         title: "ArcOS License - GPLv3",
         message: `By using ArcOS, you agree to the GPLv3 License contained within: <code class='block'>${htmlspecialchars(
           ArcLicense()
@@ -256,7 +244,7 @@ export class SettingsRuntime extends AppProcess {
             suggested: true,
           },
         ],
-        image: QuestionIcon,
+        image: this.getIconCached("QuestionIcon"),
         sound: "arcos.dialog.warning",
       },
       this.pid,
@@ -267,7 +255,7 @@ export class SettingsRuntime extends AppProcess {
   async chooseProfilePicture() {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Choose profile picture",
-      icon: AccountIcon,
+      icon: this.getIconCached("AccountIcon"),
       startDir: UserPaths.Pictures,
       extensions: [".jpg", ".png", ".gif", ".svg", ".jpeg"],
     });
@@ -280,7 +268,7 @@ export class SettingsRuntime extends AppProcess {
   async chooseWallpaper() {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Choose wallpaper",
-      icon: DesktopIcon,
+      icon: this.getIconCached("DesktopIcon"),
       startDir: UserPaths.Wallpapers,
       extensions: [".jpg", ".png", ".gif", ".svg", ".jpeg"],
     });
@@ -307,7 +295,7 @@ export class SettingsRuntime extends AppProcess {
   async chooseLoginBackground() {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Choose login background",
-      icon: PasswordIcon,
+      icon: this.getIconCached("PasswordIcon"),
       startDir: UserPaths.Wallpapers,
       extensions: [".jpg", ".png", ".gif", ".svg", ".jpeg"],
     });
@@ -326,7 +314,7 @@ export class SettingsRuntime extends AppProcess {
 
     const elevated = await this.userDaemon?.manuallyElevate({
       what: "ArcOS needs your permission to set up two-factor authentication",
-      image: ElevationIcon,
+      image: this.getIconCached("ElevationIcon"),
       title: "Set up 2FA",
       description: `For ${this.username}`,
       level: ElevationLevel.high,
@@ -342,7 +330,7 @@ export class SettingsRuntime extends AppProcess {
 
     const elevated = await this.userDaemon?.manuallyElevate({
       what: "ArcOS needs your permission to disable two-factor authentication",
-      image: ElevationIcon,
+      image: this.getIconCached("ElevationIcon"),
       title: "Disable 2FA",
       description: `For ${this.username}`,
       level: ElevationLevel.high,
@@ -363,7 +351,7 @@ export class SettingsRuntime extends AppProcess {
             { caption: "Restart now", suggested: true, action: () => this.userDaemon?.restart() },
           ],
           sound: "arcos.dialog.info",
-          image: GoodStatusIcon,
+          image: this.getIconCached("GoodStatusIcon"),
         },
         this.pid,
         true
@@ -375,7 +363,7 @@ export class SettingsRuntime extends AppProcess {
           message: "An error occured while disabling two-factor authentication for your account. Please contact ArcOS support.",
           buttons: [{ caption: "Okay", suggested: true, action: () => {} }],
           sound: "arcos.dialog.error",
-          image: ErrorIcon,
+          image: this.getIconCached("ErrorIcon"),
         },
         this.pid,
         true

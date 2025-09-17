@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { WarningIcon } from "$ts/images/dialog";
   import { Wallpapers } from "$ts/wallpaper/store";
   import type { Wallpaper } from "$types/wallpaper";
   import { onMount } from "svelte";
@@ -94,7 +93,7 @@
     <div class="centered-layout">
       {#if process.safeMode}
         <Section>
-          <Option caption="Safe Mode - wallpaper is disabled" image={WarningIcon}></Option>
+          <Option caption="Safe Mode - wallpaper is disabled" image={process.getIconCached("WarningIcon")}></Option>
         </Section>
       {/if}
     </div>

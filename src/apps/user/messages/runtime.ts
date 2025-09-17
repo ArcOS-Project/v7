@@ -3,9 +3,6 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { arrayToBlob, arrayToText, textToBlob } from "$ts/util/convert";
 import { getParentDirectory } from "$ts/util/fs";
-import { MessagingIcon } from "$ts/images/apps";
-import { WarningIcon } from "$ts/images/dialog";
-import { DefaultMimeIcon } from "$ts/images/mime";
 import { tryJsonParse } from "$ts/json";
 import { MessagingInterface } from "$ts/server/messaging";
 import { Sleep } from "$ts/sleep";
@@ -185,7 +182,7 @@ export class MessagingAppRuntime extends AppProcess {
         title: "Failed to get messages",
         message: `ArcOS failed to get the messages for ${this.page()?.name || "an unknown page"}. Please refresh to try again.`,
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-        image: WarningIcon,
+        image: this.getIconCached("WarningIcon"),
         sound: "arcos.dialog.warning",
       },
       this.pid,
@@ -248,7 +245,7 @@ export class MessagingAppRuntime extends AppProcess {
         type: "size",
         max: attachment.size,
         caption: `Reading Attachment...`,
-        icon: MessagingIcon,
+        icon: this.getIconCached("MessagingIcon"),
         subtitle: attachment.filename,
       },
       this.pid
@@ -266,7 +263,7 @@ export class MessagingAppRuntime extends AppProcess {
           title: `'${attachment.filename}' unavailable`,
           message:
             "The attachment you tried to open could not be found, it may have been deleted. Please ask the sender of the message to send the attachment again.",
-          image: info?.icon || DefaultMimeIcon,
+          image: info?.icon || this.getIconCached("DefaultMimeIcon"),
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           sound: "arcos.dialog.error",
         },
@@ -320,7 +317,7 @@ export class MessagingAppRuntime extends AppProcess {
     const date = dayjs(message.createdAt).format("DD MMM YYYY, HH.mm.ss");
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Choose where to save the message",
-      icon: MessagingIcon,
+      icon: this.getIconCached("MessagingIcon"),
       isSave: true,
       extensions: [".arcmsg"],
       saveName: `${message.title} from ${
@@ -334,7 +331,7 @@ export class MessagingAppRuntime extends AppProcess {
       {
         type: "size",
         caption: `Writing message...`,
-        icon: MessagingIcon,
+        icon: this.getIconCached("MessagingIcon"),
         subtitle: path,
       },
       this.pid
@@ -395,7 +392,7 @@ export class MessagingAppRuntime extends AppProcess {
         type: "none",
         max: 100,
         caption: `Reading attachments`,
-        icon: MessagingIcon,
+        icon: this.getIconCached("MessagingIcon"),
         subtitle: `Just a moment...`,
       },
       this.pid

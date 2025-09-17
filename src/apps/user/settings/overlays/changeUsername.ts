@@ -1,4 +1,3 @@
-import { AccountIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import { OverlayRuntime } from "../overlay";
 import ChangeUsername from "../Settings/Overlays/ChangeUsername.svelte";
@@ -8,7 +7,7 @@ export const ChangeUsernameApp: App = {
     name: "Change Username",
     author: "ArcOS Team",
     version: "3.0.0",
-    icon: AccountIcon,
+    icon: "AccountIcon",
   },
   size: { w: 350, h: 200 },
   minSize: { w: 350, h: 200 },

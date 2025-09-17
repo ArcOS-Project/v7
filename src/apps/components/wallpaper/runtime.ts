@@ -2,8 +2,6 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { arrayToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, join } from "$ts/util/fs";
-import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
-import { UploadIcon } from "$ts/images/general";
 import { tryJsonParse } from "$ts/json";
 import { UserPaths } from "$ts/server/user/store";
 import { Store } from "$ts/writable";
@@ -70,7 +68,7 @@ export class WallpaperRuntime extends AppProcess {
           title: "Failed to load the desktop",
           message: "ArcOS wasn't able to load your desktop icons. Please restart to try again.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: ErrorIcon,
+          image: this.getIconCached("ErrorIcon"),
           sound: "arcos.dialog.error",
         },
         this.parentPid
@@ -206,7 +204,7 @@ export class WallpaperRuntime extends AppProcess {
             suggested: true,
           },
         ],
-        image: WarningIcon,
+        image: this.getIconCached("WarningIcon"),
         sound: "arcos.dialog.warning",
       },
       +this.env.get("shell_pid"),
@@ -220,7 +218,7 @@ export class WallpaperRuntime extends AppProcess {
     const prog = await this.userDaemon!.FileProgress(
       {
         type: "size",
-        icon: UploadIcon,
+        icon: this.getIconCached("UploadIcon"),
         caption: "Uploading your files...",
         subtitle: `To ${getItemNameFromPath(this.directory)}`,
       },

@@ -1,7 +1,5 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
-  import { DefaultIcon } from "$ts/images/apps";
-  import { FlagIcon } from "$ts/images/general";
   import { KernelStack } from "$ts/env";
   import type { Process } from "$ts/process/instance";
   import type { ProcessContext } from "$types/process";
@@ -51,7 +49,7 @@
     }
 
     name = proc.name;
-    icon = DefaultIcon;
+    icon = process.getIconCached("DefaultIcon");
   });
 </script>
 
@@ -71,7 +69,7 @@
       <span>{name}{orphan ? " (orphaned)" : ""}</span>
     </div>
     <div class="segment pid" class:flagged={$focusedPid === proc.pid}>
-      <img src={FlagIcon} alt="" class="flag" />
+      <img src={process.getIconCached("FlagIcon")} alt="" class="flag" />
       <span>{proc.pid}</span>
     </div>
     <div class="segment app-id">{appId || "-"}</div>

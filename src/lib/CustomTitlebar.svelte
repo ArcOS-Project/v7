@@ -3,7 +3,6 @@
   import type { AppRenderer } from "$ts/apps/renderer";
   import { contextProps } from "$ts/context/actions.svelte";
   import { BETA } from "$ts/env";
-  import { ComponentIcon } from "$ts/images/general";
   import { KernelStack } from "$ts/env";
   import { onMount, type Snippet } from "svelte";
   import AltMenu from "./CustomTitlebar/AltMenu.svelte";
@@ -44,7 +43,7 @@
     {#if children}
       {@render children()}
     {:else}
-      <img src={$windowIcon || ComponentIcon} alt="" />
+      <img src={$windowIcon || process.getIconCached("ComponentIcon")} alt="" />
       <span>{$windowTitle}</span>
     {/if}
     {#if BETA && !process.app.data.entrypoint && !process.app.data.workingDirectory && !process.app.data.thirdParty}

@@ -28,23 +28,7 @@ import { ArcOSVersion, BETA, getKMod, KernelStack } from "$ts/env";
 import { toForm } from "$ts/form";
 import { KernelStateHandler } from "$ts/getters";
 import { applyDefaults } from "$ts/hierarchy";
-import { getIconPath, iconIdFromPath, maybeIconId } from "$ts/images";
-import { AppStoreIcon, MessagingIcon } from "$ts/images/apps";
-import { NightlyLogo } from "$ts/images/branding";
-import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
-import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
-import {
-  AccountIcon,
-  AppsIcon,
-  ComponentIcon,
-  FirefoxIcon,
-  GlobeIcon,
-  PasswordIcon,
-  PersonalizationIcon,
-  TrashIcon,
-} from "$ts/images/general";
-import { ImageMimeIcon, ShortcutMimeIcon } from "$ts/images/mime";
-import { RestartIcon } from "$ts/images/power";
+import type { IconService } from "$ts/icon";
 import { tryJsonParse } from "$ts/json";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -57,8 +41,9 @@ import { authcode, deepCopyWithBlobs, Plural } from "$ts/util";
 import { arrayToBlob, arrayToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { UUID } from "$ts/uuid";
+import { compareVersion } from "$ts/version";
 import { Wallpapers } from "$ts/wallpaper/store";
-import { Store } from "$ts/writable";
+import { Store, type ReadableStore } from "$ts/writable";
 import type { LoginActivity } from "$types/activity";
 import type { App, AppStorage, InstalledApp } from "$types/app";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
@@ -67,6 +52,7 @@ import type { FilesystemType, ServerManagerType } from "$types/kernel";
 import { LogLevel } from "$types/logging";
 import type { BatteryType } from "$types/navigator";
 import type { Notification } from "$types/notification";
+import type { Service } from "$types/service";
 import type { ArcShortcut } from "$types/shortcut";
 import type { ExpandedTerminal } from "$types/terminal";
 import { UserThemeKeys, type UserTheme } from "$types/theme";
@@ -88,10 +74,10 @@ import { GlobalDispatch } from "../ws";
 import { FileAssocService } from "./assoc";
 import { DefaultFileDefinitions } from "./assoc/store";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
-import { BuiltinThemes, DefaultAppData, DefaultFileHandlers, UserPaths } from "./store";
+import { BuiltinThemes, DefaultFileHandlers, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
-import { compareVersion } from "$ts/version";
-import type { Service } from "$types/service";
+import { iconIdFromPath, maybeIconId } from "$ts/images";
+import { NightlyLogo } from "$ts/images/branding";
 //#endregion
 
 export class UserDaemon extends Process {
@@ -266,7 +252,7 @@ export class UserDaemon extends Process {
                   suggested: true,
                 },
               ],
-              image: GlobeIcon,
+              image: this.getIconCached("GlobeIcon"),
             },
             +this.env.get("shell_pid"),
             true
@@ -340,7 +326,7 @@ export class UserDaemon extends Process {
           name: app.id,
           target: app.id,
           type: "app",
-          icon: iconIdFromPath(app.metadata.icon),
+          icon: `@app::${app.id}`,
         },
         join(UserPaths.AppShortcuts, `${app.id}.arclnk`)
       );
@@ -448,7 +434,7 @@ export class UserDaemon extends Process {
         message:
           "The application ID is malformed: it contains periods or dashes. If you're the creator of the app, be sure to use the suggested format for application IDs.",
         timeout: 3000,
-        image: WarningIcon,
+        image: this.getIconCached("WarningIcon"),
       });
 
       return;
@@ -459,7 +445,7 @@ export class UserDaemon extends Process {
         title: "Application not found",
         message: `ArcOS tried to launch an application with ID '${id}', but it could not be found. Is it installed?`,
         timeout: 3000,
-        image: QuestionIcon,
+        image: this.getIconCached("QuestionIcon"),
       });
       return undefined;
     }
@@ -524,7 +510,7 @@ export class UserDaemon extends Process {
         message:
           "The application ID is malformed: it contains periods or dashes. If you're the creator of the app, be sure to use the suggested format for application IDs.",
         timeout: 3000,
-        image: WarningIcon,
+        image: this.getIconCached("WarningIcon"),
       });
 
       return;
@@ -535,7 +521,7 @@ export class UserDaemon extends Process {
         title: "Application not found",
         message: `ArcOS can't find an application with ID '${id}'. Is it installed?`,
         timeout: 3000,
-        image: QuestionIcon,
+        image: this.getIconCached("QuestionIcon"),
       });
       return undefined;
     }
@@ -590,7 +576,7 @@ export class UserDaemon extends Process {
             title: "Third-party apps",
             message:
               "ArcOS can't run third-party apps without your permission. Please enable third-party apps in Settings to access this app.",
-            image: AppsIcon,
+            image: this.getIconCached("AppsIcon"),
             sound: "arcos.dialog.warning",
             buttons: [
               {
@@ -637,7 +623,7 @@ export class UserDaemon extends Process {
             message: `This application expects a newer version of the TPA framework than what ArcOS can supply. Please update your ArcOS version and try again.`,
             buttons: [{ caption: "Okay", action: () => {} }],
             sound: "arcos.dialog.error",
-            image: ErrorIcon,
+            image: this.getIconCached("ErrorIcon"),
           },
           +this.env.get("shell_pid"),
           true
@@ -659,7 +645,7 @@ export class UserDaemon extends Process {
             message: `ArcOS can't find the entrypoint of this third-party application. It might have been renamed or deleted. Please consider reinstalling the application to fix this problem.<br><code class='block'>${app.entrypoint}</code>`,
             buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
             sound: "arcos.dialog.error",
-            image: ErrorIcon,
+            image: this.getIconCached("ErrorIcon"),
           },
           +this.env.get("shell_pid"),
           true
@@ -814,7 +800,7 @@ export class UserDaemon extends Process {
         what: "ArcOS needs your permission to mount a ZIP file",
         title: getItemNameFromPath(path),
         description: letter ? `As ${letter}:/` : "As a drive",
-        image: DriveIcon,
+        image: this.getIconCached("DriveIcon"),
         level: ElevationLevel.medium,
       }));
 
@@ -825,7 +811,7 @@ export class UserDaemon extends Process {
         type: "size",
         caption: "Mounting drive",
         subtitle: `${path}${letter ? ` as ${letter}:/` : ""}`,
-        icon: DriveIcon,
+        icon: this.getIconCached("DriveIcon"),
       },
       +this.env.get("shell_pid") || undefined
     );
@@ -875,7 +861,7 @@ export class UserDaemon extends Process {
               },
             },
           ],
-          image: DriveIcon,
+          image: this.getIconCached("DriveIcon"),
           timeout: 3000,
         });
       } catch {
@@ -1052,7 +1038,7 @@ export class UserDaemon extends Process {
       {
         type: "quantity",
         max: sources.length,
-        icon: FolderIcon,
+        icon: this.getIconCached("FolderIcon"),
         caption: `Moving files to ${destinationName || destination}`,
         subtitle: "Working...",
       },
@@ -1068,7 +1054,7 @@ export class UserDaemon extends Process {
           type: "none",
           caption: `Moving ${getItemNameFromPath(source)} to ${destinationName || destination}`,
           subtitle: source,
-          icon: FolderIcon,
+          icon: this.getIconCached("FolderIcon"),
           done: 0,
           max: 100,
         },
@@ -1109,7 +1095,7 @@ export class UserDaemon extends Process {
         type: "quantity",
         max: sources.length,
         done: 0,
-        icon: FolderIcon,
+        icon: this.getIconCached("FolderIcon"),
         caption: `Copying files to ${destinationName || destination}`,
         subtitle: "Working...",
       },
@@ -1125,7 +1111,7 @@ export class UserDaemon extends Process {
           type: "none",
           caption: `Copying ${getItemNameFromPath(source)} to ${destinationName || destination}`,
           subtitle: source,
-          icon: FolderIcon,
+          icon: this.getIconCached("FolderIcon"),
           done: 0,
           max: 100,
         },
@@ -1264,7 +1250,7 @@ export class UserDaemon extends Process {
             { caption: "Okay", action: () => {}, suggested: true },
           ],
           sound: "arcos.dialog.warning",
-          image: ErrorIcon,
+          image: this.getIconCached("ErrorIcon"),
         },
         +this.env.get("shell_pid"),
         true
@@ -1304,7 +1290,7 @@ export class UserDaemon extends Process {
               message: `ArcOS doesn't know how to open shortcut '${shortcut.name}' (${filename}) of type ${shortcut.type}.`,
               buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
               sound: "arcos.dialog.warning",
-              image: WarningIcon,
+              image: this.getIconCached("WarningIcon"),
             },
             +this.env.get("shell_pid"),
             true
@@ -1315,7 +1301,7 @@ export class UserDaemon extends Process {
         {
           title: "Failed to open shortcut",
           message: `ArcOS failed to open the shortcut you requested. Reason: ${e}`,
-          image: ShortcutMimeIcon,
+          image: this.getIconCached("ShortcutMimeIcon"),
           sound: "arcos.dialog.error",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
         },
@@ -1326,7 +1312,7 @@ export class UserDaemon extends Process {
   }
 
   async createShortcut(data: ArcShortcut, path: string) {
-    if (!getIconPath(data.icon)) return false;
+    if (!(await this.getIcon(data.icon))) return false;
 
     const string = JSON.stringify(data, null, 2);
 
@@ -1445,7 +1431,7 @@ export class UserDaemon extends Process {
           message:
             "Beware! ArcOS doesn't work correctly on Firefox. It's unsure when and if support for Firefox will improve. Please be sure to give feedback to me about anything that doesn't work quite right on Firefox, okay?",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: FirefoxIcon,
+          image: this.getIconCached("FirefoxIcon"),
         },
         +this.env.get("shell_pid"),
         true
@@ -1488,7 +1474,7 @@ export class UserDaemon extends Process {
 
     const elevated = await this.manuallyElevate({
       what: "ArcOS needs your permission to disable an application",
-      image: this.getAppIcon(app, app.workingDirectory),
+      image: this.getAppIcon(app),
       title: app.metadata.name,
       description: `By ${app.metadata.author}`,
       level: ElevationLevel.medium,
@@ -1524,7 +1510,7 @@ export class UserDaemon extends Process {
 
     const elevated = await this.manuallyElevate({
       what: "ArcOS needs your permission to enable an application",
-      image: this.getAppIcon(app, app.workingDirectory),
+      image: this.getAppIcon(app),
       title: app.metadata.name,
       description: `By ${app.metadata.author}`,
       level: ElevationLevel.medium,
@@ -1547,7 +1533,7 @@ export class UserDaemon extends Process {
       what: "ArcOS wants to enable third-party applications",
       title: "Enable Third-party",
       description: "ArcOS System",
-      image: AppsIcon,
+      image: this.getIconCached("AppsIcon"),
       level: ElevationLevel.medium,
     });
 
@@ -1564,7 +1550,7 @@ export class UserDaemon extends Process {
       what: "ArcOS wants to disable third-party applications and kill any running third-party apps",
       title: "Disable Third-party",
       description: "ArcOS System",
-      image: AppsIcon,
+      image: this.getIconCached("AppsIcon"),
       level: ElevationLevel.medium,
     });
 
@@ -1627,7 +1613,7 @@ export class UserDaemon extends Process {
               title: "App load error",
               message: `ArcOS failed to load a built-in app because of an error. ${e}.`,
               buttons: [{ caption: "Okay", action: () => r(), suggested: true }],
-              image: WarningIcon,
+              image: this.getIconCached("WarningIcon"),
             },
             +this.env.get("loginapp_pid"),
             true
@@ -1710,7 +1696,7 @@ export class UserDaemon extends Process {
           message: `You're about to uninstall "${app?.metadata?.name || "Unknown"}" by ${
             app?.metadata?.author || "nobody"
           }. Do you want to just uninstall it, or do you want to delete its files also?`,
-          image: WarningIcon,
+          image: this.getIconCached("WarningIcon"),
           sound: "arcos.dialog.warning",
           buttons: [
             {
@@ -1742,34 +1728,35 @@ export class UserDaemon extends Process {
     });
   }
 
-  getAppIcon(app: App, workingDirectory?: string) {
-    if (!app) return QuestionIcon;
-
-    const { icon } = app.metadata;
-    try {
-      const maybe = maybeIconId(icon);
-      const appStore = this.appStorage();
-
-      if (icon.startsWith("http")) return icon;
-      if (maybe !== icon) return maybe;
-      if (icon.startsWith("@local:")) {
-        const path = join(workingDirectory || app.workingDirectory || "", icon.replace("@local:", ""));
-
-        if (appStore?.appIconCache[path]) return appStore?.appIconCache[path];
-      }
-
-      if (iconIdFromPath(icon)) return icon;
-
-      return ComponentIcon;
-    } catch {
-      return ComponentIcon;
-    }
+  getAppIcon(app: App) {
+    return this.getIconCached(`@app::${app.id}`);
   }
 
   getAppIconByProcess(process: AppProcess) {
-    const workingDir = (process as any).workingDirectory;
+    return this.getAppIcon(process.app?.data);
+  }
 
-    return this.getAppIcon(process.app?.data, workingDir);
+  async getIcon(id: string): Promise<string> {
+    const iconService = this.serviceHost?.getService<IconService>("IconService");
+
+    return (await iconService?.getIcon(id)) || maybeIconId(id);
+  }
+
+  getIconCached(id: string): string {
+    const iconService = this.serviceHost?.getService<IconService>("IconService");
+
+    return iconService?.getIconCached(id) || maybeIconId(id);
+  }
+
+  getIconStore(id: string): ReadableStore<string> {
+    const store = Store<string>();
+    const iconService = this.serviceHost?.getService<IconService>("IconService");
+
+    if (!iconService) store.set(maybeIconId(id));
+
+    iconService?.getIcon(id)?.then((i) => store.set(i));
+
+    return store;
   }
 
   async pinApp(appId: string) {
@@ -1924,7 +1911,7 @@ export class UserDaemon extends Process {
 
     const elevated = await this.manuallyElevate({
       what: "ArcOS needs your permission to change your username:",
-      image: AccountIcon,
+      image: this.getIconCached("AccountIcon"),
       title: "Change username",
       description: `To ${newUsername}`,
       level: ElevationLevel.medium,
@@ -1960,7 +1947,7 @@ export class UserDaemon extends Process {
 
     const elevated = await this.manuallyElevate({
       what: "ArcOS needs your permission to change your password:",
-      image: PasswordIcon,
+      image: this.getIconCached("PasswordIcon"),
       title: "Change password",
       description: `of ${this.username}`,
       level: ElevationLevel.medium,
@@ -1999,7 +1986,7 @@ export class UserDaemon extends Process {
       {
         title: "Delete ArcOS Account",
         content: DeleteUser,
-        image: TrashIcon,
+        image: this.getIconCached("TrashIcon"),
         buttons: [
           {
             caption: "Back to safety",
@@ -2139,7 +2126,7 @@ export class UserDaemon extends Process {
     const prog = await this.FileProgress(
       {
         type: "size",
-        icon: ImageMimeIcon,
+        icon: this.getIconCached("ImageMimeIcon"),
         caption: "Uploading a wallpaper of your choosing",
         subtitle: `To U:/Wallpapers`,
       },
@@ -2808,7 +2795,7 @@ export class UserDaemon extends Process {
             },
           },
         ],
-        image: PersonalizationIcon,
+        image: this.getIconCached("PersonalizationIcon"),
         timeout: 6000,
       });
     }
@@ -2835,7 +2822,7 @@ export class UserDaemon extends Process {
                 "package",
                 updates.length
               )} can be updated. Update now to get the latest features and security fixes.`,
-              image: AppStoreIcon,
+              image: this.getIconCached("AppStoreIcon"),
             }),
         buttons: [
           {
@@ -2893,7 +2880,7 @@ export class UserDaemon extends Process {
       this.sendNotification({
         title: "Missed messages",
         message: `You have ${messages.length} ${Plural("message", messages.length)} in your inbox that you haven't read yet.`,
-        image: MessagingIcon,
+        image: this.getIconCached("MessagingIcon"),
         buttons: [
           {
             caption: "Open inbox",
@@ -2938,7 +2925,14 @@ export class UserDaemon extends Process {
     };
   }
 
-  async Confirm(title: string, message: string, no: string, yes: string, image = QuestionIcon, pid?: number) {
+  async Confirm(
+    title: string,
+    message: string,
+    no: string,
+    yes: string,
+    image = this.getIconCached("QuestionIcon"),
+    pid?: number
+  ) {
     const shellPid = pid || +this.env.get("shell_pid");
     return new Promise((r) => {
       MessageBox(
@@ -3010,7 +3004,7 @@ export class UserDaemon extends Process {
       {
         title: "ArcOS is running in safe mode",
         content: SafeModeNotice,
-        image: WarningIcon,
+        image: this.getIconCached("WarningIcon"),
         sound: "arcos.dialog.warning",
         buttons: [
           { caption: "Restart now", action: () => this.restart() },
@@ -3091,7 +3085,7 @@ The information provided in this report is subject for review by me or another A
       "ArcOS has to restart before the changes will apply. Do you want to restart now?",
       "Not now",
       "Restart",
-      RestartIcon
+      this.getIconCached("RestartIcon")
     );
 
     if (restartNow) await this.restart();

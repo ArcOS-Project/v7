@@ -1,4 +1,3 @@
-import { ComponentIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import Replace from "./Replace.svelte";
 import { ReplaceRuntime } from "./runtime";
@@ -6,7 +5,7 @@ import { ReplaceRuntime } from "./runtime";
 export const ReplaceOverlay: App = {
   metadata: {
     name: "Replace",
-    icon: ComponentIcon,
+    icon: "ComponentIcon",
     version: "2.0.0",
     author: "Izaak Kuipers",
   },

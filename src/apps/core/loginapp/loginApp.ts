@@ -1,5 +1,4 @@
 import "$css/apps/core/loginapp.css";
-import { PasswordIcon } from "$ts/images/general";
 import type { App } from "../../../types/app";
 import Login from "./LoginApp.svelte";
 import { LoginAppRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const LoginApp: App = {
     name: "LogonUI",
     author: "Izaak Kuipers",
     version: "9.0.0",
-    icon: PasswordIcon,
+    icon: "PasswordIcon",
     appGroup: "coreApps",
   },
   size: { w: NaN, h: NaN },

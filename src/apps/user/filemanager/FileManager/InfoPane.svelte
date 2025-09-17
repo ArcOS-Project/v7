@@ -1,6 +1,5 @@
 <script lang="ts">
   import { getItemNameFromPath } from "$ts/util/fs";
-  import { FolderIcon } from "$ts/images/filesystem";
   import type { ExpandedFileAssociationInfo } from "$types/assoc";
   import type { ExtendedStat, SummarizedFsModifiers } from "$types/fs";
   import { onMount } from "svelte";
@@ -50,7 +49,7 @@
               singleSelectionThumbnail = "";
               singleSelectionAssoc = {
                 friendlyName: "Folder",
-                icon: FolderIcon,
+                icon: process.getIconCached("FolderIcon"),
                 extension: "",
                 handledBy: {},
               };
@@ -88,6 +87,7 @@
     <Drive drive={currentDrive} />
   {:else if variant === "singleSelection"}
     <SingleFile
+      {process}
       modifiers={singleSelectionModifiers}
       association={singleSelectionAssoc!}
       filename={singleSelectionFilename!}
@@ -96,6 +96,6 @@
       dateModified={singleSelectionStat?.modified!}
     />
   {:else if variant === "multiSelection" && currentDrive}
-    <MultiFile name={getItemNameFromPath($path)} itemCount={$selection.length} {currentDrive} />
+    <MultiFile name={getItemNameFromPath($path)} itemCount={$selection.length} {currentDrive} {process} />
   {/if}
 </div>

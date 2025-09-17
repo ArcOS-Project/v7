@@ -1,5 +1,4 @@
 import "$css/apps/admin/adminportal.css";
-import { ElevationIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import AdminPortal from "./AdminPortal.svelte";
 import { AdminPortalRuntime } from "./runtime";
@@ -9,7 +8,7 @@ const AdminPortalApp: App = {
     name: "Admin Portal",
     version: "1.0.0",
     author: "Izaak Kuipers",
-    icon: ElevationIcon,
+    icon: "ElevationIcon",
   },
   position: { centered: true },
   size: { w: 900, h: 500 },

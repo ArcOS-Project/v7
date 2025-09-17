@@ -1,8 +1,6 @@
 <script lang="ts">
   import type { SettingsRuntime } from "$apps/user/settings/runtime";
   import { MessageBox } from "$ts/dialog";
-  import { ErrorIcon } from "$ts/images/dialog";
-  import { GlobeIcon } from "$ts/images/general";
   import { KernelStack } from "$ts/env";
   import type { WeatherSearchResponse, WeatherSearchResult } from "$types/weather";
   import axios from "axios";
@@ -26,7 +24,7 @@
     } catch {
       MessageBox(
         {
-          image: ErrorIcon,
+          image: process.getIconCached("ErrorIcon"),
           title: `Failed to search for '${searchInput}'`,
           message: "An error occured while trying to search for your query. Please try again later.",
           buttons: [{ caption: "Okay", suggested: true, action: () => {} }],
@@ -74,7 +72,7 @@
 
 <div class="centered-layout">
   <div class="header">
-    <img src={GlobeIcon} alt="" />
+    <img src={process.getIconCached("GlobeIcon")} alt="" />
     <h1>Weather location</h1>
     <p>From where do you want to see the weather?</p>
   </div>

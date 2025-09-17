@@ -1,8 +1,6 @@
 <script lang="ts">
   import { Logo } from "$ts/branding";
   import { MessageBox } from "$ts/dialog";
-  import { ErrorIcon } from "$ts/images/dialog";
-  import { TrashIcon } from "$ts/images/general";
   import { sortByKey } from "$ts/util";
   import { Store } from "$ts/writable";
   import type { BugReport } from "$types/bughunt";
@@ -50,7 +48,7 @@
           title: "Report ID not found",
           message: "Sorry, the report ID you entered doesn't match any records. Check it, and then try again.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: ErrorIcon,
+          image: process.getIconCached("ErrorIcon"),
           sound: "arcos.dialog.error",
         },
         process.pid,
@@ -83,7 +81,7 @@
       "Are you sure you want to delete this report?",
       "Abort!",
       "Continue",
-      TrashIcon
+      process.getIconCached("TrashIcon")
     );
 
     if (!go) return;
@@ -99,7 +97,7 @@
       `Are you sure you want to delete ${$selectionList.length} reports? This is a potentially destructive action!`,
       "Abort!",
       "Continue",
-      TrashIcon
+      process.getIconCached("TrashIcon")
     );
 
     if (!go) return;

@@ -1,5 +1,4 @@
 import "$css/apps/user/messages.css";
-import { MessagingIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import Messages from "./Messages.svelte";
 import { MessagingAppRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const MessagingApp: App = {
     name: "Messages",
     version: "3.0.0",
     author: "Izaak Kuipers",
-    icon: MessagingIcon,
+    icon: "MessagingIcon",
     appGroup: "multimedia",
   },
   position: { centered: true },

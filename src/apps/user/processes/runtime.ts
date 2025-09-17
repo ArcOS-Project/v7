@@ -1,8 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { DefaultIcon } from "$ts/images/apps";
-import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
-import { ComponentIcon } from "$ts/images/general";
 import { KernelStack } from "$ts/env";
 import type { Process } from "$ts/process/instance";
 import { ProcessKillResultCaptions } from "$ts/process/store";
@@ -28,7 +25,7 @@ export class ProcessManagerRuntime extends AppProcess {
   async kill(proc: Process) {
     const elevated = await this.userDaemon?.manuallyElevate({
       what: `ArcOS needs your permission to kill a process`,
-      image: proc instanceof AppProcess ? proc.windowIcon() || ComponentIcon : DefaultIcon,
+      image: this.getIconCached(proc instanceof AppProcess ? proc.windowIcon() || "ComponentIcon" : "DefaultIcon"),
       title: proc.name,
       description: proc instanceof AppProcess ? "Application" : "Process",
       level: ElevationLevel.high,
@@ -43,7 +40,7 @@ export class ProcessManagerRuntime extends AppProcess {
         title: `Do you want to end ${name}?`,
         message:
           "By killing this process, its window will close and you will lose any unsaved information. If you end a system process, ArcOS might crash or become unstable. Are you sure you want to continue?",
-        image: WarningIcon,
+        image: this.getIconCached("WarningIcon"),
         sound: "arcos.dialog.warning",
         buttons: [
           { caption: "Cancel", action: () => {} },
@@ -75,7 +72,7 @@ export class ProcessManagerRuntime extends AppProcess {
         title: `Couldn't kill ${name}!`,
         message: `An error occured while trying to end the process. ${caption}`,
         buttons: [{ caption: "Okay", action() {}, suggested: true }],
-        image: ErrorIcon,
+        image: this.getIconCached("ErrorIcon"),
         sound: "arcos.dialog.error",
       },
       this.pid,

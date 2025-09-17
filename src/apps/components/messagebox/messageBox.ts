@@ -1,5 +1,4 @@
 import "$css/apps/components/messagebox.css";
-import { ErrorIcon } from "$ts/images/dialog";
 import type { App } from "$types/app";
 import MessageBox from "./MessageBox.svelte";
 import { MessageBoxRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const MessageBoxApp: App = {
     name: "Error",
     author: "Izaak Kuipers",
     version: "5.1.0",
-    icon: ErrorIcon,
+    icon: "ErrorIcon",
     appGroup: "components",
   },
   size: { w: NaN, h: NaN },

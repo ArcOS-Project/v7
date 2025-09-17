@@ -1,6 +1,5 @@
 import { arrayToText } from "$ts/util/convert";
 import { getParentDirectory } from "$ts/util/fs";
-import { DownloadIcon } from "$ts/images/filesystem";
 import { tryJsonParse } from "$ts/json";
 import type { FileHandler } from "$types/fs";
 import type { UserDaemon } from "../daemon";
@@ -9,7 +8,7 @@ const installTpaFile: (d: UserDaemon) => FileHandler = (daemon) => ({
   opens: {
     extensions: [".tpa"],
   },
-  icon: DownloadIcon,
+  icon: daemon.getIconCached("DownloadIcon"),
   name: "Install application",
   description: "Install this TPA file as an app",
   handle: async (path: string) => {

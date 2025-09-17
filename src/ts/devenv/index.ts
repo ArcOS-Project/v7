@@ -1,7 +1,6 @@
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { MessageBox } from "$ts/dialog";
 import { KernelStack } from "$ts/env";
-import { ErrorIcon } from "$ts/images/dialog";
 import { ArcBuild } from "$ts/metadata/build";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import type { ServiceHost } from "$ts/services";
@@ -108,7 +107,7 @@ export class DevelopmentEnvironment extends BaseService {
           {
             title: "ArcDev stopped",
             message: `The websocket connection was lost. Please reconnect to continue development. Disconnect reason was '${reason}'`,
-            image: ErrorIcon,
+            image: this.daemon.getIconCached("ErrorIcon"),
             sound: "arcos.dialog.error",
             buttons: [{ caption: "Okay", action: () => {} }],
           },

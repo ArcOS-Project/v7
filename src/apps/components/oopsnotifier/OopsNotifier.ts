@@ -1,5 +1,4 @@
 import "$css/apps/components/oopsnotifier.css";
-import { BugReportIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import OopsNotifier from "./OopsNotifier.svelte";
 import { OopsNotifierRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const OopsNotifierApp: App = {
     name: "OopsNotifier",
     version: "1.0.0",
     author: "Izaak Kuipers",
-    icon: BugReportIcon,
+    icon: "BugReportIcon",
   },
   position: { centered: true },
   size: { w: 320, h: 365 },

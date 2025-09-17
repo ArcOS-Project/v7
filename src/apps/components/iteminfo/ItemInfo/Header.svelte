@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
-  import { DefaultMimeIcon } from "$ts/images/mime";
   import type { ReadableStore } from "$ts/writable";
   import { onMount } from "svelte";
   import type { ItemInfoRuntime } from "../runtime";
@@ -12,12 +10,12 @@
 
   onMount(() => {
     const assoc = process.userDaemon?.assoc?.getFileAssociation($info.name);
-    icon = $info.isFolder ? FolderIcon : assoc?.icon || DefaultMimeIcon;
+    icon = $info.isFolder ? process.getIconCached("FolderIcon") : assoc?.icon || process.getIconCached("DefaultMimeIcon");
   });
 </script>
 
 <div class="header">
-  <img src={$info.name ? icon || DefaultMimeIcon : DriveIcon} alt="" />
+  <img src={$info.name ? icon || process.getIconCached("DefaultMimeIcon") : process.getIconCached("DriveIcon")} alt="" />
   <div>
     <h1>{$info.name || $info.location.parent || $info.location.drive}</h1>
     {#if $info.name && ($info.location.parent || $info.location.drive)}

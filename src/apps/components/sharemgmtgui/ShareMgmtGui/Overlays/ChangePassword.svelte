@@ -1,9 +1,6 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
   import { ShareManager } from "$ts/shares";
-  import { WarningIcon } from "$ts/images/dialog";
-  import { PasswordIcon } from "$ts/images/general";
-  import { GoodStatusIcon } from "$ts/images/status";
   import type { OverlayRuntime } from "../../overlay";
 
   const { process }: { process: OverlayRuntime } = $props();
@@ -18,7 +15,7 @@
           title: "Change password",
           message: "The passwords you entered don't match. Please try again.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: WarningIcon,
+          image: process.getIconCached("WarningIcon"),
           sound: "arcos.dialog.warning",
         },
         process.parentPid,
@@ -39,7 +36,7 @@
           title: "Change password",
           message: "Failed to change your password! Something might have gone wrong on our end. Please try again later.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: WarningIcon,
+          image: process.getIconCached("WarningIcon"),
           sound: "arcos.dialog.warning",
         },
         process.parentPid,
@@ -52,7 +49,7 @@
           message:
             "Your password has been changed successfully! New share members will have to use this password to access the share.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: GoodStatusIcon,
+          image: process.getIconCached("GoodStatusIcon"),
           sound: "arcos.dialog.info",
         },
         process.parentPid,
@@ -64,7 +61,7 @@
 
 <div class="top">
   <div class="left">
-    <img src={PasswordIcon} alt="" />
+    <img src={process.getIconCached("PasswordIcon")} alt="" />
   </div>
   <div class="right">
     <h1>Change share password</h1>

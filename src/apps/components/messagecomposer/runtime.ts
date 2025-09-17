@@ -1,9 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { getItemNameFromPath } from "$ts/util/fs";
-import { MessagingIcon } from "$ts/images/apps";
-import { WarningIcon } from "$ts/images/dialog";
-import { MemoryIcon, UploadIcon } from "$ts/images/general";
 import { MessagingInterface } from "$ts/server/messaging";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
@@ -54,7 +51,7 @@ export class MessageComposerRuntime extends AppProcess {
         type: "none",
         caption: "Sending message",
         subtitle: "Preparing...",
-        icon: MessagingIcon,
+        icon: this.getIconCached("MessagingIcon"),
       },
       this.pid
     );
@@ -92,7 +89,7 @@ export class MessageComposerRuntime extends AppProcess {
           { caption: "Cancel", action: () => {} },
           { caption: "Discard", action: () => this.closeWindow(), suggested: true },
         ],
-        image: WarningIcon,
+        image: this.getIconCached("WarningIcon"),
         sound: "arcos.dialog.warning",
       },
       this.pid,
@@ -107,7 +104,7 @@ export class MessageComposerRuntime extends AppProcess {
         title: "Failed to send message",
         message:
           "ArcOS failed to send the message! It might be too large, or none of the recipients exist. Please check the recipients or try shrinking it down, and then resend it. If it still doesn't work, contact an ArcOS administrator.",
-        image: WarningIcon,
+        image: this.getIconCached("WarningIcon"),
         sound: "arcos.dialog.warning",
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
       },
@@ -123,7 +120,7 @@ export class MessageComposerRuntime extends AppProcess {
     const attachments: Attachment[] = [];
     const paths = await this.userDaemon!.LoadSaveDialog({
       title: "Choose one or more files to attach",
-      icon: UploadIcon,
+      icon: this.getIconCached("UploadIcon"),
       startDir: UserPaths.Documents,
       multiple: true,
     });
@@ -133,7 +130,7 @@ export class MessageComposerRuntime extends AppProcess {
         max: 100,
         type: "none",
         caption: "Just a moment...",
-        icon: MemoryIcon,
+        icon: this.getIconCached("MemoryIcon"),
       },
       this.pid
     );

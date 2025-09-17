@@ -1,5 +1,4 @@
 import { AppProcess } from "$ts/apps/process";
-import { ComponentIcon } from "$ts/images/general";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { LogLevel } from "$types/logging";
@@ -19,7 +18,7 @@ export class MessageBoxRuntime extends AppProcess {
       title: "MsgBox::title",
       message: "MsgBox::message",
       buttons: [],
-      image: ComponentIcon,
+      image: "ComponentIcon",
     };
 
     if (this.data.sound) this.soundBus.playSound(this.data.sound); // Play the sound

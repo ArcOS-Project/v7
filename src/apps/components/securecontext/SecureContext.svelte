@@ -16,7 +16,7 @@
 </script>
 
 {#if data}
-  <Header {data}></Header>
+  <Header {data} {process}></Header>
   <div class="top">
     <p class="what">{@html data.what}</p>
     <Display {data} />

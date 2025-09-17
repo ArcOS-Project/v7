@@ -16,7 +16,6 @@ import {
   onFolderChange,
 } from "$ts/util/fs";
 import { getAllImages } from "$ts/images";
-import { WindowSettingsIcon } from "$ts/images/general";
 import { tryJsonStringify } from "$ts/json";
 import { Process } from "$ts/process/instance";
 import { BaseService } from "$ts/services/base";
@@ -105,7 +104,7 @@ export function ThirdPartyProps(
         {
           title: "🐛🪵",
           message: tryJsonStringify(m, 2),
-          image: WindowSettingsIcon,
+          image: "WindowSettingsIcon",
           sound: "arcos.dialog.info",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
         },

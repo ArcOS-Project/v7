@@ -1,4 +1,3 @@
-import { ShareIcon } from "$ts/images/filesystem";
 import type { App } from "$types/app";
 import { OverlayRuntime } from "../overlay";
 import RenameShare from "../ShareMgmtGui/Overlays/RenameShare.svelte";
@@ -8,7 +7,7 @@ export const RenameShareApp: App = {
     name: "Rename share",
     author: "Izaak Kuipers",
     version: "1.0.0",
-    icon: ShareIcon,
+    icon: "ShareIcon",
   },
   size: { w: 350, h: 200 },
   minSize: { w: 350, h: 200 },

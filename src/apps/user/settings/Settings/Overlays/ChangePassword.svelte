@@ -1,8 +1,5 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
-  import { WarningIcon } from "$ts/images/dialog";
-  import { PasswordIcon } from "$ts/images/general";
-  import { GoodStatusIcon } from "$ts/images/status";
   import type { SettingsRuntime } from "../../runtime";
 
   const { process }: { process: SettingsRuntime } = $props();
@@ -17,7 +14,7 @@
           title: "Change password",
           message: "The passwords you entered don't match. Please try again.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: WarningIcon,
+          image: process.getIconCached("WarningIcon"),
           sound: "arcos.dialog.warning",
         },
         process.parentPid,
@@ -38,7 +35,7 @@
           message:
             "Failed to change your password! Either the password is invalid or you didn't approve the elevation request. Please try again.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: WarningIcon,
+          image: process.getIconCached("WarningIcon"),
           sound: "arcos.dialog.warning",
         },
         process.parentPid,
@@ -50,7 +47,7 @@
           title: "Change password",
           message: "Your password has been changed successfully! You'll have to use this password when logging in in the future",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: GoodStatusIcon,
+          image: process.getIconCached("GoodStatusIcon"),
           sound: "arcos.dialog.info",
         },
         process.parentPid,
@@ -62,7 +59,7 @@
 
 <div class="top">
   <div class="left">
-    <img src={PasswordIcon} alt="" />
+    <img src={process.getIconCached("PasswordIcon")} alt="" />
   </div>
   <div class="right">
     <h1>Change your password</h1>

@@ -1,5 +1,4 @@
 import "$css/apps/user/mediaplayer.css";
-import { MediaPlayerIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import MediaPlayer from "./MediaPlayer.svelte";
 import { MediaPlayerRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const MediaPlayerApp: App = {
     name: "Media Player",
     author: "Izaak Kuipers",
     version: "4.0.0",
-    icon: MediaPlayerIcon,
+    icon: "MediaPlayerIcon",
     appGroup: "multimedia",
   },
   size: {

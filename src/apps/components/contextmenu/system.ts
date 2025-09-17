@@ -1,5 +1,4 @@
 import type { AppProcess } from "$ts/apps/process";
-import { ShutdownIcon } from "$ts/images/power";
 import { KernelStack } from "$ts/env";
 import type { AppContextMenu } from "$types/app";
 import type { ContextMenuRuntime } from "./runtime";
@@ -113,7 +112,7 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
         action: (proc: AppProcess) => {
           proc.closeWindow();
         },
-        image: ShutdownIcon,
+        image: runtime.getIconCached("ShutdownIcon"),
         disabled: (proc: AppProcess) => !proc?.app.data.controls.close,
       },
     ],

@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import { MessageBox } from "$ts/dialog";
-  import { ElevationIcon, SecurityHighIcon, SecurityMediumIcon } from "$ts/images/general";
   import { AdminScopes } from "$ts/server/admin/store";
   import type { UserTotp } from "$types/admin";
   import type { ExpandedUserInfo } from "$types/user";
@@ -34,7 +33,7 @@
             suggested: true,
           },
         ],
-        image: SecurityMediumIcon,
+        image: process.getIconCached("SecurityMediumIcon"),
         sound: "arcos.dialog.warning",
       },
       process.pid,
@@ -59,7 +58,7 @@
             suggested: true,
           },
         ],
-        image: SecurityHighIcon,
+        image: process.getIconCached("SecurityHighIcon"),
         sound: "arcos.dialog.warning",
       },
       process.pid,
@@ -72,7 +71,7 @@
       {
         title: "2FA of " + user.username,
         message: `<ul><li>Secret: ${totp?.secret}</li><li>URL: ${totp?.url}</li></ul>`,
-        image: ElevationIcon,
+        image: process.getIconCached("ElevationIcon"),
         sound: "arcos.dialog.info",
         buttons: [
           { caption: "Copy secret", action: () => navigator.clipboard.writeText(totp?.secret!) },

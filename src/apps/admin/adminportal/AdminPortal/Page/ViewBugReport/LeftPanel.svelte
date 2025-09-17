@@ -2,7 +2,6 @@
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import type { BugReportTpaFile } from "$apps/admin/adminportal/types";
   import { formatBytes } from "$ts/util/fs";
-  import { DefaultMimeIcon } from "$ts/images/mime";
   import type { BugReport } from "$types/bughunt";
   import { onMount } from "svelte";
   import Client from "./LeftPanel/Client.svelte";
@@ -40,7 +39,10 @@
       {:else}
         {#each tpaFiles as file}
           <button class="file" ondblclick={() => openTpaFile(file)} disabled={file.unavailable}>
-            <img src={process.userDaemon?.assoc?.getFileAssociation(file.filePath)?.icon || DefaultMimeIcon} alt="" />
+            <img
+              src={process.userDaemon?.assoc?.getFileAssociation(file.filePath)?.icon || process.getIconCached("DefaultMimeIcon")}
+              alt=""
+            />
             <span class="filename">{file.filename}</span>
             {#if !file.unavailable}
               <span class="size">{formatBytes(file.size)}</span>

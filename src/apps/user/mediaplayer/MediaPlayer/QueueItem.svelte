@@ -1,6 +1,5 @@
 <script lang="ts">
   import { getItemNameFromPath } from "$ts/util/fs";
-  import { DefaultMimeIcon } from "$ts/images/mime";
   import { onMount } from "svelte";
   import type { MediaPlayerRuntime } from "../runtime";
 
@@ -13,7 +12,7 @@
   onMount(() => {
     filename = getItemNameFromPath(path);
     const info = process.userDaemon?.assoc?.getFileAssociation(filename);
-    icon = info?.icon || DefaultMimeIcon;
+    icon = info?.icon || process.getIconCached("DefaultMimeIcon");
   });
 
   function playThis() {

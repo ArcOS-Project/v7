@@ -1,6 +1,5 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
-  import { WarningIcon } from "$ts/images/dialog";
   import type { ReadableStore } from "$ts/writable";
   import type { StoreItem } from "$types/package";
   import { onMount } from "svelte";
@@ -47,7 +46,7 @@
               },
             },
           ],
-          image: WarningIcon,
+          image: process.getIconCached("WarningIcon"),
           sound: "arcos.dialog.warning",
         },
         process.pid,

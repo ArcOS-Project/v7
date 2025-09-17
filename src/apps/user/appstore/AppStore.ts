@@ -1,5 +1,4 @@
 import "$css/apps/user/appstore.css";
-import { AppStoreIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import AppStore from "./AppStore.svelte";
 import { AppStoreRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const AppStoreApp: App = {
     name: "App Store",
     author: "Izaak Kuipers",
     version: "1.0.1",
-    icon: AppStoreIcon,
+    icon: "AppStoreIcon",
   },
   position: { centered: true },
   size: { w: 950, h: 500 },

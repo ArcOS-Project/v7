@@ -1,6 +1,5 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
-  import { TrashIcon } from "$ts/images/general";
   import { TrashCanService } from "$ts/server/user/trash";
   import { Plural } from "$ts/util";
   import { onMount } from "svelte";
@@ -33,7 +32,7 @@
             suggested: true,
           },
         ],
-        image: TrashIcon,
+        image: process.getIconCached("TrashIcon"),
         sound: "arcos.dialog.warning",
       },
       process.pid,

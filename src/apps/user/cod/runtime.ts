@@ -1,12 +1,9 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { arrayToText, textToBlob } from "$ts/util/convert";
-import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
-import { CodIcon } from "$ts/images/apps";
-import { WarningIcon } from "$ts/images/dialog";
-import { DefaultMimeIcon } from "$ts/images/mime";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
+import { arrayToText, textToBlob } from "$ts/util/convert";
+import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppKeyCombinations } from "$types/accelerator";
 import type { AppProcessData } from "$types/app";
@@ -23,7 +20,7 @@ export class CodRuntime extends AppProcess {
   mimetype = Store<string>("");
   directoryName = Store<string>("");
   original = Store<string>("");
-  mimeIcon = Store<string>(DefaultMimeIcon);
+  mimeIcon = Store<string>(this.getIconCached("DefaultMimeIcon"));
   public acceleratorStore: AppKeyCombinations = CodAccelerators(this);
 
   //#region LIFECYCLE
@@ -55,7 +52,7 @@ export class CodRuntime extends AppProcess {
           {
             title: "Save changes?",
             message: `Do you want to save the changes you made to ${filename}?`,
-            image: WarningIcon,
+            image: this.getIconCached("WarningIcon"),
             sound: "arcos.dialog.warning",
             buttons: [
               {
@@ -97,7 +94,7 @@ export class CodRuntime extends AppProcess {
         type: "size",
         caption: `Reading code`,
         subtitle: path,
-        icon: CodIcon,
+        icon: this.getIconCached("CodIcon"),
       },
       this.pid
     );
@@ -125,7 +122,7 @@ export class CodRuntime extends AppProcess {
       this.directoryName.set(getItemNameFromPath(getParentDirectory(path)));
       this.original.set(`${this.buffer()}`);
       this.mimetype.set(info?.friendlyName || "Unknown");
-      this.mimeIcon.set(info?.icon || DefaultMimeIcon);
+      this.mimeIcon.set(info?.icon || this.getIconCached("DefaultMimeIcon"));
       this.windowTitle.set(this.filename());
       this.windowIcon.set(this.mimeIcon());
 
@@ -142,7 +139,7 @@ export class CodRuntime extends AppProcess {
           title: "Failed to read file",
           message: `Cod was unable to open the file you requested: ${e}`,
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: WarningIcon,
+          image: this.getIconCached("WarningIcon"),
           sound: "arcos.dialog.error",
         },
         this.pid,
@@ -165,7 +162,7 @@ export class CodRuntime extends AppProcess {
         type: "size",
         caption: `Saving ${filename}`,
         subtitle: `Writing ${opened}`,
-        icon: CodIcon,
+        icon: this.getIconCached("CodIcon"),
       },
       this.pid
     );
@@ -185,7 +182,7 @@ export class CodRuntime extends AppProcess {
   async saveAs() {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Choose where to save the file",
-      icon: CodIcon,
+      icon: this.getIconCached("CodIcon"),
       startDir: UserPaths.Documents,
       isSave: true,
       saveName: this.openedFile() ? this.filename() : "",
@@ -200,7 +197,7 @@ export class CodRuntime extends AppProcess {
     this.directoryName.set(getItemNameFromPath(getParentDirectory(path)));
     this.original.set(`${this.buffer()}`);
     this.mimetype.set(info?.friendlyName || "Unknown");
-    this.mimeIcon.set(info?.icon || DefaultMimeIcon);
+    this.mimeIcon.set(info?.icon || this.getIconCached("DefaultMimeIcon"));
     this.windowTitle.set(this.filename());
     this.windowIcon.set(this.mimeIcon());
     await this.saveChanges(true);
@@ -209,7 +206,7 @@ export class CodRuntime extends AppProcess {
   async openFile() {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Select a file to open",
-      icon: CodIcon,
+      icon: this.getIconCached("CodIcon"),
       startDir: UserPaths.Documents,
     });
 

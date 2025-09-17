@@ -1,5 +1,4 @@
 import "$css/apps/user/lightsoff.css";
-import { LightsOffIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import LightsOff from "./LightsOff.svelte";
 import { LightsOffRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const LightsOffApp: App = {
     name: "Lights Off",
     version: "3.0.0",
     author: "Tim Horton, ported by Izaak Kuipers",
-    icon: LightsOffIcon,
+    icon: "LightsOffIcon",
     appGroup: "entertainment",
   },
   size: {

@@ -1,7 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import type { ShareManager } from "$ts/shares";
-import { ErrorIcon } from "$ts/images/dialog";
 import { KernelStack } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -40,7 +39,7 @@ export class ShareCreateGuiRuntime extends AppProcess {
           message:
             "ArcOS was unable to create the share you requested. You might already have the maximum amount of shares in your account.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: ErrorIcon,
+          image: this.getIconCached("ErrorIcon"),
           sound: "arcos.dialog.error",
         },
         this.pid,

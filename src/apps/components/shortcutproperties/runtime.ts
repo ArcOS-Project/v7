@@ -1,8 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { getParentDirectory } from "$ts/util/fs";
 import { getAllImages } from "$ts/images";
-import { ErrorIcon } from "$ts/images/dialog";
+import { getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { ArcShortcut } from "$types/shortcut";
@@ -44,7 +43,7 @@ export class ShortcutPropertiesRuntime extends AppProcess {
       {
         title: "Failed to save",
         message: "An error occured while trying to save the shortcut. Please try again",
-        image: ErrorIcon,
+        image: this.getIconCached("ErrorIcon"),
         sound: "arcos.dialog.error",
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
       },

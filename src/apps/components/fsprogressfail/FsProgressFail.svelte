@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { BadStatusIcon } from "$ts/images/status";
   import type { FsProgressFailRuntime } from "./runtime";
 
   const { process }: { process: FsProgressFailRuntime } = $props();
@@ -14,7 +13,7 @@
 <div class="errors">
   {#each errors as error}
     <div class="error">
-      <img src={BadStatusIcon} alt="" />
+      <img src={process.getIconCached("BadStatusIcon")} alt="" />
       <span>{error}</span>
     </div>
   {/each}

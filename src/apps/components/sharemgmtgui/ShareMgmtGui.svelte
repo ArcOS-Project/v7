@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { ShareIcon } from "$ts/images/filesystem";
   import type { ShareMgmtGuiRuntime } from "./runtime";
 
   const { process }: { process: ShareMgmtGuiRuntime } = $props();
@@ -8,7 +7,7 @@
 
 {#if info}
   <div class="header">
-    <img src={ShareIcon} alt="" />
+    <img src={process.getIconCached("ShareIcon")} alt="" />
     <div>
       <h1>
         {info.shareName}

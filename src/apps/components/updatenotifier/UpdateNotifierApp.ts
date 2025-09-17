@@ -1,5 +1,4 @@
 import "$css/apps/components/updatenotifier.css";
-import { UpdateIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import { UpdateNotifierRuntime } from "./runtime";
 import UpdateNotifier from "./UpdateNotifier.svelte";
@@ -9,7 +8,7 @@ export const UpdateNotifierApp: App = {
     name: "UpdateNotifier",
     author: "Izaak Kuipers",
     version: "2.0.0",
-    icon: UpdateIcon,
+    icon: "UpdateIcon",
   },
   position: { centered: true },
   size: { w: 390, h: 490 },

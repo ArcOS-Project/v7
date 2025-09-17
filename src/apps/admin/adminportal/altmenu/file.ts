@@ -1,4 +1,3 @@
-import { ShutdownIcon } from "$ts/images/power";
 import type { ContextMenuItem } from "$types/app";
 import type { AdminPortalRuntime } from "../runtime";
 
@@ -26,7 +25,7 @@ export function FileMenu(process: AdminPortalRuntime): ContextMenuItem {
         icon: "lock",
       },
       { sep: true },
-      { caption: "Exit", action: () => process.closeWindow(), image: ShutdownIcon },
+      { caption: "Exit", action: () => process.closeWindow(), image: process.getIconCached("ShutdownIcon") },
     ],
   };
 }

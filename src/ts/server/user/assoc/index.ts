@@ -1,10 +1,9 @@
 import { ApplicationStorage } from "$ts/apps/storage";
-import { arrayToText, textToBlob } from "$ts/util/convert";
-import { getItemNameFromPath, join } from "$ts/util/fs";
-import { maybeIconId } from "$ts/images";
 import { tryJsonParse } from "$ts/json";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
+import { arrayToText, textToBlob } from "$ts/util/convert";
+import { getItemNameFromPath, join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { ExpandedFileAssociationInfo, FileAssociationConfig } from "$types/assoc";
 import type { Service } from "$types/service";
@@ -112,7 +111,7 @@ export class FileAssocService extends BaseService {
     return {
       extension: extension,
       friendlyName: definition?.friendlyName || "Unknown",
-      icon: maybeIconId(definition?.icon || "DefaultMimeIcon"),
+      icon: this.host.daemon.getIconCached(definition?.icon || "DefaultMimeIcon"),
       handledBy: {
         app: storage?.getAppSynchronous(
           Object.entries(associations.apps)

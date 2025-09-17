@@ -1,5 +1,4 @@
 import "$css/apps/user/processmanager.css";
-import { ProcessManagerIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import ProcessManager from "./ProcessManager.svelte";
 import { ProcessManagerRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const ProcessesApp: App = {
     name: "Processes",
     version: "3.0.0",
     author: "Izaak Kuipers",
-    icon: ProcessManagerIcon,
+    icon: "ProcessManagerIcon",
     appGroup: "systemTools",
   },
   size: {

@@ -1,5 +1,4 @@
 import "$css/apps/components/multiupdategui.css";
-import { UpdateIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import MultiUpdateGui from "./MultiUpdateGui.svelte";
 import { MultiUpdateGuiRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const MultiUpdateGuiApp: App = {
     name: "App Updater",
     author: "Izaak Kuipers",
     version: "1.0.0",
-    icon: UpdateIcon,
+    icon: "UpdateIcon",
   },
   position: { centered: true },
   size: {

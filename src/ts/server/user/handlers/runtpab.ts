@@ -1,8 +1,6 @@
 import { MessageBox } from "$ts/dialog";
 import { arrayToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
-import { ErrorIcon } from "$ts/images/dialog";
-import { ArcAppMimeIcon, CompressMimeIcon } from "$ts/images/mime";
 import { UUID } from "$ts/uuid";
 import type { FileHandler } from "$types/fs";
 import { fromExtension } from "human-filetypes";
@@ -13,14 +11,14 @@ const runTpaBundle: (d: UserDaemon) => FileHandler = (daemon) => ({
   opens: {
     extensions: [".tpab"],
   },
-  icon: CompressMimeIcon,
+  icon: daemon.getIconCached("CompressMimeIcon"),
   name: "Run TPA package",
   description: "Opens this file as a package",
   handle: async (path: string) => {
     const prog = await daemon.FileProgress(
       {
         type: "size",
-        icon: ArcAppMimeIcon,
+        icon: daemon.getIconCached("ArcAppMimeIcon"),
         caption: "Reading TPA archive",
         subtitle: path,
       },
@@ -46,7 +44,7 @@ const runTpaBundle: (d: UserDaemon) => FileHandler = (daemon) => ({
           title: "Failed to open TPA package",
           message: "This archive doesn't contain a TPA file.",
           buttons: [{ caption: "Okay", action: () => {} }],
-          image: ErrorIcon,
+          image: daemon.getIconCached("ErrorIcon"),
         },
         +daemon.env.get("shell_pid"),
         true

@@ -1,5 +1,4 @@
 import "$css/apps/components/apppreinstall.css";
-import { DownloadIcon } from "$ts/images/filesystem";
 import type { App } from "$types/app";
 import AppPreinstall from "./AppPreinstall.svelte";
 import { AppPreInstallRuntime } from "./runtime";
@@ -9,7 +8,7 @@ const AppPreinstallApp: App = {
     name: "AppPreInstallApp",
     author: "Izaak Kuipers",
     version: "1.0.0",
-    icon: DownloadIcon,
+    icon: "DownloadIcon",
   },
   position: { centered: true },
   size: { w: 320, h: NaN },

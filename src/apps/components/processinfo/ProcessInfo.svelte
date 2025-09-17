@@ -3,13 +3,13 @@
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
   import { AppProcess } from "$ts/apps/process";
-  import { ComponentIcon } from "$ts/images/general";
   import type { ProcessInfoRuntime } from "./runtime";
 
   const { process }: { process: ProcessInfoRuntime } = $props();
   const { proc, parent, inherit } = process;
 
-  const icon = proc instanceof AppProcess ? process.userDaemon?.getAppIcon(proc.app.data) : ComponentIcon;
+  const icon =
+    proc instanceof AppProcess ? process.userDaemon?.getAppIcon(proc.app.data) : process.getIconCached("ComponentIcon");
   const children = process.handler.getSubProcesses(proc!.pid);
   const context = process.handler.getProcessContext(proc!.pid);
 

@@ -2,8 +2,6 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { arrayToBlob } from "$ts/util/convert";
 import { getItemNameFromPath } from "$ts/util/fs";
-import { ErrorIcon } from "$ts/images/dialog";
-import { PdfMimeIcon } from "$ts/images/mime";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
@@ -51,7 +49,7 @@ export class PdfViewerRuntime extends AppProcess {
         type: "size",
         caption: `Reading image`,
         subtitle: path,
-        icon: PdfMimeIcon,
+        icon: this.getIconCached("PdfMimeIcon"),
       },
       this.pid
     );
@@ -70,7 +68,7 @@ export class PdfViewerRuntime extends AppProcess {
           {
             title: "Failed to read PDF file",
             message: "The file you tried to open could not be read.",
-            image: ErrorIcon,
+            image: this.getIconCached("ErrorIcon"),
             sound: "arcos.dialog.error",
             buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           },

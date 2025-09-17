@@ -2,7 +2,6 @@
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
-  import { ShareIcon } from "$ts/images/filesystem";
   import type { ShareCreateGuiRuntime } from "./runtime";
 
   const { process }: { process: ShareCreateGuiRuntime } = $props();
@@ -10,7 +9,7 @@
 </script>
 
 <div class="header">
-  <img src={ShareIcon} alt="" />
+  <img src={process.getIconCached("ShareIcon")} alt="" />
   <h1>Create a share</h1>
   <p>Fill out the fields to create a share. Each share is 512MB. You can create 5 shares in total.</p>
 </div>

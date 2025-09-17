@@ -1,5 +1,4 @@
 import "$css/apps/components/driveinfo.css";
-import { DriveIcon } from "$ts/images/filesystem";
 import type { App } from "$types/app";
 import DriveInfo from "./DriveInfo.svelte";
 import { DriveInfoRuntime } from "./runtime";
@@ -9,7 +8,7 @@ const DriveInfoApp: App = {
     name: "Drive Info",
     version: "1.0.0",
     author: "Izaak Kuipers",
-    icon: DriveIcon,
+    icon: "DriveIcon",
   },
   position: { centered: true },
   size: { w: 350, h: 490 },

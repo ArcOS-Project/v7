@@ -1,4 +1,3 @@
-import { ArcTermIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import { ArcTermRuntime } from "./process";
 
@@ -7,7 +6,7 @@ export const ArcTermApp: App = {
     name: "ArcTerm",
     version: "4.0.0",
     author: "Izaak Kuipers",
-    icon: ArcTermIcon,
+    icon: "ArcTermIcon",
     appGroup: "utilities",
   },
   size: {

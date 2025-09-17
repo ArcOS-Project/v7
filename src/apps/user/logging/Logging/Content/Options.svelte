@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { FolderIcon } from "$ts/images/filesystem";
   import type { LoggingRuntime } from "../../runtime";
   import Filter from "./Options/Filter.svelte";
 
@@ -13,7 +12,7 @@
       <span class="lucide icon-scroll-text" class:icon-archive={isArchive}></span>
       <span>{isArchive ? "Archive" : "Group"}</span>
     </div>
-    <img src={FolderIcon} alt="" />
+    <img src={process.getIconCached("FolderIcon")} alt="" />
     <span>{$currentSource}</span>
   </div>
   <div class="sep"></div>

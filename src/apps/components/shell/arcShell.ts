@@ -1,5 +1,4 @@
 import "$css/apps/components/shell.css";
-import { ComponentIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import { ShellRuntime } from "./runtime";
 import Shell from "./Shell.svelte";
@@ -9,7 +8,7 @@ export const ArcShellApp: App = {
     name: "ArcOS Shell",
     author: "Izaak Kuipers",
     version: "4.1.0",
-    icon: ComponentIcon,
+    icon: "ComponentIcon",
     appGroup: "coreApps",
   },
   size: { w: NaN, h: NaN },

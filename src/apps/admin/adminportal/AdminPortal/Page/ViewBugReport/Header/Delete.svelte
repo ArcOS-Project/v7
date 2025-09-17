@@ -3,7 +3,6 @@
   import type { ViewBugReportData } from "$apps/admin/adminportal/types";
   import Spinner from "$lib/Spinner.svelte";
   import { MessageBox } from "$ts/dialog";
-  import { WarningIcon } from "$ts/images/dialog";
 
   const { process, data }: { process: AdminPortalRuntime; data: ViewBugReportData } = $props();
   const { report } = data;
@@ -27,7 +26,7 @@
             suggested: true,
           },
         ],
-        image: WarningIcon,
+        image: process.getIconCached("WarningIcon"),
         sound: "arcos.dialog.warning",
       },
       process.pid,

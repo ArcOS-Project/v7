@@ -1,7 +1,5 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
-  import { WarningIcon } from "$ts/images/dialog";
-  import { LockIcon } from "$ts/images/power";
   import type { AdminPortalRuntime } from "../../runtime";
   import type { ViewShareData } from "../../types";
   import Accessors from "./ViewShare/Accessors.svelte";
@@ -24,7 +22,7 @@
       {
         title: share.locked ? "Unlock share?" : "Lock share?",
         message: share.locked ? "Are you sure you want to unlock this share?" : "Are you sure you want to lock this share?",
-        image: LockIcon,
+        image: process.getIconCached("LockIcon"),
         sound: "arcos.dialog.warning",
         buttons: [
           { caption: "Cancel", action: () => {} },
@@ -65,7 +63,7 @@
             suggested: true,
           },
         ],
-        image: WarningIcon,
+        image: process.getIconCached("WarningIcon"),
         sound: "arcos.dialog.warning",
       },
       process.pid,

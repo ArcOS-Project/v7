@@ -4,6 +4,7 @@ import { devEnvironmentService } from "$ts/devenv";
 import { distributionService } from "$ts/distrib";
 import { KernelStack } from "$ts/env";
 import gdriveService from "$ts/gdrive";
+import iconService from "$ts/icon";
 import { Process } from "$ts/process/instance";
 import { protoService } from "$ts/proto";
 import { adminService } from "$ts/server/admin";
@@ -31,7 +32,8 @@ export class ServiceHost extends Process {
 
     this.daemon = KernelStack().getProcess(+this.env.get("userdaemon_pid"))!;
     this.name = "ServiceHost";
-    console.warn(__SOURCE__);
+
+    this.setSource(__SOURCE__);
   }
 
   public async initialRun(svcPreRun?: (service: Service) => void) {
@@ -76,6 +78,7 @@ export class ServiceHost extends Process {
     ["DistribSvc", { ...distributionService }],
     ["ProtoService", { ...protoService }],
     ["GoogleDriveSvc", { ...gdriveService }],
+    ["IconService", { ...iconService }],
   ]);
 
   public loadStore(store: ServiceStore) {

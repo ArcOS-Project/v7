@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import { contextProps } from "$ts/context/actions.svelte";
-  import { ComponentIcon } from "$ts/images/general";
   import type { App } from "$types/app";
   import { onMount } from "svelte";
 
@@ -24,6 +23,6 @@
 
 {#if app && app.metadata}
   <button class="pinned-app" title={app.metadata.name} onclick={spawn} data-contextmenu="startmenu-app" use:contextProps={[app]}>
-    <img src={process.userDaemon?.getAppIcon(app) || ComponentIcon} alt="" />
+    <img src={process.userDaemon?.getAppIcon(app) || process.getIconCached("ComponentIcon")} alt="" />
   </button>
 {/if}

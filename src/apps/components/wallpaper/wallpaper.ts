@@ -1,5 +1,4 @@
 import "$css/apps/components/wallpaper.css";
-import { DesktopIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import { WallpaperRuntime } from "./runtime";
 import Wallpaper from "./Wallpaper.svelte";
@@ -9,7 +8,7 @@ export const WallpaperApp: App = {
     name: "Wallpaper",
     author: "Izaak Kuipers",
     version: "3.1.0",
-    icon: DesktopIcon,
+    icon: "DesktopIcon",
     appGroup: "coreApps",
   },
   size: { w: NaN, h: NaN },

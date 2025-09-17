@@ -1,5 +1,4 @@
 import "$css/apps/user/filemanager.css";
-import { FileManagerIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import FileManager from "./FileManager.svelte";
 import { FileManagerRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const FileManagerApp: App = {
     name: "File Manager",
     author: "Izaak Kuipers",
     version: "8.0.0",
-    icon: FileManagerIcon,
+    icon: "FileManagerIcon",
   },
   size: {
     w: 800,

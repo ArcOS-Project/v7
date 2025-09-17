@@ -1,6 +1,5 @@
 import { getKMod } from "$ts/env";
 import { getAllJsonPaths, getJsonHierarchy } from "$ts/hierarchy";
-import { ElevationIcon } from "$ts/images/general";
 import { tryJsonParse } from "$ts/json";
 import { AdminBootstrapper } from "$ts/server/admin";
 import { ElevationLevel } from "$types/elevation";
@@ -31,7 +30,7 @@ export class AdminCommand extends TerminalProcess {
       what: "ArcTerm wants to open the Administrator Console",
       title: "Administrator Console",
       description: "Izaak Kuipers",
-      image: ElevationIcon,
+      image: term.daemon?.getIconCached("ElevationIcon")!,
       level: ElevationLevel.medium,
     });
 

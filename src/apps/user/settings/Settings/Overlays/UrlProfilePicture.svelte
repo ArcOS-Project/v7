@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { AccountIcon } from "$ts/images/general";
   import { onMount } from "svelte";
   import type { OverlayRuntime } from "../../overlay";
 
@@ -50,7 +49,7 @@
 
 <div class="top">
   <div class="left">
-    <img src={valid ? pfp : AccountIcon} alt="" />
+    <img src={valid ? pfp : process.getIconCached("AccountIcon")} alt="" />
   </div>
   <div class="right">
     <h1>Change Profile Picture</h1>

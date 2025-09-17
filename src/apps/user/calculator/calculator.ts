@@ -1,5 +1,4 @@
 import "$css/apps/user/calculator.css";
-import { CalculatorIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import Calculator from "./Calculator.svelte";
 import { CalculatorRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const CalculatorApp: App = {
     name: "Calculator",
     version: "4.0.0",
     author: "Izaak Kuipers",
-    icon: CalculatorIcon,
+    icon: "CalculatorIcon",
     appGroup: "utilities",
   },
   position: {

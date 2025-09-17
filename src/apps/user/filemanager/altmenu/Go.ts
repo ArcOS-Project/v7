@@ -1,5 +1,4 @@
 import type { FilesystemDrive } from "$ts/drives/drive";
-import { DriveIcon, FolderIcon } from "$ts/images/filesystem";
 import { UserPaths } from "$ts/server/user/store";
 import type { ContextMenuItem } from "$types/app";
 import type { FileManagerRuntime } from "../runtime";
@@ -17,7 +16,7 @@ function folderGoItems(runtime: FileManagerRuntime) {
   for (const folder of runtime.rootFolders()) {
     result.push({
       caption: folder.name,
-      image: FolderIcon,
+      image: runtime.getIconCached("FolderIcon"),
       action: () => {
         runtime.navigate(`${UserPaths.Home}/${folder.name}`);
       },
@@ -54,7 +53,7 @@ function driveGoItems(runtime: FileManagerRuntime) {
     result.push({
       caption: drive.data.driveLetter ? `${drive.data.label} (${drive.data.driveLetter}:)` : drive.data.label,
       subItems: driveSubmenu(drive.data, id),
-      image: DriveIcon,
+      image: runtime.getIconCached("DriveIcon"),
       isActive: () => runtime.path().startsWith(`${identifier}/`),
     });
   }

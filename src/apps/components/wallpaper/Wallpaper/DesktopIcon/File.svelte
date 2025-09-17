@@ -1,7 +1,5 @@
 <script lang="ts">
   import { formatBytes, join } from "$ts/util/fs";
-  import { getIconPath } from "$ts/images";
-  import { DefaultMimeIcon } from "$ts/images/mime";
   import type { FileEntry } from "$types/fs";
   import type { ArcShortcut } from "$types/shortcut";
   import { onMount } from "svelte";
@@ -16,11 +14,13 @@
   let shortcut = $state<ArcShortcut>();
   let icon = $state<string>();
   let render = $state<boolean>(false);
+  let shortcutIcon = $state<string>();
 
   onMount(async () => {
     const info = process.userDaemon?.assoc?.getFileAssociation(file.name);
     shortcut = $shortcuts[file.name];
-    icon = info?.icon || DefaultMimeIcon;
+    if (shortcut) shortcutIcon = await process.getIcon(shortcut.icon);
+    icon = info?.icon || process.getIconCached("DefaultMimeIcon");
     if (info?.friendlyName === "Image file") icon = (await process.userDaemon?.getThumbnailFor(path)) || icon;
     render = true;
   });
@@ -30,7 +30,7 @@
   <DesktopIcon
     {process}
     caption={shortcut?.name || file.name}
-    icon={(shortcut ? getIconPath(shortcut.icon) : icon) || DefaultMimeIcon}
+    icon={(shortcut ? shortcutIcon : icon) || process.getIconCached("DefaultMimeIcon")}
     alt={shortcut
       ? `Target: ${shortcut.target}\nType: Shortcut (${shortcut.type})`
       : `Location: ${path}\nType: ${file.mimeType}\nSize: ${size}`}

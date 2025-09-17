@@ -1,10 +1,8 @@
 import type { ShellRuntime } from "$apps/components/shell/runtime";
-import { ArcOSVersion, getKMod, Kernel } from "$ts/env";
+import { ArcOSVersion, getKMod, Kernel, KernelStack } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
-import { BugReportIcon, ComponentIcon, SecurityHighIcon } from "$ts/images/general";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { KernelStack } from "$ts/env";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { DefaultUserPreferences } from "$ts/server/user/default";
 import type { AppKeyCombinations } from "$types/accelerator";
@@ -73,7 +71,7 @@ export class AppProcess extends Process {
       this.safeMode = daemon.safeMode;
     }
 
-    this.windowIcon.set(this.userDaemon?.getAppIconByProcess(this) || ComponentIcon);
+    this.windowIcon.set(this.userDaemon?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
     this.startAcceleratorListener();
 
     this.systemDispatch.subscribe("window-unfullscreen", ([pid]) => {
@@ -114,8 +112,6 @@ export class AppProcess extends Process {
         return Reflect.get(target, prop, receiver);
       },
     });
-
-    this.setSource(__SOURCE__);
   }
 
   // Conditional function that can prohibit closing if it returns false
@@ -180,7 +176,7 @@ export class AppProcess extends Process {
               },
             },
           ],
-          image: SecurityHighIcon,
+          image: this.getIconCached("SecurityHighIcon"),
         });
       } else {
         this.Log(`Running application instance of app "${this.app.id}" is prohibited by the user. Terminating.`, LogLevel.error);
@@ -388,12 +384,24 @@ export class AppProcess extends Process {
         location.hostname
       }</code>`,
       buttons: [{ caption: "Sad :(", action: () => {}, suggested: true }],
-      image: BugReportIcon,
+      image: this.getIconCached("BugReportIcon"),
       sound: "arcos.dialog.warning",
     });
   }
 
   appStore() {
     return this.userDaemon?.serviceHost?.getService("AppStorage") as ApplicationStorage;
+  }
+
+  async getIcon(id: string): Promise<string> {
+    return this.userDaemon?.getIcon(id)!;
+  }
+
+  getIconCached(id: string): string {
+    return this.userDaemon?.getIconCached(id)!;
+  }
+
+  getIconStore(id: string): ReadableStore<string> {
+    return this.userDaemon?.getIconStore(id)!;
   }
 }

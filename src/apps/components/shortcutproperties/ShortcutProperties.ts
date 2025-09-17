@@ -1,5 +1,4 @@
 import "$css/apps/components/shortcutproperties.css";
-import { ComponentIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import { ShortcutPropertiesRuntime } from "./runtime";
 import ShortcutProperties from "./ShortcutProperties.svelte";
@@ -9,7 +8,7 @@ export const ShortcutPropertiesApp: App = {
     name: "Shortcut Properties",
     version: "1.0.0",
     author: "Izaak Kuipers",
-    icon: ComponentIcon,
+    icon: "ComponentIcon",
     appGroup: "components",
   },
   size: {

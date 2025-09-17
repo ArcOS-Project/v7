@@ -1,5 +1,4 @@
 import { RegisteredProcess } from "$ts/apps/util";
-import { ArcFindIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import { ArcFindRuntime } from "./runtime";
 
@@ -8,7 +7,7 @@ const ArcFind: App = RegisteredProcess({
     name: "ArcFind",
     version: "1.0.0",
     author: "Izaak Kuipers",
-    icon: ArcFindIcon,
+    icon: "ArcFindIcon",
   },
   assets: {
     runtime: ArcFindRuntime,

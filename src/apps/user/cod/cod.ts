@@ -1,5 +1,4 @@
 import "$css/apps/user/cod.css";
-import { CodIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import Cod from "./Cod.svelte";
 import { CodRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const CodApp: App = {
     name: "Cod",
     author: "Izaak Kuipers",
     version: "1.0.0",
-    icon: CodIcon,
+    icon: "CodIcon",
     appGroup: "utilities",
   },
   position: { centered: true },

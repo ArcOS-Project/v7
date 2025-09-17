@@ -2,7 +2,6 @@
   import { contextProps } from "$ts/context/actions.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
   import { join } from "$ts/util/fs";
-  import { FolderIcon } from "$ts/images/filesystem";
   import type { FolderEntry } from "$types/fs";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
@@ -47,7 +46,7 @@
     data-path={thisPath}
   >
     <div class="segment icon">
-      <img src={FolderIcon} alt="" />
+      <img src={process.getIconCached("FolderIcon")} alt="" />
     </div>
     <div class="segment name">{dir.name}</div>
     <div class="segment type">Folder</div>

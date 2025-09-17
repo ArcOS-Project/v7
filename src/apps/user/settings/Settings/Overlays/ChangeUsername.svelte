@@ -1,8 +1,5 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
-  import { WarningIcon } from "$ts/images/dialog";
-  import { AccountIcon } from "$ts/images/general";
-  import { GoodStatusIcon } from "$ts/images/status";
   import type { OverlayRuntime } from "../../overlay";
 
   const { process }: { process: OverlayRuntime } = $props();
@@ -21,7 +18,7 @@
           message:
             "Failed to change username! Either the username isn't allowed, it's already in use or you didn't approve the elevation request. Please try again.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: WarningIcon,
+          image: process.getIconCached("WarningIcon"),
           sound: "arcos.dialog.warning",
         },
         process.parentPid,
@@ -33,7 +30,7 @@
           title: "Change username",
           message: "Your username has been updated! You might have to restart ArcOS before the changes take effect everywhere.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: GoodStatusIcon,
+          image: process.getIconCached("GoodStatusIcon"),
           sound: "arcos.dialog.info",
         },
         process.parentPid,
@@ -45,7 +42,7 @@
 
 <div class="top">
   <div class="left">
-    <img src={AccountIcon} alt="" />
+    <img src={process.getIconCached("AccountIcon")} alt="" />
   </div>
   <div class="right">
     <h1>Change your username</h1>

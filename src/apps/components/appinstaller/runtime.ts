@@ -2,8 +2,6 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
 import type { InstallerProcess } from "$ts/distrib/installer";
-import { ErrorIcon } from "$ts/images/dialog";
-import { AppsIcon } from "$ts/images/general";
 import { type ReadableStore } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { ArcPackage } from "$types/package";
@@ -39,7 +37,7 @@ export class AppInstallerRuntime extends AppProcess {
           title: "Can't install package",
           message: "The Distribution Service isn't running anymore. Please restart ArcOS to fix this problem.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: ErrorIcon,
+          image: this.getIconCached("ErrorIcon"),
           sound: "arcos.dialog.error",
         },
         +this.env.get("shell_pid"),
@@ -59,7 +57,7 @@ export class AppInstallerRuntime extends AppProcess {
           title: "Can't install app",
           message:
             "Third-party apps aren't enabled on your account. Please enable third-party apps in the Settings to install this app.",
-          image: AppsIcon,
+          image: this.getIconCached("AppsIcon"),
           sound: "arcos.dialog.warning",
           buttons: [
             {

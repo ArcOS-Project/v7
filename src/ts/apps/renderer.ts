@@ -1,7 +1,6 @@
 import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
 import { contextProps } from "$ts/context/actions.svelte";
 import { BETA } from "$ts/env";
-import { ComponentIcon } from "$ts/images/general";
 import { KernelStack } from "$ts/env";
 import { UUID } from "$ts/uuid";
 import { Draggable } from "@neodrag/vanilla";
@@ -292,7 +291,7 @@ export class AppRenderer extends Process {
       titleIcon.src = v;
     });
 
-    titleIcon.src = process.userDaemon?.getAppIconByProcess(process) || ComponentIcon;
+    titleIcon.src = process.userDaemon?.getAppIconByProcess(process) || process.getIconCached("ComponentIcon");
 
     title.className = "window-title";
     title.append(titleIcon, titleCaption, this._renderAltMenu(process));

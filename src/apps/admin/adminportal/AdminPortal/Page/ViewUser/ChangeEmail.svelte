@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
-  import { QuestionIcon } from "$ts/images/dialog";
   import type { ExpandedUserInfo } from "$types/user";
 
   const { process, user }: { process: AdminPortalRuntime; user: ExpandedUserInfo } = $props();
@@ -13,7 +12,7 @@
       `Are you sure you want to change the email of '${user.username}' to '${newEmail}'?`,
       "Cancel",
       "Rename",
-      QuestionIcon
+      process.getIconCached("QuestionIcon")
     );
 
     if (!confirm || !newEmail) return;

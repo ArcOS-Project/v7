@@ -1,5 +1,4 @@
 import { RegisteredProcess } from "$ts/apps/util";
-import { ComponentIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import { TrayHostRuntime } from "./runtime";
 
@@ -8,7 +7,7 @@ export const TrayHost: App = RegisteredProcess({
     name: "TrayHost",
     author: "Izaak Kuipers",
     version: "1.0.0",
-    icon: ComponentIcon,
+    icon: "ComponentIcon",
     appGroup: "components",
   },
   assets: {

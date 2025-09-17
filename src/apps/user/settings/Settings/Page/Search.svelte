@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { WarningIcon } from "$ts/images/dialog";
-  import { ArcFindIcon } from "$ts/images/general";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
@@ -11,7 +9,7 @@
 
 <div class="centered-layout">
   <div class="header">
-    <img src={ArcFindIcon} alt="" />
+    <img src={process.getIconCached("ArcFindIcon")} alt="" />
     <h1>ArcFind options</h1>
     <p>The search functionality of ArcOS</p>
   </div>
@@ -60,7 +58,7 @@
     </Section>
   {:else}
     <Section>
-      <Option caption="ArcFind is disabled in Safe Mode" image={WarningIcon}></Option>
+      <Option caption="ArcFind is disabled in Safe Mode" image={process.getIconCached("WarningIcon")}></Option>
     </Section>
   {/if}
 </div>

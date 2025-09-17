@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { WarningIcon } from "$ts/images/dialog";
   import type { AdvSysSetRuntime } from "../runtime";
 
   const { process }: { process: AdvSysSetRuntime } = $props();
@@ -64,7 +63,7 @@
   </div>
 </div>
 <div class="warning">
-  <img src={WarningIcon} alt="" />
+  <img src={process.getIconCached("WarningIcon")} alt="" />
   <p>
     Please keep in mind that all startup items run <b>outside</b> workspaces, just like the taskbar and wallpaper. This behaviour can't
     be changed.

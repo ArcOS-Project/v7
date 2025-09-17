@@ -1,5 +1,4 @@
 import "$css/apps/components/appinfo.css";
-import { AppInfoIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import AppInfo from "./AppInfo.svelte";
 import { AppInfoRuntime } from "./runtime";
@@ -9,7 +8,7 @@ const AppInfoApp: App = {
     name: "App Info",
     author: "Izaak Kuipers",
     version: "3.0.1",
-    icon: AppInfoIcon,
+    icon: "AppInfoIcon",
     appGroup: "components",
   },
   size: {

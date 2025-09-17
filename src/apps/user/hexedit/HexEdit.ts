@@ -1,5 +1,4 @@
 import "$css/apps/user/hexedit.css";
-import { ComponentIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import HexEdit from "./HexEdit.svelte";
 import { HexEditRuntime } from "./runtime";
@@ -8,7 +7,7 @@ export const HexEditorApp: App = {
   metadata: {
     name: "Hex Editor",
     version: "1.0.0",
-    icon: ComponentIcon,
+    icon: "ComponentIcon",
     author: "Izaak Kuipers",
     appGroup: "utilities",
   },

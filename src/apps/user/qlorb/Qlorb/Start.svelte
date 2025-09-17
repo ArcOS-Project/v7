@@ -1,6 +1,5 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
-  import { QlorbIcon } from "$ts/images/apps";
   import type { QlorbRuntime } from "../runtime";
   import Background from "./Main/Background.svelte";
   import Help from "./Start/Help.svelte";
@@ -17,7 +16,7 @@
       {
         title: "Qlorb Help",
         content: Help as any,
-        image: QlorbIcon,
+        image: process.getIconCached("QlorbIcon"),
         buttons: [{ caption: "Understood", action() {}, suggested: true }],
       },
       process.pid,

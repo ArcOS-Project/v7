@@ -1,5 +1,4 @@
 import "$css/apps/components/iconpicker.css";
-import { IconLibraryIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import IconPicker from "./IconPicker.svelte";
 import { IconPickerRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const IconPickerApp: App = {
     name: "Icon Picker",
     version: "3.0.0",
     author: "Izaak Kuipers",
-    icon: IconLibraryIcon,
+    icon: "IconLibraryIcon",
     appGroup: "components",
   },
   size: {

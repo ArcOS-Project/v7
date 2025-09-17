@@ -2,7 +2,6 @@
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import { globalAdminActions } from "$apps/admin/adminportal/store";
   import { MessageBox } from "$ts/dialog";
-  import { InfoIcon } from "$ts/images/dialog";
   import { scopeToScopeCaption } from "$ts/server/admin/util";
 
   const {
@@ -23,7 +22,7 @@
         title: `${name} (${key})`,
         message: `<p>With this item, this admin can:</p><ul>${scopes.map((s) => `<li>${scopeToScopeCaption(s)}</li>`).join("")}</ul>`,
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-        image: InfoIcon,
+        image: process.getIconCached("InfoIcon"),
         sound: "arcos.dialog.info",
       },
       process.pid,

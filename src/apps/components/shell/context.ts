@@ -1,8 +1,4 @@
 import type { AppProcess } from "$ts/apps/process";
-import { iconIdFromPath } from "$ts/images";
-import { ProcessManagerIcon } from "$ts/images/apps";
-import { ShortcutMimeIcon } from "$ts/images/mime";
-import { ShutdownIcon } from "$ts/images/power";
 import { UserPaths } from "$ts/server/user/store";
 import type { App, AppContextMenu } from "$types/app";
 import type { Workspace } from "$types/user";
@@ -20,7 +16,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       },
       {
         caption: "Processes",
-        image: ProcessManagerIcon,
+        image: runtime.getIconCached("ProcessManagerIcon"),
         action: () => {
           runtime.spawnApp("processManager", runtime.pid);
         },
@@ -44,7 +40,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         action: async (app: App) => {
           const [path] = await runtime.userDaemon!.LoadSaveDialog({
             title: "Choose where to save the app shortcut",
-            icon: ShortcutMimeIcon,
+            icon: runtime.getIconCached("ShortcutMimeIcon"),
             startDir: UserPaths.Desktop,
             isSave: true,
             saveName: `${app.id}.arclnk`,
@@ -55,7 +51,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
 
           await runtime.userDaemon?.createShortcut(
             {
-              icon: iconIdFromPath(app.metadata.icon),
+              icon: `@app::${app.id}`,
               name: app.metadata.name,
               type: "app",
               target: app.id,
@@ -140,7 +136,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
           const { data: appData } = proc.app;
           const [path] = await runtime.userDaemon!.LoadSaveDialog({
             title: "Choose where to save the app shortcut",
-            icon: ShortcutMimeIcon,
+            icon: runtime.getIconCached("ShortcutMimeIcon"),
             startDir: UserPaths.Desktop,
             isSave: true,
             saveName: `${appData.id}.arclnk`,
@@ -151,7 +147,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
 
           await runtime.userDaemon?.createShortcut(
             {
-              icon: iconIdFromPath(appData.metadata.icon),
+              icon: `@app::${appData.id}`,
               name: appData.metadata.name,
               type: "app",
               target: appData.id,
@@ -186,7 +182,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       },
       {
         caption: "Close window",
-        image: ShutdownIcon,
+        image: runtime.getIconCached("ShutdownIcon"),
         action: (proc: AppProcess) => {
           if (!proc) return;
 

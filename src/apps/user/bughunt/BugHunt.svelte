@@ -37,7 +37,7 @@
       {:else if $selectedReport}
         <ReportContent {process} {report} {date} {time} />
       {:else}
-        <NoReport />
+        <NoReport {process} />
       {/if}
     {:else}
       <Loading />

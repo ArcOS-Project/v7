@@ -1,5 +1,4 @@
 import "$css/apps/components/totpauthgui.css";
-import { ElevationIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import { TotpAuthGuiRuntime } from "./runtime";
 import TotpAuthGui from "./TotpAuthGui.svelte";
@@ -9,7 +8,7 @@ export const TotpAuthGuiApp: App = {
     name: "TotpAuthGui",
     version: "1.0.0",
     author: "Izaak Kuipers",
-    icon: ElevationIcon,
+    icon: "ElevationIcon",
     appGroup: "components",
   },
   size: {

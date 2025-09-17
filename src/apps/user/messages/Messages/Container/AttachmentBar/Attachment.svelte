@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { MessagingAppRuntime } from "$apps/user/messages/runtime";
   import { formatBytes } from "$ts/util/fs";
-  import { DefaultMimeIcon } from "$ts/images/mime";
   import type { MessageAttachment } from "$types/messaging";
 
   const { process, attachment }: { process: MessagingAppRuntime; attachment: MessageAttachment } = $props();
@@ -14,7 +13,10 @@
     title={`Name: ${attachment.filename}\nSize: ${formatBytes(attachment.size)}\nType: ${attachment.mimeType}`}
     ondblclick={() => process.openAttachment(attachment, $message._id)}
   >
-    <img src={process.userDaemon?.assoc?.getFileAssociation(attachment.filename)?.icon || DefaultMimeIcon} alt="" />
+    <img
+      src={process.userDaemon?.assoc?.getFileAssociation(attachment.filename)?.icon || process.getIconCached("DefaultMimeIcon")}
+      alt=""
+    />
     <p>
       <span class="filename">
         {attachment.filename}

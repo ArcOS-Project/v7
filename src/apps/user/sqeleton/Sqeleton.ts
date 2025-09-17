@@ -1,4 +1,3 @@
-import { SqeletonIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import { SqeletonRuntime } from "./runtime";
 import Sqeleton from "./Sqeleton.svelte";
@@ -8,7 +7,7 @@ export const SqeletonApp: App = {
     name: "Sqeleton",
     version: "1.0.0",
     author: "Izaak Kuipers",
-    icon: SqeletonIcon,
+    icon: "SqeletonIcon",
   },
   position: { centered: true },
   size: { w: 800, h: 550 },

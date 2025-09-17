@@ -1,17 +1,16 @@
 <script lang="ts">
-  import { DefaultMimeIcon } from "$ts/images/mime";
   import { onMount } from "svelte";
   import type { NewFileRuntime } from "./runtime";
 
   const { process }: { process: NewFileRuntime } = $props();
   const { newFile } = process;
 
-  let icon = $state<string>(DefaultMimeIcon);
+  let icon = $state<string>(process.getIconCached("DefaultMimeIcon"));
 
   onMount(() => {
     newFile.subscribe((v) => {
       const info = process.userDaemon?.assoc?.getFileAssociation(v);
-      icon = info?.icon || DefaultMimeIcon;
+      icon = info?.icon || process.getIconCached("DefaultMimeIcon");
     });
   });
 </script>

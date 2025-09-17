@@ -3,12 +3,9 @@ import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
 import { InstallerProcess } from "$ts/distrib/installer";
 import { StoreItemIcon } from "$ts/distrib/util";
-import { arrayToBlob } from "$ts/util/convert";
-import { AppStoreIcon } from "$ts/images/apps";
-import { ErrorIcon, InfoIcon } from "$ts/images/dialog";
-import { UploadIcon } from "$ts/images/general";
 import { UserPaths } from "$ts/server/user/store";
 import { Plural } from "$ts/util";
+import { arrayToBlob } from "$ts/util/convert";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -58,7 +55,7 @@ export class AppStoreRuntime extends AppProcess {
             "The Distribution Service isn't running anymore. Please restart ArcOS, and then try again. If this keeps happening, contact an ArcOS Administrator.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           sound: "arcos.dialog.error",
-          image: ErrorIcon,
+          image: this.getIconCached("ErrorIcon"),
         },
         +this.env.get("shell_pid"),
         true
@@ -249,7 +246,7 @@ export class AppStoreRuntime extends AppProcess {
   async publishPackage() {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Select package to publish",
-      icon: AppStoreIcon,
+      icon: this.getIconCached("AppStoreIcon"),
       extensions: [".arc"],
       startDir: UserPaths.Documents,
     });
@@ -260,7 +257,7 @@ export class AppStoreRuntime extends AppProcess {
       {
         caption: "Publishing your package",
         subtitle: path,
-        icon: UploadIcon,
+        icon: this.getIconCached("UploadIcon"),
       },
       this.pid
     );
@@ -281,7 +278,7 @@ export class AppStoreRuntime extends AppProcess {
           message:
             "The server didn't accept your package. Maybe its format is incorrect or another package with the same name already exists.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: ErrorIcon,
+          image: this.getIconCached("ErrorIcon"),
           sound: "arcos.dialog.error",
         },
         this.pid,
@@ -329,7 +326,7 @@ export class AppStoreRuntime extends AppProcess {
           message:
             "The server didn't accept your update package. Maybe its format is incorrect, the app ID differs, or the version isn't increased. Please check the package and try again.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: ErrorIcon,
+          image: this.getIconCached("ErrorIcon"),
           sound: "arcos.dialog.error",
         },
         this.pid,
@@ -371,7 +368,7 @@ The author hasn't provided a readme file themselves, so this one has been automa
       {
         title: "What is a blocked package?",
         content: TakenDown as any,
-        image: InfoIcon,
+        image: this.getIconCached("InfoIcon"),
         sound: "arcos.dialog.info",
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
       },

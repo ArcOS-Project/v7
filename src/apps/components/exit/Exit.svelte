@@ -19,7 +19,7 @@
       ondblclick={(e) => process.go(action, e.shiftKey)}
       class:selected={$selected == id}
     >
-      <img src={action.icon} alt="" class="icon" />
+      <img src={process.getIconCached(action.icon)} alt="" class="icon" />
       <p>{action.caption}</p>
     </button>
   {/each}

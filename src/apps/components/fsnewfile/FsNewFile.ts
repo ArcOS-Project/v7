@@ -1,5 +1,4 @@
 import "$css/apps/components/fsnewfile.css";
-import { ComponentIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import NewFile from "./NewFile.svelte";
 import { NewFileRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const FsNewFileApp: App = {
     name: "New File",
     version: "4.0.0",
     author: "Izaak Kuipers",
-    icon: ComponentIcon,
+    icon: "ComponentIcon",
     appGroup: "components",
   },
   size: {

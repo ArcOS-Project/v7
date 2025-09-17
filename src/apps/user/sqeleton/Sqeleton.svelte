@@ -1,7 +1,6 @@
 <script lang="ts">
   import CodeEditor from "$lib/CodeEditor.svelte";
   import { formatBytes } from "$ts/util/fs";
-  import { DbMimeIcon } from "$ts/images/mime";
   import { Plural } from "$ts/util";
   import { Store } from "$ts/writable";
   import { onMount } from "svelte";
@@ -88,7 +87,7 @@
   </div>
   <div class="status-bar">
     <div class="segment filename">
-      <img src={DbMimeIcon} alt="" />
+      <img src={process.getIconCached("DbMimeIcon")} alt="" />
       <span>{$openedFileName}</span>
     </div>
     <div class="segment query-index">

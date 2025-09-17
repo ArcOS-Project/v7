@@ -1,6 +1,5 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
-  import { ErrorIcon } from "$ts/images/dialog";
   import { Store } from "$ts/writable";
   import { onMount } from "svelte";
   import type { TotpAuthGuiRuntime } from "./runtime";
@@ -44,7 +43,7 @@
             },
           ],
           sound: "arcos.dialog.error",
-          image: ErrorIcon,
+          image: process.getIconCached("ErrorIcon"),
         },
         process.parentPid,
         true

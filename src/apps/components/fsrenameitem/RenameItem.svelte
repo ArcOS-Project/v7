@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { TextEditorIcon } from "$ts/images/apps";
   import type { RenameItemRuntime } from "./runtime";
 
   const { process }: { process: RenameItemRuntime } = $props();
@@ -7,7 +6,7 @@
 </script>
 
 <div class="top">
-  <img src={TextEditorIcon} alt="" />
+  <img src={process.getIconCached("TextEditorIcon")} alt="" />
   <div class="right">
     <h1>Rename file or folder</h1>
     <p>Enter a new name for the item:</p>

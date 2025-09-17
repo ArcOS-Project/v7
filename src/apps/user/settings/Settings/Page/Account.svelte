@@ -1,8 +1,5 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import { WarningIcon } from "$ts/images/dialog";
-  import { ElevationIcon, PasswordIcon, SecureIcon, SecurityHighIcon, TrashIcon, WaveIcon } from "$ts/images/general";
-  import { LogoutIcon } from "$ts/images/power";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
@@ -22,17 +19,27 @@
 
   {#if process.safeMode}
     <Section>
-      <Option caption="Safe Mode - some options are disabled" image={WarningIcon}></Option>
+      <Option caption="Safe Mode - some options are disabled" image={process.getIconCached("WarningIcon")}></Option>
     </Section>
   {/if}
 
   <Section>
-    <Option caption="Rename your account" image={SecureIcon} chevron onclick={() => process.spawnOverlay("changeUsername")} />
-    <Option caption="Change your password" image={PasswordIcon} chevron onclick={() => process.spawnOverlay("changePassword")} />
+    <Option
+      caption="Rename your account"
+      image={process.getIconCached("SecureIcon")}
+      chevron
+      onclick={() => process.spawnOverlay("changeUsername")}
+    />
+    <Option
+      caption="Change your password"
+      image={process.getIconCached("PasswordIcon")}
+      chevron
+      onclick={() => process.spawnOverlay("changePassword")}
+    />
     {#if !process.userDaemon?.userInfo.hasTotp}
       <Option
         caption="Set up two-factor authentication"
-        image={ElevationIcon}
+        image={process.getIconCached("ElevationIcon")}
         chevron
         onclick={() => process.setup2fa()}
         disabled={process.safeMode}
@@ -40,7 +47,7 @@
     {:else}
       <Option
         caption="Disable two-factor authentication"
-        image={SecurityHighIcon}
+        image={process.getIconCached("SecurityHighIcon")}
         chevron
         onclick={() => process.disableTotp()}
         disabled={process.safeMode}
@@ -49,9 +56,23 @@
   </Section>
 
   <Section>
-    <Option caption="View login activity" image={WaveIcon} chevron onclick={() => process.loginActivity()}></Option>
-    <Option caption="Log out everywhere" image={LogoutIcon} chevron onclick={() => process.logOutEverywhere()}></Option>
-    <Option caption="Delete ArcOS account..." image={TrashIcon} chevron onclick={() => process.userDaemon?.deleteAccount()}
+    <Option
+      caption="View login activity"
+      image={process.getIconCached("WaveIcon")}
+      chevron
+      onclick={() => process.loginActivity()}
+    ></Option>
+    <Option
+      caption="Log out everywhere"
+      image={process.getIconCached("LogoutIcon")}
+      chevron
+      onclick={() => process.logOutEverywhere()}
+    ></Option>
+    <Option
+      caption="Delete ArcOS account..."
+      image={process.getIconCached("TrashIcon")}
+      chevron
+      onclick={() => process.userDaemon?.deleteAccount()}
     ></Option>
   </Section>
 </div>

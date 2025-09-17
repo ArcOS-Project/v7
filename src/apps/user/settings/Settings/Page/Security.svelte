@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { ElevationIcon, SecurityHighIcon, SecurityLowIcon, SecurityMediumIcon } from "$ts/images/general";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
@@ -36,7 +35,7 @@
 
 <div class="centered-layout">
   <div class="header">
-    <img src={SecurityMediumIcon} alt="" />
+    <img src={process.getIconCached("SecurityMediumIcon")} alt="" />
     <h1>Security Center</h1>
     <p>Manage the security of ArcOS</p>
   </div>
@@ -55,7 +54,7 @@
   <Section caption="Danger Zone">
     <Option
       className="danger-zone {$userPreferences.security.disabled ? 'disabled' : ''}"
-      image={$userPreferences.security.disabled ? SecurityLowIcon : SecurityHighIcon}
+      image={process.getIconCached($userPreferences.security.disabled ? "SecurityLowIcon" : "SecurityHighIcon")}
       caption="Turn {$userPreferences.security.disabled ? 'on' : 'off'} system security"
       onclick={() => (showDangerZone = !showDangerZone)}
     >
@@ -79,7 +78,7 @@
           </p>
         {/if}
         <button class="disable" onclick={turnOff}>
-          <img src={ElevationIcon} alt="" />
+          <img src={process.getIconCached("ElevationIcon")} alt="" />
           <span>
             {#if $userPreferences.security.disabled}
               Turn on...

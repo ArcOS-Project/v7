@@ -2,7 +2,6 @@
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
-  import { UnknownFileIcon } from "$ts/images/mime";
   import type { ShortcutPropertiesRuntime } from "./runtime";
 
   const { process }: { process: ShortcutPropertiesRuntime } = $props();
@@ -12,7 +11,7 @@
 {#if $shortcutData}
   <div class="header">
     <div class="icon">
-      <img src={iconStore[$shortcutData.icon] || UnknownFileIcon} alt="" />
+      <img src={iconStore[$shortcutData.icon] || process.getIconCached("UnknownFileIcon")} alt="" />
       <button class="change lucide icon-pencil" title="Change icon" aria-label="Change icon" onclick={() => process.changeIcon()}
       ></button>
     </div>

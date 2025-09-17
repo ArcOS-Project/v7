@@ -1,5 +1,4 @@
 import "$css/apps/user/bughunt.css";
-import { BugReportIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import BugHunt from "./BugHunt.svelte";
 import { BugHuntRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const BugHuntApp: App = {
     name: "Bug Hunt",
     version: "3.0.0",
     author: "Izaak Kuipers",
-    icon: BugReportIcon,
+    icon: "BugReportIcon",
     appGroup: "systemTools",
   },
   position: { centered: true },

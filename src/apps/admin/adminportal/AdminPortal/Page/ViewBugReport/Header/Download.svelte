@@ -3,7 +3,6 @@
   import type { ViewBugReportData } from "$apps/admin/adminportal/types";
   import { textToBlob } from "$ts/util/convert";
   import { getItemNameFromPath } from "$ts/util/fs";
-  import { SaveIcon } from "$ts/images/general";
   import { UserPaths } from "$ts/server/user/store";
 
   const { data, process }: { data: ViewBugReportData; process: AdminPortalRuntime } = $props();
@@ -13,7 +12,7 @@
     const [path] = await process.userDaemon!.LoadSaveDialog({
       isSave: true,
       title: "Choose where to export the report to",
-      icon: SaveIcon,
+      icon: process.getIconCached("SaveIcon"),
       startDir: UserPaths.Documents,
       extensions: [".json"],
       saveName: `Report-${report._id}.json`,
@@ -24,7 +23,7 @@
     const prog = await process.userDaemon!.FileProgress(
       {
         type: "size",
-        icon: SaveIcon,
+        icon: process.getIconCached("SaveIcon"),
         caption: "Exporting report...",
         subtitle: `${getItemNameFromPath(path)}`,
       },

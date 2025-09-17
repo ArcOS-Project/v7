@@ -1,6 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { WarningIcon } from "$ts/images/dialog";
 import { KernelStack } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
@@ -249,7 +248,7 @@ export class ShellRuntime extends AppProcess {
             "The workspace you want to delete still has windows opened in it. You have to close all windows in a workspace before you can delete it.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           sound: "arcos.dialog.error",
-          image: WarningIcon,
+          image: this.getIconCached("WarningIcon"),
         },
         this.pid,
         true

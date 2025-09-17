@@ -1,7 +1,6 @@
 <script lang="ts">
   import { FilesystemDrive } from "$ts/drives/drive";
   import { getDriveLetter, getItemNameFromPath } from "$ts/util/fs";
-  import { FolderIcon } from "$ts/images/filesystem";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../../runtime";
   import { DriveIcons } from "../../store";
@@ -42,7 +41,7 @@
   </div>
   {#if name && !$virtual}
     <div class="current-dir">
-      <img src={FolderIcon} alt="" />
+      <img src={process.getIconCached("FolderIcon")} alt="" />
       <span>
         {name}
       </span>

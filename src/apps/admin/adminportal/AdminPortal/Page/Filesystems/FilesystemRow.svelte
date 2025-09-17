@@ -5,7 +5,6 @@
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import Spinner from "$lib/Spinner.svelte";
   import { formatBytes } from "$ts/util/fs";
-  import { GoodStatusIcon } from "$ts/images/status";
   import type { AdminBootstrapper } from "$ts/server/admin";
 
   const {
@@ -30,7 +29,7 @@
     process.userDaemon?.sendNotification({
       title: `Indexing for ${quota.user.username} completed`,
       message: result.length ? `- ${result.join("<br>- ")}` : "No unindexed items were found during indexing.",
-      image: GoodStatusIcon,
+      image: process.getIconCached("GoodStatusIcon"),
       timeout: 4000,
     });
     indexing = false;

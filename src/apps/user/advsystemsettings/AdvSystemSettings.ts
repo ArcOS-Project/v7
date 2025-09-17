@@ -1,5 +1,4 @@
 import "$css/apps/user/advsystemsettings.css";
-import { WindowSettingsIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import AdvancedSystemSettings from "./AdvancedSystemSettings.svelte";
 import { AdvSysSetRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const AdvSystemSettings: App = {
     name: "Advanced System Settings",
     version: "1.0.0",
     author: "Izaak Kuipers",
-    icon: WindowSettingsIcon,
+    icon: "WindowSettingsIcon",
     appGroup: "systemTools",
   },
   position: { centered: true },

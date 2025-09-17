@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { WarningIcon } from "$ts/images/dialog";
-  import { TaskbarIcon } from "$ts/images/general";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
@@ -12,14 +10,14 @@
 
 <div class="centered-layout">
   <div class="header">
-    <img src={TaskbarIcon} alt="" />
+    <img src={process.getIconCached("TaskbarIcon")} alt="" />
     <h1>The ArcOS Shell</h1>
     <p>The taskbar, start menu and action center</p>
   </div>
 
   {#if process.safeMode}
     <Section>
-      <Option caption="Safe Mode - some options are disabled" image={WarningIcon}></Option>
+      <Option caption="Safe Mode - some options are disabled" image={process.getIconCached("WarningIcon")}></Option>
     </Section>
   {/if}
 

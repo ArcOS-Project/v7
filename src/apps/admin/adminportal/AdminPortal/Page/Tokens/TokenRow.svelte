@@ -2,7 +2,6 @@
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { MessageBox } from "$ts/dialog";
-  import { ElevationIcon } from "$ts/images/general";
   import { Sleep } from "$ts/sleep";
   import type { ExpandedToken } from "$types/admin";
   import dayjs from "dayjs";
@@ -39,7 +38,7 @@
             },
           },
         ],
-        image: ElevationIcon,
+        image: process.getIconCached("ElevationIcon"),
         sound: "arcos.dialog.warning",
       },
       process.pid,

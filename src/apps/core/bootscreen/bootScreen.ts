@@ -1,5 +1,4 @@
 import "$css/apps/core/bootscreen.css";
-import { ComponentIcon } from "$ts/images/general";
 import type { App } from "../../../types/app";
 import Boot from "./Boot.svelte";
 import { BootScreenRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const BootScreen: App = {
     name: "Boot App",
     author: "Izaak Kuipers",
     version: "9.0.0",
-    icon: ComponentIcon,
+    icon: "ComponentIcon",
     appGroup: "coreApps",
   },
   size: { w: NaN, h: NaN },

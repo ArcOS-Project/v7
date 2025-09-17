@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { SpinnerIcon } from "$ts/images/general";
-  import { BadStatusIcon, GoodStatusIcon } from "$ts/images/status";
   import { Sleep } from "$ts/sleep";
   import type { AppInstallerRuntime } from "../runtime";
 
@@ -38,7 +36,12 @@
           {/if}
         </p>
         <p class="content">{item.content}</p>
-        <img src={item.status === "done" ? GoodStatusIcon : item.status === "failed" ? BadStatusIcon : SpinnerIcon} alt="" />
+        <img
+          src={process.getIconCached(
+            item.status === "done" ? "GoodStatusIcon" : item.status === "failed" ? "BadStatusIcon" : "SpinnerIcon"
+          )}
+          alt=""
+        />
       </div>
     {/each}
   {/if}

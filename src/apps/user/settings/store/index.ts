@@ -1,15 +1,3 @@
-import { InfoIcon } from "$ts/images/dialog";
-import {
-  AccountIcon,
-  AppsIcon,
-  ArcFindIcon,
-  DesktopIcon,
-  PasswordIcon,
-  PersonalizationIcon,
-  SecurityMediumIcon,
-  TaskbarIcon,
-  ThemesIcon,
-} from "$ts/images/general";
 import About from "../Settings/Page/About.svelte";
 import Account from "../Settings/Page/Account.svelte";
 import Apps from "../Settings/Page/Apps.svelte";
@@ -28,7 +16,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
     {
       hidden: true,
       name: "Your ArcOS Identity",
-      icon: AccountIcon,
+      icon: "AccountIcon",
       content: Account,
       description: "Manage your ArcOS account",
     },
@@ -37,7 +25,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
     "themes",
     {
       name: "Themes",
-      icon: ThemesIcon,
+      icon: "ThemesIcon",
       content: Themes,
       description: "Personalize your ArcOS with themes",
       noSafeMode: true,
@@ -47,7 +35,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
     "wallpaper",
     {
       name: "Wallpaper",
-      icon: DesktopIcon,
+      icon: "DesktopIcon",
       content: Wallpaper,
       description: "Change your desktop wallpaper",
       noSafeMode: true,
@@ -57,7 +45,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
     "loginBackground",
     {
       name: "Login Background",
-      icon: PasswordIcon,
+      icon: "PasswordIcon",
       content: LoginBackground,
       description: "Change your login background",
       noSafeMode: true,
@@ -67,7 +55,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
     "visuals",
     {
       name: "Visuals",
-      icon: PersonalizationIcon,
+      icon: "PersonalizationIcon",
       content: Visuals,
       separator: true,
       description: "Fine-tune the appearance of ArcOS",
@@ -77,7 +65,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
     "shell",
     {
       name: "Shell",
-      icon: TaskbarIcon,
+      icon: "TaskbarIcon",
       content: Shell,
       description: "The taskbar, start menu and action center",
     },
@@ -86,7 +74,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
     "search",
     {
       name: "Search",
-      icon: ArcFindIcon,
+      icon: "ArcFindIcon",
       content: Search,
       description: "The search functionality of ArcOS",
       noSafeMode: true,
@@ -96,7 +84,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
     "apps",
     {
       name: "Apps",
-      icon: AppsIcon,
+      icon: "AppsIcon",
       content: Apps,
       separator: true,
       description: "Manage the apps on your system",
@@ -106,7 +94,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
     "securityCenter",
     {
       name: "Security Center",
-      icon: SecurityMediumIcon,
+      icon: "SecurityMediumIcon",
       content: Security,
       description: "Manage the security of ArcOS",
     },
@@ -115,7 +103,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
     "about",
     {
       name: "About ArcOS",
-      icon: InfoIcon,
+      icon: "InfoIcon",
       content: About,
       description: "ArcOS version information",
     },

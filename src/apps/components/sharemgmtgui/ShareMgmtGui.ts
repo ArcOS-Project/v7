@@ -1,5 +1,4 @@
 import "$css/apps/components/sharemgmtgui.css";
-import { ShareIcon } from "$ts/images/filesystem";
 import type { App } from "$types/app";
 import { ShareMgmtGuiRuntime } from "./runtime";
 import ShareMgmtGui from "./ShareMgmtGui.svelte";
@@ -9,7 +8,7 @@ export const ShareMgmtGuiApp: App = {
     name: "ShareMgmtGui",
     version: "1.0.0",
     author: "Izaak Kuipers",
-    icon: ShareIcon,
+    icon: "ShareIcon",
     appGroup: "components",
   },
   size: {

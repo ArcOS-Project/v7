@@ -2,7 +2,6 @@ import { AppProcess } from "$ts/apps/process";
 import type { BugHuntUserSpaceProcess } from "$ts/bughunt/process";
 import { textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath } from "$ts/util/fs";
-import { SaveIcon } from "$ts/images/general";
 import { UserPaths } from "$ts/server/user/store";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
@@ -94,7 +93,7 @@ export class BugHuntRuntime extends AppProcess {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       isSave: true,
       title: "Choose where to export the report to",
-      icon: SaveIcon,
+      icon: this.getIconCached("SaveIcon"),
       startDir: UserPaths.Documents,
       extensions: [".json"],
       saveName: `Report-${report._id}.json`,
@@ -105,7 +104,7 @@ export class BugHuntRuntime extends AppProcess {
     const prog = await this.userDaemon!.FileProgress(
       {
         type: "size",
-        icon: SaveIcon,
+        icon: this.getIconCached("SaveIcon"),
         caption: "Exporting report...",
         subtitle: `${getItemNameFromPath(path)}`,
       },

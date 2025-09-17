@@ -1,5 +1,4 @@
 import "$css/apps/user/pdfviewer.css";
-import { PdfMimeIcon } from "$ts/images/mime";
 import type { App } from "$types/app";
 import PdfViewer from "./PdfViewer.svelte";
 import { PdfViewerRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const PdfViewerApp: App = {
     name: "PDF Viewer",
     version: "1.0.0",
     author: "Izaak Kuipers",
-    icon: PdfMimeIcon,
+    icon: "PdfMimeIcon",
     appGroup: "utilities",
   },
   size: {

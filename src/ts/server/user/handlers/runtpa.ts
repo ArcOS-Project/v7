@@ -1,5 +1,4 @@
 import { arrayToText } from "$ts/util/convert";
-import { ArcAppMimeIcon } from "$ts/images/mime";
 import { tryJsonParse } from "$ts/json";
 import type { FileHandler } from "$types/fs";
 import type { UserDaemon } from "../daemon";
@@ -8,7 +7,7 @@ const runTpaFile: (d: UserDaemon) => FileHandler = (daemon) => ({
   opens: {
     extensions: [".tpa"],
   },
-  icon: ArcAppMimeIcon,
+  icon: daemon.getIconCached("ArcAppMimeIcon"),
   name: "Run ArcOS app",
   description: "Run this TPA file as an application",
   handle: async (path: string) => {

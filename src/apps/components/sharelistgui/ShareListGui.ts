@@ -1,5 +1,4 @@
 import "$css/apps/components/sharelistgui.css";
-import { ShareIcon } from "$ts/images/filesystem";
 import type { App } from "$types/app";
 import { ShareListGuiRuntime } from "./runtime";
 import ShareListGui from "./ShareListGui.svelte";
@@ -9,7 +8,7 @@ export const ShareListGuiApp: App = {
     name: "ShareListGui",
     author: "Izaak Kuipers",
     version: "1.0.0",
-    icon: ShareIcon,
+    icon: "ShareIcon",
     appGroup: "components",
   },
   position: { centered: true },

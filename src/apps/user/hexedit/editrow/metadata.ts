@@ -1,4 +1,3 @@
-import { ComponentIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import EditRowSvelte from "../HexEdit/Overlays/EditRow.svelte";
 import { EditRowRuntime } from "./runtime";
@@ -8,7 +7,7 @@ export const EditRow: App = {
     name: "Edit Row",
     author: "Izaak Kuipers",
     version: "1.0.0",
-    icon: ComponentIcon,
+    icon: "ComponentIcon",
   },
   size: {
     w: 518,

@@ -1,9 +1,9 @@
 <script lang="ts">
   import UserLink from "$lib/UserLink.svelte";
-  import { maybeIconId } from "$ts/images";
   import type { ExpandedFileAssociationInfo } from "$types/assoc";
   import type { SummarizedFsModifiers } from "$types/fs";
   import dayjs from "dayjs";
+  import type { FileManagerRuntime } from "../../runtime";
 
   const {
     modifiers,
@@ -12,6 +12,7 @@
     thumbnail,
     dateCreated,
     dateModified,
+    process,
   }: {
     modifiers: SummarizedFsModifiers | undefined;
     association: ExpandedFileAssociationInfo;
@@ -19,12 +20,14 @@
     dateModified: number;
     filename: string;
     thumbnail?: string;
+    process: FileManagerRuntime;
   } = $props();
+  const fileIcon = process.getIconStore(association?.icon);
 </script>
 
 <div class="single-file">
   <div class="header">
-    <img src={thumbnail || maybeIconId(association?.icon)} alt="" />
+    <img src={thumbnail || $fileIcon} alt="" />
     <h1>{filename}</h1>
     <p>{association?.friendlyName}</p>
   </div>

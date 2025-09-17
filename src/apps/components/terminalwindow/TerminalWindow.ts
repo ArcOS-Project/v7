@@ -1,5 +1,4 @@
 import "$css/apps/components/terminalwindow.css";
-import { TerminalWindowIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import "@xterm/xterm/css/xterm.css";
 import { TerminalWindowRuntime } from "./runtime";
@@ -10,7 +9,7 @@ export const TerminalWindowApp: App = {
     name: "Terminal Window",
     version: "1.0.0",
     author: "Izaak Kuipers",
-    icon: TerminalWindowIcon,
+    icon: "TerminalWindowIcon",
     appGroup: "systemTools",
   },
   size: { w: 640, h: 480 },

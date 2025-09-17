@@ -1,9 +1,6 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
   import { ShareManager } from "$ts/shares";
-  import { WarningIcon } from "$ts/images/dialog";
-  import { ShareIcon } from "$ts/images/filesystem";
-  import { GoodStatusIcon } from "$ts/images/status";
   import type { OverlayRuntime } from "../../overlay";
 
   const { process }: { process: OverlayRuntime } = $props();
@@ -22,7 +19,7 @@
           message:
             "ArcOS failed to change the name of your share. You might already have a share with that name. Please try something else.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: WarningIcon,
+          image: process.getIconCached("WarningIcon"),
           sound: "arcos.dialog.warning",
         },
         process.parentPid,
@@ -35,7 +32,7 @@
           message:
             "Your share has been renamed successfully! You and the members of the share will have to restart for the changes to take effect.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: GoodStatusIcon,
+          image: process.getIconCached("GoodStatusIcon"),
           sound: "arcos.dialog.info",
         },
         process.parentPid,
@@ -47,7 +44,7 @@
 
 <div class="top">
   <div class="left">
-    <img src={ShareIcon} alt="" />
+    <img src={process.getIconCached("ShareIcon")} alt="" />
   </div>
   <div class="right">
     <h1>Rename share</h1>

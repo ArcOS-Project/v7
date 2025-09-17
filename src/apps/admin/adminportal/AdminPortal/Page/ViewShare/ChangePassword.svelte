@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
-  import { QuestionIcon } from "$ts/images/dialog";
   import type { SharedDriveType } from "$types/shares";
   import { generate } from "generate-password-ts";
 
@@ -14,7 +13,7 @@
       `Are you sure you want to change the password of '${share.shareName}'?`,
       "Cancel",
       "Change",
-      QuestionIcon
+      process.getIconCached("QuestionIcon")
     );
 
     if (!confirm || !newPassword) return;

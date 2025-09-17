@@ -1,8 +1,6 @@
 <script lang="ts">
   import UserLink from "$lib/UserLink.svelte";
   import { StoreItemIcon } from "$ts/distrib/util";
-  import { SpinnerIcon, UpdateIcon } from "$ts/images/general";
-  import { BadStatusIcon, GoodStatusIcon } from "$ts/images/status";
   import { Sleep } from "$ts/sleep";
   import { Plural } from "$ts/util";
   import type { MultiUpdateGuiRuntime } from "./runtime";
@@ -21,7 +19,14 @@
 </script>
 
 <div class="header">
-  <img src={$working && $currentPackage ? StoreItemIcon($currentPackage) : $done ? GoodStatusIcon : UpdateIcon} alt="" />
+  <img
+    src={$working && $currentPackage
+      ? StoreItemIcon($currentPackage)
+      : $done
+        ? process.getIconCached("GoodStatusIcon")
+        : "UpdateIcon"}
+    alt=""
+  />
   <div class="info">
     <h1>
       {#if $working}
@@ -93,7 +98,12 @@
           {/if}
         </p>
         <p class="content">{item.content}</p>
-        <img src={item.status === "done" ? GoodStatusIcon : item.status === "failed" ? BadStatusIcon : SpinnerIcon} alt="" />
+        <img
+          src={process.getIconCached(
+            item.status === "done" ? "GoodStatusIcon" : item.status === "failed" ? "BadStatusIcon" : "SpinnerIcon"
+          )}
+          alt=""
+        />
       </div>
     {/each}
   {/each}

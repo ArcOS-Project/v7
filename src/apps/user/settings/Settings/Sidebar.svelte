@@ -13,7 +13,7 @@
   {#each [...settingsPageStore] as [id, page]}
     {#if !page.hidden && (process.safeMode ? !page.noSafeMode : true)}
       <button class="page" class:selected={$currentPage === id} onclick={() => process.switchPage(id)}>
-        <img src={page.icon} alt="" />
+        <img src={process.getIconCached(page.icon)} alt="" />
         <span>{page.name}</span>
       </button>
       {#if page.separator}

@@ -1,5 +1,4 @@
 import "$css/apps/components/messagecomposer.css";
-import { MessagingIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import MessageComposer from "./MessageComposer.svelte";
 import { MessageComposerRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const MessageComposerApp: App = {
     name: "New Message",
     author: "Izaak Kuipers",
     version: "1.0.0",
-    icon: MessagingIcon,
+    icon: "MessagingIcon",
     appGroup: "multimedia",
   },
   position: { centered: true },

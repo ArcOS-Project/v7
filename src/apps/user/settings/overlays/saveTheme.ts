@@ -1,4 +1,3 @@
-import { SaveIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import { OverlayRuntime } from "../overlay";
 import SaveTheme from "../Settings/Overlays/SaveTheme.svelte";
@@ -8,7 +7,7 @@ export const SaveThemeApp: App = {
     name: "Save Theme",
     author: "ArcOS Team",
     version: "2.0.0",
-    icon: SaveIcon,
+    icon: "SaveIcon",
   },
   size: { w: 350, h: 380 },
   minSize: { w: 350, h: 380 },

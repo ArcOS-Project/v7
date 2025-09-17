@@ -1,4 +1,3 @@
-import { DesktopIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import { OverlayRuntime } from "../overlay";
 import UrlLoginBackgroundSvelte from "../Settings/Overlays/UrlLoginWallpaper.svelte";
@@ -8,7 +7,7 @@ export const UrlLoginBackground: App = {
     name: "URL Login Background",
     author: "ArcOS Team",
     version: "3.0.0",
-    icon: DesktopIcon,
+    icon: "DesktopIcon",
   },
   size: { w: 400, h: 200 },
   minSize: { w: 400, h: 200 },

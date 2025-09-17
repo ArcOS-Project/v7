@@ -1,4 +1,3 @@
-import { BugReportIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import { BugHuntUserDataRuntime } from "./runtime";
 import UserData from "./UserData.svelte";
@@ -10,7 +9,7 @@ export const BugHuntUserDataApp: App = {
     name: "User Data",
     version: "3.0.0",
     author: "Izaak Kuipers",
-    icon: BugReportIcon,
+    icon: "BugReportIcon",
   },
   position: { centered: true },
   size: { w: 600, h: 450 },

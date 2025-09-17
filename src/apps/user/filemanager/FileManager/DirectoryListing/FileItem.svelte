@@ -2,8 +2,6 @@
   import { contextProps } from "$ts/context/actions.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
   import { formatBytes, join } from "$ts/util/fs";
-  import { getIconPath } from "$ts/images";
-  import { DefaultMimeIcon } from "$ts/images/mime";
   import type { FileEntry } from "$types/fs";
   import type { ArcShortcut } from "$types/shortcut";
   import dayjs from "dayjs";
@@ -22,6 +20,7 @@
   let extension = $state<string>();
   let thumbnail = $state<string>();
   let shortcut: ArcShortcut | undefined = $shortcuts[file.name];
+  let shortcutIcon = $state<string>();
 
   onMount(async () => {
     dayjs.extend(relativeTime);
@@ -35,7 +34,9 @@
     const info = process.userDaemon?.assoc?.getFileAssociation(thisPath);
     extension = `.${split[split.length - 1]}`;
     mime = info?.friendlyName || "Unknown";
-    icon = info?.icon || DefaultMimeIcon;
+    icon = info?.icon || process.getIconCached("DefaultMimeIcon");
+
+    if (shortcut) shortcutIcon = await process.getIcon(shortcut.icon);
 
     if (info?.friendlyName === "Image file" && process.userPreferences().appPreferences.fileManager?.renderThumbnails)
       thumbnail = await process.userDaemon?.getThumbnailFor(thisPath);
@@ -79,7 +80,7 @@
     class:is-shortcut={shortcut}
   >
     <div class="segment icon">
-      <img src={shortcut ? getIconPath(shortcut.icon) : thumbnail || icon} alt="" />
+      <img src={shortcut ? shortcutIcon : thumbnail || icon} alt="" />
       {#if shortcut}
         <span class="icon-arrow-up-right"></span>
       {/if}

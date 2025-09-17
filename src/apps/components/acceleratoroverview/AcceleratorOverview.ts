@@ -1,5 +1,4 @@
 import "$css/apps/components/acceleratoroverview.css";
-import { KeyboardIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import AcceleratorOverview from "./AcceleratorOverview.svelte";
 import { AcceleratorOverviewRuntime } from "./runtime";
@@ -9,7 +8,7 @@ const AcceleratorOverviewApp: App = {
     name: "Keyboard Shortcuts",
     author: "Izaak Kuipers",
     version: "2.0.0",
-    icon: KeyboardIcon,
+    icon: "KeyboardIcon",
     appGroup: "components",
   },
   size: {

@@ -2,7 +2,6 @@
   import type { SettingsRuntime } from "$apps/user/settings/runtime";
   import { MessageBox } from "$ts/dialog";
   import { formatBytes } from "$ts/util/fs";
-  import { WarningIcon } from "$ts/images/dialog";
   import { onMount } from "svelte";
   import UserStyleWarning from "./UserStyles/UserStyleWarning.svelte";
 
@@ -19,7 +18,7 @@
     MessageBox(
       {
         title: "User styles are risky!",
-        image: WarningIcon,
+        image: process.getIconCached("WarningIcon"),
         content: UserStyleWarning,
         buttons: [{ caption: "Understood", action: () => {}, suggested: true }],
       },

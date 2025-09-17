@@ -12,8 +12,6 @@ export class BaseService extends Process {
 
     this.name = `svc#${name}`;
     this.host = host;
-
-    this.setSource(__SOURCE__);
   }
 
   //#endregion

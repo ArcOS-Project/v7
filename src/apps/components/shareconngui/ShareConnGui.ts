@@ -1,5 +1,4 @@
 import "$css/apps/components/shareconngui.css";
-import { ShareIcon } from "$ts/images/filesystem";
 import type { App } from "$types/app";
 import { ShareConnGuiRuntime } from "./runtime";
 import ShareConnGui from "./ShareConnGui.svelte";
@@ -9,7 +8,7 @@ export const ShareConnGuiApp: App = {
     name: "ShareConnGui",
     author: "Izaak Kuipers",
     version: "1.0.0",
-    icon: ShareIcon,
+    icon: "ShareIcon",
     appGroup: "components",
   },
   size: {

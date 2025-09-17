@@ -1,5 +1,4 @@
 import "$css/apps/components/openwith.css";
-import { ComponentIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import OpenWith from "./OpenWith.svelte";
 import { OpenWithRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const OpenWithApp: App = {
     name: "Open With",
     author: "Izaak Kuipers",
     version: "4.0.0",
-    icon: ComponentIcon,
+    icon: "ComponentIcon",
     appGroup: "components",
   },
   size: {

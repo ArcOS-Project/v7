@@ -1,10 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { KernelStack } from "$ts/env";
 import type { ShareManager } from "$ts/shares";
 import type { SharedDrive } from "$ts/shares/drive";
-import { WarningIcon } from "$ts/images/dialog";
-import { ShareIcon } from "$ts/images/filesystem";
-import { KernelStack } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { SharedDriveType } from "$types/shares";
@@ -75,7 +73,7 @@ export class ShareListGuiRuntime extends AppProcess {
             suggested: true,
           },
         ],
-        image: WarningIcon,
+        image: this.getIconCached("WarningIcon"),
         sound: "arcos.dialog.warning",
       },
       this.pid,
@@ -103,7 +101,7 @@ export class ShareListGuiRuntime extends AppProcess {
               suggested: true,
             },
           ],
-          image: ShareIcon,
+          image: this.getIconCached("ShareIcon"),
           sound: "arcos.dialog.warning",
         },
         this.pid,

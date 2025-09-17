@@ -1,4 +1,3 @@
-import { ShutdownIcon } from "$ts/images/power";
 import type { ContextMenuItem } from "$types/app";
 import type { FileManagerRuntime } from "../runtime";
 
@@ -80,7 +79,7 @@ export function FileMenu(runtime: FileManagerRuntime): ContextMenuItem {
       { sep: true },
       {
         caption: "Exit",
-        image: ShutdownIcon,
+        image: runtime.getIconCached("ShutdownIcon"),
         action: () => {
           runtime.closeWindow();
         },

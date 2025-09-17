@@ -1,7 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
 import { KernelStack } from "$ts/env";
-import { AppInfoIcon } from "$ts/images/apps";
-import { ComponentIcon } from "$ts/images/general";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
@@ -30,7 +28,7 @@ export class AppInfoRuntime extends AppProcess {
       this.userDaemon?.sendNotification({
         title: "App not found",
         message: `AppInfo couldn't find any information about "${this.targetAppId}". Is it installed?`,
-        image: AppInfoIcon,
+        image: this.getIconCached("AppInfoIcon"),
         timeout: 6000,
       });
 
@@ -47,7 +45,7 @@ export class AppInfoRuntime extends AppProcess {
   async killAll() {
     const elevated = await this.userDaemon?.manuallyElevate({
       what: `ArcOS needs your permission to kill all instances of an app`,
-      image: this.userDaemon?.getAppIcon(this.targetApp()) || ComponentIcon,
+      image: this.userDaemon?.getAppIcon(this.targetApp()) || this.getIconCached("ComponentIcon"),
       title: this.targetApp().metadata.name,
       description: this.targetAppId,
       level: ElevationLevel.high,

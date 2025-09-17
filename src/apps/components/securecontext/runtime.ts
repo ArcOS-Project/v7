@@ -1,6 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { LoginUser } from "$ts/server/user/auth";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -91,7 +90,7 @@ export class SecureContextRuntime extends AppProcess {
         {
           title: "Authentication failed",
           message: "The password you entered is incorrect. Please try typing it again.",
-          image: ErrorIcon,
+          image: this.getIconCached("ErrorIcon"),
           sound: "arcos.dialog.error",
           buttons: [{ caption: "Okay", action: () => r(), suggested: true }],
         },
@@ -112,7 +111,7 @@ export class SecureContextRuntime extends AppProcess {
         title: "Cancel elevation?",
         message: "Going to the security settings from here will cancel the elevation request. Are you sure?",
         sound: "arcos.dialog.warning",
-        image: WarningIcon,
+        image: this.getIconCached("WarningIcon"),
         buttons: [
           {
             caption: "Stay here",

@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import { formatBytes } from "$ts/util/fs";
-  import { QuestionIcon } from "$ts/images/dialog";
   import type { SharedDriveType } from "$types/shares";
 
   const { share, process }: { share: SharedDriveType; process: AdminPortalRuntime } = $props();
@@ -18,7 +17,7 @@
       `Are you sure you want to change the quota of '${share.shareName}' to ${formatBytes(newQuota)}?`,
       "Cancel",
       "Change",
-      QuestionIcon
+      process.getIconCached("QuestionIcon")
     );
 
     if (!confirm) return;

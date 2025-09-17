@@ -1,9 +1,5 @@
 import { MessageBox } from "$ts/dialog";
 import { getParentDirectory, join } from "$ts/util/fs";
-import { FileManagerIcon, ProcessManagerIcon, SettingsIcon } from "$ts/images/apps";
-import { QuestionIcon } from "$ts/images/dialog";
-import { PersonalizationIcon } from "$ts/images/general";
-import { LogoutIcon, RestartIcon, ShutdownIcon } from "$ts/images/power";
 import { UserPaths } from "$ts/server/user/store";
 import { UUID } from "$ts/uuid";
 import type { AppContextMenu } from "$types/app";
@@ -176,7 +172,7 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
                 {
                   title: "Reset desktop icons?",
                   message: "Are you sure you want to reset your desktop icon positions?",
-                  image: QuestionIcon,
+                  image: runtime.getIconCached("QuestionIcon"),
                   sound: "arcos.dialog.info",
                   buttons: [
                     {
@@ -212,21 +208,21 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
       { sep: true },
       {
         caption: "File manager",
-        image: FileManagerIcon,
+        image: runtime.getIconCached("FileManagerIcon"),
         action: () => {
           runtime.spawnApp("fileManager", shellPid(), UserPaths.Home);
         },
       },
       {
         caption: "Processes",
-        image: ProcessManagerIcon,
+        image: runtime.getIconCached("ProcessManagerIcon"),
         action: () => {
           runtime.spawnApp("processManager", shellPid());
         },
       },
       {
         caption: "Settings",
-        image: SettingsIcon,
+        image: runtime.getIconCached("SettingsIcon"),
         action: () => {
           runtime.spawnApp("systemSettings", shellPid());
         },
@@ -234,17 +230,17 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
       { sep: true },
       {
         caption: "Shut down",
-        image: ShutdownIcon,
+        image: runtime.getIconCached("ShutdownIcon"),
         action: () => runtime.userDaemon?.shutdown(),
       },
       {
         caption: "Log off",
-        image: LogoutIcon,
+        image: runtime.getIconCached("LogoutIcon"),
         action: () => runtime.userDaemon?.logoff(),
       },
       {
         caption: "Restart",
-        image: RestartIcon,
+        image: runtime.getIconCached("RestartIcon"),
         action: () => runtime.userDaemon?.restart(),
       },
       { sep: true },
@@ -302,7 +298,7 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
       },
       {
         caption: "Personalize...",
-        image: PersonalizationIcon,
+        image: runtime.getIconCached("PersonalizationIcon"),
         action: async () => {
           await runtime.spawnApp("systemSettings", shellPid(), "visuals");
         },

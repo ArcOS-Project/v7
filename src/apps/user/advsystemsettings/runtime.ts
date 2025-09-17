@@ -1,6 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { WarningIcon } from "$ts/images/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { UserPreferences } from "$types/user";
@@ -61,7 +60,7 @@ export class AdvSysSetRuntime extends AppProcess {
           title: "Your preferences changed",
           message:
             "The user preferences changed while this app was running. Click 'Synchronize' to synchronize. This will discard any changes you've made since opening the dialog.",
-          image: WarningIcon,
+          image: this.getIconCached("WarningIcon"),
           buttons: [
             {
               caption: "Ignore",

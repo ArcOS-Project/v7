@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import { isPopulatable } from "$ts/apps/util";
-  import { FolderIcon } from "$ts/images/filesystem";
   import type { AppStorage } from "$types/app";
   import ListItem from "../ListItem.svelte";
 
@@ -14,7 +13,7 @@
 {#if apps.filter((a) => a.metadata.appGroup === id && (isPopulatable(a) || $userPreferences.shell.visuals.showHiddenApps)).length}
   <div class="app-group">
     <button class="list-item expander" class:expanded={expand} onclick={() => (expand = !expand)}>
-      <img src={FolderIcon} alt="" />
+      <img src={process.getIconCached("FolderIcon")} alt="" />
       <span class="name">{groupName}</span>
       <span class="lucide icon-chevron-right"></span>
     </button>

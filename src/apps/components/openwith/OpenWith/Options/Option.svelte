@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { maybeIconId } from "$ts/images";
   import type { FileOpenerResult } from "$types/fs";
   import type { OpenWithRuntime } from "../../runtime";
 
@@ -11,6 +10,9 @@
     handler: FileOpenerResult;
   } = $props();
   const { selectedId } = process;
+  const icon = process.getIconStore(
+    (handler.type === "app" ? process.userDaemon?.getAppIcon(handler.app!) : handler.handler?.icon)!
+  );
 </script>
 
 <button
@@ -19,10 +21,7 @@
   class:active={$selectedId === handler.id}
   class="option"
 >
-  <img
-    src={maybeIconId((handler.type === "app" ? process.userDaemon?.getAppIcon(handler.app!) : handler.handler?.icon)!)}
-    alt=""
-  />
+  <img src={$icon} alt="" />
   <div>
     <h1>{handler.type === "app" ? handler.app?.metadata.name : handler.handler?.name}</h1>
     <p>{handler.type === "handler" ? handler.handler?.description : handler.app?.metadata.author}</p>

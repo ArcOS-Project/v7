@@ -1,10 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { Sleep } from "$ts/sleep";
 import { arrayToBlob } from "$ts/util/convert";
 import { getItemNameFromPath } from "$ts/util/fs";
-import { ImageViewerIcon } from "$ts/images/apps";
-import { ErrorIcon } from "$ts/images/dialog";
-import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
@@ -55,7 +53,7 @@ export class ImageViewerRuntime extends AppProcess {
         type: "size",
         caption: `Reading image`,
         subtitle: path,
-        icon: ImageViewerIcon,
+        icon: this.getIconCached("ImageViewerIcon"),
       },
       this.pid
     );
@@ -74,7 +72,7 @@ export class ImageViewerRuntime extends AppProcess {
         {
           title: "Failed to read image",
           message: "The image you tried to open could not be read.",
-          image: ErrorIcon,
+          image: this.getIconCached("ErrorIcon"),
           sound: "arcos.dialog.error",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
         },

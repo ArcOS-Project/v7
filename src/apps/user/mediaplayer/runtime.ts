@@ -2,8 +2,6 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { arrayToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
-import { MediaPlayerIcon } from "$ts/images/apps";
-import { FolderIcon } from "$ts/images/filesystem";
 import { KernelStack } from "$ts/env";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
@@ -92,7 +90,7 @@ export class MediaPlayerRuntime extends AppProcess {
     }
 
     this.shell?.trayHost?.createTrayIcon?.(this.pid, this.app.id, {
-      icon: MediaPlayerIcon,
+      icon: this.getIconCached("MediaPlayerIcon"),
       popup: {
         width: 250,
         height: 160,
@@ -192,7 +190,7 @@ export class MediaPlayerRuntime extends AppProcess {
     if (this._disposed) return;
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Select an audio or video file to open",
-      icon: MediaPlayerIcon,
+      icon: this.getIconCached("MediaPlayerIcon"),
       startDir: getParentDirectory(this.queue()[this.queueIndex()]) || UserPaths.Music,
       extensions: this.app.data.opens?.extensions,
     });
@@ -271,7 +269,7 @@ export class MediaPlayerRuntime extends AppProcess {
             message:
               "ArcOS failed to open the file you requested. It might be moved or the drive doesn't support direct file access.",
             buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-            image: MediaPlayerIcon,
+            image: this.getIconCached("MediaPlayerIcon"),
             sound: "arcos.dialog.error",
           },
           this.pid,
@@ -285,7 +283,7 @@ export class MediaPlayerRuntime extends AppProcess {
       this.isVideo.set(info?.friendlyName === "Video file");
       this.url.set(url);
       this.windowTitle.set(`${getItemNameFromPath(path)} - Media Player`);
-      this.windowIcon.set(info?.icon || MediaPlayerIcon);
+      this.windowIcon.set(info?.icon || this.getIconCached("MediaPlayerIcon"));
 
       this.Reset();
 
@@ -302,7 +300,7 @@ export class MediaPlayerRuntime extends AppProcess {
     if (this._disposed) return;
     const paths = await this.userDaemon!.LoadSaveDialog({
       title: "Select a file to add to the queue",
-      icon: MediaPlayerIcon,
+      icon: this.getIconCached("MediaPlayerIcon"),
       startDir: getParentDirectory(this.queue()[this.queueIndex()]) || UserPaths.Music,
       extensions: this.app.data.opens?.extensions?.filter((e) => e !== ".arcpl"),
       multiple: true,
@@ -381,7 +379,7 @@ export class MediaPlayerRuntime extends AppProcess {
           message: `Media Player couldn't open the file you requested. ${e}`,
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           sound: "arcos.dialog.error",
-          image: MediaPlayerIcon,
+          image: this.getIconCached("MediaPlayerIcon"),
         },
         this.pid,
         true
@@ -393,7 +391,7 @@ export class MediaPlayerRuntime extends AppProcess {
     if (this._disposed) return;
     const paths = await this.userDaemon?.LoadSaveDialog({
       title: "Pick where to create the shortcut",
-      icon: FolderIcon,
+      icon: this.getIconCached("FolderIcon"),
       folder: true,
       startDir: UserPaths.Desktop,
     });
@@ -420,7 +418,7 @@ export class MediaPlayerRuntime extends AppProcess {
         title: "Failed to play",
         message: `Media Player failed to play the file you wanted to open. It might not be a (supported) audio or video file. Please try a different file.`,
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-        image: MediaPlayerIcon,
+        image: this.getIconCached("MediaPlayerIcon"),
         sound: "arcos.dialog.error",
       },
       this.pid,

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { QuestionIcon, WarningIcon } from "$ts/images/dialog";
   import type { App } from "$types/app";
   import { onMount } from "svelte";
   import type { AppInfoRuntime } from "../runtime";
@@ -43,12 +42,17 @@
 
 <div class="header">
   <div class="left">
-    <img src={process.userDaemon?.getAppIcon(target) || QuestionIcon} alt="" />
+    <img src={process.userDaemon?.getAppIcon(target) || process.getIconCached("QuestionIcon")} alt="" />
     <div class="base-info">
       <p class="name">
         <span>{target?.metadata?.name || "Unknown"}</span>
         {#if disabled}
-          <img src={WarningIcon} alt="" class="disabled" title="{target?.metadata?.name || 'Unknown'} is disabled!" />
+          <img
+            src={process.getIconCached("WarningIcon")}
+            alt=""
+            class="disabled"
+            title="{target?.metadata?.name || 'Unknown'} is disabled!"
+          />
         {/if}
       </p>
       <p class="author">{target?.metadata?.author || "No author"}</p>

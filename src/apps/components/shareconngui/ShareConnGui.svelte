@@ -2,7 +2,6 @@
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
-  import { ShareIcon } from "$ts/images/filesystem";
   import type { ShareConnGuiRuntime } from "./runtime";
 
   const { process }: { process: ShareConnGuiRuntime } = $props();
@@ -10,7 +9,7 @@
 </script>
 
 <div class="header">
-  <img src={ShareIcon} alt="" />
+  <img src={process.getIconCached("ShareIcon")} alt="" />
   <h1>Join a share</h1>
   <p>Enter the information to join a share or click 'Joined' to view the shares you've joined already.</p>
 </div>

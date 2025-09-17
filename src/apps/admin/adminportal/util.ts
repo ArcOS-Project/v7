@@ -1,5 +1,3 @@
-import { WarningIcon } from "$ts/images/dialog";
-import { GoodStatusIcon } from "$ts/images/status";
 import type { BugReport } from "$types/bughunt";
 import { ShortLogLevelCaptions, type LogItem } from "$types/logging";
 import dayjs from "dayjs";
@@ -21,6 +19,6 @@ export function stringifyLogs(logs: LogItem[]) {
 // Honestly this function used to be a lot bigger
 // in ArcOS-Reports-Panel, but I ported it anyway :sob:
 export function getReportIcon(report: BugReport): string {
-  if (report.closed) return WarningIcon;
-  return GoodStatusIcon;
+  if (report.closed) return "WarningIcon";
+  return "GoodStatusIcon";
 }

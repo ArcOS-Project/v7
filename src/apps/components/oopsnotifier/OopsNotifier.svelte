@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { ComponentIcon } from "$ts/images/general";
   import type { OopsNotifierRuntime } from "./runtime";
 
   const { process }: { process: OopsNotifierRuntime } = $props();
@@ -7,7 +6,7 @@
 </script>
 
 <div class="header">
-  <img src={process.userDaemon?.getAppIcon(data) || ComponentIcon} alt="" />
+  <img src={process.userDaemon?.getAppIcon(data) || process.getIconCached("ComponentIcon")} alt="" />
   <h1>{data?.id === "ArcOS" ? "System error occured" : `${data?.metadata?.name || "Something"} crashed`}</h1>
   <p>
     {#if data?.id === "ArcOS"}

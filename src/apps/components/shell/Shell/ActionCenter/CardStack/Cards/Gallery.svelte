@@ -1,9 +1,8 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import { contextProps } from "$ts/context/actions.svelte";
-  import { arrayToBlob } from "$ts/util/convert";
-  import { DesktopIcon } from "$ts/images/general";
   import { UserPaths } from "$ts/server/user/store";
+  import { arrayToBlob } from "$ts/util/convert";
   import type { UserPreferencesStore } from "$types/user";
   import { onMount } from "svelte";
   import Spinner from "../../../../../../../lib/Spinner.svelte";
@@ -58,7 +57,7 @@
   async function chooseImage() {
     const [path] = await process.userDaemon!.LoadSaveDialog({
       title: "Choose an image for the gallery",
-      icon: DesktopIcon,
+      icon: process.getIconCached("DesktopIcon"),
       startDir: UserPaths.Pictures,
       extensions: [".png", ".jpg", ".gif", ".webp", ".jpeg"],
     });

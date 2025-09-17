@@ -43,6 +43,10 @@ export class Process {
   public async __start(): Promise<any> {
     this.Log(`STARTING PROCESS`);
 
+    if (this.sourceUrl === "undetermined") {
+      this.Log(`Source URL of process class not set!`, LogLevel.warning);
+    }
+
     return await this.start();
   }
 
@@ -91,7 +95,5 @@ export class Process {
 
   setSource(source: string) {
     this.sourceUrl = `src/${source.split("/src/")[1]}`;
-
-    console.log(this.sourceUrl);
   }
 }

@@ -1,5 +1,4 @@
 import "$css/apps/components/processinfo.css";
-import { ComponentIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import ProcessInfo from "./ProcessInfo.svelte";
 import { ProcessInfoRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const ProcessInfoApp: App = {
     name: "Process Info",
     version: "1.0.0",
     author: "Izaak Kuipers",
-    icon: ComponentIcon,
+    icon: "ComponentIcon",
   },
   position: { centered: true },
   size: { w: 500, h: 550 },

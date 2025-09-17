@@ -2,7 +2,6 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import type { ShareManager } from "$ts/shares";
 import { SharedDrive } from "$ts/shares/drive";
-import { ErrorIcon } from "$ts/images/dialog";
 import { KernelStack } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -37,7 +36,7 @@ export class ShareConnGuiRuntime extends AppProcess {
           message:
             "ArcOS failed to add you to the requested share. Please check the information you entered, and then try again. If the problem persists, ask the owner of the share for new credentials.",
           buttons: [{ caption: "Okay", suggested: true, action: () => {} }],
-          image: ErrorIcon,
+          image: this.getIconCached("ErrorIcon"),
           sound: "arcos.dialog.error",
         },
         this.parentPid,

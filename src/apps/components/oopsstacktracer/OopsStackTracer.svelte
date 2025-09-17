@@ -1,8 +1,4 @@
 <script lang="ts">
-  import { DefaultIcon } from "$ts/images/apps";
-  import { QuestionIcon, WarningIcon } from "$ts/images/dialog";
-  import { ComponentIcon } from "$ts/images/general";
-  import { BadStatusIcon } from "$ts/images/status";
   import type { OopsStackTracerRuntime } from "./runtime";
 
   const { process }: { process: OopsStackTracerRuntime } = $props();
@@ -11,7 +7,7 @@
 </script>
 
 <div class="process">
-  <img src={process.userDaemon?.getAppIcon(data) || ComponentIcon} alt="" />
+  <img src={process.userDaemon?.getAppIcon(data) || process.getIconCached("ComponentIcon")} alt="" />
   <p class="name">{data?.metadata?.name || "Unknown app"}</p>
   {#if proc?.pid}
     <p class="pid">(PID {proc.pid})</p>
@@ -30,7 +26,7 @@
     <code class="block stack-trace">{trace}</code>
   {:else}
     <div class="stack-frame first">
-      <img src={WarningIcon} alt="" />
+      <img src={process.getIconCached("WarningIcon")} alt="" />
       <span>
         {process.string ||
           "Unable to determine the stack trace from the given process arguments. This application might have been invoked improperly. If this wasn't intentional, please report."}
@@ -39,17 +35,17 @@
     <hr />
     {#if !process.string && !stackFrames?.length}
       <div class="stack-frame">
-        <img src={QuestionIcon} alt="" />
+        <img src={process.getIconCached("QuestionIcon")} alt="" />
         <p class="source">Stack frames</p>
         <p class="method">{stackFrames?.length || 0}</p>
       </div>
       <div class="stack-frame">
-        <img src={QuestionIcon} alt="" />
+        <img src={process.getIconCached("QuestionIcon")} alt="" />
         <p class="source">Exception</p>
         <p class="method">{process.exception || "<none>"}</p>
       </div>
       <div class="stack-frame">
-        <img src={QuestionIcon} alt="" />
+        <img src={process.getIconCached("QuestionIcon")} alt="" />
         <p class="source">Call stack</p>
         <p class="method">{process.trace || "<none>"}</p>
       </div>
@@ -59,7 +55,7 @@
         <hr />
       {/if}
       <div class="stack-frame" class:internal={!frame.parsed}>
-        <img src={!i ? BadStatusIcon : DefaultIcon} alt="" />
+        <img src={!i ? process.getIconCached("BadStatusIcon") : process.getIconCached("DefaultIcon")} alt="" />
         <p class="source">{frame.parsed?.filename || "ArcOS Internal"}</p>
         <p class="method" title={frame.methodName || ""} class:anonymous={!frame.methodName}>
           {frame.methodName || "(anonymous)"}

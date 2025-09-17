@@ -2,7 +2,6 @@ import { MessageBox } from "$ts/dialog";
 import { ShareManager } from "$ts/shares";
 import type { SharedDrive } from "$ts/shares/drive";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
-import { WarningIcon } from "$ts/images/dialog";
 import { UserPaths } from "$ts/server/user/store";
 import type { AppContextMenu } from "$types/app";
 import type { FileEntry, FolderEntry } from "$types/fs";
@@ -82,7 +81,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
                   suggested: true,
                 },
               ],
-              image: WarningIcon,
+              image: runtime.getIconCached("WarningIcon"),
               sound: "arcos.dialog.warning",
             },
             runtime.pid,

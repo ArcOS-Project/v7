@@ -2,7 +2,6 @@
   import HtmlSpinner from "$lib/HtmlSpinner.svelte";
   import { MessageBox } from "$ts/dialog";
   import { ArcOSVersion } from "$ts/env";
-  import { PersonalizationIcon, UpdateIcon } from "$ts/images/general";
   import { ChangeLogs } from "$ts/metadata/changelog";
   import { onMount } from "svelte";
   import Dialog from "./Dialog.svelte";
@@ -23,7 +22,7 @@
       {
         title: `Changelog of ArcOS ${ArcOSVersion}`,
         content: Dialog,
-        image: UpdateIcon,
+        image: process.getIconCached("UpdateIcon"),
         sound: "arcos.dialog.info",
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
       },
@@ -33,10 +32,10 @@
   }
 </script>
 
-<img src={PersonalizationIcon} alt="" class="backdrop" />
+<img src={process.getIconCached("PersonalizationIcon")} alt="" class="backdrop" />
 
 <div class="header">
-  <img src={UpdateIcon} alt="" />
+  <img src={process.getIconCached("UpdateIcon")} alt="" />
   <h1>ArcOS has been updated</h1>
   <p>Welcome to ArcOS {ArcOSVersion}!</p>
 </div>

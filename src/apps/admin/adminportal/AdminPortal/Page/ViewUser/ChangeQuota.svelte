@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import { formatBytes } from "$ts/util/fs";
-  import { QuestionIcon } from "$ts/images/dialog";
   import type { ExpandedUserInfo } from "$types/user";
 
   const { user, process }: { user: ExpandedUserInfo; process: AdminPortalRuntime } = $props();
@@ -18,7 +17,7 @@
       `Are you sure you want to change the quota of '${user.username}' to ${formatBytes(newQuota)}?`,
       "Cancel",
       "Change",
-      QuestionIcon
+      process.getIconCached("QuestionIcon")
     );
 
     if (!confirm) return;

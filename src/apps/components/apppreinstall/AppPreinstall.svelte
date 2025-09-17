@@ -1,6 +1,5 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
-  import { ArcAppMimeIcon } from "$ts/images/mime";
   import type { AppPreInstallRuntime } from "./runtime";
 
   const { process }: { process: AppPreInstallRuntime } = $props();
@@ -9,7 +8,7 @@
 
 {#if $metadata}
   <div class="header">
-    <img src={ArcAppMimeIcon} alt="" />
+    <img src={process.getIconCached("ArcAppMimeIcon")} alt="" />
     <h1>{$metadata.name}</h1>
     <p>Do you want to install this package?</p>
   </div>

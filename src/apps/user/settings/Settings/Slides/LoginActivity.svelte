@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { SecurityLowIcon } from "$ts/images/general";
   import { TimeFrames } from "$ts/server/user/store";
   import { groupByTimeFrame } from "$ts/util";
   import type { LoginActivity } from "$types/activity";
@@ -24,7 +23,7 @@
 
 <div class="centered-layout">
   <div class="header">
-    <img src={SecurityLowIcon} alt="" />
+    <img src={process.getIconCached("SecurityLowIcon")} alt="" />
     <h1>Account Activity</h1>
     <p>View the security activity on your account.</p>
   </div>

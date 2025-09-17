@@ -1,5 +1,4 @@
 import "$css/apps/components/globalloadindicator.css";
-import { ComponentIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import GlobalLoadIndicator from "./GlobalLoadIndicator.svelte";
 import { GlobalLoadIndicatorRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const GlobalLoadIndicatorApp: App = {
     name: "globalLoadIndicator",
     version: "1.0.0",
     author: "Izaak Kuipers",
-    icon: ComponentIcon,
+    icon: "ComponentIcon",
     appGroup: "components",
   },
   size: {

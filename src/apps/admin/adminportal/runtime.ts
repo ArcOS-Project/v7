@@ -1,11 +1,10 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { textToBlob } from "$ts/util/convert";
-import { ShareManager } from "$ts/shares";
-import { join } from "$ts/util/fs";
-import { ElevationIcon } from "$ts/images/general";
 import { AdminBootstrapper } from "$ts/server/admin";
+import { ShareManager } from "$ts/shares";
 import { Sleep } from "$ts/sleep";
+import { textToBlob } from "$ts/util/convert";
+import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import type { BugReport } from "$types/bughunt";
@@ -59,7 +58,7 @@ export class AdminPortalRuntime extends AppProcess {
           message:
             "The page you tried to navigate to isn't registered in the Admin Portal's page store. If you didn't do this yourself, please check in with Izaak.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: ElevationIcon,
+          image: this.getIconCached("ElevationIcon"),
           sound: "arcos.dialog.warning",
         },
         this.pid,

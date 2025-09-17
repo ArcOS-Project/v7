@@ -1,6 +1,5 @@
 <script lang="ts">
   import { formatBytes } from "$ts/util/fs";
-  import { DefaultMimeIcon } from "$ts/images/mime";
   import type { MessageComposerRuntime } from "../runtime";
 
   const { process }: { process: MessageComposerRuntime } = $props();
@@ -11,7 +10,11 @@
   <div class="attachment-bar">
     {#each $attachments as attachment, i (`${attachment.uuid}-${i}`)}
       <div class="attachment">
-        <img src={process.userDaemon?.assoc?.getFileAssociation(attachment.data.name)?.icon || DefaultMimeIcon} alt="" />
+        <img
+          src={process.userDaemon?.assoc?.getFileAssociation(attachment.data.name)?.icon ||
+            process.getIconCached("DefaultMimeIcon")}
+          alt=""
+        />
         <span>{attachment.data.name}</span>
         <span class="size">({formatBytes(attachment.data.size)})</span>
         <button

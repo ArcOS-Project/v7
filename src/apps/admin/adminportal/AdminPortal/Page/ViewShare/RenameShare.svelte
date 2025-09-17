@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
-  import { QuestionIcon } from "$ts/images/dialog";
   import type { SharedDriveType } from "$types/shares";
 
   const { share, process }: { share: SharedDriveType; process: AdminPortalRuntime } = $props();
@@ -13,7 +12,7 @@
       `Are you sure you want to change the name of share '${share.shareName}' to '${newName}'?`,
       "Cancel",
       "Rename",
-      QuestionIcon
+      process.getIconCached("QuestionIcon")
     );
 
     if (!confirm || !newName) return;

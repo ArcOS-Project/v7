@@ -1,11 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { arrayToText } from "$ts/util/convert";
-import { ErrorIcon } from "$ts/images/dialog";
-import { DownloadIcon } from "$ts/images/filesystem";
-import { AppsIcon } from "$ts/images/general";
-import { ArcAppMimeIcon } from "$ts/images/mime";
 import { tryJsonParse } from "$ts/json";
+import { arrayToText } from "$ts/util/convert";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
@@ -38,7 +34,7 @@ export class AppPreInstallRuntime extends AppProcess {
           title: "Can't install app",
           message:
             "Third-party apps aren't enabled on your account. Please enable third-party apps in the Settings to install this app.",
-          image: AppsIcon,
+          image: this.getIconCached("AppsIcon"),
           sound: "arcos.dialog.warning",
           buttons: [
             {
@@ -65,7 +61,7 @@ export class AppPreInstallRuntime extends AppProcess {
     const prog = await this.userDaemon?.FileProgress(
       {
         type: "size",
-        icon: DownloadIcon,
+        icon: this.getIconCached("DownloadIcon"),
         caption: "Reading ArcOS package",
         subtitle: this.pkgPath,
       },
@@ -120,7 +116,7 @@ export class AppPreInstallRuntime extends AppProcess {
         title: "Failed to open package",
         message: `ArcOS failed to open the specified package. ${reason}`,
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-        image: ErrorIcon,
+        image: this.getIconCached("ErrorIcon"),
         sound: "arcos.dialog.error",
       },
       +this.env.get("shell_pid"),
@@ -135,7 +131,7 @@ export class AppPreInstallRuntime extends AppProcess {
       what: "ArcOS wants to install an application",
       title: meta.name,
       description: `${meta.author} - ${meta.version}`,
-      image: ArcAppMimeIcon,
+      image: this.getIconCached("ArcAppMimeIcon"),
       level: ElevationLevel.medium,
     });
 

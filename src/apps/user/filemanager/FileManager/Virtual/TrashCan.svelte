@@ -1,6 +1,5 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
-  import { TrashIcon } from "$ts/images/general";
   import { TrashCanService } from "$ts/server/user/trash";
   import { Plural } from "$ts/util";
   import type { TrashIndexNode } from "$types/trash";
@@ -39,7 +38,7 @@
             suggested: true,
           },
         ],
-        image: TrashIcon,
+        image: process.getIconCached("TrashIcon"),
         sound: "arcos.dialog.warning",
       },
       process.pid,
@@ -56,7 +55,7 @@
       {
         caption: "Restoring items",
         subtitle: "From Recycle bin",
-        icon: TrashIcon,
+        icon: process.getIconCached("TrashIcon"),
         type: "quantity",
         max: $selection.length,
       },
@@ -80,7 +79,7 @@
         "Are you sure you want to permanently delete this item from the Recycle Bin? This cannot be undone.",
         "Cancel",
         "Delete",
-        TrashIcon,
+        process.getIconCached("TrashIcon"),
         process.pid
       );
 
@@ -94,7 +93,7 @@
       "Are you sure you want to permanently delete these items from the Recycle Bin? This cannot be undone.",
       "Cancel",
       "Delete",
-      TrashIcon,
+      process.getIconCached("TrashIcon"),
       process.pid
     );
 
@@ -104,7 +103,7 @@
       {
         caption: "Deleting items",
         subtitle: "From Recycle Bin",
-        icon: TrashIcon,
+        icon: process.getIconCached("TrashIcon"),
         type: "quantity",
         max: $selection.length,
       },

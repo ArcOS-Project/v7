@@ -1,8 +1,6 @@
 <script lang="ts">
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
   import Spinner from "$lib/Spinner.svelte";
-  import { MessagingIcon } from "$ts/images/apps";
-  import { BadStatusIcon } from "$ts/images/status";
   import type { MessagingAppRuntime } from "../runtime";
   import ActionBar from "./Container/ActionBar.svelte";
   import AttachmentBar from "./Container/AttachmentBar.svelte";
@@ -23,13 +21,13 @@
     <AttachmentBar {process} />
   {:else if $messageNotFound}
     <div class="center-notice">
-      <img src={BadStatusIcon} alt="" />
+      <img src={process.getIconCached("BadStatusIcon")} alt="" />
       <h1>Message not found!</h1>
       <p>The message you tried to open could not be found.</p>
     </div>
   {:else}
     <div class="center-notice">
-      <img src={MessagingIcon} alt="" />
+      <img src={process.getIconCached("MessagingIcon")} alt="" />
       <h1>Nothing is selected</h1>
       <p>Click on a message to read it.</p>
     </div>

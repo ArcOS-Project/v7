@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
-  import { QuestionIcon } from "$ts/images/dialog";
   import type { SharedDriveType } from "$types/shares";
   import type { ExpandedUserInfo } from "$types/user";
 
@@ -15,7 +14,7 @@
       `Are you sure you want to add this user to '${share.shareName}'?`,
       "Cancel",
       "Add",
-      QuestionIcon
+      process.getIconCached("QuestionIcon")
     );
 
     if (!confirm || !contestant) return;

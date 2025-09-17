@@ -1,5 +1,4 @@
 import "$css/apps/components/fsprogressfail.css";
-import { WarningIcon } from "$ts/images/dialog";
 import type { App } from "$types/app";
 import FsProgressFail from "./FsProgressFail.svelte";
 import { FsProgressFailRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const FsProgressFailApp: App = {
     name: "FsProgressFail",
     version: "1.0.0",
     author: "Izaak Kuipers",
-    icon: WarningIcon,
+    icon: "WarningIcon",
   },
   position: { centered: true },
   size: { w: 390, h: 450 },

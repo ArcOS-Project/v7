@@ -1,4 +1,3 @@
-import { ElevationIcon } from "$ts/images/general";
 import type { ProtocolHandler } from "$types/proto";
 
 export const AdminProtocolHandlers: Record<string, ProtocolHandler> = {
@@ -8,7 +7,7 @@ export const AdminProtocolHandlers: Record<string, ProtocolHandler> = {
       return {
         title: params.id,
         caption: "Open bug report",
-        icon: ElevationIcon,
+        icon: "ElevationIcon",
       };
     },
     action: async (payload, daemon) => {

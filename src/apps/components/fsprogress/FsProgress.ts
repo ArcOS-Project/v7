@@ -1,5 +1,4 @@
 import "$css/apps/components/fsprogress.css";
-import { ComponentIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import FsProgress from "./FsProgress.svelte";
 import { FsProgressRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const FsProgressApp: App = {
     name: "FsProgress",
     author: "The ArcOS Team",
     version: "1.0.0",
-    icon: ComponentIcon,
+    icon: "ComponentIcon",
     appGroup: "components",
   },
   size: { w: 400, h: NaN },

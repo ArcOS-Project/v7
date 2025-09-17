@@ -1,8 +1,6 @@
 import { MessageBox } from "$ts/dialog";
 import { textToBlob } from "$ts/util/convert";
 import { getParentDirectory } from "$ts/util/fs";
-import { WarningIcon } from "$ts/images/dialog";
-import { ThemesIcon } from "$ts/images/general";
 import { UserPaths } from "$ts/server/user/store";
 import type { AppContextMenu } from "$types/app";
 import type { UserTheme } from "$types/theme";
@@ -25,7 +23,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
             title: "Choose where to save the theme",
             isSave: true,
             startDir: UserPaths.Documents,
-            icon: ThemesIcon,
+            icon: runtime.getIconCached("ThemesIcon"),
             saveName: `${theme.name || "Untitled theme"}.arctheme`,
           });
 
@@ -59,7 +57,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
             title: "Choose where to save the theme",
             isSave: true,
             startDir: UserPaths.Documents,
-            icon: ThemesIcon,
+            icon: runtime.getIconCached("ThemesIcon"),
             saveName: `${theme.name || "Untitled theme"}.arctheme`,
           });
 
@@ -102,7 +100,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
               title: "Delete wallpaper?",
               message:
                 "Are you sure you want to delete this wallpaper? This will also delete the original file, and it cannot be brought back.",
-              image: WarningIcon,
+              image: runtime.getIconCached("WarningIcon"),
               sound: "arcos.dialog.warning",
               buttons: [
                 {

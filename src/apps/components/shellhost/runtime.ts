@@ -1,5 +1,3 @@
-import { SpinnerIcon } from "$ts/images/general";
-import { GoodStatusIcon } from "$ts/images/status";
 import { KernelStack } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import { UserDaemon } from "$ts/server/user/daemon";
@@ -48,7 +46,7 @@ export class ShellHostRuntime extends Process {
     const trayHost = procs.TrayHostProc as TrayHostRuntime; // Get the tray host
 
     await trayHost?.createTrayIcon(this.pid, "shellHost_loading", {
-      icon: SpinnerIcon,
+      icon: proc!.getIconCached("SpinnerIcon"),
     }); // Create the shellHost loading icon
 
     await new Promise<void>(async (r) => {
@@ -68,7 +66,7 @@ export class ShellHostRuntime extends Process {
 
     // Change the tray icon to good status icon
     trayHost?.trayIcons.update((v) => {
-      v[`${this.pid}#shellHost_loading`]!.icon = GoodStatusIcon;
+      v[`${this.pid}#shellHost_loading`]!.icon = proc!.getIconCached("WarningIcon");
       return v;
     });
 

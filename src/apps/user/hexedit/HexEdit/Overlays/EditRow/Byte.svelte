@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { EditRowRuntime } from "$apps/user/hexedit/editrow/runtime";
   import { MessageBox } from "$ts/dialog";
-  import { ErrorIcon } from "$ts/images/dialog";
   import { decimalToHex } from "$ts/util";
   import { Store, type ReadableStore } from "$ts/writable";
   import { onMount } from "svelte";
@@ -52,7 +51,7 @@
             {
               title: "Invalid byte",
               message: `The byte you entered at offset ${index} is invalid, expected a hex value (0-9 A-F) but got '${v}'. You have to change this byte before being able to save the file you're working on.`,
-              image: ErrorIcon,
+              image: process.getIconCached("ErrorIcon"),
               sound: "arcos.dialog.error",
               buttons: [
                 {

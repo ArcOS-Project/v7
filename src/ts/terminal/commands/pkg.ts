@@ -1,6 +1,5 @@
 import { DistributionServiceProcess } from "$ts/distrib";
 import { formatBytes, join } from "$ts/util/fs";
-import { ArcTermIcon } from "$ts/images/apps";
 import { UserPaths } from "$ts/server/user/store";
 import { Plural } from "$ts/util";
 import { ElevationLevel } from "$types/elevation";
@@ -473,7 +472,7 @@ export class PkgCommand extends TerminalProcess {
   async elevate(): Promise<boolean> {
     return await this.term!.elevate({
       what: "ArcOS needs your permission to run the pkg command.",
-      image: ArcTermIcon,
+      image: this.term?.daemon?.getIconCached("ArcTermIcon")!,
       title: "Package manager",
       description: "ArcTerm command",
       level: ElevationLevel.medium,

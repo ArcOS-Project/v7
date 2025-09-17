@@ -1,4 +1,3 @@
-import { QuestionIcon } from "$ts/images/dialog";
 import { Process } from "$ts/process/instance";
 import type { App } from "$types/app";
 import type { FileHandler } from "$types/fs";
@@ -248,7 +247,7 @@ export const DefaultAppData: App = {
     name: "Unknown",
     author: "No author",
     version: "0.0.0",
-    icon: QuestionIcon,
+    icon: "QuestionIcon",
   },
   size: { w: NaN, h: NaN },
   minSize: { w: NaN, h: NaN },

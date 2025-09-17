@@ -1,15 +1,13 @@
 <script lang="ts">
-  import { ErrorIcon } from "$ts/images/dialog";
-  import { ArcAppMimeIcon } from "$ts/images/mime";
-  import { GoodStatusIcon } from "$ts/images/status";
   import type { AppInstallerRuntime } from "../runtime";
+
   const { process }: { process: AppInstallerRuntime } = $props();
-  const { completed, failReason, installing, status } = process.progress!;
+  const { completed, failReason, installing } = process.progress!;
   const { metadata } = process;
 </script>
 
 <div class="header">
-  <img src={$completed ? GoodStatusIcon : $failReason ? ErrorIcon : ArcAppMimeIcon} alt="" />
+  <img src={process.getIconCached($completed ? "GoodStatusIcon" : $failReason ? "ErrorIcon" : "ArcAppMimeIcon")} alt="" />
   <div>
     <h1>
       {#if $completed}

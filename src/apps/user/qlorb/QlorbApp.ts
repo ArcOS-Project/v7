@@ -1,5 +1,4 @@
 import "$css/apps/user/qlorb.css";
-import { QlorbIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import Qlorb from "./Qlorb.svelte";
 import { QlorbRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const QlorbApp: App = {
     name: "Qlorb",
     author: "Izaak Kuipers",
     version: "1.0.0",
-    icon: QlorbIcon,
+    icon: "QlorbIcon",
     appGroup: "entertainment",
   },
   position: { centered: true },

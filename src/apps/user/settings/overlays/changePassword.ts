@@ -1,4 +1,3 @@
-import { PasswordIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import { OverlayRuntime } from "../overlay";
 import ChangePassword from "../Settings/Overlays/ChangePassword.svelte";
@@ -8,7 +7,7 @@ export const ChangePasswordApp: App = {
     name: "Change Password",
     author: "ArcOS Team",
     version: "3.0.0",
-    icon: PasswordIcon,
+    icon: "PasswordIcon",
   },
   size: { w: 430, h: 250 },
   minSize: { w: 430, h: 250 },

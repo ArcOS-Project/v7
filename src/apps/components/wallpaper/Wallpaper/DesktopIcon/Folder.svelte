@@ -1,6 +1,5 @@
 <script lang="ts">
   import { join } from "$ts/util/fs";
-  import { FolderIcon } from "$ts/images/filesystem";
   import type { FolderEntry } from "$types/fs";
   import type { WallpaperRuntime } from "../../runtime";
   import DesktopIcon from "../DesktopIcon.svelte";
@@ -18,7 +17,7 @@
     alt={`Location: ${path}`}
     props={[folder, path]}
     contextMenu="folder-icon"
-    icon={FolderIcon}
+    icon={process.getIconCached("FolderIcon")}
     action={() => process.spawnApp("fileManager", +process.env.get("shell_pid"), path)}
     {i}
   />

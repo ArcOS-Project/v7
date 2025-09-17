@@ -1,7 +1,5 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
-  import { ErrorIcon } from "$ts/images/dialog";
-  import { GoodStatusIcon } from "$ts/images/status";
   import QRCode from "@castlenine/svelte-qrcode";
   import { onMount } from "svelte";
   import Input from "./TotpSetupGui/Input.svelte";
@@ -45,7 +43,7 @@
             },
           ],
           sound: "arcos.dialog.error",
-          image: ErrorIcon,
+          image: process.getIconCached("ErrorIcon"),
         },
         process.parentPid,
         true
@@ -62,7 +60,7 @@
             { caption: "Restart now", suggested: true, action: () => process.userDaemon?.restart() },
           ],
           sound: "arcos.dialog.info",
-          image: GoodStatusIcon,
+          image: process.getIconCached("GoodStatusIcon"),
         },
         process.parentPid,
         true

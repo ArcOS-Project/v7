@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { FolderIcon } from "$ts/images/filesystem";
   import { UserPaths } from "$ts/server/user/store";
   import type { FolderEntry } from "$types/fs";
   import type { UserPreferencesStore } from "$types/user";
@@ -47,7 +46,7 @@
   <div class="content">
     {#each dirs as dir}
       <button class="folder" onclick={() => process.spawnApp("fileManager", process.pid, `${UserPaths.Home}/${dir.name}`)}>
-        <img src={FolderIcon} alt="" />
+        <img src={process.getIconCached("FolderIcon")} alt="" />
         <span class="name">{dir.name}</span>
       </button>
     {/each}

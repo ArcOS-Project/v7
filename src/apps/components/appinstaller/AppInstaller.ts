@@ -1,5 +1,4 @@
 import "$css/apps/components/appinstaller.css";
-import { DownloadIcon } from "$ts/images/filesystem";
 import type { App } from "$types/app";
 import AppInstaller from "./AppInstaller.svelte";
 import { AppInstallerRuntime } from "./runtime";
@@ -9,7 +8,7 @@ const AppInstallerApp: App = {
     name: "AppInstaller",
     author: "Izaak Kuipers",
     version: "1.0.0",
-    icon: DownloadIcon,
+    icon: "DownloadIcon",
   },
   position: { centered: true },
   size: { w: 460, h: 390 },

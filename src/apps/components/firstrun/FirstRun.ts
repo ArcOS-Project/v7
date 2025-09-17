@@ -1,5 +1,4 @@
 import "$css/apps/components/firstrun.css";
-import { WaveIcon } from "$ts/images/general";
 import type { App } from "$types/app";
 import FirstRun from "./FirstRun.svelte";
 import { FirstRunRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const FirstRunApp: App = {
     name: "First Run",
     author: "Izaak Kuipers",
     version: "1.0.0",
-    icon: WaveIcon,
+    icon: "WaveIcon",
   },
   position: { centered: true },
   size: { w: 450, h: 350 },

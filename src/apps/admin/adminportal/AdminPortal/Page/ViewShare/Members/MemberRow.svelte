@@ -2,7 +2,6 @@
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { MessageBox } from "$ts/dialog";
-  import { LogoutIcon } from "$ts/images/power";
   import type { SharedDriveType } from "$types/shares";
   import type { ExpandedUserInfo } from "$types/user";
   import dayjs from "dayjs";
@@ -32,7 +31,7 @@
             suggested: true,
           },
         ],
-        image: LogoutIcon,
+        image: process.getIconCached("LogoutIcon"),
         sound: "arcos.dialog.warning",
       },
       process.pid,

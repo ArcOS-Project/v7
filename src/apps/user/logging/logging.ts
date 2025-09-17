@@ -1,5 +1,4 @@
 import "$css/apps/user/logging.css";
-import { LoggerIcon } from "$ts/images/apps";
 import type { App } from "$types/app";
 import Logging from "./Logging.svelte";
 import { LoggingRuntime } from "./runtime";
@@ -9,7 +8,7 @@ export const LoggingApp: App = {
     name: "Logging",
     version: "3.0.0",
     author: "Izaak Kuipers",
-    icon: LoggerIcon,
+    icon: "LoggerIcon",
     appGroup: "systemTools",
   },
   size: {

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { PasswordIcon } from "$ts/images/general";
   import { onMount } from "svelte";
   import type { OverlayRuntime } from "../../overlay";
 
@@ -50,7 +49,7 @@
 
 <div class="top">
   <div class="left">
-    <img src={valid ? wallpaper : PasswordIcon} alt="" />
+    <img src={valid ? wallpaper : process.getIconCached("PasswordIcon")} alt="" />
   </div>
   <div class="right">
     <h1>Login Background</h1>

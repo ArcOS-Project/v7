@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { TrashIcon } from "$ts/images/general";
   import type { ReadableStore } from "$ts/writable";
   import { ElevationLevel } from "$types/elevation";
   import type { StoreItem, UpdateInfo } from "$types/package";
@@ -26,7 +25,7 @@
       what: "ArcOS needs your permission to remove a package",
       title: $pkg.pkg.name,
       description: `By ${$pkg.user?.displayName || $pkg.user?.username || $pkg.pkg.author}`,
-      image: TrashIcon,
+      image: process.getIconCached("TrashIcon"),
       level: ElevationLevel.medium,
     });
 

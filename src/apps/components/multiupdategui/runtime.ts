@@ -1,6 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
 import { DistributionServiceProcess } from "$ts/distrib";
-import { UpdateIcon } from "$ts/images/general";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -91,7 +90,7 @@ export class MultiUpdateGuiRuntime extends AppProcess {
       what: `ArcOS needs your permission to update ${this.updates.length} ${Plural("app", this.updates.length)}.`,
       title: this.app.data.metadata.name,
       description: this.app.data.metadata.author,
-      image: UpdateIcon,
+      image: this.getIconCached("UpdateIcon"),
       level: ElevationLevel.medium,
     });
 

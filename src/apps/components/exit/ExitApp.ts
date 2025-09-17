@@ -1,5 +1,4 @@
 import "$css/apps/components/exit.css";
-import { ShutdownIcon } from "$ts/images/power";
 import type { App } from "$types/app";
 import Exit from "./Exit.svelte";
 import { ExitRuntime } from "./runtime";
@@ -9,7 +8,7 @@ const ExitApp: App = {
     name: "Exit",
     author: "Izaak Kuipers",
     version: "6.0.0",
-    icon: ShutdownIcon,
+    icon: "ShutdownIcon",
     appGroup: "components",
   },
   position: { centered: true },

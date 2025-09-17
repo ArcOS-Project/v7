@@ -1,6 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { LightsOffIcon } from "$ts/images/apps";
 import { Store, type ReadableStore } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { LogLevel } from "$types/logging";
@@ -69,7 +68,7 @@ export class LightsOffRuntime extends AppProcess {
             suggested: true,
           },
         ],
-        image: LightsOffIcon,
+        image: this.getIconCached("LightsOffIcon"),
       },
       this.pid,
       true

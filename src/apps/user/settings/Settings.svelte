@@ -1,6 +1,5 @@
 <script lang="ts">
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
-  import { SettingsIcon } from "$ts/images/apps";
   import { Sleep } from "$ts/sleep";
   import { onMount, type Component } from "svelte";
   import type { SettingsRuntime } from "./runtime";
@@ -43,7 +42,7 @@
       <button class="lucide icon-arrow-left" title="Go back" aria-label="Go back" onclick={() => ($slideVisible = false)}
       ></button>
     {/if}
-    <img src={pageData?.icon || SettingsIcon} alt="" />
+    <img src={process.getIconCached(pageData?.icon || "SettingsIcon")} alt="" />
     <span>{pageData?.name || "Settings"}</span>
   </CustomTitlebar>
   <div class="page-content" class:hide>
