@@ -1,14 +1,14 @@
+/// <reference types="gapi.client.drive" />
 import { UserPaths } from "$ts/server/user/store";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import { arrayToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
-import type { GoogleDriveFile, GoogleStoredCredentials } from "$types/gdrive";
+import type { GoogleStoredCredentials } from "$types/gdrive";
 import type { Service } from "$types/service";
-import type { GoogleApis } from "googleapis";
+import { gapi } from "gapi-script";
 
 export class GoogleDriveIntegration extends BaseService {
-  gapi?: any;
   scriptTag?: HTMLScriptElement;
   private readonly STORAGE_KEY = "google_drive_credentials";
   private readonly SCOPES = "https://www.googleapis.com/auth/drive";
@@ -19,28 +19,22 @@ export class GoogleDriveIntegration extends BaseService {
   }
 
   protected async start(): Promise<boolean> {
-    return new Promise<boolean>((resolve, reject) => {
-      this.scriptTag = document.createElement("script");
-      this.scriptTag.src = "https://apis.google.com/js/api.js";
-      this.scriptTag.onload = () => {
-        window.gapi.load("client:auth2", async () => {
-          try {
-            await window.gapi.client.init({
-              apiKey: import.meta.env.DW_GOOGLE_API_KEY,
-              clientId: import.meta.env.DW_GOOGLE_CLIENT_ID,
-              discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
-              scope: this.SCOPES,
-            });
-            this.gapi = window.gapi;
-            this.ready = true;
-            resolve(true);
-          } catch (e) {
-            resolve(false);
-          }
-        });
-      };
-      this.scriptTag!.onerror = reject;
-      document.head.appendChild(this.scriptTag!);
+    return new Promise((resolve, reject) => {
+      gapi.load("client:auth2", async () => {
+        try {
+          await gapi.client.init({
+            apiKey: import.meta.env.DW_GOOGLE_API_KEY,
+            clientId: import.meta.env.DW_GOOGLE_CLIENT_ID,
+            discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
+            scope: this.SCOPES,
+          });
+          this.ready = true;
+          resolve(true);
+        } catch (e) {
+          console.log(e);
+          resolve(false);
+        }
+      });
     });
   }
 
@@ -54,7 +48,7 @@ export class GoogleDriveIntegration extends BaseService {
 
       if (isExpired) return false;
 
-      const authInstance = this.gapi?.auth2.getAuthInstance();
+      const authInstance = gapi?.auth2.getAuthInstance();
       const currentUser = authInstance?.currentUser.get();
 
       const authResponse: GoogleStoredCredentials = {
@@ -67,7 +61,7 @@ export class GoogleDriveIntegration extends BaseService {
       await this.saveCredentials(authResponse);
 
       currentUser?.reloadAuthResponse().then(() => {
-        this.gapi?.client.setToken({
+        gapi?.client.setToken({
           access_token: savedCredentials.access_token,
         });
       });
@@ -91,7 +85,7 @@ export class GoogleDriveIntegration extends BaseService {
   }
 
   async signIn(rememberMe = true): Promise<boolean> {
-    const authInstance = this.gapi?.auth2.getAuthInstance()!;
+    const authInstance = gapi?.auth2.getAuthInstance()!;
 
     if (authInstance.isSignedIn.get()) {
       const currentUser = authInstance.currentUser.get();
@@ -128,7 +122,7 @@ export class GoogleDriveIntegration extends BaseService {
 
   async signOut(): Promise<void> {
     try {
-      const authInstance = this.gapi?.auth2.getAuthInstance();
+      const authInstance = gapi?.auth2.getAuthInstance();
       await authInstance?.signOut();
       this.clearCredentials();
     } catch (error) {
@@ -137,7 +131,7 @@ export class GoogleDriveIntegration extends BaseService {
   }
 
   isSignedIn(): boolean {
-    const authInstance = this.gapi?.auth2.getAuthInstance();
+    const authInstance = gapi?.auth2.getAuthInstance();
     const isSignedIn = authInstance?.isSignedIn.get();
 
     if (!isSignedIn) {
@@ -159,7 +153,7 @@ export class GoogleDriveIntegration extends BaseService {
 
   async refreshTokenIfNeeded(): Promise<boolean> {
     try {
-      const authInstance = this.gapi?.auth2.getAuthInstance();
+      const authInstance = gapi?.auth2.getAuthInstance();
       const currentUser = authInstance?.currentUser.get();
 
       if (!currentUser?.isSignedIn()) return false;
@@ -182,13 +176,13 @@ export class GoogleDriveIntegration extends BaseService {
     }
   }
 
-  async listFiles(pageSize: number = 10): Promise<GoogleDriveFile[]> {
+  async listFiles(pageSize: number = 10): Promise<gapi.client.drive.File[]> {
     const tokenValid = await this.refreshTokenIfNeeded();
     if (!tokenValid) {
       throw new Error("Authentication required");
     }
 
-    const response = await this.gapi?.client.drive.files.list({
+    const response = await gapi?.client.drive.files.list({
       pageSize,
       fields: "files(id,name,mimeType,size,modifiedTime)",
     });
@@ -202,7 +196,7 @@ export class GoogleDriveIntegration extends BaseService {
       throw new Error("Authentication required");
     }
 
-    const response = await this.gapi.client.drive.files.get({
+    const response = await gapi.client.drive.files.get({
       fileId,
       alt: "media",
     });
@@ -218,7 +212,7 @@ export class GoogleDriveIntegration extends BaseService {
 
   // Get current user info
   async getCurrentUser(): Promise<any> {
-    const authInstance = this.gapi.auth2.getAuthInstance();
+    const authInstance = gapi.auth2.getAuthInstance();
     const currentUser = authInstance.currentUser.get();
 
     if (!currentUser.isSignedIn()) return null;
