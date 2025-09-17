@@ -66,7 +66,7 @@ export class ShellHostRuntime extends Process {
 
     // Change the tray icon to good status icon
     trayHost?.trayIcons.update((v) => {
-      v[`${this.pid}#shellHost_loading`]!.icon = proc!.getIconCached("WarningIcon");
+      v[`${this.pid}#shellHost_loading`]!.icon = proc!.getIconCached("GoodStatusIcon");
       return v;
     });
 

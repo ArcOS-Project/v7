@@ -75,6 +75,7 @@ export class IconService extends BaseService {
   //#endregion
 
   async getIcon(id: string, noCache = false): Promise<string> {
+    if (!id) return this.DEFAULT_ICON;
     const icon = id.startsWith("@") ? id : this.Configuration()[id];
 
     if (!icon) return this.DEFAULT_ICON;
@@ -92,7 +93,7 @@ export class IconService extends BaseService {
           iconPath = maybeIconId(data) || this.DEFAULT_ICON;
           break;
         case "fs":
-          const fileContents = this.FILE_CACHE[data] || (await this.fs.readFile(data));
+          const fileContents = !noCache && this.FILE_CACHE[data] ? this.FILE_CACHE[data] : (await this.fs.readFile(data))!;
           this.FILE_CACHE[data] = fileContents;
           if (!fileContents) iconPath = this.DEFAULT_ICON;
           else iconPath = URL.createObjectURL(arrayToBlob(fileContents));

@@ -22,12 +22,11 @@
     thumbnail?: string;
     process: FileManagerRuntime;
   } = $props();
-  const fileIcon = process.getIconStore(association?.icon);
 </script>
 
 <div class="single-file">
   <div class="header">
-    <img src={thumbnail || $fileIcon} alt="" />
+    <img src={thumbnail || association.icon} alt="" />
     <h1>{filename}</h1>
     <p>{association?.friendlyName}</p>
   </div>
