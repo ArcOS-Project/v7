@@ -1,5 +1,5 @@
-import { getKMod } from "$ts/env";
 import { FilesystemDrive } from "$ts/drives/drive";
+import { getKMod } from "$ts/env";
 import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback, RecursiveDirectoryReadReturn } from "$types/fs";
 import type { FilesystemType } from "$types/kernel";
 import JSZip from "jszip";

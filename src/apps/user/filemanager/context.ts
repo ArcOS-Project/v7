@@ -1,8 +1,8 @@
 import { MessageBox } from "$ts/dialog";
+import { UserPaths } from "$ts/server/user/store";
 import { ShareManager } from "$ts/shares";
 import type { SharedDrive } from "$ts/shares/drive";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
-import { UserPaths } from "$ts/server/user/store";
 import type { AppContextMenu } from "$types/app";
 import type { FileEntry, FolderEntry } from "$types/fs";
 import type { FileManagerRuntime } from "./runtime";

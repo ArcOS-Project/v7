@@ -1,9 +1,8 @@
-import { getKMod } from "$ts/env";
-import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
-import { KernelStack } from "$ts/env";
+import { getKMod, KernelStack } from "$ts/env";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import { authcode } from "$ts/util";
+import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import type { FilesystemProgressCallback } from "$types/fs";
 import type { ServerManagerType } from "$types/kernel";
 import type { ExpandedMessage, Message, MessageNode, PartialMessage } from "$types/messaging";

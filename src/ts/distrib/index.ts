@@ -1,12 +1,12 @@
 import type { ApplicationStorage } from "$ts/apps/storage";
-import { arrayToBlob, arrayToText, textToBlob } from "$ts/util/convert";
-import { join } from "$ts/util/fs";
-import { tryJsonParse } from "$ts/json";
 import { KernelStack } from "$ts/env";
+import { tryJsonParse } from "$ts/json";
 import { Backend } from "$ts/server/axios";
 import { UserPaths } from "$ts/server/user/store";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
+import { arrayToBlob, arrayToText, textToBlob } from "$ts/util/convert";
+import { join } from "$ts/util/fs";
 import { compareVersion } from "$ts/version";
 import type { FilesystemProgressCallback } from "$types/fs";
 import type { ArcPackage, PartialStoreItem, StoreItem, UpdateInfo } from "$types/package";

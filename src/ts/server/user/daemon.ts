@@ -29,6 +29,8 @@ import { toForm } from "$ts/form";
 import { KernelStateHandler } from "$ts/getters";
 import { applyDefaults } from "$ts/hierarchy";
 import type { IconService } from "$ts/icon";
+import { maybeIconId } from "$ts/images";
+import { NightlyLogo } from "$ts/images/branding";
 import { tryJsonParse } from "$ts/json";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -76,8 +78,6 @@ import { DefaultFileDefinitions } from "./assoc/store";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultFileHandlers, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
-import { iconIdFromPath, maybeIconId } from "$ts/images";
-import { NightlyLogo } from "$ts/images/branding";
 //#endregion
 
 export class UserDaemon extends Process {

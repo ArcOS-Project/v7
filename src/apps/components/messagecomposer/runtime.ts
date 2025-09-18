@@ -1,9 +1,9 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { getItemNameFromPath } from "$ts/util/fs";
 import { MessagingInterface } from "$ts/server/messaging";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
+import { getItemNameFromPath } from "$ts/util/fs";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";

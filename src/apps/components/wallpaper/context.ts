@@ -1,6 +1,6 @@
 import { MessageBox } from "$ts/dialog";
-import { getParentDirectory, join } from "$ts/util/fs";
 import { UserPaths } from "$ts/server/user/store";
+import { getParentDirectory, join } from "$ts/util/fs";
 import { UUID } from "$ts/uuid";
 import type { AppContextMenu } from "$types/app";
 import type { FileEntry } from "$types/fs";

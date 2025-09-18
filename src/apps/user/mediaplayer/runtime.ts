@@ -1,10 +1,10 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { arrayToText, textToBlob } from "$ts/util/convert";
-import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { KernelStack } from "$ts/env";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
+import { arrayToText, textToBlob } from "$ts/util/convert";
+import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { RenderArgs } from "$types/process";

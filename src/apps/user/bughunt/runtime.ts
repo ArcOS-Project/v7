@@ -1,8 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
 import type { BugHuntUserSpaceProcess } from "$ts/bughunt/process";
+import { UserPaths } from "$ts/server/user/store";
 import { textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath } from "$ts/util/fs";
-import { UserPaths } from "$ts/server/user/store";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import type { BugReport } from "$types/bughunt";

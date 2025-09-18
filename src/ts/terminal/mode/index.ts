@@ -1,8 +1,7 @@
-import { ArcOSVersion } from "$ts/env";
+import { ArcOSVersion, KernelStack } from "$ts/env";
 import { toForm } from "$ts/form";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { KernelStack } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import { Backend } from "$ts/server/axios";
 import { LoginUser } from "$ts/server/user/auth";

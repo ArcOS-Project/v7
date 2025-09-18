@@ -4,8 +4,8 @@
   import CircularProgress from "$lib/CircularProgress.svelte";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import Spinner from "$lib/Spinner.svelte";
-  import { formatBytes } from "$ts/util/fs";
   import type { AdminBootstrapper } from "$ts/server/admin";
+  import { formatBytes } from "$ts/util/fs";
 
   const {
     admin,

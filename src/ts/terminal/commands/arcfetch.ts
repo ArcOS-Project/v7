@@ -1,9 +1,9 @@
 import { getDeviceInfo } from "$ts/device";
 import { ArcOSVersion, getKMod } from "$ts/env";
-import { formatBytes } from "$ts/util/fs";
 import { KernelStateHandler } from "$ts/getters";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
+import { formatBytes } from "$ts/util/fs";
 import type { ServerManagerType } from "$types/kernel";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";

@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import type { ViewBugReportData } from "$apps/admin/adminportal/types";
+  import { UserPaths } from "$ts/server/user/store";
   import { textToBlob } from "$ts/util/convert";
   import { getItemNameFromPath } from "$ts/util/fs";
-  import { UserPaths } from "$ts/server/user/store";
 
   const { data, process }: { data: ViewBugReportData; process: AdminPortalRuntime } = $props();
   const { report } = data;

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { formatBytes } from "$ts/util/fs";
   import { decimalToHex } from "$ts/util";
+  import { formatBytes } from "$ts/util/fs";
   import type { HexEditRuntime } from "../runtime";
 
   const { process, scrollIndex, ROWS }: { process: HexEditRuntime; scrollIndex: number; ROWS: number } = $props();

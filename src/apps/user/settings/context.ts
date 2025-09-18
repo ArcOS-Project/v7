@@ -1,7 +1,7 @@
 import { MessageBox } from "$ts/dialog";
+import { UserPaths } from "$ts/server/user/store";
 import { textToBlob } from "$ts/util/convert";
 import { getParentDirectory } from "$ts/util/fs";
-import { UserPaths } from "$ts/server/user/store";
 import type { AppContextMenu } from "$types/app";
 import type { UserTheme } from "$types/theme";
 import type { SettingsRuntime } from "./runtime";

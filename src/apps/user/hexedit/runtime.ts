@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { getItemNameFromPath } from "$ts/util/fs";
 import { sliceIntoChunks } from "$ts/util";
+import { getItemNameFromPath } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import { EditRow } from "./editrow/metadata";

@@ -1,6 +1,6 @@
 import type { FilesystemDrive } from "$ts/drives/drive";
-import { formatBytes, join } from "$ts/util/fs";
 import { FormatLargeNumber, Gap, maxLength, Plural, Truncate } from "$ts/util";
+import { formatBytes, join } from "$ts/util/fs";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
 import type { ArcTerminal } from "..";

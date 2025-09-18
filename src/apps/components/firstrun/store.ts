@@ -1,5 +1,5 @@
-import { join } from "$ts/util/fs";
 import { UserPaths } from "$ts/server/user/store";
+import { join } from "$ts/util/fs";
 import type { ArcShortcut } from "$types/shortcut";
 import Finish from "./FirstRun/Page/Finish.svelte";
 import ProfilePicture from "./FirstRun/Page/ProfilePicture.svelte";

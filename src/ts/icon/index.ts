@@ -1,4 +1,4 @@
-import { getAllImages, getIconPath, iconIdFromPath, maybeIconId } from "$ts/images";
+import { getAllImages, iconIdFromPath, maybeIconId } from "$ts/images";
 import { ComponentIcon } from "$ts/images/general";
 import { tryJsonParse } from "$ts/json";
 import { UserPaths } from "$ts/server/user/store";
@@ -8,7 +8,6 @@ import { arrayToBlob, arrayToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { App } from "$types/app";
-import { LogLevel } from "$types/logging";
 import type { Service } from "$types/service";
 
 export class IconService extends BaseService {
