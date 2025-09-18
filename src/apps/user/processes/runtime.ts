@@ -7,10 +7,20 @@ import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
 import type { ProcessKillResult } from "$types/process";
+import type { Component } from "svelte";
+import Processes from "./ProcessManager/Page/Processes.svelte";
+import Services from "./ProcessManager/Page/Services.svelte";
+import type { ServiceHost } from "$ts/services";
 
 export class ProcessManagerRuntime extends AppProcess {
-  public selected = Store<number>();
+  public selected = Store<string>();
   public running = Store<number>(0);
+  public currentTab = Store<string>("Processes");
+  public tabs: Record<string, Component> = {
+    Processes: Processes as any,
+    Services: Services as any,
+  };
+  host: ServiceHost;
 
   //#region LIFECYCLE
 
@@ -18,6 +28,7 @@ export class ProcessManagerRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.setSource(__SOURCE__);
+    this.host = this.userDaemon?.serviceHost!;
   }
 
   //#endregion
@@ -52,7 +63,7 @@ export class ProcessManagerRuntime extends AppProcess {
               if (result !== "success") {
                 this.killError(name, result);
               } else {
-                this.selected.set(-1);
+                this.selected.set("");
               }
             },
             suggested: true,

@@ -1,6 +1,62 @@
 #processManager > div.body {
-  padding: 0;
-  overflow: hidden;
+  padding: 0 10px;
+  padding-bottom: 10px;
+  border-top: none;
+}
+
+#processManager > div.body div.tabs {
+  display: flex;
+  align-items: end;
+  padding: 0 10px;
+  /* padding-bottom: 0; */
+  height: 30px;
+}
+
+#processManager > div.body div.tabs button {
+  border-radius: 0;
+  border: var(--win-border);
+  border-bottom: 0;
+  height: 26px;
+  padding: 0 8px;
+  min-width: unset;
+  background-color: var(--button-active-bg);
+  outline: none;
+}
+
+#processManager > div.body div.tabs button:hover {
+  background-color: var(--button-bg);
+}
+
+#processManager > div.body div.tabs button + button {
+  border-left: 0;
+}
+
+#processManager > div.body div.tabs button.selected {
+  background-color: var(--win-bg);
+  height: 30px;
+  padding: 0 8px;
+  translate: 0 1px;
+  border-left: var(--win-border);
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+}
+#processManager > div.body div.tabs button + button.selected {
+  margin-left: -1px;
+}
+
+#processManager > div.body div.tabs button:first-child {
+  border-top-left-radius: 5px;
+}
+
+#processManager > div.body div.tabs button:last-child {
+  border-top-right-radius: 5px;
+}
+
+#processManager > div.body div.content {
+  height: calc(100% - 30px);
+  border: var(--win-border);
+  background-color: var(--win-bg);
+  border-radius: 4px;
 }
 
 #processManager > div.body div.top {
@@ -13,7 +69,7 @@
 #processManager > div.body div.actions {
   border-top: var(--win-border);
   padding: 10px;
-  background-color: var(--button-bg);
+  background-color: var(--win-bg);
   display: flex;
   align-items: center;
 }
@@ -76,7 +132,7 @@
 }
 
 #processManager > div.body div.row:not(.header):not(.selected):hover {
-  background-color: var(--button-bg);
+  background-color: var(--button-glass-bg);
 }
 
 #processManager > div.body div.row div.segment.name {
@@ -109,7 +165,7 @@
   gap: 10px;
 }
 
-#processManager > div.body div.row:not(.service) div.segment.name {
+#processManager > div.body div.row div.segment.name {
   margin-right: auto;
 }
 
@@ -138,10 +194,8 @@
 #processManager > div.body div.row.header {
   font-weight: bold;
   margin-bottom: 10px;
-  padding: 0 10px;
-  padding-left: 5px;
+  padding: 0 5px;
   height: 20px;
-  margin-right: 8px;
 }
 
 #processManager > div.body div.row.closing {
@@ -163,4 +217,22 @@
 
 #processManager > div.body div.row.critical * {
   color: var(--clr-orange-fg);
+}
+
+#processManager > div.body button.stop {
+  background-color: var(--clr-red-fg) !important;
+  color: var(--win-bg);
+  font-weight: bold;
+}
+
+#processManager > div.body button.start {
+  background-color: var(--clr-green-fg) !important;
+  color: var(--win-bg);
+  font-weight: bold;
+}
+
+#processManager > div.body button.restart {
+  background-color: var(--clr-orange-fg) !important;
+  color: var(--win-bg);
+  font-weight: bold;
 }

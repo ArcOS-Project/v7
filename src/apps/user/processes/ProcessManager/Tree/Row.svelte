@@ -59,8 +59,8 @@
   <div
     class="row"
     class:closing
-    onclick={() => ($selected = pid)}
-    class:selected={$selected === pid}
+    onclick={() => ($selected = `proc#${pid}`)}
+    class:selected={$selected === `proc#${pid}`}
     class:orphan
     class:critical={proc._criticalProcess}
   >

@@ -11,7 +11,7 @@
   let proc = $state<Process>();
 
   selected.subscribe((v) => {
-    proc = KernelStack().getProcess(v);
+    proc = KernelStack().getProcess(+v.replace("proc#", ""));
   });
 
   function appInfo() {

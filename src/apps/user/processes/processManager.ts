@@ -5,8 +5,8 @@ import { ProcessManagerRuntime } from "./runtime";
 
 export const ProcessesApp: App = {
   metadata: {
-    name: "Processes",
-    version: "3.0.0",
+    name: "Resources",
+    version: "3.0.1",
     author: "Izaak Kuipers",
     icon: "ProcessManagerIcon",
     appGroup: "systemTools",
@@ -40,6 +40,7 @@ export const ProcessesApp: App = {
     runtime: ProcessManagerRuntime,
     component: ProcessManager as any,
   },
+  glass: true,
   vital: true,
   id: "processManager",
 };
