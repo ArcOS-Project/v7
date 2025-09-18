@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getItemNameFromPath } from "$ts/util/fs";
+  import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
   import type { ExpandedFileAssociationInfo } from "$types/assoc";
   import type { ExtendedStat, SummarizedFsModifiers } from "$types/fs";
   import { onMount } from "svelte";
@@ -33,6 +33,7 @@
 
     try {
       const driveId = process.fs.getDriveIdByIdentifier(process.fs.getDriveIdentifier($path));
+      const isRoot = getParentDirectory($path) === $path;
 
       currentDrive = $drives[driveId] ?? undefined;
 
@@ -75,7 +76,20 @@
         return;
       }
 
-      variant = "drive";
+      if (isRoot) variant = "drive";
+      else {
+        singleSelectionAssoc = {
+          extension: "",
+          friendlyName: "Folder",
+          handledBy: {},
+          icon: process.getIconCached("FolderIcon"),
+        };
+        singleSelectionFilename = getItemNameFromPath($path);
+        singleSelectionModifiers = undefined;
+        singleSelectionStat = undefined;
+        singleSelectionThumbnail = undefined;
+        variant = "singleSelection";
+      }
     } catch {
       variant = "";
     }

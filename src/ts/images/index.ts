@@ -46,5 +46,5 @@ export function iconIdFromPath(path: string) {
 }
 
 export function maybeIconId(id: string) {
-  return getAllImages()[id] || id;
+  return getAllImages()[id];
 }

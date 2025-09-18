@@ -19,7 +19,7 @@
   onMount(async () => {
     const info = process.userDaemon?.assoc?.getFileAssociation(file.name);
     shortcut = $shortcuts[file.name];
-    if (shortcut) shortcutIcon = await process.getIcon(shortcut.icon);
+    if (shortcut) shortcutIcon = process.getIconCached(shortcut.icon);
     icon = info?.icon || process.getIconCached("DefaultMimeIcon");
     if (info?.friendlyName === "Image file") icon = (await process.userDaemon?.getThumbnailFor(path)) || icon;
     render = true;

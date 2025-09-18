@@ -78,6 +78,7 @@ import { DefaultFileDefinitions } from "./assoc/store";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultFileHandlers, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
+import { ComponentIcon } from "$ts/images/general";
 //#endregion
 
 export class UserDaemon extends Process {
@@ -1729,30 +1730,30 @@ export class UserDaemon extends Process {
   }
 
   getAppIcon(app: App) {
-    return this.getIconCached(`@app::${app.id}`);
+    return this.getIconCached(`@app::${app.id}`) || ComponentIcon;
   }
 
   getAppIconByProcess(process: AppProcess) {
-    return this.getAppIcon(process.app?.data);
+    return this.getAppIcon(process.app?.data) || ComponentIcon;
   }
 
   async getIcon(id: string): Promise<string> {
     const iconService = this.serviceHost?.getService<IconService>("IconService");
 
-    return (await iconService?.getIcon(id)) || maybeIconId(id);
+    return (await iconService?.getIcon(id)) || ComponentIcon;
   }
 
   getIconCached(id: string): string {
     const iconService = this.serviceHost?.getService<IconService>("IconService");
 
-    return iconService?.getIconCached(id) || maybeIconId(id);
+    return iconService?.getIconCached(id) || ComponentIcon;
   }
 
   getIconStore(id: string): ReadableStore<string> {
     const store = Store<string>();
     const iconService = this.serviceHost?.getService<IconService>("IconService");
 
-    if (!iconService) store.set(maybeIconId(id));
+    if (!iconService) store.set(maybeIconId(id) || ComponentIcon);
 
     iconService?.getIcon(id)?.then((i) => store.set(i));
 

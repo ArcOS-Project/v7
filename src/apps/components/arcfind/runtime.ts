@@ -99,7 +99,7 @@ export class ArcFindRuntime extends AppProcess {
         action: () => {
           this.userDaemon?.openFile(file.path, file.shortcut);
         },
-        image: (file.shortcut ? await this.getIcon(file.shortcut.icon) : info?.icon) || this.getIconCached("DefaultMimeIcon"),
+        image: (file.shortcut ? this.getIconCached(file.shortcut.icon) : info?.icon) || this.getIconCached("DefaultMimeIcon"),
       });
     }
 
