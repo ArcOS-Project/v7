@@ -10,9 +10,6 @@
     handler: FileOpenerResult;
   } = $props();
   const { selectedId } = process;
-  const icon = process.getIconStore(
-    (handler.type === "app" ? process.userDaemon?.getAppIcon(handler.app!) : handler.handler?.icon)!
-  );
 </script>
 
 <button
@@ -21,7 +18,7 @@
   class:active={$selectedId === handler.id}
   class="option"
 >
-  <img src={$icon} alt="" />
+  <img src={process.getIconCached(handler.app ? `@app::${handler.app?.id}` : handler.handler?.icon || "ComponentIcon")} alt="" />
   <div>
     <h1>{handler.type === "app" ? handler.app?.metadata.name : handler.handler?.name}</h1>
     <p>{handler.type === "handler" ? handler.handler?.description : handler.app?.metadata.author}</p>

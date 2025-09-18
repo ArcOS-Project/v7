@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
-import { getAllImages, getGroupedIcons } from "$ts/images";
+import { IconService } from "$ts/icon";
+import { getGroupedIcons } from "$ts/images";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { IconPickerData } from "./types";
@@ -8,8 +9,8 @@ export class IconPickerRuntime extends AppProcess {
   forWhat?: string;
   defaultIcon?: string;
   selected = Store<string>();
-  groups = getGroupedIcons();
-  store = getAllImages();
+  groups: Record<string, Record<string, string>> = {};
+  store: Record<string, string> = {};
   returnId?: string;
 
   //#region LIFECYCLE
@@ -31,6 +32,12 @@ export class IconPickerRuntime extends AppProcess {
 
   async start() {
     if (!this.forWhat) return false;
+
+    const iconService = this.userDaemon?.serviceHost?.getService<IconService>("IconService");
+
+    if (!iconService) return false;
+    this.store = iconService.Configuration();
+    this.groups = iconService.getGroupedIcons();
   }
 
   //#endregion
