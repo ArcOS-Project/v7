@@ -1,4 +1,4 @@
-import { getAllImages, iconIdFromPath, maybeIconId } from "$ts/images";
+import { getAllImages, getGroupedIcons, iconIdFromPath, maybeIconId } from "$ts/images";
 import { ComponentIcon } from "$ts/images/general";
 import { tryJsonParse } from "$ts/json";
 import { UserPaths } from "$ts/server/user/store";
@@ -195,6 +195,21 @@ export class IconService extends BaseService {
     } catch {
       return this.getIconCached("ComponentIcon");
     }
+  }
+
+  getGroupedIcons() {
+    const icons = getGroupedIcons();
+    const result: Record<string, Record<string, string>> = {};
+
+    for (const category in icons) {
+      result[category] = {};
+
+      for (const icon in icons[category]) {
+        result[category][icon] = this.getIconCached(icon);
+      }
+    }
+
+    return result;
   }
 }
 
