@@ -1,4 +1,4 @@
-import type { ProcessHandlerType, ConstructedWaveKernel } from "$types/kernel";
+import type { ConstructedWaveKernel, ProcessHandlerType } from "$types/kernel";
 
 export const ArcOSVersion = "7.0.6";
 export const BETA = false;

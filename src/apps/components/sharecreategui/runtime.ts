@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import type { ShareManager } from "$ts/shares";
 import { KernelStack } from "$ts/env";
+import type { ShareManager } from "$ts/shares";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 

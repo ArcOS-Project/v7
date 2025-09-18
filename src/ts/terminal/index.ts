@@ -1,13 +1,14 @@
 import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import TerminalWindow from "$apps/components/terminalwindow/TerminalWindow.svelte";
-import { arrayToText, textToBlob } from "$ts/util/convert";
 import type { FilesystemDrive } from "$ts/drives/drive";
-import { join } from "$ts/util/fs";
 import { KernelStack } from "$ts/env";
+import { ASCII_ART } from "$ts/intro";
 import { Process } from "$ts/process/instance";
 import { LoginUser } from "$ts/server/user/auth";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
+import { arrayToText, textToBlob } from "$ts/util/convert";
+import { join } from "$ts/util/fs";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
 import type { DirectoryReadReturn } from "$types/fs";
 import type { ArcTermConfiguration, Arguments } from "$types/terminal";
@@ -27,7 +28,6 @@ import {
   TerminalCommandStore,
 } from "./store";
 import { ArcTermVariables } from "./var";
-import { ASCII_ART } from "$ts/intro";
 
 export class ArcTerminal extends Process {
   readonly CONFIG_PATH = join(UserPaths.Configuration, "ArcTerm/arcterm.conf");

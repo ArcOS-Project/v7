@@ -1,6 +1,6 @@
+import { FilesystemDrive } from "$ts/drives/drive";
 import { toForm } from "$ts/form";
 import { arrayToBlob } from "$ts/util/convert";
-import { FilesystemDrive } from "$ts/drives/drive";
 import { getItemNameFromPath, join } from "$ts/util/fs";
 import type {
   DirectoryReadReturn,

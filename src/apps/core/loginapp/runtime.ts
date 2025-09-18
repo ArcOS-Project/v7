@@ -2,11 +2,10 @@ import { FirstRunApp } from "$apps/components/firstrun/FirstRun";
 import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/TotpAuthGui";
 import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
-import { getKMod } from "$ts/env";
+import { getKMod, KernelStack } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { ProfilePictures } from "$ts/images/pfp";
 import { tryJsonParse } from "$ts/json";
-import { KernelStack } from "$ts/env";
 import { ProtocolServiceProcess } from "$ts/proto";
 import { Backend } from "$ts/server/axios";
 import { LoginUser } from "$ts/server/user/auth";
@@ -19,11 +18,11 @@ import { Store } from "$ts/writable";
 import type { ServerManagerType } from "$types/kernel";
 import type { ServerInfo } from "$types/server";
 import type { UserInfo } from "$types/user";
+import dayjs from "dayjs";
 import Cookies from "js-cookie";
 import { AppProcess } from "../../../ts/apps/process";
 import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps, PersistenceInfo } from "./types";
-import dayjs from "dayjs";
 
 export class LoginAppRuntime extends AppProcess {
   public DEFAULT_WALLPAPER = Store<string>("");

@@ -1,10 +1,10 @@
 import { AppProcess } from "$ts/apps/process";
-import { USERFS_UUID } from "$ts/env";
 import { FilesystemDrive } from "$ts/drives/drive";
+import { ServerDrive } from "$ts/drives/server";
+import { USERFS_UUID } from "$ts/env";
 import type { AppProcessData } from "$types/app";
 import type { UserQuota } from "$types/fs";
 import type { CategorizedDiskUsage } from "$types/user";
-import { ServerDrive } from "$ts/drives/server";
 
 export class DriveInfoRuntime extends AppProcess {
   drive?: FilesystemDrive;

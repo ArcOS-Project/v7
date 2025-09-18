@@ -1,5 +1,5 @@
-import { arrayToText } from "$ts/util/convert";
 import { tryJsonParse } from "$ts/json";
+import { arrayToText } from "$ts/util/convert";
 import type { FileHandler } from "$types/fs";
 import type { UserDaemon } from "../daemon";
 

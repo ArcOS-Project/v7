@@ -1,9 +1,9 @@
-import { arrayToText } from "$ts/util/convert";
-import { getParentDirectory, join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/json";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import { sortByHierarchy } from "$ts/util";
+import { arrayToText } from "$ts/util/convert";
+import { getParentDirectory, join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { App, AppStorage, AppStoreCb, InstalledApp } from "$types/app";
 import type { Service } from "$types/service";

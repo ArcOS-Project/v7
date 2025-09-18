@@ -1,8 +1,8 @@
-import { formatBytes } from "$ts/util/fs";
 import { AdminScopes } from "$ts/server/admin/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { BRBLACK, BRPURPLE, RESET } from "$ts/terminal/store";
 import { maxLength, Plural } from "$ts/util";
+import { formatBytes } from "$ts/util/fs";
 
 export const AdminShareListAll: AdminCommandType = async (term, admin) => {
   if (!admin.canAccess(AdminScopes.adminShareList)) return 2;

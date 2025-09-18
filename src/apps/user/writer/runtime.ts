@@ -1,9 +1,9 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { arrayToText, textToBlob } from "$ts/util/convert";
-import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
+import { arrayToText, textToBlob } from "$ts/util/convert";
+import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppKeyCombinations } from "$types/accelerator";
 import type { App, AppProcessData } from "$types/app";

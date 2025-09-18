@@ -2,8 +2,7 @@
   import { AppProcess } from "$ts/apps/process";
   import type { AppRenderer } from "$ts/apps/renderer";
   import { contextProps } from "$ts/context/actions.svelte";
-  import { BETA } from "$ts/env";
-  import { KernelStack } from "$ts/env";
+  import { BETA, KernelStack } from "$ts/env";
   import { onMount, type Snippet } from "svelte";
   import AltMenu from "./CustomTitlebar/AltMenu.svelte";
 

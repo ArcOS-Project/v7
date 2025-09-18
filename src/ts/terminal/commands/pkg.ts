@@ -1,7 +1,7 @@
 import { DistributionServiceProcess } from "$ts/distrib";
-import { formatBytes, join } from "$ts/util/fs";
 import { UserPaths } from "$ts/server/user/store";
 import { Plural } from "$ts/util";
+import { formatBytes, join } from "$ts/util/fs";
 import { ElevationLevel } from "$types/elevation";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";

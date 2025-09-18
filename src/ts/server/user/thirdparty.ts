@@ -3,8 +3,17 @@ import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { __Console__ } from "$ts/console";
 import { contextProps } from "$ts/context/actions.svelte";
 import { MessageBox } from "$ts/dialog";
-import { arrayToBlob, arrayToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/util/convert";
 import { FilesystemDrive } from "$ts/drives/drive";
+import { getKMod } from "$ts/env";
+import { getAllImages } from "$ts/images";
+import { tryJsonStringify } from "$ts/json";
+import { Process } from "$ts/process/instance";
+import { BaseService } from "$ts/services/base";
+import { Sleep } from "$ts/sleep";
+import { CustomTitlebar } from "$ts/ui/thirdparty/titlebar";
+import { TrayIconProcess } from "$ts/ui/tray/process";
+import { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";
+import { arrayToBlob, arrayToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/util/convert";
 import {
   DownloadFile,
   formatBytes,
@@ -15,16 +24,9 @@ import {
   onFileChange,
   onFolderChange,
 } from "$ts/util/fs";
-import { getAllImages } from "$ts/images";
-import { tryJsonStringify } from "$ts/json";
-import { Process } from "$ts/process/instance";
-import { BaseService } from "$ts/services/base";
-import { Sleep } from "$ts/sleep";
-import { CustomTitlebar } from "$ts/ui/thirdparty/titlebar";
-import { TrayIconProcess } from "$ts/ui/tray/process";
-import { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { App } from "$types/app";
+import type { ProcessHandlerType } from "$types/kernel";
 import type { ThirdPartyPropMap } from "$types/thirdparty";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -32,8 +34,6 @@ import { Backend } from "../axios";
 import type { UserDaemon } from "./daemon";
 import { HiddenUserPaths, SystemFolders, UserPathCaptions, UserPathIcons, UserPaths } from "./store";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
-import { getKMod } from "$ts/env";
-import type { ProcessHandlerType } from "$types/kernel";
 
 export function ThirdPartyProps(
   daemon: UserDaemon,

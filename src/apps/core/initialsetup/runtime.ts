@@ -1,10 +1,9 @@
 import { MessageBox } from "$ts/dialog";
-import { getKMod } from "$ts/env";
+import { getKMod, KernelStack } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { SecurityMediumIcon } from "$ts/images/general";
 import { ArcLicense } from "$ts/metadata/license";
-import { KernelStack } from "$ts/env";
 import { LoginUser, RegisterUser } from "$ts/server/user/auth";
 import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
@@ -15,11 +14,11 @@ import { AppProcess } from "../../../ts/apps/process";
 import type { AppProcessData } from "../../../types/app";
 import CheckInbox from "./InitialSetup/Page/CheckInbox.svelte";
 import Finish from "./InitialSetup/Page/Finish.svelte";
+import FreshDeployment from "./InitialSetup/Page/FreshDeployment.svelte";
 import Identity from "./InitialSetup/Page/Identity.svelte";
 import License from "./InitialSetup/Page/License.svelte";
 import Welcome from "./InitialSetup/Page/Welcome.svelte";
 import type { PageButtons } from "./types";
-import FreshDeployment from "./InitialSetup/Page/FreshDeployment.svelte";
 
 export class InitialSetupRuntime extends AppProcess {
   //#region VARIABLES

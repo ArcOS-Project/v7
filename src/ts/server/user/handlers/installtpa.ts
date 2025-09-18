@@ -1,6 +1,6 @@
+import { tryJsonParse } from "$ts/json";
 import { arrayToText } from "$ts/util/convert";
 import { getParentDirectory } from "$ts/util/fs";
-import { tryJsonParse } from "$ts/json";
 import type { FileHandler } from "$types/fs";
 import type { UserDaemon } from "../daemon";
 
