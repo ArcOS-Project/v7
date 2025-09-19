@@ -12,6 +12,8 @@ div.shell div.actioncenter div.quick-settings {
   transition:
     margin-bottom 0.2s,
     opacity 0.2s;
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
 }
 
 div.shell div.actioncenter div.quick-settings.hidden {
@@ -26,6 +28,8 @@ div.shell div.actioncenter div.quick-settings button {
   font-size: 20px;
   padding: 0;
   background-color: var(--button-glass-bg);
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
 }
 
 .theme-light div.shell div.actioncenter div.quick-settings button {

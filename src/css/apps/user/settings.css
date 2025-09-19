@@ -52,7 +52,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: -5px;
+  /*margin-left: -5px;*/
   background-color: transparent;
 }
 

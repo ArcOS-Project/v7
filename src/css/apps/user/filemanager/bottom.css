@@ -38,6 +38,7 @@
 
 #fileManager > div.body div.bottom.save {
   gap: 10px;
+  padding-left: 10px;
 }
 
 #fileManager > div.body div.bottom.save div.actions {
@@ -51,7 +52,7 @@
   border-radius: var(--button-border-rad);
   width: 0;
   flex-grow: 1;
-  height: 33px;
+  height: 31px;
   padding: 0 8px;
 }
 
@@ -60,7 +61,7 @@
   border: none;
   padding: 0;
   border-radius: 0;
-  height: 31px;
+  height: 29px;
 }
 
 #fileManager > div.body div.bottom.save div.save-name span {
@@ -88,7 +89,7 @@
 #fileManager > div.body div.bottom div.notice.warning {
   background-color: var(--clr-orange-fg);
 }
-/* 
+/*
 #fileManager > div.body div.bottom div.notice span:not(.lucide) {
   font-weight: bold;
 } */

@@ -122,6 +122,10 @@
   margin-left: auto;
 }
 
+#AppInfo div.info-block.process-info div.row {
+  padding-right: 10px;
+}
+
 #AppInfo div.info-block.internal-info {
   margin-bottom: 20px;
 }

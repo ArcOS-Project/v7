@@ -5,6 +5,8 @@ div.window:not(.core) div.body div.info-block {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
 }
 
 div.window:not(.core) div.body div.info-block * {

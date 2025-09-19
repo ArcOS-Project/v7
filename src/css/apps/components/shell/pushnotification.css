@@ -87,6 +87,8 @@ div.shell div.push-notification div.buttons button {
   margin: 0;
   background-color: var(--button-glass-bg);
   height: 32px;
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
 }
 
 div.shell div.push-notification div.buttons button:hover {

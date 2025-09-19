@@ -59,4 +59,6 @@ div.shell div.actioncenter div.top > div {
   border-radius: 10px;
   height: 110px;
   box-shadow: 0 2px 5px 2px #0002;
+  outline: var(--button-glass-hover-bg) 1px solid;
+  outline-offset: -1;
 }

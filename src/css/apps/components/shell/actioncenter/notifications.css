@@ -7,6 +7,8 @@
   box-shadow: 0 2px 5px 2px #0002;
   display: flex;
   flex-direction: column;
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
 }
 
 #arcShell div.shell div.notifications > div.content > p.none {
@@ -63,6 +65,8 @@ div.shell div.actioncenter div.notification {
   margin-bottom: 10px;
   transition: scale 0.3s;
   transform-origin: top;
+  outline: var(--button-glass-hover-bg) 1px solid;
+  outline-offset: -1px;
 }
 
 .theme-light div.shell div.actioncenter div.notification {
@@ -140,6 +144,8 @@ div.shell div.actioncenter div.notification div.buttons button {
   flex-grow: 1;
   margin: 0;
   background-color: var(--button-glass-bg);
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
   height: 32px;
 }
 
