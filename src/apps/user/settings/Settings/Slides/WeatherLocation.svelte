@@ -24,7 +24,7 @@
     } catch {
       MessageBox(
         {
-          image: process.getIconCached("ErrorIcon"),
+          image: "ErrorIcon",
           title: `Failed to search for '${searchInput}'`,
           message: "An error occured while trying to search for your query. Please try again later.",
           buttons: [{ caption: "Okay", suggested: true, action: () => {} }],

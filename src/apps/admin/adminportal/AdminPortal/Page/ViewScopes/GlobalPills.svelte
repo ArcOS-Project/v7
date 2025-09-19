@@ -22,7 +22,7 @@
         title: `${name} (${key})`,
         message: `<p>With this item, this admin can:</p><ul>${scopes.map((s) => `<li>${scopeToScopeCaption(s)}</li>`).join("")}</ul>`,
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-        image: process.getIconCached("InfoIcon"),
+        image: "InfoIcon",
         sound: "arcos.dialog.info",
       },
       process.pid,

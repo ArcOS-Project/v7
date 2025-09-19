@@ -74,7 +74,7 @@ export class TotpAuthGuiRuntime extends AppProcess {
           "Lost access to your authenticator app? Not a problem! Please contact an ArcOS System Admin in the Discord server to get your 2FA removed. We'll ask you questions to verify you own the account, and after that you can access it again.",
         buttons: [{ caption: "Okay", action: () => this.cancel(), suggested: true }],
         sound: "arcos.dialog.info",
-        image: this.getIconCached("InfoIcon"),
+        image: "InfoIcon",
       },
       this.parentPid,
       true

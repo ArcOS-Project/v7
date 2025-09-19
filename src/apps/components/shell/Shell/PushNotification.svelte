@@ -56,7 +56,7 @@
   {#if data}
     {#if data.image}
       <div class="left">
-        <img src={data.image} alt="" class="icon" />
+        <img src={process.getIconCached(data.image) || data.image} alt="" class="icon" />
       </div>
     {:else if data.icon}
       <div class="left">

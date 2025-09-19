@@ -23,5 +23,5 @@
   class:active={discriminator === $openedTrayPopup}
   disabled={discriminator === $openedTrayPopup}
 >
-  <img src={icon.icon} alt={discriminator} />
+  <img src={process.getIconCached(icon.icon) || icon.icon} alt={discriminator} />
 </button>

@@ -11,14 +11,14 @@ const runTpaBundle: (d: UserDaemon) => FileHandler = (daemon) => ({
   opens: {
     extensions: [".tpab"],
   },
-  icon: daemon.getIconCached("CompressMimeIcon"),
+  icon: "CompressMimeIcon",
   name: "Run TPA package",
   description: "Opens this file as a package",
   handle: async (path: string) => {
     const prog = await daemon.FileProgress(
       {
         type: "size",
-        icon: daemon.getIconCached("ArcAppMimeIcon"),
+        icon: "ArcAppMimeIcon",
         caption: "Reading TPA archive",
         subtitle: path,
       },
@@ -44,7 +44,7 @@ const runTpaBundle: (d: UserDaemon) => FileHandler = (daemon) => ({
           title: "Failed to open TPA package",
           message: "This archive doesn't contain a TPA file.",
           buttons: [{ caption: "Okay", action: () => {} }],
-          image: daemon.getIconCached("ErrorIcon"),
+          image: "ErrorIcon",
         },
         +daemon.env.get("shell_pid"),
         true

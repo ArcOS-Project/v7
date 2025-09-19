@@ -25,7 +25,7 @@
       what: "ArcOS needs your permission to remove a package",
       title: $pkg.pkg.name,
       description: `By ${$pkg.user?.displayName || $pkg.user?.username || $pkg.pkg.author}`,
-      image: process.getIconCached("TrashIcon"),
+      image: "TrashIcon",
       level: ElevationLevel.medium,
     });
 

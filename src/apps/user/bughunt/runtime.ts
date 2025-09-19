@@ -93,7 +93,7 @@ export class BugHuntRuntime extends AppProcess {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       isSave: true,
       title: "Choose where to export the report to",
-      icon: this.getIconCached("SaveIcon"),
+      icon: "SaveIcon",
       startDir: UserPaths.Documents,
       extensions: [".json"],
       saveName: `Report-${report._id}.json`,
@@ -104,7 +104,7 @@ export class BugHuntRuntime extends AppProcess {
     const prog = await this.userDaemon!.FileProgress(
       {
         type: "size",
-        icon: this.getIconCached("SaveIcon"),
+        icon: "SaveIcon",
         caption: "Exporting report...",
         subtitle: `${getItemNameFromPath(path)}`,
       },

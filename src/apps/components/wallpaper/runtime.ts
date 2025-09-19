@@ -68,7 +68,7 @@ export class WallpaperRuntime extends AppProcess {
           title: "Failed to load the desktop",
           message: "ArcOS wasn't able to load your desktop icons. Please restart to try again.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: this.getIconCached("ErrorIcon"),
+          image: "ErrorIcon",
           sound: "arcos.dialog.error",
         },
         this.parentPid
@@ -204,7 +204,7 @@ export class WallpaperRuntime extends AppProcess {
             suggested: true,
           },
         ],
-        image: this.getIconCached("WarningIcon"),
+        image: "WarningIcon",
         sound: "arcos.dialog.warning",
       },
       +this.env.get("shell_pid"),
@@ -218,7 +218,7 @@ export class WallpaperRuntime extends AppProcess {
     const prog = await this.userDaemon!.FileProgress(
       {
         type: "size",
-        icon: this.getIconCached("UploadIcon"),
+        icon: "UploadIcon",
         caption: "Uploading your files...",
         subtitle: `To ${getItemNameFromPath(this.directory)}`,
       },

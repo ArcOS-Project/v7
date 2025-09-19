@@ -13,7 +13,7 @@
       `Are you sure you want to change the password of '${share.shareName}'?`,
       "Cancel",
       "Change",
-      process.getIconCached("QuestionIcon")
+      "QuestionIcon"
     );
 
     if (!confirm || !newPassword) return;

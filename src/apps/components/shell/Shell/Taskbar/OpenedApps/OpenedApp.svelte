@@ -25,8 +25,12 @@
   data-contextmenu="taskbar-openedapp"
   use:contextProps={[openedProcess]}
 >
-  <img src={$windowIcon} alt="" class="backdrop" />
-  <img src={$windowIcon} alt="" />
+  <img
+    src={process.getIconCached($windowIcon) || $windowIcon || process.getIconCached("ComponentIcon")}
+    alt=""
+    class="backdrop"
+  />
+  <img src={process.getIconCached($windowIcon) || $windowIcon || process.getIconCached("ComponentIcon")} alt="" />
   {#if $userPreferences.shell.taskbar.labels}
     <span class="title">{$windowTitle}</span>
   {/if}

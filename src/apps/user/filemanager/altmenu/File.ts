@@ -79,7 +79,7 @@ export function FileMenu(runtime: FileManagerRuntime): ContextMenuItem {
       { sep: true },
       {
         caption: "Exit",
-        image: runtime.getIconCached("ShutdownIcon"),
+        image: "ShutdownIcon",
         action: () => {
           runtime.closeWindow();
         },

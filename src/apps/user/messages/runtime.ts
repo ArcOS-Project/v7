@@ -182,7 +182,7 @@ export class MessagingAppRuntime extends AppProcess {
         title: "Failed to get messages",
         message: `ArcOS failed to get the messages for ${this.page()?.name || "an unknown page"}. Please refresh to try again.`,
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-        image: this.getIconCached("WarningIcon"),
+        image: "WarningIcon",
         sound: "arcos.dialog.warning",
       },
       this.pid,
@@ -245,7 +245,7 @@ export class MessagingAppRuntime extends AppProcess {
         type: "size",
         max: attachment.size,
         caption: `Reading Attachment...`,
-        icon: this.getIconCached("MessagingIcon"),
+        icon: "MessagingIcon",
         subtitle: attachment.filename,
       },
       this.pid
@@ -317,7 +317,7 @@ export class MessagingAppRuntime extends AppProcess {
     const date = dayjs(message.createdAt).format("DD MMM YYYY, HH.mm.ss");
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Choose where to save the message",
-      icon: this.getIconCached("MessagingIcon"),
+      icon: "MessagingIcon",
       isSave: true,
       extensions: [".arcmsg"],
       saveName: `${message.title} from ${
@@ -331,7 +331,7 @@ export class MessagingAppRuntime extends AppProcess {
       {
         type: "size",
         caption: `Writing message...`,
-        icon: this.getIconCached("MessagingIcon"),
+        icon: "MessagingIcon",
         subtitle: path,
       },
       this.pid
@@ -392,7 +392,7 @@ export class MessagingAppRuntime extends AppProcess {
         type: "none",
         max: 100,
         caption: `Reading attachments`,
-        icon: this.getIconCached("MessagingIcon"),
+        icon: "MessagingIcon",
         subtitle: `Just a moment...`,
       },
       this.pid

@@ -16,7 +16,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       },
       {
         caption: "Processes",
-        image: runtime.getIconCached("ProcessManagerIcon"),
+        image: "ProcessManagerIcon",
         action: () => {
           runtime.spawnApp("processManager", runtime.pid);
         },
@@ -40,7 +40,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         action: async (app: App) => {
           const [path] = await runtime.userDaemon!.LoadSaveDialog({
             title: "Choose where to save the app shortcut",
-            icon: runtime.getIconCached("ShortcutMimeIcon"),
+            icon: "ShortcutMimeIcon",
             startDir: UserPaths.Desktop,
             isSave: true,
             saveName: `${app.id}.arclnk`,
@@ -136,7 +136,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
           const { data: appData } = proc.app;
           const [path] = await runtime.userDaemon!.LoadSaveDialog({
             title: "Choose where to save the app shortcut",
-            icon: runtime.getIconCached("ShortcutMimeIcon"),
+            icon: "ShortcutMimeIcon",
             startDir: UserPaths.Desktop,
             isSave: true,
             saveName: `${appData.id}.arclnk`,
@@ -182,7 +182,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       },
       {
         caption: "Close window",
-        image: runtime.getIconCached("ShutdownIcon"),
+        image: "ShutdownIcon",
         action: (proc: AppProcess) => {
           if (!proc) return;
 

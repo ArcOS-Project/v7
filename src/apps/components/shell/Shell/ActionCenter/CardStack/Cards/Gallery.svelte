@@ -57,7 +57,7 @@
   async function chooseImage() {
     const [path] = await process.userDaemon!.LoadSaveDialog({
       title: "Choose an image for the gallery",
-      icon: process.getIconCached("DesktopIcon"),
+      icon: "DesktopIcon",
       startDir: UserPaths.Pictures,
       extensions: [".png", ".jpg", ".gif", ".webp", ".jpeg"],
     });

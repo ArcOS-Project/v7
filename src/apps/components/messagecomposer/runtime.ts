@@ -51,7 +51,7 @@ export class MessageComposerRuntime extends AppProcess {
         type: "none",
         caption: "Sending message",
         subtitle: "Preparing...",
-        icon: this.getIconCached("MessagingIcon"),
+        icon: "MessagingIcon",
       },
       this.pid
     );
@@ -89,7 +89,7 @@ export class MessageComposerRuntime extends AppProcess {
           { caption: "Cancel", action: () => {} },
           { caption: "Discard", action: () => this.closeWindow(), suggested: true },
         ],
-        image: this.getIconCached("WarningIcon"),
+        image: "WarningIcon",
         sound: "arcos.dialog.warning",
       },
       this.pid,
@@ -104,7 +104,7 @@ export class MessageComposerRuntime extends AppProcess {
         title: "Failed to send message",
         message:
           "ArcOS failed to send the message! It might be too large, or none of the recipients exist. Please check the recipients or try shrinking it down, and then resend it. If it still doesn't work, contact an ArcOS administrator.",
-        image: this.getIconCached("WarningIcon"),
+        image: "WarningIcon",
         sound: "arcos.dialog.warning",
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
       },
@@ -120,7 +120,7 @@ export class MessageComposerRuntime extends AppProcess {
     const attachments: Attachment[] = [];
     const paths = await this.userDaemon!.LoadSaveDialog({
       title: "Choose one or more files to attach",
-      icon: this.getIconCached("UploadIcon"),
+      icon: "UploadIcon",
       startDir: UserPaths.Documents,
       multiple: true,
     });
@@ -130,7 +130,7 @@ export class MessageComposerRuntime extends AppProcess {
         max: 100,
         type: "none",
         caption: "Just a moment...",
-        icon: this.getIconCached("MemoryIcon"),
+        icon: "MemoryIcon",
       },
       this.pid
     );

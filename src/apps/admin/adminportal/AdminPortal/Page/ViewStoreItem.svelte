@@ -66,7 +66,7 @@
               suggested: true,
             },
           ],
-          image: process.getIconCached("WarningIcon"),
+          image: "WarningIcon",
           sound: "arcos.dialog.warning",
         },
         process.pid,
@@ -98,7 +98,7 @@
             suggested: true,
           },
         ],
-        image: process.getIconCached("WarningIcon"),
+        image: "WarningIcon",
         sound: "arcos.dialog.warning",
       },
       process.pid,
@@ -126,7 +126,7 @@
             suggested: true,
           },
         ],
-        image: process.getIconCached("WarningIcon"),
+        image: "WarningIcon",
         sound: "arcos.dialog.warning",
       },
       process.pid,
@@ -156,7 +156,7 @@
               suggested: true,
             },
           ],
-          image: process.getIconCached("WarningIcon"),
+          image: "WarningIcon",
           sound: "arcos.dialog.warning",
         },
         process.pid,
@@ -183,7 +183,7 @@
               suggested: true,
             },
           ],
-          image: process.getIconCached("WarningIcon"),
+          image: "WarningIcon",
           sound: "arcos.dialog.warning",
         },
         process.pid,
@@ -199,7 +199,7 @@
         "Are you sure you want to mark this store item as NOT official? This implies that the package was not made by ArcOS administrators and does NOT act as an official utility or optional feature for ArcOS",
         "Cancel",
         "Mark unofficial",
-        process.getIconCached("WarningIcon")
+        "WarningIcon"
       );
 
       if (confirm) {
@@ -212,7 +212,7 @@
         "Are you sure you want to mark this store item as official? This implies that the package was made by ArcOS administrators and acts as an official utility or optional feature for ArcOS",
         "Cancel",
         "Mark official",
-        process.getIconCached("WarningIcon")
+        "WarningIcon"
       );
 
       if (confirm) {
@@ -228,7 +228,7 @@
       "Are you sure you want to delete this store item? This should only ever happen if the user has lost access to their account, or if the package conflicts with another package.",
       "Cancel",
       "Delete",
-      process.getIconCached("WarningIcon")
+      "WarningIcon"
     );
 
     if (confirm) {

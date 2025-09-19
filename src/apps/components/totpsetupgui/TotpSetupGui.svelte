@@ -43,7 +43,7 @@
             },
           ],
           sound: "arcos.dialog.error",
-          image: process.getIconCached("ErrorIcon"),
+          image: "ErrorIcon",
         },
         process.parentPid,
         true
@@ -60,7 +60,7 @@
             { caption: "Restart now", suggested: true, action: () => process.userDaemon?.restart() },
           ],
           sound: "arcos.dialog.info",
-          image: process.getIconCached("GoodStatusIcon"),
+          image: "GoodStatusIcon",
         },
         process.parentPid,
         true

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { RelativeTimeMod } from "$ts/dayjs";
-  import type { UserDaemon } from "$ts/server/user/daemon";
+  import { UserDaemon } from "$ts/server/user/daemon";
   import { Sleep } from "$ts/sleep";
   import type { ErrorButton, Notification } from "$types/notification";
   import dayjs from "dayjs";
@@ -68,7 +68,7 @@
     {#if !hideContent}
       {#if notification.image}
         <div class="left">
-          <img src={notification.image} alt="" class="icon" />
+          <img src={userDaemon.getIconCached(notification.image) || notification.image} alt="" class="icon" />
         </div>
       {:else if notification.icon}
         <div class="left">

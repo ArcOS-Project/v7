@@ -52,7 +52,7 @@ export class CodRuntime extends AppProcess {
           {
             title: "Save changes?",
             message: `Do you want to save the changes you made to ${filename}?`,
-            image: this.getIconCached("WarningIcon"),
+            image: "WarningIcon",
             sound: "arcos.dialog.warning",
             buttons: [
               {
@@ -94,7 +94,7 @@ export class CodRuntime extends AppProcess {
         type: "size",
         caption: `Reading code`,
         subtitle: path,
-        icon: this.getIconCached("CodIcon"),
+        icon: "CodIcon",
       },
       this.pid
     );
@@ -139,7 +139,7 @@ export class CodRuntime extends AppProcess {
           title: "Failed to read file",
           message: `Cod was unable to open the file you requested: ${e}`,
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: this.getIconCached("WarningIcon"),
+          image: "WarningIcon",
           sound: "arcos.dialog.error",
         },
         this.pid,
@@ -162,7 +162,7 @@ export class CodRuntime extends AppProcess {
         type: "size",
         caption: `Saving ${filename}`,
         subtitle: `Writing ${opened}`,
-        icon: this.getIconCached("CodIcon"),
+        icon: "CodIcon",
       },
       this.pid
     );
@@ -182,7 +182,7 @@ export class CodRuntime extends AppProcess {
   async saveAs() {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Choose where to save the file",
-      icon: this.getIconCached("CodIcon"),
+      icon: "CodIcon",
       startDir: UserPaths.Documents,
       isSave: true,
       saveName: this.openedFile() ? this.filename() : "",
@@ -206,7 +206,7 @@ export class CodRuntime extends AppProcess {
   async openFile() {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Select a file to open",
-      icon: this.getIconCached("CodIcon"),
+      icon: "CodIcon",
       startDir: UserPaths.Documents,
     });
 

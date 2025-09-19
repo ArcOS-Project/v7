@@ -55,7 +55,7 @@ export class WriterRuntime extends AppProcess {
           {
             title: "Save changes?",
             message: `Do you want to save the changes you made to ${filename}?`,
-            image: this.getIconCached("WarningIcon"),
+            image: "WarningIcon",
             sound: "arcos.dialog.warning",
             buttons: [
               {
@@ -97,7 +97,7 @@ export class WriterRuntime extends AppProcess {
         type: "size",
         caption: `Reading file`,
         subtitle: path,
-        icon: this.getIconCached("TextMimeIcon"),
+        icon: "TextMimeIcon",
       },
       this.pid
     );
@@ -137,7 +137,7 @@ export class WriterRuntime extends AppProcess {
           title: "Failed to read file",
           message: `Writer was unable to open the file you requested: ${e}`,
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: this.getIconCached("WarningIcon"),
+          image: "WarningIcon",
           sound: "arcos.dialog.error",
         },
         this.pid,
@@ -160,7 +160,7 @@ export class WriterRuntime extends AppProcess {
         type: "size",
         caption: `Saving ${filename}`,
         subtitle: `Writing ${opened}`,
-        icon: this.getIconCached("DriveIcon"),
+        icon: "DriveIcon",
       },
       this.pid
     );
@@ -180,7 +180,7 @@ export class WriterRuntime extends AppProcess {
   async saveAs() {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Choose where to save the file",
-      icon: this.getIconCached("TextMimeIcon"),
+      icon: "TextMimeIcon",
       startDir: UserPaths.Documents,
       isSave: true,
       saveName: this.openedFile() ? this.filename() : "",
@@ -204,7 +204,7 @@ export class WriterRuntime extends AppProcess {
   async openFile() {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Select a file to open",
-      icon: this.getIconCached("TextMimeIcon"),
+      icon: "TextMimeIcon",
       startDir: UserPaths.Documents,
     });
 

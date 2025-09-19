@@ -37,7 +37,7 @@ export class AppInstallerRuntime extends AppProcess {
           title: "Can't install package",
           message: "The Distribution Service isn't running anymore. Please restart ArcOS to fix this problem.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: this.getIconCached("ErrorIcon"),
+          image: "ErrorIcon",
           sound: "arcos.dialog.error",
         },
         +this.env.get("shell_pid"),
@@ -57,7 +57,7 @@ export class AppInstallerRuntime extends AppProcess {
           title: "Can't install app",
           message:
             "Third-party apps aren't enabled on your account. Please enable third-party apps in the Settings to install this app.",
-          image: this.getIconCached("AppsIcon"),
+          image: "AppsIcon",
           sound: "arcos.dialog.warning",
           buttons: [
             {

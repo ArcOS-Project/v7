@@ -50,7 +50,7 @@
               },
             },
           ],
-          image: process.getIconCached("WarningIcon"),
+          image: "WarningIcon",
           sound: "arcos.dialog.warning",
         },
         process.pid,

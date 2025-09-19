@@ -15,7 +15,7 @@
   <div class="rows">
     {#each $groups.get($currentSource) || [] as item, i (`${i}-${item.kernelTime}-${item.message}-${item.source}`)}
       {#if $selectedLevel == "all" || item.level === $selectedLevel}
-        <Item {item} />
+        <Item {item} {process} />
       {/if}
     {/each}
   </div>

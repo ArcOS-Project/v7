@@ -50,7 +50,7 @@
               singleSelectionThumbnail = "";
               singleSelectionAssoc = {
                 friendlyName: "Folder",
-                icon: process.getIconCached("FolderIcon"),
+                icon: "FolderIcon",
                 extension: "",
                 handledBy: {},
               };
@@ -82,7 +82,7 @@
           extension: "",
           friendlyName: "Folder",
           handledBy: {},
-          icon: process.getIconCached("FolderIcon"),
+          icon: "FolderIcon",
         };
         singleSelectionFilename = getItemNameFromPath($path);
         singleSelectionModifiers = undefined;

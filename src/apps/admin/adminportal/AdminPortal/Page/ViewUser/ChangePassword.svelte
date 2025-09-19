@@ -14,7 +14,7 @@
       `Are you sure you want to change the password of '${user.username}'?`,
       "Cancel",
       "Change",
-      process.getIconCached("QuestionIcon")
+      "QuestionIcon"
     );
 
     if (!confirm || !newPassword) return;

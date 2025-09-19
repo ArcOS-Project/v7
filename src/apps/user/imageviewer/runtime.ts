@@ -53,7 +53,7 @@ export class ImageViewerRuntime extends AppProcess {
         type: "size",
         caption: `Reading image`,
         subtitle: path,
-        icon: this.getIconCached("ImageViewerIcon"),
+        icon: "ImageViewerIcon",
       },
       this.pid
     );
@@ -72,7 +72,7 @@ export class ImageViewerRuntime extends AppProcess {
         {
           title: "Failed to read image",
           message: "The image you tried to open could not be read.",
-          image: this.getIconCached("ErrorIcon"),
+          image: "ErrorIcon",
           sound: "arcos.dialog.error",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
         },

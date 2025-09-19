@@ -22,7 +22,7 @@
       {
         title: `Changelog of ArcOS ${ArcOSVersion}`,
         content: Dialog,
-        image: process.getIconCached("UpdateIcon"),
+        image: "UpdateIcon",
         sound: "arcos.dialog.info",
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
       },

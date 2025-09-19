@@ -19,7 +19,7 @@
           message:
             "ArcOS failed to change the name of your share. You might already have a share with that name. Please try something else.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: process.getIconCached("WarningIcon"),
+          image: "WarningIcon",
           sound: "arcos.dialog.warning",
         },
         process.parentPid,
@@ -32,7 +32,7 @@
           message:
             "Your share has been renamed successfully! You and the members of the share will have to restart for the changes to take effect.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: process.getIconCached("GoodStatusIcon"),
+          image: "GoodStatusIcon",
           sound: "arcos.dialog.info",
         },
         process.parentPid,

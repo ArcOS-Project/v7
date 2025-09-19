@@ -33,7 +33,7 @@
             suggested: true,
           },
         ],
-        image: process.getIconCached("SecurityMediumIcon"),
+        image: "SecurityMediumIcon",
         sound: "arcos.dialog.warning",
       },
       process.pid,
@@ -58,7 +58,7 @@
             suggested: true,
           },
         ],
-        image: process.getIconCached("SecurityHighIcon"),
+        image: "SecurityHighIcon",
         sound: "arcos.dialog.warning",
       },
       process.pid,
@@ -71,7 +71,7 @@
       {
         title: "2FA of " + user.username,
         message: `<ul><li>Secret: ${totp?.secret}</li><li>URL: ${totp?.url}</li></ul>`,
-        image: process.getIconCached("ElevationIcon"),
+        image: "ElevationIcon",
         sound: "arcos.dialog.info",
         buttons: [
           { caption: "Copy secret", action: () => navigator.clipboard.writeText(totp?.secret!) },

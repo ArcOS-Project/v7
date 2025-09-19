@@ -48,7 +48,7 @@
             suggested: true,
           },
         ],
-        image: process.getIconCached("QuestionIcon"),
+        image: "QuestionIcon",
       },
       process.pid,
       true

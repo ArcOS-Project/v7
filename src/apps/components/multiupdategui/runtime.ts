@@ -90,7 +90,7 @@ export class MultiUpdateGuiRuntime extends AppProcess {
       what: `ArcOS needs your permission to update ${this.updates.length} ${Plural("app", this.updates.length)}.`,
       title: this.app.data.metadata.name,
       description: this.app.data.metadata.author,
-      image: this.getIconCached("UpdateIcon"),
+      image: "UpdateIcon",
       level: ElevationLevel.medium,
     });
 

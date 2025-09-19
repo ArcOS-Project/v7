@@ -12,7 +12,7 @@
       `Are you sure you want to change the email of '${user.username}' to '${newEmail}'?`,
       "Cancel",
       "Rename",
-      process.getIconCached("QuestionIcon")
+      "QuestionIcon"
     );
 
     if (!confirm || !newEmail) return;

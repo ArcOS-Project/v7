@@ -9,12 +9,13 @@ import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { App } from "$types/app";
 import type { Service } from "$types/service";
+import { fromExtension } from "human-filetypes";
 
 export class IconService extends BaseService {
   PATH = join(UserPaths.System, "IconSet.json");
-  FILE_CACHE: Record<string, ArrayBuffer> = {}; // R<id, url>
+  FILE_CACHE: Record<string, string> = {}; // R<id, url>
   ICON_TYPES = ["fs", "builtin", "app"];
-  DEFAULT_ICON = ComponentIcon;
+  DEFAULT_ICON = "";
   Configuration = Store<Record<string, string>>({});
   //#region LIFECYCLE
 
@@ -92,10 +93,11 @@ export class IconService extends BaseService {
           iconPath = maybeIconId(data) || this.DEFAULT_ICON;
           break;
         case "fs":
-          const fileContents = !noCache && this.FILE_CACHE[data] ? this.FILE_CACHE[data] : (await this.fs.readFile(data))!;
-          this.FILE_CACHE[data] = fileContents;
-          if (!fileContents) iconPath = this.DEFAULT_ICON;
-          else iconPath = URL.createObjectURL(arrayToBlob(fileContents));
+          const direct = (noCache ? undefined : this.FILE_CACHE[data]) || (await this.fs.direct(data));
+          if (!direct) iconPath = this.DEFAULT_ICON;
+          else {
+            this.FILE_CACHE[data] = iconPath = direct;
+          }
           break;
       }
 
@@ -127,9 +129,7 @@ export class IconService extends BaseService {
           iconPath = maybeIconId(data) || this.DEFAULT_ICON;
           break;
         case "fs":
-          const fileContents = this.FILE_CACHE[data];
-          if (!fileContents) iconPath = this.DEFAULT_ICON;
-          else iconPath = URL.createObjectURL(arrayToBlob(fileContents));
+          iconPath = this.FILE_CACHE[data] || this.DEFAULT_ICON;
           break;
         default:
           iconPath = this.DEFAULT_ICON;

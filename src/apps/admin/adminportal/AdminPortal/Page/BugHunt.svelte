@@ -48,7 +48,7 @@
           title: "Report ID not found",
           message: "Sorry, the report ID you entered doesn't match any records. Check it, and then try again.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: process.getIconCached("ErrorIcon"),
+          image: "ErrorIcon",
           sound: "arcos.dialog.error",
         },
         process.pid,
@@ -81,7 +81,7 @@
       "Are you sure you want to delete this report?",
       "Abort!",
       "Continue",
-      process.getIconCached("TrashIcon")
+      "TrashIcon"
     );
 
     if (!go) return;
@@ -97,7 +97,7 @@
       `Are you sure you want to delete ${$selectionList.length} reports? This is a potentially destructive action!`,
       "Abort!",
       "Continue",
-      process.getIconCached("TrashIcon")
+      "TrashIcon"
     );
 
     if (!go) return;

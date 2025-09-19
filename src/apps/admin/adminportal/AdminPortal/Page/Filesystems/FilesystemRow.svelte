@@ -29,7 +29,7 @@
     process.userDaemon?.sendNotification({
       title: `Indexing for ${quota.user.username} completed`,
       message: result.length ? `- ${result.join("<br>- ")}` : "No unindexed items were found during indexing.",
-      image: process.getIconCached("GoodStatusIcon"),
+      image: "GoodStatusIcon",
       timeout: 4000,
     });
     indexing = false;

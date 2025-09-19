@@ -12,7 +12,7 @@
     const [path] = await process.userDaemon!.LoadSaveDialog({
       isSave: true,
       title: "Choose where to export the report to",
-      icon: process.getIconCached("SaveIcon"),
+      icon: "SaveIcon",
       startDir: UserPaths.Documents,
       extensions: [".json"],
       saveName: `Report-${report._id}.json`,
@@ -23,7 +23,7 @@
     const prog = await process.userDaemon!.FileProgress(
       {
         type: "size",
-        icon: process.getIconCached("SaveIcon"),
+        icon: "SaveIcon",
         caption: "Exporting report...",
         subtitle: `${getItemNameFromPath(path)}`,
       },

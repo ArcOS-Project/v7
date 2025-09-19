@@ -37,7 +37,7 @@
             suggested: true,
           },
         ],
-        image: process.getIconCached("QuestionIcon"),
+        image: "QuestionIcon",
         sound: "arcos.dialog.warning",
       },
       process.pid,

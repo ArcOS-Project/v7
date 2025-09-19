@@ -110,7 +110,7 @@ export class SqeletonRuntime extends AppProcess {
   async openFile() {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Select a database to open",
-      icon: this.getIconCached("SqeletonIcon"),
+      icon: "SqeletonIcon",
       startDir: UserPaths.Documents,
       extensions: [".db"],
     });
@@ -123,7 +123,7 @@ export class SqeletonRuntime extends AppProcess {
   async newFile() {
     const [path] = await this.userDaemon!.LoadSaveDialog({
       title: "Choose where to save the new database",
-      icon: this.getIconCached("SqeletonIcon"),
+      icon: "SqeletonIcon",
       startDir: UserPaths.Documents,
       extensions: [".db"],
       isSave: true,
@@ -317,7 +317,7 @@ export class SqeletonRuntime extends AppProcess {
             suggested: true,
           },
         ],
-        image: this.getIconCached("WarningIcon"),
+        image: "WarningIcon",
         sound: "arcos.dialog.warning",
       },
       this.pid,
@@ -331,7 +331,7 @@ export class SqeletonRuntime extends AppProcess {
         title: "Existing connection",
         message: "Sqeleton is already connected to a file. To open another file, close the existing connection first.",
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-        image: this.getIconCached("SqeletonIcon"),
+        image: "SqeletonIcon",
         sound: "arcos.dialog.warning",
       },
       this.pid,
@@ -345,7 +345,7 @@ export class SqeletonRuntime extends AppProcess {
         title: "Failed to open database",
         message: `Sqeleton was unable to open this database. ${e}`,
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-        image: this.getIconCached("ErrorIcon"),
+        image: "ErrorIcon",
         sound: "arcos.dialog.error",
       },
       this.pid,
@@ -369,7 +369,7 @@ export class SqeletonRuntime extends AppProcess {
           },
         ],
         sound: "arcos.dialog.warning",
-        image: this.getIconCached("WarningIcon"),
+        image: "WarningIcon",
       },
       this.pid,
       true

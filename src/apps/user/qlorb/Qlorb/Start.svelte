@@ -16,7 +16,7 @@
       {
         title: "Qlorb Help",
         content: Help as any,
-        image: process.getIconCached("QlorbIcon"),
+        image: "QlorbIcon",
         buttons: [{ caption: "Understood", action() {}, suggested: true }],
       },
       process.pid,

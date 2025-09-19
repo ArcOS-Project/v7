@@ -31,7 +31,7 @@
             suggested: true,
           },
         ],
-        image: process.getIconCached("LogoutIcon"),
+        image: "LogoutIcon",
         sound: "arcos.dialog.warning",
       },
       process.pid,

@@ -5,7 +5,7 @@ export interface MessageBoxData {
   message?: string;
   content?: Component<any>;
   buttons: MessageBoxButton[];
-  image?: string;
+  image?: string; // ICON ID!!!
   sound?: string;
 }
 

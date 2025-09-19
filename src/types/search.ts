@@ -1,7 +1,7 @@
 export interface SearchItem {
   caption: string;
   action: (item?: SearchItem) => void;
-  image?: string;
+  image?: string; // icon ID!!!
   description?: string;
 }
 

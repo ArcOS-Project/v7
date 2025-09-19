@@ -16,7 +16,7 @@ function folderGoItems(runtime: FileManagerRuntime) {
   for (const folder of runtime.rootFolders()) {
     result.push({
       caption: folder.name,
-      image: runtime.getIconCached("FolderIcon"),
+      image: "FolderIcon",
       action: () => {
         runtime.navigate(`${UserPaths.Home}/${folder.name}`);
       },
@@ -53,7 +53,7 @@ function driveGoItems(runtime: FileManagerRuntime) {
     result.push({
       caption: drive.data.driveLetter ? `${drive.data.label} (${drive.data.driveLetter}:)` : drive.data.label,
       subItems: driveSubmenu(drive.data, id),
-      image: runtime.getIconCached("DriveIcon"),
+      image: "DriveIcon",
       isActive: () => runtime.path().startsWith(`${identifier}/`),
     });
   }

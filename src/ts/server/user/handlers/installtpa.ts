@@ -8,7 +8,7 @@ const installTpaFile: (d: UserDaemon) => FileHandler = (daemon) => ({
   opens: {
     extensions: [".tpa"],
   },
-  icon: daemon.getIconCached("DownloadIcon"),
+  icon: "DownloadIcon",
   name: "Install application",
   description: "Install this TPA file as an app",
   handle: async (path: string) => {

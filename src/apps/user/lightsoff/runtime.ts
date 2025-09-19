@@ -68,7 +68,7 @@ export class LightsOffRuntime extends AppProcess {
             suggested: true,
           },
         ],
-        image: this.getIconCached("LightsOffIcon"),
+        image: "LightsOffIcon",
       },
       this.pid,
       true

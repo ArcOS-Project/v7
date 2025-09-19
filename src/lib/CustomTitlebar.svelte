@@ -42,7 +42,7 @@
     {#if children}
       {@render children()}
     {:else}
-      <img src={$windowIcon || process.getIconCached("ComponentIcon")} alt="" />
+      <img src={process.getIconCached($windowIcon) || $windowIcon || process.getIconCached("ComponentIcon")} alt="" />
       <span>{$windowTitle}</span>
     {/if}
     {#if BETA && !process.app.data.entrypoint && !process.app.data.workingDirectory && !process.app.data.thirdParty}

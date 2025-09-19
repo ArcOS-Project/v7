@@ -58,7 +58,7 @@ export class AdminPortalRuntime extends AppProcess {
           message:
             "The page you tried to navigate to isn't registered in the Admin Portal's page store. If you didn't do this yourself, please check in with Izaak.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: this.getIconCached("ElevationIcon"),
+          image: "ElevationIcon",
           sound: "arcos.dialog.warning",
         },
         this.pid,

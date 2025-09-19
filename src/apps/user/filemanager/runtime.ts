@@ -62,7 +62,7 @@ export class FileManagerRuntime extends AppProcess {
 
     if (loadSave) {
       this.windowTitle.set(loadSave.title);
-      this.windowIcon.set(loadSave.icon);
+      this.windowIcon.set(this.getIconCached(loadSave.icon));
       this.renderArgs.path = loadSave.startDir || UserPaths.Home;
 
       if (loadSave.isSave) {
@@ -190,7 +190,7 @@ export class FileManagerRuntime extends AppProcess {
       this.path.set(path);
       this.showNotice.set(false);
       this.notice.set(undefined);
-      this.windowTitle.set(virtual.name);
+      if (!this.loadSave) this.windowTitle.set(virtual.name);
 
       return;
     }
@@ -242,7 +242,7 @@ export class FileManagerRuntime extends AppProcess {
           driveLabel = drive?.label || "";
         }
 
-        this.windowTitle.set(getItemNameFromPath(path) || (driveLetter ? `${driveLetter}/` : driveLabel));
+        if (!this.loadSave) this.windowTitle.set(getItemNameFromPath(path) || (driveLetter ? `${driveLetter}/` : driveLabel));
       }
 
       this.checkNotice();
@@ -272,7 +272,7 @@ export class FileManagerRuntime extends AppProcess {
           },
         ],
         sound: "arcos.dialog.error",
-        image: this.getIconCached("ErrorIcon"),
+        image: "ErrorIcon",
       },
       this.pid,
       true
@@ -363,7 +363,7 @@ export class FileManagerRuntime extends AppProcess {
             suggested: true,
           },
         ],
-        image: this.getIconCached("DriveIcon"),
+        image: "DriveIcon",
         sound: "arcos.dialog.warning",
       },
       this.pid,
@@ -376,7 +376,7 @@ export class FileManagerRuntime extends AppProcess {
 
     const prog = await this.userDaemon!.FileProgress(
       {
-        icon: this.getIconCached("DriveIcon"),
+        icon: "DriveIcon",
         caption: `Unmounting ${drive.label || "drive"}...`,
         subtitle: `${drive.driveLetter || drive.uuid}:/`,
       },
@@ -398,7 +398,7 @@ export class FileManagerRuntime extends AppProcess {
     const prog = await this.userDaemon!.FileProgress(
       {
         type: "size",
-        icon: this.getIconCached("UploadIcon"),
+        icon: "UploadIcon",
         caption: "Uploading your files...",
         subtitle: `To ${getItemNameFromPath(this.path())}`,
       },
@@ -466,7 +466,7 @@ export class FileManagerRuntime extends AppProcess {
               message: `This folder is required for ArcOS to run properly. If it or any of its files are missing, ArcOS might crash or become unstable. You cannot delete this item.<br><br><details><summary>Show path</summary><code class='block'>${path}</code></details>`,
               buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
               sound: "arcos.dialog.warning",
-              image: this.getIconCached("InfoIcon"),
+              image: "InfoIcon",
             },
             this.pid,
             true
@@ -500,7 +500,7 @@ export class FileManagerRuntime extends AppProcess {
           },
         ],
         sound: "arcos.dialog.warning",
-        image: this.getIconCached("WarningIcon"),
+        image: "WarningIcon",
       },
       this.pid,
       true
@@ -515,7 +515,7 @@ export class FileManagerRuntime extends AppProcess {
       {
         max: items.length,
         type: "quantity",
-        icon: this.getIconCached("TrashIcon"),
+        icon: "TrashIcon",
         caption: isUserFs
           ? `Moving ${items.length} ${Plural("item", items.length)} to the Recycle Bin...`
           : `Deleting ${items.length} ${Plural("item", items.length)}...`,
@@ -554,7 +554,7 @@ export class FileManagerRuntime extends AppProcess {
         type: "size",
         caption: `Preparing for download`,
         subtitle: selected[0],
-        icon: this.getIconCached("DownloadIcon"),
+        icon: "DownloadIcon",
       },
       this.pid
     );
@@ -582,7 +582,7 @@ export class FileManagerRuntime extends AppProcess {
                 },
               },
             ],
-            image: this.getIconCached("ErrorIcon"),
+            image: "ErrorIcon",
             sound: "arcos.dialog.error",
           },
           this.pid,
@@ -665,7 +665,7 @@ export class FileManagerRuntime extends AppProcess {
           title: "Can't do that",
           message:
             "It is not possible to use <code>Shift</code>+<code>Enter</code> on multiple items. Please select a single item, or press <code>Enter</code> without <code>Shift</code>.",
-          image: this.getIconCached("ErrorIcon"),
+          image: "ErrorIcon",
           buttons: [{ caption: "Okay", action() {}, suggested: true }],
         },
         this.pid,
@@ -681,7 +681,7 @@ export class FileManagerRuntime extends AppProcess {
           title: "Hold up!",
           message:
             "You're about to open multiple items at the same time. This could cause unexpected behaviour, depending on the number of files. Continue?",
-          image: this.getIconCached("WarningIcon"),
+          image: "WarningIcon",
           sound: "arcos.dialog.warning",
         },
         this.pid,
@@ -735,7 +735,7 @@ export class FileManagerRuntime extends AppProcess {
   async createShortcut(name: string, path: string, folder = false) {
     const paths = await this.userDaemon?.LoadSaveDialog({
       title: "Pick where to create the shortcut",
-      icon: this.getIconCached("FolderIcon"),
+      icon: "FolderIcon",
       folder: true,
       startDir: UserPaths.Desktop,
     });

@@ -17,7 +17,7 @@
       `Are you sure you want to change the quota of '${user.username}' to ${formatBytes(newQuota)}?`,
       "Cancel",
       "Change",
-      process.getIconCached("QuestionIcon")
+      "QuestionIcon"
     );
 
     if (!confirm) return;

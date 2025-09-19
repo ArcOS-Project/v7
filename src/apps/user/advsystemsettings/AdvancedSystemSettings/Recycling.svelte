@@ -32,7 +32,7 @@
             suggested: true,
           },
         ],
-        image: process.getIconCached("TrashIcon"),
+        image: "TrashIcon",
         sound: "arcos.dialog.warning",
       },
       process.pid,

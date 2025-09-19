@@ -80,7 +80,7 @@
       {#if data.icon}
         <span class="icon lucide icon-{data.icon}"></span>
       {:else if data.image}
-        <img class="icon" src={data.image} alt={data.caption} />
+        <img class="icon" src={shell.getIconCached(data.image)} alt={data.caption} />
       {:else}
         <span class="icon"></span>
       {/if}

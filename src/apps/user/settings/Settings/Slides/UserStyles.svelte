@@ -18,7 +18,7 @@
     MessageBox(
       {
         title: "User styles are risky!",
-        image: process.getIconCached("WarningIcon"),
+        image: "WarningIcon",
         content: UserStyleWarning,
         buttons: [{ caption: "Understood", action: () => {}, suggested: true }],
       },

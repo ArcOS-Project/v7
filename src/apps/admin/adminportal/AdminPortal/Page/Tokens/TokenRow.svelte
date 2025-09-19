@@ -38,7 +38,7 @@
             },
           },
         ],
-        image: process.getIconCached("ElevationIcon"),
+        image: "ElevationIcon",
         sound: "arcos.dialog.warning",
       },
       process.pid,

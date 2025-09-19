@@ -90,7 +90,7 @@ export class SecureContextRuntime extends AppProcess {
         {
           title: "Authentication failed",
           message: "The password you entered is incorrect. Please try typing it again.",
-          image: this.getIconCached("ErrorIcon"),
+          image: "ErrorIcon",
           sound: "arcos.dialog.error",
           buttons: [{ caption: "Okay", action: () => r(), suggested: true }],
         },
@@ -111,7 +111,7 @@ export class SecureContextRuntime extends AppProcess {
         title: "Cancel elevation?",
         message: "Going to the security settings from here will cancel the elevation request. Are you sure?",
         sound: "arcos.dialog.warning",
-        image: this.getIconCached("WarningIcon"),
+        image: "WarningIcon",
         buttons: [
           {
             caption: "Stay here",

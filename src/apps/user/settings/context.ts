@@ -23,7 +23,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
             title: "Choose where to save the theme",
             isSave: true,
             startDir: UserPaths.Documents,
-            icon: runtime.getIconCached("ThemesIcon"),
+            icon: "ThemesIcon",
             saveName: `${theme.name || "Untitled theme"}.arctheme`,
           });
 
@@ -57,7 +57,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
             title: "Choose where to save the theme",
             isSave: true,
             startDir: UserPaths.Documents,
-            icon: runtime.getIconCached("ThemesIcon"),
+            icon: "ThemesIcon",
             saveName: `${theme.name || "Untitled theme"}.arctheme`,
           });
 
@@ -100,7 +100,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
               title: "Delete wallpaper?",
               message:
                 "Are you sure you want to delete this wallpaper? This will also delete the original file, and it cannot be brought back.",
-              image: runtime.getIconCached("WarningIcon"),
+              image: "WarningIcon",
               sound: "arcos.dialog.warning",
               buttons: [
                 {

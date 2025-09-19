@@ -51,7 +51,7 @@
             {
               title: "Invalid byte",
               message: `The byte you entered at offset ${index} is invalid, expected a hex value (0-9 A-F) but got '${v}'. You have to change this byte before being able to save the file you're working on.`,
-              image: process.getIconCached("ErrorIcon"),
+              image: "ErrorIcon",
               sound: "arcos.dialog.error",
               buttons: [
                 {

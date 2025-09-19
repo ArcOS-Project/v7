@@ -112,7 +112,7 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
         action: (proc: AppProcess) => {
           proc.closeWindow();
         },
-        image: runtime.getIconCached("ShutdownIcon"),
+        image: "ShutdownIcon",
         disabled: (proc: AppProcess) => !proc?.app.data.controls.close,
       },
     ],

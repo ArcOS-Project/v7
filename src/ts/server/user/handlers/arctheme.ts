@@ -12,7 +12,7 @@ const applyArcTheme: (d: UserDaemon) => FileHandler = (daemon) => ({
   },
   name: "ArcOS Theme",
   description: "Apply this theme to your desktop",
-  icon: daemon.getIconCached("ThemesIcon"),
+  icon: "ThemesIcon",
   async handle(path) {
     function fail(reason: string) {
       MessageBox(
@@ -21,7 +21,7 @@ const applyArcTheme: (d: UserDaemon) => FileHandler = (daemon) => ({
           message: `ArcOS was unable to load the theme file you're trying to apply. ${reason}. Please check the file, and then try again.`,
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           sound: "arcos.dialog.error",
-          image: daemon.getIconCached("ThemesIcon"),
+          image: "ThemesIcon",
         },
         +daemon.env.get("shell_pid"),
         true

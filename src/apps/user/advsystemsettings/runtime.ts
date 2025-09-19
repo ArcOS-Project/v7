@@ -60,7 +60,7 @@ export class AdvSysSetRuntime extends AppProcess {
           title: "Your preferences changed",
           message:
             "The user preferences changed while this app was running. Click 'Synchronize' to synchronize. This will discard any changes you've made since opening the dialog.",
-          image: this.getIconCached("WarningIcon"),
+          image: "WarningIcon",
           buttons: [
             {
               caption: "Ignore",

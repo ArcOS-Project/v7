@@ -37,7 +37,7 @@
       {/if}
     {/if}
   </div>
-  {#if $userPreferences.appPreferences.fileManager?.showInfoPane}
+  {#if $userPreferences.appPreferences.fileManager?.showInfoPane && !process.loadSave}
     <InfoPane {process} />
   {/if}
 </div>

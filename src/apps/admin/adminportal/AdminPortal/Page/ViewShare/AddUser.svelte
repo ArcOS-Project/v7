@@ -14,7 +14,7 @@
       `Are you sure you want to add this user to '${share.shareName}'?`,
       "Cancel",
       "Add",
-      process.getIconCached("QuestionIcon")
+      "QuestionIcon"
     );
 
     if (!confirm || !contestant) return;

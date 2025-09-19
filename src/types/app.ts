@@ -106,7 +106,7 @@ export interface ContextMenuItem {
   sep?: boolean;
   caption?: string;
   icon?: string;
-  image?: string;
+  image?: string; // icon ID !!!
   isActive?: ContextMenuCallback<boolean>;
   action?: ContextMenuCallback;
   subItems?: ContextMenuItem[];

@@ -36,7 +36,7 @@ export function FileMenu(runtime: MediaPlayerRuntime): ContextMenuItem {
         action: () => {
           runtime.closeWindow();
         },
-        image: runtime.getIconCached("ShutdownIcon"),
+        image: "ShutdownIcon",
         accelerator: "Ctrl+Q",
       },
     ],

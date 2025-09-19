@@ -28,7 +28,7 @@ export class AppInfoRuntime extends AppProcess {
       this.userDaemon?.sendNotification({
         title: "App not found",
         message: `AppInfo couldn't find any information about "${this.targetAppId}". Is it installed?`,
-        image: this.getIconCached("AppInfoIcon"),
+        image: "AppInfoIcon",
         timeout: 6000,
       });
 

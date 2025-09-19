@@ -48,7 +48,7 @@
             suggested: true,
           },
         ],
-        image: process.getIconCached("MemoryIcon"),
+        image: "MemoryIcon",
         sound: "arcos.dialog.info",
       },
       process.pid,

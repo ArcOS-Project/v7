@@ -7,7 +7,7 @@ const runTpaFile: (d: UserDaemon) => FileHandler = (daemon) => ({
   opens: {
     extensions: [".tpa"],
   },
-  icon: daemon.getIconCached("ArcAppMimeIcon"),
+  icon: "ArcAppMimeIcon",
   name: "Run ArcOS app",
   description: "Run this TPA file as an application",
   handle: async (path: string) => {

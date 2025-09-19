@@ -34,7 +34,7 @@ export class AppPreInstallRuntime extends AppProcess {
           title: "Can't install app",
           message:
             "Third-party apps aren't enabled on your account. Please enable third-party apps in the Settings to install this app.",
-          image: this.getIconCached("AppsIcon"),
+          image: "AppsIcon",
           sound: "arcos.dialog.warning",
           buttons: [
             {
@@ -61,7 +61,7 @@ export class AppPreInstallRuntime extends AppProcess {
     const prog = await this.userDaemon?.FileProgress(
       {
         type: "size",
-        icon: this.getIconCached("DownloadIcon"),
+        icon: "DownloadIcon",
         caption: "Reading ArcOS package",
         subtitle: this.pkgPath,
       },
@@ -116,7 +116,7 @@ export class AppPreInstallRuntime extends AppProcess {
         title: "Failed to open package",
         message: `ArcOS failed to open the specified package. ${reason}`,
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-        image: this.getIconCached("ErrorIcon"),
+        image: "ErrorIcon",
         sound: "arcos.dialog.error",
       },
       +this.env.get("shell_pid"),
@@ -131,7 +131,7 @@ export class AppPreInstallRuntime extends AppProcess {
       what: "ArcOS wants to install an application",
       title: meta.name,
       description: `${meta.author} - ${meta.version}`,
-      image: this.getIconCached("ArcAppMimeIcon"),
+      image: "ArcAppMimeIcon",
       level: ElevationLevel.medium,
     });
 

@@ -287,7 +287,7 @@ export class AppRenderer extends Process {
     });
 
     process.windowIcon.subscribe((v) => {
-      titleIcon.src = v;
+      titleIcon.src = process.getIconCached(v) || v;
     });
 
     titleIcon.src = process.userDaemon?.getAppIconByProcess(process) || process.getIconCached("ComponentIcon");

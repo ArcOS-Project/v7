@@ -49,7 +49,7 @@ export class PdfViewerRuntime extends AppProcess {
         type: "size",
         caption: `Reading image`,
         subtitle: path,
-        icon: this.getIconCached("PdfMimeIcon"),
+        icon: "PdfMimeIcon",
       },
       this.pid
     );
@@ -68,7 +68,7 @@ export class PdfViewerRuntime extends AppProcess {
           {
             title: "Failed to read PDF file",
             message: "The file you tried to open could not be read.",
-            image: this.getIconCached("ErrorIcon"),
+            image: "ErrorIcon",
             sound: "arcos.dialog.error",
             buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           },

@@ -25,7 +25,7 @@ export function FileMenu(process: AdminPortalRuntime): ContextMenuItem {
         icon: "lock",
       },
       { sep: true },
-      { caption: "Exit", action: () => process.closeWindow(), image: process.getIconCached("ShutdownIcon") },
+      { caption: "Exit", action: () => process.closeWindow(), image: "ShutdownIcon" },
     ],
   };
 }

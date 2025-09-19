@@ -22,7 +22,7 @@
       {
         title: share.locked ? "Unlock share?" : "Lock share?",
         message: share.locked ? "Are you sure you want to unlock this share?" : "Are you sure you want to lock this share?",
-        image: process.getIconCached("LockIcon"),
+        image: "LockIcon",
         sound: "arcos.dialog.warning",
         buttons: [
           { caption: "Cancel", action: () => {} },
@@ -63,7 +63,7 @@
             suggested: true,
           },
         ],
-        image: process.getIconCached("WarningIcon"),
+        image: "WarningIcon",
         sound: "arcos.dialog.warning",
       },
       process.pid,

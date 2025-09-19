@@ -44,7 +44,7 @@ export class ProcessInfoRuntime extends AppProcess {
         title: `Do you want to end ${name}?`,
         message:
           "By killing this process, its window will close and you will lose any unsaved information. If you end a system process, ArcOS might crash or become unstable. Are you sure you want to continue?",
-        image: this.getIconCached("WarningIcon"),
+        image: "WarningIcon",
         sound: "arcos.dialog.warning",
         buttons: [
           { caption: "Cancel", action: () => {} },
@@ -74,7 +74,7 @@ export class ProcessInfoRuntime extends AppProcess {
         title: `Couldn't kill ${name}!`,
         message: `An error occured while trying to end the process. ${caption}`,
         buttons: [{ caption: "Okay", action() {}, suggested: true }],
-        image: this.getIconCached("ErrorIcon"),
+        image: "ErrorIcon",
         sound: "arcos.dialog.error",
       },
       this.pid,

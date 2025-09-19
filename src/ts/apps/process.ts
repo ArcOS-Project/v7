@@ -176,7 +176,7 @@ export class AppProcess extends Process {
               },
             },
           ],
-          image: this.getIconCached("SecurityHighIcon"),
+          image: "SecurityHighIcon",
         });
       } else {
         this.Log(`Running application instance of app "${this.app.id}" is prohibited by the user. Terminating.`, LogLevel.error);
@@ -384,7 +384,7 @@ export class AppProcess extends Process {
         location.hostname
       }</code>`,
       buttons: [{ caption: "Sad :(", action: () => {}, suggested: true }],
-      image: this.getIconCached("BugReportIcon"),
+      image: "BugReportIcon",
       sound: "arcos.dialog.warning",
     });
   }

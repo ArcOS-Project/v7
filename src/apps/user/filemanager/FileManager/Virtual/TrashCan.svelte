@@ -38,7 +38,7 @@
             suggested: true,
           },
         ],
-        image: process.getIconCached("TrashIcon"),
+        image: "TrashIcon",
         sound: "arcos.dialog.warning",
       },
       process.pid,
@@ -55,7 +55,7 @@
       {
         caption: "Restoring items",
         subtitle: "From Recycle bin",
-        icon: process.getIconCached("TrashIcon"),
+        icon: "TrashIcon",
         type: "quantity",
         max: $selection.length,
       },
@@ -79,7 +79,7 @@
         "Are you sure you want to permanently delete this item from the Recycle Bin? This cannot be undone.",
         "Cancel",
         "Delete",
-        process.getIconCached("TrashIcon"),
+        "TrashIcon",
         process.pid
       );
 
@@ -93,7 +93,7 @@
       "Are you sure you want to permanently delete these items from the Recycle Bin? This cannot be undone.",
       "Cancel",
       "Delete",
-      process.getIconCached("TrashIcon"),
+      "TrashIcon",
       process.pid
     );
 
@@ -103,7 +103,7 @@
       {
         caption: "Deleting items",
         subtitle: "From Recycle Bin",
-        icon: process.getIconCached("TrashIcon"),
+        icon: "TrashIcon",
         type: "quantity",
         max: $selection.length,
       },

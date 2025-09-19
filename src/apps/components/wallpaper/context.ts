@@ -172,7 +172,7 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
                 {
                   title: "Reset desktop icons?",
                   message: "Are you sure you want to reset your desktop icon positions?",
-                  image: runtime.getIconCached("QuestionIcon"),
+                  image: "QuestionIcon",
                   sound: "arcos.dialog.info",
                   buttons: [
                     {
@@ -208,21 +208,21 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
       { sep: true },
       {
         caption: "File manager",
-        image: runtime.getIconCached("FileManagerIcon"),
+        image: "FileManagerIcon",
         action: () => {
           runtime.spawnApp("fileManager", shellPid(), UserPaths.Home);
         },
       },
       {
         caption: "Processes",
-        image: runtime.getIconCached("ProcessManagerIcon"),
+        image: "ProcessManagerIcon",
         action: () => {
           runtime.spawnApp("processManager", shellPid());
         },
       },
       {
         caption: "Settings",
-        image: runtime.getIconCached("SettingsIcon"),
+        image: "SettingsIcon",
         action: () => {
           runtime.spawnApp("systemSettings", shellPid());
         },
@@ -230,17 +230,17 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
       { sep: true },
       {
         caption: "Shut down",
-        image: runtime.getIconCached("ShutdownIcon"),
+        image: "ShutdownIcon",
         action: () => runtime.userDaemon?.shutdown(),
       },
       {
         caption: "Log off",
-        image: runtime.getIconCached("LogoutIcon"),
+        image: "LogoutIcon",
         action: () => runtime.userDaemon?.logoff(),
       },
       {
         caption: "Restart",
-        image: runtime.getIconCached("RestartIcon"),
+        image: "RestartIcon",
         action: () => runtime.userDaemon?.restart(),
       },
       { sep: true },
@@ -298,7 +298,7 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
       },
       {
         caption: "Personalize...",
-        image: runtime.getIconCached("PersonalizationIcon"),
+        image: "PersonalizationIcon",
         action: async () => {
           await runtime.spawnApp("systemSettings", shellPid(), "visuals");
         },

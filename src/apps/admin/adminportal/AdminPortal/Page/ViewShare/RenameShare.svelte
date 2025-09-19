@@ -12,7 +12,7 @@
       `Are you sure you want to change the name of share '${share.shareName}' to '${newName}'?`,
       "Cancel",
       "Rename",
-      process.getIconCached("QuestionIcon")
+      "QuestionIcon"
     );
 
     if (!confirm || !newName) return;

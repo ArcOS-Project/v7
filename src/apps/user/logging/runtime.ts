@@ -1,4 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
+import { Kernel } from "$ts/env";
 import { KernelLogs } from "$ts/getters";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -21,10 +22,7 @@ export class LoggingRuntime extends AppProcess {
     this.archive = archive || [];
     this.isArchive = this.archive.length > 0;
 
-    if (this.archive.length) {
-      // TODO: MAKE REACTIVE AGAIN
-      this.updateGroups();
-    }
+    this.updateGroups();
 
     this.dispatch.subscribe("change-source", (source) => {
       this.currentSource.set(source);

@@ -59,9 +59,9 @@ export class TrashCanService extends BaseService {
     const isDir = await this.fs.isDirectory(path);
     const name = getItemNameFromPath(path);
     const deletedPath = join(UserPaths.Trashcan, uuid);
-    const icon = this.host.daemon.getIconCached(
-      isDir ? "FolderIcon" : this.host.daemon?.assoc?.getFileAssociation(name)?.icon || "DefaultMimeIcon"
-    );
+    const icon = isDir
+      ? this.host.daemon.getIconCached("FolderIcon")
+      : this.host.daemon?.assoc?.getFileAssociation(name)?.icon || "DefaultMimeIcon";
     const node = {
       originalPath: path,
       deletedPath: join(deletedPath, name),

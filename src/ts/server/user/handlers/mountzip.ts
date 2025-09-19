@@ -5,7 +5,7 @@ const mountZipFile: (d: UserDaemon) => FileHandler = (daemon) => ({
   opens: {
     extensions: [".zip", ".tpab", ".arc"],
   },
-  icon: daemon.getIconCached("CompressMimeIcon"),
+  icon: "CompressMimeIcon",
   name: "Mount ZIP file",
   description: "View the contents of this archive",
   async handle(path) {

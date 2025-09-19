@@ -38,6 +38,14 @@ export class ShellRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.setSource(__SOURCE__);
+
+    this.FullscreenCount.subscribe((v) =>
+      console.warn(
+        this.userDaemon?.getCurrentDesktop()?.id && this.FullscreenCount()[this.userDaemon?.getCurrentDesktop()?.id!]?.size > 0,
+        v,
+        this.userDaemon?.getCurrentDesktop()
+      )
+    );
   }
 
   async start() {
@@ -248,7 +256,7 @@ export class ShellRuntime extends AppProcess {
             "The workspace you want to delete still has windows opened in it. You have to close all windows in a workspace before you can delete it.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           sound: "arcos.dialog.error",
-          image: this.getIconCached("WarningIcon"),
+          image: "WarningIcon",
         },
         this.pid,
         true

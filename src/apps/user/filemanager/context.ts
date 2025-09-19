@@ -81,7 +81,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
                   suggested: true,
                 },
               ],
-              image: runtime.getIconCached("WarningIcon"),
+              image: "WarningIcon",
               sound: "arcos.dialog.warning",
             },
             runtime.pid,

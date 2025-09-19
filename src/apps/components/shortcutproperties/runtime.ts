@@ -43,7 +43,7 @@ export class ShortcutPropertiesRuntime extends AppProcess {
       {
         title: "Failed to save",
         message: "An error occured while trying to save the shortcut. Please try again",
-        image: this.getIconCached("ErrorIcon"),
+        image: "ErrorIcon",
         sound: "arcos.dialog.error",
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
       },

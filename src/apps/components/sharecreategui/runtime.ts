@@ -39,7 +39,7 @@ export class ShareCreateGuiRuntime extends AppProcess {
           message:
             "ArcOS was unable to create the share you requested. You might already have the maximum amount of shares in your account.",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: this.getIconCached("ErrorIcon"),
+          image: "ErrorIcon",
           sound: "arcos.dialog.error",
         },
         this.pid,

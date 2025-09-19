@@ -19,7 +19,7 @@
   <Header {data} {process}></Header>
   <div class="top">
     <p class="what">{@html data.what}</p>
-    <Display {data} />
+    <Display {data} {process} />
     <Notice {userPreferences} />
     <Password {process} />
     <div class="login-status">

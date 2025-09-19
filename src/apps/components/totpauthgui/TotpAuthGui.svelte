@@ -43,7 +43,7 @@
             },
           ],
           sound: "arcos.dialog.error",
-          image: process.getIconCached("ErrorIcon"),
+          image: "ErrorIcon",
         },
         process.parentPid,
         true
