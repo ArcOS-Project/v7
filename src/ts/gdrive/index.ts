@@ -14,6 +14,8 @@ export class GoogleDriveIntegration extends BaseService {
   private readonly SCOPES = "https://www.googleapis.com/auth/drive";
   private ready = false;
 
+  //#region LIFECYCLE
+
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(pid, parentPid, name, host);
   }
@@ -36,6 +38,14 @@ export class GoogleDriveIntegration extends BaseService {
       });
     });
   }
+
+  async stop() {
+    this.ready = false;
+    this.scriptTag?.remove();
+    (window as any).gapi = null;
+  }
+
+  //#endregion
 
   private async loadCredentials() {
     try {
@@ -111,12 +121,6 @@ export class GoogleDriveIntegration extends BaseService {
     } catch (error) {
       return false;
     }
-  }
-
-  async stop() {
-    this.ready = false;
-    this.scriptTag?.remove();
-    (window as any).gapi = null;
   }
 
   async signOut(): Promise<void> {
