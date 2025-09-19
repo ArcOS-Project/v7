@@ -67,7 +67,6 @@ export class FileAssocService extends BaseService {
 
   public defaultFileAssociations(): FileAssociationConfig {
     const apps = this.host.getService<ApplicationStorage>("AppStorage")?.buffer() || [];
-    console.log(apps, this.host.Services());
     const result: FileAssociationConfig = {
       associations: {
         apps: {},

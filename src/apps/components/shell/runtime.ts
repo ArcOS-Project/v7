@@ -38,14 +38,6 @@ export class ShellRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.setSource(__SOURCE__);
-
-    this.FullscreenCount.subscribe((v) =>
-      console.warn(
-        this.userDaemon?.getCurrentDesktop()?.id && this.FullscreenCount()[this.userDaemon?.getCurrentDesktop()?.id!]?.size > 0,
-        v,
-        this.userDaemon?.getCurrentDesktop()
-      )
-    );
   }
 
   async start() {

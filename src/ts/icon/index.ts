@@ -123,7 +123,6 @@ export class IconService extends BaseService {
           const app = this.host.daemon.appStorage()?.getAppSynchronous(data);
           if (!app) iconPath = this.DEFAULT_ICON;
           else iconPath = this.getAppIcon(app, app.workingDirectory);
-          console.log(data, app, iconPath);
           break;
         case "builtin":
           iconPath = maybeIconId(data) || this.DEFAULT_ICON;

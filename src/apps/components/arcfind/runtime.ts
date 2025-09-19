@@ -104,7 +104,6 @@ export class ArcFindRuntime extends AppProcess {
       });
     }
 
-    console.log(result);
     return result;
   }
 

@@ -1898,8 +1898,7 @@ export class UserDaemon extends Process {
       if (data.admin) this.env.set("administrator", data.admin);
 
       return response.status === 200 ? (response.data as UserInfo) : undefined;
-    } catch (e) {
-      console.log((e as any).response.data);
+    } catch {
       await this.killSelf();
 
       return undefined;
