@@ -106,6 +106,7 @@ div.shell div.taskbar div.tray-icons {
 
 div.shell div.taskbar div.status-area {
   gap: 10px;
+  padding: 0 10px;
 }
 
 div.shell div.taskbar div.tray-icons div.icon,
@@ -133,6 +134,8 @@ div.shell div.taskbar div.pinned-apps {
   padding: 3px;
   background-color: var(--button-glass-bg);
   border-radius: 10px;
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
 }
 
 div.shell div.taskbar div.pinned-apps img {

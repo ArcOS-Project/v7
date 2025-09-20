@@ -90,6 +90,8 @@
 
 #contextMenu div.context-menu button.menu-item:hover {
   background-color: var(--button-glass-bg);
+  outline: var(--button-glass-hover-bg) 1px solid;
+  outline-offset: -1px;
 }
 
 #contextMenu div.context-menu.colored button.menu-item:hover {

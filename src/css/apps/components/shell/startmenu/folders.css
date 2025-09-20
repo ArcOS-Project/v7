@@ -48,6 +48,8 @@ div.shell div.startmenu div.top div.folders {
   border-radius: 10px;
   padding: 10px;
   box-shadow: var(--secondary-box-shadow);
+  outline: var(--button-glass-hover-bg) 1px solid;
+  outline-offset: -1px;
 }
 
 .theme-light div.shell div.startmenu div.top div.folders button:hover {
