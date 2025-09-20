@@ -124,10 +124,7 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
             icon: "arrow-left",
             action: (proc: AppProcess) => {
               let UserDaemon = runtime.userDaemon;
-
-              if (!UserDaemon) throw new Error("UserDaemon not found in context menu runtime");
-
-              UserDaemon.moveWindow(proc.pid, workspaces[(currentWorkspace - 1 >= 0) ? currentWorkspace - 1 : workspaces.length - 1]?.uuid);
+              UserDaemon?.moveWindow(proc.pid, workspaces[(currentWorkspace - 1 >= 0) ? currentWorkspace - 1 : workspaces.length - 1]?.uuid);
             },
             disabled: () => {
               return (workspaces[(currentWorkspace - 1)] ? false : true);
@@ -138,10 +135,7 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
             icon: "arrow-right",
             action: (proc: AppProcess) => {
               let UserDaemon = runtime.userDaemon;
-
-              if (!UserDaemon) throw new Error("UserDaemon not found in context menu runtime");
-
-              UserDaemon.moveWindow(proc.pid, workspaces[(currentWorkspace + 1 <= workspaces.length - 1) ? currentWorkspace + 1 : 0]?.uuid);
+              UserDaemon?.moveWindow(proc.pid, workspaces[(currentWorkspace + 1 <= workspaces.length - 1) ? currentWorkspace + 1 : 0]?.uuid);
             },
             disabled: () => {
               return (workspaces[(currentWorkspace + 1)] ? false : true);
