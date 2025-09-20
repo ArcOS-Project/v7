@@ -443,11 +443,31 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       },
       { sep: true },
       {
-        caption: "Advanced system settings...",
-        icon: "monitor-cog",
-        action: () => {
-          runtime.userDaemon?.spawnApp("AdvSystemSettings", +runtime.env.get("shell_pid"));
-        },
+        caption: "Manage ArcOS",
+        icon: "cog",
+        subItems: [
+          {
+            caption: "Processes",
+            action: () => {
+              runtime.spawnApp("processManager", runtime.pid, "Processes");
+            },
+            icon: "logs",
+          },
+          {
+            caption: "Services",
+            action: () => {
+              runtime.spawnApp("processManager", runtime.pid, "Services");
+            },
+            icon: "hand-helping",
+          },
+          {
+            caption: "Advanced System Settings...",
+            icon: "monitor-cog",
+            action: () => {
+              runtime.userDaemon?.spawnApp("AdvSystemSettings", +runtime.env.get("shell_pid"));
+            },
+          },
+        ],
       },
       {
         caption: "Settings...",
