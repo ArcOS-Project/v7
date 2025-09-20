@@ -8,10 +8,8 @@ import type { ContextMenuRuntime } from "./runtime";
 export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContextMenu {
 
   let userDaemon = runtime.userDaemon as UserDaemon;
-  if (!userDaemon) throw new Error("UserDaemon not found in context menu runtime");
-
-  let workspaces = userDaemon.preferences().workspaces.desktops;
-  let currentWorkspace = userDaemon.preferences().workspaces.index;
+  let workspaces = userDaemon?.preferences().workspaces.desktops;
+  let currentWorkspace = userDaemon?.preferences().workspaces.index;
 
   return {
     "_window-titlebar": [
@@ -123,8 +121,7 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
             caption: "Left workspace",
             icon: "arrow-left",
             action: (proc: AppProcess) => {
-              let UserDaemon = runtime.userDaemon;
-              UserDaemon?.moveWindow(proc.pid, workspaces[(currentWorkspace - 1 >= 0) ? currentWorkspace - 1 : workspaces.length - 1]?.uuid);
+              userDaemon?.moveWindow(proc.pid, workspaces[(currentWorkspace - 1 >= 0) ? currentWorkspace - 1 : workspaces.length - 1]?.uuid);
             },
             disabled: () => {
               return (workspaces[(currentWorkspace - 1)] ? false : true);
@@ -134,8 +131,7 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
             caption: "Right workspace",
             icon: "arrow-right",
             action: (proc: AppProcess) => {
-              let UserDaemon = runtime.userDaemon;
-              UserDaemon?.moveWindow(proc.pid, workspaces[(currentWorkspace + 1 <= workspaces.length - 1) ? currentWorkspace + 1 : 0]?.uuid);
+              userDaemon?.moveWindow(proc.pid, workspaces[(currentWorkspace + 1 <= workspaces.length - 1) ? currentWorkspace + 1 : 0]?.uuid);
             },
             disabled: () => {
               return (workspaces[(currentWorkspace + 1)] ? false : true);
