@@ -12,6 +12,8 @@ export class ServiceInfoRuntime extends AppProcess {
   serviceProcess = Store<BaseService | undefined>();
   serviceSubscriber?: Unsubscriber;
 
+  //#region LIFECYCLE
+
   constructor(pid: number, parentPid: number, app: AppProcessData, serviceId: string) {
     super(pid, parentPid, app);
 
@@ -32,6 +34,8 @@ export class ServiceInfoRuntime extends AppProcess {
   async stop() {
     this.serviceSubscriber?.();
   }
+
+  //#endregion
 
   async toggleRunningState() {
     if (this.service()?.pid) {
