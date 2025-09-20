@@ -42,6 +42,7 @@ export const DefaultUserPreferences: UserPreferences = {
       showHiddenApps: false,
       noGlass: false,
       trafficLights: false,
+      blurRadius: 10,
     },
     customStyle: {
       enabled: false,

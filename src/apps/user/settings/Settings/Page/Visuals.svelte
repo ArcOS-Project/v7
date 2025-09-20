@@ -41,6 +41,10 @@
     <Option caption="Enable the traffic light controls">
       <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.visuals.trafficLights} />
     </Option>
+    <Option caption="Window blur radius">
+      <input type="number" class="" min="1" max="15" step="1" bind:value={$userPreferences.shell.visuals.blurRadius} />
+      <span>px</span>
+    </Option>
   </Section>
 
   <Section caption="Additional tweaks">

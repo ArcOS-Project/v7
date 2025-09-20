@@ -1794,7 +1794,9 @@ export class UserDaemon extends Process {
   getAppRendererStyle(accent: string) {
     if (this._disposed) return "";
 
-    return `--accent: ${hex3to6(accent)} !important;
+    return `
+    --blur: ${this.preferences().shell.visuals.blurRadius}px;
+    --accent: ${hex3to6(accent)} !important;
     --accent-transparent: ${hex3to6(accent)}44 !important;
     --accent-light: ${lightenColor(accent)} !important;
     --accent-lighter: ${lightenColor(accent, 7.5)} !important;
@@ -1806,7 +1808,7 @@ export class UserDaemon extends Process {
     --accent-suggested-end: ${darkenColor(accent, 10)} !important;
     --accent-suggested-fg: ${bestForeground(accent)} !important;
     --wallpaper: url('${this.Wallpaper()?.url || Wallpapers.img0.url}');
-    --user-font: "${this.preferences().shell.visuals.userFont || ""}"`;
+    --user-font: "${this.preferences().shell.visuals.userFont || ""}";`;
   }
 
   async setAppRendererClasses(v: UserPreferences) {

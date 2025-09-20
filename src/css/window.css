@@ -91,7 +91,7 @@ div.window:not(.core):not(.glass).focused {
 }
 
 div.window:not(.core):not(.glass).focused > div.titlebar {
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--blur));
 }
 
 div.window:not(.core):not(.glass) > div.body {

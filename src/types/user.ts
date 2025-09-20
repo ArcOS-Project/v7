@@ -119,6 +119,7 @@ export interface VisualPreferences {
   noGlass: boolean;
   userFont?: string;
   trafficLights: boolean;
+  blurRadius: number;
 }
 
 export interface SecurityPreferences {
