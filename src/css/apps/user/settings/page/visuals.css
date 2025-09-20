@@ -1,3 +1,6 @@
+#systemSettings > div.body div.visuals div.blur-radius {
+  padding-right: 5px;
+}
 #systemSettings > div.body div.visuals div.blur-radius div.right {
   display: flex;
   align-items: center;
