@@ -1818,7 +1818,6 @@ export class UserDaemon extends Process {
 
     const accent = v.desktop.accent;
     const theme = v.desktop.theme;
-    let blur = v.shell.visuals.blurRadius;
 
     let style = this.getAppRendererStyle(accent);
 
@@ -1832,7 +1831,6 @@ export class UserDaemon extends Process {
     renderer.classList.toggle("noglass", v.shell.visuals.noGlass || this.safeMode);
     renderer.classList.toggle("safe-mode", this.safeMode);
     renderer.classList.toggle("traffic-lights", v.shell.visuals.trafficLights);
-    // renderer.style.setProperty("--blur", `${blur}px`);
   }
 
   setUserStyleLoader(style: CustomStylePreferences) {

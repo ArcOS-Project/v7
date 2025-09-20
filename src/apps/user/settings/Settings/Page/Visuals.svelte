@@ -1,10 +1,7 @@
 <script lang="ts">
-  import { KernelStack } from "$ts/env";
-  import { blur } from "svelte/transition";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
-  import Themes from "./Themes.svelte";
 
   const { process }: { process: SettingsRuntime } = $props();
   const { userPreferences } = process;
@@ -45,14 +42,7 @@
       <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.visuals.trafficLights} />
     </Option>
     <Option caption="Window blur radius">
-      <input 
-        type="number" 
-        class="" 
-        min="1" 
-        max="15" 
-        step="1" 
-        bind:value={$userPreferences.shell.visuals.blurRadius} 
-      />
+      <input type="number" class="" min="1" max="15" step="1" bind:value={$userPreferences.shell.visuals.blurRadius} />
       <span>px</span>
     </Option>
   </Section>
