@@ -1,9 +1,16 @@
 import type { AppProcess } from "$ts/apps/process";
 import { KernelStack } from "$ts/env";
+import { Log } from "$ts/logging";
+import { UserDaemon } from "$ts/server/user/daemon";
 import type { AppContextMenu } from "$types/app";
 import type { ContextMenuRuntime } from "./runtime";
 
 export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContextMenu {
+
+  let userDaemon = runtime.userDaemon as UserDaemon;
+  let workspaces = userDaemon?.preferences().workspaces.desktops;
+  let currentWorkspace = userDaemon?.preferences().workspaces.index;
+
   return {
     "_window-titlebar": [
       {
@@ -21,6 +28,7 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
         },
       },
       { sep: true },
+      
       {
         caption: "Minimize",
         action: (proc: AppProcess) => {
@@ -103,6 +111,31 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
             icon: "arrow-down-right",
             action: (proc: AppProcess) => KernelStack().renderer?.snapWindow(proc?.pid, "bottom-right"),
             isActive: (proc: AppProcess) => proc?.getWindow()?.dataset.snapstate === "bottom-right",
+          },
+        ],
+      },{
+        caption: "Move to workspace",
+        icon: "rotate-ccw-square",
+        subItems: [
+          { 
+            caption: "Left workspace",
+            icon: "arrow-left",
+            action: (proc: AppProcess) => {
+              userDaemon?.moveWindow(proc.pid, workspaces[(currentWorkspace - 1 >= 0) ? currentWorkspace - 1 : workspaces.length - 1]?.uuid);
+            },
+            disabled: () => {
+              return (workspaces[(currentWorkspace - 1)] ? false : true);
+            },
+          },
+          { 
+            caption: "Right workspace",
+            icon: "arrow-right",
+            action: (proc: AppProcess) => {
+              userDaemon?.moveWindow(proc.pid, workspaces[(currentWorkspace + 1 <= workspaces.length - 1) ? currentWorkspace + 1 : 0]?.uuid);
+            },
+            disabled: () => {
+              return (workspaces[(currentWorkspace + 1)] ? false : true);
+            },
           },
         ],
       },

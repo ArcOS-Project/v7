@@ -79,6 +79,7 @@ import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultFileHandlers, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
 import { ComponentIcon } from "$ts/images/general";
+import VirtualDesktops from "$apps/components/shell/Shell/VirtualDesktops.svelte";
 //#endregion
 
 export class UserDaemon extends Process {
