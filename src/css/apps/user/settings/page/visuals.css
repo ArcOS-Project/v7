@@ -1,0 +1,23 @@
+#systemSettings > div.body div.visuals div.blur-radius {
+  padding-right: 5px;
+}
+#systemSettings > div.body div.visuals div.blur-radius div.right {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  border: var(--win-border);
+  padding: 10px;
+  height: 30px;
+  border-radius: 8px;
+}
+
+#systemSettings > div.body div.visuals div.blur-radius div.right span {
+  opacity: 0.5;
+}
+#systemSettings > div.body div.visuals div.blur-radius div.right input {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background-color: var(--button-bg);
+  border-radius: 0;
+}
