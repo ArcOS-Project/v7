@@ -1806,7 +1806,8 @@ export class UserDaemon extends Process {
     --accent-suggested-end: ${darkenColor(accent, 10)} !important;
     --accent-suggested-fg: ${bestForeground(accent)} !important;
     --wallpaper: url('${this.Wallpaper()?.url || Wallpapers.img0.url}');
-    --user-font: "${this.preferences().shell.visuals.userFont || ""}"`;
+    --user-font: "${this.preferences().shell.visuals.userFont || ""};
+    --blur: ${this.preferences().shell.visuals.blurRadius}px !important;`;
   }
 
   async setAppRendererClasses(v: UserPreferences) {
@@ -1816,6 +1817,7 @@ export class UserDaemon extends Process {
 
     const accent = v.desktop.accent;
     const theme = v.desktop.theme;
+    let blur = v.shell.visuals.blurRadius;
 
     let style = this.getAppRendererStyle(accent);
 
@@ -1829,6 +1831,7 @@ export class UserDaemon extends Process {
     renderer.classList.toggle("noglass", v.shell.visuals.noGlass || this.safeMode);
     renderer.classList.toggle("safe-mode", this.safeMode);
     renderer.classList.toggle("traffic-lights", v.shell.visuals.trafficLights);
+    // renderer.style.setProperty("--blur", `${blur}px`);
   }
 
   setUserStyleLoader(style: CustomStylePreferences) {

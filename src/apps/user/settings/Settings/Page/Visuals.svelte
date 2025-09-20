@@ -1,7 +1,10 @@
 <script lang="ts">
+  import { KernelStack } from "$ts/env";
+  import { blur } from "svelte/transition";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
+  import Themes from "./Themes.svelte";
 
   const { process }: { process: SettingsRuntime } = $props();
   const { userPreferences } = process;
@@ -40,6 +43,33 @@
   <Section caption="Windows">
     <Option caption="Enable the traffic light controls">
       <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.visuals.trafficLights} />
+    </Option>
+    <Option caption="Window blur radius">
+      <input 
+        type="number" 
+        class="" 
+        min="1" 
+        max="15" 
+        step="1" 
+        bind:value={$userPreferences.shell.visuals.blurRadius} 
+        oninput={() => { 
+          let renderer = KernelStack().renderer?.target;
+
+          if (!renderer) throw new Error("SettingsApp: Tried to set blur radius value on renderer without renderer");
+
+          // renderer.style.setProperty("--blur", `${$userPreferences.shell.visuals.blurRadius}px`);
+          if ($userPreferences.shell.visuals.blurRadius < 1) {
+            $userPreferences.shell.visuals.blurRadius = 1;
+          } else if ($userPreferences.shell.visuals.blurRadius > 15) {
+            $userPreferences.shell.visuals.blurRadius = 15;
+          }
+          
+          if (isNaN($userPreferences.shell.visuals.blurRadius)) {
+            $userPreferences.shell.visuals.blurRadius = 10;
+          }
+        }}
+      />
+      <span>px</span>
     </Option>
   </Section>
 
