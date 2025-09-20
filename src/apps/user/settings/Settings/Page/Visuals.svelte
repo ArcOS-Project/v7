@@ -52,22 +52,6 @@
         max="15" 
         step="1" 
         bind:value={$userPreferences.shell.visuals.blurRadius} 
-        oninput={() => { 
-          let renderer = KernelStack().renderer?.target;
-
-          if (!renderer) throw new Error("SettingsApp: Tried to set blur radius value on renderer without renderer");
-
-          // renderer.style.setProperty("--blur", `${$userPreferences.shell.visuals.blurRadius}px`);
-          if ($userPreferences.shell.visuals.blurRadius < 1) {
-            $userPreferences.shell.visuals.blurRadius = 1;
-          } else if ($userPreferences.shell.visuals.blurRadius > 15) {
-            $userPreferences.shell.visuals.blurRadius = 15;
-          }
-          
-          if (isNaN($userPreferences.shell.visuals.blurRadius)) {
-            $userPreferences.shell.visuals.blurRadius = 10;
-          }
-        }}
       />
       <span>px</span>
     </Option>
