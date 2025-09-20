@@ -24,11 +24,12 @@ export class ProcessManagerRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, app: AppProcessData) {
+  constructor(pid: number, parentPid: number, app: AppProcessData, page?: string) {
     super(pid, parentPid, app);
 
     this.setSource(__SOURCE__);
     this.host = this.userDaemon?.serviceHost!;
+    if (page && this.tabs[page]) this.currentTab.set(page);
   }
 
   //#endregion
@@ -89,5 +90,11 @@ export class ProcessManagerRuntime extends AppProcess {
       this.pid,
       true
     );
+  }
+
+  serviceInfoFor(id: string) {
+    if (!this.host.getService(id)) return;
+
+    this.spawnOverlayApp("ServiceInfo", +this.env.get("shell_pid"), id);
   }
 }

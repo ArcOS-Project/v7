@@ -1,0 +1,52 @@
+#ServiceInfo > div.body {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#ServiceInfo > div.body div.header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+#ServiceInfo > div.body div.header img {
+  height: 64px;
+}
+
+#ServiceInfo > div.body div.header h1 {
+  font-size: 22px;
+}
+
+#ServiceInfo > div.body div.header p {
+  opacity: 0.5;
+}
+
+#ServiceInfo > div.body div.header button {
+  margin-left: auto;
+  color: var(--win-bg);
+  font-weight: bold;
+}
+
+#ServiceInfo > div.body div.header button.start {
+  background-color: var(--clr-green-fg) !important;
+}
+
+#ServiceInfo > div.body div.header button.stop {
+  background-color: var(--clr-red-fg) !important;
+}
+
+#ServiceInfo > div.body div.actions {
+  padding: 10px;
+  background-color: var(--button-bg);
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 10px;
+  border-radius: 15px;
+  margin-top: auto;
+  box-shadow: var(--secondary-box-shadow);
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
+}
