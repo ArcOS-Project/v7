@@ -21,3 +21,22 @@
   background-color: var(--button-hover-bg);
   margin: 0 5px;
 }
+
+.no-trash-service {
+  display: flex;
+  justify-content: center;
+  gap: 0.5em;
+  align-items: center;
+  margin: 1em;
+}
+
+#fileManager > div.body > div.container > div.main-content > div.virtual-page.recycle_bin > div > p {
+  opacity: .5;
+  font-style: italic;
+  transition: color .3s !important;
+}
+
+#fileManager > div.body > div.container > div.main-content > div.virtual-page.recycle_bin > div > span {
+  opacity: .5;
+  transition: color .3s !important;
+}
