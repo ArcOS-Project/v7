@@ -20,7 +20,7 @@ div.shell div.taskbar {
     opacity 0.3s,
     margin-top 0.3s;
   translate: 0 70px;
-  animation: arcShell_taskbar_appear 0.3s cubic-bezier(0.075, 0.82, 0.165, 1) forwards;
+  animation: arcShell_taskbar_appear 0.3s cubic-bezier(0.075, 0.82, 0.165, 1) forwards !important;
 }
 
 div.shell.docked div.taskbar.shell-colored::before {
