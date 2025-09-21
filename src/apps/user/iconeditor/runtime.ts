@@ -13,6 +13,8 @@ export class IconEditorRuntime extends AppProcess {
   selectedGroup = Store<string>("");
   hasChanges = Store<boolean>(false);
 
+  //#region LIFECYCLE
+
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
   }
@@ -31,6 +33,23 @@ export class IconEditorRuntime extends AppProcess {
       this.updateFiltered(v);
     });
   }
+
+  async onClose(): Promise<boolean> {
+    if (!this.hasChanges()) return true;
+
+    const saveChanges = await this.userDaemon?.Confirm(
+      "Save changes?",
+      "Do you want to save the changes you made to your icon set?",
+      "Discard",
+      "Save changes",
+      "SaveIcon",
+      this.pid
+    );
+
+    return !saveChanges;
+  }
+
+  //#endregion
 
   revert() {
     this.icons.set({ ...(this.iconService?.Configuration() || {}) });
@@ -56,16 +75,6 @@ export class IconEditorRuntime extends AppProcess {
   }
 
   async save() {
-    const elevated = await this.userDaemon?.manuallyElevate({
-      what: "ArcOS needs your permission to update your icon set and restart",
-      image: "AppsIcon",
-      title: "Save configuration",
-      description: "IconService",
-      level: ElevationLevel.medium,
-    });
-
-    if (!elevated) return;
-
     this.iconService?.Configuration.set({ ...this.icons() });
     this.closeWindow();
     this.userDaemon?.restart();

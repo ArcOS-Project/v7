@@ -9,6 +9,8 @@ export class IconEditDialogRuntime extends AppProcess {
   values = Store<Record<string, string>>({});
   currentIcon = Store<string>();
 
+  //#region LIFECYCLE
+
   constructor(pid: number, parentPid: number, app: AppProcessData, store?: ReadableStore<Record<string, string>>, id?: string) {
     super(pid, parentPid, app);
 
@@ -28,6 +30,8 @@ export class IconEditDialogRuntime extends AppProcess {
     this.type.subscribe((v) => this.updateCurrentIcon(v));
     this.values.subscribe((v) => this.updateCurrentIcon(this.type(), v));
   }
+
+  //#endregion
 
   async updateCurrentIcon(type: string = this.type(), values: Record<string, any> = this.values()) {
     console.log(type, values);
