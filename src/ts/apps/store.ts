@@ -41,6 +41,7 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/components/globalloadindicator/GlobalLoadIndicator",
   "$apps/components/processinfo/ProcessInfoApp",
   "$apps/components/serviceinfo/ServiceInfo",
+  "$apps/components/iconeditdialog/IconEditDialog",
   "$apps/user/advsystemsettings/AdvSystemSettings",
   "$apps/user/appstore/AppStore",
   "$apps/user/arcterm/ArcTerm",

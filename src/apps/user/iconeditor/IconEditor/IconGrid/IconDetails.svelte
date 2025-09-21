@@ -34,7 +34,7 @@
         </div>
       </div>
       <div class="actions">
-        <button class="suggested">Change...</button>
+        <button class="suggested" onclick={() => process.editIcon()}>Change...</button>
         <button
           disabled={type === "@builtin" && value === $selectedIcon}
           onclick={() => ($icons[$selectedIcon] = `@builtin::${$selectedIcon}`)}>Reset</button

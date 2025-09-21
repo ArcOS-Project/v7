@@ -70,4 +70,8 @@ export class IconEditorRuntime extends AppProcess {
     this.closeWindow();
     this.userDaemon?.restart();
   }
+
+  async editIcon() {
+    this.spawnOverlayApp("IconEditDialog", this.pid, this.icons, this.selectedIcon());
+  }
 }

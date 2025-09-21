@@ -1,0 +1,140 @@
+#IconEditDialog > div.body {
+  padding: 0;
+  display: flex;
+}
+
+#IconEditDialog > div.body div.left {
+  width: 0;
+  flex-grow: 1;
+  border-right: var(--win-border);
+  display: flex;
+  flex-direction: column;
+}
+
+#IconEditDialog > div.body div.left div.top {
+  padding: 15px;
+}
+
+#IconEditDialog > div.body div.left div.top h1 {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+#IconEditDialog > div.body div.left div.top div.mode-toggle {
+  display: flex;
+  padding: 5px;
+  gap: 5px;
+  background-color: var(--button-glass-bg);
+  border-radius: 10px;
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
+  margin-bottom: 15px;
+}
+
+#IconEditDialog > div.body div.left div.top div.mode-toggle button {
+  width: 110px;
+  height: 30px;
+  border-radius: 8px;
+}
+
+#IconEditDialog > div.body div.left div.top div.mode-toggle button.selected {
+  background-color: var(--button-glass-bg);
+}
+
+#IconEditDialog > div.body div.left div.top div.mode-toggle button:not(.selected):not(:hover) {
+  outline: none;
+  background-color: transparent;
+}
+
+#IconEditDialog > div.body div.left div.top select {
+  width: 100%;
+  height: 33px;
+  padding: 0 10px;
+}
+
+#IconEditDialog > div.body div.left div.top h2 {
+  opacity: 0.5;
+  margin-bottom: 5px;
+}
+
+#IconEditDialog > div.body div.left div.top div.input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#IconEditDialog > div.body div.left div.top div.input div.field,
+#IconEditDialog > div.body div.left div.top div.input input {
+  flex-grow: 1;
+}
+
+#IconEditDialog > div.body div.left div.top div.input button.lucide {
+  width: 33px;
+  height: 33px;
+  border-radius: 10px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+}
+
+#IconEditDialog > div.body div.left div.top div.input div.field {
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: var(--win-border);
+  border-radius: 10px;
+  height: 33px;
+}
+
+#IconEditDialog > div.body div.left div.top div.input div.field img {
+  height: 16px;
+}
+
+#IconEditDialog > div.body div.left div.bottom {
+  display: flex;
+  justify-content: end;
+  padding: 10px;
+  border-top: var(--win-border);
+  margin-top: auto;
+  gap: 10px;
+}
+
+#IconEditDialog > div.body div.left div.bottom button.default {
+  margin-right: auto;
+}
+
+#IconEditDialog > div.body div.right {
+  width: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+#IconEditDialog > div.body div.right div.icon {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--button-glass-bg);
+  border: var(--button-glass-bg) 1px solid;
+  border-radius: 10px;
+}
+
+#IconEditDialog > div.body div.right div.icon img {
+  height: 64px;
+}
+
+#IconEditDialog > div.body div.right h1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+  text-align: center;
+  padding: 0 10px;
+}
