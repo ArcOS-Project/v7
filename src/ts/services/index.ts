@@ -3,6 +3,7 @@ import { bhuspService } from "$ts/bughunt/process";
 import { devEnvironmentService } from "$ts/devenv";
 import { distributionService } from "$ts/distrib";
 import { KernelStack } from "$ts/env";
+import gdriveService from "$ts/gdrive";
 import iconService from "$ts/icon";
 import { Process } from "$ts/process/instance";
 import { protoService } from "$ts/proto";
@@ -77,6 +78,7 @@ export class ServiceHost extends Process {
     ["DistribSvc", { ...distributionService }],
     ["ProtoService", { ...protoService }],
     ["IconService", { ...iconService }],
+    ["GoogleDriveSvc", { ...gdriveService }],
   ]);
 
   public loadStore(store: ServiceStore) {
