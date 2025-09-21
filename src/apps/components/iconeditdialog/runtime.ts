@@ -34,9 +34,7 @@ export class IconEditDialogRuntime extends AppProcess {
   //#endregion
 
   async updateCurrentIcon(type: string = this.type(), values: Record<string, any> = this.values()) {
-    console.log(type, values);
     this.currentIcon.set(await this.getIcon(`${type}::${values[type]}`));
-    console.log(this.currentIcon());
   }
 
   default() {
