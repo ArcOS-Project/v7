@@ -1576,54 +1576,56 @@ export class UserDaemon extends Process {
   appStorage() {
     return this.serviceHost?.getService<ApplicationStorage>("AppStorage");
   }
-
   async initAppStorage(storage: ApplicationStorage, cb: (app: App) => void) {
     this.Log(`Now trying to load built-in applications...`);
 
-    const builtins: App[] = [];
     const blocklist = this.preferences()._internalImportBlocklist || [];
 
-    for (const path in BuiltinAppImportPathAbsolutes) {
-      if (!this.safeMode && blocklist.includes(path)) continue;
-      try {
-        const start = performance.now();
-        const mod = await BuiltinAppImportPathAbsolutes[path]();
-        const app = (mod as any).default as App;
+    const builtins: App[] = await Promise.all(
+      Object.keys(BuiltinAppImportPathAbsolutes).map(async (path) => {
+        if (!this.safeMode && blocklist.includes(path)) return null;
+        try {
+          const start = performance.now();
+          const mod = await BuiltinAppImportPathAbsolutes[path]();
+          const app = (mod as any).default as App;
 
-        if (app._internalMinVer && compareVersion(ArcOSVersion, app._internalMinVer) === "higher")
-          throw `Not loading ${app.metadata.name} because this app requires a newer version of ArcOS`;
+          if (app._internalMinVer && compareVersion(ArcOSVersion, app._internalMinVer) === "higher")
+            throw `Not loading ${app.metadata.name} because this app requires a newer version of ArcOS`;
 
-        if (app._internalSysVer || app._internalOriginalPath)
-          throw `Can't load dubious built-in app '${app.id}' because it contains runtime-level properties set before runtime`;
+          if (app._internalSysVer || app._internalOriginalPath)
+            throw `Can't load dubious built-in app '${app.id}' because it contains runtime-level properties set before runtime`;
 
-        const end = performance.now() - start;
-        const appCopy = await deepCopyWithBlobs<App>(app);
+          const end = performance.now() - start;
+          const appCopy = await deepCopyWithBlobs<App>(app);
 
-        appCopy._internalSysVer = `v${ArcOSVersion}-${ArcMode()}_${ArcBuild()}`;
-        appCopy._internalOriginalPath = path;
-        appCopy._internalLoadTime = end;
+          appCopy._internalSysVer = `v${ArcOSVersion}-${ArcMode()}_${ArcBuild()}`;
+          appCopy._internalOriginalPath = path;
+          appCopy._internalLoadTime = end;
 
-        builtins.push(appCopy);
-        cb(appCopy);
-        this.Log(
-          `Loaded app: ${path}: ${appCopy.metadata.name} by ${appCopy.metadata.author}, version ${app.metadata.version} (${end.toFixed(2)}ms)`
-        );
-      } catch (e) {
-        await new Promise<void>((r) => {
-          MessageBox(
-            {
-              title: "App load error",
-              message: `ArcOS failed to load a built-in app because of an error. ${e}.`,
-              buttons: [{ caption: "Okay", action: () => r(), suggested: true }],
-              image: "WarningIcon",
-            },
-            +this.env.get("loginapp_pid"),
-            true
+          cb(appCopy);
+          this.Log(
+            `Loaded app: ${path}: ${appCopy.metadata.name} by ${appCopy.metadata.author}, version ${app.metadata.version} (${end.toFixed(2)}ms)`
           );
-        });
-        this.Log(`Failed to load app ${path}: ${e}`);
-      }
-    }
+
+          return appCopy;
+        } catch (e) {
+          await new Promise<void>((r) => {
+            MessageBox(
+              {
+                title: "App load error",
+                message: `ArcOS failed to load a built-in app because of an error. ${e}.`,
+                buttons: [{ caption: "Okay", action: () => r(), suggested: true }],
+                image: "WarningIcon",
+              },
+              +this.env.get("loginapp_pid"),
+              true
+            );
+          });
+          this.Log(`Failed to load app ${path}: ${e}`);
+          return null;
+        }
+      })
+    ).then((apps) => apps.filter((a): a is App => a !== null));
 
     storage.loadOrigin("builtin", () => builtins);
     storage.loadOrigin("userApps", async () => await this.getUserApps());
