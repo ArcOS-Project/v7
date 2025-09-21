@@ -41,6 +41,7 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/components/globalloadindicator/GlobalLoadIndicator",
   "$apps/components/processinfo/ProcessInfoApp",
   "$apps/components/serviceinfo/ServiceInfo",
+  "$apps/components/iconeditdialog/IconEditDialog",
   "$apps/user/advsystemsettings/AdvSystemSettings",
   "$apps/user/appstore/AppStore",
   "$apps/user/arcterm/ArcTerm",
@@ -60,6 +61,7 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/user/qlorb/QlorbApp",
   "$apps/user/settings/systemSettings",
   "$apps/user/writer/writer",
+  "$apps/user/iconeditor/IconEditorApp",
 ]);
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];

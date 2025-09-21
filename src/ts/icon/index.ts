@@ -1,15 +1,13 @@
 import { getAllImages, getGroupedIcons, iconIdFromPath, maybeIconId } from "$ts/images";
-import { ComponentIcon } from "$ts/images/general";
 import { tryJsonParse } from "$ts/json";
 import { UserPaths } from "$ts/server/user/store";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
-import { arrayToBlob, arrayToText, textToBlob } from "$ts/util/convert";
+import { arrayToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { App } from "$types/app";
 import type { Service } from "$types/service";
-import { fromExtension } from "human-filetypes";
 
 export class IconService extends BaseService {
   PATH = join(UserPaths.System, "IconSet.json");
@@ -101,7 +99,7 @@ export class IconService extends BaseService {
           break;
       }
 
-      iconPath = maybeIconId(iconPath);
+      // iconPath = maybeIconId(iconPath);
 
       return iconPath;
     } catch (e) {

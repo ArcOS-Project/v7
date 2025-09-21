@@ -1,0 +1,183 @@
+#IconEditorApp > div.body {
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+#IconEditorApp > div.body > div {
+  height: 100%;
+}
+
+#IconEditorApp > div.body div.sidebar {
+  height: 100%;
+  width: 200px;
+  padding: 15px;
+}
+
+#IconEditorApp > div.body div.sidebar h1 {
+  opacity: 0.5;
+  padding: 5px 7px;
+}
+
+#IconEditorApp > div.body div.sidebar button {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 5px 7px;
+  background-color: transparent;
+  outline: none;
+}
+
+#IconEditorApp > div.body div.sidebar button span.lucide {
+  color: var(--accent-light);
+}
+
+#IconEditorApp > div.body div.sidebar button.selected {
+  background-color: var(--accent-transparent);
+}
+
+#IconEditorApp > div.body div.container {
+  width: 0;
+  flex-grow: 1;
+  border-left: var(--win-border);
+  background-color: var(--win-bg);
+  position: relative;
+}
+
+#IconEditorApp > div.body div.titlebar {
+  border-bottom: var(--win-border);
+}
+
+#IconEditorApp > div.body div.content {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 40px);
+}
+
+#IconEditorApp > div.body div.grid {
+  height: 0;
+  flex-grow: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 48px);
+  grid-template-rows: repeat(auto-fit, 48px);
+  gap: 10px;
+  padding: 20px;
+  overflow-y: auto;
+  padding-right: 0;
+  position: relative;
+}
+
+#IconEditorApp > div.body div.grid.selecting {
+  padding-bottom: 155px;
+}
+
+#IconEditorApp > div.body div.grid > button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 48px;
+}
+
+#IconEditorApp > div.body div.grid > button.active {
+  background-color: var(--accent-transparent);
+  scale: 1.3;
+}
+#IconEditorApp > div.body div.grid > button img {
+  width: 32px;
+  height: 32px;
+}
+
+#IconEditorApp > div.body div.details {
+  position: absolute;
+  bottom: 50px;
+  left: 0;
+  width: 100%;
+  height: 135px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(var(--blur));
+  border-top: var(--win-border);
+}
+
+#IconEditorApp > div.body div.details div.icon {
+  width: 105px;
+  height: 105px;
+  background-color: var(--button-glass-active-bg);
+  border: var(--button-glass-bg) 1px solid;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#IconEditorApp > div.body div.details div.icon img {
+  width: 70px;
+  height: 70px;
+}
+
+#IconEditorApp > div.body div.details h1 {
+  font-size: 22px;
+  margin-bottom: 5px;
+}
+#IconEditorApp > div.body div.details div.set-to {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+#IconEditorApp > div.body div.details div.set-to > div {
+  display: flex;
+  align-items: center;
+  border: var(--button-glass-hover-bg) 1px solid;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+#IconEditorApp > div.body div.details div.set-to > div p {
+  padding: 0 5px;
+}
+
+#IconEditorApp > div.body div.details div.set-to > div p.type {
+  background-color: var(--button-glass-bg);
+  border-right: var(--button-glass-bg) 1px solid;
+}
+
+#IconEditorApp > div.body div.details div.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#IconEditorApp > div.body div.action-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  height: 50px;
+  border-top: var(--win-border);
+  background-color: var(--win-bg);
+}
+
+#IconEditorApp > div.body div.action-bar p.count {
+  opacity: 0.5;
+  margin-right: auto;
+  margin-left: 10px;
+}
+
+#IconEditorApp > div.body div.action-bar button.suggested {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding-left: 10px;
+  min-width: unset;
+}
+
+#IconEditorApp > div.body div.action-bar button.suggested span.lucide {
+  font-weight: normal;
+  font-size: 16px;
+}
