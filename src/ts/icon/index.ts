@@ -111,6 +111,7 @@ export class IconService extends BaseService {
   }
 
   getIconCached(id: string): string {
+    if (!id) return this.DEFAULT_ICON;
     const icon = id.startsWith("@") ? id : this.Configuration()[id];
 
     if (!icon) return this.DEFAULT_ICON;
