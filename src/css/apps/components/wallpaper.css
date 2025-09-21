@@ -61,7 +61,7 @@ div.desktop-wallpaper > div.wallpaper:not(.show) {
   pointer-events: initial !important;
   translate: none !important;
   --user-font: "Nunito Sans" !important;
-  animation: wallpaper_desktopIcon_appear 0.1s forwards;
+  animation: wallpaper_desktopIcon_appear 0.1s forwards !important;
   animation-delay: calc(var(--i) * 10ms);
   opacity: 0;
 }
