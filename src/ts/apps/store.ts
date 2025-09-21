@@ -60,6 +60,7 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/user/qlorb/QlorbApp",
   "$apps/user/settings/systemSettings",
   "$apps/user/writer/writer",
+  "$apps/user/iconeditor/IconEditorApp",
 ]);
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];
