@@ -1,0 +1,26 @@
+name: PBI
+description: A standard backlog item
+title: "As "
+labels: ["bug", "triage"]
+projects: ["ArcOS-Project/5"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the goal of the PBI here in technical form
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        ## Acceptance Criteria
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance
+      description: Give the criteria required for the eventual PR to be accepted
+      placeholder: "- Good quality cookies."
+      value: "A bug happened!"
+    validations:
+      required: true
