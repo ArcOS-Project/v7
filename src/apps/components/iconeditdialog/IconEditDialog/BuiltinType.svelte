@@ -14,7 +14,7 @@
 </script>
 
 <div class="edit type-builtin">
-  <h2>App:</h2>
+  <h2>Icon ID:</h2>
   <div class="input">
     <div class="field">
       {#if $values[$type]}

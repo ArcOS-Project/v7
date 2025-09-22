@@ -19,7 +19,7 @@
 </script>
 
 <div class="edit type-app">
-  <h2>App:</h2>
+  <h2>File path:</h2>
   <div class="input">
     <input type="text" readonly value={$values[$type]} />
     <button class="lucide icon-folder-open" onclick={browse} aria-label="Choose file" title="Choose file"></button>
