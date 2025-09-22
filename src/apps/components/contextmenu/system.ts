@@ -1,4 +1,4 @@
-import type { AppProcess } from "$ts/apps/process";
+import { AppProcess } from "$ts/apps/process";
 import { KernelStack } from "$ts/env";
 import { Log } from "$ts/logging";
 import { UserDaemon } from "$ts/server/user/daemon";
@@ -121,20 +121,22 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
             caption: "Left workspace",
             icon: "arrow-left",
             action: (proc: AppProcess) => {
+              if (!proc?.pid) return;
               userDaemon?.moveWindow(proc.pid, workspaces[(currentWorkspace - 1 >= 0) ? currentWorkspace - 1 : workspaces.length - 1]?.uuid);
             },
-            disabled: () => {
-              return (workspaces[(currentWorkspace - 1)] ? false : true);
+            disabled: (proc: AppProcess) => {
+              return !workspaces[(currentWorkspace - 1)] || !proc?.pid;
             },
           },
           { 
             caption: "Right workspace",
             icon: "arrow-right",
             action: (proc: AppProcess) => {
+              if (!proc?.pid) return;
               userDaemon?.moveWindow(proc.pid, workspaces[(currentWorkspace + 1 <= workspaces.length - 1) ? currentWorkspace + 1 : 0]?.uuid);
             },
-            disabled: () => {
-              return (workspaces[(currentWorkspace + 1)] ? false : true);
+            disabled: (proc: AppProcess) => {
+              return !workspaces[(currentWorkspace + 1)] || !proc?.pid;
             },
           },
         ],
