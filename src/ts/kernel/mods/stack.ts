@@ -212,7 +212,7 @@ export class ProcessHandler extends KernelModule {
         continue;
       }
 
-      await this.kill(pid);
+      await this.kill(pid, force);
     }
   }
 
