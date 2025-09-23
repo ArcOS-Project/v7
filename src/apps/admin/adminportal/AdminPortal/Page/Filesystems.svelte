@@ -7,6 +7,7 @@
   import type { AdminPortalRuntime } from "../../runtime";
   import type { FilesystemsData, FilesystemsPageQuota } from "../../types";
   import FilesystemRow from "./Filesystems/FilesystemRow.svelte";
+  import { formatBytes } from "$ts/util/fs";
 
   const { process, data }: { process: AdminPortalRuntime; data: FilesystemsData } = $props();
   const { users } = data;
@@ -32,14 +33,17 @@
 
 <div class="fs-list">
   <div class="row header">
+    <!-- reduce calls: https://stackoverflow.com/a/16751601 -->
     <div class="segment pfp">
       <ProfilePicture height={20} />
     </div>
     <div class="segment username">Username</div>
-    <div class="segment used">Used</div>
-    <div class="segment available">Available</div>
-    <div class="segment total">Total</div>
-    <div class="segment quota">Quota</div>
+    <div class="segment used">Used ({formatBytes($quotas.map((v) => v.used).reduce((partialSum, a) => partialSum + a, 0))})</div>
+    <div class="segment available">
+      Free ({formatBytes($quotas.map((v) => v.free).reduce((partialSum, a) => partialSum + a, 0))})
+    </div>
+    <div class="segment total">Total ({formatBytes($quotas.map((v) => v.max).reduce((partialSum, a) => partialSum + a, 0))})</div>
+    <div class="segment quota">Quot</div>
     <div class="segment index">Index</div>
     <div class="segment mount">Mount</div>
   </div>
