@@ -122,11 +122,13 @@ export class AppProcess extends Process {
   async closeWindow(kill = true) {
     this.Log(`Closing window ${this.pid}`);
 
+    this.handler.renderer?.focusedPid.set(this.pid);
+
     const canClose = this._disposed || (await this.onClose());
 
     if (!canClose) {
       this.Log(`Can't close`);
-      return;
+      return false;
     }
 
     this.shell?.trayHost?.disposeProcessTrayIcons?.(this.pid);
@@ -156,6 +158,8 @@ export class AppProcess extends Process {
       if (!this.app.data.core) await Sleep(400);
       await this.killSelf();
     }
+
+    return true;
   }
 
   render(args: RenderArgs): any {

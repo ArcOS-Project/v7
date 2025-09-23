@@ -719,13 +719,14 @@ export class UserDaemon extends Process {
     await this.toLogin("logoff", { safeMode: true });
   }
 
-  async toLogin(type: string, props: Record<string, any> = {}) {
+  async toLogin(type: string, props: Record<string, any> = {}, force = false) {
     this.Log(`toLogin: ${type}`);
     await this.waitForLeaveInvocationAllow();
-    if (this._disposed) return;
+    const canLeave = await this.closeOpenedApps(type, props, force);
+    if (this._disposed || !canLeave) return;
     if (this.serviceHost) this.serviceHost._holdRestart = true;
 
-    await KernelStack()._killSubProceses(this.pid);
+    await KernelStack()._killSubProceses(this.pid, true);
     await KernelStateHandler()?.loadState("login", {
       type,
       userDaemon: this,
@@ -733,6 +734,33 @@ export class UserDaemon extends Process {
     });
     await this.serviceHost?.killSelf?.();
     await this.unmountMountedDrives();
+  }
+
+  async closeOpenedApps(type: string, props: Record<string, any> = {}, force = false): Promise<boolean> {
+    if (force) return true;
+
+    const windows = this.handler.renderer?.currentState
+      .map((pid) => this.handler.getProcess<AppProcess>(pid))
+      .filter((proc) => !proc?.app?.data?.core);
+
+    if (!windows) return true;
+
+    for (const window of windows) {
+      const closeResult = await window?.closeWindow();
+
+      if (!closeResult) {
+        this.sendNotification({
+          title: "Leave interrupted",
+          message: `An application is preventing you from leaving the desktop: <b>${window?.app?.data?.metadata?.name || "Unknown app"}</b>.`,
+          buttons: [{ caption: "Leave anyway", action: () => this.toLogin(type, props, true) }],
+          image: "WarningIcon",
+          timeout: 6000,
+        });
+        return false;
+      }
+    }
+
+    return true;
   }
 
   //#endregion

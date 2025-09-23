@@ -76,6 +76,7 @@ export class IconEditorRuntime extends AppProcess {
 
   async save() {
     this.iconService?.Configuration.set({ ...this.icons() });
+    this.hasChanges.set(false);
     this.closeWindow();
     this.userDaemon?.restart();
   }
