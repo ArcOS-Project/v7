@@ -16,9 +16,9 @@
 <div class="login-form">
   <div class="left">
     {#if !$persistence}
-      <Field bind:value={username} placeholder="Username" icon="user" />
+      <Field bind:value={username} placeholder="%apps.loginApp.loginForm.username%" icon="user" />
     {/if}
-    <Field bind:value={password} placeholder="Password" icon="key-round" password onsubmit={go} />
+    <Field bind:value={password} placeholder="%apps.loginApp.loginForm.password%" icon="key-round" password onsubmit={go} />
   </div>
   <div class="right">
     <button class="continue" aria-label="Continue" disabled={!($persistence?.username || username) || !password} onclick={go}>
@@ -27,7 +27,7 @@
   </div>
 </div>
 {#if $persistence}
-  <button class="switch-user" onclick={() => process.deletePersistence()}>Switch user</button>
+  <button class="switch-user" onclick={() => process.deletePersistence()}>%apps.loginApp.loginForm.switchUser%</button>
 {:else if !serverInfo?.disableRegistration}
-  <button class="create-user" onclick={() => process.createUser()}>No account?</button>
+  <button class="create-user" onclick={() => process.createUser()}>%apps.loginApp.loginForm.noAccount%</button>
 {/if}

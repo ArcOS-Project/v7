@@ -6,7 +6,7 @@ import { InitialSetupRuntime } from "./runtime";
 
 export const InitialSetupWizard: App = {
   metadata: {
-    name: "Initial Setup Wizard",
+    name: "%apps.initialSetupWizard._name%",
     author: "Izaak Kuipers",
     version: "7.0.0",
     icon: WaveIcon,

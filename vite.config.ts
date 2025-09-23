@@ -26,6 +26,7 @@ export default defineConfig({
       $types: resolve(__dirname, "./src/types"),
       $ts: resolve(__dirname, "./src/ts"),
       $lib: resolve(__dirname, "./src/lib"),
+      $lang: resolve(__dirname, "./src/lang"),
     },
   },
   build: {

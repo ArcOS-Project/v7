@@ -2,7 +2,7 @@
   import HtmlSpinner from "$lib/HtmlSpinner.svelte";
   import { Sleep } from "$ts/sleep";
   import { checkPasswordStrength, validateEmail, validateUsername } from "$ts/util";
-  import { PasswordStrengthCaptions, type PasswordStrength } from "$types/user";
+  import { type PasswordStrength } from "$types/user";
   import type { InitialSetupRuntime } from "../../runtime";
 
   const { process }: { process: InitialSetupRuntime } = $props();
@@ -120,15 +120,15 @@
 </script>
 
 <div class="form-page identity">
-  <h1>Your ArcOS Identity</h1>
-  <p class="subtitle">We'll use this information to create your ArcOS account.</p>
+  <h1>%identity.title%</h1>
+  <p class="subtitle">%identity.subtitle%</p>
   <div class="fields">
     <div class="field">
-      <p class="name">Display Name</p>
+      <p class="name">%identity.fields.displayName%</p>
       <input type="text" placeholder="John Doe" bind:value={$displayName} />
     </div>
     <div class="field username">
-      <p class="name">Username</p>
+      <p class="name">%identity.fields.username%</p>
       <input
         type="text"
         placeholder="johndoe"
@@ -140,7 +140,7 @@
       <HtmlSpinner height={16} stopped={!checkingUsernameAvailability} thickness={2} />
     </div>
     <div class="field email">
-      <p class="name">Email address *</p>
+      <p class="name">%identity.fields.emailAddress%</p>
       <input
         type="email"
         placeholder="john.doe@gmail.com"
@@ -152,40 +152,40 @@
       <HtmlSpinner height={16} stopped={!checkingEmailAvailability} thickness={2} />
     </div>
     <div class="field">
-      <p class="name">Password</p>
+      <p class="name">%identity.fields.password%</p>
       <div class="duo">
         <input
           type="password"
-          placeholder="Password"
+          placeholder="%identity.fields.password%"
           bind:value={enteredPassword}
           oninput={onPasswordKeydown}
           class:taken={passwordInvalid}
         />
-        <input type="password" placeholder="Confirm" bind:value={$confirm} class:taken={passwordInvalid} />
+        <input
+          type="password"
+          placeholder="%identity.fields.passwordConfirm%"
+          bind:value={$confirm}
+          class:taken={passwordInvalid}
+        />
       </div>
     </div>
     {#if usernameTaken && emailTaken}
-      <p class="error">Username and email address are both taken!</p>
+      <p class="error">%identity.errors.usernameAndEmailTaken%</p>
     {:else if usernameTaken}
-      <p class="error">Username is already taken!</p>
+      <p class="error">%identity.errors.usernameTaken%</p>
     {:else if emailTaken}
-      <p class="error">Email is already taken!</p>
+      <p class="error">%identity.errors.emailTaken%</p>
     {/if}
     {#if emailInvalid && usernameInvalid}
-      <p class="error">Username and email address are both invalid!</p>
+      <p class="error">%identity.errors.usernameAndEmailInvalid%</p>
     {:else if usernameInvalid}
-      <p class="error">Username is invalid!</p>
+      <p class="error">%identity.errors.usernameInvalid%</p>
     {:else if emailInvalid}
-      <p class="error">Email address is invalid!</p>
+      <p class="error">%identity.errors.emailInvalid%</p>
     {/if}
     {#if passwordInvalid}
-      <p class="error">
-        Password is {PasswordStrengthCaptions[passwordStrength]}!
-      </p>
+      <p class="error">%identity.errors.password{passwordStrength}%</p>
     {/if}
   </div>
-  <p class="disclaimer">
-    * You will receive an email with a link to activate your account. Your display name, username and password can be changed
-    later on. To change your email, contact an administrator.
-  </p>
+  <p class="disclaimer">%identity.disclaimer%</p>
 </div>

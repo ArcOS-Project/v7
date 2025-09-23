@@ -132,9 +132,9 @@ export class LoginAppRuntime extends AppProcess {
   getWelcomeString(): string {
     const hour = dayjs().hour();
 
-    if (hour < 12) return "Good morning";
-    if (hour < 18) return "Good afternoon";
-    return "Good evening";
+    if (hour < 12) return "%apps.loginApp.welcomeString.morning%";
+    if (hour < 18) return "%apps.loginApp.welcomeString.afternoon%";
+    return "%apps.loginApp.welcomeString.evening%";
   }
 
   //#endregion
@@ -157,22 +157,22 @@ export class LoginAppRuntime extends AppProcess {
 
     if (!userDaemon) {
       this.loadingStatus.set("");
-      this.errorMessage.set("Failed to start user daemon");
+      this.errorMessage.set("%apps.loginApp.errors.noDaemon%");
 
       return;
     }
 
-    this.loadingStatus.set("Saving token");
+    this.loadingStatus.set("%apps.loginApp.startDaemon.savingToken%");
 
     this.saveToken(userDaemon);
 
-    this.loadingStatus.set("Loading your settings");
+    this.loadingStatus.set("%apps.loginApp.startDaemon.loadingSettings%");
 
     const userInfo = await userDaemon.getUserInfo();
 
     if (!userInfo) {
       this.loadingStatus.set("");
-      this.errorMessage.set("Failed to request user info");
+      this.errorMessage.set("%apps.loginApp.errors.noUserInfo%");
 
       return;
     }
@@ -180,7 +180,7 @@ export class LoginAppRuntime extends AppProcess {
     this.profileImage.set(`${import.meta.env.DW_SERVER_URL}/user/pfp/${userInfo._id}${authcode()}`);
 
     if (userInfo.hasTotp && userInfo.restricted) {
-      this.loadingStatus.set("Requesting 2FA");
+      this.loadingStatus.set("%apps.loginApp.startDaemon.request2fa%");
       const unlocked = await this.askForTotp(token, userDaemon.userInfo?._id);
 
       if (!unlocked) {
@@ -188,7 +188,7 @@ export class LoginAppRuntime extends AppProcess {
         await userDaemon.killSelf();
         this.resetCookies();
         this.loadingStatus.set("");
-        this.errorMessage.set("You didn't enter a valid 2FA code!");
+        this.errorMessage.set("%apps.loginApp.errors.totpInvalid%");
         return;
       }
     }
@@ -205,15 +205,15 @@ export class LoginAppRuntime extends AppProcess {
 
     this.savePersistence(username, this.profileImage());
 
-    broadcast("Starting filesystem");
+    broadcast("%apps.loginApp.startDaemon.startingFilesystem%");
 
     await userDaemon.startFilesystemSupplier();
 
-    broadcast("Starting synchronization");
+    broadcast("%apps.loginApp.startDaemon.startingSync%");
 
     await userDaemon.startPreferencesSync();
 
-    broadcast("Reading profile customization");
+    broadcast("%apps.loginApp.startDaemon.profileCustomization%");
 
     this.profileName.set(userDaemon.preferences().account.displayName || username);
     if (!this.safeMode) {
@@ -222,58 +222,58 @@ export class LoginAppRuntime extends AppProcess {
       this.savePersistence(username, this.profileImage(), this.loginBackground());
     }
 
-    broadcast("Notifying login activity");
+    broadcast("%apps.loginApp.startDaemon.notifyLoginActivity%");
     await userDaemon.logActivity("login");
 
-    broadcast("Starting service host");
+    broadcast("%apps.loginApp.startDaemon.startServiceHost%");
     await userDaemon.startServiceHost(async (serviceStep) => {
       if (serviceStep.id === "AppStorage") {
-        broadcast("Loading apps");
-        await userDaemon.initAppStorage(userDaemon.appStorage()!, (app) => broadcast(`Loaded ${app.metadata.name}`));
+        broadcast("%apps.loginApp.startDaemon.loadingApps%");
+        await userDaemon.initAppStorage(userDaemon.appStorage()!, (app) => broadcast(app.metadata.name));
       } else {
-        broadcast(`Started ${serviceStep.name}`);
+        broadcast(serviceStep.name);
       }
     });
 
-    broadcast("Checking associations");
+    broadcast("%apps.loginApp.startDaemon.checkingAssoc%");
     await userDaemon.updateFileAssociations();
 
-    broadcast("Connecting global dispatch");
+    broadcast("%apps.loginApp.startDaemon.globalDispatch%");
     await userDaemon.activateGlobalDispatch();
 
-    broadcast("Welcome to ArcOS");
+    broadcast("%apps.loginApp.startDaemon.welcome%");
     if (!userDaemon.preferences().firstRunDone && !userDaemon.preferences().appPreferences.arcShell) {
       await this.firstRun(userDaemon);
     }
 
-    broadcast("Starting drive notifier watcher");
+    broadcast("%apps.loginApp.startDaemon.driveNotifierWatcher%");
     userDaemon.startDriveNotifierWatcher();
 
-    broadcast("Starting share management");
+    broadcast("%apps.loginApp.startDaemon.shareManagement%");
     await userDaemon.startShareManager();
 
     const storage = userDaemon.appStorage();
 
     if (userDaemon.userInfo.admin) {
-      broadcast("Activating admin bootstrapper");
+      broadcast("%apps.loginApp.startDaemon.adminBootstrapper%");
       await userDaemon.activateAdminBootstrapper();
     } else {
       await storage?.refresh();
     }
 
-    broadcast("Starting status refresh");
+    broadcast("%apps.loginApp.startDaemon.statusRefresh%");
     await userDaemon.startSystemStatusRefresh();
 
-    broadcast("Let's go!");
+    broadcast("%apps.loginApp.startDaemon.letsGo%");
     await KernelStateHandler()?.loadState("desktop", { userDaemon });
     this.soundBus.playSound("arcos.system.logon");
     userDaemon.setAppRendererClasses(userDaemon.preferences());
     userDaemon.checkNightly();
 
-    broadcast("Starting Workspaces");
+    broadcast("%apps.loginApp.startDaemon.startingWorkspaces%");
     await userDaemon.startVirtualDesktops();
 
-    broadcast("Running autorun");
+    broadcast("%apps.loginApp.startDaemon.autoload%");
     await userDaemon.spawnAutoload();
 
     await this.appStore()?.refresh();
@@ -296,7 +296,7 @@ export class LoginAppRuntime extends AppProcess {
     // this.hideProfileImage.set(true);
     this.type = "logoff";
 
-    this.loadingStatus.set(`Goodbye, ${daemon.username}!`);
+    this.loadingStatus.set(`%apps.loginApp.exit.logoff% ${daemon.username}!`);
     this.errorMessage.set("");
 
     for (const [_, proc] of [...KernelStack().store()]) {
@@ -340,7 +340,7 @@ export class LoginAppRuntime extends AppProcess {
       this.profileName.set(daemon.preferences().account.displayName || daemon.username);
     }
 
-    this.loadingStatus.set(`Shutting down...`);
+    this.loadingStatus.set(`%apps.loginApp.exit.shutdown%`);
     this.errorMessage.set("");
 
     await Sleep(2000);
@@ -361,7 +361,7 @@ export class LoginAppRuntime extends AppProcess {
       this.profileName.set(daemon.preferences().account.displayName || daemon.username);
     }
 
-    this.loadingStatus.set(`Restarting...`);
+    this.loadingStatus.set(`%apps.loginApp.exit.restart%`);
     this.errorMessage.set("");
 
     await Sleep(2000);
@@ -376,13 +376,13 @@ export class LoginAppRuntime extends AppProcess {
   async proceed(username: string, password: string) {
     this.Log(`Trying login of '${username}'`);
 
-    this.loadingStatus.set(`Hi, ${username}!`);
+    this.loadingStatus.set(this.getWelcomeString());
 
     const token = await LoginUser(username, password);
 
     if (!token) {
       this.loadingStatus.set("");
-      this.errorMessage.set("Username or password incorrect.");
+      this.errorMessage.set("%apps.loginApp.errors.credentialIncorrect%");
 
       return;
     }

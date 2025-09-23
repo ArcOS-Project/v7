@@ -4,7 +4,7 @@
 
 <div class="hero-page">
   <Scale />
-  <h1>License Agreement</h1>
-  <p class="subtitle">Scary stuff, I know</p>
-  <p class="message">By using ArcOS, you agree to the GPLv3 license.</p>
+  <h1>%license.title%</h1>
+  <p class="subtitle">%license.subtitle%</p>
+  <p class="message">%license.message%</p>
 </div>

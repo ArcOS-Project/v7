@@ -1,0 +1,147 @@
+{
+  "apps": {
+    "bootScreen": {
+      "pressAnyKey": "Press any key or click to start",
+      "safeMode": "Entering Safe Mode",
+      "arcTerm": "Starting ArcTerm"
+    },
+    "initialSetupWizard": {
+      "_name": "Initial Setup Wizard",
+      "buttons": {
+        "viewLicense": "View License",
+        "iAgree": "I agree",
+        "iClickedIt": "I clicked it",
+        "letsBegin": "Let's begin",
+        "serverAllGood": "Server's all good"
+      },
+      "licenseConfirmation": {
+        "title": "Just making sure...",
+        "message": "By using ArcOS, you agree to the License Agreement. You may not violate any of the rules contained within this license. Continue?"
+      },
+      "viewLicense": {
+        "title": "ArcOS License - GPLv3",
+        "message": "By using ArcOS, you agree to the GPLv3 License contained within"
+      },
+      "createAccount": {
+        "passwordMismatch": {
+          "title": "You made a typo!",
+          "message": "The passwords you entered don't match. Please re-enter them, and then try again."
+        },
+        "genericError": {
+          "title": "Something went wrong",
+          "message": "An error occured while creating your account. We might be experiencing some technical difficulties, please try again later."
+        }
+      },
+      "checkAccountActivationError": {
+        "title": "Did you click the link?",
+        "message": "Our systems tell me that your account hasn't been activated yet. Are you sure you clicked the link? If you did, and you're still seeing this, please contact support."
+      },
+      "page": {
+        "checkInbox": {
+          "title": "Check your inbox",
+          "subtitle": "You've got mail!",
+          "message": "We sent you a link to activate your account. Open it to continue. Be sure to check your spam if you can’t find it."
+        },
+        "finish": {
+          "title": "All finished!",
+          "subtitle": "You're all set.",
+          "message": "Your account has been set up successfully. Click <b>Finish</b> to start using ArcOS."
+        },
+        "freshDeployment": {
+          "title": "Fresh deployment",
+          "message": "It appears this ReArc deployment is fresh. Before continuing, please make sure that that's supposed to be the case. If it is, click <b>Next</b>. The user you're about to create is considered user #0, and will be set up as a God Admin by default. The owner of this account is then automatically seen as the owner of the server. Also, please check the server configuration:",
+          "note": "<b>Note:</b> <code>disableRegistration</code> is ignored for the first user. This configuration option will be retained once the first user has been created."
+        },
+        "identity": {
+          "title": "Your ArcOS Identity",
+          "subtitle": "We'll use this information to create your ArcOS account.",
+          "fields": {
+            "displayName": "Display Name",
+            "username": "Username",
+            "emailAddress": "Email address *",
+            "password": "Password",
+            "passwordConfirm": "Confirm"
+          },
+          "errors": {
+            "usernameAndEmailTaken": "Username and email address are both taken!",
+            "usernameTaken": "Username is already taken!",
+            "emailTaken": "Email is already taken!",
+            "emailAndUsernameInvalid": "Username and email address are both invalid!",
+            "usernameInvalid": "Username is invalid!",
+            "emailInvalid": "Email address is invalid!",
+            "passwordtooWeak": "Password is too weak!",
+            "passwordweak": "Password is weak!",
+            "passwordmedium": "Password is medium!",
+            "passwordstrong": "Password is strong!"
+          },
+          "disclaimer": "* You will receive an email with a link to activate your account. Your display name, username and password can be changed later on. To change your email, contact an administrator."
+        },
+        "license": {
+          "title": "License Agreement",
+          "subtitle": "Scary stuff, I know",
+          "message": "By using ArcOS, you agree to the GPLv3 license."
+        },
+        "welcome": {
+          "title": "Welcome",
+          "subtitle": "We're happy to have you",
+          "message": "Let's get you an ArcOS account. Click <b>Next</b> to get started, or <b>Cancel</b> to go back to the login screen."
+        }
+      }
+    },
+    "loginApp": {
+      "welcomeString": {
+        "morning": "Good morning",
+        "afternoon": "Good afternoon",
+        "evening": "Good evening"
+      },
+      "errors": {
+        "noDaemon": "Failed to start user daemon",
+        "noUserInfo": "Failed to request user info",
+        "totpInvalid": "You didn't enter a valid 2FA code!",
+        "credentialIncorrect": "Username or password incorrect."
+      },
+      "startDaemon": {
+        "savingToken": "Saving token",
+        "loadingSettings": "Loading your settings",
+        "request2fa": "Requesting 2FA",
+        "startingFilesystem": "Starting filesystem",
+        "startingSync": "Starting synchronization",
+        "profileCustomization": "Reading profile customization",
+        "notifyLoginActivity": "Notifying login activity",
+        "startServiceHost": "Starting service host",
+        "loadingApps": "Loading apps... ",
+        "checkingAssoc": "Checking associations",
+        "globalDispatch": "Connecting global dispatch",
+        "welcome": "Welcome to ArcOS",
+        "driveNotifierWatcher": "Starting drive notifier watcher",
+        "shareManagement": "Starting share management",
+        "adminBootstrapper": "Activating admin bootstrapper",
+        "statusRefresh": "Starting status refresh",
+        "letsGo": "Let's go!",
+        "startingWorkspaces": "Starting workspaces",
+        "autoload": "Spawning autorun"
+      },
+      "exit": {
+        "logoff": "Goodbye, ",
+        "shutdown": "Shutting down...",
+        "restart": "Restarting..."
+      },
+      "loginForm": {
+        "switchUser": "Switch user",
+        "noAccount": "No account?",
+        "username": "Username",
+        "password": "Password"
+      }
+    }
+  },
+  "general": {
+    "betaPill": "BETA",
+    "cancel": "Cancel",
+    "okay": "Okay",
+    "previous": "Previous",
+    "next": "Next",
+    "continue": "Continue",
+    "decline": "Decline",
+    "iAgree": "I agree"
+  }
+}
