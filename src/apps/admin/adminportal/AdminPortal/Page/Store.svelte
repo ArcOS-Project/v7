@@ -11,15 +11,15 @@
   const { process, data }: { process: AdminPortalRuntime; data: StoreData } = $props();
   const { items, users } = data;
 
-  const states: StorePageFilters[] = ["all", "official", "deprecated"];
-  const sortState = Store<StorePageFilters>("all");
+  const filters: StorePageFilters[] = ["all", "official", "deprecated"];
+  const filterMode = Store<StorePageFilters>("all");
   const store = Store<StoreItem[]>([]);
   const selection = Store<string>("");
   const selected = Store<StoreItem | undefined>(undefined);
   const sortMode = Store<string>("installCount");
 
   onMount(() => {
-    sortState.subscribe((v) => {
+    filterMode.subscribe((v) => {
       $store = items
         .filter((item) => {
           switch (v) {
@@ -39,10 +39,10 @@
 </script>
 
 <div class="header">
-  <p>{$sortState} ({$store.length})</p>
+  <p>{$filterMode} ({$store.length})</p>
   <div class="tabs">
-    {#each states as state}
-      <button onclick={() => ($sortState = state)} class:selected={$sortState === state}>{state.toUpperCase()}</button>
+    {#each filters as filter}
+      <button onclick={() => ($filterMode = filter)} class:selected={$filterMode === filter}>{filter.toUpperCase()}</button>
     {/each}
   </div>
 </div>
@@ -52,6 +52,9 @@
     <div class="segment author">Author</div>
     <div class="segment name">Name</div>
     <div class="segment version">Version</div>
+    <div class="segment size">
+      <button class="sort-mode" onclick={() => ($sortMode = "size")} class:selected={$sortMode === "size"}>Size</button>
+    </div>
     <div class="segment install-count">
       <button class="sort-mode" onclick={() => ($sortMode = "installCount")} class:selected={$sortMode === "installCount"}
         >Install count</button
