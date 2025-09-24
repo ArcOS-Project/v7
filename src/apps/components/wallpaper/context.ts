@@ -90,17 +90,10 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
     ],
     "folder-icon": [
       {
-        caption: "Go here",
+        caption: "Open folder",
         icon: "folder-open",
         action: (_, path) => {
           runtime.spawnApp("fileManager", shellPid(), path);
-        },
-      },
-      {
-        caption: "Open in new window",
-        icon: "external-link",
-        action: (_, path) => {
-          runtime.spawnApp(runtime.app.id, shellPid(), path);
         },
       },
       { sep: true },

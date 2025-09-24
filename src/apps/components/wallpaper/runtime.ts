@@ -169,6 +169,7 @@ export class WallpaperRuntime extends AppProcess {
           }
 
           if (x > maxX - 1) {
+            if (taken(x, y)) continue;
             return resolve(x * 80, y * 85);
           }
 
