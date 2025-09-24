@@ -152,7 +152,7 @@ export class ProcessManagerRuntime extends AppProcess {
   }
 
   serviceInfoFor(id: string) {
-    if (!this.host.getService(id)) return;
+    if (!this.host.hasService(id)) return;
 
     this.spawnOverlayApp("ServiceInfo", +this.env.get("shell_pid"), id);
   }
