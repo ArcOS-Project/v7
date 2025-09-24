@@ -209,6 +209,19 @@ export class IconService extends BaseService {
 
     return result;
   }
+
+  // Migration for updating the icon config when a new version of ArcOS releases
+  migrateIconConfiguration() {
+    const icons = this.defaultConfiguration();
+
+    this.Configuration.update((v) => {
+      for (const icon in icons) {
+        if (!v[icon]) v[icon] = icons[icon];
+      }
+
+      return v;
+    });
+  }
 }
 
 const iconService: Service = {
