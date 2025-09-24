@@ -67,6 +67,16 @@ export function ViewMenu(runtime: FileManagerRuntime): ContextMenuItem {
             return v;
           }),
       },
+      {
+        caption: "Show hidden drives",
+        isActive: () => runtime.userPreferences().appPreferences.fileManager?.showHiddenDrives,
+        icon: "eye",
+        action: () =>
+          runtime.userPreferences.update((v) => {
+            v.appPreferences.fileManager.showHiddenDrives = !v.appPreferences.fileManager.showHiddenDrives;
+            return v;
+          }),
+      },
     ],
   };
 }
