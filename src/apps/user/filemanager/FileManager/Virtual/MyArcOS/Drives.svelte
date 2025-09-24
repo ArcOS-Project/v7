@@ -34,27 +34,29 @@
   {#if $userPreferences.appPreferences.fileManager.myExpandDrives}
     <div class="content">
       {#each sorted as [id, drive] (`${id}-${drive.data.uuid}`)}
-        <button
-          class="drive"
-          onclick={() => process.navigate(`${drive.data.driveLetter || drive.data.uuid}:/`)}
-          data-contextmenu={drive.data.IDENTIFIES_AS === "share" ? "sidebar-shared-drive" : "sidebar-drive"}
-          use:contextProps={[drive, `${drive.data.driveLetter || drive.data.uuid}:`, () => process.unmountDrive(drive.data, id)]}
-          disabled={drive.data.IDENTIFIES_AS === "share" && (drive.data as SharedDrive).shareInfo?.locked}
-        >
-          <img src={process.getIconCached("DriveIcon")} alt="" />
-          <div>
-            <h1>{drive.data.driveLetter ? `${drive.data.label} (${drive.data.driveLetter}:)` : drive.data.label}</h1>
-            <p class="fs">{drive.data.FILESYSTEM_LONG}</p>
-            {#if !drive.quota.unknown}
-              <div class="usage">
-                <div class="bar">
-                  <div class="inner" style="--w: {(100 / drive.quota.max) * drive.quota.used}%"></div>
+        {#if !drive.data.HIDDEN || $userPreferences.appPreferences.fileManager?.showHiddenDrives}
+          <button
+            class="drive"
+            onclick={() => process.navigate(`${drive.data.driveLetter || drive.data.uuid}:/`)}
+            data-contextmenu={drive.data.IDENTIFIES_AS === "share" ? "sidebar-shared-drive" : "sidebar-drive"}
+            use:contextProps={[drive, `${drive.data.driveLetter || drive.data.uuid}:`, () => process.unmountDrive(drive.data, id)]}
+            disabled={drive.data.IDENTIFIES_AS === "share" && (drive.data as SharedDrive).shareInfo?.locked}
+          >
+            <img src={process.getIconCached("DriveIcon")} alt="" />
+            <div>
+              <h1>{drive.data.driveLetter ? `${drive.data.label} (${drive.data.driveLetter}:)` : drive.data.label}</h1>
+              <p class="fs">{drive.data.FILESYSTEM_LONG}</p>
+              {#if !drive.quota.unknown}
+                <div class="usage">
+                  <div class="bar">
+                    <div class="inner" style="--w: {(100 / drive.quota.max) * drive.quota.used}%"></div>
+                  </div>
+                  <p class="percent">{((100 / drive.quota.max) * drive.quota.used).toFixed(0)}%</p>
                 </div>
-                <p class="percent">{((100 / drive.quota.max) * drive.quota.used).toFixed(0)}%</p>
-              </div>
-            {/if}
-          </div>
-        </button>
+              {/if}
+            </div>
+          </button>
+        {/if}
       {/each}
     </div>
   {/if}

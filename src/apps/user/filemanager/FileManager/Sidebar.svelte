@@ -5,6 +5,8 @@
   import RootFolder from "./Sidebar/RootFolder.svelte";
 
   const { process }: { process: FileManagerRuntime } = $props();
+  const { userPreferences } = process;
+
   const { path, rootFolders, drives } = process;
 </script>
 
@@ -25,7 +27,7 @@
     <section>
       <h1>Places</h1>
       {#each Object.entries(process.virtualLocations) as [id, location] (id)}
-        {#if !location.hidden}
+        {#if !location.hidden || $userPreferences.appPreferences.fileManager?.showHiddenDrives}
           <button
             class="folder"
             onclick={() => process.navigate(`::${id}`)}
@@ -42,7 +44,7 @@
   <section>
     <h1>Drives</h1>
     {#each Object.entries($drives) as [id, drive] (`${id}-${drive.data.uuid}`)}
-      {#if !drive.data.HIDDEN}
+      {#if !drive.data.HIDDEN || $userPreferences.appPreferences.fileManager?.showHiddenDrives}
         <DriveEntry {process} {drive} {id} />
       {/if}
     {/each}
