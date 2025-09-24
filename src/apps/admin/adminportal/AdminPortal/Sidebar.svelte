@@ -14,7 +14,7 @@
           class="page"
           class:selected={$currentPage === id}
           onclick={() => process.switchPage(id)}
-          disabled={!$ready || (page.scopes && !process.admin.canAccess(...page.scopes))}
+          disabled={!$ready || (page.scopes && !process.admin?.canAccess(...page.scopes))}
         >
           <span class="lucide icon-{page.icon}"></span>
           <span>{page.name}</span>
