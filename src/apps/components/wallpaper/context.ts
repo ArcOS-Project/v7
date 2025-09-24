@@ -174,11 +174,9 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
                     },
                     {
                       caption: "Reset",
-                      action: () => {
-                        runtime.userPreferences.update((v) => {
-                          v.appPreferences.desktopIcons = {};
-                          return v;
-                        });
+                      action: async () => {
+                        await runtime.fs.deleteItem(runtime.CONFIG_PATH);
+                        await runtime.updateContents();
                       },
                       suggested: true,
                     },
