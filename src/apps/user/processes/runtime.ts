@@ -92,6 +92,65 @@ export class ProcessManagerRuntime extends AppProcess {
     );
   }
 
+  async stopService(id: string) {
+    if (!this.host.getService(id)) return;
+    MessageBox(
+      {
+        title: "Stop service?",
+        message: "Are you sure you want to stop this service? This may have unforseen consequences.",
+        buttons: [
+          {
+            caption: "Cancel",
+            action: () => {},
+          },
+          {
+            caption: "Stop service",
+            action: () => {
+              this.userDaemon?.serviceHost?.stopService(id);
+            },
+            suggested: true,
+          },
+        ],
+        image: "WarningIcon",
+        sound: "arcos.dialog.warning",
+      },
+      this.pid,
+      true
+    );
+  }
+
+  async restartService(id: string) {
+    this.Log("Restarting selected service");
+
+    MessageBox(
+      {
+        title: "Restart service?",
+        message:
+          "Are you sure you want to restart this service? This may have unforseen consequences.",
+        buttons: [
+          { caption: "Cancel", action: () => {} },
+          {
+            caption: "Restart service",
+            action: async () => {
+              await this.stopService(id)
+              await this.startService(id)
+            },
+            suggested: true,
+          },
+        ],
+        sound: "arcos.dialog.warning",
+        image: "WarningIcon",
+      },
+      this.pid,
+      true
+    );
+  }
+
+  async startService(id: string) {
+    if (this.host.getService(id)) return;
+    this.userDaemon?.serviceHost?.startService(id);
+  }
+
   serviceInfoFor(id: string) {
     if (!this.host.getService(id)) return;
 
