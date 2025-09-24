@@ -28,7 +28,7 @@
       className = "";
       pageData = AdminPortalPageStore.get(v);
 
-      if (pageData?.scopes && !process.admin.canAccess(...pageData!.scopes)) {
+      if (pageData?.scopes && !process.admin?.canAccess(...pageData!.scopes)) {
         loading = false;
         noAccess = true;
         $ready = true;
@@ -72,7 +72,7 @@
       <div class="no-access">
         <span class="lucide icon-ban"></span>
         <h1>Access denied</h1>
-        <p>Need {process.admin.getMissingScopes(...pageData.scopes).join(", ")}</p>
+        <p>Need {process.admin?.getMissingScopes(...pageData.scopes).join(", ") ?? "the Admin Bootstrapper service"}</p>
       </div>
     {:else if Page}
       <Page {process} data={pageProps} />

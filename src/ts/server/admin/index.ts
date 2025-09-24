@@ -83,12 +83,16 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async mountUserDrive(username: string, driveLetter?: string, onProgress?: FilesystemProgressCallback) {
+    if (this._disposed) return;
+
     try {
       return await this.fs.mountDrive(btoa(username), AdminServerDrive, driveLetter, onProgress, this.token, username);
     } catch {}
   }
 
   async mountAllUsers() {
+    if (this._disposed) return;
+
     const users = await this.getAllUsers();
 
     for (const user of users) {
@@ -97,6 +101,8 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getAllUsers(): Promise<ExpandedUserInfo[]> {
+    if (this._disposed) return [];
+
     try {
       const response = await Backend.get("/admin/users/list", { headers: { Authorization: `Bearer ${this.token}` } });
 
@@ -111,12 +117,16 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getUserByUsername(username: string): Promise<UserInfo | undefined> {
+    if (this._disposed) return;
+
     const users = await this.getAllUsers();
 
     return users.filter((u) => u.username === username)[0];
   }
 
   async getServerLogs(): Promise<ServerLogItem[]> {
+    if (this._disposed) return [];
+
     try {
       const response = await Backend.get("/admin/logs", { headers: { Authorization: `Bearer ${this.token}` } });
 
@@ -127,6 +137,8 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getAuditLog(): Promise<AuditLog[]> {
+    if (this._disposed) return [];
+
     try {
       const response = await Backend.get("/admin/auditlog", { headers: { Authorization: `Bearer ${this.token}` } });
 
@@ -137,6 +149,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async grantAdmin(username: string) {
+    if (this._disposed) return false;
     try {
       const response = await Backend.post("/admin/grant", toForm({ target: username }), {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -149,6 +162,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async revokeAdmin(username: string) {
+    if (this._disposed) return false;
     try {
       const response = await Backend.post("/admin/revoke", toForm({ target: username }), {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -161,6 +175,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getPreferencesOf(username: string) {
+    if (this._disposed) return;
     try {
       const response = await Backend.get(`/admin/preferences/${username}`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -173,6 +188,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async setPreferencesOf(username: string, preferences: UserPreferences) {
+    if (this._disposed) return false;
     try {
       const response = await Backend.put(`/admin/preferences/${username}`, preferences, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -185,6 +201,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async deleteUser(username: string) {
+    if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/users/delete/${username}`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -197,6 +214,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getStatistics() {
+    if (this._disposed) return;
     try {
       const response = await Backend.get(`/admin/stats`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -209,6 +227,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getAllTokens() {
+    if (this._disposed) return [];
     try {
       const response = await Backend.get(`/admin/tokens`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -221,6 +240,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async purgeAllTokens() {
+    if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/tokens/purge/all`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -235,6 +255,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async purgeOneToken(id: string) {
+    if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/tokens/purge/one/${id}`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -247,6 +268,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async purgeUserTokens(userId: string) {
+    if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/tokens/purge/user/${userId}`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -259,6 +281,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async deleteBugReport(reportId: string) {
+    if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/bughunt/report/${reportId}`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -271,6 +294,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async closeBugReport(reportId: string) {
+    if (this._disposed) return false;
     try {
       const response = await Backend.patch(
         `/admin/bughunt/close/${reportId}`,
@@ -287,6 +311,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async reopenBugReport(reportId: string) {
+    if (this._disposed) return false;
     try {
       const response = await Backend.patch(
         `/admin/bughunt/open/${reportId}`,
@@ -303,6 +328,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getAllBugReports() {
+    if (this._disposed) return [];
     try {
       const response = await Backend.get(`/admin/bughunt/list`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -315,6 +341,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getBugReport(id: string): Promise<BugReport | undefined> {
+    if (this._disposed) return;
     try {
       const response = await Backend.get(`/bughunt/report/${id}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
@@ -325,6 +352,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getBugHuntStatistics() {
+    if (this._disposed) return;
     try {
       const response = await Backend.get(`/admin/bughunt/stats`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -337,6 +365,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async approveUser(username: string) {
+    if (this._disposed) return false;
     try {
       const response = await Backend.post(`/admin/users/approve`, toForm({ target: username }), {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -349,6 +378,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async disapproveUser(username: string) {
+    if (this._disposed) return false;
     try {
       const response = await Backend.post(`/admin/users/disapprove`, toForm({ target: username }), {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -361,6 +391,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async changeEmailOf(username: string, newEmail: string) {
+    if (this._disposed) return false;
     try {
       const response = await Backend.post(`/admin/users/changeemail`, toForm({ target: username, newEmail }), {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -373,6 +404,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async changePasswordOf(username: string, newPassword: string) {
+    if (this._disposed) return false;
     try {
       const response = await Backend.post(`/admin/users/changepswd`, toForm({ target: username, newPassword }), {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -385,6 +417,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getAvailableScopes(): Promise<Record<string, string>> {
+    if (this._disposed) return {};
     try {
       const response = await Backend.get(`/admin/scopes/available`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -397,6 +430,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getScopesOf(username: string): Promise<string[]> {
+    if (this._disposed) return [];
     try {
       const response = await Backend.get(`/admin/scopes/${username}`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -409,6 +443,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async setScopesOf(username: string, scopes: string[]): Promise<boolean> {
+    if (this._disposed) return false;
     try {
       const response = await Backend.put(`/admin/scopes`, toForm({ target: username, scopes: JSON.stringify(scopes) }), {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -421,6 +456,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getQuotaOf(username: string): Promise<UserQuota | undefined> {
+    if (this._disposed) return;
     try {
       const response = await Backend.get(`/admin/fs/quota/${username}`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -433,6 +469,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async setQuotaOf(username: string, newQuota: number) {
+    if (this._disposed) return false;
     try {
       const response = await Backend.put(`/admin/fs/quota/${username}`, toForm({ limit: newQuota }), {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -445,6 +482,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getAllActivity(): Promise<Activity[]> {
+    if (this._disposed) return [];
     try {
       const response = await Backend.get("/admin/activities/list", {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -457,6 +495,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getActivityOf(username: string): Promise<Activity[]> {
+    if (this._disposed) return [];
     try {
       const response = await Backend.get(`/admin/activities/user/${username}`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -469,6 +508,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async deleteAllActivities(): Promise<boolean> {
+    if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/activities`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -481,6 +521,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async deleteActivitiesOf(username: string): Promise<boolean> {
+    if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/activities/${username}`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -493,6 +534,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getAllTotp(): Promise<PartialUserTotp[]> {
+    if (this._disposed) return [];
     try {
       const response = await Backend.get("/admin/totp", { headers: { Authorization: `Bearer ${this.token}` } });
 
@@ -503,6 +545,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getTotpOf(username: string): Promise<UserTotp | undefined> {
+    if (this._disposed) return;
     try {
       const response = await Backend.get(`/admin/totp/${username}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
@@ -513,6 +556,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async deActivateTotpOf(username: string) {
+    if (this._disposed) return false;
     try {
       const response = await Backend.post(
         `/admin/totp/deactivate/${username}`,
@@ -529,6 +573,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async deleteTotpOf(username: string) {
+    if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/totp/${username}`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -541,6 +586,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getAllFsAccessors(): Promise<FsAccess[]> {
+    if (this._disposed) return [];
     try {
       const response = await Backend.get("/admin/accessors", { headers: { Authorization: `Bearer ${this.token}` } });
 
@@ -551,6 +597,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getFsAccessorsOf(username: string): Promise<FsAccess[]> {
+    if (this._disposed) return [];
     try {
       const response = await Backend.get(`/admin/accessors/${username}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
@@ -561,6 +608,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async deleteAllFsAccessors(): Promise<boolean> {
+    if (this._disposed) return false;
     try {
       const response = await Backend.delete("/admin/accessors", { headers: { Authorization: `Bearer ${this.token}` } });
 
@@ -571,6 +619,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async deleteFsAccessorsOf(username: string): Promise<boolean> {
+    if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/accessors/${username}`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -583,6 +632,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getAllIndexingNodes(): Promise<FSItem[]> {
+    if (this._disposed) return [];
     try {
       const response = await Backend.get(`/admin/index`, { headers: { Authorization: `Bearer ${this.token}` } });
 
@@ -593,6 +643,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getIndexingNodesOf(username: string): Promise<FSItem[]> {
+    if (this._disposed) return [];
     try {
       const response = await Backend.get(`/admin/index/${username}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
@@ -603,6 +654,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async forceIndexFor(username: string): Promise<string[]> {
+    if (this._disposed) return [];
     try {
       const response = await Backend.post(`/admin/index/${username}`, {}, { headers: { Authorization: `Bearer ${this.token}` } });
 
@@ -613,6 +665,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async deleteIndexingOf(username: string): Promise<boolean> {
+    if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/index/${username}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
@@ -623,6 +676,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   canAccess(...scopes: string[]): boolean {
+    if (this._disposed) return false;
     if (this.userInfo?.adminScopes?.includes(AdminScopes.adminGod)) return true;
 
     for (const scope of scopes) {
@@ -633,6 +687,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   canAccessP(provided: UserInfo, ...scopes: string[]) {
+    if (this._disposed) return false;
     if (provided.adminScopes?.includes(AdminScopes.adminGod)) return true;
 
     for (const scope of scopes) {
@@ -643,12 +698,14 @@ export class AdminBootstrapper extends BaseService {
   }
 
   getMissingScopes(...scopes: string[]): string[] {
+    if (this._disposed) return [];
     if (this.userInfo?.adminScopes?.includes(AdminScopes.adminGod)) return [];
 
     return scopes.filter((s) => !this.userInfo?.adminScopes?.includes(s));
   }
 
   async getAllShares(): Promise<SharedDriveType[]> {
+    if (this._disposed) return [];
     try {
       const response = await Backend.get("/admin/share/list", { headers: { Authorization: `Bearer ${this.token}` } });
 
@@ -659,6 +716,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getSharesOf(userId: string): Promise<SharedDriveType[]> {
+    if (this._disposed) return [];
     try {
       const response = await Backend.get(`/admin/share/list/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
@@ -669,6 +727,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async deleteShare(shareId: string): Promise<boolean> {
+    if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/share/${shareId}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
@@ -679,6 +738,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async kickUserFromShare(shareId: string, userId: string): Promise<boolean> {
+    if (this._disposed) return false;
     try {
       const response = await Backend.post(`/admin/share/kick/${shareId}`, toForm({ userId }), {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -691,6 +751,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async addUserToShare(shareId: string, userId: string): Promise<boolean> {
+    if (this._disposed) return false;
     try {
       const response = await Backend.post(`/admin/share/adduser/${shareId}`, toForm({ userId }), {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -703,6 +764,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getShareAccessors(shareId: string): Promise<FSItem[]> {
+    if (this._disposed) return [];
     try {
       const response = await Backend.get(`/admin/share/accessors/${shareId}`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -715,6 +777,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async deleteShareAccessors(shareId: string): Promise<boolean> {
+    if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/share/accessors/${shareId}`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -727,6 +790,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async changeSharePassword(shareId: string, newPassword: string): Promise<boolean> {
+    if (this._disposed) return false;
     try {
       const response = await Backend.post(`/admin/share/changepswd/${shareId}`, toForm({ newPassword }), {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -739,6 +803,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async renameShare(shareId: string, newName: string): Promise<boolean> {
+    if (this._disposed) return false;
     try {
       const response = await Backend.post(`/admin/share/rename/${shareId}`, toForm({ newName }), {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -751,6 +816,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async changeShareOwner(shareId: string, newUserId: string): Promise<boolean> {
+    if (this._disposed) return false;
     try {
       const response = await Backend.post(`/admin/share/chown/${shareId}`, toForm({ newUserId }), {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -763,6 +829,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getStatisticsOf(userId: string): Promise<UserStatistics | undefined> {
+    if (this._disposed) return;
     try {
       const response = await Backend.get(`/admin/users/stats/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
@@ -773,6 +840,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async setShareQuotaOf(shareId: string, quota: number): Promise<boolean> {
+    if (this._disposed) return false;
     try {
       const response = await Backend.put(`/admin/share/quota/${shareId}`, toForm({ limit: quota }), {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -785,6 +853,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getShareQuotaOf(shareId: string): Promise<UserQuota | undefined> {
+    if (this._disposed) return undefined;
     try {
       const response = await Backend.get(`/admin/share/quota/${shareId}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
@@ -795,6 +864,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async unlockShare(shareId: string): Promise<boolean> {
+    if (this._disposed) return false;
     try {
       const response = await Backend.post(
         `/admin/share/unlock/${shareId}`,
@@ -809,6 +879,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async lockShare(shareId: string): Promise<boolean> {
+    if (this._disposed) return false;
     try {
       const response = await Backend.post(
         `/admin/share/lock/${shareId}`,
@@ -823,6 +894,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async deleteStoreItem(_id: string): Promise<boolean> {
+    false;
     try {
       const response = await Backend.delete(`/admin/store/delete/one/${_id}`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -835,6 +907,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async deleteUserStoreItems(userId: string): Promise<boolean> {
+    false;
     try {
       const response = await Backend.delete(`/admin/store/delete/user/${userId}`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -847,6 +920,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getAllStoreItems() {
+    if (this._disposed) return [];
     try {
       const response = await Backend.get(`/admin/store/list`, { headers: { Authorization: `Bearer ${this.token}` } });
 
@@ -857,6 +931,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getUserStoreItems(userId: string) {
+    if (this._disposed) return [];
     try {
       const response = await Backend.get(`/admin/storel/list/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
 
@@ -867,6 +942,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async deprecatePackage(itemId: string) {
+    if (this._disposed) return false;
     try {
       const response = await Backend.post(
         `/admin/store/deprecate/${itemId}`,
@@ -881,6 +957,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async undeprecatePackage(itemId: string) {
+    if (this._disposed) return false;
     try {
       const response = await Backend.post(
         `/admin/store/undeprecate/${itemId}`,
@@ -895,6 +972,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getStoreItem(id: string): Promise<StoreItem | undefined> {
+    if (this._disposed) return;
     try {
       const response = await Backend.get(`/store/package/id/${id}`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -907,6 +985,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async getStoreItemByName(name: string): Promise<StoreItem | undefined> {
+    if (this._disposed) return;
     try {
       const response = await Backend.get(`/store/package/name/${name}`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -919,6 +998,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async blockStoreItem(id: string, reason?: string): Promise<boolean> {
+    if (this._disposed) return false;
     const item = await this.getStoreItem(id);
     const messaging = this.host.getService<MessagingInterface>("MessagingService");
 
@@ -947,6 +1027,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async unblockStoreItem(id: string, reason?: string) {
+    if (this._disposed) return false;
     const item = await this.getStoreItem(id);
     const messaging = this.host.getService<MessagingInterface>("MessagingService");
 
@@ -979,6 +1060,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async storeItemMakeOfficial(id: string) {
+    if (this._disposed) return false;
     try {
       const response = await Backend.post(
         `/admin/store/official/on/${id}`,
@@ -993,6 +1075,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async storeItemMakeNotOfficial(id: string) {
+    if (this._disposed) return false;
     try {
       const response = await Backend.post(
         `/admin/store/official/off/${id}`,
@@ -1007,6 +1090,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async readStoreItemFiles(id: string, onProgress?: FilesystemProgressCallback, onStatus?: (s: string) => void) {
+    if (this._disposed) return false;
     const target = `T:/AdminBootstrapper/${id}`;
     const pkg = await this.getStoreItem(id);
     const distrib = this.host.getService<DistributionServiceProcess>("DistribSvc");
@@ -1078,6 +1162,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async deleteStoreItemVerification(id: string) {
+    if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/store/verification/${id}`, {
         headers: { Authorization: `Bearer ${this.token}` },
@@ -1090,6 +1175,7 @@ export class AdminBootstrapper extends BaseService {
   }
 
   async verifyStoreItem(id: string, note: string) {
+    if (this._disposed) return false;
     try {
       const response = await Backend.post(`/admin/store/verification/${id}`, toForm({ note }), {
         headers: { Authorization: `Bearer ${this.token}` },
