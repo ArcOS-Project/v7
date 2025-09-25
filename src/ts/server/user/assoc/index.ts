@@ -127,6 +127,20 @@ export class FileAssocService extends BaseService {
     };
   }
 
+  getUnresolvedAssociationIcon(path: string): string {
+    const config = this.Configuration();
+    const associations = config?.associations;
+    const definitions = config?.definitions;
+    const split = path.split(".");
+    const filename = getItemNameFromPath(path);
+    const extension = `.${split[split.length - 1]}`.toLowerCase();
+
+    if (!associations || !definitions) return "DefaultMimeIcon";
+    const definition = definitions[extension] || definitions[filename];
+
+    return definition.icon;
+  }
+
   getConfiguration() {
     return this.Configuration();
   }

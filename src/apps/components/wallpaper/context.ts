@@ -156,37 +156,6 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
               });
             },
           },
-          { sep: true },
-          {
-            caption: "Reset icon positions",
-            icon: "iteration-cw",
-            action: () => {
-              MessageBox(
-                {
-                  title: "Reset desktop icons?",
-                  message: "Are you sure you want to reset your desktop icon positions?",
-                  image: "QuestionIcon",
-                  sound: "arcos.dialog.info",
-                  buttons: [
-                    {
-                      caption: "Cancel",
-                      action: () => {},
-                    },
-                    {
-                      caption: "Reset",
-                      action: async () => {
-                        await runtime.fs.deleteItem(runtime.CONFIG_PATH);
-                        await runtime.updateContents();
-                      },
-                      suggested: true,
-                    },
-                  ],
-                },
-                shellPid(),
-                true
-              );
-            },
-          },
         ],
       },
       {
