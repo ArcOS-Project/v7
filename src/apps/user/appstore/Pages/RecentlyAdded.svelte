@@ -1,13 +1,16 @@
 <script lang="ts">
   import { TimeFrames } from "$ts/server/user/store";
-  import type { StoreItem } from "$types/package";
+  import type { PartialStoreItem, StoreItem } from "$types/package";
   import PackageGrid from "../AppStore/PackageGrid.svelte";
   import type { AppStoreRuntime } from "../runtime";
 
-  const { groups, process }: { groups: Record<string, StoreItem[]>; process: AppStoreRuntime } = $props();
+  const { groups, all, process }: { groups: Record<string, StoreItem[]>; all: PartialStoreItem[]; process: AppStoreRuntime } =
+    $props();
+
+  console.log(groups);
 </script>
 
-{#if groups && Object.entries(groups).length}
+{#if all?.length && groups && Object.entries(groups).length}
   {#each Object.entries(groups) as [frame, items]}
     {#if items.length}
       <PackageGrid {items} name={TimeFrames[frame]} {process} />
