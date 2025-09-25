@@ -251,22 +251,39 @@ export class InstallerProcess extends Process {
 
     const existing = this.userDaemon.preferences().pinnedApps.includes(this.metadata?.appId!);
     const appStore = this.userDaemon.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const app = appStore?.getAppSynchronous(this.metadata?.appId!)!;
 
     if (existing) return;
 
-    this.userDaemon?.sendNotification({
-      title: `Pin ${this.metadata?.name}`,
-      message: `Do you want to pin ${this.metadata?.name} to the taskbar so that you can easily launch it in the future?`,
-      image: this.userDaemon.getAppIcon(appStore?.getAppSynchronous(this.metadata?.appId!)!),
-      buttons: [
-        {
-          caption: "Pin to taskbar",
-          action: () => {
-            this.userDaemon.pinApp(this.metadata?.appId!);
+    if (app.hidden || app.core) {
+      this.userDaemon?.sendNotification({
+        title: `Open ${this.metadata?.name}`,
+        message: `Do you want open ${this.metadata?.name}?`,
+        image: this.userDaemon.getAppIcon(app),
+        buttons: [
+          {
+            caption: "Open",
+            action: async() => {
+              await this.userDaemon?.spawnApp(app.id, +this.env.get("shell_pid"));
+            },
           },
-        },
-      ],
-    });
+        ],
+      });
+    } else {
+      this.userDaemon?.sendNotification({
+        title: `Pin ${this.metadata?.name}`,
+        message: `Do you want to pin ${this.metadata?.name} to the taskbar so that you can easily launch it in the future?`,
+        image: this.userDaemon.getAppIcon(app),
+        buttons: [
+          {
+            caption: "Pin to taskbar",
+            action: () => {
+              this.userDaemon.pinApp(this.metadata?.appId!);
+            },
+          },
+        ],
+      });
+      }
   }
 
   public async onStop() {
