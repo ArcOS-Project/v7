@@ -26,7 +26,7 @@
 
 <div class="single-file">
   <div class="header">
-    <img src={thumbnail || association?.icon} alt="" />
+    <img src={thumbnail || process.getIconCached(association?.icon) || association?.icon} alt="" />
     <h1>{filename}</h1>
     <p>{association?.friendlyName}</p>
   </div>
