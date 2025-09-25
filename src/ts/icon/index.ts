@@ -109,7 +109,19 @@ export class IconService extends BaseService {
   }
 
   getIconCached(id: string): string {
+    console.log(`getIconCached: ${id}`);
     if (!id) return this.DEFAULT_ICON;
+
+    // The below if statement is an ugly way to fix #50.
+    //
+    // There's no real way to know the workingDirectory at this stage, since this function is being called from
+    // IconService.getAppIcon with just a bare @local call, not specifying any additional data to help us identify
+    // the app in question. Without knowing the app, we can't possibly know where the file is supposed to be read from,
+    // so I'm just returning DEFAULT_ICON because I don't feel like rewriting this stuff rn.
+    //
+    // - Izaak Kuipers, September 25th 2025
+    if (id.startsWith("@local:")) return this.DEFAULT_ICON;
+
     const icon = id.startsWith("@") ? id : this.Configuration()[id];
 
     if (!icon) return this.DEFAULT_ICON;
