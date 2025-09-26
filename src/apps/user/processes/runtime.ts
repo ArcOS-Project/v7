@@ -37,7 +37,7 @@ export class ProcessManagerRuntime extends AppProcess {
   async kill(proc: Process) {
     const elevated = await this.userDaemon?.manuallyElevate({
       what: `ArcOS needs your permission to kill a process`,
-      image: this.getIconCached(proc instanceof AppProcess ? proc.windowIcon() || "ComponentIcon" : "DefaultIcon"),
+      image: proc instanceof AppProcess ? proc.windowIcon() || "ComponentIcon" : "DefaultIcon",
       title: proc.name,
       description: proc instanceof AppProcess ? "Application" : "Process",
       level: ElevationLevel.high,
@@ -125,15 +125,14 @@ export class ProcessManagerRuntime extends AppProcess {
     MessageBox(
       {
         title: "Restart service?",
-        message:
-          "Are you sure you want to restart this service? This may have unforseen consequences.",
+        message: "Are you sure you want to restart this service? This may have unforseen consequences.",
         buttons: [
           { caption: "Cancel", action: () => {} },
           {
             caption: "Restart service",
             action: async () => {
-              await this.stopService(id)
-              await this.startService(id)
+              await this.stopService(id);
+              await this.startService(id);
             },
             suggested: true,
           },
