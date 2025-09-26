@@ -1,0 +1,89 @@
+#AppStore div.page.userPage div.user-header {
+  height: 150px;
+  width: 100%;
+  position: relative;
+  padding: 0 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: center;
+  margin-bottom: 70px;
+}
+
+#AppStore div.page.userPage div.user-header h1 {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+#AppStore div.page.userPage div.user-header p {
+  opacity: 0.5;
+  margin-bottom: 5px;
+}
+
+#AppStore div.page.userPage div.user-header img.banner {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  object-fit: cover;
+  opacity: 0.5;
+  border-bottom: var(--button-glass-hover-bg) 1px solid;
+}
+
+#AppStore div.page.userPage div.user-header img.banner.fallback {
+  filter: blur(100px);
+  border-bottom: none;
+  opacity: 0.5;
+}
+
+#AppStore div.page.userPage div.user-header div.user-info {
+  height: 100px;
+  border-radius: 15px;
+  background-color: var(--win-bg);
+  box-shadow: var(--secondary-box-shadow);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 0 15px;
+  z-index: 1000;
+  translate: 0 50px;
+  max-width: 600px;
+  width: 100%;
+  border: var(--button-glass-bg) 1px solid;
+}
+
+#AppStore div.page.userPage div.user-header div.user-info > img {
+  height: 64px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+#AppStore div.page.userPage div.pills {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+#AppStore div.page.userPage div.pills div.pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+#AppStore div.page.userPage div.pills div.pill.admin span.lucide {
+  color: var(--clr-purple-fg);
+}
+
+#AppStore div.page.userPage div.pills div.pill.developer span.lucide {
+  color: var(--clr-green-fg);
+}
+
+#AppStore div.page.userPage div.pills div.pill.certified span.lucide {
+  color: var(--clr-yellow-fg);
+}
+
+#AppStore div.page.userPage div.user-header div.pfprenderer.show-online.is-online::after {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+}

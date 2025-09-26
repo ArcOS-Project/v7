@@ -98,7 +98,11 @@ export class DistributionServiceProcess extends BaseService {
         headers: { Authorization: `Bearer ${this.host.daemon.token}` },
       });
 
-      return response.data as StoreItem;
+      const data = response.data as StoreItem;
+
+      data.user = await this.host.daemon.getPublicUserInfoOf(data.userId);
+
+      return data as StoreItem;
     } catch {
       return undefined;
     }
@@ -548,6 +552,12 @@ export class DistributionServiceProcess extends BaseService {
     } catch {
       return [];
     }
+  }
+
+  async getStoreItemsByAuthor(userId: string): Promise<StoreItem[]> {
+    const all = await this.getAllStoreItems();
+
+    return all.filter((v) => v.userId === userId);
   }
 
   async storeItemReadme(id: string): Promise<string> {
