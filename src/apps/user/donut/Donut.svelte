@@ -4,6 +4,5 @@
   const { process }: { process: DonutAppRuntime } = $props();
   const { Buffer } = process;
 </script>
-<pre>
-    {$Buffer}
-</pre>
+
+<pre>{$Buffer}</pre>
