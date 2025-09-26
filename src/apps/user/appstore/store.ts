@@ -112,7 +112,7 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
         const all = await process.distrib.getAllStoreItems();
         const groups = groupByTimeFrame<StoreItem>(all, "createdAt");
 
-        return { groups };
+        return { groups, all };
       },
     },
   ],
