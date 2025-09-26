@@ -54,7 +54,7 @@ export class ArcFindRuntime extends AppProcess {
         {
           caption: "Shut down",
           description: "Leave the desktop and turn off ArcOS",
-          image: "ShutdownIcon",
+          image: this.getIconCached("ShutdownIcon"),
           action: () => {
             this.userDaemon?.shutdown();
           },
@@ -62,7 +62,7 @@ export class ArcFindRuntime extends AppProcess {
         {
           caption: "Restart",
           description: "Leave the desktop and restart ArcOS",
-          image: "RestartIcon",
+          image: this.getIconCached("RestartIcon"),
           action: () => {
             this.userDaemon?.restart();
           },
@@ -70,7 +70,7 @@ export class ArcFindRuntime extends AppProcess {
         {
           caption: "Log off",
           description: "Leave the desktop and log out ArcOS",
-          image: "LogoutIcon",
+          image: this.getIconCached("LogoutIcon"),
           action: () => {
             this.userDaemon?.logoff();
           },
