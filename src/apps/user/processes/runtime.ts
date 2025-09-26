@@ -131,8 +131,7 @@ export class ProcessManagerRuntime extends AppProcess {
           {
             caption: "Restart service",
             action: async () => {
-              await this.stopService(id);
-              await this.startService(id);
+              await this.host.restartService(id);
             },
             suggested: true,
           },
