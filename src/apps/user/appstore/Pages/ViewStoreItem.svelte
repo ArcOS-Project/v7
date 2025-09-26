@@ -7,6 +7,7 @@
   import PackageInstallAction from "../AppStore/PackageInstallAction.svelte";
   import type { AppStoreRuntime } from "../runtime";
   import Screenshots from "./ViewStoreItem/Screenshots.svelte";
+  import UserLink from "$lib/UserLink.svelte";
 
   const { process, pkg }: { process: AppStoreRuntime; pkg: StoreItem } = $props();
 
@@ -30,7 +31,10 @@
           <span class="version">v{pkg.pkg.version}</span>
         </h1>
         <p class="description" title={pkg.pkg.description}>{pkg.pkg.description}</p>
-        <p class="author">{pkg.user?.displayName || pkg.user?.username || pkg.pkg.author} · {pkg.installCount} downloads</p>
+        <p class="author">
+          <UserLink user={pkg.user!} onClick={() => process.switchPage("userPage", { userId: pkg.userId })} /> · {pkg.installCount}
+          downloads
+        </p>
       </div>
       <div class="right">
         <div class="size">

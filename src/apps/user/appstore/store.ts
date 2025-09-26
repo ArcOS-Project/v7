@@ -8,6 +8,7 @@ import ManageStoreItem from "./Pages/ManageStoreItem.svelte";
 import OfficialApps from "./Pages/OfficialApps.svelte";
 import RecentlyAdded from "./Pages/RecentlyAdded.svelte";
 import SearchResults from "./Pages/SearchResults.svelte";
+import UserPage from "./Pages/UserPage.svelte";
 import ViewStoreItem from "./Pages/ViewStoreItem.svelte";
 import type { StorePage, StorePages } from "./types";
 
@@ -140,6 +141,21 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
         const results = await process.distrib.searchStoreItems(query);
 
         return { results };
+      },
+    },
+  ],
+  [
+    "userPage",
+    {
+      name: "User Page",
+      icon: "person",
+      hidden: true,
+      content: UserPage as any,
+      async props(process, { userId }) {
+        const results = await process.distrib.getStoreItemsByAuthor(userId);
+        const user = await process.userDaemon?.getPublicUserInfoOf(userId);
+
+        return { results, user };
       },
     },
   ],
