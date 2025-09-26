@@ -752,7 +752,7 @@ export class UserDaemon extends Process {
     for (const window of windows) {
       const closeResult = await window?.closeWindow();
 
-      if (!closeResult) {
+      if (!closeResult && !window?.app.data.overlay) {
         this.sendNotification({
           title: "Leave interrupted",
           message: `An application is preventing you from leaving the desktop: <b>${window?.app?.data?.metadata?.name || "Unknown app"}</b>.`,

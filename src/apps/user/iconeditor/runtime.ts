@@ -46,7 +46,12 @@ export class IconEditorRuntime extends AppProcess {
       this.pid
     );
 
-    return !saveChanges;
+    if (saveChanges) {
+      this.iconService?.Configuration.set({ ...this.icons() });
+      this.hasChanges.set(false);
+    }
+
+    return true;
   }
 
   //#endregion
