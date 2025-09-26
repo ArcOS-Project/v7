@@ -21,34 +21,34 @@
 }
 
 #AppStore > div.body div.sidebar div.search {
-  display: flex;
   height: 40px;
-  border-bottom: var(--button-glass-bg) 1px solid;
+  display: flex;
   align-items: center;
-  padding: 0 10px;
   gap: 10px;
+  padding: 10px;
+  border-bottom: var(--button-glass-bg) 1px solid;
 }
 
 #AppStore > div.body div.sidebar div.search input {
-  flex-grow: 1;
-  margin: 0;
   padding: 0;
-  border: none;
-  border-radius: 0;
   background-color: transparent;
+  border-radius: 0;
+  border: none;
+  min-width: unset;
+  flex-grow: 1;
 }
 
-#AppStore > div.body div.sidebar div.search button.enter-indicator {
-  width: 18px;
-  height: 18px;
+#AppStore > div.body div.sidebar div.search span {
+  opacity: 0.5;
+}
+
+#AppStore > div.body div.sidebar div.search button.icon-x {
+  width: 16px;
+  height: 16px;
+  background-color: transparent;
   padding: 0;
-  font-size: 12px;
-  border-radius: 4px;
-  border: var(--button-glass-hover-bg) 1px solid;
-}
-
-#AppStore > div.body div.sidebar div.search span.lucide {
   font-size: 16px;
+  outline: none;
 }
 
 #AppStore > div.body div.sidebar div.pages {
