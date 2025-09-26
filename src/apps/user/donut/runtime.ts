@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import type { AppProcessData } from "$types/app";
 import { Store } from "$ts/writable";
+import { DonutAltMenu } from "./altmenu";
 
 export class DonutAppRuntime extends AppProcess {
   public interval: NodeJS.Timeout;
@@ -12,8 +13,15 @@ export class DonutAppRuntime extends AppProcess {
     this.setSource(__SOURCE__);
 
     this.interval = setInterval(() => {
+      if (this.handler.renderer?.focusedPid() !== this.pid && !this.userPreferences().appPreferences.DonutApp.alwaysActive)
+        return;
+
       this.Tick();
     }, 1000 / this.FPS);
+  }
+
+  async start() {
+    this.altMenu.set(DonutAltMenu(this));
   }
 
   async stop() {
