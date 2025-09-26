@@ -13,7 +13,7 @@
   let store = Store<AppStorage>([]);
   let search = Store<string>("");
   let filter = Store<string>("visible");
-  let view = $state<string>("list");
+  let view = $state<string>("grid-small");
 
   function update() {
     const options = {
