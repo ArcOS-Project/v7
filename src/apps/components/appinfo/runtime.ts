@@ -26,8 +26,8 @@ export class AppInfoRuntime extends AppProcess {
 
     if (!targetApp) {
       this.userDaemon?.sendNotification({
-        title: "App not found",
-        message: `AppInfo couldn't find any information about "${this.targetAppId}". Is it installed?`,
+        title: "%apps.AppInfo.noTargetApp.title%",
+        message: `%apps.AppInfo.noTargetApp.message(${this.targetAppId})%`,
         image: "AppInfoIcon",
         timeout: 6000,
       });
@@ -44,7 +44,7 @@ export class AppInfoRuntime extends AppProcess {
 
   async killAll() {
     const elevated = await this.userDaemon?.manuallyElevate({
-      what: `ArcOS needs your permission to kill all instances of an app`,
+      what: `%apps.AppInfo.killAll.what%`,
       image: this.userDaemon?.getAppIcon(this.targetApp()) || this.getIconCached("ComponentIcon"),
       title: this.targetApp().metadata.name,
       description: this.targetAppId,

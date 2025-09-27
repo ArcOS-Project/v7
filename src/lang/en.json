@@ -139,6 +139,15 @@
         "title": "Keyboard shortcuts",
         "subtitle": "Get more work done faster with these handy shortcuts!"
       }
+    },
+    "AppInfo": {
+      "noTargetApp": {
+        "title": "App not found",
+        "message": "AppInfo couldn't find any information about \"{{0}}\". Is it installed?"
+      },
+      "killAll": {
+        "what": "ArcOS needs your permission to kill all instances of an app"
+      }
     }
   },
   "general": {
