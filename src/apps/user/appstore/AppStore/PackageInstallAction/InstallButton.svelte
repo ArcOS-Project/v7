@@ -56,6 +56,11 @@
       return;
     }
 
+    if (installer === "elevateCancel") {
+      reset();
+      return;
+    }
+
     if (typeof installer !== "object") {
       reset();
       return;
