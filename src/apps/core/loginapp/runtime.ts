@@ -132,6 +132,7 @@ export class LoginAppRuntime extends AppProcess {
   getWelcomeString(): string {
     const hour = dayjs().hour();
 
+    if (hour < 6) return "Hi, go to sleep";
     if (hour < 12) return "%apps.loginApp.welcomeString.morning%";
     if (hour < 18) return "%apps.loginApp.welcomeString.afternoon%";
     return "%apps.loginApp.welcomeString.evening%";

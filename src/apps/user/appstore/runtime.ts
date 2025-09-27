@@ -140,7 +140,7 @@ export class AppStoreRuntime extends AppProcess {
       level: ElevationLevel.medium,
     });
 
-    if (!elevated) return false;
+    if (!elevated) return "elevateCancel";
 
     const result = await this.distrib.storeItemInstaller(freshPkg._id, onDownloadProgress);
     if (!result) return false;

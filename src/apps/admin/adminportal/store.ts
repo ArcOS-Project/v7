@@ -7,6 +7,7 @@ import BugHunt from "./AdminPortal/Page/BugHunt.svelte";
 import Dashboard from "./AdminPortal/Page/Dashboard.svelte";
 import Filesystems from "./AdminPortal/Page/Filesystems.svelte";
 import Logs from "./AdminPortal/Page/Logs.svelte";
+import NoAdminBootstrapper from "./AdminPortal/Page/NoAdminBootstrapper.svelte";
 import Scopes from "./AdminPortal/Page/Scopes.svelte";
 import Shares from "./AdminPortal/Page/Shares.svelte";
 import Store from "./AdminPortal/Page/Store.svelte";
@@ -266,6 +267,16 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
 
         return { logs };
       },
+    },
+  ],
+  [
+    "noAdminBootstrapper",
+    {
+      name: "No admin bootstrapper",
+      content: NoAdminBootstrapper,
+      props: async () => ({}),
+      hidden: true,
+      icon: "",
     },
   ],
 ]);

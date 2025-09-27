@@ -50,7 +50,7 @@
         <button
           class="desktop"
           style="--wallpaper: url('{$Wallpaper ? $Wallpaper.url : Wallpapers.img0.url}');"
-          onclick={() => userDaemon?.switchToDesktopByUuid(desktop.uuid)}
+          onclick={() => ($userPreferences.workspaces.index = i)}
           class:selected={$userPreferences.workspaces.index === i}
           data-contextmenu="workspaces-desktop"
           use:contextProps={[desktop]}

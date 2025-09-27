@@ -42,6 +42,10 @@ export class AdminPortalRuntime extends AppProcess {
 
   async start() {
     await this.fs.createDirectory("T:/Apps/AdminPortal"); // temp folder for saveTpaFilesOfBugReport
+
+    if (!this.admin) {
+      this.switchPage("noAdminBootstrapper", {}, true);
+    }
   }
 
   //#endregion

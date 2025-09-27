@@ -48,4 +48,11 @@
   <!-- <PackageGrid name="Popular" items={popular} {process} /> -->
   <PackageGrid name="Recently Added" items={recentlyAdded} {process} more={() => process.switchPage("recentlyAdded")} />
   <p class="end">Looks like you've reached the end.</p>
+{:else}
+  <div class="empty">
+    <span class="lucide icon-circle-slash"></span>
+    <h1>No packages!</h1>
+    <p>Nobody has published a package yet! Maybe you'll be the first?</p>
+    <button class="suggested" onclick={() => process.publishPackage()}>Upload...</button>
+  </div>
 {/if}

@@ -2,6 +2,7 @@
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { StoreItemIcon } from "$ts/distrib/util";
+  import { formatBytes } from "$ts/util/fs";
   import type { ReadableStore } from "$ts/writable";
   import type { StoreItem } from "$types/package";
   import type { ExpandedUserInfo } from "$types/user";
@@ -35,6 +36,7 @@
     <span>{item.name}</span>
   </div>
   <div class="segment version">{item.pkg.version}</div>
+  <div class="segment size">{formatBytes(item.size)}</div>
   <div class="segment install-count">{item.installCount}</div>
   <div class="segment last-updated">{lastUpdated}</div>
   <div class="segment verified" class:is-verified={item.verifiedVer === item.pkg.version}>

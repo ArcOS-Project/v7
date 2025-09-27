@@ -62,6 +62,7 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/user/settings/systemSettings",
   "$apps/user/writer/writer",
   "$apps/user/iconeditor/IconEditorApp",
+  "$apps/user/donut/DonutApp",
 ]);
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];

@@ -28,7 +28,7 @@ import { ArcOSVersion, BETA, getKMod, KernelStack } from "$ts/env";
 import { toForm } from "$ts/form";
 import { KernelStateHandler } from "$ts/getters";
 import { applyDefaults } from "$ts/hierarchy";
-import type { IconService } from "$ts/icon";
+import { IconService } from "$ts/icon";
 import { maybeIconId } from "$ts/images";
 import { NightlyLogo } from "$ts/images/branding";
 import { tryJsonParse } from "$ts/json";
@@ -371,6 +371,10 @@ export class UserDaemon extends Process {
     const isOutdated = await this.isRegisteredVersionOutdated();
 
     if (!isOutdated) return;
+
+    const iconService = this.serviceHost?.getService<IconService>("IconService");
+
+    iconService?.migrateIconConfiguration();
 
     this.spawnOverlay("UpdateNotifierApp", +this.env.get("shell_pid"));
   }
@@ -748,7 +752,7 @@ export class UserDaemon extends Process {
     for (const window of windows) {
       const closeResult = await window?.closeWindow();
 
-      if (!closeResult) {
+      if (!closeResult && !window?.app.data.overlay) {
         this.sendNotification({
           title: "Leave interrupted",
           message: `An application is preventing you from leaving the desktop: <b>${window?.app?.data?.metadata?.name || "Unknown app"}</b>.`,

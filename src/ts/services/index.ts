@@ -192,4 +192,13 @@ export class ServiceHost extends Process {
 
     return KernelStack().getProcess(service.pid) as T;
   }
+
+  public hasService(id: string): boolean {
+    const store = this.Services();
+    const service = store.get(id);
+
+    if (!store.has(id) || !service) return false;
+
+    return true;
+  }
 }

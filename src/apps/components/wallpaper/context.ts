@@ -90,17 +90,10 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
     ],
     "folder-icon": [
       {
-        caption: "Go here",
+        caption: "Open folder",
         icon: "folder-open",
         action: (_, path) => {
           runtime.spawnApp("fileManager", shellPid(), path);
-        },
-      },
-      {
-        caption: "Open in new window",
-        icon: "external-link",
-        action: (_, path) => {
-          runtime.spawnApp(runtime.app.id, shellPid(), path);
         },
       },
       { sep: true },
@@ -161,39 +154,6 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
                 v.desktop.lockIcons = !v.desktop.lockIcons;
                 return v;
               });
-            },
-          },
-          { sep: true },
-          {
-            caption: "Reset icon positions",
-            icon: "iteration-cw",
-            action: () => {
-              MessageBox(
-                {
-                  title: "Reset desktop icons?",
-                  message: "Are you sure you want to reset your desktop icon positions?",
-                  image: "QuestionIcon",
-                  sound: "arcos.dialog.info",
-                  buttons: [
-                    {
-                      caption: "Cancel",
-                      action: () => {},
-                    },
-                    {
-                      caption: "Reset",
-                      action: () => {
-                        runtime.userPreferences.update((v) => {
-                          v.appPreferences.desktopIcons = {};
-                          return v;
-                        });
-                      },
-                      suggested: true,
-                    },
-                  ],
-                },
-                shellPid(),
-                true
-              );
             },
           },
         ],

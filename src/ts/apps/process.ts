@@ -124,7 +124,7 @@ export class AppProcess extends Process {
 
     this.handler.renderer?.focusedPid.set(this.pid);
 
-    const canClose = this._disposed || (await this.onClose());
+    const canClose = this._disposed || (this.onClose ? await this.onClose() : true);
 
     if (!canClose) {
       this.Log(`Can't close`);
