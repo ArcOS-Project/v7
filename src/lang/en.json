@@ -90,6 +90,7 @@
     },
     "loginApp": {
       "welcomeString": {
+        "night": "Hi, go to sleep",
         "morning": "Good morning",
         "afternoon": "Good afternoon",
         "evening": "Good evening"
@@ -131,6 +132,12 @@
         "noAccount": "No account?",
         "username": "Username",
         "password": "Password"
+      }
+    },
+    "AcceleratorOverview": {
+      "header": {
+        "title": "Keyboard shortcuts",
+        "subtitle": "Get more work done faster with these handy shortcuts!"
       }
     }
   },
