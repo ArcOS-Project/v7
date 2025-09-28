@@ -26,8 +26,8 @@ export class AppInfoRuntime extends AppProcess {
 
     if (!targetApp) {
       this.userDaemon?.sendNotification({
-        title: "%apps.AppInfo.noTargetApp.title%",
-        message: `%apps.AppInfo.noTargetApp.message(${this.targetAppId})%`,
+        title: "%apps.AppInfo.noTargetApp.title% --- %general.okay%",
+        message: `%apps.AppInfo.noTargetApp.message(${this.targetAppId})% --- %general.iAgree%. %general.okay%%general.okay%`,
         image: "AppInfoIcon",
         timeout: 6000,
       });

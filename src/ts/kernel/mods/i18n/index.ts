@@ -30,39 +30,49 @@ export class I18n extends KernelModule {
     this.startObserver(document.querySelector("#appRenderer")!);
   }
 
-  replaceInNode(node: Node) {
-    if (node.nodeType !== node.TEXT_NODE) return;
+  replaceInNode(node: Node): void {
+    if (node.nodeType === node.TEXT_NODE) {
+      const str = node.textContent ?? "";
+      const results = [...str.matchAll(this.REGEX)].map(({ groups, [0]: key }) => ({
+        id: groups?.id,
+        inlays: groups?.inlays ? groups.inlays.split(",") : [],
+        key,
+      }));
 
-    const str = node.textContent ?? "";
-    const results = [...str.matchAll(this.REGEX)].map(({ groups }) => ({
-      id: groups?.id,
-      inlays: groups?.inlays ? groups.inlays.split(",") : [],
-    }));
-
-    if (!results.length) return;
-
-    let resultString = "";
-    for (const result of results) {
-      const value = getJsonHierarchy<string>(this.LANGUAGES[this.language], result.id ?? "");
-
-      if (!result.id || !value) {
-        resultString += `%${result.id}(${result.inlays?.join(",") ?? ""})%`;
-
-        continue;
+      if (!results.length) {
+        return;
       }
 
-      let partialResultString = value as string;
+      let resultString = str;
+      for (const result of results) {
+        const value = getJsonHierarchy<string>(this.LANGUAGES[this.language], result.id ?? "");
 
-      if (result.inlays) {
-        for (let i = 0; i < result.inlays.length; i++) {
-          partialResultString = partialResultString.replace(`{{${i}}}`, result.inlays[i]);
+        if (!result.id || !value) {
+          resultString = resultString.replace(result.key, "??");
+
+          continue;
         }
+
+        let partialResultString = value as string;
+
+        if (result.inlays) {
+          for (let i = 0; i < result.inlays.length; i++) {
+            partialResultString = partialResultString.replace(`{{${i}}}`, result.inlays[i]);
+          }
+        }
+
+        resultString = resultString.replace(result.key, partialResultString);
       }
 
-      resultString += partialResultString;
-    }
+      if (node.parentElement) {
+        node.parentElement.setAttribute(`data-i18n-original`, str);
+        node.parentElement.textContent = resultString;
+      }
 
-    console.warn(str, resultString);
+      console.warn(str, resultString);
+    } else if (node.nodeType === node.ELEMENT_NODE) {
+      Array.from(node.childNodes).forEach((n) => this.replaceInNode(n));
+    }
   }
 
   startObserver(target: HTMLDivElement) {
@@ -79,6 +89,9 @@ export class I18n extends KernelModule {
       childList: true,
       subtree: true,
       attributes: true,
+      characterData: true,
+      characterDataOldValue: true,
+      attributeOldValue: true,
     });
 
     this.replaceInNode(this.TARGET);

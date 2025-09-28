@@ -199,7 +199,9 @@ export class LoginAppRuntime extends AppProcess {
     const verbose = userDaemon.preferences().enableVerboseLogin;
     const broadcast = (message: string) => {
       if (!verbose) return;
+      console.warn("BROADCAST", message);
       this.loadingStatus.set(message);
+      console.warn("END BROADCAST", message);
     };
 
     this.loadPersistence();
