@@ -22,12 +22,13 @@ export class AppInfoRuntime extends AppProcess {
   }
 
   async render() {
+    this.getBody().setAttribute("data-prefix", "apps.AppInfo");
     const targetApp = this.appStore()?.getAppSynchronous(this.targetAppId);
 
     if (!targetApp) {
       this.userDaemon?.sendNotification({
-        title: "%apps.AppInfo.noTargetApp.title% --- %general.okay%",
-        message: `%apps.AppInfo.noTargetApp.message(${this.targetAppId})% --- %general.iAgree%. %general.okay%%general.okay%`,
+        title: "%apps.AppInfo.noTargetApp.title%",
+        message: `%apps.AppInfo.noTargetApp.message(${this.targetAppId})%`,
         image: "AppInfoIcon",
         timeout: 6000,
       });

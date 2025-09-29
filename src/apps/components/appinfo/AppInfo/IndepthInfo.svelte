@@ -11,43 +11,45 @@
 
 <InfoBlock>
   <InfoRow>
-    <Segment title="Size">
+    <Segment title="%indepthInfo.size%">
       {Math.max(0, target.size?.w || 0) || "F"} x {Math.max(0, target.size?.h || 0) || "F"}
     </Segment>
 
-    <Segment title="Minimal Size">
+    <Segment title="%indepthInfo.minSize%">
       {Math.max(0, target.minSize?.w || 0) || "F"} x {Math.max(0, target.minSize?.h || 0) || "F"}
     </Segment>
 
-    <Segment title="Maximal Size">
+    <Segment title="%indepthInfo.maxSize%">
       {Math.max(0, target.maxSize?.w || 0) || "F"} x {Math.max(0, target.maxSize?.h || 0) || "F"}
     </Segment>
-    <Segment title="Controls" right>
+    <Segment title="%indepthInfo.controls%" right>
       <div class="controls">
-        <button class="minimize icon-chevron-down" class:disabled={!target?.controls?.minimize} aria-label="Minimize"></button>
-        <button class="maximize icon-chevron-up" class:disabled={!target?.controls?.maximize} aria-label="Maximize"></button>
-        <button class="close icon-x" class:disabled={!target?.controls?.close} aria-label="Close"></button>
+        <button class="minimize icon-chevron-down" class:disabled={!target?.controls?.minimize} aria-label="%general.minimize%"
+        ></button>
+        <button class="maximize icon-chevron-up" class:disabled={!target?.controls?.maximize} aria-label="%general.maximize%"
+        ></button>
+        <button class="close icon-x" class:disabled={!target?.controls?.close} aria-label="%general.close%"></button>
       </div>
     </Segment>
   </InfoRow>
   <InfoRow>
-    <Segment title="Initial Position">
+    <Segment title="%indepthInfo.initialPosition%">
       {#if target?.position?.centered}
-        Centered
+        %indepthInfo.centered%
       {:else if target?.position?.x || target.position?.y}
         {target?.position?.x}, {target?.position?.y}
       {:else}
-        Corner of screen
+        %indepthInfo.cornerOfScreen%
       {/if}
     </Segment>
-    <Segment title="Origin">
+    <Segment title="%indepthInfo.origin%">
       {AppOrigins[target?.originId || "injected"]}
     </Segment>
-    <Segment title="Core">
-      {target?.core ? "Yes" : "No"}
+    <Segment title="%indepthInfo.core%">
+      {target?.core ? "%general.yes%" : "%general.no%"}
     </Segment>
-    <Segment title="Hidden">
-      {target?.hidden ? "Yes" : "No"}
+    <Segment title="%indepthInfo.hidden%">
+      {target?.hidden ? "%general.yes%" : "%general.no%"}
     </Segment>
   </InfoRow>
 </InfoBlock>

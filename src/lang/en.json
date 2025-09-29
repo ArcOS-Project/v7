@@ -1,6 +1,7 @@
 {
   "apps": {
     "bootScreen": {
+      "_name": "Boot screen",
       "pressAnyKey": "Press any key or click to start",
       "safeMode": "Entering Safe Mode",
       "arcTerm": "Starting ArcTerm"
@@ -89,6 +90,7 @@
       }
     },
     "loginApp": {
+      "_name": "LogonUI",
       "welcomeString": {
         "night": "Hi, go to sleep",
         "morning": "Good morning",
@@ -109,8 +111,14 @@
         "startingSync": "Starting synchronization",
         "profileCustomization": "Reading profile customization",
         "notifyLoginActivity": "Notifying login activity",
-        "startServiceHost": "Starting service host",
-        "loadingApps": "Loading apps... ",
+        "startServiceHost": {
+          "initial": "Starting service host",
+          "specific": "Starting {{0}}"
+        },
+        "loadingApps": {
+          "initial": "Loading apps...",
+          "specific": "Loaded {{0}}"
+        },
         "checkingAssoc": "Checking associations",
         "globalDispatch": "Connecting global dispatch",
         "welcome": "Welcome to ArcOS",
@@ -141,12 +149,51 @@
       }
     },
     "AppInfo": {
+      "name": "App Info",
       "noTargetApp": {
         "title": "App not found",
         "message": "AppInfo couldn't find any information about \"{{0}}\". Is it installed?"
       },
       "killAll": {
         "what": "ArcOS needs your permission to kill all instances of an app"
+      },
+      "header": {
+        "isDisabled": "{{0}} is disabled!",
+        "deleteApp": "Delete app",
+        "launch": "Launch"
+      },
+      "indepthInfo": {
+        "size": "Size",
+        "minSize": "Minimal Size",
+        "maxSize": "Maximal Size",
+        "controls": "Controls",
+        "initialPosition": "Initial Position",
+        "origin": "Origin",
+        "core": "Core",
+        "hidden": "Hidden",
+        "centered": "Centered",
+        "cornerOfScreen": "Corner of screen"
+      },
+      "processInfo": {
+        "processes": "Processes",
+        "instances": "{{0}} instance(s)",
+        "firstPid": "First PID"
+      },
+      "thirdPartyInfo": {
+        "thirdParty": "Third-party",
+        "signatures": "Signatures",
+        "hasProcess": "Has process",
+        "workingDirectory": "Working directory",
+        "entryPoint": "Entry point"
+      },
+      "internalInfo": {
+        "loadTime": "Load time",
+        "systemVersion": "System version",
+        "minimalAssembly": "Minimal assembly",
+        "codePath": "Code path"
+      },
+      "actions": {
+        "killAll": "Kill all"
       }
     }
   },
@@ -158,6 +205,22 @@
     "next": "Next",
     "continue": "Continue",
     "decline": "Decline",
-    "iAgree": "I agree"
+    "iAgree": "I agree",
+    "unknown": "Unknown",
+    "noAuthor": "No author",
+    "enable": "Enable",
+    "disable": "Disable",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No",
+    "none": "None"
+  },
+  "appOrigins": {
+    "builtin": "Built-in",
+    "userApps": "Third-party",
+    "injected": "Other",
+    "administrative": "Administrative"
   }
 }

@@ -199,9 +199,7 @@ export class LoginAppRuntime extends AppProcess {
     const verbose = userDaemon.preferences().enableVerboseLogin;
     const broadcast = (message: string) => {
       if (!verbose) return;
-      console.warn("BROADCAST", message);
       this.loadingStatus.set(message);
-      console.warn("END BROADCAST", message);
     };
 
     this.loadPersistence();
@@ -228,13 +226,15 @@ export class LoginAppRuntime extends AppProcess {
     broadcast("%apps.loginApp.startDaemon.notifyLoginActivity%");
     await userDaemon.logActivity("login");
 
-    broadcast("%apps.loginApp.startDaemon.startServiceHost%");
+    broadcast("%apps.loginApp.startDaemon.startServiceHost.initial%");
     await userDaemon.startServiceHost(async (serviceStep) => {
       if (serviceStep.id === "AppStorage") {
-        broadcast("%apps.loginApp.startDaemon.loadingApps%");
-        await userDaemon.initAppStorage(userDaemon.appStorage()!, (app) => broadcast(app.metadata.name));
+        broadcast("%apps.loginApp.startDaemon.loadingApps.initial%");
+        await userDaemon.initAppStorage(userDaemon.appStorage()!, (app) =>
+          broadcast(`%apps.loginApp.startDaemon.loadingApps.specific(${app.metadata.name})%`)
+        );
       } else {
-        broadcast(serviceStep.name);
+        broadcast(`%apps.loginApp.startDaemon.startServiceHost.specific(${serviceStep.name})%`);
       }
     });
 

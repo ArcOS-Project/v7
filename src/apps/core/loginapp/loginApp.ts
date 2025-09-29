@@ -5,7 +5,7 @@ import { LoginAppRuntime } from "./runtime";
 
 export const LoginApp: App = {
   metadata: {
-    name: "LogonUI",
+    name: "%apps.loginApp._name%",
     author: "Izaak Kuipers",
     version: "9.0.0",
     icon: "PasswordIcon",
