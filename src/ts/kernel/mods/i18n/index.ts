@@ -1,9 +1,8 @@
 import EnglishLanguage from "$lang/en.json";
 import DutchLanguage from "$lang/nl.json";
-import { getKMod, KernelStack } from "$ts/env";
+import { getKMod } from "$ts/env";
 import { getJsonHierarchy } from "$ts/hierarchy";
 import { KernelModule } from "$ts/kernel/module";
-import { detectJavaScript } from "$ts/util";
 import type { ConstructedWaveKernel, SystemDispatchType } from "$types/kernel";
 
 export class I18n extends KernelModule {
@@ -33,7 +32,7 @@ export class I18n extends KernelModule {
   translateString(str: string, prefix?: string): string | undefined {
     const results = [...str.matchAll(this.REGEX)].map(({ groups, [0]: key }) => ({
       id: groups?.id,
-      inlays: groups?.inlays ? groups.inlays.split(",") : [],
+      inlays: groups?.inlays ? groups.inlays.split("::") : [],
       key,
     }));
 

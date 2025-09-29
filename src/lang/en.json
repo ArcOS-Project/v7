@@ -195,6 +195,46 @@
       "actions": {
         "killAll": "Kill all"
       }
+    },
+    "AppInstaller": {
+      "noDistrib": {
+        "title": "Can't install package",
+        "message": "The Distribution Service isn't running anymore. Please restart ArcOS to fix this problem."
+      },
+      "noEnableThirdParty": {
+        "title": "Can't install app",
+        "message": "Third-party apps aren't enabled on your account. Please enable third-party apps in the Settings app to install this app.",
+        "takeMeThere": "Take me there"
+      },
+      "rollback": "Rolling back changes...",
+      "header": {
+        "title": {
+          "installed": "Package installed!",
+          "installing": "Installing package...",
+          "failed": "Installation failed"
+        },
+        "subtitle": {
+          "completed": "Click <b>Open now</b> to launch the app",
+          "installing": "{{0}} by {{1}}",
+          "generic": "{{0}} - {{1}}"
+        }
+      },
+      "actions": {
+        "revert": "Revert",
+        "openNow": "Open now",
+        "done": "Done",
+        "install": "Install"
+      },
+      "readyToInstall": {
+        "title": "Ready to install",
+        "message": "Click <b>Install</b> to install this package."
+      },
+      "logType": {
+        "file": "Writing file",
+        "mkdir": "Creating directory",
+        "registration": "registering",
+        "generic": "Status"
+      }
     }
   },
   "general": {

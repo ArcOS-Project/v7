@@ -11,24 +11,24 @@
   <div>
     <h1>
       {#if $completed}
-        Package installed!
+        %header.title.installed%
       {:else if $installing}
-        Installing package...
+        %header.title.installing%
       {:else if $failReason}
-        Installation failed
+        %header.title.failed%
       {:else}
         {metadata?.name}
       {/if}
     </h1>
     <p>
       {#if $completed}
-        Click <b>Open now</b> to launch the app
+        %header.subtitle.completed%
       {:else if $installing}
-        {metadata?.name} by {metadata?.author}
+        %header.subtitle.installing({metadata?.name}::{metadata?.author})%
       {:else if $failReason}
         {$failReason}
       {:else}
-        {metadata?.author} - {metadata?.version}
+        %header.subtitle.generic({metadata?.author}::{metadata?.version})%
       {/if}
     </p>
   </div>
