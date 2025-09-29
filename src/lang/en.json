@@ -288,6 +288,27 @@
           "description": "Leave the desktop and log out of ArcOS"
         }
       }
+    },
+    "contextMenu": {
+      "_name": "Context Menu",
+      "system": {
+        "windowTitlebar": {
+          "appInfo": "App Info",
+          "processInfo": "Process Info",
+          "windowSnapping": "Window snapping",
+          "snappingLeft": "Left",
+          "snappingRight": "Right",
+          "snappingTop": "Top",
+          "snappingBottom": "Bottom",
+          "snappingTopLeft": "Top Left",
+          "snappingTopRight": "Top Right",
+          "snappingBottomLeft": "Bottom Left",
+          "snappingBottomRight": "Bottom Right",
+          "moveWorkspace": "Move to workspace",
+          "moveWorkspaceLeft": "Left workspace",
+          "moveWorkspaceRight": "Right workspace"
+        }
+      }
     }
   },
   "general": {

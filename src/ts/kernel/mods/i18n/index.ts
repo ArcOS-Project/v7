@@ -7,7 +7,7 @@ import type { ConstructedWaveKernel, SystemDispatchType } from "$types/kernel";
 
 export class I18n extends KernelModule {
   REGEX = /%(?<id>[\w.=\-]+)(?:\((?<inlays>(.*?))\)|)%/gm;
-  language: string = "nl";
+  language: string = "en";
   dispatch: SystemDispatchType;
   observer: MutationObserver | null = null;
   TARGET?: HTMLDivElement;
