@@ -349,6 +349,53 @@
         "shutdown": "Shutdown",
         "logoff": "Log off"
       }
+    },
+    "FirstRun": {
+      "_name": "First Run",
+      "finishingUp": "Finishing up...",
+      "creatingShortcut": "Creating shortcut for {{0}}",
+      "pages": {
+        "welcome": {
+          "_name": "Welcome",
+          "subtitle": "Let's customize your account.",
+          "later": "Later",
+          "next": "Next"
+        },
+        "style": {
+          "_name": "What's your style?",
+          "subtitle": "Pick which style suits you best. You can always change it in the Settings app.",
+          "goBack": "Go back",
+          "next": "Next"
+        },
+        "profilePicture": {
+          "_name": "Choose a profile picture",
+          "subtitle": "Do you want to upload or pick a profile picture?",
+          "upload": "Upload...",
+          "choose": "Choose",
+          "next": "Next"
+        },
+        "thirdParty": {
+          "_name": "Enable third-party apps?",
+          "subtitle": "Do you want to be able to install apps made by other ArcOS users? You can always turn it off later if you change your mind.",
+          "goBack": "Go back",
+          "notNow": "Not now",
+          "enable": "Enable"
+        },
+        "finish": {
+          "_name": "You're all set!",
+          "subtitle": "Enjoy using ArcOS! If you have any questions or concerns, feel free to talk about them in the Discord.",
+          "finish": "Finish"
+        }
+      },
+      "ChooseProfilePicture": {
+        "_name": "Choose Profile Picture",
+        "title": "Choose profile picture",
+        "subtitle": "What do you want to be?"
+      },
+      "themes": {
+        "darkMode": "Dark mode",
+        "lightMode": "Light mode"
+      }
     }
   },
   "general": {
@@ -377,5 +424,26 @@
     "userApps": "Third-party",
     "injected": "Other",
     "administrative": "Administrative"
+  },
+  "virtualLocations": {
+    "my_arcos": "My ArcOS",
+    "recycle_bin": "Recycle Bin"
+  },
+  "userPaths": {
+    "Home": "Home folder",
+    "Documents": "Documents",
+    "Pictures": "Pictures",
+    "Downloads": "Downloads",
+    "Wallpapers": "Wallpapers",
+    "Desktop": "Desktop",
+    "Music": "Music",
+    "Applications": "Applications",
+    "Trashcan": "Recycle Bin",
+    "Root": "Your Drive",
+    "System": "System Folder",
+    "Migrations": "Migration Files",
+    "Configuration": "Configuration",
+    "AppShortcuts": "Application Shortcuts",
+    "AppRepository": "Application Repository"
   }
 }

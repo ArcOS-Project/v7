@@ -4,7 +4,7 @@ import ChooseProfilePicture from "./ChooseProfilePicture.svelte";
 
 export const ChooseProfilePictureApp: App = {
   metadata: {
-    name: "Choose Profile Picture",
+    name: "%apps.FirstRun.ChooseProfilePicture._name%",
     author: "Izaak Kuipers",
     version: "1.0.0",
     icon: "AccountIcon",

@@ -5,7 +5,7 @@ import { FirstRunRuntime } from "./runtime";
 
 export const FirstRunApp: App = {
   metadata: {
-    name: "First Run",
+    name: "%apps.FirstRun._name%",
     author: "Izaak Kuipers",
     version: "1.0.0",
     icon: "WaveIcon",

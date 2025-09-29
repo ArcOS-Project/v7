@@ -4,5 +4,5 @@
 </script>
 
 <img src={process.getIconCached("GoodStatusIcon")} alt="" />
-<h1>You're all set!</h1>
-<p>Enjoy using ArcOS! If you have any questions or concerns, feel free to talk about them in the Discord.</p>
+<h1>%finish.title%</h1>
+<p>%finish.subtitle%</p>

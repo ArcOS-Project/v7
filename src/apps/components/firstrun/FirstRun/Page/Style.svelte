@@ -25,8 +25,8 @@
 
 <div class="choose-style">
   <div class="header">
-    <h1>What's your style?</h1>
-    <p>Pick which style suits you best. You can always change it in the Settings app.</p>
+    <h1>%style._name%</h1>
+    <p>%style.subtitle%</p>
   </div>
 
   <div class="styles">

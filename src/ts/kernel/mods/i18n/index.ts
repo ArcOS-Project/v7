@@ -7,7 +7,7 @@ import type { ConstructedWaveKernel, SystemDispatchType } from "$types/kernel";
 
 export class I18n extends KernelModule {
   REGEX = /%(?<id>[\w.=\-]+)(?:\((?<inlays>(.*?))\)|)%/gm;
-  language: string = "en";
+  language: string = "nl";
   dispatch: SystemDispatchType;
   observer: MutationObserver | null = null;
   TARGET?: HTMLDivElement;
@@ -56,7 +56,10 @@ export class I18n extends KernelModule {
 
       if (result.inlays) {
         for (let i = 0; i < result.inlays.length; i++) {
-          partialResultString = partialResultString.replace(`{{${i}}}`, result.inlays[i]);
+          partialResultString = partialResultString.replace(
+            `{{${i}}}`,
+            this.translateString(result.inlays[i]) || result.inlays[i]
+          );
         }
       }
 

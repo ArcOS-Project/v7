@@ -15,7 +15,7 @@
   });
 </script>
 
-<div class="top" class:hero={$currentPage?.hero}>
+<div class="top" data-prefix="apps.FirstRun.pages" class:hero={$currentPage?.hero}>
   {#if Component}
     <Component {process} />
   {:else}
@@ -24,7 +24,7 @@
     </div>
   {/if}
 </div>
-<div class="actions">
+<div class="actions" data-prefix="apps.FirstRun.pages">
   <div class="left">
     {#each $currentPage?.actions.left as button}
       <button class="action" disabled={button.disabled} class:suggested={button.suggested} onclick={() => button.action(process)}>
