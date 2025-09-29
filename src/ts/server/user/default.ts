@@ -56,6 +56,7 @@ export const DefaultUserPreferences: UserPreferences = {
     cacheFilesystem: true,
     showHiddenApps: false,
     showThirdPartyApps: true,
+    excludeShortcuts: true
   },
   security: {
     lockdown: false,
