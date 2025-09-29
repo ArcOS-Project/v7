@@ -1,5 +1,7 @@
 import type { AppProcess } from "$ts/apps/process";
+import type { Process } from "$ts/process/instance";
 import { UserPaths } from "$ts/server/user/store";
+import type { TrayIconProcess } from "$ts/ui/tray/process";
 import type { App, AppContextMenu } from "$types/app";
 import type { Workspace } from "$types/user";
 import type { ShellRuntime } from "./runtime";
@@ -272,6 +274,55 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
           });
         },
         isActive: () => runtime.userPreferences().shell.taskbar.clock12hr,
+      },
+    ],
+    "taskbar-trayicon": [
+      {
+        icon: "arrow-up-from-line",
+        caption: "Focus App",
+        action: (proc: TrayIconProcess) => {
+          const appProc = runtime.handler.getProcess(proc.parentPid) as AppProcess;
+          if (!appProc || !appProc.app) return;
+
+          runtime.handler.renderer?.focusPid(appProc.pid);
+        },
+      },
+      { sep: true },
+      {
+        icon: "book-copy",
+        caption: "App info",
+        action: async (proc: TrayIconProcess) => {
+          const appProc = runtime.handler.getProcess(proc.parentPid) as AppProcess;
+          if (!appProc || !appProc.app) return;
+
+          await runtime.spawnOverlayApp("AppInfo", runtime.pid, appProc.app.id);
+        },
+      },
+      {
+        icon: "book",
+        caption: "Process info",
+        action: async (proc: TrayIconProcess) => {
+          const parentProc = runtime.handler.getProcess(proc.parentPid) as Process;
+          if (!parentProc) return;
+
+          await runtime.spawnOverlayApp("ProcessInfoApp", runtime.pid, parentProc);
+        },
+      },
+      { sep: true },
+      {
+        icon: "circle-x",
+        caption: "Close app",
+        action: async (proc: TrayIconProcess) => {
+          const appProc = runtime.handler.getProcess(proc.parentPid) as AppProcess;
+
+          if (!appProc) return;
+          if (appProc.app) {
+            await appProc.closeWindow();
+            return;
+          }
+
+          await appProc.killSelf();
+        },
       },
     ],
   };

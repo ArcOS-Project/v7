@@ -5,6 +5,7 @@
   import { onMount } from "svelte";
   import Popup from "./TrayIcon/Popup.svelte";
   import Trigger from "./TrayIcon/Trigger.svelte";
+  import { contextProps } from "$ts/context/actions.svelte";
 
   const { process, discriminator, icon }: { process: ShellRuntime; discriminator: string; icon: TrayIconProcess } = $props();
   const targetedProcess = KernelStack().getProcess(icon.pid);
@@ -20,7 +21,7 @@
 </script>
 
 {#if targetedProcess}
-  <div class="icon">
+  <div data-contextmenu="taskbar-trayicon" use:contextProps={[targetedProcess]} class="icon">
     <Trigger {process} {discriminator} {icon} {targetedProcess} />
     <Popup {process} {discriminator} {icon} />
   </div>
