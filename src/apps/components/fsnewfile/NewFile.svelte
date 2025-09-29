@@ -18,12 +18,12 @@
 <div class="top">
   <img src={icon} alt="" />
   <div class="right">
-    <h1>New file</h1>
-    <p>Think of a wonderful name for this new file:</p>
+    <h1>%apps.FsNewFile.title%</h1>
+    <p>%apps.FsNewFile.subtitle%</p>
     <input type="text" bind:value={$newFile} />
   </div>
 </div>
 <div class="bottom">
-  <button onclick={() => process.closeWindow()}>Cancel</button>
-  <button class="suggested" disabled={!$newFile} onclick={() => process.createFile()}> Create </button>
+  <button onclick={() => process.closeWindow()}>%general.cancel%</button>
+  <button class="suggested" disabled={!$newFile} onclick={() => process.createFile()}> %apps.FsNewFile.create% </button>
 </div>

@@ -396,6 +396,20 @@
         "darkMode": "Dark mode",
         "lightMode": "Light mode"
       }
+    },
+    "FsNewFile": {
+      "title": "New file",
+      "subtitle": "Think of a wonderful name for this new file:",
+      "create": "Create"
+    },
+    "FsNewFolder": {
+      "title": "New folder",
+      "subtitle": "Think of a wonderful name for this new folder:",
+      "create": "Create"
+    },
+    "FsProgress": {
+      "quantity": "{{0}} / {{1}} done",
+      "size": "{{0}} / {{1}} done"
     }
   },
   "general": {
@@ -417,7 +431,8 @@
     "yes": "Yes",
     "no": "No",
     "none": "None",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "ArcOSTeam": "The ArcOS Team"
   },
   "appOrigins": {
     "builtin": "Built-in",

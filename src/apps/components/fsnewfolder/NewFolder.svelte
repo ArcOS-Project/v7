@@ -8,12 +8,12 @@
 <div class="top">
   <img src={process.getIconCached("FolderIcon")} alt="" />
   <div class="right">
-    <h1>New folder</h1>
-    <p>Think of a wonderful name for this new folder:</p>
+    <h1>%apps.FsNewFolder.title%</h1>
+    <p>%apps.FsNewFile.subtitle%</p>
     <input type="text" bind:value={$newFolder} />
   </div>
 </div>
 <div class="bottom">
-  <button onclick={() => process.closeWindow()}>Cancel</button>
-  <button class="suggested" disabled={!$newFolder} onclick={() => process.createFolder()}> Create </button>
+  <button onclick={() => process.closeWindow()}>%general.cancel%</button>
+  <button class="suggested" disabled={!$newFolder} onclick={() => process.createFolder()}> %apps.FsNewFolder.create% </button>
 </div>
