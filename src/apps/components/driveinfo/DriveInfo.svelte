@@ -30,7 +30,8 @@
 {/if}
 <div class="actions">
   {#if isUserFs}
-    <button class="advanced" onclick={() => (advanced = !advanced)}>{advanced ? "Simple" : "Advanced"}</button>
+    <button class="advanced" onclick={() => (advanced = !advanced)}>{advanced ? "%actions.simple%" : "%actions.advanced%"}</button
+    >
   {/if}
-  <button class="suggested" onclick={() => process.closeWindow()}>Close</button>
+  <button class="suggested" onclick={() => process.closeWindow()}>%general.close%</button>
 </div>

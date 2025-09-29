@@ -149,7 +149,7 @@
       }
     },
     "AppInfo": {
-      "name": "App Info",
+      "_name": "App Info",
       "noTargetApp": {
         "title": "App not found",
         "message": "AppInfo couldn't find any information about \"{{0}}\". Is it installed?"
@@ -308,6 +308,34 @@
           "moveWorkspaceLeft": "Left workspace",
           "moveWorkspaceRight": "Right workspace"
         }
+      }
+    },
+    "DriveInfo": {
+      "_name": "Drive Info",
+      "quota": {
+        "used": "Used ({{0}}%)",
+        "free": "Free ({{0}}%)"
+      },
+      "legend": {
+        "system": "System ({{0}}%)",
+        "trash": "Trash ({{0}}%)",
+        "home": "Home ({{0}}%)",
+        "apps": "Apps ({{0}}%)"
+      },
+      "advanced": {
+        "id": "ID",
+        "mountpoint": "Mountpoint",
+        "label": "Label",
+        "identifiesAs": "Identifies As",
+        "flags": "Flags",
+        "busy": "Busy",
+        "fixed": "Fixed",
+        "readonly": "Readonly",
+        "removable": "Removable"
+      },
+      "actions": {
+        "simple": "Simple",
+        "advanced": "Advanced"
       }
     }
   },

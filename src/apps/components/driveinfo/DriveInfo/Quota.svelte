@@ -10,7 +10,7 @@
     <div class="dot"></div>
     <div class="info">
       <h1>
-        Used ({quota.percentage.toFixed(0)}%)
+        %quota.used({quota.percentage.toFixed(0)})%
       </h1>
       <p>{formatBytes(quota.used)}</p>
     </div>
@@ -19,7 +19,7 @@
     <div class="dot"></div>
     <div class="info">
       <h1>
-        Free ({(100 - quota.percentage).toFixed(0)}%)
+        %quota.free({(100 - quota.percentage).toFixed(0)})%
       </h1>
       <p>{formatBytes(quota.free)}</p>
     </div>
