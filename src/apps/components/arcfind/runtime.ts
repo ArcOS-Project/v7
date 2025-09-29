@@ -1,5 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { isPopulatable } from "$ts/apps/util";
+import { getKMod } from "$ts/env";
+import { I18n } from "$ts/kernel/mods/i18n";
 import { UserPaths } from "$ts/server/user/store";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
@@ -30,10 +32,10 @@ export class ArcFindRuntime extends AppProcess {
     let excludeShortcuts = preferences.searchOptions.excludeShortcuts;
     this.userPreferences.subscribe((v) => {
       if (v.searchOptions.excludeShortcuts !== excludeShortcuts) {
-        this.refresh()
-        excludeShortcuts = v.searchOptions.excludeShortcuts
+        this.refresh();
+        excludeShortcuts = v.searchOptions.excludeShortcuts;
       }
-    })
+    });
   }
 
   //#endregion
@@ -59,24 +61,24 @@ export class ArcFindRuntime extends AppProcess {
     if (sources.power)
       items.push(
         {
-          caption: "Shut down",
-          description: "Leave the desktop and turn off ArcOS",
+          caption: "%apps.ArcFindProc.powerOptions.shutdown.caption%",
+          description: "%apps.ArcFindProc.powerOptions.shutdown.description%",
           image: this.getIconCached("ShutdownIcon"),
           action: () => {
             this.userDaemon?.shutdown();
           },
         },
         {
-          caption: "Restart",
-          description: "Leave the desktop and restart ArcOS",
+          caption: "%apps.ArcFindProc.powerOptions.restart.caption%",
+          description: "%apps.ArcFindProc.powerOptions.restart.description%",
           image: this.getIconCached("RestartIcon"),
           action: () => {
             this.userDaemon?.restart();
           },
         },
         {
-          caption: "Log off",
-          description: "Leave the desktop and log out ArcOS",
+          caption: "%apps.ArcFindProc.powerOptions.logoff.caption%",
+          description: "%apps.ArcFindProc.powerOptions.logoff.description%",
           image: this.getIconCached("LogoutIcon"),
           action: () => {
             this.userDaemon?.logoff();
@@ -103,7 +105,7 @@ export class ArcFindRuntime extends AppProcess {
       if (preferences.searchOptions.excludeShortcuts && !!file.shortcut) continue;
       result.push({
         caption: file.shortcut ? file.shortcut.name : file.name,
-        description: file.shortcut ? `Shortcut - ${file.path}` : file.path,
+        description: file.shortcut ? `%apps.ArcFindProc.fsSupplier.shortcut(${file.path})%` : file.path,
         action: () => {
           this.userDaemon?.openFile(file.path, file.shortcut);
         },
@@ -130,7 +132,7 @@ export class ArcFindRuntime extends AppProcess {
       ) {
         result.push({
           caption: app.metadata.name,
-          description: `By ${app.metadata.author}`,
+          description: `%apps.ArcFindProc.appSupplier(${app.metadata.author})%`,
           image: this.getIconCached(`@app::${app.id}`),
           action: () => {
             this.spawnApp(app.id, this.pid);
@@ -179,7 +181,14 @@ export class ArcFindRuntime extends AppProcess {
       keys: ["caption", "description"],
     };
 
-    const fuse = new Fuse(this.searchItems, options);
+    const fuse = new Fuse(
+      this.searchItems.map((v) => ({
+        ...v,
+        caption: getKMod<I18n>("i18n").translateString(v.caption) || v.caption,
+        description: getKMod<I18n>("i18n").translateString(v.description || "") || v.description,
+      })),
+      options
+    );
     const result = fuse.search(query);
 
     return result.map((r) => ({ ...r, id: UUID() })); // Add a UUID to each search result

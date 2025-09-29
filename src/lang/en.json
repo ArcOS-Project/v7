@@ -266,6 +266,28 @@
         "version": "Version"
       },
       "installPackage": "Install package"
+    },
+    "ArcFindProc": {
+      "fsSupplier": {
+        "shortcut": "Shortcut - {{0}}"
+      },
+      "appSupplier": {
+        "description": "By {{0}}"
+      },
+      "powerOptions": {
+        "shutdown": {
+          "caption": "Shut down",
+          "description": "Leave the desktop and turn off ArcOS"
+        },
+        "restart": {
+          "caption": "Restart",
+          "description": "Leave the desktop and restart ArcOS"
+        },
+        "logoff": {
+          "caption": "Log off",
+          "description": "Leave the desktop and log out of ArcOS"
+        }
+      }
     }
   },
   "general": {
