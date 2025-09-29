@@ -232,9 +232,40 @@
       "logType": {
         "file": "Writing file",
         "mkdir": "Creating directory",
-        "registration": "registering",
+        "registration": "Registering",
         "generic": "Status"
       }
+    },
+    "AppPreInstall": {
+      "noEnableThirdParty": {
+        "title": "Can't install app",
+        "message": "Third-party apps aren't enabled on your account. Please enable third-party apps in the Settings app to install this app.",
+        "takeMeThere": "Take me there"
+      },
+      "readingPackage": "Reading ArcOS package",
+      "errors": {
+        "noContents": "The package contents could not be read",
+        "noMeta": "The package metadata could not be read",
+        "missingFiles": "Package is corrupt; missing package or app metadata.",
+        "appIdMalformed": "The application ID is malformed: it contains periods or dashes. If you're the creator of the app, be sure to use the suggested format for application IDs.",
+        "fsError": "Filesystem error"
+      },
+      "fail": {
+        "title": "Failed to open package",
+        "messagePartial": "ArcOS failed to open the specified package."
+      },
+      "elevation": {
+        "what": "ArcOS wants to install an application",
+        "description": "{{0}} - {{1}}"
+      },
+      "header": {
+        "title": "Do you want to install this package?"
+      },
+      "info": {
+        "author": "Author",
+        "version": "Version"
+      },
+      "installPackage": "Install package"
     }
   },
   "general": {

@@ -28,23 +28,24 @@ export class AppPreInstallRuntime extends AppProcess {
   }
 
   async render() {
+    this.getBody().setAttribute("data-prefix", "apps.AppPreInstall");
+
     if (!this.userPreferences().security.enableThirdParty) {
       MessageBox(
         {
-          title: "Can't install app",
-          message:
-            "Third-party apps aren't enabled on your account. Please enable third-party apps in the Settings to install this app.",
+          title: "%apps.AppPreInstall.noEnableThirdParty.title%",
+          message: "%apps.AppPreInstall.noEnableThirdParty.message%",
           image: "AppsIcon",
           sound: "arcos.dialog.warning",
           buttons: [
             {
-              caption: "Take me there",
+              caption: "%apps.AppPreInstall.noEnableThirdParty.takeMeThere%",
               action: () => {
                 this.userDaemon?.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps");
               },
             },
             {
-              caption: "Okay",
+              caption: "%general.okay%",
               action: () => {},
               suggested: true,
             },
@@ -62,7 +63,7 @@ export class AppPreInstallRuntime extends AppProcess {
       {
         type: "size",
         icon: "DownloadIcon",
-        caption: "Reading ArcOS package",
+        caption: "%apps.AppPreInstall.readingPackage%",
         subtitle: this.pkgPath,
       },
       +this.env.get("shell_pid")
@@ -78,32 +79,30 @@ export class AppPreInstallRuntime extends AppProcess {
       await prog?.stop();
 
       if (!content) {
-        return this.fail("The package contents could not be read");
+        return this.fail("%apps.AppPreInstall.errors.noContents%");
       }
 
       this.zip = new JSZip();
       const buffer = await this.zip.loadAsync(content, {});
 
       if (!buffer.files["_metadata.json"] || !buffer.files["payload/_app.tpa"]) {
-        return this.fail("Package is corrupt; missing package or app metadata.");
+        return this.fail("%apps.AppPreInstall.errors.missingFiles%");
       }
 
       const metaBinary = await buffer.files["_metadata.json"].async("arraybuffer");
       const metadata = tryJsonParse<ArcPackage>(arrayToText(metaBinary));
 
       if (!metadata || typeof metadata === "string") {
-        return this.fail("The package metadata could not be read");
+        return this.fail("%apps.AppPreInstall.errors.noMeta%");
       }
 
       if (metadata.appId.includes(".") || metadata.appId.includes("-")) {
-        return this.fail(
-          "The application ID is malformed: it contains periods or dashes. If you're the creator of the app, be sure to use the suggested format for application IDs."
-        );
+        return this.fail("%apps.AppPreInstall.errors.appIdMalformed%");
       }
 
       this.metadata.set(metadata);
     } catch {
-      return this.fail("Filesystem error");
+      return this.fail("%apps.AppPreInstall.errors.fsError%");
     }
   }
 
@@ -113,9 +112,9 @@ export class AppPreInstallRuntime extends AppProcess {
   fail(reason: string) {
     MessageBox(
       {
-        title: "Failed to open package",
-        message: `ArcOS failed to open the specified package. ${reason}`,
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        title: "%apps.AppPreInstall.fail.title%",
+        message: `%apps.AppPreInstall.fail.messagePartial% ${reason}`,
+        buttons: [{ caption: "%general.okay%", action: () => {}, suggested: true }],
         image: "ErrorIcon",
         sound: "arcos.dialog.error",
       },
@@ -128,9 +127,9 @@ export class AppPreInstallRuntime extends AppProcess {
   async install() {
     const meta = this.metadata();
     const elevated = await this.userDaemon?.manuallyElevate({
-      what: "ArcOS wants to install an application",
+      what: "%apps.AppPreInstall.elevation.what%",
       title: meta.name,
-      description: `${meta.author} - ${meta.version}`,
+      description: `%apps.AppPreInstall.elevation.description(${meta.author}::${meta.version})%`,
       image: "ArcAppMimeIcon",
       level: ElevationLevel.medium,
     });
