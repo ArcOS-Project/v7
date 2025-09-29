@@ -4,18 +4,18 @@ import type { ExitAction } from "./types";
 export const ExitActions: Record<string, ExitAction> = {
   restart: {
     action: (daemon: UserDaemon) => daemon.restart(),
-    caption: "Restart",
+    caption: "%exitActions.restart%",
     icon: "RestartIcon",
   },
   shutdown: {
     action: (daemon: UserDaemon) => daemon.shutdown(),
-    caption: "Shut down",
+    caption: "%exitActions.shutdown%",
     icon: "ShutdownIcon",
   },
   logoff: {
     action: (daemon: UserDaemon) => daemon.logoff(),
     alternateAction: (daemon: UserDaemon) => daemon.logoffSafeMode(),
-    caption: "Log off",
+    caption: "%exitActions.logoff%",
     icon: "LogoutIcon",
   },
 };

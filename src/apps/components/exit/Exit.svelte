@@ -7,8 +7,8 @@
 </script>
 
 <div class="header">
-  <h1>Exit ArcOS</h1>
-  <p>What's your escape route?</p>
+  <h1>%header.title%</h1>
+  <p>%header.message%</p>
 </div>
 
 <div class="options">
@@ -26,7 +26,7 @@
 </div>
 <div class="confirm">
   <button class="suggested" onclick={(e) => process.go(undefined, e.shiftKey)} disabled={!$selected || !ExitActions[$selected]}>
-    Confirm
+    %general.confirm%
   </button>
-  <button onclick={() => process.closeWindow()}>Cancel</button>
+  <button onclick={() => process.closeWindow()}>%general.cancel%</button>
 </div>

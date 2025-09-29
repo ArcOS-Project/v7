@@ -337,6 +337,18 @@
         "simple": "Simple",
         "advanced": "Advanced"
       }
+    },
+    "ExitApp": {
+      "_name": "Exit",
+      "header": {
+        "title": "Exit ArcOS",
+        "message": "What's your escape route?"
+      },
+      "exitActions": {
+        "restart": "Restart",
+        "shutdown": "Shutdown",
+        "logoff": "Log off"
+      }
     }
   },
   "general": {
@@ -357,7 +369,8 @@
     "close": "Close",
     "yes": "Yes",
     "no": "No",
-    "none": "None"
+    "none": "None",
+    "confirm": "Confirm"
   },
   "appOrigins": {
     "builtin": "Built-in",
