@@ -62,6 +62,7 @@ export interface ArcFindOptions {
   cacheFilesystem: boolean;
   showHiddenApps: boolean;
   showThirdPartyApps: boolean;
+  excludeShortcuts: boolean;
 }
 
 export interface CustomStylePreferences {

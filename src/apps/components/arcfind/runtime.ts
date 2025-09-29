@@ -23,10 +23,17 @@ export class ArcFindRuntime extends AppProcess {
 
     this.setSource(__SOURCE__);
   }
-
   async start() {
     this.env.set("arcfind_pid", this.pid);
     this.refresh();
+    const preferences = this.userPreferences();
+    let excludeShortcuts = preferences.searchOptions.excludeShortcuts;
+    this.userPreferences.subscribe((v) => {
+      if (v.searchOptions.excludeShortcuts !== excludeShortcuts) {
+        this.refresh()
+        excludeShortcuts = v.searchOptions.excludeShortcuts
+      }
+    })
   }
 
   //#endregion
@@ -93,6 +100,7 @@ export class ArcFindRuntime extends AppProcess {
 
     for (const file of index) {
       const info = this.userDaemon?.assoc?.getFileAssociation(file.name);
+      if (preferences.searchOptions.excludeShortcuts && !!file.shortcut) continue;
       result.push({
         caption: file.shortcut ? file.shortcut.name : file.name,
         description: file.shortcut ? `Shortcut - ${file.path}` : file.path,
