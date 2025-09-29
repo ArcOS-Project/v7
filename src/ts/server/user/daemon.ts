@@ -1352,7 +1352,7 @@ export class UserDaemon extends Process {
     const string = JSON.stringify(data, null, 2);
 
     try {
-      return await this.fs.writeFile(path, textToBlob(string, "application/json"), undefined, false);
+      return await this.fs.writeFile(path, textToBlob(string, "application/json"));
     } catch {
       return false;
     }

@@ -28,6 +28,9 @@
       <Option caption="Include shutdown, logoff and restart">
         <input type="checkbox" class="switch" bind:checked={$userPreferences.searchOptions.includePower} />
       </Option>
+      <Option caption="Exclude shortcuts">
+        <input type="checkbox" class="switch" bind:checked={$userPreferences.searchOptions.excludeShortcuts} />
+      </Option>
     </Section>
     <Section caption="Filesystem">
       <Option caption="Search the filesystem">
