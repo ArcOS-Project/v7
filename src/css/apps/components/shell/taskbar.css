@@ -373,6 +373,11 @@ div.shell div.taskbar div.pinned-apps > button + button {
   font-weight: bold;
 }
 
+#arcShell div.taskbar div.calendar-popup div.controls button.today {
+  height: 30px;
+  padding: 0 10px;
+}
+
 #arcShell div.taskbar div.calendar-popup div.controls button.lucide {
   width: 30px;
   height: 30px;
