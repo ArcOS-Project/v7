@@ -12,7 +12,8 @@ import type { ArcFindRuntime } from "../arcfind/runtime";
 import type { TrayHostRuntime } from "../trayhost/runtime";
 import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
-import type { WeatherInformation } from "./types";
+import { shortWeekDays, type CalendarMonth, type WeatherInformation } from "./types";
+import dayjs from "dayjs";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
@@ -120,6 +121,7 @@ export class ShellRuntime extends AppProcess {
     this.dispatch.subscribe("ready", () => this.gotReadySignal());
 
     this.env.set("shell_pid", this.pid); // Set the shell PID
+    console.log(this.getCalendarMonth());
   }
 
   async render() {
@@ -322,6 +324,71 @@ export class ShellRuntime extends AppProcess {
 
     // Trigger the selected search result
     this.Trigger(results[index == -1 ? 0 : index].item); // Default to index 0
+  }
+
+  //#endregion
+  //#region CALENDAR
+
+  getCalendarMonth(date = dayjs().format("YYYY-MM-DD")): CalendarMonth {
+    const result: CalendarMonth = {
+      prepended: [],
+      current: [],
+      appended: [],
+    };
+
+    const today = dayjs().format("YYYY-MM-DD");
+    const lastMonth = dayjs(date).subtract(1, "month").format("YYYY-MM");
+    const thisMonth = dayjs(date).format("YYYY-MM");
+    const nextMonth = dayjs(date).add(1, "month").format("YYYY-MM");
+    const daysInCurrent = dayjs(date).daysInMonth();
+    const firstDayOfCurrent = dayjs(date).format(`${thisMonth}-01`);
+    const daysInPast = dayjs(date).subtract(1, "month").daysInMonth();
+    const firstWeekdayCurrent = dayjs(firstDayOfCurrent).day();
+    const prepended = firstWeekdayCurrent === 0 ? 0 : firstWeekdayCurrent;
+    const appended = 42 - prepended - daysInCurrent;
+
+    if (prepended > 0) {
+      for (let i = prepended - 1; i >= 0; i--) {
+        const dayOfMonth = daysInPast - i;
+        const fullDate = `${lastMonth}-${String(dayOfMonth).padStart(2, "0")}`;
+        const dayOfWeek = dayjs(fullDate).day();
+
+        result.prepended.push({
+          caption: shortWeekDays[dayOfWeek],
+          dayOfMonth,
+          fullDate,
+          isToday: fullDate === today,
+        });
+      }
+    }
+
+    for (let i = 0; i < daysInCurrent; i++) {
+      const dayOfMonth = i + 1;
+      const fullDate = `${thisMonth}-${String(dayOfMonth).padStart(2, "0")}`;
+      const dayOfWeek = dayjs(fullDate).day();
+
+      result.current.push({
+        caption: shortWeekDays[dayOfWeek],
+        dayOfMonth,
+        fullDate,
+        isToday: fullDate === today,
+      });
+    }
+
+    for (let i = 0; i < appended; i++) {
+      const dayOfMonth = i + 1;
+      const fullDate = `${nextMonth}-${String(dayOfMonth).padStart(2, "0")}`;
+      const dayOfWeek = dayjs(fullDate).day();
+
+      result.appended.push({
+        caption: shortWeekDays[dayOfWeek],
+        dayOfMonth,
+        fullDate,
+        isToday: fullDate === today,
+      });
+    }
+
+    return result;
   }
 
   //#endregion

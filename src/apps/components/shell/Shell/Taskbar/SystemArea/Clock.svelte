@@ -25,7 +25,12 @@
 
 <div class="clock">
   <Calendar {process} />
-  <button class="clock-button" data-contextmenu="taskbar-clock" onclick={() => ($calendarOpened = true)}>
+  <button
+    class="clock-button"
+    class:active={$calendarOpened}
+    data-contextmenu="taskbar-clock"
+    onclick={() => ($calendarOpened = true)}
+  >
     {text}
   </button>
 </div>
