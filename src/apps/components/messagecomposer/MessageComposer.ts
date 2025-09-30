@@ -5,7 +5,7 @@ import { MessageComposerRuntime } from "./runtime";
 
 export const MessageComposerApp: App = {
   metadata: {
-    name: "New Message",
+    name: "%apps.MessageComposer._name%",
     author: "Izaak Kuipers",
     version: "1.0.0",
     icon: "MessagingIcon",

@@ -26,7 +26,7 @@
 </script>
 
 <div class="field to">
-  <p class="name">To:</p>
+  <p class="name">%toField.to%</p>
   <div class="value">
     {#each $recipients as recipient}
       <div class="recipient">
@@ -34,12 +34,12 @@
         <button
           class="lucide icon-x"
           onclick={() => process.removeRecipient(recipient)}
-          aria-label="Remove {recipient}"
+          aria-label="%toField.removeRecipient({recipient})%"
           disabled={$sending}
-          title="Remove {recipient}"
+          title="%toField.removeRecipient({recipient})%"
         ></button>
       </div>
     {/each}
-    <input type="text" {onkeydown} bind:value placeholder="Enter username" disabled={$sending} {onblur} />
+    <input type="text" {onkeydown} bind:value placeholder="%toField.enterUsername%" disabled={$sending} {onblur} />
   </div>
 </div>

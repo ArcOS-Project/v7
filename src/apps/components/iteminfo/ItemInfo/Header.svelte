@@ -19,10 +19,10 @@
   <div>
     <h1>{$info.name || $info.location.parent || $info.location.drive}</h1>
     {#if $info.name && ($info.location.parent || $info.location.drive)}
-      <p>in {$info.location.parent || $info.location.drive}</p>
+      <p>%subtitle({$info.location.parent || $info.location.drive})%</p>
     {/if}
   </div>
   {#if $info.name}
-    <button class="lucide icon-pencil-line" title="Rename item" aria-label="Rename" onclick={() => process.renameItem()}></button>
+    <button class="lucide icon-pencil-line" title="%renameItem%" aria-label="%" onclick={() => process.renameItem()}></button>
   {/if}
 </div>

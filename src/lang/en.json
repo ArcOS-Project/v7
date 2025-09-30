@@ -152,7 +152,7 @@
       "_name": "App Info",
       "noTargetApp": {
         "title": "App not found",
-        "message": "AppInfo couldn't find any information about \"{{0}}\". Is it installed?"
+        "message": "AppInfo couldn't find any information about \"{{0}}\" Is it installed?"
       },
       "killAll": {
         "what": "ArcOS needs your permission to kill all instances of an app"
@@ -441,12 +441,94 @@
         "buttonTitle": "Choose icon"
       },
       "default": "Default"
+    },
+    "IconPicker": {
+      "_name": "Icon Picker",
+      "groups": {
+        "Branding": "ArcOS logos",
+        "General": "General icons",
+        "Apps": "Application icons",
+        "Filesystem": "Filesystem-related icons",
+        "Power": "Power icons",
+        "Dialog": "Dialog icons",
+        "Status": "Status indicators",
+        "Mimetypes": "File mimetypes"
+      },
+      "random": "Random",
+      "choose": "Choose",
+      "reset": "Reset",
+      "title": "Pick an icon for {{0}}"
+    },
+    "ItemInfo": {
+      "_name": "Item Info",
+      "subtitle": "in {{0}}",
+      "renameItem": "Rename item",
+      "location": {
+        "fullPath": "Full Path",
+        "extension": "Extension",
+        "parent": "Parent",
+        "drive": "Drive",
+        "filesystem": "Filesystem"
+      },
+      "meta": {
+        "sort": "Sort",
+        "type": "Type",
+        "size": "Size",
+        "created": "Created",
+        "modified": "Modified"
+      },
+      "actions": {
+        "editShortcut": "Edit shortcut..."
+      }
+    },
+    "MessageComposer": {
+      "_name": "New Message",
+      "sendProg": {
+        "caption": "Sending message",
+        "subtitleInitial": "Preparing",
+        "subtitleUploading": "Uploading"
+      },
+      "discardMessage": {
+        "title": "Discard message?",
+        "message": "Are you sure you want to discard this message? This cannot be undone."
+      },
+      "sendFailed": {
+        "title": "Failed to send message",
+        "message": "ArcOS failed to send the message! It might be too large, or none of the recipients exist. Please check the recipients or try shrinking it down, and then resend it. If it still doesn't work, contact an ArcOS administrator."
+      },
+      "addAttachment": {
+        "title": "Choose one or more files to attach",
+        "fileProgress": {
+          "caption": "Just a moment...",
+          "readingFileKnown": "Reading {{0}}",
+          "readingFileUnknown": "Readon file..."
+        }
+      },
+      "actionBar": {
+        "body": "Body",
+        "attachments": "Attachments",
+        "addAttachment": "Add attachment",
+        "discardMessage": "Discard message",
+        "send": "Send"
+      },
+      "attachmentBar": {
+        "removeAttachment": "Remove attachment"
+      },
+      "subjectField": {
+        "subject": "Subject:"
+      },
+      "toField": {
+        "to": "To:",
+        "removeRecipient": "Remove {{0}}",
+        "enterUsername": "Enter username"
+      }
     }
   },
   "general": {
     "betaPill": "BETA",
     "cancel": "Cancel",
     "okay": "Okay",
+    "open": "Open",
     "previous": "Previous",
     "next": "Next",
     "continue": "Continue",
@@ -465,7 +547,8 @@
     "confirm": "Confirm",
     "ArcOSTeam": "The ArcOS Team",
     "genericStatus": "Just a moment...",
-    "save": "Save"
+    "save": "Save",
+    "discard": "Discard"
   },
   "appOrigins": {
     "builtin": "Built-in",
@@ -493,5 +576,50 @@
     "Configuration": "Configuration",
     "AppShortcuts": "Application Shortcuts",
     "AppRepository": "Application Repository"
+  },
+  "associations": {
+    "tpa": "Third-party app file",
+    "tpab": "Third-party app binary",
+    "json": "JSON file",
+    "pdf": "PDF document",
+    "svg": "SVG image",
+    "zip": "Archive",
+    "txt": "Text file",
+    "arctermConf": "ArcTerm configuration",
+    "arcterm": "ArcTerm script (unsupported)",
+    "arctheme": "ArcOS theme",
+    "md": "Markdown document",
+    "html": "HTML document",
+    "htm": "HTML document",
+    "js": "JS script",
+    "dTs": "Type definitions",
+    "ts": "TS script",
+    "mjs": "JS module",
+    "xml": "XML file",
+    "arcpl": "ArcOS playlist",
+    "arclnk": "Shortcut",
+    "arc": "ArcOS package",
+    "msg": "ArcOS message",
+    "css": "CSS file",
+    "mig": "Migration status",
+    "lock": "Migration lockfile",
+    "RegisteredVersion": "Version registration",
+    "exe": "Windows executable (unsupported)",
+    "msi": "Windows installer (unsupported)",
+    "com": "MS-DOS executable (unsupported)",
+    "img": "Floppy image (unsupported)",
+    "iso": "CD-ROM image (unsupported)",
+    "osl": "OriginOS script (unsupported)",
+    "wasm": "WebAssembly (unsupported",
+    "bin": "Binary (unsupported)",
+    "mp3": "Audio file",
+    "opus": "Audio file",
+    "wav": "Audio file",
+    "m4a": "Audio file",
+    "flac": "Audio file",
+    "imageFile": "Image file",
+    "audioFile": "Audio file",
+    "videoFile": "Video file",
+    "shortcut": "Shortcut"
   }
 }

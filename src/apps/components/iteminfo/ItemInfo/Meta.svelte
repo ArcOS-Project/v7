@@ -24,21 +24,21 @@
 
 <InfoBlock>
   <InfoRow>
-    <Segment title="Sort">
+    <Segment title="%meta.sort%">
       {$info.name ? $info.meta.sort : "drive"}
     </Segment>
-    <Segment title="Type">
+    <Segment title="%meta.type%">
       {$info.meta.mimetype || "-"}
     </Segment>
-    <Segment title="Size" right>
+    <Segment title="%meta.size%" right>
       {$info.meta.size ? formatBytes($info.meta.size) : "-"}
     </Segment>
   </InfoRow>
   <InfoRow>
-    <Segment title="Created">
+    <Segment title="%meta.created%">
       {created}
     </Segment>
-    <Segment title="Modified">
+    <Segment title="%meta.modified%">
       {modified}
     </Segment>
   </InfoRow>

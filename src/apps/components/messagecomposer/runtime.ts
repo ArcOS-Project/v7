@@ -49,8 +49,8 @@ export class MessageComposerRuntime extends AppProcess {
     const prog = await this.userDaemon?.FileProgress(
       {
         type: "none",
-        caption: "Sending message",
-        subtitle: "Preparing...",
+        caption: "%apps.MessageComposer.sendProg.caption%",
+        subtitle: "%apps.MessageComposer.sendProg.subtitleInitial%",
         icon: "MessagingIcon",
       },
       this.pid
@@ -67,7 +67,7 @@ export class MessageComposerRuntime extends AppProcess {
         prog?.setType("size");
         prog?.setMax(progress.max);
         prog?.setDone(progress.value);
-        prog?.updSub("Uploading...");
+        prog?.updSub("%apps.MessageComposer.sendProg.subtitleUploading%");
       }
     );
 
@@ -83,11 +83,11 @@ export class MessageComposerRuntime extends AppProcess {
     if (!this.isModified()) return this.closeWindow();
     MessageBox(
       {
-        title: "Discard message?",
-        message: "Are you sure you want to discard this message? This cannot be undone.",
+        title: "%apps.MessageComposer.discardMessage.title%",
+        message: "%apps.MessageComposer.discardMessage.title%",
         buttons: [
-          { caption: "Cancel", action: () => {} },
-          { caption: "Discard", action: () => this.closeWindow(), suggested: true },
+          { caption: "%general.cancel%", action: () => {} },
+          { caption: "%general.discard%", action: () => this.closeWindow(), suggested: true },
         ],
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
@@ -101,12 +101,11 @@ export class MessageComposerRuntime extends AppProcess {
     this.sending.set(false);
     MessageBox(
       {
-        title: "Failed to send message",
-        message:
-          "ArcOS failed to send the message! It might be too large, or none of the recipients exist. Please check the recipients or try shrinking it down, and then resend it. If it still doesn't work, contact an ArcOS administrator.",
+        title: "%apps.MessageComposer.sendFailed.title%",
+        message: "%apps.MessageComposer.sendFailed.message%",
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [{ caption: "%general.okay%", action: () => {}, suggested: true }],
       },
       this.pid,
       true
@@ -119,7 +118,7 @@ export class MessageComposerRuntime extends AppProcess {
   async addAttachment() {
     const attachments: Attachment[] = [];
     const paths = await this.userDaemon!.LoadSaveDialog({
-      title: "Choose one or more files to attach",
+      title: "%apps.MessageComposer.addAttachment.title%",
       icon: "UploadIcon",
       startDir: UserPaths.Documents,
       multiple: true,
@@ -129,7 +128,7 @@ export class MessageComposerRuntime extends AppProcess {
       {
         max: 100,
         type: "none",
-        caption: "Just a moment...",
+        caption: "%general.genericStatus%",
         icon: "MemoryIcon",
       },
       this.pid
@@ -143,7 +142,11 @@ export class MessageComposerRuntime extends AppProcess {
       try {
         const contents = await this.fs.readFile(path, (progress) => {
           prog.show();
-          prog.updateCaption(progress.what ? `Reading ${progress.what}` : "Reading file...");
+          prog.updateCaption(
+            progress.what
+              ? `%apps.MessageComposer.fileProgress.readingFileKnown(${progress.what})%`
+              : "%apps.MessageComposer.fileProgress.readingFileUnknown%"
+          );
           prog.updSub(path);
           prog.setType("size");
           prog.setDone(0);

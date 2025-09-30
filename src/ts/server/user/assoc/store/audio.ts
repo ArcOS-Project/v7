@@ -2,23 +2,23 @@ import type { FileDefinition } from "$types/assoc";
 
 export const AudioFileDefinitions: Record<string, FileDefinition> = {
   ".mp3": {
-    friendlyName: "Audio file",
+    friendlyName: "%associations.audioFile%",
     icon: "AudioMimeIcon",
   },
   ".opus": {
-    friendlyName: "Audio file",
+    friendlyName: "%associations.audioFile%",
     icon: "AudioMimeIcon",
   },
   ".wav": {
-    friendlyName: "Audio file",
+    friendlyName: "%associations.audioFile%",
     icon: "AudioMimeIcon",
   },
   ".m4a": {
-    friendlyName: "Audio file",
+    friendlyName: "%associations.audioFile%",
     icon: "AudioMimeIcon",
   },
   ".flac": {
-    friendlyName: "Audio file",
+    friendlyName: "%associations.audioFile%",
     icon: "AudioMimeIcon",
   },
 };

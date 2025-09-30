@@ -19,10 +19,10 @@
         <span class="size">({formatBytes(attachment.data.size)})</span>
         <button
           class="lucide icon-x"
-          aria-label="Remove attachment"
+          aria-label="%attachmentBar.removeAttachment%"
           onclick={() => process.removeAttachment(attachment.uuid)}
           disabled={$sending}
-          title="Remove attachment"
+          title="%attachmentBar.removeAttachment%"
         >
         </button>
       </div>

@@ -40,6 +40,10 @@ export class IconPickerRuntime extends AppProcess {
     this.groups = iconService.getGroupedIcons();
   }
 
+  async render() {
+    this.getBody().setAttribute("data-prefix", "apps.IconPicker");
+  }
+
   //#endregion
 
   async confirm() {

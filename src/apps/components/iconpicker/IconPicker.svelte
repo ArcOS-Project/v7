@@ -28,12 +28,12 @@
     <button
       class="reset-icon"
       onclick={() => ($selected = defaultIcon || process.getIconCached("DefaultIcon"))}
-      disabled={$selected === defaultIcon}>Reset</button
+      disabled={$selected === defaultIcon}>%reset%</button
     >
-    <button class="random">Random</button>
+    <button class="random">%random%</button>
   </div>
   <div class="right">
-    <button class="cancel" onclick={() => process.cancel()}>Cancel</button>
-    <button class="suggested" onclick={() => process.confirm()} disabled={!$selected}>Choose</button>
+    <button class="cancel" onclick={() => process.cancel()}>%general.cancel%</button>
+    <button class="suggested" onclick={() => process.confirm()} disabled={!$selected}>%choose%</button>
   </div>
 </div>
