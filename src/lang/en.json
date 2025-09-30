@@ -410,6 +410,9 @@
     "FsProgress": {
       "quantity": "{{0}} / {{1}} done",
       "size": "{{0}} / {{1}} done"
+    },
+    "FsProgressFail": {
+      "subtitle": "This file operation encountered an error"
     }
   },
   "general": {
