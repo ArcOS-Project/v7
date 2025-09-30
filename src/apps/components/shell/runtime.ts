@@ -18,6 +18,7 @@ export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
   public actionCenterOpened = Store<boolean>(false);
   public workspaceManagerOpened = Store<boolean>(false);
+  public calendarOpened = Store<boolean>(false);
   public stackBusy = Store<boolean>(false);
   public searchQuery = Store<string>();
   public searchResults = Store<FuseResult<SearchItem>[]>([]);
@@ -129,6 +130,8 @@ export class ShellRuntime extends AppProcess {
       const actionCenterButton = document.querySelector("#arcShell button.action-center-button");
       const workspaceManager = document.querySelector("#arcShell div.virtual-desktops");
       const workspaceManagerButton = document.querySelector("#arcShell button.workspace-manager-button");
+      const calendarPopup = document.querySelector("#arcShell div.calendar-popup");
+      const calendarButton = document.querySelector("#arcShell button.clock-button");
       const systemTray = document.querySelector("#arcShell div.tray-icons");
       const contextMenu = document.querySelector("#contextMenu div.context-menu");
 
@@ -169,15 +172,26 @@ export class ShellRuntime extends AppProcess {
         !composed.includes(contextMenu!)
       )
         this.workspaceManagerOpened.set(false); // Clicked outside the wsman? close it
+
+      if (
+        calendarPopup &&
+        calendarButton &&
+        !composed.includes(calendarButton) &&
+        !composed.includes(calendarPopup) &&
+        !composed.includes(contextMenu!)
+      )
+        this.calendarOpened.set(false); // Clicked outside calendar? close it
     });
 
     // Various controlling dispatches
     this.dispatch.subscribe("open-action-center", () => this.actionCenterOpened.set(true));
     this.dispatch.subscribe("open-start-menu", () => this.startMenuOpened.set(true));
     this.dispatch.subscribe("open-workspace-manager", () => this.workspaceManagerOpened.set(true));
+    this.dispatch.subscribe("open-calendar", () => this.calendarOpened.set(true));
     this.dispatch.subscribe("close-workspace-manager", () => this.workspaceManagerOpened.set(false));
     this.dispatch.subscribe("close-action-center", () => this.actionCenterOpened.set(false));
     this.dispatch.subscribe("close-start-menu", () => this.startMenuOpened.set(false));
+    this.dispatch.subscribe("close-calendar", () => this.calendarOpened.set(false));
 
     this.startMenuOpened.subscribe((v) => {
       if (!v) this.searchQuery.set(""); // Remove search query on close

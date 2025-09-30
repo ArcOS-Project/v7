@@ -87,7 +87,7 @@ div.shell div.taskbar button.action-center-button span {
   font-size: 18px;
 }
 
-div.shell div.taskbar div.clock,
+div.shell div.taskbar button.clock-button,
 div.shell div.taskbar div.status-area,
 div.shell div.taskbar div.tray-icons {
   background-color: var(--button-glass-bg);
@@ -230,6 +230,39 @@ div.shell div.taskbar div.pinned-apps > button + button {
   pointer-events: none !important;
 }
 
+#arcShell div.taskbar div.calendar-popup {
+  --w: 350px;
+  --h: 350px;
+  position: absolute;
+  top: calc(0px - var(--h) - 10px);
+  width: var(--w);
+  height: var(--h);
+  background-color: var(--win-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border: var(--border);
+  border-radius: var(--win-border-rad);
+  margin-top: 20px;
+  scale: 0.9;
+  opacity: 0;
+  pointer-events: none !important;
+  overflow: hidden;
+  transition:
+    scale 0.2s,
+    margin 0.2s,
+    opacity 0.2s;
+}
+
+#arcShell div.taskbar div.calendar-popup.opened {
+  opacity: 1;
+  margin-top: 0;
+  pointer-events: initial !important;
+  scale: 1;
+}
+
+#arcShell div.taskbar div.tray-icons > div.icon > div.popup:not(.visible) * {
+  pointer-events: none !important;
+}
+
 @keyframes arcShell_taskbar_appear {
   0% {
     translate: 0 70px;
@@ -241,4 +274,17 @@ div.shell div.taskbar div.pinned-apps > button + button {
 
 div.shell.has-fullscreen div.taskbar {
   translate: 0 70px !important;
+}
+
+div.shell div.taskbar button.clock-button {
+  background-color: var(--button-glass-bg);
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 15px !important;
+  border-radius: 10px;
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
+  width: fit-content !important;
+  font-size: 14px !important;
 }
