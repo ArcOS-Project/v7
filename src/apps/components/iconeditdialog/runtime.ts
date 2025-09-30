@@ -31,6 +31,10 @@ export class IconEditDialogRuntime extends AppProcess {
     this.values.subscribe((v) => this.updateCurrentIcon(this.type(), v));
   }
 
+  async render() {
+    this.getBody().setAttribute("data-prefix", "apps.IconEditDialog");
+  }
+
   //#endregion
 
   async updateCurrentIcon(type: string = this.type(), values: Record<string, any> = this.values()) {

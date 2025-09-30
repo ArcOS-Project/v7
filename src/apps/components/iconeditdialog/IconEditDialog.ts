@@ -5,7 +5,7 @@ import { IconEditDialogRuntime } from "./runtime";
 
 export const IconEditDialogApp: App = {
   metadata: {
-    name: "Change Icon",
+    name: "%apps.IconEditDialog._name%",
     version: "1.0.0",
     author: "Izaak Kuipers",
     icon: "ComponentIcon",

@@ -413,6 +413,34 @@
     },
     "FsProgressFail": {
       "subtitle": "This file operation encountered an error"
+    },
+    "FsRenameItem": {
+      "title": "Rename file or folder",
+      "subtitle": "Enter a new name for the item:",
+      "rename": "Rename"
+    },
+    "IconEditDialog": {
+      "_name": "Change Icon",
+      "title": "Change {{0}}",
+      "modeToggle": {
+        "app": "App",
+        "fs": "File",
+        "builtin": "Built-in"
+      },
+      "fileType": {
+        "loadSaveTitle": "Choose an icon to load",
+        "title": "File path:",
+        "buttonTitle": "Choose file"
+      },
+      "appType": {
+        "title": "App:",
+        "option": "{{0}} by {{1}}"
+      },
+      "builtinType": {
+        "title": "Icon ID:",
+        "buttonTitle": "Choose icon"
+      },
+      "default": "Default"
     }
   },
   "general": {
@@ -435,7 +463,9 @@
     "no": "No",
     "none": "None",
     "confirm": "Confirm",
-    "ArcOSTeam": "The ArcOS Team"
+    "ArcOSTeam": "The ArcOS Team",
+    "genericStatus": "Just a moment...",
+    "save": "Save"
   },
   "appOrigins": {
     "builtin": "Built-in",

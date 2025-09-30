@@ -3,7 +3,7 @@ import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
 export class GlobalLoadIndicatorRuntime extends AppProcess {
-  caption = Store<string>("Just a moment...");
+  caption = Store<string>("%general.genericStatus%");
 
   //#region LIFECYCLE
 
