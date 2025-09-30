@@ -38,6 +38,10 @@ export class MessageComposerRuntime extends AppProcess {
     this.setSource(__SOURCE__);
   }
 
+  async render() {
+    this.getBody().setAttribute("data-prefix", "apps.MessageComposer");
+  }
+
   //#endregion
   //#region SENDING
 

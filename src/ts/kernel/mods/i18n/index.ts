@@ -7,7 +7,7 @@ import type { ConstructedWaveKernel, SystemDispatchType } from "$types/kernel";
 
 export class I18n extends KernelModule {
   REGEX = /%(?<id>[\w.=\-]+)(?:\((?<inlays>(.*?))\)|)%/gm;
-  language: string = "nl";
+  language: string = "en";
   dispatch: SystemDispatchType;
   observer: MutationObserver | null = null;
   TARGET?: HTMLDivElement;
@@ -79,7 +79,23 @@ export class I18n extends KernelModule {
 
       if (node.parentElement) {
         node.parentElement.setAttribute("data-i18n-original", str);
-        node.parentElement.innerHTML = resultString;
+        node.textContent = resultString;
+
+        let raf: number;
+
+        const x = () => {
+          if (node.isConnected) {
+            if (node.textContent !== resultString) {
+              this.replaceInNode(node);
+            }
+
+            raf = requestAnimationFrame(x);
+          } else {
+            cancelAnimationFrame(raf);
+          }
+        };
+
+        raf = requestAnimationFrame(x);
       }
     } else if (node.nodeType === node.ELEMENT_NODE) {
       const el = node as HTMLElement;

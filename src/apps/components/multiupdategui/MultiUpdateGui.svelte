@@ -24,40 +24,40 @@
       ? StoreItemIcon($currentPackage)
       : $done
         ? process.getIconCached("GoodStatusIcon")
-        : "UpdateIcon"}
+        : process.getIconCached("UpdateIcon")}
     alt=""
   />
   <div class="info">
     <h1>
       {#if $working}
         {#if $currentPackage}
-          Updating {$currentPackage.pkg.name}
+          %title.updating({$currentPackage.pkg.name})%
         {:else}
-          Just a moment
+          %title.loading%
         {/if}
       {:else if $done}
-        Finished updating
+        %title.done%
       {:else}
-        Ready to update
+        %title.ready%
       {/if}
     </h1>
     <p class="sub">
       {#if $working}
         {#if $currentPackage && $currentPackage.user}
           <span title={$currentPackage.user?.username || ""}>
-            By <UserLink user={$currentPackage.user} fallback={$currentPackage.pkg.author} />
+            %generic.by% <UserLink user={$currentPackage.user} fallback={$currentPackage.pkg.author} />
           </span>
         {:else}
-          Loading...
+          %generic.loading%
         {/if}
       {:else if $done}
         {#if $errored.length}
           {$errored.length} {Plural("error", $errored.length)} occured
         {:else}
-          All packages were updated.
+          %allPackagesUpdated%
         {/if}
       {:else}
-        Click <b>Update</b> to begin
+        %clickUpdate%
       {/if}
     </p>
   </div>
@@ -88,13 +88,13 @@
       <div class="item" bind:this={elements[uuid]}>
         <p class="type">
           {#if item.type === "file"}
-            Writing file
+            %itemType.file%
           {:else if item.type === "mkdir"}
-            Creating directory
+            %itemType.mkdir%
           {:else if item.type === "registration"}
-            Registering
+            %itemType.registration%
           {:else}
-            Status
+            %itemType.generic%
           {/if}
         </p>
         <p class="content">{item.content}</p>
@@ -111,10 +111,10 @@
 
 <div class="actions">
   <button class="show-log" disabled={!$working && !$done} onclick={() => process.toggleLog()}
-    >{$showLog ? "Hide" : "Show"} log</button
+    >{#if $showLog}%hideLog%{:else}%showLog%{/if}</button
   >
-  <button class="cancel" disabled={$working || $done} onclick={() => process.closeWindow()}>Cancel</button>
+  <button class="cancel" disabled={$working || $done} onclick={() => process.closeWindow()}>%general.cancel%</button>
   <button class="suggested" disabled={$working && !$done} onclick={() => process.mainAction()}
-    >{$done ? "Finish" : "Update"}</button
+    >{#if $done}%finish%{:else}%startUpdate%{/if}</button
   >
 </div>

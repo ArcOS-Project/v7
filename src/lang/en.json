@@ -522,6 +522,28 @@
         "removeRecipient": "Remove {{0}}",
         "enterUsername": "Enter username"
       }
+    },
+    "MultiUpdateGui": {
+      "_name": "App Updater",
+      "elevation": "ArcOS needs your permission to update {{0}} {{1}}.",
+      "title": {
+        "updating": "Updating {{0}}",
+        "loading": "Just a moment",
+        "done": "Finished updating",
+        "ready": "Ready to update"
+      },
+      "allPackagesUpdated": "All packages were updated.",
+      "clickUpdate": "Click <b>Update</b> to begin",
+      "itemType": {
+        "file": "Writing file",
+        "mkdir": "Creating directory",
+        "registration": "Registering",
+        "generic": "Status"
+      },
+      "showLog": "Show log",
+      "hideLog": "Hide log",
+      "startUpdate": "Update",
+      "finish": "Finish"
     }
   },
   "general": {
@@ -548,6 +570,8 @@
     "ArcOSTeam": "The ArcOS Team",
     "genericStatus": "Just a moment...",
     "save": "Save",
+    "by": "By",
+    "loading": "Loading...",
     "discard": "Discard"
   },
   "appOrigins": {
