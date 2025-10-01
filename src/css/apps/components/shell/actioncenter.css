@@ -62,3 +62,7 @@ div.shell div.actioncenter div.top > div {
   outline: var(--button-glass-bg) 1px solid;
   outline-offset: -1px;
 }
+
+.theme-light div.shell div.actioncenter::before {
+  opacity: 0.1;
+}

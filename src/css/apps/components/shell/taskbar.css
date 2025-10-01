@@ -242,3 +242,7 @@ div.shell div.taskbar div.pinned-apps > button + button {
 div.shell.has-fullscreen div.taskbar {
   translate: 0 70px !important;
 }
+
+.theme-light div.shell div.taskbar::before {
+  opacity: 0.1;
+}
