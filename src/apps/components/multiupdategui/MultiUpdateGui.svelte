@@ -52,7 +52,7 @@
         {/if}
       {:else if $done}
         {#if $errored.length}
-          {$errored.length} {Plural("error", $errored.length)} occured
+          {$errored.length} {Plural("error", $errored.length)} occurred
         {:else}
           All packages were updated.
         {/if}
