@@ -45,16 +45,9 @@
   --clr-purple-bright-fg: #995aff;
   --accent-darken: brightness(0.7);
   --secondary-border: var(--win-bg) 1px solid;
-  --secondary-box-shadow: 0 2px 5px 2px #0002;
-}
-/* 
-:root .theme-light.noglass {
-  --glass-bg: #fff;
-  --glass-alt-bg: #eee;
-  --glass-ultralight: #eeeeee;
-  --glass-ultradark: #bbbbbb;
+  --secondary-box-shadow: 0 2px 5px 2px #0000000a;
 }
 
-.theme-light #arcShell > div.body * {
-  --button-glass-bg: #ffffffea !important;
-} */
+:root .theme-light.noglass {
+  --glass-bg: #fff;
+}

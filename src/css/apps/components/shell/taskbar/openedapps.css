@@ -104,7 +104,7 @@ div.shell div.taskbar div.opened-apps button:hover img.backdrop {
   background-color: var(--button-glass-active-bg);
 }
 #arcShell div.shell div.taskbar div.opened-apps button {
-  outline: var(--button-glass-bg) 1px solid !important;
+  outline: var(--shell-component-outline) 1px solid !important;
   outline-offset: -1px;
 }
 div.shell div.taskbar div.opened-apps button.active img.backdrop {

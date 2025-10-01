@@ -57,7 +57,7 @@ div.shell.docked div.taskbar {
   background-color: var(--shell-component-bg);
   font-size: 18px;
   border-radius: 10px;
-  outline: var(--button-glass-active-bg) 1px solid;
+  outline: var(--shell-component-outline) 1px solid;
   outline-offset: -1px;
 }
 
@@ -96,7 +96,7 @@ div.shell div.taskbar div.tray-icons {
   align-items: center;
   padding: 0 15px;
   border-radius: 10px;
-  outline: var(--button-glass-active-bg) 1px solid;
+  outline: var(--shell-component-outline) 1px solid;
   outline-offset: -1px;
 }
 
@@ -134,7 +134,7 @@ div.shell div.taskbar div.pinned-apps {
   padding: 3px;
   background-color: var(--shell-component-bg);
   border-radius: 10px;
-  outline: var(--button-glass-active-bg) 1px solid;
+  outline: var(--shell-component-outline) 1px solid;
   outline-offset: -1px;
 }
 

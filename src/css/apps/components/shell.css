@@ -9,8 +9,8 @@
 #arcShell {
   z-index: 1000000000000000000000000000000000000000 !important;
   pointer-events: none !important;
-  --shell-component-bg: var(--button-glass-hover-bg);
-  --shell-component-outline: var(--button-glass-hover-bg);
+  --shell-component-bg: var(--button-glass-bg);
+  --shell-component-outline: var(--button-glass-bg);
 }
 
 .theme-light #arcShell {
