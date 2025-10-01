@@ -4,7 +4,7 @@
   border-radius: 10px;
   flex-grow: 1;
   overflow: hidden;
-  box-shadow: 0 2px 5px 2px #0002;
+  box-shadow: var(--secondary-box-shadow);
   display: flex;
   flex-direction: column;
   outline: var(--button-glass-bg) 1px solid;

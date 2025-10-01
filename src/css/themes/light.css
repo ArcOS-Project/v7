@@ -45,7 +45,7 @@
   --clr-purple-bright-fg: #995aff;
   --accent-darken: brightness(0.7);
   --secondary-border: var(--win-bg) 1px solid;
-  --secondary-box-shadow: 0 2px 5px 2px #0000000a;
+  --secondary-box-shadow: none !important;
 }
 
 :root .theme-light.noglass {
