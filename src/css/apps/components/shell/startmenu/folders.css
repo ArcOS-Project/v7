@@ -44,7 +44,7 @@ div.shell div.startmenu div.top div.folders button span {
 
 div.shell div.startmenu div.top div.folders {
   width: 170px;
-  background-color: var(--button-glass-bg);
+  background-color: var(--shell-component-bg);
   border-radius: 10px;
   padding: 10px;
   box-shadow: var(--secondary-box-shadow);

@@ -54,10 +54,10 @@ div.shell.docked div.taskbar {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--button-glass-bg);
+  background-color: var(--shell-component-bg);
   font-size: 18px;
   border-radius: 10px;
-  outline: var(--button-glass-bg) 1px solid;
+  outline: var(--button-glass-active-bg) 1px solid;
   outline-offset: -1px;
 }
 
@@ -90,13 +90,13 @@ div.shell div.taskbar button.action-center-button span {
 div.shell div.taskbar div.clock,
 div.shell div.taskbar div.status-area,
 div.shell div.taskbar div.tray-icons {
-  background-color: var(--button-glass-bg);
+  background-color: var(--shell-component-bg);
   height: 40px;
   display: flex;
   align-items: center;
   padding: 0 15px;
   border-radius: 10px;
-  outline: var(--button-glass-bg) 1px solid;
+  outline: var(--button-glass-active-bg) 1px solid;
   outline-offset: -1px;
 }
 
@@ -132,9 +132,9 @@ div.shell div.taskbar > *:not(.opened-apps) {
 div.shell div.taskbar div.pinned-apps {
   height: 40px;
   padding: 3px;
-  background-color: var(--button-glass-bg);
+  background-color: var(--shell-component-bg);
   border-radius: 10px;
-  outline: var(--button-glass-bg) 1px solid;
+  outline: var(--button-glass-active-bg) 1px solid;
   outline-offset: -1px;
 }
 
@@ -155,7 +155,7 @@ div.shell div.taskbar div.pinned-apps > button {
 }
 
 #arcShell div.shell div.taskbar div.pinned-apps > button:hover {
-  background-color: var(--button-glass-bg);
+  background-color: var(--shell-component-bg);
 }
 
 #arcShell div.shell div.taskbar div.pinned-apps > button:active {
@@ -182,7 +182,7 @@ div.shell div.taskbar div.pinned-apps > button + button {
 }
 
 #arcShell div.taskbar div.tray-icons > div.icon > button.trigger:hover {
-  background-color: var(--button-glass-bg);
+  background-color: var(--shell-component-bg);
 }
 
 #arcShell div.taskbar div.tray-icons > div.icon > button.trigger:disabled {

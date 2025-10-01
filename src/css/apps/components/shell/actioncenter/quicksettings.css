@@ -1,7 +1,7 @@
 div.shell div.actioncenter div.quick-settings {
   height: 60px;
   min-height: 60px;
-  background-color: var(--button-glass-bg);
+  background-color: var(--shell-component-bg);
   border-radius: 10px;
   box-shadow: 0 2px 5px 2px #0002;
   display: flex;

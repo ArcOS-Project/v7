@@ -1,6 +1,6 @@
 #arcShell div.shell div.notifications {
   padding: 10px;
-  background-color: var(--button-glass-bg);
+  background-color: var(--shell-component-bg);
   border-radius: 10px;
   flex-grow: 1;
   overflow: hidden;
