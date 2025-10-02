@@ -21,6 +21,7 @@ jobs:
         run: |
           echo -e "DW_SERVER_URL=\"https://test.arcapi.nl\"" > .env
           echo -e "DW_PREVIEW_DEP_BRANCH=\"${{ github.head_ref || github.ref_name }}\"" >> .env
+          echo "development" > public/mode
       - run: yarn
       - run: DW_SERVER_URL="https://test.arcapi.nl" yarn build
       - name: Upload build to server
