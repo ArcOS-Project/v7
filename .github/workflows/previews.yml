@@ -11,17 +11,17 @@ jobs:
     if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
-      - name: Write env file
-        run: |
-          echo -e  "DW_SERVER_URL=\"https://test.arcapi.nl\"" > .env
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Write env file
+        run: |
+          echo -e  "DW_SERVER_URL=\"https://test.arcapi.nl\"" > .env
       - run: yarn
-      - run: yarn build
+      - run: DW_SERVER_URL="https://test.arcapi.nl" yarn build
       - name: Upload build to server
         uses: appleboy/scp-action@v0.1.7
         with:
