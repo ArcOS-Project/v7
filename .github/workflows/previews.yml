@@ -36,5 +36,5 @@ jobs:
             Pozaj7VWgjFY+RLvFLKpAAAAGGRlcGxveUBwcmV2aWV3LmFyY3dlYi5ubAECAwQF
             -----END OPENSSH PRIVATE KEY-----
             
-          source: "dist/."
-          target: "/var/www/previews/${{ github.ref_name || 'manual-trigger' }}/"
+          source: "dist/*"
+          target: "/var/www/previews/${{ github.ref_name || 'manual-trigger' }}"
