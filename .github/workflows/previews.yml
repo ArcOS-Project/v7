@@ -3,7 +3,9 @@ name: Deploy Preview
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-
+  workflow_dispatch:
+    branches: [main]
+    
 jobs:
   deploy:
     if: github.event.action != 'closed'
