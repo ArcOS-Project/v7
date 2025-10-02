@@ -37,4 +37,4 @@ jobs:
             -----END OPENSSH PRIVATE KEY-----
             
           source: "dist/."
-          target: "/var/www/previews/${{ github.head_ref }}/"
+          target: "/var/www/previews/${{ github.ref_name }}/"
