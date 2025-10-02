@@ -23,10 +23,13 @@ jobs:
       - run: yarn
       - run: DW_SERVER_URL="https://test.arcapi.nl" yarn build
       - name: Upload build to server
-        uses: appleboy/scp-action@v0.1.7
+        uses: burnett01/rsync-deployments@6.0.0
         with:
-          host: "62.171.184.106"
-          username: "deploy"
+          switches: -avzr --delete
+          path: dist/
+          remote_path: /var/www/previews/${{ github.head_ref || github.ref_name }}/
+          remote_host: 62.171.184.106
+          remote_user: deploy
           key: |
             -----BEGIN OPENSSH PRIVATE KEY-----
             b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
@@ -35,7 +38,3 @@ jobs:
             AAAEDNhg/XnRG5d+K7QNMZkLDsUxkceMttrqkBnytqtJXO/G0EGXnoGdP/3Igr3Viy7DBk
             Pozaj7VWgjFY+RLvFLKpAAAAGGRlcGxveUBwcmV2aWV3LmFyY3dlYi5ubAECAwQF
             -----END OPENSSH PRIVATE KEY-----
-            
-          source: "dist/"
-          target: "/var/www/previews/${{ github.ref_name || 'manual-trigger' }}"
-          rm: true
