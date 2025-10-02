@@ -20,8 +20,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm ci
-      - run: npm run build
+      - run: yarn
+      - run: yarn build
       - name: Upload build to server
         uses: appleboy/scp-action@v0.1.7
         with:
