@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Write env file
         run: |
-          echo-e  "DW_SERVER_URL=\"https://test.arcapi.nl\"" > .env
+          echo -e  "DW_SERVER_URL=\"https://test.arcapi.nl\"" > .env
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
