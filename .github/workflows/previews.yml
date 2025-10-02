@@ -30,7 +30,7 @@ jobs:
           remote_path: /var/www/previews/${{ github.head_ref || github.ref_name }}/
           remote_host: 62.171.184.106
           remote_user: deploy
-          key: |
+          remote_key: |
             -----BEGIN OPENSSH PRIVATE KEY-----
             b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
             QyNTUxOQAAACBtBBl56BnT/9yIK91YsuwwZD6M2o+1VoIxWPkS7xSyqQAAAKD8u48e/LuP
