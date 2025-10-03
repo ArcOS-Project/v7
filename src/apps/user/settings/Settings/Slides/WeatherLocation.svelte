@@ -26,7 +26,7 @@
         {
           image: "ErrorIcon",
           title: `Failed to search for '${searchInput}'`,
-          message: "An error occured while trying to search for your query. Please try again later.",
+          message: "An error occurred while trying to search for your query. Please try again later.",
           buttons: [{ caption: "Okay", suggested: true, action: () => {} }],
         },
         process.pid,

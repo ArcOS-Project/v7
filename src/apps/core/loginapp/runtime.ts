@@ -122,10 +122,12 @@ export class LoginAppRuntime extends AppProcess {
       return false;
     }
 
-    if (!this.type && !this.unexpectedInvocation) await this.loadToken();
+    if (!this.type && !this.unexpectedInvocation) {
+      const tokenResult = await this.loadToken();
 
-    if (this.serverInfo?.loginNotice) {
-      this.errorMessage.set(this.serverInfo.loginNotice);
+      if (!tokenResult && this.serverInfo?.loginNotice) {
+        this.errorMessage.set(this.serverInfo.loginNotice);
+      }
     }
   }
 

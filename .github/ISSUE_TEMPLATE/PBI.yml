@@ -24,3 +24,7 @@ body:
       value: "A bug happened!"
     validations:
       required: true
+  - type: markdown
+    attributes:
+      value: |
+        <@&1419655169007812608>

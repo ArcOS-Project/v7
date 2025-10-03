@@ -191,7 +191,7 @@ export class SettingsRuntime extends AppProcess {
       MessageBox(
         {
           title: "Failed to upload wallpaper",
-          message: `An error occured while uploading a wallpaper from your device: ${message}`,
+          message: `An error occurred while uploading a wallpaper from your device: ${message}`,
           image: "ErrorIcon",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           sound: "arcos.dialog.error",
@@ -360,7 +360,7 @@ export class SettingsRuntime extends AppProcess {
       MessageBox(
         {
           title: "Something went wrong",
-          message: "An error occured while disabling two-factor authentication for your account. Please contact ArcOS support.",
+          message: "An error occurred while disabling two-factor authentication for your account. Please contact ArcOS support.",
           buttons: [{ caption: "Okay", suggested: true, action: () => {} }],
           sound: "arcos.dialog.error",
           image: "ErrorIcon",
