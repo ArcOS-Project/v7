@@ -1,11 +1,24 @@
 <script lang="ts">
   import { derived, get } from "svelte/store";
   import type { ShellRuntime } from "../../runtime";
+  import { onDestroy } from "svelte";
 
   const { process }: { process: ShellRuntime } = $props();
   const { workspaceManagerOpened, userPreferences } = process;
 
   let workspaceIndex = derived(userPreferences, (v) => v.workspaces.index);
+  let isChanging = $state(false);
+  let animTimeout: number = -1;
+
+  $effect(() => {
+    $workspaceIndex;
+    isChanging = true;
+    animTimeout = Number(
+      setTimeout(() => {
+        isChanging = false;
+      }, 350)
+    );
+  });
 
   function toggle() {
     $workspaceManagerOpened = !$workspaceManagerOpened;
@@ -26,6 +39,10 @@
       return v;
     });
   }
+
+  onDestroy(() => {
+    clearTimeout(animTimeout);
+  });
 </script>
 
 <button
@@ -36,5 +53,25 @@
   aria-label="Workspace Manager"
   title="Workspaces..."
 >
-  <span class="lucide icon-gallery-horizontal"></span>
+  {#if isChanging}
+    <span class="workspacebtnicon">{$workspaceIndex + 1}</span>
+  {:else}
+    <span class="workspacebtnicon lucide icon-gallery-horizontal"></span>
+  {/if}
 </button>
+
+<style>
+  .workspacebtnicon {
+    animation: show 0.4s;
+  }
+
+  @keyframes show {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+</style>
