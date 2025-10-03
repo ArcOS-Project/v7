@@ -29,7 +29,7 @@ jobs:
         with:
           switches: -avzr --delete
           path: dist/
-          remote_path: /var/www/previews/${{ github.head_ref || github.ref_name }}/
+          remote_path: /var/www/previewsite/www/${{ github.head_ref || github.ref_name }}/
           remote_host: 62.171.184.106
           remote_user: deploy
           remote_key: |
