@@ -35,7 +35,7 @@ export class FsProgressRuntime extends AppProcess {
       }
 
       if (v.done >= v.max && v.max && v.errors.length && !errorNotified) {
-        // Errors occured
+        // Errors occurred
         errorNotified = true;
 
         await this.closeWindow();

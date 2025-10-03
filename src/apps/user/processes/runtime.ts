@@ -82,7 +82,7 @@ export class ProcessManagerRuntime extends AppProcess {
     MessageBox(
       {
         title: `Couldn't kill ${name}!`,
-        message: `An error occured while trying to end the process. ${caption}`,
+        message: `An error occurred while trying to end the process. ${caption}`,
         buttons: [{ caption: "Okay", action() {}, suggested: true }],
         image: "ErrorIcon",
         sound: "arcos.dialog.error",

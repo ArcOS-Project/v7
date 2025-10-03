@@ -50,5 +50,7 @@
 {/if}
 
 {#if serverInfo?.loginBottomText}
-  <p class="bottom-text">{serverInfo?.loginBottomText}</p>
+  <p class="bottom-text">
+    {`${serverInfo?.loginBottomText} ${import.meta.env.DW_PREVIEW_DEP_BRANCH ? `-- ${import.meta.env.DW_PREVIEW_DEP_BRANCH}` : ""}`.trim()}
+  </p>
 {/if}

@@ -275,7 +275,7 @@ export class TerminalMode extends Process {
 
     const cookieOptions = {
       expires: 14,
-      domain: import.meta.env.DEV ? "localhost" : "izkuipers.nl",
+      domain: import.meta.env.DEV ? "localhost" : location.hostname,
     };
 
     Cookies.set("arcToken", token, cookieOptions);
