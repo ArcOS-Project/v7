@@ -13,6 +13,7 @@
 @import url("./window/proto.css");
 @import url("./window/userlink.css");
 @import url("./window/splitpanes.css");
+@import url("./window/maximization.css");
 
 div.window:not(.core) {
   position: absolute;
@@ -34,24 +35,6 @@ div.window:not(.core) {
 div.window:not(.core).shell-colored.colored::before {
   opacity: 0.1;
   transition: opacity 0.1s !important;
-}
-
-div.window:not(.core).maximized {
-  /* position: fixed !important; */
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  min-width: 100% !important;
-  max-width: 100% !important;
-  height: calc(100% - var(--taskbar-allocation)) !important;
-  min-height: calc(100% - var(--taskbar-allocation)) !important;
-  max-height: calc(100% - var(--taskbar-allocation)) !important;
-  translate: 0 0 !important;
-  transform: none !important;
-  border-radius: 0 !important;
-  resize: none !important;
-  border: none !important;
-  transition: all 0.3s !important;
 }
 
 div.window:not(.core).maximized.no-shell {

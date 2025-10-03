@@ -96,6 +96,7 @@ export interface TaskbarPreferences {
   clockDate: boolean;
   clock12hr: boolean;
   batteryPercentage: boolean;
+  position: "horizontal-bottom" | "vertical-left" | "vertical-right" | "horizontal-top";
 }
 
 export interface DesktopPreferences {

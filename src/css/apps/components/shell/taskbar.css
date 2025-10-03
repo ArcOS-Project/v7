@@ -1,4 +1,5 @@
 @import url("./taskbar/openedapps.css");
+@import url("./taskbar/position.css");
 div.shell div.taskbar {
   display: flex;
   align-items: center;

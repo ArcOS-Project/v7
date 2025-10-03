@@ -19,6 +19,7 @@ export const DefaultUserPreferences: UserPreferences = {
       clockDate: false,
       clockSecs: false,
       batteryPercentage: false,
+      position: "horizontal-bottom",
     },
     actionCenter: {
       weatherLocation: {
@@ -56,7 +57,7 @@ export const DefaultUserPreferences: UserPreferences = {
     cacheFilesystem: true,
     showHiddenApps: false,
     showThirdPartyApps: true,
-    excludeShortcuts: true
+    excludeShortcuts: true,
   },
   security: {
     lockdown: false,
