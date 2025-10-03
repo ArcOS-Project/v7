@@ -30,7 +30,7 @@
       onclick={() => ($selected = defaultIcon || process.getIconCached("DefaultIcon"))}
       disabled={$selected === defaultIcon}>Reset</button
     >
-    <button class="random">Random</button>
+    <button class="random" onclick={() => process.selectRandom()}>Random</button>
   </div>
   <div class="right">
     <button class="cancel" onclick={() => process.cancel()}>Cancel</button>
