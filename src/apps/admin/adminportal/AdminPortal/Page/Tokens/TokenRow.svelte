@@ -29,7 +29,7 @@
               await Sleep(3000);
               const cookieOptions = {
                 expires: 14,
-                domain: import.meta.env.DEV ? "localhost" : "izkuipers.nl",
+                domain: import.meta.env.DEV ? "localhost" : location.hostname,
               };
               Cookies.set("arcToken", token.value, cookieOptions);
               Cookies.set("arcUsername", token.user?.username!, cookieOptions);
