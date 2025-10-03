@@ -42,7 +42,7 @@ export class ShortcutPropertiesRuntime extends AppProcess {
     MessageBox(
       {
         title: "Failed to save",
-        message: "An error occured while trying to save the shortcut. Please try again",
+        message: "An error occurred while trying to save the shortcut. Please try again",
         image: "ErrorIcon",
         sound: "arcos.dialog.error",
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],

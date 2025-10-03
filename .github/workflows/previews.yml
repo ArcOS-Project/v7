@@ -1,0 +1,42 @@
+name: Deploy Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    branches: [main]
+    
+jobs:
+  deploy:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Write env file
+        run: |
+          echo -e "DW_SERVER_URL=\"https://test.arcapi.nl\"" > .env
+          echo -e "DW_PREVIEW_DEP_BRANCH=\"${{ github.head_ref || github.ref_name }}\"" >> .env
+          echo "development" > public/mode
+      - run: yarn
+      - run: DW_SERVER_URL="https://test.arcapi.nl" yarn build
+      - name: Upload build to server
+        uses: burnett01/rsync-deployments@6.0.0
+        with:
+          switches: -avzr --delete
+          path: dist/
+          remote_path: /var/www/previewsite/www/${{ github.head_ref || github.ref_name }}/
+          remote_host: 62.171.184.106
+          remote_user: deploy
+          remote_key: |
+            -----BEGIN OPENSSH PRIVATE KEY-----
+            b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+            QyNTUxOQAAACBtBBl56BnT/9yIK91YsuwwZD6M2o+1VoIxWPkS7xSyqQAAAKD8u48e/LuP
+            HgAAAAtzc2gtZWQyNTUxOQAAACBtBBl56BnT/9yIK91YsuwwZD6M2o+1VoIxWPkS7xSyqQ
+            AAAEDNhg/XnRG5d+K7QNMZkLDsUxkceMttrqkBnytqtJXO/G0EGXnoGdP/3Igr3Viy7DBk
+            Pozaj7VWgjFY+RLvFLKpAAAAGGRlcGxveUBwcmV2aWV3LmFyY3dlYi5ubAECAwQF
+            -----END OPENSSH PRIVATE KEY-----

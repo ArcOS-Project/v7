@@ -122,10 +122,12 @@ export class LoginAppRuntime extends AppProcess {
       return false;
     }
 
-    if (!this.type && !this.unexpectedInvocation) await this.loadToken();
+    if (!this.type && !this.unexpectedInvocation) {
+      const tokenResult = await this.loadToken();
 
-    if (this.serverInfo?.loginNotice) {
-      this.errorMessage.set(this.serverInfo.loginNotice);
+      if (!tokenResult && this.serverInfo?.loginNotice) {
+        this.errorMessage.set(this.serverInfo.loginNotice);
+      }
     }
   }
 
@@ -399,7 +401,7 @@ export class LoginAppRuntime extends AppProcess {
 
     const cookieOptions = {
       expires: 14, // lmao
-      domain: import.meta.env.DEV ? "localhost" : "izkuipers.nl",
+      domain: import.meta.env.DEV ? "localhost" : location.hostname,
     };
 
     Cookies.set("arcToken", token, cookieOptions);

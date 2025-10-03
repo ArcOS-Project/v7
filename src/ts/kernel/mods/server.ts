@@ -11,6 +11,7 @@ export class ServerManager extends KernelModule {
   public url: string = "";
   public connected: boolean = false;
   public serverInfo: ServerInfo | undefined;
+  public previewBranch?: string;
 
   public static isConnected() {
     const server = getKMod<ServerManagerType>("server", true);
@@ -74,6 +75,8 @@ export class ServerManager extends KernelModule {
 
       this.Log("Connection is good to go :D");
 
+      this.checkIfPreviewDeployment();
+
       return this.connected;
     } catch (e) {
       this.Log(`Failed to connect to server: ${e}`, LogLevel.error);
@@ -102,5 +105,14 @@ export class ServerManager extends KernelModule {
     } catch {
       return false;
     }
+  }
+
+  private checkIfPreviewDeployment() {
+    const previewBranchName = import.meta.env.DW_PREVIEW_DEP_BRANCH;
+
+    if (!previewBranchName) return false;
+
+    document.title = `ArcOS - PREVIEW ${previewBranchName}`;
+    this.previewBranch = previewBranchName;
   }
 }

@@ -280,7 +280,7 @@ export class InitialSetupRuntime extends AppProcess {
           image: ErrorIcon,
           title: "Something went wrong",
           message:
-            "An error occured while creating your account. We might be experiencing some technical difficulties, please try again later.",
+            "An error occurred while creating your account. We might be experiencing some technical difficulties, please try again later.",
           buttons: [
             {
               caption: "Okay",
