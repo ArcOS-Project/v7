@@ -27,7 +27,7 @@ div.window:not(.core) {
   margin-top: 0;
   opacity: 0;
   visibility: hidden;
-  scale: 0.9;
+  scale: 0.95;
   outline: var(--secondary-border) !important;
 }
 
@@ -101,8 +101,7 @@ div.window:not(.core):not(.glass) > div.body {
 div.window:not(.core).minimized:not(.no-shell) {
   opacity: 0 !important;
   visibility: hidden !important;
-  transform-origin: top !important;
-  scale: 1 0 !important;
+  margin-top: 15px !important;
 }
 
 div.window *::selection {

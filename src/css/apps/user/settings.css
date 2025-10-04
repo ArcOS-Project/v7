@@ -71,8 +71,8 @@ button.lucide:active {
   height: calc(100% - 40px);
   transition:
     pointer-events 0s,
-    scale 0.3s,
-    opacity 0.3s;
+    scale 0.2s,
+    opacity 0.2s;
   overflow-y: scroll;
 }
 

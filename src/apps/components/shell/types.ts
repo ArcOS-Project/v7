@@ -63,3 +63,19 @@ export interface QuickSetting {
 }
 
 export type TrayIconDiscriminator = `${number}#${string}`;
+
+export interface CalendarMonth {
+  prepended: CalendarDay[];
+  current: CalendarDay[];
+  appended: CalendarDay[];
+}
+
+export interface CalendarDay {
+  fullDate: string;
+  caption: string;
+  dayOfMonth: number;
+  isToday?: boolean;
+}
+
+export const longWeekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+export const shortWeekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];

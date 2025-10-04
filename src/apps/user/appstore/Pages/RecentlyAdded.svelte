@@ -6,8 +6,6 @@
 
   const { groups, all, process }: { groups: Record<string, StoreItem[]>; all: PartialStoreItem[]; process: AppStoreRuntime } =
     $props();
-
-  console.log(groups);
 </script>
 
 {#if all?.length && groups && Object.entries(groups).length}
