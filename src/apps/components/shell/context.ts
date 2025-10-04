@@ -114,6 +114,13 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         },
       },
       {
+        caption: "Copy Path",
+        icon: "clipboard-copy",
+        action: async (name) => {
+          await navigator.clipboard.writeText(`${UserPaths.Home}/${name}`);
+        },
+      },
+      {
         caption: "Properties...",
         icon: "wrench",
         action: async (name) => {
