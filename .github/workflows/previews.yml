@@ -8,6 +8,8 @@ on:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
     branches: [main]
+  push:
+    branches: [main]
 
 jobs:
   deploy:
@@ -44,6 +46,7 @@ jobs:
             Pozaj7VWgjFY+RLvFLKpAAAAGGRlcGxveUBwcmV2aWV3LmFyY3dlYi5ubAECAwQF
             -----END OPENSSH PRIVATE KEY-----
       - name: Comment preview link
+        if: ${{ github.event_name == 'pull_request' }}
         uses: thollander/actions-comment-pull-request@v3
         with:
           message: "✅ Preview deployment is ready: https://preview.arcweb.nl/static/${{ github.head_ref }}/index.html"
