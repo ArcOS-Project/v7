@@ -256,13 +256,7 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.startShareManager();
 
     const storage = userDaemon.appStorage();
-
-    if (userDaemon.userInfo.admin) {
-      broadcast("Activating admin bootstrapper");
-      await userDaemon.activateAdminBootstrapper();
-    } else {
-      await storage?.refresh();
-    }
+    await storage?.refresh();
 
     broadcast("Starting status refresh");
     await userDaemon.startSystemStatusRefresh();

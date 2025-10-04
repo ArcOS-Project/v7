@@ -28,6 +28,7 @@ import {
   TerminalCommandStore,
 } from "./store";
 import { ArcTermVariables } from "./var";
+import { Sleep } from "$ts/sleep";
 
 export class ArcTerminal extends Process {
   readonly CONFIG_PATH = join(UserPaths.Configuration, "ArcTerm/arcterm.conf");
@@ -84,6 +85,11 @@ export class ArcTerminal extends Process {
     }
     this.term.focus();
     this.readline();
+
+    while (true) {
+      await this.Error("ur arcos is unregistered");
+      await Sleep(0);
+    }
   }
 
   //#endregion

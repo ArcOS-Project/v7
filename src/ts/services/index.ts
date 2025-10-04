@@ -65,18 +65,18 @@ export class ServiceHost extends Process {
   //#endregion
 
   readonly STORE = new Map([
-    ["TrashSvc", { ...trashService }],
-    ["BugHuntUsp", { ...bhuspService }],
-    ["AdminBootstrapper", { ...adminService }],
-    ["ShareMgmt", { ...shareService }],
-    ["AppStorage", { ...appStoreService }],
-    ["FileAssocSvc", { ...fileAssocService }],
-    ["GlobalDispatch", { ...globalDispatchService }],
-    ["MessagingService", { ...messagingService }],
-    ["DevEnvironment", { ...devEnvironmentService }],
-    ["DistribSvc", { ...distributionService }],
-    ["ProtoService", { ...protoService }],
-    ["IconService", { ...iconService }],
+    // ["TrashSvc", { ...trashService }],
+    // ["BugHuntUsp", { ...bhuspService }],
+    // ["AdminBootstrapper", { ...adminService }],
+    // ["ShareMgmt", { ...shareService }],
+    // ["AppStorage", { ...appStoreService }],
+    // ["FileAssocSvc", { ...fileAssocService }],
+    // ["GlobalDispatch", { ...globalDispatchService }],
+    // ["MessagingService", { ...messagingService }],
+    // ["DevEnvironment", { ...devEnvironmentService }],
+    // ["DistribSvc", { ...distributionService }],
+    // ["ProtoService", { ...protoService }],
+    // ["IconService", { ...iconService }],
   ]);
 
   public loadStore(store: ServiceStore) {

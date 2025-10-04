@@ -13,7 +13,6 @@ import { Store } from "../../writable";
 import { KernelModule } from "../module";
 
 export class ProcessHandler extends KernelModule {
-  public BUSY = false;
   private lastPid: number = 0;
   public store = Store<Map<number, Process>>(new Map([]));
   public rendererPid = -1;
@@ -21,6 +20,10 @@ export class ProcessHandler extends KernelModule {
   public env: EnvironmentType;
   public dispatch: SystemDispatchType;
   public processContexts = new Map<number, ProcessContext>([]);
+
+  public get BUSY() {
+    return false;
+  }
 
   //#region LIFECYCLE
 
@@ -41,7 +44,6 @@ export class ProcessHandler extends KernelModule {
 
   private makeBusy(reason: string) {
     this.isKmod();
-    this.BUSY = true;
 
     this.dispatch.dispatch("stack-busy");
     this.Log(`Now busy: ${reason}`);
@@ -49,7 +51,6 @@ export class ProcessHandler extends KernelModule {
 
   private makeNotBusy(reason: string) {
     this.isKmod();
-    this.BUSY = false;
 
     this.dispatch.dispatch("stack-not-busy");
     this.Log(`Now no longer busy: ${reason}`);
@@ -112,7 +113,6 @@ export class ProcessHandler extends KernelModule {
       if (this.renderer && proc instanceof AppProcess) this.renderer.render(proc, renderTarget);
 
       this.makeNotBusy(`Stopped spawn of ${pid}: done`);
-      __Console__.timeEnd(`process spawn: ${pid}`);
       return proc as T;
     } catch (e) {
       const parsed = parse(e instanceof PromiseRejectionEvent ? e.reason.stack : e instanceof Error ? e.stack : "");

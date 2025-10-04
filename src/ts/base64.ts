@@ -7,6 +7,8 @@ import { Log } from "./logging";
  * @returns The base64
  */
 export function toBase64(input: string) {
+  return input;
+
   try {
     return btoa(input);
   } catch {
@@ -21,6 +23,8 @@ export function toBase64(input: string) {
  * @returns The string
  */
 export function fromBase64(input: string) {
+  return input;
+
   try {
     return atob(input);
   } catch {

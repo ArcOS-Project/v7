@@ -23,7 +23,6 @@ import { DistributionServiceProcess } from "$ts/distrib";
 import { StoreItemIcon } from "$ts/distrib/util";
 import { ServerDrive } from "$ts/drives/server";
 import type { MemoryFilesystemDrive } from "$ts/drives/temp";
-import { ZIPDrive } from "$ts/drives/zipdrive";
 import { ArcOSVersion, BETA, getKMod, KernelStack } from "$ts/env";
 import { toForm } from "$ts/form";
 import { KernelStateHandler } from "$ts/getters";
@@ -824,49 +823,6 @@ export class UserDaemon extends Process {
     }
   }
 
-  async mountZip(path: string, letter?: string, fromSystem = false) {
-    if (this._disposed) return;
-
-    this.Log(`Mounting ZIP file at ${path} as ${letter || "?"}:/`);
-
-    const elevated =
-      fromSystem ||
-      (await this.manuallyElevate({
-        what: "ArcOS needs your permission to mount a ZIP file",
-        title: getItemNameFromPath(path),
-        description: letter ? `As ${letter}:/` : "As a drive",
-        image: "DriveIcon",
-        level: ElevationLevel.medium,
-      }));
-
-    if (!elevated) return;
-
-    const prog = await this.FileProgress(
-      {
-        type: "size",
-        caption: "Mounting drive",
-        subtitle: `${path}${letter ? ` as ${letter}:/` : ""}`,
-        icon: "DriveIcon",
-      },
-      +this.env.get("shell_pid") || undefined
-    );
-
-    const mount = await this.fs.mountDrive(
-      btoa(path),
-      ZIPDrive,
-      letter,
-      (progress) => {
-        prog.show();
-        prog.setMax(progress.max);
-        prog.setDone(progress.value);
-      },
-      path
-    );
-
-    prog.stop();
-    return mount;
-  }
-
   startDriveNotifierWatcher() {
     if (this._disposed) return;
 
@@ -1438,7 +1394,7 @@ export class UserDaemon extends Process {
       }
     }
 
-    await this._spawnApp("shellHost", undefined, this.pid, autoloadApps);
+    await this._spawnApp("arcShell", undefined, this.pid, autoloadApps);
 
     if (this.safeMode) this.safeModeNotice();
 

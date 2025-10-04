@@ -8,9 +8,7 @@ const mountZipFile: (d: UserDaemon) => FileHandler = (daemon) => ({
   icon: "CompressMimeIcon",
   name: "Mount ZIP file",
   description: "View the contents of this archive",
-  async handle(path) {
-    await daemon.mountZip(path);
-  },
+  async handle(path) {},
   isHandler: true,
 });
 

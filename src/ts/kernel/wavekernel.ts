@@ -40,21 +40,21 @@ export class WaveKernel {
   async panic(reason: string) {
     if (this.PANICKED) return;
 
-    this.PANICKED = true;
+    // this.PANICKED = true;
 
-    const state = this.state;
+    // const state = this.state;
 
-    if (!state) {
-      this.Log(`WaveKernel::panic`, `\n\n${reason}`);
+    // if (!state) {
+    //   this.Log(`WaveKernel::panic`, `\n\n${reason}`);
 
-      prematurePanic();
+    //   prematurePanic();
 
-      return;
-    }
+    //   return;
+    // }
 
-    state.loadState("crash-screen", { text: reason }, true);
+    // state.loadState("crash-screen", { text: reason }, true);
 
-    throw reason;
+    // throw reason;
   }
 
   async _init() {

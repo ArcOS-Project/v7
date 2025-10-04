@@ -6,5 +6,5 @@ export function Log(source: string, message: string, level = LogLevel.info) {
 
   if (!kernel) return;
 
-  kernel.Log(source, message, level);
+  //   kernel.Log(source, message, level);
 }

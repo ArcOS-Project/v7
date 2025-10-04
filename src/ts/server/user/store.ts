@@ -6,7 +6,6 @@ import type { UserDaemon } from "./daemon";
 import installArcPkg from "./handlers/arcpkg";
 import applyArcTheme from "./handlers/arctheme";
 import installTpaFile from "./handlers/installtpa";
-import mountZipFile from "./handlers/mountzip";
 import runTpaFile from "./handlers/runtpa";
 import runTpaBundle from "./handlers/runtpab";
 
@@ -237,7 +236,6 @@ export function DefaultFileHandlers(daemon: UserDaemon): Record<string, FileHand
     installTpaFile: installTpaFile(daemon),
     runTpaBundle: runTpaBundle(daemon),
     installArcPkg: installArcPkg(daemon),
-    mountZipFile: mountZipFile(daemon),
     applyArcTheme: applyArcTheme(daemon),
   };
 }
