@@ -1,5 +1,5 @@
 name: Deploy Preview
-permissions: 
+permissions:
   pull-requests: write
   contents: read
 
@@ -8,7 +8,7 @@ on:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
     branches: [main]
-    
+
 jobs:
   deploy:
     if: github.event.action != 'closed'
