@@ -6,19 +6,8 @@
   const { process }: { process: ShellRuntime } = $props();
   const { workspaceManagerOpened, userPreferences } = process;
 
-  let workspaceIndex = derived(userPreferences, (v) => v.workspaces.index);
   let isChanging = $state(false);
-  let animTimeout: number = -1;
-
-  $effect(() => {
-    $workspaceIndex;
-    isChanging = true;
-    animTimeout = Number(
-      setTimeout(() => {
-        isChanging = false;
-      }, 350)
-    );
-  });
+  let animTimeout = $state<NodeJS.Timeout>();
 
   function toggle() {
     $workspaceManagerOpened = !$workspaceManagerOpened;
@@ -26,18 +15,22 @@
 
   function scroll(e: WheelEvent) {
     const down = e.deltaY > 0;
-    const current = get(workspaceIndex);
-    const desktops = userPreferences().workspaces.desktops;
+    const current = $userPreferences.workspaces.index;
+    const desktops = $userPreferences.workspaces.desktops;
 
-    if (!down && current >= desktops.length - 1) return;
-    else if (down && 0 >= current) return;
+    if (down && current >= desktops.length - 1) return;
+    else if (!down && 0 >= current) return;
 
-    userPreferences.update((v) => {
-      if (!down) v.workspaces.index += 1;
-      else v.workspaces.index -= 1;
+    clearTimeout(animTimeout);
 
-      return v;
-    });
+    if (down) $userPreferences.workspaces.index++;
+    else $userPreferences.workspaces.index--;
+
+    isChanging = true;
+
+    animTimeout = setTimeout(() => {
+      isChanging = false;
+    }, 1000);
   }
 
   onDestroy(() => {
@@ -54,7 +47,7 @@
   title="Workspaces..."
 >
   {#if isChanging}
-    <span class="workspacebtnicon">{$workspaceIndex + 1}</span>
+    <span class="workspacebtnicon">{$userPreferences.workspaces.index + 1}</span>
   {:else}
     <span class="workspacebtnicon lucide icon-gallery-horizontal"></span>
   {/if}
