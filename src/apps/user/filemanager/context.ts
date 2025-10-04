@@ -264,6 +264,13 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
           runtime.copyList.set([runtimePath]);
         },
       },
+      {
+        caption: "Copy Path",
+        icon: "clipboard-copy",
+        action: async (_, runtimePath) => {
+          await navigator.clipboard.writeText(runtimePath);
+        },
+      },
       { sep: true },
       {
         caption: "Rename...",
@@ -315,6 +322,13 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         icon: "copy",
         action: (_, runtimePath) => {
           runtime.copyList.set([runtimePath]);
+        },
+      },
+      {
+        caption: "Copy Path",
+        icon: "clipboard-copy",
+        action: async (_, runtimePath) => {
+          await navigator.clipboard.writeText(runtimePath);
         },
       },
       { sep: true },
@@ -384,6 +398,13 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         icon: "copy",
         action: (_, runtimePath) => {
           runtime.copyList.set([runtimePath]);
+        },
+      },
+      {
+        caption: "Copy Path",
+        icon: "clipboard-copy",
+        action: async (_, runtimePath) => {
+          await navigator.clipboard.writeText(runtimePath);
         },
       },
       { sep: true },

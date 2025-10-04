@@ -1,9 +1,9 @@
 :root .theme-light {
   --fg: #333;
-  --win-bg: #fbfbfb;
-  --win-border: #d4d4d4 1px solid;
-  --win-border-light: rgb(195, 195, 195) 1px solid;
-  --glass-bg: #fbfbfbdd;
+  --win-bg: #fff;
+  --win-border: rgb(214, 214, 214) 1px solid;
+  --win-border-light: #ffffff34 1px solid;
+  --glass-bg: #ffffffea;
   --glass-alt-bg: #ffffff44;
   --glass-ultralight: rgba(255, 255, 255, 0.267);
   --glass-ultradark: rgba(232, 232, 232, 0.64);
@@ -13,12 +13,12 @@
   --startmenu-applist-item-bg: transparent;
   --startmenu-applist-item-bg-hover: #00000005;
   --startmenu-applist-item-bg-active: rgba(0, 0, 0, 0.067);
-  --button-bg: #f3f3f3;
-  --button-hover-bg: #e4e4e4;
+  --button-bg: #eeeeee;
+  --button-hover-bg: #dddddd;
   --button-active-bg: #cccccc;
-  --button-glass-bg: rgba(0, 0, 0, 0.04);
-  --button-glass-hover-bg: rgba(0, 0, 0, 0.08);
-  --button-glass-active-bg: rgba(0, 0, 0, 0.16);
+  --button-glass-bg: rgba(0, 0, 0, 0.067);
+  --button-glass-hover-bg: rgba(0, 0, 0, 0.09);
+  --button-glass-active-bg: rgba(0, 0, 0, 0.15);
   --clr-red-bg: #ffc5c5;
   --clr-red-fg: #c50000;
   --clr-red-bright-fg: #ff1717;
@@ -45,16 +45,9 @@
   --clr-purple-bright-fg: #995aff;
   --accent-darken: brightness(0.7);
   --secondary-border: var(--win-bg) 1px solid;
-  --secondary-box-shadow: 0 2px 5px 2px #0002;
+  --secondary-box-shadow: none !important;
 }
 
 :root .theme-light.noglass {
   --glass-bg: #fff;
-  --glass-alt-bg: #eee;
-  --glass-ultralight: #eeeeee;
-  --glass-ultradark: #bbbbbb;
-}
-
-.theme-light #arcShell > div.body * {
-  --button-glass-bg: #ffffffea !important;
 }

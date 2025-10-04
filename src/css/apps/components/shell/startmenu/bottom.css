@@ -1,7 +1,7 @@
 div.shell div.startmenu div.bottom {
   height: 50px;
   min-height: 50px;
-  background-color: var(--button-glass-bg);
+  background-color: var(--shell-component-bg);
   border-radius: 10px;
   display: flex;
   align-items: center;
