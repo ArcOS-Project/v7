@@ -31,7 +31,7 @@
       </h1>
     </div>
     <div class="stage3">
-      <img src={process.app.data.metadata.icon} alt="" class="logo" />
+      <img src={process.getIconCached(process.app.data.metadata.icon)} alt="" class="logo" />
     </div>
   </div>
 {/if}

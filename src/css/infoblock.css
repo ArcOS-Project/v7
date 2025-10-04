@@ -17,6 +17,7 @@ div.window:not(.core) div.body div.info-block * {
 
 .theme-light div.window:not(.core) div.body div.info-block {
   background-color: var(--win-bg);
+  outline-color: var(--button-glass-active-bg);
 }
 
 div.window:not(.core) div.body div.info-block button {

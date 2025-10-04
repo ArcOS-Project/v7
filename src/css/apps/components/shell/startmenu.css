@@ -8,12 +8,12 @@ div.shell div.startmenu {
   background-color: var(--glass-bg);
   border-radius: 15px;
   transition:
-    translate 0.3s,
+    translate 0.25s,
     opacity 0.2s,
     pointer-events 0s,
-    visibility 0.3s,
-    width 0.3s,
-    height 0.3s;
+    visibility 0.25s,
+    width 0.25s,
+    height 0.25s;
   z-index: 10;
   border: var(--border);
   max-height: 100%;
@@ -41,4 +41,8 @@ div.shell div.startmenu div.top {
   height: calc(100% - 60px);
   max-height: calc(100% - 60px);
   margin-bottom: 10px;
+}
+
+.theme-light div.shell div.startmenu::before {
+  opacity: 0.1;
 }

@@ -34,7 +34,7 @@
     <Background />
     <div class="fullscreen center-flex">
       <h1 class="title">
-        <img src={process.app.data.metadata.icon} alt="" />
+        <img src={process.getIconCached(process.app.data.metadata.icon)} alt="" />
         <span>Qlorb</span>
         <p>Catch orbs, get points, and get frustrated!</p>
       </h1>

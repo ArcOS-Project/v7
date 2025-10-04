@@ -32,7 +32,7 @@
 #contextMenu div.context-menu {
   top: 0px;
   left: 0px;
-  transform: scaleY(80%);
+  translate: 0 10px;
   opacity: 0;
   visibility: hidden;
 }
@@ -48,7 +48,7 @@
 #contextMenu div.context-menu.show {
   opacity: 1;
   visibility: visible;
-  transform: scaleY(100%);
+  translate: 0;
   pointer-events: initial !important;
 }
 
@@ -105,6 +105,11 @@
   z-index: 1000;
 }
 
+#contextMenu div.context-menu::before,
+#contextMenu div.context-menu button.menu-item > div.sub-items::before {
+  opacity: 0.1;
+}
+
 #contextMenu div.context-menu.colored button.menu-item:not(.subitems):active {
   background-color: var(--accent-transparent);
   color: var(--accent-light);
@@ -133,7 +138,9 @@
 #contextMenu div.context-menu button.menu-item .icon {
   width: 18px;
   height: 18px;
-  font-size: 18px;
+  text-align: center;
+  line-height: 18px;
+  font-size: 16px;
 }
 
 #contextMenu div.context-menu.compact button.menu-item .icon {

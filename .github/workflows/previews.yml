@@ -1,11 +1,16 @@
 name: Deploy Preview
+permissions:
+  pull-requests: write
+  contents: read
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
     branches: [main]
-    
+  push:
+    branches: [main]
+
 jobs:
   deploy:
     if: github.event.action != 'closed'
@@ -40,3 +45,8 @@ jobs:
             AAAEDNhg/XnRG5d+K7QNMZkLDsUxkceMttrqkBnytqtJXO/G0EGXnoGdP/3Igr3Viy7DBk
             Pozaj7VWgjFY+RLvFLKpAAAAGGRlcGxveUBwcmV2aWV3LmFyY3dlYi5ubAECAwQF
             -----END OPENSSH PRIVATE KEY-----
+      - name: Comment preview link
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          message: "✅ Preview deployment is ready: https://preview.arcweb.nl/static/${{ github.head_ref }}/index.html"
