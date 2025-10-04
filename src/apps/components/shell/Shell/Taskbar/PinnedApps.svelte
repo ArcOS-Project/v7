@@ -8,7 +8,11 @@
   let pins = $state<string[]>([]);
 
   userPreferences.subscribe((v) => {
-    pins = v.pinnedApps || [];
+    pins =
+      v.pinnedApps.filter((appId) => {
+        if (v.disabledApps.includes(appId)) return false;
+        return true;
+      }) || [];
   });
 </script>
 
