@@ -46,4 +46,3 @@ jobs:
         uses: thollander/actions-comment-pull-request@v3
         with:
           message: "✅ Preview deployment is ready: https://preview.arcweb.nl/static/${{ github.ref_name }}/index.html"
-          comment_tag: preview-link
