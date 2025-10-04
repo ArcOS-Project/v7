@@ -6,6 +6,14 @@
   left: 30px;
 }
 
+#QlorbApp > div.osd > div.topleft > button:nth-child(1) {
+  outline: none;
+}
+
+#QlorbApp > div.osd > div.topleft > button:nth-child(2) {
+  outline: none;
+}
+
 #QlorbApp div.osd > div.topright {
   top: 30px;
   right: 30px;
