@@ -42,3 +42,7 @@ div.shell div.startmenu div.top {
   max-height: calc(100% - 60px);
   margin-bottom: 10px;
 }
+
+.theme-light div.shell div.startmenu::before {
+  opacity: 0.1;
+}

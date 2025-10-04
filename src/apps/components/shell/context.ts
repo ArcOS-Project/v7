@@ -45,7 +45,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
             icon: "ShortcutMimeIcon",
             startDir: UserPaths.Desktop,
             isSave: true,
-            saveName: `${app.id}.arclnk`,
+            saveName: app.id,
             extensions: [".arclnk"],
           });
 

@@ -1,0 +1,58 @@
+div.window > div.body input[type="checkbox"].switch {
+  appearance: none;
+  background-color: var(--button-glass-bg);
+  border-radius: 72px;
+  border-style: none;
+  flex-shrink: 0;
+  height: 20px;
+  margin: 0;
+  position: relative;
+  width: 30px;
+  padding: 0;
+}
+
+#appRenderer:not(.noani) div.window > div.body input[type="checkbox"].switch,
+#appRenderer:not(.noani) div.window > div.body input[type="checkbox"].switch::after {
+  transition: all 100ms ease-out !important;
+}
+
+div.window > div.body input[type="checkbox"].switch::after {
+  background-color: var(--win-bg);
+  border-radius: 50%;
+  content: "";
+  height: 14px;
+  left: 3px;
+  position: absolute;
+  top: 3px;
+  width: 14px;
+}
+
+div.window > div.body input[type="checkbox"].switch {
+  cursor: default;
+}
+
+div.window > div.body input[type="checkbox"].switch:hover {
+  background-color: var(--button-glass-hover-bg);
+  transition-duration: 0s;
+}
+
+div.window > div.body input[type="checkbox"].switch:checked {
+  background-color: var(--accent-light);
+}
+
+div.window > div.body input[type="checkbox"].switch:checked::after {
+  background-color: var(--win-bg);
+  left: 13px;
+}
+
+div.window > div.body input[type="checkbox"].switch:checked:hover {
+  background-color: var(--accent-light);
+}
+
+div.window > div.body input[type="checkbox"].switch:disabled {
+  background-color: var(--button-active-bg) !important;
+}
+
+div.window > div.body input[type="checkbox"].switch:disabled:checked::after {
+  background-color: var(--accent) !important;
+}

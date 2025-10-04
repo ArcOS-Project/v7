@@ -105,6 +105,11 @@
   z-index: 1000;
 }
 
+#contextMenu div.context-menu::before,
+#contextMenu div.context-menu button.menu-item > div.sub-items::before {
+  opacity: 0.1;
+}
+
 #contextMenu div.context-menu.colored button.menu-item:not(.subitems):active {
   background-color: var(--accent-transparent);
   color: var(--accent-light);

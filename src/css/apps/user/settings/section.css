@@ -89,3 +89,10 @@
 #systemSettings section div.content div.option + div.option {
   border-top: var(--win-border);
 }
+
+.theme-light #systemSettings section div.content {
+  background-color: var(--win-bg);
+  box-shadow: none;
+  outline: var(--button-glass-hover-bg) 1px solid;
+  outline-offset: -1px;
+}
