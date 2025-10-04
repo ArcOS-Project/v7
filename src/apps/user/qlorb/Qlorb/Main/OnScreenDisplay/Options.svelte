@@ -12,5 +12,5 @@
   }
 </script>
 
-<button class="material-icons-round" onclick={back}> arrow_back_ios_new </button>
-<button class="material-icons-round" onclick={reset}> refresh </button>
+<button style="outline: none;" class="material-icons-round" onclick={back}> arrow_back_ios_new </button>
+<button style="outline: none;" class="material-icons-round" onclick={reset}> refresh </button>
