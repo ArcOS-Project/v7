@@ -1,4 +1,5 @@
 @import url("./taskbar/openedapps.css");
+@import url("./taskbar/calendar.css");
 div.shell div.taskbar {
   display: flex;
   align-items: center;
@@ -71,16 +72,6 @@ div.shell.docked div.taskbar {
 
 div.shell div.taskbar button.start-button img {
   height: 30px;
-}
-
-#arcShell div.shell div.taskbar button.workspace-manager-button.active,
-#arcShell div.shell div.taskbar button.action-center-button.active {
-  background-color: var(--accent-light);
-}
-
-#arcShell div.shell div.taskbar button.workspace-manager-button.active span,
-#arcShell div.shell div.taskbar button.action-center-button.active span {
-  color: var(--win-bg);
 }
 
 div.shell div.taskbar button.action-center-button span {
@@ -232,177 +223,6 @@ div.shell div.taskbar div.pinned-apps > button + button {
   pointer-events: none !important;
 }
 
-#arcShell div.taskbar div.calendar-popup {
-  --w: 392px;
-  --h: 502px;
-  position: absolute;
-  top: calc(0px - var(--h) - 10px);
-  width: var(--w);
-  height: var(--h);
-  background-color: var(--win-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  border: var(--border);
-  border-radius: var(--win-border-rad);
-  margin-top: 20px;
-  scale: 0.9;
-  opacity: 0;
-  pointer-events: none !important;
-  overflow: hidden;
-  transition:
-    scale 0.2s,
-    margin 0.2s,
-    opacity 0.2s;
-  padding: 10px;
-}
-
-#arcShell div.taskbar div.calendar-popup:not(.opened) * {
-  pointer-events: none !important;
-}
-
-#arcShell div.taskbar div.calendar-popup > div {
-  border-radius: 10px;
-  box-shadow: 0 2px 5px 2px #0002;
-  outline: var(--button-glass-hover-bg) 1px solid;
-  outline-offset: -1;
-  background-color: var(--button-glass-bg);
-}
-
-#arcShell div.taskbar div.calendar-popup div.top {
-  width: 370px;
-  height: 105px;
-  /* height: 50%; */
-  margin-top: auto;
-  padding: 20px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  text-align: right;
-  justify-content: space-between;
-}
-
-#arcShell div.taskbar div.calendar-popup div.top h1.date {
-  font-size: 28px;
-}
-
-#arcShell div.taskbar div.calendar-popup div.top h1.time {
-  font-size: 48px;
-  line-height: 60px;
-  font-family: "fredoka";
-  font-weight: 500;
-}
-
-#arcShell div.taskbar div.calendar-popup div.top p.week {
-  font-size: 18px;
-  font-weight: 100;
-}
-
-#arcShell div.taskbar div.calendar-popup.opened {
-  opacity: 1;
-  margin-top: 0;
-  pointer-events: initial !important;
-  scale: 1;
-}
-
-#arcShell div.taskbar div.calendar-popup div.calendar {
-  width: 370px;
-  height: 315px;
-  padding: 10px;
-}
-
-#arcShell div.taskbar div.calendar-popup div.calendar div.header,
-#arcShell div.taskbar div.calendar-popup div.calendar div.grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 0;
-}
-
-#arcShell div.taskbar div.calendar-popup div.calendar div.day {
-  width: 50px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-}
-
-#arcShell div.taskbar div.calendar-popup div.calendar div.day.past,
-#arcShell div.taskbar div.calendar-popup div.calendar div.day.future {
-  opacity: 0.5;
-}
-
-#arcShell div.taskbar div.calendar-popup div.calendar div.day p.day-number {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: transparent;
-  border-radius: 50%;
-  text-align: center;
-}
-
-#arcShell div.taskbar div.calendar-popup div.calendar div.day p.day-number:hover {
-  background-color: var(--button-glass-bg);
-}
-#arcShell div.taskbar div.calendar-popup div.calendar div.day.today p.day-number {
-  background-color: var(--accent-light);
-  color: var(--win-bg) !important;
-}
-
-#arcShell div.taskbar div.calendar-popup div.calendar div.header {
-  font-weight: bold;
-  opacity: 0.5;
-  margin-bottom: 10px;
-}
-
-#arcShell div.taskbar div.calendar-popup div.calendar div.header div.day {
-  justify-content: center;
-}
-
-#arcShell div.taskbar div.calendar-popup div.controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  height: 50px;
-  padding: 0 15px;
-  padding-right: 10px;
-  border-bottom: var(--button-glass-hover-bg) 1px solid;
-}
-
-#arcShell div.taskbar div.calendar-popup div.controls p.selected-date {
-  font-size: 16px;
-  font-weight: bold;
-}
-
-#arcShell div.taskbar div.calendar-popup div.controls button.today {
-  height: 30px;
-  padding: 0 10px;
-}
-
-#arcShell div.taskbar div.calendar-popup div.controls button.lucide {
-  width: 30px;
-  height: 30px;
-  padding: 0;
-  font-size: 16px;
-  background-color: transparent;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#arcShell div.taskbar div.calendar-popup div.controls button.lucide:hover {
-  background-color: var(--button-glass-bg);
-}
-
-#arcShell div.taskbar div.calendar-popup div.controls button.lucide:active {
-  background-color: var(--button-glass-active-bg);
-}
-
-#arcShell div.taskbar div.calendar-popup div.buttons {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-}
-
 #arcShell div.taskbar div.tray-icons > div.icon > div.popup:not(.visible) * {
   pointer-events: none !important;
 }
@@ -448,6 +268,18 @@ div.shell div.taskbar button.clock-button:active {
 }
 
 div.shell div.taskbar button.clock-button.active {
-  background-color: var(--accent-light);
+  background-color: var(--accent-light) !important;
+  color: var(--win-bg) !important;
+}
+
+div.shell div.shell div.taskbar button.clock-button.active,
+#arcShell div.shell div.taskbar button.workspace-manager-button.active,
+#arcShell div.shell div.taskbar button.action-center-button.active {
+  background-color: var(--accent-light) !important;
+}
+
+div.shell div.shell div.taskbar button.clock-button.active span,
+#arcShell div.shell div.taskbar button.workspace-manager-button.active span,
+#arcShell div.shell div.taskbar button.action-center-button.active span {
   color: var(--win-bg) !important;
 }
