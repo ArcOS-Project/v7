@@ -5,6 +5,7 @@
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../../runtime";
   import UserButton from "../Folders/UserButton.svelte";
+  import { contextProps } from "$ts/context/actions.svelte";
 
   const {
     process,
@@ -45,7 +46,12 @@
   <UserButton {userPreferences} {username} {process} />
   <div class="content">
     {#each dirs as dir}
-      <button class="folder" onclick={() => process.spawnApp("fileManager", process.pid, `${UserPaths.Home}/${dir.name}`)}>
+      <button
+        class="folder"
+        data-contextmenu="startmenu-folder"
+        use:contextProps={[dir.name]}
+        onclick={() => process.spawnApp("fileManager", process.pid, `${UserPaths.Home}/${dir.name}`)}
+      >
         <img src={process.getIconCached("FolderIcon")} alt="" />
         <span class="name">{dir.name}</span>
       </button>

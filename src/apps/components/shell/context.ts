@@ -105,6 +105,36 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         disabled: (app: App) => !app?.entrypoint && !app?.thirdParty,
       },
     ],
+    "startmenu-folder": [
+      {
+        caption: "Open folder",
+        icon: "folder-open",
+        action: (name) => {
+          runtime.spawnApp("fileManager", runtime.pid, `${UserPaths.Home}/${name}`);
+        },
+      },
+      {
+        caption: "Copy Path",
+        icon: "clipboard-copy",
+        action: async (name) => {
+          await navigator.clipboard.writeText(`${UserPaths.Home}/${name}`);
+        },
+      },
+      {
+        caption: "Properties...",
+        icon: "wrench",
+        action: async (name) => {
+          const result = await runtime.fs.readDir(UserPaths.Home);
+          if (!result) return;
+
+          const dir = result.dirs.find((d) => d.name === name);
+          if (!dir) return;
+
+          runtime.spawnOverlayApp("ItemInfo", runtime.pid, `${UserPaths.Home}/${name}`, dir);
+          runtime.startMenuOpened.set(false);
+        },
+      },
+    ],
     "startmenu-list": [
       {
         caption: "Enable app groups",
