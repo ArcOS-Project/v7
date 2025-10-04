@@ -1,4 +1,6 @@
 name: Deploy Preview
+permissions: 
+  pull-requests: write
 
 on:
   pull_request:
