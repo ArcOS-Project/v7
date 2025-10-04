@@ -121,7 +121,6 @@ export class ShellRuntime extends AppProcess {
     this.dispatch.subscribe("ready", () => this.gotReadySignal());
 
     this.env.set("shell_pid", this.pid); // Set the shell PID
-    console.log(this.getCalendarMonth());
   }
 
   async render() {
