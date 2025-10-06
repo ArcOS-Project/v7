@@ -23,7 +23,7 @@
 </script>
 
 <div class="calendar-popup shell-colored" class:opened={$calendarOpened} class:colored={$userPreferences.shell.taskbar.colored}>
-  <Top />
+  <Top h12={$userPreferences.shell.taskbar.clock12hr} />
   <div class="bottom">
     {#if month}
       <Controls bind:date {update} />
