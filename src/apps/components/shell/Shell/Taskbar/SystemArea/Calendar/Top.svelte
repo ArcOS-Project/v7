@@ -6,9 +6,11 @@
   let dateStr = $state("");
   let weekNumber = $state(0);
 
+  const { h12 }: { h12?: boolean } = $props();
+
   onMount(() => {
     setInterval(() => {
-      timeStr = dayjs().format(`HH:mm`);
+      timeStr = dayjs().format(h12 ? `h:mm A` : `HH:mm`);
       dateStr = dayjs().format(`D MMMM`);
       weekNumber = dayjs().week();
     }, 500);
