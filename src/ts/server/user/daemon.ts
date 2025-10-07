@@ -390,7 +390,7 @@ export class UserDaemon extends Process {
     if (!navigator.getBattery) return undefined;
 
     const info = (await navigator.getBattery()) as BatteryType;
-    if (info.charging && info.dischargingTime === Infinity) return undefined;
+    if (info.charging && info.level === 1) return undefined;
 
     return info;
   }
