@@ -30,6 +30,7 @@ import { ShutdownCommand } from "./commands/shutdown";
 import { SpawnCommand } from "./commands/spawn";
 import { TasksCommand } from "./commands/tasks";
 import { TestCommand } from "./commands/test";
+import { TouchCommand } from "./commands/touch";
 import { TreeCommand } from "./commands/tree";
 import { VerCommand } from "./commands/ver";
 import type { TerminalProcess } from "./process";
@@ -68,6 +69,7 @@ export const TerminalCommandStore: (typeof TerminalProcess)[] = [
   DrivesCommand,
   DevenvCommand,
   PkgCommand,
+  TouchCommand,
 ];
 
 export const ESC = `\x1b[`;
