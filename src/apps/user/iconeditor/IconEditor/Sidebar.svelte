@@ -20,4 +20,15 @@
       </button>
     {/each}
   </section>
+  <section>
+    <h1>Import or Export</h1>
+    <button onclick={() => process.importIconSet()}>
+      <span class="lucide icon-file-up"></span>
+      <span>Import</span>
+    </button>
+    <button onclick={() => process.exportIconSet()}>
+      <span class="lucide icon-file-down"></span>
+      <span>Export</span>
+    </button>
+  </section>
 </div>
