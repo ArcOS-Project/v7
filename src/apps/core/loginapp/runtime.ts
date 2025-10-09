@@ -62,9 +62,6 @@ export class LoginAppRuntime extends AppProcess {
       }
     });
 
-    this.profileName.subscribe((v) => console.warn(v));
-    this.persistence.subscribe((v) => console.log(v));
-
     if (this.unexpectedInvocation) {
       this.app.data.core = false;
       this.app.data.position = { centered: true };
