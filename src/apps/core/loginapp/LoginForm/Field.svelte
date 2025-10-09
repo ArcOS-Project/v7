@@ -17,5 +17,5 @@
 
 <div class="field">
   <div class="lucide icon-{icon}"></div>
-  <input type={password ? "password" : "text"} {placeholder} bind:value {disabled} onkeydown={keydown} />
+  <input type={password ? "password" : "text"} {placeholder} bind:value {disabled} spellcheck={false} onkeydown={keydown} />
 </div>

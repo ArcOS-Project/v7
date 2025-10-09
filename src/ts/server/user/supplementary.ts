@@ -1,5 +1,5 @@
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { KernelStack } from "$ts/env";
+import { KernelServerUrl, KernelStack } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { authcode, detectJavaScript } from "$ts/util";
 import { arrayToText, textToBlob } from "$ts/util/convert";
@@ -33,9 +33,7 @@ export function SupplementaryThirdPartyPropFunctions(
       await Backend.post(`/tpa/v2/${daemon.userInfo!._id}/${app.id}/${filename}`, textToBlob(contents), {
         headers: { Authorization: `Bearer ${daemon.token}` },
       });
-      const dataUrl = `${import.meta.env.DW_SERVER_URL}/tpa/v3/${daemon.userInfo!._id}/${Date.now()}/${
-        app.id
-      }@${filename}${authcode()}`;
+      const dataUrl = `${KernelServerUrl()}/tpa/v3/${daemon.userInfo!._id}/${Date.now()}/${app.id}@${filename}${authcode()}`;
 
       try {
         const loaded = await import(/* @vite-ignore */ dataUrl);

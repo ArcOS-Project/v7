@@ -23,7 +23,7 @@
   class="container"
   class:full={$hideProfileImage}
   style="--bgurl: url('{process.safeMode ? safeModeBg : $loginBackground}')"
-  class:server-bg={serverInfo?.loginWallpaper && $loginBackground === $DEFAULT_WALLPAPER}
+  class:server-bg={$serverInfo?.loginWallpaper && $loginBackground === $DEFAULT_WALLPAPER}
   class:safemode={process.safeMode}
 >
   {#if !$hideProfileImage}
@@ -49,8 +49,8 @@
   </div>
 {/if}
 
-{#if serverInfo?.loginBottomText}
+{#if $serverInfo?.loginBottomText}
   <p class="bottom-text">
-    {`${serverInfo?.loginBottomText} ${import.meta.env.DW_PREVIEW_DEP_BRANCH ? `-- ${import.meta.env.DW_PREVIEW_DEP_BRANCH}` : ""}`.trim()}
+    {`${$serverInfo?.loginBottomText} ${import.meta.env.DW_PREVIEW_DEP_BRANCH ? `-- ${import.meta.env.DW_PREVIEW_DEP_BRANCH}` : ""}`.trim()}
   </p>
 {/if}

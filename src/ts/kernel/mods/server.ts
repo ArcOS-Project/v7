@@ -8,6 +8,7 @@ import { KernelModule } from "../module";
 export const VALIDATION_STR = "thisWonderfulArcOSServerIdentifiedByTheseWordsPleaseDontSteal(c)IzKuipers";
 
 export class ServerManager extends KernelModule {
+  private readonly DEFAULT_URL: string = import.meta.env.DW_SERVER_URL;
   public url: string = "";
   public connected: boolean = false;
   public serverInfo: ServerInfo | undefined;
@@ -31,22 +32,18 @@ export class ServerManager extends KernelModule {
   }
 
   async _init() {
-    this.getServerUrl();
+    this.validateServerUrl();
 
-    await this.testConnection();
+    await this.set(this.DEFAULT_URL);
   }
 
   //#endregion
 
-  private getServerUrl() {
+  private validateServerUrl(serverUrl = this.DEFAULT_URL) {
     this.isKmod();
-
     this.Log("Getting server URL from environment");
 
-    const serverUrl = `${import.meta.env.DW_SERVER_URL || ""}`;
-
     if (!serverUrl) throw new Error("Didn't get a server URL!");
-
     if (!serverUrl.startsWith("http") || serverUrl.endsWith("/")) throw new Error("Rejecting malformed server URL");
 
     this.url = serverUrl;
@@ -80,6 +77,7 @@ export class ServerManager extends KernelModule {
       return this.connected;
     } catch (e) {
       this.Log(`Failed to connect to server: ${e}`, LogLevel.error);
+      return false;
     }
   }
 
@@ -114,5 +112,17 @@ export class ServerManager extends KernelModule {
 
     document.title = `ArcOS - PREVIEW ${previewBranchName}`;
     this.previewBranch = previewBranchName;
+  }
+
+  public async set(server: string) {
+    Backend.defaults.baseURL = server;
+    this.validateServerUrl(server);
+    const result = await this.testConnection();
+
+    if (!result) throw new Error(`Setting server URL failed: server is unreachable`);
+  }
+
+  public async reset() {
+    return await this.set(this.DEFAULT_URL);
   }
 }

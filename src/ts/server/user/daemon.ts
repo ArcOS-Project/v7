@@ -24,7 +24,7 @@ import { StoreItemIcon } from "$ts/distrib/util";
 import { ServerDrive } from "$ts/drives/server";
 import type { MemoryFilesystemDrive } from "$ts/drives/temp";
 import { ZIPDrive } from "$ts/drives/zipdrive";
-import { ArcOSVersion, BETA, getKMod, KernelStack } from "$ts/env";
+import { ArcOSVersion, BETA, getKMod, KernelServerUrl, KernelStack } from "$ts/env";
 import { toForm } from "$ts/form";
 import { KernelStateHandler } from "$ts/getters";
 import { applyDefaults } from "$ts/hierarchy";
@@ -672,9 +672,7 @@ export class UserDaemon extends Process {
       await Backend.post(`/tpa/v2/${this.userInfo!._id}/${app.id}/${filename}`, textToBlob(js), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
-      const dataUrl = `${import.meta.env.DW_SERVER_URL}/tpa/v3/${this.userInfo!._id}/${Date.now()}/${
-        app.id
-      }@${filename}${authcode()}`;
+      const dataUrl = `${KernelServerUrl()}/tpa/v3/${this.userInfo!._id}/${Date.now()}/${app.id}@${filename}${authcode()}`;
       const code = await import(/* @vite-ignore */ dataUrl);
 
       if (!code.default || !(code.default instanceof Function)) throw new Error("Expected a default function");
