@@ -58,7 +58,6 @@ export class LoginAppRuntime extends AppProcess {
 
     this.errorMessage.subscribe((v) => {
       if (!v) {
-        this.profileImage.set(ProfilePictures.def);
         this.loadPersistence();
       }
     });

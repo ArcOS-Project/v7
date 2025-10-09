@@ -176,6 +176,7 @@ export class UserDaemon extends Process {
 
     this.TempFs?.restoreSnapshot(this.TempFsSnapshot!);
     this.fs.umountDrive(`userfs`, true);
+    this.fs.umountDrive(`admin`, true);
   }
 
   //#endregion
