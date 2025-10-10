@@ -16,7 +16,8 @@
     "build:nogit:nominify": "vite build --minify false",
     "region:check": "node tools/validate-regions.mjs",
     "console:check": "node tools/console-usage.mjs",
-    "check:everything": "yarn run check && yarn console:check && yarn region:check"
+    "method:check": "node tools/check-params.mjs",
+    "check:everything": "yarn run check && yarn console:check && yarn region:check && yarn method:check"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "5.1.0",
