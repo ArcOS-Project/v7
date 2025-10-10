@@ -12,12 +12,14 @@ import type { ArcFindRuntime } from "../arcfind/runtime";
 import type { TrayHostRuntime } from "../trayhost/runtime";
 import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
-import type { WeatherInformation } from "./types";
+import { shortWeekDays, type CalendarMonth, type WeatherInformation } from "./types";
+import dayjs from "dayjs";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
   public actionCenterOpened = Store<boolean>(false);
   public workspaceManagerOpened = Store<boolean>(false);
+  public calendarOpened = Store<boolean>(false);
   public stackBusy = Store<boolean>(false);
   public searchQuery = Store<string>();
   public searchResults = Store<FuseResult<SearchItem>[]>([]);
@@ -129,6 +131,8 @@ export class ShellRuntime extends AppProcess {
       const actionCenterButton = document.querySelector("#arcShell button.action-center-button");
       const workspaceManager = document.querySelector("#arcShell div.virtual-desktops");
       const workspaceManagerButton = document.querySelector("#arcShell button.workspace-manager-button");
+      const calendarPopup = document.querySelector("#arcShell div.calendar-popup");
+      const calendarButton = document.querySelector("#arcShell button.clock-button");
       const systemTray = document.querySelector("#arcShell div.tray-icons");
       const contextMenu = document.querySelector("#contextMenu div.context-menu");
 
@@ -169,15 +173,26 @@ export class ShellRuntime extends AppProcess {
         !composed.includes(contextMenu!)
       )
         this.workspaceManagerOpened.set(false); // Clicked outside the wsman? close it
+
+      if (
+        calendarPopup &&
+        calendarButton &&
+        !composed.includes(calendarButton) &&
+        !composed.includes(calendarPopup) &&
+        !composed.includes(contextMenu!)
+      )
+        this.calendarOpened.set(false); // Clicked outside calendar? close it
     });
 
     // Various controlling dispatches
     this.dispatch.subscribe("open-action-center", () => this.actionCenterOpened.set(true));
     this.dispatch.subscribe("open-start-menu", () => this.startMenuOpened.set(true));
     this.dispatch.subscribe("open-workspace-manager", () => this.workspaceManagerOpened.set(true));
+    this.dispatch.subscribe("open-calendar", () => this.calendarOpened.set(true));
     this.dispatch.subscribe("close-workspace-manager", () => this.workspaceManagerOpened.set(false));
     this.dispatch.subscribe("close-action-center", () => this.actionCenterOpened.set(false));
     this.dispatch.subscribe("close-start-menu", () => this.startMenuOpened.set(false));
+    this.dispatch.subscribe("close-calendar", () => this.calendarOpened.set(false));
 
     this.startMenuOpened.subscribe((v) => {
       if (!v) this.searchQuery.set(""); // Remove search query on close
@@ -308,6 +323,71 @@ export class ShellRuntime extends AppProcess {
 
     // Trigger the selected search result
     this.Trigger(results[index == -1 ? 0 : index].item); // Default to index 0
+  }
+
+  //#endregion
+  //#region CALENDAR
+
+  getCalendarMonth(date = dayjs().format("YYYY-MM-DD")): CalendarMonth {
+    const result: CalendarMonth = {
+      prepended: [],
+      current: [],
+      appended: [],
+    };
+
+    const today = dayjs().format("YYYY-MM-DD");
+    const lastMonth = dayjs(date).subtract(1, "month").format("YYYY-MM");
+    const thisMonth = dayjs(date).format("YYYY-MM");
+    const nextMonth = dayjs(date).add(1, "month").format("YYYY-MM");
+    const daysInCurrent = dayjs(date).daysInMonth();
+    const firstDayOfCurrent = dayjs(date).format(`${thisMonth}-01`);
+    const daysInPast = dayjs(date).subtract(1, "month").daysInMonth();
+    const firstWeekdayCurrent = dayjs(firstDayOfCurrent).day();
+    const prepended = firstWeekdayCurrent === 0 ? 0 : firstWeekdayCurrent;
+    const appended = 42 - prepended - daysInCurrent;
+
+    if (prepended > 0) {
+      for (let i = prepended - 1; i >= 0; i--) {
+        const dayOfMonth = daysInPast - i;
+        const fullDate = `${lastMonth}-${String(dayOfMonth).padStart(2, "0")}`;
+        const dayOfWeek = dayjs(fullDate).day();
+
+        result.prepended.push({
+          caption: shortWeekDays[dayOfWeek],
+          dayOfMonth,
+          fullDate,
+          isToday: fullDate === today,
+        });
+      }
+    }
+
+    for (let i = 0; i < daysInCurrent; i++) {
+      const dayOfMonth = i + 1;
+      const fullDate = `${thisMonth}-${String(dayOfMonth).padStart(2, "0")}`;
+      const dayOfWeek = dayjs(fullDate).day();
+
+      result.current.push({
+        caption: shortWeekDays[dayOfWeek],
+        dayOfMonth,
+        fullDate,
+        isToday: fullDate === today,
+      });
+    }
+
+    for (let i = 0; i < appended; i++) {
+      const dayOfMonth = i + 1;
+      const fullDate = `${nextMonth}-${String(dayOfMonth).padStart(2, "0")}`;
+      const dayOfWeek = dayjs(fullDate).day();
+
+      result.appended.push({
+        caption: shortWeekDays[dayOfWeek],
+        dayOfMonth,
+        fullDate,
+        isToday: fullDate === today,
+      });
+    }
+
+    return result;
   }
 
   //#endregion

@@ -1,5 +1,6 @@
 @import url("./taskbar/openedapps.css");
 @import url("./taskbar/position.css");
+@import url("./taskbar/calendar.css");
 div.shell div.taskbar {
   display: flex;
   align-items: center;
@@ -55,10 +56,10 @@ div.shell.docked div.taskbar {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--button-glass-bg);
+  background-color: var(--shell-component-bg);
   font-size: 18px;
   border-radius: 10px;
-  outline: var(--button-glass-bg) 1px solid;
+  outline: var(--shell-component-outline) 1px solid;
   outline-offset: -1px;
 }
 
@@ -74,30 +75,20 @@ div.shell div.taskbar button.start-button img {
   height: 30px;
 }
 
-#arcShell div.shell div.taskbar button.workspace-manager-button.active,
-#arcShell div.shell div.taskbar button.action-center-button.active {
-  background-color: var(--accent-light);
-}
-
-#arcShell div.shell div.taskbar button.workspace-manager-button.active span,
-#arcShell div.shell div.taskbar button.action-center-button.active span {
-  color: var(--win-bg);
-}
-
 div.shell div.taskbar button.action-center-button span {
   font-size: 18px;
 }
 
-div.shell div.taskbar div.clock,
+div.shell div.taskbar button.clock-button,
 div.shell div.taskbar div.status-area,
 div.shell div.taskbar div.tray-icons {
-  background-color: var(--button-glass-bg);
+  background-color: var(--shell-component-bg);
   height: 40px;
   display: flex;
   align-items: center;
   padding: 0 15px;
   border-radius: 10px;
-  outline: var(--button-glass-bg) 1px solid;
+  outline: var(--shell-component-outline) 1px solid;
   outline-offset: -1px;
 }
 
@@ -108,6 +99,8 @@ div.shell div.taskbar div.tray-icons {
 div.shell div.taskbar div.status-area {
   gap: 10px;
   padding: 0 10px;
+  min-width: 40px;
+  justify-content: center;
 }
 
 div.shell div.taskbar div.tray-icons div.icon,
@@ -133,9 +126,9 @@ div.shell div.taskbar > *:not(.opened-apps) {
 div.shell div.taskbar div.pinned-apps {
   height: 40px;
   padding: 3px;
-  background-color: var(--button-glass-bg);
+  background-color: var(--shell-component-bg);
   border-radius: 10px;
-  outline: var(--button-glass-bg) 1px solid;
+  outline: var(--shell-component-outline) 1px solid;
   outline-offset: -1px;
 }
 
@@ -156,7 +149,7 @@ div.shell div.taskbar div.pinned-apps > button {
 }
 
 #arcShell div.shell div.taskbar div.pinned-apps > button:hover {
-  background-color: var(--button-glass-bg);
+  background-color: var(--shell-component-bg);
 }
 
 #arcShell div.shell div.taskbar div.pinned-apps > button:active {
@@ -183,7 +176,7 @@ div.shell div.taskbar div.pinned-apps > button + button {
 }
 
 #arcShell div.taskbar div.tray-icons > div.icon > button.trigger:hover {
-  background-color: var(--button-glass-bg);
+  background-color: var(--shell-component-bg);
 }
 
 #arcShell div.taskbar div.tray-icons > div.icon > button.trigger:disabled {
@@ -231,6 +224,10 @@ div.shell div.taskbar div.pinned-apps > button + button {
   pointer-events: none !important;
 }
 
+#arcShell div.taskbar div.tray-icons > div.icon > div.popup:not(.visible) * {
+  pointer-events: none !important;
+}
+
 @keyframes arcShell_taskbar_appear {
   0% {
     translate: 0 70px;
@@ -242,4 +239,52 @@ div.shell div.taskbar div.pinned-apps > button + button {
 
 div.shell.has-fullscreen div.taskbar {
   translate: 0 70px !important;
+}
+
+div.shell div.taskbar div.clock {
+  display: flex;
+  justify-content: end;
+}
+
+div.shell div.taskbar button.clock-button {
+  background-color: var(--button-glass-bg);
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 15px !important;
+  border-radius: 10px;
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
+  width: fit-content !important;
+  font-size: 14px !important;
+}
+
+div.shell div.taskbar button.clock-button:hover {
+  background-color: var(--button-glass-hover-bg);
+}
+
+div.shell div.taskbar button.clock-button:active {
+  background-color: var(--button-glass-active-bg);
+  opacity: 0.5;
+}
+
+div.shell div.taskbar button.clock-button.active {
+  background-color: var(--accent-light) !important;
+  color: var(--win-bg) !important;
+}
+
+div.shell div.shell div.taskbar button.clock-button.active,
+#arcShell div.shell div.taskbar button.workspace-manager-button.active,
+#arcShell div.shell div.taskbar button.action-center-button.active {
+  background-color: var(--accent-light) !important;
+}
+
+div.shell div.shell div.taskbar button.clock-button.active span,
+#arcShell div.shell div.taskbar button.workspace-manager-button.active span,
+#arcShell div.shell div.taskbar button.action-center-button.active span {
+  color: var(--win-bg) !important;
+}
+
+.theme-light div.shell div.taskbar::before {
+  opacity: 0.1;
 }

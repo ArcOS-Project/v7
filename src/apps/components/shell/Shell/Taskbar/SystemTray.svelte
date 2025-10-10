@@ -6,4 +6,4 @@
   const { userPreferences } = process;
 </script>
 
-<Clock {userPreferences} />
+<Clock {process} {userPreferences} />

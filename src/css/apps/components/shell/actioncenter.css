@@ -58,7 +58,11 @@ div.shell div.actioncenter div.top {
 div.shell div.actioncenter div.top > div {
   border-radius: 10px;
   height: 110px;
-  box-shadow: 0 2px 5px 2px #0002;
-  outline: var(--button-glass-hover-bg) 1px solid;
-  outline-offset: -1;
+  box-shadow: var(--secondary-box-shadow);
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
+}
+
+.theme-light div.shell div.actioncenter::before {
+  opacity: 0.1;
 }

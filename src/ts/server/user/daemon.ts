@@ -24,13 +24,14 @@ import { StoreItemIcon } from "$ts/distrib/util";
 import { ServerDrive } from "$ts/drives/server";
 import type { MemoryFilesystemDrive } from "$ts/drives/temp";
 import { ZIPDrive } from "$ts/drives/zipdrive";
-import { ArcOSVersion, BETA, getKMod, KernelStack } from "$ts/env";
+import { ArcOSVersion, BETA, getKMod, KernelServerUrl, KernelStack } from "$ts/env";
 import { toForm } from "$ts/form";
 import { KernelStateHandler } from "$ts/getters";
 import { applyDefaults } from "$ts/hierarchy";
 import { IconService } from "$ts/icon";
 import { maybeIconId } from "$ts/images";
 import { NightlyLogo } from "$ts/images/branding";
+import { ComponentIcon } from "$ts/images/general";
 import { tryJsonParse } from "$ts/json";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -50,7 +51,7 @@ import type { LoginActivity } from "$types/activity";
 import type { App, AppStorage, InstalledApp } from "$types/app";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
 import type { FileHandler, FileOpenerResult } from "$types/fs";
-import type { FilesystemType, ServerManagerType } from "$types/kernel";
+import type { EnvironmentType, FilesystemType, ServerManagerType } from "$types/kernel";
 import { LogLevel } from "$types/logging";
 import type { BatteryType } from "$types/navigator";
 import type { Notification } from "$types/notification";
@@ -78,8 +79,6 @@ import { DefaultFileDefinitions } from "./assoc/store";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultFileHandlers, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
-import { ComponentIcon } from "$ts/images/general";
-import VirtualDesktops from "$apps/components/shell/Shell/VirtualDesktops.svelte";
 //#endregion
 
 export class UserDaemon extends Process {
@@ -104,6 +103,7 @@ export class UserDaemon extends Process {
   public safeMode = false;
   public syncLock = false;
   public initialized = false;
+  public usingTargetedAuthorization = false;
   public _elevating = false;
   public _blockLeaveInvocations = true;
   public _toLoginInvoked = false;
@@ -126,6 +126,7 @@ export class UserDaemon extends Process {
   ];
   private registeredAnchors: HTMLAnchorElement[] = [];
   public notifications = new Map<string, Notification>([]);
+  private anchorInterceptObserver?: MutationObserver;
   // KERNEL MODULES
   public server: ServerManagerType;
   public globalDispatch?: GlobalDispatch;
@@ -158,6 +159,8 @@ export class UserDaemon extends Process {
       this.TempFsSnapshot = await this.TempFs.takeSnapshot();
 
       this.startAnchorRedirectionIntercept();
+
+      this.usingTargetedAuthorization = this.server.url !== import.meta.env.DW_SERVER_URL;
     } catch {
       return false;
     }
@@ -176,6 +179,9 @@ export class UserDaemon extends Process {
 
     this.TempFs?.restoreSnapshot(this.TempFsSnapshot!);
     this.fs.umountDrive(`userfs`, true);
+    this.fs.umountDrive(`admin`, true);
+
+    this.anchorInterceptObserver?.disconnect();
   }
 
   //#endregion
@@ -263,8 +269,8 @@ export class UserDaemon extends Process {
       }
     };
 
-    const observer = new MutationObserver(handle);
-    observer.observe(document.body, { childList: true, subtree: true });
+    this.anchorInterceptObserver = new MutationObserver(handle);
+    this.anchorInterceptObserver.observe(document.body, { childList: true, subtree: true });
   }
 
   async activateGlobalDispatch() {
@@ -390,7 +396,7 @@ export class UserDaemon extends Process {
     if (!navigator.getBattery) return undefined;
 
     const info = (await navigator.getBattery()) as BatteryType;
-    if (info.charging && info.dischargingTime === Infinity) return undefined;
+    if (info.charging && info.level === 1) return undefined;
 
     return info;
   }
@@ -672,9 +678,7 @@ export class UserDaemon extends Process {
       await Backend.post(`/tpa/v2/${this.userInfo!._id}/${app.id}/${filename}`, textToBlob(js), {
         headers: { Authorization: `Bearer ${this.token}` },
       });
-      const dataUrl = `${import.meta.env.DW_SERVER_URL}/tpa/v3/${this.userInfo!._id}/${Date.now()}/${
-        app.id
-      }@${filename}${authcode()}`;
+      const dataUrl = `${KernelServerUrl()}/tpa/v3/${this.userInfo!._id}/${Date.now()}/${app.id}@${filename}${authcode()}`;
       const code = await import(/* @vite-ignore */ dataUrl);
 
       if (!code.default || !(code.default instanceof Function)) throw new Error("Expected a default function");
@@ -1766,17 +1770,17 @@ export class UserDaemon extends Process {
   }
 
   getAppIcon(app: App) {
-    return this.getIconCached(`@app::${app.id}`) || ComponentIcon;
+    return this.getIconCached(`@app::${app.id}`) || this?.getIconCached("ComponentIcon");
   }
 
   getAppIconByProcess(process: AppProcess) {
-    return this.getAppIcon(process.app?.data) || ComponentIcon;
+    return this.getAppIcon(process.app?.data) || this?.getIconCached("ComponentIcon");
   }
 
   async getIcon(id: string): Promise<string> {
     const iconService = this.serviceHost?.getService<IconService>("IconService");
 
-    return (await iconService?.getIcon(id)) || ComponentIcon;
+    return (await iconService?.getIcon(id)) || this?.getIconCached("ComponentIcon");
   }
 
   getIconCached(id: string): string {
@@ -3189,4 +3193,12 @@ The information provided in this report is subject for review by me or another A
   }
 
   //#endregion
+}
+
+export function TryGetDaemon(): UserDaemon | undefined {
+  const env = getKMod<EnvironmentType>("env");
+  const stack = KernelStack();
+  const daemonPid = +env.get("userdaemon_pid");
+
+  return stack.getProcess<UserDaemon>(daemonPid);
 }

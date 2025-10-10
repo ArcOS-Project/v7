@@ -9,6 +9,7 @@ export const IconEditorApp: App = {
     author: "Izaak Kuipers",
     version: "1.0.0",
     icon: "AppsIcon",
+    appGroup: "systemTools",
   },
   position: { centered: true },
   size: { w: 700, h: 550 },

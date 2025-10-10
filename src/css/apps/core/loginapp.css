@@ -168,6 +168,8 @@ div.window#loginApp > div.body div.login-form button.continue:active span.lucide
 }
 div.window#loginApp > div.body p.error-message {
   font-size: 16px;
+  max-width: 600px;
+  text-align: center;
 }
 
 div.window#loginApp > div.body p.loading {
@@ -236,6 +238,11 @@ div.window#loginApp > div.body p.bottom-text {
   text-align: center;
   font-size: 16px;
   opacity: 0.5;
+}
+
+div.window#loginApp > div.body p.targeted-server {
+  opacity: 0.5;
+  margin-top: -20px;
 }
 
 @keyframes new-login-show {

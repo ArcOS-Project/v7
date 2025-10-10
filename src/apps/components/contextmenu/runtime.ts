@@ -10,6 +10,7 @@ export class ContextMenuRuntime extends AppProcess {
   public CLICKLOCKED = false;
   public contextProps: Record<string, any[]> = {};
   public currentMenu = Store<string>("");
+  private abortController = new AbortController();
   // Elements that can contain a contextmenu dataset key
   private readonly validContexMenuTags = ["button", "div", "span", "p", "h1", "h2", "h3", "h4", "h5", "img"];
 
@@ -27,6 +28,10 @@ export class ContextMenuRuntime extends AppProcess {
     if (await this.closeIfSecondInstance()) return false;
   }
 
+  async stop() {
+    this.abortController.abort();
+  }
+
   async render() {
     this.assignContextMenuHooks();
   }
@@ -34,20 +39,28 @@ export class ContextMenuRuntime extends AppProcess {
   assignContextMenuHooks() {
     this.Log("Assigning context menu hooks");
 
-    document.addEventListener("click", (e) => {
-      if (this.CLICKLOCKED) return;
+    document.addEventListener(
+      "click",
+      (e) => {
+        if (this.CLICKLOCKED) return;
 
-      const el = document.querySelector("#contextMenu > div.body > .context-menu");
+        const el = document.querySelector("#contextMenu > div.body > .context-menu");
 
-      if (!el || e.button !== 0 || e.composedPath().includes(el)) return;
+        if (!el || e.button !== 0 || e.composedPath().includes(el)) return;
 
-      this.closeContextMenu();
-    });
+        this.closeContextMenu();
+      },
+      { signal: this.abortController.signal }
+    );
 
-    document.addEventListener("contextmenu", (e) => {
-      e.preventDefault();
-      this.handleContext(e);
-    });
+    document.addEventListener(
+      "contextmenu",
+      (e) => {
+        e.preventDefault();
+        this.handleContext(e);
+      },
+      { signal: this.abortController.signal }
+    );
   }
 
   //#endregion

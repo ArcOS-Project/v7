@@ -1,4 +1,4 @@
-name: Build test
+name: Test typedef generation
 
 on:
   pull_request:
@@ -20,7 +20,5 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Build the frontend
-        run: yarn build
       - name: Generate type definitions
         run: yarn build:types:all

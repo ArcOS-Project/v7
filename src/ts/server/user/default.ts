@@ -68,6 +68,9 @@ export const DefaultUserPreferences: UserPreferences = {
   },
   appPreferences: {
     experiments: {},
+    fileManager: {
+      renderThumbnails: true,
+    },
   },
   account: {
     profilePicture: 3,

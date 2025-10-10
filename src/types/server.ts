@@ -6,4 +6,5 @@ export interface ServerInfo {
   loginNotice: string;
   disableRegistration: boolean;
   freshBackend: boolean;
+  rejectTargetedAuthorization: boolean;
 }
