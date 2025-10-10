@@ -31,6 +31,7 @@ import { MessagingInterface } from "../messaging";
 import { UserPaths } from "../user/store";
 import { AdminFileSystem } from "./fs";
 import { AdminScopes } from "./store";
+import { KernelServerUrl } from "$ts/env";
 
 export class AdminBootstrapper extends BaseService {
   private token: string | undefined;
@@ -107,7 +108,7 @@ export class AdminBootstrapper extends BaseService {
       const response = await Backend.get("/admin/users/list", { headers: { Authorization: `Bearer ${this.token}` } });
 
       return (response.data as ExpandedUserInfo[]).map((u) => {
-        u.profile.profilePicture = `${import.meta.env.DW_SERVER_URL}${u.profile.profilePicture}`;
+        u.profile.profilePicture = `${KernelServerUrl()}${u.profile.profilePicture}`;
 
         return u;
       });

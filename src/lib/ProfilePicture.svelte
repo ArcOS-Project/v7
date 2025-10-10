@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { KernelServerUrl } from "$ts/env";
   import type { UserDaemon } from "$ts/server/user/daemon";
   import { Sleep } from "$ts/sleep";
   import { authcode } from "$ts/util";
@@ -34,8 +35,7 @@
     if (url) await Sleep(100);
 
     const code = authcode();
-    url =
-      fallback || `${import.meta.env.DW_SERVER_URL}/user/pfp/${userDaemon?.userInfo._id}${code}${code ? "&" : "?"}${Date.now()}`;
+    url = fallback || `${KernelServerUrl()}/user/pfp/${userDaemon?.userInfo._id}${code}${code ? "&" : "?"}${Date.now()}`;
 
     currentPfp = pfp || v.account.profilePicture!;
   }

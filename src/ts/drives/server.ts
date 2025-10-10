@@ -1,5 +1,5 @@
 import { FilesystemDrive } from "$ts/drives/drive";
-import { getKMod } from "$ts/env";
+import { getKMod, KernelServerUrl } from "$ts/env";
 import { toForm } from "$ts/form";
 import { ArcBuild } from "$ts/metadata/build";
 import { Backend } from "$ts/server/axios";
@@ -261,14 +261,10 @@ export class ServerDrive extends FilesystemDrive {
       const data = response.data as ExtendedStat;
 
       if (data.modifiers?.createdBy?.user) {
-        data.modifiers.createdBy.user.profilePicture = `${import.meta.env.DW_SERVER_URL}${
-          data.modifiers.createdBy.user.profilePicture
-        }`;
+        data.modifiers.createdBy.user.profilePicture = `${KernelServerUrl()}${data.modifiers.createdBy.user.profilePicture}`;
       }
       if (data.modifiers?.lastWrite?.user) {
-        data.modifiers.lastWrite.user.profilePicture = `${import.meta.env.DW_SERVER_URL}${
-          data.modifiers.lastWrite.user.profilePicture
-        }`;
+        data.modifiers.lastWrite.user.profilePicture = `${KernelServerUrl()}${data.modifiers.lastWrite.user.profilePicture}`;
       }
 
       return data as ExtendedStat;

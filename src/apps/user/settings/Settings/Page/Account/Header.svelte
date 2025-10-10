@@ -2,18 +2,16 @@
   import type { SettingsRuntime } from "$apps/user/settings/runtime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import type { UserDaemon } from "$ts/server/user/daemon";
-  import type { UserInfo, UserPreferencesStore } from "$types/user";
+  import type { UserInfo } from "$types/user";
   import AccountName from "./Header/AccountName.svelte";
 
   const {
     userInfo,
-    userPreferences,
     userDaemon,
     process,
   }: {
     process: SettingsRuntime;
     userInfo: UserInfo;
-    userPreferences: UserPreferencesStore;
     userDaemon: UserDaemon;
   } = $props();
 </script>

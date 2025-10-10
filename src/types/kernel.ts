@@ -56,6 +56,8 @@ export interface ServerManagerType {
   checkUsernameAvailability(username: string): Promise<boolean>;
   checkEmailAvailability(email: string): Promise<boolean>;
   _init(): Promise<void>;
+  set(server: string): Promise<void>;
+  reset(): Promise<void>;
 }
 
 export interface FilesystemType {

@@ -2,7 +2,7 @@ import { FirstRunApp } from "$apps/components/firstrun/FirstRun";
 import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/TotpAuthGui";
 import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
-import { getKMod, KernelStack } from "$ts/env";
+import { getKMod, KernelServerUrl, KernelStack } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { ProfilePictures } from "$ts/images/pfp";
 import { tryJsonParse } from "$ts/json";
@@ -33,7 +33,8 @@ export class LoginAppRuntime extends AppProcess {
   public loginBackground = Store<string>(this.DEFAULT_WALLPAPER());
   public hideProfileImage = Store<boolean>(false);
   public persistence = Store<PersistenceInfo | undefined>();
-  public serverInfo: ServerInfo | undefined;
+  public serverInfo = Store<ServerInfo>();
+  public server: ServerManagerType;
   public unexpectedInvocation = false;
   public safeMode = false;
   private type = "";
@@ -45,20 +46,21 @@ export class LoginAppRuntime extends AppProcess {
 
     const server = getKMod<ServerManagerType>("server");
 
-    this.DEFAULT_WALLPAPER.set(server.serverInfo?.loginWallpaper ? `${server.url}/loginbg${authcode()}` : Wallpapers.img18.url);
+    this.unexpectedInvocation =
+      KernelStateHandler()?.currentState !== "boot" && KernelStateHandler()?.currentState !== "initialSetup" && !props?.type;
+    this.server = server;
+    this.serverInfo.set(server.serverInfo!);
+    this.safeMode = !!(props?.safeMode || this.env.get("safemode"));
+
+    if (this.safeMode) this.env.set("safemode", true);
+
+    this.updateServerStuff();
+
     this.errorMessage.subscribe((v) => {
       if (!v) {
-        this.profileImage.set(ProfilePictures.def);
         this.loadPersistence();
       }
     });
-
-    this.unexpectedInvocation =
-      KernelStateHandler()?.currentState !== "boot" && KernelStateHandler()?.currentState !== "initialSetup" && !props?.type;
-    this.serverInfo = server.serverInfo;
-    this.safeMode = !!(props?.safeMode || this.env.get("safemode"));
-    if (this.safeMode) this.env.set("safemode", true);
-    this.loginBackground.set(this.DEFAULT_WALLPAPER());
 
     if (this.unexpectedInvocation) {
       this.app.data.core = false;
@@ -117,16 +119,18 @@ export class LoginAppRuntime extends AppProcess {
   async render() {
     this.getBody().classList.add("theme-dark");
 
-    if (this.serverInfo?.freshBackend) {
+    if (this.serverInfo().freshBackend) {
       KernelStateHandler()?.loadState("initialSetup");
       return false;
     }
 
     if (!this.type && !this.unexpectedInvocation) {
+      await this.loadPersistence();
+
       const tokenResult = await this.loadToken();
 
-      if (!tokenResult && this.serverInfo?.loginNotice) {
-        this.errorMessage.set(this.serverInfo.loginNotice);
+      if (!tokenResult && this.serverInfo().loginNotice) {
+        this.errorMessage.set(this.serverInfo().loginNotice);
       }
     }
   }
@@ -180,7 +184,7 @@ export class LoginAppRuntime extends AppProcess {
       return;
     }
 
-    this.profileImage.set(`${import.meta.env.DW_SERVER_URL}/user/pfp/${userInfo._id}${authcode()}`);
+    this.profileImage.set(`${this.server.url}/user/pfp/${userInfo._id}${authcode()}`);
 
     if (userInfo.hasTotp && userInfo.restricted) {
       this.loadingStatus.set("Requesting 2FA");
@@ -204,7 +208,7 @@ export class LoginAppRuntime extends AppProcess {
       this.loadingStatus.set(message);
     };
 
-    this.loadPersistence();
+    await this.loadPersistence();
 
     this.savePersistence(username, this.profileImage());
 
@@ -308,8 +312,6 @@ export class LoginAppRuntime extends AppProcess {
       }
     }
 
-    this.profileImage.set(`${import.meta.env.DW_SERVER_URL}/user/pfp/${daemon.userInfo._id}${authcode()}`);
-
     this.profileName.set(daemon.preferences().account.displayName || daemon.username);
     this.loginBackground.set((await daemon.getWallpaper(daemon.preferences().account.loginBackground)).url);
 
@@ -321,13 +323,12 @@ export class LoginAppRuntime extends AppProcess {
     await daemon.discontinueToken();
     await daemon.killSelf();
 
-    setTimeout(() => {
+    setTimeout(async () => {
       this.loadingStatus.set("");
       this.hideProfileImage.set(false);
-      this.profileImage.set(ProfilePictures.def);
-      this.profileName.set("");
-      this.loginBackground.set(this.DEFAULT_WALLPAPER());
       KernelStateHandler()?.getStateLoaders()?.main?.removeAttribute("style");
+
+      await this.loadPersistence();
     }, 600);
   }
 
@@ -337,7 +338,7 @@ export class LoginAppRuntime extends AppProcess {
     this.type = "shutdown";
 
     if (daemon) {
-      this.profileImage.set(`${import.meta.env.DW_SERVER_URL}/user/pfp/${daemon.userInfo._id}${authcode()}`);
+      this.profileImage.set(`${this.server.url}/user/pfp/${daemon.userInfo._id}${authcode()}`);
       this.loginBackground.set((await daemon.getWallpaper(daemon.preferences().account.loginBackground)).url);
 
       this.profileName.set(daemon.preferences().account.displayName || daemon.username);
@@ -358,7 +359,7 @@ export class LoginAppRuntime extends AppProcess {
     this.type = "restart";
 
     if (daemon) {
-      this.profileImage.set(`${import.meta.env.DW_SERVER_URL}/user/pfp/${daemon.userInfo._id}${authcode()}`);
+      this.profileImage.set(`${this.server.url}/user/pfp/${daemon.userInfo._id}${authcode()}`);
       this.loginBackground.set((await daemon.getWallpaper(daemon.preferences().account.loginBackground)).url);
 
       this.profileName.set(daemon.preferences().account.displayName || daemon.username);
@@ -376,16 +377,47 @@ export class LoginAppRuntime extends AppProcess {
   //#endregion
   //#region CREDENTIALS
 
-  async proceed(username: string, password: string) {
+  async proceed(username: string, password: string, serverName?: string) {
     this.Log(`Trying login of '${username}'`);
 
     this.loadingStatus.set(`Hi, ${username}!`);
+
+    if (serverName) {
+      this.loadingStatus.set(`Connecting to ${serverName}`);
+
+      try {
+        await this.server.set(`https://${serverName}`);
+
+        if (this.server.serverInfo?.rejectTargetedAuthorization) {
+          this.loadingStatus.set("");
+          this.errorMessage.set(
+            `Targeted server '${serverName}' does not allow connection via targeted authorization. Please contact your server administrator if you believe this to be an error.`
+          );
+          await this.server.reset();
+          this.updateServerStuff();
+
+          return;
+        }
+
+        this.updateServerStuff();
+      } catch {
+        this.loadingStatus.set("");
+        this.errorMessage.set(
+          `Targeted server '${serverName}' could not be reached. Please check the server name and try again. Also note that ArcOS only connects to targeted servers over HTTPS.`
+        );
+
+        return;
+      }
+    }
 
     const token = await LoginUser(username, password);
 
     if (!token) {
       this.loadingStatus.set("");
       this.errorMessage.set("Username or password incorrect.");
+
+      await this.server.reset();
+      this.updateServerStuff();
 
       return;
     }
@@ -506,10 +538,15 @@ export class LoginAppRuntime extends AppProcess {
 
   //#region PERSISTENCE
 
-  loadPersistence() {
+  async loadPersistence() {
     const persistence = tryJsonParse<PersistenceInfo>(localStorage.getItem("arcLoginPersistence"));
 
     if (!persistence) return;
+
+    if (persistence.serverUrl) {
+      await this.server.set(persistence.serverUrl);
+      this.updateServerStuff();
+    }
 
     this.persistence.set(persistence);
     this.profileImage.set(persistence.profilePicture);
@@ -518,15 +555,28 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   savePersistence(username: string, profilePicture: string, loginWallpaper?: string) {
-    localStorage.setItem("arcLoginPersistence", JSON.stringify({ username, profilePicture, loginWallpaper }));
+    localStorage.setItem(
+      "arcLoginPersistence",
+      JSON.stringify({ username, profilePicture, loginWallpaper, serverUrl: this.server.url })
+    );
   }
 
-  deletePersistence() {
+  async deletePersistence() {
+    await this.server.reset();
+    this.updateServerStuff();
     localStorage.removeItem("arcLoginPersistence");
     this.persistence.set(undefined);
     this.profileImage.set(ProfilePictures.def);
     this.loginBackground.set(this.DEFAULT_WALLPAPER());
     this.profileName.set("");
+  }
+
+  updateServerStuff() {
+    if (this.server.serverInfo) this.serverInfo.set(this.server.serverInfo);
+    this.DEFAULT_WALLPAPER.set(
+      this.serverInfo()?.loginWallpaper ? `${this.server.url}/loginbg${authcode()}` : Wallpapers.img18.url
+    );
+    this.loginBackground.set(this.DEFAULT_WALLPAPER());
   }
 
   //#endregion
