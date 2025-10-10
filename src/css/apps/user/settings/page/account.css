@@ -150,6 +150,8 @@
   color: var(--clr-green-fg);
 }
 
-#systemSettings div.container.account div.header p.email {
-  opacity: 0.5;
+#systemSettings div.container.account div.header p.targeted-server {
+  opacity: 1;
+  font-weight: bold;
+  margin-top: 20px;
 }
