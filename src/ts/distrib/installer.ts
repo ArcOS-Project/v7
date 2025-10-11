@@ -263,7 +263,7 @@ export class InstallerProcess extends Process {
         buttons: [
           {
             caption: "Open",
-            action: async() => {
+            action: async () => {
               await this.userDaemon?.spawnApp(app.id, +this.env.get("shell_pid"));
             },
           },
@@ -283,7 +283,7 @@ export class InstallerProcess extends Process {
           },
         ],
       });
-      }
+    }
   }
 
   public async onStop() {

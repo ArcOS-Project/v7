@@ -6,6 +6,7 @@ import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { SearchItem } from "$types/search";
 import type { Workspace } from "$types/user";
+import dayjs from "dayjs";
 import { type FuseResult } from "fuse.js";
 import { fetchWeatherApi } from "openmeteo";
 import type { ArcFindRuntime } from "../arcfind/runtime";
@@ -13,7 +14,6 @@ import type { TrayHostRuntime } from "../trayhost/runtime";
 import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
 import { shortWeekDays, type CalendarMonth, type WeatherInformation } from "./types";
-import dayjs from "dayjs";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);

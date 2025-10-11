@@ -30,10 +30,10 @@ export class ArcFindRuntime extends AppProcess {
     let excludeShortcuts = preferences.searchOptions.excludeShortcuts;
     this.userPreferences.subscribe((v) => {
       if (v.searchOptions.excludeShortcuts !== excludeShortcuts) {
-        this.refresh()
-        excludeShortcuts = v.searchOptions.excludeShortcuts
+        this.refresh();
+        excludeShortcuts = v.searchOptions.excludeShortcuts;
       }
-    })
+    });
   }
 
   //#endregion

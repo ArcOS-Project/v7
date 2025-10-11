@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { KernelServerUrl } from "$ts/env";
   import { Store } from "$ts/writable";
   import { onMount } from "svelte";
   import Field from "./LoginForm/Field.svelte";

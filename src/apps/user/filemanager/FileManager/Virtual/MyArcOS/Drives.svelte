@@ -39,7 +39,11 @@
             class="drive"
             onclick={() => process.navigate(`${drive.data.driveLetter || drive.data.uuid}:/`)}
             data-contextmenu={drive.data.IDENTIFIES_AS === "share" ? "sidebar-shared-drive" : "sidebar-drive"}
-            use:contextProps={[drive, `${drive.data.driveLetter || drive.data.uuid}:`, () => process.unmountDrive(drive.data, id)]}
+            use:contextProps={[
+              drive,
+              `${drive.data.driveLetter || drive.data.uuid}:`,
+              () => process.unmountDrive(drive.data, id),
+            ]}
             disabled={drive.data.IDENTIFIES_AS === "share" && (drive.data as SharedDrive).shareInfo?.locked}
           >
             <img src={process.getIconCached("DriveIcon")} alt="" />

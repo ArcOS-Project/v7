@@ -1,5 +1,6 @@
 import { DistributionServiceProcess } from "$ts/distrib";
 import { AdminServerDrive } from "$ts/drives/admin";
+import { KernelServerUrl } from "$ts/env";
 import { toForm } from "$ts/form";
 import { tryJsonParse } from "$ts/json";
 import type { ServiceHost } from "$ts/services";
@@ -31,7 +32,6 @@ import { MessagingInterface } from "../messaging";
 import { UserPaths } from "../user/store";
 import { AdminFileSystem } from "./fs";
 import { AdminScopes } from "./store";
-import { KernelServerUrl } from "$ts/env";
 
 export class AdminBootstrapper extends BaseService {
   private token: string | undefined;

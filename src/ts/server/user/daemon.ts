@@ -31,7 +31,6 @@ import { applyDefaults } from "$ts/hierarchy";
 import { IconService } from "$ts/icon";
 import { maybeIconId } from "$ts/images";
 import { NightlyLogo } from "$ts/images/branding";
-import { ComponentIcon } from "$ts/images/general";
 import { tryJsonParse } from "$ts/json";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";

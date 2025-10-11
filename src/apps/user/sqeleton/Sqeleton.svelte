@@ -1,7 +1,7 @@
 <script lang="ts">
   import CodeEditor from "$lib/CodeEditor.svelte";
-  import { formatBytes } from "$ts/util/fs";
   import { Plural } from "$ts/util";
+  import { formatBytes } from "$ts/util/fs";
   import { Store } from "$ts/writable";
   import { onMount } from "svelte";
   import { Pane, Splitpanes } from "svelte-splitpanes";

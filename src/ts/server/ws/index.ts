@@ -2,11 +2,11 @@ import { getKMod, KernelStack } from "$ts/env";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import type { GlobalDispatchClient } from "$types/dispatch";
+import type { ServerManagerType } from "$types/kernel";
 import type { Service } from "$types/service";
 import io, { Socket } from "socket.io-client";
 import { Backend } from "../axios";
 import { UserDaemon } from "../user/daemon";
-import type { ServerManagerType } from "$types/kernel";
 
 export class GlobalDispatch extends BaseService {
   client: Socket | undefined;

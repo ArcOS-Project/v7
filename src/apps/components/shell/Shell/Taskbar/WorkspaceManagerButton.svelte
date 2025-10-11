@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { derived, get } from "svelte/store";
-  import type { ShellRuntime } from "../../runtime";
   import { onDestroy } from "svelte";
+  import type { ShellRuntime } from "../../runtime";
 
   const { process }: { process: ShellRuntime } = $props();
   const { workspaceManagerOpened, userPreferences } = process;

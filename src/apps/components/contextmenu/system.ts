@@ -1,12 +1,10 @@
 import { AppProcess } from "$ts/apps/process";
 import { KernelStack } from "$ts/env";
-import { Log } from "$ts/logging";
 import { UserDaemon } from "$ts/server/user/daemon";
 import type { AppContextMenu } from "$types/app";
 import type { ContextMenuRuntime } from "./runtime";
 
 export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContextMenu {
-
   let userDaemon = runtime.userDaemon as UserDaemon;
   let workspaces = userDaemon?.preferences().workspaces.desktops;
   let currentWorkspace = userDaemon?.preferences().workspaces.index;
@@ -28,7 +26,7 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
         },
       },
       { sep: true },
-      
+
       {
         caption: "Minimize",
         action: (proc: AppProcess) => {
@@ -113,30 +111,37 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
             isActive: (proc: AppProcess) => proc?.getWindow()?.dataset.snapstate === "bottom-right",
           },
         ],
-      },{
+      },
+      {
         caption: "Move to workspace",
         icon: "rotate-ccw-square",
         subItems: [
-          { 
+          {
             caption: "Left workspace",
             icon: "arrow-left",
             action: (proc: AppProcess) => {
               if (!proc?.pid) return;
-              userDaemon?.moveWindow(proc.pid, workspaces[(currentWorkspace - 1 >= 0) ? currentWorkspace - 1 : workspaces.length - 1]?.uuid);
+              userDaemon?.moveWindow(
+                proc.pid,
+                workspaces[currentWorkspace - 1 >= 0 ? currentWorkspace - 1 : workspaces.length - 1]?.uuid
+              );
             },
             disabled: (proc: AppProcess) => {
-              return !workspaces[(currentWorkspace - 1)] || !proc?.pid;
+              return !workspaces[currentWorkspace - 1] || !proc?.pid;
             },
           },
-          { 
+          {
             caption: "Right workspace",
             icon: "arrow-right",
             action: (proc: AppProcess) => {
               if (!proc?.pid) return;
-              userDaemon?.moveWindow(proc.pid, workspaces[(currentWorkspace + 1 <= workspaces.length - 1) ? currentWorkspace + 1 : 0]?.uuid);
+              userDaemon?.moveWindow(
+                proc.pid,
+                workspaces[currentWorkspace + 1 <= workspaces.length - 1 ? currentWorkspace + 1 : 0]?.uuid
+              );
             },
             disabled: (proc: AppProcess) => {
-              return !workspaces[(currentWorkspace + 1)] || !proc?.pid;
+              return !workspaces[currentWorkspace + 1] || !proc?.pid;
             },
           },
         ],

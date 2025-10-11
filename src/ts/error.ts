@@ -57,7 +57,7 @@ export function handleGlobalErrors() {
 export function interceptTpaErrors(stack: string, e: Error): boolean {
   const FPA_TEST_REGEXP = /http(s|):\/\/[a-zA-Z.0-9\/]+\/assets\/(?<appId>[a-zA-Z]+)-[a-f0-9A-F\-_]+\.js/gm;
   let parsed = stackTraceParser.parse(stack);
-  parsed = parsed.filter(p => !p.file?.includes("<anonymous>"));
+  parsed = parsed.filter((p) => !p.file?.includes("<anonymous>"));
   const isTpa = !!parsed[0]?.file?.includes(`localhost:3128`) || !!parsed[0]?.file?.includes(`/tpa/`);
   const isFpa = parsed[0]?.file && FPA_TEST_REGEXP.test(parsed[0].file);
   const handler = Kernel()!.getModule<ProcessHandlerType>?.("stack", true);

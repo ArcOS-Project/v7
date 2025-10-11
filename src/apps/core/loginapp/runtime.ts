@@ -2,7 +2,7 @@ import { FirstRunApp } from "$apps/components/firstrun/FirstRun";
 import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/TotpAuthGui";
 import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
-import { getKMod, KernelServerUrl, KernelStack } from "$ts/env";
+import { getKMod, KernelStack } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { ProfilePictures } from "$ts/images/pfp";
 import { tryJsonParse } from "$ts/json";

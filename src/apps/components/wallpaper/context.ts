@@ -1,4 +1,3 @@
-import { MessageBox } from "$ts/dialog";
 import { UserPaths } from "$ts/server/user/store";
 import { getParentDirectory, join } from "$ts/util/fs";
 import { UUID } from "$ts/uuid";
