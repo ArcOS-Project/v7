@@ -43,7 +43,9 @@ export class ShellRuntime extends AppProcess {
   }
 
   async start() {
-    if (await this.closeIfSecondInstance()) return;
+    if (this.handler.getProcess(+this.env.get("shell_pid"))) return false;
+
+    this.env.set("shell_pid", this.pid); // Set the shell PID
 
     this.systemDispatch.subscribe("stack-busy", () => this.stackBusy.set(true)); // Subscribe to stack-busy
     this.systemDispatch.subscribe("stack-not-busy", () => this.stackBusy.set(false)); // Subscribe to stack-not-busy
@@ -119,8 +121,6 @@ export class ShellRuntime extends AppProcess {
     });
 
     this.dispatch.subscribe("ready", () => this.gotReadySignal());
-
-    this.env.set("shell_pid", this.pid); // Set the shell PID
   }
 
   async render() {
