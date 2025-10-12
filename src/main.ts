@@ -7,10 +7,9 @@ import "./css/main.css";
 async function Main() {
   EchoIntro();
 
-  await createAxiosOverlay();
-
   const kernel = new WaveKernel();
 
+  await createAxiosOverlay();
   await kernel._init();
 }
 
