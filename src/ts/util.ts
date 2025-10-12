@@ -137,14 +137,14 @@ export function tryParseInt(input: any, returnsUndefined = false) {
     return returnsUndefined ? undefined : input;
   }
 }
-export function sortByKey(array: any[], key: string, reverse = false) {
+export function sortByKey<T extends any[]>(array: T, key: string, reverse = false) {
   return array.sort(function (a, b) {
     const x = a[key];
     const y = b[key];
 
     const comparison = x < y ? -1 : x > y ? 1 : 0;
     return reverse ? -comparison : comparison;
-  });
+  }) as T;
 }
 
 export function sortByHierarchy(array: any[], hierarchy: string) {

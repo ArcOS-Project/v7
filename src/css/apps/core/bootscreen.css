@@ -32,7 +32,7 @@ div.window#bootScreen p.status {
 }
 
 div.window#bootScreen div.version {
-  position: fixed;
+  position: absolute;
   bottom: 0;
   left: 0;
   text-align: center;

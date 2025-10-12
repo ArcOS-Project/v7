@@ -50,7 +50,7 @@ font[size] {
 }
 
 .fullscreen {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -58,7 +58,6 @@ font[size] {
 }
 
 main#main {
-  padding: 5px;
   position: fixed;
   top: 0;
   left: 0;

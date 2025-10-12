@@ -68,3 +68,7 @@
 #MediaPlayer > div.body > div.queue > div:not(:hover) button.lucide {
   display: none;
 }
+
+#MediaPlayer > div.body > div.queue img {
+  height: 24px;
+}

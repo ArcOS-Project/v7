@@ -1,5 +1,5 @@
 import { groupByTimeFrame, sortByKey } from "$ts/util";
-import type { StoreItem } from "$types/package";
+import type { PartialStoreItem, StoreItem } from "$types/package";
 import Everything from "./Pages/Everything.svelte";
 import Home from "./Pages/Home.svelte";
 import Installed from "./Pages/Installed.svelte";
@@ -23,7 +23,9 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
       async props(process) {
         const all = await process.distrib.getAllStoreItems();
         let recentlyAdded = [...all.reverse()];
-        let popular = [...sortByKey(all, "installCount")].reverse();
+        let popular: StoreItem[] = [...sortByKey(all, "installCount")]
+          .reverse()
+          .filter((p) => !p.pkg.type || p.pkg.type === "app");
         let mostPopular = popular[0];
 
         recentlyAdded.length = 6;
