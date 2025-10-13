@@ -91,8 +91,6 @@ export class AppPreInstallRuntime extends AppProcess {
       const metaBinary = await buffer.files["_metadata.json"].async("arraybuffer");
       const metadata = tryJsonParse<ArcPackage>(arrayToText(metaBinary));
 
-      console.log(metadata);
-
       if (!metadata || typeof metadata === "string") {
         return this.fail("The package metadata could not be read");
       }

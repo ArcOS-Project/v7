@@ -219,7 +219,6 @@ export class InstallerProcess extends Process {
         this.completed.set(true);
         return true;
       } catch (e) {
-        console.log(e);
         this.fail(`LibMgmtSvc: ${e}`);
         this.parent.BUSY = "";
         return false;

@@ -59,14 +59,34 @@ export class DistributionServiceProcess extends BaseService {
     const zip = new JSZip();
     const buffer = await zip.loadAsync(content, {});
 
-    if (!buffer.files["_metadata.json"] || !buffer.files["payload/_app.tpa"]) return undefined;
+    if (!buffer.files["_metadata.json"]) {
+      return undefined;
+    }
 
     const metaBinary = await buffer.files["_metadata.json"].async("arraybuffer");
     const metadata = tryJsonParse<ArcPackage>(arrayToText(metaBinary));
 
-    if (!metadata || typeof metadata === "string") return undefined;
-    if (metadata.appId.includes(".") || metadata.appId.includes("-")) {
+    if (!metadata || typeof metadata === "string") {
       return undefined;
+    }
+
+    switch (metadata.type) {
+      case "library":
+        if (!buffer.files["payload/library.json"]) return undefined;
+
+        if (!metadata.appId.startsWith("Library::")) {
+          return undefined;
+        }
+
+        break;
+      case "app":
+      default:
+        if (!buffer.files["payload/_app.tpa"]) return undefined;
+
+        if (metadata.appId.includes(".") || metadata.appId.includes("-")) {
+          return undefined;
+        }
+        break;
     }
 
     this.BUSY = "";
