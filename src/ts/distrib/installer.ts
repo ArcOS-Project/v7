@@ -124,7 +124,7 @@ export class InstallerProcess extends Process {
 
     this.logStatus(this.metadata!.installLocation, "mkdir");
     try {
-      await this.fs.createDirectory(this.metadata!.installLocation);
+      await this.fs.createDirectory(this.metadata!.installLocation, false);
       this.setCurrentStatus("done");
       return true;
     } catch {
@@ -160,7 +160,7 @@ export class InstallerProcess extends Process {
     this.logStatus(formattedPath, "mkdir");
 
     try {
-      await this.fs.createDirectory(path);
+      await this.fs.createDirectory(path, false);
       this.setCurrentStatus("done");
       return true;
     } catch {
@@ -176,9 +176,14 @@ export class InstallerProcess extends Process {
     this.logStatus(formattedPath, "file");
 
     try {
-      await this.fs.writeFile(path, arrayToBlob(content, fromExtension(path)), (prog) => {
-        // this.setCurrentContent(`${formattedPath} (${((100 / prog.max) * prog.value).toFixed(1)}%)`);
-      });
+      await this.fs.writeFile(
+        path,
+        arrayToBlob(content, fromExtension(path)),
+        (prog) => {
+          // this.setCurrentContent(`${formattedPath} (${((100 / prog.max) * prog.value).toFixed(1)}%)`);
+        },
+        false
+      );
 
       // this.setCurrentContent(formattedPath);
       // this.setCurrentStatus("done");

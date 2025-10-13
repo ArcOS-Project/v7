@@ -34,21 +34,15 @@ import { Backend } from "../axios";
 import type { UserDaemon } from "./daemon";
 import { HiddenUserPaths, SystemFolders, UserPathCaptions, UserPathIcons, UserPaths } from "./store";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
+import type { JsExec } from "$ts/jsexec";
 
-export function ThirdPartyProps(
-  daemon: UserDaemon,
-  args: any[],
-  app: App,
-  wrap: (c: string) => string,
-  metaPath: string,
-  workingDirectory?: string
-): ThirdPartyPropMap {
+export function ThirdPartyProps(engine: JsExec): ThirdPartyPropMap {
   const props = {
-    daemon, // ?
-    fs: daemon.fs, // ?
-    env: daemon.env, // ?
-    serviceHost: daemon.serviceHost, // ?
-    dispatch: daemon.systemDispatch, // ?
+    daemon: engine.userDaemon, // ?
+    fs: engine.fs, // ?
+    env: engine.env, // ?
+    serviceHost: engine.userDaemon?.serviceHost, // ?
+    dispatch: engine.userDaemon?.systemDispatch, // ?
     handler: getKMod<ProcessHandlerType>("stack"),
     MessageBox,
     icons: getAllImages(),
@@ -76,17 +70,17 @@ export function ThirdPartyProps(
       arrayToBlob,
       blobToDataURL,
     },
-    workingDirectory: workingDirectory || app.workingDirectory!,
+    workingDirectory: engine.workingDirectory || engine.app?.workingDirectory!,
     Process,
     AppProcess,
     ThirdPartyAppProcess,
     FilesystemDrive,
-    argv: args,
-    app,
+    argv: engine.args,
+    app: engine.app,
     Store,
     Sleep,
-    $ENTRYPOINT: app.entrypoint?.includes(":/") ? app.entrypoint! : join(app.workingDirectory!, app.entrypoint!),
-    $METADATA: metaPath,
+    $ENTRYPOINT: engine.filePath,
+    $METADATA: engine.metaPath,
     load: async (path: string): Promise<any> => {},
     runApp: async (
       process: typeof ThirdPartyAppProcess,
@@ -108,7 +102,7 @@ export function ThirdPartyProps(
           sound: "arcos.dialog.info",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
         },
-        +daemon.env.get("shell_pid")
+        +engine.env.get("shell_pid")
       );
     },
     CustomTitlebar,
@@ -128,7 +122,7 @@ export function ThirdPartyProps(
     HiddenUserPaths,
   };
 
-  const supplementary = SupplementaryThirdPartyPropFunctions(daemon, daemon.fs, app, props, wrap, args, metaPath);
+  const supplementary = SupplementaryThirdPartyPropFunctions(engine);
 
   for (const [key, supp] of Object.entries(supplementary)) {
     (props as any)[key] = supp;

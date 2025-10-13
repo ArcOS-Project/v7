@@ -36,7 +36,7 @@ export class DistributionServiceProcess extends BaseService {
 
   async start() {
     try {
-      await this.fs.createDirectory(this.tempFolder);
+      await this.fs.createDirectory(this.tempFolder, false);
     } catch {
       return false;
     }
@@ -165,7 +165,7 @@ export class DistributionServiceProcess extends BaseService {
     }
 
     try {
-      const result = await this.fs.writeFile(path, arrayToBlob(buffer));
+      const result = await this.fs.writeFile(path, arrayToBlob(buffer), undefined, false);
       if (!result) {
         return false;
       }
@@ -232,8 +232,8 @@ export class DistributionServiceProcess extends BaseService {
     this.BUSY = "writeInstalledList";
 
     try {
-      await this.fs.createDirectory(this.dataFolder);
-      const result = await this.fs.writeFile(this.installedListPath, textToBlob(JSON.stringify(list, null, 2)));
+      await this.fs.createDirectory(this.dataFolder, false);
+      const result = await this.fs.writeFile(this.installedListPath, textToBlob(JSON.stringify(list, null, 2)), undefined, false);
 
       this.BUSY = "";
 
@@ -448,7 +448,7 @@ export class DistributionServiceProcess extends BaseService {
 
     stage("Updating user preferences");
 
-    await this.fs.deleteItem(join(UserPaths.AppRepository, `${appId}.json`));
+    await this.fs.deleteItem(join(UserPaths.AppRepository, `${appId}.json`), false);
 
     stage("Refreshing app store...");
 
@@ -456,7 +456,7 @@ export class DistributionServiceProcess extends BaseService {
     if (deleteFiles) {
       stage("Deleting app files...");
       try {
-        await this.fs.deleteItem(app.workingDirectory!);
+        await this.fs.deleteItem(app.workingDirectory!, false);
       } catch {}
     }
 

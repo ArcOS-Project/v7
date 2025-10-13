@@ -78,6 +78,7 @@ import { DefaultFileDefinitions } from "./assoc/store";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultFileHandlers, UserPaths } from "./store";
 import { ThirdPartyProps } from "./thirdparty";
+import { JsExec } from "$ts/jsexec";
 //#endregion
 
 export class UserDaemon extends Process {
@@ -614,77 +615,46 @@ export class UserDaemon extends Process {
 
     this.Log(`Starting JS execution to run third-party app ${app.id}`);
 
-    const fs = getKMod<FilesystemType>("fs");
-    const userDaemonPid = this.env.get("userdaemon_pid");
-
     app.workingDirectory ||= getParentDirectory(metaPath);
 
-    if (!userDaemonPid) return;
-
     let stop: (() => Promise<void>) | undefined;
-
     if (this.autoLoadComplete) stop = (await this.GlobalLoadIndicator(`Opening ${app.metadata.name}...`)).stop;
 
+    const compatibleRevision = !app.tpaRevision || ThirdPartyAppProcess.TPA_REV >= app.tpaRevision;
+
+    if (!compatibleRevision) {
+      MessageBox(
+        {
+          title: `${app.metadata.name}`,
+          message: `This application expects a newer version of the TPA framework than what ArcOS can supply. Please update your ArcOS version and try again.`,
+          buttons: [{ caption: "Okay", action: () => {} }],
+          sound: "arcos.dialog.error",
+          image: "ErrorIcon",
+        },
+        +this.env.get("shell_pid"),
+        true
+      );
+
+      return;
+    }
+
     try {
-      const compatibleRevision = !app.tpaRevision || ThirdPartyAppProcess.TPA_REV >= app.tpaRevision;
-
-      if (!compatibleRevision) {
-        MessageBox(
-          {
-            title: `${app.metadata.name}`,
-            message: `This application expects a newer version of the TPA framework than what ArcOS can supply. Please update your ArcOS version and try again.`,
-            buttons: [{ caption: "Okay", action: () => {} }],
-            sound: "arcos.dialog.error",
-            image: "ErrorIcon",
-          },
-          +this.env.get("shell_pid"),
-          true
-        );
-
-        return;
-      }
-
-      const contents = arrayToText(
-        (await fs.readFile(app.entrypoint?.includes(":/") ? app.entrypoint! : join(app.workingDirectory, app.entrypoint!)))!
+      const engine = await this.handler.spawn<JsExec>(
+        JsExec,
+        undefined,
+        this.userInfo._id,
+        this.pid,
+        join(app.workingDirectory, app.entrypoint!),
+        ...args
       );
 
-      if (!contents) {
-        await stop?.();
+      console.log(engine);
 
-        MessageBox(
-          {
-            title: `${app.metadata.name} - Entrypoint error`,
-            message: `ArcOS can't find the entrypoint of this third-party application. It might have been renamed or deleted. Please consider reinstalling the application to fix this problem.<br><code class='block'>${app.entrypoint}</code>`,
-            buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-            sound: "arcos.dialog.error",
-            image: "ErrorIcon",
-          },
-          +this.env.get("shell_pid"),
-          true
-        );
-
-        return;
-      }
-
-      const wrap = (c: string) =>
-        `export default async function({ ${Object.keys(props).join(",")} }) { \nconst global = arguments;\n ${c}\n }`;
-
-      const filename = getItemNameFromPath(
-        app.entrypoint?.includes(":/") ? app.entrypoint! : join(app.workingDirectory, app.entrypoint!)
-      );
-      const props = ThirdPartyProps(this, args, app, wrap, metaPath);
-      const js = wrap(contents);
-      await Backend.post(`/tpa/v2/${this.userInfo!._id}/${app.id}/${filename}`, textToBlob(js), {
-        headers: { Authorization: `Bearer ${this.token}` },
-      });
-      const dataUrl = `${KernelServerUrl()}/tpa/v3/${this.userInfo!._id}/${Date.now()}/${app.id}@${filename}${authcode()}`;
-      const code = await import(/* @vite-ignore */ dataUrl);
-
-      if (!code.default || !(code.default instanceof Function)) throw new Error("Expected a default function");
+      engine?.setApp(app, metaPath);
 
       stop?.();
 
-      return await code.default(props);
+      return await engine?.getContents();
     } catch (e) {
       KernelStack().renderer?.notifyCrash(app as any, e as Error, app.process!);
       this.Log(`Execution error in third-party application "${app.id}": ${(e as any).stack}`);
