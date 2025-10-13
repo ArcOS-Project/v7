@@ -51,17 +51,14 @@ export class JsExec extends Process {
 
   async getContents() {
     this.Log(`Reading script contents`);
-    try {
-      const unwrapped = arrayToText((await this.fs.readFile(this.filePath!))!);
-      if (!unwrapped) throw new Error("Failed to read the file contents");
 
-      const wrapped = this.wrap(unwrapped);
-      const tpaUrl = await this.getTpaUrl(wrapped);
+    const unwrapped = arrayToText((await this.fs.readFile(this.filePath!))!);
+    if (!unwrapped) throw new Error("Failed to read the file contents");
 
-      return await this.exec(tpaUrl);
-    } catch {
-      return false;
-    }
+    const wrapped = this.wrap(unwrapped);
+    const tpaUrl = await this.getTpaUrl(wrapped);
+
+    return await this.exec(tpaUrl);
   }
 
   async getTpaUrl(wrapped: string) {
