@@ -1879,7 +1879,7 @@ export class UserDaemon extends Process {
     }
   }
 
-  async g(): Promise<UserInfo | undefined> {
+  async getUserInfo(): Promise<UserInfo | undefined> {
     if (this._disposed) return;
 
     if (this.initialized) {
