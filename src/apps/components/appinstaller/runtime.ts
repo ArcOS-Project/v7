@@ -10,6 +10,7 @@ import JSZip from "jszip";
 export class AppInstallerRuntime extends AppProcess {
   progress?: InstallerProcess;
   metadata?: ArcPackage;
+  isLibrary = false;
   zip?: JSZip;
 
   //#region LIFECYCLE
@@ -45,6 +46,8 @@ export class AppInstallerRuntime extends AppProcess {
       );
       return false;
     }
+
+    this.isLibrary = this.metadata.type === "library";
 
     this.progress = await distrib.packageInstaller(this.zip, this.metadata); // Spawn the actual package installer proc
   }
@@ -88,16 +91,21 @@ export class AppInstallerRuntime extends AppProcess {
   async revert() {
     // I don't know how well this revert works because a package install
     // has never really errored for me before.
-    const gli = await this.userDaemon?.GlobalLoadIndicator("Rolling back changes...", this.pid);
 
-    try {
-      await this.fs.deleteItem(this.metadata!.installLocation);
-      await this.userDaemon?.deleteApp(this.metadata!.appId, false);
-    } catch {
-      // Silently error
+    // TODO: change rollback for library installment
+
+    if (!this.isLibrary) {
+      const gli = await this.userDaemon?.GlobalLoadIndicator("Rolling back changes...", this.pid);
+
+      try {
+        await this.fs.deleteItem(this.metadata!.installLocation);
+        await this.userDaemon?.deleteApp(this.metadata!.appId, false);
+      } catch {
+        // Silently error
+      }
+
+      await gli?.stop();
     }
-
-    await gli?.stop();
 
     this.closeWindow();
   }

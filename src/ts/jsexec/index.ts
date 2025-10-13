@@ -1,9 +1,19 @@
+/**
+ * ArcOS JavaScript Execution Engine
+ *
+ * This file executes JS files in ArcOS under a relatively controlled environment.
+ * It is part of the ArcOS TPA framework: a system for running third-party apps.
+ *
+ * All rights belong to their respective authors.
+ *
+ * © IzKuipers 2025
+ */
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { KernelServerUrl } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import { Backend } from "$ts/server/axios";
 import { TryGetDaemon, UserDaemon } from "$ts/server/user/daemon";
-import { ThirdPartyProps } from "$ts/server/user/thirdparty";
+import { ThirdPartyProps } from "$ts/tpa/props";
 import { authcode } from "$ts/util";
 import { arrayToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";

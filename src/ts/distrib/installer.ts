@@ -212,7 +212,7 @@ export class InstallerProcess extends Process {
 
     if (this.metadata?.type === "library") {
       try {
-        await this.userDaemon.libraries?.installArcPackageAsLibrary(this.zip!);
+        await this.userDaemon.libraries?.installLibraryFromArcInstallerProc(this);
         this.parent.BUSY = "";
         this.killSelf();
         this.installing.set(false);

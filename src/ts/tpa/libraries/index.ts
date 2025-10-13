@@ -1,3 +1,4 @@
+import type { InstallerProcess } from "$ts/distrib/installer";
 import { JsExec } from "$ts/jsexec";
 import { tryJsonParse } from "$ts/json";
 import { UserPaths } from "$ts/server/user/store";
@@ -14,15 +15,23 @@ import type JSZip from "jszip";
 export class LibraryManagement extends BaseService {
   Index: Map<string, TpaLibrary> = new Map([]);
 
+  //#region LIFECYCLE
+
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(pid, parentPid, name, host);
+
+    this.setSource(__SOURCE__);
   }
 
   async start() {
     this.populateIndex();
   }
 
+  //#endregion
+  //#region INDEXING
+
   async populateIndex() {
+    this.Log("Populating index");
     this.Index.clear();
 
     try {
@@ -45,26 +54,39 @@ export class LibraryManagement extends BaseService {
     }
   }
 
+  //#endregion
+  //#region INSTALL/DELETE
+
   async deleteLibrary(id: string) {
+    this.Log(`Deleting library ${id}`);
+
     const library = this.Index.get(id.toLowerCase());
 
     if (!id || !library) return false;
 
-    await this.fs.deleteItem(join(UserPaths.Libraries, id)); // Library directory
-    await this.fs.deleteItem(join(UserPaths.Libraries, `${id}.json`)); // Library metadata file
+    await this.fs.deleteItem(join(UserPaths.Libraries, id), false); // Library directory
+    await this.fs.deleteItem(join(UserPaths.Libraries, `${id}.json`), false); // Library metadata file
     await this.populateIndex();
   }
 
-  async installArcPackageAsLibrary(zip: JSZip) {
-    console.log(zip);
-    if (!zip.files["payload/"] || !zip.files["payload/library.json"]) throw "Missing payload or metadata";
+  async installLibraryFromArcInstallerProc(proc: InstallerProcess) {
+    const { zip } = proc;
+
+    if (!zip?.files["payload/"] || !zip.files["payload/library.json"]) throw "Missing payload or metadata";
 
     const library = tryJsonParse<TpaLibrary>(await zip.files["payload/library.json"].async("text"));
+
+    this.Log(`Installing library ${library.identifier}`);
+
     const destinationPath = join(UserPaths.Libraries, library.identifier);
     const destinationMetaPath = destinationPath + ".json";
 
+    proc.logStatus(destinationPath, "mkdir");
     await this.fs.createDirectory(destinationPath, false);
+    proc.setCurrentStatus("done");
+    proc.logStatus(destinationMetaPath, "file");
     await this.fs.writeFile(destinationMetaPath, textToBlob(JSON.stringify(library, null, 2)), undefined, false);
+    proc.setCurrentStatus("done");
 
     const files = Object.fromEntries(
       Object.entries(zip!.files)
@@ -81,18 +103,28 @@ export class LibraryManagement extends BaseService {
 
       if (!item) continue;
       if (item.dir) {
+        proc.logStatus(path, "mkdir");
         await this.fs.createDirectory(scopedPath);
+        proc.setCurrentStatus("done");
       } else {
-        const content = await item.async("arraybuffer");
+        proc.logStatus(path, "file");
 
+        const content = await item.async("arraybuffer");
         await this.fs.writeFile(scopedPath, arrayToBlob(content, fromExtension(path)));
+
+        proc.setCurrentStatus("done");
       }
     }
 
+    proc.logStatus("Populating index", "other");
     await this.populateIndex();
+    proc.setCurrentStatus("done");
 
     return true;
   }
+
+  //#endregion
+  //#region EXTERNAL
 
   async getLibrary<T = any>(id: string): Promise<T> {
     const defaultReturnValue = {};
@@ -115,6 +147,8 @@ export class LibraryManagement extends BaseService {
       return defaultReturnValue as T; // TODO: determine
     }
   }
+
+  //#endregion
 }
 
 export const libraryManagementService: Service = {
