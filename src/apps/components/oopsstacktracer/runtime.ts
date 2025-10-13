@@ -31,8 +31,6 @@ export class OopsStackTracerRuntime extends AppProcess {
       this.exception instanceof PromiseRejectionEvent ? this.exception.reason.stack : this.exception?.stack || "No stack";
     this.string = this.exception ? `${this.exception}` : "";
 
-    console.log(this.data, this.exception, this.proc, this.stackFrames, this.trace, this.string);
-
     this.setSource(__SOURCE__);
   }
 

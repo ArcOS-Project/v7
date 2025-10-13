@@ -17,8 +17,6 @@ export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
         }
       }
 
-      console.log(path);
-
       try {
         const subEngine = await engine.handler.spawn<JsExec>(
           JsExec,

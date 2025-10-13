@@ -615,8 +615,6 @@ export class UserDaemon extends Process {
         ...args
       );
 
-      console.log(engine);
-
       engine?.setApp(app, metaPath);
 
       await stop?.();

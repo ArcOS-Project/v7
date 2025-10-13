@@ -146,8 +146,6 @@ export class JsExec extends Process {
     const hasDebugger = ast.body.some((node) => node.type.startsWith("Debugger"));
     const domReferences = await this.testFileContents_detectDomReferences(ast);
 
-    console.log(unwrapped);
-
     for (const key in domReferences) {
       if ((domReferences as any)[key]) throw new JsExecError(`References to ${key} are not allowed.`);
     }
@@ -164,7 +162,6 @@ export class JsExec extends Process {
       MemberExpression(node) {
         const { object, property } = node;
         if (object.type === "Identifier" && object.name === "document") {
-          console.log(node.loc);
           switch ((property as any).name) {
             case "head":
               results.documentHead = true;
