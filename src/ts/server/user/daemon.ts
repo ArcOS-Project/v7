@@ -24,13 +24,14 @@ import { StoreItemIcon } from "$ts/distrib/util";
 import { ServerDrive } from "$ts/drives/server";
 import type { MemoryFilesystemDrive } from "$ts/drives/temp";
 import { ZIPDrive } from "$ts/drives/zipdrive";
-import { ArcOSVersion, BETA, getKMod, KernelServerUrl, KernelStack } from "$ts/env";
+import { ArcOSVersion, BETA, getKMod, KernelStack } from "$ts/env";
 import { toForm } from "$ts/form";
 import { KernelStateHandler } from "$ts/getters";
 import { applyDefaults } from "$ts/hierarchy";
 import { IconService } from "$ts/icon";
 import { maybeIconId } from "$ts/images";
 import { NightlyLogo } from "$ts/images/branding";
+import { JsExec } from "$ts/jsexec";
 import { tryJsonParse } from "$ts/json";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -50,7 +51,7 @@ import type { LoginActivity } from "$types/activity";
 import type { App, AppStorage, InstalledApp } from "$types/app";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
 import type { FileHandler, FileOpenerResult } from "$types/fs";
-import type { EnvironmentType, FilesystemType, ServerManagerType } from "$types/kernel";
+import type { EnvironmentType, ServerManagerType } from "$types/kernel";
 import { LogLevel } from "$types/logging";
 import type { BatteryType } from "$types/navigator";
 import type { Notification } from "$types/notification";
@@ -77,8 +78,6 @@ import { FileAssocService } from "./assoc";
 import { DefaultFileDefinitions } from "./assoc/store";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultFileHandlers, UserPaths } from "./store";
-import { ThirdPartyProps } from "./thirdparty";
-import { JsExec } from "$ts/jsexec";
 //#endregion
 
 export class UserDaemon extends Process {
@@ -582,30 +581,6 @@ export class UserDaemon extends Process {
   }
 
   async spawnThirdParty<T>(app: App, metaPath: string, ...args: any[]): Promise<T | undefined> {
-    if (!this.preferences().security.enableThirdParty) {
-      if (this.autoLoadComplete)
-        MessageBox(
-          {
-            title: "Third-party apps",
-            message:
-              "ArcOS can't run third-party apps without your permission. Please enable third-party apps in Settings to access this app.",
-            image: "AppsIcon",
-            sound: "arcos.dialog.warning",
-            buttons: [
-              {
-                caption: "Take me there",
-                action: () => {
-                  this.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps");
-                },
-              },
-              { caption: "Okay", suggested: true, action: () => {} },
-            ],
-          },
-          +this.env.get("shell_pid"),
-          true
-        );
-      return;
-    }
     if (this._disposed) return;
 
     if (this.safeMode) {
@@ -613,30 +588,22 @@ export class UserDaemon extends Process {
       return;
     }
 
-    this.Log(`Starting JS execution to run third-party app ${app.id}`);
+    if (!this.preferences().security.enableThirdParty) {
+      this.tpaError_noEnableThirdParty();
+      return;
+    }
+
+    const compatibleRevision = !app.tpaRevision || ThirdPartyAppProcess.TPA_REV >= app.tpaRevision;
+
+    if (!compatibleRevision) {
+      this.tpaError_revisionIncompatible(app);
+      return;
+    }
 
     app.workingDirectory ||= getParentDirectory(metaPath);
 
     let stop: (() => Promise<void>) | undefined;
     if (this.autoLoadComplete) stop = (await this.GlobalLoadIndicator(`Opening ${app.metadata.name}...`)).stop;
-
-    const compatibleRevision = !app.tpaRevision || ThirdPartyAppProcess.TPA_REV >= app.tpaRevision;
-
-    if (!compatibleRevision) {
-      MessageBox(
-        {
-          title: `${app.metadata.name}`,
-          message: `This application expects a newer version of the TPA framework than what ArcOS can supply. Please update your ArcOS version and try again.`,
-          buttons: [{ caption: "Okay", action: () => {} }],
-          sound: "arcos.dialog.error",
-          image: "ErrorIcon",
-        },
-        +this.env.get("shell_pid"),
-        true
-      );
-
-      return;
-    }
 
     try {
       const engine = await this.handler.spawn<JsExec>(
@@ -652,7 +619,7 @@ export class UserDaemon extends Process {
 
       engine?.setApp(app, metaPath);
 
-      stop?.();
+      await stop?.();
 
       return await engine?.getContents();
     } catch (e) {
@@ -660,6 +627,44 @@ export class UserDaemon extends Process {
       this.Log(`Execution error in third-party application "${app.id}": ${(e as any).stack}`);
       stop?.();
     }
+  }
+
+  tpaError_revisionIncompatible(app: App) {
+    MessageBox(
+      {
+        title: `${app.metadata.name}`,
+        message: `This application expects a newer version of the TPA framework than what ArcOS can supply. Please update your ArcOS version and try again.`,
+        buttons: [{ caption: "Okay", action: () => {} }],
+        sound: "arcos.dialog.error",
+        image: "ErrorIcon",
+      },
+      +this.env.get("shell_pid"),
+      true
+    );
+  }
+
+  tpaError_noEnableThirdParty() {
+    if (this.autoLoadComplete)
+      MessageBox(
+        {
+          title: "Third-party apps",
+          message:
+            "ArcOS can't run third-party apps without your permission. Please enable third-party apps in Settings to access this app.",
+          image: "AppsIcon",
+          sound: "arcos.dialog.warning",
+          buttons: [
+            {
+              caption: "Take me there",
+              action: () => {
+                this.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps");
+              },
+            },
+            { caption: "Okay", suggested: true, action: () => {} },
+          ],
+        },
+        +this.env.get("shell_pid"),
+        true
+      );
   }
 
   //#endregion
@@ -1582,6 +1587,7 @@ export class UserDaemon extends Process {
   appStorage() {
     return this.serviceHost?.getService<ApplicationStorage>("AppStorage");
   }
+
   async initAppStorage(storage: ApplicationStorage, cb: (app: App) => void) {
     this.Log(`Now trying to load built-in applications...`);
 
@@ -1800,6 +1806,7 @@ export class UserDaemon extends Process {
 
   //#endregion
   //#region APP RENDERER
+
   getAppRendererStyle(accent: string) {
     if (this._disposed) return "";
 
@@ -1874,7 +1881,7 @@ export class UserDaemon extends Process {
     }
   }
 
-  async getUserInfo(): Promise<UserInfo | undefined> {
+  async g(): Promise<UserInfo | undefined> {
     if (this._disposed) return;
 
     if (this.initialized) {
