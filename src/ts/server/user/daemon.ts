@@ -78,6 +78,7 @@ import { FileAssocService } from "./assoc";
 import { DefaultFileDefinitions } from "./assoc/store";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultFileHandlers, UserPaths } from "./store";
+import { LibraryManagement } from "$ts/tpa/libraries";
 //#endregion
 
 export class UserDaemon extends Process {
@@ -107,6 +108,7 @@ export class UserDaemon extends Process {
   public _blockLeaveInvocations = true;
   public _toLoginInvoked = false;
   override _criticalProcess: boolean = true;
+  public NIGHTLY = false;
   // FILESYSTEM
   public TempFs?: MemoryFilesystemDrive;
   public fileHandlers: Record<string, FileHandler> = DefaultFileHandlers(this);
@@ -131,8 +133,8 @@ export class UserDaemon extends Process {
   public globalDispatch?: GlobalDispatch;
   // SERVICES
   public assoc?: FileAssocService;
-  public serviceHost: ServiceHost | undefined;
-  public NIGHTLY = false;
+  public serviceHost?: ServiceHost;
+  public libraries?: LibraryManagement;
 
   //#endregion
   //#region LIFECYCLE
@@ -218,6 +220,7 @@ export class UserDaemon extends Process {
     await this.serviceHost?.init(svcPreRun);
 
     this.assoc = this.serviceHost?.getService<FileAssocService>("FileAssocSvc");
+    this.libraries = this.serviceHost?.getService<LibraryManagement>("LibMgmtSvc")!;
   }
 
   startAnchorRedirectionIntercept() {

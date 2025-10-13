@@ -13,6 +13,7 @@ import type { UserDaemon } from "$ts/server/user/daemon";
 import { trashService } from "$ts/server/user/trash";
 import { globalDispatchService } from "$ts/server/ws";
 import { shareService } from "$ts/shares";
+import { libraryManagementService } from "$ts/tpa/libraries";
 import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
 import type { ReadableServiceStore, Service, ServiceChangeResult, ServiceStore } from "$types/service";
@@ -77,6 +78,7 @@ export class ServiceHost extends Process {
     ["DistribSvc", { ...distributionService }],
     ["ProtoService", { ...protoService }],
     ["IconService", { ...iconService }],
+    ["LibMgmtSvc", { ...libraryManagementService }],
   ]);
 
   public loadStore(store: ServiceStore) {

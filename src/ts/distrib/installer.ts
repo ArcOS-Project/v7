@@ -210,6 +210,22 @@ export class InstallerProcess extends Process {
     this.parent!.BUSY = "InstallerProcess";
     this.installing.set(true);
 
+    if (this.metadata?.type === "library") {
+      try {
+        await this.userDaemon.libraries?.installArcPackageAsLibrary(this.zip!);
+        this.parent.BUSY = "";
+        this.killSelf();
+        this.installing.set(false);
+        this.completed.set(true);
+        return true;
+      } catch (e) {
+        console.log(e);
+        this.fail(`LibMgmtSvc: ${e}`);
+        this.parent.BUSY = "";
+        return false;
+      }
+    }
+
     if (!(await this.createInstallLocation())) {
       this.parent!.BUSY = "";
       return false;

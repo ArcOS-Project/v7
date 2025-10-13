@@ -156,16 +156,13 @@ export class JsExec extends Process {
   }
 
   async testFileContents_detectDomReferences(ast: acorn.Program) {
-    const results = { documentHead: false, documentBody: false, htmlElement: false, appRenderer: false };
+    const results = { documentBody: false, appRenderer: false };
 
     walk.simple(ast, {
       MemberExpression(node) {
         const { object, property } = node;
         if (object.type === "Identifier" && object.name === "document") {
           switch ((property as any).name) {
-            case "head":
-              results.documentHead = true;
-              break;
             case "body":
               results.documentBody = true;
               break;
