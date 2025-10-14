@@ -15,8 +15,8 @@
   let store = Store<StoreItem>(pkg);
 
   onMount(async () => {
-    $installed = await process.distrib.getInstalledPackage($store._id);
-    $update = await process.distrib.checkForUpdate($store._id, undefined, [$store]);
+    $installed = await process.distrib.getInstalledStoreItem($store._id);
+    $update = await process.distrib.checkForStoreItemUpdate($store._id, undefined, [$store]);
     loading = false;
   });
 </script>

@@ -42,8 +42,8 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
       icon: "download",
       content: Installed as any,
       async props(process) {
-        const installed = await process.distrib.loadInstalledList();
-        const updates = await process.distrib.checkForAllUpdates(installed);
+        const installed = await process.distrib.loadInstalledStoreItemList();
+        const updates = await process.distrib.checkForAllStoreItemUpdates(installed);
 
         return { installed, updates };
       },
@@ -56,7 +56,7 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
       icon: "user",
       content: MadeByYou as any,
       async props(process) {
-        const published = await process.distrib.getPublishedPackages();
+        const published = await process.distrib.publishing_getPublishedPackages();
         const unblocked = published.filter((i) => !i.blocked);
         const blocked = published.filter((i) => i.blocked);
 
@@ -72,7 +72,7 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
       hidden: true,
       content: ManageStoreItem as any,
       async props(process, { id }) {
-        const published = await process.distrib.getPublishedPackages();
+        const published = await process.distrib.publishing_getPublishedPackages();
         const isOwnedBy = !!published.filter((pkg) => pkg._id === id)[0];
 
         if (!isOwnedBy) {

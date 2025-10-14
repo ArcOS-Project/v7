@@ -75,7 +75,7 @@
       content = `${((100 / progMax) * progDone).toFixed(0)}%`;
     });
 
-    await installer.go();
+    await installer.__go();
 
     content = "Done";
     $installed = $pkg;
