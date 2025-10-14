@@ -1,14 +1,14 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
-import type { InstallerProcess } from "$ts/distrib/installer";
+import type { InstallerProcessBase } from "$ts/distrib/installer/base";
 import { type ReadableStore } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { ArcPackage } from "$types/package";
 import JSZip from "jszip";
 
 export class AppInstallerRuntime extends AppProcess {
-  progress?: InstallerProcess;
+  progress?: InstallerProcessBase;
   metadata?: ArcPackage;
   isLibrary = false;
   zip?: JSZip;
@@ -99,7 +99,7 @@ export class AppInstallerRuntime extends AppProcess {
 
       try {
         await this.fs.deleteItem(this.metadata!.installLocation);
-        await this.userDaemon?.deleteApp(this.metadata!.appId, false);
+        await this.userDaemon?.uninstallPackageWithStatus(this.metadata!.appId, false);
       } catch {
         // Silently error
       }
@@ -117,7 +117,7 @@ export class AppInstallerRuntime extends AppProcess {
 
   // More of a middleman than a method imho
   async go() {
-    this.progress?.go();
+    await this.progress?.__go();
   }
 
   //#endregion

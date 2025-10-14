@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import type { DistributionServiceProcess } from "$ts/distrib";
 import { tryJsonParse } from "$ts/json";
 import { arrayToText } from "$ts/util/convert";
 import { Store } from "$ts/writable";
@@ -69,6 +70,12 @@ export class AppPreInstallRuntime extends AppProcess {
     );
 
     try {
+      const distrib = this.userDaemon?.serviceHost?.getService<DistributionServiceProcess>("DistribSvc")!;
+
+      if (!(await distrib.validatePackage(this.pkgPath))) {
+        return this.fail("Package is corrupt; missing files");
+      }
+
       const content = await this.userDaemon?.fs.readFile(this.pkgPath, (progress) => {
         prog?.show();
         prog?.setMax(progress.max);
@@ -83,41 +90,8 @@ export class AppPreInstallRuntime extends AppProcess {
 
       this.zip = new JSZip();
       const buffer = await this.zip.loadAsync(content, {});
-
-      if (!buffer.files["_metadata.json"]) {
-        return this.fail("Package is corrupt; missing package or app metadata.");
-      }
-
       const metaBinary = await buffer.files["_metadata.json"].async("arraybuffer");
       const metadata = tryJsonParse<ArcPackage>(arrayToText(metaBinary));
-
-      if (!metadata || typeof metadata === "string") {
-        return this.fail("The package metadata could not be read");
-      }
-
-      switch (metadata.type) {
-        case "library":
-          if (!buffer.files["payload/library.json"]) return this.fail("Library package is missing metadata file");
-
-          if (!metadata.appId.startsWith("Library::")) {
-            return this.fail(
-              "The library package ID is malformed: it doesn't have the correct prefix. If you're the creator of the library, be sure to use the suggested format for library package IDs."
-            );
-          }
-
-          break;
-        case "app":
-        default:
-          if (!buffer.files["payload/_app.tpa"]) return this.fail("App package is missing metadata file");
-
-          if (metadata.appId.includes(".") || metadata.appId.includes("-")) {
-            return this.fail(
-              "The application ID is malformed: it contains periods or dashes. If you're the creator of the app, be sure to use the suggested format for application IDs."
-            );
-          }
-          break;
-      }
-
       this.metadata.set(metadata);
     } catch {
       return this.fail("Filesystem error");
