@@ -1666,17 +1666,14 @@ export class UserDaemon extends Process {
     await appStore?.refresh();
   }
 
-  async deleteApp(id: string, deleteFiles = false) {
+  async uninstallPackageWithStatus(id: string, deleteFiles = false) {
     this.Log(`Attempting to uninstall app '${id}'`);
     const distrib = this.serviceHost?.getService<DistributionServiceProcess>("DistribSvc");
-    const appStore = this.appStorage();
 
     if (!distrib) return false;
 
     const prog = await this.GlobalLoadIndicator();
-    const result = await distrib.uninstallApp(id, deleteFiles, (s) => prog.caption.set(s));
-
-    delete appStore!.appIconCache[id];
+    const result = await distrib.uninstallPackage(id, deleteFiles, (s) => prog.caption.set(s));
 
     await prog.stop();
 
@@ -1725,14 +1722,14 @@ export class UserDaemon extends Process {
             {
               caption: "Delete",
               action: () => {
-                this.deleteApp(app?.id, true);
+                this.uninstallPackageWithStatus(app?.id, true);
                 r(true);
               },
             },
             {
               caption: "Just uninstall",
               action: () => {
-                this.deleteApp(app?.id, false);
+                this.uninstallPackageWithStatus(app?.id, false);
                 r(true);
               },
               suggested: true,
@@ -2825,7 +2822,7 @@ export class UserDaemon extends Process {
     if (this.preferences().globalSettings.noUpdateNotif) return;
 
     const distrib = this.serviceHost?.getService<DistributionServiceProcess>("DistribSvc");
-    const updates = await distrib?.checkForAllUpdates();
+    const updates = await distrib?.checkForAllStoreItemUpdates();
 
     if (updates?.length) {
       const first = updates[0];
