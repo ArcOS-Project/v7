@@ -26,6 +26,8 @@ export class InstallerProcessBase extends Process {
   focused = Store<string>();
   status = Store<InstallStatus>({});
 
+  //#region LIFECYCLE
+
   constructor(pid: number, parentPid: number, zip: JSZip, metadata: ArcPackage, item: StoreItem) {
     super(pid, parentPid);
 
@@ -66,6 +68,26 @@ export class InstallerProcessBase extends Process {
   async initialize() {
     /** */
   }
+
+  protected async afterSuccessfulInstallation(): Promise<any> {
+    /** */
+    return false;
+  }
+
+  protected async afterFailedInstallation(): Promise<any> {
+    /** */
+    return false;
+  }
+
+  async stop() {
+    await this.onStop();
+  }
+
+  public async onStop() {
+    /** */
+  }
+
+  //#endregion
 
   logStatus(content: string, type: InstallStatusType = "other", status: InstallStatusMode = "working") {
     this.Log(`[${status} | ${type}] ${content}`);
@@ -217,24 +239,6 @@ export class InstallerProcessBase extends Process {
     const sortedPaths = Object.keys(files).sort((p) => (files[p].dir ? -1 : 0));
 
     return { files, sortedPaths };
-  }
-
-  protected async afterSuccessfulInstallation(): Promise<any> {
-    /** */
-    return false;
-  }
-
-  protected async afterFailedInstallation(): Promise<any> {
-    /** */
-    return false;
-  }
-
-  async stop() {
-    await this.onStop();
-  }
-
-  public async onStop() {
-    /** */
   }
 
   public static async validatePackage(metadata: ArcPackage, zip: JSZip): Promise<boolean> {

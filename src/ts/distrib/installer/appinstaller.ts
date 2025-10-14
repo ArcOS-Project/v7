@@ -8,6 +8,8 @@ import type { DistributionServiceProcess } from "..";
 import { UserPaths } from "$ts/server/user/store";
 
 export class AppInstallerProcess extends InstallerProcessBase {
+  //#region LIFECYCLE
+
   constructor(pid: number, parentPid: number, zip: JSZip, metadata: ArcPackage, item: StoreItem) {
     super(pid, parentPid, zip, metadata, item);
 
@@ -55,6 +57,8 @@ export class AppInstallerProcess extends InstallerProcessBase {
 
     return true;
   }
+
+  //#endregion
 
   async checkDesktopIcon() {
     if (!this.item) return;

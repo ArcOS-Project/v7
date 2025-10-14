@@ -11,6 +11,9 @@ import type { DistributionServiceProcess } from "..";
 
 export class LibraryInstallerProcess extends InstallerProcessBase {
   library?: TpaLibrary;
+
+  //#region LIFECYCLE
+
   constructor(pid: number, parentPid: number, zip: JSZip, metadata: ArcPackage, item: StoreItem) {
     super(pid, parentPid, zip, metadata, item);
 
@@ -27,6 +30,14 @@ export class LibraryInstallerProcess extends InstallerProcessBase {
     this.TOTAL_COUNT.set(this.TOTAL_COUNT() + Object.keys((await this.getFiles()).files).length);
     this.MISC_STEPCOUNT = 2;
   }
+
+  protected async afterSuccessfulInstallation(): Promise<any> {
+    this.logStatus("Populating index", "other");
+    await this.userDaemon.libraries?.populateIndex();
+    this.setCurrentStatus("done");
+  }
+
+  //#endregion
 
   async go(): Promise<boolean> {
     if (!(await this.createInstallLocation())) return false;
@@ -48,12 +59,6 @@ export class LibraryInstallerProcess extends InstallerProcessBase {
     }
 
     return true;
-  }
-
-  protected async afterSuccessfulInstallation(): Promise<any> {
-    this.logStatus("Populating index", "other");
-    await this.userDaemon.libraries?.populateIndex();
-    this.setCurrentStatus("done");
   }
 
   async writeMetadataFile() {
