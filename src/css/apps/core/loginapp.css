@@ -187,7 +187,7 @@ div.window#loginApp > div.body p.loading img.spinner-svg {
 }
 
 div.window#loginApp > div.body div.power-options {
-  position: fixed;
+  position: absolute;
   bottom: 30px;
   right: 30px;
   display: flex;
@@ -231,7 +231,7 @@ div.window#loginApp > div.body div.power-options button.shutdown {
 }
 
 div.window#loginApp > div.body p.bottom-text {
-  position: fixed;
+  position: absolute;
   bottom: 30px;
   left: 0;
   width: 100%;

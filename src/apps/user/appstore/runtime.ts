@@ -1,7 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
-import { InstallerProcess } from "$ts/distrib/installer";
 import { StoreItemIcon } from "$ts/distrib/util";
 import { UserPaths } from "$ts/server/user/store";
 import { Plural } from "$ts/util";
@@ -17,6 +16,8 @@ import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import TakenDown from "./AppStore/TakenDown.svelte";
 import { appStorePages } from "./store";
+import type { InstallerProcessBase } from "$ts/distrib/installer/base";
+import { Sleep } from "$ts/sleep";
 
 export class AppStoreRuntime extends AppProcess {
   searchQuery = Store<string>("");
@@ -24,7 +25,7 @@ export class AppStoreRuntime extends AppProcess {
   pageProps = Store<Record<string, any>>({});
   searching = Store<boolean>(false);
   currentPage = Store<string>("");
-  operations: Record<string, InstallerProcess> = {};
+  operations: Record<string, InstallerProcessBase> = {};
   distrib: DistributionServiceProcess;
 
   //#region LIFECYCLE
@@ -89,6 +90,8 @@ export class AppStoreRuntime extends AppProcess {
     this.loadingPage.set(true);
     this.pageProps.set({});
 
+    await Sleep(10);
+
     const page = appStorePages.get(id);
     const pageProps = page?.props ? { ...props, ...(await page.props(this, props)) } : props;
 
@@ -147,7 +150,7 @@ export class AppStoreRuntime extends AppProcess {
 
     const permitted = this.registerOperation(freshPkg._id, result);
     if (!permitted) return false;
-    await this.distrib!.removeFromInstalled(freshPkg._id);
+    await this.distrib!.removeStoreItemFromInstalled(freshPkg._id);
 
     result.onStop = async () => {
       this.discardOperation(freshPkg._id);
@@ -167,7 +170,7 @@ export class AppStoreRuntime extends AppProcess {
       );
 
       if (!go) {
-        await this.userDaemon?.deleteApp(pkg.pkg.appId, true);
+        await this.userDaemon?.uninstallPackageWithStatus(pkg.pkg.appId, true);
         return 0;
       }
     }
@@ -197,12 +200,12 @@ export class AppStoreRuntime extends AppProcess {
     });
     if (!elevated) return false;
 
-    const result = await this.distrib.updatePackage(freshPkg._id, true, onDownloadProgress);
+    const result = await this.distrib.updateStoreItem(freshPkg._id, true, onDownloadProgress);
     if (!result) return false;
 
     const permitted = this.registerOperation(freshPkg._id, result);
     if (!permitted) return false;
-    await this.distrib!.removeFromInstalled(freshPkg._id);
+    await this.distrib!.removeStoreItemFromInstalled(freshPkg._id);
 
     result.onStop = async () => {
       this.discardOperation(freshPkg._id);
@@ -222,7 +225,7 @@ export class AppStoreRuntime extends AppProcess {
 
     if (!elevated) return false;
 
-    await this.distrib!.deprecateStoreItem(pkg._id);
+    await this.distrib!.publishing_deprecateStoreItem(pkg._id);
 
     this.switchPage("manageStoreItem", { id: pkg._id }, true);
   }
@@ -238,7 +241,7 @@ export class AppStoreRuntime extends AppProcess {
 
     if (!elevated) return false;
 
-    await this.distrib!.deleteStoreItem(pkg._id);
+    await this.distrib!.publishing_deleteStoreItem(pkg._id);
 
     this.switchPage("madeByYou");
   }
@@ -262,7 +265,7 @@ export class AppStoreRuntime extends AppProcess {
       this.pid
     );
 
-    const result = await this.distrib.publishPackageFromPath(path, (progress) => {
+    const result = await this.distrib.publishing_publishPackageFromPath(path, (progress) => {
       prog.show();
       prog.setMax(progress.max + 1);
       prog.setDone(progress.value);
@@ -312,7 +315,7 @@ export class AppStoreRuntime extends AppProcess {
       this.pid
     );
 
-    const result = await this.distrib.updateStoreItemFromPath(pkg._id, path, (progress) => {
+    const result = await this.distrib.publishing_updateStoreItemFromPath(pkg._id, path, (progress) => {
       prog.show();
       prog.setMax(progress.max + 1);
       prog.setDone(progress.value);
@@ -377,7 +380,7 @@ The author hasn't provided a readme file themselves, so this one has been automa
     );
   }
 
-  registerOperation(id: string, proc: InstallerProcess) {
+  registerOperation(id: string, proc: InstallerProcessBase) {
     if (this.operations[id]) return false;
 
     this.operations[id] = proc;

@@ -6,7 +6,7 @@
 
 #contextMenu div.context-menu,
 #contextMenu div.context-menu div.sub-items {
-  position: fixed;
+  position: absolute;
   min-width: 180px;
   min-height: 42px;
   background-color: var(--glass-bg);

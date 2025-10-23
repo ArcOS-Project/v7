@@ -13,7 +13,7 @@
 
 .crash-screen #crashScreen,
 .crash-screen p#crashText {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -58,7 +58,7 @@
 }
 
 .crash-screen #crashScreen > div.shortcut-hint {
-  position: fixed;
+  position: absolute;
   bottom: 30px;
   display: flex;
   align-items: center;

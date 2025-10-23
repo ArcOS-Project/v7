@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import type { DistributionServiceProcess } from "$ts/distrib";
 import { tryJsonParse } from "$ts/json";
 import { arrayToText } from "$ts/util/convert";
 import { Store } from "$ts/writable";
@@ -69,6 +70,12 @@ export class AppPreInstallRuntime extends AppProcess {
     );
 
     try {
+      const distrib = this.userDaemon?.serviceHost?.getService<DistributionServiceProcess>("DistribSvc")!;
+
+      if (!(await distrib.validatePackage(this.pkgPath))) {
+        return this.fail("Package is corrupt; missing files");
+      }
+
       const content = await this.userDaemon?.fs.readFile(this.pkgPath, (progress) => {
         prog?.show();
         prog?.setMax(progress.max);
@@ -83,24 +90,8 @@ export class AppPreInstallRuntime extends AppProcess {
 
       this.zip = new JSZip();
       const buffer = await this.zip.loadAsync(content, {});
-
-      if (!buffer.files["_metadata.json"] || !buffer.files["payload/_app.tpa"]) {
-        return this.fail("Package is corrupt; missing package or app metadata.");
-      }
-
       const metaBinary = await buffer.files["_metadata.json"].async("arraybuffer");
       const metadata = tryJsonParse<ArcPackage>(arrayToText(metaBinary));
-
-      if (!metadata || typeof metadata === "string") {
-        return this.fail("The package metadata could not be read");
-      }
-
-      if (metadata.appId.includes(".") || metadata.appId.includes("-")) {
-        return this.fail(
-          "The application ID is malformed: it contains periods or dashes. If you're the creator of the app, be sure to use the suggested format for application IDs."
-        );
-      }
-
       this.metadata.set(metadata);
     } catch {
       return this.fail("Filesystem error");

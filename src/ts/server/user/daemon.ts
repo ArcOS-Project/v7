@@ -24,13 +24,14 @@ import { StoreItemIcon } from "$ts/distrib/util";
 import { ServerDrive } from "$ts/drives/server";
 import type { MemoryFilesystemDrive } from "$ts/drives/temp";
 import { ZIPDrive } from "$ts/drives/zipdrive";
-import { ArcOSVersion, BETA, getKMod, KernelServerUrl, KernelStack } from "$ts/env";
+import { ArcOSVersion, BETA, getKMod, KernelStack } from "$ts/env";
 import { toForm } from "$ts/form";
 import { KernelStateHandler } from "$ts/getters";
 import { applyDefaults } from "$ts/hierarchy";
 import { IconService } from "$ts/icon";
 import { maybeIconId } from "$ts/images";
 import { NightlyLogo } from "$ts/images/branding";
+import { JsExec } from "$ts/jsexec";
 import { tryJsonParse } from "$ts/json";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -50,7 +51,7 @@ import type { LoginActivity } from "$types/activity";
 import type { App, AppStorage, InstalledApp } from "$types/app";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
 import type { FileHandler, FileOpenerResult } from "$types/fs";
-import type { EnvironmentType, FilesystemType, ServerManagerType } from "$types/kernel";
+import type { EnvironmentType, ServerManagerType } from "$types/kernel";
 import { LogLevel } from "$types/logging";
 import type { BatteryType } from "$types/navigator";
 import type { Notification } from "$types/notification";
@@ -77,7 +78,7 @@ import { FileAssocService } from "./assoc";
 import { DefaultFileDefinitions } from "./assoc/store";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultFileHandlers, UserPaths } from "./store";
-import { ThirdPartyProps } from "./thirdparty";
+import { LibraryManagement } from "$ts/tpa/libraries";
 //#endregion
 
 export class UserDaemon extends Process {
@@ -107,6 +108,7 @@ export class UserDaemon extends Process {
   public _blockLeaveInvocations = true;
   public _toLoginInvoked = false;
   override _criticalProcess: boolean = true;
+  public NIGHTLY = false;
   // FILESYSTEM
   public TempFs?: MemoryFilesystemDrive;
   public fileHandlers: Record<string, FileHandler> = DefaultFileHandlers(this);
@@ -131,8 +133,8 @@ export class UserDaemon extends Process {
   public globalDispatch?: GlobalDispatch;
   // SERVICES
   public assoc?: FileAssocService;
-  public serviceHost: ServiceHost | undefined;
-  public NIGHTLY = false;
+  public serviceHost?: ServiceHost;
+  public libraries?: LibraryManagement;
 
   //#endregion
   //#region LIFECYCLE
@@ -218,6 +220,7 @@ export class UserDaemon extends Process {
     await this.serviceHost?.init(svcPreRun);
 
     this.assoc = this.serviceHost?.getService<FileAssocService>("FileAssocSvc");
+    this.libraries = this.serviceHost?.getService<LibraryManagement>("LibMgmtSvc")!;
   }
 
   startAnchorRedirectionIntercept() {
@@ -581,30 +584,6 @@ export class UserDaemon extends Process {
   }
 
   async spawnThirdParty<T>(app: App, metaPath: string, ...args: any[]): Promise<T | undefined> {
-    if (!this.preferences().security.enableThirdParty) {
-      if (this.autoLoadComplete)
-        MessageBox(
-          {
-            title: "Third-party apps",
-            message:
-              "ArcOS can't run third-party apps without your permission. Please enable third-party apps in Settings to access this app.",
-            image: "AppsIcon",
-            sound: "arcos.dialog.warning",
-            buttons: [
-              {
-                caption: "Take me there",
-                action: () => {
-                  this.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps");
-                },
-              },
-              { caption: "Okay", suggested: true, action: () => {} },
-            ],
-          },
-          +this.env.get("shell_pid"),
-          true
-        );
-      return;
-    }
     if (this._disposed) return;
 
     if (this.safeMode) {
@@ -612,84 +591,81 @@ export class UserDaemon extends Process {
       return;
     }
 
-    this.Log(`Starting JS execution to run third-party app ${app.id}`);
+    if (!this.preferences().security.enableThirdParty) {
+      this.tpaError_noEnableThirdParty();
+      return;
+    }
 
-    const fs = getKMod<FilesystemType>("fs");
-    const userDaemonPid = this.env.get("userdaemon_pid");
+    const compatibleRevision = !app.tpaRevision || ThirdPartyAppProcess.TPA_REV >= app.tpaRevision;
+
+    if (!compatibleRevision) {
+      this.tpaError_revisionIncompatible(app);
+      return;
+    }
 
     app.workingDirectory ||= getParentDirectory(metaPath);
 
-    if (!userDaemonPid) return;
-
     let stop: (() => Promise<void>) | undefined;
-
     if (this.autoLoadComplete) stop = (await this.GlobalLoadIndicator(`Opening ${app.metadata.name}...`)).stop;
 
     try {
-      const compatibleRevision = !app.tpaRevision || ThirdPartyAppProcess.TPA_REV >= app.tpaRevision;
-
-      if (!compatibleRevision) {
-        MessageBox(
-          {
-            title: `${app.metadata.name}`,
-            message: `This application expects a newer version of the TPA framework than what ArcOS can supply. Please update your ArcOS version and try again.`,
-            buttons: [{ caption: "Okay", action: () => {} }],
-            sound: "arcos.dialog.error",
-            image: "ErrorIcon",
-          },
-          +this.env.get("shell_pid"),
-          true
-        );
-
-        return;
-      }
-
-      const contents = arrayToText(
-        (await fs.readFile(app.entrypoint?.includes(":/") ? app.entrypoint! : join(app.workingDirectory, app.entrypoint!)))!
+      const engine = await this.handler.spawn<JsExec>(
+        JsExec,
+        undefined,
+        this.userInfo._id,
+        this.pid,
+        join(app.workingDirectory, app.entrypoint!),
+        ...args
       );
 
-      if (!contents) {
-        await stop?.();
+      engine?.setApp(app, metaPath);
 
-        MessageBox(
-          {
-            title: `${app.metadata.name} - Entrypoint error`,
-            message: `ArcOS can't find the entrypoint of this third-party application. It might have been renamed or deleted. Please consider reinstalling the application to fix this problem.<br><code class='block'>${app.entrypoint}</code>`,
-            buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-            sound: "arcos.dialog.error",
-            image: "ErrorIcon",
-          },
-          +this.env.get("shell_pid"),
-          true
-        );
+      await stop?.();
 
-        return;
-      }
-
-      const wrap = (c: string) =>
-        `export default async function({ ${Object.keys(props).join(",")} }) { \nconst global = arguments;\n ${c}\n }`;
-
-      const filename = getItemNameFromPath(
-        app.entrypoint?.includes(":/") ? app.entrypoint! : join(app.workingDirectory, app.entrypoint!)
-      );
-      const props = ThirdPartyProps(this, args, app, wrap, metaPath);
-      const js = wrap(contents);
-      await Backend.post(`/tpa/v2/${this.userInfo!._id}/${app.id}/${filename}`, textToBlob(js), {
-        headers: { Authorization: `Bearer ${this.token}` },
-      });
-      const dataUrl = `${KernelServerUrl()}/tpa/v3/${this.userInfo!._id}/${Date.now()}/${app.id}@${filename}${authcode()}`;
-      const code = await import(/* @vite-ignore */ dataUrl);
-
-      if (!code.default || !(code.default instanceof Function)) throw new Error("Expected a default function");
-
-      stop?.();
-
-      return await code.default(props);
+      return await engine?.getContents();
     } catch (e) {
       KernelStack().renderer?.notifyCrash(app as any, e as Error, app.process!);
       this.Log(`Execution error in third-party application "${app.id}": ${(e as any).stack}`);
       stop?.();
     }
+  }
+
+  tpaError_revisionIncompatible(app: App) {
+    MessageBox(
+      {
+        title: `${app.metadata.name}`,
+        message: `This application expects a newer version of the TPA framework than what ArcOS can supply. Please update your ArcOS version and try again.`,
+        buttons: [{ caption: "Okay", action: () => {} }],
+        sound: "arcos.dialog.error",
+        image: "ErrorIcon",
+      },
+      +this.env.get("shell_pid"),
+      true
+    );
+  }
+
+  tpaError_noEnableThirdParty() {
+    if (this.autoLoadComplete)
+      MessageBox(
+        {
+          title: "Third-party apps",
+          message:
+            "ArcOS can't run third-party apps without your permission. Please enable third-party apps in Settings to access this app.",
+          image: "AppsIcon",
+          sound: "arcos.dialog.warning",
+          buttons: [
+            {
+              caption: "Take me there",
+              action: () => {
+                this.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps");
+              },
+            },
+            { caption: "Okay", suggested: true, action: () => {} },
+          ],
+        },
+        +this.env.get("shell_pid"),
+        true
+      );
   }
 
   //#endregion
@@ -1612,6 +1588,7 @@ export class UserDaemon extends Process {
   appStorage() {
     return this.serviceHost?.getService<ApplicationStorage>("AppStorage");
   }
+
   async initAppStorage(storage: ApplicationStorage, cb: (app: App) => void) {
     this.Log(`Now trying to load built-in applications...`);
 
@@ -1689,17 +1666,14 @@ export class UserDaemon extends Process {
     await appStore?.refresh();
   }
 
-  async deleteApp(id: string, deleteFiles = false) {
+  async uninstallPackageWithStatus(id: string, deleteFiles = false) {
     this.Log(`Attempting to uninstall app '${id}'`);
     const distrib = this.serviceHost?.getService<DistributionServiceProcess>("DistribSvc");
-    const appStore = this.appStorage();
 
     if (!distrib) return false;
 
     const prog = await this.GlobalLoadIndicator();
-    const result = await distrib.uninstallApp(id, deleteFiles, (s) => prog.caption.set(s));
-
-    delete appStore!.appIconCache[id];
+    const result = await distrib.uninstallPackage(id, deleteFiles, (s) => prog.caption.set(s));
 
     await prog.stop();
 
@@ -1748,14 +1722,14 @@ export class UserDaemon extends Process {
             {
               caption: "Delete",
               action: () => {
-                this.deleteApp(app?.id, true);
+                this.uninstallPackageWithStatus(app?.id, true);
                 r(true);
               },
             },
             {
               caption: "Just uninstall",
               action: () => {
-                this.deleteApp(app?.id, false);
+                this.uninstallPackageWithStatus(app?.id, false);
                 r(true);
               },
               suggested: true,
@@ -1830,6 +1804,7 @@ export class UserDaemon extends Process {
 
   //#endregion
   //#region APP RENDERER
+
   getAppRendererStyle(accent: string) {
     if (this._disposed) return "";
 
@@ -2847,7 +2822,7 @@ export class UserDaemon extends Process {
     if (this.preferences().globalSettings.noUpdateNotif) return;
 
     const distrib = this.serviceHost?.getService<DistributionServiceProcess>("DistribSvc");
-    const updates = await distrib?.checkForAllUpdates();
+    const updates = await distrib?.checkForAllStoreItemUpdates();
 
     if (updates?.length) {
       const first = updates[0];

@@ -11,7 +11,7 @@ div.server-down span.lucide {
 }
 
 div.server-down p {
-  position: fixed;
+  position: absolute;
   bottom: 10vw;
   left: 0;
   text-align: center;

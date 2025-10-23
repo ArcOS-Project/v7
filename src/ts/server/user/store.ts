@@ -338,6 +338,7 @@ export const UserPaths = {
   Configuration: "U:/System/Config",
   AppShortcuts: "U:/System/AppShortcuts",
   AppRepository: "U:/System/AppRepository",
+  Libraries: "U:/System/Libraries",
 };
 
 export const SystemFolders = [
@@ -366,6 +367,7 @@ export const UserPathCaptions: Record<string, string> = {
   Configuration: "Configuration",
   AppShortcuts: "Application Shortcuts",
   AppRepository: "Application Repository",
+  Libraries: "System Libraries",
 };
 
 export const HiddenUserPaths: string[] = [
@@ -376,6 +378,7 @@ export const HiddenUserPaths: string[] = [
   "AppShortcuts",
   "Applications",
   "AppRepository",
+  "Libraries",
 ];
 
 export const UserPathIcons: Record<string, string> = {
@@ -394,6 +397,7 @@ export const UserPathIcons: Record<string, string> = {
   Configuration: "folder-cog",
   AppShortcuts: "arrow-up-right",
   AppRepository: "cog",
+  Libraries: "cog",
 };
 
 export const UserFonts: string[] = [

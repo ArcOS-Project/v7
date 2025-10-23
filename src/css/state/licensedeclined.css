@@ -11,7 +11,7 @@ div.license-declined span.lucide {
 }
 
 div.license-declined p {
-  position: fixed;
+  position: absolute;
   bottom: 10vw;
   left: 0;
   text-align: center;
