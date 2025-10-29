@@ -6,6 +6,8 @@
   import { onMount } from "svelte";
   import type { ProcessManagerRuntime } from "../../runtime";
   import Row from "./Row.svelte";
+  import { contextMenu } from "$ts/context/actions.svelte";
+  import { BaseService } from "$ts/services/base";
 
   const {
     pid,
@@ -60,6 +62,42 @@
     class="row"
     class:closing
     onclick={() => ($selected = `proc#${pid}`)}
+    use:contextMenu={[
+      [
+        {
+          caption: "Process info",
+          action: () => process.processInfoFor(proc),
+          icon: "info",
+        },
+        {
+          caption: "App info",
+          disabled: () => !(proc instanceof AppProcess),
+          action: () => process.appInfoFor(proc as AppProcess),
+          icon: "app-window-mac",
+        },
+        {
+          caption: "Service info",
+          disabled: () => !(proc instanceof BaseService),
+          action: () => process.serviceInfoFor(proc.name.replace("svc#", "")),
+          icon: "cog",
+        },
+        { sep: true },
+        {
+          caption: "Focus",
+          disabled: () => !(proc instanceof AppProcess),
+          action: () => process.handler.renderer?.focusPid(proc.pid),
+          icon: "flag",
+        },
+        { sep: true },
+        {
+          caption: "Kill process",
+          disabled: () => proc._criticalProcess,
+          action: () => process.kill(proc),
+          icon: "x",
+        },
+      ],
+      process,
+    ]}
     class:selected={$selected === `proc#${pid}`}
     class:orphan
     class:critical={proc._criticalProcess}

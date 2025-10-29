@@ -154,4 +154,12 @@ export class ProcessManagerRuntime extends AppProcess {
 
     this.spawnOverlayApp("ServiceInfo", +this.env.get("shell_pid"), id);
   }
+
+  appInfoFor(proc: AppProcess) {
+    this.spawnOverlayApp("AppInfo", +this.env.get("shell_pid"), proc.app.id);
+  }
+
+  processInfoFor(proc: Process) {
+    this.spawnOverlayApp("ProcessInfoApp", +this.env.get("shell_pid"), proc);
+  }
 }
