@@ -13,14 +13,6 @@
   selected.subscribe((v) => {
     proc = KernelStack().getProcess(+v.replace("proc#", ""));
   });
-
-  function appInfo() {
-    process.spawnOverlayApp("AppInfo", +process.env.get("shell_pid"), (proc as AppProcess).app.id);
-  }
-
-  function processInfo() {
-    process.spawnOverlayApp("ProcessInfoApp", +process.env.get("shell_pid"), proc);
-  }
 </script>
 
 <div class="actions">
@@ -28,8 +20,14 @@
     {$running} running {Plural("task", $running)}
   </p>
   <div class="buttons">
-    <button class="app-info" disabled={!proc || !(proc instanceof AppProcess)} onclick={appInfo}> App Info </button>
-    <button class="process-info" disabled={!proc} onclick={processInfo}> Process Info </button>
+    <button
+      class="app-info"
+      disabled={!proc || !(proc instanceof AppProcess)}
+      onclick={() => process.appInfoFor(proc as AppProcess)}
+    >
+      App Info
+    </button>
+    <button class="process-info" disabled={!proc} onclick={() => process.processInfoFor(proc!)}> Process Info </button>
     <button
       disabled={!proc || !(proc instanceof AppProcess) || proc.app.data.overlay}
       onclick={() => proc && KernelStack().renderer?.focusedPid.set(proc.pid)}
