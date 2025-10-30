@@ -246,14 +246,11 @@ div.shell div.taskbar div.clock {
 }
 
 div.shell div.taskbar button.clock-button {
-  background-color: var(--button-glass-bg);
   height: 40px;
   display: flex;
   align-items: center;
   padding: 0 15px !important;
   border-radius: 10px;
-  outline: var(--button-glass-bg) 1px solid;
-  outline-offset: -1px;
   width: fit-content !important;
   font-size: 14px !important;
 }
