@@ -67,8 +67,8 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];
 export const AppOrigins: Record<string, string> = {
-  builtin: "Built-in",
-  userApps: "Third-party",
-  injected: "Other",
-  aefs: "Administrative",
+  builtin: "%appOrigins.builtin%",
+  userApps: "%appOrigins.userApps%",
+  injected: "%appOrigins.injected%",
+  aefs: "%appOrigins.administrative%",
 };

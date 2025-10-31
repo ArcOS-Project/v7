@@ -4,6 +4,7 @@ import { ServerDrive } from "$ts/drives/server";
 import { USERFS_UUID } from "$ts/env";
 import type { AppProcessData } from "$types/app";
 import type { UserQuota } from "$types/fs";
+import type { RenderArgs } from "$types/process";
 import type { CategorizedDiskUsage } from "$types/user";
 
 export class DriveInfoRuntime extends AppProcess {
@@ -29,6 +30,10 @@ export class DriveInfoRuntime extends AppProcess {
     this.quota = await this.drive.quota();
 
     if (this.isUserFs) this.usage = await this.userDaemon?.determineCategorizedDiskUsage();
+  }
+
+  render(args: RenderArgs) {
+    this.getBody().setAttribute("data-prefix", "apps.DriveInfo");
   }
 
   //#endregion

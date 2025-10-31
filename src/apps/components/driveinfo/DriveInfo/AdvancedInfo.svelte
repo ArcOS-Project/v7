@@ -6,25 +6,25 @@
 
 <div class="advanced-info">
   <div class="row">
-    <h1>ID</h1>
+    <h1>%advanced.id%</h1>
     <p>{drive.uuid}</p>
   </div>
   <div class="row">
-    <h1>Mountpoint</h1>
+    <h1>%advanced.mountpoint%</h1>
     <p>{drive.driveLetter || drive.uuid}:/</p>
   </div>
   <div class="row">
-    <h1>Label</h1>
+    <h1>%advanced.label%</h1>
     <p>{drive.label}</p>
   </div>
   <div class="row">
-    <h1>Identifies As</h1>
+    <h1>%advanced.identifiesAs%</h1>
     <p>{drive.IDENTIFIES_AS}</p>
   </div>
   <div class="row">
-    <h1>Flags</h1>
+    <h1>%advanced.flags%</h1>
     <p>
-      {`${drive.BUSY ? "Busy" : ""} ${drive.FIXED ? "Fixed" : ""} ${drive.READONLY ? "Readonly" : ""} ${drive.REMOVABLE ? "Removable" : ""}`.trim()}
+      {`${drive.BUSY ? "%advanced.busy%" : ""} ${drive.FIXED ? "%advanced.fixed%" : ""} ${drive.READONLY ? "%advanced.readonly%" : ""} ${drive.REMOVABLE ? "%advanced.removable%" : ""}`.trim()}
     </p>
   </div>
 </div>

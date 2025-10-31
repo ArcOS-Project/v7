@@ -39,7 +39,7 @@ export class InitialSetupRuntime extends AppProcess {
   public readonly pageButtons: PageButtons = [
     {
       left: {
-        caption: "Cancel",
+        caption: "%general.cancel%",
         action: async () => {
           KernelStateHandler()?.loadState("login");
         },
@@ -47,37 +47,37 @@ export class InitialSetupRuntime extends AppProcess {
       },
       previous: {
         disabled: () => true,
-        caption: "Previous",
+        caption: "%general.previous%",
         to: 0,
       },
       next: {
         suggested: true,
-        caption: "Next",
+        caption: "%general.next%",
         to: 1,
       },
     },
     {
       left: {
-        caption: "View License",
+        caption: "%apps.initialSetupWizard.buttons.viewLicense%",
         action: () => this.viewLicense(),
       },
       previous: {
-        caption: "Previous",
+        caption: "%general.previous%",
         to: 0,
       },
       next: {
-        caption: "I agree",
+        caption: "%general.iAgree%",
         suggested: true,
         action: () => this.licenseConfirmation(),
       },
     },
     {
       previous: {
-        caption: "Previous",
+        caption: "%general.previous%",
         to: 1,
       },
       next: {
-        caption: "Continue",
+        caption: "%general.continue%",
         disabled: () => !this.identityInfoValid(),
         action: () => this.createAccount(),
         suggested: true,
@@ -87,10 +87,10 @@ export class InitialSetupRuntime extends AppProcess {
       previous: {
         disabled: () => true,
         to: 3,
-        caption: "Previous",
+        caption: "%general.previous%",
       },
       next: {
-        caption: "I clicked it",
+        caption: "%apps.initialSetupWizard.buttons.iClickedIt%",
         suggested: true,
         action: () => this.checkAccountActivation(),
       },
@@ -99,25 +99,25 @@ export class InitialSetupRuntime extends AppProcess {
       previous: {
         disabled: () => true,
         to: 4,
-        caption: "Previous",
+        caption: "%general.previous%",
       },
       next: {
-        caption: "Let's begin",
+        caption: "%apps.initialSetupWizard.buttons.letsBegin%",
         action: () => this.finish(),
         suggested: true,
       },
     },
     {
       left: {
-        caption: "Cancel",
+        caption: "%general.cancel%",
         disabled: () => true,
       },
       previous: {
-        caption: "Previous",
+        caption: "%general.previous%",
         disabled: () => true,
       },
       next: {
-        caption: "Server's all good",
+        caption: "%apps.initialSetupWizard.serverAllGood%",
         to: 0,
         suggested: true,
       },
@@ -182,18 +182,17 @@ export class InitialSetupRuntime extends AppProcess {
 
     MessageBox(
       {
-        title: "Just making sure...",
-        message:
-          "By using ArcOS, you agree to the License Agreement. You may not violate any of the rules contained within this license. Continue?",
+        title: "%apps.initialSetupWizard.licenseConfirmation.title%",
+        message: "%apps.initialSetupWizard.licenseConfirmation.message%",
         buttons: [
           {
-            caption: "Decline",
+            caption: "%general.decline%",
             action: () => {
               this.actionsDisabled.set(false);
             },
           },
           {
-            caption: "I agree",
+            caption: "%general.iAgree%",
             suggested: true,
             action: () => {
               this.pageNumber.set(this.pageNumber() + 1);
@@ -213,19 +212,17 @@ export class InitialSetupRuntime extends AppProcess {
     MessageBox(
       {
         image: SecurityMediumIcon,
-        title: "ArcOS License - GPLv3",
-        message: `By using ArcOS, you agree to the GPLv3 License contained within: <code class='block'>${htmlspecialchars(
-          ArcLicense()
-        )}</code>`,
+        title: "%apps.initialSetupWizard.viewLicense.title%",
+        message: `%apps.initialSetupWizard.viewLicense.message%: <code class='block'>${htmlspecialchars(ArcLicense())}</code>`,
         buttons: [
           {
-            caption: "Decline",
+            caption: "%general.decline%",
             action: () => {
               KernelStateHandler()?.loadState("licenseDeclined");
             },
           },
           {
-            caption: "I agree",
+            caption: "%general.iAgree%",
             action: () => {
               this.actionsDisabled.set(false);
             },
@@ -253,11 +250,11 @@ export class InitialSetupRuntime extends AppProcess {
       MessageBox(
         {
           image: WarningIcon,
-          title: "You made a typo!",
-          message: "The passwords you entered don't match. Please re-enter them, and then try again.",
+          title: "%apps.initialSetupWizard.createAccount.passwordMismatch.title%",
+          message: "%apps.initialSetupWizard.createAccount.passwordMismatch.message%",
           buttons: [
             {
-              caption: "Okay",
+              caption: "%general.okay%",
               suggested: true,
               action: () => {
                 this.actionsDisabled.set(false);
@@ -278,12 +275,11 @@ export class InitialSetupRuntime extends AppProcess {
       MessageBox(
         {
           image: ErrorIcon,
-          title: "Something went wrong",
-          message:
-            "An error occurred while creating your account. We might be experiencing some technical difficulties, please try again later.",
+          title: "%apps.initialSetupWizard.createAccount.genericError.title%",
+          message: "%apps.initialSetupWizard.createAccount.genericError.message%",
           buttons: [
             {
-              caption: "Okay",
+              caption: "%generic.okay%",
               suggested: true,
               action: () => {
                 this.actionsDisabled.set(false);
@@ -309,12 +305,11 @@ export class InitialSetupRuntime extends AppProcess {
     if (!token) {
       MessageBox(
         {
-          title: "Did you click the link?",
-          message:
-            "Our systems tell me that your account hasn't been activated yet. Are you sure you clicked the link? If you did, and you're still seeing this, please contact support.",
+          title: "%apps.initialSetupWizard.checkAccountActivationError.title%",
+          message: "%apps.initialSetupWizard.checkAccountActivationError.message%",
           buttons: [
             {
-              caption: "Okay",
+              caption: "%generic.okay%",
               action: () => {
                 this.actionsDisabled.set(false);
               },

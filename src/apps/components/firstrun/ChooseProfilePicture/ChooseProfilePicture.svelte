@@ -8,8 +8,8 @@
 </script>
 
 <div class="top">
-  <h1>Choose profile picture</h1>
-  <p>What do you want to be?</p>
+  <h1>%apps.FirstRun.ChooseProfilePicture.title%</h1>
+  <p>%apps.FirstRun.ChooseProfilePicture.subtitle%</p>
   <div class="profile-picture-grid">
     {#each Object.values(ProfilePictures) as pfp, i}
       <button
@@ -23,5 +23,5 @@
   </div>
 </div>
 <div class="actions">
-  <button class="suggested" onclick={() => process.closeWindow()}>Close</button>
+  <button class="suggested" onclick={() => process.closeWindow()}>%general.close%</button>
 </div>

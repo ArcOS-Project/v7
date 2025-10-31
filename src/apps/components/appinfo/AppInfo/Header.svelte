@@ -45,26 +45,36 @@
     <img src={process.userDaemon?.getAppIcon(target) || process.getIconCached("QuestionIcon")} alt="" />
     <div class="base-info">
       <p class="name">
-        <span>{target?.metadata?.name || "Unknown"}</span>
+        <span>{target?.metadata?.name || "%general.unknown%"}</span>
         {#if disabled}
           <img
             src={process.getIconCached("WarningIcon")}
             alt=""
             class="disabled"
-            title="{target?.metadata?.name || 'Unknown'} is disabled!"
+            title="%apps.AppInfo.header.isDisabled({target?.metadata?.name || 'Unknown'})%"
           />
         {/if}
       </p>
-      <p class="author">{target?.metadata?.author || "No author"}</p>
+      <p class="author">{target?.metadata?.author || "%general.noAuthor%"}</p>
     </div>
   </div>
   <div class="right">
-    <button class="disable" onclick={toggleDisabledState} class:disabled disabled={process.userDaemon?.isVital(target!)}
-      >{disabled ? "Enable" : "Disable"}</button
-    >
+    <button class="disable" onclick={toggleDisabledState} class:disabled disabled={process.userDaemon?.isVital(target!)}>
+      {disabled ? "%general.enable%" : "%general.disable%"}
+    </button>
     {#if (target?.entrypoint || target?.workingDirectory) && installed}
-      <button class="lucide icon-trash-2" onclick={deleteApp} title="Delete app" aria-label="Delete app"></button>
+      <button
+        class="lucide icon-trash-2"
+        onclick={deleteApp}
+        title="%apps.AppInfo.header.deleteApp%"
+        aria-label="%apps.AppInfo.header.deleteApp%"
+      ></button>
     {/if}
-    <button class="lucide icon-rocket" onclick={launch} title="Launch" aria-label="Launch"></button>
+    <button
+      class="lucide icon-rocket"
+      onclick={launch}
+      title="%apps.AppInfo.header.launch%"
+      aria-label="%apps.AppInfo.header.launch%"
+    ></button>
   </div>
 </div>

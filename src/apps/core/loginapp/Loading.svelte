@@ -7,5 +7,5 @@
 
 <p class="loading">
   <Spinner height={24} />
-  <span>{@html $loadingStatus}</span>
+  <span>{$loadingStatus}</span>
 </p>

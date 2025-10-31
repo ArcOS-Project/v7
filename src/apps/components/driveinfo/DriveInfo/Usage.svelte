@@ -18,7 +18,7 @@
         <div class="dot"></div>
         <div class="info">
           <h1>
-            {id.replace(id[0], id[0].toUpperCase())} ({percentage.toFixed(1)}%)
+            %legend.{id}({percentage.toFixed(1)})%
           </h1>
           <p>{formatBytes((usage.sizes as any)[id] || 0)}</p>
         </div>

@@ -37,7 +37,11 @@
 <div class="path" class:read-only={drive?.READONLY}>
   <div class="pill">
     <span class="lucide icon-{$virtual?.icon || DriveIcons[drive?.IDENTIFIES_AS || ''] || 'hard-drive'}"></span>
-    <span>{$virtual ? $virtual.name : driveLetter || driveLabel}</span>
+    {#if $virtual}
+      <span>{$virtual.name}</span>
+    {:else}
+      <span>{driveLetter || driveLabel}</span>
+    {/if}
   </div>
   {#if name && !$virtual}
     <div class="current-dir">

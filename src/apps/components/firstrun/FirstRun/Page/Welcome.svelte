@@ -4,5 +4,5 @@
 </script>
 
 <img src={process.getIconCached("WaveIcon")} alt="" />
-<h1>Welcome to ArcOS!</h1>
-<p>Let's customize your account.</p>
+<h1>%welcome._name%</h1>
+<p>%welcome.subtitle%</p>

@@ -11,7 +11,7 @@
 
 <div class="left">
   <div class="top">
-    <h1>Change {id}</h1>
+    <h1>%title({id})%</h1>
     <ModeToggle {process} />
     {#if $type === "@fs"}
       <FileType {process} />
@@ -23,10 +23,10 @@
   </div>
   <div class="bottom">
     <button class="default" onclick={() => process.default()} disabled={$type === "@builtin" && $values[$type] === id!}>
-      Default
+      %default%
     </button>
-    <button class="cancel" onclick={() => process.closeWindow()}>Cancel</button>
-    <button class="save suggested" onclick={() => process.save()}>Save</button>
+    <button class="cancel" onclick={() => process.closeWindow()}>%general.cancel%</button>
+    <button class="save suggested" onclick={() => process.save()}>%general.save%</button>
   </div>
 </div>
 <div class="right">

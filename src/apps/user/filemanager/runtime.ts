@@ -40,12 +40,12 @@ export class FileManagerRuntime extends AppProcess {
   directoryListing = Store<HTMLDivElement>();
   virtualLocations: Record<string, VirtualFileManagerLocation> = {
     my_arcos: {
-      name: "My ArcOS",
+      name: "%virtualLocations.my_arcos%",
       icon: "computer",
       component: MyArcOs as any,
     },
     recycle_bin: {
-      name: "Recycle Bin",
+      name: "%virtualLocations.recycle_bin%",
       icon: "trash-2",
       component: TrashCan as any,
     },

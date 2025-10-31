@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
+import type { RenderArgs } from "$types/process";
 import { ExitActions } from "./store";
 import type { ExitAction } from "./types";
 
@@ -29,5 +30,9 @@ export class ExitRuntime extends AppProcess {
     if (alternate && option.alternateAction)
       option.alternateAction(this.userDaemon!); // Alternate: when shift key is pressed
     else option.action(this.userDaemon!);
+  }
+
+  render(args: RenderArgs) {
+    this.getBody().setAttribute("data-prefix", "apps.ExitApp");
   }
 }

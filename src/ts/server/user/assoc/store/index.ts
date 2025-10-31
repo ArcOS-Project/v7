@@ -5,139 +5,139 @@ import { VideoFileDefinitions } from "./video";
 
 export const DefaultFileDefinitions: Record<string, FileDefinition> = {
   ".tpa": {
-    friendlyName: "Third-party app file",
+    friendlyName: "%associations.tpa%",
     icon: "ArcAppMimeIcon",
   },
   ".tpab": {
-    friendlyName: "Third-party app binary",
+    friendlyName: "%associations.tpab%",
     icon: "ArcAppMimeIcon",
   },
   ".json": {
-    friendlyName: "JSON file",
+    friendlyName: "%associations.json%",
     icon: "JsonMimeIcon",
   },
   ".pdf": {
-    friendlyName: "PDF document",
+    friendlyName: "%associations.pdf%",
     icon: "PdfMimeIcon",
   },
   ".svg": {
-    friendlyName: "SVG image",
+    friendlyName: "%associations.svg%",
     icon: "SvgMimeIcon",
   },
   ".zip": {
-    friendlyName: "Archive",
+    friendlyName: "%associations.zip%",
     icon: "CompressMimeIcon",
   },
   ".txt": {
-    friendlyName: "Text file",
+    friendlyName: "%associations.txt%",
     icon: "TextMimeIcon",
   },
   "arcterm.conf": {
-    friendlyName: "ArcTerm configuration",
+    friendlyName: "%associations.arctermConf%",
     icon: "TextMimeIcon",
   },
   ".arcterm": {
-    friendlyName: "ArcTerm script (unsupported)",
+    friendlyName: "%associations.arcterm%",
     icon: "TextMimeIcon",
   },
   ".arctheme": {
-    friendlyName: "ArcOS theme",
+    friendlyName: "%associations.arctheme%",
     icon: "TextMimeIcon",
   },
   ".md": {
-    friendlyName: "Markdown document",
+    friendlyName: "%associations.md%",
     icon: "TextMimeIcon",
   },
   ".html": {
-    friendlyName: "HTML document",
+    friendlyName: "%associations.html%",
     icon: "XmlMimeIcon",
   },
   ".htm": {
-    friendlyName: "HTML document",
+    friendlyName: "%associations.htm%",
     icon: "XmlMimeIcon",
   },
   ".js": {
-    friendlyName: "JS script",
+    friendlyName: "%associations.js%",
     icon: "JavascriptMimeIcon",
   },
   ".d.ts": {
-    friendlyName: "Type definitions",
+    friendlyName: "%associations.dTs%",
     icon: "JavascriptMimeIcon",
   },
   ".ts": {
-    friendlyName: "TS script",
+    friendlyName: "%associations.ts%",
     icon: "JavascriptMimeIcon",
   },
   ".mjs": {
-    friendlyName: "JS module",
+    friendlyName: "%associations.js%",
     icon: "JavascriptMimeIcon",
   },
   ".xml": {
-    friendlyName: "XML file",
+    friendlyName: "%associations.xml%",
     icon: "XmlMimeIcon",
   },
   ".arcpl": {
-    friendlyName: "ArcOS playlist",
+    friendlyName: "%associations.arcpl%",
     icon: "PlaylistMimeIcon",
   },
   ".arclnk": {
-    friendlyName: "Shortcut",
+    friendlyName: "%associations.shortcut%",
     icon: "ShortcutMimeIcon",
   },
   ".arc": {
-    friendlyName: "ArcOS package",
+    friendlyName: "%associations.arc%",
     icon: "ArcAppMimeIcon",
   },
   ".msg": {
-    friendlyName: "ArcOS message",
+    friendlyName: "%associations.msg%",
     icon: "MessagingIcon",
   },
   ".css": {
-    friendlyName: "CSS file",
+    friendlyName: "%associations.css%",
     icon: "DefaultMimeIcon",
   },
   ".mig": {
-    friendlyName: "Migration status",
+    friendlyName: "%associations.mig%",
     icon: "ComponentIcon",
   },
   ".lock": {
-    friendlyName: "Migration lockfile",
+    friendlyName: "%associations.lock%",
     icon: "ComponentIcon",
   },
   RegisteredVersion: {
-    friendlyName: "Version registration",
+    friendlyName: "%associations.RegisteredVersion%",
     icon: "ComponentIcon",
   },
   ".exe": {
-    friendlyName: "Windows executable (unsupported)",
+    friendlyName: "%associations.exe%",
     icon: "UnknownFileIcon",
   },
   ".msi": {
-    friendlyName: "Windows installer (unsupported)",
+    friendlyName: "%associations.msi%",
     icon: "UnknownFileIcon",
   },
   ".com": {
-    friendlyName: "MS-DOS executable (unsupported)",
+    friendlyName: "%associations.com%",
     icon: "UnknownFileIcon",
   },
   ".img": {
-    friendlyName: "Floppy image (unsupported)",
+    friendlyName: "%associations.img%",
     icon: "UnknownFileIcon",
   },
   ".iso": {
-    friendlyName: "CD-ROM image (unsupported)",
+    friendlyName: "%associations.iso%",
     icon: "UnknownFileIcon",
   },
   ".osl": {
-    friendlyName: "OriginOS script (unsupported)",
+    friendlyName: "%associations.osl%",
     icon: "UnknownFileIcon",
   },
   ".wasm": {
-    friendlyName: "WebAssembly (unsupported",
+    friendlyName: "%associations.wasm%",
     icon: "UnknownFileIcon",
   },
   ".bin": {
-    friendlyName: "Binary (unsupported)",
+    friendlyName: "%associations.bin%",
     icon: "UnknownFileIcon",
   },
   ...AudioFileDefinitions, // AudioMimeIcon

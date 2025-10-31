@@ -18,21 +18,21 @@
   {#if !Object.entries($status).length && !$installing}
     <div class="ready-to-install">
       <span class="lucide icon-hard-drive-download"></span>
-      <h1>Ready to install</h1>
-      <p>Click <b>Install</b> to install this package.</p>
+      <h1>%readyToInstall.title%</h1>
+      <p>%readyToInstall.message%</p>
     </div>
   {:else}
     {#each Object.entries($status) as [uuid, item] (uuid)}
       <div class="item" bind:this={elements[uuid]}>
         <p class="type">
           {#if item.type === "file"}
-            Writing file
+            %logType.file%
           {:else if item.type === "mkdir"}
-            Creating directory
+            %logType.mkdir%
           {:else if item.type === "registration"}
-            Registering
+            %logType.registration%
           {:else}
-            Status
+            %logType.generic%
           {/if}
         </p>
         <p class="content">{item.content}</p>

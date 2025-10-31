@@ -10,19 +10,19 @@
 
 <InfoBlock>
   <InfoRow>
-    <Segment title="Third-party">Yes</Segment>
-    <Segment title="Signatures">
-      {target.fileSignatures ? Object.entries(target.fileSignatures).length : "None"}
+    <Segment title="%thirdPartyInfo.thirdParty%">%general.yes%</Segment>
+    <Segment title="%thirdPartyInfo.signatures%">
+      {target.fileSignatures ? Object.entries(target.fileSignatures).length : "%general.none%"}
     </Segment>
-    <Segment title="Has process">
-      {target.process ? "Yes" : "No"}
+    <Segment title="%thirdPartyInfo.hasProcess%">
+      {target.process ? "%general.yes%" : "%general.no%"}
     </Segment>
   </InfoRow>
   <InfoRow>
-    <Segment title="Working directory">
+    <Segment title="%thirdPartyInfo.workingDirectory%">
       {target.workingDirectory}
     </Segment>
-    <Segment title="Entry point">
+    <Segment title="%thirdPartyInfo.entryPoint%">
       {target.entrypoint}
     </Segment>
   </InfoRow>

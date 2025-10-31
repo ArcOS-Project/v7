@@ -26,7 +26,7 @@
 </script>
 
 <div class="container" class:show={$showMainContent}>
-  <div class="content" class:hide>
+  <div class="content" data-prefix="apps.initialSetupWizard.page" class:hide>
     {#if PageComponent}
       <PageComponent {process} />
     {/if}

@@ -14,7 +14,7 @@
 </script>
 
 <div class="edit type-builtin">
-  <h2>Icon ID:</h2>
+  <h2>%builtinType.title%</h2>
   <div class="input">
     <div class="field">
       {#if $values[$type]}
@@ -22,6 +22,6 @@
       {/if}
       <span>{$values[$type]}</span>
     </div>
-    <button class="lucide icon-pencil" onclick={choose} aria-label="Choose icon" title="Choose icon"></button>
+    <button class="lucide icon-pencil" onclick={choose} aria-label="%" title="%builtinType.buttonTitle%"></button>
   </div>
 </div>

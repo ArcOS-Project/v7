@@ -22,7 +22,8 @@
       "$css/*": ["./src/css/*"],
       "$types/*": ["./src/types/*"],
       "$lib/*": ["./src/lib/*"],
-      "$ts/*": ["./src/ts/*"]
+      "$ts/*": ["./src/ts/*"],
+      "$lang/*": ["./src/lang/*"]
     },
     "esModuleInterop": true
   },

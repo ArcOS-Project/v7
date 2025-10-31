@@ -21,7 +21,7 @@ export class BootScreenRuntime extends AppProcess {
   async begin() {
     this.Log("Initializing boot");
 
-    this.status.set("Press a key or click to start");
+    this.status.set("%apps.bootScreen.pressAnyKey%");
 
     document.addEventListener("click", () => this.startBooting(), {
       once: true,
@@ -42,11 +42,11 @@ export class BootScreenRuntime extends AppProcess {
     this.progress.set(true);
 
     if (e?.key === "F8") {
-      this.status.set("Entering Safe Mode");
+      this.status.set("%apps.bootScreen.safeMode%");
       await Sleep(2000);
       KernelStateHandler()?.loadState("login", { safeMode: true });
     } else if (e?.key.toLowerCase() === "a") {
-      this.status.set("Starting ArcTerm");
+      this.status.set("%apps.bootScreen.arcTerm%");
       KernelStateHandler()?.loadState("arcterm");
     } else {
       this.status.set("&nbsp;");

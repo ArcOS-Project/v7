@@ -27,6 +27,8 @@ export class ItemInfoRuntime extends AppProcess {
   }
 
   async render({ path, file }: RenderArgs) {
+    this.getBody().setAttribute("data-prefix", "apps.ItemInfo");
+
     file = file as FileEntry | FolderEntry;
 
     try {

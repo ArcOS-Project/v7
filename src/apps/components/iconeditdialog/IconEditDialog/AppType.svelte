@@ -7,11 +7,11 @@
 </script>
 
 <div class="edit type-app">
-  <h2>App:</h2>
+  <h2>%appType.title%</h2>
   <div class="input">
     <select bind:value={$values[$type]}>
       {#each apps as app (app.id)}
-        <option value={app.id}>{app.metadata.name} by {app.metadata.author}</option>
+        <option value={app.id}>%appType.option({app.metadata.name}::{app.metadata.author})</option>
       {/each}
     </select>
   </div>

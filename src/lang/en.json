@@ -1,0 +1,649 @@
+{
+  "apps": {
+    "bootScreen": {
+      "_name": "Boot screen",
+      "pressAnyKey": "Press any key or click to start",
+      "safeMode": "Entering Safe Mode",
+      "arcTerm": "Starting ArcTerm"
+    },
+    "initialSetupWizard": {
+      "_name": "Initial Setup Wizard",
+      "buttons": {
+        "viewLicense": "View License",
+        "iAgree": "I agree",
+        "iClickedIt": "I clicked it",
+        "letsBegin": "Let's begin",
+        "serverAllGood": "Server's all good"
+      },
+      "licenseConfirmation": {
+        "title": "Just making sure...",
+        "message": "By using ArcOS, you agree to the License Agreement. You may not violate any of the rules contained within this license. Continue?"
+      },
+      "viewLicense": {
+        "title": "ArcOS License - GPLv3",
+        "message": "By using ArcOS, you agree to the GPLv3 License contained within"
+      },
+      "createAccount": {
+        "passwordMismatch": {
+          "title": "You made a typo!",
+          "message": "The passwords you entered don't match. Please re-enter them, and then try again."
+        },
+        "genericError": {
+          "title": "Something went wrong",
+          "message": "An error occured while creating your account. We might be experiencing some technical difficulties, please try again later."
+        }
+      },
+      "checkAccountActivationError": {
+        "title": "Did you click the link?",
+        "message": "Our systems tell me that your account hasn't been activated yet. Are you sure you clicked the link? If you did, and you're still seeing this, please contact support."
+      },
+      "page": {
+        "checkInbox": {
+          "title": "Check your inbox",
+          "subtitle": "You've got mail!",
+          "message": "We sent you a link to activate your account. Open it to continue. Be sure to check your spam if you can’t find it."
+        },
+        "finish": {
+          "title": "All finished!",
+          "subtitle": "You're all set.",
+          "message": "Your account has been set up successfully. Click <b>Finish</b> to start using ArcOS."
+        },
+        "freshDeployment": {
+          "title": "Fresh deployment",
+          "message": "It appears this ReArc deployment is fresh. Before continuing, please make sure that that's supposed to be the case. If it is, click <b>Next</b>. The user you're about to create is considered user #0, and will be set up as a God Admin by default. The owner of this account is then automatically seen as the owner of the server. Also, please check the server configuration:",
+          "note": "<b>Note:</b> <code>disableRegistration</code> is ignored for the first user. This configuration option will be retained once the first user has been created."
+        },
+        "identity": {
+          "title": "Your ArcOS Identity",
+          "subtitle": "We'll use this information to create your ArcOS account.",
+          "fields": {
+            "displayName": "Display Name",
+            "username": "Username",
+            "emailAddress": "Email address *",
+            "password": "Password",
+            "passwordConfirm": "Confirm"
+          },
+          "errors": {
+            "usernameAndEmailTaken": "Username and email address are both taken!",
+            "usernameTaken": "Username is already taken!",
+            "emailTaken": "Email is already taken!",
+            "emailAndUsernameInvalid": "Username and email address are both invalid!",
+            "usernameInvalid": "Username is invalid!",
+            "emailInvalid": "Email address is invalid!",
+            "passwordtooWeak": "Password is too weak!",
+            "passwordweak": "Password is weak!",
+            "passwordmedium": "Password is medium!",
+            "passwordstrong": "Password is strong!"
+          },
+          "disclaimer": "* You will receive an email with a link to activate your account. Your display name, username and password can be changed later on. To change your email, contact an administrator."
+        },
+        "license": {
+          "title": "License Agreement",
+          "subtitle": "Scary stuff, I know",
+          "message": "By using ArcOS, you agree to the GPLv3 license."
+        },
+        "welcome": {
+          "title": "Welcome",
+          "subtitle": "We're happy to have you",
+          "message": "Let's get you an ArcOS account. Click <b>Next</b> to get started, or <b>Cancel</b> to go back to the login screen."
+        }
+      }
+    },
+    "loginApp": {
+      "_name": "LogonUI",
+      "welcomeString": {
+        "night": "Hi, go to sleep",
+        "morning": "Good morning",
+        "afternoon": "Good afternoon",
+        "evening": "Good evening"
+      },
+      "errors": {
+        "noDaemon": "Failed to start user daemon",
+        "noUserInfo": "Failed to request user info",
+        "totpInvalid": "You didn't enter a valid 2FA code!",
+        "credentialIncorrect": "Username or password incorrect."
+      },
+      "startDaemon": {
+        "savingToken": "Saving token",
+        "loadingSettings": "Loading your settings",
+        "request2fa": "Requesting 2FA",
+        "startingFilesystem": "Starting filesystem",
+        "startingSync": "Starting synchronization",
+        "profileCustomization": "Reading profile customization",
+        "notifyLoginActivity": "Notifying login activity",
+        "startServiceHost": {
+          "initial": "Starting service host",
+          "specific": "Starting {{0}}"
+        },
+        "loadingApps": {
+          "initial": "Loading apps...",
+          "specific": "Loaded {{0}}"
+        },
+        "checkingAssoc": "Checking associations",
+        "globalDispatch": "Connecting global dispatch",
+        "welcome": "Welcome to ArcOS",
+        "driveNotifierWatcher": "Starting drive notifier watcher",
+        "shareManagement": "Starting share management",
+        "adminBootstrapper": "Activating admin bootstrapper",
+        "statusRefresh": "Starting status refresh",
+        "letsGo": "Let's go!",
+        "startingWorkspaces": "Starting workspaces",
+        "autoload": "Spawning autorun"
+      },
+      "exit": {
+        "logoff": "Goodbye, ",
+        "shutdown": "Shutting down...",
+        "restart": "Restarting..."
+      },
+      "loginForm": {
+        "switchUser": "Switch user",
+        "noAccount": "No account?",
+        "username": "Username",
+        "password": "Password"
+      }
+    },
+    "AcceleratorOverview": {
+      "header": {
+        "title": "Keyboard shortcuts",
+        "subtitle": "Get more work done faster with these handy shortcuts!"
+      }
+    },
+    "AppInfo": {
+      "_name": "App Info",
+      "noTargetApp": {
+        "title": "App not found",
+        "message": "AppInfo couldn't find any information about \"{{0}}\" Is it installed?"
+      },
+      "killAll": {
+        "what": "ArcOS needs your permission to kill all instances of an app"
+      },
+      "header": {
+        "isDisabled": "{{0}} is disabled!",
+        "deleteApp": "Delete app",
+        "launch": "Launch"
+      },
+      "indepthInfo": {
+        "size": "Size",
+        "minSize": "Minimal Size",
+        "maxSize": "Maximal Size",
+        "controls": "Controls",
+        "initialPosition": "Initial Position",
+        "origin": "Origin",
+        "core": "Core",
+        "hidden": "Hidden",
+        "centered": "Centered",
+        "cornerOfScreen": "Corner of screen"
+      },
+      "processInfo": {
+        "processes": "Processes",
+        "instances": "{{0}} instance(s)",
+        "firstPid": "First PID"
+      },
+      "thirdPartyInfo": {
+        "thirdParty": "Third-party",
+        "signatures": "Signatures",
+        "hasProcess": "Has process",
+        "workingDirectory": "Working directory",
+        "entryPoint": "Entry point"
+      },
+      "internalInfo": {
+        "loadTime": "Load time",
+        "systemVersion": "System version",
+        "minimalAssembly": "Minimal assembly",
+        "codePath": "Code path"
+      },
+      "actions": {
+        "killAll": "Kill all"
+      }
+    },
+    "AppInstaller": {
+      "noDistrib": {
+        "title": "Can't install package",
+        "message": "The Distribution Service isn't running anymore. Please restart ArcOS to fix this problem."
+      },
+      "noEnableThirdParty": {
+        "title": "Can't install app",
+        "message": "Third-party apps aren't enabled on your account. Please enable third-party apps in the Settings app to install this app.",
+        "takeMeThere": "Take me there"
+      },
+      "rollback": "Rolling back changes...",
+      "header": {
+        "title": {
+          "installed": "Package installed!",
+          "installing": "Installing package...",
+          "failed": "Installation failed"
+        },
+        "subtitle": {
+          "completed": "Click <b>Open now</b> to launch the app",
+          "installing": "{{0}} by {{1}}",
+          "generic": "{{0}} - {{1}}"
+        }
+      },
+      "actions": {
+        "revert": "Revert",
+        "openNow": "Open now",
+        "done": "Done",
+        "install": "Install"
+      },
+      "readyToInstall": {
+        "title": "Ready to install",
+        "message": "Click <b>Install</b> to install this package."
+      },
+      "logType": {
+        "file": "Writing file",
+        "mkdir": "Creating directory",
+        "registration": "Registering",
+        "generic": "Status"
+      }
+    },
+    "AppPreInstall": {
+      "noEnableThirdParty": {
+        "title": "Can't install app",
+        "message": "Third-party apps aren't enabled on your account. Please enable third-party apps in the Settings app to install this app.",
+        "takeMeThere": "Take me there"
+      },
+      "readingPackage": "Reading ArcOS package",
+      "errors": {
+        "noContents": "The package contents could not be read",
+        "noMeta": "The package metadata could not be read",
+        "missingFiles": "Package is corrupt; missing package or app metadata.",
+        "appIdMalformed": "The application ID is malformed: it contains periods or dashes. If you're the creator of the app, be sure to use the suggested format for application IDs.",
+        "fsError": "Filesystem error"
+      },
+      "fail": {
+        "title": "Failed to open package",
+        "messagePartial": "ArcOS failed to open the specified package."
+      },
+      "elevation": {
+        "what": "ArcOS wants to install an application",
+        "description": "{{0}} - {{1}}"
+      },
+      "header": {
+        "title": "Do you want to install this package?"
+      },
+      "info": {
+        "author": "Author",
+        "version": "Version"
+      },
+      "installPackage": "Install package"
+    },
+    "ArcFindProc": {
+      "fsSupplier": {
+        "shortcut": "Shortcut - {{0}}"
+      },
+      "appSupplier": {
+        "description": "By {{0}}"
+      },
+      "powerOptions": {
+        "shutdown": {
+          "caption": "Shut down",
+          "description": "Leave the desktop and turn off ArcOS"
+        },
+        "restart": {
+          "caption": "Restart",
+          "description": "Leave the desktop and restart ArcOS"
+        },
+        "logoff": {
+          "caption": "Log off",
+          "description": "Leave the desktop and log out of ArcOS"
+        }
+      }
+    },
+    "contextMenu": {
+      "_name": "Context Menu",
+      "system": {
+        "windowTitlebar": {
+          "appInfo": "App Info",
+          "processInfo": "Process Info",
+          "windowSnapping": "Window snapping",
+          "snappingLeft": "Left",
+          "snappingRight": "Right",
+          "snappingTop": "Top",
+          "snappingBottom": "Bottom",
+          "snappingTopLeft": "Top Left",
+          "snappingTopRight": "Top Right",
+          "snappingBottomLeft": "Bottom Left",
+          "snappingBottomRight": "Bottom Right",
+          "moveWorkspace": "Move to workspace",
+          "moveWorkspaceLeft": "Left workspace",
+          "moveWorkspaceRight": "Right workspace"
+        }
+      }
+    },
+    "DriveInfo": {
+      "_name": "Drive Info",
+      "quota": {
+        "used": "Used ({{0}}%)",
+        "free": "Free ({{0}}%)"
+      },
+      "legend": {
+        "system": "System ({{0}}%)",
+        "trash": "Trash ({{0}}%)",
+        "home": "Home ({{0}}%)",
+        "apps": "Apps ({{0}}%)"
+      },
+      "advanced": {
+        "id": "ID",
+        "mountpoint": "Mountpoint",
+        "label": "Label",
+        "identifiesAs": "Identifies As",
+        "flags": "Flags",
+        "busy": "Busy",
+        "fixed": "Fixed",
+        "readonly": "Readonly",
+        "removable": "Removable"
+      },
+      "actions": {
+        "simple": "Simple",
+        "advanced": "Advanced"
+      }
+    },
+    "ExitApp": {
+      "_name": "Exit",
+      "header": {
+        "title": "Exit ArcOS",
+        "message": "What's your escape route?"
+      },
+      "exitActions": {
+        "restart": "Restart",
+        "shutdown": "Shutdown",
+        "logoff": "Log off"
+      }
+    },
+    "FirstRun": {
+      "_name": "First Run",
+      "finishingUp": "Finishing up...",
+      "creatingShortcut": "Creating shortcut for {{0}}",
+      "pages": {
+        "welcome": {
+          "_name": "Welcome",
+          "subtitle": "Let's customize your account.",
+          "later": "Later",
+          "next": "Next"
+        },
+        "style": {
+          "_name": "What's your style?",
+          "subtitle": "Pick which style suits you best. You can always change it in the Settings app.",
+          "goBack": "Go back",
+          "next": "Next"
+        },
+        "profilePicture": {
+          "_name": "Choose a profile picture",
+          "subtitle": "Do you want to upload or pick a profile picture?",
+          "upload": "Upload...",
+          "choose": "Choose",
+          "next": "Next"
+        },
+        "thirdParty": {
+          "_name": "Enable third-party apps?",
+          "subtitle": "Do you want to be able to install apps made by other ArcOS users? You can always turn it off later if you change your mind.",
+          "goBack": "Go back",
+          "notNow": "Not now",
+          "enable": "Enable"
+        },
+        "finish": {
+          "_name": "You're all set!",
+          "subtitle": "Enjoy using ArcOS! If you have any questions or concerns, feel free to talk about them in the Discord.",
+          "finish": "Finish"
+        }
+      },
+      "ChooseProfilePicture": {
+        "_name": "Choose Profile Picture",
+        "title": "Choose profile picture",
+        "subtitle": "What do you want to be?"
+      },
+      "themes": {
+        "darkMode": "Dark mode",
+        "lightMode": "Light mode"
+      }
+    },
+    "FsNewFile": {
+      "title": "New file",
+      "subtitle": "Think of a wonderful name for this new file:",
+      "create": "Create"
+    },
+    "FsNewFolder": {
+      "title": "New folder",
+      "subtitle": "Think of a wonderful name for this new folder:",
+      "create": "Create"
+    },
+    "FsProgress": {
+      "quantity": "{{0}} / {{1}} done",
+      "size": "{{0}} / {{1}} done"
+    },
+    "FsProgressFail": {
+      "subtitle": "This file operation encountered an error"
+    },
+    "FsRenameItem": {
+      "title": "Rename file or folder",
+      "subtitle": "Enter a new name for the item:",
+      "rename": "Rename"
+    },
+    "IconEditDialog": {
+      "_name": "Change Icon",
+      "title": "Change {{0}}",
+      "modeToggle": {
+        "app": "App",
+        "fs": "File",
+        "builtin": "Built-in"
+      },
+      "fileType": {
+        "loadSaveTitle": "Choose an icon to load",
+        "title": "File path:",
+        "buttonTitle": "Choose file"
+      },
+      "appType": {
+        "title": "App:",
+        "option": "{{0}} by {{1}}"
+      },
+      "builtinType": {
+        "title": "Icon ID:",
+        "buttonTitle": "Choose icon"
+      },
+      "default": "Default"
+    },
+    "IconPicker": {
+      "_name": "Icon Picker",
+      "groups": {
+        "Branding": "ArcOS logos",
+        "General": "General icons",
+        "Apps": "Application icons",
+        "Filesystem": "Filesystem-related icons",
+        "Power": "Power icons",
+        "Dialog": "Dialog icons",
+        "Status": "Status indicators",
+        "Mimetypes": "File mimetypes"
+      },
+      "random": "Random",
+      "choose": "Choose",
+      "reset": "Reset",
+      "title": "Pick an icon for {{0}}"
+    },
+    "ItemInfo": {
+      "_name": "Item Info",
+      "subtitle": "in {{0}}",
+      "renameItem": "Rename item",
+      "location": {
+        "fullPath": "Full Path",
+        "extension": "Extension",
+        "parent": "Parent",
+        "drive": "Drive",
+        "filesystem": "Filesystem"
+      },
+      "meta": {
+        "sort": "Sort",
+        "type": "Type",
+        "size": "Size",
+        "created": "Created",
+        "modified": "Modified"
+      },
+      "actions": {
+        "editShortcut": "Edit shortcut..."
+      }
+    },
+    "MessageComposer": {
+      "_name": "New Message",
+      "sendProg": {
+        "caption": "Sending message",
+        "subtitleInitial": "Preparing",
+        "subtitleUploading": "Uploading"
+      },
+      "discardMessage": {
+        "title": "Discard message?",
+        "message": "Are you sure you want to discard this message? This cannot be undone."
+      },
+      "sendFailed": {
+        "title": "Failed to send message",
+        "message": "ArcOS failed to send the message! It might be too large, or none of the recipients exist. Please check the recipients or try shrinking it down, and then resend it. If it still doesn't work, contact an ArcOS administrator."
+      },
+      "addAttachment": {
+        "title": "Choose one or more files to attach",
+        "fileProgress": {
+          "caption": "Just a moment...",
+          "readingFileKnown": "Reading {{0}}",
+          "readingFileUnknown": "Readon file..."
+        }
+      },
+      "actionBar": {
+        "body": "Body",
+        "attachments": "Attachments",
+        "addAttachment": "Add attachment",
+        "discardMessage": "Discard message",
+        "send": "Send"
+      },
+      "attachmentBar": {
+        "removeAttachment": "Remove attachment"
+      },
+      "subjectField": {
+        "subject": "Subject:"
+      },
+      "toField": {
+        "to": "To:",
+        "removeRecipient": "Remove {{0}}",
+        "enterUsername": "Enter username"
+      }
+    },
+    "MultiUpdateGui": {
+      "_name": "App Updater",
+      "elevation": "ArcOS needs your permission to update {{0}} {{1}}.",
+      "title": {
+        "updating": "Updating {{0}}",
+        "loading": "Just a moment",
+        "done": "Finished updating",
+        "ready": "Ready to update"
+      },
+      "allPackagesUpdated": "All packages were updated.",
+      "clickUpdate": "Click <b>Update</b> to begin",
+      "itemType": {
+        "file": "Writing file",
+        "mkdir": "Creating directory",
+        "registration": "Registering",
+        "generic": "Status"
+      },
+      "showLog": "Show log",
+      "hideLog": "Hide log",
+      "startUpdate": "Update",
+      "finish": "Finish"
+    }
+  },
+  "general": {
+    "betaPill": "BETA",
+    "cancel": "Cancel",
+    "okay": "Okay",
+    "open": "Open",
+    "previous": "Previous",
+    "next": "Next",
+    "continue": "Continue",
+    "decline": "Decline",
+    "iAgree": "I agree",
+    "unknown": "Unknown",
+    "noAuthor": "No author",
+    "enable": "Enable",
+    "disable": "Disable",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No",
+    "none": "None",
+    "confirm": "Confirm",
+    "ArcOSTeam": "The ArcOS Team",
+    "genericStatus": "Just a moment...",
+    "save": "Save",
+    "by": "By",
+    "loading": "Loading...",
+    "discard": "Discard"
+  },
+  "appOrigins": {
+    "builtin": "Built-in",
+    "userApps": "Third-party",
+    "injected": "Other",
+    "administrative": "Administrative"
+  },
+  "virtualLocations": {
+    "my_arcos": "My ArcOS",
+    "recycle_bin": "Recycle Bin"
+  },
+  "userPaths": {
+    "Home": "Home folder",
+    "Documents": "Documents",
+    "Pictures": "Pictures",
+    "Downloads": "Downloads",
+    "Wallpapers": "Wallpapers",
+    "Desktop": "Desktop",
+    "Music": "Music",
+    "Applications": "Applications",
+    "Trashcan": "Recycle Bin",
+    "Root": "Your Drive",
+    "System": "System Folder",
+    "Migrations": "Migration Files",
+    "Configuration": "Configuration",
+    "AppShortcuts": "Application Shortcuts",
+    "AppRepository": "Application Repository"
+  },
+  "associations": {
+    "tpa": "Third-party app file",
+    "tpab": "Third-party app binary",
+    "json": "JSON file",
+    "pdf": "PDF document",
+    "svg": "SVG image",
+    "zip": "Archive",
+    "txt": "Text file",
+    "arctermConf": "ArcTerm configuration",
+    "arcterm": "ArcTerm script (unsupported)",
+    "arctheme": "ArcOS theme",
+    "md": "Markdown document",
+    "html": "HTML document",
+    "htm": "HTML document",
+    "js": "JS script",
+    "dTs": "Type definitions",
+    "ts": "TS script",
+    "mjs": "JS module",
+    "xml": "XML file",
+    "arcpl": "ArcOS playlist",
+    "arclnk": "Shortcut",
+    "arc": "ArcOS package",
+    "msg": "ArcOS message",
+    "css": "CSS file",
+    "mig": "Migration status",
+    "lock": "Migration lockfile",
+    "RegisteredVersion": "Version registration",
+    "exe": "Windows executable (unsupported)",
+    "msi": "Windows installer (unsupported)",
+    "com": "MS-DOS executable (unsupported)",
+    "img": "Floppy image (unsupported)",
+    "iso": "CD-ROM image (unsupported)",
+    "osl": "OriginOS script (unsupported)",
+    "wasm": "WebAssembly (unsupported",
+    "bin": "Binary (unsupported)",
+    "mp3": "Audio file",
+    "opus": "Audio file",
+    "wav": "Audio file",
+    "m4a": "Audio file",
+    "flac": "Audio file",
+    "imageFile": "Image file",
+    "audioFile": "Audio file",
+    "videoFile": "Video file",
+    "shortcut": "Shortcut"
+  }
+}

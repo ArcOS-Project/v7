@@ -20,11 +20,11 @@
   {#if $Progress.max > 0}
     <p class="status">
       {#if $Progress.type == "quantity"}
-        {$Progress.done} / {$Progress.max} done
+        %apps.FsProgress.quantity({$Progress.done}::{$Progress.max})%
       {:else if $Progress.type == "size"}
-        {formatBytes($Progress.done)} / {formatBytes($Progress.max)} done
+        %apps.FsProgress.size({formatBytes($Progress.done)}::{formatBytes($Progress.max)})%
       {/if}
     </p>
   {/if}
-  <button class="cancel" disabled={!$Progress.cancel || canceling} onclick={cancel}> Cancel </button>
+  <button class="cancel" disabled={!$Progress.cancel || canceling} onclick={cancel}> %general.cancel% </button>
 </div>

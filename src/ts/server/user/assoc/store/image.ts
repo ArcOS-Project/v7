@@ -2,39 +2,39 @@ import type { FileDefinition } from "$types/assoc";
 
 export const ImageFileDefinitions: Record<string, FileDefinition> = {
   ".png": {
-    friendlyName: "Image file",
+    friendlyName: "%associations.imageFile%",
     icon: "ImageMimeIcon",
   },
   ".jpg": {
-    friendlyName: "Image file",
+    friendlyName: "%associations.imageFile%",
     icon: "ImageMimeIcon",
   },
   ".gif": {
-    friendlyName: "Image file",
+    friendlyName: "%associations.imageFile%",
     icon: "ImageMimeIcon",
   },
   ".webp": {
-    friendlyName: "Image file",
+    friendlyName: "%associations.imageFile%",
     icon: "ImageMimeIcon",
   },
   ".ico": {
-    friendlyName: "Image file",
+    friendlyName: "%associations.imageFile%",
     icon: "ImageMimeIcon",
   },
   ".bmp": {
-    friendlyName: "Image file",
+    friendlyName: "%associations.imageFile%",
     icon: "ImageMimeIcon",
   },
   ".tif": {
-    friendlyName: "Image file",
+    friendlyName: "%associations.imageFile%",
     icon: "ImageMimeIcon",
   },
   ".tiff": {
-    friendlyName: "Image file",
+    friendlyName: "%associations.imageFile%",
     icon: "ImageMimeIcon",
   },
   ".jpeg": {
-    friendlyName: "Image file",
+    friendlyName: "%associations.imageFile%",
     icon: "ImageMimeIcon",
   },
 };

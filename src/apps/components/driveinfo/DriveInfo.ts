@@ -5,7 +5,7 @@ import { DriveInfoRuntime } from "./runtime";
 
 const DriveInfoApp: App = {
   metadata: {
-    name: "Drive Info",
+    name: "%apps.DriveInfo._name%",
     version: "1.0.0",
     author: "Izaak Kuipers",
     icon: "DriveIcon",

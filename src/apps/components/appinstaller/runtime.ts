@@ -35,9 +35,9 @@ export class AppInstallerRuntime extends AppProcess {
       // Should never happen unless nik fucked something up (yes, nik)
       MessageBox(
         {
-          title: "Can't install package",
-          message: "The Distribution Service isn't running anymore. Please restart ArcOS to fix this problem.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          title: "%apps.AppInstaller.noDistrib.title%",
+          message: "%apps.AppInstaller.noDistrib.message%",
+          buttons: [{ caption: "%general.okay%", action: () => {}, suggested: true }],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
         },
@@ -53,24 +53,25 @@ export class AppInstallerRuntime extends AppProcess {
   }
 
   async render() {
+    this.getBody().setAttribute("data-prefix", "apps.AppInstaller");
+
     if (!this.userPreferences().security.enableThirdParty) {
       // The user has to allow TPAs explicitly
       MessageBox(
         {
-          title: "Can't install app",
-          message:
-            "Third-party apps aren't enabled on your account. Please enable third-party apps in the Settings to install this app.",
+          title: "%apps.AppInstaller.noEnableThirdParty.title%",
+          message: "%apps.AppInstaller.noEnableThirdParty.message%",
           image: "AppsIcon",
           sound: "arcos.dialog.warning",
           buttons: [
             {
-              caption: "Take me there",
+              caption: "%apps.AppInstaller.noEnableThirdParty.takeMeThere%",
               action: () => {
                 this.userDaemon?.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps");
               },
             },
             {
-              caption: "Okay",
+              caption: "%general.okay%",
               action: () => {},
               suggested: true,
             },
@@ -95,7 +96,7 @@ export class AppInstallerRuntime extends AppProcess {
     // TODO: change rollback for library installment
 
     if (!this.isLibrary) {
-      const gli = await this.userDaemon?.GlobalLoadIndicator("Rolling back changes...", this.pid);
+      const gli = await this.userDaemon?.GlobalLoadIndicator("%apps.AppInstaller.rollback%", this.pid);
 
       try {
         await this.fs.deleteItem(this.metadata!.installLocation);

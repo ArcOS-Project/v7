@@ -8,6 +8,7 @@ import { textToBlob } from "$ts/util/convert";
 import type { ServerManagerType } from "$types/kernel";
 import { Process } from "../process/instance";
 import { StateHandler } from "../state";
+import { I18n } from "./mods/i18n";
 
 export class InitProcess extends Process {
   //#region LIFECYCLE
@@ -28,6 +29,7 @@ export class InitProcess extends Process {
     await KernelStack().startRenderer(this.pid);
 
     const server = getKMod<ServerManagerType>("server");
+    const i18n = getKMod<I18n>("i18n");
     const connected = server.connected;
     const state = await KernelStack().spawn<StateHandler>(StateHandler, undefined, "SYSTEM", this.pid, "ArcOS", States);
     const kernel = Kernel();
@@ -40,6 +42,8 @@ export class InitProcess extends Process {
     await kernel!.state?.loadState(connected ? "boot" : "serverdown", {}, true);
     __Console__.timeEnd("** Init jumpstart");
     this.name = "InitProcess";
+
+    i18n.startObserver(KernelStack().renderer?.target!);
 
     if (ArcMode() === "nightly") this.nightly();
 

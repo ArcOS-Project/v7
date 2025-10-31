@@ -11,21 +11,21 @@
 
 <InfoBlock>
   <InfoRow>
-    <Segment title="Full Path">
+    <Segment title="%location.fullPath%">
       {$info.location.fullPath}
     </Segment>
   </InfoRow>
   <InfoRow>
-    <Segment title="Extension">
+    <Segment title="%location.extension%">
       {$info.location.extension ? "." + $info.location.extension : "-"}
     </Segment>
-    <Segment title="Parent">
+    <Segment title="%location.parent%">
       {$info.location.parent || "-"}
     </Segment>
-    <Segment title="Drive">
+    <Segment title="%location.drive%">
       {$info.location.drive || "-"}
     </Segment>
-    <Segment title="Filesystem">
+    <Segment title="%location.filesystem%">
       {$info.location.driveFs || "GFS"}
     </Segment>
   </InfoRow>
