@@ -31,12 +31,12 @@
 }
 
 #fileManager > div.body > div.container > div.main-content > div.virtual-page.recycle_bin > div > p {
-  opacity: .5;
+  opacity: 0.5;
   font-style: italic;
-  transition: color .3s !important;
+  transition: color 0.3s !important;
 }
 
 #fileManager > div.body > div.container > div.main-content > div.virtual-page.recycle_bin > div > span {
-  opacity: .5;
-  transition: color .3s !important;
+  opacity: 0.5;
+  transition: color 0.3s !important;
 }

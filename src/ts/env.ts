@@ -1,4 +1,5 @@
 import type { ConstructedWaveKernel, ProcessHandlerType } from "$types/kernel";
+import { ServerManager } from "./kernel/mods/server";
 
 export const ArcOSVersion = "7.0.7";
 export const BETA = false;
@@ -13,6 +14,7 @@ export function SetCurrentKernel(kernel: ConstructedWaveKernel) {
 
 export const Kernel = () => CurrentKernel;
 export const KernelStack = () => getKMod<ProcessHandlerType>("stack");
+export const KernelServerUrl = () => getKMod<ServerManager>("server").url;
 
 export function getKMod<T = any>(id: string, dontCrash = false): T {
   const kernel = Kernel()!;

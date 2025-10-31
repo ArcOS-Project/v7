@@ -1,6 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
 import { IconService } from "$ts/icon";
-import { getGroupedIcons } from "$ts/images";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { IconPickerData } from "./types";
@@ -56,5 +55,12 @@ export class IconPickerRuntime extends AppProcess {
     this.systemDispatch.dispatch("ip-cancel", [this.returnId]); // Broadcast cancel to invocator
 
     await this.closeWindow();
+  }
+
+  selectRandom() {
+    const icons = Object.keys(this.store);
+    const icon = icons[Math.floor(Math.random() * icons.length)];
+
+    this.selected.set(icon);
   }
 }

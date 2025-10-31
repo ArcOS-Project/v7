@@ -1,7 +1,8 @@
-import { KernelStack } from "$ts/env";
+import { getKMod, KernelStack } from "$ts/env";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import type { GlobalDispatchClient } from "$types/dispatch";
+import type { ServerManagerType } from "$types/kernel";
 import type { Service } from "$types/service";
 import io, { Socket } from "socket.io-client";
 import { Backend } from "../axios";
@@ -9,6 +10,7 @@ import { UserDaemon } from "../user/daemon";
 
 export class GlobalDispatch extends BaseService {
   client: Socket | undefined;
+  server: ServerManagerType;
   token?: string;
   authorized = false;
 
@@ -17,17 +19,19 @@ export class GlobalDispatch extends BaseService {
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(pid, parentPid, name, host);
 
+    this.token = host.daemon.token;
+    this.server = getKMod<ServerManagerType>("server");
+
     window.addEventListener("beforeunload", () => {
       this.stop();
     });
-    this.token = host.daemon.token;
 
     this.setSource(__SOURCE__);
   }
 
   async start() {
     return new Promise<void>((resolve) => {
-      this.client = io(import.meta.env.DW_SERVER_URL, { transports: ["websocket"] });
+      this.client = io(this.server.url, { transports: ["websocket"] });
       this.client.on("connect", async () => {
         await this.connected();
         resolve();

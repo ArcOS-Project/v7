@@ -10,4 +10,5 @@ export interface PersistenceInfo {
   username: string;
   profilePicture: string;
   loginWallpaper?: string;
+  serverUrl: string;
 }

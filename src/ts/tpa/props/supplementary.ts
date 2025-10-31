@@ -1,24 +1,12 @@
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { KernelStack } from "$ts/env";
+import { JsExec } from "$ts/jsexec";
 import { tryJsonParse } from "$ts/json";
-import { authcode, detectJavaScript } from "$ts/util";
-import { arrayToText, textToBlob } from "$ts/util/convert";
-import { getItemNameFromPath, join } from "$ts/util/fs";
-import type { App } from "$types/app";
-import type { FilesystemType } from "$types/kernel";
-import { Backend } from "../axios";
-import type { UserDaemon } from "./daemon";
-import { ThirdPartyProps } from "./thirdparty";
+import { detectJavaScript } from "$ts/util";
+import { arrayToText } from "$ts/util/convert";
+import { join } from "$ts/util/fs";
 
-export function SupplementaryThirdPartyPropFunctions(
-  daemon: UserDaemon,
-  fs: FilesystemType,
-  app: App,
-  props: any,
-  wrap: (c: string) => string,
-  args: any[],
-  metaPath: string
-) {
+export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
   return {
     load: async (path: string) => {
       if (path.startsWith("http")) {
@@ -28,30 +16,33 @@ export function SupplementaryThirdPartyPropFunctions(
           throw e;
         }
       }
-      const filename = getItemNameFromPath(path);
-      const contents = wrap(arrayToText((await fs.readFile(join(app.workingDirectory!, path)))!));
-      await Backend.post(`/tpa/v2/${daemon.userInfo!._id}/${app.id}/${filename}`, textToBlob(contents), {
-        headers: { Authorization: `Bearer ${daemon.token}` },
-      });
-      const dataUrl = `${import.meta.env.DW_SERVER_URL}/tpa/v3/${daemon.userInfo!._id}/${Date.now()}/${
-        app.id
-      }@${filename}${authcode()}`;
 
       try {
-        const loaded = await import(/* @vite-ignore */ dataUrl);
+        const subEngine = await engine.handler.spawn<JsExec>(
+          JsExec,
+          undefined,
+          engine.userDaemon?.userInfo?._id,
+          engine.pid,
+          join(engine.workingDirectory, path)
+        );
 
-        const { default: func } = loaded;
+        if (engine.app && engine.metaPath) {
+          subEngine?.setApp(engine.app, engine.metaPath);
+        }
 
-        if (!func) return undefined;
-
-        return await func(ThirdPartyProps(daemon, args, app, wrap, metaPath, app.workingDirectory));
+        return await subEngine?.getContents();
       } catch (e) {
         throw e;
       }
     },
     runApp: async (process: typeof ThirdPartyAppProcess, metadataPath: string, parentPid?: number, ...args: any[]) => {
+      const daemon = engine.userDaemon;
+      const app = engine.app;
+
+      if (!app || !daemon) throw new Error(`Illegal runApp operation on a non-app JsExec`);
+
       try {
-        const metaStr = arrayToText((await fs.readFile(metadataPath))!);
+        const metaStr = arrayToText((await daemon.fs.readFile(metadataPath))!);
         const metadata = tryJsonParse(metaStr);
         const renderTarget = daemon.getCurrentDesktop();
 
@@ -79,8 +70,13 @@ export function SupplementaryThirdPartyPropFunctions(
       }
     },
     runAppDirect: async (process: typeof ThirdPartyAppProcess, metadataPath: string, parentPid?: number, ...args: any[]) => {
+      const daemon = engine.userDaemon;
+      const app = engine.app;
+
+      if (!app || !daemon) throw new Error(`Illegal runApp operation on a non-app JsExec`);
+
       try {
-        const metaStr = arrayToText((await fs.readFile(metadataPath))!);
+        const metaStr = arrayToText((await engine.fs.readFile(metadataPath))!);
         const metadata = tryJsonParse(metaStr);
 
         if (typeof metadata === "string") throw new Error("Failed to parse metadata");
@@ -106,7 +102,7 @@ export function SupplementaryThirdPartyPropFunctions(
       }
     },
     loadHtml: async (path: string) => {
-      const htmlCode = arrayToText((await fs.readFile(join(app.workingDirectory!, path)))!);
+      const htmlCode = arrayToText((await engine.fs.readFile(join(engine.workingDirectory, path)))!);
 
       const detected = detectJavaScript(htmlCode);
 
@@ -115,7 +111,7 @@ export function SupplementaryThirdPartyPropFunctions(
       return htmlCode;
     },
     loadDirect: async (path: string) => {
-      const url = await fs.direct(join(app.workingDirectory!, path));
+      const url = await engine.fs.direct(join(engine.workingDirectory!, path));
     },
   };
 }

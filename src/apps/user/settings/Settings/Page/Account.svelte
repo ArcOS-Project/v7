@@ -12,7 +12,7 @@
 <ProfilePicture className="backdrop" userDaemon={process.userDaemon!} height={0} />
 <div class="centered-layout">
   {#if userInfo && userPreferences}
-    <Header {process} {userInfo} {userPreferences} userDaemon={process.userDaemon!} />
+    <Header {process} {userInfo} userDaemon={process.userDaemon!} />
   {:else}
     <p class="error-text">ERR_NO_DAEMON</p>
   {/if}

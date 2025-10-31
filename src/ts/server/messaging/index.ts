@@ -1,4 +1,4 @@
-import { getKMod, KernelStack } from "$ts/env";
+import { getKMod, KernelServerUrl, KernelStack } from "$ts/env";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import { authcode } from "$ts/util";
@@ -35,7 +35,7 @@ export class MessagingInterface extends BaseService {
     dispatch?.subscribe("incoming-message", (message: Message) => {
       daemon?.sendNotification({
         className: "incoming-message",
-        image: `${import.meta.env.DW_SERVER_URL}${message.author?.profilePicture}`,
+        image: `${KernelServerUrl()}${message.author?.profilePicture}`,
         title: message.author?.username || "New message",
         message: message.title,
         buttons: [

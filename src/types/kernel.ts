@@ -39,13 +39,14 @@ export type ConstructedWaveKernel = {
 
 export interface EnvironmentType {
   _init(): Promise<void>;
-  set(key: string, value: any): boolean;
-  setMultiple(entries: [string, any][]): void;
   delete(key: string): boolean;
   get(key: string): any;
   getMultiple(keys: string[]): any[];
+  getAll(): Record<string, string>;
   setReadonly(key: string): void;
   setWritable(key: string): void;
+  set(key: string, value: any): boolean;
+  setMultiple(entries: [string, any][]): void;
   reset(): void;
 }
 
@@ -56,6 +57,8 @@ export interface ServerManagerType {
   checkUsernameAvailability(username: string): Promise<boolean>;
   checkEmailAvailability(email: string): Promise<boolean>;
   _init(): Promise<void>;
+  set(server: string): Promise<void>;
+  reset(): Promise<void>;
 }
 
 export interface FilesystemType {

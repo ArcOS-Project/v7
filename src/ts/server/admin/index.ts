@@ -1,5 +1,6 @@
 import { DistributionServiceProcess } from "$ts/distrib";
 import { AdminServerDrive } from "$ts/drives/admin";
+import { KernelServerUrl } from "$ts/env";
 import { toForm } from "$ts/form";
 import { tryJsonParse } from "$ts/json";
 import type { ServiceHost } from "$ts/services";
@@ -107,7 +108,7 @@ export class AdminBootstrapper extends BaseService {
       const response = await Backend.get("/admin/users/list", { headers: { Authorization: `Bearer ${this.token}` } });
 
       return (response.data as ExpandedUserInfo[]).map((u) => {
-        u.profile.profilePicture = `${import.meta.env.DW_SERVER_URL}${u.profile.profilePicture}`;
+        u.profile.profilePicture = `${KernelServerUrl()}${u.profile.profilePicture}`;
 
         return u;
       });

@@ -26,6 +26,8 @@ export class ArcFindRuntime extends AppProcess {
     this.setSource(__SOURCE__);
   }
   async start() {
+    if (this.handler.getProcess(+this.env.get("arcfind_pid"))) return false;
+
     this.env.set("arcfind_pid", this.pid);
     this.refresh();
     const preferences = this.userPreferences();
@@ -36,6 +38,10 @@ export class ArcFindRuntime extends AppProcess {
         excludeShortcuts = v.searchOptions.excludeShortcuts;
       }
     });
+  }
+
+  async stop() {
+    this.env.delete("arcfind_pid");
   }
 
   //#endregion

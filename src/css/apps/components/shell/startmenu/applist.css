@@ -65,6 +65,10 @@ div.shell div.startmenu div.top div.app-list.searching.loading {
   align-items: center;
 }
 
+div.shell div.startmenu div.top div.app-list.searching button {
+  transition: none;
+}
+
 div.shell div.startmenu div.top div.app-list.searching button.selected {
   background-color: var(--accent-transparent);
 }

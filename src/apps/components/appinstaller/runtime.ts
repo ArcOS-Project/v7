@@ -1,15 +1,16 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
-import type { InstallerProcess } from "$ts/distrib/installer";
+import type { InstallerProcessBase } from "$ts/distrib/installer/base";
 import { type ReadableStore } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { ArcPackage } from "$types/package";
 import JSZip from "jszip";
 
 export class AppInstallerRuntime extends AppProcess {
-  progress?: InstallerProcess;
+  progress?: InstallerProcessBase;
   metadata?: ArcPackage;
+  isLibrary = false;
   zip?: JSZip;
 
   //#region LIFECYCLE
@@ -45,6 +46,8 @@ export class AppInstallerRuntime extends AppProcess {
       );
       return false;
     }
+
+    this.isLibrary = this.metadata.type === "library";
 
     this.progress = await distrib.packageInstaller(this.zip, this.metadata); // Spawn the actual package installer proc
   }
@@ -89,16 +92,21 @@ export class AppInstallerRuntime extends AppProcess {
   async revert() {
     // I don't know how well this revert works because a package install
     // has never really errored for me before.
-    const gli = await this.userDaemon?.GlobalLoadIndicator("%apps.AppInstaller.rollback%", this.pid);
 
-    try {
-      await this.fs.deleteItem(this.metadata!.installLocation);
-      await this.userDaemon?.deleteApp(this.metadata!.appId, false);
-    } catch {
-      // Silently error
+    // TODO: change rollback for library installment
+
+    if (!this.isLibrary) {
+      const gli = await this.userDaemon?.GlobalLoadIndicator("%apps.AppInstaller.rollback%", this.pid);
+
+      try {
+        await this.fs.deleteItem(this.metadata!.installLocation);
+        await this.userDaemon?.uninstallPackageWithStatus(this.metadata!.appId, false);
+      } catch {
+        // Silently error
+      }
+
+      await gli?.stop();
     }
-
-    await gli?.stop();
 
     this.closeWindow();
   }
@@ -110,7 +118,7 @@ export class AppInstallerRuntime extends AppProcess {
 
   // More of a middleman than a method imho
   async go() {
-    this.progress?.go();
+    await this.progress?.__go();
   }
 
   //#endregion

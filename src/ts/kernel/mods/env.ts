@@ -107,4 +107,8 @@ export class Environment extends KernelModule {
     this.Log("Resetting!");
     this.store = new Map([]);
   }
+
+  getAll(): Record<string, string> {
+    return Object.fromEntries([...this.store]);
+  }
 }

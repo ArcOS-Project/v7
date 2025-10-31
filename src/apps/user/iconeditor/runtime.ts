@@ -2,7 +2,6 @@ import { AppProcess } from "$ts/apps/process";
 import { IconService } from "$ts/icon";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
-import { ElevationLevel } from "$types/elevation";
 
 export class IconEditorRuntime extends AppProcess {
   iconGroups = Store<Record<string, string[]>>({});

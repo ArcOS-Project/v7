@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { contextProps } from "$ts/context/actions.svelte";
   import { UserPaths } from "$ts/server/user/store";
   import type { FolderEntry } from "$types/fs";
   import type { UserPreferencesStore } from "$types/user";
@@ -45,7 +46,12 @@
   <UserButton {userPreferences} {username} {process} />
   <div class="content">
     {#each dirs as dir}
-      <button class="folder" onclick={() => process.spawnApp("fileManager", process.pid, `${UserPaths.Home}/${dir.name}`)}>
+      <button
+        class="folder"
+        data-contextmenu="startmenu-folder"
+        use:contextProps={[dir.name]}
+        onclick={() => process.spawnApp("fileManager", process.pid, `${UserPaths.Home}/${dir.name}`)}
+      >
         <img src={process.getIconCached("FolderIcon")} alt="" />
         <span class="name">{dir.name}</span>
       </button>

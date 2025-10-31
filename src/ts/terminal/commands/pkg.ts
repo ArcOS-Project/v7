@@ -92,7 +92,7 @@ export class PkgCommand extends TerminalProcess {
       return 1;
     }
 
-    const installed = await this.distrib!.getInstalledPackage(pkg._id);
+    const installed = await this.distrib!.getInstalledStoreItem(pkg._id);
 
     if (installed) {
       this.term?.Warning(`already installed.\n\nUse 'pkg update ${name}' to update it.`, `${pkg.name}`);
@@ -147,7 +147,7 @@ export class PkgCommand extends TerminalProcess {
       }
     });
 
-    const result = await installer?.go();
+    const result = await installer?.__go();
 
     if (!result) {
       this.term?.Error(`Installation of '${name}' failed.`);
@@ -161,7 +161,7 @@ export class PkgCommand extends TerminalProcess {
   }
 
   async removePackage(name: string): Promise<number> {
-    const local = await this.distrib?.getInstalledPackageByAppId(name);
+    const local = await this.distrib?.getInstalledStoreItemById(name);
 
     const elevated = await this.elevate();
 
@@ -183,7 +183,7 @@ export class PkgCommand extends TerminalProcess {
 
     this.term?.rl?.println("Loading...");
 
-    const result = await this.distrib?.uninstallApp(local.pkg.appId, true, (stage) => {
+    const result = await this.distrib?.uninstallPackage(local.pkg.appId, true, (stage) => {
       this.term?.rl?.println(`${CURUP}${CLRROW}${stage}`);
     });
 
@@ -219,7 +219,7 @@ export class PkgCommand extends TerminalProcess {
 
     if (!elevated) return 1;
 
-    const outdatedPackages = await this.distrib!.checkForAllUpdates();
+    const outdatedPackages = await this.distrib!.checkForAllStoreItemUpdates();
 
     if (!outdatedPackages.length) {
       this.term?.rl?.println(`${CURUP}${CLRROW}There are no updates available.`);
@@ -250,7 +250,7 @@ export class PkgCommand extends TerminalProcess {
 
       this.term?.rl?.println("Loading...");
 
-      const installer = await this.distrib!.updatePackage(outdated.pkg._id, true, (prog) => {
+      const installer = await this.distrib!.updateStoreItem(outdated.pkg._id, true, (prog) => {
         this.term?.rl?.println(
           `${CURUP}${CLRROW}Downloading package: ${BRBLUE}${formatBytes(prog.value)}${RESET} of ${BRBLUE}${formatBytes(
             prog.max
@@ -263,7 +263,7 @@ export class PkgCommand extends TerminalProcess {
         continue;
       }
 
-      await this.distrib!.removeFromInstalled(outdated.pkg._id);
+      await this.distrib!.removeStoreItemFromInstalled(outdated.pkg._id);
 
       installer.status.subscribe((v) => {
         const entries = Object.entries(v);
@@ -283,7 +283,7 @@ export class PkgCommand extends TerminalProcess {
 
       this.term?.rl?.println(`${CURUP}${CLRROW}Loading...`);
 
-      const result = await installer?.go();
+      const result = await installer?.__go();
 
       if (!result) {
         this.term?.Error(`Failed to finish update`, outdated.name);
@@ -300,7 +300,7 @@ export class PkgCommand extends TerminalProcess {
   }
 
   async update(name: string): Promise<number> {
-    const local = await this.distrib?.getInstalledPackageByAppId(name);
+    const local = await this.distrib?.getInstalledStoreItemById(name);
 
     const elevated = await this.elevate();
 
@@ -313,7 +313,7 @@ export class PkgCommand extends TerminalProcess {
 
     this.term?.rl?.println(`Updating ${BRBLUE}${local.name}${RESET}...`);
 
-    const installer = await this.distrib!.updatePackage(local._id, false, (prog) => {
+    const installer = await this.distrib!.updateStoreItem(local._id, false, (prog) => {
       this.term?.rl?.println(
         `${CURUP}${CLRROW}Downloading package: ${BRBLUE}${formatBytes(prog.value)}${RESET} of ${BRBLUE}${formatBytes(
           prog.max
@@ -326,7 +326,7 @@ export class PkgCommand extends TerminalProcess {
       return 1;
     }
 
-    await this.distrib!.removeFromInstalled(local._id);
+    await this.distrib!.removeStoreItemFromInstalled(local._id);
 
     installer.status.subscribe((v) => {
       const entries = Object.entries(v);
@@ -346,7 +346,7 @@ export class PkgCommand extends TerminalProcess {
 
     this.term?.rl?.println(`${CURUP}${CLRROW}Loading...`);
 
-    const result = await installer?.go();
+    const result = await installer?.__go();
 
     if (!result) {
       this.term?.Error(`Failed to finish update`, name);
@@ -358,7 +358,7 @@ export class PkgCommand extends TerminalProcess {
   }
 
   async reinstall(name: string): Promise<number> {
-    const local = await this.distrib?.getInstalledPackageByAppId(name);
+    const local = await this.distrib?.getInstalledStoreItemById(name);
 
     const elevated = await this.elevate();
 
@@ -384,7 +384,7 @@ export class PkgCommand extends TerminalProcess {
 
     this.term?.rl?.println(`${CURUP}${CLRROW}Uninstalling app...`);
 
-    const uninstallResult = await this.distrib?.uninstallApp(local.pkg.appId, true, (stage) => {
+    const uninstallResult = await this.distrib?.uninstallPackage(local.pkg.appId, true, (stage) => {
       this.term?.rl?.println(`${CURUP}${CLRROW}${stage}`);
     });
 
@@ -424,7 +424,7 @@ export class PkgCommand extends TerminalProcess {
 
     this.term?.rl?.println(`${CURUP}${CLRROW}Loading...`);
 
-    const installResult = await installer?.go();
+    const installResult = await installer?.__go();
 
     if (!installResult) {
       this.term?.Error(`Installation of '${name}' failed.`);
@@ -457,7 +457,7 @@ export class PkgCommand extends TerminalProcess {
 
   async listAll(): Promise<number> {
     const all = await this.distrib!.getAllStoreItems();
-    const installed = await this.distrib!.loadInstalledList();
+    const installed = await this.distrib!.loadInstalledStoreItemList();
 
     this.term?.rl?.println("");
 

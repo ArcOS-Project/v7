@@ -25,7 +25,7 @@ div.desktop-wallpaper > div.wallpaper:not(.show) {
 }
 
 #wallpaper div.desktop-icons {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -161,7 +161,7 @@ div.desktop-wallpaper > div.wallpaper:not(.show) {
 }
 
 #wallpaper div.loading {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;

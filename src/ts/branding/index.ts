@@ -1,5 +1,11 @@
 import { ReleaseLogo } from "$ts/images/branding";
 import { ArcMode } from "$ts/metadata/mode";
-import { MODES } from "./stores";
+import { TryGetDaemon } from "$ts/server/user/daemon";
+import { ALIASED_MODES, MODES } from "./stores";
 
-export const Logo = (m?: string) => MODES[m || ArcMode()] || ReleaseLogo;
+export const Logo = () => {
+  const daemon = TryGetDaemon();
+  const defaultLogo = daemon?.getIconCached?.("ReleaseLogo") || ReleaseLogo;
+
+  return (daemon ? daemon.getIconCached(ALIASED_MODES[ArcMode()]) : MODES[ArcMode()]) || defaultLogo;
+};

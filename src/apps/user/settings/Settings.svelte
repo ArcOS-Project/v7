@@ -19,7 +19,7 @@
     const sub = currentPage.subscribe(async (v) => {
       $slideVisible = false;
       hide = true;
-      await Sleep(userPreferences().shell.visuals.noAnimations ? 0 : 300);
+      await Sleep(userPreferences().shell.visuals.noAnimations ? 0 : 200);
 
       pageData = settingsPageStore.get(v);
       Page = pageData?.content;

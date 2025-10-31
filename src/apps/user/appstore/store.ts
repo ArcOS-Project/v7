@@ -1,5 +1,5 @@
 import { groupByTimeFrame, sortByKey } from "$ts/util";
-import type { StoreItem } from "$types/package";
+import type { PartialStoreItem, StoreItem } from "$types/package";
 import Everything from "./Pages/Everything.svelte";
 import Home from "./Pages/Home.svelte";
 import Installed from "./Pages/Installed.svelte";
@@ -23,7 +23,9 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
       async props(process) {
         const all = await process.distrib.getAllStoreItems();
         let recentlyAdded = [...all.reverse()];
-        let popular = [...sortByKey(all, "installCount")].reverse();
+        let popular: StoreItem[] = [...sortByKey(all, "installCount")]
+          .reverse()
+          .filter((p) => !p.pkg.type || p.pkg.type === "app");
         let mostPopular = popular[0];
 
         recentlyAdded.length = 6;
@@ -40,8 +42,8 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
       icon: "download",
       content: Installed as any,
       async props(process) {
-        const installed = await process.distrib.loadInstalledList();
-        const updates = await process.distrib.checkForAllUpdates(installed);
+        const installed = await process.distrib.loadInstalledStoreItemList();
+        const updates = await process.distrib.checkForAllStoreItemUpdates(installed);
 
         return { installed, updates };
       },
@@ -54,7 +56,7 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
       icon: "user",
       content: MadeByYou as any,
       async props(process) {
-        const published = await process.distrib.getPublishedPackages();
+        const published = await process.distrib.publishing_getPublishedPackages();
         const unblocked = published.filter((i) => !i.blocked);
         const blocked = published.filter((i) => i.blocked);
 
@@ -70,7 +72,7 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
       hidden: true,
       content: ManageStoreItem as any,
       async props(process, { id }) {
-        const published = await process.distrib.getPublishedPackages();
+        const published = await process.distrib.publishing_getPublishedPackages();
         const isOwnedBy = !!published.filter((pkg) => pkg._id === id)[0];
 
         if (!isOwnedBy) {

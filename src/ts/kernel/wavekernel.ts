@@ -1,5 +1,6 @@
 import { __Console__ } from "$ts/console";
 import { ArcOSVersion, SetCurrentKernel } from "$ts/env";
+import { JsExec } from "$ts/jsexec";
 import { getBuild } from "$ts/metadata/build";
 import { ChangeLogs } from "$ts/metadata/changelog";
 import { getLicense } from "$ts/metadata/license";
@@ -34,7 +35,11 @@ export class WaveKernel {
 
     SetCurrentKernel(this);
 
-    if (import.meta.env.DEV) (window as any)["kernel"] = this;
+    if (import.meta.env.DEV) {
+      const win = window as any;
+      win.kernel = this;
+      win.JsExec = JsExec;
+    }
   }
 
   async panic(reason: string) {

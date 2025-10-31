@@ -56,7 +56,7 @@ export const DefaultUserPreferences: UserPreferences = {
     cacheFilesystem: true,
     showHiddenApps: false,
     showThirdPartyApps: true,
-    excludeShortcuts: true
+    excludeShortcuts: true,
   },
   security: {
     lockdown: false,
@@ -67,6 +67,9 @@ export const DefaultUserPreferences: UserPreferences = {
   },
   appPreferences: {
     experiments: {},
+    fileManager: {
+      renderThumbnails: true,
+    },
   },
   account: {
     profilePicture: 3,

@@ -3,6 +3,7 @@ import { MessageBox } from "$ts/dialog";
 import { KernelStack } from "$ts/env";
 import type { Process } from "$ts/process/instance";
 import { ProcessKillResultCaptions } from "$ts/process/store";
+import type { ServiceHost } from "$ts/services";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
@@ -10,7 +11,6 @@ import type { ProcessKillResult } from "$types/process";
 import type { Component } from "svelte";
 import Processes from "./ProcessManager/Page/Processes.svelte";
 import Services from "./ProcessManager/Page/Services.svelte";
-import type { ServiceHost } from "$ts/services";
 
 export class ProcessManagerRuntime extends AppProcess {
   public selected = Store<string>();
@@ -153,5 +153,13 @@ export class ProcessManagerRuntime extends AppProcess {
     if (!this.host.hasService(id)) return;
 
     this.spawnOverlayApp("ServiceInfo", +this.env.get("shell_pid"), id);
+  }
+
+  appInfoFor(proc: AppProcess) {
+    this.spawnOverlayApp("AppInfo", +this.env.get("shell_pid"), proc.app.id);
+  }
+
+  processInfoFor(proc: Process) {
+    this.spawnOverlayApp("ProcessInfoApp", +this.env.get("shell_pid"), proc);
   }
 }

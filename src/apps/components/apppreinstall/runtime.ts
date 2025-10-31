@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import type { DistributionServiceProcess } from "$ts/distrib";
 import { tryJsonParse } from "$ts/json";
 import { arrayToText } from "$ts/util/convert";
 import { Store } from "$ts/writable";
@@ -70,6 +71,12 @@ export class AppPreInstallRuntime extends AppProcess {
     );
 
     try {
+      const distrib = this.userDaemon?.serviceHost?.getService<DistributionServiceProcess>("DistribSvc")!;
+
+      if (!(await distrib.validatePackage(this.pkgPath))) {
+        return this.fail("Package is corrupt; missing files");
+      }
+
       const content = await this.userDaemon?.fs.readFile(this.pkgPath, (progress) => {
         prog?.show();
         prog?.setMax(progress.max);
