@@ -417,6 +417,8 @@ export class ArcTerminal extends Process {
     if (parent instanceof TerminalWindowRuntime) this.window = parent;
   }
 
+
+  // MIGRATION: 7.0.3 -> 7.0.4
   async migrateConfigurationPath() {
     try {
       const oldPath = "U:/arcterm.conf";

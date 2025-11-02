@@ -20,6 +20,8 @@ export class UpdateNotifierRuntime extends AppProcess {
     await this.updateFileDefinitions();
     stop();
 
+    await this.shell?.MigrateStartMenuToFs();
+
     return true;
   }
 

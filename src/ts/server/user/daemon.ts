@@ -79,6 +79,8 @@ import { DefaultFileDefinitions } from "./assoc/store";
 import { DefaultUserInfo, DefaultUserPreferences } from "./default";
 import { BuiltinThemes, DefaultFileHandlers, UserPaths } from "./store";
 import { LibraryManagement } from "$ts/tpa/libraries";
+import type { GlobalLoadIndicatorProgress } from "$apps/components/globalloadindicator/types";
+import { isPopulatable } from "$ts/apps/util";
 //#endregion
 
 export class UserDaemon extends Process {
@@ -298,6 +300,7 @@ export class UserDaemon extends Process {
   //#endregion
   //#region MIGRATIONS
 
+  // MIGRATION 7.0.4 -> 7.0.5
   async migrateFilesystemLayout() {
     const migrationPath = join(UserPaths.Migrations, "FsMig-705.lock");
     const migrationFile = !!(await this.fs.stat(migrationPath));
@@ -344,6 +347,7 @@ export class UserDaemon extends Process {
     }
   }
 
+  // MIGRATION: 7.0.6 -> 7.0.7
   async migrateUserAppsToFs() {
     const apps = this.preferences().userApps;
 
@@ -1325,13 +1329,13 @@ export class UserDaemon extends Process {
     }
   }
 
-  async createShortcut(data: ArcShortcut, path: string) {
+  async createShortcut(data: ArcShortcut, path: string, dispatch = false) {
     if (!(await this.getIcon(data.icon))) return false;
 
     const string = JSON.stringify(data, null, 2);
 
     try {
-      return await this.fs.writeFile(path, textToBlob(string, "application/json"));
+      return await this.fs.writeFile(path, textToBlob(string, "application/json"), undefined, dispatch);
     } catch {
       return false;
     }
@@ -1580,6 +1584,15 @@ export class UserDaemon extends Process {
     for (const [pid, proc] of [...store]) {
       if (!proc._disposed && proc instanceof ThirdPartyAppProcess) KernelStack().kill(pid, true);
     }
+  }
+
+  isPopulatableByAppIdSync(appId: string): boolean {
+    const storage = this.appStorage();
+    const app = storage?.getAppSynchronous(appId);
+
+    if (!app) return false;
+
+    return isPopulatable(app);
   }
 
   //#endregion
@@ -2913,7 +2926,7 @@ export class UserDaemon extends Process {
   //#endregion
   //#region GENERIC HELPERS
 
-  async GlobalLoadIndicator(caption?: string, pid?: number) {
+  async GlobalLoadIndicator(caption?: string, pid?: number, progress?: Partial<GlobalLoadIndicatorProgress>) {
     const process = await KernelStack().spawn<GlobalLoadIndicatorRuntime>(
       GlobalLoadIndicatorRuntime,
       undefined,
@@ -2924,7 +2937,8 @@ export class UserDaemon extends Process {
         id: GlobalLoadIndicatorApp.id,
         desktop: undefined,
       },
-      caption
+      caption,
+      progress
     );
 
     if (!process)
@@ -2939,6 +2953,11 @@ export class UserDaemon extends Process {
         await Sleep(500);
         await process.closeWindow();
       },
+      incrementProgress: (amount = 1) => {
+        if (!process.progress?.()) return;
+        process.updateProgress({ value: (process.progress()?.value || 0) + amount });
+      },
+      progress: process.progress,
     };
   }
 

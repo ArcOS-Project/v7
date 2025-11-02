@@ -26,6 +26,7 @@ export class ZIPDrive extends FilesystemDrive {
     quota: false,
     bulk: false,
     stat: false,
+    bulkytree: false
   };
 
   constructor(uuid: string, letter: string, path: string) {

@@ -38,6 +38,7 @@ export class ServerDrive extends FilesystemDrive {
     quota: true,
     bulk: true,
     stat: true,
+    bulkytree: true,
   };
 
   constructor(uuid: string, letter: string, token: string) {
@@ -286,6 +287,19 @@ export class ServerDrive extends FilesystemDrive {
       const url = URL.createObjectURL(blob);
 
       return url;
+    } catch {
+      return undefined;
+    }
+  }
+
+  // possibly redundant.
+  async bulkyTree(path: string, extension: string): Promise<RecursiveDirectoryReadReturn | undefined> {
+    try {
+      const response = await Backend.get(`/fs/bulkytree/${extension}/${path}`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+
+      return response.data as any;
     } catch {
       return undefined;
     }

@@ -2,9 +2,9 @@
   import type { BooleanStore } from "$ts/writable";
   import type { UserPreferencesStore } from "$types/user";
   import type { ShellRuntime } from "../runtime";
-  import AppList from "./StartMenu/AppList.svelte";
   import Bottom from "./StartMenu/Bottom.svelte";
   import Folders from "./StartMenu/Folders.svelte";
+  import NewAppList from "./StartMenu/NewAppList.svelte";
 
   const {
     process,
@@ -28,7 +28,7 @@
   class:searching={$searchQuery}
 >
   <div class="top">
-    <AppList {process} />
+    <NewAppList {process} />
     <Folders {process} {userPreferences} {username} />
   </div>
   <Bottom {process} />

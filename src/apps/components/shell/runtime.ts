@@ -1,9 +1,12 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { KernelStack } from "$ts/env";
+import { AppGroups, UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
+import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
+import type { RecursiveDirectoryReadReturn } from "$types/fs";
 import type { SearchItem } from "$types/search";
 import type { Workspace } from "$types/user";
 import dayjs from "dayjs";
@@ -14,6 +17,7 @@ import type { TrayHostRuntime } from "../trayhost/runtime";
 import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
 import { shortWeekDays, type CalendarMonth, type WeatherInformation } from "./types";
+import { textToBlob } from "$ts/util/convert";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
@@ -31,6 +35,8 @@ export class ShellRuntime extends AppProcess {
   public trayHost?: TrayHostRuntime;
   public arcFind?: ArcFindRuntime;
   public ready = Store<boolean>(false);
+  public STARTMENU_FOLDER = UserPaths.StartMenu;
+  public StartMenuContents = Store<RecursiveDirectoryReadReturn>();
 
   override contextMenu: AppContextMenu = ShellContextMenu(this);
 
@@ -121,6 +127,12 @@ export class ShellRuntime extends AppProcess {
     });
 
     this.dispatch.subscribe("ready", () => this.gotReadySignal());
+
+    this.systemDispatch.subscribe("startmenu-refresh", () => {
+      this.refreshStartMenu();
+    });
+
+    await this.refreshStartMenu();
   }
 
   async render() {
@@ -323,6 +335,73 @@ export class ShellRuntime extends AppProcess {
 
     // Trigger the selected search result
     this.Trigger(results[index == -1 ? 0 : index].item); // Default to index 0
+  }
+
+  //#endregion
+  //#region STARTMENU
+
+  public async refreshStartMenu() {
+    const tree = await this.fs.tree(this.STARTMENU_FOLDER);
+
+    if (!tree) return; // TODO: error handling
+
+    this.StartMenuContents.set(tree);
+  }
+
+  // MIGRATION: 7.0.7 -> 7.0.8
+  public async MigrateStartMenuToFs() {
+    const migrationPath = join(UserPaths.Migrations, "StartMig-708.lock");
+    const migrationFile = !!(await this.fs.stat(migrationPath));
+
+    if (migrationFile) return;
+
+    const installedApps = this.appStore().buffer();
+
+    const { stop, incrementProgress, caption } = await this.userDaemon!.GlobalLoadIndicator(
+      "Updating the start menu...",
+      +this.env.get("shell_pid"),
+      { max: Object.keys(AppGroups).length + installedApps.length, value: 0 }
+    );
+
+    for (const appGroup in AppGroups) {
+      incrementProgress?.();
+      caption.set(`Creating folder for ${AppGroups[appGroup]}`);
+
+      await this.fs.createDirectory(join(this.STARTMENU_FOLDER, `$$${appGroup}`), false);
+    }
+
+    const promises = [];
+
+    for (const app of installedApps) {
+      promises.push(
+        new Promise(async (r) => {
+          await this.userDaemon?.createShortcut(
+            {
+              type: "app",
+              target: app.id,
+              icon: `@app::${app.id}`,
+              name: `_${app.id}`,
+            },
+            join(this.STARTMENU_FOLDER, app.metadata.appGroup ? `$$${app.metadata.appGroup}` : "", `_${app.id}.arclnk`)
+          );
+
+          caption.set(`Created shortcut for ${app.metadata.name}`);
+
+          incrementProgress?.();
+
+          r(void 0);
+        })
+      );
+    }
+
+    await Promise.all(promises);
+
+    caption.set("Finishing up...");
+
+    await this.refreshStartMenu();
+    await this.fs.writeFile(migrationPath, textToBlob(`${Date.now()}`), undefined, false);
+
+    stop?.();
   }
 
   //#endregion

@@ -113,7 +113,8 @@ export type DriveCapabilities =
   | "direct"
   | "quota"
   | "bulk"
-  | "stat";
+  | "stat"
+  | "bulkytree";
 
 export interface FilesystemStat {
   isFile: boolean;

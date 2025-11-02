@@ -621,12 +621,26 @@ export class Filesystem extends KernelModule {
   async imageThumbnail(path: string, width: number, height?: number): Promise<string | undefined> {
     this.isKmod();
 
-    this.Log(`stat '${path}'`);
+    this.Log(`imageThumbnail '${path}'`);
     this.validatePath(path);
 
     const drive = this.getDriveByPath(path);
     const scopedPath = this.removeDriveLetter(path);
 
     return await drive.imageThumbnail(scopedPath, width, height);
+  }
+
+  // TODO
+  async bulkyTree(path: string, extension: string): Promise<any> {
+    this.isKmod();
+
+    this.Log(`bulkytree '${path}'`);
+    this.validatePath(path);
+
+    const drive = this.getDriveByPath(path);
+    drive.isCapable("bulkytree");
+    const scopedPath = this.removeDriveLetter(path);
+
+    return await drive.bulkyTree(scopedPath, extension);
   }
 }

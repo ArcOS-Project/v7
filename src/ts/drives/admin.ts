@@ -32,6 +32,7 @@ export class AdminServerDrive extends FilesystemDrive {
     quota: true,
     bulk: true,
     stat: true,
+    bulkytree: false,
   };
 
   constructor(uuid: string, letter: string, token: string, targetUsername: string) {
