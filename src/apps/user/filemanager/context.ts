@@ -146,20 +146,20 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       {
         caption: "Cut items",
         disabled: () => !runtime.selection().length || !!runtime.drive()?.READONLY,
-        isActive: () => !!runtime.cutList().length,
+        isActive: () => !!runtime.userDaemon!.cutList().length,
         action: () => runtime.setCutFiles(),
         icon: "scissors",
       },
       {
         caption: "Copy items",
         disabled: () => !runtime.selection().length,
-        isActive: () => !!runtime.copyList().length,
+        isActive: () => !!runtime.userDaemon!.copyList().length,
         action: () => runtime.setCopyFiles(),
         icon: "copy",
       },
       {
         caption: "Paste items",
-        disabled: () => (!runtime.cutList().length && !runtime.copyList().length) || !!runtime.drive()?.READONLY,
+        disabled: () => (!runtime.userDaemon!.cutList().length && !runtime.userDaemon!.copyList().length) || !!runtime.drive()?.READONLY,
         action: () => runtime.pasteFiles(),
         icon: "clipboard",
       },
@@ -253,7 +253,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Cut",
         icon: "scissors",
         action: (_, runtimePath) => {
-          runtime.cutList.set([runtimePath]);
+          runtime.userDaemon!.cutList.set([runtimePath]);
         },
         disabled: () => !!runtime.drive()?.READONLY,
       },
@@ -261,7 +261,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Copy",
         icon: "copy",
         action: (_, runtimePath) => {
-          runtime.copyList.set([runtimePath]);
+          runtime.userDaemon!.copyList.set([runtimePath]);
         },
       },
       {
@@ -313,7 +313,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Cut",
         icon: "scissors",
         action: (_, runtimePath) => {
-          runtime.cutList.set([runtimePath]);
+          runtime.userDaemon!.cutList.set([runtimePath]);
         },
         disabled: () => !!runtime.drive()?.READONLY,
       },
@@ -321,7 +321,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Copy",
         icon: "copy",
         action: (_, runtimePath) => {
-          runtime.copyList.set([runtimePath]);
+          runtime.userDaemon!.copyList.set([runtimePath]);
         },
       },
       {
@@ -389,7 +389,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Cut",
         icon: "scissors",
         action: (_, runtimePath) => {
-          runtime.cutList.set([runtimePath]);
+          runtime.userDaemon!.cutList.set([runtimePath]);
         },
         disabled: () => !!runtime.drive()?.READONLY,
       },
@@ -397,7 +397,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Copy",
         icon: "copy",
         action: (_, runtimePath) => {
-          runtime.copyList.set([runtimePath]);
+          runtime.userDaemon!.copyList.set([runtimePath]);
         },
       },
       {

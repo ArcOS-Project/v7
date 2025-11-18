@@ -34,7 +34,7 @@ export class ServerManager extends KernelModule {
   async _init() {
     this.validateServerUrl();
 
-    await this.set(this.DEFAULT_URL);
+    await this.set(this.DEFAULT_URL, true);
   }
 
   //#endregion
@@ -114,12 +114,12 @@ export class ServerManager extends KernelModule {
     this.previewBranch = previewBranchName;
   }
 
-  public async set(server: string) {
+  public async set(server: string, noError = false) {
     Backend.defaults.baseURL = server;
     this.validateServerUrl(server);
     const result = await this.testConnection();
 
-    if (!result) throw new Error(`Setting server URL failed: server is unreachable`);
+    if (!noError && !result) throw new Error(`Setting server URL failed: server is unreachable`);
   }
 
   public async reset() {
