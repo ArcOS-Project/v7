@@ -138,7 +138,7 @@ export class FileAssocService extends BaseService {
     if (!associations || !definitions) return "DefaultMimeIcon";
     const definition = definitions[extension] || definitions[filename];
 
-    return definition.icon;
+    return definition?.icon || "DefaultMimeIcon";
   }
 
   getConfiguration() {
