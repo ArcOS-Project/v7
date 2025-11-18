@@ -34,7 +34,7 @@ export type ConstructedWaveKernel = {
   _init(): Promise<void>;
   getModule<T = any>(id: string, dontCrash?: boolean): T;
   Log(source: string, message: string, level?: LogLevel): void;
-  panic(reason: string): Promise<void>;
+  panic(reason: string, brief?: string): Promise<void>;
 };
 
 export interface EnvironmentType {

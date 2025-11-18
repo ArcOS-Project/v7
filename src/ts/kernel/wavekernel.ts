@@ -42,7 +42,7 @@ export class WaveKernel {
     }
   }
 
-  async panic(reason: string) {
+  async panic(reason: string, brief?: string) {
     if (this.PANICKED) return;
 
     this.PANICKED = true;
@@ -57,7 +57,7 @@ export class WaveKernel {
       return;
     }
 
-    state.loadState("crash-screen", { text: reason }, true);
+    state.loadState("crash-screen", { text: reason, brief }, true);
 
     throw reason;
   }

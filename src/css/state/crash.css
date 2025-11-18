@@ -29,6 +29,12 @@
   font-family: "Source Code Pro";
 }
 
+.crash-screen p#crashTextBrief {
+  margin-top: 50px;
+  opacity: 0.5;
+  font-family: "Source Code Pro";
+}
+
 .crash-screen #crashScreen {
   display: flex;
   align-items: center;
@@ -66,12 +72,23 @@
   gap: 10px;
   width: 100%;
   font-size: 14px;
-  opacity: 0.5;
 }
 
 .crash-screen #crashScreen > div.shortcut-hint span.lucide {
   font-size: 16px;
   height: 16px;
+}
+
+.crash-screen #crashScreen > div.shortcut-hint span.key {
+  padding: 2px 6px;
+  background-color: #fff3;
+  border-radius: 5px;
+}
+
+.crash-screen #crashScreen > div.shortcut-hint div.sep {
+  width: 1px;
+  height: 30px;
+  background-color: #fff3;
 }
 
 @keyframes crash-show {
