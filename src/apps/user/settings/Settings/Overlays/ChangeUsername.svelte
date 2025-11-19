@@ -7,7 +7,7 @@
   let newUsername = $state("");
 
   async function changeIt() {
-    const result = await process.userDaemon?.accountContext?.changeUsername(newUsername);
+    const result = await process.userDaemon?.account?.changeUsername(newUsername);
 
     process.closeWindow();
 

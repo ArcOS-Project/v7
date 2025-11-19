@@ -155,7 +155,7 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
       content: UserPage as any,
       async props(process, { userId }) {
         const results = await process.distrib.getStoreItemsByAuthor(userId);
-        const user = await process.userDaemon?.accountContext?.getPublicUserInfoOf(userId);
+        const user = await process.userDaemon?.account?.getPublicUserInfoOf(userId);
 
         return { results, user };
       },

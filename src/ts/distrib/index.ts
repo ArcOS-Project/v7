@@ -476,7 +476,7 @@ export class DistributionServiceProcess extends BaseService {
 
       const data = response.data as StoreItem;
 
-      data.user = await this.host.daemon.accountContext!.getPublicUserInfoOf(data.userId);
+      data.user = await this.host.daemon.account!.getPublicUserInfoOf(data.userId);
 
       return data as StoreItem;
     } catch {

@@ -54,7 +54,7 @@ export class SecureContextRuntime extends AppProcess {
       return false;
     }
 
-    await this.userDaemon.accountContext!.discontinueToken(token); // Discontinue validated token
+    await this.userDaemon.account!.discontinueToken(token); // Discontinue validated token
 
     return true;
   }

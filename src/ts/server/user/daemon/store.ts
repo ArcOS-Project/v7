@@ -19,7 +19,7 @@ import { WallpaperUserContext } from "./contexts/wallpaper";
 import { WorkspaceUserContext } from "./contexts/workspaces";
 
 export const UserContexts: Record<string, typeof UserContext> = {
-  accountContext: AccountUserContext,
+  account: AccountUserContext,
   activityContext: LoginActivityUserContext,
   applicationsContext: ApplicationsUserContext,
   appRegistrationContext: AppRegistrationUserContext,

@@ -68,7 +68,7 @@ export class UserDaemon extends Process {
 
   // CONTEXTS
 
-  accountContext?: AccountUserContext;
+  account?: AccountUserContext;
   activityContext?: LoginActivityUserContext;
   applicationsContext?: ApplicationsUserContext;
   appRegistrationContext?: AppRegistrationUserContext;

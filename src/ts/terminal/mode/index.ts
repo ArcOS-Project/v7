@@ -115,7 +115,7 @@ export class TerminalMode extends Process {
 
       this.saveToken(userDaemon);
 
-      const userInfo = await userDaemon.accountContext!.getUserInfo();
+      const userInfo = await userDaemon.account!.getUserInfo();
 
       if (!userInfo) {
         this.rl?.println(`Failed to request user info`);
@@ -127,7 +127,7 @@ export class TerminalMode extends Process {
 
         if (!unlocked) {
           this.rl?.println(`2FA code invalid!`);
-          await userDaemon.accountContext?.discontinueToken();
+          await userDaemon.account?.discontinueToken();
           await userDaemon.killSelf();
           return false;
         }

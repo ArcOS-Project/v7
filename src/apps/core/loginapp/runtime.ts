@@ -175,7 +175,7 @@ export class LoginAppRuntime extends AppProcess {
 
     this.loadingStatus.set("Loading your settings");
 
-    const userInfo = await userDaemon.accountContext!.getUserInfo();
+    const userInfo = await userDaemon.account!.getUserInfo();
 
     if (!userInfo) {
       this.loadingStatus.set("");
@@ -191,7 +191,7 @@ export class LoginAppRuntime extends AppProcess {
       const unlocked = await this.askForTotp(token, userDaemon.userInfo?._id);
 
       if (!unlocked) {
-        await userDaemon.accountContext!.discontinueToken();
+        await userDaemon.account!.discontinueToken();
         await userDaemon.killSelf();
         this.resetCookies();
         this.loadingStatus.set("");
@@ -320,7 +320,7 @@ export class LoginAppRuntime extends AppProcess {
     await daemon.activityContext!.logActivity("logout");
 
     this.resetCookies();
-    await daemon.accountContext!.discontinueToken();
+    await daemon.account!.discontinueToken();
     await daemon.killSelf();
 
     setTimeout(async () => {

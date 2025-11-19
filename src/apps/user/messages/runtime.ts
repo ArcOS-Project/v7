@@ -209,7 +209,7 @@ export class MessagingAppRuntime extends AppProcess {
   async userInfo(userId: string): Promise<PublicUserInfo | undefined> {
     if (this.userInfoCache[userId]) return this.userInfoCache[userId];
 
-    const info = await this.userDaemon?.accountContext?.getPublicUserInfoOf(userId);
+    const info = await this.userDaemon?.account?.getPublicUserInfoOf(userId);
     if (!info) return undefined;
 
     this.userInfoCache[userId] = info;
