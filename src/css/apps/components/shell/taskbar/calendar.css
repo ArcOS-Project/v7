@@ -21,7 +21,7 @@
 }
 
 .theme-light div.taskbar div.calendar-popup::before {
-    opacity: 0.1;
+  opacity: 0.1;
 }
 
 #arcShell div.taskbar div.calendar-popup:not(.opened) * {

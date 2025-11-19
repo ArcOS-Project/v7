@@ -12,7 +12,6 @@ export class ApplicationsUserContext extends UserContext {
     super(id, daemon);
   }
 
-  
   async spawnAutoload() {
     if (this._disposed) return;
 
@@ -32,10 +31,10 @@ export class ApplicationsUserContext extends UserContext {
           autoloadApps.push(payload);
           break;
         case "file":
-          if (!this.safeMode) await this.daemon.files?.openFile(payload); 
+          if (!this.safeMode) await this.daemon.files?.openFile(payload);
           break;
         case "folder":
-          if (!this.safeMode) await this.daemon.spawn?.spawnApp("fileManager", undefined, payload); 
+          if (!this.safeMode) await this.daemon.spawn?.spawnApp("fileManager", undefined, payload);
           break;
         case "share":
           await shares?.mountShareById(payload);
@@ -47,12 +46,11 @@ export class ApplicationsUserContext extends UserContext {
       }
     }
 
-    await this.daemon.spawn?._spawnApp("shellHost", undefined, this.pid, autoloadApps); 
+    await this.daemon.spawn?._spawnApp("shellHost", undefined, this.pid, autoloadApps);
 
-    if (this.safeMode) this.daemon.helpers?.safeModeNotice(); 
+    if (this.safeMode) this.daemon.helpers?.safeModeNotice();
 
     if (BETA)
-      
       this.daemon.notifications?.sendNotification({
         title: "Have any feedback?",
         message:
@@ -83,7 +81,6 @@ export class ApplicationsUserContext extends UserContext {
       );
     }
 
-    
     this.daemon.autoLoadComplete = true;
   }
 
@@ -120,7 +117,7 @@ export class ApplicationsUserContext extends UserContext {
 
     const elevated = await this.daemon.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to disable an application",
-      image: this.daemon.icons!.getAppIcon(app), 
+      image: this.daemon.icons!.getAppIcon(app),
       title: app.metadata.name,
       description: `By ${app.metadata.author}`,
       level: ElevationLevel.medium,
@@ -156,7 +153,7 @@ export class ApplicationsUserContext extends UserContext {
 
     const elevated = await this.daemon.elevation?.manuallyElevate({
       what: "ArcOS needs your permission to enable an application",
-      image: this.daemon.icons!.getAppIcon(app), 
+      image: this.daemon.icons!.getAppIcon(app),
       title: app.metadata.name,
       description: `By ${app.metadata.author}`,
       level: ElevationLevel.medium,
@@ -213,5 +210,4 @@ export class ApplicationsUserContext extends UserContext {
       if (!proc._disposed && proc instanceof ThirdPartyAppProcess) KernelStack().kill(pid, true);
     }
   }
-
 }

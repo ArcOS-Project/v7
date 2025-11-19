@@ -1,11 +1,11 @@
 import type { ApplicationStorage } from "$ts/apps/storage";
+import { TryGetDaemon } from "$ts/server/user/daemon";
+import { UserPaths } from "$ts/server/user/store";
 import { join } from "$ts/util/fs";
 import type { ArcPackage, StoreItem } from "$types/package";
 import type JSZip from "jszip";
-import { InstallerProcessBase } from "./base";
-import { TryGetDaemon } from "$ts/server/user/daemon";
 import type { DistributionServiceProcess } from "..";
-import { UserPaths } from "$ts/server/user/store";
+import { InstallerProcessBase } from "./base";
 
 export class AppInstallerProcess extends InstallerProcessBase {
   //#region LIFECYCLE

@@ -20,7 +20,7 @@ export class AppRegistrationUserContext extends UserContext {
   constructor(id: string, daemon: UserDaemon) {
     super(id, daemon);
   }
-  
+
   async initAppStorage(storage: ApplicationStorage, cb: (app: App) => void) {
     this.Log(`Now trying to load built-in applications...`);
 
@@ -80,7 +80,6 @@ export class AppRegistrationUserContext extends UserContext {
   async getUserApps(): Promise<AppStorage> {
     if (!this.daemon.preferences()) return [];
 
-    
     await this.daemon.migrations!.migrateUserAppsToFs();
 
     const bulk = Object.fromEntries(
@@ -174,7 +173,6 @@ export class AppRegistrationUserContext extends UserContext {
     });
   }
 
-
   async pinApp(appId: string) {
     this.Log(`Pinning ${appId}`);
 
@@ -203,5 +201,4 @@ export class AppRegistrationUserContext extends UserContext {
       return v;
     });
   }
-
 }

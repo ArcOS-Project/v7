@@ -81,7 +81,6 @@ export class MigrationsUserContext extends UserContext {
 
     if (!apps) return;
 
-    
     this.daemon.assoc?.updateConfiguration((config) => {
       for (const app of apps) {
         if (!app.opens?.extensions) continue;

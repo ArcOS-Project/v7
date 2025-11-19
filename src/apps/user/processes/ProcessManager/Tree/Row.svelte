@@ -1,13 +1,13 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
+  import { contextMenu } from "$ts/context/actions.svelte";
   import { KernelStack } from "$ts/env";
   import type { Process } from "$ts/process/instance";
+  import { BaseService } from "$ts/services/base";
   import type { ProcessContext } from "$types/process";
   import { onMount } from "svelte";
   import type { ProcessManagerRuntime } from "../../runtime";
   import Row from "./Row.svelte";
-  import { contextMenu } from "$ts/context/actions.svelte";
-  import { BaseService } from "$ts/services/base";
 
   const {
     pid,

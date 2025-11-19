@@ -4,7 +4,7 @@ import { UserContext } from "../context";
 
 export class NotificationsUserContext extends UserContext {
   public notifications = new Map<string, Notification>([]);
-  
+
   constructor(id: string, daemon: UserDaemon) {
     super(id, daemon);
   }

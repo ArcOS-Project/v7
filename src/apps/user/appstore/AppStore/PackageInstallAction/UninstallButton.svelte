@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { appShortcuts } from "$ts/apps/store";
   import type { ReadableStore } from "$ts/writable";
   import { ElevationLevel } from "$types/elevation";
   import type { StoreItem, UpdateInfo } from "$types/package";

@@ -6,9 +6,9 @@ import { authcode } from "$ts/util";
 import { ElevationLevel } from "$types/elevation";
 import { LogLevel } from "$types/logging";
 import type { PublicUserInfo, UserInfo } from "$types/user";
+import Cookies from "js-cookie";
 import type { UserDaemon } from "..";
 import { UserContext } from "../context";
-import Cookies from "js-cookie";
 
 export class AccountUserContext extends UserContext {
   constructor(id: string, daemon: UserDaemon) {

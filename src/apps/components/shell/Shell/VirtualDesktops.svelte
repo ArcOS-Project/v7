@@ -80,7 +80,12 @@
     {/if}
   </div>
 
-  <button class="add" aria-label="Add Desktop" onclick={() => userDaemon?.workspaces?.createWorkspace()} disabled={workspaces.length >= 10}>
+  <button
+    class="add"
+    aria-label="Add Desktop"
+    onclick={() => userDaemon?.workspaces?.createWorkspace()}
+    disabled={workspaces.length >= 10}
+  >
     <span class="lucide icon-plus"></span>
   </button>
 </div>

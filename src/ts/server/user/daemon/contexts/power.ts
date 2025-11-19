@@ -8,7 +8,7 @@ import { UserContext } from "../context";
 
 export class PowerUserContext extends UserContext {
   public battery = Store<BatteryType | undefined>();
-  
+
   constructor(id: string, daemon: UserDaemon) {
     super(id, daemon);
   }

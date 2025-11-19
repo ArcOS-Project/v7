@@ -9,13 +9,13 @@ import { ElevationUserContext } from "./contexts/elevation";
 import { FilesystemUserContext } from "./contexts/filesystem";
 import { HelpersUserContext } from "./contexts/helpers";
 import { IconsUserContext } from "./contexts/icons";
+import { InitUserContext } from "./contexts/init";
 import { MigrationsUserContext } from "./contexts/migrations";
 import { NotificationsUserContext } from "./contexts/notifications";
 import { PowerUserContext } from "./contexts/power";
 import { PreferencesUserContext } from "./contexts/preferences";
 import { ShortcutsUserContext } from "./contexts/shortcuts";
 import { SpawnUserContext } from "./contexts/spawn";
-import { InitUserContext } from "./contexts/init";
 import { ThemesUserContext } from "./contexts/themes";
 import { VersionUserContext } from "./contexts/version";
 import { WallpaperUserContext } from "./contexts/wallpaper";
@@ -26,7 +26,6 @@ export const UserContexts: Record<string, typeof UserContext> = {
   activity: LoginActivityUserContext,
   apps: ApplicationsUserContext,
   appreg: AppRegistrationUserContext,
-  renderer: AppRendererUserContext,
   checks: ChecksUserContext,
   elevation: ElevationUserContext,
   files: FilesystemUserContext,
@@ -37,6 +36,7 @@ export const UserContexts: Record<string, typeof UserContext> = {
   notifications: NotificationsUserContext,
   power: PowerUserContext,
   preferencesCtx: PreferencesUserContext,
+  renderer: AppRendererUserContext,
   shortcuts: ShortcutsUserContext,
   spawn: SpawnUserContext,
   themes: ThemesUserContext,

@@ -1,8 +1,10 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
+import type { InstallerProcessBase } from "$ts/distrib/installer/base";
 import { StoreItemIcon } from "$ts/distrib/util";
 import { UserPaths } from "$ts/server/user/store";
+import { Sleep } from "$ts/sleep";
 import { Plural } from "$ts/util";
 import { arrayToBlob } from "$ts/util/convert";
 import { UUID } from "$ts/uuid";
@@ -16,8 +18,6 @@ import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import TakenDown from "./AppStore/TakenDown.svelte";
 import { appStorePages } from "./store";
-import type { InstallerProcessBase } from "$ts/distrib/installer/base";
-import { Sleep } from "$ts/sleep";
 
 export class AppStoreRuntime extends AppProcess {
   searchQuery = Store<string>("");

@@ -119,30 +119,29 @@ export class HelpersUserContext extends UserContext {
     });
   }
 
+  safeModeNotice() {
+    MessageBox(
+      {
+        title: "ArcOS is running in safe mode",
+        content: SafeModeNotice,
+        image: "WarningIcon",
+        sound: "arcos.dialog.warning",
+        buttons: [
+          { caption: "Restart now", action: () => this.daemon.power?.restart() },
+          { caption: "Okay", action: () => {}, suggested: true },
+        ],
+      },
+      +this.env.get("shell_pid"),
+      true
+    );
+  }
 
-    safeModeNotice() {
-      MessageBox(
-        {
-          title: "ArcOS is running in safe mode",
-          content: SafeModeNotice,
-          image: "WarningIcon",
-          sound: "arcos.dialog.warning",
-          buttons: [
-            { caption: "Restart now", action: () => this.daemon.power?.restart() },
-            { caption: "Okay", action: () => {}, suggested: true },
-          ],
-        },
-        +this.env.get("shell_pid"),
-        true
-      );
-    }
-  
-    iHaveFeedback(process: AppProcess) {
-      this.daemon.spawn?.spawnApp(
-        "BugHuntCreator",
-        undefined,
-        `[${process.app.id}] Feedback report - ${process.windowTitle()}`,
-        `Thank you for submitting feedback to ArcOS! Any feedback is of great help to make ArcOS the best I can. Please be so kind and fill out the following form:
+  iHaveFeedback(process: AppProcess) {
+    this.daemon.spawn?.spawnApp(
+      "BugHuntCreator",
+      undefined,
+      `[${process.app.id}] Feedback report - ${process.windowTitle()}`,
+      `Thank you for submitting feedback to ArcOS! Any feedback is of great help to make ArcOS the best I can. Please be so kind and fill out the following form:
     
     1. Do you want to submit a new 'app', 'feature', or 'other'? Please answer one.
        - Your answer:
@@ -173,12 +172,11 @@ export class HelpersUserContext extends UserContext {
     # DISCLAIMER
     
     The information provided in this report is subject for review by me or another ArcOS acquaintance. We may contact you using the ArcOS Messages app if we have any additional questions. It's also possible that the feedback you've provided will be converted into a GitHub issue for communication with other developers. By submitting this feedback, you agree to that. The issue will not contain any personal information, any personal information will be filtered out by a human being.`,
-        {
-          sendAnonymously: true,
-          excludeLogs: true,
-          makePublic: true,
-        }
-      );
-    }
-  
+      {
+        sendAnonymously: true,
+        excludeLogs: true,
+        makePublic: true,
+      }
+    );
+  }
 }

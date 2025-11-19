@@ -1,6 +1,6 @@
 import { getKMod } from "$ts/env";
 import { Log } from "$ts/logging";
-import { type SystemDispatchType, type EnvironmentType, type FilesystemType, type ServerManagerType } from "$types/kernel";
+import { type EnvironmentType, type FilesystemType, type ServerManagerType, type SystemDispatchType } from "$types/kernel";
 import { LogLevel } from "$types/logging";
 import type { UserInfo } from "$types/user";
 import type { UserDaemon } from ".";

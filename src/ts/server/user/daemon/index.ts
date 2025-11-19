@@ -12,7 +12,6 @@ import { LibraryManagement } from "$ts/tpa/libraries";
 import { Store } from "$ts/writable";
 import type { App } from "$types/app";
 import type { EnvironmentType, ServerManagerType } from "$types/kernel";
-import type { Service } from "$types/service";
 import type { UserInfo, UserPreferences } from "$types/user";
 import type { FileAssocService } from "../assoc";
 import { DefaultUserInfo } from "../default";

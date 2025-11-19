@@ -1,13 +1,13 @@
 import { KernelStack } from "$ts/env";
 import { Process } from "$ts/process/instance";
+import type { UserDaemon } from "$ts/server/user/daemon";
+import { arrayToBlob } from "$ts/util/convert";
+import { UUID } from "$ts/uuid";
+import { Store } from "$ts/writable";
 import type { ArcPackage, InstallStatus, InstallStatusMode, InstallStatusType, StoreItem } from "$types/package";
+import { fromExtension } from "human-filetypes";
 import type JSZip from "jszip";
 import type { DistributionServiceProcess } from "..";
-import type { UserDaemon } from "$ts/server/user/daemon";
-import { Store } from "$ts/writable";
-import { UUID } from "$ts/uuid";
-import { fromExtension } from "human-filetypes";
-import { arrayToBlob } from "$ts/util/convert";
 
 export class InstallerProcessBase extends Process {
   protected verboseLog: string[] = [];
