@@ -238,7 +238,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       {
         caption: "Open with...",
         action: (_, runtimePath) => {
-          runtime.userDaemon?.openWith(runtimePath);
+          runtime.userDaemon?.filesystemContext?.openWith(runtimePath);
         },
       },
       {
@@ -305,7 +305,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       {
         caption: "Open with...",
         action: (_, runtimePath) => {
-          runtime.userDaemon?.openWith(runtimePath);
+          runtime.userDaemon?.filesystemContext?.openWith(runtimePath);
         },
       },
       { sep: true },

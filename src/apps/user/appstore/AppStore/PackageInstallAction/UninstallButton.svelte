@@ -34,7 +34,7 @@
 
     working = true;
     content = "Loading";
-    await process.userDaemon?.uninstallPackageWithStatus($pkg.pkg.appId, true);
+    await process.userDaemon?.appRegistrationContext?.uninstallPackageWithStatus($pkg.pkg.appId, true);
     delete process.operations[$pkg._id];
     $update = false;
     $installed = undefined;

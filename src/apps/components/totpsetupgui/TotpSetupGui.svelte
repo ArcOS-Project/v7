@@ -57,7 +57,7 @@
             "Two-factor authentication has now been enabled on your account. You must restart for the changes to fully take effect.",
           buttons: [
             { caption: "Restart later", action: () => {} },
-            { caption: "Restart now", suggested: true, action: () => process.userDaemon?.restart() },
+            { caption: "Restart now", suggested: true, action: () => process.userDaemon?.powerContext?.restart() },
           ],
           sound: "arcos.dialog.info",
           image: "GoodStatusIcon",

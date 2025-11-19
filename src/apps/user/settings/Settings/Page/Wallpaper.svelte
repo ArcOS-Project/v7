@@ -17,7 +17,7 @@
 
   onMount(() => {
     const sub = userPreferences?.subscribe(async (v) => {
-      wallpaper = await process.userDaemon?.getWallpaper(v.desktop.wallpaper);
+      wallpaper = await process.userDaemon?.wallpaperContext?.getWallpaper(v.desktop.wallpaper);
     });
 
     return () => sub?.();

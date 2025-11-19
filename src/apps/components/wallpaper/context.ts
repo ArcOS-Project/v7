@@ -13,13 +13,13 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
         caption: "Open file",
         icon: "external-link",
         action: (_, path, shortcut) => {
-          runtime.userDaemon?.openFile(path, shortcut);
+          runtime.userDaemon?.filesystemContext?.openFile(path, shortcut);
         },
       },
       {
         caption: "Open with...",
         action: (_, runtimePath) => {
-          runtime.userDaemon?.openWith(runtimePath);
+          runtime.userDaemon?.filesystemContext?.openWith(runtimePath);
         },
       },
       { sep: true },
@@ -49,13 +49,13 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
         caption: "Open shortcut",
         icon: "external-link",
         action: (_, path, shortcut) => {
-          runtime.userDaemon?.openFile(path, shortcut);
+          runtime.userDaemon?.filesystemContext?.openFile(path, shortcut);
         },
       },
       {
         caption: "Open with...",
         action: (_, path) => {
-          runtime.userDaemon?.openWith(path);
+          runtime.userDaemon?.filesystemContext?.openWith(path);
         },
       },
       { sep: true },
@@ -190,17 +190,17 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
       {
         caption: "Shut down",
         image: "ShutdownIcon",
-        action: () => runtime.userDaemon?.shutdown(),
+        action: () => runtime.userDaemon?.powerContext?.shutdown(),
       },
       {
         caption: "Log off",
         image: "LogoutIcon",
-        action: () => runtime.userDaemon?.logoff(),
+        action: () => runtime.userDaemon?.powerContext?.logoff(),
       },
       {
         caption: "Restart",
         image: "RestartIcon",
-        action: () => runtime.userDaemon?.restart(),
+        action: () => runtime.userDaemon?.powerContext?.restart(),
       },
       { sep: true },
       {

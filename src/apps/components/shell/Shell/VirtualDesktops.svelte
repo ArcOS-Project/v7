@@ -10,7 +10,7 @@
 
   const { process }: { process: ShellRuntime } = $props();
   const { userDaemon, userPreferences, workspaceManagerOpened } = process;
-  const { Wallpaper } = userDaemon || {}!;
+  const { Wallpaper } = userDaemon?.wallpaperContext! || {}!;
 
   let workspaces: Workspace[] = $state([]);
   let windowCounts = Store<Record<string, number>>({});
@@ -80,7 +80,7 @@
     {/if}
   </div>
 
-  <button class="add" aria-label="Add Desktop" onclick={() => userDaemon?.createWorkspace()} disabled={workspaces.length >= 10}>
+  <button class="add" aria-label="Add Desktop" onclick={() => userDaemon?.workspacesContext?.createWorkspace()} disabled={workspaces.length >= 10}>
     <span class="lucide icon-plus"></span>
   </button>
 </div>

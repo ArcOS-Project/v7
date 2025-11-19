@@ -39,7 +39,7 @@
         caption="Disable third-party apps"
         chevron
         image={process.getIconCached("ElevationIcon")}
-        onclick={() => process.userDaemon?.disableThirdParty()}
+        onclick={() => process.userDaemon?.applicationsContext?.disableThirdParty()}
       ></Option>
     {/if}
   </Section>
@@ -50,7 +50,7 @@
       <div>
         <h1>Enable third-party apps</h1>
         <p>Click the button to allow third-party applications to run on your ArcOS account.</p>
-        <button class="suggested" onclick={() => process.userDaemon?.enableThirdParty()}>Enable Third-party</button>
+        <button class="suggested" onclick={() => process.userDaemon?.applicationsContext?.enableThirdParty()}>Enable Third-party</button>
       </div>
     </Section>
   {/if}

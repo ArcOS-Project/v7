@@ -37,7 +37,7 @@
       const { app } = proc;
 
       name = app.data.metadata.name;
-      icon = process.userDaemon?.getAppIconByProcess(proc);
+      icon = process.userDaemon?.appRegistrationContext?.getAppIconByProcess(proc);
       appId = app.id;
 
       const dispatcher = process.systemDispatch.subscribe("window-closing", ([pid]) => {

@@ -72,7 +72,7 @@
       caption="Delete ArcOS account..."
       image={process.getIconCached("TrashIcon")}
       chevron
-      onclick={() => process.userDaemon?.deleteAccount()}
+      onclick={() => process.userDaemon?.accountContext?.deleteAccount()}
     ></Option>
   </Section>
 </div>

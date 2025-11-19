@@ -29,7 +29,7 @@ export class ArcTermRuntime extends Process {
 
     if (!daemon) return false;
 
-    const proc = await daemon.spawnApp<TerminalWindowRuntime>("TerminalWindow", this.pid);
+    const proc = await daemon.spawnContext?.spawnApp<TerminalWindowRuntime>("TerminalWindow", this.pid);
 
     if (!proc) return false;
 
@@ -39,7 +39,7 @@ export class ArcTermRuntime extends Process {
 
     this.term = await KernelStack().spawn<ArcTerminal>(
       ArcTerminal,
-      daemon.getCurrentDesktop(),
+      daemon.workspacesContext?.getCurrentDesktop(),
       daemon.userInfo?._id,
       proc.pid,
       proc.term,

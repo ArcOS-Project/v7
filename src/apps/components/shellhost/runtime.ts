@@ -33,14 +33,14 @@ export class ShellHostRuntime extends Process {
 
     const procs: Record<string, Process> = {}; // Object of executed shell components
 
-    const proc = await this.userDaemon?._spawnApp<ShellRuntime>(
+    const proc = await this.userDaemon?.spawnContext?._spawnApp<ShellRuntime>(
       this.userPreferences().globalSettings.shellExec,
       undefined,
       this.pid
     ); // Let's first spawn the shell exec from globalSettings
 
     for (const id of this.shellComponents) {
-      procs[id] = (await this.userDaemon!._spawnApp(id, undefined, this.pid))!; // Then spawn each shell component
+      procs[id] = (await this.userDaemon!.spawnContext?._spawnApp(id, undefined, this.pid))!; // Then spawn each shell component
     }
 
     const trayHost = procs.TrayHostProc as TrayHostRuntime; // Get the tray host
@@ -56,12 +56,12 @@ export class ShellHostRuntime extends Process {
 
     proc?.dispatch?.dispatch("ready"); // Dispatch ready command to the shell
 
-    await this.userDaemon?.checkForNewVersion();
+    await this.userDaemon?.versionContext?.checkForNewVersion();
 
     for (const app of this.autoloadApps) {
       if (app === "shellHost") continue; // Ignore the shellHost in autoload
 
-      await this.userDaemon?._spawnApp(app, undefined, this.pid); // Spawn autoload app
+      await this.userDaemon?.spawnContext?._spawnApp(app, undefined, this.pid); // Spawn autoload app
     }
 
     // Change the tray icon to good status icon

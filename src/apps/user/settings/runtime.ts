@@ -157,7 +157,7 @@ export class SettingsRuntime extends AppProcess {
             action: async () => {
               const token = this.userDaemon?.token;
 
-              await this.userDaemon?.logoff();
+              await this.userDaemon?.powerContext?.logoff();
 
               await Backend.post(
                 "/logallout",
@@ -184,7 +184,7 @@ export class SettingsRuntime extends AppProcess {
     this.Log("Uploading wallpaper");
 
     try {
-      await this.userDaemon?.uploadWallpaper(this.pid);
+      await this.userDaemon?.wallpaperContext?.uploadWallpaper(this.pid);
     } catch (e) {
       const message = (e as PromiseRejectionEvent).reason;
 
@@ -239,7 +239,7 @@ export class SettingsRuntime extends AppProcess {
           {
             caption: "Delete it",
             action: () => {
-              this.userDaemon?.deleteUserTheme(id);
+              this.userDaemon?.themesContext?.deleteUserTheme(id);
             },
             suggested: true,
           },
@@ -262,7 +262,7 @@ export class SettingsRuntime extends AppProcess {
 
     if (!path) return;
 
-    this.userDaemon?.changeProfilePicture(path);
+    this.userDaemon?.preferencesContext?.changeProfilePicture(path);
   }
 
   async chooseWallpaper() {
@@ -348,7 +348,7 @@ export class SettingsRuntime extends AppProcess {
             "Two-factor authentication has now been disabled for your account. You must restart for the changes to fully take effect.",
           buttons: [
             { caption: "Restart later", action: () => {} },
-            { caption: "Restart now", suggested: true, action: () => this.userDaemon?.restart() },
+            { caption: "Restart now", suggested: true, action: () => this.userDaemon?.powerContext?.restart() },
           ],
           sound: "arcos.dialog.info",
           image: "GoodStatusIcon",

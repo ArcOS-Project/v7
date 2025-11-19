@@ -12,7 +12,7 @@
   function focus() {
     KernelStack().renderer?.focusPid(pid);
 
-    if (openedProcess.app.desktop) process.userDaemon?.switchToDesktopByUuid(openedProcess.app.desktop);
+    if (openedProcess.app.desktop) process.userDaemon?.workspacesContext?.switchToDesktopByUuid(openedProcess.app.desktop);
   }
 </script>
 

@@ -21,7 +21,7 @@
     shortcut = $shortcuts[file.name];
     if (shortcut) shortcutIcon = process.getIconCached(shortcut.icon);
     icon = info?.icon || process.getIconCached("DefaultMimeIcon");
-    if (info?.friendlyName === "Image file") icon = (await process.userDaemon?.getThumbnailFor(path)) || icon;
+    if (info?.friendlyName === "Image file") icon = (await process.userDaemon?.filesystemContext?.getThumbnailFor(path)) || icon;
     render = true;
   });
 </script>
@@ -39,7 +39,7 @@
     contextMenu={shortcut ? "shortcut-icon" : "file-icon"}
     props={[file, path, shortcut]}
     action={() => {
-      process.userDaemon?.openFile(path, shortcut);
+      process.userDaemon?.filesystemContext?.openFile(path, shortcut);
     }}
     {i}
   />

@@ -170,7 +170,7 @@ export class AppStoreRuntime extends AppProcess {
       );
 
       if (!go) {
-        await this.userDaemon?.uninstallPackageWithStatus(pkg.pkg.appId, true);
+        await this.userDaemon?.appRegistrationContext?.uninstallPackageWithStatus(pkg.pkg.appId, true);
         return 0;
       }
     }

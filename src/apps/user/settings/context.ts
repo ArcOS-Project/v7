@@ -110,7 +110,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
                 {
                   caption: "Delete",
                   action: async () => {
-                    await runtime.userDaemon?.deleteLocalWallpaper(id);
+                    await runtime.userDaemon?.wallpaperContext?.deleteLocalWallpaper(id);
                   },
                   suggested: true,
                 },

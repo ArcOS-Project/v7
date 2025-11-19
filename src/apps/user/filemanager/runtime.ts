@@ -333,8 +333,8 @@ export class FileManagerRuntime extends AppProcess {
 
     this.lockRefresh();
 
-    if (copyList.length) await this.userDaemon?.copyMultiple(copyList, this.path(), this.pid);
-    else if (cutList.length) await this.userDaemon?.moveMultiple(cutList, this.path(), this.pid);
+    if (copyList.length) await this.userDaemon?.filesystemContext?.copyMultiple(copyList, this.path(), this.pid);
+    else if (cutList.length) await this.userDaemon?.filesystemContext?.moveMultiple(cutList, this.path(), this.pid);
 
     this.userDaemon?.copyList.set([]);
     this.userDaemon?.cutList.set([]);
@@ -438,7 +438,7 @@ export class FileManagerRuntime extends AppProcess {
       return;
     }
 
-    this.userDaemon?.openFile(path);
+    this.userDaemon?.filesystemContext?.openFile(path);
   }
 
   async deleteSelected() {
@@ -701,7 +701,7 @@ export class FileManagerRuntime extends AppProcess {
         continue;
       }
 
-      if (alternative) await this.userDaemon?.openWith(path);
+      if (alternative) await this.userDaemon?.filesystemContext?.openWith(path);
       else await this.openFile(path);
     }
   }
@@ -731,7 +731,7 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   async createShortcut(name: string, path: string, folder = false) {
-    const paths = await this.userDaemon?.LoadSaveDialog({
+    const paths = await this.userDaemon?.filesystemContext?.LoadSaveDialog({
       title: "Pick where to create the shortcut",
       icon: "FolderIcon",
       folder: true,
@@ -742,7 +742,7 @@ export class FileManagerRuntime extends AppProcess {
 
     const info = this.userDaemon?.assoc?.getFileAssociation(name);
 
-    this.userDaemon?.createShortcut(
+    this.userDaemon?.filesystemContext?.createShortcut(
       {
         type: folder ? "folder" : "file",
         target: path,

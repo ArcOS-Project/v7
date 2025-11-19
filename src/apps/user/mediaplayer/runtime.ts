@@ -389,7 +389,7 @@ export class MediaPlayerRuntime extends AppProcess {
 
   async createPlaylistShortcut() {
     if (this._disposed) return;
-    const paths = await this.userDaemon?.LoadSaveDialog({
+    const paths = await this.userDaemon?.filesystemContext?.LoadSaveDialog({
       title: "Pick where to create the shortcut",
       icon: "FolderIcon",
       folder: true,
@@ -400,7 +400,7 @@ export class MediaPlayerRuntime extends AppProcess {
 
     const filename = getItemNameFromPath(this.playlistPath());
 
-    this.userDaemon?.createShortcut(
+    this.userDaemon?.filesystemContext?.createShortcut(
       {
         type: "file",
         target: this.playlistPath(),

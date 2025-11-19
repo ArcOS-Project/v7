@@ -26,7 +26,7 @@
             class="lucide icon-upload"
             aria-label="Upload profile picture"
             title="Upload profile picture"
-            onclick={() => userDaemon?.uploadProfilePicture()}
+            onclick={() => userDaemon?.preferencesContext?.uploadProfilePicture()}
           ></button>
           <button
             class="lucide icon-folder-open"
