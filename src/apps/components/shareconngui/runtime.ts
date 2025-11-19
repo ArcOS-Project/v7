@@ -50,7 +50,7 @@ export class ShareConnGuiRuntime extends AppProcess {
       const path = `${result.uuid}:/`;
       const parent = KernelStack().getProcess(this.parentPid);
 
-      if (parent && this.userDaemon?.ParentIs(this, "fileManager")) {
+      if (parent && this.userDaemon?.helpers?.ParentIs(this, "fileManager")) {
         // Is the parent a file manager? Then navigate it instead of spawning one
         const dispatch = KernelStack().ConnectDispatch(this.parentPid);
         dispatch?.dispatch("navigate", path);

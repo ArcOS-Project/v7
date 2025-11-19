@@ -79,7 +79,7 @@ export class ItemInfoRuntime extends AppProcess {
     } else {
       const path = info.location.fullPath;
 
-      this.userDaemon?.openFile(path, this.shortcut());
+      this.userDaemon?.files?.openFile(path, this.shortcut());
     }
   }
 

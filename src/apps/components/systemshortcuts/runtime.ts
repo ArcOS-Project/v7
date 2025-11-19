@@ -27,7 +27,7 @@ export class SystemShortcutsRuntime extends AppProcess {
         key: "[",
         global: true,
         action: () => {
-          this.userDaemon?.previousDesktop();
+          this.userDaemon?.workspaces?.previousDesktop();
         },
       },
       {
@@ -35,7 +35,7 @@ export class SystemShortcutsRuntime extends AppProcess {
         key: "]",
         global: true,
         action: () => {
-          this.userDaemon?.nextDesktop();
+          this.userDaemon?.workspaces?.nextDesktop();
         },
       },
       {

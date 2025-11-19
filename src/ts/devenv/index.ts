@@ -107,7 +107,7 @@ export class DevelopmentEnvironment extends BaseService {
           {
             title: "ArcDev stopped",
             message: `The websocket connection was lost. Please reconnect to continue development. Disconnect reason was '${reason}'`,
-            image: this.daemon.getIconCached("ErrorIcon"),
+            image: this.daemon.icons!.getIconCached("ErrorIcon"),
             sound: "arcos.dialog.error",
             buttons: [{ caption: "Okay", action: () => {} }],
           },
@@ -121,7 +121,7 @@ export class DevelopmentEnvironment extends BaseService {
 
       this.client.on("open-file", (file: string) => {
         if (this._disposed) return this.disconnect();
-        this.daemon.openFile(file);
+        this.daemon.files!.openFile(file);
       });
       this.client.on("restart-tpa", () => {
         if (this._disposed) return this.disconnect();
@@ -176,7 +176,7 @@ export class DevelopmentEnvironment extends BaseService {
     if (this._disposed) return this.disconnect();
 
     await this.killTpa();
-    await this.daemon.openFile("V:/_app.tpa");
+    await this.daemon.files!.openFile("V:/_app.tpa");
   }
 
   async killTpa() {

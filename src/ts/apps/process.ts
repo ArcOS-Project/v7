@@ -71,7 +71,7 @@ export class AppProcess extends Process {
       this.safeMode = daemon.safeMode;
     }
 
-    this.windowIcon.set(this.userDaemon?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
+    this.windowIcon.set(this.userDaemon?.icons?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
     this.startAcceleratorListener();
 
     this.systemDispatch.subscribe("window-unfullscreen", ([pid]) => {
@@ -169,14 +169,14 @@ export class AppProcess extends Process {
   async __render__(body: HTMLDivElement) {
     if (this.userPreferences().disabledApps.includes(this.app.id)) {
       if (this.safeMode) {
-        this.userDaemon?.sendNotification({
+        this.userDaemon?.notifications?.sendNotification({
           title: "Running disabled app!",
           message: `Allowing execution of disabled app '${this.app.data.metadata.name}' because of Safe Mode.`,
           buttons: [
             {
               caption: "Manage apps",
               action: () => {
-                this.userDaemon?.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps", "apps_manageApps");
+                this.userDaemon?.spawn?.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps", "apps_manageApps");
               },
             },
           ],
@@ -241,7 +241,7 @@ export class AppProcess extends Process {
 
       if (!this.app.data.core) KernelStack().renderer?.focusPid(instances[0].pid);
 
-      if (instances[0].app.desktop) this.userDaemon?.switchToDesktopByUuid(instances[0].app.desktop);
+      if (instances[0].app.desktop) this.userDaemon?.workspaces?.switchToDesktopByUuid(instances[0].app.desktop);
     }
 
     return instances.length ? instances[0] : undefined;
@@ -324,7 +324,7 @@ export class AppProcess extends Process {
 
       if (!modifiers || (key != pK && key && key != codedKey) || !isFocused) continue;
 
-      if (!this.userDaemon?._elevating) await combo.action(this, e);
+      if (!this.userDaemon?.elevation!._elevating) await combo.action(this, e);
 
       break;
     }
@@ -365,22 +365,22 @@ export class AppProcess extends Process {
   }
 
   async spawnApp<T = AppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
-    return await this.userDaemon?.spawnApp<T>(id, parentPid ?? this.parentPid, ...args);
+    return await this.userDaemon?.spawn?.spawnApp<T>(id, parentPid ?? this.parentPid, ...args);
   }
 
   async spawnOverlayApp<T = AppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
-    return await this.userDaemon?.spawnOverlay<T>(id, parentPid ?? this.parentPid, ...args);
+    return await this.userDaemon?.spawn?.spawnOverlay<T>(id, parentPid ?? this.parentPid, ...args);
   }
 
   async elevate(id: string) {
     if (!this.elevations[id]) return false;
-    return await this.userDaemon?.manuallyElevate(this.elevations[id]);
+    return await this.userDaemon!.elevation!.manuallyElevate(this.elevations[id]);
   }
 
   notImplemented(what?: string) {
     this.Log(`Not implemented: ${what || "<unknown>"}`);
     // Manually invoking spawnOverlay method on daemon to work around AppProcess <> MessageBox circular import
-    this.userDaemon?.spawnOverlay("messageBox", this.pid, {
+    this.userDaemon?.spawn?.spawnOverlay("messageBox", this.pid, {
       title: "Not implemented",
       message: `${
         what || "This feature"
@@ -398,14 +398,14 @@ export class AppProcess extends Process {
   }
 
   async getIcon(id: string): Promise<string> {
-    return this.userDaemon?.getIcon(id)!;
+    return this.userDaemon?.icons?.getIcon(id)!;
   }
 
   getIconCached(id: string): string {
-    return this.userDaemon?.getIconCached(id)!;
+    return this.userDaemon?.icons?.getIconCached(id)!;
   }
 
   getIconStore(id: string): ReadableStore<string> {
-    return this.userDaemon?.getIconStore(id)!;
+    return this.userDaemon?.icons?.getIconStore(id)!;
   }
 }

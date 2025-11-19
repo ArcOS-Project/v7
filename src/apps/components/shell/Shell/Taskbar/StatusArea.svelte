@@ -5,14 +5,14 @@
 
   const { process }: { process: ShellRuntime } = $props();
   const { stackBusy } = process;
-  const { battery } = process.userDaemon || {}!;
+  const { battery } = process.userDaemon?.power! || {}!;
 </script>
 
 <div class="status-area">
   <StackBusy {stackBusy} />
-  {#if battery}
+  {#if process?.userDaemon?.power}
     <Battery {battery} userPreferences={process.userPreferences} />
   {:else}
-    <span class="lucide error-text battery icon-triangle-alert" title="ERR_NO_DAEMON"></span>
+    <span class="lucide error-text battery icon-triangle-alert" title="ERR_NO_DAEMON"></span>``
   {/if}
 </div>

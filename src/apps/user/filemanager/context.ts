@@ -159,7 +159,8 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       },
       {
         caption: "Paste items",
-        disabled: () => (!runtime.userDaemon!.cutList().length && !runtime.userDaemon!.copyList().length) || !!runtime.drive()?.READONLY,
+        disabled: () =>
+          (!runtime.userDaemon!.cutList().length && !runtime.userDaemon!.copyList().length) || !!runtime.drive()?.READONLY,
         action: () => runtime.pasteFiles(),
         icon: "clipboard",
       },
@@ -238,7 +239,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       {
         caption: "Open with...",
         action: (_, runtimePath) => {
-          runtime.userDaemon?.openWith(runtimePath);
+          runtime.userDaemon?.files?.openWith(runtimePath);
         },
       },
       {
@@ -305,7 +306,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       {
         caption: "Open with...",
         action: (_, runtimePath) => {
-          runtime.userDaemon?.openWith(runtimePath);
+          runtime.userDaemon?.files?.openWith(runtimePath);
         },
       },
       { sep: true },
@@ -485,7 +486,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
             caption: "Advanced System Settings...",
             icon: "monitor-cog",
             action: () => {
-              runtime.userDaemon?.spawnApp("AdvSystemSettings", +runtime.env.get("shell_pid"));
+              runtime.userDaemon?.spawn?.spawnApp("AdvSystemSettings", +runtime.env.get("shell_pid"));
             },
           },
         ],
@@ -494,7 +495,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Settings...",
         icon: "settings-2",
         action: () => {
-          runtime.userDaemon?.spawnApp("systemSettings", +runtime.env.get("shell_pid"));
+          runtime.userDaemon?.spawn?.spawnApp("systemSettings", +runtime.env.get("shell_pid"));
         },
       },
     ],
@@ -516,7 +517,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Properties...",
         icon: "wrench",
         action: () => {
-          runtime.userDaemon?.spawnApp("AdvSystemSettings", +runtime.env.get("shell_pid"), "Recycling");
+          runtime.userDaemon?.spawn?.spawnApp("AdvSystemSettings", +runtime.env.get("shell_pid"), "Recycling");
         },
       },
     ],

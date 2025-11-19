@@ -66,7 +66,7 @@ export class AppInstallerRuntime extends AppProcess {
             {
               caption: "Take me there",
               action: () => {
-                this.userDaemon?.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps");
+                this.userDaemon?.spawn?.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps");
               },
             },
             {
@@ -95,11 +95,11 @@ export class AppInstallerRuntime extends AppProcess {
     // TODO: change rollback for library installment
 
     if (!this.isLibrary) {
-      const gli = await this.userDaemon?.GlobalLoadIndicator("Rolling back changes...", this.pid);
+      const gli = await this.userDaemon?.helpers?.GlobalLoadIndicator("Rolling back changes...", this.pid);
 
       try {
         await this.fs.deleteItem(this.metadata!.installLocation);
-        await this.userDaemon?.uninstallPackageWithStatus(this.metadata!.appId, false);
+        await this.userDaemon?.appreg?.uninstallPackageWithStatus(this.metadata!.appId, false);
       } catch {
         // Silently error
       }

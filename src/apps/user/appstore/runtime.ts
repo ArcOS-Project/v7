@@ -1,8 +1,10 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
+import type { InstallerProcessBase } from "$ts/distrib/installer/base";
 import { StoreItemIcon } from "$ts/distrib/util";
 import { UserPaths } from "$ts/server/user/store";
+import { Sleep } from "$ts/sleep";
 import { Plural } from "$ts/util";
 import { arrayToBlob } from "$ts/util/convert";
 import { UUID } from "$ts/uuid";
@@ -16,8 +18,6 @@ import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import TakenDown from "./AppStore/TakenDown.svelte";
 import { appStorePages } from "./store";
-import type { InstallerProcessBase } from "$ts/distrib/installer/base";
-import { Sleep } from "$ts/sleep";
 
 export class AppStoreRuntime extends AppProcess {
   searchQuery = Store<string>("");
@@ -109,7 +109,7 @@ export class AppStoreRuntime extends AppProcess {
   async installPackage(pkg: StoreItem, onDownloadProgress?: FilesystemProgressCallback) {
     const freshPkg = (await this.distrib.getStoreItem(pkg._id))!;
     if (freshPkg.deprecated) {
-      const go = await this.userDaemon!.Confirm(
+      const go = await this.userDaemon!.helpers?.Confirm(
         "Are you sure?",
         "The author of this package marked it as <b>deprecated</b>. This means that the package is unmaintained and outdated. Are you sure you want to continue installing it?",
         "Cancel",
@@ -135,7 +135,7 @@ export class AppStoreRuntime extends AppProcess {
       return 0;
     }
 
-    const elevated = await this.userDaemon!.manuallyElevate({
+    const elevated = await this.userDaemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to install a package",
       title: freshPkg.pkg.name,
       description: `By ${freshPkg.user?.displayName || freshPkg.user?.username || freshPkg.pkg.author}`,
@@ -162,7 +162,7 @@ export class AppStoreRuntime extends AppProcess {
   async updatePackage(pkg: StoreItem, onDownloadProgress?: FilesystemProgressCallback) {
     const freshPkg = (await this.distrib.getStoreItem(pkg._id))!;
     if (freshPkg.deprecated) {
-      const go = await this.userDaemon!.Confirm(
+      const go = await this.userDaemon!.helpers?.Confirm(
         "Are you sure?",
         "The author of this package marked it as <b>deprecated</b>. This means that the package is unmaintained and outdated. Do you want to uninstall it instead of updating?",
         "Uninstall",
@@ -170,7 +170,7 @@ export class AppStoreRuntime extends AppProcess {
       );
 
       if (!go) {
-        await this.userDaemon?.uninstallPackageWithStatus(pkg.pkg.appId, true);
+        await this.userDaemon?.appreg?.uninstallPackageWithStatus(pkg.pkg.appId, true);
         return 0;
       }
     }
@@ -191,7 +191,7 @@ export class AppStoreRuntime extends AppProcess {
       return 0;
     }
 
-    const elevated = await this.userDaemon!.manuallyElevate({
+    const elevated = await this.userDaemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to update a package",
       title: freshPkg.pkg.name,
       description: `By ${freshPkg.user?.displayName || freshPkg.user?.username || freshPkg.pkg.author}`,
@@ -215,7 +215,7 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async deprecatePackage(pkg: StoreItem) {
-    const elevated = await this.userDaemon!.manuallyElevate({
+    const elevated = await this.userDaemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to deprecate one of your packages",
       title: pkg.pkg.name,
       description: pkg.pkg.appId,
@@ -231,7 +231,7 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async deletePackage(pkg: StoreItem) {
-    const elevated = await this.userDaemon!.manuallyElevate({
+    const elevated = await this.userDaemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to delete one of your packages",
       title: pkg.pkg.name,
       description: pkg.pkg.appId,
@@ -247,7 +247,7 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async publishPackage() {
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
       title: "Select package to publish",
       icon: "AppStoreIcon",
       extensions: [".arc"],
@@ -256,7 +256,7 @@ export class AppStoreRuntime extends AppProcess {
 
     if (!path) return;
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await this.userDaemon!.files!.FileProgress(
       {
         caption: "Publishing your package",
         subtitle: path,
@@ -297,7 +297,7 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async updateStoreItem(pkg: StoreItem) {
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
       title: `Select update for '${pkg.pkg.name}'`,
       icon: StoreItemIcon(pkg),
       extensions: [".arc"],
@@ -306,7 +306,7 @@ export class AppStoreRuntime extends AppProcess {
 
     if (!path) return;
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await this.userDaemon!.files!.FileProgress(
       {
         caption: "Updating your store item",
         subtitle: path,

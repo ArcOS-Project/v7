@@ -1,11 +1,11 @@
 import type { ApplicationStorage } from "$ts/apps/storage";
+import { TryGetDaemon } from "$ts/server/user/daemon";
+import { UserPaths } from "$ts/server/user/store";
 import { join } from "$ts/util/fs";
 import type { ArcPackage, StoreItem } from "$types/package";
 import type JSZip from "jszip";
-import { InstallerProcessBase } from "./base";
-import { TryGetDaemon } from "$ts/server/user/daemon";
 import type { DistributionServiceProcess } from "..";
-import { UserPaths } from "$ts/server/user/store";
+import { InstallerProcessBase } from "./base";
 
 export class AppInstallerProcess extends InstallerProcessBase {
   //#region LIFECYCLE
@@ -70,29 +70,29 @@ export class AppInstallerProcess extends InstallerProcessBase {
     if (existing) return;
 
     if (app.hidden || app.core) {
-      this.userDaemon?.sendNotification({
+      this.userDaemon?.notifications?.sendNotification({
         title: `Open ${this.metadata?.name}`,
         message: `Do you want open ${this.metadata?.name}?`,
-        image: this.userDaemon.getAppIcon(app),
+        image: this.userDaemon.icons!.getAppIcon(app),
         buttons: [
           {
             caption: "Open",
             action: async () => {
-              await this.userDaemon?.spawnApp(app.id, +this.env.get("shell_pid"));
+              await this.userDaemon?.spawn?.spawnApp(app.id, +this.env.get("shell_pid"));
             },
           },
         ],
       });
     } else {
-      this.userDaemon?.sendNotification({
+      this.userDaemon?.notifications?.sendNotification({
         title: `Pin ${this.metadata?.name}`,
         message: `Do you want to pin ${this.metadata?.name} to the taskbar so that you can easily launch it in the future?`,
-        image: this.userDaemon.getAppIcon(app),
+        image: this.userDaemon.icons!.getAppIcon(app),
         buttons: [
           {
             caption: "Pin to taskbar",
             action: () => {
-              this.userDaemon.pinApp(this.metadata?.appId!);
+              this.userDaemon.appreg!.pinApp(this.metadata?.appId!);
             },
           },
         ],
@@ -106,7 +106,7 @@ export class AppInstallerProcess extends InstallerProcessBase {
     this.logStatus(this.metadata!.name, "registration");
 
     try {
-      const result = await this.userDaemon?.registerAppFromPath(join(this.metadata!.installLocation, "_app.tpa"));
+      const result = await this.userDaemon?.appreg?.registerAppFromPath(join(this.metadata!.installLocation, "_app.tpa"));
       if (!result) {
         this.setCurrentStatus("done");
         return true;
@@ -161,6 +161,6 @@ export class AppInstallerProcess extends InstallerProcessBase {
       } catch {}
     }
 
-    host?.daemon.unpinApp(metadata.appId);
+    host?.daemon.appreg!.unpinApp(metadata.appId);
   }
 }

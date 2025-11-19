@@ -19,7 +19,7 @@ export class ExploreCommand extends TerminalProcess {
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const path = argv.join(" ");
 
-    term.daemon?.spawnApp("fileManager", term.pid, path ? term.join(path) : term.path);
+    term.daemon?.spawn?.spawnApp("fileManager", term.pid, path ? term.join(path) : term.path);
     return 0;
   }
 }

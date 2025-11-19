@@ -21,7 +21,7 @@
       <div class="items">
         {#each apps as app (`${app.id}-${app.metadata.name}`)}
           {#if app.metadata.appGroup === id}
-            {#if (isPopulatable(app) || $userPreferences.shell.visuals.showHiddenApps) && !process.userDaemon?.checkDisabled(app.id)}
+            {#if (isPopulatable(app) || $userPreferences.shell.visuals.showHiddenApps) && !process.userDaemon?.apps?.checkDisabled(app.id)}
               <ListItem {app} {process} />
             {/if}
           {/if}

@@ -22,15 +22,15 @@
 
   onMount(() => {
     getWall();
-    css = userDaemon?.getAppRendererStyle(theme.desktopAccent);
+    css = userDaemon?.renderer!.getAppRendererStyle(theme.desktopAccent);
   });
 
   async function getWall() {
-    wallpaper = (await userDaemon?.getWallpaper(theme?.desktopWallpaper))?.thumb;
+    wallpaper = (await userDaemon?.wallpaper!.getWallpaper(theme?.desktopWallpaper))?.thumb;
   }
 
   function apply() {
-    userDaemon?.applyThemeData(theme, id);
+    userDaemon?.themes?.applyThemeData(theme, id);
   }
 
   function deleteTheme() {
@@ -43,7 +43,7 @@
           {
             caption: "Delete it",
             action: () => {
-              userDaemon.deleteUserTheme(id);
+              userDaemon.themes?.deleteUserTheme(id);
             },
             suggested: true,
           },

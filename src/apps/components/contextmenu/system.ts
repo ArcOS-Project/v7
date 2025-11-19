@@ -121,7 +121,7 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
             icon: "arrow-left",
             action: (proc: AppProcess) => {
               if (!proc?.pid) return;
-              userDaemon?.moveWindow(
+              userDaemon?.workspaces?.moveWindow(
                 proc.pid,
                 workspaces[currentWorkspace - 1 >= 0 ? currentWorkspace - 1 : workspaces.length - 1]?.uuid
               );
@@ -135,7 +135,7 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
             icon: "arrow-right",
             action: (proc: AppProcess) => {
               if (!proc?.pid) return;
-              userDaemon?.moveWindow(
+              userDaemon?.workspaces?.moveWindow(
                 proc.pid,
                 workspaces[currentWorkspace + 1 <= workspaces.length - 1 ? currentWorkspace + 1 : 0]?.uuid
               );

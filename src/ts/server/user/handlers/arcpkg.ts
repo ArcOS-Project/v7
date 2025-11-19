@@ -10,7 +10,7 @@ const installArcPkg: (d: UserDaemon) => FileHandler = (daemon) => ({
     extensions: [".arc"],
   },
   async handle(path) {
-    daemon.spawnOverlay("AppPreInstall", +daemon.env.get("shell_pid"), path);
+    daemon.spawn?.spawnOverlay("AppPreInstall", +daemon.env.get("shell_pid"), path);
   },
 });
 

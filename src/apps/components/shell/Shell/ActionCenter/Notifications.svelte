@@ -30,13 +30,13 @@
       isEmpty = ![...notifications].filter(([_, n]) => !n.deleted).length;
     });
 
-    store = [...userDaemon.notifications];
+    store = [...userDaemon.notifications!.notifications];
     isEmpty = true;
     loading = false;
   });
 
   function clear() {
-    userDaemon?.clearNotifications();
+    userDaemon?.notifications?.clearNotifications();
   }
 </script>
 

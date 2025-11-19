@@ -57,7 +57,7 @@ export class HexEditRuntime extends AppProcess {
       return;
     }
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await this.userDaemon!.files!.FileProgress(
       {
         type: "size",
         caption: `Reading file`,
@@ -232,7 +232,7 @@ export class HexEditRuntime extends AppProcess {
   async saveFile() {
     if (!this.isModified()) return;
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await this.userDaemon!.files!.FileProgress(
       {
         type: "size",
         caption: `Saving ${this.filename()}`,

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { appShortcuts } from "$ts/apps/store";
   import type { ReadableStore } from "$ts/writable";
   import { ElevationLevel } from "$types/elevation";
   import type { StoreItem, UpdateInfo } from "$types/package";
@@ -22,7 +21,7 @@
   let content = $state<string>("Uninstall");
 
   async function go() {
-    const elevated = await process.userDaemon!.manuallyElevate({
+    const elevated = await process.userDaemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to remove a package",
       title: $pkg.pkg.name,
       description: `By ${$pkg.user?.displayName || $pkg.user?.username || $pkg.pkg.author}`,
@@ -34,7 +33,7 @@
 
     working = true;
     content = "Loading";
-    await process.userDaemon?.uninstallPackageWithStatus($pkg.pkg.appId, true);
+    await process.userDaemon?.appreg?.uninstallPackageWithStatus($pkg.pkg.appId, true);
     delete process.operations[$pkg._id];
     $update = false;
     $installed = undefined;

@@ -9,7 +9,7 @@
   let loading = $state<boolean>(false);
 
   async function changePassword() {
-    const confirm = await process.userDaemon?.Confirm(
+    const confirm = await process.userDaemon?.helpers?.Confirm(
       "Confirm password reset?",
       `Are you sure you want to change the password of '${user.username}'?`,
       "Cancel",

@@ -48,7 +48,7 @@ export class ImageViewerRuntime extends AppProcess {
   }
 
   async readFileIndirectFallback(path: string) {
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await this.userDaemon!.files!.FileProgress(
       {
         type: "size",
         caption: `Reading image`,

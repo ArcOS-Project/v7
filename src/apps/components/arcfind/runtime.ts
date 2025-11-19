@@ -69,7 +69,7 @@ export class ArcFindRuntime extends AppProcess {
           description: "Leave the desktop and turn off ArcOS",
           image: this.getIconCached("ShutdownIcon"),
           action: () => {
-            this.userDaemon?.shutdown();
+            this.userDaemon?.power?.shutdown();
           },
         },
         {
@@ -77,7 +77,7 @@ export class ArcFindRuntime extends AppProcess {
           description: "Leave the desktop and restart ArcOS",
           image: this.getIconCached("RestartIcon"),
           action: () => {
-            this.userDaemon?.restart();
+            this.userDaemon?.power?.restart();
           },
         },
         {
@@ -85,7 +85,7 @@ export class ArcFindRuntime extends AppProcess {
           description: "Leave the desktop and log out ArcOS",
           image: this.getIconCached("LogoutIcon"),
           action: () => {
-            this.userDaemon?.logoff();
+            this.userDaemon?.power?.logoff();
           },
         }
       );
@@ -111,7 +111,7 @@ export class ArcFindRuntime extends AppProcess {
         caption: file.shortcut ? file.shortcut.name : file.name,
         description: file.shortcut ? `Shortcut - ${file.path}` : file.path,
         action: () => {
-          this.userDaemon?.openFile(file.path, file.shortcut);
+          this.userDaemon?.files?.openFile(file.path, file.shortcut);
         },
         // Not using getIconCached for info?.icon because FileAssocSvc already returns a resolved icon path
         image: (file.shortcut ? this.getIconCached(file.shortcut.icon) : info?.icon) || this.getIconCached("DefaultMimeIcon"),

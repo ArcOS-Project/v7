@@ -23,6 +23,6 @@
 
 {#if app && app.metadata}
   <button class="pinned-app" title={app.metadata.name} onclick={spawn} data-contextmenu="startmenu-app" use:contextProps={[app]}>
-    <img src={process.userDaemon?.getAppIcon(app) || process.getIconCached("ComponentIcon")} alt="" />
+    <img src={process.userDaemon?.icons?.getAppIcon(app) || process.getIconCached("ComponentIcon")} alt="" />
   </button>
 {/if}
