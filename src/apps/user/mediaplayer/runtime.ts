@@ -400,7 +400,7 @@ export class MediaPlayerRuntime extends AppProcess {
 
     const filename = getItemNameFromPath(this.playlistPath());
 
-    this.userDaemon?.files?.createShortcut(
+    this.userDaemon?.shortcuts?.createShortcut(
       {
         type: "file",
         target: this.playlistPath(),

@@ -7,7 +7,7 @@
 </script>
 
 <div class="process">
-  <img src={process.userDaemon?.appreg!.getAppIcon(data) || process.getIconCached("ComponentIcon")} alt="" />
+  <img src={process.userDaemon?.icons!.getAppIcon(data) || process.getIconCached("ComponentIcon")} alt="" />
   <p class="name">{data?.metadata?.name || "Unknown app"}</p>
   {#if proc?.pid}
     <p class="pid">(PID {proc.pid})</p>

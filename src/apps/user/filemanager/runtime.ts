@@ -742,7 +742,7 @@ export class FileManagerRuntime extends AppProcess {
 
     const info = this.userDaemon?.assoc?.getFileAssociation(name);
 
-    this.userDaemon?.files?.createShortcut(
+    this.userDaemon?.shortcuts?.createShortcut(
       {
         type: folder ? "folder" : "file",
         target: path,

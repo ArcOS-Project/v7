@@ -32,18 +32,18 @@ export class ElevationUserContext extends UserContext {
     const key = UUID();
     const shellPid = this.env.get("shell_pid");
 
-    if (this.userDaemon.preferences().security.disabled) return true;
-    if (this.userDaemon.preferences().disabledApps.includes("SecureContext")) return true;
+    if (this.daemon.preferences().security.disabled) return true;
+    if (this.daemon.preferences().disabledApps.includes("SecureContext")) return true;
 
     this._elevating = true;
-    this.userDaemon.renderer?.setAppRendererClasses(this.userDaemon.preferences()); 
+    this.daemon.renderer?.setAppRendererClasses(this.daemon.preferences()); 
 
     if (shellPid) {
-      const proc = await this.userDaemon.spawn?._spawnOverlay("SecureContext", undefined, +shellPid, id, key, data); 
+      const proc = await this.daemon.spawn?._spawnOverlay("SecureContext", undefined, +shellPid, id, key, data); 
 
       if (!proc) return false;
     } else {
-      const proc = await this.userDaemon.spawn?._spawnApp("SecureContext", undefined, this.pid, id, key, data); 
+      const proc = await this.daemon.spawn?._spawnApp("SecureContext", undefined, this.pid, id, key, data); 
 
       if (!proc) return false;
     }
@@ -53,7 +53,7 @@ export class ElevationUserContext extends UserContext {
         if (data[0] === id && data[1] === key) {
           r(true);
           this._elevating = false;
-          this.userDaemon.renderer?.setAppRendererClasses(this.userDaemon.preferences()); 
+          this.daemon.renderer?.setAppRendererClasses(this.daemon.preferences()); 
         }
       });
 
@@ -61,7 +61,7 @@ export class ElevationUserContext extends UserContext {
         if (data[0] === id && data[1] === key) {
           r(false);
           this._elevating = false;
-          this.userDaemon.renderer?.setAppRendererClasses(this.userDaemon.preferences()); 
+          this.daemon.renderer?.setAppRendererClasses(this.daemon.preferences()); 
         }
       });
     });

@@ -30,26 +30,26 @@ export class ChecksUserContext extends UserContext {
 
   checkReducedMotion() {
     if (
-      this.userDaemon.preferencesCtx?.getGlobalSetting("reducedMotionDetection_disable") ||
-      this.userDaemon.preferences().shell.visuals.noAnimations
+      this.daemon.preferencesCtx?.getGlobalSetting("reducedMotionDetection_disable") ||
+      this.daemon.preferences().shell.visuals.noAnimations
     )
       return;
 
     if (window.matchMedia("(prefers-reduced-motion)").matches) {
-      this.userDaemon.notifications?.sendNotification({
+      this.daemon.notifications?.sendNotification({
         title: "Disable animations?",
         message: "ArcOS has detected that your device has Reduced Motion activated. Do you want ArcOS to reduce animations also?",
         buttons: [
           {
             caption: "Don't show again",
             action: () => {
-              this.userDaemon.preferencesCtx?.setGlobalSetting("reducedMotionDetection_disable", true);
+              this.daemon.preferencesCtx?.setGlobalSetting("reducedMotionDetection_disable", true);
             },
           },
           {
             caption: "Reduce",
             action: () => {
-              this.userDaemon.preferences.update((v) => {
+              this.daemon.preferences.update((v) => {
                 v.shell.visuals.noAnimations = true;
                 return v;
               });
@@ -63,14 +63,14 @@ export class ChecksUserContext extends UserContext {
   }
 
   async checkForUpdates() {
-    if (this.userDaemon.preferences().globalSettings.noUpdateNotif) return;
+    if (this.daemon.preferences().globalSettings.noUpdateNotif) return;
 
     const distrib = this.serviceHost?.getService<DistributionServiceProcess>("DistribSvc");
     const updates = await distrib?.checkForAllStoreItemUpdates();
 
     if (updates?.length) {
       const first = updates[0];
-      const notif = this.userDaemon.notifications?.sendNotification({
+      const notif = this.daemon.notifications?.sendNotification({
         ...(updates.length === 1
           ? {
               title: "Update available!",
@@ -89,18 +89,18 @@ export class ChecksUserContext extends UserContext {
           {
             caption: "View",
             action: () => {
-              if (notif) this.userDaemon.notifications?.deleteNotification(notif);
+              if (notif) this.daemon.notifications?.deleteNotification(notif);
 
-              this.userDaemon.spawn?.spawnApp("AppStore", +this.env.get("shell_pid"), "installed");
+              this.daemon.spawn?.spawnApp("AppStore", +this.env.get("shell_pid"), "installed");
             },
             suggested: true,
           },
           {
             caption: "Don't show again",
             action: () => {
-              if (notif) this.userDaemon.notifications?.deleteNotification(notif);
+              if (notif) this.daemon.notifications?.deleteNotification(notif);
 
-              this.userDaemon.preferences.update((v) => {
+              this.daemon.preferences.update((v) => {
                 v.globalSettings.noUpdateNotif = true;
                 return v;
               });
@@ -113,7 +113,7 @@ export class ChecksUserContext extends UserContext {
 
   async checkForMissedMessages() {
     const service = this.serviceHost!.getService<MessagingInterface>("MessagingService")!;
-    const archived = this.userDaemon.preferences().appPreferences?.Messages?.archive || [];
+    const archived = this.daemon.preferences().appPreferences?.Messages?.archive || [];
     const messages =
       (await service?.getReceivedMessages())?.filter(
         (m) => !m.read && !archived.includes(m._id) && m.authorId !== this.userInfo?._id
@@ -123,7 +123,7 @@ export class ChecksUserContext extends UserContext {
 
     if (messages?.length === 1) {
       const message = messages[0];
-      this.userDaemon?.notifications?.sendNotification({
+      this.daemon?.notifications?.sendNotification({
         className: "incoming-message",
         image: message.author?.profilePicture,
         title: message.author?.username || "New message",
@@ -132,13 +132,13 @@ export class ChecksUserContext extends UserContext {
           {
             caption: "View message",
             action: () => {
-              this.userDaemon.spawn?.spawnApp("Messages", +this.env.get("shell_pid"), "inbox", message._id);
+              this.daemon.spawn?.spawnApp("Messages", +this.env.get("shell_pid"), "inbox", message._id);
             },
           },
         ],
       });
     } else {
-      this.userDaemon?.notifications?.sendNotification({
+      this.daemon?.notifications?.sendNotification({
         title: "Missed messages",
         message: `You have ${messages.length} ${Plural("message", messages.length)} in your inbox that you haven't read yet.`,
         image: "MessagingIcon",
@@ -146,7 +146,7 @@ export class ChecksUserContext extends UserContext {
           {
             caption: "Open inbox",
             action: () => {
-              this.userDaemon.spawn?.spawnApp("Messages", +this.env.get("shell_pid"), "inbox");
+              this.daemon.spawn?.spawnApp("Messages", +this.env.get("shell_pid"), "inbox");
             },
           },
         ],
@@ -156,7 +156,7 @@ export class ChecksUserContext extends UserContext {
   async waitForLeaveInvocationAllow() {
     return new Promise<void>((r) => {
       const interval = setInterval(() => {
-        if (!this.userDaemon._blockLeaveInvocations) r(clearInterval(interval));
+        if (!this.daemon._blockLeaveInvocations) r(clearInterval(interval));
       }, 1);
     });
   }
@@ -192,7 +192,7 @@ export class ChecksUserContext extends UserContext {
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
         buttons: [
-          { caption: "Restart now", action: () => this.userDaemon.power?.restart() },
+          { caption: "Restart now", action: () => this.daemon.power?.restart() },
           { caption: "Okay", action: () => {}, suggested: true },
         ],
       },
@@ -202,7 +202,7 @@ export class ChecksUserContext extends UserContext {
   }
 
   iHaveFeedback(process: AppProcess) {
-    this.userDaemon.spawn?.spawnApp(
+    this.daemon.spawn?.spawnApp(
       "BugHuntCreator",
       undefined,
       `[${process.app.id}] Feedback report - ${process.windowTitle()}`,

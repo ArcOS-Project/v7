@@ -54,9 +54,9 @@ export class AccountUserContext extends UserContext {
 
       if (!data) return undefined;
 
-      this.userDaemon.preferencesCtx?.preferences.set(data.preferences);
+      this.daemon.preferencesCtx?.preferences.set(data.preferences);
 
-      this.userDaemon?.preferencesCtx?.sanitizeUserPreferences(); 
+      this.daemon?.preferencesCtx?.sanitizeUserPreferences(); 
 
       this.initialized = true;
       this.userInfo = data;
@@ -65,7 +65,7 @@ export class AccountUserContext extends UserContext {
 
       return response.status === 200 ? (response.data as UserInfo) : undefined;
     } catch {
-      await this.userDaemon.killSelf();
+      await this.daemon.killSelf();
 
       return undefined;
     }
@@ -76,7 +76,7 @@ export class AccountUserContext extends UserContext {
 
     this.Log(`Changing username to "${newUsername}"`);
 
-    const elevated = await this.userDaemon.elevation?.manuallyElevate({
+    const elevated = await this.daemon.elevation?.manuallyElevate({
       what: "ArcOS needs your permission to change your username:",
       image: "AccountIcon",
       title: "Change username",
@@ -112,7 +112,7 @@ export class AccountUserContext extends UserContext {
 
     this.Log(`Changing password to [REDACTED]`);
 
-    const elevated = await this.userDaemon.elevation?.manuallyElevate({
+    const elevated = await this.daemon.elevation?.manuallyElevate({
       what: "ArcOS needs your permission to change your password:",
       image: "PasswordIcon",
       title: "Change password",
@@ -163,7 +163,7 @@ export class AccountUserContext extends UserContext {
             caption: "Delete account",
             action: async () => {
               await Backend.delete(`/user`, { headers: { Authorization: `Bearer ${this.token}` } });
-              this.userDaemon?.power?.logoff();
+              this.daemon?.power?.logoff();
             },
             suggested: true,
           },

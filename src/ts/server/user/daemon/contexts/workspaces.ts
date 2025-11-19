@@ -76,7 +76,7 @@ export class WorkspaceUserContext extends UserContext {
 
     if (index < 0) return;
 
-    this.userDaemon.preferences.update((v) => {
+    this.daemon.preferences.update((v) => {
       v.workspaces.desktops.splice(index, 1);
 
       return v;
@@ -107,13 +107,13 @@ export class WorkspaceUserContext extends UserContext {
     KernelStack().renderer?.target.append(outer);
     this.virtualDesktop = inner;
 
-    this.syncVirtualDesktops(this.userDaemon.preferences());
+    this.syncVirtualDesktops(this.daemon.preferences());
   }
 
   getCurrentDesktop(): HTMLDivElement | undefined {
     if (this._disposed) return;
 
-    const { workspaces } = this.userDaemon.preferences();
+    const { workspaces } = this.daemon.preferences();
 
     if (!workspaces.desktops.length) {
       this.createWorkspace("Default");
@@ -136,7 +136,7 @@ export class WorkspaceUserContext extends UserContext {
 
     const uuid = UUID();
 
-    this.userDaemon.preferences.update((v) => {
+    this.daemon.preferences.update((v) => {
       v.workspaces.desktops.push({ uuid, name });
       return v;
     });
@@ -147,7 +147,7 @@ export class WorkspaceUserContext extends UserContext {
 
     const {
       workspaces: { desktops },
-    } = this.userDaemon.preferences();
+    } = this.daemon.preferences();
 
     for (let i = 0; i < desktops.length; i++) {
       if (uuid === desktops[i].uuid) return i;
@@ -165,7 +165,7 @@ export class WorkspaceUserContext extends UserContext {
 
     if (i < 0) return;
 
-    this.userDaemon.preferences.update((v) => {
+    this.daemon.preferences.update((v) => {
       v.workspaces.index = i;
       return v;
     });
@@ -194,10 +194,10 @@ export class WorkspaceUserContext extends UserContext {
 
     const {
       workspaces: { desktops, index },
-    } = this.userDaemon.preferences();
+    } = this.daemon.preferences();
 
     if (desktops.length - 1 >= index + 1) {
-      this.userDaemon.preferences.update((v) => {
+      this.daemon.preferences.update((v) => {
         v.workspaces.index++;
 
         return v;
@@ -214,10 +214,10 @@ export class WorkspaceUserContext extends UserContext {
 
     const {
       workspaces: { index },
-    } = this.userDaemon.preferences();
+    } = this.daemon.preferences();
 
     if (index - 1 >= 0) {
-      this.userDaemon.preferences.update((v) => {
+      this.daemon.preferences.update((v) => {
         v.workspaces.index--;
 
         return v;

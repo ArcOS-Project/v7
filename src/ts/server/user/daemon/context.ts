@@ -6,11 +6,11 @@ import type { UserInfo } from "$types/user";
 import type { UserDaemon } from ".";
 
 export class UserContext {
-  #userDaemon: UserDaemon;
+  #daemon: UserDaemon;
   #id: string;
 
   constructor(id: string, daemon: UserDaemon) {
-    this.#userDaemon = daemon;
+    this.#daemon = daemon;
     this.#id = id;
   }
 
@@ -60,59 +60,59 @@ export class UserContext {
 
   //#endregion KMOD REFERENCES
 
-  protected get userDaemon() {
-    return this.#userDaemon;
+  protected get daemon() {
+    return this.#daemon;
   }
 
   protected get serviceHost() {
-    return this.#userDaemon.serviceHost;
+    return this.#daemon.serviceHost;
   }
 
   protected get GlobalLoadIndicator() {
-    return this.#userDaemon.GlobalLoadIndicator;
+    return this.#daemon.GlobalLoadIndicator;
   }
 
   protected get appStorage() {
-    return this.#userDaemon.appStorage;
+    return this.#daemon.appStorage;
   }
 
   protected get safeMode() {
-    return this.#userDaemon.safeMode;
+    return this.#daemon.safeMode;
   }
 
   protected get _disposed() {
-    return this.#userDaemon._disposed;
+    return this.#daemon._disposed;
   }
 
   protected get pid() {
-    return this.#userDaemon.pid;
+    return this.#daemon.pid;
   }
 
   protected get userInfo() {
-    return this.#userDaemon.userInfo;
+    return this.#daemon.userInfo;
   }
 
   protected set userInfo(value: UserInfo) {
-    this.userDaemon.userInfo = value;
+    this.daemon.userInfo = value;
   }
 
   protected get token() {
-    return this.#userDaemon.token;
+    return this.#daemon.token;
   }
 
   protected get username() {
-    return this.#userDaemon.username;
+    return this.#daemon.username;
   }
 
   protected set username(username: string) {
-    this.#userDaemon.username = username;
+    this.#daemon.username = username;
   }
 
   protected get initialized() {
-    return this.#userDaemon.initialized;
+    return this.#daemon.initialized;
   }
 
   protected set initialized(value: boolean) {
-    this.#userDaemon.initialized = value;
+    this.#daemon.initialized = value;
   }
 }

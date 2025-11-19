@@ -51,7 +51,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
 
           if (!path) return;
 
-          await runtime.userDaemon?.files!.createShortcut(
+          await runtime.userDaemon?.shortcuts!.createShortcut(
             {
               icon: `@app::${app.id}`,
               name: app.metadata.name,
@@ -177,7 +177,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
 
           if (!path) return;
 
-          await runtime.userDaemon?.files!.createShortcut(
+          await runtime.userDaemon?.shortcuts!.createShortcut(
             {
               icon: `@app::${appData.id}`,
               name: appData.metadata.name,

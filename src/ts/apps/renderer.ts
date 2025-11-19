@@ -290,7 +290,7 @@ export class AppRenderer extends Process {
       titleIcon.src = process.getIconCached(v) || v;
     });
 
-    titleIcon.src = process.userDaemon?.appreg!.getAppIconByProcess(process) || process.getIconCached("ComponentIcon");
+    titleIcon.src = process.userDaemon?.icons!.getAppIconByProcess(process) || process.getIconCached("ComponentIcon");
 
     title.className = "window-title";
     title.append(titleIcon, titleCaption, this._renderAltMenu(process));

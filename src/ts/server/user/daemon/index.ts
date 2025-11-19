@@ -34,10 +34,12 @@ import type { AppRendererUserContext } from "./contexts/apprenderer";
 import type { ChecksUserContext } from "./contexts/checks";
 import type { ElevationUserContext } from "./contexts/elevation";
 import type { FilesystemUserContext } from "./contexts/filesystem";
+import type { IconsUserContext } from "./contexts/icons";
 import type { MigrationsUserContext } from "./contexts/migrations";
 import type { NotificationsUserContext } from "./contexts/notifications";
 import type { PowerUserContext } from "./contexts/power";
 import type { PreferencesUserContext } from "./contexts/preferences";
+import type { ShortcutsUserContext } from "./contexts/shortcuts";
 import type { SpawnUserContext } from "./contexts/spawn";
 import type { StatusUserContext } from "./contexts/status";
 import type { ThemesUserContext } from "./contexts/themes";
@@ -76,6 +78,7 @@ export class UserDaemon extends Process {
   checks?: ChecksUserContext;
   elevation?: ElevationUserContext;
   files?: FilesystemUserContext;
+  icons?: IconsUserContext;
   migrations?: MigrationsUserContext;
   notifications?: NotificationsUserContext;
   power?: PowerUserContext;
@@ -86,6 +89,7 @@ export class UserDaemon extends Process {
   version?: VersionUserContext;
   wallpaper?: WallpaperUserContext;
   workspaces?: WorkspaceUserContext;
+  shortcuts?: ShortcutsUserContext;
 
   get preferences() {
     return this.preferencesCtx!.preferences!;

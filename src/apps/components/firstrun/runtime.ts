@@ -37,7 +37,7 @@ export class FirstRunRuntime extends AppProcess {
       const payload = FirstRunShortcuts[path];
       caption.set(`Creating shortcut for ${payload.name}`);
 
-      await this.userDaemon?.files!.createShortcut(payload, path);
+      await this.userDaemon?.shortcuts!.createShortcut(payload, path);
     }
 
     await this.userDaemon?.version!.updateRegisteredVersion();

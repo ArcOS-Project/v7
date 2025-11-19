@@ -110,7 +110,7 @@ export class FileAssocService extends BaseService {
     return {
       extension: extension,
       friendlyName: definition?.friendlyName || "Unknown",
-      icon: this.host.daemon.appreg!.getIconCached(definition?.icon || "DefaultMimeIcon"),
+      icon: this.host.daemon.icons!.getIconCached(definition?.icon || "DefaultMimeIcon"),
       handledBy: {
         app: storage?.getAppSynchronous(
           Object.entries(associations.apps)

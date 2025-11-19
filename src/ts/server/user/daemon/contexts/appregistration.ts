@@ -1,11 +1,8 @@
-import type { AppProcess } from "$ts/apps/process";
 import type { ApplicationStorage } from "$ts/apps/storage";
 import { BuiltinAppImportPathAbsolutes } from "$ts/apps/store";
 import { MessageBox } from "$ts/dialog";
 import type { DistributionServiceProcess } from "$ts/distrib";
 import { ArcOSVersion } from "$ts/env";
-import type { IconService } from "$ts/icon";
-import { maybeIconId } from "$ts/images";
 import { tryJsonParse } from "$ts/json";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -13,7 +10,6 @@ import { deepCopyWithBlobs } from "$ts/util";
 import { arrayToText, textToBlob } from "$ts/util/convert";
 import { getParentDirectory, join } from "$ts/util/fs";
 import { compareVersion } from "$ts/version";
-import { Store, type ReadableStore } from "$ts/writable";
 import type { App, AppStorage, InstalledApp } from "$types/app";
 import { LogLevel } from "$types/logging";
 import type { UserDaemon } from "..";
@@ -28,7 +24,7 @@ export class AppRegistrationUserContext extends UserContext {
   async initAppStorage(storage: ApplicationStorage, cb: (app: App) => void) {
     this.Log(`Now trying to load built-in applications...`);
 
-    const blocklist = this.userDaemon.preferences()._internalImportBlocklist || [];
+    const blocklist = this.daemon.preferences()._internalImportBlocklist || [];
 
     const builtins: App[] = await Promise.all(
       Object.keys(BuiltinAppImportPathAbsolutes).map(async (path) => {
@@ -82,10 +78,10 @@ export class AppRegistrationUserContext extends UserContext {
   }
 
   async getUserApps(): Promise<AppStorage> {
-    if (!this.userDaemon.preferences()) return [];
+    if (!this.daemon.preferences()) return [];
 
     
-    await this.userDaemon.migrations!.migrateUserAppsToFs();
+    await this.daemon.migrations!.migrateUserAppsToFs();
 
     const bulk = Object.fromEntries(
       Object.entries(await this.fs.bulk(UserPaths.AppRepository, "json")).map(([k, v]) => [k.replace(".json", ""), v])
@@ -178,36 +174,6 @@ export class AppRegistrationUserContext extends UserContext {
     });
   }
 
-  getAppIcon(app: App) {
-    return this.getIconCached(`@app::${app.id}`) || this?.getIconCached("ComponentIcon");
-  }
-
-  getAppIconByProcess(process: AppProcess) {
-    return this.getAppIcon(process.app?.data) || this?.getIconCached("ComponentIcon");
-  }
-
-  async getIcon(id: string): Promise<string> {
-    const iconService = this.serviceHost?.getService<IconService>("IconService");
-
-    return (await iconService?.getIcon(id)) || this?.getIconCached("ComponentIcon");
-  }
-
-  getIconCached(id: string): string {
-    const iconService = this.serviceHost?.getService<IconService>("IconService");
-
-    return iconService?.getIconCached(id) || "";
-  }
-
-  getIconStore(id: string): ReadableStore<string> {
-    const store = Store<string>();
-    const iconService = this.serviceHost?.getService<IconService>("IconService");
-
-    if (!iconService) store.set(maybeIconId(id) || "");
-
-    iconService?.getIcon(id)?.then((i) => store.set(i));
-
-    return store;
-  }
 
   async pinApp(appId: string) {
     this.Log(`Pinning ${appId}`);
@@ -217,7 +183,7 @@ export class AppRegistrationUserContext extends UserContext {
 
     if (!app) return;
 
-    this.userDaemon.preferences.update((v) => {
+    this.daemon.preferences.update((v) => {
       if (v.pinnedApps.includes(appId)) return v;
 
       v.pinnedApps.push(appId);
@@ -229,7 +195,7 @@ export class AppRegistrationUserContext extends UserContext {
   unpinApp(appId: string) {
     this.Log(`Unpinning ${appId}`);
 
-    this.userDaemon.preferences.update((v) => {
+    this.daemon.preferences.update((v) => {
       if (!v.pinnedApps.includes(appId)) return v;
 
       v.pinnedApps.splice(v.pinnedApps.indexOf(appId), 1);

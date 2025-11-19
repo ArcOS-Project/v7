@@ -42,7 +42,7 @@
 
 <div class="header">
   <div class="left">
-    <img src={process.userDaemon?.appreg!.getAppIcon(target) || process.getIconCached("QuestionIcon")} alt="" />
+    <img src={process.userDaemon?.icons!.getAppIcon(target) || process.getIconCached("QuestionIcon")} alt="" />
     <div class="base-info">
       <p class="name">
         <span>{target?.metadata?.name || "Unknown"}</span>

@@ -43,7 +43,7 @@ export class WallpaperUserContext extends UserContext {
 
     this.Log(`Uploading wallpaper to U:/Wallpapers`);
 
-    const prog = await this.userDaemon.files!.FileProgress(
+    const prog = await this.daemon.files!.FileProgress(
       {
         type: "size",
         icon: "ImageMimeIcon",
@@ -74,7 +74,7 @@ export class WallpaperUserContext extends UserContext {
         thumb: "",
       };
 
-      this.userDaemon.preferences.update((v) => {
+      this.daemon.preferences.update((v) => {
         v.userWallpapers ||= {};
         v.userWallpapers[`@local:${btoa(path)}`] = wallpaper;
 
@@ -121,7 +121,7 @@ export class WallpaperUserContext extends UserContext {
       result = false;
     }
 
-    this.userDaemon.preferences.update((v) => {
+    this.daemon.preferences.update((v) => {
       delete v.userWallpapers[id];
 
       return v;
@@ -135,7 +135,7 @@ export class WallpaperUserContext extends UserContext {
   async getLocalWallpaper(id: string): Promise<Wallpaper> {
     if (this._disposed) return Wallpapers.img0;
 
-    const wallpaperData = this.userDaemon.preferences().userWallpapers[id];
+    const wallpaperData = this.daemon.preferences().userWallpapers[id];
 
     if (!wallpaperData) {
       this.Log(`Tried to get unknown user wallpaper '${id}', defaulting to img04`, LogLevel.warning);

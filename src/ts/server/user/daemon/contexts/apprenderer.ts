@@ -13,7 +13,7 @@ export class AppRendererUserContext extends UserContext {
   
     getAppRendererStyle(accent: string) {
       return `
-      --blur: ${this.userDaemon.preferences().shell.visuals.blurRadius}px;
+      --blur: ${this.daemon.preferences().shell.visuals.blurRadius}px;
       --accent: ${hex3to6(accent)} !important;
       --accent-transparent: ${hex3to6(accent)}44 !important;
       --accent-light: ${lightenColor(accent)} !important;
@@ -25,8 +25,8 @@ export class AppRendererUserContext extends UserContext {
       --accent-suggested-start: #${accent} !important;
       --accent-suggested-end: ${darkenColor(accent, 10)} !important;
       --accent-suggested-fg: ${bestForeground(accent)} !important;
-      --wallpaper: url('${this.userDaemon.wallpaper?.Wallpaper()?.url || Wallpapers.img0.url}');
-      --user-font: "${this.userDaemon.preferences().shell.visuals.userFont || ""}";`;
+      --wallpaper: url('${this.daemon.wallpaper?.Wallpaper()?.url || Wallpapers.img0.url}');
+      --user-font: "${this.daemon.preferences().shell.visuals.userFont || ""}";`;
     }
   
     async setAppRendererClasses(v: UserPreferences) {
@@ -63,6 +63,6 @@ export class AppRendererUserContext extends UserContext {
         KernelStack().renderer?.target.append(styleLoader);
       }
   
-      styleLoader.textContent = style.enabled && !this.userDaemon.elevation?._elevating ? style.content || "" : "";
+      styleLoader.textContent = style.enabled && !this.daemon.elevation?._elevating ? style.content || "" : "";
     }
 }

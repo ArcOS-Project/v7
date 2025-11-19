@@ -32,6 +32,6 @@ export class VersionUserContext extends UserContext {
     iconService?.migrateIconConfiguration();
 
     
-    this.userDaemon.spawn?.spawnOverlay("UpdateNotifierApp", +this.env.get("shell_pid"));
+    this.daemon.spawn?.spawnOverlay("UpdateNotifierApp", +this.env.get("shell_pid"));
   }
 }

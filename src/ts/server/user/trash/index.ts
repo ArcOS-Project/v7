@@ -128,7 +128,7 @@ export class TrashCanService extends BaseService {
         caption: "Emptying recycle bin",
         subtitle: "Please wait...",
         max: Object.entries(buffer).length,
-        icon: this.host.daemon.appreg?.getIconCached("TrashIcon"),
+        icon: this.host.daemon.icons?.getIconCached("TrashIcon"),
       },
       +this.env.get("shell_pid")
     );

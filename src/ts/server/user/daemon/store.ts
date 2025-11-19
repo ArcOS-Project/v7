@@ -7,10 +7,12 @@ import { AppRendererUserContext } from "./contexts/apprenderer";
 import { ChecksUserContext } from "./contexts/checks";
 import { ElevationUserContext } from "./contexts/elevation";
 import { FilesystemUserContext } from "./contexts/filesystem";
+import { IconsUserContext } from "./contexts/icons";
 import { MigrationsUserContext } from "./contexts/migrations";
 import { NotificationsUserContext } from "./contexts/notifications";
 import { PowerUserContext } from "./contexts/power";
 import { PreferencesUserContext } from "./contexts/preferences";
+import { ShortcutsUserContext } from "./contexts/shortcuts";
 import { SpawnUserContext } from "./contexts/spawn";
 import { StatusUserContext } from "./contexts/status";
 import { ThemesUserContext } from "./contexts/themes";
@@ -27,10 +29,12 @@ export const UserContexts: Record<string, typeof UserContext> = {
   checks: ChecksUserContext,
   elevation: ElevationUserContext,
   files: FilesystemUserContext,
+  icons: IconsUserContext,
   migrations: MigrationsUserContext,
   notifications: NotificationsUserContext,
   power: PowerUserContext,
   preferencesCtx: PreferencesUserContext,
+  shortcuts: ShortcutsUserContext,
   spawn: SpawnUserContext,
   status: StatusUserContext,
   themes: ThemesUserContext,

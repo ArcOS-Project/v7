@@ -38,7 +38,7 @@ export class MigrationsUserContext extends UserContext {
 
   async updateAppShortcutsDir() {
     const contents = await this.fs.readDir(UserPaths.AppShortcuts);
-    const storage = this.userDaemon.appStorage()?.buffer();
+    const storage = this.daemon.appStorage()?.buffer();
 
     if (!storage || !contents) return;
 
@@ -47,7 +47,7 @@ export class MigrationsUserContext extends UserContext {
 
       if (existing) continue;
 
-      this.userDaemon.files?.createShortcut(
+      this.daemon.shortcuts?.createShortcut(
         {
           name: app.id,
           target: app.id,
@@ -61,7 +61,7 @@ export class MigrationsUserContext extends UserContext {
   }
 
   async migrateUserAppsToFs() {
-    const apps = this.userDaemon.preferences().userApps;
+    const apps = this.daemon.preferences().userApps;
 
     if (!Object.entries(apps).length) return;
 
@@ -71,7 +71,7 @@ export class MigrationsUserContext extends UserContext {
       await this.fs.writeFile(join(UserPaths.AppRepository, `${id}.json`), textToBlob(JSON.stringify(apps[id], null, 2)));
     }
 
-    this.userDaemon.preferences.update((v) => {
+    this.daemon.preferences.update((v) => {
       v.userApps = {};
       return v;
     });
@@ -84,12 +84,12 @@ export class MigrationsUserContext extends UserContext {
     if (!apps) return;
 
     
-    this.userDaemon.assoc?.updateConfiguration((config) => {
+    this.daemon.assoc?.updateConfiguration((config) => {
       for (const app of apps) {
         if (!app.opens?.extensions) continue;
 
         for (const extension of app.opens.extensions) {
-          const existingAssociation = this.userDaemon.assoc?.getFileAssociation(`dummy${extension}`);
+          const existingAssociation = this.daemon.assoc?.getFileAssociation(`dummy${extension}`);
 
           if (existingAssociation) continue;
 

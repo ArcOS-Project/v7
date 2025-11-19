@@ -73,7 +73,7 @@ export class AppInstallerProcess extends InstallerProcessBase {
       this.userDaemon?.notifications!.sendNotification({
         title: `Open ${this.metadata?.name}`,
         message: `Do you want open ${this.metadata?.name}?`,
-        image: this.userDaemon.appreg!.getAppIcon(app),
+        image: this.userDaemon.icons!.getAppIcon(app),
         buttons: [
           {
             caption: "Open",
@@ -87,7 +87,7 @@ export class AppInstallerProcess extends InstallerProcessBase {
       this.userDaemon?.notifications!.sendNotification({
         title: `Pin ${this.metadata?.name}`,
         message: `Do you want to pin ${this.metadata?.name} to the taskbar so that you can easily launch it in the future?`,
-        image: this.userDaemon.appreg!.getAppIcon(app),
+        image: this.userDaemon.icons!.getAppIcon(app),
         buttons: [
           {
             caption: "Pin to taskbar",
