@@ -1,12 +1,5 @@
 //#region IMPORTS
-import { GlobalLoadIndicatorApp } from "$apps/components/globalloadindicator/GlobalLoadIndicator";
-import { GlobalLoadIndicatorRuntime } from "$apps/components/globalloadindicator/runtime";
-import type { IconPickerData } from "$apps/components/iconpicker/types";
-import { TerminalWindowApp } from "$apps/components/terminalwindow/TerminalWindow";
-import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
-import { AppProcess } from "$ts/apps/process";
 import { ApplicationStorage } from "$ts/apps/storage";
-import { MessageBox } from "$ts/dialog";
 import { getKMod, KernelStack } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { Process } from "$ts/process/instance";
@@ -16,12 +9,10 @@ import type { GlobalDispatch } from "$ts/server/ws";
 import { ServiceHost } from "$ts/services";
 import { Sleep } from "$ts/sleep";
 import { LibraryManagement } from "$ts/tpa/libraries";
-import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
 import type { App } from "$types/app";
 import type { EnvironmentType, ServerManagerType } from "$types/kernel";
 import type { Service } from "$types/service";
-import type { ExpandedTerminal } from "$types/terminal";
 import type { UserInfo, UserPreferences } from "$types/user";
 import type { FileAssocService } from "../assoc";
 import { DefaultUserInfo } from "../default";
@@ -36,13 +27,13 @@ import type { ElevationUserContext } from "./contexts/elevation";
 import type { FilesystemUserContext } from "./contexts/filesystem";
 import type { HelpersUserContext } from "./contexts/helpers";
 import type { IconsUserContext } from "./contexts/icons";
+import type { InitUserContext } from "./contexts/init";
 import type { MigrationsUserContext } from "./contexts/migrations";
 import type { NotificationsUserContext } from "./contexts/notifications";
 import type { PowerUserContext } from "./contexts/power";
 import type { PreferencesUserContext } from "./contexts/preferences";
 import type { ShortcutsUserContext } from "./contexts/shortcuts";
 import type { SpawnUserContext } from "./contexts/spawn";
-import type { StatusUserContext } from "./contexts/status";
 import type { ThemesUserContext } from "./contexts/themes";
 import type { VersionUserContext } from "./contexts/version";
 import type { WallpaperUserContext } from "./contexts/wallpaper";
@@ -81,12 +72,12 @@ export class UserDaemon extends Process {
   files?: FilesystemUserContext;
   helpers?: HelpersUserContext;
   icons?: IconsUserContext;
+  init?: InitUserContext;
   migrations?: MigrationsUserContext;
   notifications?: NotificationsUserContext;
   power?: PowerUserContext;
   preferencesCtx?: PreferencesUserContext;
   spawn?: SpawnUserContext;
-  status?: StatusUserContext;
   themes?: ThemesUserContext;
   version?: VersionUserContext;
   wallpaper?: WallpaperUserContext;
@@ -173,16 +164,6 @@ export class UserDaemon extends Process {
     }
   }
 
-  async startServiceHost(svcPreRun?: (service: Service) => void) {
-    this.Log("Starting service host");
-
-    this.serviceHost = await KernelStack().spawn<ServiceHost>(ServiceHost, undefined, this.userInfo!._id, this.pid);
-    await this.serviceHost?.init(svcPreRun);
-
-    this.assoc = this.serviceHost?.getService<FileAssocService>("FileAssocSvc");
-    this.libraries = this.serviceHost?.getService<LibraryManagement>("LibMgmtSvc")!;
-  }
-
   async activateGlobalDispatch() {
     this.globalDispatch = this.serviceHost!.getService<GlobalDispatch>("GlobalDispatch");
 
@@ -208,10 +189,6 @@ export class UserDaemon extends Process {
   }
 
   //#endregion INIT
-  //#region HELPERS
-
-
-  //#endregion HELPERS
 }
 
 export function TryGetDaemon(): UserDaemon | undefined {

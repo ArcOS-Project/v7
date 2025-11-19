@@ -214,11 +214,11 @@ export class LoginAppRuntime extends AppProcess {
 
     broadcast("Starting filesystem");
 
-    await userDaemon.files!.startFilesystemSupplier();
+    await userDaemon.init!.startFilesystemSupplier();
 
     broadcast("Starting synchronization");
 
-    await userDaemon.preferencesCtx!.startPreferencesSync();
+    await userDaemon.init!.startPreferencesSync();
 
     broadcast("Reading profile customization");
 
@@ -233,7 +233,7 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.activity!.logActivity("login");
 
     broadcast("Starting service host");
-    await userDaemon.startServiceHost(async (serviceStep) => {
+    await userDaemon.init?.startServiceHost(async (serviceStep) => {
       if (serviceStep.id === "AppStorage") {
         broadcast("Loading apps");
         await userDaemon.appreg!.initAppStorage(userDaemon.appStorage()!, (app) => broadcast(`Loaded ${app.metadata.name}`));
@@ -254,10 +254,10 @@ export class LoginAppRuntime extends AppProcess {
     }
 
     broadcast("Starting drive notifier watcher");
-    userDaemon.files!.startDriveNotifierWatcher();
+    userDaemon.init!.startDriveNotifierWatcher();
 
     broadcast("Starting share management");
-    await userDaemon.files!.startShareManager();
+    await userDaemon.init!.startShareManager();
 
     const storage = userDaemon.appStorage();
 
@@ -269,7 +269,7 @@ export class LoginAppRuntime extends AppProcess {
     }
 
     broadcast("Starting status refresh");
-    await userDaemon.status!.startSystemStatusRefresh();
+    await userDaemon.init!.startSystemStatusRefresh();
 
     broadcast("Let's go!");
     await KernelStateHandler()?.loadState("desktop", { userDaemon });
@@ -278,7 +278,7 @@ export class LoginAppRuntime extends AppProcess {
     userDaemon.checks!.checkNightly();
 
     broadcast("Starting Workspaces");
-    await userDaemon.workspaces!.startVirtualDesktops();
+    await userDaemon.init!.startVirtualDesktops();
 
     broadcast("Running autorun");
     await userDaemon.apps!.spawnAutoload();

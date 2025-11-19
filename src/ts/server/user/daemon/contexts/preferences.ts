@@ -9,7 +9,6 @@ import { UserPaths } from "../../store";
 import { UserContext } from "../context";
 
 export class PreferencesUserContext extends UserContext {
-  private firstSyncDone = false;
   public syncLock = false;
   public preferencesUnsubscribe: Unsubscriber | undefined;
   public preferences = Store<UserPreferences>(DefaultUserPreferences);
@@ -20,28 +19,6 @@ export class PreferencesUserContext extends UserContext {
 
   async _deactivate() {
     if (this.preferencesUnsubscribe) this.preferencesUnsubscribe();
-  }
-
-  async startPreferencesSync() {
-    if (this._disposed) return;
-
-    this.Log(`Starting user preferences commit sync`);
-
-    const unsubscribe = this.daemon.preferences.subscribe(async (v) => {
-      if (this._disposed) return unsubscribe();
-      if (!v || v.isDefault) return;
-
-      v = this.daemon.themes!.checkCurrentThemeIdValidity(v);
-
-      if (!this.firstSyncDone) this.firstSyncDone = true;
-      else if (!this.syncLock) this.commitPreferences(v);
-
-      this.daemon.renderer?.setAppRendererClasses(v);
-      this.daemon.wallpaper?.updateWallpaper(v);
-      this.daemon.workspaces?.syncVirtualDesktops(v);
-    });
-
-    this.daemon.preferencesCtx!.preferencesUnsubscribe = unsubscribe;
   }
 
   async commitPreferences(preferences: UserPreferences) {

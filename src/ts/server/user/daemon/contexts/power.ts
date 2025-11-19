@@ -1,10 +1,14 @@
 import type { AppProcess } from "$ts/apps/process";
 import { KernelStack } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
+import { Store } from "$ts/writable";
+import type { BatteryType } from "$types/navigator";
 import type { UserDaemon } from "..";
 import { UserContext } from "../context";
 
 export class PowerUserContext extends UserContext {
+  public battery = Store<BatteryType | undefined>();
+  
   constructor(id: string, daemon: UserDaemon) {
     super(id, daemon);
   }
@@ -43,7 +47,7 @@ export class PowerUserContext extends UserContext {
 
   async toLogin(type: string, props: Record<string, any> = {}, force = false) {
     this.Log(`toLogin: ${type}`);
-    await this.daemon.checks?.waitForLeaveInvocationAllow(); 
+    await this.daemon.helpers?.waitForLeaveInvocationAllow();
     const canLeave = await this.closeOpenedApps(type, props, force);
     if (this._disposed || !canLeave) return;
     if (this.serviceHost) this.serviceHost._holdRestart = true;
@@ -55,14 +59,14 @@ export class PowerUserContext extends UserContext {
       ...props,
     });
     await this.serviceHost?.killSelf?.();
-    await this.daemon.files?.unmountMountedDrives(); 
+    await this.daemon.files?.unmountMountedDrives();
   }
 
   async closeOpenedApps(type: string, props: Record<string, any> = {}, force = false): Promise<boolean> {
     if (force) return true;
 
-    const windows = KernelStack().renderer?.currentState
-      .map((pid) => KernelStack().getProcess<AppProcess>(pid))
+    const windows = KernelStack()
+      .renderer?.currentState.map((pid) => KernelStack().getProcess<AppProcess>(pid))
       .filter((proc) => !proc?.app?.data?.core);
 
     if (!windows) return true;
@@ -71,7 +75,6 @@ export class PowerUserContext extends UserContext {
       const closeResult = await window?.closeWindow();
 
       if (!closeResult && !window?.app.data.overlay) {
-        
         this.daemon.notifications?.sendNotification({
           title: "Leave interrupted",
           message: `An application is preventing you from leaving the desktop: <b>${window?.app?.data?.metadata?.name || "Unknown app"}</b>.`,
@@ -84,5 +87,18 @@ export class PowerUserContext extends UserContext {
     }
 
     return true;
+  }
+
+  async batteryInfo(): Promise<BatteryType | undefined> {
+    if (this._disposed) return;
+
+    const navigator = window.navigator as any;
+
+    if (!navigator.getBattery) return undefined;
+
+    const info = (await navigator.getBattery()) as BatteryType;
+    if (info.charging && info.level === 1) return undefined;
+
+    return info;
   }
 }

@@ -311,7 +311,7 @@ export class AppRenderer extends Process {
       feedbackButton.className = "link feedback";
       feedbackButton.innerText = "Feedback?";
       feedbackButton.addEventListener("click", () => {
-        process.userDaemon?.checks!.iHaveFeedback(process);
+        process.userDaemon?.helpers!.iHaveFeedback(process);
       });
 
       titlebar.append(feedbackButton);

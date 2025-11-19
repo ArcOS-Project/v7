@@ -49,20 +49,6 @@ export class FilesystemUserContext extends UserContext {
     this.fs.umountDrive(`admin`, true);
   }
 
-  async startFilesystemSupplier() {
-    if (this._disposed) return;
-
-    this.Log(`Starting filesystem supplier`);
-
-    try {
-      await this.fs.mountDrive<ServerDrive>("userfs", ServerDrive, "U", undefined, this.token);
-
-      await this.daemon.migrations?.migrateFilesystemLayout();
-    } catch {
-      throw new Error("UserDaemon: Failed to start filesystem supplier");
-    }
-  }
-
   async mountZip(path: string, letter?: string, fromSystem = false) {
     if (this._disposed) return;
 
@@ -104,44 +90,6 @@ export class FilesystemUserContext extends UserContext {
 
     prog.stop();
     return mount;
-  }
-
-  startDriveNotifierWatcher() {
-    if (this._disposed) return;
-
-    this.Log("Starting drive notifier watcher");
-
-    this.systemDispatch.subscribe("fs-mount-drive", (id) => {
-      if (this._disposed) return;
-
-      try {
-        const drive = this.fs.getDriveById(id as unknown as string);
-        if (!drive) return;
-
-        this.mountedDrives.push(id as unknown as string);
-
-        if (!drive.REMOVABLE) return;
-
-        const notificationId = this.daemon?.notifications?.sendNotification({
-          title: drive.driveLetter ? `${drive.label} (${drive.driveLetter}:)` : drive.label,
-          message: "This drive just got mounted! Click the button to view it in the file manager",
-          buttons: [
-            {
-              caption: "Open Drive",
-              action: () => {
-                this.daemon?.spawn?.spawnApp("fileManager", undefined, `${drive.driveLetter || drive.uuid}:/`);
-
-                if (notificationId) this.daemon?.notifications?.deleteNotification(notificationId);
-              },
-            },
-          ],
-          image: "DriveIcon",
-          timeout: 3000,
-        });
-      } catch {
-        return;
-      }
-    });
   }
 
   async unmountMountedDrives() {
@@ -589,11 +537,4 @@ export class FilesystemUserContext extends UserContext {
     return dataUrl;
   }
 
-  async startShareManager() {
-    this.Log("Starting share manager");
-
-    const share = this.serviceHost!.getService<ShareManager>("ShareMgmt");
-
-    await share?.mountOwnedShares();
-  }
 }

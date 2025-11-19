@@ -49,7 +49,7 @@ export class ApplicationsUserContext extends UserContext {
 
     await this.daemon.spawn?._spawnApp("shellHost", undefined, this.pid, autoloadApps); 
 
-    if (this.safeMode) this.daemon.checks?.safeModeNotice(); 
+    if (this.safeMode) this.daemon.helpers?.safeModeNotice(); 
 
     if (BETA)
       
@@ -61,7 +61,7 @@ export class ApplicationsUserContext extends UserContext {
           {
             caption: "Send feedback",
             action: () => {
-              this.daemon.checks!.iHaveFeedback(KernelStack().getProcess(+this.env.get("shell_pid"))!);
+              this.daemon.helpers!.iHaveFeedback(KernelStack().getProcess(+this.env.get("shell_pid"))!);
             },
           },
         ],

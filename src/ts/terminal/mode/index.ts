@@ -134,16 +134,16 @@ export class TerminalMode extends Process {
       }
 
       this.rl?.println(`${CURUP}${CLRROW}Starting filesystem`);
-      await userDaemon.files?.startFilesystemSupplier();
+      await userDaemon.init?.startFilesystemSupplier();
 
       this.rl?.println(`${CURUP}${CLRROW}Starting synchronization`);
-      await userDaemon.preferencesCtx?.startPreferencesSync();
+      await userDaemon.init?.startPreferencesSync();
 
       this.rl?.println(`${CURUP}${CLRROW}Notifying login activity`);
       await userDaemon.activity?.logActivity(`login`);
 
       this.rl?.println(`${CURUP}${CLRROW}Starting service host`);
-      await userDaemon.startServiceHost(async (serviceStep) => {
+      await userDaemon.init?.startServiceHost(async (serviceStep) => {
         if (serviceStep.id === "AppStorage") {
           this.rl?.println(`${CURUP}${CLRROW}Loading apps...`);
           await userDaemon.appreg!.initAppStorage(userDaemon.appStorage()!, (app) => {
@@ -158,10 +158,10 @@ export class TerminalMode extends Process {
       await userDaemon.activateGlobalDispatch();
 
       this.rl?.println(`${CURUP}${CLRROW}Starting drive notifier watcher`);
-      userDaemon.files!.startDriveNotifierWatcher();
+      userDaemon.init!.startDriveNotifierWatcher();
 
       this.rl?.println(`${CURUP}${CLRROW}Starting share management`);
-      await userDaemon.files!.startShareManager();
+      await userDaemon.init!.startShareManager();
 
       userDaemon.appStorage();
 
@@ -171,7 +171,7 @@ export class TerminalMode extends Process {
       }
 
       this.rl?.println(`${CURUP}${CLRROW}Starting status refresh`);
-      await userDaemon.status!.startSystemStatusRefresh();
+      await userDaemon.init!.startSystemStatusRefresh();
 
       this.rl?.println(`${CURUP}${CLRROW}Refreshing app storage`);
 

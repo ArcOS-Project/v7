@@ -12,8 +12,6 @@ export class MigrationsUserContext extends UserContext {
     super(id, daemon);
   }
 
-  override async _init(): Promise<void> {}
-
   async migrateFilesystemLayout() {
     const migrationPath = join(UserPaths.Migrations, "FsMig-705.lock");
     const migrationFile = !!(await this.fs.stat(migrationPath));

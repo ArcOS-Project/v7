@@ -15,7 +15,7 @@ import { PowerUserContext } from "./contexts/power";
 import { PreferencesUserContext } from "./contexts/preferences";
 import { ShortcutsUserContext } from "./contexts/shortcuts";
 import { SpawnUserContext } from "./contexts/spawn";
-import { StatusUserContext } from "./contexts/status";
+import { InitUserContext } from "./contexts/init";
 import { ThemesUserContext } from "./contexts/themes";
 import { VersionUserContext } from "./contexts/version";
 import { WallpaperUserContext } from "./contexts/wallpaper";
@@ -32,13 +32,13 @@ export const UserContexts: Record<string, typeof UserContext> = {
   files: FilesystemUserContext,
   helpers: HelpersUserContext,
   icons: IconsUserContext,
+  init: InitUserContext,
   migrations: MigrationsUserContext,
   notifications: NotificationsUserContext,
   power: PowerUserContext,
   preferencesCtx: PreferencesUserContext,
   shortcuts: ShortcutsUserContext,
   spawn: SpawnUserContext,
-  status: StatusUserContext,
   themes: ThemesUserContext,
   version: VersionUserContext,
   wallpaper: WallpaperUserContext,

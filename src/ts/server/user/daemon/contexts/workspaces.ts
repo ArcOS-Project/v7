@@ -8,9 +8,9 @@ import { UserContext } from "../context";
 
 export class WorkspaceUserContext extends UserContext {
   private virtualDesktops: Record<string, HTMLDivElement> = {};
-  private virtualDesktop: HTMLDivElement | undefined;
   private virtualDesktopIndex = -1;
   private virtualdesktopChangingTimeout: NodeJS.Timeout | undefined;
+  public virtualDesktop: HTMLDivElement | undefined;
 
   constructor(id: string, daemon: UserDaemon) {
     super(id, daemon);
@@ -90,24 +90,6 @@ export class WorkspaceUserContext extends UserContext {
 
     desktop.remove();
     delete this.virtualDesktops[uuid];
-  }
-
-  async startVirtualDesktops() {
-    if (this._disposed) return;
-
-    this.Log(`Starting virtual desktop system`);
-
-    const outer = document.createElement("div");
-    const inner = document.createElement("div");
-
-    outer.className = "virtual-desktop-container";
-    inner.className = "inner";
-
-    outer.append(inner);
-    KernelStack().renderer?.target.append(outer);
-    this.virtualDesktop = inner;
-
-    this.syncVirtualDesktops(this.daemon.preferences());
   }
 
   getCurrentDesktop(): HTMLDivElement | undefined {
