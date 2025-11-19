@@ -51,7 +51,7 @@
       trash?.restoreTrashItem($selection[0]);
       return;
     }
-    const progress = await process.userDaemon?.filesystemContext?.FileProgress(
+    const progress = await process.userDaemon?.files?.FileProgress(
       {
         caption: "Restoring items",
         subtitle: "From Recycle bin",
@@ -99,7 +99,7 @@
 
     if (!proceed) return;
 
-    const progress = await process.userDaemon?.filesystemContext?.FileProgress(
+    const progress = await process.userDaemon?.files?.FileProgress(
       {
         caption: "Deleting items",
         subtitle: "From Recycle Bin",

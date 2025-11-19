@@ -134,19 +134,19 @@ export class TerminalMode extends Process {
       }
 
       this.rl?.println(`${CURUP}${CLRROW}Starting filesystem`);
-      await userDaemon.filesystemContext?.startFilesystemSupplier();
+      await userDaemon.files?.startFilesystemSupplier();
 
       this.rl?.println(`${CURUP}${CLRROW}Starting synchronization`);
-      await userDaemon.preferencesContext?.startPreferencesSync();
+      await userDaemon.preferencesCtx?.startPreferencesSync();
 
       this.rl?.println(`${CURUP}${CLRROW}Notifying login activity`);
-      await userDaemon.activityContext?.logActivity(`login`);
+      await userDaemon.activity?.logActivity(`login`);
 
       this.rl?.println(`${CURUP}${CLRROW}Starting service host`);
       await userDaemon.startServiceHost(async (serviceStep) => {
         if (serviceStep.id === "AppStorage") {
           this.rl?.println(`${CURUP}${CLRROW}Loading apps...`);
-          await userDaemon.appRegistrationContext!.initAppStorage(userDaemon.appStorage()!, (app) => {
+          await userDaemon.appreg!.initAppStorage(userDaemon.appStorage()!, (app) => {
             this.rl?.println(`${CURUP}${CLRROW}Loading apps... ${app.id}`);
           });
         } else {
@@ -158,10 +158,10 @@ export class TerminalMode extends Process {
       await userDaemon.activateGlobalDispatch();
 
       this.rl?.println(`${CURUP}${CLRROW}Starting drive notifier watcher`);
-      userDaemon.filesystemContext!.startDriveNotifierWatcher();
+      userDaemon.files!.startDriveNotifierWatcher();
 
       this.rl?.println(`${CURUP}${CLRROW}Starting share management`);
-      await userDaemon.filesystemContext!.startShareManager();
+      await userDaemon.files!.startShareManager();
 
       userDaemon.appStorage();
 
@@ -171,7 +171,7 @@ export class TerminalMode extends Process {
       }
 
       this.rl?.println(`${CURUP}${CLRROW}Starting status refresh`);
-      await userDaemon.statusContext!.startSystemStatusRefresh();
+      await userDaemon.status!.startSystemStatusRefresh();
 
       this.rl?.println(`${CURUP}${CLRROW}Refreshing app storage`);
 

@@ -46,7 +46,7 @@
     {/if}
   {:else if $userPreferences.shell.start.noGroups}
     {#each apps as app (`${app.id}-${app.metadata.name}`)}
-      {#if (isPopulatable(app) || $userPreferences.shell.visuals.showHiddenApps) && !process.userDaemon?.applicationsContext?.checkDisabled(app.id)}
+      {#if (isPopulatable(app) || $userPreferences.shell.visuals.showHiddenApps) && !process.userDaemon?.apps?.checkDisabled(app.id)}
         <ListItem {app} {process} />
       {/if}
     {/each}

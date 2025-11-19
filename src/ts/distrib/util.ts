@@ -7,7 +7,7 @@ import type { PartialStoreItem, StoreItem } from "$types/package";
 export function StoreItemIcon(item: PartialStoreItem | StoreItem) {
   return item.pkg.store?.image
     ? `${KernelServerUrl()}/store/assets/${item._id}/icon${authcode()}`
-    : TryGetDaemon()?.appRegistrationContext!.getIconCached("ComponentIcon") || ComponentIcon;
+    : TryGetDaemon()?.appreg!.getIconCached("ComponentIcon") || ComponentIcon;
 }
 
 export function StoreItemScreenshot(item: PartialStoreItem | StoreItem, index = 0) {

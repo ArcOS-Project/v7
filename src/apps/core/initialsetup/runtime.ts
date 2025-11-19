@@ -339,8 +339,8 @@ export class InitialSetupRuntime extends AppProcess {
     );
 
     await this.userDaemon?.account?.getUserInfo();
-    await this.userDaemon?.preferencesContext?.startPreferencesSync();
-    await this.userDaemon?.filesystemContext?.startFilesystemSupplier();
+    await this.userDaemon?.preferencesCtx?.startPreferencesSync();
+    await this.userDaemon?.files?.startFilesystemSupplier();
     this.userDaemon?.preferences.update((v) => {
       v.account.displayName = this.displayName();
 

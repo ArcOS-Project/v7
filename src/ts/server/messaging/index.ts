@@ -33,7 +33,7 @@ export class MessagingInterface extends BaseService {
     const dispatch = daemon.serviceHost?.getService<GlobalDispatch>("GlobalDispatch")!;
 
     dispatch?.subscribe("incoming-message", (message: Message) => {
-      daemon?.notificationsContext!.sendNotification({
+      daemon?.notifications!.sendNotification({
         className: "incoming-message",
         image: `${KernelServerUrl()}${message.author?.profilePicture}`,
         title: message.author?.username || "New message",
@@ -42,7 +42,7 @@ export class MessagingInterface extends BaseService {
           {
             caption: "View message",
             action: () => {
-              daemon?.spawnContext!.spawnApp("Messages", +this.env.get("shell_pid"), "inbox", message._id);
+              daemon?.spawn!.spawnApp("Messages", +this.env.get("shell_pid"), "inbox", message._id);
             },
           },
         ],

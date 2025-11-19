@@ -108,7 +108,7 @@ export class SqeletonRuntime extends AppProcess {
   }
 
   async openFile() {
-    const [path] = await this.userDaemon!.filesystemContext!.LoadSaveDialog({
+    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
       title: "Select a database to open",
       icon: "SqeletonIcon",
       startDir: UserPaths.Documents,
@@ -121,7 +121,7 @@ export class SqeletonRuntime extends AppProcess {
   }
 
   async newFile() {
-    const [path] = await this.userDaemon!.filesystemContext!.LoadSaveDialog({
+    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
       title: "Choose where to save the new database",
       icon: "SqeletonIcon",
       startDir: UserPaths.Documents,

@@ -25,7 +25,7 @@ export class AppRendererUserContext extends UserContext {
       --accent-suggested-start: #${accent} !important;
       --accent-suggested-end: ${darkenColor(accent, 10)} !important;
       --accent-suggested-fg: ${bestForeground(accent)} !important;
-      --wallpaper: url('${this.userDaemon.wallpaperContext?.Wallpaper()?.url || Wallpapers.img0.url}');
+      --wallpaper: url('${this.userDaemon.wallpaper?.Wallpaper()?.url || Wallpapers.img0.url}');
       --user-font: "${this.userDaemon.preferences().shell.visuals.userFont || ""}";`;
     }
   
@@ -63,6 +63,6 @@ export class AppRendererUserContext extends UserContext {
         KernelStack().renderer?.target.append(styleLoader);
       }
   
-      styleLoader.textContent = style.enabled && !this.userDaemon.elevationContext?._elevating ? style.content || "" : "";
+      styleLoader.textContent = style.enabled && !this.userDaemon.elevation?._elevating ? style.content || "" : "";
     }
 }

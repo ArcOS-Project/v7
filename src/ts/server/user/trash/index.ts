@@ -123,12 +123,12 @@ export class TrashCanService extends BaseService {
 
   async emptyBin() {
     const buffer = this.IndexBuffer();
-    const prog = await this.host.daemon.filesystemContext!.FileProgress(
+    const prog = await this.host.daemon.files!.FileProgress(
       {
         caption: "Emptying recycle bin",
         subtitle: "Please wait...",
         max: Object.entries(buffer).length,
-        icon: this.host.daemon.appRegistrationContext?.getIconCached("TrashIcon"),
+        icon: this.host.daemon.appreg?.getIconCached("TrashIcon"),
       },
       +this.env.get("shell_pid")
     );

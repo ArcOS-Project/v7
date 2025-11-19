@@ -57,7 +57,7 @@ export class FilesystemUserContext extends UserContext {
     try {
       await this.fs.mountDrive<ServerDrive>("userfs", ServerDrive, "U", undefined, this.token);
 
-      await this.userDaemon.migrationsContext?.migrateFilesystemLayout();
+      await this.userDaemon.migrations?.migrateFilesystemLayout();
     } catch {
       throw new Error("UserDaemon: Failed to start filesystem supplier");
     }
@@ -70,7 +70,7 @@ export class FilesystemUserContext extends UserContext {
 
     const elevated =
       fromSystem ||
-      (await this.userDaemon?.elevationContext?.manuallyElevate({
+      (await this.userDaemon?.elevation?.manuallyElevate({
         what: "ArcOS needs your permission to mount a ZIP file",
         title: getItemNameFromPath(path),
         description: letter ? `As ${letter}:/` : "As a drive",
@@ -122,16 +122,16 @@ export class FilesystemUserContext extends UserContext {
 
         if (!drive.REMOVABLE) return;
 
-        const notificationId = this.userDaemon?.notificationsContext?.sendNotification({
+        const notificationId = this.userDaemon?.notifications?.sendNotification({
           title: drive.driveLetter ? `${drive.label} (${drive.driveLetter}:)` : drive.label,
           message: "This drive just got mounted! Click the button to view it in the file manager",
           buttons: [
             {
               caption: "Open Drive",
               action: () => {
-                this.userDaemon?.spawnContext?.spawnApp("fileManager", undefined, `${drive.driveLetter || drive.uuid}:/`);
+                this.userDaemon?.spawn?.spawnApp("fileManager", undefined, `${drive.driveLetter || drive.uuid}:/`);
 
-                if (notificationId) this.userDaemon?.notificationsContext?.deleteNotification(notificationId);
+                if (notificationId) this.userDaemon?.notifications?.deleteNotification(notificationId);
               },
             },
           ],
@@ -178,11 +178,11 @@ export class FilesystemUserContext extends UserContext {
       shown = true;
 
       if (!parentPid) {
-        process = await this.userDaemon.spawnContext?.spawnApp<FsProgressProc>("FsProgress", 0, progress);
+        process = await this.userDaemon.spawn?.spawnApp<FsProgressProc>("FsProgress", 0, progress);
 
         if (typeof process == "string") return DummyFileProgress;
       } else {
-        process = await this.userDaemon.spawnContext?.spawnOverlay<FsProgressProc>("FsProgress", parentPid, progress);
+        process = await this.userDaemon.spawn?.spawnOverlay<FsProgressProc>("FsProgress", parentPid, progress);
 
         if (typeof process == "string") return DummyFileProgress;
       }
@@ -485,7 +485,7 @@ export class FilesystemUserContext extends UserContext {
 
     this.Log(`Spawning LoadSaveDialog with UUID ${uuid}`);
 
-    await this.userDaemon.spawnContext?.spawnOverlay("fileManager", +this.env.get("shell_pid"), data.startDir || UserPaths.Home, {
+    await this.userDaemon.spawn?.spawnOverlay("fileManager", +this.env.get("shell_pid"), data.startDir || UserPaths.Home, {
       ...data,
       returnId: uuid,
     });
@@ -535,7 +535,7 @@ export class FilesystemUserContext extends UserContext {
 
     if (result.handledBy.handler) return await result.handledBy.handler.handle(path);
 
-    return await this.userDaemon?.spawnContext?.spawnApp(result.handledBy.app?.id!, +this.env.get("shell_pid"), path);
+    return await this.userDaemon?.spawn?.spawnApp(result.handledBy.app?.id!, +this.env.get("shell_pid"), path);
   }
 
   async openWith(path: string) {
@@ -543,7 +543,7 @@ export class FilesystemUserContext extends UserContext {
 
     if (this._disposed) return;
 
-    await this.userDaemon?.spawnContext?.spawnOverlay("OpenWith", +this.env.get("shell_pid"), path);
+    await this.userDaemon?.spawn?.spawnOverlay("OpenWith", +this.env.get("shell_pid"), path);
   }
 
   async handleShortcut(path: string, shortcut: ArcShortcut) {
@@ -553,11 +553,11 @@ export class FilesystemUserContext extends UserContext {
     try {
       switch (shortcut.type) {
         case "app":
-          return await this.userDaemon.spawnContext?.spawnApp(shortcut.target, +this.env.get("shell_pid"));
+          return await this.userDaemon.spawn?.spawnApp(shortcut.target, +this.env.get("shell_pid"));
         case "file":
           return await this.openFile(shortcut.target);
         case "folder":
-          return await this.userDaemon.spawnContext?.spawnApp("fileManager", +this.env.get("shell_pid"), shortcut.target);
+          return await this.userDaemon.spawn?.spawnApp("fileManager", +this.env.get("shell_pid"), shortcut.target);
         default:
           MessageBox(
             {
@@ -587,7 +587,7 @@ export class FilesystemUserContext extends UserContext {
   }
 
   async createShortcut(data: ArcShortcut, path: string) {
-    if (!(await this.userDaemon.appRegistrationContext?.getIcon(data.icon))) return false;
+    if (!(await this.userDaemon.appreg?.getIcon(data.icon))) return false;
 
     const string = JSON.stringify(data, null, 2);
 

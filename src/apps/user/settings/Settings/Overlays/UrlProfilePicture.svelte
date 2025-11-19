@@ -38,7 +38,7 @@
   function apply() {
     if (!valid) return;
 
-    process.userDaemon?.preferencesContext?.changeProfilePicture(pfp);
+    process.userDaemon?.preferencesCtx?.changeProfilePicture(pfp);
     process.closeWindow();
   }
 

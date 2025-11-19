@@ -16,7 +16,7 @@ export class UpdateNotifierRuntime extends AppProcess {
   async onClose() {
     const { stop } = await this.userDaemon!.GlobalLoadIndicator("Just a moment...", this.pid);
 
-    await this.userDaemon?.versionContext?.updateRegisteredVersion();
+    await this.userDaemon?.version?.updateRegisteredVersion();
     await this.updateFileDefinitions();
     stop();
 
@@ -26,6 +26,6 @@ export class UpdateNotifierRuntime extends AppProcess {
   //#endregion
 
   async updateFileDefinitions() {
-    this.userDaemon?.migrationsContext?.updateFileAssociations();
+    this.userDaemon?.migrations?.updateFileAssociations();
   }
 }

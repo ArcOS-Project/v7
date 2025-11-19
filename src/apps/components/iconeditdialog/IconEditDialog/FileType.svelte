@@ -7,7 +7,7 @@
   const { values, type } = process;
 
   async function browse() {
-    const [path] = await process.userDaemon!.filesystemContext!.LoadSaveDialog({
+    const [path] = await process.userDaemon!.files!.LoadSaveDialog({
       title: "Choose an icon to load",
       extensions: [".svg", ".png", ".jpg", ".bmp", ".gif", ".jpeg"],
       icon: UploadIcon,

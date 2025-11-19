@@ -15,7 +15,7 @@ export class ThirdPartyAppProcess extends AppProcess {
     super(pid, parentPid, app);
 
     this.workingDirectory = workingDirectory;
-    this.windowIcon.set(this.userDaemon?.appRegistrationContext!.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
+    this.windowIcon.set(this.userDaemon?.appreg!.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
 
     this.setSource(__SOURCE__);
   }

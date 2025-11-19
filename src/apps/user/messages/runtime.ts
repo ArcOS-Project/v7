@@ -240,7 +240,7 @@ export class MessagingAppRuntime extends AppProcess {
   async openAttachment(attachment: MessageAttachment, messageId: string) {
     const path = `T:/Apps/${this.app.id}/${messageId}/${attachment.filename}`;
 
-    const prog = await this.userDaemon?.filesystemContext?.FileProgress(
+    const prog = await this.userDaemon?.files?.FileProgress(
       {
         type: "size",
         max: attachment.size,
@@ -278,7 +278,7 @@ export class MessagingAppRuntime extends AppProcess {
       await this.fs.writeFile(path, arrayToBlob(contents, attachment.mimeType));
     } catch {}
 
-    await this.userDaemon?.filesystemContext?.openFile(path);
+    await this.userDaemon?.files?.openFile(path);
   }
 
   Search(query: string) {
@@ -315,7 +315,7 @@ export class MessagingAppRuntime extends AppProcess {
     if (!message) return;
 
     const date = dayjs(message.createdAt).format("DD MMM YYYY, HH.mm.ss");
-    const [path] = await this.userDaemon!.filesystemContext!.LoadSaveDialog({
+    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
       title: "Choose where to save the message",
       icon: "MessagingIcon",
       isSave: true,
@@ -327,7 +327,7 @@ export class MessagingAppRuntime extends AppProcess {
 
     if (!path) return;
 
-    const prog = await this.userDaemon?.filesystemContext?.FileProgress(
+    const prog = await this.userDaemon?.files?.FileProgress(
       {
         type: "size",
         caption: `Writing message...`,
@@ -387,7 +387,7 @@ export class MessagingAppRuntime extends AppProcess {
   async forward(message: ExpandedMessage) {
     const attachments: File[] = [];
 
-    const prog = await this.userDaemon?.filesystemContext?.FileProgress(
+    const prog = await this.userDaemon?.files?.FileProgress(
       {
         type: "none",
         max: 100,

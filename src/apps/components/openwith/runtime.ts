@@ -32,10 +32,10 @@ export class OpenWithRuntime extends AppProcess {
   async render({ path }: RenderArgs) {
     if (!path) return;
 
-    const available = await this.userDaemon!.filesystemContext!.findHandlerToOpenFile(path);
+    const available = await this.userDaemon!.files!.findHandlerToOpenFile(path);
 
     this.available.set(available);
-    this.all.set(await this.userDaemon!.filesystemContext!.getAllFileHandlers());
+    this.all.set(await this.userDaemon!.files!.getAllFileHandlers());
     this.apps.set(this.all().filter((a) => a.type === "app" && isPopulatable(a.app!))); // Filter apps to populatable
     this.filename.set(getItemNameFromPath(path));
     this.path.set(path);
@@ -51,7 +51,7 @@ export class OpenWithRuntime extends AppProcess {
     await this.closeWindow();
 
     // Very questionable way to get and execute the selected file handler from the daemon's file handlers
-    if (this.userDaemon?.filesystemContext!.fileHandlers?.[id]) return await this.userDaemon?.filesystemContext!.fileHandlers?.[id]?.handle(this.path());
+    if (this.userDaemon?.files!.fileHandlers?.[id]) return await this.userDaemon?.files!.fileHandlers?.[id]?.handle(this.path());
 
     // In case the selection is an app, not a handler
     await this.spawnApp(id, this.parentPid, this.path());

@@ -72,7 +72,7 @@ export class OopsNotifierRuntime extends AppProcess {
   //#region ACTIONS
 
   async details() {
-    const proc = await this.userDaemon?.spawnContext?.spawnOverlay(
+    const proc = await this.userDaemon?.spawn?.spawnOverlay(
       "OopsStackTracer",
       +this.env.get("shell_pid"),
       this.data,

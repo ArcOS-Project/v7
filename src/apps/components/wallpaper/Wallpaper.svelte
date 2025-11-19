@@ -6,7 +6,7 @@
   import Folder from "./Wallpaper/DesktopIcon/Folder.svelte";
 
   const { process }: AppComponentProps<WallpaperRuntime> = $props();
-  const { Wallpaper } = process.userDaemon?.wallpaperContext || {};
+  const { Wallpaper } = process.userDaemon?.wallpaper || {};
   const { contents, iconsElement, userPreferences } = process;
 </script>
 

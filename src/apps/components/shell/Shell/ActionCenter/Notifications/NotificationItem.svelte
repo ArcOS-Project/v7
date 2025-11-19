@@ -47,7 +47,7 @@
   });
 
   function deleteThis() {
-    userDaemon.notificationsContext!.deleteNotification(id);
+    userDaemon.notifications!.deleteNotification(id);
   }
 
   function toggleCollapse() {
@@ -68,7 +68,7 @@
     {#if !hideContent}
       {#if notification.image}
         <div class="left">
-          <img src={userDaemon.appRegistrationContext!.getIconCached(notification.image) || notification.image} alt="" class="icon" />
+          <img src={userDaemon.appreg!.getIconCached(notification.image) || notification.image} alt="" class="icon" />
         </div>
       {:else if notification.icon}
         <div class="left">

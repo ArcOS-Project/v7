@@ -22,10 +22,10 @@ export class OpenCommand extends TerminalProcess {
     const translated = shortcuts.filter(([_, v]) => v.name === filename).map(([k, v]) => ({ ...v, filename: k }))[0];
 
     if (translated) {
-      await term.daemon?.filesystemContext!.openFile(term.join(translated.filename), translated);
+      await term.daemon?.files!.openFile(term.join(translated.filename), translated);
       return 0;
     } else if (term.contents?.files?.map((f) => f.name)?.includes(filename)) {
-      await term.daemon?.filesystemContext!.openFile(term.join(filename), term.contents?.shortcuts[filename]);
+      await term.daemon?.files!.openFile(term.join(filename), term.contents?.shortcuts[filename]);
       return 0;
     } else {
       return 1;

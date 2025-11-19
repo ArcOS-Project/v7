@@ -15,7 +15,7 @@
 
   async function browseFiles() {
     const path = `T:/AdminBootstrapper/${item._id}`;
-    const progress = await process.userDaemon!.filesystemContext!.FileProgress(
+    const progress = await process.userDaemon!.files!.FileProgress(
       {
         caption: "Copying files...",
         subtitle: item._id,

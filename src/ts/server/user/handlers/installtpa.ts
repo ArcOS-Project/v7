@@ -17,7 +17,7 @@ const installTpaFile: (d: UserDaemon) => FileHandler = (daemon) => ({
 
     if (typeof json !== "object") throw new Error(`InstallTpaFileHandler: JSON parse failed`);
 
-    await daemon.appRegistrationContext!.registerApp({ ...json, workingDirectory: getParentDirectory(path), tpaPath: path });
+    await daemon.appreg!.registerApp({ ...json, workingDirectory: getParentDirectory(path), tpaPath: path });
   },
   isHandler: true,
 });

@@ -54,9 +54,9 @@ export class AccountUserContext extends UserContext {
 
       if (!data) return undefined;
 
-      this.userDaemon.preferencesContext?.preferences.set(data.preferences);
+      this.userDaemon.preferencesCtx?.preferences.set(data.preferences);
 
-      this.userDaemon?.preferencesContext?.sanitizeUserPreferences(); 
+      this.userDaemon?.preferencesCtx?.sanitizeUserPreferences(); 
 
       this.initialized = true;
       this.userInfo = data;
@@ -76,7 +76,7 @@ export class AccountUserContext extends UserContext {
 
     this.Log(`Changing username to "${newUsername}"`);
 
-    const elevated = await this.userDaemon.elevationContext?.manuallyElevate({
+    const elevated = await this.userDaemon.elevation?.manuallyElevate({
       what: "ArcOS needs your permission to change your username:",
       image: "AccountIcon",
       title: "Change username",
@@ -112,7 +112,7 @@ export class AccountUserContext extends UserContext {
 
     this.Log(`Changing password to [REDACTED]`);
 
-    const elevated = await this.userDaemon.elevationContext?.manuallyElevate({
+    const elevated = await this.userDaemon.elevation?.manuallyElevate({
       what: "ArcOS needs your permission to change your password:",
       image: "PasswordIcon",
       title: "Change password",
@@ -163,7 +163,7 @@ export class AccountUserContext extends UserContext {
             caption: "Delete account",
             action: async () => {
               await Backend.delete(`/user`, { headers: { Authorization: `Bearer ${this.token}` } });
-              this.userDaemon?.powerContext?.logoff();
+              this.userDaemon?.power?.logoff();
             },
             suggested: true,
           },

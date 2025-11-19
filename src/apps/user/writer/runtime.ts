@@ -92,7 +92,7 @@ export class WriterRuntime extends AppProcess {
   //#endregion
 
   async readFile(path: string) {
-    const prog = await this.userDaemon!.filesystemContext!.FileProgress(
+    const prog = await this.userDaemon!.files!.FileProgress(
       {
         type: "size",
         caption: `Reading file`,
@@ -155,7 +155,7 @@ export class WriterRuntime extends AppProcess {
 
     const filename = this.filename();
 
-    const prog = await this.userDaemon!.filesystemContext!.FileProgress(
+    const prog = await this.userDaemon!.files!.FileProgress(
       {
         type: "size",
         caption: `Saving ${filename}`,
@@ -178,7 +178,7 @@ export class WriterRuntime extends AppProcess {
   }
 
   async saveAs() {
-    const [path] = await this.userDaemon!.filesystemContext!.LoadSaveDialog({
+    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
       title: "Choose where to save the file",
       icon: "TextMimeIcon",
       startDir: UserPaths.Documents,
@@ -202,7 +202,7 @@ export class WriterRuntime extends AppProcess {
   }
 
   async openFile() {
-    const [path] = await this.userDaemon!.filesystemContext!.LoadSaveDialog({
+    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
       title: "Select a file to open",
       icon: "TextMimeIcon",
       startDir: UserPaths.Documents,

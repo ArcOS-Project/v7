@@ -26,7 +26,7 @@
     indexing = true;
     const result = await admin.forceIndexFor(quota.user.username);
 
-    process.userDaemon?.notificationsContext?.sendNotification({
+    process.userDaemon?.notifications?.sendNotification({
       title: `Indexing for ${quota.user.username} completed`,
       message: result.length ? `- ${result.join("<br>- ")}` : "No unindexed items were found during indexing.",
       image: "GoodStatusIcon",

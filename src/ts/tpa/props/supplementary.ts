@@ -44,7 +44,7 @@ export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
       try {
         const metaStr = arrayToText((await daemon.fs.readFile(metadataPath))!);
         const metadata = tryJsonParse(metaStr);
-        const renderTarget = daemon.workspacesContext!.getCurrentDesktop();
+        const renderTarget = daemon.workspaces!.getCurrentDesktop();
 
         if (typeof metadata === "string") throw new Error("Failed to parse metadata");
 

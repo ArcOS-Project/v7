@@ -82,7 +82,7 @@ export class IconEditorRuntime extends AppProcess {
     this.iconService?.Configuration.set({ ...this.icons() });
     this.hasChanges.set(false);
     this.closeWindow();
-    this.userDaemon?.powerContext?.restart();
+    this.userDaemon?.power?.restart();
   }
 
   async editIcon() {

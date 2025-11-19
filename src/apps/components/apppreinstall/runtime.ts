@@ -41,7 +41,7 @@ export class AppPreInstallRuntime extends AppProcess {
             {
               caption: "Take me there",
               action: () => {
-                this.userDaemon?.spawnContext?.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps");
+                this.userDaemon?.spawn?.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps");
               },
             },
             {
@@ -59,7 +59,7 @@ export class AppPreInstallRuntime extends AppProcess {
       return;
     }
 
-    const prog = await this.userDaemon?.filesystemContext!.FileProgress(
+    const prog = await this.userDaemon?.files!.FileProgress(
       {
         type: "size",
         icon: "DownloadIcon",
@@ -118,7 +118,7 @@ export class AppPreInstallRuntime extends AppProcess {
 
   async install() {
     const meta = this.metadata();
-    const elevated = await this.userDaemon!.elevationContext!.manuallyElevate({
+    const elevated = await this.userDaemon!.elevation!.manuallyElevate({
       what: "ArcOS wants to install an application",
       title: meta.name,
       description: `${meta.author} - ${meta.version}`,

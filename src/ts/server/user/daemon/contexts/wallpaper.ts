@@ -43,7 +43,7 @@ export class WallpaperUserContext extends UserContext {
 
     this.Log(`Uploading wallpaper to U:/Wallpapers`);
 
-    const prog = await this.userDaemon.filesystemContext!.FileProgress(
+    const prog = await this.userDaemon.files!.FileProgress(
       {
         type: "size",
         icon: "ImageMimeIcon",

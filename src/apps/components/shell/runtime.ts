@@ -200,7 +200,7 @@ export class ShellRuntime extends AppProcess {
       if (v) KernelStack().renderer?.focusedPid.set(-1); // Unfocus window on start menu invocation
     });
 
-    this.userDaemon?.checksContext?.checkReducedMotion();
+    this.userDaemon?.checks?.checkReducedMotion();
   }
 
   async stop() {
@@ -272,7 +272,7 @@ export class ShellRuntime extends AppProcess {
       return;
     }
 
-    this.userDaemon?.workspacesContext?.deleteVirtualDesktop(workspace.uuid); //First delete the desktop
+    this.userDaemon?.workspaces?.deleteVirtualDesktop(workspace.uuid); //First delete the desktop
     await Sleep(0); // Then wait for the next frame
     this.workspaceManagerOpened.set(true); // (ugly) and re-open the workspace manager
   }
@@ -462,7 +462,7 @@ export class ShellRuntime extends AppProcess {
       "RestartIcon"
     );
 
-    if (restartNow) await this.userDaemon?.powerContext?.restart();
+    if (restartNow) await this.userDaemon?.power?.restart();
   }
 
   //#endregion

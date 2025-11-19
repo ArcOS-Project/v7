@@ -85,7 +85,7 @@ export class AppRegistrationUserContext extends UserContext {
     if (!this.userDaemon.preferences()) return [];
 
     
-    await this.userDaemon.migrationsContext!.migrateUserAppsToFs();
+    await this.userDaemon.migrations!.migrateUserAppsToFs();
 
     const bulk = Object.fromEntries(
       Object.entries(await this.fs.bulk(UserPaths.AppRepository, "json")).map(([k, v]) => [k.replace(".json", ""), v])

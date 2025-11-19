@@ -30,20 +30,20 @@ export class ChecksUserContext extends UserContext {
 
   checkReducedMotion() {
     if (
-      this.userDaemon.preferencesContext?.getGlobalSetting("reducedMotionDetection_disable") ||
+      this.userDaemon.preferencesCtx?.getGlobalSetting("reducedMotionDetection_disable") ||
       this.userDaemon.preferences().shell.visuals.noAnimations
     )
       return;
 
     if (window.matchMedia("(prefers-reduced-motion)").matches) {
-      this.userDaemon.notificationsContext?.sendNotification({
+      this.userDaemon.notifications?.sendNotification({
         title: "Disable animations?",
         message: "ArcOS has detected that your device has Reduced Motion activated. Do you want ArcOS to reduce animations also?",
         buttons: [
           {
             caption: "Don't show again",
             action: () => {
-              this.userDaemon.preferencesContext?.setGlobalSetting("reducedMotionDetection_disable", true);
+              this.userDaemon.preferencesCtx?.setGlobalSetting("reducedMotionDetection_disable", true);
             },
           },
           {
@@ -70,7 +70,7 @@ export class ChecksUserContext extends UserContext {
 
     if (updates?.length) {
       const first = updates[0];
-      const notif = this.userDaemon.notificationsContext?.sendNotification({
+      const notif = this.userDaemon.notifications?.sendNotification({
         ...(updates.length === 1
           ? {
               title: "Update available!",
@@ -89,16 +89,16 @@ export class ChecksUserContext extends UserContext {
           {
             caption: "View",
             action: () => {
-              if (notif) this.userDaemon.notificationsContext?.deleteNotification(notif);
+              if (notif) this.userDaemon.notifications?.deleteNotification(notif);
 
-              this.userDaemon.spawnContext?.spawnApp("AppStore", +this.env.get("shell_pid"), "installed");
+              this.userDaemon.spawn?.spawnApp("AppStore", +this.env.get("shell_pid"), "installed");
             },
             suggested: true,
           },
           {
             caption: "Don't show again",
             action: () => {
-              if (notif) this.userDaemon.notificationsContext?.deleteNotification(notif);
+              if (notif) this.userDaemon.notifications?.deleteNotification(notif);
 
               this.userDaemon.preferences.update((v) => {
                 v.globalSettings.noUpdateNotif = true;
@@ -123,7 +123,7 @@ export class ChecksUserContext extends UserContext {
 
     if (messages?.length === 1) {
       const message = messages[0];
-      this.userDaemon?.notificationsContext?.sendNotification({
+      this.userDaemon?.notifications?.sendNotification({
         className: "incoming-message",
         image: message.author?.profilePicture,
         title: message.author?.username || "New message",
@@ -132,13 +132,13 @@ export class ChecksUserContext extends UserContext {
           {
             caption: "View message",
             action: () => {
-              this.userDaemon.spawnContext?.spawnApp("Messages", +this.env.get("shell_pid"), "inbox", message._id);
+              this.userDaemon.spawn?.spawnApp("Messages", +this.env.get("shell_pid"), "inbox", message._id);
             },
           },
         ],
       });
     } else {
-      this.userDaemon?.notificationsContext?.sendNotification({
+      this.userDaemon?.notifications?.sendNotification({
         title: "Missed messages",
         message: `You have ${messages.length} ${Plural("message", messages.length)} in your inbox that you haven't read yet.`,
         image: "MessagingIcon",
@@ -146,7 +146,7 @@ export class ChecksUserContext extends UserContext {
           {
             caption: "Open inbox",
             action: () => {
-              this.userDaemon.spawnContext?.spawnApp("Messages", +this.env.get("shell_pid"), "inbox");
+              this.userDaemon.spawn?.spawnApp("Messages", +this.env.get("shell_pid"), "inbox");
             },
           },
         ],
@@ -192,7 +192,7 @@ export class ChecksUserContext extends UserContext {
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
         buttons: [
-          { caption: "Restart now", action: () => this.userDaemon.powerContext?.restart() },
+          { caption: "Restart now", action: () => this.userDaemon.power?.restart() },
           { caption: "Okay", action: () => {}, suggested: true },
         ],
       },
@@ -202,7 +202,7 @@ export class ChecksUserContext extends UserContext {
   }
 
   iHaveFeedback(process: AppProcess) {
-    this.userDaemon.spawnContext?.spawnApp(
+    this.userDaemon.spawn?.spawnApp(
       "BugHuntCreator",
       undefined,
       `[${process.app.id}] Feedback report - ${process.windowTitle()}`,

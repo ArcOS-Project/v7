@@ -32,10 +32,10 @@ export class ApplicationsUserContext extends UserContext {
           autoloadApps.push(payload);
           break;
         case "file":
-          if (!this.safeMode) await this.userDaemon.filesystemContext?.openFile(payload); 
+          if (!this.safeMode) await this.userDaemon.files?.openFile(payload); 
           break;
         case "folder":
-          if (!this.safeMode) await this.userDaemon.spawnContext?.spawnApp("fileManager", undefined, payload); 
+          if (!this.safeMode) await this.userDaemon.spawn?.spawnApp("fileManager", undefined, payload); 
           break;
         case "share":
           await shares?.mountShareById(payload);
@@ -47,13 +47,13 @@ export class ApplicationsUserContext extends UserContext {
       }
     }
 
-    await this.userDaemon.spawnContext?._spawnApp("shellHost", undefined, this.pid, autoloadApps); 
+    await this.userDaemon.spawn?._spawnApp("shellHost", undefined, this.pid, autoloadApps); 
 
-    if (this.safeMode) this.userDaemon.checksContext?.safeModeNotice(); 
+    if (this.safeMode) this.userDaemon.checks?.safeModeNotice(); 
 
     if (BETA)
       
-      this.userDaemon.notificationsContext?.sendNotification({
+      this.userDaemon.notifications?.sendNotification({
         title: "Have any feedback?",
         message:
           "I'd love to hear it! There's a feedback button in the titlebar of every window. Don't hesitate to tell me how I'm doing stuff wrong, what you want to see or what I forgot. I want to hear all of it.",
@@ -61,7 +61,7 @@ export class ApplicationsUserContext extends UserContext {
           {
             caption: "Send feedback",
             action: () => {
-              this.userDaemon.checksContext!.iHaveFeedback(KernelStack().getProcess(+this.env.get("shell_pid"))!);
+              this.userDaemon.checks!.iHaveFeedback(KernelStack().getProcess(+this.env.get("shell_pid"))!);
             },
           },
         ],
@@ -118,9 +118,9 @@ export class ApplicationsUserContext extends UserContext {
 
     if (!app || this.isVital(app)) return;
 
-    const elevated = await this.userDaemon.elevationContext!.manuallyElevate({
+    const elevated = await this.userDaemon.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to disable an application",
-      image: this.userDaemon.appRegistrationContext!.getAppIcon(app), 
+      image: this.userDaemon.appreg!.getAppIcon(app), 
       title: app.metadata.name,
       description: `By ${app.metadata.author}`,
       level: ElevationLevel.medium,
@@ -154,16 +154,16 @@ export class ApplicationsUserContext extends UserContext {
 
     if (!app) return;
 
-    const elevated = await this.userDaemon.elevationContext?.manuallyElevate({
+    const elevated = await this.userDaemon.elevation?.manuallyElevate({
       what: "ArcOS needs your permission to enable an application",
-      image: this.userDaemon.appRegistrationContext!.getAppIcon(app), 
+      image: this.userDaemon.appreg!.getAppIcon(app), 
       title: app.metadata.name,
       description: `By ${app.metadata.author}`,
       level: ElevationLevel.medium,
     });
     if (!elevated) return;
 
-    this.userDaemon.preferencesContext?.preferences.update((v) => {
+    this.userDaemon.preferencesCtx?.preferences.update((v) => {
       if (!v.disabledApps.includes(appId)) return v;
 
       v.disabledApps.splice(v.disabledApps.indexOf(appId));
@@ -175,7 +175,7 @@ export class ApplicationsUserContext extends UserContext {
   }
 
   async enableThirdParty() {
-    const elevated = await this.userDaemon.elevationContext?.manuallyElevate({
+    const elevated = await this.userDaemon.elevation?.manuallyElevate({
       what: "ArcOS wants to enable third-party applications",
       title: "Enable Third-party",
       description: "ArcOS System",
@@ -192,7 +192,7 @@ export class ApplicationsUserContext extends UserContext {
   }
 
   async disableThirdParty() {
-    const elevated = await this.userDaemon.elevationContext?.manuallyElevate({
+    const elevated = await this.userDaemon.elevation?.manuallyElevate({
       what: "ArcOS wants to disable third-party applications and kill any running third-party apps",
       title: "Disable Third-party",
       description: "ArcOS System",

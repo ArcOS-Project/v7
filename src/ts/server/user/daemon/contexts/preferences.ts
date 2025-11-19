@@ -31,23 +31,23 @@ export class PreferencesUserContext extends UserContext {
       if (this._disposed) return unsubscribe();
       if (!v || v.isDefault) return;
 
-      v = this.userDaemon.themesContext!.checkCurrentThemeIdValidity(v);
+      v = this.userDaemon.themes!.checkCurrentThemeIdValidity(v);
 
       if (!this.firstSyncDone) this.firstSyncDone = true;
       else if (!this.syncLock) this.commitPreferences(v);
 
-      this.userDaemon.appRendererContext?.setAppRendererClasses(v);
-      this.userDaemon.wallpaperContext?.updateWallpaper(v);
-      this.userDaemon.workspacesContext?.syncVirtualDesktops(v);
+      this.userDaemon.renderer?.setAppRendererClasses(v);
+      this.userDaemon.wallpaper?.updateWallpaper(v);
+      this.userDaemon.workspaces?.syncVirtualDesktops(v);
     });
 
-    this.userDaemon.preferencesContext!.preferencesUnsubscribe = unsubscribe;
+    this.userDaemon.preferencesCtx!.preferencesUnsubscribe = unsubscribe;
   }
 
   async commitPreferences(preferences: UserPreferences) {
     if (this._disposed) return;
 
-    if (this.userDaemon.checksContext!.NIGHTLY) {
+    if (this.userDaemon.checks!.NIGHTLY) {
       this.Log("User preference commit prohibited: nightly build");
       return true;
     }

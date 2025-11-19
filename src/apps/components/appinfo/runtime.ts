@@ -25,7 +25,7 @@ export class AppInfoRuntime extends AppProcess {
     const targetApp = this.appStore()?.getAppSynchronous(this.targetAppId);
 
     if (!targetApp) {
-      this.userDaemon?.notificationsContext?.sendNotification({
+      this.userDaemon?.notifications?.sendNotification({
         title: "App not found",
         message: `AppInfo couldn't find any information about "${this.targetAppId}". Is it installed?`,
         image: "AppInfoIcon",
@@ -43,9 +43,9 @@ export class AppInfoRuntime extends AppProcess {
   //#endregion
 
   async killAll() {
-    const elevated = await this.userDaemon?.elevationContext?.manuallyElevate({
+    const elevated = await this.userDaemon?.elevation?.manuallyElevate({
       what: `ArcOS needs your permission to kill all instances of an app`,
-      image: this.userDaemon?.appRegistrationContext?.getAppIcon(this.targetApp()) || this.getIconCached("ComponentIcon"),
+      image: this.userDaemon?.appreg?.getAppIcon(this.targetApp()) || this.getIconCached("ComponentIcon"),
       title: this.targetApp().metadata.name,
       description: this.targetAppId,
       level: ElevationLevel.high,
@@ -61,7 +61,7 @@ export class AppInfoRuntime extends AppProcess {
   }
 
   async processManager() {
-    await this.userDaemon?.spawnContext?.spawnApp("processManager", +this.env.get("shell_pid"));
+    await this.userDaemon?.spawn?.spawnApp("processManager", +this.env.get("shell_pid"));
     this.closeWindow();
   }
 }

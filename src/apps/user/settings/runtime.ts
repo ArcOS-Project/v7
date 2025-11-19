@@ -157,7 +157,7 @@ export class SettingsRuntime extends AppProcess {
             action: async () => {
               const token = this.userDaemon?.token;
 
-              await this.userDaemon?.powerContext?.logoff();
+              await this.userDaemon?.power?.logoff();
 
               await Backend.post(
                 "/logallout",
@@ -184,7 +184,7 @@ export class SettingsRuntime extends AppProcess {
     this.Log("Uploading wallpaper");
 
     try {
-      await this.userDaemon?.wallpaperContext?.uploadWallpaper(this.pid);
+      await this.userDaemon?.wallpaper?.uploadWallpaper(this.pid);
     } catch (e) {
       const message = (e as PromiseRejectionEvent).reason;
 
@@ -239,7 +239,7 @@ export class SettingsRuntime extends AppProcess {
           {
             caption: "Delete it",
             action: () => {
-              this.userDaemon?.themesContext?.deleteUserTheme(id);
+              this.userDaemon?.themes?.deleteUserTheme(id);
             },
             suggested: true,
           },
@@ -253,7 +253,7 @@ export class SettingsRuntime extends AppProcess {
   }
 
   async chooseProfilePicture() {
-    const [path] = await this.userDaemon!.filesystemContext!.LoadSaveDialog({
+    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
       title: "Choose profile picture",
       icon: "AccountIcon",
       startDir: UserPaths.Pictures,
@@ -262,11 +262,11 @@ export class SettingsRuntime extends AppProcess {
 
     if (!path) return;
 
-    this.userDaemon?.preferencesContext?.changeProfilePicture(path);
+    this.userDaemon?.preferencesCtx?.changeProfilePicture(path);
   }
 
   async chooseWallpaper() {
-    const [path] = await this.userDaemon!.filesystemContext!.LoadSaveDialog({
+    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
       title: "Choose wallpaper",
       icon: "DesktopIcon",
       startDir: UserPaths.Wallpapers,
@@ -293,7 +293,7 @@ export class SettingsRuntime extends AppProcess {
   }
 
   async chooseLoginBackground() {
-    const [path] = await this.userDaemon!.filesystemContext!.LoadSaveDialog({
+    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
       title: "Choose login background",
       icon: "PasswordIcon",
       startDir: UserPaths.Wallpapers,
@@ -312,7 +312,7 @@ export class SettingsRuntime extends AppProcess {
   async setup2fa() {
     if (this.safeMode) return;
 
-    const elevated = await this.userDaemon!.elevationContext!.manuallyElevate({
+    const elevated = await this.userDaemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to set up two-factor authentication",
       image: "ElevationIcon",
       title: "Set up 2FA",
@@ -328,7 +328,7 @@ export class SettingsRuntime extends AppProcess {
   async disableTotp() {
     if (this.safeMode) return;
 
-    const elevated = await this.userDaemon!.elevationContext!.manuallyElevate({
+    const elevated = await this.userDaemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to disable two-factor authentication",
       image: "ElevationIcon",
       title: "Disable 2FA",
@@ -348,7 +348,7 @@ export class SettingsRuntime extends AppProcess {
             "Two-factor authentication has now been disabled for your account. You must restart for the changes to fully take effect.",
           buttons: [
             { caption: "Restart later", action: () => {} },
-            { caption: "Restart now", suggested: true, action: () => this.userDaemon?.powerContext?.restart() },
+            { caption: "Restart now", suggested: true, action: () => this.userDaemon?.power?.restart() },
           ],
           sound: "arcos.dialog.info",
           image: "GoodStatusIcon",

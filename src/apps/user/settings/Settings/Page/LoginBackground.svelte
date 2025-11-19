@@ -17,7 +17,7 @@
 
   onMount(() => {
     const sub = userPreferences?.subscribe(async (v) => {
-      wallpaper = await process.userDaemon!.wallpaperContext!.getWallpaper(v.account.loginBackground);
+      wallpaper = await process.userDaemon!.wallpaper!.getWallpaper(v.account.loginBackground);
     });
 
     return () => sub?.();
@@ -39,7 +39,7 @@
       <button
         class="lucide icon-upload"
         aria-label="Upload wallpaper"
-        onclick={() => userDaemon?.wallpaperContext!.uploadWallpaper()}
+        onclick={() => userDaemon?.wallpaper!.uploadWallpaper()}
         disabled={process.safeMode}
         title="Upload wallpaper"
       >

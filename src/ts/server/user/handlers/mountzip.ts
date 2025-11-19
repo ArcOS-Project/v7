@@ -9,7 +9,7 @@ const mountZipFile: (d: UserDaemon) => FileHandler = (daemon) => ({
   name: "Mount ZIP file",
   description: "View the contents of this archive",
   async handle(path) {
-    await daemon.filesystemContext!.mountZip(path);
+    await daemon.files!.mountZip(path);
   },
   isHandler: true,
 });

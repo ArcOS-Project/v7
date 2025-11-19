@@ -44,7 +44,7 @@ export class PdfViewerRuntime extends AppProcess {
   }
 
   async readFileIndirectFallback(path: string) {
-    const prog = await this.userDaemon!.filesystemContext!.FileProgress(
+    const prog = await this.userDaemon!.files!.FileProgress(
       {
         type: "size",
         caption: `Reading image`,

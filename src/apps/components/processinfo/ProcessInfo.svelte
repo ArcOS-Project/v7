@@ -9,7 +9,7 @@
   const { proc, parent, inherit } = process;
 
   const icon =
-    proc instanceof AppProcess ? process.userDaemon?.appRegistrationContext!.getAppIcon(proc.app.data) : process.getIconCached("ComponentIcon");
+    proc instanceof AppProcess ? process.userDaemon?.appreg!.getAppIcon(proc.app.data) : process.getIconCached("ComponentIcon");
   const children = process.handler.getSubProcesses(proc!.pid);
   const context = process.handler.getProcessContext(proc!.pid);
 

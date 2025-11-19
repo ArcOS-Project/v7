@@ -18,7 +18,7 @@
   {#each Object.values(ProfilePictures) as pfp, i}
     <button
       class="picture-option"
-      onclick={() => process.userDaemon?.preferencesContext?.changeProfilePicture(i + 1)}
+      onclick={() => process.userDaemon?.preferencesCtx?.changeProfilePicture(i + 1)}
       class:selected={$userPreferences.account.profilePicture === i + 1}
     >
       <ProfilePicture {userDaemon} fallback={pfp} height={40} />

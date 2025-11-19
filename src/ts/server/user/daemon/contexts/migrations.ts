@@ -47,7 +47,7 @@ export class MigrationsUserContext extends UserContext {
 
       if (existing) continue;
 
-      this.userDaemon.filesystemContext?.createShortcut(
+      this.userDaemon.files?.createShortcut(
         {
           name: app.id,
           target: app.id,

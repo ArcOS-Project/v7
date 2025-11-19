@@ -86,7 +86,7 @@ export class LoginAppRuntime extends AppProcess {
       if (!props.userDaemon) throw new Error(`LoginAppRuntimeConstructor: Irregular login type without daemon`);
 
       this.soundBus.playSound("arcos.system.logoff");
-      props.userDaemon?.appRendererContext!.setAppRendererClasses(props.userDaemon.preferences());
+      props.userDaemon?.renderer!.setAppRendererClasses(props.userDaemon.preferences());
 
       switch (props.type) {
         case "logoff":
@@ -214,36 +214,36 @@ export class LoginAppRuntime extends AppProcess {
 
     broadcast("Starting filesystem");
 
-    await userDaemon.filesystemContext!.startFilesystemSupplier();
+    await userDaemon.files!.startFilesystemSupplier();
 
     broadcast("Starting synchronization");
 
-    await userDaemon.preferencesContext!.startPreferencesSync();
+    await userDaemon.preferencesCtx!.startPreferencesSync();
 
     broadcast("Reading profile customization");
 
     this.profileName.set(userDaemon.preferences().account.displayName || username);
     if (!this.safeMode) {
-      this.loginBackground.set((await userDaemon.wallpaperContext!.getWallpaper(userDaemon.preferences().account.loginBackground)).url);
+      this.loginBackground.set((await userDaemon.wallpaper!.getWallpaper(userDaemon.preferences().account.loginBackground)).url);
 
       this.savePersistence(username, this.profileImage(), this.loginBackground());
     }
 
     broadcast("Notifying login activity");
-    await userDaemon.activityContext!.logActivity("login");
+    await userDaemon.activity!.logActivity("login");
 
     broadcast("Starting service host");
     await userDaemon.startServiceHost(async (serviceStep) => {
       if (serviceStep.id === "AppStorage") {
         broadcast("Loading apps");
-        await userDaemon.appRegistrationContext!.initAppStorage(userDaemon.appStorage()!, (app) => broadcast(`Loaded ${app.metadata.name}`));
+        await userDaemon.appreg!.initAppStorage(userDaemon.appStorage()!, (app) => broadcast(`Loaded ${app.metadata.name}`));
       } else {
         broadcast(`Started ${serviceStep.name}`);
       }
     });
 
     broadcast("Checking associations");
-    await userDaemon.migrationsContext!.updateFileAssociations();
+    await userDaemon.migrations!.updateFileAssociations();
 
     broadcast("Connecting global dispatch");
     await userDaemon.activateGlobalDispatch();
@@ -254,10 +254,10 @@ export class LoginAppRuntime extends AppProcess {
     }
 
     broadcast("Starting drive notifier watcher");
-    userDaemon.filesystemContext!.startDriveNotifierWatcher();
+    userDaemon.files!.startDriveNotifierWatcher();
 
     broadcast("Starting share management");
-    await userDaemon.filesystemContext!.startShareManager();
+    await userDaemon.files!.startShareManager();
 
     const storage = userDaemon.appStorage();
 
@@ -269,26 +269,26 @@ export class LoginAppRuntime extends AppProcess {
     }
 
     broadcast("Starting status refresh");
-    await userDaemon.statusContext!.startSystemStatusRefresh();
+    await userDaemon.status!.startSystemStatusRefresh();
 
     broadcast("Let's go!");
     await KernelStateHandler()?.loadState("desktop", { userDaemon });
     this.soundBus.playSound("arcos.system.logon");
-    userDaemon.appRendererContext!.setAppRendererClasses(userDaemon.preferences());
-    userDaemon.checksContext!.checkNightly();
+    userDaemon.renderer!.setAppRendererClasses(userDaemon.preferences());
+    userDaemon.checks!.checkNightly();
 
     broadcast("Starting Workspaces");
-    await userDaemon.workspacesContext!.startVirtualDesktops();
+    await userDaemon.workspaces!.startVirtualDesktops();
 
     broadcast("Running autorun");
-    await userDaemon.applicationsContext!.spawnAutoload();
+    await userDaemon.apps!.spawnAutoload();
 
     await this.appStore()?.refresh();
 
-    await userDaemon.checksContext!.checkForUpdates();
+    await userDaemon.checks!.checkForUpdates();
     userDaemon.serviceHost?.getService<ProtocolServiceProcess>("ProtoService")?.parseProtoParam();
-    await userDaemon.checksContext!.checkForMissedMessages();
-    await userDaemon.migrationsContext!.updateAppShortcutsDir();
+    await userDaemon.checks!.checkForMissedMessages();
+    await userDaemon.migrations!.updateAppShortcutsDir();
     await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
 
     userDaemon._blockLeaveInvocations = false;
@@ -313,11 +313,11 @@ export class LoginAppRuntime extends AppProcess {
     }
 
     this.profileName.set(daemon.preferences().account.displayName || daemon.username);
-    this.loginBackground.set((await daemon.wallpaperContext!.getWallpaper(daemon.preferences().account.loginBackground)).url);
+    this.loginBackground.set((await daemon.wallpaper!.getWallpaper(daemon.preferences().account.loginBackground)).url);
 
     await Sleep(2000);
 
-    await daemon.activityContext!.logActivity("logout");
+    await daemon.activity!.logActivity("logout");
 
     this.resetCookies();
     await daemon.account!.discontinueToken();
@@ -339,7 +339,7 @@ export class LoginAppRuntime extends AppProcess {
 
     if (daemon) {
       this.profileImage.set(`${this.server.url}/user/pfp/${daemon.userInfo._id}${authcode()}`);
-      this.loginBackground.set((await daemon.wallpaperContext!.getWallpaper(daemon.preferences().account.loginBackground)).url);
+      this.loginBackground.set((await daemon.wallpaper!.getWallpaper(daemon.preferences().account.loginBackground)).url);
 
       this.profileName.set(daemon.preferences().account.displayName || daemon.username);
     }
@@ -360,7 +360,7 @@ export class LoginAppRuntime extends AppProcess {
 
     if (daemon) {
       this.profileImage.set(`${this.server.url}/user/pfp/${daemon.userInfo._id}${authcode()}`);
-      this.loginBackground.set((await daemon.wallpaperContext!.getWallpaper(daemon.preferences().account.loginBackground)).url);
+      this.loginBackground.set((await daemon.wallpaper!.getWallpaper(daemon.preferences().account.loginBackground)).url);
 
       this.profileName.set(daemon.preferences().account.displayName || daemon.username);
     }

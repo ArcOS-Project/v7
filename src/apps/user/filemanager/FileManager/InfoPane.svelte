@@ -59,7 +59,7 @@
               singleSelectionStat = stat;
               singleSelectionAssoc = process.userDaemon?.assoc?.getFileAssociation($selection[0]);
               singleSelectionModifiers = stat?.modifiers;
-              singleSelectionThumbnail = await process.userDaemon?.filesystemContext?.getThumbnailFor($selection[0]);
+              singleSelectionThumbnail = await process.userDaemon?.files?.getThumbnailFor($selection[0]);
             }
           } catch {
             singleSelectionAssoc = process.userDaemon?.assoc?.getFileAssociation($selection[0]);

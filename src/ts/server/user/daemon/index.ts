@@ -69,26 +69,26 @@ export class UserDaemon extends Process {
   // CONTEXTS
 
   account?: AccountUserContext;
-  activityContext?: LoginActivityUserContext;
-  applicationsContext?: ApplicationsUserContext;
-  appRegistrationContext?: AppRegistrationUserContext;
-  appRendererContext?: AppRendererUserContext;
-  checksContext?: ChecksUserContext;
-  elevationContext?: ElevationUserContext;
-  filesystemContext?: FilesystemUserContext;
-  migrationsContext?: MigrationsUserContext;
-  notificationsContext?: NotificationsUserContext;
-  powerContext?: PowerUserContext;
-  preferencesContext?: PreferencesUserContext;
-  spawnContext?: SpawnUserContext;
-  statusContext?: StatusUserContext;
-  themesContext?: ThemesUserContext;
-  versionContext?: VersionUserContext;
-  wallpaperContext?: WallpaperUserContext;
-  workspacesContext?: WorkspaceUserContext;
+  activity?: LoginActivityUserContext;
+  apps?: ApplicationsUserContext;
+  appreg?: AppRegistrationUserContext;
+  renderer?: AppRendererUserContext;
+  checks?: ChecksUserContext;
+  elevation?: ElevationUserContext;
+  files?: FilesystemUserContext;
+  migrations?: MigrationsUserContext;
+  notifications?: NotificationsUserContext;
+  power?: PowerUserContext;
+  preferencesCtx?: PreferencesUserContext;
+  spawn?: SpawnUserContext;
+  status?: StatusUserContext;
+  themes?: ThemesUserContext;
+  version?: VersionUserContext;
+  wallpaper?: WallpaperUserContext;
+  workspaces?: WorkspaceUserContext;
 
   get preferences() {
-    return this.preferencesContext!.preferences!;
+    return this.preferencesCtx!.preferences!;
   }
 
   //#region LIFECYCLE
@@ -181,11 +181,11 @@ export class UserDaemon extends Process {
     this.globalDispatch = this.serviceHost!.getService<GlobalDispatch>("GlobalDispatch");
 
     this.globalDispatch?.subscribe("update-preferences", async (preferences: UserPreferences) => {
-      this.preferencesContext!.syncLock = true;
+      this.preferencesCtx!.syncLock = true;
       await Sleep(0);
-      this.preferencesContext!.preferences.set(preferences);
+      this.preferencesCtx!.preferences.set(preferences);
       await Sleep(0);
-      this.preferencesContext!.syncLock = false;
+      this.preferencesCtx!.syncLock = false;
     });
 
     this.globalDispatch?.subscribe("fs-flush-folder", (path) => {
@@ -274,7 +274,7 @@ export class UserDaemon extends Process {
 
     const uuid = UUID();
 
-    await this.spawnContext?.spawnOverlay("IconPicker", +this.env.get("shell_pid"), {
+    await this.spawn?.spawnOverlay("IconPicker", +this.env.get("shell_pid"), {
       ...data,
       returnId: uuid,
     });

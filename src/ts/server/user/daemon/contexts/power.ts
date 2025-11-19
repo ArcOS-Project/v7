@@ -43,7 +43,7 @@ export class PowerUserContext extends UserContext {
 
   async toLogin(type: string, props: Record<string, any> = {}, force = false) {
     this.Log(`toLogin: ${type}`);
-    await this.userDaemon.checksContext?.waitForLeaveInvocationAllow(); 
+    await this.userDaemon.checks?.waitForLeaveInvocationAllow(); 
     const canLeave = await this.closeOpenedApps(type, props, force);
     if (this._disposed || !canLeave) return;
     if (this.serviceHost) this.serviceHost._holdRestart = true;
@@ -55,7 +55,7 @@ export class PowerUserContext extends UserContext {
       ...props,
     });
     await this.serviceHost?.killSelf?.();
-    await this.userDaemon.filesystemContext?.unmountMountedDrives(); 
+    await this.userDaemon.files?.unmountMountedDrives(); 
   }
 
   async closeOpenedApps(type: string, props: Record<string, any> = {}, force = false): Promise<boolean> {
@@ -72,7 +72,7 @@ export class PowerUserContext extends UserContext {
 
       if (!closeResult && !window?.app.data.overlay) {
         
-        this.userDaemon.notificationsContext?.sendNotification({
+        this.userDaemon.notifications?.sendNotification({
           title: "Leave interrupted",
           message: `An application is preventing you from leaving the desktop: <b>${window?.app?.data?.metadata?.name || "Unknown app"}</b>.`,
           buttons: [{ caption: "Leave anyway", action: () => this.toLogin(type, props, true) }],

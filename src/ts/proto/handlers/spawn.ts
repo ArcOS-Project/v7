@@ -10,13 +10,13 @@ export const SpawnAppHandler: ProtocolHandler = {
     if (!app) return undefined;
 
     return {
-      icon: daemon.appRegistrationContext!.getAppIcon(app),
+      icon: daemon.appreg!.getAppIcon(app),
       caption: app.metadata.name,
       title: `Open ${app.metadata.name} by ${app.metadata.author} (${app.metadata.version})`,
     };
   },
   action: async (payload, daemon) => {
-    return !!(await daemon.spawnContext!.spawnApp(
+    return !!(await daemon.spawn!.spawnApp(
       payload.id,
       +daemon.env.get("shell_pid"),
       ...(Array.isArray(payload.args) ? payload.args : [])
