@@ -65,7 +65,7 @@ export const FirstRunPages = new Map<string, FirstRunPage>([
         left: [
           {
             caption: "Upload...",
-            action: (process) => process.userDaemon?.uploadProfilePicture(),
+            action: (process) => process.userDaemon?.preferencesContext!.uploadProfilePicture(),
           },
           {
             caption: "Choose",

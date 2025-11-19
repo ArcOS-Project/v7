@@ -29,12 +29,12 @@
   }
 
   function toggleDisabledState() {
-    if (disabled) process.userDaemon?.enableApp(id);
-    else process.userDaemon?.disableApp(id);
+    if (disabled) process.userDaemon?.applicationsContext!.enableApp(id);
+    else process.userDaemon?.applicationsContext!.disableApp(id);
   }
 
   async function deleteApp() {
-    const deleted = await process.userDaemon?.uninstallAppWithAck(target!);
+    const deleted = await process.userDaemon?.appRegistrationContext!.uninstallAppWithAck(target!);
 
     if (deleted) process.closeWindow();
   }
@@ -42,7 +42,7 @@
 
 <div class="header">
   <div class="left">
-    <img src={process.userDaemon?.getAppIcon(target) || process.getIconCached("QuestionIcon")} alt="" />
+    <img src={process.userDaemon?.appRegistrationContext!.getAppIcon(target) || process.getIconCached("QuestionIcon")} alt="" />
     <div class="base-info">
       <p class="name">
         <span>{target?.metadata?.name || "Unknown"}</span>
@@ -59,7 +59,7 @@
     </div>
   </div>
   <div class="right">
-    <button class="disable" onclick={toggleDisabledState} class:disabled disabled={process.userDaemon?.isVital(target!)}
+    <button class="disable" onclick={toggleDisabledState} class:disabled disabled={process.userDaemon?.applicationsContext!.isVital(target!)}
       >{disabled ? "Enable" : "Disable"}</button
     >
     {#if (target?.entrypoint || target?.workingDirectory) && installed}

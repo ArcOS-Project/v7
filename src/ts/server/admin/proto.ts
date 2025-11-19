@@ -11,7 +11,7 @@ export const AdminProtocolHandlers: Record<string, ProtocolHandler> = {
       };
     },
     action: async (payload, daemon) => {
-      return !!(await daemon.spawnApp("AdminPortal", +daemon.env.get("shell_pid"), "viewBugReport", { id: payload.id }));
+      return !!(await daemon.spawnContext!.spawnApp("AdminPortal", +daemon.env.get("shell_pid"), "viewBugReport", { id: payload.id }));
     },
   },
 };

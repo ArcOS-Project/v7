@@ -253,7 +253,7 @@ export class SettingsRuntime extends AppProcess {
   }
 
   async chooseProfilePicture() {
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    const [path] = await this.userDaemon!.filesystemContext!.LoadSaveDialog({
       title: "Choose profile picture",
       icon: "AccountIcon",
       startDir: UserPaths.Pictures,
@@ -266,7 +266,7 @@ export class SettingsRuntime extends AppProcess {
   }
 
   async chooseWallpaper() {
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    const [path] = await this.userDaemon!.filesystemContext!.LoadSaveDialog({
       title: "Choose wallpaper",
       icon: "DesktopIcon",
       startDir: UserPaths.Wallpapers,
@@ -293,7 +293,7 @@ export class SettingsRuntime extends AppProcess {
   }
 
   async chooseLoginBackground() {
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    const [path] = await this.userDaemon!.filesystemContext!.LoadSaveDialog({
       title: "Choose login background",
       icon: "PasswordIcon",
       startDir: UserPaths.Wallpapers,
@@ -312,7 +312,7 @@ export class SettingsRuntime extends AppProcess {
   async setup2fa() {
     if (this.safeMode) return;
 
-    const elevated = await this.userDaemon?.manuallyElevate({
+    const elevated = await this.userDaemon!.elevationContext!.manuallyElevate({
       what: "ArcOS needs your permission to set up two-factor authentication",
       image: "ElevationIcon",
       title: "Set up 2FA",
@@ -328,7 +328,7 @@ export class SettingsRuntime extends AppProcess {
   async disableTotp() {
     if (this.safeMode) return;
 
-    const elevated = await this.userDaemon?.manuallyElevate({
+    const elevated = await this.userDaemon!.elevationContext!.manuallyElevate({
       what: "ArcOS needs your permission to disable two-factor authentication",
       image: "ElevationIcon",
       title: "Disable 2FA",

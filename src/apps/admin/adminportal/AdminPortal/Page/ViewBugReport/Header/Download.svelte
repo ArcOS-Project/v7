@@ -9,7 +9,7 @@
   const { report } = data;
 
   async function download() {
-    const [path] = await process.userDaemon!.LoadSaveDialog({
+    const [path] = await process.userDaemon!.filesystemContext!.LoadSaveDialog({
       isSave: true,
       title: "Choose where to export the report to",
       icon: "SaveIcon",
@@ -20,7 +20,7 @@
 
     if (!path) return;
 
-    const prog = await process.userDaemon!.FileProgress(
+    const prog = await process.userDaemon!.filesystemContext!.FileProgress(
       {
         type: "size",
         icon: "SaveIcon",

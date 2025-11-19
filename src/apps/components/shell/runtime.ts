@@ -200,7 +200,7 @@ export class ShellRuntime extends AppProcess {
       if (v) KernelStack().renderer?.focusedPid.set(-1); // Unfocus window on start menu invocation
     });
 
-    this.userDaemon?.checkReducedMotion();
+    this.userDaemon?.checksContext?.checkReducedMotion();
   }
 
   async stop() {
@@ -272,7 +272,7 @@ export class ShellRuntime extends AppProcess {
       return;
     }
 
-    this.userDaemon?.deleteVirtualDesktop(workspace.uuid); //First delete the desktop
+    this.userDaemon?.workspacesContext?.deleteVirtualDesktop(workspace.uuid); //First delete the desktop
     await Sleep(0); // Then wait for the next frame
     this.workspaceManagerOpened.set(true); // (ugly) and re-open the workspace manager
   }
@@ -432,6 +432,37 @@ export class ShellRuntime extends AppProcess {
   async exit() {
     this.startMenuOpened.set(false); // First close the start menu
     await this.spawnOverlayApp("ExitApp", this.pid); // Then spawn the exit overlay
+  }
+
+  async changeShell(id: string) {
+    const appStore = this.userDaemon!.appStorage();
+    const newShell = appStore?.getAppSynchronous(id);
+
+    if (!newShell) return false;
+
+    const proceed = await this.userDaemon?.Confirm(
+      "Change your shell",
+      `${newShell.metadata.name} by ${newShell.metadata.author} wants to act as your ArcOS shell. Do you allow this?`,
+      "Deny",
+      "Allow"
+    );
+
+    if (!proceed) return false;
+
+    this.userPreferences.update((v) => {
+      v.globalSettings.shellExec = id;
+      return v;
+    });
+
+    const restartNow = await this.userDaemon?.Confirm(
+      "Restart now?",
+      "ArcOS has to restart before the changes will apply. Do you want to restart now?",
+      "Not now",
+      "Restart",
+      "RestartIcon"
+    );
+
+    if (restartNow) await this.userDaemon?.powerContext?.restart();
   }
 
   //#endregion

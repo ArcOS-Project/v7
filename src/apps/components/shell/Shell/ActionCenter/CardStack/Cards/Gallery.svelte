@@ -55,7 +55,7 @@
   });
 
   async function chooseImage() {
-    const [path] = await process.userDaemon!.LoadSaveDialog({
+    const [path] = await process.userDaemon!.filesystemContext!.LoadSaveDialog({
       title: "Choose an image for the gallery",
       icon: "DesktopIcon",
       startDir: UserPaths.Pictures,

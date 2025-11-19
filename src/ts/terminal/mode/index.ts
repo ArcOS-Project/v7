@@ -115,7 +115,7 @@ export class TerminalMode extends Process {
 
       this.saveToken(userDaemon);
 
-      const userInfo = await userDaemon.getUserInfo();
+      const userInfo = await userDaemon.accountContext!.getUserInfo();
 
       if (!userInfo) {
         this.rl?.println(`Failed to request user info`);
@@ -127,26 +127,26 @@ export class TerminalMode extends Process {
 
         if (!unlocked) {
           this.rl?.println(`2FA code invalid!`);
-          await userDaemon.discontinueToken();
+          await userDaemon.accountContext?.discontinueToken();
           await userDaemon.killSelf();
           return false;
         }
       }
 
       this.rl?.println(`${CURUP}${CLRROW}Starting filesystem`);
-      await userDaemon.startFilesystemSupplier();
+      await userDaemon.filesystemContext?.startFilesystemSupplier();
 
       this.rl?.println(`${CURUP}${CLRROW}Starting synchronization`);
-      await userDaemon.startPreferencesSync();
+      await userDaemon.preferencesContext?.startPreferencesSync();
 
       this.rl?.println(`${CURUP}${CLRROW}Notifying login activity`);
-      await userDaemon.logActivity(`login`);
+      await userDaemon.activityContext?.logActivity(`login`);
 
       this.rl?.println(`${CURUP}${CLRROW}Starting service host`);
       await userDaemon.startServiceHost(async (serviceStep) => {
         if (serviceStep.id === "AppStorage") {
           this.rl?.println(`${CURUP}${CLRROW}Loading apps...`);
-          await userDaemon.initAppStorage(userDaemon.appStorage()!, (app) => {
+          await userDaemon.appRegistrationContext!.initAppStorage(userDaemon.appStorage()!, (app) => {
             this.rl?.println(`${CURUP}${CLRROW}Loading apps... ${app.id}`);
           });
         } else {
@@ -158,10 +158,10 @@ export class TerminalMode extends Process {
       await userDaemon.activateGlobalDispatch();
 
       this.rl?.println(`${CURUP}${CLRROW}Starting drive notifier watcher`);
-      userDaemon.startDriveNotifierWatcher();
+      userDaemon.filesystemContext!.startDriveNotifierWatcher();
 
       this.rl?.println(`${CURUP}${CLRROW}Starting share management`);
-      await userDaemon.startShareManager();
+      await userDaemon.filesystemContext!.startShareManager();
 
       userDaemon.appStorage();
 
@@ -171,7 +171,7 @@ export class TerminalMode extends Process {
       }
 
       this.rl?.println(`${CURUP}${CLRROW}Starting status refresh`);
-      await userDaemon.startSystemStatusRefresh();
+      await userDaemon.statusContext!.startSystemStatusRefresh();
 
       this.rl?.println(`${CURUP}${CLRROW}Refreshing app storage`);
 

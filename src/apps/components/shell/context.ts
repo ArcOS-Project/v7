@@ -40,7 +40,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         caption: "Create shortcut",
         icon: "arrow-up-right",
         action: async (app: App) => {
-          const [path] = await runtime.userDaemon!.LoadSaveDialog({
+          const [path] = await runtime.userDaemon!.filesystemContext!.LoadSaveDialog({
             title: "Choose where to save the app shortcut",
             icon: "ShortcutMimeIcon",
             startDir: UserPaths.Desktop,
@@ -51,7 +51,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
 
           if (!path) return;
 
-          await runtime.userDaemon?.createShortcut(
+          await runtime.userDaemon?.filesystemContext!.createShortcut(
             {
               icon: `@app::${app.id}`,
               name: app.metadata.name,
@@ -99,7 +99,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
           // BUG 687805735731d0b12b3115af
           if (!app) return;
 
-          runtime.userDaemon?.uninstallAppWithAck(app);
+          runtime.userDaemon?.appRegistrationContext!.uninstallAppWithAck(app);
         },
         // BUG 687805735731d0b12b3115af
         disabled: (app: App) => !app?.entrypoint && !app?.thirdParty,
@@ -166,7 +166,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         icon: "arrow-up-right",
         action: async (proc: AppProcess) => {
           const { data: appData } = proc.app;
-          const [path] = await runtime.userDaemon!.LoadSaveDialog({
+          const [path] = await runtime.userDaemon!.filesystemContext!.LoadSaveDialog({
             title: "Choose where to save the app shortcut",
             icon: "ShortcutMimeIcon",
             startDir: UserPaths.Desktop,
@@ -177,7 +177,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
 
           if (!path) return;
 
-          await runtime.userDaemon?.createShortcut(
+          await runtime.userDaemon?.filesystemContext!.createShortcut(
             {
               icon: `@app::${appData.id}`,
               name: appData.metadata.name,
@@ -260,7 +260,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       {
         caption: "Go here",
         action: (desktop: Workspace) => {
-          runtime.userDaemon?.switchToDesktopByUuid(desktop.uuid);
+          runtime.userDaemon?.workspacesContext!.switchToDesktopByUuid(desktop.uuid);
         },
       },
       {

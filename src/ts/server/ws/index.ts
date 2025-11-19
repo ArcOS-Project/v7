@@ -39,7 +39,7 @@ export class GlobalDispatch extends BaseService {
 
       this.client.on("kicked", () => {
         const daemon = KernelStack().getProcess<UserDaemon>(+this.env.get("userdaemon_pid"));
-        daemon?.logoff();
+        daemon?.powerContext!.logoff();
       });
     });
   }

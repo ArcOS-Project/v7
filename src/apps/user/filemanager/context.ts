@@ -485,7 +485,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
             caption: "Advanced System Settings...",
             icon: "monitor-cog",
             action: () => {
-              runtime.userDaemon?.spawnApp("AdvSystemSettings", +runtime.env.get("shell_pid"));
+              runtime.userDaemon?.spawnContext?.spawnApp("AdvSystemSettings", +runtime.env.get("shell_pid"));
             },
           },
         ],
@@ -494,7 +494,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Settings...",
         icon: "settings-2",
         action: () => {
-          runtime.userDaemon?.spawnApp("systemSettings", +runtime.env.get("shell_pid"));
+          runtime.userDaemon?.spawnContext?.spawnApp("systemSettings", +runtime.env.get("shell_pid"));
         },
       },
     ],
@@ -516,7 +516,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Properties...",
         icon: "wrench",
         action: () => {
-          runtime.userDaemon?.spawnApp("AdvSystemSettings", +runtime.env.get("shell_pid"), "Recycling");
+          runtime.userDaemon?.spawnContext?.spawnApp("AdvSystemSettings", +runtime.env.get("shell_pid"), "Recycling");
         },
       },
     ],

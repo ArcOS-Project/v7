@@ -27,6 +27,6 @@ export class SpawnCommand extends TerminalProcess {
       return 1;
     }
 
-    return (await term.daemon?.spawnApp(id, term.daemon?.pid, ...argv)) ? 0 : 1;
+    return (await term.daemon?.spawnContext!.spawnApp(id, term.daemon?.pid, ...argv)) ? 0 : 1;
   }
 }

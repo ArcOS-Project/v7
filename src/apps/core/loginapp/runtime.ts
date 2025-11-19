@@ -86,7 +86,7 @@ export class LoginAppRuntime extends AppProcess {
       if (!props.userDaemon) throw new Error(`LoginAppRuntimeConstructor: Irregular login type without daemon`);
 
       this.soundBus.playSound("arcos.system.logoff");
-      props.userDaemon?.setAppRendererClasses(props.userDaemon.preferences());
+      props.userDaemon?.appRendererContext!.setAppRendererClasses(props.userDaemon.preferences());
 
       switch (props.type) {
         case "logoff":
@@ -175,7 +175,7 @@ export class LoginAppRuntime extends AppProcess {
 
     this.loadingStatus.set("Loading your settings");
 
-    const userInfo = await userDaemon.getUserInfo();
+    const userInfo = await userDaemon.accountContext!.getUserInfo();
 
     if (!userInfo) {
       this.loadingStatus.set("");
@@ -191,7 +191,7 @@ export class LoginAppRuntime extends AppProcess {
       const unlocked = await this.askForTotp(token, userDaemon.userInfo?._id);
 
       if (!unlocked) {
-        await userDaemon.discontinueToken();
+        await userDaemon.accountContext!.discontinueToken();
         await userDaemon.killSelf();
         this.resetCookies();
         this.loadingStatus.set("");
@@ -214,36 +214,36 @@ export class LoginAppRuntime extends AppProcess {
 
     broadcast("Starting filesystem");
 
-    await userDaemon.startFilesystemSupplier();
+    await userDaemon.filesystemContext!.startFilesystemSupplier();
 
     broadcast("Starting synchronization");
 
-    await userDaemon.startPreferencesSync();
+    await userDaemon.preferencesContext!.startPreferencesSync();
 
     broadcast("Reading profile customization");
 
     this.profileName.set(userDaemon.preferences().account.displayName || username);
     if (!this.safeMode) {
-      this.loginBackground.set((await userDaemon.getWallpaper(userDaemon.preferences().account.loginBackground)).url);
+      this.loginBackground.set((await userDaemon.wallpaperContext!.getWallpaper(userDaemon.preferences().account.loginBackground)).url);
 
       this.savePersistence(username, this.profileImage(), this.loginBackground());
     }
 
     broadcast("Notifying login activity");
-    await userDaemon.logActivity("login");
+    await userDaemon.activityContext!.logActivity("login");
 
     broadcast("Starting service host");
     await userDaemon.startServiceHost(async (serviceStep) => {
       if (serviceStep.id === "AppStorage") {
         broadcast("Loading apps");
-        await userDaemon.initAppStorage(userDaemon.appStorage()!, (app) => broadcast(`Loaded ${app.metadata.name}`));
+        await userDaemon.appRegistrationContext!.initAppStorage(userDaemon.appStorage()!, (app) => broadcast(`Loaded ${app.metadata.name}`));
       } else {
         broadcast(`Started ${serviceStep.name}`);
       }
     });
 
     broadcast("Checking associations");
-    await userDaemon.updateFileAssociations();
+    await userDaemon.migrationsContext!.updateFileAssociations();
 
     broadcast("Connecting global dispatch");
     await userDaemon.activateGlobalDispatch();
@@ -254,10 +254,10 @@ export class LoginAppRuntime extends AppProcess {
     }
 
     broadcast("Starting drive notifier watcher");
-    userDaemon.startDriveNotifierWatcher();
+    userDaemon.filesystemContext!.startDriveNotifierWatcher();
 
     broadcast("Starting share management");
-    await userDaemon.startShareManager();
+    await userDaemon.filesystemContext!.startShareManager();
 
     const storage = userDaemon.appStorage();
 
@@ -269,26 +269,26 @@ export class LoginAppRuntime extends AppProcess {
     }
 
     broadcast("Starting status refresh");
-    await userDaemon.startSystemStatusRefresh();
+    await userDaemon.statusContext!.startSystemStatusRefresh();
 
     broadcast("Let's go!");
     await KernelStateHandler()?.loadState("desktop", { userDaemon });
     this.soundBus.playSound("arcos.system.logon");
-    userDaemon.setAppRendererClasses(userDaemon.preferences());
-    userDaemon.checkNightly();
+    userDaemon.appRendererContext!.setAppRendererClasses(userDaemon.preferences());
+    userDaemon.checksContext!.checkNightly();
 
     broadcast("Starting Workspaces");
-    await userDaemon.startVirtualDesktops();
+    await userDaemon.workspacesContext!.startVirtualDesktops();
 
     broadcast("Running autorun");
-    await userDaemon.spawnAutoload();
+    await userDaemon.applicationsContext!.spawnAutoload();
 
     await this.appStore()?.refresh();
 
-    await userDaemon.checkForUpdates();
+    await userDaemon.checksContext!.checkForUpdates();
     userDaemon.serviceHost?.getService<ProtocolServiceProcess>("ProtoService")?.parseProtoParam();
-    await userDaemon.checkForMissedMessages();
-    await userDaemon.updateAppShortcutsDir();
+    await userDaemon.checksContext!.checkForMissedMessages();
+    await userDaemon.migrationsContext!.updateAppShortcutsDir();
     await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
 
     userDaemon._blockLeaveInvocations = false;
@@ -313,14 +313,14 @@ export class LoginAppRuntime extends AppProcess {
     }
 
     this.profileName.set(daemon.preferences().account.displayName || daemon.username);
-    this.loginBackground.set((await daemon.getWallpaper(daemon.preferences().account.loginBackground)).url);
+    this.loginBackground.set((await daemon.wallpaperContext!.getWallpaper(daemon.preferences().account.loginBackground)).url);
 
     await Sleep(2000);
 
-    await daemon.logActivity("logout");
+    await daemon.activityContext!.logActivity("logout");
 
     this.resetCookies();
-    await daemon.discontinueToken();
+    await daemon.accountContext!.discontinueToken();
     await daemon.killSelf();
 
     setTimeout(async () => {
@@ -339,7 +339,7 @@ export class LoginAppRuntime extends AppProcess {
 
     if (daemon) {
       this.profileImage.set(`${this.server.url}/user/pfp/${daemon.userInfo._id}${authcode()}`);
-      this.loginBackground.set((await daemon.getWallpaper(daemon.preferences().account.loginBackground)).url);
+      this.loginBackground.set((await daemon.wallpaperContext!.getWallpaper(daemon.preferences().account.loginBackground)).url);
 
       this.profileName.set(daemon.preferences().account.displayName || daemon.username);
     }
@@ -360,7 +360,7 @@ export class LoginAppRuntime extends AppProcess {
 
     if (daemon) {
       this.profileImage.set(`${this.server.url}/user/pfp/${daemon.userInfo._id}${authcode()}`);
-      this.loginBackground.set((await daemon.getWallpaper(daemon.preferences().account.loginBackground)).url);
+      this.loginBackground.set((await daemon.wallpaperContext!.getWallpaper(daemon.preferences().account.loginBackground)).url);
 
       this.profileName.set(daemon.preferences().account.displayName || daemon.username);
     }

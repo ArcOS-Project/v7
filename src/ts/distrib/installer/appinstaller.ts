@@ -70,29 +70,29 @@ export class AppInstallerProcess extends InstallerProcessBase {
     if (existing) return;
 
     if (app.hidden || app.core) {
-      this.userDaemon?.sendNotification({
+      this.userDaemon?.notificationsContext!.sendNotification({
         title: `Open ${this.metadata?.name}`,
         message: `Do you want open ${this.metadata?.name}?`,
-        image: this.userDaemon.getAppIcon(app),
+        image: this.userDaemon.appRegistrationContext!.getAppIcon(app),
         buttons: [
           {
             caption: "Open",
             action: async () => {
-              await this.userDaemon?.spawnApp(app.id, +this.env.get("shell_pid"));
+              await this.userDaemon?.spawnContext?.spawnApp(app.id, +this.env.get("shell_pid"));
             },
           },
         ],
       });
     } else {
-      this.userDaemon?.sendNotification({
+      this.userDaemon?.notificationsContext!.sendNotification({
         title: `Pin ${this.metadata?.name}`,
         message: `Do you want to pin ${this.metadata?.name} to the taskbar so that you can easily launch it in the future?`,
-        image: this.userDaemon.getAppIcon(app),
+        image: this.userDaemon.appRegistrationContext!.getAppIcon(app),
         buttons: [
           {
             caption: "Pin to taskbar",
             action: () => {
-              this.userDaemon.pinApp(this.metadata?.appId!);
+              this.userDaemon.appRegistrationContext!.pinApp(this.metadata?.appId!);
             },
           },
         ],
@@ -106,7 +106,7 @@ export class AppInstallerProcess extends InstallerProcessBase {
     this.logStatus(this.metadata!.name, "registration");
 
     try {
-      const result = await this.userDaemon?.registerAppFromPath(join(this.metadata!.installLocation, "_app.tpa"));
+      const result = await this.userDaemon?.appRegistrationContext!.registerAppFromPath(join(this.metadata!.installLocation, "_app.tpa"));
       if (!result) {
         this.setCurrentStatus("done");
         return true;
@@ -161,6 +161,6 @@ export class AppInstallerProcess extends InstallerProcessBase {
       } catch {}
     }
 
-    host?.daemon.unpinApp(metadata.appId);
+    host?.daemon.appRegistrationContext!.unpinApp(metadata.appId);
   }
 }

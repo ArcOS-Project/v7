@@ -22,7 +22,7 @@
   let content = $state<string>("Uninstall");
 
   async function go() {
-    const elevated = await process.userDaemon!.manuallyElevate({
+    const elevated = await process.userDaemon!.elevationContext!.manuallyElevate({
       what: "ArcOS needs your permission to remove a package",
       title: $pkg.pkg.name,
       description: `By ${$pkg.user?.displayName || $pkg.user?.username || $pkg.pkg.author}`,

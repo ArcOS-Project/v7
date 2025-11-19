@@ -28,7 +28,7 @@ export class DriveInfoRuntime extends AppProcess {
     this.isUserFs = this.drive instanceof ServerDrive && this.drive.uuid === USERFS_UUID;
     this.quota = await this.drive.quota();
 
-    if (this.isUserFs) this.usage = await this.userDaemon?.determineCategorizedDiskUsage();
+    if (this.isUserFs) this.usage = await this.userDaemon?.filesystemContext!.determineCategorizedDiskUsage();
   }
 
   //#endregion

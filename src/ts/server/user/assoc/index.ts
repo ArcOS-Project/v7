@@ -83,8 +83,8 @@ export class FileAssocService extends BaseService {
     }
 
     // handlers
-    for (const handlerId in this.host.daemon.fileHandlers) {
-      const handler = this.host.daemon.fileHandlers[handlerId];
+    for (const handlerId in this.host.daemon.filesystemContext!.fileHandlers) {
+      const handler = this.host.daemon.filesystemContext!.fileHandlers[handlerId];
 
       if (handler.opens.extensions) result.associations.handlers[handlerId] = handler.opens.extensions;
     }
@@ -110,7 +110,7 @@ export class FileAssocService extends BaseService {
     return {
       extension: extension,
       friendlyName: definition?.friendlyName || "Unknown",
-      icon: this.host.daemon.getIconCached(definition?.icon || "DefaultMimeIcon"),
+      icon: this.host.daemon.appRegistrationContext!.getIconCached(definition?.icon || "DefaultMimeIcon"),
       handledBy: {
         app: storage?.getAppSynchronous(
           Object.entries(associations.apps)
@@ -118,7 +118,7 @@ export class FileAssocService extends BaseService {
             .map(([a]) => a)[0]
         ),
         handler:
-          this.host.daemon.fileHandlers[
+          this.host.daemon.filesystemContext!.fileHandlers[
             Object.entries(associations.handlers)
               .filter(([_, e]) => e.includes(extension.toLowerCase()) || e.includes(filename))
               .map(([h]) => h)[0]

@@ -135,7 +135,7 @@ export class AppStoreRuntime extends AppProcess {
       return 0;
     }
 
-    const elevated = await this.userDaemon!.manuallyElevate({
+    const elevated = await this.userDaemon!.elevationContext!.manuallyElevate({
       what: "ArcOS needs your permission to install a package",
       title: freshPkg.pkg.name,
       description: `By ${freshPkg.user?.displayName || freshPkg.user?.username || freshPkg.pkg.author}`,
@@ -191,7 +191,7 @@ export class AppStoreRuntime extends AppProcess {
       return 0;
     }
 
-    const elevated = await this.userDaemon!.manuallyElevate({
+    const elevated = await this.userDaemon!.elevationContext!.manuallyElevate({
       what: "ArcOS needs your permission to update a package",
       title: freshPkg.pkg.name,
       description: `By ${freshPkg.user?.displayName || freshPkg.user?.username || freshPkg.pkg.author}`,
@@ -215,7 +215,7 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async deprecatePackage(pkg: StoreItem) {
-    const elevated = await this.userDaemon!.manuallyElevate({
+    const elevated = await this.userDaemon!.elevationContext!.manuallyElevate({
       what: "ArcOS needs your permission to deprecate one of your packages",
       title: pkg.pkg.name,
       description: pkg.pkg.appId,
@@ -231,7 +231,7 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async deletePackage(pkg: StoreItem) {
-    const elevated = await this.userDaemon!.manuallyElevate({
+    const elevated = await this.userDaemon!.elevationContext!.manuallyElevate({
       what: "ArcOS needs your permission to delete one of your packages",
       title: pkg.pkg.name,
       description: pkg.pkg.appId,
@@ -247,7 +247,7 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async publishPackage() {
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    const [path] = await this.userDaemon!.filesystemContext!.LoadSaveDialog({
       title: "Select package to publish",
       icon: "AppStoreIcon",
       extensions: [".arc"],
@@ -256,7 +256,7 @@ export class AppStoreRuntime extends AppProcess {
 
     if (!path) return;
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await this.userDaemon!.filesystemContext!.FileProgress(
       {
         caption: "Publishing your package",
         subtitle: path,
@@ -297,7 +297,7 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async updateStoreItem(pkg: StoreItem) {
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    const [path] = await this.userDaemon!.filesystemContext!.LoadSaveDialog({
       title: `Select update for '${pkg.pkg.name}'`,
       icon: StoreItemIcon(pkg),
       extensions: [".arc"],
@@ -306,7 +306,7 @@ export class AppStoreRuntime extends AppProcess {
 
     if (!path) return;
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await this.userDaemon!.filesystemContext!.FileProgress(
       {
         caption: "Updating your store item",
         subtitle: path,

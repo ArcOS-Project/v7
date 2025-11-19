@@ -315,7 +315,7 @@ export class MessagingAppRuntime extends AppProcess {
     if (!message) return;
 
     const date = dayjs(message.createdAt).format("DD MMM YYYY, HH.mm.ss");
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    const [path] = await this.userDaemon!.filesystemContext!.LoadSaveDialog({
       title: "Choose where to save the message",
       icon: "MessagingIcon",
       isSave: true,

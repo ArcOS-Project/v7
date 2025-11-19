@@ -216,7 +216,7 @@ export class WallpaperRuntime extends AppProcess {
   async uploadItems() {
     if (this._disposed) return;
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await this.userDaemon!.filesystemContext!.FileProgress(
       {
         type: "size",
         icon: "UploadIcon",

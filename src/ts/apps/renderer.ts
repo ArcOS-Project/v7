@@ -290,7 +290,7 @@ export class AppRenderer extends Process {
       titleIcon.src = process.getIconCached(v) || v;
     });
 
-    titleIcon.src = process.userDaemon?.getAppIconByProcess(process) || process.getIconCached("ComponentIcon");
+    titleIcon.src = process.userDaemon?.appRegistrationContext!.getAppIconByProcess(process) || process.getIconCached("ComponentIcon");
 
     title.className = "window-title";
     title.append(titleIcon, titleCaption, this._renderAltMenu(process));
@@ -311,7 +311,7 @@ export class AppRenderer extends Process {
       feedbackButton.className = "link feedback";
       feedbackButton.innerText = "Feedback?";
       feedbackButton.addEventListener("click", () => {
-        process.userDaemon?.iHaveFeedback(process);
+        process.userDaemon?.checksContext!.iHaveFeedback(process);
       });
 
       titlebar.append(feedbackButton);

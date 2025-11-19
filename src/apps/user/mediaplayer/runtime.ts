@@ -188,7 +188,7 @@ export class MediaPlayerRuntime extends AppProcess {
 
   public async openFile() {
     if (this._disposed) return;
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    const [path] = await this.userDaemon!.filesystemContext!.LoadSaveDialog({
       title: "Select an audio or video file to open",
       icon: "MediaPlayerIcon",
       startDir: getParentDirectory(this.queue()[this.queueIndex()]) || UserPaths.Music,
@@ -298,7 +298,7 @@ export class MediaPlayerRuntime extends AppProcess {
 
   async addToQueue() {
     if (this._disposed) return;
-    const paths = await this.userDaemon!.LoadSaveDialog({
+    const paths = await this.userDaemon!.filesystemContext!.LoadSaveDialog({
       title: "Select a file to add to the queue",
       icon: "MediaPlayerIcon",
       startDir: getParentDirectory(this.queue()[this.queueIndex()]) || UserPaths.Music,
@@ -330,7 +330,7 @@ export class MediaPlayerRuntime extends AppProcess {
     if (this._disposed) return;
     const playlist = btoa(JSON.stringify(this.queue(), null, 2));
 
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    const [path] = await this.userDaemon!.filesystemContext!.LoadSaveDialog({
       title: "Save playlist",
       icon: this.app.data.metadata.icon,
       isSave: true,
@@ -346,7 +346,7 @@ export class MediaPlayerRuntime extends AppProcess {
 
   async loadPlaylist() {
     if (this._disposed) return;
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    const [path] = await this.userDaemon!.filesystemContext!.LoadSaveDialog({
       title: "Open playlist",
       icon: this.app.data.metadata.icon,
       extensions: [".arcpl"],

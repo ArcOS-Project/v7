@@ -46,7 +46,7 @@ export class MessageComposerRuntime extends AppProcess {
 
     this.sending.set(true);
 
-    const prog = await this.userDaemon?.FileProgress(
+    const prog = await this.userDaemon?.filesystemContext!.FileProgress(
       {
         type: "none",
         caption: "Sending message",
@@ -118,14 +118,14 @@ export class MessageComposerRuntime extends AppProcess {
 
   async addAttachment() {
     const attachments: Attachment[] = [];
-    const paths = await this.userDaemon!.LoadSaveDialog({
+    const paths = await this.userDaemon!.filesystemContext!.LoadSaveDialog({
       title: "Choose one or more files to attach",
       icon: "UploadIcon",
       startDir: UserPaths.Documents,
       multiple: true,
     });
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await this.userDaemon!.filesystemContext!.FileProgress(
       {
         max: 100,
         type: "none",

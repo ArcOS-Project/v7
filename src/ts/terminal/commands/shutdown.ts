@@ -8,7 +8,7 @@ export class ShutdownCommand extends TerminalProcess {
   //#region LIFECYCLE
 
   protected async main(term: ArcTerminal) {
-    term.daemon?.shutdown();
+    term.daemon?.powerContext!.shutdown();
     return -256;
   }
 

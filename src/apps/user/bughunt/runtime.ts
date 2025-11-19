@@ -90,7 +90,7 @@ export class BugHuntRuntime extends AppProcess {
 
     if (!report) return;
 
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    const [path] = await this.userDaemon!.filesystemContext!.LoadSaveDialog({
       isSave: true,
       title: "Choose where to export the report to",
       icon: "SaveIcon",
@@ -101,7 +101,7 @@ export class BugHuntRuntime extends AppProcess {
 
     if (!path) return;
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await this.userDaemon!.filesystemContext!.FileProgress(
       {
         type: "size",
         icon: "SaveIcon",

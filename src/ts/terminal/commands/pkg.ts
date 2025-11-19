@@ -472,7 +472,7 @@ export class PkgCommand extends TerminalProcess {
   async elevate(): Promise<boolean> {
     return await this.term!.elevate({
       what: "ArcOS needs your permission to run the pkg command.",
-      image: this.term?.daemon?.getIconCached("ArcTermIcon")!,
+      image: this.term?.daemon?.appRegistrationContext!.getIconCached("ArcTermIcon")!,
       title: "Package manager",
       description: "ArcTerm command",
       level: ElevationLevel.medium,

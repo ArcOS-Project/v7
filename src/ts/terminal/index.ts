@@ -360,7 +360,7 @@ export class ArcTerminal extends Process {
       return false;
     }
 
-    await this.daemon?.discontinueToken(token);
+    await this.daemon?.accountContext?.discontinueToken(token);
 
     return true;
   }

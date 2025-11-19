@@ -66,7 +66,7 @@ export class AppInstallerRuntime extends AppProcess {
             {
               caption: "Take me there",
               action: () => {
-                this.userDaemon?.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps");
+                this.userDaemon?.spawnContext?.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps");
               },
             },
             {
@@ -99,7 +99,7 @@ export class AppInstallerRuntime extends AppProcess {
 
       try {
         await this.fs.deleteItem(this.metadata!.installLocation);
-        await this.userDaemon?.uninstallPackageWithStatus(this.metadata!.appId, false);
+        await this.userDaemon?.appRegistrationContext!.uninstallPackageWithStatus(this.metadata!.appId, false);
       } catch {
         // Silently error
       }

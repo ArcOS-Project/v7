@@ -372,7 +372,7 @@ export class FileManagerRuntime extends AppProcess {
   async confirmUmountDrive(drive: FilesystemDrive, id: string) {
     if (this._disposed) return;
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await this.userDaemon!.filesystemContext!.FileProgress(
       {
         icon: "DriveIcon",
         caption: `Unmounting ${drive.label || "drive"}...`,
@@ -393,7 +393,7 @@ export class FileManagerRuntime extends AppProcess {
   async uploadItems() {
     if (this._disposed) return;
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await this.userDaemon!.filesystemContext!.FileProgress(
       {
         type: "size",
         icon: "UploadIcon",
@@ -509,7 +509,7 @@ export class FileManagerRuntime extends AppProcess {
     if (this._disposed) return;
 
     const items = this.selection();
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await this.userDaemon!.filesystemContext!.FileProgress(
       {
         max: items.length,
         type: "quantity",
@@ -547,7 +547,7 @@ export class FileManagerRuntime extends AppProcess {
 
     const filename = getItemNameFromPath(selected[0]);
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await this.userDaemon!.filesystemContext!.FileProgress(
       {
         type: "size",
         caption: `Preparing for download`,

@@ -59,13 +59,13 @@ export class ShortcutPropertiesRuntime extends AppProcess {
 
     switch (data.type) {
       case "app":
-        await this.userDaemon?.spawnOverlay("AppInfo", +this.env.get("shell_pid"), data.target);
+        await this.userDaemon?.spawnContext?.spawnOverlay("AppInfo", +this.env.get("shell_pid"), data.target);
         break;
       case "file":
-        await this.userDaemon?.spawnApp("fileManager", +this.env.get("shell_pid"), getParentDirectory(data.target));
+        await this.userDaemon?.spawnContext?.spawnApp("fileManager", +this.env.get("shell_pid"), getParentDirectory(data.target));
         break;
       case "folder":
-        await this.userDaemon?.spawnApp("fileManager", +this.env.get("shell_pid"), data.target);
+        await this.userDaemon?.spawnContext?.spawnApp("fileManager", +this.env.get("shell_pid"), data.target);
         break;
       case "new":
         await this.closeWindow();
@@ -88,7 +88,7 @@ export class ShortcutPropertiesRuntime extends AppProcess {
   async pickTarget() {
     const data = this.shortcutData();
 
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    const [path] = await this.userDaemon!.filesystemContext!.LoadSaveDialog({
       title: "Pick a new target",
       icon: data.icon,
       folder: data.type === "folder",
