@@ -104,7 +104,7 @@ export class AppRegistrationUserContext extends UserContext {
 
     if (!distrib) return false;
 
-    const prog = await this.GlobalLoadIndicator();
+    const prog = await this.daemon.helpers!.GlobalLoadIndicator();
     const result = await distrib.uninstallPackage(id, deleteFiles, (s) => prog.caption.set(s));
 
     await prog.stop();

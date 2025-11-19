@@ -34,6 +34,7 @@ import type { AppRendererUserContext } from "./contexts/apprenderer";
 import type { ChecksUserContext } from "./contexts/checks";
 import type { ElevationUserContext } from "./contexts/elevation";
 import type { FilesystemUserContext } from "./contexts/filesystem";
+import type { HelpersUserContext } from "./contexts/helpers";
 import type { IconsUserContext } from "./contexts/icons";
 import type { MigrationsUserContext } from "./contexts/migrations";
 import type { NotificationsUserContext } from "./contexts/notifications";
@@ -78,6 +79,7 @@ export class UserDaemon extends Process {
   checks?: ChecksUserContext;
   elevation?: ElevationUserContext;
   files?: FilesystemUserContext;
+  helpers?: HelpersUserContext;
   icons?: IconsUserContext;
   migrations?: MigrationsUserContext;
   notifications?: NotificationsUserContext;
@@ -208,98 +210,6 @@ export class UserDaemon extends Process {
   //#endregion INIT
   //#region HELPERS
 
-  async GlobalLoadIndicator(caption?: string, pid?: number) {
-    const process = await KernelStack().spawn<GlobalLoadIndicatorRuntime>(
-      GlobalLoadIndicatorRuntime,
-      undefined,
-      this.userInfo!._id,
-      pid || +this.env.get("shell_pid"),
-      {
-        data: { ...GlobalLoadIndicatorApp, overlay: true },
-        id: GlobalLoadIndicatorApp.id,
-        desktop: undefined,
-      },
-      caption
-    );
-
-    if (!process)
-      return {
-        caption: Store<string>(),
-        stop: async () => {},
-      };
-
-    return {
-      caption: process.caption,
-      stop: async () => {
-        await Sleep(500);
-        await process.closeWindow();
-      },
-    };
-  }
-
-  async Confirm(title: string, message: string, no: string, yes: string, image = "QuestionIcon", pid?: number) {
-    const shellPid = pid || +this.env.get("shell_pid");
-    return new Promise((r) => {
-      MessageBox(
-        {
-          title,
-          message,
-          image,
-          buttons: [
-            { caption: no, action: () => r(false) },
-            { caption: yes, action: () => r(true), suggested: true },
-          ],
-        },
-        shellPid,
-        !!shellPid
-      );
-    });
-  }
-
-  async TerminalWindow(pid = +this.env.get("shell_pid")): Promise<ExpandedTerminal | undefined> {
-    const process = await KernelStack().spawn<TerminalWindowRuntime>(TerminalWindowRuntime, undefined, this.userInfo!._id, pid, {
-      data: { ...TerminalWindowApp },
-      id: TerminalWindowApp.id,
-      desktop: undefined,
-    });
-
-    if (!process?.term) return undefined;
-
-    const term: ExpandedTerminal = process.term;
-    term.process = process;
-
-    return term;
-  }
-
-  async IconPicker(data: Omit<IconPickerData, "returnId">) {
-    if (this._disposed) return;
-
-    this.Log(`Opening OpenWith for ${data.forWhat}`);
-
-    const uuid = UUID();
-
-    await this.spawn?.spawnOverlay("IconPicker", +this.env.get("shell_pid"), {
-      ...data,
-      returnId: uuid,
-    });
-
-    return new Promise<string>(async (r) => {
-      this.systemDispatch.subscribe<[string, string]>("ip-confirm", ([id, icon]) => {
-        if (id === uuid) r(icon);
-      });
-      this.systemDispatch.subscribe("ip-cancel", ([id]) => {
-        if (id === uuid) r(data.defaultIcon);
-      });
-    });
-  }
-
-  ParentIs(proc: AppProcess, appId: string) {
-    const targetAppInstances = KernelStack()
-      .renderer?.getAppInstances(appId)
-      .map((p) => p.pid);
-
-    return targetAppInstances?.includes(proc.parentPid);
-  }
 
   //#endregion HELPERS
 }

@@ -68,10 +68,6 @@ export class UserContext {
     return this.#daemon.serviceHost;
   }
 
-  protected get GlobalLoadIndicator() {
-    return this.#daemon.GlobalLoadIndicator;
-  }
-
   protected get appStorage() {
     return this.#daemon.appStorage;
   }

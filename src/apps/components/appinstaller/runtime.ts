@@ -95,7 +95,7 @@ export class AppInstallerRuntime extends AppProcess {
     // TODO: change rollback for library installment
 
     if (!this.isLibrary) {
-      const gli = await this.userDaemon?.GlobalLoadIndicator("Rolling back changes...", this.pid);
+      const gli = await this.userDaemon?.helpers!.GlobalLoadIndicator("Rolling back changes...", this.pid);
 
       try {
         await this.fs.deleteItem(this.metadata!.installLocation);

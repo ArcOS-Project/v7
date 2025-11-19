@@ -203,7 +203,7 @@ export class SpawnUserContext extends UserContext {
 
     let stop: (() => Promise<void>) | undefined;
 
-    if (this.daemon!.autoLoadComplete) stop = (await this.GlobalLoadIndicator(`Opening ${app.metadata.name}...`)).stop;
+    if (this.daemon!.autoLoadComplete) stop = (await this.daemon.helpers!.GlobalLoadIndicator(`Opening ${app.metadata.name}...`)).stop;
 
     try {
       const engine = await KernelStack().spawn<JsExec>(

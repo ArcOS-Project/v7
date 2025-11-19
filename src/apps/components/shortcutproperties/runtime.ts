@@ -75,7 +75,7 @@ export class ShortcutPropertiesRuntime extends AppProcess {
 
   async changeIcon() {
     const data = this.shortcutData();
-    const icon = await this.userDaemon?.IconPicker({
+    const icon = await this.userDaemon?.helpers!.IconPicker({
       defaultIcon: data.icon,
       forWhat: data.name,
     });

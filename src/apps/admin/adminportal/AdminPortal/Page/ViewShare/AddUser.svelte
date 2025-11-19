@@ -9,7 +9,7 @@
   let loading = $state<boolean>(false);
 
   async function addUser() {
-    const confirm = await process.userDaemon?.Confirm(
+    const confirm = await process.userDaemon?.helpers!.Confirm(
       "Confirm user add?",
       `Are you sure you want to add this user to '${share.shareName}'?`,
       "Cancel",

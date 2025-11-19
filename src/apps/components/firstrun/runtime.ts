@@ -31,7 +31,7 @@ export class FirstRunRuntime extends AppProcess {
   async onClose() {
     if (this.done()) return true;
 
-    const { stop, caption } = await this.userDaemon!.GlobalLoadIndicator("Finishing up...", this.parentPid);
+    const { stop, caption } = await this.userDaemon!.helpers!.GlobalLoadIndicator("Finishing up...", this.parentPid);
 
     for (const path in FirstRunShortcuts) {
       const payload = FirstRunShortcuts[path];

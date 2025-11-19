@@ -440,7 +440,7 @@ export class ShellRuntime extends AppProcess {
 
     if (!newShell) return false;
 
-    const proceed = await this.userDaemon?.Confirm(
+    const proceed = await this.userDaemon?.helpers!.Confirm(
       "Change your shell",
       `${newShell.metadata.name} by ${newShell.metadata.author} wants to act as your ArcOS shell. Do you allow this?`,
       "Deny",
@@ -454,7 +454,7 @@ export class ShellRuntime extends AppProcess {
       return v;
     });
 
-    const restartNow = await this.userDaemon?.Confirm(
+    const restartNow = await this.userDaemon?.helpers!.Confirm(
       "Restart now?",
       "ArcOS has to restart before the changes will apply. Do you want to restart now?",
       "Not now",

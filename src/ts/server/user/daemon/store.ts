@@ -7,6 +7,7 @@ import { AppRendererUserContext } from "./contexts/apprenderer";
 import { ChecksUserContext } from "./contexts/checks";
 import { ElevationUserContext } from "./contexts/elevation";
 import { FilesystemUserContext } from "./contexts/filesystem";
+import { HelpersUserContext } from "./contexts/helpers";
 import { IconsUserContext } from "./contexts/icons";
 import { MigrationsUserContext } from "./contexts/migrations";
 import { NotificationsUserContext } from "./contexts/notifications";
@@ -29,6 +30,7 @@ export const UserContexts: Record<string, typeof UserContext> = {
   checks: ChecksUserContext,
   elevation: ElevationUserContext,
   files: FilesystemUserContext,
+  helpers: HelpersUserContext,
   icons: IconsUserContext,
   migrations: MigrationsUserContext,
   notifications: NotificationsUserContext,

@@ -124,7 +124,7 @@ export class ShareListGuiRuntime extends AppProcess {
     const path = `${drive.uuid}:/`;
     const parent = KernelStack().getProcess(this.parentPid);
 
-    if (parent && this.userDaemon?.ParentIs(this, "fileManager")) {
+    if (parent && this.userDaemon?.helpers!.ParentIs(this, "fileManager")) {
       // In case the parent is a file manager; navigate it instead
       const dispatch = KernelStack().ConnectDispatch(this.parentPid);
       dispatch?.dispatch("navigate", path);

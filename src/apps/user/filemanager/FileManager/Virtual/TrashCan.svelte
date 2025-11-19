@@ -74,7 +74,7 @@
 
   async function deleteSelected() {
     if ($selection.length === 1) {
-      const proceed = await process.userDaemon?.Confirm(
+      const proceed = await process.userDaemon?.helpers!.Confirm(
         "Delete item?",
         "Are you sure you want to permanently delete this item from the Recycle Bin? This cannot be undone.",
         "Cancel",
@@ -88,7 +88,7 @@
       trash?.permanentlyDelete($selection[0]);
       return;
     }
-    const proceed = await process.userDaemon?.Confirm(
+    const proceed = await process.userDaemon?.helpers!.Confirm(
       "Delete items?",
       "Are you sure you want to permanently delete these items from the Recycle Bin? This cannot be undone.",
       "Cancel",
