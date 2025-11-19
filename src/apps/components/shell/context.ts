@@ -51,7 +51,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
 
           if (!path) return;
 
-          await runtime.userDaemon?.shortcuts!.createShortcut(
+          await runtime.userDaemon?.shortcuts?.createShortcut(
             {
               icon: `@app::${app.id}`,
               name: app.metadata.name,
@@ -99,7 +99,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
           // BUG 687805735731d0b12b3115af
           if (!app) return;
 
-          runtime.userDaemon?.appreg!.uninstallAppWithAck(app);
+          runtime.userDaemon?.appreg?.uninstallAppWithAck(app);
         },
         // BUG 687805735731d0b12b3115af
         disabled: (app: App) => !app?.entrypoint && !app?.thirdParty,
@@ -177,7 +177,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
 
           if (!path) return;
 
-          await runtime.userDaemon?.shortcuts!.createShortcut(
+          await runtime.userDaemon?.shortcuts?.createShortcut(
             {
               icon: `@app::${appData.id}`,
               name: appData.metadata.name,
@@ -260,7 +260,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       {
         caption: "Go here",
         action: (desktop: Workspace) => {
-          runtime.userDaemon?.workspaces!.switchToDesktopByUuid(desktop.uuid);
+          runtime.userDaemon?.workspaces?.switchToDesktopByUuid(desktop.uuid);
         },
       },
       {

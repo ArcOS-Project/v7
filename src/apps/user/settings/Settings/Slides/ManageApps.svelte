@@ -96,7 +96,7 @@
         onclick={() => process.spawnOverlayApp("AppInfo", process.pid, app.id)}
         class:disabled={process.userDaemon?.apps?.checkDisabled(app.id, app.noSafeMode)}
       >
-        <img src={process.userDaemon?.icons!.getAppIcon(app)} alt="" />
+        <img src={process.userDaemon?.icons?.getAppIcon(app)} alt="" />
         <h1>{app.metadata.name}</h1>
         <p class="author">{app.metadata.author} - v{app.metadata.version}</p>
       </button>

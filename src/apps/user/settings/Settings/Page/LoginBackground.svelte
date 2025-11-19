@@ -39,7 +39,7 @@
       <button
         class="lucide icon-upload"
         aria-label="Upload wallpaper"
-        onclick={() => userDaemon?.wallpaper!.uploadWallpaper()}
+        onclick={() => userDaemon?.wallpaper?.uploadWallpaper()}
         disabled={process.safeMode}
         title="Upload wallpaper"
       >

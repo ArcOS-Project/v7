@@ -12,7 +12,7 @@
 
   async function changeQuota() {
     if (!newQuota) return;
-    const confirm = await process.userDaemon?.helpers!.Confirm(
+    const confirm = await process.userDaemon?.helpers?.Confirm(
       "Confirm quota change?",
       `Are you sure you want to change the quota of '${user.username}' to ${formatBytes(newQuota)}?`,
       "Cancel",

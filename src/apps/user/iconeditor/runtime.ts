@@ -36,7 +36,7 @@ export class IconEditorRuntime extends AppProcess {
   async onClose(): Promise<boolean> {
     if (!this.hasChanges()) return true;
 
-    const saveChanges = await this.userDaemon?.helpers!.Confirm(
+    const saveChanges = await this.userDaemon?.helpers?.Confirm(
       "Save changes?",
       "Do you want to save the changes you made to your icon set?",
       "Discard",

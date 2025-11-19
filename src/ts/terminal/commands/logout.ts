@@ -17,7 +17,7 @@ export class LogoutCommand extends TerminalProcess {
   //#endregion
 
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]) {
-    term.daemon?.power!.logoff();
+    term.daemon?.power?.logoff();
     return -256;
   }
 }

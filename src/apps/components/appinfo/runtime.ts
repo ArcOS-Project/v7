@@ -45,7 +45,7 @@ export class AppInfoRuntime extends AppProcess {
   async killAll() {
     const elevated = await this.userDaemon?.elevation?.manuallyElevate({
       what: `ArcOS needs your permission to kill all instances of an app`,
-      image: this.userDaemon?.icons!.getAppIcon(this.targetApp()) || this.getIconCached("ComponentIcon"),
+      image: this.userDaemon?.icons?.getAppIcon(this.targetApp()) || this.getIconCached("ComponentIcon"),
       title: this.targetApp().metadata.name,
       description: this.targetAppId,
       level: ElevationLevel.high,

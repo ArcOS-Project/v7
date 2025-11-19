@@ -36,7 +36,7 @@
   });
 
   function clear() {
-    userDaemon?.notifications!.clearNotifications();
+    userDaemon?.notifications?.clearNotifications();
   }
 </script>
 

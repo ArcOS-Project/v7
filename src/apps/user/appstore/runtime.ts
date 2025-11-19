@@ -109,7 +109,7 @@ export class AppStoreRuntime extends AppProcess {
   async installPackage(pkg: StoreItem, onDownloadProgress?: FilesystemProgressCallback) {
     const freshPkg = (await this.distrib.getStoreItem(pkg._id))!;
     if (freshPkg.deprecated) {
-      const go = await this.userDaemon!.helpers!.Confirm(
+      const go = await this.userDaemon!.helpers?.Confirm(
         "Are you sure?",
         "The author of this package marked it as <b>deprecated</b>. This means that the package is unmaintained and outdated. Are you sure you want to continue installing it?",
         "Cancel",
@@ -162,7 +162,7 @@ export class AppStoreRuntime extends AppProcess {
   async updatePackage(pkg: StoreItem, onDownloadProgress?: FilesystemProgressCallback) {
     const freshPkg = (await this.distrib.getStoreItem(pkg._id))!;
     if (freshPkg.deprecated) {
-      const go = await this.userDaemon!.helpers!.Confirm(
+      const go = await this.userDaemon!.helpers?.Confirm(
         "Are you sure?",
         "The author of this package marked it as <b>deprecated</b>. This means that the package is unmaintained and outdated. Do you want to uninstall it instead of updating?",
         "Uninstall",

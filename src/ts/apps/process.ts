@@ -71,7 +71,7 @@ export class AppProcess extends Process {
       this.safeMode = daemon.safeMode;
     }
 
-    this.windowIcon.set(this.userDaemon?.icons!.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
+    this.windowIcon.set(this.userDaemon?.icons?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
     this.startAcceleratorListener();
 
     this.systemDispatch.subscribe("window-unfullscreen", ([pid]) => {
@@ -169,7 +169,7 @@ export class AppProcess extends Process {
   async __render__(body: HTMLDivElement) {
     if (this.userPreferences().disabledApps.includes(this.app.id)) {
       if (this.safeMode) {
-        this.userDaemon?.notifications!.sendNotification({
+        this.userDaemon?.notifications?.sendNotification({
           title: "Running disabled app!",
           message: `Allowing execution of disabled app '${this.app.data.metadata.name}' because of Safe Mode.`,
           buttons: [
@@ -241,7 +241,7 @@ export class AppProcess extends Process {
 
       if (!this.app.data.core) KernelStack().renderer?.focusPid(instances[0].pid);
 
-      if (instances[0].app.desktop) this.userDaemon?.workspaces!.switchToDesktopByUuid(instances[0].app.desktop);
+      if (instances[0].app.desktop) this.userDaemon?.workspaces?.switchToDesktopByUuid(instances[0].app.desktop);
     }
 
     return instances.length ? instances[0] : undefined;
@@ -398,14 +398,14 @@ export class AppProcess extends Process {
   }
 
   async getIcon(id: string): Promise<string> {
-    return this.userDaemon?.icons!.getIcon(id)!;
+    return this.userDaemon?.icons?.getIcon(id)!;
   }
 
   getIconCached(id: string): string {
-    return this.userDaemon?.icons!.getIconCached(id)!;
+    return this.userDaemon?.icons?.getIconCached(id)!;
   }
 
   getIconStore(id: string): ReadableStore<string> {
-    return this.userDaemon?.icons!.getIconStore(id)!;
+    return this.userDaemon?.icons?.getIconStore(id)!;
   }
 }

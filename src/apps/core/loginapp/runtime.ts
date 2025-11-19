@@ -86,7 +86,7 @@ export class LoginAppRuntime extends AppProcess {
       if (!props.userDaemon) throw new Error(`LoginAppRuntimeConstructor: Irregular login type without daemon`);
 
       this.soundBus.playSound("arcos.system.logoff");
-      props.userDaemon?.renderer!.setAppRendererClasses(props.userDaemon.preferences());
+      props.userDaemon?.renderer?.setAppRendererClasses(props.userDaemon.preferences());
 
       switch (props.type) {
         case "logoff":

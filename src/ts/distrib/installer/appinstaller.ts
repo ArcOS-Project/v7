@@ -70,7 +70,7 @@ export class AppInstallerProcess extends InstallerProcessBase {
     if (existing) return;
 
     if (app.hidden || app.core) {
-      this.userDaemon?.notifications!.sendNotification({
+      this.userDaemon?.notifications?.sendNotification({
         title: `Open ${this.metadata?.name}`,
         message: `Do you want open ${this.metadata?.name}?`,
         image: this.userDaemon.icons!.getAppIcon(app),
@@ -84,7 +84,7 @@ export class AppInstallerProcess extends InstallerProcessBase {
         ],
       });
     } else {
-      this.userDaemon?.notifications!.sendNotification({
+      this.userDaemon?.notifications?.sendNotification({
         title: `Pin ${this.metadata?.name}`,
         message: `Do you want to pin ${this.metadata?.name} to the taskbar so that you can easily launch it in the future?`,
         image: this.userDaemon.icons!.getAppIcon(app),
@@ -106,7 +106,7 @@ export class AppInstallerProcess extends InstallerProcessBase {
     this.logStatus(this.metadata!.name, "registration");
 
     try {
-      const result = await this.userDaemon?.appreg!.registerAppFromPath(join(this.metadata!.installLocation, "_app.tpa"));
+      const result = await this.userDaemon?.appreg?.registerAppFromPath(join(this.metadata!.installLocation, "_app.tpa"));
       if (!result) {
         this.setCurrentStatus("done");
         return true;

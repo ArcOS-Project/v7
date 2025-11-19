@@ -51,7 +51,7 @@
     <AltMenu {process} />
   </div>
   {#if BETA}
-    <button class="link feedback" onclick={() => process.userDaemon?.helpers!.iHaveFeedback(process)}>Feedback?</button>
+    <button class="link feedback" onclick={() => process.userDaemon?.helpers?.iHaveFeedback(process)}>Feedback?</button>
   {/if}
   <div class="controls">
     {#if data.controls.minimize && !data.overlay}

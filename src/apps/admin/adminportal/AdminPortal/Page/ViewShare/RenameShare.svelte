@@ -7,7 +7,7 @@
   let loading = $state<boolean>(false);
 
   async function rename() {
-    const confirm = await process.userDaemon?.helpers!.Confirm(
+    const confirm = await process.userDaemon?.helpers?.Confirm(
       "Confirm rename?",
       `Are you sure you want to change the name of share '${share.shareName}' to '${newName}'?`,
       "Cancel",
