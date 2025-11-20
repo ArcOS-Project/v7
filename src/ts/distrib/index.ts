@@ -1,4 +1,3 @@
-import type { ApplicationStorage } from "$ts/apps/storage";
 import { KernelStack } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { Backend } from "$ts/server/axios";
@@ -13,8 +12,8 @@ import type { ArcPackage, PartialStoreItem, StoreItem, UpdateInfo } from "$types
 import type { Service } from "$types/service";
 import type { UserPreferencesStore } from "$types/user";
 import JSZip from "jszip";
-import { InstallerProcessBase } from "./installer/base";
 import { AppInstallerProcess } from "./installer/appinstaller";
+import { InstallerProcessBase } from "./installer/base";
 import { LibraryInstallerProcess } from "./installer/libraryinstaller";
 
 export class DistributionServiceProcess extends BaseService {
@@ -476,7 +475,7 @@ export class DistributionServiceProcess extends BaseService {
 
       const data = response.data as StoreItem;
 
-      data.user = await this.host.daemon.getPublicUserInfoOf(data.userId);
+      data.user = await this.host.daemon.account!.getPublicUserInfoOf(data.userId);
 
       return data as StoreItem;
     } catch {

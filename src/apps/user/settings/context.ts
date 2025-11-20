@@ -19,7 +19,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
       {
         caption: "Export theme...",
         action: async (_, __, theme: UserTheme) => {
-          const [path] = await runtime.userDaemon!.LoadSaveDialog({
+          const [path] = await runtime.userDaemon!.files!.LoadSaveDialog({
             title: "Choose where to save the theme",
             isSave: true,
             startDir: UserPaths.Documents,
@@ -53,7 +53,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
       {
         caption: "Export theme...",
         action: async (_, __, theme: UserTheme) => {
-          const [path] = await runtime.userDaemon!.LoadSaveDialog({
+          const [path] = await runtime.userDaemon!.files!.LoadSaveDialog({
             title: "Choose where to save the theme",
             isSave: true,
             startDir: UserPaths.Documents,
@@ -83,7 +83,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
         caption: "Open file location",
         icon: "folder-open",
         action: (id: string) => {
-          runtime.userDaemon?.spawnApp(
+          runtime.userDaemon?.spawn?.spawnApp(
             "fileManager",
             +runtime.env.get("shell_pid"),
             getParentDirectory(atob(id.replace("@local:", "")))
@@ -110,7 +110,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
                 {
                   caption: "Delete",
                   action: async () => {
-                    await runtime.userDaemon?.deleteLocalWallpaper(id);
+                    await runtime.userDaemon?.wallpaper?.deleteLocalWallpaper(id);
                   },
                   suggested: true,
                 },

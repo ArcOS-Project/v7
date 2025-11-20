@@ -61,7 +61,7 @@
   }
 
   async function closeSelected() {
-    const go = await process.userDaemon!.Confirm(
+    const go = await process.userDaemon!.helpers?.Confirm(
       "Confirm Close?",
       "Are you sure you want to close this report?",
       "Abort!",
@@ -76,7 +76,7 @@
   }
 
   async function deleteSelected() {
-    const go = await process.userDaemon!.Confirm(
+    const go = await process.userDaemon!.helpers?.Confirm(
       "Confirm Delete?",
       "Are you sure you want to delete this report?",
       "Abort!",
@@ -92,7 +92,7 @@
   }
 
   async function deleteSelectedMulti() {
-    const go = await process.userDaemon!.Confirm(
+    const go = await process.userDaemon!.helpers?.Confirm(
       "Confirm Delete?",
       `Are you sure you want to delete ${$selectionList.length} reports? This is a potentially destructive action!`,
       "Abort!",
@@ -109,7 +109,7 @@
     process.switchPage("bughunt", {}, true);
   }
   async function closeSelectedMulti() {
-    const go = await process.userDaemon!.Confirm(
+    const go = await process.userDaemon!.helpers?.Confirm(
       "Confirm Close?",
       `Are you sure you want to close ${$selectionList.length} reports? This is a potentially destructive action!`,
       "Abort!",

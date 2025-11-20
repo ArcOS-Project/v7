@@ -27,9 +27,10 @@ export class ProcessInfoRuntime extends AppProcess {
   //#endregion
 
   async kill(proc: Process) {
-    const elevated = await this.userDaemon?.manuallyElevate({
+    const elevated = await this.userDaemon!.elevation!.manuallyElevate({
       what: `ArcOS needs your permission to kill a process`,
-      image: this.getIconCached(proc instanceof AppProcess ? proc.windowIcon() || "ComponentIcon" : "DefaultIcon") || "ComponentIcon",
+      image:
+        this.getIconCached(proc instanceof AppProcess ? proc.windowIcon() || "ComponentIcon" : "DefaultIcon") || "ComponentIcon",
       title: proc.name,
       description: proc instanceof AppProcess ? "Application" : "Process",
       level: ElevationLevel.high,

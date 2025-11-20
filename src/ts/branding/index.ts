@@ -5,7 +5,7 @@ import { ALIASED_MODES, MODES } from "./stores";
 
 export const Logo = () => {
   const daemon = TryGetDaemon();
-  const defaultLogo = daemon?.getIconCached?.("ReleaseLogo") || ReleaseLogo;
+  const defaultLogo = daemon?.icons!.getIconCached?.("ReleaseLogo") || ReleaseLogo;
 
-  return (daemon ? daemon.getIconCached(ALIASED_MODES[ArcMode()]) : MODES[ArcMode()]) || defaultLogo;
+  return (daemon ? daemon.icons!.getIconCached(ALIASED_MODES[ArcMode()]) : MODES[ArcMode()]) || defaultLogo;
 };

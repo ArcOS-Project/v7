@@ -15,7 +15,7 @@ const runTpaBundle: (d: UserDaemon) => FileHandler = (daemon) => ({
   name: "Run TPA package",
   description: "Opens this file as a package",
   handle: async (path: string) => {
-    const prog = await daemon.FileProgress(
+    const prog = await daemon.files!.FileProgress(
       {
         type: "size",
         icon: "ArcAppMimeIcon",
@@ -79,7 +79,7 @@ const runTpaBundle: (d: UserDaemon) => FileHandler = (daemon) => ({
       }
     }
 
-    await daemon.openFile(join(extractPath, "_package.tpa"));
+    await daemon.files!.openFile(join(extractPath, "_package.tpa"));
   },
   isHandler: true,
 });

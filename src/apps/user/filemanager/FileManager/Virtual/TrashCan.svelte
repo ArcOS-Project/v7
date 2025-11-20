@@ -51,7 +51,7 @@
       trash?.restoreTrashItem($selection[0]);
       return;
     }
-    const progress = await process.userDaemon?.FileProgress(
+    const progress = await process.userDaemon?.files?.FileProgress(
       {
         caption: "Restoring items",
         subtitle: "From Recycle bin",
@@ -74,7 +74,7 @@
 
   async function deleteSelected() {
     if ($selection.length === 1) {
-      const proceed = await process.userDaemon?.Confirm(
+      const proceed = await process.userDaemon?.helpers?.Confirm(
         "Delete item?",
         "Are you sure you want to permanently delete this item from the Recycle Bin? This cannot be undone.",
         "Cancel",
@@ -88,7 +88,7 @@
       trash?.permanentlyDelete($selection[0]);
       return;
     }
-    const proceed = await process.userDaemon?.Confirm(
+    const proceed = await process.userDaemon?.helpers?.Confirm(
       "Delete items?",
       "Are you sure you want to permanently delete these items from the Recycle Bin? This cannot be undone.",
       "Cancel",
@@ -99,7 +99,7 @@
 
     if (!proceed) return;
 
-    const progress = await process.userDaemon?.FileProgress(
+    const progress = await process.userDaemon?.files?.FileProgress(
       {
         caption: "Deleting items",
         subtitle: "From Recycle Bin",

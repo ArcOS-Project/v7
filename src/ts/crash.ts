@@ -1,5 +1,4 @@
 import type { BugHuntType, ServerManagerType } from "$types/kernel";
-import { parse } from "stacktrace-parser";
 import { LogLevel } from "../types/logging";
 import { getKMod, Kernel } from "./env";
 import { KernelIsPanicked, KernelLogs, KernelPremature } from "./getters";

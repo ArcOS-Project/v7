@@ -16,7 +16,7 @@ export class AtConfCommand extends TerminalProcess {
   //#endregion
 
   protected async main(term: ArcTerminal): Promise<number> {
-    await term.daemon?.openFile(term.CONFIG_PATH);
+    await term.daemon?.files?.openFile(term.CONFIG_PATH);
     return 0;
   }
 }

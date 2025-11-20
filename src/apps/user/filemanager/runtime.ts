@@ -333,8 +333,8 @@ export class FileManagerRuntime extends AppProcess {
 
     this.lockRefresh();
 
-    if (copyList.length) await this.userDaemon?.copyMultiple(copyList, this.path(), this.pid);
-    else if (cutList.length) await this.userDaemon?.moveMultiple(cutList, this.path(), this.pid);
+    if (copyList.length) await this.userDaemon?.files?.copyMultiple(copyList, this.path(), this.pid);
+    else if (cutList.length) await this.userDaemon?.files?.moveMultiple(cutList, this.path(), this.pid);
 
     this.userDaemon?.copyList.set([]);
     this.userDaemon?.cutList.set([]);
@@ -372,7 +372,7 @@ export class FileManagerRuntime extends AppProcess {
   async confirmUmountDrive(drive: FilesystemDrive, id: string) {
     if (this._disposed) return;
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await this.userDaemon!.files!.FileProgress(
       {
         icon: "DriveIcon",
         caption: `Unmounting ${drive.label || "drive"}...`,
@@ -393,7 +393,7 @@ export class FileManagerRuntime extends AppProcess {
   async uploadItems() {
     if (this._disposed) return;
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await this.userDaemon!.files!.FileProgress(
       {
         type: "size",
         icon: "UploadIcon",
@@ -438,7 +438,7 @@ export class FileManagerRuntime extends AppProcess {
       return;
     }
 
-    this.userDaemon?.openFile(path);
+    this.userDaemon?.files?.openFile(path);
   }
 
   async deleteSelected() {
@@ -509,7 +509,7 @@ export class FileManagerRuntime extends AppProcess {
     if (this._disposed) return;
 
     const items = this.selection();
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await this.userDaemon!.files!.FileProgress(
       {
         max: items.length,
         type: "quantity",
@@ -547,7 +547,7 @@ export class FileManagerRuntime extends AppProcess {
 
     const filename = getItemNameFromPath(selected[0]);
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await this.userDaemon!.files!.FileProgress(
       {
         type: "size",
         caption: `Preparing for download`,
@@ -701,7 +701,7 @@ export class FileManagerRuntime extends AppProcess {
         continue;
       }
 
-      if (alternative) await this.userDaemon?.openWith(path);
+      if (alternative) await this.userDaemon?.files?.openWith(path);
       else await this.openFile(path);
     }
   }
@@ -731,7 +731,7 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   async createShortcut(name: string, path: string, folder = false) {
-    const paths = await this.userDaemon?.LoadSaveDialog({
+    const paths = await this.userDaemon?.files?.LoadSaveDialog({
       title: "Pick where to create the shortcut",
       icon: "FolderIcon",
       folder: true,
@@ -742,7 +742,7 @@ export class FileManagerRuntime extends AppProcess {
 
     const info = this.userDaemon?.assoc?.getFileAssociation(name);
 
-    this.userDaemon?.createShortcut(
+    this.userDaemon?.shortcuts?.createShortcut(
       {
         type: folder ? "folder" : "file",
         target: path,

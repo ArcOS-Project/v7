@@ -17,7 +17,7 @@
   });
 
   async function getActivity() {
-    groups = groupByTimeFrame<LoginActivity>(((await userDaemon?.getLoginActivity()) || []).reverse(), "createdAt");
+    groups = groupByTimeFrame<LoginActivity>(((await userDaemon?.activity?.getLoginActivity()) || []).reverse(), "createdAt");
   }
 </script>
 

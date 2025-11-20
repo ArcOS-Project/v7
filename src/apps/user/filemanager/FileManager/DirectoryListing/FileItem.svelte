@@ -39,7 +39,7 @@
     if (shortcut) shortcutIcon = process.getIconCached(shortcut.icon);
 
     if (info?.friendlyName === "Image file" && process.userPreferences().appPreferences.fileManager?.renderThumbnails)
-      thumbnail = await process.userDaemon?.getThumbnailFor(thisPath);
+      thumbnail = await process.userDaemon?.files?.getThumbnailFor(thisPath);
   });
 
   function onclick(e: MouseEvent) {
@@ -64,7 +64,7 @@
       return;
     }
 
-    process.userDaemon?.openFile(thisPath, shortcut);
+    process.userDaemon?.files?.openFile(thisPath, shortcut);
   }
 </script>
 
