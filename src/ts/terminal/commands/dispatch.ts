@@ -1,6 +1,7 @@
 // import { KnownSystemDispatchers, SystemOnlyDispatches } from "$ts/kernel/mods/dispatch/store";
 import { KernelStack } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
+import { KnownSystemDispatchers, SystemOnlyDispatches } from "$ts/kernel/mods/dispatch/store";
 import { tryParseInt } from "$ts/util";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";
@@ -30,11 +31,11 @@ export class DispatchCommand extends TerminalProcess {
     if (list) {
       term.rl?.println("Global dispatches known to ArcOS:");
 
-      // for (const key of KnownSystemDispatchers) {
-      //   const keyStr = key.padEnd(25, " ");
+      for (const key of KnownSystemDispatchers) {
+        const keyStr = key.padEnd(25, " ");
 
-      //   term.rl?.println(`${SystemOnlyDispatches.includes(key) ? "#" : " "} ${BRBLUE}${keyStr}${RESET}`);
-      // }
+        term.rl?.println(`${SystemOnlyDispatches.includes(key) ? "#" : " "} ${BRBLUE}${keyStr}${RESET}`);
+      }
 
       return 0;
     }
