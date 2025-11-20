@@ -22,7 +22,7 @@ export class UpdateNotifierRuntime extends AppProcess {
 
     stop();
 
-    await this.shell?.UpdateStartMenu();
+    await Daemon()?.appreg?.updateStartMenuFolder();
     return true;
   }
 

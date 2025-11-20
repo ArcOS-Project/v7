@@ -38,6 +38,7 @@ export class FirstRunRuntime extends AppProcess {
       await Daemon()?.shortcuts?.createShortcut(payload, path);
     }
 
+    await Daemon()?.appreg?.updateStartMenuFolder();
     await Daemon()?.version?.updateRegisteredVersion();
     await stop();
 

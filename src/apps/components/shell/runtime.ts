@@ -344,58 +344,12 @@ export class ShellRuntime extends AppProcess {
     const tree = await Fs().tree(this.STARTMENU_FOLDER);
 
     if (!tree?.files?.length && !tree?.dirs?.length) {
-      await this.UpdateStartMenu(); // Populate it if there's no content
-      return await this.refreshStartMenu();
+      await Daemon()?.appreg?.updateStartMenuFolder(); // Populate it if there's no content
+      
+      return; // Don't try again here because this method will be reinvoked by dispatch
     }
 
     this.StartMenuContents.set(tree);
-  }
-
-  public async UpdateStartMenu() {
-    const installedApps = this.appStore()?.buffer();
-
-    if (!installedApps) return;
-
-    const { stop, incrementProgress, caption } = await Daemon()!.helpers!.GlobalLoadIndicator(
-      "Updating the start menu...",
-      +Env().get("shell_pid"),
-      {
-        max: Object.keys(AppGroups).length + installedApps.length,
-        value: 0,
-        useHtml: true,
-      }
-    );
-
-    for (const appGroup in AppGroups) {
-      incrementProgress?.();
-      caption.set(`Updating the start menu...<br>Creating folder for ${AppGroups[appGroup]}`);
-
-      await Fs().createDirectory(join(this.STARTMENU_FOLDER, `$$${appGroup}`), false);
-    }
-
-    const promises = [];
-
-    for (const app of installedApps) {
-      promises.push(
-        new Promise(async (r) => {
-          await Daemon()?.appreg?.addToStartMenu(app.id);
-
-          caption.set(`Updating the start menu...<br>Created shortcut for ${app.metadata.name}`);
-
-          incrementProgress?.();
-
-          r(void 0);
-        })
-      );
-    }
-
-    await Promise.all(promises);
-
-    caption.set("Finishing up...");
-
-    await this.refreshStartMenu();
-
-    stop?.();
   }
 
   //#endregion

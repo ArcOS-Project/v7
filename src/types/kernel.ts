@@ -112,9 +112,6 @@ export interface BugHuntType {
   getToken(): string;
   getUserBugReports(token: string): Promise<BugReport[]>;
   getPublicBugReports(): Promise<BugReport[]>;
-  server: ServerManagerType;
-  env: EnvironmentType;
-  handler: ProcessHandlerType;
 }
 
 export interface ProcessHandlerType {
@@ -122,8 +119,6 @@ export interface ProcessHandlerType {
   store: ReadableStore<Map<number, Process>>;
   rendererPid: number;
   renderer: AppRenderer | undefined;
-  env: EnvironmentType;
-  dispatch: SystemDispatchType;
   _init(): Promise<void>;
   startRenderer(initPid: number): Promise<void>;
   spawn<T = Process>(

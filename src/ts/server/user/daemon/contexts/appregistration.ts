@@ -12,8 +12,8 @@ import { getParentDirectory, join } from "$ts/util/fs";
 import { compareVersion } from "$ts/version";
 import type { App, AppStorage, InstalledApp } from "$types/app";
 import { LogLevel } from "$types/logging";
-import { Daemon, type UserDaemon } from "..";
-import { UserPaths } from "../../store";
+import { Daemon, UserDaemon } from "..";
+import { AppGroups, UserPaths } from "../../store";
 import { UserContext } from "../context";
 
 export class AppRegistrationUserContext extends UserContext {
@@ -242,5 +242,49 @@ export class AppRegistrationUserContext extends UserContext {
 
     await Fs().deleteItem(path, false);
     KernelDispatchS().dispatch("startmenu-refresh");
+  }
+
+  async updateStartMenuFolder() {
+    const installedApps = Daemon()?.appStorage()?.buffer();
+
+    if (!installedApps) return;
+
+    const { stop, incrementProgress, caption } = await Daemon()!.helpers!.GlobalLoadIndicator(
+      "Updating the start menu...",
+      +Env().get("shell_pid"),
+      {
+        max: Object.keys(AppGroups).length + installedApps.length,
+        value: 0,
+        useHtml: true,
+      }
+    );
+
+    for (const appGroup in AppGroups) {
+      incrementProgress?.();
+      caption.set(`Updating the start menu...<br>Creating folder for ${AppGroups[appGroup]}`);
+
+      await Fs().createDirectory(join(UserPaths.StartMenu, `$$${appGroup}`), false);
+    }
+
+    const promises = [];
+
+    for (const app of installedApps) {
+      promises.push(
+        new Promise(async (r) => {
+          await Daemon()?.appreg?.addToStartMenu(app.id);
+
+          caption.set(`Updating the start menu...<br>Created shortcut for ${app.metadata.name}`);
+
+          incrementProgress?.();
+
+          r(void 0);
+        })
+      );
+    }
+
+    await Promise.all(promises);
+
+    KernelDispatchS().dispatch("startmenu-refresh");
+    stop?.();
   }
 }
