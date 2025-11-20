@@ -18,6 +18,7 @@ import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
 import { shortWeekDays, type CalendarMonth, type WeatherInformation } from "./types";
 import { textToBlob } from "$ts/util/convert";
+import { Daemon } from "$ts/server/user/daemon";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
@@ -210,7 +211,7 @@ export class ShellRuntime extends AppProcess {
       if (v) KernelStack().renderer?.focusedPid.set(-1); // Unfocus window on start menu invocation
     });
 
-    this.userDaemon?.checks?.checkReducedMotion();
+    Daemon()?.checks?.checkReducedMotion();
   }
 
   async stop() {
@@ -283,7 +284,7 @@ export class ShellRuntime extends AppProcess {
       return;
     }
 
-    this.userDaemon?.workspaces?.deleteVirtualDesktop(workspace.uuid); //First delete the desktop
+    Daemon()?.workspaces?.deleteVirtualDesktop(workspace.uuid); //First delete the desktop
     await Sleep(0); // Then wait for the next frame
     this.workspaceManagerOpened.set(true); // (ugly) and re-open the workspace manager
   }
@@ -355,7 +356,7 @@ export class ShellRuntime extends AppProcess {
 
     if (!installedApps) return;
 
-    const { stop, incrementProgress, caption } = await this.userDaemon!.helpers!.GlobalLoadIndicator(
+    const { stop, incrementProgress, caption } = await Daemon()!.helpers!.GlobalLoadIndicator(
       "Updating the start menu...",
       +Env().get("shell_pid"),
       {
@@ -377,7 +378,7 @@ export class ShellRuntime extends AppProcess {
     for (const app of installedApps) {
       promises.push(
         new Promise(async (r) => {
-          await this.userDaemon?.appreg?.addToStartMenu(app.id);
+          await Daemon()?.appreg?.addToStartMenu(app.id);
 
           caption.set(`Updating the start menu...<br>Created shortcut for ${app.metadata.name}`);
 
@@ -507,12 +508,12 @@ export class ShellRuntime extends AppProcess {
   }
 
   async changeShell(id: string) {
-    const appStore = this.userDaemon!.appStorage();
+    const appStore = Daemon()!.appStorage();
     const newShell = appStore?.getAppSynchronous(id);
 
     if (!newShell) return false;
 
-    const proceed = await this.userDaemon?.helpers?.Confirm(
+    const proceed = await Daemon()?.helpers?.Confirm(
       "Change your shell",
       `${newShell.metadata.name} by ${newShell.metadata.author} wants to act as your ArcOS shell. Do you allow this?`,
       "Deny",
@@ -526,7 +527,7 @@ export class ShellRuntime extends AppProcess {
       return v;
     });
 
-    const restartNow = await this.userDaemon?.helpers?.Confirm(
+    const restartNow = await Daemon()?.helpers?.Confirm(
       "Restart now?",
       "ArcOS has to restart before the changes will apply. Do you want to restart now?",
       "Not now",
@@ -534,7 +535,7 @@ export class ShellRuntime extends AppProcess {
       "RestartIcon"
     );
 
-    if (restartNow) await this.userDaemon?.power?.restart();
+    if (restartNow) await Daemon()?.power?.restart();
   }
 
   //#endregion

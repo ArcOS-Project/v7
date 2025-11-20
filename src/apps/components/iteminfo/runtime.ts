@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { Env, Fs } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import { arrayToText } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
@@ -37,7 +38,7 @@ export class ItemInfoRuntime extends AppProcess {
       const split = path.split(".");
       const extension = file.mimeType ? split[split.length - 1] : undefined;
       const isShortcut = file?.name?.endsWith(".arclnk");
-      const info = this.userDaemon?.assoc?.getFileAssociation(path);
+      const info = Daemon()?.assoc?.getFileAssociation(path);
 
       this.info.set({
         meta: {
@@ -80,7 +81,7 @@ export class ItemInfoRuntime extends AppProcess {
     } else {
       const path = info.location.fullPath;
 
-      this.userDaemon?.files?.openFile(path, this.shortcut());
+      Daemon()?.files?.openFile(path, this.shortcut());
     }
   }
 

@@ -4,7 +4,7 @@ import { Backend } from "$ts/server/axios";
 import { Store, type Unsubscriber } from "$ts/writable";
 import { LogLevel } from "$types/logging";
 import type { UserPreferences } from "$types/user";
-import type { UserDaemon } from "..";
+import { Daemon, type UserDaemon } from "..";
 import { DefaultUserPreferences } from "../../default";
 import { UserPaths } from "../../store";
 import { UserContext } from "../context";
@@ -25,7 +25,7 @@ export class PreferencesUserContext extends UserContext {
   async commitPreferences(preferences: UserPreferences) {
     if (this._disposed) return;
 
-    if (this.daemon.checks!.NIGHTLY) {
+    if (Daemon()!.checks!.NIGHTLY) {
       this.Log("User preference commit prohibited: nightly build");
       return true;
     }
@@ -51,7 +51,7 @@ export class PreferencesUserContext extends UserContext {
       return;
     }
 
-    const preferences = this.daemon.preferences() || {};
+    const preferences = Daemon()!.preferences() || {};
 
     if (preferences.isDefault) {
       this.Log(`Not sanitizing default preferences`, LogLevel.warning);
@@ -72,16 +72,16 @@ export class PreferencesUserContext extends UserContext {
 
     if (!result.globalSettings.shellExec) result.globalSettings.shellExec = "arcShell";
 
-    this.daemon.preferences.set(result);
+    Daemon()!.preferences.set(result);
     this.commitPreferences(result);
   }
 
   getGlobalSetting(key: string) {
-    return this.daemon.preferences().globalSettings[key];
+    return Daemon()!.preferences().globalSettings[key];
   }
 
   setGlobalSetting(key: string, value: any) {
-    this.daemon.preferences.update((v) => {
+    Daemon()!.preferences.update((v) => {
       v.globalSettings[key] = value;
 
       return v;
@@ -89,13 +89,13 @@ export class PreferencesUserContext extends UserContext {
   }
 
   changeProfilePicture(newValue: string | number) {
-    this.daemon.preferences.update((v) => {
+    Daemon()!.preferences.update((v) => {
       v.account.profilePicture = newValue;
       return v;
     });
 
     KernelDispatchS().dispatch("pfp-changed", [newValue]);
-    this.daemon.globalDispatch?.emit("pfp-changed", newValue);
+    Daemon()!.globalDispatch?.emit("pfp-changed", newValue);
   }
 
   async uploadProfilePicture(): Promise<string | undefined> {

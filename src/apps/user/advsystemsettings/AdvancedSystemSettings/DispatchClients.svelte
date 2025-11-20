@@ -3,6 +3,7 @@
   import type { GlobalDispatchClient } from "$types/dispatch";
   import { onMount } from "svelte";
   import type { AdvSysSetRuntime } from "../runtime";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: AdvSysSetRuntime } = $props();
 
@@ -13,12 +14,12 @@
 
   async function update() {
     loading = true;
-    clients = await process.userDaemon!.globalDispatch!.getClients();
+    clients = await Daemon()!.globalDispatch!.getClients();
     loading = false;
   }
 
   async function disconnectClient(clientId: string) {
-    await process.userDaemon?.globalDispatch?.disconnectClient(clientId);
+    await Daemon()?.globalDispatch?.disconnectClient(clientId);
     update();
   }
 </script>
@@ -38,7 +39,7 @@
       <div class="row" title={client.socketId}>
         <div class="segment ip">
           {client.ip}
-          {#if client.socketId === process.userDaemon?.globalDispatch?.client?.id}(you){/if}
+          {#if client.socketId === Daemon()?.globalDispatch?.client?.id}(you){/if}
         </div>
         <div class="segment authorized">{client.authorized ? "Yes" : "No"}</div>
         <button
@@ -46,7 +47,7 @@
           onclick={() => disconnectClient(client.socketId)}
           aria-label="Kick client"
           title="Kick client"
-          disabled={client.socketId === process.userDaemon?.globalDispatch?.client?.id}
+          disabled={client.socketId === Daemon()?.globalDispatch?.client?.id}
         ></button>
       </div>
     {/each}

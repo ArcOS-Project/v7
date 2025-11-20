@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { Fs, KernelSound, KernelStack } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { SqlInterfaceProcess } from "$ts/sql";
@@ -68,7 +69,7 @@ export class SqeletonRuntime extends AppProcess {
     this.tempDb = await KernelStack().spawn(
       SqlInterfaceProcess,
       undefined,
-      this.userDaemon?.userInfo?._id,
+      Daemon()?.userInfo?._id,
       this.pid,
       this.tempDbPath
     );
@@ -95,7 +96,7 @@ export class SqeletonRuntime extends AppProcess {
     }
 
     try {
-      this.Interface = await KernelStack().spawn(SqlInterfaceProcess, undefined, this.userDaemon?.userInfo?._id, this.pid, path);
+      this.Interface = await KernelStack().spawn(SqlInterfaceProcess, undefined, Daemon()?.userInfo?._id, this.pid, path);
 
       if (!this.Interface?.db) throw "Failed to open database. The resource might be locked.";
 
@@ -108,7 +109,7 @@ export class SqeletonRuntime extends AppProcess {
   }
 
   async openFile() {
-    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
+    const [path] = await Daemon()!.files!.LoadSaveDialog({
       title: "Select a database to open",
       icon: "SqeletonIcon",
       startDir: UserPaths.Documents,
@@ -121,7 +122,7 @@ export class SqeletonRuntime extends AppProcess {
   }
 
   async newFile() {
-    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
+    const [path] = await Daemon()!.files!.LoadSaveDialog({
       title: "Choose where to save the new database",
       icon: "SqeletonIcon",
       startDir: UserPaths.Documents,
@@ -135,7 +136,7 @@ export class SqeletonRuntime extends AppProcess {
     const db = await KernelStack().spawn<SqlInterfaceProcess>(
       SqlInterfaceProcess,
       undefined,
-      this.userDaemon?.userInfo?._id,
+      Daemon()?.userInfo?._id,
       this.pid,
       path
     );

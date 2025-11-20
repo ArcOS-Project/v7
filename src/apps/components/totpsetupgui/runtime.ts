@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { toForm } from "$ts/form";
 import { Backend } from "$ts/server/axios";
+import { Daemon } from "$ts/server/user/daemon";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
@@ -18,7 +19,7 @@ export class TotpSetupGuiRuntime extends AppProcess {
 
   async render() {
     try {
-      const response = await Backend.post("/totp/setup", {}, { headers: { Authorization: `Bearer ${this.userDaemon?.token}` } });
+      const response = await Backend.post("/totp/setup", {}, { headers: { Authorization: `Bearer ${Daemon()?.token}` } });
 
       if (response.status !== 200) throw "";
 
@@ -52,7 +53,7 @@ export class TotpSetupGuiRuntime extends AppProcess {
 
     try {
       const response = await Backend.post("/totp/activate", toForm({ code: string }), {
-        headers: { Authorization: `Bearer ${this.userDaemon?.token}` },
+        headers: { Authorization: `Bearer ${Daemon()?.token}` },
       });
 
       const unlocked = response.status === 200;
@@ -61,7 +62,7 @@ export class TotpSetupGuiRuntime extends AppProcess {
 
       await this.closeWindow();
 
-      this.userDaemon!.userInfo.hasTotp = true;
+      Daemon()!.userInfo.hasTotp = true;
 
       return true;
     } catch {

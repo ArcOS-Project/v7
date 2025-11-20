@@ -6,7 +6,7 @@ import { NightlyLogo } from "$ts/images/branding";
 import { ArcBuild } from "$ts/metadata/build";
 import type { MessagingInterface } from "$ts/server/messaging";
 import { Plural } from "$ts/util";
-import type { UserDaemon } from "..";
+import { Daemon, type UserDaemon } from "..";
 import { UserContext } from "../context";
 
 export class ChecksUserContext extends UserContext {
@@ -18,26 +18,26 @@ export class ChecksUserContext extends UserContext {
 
   checkReducedMotion() {
     if (
-      this.daemon.preferencesCtx?.getGlobalSetting("reducedMotionDetection_disable") ||
-      this.daemon.preferences().shell.visuals.noAnimations
+      Daemon()!.preferencesCtx?.getGlobalSetting("reducedMotionDetection_disable") ||
+      Daemon()!.preferences().shell.visuals.noAnimations
     )
       return;
 
     if (window.matchMedia("(prefers-reduced-motion)").matches) {
-      this.daemon.notifications?.sendNotification({
+      Daemon()!.notifications?.sendNotification({
         title: "Disable animations?",
         message: "ArcOS has detected that your device has Reduced Motion activated. Do you want ArcOS to reduce animations also?",
         buttons: [
           {
             caption: "Don't show again",
             action: () => {
-              this.daemon.preferencesCtx?.setGlobalSetting("reducedMotionDetection_disable", true);
+              Daemon()!.preferencesCtx?.setGlobalSetting("reducedMotionDetection_disable", true);
             },
           },
           {
             caption: "Reduce",
             action: () => {
-              this.daemon.preferences.update((v) => {
+              Daemon()!.preferences.update((v) => {
                 v.shell.visuals.noAnimations = true;
                 return v;
               });
@@ -51,14 +51,14 @@ export class ChecksUserContext extends UserContext {
   }
 
   async checkForUpdates() {
-    if (this.daemon.preferences().globalSettings.noUpdateNotif) return;
+    if (Daemon()!.preferences().globalSettings.noUpdateNotif) return;
 
     const distrib = this.serviceHost?.getService<DistributionServiceProcess>("DistribSvc");
     const updates = await distrib?.checkForAllStoreItemUpdates();
 
     if (updates?.length) {
       const first = updates[0];
-      const notif = this.daemon.notifications?.sendNotification({
+      const notif = Daemon()!.notifications?.sendNotification({
         ...(updates.length === 1
           ? {
               title: "Update available!",
@@ -77,18 +77,18 @@ export class ChecksUserContext extends UserContext {
           {
             caption: "View",
             action: () => {
-              if (notif) this.daemon.notifications?.deleteNotification(notif);
+              if (notif) Daemon()!.notifications?.deleteNotification(notif);
 
-              this.daemon.spawn?.spawnApp("AppStore", +Env().get("shell_pid"), "installed");
+              Daemon()!.spawn?.spawnApp("AppStore", +Env().get("shell_pid"), "installed");
             },
             suggested: true,
           },
           {
             caption: "Don't show again",
             action: () => {
-              if (notif) this.daemon.notifications?.deleteNotification(notif);
+              if (notif) Daemon()!.notifications?.deleteNotification(notif);
 
-              this.daemon.preferences.update((v) => {
+              Daemon()!.preferences.update((v) => {
                 v.globalSettings.noUpdateNotif = true;
                 return v;
               });
@@ -101,7 +101,7 @@ export class ChecksUserContext extends UserContext {
 
   async checkForMissedMessages() {
     const service = this.serviceHost!.getService<MessagingInterface>("MessagingService")!;
-    const archived = this.daemon.preferences().appPreferences?.Messages?.archive || [];
+    const archived = Daemon()!.preferences().appPreferences?.Messages?.archive || [];
     const messages =
       (await service?.getReceivedMessages())?.filter(
         (m) => !m.read && !archived.includes(m._id) && m.authorId !== this.userInfo?._id
@@ -111,7 +111,7 @@ export class ChecksUserContext extends UserContext {
 
     if (messages?.length === 1) {
       const message = messages[0];
-      this.daemon?.notifications?.sendNotification({
+      Daemon()!?.notifications?.sendNotification({
         className: "incoming-message",
         image: message.author?.profilePicture,
         title: message.author?.username || "New message",
@@ -120,13 +120,13 @@ export class ChecksUserContext extends UserContext {
           {
             caption: "View message",
             action: () => {
-              this.daemon.spawn?.spawnApp("Messages", +Env().get("shell_pid"), "inbox", message._id);
+              Daemon()!.spawn?.spawnApp("Messages", +Env().get("shell_pid"), "inbox", message._id);
             },
           },
         ],
       });
     } else {
-      this.daemon?.notifications?.sendNotification({
+      Daemon()!?.notifications?.sendNotification({
         title: "Missed messages",
         message: `You have ${messages.length} ${Plural("message", messages.length)} in your inbox that you haven't read yet.`,
         image: "MessagingIcon",
@@ -134,7 +134,7 @@ export class ChecksUserContext extends UserContext {
           {
             caption: "Open inbox",
             action: () => {
-              this.daemon.spawn?.spawnApp("Messages", +Env().get("shell_pid"), "inbox");
+              Daemon()!.spawn?.spawnApp("Messages", +Env().get("shell_pid"), "inbox");
             },
           },
         ],

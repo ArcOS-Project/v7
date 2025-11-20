@@ -3,6 +3,7 @@ import { MessageBox } from "$ts/dialog";
 import type { DistributionServiceProcess } from "$ts/distrib";
 import { Env, Fs } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
+import { Daemon } from "$ts/server/user/daemon";
 import { arrayToText } from "$ts/util/convert";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -42,7 +43,7 @@ export class AppPreInstallRuntime extends AppProcess {
             {
               caption: "Take me there",
               action: () => {
-                this.userDaemon?.spawn?.spawnApp("systemSettings", +Env().get("shell_pid"), "apps");
+                Daemon()?.spawn?.spawnApp("systemSettings", +Env().get("shell_pid"), "apps");
               },
             },
             {
@@ -60,7 +61,7 @@ export class AppPreInstallRuntime extends AppProcess {
       return;
     }
 
-    const prog = await this.userDaemon?.files!.FileProgress(
+    const prog = await Daemon()?.files!.FileProgress(
       {
         type: "size",
         icon: "DownloadIcon",
@@ -71,7 +72,7 @@ export class AppPreInstallRuntime extends AppProcess {
     );
 
     try {
-      const distrib = this.userDaemon?.serviceHost?.getService<DistributionServiceProcess>("DistribSvc")!;
+      const distrib = Daemon()?.serviceHost?.getService<DistributionServiceProcess>("DistribSvc")!;
 
       if (!(await distrib.validatePackage(this.pkgPath))) {
         return this.fail("Package is corrupt; missing files");
@@ -119,7 +120,7 @@ export class AppPreInstallRuntime extends AppProcess {
 
   async install() {
     const meta = this.metadata();
-    const elevated = await this.userDaemon!.elevation!.manuallyElevate({
+    const elevated = await Daemon()!.elevation!.manuallyElevate({
       what: "ArcOS wants to install an application",
       title: meta.name,
       description: `${meta.author} - ${meta.version}`,

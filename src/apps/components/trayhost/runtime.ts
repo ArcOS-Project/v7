@@ -1,6 +1,6 @@
 import { Env, KernelDispatchS, KernelStack } from "$ts/env";
 import { Process } from "$ts/process/instance";
-import type { UserDaemon } from "$ts/server/user/daemon";
+import { Daemon, type UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import { TrayIconProcess } from "$ts/ui/tray/process";
 import { Store } from "$ts/writable";
@@ -9,7 +9,6 @@ import type { UserPreferencesStore } from "$types/user";
 import type { TrayIconDiscriminator, TrayIconOptions } from "../shell/types";
 
 export class TrayHostRuntime extends Process {
-  userDaemon: UserDaemon | undefined;
   userPreferences?: UserPreferencesStore;
   public trayIcons = Store<Record<TrayIconDiscriminator, TrayIconProcess>>({});
 
@@ -26,8 +25,7 @@ export class TrayHostRuntime extends Process {
   async start() {
     if (Env().get("trayhost_pid") && KernelStack().getProcess(+Env().get("trayhost_pid"))) return false;
 
-    this.userDaemon = KernelStack().getProcess<UserDaemon>(+Env().get("userdaemon_pid"));
-    this.userPreferences = this.userDaemon!.preferences;
+    this.userPreferences = Daemon()!.preferences;
 
     Env().set("trayhost_pid", this.pid);
   }
@@ -46,7 +44,7 @@ export class TrayHostRuntime extends Process {
 
     if (trayIcons[`${pid}#${identifier}`]) return false;
 
-    const proc = await KernelStack().spawn<TrayIconProcess>(process, undefined, this.userDaemon?.userInfo?._id, pid, {
+    const proc = await KernelStack().spawn<TrayIconProcess>(process, undefined, Daemon()?.userInfo?._id, pid, {
       ...options,
       pid,
       identifier,

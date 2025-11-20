@@ -7,7 +7,7 @@ import { ElevationLevel } from "$types/elevation";
 import { LogLevel } from "$types/logging";
 import type { PublicUserInfo, UserInfo } from "$types/user";
 import Cookies from "js-cookie";
-import type { UserDaemon } from "..";
+import { Daemon, type UserDaemon } from "..";
 import { UserContext } from "../context";
 import { Env, KernelDispatchS, KernelServerMan } from "$ts/env";
 
@@ -55,9 +55,9 @@ export class AccountUserContext extends UserContext {
 
       if (!data) return undefined;
 
-      this.daemon.preferencesCtx?.preferences.set(data.preferences);
+      Daemon()!.preferencesCtx?.preferences.set(data.preferences);
 
-      this.daemon?.preferencesCtx?.sanitizeUserPreferences(); 
+      Daemon()!?.preferencesCtx?.sanitizeUserPreferences(); 
 
       this.initialized = true;
       this.userInfo = data;
@@ -66,7 +66,7 @@ export class AccountUserContext extends UserContext {
 
       return response.status === 200 ? (response.data as UserInfo) : undefined;
     } catch {
-      await this.daemon.killSelf();
+      await Daemon()!.killSelf();
 
       return undefined;
     }
@@ -77,7 +77,7 @@ export class AccountUserContext extends UserContext {
 
     this.Log(`Changing username to "${newUsername}"`);
 
-    const elevated = await this.daemon.elevation?.manuallyElevate({
+    const elevated = await Daemon()!.elevation?.manuallyElevate({
       what: "ArcOS needs your permission to change your username:",
       image: "AccountIcon",
       title: "Change username",
@@ -113,7 +113,7 @@ export class AccountUserContext extends UserContext {
 
     this.Log(`Changing password to [REDACTED]`);
 
-    const elevated = await this.daemon.elevation?.manuallyElevate({
+    const elevated = await Daemon()!.elevation?.manuallyElevate({
       what: "ArcOS needs your permission to change your password:",
       image: "PasswordIcon",
       title: "Change password",
@@ -164,7 +164,7 @@ export class AccountUserContext extends UserContext {
             caption: "Delete account",
             action: async () => {
               await Backend.delete(`/user`, { headers: { Authorization: `Bearer ${this.token}` } });
-              this.daemon?.power?.logoff();
+              Daemon()!?.power?.logoff();
             },
             suggested: true,
           },

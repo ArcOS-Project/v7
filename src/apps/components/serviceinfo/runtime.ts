@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { Stack } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import { BaseService } from "$ts/services/base";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -19,13 +20,13 @@ export class ServiceInfoRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.serviceId = serviceId;
-    this.service.set(this.userDaemon?.serviceHost?.Services.get().get(serviceId));
+    this.service.set(Daemon()?.serviceHost?.Services.get().get(serviceId));
   }
 
   async start() {
     if (!this.service) return false;
 
-    this.serviceSubscriber = this.userDaemon?.serviceHost?.Services.subscribe((v) => {
+    this.serviceSubscriber = Daemon()?.serviceHost?.Services.subscribe((v) => {
       this.service.set(v.get(this.serviceId));
       const pid = this.service()?.pid;
       this.serviceProcess.set(pid ? Stack().getProcess(pid) : undefined);
@@ -52,7 +53,7 @@ export class ServiceInfoRuntime extends AppProcess {
             {
               caption: "Stop service",
               action: () => {
-                this.userDaemon?.serviceHost?.stopService(this.serviceId);
+                Daemon()?.serviceHost?.stopService(this.serviceId);
               },
               suggested: true,
             },
@@ -64,7 +65,7 @@ export class ServiceInfoRuntime extends AppProcess {
         true
       );
     } else {
-      this.userDaemon?.serviceHost?.startService(this.serviceId);
+      Daemon()?.serviceHost?.startService(this.serviceId);
     }
   }
 }

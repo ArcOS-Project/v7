@@ -5,6 +5,7 @@
   import { BETA, KernelStack } from "$ts/env";
   import { onMount, type Snippet } from "svelte";
   import AltMenu from "./CustomTitlebar/AltMenu.svelte";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { process, children, className = "" }: { process: AppProcess; children?: Snippet; className?: string } = $props();
   const { windowTitle, windowIcon } = process;
@@ -51,7 +52,7 @@
     <AltMenu {process} />
   </div>
   {#if BETA}
-    <button class="link feedback" onclick={() => process.userDaemon?.helpers?.iHaveFeedback(process)}>Feedback?</button>
+    <button class="link feedback" onclick={() => Daemon()?.helpers?.iHaveFeedback(process)}>Feedback?</button>
   {/if}
   <div class="controls">
     {#if data.controls.minimize && !data.overlay}

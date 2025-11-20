@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
+  import { Daemon } from "$ts/server/user/daemon";
   import { AppGroups } from "$ts/server/user/store";
   import { Store } from "$ts/writable";
   import type { ArcShortcut } from "$types/shortcut";
@@ -12,7 +13,7 @@
   userPreferences.subscribe((v) => {
     $populatable = Object.values(shortcuts).filter(
       ({ target, type }) =>
-        type === "app" && (process.userDaemon?.apps?.isPopulatableByAppIdSync(target) || $userPreferences.shell.visuals.showHiddenApps)
+        type === "app" && (Daemon()?.apps?.isPopulatableByAppIdSync(target) || $userPreferences.shell.visuals.showHiddenApps)
     );
   });
 
@@ -30,7 +31,7 @@
     {#if expand}
       <div class="items">
         {#each $populatable as shortcut (`${shortcut.target}-${shortcut.name}-${shortcut.icon}-${shortcut.type}`)}
-          {#if (process.userDaemon?.apps?.isPopulatableByAppIdSync(shortcut.target) || $userPreferences.shell.visuals.showHiddenApps) && !process.userDaemon?.apps?.checkDisabled(shortcut.target)}
+          {#if (Daemon()?.apps?.isPopulatableByAppIdSync(shortcut.target) || $userPreferences.shell.visuals.showHiddenApps) && !Daemon()?.apps?.checkDisabled(shortcut.target)}
             <NewListItem {shortcut} {process} />
           {/if}
         {/each}

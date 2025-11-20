@@ -1,3 +1,4 @@
+import { Daemon } from "$ts/server/user/daemon";
 import type { ContextMenuItem } from "$types/app";
 import type { FileManagerRuntime } from "../runtime";
 
@@ -26,7 +27,7 @@ export function EditMenu(runtime: FileManagerRuntime): ContextMenuItem {
         action: () => runtime.pasteFiles(),
         icon: "clipboard",
         disabled: () =>
-          (!runtime.userDaemon!.copyList().length && !runtime.userDaemon!.cutList().length) ||
+          (!Daemon()!.copyList().length && !Daemon()!.cutList().length) ||
           !!runtime.virtual() ||
           !!runtime.drive()?.READONLY,
       },

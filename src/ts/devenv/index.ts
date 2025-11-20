@@ -2,7 +2,7 @@ import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { MessageBox } from "$ts/dialog";
 import { Env, Fs, KernelStack } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
-import type { UserDaemon } from "$ts/server/user/daemon";
+import { Daemon, type UserDaemon } from "$ts/server/user/daemon";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import type { DevEnvActivationResult, ProjectMetadata } from "$types/devenv";
@@ -19,7 +19,6 @@ export class DevelopmentEnvironment extends BaseService {
   private client: Socket | undefined;
   private axios?: AxiosInstance;
   public meta?: ProjectMetadata;
-  private daemon: UserDaemon;
   private pids: number[] = [];
 
   //#region LIFECYCLE
@@ -30,8 +29,6 @@ export class DevelopmentEnvironment extends BaseService {
     window.addEventListener("onbeforeunload", () => {
       this.stop();
     });
-
-    this.daemon = KernelStack().getProcess(+Env().get("userdaemon_pid"))!;
 
     this.setSource(__SOURCE__);
   }
@@ -107,7 +104,7 @@ export class DevelopmentEnvironment extends BaseService {
           {
             title: "ArcDev stopped",
             message: `The websocket connection was lost. Please reconnect to continue development. Disconnect reason was '${reason}'`,
-            image: this.daemon.icons!.getIconCached("ErrorIcon"),
+            image: Daemon()?.icons!.getIconCached("ErrorIcon"),
             sound: "arcos.dialog.error",
             buttons: [{ caption: "Okay", action: () => {} }],
           },
@@ -121,7 +118,7 @@ export class DevelopmentEnvironment extends BaseService {
 
       this.client.on("open-file", (file: string) => {
         if (this._disposed) return this.disconnect();
-        this.daemon.files!.openFile(file);
+        Daemon()?.files!.openFile(file);
       });
       this.client.on("restart-tpa", () => {
         if (this._disposed) return this.disconnect();
@@ -176,7 +173,7 @@ export class DevelopmentEnvironment extends BaseService {
     if (this._disposed) return this.disconnect();
 
     await this.killTpa();
-    await this.daemon.files!.openFile("V:/_app.tpa");
+    await Daemon()?.files!.openFile("V:/_app.tpa");
   }
 
   async killTpa() {

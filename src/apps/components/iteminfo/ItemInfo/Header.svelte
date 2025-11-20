@@ -3,13 +3,14 @@
   import { onMount } from "svelte";
   import type { ItemInfoRuntime } from "../runtime";
   import type { ItemInfo } from "../types";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { info, process }: { info: ReadableStore<ItemInfo>; process: ItemInfoRuntime } = $props();
 
   let icon = $state<string>();
 
   onMount(() => {
-    const assoc = process.userDaemon?.assoc?.getFileAssociation($info.name);
+    const assoc = Daemon()?.assoc?.getFileAssociation($info.name);
     icon = $info.isFolder ? process.getIconCached("FolderIcon") : assoc?.icon || process.getIconCached("DefaultMimeIcon");
   });
 </script>

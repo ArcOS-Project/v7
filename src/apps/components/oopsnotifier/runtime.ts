@@ -4,6 +4,7 @@ import type { App, AppProcessData } from "$types/app";
 import { parse } from "stacktrace-parser";
 import type { ParsedStackFrame, ParsedStackUrl } from "./types";
 import { Env, KernelSound } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 
 export class OopsNotifierRuntime extends AppProcess {
   data: App;
@@ -40,7 +41,7 @@ export class OopsNotifierRuntime extends AppProcess {
     try {
       this.parseStack();
 
-      const storage = this.userDaemon?.serviceHost?.getService<ApplicationStorage>("AppStorage");
+      const storage = Daemon()?.serviceHost?.getService<ApplicationStorage>("AppStorage");
 
       if (storage && this.stackFrames[0].parsed?.appId) {
         const app = storage.getAppSynchronous(this.stackFrames[0].parsed.appId);
@@ -73,7 +74,7 @@ export class OopsNotifierRuntime extends AppProcess {
   //#region ACTIONS
 
   async details() {
-    const proc = await this.userDaemon?.spawn?.spawnOverlay(
+    const proc = await Daemon()?.spawn?.spawnOverlay(
       "OopsStackTracer",
       +Env().get("shell_pid"),
       this.data,

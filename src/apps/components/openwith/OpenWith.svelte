@@ -1,9 +1,10 @@
 <script lang="ts">
+  import { Daemon } from "$ts/server/user/daemon";
   import Options from "./OpenWith/Options.svelte";
   import type { OpenWithRuntime } from "./runtime";
 
   const { process }: { process: OpenWithRuntime } = $props();
-  const { filename, viewMode, available, all, path, selectedId, userDaemon, apps } = process;
+  const { filename, viewMode, available, all, path, selectedId, apps } = process;
 </script>
 
 <div class="top">
@@ -11,7 +12,7 @@
     <h1>Select an app to open {$filename}</h1>
     <p class="location">
       <img
-        src={process.userDaemon?.assoc?.getFileAssociation($path)?.icon || process.getIconCached("DefaultMimeIcon")}
+        src={Daemon()?.assoc?.getFileAssociation($path)?.icon || process.getIconCached("DefaultMimeIcon")}
         alt=""
       /><span>{$path}</span>
     </p>

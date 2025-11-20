@@ -1,6 +1,7 @@
 import { Fs } from "$ts/env";
 import { toForm } from "$ts/form";
 import { Backend } from "$ts/server/axios";
+import { Daemon } from "$ts/server/user/daemon";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import type { FilesystemProgressCallback } from "$types/fs";
@@ -16,7 +17,7 @@ export class ShareManager extends BaseService {
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(pid, parentPid, name, host);
 
-    this.token = host.daemon.token;
+    this.token = Daemon()!.token;
 
     this.setSource(__SOURCE__);
   }

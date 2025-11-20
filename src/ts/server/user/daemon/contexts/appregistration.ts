@@ -12,7 +12,7 @@ import { getParentDirectory, join } from "$ts/util/fs";
 import { compareVersion } from "$ts/version";
 import type { App, AppStorage, InstalledApp } from "$types/app";
 import { LogLevel } from "$types/logging";
-import type { UserDaemon } from "..";
+import { Daemon, type UserDaemon } from "..";
 import { UserPaths } from "../../store";
 import { UserContext } from "../context";
 
@@ -24,7 +24,7 @@ export class AppRegistrationUserContext extends UserContext {
   async initAppStorage(storage: ApplicationStorage, cb: (app: App) => void) {
     this.Log(`Now trying to load built-in applications...`);
 
-    const blocklist = this.daemon.preferences()._internalImportBlocklist || [];
+    const blocklist = Daemon()!.preferences()._internalImportBlocklist || [];
 
     const builtins: App[] = await Promise.all(
       Object.keys(BuiltinAppImportPathAbsolutes).map(async (path) => {
@@ -78,9 +78,9 @@ export class AppRegistrationUserContext extends UserContext {
   }
 
   async getUserApps(): Promise<AppStorage> {
-    if (!this.daemon.preferences()) return [];
+    if (!Daemon()!.preferences()) return [];
 
-    await this.daemon.migrations!.migrateUserAppsToFs();
+    await Daemon()!.migrations!.migrateUserAppsToFs();
 
     const bulk = Object.fromEntries(
       Object.entries(await Fs().bulk(UserPaths.AppRepository, "json")).map(([k, v]) => [k.replace(".json", ""), v])
@@ -104,7 +104,7 @@ export class AppRegistrationUserContext extends UserContext {
 
     if (!distrib) return false;
 
-    const prog = await this.daemon.helpers!.GlobalLoadIndicator();
+    const prog = await Daemon()!.helpers!.GlobalLoadIndicator();
     const result = await distrib.uninstallPackage(id, deleteFiles, (s) => prog.caption.set(s));
 
     await prog.stop();
@@ -182,7 +182,7 @@ export class AppRegistrationUserContext extends UserContext {
 
     if (!app) return;
 
-    this.daemon.preferences.update((v) => {
+    Daemon()!.preferences.update((v) => {
       if (v.pinnedApps.includes(appId)) return v;
 
       v.pinnedApps.push(appId);
@@ -194,7 +194,7 @@ export class AppRegistrationUserContext extends UserContext {
   unpinApp(appId: string) {
     this.Log(`Unpinning ${appId}`);
 
-    this.daemon.preferences.update((v) => {
+    Daemon()!.preferences.update((v) => {
       if (!v.pinnedApps.includes(appId)) return v;
 
       v.pinnedApps.splice(v.pinnedApps.indexOf(appId), 1);
@@ -219,7 +219,7 @@ export class AppRegistrationUserContext extends UserContext {
     const existing = await Fs().stat(path);
     if (existing) return;
 
-    await this.daemon.shortcuts?.createShortcut(
+    await Daemon()!.shortcuts?.createShortcut(
       {
         type: "app",
         target: app.id,

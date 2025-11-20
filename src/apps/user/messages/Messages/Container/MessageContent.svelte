@@ -7,10 +7,11 @@
   import { onMount } from "svelte";
   import SvelteMarkdown from "svelte-markdown";
   import type { MessagingAppRuntime } from "../../runtime";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: MessagingAppRuntime } = $props();
   const { message } = process;
-  const userId = process.userDaemon!.userInfo!._id;
+  const userId = Daemon()!.userInfo!._id;
   const isSent = $message?.authorId === userId;
 
   let user = $state<PublicUserInfo>();

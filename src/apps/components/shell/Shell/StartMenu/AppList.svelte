@@ -6,6 +6,7 @@
   import type { ShellRuntime } from "../../runtime";
   import AppGroups from "./AppList/AppGroups.svelte";
   import ListItem from "./AppList/ListItem.svelte";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: ShellRuntime } = $props();
   const { searchResults, searchQuery, searching, SelectionIndex, userPreferences } = process;
@@ -46,7 +47,7 @@
     {/if}
   {:else if $userPreferences.shell.start.noGroups}
     {#each apps as app (`${app.id}-${app.metadata.name}`)}
-      {#if (isPopulatable(app) || $userPreferences.shell.visuals.showHiddenApps) && !process.userDaemon?.apps?.checkDisabled(app.id)}
+      {#if (isPopulatable(app) || $userPreferences.shell.visuals.showHiddenApps) && !Daemon()?.apps?.checkDisabled(app.id)}
         <ListItem {app} {process} />
       {/if}
     {/each}
@@ -54,7 +55,7 @@
     <AppGroups {process} {apps} />
   {/if}
 
-  {#if !process.userDaemon}
+  {#if !Daemon()}
     <span class="error-text">ERR_NO_DAEMON</span>
   {/if}
 </div>

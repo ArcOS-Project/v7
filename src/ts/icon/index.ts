@@ -1,6 +1,7 @@
 import { Fs } from "$ts/env";
 import { getAllImages, getGroupedIcons, iconIdFromPath, maybeIconId } from "$ts/images";
 import { tryJsonParse } from "$ts/json";
+import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
@@ -84,7 +85,7 @@ export class IconService extends BaseService {
 
       switch (type) {
         case "app":
-          const app = this.host.daemon.appStorage()?.getAppSynchronous(data);
+          const app = Daemon()!.appStorage()?.getAppSynchronous(data);
           if (!app) iconPath = this.DEFAULT_ICON;
           else iconPath = this.getAppIcon(app);
           break;
@@ -131,7 +132,7 @@ export class IconService extends BaseService {
 
       switch (type) {
         case "app":
-          const app = this.host.daemon.appStorage()?.getAppSynchronous(data);
+          const app = Daemon()!.appStorage()?.getAppSynchronous(data);
           if (!app) iconPath = this.DEFAULT_ICON;
           else iconPath = this.getAppIcon(app, app.workingDirectory);
           break;
@@ -189,7 +190,7 @@ export class IconService extends BaseService {
     const { icon } = app.metadata;
     try {
       const maybe = this.getIconCached(icon);
-      const appStore = this.host.daemon!.appStorage();
+      const appStore = Daemon()!!.appStorage();
 
       if (icon.startsWith("http")) return icon;
       if (maybe !== icon && maybe !== this.DEFAULT_ICON) return maybe;

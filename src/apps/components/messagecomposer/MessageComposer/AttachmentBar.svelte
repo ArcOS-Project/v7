@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Daemon } from "$ts/server/user/daemon";
   import { formatBytes } from "$ts/util/fs";
   import type { MessageComposerRuntime } from "../runtime";
 
@@ -11,7 +12,7 @@
     {#each $attachments as attachment, i (`${attachment.uuid}-${i}`)}
       <div class="attachment">
         <img
-          src={process.userDaemon?.assoc?.getFileAssociation(attachment.data.name)?.icon ||
+          src={Daemon()?.assoc?.getFileAssociation(attachment.data.name)?.icon ||
             process.getIconCached("DefaultMimeIcon")}
           alt=""
         />

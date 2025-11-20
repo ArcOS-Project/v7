@@ -1,5 +1,6 @@
 <script lang="ts">
   import { UploadIcon } from "$ts/images/general";
+  import { Daemon } from "$ts/server/user/daemon";
   import { UserPaths } from "$ts/server/user/store";
   import type { IconEditDialogRuntime } from "../runtime";
 
@@ -7,7 +8,7 @@
   const { values, type } = process;
 
   async function browse() {
-    const [path] = await process.userDaemon!.files!.LoadSaveDialog({
+    const [path] = await Daemon()!.files!.LoadSaveDialog({
       title: "Choose an icon to load",
       extensions: [".svg", ".png", ".jpg", ".bmp", ".gif", ".jpeg"],
       icon: UploadIcon,

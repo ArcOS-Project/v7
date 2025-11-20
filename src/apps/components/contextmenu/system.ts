@@ -1,11 +1,10 @@
 import { AppProcess } from "$ts/apps/process";
 import { Env, KernelStack } from "$ts/env";
-import { UserDaemon } from "$ts/server/user/daemon";
+import { Daemon } from "$ts/server/user/daemon";
 import type { AppContextMenu } from "$types/app";
-import type { ContextMenuRuntime } from "./runtime";
 
-export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContextMenu {
-  let userDaemon = runtime.userDaemon as UserDaemon;
+export function WindowSystemContextMenu(): AppContextMenu {
+  let userDaemon = Daemon();
   let workspaces = userDaemon?.preferences().workspaces.desktops;
   let currentWorkspace = userDaemon?.preferences().workspaces.index;
 
@@ -123,11 +122,11 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
               if (!proc?.pid) return;
               userDaemon?.workspaces?.moveWindow(
                 proc.pid,
-                workspaces[currentWorkspace - 1 >= 0 ? currentWorkspace - 1 : workspaces.length - 1]?.uuid
+                workspaces?.[currentWorkspace! - 1 >= 0 ? currentWorkspace! - 1 : workspaces!.length - 1]!.uuid!
               );
             },
             disabled: (proc: AppProcess) => {
-              return !workspaces[currentWorkspace - 1] || !proc?.pid;
+              return !workspaces?.[currentWorkspace! - 1] || !proc?.pid;
             },
           },
           {
@@ -137,11 +136,11 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
               if (!proc?.pid) return;
               userDaemon?.workspaces?.moveWindow(
                 proc.pid,
-                workspaces[currentWorkspace + 1 <= workspaces.length - 1 ? currentWorkspace + 1 : 0]?.uuid
+                workspaces?.[currentWorkspace! + 1 <= workspaces.length - 1 ? currentWorkspace! + 1 : 0]!.uuid!
               );
             },
             disabled: (proc: AppProcess) => {
-              return !workspaces[currentWorkspace + 1] || !proc?.pid;
+              return !workspaces?.[currentWorkspace! + 1] || !proc?.pid;
             },
           },
         ],

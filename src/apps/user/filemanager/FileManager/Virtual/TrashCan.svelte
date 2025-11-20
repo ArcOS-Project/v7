@@ -6,10 +6,11 @@
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../../runtime";
   import DeletedItem from "./TrashCan/DeletedItem.svelte";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: FileManagerRuntime } = $props();
   const { selection } = process;
-  const trash = process.userDaemon?.serviceHost?.getService<TrashCanService>("TrashSvc");
+  const trash = Daemon()?.serviceHost?.getService<TrashCanService>("TrashSvc");
 
   let items = $state<[string, TrashIndexNode][]>([]);
 
@@ -51,7 +52,7 @@
       trash?.restoreTrashItem($selection[0]);
       return;
     }
-    const progress = await process.userDaemon?.files?.FileProgress(
+    const progress = await Daemon()?.files?.FileProgress(
       {
         caption: "Restoring items",
         subtitle: "From Recycle bin",
@@ -74,7 +75,7 @@
 
   async function deleteSelected() {
     if ($selection.length === 1) {
-      const proceed = await process.userDaemon?.helpers?.Confirm(
+      const proceed = await Daemon()?.helpers?.Confirm(
         "Delete item?",
         "Are you sure you want to permanently delete this item from the Recycle Bin? This cannot be undone.",
         "Cancel",
@@ -88,7 +89,7 @@
       trash?.permanentlyDelete($selection[0]);
       return;
     }
-    const proceed = await process.userDaemon?.helpers?.Confirm(
+    const proceed = await Daemon()?.helpers?.Confirm(
       "Delete items?",
       "Are you sure you want to permanently delete these items from the Recycle Bin? This cannot be undone.",
       "Cancel",
@@ -99,7 +100,7 @@
 
     if (!proceed) return;
 
-    const progress = await process.userDaemon?.files?.FileProgress(
+    const progress = await Daemon()?.files?.FileProgress(
       {
         caption: "Deleting items",
         subtitle: "From Recycle Bin",

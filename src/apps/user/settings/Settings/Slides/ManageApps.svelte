@@ -5,6 +5,7 @@
   import Fuse from "fuse.js";
   import { onMount } from "svelte";
   import type { SettingsRuntime } from "../../runtime";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: SettingsRuntime } = $props();
   const { userPreferences } = process;
@@ -94,9 +95,9 @@
       <button
         class="app"
         onclick={() => process.spawnOverlayApp("AppInfo", process.pid, app.id)}
-        class:disabled={process.userDaemon?.apps?.checkDisabled(app.id, app.noSafeMode)}
+        class:disabled={Daemon()?.apps?.checkDisabled(app.id, app.noSafeMode)}
       >
-        <img src={process.userDaemon?.icons?.getAppIcon(app)} alt="" />
+        <img src={Daemon()?.icons?.getAppIcon(app)} alt="" />
         <h1>{app.metadata.name}</h1>
         <p class="author">{app.metadata.author} - v{app.metadata.version}</p>
       </button>

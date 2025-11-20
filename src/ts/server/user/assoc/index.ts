@@ -8,6 +8,7 @@ import { getItemNameFromPath, join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { ExpandedFileAssociationInfo, FileAssociationConfig } from "$types/assoc";
 import type { Service } from "$types/service";
+import { Daemon } from "../daemon";
 import { UserPaths } from "../store";
 import { DefaultFileDefinitions } from "./store";
 
@@ -26,7 +27,7 @@ export class FileAssocService extends BaseService {
   async start() {
     await this.loadConfiguration();
 
-    this.host.daemon.assoc = this;
+    Daemon()!.assoc = this;
   }
 
   //#endregion
@@ -84,8 +85,8 @@ export class FileAssocService extends BaseService {
     }
 
     // handlers
-    for (const handlerId in this.host.daemon.files!.fileHandlers) {
-      const handler = this.host.daemon.files!.fileHandlers[handlerId];
+    for (const handlerId in Daemon()!.files!.fileHandlers) {
+      const handler = Daemon()!.files!.fileHandlers[handlerId];
 
       if (handler.opens.extensions) result.associations.handlers[handlerId] = handler.opens.extensions;
     }
@@ -111,7 +112,7 @@ export class FileAssocService extends BaseService {
     return {
       extension: extension,
       friendlyName: definition?.friendlyName || "Unknown",
-      icon: this.host.daemon.icons!.getIconCached(definition?.icon || "DefaultMimeIcon"),
+      icon: Daemon()!.icons!.getIconCached(definition?.icon || "DefaultMimeIcon"),
       handledBy: {
         app: storage?.getAppSynchronous(
           Object.entries(associations.apps)
@@ -119,7 +120,7 @@ export class FileAssocService extends BaseService {
             .map(([a]) => a)[0]
         ),
         handler:
-          this.host.daemon.files!.fileHandlers[
+          Daemon()?.files!.fileHandlers[
             Object.entries(associations.handlers)
               .filter(([_, e]) => e.includes(extension.toLowerCase()) || e.includes(filename))
               .map(([h]) => h)[0]

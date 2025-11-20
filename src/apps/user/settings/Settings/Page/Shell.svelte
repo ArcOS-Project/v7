@@ -1,11 +1,12 @@
 <script lang="ts">
+  import { Daemon } from "$ts/server/user/daemon";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
 
   const { process }: { process: SettingsRuntime } = $props();
   const { userPreferences } = process;
-  const { battery } = process.userDaemon?.power! || {}!;
+  const { battery } = Daemon()?.power! || {}!;
 </script>
 
 <div class="centered-layout">

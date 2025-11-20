@@ -8,27 +8,27 @@
   import ThemesHeader from "../ThemesHeader.svelte";
   import Setting from "../ThemesHeader/Setting.svelte";
   import WallpaperOption from "./Wallpaper/WallpaperOption.svelte";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: SettingsRuntime } = $props();
-  const { userDaemon } = process;
-  const { userInfo, preferences: userPreferences } = process.userDaemon || {}!;
+  const { userInfo, preferences: userPreferences } = Daemon() || {}!;
 
   let wallpaper = $state<Wallpaper>();
 
   onMount(() => {
     const sub = userPreferences?.subscribe(async (v) => {
-      wallpaper = await process.userDaemon!.wallpaper!.getWallpaper(v.account.loginBackground);
+      wallpaper = await Daemon()!.wallpaper!.getWallpaper(v.account.loginBackground);
     });
 
     return () => sub?.();
   });
 </script>
 
-{#if userInfo && userPreferences && userDaemon}
+{#if userInfo && userPreferences && Daemon()}
   <ThemesHeader
     {userInfo}
     {userPreferences}
-    userDaemon={process.userDaemon!}
+    userDaemon={Daemon()!}
     login
     background={wallpaper?.thumb || wallpaper?.url}
   >
@@ -39,7 +39,7 @@
       <button
         class="lucide icon-upload"
         aria-label="Upload wallpaper"
-        onclick={() => userDaemon?.wallpaper?.uploadWallpaper()}
+        onclick={() => Daemon()?.wallpaper?.uploadWallpaper()}
         disabled={process.safeMode}
         title="Upload wallpaper"
       >
@@ -69,7 +69,7 @@
       <p class="name">Built-in login backgrounds</p>
       <div class="wallpapers">
         {#each Object.keys(Wallpapers) as id}
-          <WallpaperOption {id} {userPreferences} {userDaemon} isLogin />
+          <WallpaperOption {id} {userPreferences} isLogin />
         {/each}
       </div>
     </div>
@@ -82,7 +82,7 @@
       >
         {#if $userPreferences?.userWallpapers && Object.values($userPreferences.userWallpapers).length}
           {#each Object.keys($userPreferences.userWallpapers) as id}
-            <WallpaperOption {id} {userPreferences} {userDaemon} isLogin />
+            <WallpaperOption {id} {userPreferences} isLogin />
           {/each}
         {:else}
           <p class="none">You have no saved wallpapers!</p>

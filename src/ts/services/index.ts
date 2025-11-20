@@ -9,7 +9,7 @@ import { protoService } from "$ts/proto";
 import { adminService } from "$ts/server/admin";
 import { messagingService } from "$ts/server/messaging";
 import { fileAssocService } from "$ts/server/user/assoc";
-import type { UserDaemon } from "$ts/server/user/daemon";
+import { Daemon, type UserDaemon } from "$ts/server/user/daemon";
 import { trashService } from "$ts/server/user/trash";
 import { globalDispatchService } from "$ts/server/ws";
 import { shareService } from "$ts/shares";
@@ -23,14 +23,12 @@ export class ServiceHost extends Process {
   public Services: ReadableServiceStore = Store<ServiceStore>();
   public _holdRestart = false;
   private _storeLoaded = false;
-  public daemon: UserDaemon;
 
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number) {
     super(pid, parentPid);
 
-    this.daemon = KernelStack().getProcess(+Env().get("userdaemon_pid"))!;
     this.name = "ServiceHost";
 
     this.setSource(__SOURCE__);
@@ -123,7 +121,7 @@ export class ServiceHost extends Process {
     if (!canStart) return "err_startCondition";
     if (service.pid) return "err_alreadyRunning";
 
-    const instance = await KernelStack().spawn(service.process, undefined, this.daemon.userInfo?._id, this.pid, id, this);
+    const instance = await KernelStack().spawn(service.process, undefined, Daemon()?.userInfo?._id, this.pid, id, this);
 
     if (!instance) return "err_spawnFailed";
 

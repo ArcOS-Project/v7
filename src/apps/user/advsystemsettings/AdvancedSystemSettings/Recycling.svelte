@@ -5,11 +5,12 @@
   import { onMount } from "svelte";
   import type { AdvSysSetRuntime } from "../runtime";
   import { Env } from "$ts/env";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: AdvSysSetRuntime } = $props();
   const { preferencesBuffer } = process;
 
-  const trash = process.userDaemon?.serviceHost?.getService<TrashCanService>("TrashSvc");
+  const trash = Daemon()?.serviceHost?.getService<TrashCanService>("TrashSvc");
   let size = $state(Object.entries(trash?.IndexBuffer() || {}).length);
 
   onMount(() => {

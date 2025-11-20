@@ -1,5 +1,6 @@
 import { MessageBox } from "$ts/dialog";
 import { Env, Fs } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { textToBlob } from "$ts/util/convert";
 import { getParentDirectory } from "$ts/util/fs";
@@ -20,7 +21,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
       {
         caption: "Export theme...",
         action: async (_, __, theme: UserTheme) => {
-          const [path] = await runtime.userDaemon!.files!.LoadSaveDialog({
+          const [path] = await Daemon()!.files!.LoadSaveDialog({
             title: "Choose where to save the theme",
             isSave: true,
             startDir: UserPaths.Documents,
@@ -54,7 +55,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
       {
         caption: "Export theme...",
         action: async (_, __, theme: UserTheme) => {
-          const [path] = await runtime.userDaemon!.files!.LoadSaveDialog({
+          const [path] = await Daemon()!.files!.LoadSaveDialog({
             title: "Choose where to save the theme",
             isSave: true,
             startDir: UserPaths.Documents,
@@ -84,7 +85,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
         caption: "Open file location",
         icon: "folder-open",
         action: (id: string) => {
-          runtime.userDaemon?.spawn?.spawnApp(
+          Daemon()?.spawn?.spawnApp(
             "fileManager",
             +Env().get("shell_pid"),
             getParentDirectory(atob(id.replace("@local:", "")))
@@ -111,7 +112,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
                 {
                   caption: "Delete",
                   action: async () => {
-                    await runtime.userDaemon?.wallpaper?.deleteLocalWallpaper(id);
+                    await Daemon()?.wallpaper?.deleteLocalWallpaper(id);
                   },
                   suggested: true,
                 },

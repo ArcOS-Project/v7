@@ -3,6 +3,7 @@
   import type { AppProcess } from "$ts/apps/process";
   import { contextProps } from "$ts/context/actions.svelte";
   import { KernelStack } from "$ts/env";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { openedProcess, pid, process }: { openedProcess: AppProcess; pid: number; process: ShellRuntime } = $props();
   const { windowTitle, windowIcon } = openedProcess;
@@ -12,7 +13,7 @@
   function focus() {
     KernelStack().renderer?.focusPid(pid);
 
-    if (openedProcess.app.desktop) process.userDaemon?.workspaces?.switchToDesktopByUuid(openedProcess.app.desktop);
+    if (openedProcess.app.desktop) Daemon()?.workspaces?.switchToDesktopByUuid(openedProcess.app.desktop);
   }
 </script>
 

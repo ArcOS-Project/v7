@@ -9,6 +9,7 @@
   import MultiFile from "./InfoPane/MultiFile.svelte";
   import SingleFile from "./InfoPane/SingleFile.svelte";
   import { Fs } from "$ts/env";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: FileManagerRuntime } = $props();
   const { path, contents, selection, drives } = process;
@@ -58,12 +59,12 @@
               singleSelectionModifiers = stat?.modifiers;
             } else {
               singleSelectionStat = stat;
-              singleSelectionAssoc = process.userDaemon?.assoc?.getFileAssociation($selection[0]);
+              singleSelectionAssoc = Daemon()?.assoc?.getFileAssociation($selection[0]);
               singleSelectionModifiers = stat?.modifiers;
-              singleSelectionThumbnail = await process.userDaemon?.files?.getThumbnailFor($selection[0]);
+              singleSelectionThumbnail = await Daemon()?.files?.getThumbnailFor($selection[0]);
             }
           } catch {
-            singleSelectionAssoc = process.userDaemon?.assoc?.getFileAssociation($selection[0]);
+            singleSelectionAssoc = Daemon()?.assoc?.getFileAssociation($selection[0]);
           }
         }
 

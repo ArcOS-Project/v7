@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { IconService } from "$ts/icon";
+import { Daemon } from "$ts/server/user/daemon";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
@@ -19,7 +20,7 @@ export class IconEditorRuntime extends AppProcess {
   }
 
   async start() {
-    this.iconService = this.userDaemon?.serviceHost?.getService<IconService>("IconService");
+    this.iconService = Daemon()?.serviceHost?.getService<IconService>("IconService");
     this.setGroups();
     this.icons.set({ ...(this.iconService?.Configuration() || {}) });
     this.icons.subscribe(() => {
@@ -36,7 +37,7 @@ export class IconEditorRuntime extends AppProcess {
   async onClose(): Promise<boolean> {
     if (!this.hasChanges()) return true;
 
-    const saveChanges = await this.userDaemon?.helpers?.Confirm(
+    const saveChanges = await Daemon()?.helpers?.Confirm(
       "Save changes?",
       "Do you want to save the changes you made to your icon set?",
       "Discard",
@@ -82,7 +83,7 @@ export class IconEditorRuntime extends AppProcess {
     this.iconService?.Configuration.set({ ...this.icons() });
     this.hasChanges.set(false);
     this.closeWindow();
-    this.userDaemon?.power?.restart();
+    Daemon()?.power?.restart();
   }
 
   async editIcon() {

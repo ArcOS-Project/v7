@@ -7,6 +7,7 @@
   import { onMount } from "svelte";
   import Spinner from "../../../../../../../lib/Spinner.svelte";
   import { Fs } from "$ts/env";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { userPreferences, process }: { userPreferences: UserPreferencesStore; process: ShellRuntime } = $props();
 
@@ -56,7 +57,7 @@
   });
 
   async function chooseImage() {
-    const [path] = await process.userDaemon!.files!.LoadSaveDialog({
+    const [path] = await Daemon()!.files!.LoadSaveDialog({
       title: "Choose an image for the gallery",
       icon: "DesktopIcon",
       startDir: UserPaths.Pictures,

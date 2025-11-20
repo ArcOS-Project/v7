@@ -9,6 +9,7 @@
   import updateLocale from "dayjs/plugin/updateLocale";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../../runtime";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { process, file }: { process: FileManagerRuntime; file: FileEntry } = $props();
   const { selection, shortcuts } = process;
@@ -31,7 +32,7 @@
     thisPath = join(process.path(), file.name);
 
     const split = file.name.split(".");
-    const info = process.userDaemon?.assoc?.getFileAssociation(thisPath);
+    const info = Daemon()?.assoc?.getFileAssociation(thisPath);
     extension = `.${split[split.length - 1]}`;
     mime = info?.friendlyName || "Unknown";
     icon = info?.icon || process.getIconCached("DefaultMimeIcon");
@@ -39,7 +40,7 @@
     if (shortcut) shortcutIcon = process.getIconCached(shortcut.icon);
 
     if (info?.friendlyName === "Image file" && process.userPreferences().appPreferences.fileManager?.renderThumbnails)
-      thumbnail = await process.userDaemon?.files?.getThumbnailFor(thisPath);
+      thumbnail = await Daemon()?.files?.getThumbnailFor(thisPath);
   });
 
   function onclick(e: MouseEvent) {
@@ -64,7 +65,7 @@
       return;
     }
 
-    process.userDaemon?.files?.openFile(thisPath, shortcut);
+    Daemon()?.files?.openFile(thisPath, shortcut);
   }
 </script>
 

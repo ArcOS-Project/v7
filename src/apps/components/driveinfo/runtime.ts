@@ -2,6 +2,7 @@ import { AppProcess } from "$ts/apps/process";
 import { FilesystemDrive } from "$ts/drives/drive";
 import { ServerDrive } from "$ts/drives/server";
 import { USERFS_UUID } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import type { AppProcessData } from "$types/app";
 import type { UserQuota } from "$types/fs";
 import type { CategorizedDiskUsage } from "$types/user";
@@ -28,7 +29,7 @@ export class DriveInfoRuntime extends AppProcess {
     this.isUserFs = this.drive instanceof ServerDrive && this.drive.uuid === USERFS_UUID;
     this.quota = await this.drive.quota();
 
-    if (this.isUserFs) this.usage = await this.userDaemon?.files?.determineCategorizedDiskUsage();
+    if (this.isUserFs) this.usage = await Daemon()?.files?.determineCategorizedDiskUsage();
   }
 
   //#endregion

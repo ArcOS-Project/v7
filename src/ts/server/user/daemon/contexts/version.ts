@@ -2,7 +2,7 @@ import { ArcOSVersion, Env, Fs } from "$ts/env";
 import type { IconService } from "$ts/icon";
 import { arrayToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
-import type { UserDaemon } from "..";
+import { Daemon, type UserDaemon } from "..";
 import { UserPaths } from "../../store";
 import { UserContext } from "../context";
 
@@ -31,6 +31,6 @@ export class VersionUserContext extends UserContext {
 
     iconService?.migrateIconConfiguration();
 
-    this.daemon.spawn?.spawnOverlay("UpdateNotifierApp", +Env().get("shell_pid"));
+    Daemon()!.spawn?.spawnOverlay("UpdateNotifierApp", +Env().get("shell_pid"));
   }
 }

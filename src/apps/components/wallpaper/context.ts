@@ -1,4 +1,5 @@
 import { Env, Fs } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { getParentDirectory, join } from "$ts/util/fs";
 import { UUID } from "$ts/uuid";
@@ -14,13 +15,13 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
         caption: "Open file",
         icon: "external-link",
         action: (_, path, shortcut) => {
-          runtime.userDaemon?.files?.openFile(path, shortcut);
+          Daemon()?.files?.openFile(path, shortcut);
         },
       },
       {
         caption: "Open with...",
         action: (_, runtimePath) => {
-          runtime.userDaemon?.files?.openWith(runtimePath);
+          Daemon()?.files?.openWith(runtimePath);
         },
       },
       { sep: true },
@@ -50,13 +51,13 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
         caption: "Open shortcut",
         icon: "external-link",
         action: (_, path, shortcut) => {
-          runtime.userDaemon?.files?.openFile(path, shortcut);
+          Daemon()?.files?.openFile(path, shortcut);
         },
       },
       {
         caption: "Open with...",
         action: (_, path) => {
-          runtime.userDaemon?.files?.openWith(path);
+          Daemon()?.files?.openWith(path);
         },
       },
       { sep: true },
@@ -191,17 +192,17 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
       {
         caption: "Shut down",
         image: "ShutdownIcon",
-        action: () => runtime.userDaemon?.power?.shutdown(),
+        action: () => Daemon()?.power?.shutdown(),
       },
       {
         caption: "Log off",
         image: "LogoutIcon",
-        action: () => runtime.userDaemon?.power?.logoff(),
+        action: () => Daemon()?.power?.logoff(),
       },
       {
         caption: "Restart",
         image: "RestartIcon",
-        action: () => runtime.userDaemon?.power?.restart(),
+        action: () => Daemon()?.power?.restart(),
       },
       { sep: true },
       {

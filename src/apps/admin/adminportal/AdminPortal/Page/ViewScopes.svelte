@@ -7,6 +7,7 @@
   import GlobalPills from "./ViewScopes/GlobalPills.svelte";
   import PagePills from "./ViewScopes/PagePills.svelte";
   import SpecificPills from "./ViewScopes/SpecificPills.svelte";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { process, data }: { process: AdminPortalRuntime; data: ViewScopesData } = $props();
   const { admin, scopes } = data;
@@ -47,7 +48,7 @@
   async function save() {
     if (
       scopeList.includes(AdminScopes.adminGod) &&
-      !(await process.userDaemon!.helpers?.Confirm(
+      !(await Daemon()!.helpers?.Confirm(
         "Are you sure?",
         "This user has the <code>admin.god</code> scope applied. This means that they can access all administrative functions of Sacruda, regardless of any other scopes. Are you sure you want to save these changes?",
         "Cancel",

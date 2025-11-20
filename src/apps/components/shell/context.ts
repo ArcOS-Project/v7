@@ -1,6 +1,7 @@
 import type { AppProcess } from "$ts/apps/process";
 import { Fs, Stack } from "$ts/env";
 import type { Process } from "$ts/process/instance";
+import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import type { TrayIconProcess } from "$ts/ui/tray/process";
 import type { App, AppContextMenu } from "$types/app";
@@ -41,7 +42,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         caption: "Create shortcut",
         icon: "arrow-up-right",
         action: async (app: App) => {
-          const [path] = await runtime.userDaemon!.files!.LoadSaveDialog({
+          const [path] = await Daemon()!.files!.LoadSaveDialog({
             title: "Choose where to save the app shortcut",
             icon: "ShortcutMimeIcon",
             startDir: UserPaths.Desktop,
@@ -52,7 +53,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
 
           if (!path) return;
 
-          await runtime.userDaemon?.shortcuts?.createShortcut(
+          await Daemon()?.shortcuts?.createShortcut(
             {
               icon: `@app::${app.id}`,
               name: app.metadata.name,
@@ -100,7 +101,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
           // BUG 687805735731d0b12b3115af
           if (!app) return;
 
-          runtime.userDaemon?.appreg?.uninstallAppWithAck(app);
+          Daemon()?.appreg?.uninstallAppWithAck(app);
         },
         // BUG 687805735731d0b12b3115af
         disabled: (app: App) => !app?.entrypoint && !app?.thirdParty,
@@ -167,7 +168,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         icon: "arrow-up-right",
         action: async (proc: AppProcess) => {
           const { data: appData } = proc.app;
-          const [path] = await runtime.userDaemon!.files!.LoadSaveDialog({
+          const [path] = await Daemon()!.files!.LoadSaveDialog({
             title: "Choose where to save the app shortcut",
             icon: "ShortcutMimeIcon",
             startDir: UserPaths.Desktop,
@@ -178,7 +179,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
 
           if (!path) return;
 
-          await runtime.userDaemon?.shortcuts?.createShortcut(
+          await Daemon()?.shortcuts?.createShortcut(
             {
               icon: `@app::${appData.id}`,
               name: appData.metadata.name,
@@ -261,7 +262,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       {
         caption: "Go here",
         action: (desktop: Workspace) => {
-          runtime.userDaemon?.workspaces?.switchToDesktopByUuid(desktop.uuid);
+          Daemon()?.workspaces?.switchToDesktopByUuid(desktop.uuid);
         },
       },
       {

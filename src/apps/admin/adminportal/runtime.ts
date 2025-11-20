@@ -14,6 +14,7 @@ import { AdminPortalPageStore } from "./store";
 import type { BugReportFileUrlParseResult, BugReportTpaFile } from "./types";
 import { BugHuntUserDataApp } from "./userdata/metadata";
 import { Fs } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 
 export class AdminPortalRuntime extends AppProcess {
   ready = Store<boolean>(false);
@@ -33,8 +34,8 @@ export class AdminPortalRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData, page?: string, props?: Record<string, any>) {
     super(pid, parentPid, app);
 
-    this.admin = this.userDaemon!.serviceHost!.getService<AdminBootstrapper>("AdminBootstrapper")!;
-    this.shares = this.userDaemon!.serviceHost!.getService<ShareManager>("ShareMgmt")!;
+    this.admin = Daemon()!.serviceHost!.getService<AdminBootstrapper>("AdminBootstrapper")!;
+    this.shares = Daemon()!.serviceHost!.getService<ShareManager>("ShareMgmt")!;
     this.switchPage(page || "dashboard", props || {});
     this.altMenu.set(AdminPortalAltMenu(this));
 

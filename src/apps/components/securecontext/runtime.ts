@@ -2,6 +2,7 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { Env, KernelDispatchS, KernelSound } from "$ts/env";
 import { LoginUser } from "$ts/server/user/auth";
+import { Daemon } from "$ts/server/user/daemon";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { ElevationData } from "$types/elevation";
@@ -46,16 +47,16 @@ export class SecureContextRuntime extends AppProcess {
     const security = this.userPreferences().security;
 
     if (security.noPassword) return true; // Password field is irrelevant if noPassword is set
-    if (security.disabled || !this.userDaemon?.username) return false; // 'Reject all elevation requests'
+    if (security.disabled || !Daemon()?.username) return false; // 'Reject all elevation requests'
 
-    const token = await LoginUser(this.userDaemon.username, this.password()); // Try to create a token to validate
+    const token = await LoginUser(Daemon()!.username, this.password()); // Try to create a token to validate
 
     if (!token) {
       await this.passwordIncorrect();
       return false;
     }
 
-    await this.userDaemon.account!.discontinueToken(token); // Discontinue validated token
+    await Daemon()?.account!.discontinueToken(token); // Discontinue validated token
 
     return true;
   }

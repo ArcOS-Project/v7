@@ -6,7 +6,7 @@ import { ServiceHost } from "$ts/services";
 import type { ShareManager } from "$ts/shares";
 import type { LibraryManagement } from "$ts/tpa/libraries";
 import type { Service } from "$types/service";
-import type { UserDaemon } from "..";
+import { Daemon, type UserDaemon } from "..";
 import type { FileAssocService } from "../../assoc";
 import { UserContext } from "../context";
 
@@ -87,7 +87,7 @@ export class InitUserContext extends UserContext {
     try {
       await Fs().mountDrive<ServerDrive>("userfs", ServerDrive, "U", undefined, this.token);
 
-      await this.daemon.migrations?.migrateFilesystemLayout();
+      await Daemon()!.migrations?.migrateFilesystemLayout();
     } catch {
       throw new Error("UserDaemon: Failed to start filesystem supplier");
     }
@@ -105,20 +105,20 @@ export class InitUserContext extends UserContext {
         const drive = Fs().getDriveById(id as unknown as string);
         if (!drive) return;
 
-        this.daemon.files?.mountedDrives.push(id as unknown as string);
+        Daemon()!.files?.mountedDrives.push(id as unknown as string);
 
         if (!drive.REMOVABLE) return;
 
-        const notificationId = this.daemon?.notifications?.sendNotification({
+        const notificationId = Daemon()!?.notifications?.sendNotification({
           title: drive.driveLetter ? `${drive.label} (${drive.driveLetter}:)` : drive.label,
           message: "This drive just got mounted! Click the button to view it in the file manager",
           buttons: [
             {
               caption: "Open Drive",
               action: () => {
-                this.daemon?.spawn?.spawnApp("fileManager", undefined, `${drive.driveLetter || drive.uuid}:/`);
+                Daemon()!?.spawn?.spawnApp("fileManager", undefined, `${drive.driveLetter || drive.uuid}:/`);
 
-                if (notificationId) this.daemon?.notifications?.deleteNotification(notificationId);
+                if (notificationId) Daemon()!?.notifications?.deleteNotification(notificationId);
               },
             },
           ],
@@ -144,21 +144,21 @@ export class InitUserContext extends UserContext {
 
     this.Log(`Starting user preferences commit sync`);
 
-    const unsubscribe = this.daemon.preferences.subscribe(async (v) => {
+    const unsubscribe = Daemon()!.preferences.subscribe(async (v) => {
       if (this._disposed) return unsubscribe();
       if (!v || v.isDefault) return;
 
-      v = this.daemon.themes!.checkCurrentThemeIdValidity(v);
+      v = Daemon()!.themes!.checkCurrentThemeIdValidity(v);
 
       if (!this.firstSyncDone) this.firstSyncDone = true;
-      else if (!this.daemon.preferencesCtx?.syncLock) this.daemon.preferencesCtx?.commitPreferences(v);
+      else if (!Daemon()!.preferencesCtx?.syncLock) Daemon()!.preferencesCtx?.commitPreferences(v);
 
-      this.daemon.renderer?.setAppRendererClasses(v);
-      this.daemon.wallpaper?.updateWallpaper(v);
-      this.daemon.workspaces?.syncVirtualDesktops(v);
+      Daemon()!.renderer?.setAppRendererClasses(v);
+      Daemon()!.wallpaper?.updateWallpaper(v);
+      Daemon()!.workspaces?.syncVirtualDesktops(v);
     });
 
-    this.daemon.preferencesCtx!.preferencesUnsubscribe = unsubscribe;
+    Daemon()!.preferencesCtx!.preferencesUnsubscribe = unsubscribe;
   }
 
   async startSystemStatusRefresh() {
@@ -167,10 +167,10 @@ export class InitUserContext extends UserContext {
     this.Log("Starting system status refresh");
 
     setInterval(async () => {
-      this.daemon.power?.battery.set(await this.daemon.power?.batteryInfo());
+      Daemon()!.power?.battery.set(await Daemon()!.power?.batteryInfo());
     }, 1000); // Every second
 
-    this.daemon.power?.battery.set(await this.daemon.power?.batteryInfo());
+    Daemon()!.power?.battery.set(await Daemon()!.power?.batteryInfo());
   }
 
   async startVirtualDesktops() {
@@ -186,18 +186,18 @@ export class InitUserContext extends UserContext {
 
     outer.append(inner);
     KernelStack().renderer?.target.append(outer);
-    this.daemon.workspaces!.virtualDesktop = inner;
+    Daemon()!.workspaces!.virtualDesktop = inner;
 
-    this.daemon.workspaces!.syncVirtualDesktops(this.daemon.preferences());
+    Daemon()!.workspaces!.syncVirtualDesktops(Daemon()!.preferences());
   }
 
   async startServiceHost(svcPreRun?: (service: Service) => void) {
     this.Log("Starting service host");
 
-    this.daemon.serviceHost = await KernelStack().spawn<ServiceHost>(ServiceHost, undefined, this.userInfo!._id, this.pid);
+    Daemon()!.serviceHost = await KernelStack().spawn<ServiceHost>(ServiceHost, undefined, this.userInfo!._id, this.pid);
     await this.serviceHost?.init(svcPreRun);
 
-    this.daemon.assoc = this.serviceHost?.getService<FileAssocService>("FileAssocSvc");
-    this.daemon.libraries = this.serviceHost?.getService<LibraryManagement>("LibMgmtSvc")!;
+    Daemon()!.assoc = this.serviceHost?.getService<FileAssocService>("FileAssocSvc");
+    Daemon()!.libraries = this.serviceHost?.getService<LibraryManagement>("LibMgmtSvc")!;
   }
 }

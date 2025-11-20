@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { Fs } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import { arrayToBlob } from "$ts/util/convert";
 import { getItemNameFromPath } from "$ts/util/fs";
@@ -49,7 +50,7 @@ export class ImageViewerRuntime extends AppProcess {
   }
 
   async readFileIndirectFallback(path: string) {
-    const prog = await this.userDaemon!.files!.FileProgress(
+    const prog = await Daemon()!.files!.FileProgress(
       {
         type: "size",
         caption: `Reading image`,

@@ -7,6 +7,7 @@ import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
 import type { Service } from "$types/service";
 import type { TrashIndexNode } from "$types/trash";
+import { Daemon } from "../daemon";
 import { UserPaths } from "../store";
 
 export class TrashCanService extends BaseService {
@@ -49,7 +50,7 @@ export class TrashCanService extends BaseService {
   }
 
   async moveToTrash(path: string, dispatch = false): Promise<TrashIndexNode | undefined> {
-    if (this.host.daemon?.preferences().globalSettings.disableTrashCan) {
+    if (Daemon()?.preferences().globalSettings.disableTrashCan) {
       await Fs().deleteItem(path);
       return undefined;
     }
@@ -60,7 +61,7 @@ export class TrashCanService extends BaseService {
     const isDir = await Fs().isDirectory(path);
     const name = getItemNameFromPath(path);
     const deletedPath = join(UserPaths.Trashcan, uuid);
-    const icon = isDir ? "FolderIcon" : this.host.daemon?.assoc?.getUnresolvedAssociationIcon(name) || "DefaultMimeIcon";
+    const icon = isDir ? "FolderIcon" : Daemon()?.assoc?.getUnresolvedAssociationIcon(name) || "DefaultMimeIcon";
     const node = {
       originalPath: path,
       deletedPath: join(deletedPath, name),
@@ -124,12 +125,12 @@ export class TrashCanService extends BaseService {
 
   async emptyBin() {
     const buffer = this.IndexBuffer();
-    const prog = await this.host.daemon.files!.FileProgress(
+    const prog = await Daemon()!.files!.FileProgress(
       {
         caption: "Emptying recycle bin",
         subtitle: "Please wait...",
         max: Object.entries(buffer).length,
-        icon: this.host.daemon.icons?.getIconCached("TrashIcon"),
+        icon: Daemon()!.icons?.getIconCached("TrashIcon"),
       },
       +Env().get("shell_pid")
     );

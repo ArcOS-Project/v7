@@ -1,5 +1,5 @@
 import { tryJsonParse } from "$ts/json";
-import { TryGetDaemon } from "$ts/server/user/daemon";
+import { Daemon, TryGetDaemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
@@ -34,7 +34,7 @@ export class LibraryInstallerProcess extends InstallerProcessBase {
 
   protected async afterSuccessfulInstallation(): Promise<any> {
     this.logStatus("Populating index", "other");
-    await this.userDaemon.libraries?.populateIndex();
+    await Daemon()?.libraries?.populateIndex();
     this.setCurrentStatus("done");
   }
 

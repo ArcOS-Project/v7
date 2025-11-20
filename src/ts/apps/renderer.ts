@@ -10,6 +10,7 @@ import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
 import { BuiltinAppImportPathAbsolutes } from "./store";
+import { Daemon } from "$ts/server/user/daemon";
 
 export class AppRenderer extends Process {
   currentState: number[] = [];
@@ -80,7 +81,7 @@ export class AppRenderer extends Process {
     window.id = data.id;
     window.classList.toggle("no-shell", !shell);
 
-    process.userDaemon?.preferences.subscribe((v) => {
+    Daemon()?.preferences.subscribe((v) => {
       window.classList.toggle("colored", v.shell.taskbar.colored && !app.data.core);
     });
 
@@ -290,7 +291,7 @@ export class AppRenderer extends Process {
       titleIcon.src = process.getIconCached(v) || v;
     });
 
-    titleIcon.src = process.userDaemon?.icons?.getAppIconByProcess(process) || process.getIconCached("ComponentIcon");
+    titleIcon.src = Daemon()?.icons?.getAppIconByProcess(process) || process.getIconCached("ComponentIcon");
 
     title.className = "window-title";
     title.append(titleIcon, titleCaption, this._renderAltMenu(process));
@@ -311,7 +312,7 @@ export class AppRenderer extends Process {
       feedbackButton.className = "link feedback";
       feedbackButton.innerText = "Feedback?";
       feedbackButton.addEventListener("click", () => {
-        process.userDaemon?.helpers?.iHaveFeedback(process);
+        Daemon()?.helpers?.iHaveFeedback(process);
       });
 
       titlebar.append(feedbackButton);

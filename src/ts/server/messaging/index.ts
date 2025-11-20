@@ -8,7 +8,7 @@ import type { ServerManagerType } from "$types/kernel";
 import type { ExpandedMessage, Message, MessageNode, PartialMessage } from "$types/messaging";
 import type { Service } from "$types/service";
 import { Backend } from "../axios";
-import { UserDaemon } from "../user/daemon";
+import { Daemon, UserDaemon } from "../user/daemon";
 import { GlobalDispatch } from "../ws";
 
 export class MessagingInterface extends BaseService {
@@ -23,7 +23,7 @@ export class MessagingInterface extends BaseService {
     const server = getKMod<ServerManagerType>("server");
     this.serverUrl = server.url;
     this.serverAuthCode = import.meta.env.DW_SERVER_AUTHCODE || "";
-    this.token = host.daemon.token;
+    this.token = Daemon()!.token;
 
     this.setSource(__SOURCE__);
   }

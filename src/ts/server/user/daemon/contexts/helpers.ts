@@ -12,7 +12,7 @@ import { Sleep } from "$ts/sleep";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
 import type { ExpandedTerminal } from "$types/terminal";
-import type { UserDaemon } from "..";
+import { Daemon, type UserDaemon } from "..";
 import { UserContext } from "../context";
 
 export class HelpersUserContext extends UserContext {
@@ -96,7 +96,7 @@ export class HelpersUserContext extends UserContext {
 
     const uuid = UUID();
 
-    await this.daemon.spawn?.spawnOverlay("IconPicker", +Env().get("shell_pid"), {
+    await Daemon()!.spawn?.spawnOverlay("IconPicker", +Env().get("shell_pid"), {
       ...data,
       returnId: uuid,
     });
@@ -121,7 +121,7 @@ export class HelpersUserContext extends UserContext {
   async waitForLeaveInvocationAllow() {
     return new Promise<void>((r) => {
       const interval = setInterval(() => {
-        if (!this.daemon._blockLeaveInvocations) r(clearInterval(interval));
+        if (!Daemon()!._blockLeaveInvocations) r(clearInterval(interval));
       }, 1);
     });
   }
@@ -134,7 +134,7 @@ export class HelpersUserContext extends UserContext {
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
         buttons: [
-          { caption: "Restart now", action: () => this.daemon.power?.restart() },
+          { caption: "Restart now", action: () => Daemon()!.power?.restart() },
           { caption: "Okay", action: () => {}, suggested: true },
         ],
       },
@@ -144,7 +144,7 @@ export class HelpersUserContext extends UserContext {
   }
 
   iHaveFeedback(process: AppProcess) {
-    this.daemon.spawn?.spawnApp(
+    Daemon()!.spawn?.spawnApp(
       "BugHuntCreator",
       undefined,
       `[${process.app.id}] Feedback report - ${process.windowTitle()}`,

@@ -6,6 +6,7 @@
   import type { AppStoreRuntime } from "./runtime";
   import { appStorePages } from "./store";
   import { Env } from "$ts/env";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: AppStoreRuntime } = $props();
   const { currentPage, pageProps, loadingPage, userPreferences } = process;
@@ -54,7 +55,7 @@
 
       <button
         class="suggested"
-        onclick={() => process.userDaemon?.spawn?.spawnApp("systemSettings", +Env().get("shell_pid"), "apps")}
+        onclick={() => Daemon()?.spawn?.spawnApp("systemSettings", +Env().get("shell_pid"), "apps")}
       >
         Take me there
       </button>

@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import { Daemon } from "$ts/server/user/daemon";
   import type { SharedDriveType } from "$types/shares";
 
   const { share, process }: { share: SharedDriveType; process: AdminPortalRuntime } = $props();
@@ -7,7 +8,7 @@
   let loading = $state<boolean>(false);
 
   async function rename() {
-    const confirm = await process.userDaemon?.helpers?.Confirm(
+    const confirm = await Daemon()?.helpers?.Confirm(
       "Confirm rename?",
       `Are you sure you want to change the name of share '${share.shareName}' to '${newName}'?`,
       "Cancel",

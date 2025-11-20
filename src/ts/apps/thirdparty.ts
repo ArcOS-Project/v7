@@ -1,4 +1,5 @@
 import { Fs } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import { join } from "$ts/util/fs";
 import type { AppProcessData } from "$types/app";
 import { AppProcess } from "./process";
@@ -16,7 +17,7 @@ export class ThirdPartyAppProcess extends AppProcess {
     super(pid, parentPid, app);
 
     this.workingDirectory = workingDirectory;
-    this.windowIcon.set(this.userDaemon?.icons?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
+    this.windowIcon.set(Daemon()?.icons?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
 
     this.setSource(__SOURCE__);
   }

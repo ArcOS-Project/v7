@@ -1,5 +1,5 @@
 import type { ApplicationStorage } from "$ts/apps/storage";
-import { TryGetDaemon } from "$ts/server/user/daemon";
+import { Daemon, TryGetDaemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { join } from "$ts/util/fs";
 import type { ArcPackage, StoreItem } from "$types/package";
@@ -64,36 +64,36 @@ export class AppInstallerProcess extends InstallerProcessBase {
   async checkDesktopIcon() {
     if (!this.item) return;
 
-    const existing = this.userDaemon.preferences().pinnedApps.includes(this.metadata?.appId!);
-    const appStore = this.userDaemon.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const existing = Daemon()?.preferences().pinnedApps.includes(this.metadata?.appId!);
+    const appStore = Daemon()?.serviceHost?.getService<ApplicationStorage>("AppStorage");
     const app = appStore?.getAppSynchronous(this.metadata?.appId!)!;
 
     if (existing) return;
 
     if (app.hidden || app.core) {
-      this.userDaemon?.notifications?.sendNotification({
+      Daemon()?.notifications?.sendNotification({
         title: `Open ${this.metadata?.name}`,
         message: `Do you want open ${this.metadata?.name}?`,
-        image: this.userDaemon.icons!.getAppIcon(app),
+        image: Daemon()?.icons!.getAppIcon(app),
         buttons: [
           {
             caption: "Open",
             action: async () => {
-              await this.userDaemon?.spawn?.spawnApp(app.id, +Env().get("shell_pid"));
+              await Daemon()?.spawn?.spawnApp(app.id, +Env().get("shell_pid"));
             },
           },
         ],
       });
     } else {
-      this.userDaemon?.notifications?.sendNotification({
+      Daemon()?.notifications?.sendNotification({
         title: `Pin ${this.metadata?.name}`,
         message: `Do you want to pin ${this.metadata?.name} to the taskbar so that you can easily launch it in the future?`,
-        image: this.userDaemon.icons!.getAppIcon(app),
+        image: Daemon()?.icons!.getAppIcon(app),
         buttons: [
           {
             caption: "Pin to taskbar",
             action: () => {
-              this.userDaemon.appreg!.pinApp(this.metadata?.appId!);
+              Daemon()?.appreg!.pinApp(this.metadata?.appId!);
             },
           },
         ],
@@ -107,7 +107,7 @@ export class AppInstallerProcess extends InstallerProcessBase {
     this.logStatus(this.metadata!.name, "registration");
 
     try {
-      const result = await this.userDaemon?.appreg?.registerAppFromPath(join(this.metadata!.installLocation, "_app.tpa"));
+      const result = await Daemon()?.appreg?.registerAppFromPath(join(this.metadata!.installLocation, "_app.tpa"));
       if (!result) {
         this.setCurrentStatus("done");
         return true;
@@ -145,7 +145,7 @@ export class AppInstallerProcess extends InstallerProcessBase {
       distrib.BUSY = "";
       distrib.BUSY = "uninstallApp";
 
-      await host?.daemon.appreg?.removeFromStartMenu(installedPkg!.pkg.appId);
+      await Daemon()?.appreg?.removeFromStartMenu(installedPkg!.pkg.appId);
     }
 
     onStage?.("Updating app repository");
@@ -164,6 +164,6 @@ export class AppInstallerProcess extends InstallerProcessBase {
       } catch {}
     }
 
-    host?.daemon.appreg!.unpinApp(metadata.appId);
+    Daemon()?.appreg!.unpinApp(metadata.appId);
   }
 }

@@ -2,6 +2,7 @@
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import type { ViewBugReportData } from "$apps/admin/adminportal/types";
   import { Fs } from "$ts/env";
+  import { Daemon } from "$ts/server/user/daemon";
   import { UserPaths } from "$ts/server/user/store";
   import { textToBlob } from "$ts/util/convert";
   import { getItemNameFromPath } from "$ts/util/fs";
@@ -10,7 +11,7 @@
   const { report } = data;
 
   async function download() {
-    const [path] = await process.userDaemon!.files!.LoadSaveDialog({
+    const [path] = await Daemon()!.files!.LoadSaveDialog({
       isSave: true,
       title: "Choose where to export the report to",
       icon: "SaveIcon",
@@ -21,7 +22,7 @@
 
     if (!path) return;
 
-    const prog = await process.userDaemon!.files!.FileProgress(
+    const prog = await Daemon()!.files!.FileProgress(
       {
         type: "size",
         icon: "SaveIcon",

@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { Env, KernelStack } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import type { AppProcessData } from "$types/app";
 
 export class SystemShortcutsRuntime extends AppProcess {
@@ -27,7 +28,7 @@ export class SystemShortcutsRuntime extends AppProcess {
         key: "[",
         global: true,
         action: () => {
-          this.userDaemon?.workspaces?.previousDesktop();
+          Daemon()?.workspaces?.previousDesktop();
         },
       },
       {
@@ -35,7 +36,7 @@ export class SystemShortcutsRuntime extends AppProcess {
         key: "]",
         global: true,
         action: () => {
-          this.userDaemon?.workspaces?.nextDesktop();
+          Daemon()?.workspaces?.nextDesktop();
         },
       },
       {

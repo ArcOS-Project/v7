@@ -18,7 +18,7 @@ import { ElevationLevel } from "$types/elevation";
 import type { FileHandler, FileOpenerResult } from "$types/fs";
 import type { ArcShortcut } from "$types/shortcut";
 import type { CategorizedDiskUsage } from "$types/user";
-import type { UserDaemon } from "..";
+import { Daemon, type UserDaemon } from "..";
 import { DefaultFileHandlers, UserPaths } from "../../store";
 import { UserContext } from "../context";
 
@@ -32,7 +32,7 @@ export class FilesystemUserContext extends UserContext {
   constructor(id: string, daemon: UserDaemon) {
     super(id, daemon);
 
-    this.fileHandlers = DefaultFileHandlers(this.daemon);
+    this.fileHandlers = DefaultFileHandlers(Daemon()!);
   }
 
   async _init() {
@@ -53,7 +53,7 @@ export class FilesystemUserContext extends UserContext {
 
     const elevated =
       fromSystem ||
-      (await this.daemon?.elevation?.manuallyElevate({
+      (await Daemon()!?.elevation?.manuallyElevate({
         what: "ArcOS needs your permission to mount a ZIP file",
         title: getItemNameFromPath(path),
         description: letter ? `As ${letter}:/` : "As a drive",
@@ -123,11 +123,11 @@ export class FilesystemUserContext extends UserContext {
       shown = true;
 
       if (!parentPid) {
-        process = await this.daemon.spawn?.spawnApp<FsProgressProc>("FsProgress", 0, progress);
+        process = await Daemon()!.spawn?.spawnApp<FsProgressProc>("FsProgress", 0, progress);
 
         if (typeof process == "string") return DummyFileProgress;
       } else {
-        process = await this.daemon.spawn?.spawnOverlay<FsProgressProc>("FsProgress", parentPid, progress);
+        process = await Daemon()!.spawn?.spawnOverlay<FsProgressProc>("FsProgress", parentPid, progress);
 
         if (typeof process == "string") return DummyFileProgress;
       }
@@ -365,7 +365,7 @@ export class FilesystemUserContext extends UserContext {
     const split = path.split(".");
     const filename = getItemNameFromPath(path);
     const extension = `.${split[split.length - 1]}`;
-    const config = this.daemon.assoc?.getConfiguration();
+    const config = Daemon()!.assoc?.getConfiguration();
     const apps = config?.associations.apps;
     const handlers = config?.associations.handlers;
     const result: FileOpenerResult[] = [];
@@ -430,7 +430,7 @@ export class FilesystemUserContext extends UserContext {
 
     this.Log(`Spawning LoadSaveDialog with UUID ${uuid}`);
 
-    await this.daemon.spawn?.spawnOverlay("fileManager", +Env().get("shell_pid"), data.startDir || UserPaths.Home, {
+    await Daemon()!.spawn?.spawnOverlay("fileManager", +Env().get("shell_pid"), data.startDir || UserPaths.Home, {
       ...data,
       returnId: uuid,
     });
@@ -449,10 +449,10 @@ export class FilesystemUserContext extends UserContext {
     this.Log(`Opening file "${path}" (${shortcut ? "Shortcut" : "File"})`);
 
     if (this._disposed) return;
-    if (shortcut) return await this.daemon?.shortcuts?.handleShortcut(path, shortcut);
+    if (shortcut) return await Daemon()!?.shortcuts?.handleShortcut(path, shortcut);
 
     const filename = getItemNameFromPath(path);
-    const result = this.daemon.assoc?.getFileAssociation(path);
+    const result = Daemon()!.assoc?.getFileAssociation(path);
 
     if (!result?.handledBy.app && !result?.handledBy?.handler) {
       await MessageBox(
@@ -480,7 +480,7 @@ export class FilesystemUserContext extends UserContext {
 
     if (result.handledBy.handler) return await result.handledBy.handler.handle(path);
 
-    return await this.daemon?.spawn?.spawnApp(result.handledBy.app?.id!, +Env().get("shell_pid"), path);
+    return await Daemon()!?.spawn?.spawnApp(result.handledBy.app?.id!, +Env().get("shell_pid"), path);
   }
 
   async openWith(path: string) {
@@ -488,7 +488,7 @@ export class FilesystemUserContext extends UserContext {
 
     if (this._disposed) return;
 
-    await this.daemon?.spawn?.spawnOverlay("OpenWith", +Env().get("shell_pid"), path);
+    await Daemon()!?.spawn?.spawnOverlay("OpenWith", +Env().get("shell_pid"), path);
   }
 
   async determineCategorizedDiskUsage(): Promise<CategorizedDiskUsage> {

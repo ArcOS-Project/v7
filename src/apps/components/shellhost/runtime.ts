@@ -1,6 +1,6 @@
 import { Env, KernelStack } from "$ts/env";
 import { Process } from "$ts/process/instance";
-import { UserDaemon } from "$ts/server/user/daemon";
+import { Daemon, UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import type { AppProcessData } from "$types/app";
 import type { UserPreferencesStore } from "$types/user";
@@ -11,7 +11,6 @@ export class ShellHostRuntime extends Process {
   private autoloadApps: string[];
   // Processes to spawn in support of the shell
   readonly shellComponents: string[] = ["contextMenu", "SystemShortcutsProc", "TrayHostProc", "ArcFindProc"];
-  userDaemon: UserDaemon | undefined;
   userPreferences: UserPreferencesStore;
 
   //#region LIFECYCLE
@@ -19,8 +18,7 @@ export class ShellHostRuntime extends Process {
   constructor(pid: number, parentPid: number, _: AppProcessData, autoloadApps: string[]) {
     super(pid, parentPid);
 
-    this.userDaemon = KernelStack().getProcess<UserDaemon>(+Env().get("userdaemon_pid")); // Get the user daemon
-    this.userPreferences = this.userDaemon!.preferences; // Get the preferences
+    this.userPreferences = Daemon()!.preferences; // Get the preferences
     this.autoloadApps = autoloadApps || []; // Get the autoload (provided by the daemon)
     this.name = "ShellHostRuntime";
 
@@ -29,18 +27,18 @@ export class ShellHostRuntime extends Process {
 
   async start() {
     // Autoload completed? Then stop the process immediately
-    if (this.userDaemon?.autoLoadComplete) return false;
+    if (Daemon()?.autoLoadComplete) return false;
 
     const procs: Record<string, Process> = {}; // Object of executed shell components
 
-    const proc = await this.userDaemon?.spawn?._spawnApp<ShellRuntime>(
+    const proc = await Daemon()?.spawn?._spawnApp<ShellRuntime>(
       this.userPreferences().globalSettings.shellExec,
       undefined,
       this.pid
     ); // Let's first spawn the shell exec from globalSettings
 
     for (const id of this.shellComponents) {
-      procs[id] = (await this.userDaemon!.spawn?._spawnApp(id, undefined, this.pid))!; // Then spawn each shell component
+      procs[id] = (await Daemon()!.spawn?._spawnApp(id, undefined, this.pid))!; // Then spawn each shell component
     }
 
     const trayHost = procs.TrayHostProc as TrayHostRuntime; // Get the tray host
@@ -56,12 +54,12 @@ export class ShellHostRuntime extends Process {
 
     proc?.dispatch?.dispatch("ready"); // Dispatch ready command to the shell
 
-    await this.userDaemon?.version?.checkForNewVersion();
+    await Daemon()?.version?.checkForNewVersion();
 
     for (const app of this.autoloadApps) {
       if (app === "shellHost") continue; // Ignore the shellHost in autoload
 
-      await this.userDaemon?.spawn?._spawnApp(app, undefined, this.pid); // Spawn autoload app
+      await Daemon()?.spawn?._spawnApp(app, undefined, this.pid); // Spawn autoload app
     }
 
     // Change the tray icon to good status icon

@@ -1,5 +1,6 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
+  import { Daemon } from "$ts/server/user/daemon";
   import { formatBytes } from "$ts/util/fs";
   import type { AdminPortalRuntime } from "../runtime";
   import { AdminPortalPageStore } from "../store";
@@ -33,6 +34,6 @@
     aria-label="Toggle redacting"
   ></button>
   <div class="sep"></div>
-  <ProfilePicture height={20} userDaemon={process.userDaemon!} />
+  <ProfilePicture height={20} />
   <span>{process.username}</span>
 </div>

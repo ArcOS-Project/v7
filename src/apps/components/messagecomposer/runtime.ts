@@ -11,6 +11,7 @@ import type { MessageCreateData } from "$types/messaging";
 import mime from "mime";
 import type { Attachment } from "./types";
 import { Fs } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 
 export class MessageComposerRuntime extends AppProcess {
   sending = Store<boolean>(false);
@@ -34,7 +35,7 @@ export class MessageComposerRuntime extends AppProcess {
     }
     if (replyId) this.replyId = replyId;
 
-    this.service = this.userDaemon!.serviceHost!.getService<MessagingInterface>("MessagingService")!;
+    this.service = Daemon()!.serviceHost!.getService<MessagingInterface>("MessagingService")!;
 
     this.setSource(__SOURCE__);
   }
@@ -47,7 +48,7 @@ export class MessageComposerRuntime extends AppProcess {
 
     this.sending.set(true);
 
-    const prog = await this.userDaemon?.files!.FileProgress(
+    const prog = await Daemon()?.files!.FileProgress(
       {
         type: "none",
         caption: "Sending message",
@@ -119,14 +120,14 @@ export class MessageComposerRuntime extends AppProcess {
 
   async addAttachment() {
     const attachments: Attachment[] = [];
-    const paths = await this.userDaemon!.files!.LoadSaveDialog({
+    const paths = await Daemon()!.files!.LoadSaveDialog({
       title: "Choose one or more files to attach",
       icon: "UploadIcon",
       startDir: UserPaths.Documents,
       multiple: true,
     });
 
-    const prog = await this.userDaemon!.files!.FileProgress(
+    const prog = await Daemon()!.files!.FileProgress(
       {
         max: 100,
         type: "none",

@@ -4,12 +4,13 @@
   import { KernelModules, KernelStateHandler } from "$ts/getters";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
+  import { Daemon } from "$ts/server/user/daemon";
   import type { AdvSysSetRuntime } from "../runtime";
 
   const { process }: { process: AdvSysSetRuntime } = $props();
   const { userPreferences } = process;
-  const userInfo = process.userDaemon?.userInfo;
-  const appStore = process.userDaemon?.serviceHost?.getService<ApplicationStorage>("AppStorage")?.buffer();
+  const userInfo = Daemon()?.userInfo;
+  const appStore = Daemon()?.serviceHost?.getService<ApplicationStorage>("AppStorage")?.buffer();
 </script>
 
 <div class="left">

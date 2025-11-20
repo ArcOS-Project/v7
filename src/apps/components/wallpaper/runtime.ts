@@ -2,6 +2,7 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { Env, Fs, KernelDispatchS } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
+import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { arrayToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, join } from "$ts/util/fs";
@@ -217,7 +218,7 @@ export class WallpaperRuntime extends AppProcess {
   async uploadItems() {
     if (this._disposed) return;
 
-    const prog = await this.userDaemon!.files!.FileProgress(
+    const prog = await Daemon()!.files!.FileProgress(
       {
         type: "size",
         icon: "UploadIcon",

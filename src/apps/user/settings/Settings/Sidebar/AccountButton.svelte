@@ -1,15 +1,16 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
+  import { Daemon } from "$ts/server/user/daemon";
   import { DefaultUserInfo } from "$ts/server/user/default";
   import type { SettingsRuntime } from "../../runtime";
 
   const { process }: { process: SettingsRuntime } = $props();
-  const { userPreferences, currentPage, userDaemon } = process;
-  const userInfo = userDaemon?.userInfo || DefaultUserInfo;
+  const { userPreferences, currentPage } = process;
+  const userInfo = Daemon()?.userInfo || DefaultUserInfo;
 </script>
 
 <button class="account-button" onclick={() => process.switchPage("account")} class:selected={$currentPage === "account"}>
-  <ProfilePicture height={32} {userDaemon} />
+  <ProfilePicture height={32} />
   <div class="info">
     <p class="account-name">
       {$userPreferences.account.displayName || userInfo.username}

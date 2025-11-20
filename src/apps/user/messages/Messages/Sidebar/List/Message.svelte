@@ -2,6 +2,7 @@
   import type { MessagingAppRuntime } from "$apps/user/messages/runtime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
+  import { Daemon } from "$ts/server/user/daemon";
   import type { PartialMessage } from "$types/messaging";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
@@ -27,7 +28,7 @@
     class="message"
     onclick={() => process.readMessage(message._id)}
     class:selected={$openedMessage?._id === message._id}
-    class:unread={!message.read && message.authorId !== process.userDaemon?.userInfo?._id}
+    class:unread={!message.read && message.authorId !== Daemon()?.userInfo?._id}
     ondblclick={() => process.popoutMessage(message._id)}
   >
     <ProfilePicture fallback={message.author.profilePicture} showOnline online={message.author.dispatchClients > 0} height={40} />

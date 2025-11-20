@@ -6,7 +6,7 @@ import type { ServerManagerType } from "$types/kernel";
 import type { Service } from "$types/service";
 import io, { Socket } from "socket.io-client";
 import { Backend } from "../axios";
-import { UserDaemon } from "../user/daemon";
+import { Daemon, UserDaemon } from "../user/daemon";
 
 export class GlobalDispatch extends BaseService {
   client: Socket | undefined;
@@ -19,7 +19,7 @@ export class GlobalDispatch extends BaseService {
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(pid, parentPid, name, host);
 
-    this.token = host.daemon.token;
+    this.token = Daemon()?.token;
     this.server = getKMod<ServerManagerType>("server");
 
     window.addEventListener("beforeunload", () => {

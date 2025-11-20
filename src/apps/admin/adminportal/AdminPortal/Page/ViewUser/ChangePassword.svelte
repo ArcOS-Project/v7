@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import { AdminScopes } from "$ts/server/admin/store";
+  import { Daemon } from "$ts/server/user/daemon";
   import type { ExpandedUserInfo } from "$types/user";
   import { generate } from "generate-password-ts";
 
@@ -9,7 +10,7 @@
   let loading = $state<boolean>(false);
 
   async function changePassword() {
-    const confirm = await process.userDaemon?.helpers?.Confirm(
+    const confirm = await Daemon()?.helpers?.Confirm(
       "Confirm password reset?",
       `Are you sure you want to change the password of '${user.username}'?`,
       "Cancel",

@@ -9,6 +9,7 @@
   import Provided from "./LeftPanel/Provided.svelte";
   import Server from "./LeftPanel/Server.svelte";
   import UserAgent from "./LeftPanel/UserAgent.svelte";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { report, process }: { report: BugReport; process: AdminPortalRuntime } = $props();
 
@@ -40,7 +41,7 @@
         {#each tpaFiles as file}
           <button class="file" ondblclick={() => openTpaFile(file)} disabled={file.unavailable}>
             <img
-              src={process.userDaemon?.assoc?.getFileAssociation(file.filePath)?.icon || process.getIconCached("DefaultMimeIcon")}
+              src={Daemon()?.assoc?.getFileAssociation(file.filePath)?.icon || process.getIconCached("DefaultMimeIcon")}
               alt=""
             />
             <span class="filename">{file.filename}</span>

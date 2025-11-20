@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { Fs } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { arrayToText, textToBlob } from "$ts/util/convert";
@@ -90,7 +91,7 @@ export class CodRuntime extends AppProcess {
   //#endregion
 
   async readFile(path: string) {
-    const prog = await this.userDaemon!.files!.FileProgress(
+    const prog = await Daemon()!.files!.FileProgress(
       {
         type: "size",
         caption: `Reading code`,
@@ -115,7 +116,7 @@ export class CodRuntime extends AppProcess {
         throw new Error("Failed to get the contents of the file.");
       }
 
-      const info = this.userDaemon?.assoc?.getFileAssociation(path);
+      const info = Daemon()?.assoc?.getFileAssociation(path);
 
       this.buffer.set(arrayToText(contents));
       this.openedFile.set(path);
@@ -158,7 +159,7 @@ export class CodRuntime extends AppProcess {
 
     const filename = this.filename();
 
-    const prog = await this.userDaemon!.files!.FileProgress(
+    const prog = await Daemon()!.files!.FileProgress(
       {
         type: "size",
         caption: `Saving ${filename}`,
@@ -181,7 +182,7 @@ export class CodRuntime extends AppProcess {
   }
 
   async saveAs() {
-    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
+    const [path] = await Daemon()!.files!.LoadSaveDialog({
       title: "Choose where to save the file",
       icon: "CodIcon",
       startDir: UserPaths.Documents,
@@ -191,7 +192,7 @@ export class CodRuntime extends AppProcess {
 
     if (!path) return;
 
-    const info = this.userDaemon?.assoc?.getFileAssociation(path);
+    const info = Daemon()?.assoc?.getFileAssociation(path);
 
     this.openedFile.set(path);
     this.filename.set(getItemNameFromPath(path));
@@ -205,7 +206,7 @@ export class CodRuntime extends AppProcess {
   }
 
   async openFile() {
-    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
+    const [path] = await Daemon()!.files!.LoadSaveDialog({
       title: "Select a file to open",
       icon: "CodIcon",
       startDir: UserPaths.Documents,

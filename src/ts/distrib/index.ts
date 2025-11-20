@@ -15,6 +15,7 @@ import JSZip from "jszip";
 import { AppInstallerProcess } from "./installer/appinstaller";
 import { InstallerProcessBase } from "./installer/base";
 import { LibraryInstallerProcess } from "./installer/libraryinstaller";
+import { Daemon } from "$ts/server/user/daemon";
 
 export class DistributionServiceProcess extends BaseService {
   private readonly dataFolder = join(UserPaths.Configuration, "DistribSvc");
@@ -32,7 +33,7 @@ export class DistributionServiceProcess extends BaseService {
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(pid, parentPid, name, host);
 
-    this.preferences = host.daemon.preferences;
+    this.preferences = Daemon()!.preferences;
 
     this.setSource(__SOURCE__);
   }
@@ -317,7 +318,7 @@ export class DistributionServiceProcess extends BaseService {
     const proc = await KernelStack().spawn(
       designatedProcess,
       undefined,
-      this.host.daemon.userInfo?._id,
+      Daemon()!.userInfo?._id,
       this.pid,
       zip,
       metadata,
@@ -364,7 +365,7 @@ export class DistributionServiceProcess extends BaseService {
 
   async getAllStoreItems(): Promise<StoreItem[]> {
     try {
-      const response = await Backend.get("/store/list", { headers: { Authorization: `Bearer ${this.host.daemon.token}` } });
+      const response = await Backend.get("/store/list", { headers: { Authorization: `Bearer ${Daemon()!.token}` } });
 
       return response.data as StoreItem[];
     } catch {
@@ -452,7 +453,7 @@ export class DistributionServiceProcess extends BaseService {
 
     try {
       const response = await Backend.get(`/store/search/${query}`, {
-        headers: { Authorization: `Bearer ${this.host.daemon.token}` },
+        headers: { Authorization: `Bearer ${Daemon()!.token}` },
       });
 
       return response.data.results as PartialStoreItem[];
@@ -470,12 +471,12 @@ export class DistributionServiceProcess extends BaseService {
   async getStoreItem(id: string): Promise<StoreItem | undefined> {
     try {
       const response = await Backend.get(`/store/package/id/${id}`, {
-        headers: { Authorization: `Bearer ${this.host.daemon.token}` },
+        headers: { Authorization: `Bearer ${Daemon()!.token}` },
       });
 
       const data = response.data as StoreItem;
 
-      data.user = await this.host.daemon.account!.getPublicUserInfoOf(data.userId);
+      data.user = await Daemon()!.account!.getPublicUserInfoOf(data.userId);
 
       return data as StoreItem;
     } catch {
@@ -486,7 +487,7 @@ export class DistributionServiceProcess extends BaseService {
   async getStoreItemByName(name: string): Promise<StoreItem | undefined> {
     try {
       const response = await Backend.get(`/store/package/name/${name}`, {
-        headers: { Authorization: `Bearer ${this.host.daemon.token}` },
+        headers: { Authorization: `Bearer ${Daemon()!.token}` },
       });
 
       return response.data as StoreItem;
@@ -502,7 +503,7 @@ export class DistributionServiceProcess extends BaseService {
 
     try {
       const response = await Backend.get(`/store/download/${id}`, {
-        headers: { Authorization: `Bearer ${this.host.daemon.token}` },
+        headers: { Authorization: `Bearer ${Daemon()!.token}` },
         responseType: "arraybuffer",
         onDownloadProgress: (progress) => {
           onProgress?.({
@@ -562,7 +563,7 @@ export class DistributionServiceProcess extends BaseService {
     this.BUSY = "publishing_publishPackage";
     try {
       const response = await Backend.post("/store/publish", data, {
-        headers: { Authorization: `Bearer ${this.host.daemon.token}` },
+        headers: { Authorization: `Bearer ${Daemon()!.token}` },
         onUploadProgress: (ev) => {
           onProgress?.({
             max: ev.total || 0,
@@ -602,7 +603,7 @@ export class DistributionServiceProcess extends BaseService {
   async publishing_getPublishedPackages(): Promise<StoreItem[]> {
     try {
       const response = await Backend.get("/store/publish/list", {
-        headers: { Authorization: `Bearer ${this.host.daemon.token}` },
+        headers: { Authorization: `Bearer ${Daemon()!.token}` },
       });
 
       return response.data as StoreItem[];
@@ -618,7 +619,7 @@ export class DistributionServiceProcess extends BaseService {
       const response = await Backend.post(
         `/store/publish/deprecate/${id}`,
         {},
-        { headers: { Authorization: `Bearer ${this.host.daemon.token}` } }
+        { headers: { Authorization: `Bearer ${Daemon()!.token}` } }
       );
 
       return response.status === 200;
@@ -632,7 +633,7 @@ export class DistributionServiceProcess extends BaseService {
 
     try {
       const response = await Backend.delete(`/store/publish/${id}`, {
-        headers: { Authorization: `Bearer ${this.host.daemon.token}` },
+        headers: { Authorization: `Bearer ${Daemon()!.token}` },
       });
 
       return response.status === 200;
@@ -650,7 +651,7 @@ export class DistributionServiceProcess extends BaseService {
 
     try {
       const response = await Backend.patch(`/store/publish/${itemId}`, newData, {
-        headers: { Authorization: `Bearer ${this.host.daemon.token}` },
+        headers: { Authorization: `Bearer ${Daemon()!.token}` },
         onUploadProgress: (ev) => {
           onProgress?.({
             max: ev.total || 0,
@@ -685,7 +686,7 @@ export class DistributionServiceProcess extends BaseService {
 
       const newData = arrayToBlob(contents);
       const response = await Backend.patch(`/store/publish/${itemId}`, newData, {
-        headers: { Authorization: `Bearer ${this.host.daemon.token}` },
+        headers: { Authorization: `Bearer ${Daemon()!.token}` },
         onUploadProgress: (ev) => {
           onProgress?.({
             max: ev.total || 0,

@@ -1,5 +1,6 @@
 import { Fs, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
+import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
@@ -84,8 +85,8 @@ export class LibraryManagement extends BaseService {
       const engine = await Stack().spawn<JsExec>(
         JsExec,
         undefined,
-        this.host.daemon.userInfo._id,
-        this.host.daemon.pid,
+        Daemon()?.userInfo._id,
+        Daemon()?.pid,
         filePath
       );
 

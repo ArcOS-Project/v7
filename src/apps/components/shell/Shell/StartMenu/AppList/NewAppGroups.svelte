@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import Spinner from "$lib/Spinner.svelte";
+  import { Daemon } from "$ts/server/user/daemon";
   import { UUID } from "$ts/uuid";
   import NewAppGroup from "./NewAppGroups/NewAppGroup.svelte";
   import NewListItem from "./NewListItem.svelte";
@@ -14,7 +15,7 @@
     <NewAppGroup {process} shortcuts={dir.children.shortcuts} name={dir.name} />
   {/each}
   {#each Object.values($StartMenuContents.shortcuts) as shortcut (`${shortcut.target}-${shortcut.name}-${shortcut.icon}-${shortcut.type}`)}
-    {#if (process.userDaemon?.apps?.isPopulatableByAppIdSync(shortcut.target) || $userPreferences.shell.visuals.showHiddenApps) && !process.userDaemon?.apps?.checkDisabled(shortcut.target) && shortcut.type === "app"}
+    {#if (Daemon()?.apps?.isPopulatableByAppIdSync(shortcut.target) || $userPreferences.shell.visuals.showHiddenApps) && !Daemon()?.apps?.checkDisabled(shortcut.target) && shortcut.type === "app"}
       <NewListItem {process} {shortcut} />
     {/if}
   {/each}

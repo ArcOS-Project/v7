@@ -8,6 +8,7 @@
   import Taskbar from "./Shell/Taskbar.svelte";
   import VirtualDesktopIndicator from "./Shell/VirtualDesktopIndicator.svelte";
   import VirtualDesktops from "./Shell/VirtualDesktops.svelte";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: AppComponentProps<ShellRuntime> = $props();
   const { userPreferences, startMenuOpened, actionCenterOpened, username, FullscreenCount, ready } = process;
@@ -16,7 +17,7 @@
 
   onMount(() => {
     userPreferences.subscribe(() => {
-      const desktop = process.userDaemon?.workspaces?.getCurrentDesktop()?.id;
+      const desktop = Daemon()?.workspaces?.getCurrentDesktop()?.id;
 
       if (!desktop) return;
 

@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { Fs } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import { sliceIntoChunks } from "$ts/util";
 import { getItemNameFromPath } from "$ts/util/fs";
 import { Store } from "$ts/writable";
@@ -58,7 +59,7 @@ export class HexEditRuntime extends AppProcess {
       return;
     }
 
-    const prog = await this.userDaemon!.files!.FileProgress(
+    const prog = await Daemon()!.files!.FileProgress(
       {
         type: "size",
         caption: `Reading file`,
@@ -233,7 +234,7 @@ export class HexEditRuntime extends AppProcess {
   async saveFile() {
     if (!this.isModified()) return;
 
-    const prog = await this.userDaemon!.files!.FileProgress(
+    const prog = await Daemon()!.files!.FileProgress(
       {
         type: "size",
         caption: `Saving ${this.filename()}`,

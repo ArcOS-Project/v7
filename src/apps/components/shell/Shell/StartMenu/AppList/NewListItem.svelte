@@ -1,11 +1,12 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import { contextMenu } from "$ts/context/actions.svelte";
+  import { Daemon } from "$ts/server/user/daemon";
   import type { ArcShortcut } from "$types/shortcut";
 
   const { shortcut, process }: { shortcut: ArcShortcut; process: ShellRuntime } = $props();
 
-  const app = process.userDaemon?.appStorage()?.getAppSynchronous(shortcut.target);
+  const app = Daemon()?.appStorage()?.getAppSynchronous(shortcut.target);
 
   let disabled = $state(false);
 
@@ -25,7 +26,7 @@
     use:contextMenu={[[], process]}
     class:no-safemode={process.safeMode && app.noSafeMode}
   >
-    <img src={process.userDaemon?.icons?.getAppIcon(app)} alt="" />
+    <img src={Daemon()?.icons?.getAppIcon(app)} alt="" />
     <span class="name">{app.metadata.name}</span>
   </button>
 {/if}

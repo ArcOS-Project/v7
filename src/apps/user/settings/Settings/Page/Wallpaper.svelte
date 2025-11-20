@@ -8,30 +8,24 @@
   import ThemesHeader from "../ThemesHeader.svelte";
   import Setting from "../ThemesHeader/Setting.svelte";
   import WallpaperOption from "./Wallpaper/WallpaperOption.svelte";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: SettingsRuntime } = $props();
-  const { userDaemon } = process;
-  const { userInfo, preferences: userPreferences } = process.userDaemon || {}!;
+  const { userInfo, preferences: userPreferences } = Daemon() || {}!;
 
   let wallpaper = $state<Wallpaper>();
 
   onMount(() => {
     const sub = userPreferences?.subscribe(async (v) => {
-      wallpaper = await process.userDaemon?.wallpaper?.getWallpaper(v.desktop.wallpaper);
+      wallpaper = await Daemon()?.wallpaper?.getWallpaper(v.desktop.wallpaper);
     });
 
     return () => sub?.();
   });
 </script>
 
-{#if userInfo && userPreferences && userDaemon}
-  <ThemesHeader
-    {userInfo}
-    {userPreferences}
-    userDaemon={process.userDaemon!}
-    desktop
-    background={wallpaper?.thumb || wallpaper?.url}
-  >
+{#if userInfo && userPreferences && Daemon()}
+  <ThemesHeader {userInfo} {userPreferences} userDaemon={Daemon()!} desktop background={wallpaper?.thumb || wallpaper?.url}>
     <Setting caption="Name" sub={wallpaper?.name} />
     <Setting caption="Author" sub={wallpaper?.author} />
 
@@ -69,7 +63,7 @@
       <p class="name">Built-in wallpapers</p>
       <div class="wallpapers">
         {#each Object.keys(Wallpapers) as id}
-          <WallpaperOption {id} {userPreferences} {userDaemon} />
+          <WallpaperOption {id} {userPreferences} />
         {/each}
       </div>
     </div>
@@ -82,7 +76,7 @@
       >
         {#if $userPreferences?.userWallpapers && Object.values($userPreferences?.userWallpapers).length}
           {#each Object.keys($userPreferences?.userWallpapers) as id (id)}
-            <WallpaperOption {id} {userPreferences} {userDaemon} />
+            <WallpaperOption {id} {userPreferences} />
           {/each}
         {:else}
           <p class="none">You have no saved wallpapers!</p>

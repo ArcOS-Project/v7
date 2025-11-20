@@ -7,6 +7,7 @@
   import AppGroups from "./AppList/AppGroups.svelte";
   import ListItem from "./AppList/ListItem.svelte";
   import NewAppGroups from "./AppList/NewAppGroups.svelte";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: ShellRuntime } = $props();
   const { searchResults, searchQuery, searching, SelectionIndex, userPreferences } = process;
@@ -52,7 +53,7 @@
     <AppGroups {process} {apps} />
   {/if}
 
-  {#if !process.userDaemon}
+  {#if !Daemon()}
     <span class="error-text">ERR_NO_DAEMON</span>
   {/if}
 </div>

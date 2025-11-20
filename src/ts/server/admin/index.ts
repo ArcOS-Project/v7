@@ -32,6 +32,7 @@ import { MessagingInterface } from "../messaging";
 import { UserPaths } from "../user/store";
 import { AdminFileSystem } from "./fs";
 import { AdminScopes } from "./store";
+import { Daemon } from "../user/daemon";
 
 export class AdminBootstrapper extends BaseService {
   private token: string | undefined;
@@ -41,7 +42,7 @@ export class AdminBootstrapper extends BaseService {
 
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(pid, parentPid, name, host);
-    this.token = host.daemon.token;
+    this.token = Daemon()!.token;
 
     this.setSource(__SOURCE__);
   }

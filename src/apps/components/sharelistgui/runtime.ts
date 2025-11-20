@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { Env, Fs, KernelStack } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import type { ShareManager } from "$ts/shares";
 import type { SharedDrive } from "$ts/shares/drive";
 import { Store } from "$ts/writable";
@@ -22,8 +23,8 @@ export class ShareListGuiRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
-    this.shares = this.userDaemon?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
-    this.thisUserId = this.userDaemon?.userInfo?._id!; // Get the user's ID using a lot of questionmarks (damn)
+    this.shares = Daemon()?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
+    this.thisUserId = Daemon()?.userInfo?._id!; // Get the user's ID using a lot of questionmarks (damn)
 
     this.selectedShare.subscribe((v) => {
       this.selectedIsOwn.set(!!this.ownedShares().filter((s) => s._id === v)[0]); // Filter the owned shares to determine if the selection is owned
@@ -124,7 +125,7 @@ export class ShareListGuiRuntime extends AppProcess {
     const path = `${drive.uuid}:/`;
     const parent = KernelStack().getProcess(this.parentPid);
 
-    if (parent && this.userDaemon?.helpers?.ParentIs(this, "fileManager")) {
+    if (parent && Daemon()?.helpers?.ParentIs(this, "fileManager")) {
       // In case the parent is a file manager; navigate it instead
       const dispatch = KernelStack().ConnectDispatch(this.parentPid);
       dispatch?.dispatch("navigate", path);

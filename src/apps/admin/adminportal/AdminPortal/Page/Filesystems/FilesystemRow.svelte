@@ -6,6 +6,7 @@
   import Spinner from "$lib/Spinner.svelte";
   import { Env, Fs } from "$ts/env";
   import type { AdminBootstrapper } from "$ts/server/admin";
+  import { Daemon } from "$ts/server/user/daemon";
   import { formatBytes } from "$ts/util/fs";
 
   const {
@@ -27,7 +28,7 @@
     indexing = true;
     const result = await admin.forceIndexFor(quota.user.username);
 
-    process.userDaemon?.notifications?.sendNotification({
+    Daemon()?.notifications?.sendNotification({
       title: `Indexing for ${quota.user.username} completed`,
       message: result.length ? `- ${result.join("<br>- ")}` : "No unindexed items were found during indexing.",
       image: "GoodStatusIcon",

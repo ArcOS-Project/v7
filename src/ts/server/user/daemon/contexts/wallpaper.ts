@@ -6,7 +6,7 @@ import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
 import type { UserPreferences, WallpaperGetters } from "$types/user";
 import type { Wallpaper } from "$types/wallpaper";
-import type { UserDaemon } from "..";
+import { Daemon, type UserDaemon } from "..";
 import { UserPaths } from "../../store";
 import { UserContext } from "../context";
 
@@ -44,7 +44,7 @@ export class WallpaperUserContext extends UserContext {
 
     this.Log(`Uploading wallpaper to U:/Wallpapers`);
 
-    const prog = await this.daemon.files!.FileProgress(
+    const prog = await Daemon()!.files!.FileProgress(
       {
         type: "size",
         icon: "ImageMimeIcon",
@@ -75,7 +75,7 @@ export class WallpaperUserContext extends UserContext {
         thumb: "",
       };
 
-      this.daemon.preferences.update((v) => {
+      Daemon()!.preferences.update((v) => {
         v.userWallpapers ||= {};
         v.userWallpapers[`@local:${btoa(path)}`] = wallpaper;
 
@@ -122,7 +122,7 @@ export class WallpaperUserContext extends UserContext {
       result = false;
     }
 
-    this.daemon.preferences.update((v) => {
+    Daemon()!.preferences.update((v) => {
       delete v.userWallpapers[id];
 
       return v;
@@ -136,7 +136,7 @@ export class WallpaperUserContext extends UserContext {
   async getLocalWallpaper(id: string): Promise<Wallpaper> {
     if (this._disposed) return Wallpapers.img0;
 
-    const wallpaperData = this.daemon.preferences().userWallpapers[id];
+    const wallpaperData = Daemon()!.preferences().userWallpapers[id];
 
     if (!wallpaperData) {
       this.Log(`Tried to get unknown user wallpaper '${id}', defaulting to img04`, LogLevel.warning);

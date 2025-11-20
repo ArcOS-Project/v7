@@ -1,4 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
+import { Daemon } from "$ts/server/user/daemon";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { ExitActions } from "./store";
@@ -27,7 +28,7 @@ export class ExitRuntime extends AppProcess {
     await this.closeWindow();
 
     if (alternate && option.alternateAction)
-      option.alternateAction(this.userDaemon!); // Alternate: when shift key is pressed
-    else option.action(this.userDaemon!);
+      option.alternateAction(Daemon()!); // Alternate: when shift key is pressed
+    else option.action(Daemon()!);
   }
 }

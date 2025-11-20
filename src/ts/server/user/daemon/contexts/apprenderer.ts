@@ -2,7 +2,7 @@ import { bestForeground, darkenColor, hex3to6, invertColor, lightenColor } from 
 import { KernelStack } from "$ts/env";
 import { Wallpapers } from "$ts/wallpaper/store";
 import type { CustomStylePreferences, UserPreferences } from "$types/user";
-import type { UserDaemon } from "..";
+import { Daemon, type UserDaemon } from "..";
 import { UserContext } from "../context";
 
 export class AppRendererUserContext extends UserContext {
@@ -12,7 +12,7 @@ export class AppRendererUserContext extends UserContext {
 
   getAppRendererStyle(accent: string) {
     return `
-      --blur: ${this.daemon.preferences().shell.visuals.blurRadius}px;
+      --blur: ${Daemon()!.preferences().shell.visuals.blurRadius}px;
       --accent: ${hex3to6(accent)} !important;
       --accent-transparent: ${hex3to6(accent)}44 !important;
       --accent-light: ${lightenColor(accent)} !important;
@@ -24,8 +24,8 @@ export class AppRendererUserContext extends UserContext {
       --accent-suggested-start: #${accent} !important;
       --accent-suggested-end: ${darkenColor(accent, 10)} !important;
       --accent-suggested-fg: ${bestForeground(accent)} !important;
-      --wallpaper: url('${this.daemon.wallpaper?.Wallpaper()?.url || Wallpapers.img0.url}');
-      --user-font: "${this.daemon.preferences().shell.visuals.userFont || ""}";`;
+      --wallpaper: url('${Daemon()!.wallpaper?.Wallpaper()?.url || Wallpapers.img0.url}');
+      --user-font: "${Daemon()!.preferences().shell.visuals.userFont || ""}";`;
   }
 
   async setAppRendererClasses(v: UserPreferences) {
@@ -62,6 +62,6 @@ export class AppRendererUserContext extends UserContext {
       KernelStack().renderer?.target.append(styleLoader);
     }
 
-    styleLoader.textContent = style.enabled && !this.daemon.elevation?._elevating ? style.content || "" : "";
+    styleLoader.textContent = style.enabled && !Daemon()!.elevation?._elevating ? style.content || "" : "";
   }
 }

@@ -1,6 +1,6 @@
 import { Env, Fs, KernelStack } from "$ts/env";
 import { Process } from "$ts/process/instance";
-import type { UserDaemon } from "$ts/server/user/daemon";
+import { Daemon, type UserDaemon } from "$ts/server/user/daemon";
 import { arrayToBlob } from "$ts/util/convert";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
@@ -17,7 +17,6 @@ export class InstallerProcessBase extends Process {
   protected zip?: JSZip;
   protected MISC_STEPCOUNT = 2;
   parent: DistributionServiceProcess;
-  userDaemon: UserDaemon;
   failReason = Store<string>();
   installing = Store<boolean>(false);
   TOTAL_COUNT = Store<number>(this.MISC_STEPCOUNT);
@@ -31,8 +30,6 @@ export class InstallerProcessBase extends Process {
   constructor(pid: number, parentPid: number, zip: JSZip, metadata: ArcPackage, item: StoreItem) {
     super(pid, parentPid);
 
-    this.userDaemon = KernelStack().getProcess(+Env().get("userdaemon_pid"))!;
-
     if (metadata && zip) {
       this.metadata = metadata;
       this.zip = zip;
@@ -41,7 +38,7 @@ export class InstallerProcessBase extends Process {
 
     if (item) this.item = item;
 
-    this.parent = this.userDaemon?.serviceHost?.getService<DistributionServiceProcess>("DistribSvc")!;
+    this.parent = Daemon()?.serviceHost?.getService<DistributionServiceProcess>("DistribSvc")!;
     this.name = "InstallerProcess";
 
     this.setSource(__SOURCE__);

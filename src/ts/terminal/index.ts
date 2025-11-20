@@ -1,11 +1,11 @@
 import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import TerminalWindow from "$apps/components/terminalwindow/TerminalWindow.svelte";
 import type { FilesystemDrive } from "$ts/drives/drive";
-import { Env, Fs, KernelStack } from "$ts/env";
+import { Fs, KernelStack } from "$ts/env";
 import { ASCII_ART } from "$ts/intro";
 import { Process } from "$ts/process/instance";
 import { LoginUser } from "$ts/server/user/auth";
-import type { UserDaemon } from "$ts/server/user/daemon";
+import { Daemon, TryGetDaemon, type UserDaemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { arrayToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
@@ -50,7 +50,7 @@ export class ArcTerminal extends Process {
 
     this.path = path || UserPaths.Home;
     this.changeDirectory(this.path);
-    this.daemon = KernelStack().getProcess(+Env().get("userdaemon_pid"));
+    this.daemon = TryGetDaemon();
 
     this.term = term;
     this.tryGetTermWindow();
@@ -69,7 +69,7 @@ export class ArcTerminal extends Process {
     }
     await this.migrateConfigurationPath();
 
-    const rl = await KernelStack().spawn<Readline>(Readline, undefined, this.window?.userDaemon?.userInfo?._id, this.pid, this);
+    const rl = await KernelStack().spawn<Readline>(Readline, undefined, Daemon()?.userInfo?._id, this.pid, this);
     await this.readConfig();
 
     this.term.loadAddon(rl!);
@@ -125,7 +125,7 @@ export class ArcTerminal extends Process {
         const proc = await KernelStack().spawn<TerminalProcess>(
           command,
           undefined,
-          this.window?.userDaemon?.userInfo?._id,
+          Daemon()?.userInfo?._id,
           this.pid
         );
 
@@ -402,7 +402,7 @@ export class ArcTerminal extends Process {
     await KernelStack().spawn(
       ArcTerminal,
       undefined,
-      this.window?.userDaemon?.userInfo?._id,
+      Daemon()?.userInfo?._id,
       this.parentPid,
       this.term,
       this.path

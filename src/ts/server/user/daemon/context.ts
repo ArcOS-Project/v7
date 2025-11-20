@@ -40,10 +40,6 @@ export class UserContext {
     Log(source, message, level);
   }
 
-  protected get daemon() {
-    return this.#daemon;
-  }
-
   protected get serviceHost() {
     return this.#daemon.serviceHost;
   }
@@ -69,7 +65,7 @@ export class UserContext {
   }
 
   protected set userInfo(value: UserInfo) {
-    this.daemon.userInfo = value;
+    this.#daemon.userInfo = value;
   }
 
   protected get token() {

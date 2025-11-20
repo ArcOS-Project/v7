@@ -3,6 +3,7 @@ import { GetConfirmation, MessageBox } from "$ts/dialog";
 import { FilesystemDrive } from "$ts/drives/drive";
 import { Fs, KernelDispatchS } from "$ts/env";
 import { AdminScopes } from "$ts/server/admin/store";
+import { Daemon } from "$ts/server/user/daemon";
 import { SystemFolders, UserPathCaptions, UserPaths } from "$ts/server/user/store";
 import { SharedDrive } from "$ts/shares/drive";
 import { Plural, sortByKey } from "$ts/util";
@@ -311,34 +312,34 @@ export class FileManagerRuntime extends AppProcess {
     if (this._disposed) return;
     this.Log(`Setting COPY list to ${files.length} items`);
 
-    this.userDaemon?.copyList.set(files || []);
-    this.userDaemon?.cutList.set([]);
+    Daemon()?.copyList.set(files || []);
+    Daemon()?.cutList.set([]);
     this.updateAltMenu();
   }
 
   public setCutFiles(files = this.selection()) {
     if (this._disposed) return;
     this.Log(`Setting CUT list to ${files.length} items`);
-    this.userDaemon?.cutList.set(files || []);
-    this.userDaemon?.copyList.set([]);
+    Daemon()?.cutList.set(files || []);
+    Daemon()?.copyList.set([]);
     this.updateAltMenu();
   }
 
   public async pasteFiles() {
     if (this._disposed) return;
 
-    const copyList = this.userDaemon!.copyList();
-    const cutList = this.userDaemon!.cutList();
+    const copyList = Daemon()!.copyList();
+    const cutList = Daemon()!.cutList();
 
     if (!copyList.length && !cutList.length) return;
 
     this.lockRefresh();
 
-    if (copyList.length) await this.userDaemon?.files?.copyMultiple(copyList, this.path(), this.pid);
-    else if (cutList.length) await this.userDaemon?.files?.moveMultiple(cutList, this.path(), this.pid);
+    if (copyList.length) await Daemon()?.files?.copyMultiple(copyList, this.path(), this.pid);
+    else if (cutList.length) await Daemon()?.files?.moveMultiple(cutList, this.path(), this.pid);
 
-    this.userDaemon?.copyList.set([]);
-    this.userDaemon?.cutList.set([]);
+    Daemon()?.copyList.set([]);
+    Daemon()?.cutList.set([]);
 
     this.unlockRefresh();
   }
@@ -373,7 +374,7 @@ export class FileManagerRuntime extends AppProcess {
   async confirmUmountDrive(drive: FilesystemDrive, id: string) {
     if (this._disposed) return;
 
-    const prog = await this.userDaemon!.files!.FileProgress(
+    const prog = await Daemon()!.files!.FileProgress(
       {
         icon: "DriveIcon",
         caption: `Unmounting ${drive.label || "drive"}...`,
@@ -394,7 +395,7 @@ export class FileManagerRuntime extends AppProcess {
   async uploadItems() {
     if (this._disposed) return;
 
-    const prog = await this.userDaemon!.files!.FileProgress(
+    const prog = await Daemon()!.files!.FileProgress(
       {
         type: "size",
         icon: "UploadIcon",
@@ -439,7 +440,7 @@ export class FileManagerRuntime extends AppProcess {
       return;
     }
 
-    this.userDaemon?.files?.openFile(path);
+    Daemon()?.files?.openFile(path);
   }
 
   async deleteSelected() {
@@ -478,7 +479,7 @@ export class FileManagerRuntime extends AppProcess {
 
     const isUserFs =
       this.path().startsWith(UserPaths.Root) &&
-      this.userDaemon?.serviceHost?.getService("TrashSvc") &&
+      Daemon()?.serviceHost?.getService("TrashSvc") &&
       !this.userPreferences().globalSettings.disableTrashCan;
 
     MessageBox(
@@ -510,7 +511,7 @@ export class FileManagerRuntime extends AppProcess {
     if (this._disposed) return;
 
     const items = this.selection();
-    const prog = await this.userDaemon!.files!.FileProgress(
+    const prog = await Daemon()!.files!.FileProgress(
       {
         max: items.length,
         type: "quantity",
@@ -548,7 +549,7 @@ export class FileManagerRuntime extends AppProcess {
 
     const filename = getItemNameFromPath(selected[0]);
 
-    const prog = await this.userDaemon!.files!.FileProgress(
+    const prog = await Daemon()!.files!.FileProgress(
       {
         type: "size",
         caption: `Preparing for download`,
@@ -702,7 +703,7 @@ export class FileManagerRuntime extends AppProcess {
         continue;
       }
 
-      if (alternative) await this.userDaemon?.files?.openWith(path);
+      if (alternative) await Daemon()?.files?.openWith(path);
       else await this.openFile(path);
     }
   }
@@ -732,7 +733,7 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   async createShortcut(name: string, path: string, folder = false) {
-    const paths = await this.userDaemon?.files?.LoadSaveDialog({
+    const paths = await Daemon()?.files?.LoadSaveDialog({
       title: "Pick where to create the shortcut",
       icon: "FolderIcon",
       folder: true,
@@ -741,9 +742,9 @@ export class FileManagerRuntime extends AppProcess {
 
     if (!paths?.[0]) return;
 
-    const info = this.userDaemon?.assoc?.getFileAssociation(name);
+    const info = Daemon()?.assoc?.getFileAssociation(name);
 
-    this.userDaemon?.shortcuts?.createShortcut(
+    Daemon()?.shortcuts?.createShortcut(
       {
         type: folder ? "folder" : "file",
         target: path,
@@ -782,7 +783,7 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   shareAccessIsAdministrative(drive: FilesystemDrive) {
-    const userInfo = this.userDaemon?.userInfo!;
+    const userInfo = Daemon()?.userInfo!;
     const thisUser = userInfo._id;
     const userIsAdmin =
       userInfo.admin &&

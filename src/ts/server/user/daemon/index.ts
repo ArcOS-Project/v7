@@ -200,3 +200,5 @@ export function TryGetDaemon(): UserDaemon | undefined {
 
   return stack.getProcess<UserDaemon>(daemonPid);
 }
+
+export const Daemon = TryGetDaemon;

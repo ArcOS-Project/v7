@@ -2,6 +2,7 @@
   import { getItemNameFromPath } from "$ts/util/fs";
   import { onMount } from "svelte";
   import type { MediaPlayerRuntime } from "../runtime";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { process, i, path }: { process: MediaPlayerRuntime; i: number; path: string } = $props();
   const { queueIndex, queue, State, Loaded } = process;
@@ -11,7 +12,7 @@
 
   onMount(() => {
     filename = getItemNameFromPath(path);
-    const info = process.userDaemon?.assoc?.getFileAssociation(filename);
+    const info = Daemon()?.assoc?.getFileAssociation(filename);
     icon = info?.icon || process.getIconCached("DefaultMimeIcon");
   });
 

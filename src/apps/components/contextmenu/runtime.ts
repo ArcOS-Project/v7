@@ -131,7 +131,7 @@ export class ContextMenuRuntime extends AppProcess {
 
     if (!(proc instanceof AppProcess)) return [];
 
-    const menu = Object.entries({ ...proc.contextMenu, ...WindowSystemContextMenu(this) }); // Concatenate process context menu with the system contexts
+    const menu = Object.entries({ ...proc.contextMenu, ...WindowSystemContextMenu() }); // Concatenate process context menu with the system contexts
 
     for (const [key, items] of menu) {
       if (scope.includes(key)) return items;

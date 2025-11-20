@@ -3,7 +3,7 @@ import { ArcOSVersion, Env, getKMod, Kernel, KernelDispatchS, KernelStack } from
 import { KernelStateHandler } from "$ts/getters";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import type { UserDaemon } from "$ts/server/user/daemon";
+import { Daemon, TryGetDaemon, type UserDaemon } from "$ts/server/user/daemon";
 import { DefaultUserPreferences } from "$ts/server/user/default";
 import type { AppKeyCombinations } from "$types/accelerator";
 import type { ElevationData } from "$types/elevation";
@@ -29,7 +29,6 @@ export class AppProcess extends Process {
   componentMount: Record<string, any> = {};
   userPreferences: ReadableStore<UserPreferences> = Store<UserPreferences>(DefaultUserPreferences);
   username: string = "";
-  userDaemon: UserDaemon | undefined;
   shell: ShellRuntime | undefined;
   overridePopulatable: boolean = false;
   public safeMode = false;
@@ -60,16 +59,15 @@ export class AppProcess extends Process {
     this.shell = KernelStack().getProcess(+Env().get("shell_pid"));
 
     const desktopProps = KernelStateHandler()?.stateProps["desktop"];
-    const daemon: UserDaemon | undefined = desktopProps?.userDaemon || KernelStack().getProcess(+Env().get("userdaemon_pid"));
+    const daemon: UserDaemon | undefined = desktopProps?.userDaemon || TryGetDaemon();
 
     if (daemon) {
       this.userPreferences = daemon.preferences;
       this.username = daemon.username;
-      this.userDaemon = daemon;
       this.safeMode = daemon.safeMode;
     }
 
-    this.windowIcon.set(this.userDaemon?.icons?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
+    this.windowIcon.set(Daemon()?.icons?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
     this.startAcceleratorListener();
 
     KernelDispatchS().subscribe("window-unfullscreen", ([pid]) => {
@@ -146,14 +144,14 @@ export class AppProcess extends Process {
   async __render__(body: HTMLDivElement) {
     if (this.userPreferences().disabledApps.includes(this.app.id)) {
       if (this.safeMode) {
-        this.userDaemon?.notifications?.sendNotification({
+        Daemon()?.notifications?.sendNotification({
           title: "Running disabled app!",
           message: `Allowing execution of disabled app '${this.app.data.metadata.name}' because of Safe Mode.`,
           buttons: [
             {
               caption: "Manage apps",
               action: () => {
-                this.userDaemon?.spawn?.spawnApp("systemSettings", +Env().get("shell_pid"), "apps", "apps_manageApps");
+                Daemon()?.spawn?.spawnApp("systemSettings", +Env().get("shell_pid"), "apps", "apps_manageApps");
               },
             },
           ],
@@ -218,7 +216,7 @@ export class AppProcess extends Process {
 
       if (!this.app.data.core) KernelStack().renderer?.focusPid(instances[0].pid);
 
-      if (instances[0].app.desktop) this.userDaemon?.workspaces?.switchToDesktopByUuid(instances[0].app.desktop);
+      if (instances[0].app.desktop) Daemon()?.workspaces?.switchToDesktopByUuid(instances[0].app.desktop);
     }
 
     return instances.length ? instances[0] : undefined;
@@ -301,7 +299,7 @@ export class AppProcess extends Process {
 
       if (!modifiers || (key != pK && key && key != codedKey) || !isFocused) continue;
 
-      if (!this.userDaemon?.elevation!._elevating) await combo.action(this, e);
+      if (!Daemon()?.elevation!._elevating) await combo.action(this, e);
 
       break;
     }
@@ -327,7 +325,7 @@ export class AppProcess extends Process {
     const proc = await KernelStack().spawn<AppProcess>(
       metadata.assets.runtime,
       undefined,
-      this.userDaemon?.userInfo?._id,
+      Daemon()?.userInfo?._id,
       this.pid,
       {
         data: { ...metadata, overlay: true },
@@ -342,22 +340,22 @@ export class AppProcess extends Process {
   }
 
   async spawnApp<T = AppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
-    return await this.userDaemon?.spawn?.spawnApp<T>(id, parentPid ?? this.parentPid, ...args);
+    return await Daemon()?.spawn?.spawnApp<T>(id, parentPid ?? this.parentPid, ...args);
   }
 
   async spawnOverlayApp<T = AppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
-    return await this.userDaemon?.spawn?.spawnOverlay<T>(id, parentPid ?? this.parentPid, ...args);
+    return await Daemon()?.spawn?.spawnOverlay<T>(id, parentPid ?? this.parentPid, ...args);
   }
 
   async elevate(id: string) {
     if (!this.elevations[id]) return false;
-    return await this.userDaemon!.elevation!.manuallyElevate(this.elevations[id]);
+    return await Daemon()!.elevation!.manuallyElevate(this.elevations[id]);
   }
 
   notImplemented(what?: string) {
     this.Log(`Not implemented: ${what || "<unknown>"}`);
     // Manually invoking spawnOverlay method on daemon to work around AppProcess <> MessageBox circular import
-    this.userDaemon?.spawn?.spawnOverlay("messageBox", this.pid, {
+    Daemon()?.spawn?.spawnOverlay("messageBox", this.pid, {
       title: "Not implemented",
       message: `${
         what || "This feature"
@@ -371,18 +369,18 @@ export class AppProcess extends Process {
   }
 
   appStore() {
-    return this.userDaemon?.serviceHost?.getService("AppStorage") as ApplicationStorage;
+    return Daemon()?.serviceHost?.getService("AppStorage") as ApplicationStorage;
   }
 
   async getIcon(id: string): Promise<string> {
-    return this.userDaemon?.icons?.getIcon(id)!;
+    return Daemon()?.icons?.getIcon(id)!;
   }
 
   getIconCached(id: string): string {
-    return this.userDaemon?.icons?.getIconCached(id)!;
+    return Daemon()?.icons?.getIconCached(id)!;
   }
 
   getIconStore(id: string): ReadableStore<string> {
-    return this.userDaemon?.icons?.getIconStore(id)!;
+    return Daemon()?.icons?.getIconStore(id)!;
   }
 }

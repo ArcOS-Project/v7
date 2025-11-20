@@ -8,6 +8,7 @@
   import { onMount } from "svelte";
   import type { ProcessManagerRuntime } from "../../runtime";
   import Row from "./Row.svelte";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const {
     pid,
@@ -37,7 +38,7 @@
       const { app } = proc;
 
       name = app.data.metadata.name;
-      icon = process.userDaemon?.icons?.getAppIconByProcess(proc);
+      icon = Daemon()?.icons?.getAppIconByProcess(proc);
       appId = app.id;
 
       const dispatcher = KernelDispatchS().subscribe("window-closing", ([pid]) => {

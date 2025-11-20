@@ -3,7 +3,7 @@ import { Fs } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
-import type { UserDaemon } from "..";
+import { Daemon, type UserDaemon } from "..";
 import { DefaultFileDefinitions } from "../../assoc/store";
 import { UserPaths } from "../../store";
 import { UserContext } from "../context";
@@ -37,7 +37,7 @@ export class MigrationsUserContext extends UserContext {
 
   async updateAppShortcutsDir() {
     const contents = await Fs().readDir(UserPaths.AppShortcuts);
-    const storage = this.daemon.appStorage()?.buffer();
+    const storage = Daemon()!.appStorage()?.buffer();
 
     if (!storage || !contents) return;
 
@@ -46,7 +46,7 @@ export class MigrationsUserContext extends UserContext {
 
       if (existing) continue;
 
-      this.daemon.shortcuts?.createShortcut(
+      Daemon()!.shortcuts?.createShortcut(
         {
           name: app.id,
           target: app.id,
@@ -60,7 +60,7 @@ export class MigrationsUserContext extends UserContext {
   }
 
   async migrateUserAppsToFs() {
-    const apps = this.daemon.preferences().userApps;
+    const apps = Daemon()!.preferences().userApps;
 
     if (!Object.entries(apps).length) return;
 
@@ -70,7 +70,7 @@ export class MigrationsUserContext extends UserContext {
       await Fs().writeFile(join(UserPaths.AppRepository, `${id}.json`), textToBlob(JSON.stringify(apps[id], null, 2)));
     }
 
-    this.daemon.preferences.update((v) => {
+    Daemon()!.preferences.update((v) => {
       v.userApps = {};
       return v;
     });
@@ -82,12 +82,12 @@ export class MigrationsUserContext extends UserContext {
 
     if (!apps) return;
 
-    this.daemon.assoc?.updateConfiguration((config) => {
+    Daemon()!.assoc?.updateConfiguration((config) => {
       for (const app of apps) {
         if (!app.opens?.extensions) continue;
 
         for (const extension of app.opens.extensions) {
-          const existingAssociation = this.daemon.assoc?.getFileAssociation(`dummy${extension}`);
+          const existingAssociation = Daemon()!.assoc?.getFileAssociation(`dummy${extension}`);
 
           if (existingAssociation) continue;
 

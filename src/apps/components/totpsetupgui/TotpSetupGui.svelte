@@ -4,6 +4,7 @@
   import { onMount } from "svelte";
   import Input from "./TotpSetupGui/Input.svelte";
   import type { TotpSetupGuiRuntime } from "./runtime";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: TotpSetupGuiRuntime } = $props();
   const { code, url } = process;
@@ -57,7 +58,7 @@
             "Two-factor authentication has now been enabled on your account. You must restart for the changes to fully take effect.",
           buttons: [
             { caption: "Restart later", action: () => {} },
-            { caption: "Restart now", suggested: true, action: () => process.userDaemon?.power?.restart() },
+            { caption: "Restart now", suggested: true, action: () => Daemon()?.power?.restart() },
           ],
           sound: "arcos.dialog.info",
           image: "GoodStatusIcon",

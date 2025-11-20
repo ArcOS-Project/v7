@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { Env, KernelStack } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import type { ShareManager } from "$ts/shares";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -15,7 +16,7 @@ export class ShareCreateGuiRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
-    this.shares = this.userDaemon?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
+    this.shares = Daemon()?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
 
     this.setSource(__SOURCE__);
   }
@@ -58,7 +59,7 @@ export class ShareCreateGuiRuntime extends AppProcess {
     const path = `${drive.uuid}:/`;
     const parent = KernelStack().getProcess(this.parentPid);
 
-    if (parent && this.userDaemon?.helpers?.ParentIs(this, "fileManager")) {
+    if (parent && Daemon()?.helpers?.ParentIs(this, "fileManager")) {
       // In case the parent is a file manager, navigate it instead
       const dispatch = KernelStack().ConnectDispatch(this.parentPid);
       dispatch?.dispatch("navigate", path);
