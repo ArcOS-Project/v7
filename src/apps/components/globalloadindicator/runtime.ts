@@ -18,7 +18,6 @@ export class GlobalLoadIndicatorRuntime extends AppProcess {
     this.setSource(__SOURCE__);
 
     this.progress.subscribe((v) => {
-      console.log(v)
       this.getWindow()?.classList.toggle("extended", !!v);
     });
   }
