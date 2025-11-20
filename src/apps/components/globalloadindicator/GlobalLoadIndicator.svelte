@@ -7,7 +7,13 @@
 </script>
 
 <div class="top">
-  <p class="caption">{$caption}</p>
+  <p class="caption">
+    {#if $progress?.useHtml}
+      {@html $caption}
+    {:else}
+      {$caption}
+    {/if}
+  </p>
   <Spinner height={32} />
 </div>
 {#if $progress}

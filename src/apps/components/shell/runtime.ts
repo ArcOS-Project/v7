@@ -131,8 +131,6 @@ export class ShellRuntime extends AppProcess {
     this.systemDispatch.subscribe("startmenu-refresh", () => {
       this.refreshStartMenu();
     });
-
-    await this.refreshStartMenu();
   }
 
   async render() {
@@ -226,6 +224,7 @@ export class ShellRuntime extends AppProcess {
     this.arcFind = KernelStack().getProcess(+this.env.get("arcfind_pid"))!;
     this.arcFind.loading.subscribe((v) => this.searchLoading.set(v));
     this.ready.set(true);
+    await this.refreshStartMenu();
   }
 
   //#endregion
@@ -340,32 +339,35 @@ export class ShellRuntime extends AppProcess {
   //#endregion
   //#region STARTMENU
 
-  public async refreshStartMenu() {
+  public async refreshStartMenu(): Promise<void> {
     const tree = await this.fs.tree(this.STARTMENU_FOLDER);
 
-    if (!tree) return; // TODO: error handling
+    if (!tree?.files?.length && !tree?.dirs?.length) {
+      await this.UpdateStartMenu(); // Populate it if there's no content
+      return await this.refreshStartMenu();
+    }
 
     this.StartMenuContents.set(tree);
   }
 
-  // MIGRATION: 7.0.7 -> 7.0.8
-  public async MigrateStartMenuToFs() {
-    const migrationPath = join(UserPaths.Migrations, "StartMig-708.lock");
-    const migrationFile = !!(await this.fs.stat(migrationPath));
+  public async UpdateStartMenu() {
+    const installedApps = this.appStore()?.buffer();
 
-    if (migrationFile) return;
+    if (!installedApps) return;
 
-    const installedApps = this.appStore().buffer();
-
-    const { stop, incrementProgress, caption } = await this.userDaemon!.GlobalLoadIndicator(
+    const { stop, incrementProgress, caption } = await this.userDaemon!.helpers!.GlobalLoadIndicator(
       "Updating the start menu...",
       +this.env.get("shell_pid"),
-      { max: Object.keys(AppGroups).length + installedApps.length, value: 0 }
+      {
+        max: Object.keys(AppGroups).length + installedApps.length,
+        value: 0,
+        useHtml: true,
+      }
     );
 
     for (const appGroup in AppGroups) {
       incrementProgress?.();
-      caption.set(`Creating folder for ${AppGroups[appGroup]}`);
+      caption.set(`Updating the start menu...<br>Creating folder for ${AppGroups[appGroup]}`);
 
       await this.fs.createDirectory(join(this.STARTMENU_FOLDER, `$$${appGroup}`), false);
     }
@@ -375,17 +377,9 @@ export class ShellRuntime extends AppProcess {
     for (const app of installedApps) {
       promises.push(
         new Promise(async (r) => {
-          await this.userDaemon?.createShortcut(
-            {
-              type: "app",
-              target: app.id,
-              icon: `@app::${app.id}`,
-              name: `_${app.id}`,
-            },
-            join(this.STARTMENU_FOLDER, app.metadata.appGroup ? `$$${app.metadata.appGroup}` : "", `_${app.id}.arclnk`)
-          );
+          await this.userDaemon?.appreg?.addToStartMenu(app.id);
 
-          caption.set(`Created shortcut for ${app.metadata.name}`);
+          caption.set(`Updating the start menu...<br>Created shortcut for ${app.metadata.name}`);
 
           incrementProgress?.();
 
@@ -399,7 +393,6 @@ export class ShellRuntime extends AppProcess {
     caption.set("Finishing up...");
 
     await this.refreshStartMenu();
-    await this.fs.writeFile(migrationPath, textToBlob(`${Date.now()}`), undefined, false);
 
     stop?.();
   }

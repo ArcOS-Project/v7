@@ -18,10 +18,10 @@ export class UpdateNotifierRuntime extends AppProcess {
 
     await this.userDaemon?.version?.updateRegisteredVersion();
     await this.updateFileDefinitions();
+
     stop();
 
-    await this.shell?.MigrateStartMenuToFs();
-
+    await this.shell?.UpdateStartMenu();
     return true;
   }
 

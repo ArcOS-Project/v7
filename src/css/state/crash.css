@@ -33,6 +33,9 @@
   margin-top: 50px;
   opacity: 0.5;
   font-family: "Source Code Pro";
+  width: fit-content;
+  max-width: 80vw;
+  text-align: left;
 }
 
 .crash-screen #crashScreen {

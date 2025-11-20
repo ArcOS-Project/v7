@@ -143,13 +143,15 @@ export class AppInstallerProcess extends InstallerProcessBase {
 
       distrib.BUSY = "";
       distrib.BUSY = "uninstallApp";
+
+      await host?.daemon.appreg?.removeFromStartMenu(installedPkg!.pkg.appId);
     }
 
-    onStage?.("Updating user preferences");
+    onStage?.("Updating app repository");
 
     await distrib.fs.deleteItem(join(UserPaths.AppRepository, `${metadata.appId}.json`), false);
 
-    onStage?.("Refreshing app store...");
+    onStage?.("Refreshing app storage...");
 
     delete appStore!.appIconCache[metadata.appId];
     await appStore?.refresh();

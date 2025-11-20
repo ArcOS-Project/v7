@@ -95,6 +95,7 @@ export class AppRegistrationUserContext extends UserContext {
 
     await this.fs.writeFile(join(UserPaths.AppRepository, `${data.id}.json`), textToBlob(JSON.stringify(data, null, 2)));
     await appStore?.refresh();
+    await this.addToStartMenu(data.id);
   }
 
   async uninstallPackageWithStatus(id: string, deleteFiles = false) {
@@ -200,5 +201,46 @@ export class AppRegistrationUserContext extends UserContext {
 
       return v;
     });
+  }
+
+  determineStartMenuShortcutPath(app: App) {
+    if (!app) return undefined;
+
+    return join(UserPaths.StartMenu, app.metadata.appGroup ? `$$${app.metadata.appGroup}` : "", `_${app.id}.arclnk`);
+  }
+
+  async addToStartMenu(appId: string) {
+    const app = this.appStorage()?.getAppSynchronous(appId);
+    if (!app) return;
+
+    const path = this.determineStartMenuShortcutPath(app);
+    if (!path) return;
+
+    const existing = await this.fs.stat(path);
+    if (existing) return;
+
+    await this.daemon.shortcuts?.createShortcut(
+      {
+        type: "app",
+        target: app.id,
+        name: app.metadata.name,
+        icon: `@app::${app.id}`,
+      },
+      path,
+      false
+    );
+
+    this.systemDispatch.dispatch("startmenu-refresh");
+  }
+
+  async removeFromStartMenu(appId: string) {
+    const app = this.appStorage()?.getAppSynchronous(appId);
+    if (!app) return;
+
+    const path = this.determineStartMenuShortcutPath(app);
+    if (!path) return;
+
+    await this.fs.deleteItem(path, false);
+    this.systemDispatch.dispatch("startmenu-refresh");
   }
 }

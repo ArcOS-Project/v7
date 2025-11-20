@@ -29,4 +29,5 @@ export const KnownSystemDispatchers: string[] = [
   "mugui-done",
   "ls-confirm",
   "ls-cancel",
+  "startmenu-refresh",
 ];

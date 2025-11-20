@@ -1,9 +1,12 @@
 #GlobalLoadIndicator.extended {
   height: calc(60px + 50px + 2px) !important;
+  min-height: fit-content !important;
 }
 
 #GlobalLoadIndicator > div.body {
   padding: 0;
+  min-height: 78px;
+  height:fit-content;
 }
 
 #GlobalLoadIndicator > div.body svg {
@@ -19,6 +22,7 @@
   padding: 20px;
   padding-bottom: 0;
   gap: 15px;
+  min-height: fit-content;
 }
 
 #GlobalLoadIndicator > div.body div.bottom {

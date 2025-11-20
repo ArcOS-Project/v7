@@ -55,7 +55,7 @@ export class PowerUserContext extends UserContext {
     await KernelStack()._killSubProceses(this.pid, true);
     await KernelStateHandler()?.loadState("login", {
       type,
-      userDaemon: this,
+      userDaemon: this.daemon,
       ...props,
     });
     await this.serviceHost?.killSelf?.();

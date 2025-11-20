@@ -16,11 +16,11 @@ export const GlobalLoadIndicatorApp: App = {
     h: NaN,
   },
   minSize: {
-    w: 320,
+    w: 400,
     h: 80,
   },
   maxSize: {
-    w: 500,
+    w: 550,
     h: 260,
   },
   state: {

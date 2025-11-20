@@ -12,7 +12,7 @@
   userPreferences.subscribe((v) => {
     $populatable = Object.values(shortcuts).filter(
       ({ target, type }) =>
-        type === "app" && (process.userDaemon?.isPopulatableByAppIdSync(target) || $userPreferences.shell.visuals.showHiddenApps)
+        type === "app" && (process.userDaemon?.apps?.isPopulatableByAppIdSync(target) || $userPreferences.shell.visuals.showHiddenApps)
     );
   });
 
@@ -30,7 +30,7 @@
     {#if expand}
       <div class="items">
         {#each $populatable as shortcut (`${shortcut.target}-${shortcut.name}-${shortcut.icon}-${shortcut.type}`)}
-          {#if (process.userDaemon?.isPopulatableByAppIdSync(shortcut.target) || $userPreferences.shell.visuals.showHiddenApps) && !process.userDaemon?.checkDisabled(shortcut.target)}
+          {#if (process.userDaemon?.apps?.isPopulatableByAppIdSync(shortcut.target) || $userPreferences.shell.visuals.showHiddenApps) && !process.userDaemon?.apps?.checkDisabled(shortcut.target)}
             <NewListItem {shortcut} {process} />
           {/if}
         {/each}

@@ -25,7 +25,7 @@
     use:contextMenu={[[], process]}
     class:no-safemode={process.safeMode && app.noSafeMode}
   >
-    <img src={process.userDaemon?.getAppIcon(app)} alt="" />
+    <img src={process.userDaemon?.icons?.getAppIcon(app)} alt="" />
     <span class="name">{app.metadata.name}</span>
   </button>
 {/if}

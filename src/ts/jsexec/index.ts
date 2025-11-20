@@ -145,6 +145,10 @@ export class JsExec extends Process {
   }
 
   async testFileContents(unwrapped: string) {
+    const isUnsafe = unwrapped.startsWith(`// #unsafe`);
+
+    if (isUnsafe) return; // File is dangerous, TODO -> PERMISSIONS
+
     const ast = acorn.parse(unwrapped, {
       sourceType: "module",
       ecmaVersion: "latest",
