@@ -6,6 +6,7 @@
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../../runtime";
   import UserButton from "../Folders/UserButton.svelte";
+  import { Fs, KernelDispatchS } from "$ts/env";
 
   const {
     process,
@@ -20,7 +21,7 @@
   let dirs: FolderEntry[] = $state([]);
 
   onMount(() => {
-    process.systemDispatch.subscribe<string>("fs-flush-folder", (path) => {
+    KernelDispatchS().subscribe<string>("fs-flush-folder", (path) => {
       if (!path) return;
 
       if (path.startsWith("U:") && path.split("/").length == 1) {
@@ -33,7 +34,7 @@
 
   async function update() {
     try {
-      const root = await process.fs.readDir(UserPaths.Home);
+      const root = await Fs().readDir(UserPaths.Home);
 
       if (!root) return;
 

@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { KernelStack } from "$ts/env";
+import { Env, KernelStack } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
@@ -61,7 +61,7 @@ export class AppInfoRuntime extends AppProcess {
   }
 
   async processManager() {
-    await this.userDaemon?.spawn?.spawnApp("processManager", +this.env.get("shell_pid"));
+    await this.userDaemon?.spawn?.spawnApp("processManager", +Env().get("shell_pid"));
     this.closeWindow();
   }
 }

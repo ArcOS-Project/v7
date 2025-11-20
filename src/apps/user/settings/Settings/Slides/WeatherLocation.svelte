@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { SettingsRuntime } from "$apps/user/settings/runtime";
   import { MessageBox } from "$ts/dialog";
-  import { KernelStack } from "$ts/env";
+  import { Env, KernelStack } from "$ts/env";
   import type { WeatherSearchResponse, WeatherSearchResult } from "$types/weather";
   import axios from "axios";
   import Section from "../Section.svelte";
@@ -50,7 +50,7 @@
       return v;
     });
 
-    const dispatch = KernelStack().ConnectDispatch(+process.env.get("shell_pid"));
+    const dispatch = KernelStack().ConnectDispatch(+Env().get("shell_pid"));
 
     dispatch?.dispatch("refresh-weather");
 

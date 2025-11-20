@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ApplicationStorage } from "$ts/apps/storage";
-  import { ArcOSVersion, KernelStack } from "$ts/env";
+  import { ArcOSVersion, Env, KernelStack } from "$ts/env";
   import { KernelModules, KernelStateHandler } from "$ts/getters";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
@@ -15,7 +15,7 @@
 <div class="left">
   <img src={process.getIconCached("ArcSystemIcon")} alt="" />
   <div class="main-actions">
-    <button class="link" onclick={() => process.spawnOverlayApp("BugHuntCreator", +process.env.get("shell_pid"))}
+    <button class="link" onclick={() => process.spawnOverlayApp("BugHuntCreator", +Env().get("shell_pid"))}
       >Report a bug...</button
     >
   </div>

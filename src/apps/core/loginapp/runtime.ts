@@ -2,7 +2,7 @@ import { FirstRunApp } from "$apps/components/firstrun/FirstRun";
 import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/TotpAuthGui";
 import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
-import { getKMod, KernelStack } from "$ts/env";
+import { Env, getKMod, KernelDispatchS, KernelSound, KernelStack } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { ProfilePictures } from "$ts/images/pfp";
 import { tryJsonParse } from "$ts/json";
@@ -50,9 +50,9 @@ export class LoginAppRuntime extends AppProcess {
       KernelStateHandler()?.currentState !== "boot" && KernelStateHandler()?.currentState !== "initialSetup" && !props?.type;
     this.server = server;
     this.serverInfo.set(server.serverInfo!);
-    this.safeMode = !!(props?.safeMode || this.env.get("safemode"));
+    this.safeMode = !!(props?.safeMode || Env().get("safemode"));
 
-    if (this.safeMode) this.env.set("safemode", true);
+    if (this.safeMode) Env().set("safemode", true);
 
     this.updateServerStuff();
 
@@ -85,7 +85,7 @@ export class LoginAppRuntime extends AppProcess {
 
       if (!props.userDaemon) throw new Error(`LoginAppRuntimeConstructor: Irregular login type without daemon`);
 
-      this.soundBus.playSound("arcos.system.logoff");
+      KernelSound().playSound("arcos.system.logoff");
       props.userDaemon?.renderer?.setAppRendererClasses(props.userDaemon.preferences());
 
       switch (props.type) {
@@ -109,11 +109,11 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async start() {
-    this.env.set("loginapp_pid", this.pid);
+    Env().set("loginapp_pid", this.pid);
   }
 
   async stop() {
-    this.env.delete("loginapp_pid");
+    Env().delete("loginapp_pid");
   }
 
   async render() {
@@ -273,7 +273,7 @@ export class LoginAppRuntime extends AppProcess {
 
     broadcast("Let's go!");
     await KernelStateHandler()?.loadState("desktop", { userDaemon });
-    this.soundBus.playSound("arcos.system.logon");
+    KernelSound().playSound("arcos.system.logon");
     userDaemon.renderer!.setAppRendererClasses(userDaemon.preferences());
     userDaemon.checks!.checkNightly();
 
@@ -490,11 +490,11 @@ export class LoginAppRuntime extends AppProcess {
     const returnId = UUID();
 
     return new Promise(async (r) => {
-      this.systemDispatch.subscribe("totp-unlock-success", ([id]) => {
+      KernelDispatchS().subscribe("totp-unlock-success", ([id]) => {
         if (id === returnId) r(true);
       });
 
-      this.systemDispatch.subscribe("totp-unlock-cancel", ([id]) => {
+      KernelDispatchS().subscribe("totp-unlock-cancel", ([id]) => {
         if (id === returnId) r(false);
       });
 

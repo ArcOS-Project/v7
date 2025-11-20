@@ -1,6 +1,6 @@
 import { MessageBox } from "$ts/dialog";
 import { ServerDrive } from "$ts/drives/server";
-import { KernelStack } from "$ts/env";
+import { Env, Fs, KernelDispatchS, KernelStack } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { ServiceHost } from "$ts/services";
 import type { ShareManager } from "$ts/shares";
@@ -68,7 +68,7 @@ export class InitUserContext extends UserContext {
               ],
               image: "GlobeIcon",
             },
-            +this.env.get("shell_pid"),
+            +Env().get("shell_pid"),
             true
           );
         });
@@ -85,7 +85,7 @@ export class InitUserContext extends UserContext {
     this.Log(`Starting filesystem supplier`);
 
     try {
-      await this.fs.mountDrive<ServerDrive>("userfs", ServerDrive, "U", undefined, this.token);
+      await Fs().mountDrive<ServerDrive>("userfs", ServerDrive, "U", undefined, this.token);
 
       await this.daemon.migrations?.migrateFilesystemLayout();
     } catch {
@@ -98,11 +98,11 @@ export class InitUserContext extends UserContext {
 
     this.Log("Starting drive notifier watcher");
 
-    this.systemDispatch.subscribe("fs-mount-drive", (id) => {
+    KernelDispatchS().subscribe("fs-mount-drive", (id) => {
       if (this._disposed) return;
 
       try {
-        const drive = this.fs.getDriveById(id as unknown as string);
+        const drive = Fs().getDriveById(id as unknown as string);
         if (!drive) return;
 
         this.daemon.files?.mountedDrives.push(id as unknown as string);

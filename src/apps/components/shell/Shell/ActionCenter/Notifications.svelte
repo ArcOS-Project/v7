@@ -5,6 +5,7 @@
   import Spinner from "../../../../../lib/Spinner.svelte";
   import type { ShellRuntime } from "../../runtime";
   import NotificationItem from "./Notifications/NotificationItem.svelte";
+  import { KernelDispatchS } from "$ts/env";
 
   const { process }: { process: ShellRuntime } = $props();
   const { userDaemon, userPreferences } = process;
@@ -22,7 +23,7 @@
       return;
     }
 
-    userDaemon.systemDispatch.subscribe("update-notifications", async ([notifications]) => {
+    KernelDispatchS().subscribe("update-notifications", async ([notifications]) => {
       store = [...notifications];
 
       isEmpty = false;

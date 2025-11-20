@@ -2,6 +2,7 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
 import type { InstallerProcessBase } from "$ts/distrib/installer/base";
+import { Env, Fs } from "$ts/env";
 import { type ReadableStore } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { ArcPackage } from "$types/package";
@@ -41,7 +42,7 @@ export class AppInstallerRuntime extends AppProcess {
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
         },
-        +this.env.get("shell_pid"),
+        +Env().get("shell_pid"),
         true
       );
       return false;
@@ -66,7 +67,7 @@ export class AppInstallerRuntime extends AppProcess {
             {
               caption: "Take me there",
               action: () => {
-                this.userDaemon?.spawn?.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps");
+                this.userDaemon?.spawn?.spawnApp("systemSettings", +Env().get("shell_pid"), "apps");
               },
             },
             {
@@ -76,7 +77,7 @@ export class AppInstallerRuntime extends AppProcess {
             },
           ],
         },
-        +this.env.get("shell_pid"),
+        +Env().get("shell_pid"),
         true
       );
 
@@ -98,7 +99,7 @@ export class AppInstallerRuntime extends AppProcess {
       const gli = await this.userDaemon?.helpers?.GlobalLoadIndicator("Rolling back changes...", this.pid);
 
       try {
-        await this.fs.deleteItem(this.metadata!.installLocation);
+        await Fs().deleteItem(this.metadata!.installLocation);
         await this.userDaemon?.appreg?.uninstallPackageWithStatus(this.metadata!.appId, false);
       } catch {
         // Silently error
@@ -112,7 +113,7 @@ export class AppInstallerRuntime extends AppProcess {
 
   runNow() {
     this.closeWindow();
-    this.spawnApp(this.metadata!.appId, +this.env.get("shell_pid"));
+    this.spawnApp(this.metadata!.appId, +Env().get("shell_pid"));
   }
 
   // More of a middleman than a method imho

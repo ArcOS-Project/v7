@@ -1,6 +1,6 @@
 import type { ShellRuntime } from "$apps/components/shell/runtime";
 import type { ShellTrayIcon, TrayPopup } from "$apps/components/shell/types";
-import { KernelStack } from "$ts/env";
+import { Env, KernelStack } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import type { ContextMenuItem } from "$types/app";
 import { mount, unmount } from "svelte";
@@ -26,7 +26,7 @@ export class TrayIconProcess extends Process {
     this.icon = data.icon;
     this.context = data.context;
     this.action = data.action;
-    this.shell = KernelStack().getProcess(+this.env.get("shell_pid"))!;
+    this.shell = KernelStack().getProcess(+Env().get("shell_pid"))!;
     this.name = "TrayIconProcess";
 
     this.setSource(__SOURCE__);

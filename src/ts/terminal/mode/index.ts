@@ -1,4 +1,4 @@
-import { ArcOSVersion, KernelStack } from "$ts/env";
+import { ArcOSVersion, Env, KernelDispatchS, KernelStack } from "$ts/env";
 import { toForm } from "$ts/form";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -175,10 +175,10 @@ export class TerminalMode extends Process {
 
       this.rl?.println(`${CURUP}${CLRROW}Refreshing app storage`);
 
-      this.systemDispatch.dispatch(`app-store-refresh`);
+      KernelDispatchS().dispatch(`app-store-refresh`);
 
-      this.env.set("currentuser", username);
-      this.env.set("shell_pid", undefined);
+      Env().set("currentuser", username);
+      Env().set("shell_pid", undefined);
 
       await Sleep(10);
 

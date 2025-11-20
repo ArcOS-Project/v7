@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { BRBLACK, BRBLUE, BRGREEN, RESET } from "../store";
+import { Fs } from "$ts/env";
 
 export class DirCommand extends TerminalProcess {
   public static keyword = "dir";
@@ -27,7 +28,7 @@ export class DirCommand extends TerminalProcess {
     try {
       let drive: FilesystemDrive | undefined;
       try {
-        drive = dir ? this.fs.getDriveByPath(dir) : term.drive;
+        drive = dir ? Fs().getDriveByPath(dir) : term.drive;
       } catch {
         drive = term.drive;
       }

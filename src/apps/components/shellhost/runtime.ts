@@ -1,4 +1,4 @@
-import { KernelStack } from "$ts/env";
+import { Env, KernelStack } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
@@ -19,7 +19,7 @@ export class ShellHostRuntime extends Process {
   constructor(pid: number, parentPid: number, _: AppProcessData, autoloadApps: string[]) {
     super(pid, parentPid);
 
-    this.userDaemon = KernelStack().getProcess<UserDaemon>(+this.env.get("userdaemon_pid")); // Get the user daemon
+    this.userDaemon = KernelStack().getProcess<UserDaemon>(+Env().get("userdaemon_pid")); // Get the user daemon
     this.userPreferences = this.userDaemon!.preferences; // Get the preferences
     this.autoloadApps = autoloadApps || []; // Get the autoload (provided by the daemon)
     this.name = "ShellHostRuntime";
@@ -50,7 +50,7 @@ export class ShellHostRuntime extends Process {
     }); // Create the shellHost loading icon
 
     await new Promise<void>(async (r) => {
-      while (!this.env.get("shell_pid") || !this.env.get("trayhost_pid") || !this.env.get("arcfind_pid")) await Sleep(1);
+      while (!Env().get("shell_pid") || !Env().get("trayhost_pid") || !Env().get("arcfind_pid")) await Sleep(1);
       r();
     }); // Wait for the shell PID and trayhost PID to be set
 

@@ -8,6 +8,7 @@
   import Drive from "./InfoPane/Drive.svelte";
   import MultiFile from "./InfoPane/MultiFile.svelte";
   import SingleFile from "./InfoPane/SingleFile.svelte";
+  import { Fs } from "$ts/env";
 
   const { process }: { process: FileManagerRuntime } = $props();
   const { path, contents, selection, drives } = process;
@@ -32,7 +33,7 @@
     variant = "";
 
     try {
-      const driveId = process.fs.getDriveIdByIdentifier(process.fs.getDriveIdentifier($path));
+      const driveId = Fs().getDriveIdByIdentifier(Fs().getDriveIdentifier($path));
       const isRoot = getParentDirectory($path) === $path;
 
       currentDrive = $drives[driveId] ?? undefined;
@@ -44,7 +45,7 @@
           singleSelectionFilename = getItemNameFromPath($selection[0]);
 
           try {
-            const stat = await process.fs.stat($selection[0]);
+            const stat = await Fs().stat($selection[0]);
 
             if (stat?.isDirectory) {
               singleSelectionThumbnail = "";

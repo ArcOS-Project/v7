@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
+import { Env, KernelStack } from "$ts/env";
 import type { ShareManager } from "$ts/shares";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -64,7 +64,7 @@ export class ShareCreateGuiRuntime extends AppProcess {
       dispatch?.dispatch("navigate", path);
     } else {
       // Otherwise spawn a new file manager
-      this.spawnApp("fileManager", +this.env.get("shell_pid"), path);
+      this.spawnApp("fileManager", +Env().get("shell_pid"), path);
     }
 
     this.closeWindow(); // Finally close the creategui

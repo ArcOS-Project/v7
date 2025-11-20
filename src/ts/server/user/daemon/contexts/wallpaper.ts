@@ -1,3 +1,4 @@
+import { Fs } from "$ts/env";
 import { arrayToBlob } from "$ts/util/convert";
 import { getParentDirectory } from "$ts/util/fs";
 import { Wallpapers } from "$ts/wallpaper/store";
@@ -54,7 +55,7 @@ export class WallpaperUserContext extends UserContext {
     );
 
     try {
-      const result = await this.fs.uploadFiles(UserPaths.Wallpapers, "image/*", false, (progress) => {
+      const result = await Fs().uploadFiles(UserPaths.Wallpapers, "image/*", false, (progress) => {
         prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);
@@ -116,7 +117,7 @@ export class WallpaperUserContext extends UserContext {
     let result: boolean = false;
 
     try {
-      result = await this.fs.deleteItem(path);
+      result = await Fs().deleteItem(path);
     } catch {
       result = false;
     }
@@ -151,8 +152,8 @@ export class WallpaperUserContext extends UserContext {
 
     try {
       const path = atob(id.replace("@local:", ""));
-      const parent = await this.fs.readDir(getParentDirectory(path));
-      const contents = await this.fs.readFile(path);
+      const parent = await Fs().readDir(getParentDirectory(path));
+      const contents = await Fs().readFile(path);
 
       if (!contents || !parent) {
         this.Log(`User wallpaper '${id}' doesn't exist on the filesystem anymore, defaulting to img04`, LogLevel.warning);

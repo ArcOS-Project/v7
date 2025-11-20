@@ -1,3 +1,4 @@
+import { Fs, KernelDispatchS } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
@@ -21,7 +22,7 @@ export class ApplicationStorage extends BaseService {
 
     this.loadOrigin("injected", () => this.injected());
 
-    this.systemDispatch.subscribe("app-store-refresh", async () => {
+    KernelDispatchS().subscribe("app-store-refresh", async () => {
       await this.refresh();
     });
 
@@ -50,7 +51,7 @@ export class ApplicationStorage extends BaseService {
     if (!this.origins.get(id)) return false;
 
     this.origins.delete(id);
-    this.systemDispatch.dispatch("app-store-refresh");
+    KernelDispatchS().dispatch("app-store-refresh");
 
     return true;
   }
@@ -107,7 +108,7 @@ export class ApplicationStorage extends BaseService {
           (async () => {
             try {
               const path = join(app.workingDirectory || "", icon.replace("@local:", ""));
-              const direct = await this.fs.direct(path);
+              const direct = await Fs().direct(path);
               if (direct) this.appIconCache[path] = direct;
             } catch {
               // ignore quietly
@@ -159,7 +160,7 @@ export class ApplicationStorage extends BaseService {
 
         if (tpaPath) {
           try {
-            const json = tryJsonParse(arrayToText((await this.fs.readFile(tpaPath))!));
+            const json = tryJsonParse(arrayToText((await Fs().readFile(tpaPath))!));
 
             if (!json || typeof json !== "object") return undefined;
 

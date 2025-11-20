@@ -15,6 +15,7 @@ import dayjs from "dayjs";
 import Fuse from "fuse.js";
 import { messagingPages } from "./store";
 import type { MessagingPage } from "./types";
+import { Fs } from "$ts/env";
 
 export class MessagingAppRuntime extends AppProcess {
   service: MessagingInterface;
@@ -221,7 +222,7 @@ export class MessagingAppRuntime extends AppProcess {
     const path = `T:/Apps/${this.app.id}/${messageId}/${attachment.filename}`;
 
     try {
-      const existing = await this.fs.readFile(path);
+      const existing = await Fs().readFile(path);
 
       if (existing) return existing;
 
@@ -274,8 +275,8 @@ export class MessagingAppRuntime extends AppProcess {
     }
 
     try {
-      await this.fs.createDirectory(getParentDirectory(path));
-      await this.fs.writeFile(path, arrayToBlob(contents, attachment.mimeType));
+      await Fs().createDirectory(getParentDirectory(path));
+      await Fs().writeFile(path, arrayToBlob(contents, attachment.mimeType));
     } catch {}
 
     await this.userDaemon?.files?.openFile(path);
@@ -338,7 +339,7 @@ export class MessagingAppRuntime extends AppProcess {
     );
 
     try {
-      await this.fs.writeFile(path, textToBlob(JSON.stringify(message, null, 2)), (progress) => {
+      await Fs().writeFile(path, textToBlob(JSON.stringify(message, null, 2)), (progress) => {
         prog?.show();
         prog?.setDone(progress.value);
         prog?.setMax(progress.max);
@@ -352,7 +353,7 @@ export class MessagingAppRuntime extends AppProcess {
     this.messageFromFile = true;
 
     try {
-      const contents = await this.fs.readFile(path);
+      const contents = await Fs().readFile(path);
       if (!contents) return this.closeWindow();
 
       const json = tryJsonParse(arrayToText(contents));

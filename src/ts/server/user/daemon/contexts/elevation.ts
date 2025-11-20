@@ -1,3 +1,4 @@
+import { Env, KernelDispatchS } from "$ts/env";
 import { UUID } from "$ts/uuid";
 import type { ElevationData } from "$types/elevation";
 import type { UserDaemon } from "..";
@@ -30,7 +31,7 @@ export class ElevationUserContext extends UserContext {
 
     const id = UUID();
     const key = UUID();
-    const shellPid = this.env.get("shell_pid");
+    const shellPid = Env().get("shell_pid");
 
     if (this.daemon.preferences().security.disabled) return true;
     if (this.daemon.preferences().disabledApps.includes("SecureContext")) return true;
@@ -49,7 +50,7 @@ export class ElevationUserContext extends UserContext {
     }
 
     return new Promise((r) => {
-      this.systemDispatch.subscribe("elevation-approve", (data) => {
+      KernelDispatchS().subscribe("elevation-approve", (data) => {
         if (data[0] === id && data[1] === key) {
           r(true);
           this._elevating = false;
@@ -57,7 +58,7 @@ export class ElevationUserContext extends UserContext {
         }
       });
 
-      this.systemDispatch.subscribe("elevation-deny", (data) => {
+      KernelDispatchS().subscribe("elevation-deny", (data) => {
         if (data[0] === id && data[1] === key) {
           r(false);
           this._elevating = false;

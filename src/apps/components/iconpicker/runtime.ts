@@ -1,4 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
+import { KernelDispatchS } from "$ts/env";
 import { IconService } from "$ts/icon";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -42,13 +43,13 @@ export class IconPickerRuntime extends AppProcess {
   //#endregion
 
   async confirm() {
-    this.systemDispatch.dispatch("ip-confirm", [this.returnId, this.selected()]); // Return selection to invocator
+    KernelDispatchS().dispatch("ip-confirm", [this.returnId, this.selected()]); // Return selection to invocator
 
     await this.closeWindow();
   }
 
   async cancel() {
-    this.systemDispatch.dispatch("ip-cancel", [this.returnId]); // Broadcast cancel to invocator
+    KernelDispatchS().dispatch("ip-cancel", [this.returnId]); // Broadcast cancel to invocator
 
     await this.closeWindow();
   }

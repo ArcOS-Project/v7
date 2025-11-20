@@ -1,4 +1,5 @@
 import { ApplicationStorage } from "$ts/apps/storage";
+import { Fs } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
@@ -34,7 +35,7 @@ export class FileAssocService extends BaseService {
     if (this._disposed) return;
 
     this.Log("Loading configuration");
-    const contents = await this.fs.readFile(this.CONFIG_PATH);
+    const contents = await Fs().readFile(this.CONFIG_PATH);
 
     const json = contents ? tryJsonParse<FileAssociationConfig>(arrayToText(contents)) : undefined;
 
@@ -47,7 +48,7 @@ export class FileAssocService extends BaseService {
     if (this._disposed) return configuration;
     this.Log("Writing configuration");
 
-    await this.fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(configuration, null, 2)));
+    await Fs().writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(configuration, null, 2)));
 
     this.Configuration.set(configuration);
 

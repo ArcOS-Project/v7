@@ -1,7 +1,7 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
   import { contextMenu } from "$ts/context/actions.svelte";
-  import { KernelStack } from "$ts/env";
+  import { KernelDispatchS, KernelStack, Stack } from "$ts/env";
   import type { Process } from "$ts/process/instance";
   import { BaseService } from "$ts/services/base";
   import type { ProcessContext } from "$types/process";
@@ -40,10 +40,10 @@
       icon = process.userDaemon?.icons?.getAppIconByProcess(proc);
       appId = app.id;
 
-      const dispatcher = process.systemDispatch.subscribe("window-closing", ([pid]) => {
+      const dispatcher = KernelDispatchS().subscribe("window-closing", ([pid]) => {
         if (pid === proc.pid) {
           closing = true;
-          process.systemDispatch.unsubscribeId("window-closing", dispatcher);
+          KernelDispatchS().unsubscribeId("window-closing", dispatcher);
         }
       });
 
@@ -85,7 +85,7 @@
         {
           caption: "Focus",
           disabled: () => !(proc instanceof AppProcess),
-          action: () => process.handler.renderer?.focusPid(proc.pid),
+          action: () => Stack().renderer?.focusPid(proc.pid),
           icon: "flag",
         },
         { sep: true },

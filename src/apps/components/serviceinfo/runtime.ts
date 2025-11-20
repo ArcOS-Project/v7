@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { Stack } from "$ts/env";
 import { BaseService } from "$ts/services/base";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -27,7 +28,7 @@ export class ServiceInfoRuntime extends AppProcess {
     this.serviceSubscriber = this.userDaemon?.serviceHost?.Services.subscribe((v) => {
       this.service.set(v.get(this.serviceId));
       const pid = this.service()?.pid;
-      this.serviceProcess.set(pid ? this.handler.getProcess(pid) : undefined);
+      this.serviceProcess.set(pid ? Stack().getProcess(pid) : undefined);
     });
   }
 

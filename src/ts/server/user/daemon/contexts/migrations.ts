@@ -1,4 +1,5 @@
 import type { ApplicationStorage } from "$ts/apps/storage";
+import { Fs } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
@@ -14,28 +15,28 @@ export class MigrationsUserContext extends UserContext {
 
   async migrateFilesystemLayout() {
     const migrationPath = join(UserPaths.Migrations, "FsMig-705.lock");
-    const migrationFile = !!(await this.fs.stat(migrationPath));
+    const migrationFile = !!(await Fs().stat(migrationPath));
 
     if (migrationFile) return;
 
-    const oldConfigDir = await this.fs.readDir("U:/Config");
+    const oldConfigDir = await Fs().readDir("U:/Config");
 
     if (oldConfigDir) {
       for (const dir of oldConfigDir.dirs) {
         const target = join(UserPaths.Configuration, dir.name);
 
-        await this.fs.deleteItem(target);
-        await this.fs.moveItem(`U:/Config/${dir.name}`, target);
+        await Fs().deleteItem(target);
+        await Fs().moveItem(`U:/Config/${dir.name}`, target);
       }
 
-      await this.fs.deleteItem("U:/Config");
+      await Fs().deleteItem("U:/Config");
     }
 
-    await this.fs.writeFile(migrationPath, textToBlob(`${Date.now()}`));
+    await Fs().writeFile(migrationPath, textToBlob(`${Date.now()}`));
   }
 
   async updateAppShortcutsDir() {
-    const contents = await this.fs.readDir(UserPaths.AppShortcuts);
+    const contents = await Fs().readDir(UserPaths.AppShortcuts);
     const storage = this.daemon.appStorage()?.buffer();
 
     if (!storage || !contents) return;
@@ -66,7 +67,7 @@ export class MigrationsUserContext extends UserContext {
     this.Log(`Migrating user apps to filesystem...`);
 
     for (const id in apps) {
-      await this.fs.writeFile(join(UserPaths.AppRepository, `${id}.json`), textToBlob(JSON.stringify(apps[id], null, 2)));
+      await Fs().writeFile(join(UserPaths.AppRepository, `${id}.json`), textToBlob(JSON.stringify(apps[id], null, 2)));
     }
 
     this.daemon.preferences.update((v) => {

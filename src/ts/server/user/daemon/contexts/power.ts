@@ -1,5 +1,5 @@
 import type { AppProcess } from "$ts/apps/process";
-import { KernelStack } from "$ts/env";
+import { Env, KernelStack } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { Store } from "$ts/writable";
 import type { BatteryType } from "$types/navigator";
@@ -40,7 +40,7 @@ export class PowerUserContext extends UserContext {
   async logoffSafeMode() {
     this.Log(`Logging off NOW (safe mode)`);
 
-    this.env.set("safemode", true);
+    Env().set("safemode", true);
 
     await this.toLogin("logoff", { safeMode: true });
   }

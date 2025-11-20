@@ -7,6 +7,7 @@
   import InstallButton from "./PackageInstallAction/InstallButton.svelte";
   import UninstallButton from "./PackageInstallAction/UninstallButton.svelte";
   import UpdateButton from "./PackageInstallAction/UpdateButton.svelte";
+  import { Env } from "$ts/env";
 
   const { process, pkg, compact = false }: { process: AppStoreRuntime; pkg: StoreItem; compact?: boolean } = $props();
   let loading = $state<boolean>(true);
@@ -38,7 +39,7 @@
           class="lucide icon-rocket"
           aria-label="Launch"
           title="Launch"
-          onclick={() => process.userDaemon!.spawn?.spawnApp($store.pkg.appId, +process.env.get("shell_pid"))}
+          onclick={() => process.userDaemon!.spawn?.spawnApp($store.pkg.appId, +Env().get("shell_pid"))}
         ></button>
       {/if}
     {/if}

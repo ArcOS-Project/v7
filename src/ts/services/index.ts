@@ -2,7 +2,7 @@ import { appStoreService } from "$ts/apps/storage";
 import { bhuspService } from "$ts/bughunt/process";
 import { devEnvironmentService } from "$ts/devenv";
 import { distributionService } from "$ts/distrib";
-import { KernelStack } from "$ts/env";
+import { Env, KernelDispatchS, KernelStack } from "$ts/env";
 import iconService from "$ts/icon";
 import { Process } from "$ts/process/instance";
 import { protoService } from "$ts/proto";
@@ -30,7 +30,7 @@ export class ServiceHost extends Process {
   constructor(pid: number, parentPid: number) {
     super(pid, parentPid);
 
-    this.daemon = KernelStack().getProcess(+this.env.get("userdaemon_pid"))!;
+    this.daemon = KernelStack().getProcess(+Env().get("userdaemon_pid"))!;
     this.name = "ServiceHost";
 
     this.setSource(__SOURCE__);
@@ -56,7 +56,7 @@ export class ServiceHost extends Process {
 
     KernelStack().store.subscribe(() => this.verifyServicesProcesses());
 
-    this.Services.subscribe(() => this.systemDispatch.dispatch("services-flush"));
+    this.Services.subscribe(() => KernelDispatchS().dispatch("services-flush"));
   }
 
   async stop() {

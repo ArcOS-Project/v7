@@ -9,6 +9,7 @@ import type { PublicUserInfo, UserInfo } from "$types/user";
 import Cookies from "js-cookie";
 import type { UserDaemon } from "..";
 import { UserContext } from "../context";
+import { Env, KernelDispatchS, KernelServerMan } from "$ts/env";
 
 export class AccountUserContext extends UserContext {
   constructor(id: string, daemon: UserDaemon) {
@@ -60,8 +61,8 @@ export class AccountUserContext extends UserContext {
 
       this.initialized = true;
       this.userInfo = data;
-      this.env.set("currentuser", this.username);
-      if (data.admin) this.env.set("administrator", data.admin);
+      Env().set("currentuser", this.username);
+      if (data.admin) Env().set("administrator", data.admin);
 
       return response.status === 200 ? (response.data as UserInfo) : undefined;
     } catch {
@@ -94,7 +95,7 @@ export class AccountUserContext extends UserContext {
       if (response.status !== 200) return false;
 
       this.username = newUsername;
-      this.systemDispatch.dispatch("change-username", [newUsername]);
+      KernelDispatchS().dispatch("change-username", [newUsername]);
 
       Cookies.set("arcUsername", newUsername, {
         expires: 14,
@@ -140,7 +141,7 @@ export class AccountUserContext extends UserContext {
       const response = await Backend.get(`/user/info/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
       const information = response.data as PublicUserInfo;
 
-      information.profilePicture = `${this.server.url}/user/pfp/${userId}${authcode()}`;
+      information.profilePicture = `${KernelServerMan().url}/user/pfp/${userId}${authcode()}`;
 
       return information;
     } catch {
@@ -170,7 +171,7 @@ export class AccountUserContext extends UserContext {
         ],
         sound: "arcos.dialog.warning",
       },
-      +this.env.get("shell_pid"),
+      +Env().get("shell_pid"),
       true
     );
   }  

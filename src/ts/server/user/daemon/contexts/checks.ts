@@ -1,6 +1,7 @@
 import { MessageBox } from "$ts/dialog";
 import type { DistributionServiceProcess } from "$ts/distrib";
 import { StoreItemIcon } from "$ts/distrib/util";
+import { Env } from "$ts/env";
 import { NightlyLogo } from "$ts/images/branding";
 import { ArcBuild } from "$ts/metadata/build";
 import type { MessagingInterface } from "$ts/server/messaging";
@@ -78,7 +79,7 @@ export class ChecksUserContext extends UserContext {
             action: () => {
               if (notif) this.daemon.notifications?.deleteNotification(notif);
 
-              this.daemon.spawn?.spawnApp("AppStore", +this.env.get("shell_pid"), "installed");
+              this.daemon.spawn?.spawnApp("AppStore", +Env().get("shell_pid"), "installed");
             },
             suggested: true,
           },
@@ -119,7 +120,7 @@ export class ChecksUserContext extends UserContext {
           {
             caption: "View message",
             action: () => {
-              this.daemon.spawn?.spawnApp("Messages", +this.env.get("shell_pid"), "inbox", message._id);
+              this.daemon.spawn?.spawnApp("Messages", +Env().get("shell_pid"), "inbox", message._id);
             },
           },
         ],
@@ -133,7 +134,7 @@ export class ChecksUserContext extends UserContext {
           {
             caption: "Open inbox",
             action: () => {
-              this.daemon.spawn?.spawnApp("Messages", +this.env.get("shell_pid"), "inbox");
+              this.daemon.spawn?.spawnApp("Messages", +Env().get("shell_pid"), "inbox");
             },
           },
         ],
@@ -142,7 +143,7 @@ export class ChecksUserContext extends UserContext {
   }
 
   checkNightly() {
-    const isNightly = !!this.env.get(`NIGHTLY_WHODIS_${ArcBuild()}`);
+    const isNightly = !!Env().get(`NIGHTLY_WHODIS_${ArcBuild()}`);
     if (!isNightly) return;
 
     this.Log("NIGHTLY DETECTED. OPERATIONS MIGHT BE RESTRICTED.");

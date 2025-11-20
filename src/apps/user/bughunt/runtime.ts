@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import type { BugHuntUserSpaceProcess } from "$ts/bughunt/process";
+import { Fs } from "$ts/env";
 import { UserPaths } from "$ts/server/user/store";
 import { textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath } from "$ts/util/fs";
@@ -111,7 +112,7 @@ export class BugHuntRuntime extends AppProcess {
       this.pid
     );
     try {
-      await this.fs.writeFile(path, textToBlob(JSON.stringify(report, null, 2)), (progress) => {
+      await Fs().writeFile(path, textToBlob(JSON.stringify(report, null, 2)), (progress) => {
         prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);

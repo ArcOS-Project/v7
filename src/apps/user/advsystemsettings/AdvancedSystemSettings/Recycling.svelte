@@ -4,6 +4,7 @@
   import { Plural } from "$ts/util";
   import { onMount } from "svelte";
   import type { AdvSysSetRuntime } from "../runtime";
+  import { Env } from "$ts/env";
 
   const { process }: { process: AdvSysSetRuntime } = $props();
   const { preferencesBuffer } = process;
@@ -71,5 +72,5 @@
 
 <section class="actions">
   <button onclick={emptyBin}>Empty...</button>
-  <button onclick={() => process.spawnApp("fileManager", +process.env.get("shell_pid"), "::recycle_bin")}>Open bin</button>
+  <button onclick={() => process.spawnApp("fileManager", +Env().get("shell_pid"), "::recycle_bin")}>Open bin</button>
 </section>

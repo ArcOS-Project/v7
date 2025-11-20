@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { Env, Fs, KernelDispatchS } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { UserPaths } from "$ts/server/user/store";
 import { arrayToText, textToBlob } from "$ts/util/convert";
@@ -31,7 +32,7 @@ export class WallpaperRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.directory = desktopDir || UserPaths.Desktop;
-    this.systemDispatch.subscribe<string>("fs-flush-folder", async (path) => {
+    KernelDispatchS().subscribe<string>("fs-flush-folder", async (path) => {
       if (!path || this._disposed) return;
 
       if (path.startsWith(this.directory)) {
@@ -85,7 +86,7 @@ export class WallpaperRuntime extends AppProcess {
     this.Log("Refreshing desktop icons!");
 
     try {
-      const contents = await this.fs.readDir(this.directory);
+      const contents = await Fs().readDir(this.directory);
       const shortcuts = contents?.shortcuts || {};
 
       this.shortcuts.set(shortcuts);
@@ -199,7 +200,7 @@ export class WallpaperRuntime extends AppProcess {
             caption: "Delete",
             action: () => {
               try {
-                this.fs.deleteItem(path, true);
+                Fs().deleteItem(path, true);
               } catch {}
             },
             suggested: true,
@@ -208,7 +209,7 @@ export class WallpaperRuntime extends AppProcess {
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
       },
-      +this.env.get("shell_pid"),
+      +Env().get("shell_pid"),
       true
     );
   }
@@ -223,11 +224,11 @@ export class WallpaperRuntime extends AppProcess {
         caption: "Uploading your files...",
         subtitle: `To ${getItemNameFromPath(this.directory)}`,
       },
-      +this.env.get("shell_pid")
+      +Env().get("shell_pid")
     );
 
     try {
-      await this.fs.uploadFiles(this.directory, "*/*", true, async (progress) => {
+      await Fs().uploadFiles(this.directory, "*/*", true, async (progress) => {
         prog.show();
         prog.setDone(0);
         prog.setMax(progress.max + 1);
@@ -245,7 +246,7 @@ export class WallpaperRuntime extends AppProcess {
   //#region CONFIGURATION
 
   async loadConfiguration() {
-    const contents = await this.fs.readFile(this.CONFIG_PATH);
+    const contents = await Fs().readFile(this.CONFIG_PATH);
     if (!contents) return await this.writeConfiguration({});
 
     const json = tryJsonParse<DesktopIcons>(arrayToText(contents));
@@ -255,7 +256,7 @@ export class WallpaperRuntime extends AppProcess {
   }
 
   async writeConfiguration(data: DesktopIcons) {
-    await this.fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(data, null, 2)));
+    await Fs().writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(data, null, 2)));
 
     return data;
   }
@@ -265,7 +266,7 @@ export class WallpaperRuntime extends AppProcess {
   async migrateDesktopIcons() {
     const migrationPath = join(UserPaths.Migrations, "DeskIconMig-706.lock");
     const pref = this.userPreferences().appPreferences.desktopIcons;
-    const migration = await this.fs.stat(migrationPath);
+    const migration = await Fs().stat(migrationPath);
 
     if (pref && !migration) {
       await this.writeConfiguration(pref);
@@ -276,7 +277,7 @@ export class WallpaperRuntime extends AppProcess {
         return v;
       });
 
-      await this.fs.writeFile(migrationPath, textToBlob(`${Date.now()}`));
+      await Fs().writeFile(migrationPath, textToBlob(`${Date.now()}`));
       return true;
     }
 

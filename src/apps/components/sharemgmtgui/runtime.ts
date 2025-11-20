@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { Fs } from "$ts/env";
 import type { ShareManager } from "$ts/shares";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
@@ -84,7 +85,7 @@ export class ShareMgmtGuiRuntime extends AppProcess {
             caption: "Delete share",
             action: async () => {
               this.closeWindow(); // First close the mgmtgui
-              await this.fs.umountDrive(this.shareId); // Then unmount the share
+              await Fs().umountDrive(this.shareId); // Then unmount the share
               await this.shares.deleteShare(this.shareId); // And finally delete the share
             },
             suggested: true,

@@ -1,6 +1,7 @@
 //#region IMPORTS
+import type { ShellRuntime } from "$apps/components/shell/runtime";
 import { ApplicationStorage } from "$ts/apps/storage";
-import { getKMod, KernelStack } from "$ts/env";
+import { getKMod, KernelDispatchS, KernelEnv, KernelServerUrl, KernelStack } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { Process } from "$ts/process/instance";
 import type { ProtocolServiceProcess } from "$ts/proto";
@@ -53,7 +54,6 @@ export class UserDaemon extends Process {
   override _criticalProcess: boolean = true;
   public copyList = Store<string[]>([]);
   public cutList = Store<string[]>([]);
-  public server: ServerManagerType;
   public globalDispatch?: GlobalDispatch;
   public assoc?: FileAssocService;
   public serviceHost?: ServiceHost;
@@ -94,11 +94,10 @@ export class UserDaemon extends Process {
 
     this.token = token;
     this.username = username;
-    this.env.set("userdaemon_pid", this.pid);
+    KernelEnv().set("userdaemon_pid", this.pid);
     if (userInfo) this.userInfo = userInfo;
 
-    this.server = getKMod<ServerManagerType>("server");
-    this.safeMode = !!this.env.get("safemode");
+    this.safeMode = !!KernelEnv().get("safemode");
     this.name = "UserDaemon";
 
     this.setSource(__SOURCE__);
@@ -107,7 +106,7 @@ export class UserDaemon extends Process {
   async start() {
     try {
       await this.startUserContexts();
-      this.usingTargetedAuthorization = this.server.url !== import.meta.env.DW_SERVER_URL;
+      this.usingTargetedAuthorization = KernelServerUrl() !== import.meta.env.DW_SERVER_URL;
     } catch {
       return false;
     }
@@ -175,16 +174,20 @@ export class UserDaemon extends Process {
     });
 
     this.globalDispatch?.subscribe("fs-flush-folder", (path) => {
-      this.systemDispatch.dispatch("fs-flush-folder", path);
+      KernelDispatchS().dispatch("fs-flush-folder", path);
     });
 
     this.globalDispatch?.subscribe("fs-flush-file", (path) => {
-      this.systemDispatch.dispatch("fs-flush-file", path);
+      KernelDispatchS().dispatch("fs-flush-file", path);
     });
   }
 
   appStorage() {
     return this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+  }
+
+  getShell(): ShellRuntime | undefined {
+    return KernelStack().getProcess(+getKMod<EnvironmentType>("env").get("shell_pid"));
   }
 
   //#endregion INIT

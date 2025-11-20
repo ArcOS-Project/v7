@@ -1,4 +1,5 @@
 import { MessageBox } from "$ts/dialog";
+import { Env, Fs } from "$ts/env";
 import { UserPaths } from "$ts/server/user/store";
 import { ShareManager } from "$ts/shares";
 import type { SharedDrive } from "$ts/shares/drive";
@@ -68,7 +69,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
                   action: async () => {
                     const shares = runtime.userDaemon?.serviceHost?.getService<ShareManager>("ShareMgmt");
 
-                    await runtime.fs.umountDrive(share.shareId!);
+                    await Fs().umountDrive(share.shareId!);
                     await shares?.leaveShare(share.shareId!);
 
                     runtime.userPreferences.update((v) => {
@@ -200,7 +201,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Open in ArcTerm",
         icon: "terminal",
         action: () => {
-          runtime.spawnApp("ArcTerm", +runtime.env.get("shell_pid"), runtime.path());
+          runtime.spawnApp("ArcTerm", +Env().get("shell_pid"), runtime.path());
         },
       },
       {
@@ -210,13 +211,13 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
           const path = runtime.path();
           const parentPath = getParentDirectory(path);
           const name = getItemNameFromPath(path);
-          const parent = await runtime.fs.readDir(parentPath);
+          const parent = await Fs().readDir(parentPath);
           const dir = parent?.dirs.filter((d) => d.name === name)[0] || parent;
           const isRoot = parentPath === path;
 
           if (isRoot) {
             try {
-              const drive = runtime.fs.getDriveByPath(path);
+              const drive = Fs().getDriveByPath(path);
               runtime.spawnOverlayApp("DriveInfo", runtime.pid, drive);
               return;
             } catch {}
@@ -486,7 +487,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
             caption: "Advanced System Settings...",
             icon: "monitor-cog",
             action: () => {
-              runtime.userDaemon?.spawn?.spawnApp("AdvSystemSettings", +runtime.env.get("shell_pid"));
+              runtime.userDaemon?.spawn?.spawnApp("AdvSystemSettings", +Env().get("shell_pid"));
             },
           },
         ],
@@ -495,7 +496,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Settings...",
         icon: "settings-2",
         action: () => {
-          runtime.userDaemon?.spawn?.spawnApp("systemSettings", +runtime.env.get("shell_pid"));
+          runtime.userDaemon?.spawn?.spawnApp("systemSettings", +Env().get("shell_pid"));
         },
       },
     ],
@@ -517,7 +518,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Properties...",
         icon: "wrench",
         action: () => {
-          runtime.userDaemon?.spawn?.spawnApp("AdvSystemSettings", +runtime.env.get("shell_pid"), "Recycling");
+          runtime.userDaemon?.spawn?.spawnApp("AdvSystemSettings", +Env().get("shell_pid"), "Recycling");
         },
       },
     ],

@@ -8,6 +8,7 @@ import type { ArcPackage, StoreItem } from "$types/package";
 import type JSZip from "jszip";
 import type { DistributionServiceProcess } from "..";
 import { InstallerProcessBase } from "./base";
+import { Fs } from "$ts/env";
 
 export class LibraryInstallerProcess extends InstallerProcessBase {
   library?: TpaLibrary;
@@ -66,7 +67,7 @@ export class LibraryInstallerProcess extends InstallerProcessBase {
 
     this.logStatus("Library information", "file");
     try {
-      await this.fs.writeFile(
+      await Fs().writeFile(
         `${this.workingDirectory}.json`,
         textToBlob(JSON.stringify(this.library!, null, 2)),
         undefined,

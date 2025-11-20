@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { Fs } from "$ts/env";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { arrayToText, textToBlob } from "$ts/util/convert";
@@ -102,7 +103,7 @@ export class CodRuntime extends AppProcess {
     prog.show();
 
     try {
-      const contents = await this.fs.readFile(path, (progress) => {
+      const contents = await Fs().readFile(path, (progress) => {
         prog.setMax(progress.max);
         prog.setDone(progress.value);
       });
@@ -168,7 +169,7 @@ export class CodRuntime extends AppProcess {
     );
 
     try {
-      await this.fs.writeFile(opened, textToBlob(buffer), async (progress) => {
+      await Fs().writeFile(opened, textToBlob(buffer), async (progress) => {
         await prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);

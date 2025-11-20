@@ -1,3 +1,4 @@
+import { Fs } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { arrayToText } from "$ts/util/convert";
 import { getParentDirectory } from "$ts/util/fs";
@@ -12,7 +13,7 @@ const installTpaFile: (d: UserDaemon) => FileHandler = (daemon) => ({
   name: "Install application",
   description: "Install this TPA file as an app",
   handle: async (path: string) => {
-    const text = arrayToText((await daemon.fs.readFile(path))!);
+    const text = arrayToText((await Fs().readFile(path))!);
     const json = tryJsonParse(text);
 
     if (typeof json !== "object") throw new Error(`InstallTpaFileHandler: JSON parse failed`);

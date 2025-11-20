@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
+import { Env, Fs, KernelDispatchS, KernelStack, Stack } from "$ts/env";
 import { AppGroups, UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { join } from "$ts/util/fs";
@@ -49,16 +49,16 @@ export class ShellRuntime extends AppProcess {
   }
 
   async start() {
-    if (this.handler.getProcess(+this.env.get("shell_pid"))) return false;
+    if (Stack().getProcess(+Env().get("shell_pid"))) return false;
 
-    this.env.set("shell_pid", this.pid); // Set the shell PID
+    Env().set("shell_pid", this.pid); // Set the shell PID
 
-    this.systemDispatch.subscribe("stack-busy", () => this.stackBusy.set(true)); // Subscribe to stack-busy
-    this.systemDispatch.subscribe("stack-not-busy", () => this.stackBusy.set(false)); // Subscribe to stack-not-busy
+    KernelDispatchS().subscribe("stack-busy", () => this.stackBusy.set(true)); // Subscribe to stack-busy
+    KernelDispatchS().subscribe("stack-not-busy", () => this.stackBusy.set(false)); // Subscribe to stack-not-busy
 
     const minimizedFullscreens: Record<string, Set<number>> = {};
 
-    this.systemDispatch.subscribe("window-fullscreen", ([pid, desktop]) =>
+    KernelDispatchS().subscribe("window-fullscreen", ([pid, desktop]) =>
       this.FullscreenCount.update((v) => {
         minimizedFullscreens[desktop] ??= new Set();
         v[desktop] ??= new Set();
@@ -69,7 +69,7 @@ export class ShellRuntime extends AppProcess {
       })
     );
 
-    this.systemDispatch.subscribe("window-unfullscreen", ([pid, desktop]) =>
+    KernelDispatchS().subscribe("window-unfullscreen", ([pid, desktop]) =>
       this.FullscreenCount.update((v) => {
         minimizedFullscreens[desktop] ??= new Set();
         v[desktop] ??= new Set();
@@ -81,7 +81,7 @@ export class ShellRuntime extends AppProcess {
       })
     );
 
-    this.systemDispatch.subscribe("window-minimize", ([pid, desktop]) =>
+    KernelDispatchS().subscribe("window-minimize", ([pid, desktop]) =>
       this.FullscreenCount.update((v) => {
         minimizedFullscreens[desktop] ??= new Set();
         v[desktop] ??= new Set();
@@ -95,7 +95,7 @@ export class ShellRuntime extends AppProcess {
       })
     );
 
-    this.systemDispatch.subscribe("window-unminimize", ([pid, desktop]) =>
+    KernelDispatchS().subscribe("window-unminimize", ([pid, desktop]) =>
       this.FullscreenCount.update((v) => {
         minimizedFullscreens[desktop] ??= new Set();
         v[desktop] ??= new Set();
@@ -128,7 +128,7 @@ export class ShellRuntime extends AppProcess {
 
     this.dispatch.subscribe("ready", () => this.gotReadySignal());
 
-    this.systemDispatch.subscribe("startmenu-refresh", () => {
+    KernelDispatchS().subscribe("startmenu-refresh", () => {
       this.refreshStartMenu();
     });
   }
@@ -214,14 +214,14 @@ export class ShellRuntime extends AppProcess {
   }
 
   async stop() {
-    this.env.delete("shell_pid");
+    Env().delete("shell_pid");
     return true;
   }
 
   async gotReadySignal() {
     this.Log("Got ready signal!");
-    this.trayHost = KernelStack().getProcess(+this.env.get("trayhost_pid"))!;
-    this.arcFind = KernelStack().getProcess(+this.env.get("arcfind_pid"))!;
+    this.trayHost = KernelStack().getProcess(+Env().get("trayhost_pid"))!;
+    this.arcFind = KernelStack().getProcess(+Env().get("arcfind_pid"))!;
     this.arcFind.loading.subscribe((v) => this.searchLoading.set(v));
     this.ready.set(true);
     await this.refreshStartMenu();
@@ -340,7 +340,7 @@ export class ShellRuntime extends AppProcess {
   //#region STARTMENU
 
   public async refreshStartMenu(): Promise<void> {
-    const tree = await this.fs.tree(this.STARTMENU_FOLDER);
+    const tree = await Fs().tree(this.STARTMENU_FOLDER);
 
     if (!tree?.files?.length && !tree?.dirs?.length) {
       await this.UpdateStartMenu(); // Populate it if there's no content
@@ -357,7 +357,7 @@ export class ShellRuntime extends AppProcess {
 
     const { stop, incrementProgress, caption } = await this.userDaemon!.helpers!.GlobalLoadIndicator(
       "Updating the start menu...",
-      +this.env.get("shell_pid"),
+      +Env().get("shell_pid"),
       {
         max: Object.keys(AppGroups).length + installedApps.length,
         value: 0,
@@ -369,7 +369,7 @@ export class ShellRuntime extends AppProcess {
       incrementProgress?.();
       caption.set(`Updating the start menu...<br>Creating folder for ${AppGroups[appGroup]}`);
 
-      await this.fs.createDirectory(join(this.STARTMENU_FOLDER, `$$${appGroup}`), false);
+      await Fs().createDirectory(join(this.STARTMENU_FOLDER, `$$${appGroup}`), false);
     }
 
     const promises = [];

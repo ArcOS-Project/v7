@@ -7,7 +7,7 @@ import TerminalWindowApp from "$apps/components/terminalwindow/TerminalWindow";
 import SafeModeNotice from "$lib/Daemon/SafeModeNotice.svelte";
 import type { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
+import { Env, KernelDispatchS, KernelStack } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
@@ -25,7 +25,7 @@ export class HelpersUserContext extends UserContext {
       GlobalLoadIndicatorRuntime,
       undefined,
       this.userInfo!._id,
-      pid || +this.env.get("shell_pid"),
+      pid || +Env().get("shell_pid"),
       {
         data: { ...GlobalLoadIndicatorApp, overlay: true },
         id: GlobalLoadIndicatorApp.id,
@@ -56,7 +56,7 @@ export class HelpersUserContext extends UserContext {
   }
 
   async Confirm(title: string, message: string, no: string, yes: string, image = "QuestionIcon", pid?: number) {
-    const shellPid = pid || +this.env.get("shell_pid");
+    const shellPid = pid || +Env().get("shell_pid");
     return new Promise((r) => {
       MessageBox(
         {
@@ -74,7 +74,7 @@ export class HelpersUserContext extends UserContext {
     });
   }
 
-  async TerminalWindow(pid = +this.env.get("shell_pid")): Promise<ExpandedTerminal | undefined> {
+  async TerminalWindow(pid = +Env().get("shell_pid")): Promise<ExpandedTerminal | undefined> {
     const process = await KernelStack().spawn<TerminalWindowRuntime>(TerminalWindowRuntime, undefined, this.userInfo!._id, pid, {
       data: { ...TerminalWindowApp },
       id: TerminalWindowApp.id,
@@ -96,16 +96,16 @@ export class HelpersUserContext extends UserContext {
 
     const uuid = UUID();
 
-    await this.daemon.spawn?.spawnOverlay("IconPicker", +this.env.get("shell_pid"), {
+    await this.daemon.spawn?.spawnOverlay("IconPicker", +Env().get("shell_pid"), {
       ...data,
       returnId: uuid,
     });
 
     return new Promise<string>(async (r) => {
-      this.systemDispatch.subscribe<[string, string]>("ip-confirm", ([id, icon]) => {
+      KernelDispatchS().subscribe<[string, string]>("ip-confirm", ([id, icon]) => {
         if (id === uuid) r(icon);
       });
-      this.systemDispatch.subscribe("ip-cancel", ([id]) => {
+      KernelDispatchS().subscribe("ip-cancel", ([id]) => {
         if (id === uuid) r(data.defaultIcon);
       });
     });
@@ -138,7 +138,7 @@ export class HelpersUserContext extends UserContext {
           { caption: "Okay", action: () => {}, suggested: true },
         ],
       },
-      +this.env.get("shell_pid"),
+      +Env().get("shell_pid"),
       true
     );
   }

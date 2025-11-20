@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
+import { KernelStack, Stack } from "$ts/env";
 import type { Process } from "$ts/process/instance";
 import { ProcessKillResultCaptions } from "$ts/process/store";
 import type { AppProcessData } from "$types/app";
@@ -18,7 +18,7 @@ export class ProcessInfoRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.proc = proc || this;
-    this.parent = this.handler.getProcess(this.proc.parentPid);
+    this.parent = Stack().getProcess(this.proc.parentPid);
     this.inherit = Object.getPrototypeOf(this.proc.constructor);
 
     this.setSource(__SOURCE__);

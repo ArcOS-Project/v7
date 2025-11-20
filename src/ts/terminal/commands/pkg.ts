@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { BRBLUE, BRGREEN, BRPURPLE, CLRROW, CURUP, RESET } from "../store";
+import { Fs } from "$ts/env";
 
 const typeCaptions: Record<string, string> = {
   mkdir: "Creating folder",
@@ -379,7 +380,7 @@ export class PkgCommand extends TerminalProcess {
     this.term?.rl?.println(`${CURUP}${CLRROW}Deleting configuration...`);
 
     try {
-      await this.fs.deleteItem(join(UserPaths.Configuration, name));
+      await Fs().deleteItem(join(UserPaths.Configuration, name));
     } catch {}
 
     this.term?.rl?.println(`${CURUP}${CLRROW}Uninstalling app...`);

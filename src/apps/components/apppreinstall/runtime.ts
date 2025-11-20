@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import type { DistributionServiceProcess } from "$ts/distrib";
+import { Env, Fs } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { arrayToText } from "$ts/util/convert";
 import { Store } from "$ts/writable";
@@ -41,7 +42,7 @@ export class AppPreInstallRuntime extends AppProcess {
             {
               caption: "Take me there",
               action: () => {
-                this.userDaemon?.spawn?.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps");
+                this.userDaemon?.spawn?.spawnApp("systemSettings", +Env().get("shell_pid"), "apps");
               },
             },
             {
@@ -51,7 +52,7 @@ export class AppPreInstallRuntime extends AppProcess {
             },
           ],
         },
-        +this.env.get("shell_pid"),
+        +Env().get("shell_pid"),
         true
       );
 
@@ -66,7 +67,7 @@ export class AppPreInstallRuntime extends AppProcess {
         caption: "Reading ArcOS package",
         subtitle: this.pkgPath,
       },
-      +this.env.get("shell_pid")
+      +Env().get("shell_pid")
     );
 
     try {
@@ -76,7 +77,7 @@ export class AppPreInstallRuntime extends AppProcess {
         return this.fail("Package is corrupt; missing files");
       }
 
-      const content = await this.userDaemon?.fs.readFile(this.pkgPath, (progress) => {
+      const content = await Fs().readFile(this.pkgPath, (progress) => {
         prog?.show();
         prog?.setMax(progress.max);
         prog?.setDone(progress.value);
@@ -110,7 +111,7 @@ export class AppPreInstallRuntime extends AppProcess {
         image: "ErrorIcon",
         sound: "arcos.dialog.error",
       },
-      +this.env.get("shell_pid"),
+      +Env().get("shell_pid"),
       true
     );
     this.closeWindow();
@@ -129,7 +130,7 @@ export class AppPreInstallRuntime extends AppProcess {
     if (!elevated) return;
 
     await this.closeWindow();
-    this.spawnOverlayApp("AppInstaller", +this.env.get("shell_pid"), this.metadata, this.zip);
+    this.spawnOverlayApp("AppInstaller", +Env().get("shell_pid"), this.metadata, this.zip);
   }
 
   //#endregion

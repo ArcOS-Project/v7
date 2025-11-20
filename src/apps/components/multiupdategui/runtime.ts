@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { DistributionServiceProcess } from "$ts/distrib";
+import { KernelDispatchS } from "$ts/env";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -59,7 +60,7 @@ export class MultiUpdateGuiRuntime extends AppProcess {
   }
 
   async onClose(): Promise<boolean> {
-    this.systemDispatch.dispatch("mugui-done");
+    KernelDispatchS().dispatch("mugui-done");
 
     return true;
   }

@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
+import { Fs, KernelSound, KernelStack } from "$ts/env";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { SqlInterfaceProcess } from "$ts/sql";
@@ -75,7 +75,7 @@ export class SqeletonRuntime extends AppProcess {
   }
 
   async stop() {
-    await this.fs.deleteItem(this.tempDbPath);
+    await Fs().deleteItem(this.tempDbPath);
   }
 
   async render({ path }: { path?: string }) {
@@ -166,7 +166,7 @@ export class SqeletonRuntime extends AppProcess {
       });
       if (!simple) {
         this.errored.set(true);
-        this.soundBus.playSound("arcos.dialog.error");
+        KernelSound().playSound("arcos.dialog.error");
         this.currentTab.set("errors");
       }
     } else {

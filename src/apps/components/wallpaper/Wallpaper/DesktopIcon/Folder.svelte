@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Env } from "$ts/env";
   import { join } from "$ts/util/fs";
   import type { FolderEntry } from "$types/fs";
   import type { WallpaperRuntime } from "../../runtime";
@@ -18,7 +19,7 @@
     props={[folder, path]}
     contextMenu="folder-icon"
     icon={process.getIconCached("FolderIcon")}
-    action={() => process.spawnApp("fileManager", +process.env.get("shell_pid"), path)}
+    action={() => process.spawnApp("fileManager", +Env().get("shell_pid"), path)}
     {i}
   />
 {/if}

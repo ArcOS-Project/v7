@@ -1,3 +1,4 @@
+import { Env, Fs } from "$ts/env";
 import { UserPaths } from "$ts/server/user/store";
 import { getParentDirectory, join } from "$ts/util/fs";
 import { UUID } from "$ts/uuid";
@@ -6,7 +7,7 @@ import type { FileEntry } from "$types/fs";
 import type { WallpaperRuntime } from "./runtime";
 
 export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu {
-  const shellPid = () => +runtime.env.get("shell_pid");
+  const shellPid = () => +Env().get("shell_pid");
   return {
     "file-icon": [
       {
@@ -41,7 +42,7 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
       {
         caption: "Properties...",
         icon: "wrench",
-        action: (file: FileEntry, path: string) => runtime.spawnOverlayApp("ItemInfo", runtime.env.get("shell_pid"), path, file),
+        action: (file: FileEntry, path: string) => runtime.spawnOverlayApp("ItemInfo", Env().get("shell_pid"), path, file),
       },
     ],
     "shortcut-icon": [
@@ -247,7 +248,7 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
         caption: "Folder properties...",
         icon: "wrench",
         action: async () => {
-          const parent = await runtime.fs.readDir(getParentDirectory(UserPaths.Desktop));
+          const parent = await Fs().readDir(getParentDirectory(UserPaths.Desktop));
           const dir = parent?.dirs.filter((d) => d.name === "Desktop")[0];
 
           if (!dir) return;

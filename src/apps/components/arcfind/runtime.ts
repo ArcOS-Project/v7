@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { isPopulatable } from "$ts/apps/util";
+import { Env, Fs, KernelDispatchS, KernelStack } from "$ts/env";
 import { UserPaths } from "$ts/server/user/store";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
@@ -19,14 +20,14 @@ export class ArcFindRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
-    this.systemDispatch.subscribe("fs-flush-file", () => this.refresh());
+    KernelDispatchS().subscribe("fs-flush-file", () => this.refresh());
 
     this.setSource(__SOURCE__);
   }
   async start() {
-    if (this.handler.getProcess(+this.env.get("arcfind_pid"))) return false;
+    if (KernelStack().getProcess(+Env().get("arcfind_pid"))) return false;
 
-    this.env.set("arcfind_pid", this.pid);
+    Env().set("arcfind_pid", this.pid);
     this.refresh();
     const preferences = this.userPreferences();
     let excludeShortcuts = preferences.searchOptions.excludeShortcuts;
@@ -39,7 +40,7 @@ export class ArcFindRuntime extends AppProcess {
   }
 
   async stop() {
-    this.env.delete("arcfind_pid");
+    Env().delete("arcfind_pid");
   }
 
   //#endregion
@@ -151,7 +152,7 @@ export class ArcFindRuntime extends AppProcess {
   async getFlatTree() {
     try {
       const result: PathedFileEntry[] = [];
-      const tree = await this.fs.tree(UserPaths.Home);
+      const tree = await Fs().tree(UserPaths.Home);
 
       const recurse = (tree: RecursiveDirectoryReadReturn, path = "U:") => {
         try {

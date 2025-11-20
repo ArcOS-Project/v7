@@ -13,6 +13,7 @@ import { AdminPortalAltMenu } from "./altmenu";
 import { AdminPortalPageStore } from "./store";
 import type { BugReportFileUrlParseResult, BugReportTpaFile } from "./types";
 import { BugHuntUserDataApp } from "./userdata/metadata";
+import { Fs } from "$ts/env";
 
 export class AdminPortalRuntime extends AppProcess {
   ready = Store<boolean>(false);
@@ -41,7 +42,7 @@ export class AdminPortalRuntime extends AppProcess {
   }
 
   async start() {
-    await this.fs.createDirectory("T:/Apps/AdminPortal"); // temp folder for saveTpaFilesOfBugReport
+    await Fs().createDirectory("T:/Apps/AdminPortal"); // temp folder for saveTpaFilesOfBugReport
 
     if (!this.admin) {
       this.switchPage("noAdminBootstrapper", {}, true);
@@ -107,7 +108,7 @@ export class AdminPortalRuntime extends AppProcess {
       try {
         const content = await axios.get(file.url, { responseType: "text" }); // responseType ensures we get a string back
         const source = content.data as string;
-        await this.fs.writeFile(filePath, textToBlob(source, "text/javascript")); // Now we write the code to temp
+        await Fs().writeFile(filePath, textToBlob(source, "text/javascript")); // Now we write the code to temp
 
         // Finally save it
         result.push({

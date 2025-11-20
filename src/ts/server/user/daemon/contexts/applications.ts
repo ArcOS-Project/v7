@@ -1,7 +1,7 @@
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { isPopulatable } from "$ts/apps/util";
 import { MessageBox } from "$ts/dialog";
-import { BETA, KernelStack } from "$ts/env";
+import { BETA, Env, KernelDispatchS, KernelStack } from "$ts/env";
 import type { ShareManager } from "$ts/shares";
 import type { App } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
@@ -60,7 +60,7 @@ export class ApplicationsUserContext extends UserContext {
           {
             caption: "Send feedback",
             action: () => {
-              this.daemon.helpers!.iHaveFeedback(KernelStack().getProcess(+this.env.get("shell_pid"))!);
+              this.daemon.helpers!.iHaveFeedback(KernelStack().getProcess(+Env().get("shell_pid"))!);
             },
           },
         ],
@@ -77,7 +77,7 @@ export class ApplicationsUserContext extends UserContext {
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           image: "FirefoxIcon",
         },
-        +this.env.get("shell_pid"),
+        +Env().get("shell_pid"),
         true
       );
     }
@@ -147,7 +147,7 @@ export class ApplicationsUserContext extends UserContext {
         KernelStack().kill(instance.pid, true);
       }
 
-    this.systemDispatch.dispatch("app-store-refresh");
+    KernelDispatchS().dispatch("app-store-refresh");
   }
 
   async enableApp(appId: string) {
@@ -178,7 +178,7 @@ export class ApplicationsUserContext extends UserContext {
       return v;
     });
 
-    this.systemDispatch.dispatch("app-store-refresh");
+    KernelDispatchS().dispatch("app-store-refresh");
   }
 
   async enableThirdParty() {

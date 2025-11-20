@@ -4,6 +4,7 @@
   import { getDriveLetter, getItemNameFromPath } from "$ts/util/fs";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../runtime";
+  import { Fs } from "$ts/env";
 
   const { process }: { process: FileManagerRuntime } = $props();
   const { contents, path, userPreferences, notice, showNotice, virtual } = process;
@@ -21,7 +22,7 @@
 
       if (driveIdentifier) {
         try {
-          const drive = process.fs.getDriveByLetter(driveIdentifier.slice(0, -1), false);
+          const drive = Fs().getDriveByLetter(driveIdentifier.slice(0, -1), false);
 
           driveLabel = drive?.label || "";
         } catch {}

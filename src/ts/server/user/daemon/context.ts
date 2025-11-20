@@ -40,26 +40,6 @@ export class UserContext {
     Log(source, message, level);
   }
 
-  //#region KMOD REFERENCES
-
-  protected get fs() {
-    return getKMod<FilesystemType>("fs");
-  }
-
-  protected get env() {
-    return getKMod<EnvironmentType>("env");
-  }
-
-  protected get systemDispatch() {
-    return getKMod<SystemDispatchType>("dispatch");
-  }
-
-  protected get server() {
-    return getKMod<ServerManagerType>("server");
-  }
-
-  //#endregion KMOD REFERENCES
-
   protected get daemon() {
     return this.#daemon;
   }

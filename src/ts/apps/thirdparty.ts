@@ -1,3 +1,4 @@
+import { Fs } from "$ts/env";
 import { join } from "$ts/util/fs";
 import type { AppProcessData } from "$types/app";
 import { AppProcess } from "./process";
@@ -56,7 +57,7 @@ export class ThirdPartyAppProcess extends AppProcess {
               continue;
 
             const filePath = originalValue.includes(":/") ? originalValue : join(this.workingDirectory, originalValue);
-            const direct = this.urlCache[filePath] ?? (await this.fs.direct(filePath));
+            const direct = this.urlCache[filePath] ?? (await Fs().direct(filePath));
 
             if (!direct) {
               this.urlCache[filePath] = originalValue;

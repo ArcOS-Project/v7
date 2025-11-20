@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { Env } from "$ts/env";
 import { getAllImages } from "$ts/images";
 import { getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
@@ -59,13 +60,13 @@ export class ShortcutPropertiesRuntime extends AppProcess {
 
     switch (data.type) {
       case "app":
-        await this.userDaemon?.spawn?.spawnOverlay("AppInfo", +this.env.get("shell_pid"), data.target);
+        await this.userDaemon?.spawn?.spawnOverlay("AppInfo", +Env().get("shell_pid"), data.target);
         break;
       case "file":
-        await this.userDaemon?.spawn?.spawnApp("fileManager", +this.env.get("shell_pid"), getParentDirectory(data.target));
+        await this.userDaemon?.spawn?.spawnApp("fileManager", +Env().get("shell_pid"), getParentDirectory(data.target));
         break;
       case "folder":
-        await this.userDaemon?.spawn?.spawnApp("fileManager", +this.env.get("shell_pid"), data.target);
+        await this.userDaemon?.spawn?.spawnApp("fileManager", +Env().get("shell_pid"), data.target);
         break;
       case "new":
         await this.closeWindow();

@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
+import { Env, KernelStack } from "$ts/env";
 import type { Process } from "$ts/process/instance";
 import { ProcessKillResultCaptions } from "$ts/process/store";
 import type { ServiceHost } from "$ts/services";
@@ -152,14 +152,14 @@ export class ProcessManagerRuntime extends AppProcess {
   serviceInfoFor(id: string) {
     if (!this.host.hasService(id)) return;
 
-    this.spawnOverlayApp("ServiceInfo", +this.env.get("shell_pid"), id);
+    this.spawnOverlayApp("ServiceInfo", +Env().get("shell_pid"), id);
   }
 
   appInfoFor(proc: AppProcess) {
-    this.spawnOverlayApp("AppInfo", +this.env.get("shell_pid"), proc.app.id);
+    this.spawnOverlayApp("AppInfo", +Env().get("shell_pid"), proc.app.id);
   }
 
   processInfoFor(proc: Process) {
-    this.spawnOverlayApp("ProcessInfoApp", +this.env.get("shell_pid"), proc);
+    this.spawnOverlayApp("ProcessInfoApp", +Env().get("shell_pid"), proc);
   }
 }

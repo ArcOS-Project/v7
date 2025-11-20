@@ -1,6 +1,6 @@
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
+import { Env, KernelStack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { getParentDirectory, join } from "$ts/util/fs";
 import type { App, InstalledApp } from "$types/app";
@@ -79,7 +79,7 @@ export class SpawnUserContext extends UserContext {
       if (!elevated) return;
     }
 
-    const shellDispatch = KernelStack().ConnectDispatch(+this.env.get("shell_pid"));
+    const shellDispatch = KernelStack().ConnectDispatch(+Env().get("shell_pid"));
 
     if (shellDispatch) {
       shellDispatch?.dispatch("close-start-menu");
@@ -159,7 +159,7 @@ export class SpawnUserContext extends UserContext {
 
     await KernelStack().waitForAvailable();
 
-    const pid = parentPid || +this.env.get("shell_pid");
+    const pid = parentPid || +Env().get("shell_pid");
 
     if (!pid) {
       this.Log(`Spawning overlay app '${app.id}' as normal app: no suitable parent process`, LogLevel.warning);
@@ -237,7 +237,7 @@ export class SpawnUserContext extends UserContext {
         sound: "arcos.dialog.error",
         image: "ErrorIcon",
       },
-      +this.env.get("shell_pid"),
+      +Env().get("shell_pid"),
       true
     );
   }
@@ -255,13 +255,13 @@ export class SpawnUserContext extends UserContext {
             {
               caption: "Take me there",
               action: () => {
-                this.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps");
+                this.spawnApp("systemSettings", +Env().get("shell_pid"), "apps");
               },
             },
             { caption: "Okay", suggested: true, action: () => {} },
           ],
         },
-        +this.env.get("shell_pid"),
+        +Env().get("shell_pid"),
         true
       );
   }

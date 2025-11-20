@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { Env, KernelDispatchS, KernelSound } from "$ts/env";
 import { LoginUser } from "$ts/server/user/auth";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -31,7 +32,7 @@ export class SecureContextRuntime extends AppProcess {
   async render() {
     if (await this.closeIfSecondInstance()) return;
 
-    this.soundBus.playSound("arcos.dialog.info");
+    KernelSound().playSound("arcos.dialog.info");
   }
 
   //#endregion
@@ -67,7 +68,7 @@ export class SecureContextRuntime extends AppProcess {
 
     await this.closeWindow(); // Close the window first
 
-    this.systemDispatch.dispatch("elevation-approve", [this.id, this.key], true); // Use dispatch to inform the invocator
+    KernelDispatchS().dispatch("elevation-approve", [this.id, this.key], true); // Use dispatch to inform the invocator
   }
 
   async deny() {
@@ -77,7 +78,7 @@ export class SecureContextRuntime extends AppProcess {
 
     await this.closeWindow(); // Close the window first
 
-    this.systemDispatch.dispatch("elevation-deny", [this.id, this.key], true); // Use dispatch to inform the invocator
+    KernelDispatchS().dispatch("elevation-deny", [this.id, this.key], true); // Use dispatch to inform the invocator
   }
 
   async passwordIncorrect() {
@@ -121,7 +122,7 @@ export class SecureContextRuntime extends AppProcess {
             caption: "Continue",
             action: () => {
               this.deny();
-              this.spawnApp("systemSettings", +this.env.get("shell_pid"), "securityCenter"); // Go to the 'securityCenter' page
+              this.spawnApp("systemSettings", +Env().get("shell_pid"), "securityCenter"); // Go to the 'securityCenter' page
             },
             suggested: true,
           },

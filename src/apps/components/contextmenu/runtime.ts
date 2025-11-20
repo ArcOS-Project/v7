@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { KernelStack } from "$ts/env";
+import { Env, KernelStack } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import type { AppProcessData, ContextMenuInstance, ContextMenuItem } from "$types/app";
@@ -19,7 +19,7 @@ export class ContextMenuRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
-    this.env.set("contextmenu_pid", this.pid);
+    Env().set("contextmenu_pid", this.pid);
 
     this.setSource(__SOURCE__);
   }

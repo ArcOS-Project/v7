@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { __Console__ } from "$ts/console";
-import { Kernel } from "$ts/env";
+import { Env, Kernel, KernelDispatchS } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import type { App } from "$types/app";
 import type { ConstructedWaveKernel, EnvironmentType, SystemDispatchType } from "$types/kernel";
@@ -18,17 +18,12 @@ export class ProcessHandler extends KernelModule {
   public store = Store<Map<number, Process>>(new Map([]));
   public rendererPid = -1;
   public renderer: AppRenderer | undefined;
-  public env: EnvironmentType;
-  public dispatch: SystemDispatchType;
   public processContexts = new Map<number, ProcessContext>([]);
 
   //#region LIFECYCLE
 
   constructor(kernel: ConstructedWaveKernel, id: string) {
     super(kernel, id);
-
-    this.env = Kernel()!.getModule<EnvironmentType>("env");
-    this.dispatch = Kernel()!.getModule<SystemDispatchType>("dispatch");
   }
 
   async startRenderer(initPid: number) {
@@ -43,7 +38,7 @@ export class ProcessHandler extends KernelModule {
     this.isKmod();
     this.BUSY = true;
 
-    this.dispatch.dispatch("stack-busy");
+    KernelDispatchS().dispatch("stack-busy");
     this.Log(`Now busy: ${reason}`);
   }
 
@@ -51,7 +46,7 @@ export class ProcessHandler extends KernelModule {
     this.isKmod();
     this.BUSY = false;
 
-    this.dispatch.dispatch("stack-not-busy");
+    KernelDispatchS().dispatch("stack-not-busy");
     this.Log(`Now no longer busy: ${reason}`);
   }
 
@@ -68,7 +63,7 @@ export class ProcessHandler extends KernelModule {
 
     this.makeBusy("Spawning process");
 
-    const userDaemonPid = this.env.get("userdaemon_pid");
+    const userDaemonPid = Env().get("userdaemon_pid");
 
     if (KernelStateHandler()?.currentState === "desktop" && userDaemonPid) {
       parentPid ??= +userDaemonPid;

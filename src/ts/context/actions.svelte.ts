@@ -1,6 +1,6 @@
 import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
 import type { AppProcess } from "$ts/apps/process";
-import { getKMod, KernelStack } from "$ts/env";
+import { Env, getKMod, KernelStack } from "$ts/env";
 import { UUID } from "$ts/uuid";
 import type { ContextMenuItem } from "$types/app";
 import type { EnvironmentType, ProcessHandlerType } from "$types/kernel";
@@ -29,7 +29,7 @@ export function contextProps(node: HTMLElement, args: any[]) {
 }
 
 export function contextMenu(node: HTMLElement, [items, process]: [ContextMenuItem[], AppProcess]) {
-  const contextMenuPid = process.env?.get("contextmenu_pid");
+  const contextMenuPid = Env().get("contextmenu_pid");
   if (!contextMenuPid) return;
   const contextmenu = KernelStack()?.getProcess<ContextMenuRuntime>(+contextMenuPid);
   if (!contextmenu) return;

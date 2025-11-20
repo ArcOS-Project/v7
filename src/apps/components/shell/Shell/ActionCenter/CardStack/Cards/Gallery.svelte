@@ -6,6 +6,7 @@
   import type { UserPreferencesStore } from "$types/user";
   import { onMount } from "svelte";
   import Spinner from "../../../../../../../lib/Spinner.svelte";
+  import { Fs } from "$ts/env";
 
   const { userPreferences, process }: { userPreferences: UserPreferencesStore; process: ShellRuntime } = $props();
 
@@ -32,7 +33,7 @@
         errored = false;
         loading = true;
 
-        const contents = await process.fs.readFile(v.shell.actionCenter.galleryImage);
+        const contents = await Fs().readFile(v.shell.actionCenter.galleryImage);
 
         loading = false;
 

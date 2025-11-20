@@ -1,6 +1,7 @@
 import { Process } from "$ts/process/instance";
 import initSqlJs from "sql.js";
 import { sqljsResultToJSON } from "./util";
+import { Fs } from "$ts/env";
 
 export class SqlInterfaceProcess extends Process {
   private filePath: string;
@@ -50,7 +51,7 @@ export class SqlInterfaceProcess extends Process {
   async readFile() {
     if (this._disposed) return;
 
-    const ab = await this.fs.readFile(this.filePath);
+    const ab = await Fs().readFile(this.filePath);
 
     if (!ab) throw new Error("Failed to read SQL: file not found");
 
@@ -66,7 +67,7 @@ export class SqlInterfaceProcess extends Process {
 
     if (!ab) return;
 
-    await this.fs.writeFile(this.filePath, new Blob([ab]));
+    await Fs().writeFile(this.filePath, new Blob([ab]));
   }
 
   async stop() {

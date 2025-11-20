@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
+import { Env, KernelStack } from "$ts/env";
 import { ArcLicense } from "$ts/metadata/license";
 import { Backend } from "$ts/server/axios";
 import { UserPaths } from "$ts/server/user/store";
@@ -220,7 +220,7 @@ export class SettingsRuntime extends AppProcess {
           },
         ],
       },
-      +this.env.get("shell_pid") || this.pid,
+      +Env().get("shell_pid") || this.pid,
       true
     );
   }

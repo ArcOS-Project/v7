@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import type { ViewBugReportData } from "$apps/admin/adminportal/types";
+  import { Fs } from "$ts/env";
   import { UserPaths } from "$ts/server/user/store";
   import { textToBlob } from "$ts/util/convert";
   import { getItemNameFromPath } from "$ts/util/fs";
@@ -31,7 +32,7 @@
     );
 
     try {
-      await process.fs.writeFile(path, textToBlob(JSON.stringify(report, null, 2)), (progress) => {
+      await Fs().writeFile(path, textToBlob(JSON.stringify(report, null, 2)), (progress) => {
         prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);

@@ -18,6 +18,7 @@ import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import TakenDown from "./AppStore/TakenDown.svelte";
 import { appStorePages } from "./store";
+import { Env, Fs, KernelDispatchS } from "$ts/env";
 
 export class AppStoreRuntime extends AppProcess {
   searchQuery = Store<string>("");
@@ -58,14 +59,14 @@ export class AppStoreRuntime extends AppProcess {
           sound: "arcos.dialog.error",
           image: "ErrorIcon",
         },
-        +this.env.get("shell_pid"),
+        +Env().get("shell_pid"),
         true
       );
 
       return false;
     }
 
-    this.systemDispatch.subscribe("mugui-done", () => {
+    KernelDispatchS().subscribe("mugui-done", () => {
       this.switchPage(this.currentPage(), this.pageProps(), true);
     });
   }
@@ -406,9 +407,9 @@ The author hasn't provided a readme file themselves, so this one has been automa
     const array = await axios.get(url, { responseType: "arraybuffer" });
 
     try {
-      await this.fs.writeFile(path, arrayToBlob(array.data));
+      await Fs().writeFile(path, arrayToBlob(array.data));
     } catch {}
 
-    this.spawnApp("ImageViewer", +this.env.get("shell_pid"), path);
+    this.spawnApp("ImageViewer", +Env().get("shell_pid"), path);
   }
 }

@@ -1,6 +1,6 @@
 import { DistributionServiceProcess } from "$ts/distrib";
 import { AdminServerDrive } from "$ts/drives/admin";
-import { KernelServerUrl } from "$ts/env";
+import { Fs, KernelServerUrl } from "$ts/env";
 import { toForm } from "$ts/form";
 import { tryJsonParse } from "$ts/json";
 import type { ServiceHost } from "$ts/services";
@@ -52,8 +52,8 @@ export class AdminBootstrapper extends BaseService {
     if (!this.userInfo || !this.userInfo.admin) throw new Error("Invalid user or not an admin");
 
     try {
-      await this.fs.createDirectory("T:/AdminBootstrapper");
-      await this.fs.mountDrive("admin", AdminFileSystem, "A", undefined, this.token);
+      await Fs().createDirectory("T:/AdminBootstrapper");
+      await Fs().mountDrive("admin", AdminFileSystem, "A", undefined, this.token);
     } catch {}
   }
 
@@ -87,7 +87,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return;
 
     try {
-      return await this.fs.mountDrive(btoa(username), AdminServerDrive, driveLetter, onProgress, this.token, username);
+      return await Fs().mountDrive(btoa(username), AdminServerDrive, driveLetter, onProgress, this.token, username);
     } catch {}
   }
 
@@ -1129,8 +1129,8 @@ export class AdminBootstrapper extends BaseService {
     status("Creating target directory");
 
     try {
-      await this.fs.createDirectory(target);
-      await this.fs.createDirectory(`${target}/payload`);
+      await Fs().createDirectory(target);
+      await Fs().createDirectory(`${target}/payload`);
     } catch {}
 
     const sortedPaths = Object.keys(buffer.files).sort((p) => (buffer.files[p].dir ? -1 : 0));
@@ -1142,7 +1142,7 @@ export class AdminBootstrapper extends BaseService {
         status(`Creating dir ${pathTarget}`);
 
         try {
-          await this.fs.createDirectory(pathTarget);
+          await Fs().createDirectory(pathTarget);
         } catch {}
       }
     }
@@ -1154,7 +1154,7 @@ export class AdminBootstrapper extends BaseService {
         status(`Writing file ${pathTarget}`);
 
         try {
-          await this.fs.writeFile(pathTarget, arrayToBlob(await item.async("arraybuffer"), fromExtension(pathTarget)));
+          await Fs().writeFile(pathTarget, arrayToBlob(await item.async("arraybuffer"), fromExtension(pathTarget)));
         } catch {}
       }
     }
@@ -1186,8 +1186,8 @@ export class AdminBootstrapper extends BaseService {
         return false;
       }
 
-      await this.fs.createDirectory(join(UserPaths.Documents, `AdminBootstrapper`));
-      await this.fs.writeFile(
+      await Fs().createDirectory(join(UserPaths.Documents, `AdminBootstrapper`));
+      await Fs().writeFile(
         join(UserPaths.Documents, `AdminBootstrapper/Verification_${id}_${Date.now()}.txt`),
         textToBlob(note)
       );

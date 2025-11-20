@@ -1,6 +1,6 @@
 import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
 import { contextProps } from "$ts/context/actions.svelte";
-import { BETA, KernelStack } from "$ts/env";
+import { BETA, Env, KernelDispatchS, KernelStack } from "$ts/env";
 import { UUID } from "$ts/uuid";
 import { Draggable } from "@neodrag/vanilla";
 import { unmount } from "svelte";
@@ -70,7 +70,7 @@ export class AppRenderer extends Process {
 
     body.className = "body";
 
-    const shell = KernelStack().getProcess(+this.env.get("shell_pid"));
+    const shell = KernelStack().getProcess(+Env().get("shell_pid"));
 
     window.className = "window shell-colored";
     window.setAttribute("data-pid", process.pid.toString());
@@ -174,7 +174,7 @@ export class AppRenderer extends Process {
       if (data.state?.maximized) window.classList.add("maximized");
       if (data.state?.fullscreen) {
         window.classList.add("fullscreen");
-        this.systemDispatch.dispatch("window-fullscreen", [proc.pid, proc.app.desktop]);
+        KernelDispatchS().dispatch("window-fullscreen", [proc.pid, proc.app.desktop]);
       }
       if (data.entrypoint || data.thirdParty || data.workingDirectory) window.classList.add("tp");
     }
@@ -327,7 +327,7 @@ export class AppRenderer extends Process {
 
     menu.className = "alt-menu nodrag";
 
-    const contextMenuPid = this.env.get("contextmenu_pid");
+    const contextMenuPid = Env().get("contextmenu_pid");
     const contextMenu = KernelStack().getProcess<ContextMenuRuntime>(+contextMenuPid);
     if (!contextMenu) return menu;
 
@@ -542,7 +542,7 @@ export class AppRenderer extends Process {
 
     this.updateDraggableDisabledState(pid, window);
 
-    this.systemDispatch.dispatch(window.classList.contains("maximized") ? "window-maximize" : "window-unmaximize", [pid]);
+    KernelDispatchS().dispatch(window.classList.contains("maximized") ? "window-maximize" : "window-unmaximize", [pid]);
   }
 
   updateDraggableDisabledState(pid: number, window: HTMLDivElement) {
@@ -573,7 +573,7 @@ export class AppRenderer extends Process {
 
     if (!process || !process.app) return;
 
-    this.systemDispatch.dispatch("window-unminimize", [pid, process.app.desktop]);
+    KernelDispatchS().dispatch("window-unminimize", [pid, process.app.desktop]);
 
     this.updateDraggableDisabledState(pid, window);
   }
@@ -592,7 +592,7 @@ export class AppRenderer extends Process {
       window.removeAttribute("data-snapstate");
     }
 
-    if (dispatch) this.systemDispatch.dispatch("window-unsnap", [pid]);
+    if (dispatch) KernelDispatchS().dispatch("window-unsnap", [pid]);
 
     this.updateDraggableDisabledState(pid, window);
   }
@@ -610,7 +610,7 @@ export class AppRenderer extends Process {
     window.classList.remove("maximized");
     window.setAttribute("data-snapstate", variant);
 
-    this.systemDispatch.dispatch("window-snap", [pid, variant]);
+    KernelDispatchS().dispatch("window-snap", [pid, variant]);
     this.updateDraggableDisabledState(pid, window);
   }
 
@@ -630,7 +630,7 @@ export class AppRenderer extends Process {
 
     if (!process || !process.app) return;
 
-    this.systemDispatch.dispatch(minimized ? "window-minimize" : "window-unminimize", [pid, process.app.desktop]);
+    KernelDispatchS().dispatch(minimized ? "window-minimize" : "window-unminimize", [pid, process.app.desktop]);
     this.updateDraggableDisabledState(pid, window);
   }
 
@@ -647,7 +647,7 @@ export class AppRenderer extends Process {
 
     if (!process || !process.app) return;
 
-    this.systemDispatch.dispatch(window.classList.contains("fullscreen") ? "window-fullscreen" : "window-unfullscreen", [
+    KernelDispatchS().dispatch(window.classList.contains("fullscreen") ? "window-fullscreen" : "window-unfullscreen", [
       pid,
       process.app.desktop,
     ]);
@@ -677,7 +677,7 @@ export class AppRenderer extends Process {
       app.assets.runtime,
       undefined,
       "SYSTEM",
-      +this.env.get("shell_pid"),
+      +Env().get("shell_pid"),
       {
         data: { ...app, overlay: true },
         id: app.id,

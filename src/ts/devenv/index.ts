@@ -1,6 +1,6 @@
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
+import { Env, Fs, KernelStack } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import type { ServiceHost } from "$ts/services";
@@ -31,7 +31,7 @@ export class DevelopmentEnvironment extends BaseService {
       this.stop();
     });
 
-    this.daemon = KernelStack().getProcess(+this.env.get("userdaemon_pid"))!;
+    this.daemon = KernelStack().getProcess(+Env().get("userdaemon_pid"))!;
 
     this.setSource(__SOURCE__);
   }
@@ -111,7 +111,7 @@ export class DevelopmentEnvironment extends BaseService {
             sound: "arcos.dialog.error",
             buttons: [{ caption: "Okay", action: () => {} }],
           },
-          +this.env.get("shell_pid"),
+          +Env().get("shell_pid"),
           true
         );
 
@@ -148,7 +148,7 @@ export class DevelopmentEnvironment extends BaseService {
     this.port = undefined;
     this.client?.disconnect();
     this.connected = false;
-    await this.fs.umountDrive("devenv", true);
+    await Fs().umountDrive("devenv", true);
     return undefined;
   }
 
@@ -167,7 +167,7 @@ export class DevelopmentEnvironment extends BaseService {
   async mountDevDrive() {
     if (this._disposed) return this.disconnect();
 
-    const result = await this.fs.mountDrive("devenv", DevDrive, "V", undefined, this.axios, this.url);
+    const result = await Fs().mountDrive("devenv", DevDrive, "V", undefined, this.axios, this.url);
 
     return !!result;
   }

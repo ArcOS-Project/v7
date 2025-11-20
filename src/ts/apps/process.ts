@@ -1,5 +1,5 @@
 import type { ShellRuntime } from "$apps/components/shell/runtime";
-import { ArcOSVersion, getKMod, Kernel, KernelStack } from "$ts/env";
+import { ArcOSVersion, Env, getKMod, Kernel, KernelDispatchS, KernelStack } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -29,7 +29,6 @@ export class AppProcess extends Process {
   componentMount: Record<string, any> = {};
   userPreferences: ReadableStore<UserPreferences> = Store<UserPreferences>(DefaultUserPreferences);
   username: string = "";
-  systemDispatch: SystemDispatchType;
   userDaemon: UserDaemon | undefined;
   shell: ShellRuntime | undefined;
   overridePopulatable: boolean = false;
@@ -58,11 +57,10 @@ export class AppProcess extends Process {
 
     this.windowTitle.set(app.data.metadata.name || "Application");
     this.name = app.data.id;
-    this.systemDispatch = getKMod<SystemDispatchType>("dispatch");
-    this.shell = KernelStack().getProcess(+this.env.get("shell_pid"));
+    this.shell = KernelStack().getProcess(+Env().get("shell_pid"));
 
     const desktopProps = KernelStateHandler()?.stateProps["desktop"];
-    const daemon: UserDaemon | undefined = desktopProps?.userDaemon || KernelStack().getProcess(+this.env.get("userdaemon_pid"));
+    const daemon: UserDaemon | undefined = desktopProps?.userDaemon || KernelStack().getProcess(+Env().get("userdaemon_pid"));
 
     if (daemon) {
       this.userPreferences = daemon.preferences;
@@ -74,11 +72,11 @@ export class AppProcess extends Process {
     this.windowIcon.set(this.userDaemon?.icons?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
     this.startAcceleratorListener();
 
-    this.systemDispatch.subscribe("window-unfullscreen", ([pid]) => {
+    KernelDispatchS().subscribe("window-unfullscreen", ([pid]) => {
       if (this.pid === pid) this.windowFullscreen.set(false);
     });
 
-    this.systemDispatch.subscribe("window-fullscreen", ([pid]) => {
+    KernelDispatchS().subscribe("window-fullscreen", ([pid]) => {
       if (this.pid === pid) this.windowFullscreen.set(true);
     });
 
@@ -91,27 +89,6 @@ export class AppProcess extends Process {
         return v;
       });
     }
-
-    // Global interceptor for the Recycle Bin
-    const userDaemon = this.userDaemon;
-
-    this.fs = new Proxy(this.fs, {
-      get: (target, prop, receiver) => {
-        if (prop === "deleteItem" && typeof target[prop] === "function") {
-          return async (path: string, dispatch?: boolean) => {
-            if (!path.startsWith("U:/")) {
-              return await target[prop].call(this.fs, path, dispatch);
-            }
-
-            const trash = userDaemon?.serviceHost?.getService("TrashSvc") as any;
-            if (!trash) return await target[prop].call(this.fs, path, dispatch);
-
-            return await trash.moveToTrash(path, dispatch);
-          };
-        }
-        return Reflect.get(target, prop, receiver);
-      },
-    });
   }
 
   // Conditional function that can prohibit closing if it returns false
@@ -122,7 +99,7 @@ export class AppProcess extends Process {
   async closeWindow(kill = true) {
     this.Log(`Closing window ${this.pid}`);
 
-    this.handler.renderer?.focusedPid.set(this.pid);
+    KernelStack().renderer?.focusedPid.set(this.pid);
 
     const canClose = this._disposed || (this.onClose ? await this.onClose() : true);
 
@@ -134,7 +111,7 @@ export class AppProcess extends Process {
     this.shell?.trayHost?.disposeProcessTrayIcons?.(this.pid);
 
     if (this.getWindow()?.classList.contains("fullscreen"))
-      this.systemDispatch.dispatch("window-unfullscreen", [this.pid, this.app.desktop]);
+      KernelDispatchS().dispatch("window-unfullscreen", [this.pid, this.app.desktop]);
 
     const elements = [
       ...document.querySelectorAll(`div.window[data-pid="${this.pid}"]`),
@@ -148,7 +125,7 @@ export class AppProcess extends Process {
       return this.killSelf();
     }
 
-    this.systemDispatch.dispatch("window-closing", [this.pid]);
+    KernelDispatchS().dispatch("window-closing", [this.pid]);
 
     for (const element of elements) {
       element.classList.add("closing");
@@ -176,7 +153,7 @@ export class AppProcess extends Process {
             {
               caption: "Manage apps",
               action: () => {
-                this.userDaemon?.spawn?.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps", "apps_manageApps");
+                this.userDaemon?.spawn?.spawnApp("systemSettings", +Env().get("shell_pid"), "apps", "apps_manageApps");
               },
             },
           ],

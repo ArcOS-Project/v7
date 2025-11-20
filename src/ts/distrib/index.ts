@@ -1,4 +1,4 @@
-import { KernelStack } from "$ts/env";
+import { Fs, KernelStack } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { Backend } from "$ts/server/axios";
 import { UserPaths } from "$ts/server/user/store";
@@ -39,7 +39,7 @@ export class DistributionServiceProcess extends BaseService {
 
   async start() {
     try {
-      await this.fs.createDirectory(this.tempFolder, false);
+      await Fs().createDirectory(this.tempFolder, false);
     } catch {
       return false;
     }
@@ -109,7 +109,7 @@ export class DistributionServiceProcess extends BaseService {
     if (this.installedStoreItemCache.length && !noCache) return this.installedStoreItemCache;
 
     try {
-      const contents = await this.fs.readFile(this.installedStoreItemListPath);
+      const contents = await Fs().readFile(this.installedStoreItemListPath);
 
       if (!contents) {
         await this.writeInstalledStoreItemList([]);
@@ -139,8 +139,8 @@ export class DistributionServiceProcess extends BaseService {
     this.BUSY = "writeInstalledStoreItemList";
 
     try {
-      await this.fs.createDirectory(this.dataFolder, false);
-      const result = await this.fs.writeFile(
+      await Fs().createDirectory(this.dataFolder, false);
+      const result = await Fs().writeFile(
         this.installedStoreItemListPath,
         textToBlob(JSON.stringify(list, null, 2)),
         undefined,
@@ -188,7 +188,7 @@ export class DistributionServiceProcess extends BaseService {
     if (this.installedPackagesCache.length) return this.installedPackagesCache;
 
     try {
-      const contents = await this.fs.readFile(this.installedPackagesListPath);
+      const contents = await Fs().readFile(this.installedPackagesListPath);
 
       if (!contents) {
         await this.writeInstalledPackageList([]);
@@ -218,8 +218,8 @@ export class DistributionServiceProcess extends BaseService {
     this.BUSY = "writeInstalledPackageList";
 
     try {
-      await this.fs.createDirectory(this.dataFolder, false);
-      const result = await this.fs.writeFile(
+      await Fs().createDirectory(this.dataFolder, false);
+      const result = await Fs().writeFile(
         this.installedPackagesListPath,
         textToBlob(JSON.stringify(list, null, 2)),
         undefined,
@@ -284,7 +284,7 @@ export class DistributionServiceProcess extends BaseService {
 
     this.BUSY = "packageInstallerFromPath";
 
-    const content = await this.host.daemon.fs.readFile(path, progress);
+    const content = await Fs().readFile(path, progress);
     if (!content) return undefined;
 
     const zip = new JSZip();
@@ -329,7 +329,7 @@ export class DistributionServiceProcess extends BaseService {
 
   async validatePackage(path: string, progress?: FilesystemProgressCallback) {
     this.BUSY = "validatePackage";
-    const content = await this.host.daemon.fs.readFile(path, progress);
+    const content = await Fs().readFile(path, progress);
 
     if (!content) {
       this.BUSY = "";
@@ -540,7 +540,7 @@ export class DistributionServiceProcess extends BaseService {
     }
 
     try {
-      const result = await this.fs.writeFile(path, arrayToBlob(buffer), undefined, false);
+      const result = await Fs().writeFile(path, arrayToBlob(buffer), undefined, false);
       if (!result) {
         return false;
       }
@@ -587,7 +587,7 @@ export class DistributionServiceProcess extends BaseService {
     if (this.checkBusy("publishing_publishPackageFromPath")) return false;
 
     try {
-      const content = await this.fs.readFile(path, (p) => {
+      const content = await Fs().readFile(path, (p) => {
         onProgress?.({ ...p, what: "Loading package" });
       });
 
@@ -677,7 +677,7 @@ export class DistributionServiceProcess extends BaseService {
     if (this.checkBusy("publishing_updateStoreItemFromPath")) return false;
 
     try {
-      const contents = await this.fs.readFile(updatePath, (p) => {
+      const contents = await Fs().readFile(updatePath, (p) => {
         onProgress?.({ ...p, what: "Loading update package" });
       });
 

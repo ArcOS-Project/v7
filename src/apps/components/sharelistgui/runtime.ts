@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
+import { Env, Fs, KernelStack } from "$ts/env";
 import type { ShareManager } from "$ts/shares";
 import type { SharedDrive } from "$ts/shares/drive";
 import { Store } from "$ts/writable";
@@ -27,7 +27,7 @@ export class ShareListGuiRuntime extends AppProcess {
 
     this.selectedShare.subscribe((v) => {
       this.selectedIsOwn.set(!!this.ownedShares().filter((s) => s._id === v)[0]); // Filter the owned shares to determine if the selection is owned
-      this.selectedIsMounted.set(!!this.fs.drives[v]); // Check if the selected share is mounted
+      this.selectedIsMounted.set(!!Fs().drives[v]); // Check if the selected share is mounted
     });
 
     this.setSource(__SOURCE__);
@@ -59,7 +59,7 @@ export class ShareListGuiRuntime extends AppProcess {
           {
             caption: "Leave",
             action: async () => {
-              await this.fs.umountDrive(shareId); // First unmount the share
+              await Fs().umountDrive(shareId); // First unmount the share
               await this.shares.leaveShare(shareId); // Then leave it
 
               this.userPreferences.update((v) => {
@@ -95,7 +95,7 @@ export class ShareListGuiRuntime extends AppProcess {
             {
               caption: "Unmount",
               action: () => {
-                this.fs.umountDrive(shareId); // First unmount it
+                Fs().umountDrive(shareId); // First unmount it
                 this.selectedIsMounted.set(false); // Then clear the selection
               },
               suggested: true,
@@ -117,7 +117,7 @@ export class ShareListGuiRuntime extends AppProcess {
 
   async openShare() {
     const shareId = this.selectedShare(); // Get the selected share
-    const drive = this.fs.drives[shareId] as SharedDrive; // Get the mount
+    const drive = Fs().drives[shareId] as SharedDrive; // Get the mount
 
     if (!drive) return; // No mount? return
 
@@ -130,7 +130,7 @@ export class ShareListGuiRuntime extends AppProcess {
       dispatch?.dispatch("navigate", path);
     } else {
       // Otherwise spawn a fresh file manager
-      this.spawnApp("fileManager", +this.env.get("shell_pid"), path);
+      this.spawnApp("fileManager", +Env().get("shell_pid"), path);
     }
 
     this.closeWindow(); // Finally close the listgui

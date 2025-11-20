@@ -1,6 +1,7 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
   import { StoreItemIcon } from "$ts/distrib/util";
+  import { Env } from "$ts/env";
   import type { AdminPortalRuntime } from "../../runtime";
   import type { ViewStoreItemData } from "../../types";
   import Details from "./ViewStoreItem/Details.svelte";
@@ -41,7 +42,7 @@
 
     progress.stop();
 
-    await process.spawnApp("fileManager", +process.env.get("shell_pid"), path);
+    await process.spawnApp("fileManager", +Env().get("shell_pid"), path);
   }
 
   async function verify() {

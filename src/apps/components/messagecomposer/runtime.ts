@@ -10,6 +10,7 @@ import type { AppProcessData } from "$types/app";
 import type { MessageCreateData } from "$types/messaging";
 import mime from "mime";
 import type { Attachment } from "./types";
+import { Fs } from "$ts/env";
 
 export class MessageComposerRuntime extends AppProcess {
   sending = Store<boolean>(false);
@@ -141,7 +142,7 @@ export class MessageComposerRuntime extends AppProcess {
       const mimetype = mime.getType(path);
       const filename = getItemNameFromPath(path);
       try {
-        const contents = await this.fs.readFile(path, (progress) => {
+        const contents = await Fs().readFile(path, (progress) => {
           prog.show();
           prog.updateCaption(progress.what ? `Reading ${progress.what}` : "Reading file...");
           prog.updSub(path);

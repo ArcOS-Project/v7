@@ -1,6 +1,6 @@
 import { __Console__ } from "$ts/console";
 import { MemoryFilesystemDrive } from "$ts/drives/temp";
-import { ArcOSVersion, getKMod, Kernel, KernelStack } from "$ts/env";
+import { ArcOSVersion, Env, Fs, getKMod, Kernel, KernelStack, Stack } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { States } from "$ts/state/store";
@@ -37,7 +37,7 @@ export class InitProcess extends Process {
     kernel!.state = state;
 
     const MobileBlockApp = (await import("$apps/components/mobileblock/MobileBlock")).default;
-    await this.handler.spawn(MobileBlockApp.assets.runtime, undefined, "SYSTEM", this.pid, {
+    await Stack().spawn(MobileBlockApp.assets.runtime, undefined, "SYSTEM", this.pid, {
       data: MobileBlockApp,
       desktop: undefined,
       id: MobileBlockApp.id,
@@ -59,17 +59,17 @@ export class InitProcess extends Process {
     this.Log("Initializing TEMP");
 
     try {
-      await this.fs.mountDrive("temp", MemoryFilesystemDrive, "T");
-      await this.fs.createDirectory("T:/Apps");
-      await this.fs.createDirectory("T:/Meta");
-      await this.fs.writeFile("T:/Meta/ARCOS_BUILD", textToBlob(ArcBuild()));
-      await this.fs.writeFile("T:/Meta/ARCOS_MODE", textToBlob(ArcMode()));
-      await this.fs.writeFile("T:/Meta/ARCOS_VERSION", textToBlob(ArcOSVersion));
+      await Fs().mountDrive("temp", MemoryFilesystemDrive, "T");
+      await Fs().createDirectory("T:/Apps");
+      await Fs().createDirectory("T:/Meta");
+      await Fs().writeFile("T:/Meta/ARCOS_BUILD", textToBlob(ArcBuild()));
+      await Fs().writeFile("T:/Meta/ARCOS_MODE", textToBlob(ArcMode()));
+      await Fs().writeFile("T:/Meta/ARCOS_VERSION", textToBlob(ArcOSVersion));
     } catch {}
   }
 
   nightly() {
     document.title = `NIGHTLY - ArcOS v${ArcOSVersion}-${ArcMode()}_${ArcBuild()}`;
-    this.env.set(`NIGHTLY_WHODIS_${ArcBuild()}`, 1);
+    Env().set(`NIGHTLY_WHODIS_${ArcBuild()}`, 1);
   }
 }

@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
+import { Fs, KernelStack } from "$ts/env";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { arrayToText, textToBlob } from "$ts/util/convert";
@@ -260,7 +260,7 @@ export class MediaPlayerRuntime extends AppProcess {
     this.Loaded.set(false);
 
     try {
-      const url = await this.fs.direct(path);
+      const url = await Fs().direct(path);
 
       if (!url) {
         MessageBox(
@@ -340,7 +340,7 @@ export class MediaPlayerRuntime extends AppProcess {
     if (!path) return;
 
     try {
-      await this.fs.writeFile(path, textToBlob(playlist, "text/plain"));
+      await Fs().writeFile(path, textToBlob(playlist, "text/plain"));
     } catch {}
   }
 
@@ -360,7 +360,7 @@ export class MediaPlayerRuntime extends AppProcess {
   async readPlaylist(path: string) {
     if (this._disposed) return;
     try {
-      const contents = await this.fs.readFile(path);
+      const contents = await Fs().readFile(path);
       if (!contents) throw new Error("Failed to read playlist");
 
       const queue = JSON.parse(atob(arrayToText(contents)));

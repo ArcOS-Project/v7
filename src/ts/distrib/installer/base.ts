@@ -1,4 +1,4 @@
-import { KernelStack } from "$ts/env";
+import { Env, Fs, KernelStack } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import type { UserDaemon } from "$ts/server/user/daemon";
 import { arrayToBlob } from "$ts/util/convert";
@@ -31,7 +31,7 @@ export class InstallerProcessBase extends Process {
   constructor(pid: number, parentPid: number, zip: JSZip, metadata: ArcPackage, item: StoreItem) {
     super(pid, parentPid);
 
-    this.userDaemon = KernelStack().getProcess(+this.env.get("userdaemon_pid"))!;
+    this.userDaemon = KernelStack().getProcess(+Env().get("userdaemon_pid"))!;
 
     if (metadata && zip) {
       this.metadata = metadata;
@@ -179,7 +179,7 @@ export class InstallerProcessBase extends Process {
     this.logStatus(formattedPath, "mkdir");
 
     try {
-      await this.fs.createDirectory(path, false);
+      await Fs().createDirectory(path, false);
       this.setCurrentStatus("done");
       return true;
     } catch {
@@ -195,7 +195,7 @@ export class InstallerProcessBase extends Process {
     this.logStatus(formattedPath, "file");
 
     try {
-      await this.fs.writeFile(
+      await Fs().writeFile(
         path,
         arrayToBlob(content, fromExtension(path)),
         (prog) => {
@@ -218,7 +218,7 @@ export class InstallerProcessBase extends Process {
 
     this.logStatus(this.workingDirectory, "mkdir");
     try {
-      await this.fs.createDirectory(this.workingDirectory, false);
+      await Fs().createDirectory(this.workingDirectory, false);
       this.setCurrentStatus("done");
       return true;
     } catch {

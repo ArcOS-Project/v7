@@ -1,3 +1,4 @@
+import { Fs, KernelDispatchS } from "$ts/env";
 import { applyDefaults } from "$ts/hierarchy";
 import { Backend } from "$ts/server/axios";
 import { Store, type Unsubscriber } from "$ts/writable";
@@ -93,7 +94,7 @@ export class PreferencesUserContext extends UserContext {
       return v;
     });
 
-    this.systemDispatch.dispatch("pfp-changed", [newValue]);
+    KernelDispatchS().dispatch("pfp-changed", [newValue]);
     this.daemon.globalDispatch?.emit("pfp-changed", newValue);
   }
 
@@ -103,7 +104,7 @@ export class PreferencesUserContext extends UserContext {
     this.Log(`Uploading profile picture to ${UserPaths.Pictures}`);
 
     try {
-      const result = await this.fs.uploadFiles(UserPaths.Pictures, "image/*");
+      const result = await Fs().uploadFiles(UserPaths.Pictures, "image/*");
       if (!result.length) return;
 
       const { path } = result[0];

@@ -1,3 +1,4 @@
+import { Fs, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { UserPaths } from "$ts/server/user/store";
 import type { ServiceHost } from "$ts/services";
@@ -30,7 +31,7 @@ export class LibraryManagement extends BaseService {
     this.Index.clear();
 
     try {
-      const libraryObject = await this.fs.bulk<TpaLibrary>(UserPaths.Libraries, "json");
+      const libraryObject = await Fs().bulk<TpaLibrary>(UserPaths.Libraries, "json");
 
       for (const filename in libraryObject) {
         const interpretedIdentifier = filename.replace(".json", "");
@@ -60,9 +61,9 @@ export class LibraryManagement extends BaseService {
     if (!id || !library) return false;
 
     onStage?.("Deleting library directory");
-    await this.fs.deleteItem(join(UserPaths.Libraries, id), false); // Library directory
+    await Fs().deleteItem(join(UserPaths.Libraries, id), false); // Library directory
     onStage?.("Deleting library configuration");
-    await this.fs.deleteItem(join(UserPaths.Libraries, `${id}.json`), false); // Library metadata file
+    await Fs().deleteItem(join(UserPaths.Libraries, `${id}.json`), false); // Library metadata file
     onStage?.("Refreshing index");
     await this.populateIndex();
 
@@ -80,7 +81,7 @@ export class LibraryManagement extends BaseService {
 
     try {
       const filePath = join(UserPaths.Libraries, id, library.entrypoint);
-      const engine = await this.handler.spawn<JsExec>(
+      const engine = await Stack().spawn<JsExec>(
         JsExec,
         undefined,
         this.host.daemon.userInfo._id,

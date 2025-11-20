@@ -1,3 +1,4 @@
+import { Fs } from "$ts/env";
 import { formatBytes } from "$ts/util/fs";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";
@@ -20,7 +21,7 @@ export class QuotaCommand extends TerminalProcess {
 
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const BAR_LENGTH = 50;
-    const quota = await term.fs.drives.userfs?.quota();
+    const quota = await Fs().drives.userfs?.quota();
 
     if (!quota) {
       term.Error("failed to get UserFS quota!");

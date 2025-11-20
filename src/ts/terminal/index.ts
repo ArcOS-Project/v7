@@ -1,7 +1,7 @@
 import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import TerminalWindow from "$apps/components/terminalwindow/TerminalWindow.svelte";
 import type { FilesystemDrive } from "$ts/drives/drive";
-import { KernelStack } from "$ts/env";
+import { Env, Fs, KernelStack } from "$ts/env";
 import { ASCII_ART } from "$ts/intro";
 import { Process } from "$ts/process/instance";
 import { LoginUser } from "$ts/server/user/auth";
@@ -50,7 +50,7 @@ export class ArcTerminal extends Process {
 
     this.path = path || UserPaths.Home;
     this.changeDirectory(this.path);
-    this.daemon = KernelStack().getProcess(+this.env.get("userdaemon_pid"));
+    this.daemon = KernelStack().getProcess(+Env().get("userdaemon_pid"));
 
     this.term = term;
     this.tryGetTermWindow();
@@ -63,7 +63,7 @@ export class ArcTerminal extends Process {
     if (!this.term) return this.killSelf();
 
     try {
-      await this.fs.createDirectory(join(UserPaths.Configuration, "ArcTerm"));
+      await Fs().createDirectory(join(UserPaths.Configuration, "ArcTerm"));
     } catch {
       return false;
     }
@@ -159,7 +159,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.readDir(this.join(path));
+    return await Fs().readDir(this.join(path));
   }
 
   async createDirectory(path: string) {
@@ -167,7 +167,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.createDirectory(this.join(path));
+    return await Fs().createDirectory(this.join(path));
   }
 
   async writeFile(path: string, data: Blob) {
@@ -175,7 +175,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.writeFile(this.join(path), data);
+    return await Fs().writeFile(this.join(path), data);
   }
 
   async tree(path: string) {
@@ -183,7 +183,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.tree(this.join(path));
+    return await Fs().tree(this.join(path));
   }
 
   async copyItem(source: string, destination: string) {
@@ -191,7 +191,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.copyItem(this.join(source), this.join(destination));
+    return await Fs().copyItem(this.join(source), this.join(destination));
   }
 
   async moveItem(source: string, destination: string) {
@@ -199,7 +199,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.moveItem(this.join(source), this.join(destination));
+    return await Fs().moveItem(this.join(source), this.join(destination));
   }
 
   async readFile(path: string) {
@@ -207,7 +207,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.readFile(this.join(path));
+    return await Fs().readFile(this.join(path));
   }
 
   async deleteItem(path: string) {
@@ -215,7 +215,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.deleteItem(this.join(path));
+    return await Fs().deleteItem(this.join(path));
   }
 
   async Error(message: string, prefix = "Error") {
@@ -242,7 +242,7 @@ export class ArcTerminal extends Process {
     if (this._disposed) return;
 
     try {
-      const drive = this.fs.getDriveByPath(path);
+      const drive = Fs().getDriveByPath(path);
 
       if (!drive) return false;
 
@@ -252,7 +252,7 @@ export class ArcTerminal extends Process {
     }
 
     try {
-      const contents = await this.fs.readDir(path);
+      const contents = await Fs().readDir(path);
 
       if (!contents) throw "";
 
@@ -370,7 +370,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
     try {
-      const contents = await this.fs.readFile(this.CONFIG_PATH);
+      const contents = await Fs().readFile(this.CONFIG_PATH);
 
       if (!contents) throw "";
 
@@ -388,7 +388,7 @@ export class ArcTerminal extends Process {
     if (this._disposed) return;
 
     try {
-      await this.fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(this.config, null, 2)));
+      await Fs().writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(this.config, null, 2)));
     } catch {
       return;
     }
@@ -422,12 +422,12 @@ export class ArcTerminal extends Process {
   async migrateConfigurationPath() {
     try {
       const oldPath = "U:/arcterm.conf";
-      const newFile = await this.fs.readFile(this.CONFIG_PATH);
-      const oldFile = newFile ? undefined : await this.fs.readFile(oldPath);
+      const newFile = await Fs().readFile(this.CONFIG_PATH);
+      const oldFile = newFile ? undefined : await Fs().readFile(oldPath);
 
       if (oldFile && !newFile) {
         this.Log("Migrating old config path to " + this.CONFIG_PATH);
-        await this.fs.moveItem(oldPath, this.CONFIG_PATH);
+        await Fs().moveItem(oldPath, this.CONFIG_PATH);
       }
     } catch {}
   }

@@ -2,7 +2,7 @@ import type { ApplicationStorage } from "$ts/apps/storage";
 import { BuiltinAppImportPathAbsolutes } from "$ts/apps/store";
 import { MessageBox } from "$ts/dialog";
 import type { DistributionServiceProcess } from "$ts/distrib";
-import { ArcOSVersion } from "$ts/env";
+import { ArcOSVersion, Env, Fs, KernelDispatchS } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -62,7 +62,7 @@ export class AppRegistrationUserContext extends UserContext {
                 buttons: [{ caption: "Okay", action: () => r(), suggested: true }],
                 image: "WarningIcon",
               },
-              +this.env.get("loginapp_pid"),
+              +Env().get("loginapp_pid"),
               true
             );
           });
@@ -83,7 +83,7 @@ export class AppRegistrationUserContext extends UserContext {
     await this.daemon.migrations!.migrateUserAppsToFs();
 
     const bulk = Object.fromEntries(
-      Object.entries(await this.fs.bulk(UserPaths.AppRepository, "json")).map(([k, v]) => [k.replace(".json", ""), v])
+      Object.entries(await Fs().bulk(UserPaths.AppRepository, "json")).map(([k, v]) => [k.replace(".json", ""), v])
     );
 
     return Object.values(bulk) as AppStorage;
@@ -93,7 +93,7 @@ export class AppRegistrationUserContext extends UserContext {
     this.Log(`Registering ${data.id}: writing ${data.id}.json to AppRepository`);
     const appStore = this.appStorage();
 
-    await this.fs.writeFile(join(UserPaths.AppRepository, `${data.id}.json`), textToBlob(JSON.stringify(data, null, 2)));
+    await Fs().writeFile(join(UserPaths.AppRepository, `${data.id}.json`), textToBlob(JSON.stringify(data, null, 2)));
     await appStore?.refresh();
     await this.addToStartMenu(data.id);
   }
@@ -114,7 +114,7 @@ export class AppRegistrationUserContext extends UserContext {
 
   async registerAppFromPath(path: string) {
     try {
-      const contents = await this.fs.readFile(path);
+      const contents = await Fs().readFile(path);
       if (!contents) return "failed to read file";
 
       const text = arrayToText(contents);
@@ -168,7 +168,7 @@ export class AppRegistrationUserContext extends UserContext {
             },
           ],
         },
-        +this.env.get("shell_pid"),
+        +Env().get("shell_pid"),
         true
       );
     });
@@ -216,7 +216,7 @@ export class AppRegistrationUserContext extends UserContext {
     const path = this.determineStartMenuShortcutPath(app);
     if (!path) return;
 
-    const existing = await this.fs.stat(path);
+    const existing = await Fs().stat(path);
     if (existing) return;
 
     await this.daemon.shortcuts?.createShortcut(
@@ -230,7 +230,7 @@ export class AppRegistrationUserContext extends UserContext {
       false
     );
 
-    this.systemDispatch.dispatch("startmenu-refresh");
+    KernelDispatchS().dispatch("startmenu-refresh");
   }
 
   async removeFromStartMenu(appId: string) {
@@ -240,7 +240,7 @@ export class AppRegistrationUserContext extends UserContext {
     const path = this.determineStartMenuShortcutPath(app);
     if (!path) return;
 
-    await this.fs.deleteItem(path, false);
-    this.systemDispatch.dispatch("startmenu-refresh");
+    await Fs().deleteItem(path, false);
+    KernelDispatchS().dispatch("startmenu-refresh");
   }
 }

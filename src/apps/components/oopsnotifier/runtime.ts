@@ -3,6 +3,7 @@ import { ApplicationStorage } from "$ts/apps/storage";
 import type { App, AppProcessData } from "$types/app";
 import { parse } from "stacktrace-parser";
 import type { ParsedStackFrame, ParsedStackUrl } from "./types";
+import { Env, KernelSound } from "$ts/env";
 
 export class OopsNotifierRuntime extends AppProcess {
   data: App;
@@ -34,7 +35,7 @@ export class OopsNotifierRuntime extends AppProcess {
   }
 
   async start() {
-    this.soundBus.playSound("arcos.dialog.error");
+    KernelSound().playSound("arcos.dialog.error");
 
     try {
       this.parseStack();
@@ -74,7 +75,7 @@ export class OopsNotifierRuntime extends AppProcess {
   async details() {
     const proc = await this.userDaemon?.spawn?.spawnOverlay(
       "OopsStackTracer",
-      +this.env.get("shell_pid"),
+      +Env().get("shell_pid"),
       this.data,
       this.exception,
       this.process,
@@ -87,7 +88,7 @@ export class OopsNotifierRuntime extends AppProcess {
   async reopen() {
     if (!this.installed) return;
 
-    await this.spawnApp(this.data.id, this.process?.parentPid || +this.env.get("shell_pid"));
+    await this.spawnApp(this.data.id, this.process?.parentPid || +Env().get("shell_pid"));
     this.closeWindow();
   }
 

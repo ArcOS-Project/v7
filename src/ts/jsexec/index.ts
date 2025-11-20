@@ -9,7 +9,7 @@
  * © IzKuipers 2025
  */
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { KernelServerUrl } from "$ts/env";
+import { Fs, KernelServerUrl } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import { Backend } from "$ts/server/axios";
 import { TryGetDaemon, UserDaemon } from "$ts/server/user/daemon";
@@ -111,7 +111,7 @@ export class JsExec extends Process {
   async getContents() {
     this.Log(`Reading script contents`);
 
-    const unwrapped = arrayToText((await this.fs.readFile(this.filePath!))!);
+    const unwrapped = arrayToText((await Fs().readFile(this.filePath!))!);
     if (!unwrapped) throw new JsExecError(`Failed to read ${this.filePath}: not found`);
 
     await this.testFileContents(unwrapped);

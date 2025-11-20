@@ -8,7 +8,7 @@ import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import { MessageBox } from "$ts/dialog";
 import type { MemoryFilesystemDrive } from "$ts/drives/temp";
 import { ZIPDrive } from "$ts/drives/zipdrive";
-import { KernelStack } from "$ts/env";
+import { Env, Fs, KernelDispatchS, KernelStack } from "$ts/env";
 import { applyDefaults } from "$ts/hierarchy";
 import { Sleep } from "$ts/sleep";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
@@ -36,14 +36,14 @@ export class FilesystemUserContext extends UserContext {
   }
 
   async _init() {
-    this.TempFs = this.fs.getDriveById("temp") as MemoryFilesystemDrive;
+    this.TempFs = Fs().getDriveById("temp") as MemoryFilesystemDrive;
     this.TempFsSnapshot = await this.TempFs.takeSnapshot();
   }
 
   async _deactivate() {
     this.TempFs?.restoreSnapshot(this.TempFsSnapshot!);
-    this.fs.umountDrive(`userfs`, true);
-    this.fs.umountDrive(`admin`, true);
+    Fs().umountDrive(`userfs`, true);
+    Fs().umountDrive(`admin`, true);
   }
 
   async mountZip(path: string, letter?: string, fromSystem = false) {
@@ -70,10 +70,10 @@ export class FilesystemUserContext extends UserContext {
         subtitle: `${path}${letter ? ` as ${letter}:/` : ""}`,
         icon: "DriveIcon",
       },
-      +this.env.get("shell_pid") || undefined
+      +Env().get("shell_pid") || undefined
     );
 
-    const mount = await this.fs.mountDrive(
+    const mount = await Fs().mountDrive(
       btoa(path),
       ZIPDrive,
       letter,
@@ -93,7 +93,7 @@ export class FilesystemUserContext extends UserContext {
     this.Log("Unmounting mounted drives");
 
     for (const drive of this.mountedDrives) {
-      this.fs.umountDrive(drive, true);
+      Fs().umountDrive(drive, true);
     }
   }
 
@@ -282,7 +282,7 @@ export class FilesystemUserContext extends UserContext {
 
       try {
         const sourceName = getItemNameFromPath(source);
-        await this.fs.moveItem(source, `${destination}/${sourceName}`, false, (prog) => {
+        await Fs().moveItem(source, `${destination}/${sourceName}`, false, (prog) => {
           childProgress.setMax(prog.max + 1);
           childProgress.setDone(prog.value);
           childProgress.setType("quantity");
@@ -299,8 +299,8 @@ export class FilesystemUserContext extends UserContext {
     }
     progress.stop();
 
-    this.systemDispatch.dispatch("fs-flush-folder", firstSourceParent);
-    if (firstSourceParent !== destination) this.systemDispatch.dispatch("fs-flush-folder", destination);
+    KernelDispatchS().dispatch("fs-flush-folder", firstSourceParent);
+    if (firstSourceParent !== destination) KernelDispatchS().dispatch("fs-flush-folder", destination);
     KernelStack()?.renderer?.focusPid(pid);
   }
 
@@ -338,7 +338,7 @@ export class FilesystemUserContext extends UserContext {
       );
 
       try {
-        await this.fs.copyItem(source, destination, false, (prog) => {
+        await Fs().copyItem(source, destination, false, (prog) => {
           childProgress.setMax(prog.max + 1);
           childProgress.setDone(prog.value);
           childProgress.setType("quantity");
@@ -355,7 +355,7 @@ export class FilesystemUserContext extends UserContext {
     }
     progress.stop();
 
-    this.systemDispatch.dispatch("fs-flush-folder", destination);
+    KernelDispatchS().dispatch("fs-flush-folder", destination);
     KernelStack()?.renderer?.focusPid(pid);
   }
 
@@ -430,16 +430,16 @@ export class FilesystemUserContext extends UserContext {
 
     this.Log(`Spawning LoadSaveDialog with UUID ${uuid}`);
 
-    await this.daemon.spawn?.spawnOverlay("fileManager", +this.env.get("shell_pid"), data.startDir || UserPaths.Home, {
+    await this.daemon.spawn?.spawnOverlay("fileManager", +Env().get("shell_pid"), data.startDir || UserPaths.Home, {
       ...data,
       returnId: uuid,
     });
 
     return new Promise<string[] | [undefined]>(async (r) => {
-      this.systemDispatch.subscribe<[string, string[] | [undefined]]>("ls-confirm", ([id, paths]) => {
+      KernelDispatchS().subscribe<[string, string[] | [undefined]]>("ls-confirm", ([id, paths]) => {
         if (id === uuid) r(paths);
       });
-      this.systemDispatch.subscribe("ls-cancel", ([id]) => {
+      KernelDispatchS().subscribe("ls-cancel", ([id]) => {
         if (id === uuid) r([undefined]);
       });
     });
@@ -471,7 +471,7 @@ export class FilesystemUserContext extends UserContext {
           sound: "arcos.dialog.warning",
           image: "ErrorIcon",
         },
-        +this.env.get("shell_pid"),
+        +Env().get("shell_pid"),
         true
       );
 
@@ -480,7 +480,7 @@ export class FilesystemUserContext extends UserContext {
 
     if (result.handledBy.handler) return await result.handledBy.handler.handle(path);
 
-    return await this.daemon?.spawn?.spawnApp(result.handledBy.app?.id!, +this.env.get("shell_pid"), path);
+    return await this.daemon?.spawn?.spawnApp(result.handledBy.app?.id!, +Env().get("shell_pid"), path);
   }
 
   async openWith(path: string) {
@@ -488,15 +488,15 @@ export class FilesystemUserContext extends UserContext {
 
     if (this._disposed) return;
 
-    await this.daemon?.spawn?.spawnOverlay("OpenWith", +this.env.get("shell_pid"), path);
+    await this.daemon?.spawn?.spawnOverlay("OpenWith", +Env().get("shell_pid"), path);
   }
 
   async determineCategorizedDiskUsage(): Promise<CategorizedDiskUsage> {
     const total = this.userInfo!.storageSize;
-    const apps = (await this.fs.readDir(UserPaths.Applications))?.totalSize || 0;
-    const system = (await this.fs.readDir(UserPaths.System))?.totalSize || 0;
-    const trash = (await this.fs.readDir(UserPaths.Trashcan))?.totalSize || 0;
-    const home = (await this.fs.readDir(UserPaths.Home))?.totalSize || 0;
+    const apps = (await Fs().readDir(UserPaths.Applications))?.totalSize || 0;
+    const system = (await Fs().readDir(UserPaths.System))?.totalSize || 0;
+    const trash = (await Fs().readDir(UserPaths.Trashcan))?.totalSize || 0;
+    const home = (await Fs().readDir(UserPaths.Home))?.totalSize || 0;
     const used = apps + system + home;
     const result: CategorizedDiskUsage = {
       sizes: {
@@ -528,7 +528,7 @@ export class FilesystemUserContext extends UserContext {
   async getThumbnailFor(path: string): Promise<string | undefined> {
     if (this.thumbnailCache[path]) return this.thumbnailCache[path];
 
-    const dataUrl = await this.fs.imageThumbnail(path, 64);
+    const dataUrl = await Fs().imageThumbnail(path, 64);
     if (dataUrl) this.thumbnailCache[path] = dataUrl;
 
     return dataUrl;

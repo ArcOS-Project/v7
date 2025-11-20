@@ -1,4 +1,5 @@
 import { MessageBox } from "$ts/dialog";
+import { Env, Fs } from "$ts/env";
 import { UserPaths } from "$ts/server/user/store";
 import { textToBlob } from "$ts/util/convert";
 import { getParentDirectory } from "$ts/util/fs";
@@ -29,7 +30,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
 
           if (!path) return;
 
-          await runtime.fs.writeFile(path, textToBlob(JSON.stringify(theme, null, 2)));
+          await Fs().writeFile(path, textToBlob(JSON.stringify(theme, null, 2)));
         },
         icon: "save",
       },
@@ -63,7 +64,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
 
           if (!path) return;
 
-          await runtime.fs.writeFile(path, textToBlob(JSON.stringify(theme, null, 2)));
+          await Fs().writeFile(path, textToBlob(JSON.stringify(theme, null, 2)));
         },
         icon: "save",
       },
@@ -85,7 +86,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
         action: (id: string) => {
           runtime.userDaemon?.spawn?.spawnApp(
             "fileManager",
-            +runtime.env.get("shell_pid"),
+            +Env().get("shell_pid"),
             getParentDirectory(atob(id.replace("@local:", "")))
           );
         },
@@ -116,7 +117,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
                 },
               ],
             },
-            +runtime.env.get("shell_pid"),
+            +Env().get("shell_pid"),
             true
           );
         },

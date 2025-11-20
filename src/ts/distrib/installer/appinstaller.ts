@@ -6,6 +6,7 @@ import type { ArcPackage, StoreItem } from "$types/package";
 import type JSZip from "jszip";
 import type { DistributionServiceProcess } from "..";
 import { InstallerProcessBase } from "./base";
+import { Env, Fs } from "$ts/env";
 
 export class AppInstallerProcess extends InstallerProcessBase {
   //#region LIFECYCLE
@@ -78,7 +79,7 @@ export class AppInstallerProcess extends InstallerProcessBase {
           {
             caption: "Open",
             action: async () => {
-              await this.userDaemon?.spawn?.spawnApp(app.id, +this.env.get("shell_pid"));
+              await this.userDaemon?.spawn?.spawnApp(app.id, +Env().get("shell_pid"));
             },
           },
         ],
@@ -149,7 +150,7 @@ export class AppInstallerProcess extends InstallerProcessBase {
 
     onStage?.("Updating app repository");
 
-    await distrib.fs.deleteItem(join(UserPaths.AppRepository, `${metadata.appId}.json`), false);
+    await Fs().deleteItem(join(UserPaths.AppRepository, `${metadata.appId}.json`), false);
 
     onStage?.("Refreshing app storage...");
 
@@ -159,7 +160,7 @@ export class AppInstallerProcess extends InstallerProcessBase {
     if (deleteFiles) {
       onStage?.("Deleting app files...");
       try {
-        await distrib.fs.deleteItem(metadata.installLocation!, false);
+        await Fs().deleteItem(metadata.installLocation!, false);
       } catch {}
     }
 

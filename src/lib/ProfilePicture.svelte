@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { KernelServerUrl } from "$ts/env";
+  import { KernelDispatchS, KernelServerUrl } from "$ts/env";
   import type { UserDaemon } from "$ts/server/user/daemon";
+  import { DefaultUserPreferences } from "$ts/server/user/default";
   import { Sleep } from "$ts/sleep";
   import { authcode } from "$ts/util";
   import type { UserPreferences } from "$types/user";
@@ -26,7 +27,7 @@
     url = fallback;
 
     preferences?.subscribe(update);
-    userDaemon?.systemDispatch.subscribe("pfp-changed", () => update(preferences?.()!));
+    KernelDispatchS().subscribe("pfp-changed", () => update(preferences?.() || DefaultUserPreferences));
   });
 
   async function update(v: UserPreferences) {

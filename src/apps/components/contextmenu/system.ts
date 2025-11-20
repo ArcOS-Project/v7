@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { KernelStack } from "$ts/env";
+import { Env, KernelStack } from "$ts/env";
 import { UserDaemon } from "$ts/server/user/daemon";
 import type { AppContextMenu } from "$types/app";
 import type { ContextMenuRuntime } from "./runtime";
@@ -15,14 +15,14 @@ export function WindowSystemContextMenu(runtime: ContextMenuRuntime): AppContext
         caption: "App Info",
         icon: "info",
         action: (proc: AppProcess) => {
-          proc.spawnOverlayApp("AppInfo", +proc.env.get("shell_pid"), proc?.app.id);
+          proc.spawnOverlayApp("AppInfo", +Env().get("shell_pid"), proc?.app.id);
         },
       },
       {
         caption: "Process info",
         icon: "cog",
         action: (proc: AppProcess) => {
-          proc.spawnOverlayApp("ProcessInfoApp", +proc.env.get("shell_pid"), proc);
+          proc.spawnOverlayApp("ProcessInfoApp", +Env().get("shell_pid"), proc);
         },
       },
       { sep: true },

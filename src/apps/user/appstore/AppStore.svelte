@@ -5,6 +5,7 @@
   import Sidebar from "./AppStore/Sidebar.svelte";
   import type { AppStoreRuntime } from "./runtime";
   import { appStorePages } from "./store";
+  import { Env } from "$ts/env";
 
   const { process }: { process: AppStoreRuntime } = $props();
   const { currentPage, pageProps, loadingPage, userPreferences } = process;
@@ -53,7 +54,7 @@
 
       <button
         class="suggested"
-        onclick={() => process.userDaemon?.spawn?.spawnApp("systemSettings", +process.env.get("shell_pid"), "apps")}
+        onclick={() => process.userDaemon?.spawn?.spawnApp("systemSettings", +Env().get("shell_pid"), "apps")}
       >
         Take me there
       </button>

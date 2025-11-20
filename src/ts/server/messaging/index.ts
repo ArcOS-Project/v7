@@ -1,4 +1,4 @@
-import { getKMod, KernelServerUrl, KernelStack } from "$ts/env";
+import { Env, Fs, getKMod, KernelServerUrl, KernelStack } from "$ts/env";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import { authcode } from "$ts/util";
@@ -29,7 +29,7 @@ export class MessagingInterface extends BaseService {
   }
 
   async start() {
-    const daemon = KernelStack().getProcess<UserDaemon>(+this.env.get("userdaemon_pid")!)!;
+    const daemon = KernelStack().getProcess<UserDaemon>(+Env().get("userdaemon_pid")!)!;
     const dispatch = daemon.serviceHost?.getService<GlobalDispatch>("GlobalDispatch")!;
 
     dispatch?.subscribe("incoming-message", (message: Message) => {
@@ -42,7 +42,7 @@ export class MessagingInterface extends BaseService {
           {
             caption: "View message",
             action: () => {
-              daemon?.spawn?.spawnApp("Messages", +this.env.get("shell_pid"), "inbox", message._id);
+              daemon?.spawn?.spawnApp("Messages", +Env().get("shell_pid"), "inbox", message._id);
             },
           },
         ],
@@ -197,9 +197,9 @@ export class MessagingInterface extends BaseService {
     try {
       const parent = getParentDirectory(filePath);
       const filename = getItemNameFromPath(filePath);
-      const parentDir = await this.fs.readDir(parent);
+      const parentDir = await Fs().readDir(parent);
       const partial = parentDir?.files.filter((f) => f.name === filename)[0];
-      const contents = await this.fs.readFile(filePath, onProgress);
+      const contents = await Fs().readFile(filePath, onProgress);
 
       if (!partial || !contents) return undefined;
 
@@ -215,5 +215,5 @@ export const messagingService: Service = {
   description: "Handles the ArcOS messaging system",
   initialState: "started",
   process: MessagingInterface,
-  startCondition: (daemon) => !daemon.env.get("safemode"),
+  startCondition: () => !Env().get("safemode"),
 };
