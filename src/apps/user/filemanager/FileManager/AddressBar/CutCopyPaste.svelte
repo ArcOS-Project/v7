@@ -3,7 +3,8 @@
 
   const { process }: { process: FileManagerRuntime } = $props();
 
-  const { cutList, copyList, selection, drive } = process;
+  const { selection, drive } = process;
+  const { cutList, copyList } = process.userDaemon!;
 </script>
 
 <div class="portion copy-paste">

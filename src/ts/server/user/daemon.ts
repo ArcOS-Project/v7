@@ -120,6 +120,8 @@ export class UserDaemon extends Process {
   public lastWallpaper = Store<string>("img0");
   public battery = Store<BatteryType | undefined>();
   public preferences = Store<UserPreferences>(DefaultUserPreferences);
+  public copyList = Store<string[]>([]);
+  public cutList = Store<string[]>([]);
   // STORES - CLASSIC
   private elevations: Record<string, ElevationData> = {};
   private preferencesUnsubscribe: Unsubscriber | undefined;

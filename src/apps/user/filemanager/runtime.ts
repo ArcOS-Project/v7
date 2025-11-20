@@ -26,8 +26,6 @@ export class FileManagerRuntime extends AppProcess {
   loading = Store<boolean>(false);
   errored = Store<boolean>(false);
   selection = Store<string[]>([]);
-  copyList = Store<string[]>([]);
-  cutList = Store<string[]>([]);
   starting = Store<boolean>(true);
   rootFolders = Store<FolderEntry[]>([]);
   drives = Store<Record<string, QuotedDrive>>({});
@@ -312,24 +310,24 @@ export class FileManagerRuntime extends AppProcess {
     if (this._disposed) return;
     this.Log(`Setting COPY list to ${files.length} items`);
 
-    this.copyList.set(files || []);
-    this.cutList.set([]);
+    this.userDaemon?.copyList.set(files || []);
+    this.userDaemon?.cutList.set([]);
     this.updateAltMenu();
   }
 
   public setCutFiles(files = this.selection()) {
     if (this._disposed) return;
     this.Log(`Setting CUT list to ${files.length} items`);
-    this.cutList.set(files || []);
-    this.copyList.set([]);
+    this.userDaemon?.cutList.set(files || []);
+    this.userDaemon?.copyList.set([]);
     this.updateAltMenu();
   }
 
   public async pasteFiles() {
     if (this._disposed) return;
 
-    const copyList = this.copyList.get();
-    const cutList = this.cutList.get();
+    const copyList = this.userDaemon!.copyList();
+    const cutList = this.userDaemon!.cutList();
 
     if (!copyList.length && !cutList.length) return;
 
@@ -338,8 +336,8 @@ export class FileManagerRuntime extends AppProcess {
     if (copyList.length) await this.userDaemon?.copyMultiple(copyList, this.path(), this.pid);
     else if (cutList.length) await this.userDaemon?.moveMultiple(cutList, this.path(), this.pid);
 
-    this.copyList.set([]);
-    this.cutList.set([]);
+    this.userDaemon?.copyList.set([]);
+    this.userDaemon?.cutList.set([]);
 
     this.unlockRefresh();
   }
