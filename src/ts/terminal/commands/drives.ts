@@ -19,7 +19,7 @@ export class DrivesCommand extends TerminalProcess {
   //#endregion
 
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
-    const drives = Fs().drives;
+    const drives = Fs.drives;
     const showHidden = flags.h || flags.hidden;
     const goTo = argv[0];
 

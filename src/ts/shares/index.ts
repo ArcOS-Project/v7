@@ -17,7 +17,7 @@ export class ShareManager extends BaseService {
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(pid, parentPid, name, host);
 
-    this.token = Daemon()!.token;
+    this.token = Daemon!.token;
 
     this.setSource(__SOURCE__);
   }
@@ -128,9 +128,9 @@ export class ShareManager extends BaseService {
   }
 
   async unmountIfMounted(shareId: string) {
-    if (!Fs().drives[shareId]) return;
+    if (!Fs.drives[shareId]) return;
 
-    await Fs().umountDrive(shareId, true);
+    await Fs.umountDrive(shareId, true);
   }
 
   async kickUserFromShare(shareId: string, userId: string): Promise<boolean> {
@@ -151,7 +151,7 @@ export class ShareManager extends BaseService {
     if (!info) return false;
 
     try {
-      return await Fs().mountDrive(info._id, SharedDrive, letter, onProgress, info, this.token);
+      return await Fs.mountDrive(info._id, SharedDrive, letter, onProgress, info, this.token);
     } catch {}
   }
 
@@ -161,7 +161,7 @@ export class ShareManager extends BaseService {
     if (!info) return false;
 
     try {
-      return await Fs().mountDrive(shareId, SharedDrive, letter, onProgress, info, this.token);
+      return await Fs.mountDrive(shareId, SharedDrive, letter, onProgress, info, this.token);
     } catch {
       return false;
     }

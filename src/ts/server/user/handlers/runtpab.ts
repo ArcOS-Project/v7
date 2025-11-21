@@ -23,10 +23,10 @@ const runTpaBundle: (d: UserDaemon) => FileHandler = (daemon) => ({
         caption: "Reading TPA archive",
         subtitle: path,
       },
-      +Env().get("shell_pid")
+      +Env.get("shell_pid")
     );
 
-    const content = await Fs().readFile(path, (progress) => {
+    const content = await Fs.readFile(path, (progress) => {
       prog.show();
       prog.setMax(progress.max);
       prog.setDone(progress.value);
@@ -47,18 +47,18 @@ const runTpaBundle: (d: UserDaemon) => FileHandler = (daemon) => ({
           buttons: [{ caption: "Okay", action: () => {} }],
           image: "ErrorIcon",
         },
-        +Env().get("shell_pid"),
+        +Env.get("shell_pid"),
         true
       );
 
       return;
     }
 
-    await Fs().createDirectory("T:/PkgTemp");
+    await Fs.createDirectory("T:/PkgTemp");
 
     const extractPath = `T:/PkgTemp/${UUID()}`;
 
-    Fs().createDirectory(extractPath);
+    Fs.createDirectory(extractPath);
 
     // First, create all directories
     const sortedPaths = Object.keys(buffer.files).sort((p) => (buffer.files[p].dir ? -1 : 0));
@@ -67,7 +67,7 @@ const runTpaBundle: (d: UserDaemon) => FileHandler = (daemon) => ({
       const item = buffer.files[path];
       const target = join(extractPath, path);
       if (item.dir) {
-        await Fs().createDirectory(target);
+        await Fs.createDirectory(target);
       }
     }
 
@@ -76,7 +76,7 @@ const runTpaBundle: (d: UserDaemon) => FileHandler = (daemon) => ({
       const item = buffer.files[path];
       const target = join(extractPath, path);
       if (!item.dir) {
-        await Fs().writeFile(target, arrayToBlob(await item.async("arraybuffer"), fromExtension(path)));
+        await Fs.writeFile(target, arrayToBlob(await item.async("arraybuffer"), fromExtension(path)));
       }
     }
 

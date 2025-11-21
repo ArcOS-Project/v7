@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { GetConfirmation, MessageBox } from "$ts/dialog";
 import { FilesystemDrive } from "$ts/drives/drive";
-import { Fs, KernelDispatchS } from "$ts/env";
+import { Fs, SysDispatch } from "$ts/env";
 import { AdminScopes } from "$ts/server/admin/store";
 import { Daemon } from "$ts/server/user/daemon";
 import { SystemFolders, UserPathCaptions, UserPaths } from "$ts/server/user/store";
@@ -96,10 +96,10 @@ export class FileManagerRuntime extends AppProcess {
     await this.updateRootFolders();
     await this.updateDrives();
 
-    KernelDispatchS().subscribe("fs-umount-drive", () => this.updateDrives());
-    KernelDispatchS().subscribe("fs-mount-drive", () => this.updateDrives());
+    SysDispatch.subscribe("fs-umount-drive", () => this.updateDrives());
+    SysDispatch.subscribe("fs-mount-drive", () => this.updateDrives());
 
-    KernelDispatchS().subscribe<string>("fs-flush-folder", (path) => {
+    SysDispatch.subscribe<string>("fs-flush-folder", (path) => {
       if (!path || this._disposed) return;
 
       if (path.startsWith("U:") && path.split("/").length == 1) {
@@ -136,7 +136,7 @@ export class FileManagerRuntime extends AppProcess {
     const currentDrive = getDriveLetter(this.path(), true) || "";
 
     try {
-      if (!Fs().getDriveByLetter(currentDrive.slice(0, -1), false)) {
+      if (!Fs.getDriveByLetter(currentDrive.slice(0, -1), false)) {
         this.navigate(UserPaths.Home);
       }
     } catch {
@@ -145,7 +145,7 @@ export class FileManagerRuntime extends AppProcess {
 
     const result: Record<string, QuotedDrive> = {};
 
-    for (const [id, drive] of Object.entries(Fs().drives)) {
+    for (const [id, drive] of Object.entries(Fs.drives)) {
       result[id] = { data: drive, quota: await drive.quota() };
     }
 
@@ -158,7 +158,7 @@ export class FileManagerRuntime extends AppProcess {
     this.Log(`Updating root folders`);
 
     try {
-      const root = this.path() === UserPaths.Home ? this.contents() : await Fs().readDir(UserPaths.Home);
+      const root = this.path() === UserPaths.Home ? this.contents() : await Fs.readDir(UserPaths.Home);
 
       this.rootFolders.set(root?.dirs || []);
     } catch {
@@ -218,7 +218,7 @@ export class FileManagerRuntime extends AppProcess {
     this.loading.set(true);
 
     try {
-      const contents = await Fs().readDir(path);
+      const contents = await Fs.readDir(path);
       const shortcuts = contents?.shortcuts;
 
       if (!contents) this.DirectoryNotFound();
@@ -235,7 +235,7 @@ export class FileManagerRuntime extends AppProcess {
         const driveIdentifier = getDriveLetter(path, true);
 
         if (driveIdentifier) {
-          const drive = Fs().getDriveByLetter(driveIdentifier.slice(0, -1), false);
+          const drive = Fs.getDriveByLetter(driveIdentifier.slice(0, -1), false);
 
           this.drive.set(drive);
 
@@ -312,34 +312,34 @@ export class FileManagerRuntime extends AppProcess {
     if (this._disposed) return;
     this.Log(`Setting COPY list to ${files.length} items`);
 
-    Daemon()?.copyList.set(files || []);
-    Daemon()?.cutList.set([]);
+    Daemon?.copyList.set(files || []);
+    Daemon?.cutList.set([]);
     this.updateAltMenu();
   }
 
   public setCutFiles(files = this.selection()) {
     if (this._disposed) return;
     this.Log(`Setting CUT list to ${files.length} items`);
-    Daemon()?.cutList.set(files || []);
-    Daemon()?.copyList.set([]);
+    Daemon?.cutList.set(files || []);
+    Daemon?.copyList.set([]);
     this.updateAltMenu();
   }
 
   public async pasteFiles() {
     if (this._disposed) return;
 
-    const copyList = Daemon()!.copyList();
-    const cutList = Daemon()!.cutList();
+    const copyList = Daemon!.copyList();
+    const cutList = Daemon!.cutList();
 
     if (!copyList.length && !cutList.length) return;
 
     this.lockRefresh();
 
-    if (copyList.length) await Daemon()?.files?.copyMultiple(copyList, this.path(), this.pid);
-    else if (cutList.length) await Daemon()?.files?.moveMultiple(cutList, this.path(), this.pid);
+    if (copyList.length) await Daemon?.files?.copyMultiple(copyList, this.path(), this.pid);
+    else if (cutList.length) await Daemon?.files?.moveMultiple(cutList, this.path(), this.pid);
 
-    Daemon()?.copyList.set([]);
-    Daemon()?.cutList.set([]);
+    Daemon?.copyList.set([]);
+    Daemon?.cutList.set([]);
 
     this.unlockRefresh();
   }
@@ -374,7 +374,7 @@ export class FileManagerRuntime extends AppProcess {
   async confirmUmountDrive(drive: FilesystemDrive, id: string) {
     if (this._disposed) return;
 
-    const prog = await Daemon()!.files!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         icon: "DriveIcon",
         caption: `Unmounting ${drive.label || "drive"}...`,
@@ -383,7 +383,7 @@ export class FileManagerRuntime extends AppProcess {
       this.pid
     );
 
-    await Fs().umountDrive(id, false, (progress) => {
+    await Fs.umountDrive(id, false, (progress) => {
       prog.show();
       prog.setMax(progress.max);
       prog.setDone(progress.value);
@@ -395,7 +395,7 @@ export class FileManagerRuntime extends AppProcess {
   async uploadItems() {
     if (this._disposed) return;
 
-    const prog = await Daemon()!.files!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
         icon: "UploadIcon",
@@ -406,7 +406,7 @@ export class FileManagerRuntime extends AppProcess {
     );
 
     try {
-      await Fs().uploadFiles(this.path(), "*/*", true, async (progress) => {
+      await Fs.uploadFiles(this.path(), "*/*", true, async (progress) => {
         prog.show();
         prog.setDone(0);
         prog.setMax(progress.max + 1);
@@ -440,7 +440,7 @@ export class FileManagerRuntime extends AppProcess {
       return;
     }
 
-    Daemon()?.files?.openFile(path);
+    Daemon?.files?.openFile(path);
   }
 
   async deleteSelected() {
@@ -479,7 +479,7 @@ export class FileManagerRuntime extends AppProcess {
 
     const isUserFs =
       this.path().startsWith(UserPaths.Root) &&
-      Daemon()?.serviceHost?.getService("TrashSvc") &&
+      Daemon?.serviceHost?.getService("TrashSvc") &&
       !this.userPreferences().globalSettings.disableTrashCan;
 
     MessageBox(
@@ -511,7 +511,7 @@ export class FileManagerRuntime extends AppProcess {
     if (this._disposed) return;
 
     const items = this.selection();
-    const prog = await Daemon()!.files!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         max: items.length,
         type: "quantity",
@@ -530,7 +530,7 @@ export class FileManagerRuntime extends AppProcess {
       prog.updSub(item);
 
       try {
-        await Fs().deleteItem(item, false);
+        await Fs.deleteItem(item, false);
       } catch (e) {
         prog.mutErr(`Failed to delete ${item}: ${e}`);
       }
@@ -538,7 +538,7 @@ export class FileManagerRuntime extends AppProcess {
       prog.mutDone(+1);
     }
 
-    KernelDispatchS().dispatch("fs-flush-folder", this.path());
+    SysDispatch.dispatch("fs-flush-folder", this.path());
   }
 
   async downloadSelected() {
@@ -549,7 +549,7 @@ export class FileManagerRuntime extends AppProcess {
 
     const filename = getItemNameFromPath(selected[0]);
 
-    const prog = await Daemon()!.files!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
         caption: `Preparing for download`,
@@ -560,12 +560,12 @@ export class FileManagerRuntime extends AppProcess {
     );
 
     try {
-      const file = await Fs().readFile(selected[0], (progress) => {
+      const file = await Fs.readFile(selected[0], (progress) => {
         prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);
       });
-      const dir = await Fs().readDir(selected[0]);
+      const dir = await Fs.readDir(selected[0]);
 
       if (!file && !dir) {
         MessageBox(
@@ -703,7 +703,7 @@ export class FileManagerRuntime extends AppProcess {
         continue;
       }
 
-      if (alternative) await Daemon()?.files?.openWith(path);
+      if (alternative) await Daemon?.files?.openWith(path);
       else await this.openFile(path);
     }
   }
@@ -727,13 +727,13 @@ export class FileManagerRuntime extends AppProcess {
         ? [selection[0] || path]
         : [!this.loadSave?.isSave ? selection[0] : join(path, saveName)];
 
-    KernelDispatchS().dispatch("ls-confirm", [this.loadSave?.returnId, result]);
+    SysDispatch.dispatch("ls-confirm", [this.loadSave?.returnId, result]);
 
     await this.closeWindow();
   }
 
   async createShortcut(name: string, path: string, folder = false) {
-    const paths = await Daemon()?.files?.LoadSaveDialog({
+    const paths = await Daemon?.files?.LoadSaveDialog({
       title: "Pick where to create the shortcut",
       icon: "FolderIcon",
       folder: true,
@@ -742,9 +742,9 @@ export class FileManagerRuntime extends AppProcess {
 
     if (!paths?.[0]) return;
 
-    const info = Daemon()?.assoc?.getFileAssociation(name);
+    const info = Daemon?.assoc?.getFileAssociation(name);
 
-    Daemon()?.shortcuts?.createShortcut(
+    Daemon?.shortcuts?.createShortcut(
       {
         type: folder ? "folder" : "file",
         target: path,
@@ -760,7 +760,7 @@ export class FileManagerRuntime extends AppProcess {
     this.notice.set(undefined);
 
     try {
-      const drive = Fs().getDriveByPath(this.path());
+      const drive = Fs.getDriveByPath(this.path());
 
       if (this.shareAccessIsAdministrative(drive)) {
         this.notice.set({
@@ -783,7 +783,7 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   shareAccessIsAdministrative(drive: FilesystemDrive) {
-    const userInfo = Daemon()?.userInfo!;
+    const userInfo = Daemon?.userInfo!;
     const thisUser = userInfo._id;
     const userIsAdmin =
       userInfo.admin &&

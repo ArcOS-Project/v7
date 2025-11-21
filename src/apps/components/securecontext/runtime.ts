@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { Env, KernelDispatchS, KernelSound } from "$ts/env";
+import { Env, SysDispatch, SoundBus } from "$ts/env";
 import { LoginUser } from "$ts/server/user/auth";
 import { Daemon } from "$ts/server/user/daemon";
 import { Store } from "$ts/writable";
@@ -33,7 +33,7 @@ export class SecureContextRuntime extends AppProcess {
   async render() {
     if (await this.closeIfSecondInstance()) return;
 
-    KernelSound().playSound("arcos.dialog.info");
+    SoundBus.playSound("arcos.dialog.info");
   }
 
   //#endregion
@@ -47,16 +47,16 @@ export class SecureContextRuntime extends AppProcess {
     const security = this.userPreferences().security;
 
     if (security.noPassword) return true; // Password field is irrelevant if noPassword is set
-    if (security.disabled || !Daemon()?.username) return false; // 'Reject all elevation requests'
+    if (security.disabled || !Daemon?.username) return false; // 'Reject all elevation requests'
 
-    const token = await LoginUser(Daemon()!.username, this.password()); // Try to create a token to validate
+    const token = await LoginUser(Daemon!.username, this.password()); // Try to create a token to validate
 
     if (!token) {
       await this.passwordIncorrect();
       return false;
     }
 
-    await Daemon()?.account!.discontinueToken(token); // Discontinue validated token
+    await Daemon?.account!.discontinueToken(token); // Discontinue validated token
 
     return true;
   }
@@ -69,7 +69,7 @@ export class SecureContextRuntime extends AppProcess {
 
     await this.closeWindow(); // Close the window first
 
-    KernelDispatchS().dispatch("elevation-approve", [this.id, this.key], true); // Use dispatch to inform the invocator
+    SysDispatch.dispatch("elevation-approve", [this.id, this.key], true); // Use dispatch to inform the invocator
   }
 
   async deny() {
@@ -79,7 +79,7 @@ export class SecureContextRuntime extends AppProcess {
 
     await this.closeWindow(); // Close the window first
 
-    KernelDispatchS().dispatch("elevation-deny", [this.id, this.key], true); // Use dispatch to inform the invocator
+    SysDispatch.dispatch("elevation-deny", [this.id, this.key], true); // Use dispatch to inform the invocator
   }
 
   async passwordIncorrect() {
@@ -123,7 +123,7 @@ export class SecureContextRuntime extends AppProcess {
             caption: "Continue",
             action: () => {
               this.deny();
-              this.spawnApp("systemSettings", +Env().get("shell_pid"), "securityCenter"); // Go to the 'securityCenter' page
+              this.spawnApp("systemSettings", +Env.get("shell_pid"), "securityCenter"); // Go to the 'securityCenter' page
             },
             suggested: true,
           },

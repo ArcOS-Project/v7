@@ -2,14 +2,14 @@ import { appStoreService } from "$ts/apps/storage";
 import { bhuspService } from "$ts/bughunt/process";
 import { devEnvironmentService } from "$ts/devenv";
 import { distributionService } from "$ts/distrib";
-import { Env, KernelDispatchS, KernelStack } from "$ts/env";
+import { SysDispatch, Stack } from "$ts/env";
 import iconService from "$ts/icon";
 import { Process } from "$ts/process/instance";
 import { protoService } from "$ts/proto";
 import { adminService } from "$ts/server/admin";
 import { messagingService } from "$ts/server/messaging";
 import { fileAssocService } from "$ts/server/user/assoc";
-import { Daemon, type UserDaemon } from "$ts/server/user/daemon";
+import { Daemon } from "$ts/server/user/daemon";
 import { trashService } from "$ts/server/user/trash";
 import { globalDispatchService } from "$ts/server/ws";
 import { shareService } from "$ts/shares";
@@ -52,9 +52,9 @@ export class ServiceHost extends Process {
     this.loadStore(this.STORE);
     await this.initialRun(svcPreRun);
 
-    KernelStack().store.subscribe(() => this.verifyServicesProcesses());
+    Stack.store.subscribe(() => this.verifyServicesProcesses());
 
-    this.Services.subscribe(() => KernelDispatchS().dispatch("services-flush"));
+    this.Services.subscribe(() => SysDispatch.dispatch("services-flush"));
   }
 
   async stop() {
@@ -116,12 +116,12 @@ export class ServiceHost extends Process {
 
     if (!services.has(id) || !service) return "err_noExist";
 
-    const canStart = service.startCondition ? await service.startCondition(KernelStack().getProcess(this.parentPid)!) : true;
+    const canStart = service.startCondition ? await service.startCondition(Stack.getProcess(this.parentPid)!) : true;
 
     if (!canStart) return "err_startCondition";
     if (service.pid) return "err_alreadyRunning";
 
-    const instance = await KernelStack().spawn(service.process, undefined, Daemon()?.userInfo?._id, this.pid, id, this);
+    const instance = await Stack.spawn(service.process, undefined, Daemon?.userInfo?._id, this.pid, id, this);
 
     if (!instance) return "err_spawnFailed";
 
@@ -146,7 +146,7 @@ export class ServiceHost extends Process {
 
     this._holdRestart = true;
 
-    await KernelStack().kill(service.pid, true);
+    await Stack.kill(service.pid, true);
 
     service.pid = undefined;
     service.changedAt = new Date().getTime();
@@ -176,7 +176,7 @@ export class ServiceHost extends Process {
     const services = this.Services.get();
 
     for (const [id, service] of [...services]) {
-      if (!service.pid || KernelStack().isPid(service.pid)) continue;
+      if (!service.pid || Stack.isPid(service.pid)) continue;
 
       this.Log(`Process of ${id} doesn't exist anymore! Restarting service...`, LogLevel.warning);
 
@@ -190,7 +190,7 @@ export class ServiceHost extends Process {
 
     if (!store.has(id) || !service || !service.pid) return undefined;
 
-    return KernelStack().getProcess(service.pid) as T;
+    return Stack.getProcess(service.pid) as T;
   }
 
   public hasService(id: string): boolean {

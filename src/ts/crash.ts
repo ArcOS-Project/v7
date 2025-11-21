@@ -54,5 +54,5 @@ export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
       })
     );
 
-  Kernel()?.panic(text, brief);
+  Kernel?.panic(text, brief);
 }

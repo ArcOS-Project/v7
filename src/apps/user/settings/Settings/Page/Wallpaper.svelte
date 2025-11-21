@@ -11,21 +11,21 @@
   import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: SettingsRuntime } = $props();
-  const { userInfo, preferences: userPreferences } = Daemon() || {}!;
+  const { userInfo, preferences: userPreferences } = Daemon || {}!;
 
   let wallpaper = $state<Wallpaper>();
 
   onMount(() => {
     const sub = userPreferences?.subscribe(async (v) => {
-      wallpaper = await Daemon()?.wallpaper?.getWallpaper(v.desktop.wallpaper);
+      wallpaper = await Daemon?.wallpaper?.getWallpaper(v.desktop.wallpaper);
     });
 
     return () => sub?.();
   });
 </script>
 
-{#if userInfo && userPreferences && Daemon()}
-  <ThemesHeader {userInfo} {userPreferences} userDaemon={Daemon()!} desktop background={wallpaper?.thumb || wallpaper?.url}>
+{#if userInfo && userPreferences && Daemon}
+  <ThemesHeader {userInfo} {userPreferences} userDaemon={Daemon!} desktop background={wallpaper?.thumb || wallpaper?.url}>
     <Setting caption="Name" sub={wallpaper?.name} />
     <Setting caption="Author" sub={wallpaper?.author} />
 

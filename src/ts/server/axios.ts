@@ -22,7 +22,7 @@ export const Backend = axios.create({
 
 Backend.interceptors.request.use(
   (config) => {
-    config.headers.set("X-Request-ID", Kernel()?.getModule<EnvironmentType>("env").get("dispatch_sock_id"));
+    config.headers.set("X-Request-ID", Kernel?.getModule<EnvironmentType>("env").get("dispatch_sock_id"));
     return config;
   },
   (error) => {

@@ -73,7 +73,7 @@ export function ThirdPartyProps(engine: JsExec): ThirdPartyPropMap {
     Sleep,
     $ENTRYPOINT: engine.filePath,
     $METADATA: engine.metaPath,
-    SHELL_PID: +Env().get("shell_pid"),
+    SHELL_PID: +Env.get("shell_pid"),
     load: async (path: string): Promise<any> => {},
     runApp: async (
       process: typeof ThirdPartyAppProcess,
@@ -95,7 +95,7 @@ export function ThirdPartyProps(engine: JsExec): ThirdPartyPropMap {
           sound: "arcos.dialog.info",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
         },
-        +Env().get("shell_pid")
+        +Env.get("shell_pid")
       );
     },
     CustomTitlebar,

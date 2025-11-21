@@ -6,14 +6,14 @@
   import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: OverlayRuntime } = $props();
-  const { userInfo, preferences: userPreferences } = Daemon()!;
+  const { userInfo, preferences: userPreferences } = Daemon!;
 
   let name = $state("");
   let currentWallpaper: Wallpaper | undefined = $state();
 
   onMount(() => {
     const sub = userPreferences.subscribe(async (v) => {
-      currentWallpaper = await Daemon()!.wallpaper?.getWallpaper(v.desktop.wallpaper);
+      currentWallpaper = await Daemon!.wallpaper?.getWallpaper(v.desktop.wallpaper);
     });
 
     return () => sub();
@@ -22,13 +22,13 @@
   function save() {
     if (!name) return;
 
-    Daemon()?.themes?.saveCurrentTheme(name);
+    Daemon?.themes?.saveCurrentTheme(name);
 
     process.killSelf();
   }
 </script>
 
-<ThemesHeader {userInfo} {userPreferences} userDaemon={Daemon()!} desktop background={currentWallpaper?.url} />
+<ThemesHeader {userInfo} {userPreferences} userDaemon={Daemon!} desktop background={currentWallpaper?.url} />
 
 <h1>Save Theme</h1>
 <p>What a nice theme! Enter a fitting name for it:</p>

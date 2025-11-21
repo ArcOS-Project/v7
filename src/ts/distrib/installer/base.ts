@@ -1,6 +1,6 @@
-import { Env, Fs, KernelStack } from "$ts/env";
+import { Fs } from "$ts/env";
 import { Process } from "$ts/process/instance";
-import { Daemon, type UserDaemon } from "$ts/server/user/daemon";
+import { Daemon } from "$ts/server/user/daemon";
 import { arrayToBlob } from "$ts/util/convert";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
@@ -38,7 +38,7 @@ export class InstallerProcessBase extends Process {
 
     if (item) this.item = item;
 
-    this.parent = Daemon()?.serviceHost?.getService<DistributionServiceProcess>("DistribSvc")!;
+    this.parent = Daemon?.serviceHost?.getService<DistributionServiceProcess>("DistribSvc")!;
     this.name = "InstallerProcess";
 
     this.setSource(__SOURCE__);
@@ -176,7 +176,7 @@ export class InstallerProcessBase extends Process {
     this.logStatus(formattedPath, "mkdir");
 
     try {
-      await Fs().createDirectory(path, false);
+      await Fs.createDirectory(path, false);
       this.setCurrentStatus("done");
       return true;
     } catch {
@@ -192,7 +192,7 @@ export class InstallerProcessBase extends Process {
     this.logStatus(formattedPath, "file");
 
     try {
-      await Fs().writeFile(
+      await Fs.writeFile(
         path,
         arrayToBlob(content, fromExtension(path)),
         (prog) => {
@@ -215,7 +215,7 @@ export class InstallerProcessBase extends Process {
 
     this.logStatus(this.workingDirectory, "mkdir");
     try {
-      await Fs().createDirectory(this.workingDirectory, false);
+      await Fs.createDirectory(this.workingDirectory, false);
       this.setCurrentStatus("done");
       return true;
     } catch {

@@ -1,7 +1,7 @@
 //#region IMPORTS
 import type { ShellRuntime } from "$apps/components/shell/runtime";
 import { ApplicationStorage } from "$ts/apps/storage";
-import { getKMod, KernelDispatchS, KernelEnv, KernelServerUrl, KernelStack } from "$ts/env";
+import { Env, getKMod, SysDispatch, KernelServerUrl, Stack } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { Process } from "$ts/process/instance";
 import type { ProtocolServiceProcess } from "$ts/proto";
@@ -12,7 +12,7 @@ import { Sleep } from "$ts/sleep";
 import { LibraryManagement } from "$ts/tpa/libraries";
 import { Store } from "$ts/writable";
 import type { App } from "$types/app";
-import type { EnvironmentType, ServerManagerType } from "$types/kernel";
+import type { EnvironmentType } from "$types/kernel";
 import type { UserInfo, UserPreferences } from "$types/user";
 import type { FileAssocService } from "../assoc";
 import { DefaultUserInfo } from "../default";
@@ -94,19 +94,20 @@ export class UserDaemon extends Process {
 
     this.token = token;
     this.username = username;
-    KernelEnv().set("userdaemon_pid", this.pid);
+    Env.set("userdaemon_pid", this.pid);
     if (userInfo) this.userInfo = userInfo;
 
-    this.safeMode = !!KernelEnv().get("safemode");
+    this.safeMode = !!Env.get("safemode");
     this.name = "UserDaemon";
 
     this.setSource(__SOURCE__);
+    Daemon = this;
   }
 
   async start() {
     try {
       await this.startUserContexts();
-      this.usingTargetedAuthorization = KernelServerUrl() !== import.meta.env.DW_SERVER_URL;
+      this.usingTargetedAuthorization = KernelServerUrl !== import.meta.env.DW_SERVER_URL;
     } catch {
       return false;
     }
@@ -174,11 +175,11 @@ export class UserDaemon extends Process {
     });
 
     this.globalDispatch?.subscribe("fs-flush-folder", (path) => {
-      KernelDispatchS().dispatch("fs-flush-folder", path);
+      SysDispatch.dispatch("fs-flush-folder", path);
     });
 
     this.globalDispatch?.subscribe("fs-flush-file", (path) => {
-      KernelDispatchS().dispatch("fs-flush-file", path);
+      SysDispatch.dispatch("fs-flush-file", path);
     });
   }
 
@@ -187,7 +188,7 @@ export class UserDaemon extends Process {
   }
 
   getShell(): ShellRuntime | undefined {
-    return KernelStack().getProcess(+getKMod<EnvironmentType>("env").get("shell_pid"));
+    return Stack.getProcess(+getKMod<EnvironmentType>("env").get("shell_pid"));
   }
 
   //#endregion INIT
@@ -195,10 +196,10 @@ export class UserDaemon extends Process {
 
 export function TryGetDaemon(): UserDaemon | undefined {
   const env = getKMod<EnvironmentType>("env");
-  const stack = KernelStack();
+  const stack = Stack;
   const daemonPid = +env.get("userdaemon_pid");
 
   return stack.getProcess<UserDaemon>(daemonPid);
 }
 
-export const Daemon = TryGetDaemon;
+export let Daemon: UserDaemon;

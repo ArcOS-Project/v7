@@ -60,7 +60,7 @@ export function interceptTpaErrors(stack: string, e: Error): boolean {
   parsed = parsed.filter((p) => !p.file?.includes("<anonymous>"));
   const isTpa = !!parsed[0]?.file?.includes(`localhost:3128`) || !!parsed[0]?.file?.includes(`/tpa/`);
   const isFpa = parsed[0]?.file && FPA_TEST_REGEXP.test(parsed[0].file);
-  const handler = Kernel()!.getModule<ProcessHandlerType>?.("stack", true);
+  const handler = Kernel!.getModule<ProcessHandlerType>?.("stack", true);
   const renderer = handler?.renderer;
 
   if (renderer?.lastInteract) {

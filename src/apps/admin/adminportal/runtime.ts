@@ -34,8 +34,8 @@ export class AdminPortalRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData, page?: string, props?: Record<string, any>) {
     super(pid, parentPid, app);
 
-    this.admin = Daemon()!.serviceHost!.getService<AdminBootstrapper>("AdminBootstrapper")!;
-    this.shares = Daemon()!.serviceHost!.getService<ShareManager>("ShareMgmt")!;
+    this.admin = Daemon!.serviceHost!.getService<AdminBootstrapper>("AdminBootstrapper")!;
+    this.shares = Daemon!.serviceHost!.getService<ShareManager>("ShareMgmt")!;
     this.switchPage(page || "dashboard", props || {});
     this.altMenu.set(AdminPortalAltMenu(this));
 
@@ -43,7 +43,7 @@ export class AdminPortalRuntime extends AppProcess {
   }
 
   async start() {
-    await Fs().createDirectory("T:/Apps/AdminPortal"); // temp folder for saveTpaFilesOfBugReport
+    await Fs.createDirectory("T:/Apps/AdminPortal"); // temp folder for saveTpaFilesOfBugReport
 
     if (!this.admin) {
       this.switchPage("noAdminBootstrapper", {}, true);
@@ -109,7 +109,7 @@ export class AdminPortalRuntime extends AppProcess {
       try {
         const content = await axios.get(file.url, { responseType: "text" }); // responseType ensures we get a string back
         const source = content.data as string;
-        await Fs().writeFile(filePath, textToBlob(source, "text/javascript")); // Now we write the code to temp
+        await Fs.writeFile(filePath, textToBlob(source, "text/javascript")); // Now we write the code to temp
 
         // Finally save it
         result.push({

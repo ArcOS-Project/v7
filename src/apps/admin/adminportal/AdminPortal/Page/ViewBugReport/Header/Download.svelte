@@ -11,7 +11,7 @@
   const { report } = data;
 
   async function download() {
-    const [path] = await Daemon()!.files!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       isSave: true,
       title: "Choose where to export the report to",
       icon: "SaveIcon",
@@ -22,7 +22,7 @@
 
     if (!path) return;
 
-    const prog = await Daemon()!.files!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
         icon: "SaveIcon",
@@ -33,7 +33,7 @@
     );
 
     try {
-      await Fs().writeFile(path, textToBlob(JSON.stringify(report, null, 2)), (progress) => {
+      await Fs.writeFile(path, textToBlob(JSON.stringify(report, null, 2)), (progress) => {
         prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);

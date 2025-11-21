@@ -11,6 +11,6 @@
   <ProfilePicture height={32} />
   <div>
     <h1>{$userPreferences.account.displayName || process.username}</h1>
-    <p>{Daemon()?.userInfo.email}</p>
+    <p>{Daemon?.userInfo.email}</p>
   </div>
 </div>

@@ -20,7 +20,7 @@ export class SoundBus extends KernelModule {
 
   public playSound(id: string, volume = 1) {
     this.isKmod();
-    if (Env().get("safemode")) return;
+    if (Env.get("safemode")) return;
     if (!this.store[id]) return false;
 
     this.Log(`Playing sound ${id} from store`);

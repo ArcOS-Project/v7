@@ -17,7 +17,7 @@
 
   onMount(() => {
     userPreferences.subscribe(() => {
-      const desktop = Daemon()?.workspaces?.getCurrentDesktop()?.id;
+      const desktop = Daemon?.workspaces?.getCurrentDesktop()?.id;
 
       if (!desktop) return;
 

@@ -1,6 +1,6 @@
-import { Env, KernelStack } from "$ts/env";
+import { Env } from "$ts/env";
 import { Process } from "$ts/process/instance";
-import { Daemon, UserDaemon } from "$ts/server/user/daemon";
+import { Daemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import type { AppProcessData } from "$types/app";
 import type { UserPreferencesStore } from "$types/user";
@@ -18,7 +18,7 @@ export class ShellHostRuntime extends Process {
   constructor(pid: number, parentPid: number, _: AppProcessData, autoloadApps: string[]) {
     super(pid, parentPid);
 
-    this.userPreferences = Daemon()!.preferences; // Get the preferences
+    this.userPreferences = Daemon!.preferences; // Get the preferences
     this.autoloadApps = autoloadApps || []; // Get the autoload (provided by the daemon)
     this.name = "ShellHostRuntime";
 
@@ -27,18 +27,18 @@ export class ShellHostRuntime extends Process {
 
   async start() {
     // Autoload completed? Then stop the process immediately
-    if (Daemon()?.autoLoadComplete) return false;
+    if (Daemon?.autoLoadComplete) return false;
 
     const procs: Record<string, Process> = {}; // Object of executed shell components
 
-    const proc = await Daemon()?.spawn?._spawnApp<ShellRuntime>(
+    const proc = await Daemon?.spawn?._spawnApp<ShellRuntime>(
       this.userPreferences().globalSettings.shellExec,
       undefined,
       this.pid
     ); // Let's first spawn the shell exec from globalSettings
 
     for (const id of this.shellComponents) {
-      procs[id] = (await Daemon()!.spawn?._spawnApp(id, undefined, this.pid))!; // Then spawn each shell component
+      procs[id] = (await Daemon!.spawn?._spawnApp(id, undefined, this.pid))!; // Then spawn each shell component
     }
 
     const trayHost = procs.TrayHostProc as TrayHostRuntime; // Get the tray host
@@ -48,18 +48,18 @@ export class ShellHostRuntime extends Process {
     }); // Create the shellHost loading icon
 
     await new Promise<void>(async (r) => {
-      while (!Env().get("shell_pid") || !Env().get("trayhost_pid") || !Env().get("arcfind_pid")) await Sleep(1);
+      while (!Env.get("shell_pid") || !Env.get("trayhost_pid") || !Env.get("arcfind_pid")) await Sleep(1);
       r();
     }); // Wait for the shell PID and trayhost PID to be set
 
     proc?.dispatch?.dispatch("ready"); // Dispatch ready command to the shell
 
-    await Daemon()?.version?.checkForNewVersion();
+    await Daemon?.version?.checkForNewVersion();
 
     for (const app of this.autoloadApps) {
       if (app === "shellHost") continue; // Ignore the shellHost in autoload
 
-      await Daemon()?.spawn?._spawnApp(app, undefined, this.pid); // Spawn autoload app
+      await Daemon?.spawn?._spawnApp(app, undefined, this.pid); // Spawn autoload app
     }
 
     // Change the tray icon to good status icon

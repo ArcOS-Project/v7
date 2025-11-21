@@ -34,7 +34,7 @@
         errored = false;
         loading = true;
 
-        const contents = await Fs().readFile(v.shell.actionCenter.galleryImage);
+        const contents = await Fs.readFile(v.shell.actionCenter.galleryImage);
 
         loading = false;
 
@@ -57,7 +57,7 @@
   });
 
   async function chooseImage() {
-    const [path] = await Daemon()!.files!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Choose an image for the gallery",
       icon: "DesktopIcon",
       startDir: UserPaths.Pictures,

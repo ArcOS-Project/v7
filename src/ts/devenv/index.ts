@@ -1,8 +1,8 @@
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { MessageBox } from "$ts/dialog";
-import { Env, Fs, KernelStack } from "$ts/env";
+import { Env, Fs, Stack } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
-import { Daemon, type UserDaemon } from "$ts/server/user/daemon";
+import { Daemon } from "$ts/server/user/daemon";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import type { DevEnvActivationResult, ProjectMetadata } from "$types/devenv";
@@ -64,7 +64,7 @@ export class DevelopmentEnvironment extends BaseService {
       },
     });
 
-    KernelStack().store.subscribe((v) => {
+    Stack.store.subscribe((v) => {
       if (this._disposed) return;
 
       const procs = [...v]
@@ -104,11 +104,11 @@ export class DevelopmentEnvironment extends BaseService {
           {
             title: "ArcDev stopped",
             message: `The websocket connection was lost. Please reconnect to continue development. Disconnect reason was '${reason}'`,
-            image: Daemon()?.icons!.getIconCached("ErrorIcon"),
+            image: Daemon?.icons!.getIconCached("ErrorIcon"),
             sound: "arcos.dialog.error",
             buttons: [{ caption: "Okay", action: () => {} }],
           },
-          +Env().get("shell_pid"),
+          +Env.get("shell_pid"),
           true
         );
 
@@ -118,7 +118,7 @@ export class DevelopmentEnvironment extends BaseService {
 
       this.client.on("open-file", (file: string) => {
         if (this._disposed) return this.disconnect();
-        Daemon()?.files!.openFile(file);
+        Daemon?.files!.openFile(file);
       });
       this.client.on("restart-tpa", () => {
         if (this._disposed) return this.disconnect();
@@ -145,7 +145,7 @@ export class DevelopmentEnvironment extends BaseService {
     this.port = undefined;
     this.client?.disconnect();
     this.connected = false;
-    await Fs().umountDrive("devenv", true);
+    await Fs.umountDrive("devenv", true);
     return undefined;
   }
 
@@ -164,7 +164,7 @@ export class DevelopmentEnvironment extends BaseService {
   async mountDevDrive() {
     if (this._disposed) return this.disconnect();
 
-    const result = await Fs().mountDrive("devenv", DevDrive, "V", undefined, this.axios, this.url);
+    const result = await Fs.mountDrive("devenv", DevDrive, "V", undefined, this.axios, this.url);
 
     return !!result;
   }
@@ -173,23 +173,23 @@ export class DevelopmentEnvironment extends BaseService {
     if (this._disposed) return this.disconnect();
 
     await this.killTpa();
-    await Daemon()?.files!.openFile("V:/_app.tpa");
+    await Daemon?.files!.openFile("V:/_app.tpa");
   }
 
   async killTpa() {
     if (this._disposed) return this.disconnect();
 
-    const procs = [...KernelStack().store()]
+    const procs = [...Stack.store()]
       .filter(([_, proc]) => proc instanceof ThirdPartyAppProcess && proc.app.id === this.meta?.metadata.appId)
       .map(([pid]) => pid);
 
     for (const pid of procs) {
-      await KernelStack().kill(pid, true);
+      await Stack.kill(pid, true);
     }
   }
 
   async refreshCSS(filename: string) {
-    const processes = this.pids.map((pid) => KernelStack().getProcess<ThirdPartyAppProcess>(pid)).filter((proc) => !!proc);
+    const processes = this.pids.map((pid) => Stack.getProcess<ThirdPartyAppProcess>(pid)).filter((proc) => !!proc);
 
     for (const proc of processes) {
       if (proc.elements[filename] && proc.elements[filename] instanceof HTMLLinkElement) {

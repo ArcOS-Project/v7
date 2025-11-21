@@ -18,7 +18,7 @@
       return v;
     });
 
-    Daemon()!.renderer!.setAppRendererClasses(process.userPreferences());
+    Daemon!.renderer!.setAppRendererClasses(process.userPreferences());
 
     selection = key;
   }

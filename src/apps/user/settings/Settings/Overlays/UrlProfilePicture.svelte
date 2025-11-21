@@ -39,7 +39,7 @@
   function apply() {
     if (!valid) return;
 
-    Daemon()?.preferencesCtx?.changeProfilePicture(pfp);
+    Daemon?.preferencesCtx?.changeProfilePicture(pfp);
     process.closeWindow();
   }
 

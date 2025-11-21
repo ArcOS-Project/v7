@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { KernelStack } from "$ts/env";
+import { Stack } from "$ts/env";
 import type { AppProcessData } from "$types/app";
 import { ClipboardAddon } from "@xterm/addon-clipboard";
 import { FitAddon } from "@xterm/addon-fit";
@@ -68,13 +68,13 @@ export class TerminalWindowRuntime extends AppProcess {
 
   protected async stop() {
     setTimeout(() => {
-      const parent = KernelStack().getProcess(this.parentPid);
+      const parent = Stack.getProcess(this.parentPid);
 
       if (!parent || parent instanceof AppProcess) return;
 
-      const children = KernelStack().getSubProcesses(this.parentPid);
+      const children = Stack.getSubProcesses(this.parentPid);
 
-      if (!children.size) KernelStack().kill(this.parentPid);
+      if (!children.size) Stack.kill(this.parentPid);
     });
   }
 

@@ -1,6 +1,6 @@
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { MessageBox } from "$ts/dialog";
-import { Env, KernelStack } from "$ts/env";
+import { Env, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { getParentDirectory, join } from "$ts/util/fs";
 import type { App, InstalledApp } from "$types/app";
@@ -17,13 +17,13 @@ export class SpawnUserContext extends UserContext {
   async spawnApp<T>(id: string, parentPid?: number, ...args: any[]) {
     if (this._disposed) return;
 
-    return await this._spawnApp<T>(id, Daemon()!.workspaces?.getCurrentDesktop(), parentPid, ...args);
+    return await this._spawnApp<T>(id, Daemon!.workspaces?.getCurrentDesktop(), parentPid, ...args);
   }
 
   async spawnOverlay<T>(id: string, parentPid?: number, ...args: any[]) {
     if (this._disposed) return;
 
-    return await this._spawnOverlay<T>(id, Daemon()!.workspaces?.getCurrentDesktop(), parentPid, ...args);
+    return await this._spawnOverlay<T>(id, Daemon!.workspaces?.getCurrentDesktop(), parentPid, ...args);
   }
 
   async _spawnApp<T>(
@@ -37,10 +37,10 @@ export class SpawnUserContext extends UserContext {
     const appStore = this.appStorage();
     const app = appStore?.getAppSynchronous(id);
 
-    if (Daemon()!.apps?.checkDisabled(id, app?.noSafeMode)) return;
+    if (Daemon!.apps?.checkDisabled(id, app?.noSafeMode)) return;
 
     if (app?.id.includes("-") || app?.id.includes(".")) {
-      Daemon()!.notifications?.sendNotification({
+      Daemon!.notifications?.sendNotification({
         title: `Refusing to spawn '${id}'`,
         message:
           "The application ID is malformed: it contains periods or dashes. If you're the creator of the app, be sure to use the suggested format for application IDs.",
@@ -52,7 +52,7 @@ export class SpawnUserContext extends UserContext {
     }
 
     if (!app) {
-      Daemon()!.notifications?.sendNotification({
+      Daemon!.notifications?.sendNotification({
         title: "Application not found",
         message: `ArcOS tried to launch an application with ID '${id}', but it could not be found. Is it installed?`,
         timeout: 3000,
@@ -68,7 +68,7 @@ export class SpawnUserContext extends UserContext {
     }
 
     if (app.elevated) {
-      const elevated = await Daemon()!.elevation?.manuallyElevate({
+      const elevated = await Daemon!.elevation?.manuallyElevate({
         what: "ArcOS needs your permission to open the following application:",
         title: app.metadata.name,
         description: `by ${app.metadata.author}`,
@@ -79,16 +79,16 @@ export class SpawnUserContext extends UserContext {
       if (!elevated) return;
     }
 
-    const shellDispatch = KernelStack().ConnectDispatch(+Env().get("shell_pid"));
+    const shellDispatch = Stack.ConnectDispatch(+Env.get("shell_pid"));
 
     if (shellDispatch) {
       shellDispatch?.dispatch("close-start-menu");
       shellDispatch?.dispatch("close-action-center");
     }
 
-    await KernelStack().waitForAvailable();
+    await Stack.waitForAvailable();
 
-    return await KernelStack().spawn<T>(
+    return await Stack.spawn<T>(
       app.assets.runtime,
       renderTarget,
       this.userInfo!._id,
@@ -113,10 +113,10 @@ export class SpawnUserContext extends UserContext {
     const appStore = this.appStorage();
     const app = await appStore?.getAppSynchronous(id);
 
-    if (Daemon()!?.apps?.checkDisabled(id, app?.noSafeMode)) return;
+    if (Daemon!?.apps?.checkDisabled(id, app?.noSafeMode)) return;
 
     if (app?.id.includes("-") || app?.id.includes(".")) {
-      Daemon()!.notifications?.sendNotification({
+      Daemon!.notifications?.sendNotification({
         title: `Refusing to spawn '${id}'`,
         message:
           "The application ID is malformed: it contains periods or dashes. If you're the creator of the app, be sure to use the suggested format for application IDs.",
@@ -128,7 +128,7 @@ export class SpawnUserContext extends UserContext {
     }
 
     if (!app) {
-      Daemon()!.notifications?.sendNotification({
+      Daemon!.notifications?.sendNotification({
         title: "Application not found",
         message: `ArcOS can't find an application with ID '${id}'. Is it installed?`,
         timeout: 3000,
@@ -146,7 +146,7 @@ export class SpawnUserContext extends UserContext {
     }
 
     if (app.elevated) {
-      const elevated = await Daemon()!?.elevation?.manuallyElevate({
+      const elevated = await Daemon!?.elevation?.manuallyElevate({
         what: "ArcOS needs your permission to open the following application as an overlay:",
         title: app.metadata.name,
         description: `by ${app.metadata.author}`,
@@ -157,15 +157,15 @@ export class SpawnUserContext extends UserContext {
       if (!elevated) return;
     }
 
-    await KernelStack().waitForAvailable();
+    await Stack.waitForAvailable();
 
-    const pid = parentPid || +Env().get("shell_pid");
+    const pid = parentPid || +Env.get("shell_pid");
 
     if (!pid) {
       this.Log(`Spawning overlay app '${app.id}' as normal app: no suitable parent process`, LogLevel.warning);
     }
 
-    return await KernelStack().spawn<T>(
+    return await Stack.spawn<T>(
       app.assets.runtime,
       renderTarget,
       this.userInfo!._id,
@@ -187,7 +187,7 @@ export class SpawnUserContext extends UserContext {
       return;
     }
 
-    if (!Daemon()!.preferences().security.enableThirdParty) {
+    if (!Daemon!.preferences().security.enableThirdParty) {
       this.tpaError_noEnableThirdParty();
       return;
     }
@@ -203,11 +203,11 @@ export class SpawnUserContext extends UserContext {
 
     let stop: (() => Promise<void>) | undefined;
 
-    if (Daemon()!!.autoLoadComplete)
-      stop = (await Daemon()!.helpers!.GlobalLoadIndicator(`Opening ${app.metadata.name}...`)).stop;
+    if (Daemon!!.autoLoadComplete)
+      stop = (await Daemon!.helpers!.GlobalLoadIndicator(`Opening ${app.metadata.name}...`)).stop;
 
     try {
-      const engine = await KernelStack().spawn<JsExec>(
+      const engine = await Stack.spawn<JsExec>(
         JsExec,
         undefined,
         this.userInfo._id,
@@ -222,7 +222,7 @@ export class SpawnUserContext extends UserContext {
 
       return await engine?.getContents();
     } catch (e) {
-      KernelStack().renderer?.notifyCrash(app as any, e as Error, app.process!);
+      Stack.renderer?.notifyCrash(app as any, e as Error, app.process!);
       this.Log(`Execution error in third-party application "${app.id}": ${(e as any).stack}`);
       stop?.();
     }
@@ -237,13 +237,13 @@ export class SpawnUserContext extends UserContext {
         sound: "arcos.dialog.error",
         image: "ErrorIcon",
       },
-      +Env().get("shell_pid"),
+      +Env.get("shell_pid"),
       true
     );
   }
 
   tpaError_noEnableThirdParty() {
-    if (Daemon()!!.autoLoadComplete)
+    if (Daemon!!.autoLoadComplete)
       MessageBox(
         {
           title: "Third-party apps",
@@ -255,13 +255,13 @@ export class SpawnUserContext extends UserContext {
             {
               caption: "Take me there",
               action: () => {
-                this.spawnApp("systemSettings", +Env().get("shell_pid"), "apps");
+                this.spawnApp("systemSettings", +Env.get("shell_pid"), "apps");
               },
             },
             { caption: "Okay", suggested: true, action: () => {} },
           ],
         },
-        +Env().get("shell_pid"),
+        +Env.get("shell_pid"),
         true
       );
   }

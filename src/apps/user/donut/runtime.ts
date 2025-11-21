@@ -14,7 +14,7 @@ export class DonutAppRuntime extends AppProcess {
     this.setSource(__SOURCE__);
 
     this.interval = setInterval(() => {
-      if (Stack().renderer?.focusedPid() !== this.pid && !this.userPreferences().appPreferences.DonutApp.alwaysActive)
+      if (Stack.renderer?.focusedPid() !== this.pid && !this.userPreferences().appPreferences.DonutApp.alwaysActive)
         return;
 
       this.Tick();

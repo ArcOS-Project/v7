@@ -8,7 +8,7 @@
   let loading = $state<boolean>(false);
 
   async function rename() {
-    const confirm = await Daemon()?.helpers?.Confirm(
+    const confirm = await Daemon?.helpers?.Confirm(
       "Confirm rename?",
       `Are you sure you want to change the email of '${user.username}' to '${newEmail}'?`,
       "Cancel",

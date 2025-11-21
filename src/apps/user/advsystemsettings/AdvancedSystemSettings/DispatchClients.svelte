@@ -14,12 +14,12 @@
 
   async function update() {
     loading = true;
-    clients = await Daemon()!.globalDispatch!.getClients();
+    clients = await Daemon!.globalDispatch!.getClients();
     loading = false;
   }
 
   async function disconnectClient(clientId: string) {
-    await Daemon()?.globalDispatch?.disconnectClient(clientId);
+    await Daemon?.globalDispatch?.disconnectClient(clientId);
     update();
   }
 </script>
@@ -39,7 +39,7 @@
       <div class="row" title={client.socketId}>
         <div class="segment ip">
           {client.ip}
-          {#if client.socketId === Daemon()?.globalDispatch?.client?.id}(you){/if}
+          {#if client.socketId === Daemon?.globalDispatch?.client?.id}(you){/if}
         </div>
         <div class="segment authorized">{client.authorized ? "Yes" : "No"}</div>
         <button
@@ -47,7 +47,7 @@
           onclick={() => disconnectClient(client.socketId)}
           aria-label="Kick client"
           title="Kick client"
-          disabled={client.socketId === Daemon()?.globalDispatch?.client?.id}
+          disabled={client.socketId === Daemon?.globalDispatch?.client?.id}
         ></button>
       </div>
     {/each}

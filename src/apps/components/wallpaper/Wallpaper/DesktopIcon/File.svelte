@@ -18,11 +18,11 @@
   let shortcutIcon = $state<string>();
 
   onMount(async () => {
-    const info = Daemon()?.assoc?.getFileAssociation(file.name);
+    const info = Daemon?.assoc?.getFileAssociation(file.name);
     shortcut = $shortcuts[file.name];
     if (shortcut) shortcutIcon = process.getIconCached(shortcut.icon);
     icon = info?.icon || process.getIconCached("DefaultMimeIcon");
-    if (info?.friendlyName === "Image file") icon = (await Daemon()?.files?.getThumbnailFor(path)) || icon;
+    if (info?.friendlyName === "Image file") icon = (await Daemon?.files?.getThumbnailFor(path)) || icon;
     render = true;
   });
 </script>
@@ -40,7 +40,7 @@
     contextMenu={shortcut ? "shortcut-icon" : "file-icon"}
     props={[file, path, shortcut]}
     action={() => {
-      Daemon()?.files?.openFile(path, shortcut);
+      Daemon?.files?.openFile(path, shortcut);
     }}
     {i}
   />

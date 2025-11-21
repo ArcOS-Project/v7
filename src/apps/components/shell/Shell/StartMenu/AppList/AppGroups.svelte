@@ -16,7 +16,7 @@
 {/each}
 {#each apps as app (`${app.id}-${app.metadata.name}`)}
   {#if !app.metadata.appGroup || !AppGroups[app.metadata.appGroup]}
-    {#if (isPopulatable(app) || $userPreferences.shell.visuals.showHiddenApps) && !Daemon()?.apps?.checkDisabled(app.id)}
+    {#if (isPopulatable(app) || $userPreferences.shell.visuals.showHiddenApps) && !Daemon?.apps?.checkDisabled(app.id)}
       <ListItem {app} {process} />
     {/if}
   {/if}

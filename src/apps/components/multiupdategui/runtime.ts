@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { DistributionServiceProcess } from "$ts/distrib";
-import { KernelDispatchS } from "$ts/env";
+import { SysDispatch } from "$ts/env";
 import { Daemon } from "$ts/server/user/daemon";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
@@ -28,7 +28,7 @@ export class MultiUpdateGuiRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData, updates: UpdateInfo[]) {
     super(pid, parentPid, app);
 
-    this.distrib = Daemon()!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
+    this.distrib = Daemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
     this.updates = Array.isArray(updates) ? updates : [];
 
     this.setSource(__SOURCE__);
@@ -61,7 +61,7 @@ export class MultiUpdateGuiRuntime extends AppProcess {
   }
 
   async onClose(): Promise<boolean> {
-    KernelDispatchS().dispatch("mugui-done");
+    SysDispatch.dispatch("mugui-done");
 
     return true;
   }
@@ -88,7 +88,7 @@ export class MultiUpdateGuiRuntime extends AppProcess {
   async go() {
     this.working.set(true);
 
-    const elevated = await Daemon()!.elevation!.manuallyElevate({
+    const elevated = await Daemon!.elevation!.manuallyElevate({
       what: `ArcOS needs your permission to update ${this.updates.length} ${Plural("app", this.updates.length)}.`,
       title: this.app.data.metadata.name,
       description: this.app.data.metadata.author,

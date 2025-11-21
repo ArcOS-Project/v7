@@ -1,7 +1,7 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
   import { contextProps } from "$ts/context/actions.svelte";
-  import { KernelStack } from "$ts/env";
+  import { Stack } from "$ts/env";
   import { Daemon } from "$ts/server/user/daemon";
   import { Wallpapers } from "$ts/wallpaper/store";
   import { Store } from "$ts/writable";
@@ -11,14 +11,14 @@
 
   const { process }: { process: ShellRuntime } = $props();
   const { userPreferences, workspaceManagerOpened } = process;
-  const userDaemon = Daemon();
+  const userDaemon = Daemon;
   const { Wallpaper } = userDaemon?.wallpaper! || {}!;
 
   let workspaces: Workspace[] = $state([]);
   let windowCounts = Store<Record<string, number>>({});
 
   onMount(() => {
-    const sub = KernelStack().store.subscribe((v) => {
+    const sub = Stack.store.subscribe((v) => {
       $windowCounts = {};
 
       for (const workspace of workspaces) {

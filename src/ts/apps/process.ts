@@ -1,5 +1,5 @@
 import type { ShellRuntime } from "$apps/components/shell/runtime";
-import { ArcOSVersion, Env, getKMod, Kernel, KernelDispatchS, KernelStack } from "$ts/env";
+import { ArcOSVersion, Env, Kernel, SysDispatch, Stack } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -7,7 +7,6 @@ import { Daemon, TryGetDaemon, type UserDaemon } from "$ts/server/user/daemon";
 import { DefaultUserPreferences } from "$ts/server/user/default";
 import type { AppKeyCombinations } from "$types/accelerator";
 import type { ElevationData } from "$types/elevation";
-import type { SystemDispatchType } from "$types/kernel";
 import { LogLevel } from "$types/logging";
 import type { RenderArgs } from "$types/process";
 import type { UserPreferences } from "$types/user";
@@ -52,11 +51,11 @@ export class AppProcess extends Process {
       desktop: app.desktop,
     };
 
-    KernelStack().renderer!.lastInteract = this;
+    Stack.renderer!.lastInteract = this;
 
     this.windowTitle.set(app.data.metadata.name || "Application");
     this.name = app.data.id;
-    this.shell = KernelStack().getProcess(+Env().get("shell_pid"));
+    this.shell = Stack.getProcess(+Env.get("shell_pid"));
 
     const desktopProps = KernelStateHandler()?.stateProps["desktop"];
     const daemon: UserDaemon | undefined = desktopProps?.userDaemon || TryGetDaemon();
@@ -67,14 +66,14 @@ export class AppProcess extends Process {
       this.safeMode = daemon.safeMode;
     }
 
-    this.windowIcon.set(Daemon()?.icons?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
+    this.windowIcon.set(Daemon?.icons?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
     this.startAcceleratorListener();
 
-    KernelDispatchS().subscribe("window-unfullscreen", ([pid]) => {
+    SysDispatch.subscribe("window-unfullscreen", ([pid]) => {
       if (this.pid === pid) this.windowFullscreen.set(false);
     });
 
-    KernelDispatchS().subscribe("window-fullscreen", ([pid]) => {
+    SysDispatch.subscribe("window-fullscreen", ([pid]) => {
       if (this.pid === pid) this.windowFullscreen.set(true);
     });
 
@@ -97,7 +96,7 @@ export class AppProcess extends Process {
   async closeWindow(kill = true) {
     this.Log(`Closing window ${this.pid}`);
 
-    KernelStack().renderer?.focusedPid.set(this.pid);
+    Stack.renderer?.focusedPid.set(this.pid);
 
     const canClose = this._disposed || (this.onClose ? await this.onClose() : true);
 
@@ -109,7 +108,7 @@ export class AppProcess extends Process {
     this.shell?.trayHost?.disposeProcessTrayIcons?.(this.pid);
 
     if (this.getWindow()?.classList.contains("fullscreen"))
-      KernelDispatchS().dispatch("window-unfullscreen", [this.pid, this.app.desktop]);
+      SysDispatch.dispatch("window-unfullscreen", [this.pid, this.app.desktop]);
 
     const elements = [
       ...document.querySelectorAll(`div.window[data-pid="${this.pid}"]`),
@@ -123,7 +122,7 @@ export class AppProcess extends Process {
       return this.killSelf();
     }
 
-    KernelDispatchS().dispatch("window-closing", [this.pid]);
+    SysDispatch.dispatch("window-closing", [this.pid]);
 
     for (const element of elements) {
       element.classList.add("closing");
@@ -144,14 +143,14 @@ export class AppProcess extends Process {
   async __render__(body: HTMLDivElement) {
     if (this.userPreferences().disabledApps.includes(this.app.id)) {
       if (this.safeMode) {
-        Daemon()?.notifications?.sendNotification({
+        Daemon?.notifications?.sendNotification({
           title: "Running disabled app!",
           message: `Allowing execution of disabled app '${this.app.data.metadata.name}' because of Safe Mode.`,
           buttons: [
             {
               caption: "Manage apps",
               action: () => {
-                Daemon()?.spawn?.spawnApp("systemSettings", +Env().get("shell_pid"), "apps", "apps_manageApps");
+                Daemon?.spawn?.spawnApp("systemSettings", +Env.get("shell_pid"), "apps", "apps_manageApps");
               },
             },
           ],
@@ -174,7 +173,7 @@ export class AppProcess extends Process {
         props: {
           process: this,
           pid: this.pid,
-          kernel: Kernel(),
+          kernel: Kernel,
           app: this.app.data,
           windowTitle: this.windowTitle,
           windowIcon: this.windowIcon,
@@ -201,7 +200,7 @@ export class AppProcess extends Process {
   }
 
   getSingleton() {
-    const { renderer } = KernelStack();
+    const { renderer } = Stack;
 
     return renderer?.getAppInstances(this.app.data.id, this.pid) || [];
   }
@@ -214,9 +213,9 @@ export class AppProcess extends Process {
     if (instances.length) {
       await this.killSelf();
 
-      if (!this.app.data.core) KernelStack().renderer?.focusPid(instances[0].pid);
+      if (!this.app.data.core) Stack.renderer?.focusPid(instances[0].pid);
 
-      if (instances[0].app.desktop) Daemon()?.workspaces?.switchToDesktopByUuid(instances[0].app.desktop);
+      if (instances[0].app.desktop) Daemon?.workspaces?.switchToDesktopByUuid(instances[0].app.desktop);
     }
 
     return instances.length ? instances[0] : undefined;
@@ -295,11 +294,11 @@ export class AppProcess extends Process {
       const key = combo.key?.trim().toLowerCase();
       const codedKey = String.fromCharCode(e.keyCode).toLowerCase();
       /** */
-      const isFocused = KernelStack().renderer?.focusedPid() == this.pid || combo.global;
+      const isFocused = Stack.renderer?.focusedPid() == this.pid || combo.global;
 
       if (!modifiers || (key != pK && key && key != codedKey) || !isFocused) continue;
 
-      if (!Daemon()?.elevation!._elevating) await combo.action(this, e);
+      if (!Daemon?.elevation!._elevating) await combo.action(this, e);
 
       break;
     }
@@ -322,10 +321,10 @@ export class AppProcess extends Process {
       return false;
     }
 
-    const proc = await KernelStack().spawn<AppProcess>(
+    const proc = await Stack.spawn<AppProcess>(
       metadata.assets.runtime,
       undefined,
-      Daemon()?.userInfo?._id,
+      Daemon?.userInfo?._id,
       this.pid,
       {
         data: { ...metadata, overlay: true },
@@ -334,28 +333,28 @@ export class AppProcess extends Process {
       ...args
     );
 
-    if (proc) KernelStack().renderer?.focusPid(proc?.pid);
+    if (proc) Stack.renderer?.focusPid(proc?.pid);
 
     return !!proc;
   }
 
   async spawnApp<T = AppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
-    return await Daemon()?.spawn?.spawnApp<T>(id, parentPid ?? this.parentPid, ...args);
+    return await Daemon?.spawn?.spawnApp<T>(id, parentPid ?? this.parentPid, ...args);
   }
 
   async spawnOverlayApp<T = AppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
-    return await Daemon()?.spawn?.spawnOverlay<T>(id, parentPid ?? this.parentPid, ...args);
+    return await Daemon?.spawn?.spawnOverlay<T>(id, parentPid ?? this.parentPid, ...args);
   }
 
   async elevate(id: string) {
     if (!this.elevations[id]) return false;
-    return await Daemon()!.elevation!.manuallyElevate(this.elevations[id]);
+    return await Daemon!.elevation!.manuallyElevate(this.elevations[id]);
   }
 
   notImplemented(what?: string) {
     this.Log(`Not implemented: ${what || "<unknown>"}`);
     // Manually invoking spawnOverlay method on daemon to work around AppProcess <> MessageBox circular import
-    Daemon()?.spawn?.spawnOverlay("messageBox", this.pid, {
+    Daemon?.spawn?.spawnOverlay("messageBox", this.pid, {
       title: "Not implemented",
       message: `${
         what || "This feature"
@@ -369,18 +368,18 @@ export class AppProcess extends Process {
   }
 
   appStore() {
-    return Daemon()?.serviceHost?.getService("AppStorage") as ApplicationStorage;
+    return Daemon?.serviceHost?.getService("AppStorage") as ApplicationStorage;
   }
 
   async getIcon(id: string): Promise<string> {
-    return Daemon()?.icons?.getIcon(id)!;
+    return Daemon?.icons?.getIcon(id)!;
   }
 
   getIconCached(id: string): string {
-    return Daemon()?.icons?.getIconCached(id)!;
+    return Daemon?.icons?.getIconCached(id)!;
   }
 
   getIconStore(id: string): ReadableStore<string> {
-    return Daemon()?.icons?.getIconStore(id)!;
+    return Daemon?.icons?.getIconStore(id)!;
   }
 }

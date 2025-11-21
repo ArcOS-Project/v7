@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { KernelDispatchS } from "$ts/env";
+import { SysDispatch } from "$ts/env";
 import { toForm } from "$ts/form";
 import { Backend } from "$ts/server/axios";
 import type { AppProcessData } from "$types/app";
@@ -86,11 +86,11 @@ export class TotpAuthGuiRuntime extends AppProcess {
   //#region ACTIONS
 
   async doDispatch() {
-    KernelDispatchS().dispatch("totp-unlock-success", [this.dispatchId]);
+    SysDispatch.dispatch("totp-unlock-success", [this.dispatchId]);
   }
 
   async cancel() {
-    KernelDispatchS().dispatch("totp-unlock-cancel", [this.dispatchId]);
+    SysDispatch.dispatch("totp-unlock-cancel", [this.dispatchId]);
     this.closeWindow();
   }
 

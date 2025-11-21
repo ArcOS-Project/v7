@@ -9,7 +9,7 @@ import type { PublicUserInfo, UserInfo } from "$types/user";
 import Cookies from "js-cookie";
 import { Daemon, type UserDaemon } from "..";
 import { UserContext } from "../context";
-import { Env, KernelDispatchS, KernelServerMan } from "$ts/env";
+import { Env, SysDispatch, Server } from "$ts/env";
 
 export class AccountUserContext extends UserContext {
   constructor(id: string, daemon: UserDaemon) {
@@ -55,18 +55,18 @@ export class AccountUserContext extends UserContext {
 
       if (!data) return undefined;
 
-      Daemon()!.preferencesCtx?.preferences.set(data.preferences);
+      Daemon!.preferencesCtx?.preferences.set(data.preferences);
 
-      Daemon()!?.preferencesCtx?.sanitizeUserPreferences(); 
+      Daemon!?.preferencesCtx?.sanitizeUserPreferences(); 
 
       this.initialized = true;
       this.userInfo = data;
-      Env().set("currentuser", this.username);
-      if (data.admin) Env().set("administrator", data.admin);
+      Env.set("currentuser", this.username);
+      if (data.admin) Env.set("administrator", data.admin);
 
       return response.status === 200 ? (response.data as UserInfo) : undefined;
     } catch {
-      await Daemon()!.killSelf();
+      await Daemon!.killSelf();
 
       return undefined;
     }
@@ -77,7 +77,7 @@ export class AccountUserContext extends UserContext {
 
     this.Log(`Changing username to "${newUsername}"`);
 
-    const elevated = await Daemon()!.elevation?.manuallyElevate({
+    const elevated = await Daemon!.elevation?.manuallyElevate({
       what: "ArcOS needs your permission to change your username:",
       image: "AccountIcon",
       title: "Change username",
@@ -95,7 +95,7 @@ export class AccountUserContext extends UserContext {
       if (response.status !== 200) return false;
 
       this.username = newUsername;
-      KernelDispatchS().dispatch("change-username", [newUsername]);
+      SysDispatch.dispatch("change-username", [newUsername]);
 
       Cookies.set("arcUsername", newUsername, {
         expires: 14,
@@ -113,7 +113,7 @@ export class AccountUserContext extends UserContext {
 
     this.Log(`Changing password to [REDACTED]`);
 
-    const elevated = await Daemon()!.elevation?.manuallyElevate({
+    const elevated = await Daemon!.elevation?.manuallyElevate({
       what: "ArcOS needs your permission to change your password:",
       image: "PasswordIcon",
       title: "Change password",
@@ -141,7 +141,7 @@ export class AccountUserContext extends UserContext {
       const response = await Backend.get(`/user/info/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
       const information = response.data as PublicUserInfo;
 
-      information.profilePicture = `${KernelServerMan().url}/user/pfp/${userId}${authcode()}`;
+      information.profilePicture = `${Server.url}/user/pfp/${userId}${authcode()}`;
 
       return information;
     } catch {
@@ -164,14 +164,14 @@ export class AccountUserContext extends UserContext {
             caption: "Delete account",
             action: async () => {
               await Backend.delete(`/user`, { headers: { Authorization: `Bearer ${this.token}` } });
-              Daemon()!?.power?.logoff();
+              Daemon!?.power?.logoff();
             },
             suggested: true,
           },
         ],
         sound: "arcos.dialog.warning",
       },
-      +Env().get("shell_pid"),
+      +Env.get("shell_pid"),
       true
     );
   }  

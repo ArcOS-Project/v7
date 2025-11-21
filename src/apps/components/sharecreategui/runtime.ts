@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { Env, KernelStack } from "$ts/env";
+import { Env, Stack } from "$ts/env";
 import { Daemon } from "$ts/server/user/daemon";
 import type { ShareManager } from "$ts/shares";
 import { Store } from "$ts/writable";
@@ -16,7 +16,7 @@ export class ShareCreateGuiRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
-    this.shares = Daemon()?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
+    this.shares = Daemon?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
 
     this.setSource(__SOURCE__);
   }
@@ -57,15 +57,15 @@ export class ShareCreateGuiRuntime extends AppProcess {
     if (!drive) return;
 
     const path = `${drive.uuid}:/`;
-    const parent = KernelStack().getProcess(this.parentPid);
+    const parent = Stack.getProcess(this.parentPid);
 
-    if (parent && Daemon()?.helpers?.ParentIs(this, "fileManager")) {
+    if (parent && Daemon?.helpers?.ParentIs(this, "fileManager")) {
       // In case the parent is a file manager, navigate it instead
-      const dispatch = KernelStack().ConnectDispatch(this.parentPid);
+      const dispatch = Stack.ConnectDispatch(this.parentPid);
       dispatch?.dispatch("navigate", path);
     } else {
       // Otherwise spawn a new file manager
-      this.spawnApp("fileManager", +Env().get("shell_pid"), path);
+      this.spawnApp("fileManager", +Env.get("shell_pid"), path);
     }
 
     this.closeWindow(); // Finally close the creategui

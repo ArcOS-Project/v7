@@ -11,7 +11,7 @@
 
   const { process }: { process: MessagingAppRuntime } = $props();
   const { message } = process;
-  const userId = Daemon()!.userInfo!._id;
+  const userId = Daemon!.userInfo!._id;
   const isSent = $message?.authorId === userId;
 
   let user = $state<PublicUserInfo>();

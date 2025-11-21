@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { Env, KernelStack } from "$ts/env";
+import { Env, Stack } from "$ts/env";
 import { Daemon } from "$ts/server/user/daemon";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
@@ -26,7 +26,7 @@ export class AppInfoRuntime extends AppProcess {
     const targetApp = this.appStore()?.getAppSynchronous(this.targetAppId);
 
     if (!targetApp) {
-      Daemon()?.notifications?.sendNotification({
+      Daemon?.notifications?.sendNotification({
         title: "App not found",
         message: `AppInfo couldn't find any information about "${this.targetAppId}". Is it installed?`,
         image: "AppInfoIcon",
@@ -44,9 +44,9 @@ export class AppInfoRuntime extends AppProcess {
   //#endregion
 
   async killAll() {
-    const elevated = await Daemon()?.elevation?.manuallyElevate({
+    const elevated = await Daemon?.elevation?.manuallyElevate({
       what: `ArcOS needs your permission to kill all instances of an app`,
-      image: Daemon()?.icons?.getAppIcon(this.targetApp()) || this.getIconCached("ComponentIcon"),
+      image: Daemon?.icons?.getAppIcon(this.targetApp()) || this.getIconCached("ComponentIcon"),
       title: this.targetApp().metadata.name,
       description: this.targetAppId,
       level: ElevationLevel.high,
@@ -54,7 +54,7 @@ export class AppInfoRuntime extends AppProcess {
 
     if (!elevated) return;
 
-    const instances = KernelStack().renderer?.getAppInstances(this.targetAppId);
+    const instances = Stack.renderer?.getAppInstances(this.targetAppId);
 
     for (const instance of instances || []) {
       instance.killSelf();
@@ -62,7 +62,7 @@ export class AppInfoRuntime extends AppProcess {
   }
 
   async processManager() {
-    await Daemon()?.spawn?.spawnApp("processManager", +Env().get("shell_pid"));
+    await Daemon?.spawn?.spawnApp("processManager", +Env.get("shell_pid"));
     this.closeWindow();
   }
 }

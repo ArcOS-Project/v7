@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
   import type { AppProcess } from "$ts/apps/process";
-  import { Env, KernelStack } from "$ts/env";
+  import { Env, Stack } from "$ts/env";
   import { UUID } from "$ts/uuid";
   import type { ContextMenuItem } from "$types/app";
   import { onMount } from "svelte";
@@ -12,8 +12,8 @@
   let button: HTMLButtonElement | undefined = $state();
   let uuid = UUID();
 
-  const contextMenuPid = Env().get("contextmenu_pid");
-  const contextMenu = KernelStack().getProcess<ContextMenuRuntime>(+contextMenuPid);
+  const contextMenuPid = Env.get("contextmenu_pid");
+  const contextMenu = Stack.getProcess<ContextMenuRuntime>(+contextMenuPid);
 
   onMount(() => {
     contextMenu?.currentMenu.subscribe((v) => {

@@ -31,7 +31,7 @@ export class AppInstallerRuntime extends AppProcess {
     if (!(this.zip instanceof JSZip) || !this.metadata) return false; // No ZIP object? Then die.
 
     // Get the distribution service
-    const distrib = Daemon()!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
+    const distrib = Daemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
 
     if (!distrib) {
       // Should never happen unless nik fucked something up (yes, nik)
@@ -43,7 +43,7 @@ export class AppInstallerRuntime extends AppProcess {
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
         },
-        +Env().get("shell_pid"),
+        +Env.get("shell_pid"),
         true
       );
       return false;
@@ -68,7 +68,7 @@ export class AppInstallerRuntime extends AppProcess {
             {
               caption: "Take me there",
               action: () => {
-                Daemon()?.spawn?.spawnApp("systemSettings", +Env().get("shell_pid"), "apps");
+                Daemon?.spawn?.spawnApp("systemSettings", +Env.get("shell_pid"), "apps");
               },
             },
             {
@@ -78,7 +78,7 @@ export class AppInstallerRuntime extends AppProcess {
             },
           ],
         },
-        +Env().get("shell_pid"),
+        +Env.get("shell_pid"),
         true
       );
 
@@ -97,11 +97,11 @@ export class AppInstallerRuntime extends AppProcess {
     // TODO: change rollback for library installment
 
     if (!this.isLibrary) {
-      const gli = await Daemon()?.helpers?.GlobalLoadIndicator("Rolling back changes...", this.pid);
+      const gli = await Daemon?.helpers?.GlobalLoadIndicator("Rolling back changes...", this.pid);
 
       try {
-        await Fs().deleteItem(this.metadata!.installLocation);
-        await Daemon()?.appreg?.uninstallPackageWithStatus(this.metadata!.appId, false);
+        await Fs.deleteItem(this.metadata!.installLocation);
+        await Daemon?.appreg?.uninstallPackageWithStatus(this.metadata!.appId, false);
       } catch {
         // Silently error
       }
@@ -114,7 +114,7 @@ export class AppInstallerRuntime extends AppProcess {
 
   runNow() {
     this.closeWindow();
-    this.spawnApp(this.metadata!.appId, +Env().get("shell_pid"));
+    this.spawnApp(this.metadata!.appId, +Env.get("shell_pid"));
   }
 
   // More of a middleman than a method imho

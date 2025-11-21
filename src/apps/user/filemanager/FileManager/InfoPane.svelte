@@ -34,7 +34,7 @@
     variant = "";
 
     try {
-      const driveId = Fs().getDriveIdByIdentifier(Fs().getDriveIdentifier($path));
+      const driveId = Fs.getDriveIdByIdentifier(Fs.getDriveIdentifier($path));
       const isRoot = getParentDirectory($path) === $path;
 
       currentDrive = $drives[driveId] ?? undefined;
@@ -46,7 +46,7 @@
           singleSelectionFilename = getItemNameFromPath($selection[0]);
 
           try {
-            const stat = await Fs().stat($selection[0]);
+            const stat = await Fs.stat($selection[0]);
 
             if (stat?.isDirectory) {
               singleSelectionThumbnail = "";
@@ -59,12 +59,12 @@
               singleSelectionModifiers = stat?.modifiers;
             } else {
               singleSelectionStat = stat;
-              singleSelectionAssoc = Daemon()?.assoc?.getFileAssociation($selection[0]);
+              singleSelectionAssoc = Daemon?.assoc?.getFileAssociation($selection[0]);
               singleSelectionModifiers = stat?.modifiers;
-              singleSelectionThumbnail = await Daemon()?.files?.getThumbnailFor($selection[0]);
+              singleSelectionThumbnail = await Daemon?.files?.getThumbnailFor($selection[0]);
             }
           } catch {
-            singleSelectionAssoc = Daemon()?.assoc?.getFileAssociation($selection[0]);
+            singleSelectionAssoc = Daemon?.assoc?.getFileAssociation($selection[0]);
           }
         }
 

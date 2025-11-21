@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { KernelStack, Stack } from "$ts/env";
+import { Stack } from "$ts/env";
 import type { Process } from "$ts/process/instance";
 import { ProcessKillResultCaptions } from "$ts/process/store";
 import { Daemon } from "$ts/server/user/daemon";
@@ -19,7 +19,7 @@ export class ProcessInfoRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.proc = proc || this;
-    this.parent = Stack().getProcess(this.proc.parentPid);
+    this.parent = Stack.getProcess(this.proc.parentPid);
     this.inherit = Object.getPrototypeOf(this.proc.constructor);
 
     this.setSource(__SOURCE__);
@@ -28,7 +28,7 @@ export class ProcessInfoRuntime extends AppProcess {
   //#endregion
 
   async kill(proc: Process) {
-    const elevated = await Daemon()!.elevation!.manuallyElevate({
+    const elevated = await Daemon!.elevation!.manuallyElevate({
       what: `ArcOS needs your permission to kill a process`,
       image:
         this.getIconCached(proc instanceof AppProcess ? proc.windowIcon() || "ComponentIcon" : "DefaultIcon") || "ComponentIcon",
@@ -53,7 +53,7 @@ export class ProcessInfoRuntime extends AppProcess {
           {
             caption: "End process",
             action: async () => {
-              const result = await KernelStack().kill(proc.pid, true);
+              const result = await Stack.kill(proc.pid, true);
 
               if (result !== "success") {
                 this.killError(name, result);

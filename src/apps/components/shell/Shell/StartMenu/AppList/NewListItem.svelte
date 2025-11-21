@@ -6,7 +6,7 @@
 
   const { shortcut, process }: { shortcut: ArcShortcut; process: ShellRuntime } = $props();
 
-  const app = Daemon()?.appStorage()?.getAppSynchronous(shortcut.target);
+  const app = Daemon?.appStorage()?.getAppSynchronous(shortcut.target);
 
   let disabled = $state(false);
 
@@ -26,7 +26,7 @@
     use:contextMenu={[[], process]}
     class:no-safemode={process.safeMode && app.noSafeMode}
   >
-    <img src={Daemon()?.icons?.getAppIcon(app)} alt="" />
+    <img src={Daemon?.icons?.getAppIcon(app)} alt="" />
     <span class="name">{app.metadata.name}</span>
   </button>
 {/if}

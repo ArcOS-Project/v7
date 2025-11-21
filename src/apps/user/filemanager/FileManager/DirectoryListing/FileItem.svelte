@@ -32,7 +32,7 @@
     thisPath = join(process.path(), file.name);
 
     const split = file.name.split(".");
-    const info = Daemon()?.assoc?.getFileAssociation(thisPath);
+    const info = Daemon?.assoc?.getFileAssociation(thisPath);
     extension = `.${split[split.length - 1]}`;
     mime = info?.friendlyName || "Unknown";
     icon = info?.icon || process.getIconCached("DefaultMimeIcon");
@@ -40,7 +40,7 @@
     if (shortcut) shortcutIcon = process.getIconCached(shortcut.icon);
 
     if (info?.friendlyName === "Image file" && process.userPreferences().appPreferences.fileManager?.renderThumbnails)
-      thumbnail = await Daemon()?.files?.getThumbnailFor(thisPath);
+      thumbnail = await Daemon?.files?.getThumbnailFor(thisPath);
   });
 
   function onclick(e: MouseEvent) {
@@ -65,7 +65,7 @@
       return;
     }
 
-    Daemon()?.files?.openFile(thisPath, shortcut);
+    Daemon?.files?.openFile(thisPath, shortcut);
   }
 </script>
 

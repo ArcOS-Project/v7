@@ -19,7 +19,7 @@ export class TotpSetupGuiRuntime extends AppProcess {
 
   async render() {
     try {
-      const response = await Backend.post("/totp/setup", {}, { headers: { Authorization: `Bearer ${Daemon()?.token}` } });
+      const response = await Backend.post("/totp/setup", {}, { headers: { Authorization: `Bearer ${Daemon?.token}` } });
 
       if (response.status !== 200) throw "";
 
@@ -53,7 +53,7 @@ export class TotpSetupGuiRuntime extends AppProcess {
 
     try {
       const response = await Backend.post("/totp/activate", toForm({ code: string }), {
-        headers: { Authorization: `Bearer ${Daemon()?.token}` },
+        headers: { Authorization: `Bearer ${Daemon?.token}` },
       });
 
       const unlocked = response.status === 200;
@@ -62,7 +62,7 @@ export class TotpSetupGuiRuntime extends AppProcess {
 
       await this.closeWindow();
 
-      Daemon()!.userInfo.hasTotp = true;
+      Daemon!.userInfo.hasTotp = true;
 
       return true;
     } catch {

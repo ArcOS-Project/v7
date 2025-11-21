@@ -34,7 +34,7 @@ export class LibraryInstallerProcess extends InstallerProcessBase {
 
   protected async afterSuccessfulInstallation(): Promise<any> {
     this.logStatus("Populating index", "other");
-    await Daemon()?.libraries?.populateIndex();
+    await Daemon?.libraries?.populateIndex();
     this.setCurrentStatus("done");
   }
 
@@ -67,7 +67,7 @@ export class LibraryInstallerProcess extends InstallerProcessBase {
 
     this.logStatus("Library information", "file");
     try {
-      await Fs().writeFile(
+      await Fs.writeFile(
         `${this.workingDirectory}.json`,
         textToBlob(JSON.stringify(this.library!, null, 2)),
         undefined,

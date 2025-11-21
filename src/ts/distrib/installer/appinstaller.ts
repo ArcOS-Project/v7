@@ -64,36 +64,36 @@ export class AppInstallerProcess extends InstallerProcessBase {
   async checkDesktopIcon() {
     if (!this.item) return;
 
-    const existing = Daemon()?.preferences().pinnedApps.includes(this.metadata?.appId!);
-    const appStore = Daemon()?.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const existing = Daemon?.preferences().pinnedApps.includes(this.metadata?.appId!);
+    const appStore = Daemon?.serviceHost?.getService<ApplicationStorage>("AppStorage");
     const app = appStore?.getAppSynchronous(this.metadata?.appId!)!;
 
     if (existing) return;
 
     if (app.hidden || app.core) {
-      Daemon()?.notifications?.sendNotification({
+      Daemon?.notifications?.sendNotification({
         title: `Open ${this.metadata?.name}`,
         message: `Do you want open ${this.metadata?.name}?`,
-        image: Daemon()?.icons!.getAppIcon(app),
+        image: Daemon?.icons!.getAppIcon(app),
         buttons: [
           {
             caption: "Open",
             action: async () => {
-              await Daemon()?.spawn?.spawnApp(app.id, +Env().get("shell_pid"));
+              await Daemon?.spawn?.spawnApp(app.id, +Env.get("shell_pid"));
             },
           },
         ],
       });
     } else {
-      Daemon()?.notifications?.sendNotification({
+      Daemon?.notifications?.sendNotification({
         title: `Pin ${this.metadata?.name}`,
         message: `Do you want to pin ${this.metadata?.name} to the taskbar so that you can easily launch it in the future?`,
-        image: Daemon()?.icons!.getAppIcon(app),
+        image: Daemon?.icons!.getAppIcon(app),
         buttons: [
           {
             caption: "Pin to taskbar",
             action: () => {
-              Daemon()?.appreg!.pinApp(this.metadata?.appId!);
+              Daemon?.appreg!.pinApp(this.metadata?.appId!);
             },
           },
         ],
@@ -107,7 +107,7 @@ export class AppInstallerProcess extends InstallerProcessBase {
     this.logStatus(this.metadata!.name, "registration");
 
     try {
-      const result = await Daemon()?.appreg?.registerAppFromPath(join(this.metadata!.installLocation, "_app.tpa"));
+      const result = await Daemon?.appreg?.registerAppFromPath(join(this.metadata!.installLocation, "_app.tpa"));
       if (!result) {
         this.setCurrentStatus("done");
         return true;
@@ -145,12 +145,12 @@ export class AppInstallerProcess extends InstallerProcessBase {
       distrib.BUSY = "";
       distrib.BUSY = "uninstallApp";
 
-      await Daemon()?.appreg?.removeFromStartMenu(installedPkg!.pkg.appId);
+      await Daemon?.appreg?.removeFromStartMenu(installedPkg!.pkg.appId);
     }
 
     onStage?.("Updating app repository");
 
-    await Fs().deleteItem(join(UserPaths.AppRepository, `${metadata.appId}.json`), false);
+    await Fs.deleteItem(join(UserPaths.AppRepository, `${metadata.appId}.json`), false);
 
     onStage?.("Refreshing app storage...");
 
@@ -160,10 +160,10 @@ export class AppInstallerProcess extends InstallerProcessBase {
     if (deleteFiles) {
       onStage?.("Deleting app files...");
       try {
-        await Fs().deleteItem(metadata.installLocation!, false);
+        await Fs.deleteItem(metadata.installLocation!, false);
       } catch {}
     }
 
-    Daemon()?.appreg!.unpinApp(metadata.appId);
+    Daemon?.appreg!.unpinApp(metadata.appId);
   }
 }

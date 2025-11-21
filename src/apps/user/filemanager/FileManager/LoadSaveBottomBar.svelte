@@ -21,7 +21,7 @@
 
       if (driveIdentifier) {
         try {
-          const drive = Fs().getDriveByLetter(driveIdentifier.slice(0, -1), false);
+          const drive = Fs.getDriveByLetter(driveIdentifier.slice(0, -1), false);
 
           driveLabel = drive?.label || "";
         } catch {}

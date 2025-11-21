@@ -28,7 +28,7 @@ export class ExitRuntime extends AppProcess {
     await this.closeWindow();
 
     if (alternate && option.alternateAction)
-      option.alternateAction(Daemon()!); // Alternate: when shift key is pressed
-    else option.action(Daemon()!);
+      option.alternateAction(Daemon!); // Alternate: when shift key is pressed
+    else option.action(Daemon!);
   }
 }

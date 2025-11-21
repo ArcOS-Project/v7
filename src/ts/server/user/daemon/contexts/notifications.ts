@@ -1,4 +1,4 @@
-import { KernelDispatchS } from "$ts/env";
+import { SysDispatch } from "$ts/env";
 import type { Notification } from "$types/notification";
 import type { UserDaemon } from "..";
 import { UserContext } from "../context";
@@ -20,8 +20,8 @@ export class NotificationsUserContext extends UserContext {
     data.timestamp = Date.now();
 
     this.notifications.set(id, data);
-    KernelDispatchS().dispatch("update-notifications", [this.notifications]);
-    KernelDispatchS().dispatch("send-notification", [data]);
+    SysDispatch.dispatch("update-notifications", [this.notifications]);
+    SysDispatch.dispatch("send-notification", [data]);
 
     return id;
   }
@@ -39,8 +39,8 @@ export class NotificationsUserContext extends UserContext {
 
     this.notifications.set(id, notification);
 
-    KernelDispatchS().dispatch("delete-notification", [id]);
-    KernelDispatchS().dispatch("update-notifications", [this.notifications]);
+    SysDispatch.dispatch("delete-notification", [id]);
+    SysDispatch.dispatch("update-notifications", [this.notifications]);
   }
 
   clearNotifications() {
@@ -49,6 +49,6 @@ export class NotificationsUserContext extends UserContext {
     this.Log(`Clearing notifications`);
 
     this.notifications = new Map<string, Notification>([]);
-    KernelDispatchS().dispatch("update-notifications", [this.notifications]);
+    SysDispatch.dispatch("update-notifications", [this.notifications]);
   }
 }

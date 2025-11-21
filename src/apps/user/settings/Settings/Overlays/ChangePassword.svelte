@@ -25,7 +25,7 @@
       return;
     }
 
-    const result = await Daemon()?.account?.changePassword(newPassword);
+    const result = await Daemon?.account?.changePassword(newPassword);
 
     process.closeWindow();
 

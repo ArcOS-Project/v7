@@ -25,7 +25,7 @@
     use:contextProps={[app]}
     class:no-safemode={process.safeMode && app.noSafeMode}
   >
-    <img src={Daemon()?.icons?.getAppIcon(app)} alt="" />
+    <img src={Daemon?.icons?.getAppIcon(app)} alt="" />
     <span class="name">{app.metadata.name}</span>
   </button>
 {/if}

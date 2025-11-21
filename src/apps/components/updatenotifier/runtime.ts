@@ -11,24 +11,24 @@ export class UpdateNotifierRuntime extends AppProcess {
   }
 
   async start() {
-    if (Daemon()?.autoLoadComplete) return false;
+    if (Daemon?.autoLoadComplete) return false;
   }
 
   async onClose() {
-    const { stop } = await Daemon()!.helpers!.GlobalLoadIndicator("Just a moment...", this.pid);
+    const { stop } = await Daemon!.helpers!.GlobalLoadIndicator("Just a moment...", this.pid);
 
-    await Daemon()?.version?.updateRegisteredVersion();
+    await Daemon?.version?.updateRegisteredVersion();
     await this.updateFileDefinitions();
 
     stop();
 
-    await Daemon()?.appreg?.updateStartMenuFolder();
+    await Daemon?.appreg?.updateStartMenuFolder();
     return true;
   }
 
   //#endregion
 
   async updateFileDefinitions() {
-    Daemon()?.migrations?.updateFileAssociations();
+    Daemon?.migrations?.updateFileAssociations();
   }
 }

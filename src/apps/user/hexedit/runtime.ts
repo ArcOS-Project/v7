@@ -59,7 +59,7 @@ export class HexEditRuntime extends AppProcess {
       return;
     }
 
-    const prog = await Daemon()!.files!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
         caption: `Reading file`,
@@ -69,7 +69,7 @@ export class HexEditRuntime extends AppProcess {
       this.pid
     );
     try {
-      const contents = await Fs().readFile(this.requestedFile, (progress) => {
+      const contents = await Fs.readFile(this.requestedFile, (progress) => {
         prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);
@@ -234,7 +234,7 @@ export class HexEditRuntime extends AppProcess {
   async saveFile() {
     if (!this.isModified()) return;
 
-    const prog = await Daemon()!.files!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
         caption: `Saving ${this.filename()}`,
@@ -245,7 +245,7 @@ export class HexEditRuntime extends AppProcess {
     );
 
     try {
-      await Fs().writeFile(this.requestedFile, new Blob([this.view() as any]), async (progress) => {
+      await Fs.writeFile(this.requestedFile, new Blob([this.view() as any]), async (progress) => {
         await prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);

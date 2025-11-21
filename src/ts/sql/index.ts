@@ -51,7 +51,7 @@ export class SqlInterfaceProcess extends Process {
   async readFile() {
     if (this._disposed) return;
 
-    const ab = await Fs().readFile(this.filePath);
+    const ab = await Fs.readFile(this.filePath);
 
     if (!ab) throw new Error("Failed to read SQL: file not found");
 
@@ -67,7 +67,7 @@ export class SqlInterfaceProcess extends Process {
 
     if (!ab) return;
 
-    await Fs().writeFile(this.filePath, new Blob([ab]));
+    await Fs.writeFile(this.filePath, new Blob([ab]));
   }
 
   async stop() {

@@ -1,7 +1,7 @@
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { isPopulatable } from "$ts/apps/util";
 import { MessageBox } from "$ts/dialog";
-import { BETA, Env, KernelDispatchS, KernelStack } from "$ts/env";
+import { BETA, Env, SysDispatch, Stack } from "$ts/env";
 import type { ShareManager } from "$ts/shares";
 import type { App } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
@@ -21,7 +21,7 @@ export class ApplicationsUserContext extends UserContext {
 
     this.Log(`Spawning autoload applications`);
 
-    let { startup } = Daemon()!.preferences();
+    let { startup } = Daemon!.preferences();
     startup ||= {};
 
     for (const payload in startup) {
@@ -32,10 +32,10 @@ export class ApplicationsUserContext extends UserContext {
           autoloadApps.push(payload);
           break;
         case "file":
-          if (!this.safeMode) await Daemon()!.files?.openFile(payload);
+          if (!this.safeMode) await Daemon!.files?.openFile(payload);
           break;
         case "folder":
-          if (!this.safeMode) await Daemon()!.spawn?.spawnApp("fileManager", undefined, payload);
+          if (!this.safeMode) await Daemon!.spawn?.spawnApp("fileManager", undefined, payload);
           break;
         case "share":
           await shares?.mountShareById(payload);
@@ -47,12 +47,12 @@ export class ApplicationsUserContext extends UserContext {
       }
     }
 
-    await Daemon()!.spawn?._spawnApp("shellHost", undefined, this.pid, autoloadApps);
+    await Daemon!.spawn?._spawnApp("shellHost", undefined, this.pid, autoloadApps);
 
-    if (this.safeMode) Daemon()!.helpers?.safeModeNotice();
+    if (this.safeMode) Daemon!.helpers?.safeModeNotice();
 
     if (BETA)
-      Daemon()!.notifications?.sendNotification({
+      Daemon!.notifications?.sendNotification({
         title: "Have any feedback?",
         message:
           "I'd love to hear it! There's a feedback button in the titlebar of every window. Don't hesitate to tell me how I'm doing stuff wrong, what you want to see or what I forgot. I want to hear all of it.",
@@ -60,7 +60,7 @@ export class ApplicationsUserContext extends UserContext {
           {
             caption: "Send feedback",
             action: () => {
-              Daemon()!.helpers!.iHaveFeedback(KernelStack().getProcess(+Env().get("shell_pid"))!);
+              Daemon!.helpers!.iHaveFeedback(Stack.getProcess(+Env.get("shell_pid"))!);
             },
           },
         ],
@@ -77,12 +77,12 @@ export class ApplicationsUserContext extends UserContext {
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           image: "FirefoxIcon",
         },
-        +Env().get("shell_pid"),
+        +Env.get("shell_pid"),
         true
       );
     }
 
-    Daemon()!.autoLoadComplete = true;
+    Daemon!.autoLoadComplete = true;
   }
 
   checkDisabled(appId: string, noSafeMode?: boolean): boolean {
@@ -91,7 +91,7 @@ export class ApplicationsUserContext extends UserContext {
       return false;
     }
 
-    const { disabledApps } = Daemon()!.preferences();
+    const { disabledApps } = Daemon!.preferences();
 
     const appStore = this.appStorage();
     const app = appStore?.buffer().filter((a) => a.id === appId)[0];
@@ -125,29 +125,29 @@ export class ApplicationsUserContext extends UserContext {
 
     if (!app || this.isVital(app)) return;
 
-    const elevated = await Daemon()!.elevation!.manuallyElevate({
+    const elevated = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to disable an application",
-      image: Daemon()!.icons!.getAppIcon(app),
+      image: Daemon!.icons!.getAppIcon(app),
       title: app.metadata.name,
       description: `By ${app.metadata.author}`,
       level: ElevationLevel.medium,
     });
     if (!elevated) return;
 
-    Daemon()!.preferences.update((v) => {
+    Daemon!.preferences.update((v) => {
       v.disabledApps.push(appId);
 
       return v;
     });
 
-    const instances = KernelStack().renderer?.getAppInstances(appId);
+    const instances = Stack.renderer?.getAppInstances(appId);
 
     if (instances)
       for (const instance of instances) {
-        KernelStack().kill(instance.pid, true);
+        Stack.kill(instance.pid, true);
       }
 
-    KernelDispatchS().dispatch("app-store-refresh");
+    SysDispatch.dispatch("app-store-refresh");
   }
 
   async enableApp(appId: string) {
@@ -161,16 +161,16 @@ export class ApplicationsUserContext extends UserContext {
 
     if (!app) return;
 
-    const elevated = await Daemon()!.elevation?.manuallyElevate({
+    const elevated = await Daemon!.elevation?.manuallyElevate({
       what: "ArcOS needs your permission to enable an application",
-      image: Daemon()!.icons!.getAppIcon(app),
+      image: Daemon!.icons!.getAppIcon(app),
       title: app.metadata.name,
       description: `By ${app.metadata.author}`,
       level: ElevationLevel.medium,
     });
     if (!elevated) return;
 
-    Daemon()!.preferencesCtx?.preferences.update((v) => {
+    Daemon!.preferencesCtx?.preferences.update((v) => {
       if (!v.disabledApps.includes(appId)) return v;
 
       v.disabledApps.splice(v.disabledApps.indexOf(appId));
@@ -178,11 +178,11 @@ export class ApplicationsUserContext extends UserContext {
       return v;
     });
 
-    KernelDispatchS().dispatch("app-store-refresh");
+    SysDispatch.dispatch("app-store-refresh");
   }
 
   async enableThirdParty() {
-    const elevated = await Daemon()!.elevation?.manuallyElevate({
+    const elevated = await Daemon!.elevation?.manuallyElevate({
       what: "ArcOS wants to enable third-party applications",
       title: "Enable Third-party",
       description: "ArcOS System",
@@ -192,14 +192,14 @@ export class ApplicationsUserContext extends UserContext {
 
     if (!elevated) return;
 
-    Daemon()!.preferences.update((v) => {
+    Daemon!.preferences.update((v) => {
       v.security.enableThirdParty = true;
       return v;
     });
   }
 
   async disableThirdParty() {
-    const elevated = await Daemon()!.elevation?.manuallyElevate({
+    const elevated = await Daemon!.elevation?.manuallyElevate({
       what: "ArcOS wants to disable third-party applications and kill any running third-party apps",
       title: "Disable Third-party",
       description: "ArcOS System",
@@ -209,15 +209,15 @@ export class ApplicationsUserContext extends UserContext {
 
     if (!elevated) return;
 
-    Daemon()!.preferences.update((v) => {
+    Daemon!.preferences.update((v) => {
       v.security.enableThirdParty = false;
       return v;
     });
 
-    const store = KernelStack().store();
+    const store = Stack.store();
 
     for (const [pid, proc] of [...store]) {
-      if (!proc._disposed && proc instanceof ThirdPartyAppProcess) KernelStack().kill(pid, true);
+      if (!proc._disposed && proc instanceof ThirdPartyAppProcess) Stack.kill(pid, true);
     }
   }
 }

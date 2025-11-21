@@ -40,7 +40,7 @@
     <ProfilePicture height={32}></ProfilePicture>
     <div>
       <h1>{$userPreferences.account.displayName || username}</h1>
-      <p>{Daemon()?.userInfo?.email || "ArcOS User"}</p>
+      <p>{Daemon?.userInfo?.email || "ArcOS User"}</p>
     </div>
   </div>
 </div>

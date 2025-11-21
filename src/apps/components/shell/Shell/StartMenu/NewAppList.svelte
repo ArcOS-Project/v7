@@ -53,7 +53,7 @@
     <AppGroups {process} {apps} />
   {/if}
 
-  {#if !Daemon()}
+  {#if !Daemon}
     <span class="error-text">ERR_NO_DAEMON</span>
   {/if}
 </div>

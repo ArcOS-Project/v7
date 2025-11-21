@@ -7,7 +7,7 @@
 </script>
 
 <div class="header">
-  <img src={Daemon()?.icons?.getAppIcon(data) || process.getIconCached("ComponentIcon")} alt="" />
+  <img src={Daemon?.icons?.getAppIcon(data) || process.getIconCached("ComponentIcon")} alt="" />
   <h1>{data?.id === "ArcOS" ? "System error occurred" : `${data?.metadata?.name || "Something"} crashed`}</h1>
   <p>
     {#if data?.id === "ArcOS"}

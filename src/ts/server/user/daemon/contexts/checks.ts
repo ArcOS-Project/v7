@@ -18,26 +18,26 @@ export class ChecksUserContext extends UserContext {
 
   checkReducedMotion() {
     if (
-      Daemon()!.preferencesCtx?.getGlobalSetting("reducedMotionDetection_disable") ||
-      Daemon()!.preferences().shell.visuals.noAnimations
+      Daemon!.preferencesCtx?.getGlobalSetting("reducedMotionDetection_disable") ||
+      Daemon!.preferences().shell.visuals.noAnimations
     )
       return;
 
     if (window.matchMedia("(prefers-reduced-motion)").matches) {
-      Daemon()!.notifications?.sendNotification({
+      Daemon!.notifications?.sendNotification({
         title: "Disable animations?",
         message: "ArcOS has detected that your device has Reduced Motion activated. Do you want ArcOS to reduce animations also?",
         buttons: [
           {
             caption: "Don't show again",
             action: () => {
-              Daemon()!.preferencesCtx?.setGlobalSetting("reducedMotionDetection_disable", true);
+              Daemon!.preferencesCtx?.setGlobalSetting("reducedMotionDetection_disable", true);
             },
           },
           {
             caption: "Reduce",
             action: () => {
-              Daemon()!.preferences.update((v) => {
+              Daemon!.preferences.update((v) => {
                 v.shell.visuals.noAnimations = true;
                 return v;
               });
@@ -51,14 +51,14 @@ export class ChecksUserContext extends UserContext {
   }
 
   async checkForUpdates() {
-    if (Daemon()!.preferences().globalSettings.noUpdateNotif) return;
+    if (Daemon!.preferences().globalSettings.noUpdateNotif) return;
 
     const distrib = this.serviceHost?.getService<DistributionServiceProcess>("DistribSvc");
     const updates = await distrib?.checkForAllStoreItemUpdates();
 
     if (updates?.length) {
       const first = updates[0];
-      const notif = Daemon()!.notifications?.sendNotification({
+      const notif = Daemon!.notifications?.sendNotification({
         ...(updates.length === 1
           ? {
               title: "Update available!",
@@ -77,18 +77,18 @@ export class ChecksUserContext extends UserContext {
           {
             caption: "View",
             action: () => {
-              if (notif) Daemon()!.notifications?.deleteNotification(notif);
+              if (notif) Daemon!.notifications?.deleteNotification(notif);
 
-              Daemon()!.spawn?.spawnApp("AppStore", +Env().get("shell_pid"), "installed");
+              Daemon!.spawn?.spawnApp("AppStore", +Env.get("shell_pid"), "installed");
             },
             suggested: true,
           },
           {
             caption: "Don't show again",
             action: () => {
-              if (notif) Daemon()!.notifications?.deleteNotification(notif);
+              if (notif) Daemon!.notifications?.deleteNotification(notif);
 
-              Daemon()!.preferences.update((v) => {
+              Daemon!.preferences.update((v) => {
                 v.globalSettings.noUpdateNotif = true;
                 return v;
               });
@@ -101,7 +101,7 @@ export class ChecksUserContext extends UserContext {
 
   async checkForMissedMessages() {
     const service = this.serviceHost!.getService<MessagingInterface>("MessagingService")!;
-    const archived = Daemon()!.preferences().appPreferences?.Messages?.archive || [];
+    const archived = Daemon!.preferences().appPreferences?.Messages?.archive || [];
     const messages =
       (await service?.getReceivedMessages())?.filter(
         (m) => !m.read && !archived.includes(m._id) && m.authorId !== this.userInfo?._id
@@ -111,7 +111,7 @@ export class ChecksUserContext extends UserContext {
 
     if (messages?.length === 1) {
       const message = messages[0];
-      Daemon()!?.notifications?.sendNotification({
+      Daemon!?.notifications?.sendNotification({
         className: "incoming-message",
         image: message.author?.profilePicture,
         title: message.author?.username || "New message",
@@ -120,13 +120,13 @@ export class ChecksUserContext extends UserContext {
           {
             caption: "View message",
             action: () => {
-              Daemon()!.spawn?.spawnApp("Messages", +Env().get("shell_pid"), "inbox", message._id);
+              Daemon!.spawn?.spawnApp("Messages", +Env.get("shell_pid"), "inbox", message._id);
             },
           },
         ],
       });
     } else {
-      Daemon()!?.notifications?.sendNotification({
+      Daemon!?.notifications?.sendNotification({
         title: "Missed messages",
         message: `You have ${messages.length} ${Plural("message", messages.length)} in your inbox that you haven't read yet.`,
         image: "MessagingIcon",
@@ -134,7 +134,7 @@ export class ChecksUserContext extends UserContext {
           {
             caption: "Open inbox",
             action: () => {
-              Daemon()!.spawn?.spawnApp("Messages", +Env().get("shell_pid"), "inbox");
+              Daemon!.spawn?.spawnApp("Messages", +Env.get("shell_pid"), "inbox");
             },
           },
         ],
@@ -143,7 +143,7 @@ export class ChecksUserContext extends UserContext {
   }
 
   checkNightly() {
-    const isNightly = !!Env().get(`NIGHTLY_WHODIS_${ArcBuild()}`);
+    const isNightly = !!Env.get(`NIGHTLY_WHODIS_${ArcBuild()}`);
     if (!isNightly) return;
 
     this.Log("NIGHTLY DETECTED. OPERATIONS MIGHT BE RESTRICTED.");

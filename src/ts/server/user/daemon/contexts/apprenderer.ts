@@ -1,5 +1,5 @@
 import { bestForeground, darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
-import { KernelStack } from "$ts/env";
+import { Stack } from "$ts/env";
 import { Wallpapers } from "$ts/wallpaper/store";
 import type { CustomStylePreferences, UserPreferences } from "$types/user";
 import { Daemon, type UserDaemon } from "..";
@@ -12,7 +12,7 @@ export class AppRendererUserContext extends UserContext {
 
   getAppRendererStyle(accent: string) {
     return `
-      --blur: ${Daemon()!.preferences().shell.visuals.blurRadius}px;
+      --blur: ${Daemon!.preferences().shell.visuals.blurRadius}px;
       --accent: ${hex3to6(accent)} !important;
       --accent-transparent: ${hex3to6(accent)}44 !important;
       --accent-light: ${lightenColor(accent)} !important;
@@ -24,12 +24,12 @@ export class AppRendererUserContext extends UserContext {
       --accent-suggested-start: #${accent} !important;
       --accent-suggested-end: ${darkenColor(accent, 10)} !important;
       --accent-suggested-fg: ${bestForeground(accent)} !important;
-      --wallpaper: url('${Daemon()!.wallpaper?.Wallpaper()?.url || Wallpapers.img0.url}');
-      --user-font: "${Daemon()!.preferences().shell.visuals.userFont || ""}";`;
+      --wallpaper: url('${Daemon!.wallpaper?.Wallpaper()?.url || Wallpapers.img0.url}');
+      --user-font: "${Daemon!.preferences().shell.visuals.userFont || ""}";`;
   }
 
   async setAppRendererClasses(v: UserPreferences) {
-    const renderer = KernelStack().renderer?.target;
+    const renderer = Stack.renderer?.target;
 
     if (!renderer) throw new Error("UserDaemon: Tried to set renderer classes without renderer");
 
@@ -53,15 +53,15 @@ export class AppRendererUserContext extends UserContext {
   setUserStyleLoader(style: CustomStylePreferences) {
     if (this._disposed || this.safeMode) return;
 
-    let styleLoader = KernelStack().renderer?.target.querySelector("#userStyleLoader");
+    let styleLoader = Stack.renderer?.target.querySelector("#userStyleLoader");
 
     if (!styleLoader) {
       styleLoader = document.createElement("style");
       styleLoader.id = "userStyleLoader";
 
-      KernelStack().renderer?.target.append(styleLoader);
+      Stack.renderer?.target.append(styleLoader);
     }
 
-    styleLoader.textContent = style.enabled && !Daemon()!.elevation?._elevating ? style.content || "" : "";
+    styleLoader.textContent = style.enabled && !Daemon!.elevation?._elevating ? style.content || "" : "";
   }
 }

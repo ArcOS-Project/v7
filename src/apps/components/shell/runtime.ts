@@ -1,9 +1,9 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { Env, Fs, KernelDispatchS, KernelStack, Stack } from "$ts/env";
-import { AppGroups, UserPaths } from "$ts/server/user/store";
+import { Env, Fs, SysDispatch, Stack } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
+import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
-import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { RecursiveDirectoryReadReturn } from "$types/fs";
@@ -17,8 +17,6 @@ import type { TrayHostRuntime } from "../trayhost/runtime";
 import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
 import { shortWeekDays, type CalendarMonth, type WeatherInformation } from "./types";
-import { textToBlob } from "$ts/util/convert";
-import { Daemon } from "$ts/server/user/daemon";
 
 export class ShellRuntime extends AppProcess {
   public startMenuOpened = Store<boolean>(false);
@@ -50,16 +48,16 @@ export class ShellRuntime extends AppProcess {
   }
 
   async start() {
-    if (Stack().getProcess(+Env().get("shell_pid"))) return false;
+    if (Stack.getProcess(+Env.get("shell_pid"))) return false;
 
-    Env().set("shell_pid", this.pid); // Set the shell PID
+    Env.set("shell_pid", this.pid); // Set the shell PID
 
-    KernelDispatchS().subscribe("stack-busy", () => this.stackBusy.set(true)); // Subscribe to stack-busy
-    KernelDispatchS().subscribe("stack-not-busy", () => this.stackBusy.set(false)); // Subscribe to stack-not-busy
+    SysDispatch.subscribe("stack-busy", () => this.stackBusy.set(true)); // Subscribe to stack-busy
+    SysDispatch.subscribe("stack-not-busy", () => this.stackBusy.set(false)); // Subscribe to stack-not-busy
 
     const minimizedFullscreens: Record<string, Set<number>> = {};
 
-    KernelDispatchS().subscribe("window-fullscreen", ([pid, desktop]) =>
+    SysDispatch.subscribe("window-fullscreen", ([pid, desktop]) =>
       this.FullscreenCount.update((v) => {
         minimizedFullscreens[desktop] ??= new Set();
         v[desktop] ??= new Set();
@@ -70,7 +68,7 @@ export class ShellRuntime extends AppProcess {
       })
     );
 
-    KernelDispatchS().subscribe("window-unfullscreen", ([pid, desktop]) =>
+    SysDispatch.subscribe("window-unfullscreen", ([pid, desktop]) =>
       this.FullscreenCount.update((v) => {
         minimizedFullscreens[desktop] ??= new Set();
         v[desktop] ??= new Set();
@@ -82,7 +80,7 @@ export class ShellRuntime extends AppProcess {
       })
     );
 
-    KernelDispatchS().subscribe("window-minimize", ([pid, desktop]) =>
+    SysDispatch.subscribe("window-minimize", ([pid, desktop]) =>
       this.FullscreenCount.update((v) => {
         minimizedFullscreens[desktop] ??= new Set();
         v[desktop] ??= new Set();
@@ -96,7 +94,7 @@ export class ShellRuntime extends AppProcess {
       })
     );
 
-    KernelDispatchS().subscribe("window-unminimize", ([pid, desktop]) =>
+    SysDispatch.subscribe("window-unminimize", ([pid, desktop]) =>
       this.FullscreenCount.update((v) => {
         minimizedFullscreens[desktop] ??= new Set();
         v[desktop] ??= new Set();
@@ -129,7 +127,7 @@ export class ShellRuntime extends AppProcess {
 
     this.dispatch.subscribe("ready", () => this.gotReadySignal());
 
-    KernelDispatchS().subscribe("startmenu-refresh", () => {
+    SysDispatch.subscribe("startmenu-refresh", () => {
       this.refreshStartMenu();
     });
   }
@@ -149,9 +147,9 @@ export class ShellRuntime extends AppProcess {
 
       const composed = e.composedPath();
 
-      this.startMenuOpened.subscribe((v) => v && KernelStack().renderer?.focusedPid.set(-1));
-      this.actionCenterOpened.subscribe((v) => v && KernelStack().renderer?.focusedPid.set(-1));
-      this.openedTrayPopup.subscribe((v) => v && KernelStack().renderer?.focusedPid.set(-1));
+      this.startMenuOpened.subscribe((v) => v && Stack.renderer?.focusedPid.set(-1));
+      this.actionCenterOpened.subscribe((v) => v && Stack.renderer?.focusedPid.set(-1));
+      this.openedTrayPopup.subscribe((v) => v && Stack.renderer?.focusedPid.set(-1));
 
       // Clicked outside the start menu? Then close it
       if (
@@ -208,21 +206,21 @@ export class ShellRuntime extends AppProcess {
     this.startMenuOpened.subscribe((v) => {
       if (!v) this.searchQuery.set(""); // Remove search query on close
 
-      if (v) KernelStack().renderer?.focusedPid.set(-1); // Unfocus window on start menu invocation
+      if (v) Stack.renderer?.focusedPid.set(-1); // Unfocus window on start menu invocation
     });
 
-    Daemon()?.checks?.checkReducedMotion();
+    Daemon?.checks?.checkReducedMotion();
   }
 
   async stop() {
-    Env().delete("shell_pid");
+    Env.delete("shell_pid");
     return true;
   }
 
   async gotReadySignal() {
     this.Log("Got ready signal!");
-    this.trayHost = KernelStack().getProcess(+Env().get("trayhost_pid"))!;
-    this.arcFind = KernelStack().getProcess(+Env().get("arcfind_pid"))!;
+    this.trayHost = Stack.getProcess(+Env.get("trayhost_pid"))!;
+    this.arcFind = Stack.getProcess(+Env.get("arcfind_pid"))!;
     this.arcFind.loading.subscribe((v) => this.searchLoading.set(v));
     this.ready.set(true);
     await this.refreshStartMenu();
@@ -263,7 +261,7 @@ export class ShellRuntime extends AppProcess {
   //#region WORKSPACES
 
   async deleteWorkspace(workspace: Workspace) {
-    const windowCount = [...KernelStack().store()].filter(
+    const windowCount = [...Stack.store()].filter(
       ([_, p]) => p instanceof AppProcess && p.app.desktop === workspace.uuid
     ).length; // Get the window count using some arguably unreadable code
 
@@ -284,7 +282,7 @@ export class ShellRuntime extends AppProcess {
       return;
     }
 
-    Daemon()?.workspaces?.deleteVirtualDesktop(workspace.uuid); //First delete the desktop
+    Daemon?.workspaces?.deleteVirtualDesktop(workspace.uuid); //First delete the desktop
     await Sleep(0); // Then wait for the next frame
     this.workspaceManagerOpened.set(true); // (ugly) and re-open the workspace manager
   }
@@ -341,10 +339,10 @@ export class ShellRuntime extends AppProcess {
   //#region STARTMENU
 
   public async refreshStartMenu(): Promise<void> {
-    const tree = await Fs().tree(this.STARTMENU_FOLDER);
+    const tree = await Fs.tree(this.STARTMENU_FOLDER);
 
     if (!tree?.files?.length && !tree?.dirs?.length) {
-      await Daemon()?.appreg?.updateStartMenuFolder(); // Populate it if there's no content
+      await Daemon?.appreg?.updateStartMenuFolder(); // Populate it if there's no content
       
       return; // Don't try again here because this method will be reinvoked by dispatch
     }
@@ -462,12 +460,12 @@ export class ShellRuntime extends AppProcess {
   }
 
   async changeShell(id: string) {
-    const appStore = Daemon()!.appStorage();
+    const appStore = Daemon!.appStorage();
     const newShell = appStore?.getAppSynchronous(id);
 
     if (!newShell) return false;
 
-    const proceed = await Daemon()?.helpers?.Confirm(
+    const proceed = await Daemon?.helpers?.Confirm(
       "Change your shell",
       `${newShell.metadata.name} by ${newShell.metadata.author} wants to act as your ArcOS shell. Do you allow this?`,
       "Deny",
@@ -481,7 +479,7 @@ export class ShellRuntime extends AppProcess {
       return v;
     });
 
-    const restartNow = await Daemon()?.helpers?.Confirm(
+    const restartNow = await Daemon?.helpers?.Confirm(
       "Restart now?",
       "ArcOS has to restart before the changes will apply. Do you want to restart now?",
       "Not now",
@@ -489,7 +487,7 @@ export class ShellRuntime extends AppProcess {
       "RestartIcon"
     );
 
-    if (restartNow) await Daemon()?.power?.restart();
+    if (restartNow) await Daemon?.power?.restart();
   }
 
   //#endregion

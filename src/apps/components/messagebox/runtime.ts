@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { KernelSound } from "$ts/env";
+import { SoundBus } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { LogLevel } from "$types/logging";
@@ -22,7 +22,7 @@ export class MessageBoxRuntime extends AppProcess {
       image: "ComponentIcon",
     };
 
-    if (this.data.sound) KernelSound().playSound(this.data.sound); // Play the sound
+    if (this.data.sound) SoundBus.playSound(this.data.sound); // Play the sound
 
     this.setSource(__SOURCE__);
   }

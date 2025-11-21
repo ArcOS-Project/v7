@@ -12,14 +12,14 @@ export class VersionUserContext extends UserContext {
   }
 
   async isRegisteredVersionOutdated() {
-    const contents = await Fs().readFile(join(UserPaths.System, "RegisteredVersion"));
+    const contents = await Fs.readFile(join(UserPaths.System, "RegisteredVersion"));
     const isOutdated = !contents || arrayToText(contents) !== ArcOSVersion;
 
     return isOutdated;
   }
 
   async updateRegisteredVersion() {
-    await Fs().writeFile(join(UserPaths.System, "RegisteredVersion"), textToBlob(ArcOSVersion));
+    await Fs.writeFile(join(UserPaths.System, "RegisteredVersion"), textToBlob(ArcOSVersion));
   }
 
   async checkForNewVersion() {
@@ -31,6 +31,6 @@ export class VersionUserContext extends UserContext {
 
     iconService?.migrateIconConfiguration();
 
-    Daemon()!.spawn?.spawnOverlay("UpdateNotifierApp", +Env().get("shell_pid"));
+    Daemon!.spawn?.spawnOverlay("UpdateNotifierApp", +Env.get("shell_pid"));
   }
 }

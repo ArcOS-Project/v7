@@ -13,7 +13,7 @@ const installTpaFile: (d: UserDaemon) => FileHandler = (daemon) => ({
   name: "Install application",
   description: "Install this TPA file as an app",
   handle: async (path: string) => {
-    const text = arrayToText((await Fs().readFile(path))!);
+    const text = arrayToText((await Fs.readFile(path))!);
     const json = tryJsonParse(text);
 
     if (typeof json !== "object") throw new Error(`InstallTpaFileHandler: JSON parse failed`);

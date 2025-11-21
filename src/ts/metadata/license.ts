@@ -3,7 +3,7 @@ import { Kernel } from "$ts/env";
 
 export async function getLicense() {
   __Console__.time("Get License");
-  const kernel = Kernel()!;
+  const kernel = Kernel!;
 
   kernel.Log("branding", "Attempting to retrieve project license from /license");
 
@@ -19,4 +19,4 @@ export async function getLicense() {
   }
 }
 
-export const ArcLicense = () => Kernel()!.ARCOS_LICENSE;
+export const ArcLicense = () => Kernel!.ARCOS_LICENSE;

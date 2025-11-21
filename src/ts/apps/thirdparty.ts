@@ -17,7 +17,7 @@ export class ThirdPartyAppProcess extends AppProcess {
     super(pid, parentPid, app);
 
     this.workingDirectory = workingDirectory;
-    this.windowIcon.set(Daemon()?.icons?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
+    this.windowIcon.set(Daemon?.icons?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
 
     this.setSource(__SOURCE__);
   }
@@ -58,7 +58,7 @@ export class ThirdPartyAppProcess extends AppProcess {
               continue;
 
             const filePath = originalValue.includes(":/") ? originalValue : join(this.workingDirectory, originalValue);
-            const direct = this.urlCache[filePath] ?? (await Fs().direct(filePath));
+            const direct = this.urlCache[filePath] ?? (await Fs.direct(filePath));
 
             if (!direct) {
               this.urlCache[filePath] = originalValue;

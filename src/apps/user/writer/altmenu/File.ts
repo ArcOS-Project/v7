@@ -38,7 +38,7 @@ export function FileMenu(runtime: WriterRuntime): ContextMenuItem {
         caption: "Open file location",
         action: () => {
           const parent = getParentDirectory(runtime.openedFile());
-          runtime.spawnApp("fileManager", +Env().get("shell_pid"), parent);
+          runtime.spawnApp("fileManager", +Env.get("shell_pid"), parent);
         },
         disabled: () => !runtime.openedFile(),
         icon: "folder-up",

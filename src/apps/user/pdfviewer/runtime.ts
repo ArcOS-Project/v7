@@ -31,7 +31,7 @@ export class PdfViewerRuntime extends AppProcess {
 
   async readFile(path: string) {
     try {
-      const url = await Fs().direct(path);
+      const url = await Fs.direct(path);
 
       if (!url) {
         return await this.readFileIndirectFallback(path);
@@ -46,7 +46,7 @@ export class PdfViewerRuntime extends AppProcess {
   }
 
   async readFileIndirectFallback(path: string) {
-    const prog = await Daemon()!.files!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
         caption: `Reading image`,
@@ -57,7 +57,7 @@ export class PdfViewerRuntime extends AppProcess {
     );
 
     try {
-      const contents = await Fs().readFile(path, (progress) => {
+      const contents = await Fs.readFile(path, (progress) => {
         prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);

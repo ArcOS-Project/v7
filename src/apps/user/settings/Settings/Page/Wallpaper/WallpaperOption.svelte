@@ -24,7 +24,7 @@
 
   async function getWallpaper() {
     loading = true;
-    wallpaper = await Daemon()!.wallpaper!.getWallpaper(id);
+    wallpaper = await Daemon!.wallpaper!.getWallpaper(id);
     loading = false;
   }
 

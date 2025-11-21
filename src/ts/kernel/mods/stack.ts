@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { __Console__ } from "$ts/console";
-import { Env, Kernel, KernelDispatchS } from "$ts/env";
+import { Env, Kernel, SysDispatch } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import type { App } from "$types/app";
 import type { ConstructedWaveKernel, EnvironmentType, SystemDispatchType } from "$types/kernel";
@@ -38,7 +38,7 @@ export class ProcessHandler extends KernelModule {
     this.isKmod();
     this.BUSY = true;
 
-    KernelDispatchS().dispatch("stack-busy");
+    SysDispatch.dispatch("stack-busy");
     this.Log(`Now busy: ${reason}`);
   }
 
@@ -46,7 +46,7 @@ export class ProcessHandler extends KernelModule {
     this.isKmod();
     this.BUSY = false;
 
-    KernelDispatchS().dispatch("stack-not-busy");
+    SysDispatch.dispatch("stack-not-busy");
     this.Log(`Now no longer busy: ${reason}`);
   }
 
@@ -59,11 +59,11 @@ export class ProcessHandler extends KernelModule {
   ): Promise<T | undefined> {
     this.isKmod();
 
-    if (Kernel()?.PANICKED || this.BUSY) return;
+    if (Kernel?.PANICKED || this.BUSY) return;
 
     this.makeBusy("Spawning process");
 
-    const userDaemonPid = Env().get("userdaemon_pid");
+    const userDaemonPid = Env.get("userdaemon_pid");
 
     if (KernelStateHandler()?.currentState === "desktop" && userDaemonPid) {
       parentPid ??= +userDaemonPid;
@@ -143,7 +143,7 @@ export class ProcessHandler extends KernelModule {
   async kill(pid: number, force = false): Promise<ProcessKillResult> {
     this.isKmod();
 
-    if (this.BUSY || Kernel()?.PANICKED) return "err_disposed";
+    if (this.BUSY || Kernel?.PANICKED) return "err_disposed";
 
     Log("ProcessHandler.kill", `Attempting to kill ${pid}`);
 
@@ -192,7 +192,7 @@ export class ProcessHandler extends KernelModule {
   public async _killSubProceses(pid: number, force = false) {
     this.isKmod();
 
-    if (Kernel()?.PANICKED) return;
+    if (Kernel?.PANICKED) return;
 
     const procs = this.getSubProcesses(pid);
 

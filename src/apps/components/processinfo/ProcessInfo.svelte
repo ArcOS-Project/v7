@@ -11,12 +11,12 @@
   const { proc, parent, inherit } = process;
 
   const icon =
-    (proc instanceof AppProcess ? Daemon()?.icons?.getAppIcon(proc.app.data)! : process.getIconCached("ComponentIcon"));
-  const children = Stack().getSubProcesses(proc!.pid);
-  const context = Stack().getProcessContext(proc!.pid);
+    (proc instanceof AppProcess ? Daemon?.icons?.getAppIcon(proc.app.data)! : process.getIconCached("ComponentIcon"));
+  const children = Stack.getSubProcesses(proc!.pid);
+  const context = Stack.getProcessContext(proc!.pid);
 
   function info() {
-    process.spawnOverlayApp("AppInfo", +Env().get("shell_pid"), (proc as AppProcess).app.id);
+    process.spawnOverlayApp("AppInfo", +Env.get("shell_pid"), (proc as AppProcess).app.id);
   }
 </script>
 

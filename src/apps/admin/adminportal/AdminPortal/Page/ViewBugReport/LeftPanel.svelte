@@ -41,7 +41,7 @@
         {#each tpaFiles as file}
           <button class="file" ondblclick={() => openTpaFile(file)} disabled={file.unavailable}>
             <img
-              src={Daemon()?.assoc?.getFileAssociation(file.filePath)?.icon || process.getIconCached("DefaultMimeIcon")}
+              src={Daemon?.assoc?.getFileAssociation(file.filePath)?.icon || process.getIconCached("DefaultMimeIcon")}
               alt=""
             />
             <span class="filename">{file.filename}</span>

@@ -32,13 +32,13 @@ export class ItemInfoRuntime extends AppProcess {
     file = file as FileEntry | FolderEntry;
 
     try {
-      const drive = Fs().getDriveByPath(path);
+      const drive = Fs.getDriveByPath(path);
       const name = getItemNameFromPath(path);
       const parent = getItemNameFromPath(getParentDirectory(path));
       const split = path.split(".");
       const extension = file.mimeType ? split[split.length - 1] : undefined;
       const isShortcut = file?.name?.endsWith(".arclnk");
-      const info = Daemon()?.assoc?.getFileAssociation(path);
+      const info = Daemon?.assoc?.getFileAssociation(path);
 
       this.info.set({
         meta: {
@@ -62,7 +62,7 @@ export class ItemInfoRuntime extends AppProcess {
 
       if (isShortcut) {
         // Longwinded and godawful way to get the shortcut metadata in this file
-        this.shortcut.set(JSON.parse(arrayToText((await Fs().readFile(this.info().location.fullPath))!)));
+        this.shortcut.set(JSON.parse(arrayToText((await Fs.readFile(this.info().location.fullPath))!)));
       }
     } catch {
       this.closeWindow();
@@ -77,11 +77,11 @@ export class ItemInfoRuntime extends AppProcess {
     await this.closeWindow(); // First get the process out of here
 
     if (info.isFolder) {
-      await this.spawnApp("fileManager", +Env().get("shell_pid"), info.location.fullPath);
+      await this.spawnApp("fileManager", +Env.get("shell_pid"), info.location.fullPath);
     } else {
       const path = info.location.fullPath;
 
-      Daemon()?.files?.openFile(path, this.shortcut());
+      Daemon?.files?.openFile(path, this.shortcut());
     }
   }
 

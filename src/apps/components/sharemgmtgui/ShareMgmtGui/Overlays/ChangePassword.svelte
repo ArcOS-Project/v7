@@ -26,7 +26,7 @@
       return;
     }
 
-    const shares = Daemon()?.serviceHost?.getService<ShareManager>("ShareMgmt")!;
+    const shares = Daemon?.serviceHost?.getService<ShareManager>("ShareMgmt")!;
     const result = shares?.changeSharePassword(process.parentProcess.shareId, newPassword);
 
     process.closeWindow();

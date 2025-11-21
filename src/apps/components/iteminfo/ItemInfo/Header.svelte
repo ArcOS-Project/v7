@@ -10,7 +10,7 @@
   let icon = $state<string>();
 
   onMount(() => {
-    const assoc = Daemon()?.assoc?.getFileAssociation($info.name);
+    const assoc = Daemon?.assoc?.getFileAssociation($info.name);
     icon = $info.isFolder ? process.getIconCached("FolderIcon") : assoc?.icon || process.getIconCached("DefaultMimeIcon");
   });
 </script>

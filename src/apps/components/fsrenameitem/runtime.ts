@@ -31,7 +31,7 @@ export class RenameItemRuntime extends AppProcess {
 
   async rename() {
     try {
-      await Fs().moveItem(this.path, join(this.parentDir, this.newName()));
+      await Fs.moveItem(this.path, join(this.parentDir, this.newName()));
     } catch {
       // silently error
     }

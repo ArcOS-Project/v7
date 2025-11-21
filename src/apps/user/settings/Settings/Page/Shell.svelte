@@ -6,7 +6,7 @@
 
   const { process }: { process: SettingsRuntime } = $props();
   const { userPreferences } = process;
-  const { battery } = Daemon()?.power! || {}!;
+  const { battery } = Daemon?.power! || {}!;
 </script>
 
 <div class="centered-layout">

@@ -7,7 +7,7 @@ import TerminalWindowApp from "$apps/components/terminalwindow/TerminalWindow";
 import SafeModeNotice from "$lib/Daemon/SafeModeNotice.svelte";
 import type { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { Env, KernelDispatchS, KernelStack } from "$ts/env";
+import { Env, SysDispatch, Stack } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
@@ -21,11 +21,11 @@ export class HelpersUserContext extends UserContext {
   }
 
   async GlobalLoadIndicator(caption?: string, pid?: number, progress?: Partial<GlobalLoadIndicatorProgress>) {
-    const process = await KernelStack().spawn<GlobalLoadIndicatorRuntime>(
+    const process = await Stack.spawn<GlobalLoadIndicatorRuntime>(
       GlobalLoadIndicatorRuntime,
       undefined,
       this.userInfo!._id,
-      pid || +Env().get("shell_pid"),
+      pid || +Env.get("shell_pid"),
       {
         data: { ...GlobalLoadIndicatorApp, overlay: true },
         id: GlobalLoadIndicatorApp.id,
@@ -56,7 +56,7 @@ export class HelpersUserContext extends UserContext {
   }
 
   async Confirm(title: string, message: string, no: string, yes: string, image = "QuestionIcon", pid?: number) {
-    const shellPid = pid || +Env().get("shell_pid");
+    const shellPid = pid || +Env.get("shell_pid");
     return new Promise((r) => {
       MessageBox(
         {
@@ -74,8 +74,8 @@ export class HelpersUserContext extends UserContext {
     });
   }
 
-  async TerminalWindow(pid = +Env().get("shell_pid")): Promise<ExpandedTerminal | undefined> {
-    const process = await KernelStack().spawn<TerminalWindowRuntime>(TerminalWindowRuntime, undefined, this.userInfo!._id, pid, {
+  async TerminalWindow(pid = +Env.get("shell_pid")): Promise<ExpandedTerminal | undefined> {
+    const process = await Stack.spawn<TerminalWindowRuntime>(TerminalWindowRuntime, undefined, this.userInfo!._id, pid, {
       data: { ...TerminalWindowApp },
       id: TerminalWindowApp.id,
       desktop: undefined,
@@ -96,23 +96,23 @@ export class HelpersUserContext extends UserContext {
 
     const uuid = UUID();
 
-    await Daemon()!.spawn?.spawnOverlay("IconPicker", +Env().get("shell_pid"), {
+    await Daemon!.spawn?.spawnOverlay("IconPicker", +Env.get("shell_pid"), {
       ...data,
       returnId: uuid,
     });
 
     return new Promise<string>(async (r) => {
-      KernelDispatchS().subscribe<[string, string]>("ip-confirm", ([id, icon]) => {
+      SysDispatch.subscribe<[string, string]>("ip-confirm", ([id, icon]) => {
         if (id === uuid) r(icon);
       });
-      KernelDispatchS().subscribe("ip-cancel", ([id]) => {
+      SysDispatch.subscribe("ip-cancel", ([id]) => {
         if (id === uuid) r(data.defaultIcon);
       });
     });
   }
 
   ParentIs(proc: AppProcess, appId: string) {
-    const targetAppInstances = KernelStack()
+    const targetAppInstances = Stack
       .renderer?.getAppInstances(appId)
       .map((p) => p.pid);
 
@@ -121,7 +121,7 @@ export class HelpersUserContext extends UserContext {
   async waitForLeaveInvocationAllow() {
     return new Promise<void>((r) => {
       const interval = setInterval(() => {
-        if (!Daemon()!._blockLeaveInvocations) r(clearInterval(interval));
+        if (!Daemon!._blockLeaveInvocations) r(clearInterval(interval));
       }, 1);
     });
   }
@@ -134,17 +134,17 @@ export class HelpersUserContext extends UserContext {
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
         buttons: [
-          { caption: "Restart now", action: () => Daemon()!.power?.restart() },
+          { caption: "Restart now", action: () => Daemon!.power?.restart() },
           { caption: "Okay", action: () => {}, suggested: true },
         ],
       },
-      +Env().get("shell_pid"),
+      +Env.get("shell_pid"),
       true
     );
   }
 
   iHaveFeedback(process: AppProcess) {
-    Daemon()!.spawn?.spawnApp(
+    Daemon!.spawn?.spawnApp(
       "BugHuntCreator",
       undefined,
       `[${process.app.id}] Feedback report - ${process.windowTitle()}`,

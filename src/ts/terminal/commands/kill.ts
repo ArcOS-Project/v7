@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { KernelStack } from "$ts/env";
+import { Stack } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { ElevationLevel } from "$types/elevation";
 import type { Arguments } from "$types/terminal";
@@ -24,7 +24,7 @@ export class KillCommand extends TerminalProcess {
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const force = flags.force || flags.f;
     const pid = tryJsonParse<number>(argv[0]) as number;
-    const process = KernelStack().getProcess(pid);
+    const process = Stack.getProcess(pid);
 
     if (!pid) {
       term.Error("Missing process ID.");
@@ -54,7 +54,7 @@ export class KillCommand extends TerminalProcess {
       if (select.selectedIndex !== 0) return 1;
     }
 
-    const result = await KernelStack().kill(process.pid, !!force);
+    const result = await Stack.kill(process.pid, !!force);
 
     if (result !== "success") {
       term.Error(result);

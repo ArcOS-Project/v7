@@ -10,7 +10,7 @@
   const { process }: { process: AdvSysSetRuntime } = $props();
   const { preferencesBuffer } = process;
 
-  const trash = Daemon()?.serviceHost?.getService<TrashCanService>("TrashSvc");
+  const trash = Daemon?.serviceHost?.getService<TrashCanService>("TrashSvc");
   let size = $state(Object.entries(trash?.IndexBuffer() || {}).length);
 
   onMount(() => {
@@ -73,5 +73,5 @@
 
 <section class="actions">
   <button onclick={emptyBin}>Empty...</button>
-  <button onclick={() => process.spawnApp("fileManager", +Env().get("shell_pid"), "::recycle_bin")}>Open bin</button>
+  <button onclick={() => process.spawnApp("fileManager", +Env.get("shell_pid"), "::recycle_bin")}>Open bin</button>
 </section>

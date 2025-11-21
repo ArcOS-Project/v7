@@ -1,6 +1,6 @@
 import type { AppProcess } from "$ts/apps/process";
 import { contextProps } from "$ts/context/actions.svelte";
-import { KernelStack } from "$ts/env";
+import { Stack } from "$ts/env";
 
 export class CustomTitlebar {
   #className = "";
@@ -17,7 +17,7 @@ export class CustomTitlebar {
     if (this.#titlebar) throw new Error("CustomTitlebar instance already consumed");
 
     this.#target = target;
-    this.#titlebar = KernelStack()?.renderer?._renderTitlebar(this.#process);
+    this.#titlebar = Stack?.renderer?._renderTitlebar(this.#process);
 
     if (!this.#titlebar) throw new Error("CustomTitlebar: failed to create titlebar");
     if (this.#className) this.#titlebar.classList.add(this.#className);

@@ -10,7 +10,7 @@
   const { process, updates, installed }: { process: AppStoreRuntime; updates: UpdateInfo[]; installed: StoreItem[] } = $props();
 
   function updateAll() {
-    process.spawnOverlayApp("MultiUpdateGui", +Env().get("shell_pid") || process.pid, updates);
+    process.spawnOverlayApp("MultiUpdateGui", +Env.get("shell_pid") || process.pid, updates);
   }
 </script>
 

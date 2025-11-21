@@ -1,4 +1,4 @@
-import { Fs, KernelDispatchS } from "$ts/env";
+import { Fs, SysDispatch } from "$ts/env";
 import { applyDefaults } from "$ts/hierarchy";
 import { Backend } from "$ts/server/axios";
 import { Store, type Unsubscriber } from "$ts/writable";
@@ -25,7 +25,7 @@ export class PreferencesUserContext extends UserContext {
   async commitPreferences(preferences: UserPreferences) {
     if (this._disposed) return;
 
-    if (Daemon()!.checks!.NIGHTLY) {
+    if (Daemon!.checks!.NIGHTLY) {
       this.Log("User preference commit prohibited: nightly build");
       return true;
     }
@@ -51,7 +51,7 @@ export class PreferencesUserContext extends UserContext {
       return;
     }
 
-    const preferences = Daemon()!.preferences() || {};
+    const preferences = Daemon!.preferences() || {};
 
     if (preferences.isDefault) {
       this.Log(`Not sanitizing default preferences`, LogLevel.warning);
@@ -72,16 +72,16 @@ export class PreferencesUserContext extends UserContext {
 
     if (!result.globalSettings.shellExec) result.globalSettings.shellExec = "arcShell";
 
-    Daemon()!.preferences.set(result);
+    Daemon!.preferences.set(result);
     this.commitPreferences(result);
   }
 
   getGlobalSetting(key: string) {
-    return Daemon()!.preferences().globalSettings[key];
+    return Daemon!.preferences().globalSettings[key];
   }
 
   setGlobalSetting(key: string, value: any) {
-    Daemon()!.preferences.update((v) => {
+    Daemon!.preferences.update((v) => {
       v.globalSettings[key] = value;
 
       return v;
@@ -89,13 +89,13 @@ export class PreferencesUserContext extends UserContext {
   }
 
   changeProfilePicture(newValue: string | number) {
-    Daemon()!.preferences.update((v) => {
+    Daemon!.preferences.update((v) => {
       v.account.profilePicture = newValue;
       return v;
     });
 
-    KernelDispatchS().dispatch("pfp-changed", [newValue]);
-    Daemon()!.globalDispatch?.emit("pfp-changed", newValue);
+    SysDispatch.dispatch("pfp-changed", [newValue]);
+    Daemon!.globalDispatch?.emit("pfp-changed", newValue);
   }
 
   async uploadProfilePicture(): Promise<string | undefined> {
@@ -104,7 +104,7 @@ export class PreferencesUserContext extends UserContext {
     this.Log(`Uploading profile picture to ${UserPaths.Pictures}`);
 
     try {
-      const result = await Fs().uploadFiles(UserPaths.Pictures, "image/*");
+      const result = await Fs.uploadFiles(UserPaths.Pictures, "image/*");
       if (!result.length) return;
 
       const { path } = result[0];

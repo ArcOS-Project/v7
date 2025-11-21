@@ -43,7 +43,7 @@ export class AppPreInstallRuntime extends AppProcess {
             {
               caption: "Take me there",
               action: () => {
-                Daemon()?.spawn?.spawnApp("systemSettings", +Env().get("shell_pid"), "apps");
+                Daemon?.spawn?.spawnApp("systemSettings", +Env.get("shell_pid"), "apps");
               },
             },
             {
@@ -53,7 +53,7 @@ export class AppPreInstallRuntime extends AppProcess {
             },
           ],
         },
-        +Env().get("shell_pid"),
+        +Env.get("shell_pid"),
         true
       );
 
@@ -61,24 +61,24 @@ export class AppPreInstallRuntime extends AppProcess {
       return;
     }
 
-    const prog = await Daemon()?.files!.FileProgress(
+    const prog = await Daemon?.files!.FileProgress(
       {
         type: "size",
         icon: "DownloadIcon",
         caption: "Reading ArcOS package",
         subtitle: this.pkgPath,
       },
-      +Env().get("shell_pid")
+      +Env.get("shell_pid")
     );
 
     try {
-      const distrib = Daemon()?.serviceHost?.getService<DistributionServiceProcess>("DistribSvc")!;
+      const distrib = Daemon?.serviceHost?.getService<DistributionServiceProcess>("DistribSvc")!;
 
       if (!(await distrib.validatePackage(this.pkgPath))) {
         return this.fail("Package is corrupt; missing files");
       }
 
-      const content = await Fs().readFile(this.pkgPath, (progress) => {
+      const content = await Fs.readFile(this.pkgPath, (progress) => {
         prog?.show();
         prog?.setMax(progress.max);
         prog?.setDone(progress.value);
@@ -112,7 +112,7 @@ export class AppPreInstallRuntime extends AppProcess {
         image: "ErrorIcon",
         sound: "arcos.dialog.error",
       },
-      +Env().get("shell_pid"),
+      +Env.get("shell_pid"),
       true
     );
     this.closeWindow();
@@ -120,7 +120,7 @@ export class AppPreInstallRuntime extends AppProcess {
 
   async install() {
     const meta = this.metadata();
-    const elevated = await Daemon()!.elevation!.manuallyElevate({
+    const elevated = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS wants to install an application",
       title: meta.name,
       description: `${meta.author} - ${meta.version}`,
@@ -131,7 +131,7 @@ export class AppPreInstallRuntime extends AppProcess {
     if (!elevated) return;
 
     await this.closeWindow();
-    this.spawnOverlayApp("AppInstaller", +Env().get("shell_pid"), this.metadata, this.zip);
+    this.spawnOverlayApp("AppInstaller", +Env.get("shell_pid"), this.metadata, this.zip);
   }
 
   //#endregion

@@ -24,11 +24,11 @@ const applyArcTheme: (d: UserDaemon) => FileHandler = (daemon) => ({
           sound: "arcos.dialog.error",
           image: "ThemesIcon",
         },
-        +Env().get("shell_pid"),
+        +Env.get("shell_pid"),
         true
       );
     }
-    const content = await Fs().readFile(path);
+    const content = await Fs.readFile(path);
     if (!content) return fail("The contents of the file could not be read");
 
     const json = tryJsonParse<UserTheme>(arrayToText(content));

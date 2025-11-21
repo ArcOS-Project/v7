@@ -26,7 +26,7 @@
             caption: "Log In As",
             suggested: true,
             action: async () => {
-              await Daemon()?.power?.logoff();
+              await Daemon?.power?.logoff();
               await Sleep(3000);
               const cookieOptions = {
                 expires: 14,
@@ -34,8 +34,8 @@
               };
               Cookies.set("arcToken", token.value, cookieOptions);
               Cookies.set("arcUsername", token.user?.username!, cookieOptions);
-              Daemon()!._disposed = false;
-              await Daemon()?.power?.restart();
+              Daemon!._disposed = false;
+              await Daemon?.power?.restart();
             },
           },
         ],

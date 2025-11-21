@@ -262,10 +262,10 @@ export class ServerDrive extends FilesystemDrive {
       const data = response.data as ExtendedStat;
 
       if (data.modifiers?.createdBy?.user) {
-        data.modifiers.createdBy.user.profilePicture = `${KernelServerUrl()}${data.modifiers.createdBy.user.profilePicture}`;
+        data.modifiers.createdBy.user.profilePicture = `${KernelServerUrl}${data.modifiers.createdBy.user.profilePicture}`;
       }
       if (data.modifiers?.lastWrite?.user) {
-        data.modifiers.lastWrite.user.profilePicture = `${KernelServerUrl()}${data.modifiers.lastWrite.user.profilePicture}`;
+        data.modifiers.lastWrite.user.profilePicture = `${KernelServerUrl}${data.modifiers.lastWrite.user.profilePicture}`;
       }
 
       return data as ExtendedStat;

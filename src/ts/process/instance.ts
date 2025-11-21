@@ -1,5 +1,4 @@
-import { getKMod, KernelFs } from "$ts/env";
-import type { EnvironmentType, FilesystemType, ProcessHandlerType, SoundbusType, SystemDispatchType } from "$types/kernel";
+import { Fs, getKMod } from "$ts/env";
 import { LogLevel } from "../../types/logging";
 import { Log } from "../logging";
 import { ProcessDispatch } from "./dispatch";
@@ -63,7 +62,7 @@ export class Process {
     this.Log(`Requesting file lock for '${path}'`);
 
     try {
-      await KernelFs().lockFile(path, this.pid);
+      await Fs.lockFile(path, this.pid);
 
       this.fileLocks.push(path);
     } catch {
@@ -75,7 +74,7 @@ export class Process {
     this.Log(`Requesting file unlock for '${path}'`);
 
     try {
-      await KernelFs().releaseLock(path, this.pid);
+      await Fs.releaseLock(path, this.pid);
 
       this.fileLocks.splice(this.fileLocks.indexOf(path));
     } catch {

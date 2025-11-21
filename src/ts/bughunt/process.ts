@@ -21,7 +21,7 @@ export class BugHuntUserSpaceProcess extends BaseService {
     super(pid, parentPid, name, host);
 
     this.module = getKMod<BugHuntType>("bughunt");
-    this.token = Daemon()!.token;
+    this.token = Daemon!.token;
 
     this.setSource(__SOURCE__);
   }

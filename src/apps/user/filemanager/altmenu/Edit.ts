@@ -27,7 +27,7 @@ export function EditMenu(runtime: FileManagerRuntime): ContextMenuItem {
         action: () => runtime.pasteFiles(),
         icon: "clipboard",
         disabled: () =>
-          (!Daemon()!.copyList().length && !Daemon()!.cutList().length) ||
+          (!Daemon!.copyList().length && !Daemon!.cutList().length) ||
           !!runtime.virtual() ||
           !!runtime.drive()?.READONLY,
       },

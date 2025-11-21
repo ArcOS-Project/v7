@@ -15,7 +15,7 @@
     ondblclick={() => process.openAttachment(attachment, $message._id)}
   >
     <img
-      src={Daemon()?.assoc?.getFileAssociation(attachment.filename)?.icon || process.getIconCached("DefaultMimeIcon")}
+      src={Daemon?.assoc?.getFileAssociation(attachment.filename)?.icon || process.getIconCached("DefaultMimeIcon")}
       alt=""
     />
     <p>

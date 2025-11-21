@@ -1,4 +1,4 @@
-import { Env, KernelDispatchS } from "$ts/env";
+import { Env, SysDispatch } from "$ts/env";
 import { UUID } from "$ts/uuid";
 import type { ElevationData } from "$types/elevation";
 import { Daemon, type UserDaemon } from "..";
@@ -31,38 +31,38 @@ export class ElevationUserContext extends UserContext {
 
     const id = UUID();
     const key = UUID();
-    const shellPid = Env().get("shell_pid");
+    const shellPid = Env.get("shell_pid");
 
-    if (Daemon()!.preferences().security.disabled) return true;
-    if (Daemon()!.preferences().disabledApps.includes("SecureContext")) return true;
+    if (Daemon!.preferences().security.disabled) return true;
+    if (Daemon!.preferences().disabledApps.includes("SecureContext")) return true;
 
     this._elevating = true;
-    Daemon()!.renderer?.setAppRendererClasses(Daemon()!.preferences());
+    Daemon!.renderer?.setAppRendererClasses(Daemon!.preferences());
 
     if (shellPid) {
-      const proc = await Daemon()!.spawn?._spawnOverlay("SecureContext", undefined, +shellPid, id, key, data);
+      const proc = await Daemon!.spawn?._spawnOverlay("SecureContext", undefined, +shellPid, id, key, data);
 
       if (!proc) return false;
     } else {
-      const proc = await Daemon()!.spawn?._spawnApp("SecureContext", undefined, this.pid, id, key, data);
+      const proc = await Daemon!.spawn?._spawnApp("SecureContext", undefined, this.pid, id, key, data);
 
       if (!proc) return false;
     }
 
     return new Promise((r) => {
-      KernelDispatchS().subscribe("elevation-approve", (data) => {
+      SysDispatch.subscribe("elevation-approve", (data) => {
         if (data[0] === id && data[1] === key) {
           r(true);
           this._elevating = false;
-          Daemon()!.renderer?.setAppRendererClasses(Daemon()!.preferences());
+          Daemon!.renderer?.setAppRendererClasses(Daemon!.preferences());
         }
       });
 
-      KernelDispatchS().subscribe("elevation-deny", (data) => {
+      SysDispatch.subscribe("elevation-deny", (data) => {
         if (data[0] === id && data[1] === key) {
           r(false);
           this._elevating = false;
-          Daemon()!.renderer?.setAppRendererClasses(Daemon()!.preferences());
+          Daemon!.renderer?.setAppRendererClasses(Daemon!.preferences());
         }
       });
     });

@@ -8,7 +8,7 @@
   let newName = $state<string>();
 
   async function changeIt() {
-    const shares = Daemon()?.serviceHost?.getService<ShareManager>("ShareMgmt")!;
+    const shares = Daemon?.serviceHost?.getService<ShareManager>("ShareMgmt")!;
     const result = await shares?.renameShare(process.parentProcess.shareId, newName!);
 
     process.closeWindow();

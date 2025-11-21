@@ -11,24 +11,24 @@
   import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: SettingsRuntime } = $props();
-  const { userInfo, preferences: userPreferences } = Daemon() || {}!;
+  const { userInfo, preferences: userPreferences } = Daemon || {}!;
 
   let wallpaper = $state<Wallpaper>();
 
   onMount(() => {
     const sub = userPreferences?.subscribe(async (v) => {
-      wallpaper = await Daemon()!.wallpaper!.getWallpaper(v.account.loginBackground);
+      wallpaper = await Daemon!.wallpaper!.getWallpaper(v.account.loginBackground);
     });
 
     return () => sub?.();
   });
 </script>
 
-{#if userInfo && userPreferences && Daemon()}
+{#if userInfo && userPreferences && Daemon}
   <ThemesHeader
     {userInfo}
     {userPreferences}
-    userDaemon={Daemon()!}
+    userDaemon={Daemon!}
     login
     background={wallpaper?.thumb || wallpaper?.url}
   >
@@ -39,7 +39,7 @@
       <button
         class="lucide icon-upload"
         aria-label="Upload wallpaper"
-        onclick={() => Daemon()?.wallpaper?.uploadWallpaper()}
+        onclick={() => Daemon?.wallpaper?.uploadWallpaper()}
         disabled={process.safeMode}
         title="Upload wallpaper"
       >

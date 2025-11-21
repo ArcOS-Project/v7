@@ -10,7 +10,7 @@
 
   onMount(() => {
     newFile.subscribe((v) => {
-      const info = Daemon()?.assoc?.getFileAssociation(v);
+      const info = Daemon?.assoc?.getFileAssociation(v);
       icon = info?.icon || process.getIconCached("DefaultMimeIcon");
     });
   });

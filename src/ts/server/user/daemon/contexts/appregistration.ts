@@ -2,7 +2,7 @@ import type { ApplicationStorage } from "$ts/apps/storage";
 import { BuiltinAppImportPathAbsolutes } from "$ts/apps/store";
 import { MessageBox } from "$ts/dialog";
 import type { DistributionServiceProcess } from "$ts/distrib";
-import { ArcOSVersion, Env, Fs, KernelDispatchS } from "$ts/env";
+import { ArcOSVersion, Env, Fs, SysDispatch } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -24,7 +24,7 @@ export class AppRegistrationUserContext extends UserContext {
   async initAppStorage(storage: ApplicationStorage, cb: (app: App) => void) {
     this.Log(`Now trying to load built-in applications...`);
 
-    const blocklist = Daemon()!.preferences()._internalImportBlocklist || [];
+    const blocklist = Daemon!.preferences()._internalImportBlocklist || [];
 
     const builtins: App[] = await Promise.all(
       Object.keys(BuiltinAppImportPathAbsolutes).map(async (path) => {
@@ -62,7 +62,7 @@ export class AppRegistrationUserContext extends UserContext {
                 buttons: [{ caption: "Okay", action: () => r(), suggested: true }],
                 image: "WarningIcon",
               },
-              +Env().get("loginapp_pid"),
+              +Env.get("loginapp_pid"),
               true
             );
           });
@@ -78,12 +78,12 @@ export class AppRegistrationUserContext extends UserContext {
   }
 
   async getUserApps(): Promise<AppStorage> {
-    if (!Daemon()!.preferences()) return [];
+    if (!Daemon!.preferences()) return [];
 
-    await Daemon()!.migrations!.migrateUserAppsToFs();
+    await Daemon!.migrations!.migrateUserAppsToFs();
 
     const bulk = Object.fromEntries(
-      Object.entries(await Fs().bulk(UserPaths.AppRepository, "json")).map(([k, v]) => [k.replace(".json", ""), v])
+      Object.entries(await Fs.bulk(UserPaths.AppRepository, "json")).map(([k, v]) => [k.replace(".json", ""), v])
     );
 
     return Object.values(bulk) as AppStorage;
@@ -93,7 +93,7 @@ export class AppRegistrationUserContext extends UserContext {
     this.Log(`Registering ${data.id}: writing ${data.id}.json to AppRepository`);
     const appStore = this.appStorage();
 
-    await Fs().writeFile(join(UserPaths.AppRepository, `${data.id}.json`), textToBlob(JSON.stringify(data, null, 2)));
+    await Fs.writeFile(join(UserPaths.AppRepository, `${data.id}.json`), textToBlob(JSON.stringify(data, null, 2)));
     await appStore?.refresh();
     await this.addToStartMenu(data.id);
   }
@@ -104,7 +104,7 @@ export class AppRegistrationUserContext extends UserContext {
 
     if (!distrib) return false;
 
-    const prog = await Daemon()!.helpers!.GlobalLoadIndicator();
+    const prog = await Daemon!.helpers!.GlobalLoadIndicator();
     const result = await distrib.uninstallPackage(id, deleteFiles, (s) => prog.caption.set(s));
 
     await prog.stop();
@@ -114,7 +114,7 @@ export class AppRegistrationUserContext extends UserContext {
 
   async registerAppFromPath(path: string) {
     try {
-      const contents = await Fs().readFile(path);
+      const contents = await Fs.readFile(path);
       if (!contents) return "failed to read file";
 
       const text = arrayToText(contents);
@@ -168,7 +168,7 @@ export class AppRegistrationUserContext extends UserContext {
             },
           ],
         },
-        +Env().get("shell_pid"),
+        +Env.get("shell_pid"),
         true
       );
     });
@@ -182,7 +182,7 @@ export class AppRegistrationUserContext extends UserContext {
 
     if (!app) return;
 
-    Daemon()!.preferences.update((v) => {
+    Daemon!.preferences.update((v) => {
       if (v.pinnedApps.includes(appId)) return v;
 
       v.pinnedApps.push(appId);
@@ -194,7 +194,7 @@ export class AppRegistrationUserContext extends UserContext {
   unpinApp(appId: string) {
     this.Log(`Unpinning ${appId}`);
 
-    Daemon()!.preferences.update((v) => {
+    Daemon!.preferences.update((v) => {
       if (!v.pinnedApps.includes(appId)) return v;
 
       v.pinnedApps.splice(v.pinnedApps.indexOf(appId), 1);
@@ -216,10 +216,10 @@ export class AppRegistrationUserContext extends UserContext {
     const path = this.determineStartMenuShortcutPath(app);
     if (!path) return;
 
-    const existing = await Fs().stat(path);
+    const existing = await Fs.stat(path);
     if (existing) return;
 
-    await Daemon()!.shortcuts?.createShortcut(
+    await Daemon!.shortcuts?.createShortcut(
       {
         type: "app",
         target: app.id,
@@ -230,7 +230,7 @@ export class AppRegistrationUserContext extends UserContext {
       false
     );
 
-    KernelDispatchS().dispatch("startmenu-refresh");
+    SysDispatch.dispatch("startmenu-refresh");
   }
 
   async removeFromStartMenu(appId: string) {
@@ -240,18 +240,18 @@ export class AppRegistrationUserContext extends UserContext {
     const path = this.determineStartMenuShortcutPath(app);
     if (!path) return;
 
-    await Fs().deleteItem(path, false);
-    KernelDispatchS().dispatch("startmenu-refresh");
+    await Fs.deleteItem(path, false);
+    SysDispatch.dispatch("startmenu-refresh");
   }
 
   async updateStartMenuFolder() {
-    const installedApps = Daemon()?.appStorage()?.buffer();
+    const installedApps = Daemon?.appStorage()?.buffer();
 
     if (!installedApps) return;
 
-    const { stop, incrementProgress, caption } = await Daemon()!.helpers!.GlobalLoadIndicator(
+    const { stop, incrementProgress, caption } = await Daemon!.helpers!.GlobalLoadIndicator(
       "Updating the start menu...",
-      +Env().get("shell_pid"),
+      +Env.get("shell_pid"),
       {
         max: Object.keys(AppGroups).length + installedApps.length,
         value: 0,
@@ -263,7 +263,7 @@ export class AppRegistrationUserContext extends UserContext {
       incrementProgress?.();
       caption.set(`Updating the start menu...<br>Creating folder for ${AppGroups[appGroup]}`);
 
-      await Fs().createDirectory(join(UserPaths.StartMenu, `$$${appGroup}`), false);
+      await Fs.createDirectory(join(UserPaths.StartMenu, `$$${appGroup}`), false);
     }
 
     const promises = [];
@@ -271,7 +271,7 @@ export class AppRegistrationUserContext extends UserContext {
     for (const app of installedApps) {
       promises.push(
         new Promise(async (r) => {
-          await Daemon()?.appreg?.addToStartMenu(app.id);
+          await Daemon?.appreg?.addToStartMenu(app.id);
 
           caption.set(`Updating the start menu...<br>Created shortcut for ${app.metadata.name}`);
 
@@ -284,7 +284,7 @@ export class AppRegistrationUserContext extends UserContext {
 
     await Promise.all(promises);
 
-    KernelDispatchS().dispatch("startmenu-refresh");
+    SysDispatch.dispatch("startmenu-refresh");
     stop?.();
   }
 }

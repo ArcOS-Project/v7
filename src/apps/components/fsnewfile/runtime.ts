@@ -27,7 +27,7 @@ export class NewFileRuntime extends AppProcess {
   async createFile() {
     const blob = new Blob(); // Empty blob === empty file contents
     try {
-      await Fs().writeFile(join(this.path, this.newFile()), blob);
+      await Fs.writeFile(join(this.path, this.newFile()), blob);
     } catch {
       // silently error
     }

@@ -10,7 +10,7 @@ export function FileMenu(runtime: FileManagerRuntime): ContextMenuItem {
         caption: "New window",
         icon: "plus",
         action: () => {
-          Daemon()?.spawn?.spawnApp("fileManager", undefined, runtime.path());
+          Daemon?.spawn?.spawnApp("fileManager", undefined, runtime.path());
         },
       },
       {

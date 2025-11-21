@@ -3,7 +3,7 @@
   import type { ErrorButton, Notification } from "$types/notification";
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../runtime";
-  import { KernelDispatchS, KernelSound } from "$ts/env";
+  import { SysDispatch, SoundBus } from "$ts/env";
 
   const { process }: { process: ShellRuntime } = $props();
   const { actionCenterOpened, userPreferences } = process;
@@ -13,7 +13,7 @@
   let show = $state(false);
 
   onMount(() => {
-    KernelDispatchS().subscribe("send-notification", async ([incoming]) => {
+    SysDispatch.subscribe("send-notification", async ([incoming]) => {
       if ($actionCenterOpened) return;
 
       if (show) {
@@ -23,7 +23,7 @@
 
       data = incoming;
       show = true;
-      KernelSound().playSound("arcos.notification");
+      SoundBus.playSound("arcos.notification");
 
       if (timeout) clearTimeout(timeout);
 

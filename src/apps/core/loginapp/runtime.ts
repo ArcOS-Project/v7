@@ -2,7 +2,7 @@ import { FirstRunApp } from "$apps/components/firstrun/FirstRun";
 import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/TotpAuthGui";
 import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
-import { Env, getKMod, KernelDispatchS, KernelSound, KernelStack } from "$ts/env";
+import { Env, getKMod, SysDispatch, SoundBus, Stack } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { ProfilePictures } from "$ts/images/pfp";
 import { tryJsonParse } from "$ts/json";
@@ -50,9 +50,9 @@ export class LoginAppRuntime extends AppProcess {
       KernelStateHandler()?.currentState !== "boot" && KernelStateHandler()?.currentState !== "initialSetup" && !props?.type;
     this.server = server;
     this.serverInfo.set(server.serverInfo!);
-    this.safeMode = !!(props?.safeMode || Env().get("safemode"));
+    this.safeMode = !!(props?.safeMode || Env.get("safemode"));
 
-    if (this.safeMode) Env().set("safemode", true);
+    if (this.safeMode) Env.set("safemode", true);
 
     this.updateServerStuff();
 
@@ -85,7 +85,7 @@ export class LoginAppRuntime extends AppProcess {
 
       if (!props.userDaemon) throw new Error(`LoginAppRuntimeConstructor: Irregular login type without daemon`);
 
-      KernelSound().playSound("arcos.system.logoff");
+      SoundBus.playSound("arcos.system.logoff");
       props.userDaemon?.renderer?.setAppRendererClasses(props.userDaemon.preferences());
 
       switch (props.type) {
@@ -109,11 +109,11 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async start() {
-    Env().set("loginapp_pid", this.pid);
+    Env.set("loginapp_pid", this.pid);
   }
 
   async stop() {
-    Env().delete("loginapp_pid");
+    Env.delete("loginapp_pid");
   }
 
   async render() {
@@ -152,7 +152,7 @@ export class LoginAppRuntime extends AppProcess {
 
     this.loadingStatus.set(this.getWelcomeString());
 
-    const userDaemon = await KernelStack().spawn<UserDaemon>(
+    const userDaemon = await Stack.spawn<UserDaemon>(
       UserDaemon,
       undefined,
       info?._id || "SYSTEM",
@@ -273,7 +273,7 @@ export class LoginAppRuntime extends AppProcess {
 
     broadcast("Let's go!");
     await KernelStateHandler()?.loadState("desktop", { userDaemon });
-    KernelSound().playSound("arcos.system.logon");
+    SoundBus.playSound("arcos.system.logon");
     userDaemon.renderer!.setAppRendererClasses(userDaemon.preferences());
     userDaemon.checks!.checkNightly();
 
@@ -306,7 +306,7 @@ export class LoginAppRuntime extends AppProcess {
     this.loadingStatus.set(`Goodbye, ${daemon.username}!`);
     this.errorMessage.set("");
 
-    for (const [_, proc] of [...KernelStack().store()]) {
+    for (const [_, proc] of [...Stack.store()]) {
       if (proc && !proc._disposed && proc instanceof AppProcess && proc.pid !== this.pid) {
         await proc.killSelf();
       }
@@ -490,15 +490,15 @@ export class LoginAppRuntime extends AppProcess {
     const returnId = UUID();
 
     return new Promise(async (r) => {
-      KernelDispatchS().subscribe("totp-unlock-success", ([id]) => {
+      SysDispatch.subscribe("totp-unlock-success", ([id]) => {
         if (id === returnId) r(true);
       });
 
-      KernelDispatchS().subscribe("totp-unlock-cancel", ([id]) => {
+      SysDispatch.subscribe("totp-unlock-cancel", ([id]) => {
         if (id === returnId) r(false);
       });
 
-      await KernelStack().spawn(
+      await Stack.spawn(
         TotpAuthGuiRuntime,
         undefined,
         userId,
@@ -511,7 +511,7 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async firstRun(daemon: UserDaemon) {
-    const process = await KernelStack().spawn<FirstRunRuntime>(
+    const process = await Stack.spawn<FirstRunRuntime>(
       FirstRunRuntime,
       undefined,
       daemon.userInfo?._id,

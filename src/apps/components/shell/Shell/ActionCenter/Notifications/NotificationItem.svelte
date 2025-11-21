@@ -1,6 +1,6 @@
 <script lang="ts">
   import { RelativeTimeMod } from "$ts/dayjs";
-  import { KernelDispatchS } from "$ts/env";
+  import { SysDispatch } from "$ts/env";
   import { UserDaemon } from "$ts/server/user/daemon";
   import { Sleep } from "$ts/sleep";
   import type { ErrorButton, Notification } from "$types/notification";
@@ -30,7 +30,7 @@
   dayjs.updateLocale("en", RelativeTimeMod);
 
   onMount(() => {
-    KernelDispatchS().subscribe("delete-notification", async ([deletedId]) => {
+    SysDispatch.subscribe("delete-notification", async ([deletedId]) => {
       if (id === deletedId) {
         deleted = true;
 

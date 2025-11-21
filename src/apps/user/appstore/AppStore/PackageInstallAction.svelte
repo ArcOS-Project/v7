@@ -28,7 +28,7 @@
     <Spinner height={24} />
   {:else if $installed}
     {#if !compact}
-      {#if pkg.userId === Daemon()?.userInfo._id}
+      {#if pkg.userId === Daemon?.userInfo._id}
         <button
           class="lucide icon-cog"
           aria-label="Manage"
@@ -40,7 +40,7 @@
           class="lucide icon-rocket"
           aria-label="Launch"
           title="Launch"
-          onclick={() => Daemon()!.spawn?.spawnApp($store.pkg.appId, +Env().get("shell_pid"))}
+          onclick={() => Daemon!.spawn?.spawnApp($store.pkg.appId, +Env.get("shell_pid"))}
         ></button>
       {/if}
     {/if}

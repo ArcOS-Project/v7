@@ -6,7 +6,7 @@
 
   const { process }: { process: SettingsRuntime } = $props();
   const { userPreferences, currentPage } = process;
-  const userInfo = Daemon()?.userInfo || DefaultUserInfo;
+  const userInfo = Daemon?.userInfo || DefaultUserInfo;
 </script>
 
 <button class="account-button" onclick={() => process.switchPage("account")} class:selected={$currentPage === "account"}>

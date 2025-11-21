@@ -1,12 +1,12 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
   import { isPopulatable } from "$ts/apps/util";
-  import { KernelStack } from "$ts/env";
+  import { Stack } from "$ts/env";
   import type { ShellRuntime } from "../../runtime";
   import OpenedApp from "./OpenedApps/OpenedApp.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
-  const { store } = KernelStack();
+  const { store } = Stack;
 </script>
 
 <div class="opened-apps">

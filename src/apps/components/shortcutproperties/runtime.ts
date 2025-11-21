@@ -34,7 +34,7 @@ export class ShortcutPropertiesRuntime extends AppProcess {
   //#region ACTIONS
 
   async save() {
-    const result = await Daemon()?.shortcuts?.createShortcut(this.shortcutData(), this.path!);
+    const result = await Daemon?.shortcuts?.createShortcut(this.shortcutData(), this.path!);
 
     if (result) {
       await this.closeWindow();
@@ -61,13 +61,13 @@ export class ShortcutPropertiesRuntime extends AppProcess {
 
     switch (data.type) {
       case "app":
-        await Daemon()?.spawn?.spawnOverlay("AppInfo", +Env().get("shell_pid"), data.target);
+        await Daemon?.spawn?.spawnOverlay("AppInfo", +Env.get("shell_pid"), data.target);
         break;
       case "file":
-        await Daemon()?.spawn?.spawnApp("fileManager", +Env().get("shell_pid"), getParentDirectory(data.target));
+        await Daemon?.spawn?.spawnApp("fileManager", +Env.get("shell_pid"), getParentDirectory(data.target));
         break;
       case "folder":
-        await Daemon()?.spawn?.spawnApp("fileManager", +Env().get("shell_pid"), data.target);
+        await Daemon?.spawn?.spawnApp("fileManager", +Env.get("shell_pid"), data.target);
         break;
       case "new":
         await this.closeWindow();
@@ -77,7 +77,7 @@ export class ShortcutPropertiesRuntime extends AppProcess {
 
   async changeIcon() {
     const data = this.shortcutData();
-    const icon = await Daemon()?.helpers?.IconPicker({
+    const icon = await Daemon?.helpers?.IconPicker({
       defaultIcon: data.icon,
       forWhat: data.name,
     });
@@ -90,7 +90,7 @@ export class ShortcutPropertiesRuntime extends AppProcess {
   async pickTarget() {
     const data = this.shortcutData();
 
-    const [path] = await Daemon()!.files!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Pick a new target",
       icon: data.icon,
       folder: data.type === "folder",

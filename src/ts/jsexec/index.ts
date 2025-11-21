@@ -58,7 +58,7 @@ export class JsExec extends Process {
     this.Log(`Getting TPA file URL`);
 
     const postUrl = this.getTpaPostUrl();
-    const serverUrl = KernelServerUrl();
+    const serverUrl = KernelServerUrl;
     const { appId, userId, filename } = this.getTpaUrlInfo();
     const now = Date.now();
     const ac = authcode();
@@ -111,7 +111,7 @@ export class JsExec extends Process {
   async getContents() {
     this.Log(`Reading script contents`);
 
-    const unwrapped = arrayToText((await Fs().readFile(this.filePath!))!);
+    const unwrapped = arrayToText((await Fs.readFile(this.filePath!))!);
     if (!unwrapped) throw new JsExecError(`Failed to read ${this.filePath}: not found`);
 
     await this.testFileContents(unwrapped);

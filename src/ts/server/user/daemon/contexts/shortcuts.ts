@@ -18,11 +18,11 @@ export class ShortcutsUserContext extends UserContext {
     try {
       switch (shortcut.type) {
         case "app":
-          return await Daemon()!.spawn?.spawnApp(shortcut.target, +Env().get("shell_pid"));
+          return await Daemon!.spawn?.spawnApp(shortcut.target, +Env.get("shell_pid"));
         case "file":
-          return await Daemon()!.files?.openFile(shortcut.target);
+          return await Daemon!.files?.openFile(shortcut.target);
         case "folder":
-          return await Daemon()!.spawn?.spawnApp("fileManager", +Env().get("shell_pid"), shortcut.target);
+          return await Daemon!.spawn?.spawnApp("fileManager", +Env.get("shell_pid"), shortcut.target);
         default:
           MessageBox(
             {
@@ -32,7 +32,7 @@ export class ShortcutsUserContext extends UserContext {
               sound: "arcos.dialog.warning",
               image: "WarningIcon",
             },
-            +Env().get("shell_pid"),
+            +Env.get("shell_pid"),
             true
           );
       }
@@ -45,19 +45,19 @@ export class ShortcutsUserContext extends UserContext {
           sound: "arcos.dialog.error",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
         },
-        +Env().get("shell_pid"),
+        +Env.get("shell_pid"),
         true
       );
     }
   }
 
   async createShortcut(data: ArcShortcut, path: string, dispatch = false) {
-    if (!(await Daemon()!.icons?.getIcon(data.icon))) return false;
+    if (!(await Daemon!.icons?.getIcon(data.icon))) return false;
 
     const string = JSON.stringify(data, null, 2);
 
     try {
-      return await Fs().writeFile(path, textToBlob(string, "application/json"), undefined, dispatch);
+      return await Fs.writeFile(path, textToBlob(string, "application/json"), undefined, dispatch);
     } catch {
       return false;
     }

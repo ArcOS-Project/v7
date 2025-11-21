@@ -9,7 +9,7 @@
   let loading = $state<boolean>(false);
 
   async function changePassword() {
-    const confirm = await Daemon()?.helpers?.Confirm(
+    const confirm = await Daemon?.helpers?.Confirm(
       "Confirm password reset?",
       `Are you sure you want to change the password of '${share.shareName}'?`,
       "Cancel",

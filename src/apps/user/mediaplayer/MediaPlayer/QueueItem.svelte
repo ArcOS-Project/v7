@@ -12,7 +12,7 @@
 
   onMount(() => {
     filename = getItemNameFromPath(path);
-    const info = Daemon()?.assoc?.getFileAssociation(filename);
+    const info = Daemon?.assoc?.getFileAssociation(filename);
     icon = info?.icon || process.getIconCached("DefaultMimeIcon");
   });
 

@@ -21,7 +21,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
       {
         caption: "Export theme...",
         action: async (_, __, theme: UserTheme) => {
-          const [path] = await Daemon()!.files!.LoadSaveDialog({
+          const [path] = await Daemon!.files!.LoadSaveDialog({
             title: "Choose where to save the theme",
             isSave: true,
             startDir: UserPaths.Documents,
@@ -31,7 +31,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
 
           if (!path) return;
 
-          await Fs().writeFile(path, textToBlob(JSON.stringify(theme, null, 2)));
+          await Fs.writeFile(path, textToBlob(JSON.stringify(theme, null, 2)));
         },
         icon: "save",
       },
@@ -55,7 +55,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
       {
         caption: "Export theme...",
         action: async (_, __, theme: UserTheme) => {
-          const [path] = await Daemon()!.files!.LoadSaveDialog({
+          const [path] = await Daemon!.files!.LoadSaveDialog({
             title: "Choose where to save the theme",
             isSave: true,
             startDir: UserPaths.Documents,
@@ -65,7 +65,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
 
           if (!path) return;
 
-          await Fs().writeFile(path, textToBlob(JSON.stringify(theme, null, 2)));
+          await Fs.writeFile(path, textToBlob(JSON.stringify(theme, null, 2)));
         },
         icon: "save",
       },
@@ -85,9 +85,9 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
         caption: "Open file location",
         icon: "folder-open",
         action: (id: string) => {
-          Daemon()?.spawn?.spawnApp(
+          Daemon?.spawn?.spawnApp(
             "fileManager",
-            +Env().get("shell_pid"),
+            +Env.get("shell_pid"),
             getParentDirectory(atob(id.replace("@local:", "")))
           );
         },
@@ -112,13 +112,13 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
                 {
                   caption: "Delete",
                   action: async () => {
-                    await Daemon()?.wallpaper?.deleteLocalWallpaper(id);
+                    await Daemon?.wallpaper?.deleteLocalWallpaper(id);
                   },
                   suggested: true,
                 },
               ],
             },
-            +Env().get("shell_pid"),
+            +Env.get("shell_pid"),
             true
           );
         },

@@ -38,10 +38,10 @@
 
   async function mountShare() {
     try {
-      if (Fs().drives[$selection]) await Fs().umountDrive($selection, true);
+      if (Fs.drives[$selection]) await Fs.umountDrive($selection, true);
       else {
         const drive = await process.shares.mountShareById($selection);
-        if (drive) await process.spawnApp("fileManager", +Env().get("shell_pid"), `${drive.uuid}:/`);
+        if (drive) await process.spawnApp("fileManager", +Env.get("shell_pid"), `${drive.uuid}:/`);
       }
 
       process.switchPage("shares", {}, true);
@@ -101,7 +101,7 @@
   <input type="text" placeholder="Share ID" bind:value={$selection} maxlength="24" />
   <button disabled={$selection.length !== 24} onclick={() => process.switchPage("viewShare", { share: $selected })}>Go</button>
   <div class="actions">
-    <button class="mount" disabled={!$selected} onclick={mountShare}>{Fs().drives[$selection] ? "Unmount" : "Mount"}</button
+    <button class="mount" disabled={!$selected} onclick={mountShare}>{Fs.drives[$selection] ? "Unmount" : "Mount"}</button
     >
   </div>
 </div>

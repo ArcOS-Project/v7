@@ -63,7 +63,7 @@ export class ProtocolServiceProcess extends BaseService {
     this.Log(`Parsing a fresh anchor element`);
 
     const handler = this.store[parsed.command]!;
-    const info = handler.info(parsed.payload, Daemon()!);
+    const info = handler.info(parsed.payload, Daemon!);
 
     if (!info) {
       anchor.setAttribute("data-no-proto", "true");
@@ -82,7 +82,7 @@ export class ProtocolServiceProcess extends BaseService {
     if (info.title) button.title = info.title;
 
     button.append(icon, caption);
-    button.addEventListener("click", () => handler.action(parsed.payload, Daemon()!, parsed));
+    button.addEventListener("click", () => handler.action(parsed.payload, Daemon!, parsed));
 
     anchor.insertAdjacentElement("afterend", button);
     anchor.remove();
@@ -118,7 +118,7 @@ export class ProtocolServiceProcess extends BaseService {
 
     if (!parsed || !handler) return;
 
-    return await handler.action(parsed.payload, Daemon()!, parsed);
+    return await handler.action(parsed.payload, Daemon!, parsed);
   }
 
   registerHandler(command: string, handler: ProtocolHandler) {

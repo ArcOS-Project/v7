@@ -39,7 +39,7 @@ export class ThemesUserContext extends UserContext {
 
     const id = `${Math.floor(Math.random() * 1e6)}`;
 
-    Daemon()!.preferences.update((userPreferences) => {
+    Daemon!.preferences.update((userPreferences) => {
       const context = this.themeFromUserPreferences(userPreferences, name, this.username, "1.0");
 
       userPreferences.userThemes[id] = context;
@@ -61,7 +61,7 @@ export class ThemesUserContext extends UserContext {
       return false;
     }
 
-    Daemon()!.preferences.update((userPreferences) => {
+    Daemon!.preferences.update((userPreferences) => {
       userPreferences.shell.taskbar.labels = !!data.taskbarLabels;
       userPreferences.shell.taskbar.docked = !!data.taskbarDocked;
       userPreferences.shell.taskbar.colored = !!data.taskbarColored;
@@ -85,7 +85,7 @@ export class ThemesUserContext extends UserContext {
 
     this.Log(`Applying saved theme '${id}'`);
 
-    const userPreferences = Daemon()!.preferences();
+    const userPreferences = Daemon!.preferences();
 
     if (!userPreferences.userThemes[id]) return;
 
@@ -132,7 +132,7 @@ export class ThemesUserContext extends UserContext {
 
     this.Log(`Deleting user theme '${id}'`);
 
-    Daemon()!.preferences.update((udata) => {
+    Daemon!.preferences.update((udata) => {
       if (!udata.userThemes) return udata;
 
       delete udata.userThemes[id];

@@ -28,7 +28,7 @@
     indexing = true;
     const result = await admin.forceIndexFor(quota.user.username);
 
-    Daemon()?.notifications?.sendNotification({
+    Daemon?.notifications?.sendNotification({
       title: `Indexing for ${quota.user.username} completed`,
       message: result.length ? `- ${result.join("<br>- ")}` : "No unindexed items were found during indexing.",
       image: "GoodStatusIcon",
@@ -39,10 +39,10 @@
 
   async function mountUser() {
     mounting = true;
-    if (Fs().drives[btoa(quota.user.username)]) await Fs().umountDrive(btoa(quota.user.username), true);
+    if (Fs.drives[btoa(quota.user.username)]) await Fs.umountDrive(btoa(quota.user.username), true);
     else {
       const drive = await admin.mountUserDrive(quota.user.username);
-      if (drive) process.spawnApp("fileManager", +Env().get("shell_pid"), `${drive.uuid}:/`);
+      if (drive) process.spawnApp("fileManager", +Env.get("shell_pid"), `${drive.uuid}:/`);
     }
 
     process.switchPage("filesystems", {}, true);
@@ -80,6 +80,6 @@
     </button>
   </div>
   <div class="segment mount">
-    <button onclick={mountUser} disabled={mounting}>{Fs().drives[btoa(quota.user.username)] ? "Unmount" : "Mount"}</button>
+    <button onclick={mountUser} disabled={mounting}>{Fs.drives[btoa(quota.user.username)] ? "Unmount" : "Mount"}</button>
   </div>
 </div>

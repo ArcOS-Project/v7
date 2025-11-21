@@ -22,7 +22,7 @@
 
       if (driveIdentifier) {
         try {
-          drive = Fs().getDriveByLetter(driveIdentifier.slice(0, -1), false);
+          drive = Fs.getDriveByLetter(driveIdentifier.slice(0, -1), false);
 
           driveLabel = drive?.label || "";
         } catch {}

@@ -28,7 +28,7 @@ export class DirCommand extends TerminalProcess {
     try {
       let drive: FilesystemDrive | undefined;
       try {
-        drive = dir ? Fs().getDriveByPath(dir) : term.drive;
+        drive = dir ? Fs.getDriveByPath(dir) : term.drive;
       } catch {
         drive = term.drive;
       }

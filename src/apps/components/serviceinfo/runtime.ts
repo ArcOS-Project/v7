@@ -20,16 +20,16 @@ export class ServiceInfoRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.serviceId = serviceId;
-    this.service.set(Daemon()?.serviceHost?.Services.get().get(serviceId));
+    this.service.set(Daemon?.serviceHost?.Services.get().get(serviceId));
   }
 
   async start() {
     if (!this.service) return false;
 
-    this.serviceSubscriber = Daemon()?.serviceHost?.Services.subscribe((v) => {
+    this.serviceSubscriber = Daemon?.serviceHost?.Services.subscribe((v) => {
       this.service.set(v.get(this.serviceId));
       const pid = this.service()?.pid;
-      this.serviceProcess.set(pid ? Stack().getProcess(pid) : undefined);
+      this.serviceProcess.set(pid ? Stack.getProcess(pid) : undefined);
     });
   }
 
@@ -53,7 +53,7 @@ export class ServiceInfoRuntime extends AppProcess {
             {
               caption: "Stop service",
               action: () => {
-                Daemon()?.serviceHost?.stopService(this.serviceId);
+                Daemon?.serviceHost?.stopService(this.serviceId);
               },
               suggested: true,
             },
@@ -65,7 +65,7 @@ export class ServiceInfoRuntime extends AppProcess {
         true
       );
     } else {
-      Daemon()?.serviceHost?.startService(this.serviceId);
+      Daemon?.serviceHost?.startService(this.serviceId);
     }
   }
 }

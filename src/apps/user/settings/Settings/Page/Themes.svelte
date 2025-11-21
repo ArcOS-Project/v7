@@ -10,13 +10,13 @@
   import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: SettingsRuntime } = $props();
-  const { userInfo, preferences: userPreferences } = Daemon() || {}!;
+  const { userInfo, preferences: userPreferences } = Daemon || {}!;
 
   let currentWallpaper: Wallpaper | undefined = $state();
 
   onMount(() => {
     const sub = userPreferences?.subscribe(async (v) => {
-      currentWallpaper = await Daemon()!.wallpaper?.getWallpaper(v.desktop.wallpaper);
+      currentWallpaper = await Daemon!.wallpaper?.getWallpaper(v.desktop.wallpaper);
     });
 
     return () => sub?.();
@@ -31,7 +31,7 @@
   <ThemesHeader
     {userInfo}
     {userPreferences}
-    userDaemon={Daemon()!}
+    userDaemon={Daemon!}
     background={currentWallpaper?.thumb || currentWallpaper?.url}
     desktop
   >
@@ -63,7 +63,7 @@
     <p class="name">Built-in themes</p>
     <div class="themes">
       {#each Object.entries(BuiltinThemes) as [id, theme]}
-        <Theme {theme} {id} userDaemon={Daemon()!} {process} />
+        <Theme {theme} {id} userDaemon={Daemon!} {process} />
       {/each}
     </div>
   </div>
@@ -73,7 +73,7 @@
     <div class="themes" class:empty={!$userPreferences?.userThemes || !Object.values($userPreferences?.userThemes).length}>
       {#if $userPreferences?.userThemes && Object.values($userPreferences.userThemes).length}
         {#each Object.entries($userPreferences.userThemes) as [id, theme] (id)}
-          <Theme {theme} {id} userDaemon={Daemon()!} {process} isUser />
+          <Theme {theme} {id} userDaemon={Daemon!} {process} isUser />
         {/each}
       {:else}
         <p class="none">You have no saved themes!</p>

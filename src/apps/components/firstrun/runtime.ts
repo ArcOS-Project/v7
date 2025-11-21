@@ -29,17 +29,17 @@ export class FirstRunRuntime extends AppProcess {
   async onClose() {
     if (this.done()) return true;
 
-    const { stop, caption } = await Daemon()!.helpers!.GlobalLoadIndicator("Finishing up...", this.parentPid);
+    const { stop, caption } = await Daemon!.helpers!.GlobalLoadIndicator("Finishing up...", this.parentPid);
 
     for (const path in FirstRunShortcuts) {
       const payload = FirstRunShortcuts[path];
       caption.set(`Creating shortcut for ${payload.name}`);
 
-      await Daemon()?.shortcuts?.createShortcut(payload, path);
+      await Daemon?.shortcuts?.createShortcut(payload, path);
     }
 
-    await Daemon()?.appreg?.updateStartMenuFolder();
-    await Daemon()?.version?.updateRegisteredVersion();
+    await Daemon?.appreg?.updateStartMenuFolder();
+    await Daemon?.version?.updateRegisteredVersion();
     await stop();
 
     this.done.set(true);

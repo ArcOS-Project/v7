@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { getKMod, IsMobile, Kernel, KernelStack } from "$ts/env";
+import { getKMod, IsMobile, Kernel, Stack } from "$ts/env";
 import type { ProcessHandlerType } from "$types/kernel";
 import { LogLevel } from "$types/logging";
 import type { State } from "../../types/state";
@@ -42,7 +42,7 @@ export class StateHandler extends Process {
   async loadState(id: string, props: Record<string, any> = {}, instant = false) {
     if (this._disposed || IsMobile()) return;
 
-    if (Kernel()?.PANICKED && id !== "crash-screen") return;
+    if (Kernel?.PANICKED && id !== "crash-screen") return;
 
     const data = this.store[id];
 
@@ -73,7 +73,7 @@ export class StateHandler extends Process {
       await Sleep(400);
     }
 
-    const appRenderer = KernelStack().renderer?.target;
+    const appRenderer = Stack.renderer?.target;
 
     if (appRenderer) {
       appRenderer.className = "";

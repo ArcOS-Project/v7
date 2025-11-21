@@ -1,5 +1,5 @@
 import { MessageBox } from "$ts/dialog";
-import { Env, getKMod, KernelStack, Stack } from "$ts/env";
+import { Env, getKMod, Stack } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { SecurityMediumIcon } from "$ts/images/general";
@@ -137,7 +137,7 @@ export class InitialSetupRuntime extends AppProcess {
       );
     };
 
-    this.#userDaemon = Stack().getProcess(Env().get("userdaemon_pid"));
+    this.#userDaemon = Stack.getProcess(Env.get("userdaemon_pid"));
     this.newUsername.subscribe(update);
     this.password.subscribe(update);
     this.confirm.subscribe(update);
@@ -331,7 +331,7 @@ export class InitialSetupRuntime extends AppProcess {
       return;
     }
 
-    this.#userDaemon = await KernelStack().spawn(
+    this.#userDaemon = await Stack.spawn(
       UserDaemon,
       undefined,
       this.#userDaemon?.userInfo?._id,

@@ -47,7 +47,7 @@
     {/if}
   {:else if $userPreferences.shell.start.noGroups}
     {#each apps as app (`${app.id}-${app.metadata.name}`)}
-      {#if (isPopulatable(app) || $userPreferences.shell.visuals.showHiddenApps) && !Daemon()?.apps?.checkDisabled(app.id)}
+      {#if (isPopulatable(app) || $userPreferences.shell.visuals.showHiddenApps) && !Daemon?.apps?.checkDisabled(app.id)}
         <ListItem {app} {process} />
       {/if}
     {/each}
@@ -55,7 +55,7 @@
     <AppGroups {process} {apps} />
   {/if}
 
-  {#if !Daemon()}
+  {#if !Daemon}
     <span class="error-text">ERR_NO_DAEMON</span>
   {/if}
 </div>

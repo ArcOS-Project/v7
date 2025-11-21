@@ -19,10 +19,10 @@
   });
 
   async function mountUser() {
-    if (Fs().drives[btoa(user.username)]) await Fs().umountDrive(btoa(user.username), true);
+    if (Fs.drives[btoa(user.username)]) await Fs.umountDrive(btoa(user.username), true);
     else {
       const drive = await process.admin.mountUserDrive(user.username);
-      if (drive) process.spawnApp("fileManager", +Env().get("shell_pid"), `${drive.uuid}:/`);
+      if (drive) process.spawnApp("fileManager", +Env.get("shell_pid"), `${drive.uuid}:/`);
     }
 
     process.switchPage("viewUser", { user }, true);
@@ -40,7 +40,7 @@
         <p class="used">{formatBytes(quota.used)} / {formatBytes(quota.max)}</p>
         <p class="percentage">({quota.percentage.toFixed(2)}%)</p>
       </div>
-      <button onclick={mountUser}>{Fs().drives[btoa(user.username)] ? "Unmount" : "Mount"}</button>
+      <button onclick={mountUser}>{Fs.drives[btoa(user.username)] ? "Unmount" : "Mount"}</button>
     {:else}
       <p class="error-text">QUOTA_FAILED</p>
     {/if}

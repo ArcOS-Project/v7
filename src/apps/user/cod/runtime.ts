@@ -91,7 +91,7 @@ export class CodRuntime extends AppProcess {
   //#endregion
 
   async readFile(path: string) {
-    const prog = await Daemon()!.files!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
         caption: `Reading code`,
@@ -104,7 +104,7 @@ export class CodRuntime extends AppProcess {
     prog.show();
 
     try {
-      const contents = await Fs().readFile(path, (progress) => {
+      const contents = await Fs.readFile(path, (progress) => {
         prog.setMax(progress.max);
         prog.setDone(progress.value);
       });
@@ -116,7 +116,7 @@ export class CodRuntime extends AppProcess {
         throw new Error("Failed to get the contents of the file.");
       }
 
-      const info = Daemon()?.assoc?.getFileAssociation(path);
+      const info = Daemon?.assoc?.getFileAssociation(path);
 
       this.buffer.set(arrayToText(contents));
       this.openedFile.set(path);
@@ -159,7 +159,7 @@ export class CodRuntime extends AppProcess {
 
     const filename = this.filename();
 
-    const prog = await Daemon()!.files!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
         caption: `Saving ${filename}`,
@@ -170,7 +170,7 @@ export class CodRuntime extends AppProcess {
     );
 
     try {
-      await Fs().writeFile(opened, textToBlob(buffer), async (progress) => {
+      await Fs.writeFile(opened, textToBlob(buffer), async (progress) => {
         await prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);
@@ -182,7 +182,7 @@ export class CodRuntime extends AppProcess {
   }
 
   async saveAs() {
-    const [path] = await Daemon()!.files!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Choose where to save the file",
       icon: "CodIcon",
       startDir: UserPaths.Documents,
@@ -192,7 +192,7 @@ export class CodRuntime extends AppProcess {
 
     if (!path) return;
 
-    const info = Daemon()?.assoc?.getFileAssociation(path);
+    const info = Daemon?.assoc?.getFileAssociation(path);
 
     this.openedFile.set(path);
     this.filename.set(getItemNameFromPath(path));
@@ -206,7 +206,7 @@ export class CodRuntime extends AppProcess {
   }
 
   async openFile() {
-    const [path] = await Daemon()!.files!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Select a file to open",
       icon: "CodIcon",
       startDir: UserPaths.Documents,

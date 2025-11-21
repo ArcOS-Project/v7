@@ -9,7 +9,7 @@
   import Indicator from "./CardStack/Indicator.svelte";
 
   const { userPreferences, process }: { userPreferences: UserPreferencesStore; process: ShellRuntime } = $props();
-  const userDaemon = Daemon();
+  const userDaemon = Daemon;
   
   let changing = $state(false);
   const scrollThreshold = 500;

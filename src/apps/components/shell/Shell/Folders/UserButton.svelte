@@ -14,7 +14,7 @@
     username: string;
   } = $props();
 
-  const userDaemon = Daemon();
+  const userDaemon = Daemon;
   
   function onclick() {
     process.spawnApp("systemSettings", process.pid);

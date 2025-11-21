@@ -29,7 +29,7 @@
     <Segment title="Loaded at">{dayjs($service?.loadedAt).format("MMM D, HH:mm:ss")}</Segment>
     <Segment title="Changed at">{dayjs($service?.changedAt).format("MMM D, HH:mm:ss")}</Segment>
     <Segment title="PID">{$service?.pid || "-"}</Segment>
-    <Segment title="Parent PID">{Daemon()?.serviceHost?.pid || "-"}</Segment>
+    <Segment title="Parent PID">{Daemon?.serviceHost?.pid || "-"}</Segment>
   </InfoRow>
 </InfoBlock>
 

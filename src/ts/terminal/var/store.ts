@@ -32,7 +32,7 @@ import {
 export function getArcTermStore(term: ArcTerminal): VariableStore {
   return {
     username: {
-      get: () => Env().get("currentuser") || "stranger",
+      get: () => Env.get("currentuser") || "stranger",
       readOnly: true,
       canDelete: false,
     },

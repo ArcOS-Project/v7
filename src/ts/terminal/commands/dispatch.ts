@@ -1,5 +1,5 @@
 // import { KnownSystemDispatchers, SystemOnlyDispatches } from "$ts/kernel/mods/dispatch/store";
-import { KernelDispatchS, KernelStack } from "$ts/env";
+import { SysDispatch, Stack } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { KnownSystemDispatchers, SystemOnlyDispatches } from "$ts/kernel/mods/dispatch/store";
 import { tryParseInt } from "$ts/util";
@@ -46,7 +46,7 @@ export class DispatchCommand extends TerminalProcess {
     }
 
     if (!pid) {
-      const result = KernelDispatchS().dispatch(command, data, false);
+      const result = SysDispatch.dispatch(command, data, false);
 
       if (result !== "success") {
         term.Error(`failed: ${command}: ${result}`);
@@ -58,7 +58,7 @@ export class DispatchCommand extends TerminalProcess {
 
       return 0;
     } else {
-      const dispatch = KernelStack().ConnectDispatch(+pid);
+      const dispatch = Stack.ConnectDispatch(+pid);
 
       if (!dispatch) {
         term.Error(`Failed to connect to dispatch of PID ${pid}`);

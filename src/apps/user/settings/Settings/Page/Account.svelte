@@ -7,13 +7,13 @@
   import Header from "./Account/Header.svelte";
 
   const { process }: { process: SettingsRuntime } = $props();
-  const { userInfo, preferences: userPreferences } = Daemon() || {}!;
+  const { userInfo, preferences: userPreferences } = Daemon || {}!;
 </script>
 
 <ProfilePicture className="backdrop" height={0} />
 <div class="centered-layout">
   {#if userInfo && userPreferences}
-    <Header {process} {userInfo} userDaemon={Daemon()!} />
+    <Header {process} {userInfo} userDaemon={Daemon!} />
   {:else}
     <p class="error-text">ERR_NO_DAEMON</p>
   {/if}
@@ -37,7 +37,7 @@
       chevron
       onclick={() => process.spawnOverlay("changePassword")}
     />
-    {#if !Daemon()?.userInfo.hasTotp}
+    {#if !Daemon?.userInfo.hasTotp}
       <Option
         caption="Set up two-factor authentication"
         image={process.getIconCached("ElevationIcon")}
@@ -73,7 +73,7 @@
       caption="Delete ArcOS account..."
       image={process.getIconCached("TrashIcon")}
       chevron
-      onclick={() => Daemon()?.account?.deleteAccount()}
+      onclick={() => Daemon?.account?.deleteAccount()}
     ></Option>
   </Section>
 </div>

@@ -1,5 +1,5 @@
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { Fs, KernelStack, Stack } from "$ts/env";
+import { Fs, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { tryJsonParse } from "$ts/json";
 import { detectJavaScript } from "$ts/util";
@@ -18,7 +18,7 @@ export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
       }
 
       try {
-        const subEngine = await Stack().spawn<JsExec>(
+        const subEngine = await Stack.spawn<JsExec>(
           JsExec,
           undefined,
           engine.userDaemon?.userInfo?._id,
@@ -42,13 +42,13 @@ export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
       if (!app || !daemon) throw new Error(`Illegal runApp operation on a non-app JsExec`);
 
       try {
-        const metaStr = arrayToText((await Fs().readFile(metadataPath))!);
+        const metaStr = arrayToText((await Fs.readFile(metadataPath))!);
         const metadata = tryJsonParse(metaStr);
         const renderTarget = daemon.workspaces!.getCurrentDesktop();
 
         if (typeof metadata === "string") throw new Error("Failed to parse metadata");
 
-        const proc = await KernelStack().spawn<ThirdPartyAppProcess>(
+        const proc = await Stack.spawn<ThirdPartyAppProcess>(
           process,
           renderTarget,
           daemon.userInfo!._id,
@@ -76,12 +76,12 @@ export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
       if (!app || !daemon) throw new Error(`Illegal runApp operation on a non-app JsExec`);
 
       try {
-        const metaStr = arrayToText((await Fs().readFile(metadataPath))!);
+        const metaStr = arrayToText((await Fs.readFile(metadataPath))!);
         const metadata = tryJsonParse(metaStr);
 
         if (typeof metadata === "string") throw new Error("Failed to parse metadata");
 
-        const proc = await KernelStack().spawn<ThirdPartyAppProcess>(
+        const proc = await Stack.spawn<ThirdPartyAppProcess>(
           process,
           undefined,
           daemon.userInfo!._id,
@@ -102,7 +102,7 @@ export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
       }
     },
     loadHtml: async (path: string) => {
-      const htmlCode = arrayToText((await Fs().readFile(join(engine.workingDirectory, path)))!);
+      const htmlCode = arrayToText((await Fs.readFile(join(engine.workingDirectory, path)))!);
 
       const detected = detectJavaScript(htmlCode);
 
@@ -111,7 +111,7 @@ export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
       return htmlCode;
     },
     loadDirect: async (path: string) => {
-      const url = await Fs().direct(join(engine.workingDirectory!, path));
+      const url = await Fs.direct(join(engine.workingDirectory!, path));
     },
   };
 }

@@ -94,7 +94,7 @@ export class WriterRuntime extends AppProcess {
   //#endregion
 
   async readFile(path: string) {
-    const prog = await Daemon()!.files!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
         caption: `Reading file`,
@@ -107,7 +107,7 @@ export class WriterRuntime extends AppProcess {
     prog.show();
 
     try {
-      const contents = await Fs().readFile(path, (progress) => {
+      const contents = await Fs.readFile(path, (progress) => {
         prog.setMax(progress.max);
         prog.setDone(progress.value);
       });
@@ -119,7 +119,7 @@ export class WriterRuntime extends AppProcess {
         throw new Error("Failed to get the contents of the file.");
       }
 
-      const info = Daemon()?.assoc?.getFileAssociation(path);
+      const info = Daemon?.assoc?.getFileAssociation(path);
 
       this.buffer.set(arrayToText(contents));
       this.openedFile.set(path);
@@ -157,7 +157,7 @@ export class WriterRuntime extends AppProcess {
 
     const filename = this.filename();
 
-    const prog = await Daemon()!.files!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
         caption: `Saving ${filename}`,
@@ -168,7 +168,7 @@ export class WriterRuntime extends AppProcess {
     );
 
     try {
-      await Fs().writeFile(opened, textToBlob(buffer), async (progress) => {
+      await Fs.writeFile(opened, textToBlob(buffer), async (progress) => {
         await prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);
@@ -180,7 +180,7 @@ export class WriterRuntime extends AppProcess {
   }
 
   async saveAs() {
-    const [path] = await Daemon()!.files!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Choose where to save the file",
       icon: "TextMimeIcon",
       startDir: UserPaths.Documents,
@@ -190,7 +190,7 @@ export class WriterRuntime extends AppProcess {
 
     if (!path) return;
 
-    const info = Daemon()?.assoc?.getFileAssociation(path);
+    const info = Daemon?.assoc?.getFileAssociation(path);
 
     this.openedFile.set(path);
     this.filename.set(getItemNameFromPath(path));
@@ -204,7 +204,7 @@ export class WriterRuntime extends AppProcess {
   }
 
   async openFile() {
-    const [path] = await Daemon()!.files!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Select a file to open",
       icon: "TextMimeIcon",
       startDir: UserPaths.Documents,

@@ -19,7 +19,7 @@
     props={[folder, path]}
     contextMenu="folder-icon"
     icon={process.getIconCached("FolderIcon")}
-    action={() => process.spawnApp("fileManager", +Env().get("shell_pid"), path)}
+    action={() => process.spawnApp("fileManager", +Env.get("shell_pid"), path)}
     {i}
   />
 {/if}

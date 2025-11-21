@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { KernelStack } from "$ts/env";
+import { Stack } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { UUID } from "$ts/uuid";
 import type { UserPreferences } from "$types/user";
@@ -76,7 +76,7 @@ export class WorkspaceUserContext extends UserContext {
 
     if (index < 0) return;
 
-    Daemon()!.preferences.update((v) => {
+    Daemon!.preferences.update((v) => {
       v.workspaces.desktops.splice(index, 1);
 
       return v;
@@ -95,7 +95,7 @@ export class WorkspaceUserContext extends UserContext {
   getCurrentDesktop(): HTMLDivElement | undefined {
     if (this._disposed) return;
 
-    const { workspaces } = Daemon()!.preferences();
+    const { workspaces } = Daemon!.preferences();
 
     if (!workspaces.desktops.length) {
       this.createWorkspace("Default");
@@ -118,7 +118,7 @@ export class WorkspaceUserContext extends UserContext {
 
     const uuid = UUID();
 
-    Daemon()!.preferences.update((v) => {
+    Daemon!.preferences.update((v) => {
       v.workspaces.desktops.push({ uuid, name });
       return v;
     });
@@ -129,7 +129,7 @@ export class WorkspaceUserContext extends UserContext {
 
     const {
       workspaces: { desktops },
-    } = Daemon()!.preferences();
+    } = Daemon!.preferences();
 
     for (let i = 0; i < desktops.length; i++) {
       if (uuid === desktops[i].uuid) return i;
@@ -147,7 +147,7 @@ export class WorkspaceUserContext extends UserContext {
 
     if (i < 0) return;
 
-    Daemon()!.preferences.update((v) => {
+    Daemon!.preferences.update((v) => {
       v.workspaces.index = i;
       return v;
     });
@@ -158,7 +158,7 @@ export class WorkspaceUserContext extends UserContext {
 
     this.Log(`Killing processes on workspace with UUID "${uuid}"`);
 
-    const processes = KernelStack().store();
+    const processes = Stack.store();
 
     for (const [_, proc] of [...processes]) {
       if (!(proc instanceof AppProcess)) continue;
@@ -176,10 +176,10 @@ export class WorkspaceUserContext extends UserContext {
 
     const {
       workspaces: { desktops, index },
-    } = Daemon()!.preferences();
+    } = Daemon!.preferences();
 
     if (desktops.length - 1 >= index + 1) {
-      Daemon()!.preferences.update((v) => {
+      Daemon!.preferences.update((v) => {
         v.workspaces.index++;
 
         return v;
@@ -196,10 +196,10 @@ export class WorkspaceUserContext extends UserContext {
 
     const {
       workspaces: { index },
-    } = Daemon()!.preferences();
+    } = Daemon!.preferences();
 
     if (index - 1 >= 0) {
-      Daemon()!.preferences.update((v) => {
+      Daemon!.preferences.update((v) => {
         v.workspaces.index--;
 
         return v;
@@ -210,7 +210,7 @@ export class WorkspaceUserContext extends UserContext {
   async moveWindow(pid: number, destination: string) {
     this.Log(`Moving window ${pid} to destination ${destination}`);
 
-    const proc = KernelStack().getProcess(pid);
+    const proc = Stack.getProcess(pid);
     const destinationWorkspace = this.virtualDesktops[destination];
     const window = document.querySelector(`#appRenderer div.window[data-pid*='${pid}']`);
 
@@ -218,7 +218,7 @@ export class WorkspaceUserContext extends UserContext {
 
     const currentWorkspace = proc.app.desktop;
 
-    if (currentWorkspace && this.getCurrentDesktop()?.id === currentWorkspace && KernelStack().renderer?.focusedPid() === pid) {
+    if (currentWorkspace && this.getCurrentDesktop()?.id === currentWorkspace && Stack.renderer?.focusedPid() === pid) {
       this.switchToDesktopByUuid(destination);
     }
 
@@ -226,7 +226,7 @@ export class WorkspaceUserContext extends UserContext {
 
     destinationWorkspace.appendChild(window);
     proc.app.desktop = destination;
-    KernelStack().store.update((v) => {
+    Stack.store.update((v) => {
       v.set(pid, proc);
 
       return v;

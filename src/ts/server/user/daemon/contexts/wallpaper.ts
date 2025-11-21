@@ -44,7 +44,7 @@ export class WallpaperUserContext extends UserContext {
 
     this.Log(`Uploading wallpaper to U:/Wallpapers`);
 
-    const prog = await Daemon()!.files!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
         icon: "ImageMimeIcon",
@@ -55,7 +55,7 @@ export class WallpaperUserContext extends UserContext {
     );
 
     try {
-      const result = await Fs().uploadFiles(UserPaths.Wallpapers, "image/*", false, (progress) => {
+      const result = await Fs.uploadFiles(UserPaths.Wallpapers, "image/*", false, (progress) => {
         prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);
@@ -75,7 +75,7 @@ export class WallpaperUserContext extends UserContext {
         thumb: "",
       };
 
-      Daemon()!.preferences.update((v) => {
+      Daemon!.preferences.update((v) => {
         v.userWallpapers ||= {};
         v.userWallpapers[`@local:${btoa(path)}`] = wallpaper;
 
@@ -117,12 +117,12 @@ export class WallpaperUserContext extends UserContext {
     let result: boolean = false;
 
     try {
-      result = await Fs().deleteItem(path);
+      result = await Fs.deleteItem(path);
     } catch {
       result = false;
     }
 
-    Daemon()!.preferences.update((v) => {
+    Daemon!.preferences.update((v) => {
       delete v.userWallpapers[id];
 
       return v;
@@ -136,7 +136,7 @@ export class WallpaperUserContext extends UserContext {
   async getLocalWallpaper(id: string): Promise<Wallpaper> {
     if (this._disposed) return Wallpapers.img0;
 
-    const wallpaperData = Daemon()!.preferences().userWallpapers[id];
+    const wallpaperData = Daemon!.preferences().userWallpapers[id];
 
     if (!wallpaperData) {
       this.Log(`Tried to get unknown user wallpaper '${id}', defaulting to img04`, LogLevel.warning);
@@ -152,8 +152,8 @@ export class WallpaperUserContext extends UserContext {
 
     try {
       const path = atob(id.replace("@local:", ""));
-      const parent = await Fs().readDir(getParentDirectory(path));
-      const contents = await Fs().readFile(path);
+      const parent = await Fs.readDir(getParentDirectory(path));
+      const contents = await Fs.readFile(path);
 
       if (!contents || !parent) {
         this.Log(`User wallpaper '${id}' doesn't exist on the filesystem anymore, defaulting to img04`, LogLevel.warning);
