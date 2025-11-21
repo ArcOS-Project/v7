@@ -2,7 +2,7 @@ import type { ProcessHandlerType } from "$types/kernel";
 import * as stackTraceParser from "stacktrace-parser";
 import { __Console__ } from "./console";
 import { Crash } from "./crash";
-import { Kernel } from "./env";
+import { Kernel, SysDispatch } from "./env";
 import { Log } from "./logging";
 
 export function handleGlobalErrors() {
@@ -67,7 +67,7 @@ export function interceptTpaErrors(stack: string, e: Error): boolean {
     if (isTpa && parsed[0]?.file?.includes(`/${renderer.lastInteract.app.id}@`)) {
       Log("interceptTpaErrors", `Not crashing for ${e instanceof PromiseRejectionEvent ? e.reason : e}: source is a TPA`);
       handler.BUSY = false;
-      handler.dispatch.dispatch("stack-not-busy");
+      SysDispatch.dispatch("stack-not-busy");
       renderer.notifyCrash(renderer.lastInteract.app.data, e, renderer.lastInteract);
       handler.kill(renderer.lastInteract.pid);
       renderer.lastInteract = undefined;
@@ -76,7 +76,7 @@ export function interceptTpaErrors(stack: string, e: Error): boolean {
 
       if (parsedAppId) {
         handler.BUSY = false;
-        handler.dispatch.dispatch("stack-not-busy");
+        SysDispatch.dispatch("stack-not-busy");
         renderer.notifyCrash(renderer.lastInteract.app.data, e, renderer.lastInteract);
         handler.kill(renderer.lastInteract.pid);
         renderer.lastInteract = undefined;
