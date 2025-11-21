@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { Fs } from "$ts/env";
+  import { Daemon } from "$ts/server/user/daemon";
   import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
   import type { ExpandedFileAssociationInfo } from "$types/assoc";
   import type { ExtendedStat, SummarizedFsModifiers } from "$types/fs";
@@ -8,8 +10,6 @@
   import Drive from "./InfoPane/Drive.svelte";
   import MultiFile from "./InfoPane/MultiFile.svelte";
   import SingleFile from "./InfoPane/SingleFile.svelte";
-  import { Fs } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: FileManagerRuntime } = $props();
   const { path, contents, selection, drives } = process;

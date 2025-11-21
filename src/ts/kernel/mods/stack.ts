@@ -3,7 +3,7 @@ import { __Console__ } from "$ts/console";
 import { Env, Kernel, SysDispatch } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import type { App } from "$types/app";
-import type { ConstructedWaveKernel, EnvironmentType, SystemDispatchType } from "$types/kernel";
+import type { ConstructedWaveKernel } from "$types/kernel";
 import type { ProcessContext, ProcessKillResult } from "$types/process";
 import { parse } from "stacktrace-parser";
 import { AppRenderer } from "../../apps/renderer";

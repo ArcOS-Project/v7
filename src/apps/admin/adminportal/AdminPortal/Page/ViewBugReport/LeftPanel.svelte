@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import type { BugReportTpaFile } from "$apps/admin/adminportal/types";
+  import { Daemon } from "$ts/server/user/daemon";
   import { formatBytes } from "$ts/util/fs";
   import type { BugReport } from "$types/bughunt";
   import { onMount } from "svelte";
@@ -9,7 +10,6 @@
   import Provided from "./LeftPanel/Provided.svelte";
   import Server from "./LeftPanel/Server.svelte";
   import UserAgent from "./LeftPanel/UserAgent.svelte";
-  import { Daemon } from "$ts/server/user/daemon";
 
   const { report, process }: { report: BugReport; process: AdminPortalRuntime } = $props();
 

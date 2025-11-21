@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Daemon } from "$ts/server/user/daemon";
   import type { AppComponentProps } from "$types/app";
   import { onMount } from "svelte";
   import type { ShellRuntime } from "./runtime";
@@ -8,7 +9,6 @@
   import Taskbar from "./Shell/Taskbar.svelte";
   import VirtualDesktopIndicator from "./Shell/VirtualDesktopIndicator.svelte";
   import VirtualDesktops from "./Shell/VirtualDesktops.svelte";
-  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: AppComponentProps<ShellRuntime> = $props();
   const { userPreferences, startMenuOpened, actionCenterOpened, username, FullscreenCount, ready } = process;

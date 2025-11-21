@@ -65,8 +65,8 @@ export class PowerUserContext extends UserContext {
   async closeOpenedApps(type: string, props: Record<string, any> = {}, force = false): Promise<boolean> {
     if (force) return true;
 
-    const windows = Stack
-      .renderer?.currentState.map((pid) => Stack.getProcess<AppProcess>(pid))
+    const windows = Stack.renderer?.currentState
+      .map((pid) => Stack.getProcess<AppProcess>(pid))
       .filter((proc) => !proc?.app?.data?.core);
 
     if (!windows) return true;

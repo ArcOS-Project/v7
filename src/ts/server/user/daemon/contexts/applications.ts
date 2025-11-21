@@ -1,7 +1,7 @@
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { isPopulatable } from "$ts/apps/util";
 import { MessageBox } from "$ts/dialog";
-import { BETA, Env, SysDispatch, Stack } from "$ts/env";
+import { BETA, Env, Stack, SysDispatch } from "$ts/env";
 import type { ShareManager } from "$ts/shares";
 import type { App } from "$types/app";
 import { ElevationLevel } from "$types/elevation";

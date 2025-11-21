@@ -36,7 +36,7 @@ export class SharedDrive extends FilesystemDrive {
     quota: true,
     bulk: true,
     stat: true,
-    bulkytree: false
+    bulkytree: false,
   };
   constructor(uuid: string, letter: string, info: SharedDriveType, token: string) {
     super(uuid, letter);

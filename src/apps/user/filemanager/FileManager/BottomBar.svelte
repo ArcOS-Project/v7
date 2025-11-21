@@ -1,10 +1,10 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
+  import { Fs } from "$ts/env";
   import { Plural } from "$ts/util";
   import { getDriveLetter, getItemNameFromPath } from "$ts/util/fs";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../runtime";
-  import { Fs } from "$ts/env";
 
   const { process }: { process: FileManagerRuntime } = $props();
   const { contents, path, userPreferences, notice, showNotice, virtual } = process;

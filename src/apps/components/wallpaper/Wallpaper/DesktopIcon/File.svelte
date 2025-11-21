@@ -1,11 +1,11 @@
 <script lang="ts">
+  import { Daemon } from "$ts/server/user/daemon";
   import { formatBytes, join } from "$ts/util/fs";
   import type { FileEntry } from "$types/fs";
   import type { ArcShortcut } from "$types/shortcut";
   import { onMount } from "svelte";
   import type { WallpaperRuntime } from "../../runtime";
   import DesktopIcon from "../DesktopIcon.svelte";
-  import { Daemon } from "$ts/server/user/daemon";
 
   const { process, file, i }: { process: WallpaperRuntime; file: FileEntry; i: number } = $props();
   const { shortcuts } = process;

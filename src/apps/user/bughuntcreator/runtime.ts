@@ -30,9 +30,7 @@ export class BugHuntCreatorRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     const parent = Stack.getProcess(this.parentPid);
-    const bugHuntInstances = Stack
-      .renderer?.getAppInstances("BugHunt")
-      .map((p) => p.pid);
+    const bugHuntInstances = Stack.renderer?.getAppInstances("BugHunt").map((p) => p.pid);
 
     if (parent && bugHuntInstances?.includes(parent.pid)) this.parent = parent as any;
 

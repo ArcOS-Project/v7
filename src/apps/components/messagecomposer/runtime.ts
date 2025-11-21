@@ -1,6 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { Fs } from "$ts/env";
 import { MessagingInterface } from "$ts/server/messaging";
+import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { getItemNameFromPath } from "$ts/util/fs";
@@ -10,8 +12,6 @@ import type { AppProcessData } from "$types/app";
 import type { MessageCreateData } from "$types/messaging";
 import mime from "mime";
 import type { Attachment } from "./types";
-import { Fs } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
 
 export class MessageComposerRuntime extends AppProcess {
   sending = Store<boolean>(false);

@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { isPopulatable } from "$ts/apps/util";
-import { Env, Fs, SysDispatch, Stack } from "$ts/env";
+import { Env, Fs, Stack, SysDispatch } from "$ts/env";
 import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { UUID } from "$ts/uuid";

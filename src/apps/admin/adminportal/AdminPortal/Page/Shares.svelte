@@ -1,11 +1,11 @@
 <script lang="ts">
+  import { Env, Fs } from "$ts/env";
   import { formatBytes } from "$ts/util/fs";
   import { Store } from "$ts/writable";
   import type { SharedDriveType } from "$types/shares";
   import { onMount } from "svelte";
   import type { AdminPortalRuntime } from "../../runtime";
   import type { SharesData, SharesPageFilters } from "../../types";
-  import { Env, Fs } from "$ts/env";
 
   const { process, data }: { process: AdminPortalRuntime; data: SharesData } = $props();
   const { redacted } = process;

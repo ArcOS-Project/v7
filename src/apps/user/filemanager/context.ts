@@ -161,8 +161,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       },
       {
         caption: "Paste items",
-        disabled: () =>
-          (!Daemon!.cutList().length && !Daemon!.copyList().length) || !!runtime.drive()?.READONLY,
+        disabled: () => (!Daemon!.cutList().length && !Daemon!.copyList().length) || !!runtime.drive()?.READONLY,
         action: () => runtime.pasteFiles(),
         icon: "clipboard",
       },

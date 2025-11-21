@@ -122,12 +122,7 @@ export class ArcTerminal extends Process {
         this.Error("Command not found.");
         this.lastCommandErrored = true;
       } else {
-        const proc = await Stack.spawn<TerminalProcess>(
-          command,
-          undefined,
-          Daemon?.userInfo?._id,
-          this.pid
-        );
+        const proc = await Stack.spawn<TerminalProcess>(command, undefined, Daemon?.userInfo?._id, this.pid);
 
         // BUG 68798d6957684017c3e9a085
         if (!proc) {
@@ -399,14 +394,7 @@ export class ArcTerminal extends Process {
 
     await this.rl?.dispose();
     await this.killSelf();
-    await Stack.spawn(
-      ArcTerminal,
-      undefined,
-      Daemon?.userInfo?._id,
-      this.parentPid,
-      this.term,
-      this.path
-    );
+    await Stack.spawn(ArcTerminal, undefined, Daemon?.userInfo?._id, this.parentPid, this.term, this.path);
   }
 
   tryGetTermWindow() {
@@ -416,7 +404,6 @@ export class ArcTerminal extends Process {
 
     if (parent instanceof TerminalWindowRuntime) this.window = parent;
   }
-
 
   // MIGRATION: 7.0.3 -> 7.0.4
   async migrateConfigurationPath() {

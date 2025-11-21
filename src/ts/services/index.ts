@@ -2,7 +2,7 @@ import { appStoreService } from "$ts/apps/storage";
 import { bhuspService } from "$ts/bughunt/process";
 import { devEnvironmentService } from "$ts/devenv";
 import { distributionService } from "$ts/distrib";
-import { SysDispatch, Stack } from "$ts/env";
+import { Stack, SysDispatch } from "$ts/env";
 import iconService from "$ts/icon";
 import { Process } from "$ts/process/instance";
 import { protoService } from "$ts/proto";

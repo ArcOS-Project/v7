@@ -42,9 +42,7 @@ export class ArcFetchCommand extends TerminalProcess {
     return Object.entries({
       OS: `ArcOS ${ArcOSVersion}-${ArcMode()} (${ArcBuild()})`,
       Host: `${server?.url} ${BRBLACK}(${import.meta.env.DW_SERVER_AUTHCODE ? "Protected" : "Open"})${RESET}`,
-      Username: `${Env.get("currentuser")} ${BRBLACK}(${
-        Env.get("administrator") ? "Administrator" : "Regular User"
-      })${RESET}`,
+      Username: `${Env.get("currentuser")} ${BRBLACK}(${Env.get("administrator") ? "Administrator" : "Regular User"})${RESET}`,
       Mode: `Browser ${BRBLACK}(on state ${state?.toUpperCase()})${RESET}`,
       Terminal: `PID ${term.pid} (${term.name}) on parent PID ${term.parentPid}`,
       CPU: `${info.cpu.cores} cores`,

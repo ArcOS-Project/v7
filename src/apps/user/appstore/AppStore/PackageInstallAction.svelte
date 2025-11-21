@@ -1,5 +1,7 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
+  import { Env } from "$ts/env";
+  import { Daemon } from "$ts/server/user/daemon";
   import { Store } from "$ts/writable";
   import type { StoreItem, UpdateInfo } from "$types/package";
   import { onMount } from "svelte";
@@ -7,8 +9,6 @@
   import InstallButton from "./PackageInstallAction/InstallButton.svelte";
   import UninstallButton from "./PackageInstallAction/UninstallButton.svelte";
   import UpdateButton from "./PackageInstallAction/UpdateButton.svelte";
-  import { Env } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
 
   const { process, pkg, compact = false }: { process: AppStoreRuntime; pkg: StoreItem; compact?: boolean } = $props();
   let loading = $state<boolean>(true);

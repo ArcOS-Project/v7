@@ -1,5 +1,6 @@
 import DeleteUser from "$lib/Daemon/DeleteUser.svelte";
 import { MessageBox } from "$ts/dialog";
+import { Env, Server, SysDispatch } from "$ts/env";
 import { toForm } from "$ts/form";
 import { Backend } from "$ts/server/axios";
 import { authcode } from "$ts/util";
@@ -9,7 +10,6 @@ import type { PublicUserInfo, UserInfo } from "$types/user";
 import Cookies from "js-cookie";
 import { Daemon, type UserDaemon } from "..";
 import { UserContext } from "../context";
-import { Env, SysDispatch, Server } from "$ts/env";
 
 export class AccountUserContext extends UserContext {
   constructor(id: string, daemon: UserDaemon) {

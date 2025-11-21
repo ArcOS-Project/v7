@@ -1,4 +1,5 @@
 import type { FilesystemDrive } from "$ts/drives/drive";
+import { Fs } from "$ts/env";
 import { FormatLargeNumber, Gap, maxLength, Plural, Truncate } from "$ts/util";
 import { formatBytes, join } from "$ts/util/fs";
 import type { Arguments } from "$types/terminal";
@@ -6,7 +7,6 @@ import dayjs from "dayjs";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { BRBLACK, BRBLUE, BRGREEN, RESET } from "../store";
-import { Fs } from "$ts/env";
 
 export class DirCommand extends TerminalProcess {
   public static keyword = "dir";

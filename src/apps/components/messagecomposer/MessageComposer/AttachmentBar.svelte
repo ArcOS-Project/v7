@@ -12,8 +12,7 @@
     {#each $attachments as attachment, i (`${attachment.uuid}-${i}`)}
       <div class="attachment">
         <img
-          src={Daemon?.assoc?.getFileAssociation(attachment.data.name)?.icon ||
-            process.getIconCached("DefaultMimeIcon")}
+          src={Daemon?.assoc?.getFileAssociation(attachment.data.name)?.icon || process.getIconCached("DefaultMimeIcon")}
           alt=""
         />
         <span>{attachment.data.name}</span>

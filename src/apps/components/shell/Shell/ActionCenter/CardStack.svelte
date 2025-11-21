@@ -10,7 +10,7 @@
 
   const { userPreferences, process }: { userPreferences: UserPreferencesStore; process: ShellRuntime } = $props();
   const userDaemon = Daemon;
-  
+
   let changing = $state(false);
   const scrollThreshold = 500;
   let accumulatedScroll = 0;

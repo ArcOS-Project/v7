@@ -1,7 +1,7 @@
 //#region IMPORTS
 import type { ShellRuntime } from "$apps/components/shell/runtime";
 import { ApplicationStorage } from "$ts/apps/storage";
-import { Env, getKMod, SysDispatch, KernelServerUrl, Stack } from "$ts/env";
+import { Env, getKMod, KernelServerUrl, Stack, SysDispatch } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { Process } from "$ts/process/instance";
 import type { ProtocolServiceProcess } from "$ts/proto";

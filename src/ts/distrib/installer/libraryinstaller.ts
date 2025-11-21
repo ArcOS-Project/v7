@@ -1,3 +1,4 @@
+import { Fs } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { Daemon, TryGetDaemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
@@ -8,7 +9,6 @@ import type { ArcPackage, StoreItem } from "$types/package";
 import type JSZip from "jszip";
 import type { DistributionServiceProcess } from "..";
 import { InstallerProcessBase } from "./base";
-import { Fs } from "$ts/env";
 
 export class LibraryInstallerProcess extends InstallerProcessBase {
   library?: TpaLibrary;

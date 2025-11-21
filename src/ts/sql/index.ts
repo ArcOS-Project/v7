@@ -1,7 +1,7 @@
+import { Fs } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import initSqlJs from "sql.js";
 import { sqljsResultToJSON } from "./util";
-import { Fs } from "$ts/env";
 
 export class SqlInterfaceProcess extends Process {
   private filePath: string;

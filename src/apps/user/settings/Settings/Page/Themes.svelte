@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Daemon } from "$ts/server/user/daemon";
   import { BuiltinThemes, VisualStyles } from "$ts/server/user/store";
   import type { Wallpaper } from "$types/wallpaper";
   import { onMount } from "svelte";
@@ -7,7 +8,6 @@
   import Setting from "../ThemesHeader/Setting.svelte";
   import AccentColor from "./Themes/AccentColor.svelte";
   import Theme from "./Themes/Theme.svelte";
-  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: SettingsRuntime } = $props();
   const { userInfo, preferences: userPreferences } = Daemon || {}!;

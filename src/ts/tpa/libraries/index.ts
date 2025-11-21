@@ -82,13 +82,7 @@ export class LibraryManagement extends BaseService {
 
     try {
       const filePath = join(UserPaths.Libraries, id, library.entrypoint);
-      const engine = await Stack.spawn<JsExec>(
-        JsExec,
-        undefined,
-        Daemon?.userInfo._id,
-        Daemon?.pid,
-        filePath
-      );
+      const engine = await Stack.spawn<JsExec>(JsExec, undefined, Daemon?.userInfo._id, Daemon?.pid, filePath);
 
       return (await engine?.getContents()) as T;
     } catch {

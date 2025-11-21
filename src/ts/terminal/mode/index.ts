@@ -1,4 +1,4 @@
-import { ArcOSVersion, Env, SysDispatch, Stack } from "$ts/env";
+import { ArcOSVersion, Env, Stack, SysDispatch } from "$ts/env";
 import { toForm } from "$ts/form";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";

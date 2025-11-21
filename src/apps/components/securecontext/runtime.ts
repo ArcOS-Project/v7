@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { Env, SysDispatch, SoundBus } from "$ts/env";
+import { Env, SoundBus, SysDispatch } from "$ts/env";
 import { LoginUser } from "$ts/server/user/auth";
 import { Daemon } from "$ts/server/user/daemon";
 import { Store } from "$ts/writable";

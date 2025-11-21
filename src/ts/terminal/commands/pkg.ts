@@ -1,4 +1,5 @@
 import { DistributionServiceProcess } from "$ts/distrib";
+import { Fs } from "$ts/env";
 import { UserPaths } from "$ts/server/user/store";
 import { Plural } from "$ts/util";
 import { formatBytes, join } from "$ts/util/fs";
@@ -8,7 +9,6 @@ import dayjs from "dayjs";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { BRBLUE, BRGREEN, BRPURPLE, CLRROW, CURUP, RESET } from "../store";
-import { Fs } from "$ts/env";
 
 const typeCaptions: Record<string, string> = {
   mkdir: "Creating folder",

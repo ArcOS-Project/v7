@@ -1,7 +1,7 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
   import { contextMenu } from "$ts/context/actions.svelte";
-  import { SysDispatch, Stack } from "$ts/env";
+  import { Stack, SysDispatch } from "$ts/env";
   import type { Process } from "$ts/process/instance";
   import { Daemon } from "$ts/server/user/daemon";
   import { BaseService } from "$ts/services/base";

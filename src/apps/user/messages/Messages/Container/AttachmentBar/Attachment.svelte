@@ -14,10 +14,7 @@
     title={`Name: ${attachment.filename}\nSize: ${formatBytes(attachment.size)}\nType: ${attachment.mimeType}`}
     ondblclick={() => process.openAttachment(attachment, $message._id)}
   >
-    <img
-      src={Daemon?.assoc?.getFileAssociation(attachment.filename)?.icon || process.getIconCached("DefaultMimeIcon")}
-      alt=""
-    />
+    <img src={Daemon?.assoc?.getFileAssociation(attachment.filename)?.icon || process.getIconCached("DefaultMimeIcon")} alt="" />
     <p>
       <span class="filename">
         {attachment.filename}

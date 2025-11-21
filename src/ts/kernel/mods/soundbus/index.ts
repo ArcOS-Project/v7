@@ -1,6 +1,6 @@
 import { Env } from "$ts/env";
 import { KernelModule } from "$ts/kernel/module";
-import type { ConstructedWaveKernel, EnvironmentType } from "$types/kernel";
+import type { ConstructedWaveKernel } from "$types/kernel";
 import type { SoundBusStore, SoundStore } from "$types/soundbus";
 import { ArcSounds } from "./store";
 

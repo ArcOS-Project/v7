@@ -1,6 +1,5 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import { Daemon } from "$ts/server/user/daemon";
   import { formatBytes } from "$ts/util/fs";
   import type { AdminPortalRuntime } from "../runtime";
   import { AdminPortalPageStore } from "../store";

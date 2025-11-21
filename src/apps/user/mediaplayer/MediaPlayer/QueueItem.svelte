@@ -1,8 +1,8 @@
 <script lang="ts">
+  import { Daemon } from "$ts/server/user/daemon";
   import { getItemNameFromPath } from "$ts/util/fs";
   import { onMount } from "svelte";
   import type { MediaPlayerRuntime } from "../runtime";
-  import { Daemon } from "$ts/server/user/daemon";
 
   const { process, i, path }: { process: MediaPlayerRuntime; i: number; path: string } = $props();
   const { queueIndex, queue, State, Loaded } = process;

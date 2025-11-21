@@ -1,6 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { Fs } from "$ts/env";
 import { AdminBootstrapper } from "$ts/server/admin";
+import { Daemon } from "$ts/server/user/daemon";
 import { ShareManager } from "$ts/shares";
 import { Sleep } from "$ts/sleep";
 import { textToBlob } from "$ts/util/convert";
@@ -13,8 +15,6 @@ import { AdminPortalAltMenu } from "./altmenu";
 import { AdminPortalPageStore } from "./store";
 import type { BugReportFileUrlParseResult, BugReportTpaFile } from "./types";
 import { BugHuntUserDataApp } from "./userdata/metadata";
-import { Fs } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
 
 export class AdminPortalRuntime extends AppProcess {
   ready = Store<boolean>(false);

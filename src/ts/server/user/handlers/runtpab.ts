@@ -1,4 +1,5 @@
 import { MessageBox } from "$ts/dialog";
+import { Env, Fs } from "$ts/env";
 import { arrayToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
 import { UUID } from "$ts/uuid";
@@ -6,7 +7,6 @@ import type { FileHandler } from "$types/fs";
 import { fromExtension } from "human-filetypes";
 import JSZip from "jszip";
 import type { UserDaemon } from "../daemon";
-import { Env, Fs } from "$ts/env";
 
 const runTpaBundle: (d: UserDaemon) => FileHandler = (daemon) => ({
   opens: {

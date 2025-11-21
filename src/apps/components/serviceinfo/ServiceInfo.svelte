@@ -2,10 +2,10 @@
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
+  import { Daemon } from "$ts/server/user/daemon";
   import dayjs from "dayjs";
   import type { ServiceInfoRuntime } from "./runtime";
   import Header from "./ServiceInfo/Header.svelte";
-  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: ServiceInfoRuntime } = $props();
   const { service, serviceProcess } = process;

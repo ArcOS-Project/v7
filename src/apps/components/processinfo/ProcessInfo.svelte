@@ -10,8 +10,7 @@
   const { process }: { process: ProcessInfoRuntime } = $props();
   const { proc, parent, inherit } = process;
 
-  const icon =
-    (proc instanceof AppProcess ? Daemon?.icons?.getAppIcon(proc.app.data)! : process.getIconCached("ComponentIcon"));
+  const icon = proc instanceof AppProcess ? Daemon?.icons?.getAppIcon(proc.app.data)! : process.getIconCached("ComponentIcon");
   const children = Stack.getSubProcesses(proc!.pid);
   const context = Stack.getProcessContext(proc!.pid);
 

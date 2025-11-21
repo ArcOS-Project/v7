@@ -16,9 +16,7 @@
 <div class="left">
   <img src={process.getIconCached("ArcSystemIcon")} alt="" />
   <div class="main-actions">
-    <button class="link" onclick={() => process.spawnOverlayApp("BugHuntCreator", +Env.get("shell_pid"))}
-      >Report a bug...</button
-    >
+    <button class="link" onclick={() => process.spawnOverlayApp("BugHuntCreator", +Env.get("shell_pid"))}>Report a bug...</button>
   </div>
 </div>
 

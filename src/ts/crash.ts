@@ -47,9 +47,7 @@ export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
   if (!import.meta.env.DEV)
     bughunt?.sendReport(
       bughunt?.createReport({
-        title: !KernelPremature()
-          ? `CRASH - ${brief}`
-          : `Premature kernel failure`,
+        title: !KernelPremature() ? `CRASH - ${brief}` : `Premature kernel failure`,
         body: `${stack}`.replaceAll(location.href, "./"),
       })
     );

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Daemon } from "$ts/server/user/daemon";
   import { TimeFrames } from "$ts/server/user/store";
   import { groupByTimeFrame } from "$ts/util";
   import type { LoginActivity } from "$types/activity";
@@ -6,7 +7,6 @@
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
   import Activity from "./LoginActivity/Activity.svelte";
-  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: SettingsRuntime } = $props();
 

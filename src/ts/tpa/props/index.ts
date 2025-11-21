@@ -83,7 +83,7 @@ export function ThirdPartyProps(engine: JsExec): ThirdPartyPropMap {
     ): Promise<ThirdPartyAppProcess | undefined> => undefined,
     loadHtml: async (path: string): Promise<string | undefined> => undefined,
     axios,
-    Server: Backend,// TODO: PERMISSION_SERVER_INTERACT
+    Server: Backend, // TODO: PERMISSION_SERVER_INTERACT
     BaseService,
     TrayIconProcess,
     Debug: (m: any) => {

@@ -1,10 +1,10 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
+  import { Daemon } from "$ts/server/user/daemon";
   import QRCode from "@castlenine/svelte-qrcode";
   import { onMount } from "svelte";
   import Input from "./TotpSetupGui/Input.svelte";
   import type { TotpSetupGuiRuntime } from "./runtime";
-  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: TotpSetupGuiRuntime } = $props();
   const { code, url } = process;

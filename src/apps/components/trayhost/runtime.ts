@@ -1,4 +1,4 @@
-import { Env, SysDispatch, Stack } from "$ts/env";
+import { Env, Stack, SysDispatch } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import { Daemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";

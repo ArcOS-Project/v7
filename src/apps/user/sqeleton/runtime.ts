@@ -66,13 +66,7 @@ export class SqeletonRuntime extends AppProcess {
   }
 
   async start() {
-    this.tempDb = await Stack.spawn(
-      SqlInterfaceProcess,
-      undefined,
-      Daemon?.userInfo?._id,
-      this.pid,
-      this.tempDbPath
-    );
+    this.tempDb = await Stack.spawn(SqlInterfaceProcess, undefined, Daemon?.userInfo?._id, this.pid, this.tempDbPath);
   }
 
   async stop() {
@@ -133,13 +127,7 @@ export class SqeletonRuntime extends AppProcess {
 
     if (!path) return;
 
-    const db = await Stack.spawn<SqlInterfaceProcess>(
-      SqlInterfaceProcess,
-      undefined,
-      Daemon?.userInfo?._id,
-      this.pid,
-      path
-    );
+    const db = await Stack.spawn<SqlInterfaceProcess>(SqlInterfaceProcess, undefined, Daemon?.userInfo?._id, this.pid, path);
     await db?.writeFile();
     await db?.killSelf();
 

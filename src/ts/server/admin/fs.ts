@@ -33,7 +33,7 @@ export class AdminFileSystem extends FilesystemDrive {
     quota: true,
     bulk: false,
     stat: true,
-    bulkytree: false
+    bulkytree: false,
   };
 
   constructor(uuid: string, letter: string, token: string) {

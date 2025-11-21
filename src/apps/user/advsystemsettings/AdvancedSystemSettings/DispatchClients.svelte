@@ -1,9 +1,9 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
+  import { Daemon } from "$ts/server/user/daemon";
   import type { GlobalDispatchClient } from "$types/dispatch";
   import { onMount } from "svelte";
   import type { AdvSysSetRuntime } from "../runtime";
-  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: AdvSysSetRuntime } = $props();
 

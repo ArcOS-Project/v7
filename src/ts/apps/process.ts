@@ -1,5 +1,5 @@
 import type { ShellRuntime } from "$apps/components/shell/runtime";
-import { ArcOSVersion, Env, Kernel, SysDispatch, Stack } from "$ts/env";
+import { ArcOSVersion, Env, Kernel, Stack, SysDispatch } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";

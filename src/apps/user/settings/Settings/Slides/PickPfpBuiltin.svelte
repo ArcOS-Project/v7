@@ -1,9 +1,9 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { ProfilePictures } from "$ts/images/pfp";
+  import { Daemon } from "$ts/server/user/daemon";
   import { onMount } from "svelte";
   import type { SettingsRuntime } from "../../runtime";
-  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: SettingsRuntime } = $props();
   const { userPreferences, slideVisible } = process;

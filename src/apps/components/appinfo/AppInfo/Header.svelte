@@ -1,8 +1,8 @@
 <script lang="ts">
+  import { Daemon } from "$ts/server/user/daemon";
   import type { App } from "$types/app";
   import { onMount } from "svelte";
   import type { AppInfoRuntime } from "../runtime";
-  import { Daemon } from "$ts/server/user/daemon";
 
   interface Props {
     target: App;

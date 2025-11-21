@@ -315,15 +315,7 @@ export class DistributionServiceProcess extends BaseService {
 
     let designatedProcess = this.getInstallerProcess(metadata);
 
-    const proc = await Stack.spawn(
-      designatedProcess,
-      undefined,
-      Daemon!.userInfo?._id,
-      this.pid,
-      zip,
-      metadata,
-      item
-    );
+    const proc = await Stack.spawn(designatedProcess, undefined, Daemon!.userInfo?._id, this.pid, zip, metadata, item);
 
     return proc as T;
   }

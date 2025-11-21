@@ -63,14 +63,7 @@ export class Readline extends Process implements ITerminalAddon {
   }
 
   async start() {
-    this.history = await Stack.spawn(
-      History,
-      undefined,
-      this.terminal?.daemon?.userInfo?._id,
-      this.pid,
-      50,
-      this.terminal
-    );
+    this.history = await Stack.spawn(History, undefined, this.terminal?.daemon?.userInfo?._id, this.pid, 50, this.terminal);
     this.history?.restore();
   }
 

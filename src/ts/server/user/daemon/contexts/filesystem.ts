@@ -8,7 +8,7 @@ import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import { MessageBox } from "$ts/dialog";
 import type { MemoryFilesystemDrive } from "$ts/drives/temp";
 import { ZIPDrive } from "$ts/drives/zipdrive";
-import { Env, Fs, SysDispatch, Stack } from "$ts/env";
+import { Env, Fs, Stack, SysDispatch } from "$ts/env";
 import { applyDefaults } from "$ts/hierarchy";
 import { Sleep } from "$ts/sleep";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";

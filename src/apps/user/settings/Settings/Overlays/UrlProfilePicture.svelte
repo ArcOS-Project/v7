@@ -1,7 +1,7 @@
 <script lang="ts">
+  import { Daemon } from "$ts/server/user/daemon";
   import { onMount } from "svelte";
   import type { OverlayRuntime } from "../../overlay";
-  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: OverlayRuntime } = $props();
   const { userPreferences } = process;

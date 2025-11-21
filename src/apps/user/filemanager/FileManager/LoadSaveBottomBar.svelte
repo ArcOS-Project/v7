@@ -1,9 +1,9 @@
 <script lang="ts">
+  import { Fs } from "$ts/env";
   import { Plural } from "$ts/util";
   import { getDriveLetter, getItemNameFromPath } from "$ts/util/fs";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../runtime";
-  import { Fs } from "$ts/env";
 
   const { process }: { process: FileManagerRuntime } = $props();
   const { saveName, path, contents, selection } = process;

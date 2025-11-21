@@ -1,11 +1,11 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
+  import { Env } from "$ts/env";
+  import { Daemon } from "$ts/server/user/daemon";
   import { TrashCanService } from "$ts/server/user/trash";
   import { Plural } from "$ts/util";
   import { onMount } from "svelte";
   import type { AdvSysSetRuntime } from "../runtime";
-  import { Env } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: AdvSysSetRuntime } = $props();
   const { preferencesBuffer } = process;

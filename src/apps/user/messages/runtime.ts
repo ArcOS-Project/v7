@@ -1,8 +1,10 @@
 import type { FileProgressMutator } from "$apps/components/fsprogress/types";
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { Fs } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { MessagingInterface } from "$ts/server/messaging";
+import { Daemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import { sortByKey } from "$ts/util";
 import { arrayToBlob, arrayToText, textToBlob } from "$ts/util/convert";
@@ -15,8 +17,6 @@ import dayjs from "dayjs";
 import Fuse from "fuse.js";
 import { messagingPages } from "./store";
 import type { MessagingPage } from "./types";
-import { Fs } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
 
 export class MessagingAppRuntime extends AppProcess {
   service: MessagingInterface;

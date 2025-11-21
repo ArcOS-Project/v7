@@ -29,10 +29,10 @@ import { fromExtension } from "human-filetypes";
 import JSZip from "jszip";
 import { Backend } from "../axios";
 import { MessagingInterface } from "../messaging";
+import { Daemon } from "../user/daemon";
 import { UserPaths } from "../user/store";
 import { AdminFileSystem } from "./fs";
 import { AdminScopes } from "./store";
-import { Daemon } from "../user/daemon";
 
 export class AdminBootstrapper extends BaseService {
   private token: string | undefined;

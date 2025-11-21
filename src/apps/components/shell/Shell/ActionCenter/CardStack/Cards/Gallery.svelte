@@ -1,13 +1,13 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import { contextProps } from "$ts/context/actions.svelte";
+  import { Fs } from "$ts/env";
+  import { Daemon } from "$ts/server/user/daemon";
   import { UserPaths } from "$ts/server/user/store";
   import { arrayToBlob } from "$ts/util/convert";
   import type { UserPreferencesStore } from "$types/user";
   import { onMount } from "svelte";
   import Spinner from "../../../../../../../lib/Spinner.svelte";
-  import { Fs } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
 
   const { userPreferences, process }: { userPreferences: UserPreferencesStore; process: ShellRuntime } = $props();
 

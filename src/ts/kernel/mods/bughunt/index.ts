@@ -14,7 +14,6 @@ export class BugHunt extends KernelModule {
 
   constructor(kernel: ConstructedWaveKernel, id: string) {
     super(kernel, id);
-
   }
 
   async _init(): Promise<void> {}

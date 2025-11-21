@@ -6,7 +6,7 @@
 #GlobalLoadIndicator > div.body {
   padding: 0;
   min-height: 78px;
-  height:fit-content;
+  height: fit-content;
 }
 
 #GlobalLoadIndicator > div.body svg {

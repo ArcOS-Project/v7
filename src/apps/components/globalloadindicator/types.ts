@@ -1,5 +1,5 @@
 export interface GlobalLoadIndicatorProgress {
   max: number;
-  value: number; 
+  value: number;
   useHtml?: boolean;
 }

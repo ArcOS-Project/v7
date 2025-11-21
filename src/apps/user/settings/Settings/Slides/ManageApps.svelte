@@ -1,11 +1,11 @@
 <script lang="ts">
   import { isPopulatable } from "$ts/apps/util";
+  import { Daemon } from "$ts/server/user/daemon";
   import { Store } from "$ts/writable";
   import type { AppStorage } from "$types/app";
   import Fuse from "fuse.js";
   import { onMount } from "svelte";
   import type { SettingsRuntime } from "../../runtime";
-  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: SettingsRuntime } = $props();
   const { userPreferences } = process;

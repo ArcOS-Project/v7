@@ -1,12 +1,12 @@
 <script lang="ts">
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
   import Spinner from "$lib/Spinner.svelte";
+  import { Env } from "$ts/env";
+  import { Daemon } from "$ts/server/user/daemon";
   import { onMount, type Component } from "svelte";
   import Sidebar from "./AppStore/Sidebar.svelte";
   import type { AppStoreRuntime } from "./runtime";
   import { appStorePages } from "./store";
-  import { Env } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: AppStoreRuntime } = $props();
   const { currentPage, pageProps, loadingPage, userPreferences } = process;

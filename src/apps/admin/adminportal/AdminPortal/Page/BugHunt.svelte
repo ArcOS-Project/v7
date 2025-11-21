@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Logo } from "$ts/branding";
   import { MessageBox } from "$ts/dialog";
+  import { Daemon } from "$ts/server/user/daemon";
   import { sortByKey } from "$ts/util";
   import { Store } from "$ts/writable";
   import type { BugReport } from "$types/bughunt";
@@ -9,7 +10,6 @@
   import type { BugHuntData } from "../../types";
   import QuickView from "./BugHunt/QuickView.svelte";
   import Row from "./BugHunt/Row.svelte";
-  import { Daemon } from "$ts/server/user/daemon";
 
   const { process, data }: { process: AdminPortalRuntime; data: BugHuntData } = $props();
   const { reports, stats, users } = data;

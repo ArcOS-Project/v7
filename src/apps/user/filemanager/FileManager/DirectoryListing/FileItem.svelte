@@ -1,6 +1,7 @@
 <script lang="ts">
   import { contextProps } from "$ts/context/actions.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
+  import { Daemon } from "$ts/server/user/daemon";
   import { formatBytes, join } from "$ts/util/fs";
   import type { FileEntry } from "$types/fs";
   import type { ArcShortcut } from "$types/shortcut";
@@ -9,7 +10,6 @@
   import updateLocale from "dayjs/plugin/updateLocale";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../../runtime";
-  import { Daemon } from "$ts/server/user/daemon";
 
   const { process, file }: { process: FileManagerRuntime; file: FileEntry } = $props();
   const { selection, shortcuts } = process;
