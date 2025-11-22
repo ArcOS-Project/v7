@@ -21,6 +21,11 @@
   overflow: hidden;
 }
 
+.crash-screen #crashScreen > p {
+  max-width: 360px;
+  text-align: center;
+}
+
 .crash-screen p#crashText {
   white-space: pre-wrap;
   overflow-y: scroll;
@@ -30,7 +35,7 @@
 }
 
 .crash-screen p#crashTextBrief {
-  margin-top: 50px;
+  margin-top: 40px;
   opacity: 0.5;
   font-family: "Source Code Pro";
   width: fit-content;
@@ -59,11 +64,6 @@
 .crash-screen #crashScreen > h1 {
   font-size: 18px;
   margin-bottom: 10px;
-}
-
-.crash-screen #crashScreen > p {
-  max-width: 360px;
-  text-align: center;
 }
 
 .crash-screen #crashScreen > div.shortcut-hint {

@@ -360,7 +360,7 @@ export class LoginAppRuntime extends AppProcess {
 
     if (daemon) {
       this.profileImage.set(`${this.server.url}/user/pfp/${daemon.userInfo._id}${authcode()}`);
-      this.loginBackground.set((await daemon.wallpaper!.getWallpaper(daemon.preferences().account.loginBackground)).url);
+      this.loginBackground.set((await daemon.wallpaper?.getWallpaper(daemon.preferences().account.loginBackground))?.url || this.DEFAULT_WALLPAPER());
 
       this.profileName.set(daemon.preferences().account.displayName || daemon.username);
     }

@@ -116,12 +116,16 @@ export class UserDaemon extends Process {
   async stop() {
     if (this._disposed) return;
 
+    await this.stopUserContexts();
+
     if (!this._toLoginInvoked && KernelStateHandler()?.currentState === "desktop") {
       KernelStateHandler()?.loadState("login", { type: "restart", userDaemon: this });
       return false;
     }
 
     if (this.serviceHost) this.serviceHost._holdRestart = true;
+    
+    this.env.delete("userdaemon_pid");
   }
 
   //#endregion

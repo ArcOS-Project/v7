@@ -1,9 +1,9 @@
 /**
  * ArcOS proprietary type build process
  *
- * The files in the tools/ directory are responsible for generating and altering the ArcOS v7 type declarations to make
- * them compatible with ArcOS third-party app development using v7cli. The code in this file is not to be compared to any
- * ordinary build systems, because it is far from usual.
+ * This file is part of the other files in the tools/ directory, and is responsible for generating and altering the ArcOS v7
+ * type declarations to make them compatible with ArcOS third-party app development using v7cli. The code in this file is not
+ * to be compared to any ordinary build systems, because it is far from usual.
  *
  * © IzKuipers 2025. Licensed under GPLv3.
  */

@@ -42,8 +42,10 @@ export class FilesystemUserContext extends UserContext {
 
   async _deactivate() {
     this.TempFs?.restoreSnapshot(this.TempFsSnapshot!);
-    Fs.umountDrive(`userfs`, true);
-    Fs.umountDrive(`admin`, true);
+    this.TempFsSnapshot = {}; // Get that memory outta here
+
+    await Fs.umountDrive(`userfs`, true);
+    await Fs.umountDrive(`admin`, true);
   }
 
   async mountZip(path: string, letter?: string, fromSystem = false) {
@@ -93,7 +95,7 @@ export class FilesystemUserContext extends UserContext {
     this.Log("Unmounting mounted drives");
 
     for (const drive of this.mountedDrives) {
-      Fs.umountDrive(drive, true);
+      await Fs.umountDrive(drive, true);
     }
   }
 

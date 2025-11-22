@@ -1,7 +1,3 @@
-// check-params.js
-// Run with: node check-params.js
-// Requires: npm install typescript glob
-
 import ts from "typescript";
 import { glob } from "glob";
 import fs from "fs";
