@@ -60,8 +60,8 @@ The compiled copy of ArcOS v7 will be in the `dist/` directory.
 
 If you don't have a backend and you're not able to host one yourself, use these credentials in your `.env` file to connect to the deployed ReArc backend:
 
-- set `DW_SERVER_URL` to `https://api.arcapi.nl`
-- set `DW_SERVER_AUTHCODE` to `ohshitv7iscoming`
+- set `DW_SERVER_URL` to `https://arcapi.nl`
+- ~~set `DW_SERVER_AUTHCODE` to `ohshitv7iscoming`~~
 
 ## License
 
