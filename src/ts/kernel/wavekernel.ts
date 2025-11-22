@@ -52,7 +52,7 @@ export class WaveKernel {
     if (!state) {
       this.Log(`WaveKernel::panic`, `\n\n${reason}`);
 
-      prematurePanic();
+      prematurePanic(brief);
 
       return;
     }
