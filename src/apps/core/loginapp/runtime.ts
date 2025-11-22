@@ -152,15 +152,7 @@ export class LoginAppRuntime extends AppProcess {
 
     this.loadingStatus.set(this.getWelcomeString());
 
-    const userDaemon = await Stack.spawn<UserDaemon>(
-      UserDaemon,
-      undefined,
-      info?._id || "SYSTEM",
-      1,
-      token,
-      username,
-      info
-    );
+    const userDaemon = await Stack.spawn<UserDaemon>(UserDaemon, undefined, info?._id || "SYSTEM", 1, token, username, info);
 
     if (!userDaemon) {
       this.loadingStatus.set("");
@@ -360,7 +352,9 @@ export class LoginAppRuntime extends AppProcess {
 
     if (daemon) {
       this.profileImage.set(`${this.server.url}/user/pfp/${daemon.userInfo._id}${authcode()}`);
-      this.loginBackground.set((await daemon.wallpaper?.getWallpaper(daemon.preferences().account.loginBackground))?.url || this.DEFAULT_WALLPAPER());
+      this.loginBackground.set(
+        (await daemon.wallpaper?.getWallpaper(daemon.preferences().account.loginBackground))?.url || this.DEFAULT_WALLPAPER()
+      );
 
       this.profileName.set(daemon.preferences().account.displayName || daemon.username);
     }
@@ -522,12 +516,11 @@ export class LoginAppRuntime extends AppProcess {
 
     if (!process) return;
 
+    Env.set("shell_pid", this.pid);
+
     await new Promise<void>((r) => process.done.subscribe((v) => v && r()));
 
-    // daemon.preferences.update((v) => {
-    //   v.firstRunDone = true;
-    //   return v;
-    // });
+    Env.delete("shell_pid");
   }
 
   createUser() {
