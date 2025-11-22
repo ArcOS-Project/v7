@@ -31,7 +31,6 @@ export class MemoryFilesystemDrive extends FilesystemDrive {
     quota: true,
     bulk: true,
     stat: false,
-    bulkytree: false,
   };
 
   constructor(kernel: any, uuid: string, letter?: string) {

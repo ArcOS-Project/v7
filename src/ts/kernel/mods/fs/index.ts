@@ -629,18 +629,4 @@ export class Filesystem extends KernelModule {
 
     return await drive.imageThumbnail(scopedPath, width, height);
   }
-
-  // TODO
-  async bulkyTree(path: string, extension: string): Promise<any> {
-    this.isKmod();
-
-    this.Log(`bulkytree '${path}'`);
-    this.validatePath(path);
-
-    const drive = this.getDriveByPath(path);
-    drive.isCapable("bulkytree");
-    const scopedPath = this.removeDriveLetter(path);
-
-    return await drive.bulkyTree(scopedPath, extension);
-  }
 }

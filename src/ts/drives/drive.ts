@@ -39,7 +39,6 @@ export class FilesystemDrive {
     quota: false,
     bulk: false,
     stat: false,
-    bulkytree: false,
   };
 
   constructor(uuid: string, letter?: string, ...args: any[]) {
@@ -186,11 +185,6 @@ export class FilesystemDrive {
   }
 
   async imageThumbnail(path: string, width: number, height?: number): Promise<string | undefined> {
-    return undefined;
-  }
-
-  // possibly redundant.
-  async bulkyTree(path: string, extension: string): Promise<RecursiveDirectoryReadReturn | undefined> {
     return undefined;
   }
 }
