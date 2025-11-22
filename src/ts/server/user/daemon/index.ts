@@ -125,7 +125,7 @@ export class UserDaemon extends Process {
 
     if (this.serviceHost) this.serviceHost._holdRestart = true;
     
-    this.env.delete("userdaemon_pid");
+    Env.delete("userdaemon_pid");
   }
 
   //#endregion

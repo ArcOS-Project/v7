@@ -28,7 +28,7 @@ async function main() {
 
     process.exit(1);
   } else {
-    console.log("No methods contain more than 8 parameters!");
+    console.log("✅ No methods contain more than 8 parameters!");
   }
 }
 

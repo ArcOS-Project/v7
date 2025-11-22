@@ -27,7 +27,7 @@
   }
 </script>
 
-{#if userInfo && userPreferences}
+{#if userInfo && $userPreferences}
   <ThemesHeader
     {userInfo}
     {userPreferences}

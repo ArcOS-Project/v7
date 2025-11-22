@@ -24,7 +24,7 @@
   });
 </script>
 
-{#if userInfo && userPreferences && Daemon}
+{#if userInfo && $userPreferences && Daemon}
   <ThemesHeader {userInfo} {userPreferences} userDaemon={Daemon!} desktop background={wallpaper?.thumb || wallpaper?.url}>
     <Setting caption="Name" sub={wallpaper?.name} />
     <Setting caption="Author" sub={wallpaper?.author} />

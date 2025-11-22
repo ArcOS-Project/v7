@@ -36,5 +36,5 @@ if (violations.length > 0) {
   );
   process.exit(1);
 } else {
-  console.log("\nNo files contain console calls.");
+  console.log("\n✅ No files contain console calls.");
 }
