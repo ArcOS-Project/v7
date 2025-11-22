@@ -13,7 +13,7 @@
 {#if data}
   <div class="top">
     <div class="left">
-      <img src={process.getIconCached(data.image || "ComponentIcon")} alt="" />
+      <img src={process.getIconCached(data.image || "ComponentIcon") || data.image} alt="" />
     </div>
     <div class="right">
       <h1>{data?.title}</h1>

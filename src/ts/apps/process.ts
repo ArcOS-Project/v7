@@ -19,6 +19,7 @@ import { Sleep } from "../sleep";
 import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
 import { ApplicationStorage } from "./storage";
+import { getIconPath } from "$ts/images";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
 export class AppProcess extends Process {
@@ -398,11 +399,11 @@ export class AppProcess extends Process {
   }
 
   async getIcon(id: string): Promise<string> {
-    return this.userDaemon?.icons?.getIcon(id)!;
+    return this.userDaemon?.icons?.getIcon(id)! || getIconPath(id);
   }
 
   getIconCached(id: string): string {
-    return this.userDaemon?.icons?.getIconCached(id)!;
+    return this.userDaemon?.icons?.getIconCached(id)! || getIconPath(id);
   }
 
   getIconStore(id: string): ReadableStore<string> {
