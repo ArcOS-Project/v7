@@ -1,12 +1,13 @@
 import type { ShellRuntime } from "$apps/components/shell/runtime";
-import { ArcOSVersion, Env, Kernel, Stack, SysDispatch } from "$ts/env";
-import { KernelStateHandler } from "$ts/getters";
+import { ArcOSVersion, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { Daemon, TryGetDaemon, type UserDaemon } from "$ts/server/user/daemon";
+import { Permissions } from "$ts/permissions";
+import type { PermissionString } from "$ts/permissions/store";
+import { Daemon, TryGetDaemon, UserDaemon } from "$ts/server/user/daemon";
 import { DefaultUserPreferences } from "$ts/server/user/default";
 import type { AppKeyCombinations } from "$types/accelerator";
-import type { ElevationData } from "$types/elevation";
+import { type ElevationData } from "$types/elevation";
 import { LogLevel } from "$types/logging";
 import type { RenderArgs } from "$types/process";
 import type { UserPreferences } from "$types/user";
@@ -18,7 +19,6 @@ import { Sleep } from "../sleep";
 import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
 import { ApplicationStorage } from "./storage";
-import { getIconPath } from "$ts/images";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
 export class AppProcess extends Process {
@@ -58,7 +58,7 @@ export class AppProcess extends Process {
     this.name = app.data.id;
     this.shell = Stack.getProcess(+Env.get("shell_pid"));
 
-    const desktopProps = KernelStateHandler()?.stateProps["desktop"];
+    const desktopProps = State?.stateProps["desktop"];
     const daemon: UserDaemon | undefined = desktopProps?.userDaemon || TryGetDaemon();
 
     if (daemon) {
@@ -272,7 +272,7 @@ export class AppProcess extends Process {
       if (document.activeElement === textarea) focusingTextArea = true;
     }
 
-    if (!focusingTextArea && bannedKeys.includes(e.key.toLowerCase()) && KernelStateHandler()?.currentState === "desktop") {
+    if (!focusingTextArea && bannedKeys.includes(e.key.toLowerCase()) && State?.currentState === "desktop") {
       e.preventDefault();
 
       return false;
@@ -280,7 +280,7 @@ export class AppProcess extends Process {
 
     this.unfocusActiveElement();
 
-    const state = KernelStateHandler()?.currentState;
+    const state = State?.currentState;
 
     if (state != "desktop" || this._disposed) return;
 
@@ -373,14 +373,117 @@ export class AppProcess extends Process {
   }
 
   async getIcon(id: string): Promise<string> {
-    return Daemon?.icons?.getIcon(id)! || getIconPath(id);
+    return Daemon?.icons?.getIcon(id)!;
   }
 
   getIconCached(id: string): string {
-    return Daemon?.icons?.getIconCached(id)! || getIconPath(id);
+    return Daemon?.icons?.getIconCached(id)!;
   }
 
   getIconStore(id: string): ReadableStore<string> {
     return Daemon?.icons?.getIconStore(id)!;
   }
+
+  async requestPermission(permission: PermissionString) {
+    return await Permissions.requestPermission(this, permission);
+  }
+
+  //#region USER CONTEXTS GETTERS
+
+  get accountContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_ACCOUNT", Daemon?.account);
+  }
+
+  get activityContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_ACTIVITY", Daemon?.activity);
+  }
+
+  get applicationsContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_APPLICATIONS", Daemon?.apps);
+  }
+
+  get appregistrationContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_APPREGISTRATION", Daemon?.appreg);
+  }
+
+  get apprendererContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_APPRENDERER", Daemon?.renderer);
+  }
+
+  get checksContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_CHECKS", Daemon?.checks);
+  }
+
+  get elevationContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_ELEVATION", Daemon?.elevation);
+  }
+
+  get filesystemContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_FILESYSTEM", Daemon?.files);
+  }
+
+  get helpersContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_HELPERS", Daemon?.helpers);
+  }
+
+  get iconsContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_ICONS", Daemon?.icons);
+  }
+
+  get initContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_INIT", Daemon?.init);
+  }
+
+  get migrationsContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_MIGRATIONS", Daemon?.migrations);
+  }
+
+  get notificationsContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_NOTIFICATIONS", Daemon?.notifications);
+  }
+
+  get powerContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_POWER", Daemon?.power);
+  }
+
+  get preferencesContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_PREFERENCES", Daemon?.preferences);
+  }
+
+  get shortcutsContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_SHORTCUTS", Daemon?.shortcuts);
+  }
+
+  get spawnContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_SPAWN", Daemon?.spawn);
+  }
+
+  get themesContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_THEMES", Daemon?.themes);
+  }
+
+  get versionContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_VERSION", Daemon?.version);
+  }
+
+  get wallpaperContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_WALLPAPER", Daemon?.wallpaper);
+  }
+
+  get workspacesContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_WORKSPACES", Daemon?.workspaces);
+  }
+
+  //#endregion USER CONTEXTS GETTERS
+  //#region KERNEL MODULE GETTERS
+
+  get env() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_KMOD_ENV", Env);
+  }
+
+  get appRenderer() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_APPRENDERER", Stack.renderer);
+  }
+
+  //#endregion
 }

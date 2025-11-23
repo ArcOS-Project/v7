@@ -1,7 +1,7 @@
 import { MessageBox } from "$ts/dialog";
 import { ServerDrive } from "$ts/drives/server";
-import { Env, Fs, Stack, SysDispatch } from "$ts/env";
-import { KernelStateHandler } from "$ts/getters";
+import { Env, Fs, Stack, State, SysDispatch } from "$ts/env";
+import { PermissionHandler } from "$ts/permissions";
 import { ServiceHost } from "$ts/services";
 import type { ShareManager } from "$ts/shares";
 import type { LibraryManagement } from "$ts/tpa/libraries";
@@ -43,7 +43,7 @@ export class InitUserContext extends UserContext {
         this.registeredAnchors.push(anchor);
 
         anchor.addEventListener("click", (e) => {
-          const currentState = KernelStateHandler()?.currentState;
+          const currentState = State?.currentState;
 
           e.preventDefault();
 
@@ -199,5 +199,13 @@ export class InitUserContext extends UserContext {
 
     Daemon!.assoc = this.serviceHost?.getService<FileAssocService>("FileAssocSvc");
     Daemon!.libraries = this.serviceHost?.getService<LibraryManagement>("LibMgmtSvc")!;
+  }
+
+  async startPermissionHandler() {
+    const proc = await Stack.spawn(PermissionHandler, undefined, "SYSTEM", this.pid);
+
+    if (!proc) return false;
+
+    return true;
   }
 }

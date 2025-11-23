@@ -44,6 +44,7 @@ export class HelpersUserContext extends UserContext {
     return {
       caption: process.caption,
       stop: async () => {
+        if (process._disposed) return;
         await Sleep(500);
         await process.closeWindow();
       },
@@ -149,36 +150,36 @@ export class HelpersUserContext extends UserContext {
       undefined,
       `[${process.app.id}] Feedback report - ${process.windowTitle()}`,
       `Thank you for submitting feedback to ArcOS! Any feedback is of great help to make ArcOS the best I can. Please be so kind and fill out the following form:
-    
-    1. Do you want to submit a new 'app', 'feature', or 'other'? Please answer one.
-       - Your answer:
-    
-    2. What do you want me to implement?
-       - Your answer:
-    
-    3. How should I go about this? Any ideas?
-       - Your answer:
-    
-    4. Did a previous version of ArcOS include this (v5 or v6)?
-       - Your answer:
-    
-    5. Convince me why I should implement this feature.
-       - Your answer:
-    
-    
-    **Do not change any of the information below this line.**
-    
-    ------
-    
-    - Username: ${this.userInfo?.username}
-    - User ID: ${this.userInfo?._id}
-    
-    ------
-    
-    
-    # DISCLAIMER
-    
-    The information provided in this report is subject for review by me or another ArcOS acquaintance. We may contact you using the ArcOS Messages app if we have any additional questions. It's also possible that the feedback you've provided will be converted into a GitHub issue for communication with other developers. By submitting this feedback, you agree to that. The issue will not contain any personal information, any personal information will be filtered out by a human being.`,
+
+1. Do you want to submit a new 'app', 'feature', or 'other'? Please answer one.
+    - Your answer:
+
+2. What do you want me to implement?
+    - Your answer:
+
+3. How should I go about this? Any ideas?
+    - Your answer:
+
+4. Did a previous version of ArcOS include this (v5 or v6)?
+    - Your answer:
+
+5. Convince me why I should implement this feature.
+    - Your answer:
+
+
+**Do not change any of the information below this line.**
+
+------
+
+- Username: ${this.userInfo?.username}
+- User ID: ${this.userInfo?._id}
+
+------
+
+
+# DISCLAIMER
+
+The information provided in this report is subject for review by me or another ArcOS acquaintance. We may contact you using the ArcOS Messages app if we have any additional questions. It's also possible that the feedback you've provided will be converted into a GitHub issue for communication with other developers. By submitting this feedback, you agree to that. The issue will not contain any personal information, any personal information will be filtered out by a human being.`,
       {
         sendAnonymously: true,
         excludeLogs: true,

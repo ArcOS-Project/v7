@@ -1,5 +1,5 @@
 import { getDeviceInfo } from "$ts/device";
-import { ArcOSVersion, Env, getKMod } from "$ts/env";
+import { ArcOSVersion, Env, getKMod, State } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -37,7 +37,7 @@ export class ArcFetchCommand extends TerminalProcess {
   getItems(term: ArcTerminal) {
     const server = getKMod<ServerManagerType>("server", true);
     const info = getDeviceInfo();
-    const state = KernelStateHandler()?.currentState;
+    const state = State?.currentState;
 
     return Object.entries({
       OS: `ArcOS ${ArcOSVersion}-${ArcMode()} (${ArcBuild()})`,

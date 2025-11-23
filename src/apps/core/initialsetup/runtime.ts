@@ -1,6 +1,5 @@
 import { MessageBox } from "$ts/dialog";
-import { Env, getKMod, Stack } from "$ts/env";
-import { KernelStateHandler } from "$ts/getters";
+import { Env, getKMod, Stack, State } from "$ts/env";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { SecurityMediumIcon } from "$ts/images/general";
 import { ArcLicense } from "$ts/metadata/license";
@@ -42,7 +41,7 @@ export class InitialSetupRuntime extends AppProcess {
       left: {
         caption: "Cancel",
         action: async () => {
-          KernelStateHandler()?.loadState("login");
+          State?.loadState("login");
         },
         disabled: () => !!this.server?.serverInfo?.freshBackend,
       },
@@ -223,7 +222,7 @@ export class InitialSetupRuntime extends AppProcess {
           {
             caption: "Decline",
             action: () => {
-              KernelStateHandler()?.loadState("licenseDeclined");
+              State?.loadState("licenseDeclined");
             },
           },
           {

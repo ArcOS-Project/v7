@@ -1,6 +1,6 @@
 import { __Console__ } from "$ts/console";
 import { MemoryFilesystemDrive } from "$ts/drives/temp";
-import { ArcOSVersion, Env, Fs, getKMod, Kernel, Stack } from "$ts/env";
+import { ArcOSVersion, Env, Fs, getKMod, Kernel, SetCurrentStateHandler, SetKernelExports, Stack } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { States } from "$ts/state/store";
@@ -35,6 +35,8 @@ export class InitProcess extends Process {
     if (!state) throw new Error("State handler failed to spawn");
 
     kernel!.state = state;
+
+    SetCurrentStateHandler(state)
 
     const MobileBlockApp = (await import("$apps/components/mobileblock/MobileBlock")).default;
     await Stack.spawn(MobileBlockApp.assets.runtime, undefined, "SYSTEM", this.pid, {

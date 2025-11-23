@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { getIconPath } from "$ts/images";
   import type { AppComponentProps } from "$types/app";
   import Button from "./MessageBox/Button.svelte";
   import type { MessageBoxRuntime } from "./runtime";
@@ -12,9 +13,11 @@
 
 {#if data}
   <div class="top">
-    <div class="left">
-      <img src={process.getIconCached(data.image || "ComponentIcon") || data.image} alt="" />
-    </div>
+    {#if data.image}
+      <div class="left">
+        <img src={process.getIconCached(data.image) || getIconPath(data.image) || data.image} alt="" />
+      </div>
+    {/if}
     <div class="right">
       <h1>{data?.title}</h1>
       {#if data.message}

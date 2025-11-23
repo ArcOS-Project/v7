@@ -1,7 +1,7 @@
 //#region IMPORTS
 import type { ShellRuntime } from "$apps/components/shell/runtime";
 import { ApplicationStorage } from "$ts/apps/storage";
-import { Env, getKMod, KernelServerUrl, Stack, SysDispatch } from "$ts/env";
+import { Env, getKMod, KernelServerUrl, Stack, State, SysDispatch } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { Process } from "$ts/process/instance";
 import type { ProtocolServiceProcess } from "$ts/proto";
@@ -116,10 +116,8 @@ export class UserDaemon extends Process {
   async stop() {
     if (this._disposed) return;
 
-    await this.stopUserContexts();
-
-    if (!this._toLoginInvoked && KernelStateHandler()?.currentState === "desktop") {
-      KernelStateHandler()?.loadState("login", { type: "restart", userDaemon: this });
+    if (!this._toLoginInvoked && State?.currentState === "desktop") {
+      State?.loadState("login", { type: "restart", userDaemon: this });
       return false;
     }
 

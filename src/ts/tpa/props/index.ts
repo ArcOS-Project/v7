@@ -74,6 +74,7 @@ export function ThirdPartyProps(engine: JsExec): ThirdPartyPropMap {
     $ENTRYPOINT: engine.filePath,
     $METADATA: engine.metaPath,
     SHELL_PID: +Env.get("shell_pid"),
+    OPERATION_ID: engine.operationId,
     load: async (path: string): Promise<any> => {},
     runApp: async (
       process: typeof ThirdPartyAppProcess,

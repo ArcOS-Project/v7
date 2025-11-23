@@ -6,6 +6,7 @@ import { ArcOSVersion, Env, Fs, SysDispatch } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
+import { Permissions } from "$ts/permissions";
 import { deepCopyWithBlobs } from "$ts/util";
 import { arrayToText, textToBlob } from "$ts/util/convert";
 import { getParentDirectory, join } from "$ts/util/fs";
@@ -101,6 +102,8 @@ export class AppRegistrationUserContext extends UserContext {
   async uninstallPackageWithStatus(id: string, deleteFiles = false) {
     this.Log(`Attempting to uninstall app '${id}'`);
     const distrib = this.serviceHost?.getService<DistributionServiceProcess>("DistribSvc");
+
+    Permissions.removeApplication(id);
 
     if (!distrib) return false;
 

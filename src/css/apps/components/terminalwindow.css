@@ -16,7 +16,7 @@
 }
 
 #TerminalWindow > div.body * {
-  font-family: "Fira Code";
+  font-family: "Fira Mono";
 }
 
 #TerminalWindow > div.body div.xterm-viewport {

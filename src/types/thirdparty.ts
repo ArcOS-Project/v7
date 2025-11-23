@@ -58,6 +58,7 @@ export interface ThirdPartyPropMap {
   $ENTRYPOINT: string;
   $METADATA: string;
   SHELL_PID?: number;
+  OPERATION_ID: string;
   load: (path: string) => Promise<any>;
   runApp: (
     process: typeof ThirdPartyAppProcess,

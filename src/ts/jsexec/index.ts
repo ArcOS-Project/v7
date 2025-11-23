@@ -17,6 +17,7 @@ import { ThirdPartyProps } from "$ts/tpa/props";
 import { authcode } from "$ts/util";
 import { arrayToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
+import { UUID } from "$ts/uuid";
 import type { App } from "$types/app";
 import type { ThirdPartyPropMap } from "$types/thirdparty";
 import * as acorn from "acorn";
@@ -31,7 +32,8 @@ export class JsExec extends Process {
   metaPath?: string;
   filePath?: string;
   workingDirectory: string;
-
+  operationId: string;
+  
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, filePath: string, ...args: any[]) {
@@ -43,6 +45,7 @@ export class JsExec extends Process {
     this.workingDirectory = getParentDirectory(filePath);
     this.name = "JsExec";
     this.setSource(__SOURCE__);
+    this.operationId = UUID();
   }
 
   async start() {

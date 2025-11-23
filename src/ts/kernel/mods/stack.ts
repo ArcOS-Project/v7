@@ -1,7 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { __Console__ } from "$ts/console";
-import { Env, Kernel, SysDispatch } from "$ts/env";
-import { KernelStateHandler } from "$ts/getters";
+import { Env, Kernel, State, SysDispatch } from "$ts/env";
 import type { App } from "$types/app";
 import type { ConstructedWaveKernel } from "$types/kernel";
 import type { ProcessContext, ProcessKillResult } from "$types/process";
@@ -65,7 +64,7 @@ export class ProcessHandler extends KernelModule {
 
     const userDaemonPid = Env.get("userdaemon_pid");
 
-    if (KernelStateHandler()?.currentState === "desktop" && userDaemonPid) {
+    if (State?.currentState === "desktop" && userDaemonPid) {
       parentPid ??= +userDaemonPid;
     }
 

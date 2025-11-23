@@ -1,5 +1,6 @@
-import { Fs } from "$ts/env";
+import { Fs, Stack, SysDispatch } from "$ts/env";
 import { Daemon } from "$ts/server/user/daemon";
+import { Sleep } from "$ts/sleep";
 import { join } from "$ts/util/fs";
 import type { AppProcessData } from "$types/app";
 import { AppProcess } from "./process";
@@ -7,16 +8,25 @@ import { AppProcess } from "./process";
 export class ThirdPartyAppProcess extends AppProcess {
   public static readonly TPA_REV = 1;
   workingDirectory: string;
+  operationId: string;
   mutationLock = false;
   urlCache: Record<string, string> = {};
   elements: Record<string, Element> = {};
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, app: AppProcessData, workingDirectory: string, ...args: any[]) {
+  constructor(
+    pid: number,
+    parentPid: number,
+    app: AppProcessData,
+    operationId: string,
+    workingDirectory: string,
+    ...args: any[]
+  ) {
     super(pid, parentPid, app);
 
     this.workingDirectory = workingDirectory;
+    this.operationId = operationId;
     this.windowIcon.set(Daemon?.icons?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
 
     this.setSource(__SOURCE__);
@@ -77,6 +87,11 @@ export class ThirdPartyAppProcess extends AppProcess {
       }
 
       this.mutationLock = false;
+      SysDispatch.dispatch("tpa-spawn-done", [this.operationId]);
+
+      await Sleep(1000); // 1s to give invocator's GLI the time it needs
+      
+      Stack.renderer?.focusPid(this.pid);
     };
 
     const observer = new MutationObserver(async (mutations) => {

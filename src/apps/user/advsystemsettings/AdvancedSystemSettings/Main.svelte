@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ApplicationStorage } from "$ts/apps/storage";
-  import { ArcOSVersion, Env, Stack } from "$ts/env";
-  import { KernelModules, KernelStateHandler } from "$ts/getters";
+  import { ArcOSVersion, Env, Stack, State } from "$ts/env";
+  import { KernelModules } from "$ts/getters";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
   import { Daemon } from "$ts/server/user/daemon";
@@ -35,8 +35,8 @@
     <h1>ArcOS System:</h1>
     <ul>
       <li title={KernelModules().join(", ")}>Kernel modules: {KernelModules().length} loaded</li>
-      <li title={Object.keys(KernelStateHandler()?.store || {}).join(", ")}>
-        States: {Object.entries(KernelStateHandler()?.store || {}).length} loaded
+      <li title={Object.keys(State?.store || {}).join(", ")}>
+        States: {Object.entries(State?.store || {}).length} loaded
       </li>
       <li>Process count: {Stack.store().size} running</li>
       <li>Installed apps: {appStore?.length} loaded</li>

@@ -10,6 +10,15 @@ export class AppRendererUserContext extends UserContext {
     super(id, daemon);
   }
 
+  async _deactivate(): Promise<void> {
+    const renderer = Stack.renderer?.target;
+
+    if (!renderer) return;
+
+    renderer.removeAttribute("style");
+    renderer.removeAttribute("class");
+  }
+
   getAppRendererStyle(accent: string) {
     return `
       --blur: ${Daemon!.preferences().shell.visuals.blurRadius}px;

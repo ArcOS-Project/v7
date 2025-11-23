@@ -1,8 +1,9 @@
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { MessageBox } from "$ts/dialog";
-import { Env, Stack } from "$ts/env";
+import { Env, Stack, SysDispatch } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { getParentDirectory, join } from "$ts/util/fs";
+import { UUID } from "$ts/uuid";
 import type { App, InstalledApp } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
 import { LogLevel } from "$types/logging";
@@ -215,9 +216,16 @@ export class SpawnUserContext extends UserContext {
         ...args
       );
 
+      const num = SysDispatch.subscribe("tpa-spawn-done", ([operationId]) => {
+        if (operationId === engine?.operationId) stop?.();
+        SysDispatch.unsubscribeId("tpa-spawn-done", num);
+      });
+
       engine?.setApp(app, metaPath);
 
-      await stop?.();
+      setTimeout(() => {
+        stop?.();
+      }, 10000);
 
       return await engine?.getContents();
     } catch (e) {

@@ -58,6 +58,7 @@ export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
             id: metadata.id,
             desktop: renderTarget ? renderTarget.id : undefined,
           },
+          engine.operationId,
           app.workingDirectory,
           ...args
         );

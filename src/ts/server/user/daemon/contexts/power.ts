@@ -1,6 +1,5 @@
 import type { AppProcess } from "$ts/apps/process";
-import { Env, Stack } from "$ts/env";
-import { KernelStateHandler } from "$ts/getters";
+import { Env, Stack, State } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { BatteryType } from "$types/navigator";
 import { Daemon, type UserDaemon } from "..";
@@ -53,7 +52,7 @@ export class PowerUserContext extends UserContext {
     if (this.serviceHost) this.serviceHost._holdRestart = true;
 
     await Stack._killSubProceses(this.pid, true);
-    await KernelStateHandler()?.loadState("login", {
+    await State?.loadState("login", {
       type,
       userDaemon: Daemon,
       ...props,

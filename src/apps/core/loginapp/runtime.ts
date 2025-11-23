@@ -2,8 +2,7 @@ import { FirstRunApp } from "$apps/components/firstrun/FirstRun";
 import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/TotpAuthGui";
 import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
-import { Env, getKMod, SoundBus, Stack, SysDispatch } from "$ts/env";
-import { KernelStateHandler } from "$ts/getters";
+import { Env, getKMod, SoundBus, Stack, State, SysDispatch } from "$ts/env";
 import { ProfilePictures } from "$ts/images/pfp";
 import { tryJsonParse } from "$ts/json";
 import { ProtocolServiceProcess } from "$ts/proto";
@@ -47,7 +46,7 @@ export class LoginAppRuntime extends AppProcess {
     const server = getKMod<ServerManagerType>("server");
 
     this.unexpectedInvocation =
-      KernelStateHandler()?.currentState !== "boot" && KernelStateHandler()?.currentState !== "initialSetup" && !props?.type;
+      State?.currentState !== "boot" && State?.currentState !== "initialSetup" && !props?.type;
     this.server = server;
     this.serverInfo.set(server.serverInfo!);
     this.safeMode = !!(props?.safeMode || Env.get("safemode"));
@@ -102,7 +101,7 @@ export class LoginAppRuntime extends AppProcess {
           throw new Error(`LoginAppRuntimeConstructor: invalid login type '${props.type}'`);
       }
     } else {
-      KernelStateHandler()?.getStateLoaders()?.main?.removeAttribute("style");
+      State?.getStateLoaders()?.main?.removeAttribute("style");
     }
 
     this.setSource(__SOURCE__);
@@ -120,7 +119,7 @@ export class LoginAppRuntime extends AppProcess {
     this.getBody().classList.add("theme-dark");
 
     if (this.serverInfo().freshBackend) {
-      KernelStateHandler()?.loadState("initialSetup");
+      State?.loadState("initialSetup");
       return false;
     }
 
@@ -247,6 +246,7 @@ export class LoginAppRuntime extends AppProcess {
 
     broadcast("Starting drive notifier watcher");
     userDaemon.init!.startDriveNotifierWatcher();
+    await userDaemon.init!.startPermissionHandler();
 
     broadcast("Starting share management");
     await userDaemon.init!.startShareManager();
@@ -264,7 +264,7 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.init!.startSystemStatusRefresh();
 
     broadcast("Let's go!");
-    await KernelStateHandler()?.loadState("desktop", { userDaemon });
+    await State?.loadState("desktop", { userDaemon });
     SoundBus.playSound("arcos.system.logon");
     userDaemon.renderer!.setAppRendererClasses(userDaemon.preferences());
     userDaemon.checks!.checkNightly();
@@ -308,17 +308,17 @@ export class LoginAppRuntime extends AppProcess {
     this.loginBackground.set((await daemon.wallpaper!.getWallpaper(daemon.preferences().account.loginBackground)).url);
 
     await Sleep(2000);
-
     await daemon.activity!.logActivity("logout");
-
+    
     this.resetCookies();
     await daemon.account!.discontinueToken();
+    await daemon.stopUserContexts();
     await daemon.killSelf();
 
     setTimeout(async () => {
       this.loadingStatus.set("");
       this.hideProfileImage.set(false);
-      KernelStateHandler()?.getStateLoaders()?.main?.removeAttribute("style");
+      State?.getStateLoaders()?.main?.removeAttribute("style");
 
       await this.loadPersistence();
     }, 600);
@@ -342,7 +342,7 @@ export class LoginAppRuntime extends AppProcess {
     await Sleep(2000);
 
     if (daemon) await daemon.killSelf();
-    KernelStateHandler()?.loadState("turnedOff");
+    State?.loadState("turnedOff");
   }
 
   async restart(daemon?: UserDaemon) {
@@ -524,7 +524,7 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   createUser() {
-    KernelStateHandler()?.loadState("initialSetup");
+    State?.loadState("initialSetup");
   }
 
   //#endregion
