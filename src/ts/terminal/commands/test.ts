@@ -17,10 +17,8 @@ export class TestCommand extends TerminalProcess {
   //#endregion
 
   protected async main(term: ArcTerminal): Promise<number> {
-    const result = await term.rl?.read("[sudo] Password for izkuipers: ", true);
+    term.rl?.println(`${this.HAS_SUDO}`);
 
-    term.Info(`${result}`);
-
-    return 0;
+    return 0
   }
 }
