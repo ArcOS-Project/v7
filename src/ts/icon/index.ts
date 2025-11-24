@@ -190,7 +190,7 @@ export class IconService extends BaseService {
     const { icon } = app.metadata;
     try {
       const maybe = this.getIconCached(icon);
-      const appStore = Daemon!!.appStorage();
+      const appStore = Daemon!.appStorage();
 
       if (icon.startsWith("http")) return icon;
       if (maybe !== icon && maybe !== this.DEFAULT_ICON) return maybe;

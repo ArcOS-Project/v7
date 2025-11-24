@@ -10,6 +10,7 @@ import { Process } from "../process/instance";
 import { StateHandler } from "../state";
 
 export class InitProcess extends Process {
+  public _criticalProcess: boolean = true;
   //#region LIFECYCLE
   constructor(pid: number, parentPid = undefined) {
     super(pid, parentPid);
@@ -36,7 +37,7 @@ export class InitProcess extends Process {
 
     kernel!.state = state;
 
-    SetCurrentStateHandler(state)
+    SetCurrentStateHandler(state);
 
     const MobileBlockApp = (await import("$apps/components/mobileblock/MobileBlock")).default;
     await Stack.spawn(MobileBlockApp.assets.runtime, undefined, "SYSTEM", this.pid, {

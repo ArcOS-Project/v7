@@ -205,7 +205,7 @@ export class SpawnUserContext extends UserContext {
 
     let stop: (() => Promise<void>) | undefined;
 
-    if (Daemon!!.autoLoadComplete) stop = (await Daemon!.helpers!.GlobalLoadIndicator(`Opening ${app.metadata.name}...`)).stop;
+    if (Daemon!.autoLoadComplete) stop = (await Daemon!.helpers!.GlobalLoadIndicator(`Opening ${app.metadata.name}...`)).stop;
 
     try {
       const engine = await Stack.spawn<JsExec>(
@@ -249,7 +249,7 @@ export class SpawnUserContext extends UserContext {
   }
 
   tpaError_noEnableThirdParty() {
-    if (Daemon!!.autoLoadComplete)
+    if (Daemon!.autoLoadComplete)
       MessageBox(
         {
           title: "Third-party apps",
