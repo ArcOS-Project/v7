@@ -28,6 +28,7 @@ import { RestartCommand } from "./commands/restart";
 import { RmCommand } from "./commands/rm";
 import { ShutdownCommand } from "./commands/shutdown";
 import { SpawnCommand } from "./commands/spawn";
+import { SudoCommand } from "./commands/sudo";
 import { TasksCommand } from "./commands/tasks";
 import { TestCommand } from "./commands/test";
 import { TreeCommand } from "./commands/tree";
@@ -63,6 +64,7 @@ export const TerminalCommandStore: (typeof TerminalProcess)[] = [
   AtConfCommand,
   ConfigCommand,
   SpawnCommand,
+  SudoCommand,
   TasksCommand,
   AdminCommand,
   DrivesCommand,

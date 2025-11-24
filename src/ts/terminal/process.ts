@@ -1,3 +1,4 @@
+import { Permissions } from "$ts/permissions";
 import { Process } from "$ts/process/instance";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from ".";
@@ -10,6 +11,10 @@ export class TerminalProcess extends Process {
   protected flags?: Arguments;
   protected argv?: string[];
   private exitCode: number = 0;
+
+  get HAS_SUDO() {
+    return Permissions.hasSudo(this);
+  }
 
   //#region LIFECYCLE
 
