@@ -12,6 +12,8 @@ export class SudoCommand extends TerminalProcess {
   public static description: string = "Execute a command with superuser privileges";
   private retryCount = 0;
 
+  //#region LIFECYCLE
+
   constructor(pid: number, parentPid: number) {
     super(pid, parentPid);
   }
@@ -41,6 +43,8 @@ export class SudoCommand extends TerminalProcess {
 
     return 1;
   }
+
+  //#endregion
 
   async execute(term: ArcTerminal, parentArgv: string[]) {
     const text = parentArgv.join(" ");
