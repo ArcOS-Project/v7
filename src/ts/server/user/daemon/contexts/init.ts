@@ -156,6 +156,7 @@ export class InitUserContext extends UserContext {
       Daemon!.renderer?.setAppRendererClasses(v);
       Daemon!.wallpaper?.updateWallpaper(v);
       Daemon!.workspaces?.syncVirtualDesktops(v);
+      Daemon!.updateGlobalDispatch();
     });
 
     Daemon!.preferencesCtx!.preferencesUnsubscribe = unsubscribe;

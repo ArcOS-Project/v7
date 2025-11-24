@@ -69,6 +69,14 @@ export class GlobalDispatch extends BaseService {
     });
   }
 
+  sendUpdate() {
+    this.emit("update", {
+      lastActive: Date.now(),
+      processCount: Stack.store().size,
+      lastApp: Stack.renderer?.lastInteract?.app?.data,
+    });
+  }
+
   subscribe<T extends Array<any> = any[]>(event: string, callback: (...data: T) => void) {
     this.Log(`Subscribing to event ${event}`);
     this.client?.on(event, (...data: T) => callback(...data));

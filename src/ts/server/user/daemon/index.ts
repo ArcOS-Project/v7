@@ -194,6 +194,10 @@ export class UserDaemon extends Process {
   }
 
   //#endregion INIT
+
+  updateGlobalDispatch() {
+    this.serviceHost?.getService<GlobalDispatch>?.("GlobalDispatch")?.sendUpdate();
+  }
 }
 
 export function TryGetDaemon(): UserDaemon | undefined {

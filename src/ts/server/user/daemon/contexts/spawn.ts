@@ -3,7 +3,6 @@ import { MessageBox } from "$ts/dialog";
 import { Env, Stack, SysDispatch } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { getParentDirectory, join } from "$ts/util/fs";
-import { UUID } from "$ts/uuid";
 import type { App, InstalledApp } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
 import { LogLevel } from "$types/logging";
@@ -88,6 +87,8 @@ export class SpawnUserContext extends UserContext {
     }
 
     await Stack.waitForAvailable();
+
+    Daemon!.updateGlobalDispatch();
 
     return await Stack.spawn<T>(
       app.assets.runtime,
@@ -223,9 +224,7 @@ export class SpawnUserContext extends UserContext {
 
       engine?.setApp(app, metaPath);
 
-      setTimeout(() => {
-        stop?.();
-      }, 10000);
+      await stop?.();
 
       return await engine?.getContents();
     } catch (e) {
