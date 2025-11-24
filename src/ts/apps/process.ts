@@ -41,6 +41,14 @@ export class AppProcess extends Process {
   public windowFullscreen = Store<boolean>(false);
   draggable: Draggable | undefined;
 
+  get HAS_SUDO() {
+    try {
+      return Permissions.hasSudo(this);
+    } catch {
+      return false;
+    }
+  }
+
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, app: AppProcessData, ...args: any[]) {

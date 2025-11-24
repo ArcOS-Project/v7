@@ -15,3 +15,5 @@ export type PermissionStorage = {
   denied: Record<string, string[]>;
   registration: Record<string, string>;
 }
+
+export type SudoPermissions = Record<string, number>; // R<id,exp>

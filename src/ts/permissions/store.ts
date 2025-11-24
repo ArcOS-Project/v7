@@ -29,7 +29,7 @@ export const PERMISSIONS = [
   "PERMISSION_FS_READ_CONFIG",
   "PERMISSION_FS_WRITE_CONFIG",
   "PERMISSION_KMOD_ENV",
-  "PERMISSION_APPRENDERER"
+  "PERMISSION_APPRENDERER",
 ] as const;
 export type PermissionString = (typeof PERMISSIONS)[number];
 
@@ -41,6 +41,10 @@ export const PERMISSION_ERRORS = [
   "PERMERR_INVALID_PERMSTR",
   "PERMERR_NATURE_UNKNOWN",
   "PERMERR_ALREADY_DENIED",
+  "PERMERR_SUDO_NOT_GRANTED",
+  "PERMERR_SUDO_ALREADY_GRANTED",
+  "PERMERR_SUDO_INVALID",
+  "PERMERR_SUDO_EXPIRED",
   "PERMERR_OK",
 ] as const;
 export type PermissionError = (typeof PERMISSION_ERRORS)[number];
@@ -53,6 +57,10 @@ export const PermissionErrorCaptions: Record<PermissionError, string> = {
   PERMERR_INVALID_PERMSTR: "Permission %p is invalid",
   PERMERR_NATURE_UNKNOWN: "The nature of the process could not be determined",
   PERMERR_ALREADY_DENIED: "Permission %p is already explicitly denied on %c",
+  PERMERR_SUDO_ALREADY_GRANTED: "%c already has sudo",
+  PERMERR_SUDO_EXPIRED: "Sudo on %c has expired",
+  PERMERR_SUDO_INVALID: "Sudo on %c is invalid",
+  PERMERR_SUDO_NOT_GRANTED: "Client %c has not been granted sudo",
   PERMERR_OK: "Operation completed successfully",
 };
 
