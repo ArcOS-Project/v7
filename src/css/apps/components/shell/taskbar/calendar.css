@@ -51,13 +51,19 @@
 
 #arcShell div.taskbar div.calendar-popup div.top h1.date {
   font-size: 28px;
+  white-space: nowrap;
+  overflow:hidden;
+  text-overflow: ellipsis;
 }
 
 #arcShell div.taskbar div.calendar-popup div.top h1.time {
-  font-size: 48px;
+  font-size: 36px;
   line-height: 60px;
   font-family: "fredoka";
   font-weight: 500;
+  white-space: nowrap;
+  overflow:hidden;
+  text-overflow: ellipsis;
 }
 
 #arcShell div.taskbar div.calendar-popup div.top p.week {

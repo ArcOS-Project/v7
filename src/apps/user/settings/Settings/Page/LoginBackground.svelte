@@ -14,24 +14,22 @@
   const { userInfo, preferences: userPreferences } = Daemon || {}!;
 
   let wallpaper = $state<Wallpaper>();
+  let render = $state<boolean>(false);
 
   onMount(() => {
     const sub = userPreferences?.subscribe(async (v) => {
       wallpaper = await Daemon!.wallpaper!.getWallpaper(v.account.loginBackground);
     });
 
+    // The below timeout is to wait for the page transition, prevents lag
+    setTimeout(() => (render = true), $userPreferences.shell.visuals.noAnimations ? 0 : 400);
+
     return () => sub?.();
   });
 </script>
 
 {#if userInfo && $userPreferences && Daemon}
-  <ThemesHeader
-    {userInfo}
-    {userPreferences}
-    userDaemon={Daemon!}
-    login
-    background={wallpaper?.thumb || wallpaper?.url}
-  >
+  <ThemesHeader {userInfo} {userPreferences} userDaemon={Daemon!} login background={wallpaper?.thumb || wallpaper?.url}>
     <Setting caption="Name" sub={wallpaper?.name} />
     <Setting caption="Author" sub={wallpaper?.author} />
 
@@ -64,39 +62,41 @@
     </div>
   </ThemesHeader>
 
-  {#if !process.safeMode}
-    <div class="wallpaper-section">
-      <p class="name">Built-in login backgrounds</p>
-      <div class="wallpapers">
-        {#each Object.keys(Wallpapers) as id}
-          <WallpaperOption {id} {userPreferences} isLogin />
-        {/each}
-      </div>
-    </div>
-
-    <div class="wallpaper-section">
-      <p class="name">Your saved wallpapers</p>
-      <div
-        class="wallpapers"
-        class:empty={!$userPreferences?.userWallpapers || !Object.values($userPreferences?.userWallpapers).length}
-      >
-        {#if $userPreferences?.userWallpapers && Object.values($userPreferences.userWallpapers).length}
-          {#each Object.keys($userPreferences.userWallpapers) as id}
+  {#if render}
+    {#if !process.safeMode}
+      <div class="wallpaper-section">
+        <p class="name">Built-in login backgrounds</p>
+        <div class="wallpapers">
+          {#each Object.keys(Wallpapers) as id}
             <WallpaperOption {id} {userPreferences} isLogin />
           {/each}
-        {:else}
-          <p class="none">You have no saved wallpapers!</p>
+        </div>
+      </div>
+
+      <div class="wallpaper-section">
+        <p class="name">Your saved wallpapers</p>
+        <div
+          class="wallpapers"
+          class:empty={!$userPreferences?.userWallpapers || !Object.values($userPreferences?.userWallpapers).length}
+        >
+          {#if $userPreferences?.userWallpapers && Object.values($userPreferences.userWallpapers).length}
+            {#each Object.keys($userPreferences.userWallpapers) as id}
+              <WallpaperOption {id} {userPreferences} isLogin />
+            {/each}
+          {:else}
+            <p class="none">You have no saved wallpapers!</p>
+          {/if}
+        </div>
+      </div>
+    {:else}
+      <div class="centered-layout">
+        {#if process.safeMode}
+          <Section>
+            <Option caption="Safe Mode - login background is disabled" image={process.getIconCached("WarningIcon")}></Option>
+          </Section>
         {/if}
       </div>
-    </div>
-  {:else}
-    <div class="centered-layout">
-      {#if process.safeMode}
-        <Section>
-          <Option caption="Safe Mode - login background is disabled" image={process.getIconCached("WarningIcon")}></Option>
-        </Section>
-      {/if}
-    </div>
+    {/if}
   {/if}
 {:else}
   <p class="error-text">ERR_NO_DAEMON</p>
