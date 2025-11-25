@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Daemon } from "$ts/server/user/daemon";
   import { TimeFrames } from "$ts/server/user/store";
   import { groupByTimeFrame } from "$ts/util";
   import type { LoginActivity } from "$types/activity";
@@ -8,7 +9,6 @@
   import Activity from "./LoginActivity/Activity.svelte";
 
   const { process }: { process: SettingsRuntime } = $props();
-  const { userDaemon } = process;
 
   let groups: Record<string, LoginActivity[]> = $state({});
 
@@ -17,7 +17,7 @@
   });
 
   async function getActivity() {
-    groups = groupByTimeFrame<LoginActivity>(((await userDaemon?.activity?.getLoginActivity()) || []).reverse(), "createdAt");
+    groups = groupByTimeFrame<LoginActivity>(((await Daemon?.activity?.getLoginActivity()) || []).reverse(), "createdAt");
   }
 </script>
 

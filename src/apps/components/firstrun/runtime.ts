@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import type { UserDaemon } from "$ts/server/user/daemon";
+import { Daemon, type UserDaemon } from "$ts/server/user/daemon";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import { ChooseProfilePictureApp } from "./ChooseProfilePicture/metadata";
@@ -19,8 +19,6 @@ export class FirstRunRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData, daemon: UserDaemon) {
     super(pid, parentPid, app);
 
-    if (daemon) this.userDaemon = daemon;
-
     this.setSource(__SOURCE__);
   }
 
@@ -31,16 +29,17 @@ export class FirstRunRuntime extends AppProcess {
   async onClose() {
     if (this.done()) return true;
 
-    const { stop, caption } = await this.userDaemon!.helpers!.GlobalLoadIndicator("Finishing up...", this.parentPid);
+    const { stop, caption } = await Daemon!.helpers!.GlobalLoadIndicator("Finishing up...", this.parentPid);
 
     for (const path in FirstRunShortcuts) {
       const payload = FirstRunShortcuts[path];
       caption.set(`Creating shortcut for ${payload.name}`);
 
-      await this.userDaemon?.shortcuts?.createShortcut(payload, path);
+      await Daemon?.shortcuts?.createShortcut(payload, path);
     }
 
-    await this.userDaemon?.version?.updateRegisteredVersion();
+    await Daemon?.appreg?.updateStartMenuFolder();
+    await Daemon?.version?.updateRegisteredVersion();
     await stop();
 
     this.done.set(true);

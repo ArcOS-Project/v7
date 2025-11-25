@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import { isPopulatable } from "$ts/apps/util";
+  import { Daemon } from "$ts/server/user/daemon";
   import type { AppStorage } from "$types/app";
   import ListItem from "../ListItem.svelte";
 
@@ -21,7 +22,7 @@
       <div class="items">
         {#each apps as app (`${app.id}-${app.metadata.name}`)}
           {#if app.metadata.appGroup === id}
-            {#if (isPopulatable(app) || $userPreferences.shell.visuals.showHiddenApps) && !process.userDaemon?.apps?.checkDisabled(app.id)}
+            {#if (isPopulatable(app) || $userPreferences.shell.visuals.showHiddenApps) && !Daemon?.apps?.checkDisabled(app.id)}
               <ListItem {app} {process} />
             {/if}
           {/if}

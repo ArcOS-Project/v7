@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import { contextProps } from "$ts/context/actions.svelte";
+  import { Fs } from "$ts/env";
+  import { Daemon } from "$ts/server/user/daemon";
   import { UserPaths } from "$ts/server/user/store";
   import { arrayToBlob } from "$ts/util/convert";
   import type { UserPreferencesStore } from "$types/user";
@@ -32,7 +34,7 @@
         errored = false;
         loading = true;
 
-        const contents = await process.fs.readFile(v.shell.actionCenter.galleryImage);
+        const contents = await Fs.readFile(v.shell.actionCenter.galleryImage);
 
         loading = false;
 
@@ -55,7 +57,7 @@
   });
 
   async function chooseImage() {
-    const [path] = await process.userDaemon!.files!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Choose an image for the gallery",
       icon: "DesktopIcon",
       startDir: UserPaths.Pictures,

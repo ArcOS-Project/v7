@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { KernelStack } from "$ts/env";
+import { Stack } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { sliceIntoChunks } from "$ts/util";
 import { Store, type ReadableStore } from "$ts/writable";
@@ -26,7 +26,7 @@ export class EditRowRuntime extends AppProcess {
   }
 
   async render() {
-    const parent = KernelStack().getProcess(this.parentPid)!;
+    const parent = Stack.getProcess(this.parentPid)!;
 
     if (!(parent instanceof HexEditRuntime)) throw new Error("EditRowRuntime: invalid invocation");
 

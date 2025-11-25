@@ -1,5 +1,6 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
+  import { Daemon } from "$ts/server/user/daemon";
   import type { OverlayRuntime } from "../../overlay";
 
   const { process }: { process: OverlayRuntime } = $props();
@@ -7,7 +8,7 @@
   let newUsername = $state("");
 
   async function changeIt() {
-    const result = await process.userDaemon?.account?.changeUsername(newUsername);
+    const result = await Daemon?.account?.changeUsername(newUsername);
 
     process.closeWindow();
 

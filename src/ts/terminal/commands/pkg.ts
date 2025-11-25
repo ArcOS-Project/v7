@@ -1,4 +1,5 @@
 import { DistributionServiceProcess } from "$ts/distrib";
+import { Fs } from "$ts/env";
 import { UserPaths } from "$ts/server/user/store";
 import { Plural } from "$ts/util";
 import { formatBytes, join } from "$ts/util/fs";
@@ -379,7 +380,7 @@ export class PkgCommand extends TerminalProcess {
     this.term?.rl?.println(`${CURUP}${CLRROW}Deleting configuration...`);
 
     try {
-      await this.fs.deleteItem(join(UserPaths.Configuration, name));
+      await Fs.deleteItem(join(UserPaths.Configuration, name));
     } catch {}
 
     this.term?.rl?.println(`${CURUP}${CLRROW}Uninstalling app...`);

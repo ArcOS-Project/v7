@@ -1,5 +1,7 @@
+import { Fs } from "$ts/env";
 import { toForm } from "$ts/form";
 import { Backend } from "$ts/server/axios";
+import { Daemon } from "$ts/server/user/daemon";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import type { FilesystemProgressCallback } from "$types/fs";
@@ -15,7 +17,7 @@ export class ShareManager extends BaseService {
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(pid, parentPid, name, host);
 
-    this.token = host.daemon.token;
+    this.token = Daemon!.token;
 
     this.setSource(__SOURCE__);
   }
@@ -126,9 +128,9 @@ export class ShareManager extends BaseService {
   }
 
   async unmountIfMounted(shareId: string) {
-    if (!this.fs.drives[shareId]) return;
+    if (!Fs.drives[shareId]) return;
 
-    await this.fs.umountDrive(shareId, true);
+    await Fs.umountDrive(shareId, true);
   }
 
   async kickUserFromShare(shareId: string, userId: string): Promise<boolean> {
@@ -149,7 +151,7 @@ export class ShareManager extends BaseService {
     if (!info) return false;
 
     try {
-      return await this.fs.mountDrive(info._id, SharedDrive, letter, onProgress, info, this.token);
+      return await Fs.mountDrive(info._id, SharedDrive, letter, onProgress, info, this.token);
     } catch {}
   }
 
@@ -159,7 +161,7 @@ export class ShareManager extends BaseService {
     if (!info) return false;
 
     try {
-      return await this.fs.mountDrive(shareId, SharedDrive, letter, onProgress, info, this.token);
+      return await Fs.mountDrive(shareId, SharedDrive, letter, onProgress, info, this.token);
     } catch {
       return false;
     }

@@ -1,13 +1,13 @@
 import type { ShellRuntime } from "$apps/components/shell/runtime";
-import { ArcOSVersion, getKMod, Kernel, KernelStack } from "$ts/env";
-import { KernelStateHandler } from "$ts/getters";
+import { ArcOSVersion, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import type { UserDaemon } from "$ts/server/user/daemon";
+import { Permissions } from "$ts/permissions";
+import type { PermissionString } from "$ts/permissions/store";
+import { Daemon, TryGetDaemon, UserDaemon } from "$ts/server/user/daemon";
 import { DefaultUserPreferences } from "$ts/server/user/default";
 import type { AppKeyCombinations } from "$types/accelerator";
-import type { ElevationData } from "$types/elevation";
-import type { SystemDispatchType } from "$types/kernel";
+import { type ElevationData } from "$types/elevation";
 import { LogLevel } from "$types/logging";
 import type { RenderArgs } from "$types/process";
 import type { UserPreferences } from "$types/user";
@@ -19,7 +19,6 @@ import { Sleep } from "../sleep";
 import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
 import { ApplicationStorage } from "./storage";
-import { getIconPath } from "$ts/images";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
 export class AppProcess extends Process {
@@ -30,8 +29,6 @@ export class AppProcess extends Process {
   componentMount: Record<string, any> = {};
   userPreferences: ReadableStore<UserPreferences> = Store<UserPreferences>(DefaultUserPreferences);
   username: string = "";
-  systemDispatch: SystemDispatchType;
-  userDaemon: UserDaemon | undefined;
   shell: ShellRuntime | undefined;
   overridePopulatable: boolean = false;
   public safeMode = false;
@@ -44,6 +41,14 @@ export class AppProcess extends Process {
   public windowFullscreen = Store<boolean>(false);
   draggable: Draggable | undefined;
 
+  get HAS_SUDO() {
+    try {
+      return Permissions.hasSudo(this);
+    } catch {
+      return false;
+    }
+  }
+
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, app: AppProcessData, ...args: any[]) {
@@ -55,31 +60,29 @@ export class AppProcess extends Process {
       desktop: app.desktop,
     };
 
-    KernelStack().renderer!.lastInteract = this;
+    Stack.renderer!.lastInteract = this;
 
     this.windowTitle.set(app.data.metadata.name || "Application");
     this.name = app.data.id;
-    this.systemDispatch = getKMod<SystemDispatchType>("dispatch");
-    this.shell = KernelStack().getProcess(+this.env.get("shell_pid"));
+    this.shell = Stack.getProcess(+Env.get("shell_pid"));
 
-    const desktopProps = KernelStateHandler()?.stateProps["desktop"];
-    const daemon: UserDaemon | undefined = desktopProps?.userDaemon || KernelStack().getProcess(+this.env.get("userdaemon_pid"));
+    const desktopProps = State?.stateProps["desktop"];
+    const daemon: UserDaemon | undefined = desktopProps?.userDaemon || TryGetDaemon();
 
     if (daemon) {
       this.userPreferences = daemon.preferences;
       this.username = daemon.username;
-      this.userDaemon = daemon;
       this.safeMode = daemon.safeMode;
     }
 
-    this.windowIcon.set(this.userDaemon?.icons?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
+    this.windowIcon.set(Daemon?.icons?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
     this.startAcceleratorListener();
 
-    this.systemDispatch.subscribe("window-unfullscreen", ([pid]) => {
+    SysDispatch.subscribe("window-unfullscreen", ([pid]) => {
       if (this.pid === pid) this.windowFullscreen.set(false);
     });
 
-    this.systemDispatch.subscribe("window-fullscreen", ([pid]) => {
+    SysDispatch.subscribe("window-fullscreen", ([pid]) => {
       if (this.pid === pid) this.windowFullscreen.set(true);
     });
 
@@ -92,27 +95,6 @@ export class AppProcess extends Process {
         return v;
       });
     }
-
-    // Global interceptor for the Recycle Bin
-    const userDaemon = this.userDaemon;
-
-    this.fs = new Proxy(this.fs, {
-      get: (target, prop, receiver) => {
-        if (prop === "deleteItem" && typeof target[prop] === "function") {
-          return async (path: string, dispatch?: boolean) => {
-            if (!path.startsWith("U:/")) {
-              return await target[prop].call(this.fs, path, dispatch);
-            }
-
-            const trash = userDaemon?.serviceHost?.getService("TrashSvc") as any;
-            if (!trash) return await target[prop].call(this.fs, path, dispatch);
-
-            return await trash.moveToTrash(path, dispatch);
-          };
-        }
-        return Reflect.get(target, prop, receiver);
-      },
-    });
   }
 
   // Conditional function that can prohibit closing if it returns false
@@ -123,7 +105,7 @@ export class AppProcess extends Process {
   async closeWindow(kill = true) {
     this.Log(`Closing window ${this.pid}`);
 
-    this.handler.renderer?.focusedPid.set(this.pid);
+    Stack.renderer?.focusedPid.set(this.pid);
 
     const canClose = this._disposed || (this.onClose ? await this.onClose() : true);
 
@@ -135,7 +117,7 @@ export class AppProcess extends Process {
     this.shell?.trayHost?.disposeProcessTrayIcons?.(this.pid);
 
     if (this.getWindow()?.classList.contains("fullscreen"))
-      this.systemDispatch.dispatch("window-unfullscreen", [this.pid, this.app.desktop]);
+      SysDispatch.dispatch("window-unfullscreen", [this.pid, this.app.desktop]);
 
     const elements = [
       ...document.querySelectorAll(`div.window[data-pid="${this.pid}"]`),
@@ -149,7 +131,7 @@ export class AppProcess extends Process {
       return this.killSelf();
     }
 
-    this.systemDispatch.dispatch("window-closing", [this.pid]);
+    SysDispatch.dispatch("window-closing", [this.pid]);
 
     for (const element of elements) {
       element.classList.add("closing");
@@ -170,14 +152,14 @@ export class AppProcess extends Process {
   async __render__(body: HTMLDivElement) {
     if (this.userPreferences().disabledApps.includes(this.app.id)) {
       if (this.safeMode) {
-        this.userDaemon?.notifications?.sendNotification({
+        Daemon?.notifications?.sendNotification({
           title: "Running disabled app!",
           message: `Allowing execution of disabled app '${this.app.data.metadata.name}' because of Safe Mode.`,
           buttons: [
             {
               caption: "Manage apps",
               action: () => {
-                this.userDaemon?.spawn?.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps", "apps_manageApps");
+                Daemon?.spawn?.spawnApp("systemSettings", +Env.get("shell_pid"), "apps", "apps_manageApps");
               },
             },
           ],
@@ -200,7 +182,7 @@ export class AppProcess extends Process {
         props: {
           process: this,
           pid: this.pid,
-          kernel: Kernel(),
+          kernel: Kernel,
           app: this.app.data,
           windowTitle: this.windowTitle,
           windowIcon: this.windowIcon,
@@ -227,7 +209,7 @@ export class AppProcess extends Process {
   }
 
   getSingleton() {
-    const { renderer } = KernelStack();
+    const { renderer } = Stack;
 
     return renderer?.getAppInstances(this.app.data.id, this.pid) || [];
   }
@@ -240,9 +222,9 @@ export class AppProcess extends Process {
     if (instances.length) {
       await this.killSelf();
 
-      if (!this.app.data.core) KernelStack().renderer?.focusPid(instances[0].pid);
+      if (!this.app.data.core) Stack.renderer?.focusPid(instances[0].pid);
 
-      if (instances[0].app.desktop) this.userDaemon?.workspaces?.switchToDesktopByUuid(instances[0].app.desktop);
+      if (instances[0].app.desktop) Daemon?.workspaces?.switchToDesktopByUuid(instances[0].app.desktop);
     }
 
     return instances.length ? instances[0] : undefined;
@@ -298,7 +280,7 @@ export class AppProcess extends Process {
       if (document.activeElement === textarea) focusingTextArea = true;
     }
 
-    if (!focusingTextArea && bannedKeys.includes(e.key.toLowerCase()) && KernelStateHandler()?.currentState === "desktop") {
+    if (!focusingTextArea && bannedKeys.includes(e.key.toLowerCase()) && State?.currentState === "desktop") {
       e.preventDefault();
 
       return false;
@@ -306,7 +288,7 @@ export class AppProcess extends Process {
 
     this.unfocusActiveElement();
 
-    const state = KernelStateHandler()?.currentState;
+    const state = State?.currentState;
 
     if (state != "desktop" || this._disposed) return;
 
@@ -321,11 +303,11 @@ export class AppProcess extends Process {
       const key = combo.key?.trim().toLowerCase();
       const codedKey = String.fromCharCode(e.keyCode).toLowerCase();
       /** */
-      const isFocused = KernelStack().renderer?.focusedPid() == this.pid || combo.global;
+      const isFocused = Stack.renderer?.focusedPid() == this.pid || combo.global;
 
       if (!modifiers || (key != pK && key && key != codedKey) || !isFocused) continue;
 
-      if (!this.userDaemon?.elevation!._elevating) await combo.action(this, e);
+      if (!Daemon?.elevation!._elevating) await combo.action(this, e);
 
       break;
     }
@@ -348,10 +330,10 @@ export class AppProcess extends Process {
       return false;
     }
 
-    const proc = await KernelStack().spawn<AppProcess>(
+    const proc = await Stack.spawn<AppProcess>(
       metadata.assets.runtime,
       undefined,
-      this.userDaemon?.userInfo?._id,
+      Daemon?.userInfo?._id,
       this.pid,
       {
         data: { ...metadata, overlay: true },
@@ -360,28 +342,28 @@ export class AppProcess extends Process {
       ...args
     );
 
-    if (proc) KernelStack().renderer?.focusPid(proc?.pid);
+    if (proc) Stack.renderer?.focusPid(proc?.pid);
 
     return !!proc;
   }
 
   async spawnApp<T = AppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
-    return await this.userDaemon?.spawn?.spawnApp<T>(id, parentPid ?? this.parentPid, ...args);
+    return await Daemon?.spawn?.spawnApp<T>(id, parentPid ?? this.parentPid, ...args);
   }
 
   async spawnOverlayApp<T = AppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
-    return await this.userDaemon?.spawn?.spawnOverlay<T>(id, parentPid ?? this.parentPid, ...args);
+    return await Daemon?.spawn?.spawnOverlay<T>(id, parentPid ?? this.parentPid, ...args);
   }
 
   async elevate(id: string) {
     if (!this.elevations[id]) return false;
-    return await this.userDaemon!.elevation!.manuallyElevate(this.elevations[id]);
+    return await Daemon!.elevation!.manuallyElevate(this.elevations[id]);
   }
 
   notImplemented(what?: string) {
     this.Log(`Not implemented: ${what || "<unknown>"}`);
     // Manually invoking spawnOverlay method on daemon to work around AppProcess <> MessageBox circular import
-    this.userDaemon?.spawn?.spawnOverlay("messageBox", this.pid, {
+    Daemon?.spawn?.spawnOverlay("messageBox", this.pid, {
       title: "Not implemented",
       message: `${
         what || "This feature"
@@ -395,18 +377,121 @@ export class AppProcess extends Process {
   }
 
   appStore() {
-    return this.userDaemon?.serviceHost?.getService("AppStorage") as ApplicationStorage;
+    return Daemon?.serviceHost?.getService("AppStorage") as ApplicationStorage;
   }
 
   async getIcon(id: string): Promise<string> {
-    return this.userDaemon?.icons?.getIcon(id)! || getIconPath(id);
+    return Daemon?.icons?.getIcon(id)!;
   }
 
   getIconCached(id: string): string {
-    return this.userDaemon?.icons?.getIconCached(id)! || getIconPath(id);
+    return Daemon?.icons?.getIconCached(id)!;
   }
 
   getIconStore(id: string): ReadableStore<string> {
-    return this.userDaemon?.icons?.getIconStore(id)!;
+    return Daemon?.icons?.getIconStore(id)!;
   }
+
+  async requestPermission(permission: PermissionString) {
+    return await Permissions.requestPermission(this, permission);
+  }
+
+  //#region USER CONTEXTS GETTERS
+
+  get accountContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_ACCOUNT", Daemon?.account);
+  }
+
+  get activityContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_ACTIVITY", Daemon?.activity);
+  }
+
+  get applicationsContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_APPLICATIONS", Daemon?.apps);
+  }
+
+  get appregistrationContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_APPREGISTRATION", Daemon?.appreg);
+  }
+
+  get apprendererContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_APPRENDERER", Daemon?.renderer);
+  }
+
+  get checksContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_CHECKS", Daemon?.checks);
+  }
+
+  get elevationContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_ELEVATION", Daemon?.elevation);
+  }
+
+  get filesystemContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_FILESYSTEM", Daemon?.files);
+  }
+
+  get helpersContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_HELPERS", Daemon?.helpers);
+  }
+
+  get iconsContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_ICONS", Daemon?.icons);
+  }
+
+  get initContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_INIT", Daemon?.init);
+  }
+
+  get migrationsContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_MIGRATIONS", Daemon?.migrations);
+  }
+
+  get notificationsContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_NOTIFICATIONS", Daemon?.notifications);
+  }
+
+  get powerContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_POWER", Daemon?.power);
+  }
+
+  get preferencesContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_PREFERENCES", Daemon?.preferences);
+  }
+
+  get shortcutsContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_SHORTCUTS", Daemon?.shortcuts);
+  }
+
+  get spawnContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_SPAWN", Daemon?.spawn);
+  }
+
+  get themesContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_THEMES", Daemon?.themes);
+  }
+
+  get versionContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_VERSION", Daemon?.version);
+  }
+
+  get wallpaperContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_WALLPAPER", Daemon?.wallpaper);
+  }
+
+  get workspacesContext() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_WORKSPACES", Daemon?.workspaces);
+  }
+
+  //#endregion USER CONTEXTS GETTERS
+  //#region KERNEL MODULE GETTERS
+
+  get env() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_KMOD_ENV", Env);
+  }
+
+  get appRenderer() {
+    return Permissions?.hasPermissionExplicit(this, "PERMISSION_APPRENDERER", Stack.renderer);
+  }
+
+  //#endregion
 }

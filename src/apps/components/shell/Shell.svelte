@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Daemon } from "$ts/server/user/daemon";
   import type { AppComponentProps } from "$types/app";
   import { onMount } from "svelte";
   import type { ShellRuntime } from "./runtime";
@@ -16,7 +17,7 @@
 
   onMount(() => {
     userPreferences.subscribe(() => {
-      const desktop = process.userDaemon?.workspaces?.getCurrentDesktop()?.id;
+      const desktop = Daemon?.workspaces?.getCurrentDesktop()?.id;
 
       if (!desktop) return;
 

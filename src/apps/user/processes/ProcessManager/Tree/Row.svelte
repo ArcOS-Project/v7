@@ -1,8 +1,9 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
   import { contextMenu } from "$ts/context/actions.svelte";
-  import { KernelStack } from "$ts/env";
+  import { Stack, SysDispatch } from "$ts/env";
   import type { Process } from "$ts/process/instance";
+  import { Daemon } from "$ts/server/user/daemon";
   import { BaseService } from "$ts/services/base";
   import type { ProcessContext } from "$types/process";
   import { onMount } from "svelte";
@@ -17,7 +18,7 @@
   }: { pid: number; proc: Process; process: ProcessManagerRuntime; orphan?: boolean } = $props();
 
   const { selected } = process;
-  const { focusedPid } = KernelStack().renderer!;
+  const { focusedPid } = Stack.renderer!;
 
   let name = $state<string>();
   let icon = $state<string>();
@@ -27,23 +28,23 @@
   let context = $state<ProcessContext>();
 
   onMount(() => {
-    KernelStack().store.subscribe(async () => {
-      children = await KernelStack().getSubProcesses(proc.pid);
+    Stack.store.subscribe(async () => {
+      children = await Stack.getSubProcesses(proc.pid);
     });
 
-    context = KernelStack().getProcessContext(pid);
+    context = Stack.getProcessContext(pid);
 
     if (proc instanceof AppProcess) {
       const { app } = proc;
 
       name = app.data.metadata.name;
-      icon = process.userDaemon?.icons?.getAppIconByProcess(proc);
+      icon = Daemon?.icons?.getAppIconByProcess(proc);
       appId = app.id;
 
-      const dispatcher = process.systemDispatch.subscribe("window-closing", ([pid]) => {
+      const dispatcher = SysDispatch.subscribe("window-closing", ([pid]) => {
         if (pid === proc.pid) {
           closing = true;
-          process.systemDispatch.unsubscribeId("window-closing", dispatcher);
+          SysDispatch.unsubscribeId("window-closing", dispatcher);
         }
       });
 
@@ -85,7 +86,7 @@
         {
           caption: "Focus",
           disabled: () => !(proc instanceof AppProcess),
-          action: () => process.handler.renderer?.focusPid(proc.pid),
+          action: () => Stack.renderer?.focusPid(proc.pid),
           icon: "flag",
         },
         { sep: true },

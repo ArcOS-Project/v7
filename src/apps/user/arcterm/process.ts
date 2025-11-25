@@ -1,5 +1,5 @@
 import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
-import { KernelStack } from "$ts/env";
+import { Env, Stack } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import { UserDaemon } from "$ts/server/user/daemon";
 import { ArcTerminal } from "$ts/terminal";
@@ -24,8 +24,8 @@ export class ArcTermRuntime extends Process {
   }
 
   protected async start(): Promise<any> {
-    const daemonPid = +this.env.get("userdaemon_pid");
-    const daemon = KernelStack().getProcess<UserDaemon>(daemonPid);
+    const daemonPid = +Env.get("userdaemon_pid");
+    const daemon = Stack.getProcess<UserDaemon>(daemonPid);
 
     if (!daemon) return false;
 
@@ -37,7 +37,7 @@ export class ArcTermRuntime extends Process {
     proc.windowTitle.set("ArcTerm");
     proc.windowIcon.set(this.app.data.metadata.icon);
 
-    this.term = await KernelStack().spawn<ArcTerminal>(
+    this.term = await Stack.spawn<ArcTerminal>(
       ArcTerminal,
       daemon.workspaces?.getCurrentDesktop(),
       daemon.userInfo?._id,

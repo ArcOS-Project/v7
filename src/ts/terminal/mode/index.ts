@@ -1,4 +1,4 @@
-import { ArcOSVersion, KernelStack } from "$ts/env";
+import { ArcOSVersion, Env, Stack, SysDispatch } from "$ts/env";
 import { toForm } from "$ts/form";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -88,7 +88,7 @@ export class TerminalMode extends Process {
 
     new ResizeObserver(() => fitAddon.fit()).observe(this.target);
 
-    const rl = await KernelStack().spawn<Readline>(Readline, undefined, this.userDaemon?.userInfo?._id, this.pid, this);
+    const rl = await Stack.spawn<Readline>(Readline, undefined, this.userDaemon?.userInfo?._id, this.pid, this);
     this.term.loadAddon(rl!);
     this.rl = rl;
   }
@@ -104,7 +104,7 @@ export class TerminalMode extends Process {
 
   async startDaemon(token: string, username: string): Promise<boolean> {
     try {
-      const userDaemon = await KernelStack().spawn<UserDaemon>(UserDaemon, undefined, "SYSTEM", 1, token, username);
+      const userDaemon = await Stack.spawn<UserDaemon>(UserDaemon, undefined, "SYSTEM", 1, token, username);
 
       this.rl?.println(`Starting daemon`);
 
@@ -175,16 +175,16 @@ export class TerminalMode extends Process {
 
       this.rl?.println(`${CURUP}${CLRROW}Refreshing app storage`);
 
-      this.systemDispatch.dispatch(`app-store-refresh`);
+      SysDispatch.dispatch(`app-store-refresh`);
 
-      this.env.set("currentuser", username);
-      this.env.set("shell_pid", undefined);
+      Env.set("currentuser", username);
+      Env.set("shell_pid", undefined);
 
       await Sleep(10);
 
       this.term?.clear();
 
-      this.arcTerm = await KernelStack().spawn<ArcTerminal>(
+      this.arcTerm = await Stack.spawn<ArcTerminal>(
         ArcTerminal,
         undefined,
         userDaemon.userInfo?._id,

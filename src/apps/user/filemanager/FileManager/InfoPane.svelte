@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { Fs } from "$ts/env";
+  import { Daemon } from "$ts/server/user/daemon";
   import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
   import type { ExpandedFileAssociationInfo } from "$types/assoc";
   import type { ExtendedStat, SummarizedFsModifiers } from "$types/fs";
@@ -32,7 +34,7 @@
     variant = "";
 
     try {
-      const driveId = process.fs.getDriveIdByIdentifier(process.fs.getDriveIdentifier($path));
+      const driveId = Fs.getDriveIdByIdentifier(Fs.getDriveIdentifier($path));
       const isRoot = getParentDirectory($path) === $path;
 
       currentDrive = $drives[driveId] ?? undefined;
@@ -44,7 +46,7 @@
           singleSelectionFilename = getItemNameFromPath($selection[0]);
 
           try {
-            const stat = await process.fs.stat($selection[0]);
+            const stat = await Fs.stat($selection[0]);
 
             if (stat?.isDirectory) {
               singleSelectionThumbnail = "";
@@ -57,12 +59,12 @@
               singleSelectionModifiers = stat?.modifiers;
             } else {
               singleSelectionStat = stat;
-              singleSelectionAssoc = process.userDaemon?.assoc?.getFileAssociation($selection[0]);
+              singleSelectionAssoc = Daemon?.assoc?.getFileAssociation($selection[0]);
               singleSelectionModifiers = stat?.modifiers;
-              singleSelectionThumbnail = await process.userDaemon?.files?.getThumbnailFor($selection[0]);
+              singleSelectionThumbnail = await Daemon?.files?.getThumbnailFor($selection[0]);
             }
           } catch {
-            singleSelectionAssoc = process.userDaemon?.assoc?.getFileAssociation($selection[0]);
+            singleSelectionAssoc = Daemon?.assoc?.getFileAssociation($selection[0]);
           }
         }
 

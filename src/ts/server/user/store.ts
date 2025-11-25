@@ -339,6 +339,7 @@ export const UserPaths = {
   AppShortcuts: "U:/System/AppShortcuts",
   AppRepository: "U:/System/AppRepository",
   Libraries: "U:/System/Libraries",
+  StartMenu: "U:/System/Start",
 };
 
 export const SystemFolders = [

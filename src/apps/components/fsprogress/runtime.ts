@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { KernelStack } from "$ts/env";
+import { Stack } from "$ts/env";
 import { Store, type ReadableStore } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { RenderArgs } from "$types/process";
@@ -45,7 +45,7 @@ export class FsProgressRuntime extends AppProcess {
   }
 
   async onClose(): Promise<boolean> {
-    if (this.parentPid) KernelStack().renderer?.focusedPid.set(this.parentPid); // Focus the parent PID upon close
+    if (this.parentPid) Stack.renderer?.focusedPid.set(this.parentPid); // Focus the parent PID upon close
 
     return true;
   }

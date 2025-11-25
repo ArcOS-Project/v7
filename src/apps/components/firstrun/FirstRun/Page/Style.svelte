@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Daemon } from "$ts/server/user/daemon";
   import type { FirstRunRuntime } from "../../runtime";
   import { FirstRunThemes } from "../../store";
   import type { FirstRunTheme } from "../../types";
@@ -17,7 +18,7 @@
       return v;
     });
 
-    process.userDaemon!.renderer!.setAppRendererClasses(process.userPreferences());
+    Daemon!.renderer!.setAppRendererClasses(process.userPreferences());
 
     selection = key;
   }

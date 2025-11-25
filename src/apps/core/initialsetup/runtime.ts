@@ -1,6 +1,5 @@
 import { MessageBox } from "$ts/dialog";
-import { getKMod, KernelStack } from "$ts/env";
-import { KernelStateHandler } from "$ts/getters";
+import { Env, getKMod, Stack, State } from "$ts/env";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { SecurityMediumIcon } from "$ts/images/general";
 import { ArcLicense } from "$ts/metadata/license";
@@ -33,6 +32,7 @@ export class InitialSetupRuntime extends AppProcess {
   public showMainContent = Store<boolean>(false);
   public displayName = Store<string>();
   public server: ServerManagerType;
+  #userDaemon?: UserDaemon;
 
   public readonly pages = [Welcome, License, Identity, CheckInbox, Finish, FreshDeployment];
 
@@ -41,7 +41,7 @@ export class InitialSetupRuntime extends AppProcess {
       left: {
         caption: "Cancel",
         action: async () => {
-          KernelStateHandler()?.loadState("login");
+          State?.loadState("login");
         },
         disabled: () => !!this.server?.serverInfo?.freshBackend,
       },
@@ -136,6 +136,7 @@ export class InitialSetupRuntime extends AppProcess {
       );
     };
 
+    this.#userDaemon = Stack.getProcess(Env.get("userdaemon_pid"));
     this.newUsername.subscribe(update);
     this.password.subscribe(update);
     this.confirm.subscribe(update);
@@ -221,7 +222,7 @@ export class InitialSetupRuntime extends AppProcess {
           {
             caption: "Decline",
             action: () => {
-              KernelStateHandler()?.loadState("licenseDeclined");
+              State?.loadState("licenseDeclined");
             },
           },
           {
@@ -329,19 +330,19 @@ export class InitialSetupRuntime extends AppProcess {
       return;
     }
 
-    this.userDaemon = await KernelStack().spawn(
+    this.#userDaemon = await Stack.spawn(
       UserDaemon,
       undefined,
-      this.userDaemon?.userInfo?._id,
+      this.#userDaemon?.userInfo?._id,
       this.pid,
       token,
       this.newUsername()
     );
 
-    await this.userDaemon?.account?.getUserInfo();
-    await this.userDaemon?.init?.startPreferencesSync();
-    await this.userDaemon?.init?.startFilesystemSupplier();
-    this.userDaemon?.preferences.update((v) => {
+    await this.#userDaemon?.account?.getUserInfo();
+    await this.#userDaemon?.init?.startPreferencesSync();
+    await this.#userDaemon?.init?.startFilesystemSupplier();
+    this.#userDaemon?.preferences.update((v) => {
       v.account.displayName = this.displayName();
 
       return v;

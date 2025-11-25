@@ -1,6 +1,6 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
-  import { KernelStack } from "$ts/env";
+  import { Stack } from "$ts/env";
   import { Process } from "$ts/process/instance";
   import { Plural } from "$ts/util";
   import type { ProcessManagerRuntime } from "../runtime";
@@ -11,7 +11,7 @@
   let proc = $state<Process>();
 
   selected.subscribe((v) => {
-    proc = KernelStack().getProcess(+v.replace("proc#", ""));
+    proc = Stack.getProcess(+v.replace("proc#", ""));
   });
 </script>
 
@@ -30,7 +30,7 @@
     <button class="process-info" disabled={!proc} onclick={() => process.processInfoFor(proc!)}> Process Info </button>
     <button
       disabled={!proc || !(proc instanceof AppProcess) || proc.app.data.overlay}
-      onclick={() => proc && KernelStack().renderer?.focusedPid.set(proc.pid)}
+      onclick={() => proc && Stack.renderer?.focusedPid.set(proc.pid)}
     >
       Focus
     </button>

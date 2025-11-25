@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { SoundBus, SysDispatch } from "$ts/env";
   import { Sleep } from "$ts/sleep";
   import type { ErrorButton, Notification } from "$types/notification";
   import { onMount } from "svelte";
@@ -12,7 +13,7 @@
   let show = $state(false);
 
   onMount(() => {
-    process.systemDispatch.subscribe("send-notification", async ([incoming]) => {
+    SysDispatch.subscribe("send-notification", async ([incoming]) => {
       if ($actionCenterOpened) return;
 
       if (show) {
@@ -22,7 +23,7 @@
 
       data = incoming;
       show = true;
-      process.soundBus.playSound("arcos.notification");
+      SoundBus.playSound("arcos.notification");
 
       if (timeout) clearTimeout(timeout);
 

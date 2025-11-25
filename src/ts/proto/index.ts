@@ -1,5 +1,6 @@
 import { KernelParams } from "$ts/getters";
 import { tryJsonParse } from "$ts/json";
+import { Daemon } from "$ts/server/user/daemon";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import type { ArcProtocol, ProtocolHandler } from "$types/proto";
@@ -62,7 +63,7 @@ export class ProtocolServiceProcess extends BaseService {
     this.Log(`Parsing a fresh anchor element`);
 
     const handler = this.store[parsed.command]!;
-    const info = handler.info(parsed.payload, this.host.daemon);
+    const info = handler.info(parsed.payload, Daemon!);
 
     if (!info) {
       anchor.setAttribute("data-no-proto", "true");
@@ -81,7 +82,7 @@ export class ProtocolServiceProcess extends BaseService {
     if (info.title) button.title = info.title;
 
     button.append(icon, caption);
-    button.addEventListener("click", () => handler.action(parsed.payload, this.host.daemon, parsed));
+    button.addEventListener("click", () => handler.action(parsed.payload, Daemon!, parsed));
 
     anchor.insertAdjacentElement("afterend", button);
     anchor.remove();
@@ -117,7 +118,7 @@ export class ProtocolServiceProcess extends BaseService {
 
     if (!parsed || !handler) return;
 
-    return await handler.action(parsed.payload, this.host.daemon, parsed);
+    return await handler.action(parsed.payload, Daemon!, parsed);
   }
 
   registerHandler(command: string, handler: ProtocolHandler) {

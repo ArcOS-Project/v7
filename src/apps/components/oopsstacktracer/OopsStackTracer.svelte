@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Daemon } from "$ts/server/user/daemon";
   import type { OopsStackTracerRuntime } from "./runtime";
 
   const { process }: { process: OopsStackTracerRuntime } = $props();
@@ -7,7 +8,7 @@
 </script>
 
 <div class="process">
-  <img src={process.userDaemon?.icons?.getAppIcon(data) || process.getIconCached("ComponentIcon")} alt="" />
+  <img src={Daemon?.icons?.getAppIcon(data) || process.getIconCached("ComponentIcon")} alt="" />
   <p class="name">{data?.metadata?.name || "Unknown app"}</p>
   {#if proc?.pid}
     <p class="pid">(PID {proc.pid})</p>

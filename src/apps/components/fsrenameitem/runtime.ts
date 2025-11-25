@@ -1,4 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
+import { Fs } from "$ts/env";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -30,7 +31,7 @@ export class RenameItemRuntime extends AppProcess {
 
   async rename() {
     try {
-      await this.fs.moveItem(this.path, join(this.parentDir, this.newName()));
+      await Fs.moveItem(this.path, join(this.parentDir, this.newName()));
     } catch {
       // silently error
     }

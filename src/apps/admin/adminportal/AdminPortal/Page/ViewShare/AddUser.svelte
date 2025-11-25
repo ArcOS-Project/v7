@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import { Daemon } from "$ts/server/user/daemon";
   import type { SharedDriveType } from "$types/shares";
   import type { ExpandedUserInfo } from "$types/user";
 
@@ -9,7 +10,7 @@
   let loading = $state<boolean>(false);
 
   async function addUser() {
-    const confirm = await process.userDaemon?.helpers?.Confirm(
+    const confirm = await Daemon?.helpers?.Confirm(
       "Confirm user add?",
       `Are you sure you want to add this user to '${share.shareName}'?`,
       "Cancel",

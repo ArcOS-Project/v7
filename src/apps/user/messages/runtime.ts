@@ -1,8 +1,10 @@
 import type { FileProgressMutator } from "$apps/components/fsprogress/types";
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { Fs } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { MessagingInterface } from "$ts/server/messaging";
+import { Daemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import { sortByKey } from "$ts/util";
 import { arrayToBlob, arrayToText, textToBlob } from "$ts/util/convert";
@@ -38,7 +40,7 @@ export class MessagingAppRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData, pageOrMessagePath = "inbox", messageId?: string) {
     super(pid, parentPid, app);
 
-    this.service = this.userDaemon?.serviceHost?.getService<MessagingInterface>("MessagingService")!;
+    this.service = Daemon?.serviceHost?.getService<MessagingInterface>("MessagingService")!;
 
     const path = pageOrMessagePath.includes(":/") && pageOrMessagePath.endsWith(".msg") ? pageOrMessagePath : undefined;
 
@@ -209,7 +211,7 @@ export class MessagingAppRuntime extends AppProcess {
   async userInfo(userId: string): Promise<PublicUserInfo | undefined> {
     if (this.userInfoCache[userId]) return this.userInfoCache[userId];
 
-    const info = await this.userDaemon?.account?.getPublicUserInfoOf(userId);
+    const info = await Daemon?.account?.getPublicUserInfoOf(userId);
     if (!info) return undefined;
 
     this.userInfoCache[userId] = info;
@@ -221,7 +223,7 @@ export class MessagingAppRuntime extends AppProcess {
     const path = `T:/Apps/${this.app.id}/${messageId}/${attachment.filename}`;
 
     try {
-      const existing = await this.fs.readFile(path);
+      const existing = await Fs.readFile(path);
 
       if (existing) return existing;
 
@@ -240,7 +242,7 @@ export class MessagingAppRuntime extends AppProcess {
   async openAttachment(attachment: MessageAttachment, messageId: string) {
     const path = `T:/Apps/${this.app.id}/${messageId}/${attachment.filename}`;
 
-    const prog = await this.userDaemon?.files?.FileProgress(
+    const prog = await Daemon?.files?.FileProgress(
       {
         type: "size",
         max: attachment.size,
@@ -257,7 +259,7 @@ export class MessagingAppRuntime extends AppProcess {
     await prog?.stop();
 
     if (!contents) {
-      const info = this.userDaemon?.assoc?.getFileAssociation(attachment.filename);
+      const info = Daemon?.assoc?.getFileAssociation(attachment.filename);
       MessageBox(
         {
           title: `'${attachment.filename}' unavailable`,
@@ -274,11 +276,11 @@ export class MessagingAppRuntime extends AppProcess {
     }
 
     try {
-      await this.fs.createDirectory(getParentDirectory(path));
-      await this.fs.writeFile(path, arrayToBlob(contents, attachment.mimeType));
+      await Fs.createDirectory(getParentDirectory(path));
+      await Fs.writeFile(path, arrayToBlob(contents, attachment.mimeType));
     } catch {}
 
-    await this.userDaemon?.files?.openFile(path);
+    await Daemon?.files?.openFile(path);
   }
 
   Search(query: string) {
@@ -315,7 +317,7 @@ export class MessagingAppRuntime extends AppProcess {
     if (!message) return;
 
     const date = dayjs(message.createdAt).format("DD MMM YYYY, HH.mm.ss");
-    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Choose where to save the message",
       icon: "MessagingIcon",
       isSave: true,
@@ -327,7 +329,7 @@ export class MessagingAppRuntime extends AppProcess {
 
     if (!path) return;
 
-    const prog = await this.userDaemon?.files?.FileProgress(
+    const prog = await Daemon?.files?.FileProgress(
       {
         type: "size",
         caption: `Writing message...`,
@@ -338,7 +340,7 @@ export class MessagingAppRuntime extends AppProcess {
     );
 
     try {
-      await this.fs.writeFile(path, textToBlob(JSON.stringify(message, null, 2)), (progress) => {
+      await Fs.writeFile(path, textToBlob(JSON.stringify(message, null, 2)), (progress) => {
         prog?.show();
         prog?.setDone(progress.value);
         prog?.setMax(progress.max);
@@ -352,7 +354,7 @@ export class MessagingAppRuntime extends AppProcess {
     this.messageFromFile = true;
 
     try {
-      const contents = await this.fs.readFile(path);
+      const contents = await Fs.readFile(path);
       if (!contents) return this.closeWindow();
 
       const json = tryJsonParse(arrayToText(contents));
@@ -387,7 +389,7 @@ export class MessagingAppRuntime extends AppProcess {
   async forward(message: ExpandedMessage) {
     const attachments: File[] = [];
 
-    const prog = await this.userDaemon?.files?.FileProgress(
+    const prog = await Daemon?.files?.FileProgress(
       {
         type: "none",
         max: 100,
@@ -419,7 +421,7 @@ export class MessagingAppRuntime extends AppProcess {
   toggleArchived(message: ExpandedMessage) {
     if (this.isArchived(message._id)) {
       this.removeFromArchive(message._id);
-      this.switchPage(message.authorId === this.userDaemon?.userInfo?._id ? "sent" : "inbox");
+      this.switchPage(message.authorId === Daemon?.userInfo?._id ? "sent" : "inbox");
     } else {
       this.addToArchive(message._id);
       this.switchPage("archived");

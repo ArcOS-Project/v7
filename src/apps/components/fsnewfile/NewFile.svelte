@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Daemon } from "$ts/server/user/daemon";
   import { onMount } from "svelte";
   import type { NewFileRuntime } from "./runtime";
 
@@ -9,7 +10,7 @@
 
   onMount(() => {
     newFile.subscribe((v) => {
-      const info = process.userDaemon?.assoc?.getFileAssociation(v);
+      const info = Daemon?.assoc?.getFileAssociation(v);
       icon = info?.icon || process.getIconCached("DefaultMimeIcon");
     });
   });

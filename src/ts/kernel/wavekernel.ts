@@ -1,5 +1,5 @@
 import { __Console__ } from "$ts/console";
-import { ArcOSVersion, SetCurrentKernel } from "$ts/env";
+import { ArcOSVersion, SetCurrentKernel, SetKernelExports } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { getBuild } from "$ts/metadata/build";
 import { ChangeLogs } from "$ts/metadata/changelog";
@@ -78,6 +78,8 @@ export class WaveKernel {
     this.Log(`ArcOS`, `***** [v7 -> ArcOS InDev v${ArcOSVersion}-${this.ARCOS_MODE}_${this.ARCOS_BUILD}] *****`);
 
     await this._kernelModules();
+
+    SetKernelExports();
 
     const stack = this.getModule<ProcessHandlerType>("stack");
 

@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { KernelStack } from "$ts/env";
+import { Stack } from "$ts/env";
 import type { Process } from "$ts/process/instance";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";
@@ -22,7 +22,7 @@ export class TasksCommand extends TerminalProcess {
 
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const tree = flags.tree || flags.t;
-    const store = KernelStack().store();
+    const store = Stack.store();
 
     if (!tree) {
       term.rl?.println("");
@@ -37,7 +37,7 @@ export class TasksCommand extends TerminalProcess {
     }
 
     function branch(proc: Process, indent = "", isLast = true) {
-      const subProcesses = KernelStack().getSubProcesses(proc.pid);
+      const subProcesses = Stack.getSubProcesses(proc.pid);
       const prefix = indent + (isLast ? "└── " : "├── ");
 
       term.rl?.println(

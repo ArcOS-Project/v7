@@ -2,6 +2,7 @@
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import UserLink from "$lib/UserLink.svelte";
   import { ProfilePictures } from "$ts/images/pfp";
+  import { Daemon } from "$ts/server/user/daemon";
   import type { PublicUserInfo } from "$types/user";
   import dayjs from "dayjs";
   import { onMount } from "svelte";
@@ -10,7 +11,7 @@
 
   const { process }: { process: MessagingAppRuntime } = $props();
   const { message } = process;
-  const userId = process.userDaemon!.userInfo!._id;
+  const userId = Daemon!.userInfo!._id;
   const isSent = $message?.authorId === userId;
 
   let user = $state<PublicUserInfo>();

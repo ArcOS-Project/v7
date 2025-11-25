@@ -1,6 +1,4 @@
-import { getKMod } from "$ts/env";
 import { Log } from "$ts/logging";
-import { type EnvironmentType, type FilesystemType, type ServerManagerType, type SystemDispatchType } from "$types/kernel";
 import { LogLevel } from "$types/logging";
 import type { UserInfo } from "$types/user";
 import type { UserDaemon } from ".";
@@ -40,30 +38,6 @@ export class UserContext {
     Log(source, message, level);
   }
 
-  //#region KMOD REFERENCES
-
-  protected get fs() {
-    return getKMod<FilesystemType>("fs");
-  }
-
-  protected get env() {
-    return getKMod<EnvironmentType>("env");
-  }
-
-  protected get systemDispatch() {
-    return getKMod<SystemDispatchType>("dispatch");
-  }
-
-  protected get server() {
-    return getKMod<ServerManagerType>("server");
-  }
-
-  //#endregion KMOD REFERENCES
-
-  protected get daemon() {
-    return this.#daemon;
-  }
-
   protected get serviceHost() {
     return this.#daemon.serviceHost;
   }
@@ -89,7 +63,7 @@ export class UserContext {
   }
 
   protected set userInfo(value: UserInfo) {
-    this.daemon.userInfo = value;
+    this.#daemon.userInfo = value;
   }
 
   protected get token() {

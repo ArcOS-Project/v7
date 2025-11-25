@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { KernelStack } from "$ts/env";
+  import { Stack } from "$ts/env";
   import type { MediaPlayerRuntime } from "../runtime";
   import Forward from "./Controls/Forward.svelte";
   import Next from "./Controls/Next.svelte";
@@ -26,7 +26,7 @@
     class="lucide fullscreen-toggle"
     class:icon-minimize={$windowFullscreen}
     class:icon-maximize={!$windowFullscreen}
-    onclick={() => KernelStack().renderer?.toggleFullscreen(process.pid)}
+    onclick={() => Stack.renderer?.toggleFullscreen(process.pid)}
     disabled={!$queue.length}
   ></button>
 </div>

@@ -1,6 +1,7 @@
+import { Env, SysDispatch } from "$ts/env";
 import { UUID } from "$ts/uuid";
 import type { ElevationData } from "$types/elevation";
-import type { UserDaemon } from "..";
+import { Daemon, type UserDaemon } from "..";
 import { UserContext } from "../context";
 
 export class ElevationUserContext extends UserContext {
@@ -30,38 +31,38 @@ export class ElevationUserContext extends UserContext {
 
     const id = UUID();
     const key = UUID();
-    const shellPid = this.env.get("shell_pid");
+    const shellPid = Env.get("shell_pid");
 
-    if (this.daemon.preferences().security.disabled) return true;
-    if (this.daemon.preferences().disabledApps.includes("SecureContext")) return true;
+    if (Daemon!.preferences().security.disabled) return true;
+    if (Daemon!.preferences().disabledApps.includes("SecureContext")) return true;
 
     this._elevating = true;
-    this.daemon.renderer?.setAppRendererClasses(this.daemon.preferences());
+    Daemon!.renderer?.setAppRendererClasses(Daemon!.preferences());
 
     if (shellPid) {
-      const proc = await this.daemon.spawn?._spawnOverlay("SecureContext", undefined, +shellPid, id, key, data);
+      const proc = await Daemon!.spawn?._spawnOverlay("SecureContext", undefined, +shellPid, id, key, data);
 
       if (!proc) return false;
     } else {
-      const proc = await this.daemon.spawn?._spawnApp("SecureContext", undefined, this.pid, id, key, data);
+      const proc = await Daemon!.spawn?._spawnApp("SecureContext", undefined, this.pid, id, key, data);
 
       if (!proc) return false;
     }
 
     return new Promise((r) => {
-      this.systemDispatch.subscribe("elevation-approve", (data) => {
+      SysDispatch.subscribe("elevation-approve", (data) => {
         if (data[0] === id && data[1] === key) {
           r(true);
           this._elevating = false;
-          this.daemon.renderer?.setAppRendererClasses(this.daemon.preferences());
+          Daemon!.renderer?.setAppRendererClasses(Daemon!.preferences());
         }
       });
 
-      this.systemDispatch.subscribe("elevation-deny", (data) => {
+      SysDispatch.subscribe("elevation-deny", (data) => {
         if (data[0] === id && data[1] === key) {
           r(false);
           this._elevating = false;
-          this.daemon.renderer?.setAppRendererClasses(this.daemon.preferences());
+          Daemon!.renderer?.setAppRendererClasses(Daemon!.preferences());
         }
       });
     });

@@ -621,7 +621,7 @@ export class Filesystem extends KernelModule {
   async imageThumbnail(path: string, width: number, height?: number): Promise<string | undefined> {
     this.isKmod();
 
-    this.Log(`stat '${path}'`);
+    this.Log(`imageThumbnail '${path}'`);
     this.validatePath(path);
 
     const drive = this.getDriveByPath(path);

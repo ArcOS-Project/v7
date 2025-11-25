@@ -1,3 +1,4 @@
+import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { join } from "$ts/util/fs";
 import type { ArcShortcut } from "$types/shortcut";
@@ -65,7 +66,7 @@ export const FirstRunPages = new Map<string, FirstRunPage>([
         left: [
           {
             caption: "Upload...",
-            action: (process) => process.userDaemon?.preferencesCtx?.uploadProfilePicture(),
+            action: (process) => Daemon?.preferencesCtx?.uploadProfilePicture(),
           },
           {
             caption: "Choose",

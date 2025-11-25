@@ -1,11 +1,11 @@
 import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import TerminalWindow from "$apps/components/terminalwindow/TerminalWindow.svelte";
 import type { FilesystemDrive } from "$ts/drives/drive";
-import { KernelStack } from "$ts/env";
+import { Fs, Stack } from "$ts/env";
 import { ASCII_ART } from "$ts/intro";
 import { Process } from "$ts/process/instance";
 import { LoginUser } from "$ts/server/user/auth";
-import type { UserDaemon } from "$ts/server/user/daemon";
+import { Daemon, TryGetDaemon, type UserDaemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { arrayToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
@@ -50,7 +50,7 @@ export class ArcTerminal extends Process {
 
     this.path = path || UserPaths.Home;
     this.changeDirectory(this.path);
-    this.daemon = KernelStack().getProcess(+this.env.get("userdaemon_pid"));
+    this.daemon = TryGetDaemon();
 
     this.term = term;
     this.tryGetTermWindow();
@@ -63,13 +63,13 @@ export class ArcTerminal extends Process {
     if (!this.term) return this.killSelf();
 
     try {
-      await this.fs.createDirectory(join(UserPaths.Configuration, "ArcTerm"));
+      await Fs.createDirectory(join(UserPaths.Configuration, "ArcTerm"));
     } catch {
       return false;
     }
     await this.migrateConfigurationPath();
 
-    const rl = await KernelStack().spawn<Readline>(Readline, undefined, this.window?.userDaemon?.userInfo?._id, this.pid, this);
+    const rl = await Stack.spawn<Readline>(Readline, undefined, Daemon?.userInfo?._id, this.pid, this);
     await this.readConfig();
 
     this.term.loadAddon(rl!);
@@ -122,12 +122,7 @@ export class ArcTerminal extends Process {
         this.Error("Command not found.");
         this.lastCommandErrored = true;
       } else {
-        const proc = await KernelStack().spawn<TerminalProcess>(
-          command,
-          undefined,
-          this.window?.userDaemon?.userInfo?._id,
-          this.pid
-        );
+        const proc = await Stack.spawn<TerminalProcess>(command, undefined, Daemon?.userInfo?._id, this.pid);
 
         // BUG 68798d6957684017c3e9a085
         if (!proc) {
@@ -159,7 +154,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.readDir(this.join(path));
+    return await Fs.readDir(this.join(path));
   }
 
   async createDirectory(path: string) {
@@ -167,7 +162,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.createDirectory(this.join(path));
+    return await Fs.createDirectory(this.join(path));
   }
 
   async writeFile(path: string, data: Blob) {
@@ -175,7 +170,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.writeFile(this.join(path), data);
+    return await Fs.writeFile(this.join(path), data);
   }
 
   async tree(path: string) {
@@ -183,7 +178,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.tree(this.join(path));
+    return await Fs.tree(this.join(path));
   }
 
   async copyItem(source: string, destination: string) {
@@ -191,7 +186,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.copyItem(this.join(source), this.join(destination));
+    return await Fs.copyItem(this.join(source), this.join(destination));
   }
 
   async moveItem(source: string, destination: string) {
@@ -199,7 +194,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.moveItem(this.join(source), this.join(destination));
+    return await Fs.moveItem(this.join(source), this.join(destination));
   }
 
   async readFile(path: string) {
@@ -207,7 +202,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.readFile(this.join(path));
+    return await Fs.readFile(this.join(path));
   }
 
   async deleteItem(path: string) {
@@ -215,7 +210,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.deleteItem(this.join(path));
+    return await Fs.deleteItem(this.join(path));
   }
 
   async Error(message: string, prefix = "Error") {
@@ -242,7 +237,7 @@ export class ArcTerminal extends Process {
     if (this._disposed) return;
 
     try {
-      const drive = this.fs.getDriveByPath(path);
+      const drive = Fs.getDriveByPath(path);
 
       if (!drive) return false;
 
@@ -252,7 +247,7 @@ export class ArcTerminal extends Process {
     }
 
     try {
-      const contents = await this.fs.readDir(path);
+      const contents = await Fs.readDir(path);
 
       if (!contents) throw "";
 
@@ -295,10 +290,10 @@ export class ArcTerminal extends Process {
   }
 
   async stop(): Promise<any> {
-    const parent = KernelStack().getProcess(this.parentPid);
+    const parent = Stack.getProcess(this.parentPid);
 
     if (parent instanceof TerminalWindow) {
-      KernelStack().kill(this.parentPid);
+      Stack.kill(this.parentPid);
     }
   }
 
@@ -370,7 +365,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
     try {
-      const contents = await this.fs.readFile(this.CONFIG_PATH);
+      const contents = await Fs.readFile(this.CONFIG_PATH);
 
       if (!contents) throw "";
 
@@ -388,7 +383,7 @@ export class ArcTerminal extends Process {
     if (this._disposed) return;
 
     try {
-      await this.fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(this.config, null, 2)));
+      await Fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(this.config, null, 2)));
     } catch {
       return;
     }
@@ -399,33 +394,27 @@ export class ArcTerminal extends Process {
 
     await this.rl?.dispose();
     await this.killSelf();
-    await KernelStack().spawn(
-      ArcTerminal,
-      undefined,
-      this.window?.userDaemon?.userInfo?._id,
-      this.parentPid,
-      this.term,
-      this.path
-    );
+    await Stack.spawn(ArcTerminal, undefined, Daemon?.userInfo?._id, this.parentPid, this.term, this.path);
   }
 
   tryGetTermWindow() {
     this.Log("Trying to get TermWindProc");
 
-    const parent = KernelStack().getProcess(this.parentPid);
+    const parent = Stack.getProcess(this.parentPid);
 
     if (parent instanceof TerminalWindowRuntime) this.window = parent;
   }
 
+  // MIGRATION: 7.0.3 -> 7.0.4
   async migrateConfigurationPath() {
     try {
       const oldPath = "U:/arcterm.conf";
-      const newFile = await this.fs.readFile(this.CONFIG_PATH);
-      const oldFile = newFile ? undefined : await this.fs.readFile(oldPath);
+      const newFile = await Fs.readFile(this.CONFIG_PATH);
+      const oldFile = newFile ? undefined : await Fs.readFile(oldPath);
 
       if (oldFile && !newFile) {
         this.Log("Migrating old config path to " + this.CONFIG_PATH);
-        await this.fs.moveItem(oldPath, this.CONFIG_PATH);
+        await Fs.moveItem(oldPath, this.CONFIG_PATH);
       }
     } catch {}
   }

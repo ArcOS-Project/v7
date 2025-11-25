@@ -9,7 +9,7 @@
  * © IzKuipers 2025
  */
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { KernelServerUrl } from "$ts/env";
+import { Fs, KernelServerUrl } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import { Backend } from "$ts/server/axios";
 import { TryGetDaemon, UserDaemon } from "$ts/server/user/daemon";
@@ -17,6 +17,7 @@ import { ThirdPartyProps } from "$ts/tpa/props";
 import { authcode } from "$ts/util";
 import { arrayToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
+import { UUID } from "$ts/uuid";
 import type { App } from "$types/app";
 import type { ThirdPartyPropMap } from "$types/thirdparty";
 import * as acorn from "acorn";
@@ -31,7 +32,8 @@ export class JsExec extends Process {
   metaPath?: string;
   filePath?: string;
   workingDirectory: string;
-
+  operationId: string;
+  
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, filePath: string, ...args: any[]) {
@@ -43,6 +45,7 @@ export class JsExec extends Process {
     this.workingDirectory = getParentDirectory(filePath);
     this.name = "JsExec";
     this.setSource(__SOURCE__);
+    this.operationId = UUID();
   }
 
   async start() {
@@ -58,7 +61,7 @@ export class JsExec extends Process {
     this.Log(`Getting TPA file URL`);
 
     const postUrl = this.getTpaPostUrl();
-    const serverUrl = KernelServerUrl();
+    const serverUrl = KernelServerUrl;
     const { appId, userId, filename } = this.getTpaUrlInfo();
     const now = Date.now();
     const ac = authcode();
@@ -111,7 +114,7 @@ export class JsExec extends Process {
   async getContents() {
     this.Log(`Reading script contents`);
 
-    const unwrapped = arrayToText((await this.fs.readFile(this.filePath!))!);
+    const unwrapped = arrayToText((await Fs.readFile(this.filePath!))!);
     if (!unwrapped) throw new JsExecError(`Failed to read ${this.filePath}: not found`);
 
     await this.testFileContents(unwrapped);
@@ -145,6 +148,10 @@ export class JsExec extends Process {
   }
 
   async testFileContents(unwrapped: string) {
+    const isUnsafe = unwrapped.startsWith(`// #unsafe`);
+
+    if (isUnsafe) return; // File is dangerous, TODO -> PERMISSIONS
+
     const ast = acorn.parse(unwrapped, {
       sourceType: "module",
       ecmaVersion: "latest",

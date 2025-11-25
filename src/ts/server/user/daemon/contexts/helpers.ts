@@ -1,17 +1,18 @@
 import GlobalLoadIndicatorApp from "$apps/components/globalloadindicator/GlobalLoadIndicator";
 import { GlobalLoadIndicatorRuntime } from "$apps/components/globalloadindicator/runtime";
+import type { GlobalLoadIndicatorProgress } from "$apps/components/globalloadindicator/types";
 import type { IconPickerData } from "$apps/components/iconpicker/types";
 import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import TerminalWindowApp from "$apps/components/terminalwindow/TerminalWindow";
 import SafeModeNotice from "$lib/Daemon/SafeModeNotice.svelte";
 import type { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
+import { Env, Stack, SysDispatch } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
 import type { ExpandedTerminal } from "$types/terminal";
-import type { UserDaemon } from "..";
+import { Daemon, type UserDaemon } from "..";
 import { UserContext } from "../context";
 
 export class HelpersUserContext extends UserContext {
@@ -19,18 +20,19 @@ export class HelpersUserContext extends UserContext {
     super(id, daemon);
   }
 
-  async GlobalLoadIndicator(caption?: string, pid?: number) {
-    const process = await KernelStack().spawn<GlobalLoadIndicatorRuntime>(
+  async GlobalLoadIndicator(caption?: string, pid?: number, progress?: Partial<GlobalLoadIndicatorProgress>) {
+    const process = await Stack.spawn<GlobalLoadIndicatorRuntime>(
       GlobalLoadIndicatorRuntime,
       undefined,
       this.userInfo!._id,
-      pid || +this.env.get("shell_pid"),
+      pid || +Env.get("shell_pid"),
       {
         data: { ...GlobalLoadIndicatorApp, overlay: true },
         id: GlobalLoadIndicatorApp.id,
         desktop: undefined,
       },
-      caption
+      caption,
+      progress
     );
 
     if (!process)
@@ -42,14 +44,20 @@ export class HelpersUserContext extends UserContext {
     return {
       caption: process.caption,
       stop: async () => {
+        if (process._disposed) return;
         await Sleep(500);
         await process.closeWindow();
       },
+      incrementProgress: (amount = 1) => {
+        if (!process.progress?.()) return;
+        process.updateProgress({ value: (process.progress()?.value || 0) + amount });
+      },
+      progress: process.progress,
     };
   }
 
   async Confirm(title: string, message: string, no: string, yes: string, image = "QuestionIcon", pid?: number) {
-    const shellPid = pid || +this.env.get("shell_pid");
+    const shellPid = pid || +Env.get("shell_pid");
     return new Promise((r) => {
       MessageBox(
         {
@@ -67,8 +75,8 @@ export class HelpersUserContext extends UserContext {
     });
   }
 
-  async TerminalWindow(pid = +this.env.get("shell_pid")): Promise<ExpandedTerminal | undefined> {
-    const process = await KernelStack().spawn<TerminalWindowRuntime>(TerminalWindowRuntime, undefined, this.userInfo!._id, pid, {
+  async TerminalWindow(pid = +Env.get("shell_pid")): Promise<ExpandedTerminal | undefined> {
+    const process = await Stack.spawn<TerminalWindowRuntime>(TerminalWindowRuntime, undefined, this.userInfo!._id, pid, {
       data: { ...TerminalWindowApp },
       id: TerminalWindowApp.id,
       desktop: undefined,
@@ -89,23 +97,23 @@ export class HelpersUserContext extends UserContext {
 
     const uuid = UUID();
 
-    await this.daemon.spawn?.spawnOverlay("IconPicker", +this.env.get("shell_pid"), {
+    await Daemon!.spawn?.spawnOverlay("IconPicker", +Env.get("shell_pid"), {
       ...data,
       returnId: uuid,
     });
 
     return new Promise<string>(async (r) => {
-      this.systemDispatch.subscribe<[string, string]>("ip-confirm", ([id, icon]) => {
+      SysDispatch.subscribe<[string, string]>("ip-confirm", ([id, icon]) => {
         if (id === uuid) r(icon);
       });
-      this.systemDispatch.subscribe("ip-cancel", ([id]) => {
+      SysDispatch.subscribe("ip-cancel", ([id]) => {
         if (id === uuid) r(data.defaultIcon);
       });
     });
   }
 
   ParentIs(proc: AppProcess, appId: string) {
-    const targetAppInstances = KernelStack()
+    const targetAppInstances = Stack
       .renderer?.getAppInstances(appId)
       .map((p) => p.pid);
 
@@ -114,7 +122,7 @@ export class HelpersUserContext extends UserContext {
   async waitForLeaveInvocationAllow() {
     return new Promise<void>((r) => {
       const interval = setInterval(() => {
-        if (!this.daemon._blockLeaveInvocations) r(clearInterval(interval));
+        if (!Daemon!._blockLeaveInvocations) r(clearInterval(interval));
       }, 1);
     });
   }
@@ -127,51 +135,51 @@ export class HelpersUserContext extends UserContext {
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
         buttons: [
-          { caption: "Restart now", action: () => this.daemon.power?.restart() },
+          { caption: "Restart now", action: () => Daemon!.power?.restart() },
           { caption: "Okay", action: () => {}, suggested: true },
         ],
       },
-      +this.env.get("shell_pid"),
+      +Env.get("shell_pid"),
       true
     );
   }
 
   iHaveFeedback(process: AppProcess) {
-    this.daemon.spawn?.spawnApp(
+    Daemon!.spawn?.spawnApp(
       "BugHuntCreator",
       undefined,
       `[${process.app.id}] Feedback report - ${process.windowTitle()}`,
       `Thank you for submitting feedback to ArcOS! Any feedback is of great help to make ArcOS the best I can. Please be so kind and fill out the following form:
-    
-    1. Do you want to submit a new 'app', 'feature', or 'other'? Please answer one.
-       - Your answer:
-    
-    2. What do you want me to implement?
-       - Your answer:
-    
-    3. How should I go about this? Any ideas?
-       - Your answer:
-    
-    4. Did a previous version of ArcOS include this (v5 or v6)?
-       - Your answer:
-    
-    5. Convince me why I should implement this feature.
-       - Your answer:
-    
-    
-    **Do not change any of the information below this line.**
-    
-    ------
-    
-    - Username: ${this.userInfo?.username}
-    - User ID: ${this.userInfo?._id}
-    
-    ------
-    
-    
-    # DISCLAIMER
-    
-    The information provided in this report is subject for review by me or another ArcOS acquaintance. We may contact you using the ArcOS Messages app if we have any additional questions. It's also possible that the feedback you've provided will be converted into a GitHub issue for communication with other developers. By submitting this feedback, you agree to that. The issue will not contain any personal information, any personal information will be filtered out by a human being.`,
+
+1. Do you want to submit a new 'app', 'feature', or 'other'? Please answer one.
+    - Your answer:
+
+2. What do you want me to implement?
+    - Your answer:
+
+3. How should I go about this? Any ideas?
+    - Your answer:
+
+4. Did a previous version of ArcOS include this (v5 or v6)?
+    - Your answer:
+
+5. Convince me why I should implement this feature.
+    - Your answer:
+
+
+**Do not change any of the information below this line.**
+
+------
+
+- Username: ${this.userInfo?.username}
+- User ID: ${this.userInfo?._id}
+
+------
+
+
+# DISCLAIMER
+
+The information provided in this report is subject for review by me or another ArcOS acquaintance. We may contact you using the ArcOS Messages app if we have any additional questions. It's also possible that the feedback you've provided will be converted into a GitHub issue for communication with other developers. By submitting this feedback, you agree to that. The issue will not contain any personal information, any personal information will be filtered out by a human being.`,
       {
         sendAnonymously: true,
         excludeLogs: true,

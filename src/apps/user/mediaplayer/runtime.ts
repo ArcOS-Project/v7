@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
+import { Fs, Stack } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { arrayToText, textToBlob } from "$ts/util/convert";
@@ -29,14 +30,14 @@ export class MediaPlayerRuntime extends AppProcess {
         caption: "Enter fullscreen",
         disabled: async () => !!this.getWindow()?.classList.contains("fullscreen"),
         action: () => {
-          KernelStack().renderer?.toggleFullscreen(this.pid);
+          Stack.renderer?.toggleFullscreen(this.pid);
         },
       },
       {
         caption: "Exit fullscreen",
         disabled: async () => !this.getWindow()?.classList.contains("fullscreen"),
         action: () => {
-          KernelStack().renderer?.toggleFullscreen(this.pid);
+          Stack.renderer?.toggleFullscreen(this.pid);
         },
       },
     ],
@@ -188,7 +189,7 @@ export class MediaPlayerRuntime extends AppProcess {
 
   public async openFile() {
     if (this._disposed) return;
-    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Select an audio or video file to open",
       icon: "MediaPlayerIcon",
       startDir: getParentDirectory(this.queue()[this.queueIndex()]) || UserPaths.Music,
@@ -260,7 +261,7 @@ export class MediaPlayerRuntime extends AppProcess {
     this.Loaded.set(false);
 
     try {
-      const url = await this.fs.direct(path);
+      const url = await Fs.direct(path);
 
       if (!url) {
         MessageBox(
@@ -278,7 +279,7 @@ export class MediaPlayerRuntime extends AppProcess {
         return;
       }
 
-      const info = this.userDaemon?.assoc?.getFileAssociation(path);
+      const info = Daemon?.assoc?.getFileAssociation(path);
 
       this.isVideo.set(info?.friendlyName === "Video file");
       this.url.set(url);
@@ -298,7 +299,7 @@ export class MediaPlayerRuntime extends AppProcess {
 
   async addToQueue() {
     if (this._disposed) return;
-    const paths = await this.userDaemon!.files!.LoadSaveDialog({
+    const paths = await Daemon!.files!.LoadSaveDialog({
       title: "Select a file to add to the queue",
       icon: "MediaPlayerIcon",
       startDir: getParentDirectory(this.queue()[this.queueIndex()]) || UserPaths.Music,
@@ -330,7 +331,7 @@ export class MediaPlayerRuntime extends AppProcess {
     if (this._disposed) return;
     const playlist = btoa(JSON.stringify(this.queue(), null, 2));
 
-    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Save playlist",
       icon: this.app.data.metadata.icon,
       isSave: true,
@@ -340,13 +341,13 @@ export class MediaPlayerRuntime extends AppProcess {
     if (!path) return;
 
     try {
-      await this.fs.writeFile(path, textToBlob(playlist, "text/plain"));
+      await Fs.writeFile(path, textToBlob(playlist, "text/plain"));
     } catch {}
   }
 
   async loadPlaylist() {
     if (this._disposed) return;
-    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Open playlist",
       icon: this.app.data.metadata.icon,
       extensions: [".arcpl"],
@@ -360,7 +361,7 @@ export class MediaPlayerRuntime extends AppProcess {
   async readPlaylist(path: string) {
     if (this._disposed) return;
     try {
-      const contents = await this.fs.readFile(path);
+      const contents = await Fs.readFile(path);
       if (!contents) throw new Error("Failed to read playlist");
 
       const queue = JSON.parse(atob(arrayToText(contents)));
@@ -389,7 +390,7 @@ export class MediaPlayerRuntime extends AppProcess {
 
   async createPlaylistShortcut() {
     if (this._disposed) return;
-    const paths = await this.userDaemon?.files?.LoadSaveDialog({
+    const paths = await Daemon?.files?.LoadSaveDialog({
       title: "Pick where to create the shortcut",
       icon: "FolderIcon",
       folder: true,
@@ -400,7 +401,7 @@ export class MediaPlayerRuntime extends AppProcess {
 
     const filename = getItemNameFromPath(this.playlistPath());
 
-    this.userDaemon?.shortcuts?.createShortcut(
+    Daemon?.shortcuts?.createShortcut(
       {
         type: "file",
         target: this.playlistPath(),

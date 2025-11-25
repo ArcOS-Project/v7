@@ -1,3 +1,4 @@
+import { Daemon } from "$ts/server/user/daemon";
 import { groupByTimeFrame, sortByKey } from "$ts/util";
 import type { StoreItem } from "$types/package";
 import Everything from "./Pages/Everything.svelte";
@@ -155,7 +156,7 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
       content: UserPage as any,
       async props(process, { userId }) {
         const results = await process.distrib.getStoreItemsByAuthor(userId);
-        const user = await process.userDaemon?.account?.getPublicUserInfoOf(userId);
+        const user = await Daemon?.account?.getPublicUserInfoOf(userId);
 
         return { results, user };
       },

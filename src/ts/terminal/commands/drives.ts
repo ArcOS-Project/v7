@@ -1,3 +1,4 @@
+import { Fs } from "$ts/env";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
@@ -18,7 +19,7 @@ export class DrivesCommand extends TerminalProcess {
   //#endregion
 
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
-    const drives = term.fs.drives;
+    const drives = Fs.drives;
     const showHidden = flags.h || flags.hidden;
     const goTo = argv[0];
 

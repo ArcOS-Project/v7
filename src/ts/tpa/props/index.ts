@@ -4,7 +4,7 @@ import { __Console__ } from "$ts/console";
 import { contextProps } from "$ts/context/actions.svelte";
 import { MessageBox } from "$ts/dialog";
 import { FilesystemDrive } from "$ts/drives/drive";
-import { getKMod } from "$ts/env";
+import { Env } from "$ts/env";
 import { getAllImages } from "$ts/images";
 import type { JsExec } from "$ts/jsexec";
 import { tryJsonStringify } from "$ts/json";
@@ -28,7 +28,6 @@ import {
   onFolderChange,
 } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { ProcessHandlerType } from "$types/kernel";
 import type { ThirdPartyPropMap } from "$types/thirdparty";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -36,12 +35,7 @@ import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
 
 export function ThirdPartyProps(engine: JsExec): ThirdPartyPropMap {
   const props = {
-    daemon: engine.userDaemon, // ?
-    fs: engine.fs, // ?
-    env: engine.env, // ?
-    serviceHost: engine.userDaemon?.serviceHost, // ?
-    dispatch: engine.userDaemon?.systemDispatch, // ?
-    handler: getKMod<ProcessHandlerType>("stack"),
+    serviceHost: engine.userDaemon?.serviceHost, // TODO: PERMISSION_SERVICE_HOST
     MessageBox,
     icons: getAllImages(),
     util: {
@@ -79,6 +73,8 @@ export function ThirdPartyProps(engine: JsExec): ThirdPartyPropMap {
     Sleep,
     $ENTRYPOINT: engine.filePath,
     $METADATA: engine.metaPath,
+    SHELL_PID: +Env.get("shell_pid"),
+    OPERATION_ID: engine.operationId,
     load: async (path: string): Promise<any> => {},
     runApp: async (
       process: typeof ThirdPartyAppProcess,
@@ -88,7 +84,7 @@ export function ThirdPartyProps(engine: JsExec): ThirdPartyPropMap {
     ): Promise<ThirdPartyAppProcess | undefined> => undefined,
     loadHtml: async (path: string): Promise<string | undefined> => undefined,
     axios,
-    Server: Backend,
+    Server: Backend, // TODO: PERMISSION_SERVER_INTERACT
     BaseService,
     TrayIconProcess,
     Debug: (m: any) => {
@@ -100,7 +96,7 @@ export function ThirdPartyProps(engine: JsExec): ThirdPartyPropMap {
           sound: "arcos.dialog.info",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
         },
-        +engine.env.get("shell_pid")
+        +Env.get("shell_pid")
       );
     },
     CustomTitlebar,

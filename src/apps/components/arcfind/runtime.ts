@@ -1,5 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { isPopulatable } from "$ts/apps/util";
+import { Env, Fs, Stack, SysDispatch } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
@@ -19,14 +21,14 @@ export class ArcFindRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
-    this.systemDispatch.subscribe("fs-flush-file", () => this.refresh());
+    SysDispatch.subscribe("fs-flush-file", () => this.refresh());
 
     this.setSource(__SOURCE__);
   }
   async start() {
-    if (this.handler.getProcess(+this.env.get("arcfind_pid"))) return false;
+    if (Stack.getProcess(+Env.get("arcfind_pid"))) return false;
 
-    this.env.set("arcfind_pid", this.pid);
+    Env.set("arcfind_pid", this.pid);
     this.refresh();
     const preferences = this.userPreferences();
     let excludeShortcuts = preferences.searchOptions.excludeShortcuts;
@@ -39,7 +41,7 @@ export class ArcFindRuntime extends AppProcess {
   }
 
   async stop() {
-    this.env.delete("arcfind_pid");
+    Env.delete("arcfind_pid");
   }
 
   //#endregion
@@ -69,7 +71,7 @@ export class ArcFindRuntime extends AppProcess {
           description: "Leave the desktop and turn off ArcOS",
           image: this.getIconCached("ShutdownIcon"),
           action: () => {
-            this.userDaemon?.power?.shutdown();
+            Daemon?.power?.shutdown();
           },
         },
         {
@@ -77,7 +79,7 @@ export class ArcFindRuntime extends AppProcess {
           description: "Leave the desktop and restart ArcOS",
           image: this.getIconCached("RestartIcon"),
           action: () => {
-            this.userDaemon?.power?.restart();
+            Daemon?.power?.restart();
           },
         },
         {
@@ -85,7 +87,7 @@ export class ArcFindRuntime extends AppProcess {
           description: "Leave the desktop and log out ArcOS",
           image: this.getIconCached("LogoutIcon"),
           action: () => {
-            this.userDaemon?.power?.logoff();
+            Daemon?.power?.logoff();
           },
         }
       );
@@ -105,13 +107,13 @@ export class ArcFindRuntime extends AppProcess {
     this.fileSystemIndex = index; // Set the cache
 
     for (const file of index) {
-      const info = this.userDaemon?.assoc?.getFileAssociation(file.name);
+      const info = Daemon?.assoc?.getFileAssociation(file.name);
       if (preferences.searchOptions.excludeShortcuts && !!file.shortcut) continue;
       result.push({
         caption: file.shortcut ? file.shortcut.name : file.name,
         description: file.shortcut ? `Shortcut - ${file.path}` : file.path,
         action: () => {
-          this.userDaemon?.files?.openFile(file.path, file.shortcut);
+          Daemon?.files?.openFile(file.path, file.shortcut);
         },
         // Not using getIconCached for info?.icon because FileAssocSvc already returns a resolved icon path
         image: (file.shortcut ? this.getIconCached(file.shortcut.icon) : info?.icon) || this.getIconCached("DefaultMimeIcon"),
@@ -151,7 +153,7 @@ export class ArcFindRuntime extends AppProcess {
   async getFlatTree() {
     try {
       const result: PathedFileEntry[] = [];
-      const tree = await this.fs.tree(UserPaths.Home);
+      const tree = await Fs.tree(UserPaths.Home);
 
       const recurse = (tree: RecursiveDirectoryReadReturn, path = "U:") => {
         try {

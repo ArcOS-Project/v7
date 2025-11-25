@@ -1,8 +1,9 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
+import { Env, Stack } from "$ts/env";
 import { ArcLicense } from "$ts/metadata/license";
 import { Backend } from "$ts/server/axios";
+import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { htmlspecialchars } from "$ts/util";
@@ -79,7 +80,7 @@ export class SettingsRuntime extends AppProcess {
     const firstInstance = await this.closeIfSecondInstance();
 
     if (firstInstance) {
-      const dispatch = KernelStack().ConnectDispatch(firstInstance.pid);
+      const dispatch = Stack.ConnectDispatch(firstInstance.pid);
 
       dispatch?.dispatch("switch-page", this.currentPage());
       if (this.requestedSlide) dispatch?.dispatch("show-slide", this.requestedSlide);
@@ -155,9 +156,9 @@ export class SettingsRuntime extends AppProcess {
           {
             caption: "Log out",
             action: async () => {
-              const token = this.userDaemon?.token;
+              const token = Daemon?.token;
 
-              await this.userDaemon?.power?.logoff();
+              await Daemon?.power?.logoff();
 
               await Backend.post(
                 "/logallout",
@@ -184,7 +185,7 @@ export class SettingsRuntime extends AppProcess {
     this.Log("Uploading wallpaper");
 
     try {
-      await this.userDaemon?.wallpaper?.uploadWallpaper(this.pid);
+      await Daemon?.wallpaper?.uploadWallpaper(this.pid);
     } catch (e) {
       const message = (e as PromiseRejectionEvent).reason;
 
@@ -220,7 +221,7 @@ export class SettingsRuntime extends AppProcess {
           },
         ],
       },
-      +this.env.get("shell_pid") || this.pid,
+      +Env.get("shell_pid") || this.pid,
       true
     );
   }
@@ -239,7 +240,7 @@ export class SettingsRuntime extends AppProcess {
           {
             caption: "Delete it",
             action: () => {
-              this.userDaemon?.themes?.deleteUserTheme(id);
+              Daemon?.themes?.deleteUserTheme(id);
             },
             suggested: true,
           },
@@ -253,7 +254,7 @@ export class SettingsRuntime extends AppProcess {
   }
 
   async chooseProfilePicture() {
-    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Choose profile picture",
       icon: "AccountIcon",
       startDir: UserPaths.Pictures,
@@ -262,11 +263,11 @@ export class SettingsRuntime extends AppProcess {
 
     if (!path) return;
 
-    this.userDaemon?.preferencesCtx?.changeProfilePicture(path);
+    Daemon?.preferencesCtx?.changeProfilePicture(path);
   }
 
   async chooseWallpaper() {
-    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Choose wallpaper",
       icon: "DesktopIcon",
       startDir: UserPaths.Wallpapers,
@@ -293,7 +294,7 @@ export class SettingsRuntime extends AppProcess {
   }
 
   async chooseLoginBackground() {
-    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Choose login background",
       icon: "PasswordIcon",
       startDir: UserPaths.Wallpapers,
@@ -312,7 +313,7 @@ export class SettingsRuntime extends AppProcess {
   async setup2fa() {
     if (this.safeMode) return;
 
-    const elevated = await this.userDaemon!.elevation!.manuallyElevate({
+    const elevated = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to set up two-factor authentication",
       image: "ElevationIcon",
       title: "Set up 2FA",
@@ -328,7 +329,7 @@ export class SettingsRuntime extends AppProcess {
   async disableTotp() {
     if (this.safeMode) return;
 
-    const elevated = await this.userDaemon!.elevation!.manuallyElevate({
+    const elevated = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to disable two-factor authentication",
       image: "ElevationIcon",
       title: "Disable 2FA",
@@ -339,7 +340,7 @@ export class SettingsRuntime extends AppProcess {
     if (!elevated) return;
 
     try {
-      Backend.delete("/totp", { headers: { Authorization: `Bearer ${this.userDaemon?.token}` } });
+      Backend.delete("/totp", { headers: { Authorization: `Bearer ${Daemon?.token}` } });
 
       MessageBox(
         {
@@ -348,7 +349,7 @@ export class SettingsRuntime extends AppProcess {
             "Two-factor authentication has now been disabled for your account. You must restart for the changes to fully take effect.",
           buttons: [
             { caption: "Restart later", action: () => {} },
-            { caption: "Restart now", suggested: true, action: () => this.userDaemon?.power?.restart() },
+            { caption: "Restart now", suggested: true, action: () => Daemon?.power?.restart() },
           ],
           sound: "arcos.dialog.info",
           image: "GoodStatusIcon",

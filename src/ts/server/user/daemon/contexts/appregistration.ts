@@ -2,18 +2,19 @@ import type { ApplicationStorage } from "$ts/apps/storage";
 import { BuiltinAppImportPathAbsolutes } from "$ts/apps/store";
 import { MessageBox } from "$ts/dialog";
 import type { DistributionServiceProcess } from "$ts/distrib";
-import { ArcOSVersion } from "$ts/env";
+import { ArcOSVersion, Env, Fs, SysDispatch } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
+import { Permissions } from "$ts/permissions";
 import { deepCopyWithBlobs } from "$ts/util";
 import { arrayToText, textToBlob } from "$ts/util/convert";
 import { getParentDirectory, join } from "$ts/util/fs";
 import { compareVersion } from "$ts/version";
 import type { App, AppStorage, InstalledApp } from "$types/app";
 import { LogLevel } from "$types/logging";
-import type { UserDaemon } from "..";
-import { UserPaths } from "../../store";
+import { Daemon, UserDaemon } from "..";
+import { AppGroups, UserPaths } from "../../store";
 import { UserContext } from "../context";
 
 export class AppRegistrationUserContext extends UserContext {
@@ -24,7 +25,7 @@ export class AppRegistrationUserContext extends UserContext {
   async initAppStorage(storage: ApplicationStorage, cb: (app: App) => void) {
     this.Log(`Now trying to load built-in applications...`);
 
-    const blocklist = this.daemon.preferences()._internalImportBlocklist || [];
+    const blocklist = Daemon!.preferences()._internalImportBlocklist || [];
 
     const builtins: App[] = await Promise.all(
       Object.keys(BuiltinAppImportPathAbsolutes).map(async (path) => {
@@ -62,7 +63,7 @@ export class AppRegistrationUserContext extends UserContext {
                 buttons: [{ caption: "Okay", action: () => r(), suggested: true }],
                 image: "WarningIcon",
               },
-              +this.env.get("loginapp_pid"),
+              +Env.get("loginapp_pid"),
               true
             );
           });
@@ -78,12 +79,12 @@ export class AppRegistrationUserContext extends UserContext {
   }
 
   async getUserApps(): Promise<AppStorage> {
-    if (!this.daemon.preferences()) return [];
+    if (!Daemon!.preferences()) return [];
 
-    await this.daemon.migrations!.migrateUserAppsToFs();
+    await Daemon!.migrations!.migrateUserAppsToFs();
 
     const bulk = Object.fromEntries(
-      Object.entries(await this.fs.bulk(UserPaths.AppRepository, "json")).map(([k, v]) => [k.replace(".json", ""), v])
+      Object.entries(await Fs.bulk(UserPaths.AppRepository, "json")).map(([k, v]) => [k.replace(".json", ""), v])
     );
 
     return Object.values(bulk) as AppStorage;
@@ -93,17 +94,20 @@ export class AppRegistrationUserContext extends UserContext {
     this.Log(`Registering ${data.id}: writing ${data.id}.json to AppRepository`);
     const appStore = this.appStorage();
 
-    await this.fs.writeFile(join(UserPaths.AppRepository, `${data.id}.json`), textToBlob(JSON.stringify(data, null, 2)));
+    await Fs.writeFile(join(UserPaths.AppRepository, `${data.id}.json`), textToBlob(JSON.stringify(data, null, 2)));
     await appStore?.refresh();
+    await this.addToStartMenu(data.id);
   }
 
   async uninstallPackageWithStatus(id: string, deleteFiles = false) {
     this.Log(`Attempting to uninstall app '${id}'`);
     const distrib = this.serviceHost?.getService<DistributionServiceProcess>("DistribSvc");
 
+    Permissions.removeApplication(id);
+
     if (!distrib) return false;
 
-    const prog = await this.daemon.helpers!.GlobalLoadIndicator();
+    const prog = await Daemon!.helpers!.GlobalLoadIndicator();
     const result = await distrib.uninstallPackage(id, deleteFiles, (s) => prog.caption.set(s));
 
     await prog.stop();
@@ -113,7 +117,7 @@ export class AppRegistrationUserContext extends UserContext {
 
   async registerAppFromPath(path: string) {
     try {
-      const contents = await this.fs.readFile(path);
+      const contents = await Fs.readFile(path);
       if (!contents) return "failed to read file";
 
       const text = arrayToText(contents);
@@ -167,7 +171,7 @@ export class AppRegistrationUserContext extends UserContext {
             },
           ],
         },
-        +this.env.get("shell_pid"),
+        +Env.get("shell_pid"),
         true
       );
     });
@@ -181,7 +185,7 @@ export class AppRegistrationUserContext extends UserContext {
 
     if (!app) return;
 
-    this.daemon.preferences.update((v) => {
+    Daemon!.preferences.update((v) => {
       if (v.pinnedApps.includes(appId)) return v;
 
       v.pinnedApps.push(appId);
@@ -193,12 +197,97 @@ export class AppRegistrationUserContext extends UserContext {
   unpinApp(appId: string) {
     this.Log(`Unpinning ${appId}`);
 
-    this.daemon.preferences.update((v) => {
+    Daemon!.preferences.update((v) => {
       if (!v.pinnedApps.includes(appId)) return v;
 
       v.pinnedApps.splice(v.pinnedApps.indexOf(appId), 1);
 
       return v;
     });
+  }
+
+  determineStartMenuShortcutPath(app: App) {
+    if (!app) return undefined;
+
+    return join(UserPaths.StartMenu, app.metadata.appGroup ? `$$${app.metadata.appGroup}` : "", `_${app.id}.arclnk`);
+  }
+
+  async addToStartMenu(appId: string) {
+    const app = this.appStorage()?.getAppSynchronous(appId);
+    if (!app) return;
+
+    const path = this.determineStartMenuShortcutPath(app);
+    if (!path) return;
+
+    const existing = await Fs.stat(path);
+    if (existing) return;
+
+    await Daemon!.shortcuts?.createShortcut(
+      {
+        type: "app",
+        target: app.id,
+        name: app.metadata.name,
+        icon: `@app::${app.id}`,
+      },
+      path,
+      false
+    );
+
+    SysDispatch.dispatch("startmenu-refresh");
+  }
+
+  async removeFromStartMenu(appId: string) {
+    const app = this.appStorage()?.getAppSynchronous(appId);
+    if (!app) return;
+
+    const path = this.determineStartMenuShortcutPath(app);
+    if (!path) return;
+
+    await Fs.deleteItem(path, false);
+    SysDispatch.dispatch("startmenu-refresh");
+  }
+
+  async updateStartMenuFolder() {
+    const installedApps = Daemon?.appStorage()?.buffer();
+
+    if (!installedApps) return;
+
+    const { stop, incrementProgress, caption } = await Daemon!.helpers!.GlobalLoadIndicator(
+      "Updating the start menu...",
+      +Env.get("shell_pid"),
+      {
+        max: Object.keys(AppGroups).length + installedApps.length,
+        value: 0,
+        useHtml: true,
+      }
+    );
+
+    for (const appGroup in AppGroups) {
+      incrementProgress?.();
+      caption.set(`Updating the start menu...<br>Creating folder for ${AppGroups[appGroup]}`);
+
+      await Fs.createDirectory(join(UserPaths.StartMenu, `$$${appGroup}`), false);
+    }
+
+    const promises = [];
+
+    for (const app of installedApps) {
+      promises.push(
+        new Promise(async (r) => {
+          await Daemon?.appreg?.addToStartMenu(app.id);
+
+          caption.set(`Updating the start menu...<br>Created shortcut for ${app.metadata.name}`);
+
+          incrementProgress?.();
+
+          r(void 0);
+        })
+      );
+    }
+
+    await Promise.all(promises);
+
+    SysDispatch.dispatch("startmenu-refresh");
+    stop?.();
   }
 }

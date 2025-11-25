@@ -1,4 +1,4 @@
-import { ArcOSVersion } from "$ts/env";
+import { ArcOSVersion, Env } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { UserPaths } from "$ts/server/user/store";
@@ -32,7 +32,7 @@ import {
 export function getArcTermStore(term: ArcTerminal): VariableStore {
   return {
     username: {
-      get: () => term.env.get("currentuser") || "stranger",
+      get: () => Env.get("currentuser") || "stranger",
       readOnly: true,
       canDelete: false,
     },

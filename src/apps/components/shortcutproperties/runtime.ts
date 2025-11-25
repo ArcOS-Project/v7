@@ -1,6 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { Env } from "$ts/env";
 import { getAllImages } from "$ts/images";
+import { Daemon } from "$ts/server/user/daemon";
 import { getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -32,7 +34,7 @@ export class ShortcutPropertiesRuntime extends AppProcess {
   //#region ACTIONS
 
   async save() {
-    const result = await this.userDaemon?.shortcuts?.createShortcut(this.shortcutData(), this.path!);
+    const result = await Daemon?.shortcuts?.createShortcut(this.shortcutData(), this.path!);
 
     if (result) {
       await this.closeWindow();
@@ -59,13 +61,13 @@ export class ShortcutPropertiesRuntime extends AppProcess {
 
     switch (data.type) {
       case "app":
-        await this.userDaemon?.spawn?.spawnOverlay("AppInfo", +this.env.get("shell_pid"), data.target);
+        await Daemon?.spawn?.spawnOverlay("AppInfo", +Env.get("shell_pid"), data.target);
         break;
       case "file":
-        await this.userDaemon?.spawn?.spawnApp("fileManager", +this.env.get("shell_pid"), getParentDirectory(data.target));
+        await Daemon?.spawn?.spawnApp("fileManager", +Env.get("shell_pid"), getParentDirectory(data.target));
         break;
       case "folder":
-        await this.userDaemon?.spawn?.spawnApp("fileManager", +this.env.get("shell_pid"), data.target);
+        await Daemon?.spawn?.spawnApp("fileManager", +Env.get("shell_pid"), data.target);
         break;
       case "new":
         await this.closeWindow();
@@ -75,7 +77,7 @@ export class ShortcutPropertiesRuntime extends AppProcess {
 
   async changeIcon() {
     const data = this.shortcutData();
-    const icon = await this.userDaemon?.helpers?.IconPicker({
+    const icon = await Daemon?.helpers?.IconPicker({
       defaultIcon: data.icon,
       forWhat: data.name,
     });
@@ -88,7 +90,7 @@ export class ShortcutPropertiesRuntime extends AppProcess {
   async pickTarget() {
     const data = this.shortcutData();
 
-    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Pick a new target",
       icon: data.icon,
       folder: data.type === "folder",

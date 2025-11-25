@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { KernelStack } from "$ts/env";
+import { Env, Stack } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import type { AppProcessData, ContextMenuInstance, ContextMenuItem } from "$types/app";
@@ -19,7 +19,7 @@ export class ContextMenuRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
-    this.env.set("contextmenu_pid", this.pid);
+    Env.set("contextmenu_pid", this.pid);
 
     this.setSource(__SOURCE__);
   }
@@ -98,7 +98,7 @@ export class ContextMenuRuntime extends AppProcess {
     const contextProps = scope.dataset.contextprops || "";
 
     const items = this.getContextEntry(+pid, contextmenu);
-    const proc = KernelStack().getProcess(+pid);
+    const proc = Stack.getProcess(+pid);
 
     if (!items.length) return this.closeContextMenu();
 
@@ -127,11 +127,11 @@ export class ContextMenuRuntime extends AppProcess {
   //#region GETTERS
 
   getContextEntry(pid: number, scope: string): ContextMenuItem[] {
-    const proc = KernelStack().getProcess(pid);
+    const proc = Stack.getProcess(pid);
 
     if (!(proc instanceof AppProcess)) return [];
 
-    const menu = Object.entries({ ...proc.contextMenu, ...WindowSystemContextMenu(this) }); // Concatenate process context menu with the system contexts
+    const menu = Object.entries({ ...proc.contextMenu, ...WindowSystemContextMenu() }); // Concatenate process context menu with the system contexts
 
     for (const [key, items] of menu) {
       if (scope.includes(key)) return items;

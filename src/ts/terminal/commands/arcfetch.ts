@@ -1,5 +1,5 @@
 import { getDeviceInfo } from "$ts/device";
-import { ArcOSVersion, getKMod } from "$ts/env";
+import { ArcOSVersion, Env, getKMod, State } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -37,14 +37,12 @@ export class ArcFetchCommand extends TerminalProcess {
   getItems(term: ArcTerminal) {
     const server = getKMod<ServerManagerType>("server", true);
     const info = getDeviceInfo();
-    const state = KernelStateHandler()?.currentState;
+    const state = State?.currentState;
 
     return Object.entries({
       OS: `ArcOS ${ArcOSVersion}-${ArcMode()} (${ArcBuild()})`,
       Host: `${server?.url} ${BRBLACK}(${import.meta.env.DW_SERVER_AUTHCODE ? "Protected" : "Open"})${RESET}`,
-      Username: `${term.env.get("currentuser")} ${BRBLACK}(${
-        term.env.get("administrator") ? "Administrator" : "Regular User"
-      })${RESET}`,
+      Username: `${Env.get("currentuser")} ${BRBLACK}(${Env.get("administrator") ? "Administrator" : "Regular User"})${RESET}`,
       Mode: `Browser ${BRBLACK}(on state ${state?.toUpperCase()})${RESET}`,
       Terminal: `PID ${term.pid} (${term.name}) on parent PID ${term.parentPid}`,
       CPU: `${info.cpu.cores} cores`,

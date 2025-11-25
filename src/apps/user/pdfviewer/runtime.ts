@@ -1,5 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { Fs } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import { arrayToBlob } from "$ts/util/convert";
 import { getItemNameFromPath } from "$ts/util/fs";
 import { Store } from "$ts/writable";
@@ -29,7 +31,7 @@ export class PdfViewerRuntime extends AppProcess {
 
   async readFile(path: string) {
     try {
-      const url = await this.fs.direct(path);
+      const url = await Fs.direct(path);
 
       if (!url) {
         return await this.readFileIndirectFallback(path);
@@ -44,7 +46,7 @@ export class PdfViewerRuntime extends AppProcess {
   }
 
   async readFileIndirectFallback(path: string) {
-    const prog = await this.userDaemon!.files!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
         caption: `Reading image`,
@@ -55,7 +57,7 @@ export class PdfViewerRuntime extends AppProcess {
     );
 
     try {
-      const contents = await this.fs.readFile(path, (progress) => {
+      const contents = await Fs.readFile(path, (progress) => {
         prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);

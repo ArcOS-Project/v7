@@ -4,7 +4,9 @@
   import CircularProgress from "$lib/CircularProgress.svelte";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import Spinner from "$lib/Spinner.svelte";
+  import { Env, Fs } from "$ts/env";
   import type { AdminBootstrapper } from "$ts/server/admin";
+  import { Daemon } from "$ts/server/user/daemon";
   import { formatBytes } from "$ts/util/fs";
 
   const {
@@ -26,7 +28,7 @@
     indexing = true;
     const result = await admin.forceIndexFor(quota.user.username);
 
-    process.userDaemon?.notifications?.sendNotification({
+    Daemon?.notifications?.sendNotification({
       title: `Indexing for ${quota.user.username} completed`,
       message: result.length ? `- ${result.join("<br>- ")}` : "No unindexed items were found during indexing.",
       image: "GoodStatusIcon",
@@ -37,10 +39,10 @@
 
   async function mountUser() {
     mounting = true;
-    if (process.fs.drives[btoa(quota.user.username)]) await process.fs.umountDrive(btoa(quota.user.username), true);
+    if (Fs.drives[btoa(quota.user.username)]) await Fs.umountDrive(btoa(quota.user.username), true);
     else {
       const drive = await admin.mountUserDrive(quota.user.username);
-      if (drive) process.spawnApp("fileManager", +process.env.get("shell_pid"), `${drive.uuid}:/`);
+      if (drive) process.spawnApp("fileManager", +Env.get("shell_pid"), `${drive.uuid}:/`);
     }
 
     process.switchPage("filesystems", {}, true);
@@ -78,6 +80,6 @@
     </button>
   </div>
   <div class="segment mount">
-    <button onclick={mountUser} disabled={mounting}>{process.fs.drives[btoa(quota.user.username)] ? "Unmount" : "Mount"}</button>
+    <button onclick={mountUser} disabled={mounting}>{Fs.drives[btoa(quota.user.username)] ? "Unmount" : "Mount"}</button>
   </div>
 </div>

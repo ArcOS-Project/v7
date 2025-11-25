@@ -1,5 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { Fs } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import type { ShareManager } from "$ts/shares";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
@@ -26,7 +28,7 @@ export class ShareMgmtGuiRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.shareId = shareId;
-    this.shares = this.userDaemon?.serviceHost?.getService("ShareMgmt")!;
+    this.shares = Daemon?.serviceHost?.getService("ShareMgmt")!;
 
     this.setSource(__SOURCE__);
   }
@@ -35,7 +37,7 @@ export class ShareMgmtGuiRuntime extends AppProcess {
     this.info = await this.shares.getShareInfoById(this.shareId);
 
     if (!this.info) return false;
-    this.myShare = this.userDaemon?.userInfo._id === this.info.userId; // Compare user IDs to see if the share is own
+    this.myShare = Daemon?.userInfo._id === this.info.userId; // Compare user IDs to see if the share is own
 
     await this.updateMembers();
   }
@@ -84,7 +86,7 @@ export class ShareMgmtGuiRuntime extends AppProcess {
             caption: "Delete share",
             action: async () => {
               this.closeWindow(); // First close the mgmtgui
-              await this.fs.umountDrive(this.shareId); // Then unmount the share
+              await Fs.umountDrive(this.shareId); // Then unmount the share
               await this.shares.deleteShare(this.shareId); // And finally delete the share
             },
             suggested: true,

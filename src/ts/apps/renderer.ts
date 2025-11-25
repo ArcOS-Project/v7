@@ -1,6 +1,7 @@
 import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
 import { contextProps } from "$ts/context/actions.svelte";
-import { BETA, KernelStack } from "$ts/env";
+import { BETA, Env, Stack, SysDispatch } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import { UUID } from "$ts/uuid";
 import { Draggable } from "@neodrag/vanilla";
 import { unmount } from "svelte";
@@ -30,7 +31,7 @@ export class AppRenderer extends Process {
     if (!targetDiv) throw new AppRendererError("Tried to create an app renderer on a non existent element");
 
     this.target = targetDiv;
-    KernelStack().rendererPid = this.pid;
+    Stack.rendererPid = this.pid;
     this.name = "AppRenderer";
 
     this.setSource(__SOURCE__);
@@ -40,7 +41,7 @@ export class AppRenderer extends Process {
     this.focusedPid.subscribe((v) => {
       if (this._disposed || !v) return;
 
-      this.lastInteract = KernelStack().getProcess(v);
+      this.lastInteract = Stack.getProcess(v);
     });
   }
 
@@ -70,7 +71,7 @@ export class AppRenderer extends Process {
 
     body.className = "body";
 
-    const shell = KernelStack().getProcess(+this.env.get("shell_pid"));
+    const shell = Stack.getProcess(+Env.get("shell_pid"));
 
     window.className = "window shell-colored";
     window.setAttribute("data-pid", process.pid.toString());
@@ -80,7 +81,7 @@ export class AppRenderer extends Process {
     window.id = data.id;
     window.classList.toggle("no-shell", !shell);
 
-    process.userDaemon?.preferences.subscribe((v) => {
+    Daemon?.preferences.subscribe((v) => {
       window.classList.toggle("colored", v.shell.taskbar.colored && !app.data.core);
     });
 
@@ -137,7 +138,7 @@ export class AppRenderer extends Process {
         this.notifyCrash(data, e as Error, process);
       }
 
-      await KernelStack().kill(process.pid);
+      await Stack.kill(process.pid);
     }
   }
 
@@ -174,7 +175,7 @@ export class AppRenderer extends Process {
       if (data.state?.maximized) window.classList.add("maximized");
       if (data.state?.fullscreen) {
         window.classList.add("fullscreen");
-        this.systemDispatch.dispatch("window-fullscreen", [proc.pid, proc.app.desktop]);
+        SysDispatch.dispatch("window-fullscreen", [proc.pid, proc.app.desktop]);
       }
       if (data.entrypoint || data.thirdParty || data.workingDirectory) window.classList.add("tp");
     }
@@ -290,7 +291,7 @@ export class AppRenderer extends Process {
       titleIcon.src = process.getIconCached(v) || v;
     });
 
-    titleIcon.src = process.userDaemon?.icons?.getAppIconByProcess(process) || process.getIconCached("ComponentIcon");
+    titleIcon.src = Daemon?.icons?.getAppIconByProcess(process) || process.getIconCached("ComponentIcon");
 
     title.className = "window-title";
     title.append(titleIcon, titleCaption, this._renderAltMenu(process));
@@ -311,7 +312,7 @@ export class AppRenderer extends Process {
       feedbackButton.className = "link feedback";
       feedbackButton.innerText = "Feedback?";
       feedbackButton.addEventListener("click", () => {
-        process.userDaemon?.helpers?.iHaveFeedback(process);
+        Daemon?.helpers?.iHaveFeedback(process);
       });
 
       titlebar.append(feedbackButton);
@@ -327,8 +328,8 @@ export class AppRenderer extends Process {
 
     menu.className = "alt-menu nodrag";
 
-    const contextMenuPid = this.env.get("contextmenu_pid");
-    const contextMenu = KernelStack().getProcess<ContextMenuRuntime>(+contextMenuPid);
+    const contextMenuPid = Env.get("contextmenu_pid");
+    const contextMenu = Stack.getProcess<ContextMenuRuntime>(+contextMenuPid);
     if (!contextMenu) return menu;
 
     process.altMenu.subscribe((v) => {
@@ -504,7 +505,7 @@ export class AppRenderer extends Process {
 
     if (!pid) return;
 
-    const process = KernelStack().getProcess<AppProcess>(pid, true);
+    const process = Stack.getProcess<AppProcess>(pid, true);
 
     if (process?.componentMount && Object.entries(process.componentMount).length) unmount(process?.componentMount);
 
@@ -542,11 +543,11 @@ export class AppRenderer extends Process {
 
     this.updateDraggableDisabledState(pid, window);
 
-    this.systemDispatch.dispatch(window.classList.contains("maximized") ? "window-maximize" : "window-unmaximize", [pid]);
+    SysDispatch.dispatch(window.classList.contains("maximized") ? "window-maximize" : "window-unmaximize", [pid]);
   }
 
   updateDraggableDisabledState(pid: number, window: HTMLDivElement) {
-    const process = KernelStack().getProcess<AppProcess>(pid);
+    const process = Stack.getProcess<AppProcess>(pid);
 
     if (!process || !process.draggable) return;
 
@@ -569,11 +570,11 @@ export class AppRenderer extends Process {
     if (!window || !window.classList.contains("minimized")) return;
 
     window.classList.remove("minimized");
-    const process = KernelStack().getProcess<AppProcess>(+pid);
+    const process = Stack.getProcess<AppProcess>(+pid);
 
     if (!process || !process.app) return;
 
-    this.systemDispatch.dispatch("window-unminimize", [pid, process.app.desktop]);
+    SysDispatch.dispatch("window-unminimize", [pid, process.app.desktop]);
 
     this.updateDraggableDisabledState(pid, window);
   }
@@ -592,7 +593,7 @@ export class AppRenderer extends Process {
       window.removeAttribute("data-snapstate");
     }
 
-    if (dispatch) this.systemDispatch.dispatch("window-unsnap", [pid]);
+    if (dispatch) SysDispatch.dispatch("window-unsnap", [pid]);
 
     this.updateDraggableDisabledState(pid, window);
   }
@@ -610,7 +611,7 @@ export class AppRenderer extends Process {
     window.classList.remove("maximized");
     window.setAttribute("data-snapstate", variant);
 
-    this.systemDispatch.dispatch("window-snap", [pid, variant]);
+    SysDispatch.dispatch("window-snap", [pid, variant]);
     this.updateDraggableDisabledState(pid, window);
   }
 
@@ -626,11 +627,11 @@ export class AppRenderer extends Process {
     const minimized = window.classList.contains("minimized");
     if (minimized) this.focusedPid.set(-1);
 
-    const process = KernelStack().getProcess<AppProcess>(+pid);
+    const process = Stack.getProcess<AppProcess>(+pid);
 
     if (!process || !process.app) return;
 
-    this.systemDispatch.dispatch(minimized ? "window-minimize" : "window-unminimize", [pid, process.app.desktop]);
+    SysDispatch.dispatch(minimized ? "window-minimize" : "window-unminimize", [pid, process.app.desktop]);
     this.updateDraggableDisabledState(pid, window);
   }
 
@@ -643,11 +644,11 @@ export class AppRenderer extends Process {
 
     window.classList.toggle("fullscreen");
 
-    const process = KernelStack().getProcess<AppProcess>(+pid);
+    const process = Stack.getProcess<AppProcess>(+pid);
 
     if (!process || !process.app) return;
 
-    this.systemDispatch.dispatch(window.classList.contains("fullscreen") ? "window-fullscreen" : "window-unfullscreen", [
+    SysDispatch.dispatch(window.classList.contains("fullscreen") ? "window-fullscreen" : "window-unfullscreen", [
       pid,
       process.app.desktop,
     ]);
@@ -660,7 +661,7 @@ export class AppRenderer extends Process {
     for (const pid of this.currentState) {
       if (pid === originPid) continue;
 
-      const proc = KernelStack().getProcess<AppProcess>(pid);
+      const proc = Stack.getProcess<AppProcess>(pid);
 
       if (proc && proc.app && proc.app.data && proc.app.data.id === id) result.push(proc);
     }
@@ -672,12 +673,12 @@ export class AppRenderer extends Process {
     const mod = await BuiltinAppImportPathAbsolutes["/src/apps/components/oopsnotifier/OopsNotifier.ts"]();
     const app = (mod as any).default as App;
 
-    await KernelStack().waitForAvailable();
-    const proc = await KernelStack().spawn(
+    await Stack.waitForAvailable();
+    const proc = await Stack.spawn(
       app.assets.runtime,
       undefined,
       "SYSTEM",
-      +this.env.get("shell_pid"),
+      +Env.get("shell_pid"),
       {
         data: { ...app, overlay: true },
         id: app.id,

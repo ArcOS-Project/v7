@@ -1,4 +1,5 @@
 import type { ApplicationStorage } from "$ts/apps/storage";
+import { Env } from "$ts/env";
 import type { ProtocolHandler } from "$types/proto";
 
 export const SpawnAppHandler: ProtocolHandler = {
@@ -18,7 +19,7 @@ export const SpawnAppHandler: ProtocolHandler = {
   action: async (payload, daemon) => {
     return !!(await daemon.spawn!.spawnApp(
       payload.id,
-      +daemon.env.get("shell_pid"),
+      +Env.get("shell_pid"),
       ...(Array.isArray(payload.args) ? payload.args : [])
     ));
   },

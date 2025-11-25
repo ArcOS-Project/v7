@@ -1,4 +1,5 @@
 import { getKMod } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import type { BugReport, ReportOptions } from "$types/bughunt";
@@ -20,7 +21,7 @@ export class BugHuntUserSpaceProcess extends BaseService {
     super(pid, parentPid, name, host);
 
     this.module = getKMod<BugHuntType>("bughunt");
-    this.token = host.daemon.token;
+    this.token = Daemon!.token;
 
     this.setSource(__SOURCE__);
   }

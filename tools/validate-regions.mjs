@@ -42,5 +42,5 @@ if (violations.length > 0) {
   console.error(`\nvalidate-regions failed with ${violations.length} violations.`);
   process.exit(1);
 } else {
-  console.log("\nAll Process classes contain LIFECYCLE region.");
+  console.log("\n✅ All Process classes contain LIFECYCLE region.");
 }

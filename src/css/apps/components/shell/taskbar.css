@@ -20,8 +20,6 @@ div.shell div.taskbar {
     translate 0.3s,
     opacity 0.3s,
     margin-top 0.3s;
-  translate: 0 70px;
-  animation: arcShell_taskbar_appear 0.3s cubic-bezier(0.075, 0.82, 0.165, 1) forwards !important;
 }
 
 div.shell.docked div.taskbar.shell-colored::before {
@@ -225,15 +223,6 @@ div.shell div.taskbar div.pinned-apps > button + button {
 
 #arcShell div.taskbar div.tray-icons > div.icon > div.popup:not(.visible) * {
   pointer-events: none !important;
-}
-
-@keyframes arcShell_taskbar_appear {
-  0% {
-    translate: 0 70px;
-  }
-  100% {
-    translate: 0;
-  }
 }
 
 div.shell.has-fullscreen div.taskbar {

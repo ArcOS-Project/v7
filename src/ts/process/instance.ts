@@ -1,21 +1,15 @@
-import { getKMod } from "$ts/env";
-import type { EnvironmentType, FilesystemType, ProcessHandlerType, SoundbusType, SystemDispatchType } from "$types/kernel";
+import { Fs, getKMod } from "$ts/env";
 import { LogLevel } from "../../types/logging";
 import { Log } from "../logging";
 import { ProcessDispatch } from "./dispatch";
 
 export class Process {
-  public env: EnvironmentType;
-  public soundBus: SoundbusType;
   public dispatch: ProcessDispatch;
-  public systemDispatch: SystemDispatchType;
-  public handler: ProcessHandlerType;
   public pid: number;
   public parentPid: number;
   public name = "";
   public _disposed = false;
   public _criticalProcess = false;
-  public fs: FilesystemType;
   public sourceUrl: string = "undetermined";
   private fileLocks: string[] = [];
 
@@ -25,11 +19,6 @@ export class Process {
     this.parentPid = parentPid || 0;
     this.name ||= this.constructor.name;
     this.dispatch = new ProcessDispatch(this);
-    this.systemDispatch = getKMod<SystemDispatchType>("dispatch");
-    this.env = getKMod<EnvironmentType>("env");
-    this.soundBus = getKMod<SoundbusType>("soundbus");
-    this.fs = getKMod<FilesystemType>("fs");
-    this.handler = getKMod<ProcessHandlerType>("stack");
   }
 
   protected async stop(): Promise<any> {
@@ -73,7 +62,7 @@ export class Process {
     this.Log(`Requesting file lock for '${path}'`);
 
     try {
-      await this.fs.lockFile(path, this.pid);
+      await Fs.lockFile(path, this.pid);
 
       this.fileLocks.push(path);
     } catch {
@@ -85,7 +74,7 @@ export class Process {
     this.Log(`Requesting file unlock for '${path}'`);
 
     try {
-      await this.fs.releaseLock(path, this.pid);
+      await Fs.releaseLock(path, this.pid);
 
       this.fileLocks.splice(this.fileLocks.indexOf(path));
     } catch {

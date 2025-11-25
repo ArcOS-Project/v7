@@ -1,5 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import type { BugHuntUserSpaceProcess } from "$ts/bughunt/process";
+import { Fs } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath } from "$ts/util/fs";
@@ -27,7 +29,7 @@ export class BugHuntRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
-    this.bughunt = this.userDaemon?.serviceHost?.getService<BugHuntUserSpaceProcess>("BugHuntUsp")!;
+    this.bughunt = Daemon?.serviceHost?.getService<BugHuntUserSpaceProcess>("BugHuntUsp")!;
     this.altMenu.set(BugHuntAltMenu(this));
 
     this.setSource(__SOURCE__);
@@ -90,7 +92,7 @@ export class BugHuntRuntime extends AppProcess {
 
     if (!report) return;
 
-    const [path] = await this.userDaemon!.files!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       isSave: true,
       title: "Choose where to export the report to",
       icon: "SaveIcon",
@@ -101,7 +103,7 @@ export class BugHuntRuntime extends AppProcess {
 
     if (!path) return;
 
-    const prog = await this.userDaemon!.files!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
         icon: "SaveIcon",
@@ -111,7 +113,7 @@ export class BugHuntRuntime extends AppProcess {
       this.pid
     );
     try {
-      await this.fs.writeFile(path, textToBlob(JSON.stringify(report, null, 2)), (progress) => {
+      await Fs.writeFile(path, textToBlob(JSON.stringify(report, null, 2)), (progress) => {
         prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);

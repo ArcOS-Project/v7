@@ -1,5 +1,6 @@
 import DeleteUser from "$lib/Daemon/DeleteUser.svelte";
 import { MessageBox } from "$ts/dialog";
+import { Env, Server, SysDispatch } from "$ts/env";
 import { toForm } from "$ts/form";
 import { Backend } from "$ts/server/axios";
 import { authcode } from "$ts/util";
@@ -7,7 +8,7 @@ import { ElevationLevel } from "$types/elevation";
 import { LogLevel } from "$types/logging";
 import type { PublicUserInfo, UserInfo } from "$types/user";
 import Cookies from "js-cookie";
-import type { UserDaemon } from "..";
+import { Daemon, type UserDaemon } from "..";
 import { UserContext } from "../context";
 
 export class AccountUserContext extends UserContext {
@@ -54,18 +55,18 @@ export class AccountUserContext extends UserContext {
 
       if (!data) return undefined;
 
-      this.daemon.preferencesCtx?.preferences.set(data.preferences);
+      Daemon!.preferencesCtx?.preferences.set(data.preferences);
 
-      this.daemon?.preferencesCtx?.sanitizeUserPreferences(); 
+      Daemon!?.preferencesCtx?.sanitizeUserPreferences(); 
 
       this.initialized = true;
       this.userInfo = data;
-      this.env.set("currentuser", this.username);
-      if (data.admin) this.env.set("administrator", data.admin);
+      Env.set("currentuser", this.username);
+      if (data.admin) Env.set("administrator", data.admin);
 
       return response.status === 200 ? (response.data as UserInfo) : undefined;
     } catch {
-      await this.daemon.killSelf();
+      await Daemon!.killSelf();
 
       return undefined;
     }
@@ -76,7 +77,7 @@ export class AccountUserContext extends UserContext {
 
     this.Log(`Changing username to "${newUsername}"`);
 
-    const elevated = await this.daemon.elevation?.manuallyElevate({
+    const elevated = await Daemon!.elevation?.manuallyElevate({
       what: "ArcOS needs your permission to change your username:",
       image: "AccountIcon",
       title: "Change username",
@@ -94,7 +95,7 @@ export class AccountUserContext extends UserContext {
       if (response.status !== 200) return false;
 
       this.username = newUsername;
-      this.systemDispatch.dispatch("change-username", [newUsername]);
+      SysDispatch.dispatch("change-username", [newUsername]);
 
       Cookies.set("arcUsername", newUsername, {
         expires: 14,
@@ -112,7 +113,7 @@ export class AccountUserContext extends UserContext {
 
     this.Log(`Changing password to [REDACTED]`);
 
-    const elevated = await this.daemon.elevation?.manuallyElevate({
+    const elevated = await Daemon!.elevation?.manuallyElevate({
       what: "ArcOS needs your permission to change your password:",
       image: "PasswordIcon",
       title: "Change password",
@@ -140,7 +141,7 @@ export class AccountUserContext extends UserContext {
       const response = await Backend.get(`/user/info/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
       const information = response.data as PublicUserInfo;
 
-      information.profilePicture = `${this.server.url}/user/pfp/${userId}${authcode()}`;
+      information.profilePicture = `${Server.url}/user/pfp/${userId}${authcode()}`;
 
       return information;
     } catch {
@@ -163,14 +164,14 @@ export class AccountUserContext extends UserContext {
             caption: "Delete account",
             action: async () => {
               await Backend.delete(`/user`, { headers: { Authorization: `Bearer ${this.token}` } });
-              this.daemon?.power?.logoff();
+              Daemon!?.power?.logoff();
             },
             suggested: true,
           },
         ],
         sound: "arcos.dialog.warning",
       },
-      +this.env.get("shell_pid"),
+      +Env.get("shell_pid"),
       true
     );
   }  

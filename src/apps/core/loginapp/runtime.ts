@@ -2,8 +2,7 @@ import { FirstRunApp } from "$apps/components/firstrun/FirstRun";
 import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/TotpAuthGui";
 import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
-import { getKMod, KernelStack } from "$ts/env";
-import { KernelStateHandler } from "$ts/getters";
+import { Env, getKMod, SoundBus, Stack, State, SysDispatch } from "$ts/env";
 import { ProfilePictures } from "$ts/images/pfp";
 import { tryJsonParse } from "$ts/json";
 import { ProtocolServiceProcess } from "$ts/proto";
@@ -47,12 +46,12 @@ export class LoginAppRuntime extends AppProcess {
     const server = getKMod<ServerManagerType>("server");
 
     this.unexpectedInvocation =
-      KernelStateHandler()?.currentState !== "boot" && KernelStateHandler()?.currentState !== "initialSetup" && !props?.type;
+      State?.currentState !== "boot" && State?.currentState !== "initialSetup" && !props?.type;
     this.server = server;
     this.serverInfo.set(server.serverInfo!);
-    this.safeMode = !!(props?.safeMode || this.env.get("safemode"));
+    this.safeMode = !!(props?.safeMode || Env.get("safemode"));
 
-    if (this.safeMode) this.env.set("safemode", true);
+    if (this.safeMode) Env.set("safemode", true);
 
     this.updateServerStuff();
 
@@ -85,7 +84,7 @@ export class LoginAppRuntime extends AppProcess {
 
       if (!props.userDaemon) throw new Error(`LoginAppRuntimeConstructor: Irregular login type without daemon`);
 
-      this.soundBus.playSound("arcos.system.logoff");
+      SoundBus.playSound("arcos.system.logoff");
       props.userDaemon?.renderer?.setAppRendererClasses(props.userDaemon.preferences());
 
       switch (props.type) {
@@ -102,25 +101,25 @@ export class LoginAppRuntime extends AppProcess {
           throw new Error(`LoginAppRuntimeConstructor: invalid login type '${props.type}'`);
       }
     } else {
-      KernelStateHandler()?.getStateLoaders()?.main?.removeAttribute("style");
+      State?.getStateLoaders()?.main?.removeAttribute("style");
     }
 
     this.setSource(__SOURCE__);
   }
 
   async start() {
-    this.env.set("loginapp_pid", this.pid);
+    Env.set("loginapp_pid", this.pid);
   }
 
   async stop() {
-    this.env.delete("loginapp_pid");
+    Env.delete("loginapp_pid");
   }
 
   async render() {
     this.getBody().classList.add("theme-dark");
 
     if (this.serverInfo().freshBackend) {
-      KernelStateHandler()?.loadState("initialSetup");
+      State?.loadState("initialSetup");
       return false;
     }
 
@@ -152,15 +151,7 @@ export class LoginAppRuntime extends AppProcess {
 
     this.loadingStatus.set(this.getWelcomeString());
 
-    const userDaemon = await KernelStack().spawn<UserDaemon>(
-      UserDaemon,
-      undefined,
-      info?._id || "SYSTEM",
-      1,
-      token,
-      username,
-      info
-    );
+    const userDaemon = await Stack.spawn<UserDaemon>(UserDaemon, undefined, info?._id || "SYSTEM", 1, token, username, info);
 
     if (!userDaemon) {
       this.loadingStatus.set("");
@@ -255,6 +246,7 @@ export class LoginAppRuntime extends AppProcess {
 
     broadcast("Starting drive notifier watcher");
     userDaemon.init!.startDriveNotifierWatcher();
+    await userDaemon.init!.startPermissionHandler();
 
     broadcast("Starting share management");
     await userDaemon.init!.startShareManager();
@@ -272,8 +264,8 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.init!.startSystemStatusRefresh();
 
     broadcast("Let's go!");
-    await KernelStateHandler()?.loadState("desktop", { userDaemon });
-    this.soundBus.playSound("arcos.system.logon");
+    await State?.loadState("desktop", { userDaemon });
+    SoundBus.playSound("arcos.system.logon");
     userDaemon.renderer!.setAppRendererClasses(userDaemon.preferences());
     userDaemon.checks!.checkNightly();
 
@@ -306,7 +298,7 @@ export class LoginAppRuntime extends AppProcess {
     this.loadingStatus.set(`Goodbye, ${daemon.username}!`);
     this.errorMessage.set("");
 
-    for (const [_, proc] of [...KernelStack().store()]) {
+    for (const [_, proc] of [...Stack.store()]) {
       if (proc && !proc._disposed && proc instanceof AppProcess && proc.pid !== this.pid) {
         await proc.killSelf();
       }
@@ -316,17 +308,17 @@ export class LoginAppRuntime extends AppProcess {
     this.loginBackground.set((await daemon.wallpaper!.getWallpaper(daemon.preferences().account.loginBackground)).url);
 
     await Sleep(2000);
-
     await daemon.activity!.logActivity("logout");
-
+    
     this.resetCookies();
     await daemon.account!.discontinueToken();
+    await daemon.stopUserContexts();
     await daemon.killSelf();
 
     setTimeout(async () => {
       this.loadingStatus.set("");
       this.hideProfileImage.set(false);
-      KernelStateHandler()?.getStateLoaders()?.main?.removeAttribute("style");
+      State?.getStateLoaders()?.main?.removeAttribute("style");
 
       await this.loadPersistence();
     }, 600);
@@ -350,7 +342,7 @@ export class LoginAppRuntime extends AppProcess {
     await Sleep(2000);
 
     if (daemon) await daemon.killSelf();
-    KernelStateHandler()?.loadState("turnedOff");
+    State?.loadState("turnedOff");
   }
 
   async restart(daemon?: UserDaemon) {
@@ -360,7 +352,9 @@ export class LoginAppRuntime extends AppProcess {
 
     if (daemon) {
       this.profileImage.set(`${this.server.url}/user/pfp/${daemon.userInfo._id}${authcode()}`);
-      this.loginBackground.set((await daemon.wallpaper?.getWallpaper(daemon.preferences().account.loginBackground))?.url || this.DEFAULT_WALLPAPER());
+      this.loginBackground.set(
+        (await daemon.wallpaper?.getWallpaper(daemon.preferences().account.loginBackground))?.url || this.DEFAULT_WALLPAPER()
+      );
 
       this.profileName.set(daemon.preferences().account.displayName || daemon.username);
     }
@@ -490,15 +484,15 @@ export class LoginAppRuntime extends AppProcess {
     const returnId = UUID();
 
     return new Promise(async (r) => {
-      this.systemDispatch.subscribe("totp-unlock-success", ([id]) => {
+      SysDispatch.subscribe("totp-unlock-success", ([id]) => {
         if (id === returnId) r(true);
       });
 
-      this.systemDispatch.subscribe("totp-unlock-cancel", ([id]) => {
+      SysDispatch.subscribe("totp-unlock-cancel", ([id]) => {
         if (id === returnId) r(false);
       });
 
-      await KernelStack().spawn(
+      await Stack.spawn(
         TotpAuthGuiRuntime,
         undefined,
         userId,
@@ -511,7 +505,7 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async firstRun(daemon: UserDaemon) {
-    const process = await KernelStack().spawn<FirstRunRuntime>(
+    const process = await Stack.spawn<FirstRunRuntime>(
       FirstRunRuntime,
       undefined,
       daemon.userInfo?._id,
@@ -522,16 +516,15 @@ export class LoginAppRuntime extends AppProcess {
 
     if (!process) return;
 
+    Env.set("shell_pid", this.pid);
+
     await new Promise<void>((r) => process.done.subscribe((v) => v && r()));
 
-    // daemon.preferences.update((v) => {
-    //   v.firstRunDone = true;
-    //   return v;
-    // });
+    Env.delete("shell_pid");
   }
 
   createUser() {
-    KernelStateHandler()?.loadState("initialSetup");
+    State?.loadState("initialSetup");
   }
 
   //#endregion

@@ -1,9 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
 import { __Console__ } from "$ts/console";
-import { Kernel } from "$ts/env";
-import { KernelStateHandler } from "$ts/getters";
+import { Env, Kernel, State, SysDispatch } from "$ts/env";
 import type { App } from "$types/app";
-import type { ConstructedWaveKernel, EnvironmentType, SystemDispatchType } from "$types/kernel";
+import type { ConstructedWaveKernel } from "$types/kernel";
 import type { ProcessContext, ProcessKillResult } from "$types/process";
 import { parse } from "stacktrace-parser";
 import { AppRenderer } from "../../apps/renderer";
@@ -18,17 +17,12 @@ export class ProcessHandler extends KernelModule {
   public store = Store<Map<number, Process>>(new Map([]));
   public rendererPid = -1;
   public renderer: AppRenderer | undefined;
-  public env: EnvironmentType;
-  public dispatch: SystemDispatchType;
   public processContexts = new Map<number, ProcessContext>([]);
 
   //#region LIFECYCLE
 
   constructor(kernel: ConstructedWaveKernel, id: string) {
     super(kernel, id);
-
-    this.env = Kernel()!.getModule<EnvironmentType>("env");
-    this.dispatch = Kernel()!.getModule<SystemDispatchType>("dispatch");
   }
 
   async startRenderer(initPid: number) {
@@ -43,7 +37,7 @@ export class ProcessHandler extends KernelModule {
     this.isKmod();
     this.BUSY = true;
 
-    this.dispatch.dispatch("stack-busy");
+    SysDispatch.dispatch("stack-busy");
     this.Log(`Now busy: ${reason}`);
   }
 
@@ -51,7 +45,7 @@ export class ProcessHandler extends KernelModule {
     this.isKmod();
     this.BUSY = false;
 
-    this.dispatch.dispatch("stack-not-busy");
+    SysDispatch.dispatch("stack-not-busy");
     this.Log(`Now no longer busy: ${reason}`);
   }
 
@@ -64,13 +58,13 @@ export class ProcessHandler extends KernelModule {
   ): Promise<T | undefined> {
     this.isKmod();
 
-    if (Kernel()?.PANICKED || this.BUSY) return;
+    if (Kernel?.PANICKED || this.BUSY) return;
 
     this.makeBusy("Spawning process");
 
-    const userDaemonPid = this.env.get("userdaemon_pid");
+    const userDaemonPid = Env.get("userdaemon_pid");
 
-    if (KernelStateHandler()?.currentState === "desktop" && userDaemonPid) {
+    if (State?.currentState === "desktop" && userDaemonPid) {
       parentPid ??= +userDaemonPid;
     }
 
@@ -148,7 +142,7 @@ export class ProcessHandler extends KernelModule {
   async kill(pid: number, force = false): Promise<ProcessKillResult> {
     this.isKmod();
 
-    if (this.BUSY || Kernel()?.PANICKED) return "err_disposed";
+    if (this.BUSY || Kernel?.PANICKED) return "err_disposed";
 
     Log("ProcessHandler.kill", `Attempting to kill ${pid}`);
 
@@ -197,7 +191,7 @@ export class ProcessHandler extends KernelModule {
   public async _killSubProceses(pid: number, force = false) {
     this.isKmod();
 
-    if (Kernel()?.PANICKED) return;
+    if (Kernel?.PANICKED) return;
 
     const procs = this.getSubProcesses(pid);
 

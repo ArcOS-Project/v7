@@ -1,5 +1,7 @@
+import { Fs } from "$ts/env";
 import { getAllImages, getGroupedIcons, iconIdFromPath, maybeIconId } from "$ts/images";
 import { tryJsonParse } from "$ts/json";
+import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
@@ -42,7 +44,7 @@ export class IconService extends BaseService {
 
   async loadConfiguration() {
     this.Log(`Loading configuration`);
-    const config = tryJsonParse<Record<string, string>>(arrayToText((await this.fs.readFile(this.PATH))!));
+    const config = tryJsonParse<Record<string, string>>(arrayToText((await Fs.readFile(this.PATH))!));
 
     if (!config || typeof config === "string") {
       return await this.writeConfiguration(this.defaultConfiguration());
@@ -54,7 +56,7 @@ export class IconService extends BaseService {
   async writeConfiguration(config: Record<string, string>) {
     this.Log(`Writing configuration: ${Object.keys(config).length} icons`);
 
-    await this.fs.writeFile(this.PATH, textToBlob(JSON.stringify(config, null, 2)));
+    await Fs.writeFile(this.PATH, textToBlob(JSON.stringify(config, null, 2)));
 
     return config;
   }
@@ -83,7 +85,7 @@ export class IconService extends BaseService {
 
       switch (type) {
         case "app":
-          const app = this.host.daemon.appStorage()?.getAppSynchronous(data);
+          const app = Daemon!.appStorage()?.getAppSynchronous(data);
           if (!app) iconPath = this.DEFAULT_ICON;
           else iconPath = this.getAppIcon(app);
           break;
@@ -91,7 +93,7 @@ export class IconService extends BaseService {
           iconPath = maybeIconId(data) || this.DEFAULT_ICON;
           break;
         case "fs":
-          const direct = (noCache ? undefined : this.FILE_CACHE[data]) || (await this.fs.direct(data));
+          const direct = (noCache ? undefined : this.FILE_CACHE[data]) || (await Fs.direct(data));
           if (!direct) iconPath = this.DEFAULT_ICON;
           else {
             this.FILE_CACHE[data] = iconPath = direct;
@@ -130,7 +132,7 @@ export class IconService extends BaseService {
 
       switch (type) {
         case "app":
-          const app = this.host.daemon.appStorage()?.getAppSynchronous(data);
+          const app = Daemon!.appStorage()?.getAppSynchronous(data);
           if (!app) iconPath = this.DEFAULT_ICON;
           else iconPath = this.getAppIcon(app, app.workingDirectory);
           break;
@@ -188,7 +190,7 @@ export class IconService extends BaseService {
     const { icon } = app.metadata;
     try {
       const maybe = this.getIconCached(icon);
-      const appStore = this.host.daemon!.appStorage();
+      const appStore = Daemon!.appStorage();
 
       if (icon.startsWith("http")) return icon;
       if (maybe !== icon && maybe !== this.DEFAULT_ICON) return maybe;
@@ -221,6 +223,7 @@ export class IconService extends BaseService {
     return result;
   }
 
+  // MIGRATION inversional: continuous
   // Migration for updating the icon config when a new version of ArcOS releases
   migrateIconConfiguration() {
     const icons = this.defaultConfiguration();

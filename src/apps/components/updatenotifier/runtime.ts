@@ -1,4 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
+import { Daemon } from "$ts/server/user/daemon";
 import type { AppProcessData } from "$types/app";
 
 export class UpdateNotifierRuntime extends AppProcess {
@@ -10,22 +11,24 @@ export class UpdateNotifierRuntime extends AppProcess {
   }
 
   async start() {
-    if (this.userDaemon?.autoLoadComplete) return false;
+    if (Daemon?.autoLoadComplete) return false;
   }
 
   async onClose() {
-    const { stop } = await this.userDaemon!.helpers!.GlobalLoadIndicator("Just a moment...", this.pid);
+    const { stop } = await Daemon!.helpers!.GlobalLoadIndicator("Just a moment...", this.pid);
 
-    await this.userDaemon?.version?.updateRegisteredVersion();
+    await Daemon?.version?.updateRegisteredVersion();
     await this.updateFileDefinitions();
+
     stop();
 
+    await Daemon?.appreg?.updateStartMenuFolder();
     return true;
   }
 
   //#endregion
 
   async updateFileDefinitions() {
-    this.userDaemon?.migrations?.updateFileAssociations();
+    Daemon?.migrations?.updateFileAssociations();
   }
 }

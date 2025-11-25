@@ -33,6 +33,6 @@
     aria-label="Toggle redacting"
   ></button>
   <div class="sep"></div>
-  <ProfilePicture height={20} userDaemon={process.userDaemon!} />
+  <ProfilePicture height={20} />
   <span>{process.username}</span>
 </div>

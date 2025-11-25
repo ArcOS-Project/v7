@@ -1,7 +1,7 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
   import { contextProps } from "$ts/context/actions.svelte";
-  import type { UserDaemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/server/user/daemon";
   import { Wallpapers } from "$ts/wallpaper/store";
   import type { UserPreferencesStore } from "$types/user";
   import type { Wallpaper } from "$types/wallpaper";
@@ -10,11 +10,10 @@
   interface Props {
     id: string;
     userPreferences: UserPreferencesStore;
-    userDaemon: UserDaemon;
     isLogin?: boolean;
   }
 
-  const { id, userPreferences, userDaemon, isLogin = false }: Props = $props();
+  const { id, userPreferences, isLogin = false }: Props = $props();
 
   let wallpaper = $state<Wallpaper>(Wallpapers.img0);
   let loading = $state<boolean>(true);
@@ -25,7 +24,7 @@
 
   async function getWallpaper() {
     loading = true;
-    wallpaper = await userDaemon.wallpaper!.getWallpaper(id);
+    wallpaper = await Daemon!.wallpaper!.getWallpaper(id);
     loading = false;
   }
 

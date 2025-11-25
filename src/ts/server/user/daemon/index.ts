@@ -1,6 +1,7 @@
 //#region IMPORTS
+import type { ShellRuntime } from "$apps/components/shell/runtime";
 import { ApplicationStorage } from "$ts/apps/storage";
-import { getKMod, KernelStack } from "$ts/env";
+import { Env, getKMod, KernelServerUrl, Stack, State, SysDispatch } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { Process } from "$ts/process/instance";
 import type { ProtocolServiceProcess } from "$ts/proto";
@@ -11,7 +12,7 @@ import { Sleep } from "$ts/sleep";
 import { LibraryManagement } from "$ts/tpa/libraries";
 import { Store } from "$ts/writable";
 import type { App } from "$types/app";
-import type { EnvironmentType, ServerManagerType } from "$types/kernel";
+import type { EnvironmentType } from "$types/kernel";
 import type { UserInfo, UserPreferences } from "$types/user";
 import type { FileAssocService } from "../assoc";
 import { DefaultUserInfo } from "../default";
@@ -53,7 +54,6 @@ export class UserDaemon extends Process {
   override _criticalProcess: boolean = true;
   public copyList = Store<string[]>([]);
   public cutList = Store<string[]>([]);
-  public server: ServerManagerType;
   public globalDispatch?: GlobalDispatch;
   public assoc?: FileAssocService;
   public serviceHost?: ServiceHost;
@@ -94,20 +94,20 @@ export class UserDaemon extends Process {
 
     this.token = token;
     this.username = username;
-    this.env.set("userdaemon_pid", this.pid);
+    Env.set("userdaemon_pid", this.pid);
     if (userInfo) this.userInfo = userInfo;
 
-    this.server = getKMod<ServerManagerType>("server");
-    this.safeMode = !!this.env.get("safemode");
+    this.safeMode = !!Env.get("safemode");
     this.name = "UserDaemon";
 
     this.setSource(__SOURCE__);
+    Daemon = this;
   }
 
   async start() {
     try {
       await this.startUserContexts();
-      this.usingTargetedAuthorization = this.server.url !== import.meta.env.DW_SERVER_URL;
+      this.usingTargetedAuthorization = KernelServerUrl !== import.meta.env.DW_SERVER_URL;
     } catch {
       return false;
     }
@@ -116,16 +116,14 @@ export class UserDaemon extends Process {
   async stop() {
     if (this._disposed) return;
 
-    await this.stopUserContexts();
-
-    if (!this._toLoginInvoked && KernelStateHandler()?.currentState === "desktop") {
-      KernelStateHandler()?.loadState("login", { type: "restart", userDaemon: this });
+    if (!this._toLoginInvoked && State?.currentState === "desktop") {
+      State?.loadState("login", { type: "restart", userDaemon: this });
       return false;
     }
 
     if (this.serviceHost) this.serviceHost._holdRestart = true;
     
-    this.env.delete("userdaemon_pid");
+    Env.delete("userdaemon_pid");
   }
 
   //#endregion
@@ -179,11 +177,11 @@ export class UserDaemon extends Process {
     });
 
     this.globalDispatch?.subscribe("fs-flush-folder", (path) => {
-      this.systemDispatch.dispatch("fs-flush-folder", path);
+      SysDispatch.dispatch("fs-flush-folder", path);
     });
 
     this.globalDispatch?.subscribe("fs-flush-file", (path) => {
-      this.systemDispatch.dispatch("fs-flush-file", path);
+      SysDispatch.dispatch("fs-flush-file", path);
     });
   }
 
@@ -191,13 +189,23 @@ export class UserDaemon extends Process {
     return this.serviceHost?.getService<ApplicationStorage>("AppStorage");
   }
 
+  getShell(): ShellRuntime | undefined {
+    return Stack.getProcess(+getKMod<EnvironmentType>("env").get("shell_pid"));
+  }
+
   //#endregion INIT
+
+  updateGlobalDispatch() {
+    this.serviceHost?.getService<GlobalDispatch>?.("GlobalDispatch")?.sendUpdate();
+  }
 }
 
 export function TryGetDaemon(): UserDaemon | undefined {
   const env = getKMod<EnvironmentType>("env");
-  const stack = KernelStack();
+  const stack = Stack;
   const daemonPid = +env.get("userdaemon_pid");
 
   return stack.getProcess<UserDaemon>(daemonPid);
 }
+
+export let Daemon: UserDaemon;

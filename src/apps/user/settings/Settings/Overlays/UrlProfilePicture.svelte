@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Daemon } from "$ts/server/user/daemon";
   import { onMount } from "svelte";
   import type { OverlayRuntime } from "../../overlay";
 
@@ -38,7 +39,7 @@
   function apply() {
     if (!valid) return;
 
-    process.userDaemon?.preferencesCtx?.changeProfilePicture(pfp);
+    Daemon?.preferencesCtx?.changeProfilePicture(pfp);
     process.closeWindow();
   }
 

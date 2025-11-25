@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Daemon } from "$ts/server/user/daemon";
   import type { IconEditDialogRuntime } from "../runtime";
 
   const { process }: { process: IconEditDialogRuntime } = $props();
@@ -6,7 +7,7 @@
 
   async function choose() {
     $values[$type] =
-      (await process.userDaemon!.helpers!.IconPicker({
+      (await Daemon!.helpers!.IconPicker({
         forWhat: process.id!,
         defaultIcon: $values[$type] || "ComponentIcon",
       })) || $values[$type];

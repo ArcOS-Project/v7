@@ -1,4 +1,4 @@
-import { getKMod, KernelStack } from "$ts/env";
+import { Env, getKMod, Stack } from "$ts/env";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import type { GlobalDispatchClient } from "$types/dispatch";
@@ -6,7 +6,7 @@ import type { ServerManagerType } from "$types/kernel";
 import type { Service } from "$types/service";
 import io, { Socket } from "socket.io-client";
 import { Backend } from "../axios";
-import { UserDaemon } from "../user/daemon";
+import { Daemon, UserDaemon } from "../user/daemon";
 
 export class GlobalDispatch extends BaseService {
   client: Socket | undefined;
@@ -19,7 +19,7 @@ export class GlobalDispatch extends BaseService {
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(pid, parentPid, name, host);
 
-    this.token = host.daemon.token;
+    this.token = Daemon?.token;
     this.server = getKMod<ServerManagerType>("server");
 
     window.addEventListener("beforeunload", () => {
@@ -38,7 +38,7 @@ export class GlobalDispatch extends BaseService {
       });
 
       this.client.on("kicked", () => {
-        const daemon = KernelStack().getProcess<UserDaemon>(+this.env.get("userdaemon_pid"));
+        const daemon = Stack.getProcess<UserDaemon>(+Env.get("userdaemon_pid"));
         daemon?.power?.logoff();
       });
     });
@@ -58,7 +58,7 @@ export class GlobalDispatch extends BaseService {
     await new Promise<void>((resolve, reject) => {
       this.client?.once("authorized", () => {
         this.Log(`Global Dispatch is good to go :D`);
-        this.env.set("dispatch_sock_id", this.client?.id);
+        Env.set("dispatch_sock_id", this.client?.id);
         this.authorized = true;
         resolve();
       });
@@ -66,6 +66,14 @@ export class GlobalDispatch extends BaseService {
         this.Log(`The server rejected our token :(`);
         reject();
       });
+    });
+  }
+
+  sendUpdate() {
+    this.emit("update", {
+      lastActive: Date.now(),
+      processCount: Stack.store().size,
+      lastApp: Stack.renderer?.lastInteract?.app?.data,
     });
   }
 

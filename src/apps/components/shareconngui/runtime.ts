@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
+import { Env, Stack } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import type { ShareManager } from "$ts/shares";
 import { SharedDrive } from "$ts/shares/drive";
 import { Store } from "$ts/writable";
@@ -16,7 +17,7 @@ export class ShareConnGuiRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
-    this.shares = this.userDaemon?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
+    this.shares = Daemon?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
 
     this.setSource(__SOURCE__);
   }
@@ -48,15 +49,15 @@ export class ShareConnGuiRuntime extends AppProcess {
 
     if (result instanceof SharedDrive) {
       const path = `${result.uuid}:/`;
-      const parent = KernelStack().getProcess(this.parentPid);
+      const parent = Stack.getProcess(this.parentPid);
 
-      if (parent && this.userDaemon?.helpers?.ParentIs(this, "fileManager")) {
+      if (parent && Daemon?.helpers?.ParentIs(this, "fileManager")) {
         // Is the parent a file manager? Then navigate it instead of spawning one
-        const dispatch = KernelStack().ConnectDispatch(this.parentPid);
+        const dispatch = Stack.ConnectDispatch(this.parentPid);
         dispatch?.dispatch("navigate", path);
       } else {
         // Spawn a file manager instead
-        this.spawnApp("fileManager", +this.env.get("shell_pid"), path);
+        this.spawnApp("fileManager", +Env.get("shell_pid"), path);
       }
 
       this.userPreferences.update((v) => {

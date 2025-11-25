@@ -3,18 +3,19 @@
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
   import { AppProcess } from "$ts/apps/process";
+  import { Env, Stack } from "$ts/env";
+  import { Daemon } from "$ts/server/user/daemon";
   import type { ProcessInfoRuntime } from "./runtime";
 
   const { process }: { process: ProcessInfoRuntime } = $props();
   const { proc, parent, inherit } = process;
 
-  const icon =
-    (proc instanceof AppProcess ? process.userDaemon?.icons?.getAppIcon(proc.app.data)! : process.getIconCached("ComponentIcon"));
-  const children = process.handler.getSubProcesses(proc!.pid);
-  const context = process.handler.getProcessContext(proc!.pid);
+  const icon = proc instanceof AppProcess ? Daemon?.icons?.getAppIcon(proc.app.data)! : process.getIconCached("ComponentIcon");
+  const children = Stack.getSubProcesses(proc!.pid);
+  const context = Stack.getProcessContext(proc!.pid);
 
   function info() {
-    process.spawnOverlayApp("AppInfo", +process.env.get("shell_pid"), (proc as AppProcess).app.id);
+    process.spawnOverlayApp("AppInfo", +Env.get("shell_pid"), (proc as AppProcess).app.id);
   }
 </script>
 

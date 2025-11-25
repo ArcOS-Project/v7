@@ -18,7 +18,7 @@
 
 <div class="header">
   <div class="profile-picture">
-    <ProfilePicture {userDaemon} height={128} />
+    <ProfilePicture height={128} />
     {#if !process.safeMode}
       <div class="change-menu">
         <div class="inner">

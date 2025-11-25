@@ -1,9 +1,8 @@
 import type { AppProcess } from "$ts/apps/process";
-import { KernelStack } from "$ts/env";
-import { KernelStateHandler } from "$ts/getters";
+import { Env, Stack, State } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { BatteryType } from "$types/navigator";
-import type { UserDaemon } from "..";
+import { Daemon, type UserDaemon } from "..";
 import { UserContext } from "../context";
 
 export class PowerUserContext extends UserContext {
@@ -40,33 +39,33 @@ export class PowerUserContext extends UserContext {
   async logoffSafeMode() {
     this.Log(`Logging off NOW (safe mode)`);
 
-    this.env.set("safemode", true);
+    Env.set("safemode", true);
 
     await this.toLogin("logoff", { safeMode: true });
   }
 
   async toLogin(type: string, props: Record<string, any> = {}, force = false) {
     this.Log(`toLogin: ${type}`);
-    await this.daemon.helpers?.waitForLeaveInvocationAllow();
+    await Daemon?.helpers?.waitForLeaveInvocationAllow();
     const canLeave = await this.closeOpenedApps(type, props, force);
     if (this._disposed || !canLeave) return;
     if (this.serviceHost) this.serviceHost._holdRestart = true;
 
-    await KernelStack()._killSubProceses(this.pid, true);
-    await KernelStateHandler()?.loadState("login", {
+    await Stack._killSubProceses(this.pid, true);
+    await State?.loadState("login", {
       type,
-      userDaemon: this.daemon,
+      userDaemon: Daemon,
       ...props,
     });
     await this.serviceHost?.killSelf?.();
-    await this.daemon.files?.unmountMountedDrives();
+    await Daemon?.files?.unmountMountedDrives();
   }
 
   async closeOpenedApps(type: string, props: Record<string, any> = {}, force = false): Promise<boolean> {
     if (force) return true;
 
-    const windows = KernelStack()
-      .renderer?.currentState.map((pid) => KernelStack().getProcess<AppProcess>(pid))
+    const windows = Stack.renderer?.currentState
+      .map((pid) => Stack.getProcess<AppProcess>(pid))
       .filter((proc) => !proc?.app?.data?.core);
 
     if (!windows) return true;
@@ -75,7 +74,7 @@ export class PowerUserContext extends UserContext {
       const closeResult = await window?.closeWindow();
 
       if (!closeResult && !window?.app.data.overlay) {
-        this.daemon.notifications?.sendNotification({
+        Daemon?.notifications?.sendNotification({
           title: "Leave interrupted",
           message: `An application is preventing you from leaving the desktop: <b>${window?.app?.data?.metadata?.name || "Unknown app"}</b>.`,
           buttons: [{ caption: "Leave anyway", action: () => this.toLogin(type, props, true) }],

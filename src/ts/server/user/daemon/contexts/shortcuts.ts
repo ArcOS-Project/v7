@@ -1,8 +1,9 @@
 import { MessageBox } from "$ts/dialog";
+import { Env, Fs } from "$ts/env";
 import { textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath } from "$ts/util/fs";
 import type { ArcShortcut } from "$types/shortcut";
-import type { UserDaemon } from "..";
+import { Daemon, type UserDaemon } from "..";
 import { UserContext } from "../context";
 
 export class ShortcutsUserContext extends UserContext {
@@ -17,11 +18,11 @@ export class ShortcutsUserContext extends UserContext {
     try {
       switch (shortcut.type) {
         case "app":
-          return await this.daemon.spawn?.spawnApp(shortcut.target, +this.env.get("shell_pid"));
+          return await Daemon!.spawn?.spawnApp(shortcut.target, +Env.get("shell_pid"));
         case "file":
-          return await this.daemon.files?.openFile(shortcut.target);
+          return await Daemon!.files?.openFile(shortcut.target);
         case "folder":
-          return await this.daemon.spawn?.spawnApp("fileManager", +this.env.get("shell_pid"), shortcut.target);
+          return await Daemon!.spawn?.spawnApp("fileManager", +Env.get("shell_pid"), shortcut.target);
         default:
           MessageBox(
             {
@@ -31,7 +32,7 @@ export class ShortcutsUserContext extends UserContext {
               sound: "arcos.dialog.warning",
               image: "WarningIcon",
             },
-            +this.env.get("shell_pid"),
+            +Env.get("shell_pid"),
             true
           );
       }
@@ -44,19 +45,19 @@ export class ShortcutsUserContext extends UserContext {
           sound: "arcos.dialog.error",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
         },
-        +this.env.get("shell_pid"),
+        +Env.get("shell_pid"),
         true
       );
     }
   }
 
-  async createShortcut(data: ArcShortcut, path: string) {
-    if (!(await this.daemon.icons!.getIconCached(data.icon))) return false;
+  async createShortcut(data: ArcShortcut, path: string, dispatch = false) {
+    if (!(await Daemon!.icons?.getIcon(data.icon))) return false;
 
     const string = JSON.stringify(data, null, 2);
 
     try {
-      return await this.fs.writeFile(path, textToBlob(string, "application/json"));
+      return await Fs.writeFile(path, textToBlob(string, "application/json"), undefined, dispatch);
     } catch {
       return false;
     }

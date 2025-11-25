@@ -1,5 +1,6 @@
 <script lang="ts">
   import { FilesystemDrive } from "$ts/drives/drive";
+  import { Fs } from "$ts/env";
   import { getDriveLetter, getItemNameFromPath } from "$ts/util/fs";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../../runtime";
@@ -21,7 +22,7 @@
 
       if (driveIdentifier) {
         try {
-          drive = process.fs.getDriveByLetter(driveIdentifier.slice(0, -1), false);
+          drive = Fs.getDriveByLetter(driveIdentifier.slice(0, -1), false);
 
           driveLabel = drive?.label || "";
         } catch {}

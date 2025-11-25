@@ -1,23 +1,76 @@
-import type { ConstructedWaveKernel, ProcessHandlerType } from "$types/kernel";
-import { ServerManager } from "./kernel/mods/server";
+import type {
+  ConstructedWaveKernel,
+  EnvironmentType,
+  FilesystemType,
+  ProcessHandlerType,
+  ServerManagerType,
+  SoundbusType,
+  SystemDispatchType,
+} from "$types/kernel";
+import { TryGetDaemon } from "./server/user/daemon";
+import type { TrashCanService } from "./server/user/trash";
+import { StateHandler } from "./state";
+import { Store } from "./writable";
 
 export const ArcOSVersion = "7.0.7";
-export const BETA = false;
+export const BETA = true;
 export const USERFS_UUID = "233D-CE74-18C0-0B08";
-export let CurrentKernel: ConstructedWaveKernel | undefined = undefined;
+export const IsMobile = Store<boolean>(false);
+export let Kernel: ConstructedWaveKernel;
+export let KernelServerUrl: string;
+
+export let Fs: FilesystemType;
+export let Env: EnvironmentType;
+export let Stack: ProcessHandlerType;
+export let Server: ServerManagerType;
+export let SysDispatch: SystemDispatchType;
+export let SoundBus: SoundbusType;
+export let State: StateHandler;
 
 export function SetCurrentKernel(kernel: ConstructedWaveKernel) {
-  if (CurrentKernel) throw new Error("Tried to reassign CurrentKernel");
+  if (Kernel) throw new Error("Tried to reassign CurrentKernel");
 
-  CurrentKernel = kernel;
+  Kernel = kernel;
 }
 
-export const Kernel = () => CurrentKernel;
-export const KernelStack = () => getKMod<ProcessHandlerType>("stack");
-export const KernelServerUrl = () => getKMod<ServerManager>("server").url;
+export function SetCurrentStateHandler(state: StateHandler) {
+  if (State) throw new Error("Tried to reassign StateHandler");
+
+  State = state;
+}
+
+export function SetKernelExports() {
+  Fs = new Proxy(getKMod<FilesystemType>("fs"), {
+    get: (target, prop, receiver) => {
+      // recycle bin interceptor
+      if (prop === "deleteItem" && typeof target[prop] === "function") {
+        return async (path: string, dispatch?: boolean) => {
+          if (!path.startsWith("U:/")) {
+            return await target[prop].call(Fs, path, dispatch);
+          }
+
+          const daemon = TryGetDaemon();
+          const trash = daemon?.serviceHost?.getService("TrashSvc") as TrashCanService;
+
+          if (!trash) return await target[prop].call(Fs, path, dispatch);
+
+          return await trash.moveToTrash(path, dispatch);
+        };
+      }
+      return Reflect.get(target, prop, receiver);
+    },
+  });
+
+  Env = getKMod<EnvironmentType>("env");
+  Stack = getKMod<ProcessHandlerType>("stack");
+  Server = getKMod<ServerManagerType>("server");
+  KernelServerUrl = Server.url;
+  SysDispatch = getKMod<SystemDispatchType>("dispatch");
+  SoundBus = getKMod<SoundbusType>("soundbus");
+}
 
 export function getKMod<T = any>(id: string, dontCrash = false): T {
-  const kernel = Kernel()!;
+  const kernel = Kernel!;
 
   return kernel.getModule<T>(id, dontCrash) as T;
 }

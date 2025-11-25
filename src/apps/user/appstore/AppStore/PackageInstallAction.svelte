@@ -1,5 +1,7 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
+  import { Env } from "$ts/env";
+  import { Daemon } from "$ts/server/user/daemon";
   import { Store } from "$ts/writable";
   import type { StoreItem, UpdateInfo } from "$types/package";
   import { onMount } from "svelte";
@@ -26,7 +28,7 @@
     <Spinner height={24} />
   {:else if $installed}
     {#if !compact}
-      {#if pkg.userId === process.userDaemon?.userInfo._id}
+      {#if pkg.userId === Daemon?.userInfo._id}
         <button
           class="lucide icon-cog"
           aria-label="Manage"
@@ -38,7 +40,7 @@
           class="lucide icon-rocket"
           aria-label="Launch"
           title="Launch"
-          onclick={() => process.userDaemon!.spawn?.spawnApp($store.pkg.appId, +process.env.get("shell_pid"))}
+          onclick={() => Daemon!.spawn?.spawnApp($store.pkg.appId, +Env.get("shell_pid"))}
         ></button>
       {/if}
     {/if}

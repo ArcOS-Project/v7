@@ -1,5 +1,6 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
+  import { Daemon } from "$ts/server/user/daemon";
   import type { SettingsRuntime } from "../../runtime";
 
   const { process }: { process: SettingsRuntime } = $props();
@@ -24,7 +25,7 @@
       return;
     }
 
-    const result = await process.userDaemon?.account?.changePassword(newPassword);
+    const result = await Daemon?.account?.changePassword(newPassword);
 
     process.closeWindow();
 
