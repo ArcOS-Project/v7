@@ -124,7 +124,8 @@ export const DefaultColors = {
   blue: "#96d3ff",
   cyan: "#79ffd0",
   magenta: "#d597ff",
-  background: "askjka",
+  background: "#000000",
   foreground: "#dddddd",
   brightBlack: "#555753",
+  backdropOpacity: 0.6
 };

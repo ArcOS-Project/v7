@@ -21,7 +21,7 @@
 }
 
 #TerminalWindow > div.body div.xterm-viewport {
-  transition: background-color 0.3s !important;
+  background-color: transparent !important;
 }
 
 #TerminalWindow > div.body .xterm-cursor.xterm-cursor-bar {
