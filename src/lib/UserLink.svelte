@@ -15,11 +15,11 @@
   }
 </script>
 
-{#if user.displayName || user.username || fallback}
-  <button class="link user-link" title={user.username || fallback} {onclick}>
+{#if user?.displayName || user?.username || fallback}
+  <button class="link user-link" title={user?.username || fallback} {onclick}>
     {#if !noPfp}
-      <ProfilePicture height={14} fallback={user.profilePicture} />
+      <ProfilePicture height={14} fallback={user?.profilePicture} />
     {/if}
-    <span>{user.displayName || user.username || fallback}</span>
+    <span>{user?.displayName || user?.username || fallback}</span>
   </button>
 {/if}

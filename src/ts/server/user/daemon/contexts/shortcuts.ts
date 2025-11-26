@@ -40,7 +40,7 @@ export class ShortcutsUserContext extends UserContext {
       MessageBox(
         {
           title: "Failed to open shortcut",
-          message: `ArcOS failed to open the shortcut you requested. Reason: ${e}`,
+          message: `ArcOS failed to open the shortcut you requested.<br><br> ${e}`,
           image: "ShortcutMimeIcon",
           sound: "arcos.dialog.error",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],

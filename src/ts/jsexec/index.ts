@@ -124,8 +124,10 @@ export class JsExec extends Process {
 
     return await this.exec(tpaUrl);
   }
+
   //#endregion
   //#region HELPERS
+
   setApp(app: App, metaPath: string) {
     this.Log(`Setting app data to ${app.id} (${metaPath})`);
 
@@ -193,6 +195,7 @@ export class JsExec extends Process {
 
     return results;
   }
+  
   //#endregion
 }
 
