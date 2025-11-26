@@ -24,6 +24,7 @@ import {
   BRRED,
   BRYELLOW,
   DefaultArcTermConfiguration,
+  DefaultColors,
   RESET,
   TerminalCommandStore,
 } from "./store";
@@ -372,6 +373,33 @@ export class ArcTerminal extends Process {
       const json = JSON.parse(arrayToText(contents));
 
       this.config = json as ArcTermConfiguration;
+      this.term!.options.theme = {
+        // RED
+        brightRed: this.config.red || DefaultColors.red,
+        red: this.config.red || DefaultColors.red,
+        // GREEN
+        brightGreen: this.config.green || DefaultColors.green,
+        green: this.config.green || DefaultColors.green,
+        // YELLOW
+        brightYellow: this.config.yellow || DefaultColors.yellow,
+        yellow: this.config.yellow || DefaultColors.yellow,
+        // BLUE
+        brightBlue: this.config.blue || DefaultColors.blue,
+        blue: this.config.blue || DefaultColors.blue,
+        // CYAN
+        brightCyan: this.config.cyan || DefaultColors.cyan,
+        cyan: this.config.cyan || DefaultColors.cyan,
+        // MAGENTA
+        brightMagenta: this.config.magenta || DefaultColors.magenta,
+        magenta: this.config.magenta || DefaultColors.magenta,
+        // FORE/BACK GROUND
+        background: this.config.background || DefaultColors.background,
+        foreground: this.config.foreground || DefaultColors.foreground,
+        brightBlack: this.config.brightBlack || DefaultColors.brightBlack,
+      };
+
+      this.window?.getWindow()?.style.setProperty("--terminal-background", this.config.background || DefaultColors.background);
+      this.window?.getBody()?.style.setProperty("--fg", this.config.foreground || DefaultColors.foreground);
     } catch {
       await this.writeConfig();
     }
@@ -389,6 +417,10 @@ export class ArcTerminal extends Process {
     }
   }
 
+  /**
+   * WARNING: this method ONLY works if there's no active readline prompt in progress. Running this method whilst
+   * receiving input from the user will cause two readlines to happen on the same instance. DO NOT DO THAT.
+   */
   async reload() {
     this.Log("Soft-reloading ArcTerm");
 
@@ -402,7 +434,34 @@ export class ArcTerminal extends Process {
 
     const parent = Stack.getProcess(this.parentPid);
 
-    if (parent instanceof TerminalWindowRuntime) this.window = parent;
+    if (parent instanceof TerminalWindowRuntime) {
+      this.window = parent;
+
+      this.window.altMenu.set([
+        {
+          caption: "Terminal",
+          subItems: [
+            {
+              caption: "New window",
+              action: () => {
+                Daemon.spawn?.spawnApp("ArcTerm", this.window?.parentPid, this.path);
+              },
+              icon: "square-plus",
+            },
+            {
+              caption: "Edit colors...",
+              action: () => this.window?.notImplemented("Editing colors"),
+              icon: "palette",
+            },
+            {
+              caption: "Exit",
+              action: () => this.window?.closeWindow(),
+              icon: "power",
+            },
+          ],
+        },
+      ]);
+    }
   }
 
   // MIGRATION: 7.0.3 -> 7.0.4

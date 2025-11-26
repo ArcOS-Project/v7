@@ -27,5 +27,14 @@ export interface ArcTermConfiguration {
   prompt?: string;
   greeting?: string;
   noLogo?: boolean;
+  red?: string;
+  green?: string;
+  yellow?: string;
+  blue?: string;
+  cyan?: string;
+  magenta?: string;
+  foreground?: string;
+  background?: string;
+  brightBlack?: string;
 }
 export type ExpandedTerminal = Terminal & { process?: TerminalWindowRuntime };

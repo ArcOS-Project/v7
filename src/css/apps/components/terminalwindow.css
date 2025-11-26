@@ -8,11 +8,12 @@
 }
 
 #TerminalWindow {
-  background-color: #000d;
+  --terminal-background: #000d;
+  background-color: var(--terminal-background);
 }
 
-#TerminalWindow:not(.focused) {
-  background-color: #000;
+#TerminalWindow::before {
+  display: none;
 }
 
 #TerminalWindow > div.body * {
@@ -20,11 +21,15 @@
 }
 
 #TerminalWindow > div.body div.xterm-viewport {
-  background-color: transparent !important;
+  transition: background-color 0.3s !important;
 }
 
 #TerminalWindow > div.body .xterm-cursor.xterm-cursor-bar {
   box-shadow: 1px 0 0 var(--fg) inset !important;
+}
+
+#TerminalWindow > div.body .xterm-cursor.xterm-cursor-outline {
+  outline: var(--fg) 1px solid;
 }
 
 #TerminalWindow > div.titlebar {

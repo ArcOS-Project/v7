@@ -17,21 +17,23 @@ import Cookies from "js-cookie";
 import { Terminal } from "xterm";
 import { ArcTerminal } from "..";
 import { Readline } from "../readline/readline";
-import { BRRED, CLRROW, CURUP, RESET } from "../store";
+import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../store";
 
 export class TerminalMode extends Process {
   userDaemon?: UserDaemon;
   target: HTMLDivElement;
+  wrapper: HTMLDivElement
   term?: Terminal;
   rl?: Readline;
   arcTerm?: ArcTerminal;
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, target: HTMLDivElement) {
+  constructor(pid: number, parentPid: number, target: HTMLDivElement, wrapper: HTMLDivElement) {
     super(pid, parentPid);
 
     this.target = target;
+    this.wrapper = wrapper;
     this.name = "TerminalMode";
 
     this.setSource(__SOURCE__);
@@ -54,18 +56,18 @@ export class TerminalMode extends Process {
       cursorStyle: "bar",
       fontSize: 14,
       theme: {
-        brightRed: "#ff7e7e",
-        red: "#ff7e7e",
-        brightGreen: "#82ff80",
-        green: "#82ff80",
-        brightYellow: "#ffe073",
-        yellow: "#ffe073",
-        brightBlue: "#96d3ff",
-        blue: "#96d3ff",
-        brightCyan: "#79ffd0",
-        cyan: "#79ffd0",
-        brightMagenta: "#d597ff",
-        magenta: "#d597ff",
+        brightRed: DefaultColors.red,
+        red: DefaultColors.red,
+        brightGreen: DefaultColors.green,
+        green: DefaultColors.green,
+        brightYellow: DefaultColors.yellow,
+        yellow: DefaultColors.yellow,
+        brightBlue: DefaultColors.blue,
+        blue: DefaultColors.blue,
+        brightCyan: DefaultColors.cyan,
+        cyan: DefaultColors.cyan,
+        brightMagenta: DefaultColors.magenta,
+        magenta: DefaultColors.magenta,
       },
       scrollback: 999999,
     });
@@ -184,15 +186,11 @@ export class TerminalMode extends Process {
 
       this.term?.clear();
 
-      this.arcTerm = await Stack.spawn<ArcTerminal>(
-        ArcTerminal,
-        undefined,
-        userDaemon.userInfo?._id,
-        this.pid,
-        this.term
-      );
+      this.arcTerm = await Stack.spawn<ArcTerminal>(ArcTerminal, undefined, userDaemon.userInfo?._id, this.pid, this.term);
 
       this.term?.focus();
+      this.target.style.setProperty("--fg", this.arcTerm?.config.foreground || DefaultColors.foreground);
+      this.wrapper.style.backgroundColor = this.arcTerm?.config.background || DefaultColors.background;
 
       return true;
     } catch (e) {

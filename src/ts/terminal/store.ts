@@ -106,4 +106,25 @@ export const DefaultArcTermConfiguration: ArcTermConfiguration = {
   greeting:
     "ArcTerm & ArcOS $BRBLUEv$version$RESET\r\n\r\nLicensed under $BRBLUEGPLv3$RESET. Created by Izaak Kuipers.\r\nType $BRBLUEHELP$RESET for a list of commands.\r\n",
   noLogo: false,
+  red: "#ff7e7e",
+  green: "#82ff80",
+  yellow: "#ffe073",
+  blue: "#96d3ff",
+  cyan: "#79ffd0",
+  magenta: "#d597ff",
+  background: "#222222",
+  foreground: "#dddddd",
+  brightBlack: "#555753",
+};
+
+export const DefaultColors = {
+  red: "#ff7e7e",
+  green: "#82ff80",
+  yellow: "#ffe073",
+  blue: "#96d3ff",
+  cyan: "#79ffd0",
+  magenta: "#d597ff",
+  background: "askjka",
+  foreground: "#dddddd",
+  brightBlack: "#555753",
 };
