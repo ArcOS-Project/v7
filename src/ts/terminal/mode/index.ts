@@ -22,7 +22,6 @@ import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../store";
 export class TerminalMode extends Process {
   userDaemon?: UserDaemon;
   target: HTMLDivElement;
-  wrapper: HTMLDivElement;
   term?: Terminal;
   rl?: Readline;
   arcTerm?: ArcTerminal;
@@ -33,7 +32,6 @@ export class TerminalMode extends Process {
     super(pid, parentPid);
 
     this.target = target;
-    this.wrapper = wrapper;
     this.name = "TerminalMode";
 
     this.setSource(__SOURCE__);
@@ -195,8 +193,6 @@ export class TerminalMode extends Process {
       this.arcTerm = await Stack.spawn<ArcTerminal>(ArcTerminal, undefined, userDaemon.userInfo?._id, this.pid, this.term);
 
       this.term?.focus();
-      this.target.style.setProperty("--fg", this.arcTerm?.config.foreground || DefaultColors.foreground);
-      this.wrapper.style.backgroundColor = this.arcTerm?.config.background || DefaultColors.background;
 
       return true;
     } catch (e) {

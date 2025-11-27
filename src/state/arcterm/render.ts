@@ -5,7 +5,6 @@ import type { StateProps } from "$types/state";
 
 export default async function render(_: StateProps) {
   const target = document.querySelector("#arcTermMode");
-  const wrapper = document.querySelector("#arcTermWrapper");
-
-  await Stack.spawn(TerminalMode, undefined, "SYSTEM", KernelInitPid(), target, wrapper);
+  
+  await Stack.spawn(TerminalMode, undefined, "SYSTEM", KernelInitPid(), target);
 }

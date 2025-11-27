@@ -1,13 +1,15 @@
 import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import TerminalWindow from "$apps/components/terminalwindow/TerminalWindow.svelte";
+import { hexToRgb } from "$ts/color";
 import type { FilesystemDrive } from "$ts/drives/drive";
-import { Env, Fs, Stack } from "$ts/env";
+import { Env, Fs, Stack, State } from "$ts/env";
 import { ASCII_ART } from "$ts/intro";
 import { Process } from "$ts/process/instance";
 import { LoginUser } from "$ts/server/user/auth";
 import { Daemon, TryGetDaemon, type UserDaemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
+import { ErrorUtils } from "$ts/util/error";
 import { join } from "$ts/util/fs";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
 import type { DirectoryReadReturn } from "$types/fs";
@@ -29,7 +31,6 @@ import {
   TerminalCommandStore,
 } from "./store";
 import { ArcTermVariables } from "./var";
-import { hexToRgb, rgbToHex } from "$ts/color";
 
 export class ArcTerminal extends Process {
   readonly CONFIG_PATH = join(UserPaths.Configuration, "ArcTerm/arcterm.conf");
@@ -128,18 +129,23 @@ export class ArcTerminal extends Process {
         this.Error("Command not found.");
         this.lastCommandErrored = true;
       } else {
-        const proc = await Stack.spawn<TerminalProcess>(command, undefined, Daemon?.userInfo?._id, this.pid);
+        try {
+          const proc = await Stack.spawn<TerminalProcess>(command, undefined, Daemon?.userInfo?._id, this.pid);
 
-        // BUG 68798d6957684017c3e9a085
-        if (!proc) {
+          // BUG 68798d6957684017c3e9a085
+          if (!proc) {
+            this.lastCommandErrored = true;
+            return;
+          }
+
+          const result = (await proc?._main(this, flags, argv)) || 0;
+
+          if (result !== 0) this.lastCommandErrored = true;
+          if (result <= -128) return this.rl?.dispose();
+        } catch (e) {
           this.lastCommandErrored = true;
-          return;
+          this.handleCommandError(e as Error, command);
         }
-
-        const result = (await proc?._main(this, flags, argv)) || 0;
-
-        if (result !== 0) this.lastCommandErrored = true;
-        if (result <= -128) return this.rl?.dispose();
       }
     }
 
@@ -406,14 +412,22 @@ export class ArcTerminal extends Process {
         brightBlack: this.config.brightBlack || DefaultColors.brightBlack,
       };
 
-      const window = this.window?.getWindow();
+      if (State.currentState === "arcterm") {
+        const wrapper = document.querySelector<HTMLDivElement>("#arcTermWrapper");
+        const target = document.querySelector<HTMLDivElement>("#arcTermMode");
 
-      window?.style.setProperty(
-        "--terminal-background",
-        `rgba(${hexToRgb(this.config.background || DefaultColors.background).join(", ")}, ${this.config.backdropOpacity ?? DefaultColors.backdropOpacity})`
-      );
-      window?.style.setProperty("--terminal-background-inactive", this.config.background || DefaultColors.background);
-      window?.style.setProperty("--fg", this.config.foreground || DefaultColors.foreground);
+        target!.style.setProperty("--fg", this.config.foreground || DefaultColors.foreground);
+        wrapper!.style.backgroundColor = this.config.background || DefaultColors.background;
+      } else {
+        const window = this.window?.getWindow();
+
+        window?.style.setProperty(
+          "--terminal-background",
+          `rgba(${hexToRgb(this.config.background || DefaultColors.background).join(", ")}, ${this.config.backdropOpacity ?? DefaultColors.backdropOpacity})`
+        );
+        window?.style.setProperty("--terminal-background-inactive", this.config.background || DefaultColors.background);
+        window?.style.setProperty("--fg", this.config.foreground || DefaultColors.foreground);
+      }
     } catch {
       await this.writeConfig();
     }
@@ -493,5 +507,10 @@ export class ArcTerminal extends Process {
         await Fs.moveItem(oldPath, this.CONFIG_PATH);
       }
     } catch {}
+  }
+
+  handleCommandError(e: Error, command: typeof TerminalProcess) {
+    this.rl?.println(ErrorUtils.abbreviatedStackTrace(e,`${BRRED}${command.name}: `));
+    this.rl?.println(`${RESET}`);
   }
 }
