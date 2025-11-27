@@ -175,6 +175,9 @@ export class SpawnUserContext extends UserContext {
       app.overlay = false;
       app.state.headless = false;
       app.position = { centered: true };
+    } else {
+      app.overlay = true;
+      app.state.headless = true;
     }
 
     return await Stack.spawn<T>(
