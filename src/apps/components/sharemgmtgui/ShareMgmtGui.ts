@@ -6,7 +6,7 @@ import ShareMgmtGui from "./ShareMgmtGui.svelte";
 export const ShareMgmtGuiApp: App = {
   metadata: {
     name: "ShareMgmtGui",
-    version: "1.0.0",
+    version: "1.0.1",
     author: "Izaak Kuipers",
     icon: "ShareIcon",
     appGroup: "components",

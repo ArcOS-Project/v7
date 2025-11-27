@@ -1,7 +1,7 @@
 import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import TerminalWindow from "$apps/components/terminalwindow/TerminalWindow.svelte";
 import type { FilesystemDrive } from "$ts/drives/drive";
-import { Fs, Stack } from "$ts/env";
+import { Env, Fs, Stack } from "$ts/env";
 import { ASCII_ART } from "$ts/intro";
 import { Process } from "$ts/process/instance";
 import { LoginUser } from "$ts/server/user/auth";
@@ -29,6 +29,7 @@ import {
   TerminalCommandStore,
 } from "./store";
 import { ArcTermVariables } from "./var";
+import { hexToRgb, rgbToHex } from "$ts/color";
 
 export class ArcTerminal extends Process {
   readonly CONFIG_PATH = join(UserPaths.Configuration, "ArcTerm/arcterm.conf");
@@ -42,11 +43,12 @@ export class ArcTerminal extends Process {
   ansiEscapes = ansiEscapes;
   lastCommandErrored = false;
   config: ArcTermConfiguration = DefaultArcTermConfiguration;
+  configProvidedExternal = false;
   window: TerminalWindowRuntime | undefined;
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, term: Terminal, path?: string) {
+  constructor(pid: number, parentPid: number, term: Terminal, path?: string, config?: ArcTermConfiguration) {
     super(pid, parentPid);
 
     this.path = path || UserPaths.Home;
@@ -56,6 +58,10 @@ export class ArcTerminal extends Process {
     this.term = term;
     this.tryGetTermWindow();
     this.name = "ArcTerminal";
+    if (config) {
+      this.config = config;
+      this.configProvidedExternal = true;
+    }
 
     this.setSource(__SOURCE__);
   }
@@ -68,10 +74,9 @@ export class ArcTerminal extends Process {
     } catch {
       return false;
     }
-    await this.migrateConfigurationPath();
 
-    const rl = await Stack.spawn<Readline>(Readline, undefined, Daemon?.userInfo?._id, this.pid, this);
     await this.readConfig();
+    const rl = await Stack.spawn<Readline>(Readline, undefined, Daemon?.userInfo?._id, this.pid, this);
 
     this.term.loadAddon(rl!);
     this.rl = rl;
@@ -366,13 +371,16 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
     try {
-      const contents = await Fs.readFile(this.CONFIG_PATH);
+      if (!this.configProvidedExternal) {
+        const contents = await Fs.readFile(this.CONFIG_PATH);
+        if (!contents) throw "";
 
-      if (!contents) throw "";
+        const json = JSON.parse(arrayBufferToText(contents));
+        this.config = json as ArcTermConfiguration;
+      } else {
+        this.configProvidedExternal = false;
+      }
 
-      const json = JSON.parse(arrayBufferToText(contents));
-
-      this.config = json as ArcTermConfiguration;
       this.term!.options.theme = {
         // RED
         brightRed: this.config.red || DefaultColors.red,
@@ -398,8 +406,14 @@ export class ArcTerminal extends Process {
         brightBlack: this.config.brightBlack || DefaultColors.brightBlack,
       };
 
-      this.window?.getWindow()?.style.setProperty("--terminal-background", this.config.background || DefaultColors.background);
-      this.window?.getBody()?.style.setProperty("--fg", this.config.foreground || DefaultColors.foreground);
+      const window = this.window?.getWindow();
+
+      window?.style.setProperty(
+        "--terminal-background",
+        `rgba(${hexToRgb(this.config.background || DefaultColors.background).join(", ")}, ${this.config.backdropOpacity ?? DefaultColors.backdropOpacity})`
+      );
+      window?.style.setProperty("--terminal-background-inactive", this.config.background || DefaultColors.background);
+      window?.style.setProperty("--fg", this.config.foreground || DefaultColors.foreground);
     } catch {
       await this.writeConfig();
     }
@@ -450,7 +464,7 @@ export class ArcTerminal extends Process {
             },
             {
               caption: "Edit colors...",
-              action: () => this.window?.notImplemented("Editing colors"),
+              action: () => this.window?.spawnOverlayApp("ArcTermColors", +Env.get("shell_pid")),
               icon: "palette",
             },
             {
@@ -465,6 +479,9 @@ export class ArcTerminal extends Process {
   }
 
   // MIGRATION: 7.0.3 -> 7.0.4
+  /**
+   * @deprecated This migration has expired
+   */
   async migrateConfigurationPath() {
     try {
       const oldPath = "U:/arcterm.conf";

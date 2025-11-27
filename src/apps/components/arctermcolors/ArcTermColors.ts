@@ -1,3 +1,4 @@
+import "$css/apps/components/arctermcolors.css";
 import type { App } from "$types/app";
 import ArcTermColors from "./ArcTermColors.svelte";
 import { ArcTermColorsRuntime } from "./runtime";

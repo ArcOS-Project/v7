@@ -90,6 +90,11 @@ export class SpawnUserContext extends UserContext {
 
     Daemon!.updateGlobalDispatch();
 
+    if (app.overlay) {
+      app.overlay = false;
+      app.position = { centered: true };
+    }
+
     return await Stack.spawn<T>(
       app.assets.runtime,
       renderTarget,
@@ -163,8 +168,13 @@ export class SpawnUserContext extends UserContext {
 
     const pid = parentPid || +Env.get("shell_pid");
 
+    console.log(pid, parentPid);
+
     if (!pid) {
       this.Log(`Spawning overlay app '${app.id}' as normal app: no suitable parent process`, LogLevel.warning);
+      app.overlay = false;
+      app.state.headless = false;
+      app.position = { centered: true };
     }
 
     return await Stack.spawn<T>(
@@ -173,7 +183,7 @@ export class SpawnUserContext extends UserContext {
       this.userInfo!._id,
       pid || this.pid,
       {
-        data: { ...app, overlay: !!pid },
+        data: app,
         id: app.id,
         desktop: renderTarget ? renderTarget.id : undefined,
       },

@@ -22,7 +22,7 @@ import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../store";
 export class TerminalMode extends Process {
   userDaemon?: UserDaemon;
   target: HTMLDivElement;
-  wrapper: HTMLDivElement
+  wrapper: HTMLDivElement;
   term?: Terminal;
   rl?: Readline;
   arcTerm?: ArcTerminal;
@@ -156,16 +156,20 @@ export class TerminalMode extends Process {
         }
       });
 
+      this.rl?.println(`${CURUP}${CLRROW}Checking associations`);
+      await userDaemon.migrations!.updateFileAssociations();
+
       this.rl?.println(`${CURUP}${CLRROW}Connecting global dispatch`);
       await userDaemon.activateGlobalDispatch();
 
       this.rl?.println(`${CURUP}${CLRROW}Starting drive notifier watcher`);
       userDaemon.init!.startDriveNotifierWatcher();
 
+      this.rl?.println(`${CURUP}${CLRROW}Starting permission manager`);
+      await userDaemon.init!.startPermissionHandler();
+
       this.rl?.println(`${CURUP}${CLRROW}Starting share management`);
       await userDaemon.init!.startShareManager();
-
-      userDaemon.appStorage();
 
       if (userDaemon.userInfo.admin) {
         this.rl?.println(`${CURUP}${CLRROW}Activating admin bootstrapper`);
@@ -176,11 +180,13 @@ export class TerminalMode extends Process {
       await userDaemon.init!.startSystemStatusRefresh();
 
       this.rl?.println(`${CURUP}${CLRROW}Refreshing app storage`);
-
       SysDispatch.dispatch(`app-store-refresh`);
 
       Env.set("currentuser", username);
       Env.set("shell_pid", undefined);
+
+      await userDaemon.migrations!.updateAppShortcutsDir();
+      userDaemon.checks!.checkNightly();
 
       await Sleep(10);
 

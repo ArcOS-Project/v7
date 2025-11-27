@@ -2,18 +2,18 @@
   import type { ArcTermColorsRuntime } from "../runtime";
   import type { ArcTermColorPreset } from "../types";
 
-  let { preset, selectedName = $bindable(), process }: { preset: ArcTermColorPreset; selectedName?: string; process: ArcTermColorsRuntime } = $props();
+  let { preset, selected = $bindable(), process }: { preset: ArcTermColorPreset; selected?: ArcTermColorPreset; process: ArcTermColorsRuntime } = $props();
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="preset" onclick={() => (selectedName = preset.name)} class:selected={selectedName === preset.name}>
+<div class="preset" onclick={() => (selected = preset)} class:selected={selected?.name === preset.name}>
   <p class="name">{preset.name}</p>
   <div class="buttons">
     <button class="lucide icon-pencil" aria-label="Edit..." onclick={() => process.customFromPreset(preset)}></button>
     <button class="lucide icon-check" aria-label="Apply" onclick={() => process.choosePreset(preset)}></button>
   </div>
-  <div class="display">
+  <div class="display" style="background-color: {preset.background}; border-color: {preset.brightBlack};">
     <div style="--color: {preset.red};"></div>
     <div style="--color: {preset.green};"></div>
     <div style="--color: {preset.yellow};"></div>

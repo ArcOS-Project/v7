@@ -34,12 +34,19 @@ export class ShareMgmtGuiRuntime extends AppProcess {
   }
 
   async start(): Promise<any> {
+    const { stop } = await Daemon.helpers?.GlobalLoadIndicator("Probing share information...")!;
+
     this.info = await this.shares.getShareInfoById(this.shareId);
 
-    if (!this.info) return false;
+    if (!this.info) {
+      stop();
+      return false;
+    }
+
     this.myShare = Daemon?.userInfo._id === this.info.userId; // Compare user IDs to see if the share is own
 
     await this.updateMembers();
+    stop();
   }
 
   //#endregion

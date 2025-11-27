@@ -4,7 +4,7 @@ import { Env, Fs } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
-import { DefaultArcTermConfiguration, DefaultColors } from "$ts/terminal/store";
+import { DefaultArcTermConfiguration } from "$ts/terminal/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
@@ -15,7 +15,8 @@ import type { ArcTermColorPreset, ArcTermColors } from "./types";
 export class ArcTermColorsRuntime extends AppProcess {
   CONFIG_PATH = join(UserPaths.Configuration, "ArcTerm/arcterm.conf");
   arcTermConfiguration = Store<ArcTermConfiguration>(DefaultArcTermConfiguration);
-  mode = Store<"presets" | "custom">();
+  mode = Store<"presets" | "custom">("custom");
+  changed = Store<boolean>(false);
   savePath?: string;
   //#region LIFECYCLE
 
@@ -24,12 +25,19 @@ export class ArcTermColorsRuntime extends AppProcess {
 
     this.setSource(__SOURCE__);
     this.savePath = path;
+
+    this.arcTermConfiguration.subscribe((v) => {
+      this.changed.set(true);
+    });
   }
 
   async start() {
-    await this.writeDefaultConfiguration();
+    const { stop } = await Daemon.helpers?.GlobalLoadIndicator("Loading configuration...")!;
 
-    if (!this.savePath) return;
+    await this.readConfiguration();
+    await this.readPresetFromFile();
+
+    await stop();
   }
 
   async stop() {}
@@ -50,9 +58,17 @@ export class ArcTermColorsRuntime extends AppProcess {
   }
 
   choosePreset(preset: ArcTermColorPreset) {
+    // Remove additional metadata from preset
+    const newData = {
+      ...preset,
+      author: undefined,
+      name: undefined,
+      variant: undefined,
+    };
+
     // Overrides color properties from the ArcTerm configuration with those of the preset we're applying
     this.arcTermConfiguration.update((v) => {
-      return { ...v, ...preset };
+      return { ...v, ...newData };
     });
   }
 
@@ -79,17 +95,20 @@ export class ArcTermColorsRuntime extends AppProcess {
     await Fs.writeFile(path, textToBlob(JSON.stringify(saveData, null, 2)), undefined, false);
   }
 
-  async readPresetFromFile(path = this.savePath) {
-    if (!path) {
-      [path] = await Daemon.files!.LoadSaveDialog({
-        title: "Choose a colorset to open",
-        icon: "ArcTermIcon",
-        startDir: join(UserPaths.Configuration, "ArcTerm"),
-        extensions: [".atc"],
-      });
+  async openPreset() {
+    const [path] = await Daemon.files!.LoadSaveDialog({
+      title: "Choose a colorset to open",
+      icon: "ArcTermIcon",
+      startDir: join(UserPaths.Configuration, "ArcTerm"),
+      extensions: [".atc"],
+    });
 
-      if (!path) return;
-    }
+    await this.readPresetFromFile(path);
+    this.mode.set("custom");
+  }
+
+  async readPresetFromFile(path = this.savePath) {
+    if (!path) return;
 
     const contents = await Fs.readFile(path);
     if (!contents) {
@@ -101,16 +120,16 @@ export class ArcTermColorsRuntime extends AppProcess {
       return await this.error_savePath();
     }
 
-    // Overrides color properties from the ArcTerm configuration with those of the preset we're loading
-    this.arcTermConfiguration.update((v) => {
-      return { ...v, ...json };
-    });
+    this.choosePreset(json as ArcTermColorPreset);
     this.mode.set("custom");
+    this.changed.set(false);
   }
 
   async applyConfiguration() {
+    const { stop } = await Daemon.helpers?.GlobalLoadIndicator("Saving configuration...")!;
     await Fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(this.arcTermConfiguration(), null, 2)), undefined, false);
 
+    await stop();
     await this.closeWindow();
   }
 
@@ -128,6 +147,7 @@ export class ArcTermColorsRuntime extends AppProcess {
     }
 
     this.arcTermConfiguration.set(json);
+    this.changed.set(false);
   }
 
   async error_savePath() {

@@ -21,6 +21,10 @@ export class TerminalWindowRuntime extends AppProcess {
     this.setSource(__SOURCE__);
   }
 
+  async start() {
+    
+  }
+
   async render() {
     const body = this.getBody();
     this.getWindow().classList.add("theme-dark");

@@ -12,6 +12,10 @@
   background-color: var(--terminal-background);
 }
 
+#TerminalWindow:not(.focused) {
+  background-color: var(--terminal-background-inactive);
+}
+
 #TerminalWindow::before {
   display: none;
 }

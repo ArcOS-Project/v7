@@ -21,16 +21,28 @@ export class HelpersUserContext extends UserContext {
   }
 
   async GlobalLoadIndicator(caption?: string, pid?: number, progress?: Partial<GlobalLoadIndicatorProgress>) {
+    pid ||= +Env.get("shell_pid");
+
+    console.log(pid)
+
+    const data = {
+      data: { ...GlobalLoadIndicatorApp, overlay: true },
+      id: GlobalLoadIndicatorApp.id,
+      desktop: undefined,
+    };
+
+    if (!pid || Number.isNaN(pid)) {
+      data.data.overlay = false;
+      data.data.state.headless = false;
+      data.data.position = { x: 60, y: 60 };
+    }
+
     const process = await Stack.spawn<GlobalLoadIndicatorRuntime>(
       GlobalLoadIndicatorRuntime,
       undefined,
       this.userInfo!._id,
-      pid || +Env.get("shell_pid"),
-      {
-        data: { ...GlobalLoadIndicatorApp, overlay: true },
-        id: GlobalLoadIndicatorApp.id,
-        desktop: undefined,
-      },
+      pid,
+      data,
       caption,
       progress
     );
@@ -113,9 +125,7 @@ export class HelpersUserContext extends UserContext {
   }
 
   ParentIs(proc: AppProcess, appId: string) {
-    const targetAppInstances = Stack
-      .renderer?.getAppInstances(appId)
-      .map((p) => p.pid);
+    const targetAppInstances = Stack.renderer?.getAppInstances(appId).map((p) => p.pid);
 
     return targetAppInstances?.includes(proc.parentPid);
   }
