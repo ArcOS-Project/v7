@@ -28,6 +28,7 @@ import { RestartCommand } from "./commands/restart";
 import { RmCommand } from "./commands/rm";
 import { ShutdownCommand } from "./commands/shutdown";
 import { SpawnCommand } from "./commands/spawn";
+import { SqlCommand } from "./commands/sql";
 import { SudoCommand } from "./commands/sudo";
 import { TasksCommand } from "./commands/tasks";
 import { TestCommand } from "./commands/test";
@@ -70,6 +71,7 @@ export const TerminalCommandStore: (typeof TerminalProcess)[] = [
   DrivesCommand,
   DevenvCommand,
   PkgCommand,
+  SqlCommand,
 ];
 
 export const ESC = `\x1b[`;

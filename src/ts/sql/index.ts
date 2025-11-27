@@ -1,9 +1,10 @@
 import { Fs } from "$ts/env";
 import { Process } from "$ts/process/instance";
-import initSqlJs from "sql.js";
+import initSqlJs, { type QueryExecResult } from "sql.js";
 import { sqljsResultToJSON } from "./util";
 
 export class SqlInterfaceProcess extends Process {
+  public static readonly REVISION = 1;
   private filePath: string;
   private sql?: initSqlJs.SqlJsStatic;
   public db?: initSqlJs.Database;
@@ -87,5 +88,28 @@ export class SqlInterfaceProcess extends Process {
     } catch (e) {
       return `${e}`;
     }
+  }
+
+  static sqlResultToObject(input: Record<string, any>[][]) {
+    const returnValue = [];
+
+    for (const result of input) {
+      if (!result.length) continue;
+
+      const object: Record<string, any> = {};
+      const columns = Object.keys(result.splice(0, 1));
+
+      for (const row of result) {
+        const rowCols = Object.values(row);
+
+        for (let i = 0; i < columns.length; i++) {
+          object[columns[i]] = rowCols[i];
+        }
+      }
+
+      returnValue.push(object);
+    }
+
+    return returnValue;
   }
 }
