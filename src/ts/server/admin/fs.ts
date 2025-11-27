@@ -1,6 +1,6 @@
 import { FilesystemDrive } from "$ts/drives/drive";
 import { toForm } from "$ts/form";
-import { arrayToBlob } from "$ts/util/convert";
+import { arrayBufferToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, join } from "$ts/util/fs";
 import type {
   DirectoryReadReturn,
@@ -199,7 +199,7 @@ export class AdminFileSystem extends FilesystemDrive {
     const content = await this.readFile(path, () => {});
     if (!content) return undefined;
 
-    const blob = arrayToBlob(content);
+    const blob = arrayBufferToBlob(content);
     return URL.createObjectURL(blob);
   }
 

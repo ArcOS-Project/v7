@@ -26,10 +26,14 @@ export class DriveInfoRuntime extends AppProcess {
   async start() {
     if (!this.drive) return false;
 
+    const { stop } = await Daemon.helpers?.GlobalLoadIndicator("Probing drive information...")!;
+
     this.isUserFs = this.drive instanceof ServerDrive && this.drive.uuid === USERFS_UUID;
     this.quota = await this.drive.quota();
 
     if (this.isUserFs) this.usage = await Daemon?.files?.determineCategorizedDiskUsage();
+
+    stop();
   }
 
   //#endregion

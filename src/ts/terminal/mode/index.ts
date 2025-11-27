@@ -17,7 +17,7 @@ import Cookies from "js-cookie";
 import { Terminal } from "xterm";
 import { ArcTerminal } from "..";
 import { Readline } from "../readline/readline";
-import { BRRED, CLRROW, CURUP, RESET } from "../store";
+import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../store";
 
 export class TerminalMode extends Process {
   userDaemon?: UserDaemon;
@@ -28,7 +28,7 @@ export class TerminalMode extends Process {
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, target: HTMLDivElement) {
+  constructor(pid: number, parentPid: number, target: HTMLDivElement, wrapper: HTMLDivElement) {
     super(pid, parentPid);
 
     this.target = target;
@@ -54,18 +54,18 @@ export class TerminalMode extends Process {
       cursorStyle: "bar",
       fontSize: 14,
       theme: {
-        brightRed: "#ff7e7e",
-        red: "#ff7e7e",
-        brightGreen: "#82ff80",
-        green: "#82ff80",
-        brightYellow: "#ffe073",
-        yellow: "#ffe073",
-        brightBlue: "#96d3ff",
-        blue: "#96d3ff",
-        brightCyan: "#79ffd0",
-        cyan: "#79ffd0",
-        brightMagenta: "#d597ff",
-        magenta: "#d597ff",
+        brightRed: DefaultColors.red,
+        red: DefaultColors.red,
+        brightGreen: DefaultColors.green,
+        green: DefaultColors.green,
+        brightYellow: DefaultColors.yellow,
+        yellow: DefaultColors.yellow,
+        brightBlue: DefaultColors.blue,
+        blue: DefaultColors.blue,
+        brightCyan: DefaultColors.cyan,
+        cyan: DefaultColors.cyan,
+        brightMagenta: DefaultColors.magenta,
+        magenta: DefaultColors.magenta,
       },
       scrollback: 999999,
     });
@@ -154,16 +154,20 @@ export class TerminalMode extends Process {
         }
       });
 
+      this.rl?.println(`${CURUP}${CLRROW}Checking associations`);
+      await userDaemon.migrations!.updateFileAssociations();
+
       this.rl?.println(`${CURUP}${CLRROW}Connecting global dispatch`);
       await userDaemon.activateGlobalDispatch();
 
       this.rl?.println(`${CURUP}${CLRROW}Starting drive notifier watcher`);
       userDaemon.init!.startDriveNotifierWatcher();
 
+      this.rl?.println(`${CURUP}${CLRROW}Starting permission manager`);
+      await userDaemon.init!.startPermissionHandler();
+
       this.rl?.println(`${CURUP}${CLRROW}Starting share management`);
       await userDaemon.init!.startShareManager();
-
-      userDaemon.appStorage();
 
       if (userDaemon.userInfo.admin) {
         this.rl?.println(`${CURUP}${CLRROW}Activating admin bootstrapper`);
@@ -174,23 +178,19 @@ export class TerminalMode extends Process {
       await userDaemon.init!.startSystemStatusRefresh();
 
       this.rl?.println(`${CURUP}${CLRROW}Refreshing app storage`);
-
       SysDispatch.dispatch(`app-store-refresh`);
 
       Env.set("currentuser", username);
       Env.set("shell_pid", undefined);
 
+      await userDaemon.migrations!.updateAppShortcutsDir();
+      userDaemon.checks!.checkNightly();
+
       await Sleep(10);
 
       this.term?.clear();
 
-      this.arcTerm = await Stack.spawn<ArcTerminal>(
-        ArcTerminal,
-        undefined,
-        userDaemon.userInfo?._id,
-        this.pid,
-        this.term
-      );
+      this.arcTerm = await Stack.spawn<ArcTerminal>(ArcTerminal, undefined, userDaemon.userInfo?._id, this.pid, this.term);
 
       this.term?.focus();
 

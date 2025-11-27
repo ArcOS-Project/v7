@@ -4,7 +4,7 @@ import type { DistributionServiceProcess } from "$ts/distrib";
 import { Env, Fs } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { Daemon } from "$ts/server/user/daemon";
-import { arrayToText } from "$ts/util/convert";
+import { arrayBufferToText } from "$ts/util/convert";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
@@ -93,7 +93,7 @@ export class AppPreInstallRuntime extends AppProcess {
       this.zip = new JSZip();
       const buffer = await this.zip.loadAsync(content, {});
       const metaBinary = await buffer.files["_metadata.json"].async("arraybuffer");
-      const metadata = tryJsonParse<ArcPackage>(arrayToText(metaBinary));
+      const metadata = tryJsonParse<ArcPackage>(arrayBufferToText(metaBinary));
       this.metadata.set(metadata);
     } catch {
       return this.fail("Filesystem error");

@@ -4,7 +4,7 @@ import { toForm } from "$ts/form";
 import { ArcBuild } from "$ts/metadata/build";
 import { Backend } from "$ts/server/axios";
 import { authcode } from "$ts/util";
-import { arrayToBlob } from "$ts/util/convert";
+import { arrayBufferToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, join } from "$ts/util/fs";
 import type {
   DirectoryReadReturn,
@@ -282,7 +282,7 @@ export class ServerDrive extends FilesystemDrive {
 
       if (response.status !== 200) return undefined;
 
-      const blob = arrayToBlob(response.data, response.headers["Content-Type"]?.toString());
+      const blob = arrayBufferToBlob(response.data, response.headers["Content-Type"]?.toString());
       const url = URL.createObjectURL(blob);
 
       return url;

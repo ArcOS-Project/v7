@@ -135,16 +135,16 @@ export async function getReadableVibrantColor(url: string): Promise<string> {
   });
 }
 
-function rgbToHex(r: number, g: number, b: number): string {
-  return "#" + [r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("");
+export function rgbToHex(r: number, g: number, b: number, a = 255): string {
+  return "#" + [r, g, b, a].map((x) => x.toString(16).padStart(2, "0")).join("");
 }
 
-function hexToRgb(hex: string): [number, number, number] {
+export function hexToRgb(hex: string): [number, number, number] {
   const bigint = parseInt(hex.slice(1), 16);
   return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
 }
 
-function relativeLuminance([r, g, b]: [number, number, number]): number {
+export function relativeLuminance([r, g, b]: [number, number, number]): number {
   const srgb = [r, g, b].map((v) => {
     v /= 255;
     return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
@@ -152,7 +152,7 @@ function relativeLuminance([r, g, b]: [number, number, number]): number {
   return 0.2126 * srgb[0] + 0.7152 * srgb[1] + 0.0722 * srgb[2];
 }
 
-function getContrastRatio(hex1: string, hex2: string): number {
+export function getContrastRatio(hex1: string, hex2: string): number {
   const lum1 = relativeLuminance(hexToRgb(hex1));
   const lum2 = relativeLuminance(hexToRgb(hex2));
   const lighter = Math.max(lum1, lum2);
@@ -160,7 +160,7 @@ function getContrastRatio(hex1: string, hex2: string): number {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
-function ensureContrast(hex: string, bg: string, minContrast: number): string {
+export function ensureContrast(hex: string, bg: string, minContrast: number): string {
   let [r, g, b] = hexToRgb(hex);
   let [h, s, l] = rgbToHsl(r, g, b);
 
@@ -172,7 +172,7 @@ function ensureContrast(hex: string, bg: string, minContrast: number): string {
   return rgbToHex(nr, ng, nb);
 }
 
-function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
+export function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
   r /= 255;
   g /= 255;
   b /= 255;
@@ -200,7 +200,7 @@ function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
   return [h, s, l];
 }
 
-function hslToRgb(h: number, s: number, l: number): [number, number, number] {
+export function hslToRgb(h: number, s: number, l: number): [number, number, number] {
   let r: number, g: number, b: number;
   if (s === 0) {
     r = g = b = l; // gray

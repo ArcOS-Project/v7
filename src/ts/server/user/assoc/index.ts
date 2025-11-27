@@ -3,7 +3,7 @@ import { Fs } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
-import { arrayToText, textToBlob } from "$ts/util/convert";
+import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { ExpandedFileAssociationInfo, FileAssociationConfig } from "$types/assoc";
@@ -38,7 +38,7 @@ export class FileAssocService extends BaseService {
     this.Log("Loading configuration");
     const contents = await Fs.readFile(this.CONFIG_PATH);
 
-    const json = contents ? tryJsonParse<FileAssociationConfig>(arrayToText(contents)) : undefined;
+    const json = contents ? tryJsonParse<FileAssociationConfig>(arrayBufferToText(contents)) : undefined;
 
     if (!json || typeof json === "string") return await this.writeConfiguration(this.defaultFileAssociations());
 

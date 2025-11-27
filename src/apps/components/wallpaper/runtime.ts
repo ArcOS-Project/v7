@@ -4,7 +4,7 @@ import { Env, Fs, SysDispatch } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
-import { arrayToText, textToBlob } from "$ts/util/convert";
+import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
@@ -250,7 +250,7 @@ export class WallpaperRuntime extends AppProcess {
     const contents = await Fs.readFile(this.CONFIG_PATH);
     if (!contents) return await this.writeConfiguration({});
 
-    const json = tryJsonParse<DesktopIcons>(arrayToText(contents));
+    const json = tryJsonParse<DesktopIcons>(arrayBufferToText(contents));
     if (!json || typeof json === "string") return await this.writeConfiguration({});
 
     this.Configuration.set(json);

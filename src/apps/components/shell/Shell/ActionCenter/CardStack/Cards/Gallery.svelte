@@ -4,7 +4,7 @@
   import { Fs } from "$ts/env";
   import { Daemon } from "$ts/server/user/daemon";
   import { UserPaths } from "$ts/server/user/store";
-  import { arrayToBlob } from "$ts/util/convert";
+  import { arrayBufferToBlob } from "$ts/util/convert";
   import type { UserPreferencesStore } from "$types/user";
   import { onMount } from "svelte";
   import Spinner from "../../../../../../../lib/Spinner.svelte";
@@ -45,7 +45,7 @@
           return;
         }
 
-        const blob = arrayToBlob(contents);
+        const blob = arrayBufferToBlob(contents);
         url = URL.createObjectURL(blob);
       } catch {
         errored = true;

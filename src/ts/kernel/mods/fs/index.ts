@@ -11,7 +11,7 @@ import {
 } from "$types/fs";
 import type { ConstructedWaveKernel, SystemDispatchType } from "$types/kernel";
 import type { FilesystemDrive } from "../../../drives/drive";
-import { arrayToBlob } from "../../../util/convert";
+import { arrayBufferToBlob } from "../../../util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "../../../util/fs";
 
 export class Filesystem extends KernelModule {
@@ -295,7 +295,7 @@ export class Filesystem extends KernelModule {
             const sourceContent = await this.readFile(sourcePath);
             if (!sourceContent) return false;
 
-            const result = await this.writeFile(destinationPath, arrayToBlob(sourceContent), undefined, false);
+            const result = await this.writeFile(destinationPath, arrayBufferToBlob(sourceContent), undefined, false);
 
             if (!result) return false;
 
@@ -318,7 +318,7 @@ export class Filesystem extends KernelModule {
         const sourceContent = await this.readFile(source);
         if (!sourceContent) return false;
 
-        return await this.writeFile(destinationIsDir ? join(destination, sourceName) : destination, arrayToBlob(sourceContent));
+        return await this.writeFile(destinationIsDir ? join(destination, sourceName) : destination, arrayBufferToBlob(sourceContent));
       }
     } else {
       drive.isCapable("copyItem");
@@ -394,7 +394,7 @@ export class Filesystem extends KernelModule {
             const sourceContent = await this.readFile(sourcePath);
             if (!sourceContent) return false;
 
-            const result = await this.writeFile(destinationPath, arrayToBlob(sourceContent), undefined, false);
+            const result = await this.writeFile(destinationPath, arrayBufferToBlob(sourceContent), undefined, false);
 
             counter++;
 
@@ -423,7 +423,7 @@ export class Filesystem extends KernelModule {
 
         const result = await this.writeFile(
           destinationIsDir ? join(destination, sourceName) : destination,
-          arrayToBlob(sourceContent)
+          arrayBufferToBlob(sourceContent)
         );
         await this.deleteItem(source);
         return result;
@@ -495,7 +495,7 @@ export class Filesystem extends KernelModule {
 
           for (let i = 0; i < files.length; i++) {
             const file = files[i];
-            const content = arrayToBlob(await file?.arrayBuffer()!);
+            const content = arrayBufferToBlob(await file?.arrayBuffer()!);
 
             onProgress({
               max: files.length,

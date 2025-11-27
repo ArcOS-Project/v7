@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { Env, Fs } from "$ts/env";
 import { Daemon } from "$ts/server/user/daemon";
-import { arrayToText } from "$ts/util/convert";
+import { arrayBufferToText } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -62,7 +62,7 @@ export class ItemInfoRuntime extends AppProcess {
 
       if (isShortcut) {
         // Longwinded and godawful way to get the shortcut metadata in this file
-        this.shortcut.set(JSON.parse(arrayToText((await Fs.readFile(this.info().location.fullPath))!)));
+        this.shortcut.set(JSON.parse(arrayBufferToText((await Fs.readFile(this.info().location.fullPath))!)));
       }
     } catch {
       this.closeWindow();

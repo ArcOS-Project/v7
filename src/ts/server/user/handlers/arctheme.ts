@@ -1,7 +1,7 @@
 import { MessageBox } from "$ts/dialog";
 import { Env, Fs } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
-import { arrayToText } from "$ts/util/convert";
+import { arrayBufferToText } from "$ts/util/convert";
 import type { FileHandler } from "$types/fs";
 import type { UserTheme } from "$types/theme";
 import type { UserDaemon } from "../daemon";
@@ -31,7 +31,7 @@ const applyArcTheme: (d: UserDaemon) => FileHandler = (daemon) => ({
     const content = await Fs.readFile(path);
     if (!content) return fail("The contents of the file could not be read");
 
-    const json = tryJsonParse<UserTheme>(arrayToText(content));
+    const json = tryJsonParse<UserTheme>(arrayBufferToText(content));
 
     if (typeof json === "string") return fail("Couldn't parse the JSON object");
     if (!daemon.themes!.verifyTheme(json)) return fail("The theme is missing some required data");

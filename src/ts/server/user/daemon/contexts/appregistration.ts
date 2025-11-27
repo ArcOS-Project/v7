@@ -8,7 +8,7 @@ import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { Permissions } from "$ts/permissions";
 import { deepCopyWithBlobs } from "$ts/util";
-import { arrayToText, textToBlob } from "$ts/util/convert";
+import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { getParentDirectory, join } from "$ts/util/fs";
 import { compareVersion } from "$ts/version";
 import type { App, AppStorage, InstalledApp } from "$types/app";
@@ -120,7 +120,7 @@ export class AppRegistrationUserContext extends UserContext {
       const contents = await Fs.readFile(path);
       if (!contents) return "failed to read file";
 
-      const text = arrayToText(contents);
+      const text = arrayBufferToText(contents);
       const json = tryJsonParse<InstalledApp>(text);
 
       if (typeof json !== "object") return "failed to convert to JSON";

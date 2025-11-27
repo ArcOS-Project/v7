@@ -1,6 +1,6 @@
 import { getKMod } from "$ts/env";
 import type { SystemDispatchType } from "$types/kernel";
-import { arrayToBlob } from "./convert";
+import { arrayBufferToBlob } from "./convert";
 
 export const sizeUnits = ["bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
@@ -105,7 +105,7 @@ export function formatBytes(bytes: number) {
 export function DownloadFile(file: ArrayBuffer, filename: string, mimetype?: string) {
   if (!file || !filename) return;
 
-  const blob = arrayToBlob(file, mimetype);
+  const blob = arrayBufferToBlob(file, mimetype);
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
 

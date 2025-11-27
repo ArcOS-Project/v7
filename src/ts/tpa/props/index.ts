@@ -16,7 +16,7 @@ import { Sleep } from "$ts/sleep";
 import { CustomTitlebar } from "$ts/ui/thirdparty/titlebar";
 import { TrayIconProcess } from "$ts/ui/tray/process";
 import { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";
-import { arrayToBlob, arrayToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/util/convert";
+import { arrayBufferToBlob, arrayBufferToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/util/convert";
 import {
   DownloadFile,
   formatBytes,
@@ -55,11 +55,11 @@ export function ThirdPartyProps(engine: JsExec): ThirdPartyPropMap {
       onFolderChange,
     },
     convert: {
-      arrayToText,
+      arrayToText: arrayBufferToText,
       textToArrayBuffer,
       blobToText,
       textToBlob,
-      arrayToBlob,
+      arrayToBlob: arrayBufferToBlob,
       blobToDataURL,
     },
     workingDirectory: engine.workingDirectory || engine.app?.workingDirectory!,

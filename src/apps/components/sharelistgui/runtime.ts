@@ -35,10 +35,14 @@ export class ShareListGuiRuntime extends AppProcess {
   }
 
   async start() {
+    const { stop } = await Daemon.helpers?.GlobalLoadIndicator("Probing share information...")!;
+
     this.loading.set(true);
     this.ownedShares.set(await this.shares.getOwnedShares()); // Get owned shares from manager
     this.joinedShares.set(await this.shares.getJoinedShares()); // Get joined shares from manager
     this.loading.set(false);
+
+    stop()
   }
 
   //#endregion

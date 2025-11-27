@@ -5,7 +5,7 @@ import type { FilesystemDrive } from "$ts/drives/drive";
 import type { Process } from "$ts/process/instance";
 import type { ServiceHost } from "$ts/services";
 import type { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";
-import type { arrayToBlob, arrayToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/util/convert";
+import type { arrayBufferToBlob, arrayBufferToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/util/convert";
 import type {
   DownloadFile,
   formatBytes,
@@ -41,11 +41,11 @@ export interface ThirdPartyPropMap {
     onFolderChange: typeof onFolderChange;
   };
   convert: {
-    arrayToText: typeof arrayToText;
+    arrayToText: typeof arrayBufferToText;
     textToArrayBuffer: typeof textToArrayBuffer;
     blobToText: typeof blobToText;
     textToBlob: typeof textToBlob;
-    arrayToBlob: typeof arrayToBlob;
+    arrayToBlob: typeof arrayBufferToBlob;
     blobToDataURL: typeof blobToDataURL;
   };
   workingDirectory: string;

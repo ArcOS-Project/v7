@@ -3,7 +3,7 @@ import { tryJsonParse } from "$ts/json";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import { sortByHierarchy } from "$ts/util";
-import { arrayToText } from "$ts/util/convert";
+import { arrayBufferToText } from "$ts/util/convert";
 import { getParentDirectory, join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { App, AppStorage, AppStoreCb, InstalledApp } from "$types/app";
@@ -160,7 +160,7 @@ export class ApplicationStorage extends BaseService {
 
         if (tpaPath) {
           try {
-            const json = tryJsonParse(arrayToText((await Fs.readFile(tpaPath))!));
+            const json = tryJsonParse(arrayBufferToText((await Fs.readFile(tpaPath))!));
 
             if (!json || typeof json !== "object") return undefined;
 

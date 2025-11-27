@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
+import { DefaultColors } from "$ts/terminal/store";
 import type { AppProcessData } from "$types/app";
 import { ClipboardAddon } from "@xterm/addon-clipboard";
 import { FitAddon } from "@xterm/addon-fit";
@@ -20,6 +21,10 @@ export class TerminalWindowRuntime extends AppProcess {
     this.setSource(__SOURCE__);
   }
 
+  async start() {
+    
+  }
+
   async render() {
     const body = this.getBody();
     this.getWindow().classList.add("theme-dark");
@@ -31,18 +36,19 @@ export class TerminalWindowRuntime extends AppProcess {
       fontSize: 13,
       fontFamily: "Source Code Pro",
       theme: {
-        brightRed: "#ff7e7e",
-        red: "#ff7e7e",
-        brightGreen: "#82ff80",
-        green: "#82ff80",
-        brightYellow: "#ffe073",
-        yellow: "#ffe073",
-        brightBlue: "#96d3ff",
-        blue: "#96d3ff",
-        brightCyan: "#79ffd0",
-        cyan: "#79ffd0",
-        brightMagenta: "#d597ff",
-        magenta: "#d597ff",
+        brightRed: DefaultColors.red,
+        red: DefaultColors.red,
+        brightGreen: DefaultColors.green,
+        green: DefaultColors.green,
+        brightYellow: DefaultColors.yellow,
+        yellow: DefaultColors.yellow,
+        brightBlue: DefaultColors.blue,
+        blue: DefaultColors.blue,
+        brightCyan: DefaultColors.cyan,
+        cyan: DefaultColors.cyan,
+        brightMagenta: DefaultColors.magenta,
+        magenta: DefaultColors.magenta,
+        background: "#0000",
       },
       scrollback: 500,
     });

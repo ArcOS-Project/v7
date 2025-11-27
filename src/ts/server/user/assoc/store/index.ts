@@ -140,6 +140,10 @@ export const DefaultFileDefinitions: Record<string, FileDefinition> = {
     friendlyName: "Binary (unsupported)",
     icon: "UnknownFileIcon",
   },
+  ".atc": {
+    friendlyName: "ArcTerm Color Preset",
+    icon: "ArcTermIcon",
+  },
   ...AudioFileDefinitions, // AudioMimeIcon
   ...ImageFileDefinitions, // ImageMimeIcon
   ...VideoFileDefinitions, // VideoMimeIcon

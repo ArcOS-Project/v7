@@ -43,7 +43,7 @@ export class Readline extends Process implements ITerminalAddon {
   private highWatermark = 10000;
   private lowWatermark = 1000;
   private highWater = false;
-  private state: State | undefined;
+  public state: State | undefined;
   private checkHandler: CheckHandler = () => true;
   private ctrlCHandler: CtrlCHandler = () => {
     return;

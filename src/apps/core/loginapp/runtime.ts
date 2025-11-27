@@ -45,8 +45,7 @@ export class LoginAppRuntime extends AppProcess {
 
     const server = getKMod<ServerManagerType>("server");
 
-    this.unexpectedInvocation =
-      State?.currentState !== "boot" && State?.currentState !== "initialSetup" && !props?.type;
+    this.unexpectedInvocation = State?.currentState !== "boot" && State?.currentState !== "initialSetup" && !props?.type;
     this.server = server;
     this.serverInfo.set(server.serverInfo!);
     this.safeMode = !!(props?.safeMode || Env.get("safemode"));
@@ -204,11 +203,9 @@ export class LoginAppRuntime extends AppProcess {
     this.savePersistence(username, this.profileImage());
 
     broadcast("Starting filesystem");
-
     await userDaemon.init!.startFilesystemSupplier();
 
     broadcast("Starting synchronization");
-
     await userDaemon.init!.startPreferencesSync();
 
     broadcast("Reading profile customization");
@@ -246,6 +243,8 @@ export class LoginAppRuntime extends AppProcess {
 
     broadcast("Starting drive notifier watcher");
     userDaemon.init!.startDriveNotifierWatcher();
+
+    broadcast("Starting permission manager");
     await userDaemon.init!.startPermissionHandler();
 
     broadcast("Starting share management");
@@ -309,7 +308,7 @@ export class LoginAppRuntime extends AppProcess {
 
     await Sleep(2000);
     await daemon.activity!.logActivity("logout");
-    
+
     this.resetCookies();
     await daemon.account!.discontinueToken();
     await daemon.stopUserContexts();
