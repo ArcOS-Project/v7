@@ -5,7 +5,7 @@ import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
-import { arrayToBlob, arrayToText, textToBlob } from "$ts/util/convert";
+import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
 import { compareVersion } from "$ts/version";
 import type { FilesystemProgressCallback } from "$types/fs";
@@ -117,7 +117,7 @@ export class DistributionServiceProcess extends BaseService {
         return [];
       }
 
-      const json = tryJsonParse<StoreItem[]>(arrayToText(contents));
+      const json = tryJsonParse<StoreItem[]>(arrayBufferToText(contents));
 
       if (typeof json === "string") {
         await this.writeInstalledStoreItemList([]);
@@ -196,7 +196,7 @@ export class DistributionServiceProcess extends BaseService {
         return [];
       }
 
-      const json = tryJsonParse<ArcPackage[]>(arrayToText(contents));
+      const json = tryJsonParse<ArcPackage[]>(arrayBufferToText(contents));
 
       if (typeof json === "string") {
         await this.writeInstalledPackageList([]);
@@ -291,7 +291,7 @@ export class DistributionServiceProcess extends BaseService {
     const zip = new JSZip();
     const buffer = await zip.loadAsync(content, {});
     const metaBinary = await buffer.files["_metadata.json"].async("arraybuffer");
-    const metadata = tryJsonParse<ArcPackage>(arrayToText(metaBinary));
+    const metadata = tryJsonParse<ArcPackage>(arrayBufferToText(metaBinary));
 
     this.BUSY = "";
 
@@ -338,7 +338,7 @@ export class DistributionServiceProcess extends BaseService {
     }
 
     const metaBinary = await buffer.files["_metadata.json"].async("arraybuffer");
-    const metadata = tryJsonParse<ArcPackage>(arrayToText(metaBinary));
+    const metadata = tryJsonParse<ArcPackage>(arrayBufferToText(metaBinary));
 
     if (!metadata || typeof metadata === "string") {
       this.BUSY = "";
@@ -533,7 +533,7 @@ export class DistributionServiceProcess extends BaseService {
     }
 
     try {
-      const result = await Fs.writeFile(path, arrayToBlob(buffer), undefined, false);
+      const result = await Fs.writeFile(path, arrayBufferToBlob(buffer), undefined, false);
       if (!result) {
         return false;
       }
@@ -586,7 +586,7 @@ export class DistributionServiceProcess extends BaseService {
 
       if (!content) return false;
 
-      return await this.publishing_publishPackage(arrayToBlob(content), onProgress);
+      return await this.publishing_publishPackage(arrayBufferToBlob(content), onProgress);
     } catch {
       return false;
     }
@@ -676,7 +676,7 @@ export class DistributionServiceProcess extends BaseService {
 
       if (!contents) return false;
 
-      const newData = arrayToBlob(contents);
+      const newData = arrayBufferToBlob(contents);
       const response = await Backend.patch(`/store/publish/${itemId}`, newData, {
         headers: { Authorization: `Bearer ${Daemon!.token}` },
         onUploadProgress: (ev) => {

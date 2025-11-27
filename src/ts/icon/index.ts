@@ -5,7 +5,7 @@ import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
-import { arrayToText, textToBlob } from "$ts/util/convert";
+import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { App } from "$types/app";
@@ -44,7 +44,7 @@ export class IconService extends BaseService {
 
   async loadConfiguration() {
     this.Log(`Loading configuration`);
-    const config = tryJsonParse<Record<string, string>>(arrayToText((await Fs.readFile(this.PATH))!));
+    const config = tryJsonParse<Record<string, string>>(arrayBufferToText((await Fs.readFile(this.PATH))!));
 
     if (!config || typeof config === "string") {
       return await this.writeConfiguration(this.defaultConfiguration());

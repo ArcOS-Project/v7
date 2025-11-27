@@ -5,7 +5,7 @@ import { tryJsonParse } from "$ts/json";
 import { Process } from "$ts/process/instance";
 import { Daemon } from "$ts/server/user/daemon";
 import { sliceIntoChunks } from "$ts/util";
-import { arrayToText, textToBlob } from "$ts/util/convert";
+import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { Store } from "$ts/writable";
 import { ElevationLevel } from "$types/elevation";
 import type { PermissionStorage, SudoPermissions } from "$types/permission";
@@ -66,7 +66,7 @@ export class PermissionHandler extends Process {
     const content = await Fs.readFile(this.#PERMISSION_FILE);
     if (!content) return this.writeConfiguration(this.Configuration());
 
-    const json = tryJsonParse<PermissionStorage>(arrayToText(content));
+    const json = tryJsonParse<PermissionStorage>(arrayBufferToText(content));
     if (typeof json === "string") return this.writeConfiguration(DefaultPermissionStorage);
 
     this.Configuration.set(json);

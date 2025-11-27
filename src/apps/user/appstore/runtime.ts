@@ -8,7 +8,7 @@ import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { Plural } from "$ts/util";
-import { arrayToBlob } from "$ts/util/convert";
+import { arrayBufferToBlob } from "$ts/util/convert";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -408,7 +408,7 @@ The author hasn't provided a readme file themselves, so this one has been automa
     const array = await axios.get(url, { responseType: "arraybuffer" });
 
     try {
-      await Fs.writeFile(path, arrayToBlob(array.data));
+      await Fs.writeFile(path, arrayBufferToBlob(array.data));
     } catch {}
 
     this.spawnApp("ImageViewer", +Env.get("shell_pid"), path);

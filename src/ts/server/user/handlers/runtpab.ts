@@ -1,6 +1,6 @@
 import { MessageBox } from "$ts/dialog";
 import { Env, Fs } from "$ts/env";
-import { arrayToBlob } from "$ts/util/convert";
+import { arrayBufferToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
 import { UUID } from "$ts/uuid";
 import type { FileHandler } from "$types/fs";
@@ -76,7 +76,7 @@ const runTpaBundle: (d: UserDaemon) => FileHandler = (daemon) => ({
       const item = buffer.files[path];
       const target = join(extractPath, path);
       if (!item.dir) {
-        await Fs.writeFile(target, arrayToBlob(await item.async("arraybuffer"), fromExtension(path)));
+        await Fs.writeFile(target, arrayBufferToBlob(await item.async("arraybuffer"), fromExtension(path)));
       }
     }
 

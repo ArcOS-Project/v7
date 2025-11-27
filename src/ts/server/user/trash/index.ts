@@ -1,7 +1,7 @@
 import { Env, Fs, SysDispatch } from "$ts/env";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
-import { arrayToText, textToBlob } from "$ts/util/convert";
+import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
@@ -35,7 +35,7 @@ export class TrashCanService extends BaseService {
     if (!content) return await this.writeIndex({});
 
     try {
-      const parsed = JSON.parse(arrayToText(content));
+      const parsed = JSON.parse(arrayBufferToText(content));
 
       return parsed as Record<string, TrashIndexNode>;
     } catch {

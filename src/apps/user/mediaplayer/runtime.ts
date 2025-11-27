@@ -4,7 +4,7 @@ import { Fs, Stack } from "$ts/env";
 import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
-import { arrayToText, textToBlob } from "$ts/util/convert";
+import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
@@ -364,7 +364,7 @@ export class MediaPlayerRuntime extends AppProcess {
       const contents = await Fs.readFile(path);
       if (!contents) throw new Error("Failed to read playlist");
 
-      const queue = JSON.parse(atob(arrayToText(contents)));
+      const queue = JSON.parse(atob(arrayBufferToText(contents)));
       if (!queue || !Array.isArray(queue)) throw new Error("Playlist is not valid");
 
       const queueIndex = this.queueIndex();

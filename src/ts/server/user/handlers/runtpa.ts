@@ -1,6 +1,6 @@
 import { Fs } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
-import { arrayToText } from "$ts/util/convert";
+import { arrayBufferToText } from "$ts/util/convert";
 import type { FileHandler } from "$types/fs";
 import type { UserDaemon } from "../daemon";
 
@@ -12,7 +12,7 @@ const runTpaFile: (d: UserDaemon) => FileHandler = (daemon) => ({
   name: "Run ArcOS app",
   description: "Run this TPA file as an application",
   handle: async (path: string) => {
-    const text = arrayToText((await Fs.readFile(path))!);
+    const text = arrayBufferToText((await Fs.readFile(path))!);
     const json = tryJsonParse(text);
 
     if (typeof json !== "object") throw new Error(`RunTpaFileHandler: JSON parse failed`);

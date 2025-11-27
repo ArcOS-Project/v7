@@ -1,5 +1,5 @@
 import { Fs } from "$ts/env";
-import { arrayToBlob } from "$ts/util/convert";
+import { arrayBufferToBlob } from "$ts/util/convert";
 import { getParentDirectory } from "$ts/util/fs";
 import { Wallpapers } from "$ts/wallpaper/store";
 import { Store } from "$ts/writable";
@@ -161,7 +161,7 @@ export class WallpaperUserContext extends UserContext {
         return Wallpapers.img04;
       }
 
-      const blob = arrayToBlob(contents, parent.files.filter((f) => path.endsWith(f.name))[0]?.mimeType || "");
+      const blob = arrayBufferToBlob(contents, parent.files.filter((f) => path.endsWith(f.name))[0]?.mimeType || "");
       const blobUrl = URL.createObjectURL(blob);
 
       this.localWallpaperCache[id] = blob;

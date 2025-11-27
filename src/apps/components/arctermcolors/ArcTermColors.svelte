@@ -33,12 +33,15 @@
 </div>
 
 <div class="actions">
-  <button class="lucide icon-rotate-ccw" aria-label="Revert"></button>
-  <div class="sep"></div>
-  <button class="lucide icon-folder-open" aria-label="Revert"></button>
-  <button class="lucide icon-save" disabled={$mode === "presets"} aria-label="Save current colorset"></button>
+  <button class="lucide icon-folder-open" aria-label="Load colorset..." onclick={() => process.readPresetFromFile()}></button>
+  <button
+    class="lucide icon-save"
+    disabled={$mode === "presets"}
+    aria-label="Save current colorset"
+    onclick={() => process.savePresetToFile()}
+  ></button>
   <div class="master">
-    <button class="cancel">Cancel</button>
-    <button class="apply suggested">Apply</button>
+    <button class="cancel" onclick={() => process.closeWindow()}>Cancel</button>
+    <button class="apply suggested" onclick={() => process.applyConfiguration()}>Apply</button>
   </div>
 </div>

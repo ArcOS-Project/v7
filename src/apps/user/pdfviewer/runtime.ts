@@ -2,7 +2,7 @@ import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { Fs } from "$ts/env";
 import { Daemon } from "$ts/server/user/daemon";
-import { arrayToBlob } from "$ts/util/convert";
+import { arrayBufferToBlob } from "$ts/util/convert";
 import { getItemNameFromPath } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -82,7 +82,7 @@ export class PdfViewerRuntime extends AppProcess {
         return;
       }
 
-      const blob = arrayToBlob(contents);
+      const blob = arrayBufferToBlob(contents);
       const url = URL.createObjectURL(blob);
 
       this.openedFile.set(path);

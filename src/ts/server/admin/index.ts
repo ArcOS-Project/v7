@@ -5,7 +5,7 @@ import { toForm } from "$ts/form";
 import { tryJsonParse } from "$ts/json";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
-import { arrayToBlob, arrayToText, textToBlob } from "$ts/util/convert";
+import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
 import type {
   Activity,
@@ -1122,7 +1122,7 @@ export class AdminBootstrapper extends BaseService {
     }
 
     const metaBinary = await buffer.files["_metadata.json"].async("arraybuffer");
-    const metadata = tryJsonParse<ArcPackage>(arrayToText(metaBinary));
+    const metadata = tryJsonParse<ArcPackage>(arrayBufferToText(metaBinary));
 
     if (!metadata || typeof metadata === "string") return false;
     if (metadata.appId.includes(".") || metadata.appId.includes("-")) return false;
@@ -1155,7 +1155,7 @@ export class AdminBootstrapper extends BaseService {
         status(`Writing file ${pathTarget}`);
 
         try {
-          await Fs.writeFile(pathTarget, arrayToBlob(await item.async("arraybuffer"), fromExtension(pathTarget)));
+          await Fs.writeFile(pathTarget, arrayBufferToBlob(await item.async("arraybuffer"), fromExtension(pathTarget)));
         } catch {}
       }
     }

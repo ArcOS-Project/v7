@@ -36,6 +36,9 @@ const ArcTermColorsApp: App = {
   overlay: true,
   noSafeMode: false,
   vital: false,
+  opens: {
+    extensions: [".atc"],
+  },
   id: "ArcTermColors",
 };
 

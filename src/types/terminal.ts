@@ -36,5 +36,6 @@ export interface ArcTermConfiguration {
   foreground?: string;
   background?: string;
   brightBlack?: string;
+  backdropOpacity?: number;
 }
 export type ExpandedTerminal = Terminal & { process?: TerminalWindowRuntime };

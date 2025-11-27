@@ -89,7 +89,8 @@ export class MigrationsUserContext extends UserContext {
         for (const extension of app.opens.extensions) {
           const existingAssociation = Daemon!.assoc?.getFileAssociation(`dummy${extension}`);
 
-          if (existingAssociation) continue;
+          // BUG: addition of `?.handledBy?.app` fixes existing assoc check
+          if (existingAssociation?.handledBy?.app) continue;
 
           config.associations.apps[app.id] ||= [];
           config.associations.apps[app.id].push(extension);

@@ -15,7 +15,7 @@ import { Backend } from "$ts/server/axios";
 import { TryGetDaemon, UserDaemon } from "$ts/server/user/daemon";
 import { ThirdPartyProps } from "$ts/tpa/props";
 import { authcode } from "$ts/util";
-import { arrayToText, textToBlob } from "$ts/util/convert";
+import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { UUID } from "$ts/uuid";
 import type { App } from "$types/app";
@@ -114,7 +114,7 @@ export class JsExec extends Process {
   async getContents() {
     this.Log(`Reading script contents`);
 
-    const unwrapped = arrayToText((await Fs.readFile(this.filePath!))!);
+    const unwrapped = arrayBufferToText((await Fs.readFile(this.filePath!))!);
     if (!unwrapped) throw new JsExecError(`Failed to read ${this.filePath}: not found`);
 
     await this.testFileContents(unwrapped);

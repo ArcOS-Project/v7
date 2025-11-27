@@ -1,6 +1,6 @@
 import { ArcOSVersion, Env, Fs } from "$ts/env";
 import type { IconService } from "$ts/icon";
-import { arrayToText, textToBlob } from "$ts/util/convert";
+import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
 import { Daemon, type UserDaemon } from "..";
 import { UserPaths } from "../../store";
@@ -13,7 +13,7 @@ export class VersionUserContext extends UserContext {
 
   async isRegisteredVersionOutdated() {
     const contents = await Fs.readFile(join(UserPaths.System, "RegisteredVersion"));
-    const isOutdated = !contents || arrayToText(contents) !== ArcOSVersion;
+    const isOutdated = !contents || arrayBufferToText(contents) !== ArcOSVersion;
 
     return isOutdated;
   }

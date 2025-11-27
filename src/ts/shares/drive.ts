@@ -13,7 +13,7 @@ import type {
 } from "$types/fs";
 import type { SharedDriveType } from "$types/shares";
 import { FilesystemDrive } from "../drives/drive";
-import { arrayToBlob } from "../util/convert";
+import { arrayBufferToBlob } from "../util/convert";
 import { getItemNameFromPath, join } from "../util/fs";
 
 export class SharedDrive extends FilesystemDrive {
@@ -269,7 +269,7 @@ export class SharedDrive extends FilesystemDrive {
 
       if (response.status !== 200) return undefined;
 
-      const blob = arrayToBlob(response.data, response.headers["Content-Type"]?.toString());
+      const blob = arrayBufferToBlob(response.data, response.headers["Content-Type"]?.toString());
       const url = URL.createObjectURL(blob);
 
       return url;

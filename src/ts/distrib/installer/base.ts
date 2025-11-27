@@ -1,7 +1,7 @@
 import { Fs } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import { Daemon } from "$ts/server/user/daemon";
-import { arrayToBlob } from "$ts/util/convert";
+import { arrayBufferToBlob } from "$ts/util/convert";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
 import type { ArcPackage, InstallStatus, InstallStatusMode, InstallStatusType, StoreItem } from "$types/package";
@@ -194,7 +194,7 @@ export class InstallerProcessBase extends Process {
     try {
       await Fs.writeFile(
         path,
-        arrayToBlob(content, fromExtension(path)),
+        arrayBufferToBlob(content, fromExtension(path)),
         (prog) => {
           // this.setCurrentContent(`${formattedPath} (${((100 / prog.max) * prog.value).toFixed(1)}%)`);
         },

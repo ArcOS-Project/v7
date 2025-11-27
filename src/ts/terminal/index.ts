@@ -7,7 +7,7 @@ import { Process } from "$ts/process/instance";
 import { LoginUser } from "$ts/server/user/auth";
 import { Daemon, TryGetDaemon, type UserDaemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
-import { arrayToText, textToBlob } from "$ts/util/convert";
+import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
 import type { DirectoryReadReturn } from "$types/fs";
@@ -370,7 +370,7 @@ export class ArcTerminal extends Process {
 
       if (!contents) throw "";
 
-      const json = JSON.parse(arrayToText(contents));
+      const json = JSON.parse(arrayBufferToText(contents));
 
       this.config = json as ArcTermConfiguration;
       this.term!.options.theme = {

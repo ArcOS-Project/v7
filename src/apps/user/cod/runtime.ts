@@ -4,7 +4,7 @@ import { Fs } from "$ts/env";
 import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
-import { arrayToText, textToBlob } from "$ts/util/convert";
+import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppKeyCombinations } from "$types/accelerator";
@@ -118,7 +118,7 @@ export class CodRuntime extends AppProcess {
 
       const info = Daemon?.assoc?.getFileAssociation(path);
 
-      this.buffer.set(arrayToText(contents));
+      this.buffer.set(arrayBufferToText(contents));
       this.openedFile.set(path);
       this.filename.set(getItemNameFromPath(path));
       this.directoryName.set(getItemNameFromPath(getParentDirectory(path)));

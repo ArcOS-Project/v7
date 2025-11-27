@@ -7,7 +7,7 @@ import { MessagingInterface } from "$ts/server/messaging";
 import { Daemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import { sortByKey } from "$ts/util";
-import { arrayToBlob, arrayToText, textToBlob } from "$ts/util/convert";
+import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -277,7 +277,7 @@ export class MessagingAppRuntime extends AppProcess {
 
     try {
       await Fs.createDirectory(getParentDirectory(path));
-      await Fs.writeFile(path, arrayToBlob(contents, attachment.mimeType));
+      await Fs.writeFile(path, arrayBufferToBlob(contents, attachment.mimeType));
     } catch {}
 
     await Daemon?.files?.openFile(path);
@@ -357,7 +357,7 @@ export class MessagingAppRuntime extends AppProcess {
       const contents = await Fs.readFile(path);
       if (!contents) return this.closeWindow();
 
-      const json = tryJsonParse(arrayToText(contents));
+      const json = tryJsonParse(arrayBufferToText(contents));
       if (typeof json === "string") return this.closeWindow();
 
       this.message.set(json as ExpandedMessage);
