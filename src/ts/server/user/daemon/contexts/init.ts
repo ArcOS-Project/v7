@@ -1,10 +1,12 @@
 import { MessageBox } from "$ts/dialog";
+import { EurekaDrive } from "$ts/drives/eureka";
 import { ServerDrive } from "$ts/drives/server";
 import { Env, Fs, Stack, State, SysDispatch } from "$ts/env";
 import { PermissionHandler } from "$ts/permissions";
 import { ServiceHost } from "$ts/services";
 import type { ShareManager } from "$ts/shares";
 import type { LibraryManagement } from "$ts/tpa/libraries";
+import { arrayBufferToText } from "$ts/util/convert";
 import type { Service } from "$types/service";
 import { Daemon, type UserDaemon } from "..";
 import type { FileAssocService } from "../../assoc";
@@ -88,6 +90,14 @@ export class InitUserContext extends UserContext {
       await Fs.mountDrive<ServerDrive>("userfs", ServerDrive, "U", undefined, this.token);
 
       await Daemon!.migrations?.migrateFilesystemLayout();
+
+      // TEMPORARY!
+      const eurekaFile = await Fs.readFile("U:/System/Config/EurekaToken");
+      if (!eurekaFile) return;
+      const token = arrayBufferToText(eurekaFile);
+
+      await Fs.mountDrive<EurekaDrive>("eureka", EurekaDrive, undefined, undefined, token);
+      // END TEMPORARY
     } catch {
       throw new Error("UserDaemon: Failed to start filesystem supplier");
     }
