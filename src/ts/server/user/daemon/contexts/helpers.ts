@@ -23,8 +23,6 @@ export class HelpersUserContext extends UserContext {
   async GlobalLoadIndicator(caption?: string, pid?: number, progress?: Partial<GlobalLoadIndicatorProgress>) {
     pid ||= +Env.get("shell_pid");
 
-    console.log(pid)
-
     const data = {
       data: { ...GlobalLoadIndicatorApp, overlay: true },
       id: GlobalLoadIndicatorApp.id,

@@ -168,13 +168,14 @@ export class SpawnUserContext extends UserContext {
 
     const pid = parentPid || +Env.get("shell_pid");
 
-    console.log(pid, parentPid);
-
     if (!pid) {
       this.Log(`Spawning overlay app '${app.id}' as normal app: no suitable parent process`, LogLevel.warning);
       app.overlay = false;
       app.state.headless = false;
       app.position = { centered: true };
+    } else {
+      app.overlay = true;
+      app.state.headless = true;
     }
 
     return await Stack.spawn<T>(
