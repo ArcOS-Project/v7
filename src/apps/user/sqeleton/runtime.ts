@@ -22,7 +22,7 @@ export class SqeletonRuntime extends AppProcess {
   working = Store<boolean>(false);
   errored = Store<boolean>(false);
   result = Store<Record<string, any>[][] | undefined>();
-  tables = Store<SqlTable[]>(); // TODO: dedicated type
+  tables = Store<SqlTable[]>();
   busy = false;
   currentTab = Store<string>("result");
   syntaxError = Store<boolean>(false);

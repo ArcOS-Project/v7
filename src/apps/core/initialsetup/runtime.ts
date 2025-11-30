@@ -159,7 +159,6 @@ export class InitialSetupRuntime extends AppProcess {
       throw new Error("InitialSetupWizardRender: Registration is disabled on this server");
     }
 
-    // TODO: some kind of intro animation
     await Sleep(1000);
 
     this.showMainContent.set(true);

@@ -12,6 +12,7 @@
   let installed = $state<ExpandedUserInfo[]>([]);
 
   onMount(async () => {
+    // TODO: implement a new method that uses the userfs-based AppRepository
     const users = await process.admin.getAllUsers();
 
     for (const user of users) {
