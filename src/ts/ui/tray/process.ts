@@ -1,11 +1,12 @@
 import type { ShellRuntime } from "$apps/components/shell/runtime";
 import type { ShellTrayIcon, TrayPopup } from "$apps/components/shell/types";
 import { Env, Stack } from "$ts/env";
+import { ProcessWithPermissions } from "$ts/permissions/process";
 import { Process } from "$ts/process/instance";
 import type { ContextMenuItem } from "$types/app";
 import { mount, unmount } from "svelte";
 
-export class TrayIconProcess extends Process {
+export class TrayIconProcess extends ProcessWithPermissions {
   targetPid: number;
   identifier: string;
   popup?: TrayPopup;
