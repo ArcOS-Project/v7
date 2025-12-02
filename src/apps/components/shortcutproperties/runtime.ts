@@ -34,7 +34,7 @@ export class ShortcutPropertiesRuntime extends AppProcess {
   //#region ACTIONS
 
   async save() {
-    const result = await Daemon?.shortcuts?.createShortcut(this.shortcutData(), this.path!);
+    const result = await Daemon?.shortcuts?.createShortcut(this.shortcutData(), this.path!, true);
 
     if (result) {
       await this.closeWindow();

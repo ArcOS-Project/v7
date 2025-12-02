@@ -1,7 +1,8 @@
 import { MessageBox } from "$ts/dialog";
 import { Env, Fs } from "$ts/env";
 import { textToBlob } from "$ts/util/convert";
-import { getItemNameFromPath } from "$ts/util/fs";
+import { getItemNameFromPath, join } from "$ts/util/fs";
+import { UUID } from "$ts/uuid";
 import type { ArcShortcut } from "$types/shortcut";
 import { Daemon, type UserDaemon } from "..";
 import { UserContext } from "../context";
@@ -61,5 +62,14 @@ export class ShortcutsUserContext extends UserContext {
     } catch {
       return false;
     }
+  }
+
+  async newShortcut(location: string) {
+    Daemon.spawn?.spawnOverlay("ShortcutProperties", +Env.get("shell_pid"), join(location, `${UUID()}.arclnk`), {
+      icon: "ShortcutMimeIcon",
+      name: "New shortcut",
+      type: "new",
+      target: location,
+    });
   }
 }

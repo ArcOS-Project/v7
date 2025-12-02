@@ -66,8 +66,7 @@ export function interceptTpaErrors(stack: string, e: Error): boolean {
   if (renderer?.lastInteract) {
     if (isTpa && parsed[0]?.file?.includes(`/${renderer.lastInteract.app.id}@`)) {
       Log("interceptTpaErrors", `Not crashing for ${e instanceof PromiseRejectionEvent ? e.reason : e}: source is a TPA`);
-      handler.BUSY = false;
-      SysDispatch.dispatch("stack-not-busy");
+      handler.BUSY = "";
       renderer.notifyCrash(renderer.lastInteract.app.data, e, renderer.lastInteract);
       handler.kill(renderer.lastInteract.pid);
       renderer.lastInteract = undefined;
@@ -75,8 +74,7 @@ export function interceptTpaErrors(stack: string, e: Error): boolean {
       const parsedAppId = parsed[0]?.file?.match(FPA_TEST_REGEXP)?.groups?.appId;
 
       if (parsedAppId) {
-        handler.BUSY = false;
-        SysDispatch.dispatch("stack-not-busy");
+        handler.BUSY = "";
         renderer.notifyCrash(renderer.lastInteract.app.data, e, renderer.lastInteract);
         handler.kill(renderer.lastInteract.pid);
         renderer.lastInteract = undefined;

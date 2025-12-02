@@ -2,6 +2,7 @@ import { MessageBoxApp } from "$apps/components/messagebox/messageBox";
 import { MessageBoxRuntime } from "$apps/components/messagebox/runtime";
 import type { ProcessHandlerType } from "$types/kernel";
 import type { ConfirmationData, MessageBoxData } from "$types/messagebox";
+import type { ErrorButton } from "$types/notification";
 import { getKMod } from "./env";
 
 export async function MessageBox(data: MessageBoxData, parentPid: number, overlay = false) {
@@ -36,3 +37,5 @@ export async function GetConfirmation(data: ConfirmationData, parentPid: number,
     );
   });
 }
+
+export const ConditionalButton = (button: ErrorButton, condition: any) => (!!condition ? [button] : []);

@@ -220,3 +220,5 @@ export function groupByTimeFrame<T extends Record<string, any>>(items: T[], colu
     } as Record<string, T[]>
   );
 }
+
+export function noop() {} // empty filler method

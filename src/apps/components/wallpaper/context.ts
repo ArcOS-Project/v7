@@ -213,12 +213,7 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
             caption: "Shortcut...",
             icon: "arrow-up-right",
             action: () => {
-              runtime.spawnOverlayApp("ShortcutProperties", shellPid(), join(UserPaths.Desktop, `${UUID()}.arclnk`), {
-                icon: "ShortcutMimeIcon",
-                name: "New shortcut",
-                type: "new",
-                target: UserPaths.Desktop,
-              });
+              Daemon.shortcuts?.newShortcut(UserPaths.Desktop);
             },
           },
           {

@@ -115,7 +115,7 @@ export interface BugHuntType {
 }
 
 export interface ProcessHandlerType {
-  BUSY: boolean;
+  BUSY: string;
   store: ReadableStore<Map<number, Process>>;
   rendererPid: number;
   renderer: AppRenderer | undefined;
@@ -135,7 +135,7 @@ export interface ProcessHandlerType {
   getPid(): number;
   isPid(pid: number): boolean;
   ConnectDispatch(pid: number): ProcessDispatch | undefined;
-  waitForAvailable(): Promise<void>;
+  waitForAvailable(or?: string): Promise<void>;
   getProcessContext(pid: number): ProcessContext | undefined;
 }
 

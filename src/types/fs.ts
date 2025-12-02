@@ -64,6 +64,14 @@ export interface UserQuota extends Record<string, number | boolean | undefined> 
   unknown?: boolean;
 }
 
+export const DefaultUserQuota: UserQuota = {
+  used: 0,
+  max: 100,
+  free: 100,
+  percentage: 0,
+  unknown: true,
+};
+
 export interface SingleUploadReturn {
   path: string;
   file: File;

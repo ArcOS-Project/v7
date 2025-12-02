@@ -57,6 +57,10 @@
                   </div>
                   <p class="percent">{((100 / drive.quota.max) * drive.quota.used).toFixed(0)}%</p>
                 </div>
+              {:else}
+                <div class="usage">
+                  <div class="bar"></div>
+                </div>
               {/if}
             </div>
           </button>
