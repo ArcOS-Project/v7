@@ -1,6 +1,7 @@
 import { KernelServerUrl } from "$ts/env";
 import { toForm } from "$ts/form";
 import { Backend } from "$ts/server/axios";
+import { Daemon } from "$ts/server/user/daemon";
 import { authcode } from "$ts/util";
 import type {
   DirectoryReadReturn,
@@ -18,7 +19,6 @@ import { getItemNameFromPath, join } from "../util/fs";
 
 export class SharedDrive extends FilesystemDrive {
   shareId: string | undefined;
-  token: string;
   shareInfo: SharedDriveType;
   public IDENTIFIES_AS: string = "share";
   public FILESYSTEM_SHORT: string = "SDFS";
@@ -37,10 +37,9 @@ export class SharedDrive extends FilesystemDrive {
     bulk: true,
     stat: true,
   };
-  constructor(uuid: string, letter: string, info: SharedDriveType, token: string) {
+  constructor(uuid: string, letter: string, info: SharedDriveType) {
     super(uuid, letter);
 
-    this.token = token;
     this.shareInfo = info;
   }
 
@@ -60,7 +59,7 @@ export class SharedDrive extends FilesystemDrive {
       const response = await Backend.get<DirectoryReadReturn>(
         path ? `/share/dir/${this.shareId}/${path}` : `/share/dir/${this.shareId}`,
         {
-          headers: { Authorization: `Bearer ${this.token}` },
+          headers: { Authorization: `Bearer ${Daemon!.token}` },
         }
       );
 
@@ -75,7 +74,7 @@ export class SharedDrive extends FilesystemDrive {
       const response = await Backend.post<DirectoryReadReturn>(
         `/share/dir/${this.shareId}/${path}`,
         {},
-        { headers: { Authorization: `Bearer ${this.token}` } }
+        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
       );
 
       return response.status === 200;
@@ -89,7 +88,7 @@ export class SharedDrive extends FilesystemDrive {
 
     try {
       const response = await Backend.get(`/share/file/${this.shareId}/${path}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
         responseType: "arraybuffer",
         onDownloadProgress: (progress) => {
           onProgress({
@@ -109,7 +108,7 @@ export class SharedDrive extends FilesystemDrive {
   async writeFile(path: string, blob: Blob, onProgress: FilesystemProgressCallback): Promise<boolean> {
     try {
       const response = await Backend.post(`/share/file/${this.shareId}/${path}`, blob, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
         onUploadProgress: (progress) => {
           onProgress({
             max: progress.total || 0,
@@ -128,7 +127,7 @@ export class SharedDrive extends FilesystemDrive {
   async tree(path: string = ""): Promise<RecursiveDirectoryReadReturn | undefined> {
     try {
       const response = await Backend.get(path ? `/share/tree/${this.shareId}/${path}` : `/share/tree/${this.shareId}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.data;
@@ -147,7 +146,7 @@ export class SharedDrive extends FilesystemDrive {
           destination: destination.endsWith(sourceFilename) ? destination : join(destination, sourceFilename),
         }),
         {
-          headers: { Authorization: `Bearer ${this.token}` },
+          headers: { Authorization: `Bearer ${Daemon!.token}` },
         }
       );
 
@@ -167,7 +166,7 @@ export class SharedDrive extends FilesystemDrive {
           destination,
         }),
         {
-          headers: { Authorization: `Bearer ${this.token}` },
+          headers: { Authorization: `Bearer ${Daemon!.token}` },
         }
       );
 
@@ -182,7 +181,7 @@ export class SharedDrive extends FilesystemDrive {
 
     try {
       const response = await Backend.delete(`/share/rm/${this.shareId}/${path}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -194,7 +193,7 @@ export class SharedDrive extends FilesystemDrive {
   async quota(): Promise<UserQuota> {
     try {
       const response = await Backend.get(`/share/quota/${this.shareId}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.data as UserQuota;
@@ -213,7 +212,7 @@ export class SharedDrive extends FilesystemDrive {
       const response = await Backend.post(
         `/share/accessor/${this.shareId}/${path}`,
         {},
-        { headers: { Authorization: `Bearer ${this.token}` } }
+        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
       );
 
       const data = response.data as FsAccess;
@@ -227,7 +226,7 @@ export class SharedDrive extends FilesystemDrive {
   async bulk<T = any>(path: string, extension: string): Promise<Record<string, T>> {
     try {
       const response = await Backend.get(`/share/bulk/${this.shareId}/${extension}/${path}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       if (response.status !== 200) return {};
@@ -243,7 +242,7 @@ export class SharedDrive extends FilesystemDrive {
   async stat(path: string): Promise<ExtendedStat | undefined> {
     try {
       const response = await Backend.get(`/share/stat/${this.shareId}/${path}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
       const data = response.data as ExtendedStat;
 
@@ -263,7 +262,7 @@ export class SharedDrive extends FilesystemDrive {
   async imageThumbnail(path: string, width: number, height?: number): Promise<string | undefined> {
     try {
       const response = await Backend.get(`/share/thumbnail/${this.shareId}/${width}x${height ?? width}/${path}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
         responseType: "arraybuffer",
       });
 

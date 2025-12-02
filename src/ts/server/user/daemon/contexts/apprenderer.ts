@@ -5,6 +5,10 @@ import type { CustomStylePreferences, UserPreferences } from "$types/user";
 import { Daemon, type UserDaemon } from "..";
 import { UserContext } from "../context";
 
+/**
+ * RESTRICTED: this class does not have an entry in ProcessWithPermissions,
+ * and as such cannot be accessed by third-party applications.
+ */
 export class AppRendererUserContext extends UserContext {
   constructor(id: string, daemon: UserDaemon) {
     super(id, daemon);

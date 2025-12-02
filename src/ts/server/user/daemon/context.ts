@@ -66,10 +66,6 @@ export class UserContext {
     this.#daemon.userInfo = value;
   }
 
-  protected get token() {
-    return this.#daemon.token;
-  }
-
   protected get username() {
     return this.#daemon.username;
   }

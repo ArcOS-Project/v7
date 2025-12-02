@@ -33,7 +33,7 @@ export class PreferencesUserContext extends UserContext {
 
     try {
       const response = await Backend.put(`/user/preferences`, preferences, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;

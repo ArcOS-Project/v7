@@ -10,6 +10,10 @@ import { Daemon, type UserDaemon } from "..";
 import type { FileAssocService } from "../../assoc";
 import { UserContext } from "../context";
 
+/**
+ * RESTRICTED: this class does not have an entry in ProcessWithPermissions,
+ * and as such cannot be accessed by third-party applications.
+ */
 export class InitUserContext extends UserContext {
   private registeredAnchors: HTMLAnchorElement[] = [];
   private firstSyncDone = false;
@@ -85,7 +89,7 @@ export class InitUserContext extends UserContext {
     this.Log(`Starting filesystem supplier`);
 
     try {
-      await Fs.mountDrive<ServerDrive>("userfs", ServerDrive, "U", undefined, this.token);
+      await Fs.mountDrive<ServerDrive>("userfs", ServerDrive, "U", undefined);
 
       await Daemon!.migrations?.migrateFilesystemLayout();
     } catch {

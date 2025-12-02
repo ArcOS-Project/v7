@@ -16,7 +16,7 @@ export class AccountUserContext extends UserContext {
     super(id, daemon);
   }
 
-  async discontinueToken(token = this.token) {
+  async discontinueToken(token = Daemon!.token) {
     if (this._disposed) return;
 
     this.Log(`Discontinuing token`);
@@ -48,7 +48,7 @@ export class AccountUserContext extends UserContext {
             data: this.userInfo,
           }
         : await Backend.get(`/user/self`, {
-            headers: { Authorization: `Bearer ${this.token}` },
+            headers: { Authorization: `Bearer ${Daemon!.token}` },
           });
 
       const data = response.status === 200 ? (response.data as UserInfo) : undefined;
@@ -89,7 +89,7 @@ export class AccountUserContext extends UserContext {
 
     try {
       const response = await Backend.patch("/user/rename", toForm({ newUsername }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       if (response.status !== 200) return false;
@@ -125,7 +125,7 @@ export class AccountUserContext extends UserContext {
 
     try {
       const response = await Backend.post("/user/changepswd", toForm({ newPassword }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       if (response.status !== 200) return false;
@@ -138,7 +138,7 @@ export class AccountUserContext extends UserContext {
 
   async getPublicUserInfoOf(userId: string): Promise<PublicUserInfo | undefined> {
     try {
-      const response = await Backend.get(`/user/info/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/user/info/${userId}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
       const information = response.data as PublicUserInfo;
 
       information.profilePicture = `${Server.url}/user/pfp/${userId}${authcode()}`;
@@ -163,7 +163,7 @@ export class AccountUserContext extends UserContext {
           {
             caption: "Delete account",
             action: async () => {
-              await Backend.delete(`/user`, { headers: { Authorization: `Bearer ${this.token}` } });
+              await Backend.delete(`/user`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
               Daemon!?.power?.logoff();
             },
             suggested: true,

@@ -35,14 +35,12 @@ import { AdminFileSystem } from "./fs";
 import { AdminScopes } from "./store";
 
 export class AdminBootstrapper extends BaseService {
-  private token: string | undefined;
   private userInfo: UserInfo | undefined;
 
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(pid, parentPid, name, host);
-    this.token = Daemon!.token;
 
     this.setSource(__SOURCE__);
   }
@@ -54,7 +52,7 @@ export class AdminBootstrapper extends BaseService {
 
     try {
       await Fs.createDirectory("T:/AdminBootstrapper");
-      await Fs.mountDrive("admin", AdminFileSystem, "A", undefined, this.token);
+      await Fs.mountDrive("admin", AdminFileSystem, "A", undefined);
     } catch {}
   }
 
@@ -67,7 +65,7 @@ export class AdminBootstrapper extends BaseService {
 
     try {
       const response = await Backend.get(`/user/self`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       const data = response.status === 200 ? (response.data as UserInfo) : undefined;
@@ -88,7 +86,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return;
 
     try {
-      return await Fs.mountDrive(btoa(username), AdminServerDrive, driveLetter, onProgress, this.token, username);
+      return await Fs.mountDrive(btoa(username), AdminServerDrive, driveLetter, onProgress, username);
     } catch {}
   }
 
@@ -106,7 +104,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return [];
 
     try {
-      const response = await Backend.get("/admin/users/list", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get("/admin/users/list", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return (response.data as ExpandedUserInfo[]).map((u) => {
         u.profile.profilePicture = `${KernelServerUrl}${u.profile.profilePicture}`;
@@ -130,7 +128,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return [];
 
     try {
-      const response = await Backend.get("/admin/logs", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get("/admin/logs", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.data as ServerLogItem[];
     } catch {
@@ -142,7 +140,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return [];
 
     try {
-      const response = await Backend.get("/admin/auditlog", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get("/admin/auditlog", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.data as AuditLog[];
     } catch {
@@ -154,7 +152,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.post("/admin/grant", toForm({ target: username }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -167,7 +165,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.post("/admin/revoke", toForm({ target: username }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -180,7 +178,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return;
     try {
       const response = await Backend.get(`/admin/preferences/${username}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.data as UserPreferences;
@@ -193,7 +191,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.put(`/admin/preferences/${username}`, preferences, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -206,7 +204,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/users/delete/${username}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -219,7 +217,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return;
     try {
       const response = await Backend.get(`/admin/stats`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.data as ServerStatistics;
@@ -232,7 +230,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return [];
     try {
       const response = await Backend.get(`/admin/tokens`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.data as Token[];
@@ -245,7 +243,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/tokens/purge/all`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       location.reload();
@@ -260,7 +258,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/tokens/purge/one/${id}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -273,7 +271,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/tokens/purge/user/${userId}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -286,7 +284,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/bughunt/report/${reportId}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -302,7 +300,7 @@ export class AdminBootstrapper extends BaseService {
         `/admin/bughunt/close/${reportId}`,
         {},
         {
-          headers: { Authorization: `Bearer ${this.token}` },
+          headers: { Authorization: `Bearer ${Daemon!.token}` },
         }
       );
 
@@ -319,7 +317,7 @@ export class AdminBootstrapper extends BaseService {
         `/admin/bughunt/open/${reportId}`,
         {},
         {
-          headers: { Authorization: `Bearer ${this.token}` },
+          headers: { Authorization: `Bearer ${Daemon!.token}` },
         }
       );
 
@@ -333,7 +331,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return [];
     try {
       const response = await Backend.get(`/admin/bughunt/list`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.data as BugReport[];
@@ -345,7 +343,7 @@ export class AdminBootstrapper extends BaseService {
   async getBugReport(id: string): Promise<BugReport | undefined> {
     if (this._disposed) return;
     try {
-      const response = await Backend.get(`/bughunt/report/${id}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/bughunt/report/${id}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.data as BugReport;
     } catch {
@@ -357,7 +355,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return;
     try {
       const response = await Backend.get(`/admin/bughunt/stats`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.data as ReportStatistics;
@@ -370,7 +368,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.post(`/admin/users/approve`, toForm({ target: username }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -383,7 +381,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.post(`/admin/users/disapprove`, toForm({ target: username }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -396,7 +394,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.post(`/admin/users/changeemail`, toForm({ target: username, newEmail }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -409,7 +407,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.post(`/admin/users/changepswd`, toForm({ target: username, newPassword }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -422,7 +420,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return {};
     try {
       const response = await Backend.get(`/admin/scopes/available`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.data as Record<string, string>;
@@ -435,7 +433,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return [];
     try {
       const response = await Backend.get(`/admin/scopes/${username}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.data as string[];
@@ -448,7 +446,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.put(`/admin/scopes`, toForm({ target: username, scopes: JSON.stringify(scopes) }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -461,7 +459,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return;
     try {
       const response = await Backend.get(`/admin/fs/quota/${username}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.data as UserQuota;
@@ -474,7 +472,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.put(`/admin/fs/quota/${username}`, toForm({ limit: newQuota }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -487,7 +485,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return [];
     try {
       const response = await Backend.get("/admin/activities/list", {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.data as Activity[];
@@ -500,7 +498,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return [];
     try {
       const response = await Backend.get(`/admin/activities/user/${username}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.data as Activity[];
@@ -513,7 +511,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/activities`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -526,7 +524,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/activities/${username}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -538,7 +536,7 @@ export class AdminBootstrapper extends BaseService {
   async getAllTotp(): Promise<PartialUserTotp[]> {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get("/admin/totp", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get("/admin/totp", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.data as PartialUserTotp[];
     } catch {
@@ -549,7 +547,7 @@ export class AdminBootstrapper extends BaseService {
   async getTotpOf(username: string): Promise<UserTotp | undefined> {
     if (this._disposed) return;
     try {
-      const response = await Backend.get(`/admin/totp/${username}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/admin/totp/${username}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.status === 200 ? response.data : undefined;
     } catch {
@@ -564,7 +562,7 @@ export class AdminBootstrapper extends BaseService {
         `/admin/totp/deactivate/${username}`,
         {},
         {
-          headers: { Authorization: `Bearer ${this.token}` },
+          headers: { Authorization: `Bearer ${Daemon!.token}` },
         }
       );
 
@@ -578,7 +576,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/totp/${username}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -590,7 +588,7 @@ export class AdminBootstrapper extends BaseService {
   async getAllFsAccessors(): Promise<FsAccess[]> {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get("/admin/accessors", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get("/admin/accessors", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.data as FsAccess[];
     } catch {
@@ -601,7 +599,7 @@ export class AdminBootstrapper extends BaseService {
   async getFsAccessorsOf(username: string): Promise<FsAccess[]> {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get(`/admin/accessors/${username}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/admin/accessors/${username}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.data;
     } catch {
@@ -612,7 +610,7 @@ export class AdminBootstrapper extends BaseService {
   async deleteAllFsAccessors(): Promise<boolean> {
     if (this._disposed) return false;
     try {
-      const response = await Backend.delete("/admin/accessors", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.delete("/admin/accessors", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.status === 200;
     } catch {
@@ -624,7 +622,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/accessors/${username}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -636,7 +634,7 @@ export class AdminBootstrapper extends BaseService {
   async getAllIndexingNodes(): Promise<FSItem[]> {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get(`/admin/index`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/admin/index`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.data as FSItem[];
     } catch {
@@ -647,7 +645,7 @@ export class AdminBootstrapper extends BaseService {
   async getIndexingNodesOf(username: string): Promise<FSItem[]> {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get(`/admin/index/${username}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/admin/index/${username}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.data as FSItem[];
     } catch {
@@ -658,7 +656,7 @@ export class AdminBootstrapper extends BaseService {
   async forceIndexFor(username: string): Promise<string[]> {
     if (this._disposed) return [];
     try {
-      const response = await Backend.post(`/admin/index/${username}`, {}, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.post(`/admin/index/${username}`, {}, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.data as string[];
     } catch {
@@ -669,7 +667,7 @@ export class AdminBootstrapper extends BaseService {
   async deleteIndexingOf(username: string): Promise<boolean> {
     if (this._disposed) return false;
     try {
-      const response = await Backend.delete(`/admin/index/${username}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.delete(`/admin/index/${username}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.status === 200;
     } catch {
@@ -709,7 +707,7 @@ export class AdminBootstrapper extends BaseService {
   async getAllShares(): Promise<SharedDriveType[]> {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get("/admin/share/list", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get("/admin/share/list", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.data as SharedDriveType[];
     } catch {
@@ -720,7 +718,7 @@ export class AdminBootstrapper extends BaseService {
   async getSharesOf(userId: string): Promise<SharedDriveType[]> {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get(`/admin/share/list/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/admin/share/list/${userId}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.data as SharedDriveType[];
     } catch {
@@ -731,7 +729,7 @@ export class AdminBootstrapper extends BaseService {
   async deleteShare(shareId: string): Promise<boolean> {
     if (this._disposed) return false;
     try {
-      const response = await Backend.delete(`/admin/share/${shareId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.delete(`/admin/share/${shareId}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.status === 200;
     } catch {
@@ -743,7 +741,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.post(`/admin/share/kick/${shareId}`, toForm({ userId }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -756,7 +754,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.post(`/admin/share/adduser/${shareId}`, toForm({ userId }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -769,7 +767,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return [];
     try {
       const response = await Backend.get(`/admin/share/accessors/${shareId}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.data as FSItem[];
@@ -782,7 +780,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/share/accessors/${shareId}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -795,7 +793,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.post(`/admin/share/changepswd/${shareId}`, toForm({ newPassword }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -808,7 +806,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.post(`/admin/share/rename/${shareId}`, toForm({ newName }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -821,7 +819,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.post(`/admin/share/chown/${shareId}`, toForm({ newUserId }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -833,7 +831,7 @@ export class AdminBootstrapper extends BaseService {
   async getStatisticsOf(userId: string): Promise<UserStatistics | undefined> {
     if (this._disposed) return;
     try {
-      const response = await Backend.get(`/admin/users/stats/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/admin/users/stats/${userId}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.data as UserStatistics;
     } catch {
@@ -845,7 +843,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.put(`/admin/share/quota/${shareId}`, toForm({ limit: quota }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -857,7 +855,7 @@ export class AdminBootstrapper extends BaseService {
   async getShareQuotaOf(shareId: string): Promise<UserQuota | undefined> {
     if (this._disposed) return undefined;
     try {
-      const response = await Backend.get(`/admin/share/quota/${shareId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/admin/share/quota/${shareId}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.data as UserQuota;
     } catch {
@@ -871,7 +869,7 @@ export class AdminBootstrapper extends BaseService {
       const response = await Backend.post(
         `/admin/share/unlock/${shareId}`,
         {},
-        { headers: { Authorization: `Bearer ${this.token}` } }
+        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
       );
 
       return response.status === 2000;
@@ -886,7 +884,7 @@ export class AdminBootstrapper extends BaseService {
       const response = await Backend.post(
         `/admin/share/lock/${shareId}`,
         {},
-        { headers: { Authorization: `Bearer ${this.token}` } }
+        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
       );
 
       return response.status === 2000;
@@ -899,7 +897,7 @@ export class AdminBootstrapper extends BaseService {
     false;
     try {
       const response = await Backend.delete(`/admin/store/delete/one/${_id}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -912,7 +910,7 @@ export class AdminBootstrapper extends BaseService {
     false;
     try {
       const response = await Backend.delete(`/admin/store/delete/user/${userId}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -924,7 +922,7 @@ export class AdminBootstrapper extends BaseService {
   async getAllStoreItems() {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get(`/admin/store/list`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/admin/store/list`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.data as StoreItem[];
     } catch {
@@ -935,7 +933,7 @@ export class AdminBootstrapper extends BaseService {
   async getUserStoreItems(userId: string) {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get(`/admin/storel/list/${userId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/admin/storel/list/${userId}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.data as StoreItem[];
     } catch {
@@ -949,7 +947,7 @@ export class AdminBootstrapper extends BaseService {
       const response = await Backend.post(
         `/admin/store/deprecate/${itemId}`,
         {},
-        { headers: { Authorization: `Bearer ${this.token}` } }
+        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
       );
 
       return response.status === 200;
@@ -964,7 +962,7 @@ export class AdminBootstrapper extends BaseService {
       const response = await Backend.post(
         `/admin/store/undeprecate/${itemId}`,
         {},
-        { headers: { Authorization: `Bearer ${this.token}` } }
+        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
       );
 
       return response.status === 200;
@@ -977,7 +975,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return;
     try {
       const response = await Backend.get(`/store/package/id/${id}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.data as StoreItem;
@@ -990,7 +988,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return;
     try {
       const response = await Backend.get(`/store/package/name/${name}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.data as StoreItem;
@@ -1020,7 +1018,7 @@ export class AdminBootstrapper extends BaseService {
     }
 
     try {
-      const response = await Backend.post(`/admin/store/block/${id}`, {}, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.post(`/admin/store/block/${id}`, {}, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.status === 200;
     } catch {
@@ -1052,7 +1050,7 @@ export class AdminBootstrapper extends BaseService {
       const response = await Backend.post(
         `/admin/store/unblock/${id}`,
         {},
-        { headers: { Authorization: `Bearer ${this.token}` } }
+        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
       );
 
       return response.status === 200;
@@ -1067,7 +1065,7 @@ export class AdminBootstrapper extends BaseService {
       const response = await Backend.post(
         `/admin/store/official/on/${id}`,
         {},
-        { headers: { Authorization: `Bearer ${this.token}` } }
+        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
       );
 
       return response.status === 200;
@@ -1082,7 +1080,7 @@ export class AdminBootstrapper extends BaseService {
       const response = await Backend.post(
         `/admin/store/official/off/${id}`,
         {},
-        { headers: { Authorization: `Bearer ${this.token}` } }
+        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
       );
 
       return response.status === 200;
@@ -1167,7 +1165,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.delete(`/admin/store/verification/${id}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -1180,7 +1178,7 @@ export class AdminBootstrapper extends BaseService {
     if (this._disposed) return false;
     try {
       const response = await Backend.post(`/admin/store/verification/${id}`, toForm({ note }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       if (response.status !== 200) {

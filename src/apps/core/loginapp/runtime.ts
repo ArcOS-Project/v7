@@ -497,7 +497,6 @@ export class LoginAppRuntime extends AppProcess {
         userId,
         this.pid,
         { data: { ...TotpAuthGuiApp, overlay: true }, id: "TotpAuthGuiApp" },
-        token,
         returnId
       );
     });

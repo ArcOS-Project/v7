@@ -9,6 +9,10 @@ import { Plural } from "$ts/util";
 import { Daemon, type UserDaemon } from "..";
 import { UserContext } from "../context";
 
+/**
+ * RESTRICTED: this class does not have an entry in ProcessWithPermissions,
+ * and as such cannot be accessed by third-party applications.
+ */
 export class ChecksUserContext extends UserContext {
   public NIGHTLY = false;
 

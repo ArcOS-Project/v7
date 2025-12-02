@@ -3,26 +3,25 @@ import { MessageBox } from "$ts/dialog";
 import { SysDispatch } from "$ts/env";
 import { toForm } from "$ts/form";
 import { Backend } from "$ts/server/axios";
+import { Daemon } from "$ts/server/user/daemon";
 import type { AppProcessData } from "$types/app";
 import type { RenderArgs } from "$types/process";
 
 export class TotpAuthGuiRuntime extends AppProcess {
-  private token: string;
   private dispatchId: string;
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, app: AppProcessData, token: string, dispatchId: string) {
+  constructor(pid: number, parentPid: number, app: AppProcessData, dispatchId: string) {
     super(pid, parentPid, app);
 
-    this.token = token;
     this.dispatchId = dispatchId;
 
     this.setSource(__SOURCE__);
   }
 
   render(args: RenderArgs) {
-    if (!this.token || !this.dispatchId) {
+    if (!Daemon!.token || !this.dispatchId) {
       this.closeWindow();
       return false;
     }
@@ -50,7 +49,7 @@ export class TotpAuthGuiRuntime extends AppProcess {
 
     try {
       const response = await Backend.post("/totp/unlock", toForm({ code }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       const unlocked = response.status === 200;

@@ -12,7 +12,6 @@ import { Daemon, UserDaemon } from "../user/daemon";
 import { GlobalDispatch } from "../ws";
 
 export class MessagingInterface extends BaseService {
-  token: string | undefined;
   serverUrl: string | false | undefined;
   serverAuthCode: string;
 
@@ -23,7 +22,6 @@ export class MessagingInterface extends BaseService {
     const server = getKMod<ServerManagerType>("server");
     this.serverUrl = server.url;
     this.serverAuthCode = import.meta.env.DW_SERVER_AUTHCODE || "";
-    this.token = Daemon!.token;
 
     this.setSource(__SOURCE__);
   }
@@ -56,7 +54,7 @@ export class MessagingInterface extends BaseService {
     if (this._disposed) return [];
 
     try {
-      const response = await Backend.get("/messaging/sent", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get("/messaging/sent", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
       const data = (response.data as PartialMessage[]).map((message) => {
         if (message.author) {
           message.author.profilePicture = `${this.serverUrl}/user/pfp/${message.authorId}${authcode()}`;
@@ -74,7 +72,7 @@ export class MessagingInterface extends BaseService {
     if (this._disposed) return [];
 
     try {
-      const response = await Backend.get("/messaging/received", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get("/messaging/received", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
       const data = (response.data as PartialMessage[]).map((message) => {
         if (message.author) {
           message.author.profilePicture = `${this.serverUrl}/user/pfp/${message.authorId}${authcode()}`;
@@ -109,7 +107,7 @@ export class MessagingInterface extends BaseService {
 
     try {
       const response = await Backend.post("/messaging", formData, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
         onUploadProgress: (progress) => {
           onProgress?.({
             max: progress.total || 0,
@@ -129,7 +127,7 @@ export class MessagingInterface extends BaseService {
     if (this._disposed) return false;
 
     try {
-      const response = await Backend.delete(`/messaging/${messageId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.delete(`/messaging/${messageId}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.status === 200;
     } catch {
@@ -141,7 +139,7 @@ export class MessagingInterface extends BaseService {
     if (this._disposed) return;
 
     try {
-      const response = await Backend.get(`/messaging/read/${messageId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/messaging/read/${messageId}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       const data = response.data as ExpandedMessage;
 
@@ -164,7 +162,7 @@ export class MessagingInterface extends BaseService {
 
     try {
       const response = await Backend.get(`/messaging/attachment/${messageId}/${attachmentId}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
         responseType: "arraybuffer",
         onDownloadProgress: (progress) => {
           onProgress?.({
@@ -185,7 +183,7 @@ export class MessagingInterface extends BaseService {
     const url = messageId ? `/messaging/thread/${messageId}` : `/messaging/thread`;
 
     try {
-      const response = await Backend.get(url, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(url, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.data as MessageNode[];
     } catch {

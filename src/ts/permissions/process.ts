@@ -40,24 +40,12 @@ export class ProcessWithPermissions extends Process {
     return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_ACCOUNT", Daemon?.account);
   }
 
-  get activityContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_ACTIVITY", Daemon?.activity);
-  }
-
   get applicationsContext() {
     return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_APPLICATIONS", Daemon?.apps);
   }
 
   get appregistrationContext() {
     return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_APPREGISTRATION", Daemon?.appreg);
-  }
-
-  get apprendererContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_APPRENDERER", Daemon?.renderer);
-  }
-
-  get checksContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_CHECKS", Daemon?.checks);
   }
 
   get elevationContext() {
@@ -74,14 +62,6 @@ export class ProcessWithPermissions extends Process {
 
   get iconsContext() {
     return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_ICONS", Daemon?.icons);
-  }
-
-  get initContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_INIT", Daemon?.init);
-  }
-
-  get migrationsContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_MIGRATIONS", Daemon?.migrations);
   }
 
   get notificationsContext() {
