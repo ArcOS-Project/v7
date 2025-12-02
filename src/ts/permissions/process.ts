@@ -88,10 +88,6 @@ export class ProcessWithPermissions extends Process {
     return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_THEMES", Daemon?.themes);
   }
 
-  get versionContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_VERSION", Daemon?.version);
-  }
-
   get wallpaperContext() {
     return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_WALLPAPER", Daemon?.wallpaper);
   }
