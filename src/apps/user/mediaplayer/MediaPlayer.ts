@@ -13,11 +13,11 @@ export const MediaPlayerApp: App = {
   },
   size: {
     w: 820,
-    h: 530,
+    h: 560,
   },
   minSize: {
     w: 642,
-    h: 392,
+    h: 560,
   },
   maxSize: {
     w: NaN,
@@ -40,7 +40,7 @@ export const MediaPlayerApp: App = {
     component: MediaPlayer as any,
   },
   opens: {
-    extensions: [".mp3", ".opus", ".wav", ".m4a", ".flac", ".mp4", ".mkv", ".mov", ".avi", ".arcpl", ".ogg"],
+    extensions: [".mp3", ".opus", ".wav", ".flac", ".mp4", ".mkv", ".mov", ".avi", ".arcpl", ".ogg"],
   },
   position: { centered: true },
   id: "MediaPlayer",
