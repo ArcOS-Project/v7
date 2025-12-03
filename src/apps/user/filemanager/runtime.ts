@@ -548,7 +548,6 @@ export class FileManagerRuntime extends AppProcess {
         if (isUserFs) await Fs.deleteItem(item, false);
         else await LiteralFs.deleteItem(item, false);
       } catch (e) {
-        console.log(e);
         prog.mutErr(`Failed to delete ${item}: ${e}`);
       }
 
