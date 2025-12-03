@@ -9,6 +9,7 @@ import { AppRenderer } from "../../apps/renderer";
 import type { Process } from "../../process/instance";
 import { Store } from "../../writable";
 import { KernelModule } from "../module";
+import { calculateMemory } from "$ts/util";
 
 export class ProcessHandler extends KernelModule {
   private _busy: string = "";
@@ -33,6 +34,17 @@ export class ProcessHandler extends KernelModule {
     } else {
       SysDispatch.dispatch("stack-not-busy");
     }
+  }
+
+  get MEMORY() {
+    let sum = 0;
+    const procs = this.store();
+
+    for (const [pid, proc] of [...procs]) {
+      sum += calculateMemory(proc);
+    }
+
+    return sum;
   }
 
   busyWithNot(thing: string) {
@@ -264,7 +276,7 @@ export class ProcessHandler extends KernelModule {
   }
 
   async waitForAvailable(or?: string) {
-    this.Log("wait for available")
+    this.Log("wait for available");
     return new Promise<void>((r) => {
       const interval = setInterval(() => {
         if (!this.BUSY || (or && this.BUSY === or)) r(clearInterval(interval));

@@ -5,6 +5,7 @@
   import { AppProcess } from "$ts/apps/process";
   import { Env, Stack } from "$ts/env";
   import { Daemon } from "$ts/server/user/daemon";
+  import { formatBytes } from "$ts/util/fs";
   import type { ProcessInfoRuntime } from "./runtime";
 
   const { process }: { process: ProcessInfoRuntime } = $props();
@@ -30,9 +31,9 @@
   <InfoBlock>
     <InfoRow>
       <Segment title="Type">{inherit?.name || "Unknown"}</Segment>
-      <Segment title="PID">{proc.pid}</Segment>
       <Segment title="Parent PID">{proc.parentPid} ({parent?.name || "?"})</Segment>
       <Segment title="Children">{children.size}</Segment>
+      <Segment title="Memory">{formatBytes(proc.MEMORY)}</Segment>
     </InfoRow>
     <InfoRow>
       <Segment title="Critical">{process._criticalProcess ? "Yes" : "No"}</Segment>

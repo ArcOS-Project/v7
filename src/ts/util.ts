@@ -3,6 +3,7 @@ import { sha256 as sha256Fallback } from "js-sha256";
 import leoProfanity from "leo-profanity";
 import validator from "validator";
 import { getJsonHierarchy } from "./hierarchy";
+import { Process } from "./process/instance";
 
 leoProfanity.loadDictionary("en");
 
@@ -222,3 +223,76 @@ export function groupByTimeFrame<T extends Record<string, any>>(items: T[], colu
 }
 
 export function noop() {} // empty filler method
+
+export function calculateMemory(process: Process): number {
+  const seen = new WeakSet();
+
+  function walk(node: any, root = false): number {
+    if (node === null || typeof node !== "object") {
+      return String(node).length;
+    }
+
+    if (seen.has(node)) {
+      return 20; // length of "[CIRCULAR_REFERENCE]"
+    }
+    seen.add(node);
+
+    if (Array.isArray(node)) {
+      let len = 2;
+      for (let i = 0; i < node.length; i++) {
+        len += walk(node[i]);
+      }
+      return len;
+    }
+
+    let len = 2;
+
+    // MEMORY BOUNDARY: each process has their own memory that does not "leak" to other processes.
+    //
+    // So; if a property of a process is another process, assume that that other process is calculated
+    // elsewhere, and don't accumulate it here.
+    if (node instanceof Process && !root) return 0;
+
+    const keys = Object.keys(node);
+
+    for (let i = 0; i < keys.length; i++) {
+      const k = keys[i];
+      len += k.length;
+      len += walk(node[k]);
+    }
+
+    return len;
+  }
+
+  return walk(process, true);
+}
+
+export function stringifyProcess(obj: Process): string {
+  const seen = new WeakSet();
+
+  function walk(value: any, root = false): string {
+    if (value === null || typeof value !== "object") {
+      return String(value);
+    }
+    if (seen.has(value)) {
+      return "[CIRCULAR_REFERENCE]";
+    }
+    seen.add(value);
+
+    if (Array.isArray(value)) {
+      return "[ " + value.map((v) => walk(v)).join(", ") + " ]";
+    }
+
+    if (value instanceof Process && !root) return "";
+
+    const entries = Object.entries(value)
+      .map(([k, v]) => `${JSON.stringify(k)}: ${walk(v)}`)
+      .join(", ");
+
+    return `{ ${entries} }`;
+  }
+
+  const str = walk(obj, true);
+
+  return str;
+}

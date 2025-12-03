@@ -116,6 +116,8 @@ export interface BugHuntType {
 
 export interface ProcessHandlerType {
   BUSY: string;
+  IS_BUSY: boolean;
+  get MEMORY(): number;
   store: ReadableStore<Map<number, Process>>;
   rendererPid: number;
   renderer: AppRenderer | undefined;
