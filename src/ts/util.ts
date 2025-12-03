@@ -229,7 +229,13 @@ export function calculateMemory(process: Process): number {
 
   function walk(node: any, root = false): number {
     if (node === null || typeof node !== "object") {
-      return String(node).length;
+      // The below expression tries to use poor-man's evaluation to
+      // determine if the node is an ArcOS svelte-derived writable
+      if (typeof node === "function" && node?.toString()?.includes("=> obj.get()")) {
+        return walk(node());
+      } else {
+        return String(node).length;
+      }
     }
 
     if (seen.has(node)) {
@@ -272,7 +278,11 @@ export function stringifyProcess(obj: Process): string {
 
   function walk(value: any, root = false): string {
     if (value === null || typeof value !== "object") {
-      return String(value);
+      if (typeof value === "function" && value?.toString()?.includes("=> obj.get()")) {
+        return walk(value());
+      } else {
+        return String(value);
+      }
     }
     if (seen.has(value)) {
       return "[CIRCULAR_REFERENCE]";
