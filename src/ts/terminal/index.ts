@@ -8,6 +8,7 @@ import { Process } from "$ts/process/instance";
 import { LoginUser } from "$ts/server/user/auth";
 import { Daemon, TryGetDaemon, type UserDaemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
+import { noop } from "$ts/util";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { ErrorUtils } from "$ts/util/error";
 import { join } from "$ts/util/fs";
@@ -497,20 +498,11 @@ export class ArcTerminal extends Process {
    * @deprecated This migration has expired
    */
   async migrateConfigurationPath() {
-    try {
-      const oldPath = "U:/arcterm.conf";
-      const newFile = await Fs.readFile(this.CONFIG_PATH);
-      const oldFile = newFile ? undefined : await Fs.readFile(oldPath);
-
-      if (oldFile && !newFile) {
-        this.Log("Migrating old config path to " + this.CONFIG_PATH);
-        await Fs.moveItem(oldPath, this.CONFIG_PATH);
-      }
-    } catch {}
+    noop();
   }
 
   handleCommandError(e: Error, command: typeof TerminalProcess) {
-    this.rl?.println(ErrorUtils.abbreviatedStackTrace(e,`${BRRED}${command.name}: `));
+    this.rl?.println(ErrorUtils.abbreviatedStackTrace(e, `${BRRED}${command.name}: `));
     this.rl?.println(`${RESET}`);
   }
 }

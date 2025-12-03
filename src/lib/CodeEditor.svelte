@@ -22,37 +22,43 @@
 
   let highlight = $state<string>("");
   let textarea: HTMLTextAreaElement;
+  let highlightHandle: number | null = null;
 
   onMount(() => {
     $value ||= "";
-    hljs.registerLanguage("javascript", javascript);
-    hljs.registerLanguage("css", css);
-    hljs.registerLanguage("json", json);
-    hljs.registerLanguage("ini", ini);
-    hljs.registerLanguage("markdown", markdown);
-    hljs.registerLanguage("yaml", yaml);
-    hljs.registerLanguage("xml", xml);
-    hljs.registerLanguage("plaintext", plaintext);
-    hljs.registerLanguage("sql", sql);
+
+    let hlInit = false;
+    if (!hlInit) {
+      hlInit = true;
+      hljs.registerLanguage("javascript", javascript);
+      hljs.registerLanguage("css", css);
+      hljs.registerLanguage("json", json);
+      hljs.registerLanguage("ini", ini);
+      hljs.registerLanguage("markdown", markdown);
+      hljs.registerLanguage("yaml", yaml);
+      hljs.registerLanguage("xml", xml);
+      hljs.registerLanguage("plaintext", plaintext);
+      hljs.registerLanguage("sql", sql);
+    }
 
     value.subscribe(update);
     update($value);
   });
 
   function update(v: string) {
-    if (textarea) {
-      textarea.style.height = `auto`;
-      textarea.style.width = `auto`;
-      textarea.style.height = `${textarea.scrollHeight}px`;
-      textarea.style.width = `calc(${textarea.scrollWidth}px + 1.5em)`;
-    }
+    if (highlightHandle) cancelAnimationFrame(highlightHandle);
 
-    highlight = hljs.highlight(v, { language }).value;
+    highlightHandle = requestAnimationFrame(() => {
+      if (textarea) {
+        textarea.style.height = `auto`;
+        textarea.style.width = `auto`;
+        textarea.style.height = `${textarea.scrollHeight}px`;
+        textarea.style.width = `calc(${textarea.scrollWidth}px + 1.5em)`;
+      }
+
+      highlight = hljs.highlight(v, { language }).value;
+    });
   }
-
-  $effect(() => {
-    update($value);
-  });
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -62,6 +68,6 @@
     <div class="highlight">
       <pre><code class="hljs">{@html highlight}</code></pre>
     </div>
-    <textarea name="" id="" bind:this={textarea} bind:value={$value}></textarea>
+    <textarea name="" id="" bind:this={textarea} bind:value={$value} spellcheck={false}></textarea>
   </div>
 </div>

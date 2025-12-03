@@ -1,4 +1,5 @@
 import { Fs, getKMod } from "$ts/env";
+import { calculateMemory } from "$ts/util";
 import { LogLevel } from "../../types/logging";
 import { Log } from "../logging";
 import { ProcessDispatch } from "./dispatch";
@@ -19,6 +20,10 @@ export class Process {
     this.parentPid = parentPid || 0;
     this.name ||= this.constructor.name;
     this.dispatch = new ProcessDispatch(this);
+  }
+
+  get MEMORY() {
+    return calculateMemory(this);
   }
 
   protected async stop(): Promise<any> {

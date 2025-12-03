@@ -86,7 +86,7 @@ export class SpawnUserContext extends UserContext {
       shellDispatch?.dispatch("close-action-center");
     }
 
-    await Stack.waitForAvailable();
+    await Stack.waitForAvailable("spawn");
 
     Daemon!.updateGlobalDispatch();
 
@@ -164,7 +164,7 @@ export class SpawnUserContext extends UserContext {
       if (!elevated) return;
     }
 
-    await Stack.waitForAvailable();
+    await Stack.waitForAvailable("spawn");
 
     const pid = parentPid || +Env.get("shell_pid");
 

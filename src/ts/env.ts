@@ -20,6 +20,7 @@ export let Kernel: ConstructedWaveKernel;
 export let KernelServerUrl: string;
 
 export let Fs: FilesystemType;
+export let LiteralFs: FilesystemType;
 export let Env: EnvironmentType;
 export let Stack: ProcessHandlerType;
 export let Server: ServerManagerType;
@@ -40,7 +41,8 @@ export function SetCurrentStateHandler(state: StateHandler) {
 }
 
 export function SetKernelExports() {
-  Fs = new Proxy(getKMod<FilesystemType>("fs"), {
+  LiteralFs = getKMod<FilesystemType>("fs");
+  Fs = new Proxy(LiteralFs, {
     get: (target, prop, receiver) => {
       // recycle bin interceptor
       if (prop === "deleteItem" && typeof target[prop] === "function") {
@@ -51,8 +53,9 @@ export function SetKernelExports() {
 
           const daemon = TryGetDaemon();
           const trash = daemon?.serviceHost?.getService("TrashSvc") as TrashCanService;
+          const disableTrash = daemon?.preferences().globalSettings.disableTrashCan;
 
-          if (!trash) return await target[prop].call(Fs, path, dispatch);
+          if (!trash || disableTrash) return await target[prop].call(Fs, path, dispatch);
 
           return await trash.moveToTrash(path, dispatch);
         };

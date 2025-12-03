@@ -146,7 +146,7 @@ export class ArcTermColorsRuntime extends AppProcess {
       return await this.writeDefaultConfiguration();
     }
 
-    this.arcTermConfiguration.set(json);
+    this.arcTermConfiguration.set({ ...DefaultArcTermConfiguration, ...json });
     this.changed.set(false);
   }
 

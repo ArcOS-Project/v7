@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
-import { GetConfirmation, MessageBox } from "$ts/dialog";
+import { ConditionalButton, GetConfirmation, MessageBox } from "$ts/dialog";
 import { FilesystemDrive } from "$ts/drives/drive";
-import { Fs, SysDispatch } from "$ts/env";
+import { Fs, LiteralFs, SysDispatch } from "$ts/env";
 import { AdminScopes } from "$ts/server/admin/store";
 import { Daemon } from "$ts/server/user/daemon";
 import { SystemFolders, UserPathCaptions, UserPaths } from "$ts/server/user/store";
@@ -10,7 +10,7 @@ import { Plural, sortByKey } from "$ts/util";
 import { DownloadFile, getDriveLetter, getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
-import type { DirectoryReadReturn, FolderEntry } from "$types/fs";
+import { DefaultUserQuota, type DirectoryReadReturn, type FolderEntry } from "$types/fs";
 import { LogLevel } from "$types/logging";
 import type { RenderArgs } from "$types/process";
 import type { ShortcutStore } from "$types/shortcut";
@@ -94,6 +94,9 @@ export class FileManagerRuntime extends AppProcess {
 
     await this.navigate(path || "::my_arcos");
     await this.updateRootFolders();
+
+    this.starting.set(false);
+
     await this.updateDrives();
 
     SysDispatch.subscribe("fs-umount-drive", () => this.updateDrives());
@@ -113,7 +116,6 @@ export class FileManagerRuntime extends AppProcess {
 
     this.acceleratorStore.push(...FileManagerAccelerators(this));
 
-    this.starting.set(false);
     const startDuration = performance.now() - startTime;
 
     this.Log(`Starting file manager took ${startDuration}ms`);
@@ -133,14 +135,18 @@ export class FileManagerRuntime extends AppProcess {
     if (this._disposed) return;
     this.Log(`Updating drives`);
 
+    if (!Object.entries(this.drives()).length)
+      // Quickly set without quota, then populate later on so that the UI can get a taste of what's to come.
+      this.drives.set(Object.fromEntries(Object.entries(Fs.drives).map(([k, v]) => [k, { data: v, quota: DefaultUserQuota }])));
+
     const currentDrive = getDriveLetter(this.path(), true) || "";
 
     try {
       if (!Fs.getDriveByLetter(currentDrive.slice(0, -1), false)) {
-        this.navigate(UserPaths.Home);
+        await this.navigate(UserPaths.Home);
       }
     } catch {
-      this.Log("Failed to determine the currently selected drive", LogLevel.error);
+      this.Log("Failed to determine the currently selected drive", LogLevel.warning);
     }
 
     const result: Record<string, QuotedDrive> = {};
@@ -150,7 +156,7 @@ export class FileManagerRuntime extends AppProcess {
     }
 
     this.drives.set(result);
-    this.updateAltMenu();
+    this.updateAltMenu(); // Update the alt menu so that the Go menu is up-to-date
   }
 
   async updateRootFolders() {
@@ -493,6 +499,15 @@ export class FileManagerRuntime extends AppProcess {
             )}? This cannot be undone.`,
         buttons: [
           { caption: "Cancel", action: () => {} },
+          ...ConditionalButton(
+            {
+              caption: "Delete permanently",
+              action: () => {
+                this.confirmDeleteSelected(false);
+              },
+            },
+            isUserFs
+          ),
           {
             caption: "Delete",
             action: () => this.confirmDeleteSelected(isUserFs),
@@ -530,7 +545,8 @@ export class FileManagerRuntime extends AppProcess {
       prog.updSub(item);
 
       try {
-        await Fs.deleteItem(item, false);
+        if (isUserFs) await Fs.deleteItem(item, false);
+        else await LiteralFs.deleteItem(item, false);
       } catch (e) {
         prog.mutErr(`Failed to delete ${item}: ${e}`);
       }
