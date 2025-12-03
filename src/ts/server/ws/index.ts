@@ -11,7 +11,6 @@ import { Daemon, UserDaemon } from "../user/daemon";
 export class GlobalDispatch extends BaseService {
   client: Socket | undefined;
   server: ServerManagerType;
-  token?: string;
   authorized = false;
 
   //#region LIFECYCLE
@@ -19,7 +18,6 @@ export class GlobalDispatch extends BaseService {
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(pid, parentPid, name, host);
 
-    this.token = Daemon?.token;
     this.server = getKMod<ServerManagerType>("server");
 
     window.addEventListener("beforeunload", () => {
@@ -53,7 +51,7 @@ export class GlobalDispatch extends BaseService {
 
   async connected() {
     this.Log(`Connected, authorizing using token`);
-    this.client?.emit("authorize", this.token);
+    this.client?.emit("authorize", Daemon!.token);
 
     await new Promise<void>((resolve, reject) => {
       this.client?.once("authorized", () => {
@@ -89,7 +87,7 @@ export class GlobalDispatch extends BaseService {
 
   async getClients(): Promise<GlobalDispatchClient[]> {
     try {
-      const response = await Backend.get("/user/dispatch", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get("/user/dispatch", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.data as GlobalDispatchClient[];
     } catch {
@@ -102,7 +100,7 @@ export class GlobalDispatch extends BaseService {
       const response = await Backend.post(
         `/user/dispatch/kick/${clientId}`,
         {},
-        { headers: { Authorization: `Bearer ${this.token}` } }
+        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
       );
 
       return response.status === 200;

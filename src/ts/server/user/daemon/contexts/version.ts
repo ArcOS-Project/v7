@@ -6,6 +6,10 @@ import { Daemon, type UserDaemon } from "..";
 import { UserPaths } from "../../store";
 import { UserContext } from "../context";
 
+/**
+ * RESTRICTED: this class does not have an entry in ProcessWithPermissions,
+ * and as such cannot be accessed by third-party applications.
+ */
 export class VersionUserContext extends UserContext {
   constructor(id: string, daemon: UserDaemon) {
     super(id, daemon);

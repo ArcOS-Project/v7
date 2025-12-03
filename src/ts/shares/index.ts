@@ -10,14 +10,10 @@ import type { SharedDriveType } from "$types/shares";
 import { SharedDrive } from "./drive";
 
 export class ShareManager extends BaseService {
-  token: string | undefined;
-
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(pid, parentPid, name, host);
-
-    this.token = Daemon!.token;
 
     this.setSource(__SOURCE__);
   }
@@ -26,7 +22,7 @@ export class ShareManager extends BaseService {
 
   async getOwnedShares(): Promise<SharedDriveType[]> {
     try {
-      const response = await Backend.get("/share/owned", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get("/share/owned", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.data as SharedDriveType[];
     } catch {
@@ -44,7 +40,7 @@ export class ShareManager extends BaseService {
 
   async getJoinedShares(): Promise<SharedDriveType[]> {
     try {
-      const response = await Backend.get("/share/joined", { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get("/share/joined", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.data as SharedDriveType[];
     } catch {
@@ -55,7 +51,7 @@ export class ShareManager extends BaseService {
   async createShare(name: string, password: string): Promise<SharedDriveType | undefined> {
     try {
       const response = await Backend.post("/share", toForm({ name, password }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.data as SharedDriveType;
@@ -66,7 +62,7 @@ export class ShareManager extends BaseService {
 
   async deleteShare(shareId: string) {
     try {
-      const response = await Backend.delete(`/share/${shareId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.delete(`/share/${shareId}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.status === 200;
     } catch {
@@ -77,7 +73,7 @@ export class ShareManager extends BaseService {
   async changeSharePassword(shareId: string, newPassword: string): Promise<boolean> {
     try {
       const response = await Backend.post(`/share/changepswd/${shareId}`, toForm({ newPassword }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -89,7 +85,7 @@ export class ShareManager extends BaseService {
   async renameShare(shareId: string, newName: string): Promise<boolean> {
     try {
       const response = await Backend.post(`/share/rename/${shareId}`, toForm({ newName }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -101,7 +97,7 @@ export class ShareManager extends BaseService {
   async joinShare(username: string, shareName: string, password: string, mountAlso = false) {
     try {
       const response = await Backend.post(`/share/join/${username}/${shareName}`, toForm({ password }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       if (response.status !== 200) return false;
@@ -119,7 +115,7 @@ export class ShareManager extends BaseService {
     await this.unmountIfMounted(shareId);
 
     try {
-      const response = await Backend.post(`/share/leave/${shareId}`, {}, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.post(`/share/leave/${shareId}`, {}, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.status === 200;
     } catch {
@@ -136,7 +132,7 @@ export class ShareManager extends BaseService {
   async kickUserFromShare(shareId: string, userId: string): Promise<boolean> {
     try {
       const response = await Backend.post(`/share/kick/${shareId}`, toForm({ userId }), {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -151,7 +147,7 @@ export class ShareManager extends BaseService {
     if (!info) return false;
 
     try {
-      return await Fs.mountDrive(info._id, SharedDrive, letter, onProgress, info, this.token);
+      return await Fs.mountDrive(info._id, SharedDrive, letter, onProgress, info);
     } catch {}
   }
 
@@ -161,7 +157,7 @@ export class ShareManager extends BaseService {
     if (!info) return false;
 
     try {
-      return await Fs.mountDrive(shareId, SharedDrive, letter, onProgress, info, this.token);
+      return await Fs.mountDrive(shareId, SharedDrive, letter, onProgress, info);
     } catch {
       return false;
     }
@@ -169,7 +165,7 @@ export class ShareManager extends BaseService {
 
   async getShareMembers(shareId: string): Promise<Record<string, string>> {
     try {
-      const response = await Backend.get(`/share/members/${shareId}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/share/members/${shareId}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.data as Record<string, string>;
     } catch {
@@ -180,7 +176,7 @@ export class ShareManager extends BaseService {
   async getShareInfoByName(username: string, shareName: string): Promise<SharedDriveType | undefined> {
     try {
       const response = await Backend.get(`/share/info/byname/${username}/${shareName}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200 ? (response.data as SharedDriveType) : undefined;
@@ -192,7 +188,7 @@ export class ShareManager extends BaseService {
   async getShareInfoById(shareId: string): Promise<SharedDriveType | undefined> {
     try {
       const response = await Backend.get(`/share/info/byid/${shareId}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200 ? (response.data as SharedDriveType) : undefined;

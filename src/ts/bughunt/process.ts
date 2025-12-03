@@ -12,7 +12,6 @@ export class BugHuntUserSpaceProcess extends BaseService {
   publicCache: BugReport[] = [];
   cachedPrivateResponseCount = 0;
   cachedPublicResponseCount = 0;
-  token: string | undefined;
   module: BugHuntType;
 
   //#region LIFECYCLE
@@ -21,7 +20,6 @@ export class BugHuntUserSpaceProcess extends BaseService {
     super(pid, parentPid, name, host);
 
     this.module = getKMod<BugHuntType>("bughunt");
-    this.token = Daemon!.token;
 
     this.setSource(__SOURCE__);
   }
@@ -35,7 +33,7 @@ export class BugHuntUserSpaceProcess extends BaseService {
   async sendBugReport(options: ReportOptions): Promise<boolean> {
     const data = this.module.createReport(options);
 
-    return await this.module.sendReport(data, this.token, options);
+    return await this.module.sendReport(data, Daemon!.token, options);
   }
 
   async getPrivateReports(forceInvalidate = false) {
@@ -50,7 +48,7 @@ export class BugHuntUserSpaceProcess extends BaseService {
       }
     }
 
-    const reports = (await this.module.getUserBugReports(this.token!)).reverse();
+    const reports = (await this.module.getUserBugReports(Daemon!.token!)).reverse();
 
     this.privateCache = reports;
 
