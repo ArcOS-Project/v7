@@ -5,9 +5,13 @@ import { sqljsResultToJSON } from "./util";
 
 export class SqlInterfaceProcess extends Process {
   private filePath: string;
-  private sql?: initSqlJs.SqlJsStatic;
-  public db?: initSqlJs.Database;
+  #sql?: initSqlJs.SqlJsStatic;
+  #db?: initSqlJs.Database;
   public isFresh = false;
+
+  get DB_EXISTS() {
+    return !!this.#db;
+  }
 
   //#region LIFECYCLE
 
@@ -21,7 +25,7 @@ export class SqlInterfaceProcess extends Process {
   }
 
   async start() {
-    this.sql = await initSqlJs({
+    this.#sql = await initSqlJs({
       locateFile: (file) => `https://sql.js.org/dist/${file}`,
     });
     await this.initialize();
@@ -32,8 +36,8 @@ export class SqlInterfaceProcess extends Process {
   reset() {
     if (this._disposed) return;
 
-    this.db?.close();
-    this.db = new this.sql!.Database();
+    this.#db?.close();
+    this.#db = new this.#sql!.Database();
     this.isFresh = true;
   }
 
@@ -42,7 +46,7 @@ export class SqlInterfaceProcess extends Process {
     try {
       await this.readFile();
     } catch {
-      this.db = new this.sql!.Database();
+      this.#db = new this.#sql!.Database();
       await this.writeFile();
       this.isFresh = true;
     }
@@ -57,13 +61,13 @@ export class SqlInterfaceProcess extends Process {
 
     await this.requestFileLock(this.filePath);
 
-    this.db = new this.sql!.Database(new Uint8Array(ab));
+    this.#db = new this.#sql!.Database(new Uint8Array(ab));
   }
 
   async writeFile() {
     if (this._disposed) return;
 
-    const ab = this.db?.export() as Uint8Array<ArrayBuffer>;
+    const ab = this.#db?.export() as Uint8Array<ArrayBuffer>;
 
     if (!ab) return;
 
@@ -72,14 +76,14 @@ export class SqlInterfaceProcess extends Process {
 
   async stop() {
     await this.unlockFile(this.filePath);
-    this.db = undefined;
+    this.#db = undefined;
   }
 
   exec(sql: string, params?: initSqlJs.BindParams | undefined): Record<string, any>[][] | string {
     if (this._disposed) throw new Error("SqlInterfaceProcess gone");
 
     try {
-      const result = this.db?.exec(sql, params);
+      const result = this.#db?.exec(sql, params);
 
       if (!result) return [];
 

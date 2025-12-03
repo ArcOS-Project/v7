@@ -231,8 +231,10 @@ export function calculateMemory(process: Process): number {
     if (node === null || typeof node !== "object") {
       // The below expression tries to use poor-man's evaluation to
       // determine if the node is an ArcOS svelte-derived writable
-      if (typeof node === "function" && node?.toString()?.includes("=> obj.get()")) {
-        return walk(node());
+      if (typeof node === "function") {
+        if (node.__isStore) {
+          return walk(node());
+        } else return 0;
       } else {
         return String(node).length;
       }
@@ -257,7 +259,9 @@ export function calculateMemory(process: Process): number {
     //
     // So; if a property of a process is another process, assume that that other process is calculated
     // elsewhere, and don't accumulate it here.
-    if (node instanceof Process && !root) return 0;
+
+    // if (node?.name?.includes("SqlInterfaceProcess")) return 0;
+    if ((node instanceof Process || !!node.__start) && !root) return 0;
 
     const keys = Object.keys(node);
 
@@ -293,7 +297,9 @@ export function stringifyProcess(obj: Process): string {
       return "[ " + value.map((v) => walk(v)).join(", ") + " ]";
     }
 
-    if (value instanceof Process && !root) return "";
+    if (value?.name?.includes("SqlInterfaceProcess")) return "";
+
+    if ((value instanceof Process || !!value.__start) && !root) return "";
 
     const entries = Object.entries(value)
       .map(([k, v]) => `${JSON.stringify(k)}: ${walk(v)}`)

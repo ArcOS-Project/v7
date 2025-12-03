@@ -43,6 +43,7 @@ export function Store<T>(initial?: T): ReadableStore<T> {
   const obj = { ...store, get: () => get(store) };
   const fn = () => obj.get();
 
+  fn.__isStore = true;
   fn.get = obj.get;
   fn.set = obj.set;
   fn.update = obj.update;

@@ -92,7 +92,7 @@ export class SqeletonRuntime extends AppProcess {
     try {
       this.Interface = await Stack.spawn(SqlInterfaceProcess, undefined, Daemon?.userInfo?._id, this.pid, path);
 
-      if (!this.Interface?.db) throw "Failed to open database. The resource might be locked.";
+      if (!this.Interface?.DB_EXISTS) throw "Failed to open database. The resource might be locked.";
 
       this.updateTables();
       this.openedFile.set(path);
