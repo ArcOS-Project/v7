@@ -16,6 +16,7 @@ import { MediaPlayerAccelerators } from "./accelerators";
 import { MediaPlayerAltMenu } from "./altmenu";
 import TrayPopup from "./MediaPlayer/TrayPopup.svelte";
 import type { AudioFileMetadata, MetadataConfiguration, PlayerState } from "./types";
+import type { FileEntry } from "$types/fs";
 
 export class MediaPlayerRuntime extends AppProcess {
   private readonly METADATA_PATH = join(UserPaths.Configuration, "MediaPlayer", "Metadata.json");
@@ -308,7 +309,6 @@ export class MediaPlayerRuntime extends AppProcess {
 
       this.Loaded.set(true);
     } catch (e) {
-      console.log(e);
       this.failedToPlay();
     }
   }
@@ -346,7 +346,7 @@ export class MediaPlayerRuntime extends AppProcess {
   //#endregion
   //#region PLAYLISTS
 
-  async savePlaylist() {
+  async savePlaylist(queue = this.queue()) {
     if (this._disposed) return;
     const playlist = btoa(JSON.stringify(this.queue(), null, 2));
 
@@ -431,6 +431,33 @@ export class MediaPlayerRuntime extends AppProcess {
     );
   }
 
+  async folderAsPlaylist() {
+    const [path] = await Daemon.files!.LoadSaveDialog({
+      title: "Choose a folder to scan for media",
+      icon: this.app.data.metadata.icon,
+      startDir: UserPaths.Music,
+      folder: true,
+    });
+
+    if (!path) return;
+
+    const content = await Fs.readDir(path);
+    const mediaFiles: FileEntry[] = [];
+
+    for (const file of content?.files || []) {
+      const extensions = this.app.data.opens?.extensions?.filter((e) => file.name.endsWith(e) && e !== ".arcpl");
+      if (!extensions?.length) continue;
+
+      mediaFiles.push(file);
+    }
+
+    this.Stop();
+    const playlist = mediaFiles.map((f) => join(path, f.name));
+    this.queue.set(playlist);
+    await this.parseEntireQueue();
+    await this.savePlaylist(this.queue());
+  }
+
   //#endregion
   //#region ERRORS
 
@@ -480,7 +507,8 @@ export class MediaPlayerRuntime extends AppProcess {
     result.year = Number.isNaN(meta?.common?.year) ? undefined : meta?.common?.year;
     result.album = meta?.common?.album;
 
-    const coverImage = meta?.common?.picture?.find((p) => p.description?.toLowerCase().includes("cover"));
+    const coverImage =
+      meta?.common?.picture?.find((p) => p.description?.toLowerCase().includes("cover")) || meta?.common?.picture?.[0];
     const coverImageBytes = coverImage?.data;
     const coverImageBuffer = coverImageBytes?.buffer.slice(
       coverImageBytes.byteOffset,

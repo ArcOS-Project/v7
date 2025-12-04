@@ -17,6 +17,11 @@ export function PlaylistAltMenu(runtime: MediaPlayerRuntime): ContextMenuItem {
       },
       { sep: true },
       {
+        caption: "Playlist from folder...",
+        icon: "folder-search",
+        action: () => runtime.folderAsPlaylist(),
+      },
+      {
         caption: "Create shortcut...",
         icon: "arrow-up-right",
         action: () => runtime.createPlaylistShortcut(),
