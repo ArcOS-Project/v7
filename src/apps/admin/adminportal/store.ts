@@ -6,7 +6,6 @@ import Activities from "./AdminPortal/Page/Activities.svelte";
 import AuditLog from "./AdminPortal/Page/AuditLog.svelte";
 import BugHunt from "./AdminPortal/Page/BugHunt.svelte";
 import Dashboard from "./AdminPortal/Page/Dashboard.svelte";
-import ExecuteQuery from "./AdminPortal/Page/ExecuteQuery.svelte";
 import Filesystems from "./AdminPortal/Page/Filesystems.svelte";
 import Logs from "./AdminPortal/Page/Logs.svelte";
 import NoAdminBootstrapper from "./AdminPortal/Page/NoAdminBootstrapper.svelte";
@@ -36,21 +35,6 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
         return { stats, logs };
       },
       scopes: [AdminScopes.adminLogs, AdminScopes.adminStats],
-    },
-  ],
-  [
-    "query",
-    {
-      name: "Execute query",
-      icon: "scan-search",
-      content: ExecuteQuery,
-      separator: true,
-      props: async (process) => {
-        const users = await process.admin.getAllUsers();
-
-        return { users };
-      },
-      scopes: [AdminScopes.adminUsersList],
     },
   ],
   [
