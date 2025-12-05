@@ -1,0 +1,238 @@
+#AdminPortal .container.query div.page-content {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+#AdminPortal .container.query div.expressions {
+  max-height: 250px;
+  overflow-y: scroll;
+}
+
+#AdminPortal .container.query div.expressions div.row {
+  display: flex;
+  align-items: center;
+  height: 31px;
+  gap: 10px;
+  padding-left: 10px;
+  border-bottom: var(--win-border);
+}
+
+#AdminPortal .container.query div.expressions div.row span.json-representation {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 10px;
+  display: block;
+  width: 0;
+  flex-grow: 1;
+  font-family: "Source Code Pro";
+  opacity: 0.5;
+}
+
+#AdminPortal .container.query div.expressions div.actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+#AdminPortal .container.query div.expressions div.actions button {
+  font-size: 16px;
+  width: 31px;
+  padding: 7px;
+  border-left: var(--win-border);
+  border-radius: 0;
+}
+
+#AdminPortal .container.query div.expressions div.row p.where {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+#AdminPortal .container.query div.results {
+  flex-grow: 1;
+  height: 0;
+  flex-direction: column;
+  border-top: var(--win-border);
+}
+
+#AdminPortal .container.query div.results div.action-bar {
+  height: 31px;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  border-bottom: var(--win-border);
+  background-color: var(--button-bg);
+}
+
+#AdminPortal .container.query div.results div.table-wrapper {
+  height: calc(100% - 31px);
+  overflow: scroll;
+}
+
+#AdminPortal .container.query div.results div.action-bar p.count {
+  margin-right: auto;
+}
+#AdminPortal .container.query div.results div.truncated {
+  height: 30px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--clr-red-bg);
+}
+
+#AdminPortal .container.query div.results div.truncated img {
+  height: 16px;
+}
+
+#AdminPortal .container.query div.selector {
+  display: flex;
+  align-items: center;
+  height: 31px;
+  border-bottom: var(--win-border);
+  gap: 10px;
+  padding-left: 10px;
+  background-color: var(--button-bg);
+}
+
+#AdminPortal .container.query div.selector p.from {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+#AdminPortal .container.query div.fields {
+  display: flex;
+  align-items: center;
+  width: 0;
+  flex-grow: 1;
+  overflow:hidden;
+}
+
+#AdminPortal .container.query div.fields label {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  gap: 10px;
+  font-family: "Source Code Pro";
+}
+
+#AdminPortal .container.query input:not([type="checkbox"]),
+#AdminPortal .container.query select {
+  border-bottom: 0;
+  border-top: 0;
+  border-radius: 0;
+  height: 30px;
+}
+
+#AdminPortal .container.query div.selector select {
+  background-color: var(--button-bg);
+}
+
+#AdminPortal .container.query div.selector div.actions {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+#AdminPortal .container.query div.action-bar button,
+#AdminPortal .container.query div.selector button {
+  border-radius: 0;
+  height: 30px;
+  border-left: var(--win-border);
+  display: flex;
+  padding: 0 10px;
+  gap: 10px;
+  align-items: center;
+  background-color: transparent;
+}
+
+#AdminPortal .container.query div.action-bar button:hover,
+#AdminPortal .container.query div.selector button:hover {
+  background-color: var(--button-glass-bg);
+}
+#AdminPortal .container.query div.action-bar button:active,
+#AdminPortal .container.query div.selector button:active {
+  background-color: var(--button-glass-active-bg);
+}
+
+#AdminPortal .container.query div.action-bar button:disabled,
+#AdminPortal .container.query div.selector button:disabled {
+  opacity: 0.2;
+}
+
+#AdminPortal .container.query div.selector button span.lucide.icon-play {
+  color: var(--clr-green-fg);
+}
+
+#AdminPortal .container.query table {
+  display: block;
+  width: 100%;
+  width: max-content;
+  max-width: 100%;
+  overflow: auto;
+  border-spacing: 0;
+  border-collapse: collapse;
+  margin: -1px;
+}
+
+#AdminPortal .container.query table tr {
+  background-color: var(--button-bg);
+  border-top: var(--win-border);
+}
+
+#AdminPortal .container.query table tr:hover td {
+  background-color: var(--button-glass-hover-bg);
+}
+
+#AdminPortal .container.query table th,
+#AdminPortal .container.query table td {
+  padding: 5px 8px;
+  border: var(--win-border);
+  text-align: left !important;
+  white-space: nowrap;
+}
+
+#AdminPortal .container.query table tr th {
+  font-weight: bold !important;
+}
+
+#AdminPortal .container.query table tr:nth-child(2n) {
+  background-color: var(--button-bg) 1px solid;
+}
+
+#AdminPortal .container.query div.row select:not([type="checkbox"]) + select:not([type="checkbox"]),
+#AdminPortal .container.query div.row input:not([type="checkbox"]) + select:not([type="checkbox"]),
+#AdminPortal .container.query div.row select:not([type="checkbox"]) + input:not([type="checkbox"]),
+#AdminPortal .container.query div.row input:not([type="checkbox"]) + input:not([type="checkbox"]) {
+  border-left: none !important;
+}
+#AdminPortal .container.query div.row img {
+  height: 16px;
+}
+
+#AdminPortal .container.query div.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0004;
+  backdrop-filter: blur(2px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity 0.3s,
+    pointer-events 0s !important;
+}
+
+#AdminPortal .container.query div.loading-overlay.show {
+  opacity: 1;
+  pointer-events: initial;
+  z-index: 100000000;
+}

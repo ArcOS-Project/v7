@@ -1,4 +1,11 @@
-import type { Activity, AuditLog, ExpandedToken, ServerLogItem, ServerStatistics, User } from "$types/admin";
+import type {
+  Activity,
+  AuditLog,
+  ExpandedToken,
+  ServerLogItem,
+  ServerStatistics,
+  User
+} from "$types/admin";
 import type { BugReport, ReportStatistics } from "$types/bughunt";
 import type { FsAccess } from "$types/fs";
 import type { StoreItem } from "$types/package";
@@ -30,6 +37,10 @@ export type PageData = Record<string, any>;
 export type DashboardData = {
   stats: ServerStatistics;
   logs: ServerLogItem[];
+};
+
+export type QueryData = {
+  users: ExpandedUserInfo[];
 };
 
 export type BugHuntData = {
