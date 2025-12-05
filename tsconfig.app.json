@@ -24,6 +24,7 @@
       "$lib/*": ["./src/lib/*"],
       "$ts/*": ["./src/ts/*"]
     },
+    "composite": true,
     "esModuleInterop": true
   },
   "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte", "src/**/*.html"]
