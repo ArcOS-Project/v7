@@ -79,7 +79,9 @@ export const AdminScopes = {
   adminAfsRead: "admin.afs.read",
   adminAfsWrite: "admin.afs.write",
   adminAfsQuota: "admin.afs.quota",
-};
+} as const;
+
+export type AdminScopesType = (typeof AdminScopes)[keyof typeof AdminScopes];
 
 export const AdminScopeCaptions: Record<string, string> = {
   adminGod: "do everything",

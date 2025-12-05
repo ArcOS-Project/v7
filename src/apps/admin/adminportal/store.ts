@@ -1,6 +1,7 @@
 import { DevelopmentLogo, EsrLogo, RcLogo, ReleaseLogo, UnstableLogo } from "$ts/images/branding";
 import { AdminScopes } from "$ts/server/admin/store";
 import { sliceIntoChunks } from "$ts/util";
+import type { PartialUserTotp, Token } from "$types/admin";
 import Activities from "./AdminPortal/Page/Activities.svelte";
 import AuditLog from "./AdminPortal/Page/AuditLog.svelte";
 import BugHunt from "./AdminPortal/Page/BugHunt.svelte";
@@ -608,4 +609,15 @@ export const globalAdminActions: SpecificAdminActions = {
     caption: "ARD",
     scopes: [AdminScopes.adminAfsQuota, AdminScopes.adminAfsRead, AdminScopes.adminAfsWrite],
   },
+};
+
+export const DefaultTotpInfo: PartialUserTotp = {
+  _id: "",
+  activated: false,
+  userId: "",
+};
+
+export const DefaultTokenInfo: Token = {
+  value: "",
+  userId: "",
 };

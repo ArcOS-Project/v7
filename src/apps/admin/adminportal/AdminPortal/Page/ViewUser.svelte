@@ -22,6 +22,8 @@
   let statistics: UserStatistics | undefined = $state();
 
   onMount(async () => {
+    if (!user) return;
+    
     statistics = await process.admin.getStatisticsOf(user._id);
   });
 
@@ -130,65 +132,69 @@
   }
 </script>
 
-<div class="leftpanel">
-  <Identity {user} {redacted} />
-  <Filesystem {user} {process} />
-  <Shares {user} {process} />
-  <Reports {user} {reports} {process} />
-</div>
-<div class="rightpanel">
-  <div class="statistics" class:centered={!statistics || !process.admin.canAccess(AdminScopes.adminStats)}>
-    {#if statistics}
-      {#each Object.entries(statistics) as [what, count]}
-        <div class="statistic">
-          <h1>{what}</h1>
-          <p class="big-value">{count}</p>
-        </div>
-      {/each}
-    {:else if !process.admin.canAccess(AdminScopes.adminStats)}
-      <p class="error-text">NO_BUGHUNT_STAT_PERMISSION</p>
-    {:else}
-      <Spinner height={32} />
-    {/if}
+{#if !user}
+  <p class="error-text">USER_NOT_FOUND</p>
+{:else}
+  <div class="leftpanel">
+    <Identity {user} {redacted} />
+    <Filesystem {user} {process} />
+    <Shares {user} {process} />
+    <Reports {user} {reports} {process} />
   </div>
-  <div class="split">
-    <div class="resets">
-      <ChangeEmail {process} {user} />
-      <ChangePassword {process} {user} />
-      <ChangeQuota {process} {user} />
-      <TwoFactor {process} {user} />
+  <div class="rightpanel">
+    <div class="statistics" class:centered={!statistics || !process.admin.canAccess(AdminScopes.adminStats)}>
+      {#if statistics}
+        {#each Object.entries(statistics) as [what, count]}
+          <div class="statistic">
+            <h1>{what}</h1>
+            <p class="big-value">{count}</p>
+          </div>
+        {/each}
+      {:else if !process.admin.canAccess(AdminScopes.adminStats)}
+        <p class="error-text">NO_BUGHUNT_STAT_PERMISSION</p>
+      {:else}
+        <Spinner height={32} />
+      {/if}
     </div>
-    <div class="quick-actions">
-      <button
-        class="lucide icon-log-out"
-        aria-label="Log out"
-        onclick={logout}
-        disabled={!user.approved || !process.admin.canAccess(AdminScopes.adminTokensPurgeUserDelete)}
-        title="Log user out"
-      ></button>
-      <button
-        class="lucide icon-user-minus"
-        class:icon-user-plus={!user.approved}
-        aria-label={user.approved ? "Disapprove" : "Approve"}
-        onclick={toggleApproved}
-        title={user.approved ? "Disapprove" : "Approve"}
-        disabled={!process.admin.canAccess(user.approved ? AdminScopes.adminUsersDisapprove : AdminScopes.adminUsersApprove)}
-      ></button>
-      <button
-        class="lucide icon-shield-minus"
-        class:icon-shield-plus={!user.admin}
-        aria-label={user.admin ? "Revoke admin" : "Grant admin"}
-        title={user.admin ? "Revoke admin" : "Grant admin"}
-        onclick={toggleAdmin}
-        disabled={!user.approved || !process.admin.canAccess(user.admin ? AdminScopes.adminRevoke : AdminScopes.adminGrant)}
-      ></button>
-      <button
-        class="clr-red lucide icon-trash-2"
-        aria-label="Delete user"
-        title="Delete user"
-        onclick={deleteUser}
-        disabled={!process.admin.canAccess(AdminScopes.adminUsersDelete)}
-      ></button>
+    <div class="split">
+      <div class="resets">
+        <ChangeEmail {process} {user} />
+        <ChangePassword {process} {user} />
+        <ChangeQuota {process} {user} />
+        <TwoFactor {process} {user} />
+      </div>
+      <div class="quick-actions">
+        <button
+          class="lucide icon-log-out"
+          aria-label="Log out"
+          onclick={logout}
+          disabled={!user.approved || !process.admin.canAccess(AdminScopes.adminTokensPurgeUserDelete)}
+          title="Log user out"
+        ></button>
+        <button
+          class="lucide icon-user-minus"
+          class:icon-user-plus={!user.approved}
+          aria-label={user.approved ? "Disapprove" : "Approve"}
+          onclick={toggleApproved}
+          title={user.approved ? "Disapprove" : "Approve"}
+          disabled={!process.admin.canAccess(user.approved ? AdminScopes.adminUsersDisapprove : AdminScopes.adminUsersApprove)}
+        ></button>
+        <button
+          class="lucide icon-shield-minus"
+          class:icon-shield-plus={!user.admin}
+          aria-label={user.admin ? "Revoke admin" : "Grant admin"}
+          title={user.admin ? "Revoke admin" : "Grant admin"}
+          onclick={toggleAdmin}
+          disabled={!user.approved || !process.admin.canAccess(user.admin ? AdminScopes.adminRevoke : AdminScopes.adminGrant)}
+        ></button>
+        <button
+          class="clr-red lucide icon-trash-2"
+          aria-label="Delete user"
+          title="Delete user"
+          onclick={deleteUser}
+          disabled={!process.admin.canAccess(AdminScopes.adminUsersDelete)}
+        ></button>
+      </div>
     </div>
   </div>
-</div>
+{/if}

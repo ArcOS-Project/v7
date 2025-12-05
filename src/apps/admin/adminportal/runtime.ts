@@ -132,4 +132,13 @@ export class AdminPortalRuntime extends AppProcess {
   }
 
   //#endregion
+  //#region UTILS
+  
+  async viewUserById(userId: string) {
+    const user = (await this.admin.getAllUsers()).find((u) => u._id === userId);
+    
+    this.switchPage("viewUser", { user });
+  }
+
+  //#endregion
 }

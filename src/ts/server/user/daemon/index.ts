@@ -153,9 +153,12 @@ export class UserDaemon extends Process {
 
     if (!this.userInfo.admin) return;
     const appStore = this.appStorage()!;
-    const adminPortal = (await import("$apps/admin/adminportal/AdminPortal")).default as App;
 
-    appStore.loadOrigin("admin", () => [adminPortal]);
+    // TODO: glob that shit instead of multiple import calls
+    const adminPortal = (await import("$apps/admin/adminportal/AdminPortal")).default as App;
+    const executeQuery = (await import("$apps/admin/executequery/ExecuteQueryApp")).default as App;
+
+    appStore.loadOrigin("admin", () => [adminPortal, executeQuery]);
     await appStore.refresh();
 
     const proto = this.serviceHost?.getService<ProtocolServiceProcess>("ProtoService");
