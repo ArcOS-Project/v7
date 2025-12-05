@@ -61,7 +61,7 @@ export function QueryDesignations(runtime: ExecuteQueryRuntime): QueryDesignatio
       scopes: ["admin.index.get"],
     },
     activities: {
-      obtainer: async () => await runtime.admin.getAllTotp(),
+      obtainer: async () => await runtime.admin.getAllActivity(),
       scopes: ["admin.activities.list"],
     },
     logs: {

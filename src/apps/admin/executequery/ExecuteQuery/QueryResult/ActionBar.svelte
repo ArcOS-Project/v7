@@ -6,11 +6,11 @@
 </script>
 
 <div class="action-bar">
-  <p class="count">{result?.length} results</p>
+  <p class="count">{$result?.length}/{$totalCount} results</p>
   {#if $truncated}
     <div class="truncated">
       <img src={process.getIconCached("ErrorIcon")} alt="" />
-      <span>Result truncated because it is too large ({$totalCount} &gt 1000)</span>
+      <span>Result truncated: too many items ({$totalCount} &gt 1000)</span>
     </div>
   {/if}
   <button onclick={() => process.exportResults()}>Export</button>

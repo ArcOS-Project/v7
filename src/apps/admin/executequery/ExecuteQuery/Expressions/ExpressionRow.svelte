@@ -1,12 +1,11 @@
 <script lang="ts">
   import type { ExecuteQueryRuntime } from "../../runtime";
-  import type { QueryExpression } from "../../types";
   import ColumnName from "./ExpressionRow/ColumnName.svelte";
   import ComparisonType from "./ExpressionRow/ComparisonType.svelte";
   import ComparisonValue from "./ExpressionRow/ComparisonValue.svelte";
   import IncompleteWarning from "./ExpressionRow/IncompleteWarning.svelte";
 
-  const { process, expression, i }: { process: ExecuteQueryRuntime; expression: QueryExpression; i: number } = $props();
+  const { process, i }: { process: ExecuteQueryRuntime; i: number } = $props();
 </script>
 
 <div class="row">
@@ -14,8 +13,8 @@
 
   <div class="fields">
     <ColumnName {process} {i} />
-    <ComparisonType {process} {i} {expression} />
-    <ComparisonValue {process} {i} {expression} />
+    <ComparisonType {process} {i} />
+    <ComparisonValue {process} {i} />
   </div>
 
   <IncompleteWarning {process} {i} />

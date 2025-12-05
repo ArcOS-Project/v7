@@ -1,3 +1,4 @@
+import "$css/apps/admin/executequery.css";
 import type { App } from "$types/app";
 import ExecuteQuery from "./ExecuteQuery.svelte";
 import { ExecuteQueryRuntime } from "./runtime";
@@ -8,14 +9,14 @@ const ExecuteQueryApp: App = {
     version: "1.0.0",
     author: "Izaak Kuipers",
     appGroup: "adminTools",
-    icon: "ComponentIcon",
+    icon: "ArcFindIcon",
   },
   position: { centered: true },
-  size: { w: 640, h: 480 },
+  size: { w: 800, h: 550 },
   minSize: { w: 640, h: 480 },
   maxSize: { w: NaN, h: NaN },
   state: {
-    maximized: true,
+    maximized: false,
     minimized: false,
     resizable: true,
     fullscreen: false,
@@ -37,7 +38,7 @@ const ExecuteQueryApp: App = {
   overlay: false,
   noSafeMode: false,
   vital: true,
-  id: "ExecuteQuery",
+  id: "ExecuteQueryApp",
 };
 
 export default ExecuteQueryApp;

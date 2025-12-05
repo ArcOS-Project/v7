@@ -54,19 +54,23 @@ export class ExecuteQueryRuntime extends AppProcess {
   async updateResult(key: QuerySourceKey) {
     const designation = this.queryDesignations[key];
 
+    if (!designation) return;
+
     if (designation.scopes && !this.admin.canAccess(...designation.scopes)) {
       this.noAccessToSource();
       return;
     }
 
+    this.loading.set(true);
+
     const dataSource = await designation.obtainer();
 
-    this.loading.set(true);
     this.result.set([]);
     this.dataSource.set(dataSource);
-
     this.columns.set(this.findMostColumnsOf(dataSource));
+
     this.updateColumnTypes();
+    this.loading.set(false);
   }
 
   updateColumnTypes(items: any[] = this.dataSource()) {
@@ -81,6 +85,9 @@ export class ExecuteQueryRuntime extends AppProcess {
       const value = testSubject[column];
       result.push(Array.isArray(value) ? "array" : typeof value);
     }
+
+    this.columnTypes.set(result);
+    console.log(result, columns);
   }
 
   //#endregion
@@ -93,13 +100,17 @@ export class ExecuteQueryRuntime extends AppProcess {
 
     let queryResult = this.dataSource().filter((item) => {
       for (const expression of expressions[selectedSource]) {
-        return this.evaluateExpression(item, expression);
+        const result = this.evaluateExpression(item, expression);
+
+        if (result === false) return false;
       }
+
+      return true;
     });
+    this.totalCount.set(queryResult.length);
 
     if (queryResult.length > 1000) {
       this.truncated.set(true);
-      this.totalCount.set(queryResult.length);
 
       queryResult.length = 1000;
     }
@@ -110,7 +121,12 @@ export class ExecuteQueryRuntime extends AppProcess {
   evaluateExpression(item: any, expression: QueryExpression): boolean {
     const { comparisonType, comparisonValue, columnName } = expression;
 
-    if (columnName === undefined || comparisonType === undefined || comparisonValue === undefined) return true;
+    if (
+      columnName === undefined ||
+      comparisonType === undefined ||
+      (comparisonValue === undefined && !comparisonType.includes("defined"))
+    )
+      return true;
 
     const columns = this.columns();
     const columnTypes = this.columnTypes();
@@ -195,6 +211,7 @@ export class ExecuteQueryRuntime extends AppProcess {
   }
 
   comparison_isNotDefined(value: any) {
+    console.log("is not defined", value);
     return value === null || value === undefined;
   }
 

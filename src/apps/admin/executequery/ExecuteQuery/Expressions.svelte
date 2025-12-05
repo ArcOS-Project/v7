@@ -7,7 +7,7 @@
 </script>
 
 <div class="expressions">
-  {#each $expressions[$selectedSource] as expression, i}
-    <ExpressionRow {expression} {i} {process}/>
+  {#each $expressions[$selectedSource] as _, i}
+    <ExpressionRow {i} {process}/>
   {/each}
 </div>

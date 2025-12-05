@@ -33,7 +33,7 @@
         {:else}
           Object
         {/if}
-      {:else if QueryUserColumns.includes(key) || (key === "_id" && $selectedSource === "users")}
+      {:else if QueryUserColumns.includes(key)}
         {users.find((u) => u._id === value)?.username || value || "no user"}
       {:else}
         {valueStr}
