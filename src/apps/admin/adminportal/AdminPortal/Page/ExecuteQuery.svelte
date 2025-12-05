@@ -1,18 +1,28 @@
 <script lang="ts">
+  /**
+   * I'll be the first to admit, this file is a mess. I'm aware.
+   *
+   * It's an administrative tool that the devs probably rely heavily on for bughunting, and as such I've kept it as selfcontained and
+   * simplistic as possible. This file isn't really supposed to be edited at any point, except for critical bugfixes.
+   *
+   * - IzKuipers, December 5th 2025
+   */
   import { FileManagerRuntime } from "$apps/user/filemanager/runtime";
+  import Spinner from "$lib/Spinner.svelte";
+  import { contextMenu } from "$ts/context/actions.svelte";
+  import { MessageBox } from "$ts/dialog";
   import { Fs } from "$ts/env";
+  import { getJsonHierarchy } from "$ts/hierarchy";
   import { tryJsonParse, tryJsonStringify } from "$ts/json";
+  import { AdminScopes } from "$ts/server/admin/store";
   import { Daemon } from "$ts/server/user/daemon";
   import { textToBlob } from "$ts/util/convert";
-  import { getParentDirectory } from "$ts/util/fs";
+  import { formatBytes, getParentDirectory } from "$ts/util/fs";
+  import { UUID } from "$ts/uuid";
   import { Store } from "$ts/writable";
   import { onMount } from "svelte";
   import type { AdminPortalRuntime } from "../../runtime";
   import type { QueryData } from "../../types";
-  import Spinner from "$lib/Spinner.svelte";
-  import { contextMenu } from "$ts/context/actions.svelte";
-  import { AdminScopes } from "$ts/server/admin/store";
-  import { MessageBox } from "$ts/dialog";
 
   const { process, data }: { process: AdminPortalRuntime; data: QueryData } = $props();
   const { users } = data;
@@ -27,9 +37,11 @@
     shares: [async () => await process.admin.getAllShares(), [AdminScopes.adminShareList]],
     indexes: [async () => await process.admin.getAllIndexingNodes(), [AdminScopes.adminIndexGet]],
     activities: [async () => await process.admin.getAllActivity(), [AdminScopes.adminActivitiesList]],
+    logs: [async () => await process.admin.getServerLogs(), [AdminScopes.adminLogs]],
+    auditlog: [async () => process.admin.getAuditLog(), [AdminScopes.adminAuditLog]],
   };
 
-  const sources = ["", "users", "tokens", "totp", "reports", "shares", "indexes", "activities"] as const;
+  const sources = ["", "users", "tokens", "totp", "reports", "shares", "indexes", "activities", "logs", "auditlog"] as const;
   const comparisonTypes = [
     "",
     "is equal to",
@@ -44,6 +56,7 @@
     "is less than",
     "is less than or equal to",
   ] as const;
+  const userColumns = ["userId", "authorId", "recipient", "repliesTo"];
 
   //#region DO NOT TOUCH
 
@@ -54,18 +67,22 @@
     columnName?: string;
     comparisonType?: ComparisonTypes;
     comparisonValue?: string | boolean;
+    hierarchyValue?: any;
   }
 
   let result = $state<any[]>();
   let source = $state<any[]>();
   let loading = $state<boolean>(false);
   let truncated = $state<boolean>(false);
+  let columns = $state<string[]>([]);
+  let columnTypes = $state<string[]>([]);
+
+  // USER INPUT
   const selectFrom = Store<SourceKeys>("");
   let expressions = $state<Record<SourceKeys, SelectFromExpression[]>>(
     Object.fromEntries(sources.map((s) => [s, [] as SelectFromExpression[]])) as Record<SourceKeys, SelectFromExpression[]>
   );
-
-  let columns = $state<string[]>([]);
+  /////////////
 
   onMount(() => {
     selectFrom.subscribe(async (v) => {
@@ -75,7 +92,7 @@
             title: "Inaccessible",
             message:
               "The datasource you've selected isn't available on your account. You're missing scopes to access this datasource, so the result will always be empty.",
-            buttons: [{ caption: "Okay", action: () => {} }],
+            buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
             sound: "arcos.dialog.warning",
             image: "WarningIcon",
           },
@@ -87,6 +104,7 @@
       loading = true;
       source = await designations[v][0]();
       columns = findMostColumns(source);
+      findColumnTypes(source);
       loading = false;
     });
   });
@@ -97,25 +115,34 @@
     truncated = false;
 
     let queryResult = source!.filter((item) => {
-      for (const { comparisonType, comparisonValue, columnName } of expressions[$selectFrom]) {
+      for (const { comparisonType, comparisonValue, columnName, hierarchyValue } of expressions[$selectFrom]) {
         if (columnName === undefined || comparisonType === undefined || comparisonValue === undefined) continue;
 
         const valueStr = tryJsonStringify(item[columnName], 2);
         const value = item[columnName];
+        const valueIsObject = columnTypes[columns.indexOf(columnName)] === "object";
         let result = true;
-
-        console.log($selectFrom, comparisonType, comparisonValue, columnName);
 
         switch (comparisonType) {
           case "is equal to":
-            result = value == tryJsonParse(comparisonValue);
+            if (valueIsObject) {
+              result = getJsonHierarchy(value, comparisonValue as string) == hierarchyValue;
+            } else {
+              result = value == tryJsonParse(comparisonValue);
+            }
             break;
           case "is not equal to":
-            result = value != tryJsonParse(comparisonValue);
+            if (valueIsObject) {
+              result = getJsonHierarchy(value, comparisonValue as string) != hierarchyValue;
+            } else {
+              result = value != tryJsonParse(comparisonValue);
+            }
             break;
           case "includes":
             if (Array.isArray(value)) {
               result = value.includes(comparisonValue);
+            } else if (valueIsObject) {
+              result = getJsonHierarchy(value, comparisonValue as string)?.includes?.(hierarchyValue?.toString().toLowerCase());
             } else {
               result = valueStr.toLowerCase().includes(comparisonValue?.toString().toLowerCase());
             }
@@ -123,6 +150,8 @@
           case "does not include":
             if (Array.isArray(value)) {
               result = !value.includes(comparisonValue);
+            } else if (valueIsObject) {
+              result = !getJsonHierarchy(value, comparisonValue as string)?.includes?.(hierarchyValue?.toString().toLowerCase());
             } else {
               result = !valueStr.toLowerCase().includes(comparisonValue?.toString().toLowerCase());
             }
@@ -206,6 +235,19 @@
     return columns[highestIndex];
   }
 
+  function findColumnTypes(items: any[]) {
+    if (!columns) return;
+
+    columnTypes = [];
+
+    const item = items[0];
+
+    for (const column of columns) {
+      const value = item[column];
+      columnTypes.push(Array.isArray(value) ? "array" : typeof value);
+    }
+  }
+
   async function exportResults() {
     const [path] = await Daemon.files!.LoadSaveDialog({
       title: "Choose where to save the results",
@@ -236,6 +278,10 @@
       <option value={source} disabled={!source} selected={!source}>{source || "Source..."}</option>
     {/each}
   </select>
+
+  {#if source?.length}
+    <p>- {formatBytes(tryJsonStringify(source, 0).length)}</p>
+  {/if}
 
   <div class="actions">
     <button onclick={addExpression} disabled={!$selectFrom}>
@@ -272,11 +318,11 @@
 
           {#if comparisonType}
             <!-- It's a user we're looking for -->
-            {#if columnName === "userId" || columnName === "authorId" || columnName === "repliesTo" || columnName === "recipient" || (columnName === "_id" && $selectFrom === "users")}
+            {#if (columnName && userColumns.includes(columnName)) || (columnName === "_id" && $selectFrom === "users")}
               <select bind:value={expressions[$selectFrom][i].comparisonValue} placeholder="Select user...">
                 <option value="" disabled selected></option>
                 {#each users as user (user._id)}
-                  <option value={user._id}>{user.username} ({user._id})</option>
+                  <option value={user._id}>{user.username}</option>
                 {/each}
               </select>
             {:else if comparisonType.includes("defined")}
@@ -286,10 +332,18 @@
                 <input type="checkbox" bind:checked={expressions[$selectFrom][i].comparisonValue as boolean} />
                 <span>{comparisonValue}</span>
               </label>
+            {:else if columnName && columnTypes[columns.indexOf(columnName)] === "object" && (comparisonType.includes("include") || comparisonType.includes("equal"))}
+              <input
+                class="comparison-value"
+                bind:value={expressions[$selectFrom][i].comparisonValue}
+                placeholder="Hierarchy..."
+                title={JSON.stringify(tryJsonParse(comparisonValue))}
+              />
+              <p>{comparisonType}</p>
+              <input class="hierarchy-value" bind:value={expressions[$selectFrom][i].hierarchyValue} placeholder="Value..." />
             {:else}
               <input class="comparison-value" bind:value={expressions[$selectFrom][i].comparisonValue} placeholder="Value..." />
             {/if}
-            <span class="json-representation">{JSON.stringify(tryJsonParse(comparisonValue))}</span>
           {/if}
         </div>
 
@@ -334,7 +388,7 @@
         </thead>
 
         <tbody>
-          {#each result as item (item?._id || item?.id || JSON.stringify(item))}
+          {#each result as item (item?._id || item?.id || UUID())}
             <tr>
               {#each columns as key}
                 {@const value = item[key]}
@@ -360,9 +414,9 @@
                     {:else}
                       Object
                     {/if}
-                  {:else if key === "userId" || key === "authorId" || key === "repliesTo" || key === "recipient" || (key === "_id" && $selectFrom === "users")}
-                    <button class="link" onclick={() => process.viewUserById(value)} title={value}>
-                      {users.find((u) => u._id === value)?.username || value}
+                  {:else if userColumns.includes(key) || (key === "_id" && $selectFrom === "users")}
+                    <button class="link" onclick={() => process.viewUserById(value)} title={value} disabled={!value}>
+                      {users.find((u) => u._id === value)?.username || value || "no user"}
                     </button>
                   {:else}
                     {valueStr}
@@ -374,6 +428,22 @@
         </tbody>
       </table>
     </div>
+  </div>
+{:else}
+  <div class="query-sentence">
+    Selecting from <b>{$selectFrom}</b>
+    {#each expressions[$selectFrom] as expression, i}
+      {#if expression.columnName && expression.comparisonType && expression.comparisonValue !== undefined && expression.comparisonValue !== null}
+        {#if i}, and{/if} where
+        {#if expression.hierarchyValue}
+          address <b>{expression.comparisonValue}</b> of <b>{expression.columnName}</b>
+          {expression.comparisonType}
+          <b>{tryJsonStringify(expression.hierarchyValue, 0)}</b>
+        {:else}
+          <b>{expression.columnName}</b> {expression.comparisonType} <b>{tryJsonStringify(expression.comparisonValue, 0)}</b>
+        {/if}
+      {/if}
+    {/each}.
   </div>
 {/if}
 {#if loading}

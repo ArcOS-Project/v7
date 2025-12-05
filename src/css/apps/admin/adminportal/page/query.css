@@ -236,3 +236,9 @@
   pointer-events: initial;
   z-index: 100000000;
 }
+
+
+#AdminPortal .container.query div.query-sentence {
+  padding: 15px;
+  max-width: 600px;
+}

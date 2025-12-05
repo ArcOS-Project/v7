@@ -8,6 +8,7 @@ const AdminPortalApp: App = {
     name: "Admin Portal",
     version: "1.0.0",
     author: "Izaak Kuipers",
+    appGroup: "adminTools",
     icon: "ElevationIcon",
   },
   position: { centered: true },

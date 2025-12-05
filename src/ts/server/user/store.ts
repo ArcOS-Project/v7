@@ -318,6 +318,7 @@ export const AppGroups: Record<string, string> = {
   thirdParty: "Third-party apps",
   components: "Components",
   coreApps: "Core Applications",
+  adminTools: "Administrative tools",
   entertainment: "Entertainment",
 };
 
