@@ -67,6 +67,11 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/user/sqeleton/Sqeleton",
 ]);
 
+export const AdminAppImportPathAbsolutes = import.meta.glob([
+  "$apps/admin/adminportal/AdminPortal",
+  "$apps/admin/executequery/ExecuteQueryApp",
+])
+
 export const appShortcuts: [number, AppKeyCombinations][] = [];
 export const AppOrigins: Record<string, string> = {
   builtin: "Built-in",

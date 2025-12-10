@@ -87,7 +87,6 @@ export class ExecuteQueryRuntime extends AppProcess {
     }
 
     this.columnTypes.set(result);
-    console.log(result, columns);
   }
 
   //#endregion
@@ -211,7 +210,6 @@ export class ExecuteQueryRuntime extends AppProcess {
   }
 
   comparison_isNotDefined(value: any) {
-    console.log("is not defined", value);
     return value === null || value === undefined;
   }
 
