@@ -1,0 +1,46 @@
+#ExecuteQueryApp #LoadQueryOverlay > div.body {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+#ExecuteQueryApp #LoadQueryOverlay > div.body div.list {
+  padding: 10px;
+  height: 0;
+  flex-grow: 1;
+}
+
+#ExecuteQueryApp #LoadQueryOverlay > div.body div.list button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  gap: 10px;
+  padding: 0 10px;
+  height: 30px;
+  margin-bottom: 4px;
+}
+
+#ExecuteQueryApp #LoadQueryOverlay > div.body div.list button:not(.selected):not(:hover) {
+  background-color: transparent;
+  outline: none;
+}
+
+#ExecuteQueryApp #LoadQueryOverlay > div.body div.list button.selected {
+  background-color: var(--accent-transparent);
+}
+
+#ExecuteQueryApp #LoadQueryOverlay > div.body div.list button span.lucide {
+  font-size: 16px;
+  color: var(--accent-light);
+}
+
+#ExecuteQueryApp #LoadQueryOverlay > div.body div.actions {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 10px;
+  border-top: var(--win-border);
+  background-color: var(--win-bg);
+}

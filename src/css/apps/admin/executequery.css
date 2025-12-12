@@ -1,3 +1,6 @@
+@import url("./executequery/loadquery.css");
+@import url("./executequery/savequery.css");
+
 #ExecuteQueryApp > div.body ::-webkit-scrollbar {
   display: none;
 }

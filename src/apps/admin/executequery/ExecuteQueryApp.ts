@@ -12,8 +12,8 @@ const ExecuteQueryApp: App = {
     icon: "ArcFindIcon",
   },
   position: { centered: true },
-  size: { w: 800, h: 550 },
-  minSize: { w: 640, h: 480 },
+  size: { w: 1000, h: 550 },
+  minSize: { w: 1000, h: 480 },
   maxSize: { w: NaN, h: NaN },
   state: {
     maximized: false,
