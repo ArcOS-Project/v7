@@ -1,18 +1,16 @@
 #calculator div.body {
   overflow: hidden;
-  background-color: var(--win-bg);
   border-top: var(--win-border);
 }
 
 #calculator input.display {
+  font-weight: bold;
   height: 50px;
   width: 100%;
   padding: 10px 20px;
-  font-family: "Source Code Pro", monospace;
-  font-size: 16px;
+  font-size: 24px;
   text-align: right;
-  background-color: var(--button-glass-bg);
-  border: var(--button-glass-bg) 1px solid;
+  border: none;
   box-shadow: none;
 }
 
@@ -23,7 +21,7 @@
 #calculator div.keys {
   display: grid;
   grid-template-columns: repeat(4, 75px);
-  grid-template-rows: repeat(5, 60px);
+  grid-template-rows: repeat(5, 50px);
   margin-top: 10px;
   gap: 5px;
   justify-content: center;
@@ -32,8 +30,9 @@
 #calculator div.keys button {
   position: relative;
   margin: 0;
-  font-size: 16px;
+  font-size: 14px;
   background-color: var(--button-glass-bg);
+  margin: 0.08em;
 }
 
 #calculator div.keys button.empty {
