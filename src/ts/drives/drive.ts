@@ -54,15 +54,15 @@ export class FilesystemDrive {
 
   async lockFile(path: string, pid: number) {
     if (this.fileLocks[path])
-      throw new Error(`GenericFilesystemDrive: can't lock ${path}: file is in use by process ${this.fileLocks[path]}`);
+      throw new Error(`${this.constructor.name}: can't lock ${path}: file is in use by process ${this.fileLocks[path]}`);
 
     this.fileLocks[path] = pid;
   }
 
   async releaseLock(path: string, pid: number, fromSystem = false) {
-    if (!this.fileLocks[path]) throw new Error(`GenericFilesystemDrive: can't unlock '${path}': not locked`);
+    if (!this.fileLocks[path]) throw new Error(`${this.constructor.name}: can't unlock '${path}': not locked`);
     if (pid !== this.fileLocks[path] && !fromSystem)
-      throw new Error(`GenericFilesystemDrive: can't unlock '${path}': expected PID ${this.fileLocks[path]}, got ${pid}`);
+      throw new Error(`${this.constructor.name}: can't unlock '${path}': expected PID ${this.fileLocks[path]}, got ${pid}`);
 
     delete this.fileLocks[path];
   }
@@ -72,7 +72,7 @@ export class FilesystemDrive {
 
     const result = await this._spinUp(onProgress);
 
-    this.Log("Heads loaded.");
+    if (result === true) this.Log("Heads loaded.");
 
     //
     // UNCOMMENT THE BELOW PROPERTY ASSIGNMENT TO DISABLE **ALL** FILESYSTEM OEPRATIONS
@@ -90,7 +90,9 @@ export class FilesystemDrive {
     //   direct: false,
     //   quota: false,
     //   bulk: false,
+    //   stat: true,
     // };
+
     return result;
   }
 
@@ -180,7 +182,7 @@ export class FilesystemDrive {
   isCapable(capability: DriveCapabilities) {
     if (!this.CAPABILITIES[capability]) {
       this.Log(`Detected illegal filesystem operation '${capability}'!`);
-      throw new Error(`GenericFilesystemDrive: illegal ${capability} on ${this.FILESYSTEM_SHORT}`);
+      throw new Error(`${this.constructor.name}: illegal ${capability} on ${this.FILESYSTEM_SHORT}`);
     }
   }
 

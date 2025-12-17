@@ -17,6 +17,7 @@ import { Sleep } from "../sleep";
 import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
 import { ApplicationStorage } from "./storage";
+import { ComponentIcon } from "$ts/images/general";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
 export class AppProcess extends ProcessWithPermissions {
@@ -375,7 +376,7 @@ export class AppProcess extends ProcessWithPermissions {
   }
 
   getIconCached(id: string): string {
-    return Daemon?.icons?.getIconCached(id)!;
+    return Daemon?.icons?.getIconCached(id)! || Daemon?.icons?.getIconCached("ComponentIcon")! || ComponentIcon;
   }
 
   getIconStore(id: string): ReadableStore<string> {

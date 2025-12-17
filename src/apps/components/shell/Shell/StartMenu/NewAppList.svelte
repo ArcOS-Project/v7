@@ -6,6 +6,7 @@
   import type { ShellRuntime } from "../../runtime";
   import AppGroups from "./AppList/AppGroups.svelte";
   import NewAppGroups from "./AppList/NewAppGroups.svelte";
+  import AppList from "./AppList.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
   const { searchResults, searchQuery, searching, SelectionIndex, userPreferences } = process;
@@ -47,7 +48,6 @@
   {:else if !$userPreferences.shell.start.noGroups}
     <NewAppGroups {process} />
   {:else}
-    Not implemented
     <AppGroups {process} {apps} />
   {/if}
 

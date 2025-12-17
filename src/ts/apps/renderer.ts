@@ -1,6 +1,6 @@
 import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
 import { contextProps } from "$ts/context/actions.svelte";
-import { BETA, Env, Stack, SysDispatch } from "$ts/env";
+import { BETA, BugHunt, Env, Stack, SysDispatch } from "$ts/env";
 import { Daemon } from "$ts/server/user/daemon";
 import { UUID } from "$ts/uuid";
 import { Draggable } from "@neodrag/vanilla";
@@ -11,6 +11,7 @@ import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { AppProcess } from "./process";
 import { BuiltinAppImportPathAbsolutes } from "./store";
+import { DistributionServiceProcess } from "$ts/distrib";
 
 export class AppRenderer extends Process {
   currentState: number[] = [];
@@ -669,9 +670,29 @@ export class AppRenderer extends Process {
     return result;
   }
 
-  async notifyCrash(data: App, e: Error, process?: AppProcess) {
+  async notifyCrash(data: App, reason: any, process?: AppProcess) {
     const mod = await BuiltinAppImportPathAbsolutes["/src/apps/components/oopsnotifier/OopsNotifier.ts"]();
     const app = (mod as any).default as App;
+    const storeItem = await Daemon.serviceHost
+      ?.getService<DistributionServiceProcess>("DistribSvc")
+      ?.getInstalledStoreItemByAppId(data.id);
+
+    console.log(data, storeItem);
+
+    const stack = reason instanceof PromiseRejectionEvent ? reason.reason.stack : reason.stack || "No stack";
+
+    await BugHunt.sendReport(
+      BugHunt.createReport(
+        {
+          body: `${stack}`,
+          title: `APP - ${reason}`,
+          public: true,
+          anonymous: true,
+        },
+        data,
+        storeItem?._id
+      )
+    );
 
     await Stack.waitForAvailable();
     const proc = await Stack.spawn(
@@ -685,12 +706,12 @@ export class AppRenderer extends Process {
         desktop: undefined,
       },
       data,
-      e,
+      reason,
       process
     );
 
     if (!proc) {
-      this.Log(`OOPS FALLBACK - ${e}`);
+      this.Log(`OOPS FALLBACK - ${reason}`);
     }
   }
 }

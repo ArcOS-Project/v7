@@ -45,6 +45,13 @@ export class ShellRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.setSource(__SOURCE__);
+
+    this.acceleratorStore.push({
+      alt: true,
+      action: () => {
+        this.startMenuOpened.set(!this.startMenuOpened());
+      },
+    });
   }
 
   async start() {
@@ -261,9 +268,7 @@ export class ShellRuntime extends AppProcess {
   //#region WORKSPACES
 
   async deleteWorkspace(workspace: Workspace) {
-    const windowCount = [...Stack.store()].filter(
-      ([_, p]) => p instanceof AppProcess && p.app.desktop === workspace.uuid
-    ).length; // Get the window count using some arguably unreadable code
+    const windowCount = [...Stack.store()].filter(([_, p]) => p instanceof AppProcess && p.app.desktop === workspace.uuid).length; // Get the window count using some arguably unreadable code
 
     if (windowCount > 0) {
       MessageBox(
@@ -339,15 +344,19 @@ export class ShellRuntime extends AppProcess {
   //#region STARTMENU
 
   public async refreshStartMenu(): Promise<void> {
-    const tree = await Fs.tree(this.STARTMENU_FOLDER);
+    try {
+      const tree = await Fs.tree(this.STARTMENU_FOLDER);
 
-    if (!tree?.files?.length && !tree?.dirs?.length) {
-      await Daemon?.appreg?.updateStartMenuFolder(); // Populate it if there's no content
-      
-      return; // Don't try again here because this method will be reinvoked by dispatch
+      if (!tree?.files?.length && !tree?.dirs?.length) {
+        await Daemon?.appreg?.updateStartMenuFolder(); // Populate it if there's no content
+
+        return; // Don't try again here because this method will be reinvoked by dispatch
+      }
+
+      this.StartMenuContents.set(tree);
+    } catch {
+      return;
     }
-
-    this.StartMenuContents.set(tree);
   }
 
   //#endregion

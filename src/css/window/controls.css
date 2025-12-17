@@ -34,8 +34,16 @@ div.window div.titlebar div.alt-menu {
   padding-left: 10px;
   margin-left: 5px;
   border-left: var(--button-glass-hover-bg) 1px solid;
-  /* width: 0; */
-  /* flex-grow: 1; */
+}
+
+.hide-altmenus div.window div.titlebar div.alt-menu {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.hide-altmenus div.window div.titlebar div.alt-menu:has(button.selected),
+.hide-altmenus div.window div.titlebar:hover div.alt-menu {
+  opacity: 1;
 }
 
 div.window div.titlebar div.alt-menu button {

@@ -51,6 +51,9 @@
         onclick={() => ($userPreferences.shell.taskbar.clockDate = !$userPreferences.shell.taskbar.clockDate)}>Date</button
       >
     </Option>
+    <Option caption="Only show apps from the current workspace">
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.taskbar.openedAppsPerWorkspace} />
+    </Option>
   </Section>
   <Section caption="Action Center">
     <Option caption="Weather location">

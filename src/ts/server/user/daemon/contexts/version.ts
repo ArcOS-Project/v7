@@ -16,14 +16,22 @@ export class VersionUserContext extends UserContext {
   }
 
   async isRegisteredVersionOutdated() {
-    const contents = await Fs.readFile(join(UserPaths.System, "RegisteredVersion"));
-    const isOutdated = !contents || arrayBufferToText(contents) !== ArcOSVersion;
+    try {
+      const contents = await Fs.readFile(join(UserPaths.System, "RegisteredVersion"));
+      const isOutdated = !contents || arrayBufferToText(contents) !== ArcOSVersion;
 
-    return isOutdated;
+      return isOutdated;
+    } catch {
+      return false;
+    }
   }
 
   async updateRegisteredVersion() {
-    await Fs.writeFile(join(UserPaths.System, "RegisteredVersion"), textToBlob(ArcOSVersion));
+    try {
+      await Fs.writeFile(join(UserPaths.System, "RegisteredVersion"), textToBlob(ArcOSVersion));
+    } catch {
+      return;
+    }
   }
 
   async checkForNewVersion() {

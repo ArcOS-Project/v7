@@ -19,6 +19,7 @@ export const DefaultUserPreferences: UserPreferences = {
       clockDate: false,
       clockSecs: false,
       batteryPercentage: false,
+      openedAppsPerWorkspace: false,
     },
     actionCenter: {
       weatherLocation: {
@@ -43,6 +44,7 @@ export const DefaultUserPreferences: UserPreferences = {
       noGlass: false,
       trafficLights: false,
       blurRadius: 10,
+      hideAltmenus: false,
     },
     customStyle: {
       enabled: false,

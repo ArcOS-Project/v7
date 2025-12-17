@@ -5,6 +5,7 @@ import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { Backend } from "$ts/server/axios";
 import { UserDaemon } from "$ts/server/user/daemon";
+import type { App } from "$types/app";
 import type { BugReport, OutgoingBugReport } from "$types/bughunt";
 import type { ConstructedWaveKernel } from "$types/kernel";
 import { defaultReportOptions } from "./store";
@@ -20,7 +21,7 @@ export class BugHunt extends KernelModule {
 
   //#endregion
 
-  createReport(options = defaultReportOptions): OutgoingBugReport {
+  createReport(options = defaultReportOptions, app?: App, storeItemId?: string): OutgoingBugReport {
     const server = URL.parse(Server.url)?.host;
 
     return {
@@ -36,6 +37,9 @@ export class BugHunt extends KernelModule {
       mode: ArcMode(),
       build: ArcBuild(),
       public: options.public,
+      isAppReport: !!app,
+      reportAppId: app?.id,
+      reportAppPkgId: storeItemId,
     };
   }
 

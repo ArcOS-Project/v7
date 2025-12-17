@@ -1,4 +1,5 @@
 import type {
+  BugHuntType,
   ConstructedWaveKernel,
   EnvironmentType,
   FilesystemType,
@@ -27,6 +28,7 @@ export let Server: ServerManagerType;
 export let SysDispatch: SystemDispatchType;
 export let SoundBus: SoundbusType;
 export let State: StateHandler;
+export let BugHunt: BugHuntType;
 
 export function SetCurrentKernel(kernel: ConstructedWaveKernel) {
   if (Kernel) throw new Error("Tried to reassign CurrentKernel");
@@ -70,6 +72,7 @@ export function SetKernelExports() {
   KernelServerUrl = Server.url;
   SysDispatch = getKMod<SystemDispatchType>("dispatch");
   SoundBus = getKMod<SoundbusType>("soundbus");
+  BugHunt = getKMod<BugHuntType>("bughunt");
 }
 
 export function getKMod<T = any>(id: string, dontCrash = false): T {

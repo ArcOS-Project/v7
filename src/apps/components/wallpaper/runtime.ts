@@ -247,13 +247,15 @@ export class WallpaperRuntime extends AppProcess {
   //#region CONFIGURATION
 
   async loadConfiguration() {
-    const contents = await Fs.readFile(this.CONFIG_PATH);
-    if (!contents) return await this.writeConfiguration({});
+    try {
+      const contents = await Fs.readFile(this.CONFIG_PATH);
+      if (!contents) return await this.writeConfiguration({});
 
-    const json = tryJsonParse<DesktopIcons>(arrayBufferToText(contents));
-    if (!json || typeof json === "string") return await this.writeConfiguration({});
+      const json = tryJsonParse<DesktopIcons>(arrayBufferToText(contents));
+      if (!json || typeof json === "string") return await this.writeConfiguration({});
 
-    this.Configuration.set(json);
+      this.Configuration.set(json);
+    } catch {}
   }
 
   async writeConfiguration(data: DesktopIcons) {

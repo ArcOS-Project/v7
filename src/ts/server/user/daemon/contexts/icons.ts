@@ -1,6 +1,7 @@
 import type { AppProcess } from "$ts/apps/process";
 import type { IconService } from "$ts/icon";
 import { maybeIconId } from "$ts/images";
+import { ComponentIcon } from "$ts/images/general";
 import { Store, type ReadableStore } from "$ts/writable";
 import type { App } from "$types/app";
 import type { UserDaemon } from "..";
@@ -28,7 +29,7 @@ export class IconsUserContext extends UserContext {
   getIconCached(id: string): string {
     const iconService = this.serviceHost?.getService<IconService>("IconService");
 
-    return iconService?.getIconCached(id) || "";
+    return iconService?.getIconCached(id) || iconService?.getIconCached("ComponentIcon") || ComponentIcon;
   }
 
   getIconStore(id: string): ReadableStore<string> {
