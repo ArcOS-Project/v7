@@ -1,24 +1,32 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
   import { Daemon } from "$ts/server/user/daemon";
-  import type { AppStorage } from "$types/app";
+  import type { ArcShortcut } from "$types/shortcut";
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../../runtime";
-  import AppGroups from "./AppList/AppGroups.svelte";
   import NewAppGroups from "./AppList/NewAppGroups.svelte";
-  import AppList from "./AppList.svelte";
+  import NewListItem from "./AppList/NewListItem.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
-  const { searchResults, searchQuery, searching, SelectionIndex, userPreferences } = process;
+  const { searchResults, searchQuery, searching, SelectionIndex, userPreferences, StartMenuContents } = process;
 
-  let apps = $state<AppStorage>([]);
+  let singleDepthList = $state<ArcShortcut[]>([]);
 
   onMount(() => {
-    const unsubscribe = process.appStore()?.buffer.subscribe((v) => {
-      apps = v;
-    });
+    StartMenuContents.subscribe((v) => {
+      if (!v) return;
 
-    return () => unsubscribe && unsubscribe();
+      let result = Object.values(v.shortcuts);
+
+      for (const folder of v.dirs) {
+        result.push(...Object.values(folder.children.shortcuts));
+      }
+
+      singleDepthList = result.filter(
+        ({ target, type }) =>
+          type === "app" && (Daemon?.apps?.isPopulatableByAppIdSync(target) || $userPreferences.shell.visuals.showHiddenApps)
+      );
+    });
   });
 </script>
 
@@ -48,7 +56,11 @@
   {:else if !$userPreferences.shell.start.noGroups}
     <NewAppGroups {process} />
   {:else}
-    <AppGroups {process} {apps} />
+    {#each singleDepthList as shortcut (`${shortcut.target}-${shortcut.name}-${shortcut.icon}-${shortcut.type}`)}
+      {#if !Daemon?.apps?.checkDisabled(shortcut.target)}
+        <NewListItem {shortcut} {process} />
+      {/if}
+    {/each}
   {/if}
 
   {#if !Daemon}

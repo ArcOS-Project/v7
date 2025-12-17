@@ -165,8 +165,6 @@ export class LegacyServerDrive extends FilesystemDrive {
   async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
     const content = await this.legacy_readDir(path);
 
-    console.log(content);
-
     return {
       totalFiles: content.files.length,
       totalFolders: content.directories.length,

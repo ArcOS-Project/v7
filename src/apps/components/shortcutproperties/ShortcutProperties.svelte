@@ -11,7 +11,7 @@
 {#if $shortcutData}
   <div class="header">
     <div class="icon">
-      <img src={iconStore[$shortcutData.icon] || process.getIconCached("UnknownFileIcon")} alt="" />
+      <img src={process.getIconCached($shortcutData.icon) || process.getIconCached("UnknownFileIcon")} alt="" />
       <button class="change lucide icon-pencil" title="Change icon" aria-label="Change icon" onclick={() => process.changeIcon()}
       ></button>
     </div>

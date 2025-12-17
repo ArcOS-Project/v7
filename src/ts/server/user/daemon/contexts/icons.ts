@@ -29,7 +29,7 @@ export class IconsUserContext extends UserContext {
   getIconCached(id: string): string {
     const iconService = this.serviceHost?.getService<IconService>("IconService");
 
-    return iconService?.getIconCached(id) || iconService?.getIconCached("ComponentIcon") || ComponentIcon;
+    return iconService?.getIconCached(id) || id;
   }
 
   getIconStore(id: string): ReadableStore<string> {

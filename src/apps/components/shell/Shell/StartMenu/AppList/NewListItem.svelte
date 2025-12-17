@@ -27,6 +27,6 @@
     class:no-safemode={process.safeMode && app.noSafeMode}
   >
     <img src={Daemon?.icons?.getAppIcon(app)} alt="" />
-    <span class="name">{app.metadata.name}</span>
+    <span class="name">{shortcut.name === `_${app.id}` ? app.metadata.name : shortcut.name}</span>
   </button>
 {/if}

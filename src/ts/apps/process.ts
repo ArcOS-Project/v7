@@ -376,7 +376,7 @@ export class AppProcess extends ProcessWithPermissions {
   }
 
   getIconCached(id: string): string {
-    return Daemon?.icons?.getIconCached(id)! || Daemon?.icons?.getIconCached("ComponentIcon")! || ComponentIcon;
+    return Daemon?.icons?.getIconCached(id)! || id;
   }
 
   getIconStore(id: string): ReadableStore<string> {

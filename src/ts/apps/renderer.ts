@@ -677,8 +677,6 @@ export class AppRenderer extends Process {
       ?.getService<DistributionServiceProcess>("DistribSvc")
       ?.getInstalledStoreItemByAppId(data.id);
 
-    console.log(data, storeItem);
-
     const stack = reason instanceof PromiseRejectionEvent ? reason.reason.stack : reason.stack || "No stack";
 
     await BugHunt.sendReport(
