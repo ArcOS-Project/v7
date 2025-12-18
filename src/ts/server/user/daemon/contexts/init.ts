@@ -1,5 +1,3 @@
-import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
-import { contextMenu } from "$ts/context/actions.svelte";
 import { MessageBox } from "$ts/dialog";
 import { ServerDrive } from "$ts/drives/server";
 import { Env, Fs, Stack, State, SysDispatch } from "$ts/env";
@@ -79,46 +77,6 @@ export class InitUserContext extends UserContext {
           );
         });
       }
-
-      //#region TEST TEST TEST
-
-      const selects = document.querySelectorAll("select");
-
-      const contextMenuPid = Env.get("contextmenu_pid");
-      if (!contextMenuPid) return;
-      const contextmenu = Stack?.getProcess<ContextMenuRuntime>(+contextMenuPid);
-      if (!contextmenu) return;
-
-      for (const select of selects) {
-        if (select.dataset.processed || select.dataset.skip) continue;
-
-        select.addEventListener("click", (e) => {
-          e.preventDefault();
-          select.blur();
-
-          const rect = select?.getBoundingClientRect();
-
-          contextmenu.createContextMenu({
-            items: [...select.querySelectorAll("option")].map((opt) => ({
-              caption: opt.innerText,
-              disabled: () => opt.disabled,
-              isActive: () => opt.selected,
-              action: () => {
-                select.value = opt.value;
-                select.dispatchEvent(new InputEvent("input"));
-                select.dispatchEvent(new InputEvent("change"));
-              },
-            })),
-            x: rect.x,
-            y: rect.y + 5,
-          });
-
-          return false;
-        });
-        select.setAttribute("data-processed", "true");
-      }
-
-      //#endregion TEST TEST TEST
     };
 
     this.anchorInterceptObserver = new MutationObserver(handle);
