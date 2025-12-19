@@ -37,10 +37,11 @@
   width: 1px;
   height: 20px;
   background-color: var(--button-glass-hover-bg);
+  margin: 0 5px;
 }
 
 #BugHunt > div.body > div.container div.actionbar > div {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
 }

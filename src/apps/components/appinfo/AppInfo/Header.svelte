@@ -45,17 +45,7 @@
   <div class="left">
     <img src={Daemon?.icons?.getAppIcon(target) || process.getIconCached("QuestionIcon")} alt="" />
     <div class="base-info">
-      <p class="name">
-        <span>{target?.metadata?.name || "Unknown"}</span>
-        {#if disabled}
-          <img
-            src={process.getIconCached("WarningIcon")}
-            alt=""
-            class="disabled"
-            title="{target?.metadata?.name || 'Unknown'} is disabled!"
-          />
-        {/if}
-      </p>
+      <p class="name">{target?.metadata?.name || "Unknown"}</p>
       <p class="author">{target?.metadata?.author || "No author"}</p>
     </div>
   </div>

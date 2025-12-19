@@ -23,7 +23,7 @@
   grid-template-columns: repeat(4, 75px);
   grid-template-rows: repeat(5, 50px);
   margin-top: 10px;
-  gap: 5px;
+  gap: 8px;
   justify-content: center;
 }
 
@@ -32,7 +32,10 @@
   margin: 0;
   font-size: 14px;
   background-color: var(--button-glass-bg);
-  margin: 0.08em;
+}
+
+#calculator div.keys button:hover {
+  background-color: var(--button-glass-hover-bg);
 }
 
 #calculator div.keys button.empty {
