@@ -18,7 +18,9 @@
         buttons: [
           {
             caption: "Abort!",
-            action: () => {},
+            action: () => {
+              loading = false;
+            },
           },
           {
             caption: "Continue",

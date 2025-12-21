@@ -16,12 +16,18 @@
         message:
           "Are you really, really REALLY sure you want to delete this report? It may be a smarter option to simply close it as this action CANNOT be reverted.",
         buttons: [
-          { caption: "Cancel", action: () => {} },
+          {
+            caption: "Cancel",
+            action: () => {
+              loading = false;
+            },
+          },
           {
             caption: "Delete",
-            action: () => {
-              process.admin.deleteBugReport(report._id!);
-              process.switchPage("bughunt");
+            action: async () => {
+              await process.admin.deleteBugReport(report._id!);
+              await process.switchPage("bughunt");
+              loading = false;
             },
             suggested: true,
           },

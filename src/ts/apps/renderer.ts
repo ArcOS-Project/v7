@@ -679,18 +679,21 @@ export class AppRenderer extends Process {
 
     const stack = reason instanceof PromiseRejectionEvent ? reason.reason.stack : reason.stack || "No stack";
 
-    await BugHunt.sendReport(
-      BugHunt.createReport(
-        {
-          body: `${stack}`,
-          title: `APP - ${reason}`,
-          public: true,
-          anonymous: true,
-        },
-        data,
-        storeItem?._id
-      )
-    );
+    // I'm not sending app reports to the servers if we're in dev,
+    // even if they might be useful to some app developers.
+    if (!import.meta.env.DEV)
+      await BugHunt.sendReport(
+        BugHunt.createReport(
+          {
+            body: `${stack}`,
+            title: `APP - ${reason}`,
+            public: true,
+            anonymous: true,
+          },
+          data,
+          storeItem?._id
+        )
+      );
 
     await Stack.waitForAvailable();
     const proc = await Stack.spawn(

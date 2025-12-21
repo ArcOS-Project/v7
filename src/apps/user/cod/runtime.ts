@@ -109,7 +109,8 @@ export class CodRuntime extends AppProcess {
         prog.setDone(progress.value);
       });
 
-      await Sleep(0);
+      // Sleeping to give FsProgress the time to render if the file is done loading before FsProgress has a chance to show.
+      await Sleep(500);
       await prog.stop();
 
       if (!contents) {

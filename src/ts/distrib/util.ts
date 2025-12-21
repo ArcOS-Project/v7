@@ -10,6 +10,10 @@ export function StoreItemIcon(item: PartialStoreItem | StoreItem) {
     : TryGetDaemon()?.icons!.getIconCached("ComponentIcon") || ComponentIcon;
 }
 
+export function StoreItemIconPrimitive(id: string) {
+  return `${KernelServerUrl}/store/assets/${id}/icon${authcode()}`;
+}
+
 export function StoreItemScreenshot(item: PartialStoreItem | StoreItem, index = 0) {
   return item.pkg.store?.screenshots?.[index]
     ? `${KernelServerUrl}/store/assets/${item._id}/screenshot/${index}${authcode()}`
