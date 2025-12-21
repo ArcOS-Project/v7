@@ -1,4 +1,5 @@
-import type { QuickSetting, WeatherMeta } from "./types";
+import { UserPaths } from "$ts/server/user/store";
+import type { QuickSetting, StartMenuAction, WeatherMeta } from "./types";
 
 export const weatherMetadata: Record<number, WeatherMeta> = {
   0: {
@@ -275,3 +276,56 @@ export const QuickSettings: QuickSetting[] = [
       }),
   },
 ];
+
+export const DefaultStartMenuActions = ["$$", "fileManager", "settings", "exit"];
+
+export const StartMenuActions: Record<string, StartMenuAction> = {
+  fileManager: {
+    caption: "File Manager",
+    action: (process) => process.spawnApp("fileManager", process.pid),
+    icon: "folder-open",
+    className: "file-manager",
+  },
+  documents: {
+    caption: "Documents",
+    action: (process) => process.spawnApp("fileManager", process.pid, UserPaths.Documents),
+    icon: "file-text",
+  },
+  pictures: {
+    caption: "Pictures",
+    action: (process) => process.spawnApp("fileManager", process.pid, UserPaths.Pictures),
+    icon: "file-image",
+  },
+  music: {
+    caption: "Music",
+    action: (process) => process.spawnApp("fileManager", process.pid, UserPaths.Music),
+    icon: "file-music",
+  },
+  downloads: {
+    caption: "Downloads",
+    action: (process) => process.spawnApp("fileManager", process.pid, UserPaths.Downloads),
+    icon: "file-down",
+  },
+  settings: {
+    caption: "Settings",
+    action: (process) => process.spawnApp("systemSettings", process.pid),
+    icon: "settings-2",
+  },
+  processes: {
+    caption: "Processes",
+    action: (process) => process.spawnApp("processManager", process.pid, "Processes"),
+    icon: "activity",
+  },
+  services: {
+    caption: "Services",
+    action: (process) => process.spawnApp("processManager", process.pid, "Services"),
+    icon: "hand-helping",
+  },
+  exit: {
+    caption: "Exit ArcOS",
+    action: (process) => process.exit(),
+    icon: "power",
+  },
+};
+
+export const DefaultPinnedApps = ["$", "fileManager", "Messages", "AppStore", "systemSettings", "processManager"];

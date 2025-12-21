@@ -1,4 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
+import { MessageBox } from "$ts/dialog";
+import { Env } from "$ts/env";
 import { IconService } from "$ts/icon";
 import { Daemon } from "$ts/server/user/daemon";
 import { Store } from "$ts/writable";
@@ -82,8 +84,22 @@ export class IconEditorRuntime extends AppProcess {
   async save() {
     this.iconService?.Configuration.set({ ...this.icons() });
     this.hasChanges.set(false);
-    this.closeWindow();
-    Daemon?.power?.restart();
+    await this.closeWindow();
+
+    MessageBox(
+      {
+        title: this.app.data.metadata.name,
+        message: "You have to restart ArcOS for the changes to the icons to take effect.",
+        buttons: [
+          { caption: "Restart later", action: () => {} },
+          { caption: "Restart now", action: () => Daemon?.power?.restart(), suggested: true },
+        ],
+        image: this.app.data.metadata.icon,
+        sound: "arcos.dialog.info",
+      },
+      +Env.get("shell_pid"),
+      true
+    );
   }
 
   async editIcon() {

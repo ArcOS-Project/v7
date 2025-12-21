@@ -35,6 +35,7 @@ export const DefaultUserPreferences: UserPreferences = {
     },
     start: {
       noGroups: false,
+      actions: [],
     },
     visuals: {
       noAnimations: false,

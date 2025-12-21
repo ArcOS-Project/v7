@@ -72,5 +72,8 @@
     <Option caption="Disable app groups">
       <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.start.noGroups} />
     </Option>
+    <Option caption="Actions">
+      <button onclick={() => process.showSlide("shell_startMenuActions")}>Customize...</button>
+    </Option>
   </Section>
 </div>

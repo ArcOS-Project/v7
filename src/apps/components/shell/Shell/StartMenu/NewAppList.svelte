@@ -6,6 +6,7 @@
   import type { ShellRuntime } from "../../runtime";
   import NewAppGroups from "./AppList/NewAppGroups.svelte";
   import NewListItem from "./AppList/NewListItem.svelte";
+  import { sortByKey } from "$ts/util";
 
   const { process }: { process: ShellRuntime } = $props();
   const { searchResults, searchQuery, searching, SelectionIndex, userPreferences, StartMenuContents } = process;
@@ -22,15 +23,18 @@
         result.push(...Object.values(folder.children.shortcuts));
       }
 
-      singleDepthList = result.filter(
-        ({ target, type }) =>
-          type === "app" && (Daemon?.apps?.isPopulatableByAppIdSync(target) || $userPreferences.shell.visuals.showHiddenApps)
+      singleDepthList = sortByKey(
+        result.filter(
+          ({ target, type }) =>
+            type === "app" && (Daemon?.apps?.isPopulatableByAppIdSync(target) || $userPreferences.shell.visuals.showHiddenApps)
+        ),
+        "name"
       );
     });
   });
 </script>
 
-<div class="app-list" class:searching={$searchQuery} class:loading={$searching} data-contextmenu="startmenu-list">
+<div class="app-list" class:searching={$searchQuery} class:loading={$searching}>
   {#if $searchQuery}
     {#if $searching}
       <Spinner height={32} />

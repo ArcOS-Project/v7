@@ -22,7 +22,7 @@
   });
 </script>
 
-<div class="app-list" class:searching={$searchQuery} class:loading={$searching} data-contextmenu="startmenu-list">
+<div class="app-list" class:searching={$searchQuery} class:loading={$searching}>
   {#if $searchQuery}
     {#if $searching}
       <Spinner height={32} />

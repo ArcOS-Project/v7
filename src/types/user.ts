@@ -111,6 +111,7 @@ export interface DesktopPreferences {
 
 export interface StartMenuPreferences {
   noGroups: boolean;
+  actions: string[]
 }
 
 export interface VisualPreferences {
