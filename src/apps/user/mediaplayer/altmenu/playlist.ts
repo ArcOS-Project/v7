@@ -6,11 +6,6 @@ export function PlaylistAltMenu(runtime: MediaPlayerRuntime): ContextMenuItem {
     caption: "Playlist",
     subItems: [
       {
-        caption: "Open playlist",
-        icon: "folder-open",
-        action: () => runtime.loadPlaylist(),
-      },
-      {
         caption: "Save playlist",
         icon: "save",
         action: () => runtime.savePlaylist(),

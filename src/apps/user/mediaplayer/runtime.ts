@@ -205,12 +205,13 @@ export class MediaPlayerRuntime extends AppProcess {
       title: "Select an audio or video file to open",
       icon: "MediaPlayerIcon",
       startDir: getParentDirectory(this.queue()[this.queueIndex()]) || UserPaths.Music,
-      extensions: this.app.data.opens?.extensions?.filter((e) => e !== ".arcpl"),
+      extensions: this.app.data.opens?.extensions,
     });
 
     if (!path) return;
 
-    await this.readFile([path]);
+    if (path.endsWith(".arcpl")) await this.readPlaylist(path);
+    else await this.readFile([path]);
   }
 
   async readFile(paths: string[], addToQueue = false) {
@@ -369,19 +370,6 @@ export class MediaPlayerRuntime extends AppProcess {
       if (!queueIndex) this.handleSongChange(0);
       this.playlistPath.set(path);
     } catch {}
-  }
-
-  async loadPlaylist() {
-    if (this._disposed) return;
-    const [path] = await Daemon!.files!.LoadSaveDialog({
-      title: "Open playlist",
-      icon: this.app.data.metadata.icon,
-      extensions: [".arcpl"],
-    });
-
-    if (!path) return;
-
-    this.readPlaylist(path);
   }
 
   async readPlaylist(path: string) {
