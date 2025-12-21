@@ -7,11 +7,8 @@ import TerminalWindowApp from "$apps/components/terminalwindow/TerminalWindow";
 import SafeModeNotice from "$lib/Daemon/SafeModeNotice.svelte";
 import type { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { Env, Fs, Stack, SysDispatch } from "$ts/env";
-import type { Process } from "$ts/process/instance";
+import { Env, Stack, SysDispatch } from "$ts/env";
 import { Sleep } from "$ts/sleep";
-import { stringifyProcess } from "$ts/util";
-import { textToBlob } from "$ts/util/convert";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
 import type { ExpandedTerminal } from "$types/terminal";
@@ -197,14 +194,5 @@ The information provided in this report is subject for review by me or another A
         makePublic: true,
       }
     );
-  }
-
-  async ProcessDump(process: Process) {
-    const string = stringifyProcess(process);
-    const path = `U:/${UUID()}.dmp`;
-
-    await Fs.writeFile(path, textToBlob(string), undefined, false);
-
-    Daemon.spawn?.spawnApp("HexEdit", +Env.get("shell_pid"), path);
   }
 }
