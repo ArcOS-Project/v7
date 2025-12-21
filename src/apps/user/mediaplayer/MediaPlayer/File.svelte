@@ -11,7 +11,9 @@
   {#if $LoadingMetadata || !$CurrentMediaMetadata?.title}
     <h1 class="title">
       <span>{$windowTitle.split("-")[0]}</span>
-      <HtmlSpinner height={16} thickness={3} />
+      {#if $LoadingMetadata}
+        <HtmlSpinner height={16} thickness={3} />
+      {/if}
     </h1>
   {:else}
     <h1 class="title">
