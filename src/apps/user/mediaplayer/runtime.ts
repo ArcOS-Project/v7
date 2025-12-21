@@ -10,13 +10,13 @@ import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
+import type { FileEntry } from "$types/fs";
 import type { RenderArgs } from "$types/process";
 import { parseBuffer, type IAudioMetadata } from "music-metadata";
 import { MediaPlayerAccelerators } from "./accelerators";
 import { MediaPlayerAltMenu } from "./altmenu";
 import TrayPopup from "./MediaPlayer/TrayPopup.svelte";
 import type { AudioFileMetadata, MetadataConfiguration, PlayerState } from "./types";
-import type { FileEntry } from "$types/fs";
 
 export class MediaPlayerRuntime extends AppProcess {
   private readonly METADATA_PATH = join(UserPaths.Configuration, "MediaPlayer", "Metadata.json");
@@ -361,6 +361,13 @@ export class MediaPlayerRuntime extends AppProcess {
 
     try {
       await Fs.writeFile(path, textToBlob(playlist, "text/plain"));
+
+      const queueIndex = this.queueIndex();
+      this.Loaded.set(false);
+      this.queue.set(queue);
+      this.queueIndex.set(0);
+      if (!queueIndex) this.handleSongChange(0);
+      this.playlistPath.set(path);
     } catch {}
   }
 
