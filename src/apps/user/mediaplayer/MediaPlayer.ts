@@ -7,7 +7,7 @@ export const MediaPlayerApp: App = {
   metadata: {
     name: "Media Player",
     author: "Izaak Kuipers",
-    version: "4.0.0",
+    version: "4.0.2",
     icon: "MediaPlayerIcon",
     appGroup: "multimedia",
   },

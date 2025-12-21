@@ -6,7 +6,7 @@ import { AdminPortalRuntime } from "./runtime";
 const AdminPortalApp: App = {
   metadata: {
     name: "Admin Portal",
-    version: "1.0.0",
+    version: "1.0.2",
     author: "Izaak Kuipers",
     appGroup: "adminTools",
     icon: "ElevationIcon",
