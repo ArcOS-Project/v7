@@ -20,13 +20,13 @@
   onMount(async () => {
     if (!$message) return;
 
-    user = (isSent ? await process.userInfo($message.recipient) : $message.author!) || {
+    user = (isSent ? await process.userInfo($message?.recipient) : $message?.author!) || {
       username: "(deleted user)",
       profilePicture: ProfilePictures.def,
       admin: false,
       dispatchClients: 0,
     };
-    date = dayjs($message.createdAt).format("D MMMM YYYY, hh:mm A");
+    date = dayjs($message?.createdAt).format("D MMMM YYYY, hh:mm A");
   });
 </script>
 
@@ -34,13 +34,13 @@
   {#if $message && user}
     <div class="header">
       <ProfilePicture
-        fallback={$message.author!.profilePicture}
+        fallback={$message?.author!.profilePicture}
         height={40}
         showOnline
-        online={$message.author!.dispatchClients > 0}
+        online={$message?.author!.dispatchClients > 0}
       />
       <div>
-        <h1>{$message.title}</h1>
+        <h1>{$message?.title}</h1>
         <p>
           {#if isSent}
             To <UserLink {user} /> on {date}

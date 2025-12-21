@@ -5,6 +5,7 @@
   import File from "./MediaPlayer/File.svelte";
   import QueueItem from "./MediaPlayer/QueueItem.svelte";
   import type { MediaPlayerRuntime } from "./runtime";
+  import CoverImage from "./MediaPlayer/CoverImage.svelte";
 
   const { process }: { process: MediaPlayerRuntime } = $props();
 
@@ -21,7 +22,7 @@
     }, 3000);
   }
 
-  const { isVideo, State, queue, queueIndex, Loaded, windowFullscreen } = process;
+  const { isVideo, State, queue, queueIndex, Loaded, windowFullscreen, LoadingMetadata, CurrentCoverUrl } = process;
 
   onMount(() => {
     process.setPlayer(audio);
@@ -44,8 +45,8 @@
   </div>
   {#if $State && $queue[$queueIndex]}
     {#if !$isVideo}
-      <div class="audio-visual">
-        <span class="lucide icon-music-2"></span>
+      <div class="audio-visual" style={!$LoadingMetadata && $CurrentCoverUrl ? `--cover-backdrop: url('${$CurrentCoverUrl}')` : ""}>
+        <CoverImage {process} />
         <File {process} />
       </div>
     {/if}
