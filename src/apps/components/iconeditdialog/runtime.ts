@@ -1,4 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
+import type { IconService } from "$ts/icon";
+import { Daemon } from "$ts/server/user/daemon";
 import { Store, type ReadableStore } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
@@ -15,7 +17,7 @@ export class IconEditDialogRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.id = id;
-    this.store = store;
+    this.store = store || Store(Daemon?.serviceHost?.getService<IconService>("IconService")?.Configuration());
   }
 
   async start() {

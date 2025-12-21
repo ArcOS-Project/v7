@@ -1,3 +1,4 @@
+import { DefaultPinnedApps, DefaultStartMenuActions } from "$apps/components/shell/store";
 import { Fs, SysDispatch } from "$ts/env";
 import { applyDefaults } from "$ts/hierarchy";
 import { Backend } from "$ts/server/axios";
@@ -62,8 +63,8 @@ export class PreferencesUserContext extends UserContext {
         wallpaper: "app",
       };
 
-    if (!preferences.pinnedApps?.length)
-      preferences.pinnedApps = ["$", "fileManager", "Messages", "AppStore", "systemSettings", "processManager"];
+    if (!preferences.pinnedApps?.length) preferences.pinnedApps = DefaultPinnedApps;
+    if (!preferences.shell.start.actions?.length) preferences.shell.start.actions = DefaultStartMenuActions;
 
     const result = applyDefaults<UserPreferences>(preferences, {
       ...DefaultUserPreferences,

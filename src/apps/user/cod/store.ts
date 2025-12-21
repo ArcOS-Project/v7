@@ -11,4 +11,6 @@ export const CodTranslations: Record<string, CodLang> = {
   md: "markdown",
   ini: "ini",
   xml: "xml",
+  arclnk: "json",
+  arcpl: "plaintext",
 };

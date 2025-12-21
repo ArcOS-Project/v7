@@ -36,7 +36,9 @@ const applyArcTheme: (d: UserDaemon) => FileHandler = (daemon) => ({
     if (typeof json === "string") return fail("Couldn't parse the JSON object");
     if (!daemon.themes!.verifyTheme(json)) return fail("The theme is missing some required data");
 
-    daemon.themes!.applyThemeData(json);
+    const applied = daemon.themes!.applyThemeData(json);
+
+    if (!applied) fail("The theme could not be applied.");
   },
 });
 

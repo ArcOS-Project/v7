@@ -72,6 +72,6 @@
 </section>
 
 <section class="actions">
-  <button onclick={emptyBin}>Empty...</button>
+  <button onclick={emptyBin} disabled={!size}>Empty...</button>
   <button onclick={() => process.spawnApp("fileManager", +Env.get("shell_pid"), "::recycle_bin")}>Open bin</button>
 </section>

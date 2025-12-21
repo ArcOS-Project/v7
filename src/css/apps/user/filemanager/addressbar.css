@@ -38,6 +38,20 @@
   gap: 10px;
 }
 
+#fileManager div.address-bar div.path.manual-entry {
+  padding-left:8px;
+  gap: 5px
+}
+
+#fileManager div.address-bar div.path input {
+  height: 24px;
+  border: none;
+  border-radius: 0;
+  width: 0;
+  flex-grow: 1;
+  padding: 0 5px;
+}
+
 #fileManager div.address-bar div.path div.current-dir {
   display: flex;
   align-items: center;

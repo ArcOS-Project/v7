@@ -82,6 +82,19 @@
   gap: 10px;
 }
 
+#systemSettings section div.content div.option div.name div.icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#systemSettings section div.content div.option div.name span.lucide {
+  font-size: 16px;
+  color: var(--accent-light);
+}
+
 #systemSettings section div.content div.option div.name img {
   height: 24px;
 }

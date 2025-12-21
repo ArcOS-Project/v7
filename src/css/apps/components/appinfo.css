@@ -44,6 +44,7 @@
 #AppInfo div.header {
   display: flex;
   justify-content: space-between;
+  gap: 10px;
 }
 
 #AppInfo div.header > div {
@@ -52,6 +53,16 @@
   gap: 10px;
   align-items: center;
 }
+
+#AppInfo div.header div.left div.base-info,
+#AppInfo div.header div.left {
+  width: 0;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 #AppInfo div.header div.left img {
   height: 64px;
   margin-right: 5px;
@@ -60,10 +71,10 @@
 #AppInfo div.header div.left p.name {
   font-size: 22px;
   font-weight: bold;
-  margin: 0;
-  display: flex;
-  align-items: center;
   gap: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 #AppInfo div.header div.left p.name img {

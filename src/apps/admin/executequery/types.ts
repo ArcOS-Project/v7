@@ -18,3 +18,5 @@ export interface QueryExpression {
 export type QueryExpressionsType = Record<QuerySourceKey, QueryExpression[]>;
 export type QueryDesignationsType = Record<QuerySourceKey, QueryDesignation>;
 export type QueryComparisonTypesType = (typeof QueryComparisonTypes)[number];
+
+export type SavedQuery = { selectedSource: QuerySourceKey; expressions: QueryExpressionsType };

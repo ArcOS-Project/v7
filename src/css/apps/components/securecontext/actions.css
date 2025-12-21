@@ -3,9 +3,9 @@
 #SecureContext div.actions {
   display: flex;
   margin-top: auto;
-  border-top: var(--button-glass-hover-bg) 1px solid;
+  border-top: var(--win-border);
   padding: 10px;
-  background-color: var(--button-glass-bg);
+  background-color: var(--glass-alt-bg);
   margin: 0;
   display: flex;
   gap: 10px;

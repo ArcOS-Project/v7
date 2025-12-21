@@ -1,12 +1,15 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { Env } from "$ts/env";
+import { IconService } from "$ts/icon";
 import { getAllImages } from "$ts/images";
 import { Daemon } from "$ts/server/user/daemon";
+import { Sleep } from "$ts/sleep";
 import { getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { ArcShortcut } from "$types/shortcut";
+import { IconEditDialogRuntime } from "../iconeditdialog/runtime";
 
 export class ShortcutPropertiesRuntime extends AppProcess {
   shortcutData = Store<ArcShortcut>();
@@ -77,12 +80,19 @@ export class ShortcutPropertiesRuntime extends AppProcess {
 
   async changeIcon() {
     const data = this.shortcutData();
-    const icon = await Daemon?.helpers?.IconPicker({
-      defaultIcon: data.icon,
-      forWhat: data.name,
+    const icons = Store(Daemon.serviceHost?.getService<IconService>("IconService")?.Configuration() || {});
+
+    const proc = await this.spawnOverlayApp<IconEditDialogRuntime>("IconEditDialog", this.parentPid, icons, data.icon);
+
+    await new Promise<void>(async (r) => {
+      while (!proc?._disposed) {
+        await Sleep(1);
+      }
+
+      r();
     });
 
-    data.icon = icon || data.icon;
+    data.icon = proc?.currentIcon() || data.icon;
 
     this.shortcutData.set(data);
   }

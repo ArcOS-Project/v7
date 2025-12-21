@@ -41,6 +41,9 @@
     <Option caption="Enable the traffic light controls">
       <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.visuals.trafficLights} />
     </Option>
+    <Option caption="Auto-hide titlebar menu items">
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.visuals.hideAltmenus} />
+    </Option>
     <Option caption="Window blur radius" className="blur-radius">
       <input type="number" class="no-arrows" min="1" max="15" step="1" bind:value={$userPreferences.shell.visuals.blurRadius} />
       <span>px</span>

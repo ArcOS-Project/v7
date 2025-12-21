@@ -78,6 +78,8 @@ export class ThemesUserContext extends UserContext {
 
       return userPreferences;
     });
+
+    return true;
   }
 
   applySavedTheme(id: string) {

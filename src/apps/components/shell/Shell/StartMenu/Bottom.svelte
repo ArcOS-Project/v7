@@ -3,9 +3,10 @@
   import { Sleep } from "$ts/sleep";
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../../runtime";
+  import { StartMenuActions } from "../../store";
 
   const { process }: { process: ShellRuntime } = $props();
-  const { searchQuery, startMenuOpened, searchLoading } = process;
+  const { searchQuery, startMenuOpened, searchLoading, userPreferences } = process;
 
   let searchBar = $state<HTMLInputElement>();
 
@@ -47,15 +48,20 @@
       />
     {/if}
   </form>
-  <div class="actions">
-    <button class="file-manager" aria-label="Your files" onclick={() => process.spawnApp("fileManager", process.pid)}>
-      <span class="lucide icon-folder-open"></span>
-    </button>
-    <button class="settings" aria-label="Settings" onclick={() => process.spawnApp("systemSettings", process.pid)}>
-      <span class="lucide icon-settings-2"></span>
-    </button>
-    <button class="shutdown" aria-label="Shutdown" onclick={() => process.exit()}>
-      <span class="lucide icon-power"></span>
-    </button>
-  </div>
+  {#if Object.keys(StartMenuActions).filter((e) => $userPreferences.shell.start.actions?.includes(e)).length}
+    <div class="actions">
+      {#each Object.entries(StartMenuActions) as [id, action] (id)}
+        {#if $userPreferences.shell.start.actions?.includes(id)}
+          <button
+            class={action.className || ""}
+            aria-label={action.caption}
+            onclick={() => action.action(process)}
+            title={action.caption}
+          >
+            <span class="lucide icon-{action.icon}"></span>
+          </button>
+        {/if}
+      {/each}
+    </div>
+  {/if}
 </div>

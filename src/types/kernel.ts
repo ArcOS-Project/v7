@@ -4,6 +4,7 @@ import type { ProcessDispatch } from "$ts/process/dispatch";
 import type { Process } from "$ts/process/instance";
 import type { StateHandler } from "$ts/state";
 import type { ReadableStore } from "$ts/writable";
+import type { App } from "./app";
 import type { BugReport, OutgoingBugReport, ReportOptions } from "./bughunt";
 import type { SystemDispatchResult } from "./dispatch";
 import type {
@@ -107,7 +108,7 @@ export interface FilesystemType {
 
 export interface BugHuntType {
   _init(): Promise<void>;
-  createReport(options?: ReportOptions): OutgoingBugReport;
+  createReport(options?: ReportOptions, app?: App, storeItemId?: string): OutgoingBugReport;
   sendReport(outgoing: OutgoingBugReport, token?: string, options?: ReportOptions): Promise<boolean>;
   getToken(): string;
   getUserBugReports(token: string): Promise<BugReport[]>;

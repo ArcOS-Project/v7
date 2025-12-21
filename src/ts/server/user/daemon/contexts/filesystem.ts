@@ -6,6 +6,7 @@ import {
 } from "$apps/components/fsprogress/types";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import { MessageBox } from "$ts/dialog";
+import { LegacyServerDrive } from "$ts/drives/legacy";
 import type { MemoryFilesystemDrive } from "$ts/drives/temp";
 import { ZIPDrive } from "$ts/drives/zipdrive";
 import { Env, Fs, Stack, SysDispatch } from "$ts/env";
@@ -16,6 +17,7 @@ import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
 import { ElevationLevel } from "$types/elevation";
 import type { FileHandler, FileOpenerResult } from "$types/fs";
+import type { LegacyConnectionInfo } from "$types/legacy";
 import type { ArcShortcut } from "$types/shortcut";
 import type { CategorizedDiskUsage } from "$types/user";
 import { Daemon, type UserDaemon } from "..";
@@ -513,4 +515,13 @@ export class FilesystemUserContext extends UserContext {
     return dataUrl;
   }
 
+  async mountLegacyFilesystem(connectionInfo: LegacyConnectionInfo) {
+    return await Fs.mountDrive<LegacyServerDrive>(
+      btoa(`${connectionInfo.username}@${connectionInfo.url}`),
+      LegacyServerDrive,
+      undefined,
+      undefined,
+      connectionInfo
+    );
+  }
 }

@@ -13,10 +13,11 @@
 
   const { process, data }: { process: AdminPortalRuntime; data: BugHuntData } = $props();
   const { reports, stats, users } = data;
-  const pages: ("all" | "opened" | "closed")[] = ["all", "opened", "closed"];
+  const pages = ["all", "opened", "closed", "apps"] as const;
+  type PagesType = (typeof pages)[number];
 
   let store = Store<BugReport[]>([]);
-  let sortState = Store<"all" | "opened" | "closed">("opened");
+  let sortState = Store<PagesType>("opened");
   let filterId = Store<string>("");
   let idEntry = Store("");
   let quickView = Store<string>("");
@@ -31,6 +32,8 @@
           return report.closed;
         case "opened":
           return !report.closed;
+        case "apps":
+          return report.isAppReport;
       }
     });
   }
@@ -109,27 +112,13 @@
 
     process.switchPage("bughunt", {}, true);
   }
-  async function closeSelectedMulti() {
-    const go = await Daemon!.helpers?.Confirm(
-      "Confirm Close?",
-      `Are you sure you want to close ${$selectionList.length} reports? This is a potentially destructive action!`,
-      "Abort!",
-      "Continue"
-    );
-
-    if (!go) return;
-
-    await process.admin.closeBugReport($idEntry);
-
-    process.switchPage("bughunt", {}, true);
-  }
 </script>
 
 <div class="list-wrapper">
   <div class="tabs">
     <p>{$sortState} ({$store.length})</p>
     <select name="" id="" bind:value={$filterId}>
-      <option value="">None</option>
+      <option value="">Any user</option>
       {#each users as user (user._id)}
         <option value={user._id}>{user.username}</option>
       {/each}

@@ -1,8 +1,7 @@
 //#region IMPORTS
 import type { ShellRuntime } from "$apps/components/shell/runtime";
 import { ApplicationStorage } from "$ts/apps/storage";
-import { Env, getKMod, KernelServerUrl, Stack, State, SysDispatch } from "$ts/env";
-import { KernelStateHandler } from "$ts/getters";
+import { ArcOSVersion, Env, getKMod, KernelServerUrl, Stack, State, SysDispatch } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import type { ProtocolServiceProcess } from "$ts/proto";
 import { AdminProtocolHandlers } from "$ts/server/admin/proto";
@@ -39,6 +38,13 @@ import type { VersionUserContext } from "./contexts/version";
 import type { WallpaperUserContext } from "./contexts/wallpaper";
 import type { WorkspaceUserContext } from "./contexts/workspaces";
 import { UserContexts } from "./store";
+import { AdminAppImportPathAbsolutes } from "$ts/apps/store";
+import { compareVersion } from "$ts/version";
+import { MessageBox } from "$ts/dialog";
+import { ArcMode } from "$ts/metadata/mode";
+import { ArcBuild } from "$ts/metadata/build";
+import { deepCopyWithBlobs } from "$ts/util";
+
 //#endregion
 
 export class UserDaemon extends Process {
@@ -122,7 +128,7 @@ export class UserDaemon extends Process {
     }
 
     if (this.serviceHost) this.serviceHost._holdRestart = true;
-    
+
     Env.delete("userdaemon_pid");
   }
 
@@ -154,11 +160,54 @@ export class UserDaemon extends Process {
     if (!this.userInfo.admin) return;
     const appStore = this.appStorage()!;
 
-    // TODO: glob that shit instead of multiple import calls
-    const adminPortal = (await import("$apps/admin/adminportal/AdminPortal")).default as App;
-    const executeQuery = (await import("$apps/admin/executequery/ExecuteQueryApp")).default as App;
+    const blocklist = Daemon!.preferences()._internalImportBlocklist || [];
+    const adminApps = await Promise.all(
+      Object.keys(AdminAppImportPathAbsolutes).map(async (path) => {
+        if (!this.safeMode && blocklist.includes(path)) return null;
+        try {
+          const start = performance.now();
+          const mod = await AdminAppImportPathAbsolutes[path]();
+          const app = (mod as any).default as App;
 
-    appStore.loadOrigin("admin", () => [adminPortal, executeQuery]);
+          if (app._internalMinVer && compareVersion(ArcOSVersion, app._internalMinVer) === "higher")
+            throw `Not loading ${app.metadata.name} because this app requires a newer version of ArcOS`;
+
+          if (app._internalSysVer || app._internalOriginalPath)
+            throw `Can't load dubious built-in app '${app.id}' because it contains runtime-level properties set before runtime`;
+
+          const end = performance.now() - start;
+          const appCopy = await deepCopyWithBlobs<App>(app);
+
+          appCopy._internalSysVer = `v${ArcOSVersion}-${ArcMode()}-${ArcBuild()}`;
+          appCopy._internalOriginalPath = path;
+          appCopy._internalLoadTime = end;
+
+          this.Log(
+            `Loaded admin app: ${path}: ${appCopy.metadata.name} by ${appCopy.metadata.author}, version ${appCopy.metadata.version} (${end.toFixed(2)}ms)`
+          );
+
+          return appCopy;
+        } catch (e) {
+          await new Promise<void>((r) => {
+            MessageBox(
+              {
+                title: "Admin app load error",
+                message: `ArcOS failed to load an administrative application because of an error. ${e}.`,
+                buttons: [{ caption: "Okay", action: () => r(), suggested: true }],
+                image: "WarningIcon",
+              },
+              +Env.get("loginapp_pid"),
+              true
+            );
+            this.Log(`Failed to load admin app ${path}: ${e}`);
+            return null;
+          });
+        }
+      })
+    ).then((apps) => apps.filter((a): a is App => a !== null));
+
+    appStore.loadOrigin("admin", () => adminApps);
+
     await appStore.refresh();
 
     const proto = this.serviceHost?.getService<ProtocolServiceProcess>("ProtoService");

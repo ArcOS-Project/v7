@@ -308,7 +308,7 @@ export class MediaPlayerRuntime extends AppProcess {
       await this.player?.play();
 
       this.Loaded.set(true);
-    } catch (e) {
+    } catch {
       this.failedToPlay();
     }
   }
@@ -461,12 +461,13 @@ export class MediaPlayerRuntime extends AppProcess {
   //#endregion
   //#region ERRORS
 
-  async failedToPlay() {
+  async failedToPlay(e?: any) {
     if (this._disposed) return;
     MessageBox(
       {
         title: "Failed to play",
-        message: `Media Player failed to play the file you wanted to open. It might not be a (supported) audio or video file. Please try a different file.`,
+        message:
+          `Media Player failed to play the file you wanted to open. It might not be a (supported) audio or video file. Please try a different file. ${e}`.trim(),
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
         image: "MediaPlayerIcon",
         sound: "arcos.dialog.error",

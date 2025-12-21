@@ -6,13 +6,16 @@ import { getJsonHierarchy } from "$ts/hierarchy";
 import { tryJsonParse, tryJsonStringify } from "$ts/json";
 import { AdminBootstrapper } from "$ts/server/admin";
 import { Daemon } from "$ts/server/user/daemon";
-import { textToBlob } from "$ts/util/convert";
+import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { App, AppProcessData } from "$types/app";
 import type { ExpandedUserInfo } from "$types/user";
+import { ExecuteQueryAltMenu } from "./altmenu";
+import LoadQueryOverlayApp from "./LoadQuery/LoadQuery";
+import SaveQueryOverlayApp from "./SaveQuery/SaveQuery";
 import { QueryDesignations, QuerySources } from "./store";
-import type { QueryDesignationsType, QueryExpression, QueryExpressionsType, QuerySourceKey } from "./types";
+import type { QueryDesignationsType, QueryExpression, QueryExpressionsType, QuerySourceKey, SavedQuery } from "./types";
 
 export class ExecuteQueryRuntime extends AppProcess {
   result = Store<any[]>([]);
@@ -29,6 +32,10 @@ export class ExecuteQueryRuntime extends AppProcess {
   admin: AdminBootstrapper;
   users: ExpandedUserInfo[] = [];
   readonly queryDesignations: QueryDesignationsType = QueryDesignations(this);
+  protected override overlayStore: Record<string, App> = {
+    loadQuery: LoadQueryOverlayApp,
+    saveQuery: SaveQueryOverlayApp,
+  };
 
   //#region LIFECYCLE
 
@@ -37,6 +44,7 @@ export class ExecuteQueryRuntime extends AppProcess {
 
     this.setSource(__SOURCE__);
     this.admin = Daemon.serviceHost?.getService<AdminBootstrapper>("AdminBootstrapper")!;
+    this.altMenu.set(ExecuteQueryAltMenu(this));
   }
 
   async start() {
@@ -87,7 +95,6 @@ export class ExecuteQueryRuntime extends AppProcess {
     }
 
     this.columnTypes.set(result);
-    console.log(result, columns);
   }
 
   //#endregion
@@ -211,7 +218,6 @@ export class ExecuteQueryRuntime extends AppProcess {
   }
 
   comparison_isNotDefined(value: any) {
-    console.log("is not defined", value);
     return value === null || value === undefined;
   }
 
@@ -296,6 +302,60 @@ export class ExecuteQueryRuntime extends AppProcess {
 
   //#endregion
   //#region LOAD/SAVE
+
+  async loadQueryDialog() {
+    return await this.spawnOverlay("loadQuery", this);
+  }
+
+  async saveQueryDialog() {
+    return await this.spawnOverlay("saveQuery", this);
+  }
+
+  async loadQueryList(): Promise<string[]> {
+    const files = await Fs.readDir("A:/Queries");
+    const result: string[] = files?.files?.map(({ name }) => name) || [];
+
+    return result;
+  }
+
+  async saveQuery(name: string, data: QueryExpressionsType = this.expressions()) {
+    await Fs.writeFile(
+      this.normalizeQueryPath(name),
+      textToBlob(
+        JSON.stringify(
+          {
+            expressions: data,
+            selectedSource: this.selectedSource(),
+          },
+          null,
+          2
+        )
+      ),
+      undefined,
+      false
+    );
+  }
+
+  async loadQuery(name: string) {
+    const content = await Fs.readFile(this.normalizeQueryPath(name));
+    if (!content) return false;
+
+    const json = tryJsonParse<SavedQuery>(arrayBufferToText(content));
+    if (!json || typeof json === "string") return false;
+
+    this.selectedSource.set(json.selectedSource);
+    this.expressions.set(json.expressions);
+
+    return true;
+  }
+
+  async deleteQuery(name: string) {
+    return await Fs.deleteItem(this.normalizeQueryPath(name));
+  }
+
+  normalizeQueryPath(name: string) {
+    return `A:/Queries/${name.toLowerCase().replaceAll(/[\/\. ]/g, "-")}.json`;
+  }
 
   //#endregion
   //#region ERROR

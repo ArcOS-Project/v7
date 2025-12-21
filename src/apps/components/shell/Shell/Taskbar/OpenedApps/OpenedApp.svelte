@@ -4,11 +4,20 @@
   import { contextProps } from "$ts/context/actions.svelte";
   import { Stack } from "$ts/env";
   import { Daemon } from "$ts/server/user/daemon";
+  import { onMount } from "svelte";
 
   const { openedProcess, pid, process }: { openedProcess: AppProcess; pid: number; process: ShellRuntime } = $props();
   const { windowTitle, windowIcon } = openedProcess;
   const { userPreferences } = process;
   const { focusedPid } = Stack.renderer!;
+
+  let wndIcon = $state<string>();
+
+  onMount(() => {
+    windowIcon.subscribe((v) => {
+      wndIcon = process.getIconCached(v) || v || process.getIconCached("ComponentIcon");
+    });
+  });
 
   function focus() {
     Stack.renderer?.focusPid(pid);
@@ -26,12 +35,8 @@
   data-contextmenu="taskbar-openedapp"
   use:contextProps={[openedProcess]}
 >
-  <img
-    src={process.getIconCached($windowIcon) || $windowIcon || process.getIconCached("ComponentIcon")}
-    alt=""
-    class="backdrop"
-  />
-  <img src={process.getIconCached($windowIcon) || $windowIcon || process.getIconCached("ComponentIcon")} alt="" />
+  <img src={wndIcon} alt="" class="backdrop" />
+  <img src={wndIcon} alt="" />
   {#if $userPreferences.shell.taskbar.labels}
     <span class="title">{$windowTitle}</span>
   {/if}

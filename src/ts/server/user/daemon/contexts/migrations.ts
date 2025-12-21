@@ -40,26 +40,30 @@ export class MigrationsUserContext extends UserContext {
   }
 
   async updateAppShortcutsDir() {
-    const contents = await Fs.readDir(UserPaths.AppShortcuts);
-    const storage = Daemon!.appStorage()?.buffer();
+    try {
+      const contents = await Fs.readDir(UserPaths.AppShortcuts);
+      const storage = Daemon!.appStorage()?.buffer();
 
-    if (!storage || !contents) return;
+      if (!storage || !contents) return;
 
-    for (const app of storage) {
-      const existing = contents?.files.filter((f) => f.name === `${app.id}.arclnk`)[0];
+      for (const app of storage) {
+        const existing = contents?.files.filter((f) => f.name === `${app.id}.arclnk`)[0];
 
-      if (existing) continue;
+        if (existing) continue;
 
-      Daemon!.shortcuts?.createShortcut(
-        {
-          name: app.id,
-          target: app.id,
-          type: "app",
-          icon: `@app::${app.id}`,
-        },
-        join(UserPaths.AppShortcuts, `${app.id}.arclnk`)
-      );
-      await Sleep(50);
+        Daemon!.shortcuts?.createShortcut(
+          {
+            name: app.id,
+            target: app.id,
+            type: "app",
+            icon: `@app::${app.id}`,
+          },
+          join(UserPaths.AppShortcuts, `${app.id}.arclnk`)
+        );
+        await Sleep(50);
+      }
+    } catch {
+      return;
     }
   }
 

@@ -79,15 +79,19 @@ export class AppRegistrationUserContext extends UserContext {
   }
 
   async getUserApps(): Promise<AppStorage> {
-    if (!Daemon!.preferences()) return [];
+    try {
+      if (!Daemon!.preferences()) return [];
 
-    await Daemon!.migrations!.migrateUserAppsToFs();
+      await Daemon!.migrations!.migrateUserAppsToFs();
 
-    const bulk = Object.fromEntries(
-      Object.entries(await Fs.bulk(UserPaths.AppRepository, "json")).map(([k, v]) => [k.replace(".json", ""), v])
-    );
+      const bulk = Object.fromEntries(
+        Object.entries(await Fs.bulk(UserPaths.AppRepository, "json")).map(([k, v]) => [k.replace(".json", ""), v])
+      );
 
-    return Object.values(bulk) as AppStorage;
+      return Object.values(bulk) as AppStorage;
+    } catch {
+      return [];
+    }
   }
 
   async registerApp(data: InstalledApp) {

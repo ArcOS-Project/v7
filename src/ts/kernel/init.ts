@@ -39,13 +39,6 @@ export class InitProcess extends Process {
 
     SetCurrentStateHandler(state);
 
-    const MobileBlockApp = (await import("$apps/components/mobileblock/MobileBlock")).default;
-    await Stack.spawn(MobileBlockApp.assets.runtime, undefined, "SYSTEM", this.pid, {
-      data: MobileBlockApp,
-      desktop: undefined,
-      id: MobileBlockApp.id,
-    });
-
     await this.initializeTempFs();
     await kernel!.state?.loadState(connected ? "boot" : "serverdown", {}, true);
     __Console__.timeEnd("** Init jumpstart");

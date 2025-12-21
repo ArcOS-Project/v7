@@ -15,6 +15,7 @@ export const ExitActions: Record<string, ExitAction> = {
   logoff: {
     action: (daemon: UserDaemon) => daemon.power!.logoff(),
     alternateAction: (daemon: UserDaemon) => daemon.power!.logoffSafeMode(),
+    alternateCaption: "Safe mode",
     caption: "Log off",
     icon: "LogoutIcon",
   },

@@ -61,6 +61,7 @@ export class AppRendererUserContext extends UserContext {
     renderer.classList.toggle("noglass", v.shell.visuals.noGlass || this.safeMode);
     renderer.classList.toggle("safe-mode", this.safeMode);
     renderer.classList.toggle("traffic-lights", v.shell.visuals.trafficLights);
+    renderer.classList.toggle("hide-altmenus", v.shell.visuals.hideAltmenus);
   }
 
   setUserStyleLoader(style: CustomStylePreferences) {

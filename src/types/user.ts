@@ -96,6 +96,7 @@ export interface TaskbarPreferences {
   clockDate: boolean;
   clock12hr: boolean;
   batteryPercentage: boolean;
+  openedAppsPerWorkspace?: boolean;
 }
 
 export interface DesktopPreferences {
@@ -110,6 +111,7 @@ export interface DesktopPreferences {
 
 export interface StartMenuPreferences {
   noGroups: boolean;
+  actions: string[]
 }
 
 export interface VisualPreferences {
@@ -121,6 +123,7 @@ export interface VisualPreferences {
   userFont?: string;
   trafficLights: boolean;
   blurRadius: number;
+  hideAltmenus?: boolean;
 }
 
 export interface SecurityPreferences {

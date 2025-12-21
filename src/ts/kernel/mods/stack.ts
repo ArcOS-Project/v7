@@ -112,7 +112,7 @@ export class ProcessHandler extends KernelModule {
         appId: proc instanceof AppProcess ? proc.app.id : undefined,
       });
 
-      const store = this.store.get();
+      const store = this.store();
 
       store.set(pid, proc);
 
@@ -185,7 +185,7 @@ export class ProcessHandler extends KernelModule {
 
     if (proc.__stop) await proc.__stop();
 
-    let store = this.store.get();
+    let store = this.store();
 
     proc._disposed = true;
 
@@ -194,7 +194,7 @@ export class ProcessHandler extends KernelModule {
 
     if (this.renderer) await this.renderer.remove(pid);
 
-    store = this.store.get();
+    store = this.store();
     store.delete(pid);
     this.store.set(store);
 
@@ -232,7 +232,7 @@ export class ProcessHandler extends KernelModule {
 
     if (!this.isPid(parentPid)) return result;
 
-    for (const [pid, proc] of this.store.get()) {
+    for (const [pid, proc] of this.store()) {
       if (proc.parentPid != parentPid) continue;
 
       result.set(pid, proc);
@@ -244,7 +244,7 @@ export class ProcessHandler extends KernelModule {
   getProcess<T = Process>(pid: number, disposedToo = false) {
     this.isKmod();
 
-    const proc = this.store.get().get(pid);
+    const proc = this.store().get(pid);
 
     if (!proc) return undefined;
 
@@ -262,7 +262,7 @@ export class ProcessHandler extends KernelModule {
   isPid(pid: number) {
     this.isKmod();
 
-    return this.store.get().has(pid) && !this.store.get().get(pid)?._disposed;
+    return this.store().has(pid) && !this.store().get(pid)?._disposed;
   }
 
   ConnectDispatch(pid: number) {

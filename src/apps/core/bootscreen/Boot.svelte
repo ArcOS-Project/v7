@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Logo } from "$ts/branding";
-  import { ArcOSVersion, BETA, IsMobile } from "$ts/env";
+  import { ArcOSVersion, BETA } from "$ts/env";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
   import type { AppComponentProps } from "$types/app";
@@ -12,7 +12,6 @@
   const { status, progress } = process;
 
   onMount(() => {
-    if ($IsMobile) return;
     process.begin();
   });
 </script>

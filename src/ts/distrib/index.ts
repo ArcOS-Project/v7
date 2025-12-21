@@ -235,8 +235,12 @@ export class DistributionServiceProcess extends BaseService {
     }
   }
 
-  async getInstalledPackageById(id: string): Promise<ArcPackage | undefined> {
+  async getInstalledPackageByAppId(id: string): Promise<ArcPackage | undefined> {
     return (await this.loadInstalledPackageList()).filter((s) => s.appId === id)[0];
+  }
+
+  async getInstalledStoreItemByAppId(id: string): Promise<StoreItem | undefined> {
+    return (await this.loadInstalledStoreItemList()).filter((s) => s.pkg.appId === id)[0];
   }
 
   //#endregion
@@ -253,7 +257,7 @@ export class DistributionServiceProcess extends BaseService {
     if (this.checkBusy("uninstallPackage")) return false;
     this.BUSY = "uninstallPackage";
 
-    const installedPkg = await this.getInstalledPackageById(appId);
+    const installedPkg = await this.getInstalledPackageByAppId(appId);
 
     if (!installedPkg) {
       this.BUSY = "";
