@@ -93,7 +93,7 @@ export class MediaPlayerRuntime extends AppProcess {
       
       if (!v || !window) return;
 
-      window.style.
+      // Merging goes here
     })
 
     this.setSource(__SOURCE__);
