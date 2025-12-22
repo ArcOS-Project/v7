@@ -36,7 +36,7 @@ export class AdvSysSetRuntime extends AppProcess {
     this.setSource(__SOURCE__);
   }
 
-  async start() {
+  async render() {
     if (await this.closeIfSecondInstance()) return false;
 
     this.preferencesBuffer.set(this.userPreferences());

@@ -17,6 +17,7 @@ import { MediaPlayerAccelerators } from "./accelerators";
 import { MediaPlayerAltMenu } from "./altmenu";
 import TrayPopup from "./MediaPlayer/TrayPopup.svelte";
 import type { AudioFileMetadata, MetadataConfiguration, PlayerState } from "./types";
+import { getReadableVibrantColor } from "$ts/color";
 
 export class MediaPlayerRuntime extends AppProcess {
   private readonly METADATA_PATH = join(UserPaths.Configuration, "MediaPlayer", "Metadata.json");
@@ -33,6 +34,7 @@ export class MediaPlayerRuntime extends AppProcess {
   CurrentMediaMetadata = Store<AudioFileMetadata | undefined>();
   CurrentCoverUrl = Store<string | undefined>();
   LoadingMetadata = Store<boolean>(false);
+  mediaSpecificAccentColor = Store<string>("");
 
   override contextMenu: AppContextMenu = {
     player: [
@@ -79,6 +81,20 @@ export class MediaPlayerRuntime extends AppProcess {
         this.getWindow()?.classList.remove("fullscreen");
       }
     });
+
+    this.CurrentCoverUrl.subscribe(async (v) => {
+      if (!v) return this.mediaSpecificAccentColor.set("");
+
+      this.mediaSpecificAccentColor.set(await getReadableVibrantColor(v));
+    });
+
+    this.mediaSpecificAccentColor.subscribe((v) => { 
+      const window = this.getWindow();
+      
+      if (!v || !window) return;
+
+      window.style.
+    })
 
     this.setSource(__SOURCE__);
   }

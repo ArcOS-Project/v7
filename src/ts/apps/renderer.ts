@@ -136,6 +136,7 @@ export class AppRenderer extends Process {
       await process.CrashDetection();
     } catch (e) {
       if (!process._disposed) {
+        process.STATE = "error";
         this.notifyCrash(data, e as Error, process);
       }
 

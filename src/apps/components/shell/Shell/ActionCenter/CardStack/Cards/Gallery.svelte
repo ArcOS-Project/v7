@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
-  import { contextProps } from "$ts/context/actions.svelte";
+  import { contextMenu, contextProps } from "$ts/context/actions.svelte";
   import { Fs } from "$ts/env";
   import { Daemon } from "$ts/server/user/daemon";
   import { UserPaths } from "$ts/server/user/store";
@@ -76,8 +76,21 @@
   class:no-image={noImage}
   class:errored
   class:loading
-  data-contextmenu="actioncenter-gallery-card"
-  use:contextProps={[chooseImage]}
+  use:contextMenu={[
+    [
+      {
+        caption: "Change image...",
+        action: () => chooseImage(),
+        icon: "pencil",
+      },
+      {
+        caption: "Remove image",
+        action: () => ($userPreferences.shell.actionCenter.galleryImage = ""),
+        icon: "x",
+      },
+    ],
+    process,
+  ]}
 >
   {#if !loading}
     {#if noImage}

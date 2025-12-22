@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { __Console__ } from "$ts/console";
 import { Env, Kernel, State, SysDispatch } from "$ts/env";
+import { calculateMemory } from "$ts/util";
 import type { App } from "$types/app";
 import type { ConstructedWaveKernel } from "$types/kernel";
 import type { ProcessContext, ProcessKillResult } from "$types/process";
@@ -9,7 +10,6 @@ import { AppRenderer } from "../../apps/renderer";
 import type { Process } from "../../process/instance";
 import { Store } from "../../writable";
 import { KernelModule } from "../module";
-import { calculateMemory } from "$ts/util";
 
 export class ProcessHandler extends KernelModule {
   private _busy: string = "";
@@ -187,7 +187,7 @@ export class ProcessHandler extends KernelModule {
 
     let store = this.store();
 
-    proc._disposed = true;
+    proc.STATE = "disposed";
 
     store.set(pid, proc);
     this.store.set(store);
@@ -241,14 +241,14 @@ export class ProcessHandler extends KernelModule {
     return result;
   }
 
-  getProcess<T = Process>(pid: number, disposedToo = false) {
+  getProcess<T = Process>(pid: number) {
     this.isKmod();
 
     const proc = this.store().get(pid);
 
     if (!proc) return undefined;
 
-    return proc._disposed && !disposedToo ? undefined : (proc as T);
+    return proc._disposed ? undefined : (proc as T);
   }
 
   getPid() {

@@ -1,5 +1,6 @@
 import { Fs, getKMod } from "$ts/env";
 import { calculateMemory } from "$ts/util";
+import type { ProcessState } from "$types/process";
 import { LogLevel } from "../../types/logging";
 import { Log } from "../logging";
 import { ProcessDispatch } from "./dispatch";
@@ -9,13 +10,17 @@ export class Process {
   public pid: number;
   public parentPid: number;
   public name = "";
-  public _disposed = false;
+  public get _disposed() {
+    return this.STATE === "disposed" || this.STATE === "error";
+  }
+  
   public _criticalProcess = false;
   public sourceUrl: string = "undetermined";
   private fileLocks: string[] = [];
+  public STATE: ProcessState = "unknown";
 
   constructor(pid: number, parentPid?: number, ...args: any[]) {
-    this._disposed = false;
+    this.STATE = "constructing";
     this.pid = pid;
     this.parentPid = parentPid || 0;
     this.name ||= this.constructor.name;
@@ -35,19 +40,25 @@ export class Process {
   }
 
   public async __start(): Promise<any> {
+    this.STATE = "starting";
     this.Log(`STARTING PROCESS`);
 
     if (this.sourceUrl === "undetermined") {
       this.Log(`Source URL of process class not set!`, LogLevel.warning);
     }
 
-    return await this.start();
+    const result = await this.start();
+    this.STATE = "running";
+    return result;
   }
 
   public async __stop(): Promise<any> {
+    this.STATE = "stopping";
     this.Log(`STOPPING PROCESS`);
 
-    return await this.stop();
+    const result = await this.stop();
+    this.STATE = "disposed";
+    return result;
   }
 
   async killSelf() {

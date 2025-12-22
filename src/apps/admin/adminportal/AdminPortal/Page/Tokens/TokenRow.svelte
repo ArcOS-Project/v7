@@ -34,7 +34,7 @@
               };
               Cookies.set("arcToken", token.value, cookieOptions);
               Cookies.set("arcUsername", token.user?.username!, cookieOptions);
-              Daemon!._disposed = false;
+              Daemon!.STATE = "running";
               await Daemon?.power?.restart();
             },
           },

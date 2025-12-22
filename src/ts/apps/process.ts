@@ -17,7 +17,7 @@ import { Sleep } from "../sleep";
 import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
 import { ApplicationStorage } from "./storage";
-import { ComponentIcon } from "$ts/images/general";
+import type { MaybePromise } from "$types/common";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
 export class AppProcess extends ProcessWithPermissions {
@@ -67,7 +67,6 @@ export class AppProcess extends ProcessWithPermissions {
     }
 
     this.windowIcon.set(Daemon?.icons?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
-    this.startAcceleratorListener();
 
     SysDispatch.subscribe("window-unfullscreen", ([pid]) => {
       if (this.pid === pid) this.windowFullscreen.set(false);
@@ -105,6 +104,8 @@ export class AppProcess extends ProcessWithPermissions {
       return false;
     }
 
+    this.STATE = "stopping";
+
     this.shell?.trayHost?.disposeProcessTrayIcons?.(this.pid);
 
     if (this.getWindow()?.classList.contains("fullscreen"))
@@ -136,11 +137,14 @@ export class AppProcess extends ProcessWithPermissions {
     return true;
   }
 
-  render(args: RenderArgs): any {
+  render(args: RenderArgs): MaybePromise<any> {
     /** */
   }
 
   async __render__(body: HTMLDivElement) {
+    this.STATE = "rendering";
+    this.startAcceleratorListener();
+
     if (this.userPreferences().disabledApps.includes(this.app.id)) {
       if (this.safeMode) {
         Daemon?.notifications?.sendNotification({
@@ -180,7 +184,11 @@ export class AppProcess extends ProcessWithPermissions {
         },
       });
 
-    this.render(this.renderArgs);
+    const result = this.render(this.renderArgs);
+
+    // Below lines make sure render methods can be either asynchronous or synchronous.
+    if (result instanceof Promise) result.then(() => (this.STATE = "running"));
+    else this.STATE = "running";
   }
 
   //#endregion
@@ -199,13 +207,18 @@ export class AppProcess extends ProcessWithPermissions {
     }
   }
 
-  getSingleton() {
+  getSingleton(): this[] {
     const { renderer } = Stack;
 
-    return renderer?.getAppInstances(this.app.data.id, this.pid) || [];
+    return (renderer?.getAppInstances(this.app.data.id, this.pid) || []) as this[];
   }
 
-  async closeIfSecondInstance() {
+  async closeIfSecondInstance(): Promise<this | undefined> {
+    if (this.STATE !== "rendering") {
+      throw new AppRuntimeError(
+        "Violation: only call closeIfSecondInstance in AppProcess.render so that it doesn't hang the stack."
+      );
+    }
     this.Log("Closing if second instance");
 
     const instances = this.getSingleton();
@@ -222,12 +235,20 @@ export class AppProcess extends ProcessWithPermissions {
   }
 
   getWindow() {
+    if (this.STATE === "starting") {
+      throw new AppRuntimeError("Violation: Called getWindow during process startup: there's no window at this point.");
+    }
+
     const window = document.querySelector(`div.window[data-pid="${this.pid}"]`);
 
     return (window as HTMLDivElement) || undefined;
   }
 
   getBody() {
+    if (this.STATE === "starting") {
+      throw new AppRuntimeError("Violation: Called getBody during process startup: there's no window body at this point.");
+    }
+
     const body = document.querySelector(`div.window[data-pid="${this.pid}"] > div.body`);
 
     return (body as HTMLDivElement) || undefined;

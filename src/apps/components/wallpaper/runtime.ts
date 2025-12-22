@@ -60,7 +60,7 @@ export class WallpaperRuntime extends AppProcess {
   }
 
   async render() {
-    this.closeIfSecondInstance();
+    if (await this.closeIfSecondInstance()) return false;
 
     try {
       await this.updateContents();

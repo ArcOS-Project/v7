@@ -5,10 +5,11 @@
   import type { Process } from "$ts/process/instance";
   import { Daemon } from "$ts/server/user/daemon";
   import { BaseService } from "$ts/services/base";
+  import { formatBytes } from "$ts/util/fs";
+  import { ProcessStateIcons } from "$types/process";
   import { onDestroy, onMount } from "svelte";
   import type { ProcessManagerRuntime } from "../../runtime";
   import Row from "./Row.svelte";
-  import { formatBytes } from "$ts/util/fs";
 
   const {
     pid,
@@ -113,6 +114,7 @@
     <div class="segment name">
       <img src={icon} alt="" />
       <span>{name}{orphan ? " (orphaned)" : ""}</span>
+      <span class="lucide icon-{ProcessStateIcons[proc.STATE]}"></span>
     </div>
     <div class="segment pid" class:flagged={$focusedPid === proc.pid}>
       <img src={process.getIconCached("FlagIcon")} alt="" class="flag" />

@@ -10,8 +10,10 @@ export class SystemShortcutsRuntime extends AppProcess {
 
     this.setSource(__SOURCE__);
   }
+  
+  //#endregion
 
-  async start() {
+  async render() {
     if (await this.closeIfSecondInstance()) return false;
 
     this.acceleratorStore.push(
@@ -49,8 +51,6 @@ export class SystemShortcutsRuntime extends AppProcess {
       }
     );
   }
-
-  //#endregion
 
   async closeFocused() {
     this.Log("Attempting to close focused window");

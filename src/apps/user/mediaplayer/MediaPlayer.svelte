@@ -6,6 +6,7 @@
   import QueueItem from "./MediaPlayer/QueueItem.svelte";
   import type { MediaPlayerRuntime } from "./runtime";
   import CoverImage from "./MediaPlayer/CoverImage.svelte";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: MediaPlayerRuntime } = $props();
 
@@ -22,7 +23,17 @@
     }, 3000);
   }
 
-  const { isVideo, State, queue, queueIndex, Loaded, windowFullscreen, LoadingMetadata, CurrentCoverUrl } = process;
+  const {
+    isVideo,
+    State,
+    queue,
+    queueIndex,
+    Loaded,
+    windowFullscreen,
+    LoadingMetadata,
+    CurrentCoverUrl,
+    mediaSpecificAccentColor,
+  } = process;
 
   onMount(() => {
     process.setPlayer(audio);
@@ -37,6 +48,7 @@
   data-contextmenu={$queue.length && $Loaded ? "player" : ""}
   class:is-video={$isVideo && $Loaded}
   class:theme-dark={$windowFullscreen}
+  style={$mediaSpecificAccentColor ? Daemon.renderer?.getAppRendererStyle($mediaSpecificAccentColor.replace("#","")) : ""}
 >
   <div class="video-wrapper" class:show={$isVideo}>
     <video bind:this={audio}>
@@ -45,7 +57,10 @@
   </div>
   {#if $State && $queue[$queueIndex]}
     {#if !$isVideo}
-      <div class="audio-visual" style={!$LoadingMetadata && $CurrentCoverUrl ? `--cover-backdrop: url('${$CurrentCoverUrl}')` : ""}>
+      <div
+        class="audio-visual"
+        style={!$LoadingMetadata && $CurrentCoverUrl ? `--cover-backdrop: url('${$CurrentCoverUrl}')` : ""}
+      >
         <CoverImage {process} />
         <File {process} />
       </div>

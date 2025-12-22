@@ -5,24 +5,31 @@ import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import type { TrayIconProcess } from "$ts/ui/tray/process";
 import type { AppContextMenu } from "$types/app";
-import type { Workspace } from "$types/user";
 import type { ShellRuntime } from "./runtime";
 
 export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
   return {
     "shell-taskbar": [
       {
-        caption: "Settings",
-        icon: "settings",
+        caption: "Processes",
+        icon: "activity",
         action: () => {
-          runtime.spawnApp("systemSettings", runtime.pid);
+          runtime.spawnApp("processManager", runtime.pid);
         },
       },
       {
-        caption: "Processes",
-        image: "ProcessManagerIcon",
+        caption: "Services",
+        icon: "hand-helping",
         action: () => {
           runtime.spawnApp("processManager", runtime.pid);
+        },
+      },
+      { sep: true },
+      {
+        caption: "Settings",
+        icon: "settings",
+        action: () => {
+          runtime.spawnApp("systemSettings", runtime.pid, "shell");
         },
       },
     ],
@@ -94,55 +101,6 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
           if (!proc) return;
 
           proc.closeWindow();
-        },
-      },
-    ],
-    "actioncenter-weather-card": [
-      {
-        caption: "Refresh",
-        action: (_, refresh) => {
-          refresh(true);
-        },
-        icon: "rotate-cw",
-      },
-      {
-        caption: "Change location...",
-        icon: "map-pin",
-        action: (changeLocation) => {
-          changeLocation();
-        },
-      },
-    ],
-    "actioncenter-gallery-card": [
-      {
-        caption: "Change image...",
-        action: (chooseImage) => {
-          chooseImage();
-        },
-      },
-      {
-        caption: "Remove image",
-        action: async () => {
-          runtime.userPreferences.update((v) => {
-            v.shell.actionCenter.galleryImage = "";
-
-            return v;
-          });
-        },
-      },
-    ],
-    "workspaces-desktop": [
-      {
-        caption: "Go here",
-        action: (desktop: Workspace) => {
-          Daemon?.workspaces?.switchToDesktopByUuid(desktop.uuid);
-        },
-      },
-      {
-        caption: "Delete workspace",
-        icon: "trash",
-        action: (desktop: Workspace) => {
-          runtime.deleteWorkspace(desktop);
         },
       },
     ],

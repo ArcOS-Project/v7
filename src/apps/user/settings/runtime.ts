@@ -85,7 +85,7 @@ export class SettingsRuntime extends AppProcess {
       dispatch?.dispatch("switch-page", this.currentPage());
       if (this.requestedSlide) dispatch?.dispatch("show-slide", this.requestedSlide);
 
-      return;
+      return false;
     }
 
     this.dispatch.subscribe("switch-page", (page: string) => {

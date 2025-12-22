@@ -33,6 +33,15 @@ export class ProcessManagerRuntime extends AppProcess {
     if (page && this.tabs[page]) this.currentTab.set(page);
   }
 
+  async render() {
+    const existingInstance = await this.closeIfSecondInstance();
+
+    if (existingInstance) {
+      existingInstance.currentTab.set(this.currentTab());
+      return false;
+    }
+  }
+
   //#endregion
 
   async kill(proc: Process) {

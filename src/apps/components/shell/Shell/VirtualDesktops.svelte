@@ -1,6 +1,6 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
-  import { contextProps } from "$ts/context/actions.svelte";
+  import { contextMenu, contextProps } from "$ts/context/actions.svelte";
   import { Stack } from "$ts/env";
   import { Daemon } from "$ts/server/user/daemon";
   import { Wallpapers } from "$ts/wallpaper/store";
@@ -54,8 +54,24 @@
           style="--wallpaper: url('{$Wallpaper ? $Wallpaper.url : Wallpapers.img0.url}');"
           onclick={() => ($userPreferences.workspaces.index = i)}
           class:selected={$userPreferences.workspaces.index === i}
-          data-contextmenu="workspaces-desktop"
-          use:contextProps={[desktop]}
+          use:contextMenu={[
+            [
+              {
+                caption: "Go here",
+                action: () => {
+                  Daemon?.workspaces?.switchToDesktopByUuid(desktop.uuid);
+                },
+                icon: "arrow-right",
+              },
+              {
+                caption: "Delete workspace",
+                action: () => {
+                  process.deleteWorkspace(desktop);
+                },
+              },
+            ],
+            process,
+          ]}
         >
           <div class="number">{i + 1}</div>
           <div class="bottom">
