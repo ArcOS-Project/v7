@@ -1,4 +1,4 @@
-import { Env, LiteralFs, SysDispatch } from "$ts/env";
+import { Env, Fs, SysDispatch } from "$ts/env";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
@@ -30,7 +30,7 @@ export class TrashCanService extends BaseService {
   //#endregion
 
   async readIndex(): Promise<Record<string, TrashIndexNode>> {
-    const content = await LiteralFs.readFile(this.INDEX_PATH);
+    const content = await Fs.readFile(this.INDEX_PATH);
 
     if (!content) return await this.writeIndex({});
 
@@ -44,14 +44,14 @@ export class TrashCanService extends BaseService {
   }
 
   async writeIndex(index: Record<string, TrashIndexNode>) {
-    await LiteralFs.writeFile(this.INDEX_PATH, textToBlob(JSON.stringify(index, null, 2)));
+    await Fs.writeFile(this.INDEX_PATH, textToBlob(JSON.stringify(index, null, 2)));
 
     return index;
   }
 
   async moveToTrash(path: string, dispatch = false): Promise<TrashIndexNode | undefined> {
     if (Daemon?.preferences().globalSettings.disableTrashCan) {
-      await LiteralFs.deleteItem(path);
+      await Fs.deleteItem(path);
       return undefined;
     }
 
@@ -64,7 +64,7 @@ export class TrashCanService extends BaseService {
       return undefined;
 
     const uuid = UUID();
-    const isDir = await LiteralFs.isDirectory(path);
+    const isDir = await Fs.isDirectory(path);
     const name = getItemNameFromPath(path);
     const deletedPath = join(UserPaths.Trashcan, uuid);
     const icon = isDir ? "FolderIcon" : Daemon?.assoc?.getUnresolvedAssociationIcon(name) || "DefaultMimeIcon";
@@ -76,7 +76,7 @@ export class TrashCanService extends BaseService {
       timestamp: Date.now(),
     };
 
-    await LiteralFs.createDirectory(deletedPath, false);
+    await Fs.createDirectory(deletedPath, false);
 
     this.IndexBuffer.update((v) => {
       v[uuid] = node;
@@ -84,7 +84,7 @@ export class TrashCanService extends BaseService {
       return v;
     });
 
-    await LiteralFs.moveItem(path, `${deletedPath}/${name}`, dispatch);
+    await Fs.moveItem(path, `${deletedPath}/${name}`, dispatch);
 
     SysDispatch.dispatch("fs-flush-folder", getParentDirectory(path));
 
@@ -96,7 +96,7 @@ export class TrashCanService extends BaseService {
 
     if (!index) return false;
 
-    await LiteralFs.moveItem(index.deletedPath, index.originalPath, false);
+    await Fs.moveItem(index.deletedPath, index.originalPath, false);
 
     SysDispatch.dispatch("fs-flush-folder", getParentDirectory(index.originalPath));
 
@@ -105,7 +105,7 @@ export class TrashCanService extends BaseService {
       return v;
     });
 
-    await LiteralFs.deleteItem(join(UserPaths.Trashcan, uuid), false);
+    await Fs.deleteItem(join(UserPaths.Trashcan, uuid), false);
 
     return true;
   }
@@ -119,7 +119,7 @@ export class TrashCanService extends BaseService {
 
     if (!index) return false;
 
-    await LiteralFs.deleteItem(join(UserPaths.Trashcan, uuid));
+    await Fs.deleteItem(join(UserPaths.Trashcan, uuid));
 
     this.IndexBuffer.update((v) => {
       delete v[uuid];
@@ -144,7 +144,7 @@ export class TrashCanService extends BaseService {
     prog.show();
 
     for (const uuid in buffer) {
-      await LiteralFs.deleteItem(join(UserPaths.Trashcan, uuid));
+      await Fs.deleteItem(join(UserPaths.Trashcan, uuid));
       prog.mutDone(+1);
     }
 

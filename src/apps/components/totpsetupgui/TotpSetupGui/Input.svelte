@@ -18,7 +18,9 @@
   }
 
   onMount(() => {
-    els[0]?.focus();
+    setTimeout(() => {
+      els[0]?.focus();
+    }, 200);
   });
 
   function handleMoveAndBackspace(e) {

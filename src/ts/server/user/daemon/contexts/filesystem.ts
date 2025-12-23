@@ -11,7 +11,6 @@ import type { MemoryFilesystemDrive } from "$ts/drives/temp";
 import { ZIPDrive } from "$ts/drives/zipdrive";
 import { Env, Fs, Stack, SysDispatch } from "$ts/env";
 import { applyDefaults } from "$ts/hierarchy";
-import { Sleep } from "$ts/sleep";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
@@ -22,6 +21,7 @@ import type { ArcShortcut } from "$types/shortcut";
 import type { CategorizedDiskUsage } from "$types/user";
 import { Daemon, type UserDaemon } from "..";
 import { DefaultFileHandlers, UserPaths } from "../../store";
+import { TrashCanService } from "../../trash";
 import { UserContext } from "../context";
 
 export class FilesystemUserContext extends UserContext {
@@ -275,7 +275,6 @@ export class FilesystemUserContext extends UserContext {
 
       progress.mutDone(+1);
 
-      await Sleep(200); // prevent rate limit
       childProgress.stop();
     }
     progress.stop();
@@ -331,7 +330,6 @@ export class FilesystemUserContext extends UserContext {
 
       progress.mutDone(+1);
 
-      await Sleep(200); // prevent rate limit
       childProgress.stop();
     }
     progress.stop();
@@ -523,5 +521,45 @@ export class FilesystemUserContext extends UserContext {
       undefined,
       connectionInfo
     );
+  }
+
+  /**
+   * Deletes the specified item WITH SUPPORT FOR RECYCLING
+   * @param path The file or folder to delete
+   * @param dispatch Whether or not to trigger fs-flush
+   */
+  async moveToTrashOrDeleteItem(path: string, dispatch = false): Promise<boolean> {
+    const trashSvc = Daemon.serviceHost?.getService<TrashCanService>("TrashSvc");
+
+    if (path.startsWith("U:/") && trashSvc) {
+      return !!(await trashSvc.moveToTrash(path, dispatch));
+    }
+
+    return await Fs.deleteItem(path, dispatch);
+  }
+
+  normalizePath(path: string) {
+    const driveMatch = /^[A-Za-z]:/.exec(path);
+    const guidMatch = /^[0-9A-F]{4}(?:-[0-9A-F]{4}){3}/.exec(path);
+    const prefix = driveMatch ? driveMatch[0] : guidMatch ? guidMatch[0] : "";
+
+    let rest = path.slice(prefix.length);
+
+    const hasLeading = rest.startsWith("/");
+
+    const parts = rest.split("/").filter(Boolean);
+    const stack = [];
+
+    for (const p of parts) {
+      if (p === ".") continue;
+      if (p === "..") {
+        if (stack.length) stack.pop();
+        continue;
+      }
+      stack.push(p);
+    }
+
+    const result = prefix + (hasLeading ? "/" : "") + stack.join("/");
+    return result || prefix || ".";
   }
 }

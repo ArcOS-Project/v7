@@ -43,27 +43,7 @@ export function SetCurrentStateHandler(state: StateHandler) {
 
 export function SetKernelExports() {
   LiteralFs = getKMod<FilesystemType>("fs");
-  Fs = new Proxy(LiteralFs, {
-    get: (target, prop, receiver) => {
-      // recycle bin interceptor
-      if (prop === "deleteItem" && typeof target[prop] === "function") {
-        return async (path: string, dispatch?: boolean) => {
-          if (!path.startsWith("U:/")) {
-            return await target[prop].call(Fs, path, dispatch);
-          }
-
-          const daemon = TryGetDaemon();
-          const trash = daemon?.serviceHost?.getService("TrashSvc") as TrashCanService;
-          const disableTrash = daemon?.preferences().globalSettings.disableTrashCan;
-
-          if (!trash || disableTrash) return await target[prop].call(Fs, path, dispatch);
-
-          return await trash.moveToTrash(path, dispatch);
-        };
-      }
-      return Reflect.get(target, prop, receiver);
-    },
-  });
+  Fs = LiteralFs; // TODO: remove LiteralFs export and resort to Fs only
 
   Env = getKMod<EnvironmentType>("env");
   Stack = getKMod<ProcessHandlerType>("stack");

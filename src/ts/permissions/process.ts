@@ -1,9 +1,9 @@
 /**
  * ProcessWithPermissions
- * 
+ *
  * This base class adds the permission-guarded class properties like the daemon contexts.
  * This class is to be applied to any designation by method of mixins or direct inheritance.
- * 
+ *
  * © IzKuipers 2025
  */
 
@@ -105,6 +105,10 @@ export class ProcessWithPermissions extends Process {
 
   get appRenderer() {
     return Permissions?.hasPermissionExplicit(this, "PERMISSION_APPRENDERER", Stack.renderer);
+  }
+
+  get fs() {
+    return Permissions.getOrCreatePermissionedFilesystemInteractor(this);
   }
 
   //#endregion

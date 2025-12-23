@@ -87,11 +87,6 @@ export class ThirdPartyAppProcess extends AppProcess {
       }
 
       this.mutationLock = false;
-      SysDispatch.dispatch("tpa-spawn-done", [this.operationId]);
-
-      await Sleep(1000); // 1s to give invocator's GLI the time it needs
-      
-      Stack.renderer?.focusPid(this.pid);
     };
 
     const observer = new MutationObserver(async (mutations) => {
@@ -105,6 +100,12 @@ export class ThirdPartyAppProcess extends AppProcess {
     observer.observe(body, { childList: true, subtree: true, attributes: true });
     await this.render(this.renderArgs);
     await processElements(body);
+
+    SysDispatch.dispatch("tpa-spawn-done", [this.operationId]);
+
+    await Sleep(1000); // 1s to give invocator's GLI the time it needs
+
+    Stack.renderer?.focusPid(this.pid);
   }
 
   //#endregion

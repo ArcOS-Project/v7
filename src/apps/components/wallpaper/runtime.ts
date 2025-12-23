@@ -201,7 +201,7 @@ export class WallpaperRuntime extends AppProcess {
             caption: "Delete",
             action: () => {
               try {
-                Fs.deleteItem(path, true);
+                Daemon.files?.moveToTrashOrDeleteItem(path, true);
               } catch {}
             },
             suggested: true,

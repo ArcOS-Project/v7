@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { Fs } from "$ts/env";
+import { Fs, USERFS_UUID } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { Process } from "$ts/process/instance";
 import { Daemon } from "$ts/server/user/daemon";
@@ -10,6 +10,7 @@ import { Store } from "$ts/writable";
 import { ElevationLevel } from "$types/elevation";
 import type { PermissionStorage, SudoPermissions } from "$types/permission";
 import { sha256 } from "js-sha256";
+import { PermissionedFilesystemInteractor } from "./filesystem";
 import {
   DefaultPermissionStorage,
   PERMISSION_ERRORS,
@@ -29,6 +30,7 @@ export class PermissionHandler extends Process {
   private SudoConfiguration = Store<SudoPermissions>({});
   private FirstSubDone = false;
   private configurationWriteTimeout?: NodeJS.Timeout;
+  #permissionedFilesystemInteractors: Record<string, PermissionedFilesystemInteractor> = {};
 
   get #PERMISSION_EXPIRY_DYN() {
     return Date.now() + this.#PERMISSION_EXPIRY;
@@ -192,6 +194,45 @@ export class PermissionHandler extends Process {
     if (!this.hasPermission(process, permission)) this.throwError("PERMERR_NOT_GRANTED", id, permission);
 
     return returnValue;
+  }
+
+  getOrCreatePermissionedFilesystemInteractor(process: Process) {
+    const id = this.getPermissionId(process);
+
+    if (!this.hasPermission(process, "PERMISSION_FS_READ")) this.throwError("PERMERR_DENIED", id, "PERMISSION_FS_READ");
+
+    if (!this.#permissionedFilesystemInteractors[id])
+      this.#permissionedFilesystemInteractors[id] = new PermissionedFilesystemInteractor(process);
+
+    return this.#permissionedFilesystemInteractors[id];
+  }
+
+  hasReadPermissionForPathExplicit(process: Process, path: string) {
+    path = Daemon.files?.normalizePath(path)!;
+    if (path === "U:/System/Permissions.json") Permissions.throwError("PERMERR_DENIED");
+
+    Permissions.hasPermissionExplicit(process, "PERMISSION_FS_READ");
+
+    if (!path.startsWith("U:/") && !path.startsWith(`${USERFS_UUID}:/`))
+      Permissions.hasPermissionExplicit(process, "PERMISSION_FS_READ_EXTERNAL");
+    if (path.startsWith("U:/Applications")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_READ_APPLICATIONS");
+    if (path.startsWith("U:/Home")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_READ_USER");
+    if (path.startsWith("U:/System/Config")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_READ_CONFIG");
+    if (path.startsWith("U:/System")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_READ_SYSTEM");
+  }
+
+  hasWritePermissionForPathExplicit(process: Process, path: string) {
+    path = Daemon.files?.normalizePath(path)!;
+    if (path === "U:/System/Permissions.json") Permissions.throwError("PERMERR_DENIED");
+
+    Permissions.hasPermissionExplicit(process, "PERMISSION_FS_WRITE");
+
+    if (!path.startsWith("U:/") && !path.startsWith(`${USERFS_UUID}:/`))
+      Permissions.hasPermissionExplicit(process, "PERMISSION_FS_WRITE_EXTERNAL");
+    if (path.startsWith("U:/Applications")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_WRITE_APPLICATIONS");
+    if (path.startsWith("U:/Home")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_WRITE_USER");
+    if (path.startsWith("U:/System/Config")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_WRITE_CONFIG");
+    if (path.startsWith("U:/System")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_WRITE_SYSTEM");
   }
 
   //#endregion
