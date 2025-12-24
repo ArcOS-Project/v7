@@ -7,6 +7,7 @@ import {
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import { MessageBox } from "$ts/dialog";
 import { LegacyServerDrive } from "$ts/drives/legacy";
+import { LocalFilesystemDrive } from "$ts/drives/localfs";
 import type { MemoryFilesystemDrive } from "$ts/drives/temp";
 import { ZIPDrive } from "$ts/drives/zipdrive";
 import { Env, Fs, Stack, SysDispatch } from "$ts/env";
@@ -520,6 +521,32 @@ export class FilesystemUserContext extends UserContext {
       undefined,
       undefined,
       connectionInfo
+    );
+  }
+
+  async mountLocalFilesystem() {
+    if (!("showDirectoryPicker" in window)) return;
+
+    let handle: FileSystemDirectoryHandle | undefined;
+
+    try {
+      handle = await (window.showDirectoryPicker as any)({
+        id: "arcos",
+        mode: "readwrite",
+        startIn: "desktop",
+      });
+    } catch (e) {
+      if ((e as any).name === "AbortError") {
+      } else throw e;
+    }
+
+    if (!handle) return;
+    return await Fs.mountDrive<LocalFilesystemDrive>(
+      btoa(`${handle.name}`), // fixme: use something better as id
+      LocalFilesystemDrive,
+      undefined,
+      undefined,
+      handle
     );
   }
 
