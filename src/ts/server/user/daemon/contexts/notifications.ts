@@ -1,4 +1,5 @@
 import { SysDispatch } from "$ts/env";
+import type { IconService } from "$ts/icon";
 import type { Notification } from "$types/notification";
 import type { UserDaemon } from "..";
 import { UserContext } from "../context";
@@ -22,6 +23,27 @@ export class NotificationsUserContext extends UserContext {
     this.notifications.set(id, data);
     SysDispatch.dispatch("update-notifications", [this.notifications]);
     SysDispatch.dispatch("send-notification", [data]);
+
+    if (!document.hasFocus()) {
+      Notification.requestPermission().then((perm) => {
+        if (perm !== "granted") return;
+
+        // there's probably a better way to do this rather than inserting a CDN link
+        const icon = data.icon ? `https://unpkg.com/lucide-static@latest/icons/${data.icon}.svg` : undefined;
+        const image = data.image
+          ? this.serviceHost?.getService<IconService>("IconService")?.getIconCached(data.image) || data.image
+          : icon;
+
+        const notif = new Notification(data.title, { body: data.message, icon: image, requireInteraction: true });
+        notif.onclose = () => this.deleteNotification(id);
+        notif.onclick = () => {
+          window.focus();
+          this.deleteNotification(id);
+        };
+
+        if (data.timeout) setTimeout(() => notif.close(), data.timeout);
+      });
+    }
 
     return id;
   }
