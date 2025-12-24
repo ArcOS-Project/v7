@@ -14,14 +14,14 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         caption: "Processes",
         icon: "activity",
         action: () => {
-          runtime.spawnApp("processManager", runtime.pid);
+          runtime.spawnApp("processManager", runtime.pid, "Processes");
         },
       },
       {
         caption: "Services",
         icon: "hand-helping",
         action: () => {
-          runtime.spawnApp("processManager", runtime.pid);
+          runtime.spawnApp("processManager", runtime.pid, "Services");
         },
       },
       { sep: true },
