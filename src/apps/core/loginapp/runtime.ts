@@ -8,7 +8,7 @@ import { tryJsonParse } from "$ts/json";
 import { ProtocolServiceProcess } from "$ts/proto";
 import { Backend } from "$ts/server/axios";
 import { LoginUser } from "$ts/server/user/auth";
-import { UserDaemon } from "$ts/server/user/daemon";
+import { Daemon, UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import { authcode } from "$ts/util";
 import { UUID } from "$ts/uuid";
@@ -22,6 +22,7 @@ import Cookies from "js-cookie";
 import { AppProcess } from "../../../ts/apps/process";
 import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps, PersistenceInfo } from "./types";
+import { MigrationService } from "../../../migrations";
 
 export class LoginAppRuntime extends AppProcess {
   public DEFAULT_WALLPAPER = Store<string>("");
@@ -222,16 +223,16 @@ export class LoginAppRuntime extends AppProcess {
 
     broadcast("Starting service host");
     await userDaemon.init?.startServiceHost(async (serviceStep) => {
-      if (serviceStep.id === "AppStorage") {
-        broadcast("Loading apps");
-        await userDaemon.appreg!.initAppStorage(userDaemon.appStorage()!, (app) => broadcast(`Loaded ${app.metadata.name}`));
-      } else {
-        broadcast(`Started ${serviceStep.name}`);
+      switch (serviceStep.id) {
+        case "AppStorage":
+          broadcast("Loading apps");
+          await userDaemon.appreg!.initAppStorage(userDaemon.appStorage()!, (app) => broadcast(`Loaded ${app.metadata.name}`));
+          break;
+        default:
+          broadcast(`Started ${serviceStep.name}`);
+          break;
       }
     });
-
-    broadcast("Checking associations");
-    await userDaemon.migrations!.updateFileAssociations();
 
     broadcast("Connecting global dispatch");
     await userDaemon.activateGlobalDispatch();
@@ -249,6 +250,9 @@ export class LoginAppRuntime extends AppProcess {
 
     broadcast("Starting share management");
     await userDaemon.init!.startShareManager();
+
+    broadcast("Running migrations");
+    console.log(await userDaemon.serviceHost?.getService<MigrationService>("MigrationSvc")?.runMigrations(broadcast));
 
     const storage = userDaemon.appStorage();
 

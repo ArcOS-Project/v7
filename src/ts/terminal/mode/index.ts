@@ -154,9 +154,6 @@ export class TerminalMode extends Process {
         }
       });
 
-      this.rl?.println(`${CURUP}${CLRROW}Checking associations`);
-      await userDaemon.migrations!.updateFileAssociations();
-
       this.rl?.println(`${CURUP}${CLRROW}Connecting global dispatch`);
       await userDaemon.activateGlobalDispatch();
 

@@ -18,7 +18,6 @@ export class UpdateNotifierRuntime extends AppProcess {
     const { stop } = await Daemon!.helpers!.GlobalLoadIndicator("Just a moment...", this.pid);
 
     await Daemon?.version?.updateRegisteredVersion();
-    await this.updateFileDefinitions();
 
     stop();
 
@@ -27,8 +26,4 @@ export class UpdateNotifierRuntime extends AppProcess {
   }
 
   //#endregion
-
-  async updateFileDefinitions() {
-    Daemon?.migrations?.updateFileAssociations();
-  }
 }
