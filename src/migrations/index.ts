@@ -11,12 +11,13 @@ import type { MigrationResultCollection, MigrationStatusCallback } from "$types/
 import type { Service } from "$types/service";
 import type { MigrationNode } from "./node";
 import { FileAssociationsMigration } from "./nodes/FileAssociations";
+import { IconConfigurationMigration } from "./nodes/IconConfiguration";
 
 export class MigrationService extends BaseService {
   private Configuration = Store<Record<string, number>>({});
   private CONFIG_PATH = join(UserPaths.Migrations, "Index.json");
 
-  private MIGRATIONS: (typeof MigrationNode)[] = [FileAssociationsMigration];
+  private MIGRATIONS: (typeof MigrationNode)[] = [FileAssociationsMigration, IconConfigurationMigration];
 
   public get Config() {
     return this.Configuration();

@@ -2,10 +2,14 @@ import { Log } from "$ts/logging";
 import type { LogLevel } from "$types/logging";
 import type { MigrationResult, MigrationStatusCallback } from "$types/migrations";
 import { MigrationNode } from "./node";
+import packageJson from "../../package.json";
 
 export class MigrationVersion {
-  public static version = 0;
-  public static migrationName = "Unknown";
+  public static version = packageJson.version
+    .split(".")
+    .splice(1, 2)
+    .map(Number)
+    .reduce((p, v, i) => p + (i == 1 ? v / 10 : v));
 
   protected migration: MigrationNode;
   protected self: typeof MigrationVersion;

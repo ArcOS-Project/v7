@@ -1,6 +1,6 @@
 import { Log } from "$ts/logging";
 import { LogLevel } from "$types/logging";
-import type { MigrationResult, MigrationResultCollection, MigrationStatusCallback } from "$types/migrations";
+import type { MigrationResultCollection, MigrationStatusCallback } from "$types/migrations";
 import type { MigrationService } from ".";
 import { MigrationVersion } from "./version";
 
@@ -9,10 +9,10 @@ export class MigrationNode {
   public static friendlyName = "Unknown Migration";
   public static inversional = false;
   public static deprecated = false;
-  public static version = 0; // float
+  public static version = MigrationVersion.version; // float, defaults to ArcOS version (more or less)
+  public svc: MigrationService;
 
   protected self: typeof MigrationNode;
-  protected svc: MigrationService;
   protected versions: Record<number, typeof MigrationVersion> = {
     0: MigrationVersion,
   };
@@ -51,10 +51,11 @@ export class MigrationNode {
     }
 
     for (let i = installedVersion; i <= currentVersion; i += 0.1) {
-      const version = this.versions[i];
+      const idx = +i.toFixed(1);
+      const version = this.versions[idx];
 
       if (!version) {
-        this.Log(`Skipping migration version ${i}: no migration exists for this version`);
+        this.Log(`Skipping migration version ${idx}: no migration exists for this version`);
         continue;
       }
 

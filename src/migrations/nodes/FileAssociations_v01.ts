@@ -1,30 +1,28 @@
 import type { ApplicationStorage } from "$ts/apps/storage";
+import { FileAssocService } from "$ts/server/user/assoc";
 import { DefaultFileDefinitions } from "$ts/server/user/assoc/store";
-import { Daemon } from "$ts/server/user/daemon";
 import type { MigrationResult, MigrationStatusCallback } from "$types/migrations";
 import type { MigrationNode } from "../node";
 import { MigrationVersion } from "../version";
 
 export class FileAssociationsMigrationV01 extends MigrationVersion {
-  static override version = 0.1;
-  static override migrationName: string = "FileAssociationsMigration";
-
   constructor(migration: MigrationNode, self: typeof FileAssociationsMigrationV01) {
     super(migration, self);
   }
 
   async runMigration(cb?: MigrationStatusCallback): Promise<MigrationResult> {
-    const appStore = Daemon.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const appStore = this.migration.svc.host.getService<ApplicationStorage>("AppStorage");
+    const assoc = this.migration.svc.host.getService<FileAssocService>("FileAssocSvc")
     const apps = await appStore?.get();
 
     if (!apps) return { result: "err_noop", sucessMessage: "Nothing to do." };
 
-    Daemon!.assoc?.updateConfiguration((config) => {
+    assoc?.updateConfiguration((config) => {
       for (const app of apps) {
         if (!app.opens?.extensions) continue;
 
         for (const extension of app.opens.extensions) {
-          const existingAssociation = Daemon!.assoc?.getFileAssociation(`dummy${extension}`);
+          const existingAssociation = assoc?.getFileAssociation(`dummy${extension}`);
 
           // BUG: addition of `?.handledBy?.app` fixes existing assoc check
           if (existingAssociation?.handledBy?.app) continue;

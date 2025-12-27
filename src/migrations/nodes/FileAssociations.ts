@@ -6,7 +6,6 @@ import { FileAssociationsMigrationV01 } from "./FileAssociations_v01";
 export class FileAssociationsMigration extends MigrationNode {
   static override name = "FileAssociationsMig";
   static override friendlyName = "File associations migration";
-  static override version = 0.1;
 
   protected override versions: Record<number, typeof MigrationVersion> = {
     [this.self.version]: FileAssociationsMigrationV01,
