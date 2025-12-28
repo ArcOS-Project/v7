@@ -83,35 +83,4 @@ export class MigrationsUserContext extends UserContext {
       return v;
     });
   }
-
-  async updateFileAssociations() {
-    const appStore = this.serviceHost?.getService<ApplicationStorage>("AppStorage");
-    const apps = await appStore?.get();
-
-    if (!apps) return;
-
-    Daemon!.assoc?.updateConfiguration((config) => {
-      for (const app of apps) {
-        if (!app.opens?.extensions) continue;
-
-        for (const extension of app.opens.extensions) {
-          const existingAssociation = Daemon!.assoc?.getFileAssociation(`dummy${extension}`);
-
-          // BUG: addition of `?.handledBy?.app` fixes existing assoc check
-          if (existingAssociation?.handledBy?.app) continue;
-
-          config.associations.apps[app.id] ||= [];
-          config.associations.apps[app.id].push(extension);
-        }
-      }
-
-      for (const definitionKey in DefaultFileDefinitions) {
-        const definitionValue = DefaultFileDefinitions[definitionKey];
-
-        if (!config.definitions[definitionKey]) config.definitions[definitionKey] = definitionValue;
-      }
-
-      return config;
-    });
-  }
 }
