@@ -23,6 +23,8 @@ export class MigrationService extends BaseService {
     return this.Configuration();
   }
 
+  //#region LIFECYCLE
+
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(pid, parentPid, name, host);
 
@@ -39,6 +41,8 @@ export class MigrationService extends BaseService {
       this.writeConfiguration(v);
     });
   }
+
+  //#endregion
 
   async runMigrations(cb?: MigrationStatusCallback): Promise<Record<string, MigrationResultCollection>> {
     this.Log("runMigrations: now running versional migrations");
