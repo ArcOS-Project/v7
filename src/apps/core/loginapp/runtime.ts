@@ -252,7 +252,7 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.init!.startShareManager();
 
     broadcast("Running migrations");
-    console.log(await userDaemon.serviceHost?.getService<MigrationService>("MigrationSvc")?.runMigrations(broadcast));
+    await userDaemon.serviceHost?.getService<MigrationService>("MigrationSvc")?.runMigrations(broadcast);
 
     const storage = userDaemon.appStorage();
 
