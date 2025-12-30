@@ -57,7 +57,7 @@
     <p class="message-body markdown-body">
       <SvelteMarkdown source={$message.body} />
     </p>
-    {#if $message.repliesTo}
+    {#if $message.repliesTo && thread?.length}
       {#each thread as threadMessage (threadMessage._id)}
         <MessageThread message={threadMessage} {process} originalMessageId={$message._id} />
       {/each}
