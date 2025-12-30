@@ -139,7 +139,9 @@ export class MessagingInterface extends BaseService {
     if (this._disposed) return;
 
     try {
-      const response = await Backend.get(`/messaging/read/${messageId}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await Backend.get(`/messaging/read/${messageId}`, {
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
+      });
 
       const data = response.data as ExpandedMessage;
 
@@ -183,7 +185,10 @@ export class MessagingInterface extends BaseService {
     const url = messageId ? `/messaging/thread/${messageId}` : `/messaging/thread`;
 
     try {
-      const response = await Backend.get(url, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await Backend.get(url, {
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
+        params: { reverse: true },
+      });
 
       return response.data as MessageNode[];
     } catch {

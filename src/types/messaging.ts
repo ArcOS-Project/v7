@@ -25,6 +25,7 @@ export interface MessageCreateData {
 
 export interface MessageNode extends Message {
   replies: MessageNode[];
+  attachmentCount: number;
 }
 
 export interface PartialMessage {
@@ -39,6 +40,7 @@ export interface PartialMessage {
   author?: PublicUserInfo;
   correlationId: string;
   read: boolean;
+  parent?: PartialMessage;
 }
 
 export type ExpandedMessage = Omit<Message, "attachments"> & {

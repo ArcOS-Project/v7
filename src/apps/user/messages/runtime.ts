@@ -73,9 +73,11 @@ export class MessagingAppRuntime extends AppProcess {
     if (this.messageWindow) return [];
 
     const received = await this.service.getReceivedMessages();
+    const replyStr = received.map((r) => r.repliesTo).filter(Boolean).join("//");
+    const lastMessages = received.filter((m) => !replyStr.includes(m._id));
     const archived = this.getArchiveState();
 
-    return received.filter((m) => !archived.includes(m._id));
+    return lastMessages.filter((m) => !archived.includes(m._id));
   }
 
   async getSent() {
@@ -370,15 +372,12 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   replyTo(message: ExpandedMessage) {
-    const originalDate = dayjs(message.createdAt).format("ddd, D MMM YYYY [at] HH:mm");
     this.spawnOverlayApp(
       "MessageComposer",
       this.pid,
       {
         title: message.title.startsWith("Re: ") ? message.title : `Re: ${message.title}`,
-        body: `\n\n------\n\nOn ${originalDate}, ${
-          message.author?.displayName || message.author?.username || "unknown user"
-        } wrote:\n\n${message.body}`,
+        body: "",
         recipients: [message.author!.username],
         attachments: [],
       },

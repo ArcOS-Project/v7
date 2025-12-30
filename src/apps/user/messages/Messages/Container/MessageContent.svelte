@@ -3,11 +3,13 @@
   import UserLink from "$lib/UserLink.svelte";
   import { ProfilePictures } from "$ts/images/pfp";
   import { Daemon } from "$ts/server/user/daemon";
+  import { type MessageNode } from "$types/messaging";
   import type { PublicUserInfo } from "$types/user";
   import dayjs from "dayjs";
   import { onMount } from "svelte";
   import SvelteMarkdown from "svelte-markdown";
   import type { MessagingAppRuntime } from "../../runtime";
+  import MessageThread from "./MessageThread.svelte";
 
   const { process }: { process: MessagingAppRuntime } = $props();
   const { message } = process;
@@ -16,6 +18,7 @@
 
   let user = $state<PublicUserInfo>();
   let date = $state<string>();
+  let thread = $state<MessageNode[]>();
 
   onMount(async () => {
     if (!$message) return;
@@ -26,6 +29,7 @@
       admin: false,
       dispatchClients: 0,
     };
+    thread = await process.service.getMessageThread($message?._id!);
     date = dayjs($message?.createdAt).format("D MMMM YYYY, hh:mm A");
   });
 </script>
@@ -53,5 +57,10 @@
     <p class="message-body markdown-body">
       <SvelteMarkdown source={$message.body} />
     </p>
+    {#if $message.repliesTo}
+      {#each thread as threadMessage (threadMessage._id)}
+        <MessageThread message={threadMessage} {process} originalMessageId={$message._id} />
+      {/each}
+    {/if}
   {/if}
 </div>
