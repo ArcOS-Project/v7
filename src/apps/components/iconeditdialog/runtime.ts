@@ -21,7 +21,9 @@ export class IconEditDialogRuntime extends AppProcess {
   }
 
   async start() {
-    if (!this.store || !this.id || !this.store()[this.id]) return false;
+    if (!this.store || !this.id) return false;
+
+    if (!this.store()[this.id]) this.id = "@builtin::ComponentIcon";
 
     const icon = this.store()[this.id].split("::");
 
