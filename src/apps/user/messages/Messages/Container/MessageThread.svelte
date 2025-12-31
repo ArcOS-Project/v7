@@ -16,7 +16,7 @@
 </script>
 
 <div class="message-thread">
-  <button class="thread-item">
+  <button class="thread-item" onclick={() => process.readMessage(message._id, true)}>
     <Header {process} {message}></Header>
     <p>{message.body}</p>
   </button>
