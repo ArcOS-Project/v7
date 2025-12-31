@@ -23,7 +23,7 @@ export class IconEditDialogRuntime extends AppProcess {
   async start() {
     if (!this.store || !this.id) return false;
 
-    if (!this.store()[this.id]) this.id = "@builtin::ComponentIcon";
+    if (!this.store()[this.id]) this.id = this.id.includes("::") ? this.id.split("::")[1] : this.id;
 
     const icon = this.store()[this.id].split("::");
 
@@ -53,6 +53,8 @@ export class IconEditDialogRuntime extends AppProcess {
       v[this.id!] = `${this.type()}::${this.values()[this.type()]}`;
       return v;
     });
+    console.log(`${this.type()}::${this.values()[this.type()]}`);
+
     this.closeWindow();
   }
 }
