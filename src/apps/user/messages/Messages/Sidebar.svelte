@@ -4,7 +4,6 @@
   import Pages from "./Sidebar/Pages.svelte";
 
   const { process }: { process: MessagingAppRuntime } = $props();
-  const { buffer } = process;
 </script>
 
 <div class="sidebar">

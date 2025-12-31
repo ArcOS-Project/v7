@@ -1,7 +1,6 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
   import type { MessagingAppRuntime } from "../../runtime";
-  import CorrelatedMessages from "./List/CorrelatedMessages.svelte";
   import Message from "./List/Message.svelte";
   import Search from "./List/Search.svelte";
 

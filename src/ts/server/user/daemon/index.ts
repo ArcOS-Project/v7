@@ -1,7 +1,7 @@
 //#region IMPORTS
 import type { ShellRuntime } from "$apps/components/shell/runtime";
 import { ApplicationStorage } from "$ts/apps/storage";
-import { ArcOSVersion, Env, getKMod, KernelServerUrl, Stack, State, SysDispatch } from "$ts/env";
+import { ArcOSVersion, Env, getKMod, Server, Stack, State, SysDispatch } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import type { ProtocolServiceProcess } from "$ts/proto";
 import { AdminProtocolHandlers } from "$ts/server/admin/proto";
@@ -113,7 +113,7 @@ export class UserDaemon extends Process {
   async start() {
     try {
       await this.startUserContexts();
-      this.usingTargetedAuthorization = KernelServerUrl !== import.meta.env.DW_SERVER_URL;
+      this.usingTargetedAuthorization = Server.url !== import.meta.env.DW_SERVER_URL;
     } catch {
       return false;
     }

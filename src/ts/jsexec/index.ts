@@ -9,7 +9,7 @@
  * © IzKuipers 2025
  */
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { Fs, KernelServerUrl } from "$ts/env";
+import { Fs, Server } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import { Backend } from "$ts/server/axios";
 import { TryGetDaemon, UserDaemon } from "$ts/server/user/daemon";
@@ -61,7 +61,7 @@ export class JsExec extends Process {
     this.Log(`Getting TPA file URL`);
 
     const postUrl = this.getTpaPostUrl();
-    const serverUrl = KernelServerUrl;
+    const serverUrl = Server.url;
     const { appId, userId, filename } = this.getTpaUrlInfo();
     const now = Date.now();
     const ac = authcode();
