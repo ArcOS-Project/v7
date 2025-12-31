@@ -8,7 +8,7 @@ export const Logo = () => {
   const daemon = TryGetDaemon();
   
   const d = new Date();
-  if (d.getDate() >= 24 && d.getDate() <= 31 && d.getMonth() === 11) // Check whether to enable the Christmas logo
+  if ((d.getDate() >= 24 && d.getMonth() === 11) || (d.getMonth() === 0 && d.getDate() <= 4)) // Check whether to enable the Christmas logo
     return ChristmasLogo;
   
   const defaultLogo = daemon?.icons!.getIconCached?.("ReleaseLogo") || ReleaseLogo;
