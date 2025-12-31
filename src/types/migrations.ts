@@ -8,7 +8,7 @@ export interface MigrationStatusItem {
 export interface MigrationResult {
   result: MigrationResultStatus;
   errorMessage?: string;
-  sucessMessage?: string;
+  successMessage?: string;
   duration?: number;
 }
 

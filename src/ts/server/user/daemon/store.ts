@@ -10,7 +10,6 @@ import { FilesystemUserContext } from "./contexts/filesystem";
 import { HelpersUserContext } from "./contexts/helpers";
 import { IconsUserContext } from "./contexts/icons";
 import { InitUserContext } from "./contexts/init";
-import { MigrationsUserContext } from "./contexts/migrations";
 import { NotificationsUserContext } from "./contexts/notifications";
 import { PowerUserContext } from "./contexts/power";
 import { PreferencesUserContext } from "./contexts/preferences";
@@ -32,7 +31,6 @@ export const UserContexts: Record<string, typeof UserContext> = {
   helpers: HelpersUserContext,
   icons: IconsUserContext,
   init: InitUserContext,
-  migrations: MigrationsUserContext,
   notifications: NotificationsUserContext,
   power: PowerUserContext,
   preferencesCtx: PreferencesUserContext,

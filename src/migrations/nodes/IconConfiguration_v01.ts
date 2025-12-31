@@ -21,6 +21,6 @@ export class IconConfigurationMigrationV01 extends MigrationVersion {
       return v;
     });
 
-    return { result: "err_ok", sucessMessage: "Icon configuration has been updated." };
+    return { result: "err_ok", successMessage: "Icon configuration has been updated." };
   }
 }

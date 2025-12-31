@@ -18,6 +18,7 @@ import { Terminal } from "xterm";
 import { ArcTerminal } from "..";
 import { Readline } from "../readline/readline";
 import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../store";
+import type { MigrationService } from "../../../migrations";
 
 export class TerminalMode extends Process {
   userDaemon?: UserDaemon;
@@ -166,6 +167,11 @@ export class TerminalMode extends Process {
       this.rl?.println(`${CURUP}${CLRROW}Starting share management`);
       await userDaemon.init!.startShareManager();
 
+      this.rl?.println(`${CURUP}${CLRROW}Running migrations`);
+      await userDaemon.serviceHost
+        ?.getService<MigrationService>("MigrationSvc")
+        ?.runMigrations((m) => this.rl?.println(`${CURUP}${CLRROW}${m}`));
+
       if (userDaemon.userInfo.admin) {
         this.rl?.println(`${CURUP}${CLRROW}Activating admin bootstrapper`);
         await userDaemon.activateAdminBootstrapper();
@@ -180,7 +186,6 @@ export class TerminalMode extends Process {
       Env.set("currentuser", username);
       Env.set("shell_pid", undefined);
 
-      await userDaemon.migrations!.updateAppShortcutsDir();
       userDaemon.checks!.checkNightly();
 
       await Sleep(10);

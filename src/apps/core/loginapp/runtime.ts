@@ -283,7 +283,7 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.checks!.checkForUpdates();
     userDaemon.serviceHost?.getService<ProtocolServiceProcess>("ProtoService")?.parseProtoParam();
     await userDaemon.checks!.checkForMissedMessages();
-    await userDaemon.migrations!.updateAppShortcutsDir();
+    
     await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
 
     userDaemon._blockLeaveInvocations = false;

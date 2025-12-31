@@ -10,6 +10,7 @@ import { LogLevel } from "$types/logging";
 import type { MigrationResultCollection, MigrationStatusCallback } from "$types/migrations";
 import type { Service } from "$types/service";
 import type { MigrationNode } from "./node";
+import { AppShortcutsMigration } from "./nodes/AppShortcuts";
 import { FileAssociationsMigration } from "./nodes/FileAssociations";
 import { IconConfigurationMigration } from "./nodes/IconConfiguration";
 
@@ -17,7 +18,7 @@ export class MigrationService extends BaseService {
   private Configuration = Store<Record<string, number>>({});
   private CONFIG_PATH = join(UserPaths.Migrations, "Index.json");
 
-  private MIGRATIONS: (typeof MigrationNode)[] = [FileAssociationsMigration, IconConfigurationMigration];
+  private MIGRATIONS: (typeof MigrationNode)[] = [FileAssociationsMigration, IconConfigurationMigration, AppShortcutsMigration];
 
   public get Config() {
     return this.Configuration();

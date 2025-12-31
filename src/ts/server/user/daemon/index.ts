@@ -27,7 +27,6 @@ import type { FilesystemUserContext } from "./contexts/filesystem";
 import type { HelpersUserContext } from "./contexts/helpers";
 import type { IconsUserContext } from "./contexts/icons";
 import type { InitUserContext } from "./contexts/init";
-import type { MigrationsUserContext } from "./contexts/migrations";
 import type { NotificationsUserContext } from "./contexts/notifications";
 import type { PowerUserContext } from "./contexts/power";
 import type { PreferencesUserContext } from "./contexts/preferences";
@@ -78,7 +77,6 @@ export class UserDaemon extends Process {
   helpers?: HelpersUserContext;
   icons?: IconsUserContext;
   init?: InitUserContext;
-  migrations?: MigrationsUserContext;
   notifications?: NotificationsUserContext;
   power?: PowerUserContext;
   preferencesCtx?: PreferencesUserContext;

@@ -15,7 +15,7 @@ export class FileAssociationsMigrationV01 extends MigrationVersion {
     const assoc = this.migration.svc.host.getService<FileAssocService>("FileAssocSvc")
     const apps = await appStore?.get();
 
-    if (!apps) return { result: "err_noop", sucessMessage: "Nothing to do." };
+    if (!apps) return { result: "err_noop", successMessage: "Nothing to do." };
 
     assoc?.updateConfiguration((config) => {
       for (const app of apps) {
@@ -47,6 +47,6 @@ export class FileAssociationsMigrationV01 extends MigrationVersion {
       return config;
     });
 
-    return { sucessMessage: "File associations updated successfully", result: "err_ok" };
+    return { successMessage: "File associations updated successfully", result: "err_ok" };
   }
 }
