@@ -11,6 +11,8 @@
         forWhat: process.id!,
         defaultIcon: $values[$type] || "ComponentIcon",
       })) || $values[$type];
+
+    console.log($values[$type]);
   }
 </script>
 

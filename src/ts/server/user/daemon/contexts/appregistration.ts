@@ -82,7 +82,7 @@ export class AppRegistrationUserContext extends UserContext {
     try {
       if (!Daemon!.preferences()) return [];
 
-      await Daemon!.migrations!.migrateUserAppsToFs();
+      await this.modeUserAppsToFs();
 
       const bulk = Object.fromEntries(
         Object.entries(await Fs.bulk(UserPaths.AppRepository, "json")).map(([k, v]) => [k.replace(".json", ""), v])
@@ -293,5 +293,22 @@ export class AppRegistrationUserContext extends UserContext {
 
     SysDispatch.dispatch("startmenu-refresh");
     stop?.();
+  }
+
+  async modeUserAppsToFs() {
+    const apps = Daemon!.preferences().userApps;
+
+    if (!Object.entries(apps).length) return;
+
+    this.Log(`Migrating user apps to filesystem...`);
+
+    for (const id in apps) {
+      await Fs.writeFile(join(UserPaths.AppRepository, `${id}.json`), textToBlob(JSON.stringify(apps[id], null, 2)));
+    }
+
+    Daemon!.preferences.update((v) => {
+      v.userApps = {};
+      return v;
+    });
   }
 }

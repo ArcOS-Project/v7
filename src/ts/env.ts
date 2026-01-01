@@ -13,11 +13,10 @@ import type { TrashCanService } from "./server/user/trash";
 import { StateHandler } from "./state";
 import { Store } from "./writable";
 
-export const ArcOSVersion = "7.0.7";
+export const ArcOSVersion = "7.0.8";
 export const BETA = true;
 export const USERFS_UUID = "233D-CE74-18C0-0B08";
 export let Kernel: ConstructedWaveKernel;
-export let KernelServerUrl: string;
 
 export let Fs: FilesystemType;
 export let LiteralFs: FilesystemType;
@@ -48,7 +47,6 @@ export function SetKernelExports() {
   Env = getKMod<EnvironmentType>("env");
   Stack = getKMod<ProcessHandlerType>("stack");
   Server = getKMod<ServerManagerType>("server");
-  KernelServerUrl = Server.url;
   SysDispatch = getKMod<SystemDispatchType>("dispatch");
   SoundBus = getKMod<SoundbusType>("soundbus");
   BugHunt = getKMod<BugHuntType>("bughunt");

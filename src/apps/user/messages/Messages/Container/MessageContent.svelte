@@ -1,57 +1,54 @@
 <script lang="ts">
-  import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import UserLink from "$lib/UserLink.svelte";
-  import { ProfilePictures } from "$ts/images/pfp";
-  import { Daemon } from "$ts/server/user/daemon";
-  import type { PublicUserInfo } from "$types/user";
-  import dayjs from "dayjs";
+  import type { ExpandedMessageNode } from "$types/messaging";
   import { onMount } from "svelte";
   import SvelteMarkdown from "svelte-markdown";
   import type { MessagingAppRuntime } from "../../runtime";
+  import Header from "./MessageContent/Header.svelte";
+  import MessageThread from "./MessageThread.svelte";
+  import Spinner from "$lib/Spinner.svelte";
 
   const { process }: { process: MessagingAppRuntime } = $props();
   const { message } = process;
-  const userId = Daemon!.userInfo!._id;
-  const isSent = $message?.authorId === userId;
 
-  let user = $state<PublicUserInfo>();
-  let date = $state<string>();
+  let expandThread = $state<boolean>(false);
+  let loadingThread = $state<boolean>(false);
+  let thread = $state<ExpandedMessageNode[]>();
 
   onMount(async () => {
     if (!$message) return;
 
-    user = (isSent ? await process.userInfo($message?.recipient) : $message?.author!) || {
-      username: "(deleted user)",
-      profilePicture: ProfilePictures.def,
-      admin: false,
-      dispatchClients: 0,
-    };
-    date = dayjs($message?.createdAt).format("D MMMM YYYY, hh:mm A");
+    loadingThread = true;
+    thread = await process.service.getMessageThread($message?._id!);
+    loadingThread = false;
   });
 </script>
 
 <div class="message-content">
-  {#if $message && user}
-    <div class="header">
-      <ProfilePicture
-        fallback={$message?.author!.profilePicture}
-        height={40}
-        showOnline
-        online={$message?.author!.dispatchClients > 0}
-      />
-      <div>
-        <h1>{$message?.title}</h1>
-        <p>
-          {#if isSent}
-            To <UserLink {user} /> on {date}
-          {:else}
-            From <UserLink {user} /> on {date}
-          {/if}
-        </p>
-      </div>
-    </div>
-    <p class="message-body markdown-body">
+  {#if $message}
+    <Header {process} message={$message} />
+    <div class="message-body markdown-body">
       <SvelteMarkdown source={$message.body} />
-    </p>
+    </div>
+    {#if loadingThread}
+      <div class="thread-wrapper">
+        <div class="notice">
+          <p>Loading thread information...</p>
+          <Spinner height={30} />
+        </div>
+      </div>
+    {/if}
+    {#if $message.repliesTo && thread?.length}
+      <div class="thread-wrapper" class:expand={expandThread}>
+        <div class="notice">
+          <p>This message is part of a thread.</p>
+          <button onclick={() => (expandThread = !expandThread)}>{expandThread ? "Hide" : "Show"}</button>
+        </div>
+        {#if expandThread}
+          {#each thread as threadMessage (threadMessage._id)}
+            <MessageThread message={threadMessage} {process} originalMessageId={$message._id} />
+          {/each}
+        {/if}
+      </div>
+    {/if}
   {/if}
 </div>

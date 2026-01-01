@@ -3,13 +3,13 @@
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
   import { Daemon } from "$ts/server/user/daemon";
-  import type { PartialMessage } from "$types/messaging";
+  import type { ExpandedMessage } from "$types/messaging";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
   import { onMount, type Snippet } from "svelte";
 
-  const { process, message, children }: { process: MessagingAppRuntime; message: PartialMessage; children?: Snippet } = $props();
+  const { process, message, children }: { process: MessagingAppRuntime; message: ExpandedMessage; children?: Snippet } = $props();
   const { message: openedMessage } = process;
   let date = $state<string>();
 
@@ -39,7 +39,7 @@
           {#if message.repliesTo}
             <span class="lucide icon-reply"></span>
           {/if}
-          {#if message.attachmentCount > 0}
+          {#if message.attachments?.length}
             <span class="lucide icon-paperclip"></span>
           {/if}
         </div>

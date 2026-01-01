@@ -1,27 +1,28 @@
-import { Env, Fs, getKMod, KernelServerUrl, Stack } from "$ts/env";
+import { Env, Fs, getKMod, Server, Stack } from "$ts/env";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import { authcode } from "$ts/util";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import type { FilesystemProgressCallback } from "$types/fs";
 import type { ServerManagerType } from "$types/kernel";
-import type { ExpandedMessage, Message, MessageNode, PartialMessage } from "$types/messaging";
+import type { ExpandedMessage, ExpandedMessageNode } from "$types/messaging";
 import type { Service } from "$types/service";
 import { Backend } from "../axios";
 import { Daemon, UserDaemon } from "../user/daemon";
 import { GlobalDispatch } from "../ws";
 
 export class MessagingInterface extends BaseService {
-  serverUrl: string | false | undefined;
-  serverAuthCode: string;
+  get serverUrl() {
+    return getKMod<ServerManagerType>("server").url;
+  }
+
+  get serverAuthCode() {
+    return authcode();
+  }
 
   //#region LIFECYCLE
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(pid, parentPid, name, host);
-
-    const server = getKMod<ServerManagerType>("server");
-    this.serverUrl = server.url;
-    this.serverAuthCode = import.meta.env.DW_SERVER_AUTHCODE || "";
 
     this.setSource(__SOURCE__);
   }
@@ -30,10 +31,10 @@ export class MessagingInterface extends BaseService {
     const daemon = Stack.getProcess<UserDaemon>(+Env.get("userdaemon_pid")!)!;
     const dispatch = daemon.serviceHost?.getService<GlobalDispatch>("GlobalDispatch")!;
 
-    dispatch?.subscribe("incoming-message", (message: Message) => {
+    dispatch?.subscribe("incoming-message", (message: ExpandedMessage) => {
       daemon?.notifications?.sendNotification({
         className: "incoming-message",
-        image: `${KernelServerUrl}${message.author?.profilePicture}`,
+        image: `${Server.url}${message.author?.profilePicture}`,
         title: message.author?.username || "New message",
         message: message.title,
         buttons: [
@@ -50,12 +51,12 @@ export class MessagingInterface extends BaseService {
 
   //#endregion
 
-  async getSentMessages(): Promise<PartialMessage[]> {
+  async getSentMessages(): Promise<ExpandedMessage[]> {
     if (this._disposed) return [];
 
     try {
       const response = await Backend.get("/messaging/sent", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
-      const data = (response.data as PartialMessage[]).map((message) => {
+      const data = (response.data as ExpandedMessage[]).map((message) => {
         if (message.author) {
           message.author.profilePicture = `${this.serverUrl}/user/pfp/${message.authorId}${authcode()}`;
         }
@@ -68,12 +69,12 @@ export class MessagingInterface extends BaseService {
       return [];
     }
   }
-  async getReceivedMessages(): Promise<PartialMessage[]> {
+  async getReceivedMessages(): Promise<ExpandedMessage[]> {
     if (this._disposed) return [];
 
     try {
       const response = await Backend.get("/messaging/received", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
-      const data = (response.data as PartialMessage[]).map((message) => {
+      const data = (response.data as ExpandedMessage[]).map((message) => {
         if (message.author) {
           message.author.profilePicture = `${this.serverUrl}/user/pfp/${message.authorId}${authcode()}`;
         }
@@ -86,6 +87,26 @@ export class MessagingInterface extends BaseService {
       return [];
     }
   }
+
+  async getInboxListing(): Promise<ExpandedMessage[]> {
+    if (this._disposed) return [];
+
+    try {
+      const response = await Backend.get("/messaging/inbox", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const data = (response.data as ExpandedMessage[]).map((message) => {
+        if (message.author) {
+          message.author.profilePicture = `${this.serverUrl}/user/pfp/${message.authorId}${authcode()}`;
+        }
+
+        return message;
+      });
+
+      return data;
+    } catch {
+      return [];
+    }
+  }
+
   async sendMessage(
     subject: string,
     recipients: string[],
@@ -139,7 +160,9 @@ export class MessagingInterface extends BaseService {
     if (this._disposed) return;
 
     try {
-      const response = await Backend.get(`/messaging/read/${messageId}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await Backend.get(`/messaging/read/${messageId}`, {
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
+      });
 
       const data = response.data as ExpandedMessage;
 
@@ -179,13 +202,18 @@ export class MessagingInterface extends BaseService {
     }
   }
 
-  async getMessageThread(messageId?: string): Promise<MessageNode[]> {
+  async getMessageThread(messageId?: string): Promise<ExpandedMessageNode[]> {
     const url = messageId ? `/messaging/thread/${messageId}` : `/messaging/thread`;
 
     try {
-      const response = await Backend.get(url, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await Backend.get(url, {
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
+        params: { reverse: true },
+      });
 
-      return response.data as MessageNode[];
+      // Not changing the author pfp URLs here because it's an effectively never ending tree of messages
+
+      return response.data as ExpandedMessageNode[];
     } catch {
       return [];
     }

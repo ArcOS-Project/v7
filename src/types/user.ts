@@ -107,6 +107,7 @@ export interface DesktopPreferences {
   accent: string;
   noIconGrid: boolean;
   lockIcons: boolean;
+  nativeNotificationsState?: NotificationPermission;
 }
 
 export interface StartMenuPreferences {

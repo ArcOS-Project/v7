@@ -63,7 +63,7 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/user/writer/writer",
   "$apps/user/iconeditor/IconEditorApp",
   "$apps/user/donut/DonutApp",
-  "$apps/user/sqeleton/Sqeleton",
+  // "$apps/user/sqeleton/Sqeleton",
 ]);
 
 export const AdminAppImportPathAbsolutes = import.meta.glob([

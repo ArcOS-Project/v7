@@ -129,6 +129,8 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   async render({ file }: RenderArgs) {
+    if (await this.closeIfSecondInstance()) return;
+    
     if (file) {
       if (file.endsWith(".arcpl")) this.readPlaylist(file);
       else this.readFile([file]);

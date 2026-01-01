@@ -90,8 +90,6 @@ export class InitUserContext extends UserContext {
 
     try {
       await Fs.mountDrive<ServerDrive>("userfs", ServerDrive, "U", undefined);
-
-      await Daemon!.migrations?.migrateFilesystemLayout();
     } catch {
       throw new Error("UserDaemon: Failed to start filesystem supplier");
     }
