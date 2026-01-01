@@ -93,7 +93,6 @@ export class ShortcutPropertiesRuntime extends AppProcess {
     });
 
     data.icon = proc?.store?.()?.[proc.id!] || data.icon;
-    console.log(data.icon);
     this.shortcutData.set(data);
   }
 

@@ -53,7 +53,6 @@ export class IconEditDialogRuntime extends AppProcess {
       v[this.id!] = `${this.type()}::${this.values()[this.type()]}`;
       return v;
     });
-    console.log(`${this.type()}::${this.values()[this.type()]}`);
 
     this.closeWindow();
   }
