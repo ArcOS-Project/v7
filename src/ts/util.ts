@@ -4,6 +4,7 @@ import leoProfanity from "leo-profanity";
 import validator from "validator";
 import { getJsonHierarchy } from "./hierarchy";
 import { Process } from "./process/instance";
+import { Server } from "./env";
 
 leoProfanity.loadDictionary("en");
 
@@ -183,7 +184,7 @@ export function deepCopyWithBlobs<T>(obj: T): Promise<T> {
 }
 
 export function authcode() {
-  return import.meta.env.DW_SERVER_AUTHCODE ? `?authcode=${import.meta.env.DW_SERVER_AUTHCODE}` : "";
+  return Server.authCode ?? "";
 }
 
 export function groupByTimeFrame<T extends Record<string, any>>(items: T[], column: keyof T = "createdAt") {

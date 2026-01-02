@@ -8,3 +8,11 @@ export interface ServerInfo {
   freshBackend: boolean;
   rejectTargetedAuthorization: boolean;
 }
+
+export interface ServerOption {
+  url: string;
+  authCode?: string;
+  name?: string;
+  system?: boolean;
+  icon?: string;
+}

@@ -22,7 +22,7 @@ export class BugHunt extends KernelModule {
   //#endregion
 
   createReport(options = defaultReportOptions, app?: App, storeItemId?: string): OutgoingBugReport {
-    const server = URL.parse(Server.url)?.host;
+    const server = URL.parse(Server.url || "https://arcapi.nl")?.host;
 
     return {
       title: options.title,

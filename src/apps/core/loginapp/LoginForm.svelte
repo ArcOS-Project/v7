@@ -6,22 +6,12 @@
 
   let username = Store("");
   let password = Store("");
-  let targetedUsername = Store<[string, string] | undefined>();
 
   const { process }: { process: LoginAppRuntime } = $props();
   const { serverInfo, persistence } = process;
 
-  onMount(() => {
-    username.subscribe((v) => {
-      const result = /(?<hostname>[a-zA-Z.]+)\\(?<username>.+)/g.exec(v);
-
-      if (result?.groups?.hostname) $targetedUsername = [result?.groups?.hostname, result?.groups.username];
-      else $targetedUsername = undefined;
-    });
-  });
-
   function go() {
-    process.proceed($persistence?.username || $targetedUsername?.[1] || $username, $password, $targetedUsername?.[0]);
+    process.proceed($persistence?.username || $username, $password);
   }
 </script>
 
@@ -38,11 +28,6 @@
     </button>
   </div>
 </div>
-{#if $targetedUsername?.[0]}
-  <p class="targeted-server">
-    Logging in to {$targetedUsername[0]}
-  </p>
-{/if}
 {#if $persistence}
   <button class="switch-user" onclick={() => process.deletePersistence()}>Switch user</button>
 {:else if !$serverInfo?.disableRegistration}

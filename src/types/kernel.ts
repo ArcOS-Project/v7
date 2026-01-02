@@ -17,7 +17,7 @@ import type {
 } from "./fs";
 import type { LogItem, LogLevel } from "./logging";
 import type { ProcessContext, ProcessKillResult } from "./process";
-import type { ServerInfo } from "./server";
+import type { ServerInfo, ServerOption } from "./server";
 
 export type ConstructedWaveKernel = {
   modules: string[];
@@ -52,14 +52,21 @@ export interface EnvironmentType {
 }
 
 export interface ServerManagerType {
-  url: string;
   connected: boolean;
-  serverInfo: ServerInfo | undefined;
+  serverInfo?: ServerInfo;
+  previewBranch?: string;
+  servers: ServerOption[];
+  url?: string;
+  authCode?: string;
   checkUsernameAvailability(username: string): Promise<boolean>;
-  checkEmailAvailability(email: string): Promise<boolean>;
-  _init(): Promise<void>;
-  set(server: string): Promise<void>;
-  reset(): Promise<void>;
+  checkEmailAvailability(username: string): Promise<boolean>;
+  switchServer(url: string): Promise<boolean>;
+  loadServers(): void;
+  writeServers(servers: ServerOption[]): void;
+  resetServers(): void;
+  addServer(config: ServerOption): boolean;
+  removeServer(url: string): boolean;
+  isAdded(url: string): boolean;
 }
 
 export interface FilesystemType {

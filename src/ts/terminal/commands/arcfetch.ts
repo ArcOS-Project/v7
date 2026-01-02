@@ -3,6 +3,7 @@ import { ArcOSVersion, Env, getKMod, State } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
+import { authcode } from "$ts/util";
 import { formatBytes } from "$ts/util/fs";
 import type { ServerManagerType } from "$types/kernel";
 import type { ArcTerminal } from "..";
@@ -41,7 +42,7 @@ export class ArcFetchCommand extends TerminalProcess {
 
     return Object.entries({
       OS: `ArcOS ${ArcOSVersion}-${ArcMode()} (${ArcBuild()})`,
-      Host: `${server?.url} ${BRBLACK}(${import.meta.env.DW_SERVER_AUTHCODE ? "Protected" : "Open"})${RESET}`,
+      Host: `${server?.url} ${BRBLACK}(${authcode() ? "Protected" : "Open"})${RESET}`,
       Username: `${Env.get("currentuser")} ${BRBLACK}(${Env.get("administrator") ? "Administrator" : "Regular User"})${RESET}`,
       Mode: `Browser ${BRBLACK}(on state ${state?.toUpperCase()})${RESET}`,
       Terminal: `PID ${term.pid} (${term.name}) on parent PID ${term.parentPid}`,

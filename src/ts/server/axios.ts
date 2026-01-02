@@ -5,14 +5,7 @@ import { UUID } from "$ts/uuid";
 import type { EnvironmentType } from "$types/kernel";
 import axios, { type AxiosRequestConfig, type InternalAxiosRequestConfig } from "axios";
 
-const presetAuthCode = import.meta.env.DW_SERVER_AUTHCODE;
-
 export const Backend = axios.create({
-  params: presetAuthCode
-    ? {
-        authcode: presetAuthCode,
-      }
-    : {},
   headers: {
     "Cache-Control": "no-cache, no-store, must-revalidate",
     Pragma: "no-cache",
