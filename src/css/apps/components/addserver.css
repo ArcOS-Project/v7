@@ -1,0 +1,107 @@
+#AddServer > div.body {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+#AddServer > div.body div.header {
+  margin-top: 10px;
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+#AddServer > div.body div.header h1 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+#AddServer > div.body div.header p {
+  opacity: 0.5;
+}
+
+#AddServer > div.body div.input {
+  background-color: var(--button-bg);
+  margin-bottom: 15px;
+  border-radius: 10px;
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
+  padding: 10px 15px;
+}
+
+#AddServer > div.body div.input p.caption {
+  font-weight: bold;
+  opacity: 0.5;
+}
+
+#AddServer > div.body div.input > input {
+  padding: 0;
+  margin: 0;
+  border: none;
+  background-color: transparent;
+  width: 100%;
+  border-radius: 0;
+}
+
+#AddServer > div.body div.input.port {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#AddServer > div.body div.input.port div.options {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#AddServer > div.body div.input.port div.options button {
+  text-decoration: none;
+  color: var(--fg);
+}
+
+#AddServer > div.body div.input.port div.options button:hover {
+  text-decoration: underline;
+}
+#AddServer > div.body div.input.port div.options button.selected {
+  font-weight: bold;
+  color: var(--accent-light);
+}
+#AddServer > div.body div.input.port div.options div.sep {
+  opacity: 0.2;
+}
+
+#AddServer > div.body div.input.port input {
+  width: 70px;
+  text-align: center;
+}
+
+/* removes up and down arrows from inputs */
+#AddServer > div.body div.input.port input::-webkit-outer-spin-button,
+#AddServer > div.body div.input.port input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+#AddServer > div.body div.input.port input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+#AddServer > div.body div.actions {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background-color: var(--button-glass-bg);
+  border-radius: 10px;
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
+  box-shadow: var(--secondary-box-shadow);
+}
+
+#AddServer > div.body div.actions button.test {
+  margin-right: auto;
+}
+
+#AddServer > div.body div.actions button:not(:hover):not(:active) {
+  background-color: var(--button-glass-bg);
+}

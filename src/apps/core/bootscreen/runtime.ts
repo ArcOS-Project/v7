@@ -46,6 +46,9 @@ export class BootScreenRuntime extends AppProcess {
       this.status.set("Entering Safe Mode");
       await Sleep(2000);
       State?.loadState("login", { safeMode: true });
+    } else if (e?.key === "F4") {
+      this.status.set("Opening server selector");
+      State?.loadState("switchServer", { safeMode: true });
     } else if (e?.key.toLowerCase() === "a") {
       this.status.set("Starting ArcTerm");
       State?.loadState("arcterm");

@@ -56,3 +56,30 @@ div.window#bootScreen div.bottom {
   flex-direction: column;
   gap: 20px;
 }
+
+div.window#bootScreen div.top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  padding-right: 15px;
+}
+
+div.window#bootScreen div.top div.url {
+  font-family: "Source Code Pro";
+  opacity: 0.5;
+}
+
+div.window#bootScreen div.top div.keys div.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+div.window#bootScreen div.top div.keys div.row div.key {
+  font-weight: bold;
+  opacity: 0.5;
+}

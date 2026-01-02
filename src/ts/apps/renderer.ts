@@ -387,7 +387,7 @@ export class AppRenderer extends Process {
   }
 
   _resizeGrabbers(process: AppProcess, window: HTMLDivElement) {
-    if (!process.app.data.state.resizable) return undefined;
+    if (!process.app.data.state.resizable || process.app.data.core) return undefined;
 
     const RESIZERS: WindowResizer[] = [
       { className: "top", cursor: "ns-resize", width: "100%", height: "7px", top: "-3px" },
