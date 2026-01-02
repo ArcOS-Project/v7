@@ -144,8 +144,9 @@ export class ServerManager extends KernelModule {
       Backend.defaults.params = server.authCode ? { authcode: server.authCode } : {};
       Backend.defaults.baseURL = server.url;
 
-      document.title = `ArcOS - ${server.name || new URL(server.url).hostname}`;
-
+      if (!server.system) document.title = `ArcOS - ${server.name || new URL(server.url).hostname}`;
+      else document.title = "ArcOS";
+      
       return true;
     } catch (e) {
       this.dispatch.dispatch("server-connection-failed");
