@@ -6,14 +6,14 @@
 }
 
 #SwitchServer > div.body > h1 {
-  font-size: 18px;
-  margin-bottom: 20px;
+  font-size: 20px;
+  margin-bottom: 30px;
 }
 
 #SwitchServer > div.body div.selector {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
 }
 
 #SwitchServer > div.body div.selector div.server-option button.selector,
