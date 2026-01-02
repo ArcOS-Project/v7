@@ -1,4 +1,4 @@
-import { playDataAsAudio } from "$ts/audio-conversation";
+import { doPing } from "$ts/audio-conversation";
 import { __Console__ } from "$ts/console";
 import { Kernel } from "$ts/env";
 import { ArcMode } from "$ts/metadata/mode";
@@ -33,12 +33,12 @@ Backend.interceptors.request.use(
 );
 
 Backend.interceptors.request.use((req) => {
-  if (req.url) playDataAsAudio(req.url + (req.data ?? ""));
+  doPing();
   return req;
 });
 
 Backend.interceptors.response.use((res) => {
-  playDataAsAudio(res.data);
+  doPing();
   return res;
 });
 

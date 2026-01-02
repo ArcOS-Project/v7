@@ -9,6 +9,7 @@ import click from "$assets/audio/click.wav";
 import systemLogoff from "$assets/audio/logoff.wav";
 import systemLogon from "$assets/audio/logon.wav";
 import mwomp from "$assets/audio/mwomp.mp3";
+import GoofyPlatformerWildWestWorld2DangerDEMO3Unfinished from "$assets/audio/Goofy Platformer - Wild West World 2 Danger [DEMO 3 - Unfinished].wav";
 
 export const ArcSounds: SoundStore = {
   "arcos.dialog.error": dialogError,
@@ -20,4 +21,5 @@ export const ArcSounds: SoundStore = {
   "arcos.click": click,
   "arcos.mwomp": mwomp,
   "646973636F72640A": v646973636F72640A,
+  GoofyPlatformerWildWestWorld2DangerDEMO3Unfinished: GoofyPlatformerWildWestWorld2DangerDEMO3Unfinished,
 };
