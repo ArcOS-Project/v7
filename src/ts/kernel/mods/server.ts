@@ -192,6 +192,7 @@ export class ServerManager extends KernelModule {
   addServer(config: ServerOption) {
     this.Log(`addServer: ${config.url} (${config.authCode ? "Private" : "Public"})`);
 
+    if (this.servers.length >= 8) return false;
     if (this.isAdded(config.url)) return false;
 
     this.writeServers([...this.servers, config]);

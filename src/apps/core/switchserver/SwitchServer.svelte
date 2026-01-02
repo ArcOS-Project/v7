@@ -15,7 +15,7 @@
   {/each}
 </div>
 
-<button class="add-server" onclick={() => process.addServer()} disabled={$loading}>Add server</button>
+<button class="add-server" onclick={() => process.addServer()} disabled={$loading || $servers?.length >= 8}>Add server</button>
 
 {#if $connectionError}
   <div class="connection-error">
