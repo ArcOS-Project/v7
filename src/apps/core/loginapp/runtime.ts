@@ -8,7 +8,7 @@ import { tryJsonParse } from "$ts/json";
 import { ProtocolServiceProcess } from "$ts/proto";
 import { Backend } from "$ts/server/axios";
 import { LoginUser } from "$ts/server/user/auth";
-import { Daemon, UserDaemon } from "$ts/server/user/daemon";
+import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import { authcode } from "$ts/util";
 import { UUID } from "$ts/uuid";
@@ -19,10 +19,10 @@ import type { ServerInfo } from "$types/server";
 import type { UserInfo } from "$types/user";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
+import { MigrationService } from "../../../migrations";
 import { AppProcess } from "../../../ts/apps/process";
 import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps, PersistenceInfo } from "./types";
-import { MigrationService } from "../../../migrations";
 
 export class LoginAppRuntime extends AppProcess {
   public DEFAULT_WALLPAPER = Store<string>("");
@@ -283,7 +283,7 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.checks!.checkForUpdates();
     userDaemon.serviceHost?.getService<ProtocolServiceProcess>("ProtoService")?.parseProtoParam();
     await userDaemon.checks!.checkForMissedMessages();
-    
+
     await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
 
     userDaemon._blockLeaveInvocations = false;
@@ -374,38 +374,10 @@ export class LoginAppRuntime extends AppProcess {
   //#endregion
   //#region CREDENTIALS
 
-  async proceed(username: string, password: string, serverName?: string) {
+  async proceed(username: string, password: string) {
     this.Log(`Trying login of '${username}'`);
 
     this.loadingStatus.set(`Hi, ${username}!`);
-
-    if (serverName) {
-      this.loadingStatus.set(`Connecting to ${serverName}`);
-
-      try {
-        await this.server.set(`https://${serverName}`);
-
-        if (this.server.serverInfo?.rejectTargetedAuthorization) {
-          this.loadingStatus.set("");
-          this.errorMessage.set(
-            `Targeted server '${serverName}' does not allow connection via targeted authorization. Please contact your server administrator if you believe this to be an error.`
-          );
-          await this.server.reset();
-          this.updateServerStuff();
-
-          return;
-        }
-
-        this.updateServerStuff();
-      } catch {
-        this.loadingStatus.set("");
-        this.errorMessage.set(
-          `Targeted server '${serverName}' could not be reached. Please check the server name and try again. Also note that ArcOS only connects to targeted servers over HTTPS.`
-        );
-
-        return;
-      }
-    }
 
     const token = await LoginUser(username, password);
 
@@ -413,7 +385,6 @@ export class LoginAppRuntime extends AppProcess {
       this.loadingStatus.set("");
       this.errorMessage.set("Username or password incorrect.");
 
-      await this.server.reset();
       this.updateServerStuff();
 
       return;
@@ -538,10 +509,7 @@ export class LoginAppRuntime extends AppProcess {
 
     if (!persistence) return;
 
-    if (persistence.serverUrl) {
-      await this.server.set(persistence.serverUrl);
-      this.updateServerStuff();
-    }
+    this.updateServerStuff();
 
     this.persistence.set(persistence);
     this.profileImage.set(persistence.profilePicture);
@@ -557,7 +525,6 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async deletePersistence() {
-    await this.server.reset();
     this.updateServerStuff();
     localStorage.removeItem("arcLoginPersistence");
     this.persistence.set(undefined);
