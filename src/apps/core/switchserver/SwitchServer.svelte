@@ -7,6 +7,8 @@
   const { servers, connectionError, loading } = process;
 </script>
 
+<h1>Choose Server</h1>
+
 <div class="selector">
   {#each $servers as server (UUID())}
     <ServerOption {process} {server} />

@@ -30,6 +30,7 @@ export class SwitchServerRuntime extends AppProcess {
     });
 
     this.servers.set(Server.servers);
+    this.selected.set(Server.url || import.meta.env.DW_SERVER_URL);
   }
 
   async stop() {
