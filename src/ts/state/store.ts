@@ -17,6 +17,7 @@ const globs = Object.values(
     "$apps/core/bootscreen/bootScreen",
     "$apps/core/initialsetup/initialSetupWizard",
     "$apps/core/loginapp/loginApp",
+    "$apps/core/switchserver/SwitchServer",
   ])
 );
 
@@ -71,5 +72,10 @@ export const States: Record<string, State> = {
     identifier: "arcterm",
     render: ArcTermRender,
     html: ArcTermHtml,
+  },
+  switchServer: {
+    name: "Switch Server",
+    identifier: "switchServer",
+    appModule: globs[3] as AppModuleLoader,
   },
 };

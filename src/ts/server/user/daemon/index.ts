@@ -53,7 +53,6 @@ export class UserDaemon extends Process {
   public autoLoadComplete = false;
   public safeMode = false;
   public initialized = false;
-  public usingTargetedAuthorization = false;
   public _blockLeaveInvocations = true;
   public _toLoginInvoked = false;
   override _criticalProcess: boolean = true;
@@ -111,7 +110,6 @@ export class UserDaemon extends Process {
   async start() {
     try {
       await this.startUserContexts();
-      this.usingTargetedAuthorization = Server.url !== import.meta.env.DW_SERVER_URL;
     } catch {
       return false;
     }
