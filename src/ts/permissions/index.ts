@@ -26,7 +26,7 @@ export class PermissionHandler extends Process {
   public _criticalProcess: boolean = true;
   #PERMISSION_FILE = "U:/System/Permissions.json";
   #PERMISSION_EXPIRY = 1000 * 60 * 10; // 10 minutes
-  private Configuration = Store<PermissionStorage>(DefaultPermissionStorage);
+  public Configuration = Store<PermissionStorage>(DefaultPermissionStorage);
   private SudoConfiguration = Store<SudoPermissions>({});
   private FirstSubDone = false;
   private configurationWriteTimeout?: NodeJS.Timeout;

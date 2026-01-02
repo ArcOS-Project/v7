@@ -32,6 +32,38 @@ export const PERMISSIONS = [
   "PERMISSION_KMOD_ENV",
   "PERMISSION_APPRENDERER",
 ] as const;
+export const PERMISSION_NAMES = {
+  "PERMISSION_USER_CONTEXT_ACCOUNT": "Account",
+  "PERMISSION_USER_CONTEXT_APPLICATION": "Applications",
+  "PERMISSION_USER_CONTEXT_APPREGISTRATION": "App registration",
+  "PERMISSION_USER_CONTEXT_ELEVATION": "Elevation",
+  "PERMISSION_USER_CONTEXT_FILESYSTEM": "File System",
+  "PERMISSION_USER_CONTEXT_HELPERS": "Helpers",
+  "PERMISSION_USER_CONTEXT_ICONS": "Icons",
+  "PERMISSION_USER_CONTEXT_NOTIFICATIONS": "Notifications",
+  "PERMISSION_USER_CONTEXT_POWER": "Power",
+  "PERMISSION_USER_CONTEXT_PREFERENCES": "Preferences",
+  "PERMISSION_USER_CONTEXT_SHORTCUTS": "Shortcuts",
+  "PERMISSION_USER_CONTEXT_SPAWN": "Spawning",
+  "PERMISSION_USER_CONTEXT_THEMES": "Themes",
+  "PERMISSION_USER_CONTEXT_WALLPAPER": "Wallpapers",
+  "PERMISSION_USER_CONTEXT_WORKSPACES": "Workspaces",
+  "PERMISSION_FS_READ_EXTERNAL": "Read external file system",
+  "PERMISSION_FS_WRITE_EXTERNAL": "Write external file system",
+  "PERMISSION_FS_READ_APPLICATIONS": "Read application files",
+  "PERMISSION_FS_WRITE_APPLICATIONS": "Write application files",
+  "PERMISSION_FS_READ_SYSTEM": "Read system files",
+  "PERMISSION_FS_WRITE_SYSTEM": "Write system files",
+  "PERMISSION_FS_READ_CONFIG": "Read config files",
+  "PERMISSION_FS_WRITE_CONFIG": "Write config files",
+  "PERMISSION_FS_READ_USER": "Read user files",
+  "PERMISSION_FS_WRITE_USER": "Write user files",
+  "PERMISSION_FS_READ": "Read files",
+  "PERMISSION_FS_WRITE": "Write files",
+  "PERMISSION_FS_DRIVES": "Drives",
+  "PERMISSION_KMOD_ENV": "Env kernel module",
+  "PERMISSION_APPRENDERER": "AppRenderer",
+} as const;
 export type PermissionString = (typeof PERMISSIONS)[number];
 
 export const PERMISSION_ERRORS = [

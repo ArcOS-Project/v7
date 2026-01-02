@@ -1,0 +1,65 @@
+#AppPermissions div.header {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+#AppPermissions div.header img.icon {
+  height: 48px;
+}
+
+#AppPermissions div.header p.title {
+  font-size: 22px;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#AppPermissions div.permissionslist {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  height: 125px;
+  overflow: scroll;
+  margin-left: 0.5em;
+}
+
+#AppPermissions div.permissionslist div.permission {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#AppPermissions div.permissionslist div.permission div.options {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+}
+
+#AppPermissions div.permissionslist div.permission p.permname {
+  color: #dddddd;
+}
+#AppPermissions p.sectiontitle {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0.33em 0;
+}
+
+#AppPermissions p.graytext {
+  opacity: 0.5;
+  margin: 0.5em 0;
+}
+
+#AppPermissions div.actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#AppPermissions p.id {
+  opacity: 0.5;
+  font-family: 'Source Code Pro';
+}
