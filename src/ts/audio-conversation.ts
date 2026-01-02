@@ -14,7 +14,7 @@ export async function playDataAsAudio(data: string | Uint8Array) {
 
   let t = ctx.currentTime;
   for (const b of data) {
-    const freq = 100 + (b / 255) * 200;
+    const freq = 100 + (b / 255) * 2000;
     osc.frequency.setValueAtTime(freq, t);
     t += 20 / 1000;
   }
