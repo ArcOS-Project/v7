@@ -24,6 +24,7 @@ export let Permissions: PermissionHandler;
 
 export class PermissionHandler extends Process {
   public _criticalProcess: boolean = true;
+  private PERMISSION_ID_REGEX = /^([0-9A-Z]{4}-){3}[0-9A-Z]{4}$/gm;
   #PERMISSION_FILE = "U:/System/Permissions.json";
   #PERMISSION_EXPIRY = 1000 * 60 * 10; // 10 minutes
   public Configuration = Store<PermissionStorage>(DefaultPermissionStorage);
@@ -89,6 +90,13 @@ export class PermissionHandler extends Process {
     return this.Configuration().allowed[id]?.includes(permission);
   }
 
+  hasPermissionById(permissionId: string, permission: PermissionString) {
+    this.validatePermissionString(permission);
+    this.validatePermissionId(permissionId);
+
+    return this.Configuration().allowed[permissionId]?.includes(permission);
+  }
+
   grantPermission(process: Process, permission: PermissionString) {
     this.validatePermissionString(permission);
     const id = this.getPermissionId(process);
@@ -103,15 +111,39 @@ export class PermissionHandler extends Process {
     });
   }
 
+  grantPermissionById(permissionId: string, permission: PermissionString) {
+    this.validatePermissionString(permission);
+    this.validatePermissionId(permissionId);
+
+    if (this.hasPermissionById(permissionId, permission)) this.throwError("PERMERR_ALREADY_OWNED", permissionId, permission);
+
+    this.Configuration.update((v) => {
+      v.allowed[permissionId] ||= [];
+      v.allowed[permissionId].push(permission);
+
+      return v;
+    });
+  }
+
   revokePermission(process: Process, permission: PermissionString) {
     this.validatePermissionString(permission);
     const id = this.getPermissionId(process);
 
-    if (!this.hasPermission(process, permission)) this.throwError("PERMERR_DENIED", id, permission);
-
     this.Configuration.update((v) => {
       v.allowed[id] ||= [];
       v.allowed[id].splice(v.allowed[id].indexOf(permission), 1);
+
+      return v;
+    });
+  }
+
+  revokePermissionById(permissionId: string, permission: PermissionString) {
+    this.validatePermissionString(permission);
+    this.validatePermissionId(permissionId);
+
+    this.Configuration.update((v) => {
+      v.allowed[permissionId] ||= [];
+      v.allowed[permissionId].splice(v.allowed[permissionId].indexOf(permission), 1);
 
       return v;
     });
@@ -125,6 +157,13 @@ export class PermissionHandler extends Process {
 
     const id = this.getPermissionId(process);
     return this.Configuration().denied[id]?.includes(permission);
+  }
+
+  isDeniedById(permissionId: string, permission: PermissionString) {
+    this.validatePermissionId(permissionId);
+    this.validatePermissionString(permission);
+
+    return this.Configuration().denied[permissionId]?.includes(permission);
   }
 
   denyPermission(process: Process, permission: PermissionString) {
@@ -143,6 +182,21 @@ export class PermissionHandler extends Process {
     });
   }
 
+  denyPermissionById(permissionId: string, permission: PermissionString) {
+    this.validatePermissionString(permission);
+    this.validatePermissionId(permissionId);
+
+    if (this.isDeniedById(permissionId, permission)) this.throwError("PERMERR_ALREADY_DENIED", permissionId, permission);
+    if (this.hasPermissionById(permissionId, permission)) this.revokePermissionById(permissionId, permission);
+
+    this.Configuration.update((v) => {
+      v.denied[permissionId] ||= [];
+      v.denied[permissionId].push(permission);
+
+      return v;
+    });
+  }
+
   revokeDenial(process: Process, permission: PermissionString) {
     this.validatePermissionString(permission);
 
@@ -153,6 +207,20 @@ export class PermissionHandler extends Process {
     this.Configuration.update((v) => {
       v.denied[id] ||= [];
       v.denied[id].splice(v.denied[id].indexOf(permission), 1);
+
+      return v;
+    });
+  }
+
+  revokeDenialById(permissionId: string, permission: PermissionString) {
+    this.validatePermissionId(permissionId);
+    this.validatePermissionString(permission);
+
+    if (!this.isDeniedById(permissionId, permission)) this.throwError("PERMERR_NOT_DENIED", permissionId, permission);
+
+    this.Configuration.update((v) => {
+      v.denied[permissionId] ||= [];
+      v.denied[permissionId].splice(v.denied[permissionId].indexOf(permission), 1);
 
       return v;
     });
@@ -240,6 +308,10 @@ export class PermissionHandler extends Process {
 
   validatePermissionString(permission: PermissionString) {
     if (!PERMISSIONS.includes(permission)) this.throwError("PERMERR_INVALID_PERMSTR", undefined, permission);
+  }
+
+  validatePermissionId(permissionId: string) {
+    if (!permissionId.match(this.PERMISSION_ID_REGEX)) this.throwError("PERMERR_NATURE_UNKNOWN");
   }
 
   throwError(error: PermissionError, client?: string, permission?: PermissionString) {
