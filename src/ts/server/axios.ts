@@ -1,3 +1,4 @@
+import { playDataAsAudio } from "$ts/audio-conversation";
 import { __Console__ } from "$ts/console";
 import { Kernel } from "$ts/env";
 import { ArcMode } from "$ts/metadata/mode";
@@ -30,6 +31,16 @@ Backend.interceptors.request.use(
     return false;
   }
 );
+
+Backend.interceptors.request.use((req) => {
+  if (req.url) playDataAsAudio(req.url + (req.data ?? ""));
+  return req;
+});
+
+Backend.interceptors.response.use((res) => {
+  playDataAsAudio(res.data);
+  return res;
+});
 
 export async function createAxiosOverlay() {
   if (!import.meta.env.DEV && ArcMode() !== "development" && !import.meta.env.DW_PREVIEW_DEP_BRANCH) return;

@@ -7,6 +7,7 @@ import type { Service } from "$types/service";
 import io, { Socket } from "socket.io-client";
 import { Backend } from "../axios";
 import { Daemon, UserDaemon } from "../user/daemon";
+import { playDataAsAudio } from "$ts/audio-conversation";
 
 export class GlobalDispatch extends BaseService {
   client: Socket | undefined;
@@ -30,6 +31,10 @@ export class GlobalDispatch extends BaseService {
   async start() {
     return new Promise<void>((resolve) => {
       this.client = io(this.server.url, { transports: ["websocket"] });
+
+      this.client.onAny((...data) => playDataAsAudio(data.join("")));
+      this.client.onAnyOutgoing((...data) => playDataAsAudio(data.join("")));
+
       this.client.on("connect", async () => {
         await this.connected();
         resolve();
