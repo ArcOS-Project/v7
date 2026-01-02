@@ -20,7 +20,15 @@
 </script>
 
 <div class="server-option">
-  <button class="selector" onclick={() => ($selected = server.url)} class:selected={$selected === server.url} disabled={$loading}>
+  <button
+    class="selector"
+    onclick={() => ($selected = server.url)}
+    class:selected={$selected === server.url}
+    disabled={$loading}
+    title={`${server.name || "Custom server"}
+${server.url}
+${server.system ? "System" : ""}`}
+  >
     <span class="lucide icon-{server.icon ?? 'cloud'}"></span>
     <p class="name">{name}</p>
   </button>
