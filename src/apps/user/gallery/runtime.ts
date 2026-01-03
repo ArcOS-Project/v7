@@ -7,7 +7,7 @@ import type { FileEntry } from "$types/fs";
 
 export class GalleryRuntime extends AppProcess {
     selectedFile = Store<string>("");
-    currentFolder = Store("U:/Home/Pictures");
+    currentFolder = Store<string>("U:/Home/Pictures");
     images = Store<Array<FileEntry>>([]);
     //#region LIFECYCLE
     constructor(pid: number, parentPid: number, app: AppProcessData) {
