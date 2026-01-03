@@ -11,5 +11,5 @@
 {#if $targetApp}
     <Header target={$targetApp} {process}></Header>
     <PermissionsList {process} app={targetAppId}></PermissionsList>
-    <Actions {process} appId={targetAppId} />
+    <Actions {process} app={targetAppId} />
 {/if}

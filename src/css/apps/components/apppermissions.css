@@ -1,8 +1,10 @@
 #AppPermissions div.header {
   display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-bottom: 12px;
+  gap: 5px;
+  align-items: flex-start;
+  flex-direction: column;
+  margin: 0.5em;
+  margin-bottom: 1em;
 }
 
 #AppPermissions div.header img.icon {
@@ -10,7 +12,7 @@
 }
 
 #AppPermissions div.header p.title {
-  font-size: 22px;
+  font-size: 16px;
   font-weight: bold;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -21,35 +23,25 @@
   display: flex;
   flex-direction: column;
   gap: 0.5em;
-  height: 125px;
   overflow: scroll;
-  margin-left: 0.5em;
+  border-radius: 1em;
+  border: var(--clr-aqua-bg) solid 1px;
+  padding: 0.5em 1em;
+  padding-right: 0.25em;
+  height: 288px;
+  margin-bottom: 1em;
 }
 
 #AppPermissions div.permissionslist div.permission {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-#AppPermissions div.permissionslist div.permission div.options {
-  display: flex;
-  flex-direction: row;
-  gap: 0.5em;
+  width: -webkit-fill-available;
 }
 
 #AppPermissions div.permissionslist div.permission p.permname {
   color: #dddddd;
-}
-#AppPermissions p.sectiontitle {
-  font-size: 16px;
-  font-weight: bold;
-  margin: 0.33em 0;
-}
-
-#AppPermissions p.graytext {
-  opacity: 0.5;
-  margin: 0.5em 0;
+  font-size: 0.9em;
 }
 
 #AppPermissions div.actions {
@@ -62,4 +54,17 @@
 #AppPermissions p.id {
   opacity: 0.5;
   font-family: 'Source Code Pro';
+}
+
+#AppPermissions select.option {
+  width: 7em;
+}
+
+#AppPermissions p.subsection {
+  opacity: 0.5;
+}
+
+#AppPermissions p.graytext {
+  margin: 0.5em 0;
+  opacity: 0.5;
 }

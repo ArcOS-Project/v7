@@ -6,6 +6,6 @@
 </script>
 
 <div class="header">
-    <img class="icon" src={Daemon?.icons?.getAppIcon(target) || process.getIconCached("QuestionIcon")} alt="" />
-    <p class="title">{target?.metadata?.name ?? "Unknown App"}'s Permissions</p>
+    <p class="title">Manage Permissions</p>
+    <p class="subsection">{target?.metadata?.name ?? "Unknown App"} by {target?.metadata?.author}</p>
 </div>
