@@ -8,7 +8,7 @@
     let { selectedFile, file }: { selectedFile: ReadableStore<string>, file: FileEntry } = $props();
 </script>
 
-<button class="file" class:selected={$selectedFile} onclick={(e) => {
+<button class="file" class:selected={$selectedFile === file.name} onclick={(e) => {
     if (selectedFile.get() === file.name) {
 
     } else {
