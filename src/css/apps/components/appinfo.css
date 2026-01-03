@@ -127,6 +127,11 @@
   opacity: 0.5;
   font-family: "Source Code Pro", monospace;
   line-height: 30px;
+  width: 0;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 #AppInfo div.info-block.process-info div.row button.processes {
