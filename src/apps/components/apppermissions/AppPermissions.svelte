@@ -20,7 +20,7 @@
   });
 </script>
 
-{#if $targetApp && permissionId}
+{#if $targetApp}
   <Header target={$targetApp} {process} />
   <PermissionsList {permissionId} />
   <Actions {permissionId} {process} />

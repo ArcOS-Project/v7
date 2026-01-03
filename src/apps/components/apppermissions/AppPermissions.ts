@@ -12,16 +12,16 @@ const AppPermissionsApp: App = {
     appGroup: "components",
   },
   size: {
-    w: 500,
-    h: 450,
+    w: 520,
+    h: 530,
   },
   minSize: {
-    w: 500,
-    h: 450,
+    w: 520,
+    h: 530,
   },
   maxSize: {
-    w: 500,
-    h: 600,
+    w: 520,
+    h: 530,
   },
   position: {
     centered: true,

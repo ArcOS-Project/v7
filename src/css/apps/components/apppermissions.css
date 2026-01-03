@@ -16,6 +16,13 @@
 
 #AppPermissions > div.body div.header p {
   opacity: 0.5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#AppPermissions > div.body div.header p img {
+  height: 16px;
 }
 
 #AppPermissions > div.body div.permissions-list {
@@ -64,4 +71,34 @@
 #AppPermissions > div.body div.actions button {
   height: 30px;
   padding: 0 15px;
+}
+
+#AppPermissions > div.body div.permissions-list.empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#AppPermissions > div.body div.empty-notice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#AppPermissions > div.body div.empty-notice span.lucide {
+  font-size: 64px;
+  margin-bottom: 15px;
+  color: var(--accent-lighter);
+}
+
+#AppPermissions > div.body div.empty-notice h1 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+#AppPermissions > div.body div.empty-notice p {
+  opacity: 0.5;
+  max-width: 300px;
+  text-align: center;
+  margin-bottom: 15px;
 }

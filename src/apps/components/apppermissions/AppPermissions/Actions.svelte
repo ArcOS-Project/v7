@@ -9,7 +9,7 @@
 
 <InfoBlock>
   <InfoRow className="actions">
-    <button onclick={() => Permissions.resetPermissionsById(permissionId)}>Reset all</button>
+    <button onclick={() => Permissions.resetPermissionsById(permissionId)} disabled={!permissionId}>Reset all</button>
     <button class="suggested" onclick={() => process.closeWindow()}>Close</button>
   </InfoRow>
 </InfoBlock>

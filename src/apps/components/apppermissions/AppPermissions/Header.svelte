@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Daemon } from "$ts/server/user/daemon";
   import type { App } from "$types/app";
   import type { AppPermissionsRuntime } from "../runtime";
 
@@ -8,7 +9,7 @@
 <div class="header">
   <h1>Manage Permissions</h1>
   <p>
-    <img src={process.getIconCached(target.metadata.icon)} alt="" />
+    <img src={Daemon.icons?.getAppIcon(target)} alt="" />
     <span>{target?.metadata?.name ?? "Unknown App"} by {target?.metadata?.author}</span>
   </p>
 </div>

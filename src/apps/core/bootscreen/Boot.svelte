@@ -37,6 +37,10 @@
       <div class="key">F4</div>
       <div class="description">Change server</div>
     </div>
+    <div class="row">
+      <div class="key">A</div>
+      <div class="description">ArcTerm mode</div>
+    </div>
   </div>
 </div>
 
