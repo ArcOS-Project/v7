@@ -1,30 +1,20 @@
 <script lang="ts">
-  import { AppPermissionsRuntime } from "../runtime";
-  import PermissionRow from "./PermissionRow.svelte";
   import { PERMISSIONS } from "$ts/permissions/store";
-  import { Permissions } from "$ts/permissions";
-  import { onMount } from "svelte";
+  import PermissionRow from "./PermissionRow.svelte";
 
-  const { Configuration } = Permissions!;
-  const { app, process }: { app: string; process: AppPermissionsRuntime } = $props();
-
-  let uuid = $state("");
-
-    onMount(() => {
-        Configuration.subscribe((permissions) => {
-            const reg = permissions?.registration ?? {};
-            uuid = Object.keys(reg).find((key) => reg[key] === app) ?? "";
-        });
-    });
+  const { permissionId }: { permissionId: string } = $props();
 </script>
-{#if uuid}
-    <div class="permissionslist">
-        {#each PERMISSIONS as p}
-            <PermissionRow app={app} id={p}></PermissionRow>
-        {/each}
+
+<div class="permissions-list" class:empty={!permissionId}>
+  {#if permissionId}
+    {#each PERMISSIONS as id (id)}
+      <PermissionRow {id} {permissionId} />
+    {/each}
+  {:else}
+    <div class="empty-notice">
+      <span class="lucide icon-shield-ban"></span>
+      <h1>No permissions</h1>
+      <p class="graytext">This application hasn't yet asked for permissions.</p>
     </div>
-{:else}
-    <div class="permissionslist">
-        <p class="graytext">This application hasn't yet asked for permissions.</p>
-    </div>
-{/if}
+  {/if}
+</div>

@@ -1,70 +1,67 @@
-#AppPermissions div.header {
+#AppPermissions > div.body {
   display: flex;
-  gap: 5px;
-  align-items: flex-start;
   flex-direction: column;
-  margin: 0.5em;
-  margin-bottom: 1em;
+  gap: 15px;
 }
 
-#AppPermissions div.header img.icon {
+#AppPermissions > div.body div.header img.icon {
   height: 48px;
 }
 
-#AppPermissions div.header p.title {
-  font-size: 16px;
+#AppPermissions > div.body div.header h1 {
+  font-size: 18px;
   font-weight: bold;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  margin-bottom: 5px;
 }
 
-#AppPermissions div.permissionslist {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
+#AppPermissions > div.body div.header p {
+  opacity: 0.5;
+}
+
+#AppPermissions > div.body div.permissions-list {
   overflow: scroll;
-  border-radius: 1em;
-  border: var(--clr-aqua-bg) solid 1px;
-  padding: 0.5em 1em;
-  padding-right: 0.25em;
-  height: 288px;
-  margin-bottom: 1em;
+  border-radius: 15px;
+  border: var(--win-border);
+  padding: 15px;
+  height: 0;
+  flex-grow: 1;
 }
-
-#AppPermissions div.permissionslist div.permission {
+#AppPermissions > div.body div.permissions-list div.permission-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: -webkit-fill-available;
+  margin-bottom: 10px;
 }
 
-#AppPermissions div.permissionslist div.permission p.permname {
-  color: #dddddd;
-  font-size: 0.9em;
+#AppPermissions > div.body div.permissions-list div.permission-row:last-child {
+  margin-bottom: 0;
 }
 
-#AppPermissions div.actions {
+#AppPermissions div.body div.permissions-list div.permission-row select.option {
+  width: 120px;
+}
+
+#AppPermissions > div.body div.permissions-list div.permission-row div.name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#AppPermissions > div.body div.permissions-list div.permission-row div.name span.lucide {
+  font-size: 16px;
+  color: var(--accent-lighter);
+}
+
+#AppPermissions > div.body div.actions {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  padding: 0 10px;
+  height: 50px;
 }
 
-#AppPermissions p.id {
-  opacity: 0.5;
-  font-family: 'Source Code Pro';
-}
-
-#AppPermissions select.option {
-  width: 7em;
-}
-
-#AppPermissions p.subsection {
-  opacity: 0.5;
-}
-
-#AppPermissions p.graytext {
-  margin: 0.5em 0;
-  opacity: 0.5;
+#AppPermissions > div.body div.actions button {
+  height: 30px;
+  padding: 0 15px;
 }

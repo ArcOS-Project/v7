@@ -303,6 +303,18 @@ export class PermissionHandler extends Process {
     if (path.startsWith("U:/System")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_WRITE_SYSTEM");
   }
 
+  resetPermissionsById(permissionId: string) {
+    this.validatePermissionId(permissionId);
+
+    this.Configuration.update((v) => {
+      delete v.allowed[permissionId];
+      delete v.denied[permissionId];
+      delete v.registration[permissionId];
+
+      return v;
+    });
+  }
+
   //#endregion
   //#region UTILITY
 

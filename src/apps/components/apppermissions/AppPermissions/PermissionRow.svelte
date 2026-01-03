@@ -1,49 +1,60 @@
 <script lang="ts">
-    import { Permissions } from "$ts/permissions";
-    import { PERMISSION_NAMES, type PermissionString } from "$ts/permissions/store";
-    import { onMount } from "svelte";
+  import { Permissions } from "$ts/permissions";
+  import { PERMISSION_NAMES, type PermissionString } from "$ts/permissions/store";
+  import { onMount } from "svelte";
 
-    const { app, id }: { app: string, id: PermissionString } = $props();
-    const { Configuration } = Permissions!;
+  const { id, permissionId }: { id: PermissionString; permissionId: string } = $props();
+  const { Configuration } = Permissions!;
 
-    let opt = $state<"Unset" | "Allow" | "Deny">("Unset");
-    let uuid = $state("");
+  const options = ["Unset", "Allow", "Deny"] as const;
+  type Option = (typeof options)[number];
 
-    onMount(() => {
-        Configuration.subscribe((permissions) => {
-            const reg = permissions?.registration ?? {};
-            uuid = Object.keys(reg).find((key) => reg[key] === app) ?? "";
-            const state = permissions.allowed[uuid]?.includes(id) ? "Allow" : permissions.denied[uuid]?.includes(id) ? "Deny" : "Unset"; 
-            opt = state;
-        });
+  let option = $state<Option>("Unset");
+
+  onMount(() => {
+    Configuration.subscribe((permissions) => {
+      const state = permissions.allowed[permissionId]?.includes(id)
+        ? "Allow"
+        : permissions.denied[permissionId]?.includes(id)
+          ? "Deny"
+          : "Unset";
+
+      option = state;
     });
+  });
 
-    function modifValue() {
-        if (!uuid) return;
-        
+  function onchange() {
+    if (!permissionId) return;
 
-        if (opt === "Allow") {
-            if (Permissions.isDeniedById(uuid, id))
-                Permissions.revokeDenialById(uuid, id);
-            Permissions.grantPermissionById(uuid, id);
-        } else if (opt === "Deny") {
-            if (Permissions.hasPermissionById(uuid, id))
-                Permissions.revokePermissionById(uuid, id);
-            Permissions.denyPermissionById(uuid, id);
-        } else {
-            if (Permissions.hasPermissionById(uuid, id))
-                Permissions.revokePermissionById(uuid, id);
-            else if (Permissions.isDeniedById(uuid, id))
-                Permissions.revokeDenialById(uuid, id);
-        
-        }
+    switch (option) {
+      case "Allow":
+        if (Permissions.isDeniedById(permissionId, id)) Permissions.revokeDenialById(permissionId, id);
+        Permissions.grantPermissionById(permissionId, id);
+
+        break;
+      case "Deny":
+        if (Permissions.hasPermissionById(permissionId, id)) Permissions.revokePermissionById(permissionId, id);
+        Permissions.denyPermissionById(permissionId, id);
+
+        break;
+      case "Unset":
+        if (Permissions.hasPermissionById(permissionId, id)) Permissions.revokePermissionById(permissionId, id);
+        if (Permissions.isDeniedById(permissionId, id)) Permissions.revokeDenialById(permissionId, id);
+
+        break;
     }
+  }
 </script>
-<div class="permission">
-    <p class="permname">{PERMISSION_NAMES[id] as PermissionString}</p>
-    <select class="option" bind:value={opt} onchange={modifValue}>
-        <option>Unset</option>
-        <option>Allow</option>
-        <option>Deny</option>
-    </select>
+
+<div class="permission-row">
+  <div class="name">
+    <!-- Icon is placeholder for now -->
+    <span class="lucide icon-slash"></span>
+    <p>{PERMISSION_NAMES[id]}</p>
+  </div>
+  <select class="option" bind:value={option} {onchange}>
+    {#each options as option (option)}
+      <option value={option}>{option}</option>
+    {/each}
+  </select>
 </div>
