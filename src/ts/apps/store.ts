@@ -52,6 +52,7 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/user/calculator/calculator",
   "$apps/user/cod/cod",
   "$apps/user/filemanager/fileManager",
+  "$apps/user/gallery/Gallery",
   "$apps/user/imageviewer/ImageViewer",
   "$apps/user/lightsoff/LightsOff",
   "$apps/user/logging/logging",

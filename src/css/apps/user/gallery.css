@@ -1,0 +1,91 @@
+#gallery > div.body {
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+}
+
+#gallery > div.body div.sidebar {
+    border-right: var(--button-glass-bg) 1px solid;
+    width: 250px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    gap: 8px;
+}
+
+#gallery > div.body div.main {
+    height: 100%;
+    width: calc(100% - 250px);
+    background-color: var(--darkened-overlay);
+    display: flex;
+    flex-direction: column;
+}
+
+#gallery > div.body div.sidebar button.folder {
+    background-color: transparent;
+    outline: none;
+    text-align: left;
+}
+
+#gallery button.folder:hover:not(.selected) {
+    background-color: var(--button-glass-bg) !important;
+}
+
+#gallery p.title {
+    margin: 1em;
+    font-size: 22px;
+    margin-bottom: 0;
+}
+
+#gallery span.graytext {
+    opacity: 0.5;
+}
+
+#gallery div.main > div.gridarea {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin: 0.5em;
+    gap: 0.5em;
+}
+
+#gallery button.file {
+    width: calc(100% / 3 - 0.5em);
+    padding: 0.5em;
+    border-radius: 0.5em;
+}
+
+#gallery div.preview {
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: center;
+}
+
+#gallery img.previewimage {
+   max-width: 100%;
+}
+
+#gallery div.info {
+    display: flex;
+    gap: 0.5em;
+    margin-top: 4px;
+}
+
+#gallery p.filename {
+    font-weight: bold;
+}
+
+#gallery p.graytext {
+    opacity: 0.5;
+}
+
+#gallery button.file:hover {
+    background-color: var(--button-glass-bg);
+}
+
+#gallery .selected {
+    background-color: var(--accent-transparent) !important;
+}
