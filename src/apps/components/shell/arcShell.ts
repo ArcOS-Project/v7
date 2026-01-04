@@ -34,6 +34,7 @@ export const ArcShellApp: App = {
   id: "arcShell",
   core: true,
   hidden: true,
+  vital: true,
   acceleratorDescriptions: {
     "Ctrl+Q": "Close the currently focused application",
     "Alt+[": "Switch to the previous workspace",

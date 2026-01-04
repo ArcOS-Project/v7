@@ -82,4 +82,5 @@ div.window#bootScreen div.top div.keys div.row {
 div.window#bootScreen div.top div.keys div.row div.key {
   font-weight: bold;
   opacity: 0.5;
+  width: 20px;
 }

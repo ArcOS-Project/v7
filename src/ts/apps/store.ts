@@ -3,6 +3,7 @@ import type { AppKeyCombinations } from "$types/accelerator";
 export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/components/acceleratoroverview/AcceleratorOverview",
   "$apps/components/appinfo/AppInfo",
+  "$apps/components/apppermissions/AppPermissions",
   "$apps/components/appinstaller/AppInstaller",
   "$apps/components/apppreinstall/AppPreInstall",
   "$apps/components/arcfind/ArcFindProc",
