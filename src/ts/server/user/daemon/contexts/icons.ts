@@ -13,14 +13,19 @@ export class IconsUserContext extends UserContext {
   }
 
   getAppIcon(app: App) {
+    if (!app) return this.getIconCached("ComponentIcon");
     return this.getIconCached(`@app::${app.id}`) || this?.getIconCached("ComponentIcon");
   }
 
   getAppIconByProcess(process: AppProcess) {
+    if (!process) return this.getIconCached("ComponentIcon");
+
     return this.getAppIcon(process.app?.data) || this?.getIconCached("ComponentIcon");
   }
 
   async getIcon(id: string): Promise<string> {
+    if (!id) return this.getIconCached("ComponentIcon");
+
     const iconService = this.serviceHost?.getService<IconService>("IconService");
 
     return (await iconService?.getIcon(id)) || this?.getIconCached("ComponentIcon");
