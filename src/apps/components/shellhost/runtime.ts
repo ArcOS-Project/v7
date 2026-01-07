@@ -1,4 +1,6 @@
+import { MessageBox } from "$ts/dialog";
 import { Env } from "$ts/env";
+import { ErrorIcon } from "$ts/images/dialog";
 import { Process } from "$ts/process/instance";
 import { Daemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
@@ -36,6 +38,21 @@ export class ShellHostRuntime extends Process {
       undefined,
       this.pid
     ); // Let's first spawn the shell exec from globalSettings
+
+    // BUG 695905e6e49c74867e992655
+    if (!proc) {
+      MessageBox(
+        {
+          title: "Shell failed",
+          message: "An error occurred while trying to spawn the shell. Please try again by restarting.",
+          buttons: [{ caption: "Restart", action: () => Daemon.power?.restart(), suggested: true }],
+          sound: "arcos.dialog.error",
+          image: ErrorIcon,
+        },
+        Daemon.pid
+      );
+      return;
+    }
 
     for (const id of this.shellComponents) {
       procs[id] = (await Daemon!.spawn?._spawnApp(id, undefined, this.pid))!; // Then spawn each shell component
