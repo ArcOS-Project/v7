@@ -23,7 +23,6 @@ export class AppShortcutsMigration extends MigrationNode {
       if (!storage || !contents) return { result: "err_noop", errorMessage: "Nothing to do." };
 
       for (const app of storage) {
-        console.log(app);
         const existing = contents?.files.filter((f) => f.name === `${app.id}.arclnk`)[0];
 
         if (existing) continue;

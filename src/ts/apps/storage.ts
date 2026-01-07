@@ -139,8 +139,6 @@ export class ApplicationStorage extends BaseService {
       result.push(...apps);
     }
 
-    console.log(result);
-  
     return sortByHierarchy(
       result.sort((a) => (a.hidden ? 0 : -1)),
       "metadata.name"

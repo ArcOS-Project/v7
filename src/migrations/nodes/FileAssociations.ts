@@ -20,14 +20,8 @@ export class FileAssociationsMigration extends MigrationNode {
 
     if (!apps) return { result: "err_noop", successMessage: "Nothing to do." };
 
-    console.log(apps.map((a) => a.id + "\n"));
-
-    console.log("NOW UPDATING CONFIGURATION");
-
     assoc?.updateConfiguration((config) => {
       for (const app of apps) {
-        console.log("NOW UPDATING " + app.id);
-
         if (!app.opens?.extensions) continue;
 
         for (const extension of app.opens.extensions) {
@@ -46,12 +40,8 @@ export class FileAssociationsMigration extends MigrationNode {
         }
       }
 
-      console.log(`NOW UPDATING FILE DEFINITIONS`);
-
       for (const definitionKey in DefaultFileDefinitions) {
         const definitionValue = DefaultFileDefinitions[definitionKey];
-
-        console.log(`NOW UPDATING ${definitionKey}`);
 
         if (!config.definitions[definitionKey]) {
           config.definitions[definitionKey] = definitionValue;
