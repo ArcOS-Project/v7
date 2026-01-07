@@ -33,7 +33,7 @@ export class JsExec extends Process {
   filePath?: string;
   workingDirectory: string;
   operationId: string;
-  
+
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, filePath: string, ...args: any[]) {
@@ -154,24 +154,28 @@ export class JsExec extends Process {
 
     if (isUnsafe) return; // File is dangerous, TODO -> PERMISSIONS
 
-    const ast = acorn.parse(unwrapped, {
-      sourceType: "module",
-      ecmaVersion: "latest",
-      allowReturnOutsideFunction: true,
-      allowAwaitOutsideFunction: true,
-    });
-    const hasExport = ast.body.some((node) => node.type.startsWith("Export"));
-    const hasImport = ast.body.some((node) => node.type.startsWith("Import"));
-    const hasDebugger = ast.body.some((node) => node.type.startsWith("Debugger"));
-    const domReferences = await this.testFileContents_detectDomReferences(ast);
+    try {
+      const ast = acorn.parse(unwrapped, {
+        sourceType: "module",
+        ecmaVersion: "latest",
+        allowReturnOutsideFunction: true,
+        allowAwaitOutsideFunction: true,
+      });
+      const hasExport = ast.body.some((node) => node.type.startsWith("Export"));
+      const hasImport = ast.body.some((node) => node.type.startsWith("Import"));
+      const hasDebugger = ast.body.some((node) => node.type.startsWith("Debugger"));
+      const domReferences = await this.testFileContents_detectDomReferences(ast);
 
-    for (const key in domReferences) {
-      if ((domReferences as any)[key]) throw new JsExecError(`References to ${key} are not allowed.`);
+      for (const key in domReferences) {
+        if ((domReferences as any)[key]) throw new JsExecError(`References to ${key} are not allowed.`);
+      }
+
+      if (hasExport) throw new JsExecError("Export statements are not valid inside of ArcOS");
+      if (hasImport) throw new JsExecError("Import statements are not valid inside of ArcOS");
+      if (hasDebugger) throw new JsExecError("Debugger triggers are not valid inside of ArcOS");
+    } catch {
+      throw new JsExecError("An error occurred while parsing the source file");
     }
-
-    if (hasExport) throw new JsExecError("Export statements are not valid inside of ArcOS");
-    if (hasImport) throw new JsExecError("Import statements are not valid inside of ArcOS");
-    if (hasDebugger) throw new JsExecError("Debugger triggers are not valid inside of ArcOS");
   }
 
   async testFileContents_detectDomReferences(ast: acorn.Program) {
@@ -195,7 +199,7 @@ export class JsExec extends Process {
 
     return results;
   }
-  
+
   //#endregion
 }
 
