@@ -170,6 +170,12 @@ export const FirstRunShortcuts: Record<string, ArcShortcut> = {
     type: "app",
     target: "AppStore",
   },
+  [join(UserPaths.Desktop,"iHaveFeedback.arclnk")]: {
+    icon:"BugReportIcon",
+    name:"Give feedback",
+    type:"app",
+    target:"feedback"
+  },
   [join(UserPaths.Documents, "pictures.arclnk")]: {
     icon: "WallpapersFolderIcon",
     name: "Pictures",

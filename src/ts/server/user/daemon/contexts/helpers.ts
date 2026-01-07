@@ -7,7 +7,9 @@ import TerminalWindowApp from "$apps/components/terminalwindow/TerminalWindow";
 import SafeModeNotice from "$lib/Daemon/SafeModeNotice.svelte";
 import type { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { Env, Stack, SysDispatch } from "$ts/env";
+import { ArcOSVersion, Env, Stack, SysDispatch } from "$ts/env";
+import { ArcBuild } from "$ts/metadata/build";
+import { ArcMode } from "$ts/metadata/mode";
 import { Sleep } from "$ts/sleep";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
@@ -157,37 +159,21 @@ export class HelpersUserContext extends UserContext {
       "BugHuntCreator",
       undefined,
       `[${process.app.id}] Feedback report - ${process.windowTitle()}`,
-      `Thank you for submitting feedback to ArcOS! Any feedback is of great help to make ArcOS the best I can. Please be so kind and fill out the following form:
+      `Thank you for submitting feedback to ArcOS! Any feedback is of great help to make ArcOS the best we can. Please write your feedback in between the lines:
 
-1. Do you want to submit a new 'app', 'feature', or 'other'? Please answer one.
-    - Your answer:
+------
 
-2. What do you want me to implement?
-    - Your answer:
-
-3. How should I go about this? Any ideas?
-    - Your answer:
-
-4. Did a previous version of ArcOS include this (v5 or v6)?
-    - Your answer:
-
-5. Convince me why I should implement this feature.
-    - Your answer:
-
+------
 
 **Do not change any of the information below this line.**
 
-------
-
 - Username: ${this.userInfo?.username}
 - User ID: ${this.userInfo?._id}
-
-------
-
+- ArcOS version: ${ArcOSVersion}-${ArcMode()}-${ArcBuild()}
 
 # DISCLAIMER
 
-The information provided in this report is subject for review by me or another ArcOS acquaintance. We may contact you using the ArcOS Messages app if we have any additional questions. It's also possible that the feedback you've provided will be converted into a GitHub issue for communication with other developers. By submitting this feedback, you agree to that. The issue will not contain any personal information, any personal information will be filtered out by a human being.`,
+The information provided in this report is subject for review by Izaak or another ArcOS team member. We may contact you using the ArcOS Messages app if we have any additional questions. It's also possible that the feedback you've provided will be converted into a GitHub issue for communication with other developers. By submitting this feedback, you agree to that. The issue will not contain any personal information, any personal information will be filtered out by a human being. Feedback reports are PUBLIC and ANONYMOUS. They do NOT contain any system logs.`,
       {
         sendAnonymously: true,
         excludeLogs: true,

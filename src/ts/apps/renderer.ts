@@ -240,7 +240,6 @@ export class AppRenderer extends Process {
     const titleIcon = document.createElement("img");
     const titleCaption = document.createElement("span");
     const controls = document.createElement("div");
-    const feedbackButton = document.createElement("button");
 
     controls.className = "controls";
 
@@ -309,16 +308,6 @@ export class AppRenderer extends Process {
 
     titlebar.className = "titlebar";
     titlebar.append(title);
-
-    if (BETA && !process.app.data.entrypoint && !process.app.data.workingDirectory && !process.app.data.thirdParty) {
-      feedbackButton.className = "link feedback";
-      feedbackButton.innerText = "Feedback?";
-      feedbackButton.addEventListener("click", () => {
-        Daemon?.helpers?.iHaveFeedback(process);
-      });
-
-      titlebar.append(feedbackButton);
-    }
 
     titlebar.append(controls);
 

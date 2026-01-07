@@ -1,7 +1,7 @@
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { isPopulatable } from "$ts/apps/util";
 import { MessageBox } from "$ts/dialog";
-import { BETA, Env, Stack, SysDispatch } from "$ts/env";
+import { Env, Stack, SysDispatch } from "$ts/env";
 import type { ShareManager } from "$ts/shares";
 import type { App } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
@@ -50,23 +50,6 @@ export class ApplicationsUserContext extends UserContext {
     await Daemon!.spawn?._spawnApp("shellHost", undefined, this.pid, autoloadApps);
 
     if (this.safeMode) Daemon!.helpers?.safeModeNotice();
-
-    if (BETA)
-      Daemon!.notifications?.sendNotification({
-        title: "Have any feedback?",
-        message:
-          "I'd love to hear it! There's a feedback button in the titlebar of every window. Don't hesitate to tell me how I'm doing stuff wrong, what you want to see or what I forgot. I want to hear all of it.",
-        buttons: [
-          {
-            caption: "Send feedback",
-            action: () => {
-              Daemon!.helpers!.iHaveFeedback(Stack.getProcess(+Env.get("shell_pid"))!);
-            },
-          },
-        ],
-        icon: "message-square-heart",
-        timeout: 6000,
-      });
 
     if (navigator.userAgent.toLowerCase().includes("firefox")) {
       await MessageBox(

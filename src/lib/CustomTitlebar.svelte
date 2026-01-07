@@ -3,7 +3,6 @@
   import type { AppRenderer } from "$ts/apps/renderer";
   import { contextProps } from "$ts/context/actions.svelte";
   import { BETA, Stack } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
   import { onMount, type Snippet } from "svelte";
   import AltMenu from "./CustomTitlebar/AltMenu.svelte";
 
@@ -51,9 +50,6 @@
     {/if}
     <AltMenu {process} />
   </div>
-  {#if BETA}
-    <button class="link feedback" onclick={() => Daemon?.helpers?.iHaveFeedback(process)}>Feedback?</button>
-  {/if}
   <div class="controls">
     {#if data.controls.minimize && !data.overlay}
       <button class="minimize icon-chevron-down" aria-label="minimize" onclick={minimize}></button>
