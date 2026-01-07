@@ -92,6 +92,7 @@ div.desktop-wallpaper > div.wallpaper:not(.show) {
   width: 32px;
   margin: 0 auto;
   height: 32px;
+  object-fit: contain;
 }
 
 #wallpaper div.desktop-icons div.img span {
@@ -125,6 +126,8 @@ div.desktop-wallpaper > div.wallpaper:not(.show) {
 
 #wallpaper div.desktop-icons img {
   height: 32px;
+  width: 32px;
+  object-fit: contain;
 }
 
 #wallpaper div.desktop-icons button:hover {

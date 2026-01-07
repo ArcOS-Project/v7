@@ -1,36 +1,46 @@
 import { AppProcess } from "$ts/apps/process";
-import type { IconService } from "$ts/icon";
-import { Daemon } from "$ts/server/user/daemon";
-import { Store, type ReadableStore } from "$ts/writable";
+import { SysDispatch } from "$ts/env";
+import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
 export class IconEditDialogRuntime extends AppProcess {
-  store?: ReadableStore<Record<string, string>>;
-  id?: string;
+  iconName?: string;
+  returnId?: string;
   type = Store<string>();
   values = Store<Record<string, string>>({});
   currentIcon = Store<string>();
+  defaultIcon?: string;
+  sent = false;
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, app: AppProcessData, store?: ReadableStore<Record<string, string>>, id?: string) {
+  constructor(
+    pid: number,
+    parentPid: number,
+    app: AppProcessData,
+    returnId?: string,
+    initialValue?: string,
+    name?: string,
+    defaultIcon?: string
+  ) {
     super(pid, parentPid, app);
 
-    this.id = id;
-    this.store = store || Store(Daemon?.serviceHost?.getService<IconService>("IconService")?.Configuration());
+    this.iconName = name;
+    this.returnId = returnId;
+    if (initialValue && initialValue.startsWith("@") && initialValue.includes("::")) {
+      const split = initialValue.split("::");
+      this.type.set(split[0]);
+      this.values.update((v) => {
+        v[split[0]] = split[1];
+        return v;
+      });
+    }
+    this.defaultIcon = defaultIcon;
   }
 
   async start() {
-    if (!this.store || !this.id) return false;
+    if (!this.returnId || !this.iconName) return false;
 
-    if (!this.store()[this.id]) this.id = this.id.includes("::") ? this.id.split("::")[1] : this.id;
-
-    const icon = this.store()[this.id].split("::");
-
-    this.type.set(icon[0]);
-    this.values.set({
-      [this.type()]: icon[1],
-    });
     this.type.subscribe((v) => this.updateCurrentIcon(v));
     this.values.subscribe((v) => this.updateCurrentIcon(this.type(), v));
   }
@@ -42,18 +52,24 @@ export class IconEditDialogRuntime extends AppProcess {
   }
 
   default() {
-    this.type.set("@builtin");
+    if (!this.defaultIcon) return;
+
+    const [type, value] = this.defaultIcon.split("::");
+    this.type.set(type);
     this.values.set({
-      "@builtin": this.id!,
+      [type]: value,
     });
   }
 
   save() {
-    this.store?.update((v) => {
-      v[this.id!] = `${this.type()}::${this.values()[this.type()]}`;
-      return v;
-    });
-
+    SysDispatch.dispatch("ied-confirm", [this.returnId, `${this.type()}::${this.values()[this.type()]}`]);
+    this.sent = true;
     this.closeWindow();
+  }
+
+  async stop() {
+    if (!this.sent) {
+      SysDispatch.dispatch("ied-cancel", [this.returnId]);
+    }
   }
 }

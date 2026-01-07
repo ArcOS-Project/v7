@@ -29,7 +29,9 @@
   margin-bottom: 15px;
 }
 #ShortcutProperties > div.body div.icon img {
+  width: 84px;
   height: 84px;
+  object-fit: contain;
 }
 
 #ShortcutProperties > div.body div.icon button {
@@ -90,7 +92,7 @@
   height: 16px;
   font-size: 16px;
   background-color: transparent;
-  outline:none;
+  outline: none;
   border-radius: 0;
 }
 #ShortcutProperties > div.body div.info-block div.type {

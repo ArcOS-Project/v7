@@ -124,6 +124,21 @@ export class HelpersUserContext extends UserContext {
     });
   }
 
+  async IconEditor(initialValue: string, defaultIcon?: string, name?: string) {
+    const returnId = UUID();
+
+    await Daemon!.spawn?.spawnOverlay("IconEditDialog", +Env.get("shell_pid"), returnId, initialValue, name, defaultIcon);
+
+    return new Promise<string>(async (r) => {
+      SysDispatch.subscribe<[string, string]>("ied-confirm", ([id, icon]) => {
+        if (id === returnId) r(icon);
+      });
+      SysDispatch.subscribe<[string, string]>("ied-cancel", ([id]) => {
+        if (id === returnId) r(initialValue);
+      });
+    });
+  }
+
   ParentIs(proc: AppProcess, appId: string) {
     const targetAppInstances = Stack.renderer?.getAppInstances(appId).map((p) => p.pid);
 

@@ -8,7 +8,7 @@
   async function choose() {
     $values[$type] =
       (await Daemon!.helpers!.IconPicker({
-        forWhat: process.id!,
+        forWhat: process.iconName!,
         defaultIcon: $values[$type] || "ComponentIcon",
       })) || $values[$type];
   }

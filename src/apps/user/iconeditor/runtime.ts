@@ -103,6 +103,15 @@ export class IconEditorRuntime extends AppProcess {
   }
 
   async editIcon() {
-    this.spawnOverlayApp("IconEditDialog", this.pid, this.icons, this.selectedIcon());
+    const icon = await Daemon.helpers!.IconEditor(
+      this.icons()[this.selectedIcon()],
+      `@builtin::${this.selectedIcon()}`,
+      this.selectedIcon()
+    );
+
+    this.icons.update((v) => {
+      v[this.selectedIcon()] = icon;
+      return v;
+    });
   }
 }
