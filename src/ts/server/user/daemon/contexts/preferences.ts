@@ -64,7 +64,6 @@ export class PreferencesUserContext extends UserContext {
       };
 
     if (!preferences.pinnedApps?.length) preferences.pinnedApps = DefaultPinnedApps;
-    if (!preferences.shell.start.actions?.length) preferences.shell.start.actions = DefaultStartMenuActions;
 
     const result = applyDefaults<UserPreferences>(preferences, {
       ...DefaultUserPreferences,
@@ -72,6 +71,7 @@ export class PreferencesUserContext extends UserContext {
     });
 
     if (!result.globalSettings.shellExec) result.globalSettings.shellExec = "arcShell";
+    if (!result.shell.start.actions?.length) result.shell.start.actions = DefaultStartMenuActions;
 
     Daemon!.preferences.set(result);
     this.commitPreferences(result);

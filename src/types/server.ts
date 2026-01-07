@@ -7,6 +7,7 @@ export interface ServerInfo {
   disableRegistration: boolean;
   freshBackend: boolean;
   rejectTargetedAuthorization: boolean;
+  noEmailVerify: boolean;
 }
 
 export interface ServerOption {

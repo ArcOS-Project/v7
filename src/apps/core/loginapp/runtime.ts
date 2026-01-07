@@ -251,6 +251,9 @@ export class LoginAppRuntime extends AppProcess {
     broadcast("Starting share management");
     await userDaemon.init!.startShareManager();
 
+    broadcast("Indexing your files");
+    await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
+
     broadcast("Running migrations");
     await userDaemon.serviceHost?.getService<MigrationService>("MigrationSvc")?.runMigrations(broadcast);
 
@@ -283,8 +286,6 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.checks!.checkForUpdates();
     userDaemon.serviceHost?.getService<ProtocolServiceProcess>("ProtoService")?.parseProtoParam();
     await userDaemon.checks!.checkForMissedMessages();
-
-    await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
 
     userDaemon._blockLeaveInvocations = false;
   }

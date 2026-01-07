@@ -85,9 +85,11 @@ export class AppRegistrationUserContext extends UserContext {
       await this.modeUserAppsToFs();
 
       const bulk = Object.fromEntries(
-        Object.entries(await Fs.bulk(UserPaths.AppRepository, "json")).map(([k, v]) => [k.replace(".json", ""), v])
+        Object.entries((await Fs.bulk(UserPaths.AppRepository, "json")) || {}).map(([k, v]) => [k.replace(".json", ""), v])
       );
 
+      console.log(bulk);
+      
       return Object.values(bulk) as AppStorage;
     } catch {
       return [];

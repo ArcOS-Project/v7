@@ -59,6 +59,11 @@ export class ServiceHost extends Process {
   }
 
   async stop() {
+    // Gracefully stop each service
+    for (const [id, service] of [...this.Services()]) {
+      if (service.pid) await this.stopService(id);
+    }
+
     this._holdRestart = true;
   }
 

@@ -1,7 +1,7 @@
 import { MessageBox } from "$ts/dialog";
-import { Env, getKMod, Stack, State } from "$ts/env";
+import { Env, getKMod, Server, Stack, State } from "$ts/env";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
-import { SecurityMediumIcon } from "$ts/images/general";
+import { AccountIcon, SecurityMediumIcon } from "$ts/images/general";
 import { ArcLicense } from "$ts/metadata/license";
 import { LoginUser, RegisterUser } from "$ts/server/user/auth";
 import { UserDaemon } from "$ts/server/user/daemon";
@@ -255,6 +255,7 @@ export class InitialSetupRuntime extends AppProcess {
           image: WarningIcon,
           title: "You made a typo!",
           message: "The passwords you entered don't match. Please re-enter them, and then try again.",
+          sound: "arcos.dialog.warning",
           buttons: [
             {
               caption: "Okay",
@@ -269,6 +270,48 @@ export class InitialSetupRuntime extends AppProcess {
         true
       );
 
+      return;
+    }
+
+    const confirmed = await new Promise<boolean>((r) => {
+      const emailNotice = !Server.serverInfo?.noEmailVerify
+        ? ` Please note that you <b>need</b> a valid email address in order to activate your account. Entering a non-existent email address will prevent you from creating your account.`
+        : ``;
+
+      MessageBox(
+        {
+          title: "Confirm details",
+          message: `Are you sure that the following information is correct?${emailNotice}<br>
+<br>
+<ul>
+  <li><b>Username:</b> ${htmlspecialchars(username)}</li>
+  <li><b>Email:</b> ${htmlspecialchars(email)}</li>
+</ul>`,
+          sound: "arcos.dialog.warning",
+          buttons: [
+            {
+              caption: "Go back",
+              action: () => {
+                r(false);
+              },
+            },
+            {
+              caption: "Confirm",
+              suggested: true,
+              action: () => {
+                r(true);
+              },
+            },
+          ],
+          image: AccountIcon,
+        },
+        this.pid,
+        true
+      );
+    });
+
+    if (!confirmed) {
+      this.actionsDisabled.set(false);
       return;
     }
 
@@ -298,7 +341,7 @@ export class InitialSetupRuntime extends AppProcess {
       return;
     }
 
-    this.pageNumber.set(this.pageNumber() + 1);
+    this.pageNumber.set(this.pageNumber() + (Server.serverInfo?.noEmailVerify ? 2 : 1));
   }
 
   async checkAccountActivation() {
@@ -321,7 +364,8 @@ export class InitialSetupRuntime extends AppProcess {
               suggested: true,
             },
           ],
-          image: WarningIcon,
+          sound: "arcos.dialog.error",
+          image: ErrorIcon,
         },
         this.pid,
         true

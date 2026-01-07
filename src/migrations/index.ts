@@ -7,7 +7,7 @@ import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
-import type { MigrationResultCollection, MigrationStatusCallback } from "$types/migrations";
+import type { MigrationResult, MigrationStatusCallback } from "$types/migrations";
 import type { Service } from "$types/service";
 import type { MigrationNode } from "./node";
 import { AppShortcutsMigration } from "./nodes/AppShortcuts";
@@ -45,10 +45,10 @@ export class MigrationService extends BaseService {
 
   //#endregion
 
-  async runMigrations(cb?: MigrationStatusCallback): Promise<Record<string, MigrationResultCollection>> {
+  async runMigrations(cb?: MigrationStatusCallback): Promise<Record<string, MigrationResult>> {
     this.Log("runMigrations: now running versional migrations");
     const config = this.Configuration();
-    const results: Record<string, MigrationResultCollection> = {};
+    const results: Record<string, MigrationResult> = {};
 
     cb?.("Running migrations");
 
@@ -79,10 +79,16 @@ export class MigrationService extends BaseService {
 
         results[migration.name] = result;
 
-        this.Configuration.update((v) => {
-          v[migration.name] = migration.version;
-          return v;
-        });
+        if (result.result === "err_ok" || result.result === "err_sameVersion")
+          this.Configuration.update((v) => {
+            v[migration.name] = migration.version;
+            return v;
+          });
+        else {
+          this.Log(
+            `runMigrations: ${migration.name}::${result.result} -> ${result.errorMessage || result.successMessage || "<no_msg>"}`
+          );
+        }
       } else {
         this.Log(`runMigrations: ${migration.name}: up to date`);
       }
@@ -93,7 +99,7 @@ export class MigrationService extends BaseService {
     return results;
   }
 
-  async runMigration(migration: typeof MigrationNode, cb?: MigrationStatusCallback): Promise<MigrationResultCollection> {
+  async runMigration(migration: typeof MigrationNode, cb?: MigrationStatusCallback): Promise<MigrationResult> {
     const instance = new migration(migration, this);
     const result = await instance._runMigration(cb);
 
