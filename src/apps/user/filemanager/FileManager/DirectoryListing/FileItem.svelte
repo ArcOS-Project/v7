@@ -37,7 +37,7 @@
     mime = info?.friendlyName || "Unknown";
     icon = info?.icon || process.getIconCached("DefaultMimeIcon");
 
-    if (shortcut) shortcutIcon = process.getIconCached(shortcut.icon);
+    if (shortcut) shortcutIcon = await process.getIcon(shortcut.icon);
 
     if (info?.friendlyName === "Image file" && process.userPreferences().appPreferences.fileManager?.renderThumbnails)
       thumbnail = await Daemon?.files?.getThumbnailFor(thisPath);
