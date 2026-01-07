@@ -1,11 +1,4 @@
-import type {
-  Activity,
-  AuditLog,
-  ExpandedToken,
-  ServerLogItem,
-  ServerStatistics,
-  User
-} from "$types/admin";
+import type { Activity, AuditLog, ExpandedToken, ServerLogItem, ServerStatistics, User } from "$types/admin";
 import type { BugReport, ReportStatistics } from "$types/bughunt";
 import type { FsAccess } from "$types/fs";
 import type { StoreItem } from "$types/package";
@@ -13,6 +6,7 @@ import type { SharedDriveType } from "$types/shares";
 import type { ExpandedUserInfo, UserInfo } from "$types/user";
 import type { Component } from "svelte";
 import type { AdminPortalRuntime } from "./runtime";
+import type { ReadableStore } from "$ts/writable";
 
 export interface AdminPortalPage {
   name: string;
@@ -51,6 +45,7 @@ export type BugHuntData = {
 
 export type ViewBugReportData = {
   report: BugReport;
+  quickView?: ReadableStore<string>;
 };
 
 export type UsersData = {

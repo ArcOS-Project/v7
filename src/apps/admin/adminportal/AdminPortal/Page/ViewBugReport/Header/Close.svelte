@@ -5,7 +5,7 @@
   import { MessageBox } from "$ts/dialog";
 
   const { process, data }: { process: AdminPortalRuntime; data: ViewBugReportData } = $props();
-  const { report } = data;
+  const { report, quickView } = data;
 
   let loading = $state(false);
 
@@ -34,7 +34,9 @@
               }
 
               await process.admin.closeBugReport(report._id!);
-              process.switchPage("bughunt");
+
+              if ($quickView) $quickView = "";
+              else process.switchPage("bughunt");
             },
             suggested: true,
           },

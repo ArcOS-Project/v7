@@ -5,7 +5,7 @@
   import { MessageBox } from "$ts/dialog";
 
   const { process, data }: { process: AdminPortalRuntime; data: ViewBugReportData } = $props();
-  const { report } = data;
+  const { report, quickView } = data;
 
   let loading = $state(false);
 
@@ -26,7 +26,10 @@
             caption: "Delete",
             action: async () => {
               await process.admin.deleteBugReport(report._id!);
-              await process.switchPage("bughunt");
+             
+              if ($quickView) $quickView = "";
+              else await process.switchPage("bughunt");
+             
               loading = false;
             },
             suggested: true,

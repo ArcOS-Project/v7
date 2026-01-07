@@ -13,11 +13,11 @@
 
   const { process, data }: { process: AdminPortalRuntime; data: BugHuntData } = $props();
   const { reports, stats, users } = data;
-  const pages = ["all", "opened", "closed", "apps"] as const;
+  const pages = ["all", "sys", "apps", "closed"] as const;
   type PagesType = (typeof pages)[number];
 
   let store = Store<BugReport[]>([]);
-  let sortState = Store<PagesType>("opened");
+  let sortState = Store<PagesType>("sys");
   let filterId = Store<string>("");
   let idEntry = Store("");
   let quickView = Store<string>("");
@@ -30,8 +30,8 @@
           return true;
         case "closed":
           return report.closed;
-        case "opened":
-          return !report.closed;
+        case "sys":
+          return !report.closed && !report.isAppReport;
         case "apps":
           return report.isAppReport;
       }
@@ -106,9 +106,16 @@
 
     if (!go) return;
 
+    const { stop, incrementProgress } = await Daemon.helpers!.GlobalLoadIndicator("Deleting reports...", process.pid, {
+      max: $selectionList.length,
+    });
+
     for (const report of $selectionList) {
       await process.admin.deleteBugReport(report);
+      incrementProgress?.();
     }
+
+    await stop();
 
     process.switchPage("bughunt", {}, true);
   }
