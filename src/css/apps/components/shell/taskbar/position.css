@@ -28,7 +28,7 @@
 
 .tb-vertical-left #arcShell div.taskbar,
 .tb-vertical-right #arcShell div.taskbar {
-  width: 51px;
+  width: 50px;
   height: calc(100% - 20px);
   border-top: none;
   flex-direction: column;
@@ -37,7 +37,7 @@
 
 .tb-vertical-left #arcShell div.shell.docked div.taskbar,
 .tb-vertical-right #arcShell div.shell.docked div.taskbar {
-  width: 51px;
+  width: 50px;
   height: 100%;
   border-top: none;
   flex-direction: column;

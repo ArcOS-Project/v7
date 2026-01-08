@@ -140,7 +140,7 @@ export class MediaPlayerRuntime extends AppProcess {
       icon: "MediaPlayerIcon",
       popup: {
         width: 250,
-        height: 280,
+        height: 185,
         component: TrayPopup as any,
       },
     });

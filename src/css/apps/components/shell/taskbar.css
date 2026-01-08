@@ -31,8 +31,18 @@ div.shell.docked div.taskbar.shell-colored::before {
   --taskbar-allocation: 72px;
 }
 
+:root #main:has(#arcShell div.shell) #appRenderer.tb-vertical-left,
+:root #main:has(#arcShell div.shell) #appRenderer.tb-vertical-right {
+  --taskbar-allocation: 70px;
+}
+
 :root #main:has(#arcShell div.shell.docked) {
   --taskbar-allocation: 51px;
+}
+
+:root #main:has(#arcShell div.shell.docked) #appRenderer.tb-vertical-left,
+:root #main:has(#arcShell div.shell.docked) #appRenderer.tb-vertical-right {
+  --taskbar-allocation: 50px;
 }
 
 div.shell.docked div.taskbar {
@@ -160,7 +170,7 @@ div.shell div.taskbar div.pinned-apps > button {
 }
 
 .theme-light #arcShell div.shell div.taskbar div.pinned-apps > button:active {
-opacity: 0.5;
+  opacity: 0.5;
   filter: brightness(0.9);
 }
 
@@ -181,6 +191,7 @@ div.shell div.taskbar div.pinned-apps > button + button {
   justify-content: center;
   align-items: center;
   background-color: transparent;
+  position: relative;
 }
 
 #arcShell div.taskbar div.tray-icons > div.icon > button.trigger:hover {
@@ -221,9 +232,25 @@ div.shell div.taskbar div.pinned-apps > button + button {
     opacity 0.2s;
 }
 
+.tb-vertical-left #arcShell div.taskbar div.tray-icons > div.icon > div.popup {
+  top: unset !important;
+  right: calc(0px - var(--w) - 10px) !important;
+  margin-top: 0;
+  margin-right: 20px;
+}
+
+.tb-vertical-right #arcShell div.taskbar div.tray-icons > div.icon > div.popup {
+  top: unset !important;
+  left: calc(0px - var(--w) - 20px) !important;
+  margin-top: 0;
+  margin-left: 20px;
+}
+
 #arcShell div.taskbar div.tray-icons > div.icon > div.popup.visible {
   opacity: 1;
   margin-top: 0;
+  margin-left: 0;
+  margin-right: 0;
   pointer-events: initial !important;
   scale: 1;
 }
@@ -293,4 +320,11 @@ div.shell div.shell div.taskbar button.clock-button.active span,
 
 .theme-light div.shell div.taskbar::before {
   opacity: 0.1;
+}
+
+[class*="tb-vertical"] div.shell div.taskbar button.clock-button {
+  width: 40px !important;
+  min-width: unset;
+  padding: 0;
+  justify-content: center;
 }
