@@ -56,6 +56,7 @@ export class AppRendererUserContext extends UserContext {
     renderer.removeAttribute("class");
     renderer.setAttribute("style", style);
     renderer.classList.add(`theme-${theme}`);
+    renderer.classList.add(`tb-${v.shell.taskbar.position}`);
     renderer.classList.toggle("sharp", v.shell.visuals.sharpCorners);
     renderer.classList.toggle("noani", v.shell.visuals.noAnimations || this.safeMode);
     renderer.classList.toggle("noglass", v.shell.visuals.noGlass || this.safeMode);
