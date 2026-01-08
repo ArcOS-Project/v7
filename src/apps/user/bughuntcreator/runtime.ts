@@ -33,7 +33,7 @@ export class BugHuntCreatorRuntime extends AppProcess {
     const bugHuntInstances = Stack.renderer?.getAppInstances("BugHunt").map((p) => p.pid);
 
     this.userPreferences.update((v) => {
-      v.appPreferences.Bughunt ||= {};
+      v.appPreferences.BugHunt ||= {};
       return v;
     });
     
@@ -64,9 +64,9 @@ export class BugHuntCreatorRuntime extends AppProcess {
     await this.bughunt.sendBugReport({
       title,
       body,
-      anonymous: options.sendAnonymously,
-      noLogs: options.excludeLogs,
-      public: options.makePublic,
+      anonymous: !!options.sendAnonymously,
+      noLogs: !!options.excludeLogs,
+      public: !!options.makePublic,
     });
 
     await this.closeWindow();
