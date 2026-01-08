@@ -1,7 +1,8 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
-  import { contextProps } from "$ts/context/actions.svelte";
-  import { KernelStack } from "$ts/env";
+  import { contextMenu, contextProps } from "$ts/context/actions.svelte";
+  import { Stack } from "$ts/env";
+  import { Daemon } from "$ts/server/user/daemon";
   import { Wallpapers } from "$ts/wallpaper/store";
   import { Store } from "$ts/writable";
   import type { Workspace } from "$types/user";
@@ -9,14 +10,15 @@
   import type { ShellRuntime } from "../runtime";
 
   const { process }: { process: ShellRuntime } = $props();
-  const { userDaemon, userPreferences, workspaceManagerOpened } = process;
-  const { Wallpaper } = userDaemon || {}!;
+  const { userPreferences, workspaceManagerOpened } = process;
+  const userDaemon = Daemon;
+  const { Wallpaper } = userDaemon?.wallpaper! || {}!;
 
   let workspaces: Workspace[] = $state([]);
   let windowCounts = Store<Record<string, number>>({});
 
   onMount(() => {
-    const sub = KernelStack().store.subscribe((v) => {
+    const sub = Stack.store.subscribe((v) => {
       $windowCounts = {};
 
       for (const workspace of workspaces) {
@@ -52,8 +54,24 @@
           style="--wallpaper: url('{$Wallpaper ? $Wallpaper.url : Wallpapers.img0.url}');"
           onclick={() => ($userPreferences.workspaces.index = i)}
           class:selected={$userPreferences.workspaces.index === i}
-          data-contextmenu="workspaces-desktop"
-          use:contextProps={[desktop]}
+          use:contextMenu={[
+            [
+              {
+                caption: "Go here",
+                action: () => {
+                  Daemon?.workspaces?.switchToDesktopByUuid(desktop.uuid);
+                },
+                icon: "arrow-right",
+              },
+              {
+                caption: "Delete workspace",
+                action: () => {
+                  process.deleteWorkspace(desktop);
+                },
+              },
+            ],
+            process,
+          ]}
         >
           <div class="number">{i + 1}</div>
           <div class="bottom">
@@ -80,7 +98,12 @@
     {/if}
   </div>
 
-  <button class="add" aria-label="Add Desktop" onclick={() => userDaemon?.createWorkspace()} disabled={workspaces.length >= 10}>
+  <button
+    class="add"
+    aria-label="Add Desktop"
+    onclick={() => userDaemon?.workspaces?.createWorkspace()}
+    disabled={workspaces.length >= 10}
+  >
     <span class="lucide icon-plus"></span>
   </button>
 </div>

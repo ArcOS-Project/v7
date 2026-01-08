@@ -70,7 +70,7 @@ div.shell div.actioncenter div.notification {
 }
 
 .theme-light div.shell div.actioncenter div.notification {
-  background-color: var(--glass-ultradark);
+  background-color: var(--shell-component-bg);
 }
 
 div.shell div.actioncenter div.notification.no-image > div.content {

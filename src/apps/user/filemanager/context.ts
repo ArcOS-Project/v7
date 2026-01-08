@@ -1,4 +1,6 @@
 import { MessageBox } from "$ts/dialog";
+import { Env, Fs } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { ShareManager } from "$ts/shares";
 import type { SharedDrive } from "$ts/shares/drive";
@@ -50,7 +52,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         },
         icon: "x",
         disabled: (drive: QuotedDrive) =>
-          drive.data.FIXED || (drive.data as SharedDrive).shareInfo.userId === runtime.userDaemon?.userInfo?._id,
+          drive.data.FIXED || (drive.data as SharedDrive).shareInfo.userId === Daemon?.userInfo?._id,
       },
       {
         caption: "Leave share",
@@ -66,9 +68,9 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
                 {
                   caption: "Leave",
                   action: async () => {
-                    const shares = runtime.userDaemon?.serviceHost?.getService<ShareManager>("ShareMgmt");
+                    const shares = Daemon?.serviceHost?.getService<ShareManager>("ShareMgmt");
 
-                    await runtime.fs.umountDrive(share.shareId!);
+                    await Fs.umountDrive(share.shareId!);
                     await shares?.leaveShare(share.shareId!);
 
                     runtime.userPreferences.update((v) => {
@@ -90,7 +92,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         },
         icon: "log-out",
         disabled: (drive: QuotedDrive) =>
-          (drive.data as SharedDrive).shareInfo.userId === runtime.userDaemon?.userInfo?._id ||
+          (drive.data as SharedDrive).shareInfo.userId === Daemon?.userInfo?._id ||
           runtime.shareAccessIsAdministrative(drive.data),
       },
       { sep: true },
@@ -146,20 +148,20 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       {
         caption: "Cut items",
         disabled: () => !runtime.selection().length || !!runtime.drive()?.READONLY,
-        isActive: () => !!runtime.cutList().length,
+        isActive: () => !!Daemon!.cutList().length,
         action: () => runtime.setCutFiles(),
         icon: "scissors",
       },
       {
         caption: "Copy items",
         disabled: () => !runtime.selection().length,
-        isActive: () => !!runtime.copyList().length,
+        isActive: () => !!Daemon!.copyList().length,
         action: () => runtime.setCopyFiles(),
         icon: "copy",
       },
       {
         caption: "Paste items",
-        disabled: () => (!runtime.cutList().length && !runtime.copyList().length) || !!runtime.drive()?.READONLY,
+        disabled: () => (!Daemon!.cutList().length && !Daemon!.copyList().length) || !!runtime.drive()?.READONLY,
         action: () => runtime.pasteFiles(),
         icon: "clipboard",
       },
@@ -199,7 +201,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Open in ArcTerm",
         icon: "terminal",
         action: () => {
-          runtime.spawnApp("ArcTerm", +runtime.env.get("shell_pid"), runtime.path());
+          runtime.spawnApp("ArcTerm", +Env.get("shell_pid"), runtime.path());
         },
       },
       {
@@ -209,13 +211,13 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
           const path = runtime.path();
           const parentPath = getParentDirectory(path);
           const name = getItemNameFromPath(path);
-          const parent = await runtime.fs.readDir(parentPath);
+          const parent = await Fs.readDir(parentPath);
           const dir = parent?.dirs.filter((d) => d.name === name)[0] || parent;
           const isRoot = parentPath === path;
 
           if (isRoot) {
             try {
-              const drive = runtime.fs.getDriveByPath(path);
+              const drive = Fs.getDriveByPath(path);
               runtime.spawnOverlayApp("DriveInfo", runtime.pid, drive);
               return;
             } catch {}
@@ -238,7 +240,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       {
         caption: "Open with...",
         action: (_, runtimePath) => {
-          runtime.userDaemon?.openWith(runtimePath);
+          Daemon?.files?.openWith(runtimePath);
         },
       },
       {
@@ -253,7 +255,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Cut",
         icon: "scissors",
         action: (_, runtimePath) => {
-          runtime.cutList.set([runtimePath]);
+          Daemon!.cutList.set([runtimePath]);
         },
         disabled: () => !!runtime.drive()?.READONLY,
       },
@@ -261,7 +263,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Copy",
         icon: "copy",
         action: (_, runtimePath) => {
-          runtime.copyList.set([runtimePath]);
+          Daemon!.copyList.set([runtimePath]);
         },
       },
       {
@@ -305,7 +307,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       {
         caption: "Open with...",
         action: (_, runtimePath) => {
-          runtime.userDaemon?.openWith(runtimePath);
+          Daemon?.files?.openWith(runtimePath);
         },
       },
       { sep: true },
@@ -313,7 +315,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Cut",
         icon: "scissors",
         action: (_, runtimePath) => {
-          runtime.cutList.set([runtimePath]);
+          Daemon!.cutList.set([runtimePath]);
         },
         disabled: () => !!runtime.drive()?.READONLY,
       },
@@ -321,7 +323,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Copy",
         icon: "copy",
         action: (_, runtimePath) => {
-          runtime.copyList.set([runtimePath]);
+          Daemon!.copyList.set([runtimePath]);
         },
       },
       {
@@ -389,7 +391,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Cut",
         icon: "scissors",
         action: (_, runtimePath) => {
-          runtime.cutList.set([runtimePath]);
+          Daemon!.cutList.set([runtimePath]);
         },
         disabled: () => !!runtime.drive()?.READONLY,
       },
@@ -397,7 +399,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Copy",
         icon: "copy",
         action: (_, runtimePath) => {
-          runtime.copyList.set([runtimePath]);
+          Daemon!.copyList.set([runtimePath]);
         },
       },
       {
@@ -485,7 +487,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
             caption: "Advanced System Settings...",
             icon: "monitor-cog",
             action: () => {
-              runtime.userDaemon?.spawnApp("AdvSystemSettings", +runtime.env.get("shell_pid"));
+              Daemon?.spawn?.spawnApp("AdvSystemSettings", +Env.get("shell_pid"));
             },
           },
         ],
@@ -494,7 +496,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Settings...",
         icon: "settings-2",
         action: () => {
-          runtime.userDaemon?.spawnApp("systemSettings", +runtime.env.get("shell_pid"));
+          Daemon?.spawn?.spawnApp("systemSettings", +Env.get("shell_pid"));
         },
       },
     ],
@@ -516,7 +518,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Properties...",
         icon: "wrench",
         action: () => {
-          runtime.userDaemon?.spawnApp("AdvSystemSettings", +runtime.env.get("shell_pid"), "Recycling");
+          Daemon?.spawn?.spawnApp("AdvSystemSettings", +Env.get("shell_pid"), "Recycling");
         },
       },
     ],

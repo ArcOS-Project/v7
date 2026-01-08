@@ -18,7 +18,7 @@
 
 <div class="header">
   <div class="profile-picture">
-    <ProfilePicture {userDaemon} height={128} />
+    <ProfilePicture height={128} />
     {#if !process.safeMode}
       <div class="change-menu">
         <div class="inner">
@@ -26,7 +26,7 @@
             class="lucide icon-upload"
             aria-label="Upload profile picture"
             title="Upload profile picture"
-            onclick={() => userDaemon?.uploadProfilePicture()}
+            onclick={() => userDaemon?.preferencesCtx?.uploadProfilePicture()}
           ></button>
           <button
             class="lucide icon-folder-open"

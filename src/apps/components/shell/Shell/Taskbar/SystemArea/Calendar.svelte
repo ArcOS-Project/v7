@@ -1,13 +1,13 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
-  import { shortWeekDays, type CalendarMonth } from "$apps/components/shell/types";
+  import { type CalendarMonth } from "$apps/components/shell/types";
   import Spinner from "$lib/Spinner.svelte";
   import dayjs, { Dayjs } from "dayjs";
   import weekOfYear from "dayjs/plugin/weekOfYear";
-  import Top from "./Calendar/Top.svelte";
   import Controls from "./Calendar/Controls.svelte";
-  import Header from "./Calendar/Header.svelte";
   import Day from "./Calendar/Day.svelte";
+  import Header from "./Calendar/Header.svelte";
+  import Top from "./Calendar/Top.svelte";
 
   const { process }: { process: ShellRuntime } = $props();
   const { calendarOpened, userPreferences } = process;

@@ -7,7 +7,7 @@ export const ShareConnGuiApp: App = {
   metadata: {
     name: "ShareConnGui",
     author: "Izaak Kuipers",
-    version: "1.0.0",
+    version: "1.0.1",
     icon: "ShareIcon",
     appGroup: "components",
   },

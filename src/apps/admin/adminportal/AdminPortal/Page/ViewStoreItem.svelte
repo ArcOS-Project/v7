@@ -1,6 +1,8 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
   import { StoreItemIcon } from "$ts/distrib/util";
+  import { Env } from "$ts/env";
+  import { Daemon } from "$ts/server/user/daemon";
   import type { AdminPortalRuntime } from "../../runtime";
   import type { ViewStoreItemData } from "../../types";
   import Details from "./ViewStoreItem/Details.svelte";
@@ -15,7 +17,7 @@
 
   async function browseFiles() {
     const path = `T:/AdminBootstrapper/${item._id}`;
-    const progress = await process.userDaemon!.FileProgress(
+    const progress = await Daemon!.files!.FileProgress(
       {
         caption: "Copying files...",
         subtitle: item._id,
@@ -41,7 +43,7 @@
 
     progress.stop();
 
-    await process.spawnApp("fileManager", +process.env.get("shell_pid"), path);
+    await process.spawnApp("fileManager", +Env.get("shell_pid"), path);
   }
 
   async function verify() {
@@ -194,7 +196,7 @@
 
   async function toggleOfficial() {
     if (item.official) {
-      const confirm = await process.userDaemon?.Confirm(
+      const confirm = await Daemon?.helpers?.Confirm(
         "Mark store item?",
         "Are you sure you want to mark this store item as NOT official? This implies that the package was not made by ArcOS administrators and does NOT act as an official utility or optional feature for ArcOS",
         "Cancel",
@@ -207,7 +209,7 @@
         await process.switchPage("viewStoreItem", { id: item._id }, true);
       }
     } else {
-      const confirm = await process.userDaemon?.Confirm(
+      const confirm = await Daemon?.helpers?.Confirm(
         "Mark store item?",
         "Are you sure you want to mark this store item as official? This implies that the package was made by ArcOS administrators and acts as an official utility or optional feature for ArcOS",
         "Cancel",
@@ -223,7 +225,7 @@
   }
 
   async function deleteItem() {
-    const confirm = await process.userDaemon?.Confirm(
+    const confirm = await Daemon?.helpers?.Confirm(
       "Delete store item?",
       "Are you sure you want to delete this store item? This should only ever happen if the user has lost access to their account, or if the package conflicts with another package.",
       "Cancel",

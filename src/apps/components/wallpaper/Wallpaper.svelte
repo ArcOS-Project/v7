@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Daemon } from "$ts/server/user/daemon";
   import { Wallpapers } from "$ts/wallpaper/store";
   import type { AppComponentProps } from "$types/app";
   import type { WallpaperRuntime } from "./runtime";
@@ -6,7 +7,7 @@
   import Folder from "./Wallpaper/DesktopIcon/Folder.svelte";
 
   const { process }: AppComponentProps<WallpaperRuntime> = $props();
-  const { Wallpaper } = process.userDaemon || {};
+  const { Wallpaper } = Daemon?.wallpaper || {};
   const { contents, iconsElement, userPreferences } = process;
 </script>
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { KernelStack } from "$ts/env";
+  import { Stack } from "$ts/env";
   import type { Process } from "$ts/process/instance";
   import { onMount } from "svelte";
   import type { ProcessManagerRuntime } from "../runtime";
@@ -11,7 +11,7 @@
   let map = $state<Map<number, Process>>(new Map());
 
   onMount(() => {
-    KernelStack().store.subscribe(async (v) => {
+    Stack.store.subscribe(async (v) => {
       map = new Map();
       map = v;
       $running = [...map].filter(([_, proc]) => !proc._disposed).length;
@@ -21,8 +21,8 @@
 
 <div class="process-tree">
   {#each [...map] as [pid, proc], i (`${i}-${pid} ${proc.name}`)}
-    {#if !proc.parentPid || !KernelStack().getProcess(proc.parentPid)}
-      <Row {proc} {pid} {process} orphan={!KernelStack().getProcess(proc.parentPid) && proc.pid !== 1} />
+    {#if !proc.parentPid || !Stack.getProcess(proc.parentPid)}
+      <Row {proc} {pid} {process} orphan={!Stack.getProcess(proc.parentPid) && proc.pid !== 1} />
     {/if}
   {/each}
 </div>

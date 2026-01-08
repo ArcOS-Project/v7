@@ -18,7 +18,9 @@
   }
 
   onMount(() => {
-    els[0]?.focus();
+    setTimeout(() => {
+      els[0]?.focus();
+    }, 200);
   });
 
   function handleMoveAndBackspace(e) {
@@ -45,6 +47,13 @@
         }
         break;
     }
+  }
+
+  function handleAutoFill(e) {
+    if (Number.isNaN(e.target.value) || e.target.value.toString().length !== 6) return;
+    const val = e.target.value;
+    e.target.value = val.slice(0, 1);
+    waterfall({ target: e.target, arr: val });
   }
 
   function handleKey(e) {
@@ -101,6 +110,7 @@
           on:keydown={handleMoveAndBackspace}
           on:keypress|preventDefault={handleKey}
           on:paste|preventDefault={handlePaste}
+          on:input={handleAutoFill}
           bind:this={els[index + getTotalLength(idx, length)]}
           bind:value={values[index + getTotalLength(idx, length)]}
           index={index + getTotalLength(idx, length)}
@@ -115,6 +125,7 @@
         on:keydown={handleMoveAndBackspace}
         on:keypress|preventDefault={handleKey}
         on:paste|preventDefault={handlePaste}
+        on:input={handleAutoFill}
         bind:this={els[index]}
         bind:value={values[index]}
         {index}

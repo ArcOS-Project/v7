@@ -20,6 +20,10 @@
   padding: 10px;
 }
 
+.theme-light div.taskbar div.calendar-popup::before {
+  opacity: 0.1;
+}
+
 #arcShell div.taskbar div.calendar-popup:not(.opened) * {
   pointer-events: none !important;
 }
@@ -27,9 +31,9 @@
 #arcShell div.taskbar div.calendar-popup > div {
   border-radius: 10px;
   box-shadow: 0 2px 5px 2px #0002;
-  outline: var(--button-glass-hover-bg) 1px solid;
-  outline-offset: -1;
-  background-color: var(--button-glass-bg);
+  outline: var(--shell-component-outline) 1px solid;
+  outline-offset: -1px;
+  background-color: var(--shell-component-bg);
 }
 
 #arcShell div.taskbar div.calendar-popup div.top {
@@ -47,13 +51,19 @@
 
 #arcShell div.taskbar div.calendar-popup div.top h1.date {
   font-size: 28px;
+  white-space: nowrap;
+  overflow:hidden;
+  text-overflow: ellipsis;
 }
 
 #arcShell div.taskbar div.calendar-popup div.top h1.time {
-  font-size: 48px;
+  font-size: 36px;
   line-height: 60px;
   font-family: "fredoka";
   font-weight: 500;
+  white-space: nowrap;
+  overflow:hidden;
+  text-overflow: ellipsis;
 }
 
 #arcShell div.taskbar div.calendar-popup div.top p.week {

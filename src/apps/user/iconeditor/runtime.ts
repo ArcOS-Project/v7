@@ -1,8 +1,10 @@
 import { AppProcess } from "$ts/apps/process";
+import { MessageBox } from "$ts/dialog";
+import { Env } from "$ts/env";
 import { IconService } from "$ts/icon";
+import { Daemon } from "$ts/server/user/daemon";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
-import { ElevationLevel } from "$types/elevation";
 
 export class IconEditorRuntime extends AppProcess {
   iconGroups = Store<Record<string, string[]>>({});
@@ -20,7 +22,7 @@ export class IconEditorRuntime extends AppProcess {
   }
 
   async start() {
-    this.iconService = this.userDaemon?.serviceHost?.getService<IconService>("IconService");
+    this.iconService = Daemon?.serviceHost?.getService<IconService>("IconService");
     this.setGroups();
     this.icons.set({ ...(this.iconService?.Configuration() || {}) });
     this.icons.subscribe(() => {
@@ -37,7 +39,7 @@ export class IconEditorRuntime extends AppProcess {
   async onClose(): Promise<boolean> {
     if (!this.hasChanges()) return true;
 
-    const saveChanges = await this.userDaemon?.Confirm(
+    const saveChanges = await Daemon?.helpers?.Confirm(
       "Save changes?",
       "Do you want to save the changes you made to your icon set?",
       "Discard",
@@ -82,11 +84,34 @@ export class IconEditorRuntime extends AppProcess {
   async save() {
     this.iconService?.Configuration.set({ ...this.icons() });
     this.hasChanges.set(false);
-    this.closeWindow();
-    this.userDaemon?.restart();
+    await this.closeWindow();
+
+    MessageBox(
+      {
+        title: this.app.data.metadata.name,
+        message: "You have to restart ArcOS for the changes to the icons to take effect.",
+        buttons: [
+          { caption: "Restart later", action: () => {} },
+          { caption: "Restart now", action: () => Daemon?.power?.restart(), suggested: true },
+        ],
+        image: this.app.data.metadata.icon,
+        sound: "arcos.dialog.info",
+      },
+      +Env.get("shell_pid"),
+      true
+    );
   }
 
   async editIcon() {
-    this.spawnOverlayApp("IconEditDialog", this.pid, this.icons, this.selectedIcon());
+    const icon = await Daemon.helpers!.IconEditor(
+      this.icons()[this.selectedIcon()],
+      `@builtin::${this.selectedIcon()}`,
+      this.selectedIcon()
+    );
+
+    this.icons.update((v) => {
+      v[this.selectedIcon()] = icon;
+      return v;
+    });
   }
 }

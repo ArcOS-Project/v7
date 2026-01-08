@@ -1,5 +1,6 @@
+import { Fs } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
-import { arrayToText } from "$ts/util/convert";
+import { arrayBufferToText } from "$ts/util/convert";
 import { getParentDirectory } from "$ts/util/fs";
 import type { FileHandler } from "$types/fs";
 import type { UserDaemon } from "../daemon";
@@ -12,12 +13,12 @@ const installTpaFile: (d: UserDaemon) => FileHandler = (daemon) => ({
   name: "Install application",
   description: "Install this TPA file as an app",
   handle: async (path: string) => {
-    const text = arrayToText((await daemon.fs.readFile(path))!);
+    const text = arrayBufferToText((await Fs.readFile(path))!);
     const json = tryJsonParse(text);
 
     if (typeof json !== "object") throw new Error(`InstallTpaFileHandler: JSON parse failed`);
 
-    await daemon.registerApp({ ...json, workingDirectory: getParentDirectory(path), tpaPath: path });
+    await daemon.appreg!.registerApp({ ...json, workingDirectory: getParentDirectory(path), tpaPath: path });
   },
   isHandler: true,
 });

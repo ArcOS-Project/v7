@@ -1,4 +1,5 @@
 import type { FilesystemDrive } from "$ts/drives/drive";
+import { Fs } from "$ts/env";
 import { FormatLargeNumber, Gap, maxLength, Plural, Truncate } from "$ts/util";
 import { formatBytes, join } from "$ts/util/fs";
 import type { Arguments } from "$types/terminal";
@@ -27,7 +28,7 @@ export class DirCommand extends TerminalProcess {
     try {
       let drive: FilesystemDrive | undefined;
       try {
-        drive = dir ? this.fs.getDriveByPath(dir) : term.drive;
+        drive = dir ? Fs.getDriveByPath(dir) : term.drive;
       } catch {
         drive = term.drive;
       }

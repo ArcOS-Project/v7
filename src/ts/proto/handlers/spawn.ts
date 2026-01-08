@@ -1,4 +1,5 @@
 import type { ApplicationStorage } from "$ts/apps/storage";
+import { Env } from "$ts/env";
 import type { ProtocolHandler } from "$types/proto";
 
 export const SpawnAppHandler: ProtocolHandler = {
@@ -10,15 +11,15 @@ export const SpawnAppHandler: ProtocolHandler = {
     if (!app) return undefined;
 
     return {
-      icon: daemon.getAppIcon(app),
+      icon: daemon.icons!.getAppIcon(app),
       caption: app.metadata.name,
       title: `Open ${app.metadata.name} by ${app.metadata.author} (${app.metadata.version})`,
     };
   },
   action: async (payload, daemon) => {
-    return !!(await daemon.spawnApp(
+    return !!(await daemon.spawn!.spawnApp(
       payload.id,
-      +daemon.env.get("shell_pid"),
+      +Env.get("shell_pid"),
       ...(Array.isArray(payload.args) ? payload.args : [])
     ));
   },

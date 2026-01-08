@@ -1,7 +1,3 @@
-// check-params.js
-// Run with: node check-params.js
-// Requires: npm install typescript glob
-
 import ts from "typescript";
 import { glob } from "glob";
 import fs from "fs";
@@ -32,7 +28,7 @@ async function main() {
 
     process.exit(1);
   } else {
-    console.log("No methods contain more than 8 parameters!");
+    console.log("✅ No methods contain more than 8 parameters!");
   }
 }
 

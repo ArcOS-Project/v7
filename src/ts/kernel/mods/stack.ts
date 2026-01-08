@@ -1,34 +1,60 @@
 import { AppProcess } from "$ts/apps/process";
 import { __Console__ } from "$ts/console";
-import { Kernel } from "$ts/env";
-import { KernelStateHandler } from "$ts/getters";
+import { Env, Kernel, State, SysDispatch } from "$ts/env";
+import { calculateMemory } from "$ts/util";
 import type { App } from "$types/app";
-import type { ConstructedWaveKernel, EnvironmentType, SystemDispatchType } from "$types/kernel";
+import type { ConstructedWaveKernel } from "$types/kernel";
 import type { ProcessContext, ProcessKillResult } from "$types/process";
 import { parse } from "stacktrace-parser";
 import { AppRenderer } from "../../apps/renderer";
-import { Log } from "../../logging";
 import type { Process } from "../../process/instance";
 import { Store } from "../../writable";
 import { KernelModule } from "../module";
 
 export class ProcessHandler extends KernelModule {
-  public BUSY = false;
+  private _busy: string = "";
   private lastPid: number = 0;
   public store = Store<Map<number, Process>>(new Map([]));
   public rendererPid = -1;
   public renderer: AppRenderer | undefined;
-  public env: EnvironmentType;
-  public dispatch: SystemDispatchType;
   public processContexts = new Map<number, ProcessContext>([]);
+
+  get IS_BUSY() {
+    return !!this.BUSY;
+  }
+
+  get BUSY() {
+    return this._busy;
+  }
+
+  set BUSY(value: string) {
+    this._busy = value;
+    if (value) {
+      SysDispatch.dispatch("stack-busy");
+    } else {
+      SysDispatch.dispatch("stack-not-busy");
+    }
+  }
+
+  get MEMORY() {
+    let sum = 0;
+    const procs = this.store();
+
+    for (const [pid, proc] of [...procs]) {
+      sum += calculateMemory(proc);
+    }
+
+    return sum;
+  }
+
+  busyWithNot(thing: string) {
+    return this.BUSY && this.BUSY !== thing;
+  }
 
   //#region LIFECYCLE
 
   constructor(kernel: ConstructedWaveKernel, id: string) {
     super(kernel, id);
-
-    this.env = Kernel()!.getModule<EnvironmentType>("env");
-    this.dispatch = Kernel()!.getModule<SystemDispatchType>("dispatch");
   }
 
   async startRenderer(initPid: number) {
@@ -39,22 +65,6 @@ export class ProcessHandler extends KernelModule {
 
   //#endregion
 
-  private makeBusy(reason: string) {
-    this.isKmod();
-    this.BUSY = true;
-
-    this.dispatch.dispatch("stack-busy");
-    this.Log(`Now busy: ${reason}`);
-  }
-
-  private makeNotBusy(reason: string) {
-    this.isKmod();
-    this.BUSY = false;
-
-    this.dispatch.dispatch("stack-not-busy");
-    this.Log(`Now no longer busy: ${reason}`);
-  }
-
   async spawn<T = Process>(
     process: typeof Process,
     renderTarget: HTMLDivElement | undefined = undefined,
@@ -64,13 +74,13 @@ export class ProcessHandler extends KernelModule {
   ): Promise<T | undefined> {
     this.isKmod();
 
-    if (Kernel()?.PANICKED || this.BUSY) return;
+    if (Kernel?.PANICKED || this.busyWithNot("spawn")) return;
 
-    this.makeBusy("Spawning process");
+    this.BUSY = "spawn";
 
-    const userDaemonPid = this.env.get("userdaemon_pid");
+    const userDaemonPid = Env.get("userdaemon_pid");
 
-    if (KernelStateHandler()?.currentState === "desktop" && userDaemonPid) {
+    if (State?.currentState === "desktop" && userDaemonPid) {
       parentPid ??= +userDaemonPid;
     }
 
@@ -80,15 +90,14 @@ export class ProcessHandler extends KernelModule {
     try {
       const proc = new (process as any)(pid, parentPid, ...args) as Process;
 
-      Log("ProcessHandler.spawn", `Spawning new ${proc.constructor.name} with PID ${pid}`);
+      this.Log(`Spawning new ${proc.constructor.name} with PID ${pid}`);
 
       if (proc.__start) {
-        this.makeNotBusy(`Calling __start of ${pid}`);
         const result = await proc.__start();
-        this.makeBusy(`Done calling __start of ${pid}`);
 
         if (result === false) {
-          this.makeNotBusy(`Stopped spawn of ${pid}: __start gave false`);
+          this.Log(`Stopped spawn of ${pid}: __start gave false`);
+          this.BUSY = "";
 
           __Console__.timeEnd(`process spawn: ${pid}`);
           return;
@@ -103,7 +112,7 @@ export class ProcessHandler extends KernelModule {
         appId: proc instanceof AppProcess ? proc.app.id : undefined,
       });
 
-      const store = this.store.get();
+      const store = this.store();
 
       store.set(pid, proc);
 
@@ -111,7 +120,7 @@ export class ProcessHandler extends KernelModule {
 
       if (this.renderer && proc instanceof AppProcess) this.renderer.render(proc, renderTarget);
 
-      this.makeNotBusy(`Stopped spawn of ${pid}: done`);
+      this.BUSY = "";
       __Console__.timeEnd(`process spawn: ${pid}`);
       return proc as T;
     } catch (e) {
@@ -121,7 +130,8 @@ export class ProcessHandler extends KernelModule {
         this.renderer?.notifyCrash(args[0]?.data as App, e as Error);
       }
 
-      this.makeNotBusy(`Stopped spawn of ${pid}: uncaught error during construct`);
+      this.Log(`Stopped spawn of ${pid}: uncaught error during construct`);
+      this.BUSY = "";
       __Console__.warn(e);
       __Console__.timeEnd(`process spawn: ${pid}`);
 
@@ -148,48 +158,47 @@ export class ProcessHandler extends KernelModule {
   async kill(pid: number, force = false): Promise<ProcessKillResult> {
     this.isKmod();
 
-    if (this.BUSY || Kernel()?.PANICKED) return "err_disposed";
+    if (this.busyWithNot("kill") || Kernel?.PANICKED) return "err_disposed";
 
-    Log("ProcessHandler.kill", `Attempting to kill ${pid}`);
+    this.Log(`Attempting to kill ${pid}`);
 
-    this.makeBusy(`Killing ${pid}`);
+    this.BUSY = "kill";
 
     const proc = this.getProcess(pid);
 
     if (!proc) {
-      this.makeNotBusy(`Can't kill ${pid}: no such process`);
+      this.Log(`Can't kill ${pid}: no such process`);
+      this.BUSY = "";
       return "err_noExist";
     }
     if (proc._criticalProcess && !force) {
-      this.makeNotBusy(`Can't kill ${pid}: critical process`);
+      this.Log(`Can't kill ${pid}: critical process`);
+      this.BUSY = "";
       return "err_criticalProcess";
     }
 
-    this.makeNotBusy(`Killing subprocesses of ${pid}`);
     await this._killSubProceses(pid, force);
 
     if (proc instanceof AppProcess && proc.closeWindow && !force) {
       await proc.closeWindow(false);
     }
 
-    this.makeBusy(`Continuing killing of ${pid}`);
-
     if (proc.__stop) await proc.__stop();
 
-    let store = this.store.get();
+    let store = this.store();
 
-    proc._disposed = true;
+    proc.STATE = "disposed";
 
     store.set(pid, proc);
     this.store.set(store);
 
     if (this.renderer) await this.renderer.remove(pid);
 
-    store = this.store.get();
+    store = this.store();
     store.delete(pid);
     this.store.set(store);
 
-    this.makeNotBusy(`Done killing ${pid}`);
+    this.BUSY = "";
 
     return "success";
   }
@@ -197,7 +206,7 @@ export class ProcessHandler extends KernelModule {
   public async _killSubProceses(pid: number, force = false) {
     this.isKmod();
 
-    if (Kernel()?.PANICKED) return;
+    if (Kernel?.PANICKED) return;
 
     const procs = this.getSubProcesses(pid);
 
@@ -223,7 +232,7 @@ export class ProcessHandler extends KernelModule {
 
     if (!this.isPid(parentPid)) return result;
 
-    for (const [pid, proc] of this.store.get()) {
+    for (const [pid, proc] of this.store()) {
       if (proc.parentPid != parentPid) continue;
 
       result.set(pid, proc);
@@ -232,14 +241,14 @@ export class ProcessHandler extends KernelModule {
     return result;
   }
 
-  getProcess<T = Process>(pid: number, disposedToo = false) {
+  getProcess<T = Process>(pid: number) {
     this.isKmod();
 
-    const proc = this.store.get().get(pid);
+    const proc = this.store().get(pid);
 
     if (!proc) return undefined;
 
-    return proc._disposed && !disposedToo ? undefined : (proc as T);
+    return proc._disposed ? undefined : (proc as T);
   }
 
   getPid() {
@@ -253,7 +262,7 @@ export class ProcessHandler extends KernelModule {
   isPid(pid: number) {
     this.isKmod();
 
-    return this.store.get().has(pid) && !this.store.get().get(pid)?._disposed;
+    return this.store().has(pid) && !this.store().get(pid)?._disposed;
   }
 
   ConnectDispatch(pid: number) {
@@ -266,10 +275,11 @@ export class ProcessHandler extends KernelModule {
     return proc.dispatch;
   }
 
-  async waitForAvailable() {
+  async waitForAvailable(or?: string) {
+    this.Log("wait for available");
     return new Promise<void>((r) => {
       const interval = setInterval(() => {
-        if (!this.BUSY) r(clearInterval(interval));
+        if (!this.BUSY || (or && this.BUSY === or)) r(clearInterval(interval));
       }, 1);
     });
   }

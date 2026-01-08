@@ -1,10 +1,11 @@
 import { __Console__ } from "$ts/console";
-import { ArcOSVersion, SetCurrentKernel } from "$ts/env";
+import { ArcOSVersion, SetCurrentKernel, SetKernelExports } from "$ts/env";
+import { JsExec } from "$ts/jsexec";
 import { getBuild } from "$ts/metadata/build";
 import { ChangeLogs } from "$ts/metadata/changelog";
 import { getLicense } from "$ts/metadata/license";
 import { getMode } from "$ts/metadata/mode";
-import type { ProcessHandlerType } from "$types/kernel";
+import type { EnvironmentType, ProcessHandlerType } from "$types/kernel";
 import { LogLevel, ShortLogLevelCaptions, type LogItem } from "../../types/logging";
 import { handleGlobalErrors } from "../error";
 import { StateHandler } from "../state";
@@ -34,10 +35,14 @@ export class WaveKernel {
 
     SetCurrentKernel(this);
 
-    if (import.meta.env.DEV) (window as any)["kernel"] = this;
+    if (import.meta.env.DEV) {
+      const win = window as any;
+      win.kernel = this;
+      win.JsExec = JsExec;
+    }
   }
 
-  async panic(reason: string) {
+  async panic(reason: string, brief?: string) {
     if (this.PANICKED) return;
 
     this.PANICKED = true;
@@ -47,12 +52,12 @@ export class WaveKernel {
     if (!state) {
       this.Log(`WaveKernel::panic`, `\n\n${reason}`);
 
-      prematurePanic();
+      prematurePanic(brief);
 
       return;
     }
 
-    state.loadState("crash-screen", { text: reason }, true);
+    state.loadState("crash-screen", { text: reason, brief }, true);
 
     throw reason;
   }
@@ -73,6 +78,17 @@ export class WaveKernel {
     this.Log(`ArcOS`, `***** [v7 -> ArcOS InDev v${ArcOSVersion}-${this.ARCOS_MODE}_${this.ARCOS_BUILD}] *****`);
 
     await this._kernelModules();
+
+    // Absolutely oblivious piece of code
+    this.getModule<EnvironmentType>("env").set(
+      "MIGVER",
+      ArcOSVersion.split(".")
+        .splice(1, 2)
+        .map(Number)
+        .reduce((p, v, i) => p + (i == 1 ? v / 10 : v))
+    );
+
+    SetKernelExports();
 
     const stack = this.getModule<ProcessHandlerType>("stack");
 

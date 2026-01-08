@@ -1,3 +1,4 @@
+import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { join } from "$ts/util/fs";
 import type { ArcShortcut } from "$types/shortcut";
@@ -65,7 +66,7 @@ export const FirstRunPages = new Map<string, FirstRunPage>([
         left: [
           {
             caption: "Upload...",
-            action: (process) => process.userDaemon?.uploadProfilePicture(),
+            action: (process) => Daemon?.preferencesCtx?.uploadProfilePicture(),
           },
           {
             caption: "Choose",
@@ -168,6 +169,12 @@ export const FirstRunShortcuts: Record<string, ArcShortcut> = {
     name: "App Store",
     type: "app",
     target: "AppStore",
+  },
+  [join(UserPaths.Desktop,"iHaveFeedback.arclnk")]: {
+    icon:"BugReportIcon",
+    name:"Give feedback",
+    type:"app",
+    target:"feedback"
   },
   [join(UserPaths.Documents, "pictures.arclnk")]: {
     icon: "WallpapersFolderIcon",

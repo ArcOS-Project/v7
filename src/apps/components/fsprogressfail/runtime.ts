@@ -24,7 +24,7 @@ export class FsProgressFailRuntime extends AppProcess {
     const progress = this.prog.Progress();
 
     this.errors = progress.errors;
-    this.icon = progress.icon;
+    this.icon = this.getIconCached(progress.icon) || progress.icon;
     this.title = progress.caption;
   }
 

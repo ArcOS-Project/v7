@@ -5,7 +5,7 @@
 }
 
 #initialSetupWizard * {
-  --accent: #ff6e54 !important;
+  --accent: #ff9582 !important;
   --accent-transparent: #ff6e5444 !important;
   --accent-light: #ff7c65 !important;
   --accent-lighter: #ff846d !important;
@@ -13,8 +13,8 @@
   --accent-darkest: #330800 !important;
   --accent-light-transparent: #ff7c6577 !important;
   --accent-light-invert: #00839a !important;
-  --accent-suggested-start: #ff6e54 !important;
-  --accent-suggested-end: #ff5132 !important;
+  --accent-suggested-start: #ff826b !important;
+  --accent-suggested-end: #e5543a !important;
   --accent-suggested-fg: black !important;
 }
 
@@ -30,7 +30,7 @@
 }
 
 #initialSetupWizard > div.body {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;

@@ -1,4 +1,4 @@
-import { ArcOSVersion, KernelStack } from "$ts/env";
+import { ArcOSVersion, Env, Stack, SysDispatch } from "$ts/env";
 import { toForm } from "$ts/form";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -17,7 +17,8 @@ import Cookies from "js-cookie";
 import { Terminal } from "xterm";
 import { ArcTerminal } from "..";
 import { Readline } from "../readline/readline";
-import { BRRED, CLRROW, CURUP, RESET } from "../store";
+import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../store";
+import type { MigrationService } from "../../../migrations";
 
 export class TerminalMode extends Process {
   userDaemon?: UserDaemon;
@@ -28,7 +29,7 @@ export class TerminalMode extends Process {
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, target: HTMLDivElement) {
+  constructor(pid: number, parentPid: number, target: HTMLDivElement, wrapper: HTMLDivElement) {
     super(pid, parentPid);
 
     this.target = target;
@@ -54,18 +55,18 @@ export class TerminalMode extends Process {
       cursorStyle: "bar",
       fontSize: 14,
       theme: {
-        brightRed: "#ff7e7e",
-        red: "#ff7e7e",
-        brightGreen: "#82ff80",
-        green: "#82ff80",
-        brightYellow: "#ffe073",
-        yellow: "#ffe073",
-        brightBlue: "#96d3ff",
-        blue: "#96d3ff",
-        brightCyan: "#79ffd0",
-        cyan: "#79ffd0",
-        brightMagenta: "#d597ff",
-        magenta: "#d597ff",
+        brightRed: DefaultColors.red,
+        red: DefaultColors.red,
+        brightGreen: DefaultColors.green,
+        green: DefaultColors.green,
+        brightYellow: DefaultColors.yellow,
+        yellow: DefaultColors.yellow,
+        brightBlue: DefaultColors.blue,
+        blue: DefaultColors.blue,
+        brightCyan: DefaultColors.cyan,
+        cyan: DefaultColors.cyan,
+        brightMagenta: DefaultColors.magenta,
+        magenta: DefaultColors.magenta,
       },
       scrollback: 999999,
     });
@@ -88,7 +89,7 @@ export class TerminalMode extends Process {
 
     new ResizeObserver(() => fitAddon.fit()).observe(this.target);
 
-    const rl = await KernelStack().spawn<Readline>(Readline, undefined, this.userDaemon?.userInfo?._id, this.pid, this);
+    const rl = await Stack.spawn<Readline>(Readline, undefined, this.userDaemon?.userInfo?._id, this.pid, this);
     this.term.loadAddon(rl!);
     this.rl = rl;
   }
@@ -104,7 +105,7 @@ export class TerminalMode extends Process {
 
   async startDaemon(token: string, username: string): Promise<boolean> {
     try {
-      const userDaemon = await KernelStack().spawn<UserDaemon>(UserDaemon, undefined, "SYSTEM", 1, token, username);
+      const userDaemon = await Stack.spawn<UserDaemon>(UserDaemon, undefined, "SYSTEM", 1, token, username);
 
       this.rl?.println(`Starting daemon`);
 
@@ -115,7 +116,7 @@ export class TerminalMode extends Process {
 
       this.saveToken(userDaemon);
 
-      const userInfo = await userDaemon.getUserInfo();
+      const userInfo = await userDaemon.account!.getUserInfo();
 
       if (!userInfo) {
         this.rl?.println(`Failed to request user info`);
@@ -127,26 +128,26 @@ export class TerminalMode extends Process {
 
         if (!unlocked) {
           this.rl?.println(`2FA code invalid!`);
-          await userDaemon.discontinueToken();
+          await userDaemon.account?.discontinueToken();
           await userDaemon.killSelf();
           return false;
         }
       }
 
       this.rl?.println(`${CURUP}${CLRROW}Starting filesystem`);
-      await userDaemon.startFilesystemSupplier();
+      await userDaemon.init?.startFilesystemSupplier();
 
       this.rl?.println(`${CURUP}${CLRROW}Starting synchronization`);
-      await userDaemon.startPreferencesSync();
+      await userDaemon.init?.startPreferencesSync();
 
       this.rl?.println(`${CURUP}${CLRROW}Notifying login activity`);
-      await userDaemon.logActivity(`login`);
+      await userDaemon.activity?.logActivity(`login`);
 
       this.rl?.println(`${CURUP}${CLRROW}Starting service host`);
-      await userDaemon.startServiceHost(async (serviceStep) => {
+      await userDaemon.init?.startServiceHost(async (serviceStep) => {
         if (serviceStep.id === "AppStorage") {
           this.rl?.println(`${CURUP}${CLRROW}Loading apps...`);
-          await userDaemon.initAppStorage(userDaemon.appStorage()!, (app) => {
+          await userDaemon.appreg!.initAppStorage(userDaemon.appStorage()!, (app) => {
             this.rl?.println(`${CURUP}${CLRROW}Loading apps... ${app.id}`);
           });
         } else {
@@ -158,12 +159,18 @@ export class TerminalMode extends Process {
       await userDaemon.activateGlobalDispatch();
 
       this.rl?.println(`${CURUP}${CLRROW}Starting drive notifier watcher`);
-      userDaemon.startDriveNotifierWatcher();
+      userDaemon.init!.startDriveNotifierWatcher();
+
+      this.rl?.println(`${CURUP}${CLRROW}Starting permission manager`);
+      await userDaemon.init!.startPermissionHandler();
 
       this.rl?.println(`${CURUP}${CLRROW}Starting share management`);
-      await userDaemon.startShareManager();
+      await userDaemon.init!.startShareManager();
 
-      userDaemon.appStorage();
+      this.rl?.println(`${CURUP}${CLRROW}Running migrations`);
+      await userDaemon.serviceHost
+        ?.getService<MigrationService>("MigrationSvc")
+        ?.runMigrations((m) => this.rl?.println(`${CURUP}${CLRROW}${m}`));
 
       if (userDaemon.userInfo.admin) {
         this.rl?.println(`${CURUP}${CLRROW}Activating admin bootstrapper`);
@@ -171,26 +178,21 @@ export class TerminalMode extends Process {
       }
 
       this.rl?.println(`${CURUP}${CLRROW}Starting status refresh`);
-      await userDaemon.startSystemStatusRefresh();
+      await userDaemon.init!.startSystemStatusRefresh();
 
       this.rl?.println(`${CURUP}${CLRROW}Refreshing app storage`);
+      SysDispatch.dispatch(`app-store-refresh`);
 
-      this.systemDispatch.dispatch(`app-store-refresh`);
+      Env.set("currentuser", username);
+      Env.set("shell_pid", undefined);
 
-      this.env.set("currentuser", username);
-      this.env.set("shell_pid", undefined);
+      userDaemon.checks!.checkNightly();
 
       await Sleep(10);
 
       this.term?.clear();
 
-      this.arcTerm = await KernelStack().spawn<ArcTerminal>(
-        ArcTerminal,
-        undefined,
-        userDaemon.userInfo?._id,
-        this.pid,
-        this.term
-      );
+      this.arcTerm = await Stack.spawn<ArcTerminal>(ArcTerminal, undefined, userDaemon.userInfo?._id, this.pid, this.term);
 
       this.term?.focus();
 

@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import type { BugReportTpaFile } from "$apps/admin/adminportal/types";
+  import { Daemon } from "$ts/server/user/daemon";
   import { formatBytes } from "$ts/util/fs";
   import type { BugReport } from "$types/bughunt";
   import { onMount } from "svelte";
@@ -40,7 +41,7 @@
         {#each tpaFiles as file}
           <button class="file" ondblclick={() => openTpaFile(file)} disabled={file.unavailable}>
             <img
-              src={process.userDaemon?.assoc?.getFileAssociation(file.filePath)?.icon || process.getIconCached("DefaultMimeIcon")}
+              src={Daemon?.assoc?.getFileAssociation(file.filePath)?.icon || process.getIconCached("DefaultMimeIcon")}
               alt=""
             />
             <span class="filename">{file.filename}</span>

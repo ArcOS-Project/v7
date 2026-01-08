@@ -1,5 +1,6 @@
 <script lang="ts">
   import { RelativeTimeMod } from "$ts/dayjs";
+  import { SysDispatch } from "$ts/env";
   import { UserDaemon } from "$ts/server/user/daemon";
   import { Sleep } from "$ts/sleep";
   import type { ErrorButton, Notification } from "$types/notification";
@@ -29,7 +30,7 @@
   dayjs.updateLocale("en", RelativeTimeMod);
 
   onMount(() => {
-    userDaemon.systemDispatch.subscribe("delete-notification", async ([deletedId]) => {
+    SysDispatch.subscribe("delete-notification", async ([deletedId]) => {
       if (id === deletedId) {
         deleted = true;
 
@@ -47,7 +48,7 @@
   });
 
   function deleteThis() {
-    userDaemon.deleteNotification(id);
+    userDaemon.notifications!.deleteNotification(id);
   }
 
   function toggleCollapse() {
@@ -68,7 +69,7 @@
     {#if !hideContent}
       {#if notification.image}
         <div class="left">
-          <img src={userDaemon.getIconCached(notification.image) || notification.image} alt="" class="icon" />
+          <img src={userDaemon.icons!.getIconCached(notification.image) || notification.image} alt="" class="icon" />
         </div>
       {:else if notification.icon}
         <div class="left">

@@ -11,7 +11,7 @@ import {
 } from "$types/fs";
 import type { ConstructedWaveKernel, SystemDispatchType } from "$types/kernel";
 import type { FilesystemDrive } from "../../../drives/drive";
-import { arrayToBlob } from "../../../util/convert";
+import { arrayBufferToBlob } from "../../../util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "../../../util/fs";
 
 export class Filesystem extends KernelModule {
@@ -255,71 +255,7 @@ export class Filesystem extends KernelModule {
     const drive = this.getDriveByPath(source);
 
     if (sourceId !== destinationId) {
-      const sourceDirectory = await this.isDirectory(source);
-
-      if (sourceDirectory) {
-        const tree = await this.tree(source);
-        const sourceName = getItemNameFromPath(source);
-        const target = destination.endsWith(sourceName) ? "" : sourceName;
-
-        if (!tree) return false;
-
-        let counter = 0;
-
-        onProgress?.({
-          max: sourceDirectory.totalFiles - sourceDirectory.totalFolders,
-          value: 0,
-          type: "items",
-        });
-
-        await this.createDirectory(join(destination, target));
-
-        const walk = async (data: RecursiveDirectoryReadReturn = tree, path = "") => {
-          for (const dir of data.dirs) {
-            await this.createDirectory(join(destination, target, path, dir.name));
-            const result = await walk(
-              {
-                dirs: dir.children.dirs,
-                files: dir.children.files,
-                shortcuts: {},
-              },
-              join(path, dir.name)
-            );
-
-            if (!result) return false;
-          }
-
-          for (const file of data.files) {
-            const sourcePath = join(source, path, file.name);
-            const destinationPath = join(destination, target, path, file.name);
-            const sourceContent = await this.readFile(sourcePath);
-            if (!sourceContent) return false;
-
-            const result = await this.writeFile(destinationPath, arrayToBlob(sourceContent), undefined, false);
-
-            if (!result) return false;
-
-            counter++;
-
-            onProgress?.({
-              max: sourceDirectory.totalFiles - sourceDirectory.totalFolders,
-              value: counter,
-              type: "items",
-            });
-          }
-
-          return true;
-        };
-
-        return await walk();
-      } else {
-        const destinationIsDir = await this.isDirectory(destination);
-        const sourceName = getItemNameFromPath(source);
-        const sourceContent = await this.readFile(source);
-        if (!sourceContent) return false;
-
-        return await this.writeFile(destinationIsDir ? join(destination, sourceName) : destination, arrayToBlob(sourceContent));
-      }
+      return await this.transferFileBetweenDrives(source, destination, onProgress, true);
     } else {
       drive.isCapable("copyItem");
 
@@ -354,80 +290,7 @@ export class Filesystem extends KernelModule {
     const drive = this.getDriveByPath(source);
 
     if (sourceId !== destinationId) {
-      const sourceDirectory = await this.isDirectory(source);
-
-      if (sourceDirectory) {
-        const tree = await this.tree(source);
-        const sourceName = getItemNameFromPath(source);
-        const target = destination.endsWith(sourceName) ? "" : sourceName;
-
-        if (!tree) return false;
-
-        let counter = 0;
-
-        onProgress?.({
-          max: sourceDirectory.totalFiles - sourceDirectory.totalFolders,
-          value: 0,
-          type: "items",
-        });
-
-        await this.createDirectory(join(destination, target));
-
-        const walk = async (data: RecursiveDirectoryReadReturn = tree, path = "") => {
-          for (const dir of data.dirs) {
-            await this.createDirectory(join(destination, target, path, dir.name));
-            const result = await walk(
-              {
-                dirs: dir.children.dirs,
-                files: dir.children.files,
-                shortcuts: {},
-              },
-              join(path, dir.name)
-            );
-
-            if (!result) return false;
-          }
-
-          for (const file of data.files) {
-            const sourcePath = join(source, path, file.name);
-            const destinationPath = join(destination, target, path, file.name);
-            const sourceContent = await this.readFile(sourcePath);
-            if (!sourceContent) return false;
-
-            const result = await this.writeFile(destinationPath, arrayToBlob(sourceContent), undefined, false);
-
-            counter++;
-
-            if (!result) return false;
-
-            onProgress?.({
-              max: sourceDirectory.totalFiles - sourceDirectory.totalFolders,
-              value: counter,
-              type: "items",
-            });
-          }
-
-          await this.deleteItem(join(source, path));
-
-          return true;
-        };
-
-        const result = await walk();
-        await this.deleteItem(source);
-        return result;
-      } else {
-        const destinationIsDir = await this.isDirectory(destination);
-        const sourceName = getItemNameFromPath(source);
-        const sourceContent = await this.readFile(source);
-        if (!sourceContent) return false;
-
-        const result = await this.writeFile(
-          destinationIsDir ? join(destination, sourceName) : destination,
-          arrayToBlob(sourceContent)
-        );
-        await this.deleteItem(source);
-        return result;
-      }
+      return await this.transferFileBetweenDrives(source, destination, onProgress, false);
     } else {
       drive.isCapable("moveItem");
 
@@ -442,6 +305,102 @@ export class Filesystem extends KernelModule {
         this.dispatch.dispatch("fs-flush-folder", destinationParent);
         if (sourceParent !== destinationParent) this.dispatch.dispatch("fs-flush-folder", sourceParent);
       }
+
+      return result;
+    }
+  }
+
+  private async transferFileBetweenDrives(
+    source: string,
+    destination: string,
+    onProgress?: FilesystemProgressCallback,
+    keepSource = false
+  ) {
+    const isDirectory = await this.isDirectory(source);
+
+    if (isDirectory) {
+      // We're transferring a folder
+
+      const sourceDirectory = await this.readDir(source);
+      if (!sourceDirectory) return false;
+
+      const tree = await this.tree(source);
+      if (!tree) return false;
+
+      const sourceName = getItemNameFromPath(source);
+      const target = destination.endsWith(sourceName) ? "" : sourceName;
+
+      let counter = 0;
+
+      onProgress?.({
+        max: sourceDirectory.totalFiles - sourceDirectory.totalFolders,
+        value: 0,
+        type: "items",
+      });
+
+      await this.createDirectory(join(destination, target), false);
+
+      const walk = async (data: RecursiveDirectoryReadReturn = tree, path = "") => {
+        for (const dir of data.dirs) {
+          await this.createDirectory(join(destination, target, path, dir.name), false);
+          const result = await walk(
+            {
+              dirs: dir.children.dirs,
+              files: dir.children.files,
+              shortcuts: {},
+            },
+            join(path, dir.name)
+          );
+
+          if (!result) return false;
+        }
+
+        for (const file of data.files) {
+          const sourcePath = join(source, path, file.name);
+          const destinationPath = join(destination, target, path, file.name);
+          const sourceContent = await this.readFile(sourcePath);
+          if (!sourceContent) return false;
+
+          const result = await this.writeFile(destinationPath, arrayBufferToBlob(sourceContent), undefined, false);
+
+          counter++;
+
+          if (!result) return false;
+
+          onProgress?.({
+            max: sourceDirectory.totalFiles - sourceDirectory.totalFolders,
+            value: counter,
+            type: "items",
+          });
+        }
+
+        await this.deleteItem(join(source, path), false);
+
+        return true;
+      };
+
+      const result = await walk();
+
+      if (!keepSource) await this.deleteItem(source, false);
+
+      return result;
+    } else {
+      // We're transferring a file
+
+      const destinationIsDir = await this.isDirectory(destination);
+      const sourceName = getItemNameFromPath(source);
+      const sourceContent = await this.readFile(source);
+
+      if (!sourceContent) return false;
+
+      const result = await this.writeFile(
+        destinationIsDir ? join(destination, sourceName) : destination,
+        arrayBufferToBlob(sourceContent),
+        undefined,
+        false
+      );
+
+      if (!keepSource) await this.deleteItem(source, false);
 
       return result;
     }
@@ -495,7 +454,7 @@ export class Filesystem extends KernelModule {
 
           for (let i = 0; i < files.length; i++) {
             const file = files[i];
-            const content = arrayToBlob(await file?.arrayBuffer()!);
+            const content = arrayBufferToBlob(await file?.arrayBuffer()!);
 
             onProgress({
               max: files.length,
@@ -594,14 +553,18 @@ export class Filesystem extends KernelModule {
   // fallback for drives that can't stat
   async isDirectory(path: string) {
     try {
+      const drive = this.getDriveByPath(path);
+
+      drive.isCapable("stat");
+
+      return (await this.stat(path))?.isDirectory;
+    } catch {
       const contents = await this.readDir(path);
       const fileContents = await this.readFile(path);
 
       if (fileContents) return false;
 
       return contents;
-    } catch {
-      return false;
     }
   }
 
@@ -621,7 +584,7 @@ export class Filesystem extends KernelModule {
   async imageThumbnail(path: string, width: number, height?: number): Promise<string | undefined> {
     this.isKmod();
 
-    this.Log(`stat '${path}'`);
+    this.Log(`imageThumbnail '${path}'`);
     this.validatePath(path);
 
     const drive = this.getDriveByPath(path);

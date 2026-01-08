@@ -79,3 +79,10 @@ export interface CalendarDay {
 
 export const longWeekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 export const shortWeekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+export interface StartMenuAction {
+  caption: string;
+  icon: string;
+  action: (process: ShellRuntime) => void;
+  className?: string;
+}

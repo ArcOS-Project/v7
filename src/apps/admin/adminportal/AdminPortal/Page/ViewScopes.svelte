@@ -1,6 +1,7 @@
 <script lang="ts">
   import { AdminScopes } from "$ts/server/admin/store";
   import { scopeToScopeCaption } from "$ts/server/admin/util";
+  import { Daemon } from "$ts/server/user/daemon";
   import { onMount } from "svelte";
   import { AdminPortalRuntime } from "../../runtime";
   import type { ViewScopesData } from "../../types";
@@ -47,7 +48,7 @@
   async function save() {
     if (
       scopeList.includes(AdminScopes.adminGod) &&
-      !(await process.userDaemon!.Confirm(
+      !(await Daemon!.helpers?.Confirm(
         "Are you sure?",
         "This user has the <code>admin.god</code> scope applied. This means that they can access all administrative functions of Sacruda, regardless of any other scopes. Are you sure you want to save these changes?",
         "Cancel",

@@ -1,3 +1,4 @@
+import { State } from "$ts/env";
 import { KernelStateHandler } from "$ts/getters";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
@@ -44,13 +45,16 @@ export class BootScreenRuntime extends AppProcess {
     if (e?.key === "F8") {
       this.status.set("Entering Safe Mode");
       await Sleep(2000);
-      KernelStateHandler()?.loadState("login", { safeMode: true });
+      State?.loadState("login", { safeMode: true });
+    } else if (e?.key === "F4") {
+      this.status.set("Opening server selector");
+      State?.loadState("switchServer", { safeMode: true });
     } else if (e?.key.toLowerCase() === "a") {
       this.status.set("Starting ArcTerm");
-      KernelStateHandler()?.loadState("arcterm");
+      State?.loadState("arcterm");
     } else {
       this.status.set("&nbsp;");
-      KernelStateHandler()?.loadState("login");
+      State?.loadState("login");
     }
   }
 }

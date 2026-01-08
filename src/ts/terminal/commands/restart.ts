@@ -16,7 +16,7 @@ export class RestartCommand extends TerminalProcess {
   //#endregion
 
   protected async main(term: ArcTerminal) {
-    term.daemon?.restart();
+    term.daemon?.power?.restart();
     return -256;
   }
 }

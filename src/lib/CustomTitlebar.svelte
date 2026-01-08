@@ -2,7 +2,7 @@
   import { AppProcess } from "$ts/apps/process";
   import type { AppRenderer } from "$ts/apps/renderer";
   import { contextProps } from "$ts/context/actions.svelte";
-  import { BETA, KernelStack } from "$ts/env";
+  import { BETA, Stack } from "$ts/env";
   import { onMount, type Snippet } from "svelte";
   import AltMenu from "./CustomTitlebar/AltMenu.svelte";
 
@@ -13,7 +13,7 @@
   let renderer: AppRenderer | undefined;
 
   onMount(() => {
-    renderer = KernelStack().renderer;
+    renderer = Stack.renderer;
   });
 
   function maximize() {
@@ -50,9 +50,6 @@
     {/if}
     <AltMenu {process} />
   </div>
-  {#if BETA}
-    <button class="link feedback" onclick={() => process.userDaemon?.iHaveFeedback(process)}>Feedback?</button>
-  {/if}
   <div class="controls">
     {#if data.controls.minimize && !data.overlay}
       <button class="minimize icon-chevron-down" aria-label="minimize" onclick={minimize}></button>

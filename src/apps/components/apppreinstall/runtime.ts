@@ -1,7 +1,10 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import type { DistributionServiceProcess } from "$ts/distrib";
+import { Env, Fs } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
-import { arrayToText } from "$ts/util/convert";
+import { Daemon } from "$ts/server/user/daemon";
+import { arrayBufferToText } from "$ts/util/convert";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
@@ -40,7 +43,7 @@ export class AppPreInstallRuntime extends AppProcess {
             {
               caption: "Take me there",
               action: () => {
-                this.userDaemon?.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps");
+                Daemon?.spawn?.spawnApp("systemSettings", +Env.get("shell_pid"), "apps");
               },
             },
             {
@@ -50,7 +53,7 @@ export class AppPreInstallRuntime extends AppProcess {
             },
           ],
         },
-        +this.env.get("shell_pid"),
+        +Env.get("shell_pid"),
         true
       );
 
@@ -58,18 +61,24 @@ export class AppPreInstallRuntime extends AppProcess {
       return;
     }
 
-    const prog = await this.userDaemon?.FileProgress(
+    const prog = await Daemon?.files!.FileProgress(
       {
         type: "size",
         icon: "DownloadIcon",
         caption: "Reading ArcOS package",
         subtitle: this.pkgPath,
       },
-      +this.env.get("shell_pid")
+      +Env.get("shell_pid")
     );
 
     try {
-      const content = await this.userDaemon?.fs.readFile(this.pkgPath, (progress) => {
+      const distrib = Daemon?.serviceHost?.getService<DistributionServiceProcess>("DistribSvc")!;
+
+      if (!(await distrib.validatePackage(this.pkgPath))) {
+        return this.fail("Package is corrupt; missing files");
+      }
+
+      const content = await Fs.readFile(this.pkgPath, (progress) => {
         prog?.show();
         prog?.setMax(progress.max);
         prog?.setDone(progress.value);
@@ -83,24 +92,8 @@ export class AppPreInstallRuntime extends AppProcess {
 
       this.zip = new JSZip();
       const buffer = await this.zip.loadAsync(content, {});
-
-      if (!buffer.files["_metadata.json"] || !buffer.files["payload/_app.tpa"]) {
-        return this.fail("Package is corrupt; missing package or app metadata.");
-      }
-
       const metaBinary = await buffer.files["_metadata.json"].async("arraybuffer");
-      const metadata = tryJsonParse<ArcPackage>(arrayToText(metaBinary));
-
-      if (!metadata || typeof metadata === "string") {
-        return this.fail("The package metadata could not be read");
-      }
-
-      if (metadata.appId.includes(".") || metadata.appId.includes("-")) {
-        return this.fail(
-          "The application ID is malformed: it contains periods or dashes. If you're the creator of the app, be sure to use the suggested format for application IDs."
-        );
-      }
-
+      const metadata = tryJsonParse<ArcPackage>(arrayBufferToText(metaBinary));
       this.metadata.set(metadata);
     } catch {
       return this.fail("Filesystem error");
@@ -119,7 +112,7 @@ export class AppPreInstallRuntime extends AppProcess {
         image: "ErrorIcon",
         sound: "arcos.dialog.error",
       },
-      +this.env.get("shell_pid"),
+      +Env.get("shell_pid"),
       true
     );
     this.closeWindow();
@@ -127,7 +120,7 @@ export class AppPreInstallRuntime extends AppProcess {
 
   async install() {
     const meta = this.metadata();
-    const elevated = await this.userDaemon?.manuallyElevate({
+    const elevated = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS wants to install an application",
       title: meta.name,
       description: `${meta.author} - ${meta.version}`,
@@ -138,7 +131,7 @@ export class AppPreInstallRuntime extends AppProcess {
     if (!elevated) return;
 
     await this.closeWindow();
-    this.spawnOverlayApp("AppInstaller", +this.env.get("shell_pid"), this.metadata, this.zip);
+    this.spawnOverlayApp("AppInstaller", +Env.get("shell_pid"), this.metadata, this.zip);
   }
 
   //#endregion

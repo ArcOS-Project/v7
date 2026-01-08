@@ -3,7 +3,7 @@ import { Kernel } from "$ts/env";
 
 export async function getBuild() {
   __Console__.time("Get Build");
-  const kernel = Kernel();
+  const kernel = Kernel;
 
   kernel?.Log("branding", "Attempting to retrieve git hash from /build");
 
@@ -19,4 +19,4 @@ export async function getBuild() {
   }
 }
 
-export const ArcBuild = () => Kernel()!.ARCOS_BUILD;
+export const ArcBuild = () => Kernel!.ARCOS_BUILD;

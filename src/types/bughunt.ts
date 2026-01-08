@@ -20,6 +20,9 @@ export interface BugReport {
   mode: string;
   build: string;
   public: boolean;
+  isAppReport?: boolean;
+  reportAppId?: string;
+  reportAppPkgId?: string;
 }
 
 export interface OutgoingBugReport {
@@ -35,6 +38,9 @@ export interface OutgoingBugReport {
   mode: string;
   build: string;
   public?: boolean;
+  isAppReport?: boolean;
+  reportAppId?: string;
+  reportAppPkgId?: string;
 }
 
 export interface Location {

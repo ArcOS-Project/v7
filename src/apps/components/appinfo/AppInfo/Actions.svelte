@@ -20,7 +20,8 @@
 
 <InfoBlock className="actions">
   <InfoRow>
-    <p class="id">{appId}</p>
+    <p class="id" title={appId}>{appId}</p>
+    <button onclick={() => process.openPermissions()} {disabled}>Permissions</button>
     <button onclick={() => process.killAll()} {disabled}>Kill all</button>
     <button class="suggested" onclick={() => process.closeWindow()}>Close</button>
   </InfoRow>

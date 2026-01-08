@@ -1,12 +1,12 @@
+import { Env } from "$ts/env";
 import { KernelModule } from "$ts/kernel/module";
-import type { ConstructedWaveKernel, EnvironmentType } from "$types/kernel";
+import type { ConstructedWaveKernel } from "$types/kernel";
 import type { SoundBusStore, SoundStore } from "$types/soundbus";
 import { ArcSounds } from "./store";
 
 export class SoundBus extends KernelModule {
   private store: SoundStore = {};
   private _bus: SoundBusStore = {};
-  private env: EnvironmentType;
 
   //#region LIFECYCLE
 
@@ -14,14 +14,13 @@ export class SoundBus extends KernelModule {
     super(kernel, id);
 
     this.store = ArcSounds;
-    this.env = kernel.getModule<EnvironmentType>("env");
   }
 
   //#endregion
 
   public playSound(id: string, volume = 1) {
     this.isKmod();
-    if (this.env.get("safemode")) return;
+    if (Env.get("safemode")) return;
     if (!this.store[id]) return false;
 
     this.Log(`Playing sound ${id} from store`);

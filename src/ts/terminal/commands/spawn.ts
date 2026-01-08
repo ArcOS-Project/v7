@@ -1,4 +1,6 @@
 import { tryJsonParse } from "$ts/json";
+import { Permissions } from "$ts/permissions";
+import { Process } from "$ts/process/instance";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
@@ -27,6 +29,12 @@ export class SpawnCommand extends TerminalProcess {
       return 1;
     }
 
-    return (await term.daemon?.spawnApp(id, term.daemon?.pid, ...argv)) ? 0 : 1;
+    const proc = (await term.daemon?.spawn?.spawnApp<Process>(id, term.daemon?.pid, ...argv));
+
+    if (!proc) return 1;
+
+    if (this.HAS_SUDO) Permissions.grantSudo(proc);
+
+    return 0;
   }
 }

@@ -1,11 +1,12 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { ProfilePictures } from "$ts/images/pfp";
+  import { Daemon } from "$ts/server/user/daemon";
   import { onMount } from "svelte";
   import type { SettingsRuntime } from "../../runtime";
 
   const { process }: { process: SettingsRuntime } = $props();
-  const { userPreferences, slideVisible, userDaemon } = process;
+  const { userPreferences, slideVisible } = process;
 
   onMount(() => {
     if (!$slideVisible) return;
@@ -18,10 +19,10 @@
   {#each Object.values(ProfilePictures) as pfp, i}
     <button
       class="picture-option"
-      onclick={() => process.userDaemon?.changeProfilePicture(i + 1)}
+      onclick={() => Daemon?.preferencesCtx?.changeProfilePicture(i + 1)}
       class:selected={$userPreferences.account.profilePicture === i + 1}
     >
-      <ProfilePicture {userDaemon} fallback={pfp} height={40} />
+      <ProfilePicture fallback={pfp} height={40} />
     </button>
   {/each}
 </div>

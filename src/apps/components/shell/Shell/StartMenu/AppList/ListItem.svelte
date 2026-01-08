@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import { contextProps } from "$ts/context/actions.svelte";
+  import { Daemon } from "$ts/server/user/daemon";
   import type { App } from "$types/app";
 
   const { app, process }: { app: App; process: ShellRuntime } = $props();
@@ -24,7 +25,7 @@
     use:contextProps={[app]}
     class:no-safemode={process.safeMode && app.noSafeMode}
   >
-    <img src={process.userDaemon?.getAppIcon(app)} alt="" />
+    <img src={Daemon?.icons?.getAppIcon(app)} alt="" />
     <span class="name">{app.metadata.name}</span>
   </button>
 {/if}

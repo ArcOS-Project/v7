@@ -1,12 +1,17 @@
-#arcTermMode {
-  position: fixed;
+#arcTermWrapper {
+  position: absolute;
   top: 0px;
   left: 0px;
-  width: calc(100% - 14px);
-  height: calc(100% - 14px);
-  margin: 7px;
+  width: 100%;
+  height: 100%;
+  padding: 7px;
+}
+
+#arcTermMode {
+  width: 100%;
+  height: 100%;
 }
 
 #arcTermMode * {
-  font-family: "Fira Code";
+  font-family: "Fira Mono";
 }

@@ -25,7 +25,7 @@ div.desktop-wallpaper > div.wallpaper:not(.show) {
 }
 
 #wallpaper div.desktop-icons {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -61,9 +61,6 @@ div.desktop-wallpaper > div.wallpaper:not(.show) {
   pointer-events: initial !important;
   translate: none !important;
   --user-font: "Nunito Sans" !important;
-  animation: wallpaper_desktopIcon_appear 0.1s forwards !important;
-  animation-delay: calc(var(--i) * 10ms);
-  opacity: 0;
 }
 
 #wallpaper div.desktop-icons div.ghost {
@@ -95,6 +92,7 @@ div.desktop-wallpaper > div.wallpaper:not(.show) {
   width: 32px;
   margin: 0 auto;
   height: 32px;
+  object-fit: contain;
 }
 
 #wallpaper div.desktop-icons div.img span {
@@ -128,6 +126,8 @@ div.desktop-wallpaper > div.wallpaper:not(.show) {
 
 #wallpaper div.desktop-icons img {
   height: 32px;
+  width: 32px;
+  object-fit: contain;
 }
 
 #wallpaper div.desktop-icons button:hover {
@@ -161,7 +161,7 @@ div.desktop-wallpaper > div.wallpaper:not(.show) {
 }
 
 #wallpaper div.loading {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -176,18 +176,4 @@ div.desktop-wallpaper > div.wallpaper:not(.show) {
   border: #fff2 var(--thickness) solid;
   border-top: var(--thickness) solid currentColor;
   box-shadow: var(--secondary-box-shadow);
-}
-
-@keyframes wallpaper_desktopIcon_appear {
-  0% {
-    opacity: 0;
-    pointer-events: none;
-  }
-  60% {
-    pointer-events: initial;
-  }
-  100% {
-    opacity: 1;
-    pointer-events: initial;
-  }
 }

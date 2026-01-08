@@ -1,4 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
+import { Fs } from "$ts/env";
 import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -26,7 +27,7 @@ export class NewFileRuntime extends AppProcess {
   async createFile() {
     const blob = new Blob(); // Empty blob === empty file contents
     try {
-      await this.fs.writeFile(join(this.path, this.newFile()), blob);
+      await Fs.writeFile(join(this.path, this.newFile()), blob);
     } catch {
       // silently error
     }

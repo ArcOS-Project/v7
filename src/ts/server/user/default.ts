@@ -20,6 +20,7 @@ export const DefaultUserPreferences: UserPreferences = {
       clockSecs: false,
       batteryPercentage: false,
       position: "horizontal-bottom",
+      openedAppsPerWorkspace: false,
     },
     actionCenter: {
       weatherLocation: {
@@ -35,6 +36,7 @@ export const DefaultUserPreferences: UserPreferences = {
     },
     start: {
       noGroups: false,
+      actions: [],
     },
     visuals: {
       noAnimations: false,
@@ -44,6 +46,7 @@ export const DefaultUserPreferences: UserPreferences = {
       noGlass: false,
       trafficLights: false,
       blurRadius: 10,
+      hideAltmenus: false,
     },
     customStyle: {
       enabled: false,

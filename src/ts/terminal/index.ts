@@ -1,13 +1,16 @@
 import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import TerminalWindow from "$apps/components/terminalwindow/TerminalWindow.svelte";
+import { hexToRgb } from "$ts/color";
 import type { FilesystemDrive } from "$ts/drives/drive";
-import { KernelStack } from "$ts/env";
+import { Env, Fs, Stack, State } from "$ts/env";
 import { ASCII_ART } from "$ts/intro";
 import { Process } from "$ts/process/instance";
 import { LoginUser } from "$ts/server/user/auth";
-import type { UserDaemon } from "$ts/server/user/daemon";
+import { Daemon, TryGetDaemon, type UserDaemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
-import { arrayToText, textToBlob } from "$ts/util/convert";
+import { noop } from "$ts/util";
+import { arrayBufferToText, textToBlob } from "$ts/util/convert";
+import { ErrorUtils } from "$ts/util/error";
 import { join } from "$ts/util/fs";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
 import type { DirectoryReadReturn } from "$types/fs";
@@ -24,6 +27,7 @@ import {
   BRRED,
   BRYELLOW,
   DefaultArcTermConfiguration,
+  DefaultColors,
   RESET,
   TerminalCommandStore,
 } from "./store";
@@ -41,20 +45,25 @@ export class ArcTerminal extends Process {
   ansiEscapes = ansiEscapes;
   lastCommandErrored = false;
   config: ArcTermConfiguration = DefaultArcTermConfiguration;
+  configProvidedExternal = false;
   window: TerminalWindowRuntime | undefined;
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, term: Terminal, path?: string) {
+  constructor(pid: number, parentPid: number, term: Terminal, path?: string, config?: ArcTermConfiguration) {
     super(pid, parentPid);
 
     this.path = path || UserPaths.Home;
     this.changeDirectory(this.path);
-    this.daemon = KernelStack().getProcess(+this.env.get("userdaemon_pid"));
+    this.daemon = TryGetDaemon();
 
     this.term = term;
     this.tryGetTermWindow();
     this.name = "ArcTerminal";
+    if (config) {
+      this.config = config;
+      this.configProvidedExternal = true;
+    }
 
     this.setSource(__SOURCE__);
   }
@@ -63,14 +72,13 @@ export class ArcTerminal extends Process {
     if (!this.term) return this.killSelf();
 
     try {
-      await this.fs.createDirectory(join(UserPaths.Configuration, "ArcTerm"));
+      await Fs.createDirectory(join(UserPaths.Configuration, "ArcTerm"));
     } catch {
       return false;
     }
-    await this.migrateConfigurationPath();
 
-    const rl = await KernelStack().spawn<Readline>(Readline, undefined, this.window?.userDaemon?.userInfo?._id, this.pid, this);
     await this.readConfig();
+    const rl = await Stack.spawn<Readline>(Readline, undefined, Daemon?.userInfo?._id, this.pid, this);
 
     this.term.loadAddon(rl!);
     this.rl = rl;
@@ -122,23 +130,23 @@ export class ArcTerminal extends Process {
         this.Error("Command not found.");
         this.lastCommandErrored = true;
       } else {
-        const proc = await KernelStack().spawn<TerminalProcess>(
-          command,
-          undefined,
-          this.window?.userDaemon?.userInfo?._id,
-          this.pid
-        );
+        try {
+          const proc = await Stack.spawn<TerminalProcess>(command, undefined, Daemon?.userInfo?._id, this.pid);
 
-        // BUG 68798d6957684017c3e9a085
-        if (!proc) {
+          // BUG 68798d6957684017c3e9a085
+          if (!proc) {
+            this.lastCommandErrored = true;
+            return;
+          }
+
+          const result = (await proc?._main(this, flags, argv)) || 0;
+
+          if (result !== 0) this.lastCommandErrored = true;
+          if (result <= -128) return this.rl?.dispose();
+        } catch (e) {
           this.lastCommandErrored = true;
-          return;
+          this.handleCommandError(e as Error, command);
         }
-
-        const result = (await proc?._main(this, flags, argv)) || 0;
-
-        if (result !== 0) this.lastCommandErrored = true;
-        if (result <= -128) return this.rl?.dispose();
       }
     }
 
@@ -159,7 +167,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.readDir(this.join(path));
+    return await Fs.readDir(this.join(path));
   }
 
   async createDirectory(path: string) {
@@ -167,7 +175,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.createDirectory(this.join(path));
+    return await Fs.createDirectory(this.join(path));
   }
 
   async writeFile(path: string, data: Blob) {
@@ -175,7 +183,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.writeFile(this.join(path), data);
+    return await Fs.writeFile(this.join(path), data);
   }
 
   async tree(path: string) {
@@ -183,7 +191,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.tree(this.join(path));
+    return await Fs.tree(this.join(path));
   }
 
   async copyItem(source: string, destination: string) {
@@ -191,7 +199,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.copyItem(this.join(source), this.join(destination));
+    return await Fs.copyItem(this.join(source), this.join(destination));
   }
 
   async moveItem(source: string, destination: string) {
@@ -199,7 +207,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.moveItem(this.join(source), this.join(destination));
+    return await Fs.moveItem(this.join(source), this.join(destination));
   }
 
   async readFile(path: string) {
@@ -207,7 +215,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.readFile(this.join(path));
+    return await Fs.readFile(this.join(path));
   }
 
   async deleteItem(path: string) {
@@ -215,7 +223,7 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
 
-    return await this.fs.deleteItem(this.join(path));
+    return await Fs.deleteItem(this.join(path));
   }
 
   async Error(message: string, prefix = "Error") {
@@ -242,7 +250,7 @@ export class ArcTerminal extends Process {
     if (this._disposed) return;
 
     try {
-      const drive = this.fs.getDriveByPath(path);
+      const drive = Fs.getDriveByPath(path);
 
       if (!drive) return false;
 
@@ -252,7 +260,7 @@ export class ArcTerminal extends Process {
     }
 
     try {
-      const contents = await this.fs.readDir(path);
+      const contents = await Fs.readDir(path);
 
       if (!contents) throw "";
 
@@ -295,10 +303,10 @@ export class ArcTerminal extends Process {
   }
 
   async stop(): Promise<any> {
-    const parent = KernelStack().getProcess(this.parentPid);
+    const parent = Stack.getProcess(this.parentPid);
 
     if (parent instanceof TerminalWindow) {
-      KernelStack().kill(this.parentPid);
+      Stack.kill(this.parentPid);
     }
   }
 
@@ -360,7 +368,7 @@ export class ArcTerminal extends Process {
       return false;
     }
 
-    await this.daemon?.discontinueToken(token);
+    await this.daemon?.account?.discontinueToken(token);
 
     return true;
   }
@@ -370,13 +378,57 @@ export class ArcTerminal extends Process {
 
     if (this._disposed) return;
     try {
-      const contents = await this.fs.readFile(this.CONFIG_PATH);
+      if (!this.configProvidedExternal) {
+        const contents = await Fs.readFile(this.CONFIG_PATH);
+        if (!contents) throw "";
 
-      if (!contents) throw "";
+        const json = JSON.parse(arrayBufferToText(contents));
+        this.config = json as ArcTermConfiguration;
+      } else {
+        this.configProvidedExternal = false;
+      }
 
-      const json = JSON.parse(arrayToText(contents));
+      this.term!.options.theme = {
+        // RED
+        brightRed: this.config.red || DefaultColors.red,
+        red: this.config.red || DefaultColors.red,
+        // GREEN
+        brightGreen: this.config.green || DefaultColors.green,
+        green: this.config.green || DefaultColors.green,
+        // YELLOW
+        brightYellow: this.config.yellow || DefaultColors.yellow,
+        yellow: this.config.yellow || DefaultColors.yellow,
+        // BLUE
+        brightBlue: this.config.blue || DefaultColors.blue,
+        blue: this.config.blue || DefaultColors.blue,
+        // CYAN
+        brightCyan: this.config.cyan || DefaultColors.cyan,
+        cyan: this.config.cyan || DefaultColors.cyan,
+        // MAGENTA
+        brightMagenta: this.config.magenta || DefaultColors.magenta,
+        magenta: this.config.magenta || DefaultColors.magenta,
+        // FORE/BACK GROUND
+        background: this.config.background || DefaultColors.background,
+        foreground: this.config.foreground || DefaultColors.foreground,
+        brightBlack: this.config.brightBlack || DefaultColors.brightBlack,
+      };
 
-      this.config = json as ArcTermConfiguration;
+      if (State.currentState === "arcterm") {
+        const wrapper = document.querySelector<HTMLDivElement>("#arcTermWrapper");
+        const target = document.querySelector<HTMLDivElement>("#arcTermMode");
+
+        target!.style.setProperty("--fg", this.config.foreground || DefaultColors.foreground);
+        wrapper!.style.backgroundColor = this.config.background || DefaultColors.background;
+      } else {
+        const window = this.window?.getWindow();
+
+        window?.style.setProperty(
+          "--terminal-background",
+          `rgba(${hexToRgb(this.config.background || DefaultColors.background).join(", ")}, ${this.config.backdropOpacity ?? DefaultColors.backdropOpacity})`
+        );
+        window?.style.setProperty("--terminal-background-inactive", this.config.background || DefaultColors.background);
+        window?.style.setProperty("--fg", this.config.foreground || DefaultColors.foreground);
+      }
     } catch {
       await this.writeConfig();
     }
@@ -388,45 +440,69 @@ export class ArcTerminal extends Process {
     if (this._disposed) return;
 
     try {
-      await this.fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(this.config, null, 2)));
+      await Fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(this.config, null, 2)));
     } catch {
       return;
     }
   }
 
+  /**
+   * WARNING: this method ONLY works if there's no active readline prompt in progress. Running this method whilst
+   * receiving input from the user will cause two readlines to happen on the same instance. DO NOT DO THAT.
+   */
   async reload() {
     this.Log("Soft-reloading ArcTerm");
 
     await this.rl?.dispose();
     await this.killSelf();
-    await KernelStack().spawn(
-      ArcTerminal,
-      undefined,
-      this.window?.userDaemon?.userInfo?._id,
-      this.parentPid,
-      this.term,
-      this.path
-    );
+    await Stack.spawn(ArcTerminal, undefined, Daemon?.userInfo?._id, this.parentPid, this.term, this.path);
   }
 
   tryGetTermWindow() {
     this.Log("Trying to get TermWindProc");
 
-    const parent = KernelStack().getProcess(this.parentPid);
+    const parent = Stack.getProcess(this.parentPid);
 
-    if (parent instanceof TerminalWindowRuntime) this.window = parent;
+    if (parent instanceof TerminalWindowRuntime) {
+      this.window = parent;
+
+      this.window.altMenu.set([
+        {
+          caption: "Terminal",
+          subItems: [
+            {
+              caption: "New window",
+              action: () => {
+                Daemon.spawn?.spawnApp("ArcTerm", this.window?.parentPid, this.path);
+              },
+              icon: "square-plus",
+            },
+            {
+              caption: "Edit colors...",
+              action: () => this.window?.spawnOverlayApp("ArcTermColors", +Env.get("shell_pid")),
+              icon: "palette",
+            },
+            {
+              caption: "Exit",
+              action: () => this.window?.closeWindow(),
+              icon: "power",
+            },
+          ],
+        },
+      ]);
+    }
   }
 
+  // MIGRATION: 7.0.3 -> 7.0.4
+  /**
+   * @deprecated This migration has expired
+   */
   async migrateConfigurationPath() {
-    try {
-      const oldPath = "U:/arcterm.conf";
-      const newFile = await this.fs.readFile(this.CONFIG_PATH);
-      const oldFile = newFile ? undefined : await this.fs.readFile(oldPath);
+    noop();
+  }
 
-      if (oldFile && !newFile) {
-        this.Log("Migrating old config path to " + this.CONFIG_PATH);
-        await this.fs.moveItem(oldPath, this.CONFIG_PATH);
-      }
-    } catch {}
+  handleCommandError(e: Error, command: typeof TerminalProcess) {
+    this.rl?.println(ErrorUtils.abbreviatedStackTrace(e, `${BRRED}${command.name}: `));
+    this.rl?.println(`${RESET}`);
   }
 }

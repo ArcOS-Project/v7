@@ -1,4 +1,4 @@
-export function arrayToText(buffer: ArrayLike<number> | ArrayBufferLike) {
+export function arrayBufferToText(buffer: ArrayLike<number> | ArrayBufferLike) {
   return new TextDecoder().decode(new Uint8Array(buffer as any));
 }
 
@@ -18,7 +18,7 @@ export function textToBlob(text: string, type = "text/plain"): Blob {
   return new Blob([text], { type });
 }
 
-export function arrayToBlob(buffer: ArrayBuffer, type = "text/plain"): Blob {
+export function arrayBufferToBlob(buffer: ArrayBuffer, type = "text/plain"): Blob {
   return new Blob([new Uint8Array(buffer)], {
     type,
   });

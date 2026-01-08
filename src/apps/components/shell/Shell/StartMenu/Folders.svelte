@@ -1,11 +1,12 @@
 <script lang="ts">
+  import { contextProps } from "$ts/context/actions.svelte";
+  import { Fs, SysDispatch } from "$ts/env";
   import { UserPaths } from "$ts/server/user/store";
   import type { FolderEntry } from "$types/fs";
   import type { UserPreferencesStore } from "$types/user";
   import { onMount } from "svelte";
   import type { ShellRuntime } from "../../runtime";
   import UserButton from "../Folders/UserButton.svelte";
-  import { contextProps } from "$ts/context/actions.svelte";
 
   const {
     process,
@@ -20,7 +21,7 @@
   let dirs: FolderEntry[] = $state([]);
 
   onMount(() => {
-    process.systemDispatch.subscribe<string>("fs-flush-folder", (path) => {
+    SysDispatch.subscribe<string>("fs-flush-folder", (path) => {
       if (!path) return;
 
       if (path.startsWith("U:") && path.split("/").length == 1) {
@@ -33,7 +34,7 @@
 
   async function update() {
     try {
-      const root = await process.fs.readDir(UserPaths.Home);
+      const root = await Fs.readDir(UserPaths.Home);
 
       if (!root) return;
 

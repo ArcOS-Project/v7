@@ -97,6 +97,7 @@ export interface TaskbarPreferences {
   clock12hr: boolean;
   batteryPercentage: boolean;
   position: "horizontal-bottom" | "vertical-left" | "vertical-right" | "horizontal-top";
+  openedAppsPerWorkspace?: boolean;
 }
 
 export interface DesktopPreferences {
@@ -107,10 +108,12 @@ export interface DesktopPreferences {
   accent: string;
   noIconGrid: boolean;
   lockIcons: boolean;
+  nativeNotificationsState?: NotificationPermission;
 }
 
 export interface StartMenuPreferences {
   noGroups: boolean;
+  actions: string[]
 }
 
 export interface VisualPreferences {
@@ -122,6 +125,7 @@ export interface VisualPreferences {
   userFont?: string;
   trafficLights: boolean;
   blurRadius: number;
+  hideAltmenus?: boolean;
 }
 
 export interface SecurityPreferences {

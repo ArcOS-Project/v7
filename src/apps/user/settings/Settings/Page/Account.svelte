@@ -1,18 +1,19 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
+  import { Daemon } from "$ts/server/user/daemon";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
   import Header from "./Account/Header.svelte";
 
   const { process }: { process: SettingsRuntime } = $props();
-  const { userInfo, preferences: userPreferences } = process.userDaemon || {}!;
+  const { userInfo, preferences: userPreferences } = Daemon || {}!;
 </script>
 
-<ProfilePicture className="backdrop" userDaemon={process.userDaemon!} height={0} />
+<ProfilePicture className="backdrop" height={0} />
 <div class="centered-layout">
-  {#if userInfo && userPreferences}
-    <Header {process} {userInfo} userDaemon={process.userDaemon!} />
+  {#if userInfo && $userPreferences}
+    <Header {process} {userInfo} userDaemon={Daemon!} />
   {:else}
     <p class="error-text">ERR_NO_DAEMON</p>
   {/if}
@@ -36,7 +37,7 @@
       chevron
       onclick={() => process.spawnOverlay("changePassword")}
     />
-    {#if !process.userDaemon?.userInfo.hasTotp}
+    {#if !Daemon?.userInfo.hasTotp}
       <Option
         caption="Set up two-factor authentication"
         image={process.getIconCached("ElevationIcon")}
@@ -72,7 +73,7 @@
       caption="Delete ArcOS account..."
       image={process.getIconCached("TrashIcon")}
       chevron
-      onclick={() => process.userDaemon?.deleteAccount()}
+      onclick={() => Daemon?.account?.deleteAccount()}
     ></Option>
   </Section>
 </div>

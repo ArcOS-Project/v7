@@ -3,6 +3,7 @@
 
   interface Props {
     image?: string;
+    icon?: string;
     caption: string;
     children?: Snippet;
     chevron?: boolean;
@@ -14,6 +15,7 @@
   const {
     disabled = false,
     image = "",
+    icon = "",
     caption,
     children = undefined,
     chevron = false,
@@ -30,8 +32,14 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="option {className}" onclick={click} class:clickable={!!onclick} class:chevron class:disabled>
   <div class="name">
-    {#if image}
-      <img src={image} alt="" />
+    {#if image || icon}
+      <div class="icon">
+        {#if image}
+          <img src={image} alt="" />
+        {:else if icon}
+          <span class="lucide icon-{icon}"></span>
+        {/if}
+      </div>
     {/if}
     <span>{caption}</span>
   </div>

@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
-import { KernelStack } from "$ts/env";
+import { Env, Stack } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import type { AppProcessData } from "$types/app";
 
 export class SystemShortcutsRuntime extends AppProcess {
@@ -9,8 +10,10 @@ export class SystemShortcutsRuntime extends AppProcess {
 
     this.setSource(__SOURCE__);
   }
+  
+  //#endregion
 
-  async start() {
+  async render() {
     if (await this.closeIfSecondInstance()) return false;
 
     this.acceleratorStore.push(
@@ -27,7 +30,7 @@ export class SystemShortcutsRuntime extends AppProcess {
         key: "[",
         global: true,
         action: () => {
-          this.userDaemon?.previousDesktop();
+          Daemon?.workspaces?.previousDesktop();
         },
       },
       {
@@ -35,36 +38,34 @@ export class SystemShortcutsRuntime extends AppProcess {
         key: "]",
         global: true,
         action: () => {
-          this.userDaemon?.nextDesktop();
+          Daemon?.workspaces?.nextDesktop();
         },
       },
       {
         ctrl: true,
         key: "/",
         action: () => {
-          this.spawnOverlayApp("AcceleratorOverview", +this.env.get("shell_pid"));
+          this.spawnOverlayApp("AcceleratorOverview", +Env.get("shell_pid"));
         },
         global: true,
       }
     );
   }
 
-  //#endregion
-
   async closeFocused() {
     this.Log("Attempting to close focused window");
 
-    const focusedPid = KernelStack().renderer?.focusedPid();
+    const focusedPid = Stack.renderer?.focusedPid();
     if (!focusedPid) return;
 
-    const focusedProc = KernelStack().getProcess(focusedPid);
+    const focusedProc = Stack.getProcess(focusedPid);
 
     if (!focusedProc || !(focusedProc instanceof AppProcess)) return;
 
     await focusedProc?.closeWindow();
 
-    const appProcesses = (KernelStack().renderer?.currentState || [])
-      .map((pid) => KernelStack().getProcess(pid))
+    const appProcesses = (Stack.renderer?.currentState || [])
+      .map((pid) => Stack.getProcess(pid))
       .filter((proc) => proc && !proc._disposed && proc instanceof AppProcess && !proc.app.data.core && !proc.app.data.overlay)
       .filter((proc) => !!proc);
 
@@ -72,6 +73,6 @@ export class SystemShortcutsRuntime extends AppProcess {
 
     if (!targetProcess) return;
 
-    KernelStack().renderer?.focusPid(targetProcess.pid);
+    Stack.renderer?.focusPid(targetProcess.pid);
   }
 }

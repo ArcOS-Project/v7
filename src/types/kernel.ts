@@ -4,6 +4,7 @@ import type { ProcessDispatch } from "$ts/process/dispatch";
 import type { Process } from "$ts/process/instance";
 import type { StateHandler } from "$ts/state";
 import type { ReadableStore } from "$ts/writable";
+import type { App } from "./app";
 import type { BugReport, OutgoingBugReport, ReportOptions } from "./bughunt";
 import type { SystemDispatchResult } from "./dispatch";
 import type {
@@ -16,7 +17,7 @@ import type {
 } from "./fs";
 import type { LogItem, LogLevel } from "./logging";
 import type { ProcessContext, ProcessKillResult } from "./process";
-import type { ServerInfo } from "./server";
+import type { ServerInfo, ServerOption } from "./server";
 
 export type ConstructedWaveKernel = {
   modules: string[];
@@ -34,30 +35,38 @@ export type ConstructedWaveKernel = {
   _init(): Promise<void>;
   getModule<T = any>(id: string, dontCrash?: boolean): T;
   Log(source: string, message: string, level?: LogLevel): void;
-  panic(reason: string): Promise<void>;
+  panic(reason: string, brief?: string): Promise<void>;
 };
 
 export interface EnvironmentType {
   _init(): Promise<void>;
-  set(key: string, value: any): boolean;
-  setMultiple(entries: [string, any][]): void;
   delete(key: string): boolean;
   get(key: string): any;
   getMultiple(keys: string[]): any[];
+  getAll(): Record<string, string>;
   setReadonly(key: string): void;
   setWritable(key: string): void;
+  set(key: string, value: any): boolean;
+  setMultiple(entries: [string, any][]): void;
   reset(): void;
 }
 
 export interface ServerManagerType {
-  url: string;
   connected: boolean;
-  serverInfo: ServerInfo | undefined;
+  serverInfo?: ServerInfo;
+  previewBranch?: string;
+  servers: ServerOption[];
+  url?: string;
+  authCode?: string;
   checkUsernameAvailability(username: string): Promise<boolean>;
-  checkEmailAvailability(email: string): Promise<boolean>;
-  _init(): Promise<void>;
-  set(server: string): Promise<void>;
-  reset(): Promise<void>;
+  checkEmailAvailability(username: string): Promise<boolean>;
+  switchServer(url: string): Promise<boolean>;
+  loadServers(): void;
+  writeServers(servers: ServerOption[]): void;
+  resetServers(): void;
+  addServer(config: ServerOption): boolean;
+  removeServer(url: string): boolean;
+  isAdded(url: string): boolean;
 }
 
 export interface FilesystemType {
@@ -106,23 +115,20 @@ export interface FilesystemType {
 
 export interface BugHuntType {
   _init(): Promise<void>;
-  createReport(options?: ReportOptions): OutgoingBugReport;
+  createReport(options?: ReportOptions, app?: App, storeItemId?: string): OutgoingBugReport;
   sendReport(outgoing: OutgoingBugReport, token?: string, options?: ReportOptions): Promise<boolean>;
   getToken(): string;
   getUserBugReports(token: string): Promise<BugReport[]>;
   getPublicBugReports(): Promise<BugReport[]>;
-  server: ServerManagerType;
-  env: EnvironmentType;
-  handler: ProcessHandlerType;
 }
 
 export interface ProcessHandlerType {
-  BUSY: boolean;
+  BUSY: string;
+  IS_BUSY: boolean;
+  get MEMORY(): number;
   store: ReadableStore<Map<number, Process>>;
   rendererPid: number;
   renderer: AppRenderer | undefined;
-  env: EnvironmentType;
-  dispatch: SystemDispatchType;
   _init(): Promise<void>;
   startRenderer(initPid: number): Promise<void>;
   spawn<T = Process>(
@@ -139,7 +145,7 @@ export interface ProcessHandlerType {
   getPid(): number;
   isPid(pid: number): boolean;
   ConnectDispatch(pid: number): ProcessDispatch | undefined;
-  waitForAvailable(): Promise<void>;
+  waitForAvailable(or?: string): Promise<void>;
   getProcessContext(pid: number): ProcessContext | undefined;
 }
 

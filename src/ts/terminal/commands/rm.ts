@@ -31,6 +31,7 @@ export class RmCommand extends TerminalProcess {
       }
     } catch {}
 
+    // DECIDE: should this invoke FilesystemUserContext.moveToTrashOrDeleteItem?
     const result = await term.deleteItem(name);
 
     return result ? 0 : 1;

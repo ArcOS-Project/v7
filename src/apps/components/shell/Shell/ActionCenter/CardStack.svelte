@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Daemon } from "$ts/server/user/daemon";
   import { Sleep } from "$ts/sleep";
   import type { UserPreferencesStore } from "$types/user";
   import type { ShellRuntime } from "../../runtime";
@@ -8,8 +9,7 @@
   import Indicator from "./CardStack/Indicator.svelte";
 
   const { userPreferences, process }: { userPreferences: UserPreferencesStore; process: ShellRuntime } = $props();
-
-  const { userDaemon } = process;
+  const userDaemon = Daemon;
 
   let changing = $state(false);
   const scrollThreshold = 500;

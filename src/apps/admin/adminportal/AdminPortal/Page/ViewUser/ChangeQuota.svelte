@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import { Daemon } from "$ts/server/user/daemon";
   import { formatBytes } from "$ts/util/fs";
   import type { ExpandedUserInfo } from "$types/user";
 
@@ -12,7 +13,7 @@
 
   async function changeQuota() {
     if (!newQuota) return;
-    const confirm = await process.userDaemon?.Confirm(
+    const confirm = await Daemon?.helpers?.Confirm(
       "Confirm quota change?",
       `Are you sure you want to change the quota of '${user.username}' to ${formatBytes(newQuota)}?`,
       "Cancel",

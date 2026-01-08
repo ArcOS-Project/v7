@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import { Daemon } from "$ts/server/user/daemon";
   import type { SharedDriveType } from "$types/shares";
   import { generate } from "generate-password-ts";
 
@@ -8,7 +9,7 @@
   let loading = $state<boolean>(false);
 
   async function changePassword() {
-    const confirm = await process.userDaemon?.Confirm(
+    const confirm = await Daemon?.helpers?.Confirm(
       "Confirm password reset?",
       `Are you sure you want to change the password of '${share.shareName}'?`,
       "Cancel",

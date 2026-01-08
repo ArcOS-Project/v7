@@ -75,7 +75,7 @@
 }
 
 #OopsStackTracer > div.body div.stack-frame.first {
-  font-family: "Fira Code";
+  font-family: "Fira Mono";
   font-size: 12px;
   line-height: 16px;
   align-items: start;
@@ -95,7 +95,7 @@
 }
 
 #OopsStackTracer > div.body div.stack-frame p.method {
-  font-family: "Fira Code";
+  font-family: "Fira Mono";
   font-size: 12px;
   width: 0;
   flex-grow: 1;

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { StoreItemIcon } from "$ts/distrib/util";
+  import { Env } from "$ts/env";
   import { Plural } from "$ts/util";
   import type { StoreItem, UpdateInfo } from "$types/package";
   import PackageGrid from "../AppStore/PackageGrid.svelte";
@@ -9,7 +10,7 @@
   const { process, updates, installed }: { process: AppStoreRuntime; updates: UpdateInfo[]; installed: StoreItem[] } = $props();
 
   function updateAll() {
-    process.spawnOverlayApp("MultiUpdateGui", +process.env.get("shell_pid") || process.pid, updates);
+    process.spawnOverlayApp("MultiUpdateGui", +Env.get("shell_pid") || process.pid, updates);
   }
 </script>
 

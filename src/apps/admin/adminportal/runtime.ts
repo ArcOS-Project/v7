@@ -1,6 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { Fs } from "$ts/env";
 import { AdminBootstrapper } from "$ts/server/admin";
+import { Daemon } from "$ts/server/user/daemon";
 import { ShareManager } from "$ts/shares";
 import { Sleep } from "$ts/sleep";
 import { textToBlob } from "$ts/util/convert";
@@ -32,8 +34,8 @@ export class AdminPortalRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData, page?: string, props?: Record<string, any>) {
     super(pid, parentPid, app);
 
-    this.admin = this.userDaemon!.serviceHost!.getService<AdminBootstrapper>("AdminBootstrapper")!;
-    this.shares = this.userDaemon!.serviceHost!.getService<ShareManager>("ShareMgmt")!;
+    this.admin = Daemon!.serviceHost!.getService<AdminBootstrapper>("AdminBootstrapper")!;
+    this.shares = Daemon!.serviceHost!.getService<ShareManager>("ShareMgmt")!;
     this.switchPage(page || "dashboard", props || {});
     this.altMenu.set(AdminPortalAltMenu(this));
 
@@ -41,7 +43,7 @@ export class AdminPortalRuntime extends AppProcess {
   }
 
   async start() {
-    await this.fs.createDirectory("T:/Apps/AdminPortal"); // temp folder for saveTpaFilesOfBugReport
+    await Fs.createDirectory("T:/Apps/AdminPortal"); // temp folder for saveTpaFilesOfBugReport
 
     if (!this.admin) {
       this.switchPage("noAdminBootstrapper", {}, true);
@@ -107,7 +109,7 @@ export class AdminPortalRuntime extends AppProcess {
       try {
         const content = await axios.get(file.url, { responseType: "text" }); // responseType ensures we get a string back
         const source = content.data as string;
-        await this.fs.writeFile(filePath, textToBlob(source, "text/javascript")); // Now we write the code to temp
+        await Fs.writeFile(filePath, textToBlob(source, "text/javascript")); // Now we write the code to temp
 
         // Finally save it
         result.push({
@@ -127,6 +129,15 @@ export class AdminPortalRuntime extends AppProcess {
     }
 
     return result;
+  }
+
+  //#endregion
+  //#region UTILS
+  
+  async viewUserById(userId: string) {
+    const user = (await this.admin.getAllUsers()).find((u) => u._id === userId);
+    
+    this.switchPage("viewUser", { user });
   }
 
   //#endregion

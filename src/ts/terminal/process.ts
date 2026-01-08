@@ -1,8 +1,8 @@
-import { Process } from "$ts/process/instance";
+import { ProcessWithPermissions } from "$ts/permissions/process";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from ".";
 
-export class TerminalProcess extends Process {
+export class TerminalProcess extends ProcessWithPermissions {
   public static keyword: string;
   public static description: string;
   public static hidden = false;

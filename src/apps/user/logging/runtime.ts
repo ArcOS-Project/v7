@@ -1,5 +1,4 @@
 import { AppProcess } from "$ts/apps/process";
-import { Kernel } from "$ts/env";
 import { KernelLogs } from "$ts/getters";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";

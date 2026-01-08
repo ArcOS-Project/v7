@@ -3,7 +3,6 @@ import path from "path";
 
 const SRC_DIR = "./src"; // adjust if your code lives elsewhere
 const PROCESS_CLASS_REGEX = /class\s+(\w*)\s+extends\s+(\w*Process\w*|KernelModule|BaseService)\s*{/g;
-const CONTROL_FLOW_REGEX = /#region LIFECYCLE/gm;
 
 /**
  * Recursively collect .ts and .svelte files
@@ -43,5 +42,5 @@ if (violations.length > 0) {
   console.error(`\nvalidate-regions failed with ${violations.length} violations.`);
   process.exit(1);
 } else {
-  console.log("\nAll Process classes contain LIFECYCLE region.");
+  console.log("\n✅ All Process classes contain LIFECYCLE region.");
 }

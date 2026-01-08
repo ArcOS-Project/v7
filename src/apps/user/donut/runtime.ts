@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
-import type { AppProcessData } from "$types/app";
+import { Stack } from "$ts/env";
 import { Store } from "$ts/writable";
+import type { AppProcessData } from "$types/app";
 import { DonutAltMenu } from "./altmenu";
 
 export class DonutAppRuntime extends AppProcess {
@@ -13,8 +14,7 @@ export class DonutAppRuntime extends AppProcess {
     this.setSource(__SOURCE__);
 
     this.interval = setInterval(() => {
-      if (this.handler.renderer?.focusedPid() !== this.pid && !this.userPreferences().appPreferences.DonutApp.alwaysActive)
-        return;
+      if (Stack.renderer?.focusedPid() !== this.pid && !this.userPreferences().appPreferences.DonutApp.alwaysActive) return;
 
       this.Tick();
     }, 1000 / this.FPS);

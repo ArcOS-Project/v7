@@ -6,5 +6,5 @@ export function isPopulatable(app: App) {
 }
 
 export function RegisteredProcess(process: RegisteredProcess): App {
-  return { ...DefaultAppData, ...process, core: true, hidden: true };
+  return { core: true, hidden: true, ...DefaultAppData, ...process };
 }

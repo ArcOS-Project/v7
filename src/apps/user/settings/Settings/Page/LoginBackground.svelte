@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Daemon } from "$ts/server/user/daemon";
   import { Wallpapers } from "$ts/wallpaper/store";
   import type { Wallpaper } from "$types/wallpaper";
   import { onMount } from "svelte";
@@ -10,28 +11,25 @@
   import WallpaperOption from "./Wallpaper/WallpaperOption.svelte";
 
   const { process }: { process: SettingsRuntime } = $props();
-  const { userDaemon } = process;
-  const { userInfo, preferences: userPreferences } = process.userDaemon || {}!;
+  const { userInfo, preferences: userPreferences } = Daemon || {}!;
 
   let wallpaper = $state<Wallpaper>();
+  let render = $state<boolean>(false);
 
   onMount(() => {
     const sub = userPreferences?.subscribe(async (v) => {
-      wallpaper = await process.userDaemon!.getWallpaper(v.account.loginBackground);
+      wallpaper = await Daemon!.wallpaper!.getWallpaper(v.account.loginBackground);
     });
+
+    // The below timeout is to wait for the page transition, prevents lag
+    setTimeout(() => (render = true), $userPreferences.shell.visuals.noAnimations ? 0 : 400);
 
     return () => sub?.();
   });
 </script>
 
-{#if userInfo && userPreferences && userDaemon}
-  <ThemesHeader
-    {userInfo}
-    {userPreferences}
-    userDaemon={process.userDaemon!}
-    login
-    background={wallpaper?.thumb || wallpaper?.url}
-  >
+{#if userInfo && $userPreferences && Daemon}
+  <ThemesHeader {userInfo} {userPreferences} userDaemon={Daemon!} login background={wallpaper?.thumb || wallpaper?.url}>
     <Setting caption="Name" sub={wallpaper?.name} />
     <Setting caption="Author" sub={wallpaper?.author} />
 
@@ -39,7 +37,7 @@
       <button
         class="lucide icon-upload"
         aria-label="Upload wallpaper"
-        onclick={() => userDaemon?.uploadWallpaper()}
+        onclick={() => Daemon?.wallpaper?.uploadWallpaper()}
         disabled={process.safeMode}
         title="Upload wallpaper"
       >
@@ -64,39 +62,41 @@
     </div>
   </ThemesHeader>
 
-  {#if !process.safeMode}
-    <div class="wallpaper-section">
-      <p class="name">Built-in login backgrounds</p>
-      <div class="wallpapers">
-        {#each Object.keys(Wallpapers) as id}
-          <WallpaperOption {id} {userPreferences} {userDaemon} isLogin />
-        {/each}
-      </div>
-    </div>
-
-    <div class="wallpaper-section">
-      <p class="name">Your saved wallpapers</p>
-      <div
-        class="wallpapers"
-        class:empty={!$userPreferences?.userWallpapers || !Object.values($userPreferences?.userWallpapers).length}
-      >
-        {#if $userPreferences?.userWallpapers && Object.values($userPreferences.userWallpapers).length}
-          {#each Object.keys($userPreferences.userWallpapers) as id}
-            <WallpaperOption {id} {userPreferences} {userDaemon} isLogin />
+  {#if render}
+    {#if !process.safeMode}
+      <div class="wallpaper-section">
+        <p class="name">Built-in login backgrounds</p>
+        <div class="wallpapers">
+          {#each Object.keys(Wallpapers) as id}
+            <WallpaperOption {id} {userPreferences} isLogin />
           {/each}
-        {:else}
-          <p class="none">You have no saved wallpapers!</p>
+        </div>
+      </div>
+
+      <div class="wallpaper-section">
+        <p class="name">Your saved wallpapers</p>
+        <div
+          class="wallpapers"
+          class:empty={!$userPreferences?.userWallpapers || !Object.values($userPreferences?.userWallpapers).length}
+        >
+          {#if $userPreferences?.userWallpapers && Object.values($userPreferences.userWallpapers).length}
+            {#each Object.keys($userPreferences.userWallpapers) as id}
+              <WallpaperOption {id} {userPreferences} isLogin />
+            {/each}
+          {:else}
+            <p class="none">You have no saved wallpapers!</p>
+          {/if}
+        </div>
+      </div>
+    {:else}
+      <div class="centered-layout">
+        {#if process.safeMode}
+          <Section>
+            <Option caption="Safe Mode - login background is disabled" image={process.getIconCached("WarningIcon")}></Option>
+          </Section>
         {/if}
       </div>
-    </div>
-  {:else}
-    <div class="centered-layout">
-      {#if process.safeMode}
-        <Section>
-          <Option caption="Safe Mode - login background is disabled" image={process.getIconCached("WarningIcon")}></Option>
-        </Section>
-      {/if}
-    </div>
+    {/if}
   {/if}
 {:else}
   <p class="error-text">ERR_NO_DAEMON</p>

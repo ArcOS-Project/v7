@@ -17,9 +17,6 @@
     userPreferences: UserPreferencesStore;
     process: ShellRuntime;
   } = $props();
-
-  // TODO: implement quick settings
-  // TODO: remove fade-in animation from "No notifications" text if animations are turned off
 </script>
 
 <div class="actioncenter shell-colored" class:colored={$userPreferences.shell.taskbar.colored} class:opened={$actionCenterOpened}>

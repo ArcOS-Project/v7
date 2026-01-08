@@ -1,14 +1,17 @@
+import { AppConfigError } from "$ts/apps/error";
 import { AppProcess } from "$ts/apps/process";
-import { GetConfirmation, MessageBox } from "$ts/dialog";
+import { ConditionalButton, GetConfirmation, MessageBox } from "$ts/dialog";
 import { FilesystemDrive } from "$ts/drives/drive";
+import { Fs, SysDispatch } from "$ts/env";
 import { AdminScopes } from "$ts/server/admin/store";
+import { Daemon } from "$ts/server/user/daemon";
 import { SystemFolders, UserPathCaptions, UserPaths } from "$ts/server/user/store";
 import { SharedDrive } from "$ts/shares/drive";
 import { Plural, sortByKey } from "$ts/util";
 import { DownloadFile, getDriveLetter, getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
-import type { DirectoryReadReturn, FolderEntry } from "$types/fs";
+import { DefaultUserQuota, type DirectoryReadReturn, type FolderEntry } from "$types/fs";
 import { LogLevel } from "$types/logging";
 import type { RenderArgs } from "$types/process";
 import type { ShortcutStore } from "$types/shortcut";
@@ -26,8 +29,6 @@ export class FileManagerRuntime extends AppProcess {
   loading = Store<boolean>(false);
   errored = Store<boolean>(false);
   selection = Store<string[]>([]);
-  copyList = Store<string[]>([]);
-  cutList = Store<string[]>([]);
   starting = Store<boolean>(true);
   rootFolders = Store<FolderEntry[]>([]);
   drives = Store<Record<string, QuotedDrive>>({});
@@ -51,6 +52,7 @@ export class FileManagerRuntime extends AppProcess {
     },
   };
   private _refreshLocked = false;
+  override contextMenu: AppContextMenu = FileManagerContextMenu(this);
 
   //#region LIFECYCLE
 
@@ -59,28 +61,7 @@ export class FileManagerRuntime extends AppProcess {
 
     this.renderArgs.path = path;
     this.loadSave = loadSave;
-
-    if (loadSave) {
-      this.windowTitle.set(loadSave.title);
-      this.windowIcon.set(this.getIconCached(loadSave.icon));
-      this.renderArgs.path = loadSave.startDir || UserPaths.Home;
-
-      if (loadSave.isSave) {
-        this.selection.subscribe((v) => {
-          if (!v.length) return;
-
-          this.saveName.set(getItemNameFromPath(v[0]));
-        });
-
-        if (loadSave.saveName) this.saveName.set(loadSave.saveName);
-      }
-
-      this.contextMenu = {};
-
-      if (loadSave.isSave && loadSave.multiple) throw new Error("FileManagerLoadSave: both isSave and multiple is illegal");
-      if (loadSave.folder && loadSave.isSave) throw new Error("FileManagerLoadSave: both folder and isSave is illegal");
-      if (loadSave.folder && loadSave.multiple) throw new Error("FileManagerLoadSave: both folder and multiple is illegal");
-    }
+    this.setupLoadSave();
 
     this.dispatch.subscribe("navigate", (path) => {
       this.navigate(path);
@@ -90,16 +71,15 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   async render({ path }: RenderArgs) {
-    const startTime = performance.now();
-
     await this.navigate(path || "::my_arcos");
     await this.updateRootFolders();
-    await this.updateDrives();
+    this.updateDrives();
 
-    this.systemDispatch.subscribe("fs-umount-drive", () => this.updateDrives());
-    this.systemDispatch.subscribe("fs-mount-drive", () => this.updateDrives());
+    this.starting.set(false);
 
-    this.systemDispatch.subscribe<string>("fs-flush-folder", (path) => {
+    SysDispatch.subscribe("fs-umount-drive", () => this.updateDrives());
+    SysDispatch.subscribe("fs-mount-drive", () => this.updateDrives());
+    SysDispatch.subscribe<string>("fs-flush-folder", (path) => {
       if (!path || this._disposed) return;
 
       if (path.startsWith("U:") && path.split("/").length == 1) {
@@ -112,60 +92,10 @@ export class FileManagerRuntime extends AppProcess {
     });
 
     this.acceleratorStore.push(...FileManagerAccelerators(this));
-
-    this.starting.set(false);
-    const startDuration = performance.now() - startTime;
-
-    this.Log(`Starting file manager took ${startDuration}ms`);
   }
 
   //#endregion
-
-  override contextMenu: AppContextMenu = FileManagerContextMenu(this);
-
-  updateAltMenu() {
-    if (this.loadSave) return;
-
-    this.altMenu.set(FileManagerAltMenu(this));
-  }
-
-  async updateDrives() {
-    if (this._disposed) return;
-    this.Log(`Updating drives`);
-
-    const currentDrive = getDriveLetter(this.path(), true) || "";
-
-    try {
-      if (!this.fs.getDriveByLetter(currentDrive.slice(0, -1), false)) {
-        this.navigate(UserPaths.Home);
-      }
-    } catch {
-      this.Log("Failed to determine the currently selected drive", LogLevel.error);
-    }
-
-    const result: Record<string, QuotedDrive> = {};
-
-    for (const [id, drive] of Object.entries(this.fs.drives)) {
-      result[id] = { data: drive, quota: await drive.quota() };
-    }
-
-    this.drives.set(result);
-    this.updateAltMenu();
-  }
-
-  async updateRootFolders() {
-    if (this._disposed) return;
-    this.Log(`Updating root folders`);
-
-    try {
-      const root = this.path() === UserPaths.Home ? this.contents() : await this.fs.readDir(UserPaths.Home);
-
-      this.rootFolders.set(root?.dirs || []);
-    } catch {
-      this.rootFolders.set([]);
-    }
-    this.updateAltMenu();
-  }
+  //#region NAVIGATION
 
   async navigate(path: string) {
     if (this._disposed) return;
@@ -175,25 +105,7 @@ export class FileManagerRuntime extends AppProcess {
 
     this.virtual.set(undefined);
 
-    if (path.startsWith("::")) {
-      const virtual = this.virtualLocations[path.replace("::", "")];
-
-      if (!virtual) {
-        this.DirectoryNotFound();
-        return;
-      }
-
-      this.contents.set(undefined);
-      this.selection.set([]);
-      this.errored.set(false);
-      this.virtual.set(virtual);
-      this.path.set(path);
-      this.showNotice.set(false);
-      this.notice.set(undefined);
-      if (!this.loadSave) this.windowTitle.set(virtual.name);
-
-      return;
-    }
+    if (path.startsWith("::")) return this.handleVirtualLocation(path);
 
     this.errored.set(false);
     this.path.set(path);
@@ -206,46 +118,44 @@ export class FileManagerRuntime extends AppProcess {
   }
 
   async refresh() {
-    if (this._disposed) return;
-    if (this._refreshLocked) return;
-
-    this.Log(`Refreshing`);
-
     const path = this.path();
 
-    if (!path) return;
+    if (this._disposed || this._refreshLocked || !path) return;
 
+    this.Log(`Refreshing`);
     this.loading.set(true);
 
     try {
-      const contents = await this.fs.readDir(path);
+      const contents = await Fs.readDir(path);
       const shortcuts = contents?.shortcuts;
 
-      if (!contents) this.DirectoryNotFound();
-      else {
-        contents.files = sortByKey(
-          contents.files.map((f) => ({ ...f, nameLower: f.name.toLowerCase() })),
-          "nameLower"
-        );
+      if (!contents) return this.DirectoryNotFound();
 
-        this.contents.set(contents);
-        this.shortcuts.set(shortcuts || {});
-        let driveLabel: string = "";
-        const driveLetter = getDriveLetter(path, false);
-        const driveIdentifier = getDriveLetter(path, true);
+      // nameLower makes sure that the A-Z sorting doesn't favor casing
+      contents.files = sortByKey(
+        contents.files.map((f) => ({ ...f, nameLower: f.name.toLowerCase() })),
+        "nameLower"
+      );
 
-        if (driveIdentifier) {
-          const drive = this.fs.getDriveByLetter(driveIdentifier.slice(0, -1), false);
+      this.contents.set(contents);
+      this.shortcuts.set(shortcuts || {});
+      let driveLabel: string = "";
+      const driveLetter = getDriveLetter(path, false);
+      const driveIdentifier = getDriveLetter(path, true);
 
-          this.drive.set(drive);
+      if (driveIdentifier) {
+        const drive = Fs.getDriveByLetter(driveIdentifier.slice(0, -1), false);
 
-          driveLabel = drive?.label || "";
-        }
+        this.drive.set(drive);
 
-        if (!this.loadSave) this.windowTitle.set(getItemNameFromPath(path) || (driveLetter ? `${driveLetter}/` : driveLabel));
+        driveLabel = drive?.label || "";
       }
 
-      this.checkNotice();
+      if (!this.loadSave) {
+        this.windowTitle.set(getItemNameFromPath(path) || (driveLetter ? `${driveLetter}/` : driveLabel));
+      }
+
+      this.updateNotice();
     } catch {
       this.DirectoryNotFound();
     }
@@ -253,32 +163,16 @@ export class FileManagerRuntime extends AppProcess {
     this.loading.set(false);
   }
 
-  DirectoryNotFound() {
-    if (this._disposed || this.errored()) return;
-    this.Log(`Directory Not Found!`);
+  public lockRefresh() {
+    if (this._disposed) return;
+    this._refreshLocked = true;
+  }
 
-    this.errored.set(true);
-    this.contents.set(undefined);
+  public unlockRefresh(refresh = true) {
+    if (this._disposed) return;
+    this._refreshLocked = false;
 
-    MessageBox(
-      {
-        title: "Location unavailable",
-        message: `The location you tried to navigate to is unavailable. Maybe the specified drive isn't mounted or the folder itself is missing.`,
-        buttons: [
-          {
-            caption: "Okay",
-            action: () => {},
-            suggested: true,
-          },
-        ],
-        sound: "arcos.dialog.error",
-        image: "ErrorIcon",
-      },
-      this.pid,
-      true
-    );
-
-    this.navigate(UserPaths.Home);
+    if (refresh) this.refresh();
   }
 
   parentDir() {
@@ -290,58 +184,35 @@ export class FileManagerRuntime extends AppProcess {
     this.navigate(parent || this.path());
   }
 
-  public updateSelection(e: MouseEvent, path: string) {
-    if (this._disposed) return;
-    if (!e.shiftKey || (this.loadSave && !this.loadSave?.multiple)) {
-      this.selection.set([path]);
-      this.updateAltMenu();
+  //#endregion
+  //#region DRIVES
 
-      return;
+  async updateDrives() {
+    if (this._disposed) return;
+    this.Log(`Updating drives`);
+
+    if (!Object.entries(this.drives()).length)
+      // Quickly set without quota, then populate later on so that the UI can get a taste of what's to come.
+      this.drives.set(Object.fromEntries(Object.entries(Fs.drives).map(([k, v]) => [k, { data: v, quota: DefaultUserQuota }])));
+
+    const currentDrive = getDriveLetter(this.path(), true) || "";
+
+    try {
+      if (!Fs.getDriveByLetter(currentDrive.slice(0, -1), false)) {
+        await this.navigate(UserPaths.Home);
+      }
+    } catch {
+      this.Log("Failed to determine the currently selected drive", LogLevel.warning);
     }
 
-    const selected = this.selection.get();
+    const result: Record<string, QuotedDrive> = {};
 
-    if (selected.includes(path)) selected.splice(selected.indexOf(path), 1);
-    else selected.push(path);
+    for (const [id, drive] of Object.entries(Fs.drives)) {
+      result[id] = { data: drive, quota: await drive.quota() };
+    }
 
-    this.selection.set(selected);
-    this.updateAltMenu();
-  }
-
-  public setCopyFiles(files = this.selection()) {
-    if (this._disposed) return;
-    this.Log(`Setting COPY list to ${files.length} items`);
-
-    this.copyList.set(files || []);
-    this.cutList.set([]);
-    this.updateAltMenu();
-  }
-
-  public setCutFiles(files = this.selection()) {
-    if (this._disposed) return;
-    this.Log(`Setting CUT list to ${files.length} items`);
-    this.cutList.set(files || []);
-    this.copyList.set([]);
-    this.updateAltMenu();
-  }
-
-  public async pasteFiles() {
-    if (this._disposed) return;
-
-    const copyList = this.copyList.get();
-    const cutList = this.cutList.get();
-
-    if (!copyList.length && !cutList.length) return;
-
-    this.lockRefresh();
-
-    if (copyList.length) await this.userDaemon?.copyMultiple(copyList, this.path(), this.pid);
-    else if (cutList.length) await this.userDaemon?.moveMultiple(cutList, this.path(), this.pid);
-
-    this.copyList.set([]);
-    this.cutList.set([]);
-
-    this.unlockRefresh();
+    this.drives.set(result);
+    this.updateAltMenu(); // Update the alt menu so that the Go menu is up-to-date
   }
 
   unmountDrive(drive: FilesystemDrive, id: string) {
@@ -374,7 +245,7 @@ export class FileManagerRuntime extends AppProcess {
   async confirmUmountDrive(drive: FilesystemDrive, id: string) {
     if (this._disposed) return;
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         icon: "DriveIcon",
         caption: `Unmounting ${drive.label || "drive"}...`,
@@ -383,7 +254,7 @@ export class FileManagerRuntime extends AppProcess {
       this.pid
     );
 
-    await this.fs.umountDrive(id, false, (progress) => {
+    await Fs.umountDrive(id, false, (progress) => {
       prog.show();
       prog.setMax(progress.max);
       prog.setDone(progress.value);
@@ -392,10 +263,99 @@ export class FileManagerRuntime extends AppProcess {
     prog.stop();
   }
 
+  //#endregion
+  //#region UI UPDATES
+
+  updateAltMenu() {
+    if (this.loadSave) return;
+
+    this.altMenu.set(FileManagerAltMenu(this));
+  }
+
+  async updateRootFolders() {
+    if (this._disposed) return;
+    this.Log(`Updating root folders`);
+
+    try {
+      const root = this.path() === UserPaths.Home ? this.contents() : await Fs.readDir(UserPaths.Home);
+
+      this.rootFolders.set(root?.dirs || []);
+    } catch {
+      this.rootFolders.set([]);
+    }
+    this.updateAltMenu();
+  }
+
+  async updateNotice() {
+    this.showNotice.set(false);
+    this.notice.set(undefined);
+
+    try {
+      const drive = Fs.getDriveByPath(this.path());
+
+      if (this.shareAccessIsAdministrative(drive)) {
+        this.notice.set({
+          icon: "shield-user",
+          text: "You're accessing a share as an administrator!",
+          className: "warning",
+        });
+        this.showNotice.set(true);
+      }
+
+      if (SystemFolders.includes(this.path())) {
+        this.notice.set({
+          icon: "cog",
+          text: "This is a system folder",
+          className: "warning",
+        });
+        this.showNotice.set(true);
+      }
+    } catch {}
+  }
+
+  //#endregion
+  //#region CUT/COPY/PASTE
+
+  public setCopyFiles(files = this.selection()) {
+    if (this._disposed) return;
+    this.Log(`Setting COPY list to ${files.length} items`);
+
+    Daemon?.copyList.set(files || []);
+    Daemon?.cutList.set([]);
+    this.updateAltMenu();
+  }
+
+  public setCutFiles(files = this.selection()) {
+    if (this._disposed) return;
+    this.Log(`Setting CUT list to ${files.length} items`);
+    Daemon?.cutList.set(files || []);
+    Daemon?.copyList.set([]);
+    this.updateAltMenu();
+  }
+
+  public async pasteFiles() {
+    if (this._disposed) return;
+
+    const copyList = Daemon!.copyList();
+    const cutList = Daemon!.cutList();
+
+    if (!copyList.length && !cutList.length) return;
+
+    this.lockRefresh();
+
+    if (copyList.length) await Daemon?.files?.copyMultiple(copyList, this.path(), this.pid);
+    else if (cutList.length) await Daemon?.files?.moveMultiple(cutList, this.path(), this.pid);
+
+    Daemon?.copyList.set([]);
+    Daemon?.cutList.set([]);
+
+    this.unlockRefresh();
+  }
+
   async uploadItems() {
     if (this._disposed) return;
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
         icon: "UploadIcon",
@@ -406,7 +366,7 @@ export class FileManagerRuntime extends AppProcess {
     );
 
     try {
-      await this.fs.uploadFiles(this.path(), "*/*", true, async (progress) => {
+      await Fs.uploadFiles(this.path(), "*/*", true, async (progress) => {
         prog.show();
         prog.setDone(0);
         prog.setMax(progress.max + 1);
@@ -421,18 +381,6 @@ export class FileManagerRuntime extends AppProcess {
     prog.mutDone(+1);
   }
 
-  public lockRefresh() {
-    if (this._disposed) return;
-    this._refreshLocked = true;
-  }
-
-  public unlockRefresh(refresh = true) {
-    if (this._disposed) return;
-    this._refreshLocked = false;
-
-    if (refresh) this.refresh();
-  }
-
   async openFile(path: string) {
     if (this._disposed) return;
     if (this.loadSave) {
@@ -440,8 +388,34 @@ export class FileManagerRuntime extends AppProcess {
       return;
     }
 
-    this.userDaemon?.openFile(path);
+    Daemon?.files?.openFile(path);
   }
+
+  async createShortcut(name: string, path: string, folder = false) {
+    const paths = await Daemon?.files?.LoadSaveDialog({
+      title: "Pick where to create the shortcut",
+      icon: "FolderIcon",
+      folder: true,
+      startDir: UserPaths.Desktop,
+    });
+
+    if (!paths?.[0]) return;
+
+    const info = Daemon?.assoc?.getFileAssociation(name);
+
+    Daemon?.shortcuts?.createShortcut(
+      {
+        type: folder ? "folder" : "file",
+        target: path,
+        icon: folder ? "FolderIcon" : info?.icon || this.getIconCached("DefaultMimeIcon"),
+        name: `${name} - Shortcut`,
+      },
+      join(paths[0], `${name}.arclnk`)
+    );
+  }
+
+  //#endregion
+  //#region SELECTION
 
   async deleteSelected() {
     if (this._disposed) return;
@@ -458,28 +432,14 @@ export class FileManagerRuntime extends AppProcess {
           this.userPreferences().security.restrictSystemFolders &&
           (SystemFolders.includes(path) ? item === path || getParentDirectory(item) === path : item === path)
         ) {
-          const name = (UserPathCaptions as any)[key];
-
-          MessageBox(
-            {
-              title: `${name}`,
-              message: `This folder is required for ArcOS to run properly. If it or any of its files are missing, ArcOS might crash or become unstable. You cannot delete this item.<br><br><details><summary>Show path</summary><code class='block'>${path}</code></details>`,
-              buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-              sound: "arcos.dialog.warning",
-              image: "InfoIcon",
-            },
-            this.pid,
-            true
-          );
-
-          return;
+          return this.SystemFolderDeletionRestricted(key);
         }
       }
     }
 
     const isUserFs =
       this.path().startsWith(UserPaths.Root) &&
-      this.userDaemon?.serviceHost?.getService("TrashSvc") &&
+      Daemon?.serviceHost?.getService("TrashSvc") &&
       !this.userPreferences().globalSettings.disableTrashCan;
 
     MessageBox(
@@ -493,6 +453,15 @@ export class FileManagerRuntime extends AppProcess {
             )}? This cannot be undone.`,
         buttons: [
           { caption: "Cancel", action: () => {} },
+          ...ConditionalButton(
+            {
+              caption: "Delete permanently",
+              action: () => {
+                this.confirmDeleteSelected(false);
+              },
+            },
+            isUserFs
+          ),
           {
             caption: "Delete",
             action: () => this.confirmDeleteSelected(isUserFs),
@@ -511,7 +480,7 @@ export class FileManagerRuntime extends AppProcess {
     if (this._disposed) return;
 
     const items = this.selection();
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         max: items.length,
         type: "quantity",
@@ -530,7 +499,8 @@ export class FileManagerRuntime extends AppProcess {
       prog.updSub(item);
 
       try {
-        await this.fs.deleteItem(item, false);
+        if (isUserFs) await Daemon.files?.moveToTrashOrDeleteItem(item, false);
+        else await Fs.deleteItem(item, false);
       } catch (e) {
         prog.mutErr(`Failed to delete ${item}: ${e}`);
       }
@@ -538,18 +508,16 @@ export class FileManagerRuntime extends AppProcess {
       prog.mutDone(+1);
     }
 
-    this.systemDispatch.dispatch("fs-flush-folder", this.path());
+    SysDispatch.dispatch("fs-flush-folder", this.path());
   }
 
   async downloadSelected() {
-    if (this._disposed) return;
     const selected = this.selection();
 
-    if (!selected.length) return;
+    if (this._disposed || !selected.length) return;
 
     const filename = getItemNameFromPath(selected[0]);
-
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
         caption: `Preparing for download`,
@@ -560,12 +528,12 @@ export class FileManagerRuntime extends AppProcess {
     );
 
     try {
-      const file = await this.fs.readFile(selected[0], (progress) => {
+      const file = await Fs.readFile(selected[0], (progress) => {
         prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);
       });
-      const dir = await this.fs.readDir(selected[0]);
+      const dir = await Fs.readDir(selected[0]);
 
       if (!file && !dir) {
         MessageBox(
@@ -592,8 +560,8 @@ export class FileManagerRuntime extends AppProcess {
         return;
       }
 
+      // Check if the user is trying to download a folder
       if (!file && dir) {
-        // Check if the user is trying to download a folder
         return;
       }
 
@@ -612,6 +580,27 @@ export class FileManagerRuntime extends AppProcess {
 
     this.selection.set([selected[selected.length - 1]]);
   }
+
+  public updateSelection(e: MouseEvent, path: string) {
+    if (this._disposed) return;
+    if (!e.shiftKey || (this.loadSave && !this.loadSave?.multiple)) {
+      this.selection.set([path]);
+      this.updateAltMenu();
+
+      return;
+    }
+
+    const selected = this.selection.get();
+
+    if (selected.includes(path)) selected.splice(selected.indexOf(path), 1);
+    else selected.push(path);
+
+    this.selection.set(selected);
+    this.updateAltMenu();
+  }
+
+  //#endregion
+  //#region ACCELERATORS
 
   async selectorUp() {
     if (this._disposed) return;
@@ -703,10 +692,13 @@ export class FileManagerRuntime extends AppProcess {
         continue;
       }
 
-      if (alternative) await this.userDaemon?.openWith(path);
+      if (alternative) await Daemon?.files?.openWith(path);
       else await this.openFile(path);
     }
   }
+
+  //#endregion
+  //#region CHECKS
 
   public isDirectory(path: string, workingPath?: string) {
     if (this._disposed) return;
@@ -716,74 +708,8 @@ export class FileManagerRuntime extends AppProcess {
     return dir?.dirs.map((a) => join(workingPath, a.name)).includes(path);
   }
 
-  async confirmLoadSave() {
-    if (this._disposed) return;
-    const selection = this.selection();
-    const saveName = `${this.saveName()}${this.loadSave?.extensions?.[0] || ""}`;
-    const path = this.path();
-    const result = this.loadSave?.multiple
-      ? this.selection()
-      : this.loadSave?.folder
-        ? [selection[0] || path]
-        : [!this.loadSave?.isSave ? selection[0] : join(path, saveName)];
-
-    this.systemDispatch.dispatch("ls-confirm", [this.loadSave?.returnId, result]);
-
-    await this.closeWindow();
-  }
-
-  async createShortcut(name: string, path: string, folder = false) {
-    const paths = await this.userDaemon?.LoadSaveDialog({
-      title: "Pick where to create the shortcut",
-      icon: "FolderIcon",
-      folder: true,
-      startDir: UserPaths.Desktop,
-    });
-
-    if (!paths?.[0]) return;
-
-    const info = this.userDaemon?.assoc?.getFileAssociation(name);
-
-    this.userDaemon?.createShortcut(
-      {
-        type: folder ? "folder" : "file",
-        target: path,
-        icon: folder ? "FolderIcon" : info?.icon || this.getIconCached("DefaultMimeIcon"),
-        name: `${name} - Shortcut`,
-      },
-      join(paths[0], `${name}.arclnk`)
-    );
-  }
-
-  async checkNotice() {
-    this.showNotice.set(false);
-    this.notice.set(undefined);
-
-    try {
-      const drive = this.fs.getDriveByPath(this.path());
-
-      if (this.shareAccessIsAdministrative(drive)) {
-        this.notice.set({
-          icon: "shield-user",
-          text: "You're accessing a share as an administrator!",
-          className: "warning",
-        });
-        this.showNotice.set(true);
-      }
-
-      if (SystemFolders.includes(this.path())) {
-        this.notice.set({
-          icon: "cog",
-          text: "This is a system folder",
-          className: "warning",
-        });
-        this.showNotice.set(true);
-      }
-    } catch {}
-  }
-
   shareAccessIsAdministrative(drive: FilesystemDrive) {
-    const userInfo = this.userDaemon?.userInfo!;
+    const userInfo = Daemon?.userInfo!;
     const thisUser = userInfo._id;
     const userIsAdmin =
       userInfo.admin &&
@@ -797,4 +723,124 @@ export class FileManagerRuntime extends AppProcess {
 
     return false;
   }
+
+  //#endregion
+  //#region ERROR HANDLING
+
+  DirectoryNotFound() {
+    if (this._disposed || this.errored()) return;
+    this.Log(`Directory Not Found!`);
+
+    this.errored.set(true);
+    this.contents.set(undefined);
+    this.loading.set(false);
+
+    MessageBox(
+      {
+        title: "Location unavailable",
+        message: `The location you tried to navigate to is unavailable. Maybe the specified drive isn't mounted or the folder itself is missing.`,
+        buttons: [
+          {
+            caption: "Okay",
+            action: () => {},
+            suggested: true,
+          },
+        ],
+        sound: "arcos.dialog.error",
+        image: "ErrorIcon",
+      },
+      this.pid,
+      true
+    );
+
+    this.navigate(UserPaths.Home);
+  }
+
+  SystemFolderDeletionRestricted(userPathKey: string) {
+    const name = (UserPathCaptions as any)[userPathKey];
+    const path = (UserPaths as any)[userPathKey];
+
+    MessageBox(
+      {
+        title: `${name}`,
+        message: `This folder is required for ArcOS to run properly. If it or any of its files are missing, ArcOS might crash or become unstable. You cannot delete this item.<br><br><details><summary>Show path</summary><code class='block'>${path}</code></details>`,
+        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        sound: "arcos.dialog.warning",
+        image: "InfoIcon",
+      },
+      this.pid,
+      true
+    );
+  }
+
+  //#endregion
+  //#region LOAD/SAVE
+
+  async confirmLoadSave() {
+    if (this._disposed) return;
+    const selection = this.selection();
+    const saveName = `${this.saveName()}${this.loadSave?.extensions?.[0] || ""}`;
+    const path = this.path();
+    const result = this.loadSave?.multiple
+      ? this.selection()
+      : this.loadSave?.folder
+        ? [selection[0] || path]
+        : [!this.loadSave?.isSave ? selection[0] : join(path, saveName)];
+
+    SysDispatch.dispatch("ls-confirm", [this.loadSave?.returnId, result]);
+
+    await this.closeWindow();
+  }
+
+  setupLoadSave(loadSave = this.loadSave) {
+    if (!loadSave) return;
+
+    this.windowTitle.set(loadSave.title);
+    this.windowIcon.set(this.getIconCached(loadSave.icon));
+    this.renderArgs.path = loadSave.startDir || UserPaths.Home;
+
+    if (loadSave.isSave) {
+      this.selection.subscribe((v) => {
+        if (!v.length) return;
+
+        this.saveName.set(getItemNameFromPath(v[0]));
+      });
+
+      if (loadSave.saveName) this.saveName.set(loadSave.saveName);
+    }
+
+    this.contextMenu = {};
+
+    if (loadSave.isSave && loadSave.multiple)
+      throw new AppConfigError("FileManagerLoadSave: both isSave and multiple is illegal");
+    if (loadSave.folder && loadSave.isSave) throw new AppConfigError("FileManagerLoadSave: both folder and isSave is illegal");
+    if (loadSave.folder && loadSave.multiple)
+      throw new AppConfigError("FileManagerLoadSave: both folder and multiple is illegal");
+  }
+
+  //#endregion
+  //#region VIRTUAL LOCATIONS
+
+  handleVirtualLocation(path: string) {
+    if (!path.startsWith("::")) return; // Virtual locations ALWAYS start with a double colon
+
+    const virtual = this.virtualLocations[path.replace("::", "")];
+
+    if (!virtual) {
+      this.DirectoryNotFound();
+      return;
+    }
+
+    this.contents.set(undefined);
+    this.selection.set([]);
+    this.errored.set(false);
+    this.virtual.set(virtual);
+    this.path.set(path);
+    this.showNotice.set(false);
+    this.notice.set(undefined);
+
+    if (!this.loadSave) this.windowTitle.set(virtual.name);
+  }
+
+  //#endregion
 }

@@ -1,8 +1,10 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
+import { Env, Stack } from "$ts/env";
 import type { Process } from "$ts/process/instance";
 import { ProcessKillResultCaptions } from "$ts/process/store";
+import { Daemon } from "$ts/server/user/daemon";
+import type { ServiceHost } from "$ts/services";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
@@ -10,7 +12,6 @@ import type { ProcessKillResult } from "$types/process";
 import type { Component } from "svelte";
 import Processes from "./ProcessManager/Page/Processes.svelte";
 import Services from "./ProcessManager/Page/Services.svelte";
-import type { ServiceHost } from "$ts/services";
 
 export class ProcessManagerRuntime extends AppProcess {
   public selected = Store<string>();
@@ -28,8 +29,17 @@ export class ProcessManagerRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.setSource(__SOURCE__);
-    this.host = this.userDaemon?.serviceHost!;
+    this.host = Daemon?.serviceHost!;
     if (page && this.tabs[page]) this.currentTab.set(page);
+  }
+
+  async render() {
+    const existingInstance = await this.closeIfSecondInstance();
+
+    if (existingInstance) {
+      existingInstance.currentTab.set(this.currentTab());
+      return false;
+    }
   }
 
   //#endregion
@@ -37,7 +47,7 @@ export class ProcessManagerRuntime extends AppProcess {
   async kill(proc: Process) {
     const name = proc instanceof AppProcess ? proc.app.data.metadata.name : proc.name;
 
-    const elevated = await this.userDaemon?.manuallyElevate({
+    const elevated = await Daemon!.elevation!.manuallyElevate({
       what: `ArcOS needs your permission to kill a process`,
       image: proc instanceof AppProcess ? proc.windowIcon() || "ComponentIcon" : "DefaultIcon",
       title: name,
@@ -59,7 +69,7 @@ export class ProcessManagerRuntime extends AppProcess {
           {
             caption: "End process",
             action: async () => {
-              const result = await KernelStack().kill(proc.pid, true);
+              const result = await Stack.kill(proc.pid, true);
 
               if (result !== "success") {
                 this.killError(name, result);
@@ -106,7 +116,7 @@ export class ProcessManagerRuntime extends AppProcess {
           {
             caption: "Stop service",
             action: () => {
-              this.userDaemon?.serviceHost?.stopService(id);
+              Daemon?.serviceHost?.stopService(id);
             },
             suggested: true,
           },
@@ -146,12 +156,20 @@ export class ProcessManagerRuntime extends AppProcess {
 
   async startService(id: string) {
     if (this.host.getService(id)) return;
-    this.userDaemon?.serviceHost?.startService(id);
+    Daemon?.serviceHost?.startService(id);
   }
 
   serviceInfoFor(id: string) {
     if (!this.host.hasService(id)) return;
 
-    this.spawnOverlayApp("ServiceInfo", +this.env.get("shell_pid"), id);
+    this.spawnOverlayApp("ServiceInfo", +Env.get("shell_pid"), id);
+  }
+
+  appInfoFor(proc: AppProcess) {
+    this.spawnOverlayApp("AppInfo", +Env.get("shell_pid"), proc.app.id);
+  }
+
+  processInfoFor(proc: Process) {
+    this.spawnOverlayApp("ProcessInfoApp", +Env.get("shell_pid"), proc);
   }
 }

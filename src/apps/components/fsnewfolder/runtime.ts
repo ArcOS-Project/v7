@@ -1,4 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
+import { Fs } from "$ts/env";
 import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -25,7 +26,7 @@ export class NewFolderRuntime extends AppProcess {
 
   async createFolder() {
     try {
-      await this.fs.createDirectory(join(this.path, this.newFolder()));
+      await Fs.createDirectory(join(this.path, this.newFolder()));
     } catch {
       // silently error
     }

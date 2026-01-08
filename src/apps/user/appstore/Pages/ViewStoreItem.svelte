@@ -1,4 +1,5 @@
 <script lang="ts">
+  import UserLink from "$lib/UserLink.svelte";
   import { StoreItemBanner, StoreItemIcon } from "$ts/distrib/util";
   import { formatBytes } from "$ts/util/fs";
   import type { StoreItem } from "$types/package";
@@ -7,7 +8,6 @@
   import PackageInstallAction from "../AppStore/PackageInstallAction.svelte";
   import type { AppStoreRuntime } from "../runtime";
   import Screenshots from "./ViewStoreItem/Screenshots.svelte";
-  import UserLink from "$lib/UserLink.svelte";
 
   const { process, pkg }: { process: AppStoreRuntime; pkg: StoreItem } = $props();
 
@@ -32,7 +32,7 @@
         </h1>
         <p class="description" title={pkg.pkg.description}>{pkg.pkg.description}</p>
         <p class="author">
-          <UserLink user={pkg.user!} onClick={() => process.switchPage("userPage", { userId: pkg.userId })} /> · {pkg.installCount}
+          <UserLink user={pkg?.user!} onClick={() => process.switchPage("userPage", { userId: pkg.userId })} /> · {pkg.installCount}
           downloads
         </p>
       </div>
