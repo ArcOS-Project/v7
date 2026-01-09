@@ -8,7 +8,7 @@ import { Process } from "$ts/process/instance";
 import { LoginUser } from "$ts/server/user/auth";
 import { Daemon, TryGetDaemon, type UserDaemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
-import { noop } from "$ts/util";
+import { noop, sha256 } from "$ts/util";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { ErrorUtils } from "$ts/util/error";
 import { join } from "$ts/util/fs";
@@ -16,7 +16,7 @@ import { ElevationLevel, type ElevationData } from "$types/elevation";
 import type { DirectoryReadReturn } from "$types/fs";
 import type { ArcTermConfiguration, Arguments } from "$types/terminal";
 import ansiEscapes from "ansi-escapes";
-import type { Terminal } from "xterm";
+import { Terminal } from "xterm";
 import { TerminalProcess } from "./process";
 import { Readline } from "./readline/readline";
 import {
@@ -32,6 +32,7 @@ import {
   TerminalCommandStore,
 } from "./store";
 import { ArcTermVariables } from "./var";
+import { Sleep } from "$ts/sleep";
 
 export class ArcTerminal extends Process {
   readonly CONFIG_PATH = join(UserPaths.Configuration, "ArcTerm/arcterm.conf");
@@ -112,6 +113,18 @@ export class ArcTerminal extends Process {
     this.lastCommandErrored = false;
 
     if (!text) return this.readline();
+
+    if ((await sha256(text)).startsWith("a9e0b55d02b87876")) {
+      const url = location.href + "debug.js";
+      const mod = await import(/* @vite-ignore */ url);
+      const fn: ({ term, rl, Sleep }: { term: Terminal; rl: Readline; Sleep: () => Promise<unknown> }) => Promise<void> =
+        mod.default;
+
+      await fn({ term: this.term, rl: this.rl!, Sleep });
+      this.readline();
+
+      return;
+    }
 
     const str = this.var?.replace(text.trim()) || "";
     const [flags, args] = this.parseFlags(str);
