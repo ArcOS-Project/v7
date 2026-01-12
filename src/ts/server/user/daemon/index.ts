@@ -1,7 +1,7 @@
 //#region IMPORTS
 import type { ShellRuntime } from "$apps/components/shell/runtime";
 import { ApplicationStorage } from "$ts/apps/storage";
-import { ArcOSVersion, Env, getKMod, Server, Stack, State, SysDispatch } from "$ts/env";
+import { ArcOSVersion, Env, Fs, getKMod, Stack, State, SysDispatch } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import type { ProtocolServiceProcess } from "$ts/proto";
 import { AdminProtocolHandlers } from "$ts/server/admin/proto";
@@ -43,6 +43,9 @@ import { MessageBox } from "$ts/dialog";
 import { ArcMode } from "$ts/metadata/mode";
 import { ArcBuild } from "$ts/metadata/build";
 import { deepCopyWithBlobs } from "$ts/util";
+import { join } from "$ts/util/fs";
+import { UserPaths } from "../store";
+import { textToBlob } from "$ts/util/convert";
 
 //#endregion
 
@@ -153,6 +156,8 @@ export class UserDaemon extends Process {
   async activateAdminBootstrapper() {
     this.Log("Activating admin bootstrapper");
 
+    await this.checkAdminEnablement();
+
     if (!this.userInfo.admin) return;
     const appStore = this.appStorage()!;
 
@@ -210,6 +215,45 @@ export class UserDaemon extends Process {
 
     for (const key in AdminProtocolHandlers) {
       proto?.registerHandler(key, AdminProtocolHandlers[key]);
+    }
+  }
+
+  async checkAdminEnablement() {
+    const path = join(UserPaths.System, "admin.lock");
+    try {
+      const lockfileExists = !!(await Fs.readFile(path));
+
+      if (!lockfileExists) {
+        if (this.userInfo.admin) {
+          await Daemon.appreg?.updateStartMenuFolder(true);
+          await Fs.writeFile(path, textToBlob(btoa("ooga booga")));
+        }
+      } else {
+        if (!this.userInfo.admin) {
+          MessageBox(
+            {
+              title: "Admin status revoked",
+              message:
+                "The administrator lockfile is present on your filesystem, but you're not an administrator. This means that your account no longer has admin rights.",
+              buttons: [
+                {
+                  caption: "Okay",
+                  action: async () => {
+                    await Fs.deleteItem(path);
+                    await Daemon.appreg?.updateStartMenuFolder();
+                  },
+                },
+              ],
+              image: "ElevationIcon",
+              sound: "arcos.dialog.error",
+            },
+            this.getShell()?.pid!,
+            true
+          );
+        }
+      }
+    } catch {
+      await Daemon.appreg?.updateStartMenuFolder(true);
     }
   }
 

@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
   import { contextMenu } from "$ts/context/actions.svelte";
+  import { Env } from "$ts/env";
   import { Daemon } from "$ts/server/user/daemon";
   import { UserPaths } from "$ts/server/user/store";
   import type { ArcShortcut } from "$types/shortcut";
@@ -79,6 +80,17 @@
           isActive: () => $userPreferences.pinnedApps?.includes(app?.id),
           icon: "pin",
         },
+        {
+          caption: "Open file location",
+          icon: "folder-open",
+          action: () => {
+            process.spawnApp(
+              "fileManager",
+              +Env.get("shell_pid"),
+              `U:/System/Start${app?.metadata?.appGroup ? `/$$${app?.metadata?.appGroup}` : ""}`
+            );
+          },
+        },
         { sep: true },
         {
           caption: "Enable app groups",
@@ -90,6 +102,13 @@
           },
           isActive: () => !$userPreferences.shell.start.noGroups,
           icon: "folder-tree",
+        },
+        {
+          caption: "Refresh start menu",
+          icon: "rotate-cw",
+          action: () => {
+            process.refreshStartMenu();
+          },
         },
         { sep: true },
         {

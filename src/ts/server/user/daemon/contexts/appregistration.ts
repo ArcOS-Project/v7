@@ -251,24 +251,22 @@ export class AppRegistrationUserContext extends UserContext {
     SysDispatch.dispatch("startmenu-refresh");
   }
 
-  async updateStartMenuFolder() {
+  async updateStartMenuFolder(quiet = false) {
     const installedApps = Daemon?.appStorage()?.buffer();
 
     if (!installedApps) return;
 
-    const { stop, incrementProgress, caption } = await Daemon!.helpers!.GlobalLoadIndicator(
-      "Updating the start menu...",
-      +Env.get("shell_pid"),
-      {
-        max: Object.keys(AppGroups).length + installedApps.length,
-        value: 0,
-        useHtml: true,
-      }
-    );
+    const gli = quiet
+      ? undefined
+      : await Daemon!.helpers!.GlobalLoadIndicator("Updating the start menu...", +Env.get("shell_pid"), {
+          max: Object.keys(AppGroups).length + installedApps.length,
+          value: 0,
+          useHtml: true,
+        });
 
     for (const appGroup in AppGroups) {
-      incrementProgress?.();
-      caption.set(`Updating the start menu...<br>Creating folder for ${AppGroups[appGroup]}`);
+      gli?.incrementProgress?.();
+      gli?.caption.set(`Updating the start menu...<br>Creating folder for ${AppGroups[appGroup]}`);
 
       await Fs.createDirectory(join(UserPaths.StartMenu, `$$${appGroup}`), false);
     }
@@ -280,9 +278,9 @@ export class AppRegistrationUserContext extends UserContext {
         new Promise(async (r) => {
           await Daemon?.appreg?.addToStartMenu(app.id);
 
-          caption.set(`Updating the start menu...<br>Created shortcut for ${app.metadata.name}`);
+          gli?.caption.set(`Updating the start menu...<br>Created shortcut for ${app.metadata.name}`);
 
-          incrementProgress?.();
+          gli?.incrementProgress?.();
 
           r(void 0);
         })
