@@ -98,6 +98,7 @@ export class SystemDispatch extends KernelModule {
     term.loadAddon(unicode11Addon);
 
     this.subscribe<[LogItem]>("kernel-log", ([data]) => {
+      if (!target?.classList?.contains("visible")) return;
       term.write(logItemToStr(data) + "\r\n");
     });
 
@@ -111,6 +112,14 @@ export class SystemDispatch extends KernelModule {
     document.addEventListener("keydown", (e: KeyboardEvent) => {
       if (e.shiftKey && e.altKey && e.key.toLowerCase() === "k") {
         target.classList.toggle("visible");
+
+        if (target.classList.contains("visible")) {
+          for (const line of Kernel.Logs) {
+            term.writeln(logItemToStr(line));
+          }
+        } else {
+          term.clear();
+        }
       }
     });
   }
