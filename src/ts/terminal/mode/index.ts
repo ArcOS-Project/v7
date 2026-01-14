@@ -113,8 +113,7 @@ export class TerminalMode extends Process {
       this.rl?.println(`Starting daemon`);
 
       if (!userDaemon) {
-        this.rl?.println(`Failed to start user daemon`);
-        return false;
+        throw new Error("Daemon process didn't come up.");
       }
 
       this.saveToken(userDaemon);

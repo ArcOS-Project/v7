@@ -1,8 +1,13 @@
 import type { SystemDispatchResult } from "$types/dispatch";
 import type { ConstructedWaveKernel } from "$types/kernel";
-import { LogLevel } from "$types/logging";
+import { Terminal } from "@xterm/xterm";
 import { KernelModule } from "../../module";
-import { KnownSystemDispatchers, SystemOnlyDispatches } from "./store";
+import { SystemOnlyDispatches } from "./store";
+import { DefaultColors } from "$ts/terminal/store";
+import { FitAddon } from "@xterm/addon-fit";
+import { Unicode11Addon } from "@xterm/addon-unicode11";
+import { ShortLogLevelCaptions, type LogItem } from "$types/logging";
+import { Kernel } from "$ts/env";
 
 export class SystemDispatch extends KernelModule {
   public subscribers: Record<string, Record<number, (data: any) => void>> = {};
@@ -60,5 +65,56 @@ export class SystemDispatch extends KernelModule {
     }
 
     return "success";
+  }
+
+  async _init(): Promise<void> {
+    const term = new Terminal({
+      allowProposedApi: true,
+      allowTransparency: false,
+      cursorStyle: "block",
+      fontSize: 12,
+      theme: {
+        brightRed: DefaultColors.red,
+        red: DefaultColors.red,
+        brightGreen: DefaultColors.green,
+        green: DefaultColors.green,
+        brightYellow: DefaultColors.yellow,
+        yellow: DefaultColors.yellow,
+        brightBlue: DefaultColors.blue,
+        blue: DefaultColors.blue,
+        brightCyan: DefaultColors.cyan,
+        cyan: DefaultColors.cyan,
+        brightMagenta: DefaultColors.magenta,
+        magenta: DefaultColors.magenta,
+      },
+      scrollback: 0,
+    });
+
+    const fitAddon = new FitAddon();
+    const unicode11Addon = new Unicode11Addon();
+
+    term.loadAddon(fitAddon);
+    term.loadAddon(unicode11Addon);
+
+    this.subscribe<[LogItem]>("kernel-log", ([data]) => {
+      const timestamp = (data.timestamp - Kernel.startMs).toString().padStart(10, "0");
+      const level = ShortLogLevelCaptions[data.level];
+      const line = `[${timestamp}] ${level} ${data.source}: ${data.message}\r\n`;
+
+      term.write(line);
+    });
+
+    const target = document.querySelector<HTMLDivElement>("#kernelLog")!;
+
+    term.open(target);
+    fitAddon.fit();
+
+    new ResizeObserver(() => fitAddon.fit()).observe(target);
+
+    document.addEventListener("keydown", (e: KeyboardEvent) => {
+      if (e.shiftKey && e.altKey && e.key.toLowerCase() === "k") {
+        target.classList.toggle("visible");
+      }
+    });
   }
 }

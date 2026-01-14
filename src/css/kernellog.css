@@ -1,0 +1,28 @@
+#kernelLog {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+}
+
+#kernelLog .terminal,
+#kernelLog .xterm-screen {
+  width: 100% !important;
+  height: 100% !important;
+}
+#kernelLog .terminal,
+#kernelLog .xterm-screen,
+#kernelLog .xterm-viewport {
+  pointer-events: none !important;
+}
+
+#kernelLog * {
+  font-family: "Fira Mono";
+}
+
+
+#kernelLog.visible {
+  z-index:calc(infinity);
+}
