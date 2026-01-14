@@ -8,6 +8,8 @@ export class KlogCommand extends TerminalProcess {
   static override keyword: string = "klog";
   static override description: string = "Continuously reads the ArcOS kernel log";
 
+  //#region LIFECYCLE
+
   constructor(pid: number, parentPid: number) {
     super(pid, parentPid);
   }
@@ -19,4 +21,6 @@ export class KlogCommand extends TerminalProcess {
 
     return -256;
   }
+
+  //#endregion
 }
