@@ -8,6 +8,7 @@
   padding: 10px;
   height: 0;
   flex-grow: 1;
+  overflow-y: auto;
 }
 
 #ExecuteQueryApp #LoadQueryOverlay > div.body div.list button {
