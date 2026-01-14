@@ -15,7 +15,7 @@
     <UserComparisonValue {process} {i} />
   {:else if $expressions[$selectedSource][i].comparisonType === "is boolean"}
     <BooleanComparisonValue {process} {i} />
-  {:else if $expressions[$selectedSource][i].columnName && $columnTypes[$columns.indexOf($expressions[$selectedSource][i].columnName)] === "object" && ($expressions[$selectedSource][i].comparisonType?.includes("include") || $expressions[$selectedSource][i].comparisonType?.includes("equal"))}
+  {:else if $columns && $expressions[$selectedSource][i].columnName && $columnTypes[$columns.indexOf($expressions[$selectedSource][i].columnName)] === "object" && ($expressions[$selectedSource][i].comparisonType?.includes("include") || $expressions[$selectedSource][i].comparisonType?.includes("equal"))}
     <JsonHierarchyComparisonValue {process} {i} />
   {:else if $expressions[$selectedSource][i].comparisonType.includes("defined")}
     <p>?</p>
