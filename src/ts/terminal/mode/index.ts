@@ -107,6 +107,9 @@ export class TerminalMode extends Process {
     try {
       const userDaemon = await Stack.spawn<UserDaemon>(UserDaemon, undefined, "SYSTEM", 1, token, username);
 
+      const broadcast = (m: string) => {
+        this.rl?.println(`${CURUP}${CLRROW}${m}`);
+      };
       this.rl?.println(`Starting daemon`);
 
       if (!userDaemon) {
@@ -134,53 +137,55 @@ export class TerminalMode extends Process {
         }
       }
 
-      this.rl?.println(`${CURUP}${CLRROW}Starting filesystem`);
+      broadcast(`Starting filesystem`);
       await userDaemon.init?.startFilesystemSupplier();
 
-      this.rl?.println(`${CURUP}${CLRROW}Starting synchronization`);
+      broadcast(`Starting synchronization`);
       await userDaemon.init?.startPreferencesSync();
 
-      this.rl?.println(`${CURUP}${CLRROW}Notifying login activity`);
+      broadcast(`Notifying login activity`);
       await userDaemon.activity?.logActivity(`login`);
 
-      this.rl?.println(`${CURUP}${CLRROW}Starting service host`);
+      broadcast(`Starting service host`);
       await userDaemon.init?.startServiceHost(async (serviceStep) => {
         if (serviceStep.id === "AppStorage") {
-          this.rl?.println(`${CURUP}${CLRROW}Loading apps...`);
+          broadcast(`Loading apps...`);
           await userDaemon.appreg!.initAppStorage(userDaemon.appStorage()!, (app) => {
-            this.rl?.println(`${CURUP}${CLRROW}Loading apps... ${app.id}`);
+            broadcast(`Loading apps... ${app.id}`);
           });
         } else {
-          this.rl?.println(`${CURUP}${CLRROW}Started ${serviceStep.id}`);
+          broadcast(`Started ${serviceStep.id}`);
         }
       });
 
-      this.rl?.println(`${CURUP}${CLRROW}Connecting global dispatch`);
+      broadcast(`Connecting global dispatch`);
       await userDaemon.activateGlobalDispatch();
 
-      this.rl?.println(`${CURUP}${CLRROW}Starting drive notifier watcher`);
+      broadcast(`Starting drive notifier watcher`);
       userDaemon.init!.startDriveNotifierWatcher();
 
-      this.rl?.println(`${CURUP}${CLRROW}Starting permission manager`);
+      broadcast(`Starting permission manager`);
       await userDaemon.init!.startPermissionHandler();
 
-      this.rl?.println(`${CURUP}${CLRROW}Starting share management`);
+      broadcast(`Starting share management`);
       await userDaemon.init!.startShareManager();
 
-      this.rl?.println(`${CURUP}${CLRROW}Running migrations`);
+      broadcast(`Indexing your files`);
+      await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
+
       await userDaemon.serviceHost
         ?.getService<MigrationService>("MigrationSvc")
         ?.runMigrations((m) => this.rl?.println(`${CURUP}${CLRROW}${m}`));
 
       if (userDaemon.userInfo.admin) {
-        this.rl?.println(`${CURUP}${CLRROW}Activating admin bootstrapper`);
+        broadcast(`Activating admin bootstrapper`);
         await userDaemon.activateAdminBootstrapper();
       }
 
-      this.rl?.println(`${CURUP}${CLRROW}Starting status refresh`);
+      broadcast(`Starting status refresh`);
       await userDaemon.init!.startSystemStatusRefresh();
 
-      this.rl?.println(`${CURUP}${CLRROW}Refreshing app storage`);
+      broadcast(`Refreshing app storage`);
       SysDispatch.dispatch(`app-store-refresh`);
 
       Env.set("currentuser", username);
