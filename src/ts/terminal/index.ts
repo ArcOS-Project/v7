@@ -48,6 +48,7 @@ export class ArcTerminal extends Process {
   config: ArcTermConfiguration = DefaultArcTermConfiguration;
   configProvidedExternal = false;
   window: TerminalWindowRuntime | undefined;
+  IS_ARCTERM_MODE = false;
 
   //#region LIFECYCLE
 

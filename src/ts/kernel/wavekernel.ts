@@ -5,7 +5,7 @@ import { getBuild } from "$ts/metadata/build";
 import { ChangeLogs } from "$ts/metadata/changelog";
 import { getLicense } from "$ts/metadata/license";
 import { getMode } from "$ts/metadata/mode";
-import type { EnvironmentType, ProcessHandlerType } from "$types/kernel";
+import type { SystemDispatchType, EnvironmentType, ProcessHandlerType } from "$types/kernel";
 import { LogLevel, ShortLogLevelCaptions, type LogItem } from "../../types/logging";
 import { handleGlobalErrors } from "../error";
 import { StateHandler } from "../state";
@@ -126,14 +126,18 @@ export class WaveKernel {
 
   public Log(source: string, message: string, level = LogLevel.info) {
     const timestamp = Date.now();
-
-    this.Logs.push({
+    const data: LogItem = {
       timestamp,
       source,
       message,
       level,
       kernelTime: timestamp - this.startMs,
-    });
+    };
+
+    this.Logs.push(data);
+
+    const dispatch = this.getModule<SystemDispatchType>("dispatch", true);
+    dispatch?.dispatch<[LogItem]>("kernel-log", [data]);
 
     __Console__.log(
       `[${(timestamp - this.startMs).toString().padStart(10, "0")}] ${ShortLogLevelCaptions[level]} ${source}: ${message}`

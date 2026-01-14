@@ -11,8 +11,6 @@ export class SystemDispatch extends KernelModule {
 
   constructor(kernel: ConstructedWaveKernel, id: string) {
     super(kernel, id);
-
-    this.Log("Creating new SystemDispatch");
   }
 
   //#endregion
@@ -26,13 +24,8 @@ export class SystemDispatch extends KernelModule {
 
     if (this.subscribers[event][id]) return this.subscribe(event, callback); // get another ID
 
-    this.Log(`Subscribing on ID ${id} to event ${event}`);
-
     if (!this.subscribers[event]) this.subscribers[event] = { [id]: callback };
     else this.subscribers[event][id] = callback;
-
-    if (!KnownSystemDispatchers.includes(event))
-      this.Log(`Subscribing to unknown event ${event} on Global Dispatch. Don't do that.`, LogLevel.warning);
 
     return id;
   }
@@ -40,15 +33,11 @@ export class SystemDispatch extends KernelModule {
   unsubscribeId(event: string, id: number) {
     this.isKmod();
 
-    this.Log(`Unsubscribing ID ${id} of event ${event}`);
-
     delete this.subscribers[event][id];
   }
 
   discardEvent(event: string) {
     this.isKmod();
-
-    this.Log(`Discarding event ${event}`);
 
     delete this.subscribers[event];
   }
@@ -56,13 +45,9 @@ export class SystemDispatch extends KernelModule {
   dispatch<T = any[]>(caller: string, data?: T, system = true): SystemDispatchResult {
     this.isKmod();
 
-    this.Log(`Dispatching ${caller}`);
-
     const callers = this.subscribers[caller];
 
     if (!system && SystemOnlyDispatches.includes(caller)) {
-      this.Log("Not allowing user to dispatch system-only event", LogLevel.error);
-
       return "err_systemOnly";
     }
 
@@ -73,9 +58,6 @@ export class SystemDispatch extends KernelModule {
     for (const callback of callbacks) {
       callback(data);
     }
-
-    if (!KnownSystemDispatchers.includes(caller))
-      this.Log(`Dispatching unknown event ${caller} over Global Dispatch. Don't do that.`, LogLevel.warning);
 
     return "success";
   }

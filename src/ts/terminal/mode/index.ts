@@ -198,6 +198,7 @@ export class TerminalMode extends Process {
       this.term?.clear();
 
       this.arcTerm = await Stack.spawn<ArcTerminal>(ArcTerminal, undefined, userDaemon.userInfo?._id, this.pid, this.term);
+      this.arcTerm!.IS_ARCTERM_MODE = true;
 
       this.term?.focus();
 

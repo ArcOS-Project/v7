@@ -167,7 +167,6 @@ export class ProcessHandler extends KernelModule {
     const proc = this.getProcess(pid);
 
     if (!proc) {
-      this.Log(`Can't kill ${pid}: no such process`);
       this.BUSY = "";
       return "err_noExist";
     }
