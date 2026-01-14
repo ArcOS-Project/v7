@@ -206,7 +206,7 @@ export class TerminalMode extends Process {
     } catch (e) {
       const stack = e instanceof PromiseRejectionEvent ? e.reason.stack : e instanceof Error ? e.stack : "Unknown error";
 
-      this.rl?.println(`\n${BRRED}Failed to start User Daemon:\n\n${stack}${RESET}`);
+      this.rl?.println(`\n${BRRED}Failed to start ArcTerm Mode:\n\n${stack}${RESET}`);
       this.rl?.println(`\nArcTerm Mode couldn't start, and ArcOS has been halted.\nTo try again, please reload the page.`);
 
       return false;
