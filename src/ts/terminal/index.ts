@@ -153,10 +153,17 @@ export class ArcTerminal extends Process {
             return;
           }
 
+          this.rl?.setCtrlCHandler(async () => {
+            this.rl?.println("^C");
+            if (command.allowInterrupt) await proc?.killSelf();
+          });
+
           const result = (await proc?._main(this, flags, argv)) || 0;
 
           if (result !== 0) this.lastCommandErrored = true;
           if (result <= -128) return this.rl?.dispose();
+
+          this.rl?.setCtrlCHandler(noop);
         } catch (e) {
           this.lastCommandErrored = true;
           this.handleCommandError(e as Error, command);

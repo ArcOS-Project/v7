@@ -11,7 +11,7 @@ import { BRBLACK, BRBLUE, BRGREEN, RESET } from "../store";
 export class DirCommand extends TerminalProcess {
   public static keyword = "dir";
   public static description = "List the contents of the current or specified directory";
-
+  public static allowInterrupt: boolean = true;
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number) {
@@ -35,6 +35,8 @@ export class DirCommand extends TerminalProcess {
 
       const contents = await term.readDir(dir);
       const quota = await drive?.quota();
+
+      if (this._disposed) return 0;
 
       if (!contents || !quota) {
         throw "";

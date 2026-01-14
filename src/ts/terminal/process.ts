@@ -1,3 +1,4 @@
+import { SysDispatch } from "$ts/env";
 import { ProcessWithPermissions } from "$ts/permissions/process";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from ".";
@@ -6,6 +7,7 @@ export class TerminalProcess extends ProcessWithPermissions {
   public static keyword: string;
   public static description: string;
   public static hidden = false;
+  public static allowInterrupt = false;
   protected term?: ArcTerminal;
   protected flags?: Arguments;
   protected argv?: string[];
@@ -30,7 +32,17 @@ export class TerminalProcess extends ProcessWithPermissions {
     this.term = term;
     this.flags = flags;
     this.argv = argv;
-    const result = await this.main(term, flags, argv);
+
+    const result = await new Promise((r) => {
+      this.main(term, flags, argv).then((result) => r(result));
+
+      const eventId = SysDispatch.subscribe<[number]>("proc-kill", ([pid]) => {
+        if (pid === this.pid) {
+          SysDispatch.unsubscribeId("proc-kill", eventId);
+          r(0);
+        }
+      });
+    });
 
     await this.killSelf();
 

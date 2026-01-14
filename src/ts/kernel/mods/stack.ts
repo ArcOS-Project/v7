@@ -182,6 +182,8 @@ export class ProcessHandler extends KernelModule {
       await proc.closeWindow(false);
     }
 
+    SysDispatch.dispatch<[number]>("proc-kill", [pid]);
+
     if (proc.__stop) await proc.__stop();
 
     let store = this.store();
