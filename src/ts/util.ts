@@ -4,7 +4,8 @@ import leoProfanity from "leo-profanity";
 import validator from "validator";
 import { getJsonHierarchy } from "./hierarchy";
 import { Process } from "./process/instance";
-import { Server } from "./env";
+import { Kernel, Server } from "./env";
+import { ShortLogLevelCaptions, type LogItem } from "$types/logging";
 
 leoProfanity.loadDictionary("en");
 
@@ -296,4 +297,12 @@ export function stringifyProcess(obj: Process): string {
   const str = walk(obj, true);
 
   return str;
+}
+
+export function logItemToStr(data: LogItem) {
+  const timestamp = (data.timestamp - Kernel.startMs).toString().padStart(10, "0");
+  const level = ShortLogLevelCaptions[data.level];
+  const line = `[${timestamp}] ${level} ${data.source}: ${data.message}`;
+
+  return line;
 }

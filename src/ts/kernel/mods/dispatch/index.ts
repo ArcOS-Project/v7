@@ -8,6 +8,7 @@ import { FitAddon } from "@xterm/addon-fit";
 import { Unicode11Addon } from "@xterm/addon-unicode11";
 import { ShortLogLevelCaptions, type LogItem } from "$types/logging";
 import { Kernel } from "$ts/env";
+import { logItemToStr } from "$ts/util";
 
 export class SystemDispatch extends KernelModule {
   public subscribers: Record<string, Record<number, (data: any) => void>> = {};
@@ -97,11 +98,7 @@ export class SystemDispatch extends KernelModule {
     term.loadAddon(unicode11Addon);
 
     this.subscribe<[LogItem]>("kernel-log", ([data]) => {
-      const timestamp = (data.timestamp - Kernel.startMs).toString().padStart(10, "0");
-      const level = ShortLogLevelCaptions[data.level];
-      const line = `[${timestamp}] ${level} ${data.source}: ${data.message}\r\n`;
-
-      term.write(line);
+      term.write(logItemToStr(data) + "\r\n");
     });
 
     const target = document.querySelector<HTMLDivElement>("#kernelLog")!;

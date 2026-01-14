@@ -18,6 +18,7 @@ import { FindCommand } from "./commands/find";
 import { HelpCommand } from "./commands/help";
 import { HistoryCommand } from "./commands/history";
 import { KillCommand } from "./commands/kill";
+import { KlogCommand } from "./commands/klog";
 import { LogoutCommand } from "./commands/logout";
 import { MkdirCommand } from "./commands/mkdir";
 import { OpenCommand } from "./commands/open";
@@ -70,6 +71,7 @@ export const TerminalCommandStore: (typeof TerminalProcess)[] = [
   DrivesCommand,
   DevenvCommand,
   PkgCommand,
+  KlogCommand,
 ];
 
 export const ESC = `\x1b[`;

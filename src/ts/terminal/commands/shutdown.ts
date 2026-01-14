@@ -1,6 +1,7 @@
-import { Kernel, State, SysDispatch } from "$ts/env";
+import { State, SysDispatch } from "$ts/env";
 import { Sleep } from "$ts/sleep";
-import { ShortLogLevelCaptions, type LogItem } from "$types/logging";
+import { logItemToStr } from "$ts/util";
+import { type LogItem } from "$types/logging";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { BRBLUE, RESET } from "../store";
@@ -16,11 +17,7 @@ export class ShutdownCommand extends TerminalProcess {
       term.rl?.println(`${BRBLUE}Goodbye.${RESET}`);
 
       SysDispatch.subscribe<[LogItem]>("kernel-log", ([data]) => {
-        const timestamp = (data.timestamp - Kernel.startMs).toString().padStart(10, "0");
-        const level = ShortLogLevelCaptions[data.level];
-        const line = `[${timestamp}] ${level} ${data.source}: ${data.message}`;
-
-        term.rl?.println(line);
+        term.rl?.println(logItemToStr(data));
       });
 
       await term.daemon?.serviceHost?.stop();
