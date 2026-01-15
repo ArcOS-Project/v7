@@ -17,7 +17,7 @@ export const GlobalLoadIndicatorApp: App = {
   },
   minSize: {
     w: 400,
-    h: 80,
+    h: 72,
   },
   maxSize: {
     w: 550,

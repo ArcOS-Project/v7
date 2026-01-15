@@ -1,11 +1,11 @@
 #GlobalLoadIndicator.extended {
-  height: calc(60px + 50px + 2px) !important;
+  height: fit-content !important;
   min-height: fit-content !important;
 }
 
 #GlobalLoadIndicator > div.body {
-  padding: 0;
-  min-height: 78px;
+  padding: 20px;
+  min-height: 70px;
   height: fit-content;
 }
 
@@ -14,20 +14,15 @@
 }
 
 #GlobalLoadIndicator > div.body div.top {
-  height: 60px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-height: 60px;
-  padding: 20px;
   gap: 15px;
   min-height: fit-content;
 }
 
 #GlobalLoadIndicator > div.body div.bottom {
-  height: 50px;
-  padding: 20px;
-  padding-top: 0;
+  margin-top: 20px;
 }
 
 #GlobalLoadIndicator > div.body div.progress-bar {
