@@ -17,7 +17,7 @@ import { libraryManagementService } from "$ts/tpa/libraries";
 import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
 import type { ReadableServiceStore, Service, ServiceChangeResult, ServiceStore } from "$types/service";
-import { migrationService } from "../../migrations";
+import { migrationService } from "../migrations";
 import type { BaseService } from "./base";
 
 export class ServiceHost extends Process {

@@ -18,7 +18,7 @@ export class MigrationService extends BaseService {
   private Configuration = Store<Record<string, number>>({});
   private CONFIG_PATH = join(UserPaths.Migrations, "Index.json");
 
-  private MIGRATIONS: (typeof MigrationNode)[] = [FileAssociationsMigration, IconConfigurationMigration, AppShortcutsMigration];
+  public MIGRATIONS: (typeof MigrationNode)[] = [FileAssociationsMigration, IconConfigurationMigration, AppShortcutsMigration];
 
   public get Config() {
     return this.Configuration();

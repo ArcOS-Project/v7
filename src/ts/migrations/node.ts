@@ -2,7 +2,7 @@ import { Log } from "$ts/logging";
 import { LogLevel } from "$types/logging";
 import type { MigrationResult, MigrationStatusCallback } from "$types/migrations";
 import type { MigrationService } from ".";
-import packageJson from "../../package.json";
+import packageJson from "../../../package.json";
 
 export class MigrationNode {
   public static name = "MigrationNode";

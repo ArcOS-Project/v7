@@ -1,6 +1,7 @@
 @import url("./advsystemsettings/recycling.css");
 @import url("./advsystemsettings/startup.css");
 @import url("./advsystemsettings/dispatch.css");
+@import url("./advsystemsettings/migrations.css");
 @import url("./advsystemsettings/main.css");
 
 #AdvSystemSettings > div.body {

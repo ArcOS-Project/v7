@@ -1,0 +1,57 @@
+#AdvSystemSettings > div.body div.migrations {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#AdvSystemSettings > div.body div.migrations div.list {
+  border: var(--win-border);
+  flex-grow: 1;
+  overflow-y: auto;
+  border-radius: 4px;
+  background-color: var(--win-bg);
+}
+
+#AdvSystemSettings > div.body div.migrations div.list::-webkit-scrollbar {
+  display: none;
+}
+
+#AdvSystemSettings > div.body div.migrations div.list div.row {
+  display: flex;
+  align-items: center;
+  border-bottom: var(--win-border);
+  height: 31px;
+  padding: 0 10px;
+  padding-right: 0;
+}
+
+#AdvSystemSettings > div.body div.migrations div.list div.version {
+  width: 31px;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+  border-left: var(--win-border);
+}
+
+#AdvSystemSettings > div.body div.migrations div.list div.name {
+  margin-right: auto;
+}
+
+#AdvSystemSettings > div.body div.migrations div.list button {
+  border-radius: 0;
+  outline: none;
+  border-left: var(--win-border);
+  width: 60px;
+}
+
+#AdvSystemSettings > div.body div.migrations div.list div.row.head {
+  font-weight: bold;
+}
+
+#AdvSystemSettings > div.body div.migrations div.list div.run-migration {
+  width: 60px;
+  text-align: center;
+  border-left: var(--win-border);
+  height: 30px;
+  line-height: 30px;
+}

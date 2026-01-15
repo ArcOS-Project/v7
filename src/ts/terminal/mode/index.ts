@@ -18,7 +18,7 @@ import { Terminal } from "xterm";
 import { ArcTerminal } from "..";
 import { Readline } from "../readline/readline";
 import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../store";
-import type { MigrationService } from "../../../migrations";
+import type { MigrationService } from "../../migrations";
 
 export class TerminalMode extends Process {
   userDaemon?: UserDaemon;

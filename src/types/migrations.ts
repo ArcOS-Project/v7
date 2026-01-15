@@ -1,4 +1,4 @@
-import type { MigrationNode } from "../migrations/node";
+import type { MigrationNode } from "../ts/migrations/node";
 
 export interface MigrationStatusItem {
   caption: string;
