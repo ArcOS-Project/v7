@@ -9,6 +9,7 @@
     refresh,
   }: { migrationService: MigrationService; id: string; version: number; refresh: () => void } = $props();
   const migration = migrationService.MIGRATIONS.find((m) => m.name === id);
+  const upToDate = migration?.version === version && !migration?.inversional;
 
   async function runMigration() {
     if (!migration) return;
@@ -28,8 +29,13 @@
     <div class="name" title={migration.name}>{migration.friendlyName}</div>
     <div class="version local">{version}</div>
     <div class="version current">{migration.version}</div>
-    <button class="run-migration" disabled={migration.version === version && !migration.inversional} onclick={runMigration}
-      >Run</button
+    <button
+      class="run-migration"
+      disabled={upToDate}
+      onclick={runMigration}
+      title={upToDate ? "This migration is up to date" : "Click to run this migration now"}
     >
+      Run
+    </button>
   </div>
 {/if}

@@ -103,6 +103,12 @@ export class MigrationService extends BaseService {
     const instance = new migration(migration, this);
     const result = await instance._runMigration(cb);
 
+    if (result.result === "err_ok" || result.result === "err_sameVersion")
+      this.Configuration.update((v) => {
+        v[migration.name] = migration.version;
+        return v;
+      });
+
     return result;
   }
 
