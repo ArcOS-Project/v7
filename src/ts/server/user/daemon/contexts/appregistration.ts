@@ -290,7 +290,7 @@ export class AppRegistrationUserContext extends UserContext {
     await Promise.all(promises);
 
     SysDispatch.dispatch("startmenu-refresh");
-    stop?.();
+    gli?.stop?.();
   }
 
   async modeUserAppsToFs() {
