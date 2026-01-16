@@ -88,13 +88,13 @@ export class MediaPlayerRuntime extends AppProcess {
       this.mediaSpecificAccentColor.set(await getReadableVibrantColor(v));
     });
 
-    this.mediaSpecificAccentColor.subscribe((v) => { 
+    this.mediaSpecificAccentColor.subscribe((v) => {
       const window = this.getWindow();
-      
+
       if (!v || !window) return;
 
       // Merging goes here
-    })
+    });
 
     this.setSource(__SOURCE__);
   }
@@ -130,7 +130,7 @@ export class MediaPlayerRuntime extends AppProcess {
 
   async render({ file }: RenderArgs) {
     if (await this.closeIfSecondInstance()) return;
-    
+
     if (file) {
       if (file.endsWith(".arcpl")) this.readPlaylist(file);
       else this.readFile([file]);
@@ -140,7 +140,7 @@ export class MediaPlayerRuntime extends AppProcess {
       icon: "MediaPlayerIcon",
       popup: {
         width: 250,
-        height: 280,
+        height: 185,
         component: TrayPopup as any,
       },
     });
