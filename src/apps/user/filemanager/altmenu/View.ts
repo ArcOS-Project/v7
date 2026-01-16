@@ -48,6 +48,18 @@ export function ViewMenu(runtime: FileManagerRuntime): ContextMenuItem {
       },
       { sep: true },
       {
+        caption: "Enable compact mode",
+        isActive: () => !!runtime.userPreferences().appPreferences.fileManager?.compact,
+        icon: "list-chevrons-down-up",
+        disabled: () => !!runtime.virtual() || !!runtime.userPreferences().appPreferences.fileManager?.thumbnails,
+        action: () =>
+          runtime.userPreferences.update((v) => {
+            v.appPreferences.fileManager.compact = !v.appPreferences.fileManager.compact;
+            return v;
+          }),
+      },
+      { sep: true },
+      {
         caption: "Load image thumbnails",
         isActive: () => runtime.userPreferences().appPreferences.fileManager?.renderThumbnails,
         icon: "image",

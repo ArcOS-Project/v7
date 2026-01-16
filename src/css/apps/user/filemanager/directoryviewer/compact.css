@@ -1,0 +1,20 @@
+#fileManager div.directory-viewer:not(.thumbnail).compact {
+  gap: 0;
+}
+
+#fileManager div.directory-viewer:not(.thumbnail).compact button {
+  gap: 5px;
+  padding: 3px 4px;
+  border-radius: 5px;
+}
+
+#fileManager div.directory-viewer:not(.thumbnail).compact button.header-row {
+  margin: 5px 0;
+}
+
+
+#fileManager div.directory-viewer:not(.thumbnail).compact button div.segment.icon,
+#fileManager div.directory-viewer:not(.thumbnail).compact button div.segment.icon img {
+  width: 16px;
+  height: 16px;
+}

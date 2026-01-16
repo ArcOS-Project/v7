@@ -23,7 +23,7 @@
 
   onMount(async () => {
     if (!user) return;
-    
+
     statistics = await process.admin.getStatisticsOf(user._id);
   });
 
@@ -130,6 +130,27 @@
       true
     );
   }
+
+  function copy() {
+    MessageBox(
+      {
+        title: `Copy from ${user.username}`,
+        message:
+          "Choose the information that you would like to copy from this user. It goes without saying that none of this should ever be pasted anywhere except the team, so <b>be careful</b>.",
+        buttons: [
+          { caption: "ID", action: () => navigator.clipboard.writeText(user._id) },
+          { caption: "Username", action: () => navigator.clipboard.writeText(user.username) },
+          { caption: "Email address", action: () => navigator.clipboard.writeText(user.email) },
+          { caption: "Preferences", action: () => navigator.clipboard.writeText(JSON.stringify(user.preferences, null, 2)) },
+          { caption: "Cancel", action: () => {}, suggested: true },
+        ],
+        image: "ElevationIcon",
+        sound: "arcos.dialog.warning",
+      },
+      process.pid,
+      true
+    );
+  }
 </script>
 
 {#if !user}
@@ -171,6 +192,7 @@
           disabled={!user.approved || !process.admin.canAccess(AdminScopes.adminTokensPurgeUserDelete)}
           title="Log user out"
         ></button>
+        <button class="lucide icon-copy" aria-label="Copy..." onclick={copy} title="Copy..."></button>
         <button
           class="lucide icon-user-minus"
           class:icon-user-plus={!user.approved}
