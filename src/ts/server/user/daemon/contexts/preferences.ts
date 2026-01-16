@@ -56,6 +56,7 @@ export class PreferencesUserContext extends UserContext {
 
     if (preferences.isDefault) {
       this.Log(`Not sanitizing default preferences`, LogLevel.warning);
+      return;
     }
 
     if (!preferences.startup)
@@ -65,10 +66,13 @@ export class PreferencesUserContext extends UserContext {
 
     if (!preferences.pinnedApps?.length) preferences.pinnedApps = DefaultPinnedApps;
 
-    const result = applyDefaults<UserPreferences>(preferences, {
+    let result = applyDefaults<UserPreferences>(preferences, {
       ...DefaultUserPreferences,
       isDefault: undefined,
     });
+
+    // Hotfix to reset the user preferences if the shell object is somehow missing
+    if (!result.shell) result = { ...DefaultUserPreferences, isDefault: undefined };
 
     if (!result.globalSettings.shellExec) result.globalSettings.shellExec = "arcShell";
     if (!result.shell.start.actions?.length) result.shell.start.actions = DefaultStartMenuActions;
