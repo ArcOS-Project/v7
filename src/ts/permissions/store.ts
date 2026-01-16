@@ -1,10 +1,9 @@
-import type { PermissionStorage } from "$types/permission";
+import type { PermissionInfo, PermissionStorage } from "$types/permission";
 
 export const PERMISSIONS = [
   "PERMISSION_USER_CONTEXT_ACCOUNT",
   "PERMISSION_USER_CONTEXT_APPLICATIONS",
   "PERMISSION_USER_CONTEXT_APPREGISTRATION",
-  "PERMISSION_USER_CONTEXT_ELEVATION",
   "PERMISSION_USER_CONTEXT_FILESYSTEM",
   "PERMISSION_USER_CONTEXT_HELPERS",
   "PERMISSION_USER_CONTEXT_ICONS",
@@ -36,7 +35,6 @@ export const PERMISSION_NAMES: Record<PermissionString, string> = {
   PERMISSION_USER_CONTEXT_ACCOUNT: "Account",
   PERMISSION_USER_CONTEXT_APPLICATIONS: "Applications",
   PERMISSION_USER_CONTEXT_APPREGISTRATION: "App registration",
-  PERMISSION_USER_CONTEXT_ELEVATION: "Elevation",
   PERMISSION_USER_CONTEXT_FILESYSTEM: "File System",
   PERMISSION_USER_CONTEXT_HELPERS: "Helpers",
   PERMISSION_USER_CONTEXT_ICONS: "Icons",
@@ -102,3 +100,196 @@ export const DefaultPermissionStorage: PermissionStorage = {
   denied: {},
   registration: {},
 };
+
+export const PermissionInfoStore: PermissionInfo[] = [
+  {
+    permission: "PERMISSION_USER_CONTEXT_ACCOUNT",
+    friendlyName: "Manage your ArcOS account",
+    friendlyDescription: "{{name}} would like to manage your ArcOS account",
+    icon: "square-user",
+    canDo: [
+      {
+        what: "Read your user information",
+        icon: "info",
+      },
+      {
+        what: "Change your password if you confirm",
+        icon: "key-round",
+      },
+      {
+        what: "Change your username if you confirm",
+        icon: "person",
+      },
+      {
+        what: "Ask you if you want to delete your account",
+        icon: "trash-2",
+      },
+      {
+        what: "Get the public user info of any user",
+        icon: "users",
+      },
+    ],
+    cantDo: [
+      {
+        what: "Change your credentials without your permission",
+        icon: "key-round",
+      },
+      {
+        what: "Delete your account without your permission",
+        icon: "trash-2",
+      },
+    ],
+  },
+  {
+    permission: "PERMISSION_USER_CONTEXT_APPLICATIONS",
+    friendlyName: "Manage applications",
+    friendlyDescription: "{{name}} would like to manage application related settings",
+    icon: "package",
+    canDo: [
+      {
+        what: "Run the startup list",
+        icon: "play",
+      },
+      {
+        what: "Check the state of applications",
+        icon: "check",
+      },
+      {
+        what: "Disable- or enable an app",
+        icon: "power",
+      },
+      {
+        what: "Enable or disable third-party apps",
+        icon: "shopping-bag",
+      },
+    ],
+    cantDo: [
+      {
+        what: "Install or uninstall an application",
+        icon: "download",
+      },
+    ],
+  },
+  {
+    permission: "PERMISSION_USER_CONTEXT_APPREGISTRATION",
+    friendlyName: "Manage application registration",
+    friendlyDescription: "{{name}} would like to manage your installed applications",
+    icon: "hard-drive-download",
+    canDo: [
+      {
+        what: "Register an application",
+        icon: "monitor-down",
+      },
+      {
+        what: "Uninstall an app",
+        icon: "trash-2",
+      },
+      {
+        what: "Pin or unpin an app",
+        icon: "pin",
+      },
+      {
+        what: "Add- or remove apps from the start menu",
+        icon: "list-checks",
+      },
+    ],
+    cantDo: [
+      {
+        what: "Install or uninstall an application",
+        icon: "download",
+      },
+    ],
+  },
+  {
+    permission: "PERMISSION_USER_CONTEXT_FILESYSTEM",
+    friendlyName: "Use filesystem utilities",
+    friendlyDescription: "{{name}} would like to make use of filesystem utilities",
+    icon: "hard-drive-download",
+    canDo: [
+      {
+        what: "Mount a ZIP file",
+        icon: "file-archive",
+      },
+      {
+        what: "Unmount mounted drives",
+        icon: "hard-drive-upload",
+      },
+      {
+        what: "See what drives are mounted",
+        icon: "list-checked",
+      },
+      {
+        what: "Display file progress",
+        icon: "pin",
+      },
+      {
+        what: "Tell ArcOS to open a file",
+        icon: "file-check",
+      },
+      {
+        what: "Open a load/save dialog",
+        icon: "save",
+      },
+      {
+        what: "Get categorized disk usage of U:",
+        icon: "chart-pie",
+      },
+      {
+        what: "Mount a v5 or v6 filesystem",
+        icon: "hard-drive",
+      },
+      {
+        what: "Move an item to the trash",
+        icon: "trash-2",
+        critical: true,
+        extraWarning:
+          "When moving an item to the trash when the trash is disabled, the item is permanently deleted. This includes system files!",
+      },
+      {
+        what: "Access the Temporary filesystem",
+        icon: "book-dashed",
+      },
+    ],
+    cantDo: [
+      {
+        what: "Access your drive",
+        icon: "download",
+      },
+      {
+        what: "Eat cookies",
+        icon: "cookie",
+      },
+      // TODO
+    ],
+  },
+    {
+    permission: "PERMISSION_USER_CONTEXT_APPREGISTRATION",
+    friendlyName: "Manage application registration",
+    friendlyDescription: "{{name}} would like to manage your installed applications",
+    icon: "hard-drive-download",
+    canDo: [
+      {
+        what: "Register an application",
+        icon: "monitor-down",
+      },
+      {
+        what: "Uninstall an app",
+        icon: "trash-2",
+      },
+      {
+        what: "Pin or unpin an app",
+        icon: "pin",
+      },
+      {
+        what: "Add- or remove apps from the start menu",
+        icon: "list-checks",
+      },
+    ],
+    cantDo: [
+      {
+        what: "Install or uninstall an application",
+        icon: "download",
+      },
+    ],
+  },
+];

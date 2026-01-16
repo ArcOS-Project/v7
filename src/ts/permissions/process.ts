@@ -49,7 +49,7 @@ export class ProcessWithPermissions extends Process {
   }
 
   get elevationContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_ELEVATION", Daemon?.elevation);
+    return Daemon?.elevation;
   }
 
   get filesystemContext() {
