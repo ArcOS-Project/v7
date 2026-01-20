@@ -114,26 +114,42 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         icon: "eye",
         subItems: [
           {
-            caption: "Compact grid",
-            icon: "columns-3",
-            action: () => {
+            caption: "Thumbnail view",
+            isActive: () => !!runtime.userPreferences().appPreferences.fileManager?.thumbnails,
+            icon: "file-image",
+            disabled: () => !!runtime.virtual(),
+            action: () =>
               runtime.userPreferences.update((v) => {
-                v.appPreferences.fileManager!.grid = true;
+                v.appPreferences.fileManager.thumbnails = true;
+                v.appPreferences.fileManager.grid = false;
                 return v;
-              });
-            },
-            isActive: () => !!runtime.userPreferences().appPreferences.fileManager?.grid,
+              }),
           },
           {
-            caption: "List view",
-            icon: "list",
-            action: () => {
+            caption: "Grid view",
+            isActive: () => !!runtime.userPreferences().appPreferences.fileManager?.grid,
+            icon: "columns-3",
+            disabled: () => !!runtime.virtual(),
+            action: () =>
               runtime.userPreferences.update((v) => {
-                v.appPreferences.fileManager!.grid = false;
+                v.appPreferences.fileManager.thumbnails = false;
+                v.appPreferences.fileManager.grid = true;
                 return v;
-              });
-            },
-            isActive: () => !runtime.userPreferences().appPreferences.fileManager?.grid,
+              }),
+          },
+          {
+            caption: "Thumbnail view",
+            isActive: () =>
+              !runtime.userPreferences().appPreferences.fileManager?.grid &&
+              !runtime.userPreferences().appPreferences.fileManager?.thumbnails,
+            icon: "list",
+            disabled: () => !!runtime.virtual(),
+            action: () =>
+              runtime.userPreferences.update((v) => {
+                v.appPreferences.fileManager.thumbnails = false;
+                v.appPreferences.fileManager.grid = false;
+                return v;
+              }),
           },
         ],
       },

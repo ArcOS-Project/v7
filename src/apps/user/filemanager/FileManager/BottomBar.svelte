@@ -33,7 +33,6 @@
   function thumbnails() {
     process.userPreferences.update((v) => {
       v.appPreferences.fileManager.grid = false;
-      v.appPreferences.fileManager.compact = false;
       v.appPreferences.fileManager.thumbnails = true;
       return v;
     });
@@ -42,7 +41,6 @@
   function grid() {
     process.userPreferences.update((v) => {
       v.appPreferences.fileManager.grid = true;
-      v.appPreferences.fileManager.compact = false;
       v.appPreferences.fileManager.thumbnails = false;
       return v;
     });
@@ -51,7 +49,6 @@
   function list() {
     process.userPreferences.update((v) => {
       v.appPreferences.fileManager.grid = false;
-      v.appPreferences.fileManager.compact = false;
       v.appPreferences.fileManager.thumbnails = false;
       return v;
     });

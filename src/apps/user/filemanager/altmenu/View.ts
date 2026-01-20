@@ -14,7 +14,6 @@ export function ViewMenu(runtime: FileManagerRuntime): ContextMenuItem {
           runtime.userPreferences.update((v) => {
             v.appPreferences.fileManager.thumbnails = true;
             v.appPreferences.fileManager.grid = false;
-            v.appPreferences.fileManager.compact = false;
             return v;
           }),
       },
@@ -27,7 +26,6 @@ export function ViewMenu(runtime: FileManagerRuntime): ContextMenuItem {
           runtime.userPreferences.update((v) => {
             v.appPreferences.fileManager.thumbnails = false;
             v.appPreferences.fileManager.grid = true;
-            v.appPreferences.fileManager.compact = false;
             return v;
           }),
       },
@@ -42,7 +40,6 @@ export function ViewMenu(runtime: FileManagerRuntime): ContextMenuItem {
           runtime.userPreferences.update((v) => {
             v.appPreferences.fileManager.thumbnails = false;
             v.appPreferences.fileManager.grid = false;
-            v.appPreferences.fileManager.compact = false;
             return v;
           }),
       },
