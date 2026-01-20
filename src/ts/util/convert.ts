@@ -1,4 +1,6 @@
 export function arrayBufferToText(buffer: ArrayLike<number> | ArrayBufferLike) {
+  if (!buffer) return undefined;
+  
   return new TextDecoder().decode(new Uint8Array(buffer as any));
 }
 

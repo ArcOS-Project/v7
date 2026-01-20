@@ -20,6 +20,7 @@ import type { LegacyConnectionInfo } from "$types/legacy";
 import type { ArcShortcut } from "$types/shortcut";
 import type { CategorizedDiskUsage } from "$types/user";
 import { Daemon, type UserDaemon } from "..";
+import { RecentFilesService } from "../../recents";
 import { DefaultFileHandlers, UserPaths } from "../../store";
 import { TrashCanService } from "../../trash";
 import { UserContext } from "../context";
@@ -30,6 +31,10 @@ export class FilesystemUserContext extends UserContext {
   public fileHandlers: Record<string, FileHandler>;
   public mountedDrives: string[] = [];
   private TempFsSnapshot: Record<string, any> = {};
+
+  private get RecentFiles() {
+    return Daemon.serviceHost?.getService<RecentFilesService>("RecentFilesSvc");
+  }
 
   constructor(id: string, daemon: UserDaemon) {
     super(id, daemon);
@@ -456,6 +461,8 @@ export class FilesystemUserContext extends UserContext {
 
       return;
     }
+
+    this.RecentFiles?.addToRecents(path);
 
     if (result.handledBy.handler) return await result.handledBy.handler.handle(path);
 

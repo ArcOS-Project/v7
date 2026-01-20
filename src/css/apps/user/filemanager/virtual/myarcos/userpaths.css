@@ -1,0 +1,56 @@
+
+#fileManager > div.body div.my_arcos section.user-paths > div button {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  text-align: left;
+  width: 100%;
+  padding: 0 7px;
+  height: 30px;
+  margin-bottom: 5px;
+  background-color: transparent;
+  transition: none;
+  outline: none;
+}
+
+#fileManager > div.body div.my_arcos section.user-paths > div button:hover {
+  background-color: var(--accent-transparent);
+}
+
+#fileManager > div.body div.my_arcos section.user-paths > div button:active {
+  opacity: 0.5;
+}
+
+#fileManager > div.body div.my_arcos section.user-paths > div button > span.lucide {
+  font-size: 16px;
+  height: 16px;
+  color: var(--accent-lighter);
+}
+
+#fileManager > div.body div.my_arcos section.user-paths > div button span.path {
+  width: 50%;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#fileManager > div.body div.my_arcos section.user-paths > div button span.pill {
+  padding: 0 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: var(--button-glass-bg);
+  height: 22px;
+  border-radius: 5px;
+}
+
+#fileManager > div.body div.my_arcos section.user-paths > div button span.pill span.lucide {
+  font-size: 16px;
+  height: 16px;
+  color: var(--accent-light);
+}
+
+#fileManager > div.body div.my_arcos section.user-paths > div button span.path > span.lucide {
+  opacity: 0.5;
+}
