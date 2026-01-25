@@ -6,7 +6,6 @@
   background-color: var(--button-glass-bg);
   border-radius: 3.5px;
   border: var(--button-glass-bg) 1px solid;
-  overflow: hidden;
   min-height: 7px;
 }
 
