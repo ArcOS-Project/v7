@@ -14,7 +14,11 @@
   outline: none;
 }
 
-#MediaPlayer > div.body div.media-controls button.fullscreen-toggle {
+#MediaPlayer>div.body div.media-controls button {
+  border-radius: 8px;
+}
+
+#MediaPlayer>div.body div.media-controls button.fullscreen-toggle {
   width: 30px;
   height: 30px;
   border-radius: 8px;
@@ -32,31 +36,51 @@
   background-color: transparent;
 }
 
-#MediaPlayer > div.body div.media-controls button.stop {
+#MediaPlayer>div.body div.media-controls button.loop-toggle {
+  width: 26px;
+  height: 26px;
+  font-size: 16px;
+  background-color: transparent;
+}
+
+#MediaPlayer>div.body div.media-controls button.play {
+  border-radius: 100%;
+}
+
+#MediaPlayer>div.body div.media-controls button.stop {
   width: 26px;
   height: 26px;
   font-size: 14px;
   background-color: transparent;
 }
-#MediaPlayer > div.body div.media-controls button.previous,
-#MediaPlayer > div.body div.media-controls button.next {
+
+#MediaPlayer>div.body div.media-controls button.previous,
+#MediaPlayer>div.body div.media-controls button.next {
   font-size: 16px;
   background-color: transparent;
 }
 
-#MediaPlayer > div.body div.media-controls button.previous::before,
-#MediaPlayer > div.body div.media-controls button.next::before {
+#MediaPlayer>div.body div.media-controls button.previous::before,
+#MediaPlayer>div.body div.media-controls button.next::before {
   height: 16px;
 }
 
-#MediaPlayer > div.body div.media-controls div.group {
+#MediaPlayer>div.body div.media-controls button:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#MediaPlayer>div.body div.media-controls button:active {
+  background-color: var(--button-glass-active-bg);
+}
+
+#MediaPlayer>div.body div.media-controls div.group {
   display: flex;
   border-radius: var(--button-border-rad);
   overflow: hidden;
   gap: 10px;
 }
 
-#MediaPlayer > div.body div.media-controls div.timestamp {
+#MediaPlayer>div.body div.media-controls div.timestamp {
   margin-left: auto;
 }
 
@@ -67,15 +91,15 @@
   padding: 15px;
 }
 
-#MediaPlayer.fullscreen > div.body div.media-controls {
+#MediaPlayer.fullscreen>div.body div.media-controls {
   padding: 15px;
   transition: margin-bottom 0.3s;
 }
 
-#MediaPlayer.fullscreen > div.body div.hide-controls div.media-controls {
+#MediaPlayer.fullscreen>div.body div.hide-controls div.media-controls {
   margin-bottom: -93px;
 }
 
-#MediaPlayer.fullscreen > div.body div.container:not(.hide-controls) div.video-wrapper {
+#MediaPlayer.fullscreen>div.body div.container:not(.hide-controls) div.video-wrapper {
   height: calc(100% - 93px) !important;
 }

@@ -21,7 +21,7 @@
 </script>
 
 <button
-  class="lucide previous icon-repeat"
+  class="lucide loop-toggle icon-repeat"
   class:icon-repeat-2={$State.loopMode == LoopMode.None}
   class:icon-repeat={$State.loopMode == LoopMode.All}
   class:icon-repeat-1={$State.loopMode == LoopMode.One}
