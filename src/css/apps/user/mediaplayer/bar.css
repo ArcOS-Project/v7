@@ -55,18 +55,20 @@
   width: 15px;
   height: 11px;
   /* the offset can be anywhere from -7px to 7px. Added due to weird response of new width/height. */
-  transform: translate(var(--slider-thumb-offset), -1px);
+  transform: translateX(var(--slider-thumb-offset));
   box-shadow: 0 0 4px rgb(0, 0, 0);
 }
 
 #MediaPlayer div.bar input[type="range"].slider::-webkit-slider-runnable-track {
   -webkit-appearance: none;
   appearance: none;
+  width: 100%;
+  height: 100%;
   background: linear-gradient(to right,
       var(--accent) 0%,
       var(--accent) var(--progress-percent),
-      transparent var(--progress-percent),
-      transparent 100%);
+      var(--button-glass-bg) var(--progress-percent),
+      var(--button-glass-bg) 100%);
 }
 
 #MediaPlayer.fullscreen>div.body div.bar {
