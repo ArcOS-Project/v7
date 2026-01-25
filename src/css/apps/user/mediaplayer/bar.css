@@ -36,6 +36,40 @@
   border-radius: 2.5px;
 }
 
-#MediaPlayer.fullscreen > div.body div.bar {
+#MediaPlayer div.bar input.slider {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+#MediaPlayer div.bar input[type="range"].slider {
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  padding: 0;
+  width: 100%;
+  height: 5px;
+  transform: translateY(-9px);
+  outline: none;
+}
+
+#MediaPlayer div.bar input[type="range"].slider::-webkit-slider-thumb {
+  width: 15px;
+  height: 11px;
+  /* the offset can be anywhere from -7px to 7px. Added due to weird response of new width/height. */
+  transform: translate(var(--slider-thumb-offset), -1px);
+  box-shadow: 0 0 4px rgb(0, 0, 0);
+}
+
+#MediaPlayer div.bar input[type="range"].slider::-webkit-slider-runnable-track {
+  -webkit-appearance: none;
+  appearance: none;
+  background: linear-gradient(to right,
+      var(--accent) 0%,
+      var(--accent) var(--progress-percent),
+      transparent var(--progress-percent),
+      transparent 100%);
+}
+
+#MediaPlayer.fullscreen>div.body div.bar {
   margin-top: 0;
 }

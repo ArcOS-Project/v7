@@ -2,6 +2,7 @@
   import { Stack } from "$ts/env";
   import type { MediaPlayerRuntime } from "../runtime";
   import Forward from "./Controls/Forward.svelte";
+  import Loop from "./Controls/Loop.svelte";
   import Next from "./Controls/Next.svelte";
   import PlayPause from "./Controls/PlayPause.svelte";
   import Previous from "./Controls/Previous.svelte";
@@ -19,6 +20,7 @@
   <PlayPause {process} />
   <Forward {process} />
   <Next {process} />
+  <Loop {process} />
   <Stop {process} />
   <Time {process} />
   <!-- svelte-ignore a11y_consider_explicit_label -->

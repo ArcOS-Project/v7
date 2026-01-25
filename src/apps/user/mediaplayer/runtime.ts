@@ -16,8 +16,9 @@ import { parseBuffer, type IAudioMetadata } from "music-metadata";
 import { MediaPlayerAccelerators } from "./accelerators";
 import { MediaPlayerAltMenu } from "./altmenu";
 import TrayPopup from "./MediaPlayer/TrayPopup.svelte";
-import type { AudioFileMetadata, MetadataConfiguration, PlayerState } from "./types";
+import { LoopMode, type AudioFileMetadata, type MetadataConfiguration, type PlayerState } from "./types";
 import { getReadableVibrantColor } from "$ts/color";
+import Loop from "./MediaPlayer/Controls/Loop.svelte";
 
 export class MediaPlayerRuntime extends AppProcess {
   private readonly METADATA_PATH = join(UserPaths.Configuration, "MediaPlayer", "Metadata.json");
@@ -26,7 +27,8 @@ export class MediaPlayerRuntime extends AppProcess {
   public queueIndex = Store<number>(0);
   public url = Store<string>();
   public player: HTMLVideoElement | undefined;
-  public State = Store<PlayerState>({ paused: true, current: 0, duration: 0 });
+  public loopMode = Store<LoopMode>(LoopMode.None);
+  public State = Store<PlayerState>({ paused: true, current: 0, duration: 0, loopMode: LoopMode.None });
   public isVideo = Store<boolean>(false);
   public Loaded = Store<boolean>(false);
   public playlistPath = Store<string>();
@@ -189,6 +191,13 @@ export class MediaPlayerRuntime extends AppProcess {
     this.player.currentTime += mod;
   }
 
+  public SeekTo(secondTime: number) {
+    if (this._disposed) return;
+    if (!this.player) return;
+
+    this.player.currentTime = secondTime;
+  }
+
   public Stop() {
     if (this._disposed) return;
     if (!this.player) return;
@@ -196,6 +205,36 @@ export class MediaPlayerRuntime extends AppProcess {
     try {
       this.player.pause();
       this.player.currentTime = 0;
+    } catch {}
+  }
+
+  public async SetLoopNone() {
+    if (this._disposed) return;
+    if (!this.player) return;
+
+    try {
+      this.player.loop = false;
+      this.loopMode.set(LoopMode.None);
+    } catch {}
+  }
+
+  public async SetLoopAll() {
+    if (this._disposed) return;
+    if (!this.player) return;
+
+    try {
+      this.player.loop = false;
+      this.loopMode.set(LoopMode.All);
+    } catch {}
+  }
+
+  public async SetLoopOne() {
+    if (this._disposed) return;
+    if (!this.player) return;
+
+    try {
+      this.player.loop = true;
+      this.loopMode.set(LoopMode.One);
     } catch {}
   }
 
@@ -212,6 +251,7 @@ export class MediaPlayerRuntime extends AppProcess {
       paused: this.player.paused,
       current: this.player.currentTime,
       duration: this.player.duration,
+      loopMode: this.loopMode.get(),
     };
 
     this.State.set(state);
@@ -254,6 +294,7 @@ export class MediaPlayerRuntime extends AppProcess {
     const queue = this.queue();
 
     if (index + 1 > queue.length - 1) {
+      if (this.loopMode() == LoopMode.All) this.queueIndex.set(0);
       return;
     }
     index++;
@@ -263,6 +304,7 @@ export class MediaPlayerRuntime extends AppProcess {
   async previousSong() {
     if (this._disposed) return;
     let index = this.queueIndex();
+    const queue = this.queue();
 
     if (this.State().current >= 2) {
       this.player!.currentTime = 0;
@@ -271,6 +313,7 @@ export class MediaPlayerRuntime extends AppProcess {
     }
 
     if (index - 1 < 0) {
+      if (this.loopMode() == LoopMode.All) this.queueIndex.set(queue.length - 1);
       return;
     }
     index--;
