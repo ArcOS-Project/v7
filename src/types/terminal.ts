@@ -8,7 +8,7 @@ export interface TerminalCommand {
   hidden?: boolean;
   exec: (term: ArcTerminal, flags: Arguments, argv: string[]) => number | Promise<number>;
 }
-export type Arguments = Record<string, string | boolean>;
+export type Arguments = Record<string, string | boolean | any[] | object>;
 export interface Variable {
   get: () => string | undefined;
   set?: (v: string) => Promise<any> | any;

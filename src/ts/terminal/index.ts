@@ -33,6 +33,7 @@ import {
 } from "./store";
 import { ArcTermVariables } from "./var";
 import { Sleep } from "$ts/sleep";
+import { tryJsonParse } from "$ts/json";
 
 export class ArcTerminal extends Process {
   readonly CONFIG_PATH = join(UserPaths.Configuration, "ArcTerm/arcterm.conf");
@@ -45,6 +46,7 @@ export class ArcTerminal extends Process {
   daemon: UserDaemon | undefined;
   ansiEscapes = ansiEscapes;
   lastCommandErrored = false;
+  lastLine?: string;
   config: ArcTermConfiguration = DefaultArcTermConfiguration;
   configProvidedExternal = false;
   window: TerminalWindowRuntime | undefined;
@@ -111,10 +113,7 @@ export class ArcTerminal extends Process {
   async processLine(text: string | undefined) {
     if (this._disposed) return;
 
-    this.lastCommandErrored = false;
-
     if (!text) return this.readline();
-
     if ((await sha256(text)).startsWith("a9e0b55d02b87876")) {
       const url = location.href + "debug.js";
       const mod = await import(/* @vite-ignore */ url);
@@ -126,6 +125,21 @@ export class ArcTerminal extends Process {
 
       return;
     }
+
+    // SETTER: variable=value
+    if (text.match(/^[a-zA-Z0-9]+=(.*?)$/gm)) {
+      const [variable] = text.split("=");
+      const value = text.replace(`${variable}=`, "");
+      const result = this.var?.set(variable, tryJsonParse(value));
+
+      if (!result) this.lastCommandErrored = true;
+
+      this.readline();
+
+      return;
+    }
+
+    this.lastLine = text;
 
     const str = this.var?.replace(text.trim()) || "";
     const [flags, args] = this.parseFlags(str);
@@ -150,20 +164,20 @@ export class ArcTerminal extends Process {
           // BUG 68798d6957684017c3e9a085
           if (!proc) {
             this.lastCommandErrored = true;
-            return;
+          } else {
+            this.rl?.setCtrlCHandler(async () => {
+              this.rl?.println("^C");
+              if (command.allowInterrupt) await proc?.killSelf();
+            });
+
+            const result = (await proc?._main(this, flags, argv)) || 0;
+
+            if (result !== 0) this.lastCommandErrored = true;
+            else this.lastCommandErrored = false;
+            if (result <= -128) return this.rl?.dispose();
+
+            this.rl?.setCtrlCHandler(noop);
           }
-
-          this.rl?.setCtrlCHandler(async () => {
-            this.rl?.println("^C");
-            if (command.allowInterrupt) await proc?.killSelf();
-          });
-
-          const result = (await proc?._main(this, flags, argv)) || 0;
-
-          if (result !== 0) this.lastCommandErrored = true;
-          if (result <= -128) return this.rl?.dispose();
-
-          this.rl?.setCtrlCHandler(noop);
         } catch (e) {
           this.lastCommandErrored = true;
           this.handleCommandError(e as Error, command);
@@ -299,7 +313,7 @@ export class ArcTerminal extends Process {
   parseFlags(args: string): [Arguments, string] {
     if (this._disposed) return [{}, ""];
 
-    const regex = /(?: --(?<nl>[a-z\-]+)(?:="(?<vl>.*?)"|(?:=(?<vs>.*?)(?: |$))|)| -(?<ns>[a-zA-Z]))/gm; //--name=?value
+    const regex = /(?: --(?<nl>[a-z\-]+)(?:=(?<vl>.*?)(?= --|$)|))/gm; //--name=?value
     const matches: RegExpMatchArray[] = [];
 
     let match: RegExpExecArray | null;
@@ -310,14 +324,14 @@ export class ArcTerminal extends Process {
 
     const result: Arguments = {};
     const arglist = matches.map((match) => {
-      const name = match.groups?.nl || match.groups?.ns;
-      const value = match.groups?.vl || match.groups?.vs || true; // make it true if the flag has no value at all
+      const name = match.groups?.nl;
+      const value = match.groups?.vl || true; // make it true if the flag has no value at all
 
       return { name, value };
     });
 
     for (const arg of arglist) {
-      if (arg.name) result[arg.name] = arg.value;
+      if (arg.name) result[arg.name] = typeof arg.value === "string" ? tryJsonParse(arg.value) : arg.value;
     }
 
     return [result, args.replace(regex, "").split(" ").filter(Boolean).join(" ")];
