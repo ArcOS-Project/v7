@@ -1,6 +1,6 @@
 # ArcOS v7
 
-This is the main repository for the ArcOS v7 project. This code is to remain private until further notice. Do not share any code from this repository with other people. If you're reading this, that means that you have exclusive access to this code, which means you'll honour its secrecy.
+This is the main repository for the ArcOS v7 project. All of the frontend code is open for educational and viewing purposes.
 
 ## Getting started
 
