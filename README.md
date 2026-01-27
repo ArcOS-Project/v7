@@ -4,7 +4,7 @@ This is the main repository for the ArcOS v7 project. All of the frontend code i
 
 ## Getting started
 
-You'll need the latest version of [NodeJS](https://nodejs.org/), along with [Git](https://git-scm.com/). If you don't want to use the deployed ArcOS backend, you'll have to clone it yourself. For more information, go to [ReArc-Backend-v1](https://github.com/IzK-ArcOS/ReArc-Backend-v1)
+You'll need the latest version of [NodeJS](https://nodejs.org/), along with [Git](https://git-scm.com/). If you don't want to use the deployed ArcOS backend, you'll have to clone it yourself. For more information, go to [ReArc-Backend-v1](https://github.com/IzK-ArcOS/ReArc-Backend-v1) (this only applies to team members)
 
 > [!WARNING]
 > ArcOS v7 only works when using Yarn. Dependency conflicts occur if using npm, pnpm or other managers like bun.
