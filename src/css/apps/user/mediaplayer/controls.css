@@ -63,11 +63,11 @@
 
 #MediaPlayer div.media-controls,
 #MediaPlayer>div.body div.media-controls {
-  button:hover {
+  button:hover:not(:disabled) {
     background-color: var(--button-glass-bg);
   }
 
-  button:active {
+  button:active:not(:disabled) {
     background-color: var(--button-glass-active-bg);
   }
 }
