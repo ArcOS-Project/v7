@@ -1,5 +1,4 @@
 <script lang="ts">
-  import SafeModeNotice from "$lib/Daemon/SafeModeNotice.svelte";
   import { onMount } from "svelte";
   import type { MediaPlayerRuntime } from "../runtime";
 
