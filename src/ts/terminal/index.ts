@@ -417,7 +417,7 @@ export class ArcTerminal extends Process {
         const contents = await Fs.readFile(this.CONFIG_PATH);
         if (!contents) throw "";
 
-        const json = JSON.parse(arrayBufferToText(contents));
+        const json = JSON.parse(arrayBufferToText(contents)!);
         this.config = json as ArcTermConfiguration;
       } else {
         this.configProvidedExternal = false;

@@ -105,7 +105,7 @@ export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
     loadHtml: async (path: string) => {
       const htmlCode = arrayBufferToText((await Fs.readFile(join(engine.workingDirectory, path)))!);
 
-      const detected = detectJavaScript(htmlCode);
+      const detected = detectJavaScript(htmlCode!);
 
       if (detected) throw new Error(`- ${detected.join("\n- ")}`);
 

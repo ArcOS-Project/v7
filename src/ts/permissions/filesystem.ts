@@ -139,7 +139,7 @@ export class PermissionedFilesystemInteractor {
     return await Fs.direct(path);
   }
 
-  async isDirectory(path: string): Promise<false | DirectoryReadReturn | undefined> {
+  async isDirectory(path: string): Promise<boolean | DirectoryReadReturn> {
     Permissions.hasReadPermissionForPathExplicit(this.#process, path);
 
     return await Fs.isDirectory(path);

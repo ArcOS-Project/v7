@@ -1,4 +1,6 @@
 export function tryJsonParse<T = any>(input: any): T {
+  if (!input) return undefined as T;
+  
   try {
     return JSON.parse(input) as T;
   } catch {

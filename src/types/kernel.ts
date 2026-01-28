@@ -108,7 +108,7 @@ export interface FilesystemType {
   releaseLock(path: string, pid: number): Promise<void>;
   direct(path: string): Promise<string | undefined>;
   nextAvailableDriveLetter(): string | undefined;
-  isDirectory(path: string): Promise<false | DirectoryReadReturn | undefined>;
+  isDirectory(path: string): Promise<boolean | DirectoryReadReturn>;
   stat(path: string): Promise<ExtendedStat | undefined>;
   imageThumbnail(path: string, width: number, height?: number): Promise<string | undefined>;
 }
