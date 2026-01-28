@@ -15,3 +15,12 @@ export const MODES: Record<string, string> = {
   esr,
   nightly,
 };
+
+export const ALIASED_MODES: Record<string, string> = {
+  release: "ReleaseLogo",
+  development: "DevelopmentLogo",
+  unstable: "UnstableLogo",
+  rc: "RcLogo",
+  esr: "EsrLogo",
+  nightly: "NightlyLogo",
+};

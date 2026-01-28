@@ -1,12 +1,14 @@
 import { ApplicationStorage } from "$ts/apps/storage";
+import { Fs } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
-import { arrayToText, textToBlob } from "$ts/util/convert";
+import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { ExpandedFileAssociationInfo, FileAssociationConfig } from "$types/assoc";
 import type { Service } from "$types/service";
+import { Daemon } from "../daemon";
 import { UserPaths } from "../store";
 import { DefaultFileDefinitions } from "./store";
 
@@ -25,7 +27,7 @@ export class FileAssocService extends BaseService {
   async start() {
     await this.loadConfiguration();
 
-    this.host.daemon.assoc = this;
+    Daemon!.assoc = this;
   }
 
   //#endregion
@@ -34,9 +36,9 @@ export class FileAssocService extends BaseService {
     if (this._disposed) return;
 
     this.Log("Loading configuration");
-    const contents = await this.fs.readFile(this.CONFIG_PATH);
+    const contents = await Fs.readFile(this.CONFIG_PATH);
 
-    const json = contents ? tryJsonParse<FileAssociationConfig>(arrayToText(contents)) : undefined;
+    const json = contents ? tryJsonParse<FileAssociationConfig>(arrayBufferToText(contents)) : undefined;
 
     if (!json || typeof json === "string") return await this.writeConfiguration(this.defaultFileAssociations());
 
@@ -47,7 +49,7 @@ export class FileAssocService extends BaseService {
     if (this._disposed) return configuration;
     this.Log("Writing configuration");
 
-    await this.fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(configuration, null, 2)));
+    await Fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(configuration, null, 2)));
 
     this.Configuration.set(configuration);
 
@@ -83,8 +85,8 @@ export class FileAssocService extends BaseService {
     }
 
     // handlers
-    for (const handlerId in this.host.daemon.fileHandlers) {
-      const handler = this.host.daemon.fileHandlers[handlerId];
+    for (const handlerId in Daemon!.files!.fileHandlers) {
+      const handler = Daemon!.files!.fileHandlers[handlerId];
 
       if (handler.opens.extensions) result.associations.handlers[handlerId] = handler.opens.extensions;
     }
@@ -110,7 +112,7 @@ export class FileAssocService extends BaseService {
     return {
       extension: extension,
       friendlyName: definition?.friendlyName || "Unknown",
-      icon: this.host.daemon.getIconCached(definition?.icon || "DefaultMimeIcon"),
+      icon: Daemon!.icons!.getIconCached(definition?.icon || "DefaultMimeIcon"),
       handledBy: {
         app: storage?.getAppSynchronous(
           Object.entries(associations.apps)
@@ -118,7 +120,7 @@ export class FileAssocService extends BaseService {
             .map(([a]) => a)[0]
         ),
         handler:
-          this.host.daemon.fileHandlers[
+          Daemon?.files!.fileHandlers[
             Object.entries(associations.handlers)
               .filter(([_, e]) => e.includes(extension.toLowerCase()) || e.includes(filename))
               .map(([h]) => h)[0]
@@ -138,7 +140,7 @@ export class FileAssocService extends BaseService {
     if (!associations || !definitions) return "DefaultMimeIcon";
     const definition = definitions[extension] || definitions[filename];
 
-    return definition.icon;
+    return definition?.icon || "DefaultMimeIcon";
   }
 
   getConfiguration() {

@@ -1,17 +1,23 @@
 import type { PublicUserInfo } from "./user";
 
 export interface ArcPackage {
+  _id?: string;
   name: string;
   author: string;
   version: string;
   description: string;
-  installLocation: `U:/Applications/${string}`;
+  installLocation:
+    | `U:/Applications/${string}` // type === "app"
+    | `U:/System/Libraries/${string}`; // type === "library"
   appId: string;
   store?: {
     image?: string;
     screenshots?: string[];
     banner?: string;
+    category?: string;
   };
+  dependencies?: string[];
+  type: "app" | "library";
 }
 
 export interface StoreItem {
@@ -48,6 +54,7 @@ export interface PartialStoreItem {
     image?: string;
     screenshots?: string[];
     banner?: string;
+    category?: string;
   };
   description: string;
   blocked: boolean;

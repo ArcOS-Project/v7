@@ -1,3 +1,4 @@
+import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 
@@ -16,10 +17,8 @@ export class TestCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal): Promise<number> {
-    const result = await term.rl?.read("[sudo] Password for izkuipers: ", true);
-
-    term.Info(`${result}`);
+  protected async main(term: ArcTerminal, flags: Arguments): Promise<number> {
+    term.rl?.println(JSON.stringify(flags, null, 2));
 
     return 0;
   }

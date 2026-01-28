@@ -7,7 +7,7 @@ export const SystemSettings: App = {
   metadata: {
     name: "System Settings",
     author: "Izaak Kuipers",
-    version: "6.0.0",
+    version: "6.0.3",
     icon: "SettingsIcon",
     appGroup: "systemTools",
   },

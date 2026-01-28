@@ -2,6 +2,7 @@
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
+  import { Daemon } from "$ts/server/user/daemon";
   import dayjs from "dayjs";
   import type { ServiceInfoRuntime } from "./runtime";
   import Header from "./ServiceInfo/Header.svelte";
@@ -28,7 +29,7 @@
     <Segment title="Loaded at">{dayjs($service?.loadedAt).format("MMM D, HH:mm:ss")}</Segment>
     <Segment title="Changed at">{dayjs($service?.changedAt).format("MMM D, HH:mm:ss")}</Segment>
     <Segment title="PID">{$service?.pid || "-"}</Segment>
-    <Segment title="Parent PID">{process.userDaemon?.serviceHost?.pid || "-"}</Segment>
+    <Segment title="Parent PID">{Daemon?.serviceHost?.pid || "-"}</Segment>
   </InfoRow>
 </InfoBlock>
 

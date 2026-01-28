@@ -1,6 +1,6 @@
 import type { BugHuntType, ServerManagerType } from "$types/kernel";
 import { LogLevel } from "../types/logging";
-import { getKMod, Kernel } from "./env";
+import { Env, getKMod, Kernel } from "./env";
 import { KernelIsPanicked, KernelLogs, KernelPremature } from "./getters";
 import { ASCII_ART } from "./intro";
 
@@ -29,6 +29,7 @@ export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
 
   const str = HEADER.join("\n");
   const stack = reason instanceof ErrorEvent ? reason?.error?.stack : reason?.reason?.stack || reason?.reason || reason;
+  const brief = reason instanceof PromiseRejectionEvent ? reason.reason : reason.error;
 
   let text = str;
 
@@ -43,15 +44,13 @@ export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
     .reverse()
     .join("\n")}`;
 
-  if (!import.meta.env.DEV)
+  if (!import.meta.env.DEV && !Env.get("DEBUG_BUGHUNT_DISABLE"))
     bughunt?.sendReport(
       bughunt?.createReport({
-        title: !KernelPremature()
-          ? `CRASH - ${reason instanceof PromiseRejectionEvent ? reason.reason : reason.error}`
-          : `Premature kernel failure`,
+        title: !KernelPremature() ? `CRASH - ${brief}` : `Premature kernel failure`,
         body: `${stack}`.replaceAll(location.href, "./"),
       })
     );
 
-  Kernel()?.panic(text);
+  Kernel?.panic(text, brief);
 }

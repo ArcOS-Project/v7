@@ -1,5 +1,5 @@
 #QlorbApp div.osd > div {
-  position: fixed;
+  position: absolute;
 }
 #QlorbApp div.osd > div.topleft {
   top: 30px;

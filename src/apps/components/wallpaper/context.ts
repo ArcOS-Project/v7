@@ -1,4 +1,5 @@
-import { MessageBox } from "$ts/dialog";
+import { Env, Fs } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { getParentDirectory, join } from "$ts/util/fs";
 import { UUID } from "$ts/uuid";
@@ -7,20 +8,20 @@ import type { FileEntry } from "$types/fs";
 import type { WallpaperRuntime } from "./runtime";
 
 export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu {
-  const shellPid = () => +runtime.env.get("shell_pid");
+  const shellPid = () => +Env.get("shell_pid");
   return {
     "file-icon": [
       {
         caption: "Open file",
         icon: "external-link",
         action: (_, path, shortcut) => {
-          runtime.userDaemon?.openFile(path, shortcut);
+          Daemon?.files?.openFile(path, shortcut);
         },
       },
       {
         caption: "Open with...",
         action: (_, runtimePath) => {
-          runtime.userDaemon?.openWith(runtimePath);
+          Daemon?.files?.openWith(runtimePath);
         },
       },
       { sep: true },
@@ -42,7 +43,7 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
       {
         caption: "Properties...",
         icon: "wrench",
-        action: (file: FileEntry, path: string) => runtime.spawnOverlayApp("ItemInfo", runtime.env.get("shell_pid"), path, file),
+        action: (file: FileEntry, path: string) => runtime.spawnOverlayApp("ItemInfo", Env.get("shell_pid"), path, file),
       },
     ],
     "shortcut-icon": [
@@ -50,13 +51,13 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
         caption: "Open shortcut",
         icon: "external-link",
         action: (_, path, shortcut) => {
-          runtime.userDaemon?.openFile(path, shortcut);
+          Daemon?.files?.openFile(path, shortcut);
         },
       },
       {
         caption: "Open with...",
         action: (_, path) => {
-          runtime.userDaemon?.openWith(path);
+          Daemon?.files?.openWith(path);
         },
       },
       { sep: true },
@@ -191,17 +192,17 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
       {
         caption: "Shut down",
         image: "ShutdownIcon",
-        action: () => runtime.userDaemon?.shutdown(),
+        action: () => Daemon?.power?.shutdown(),
       },
       {
         caption: "Log off",
         image: "LogoutIcon",
-        action: () => runtime.userDaemon?.logoff(),
+        action: () => Daemon?.power?.logoff(),
       },
       {
         caption: "Restart",
         image: "RestartIcon",
-        action: () => runtime.userDaemon?.restart(),
+        action: () => Daemon?.power?.restart(),
       },
       { sep: true },
       {
@@ -212,12 +213,7 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
             caption: "Shortcut...",
             icon: "arrow-up-right",
             action: () => {
-              runtime.spawnOverlayApp("ShortcutProperties", shellPid(), join(UserPaths.Desktop, `${UUID()}.arclnk`), {
-                icon: "ShortcutMimeIcon",
-                name: "New shortcut",
-                type: "new",
-                target: UserPaths.Desktop,
-              });
+              Daemon.shortcuts?.newShortcut(UserPaths.Desktop);
             },
           },
           {
@@ -248,7 +244,7 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
         caption: "Folder properties...",
         icon: "wrench",
         action: async () => {
-          const parent = await runtime.fs.readDir(getParentDirectory(UserPaths.Desktop));
+          const parent = await Fs.readDir(getParentDirectory(UserPaths.Desktop));
           const dir = parent?.dirs.filter((d) => d.name === "Desktop")[0];
 
           if (!dir) return;

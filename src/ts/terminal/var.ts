@@ -1,3 +1,5 @@
+import { getKMod } from "$ts/env";
+import type { EnvironmentType } from "$types/kernel";
 import type { StaticVariableStore, Variable, VariableStore } from "$types/terminal";
 import type { ArcTerminal } from ".";
 import { getArcTermStore } from "./var/store";
@@ -68,6 +70,14 @@ export class ArcTermVariables {
 
   replace(str: string) {
     const all = this.getAll();
+    const envVars = getKMod<EnvironmentType>("env").getAll();
+
+    for (const key in envVars) {
+      all[`$${key}`] = {
+        value: envVars[key],
+        readOnly: true,
+      };
+    }
 
     for (const key in all) {
       const value = all[key]?.value;

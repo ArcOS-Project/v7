@@ -1,8 +1,14 @@
 import type { SystemDispatchResult } from "$types/dispatch";
 import type { ConstructedWaveKernel } from "$types/kernel";
-import { LogLevel } from "$types/logging";
+import { Terminal } from "@xterm/xterm";
 import { KernelModule } from "../../module";
-import { KnownSystemDispatchers, SystemOnlyDispatches } from "./store";
+import { SystemOnlyDispatches } from "./store";
+import { DefaultColors } from "$ts/terminal/store";
+import { FitAddon } from "@xterm/addon-fit";
+import { Unicode11Addon } from "@xterm/addon-unicode11";
+import { ShortLogLevelCaptions, type LogItem } from "$types/logging";
+import { Kernel } from "$ts/env";
+import { logItemToStr } from "$ts/util";
 
 export class SystemDispatch extends KernelModule {
   public subscribers: Record<string, Record<number, (data: any) => void>> = {};
@@ -11,8 +17,6 @@ export class SystemDispatch extends KernelModule {
 
   constructor(kernel: ConstructedWaveKernel, id: string) {
     super(kernel, id);
-
-    this.Log("Creating new SystemDispatch");
   }
 
   //#endregion
@@ -26,13 +30,8 @@ export class SystemDispatch extends KernelModule {
 
     if (this.subscribers[event][id]) return this.subscribe(event, callback); // get another ID
 
-    this.Log(`Subscribing on ID ${id} to event ${event}`);
-
     if (!this.subscribers[event]) this.subscribers[event] = { [id]: callback };
     else this.subscribers[event][id] = callback;
-
-    if (!KnownSystemDispatchers.includes(event))
-      this.Log(`Subscribing to unknown event ${event} on Global Dispatch. Don't do that.`, LogLevel.warning);
 
     return id;
   }
@@ -40,15 +39,11 @@ export class SystemDispatch extends KernelModule {
   unsubscribeId(event: string, id: number) {
     this.isKmod();
 
-    this.Log(`Unsubscribing ID ${id} of event ${event}`);
-
     delete this.subscribers[event][id];
   }
 
   discardEvent(event: string) {
     this.isKmod();
-
-    this.Log(`Discarding event ${event}`);
 
     delete this.subscribers[event];
   }
@@ -56,13 +51,9 @@ export class SystemDispatch extends KernelModule {
   dispatch<T = any[]>(caller: string, data?: T, system = true): SystemDispatchResult {
     this.isKmod();
 
-    this.Log(`Dispatching ${caller}`);
-
     const callers = this.subscribers[caller];
 
     if (!system && SystemOnlyDispatches.includes(caller)) {
-      this.Log("Not allowing user to dispatch system-only event", LogLevel.error);
-
       return "err_systemOnly";
     }
 
@@ -74,9 +65,62 @@ export class SystemDispatch extends KernelModule {
       callback(data);
     }
 
-    if (!KnownSystemDispatchers.includes(caller))
-      this.Log(`Dispatching unknown event ${caller} over Global Dispatch. Don't do that.`, LogLevel.warning);
-
     return "success";
+  }
+
+  async _init(): Promise<void> {
+    const term = new Terminal({
+      allowProposedApi: true,
+      allowTransparency: false,
+      cursorStyle: "block",
+      fontSize: 12,
+      theme: {
+        brightRed: DefaultColors.red,
+        red: DefaultColors.red,
+        brightGreen: DefaultColors.green,
+        green: DefaultColors.green,
+        brightYellow: DefaultColors.yellow,
+        yellow: DefaultColors.yellow,
+        brightBlue: DefaultColors.blue,
+        blue: DefaultColors.blue,
+        brightCyan: DefaultColors.cyan,
+        cyan: DefaultColors.cyan,
+        brightMagenta: DefaultColors.magenta,
+        magenta: DefaultColors.magenta,
+      },
+      scrollback: 0,
+    });
+
+    const fitAddon = new FitAddon();
+    const unicode11Addon = new Unicode11Addon();
+
+    term.loadAddon(fitAddon);
+    term.loadAddon(unicode11Addon);
+
+    this.subscribe<[LogItem]>("kernel-log", ([data]) => {
+      if (!target?.classList?.contains("visible")) return;
+      term.write(logItemToStr(data) + "\r\n");
+    });
+
+    const target = document.querySelector<HTMLDivElement>("#kernelLog")!;
+
+    term.open(target);
+    fitAddon.fit();
+
+    new ResizeObserver(() => fitAddon.fit()).observe(target);
+
+    document.addEventListener("keydown", (e: KeyboardEvent) => {
+      if (e.shiftKey && e.altKey && e.key.toLowerCase() === "k") {
+        target.classList.toggle("visible");
+
+        if (target.classList.contains("visible")) {
+          for (const line of Kernel.Logs) {
+            term.writeln(logItemToStr(line));
+          }
+        } else {
+          term.clear();
+        }
+      }
+    });
   }
 }

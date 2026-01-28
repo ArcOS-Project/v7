@@ -1,12 +1,19 @@
 import type { FilesystemDrive } from "$ts/drives/drive";
-import { UserPaths } from "$ts/server/user/store";
+import { HiddenUserPaths, UserPathCaptions, UserPathIcons, UserPaths } from "$ts/server/user/store";
 import type { ContextMenuItem } from "$types/app";
 import type { FileManagerRuntime } from "../runtime";
 
 export function GoMenu(runtime: FileManagerRuntime): ContextMenuItem {
   return {
     caption: "Go",
-    subItems: [...folderGoItems(runtime), { sep: true }, ...driveGoItems(runtime)],
+    subItems: [
+      //
+      ...folderGoItems(runtime),
+      { sep: true },
+      userPathsGoItems(runtime),
+      { sep: true },
+      ...driveGoItems(runtime),
+    ],
   };
 }
 
@@ -26,6 +33,28 @@ function folderGoItems(runtime: FileManagerRuntime) {
   return result;
 }
 
+function userPathsGoItems(runtime: FileManagerRuntime): ContextMenuItem {
+  const result = [];
+
+  for (const id in UserPaths) {
+    if (HiddenUserPaths.includes(id)) continue;
+    
+    result.push({
+      caption: UserPathCaptions[id],
+      icon: UserPathIcons[id] || "folder",
+      action: () => {
+        runtime.navigate((UserPaths as any)[id]);
+      },
+    });
+  }
+
+  return {
+    caption: "Locations",
+    icon: "map-pin",
+    subItems: result,
+  };
+}
+
 function driveGoItems(runtime: FileManagerRuntime) {
   const result = [];
   const driveSubmenu = (drive: FilesystemDrive, id: string) => [
@@ -36,7 +65,6 @@ function driveGoItems(runtime: FileManagerRuntime) {
       },
       icon: "hard-drive",
     },
-    { sep: true },
     {
       caption: "Unmount",
       action: () => {

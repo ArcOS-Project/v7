@@ -20,8 +20,6 @@ div.shell div.taskbar {
     translate 0.3s,
     opacity 0.3s,
     margin-top 0.3s;
-  translate: 0 70px;
-  animation: arcShell_taskbar_appear 0.3s cubic-bezier(0.075, 0.82, 0.165, 1) forwards !important;
 }
 
 div.shell.docked div.taskbar.shell-colored::before {
@@ -148,11 +146,21 @@ div.shell div.taskbar div.pinned-apps > button {
 }
 
 #arcShell div.shell div.taskbar div.pinned-apps > button:hover {
-  background-color: var(--shell-component-bg);
+  background-color: var(--button-glass-hover-bg);
 }
 
 #arcShell div.shell div.taskbar div.pinned-apps > button:active {
   background-color: var(--button-glass-active-bg);
+}
+
+.theme-light #arcShell div.shell div.taskbar div.pinned-apps > button:hover {
+  background-color: var(--shell-component-bg);
+  filter: brightness(0.95);
+}
+
+.theme-light #arcShell div.shell div.taskbar div.pinned-apps > button:active {
+opacity: 0.5;
+  filter: brightness(0.9);
 }
 
 div.shell div.taskbar div.pinned-apps > button + button {
@@ -227,15 +235,6 @@ div.shell div.taskbar div.pinned-apps > button + button {
   pointer-events: none !important;
 }
 
-@keyframes arcShell_taskbar_appear {
-  0% {
-    translate: 0 70px;
-  }
-  100% {
-    translate: 0;
-  }
-}
-
 div.shell.has-fullscreen div.taskbar {
   translate: 0 70px !important;
 }
@@ -246,14 +245,11 @@ div.shell div.taskbar div.clock {
 }
 
 div.shell div.taskbar button.clock-button {
-  background-color: var(--button-glass-bg);
   height: 40px;
   display: flex;
   align-items: center;
   padding: 0 15px !important;
   border-radius: 10px;
-  outline: var(--button-glass-bg) 1px solid;
-  outline-offset: -1px;
   width: fit-content !important;
   font-size: 14px !important;
 }
@@ -264,6 +260,16 @@ div.shell div.taskbar button.clock-button:hover {
 
 div.shell div.taskbar button.clock-button:active {
   background-color: var(--button-glass-active-bg);
+  opacity: 0.5;
+}
+
+.theme-light div.shell div.taskbar button.clock-button:hover {
+  background-color: var(--shell-component-bg);
+  filter: brightness(0.95);
+}
+
+.theme-light div.shell div.taskbar button.clock-button:active {
+  background-color: var(--shell-component-bg);
   opacity: 0.5;
 }
 

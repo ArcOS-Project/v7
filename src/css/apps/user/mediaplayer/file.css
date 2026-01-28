@@ -1,6 +1,17 @@
-#MediaPlayer.fullscreen > div.body > div.container div.file {
+#MediaPlayer > div.body > div.container div.file h1 {
+  font-size: 20px;
+  display:flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#MediaPlayer.fullscreen > div.body > div.container div.file h1 {
   font-size: 26px;
-  font-weight: bold;
+}
+
+#MediaPlayer > div.body > div.container div.file p.author {
+  font-size: 16px;
+  opacity: 0.5;
 }
 
 #MediaPlayer.fullscreen > div.body > div.container div.file img {
@@ -8,11 +19,14 @@
 }
 
 #MediaPlayer div.file {
-  display: flex;
   gap: 10px;
   align-items: center;
 }
 
 #MediaPlayer div.file img {
   height: 24px;
+}
+
+#MediaPlayer.fullscreen div.file img {
+  display: none;
 }

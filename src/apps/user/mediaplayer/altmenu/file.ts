@@ -21,6 +21,13 @@ export function FileMenu(runtime: MediaPlayerRuntime): ContextMenuItem {
         },
         accelerator: "Alt+A",
       },
+      { sep: true },
+      {
+        caption: "Scan for song information...",
+        icon: "binoculars",
+        action: () => runtime.parseEntireQueue(),
+      },
+      { sep: true },
       {
         caption: "Open file location",
         icon: "folder-search",

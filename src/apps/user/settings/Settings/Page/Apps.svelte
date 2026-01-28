@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Glow } from "$ts/images/branding";
+  import { Daemon } from "$ts/server/user/daemon";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
@@ -39,7 +40,7 @@
         caption="Disable third-party apps"
         chevron
         image={process.getIconCached("ElevationIcon")}
-        onclick={() => process.userDaemon?.disableThirdParty()}
+        onclick={() => Daemon?.apps?.disableThirdParty()}
       ></Option>
     {/if}
   </Section>
@@ -50,7 +51,7 @@
       <div>
         <h1>Enable third-party apps</h1>
         <p>Click the button to allow third-party applications to run on your ArcOS account.</p>
-        <button class="suggested" onclick={() => process.userDaemon?.enableThirdParty()}>Enable Third-party</button>
+        <button class="suggested" onclick={() => Daemon?.apps?.enableThirdParty()}>Enable Third-party</button>
       </div>
     </Section>
   {/if}

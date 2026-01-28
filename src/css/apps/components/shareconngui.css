@@ -53,12 +53,14 @@
   padding: 10px;
   background-color: var(--button-bg);
   width: 100%;
-  border-radius: 10px;
+  border-radius: 15px;
   box-shadow: var(--secondary-box-shadow);
   display: flex;
   align-items: center;
   gap: 10px;
   margin-top: 20px;
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
 }
 #ShareConnGui > div.body div.actions button.joined {
   margin-right: auto;

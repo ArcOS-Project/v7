@@ -1,6 +1,7 @@
 <script lang="ts">
   import { contextProps } from "$ts/context/actions.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
+  import { Daemon } from "$ts/server/user/daemon";
   import { formatBytes, join } from "$ts/util/fs";
   import type { FileEntry } from "$types/fs";
   import type { ArcShortcut } from "$types/shortcut";
@@ -31,15 +32,15 @@
     thisPath = join(process.path(), file.name);
 
     const split = file.name.split(".");
-    const info = process.userDaemon?.assoc?.getFileAssociation(thisPath);
+    const info = Daemon?.assoc?.getFileAssociation(thisPath);
     extension = `.${split[split.length - 1]}`;
     mime = info?.friendlyName || "Unknown";
     icon = info?.icon || process.getIconCached("DefaultMimeIcon");
 
-    if (shortcut) shortcutIcon = process.getIconCached(shortcut.icon);
+    if (shortcut) shortcutIcon = await process.getIcon(shortcut.icon);
 
     if (info?.friendlyName === "Image file" && process.userPreferences().appPreferences.fileManager?.renderThumbnails)
-      thumbnail = await process.userDaemon?.getThumbnailFor(thisPath);
+      thumbnail = await Daemon?.files?.getThumbnailFor(thisPath);
   });
 
   function onclick(e: MouseEvent) {
@@ -64,7 +65,7 @@
       return;
     }
 
-    process.userDaemon?.openFile(thisPath, shortcut);
+    Daemon?.files?.openFile(thisPath, shortcut);
   }
 </script>
 

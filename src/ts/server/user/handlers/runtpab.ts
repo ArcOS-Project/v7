@@ -1,5 +1,6 @@
 import { MessageBox } from "$ts/dialog";
-import { arrayToBlob } from "$ts/util/convert";
+import { Env, Fs } from "$ts/env";
+import { arrayBufferToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
 import { UUID } from "$ts/uuid";
 import type { FileHandler } from "$types/fs";
@@ -15,17 +16,17 @@ const runTpaBundle: (d: UserDaemon) => FileHandler = (daemon) => ({
   name: "Run TPA package",
   description: "Opens this file as a package",
   handle: async (path: string) => {
-    const prog = await daemon.FileProgress(
+    const prog = await daemon.files!.FileProgress(
       {
         type: "size",
         icon: "ArcAppMimeIcon",
         caption: "Reading TPA archive",
         subtitle: path,
       },
-      +daemon.env.get("shell_pid")
+      +Env.get("shell_pid")
     );
 
-    const content = await daemon.fs.readFile(path, (progress) => {
+    const content = await Fs.readFile(path, (progress) => {
       prog.show();
       prog.setMax(progress.max);
       prog.setDone(progress.value);
@@ -46,18 +47,18 @@ const runTpaBundle: (d: UserDaemon) => FileHandler = (daemon) => ({
           buttons: [{ caption: "Okay", action: () => {} }],
           image: "ErrorIcon",
         },
-        +daemon.env.get("shell_pid"),
+        +Env.get("shell_pid"),
         true
       );
 
       return;
     }
 
-    await daemon.fs.createDirectory("T:/PkgTemp");
+    await Fs.createDirectory("T:/PkgTemp");
 
     const extractPath = `T:/PkgTemp/${UUID()}`;
 
-    daemon.fs.createDirectory(extractPath);
+    Fs.createDirectory(extractPath);
 
     // First, create all directories
     const sortedPaths = Object.keys(buffer.files).sort((p) => (buffer.files[p].dir ? -1 : 0));
@@ -66,7 +67,7 @@ const runTpaBundle: (d: UserDaemon) => FileHandler = (daemon) => ({
       const item = buffer.files[path];
       const target = join(extractPath, path);
       if (item.dir) {
-        await daemon.fs.createDirectory(target);
+        await Fs.createDirectory(target);
       }
     }
 
@@ -75,11 +76,11 @@ const runTpaBundle: (d: UserDaemon) => FileHandler = (daemon) => ({
       const item = buffer.files[path];
       const target = join(extractPath, path);
       if (!item.dir) {
-        await daemon.fs.writeFile(target, arrayToBlob(await item.async("arraybuffer"), fromExtension(path)));
+        await Fs.writeFile(target, arrayBufferToBlob(await item.async("arraybuffer"), fromExtension(path)));
       }
     }
 
-    await daemon.openFile(join(extractPath, "_package.tpa"));
+    await daemon.files!.openFile(join(extractPath, "_package.tpa"));
   },
   isHandler: true,
 });

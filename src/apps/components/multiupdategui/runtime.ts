@@ -1,5 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { DistributionServiceProcess } from "$ts/distrib";
+import { SysDispatch } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -26,7 +28,7 @@ export class MultiUpdateGuiRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData, updates: UpdateInfo[]) {
     super(pid, parentPid, app);
 
-    this.distrib = this.userDaemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
+    this.distrib = Daemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
     this.updates = Array.isArray(updates) ? updates : [];
 
     this.setSource(__SOURCE__);
@@ -59,7 +61,7 @@ export class MultiUpdateGuiRuntime extends AppProcess {
   }
 
   async onClose(): Promise<boolean> {
-    this.systemDispatch.dispatch("mugui-done");
+    SysDispatch.dispatch("mugui-done");
 
     return true;
   }
@@ -86,7 +88,7 @@ export class MultiUpdateGuiRuntime extends AppProcess {
   async go() {
     this.working.set(true);
 
-    const elevated = await this.userDaemon!.manuallyElevate({
+    const elevated = await Daemon!.elevation!.manuallyElevate({
       what: `ArcOS needs your permission to update ${this.updates.length} ${Plural("app", this.updates.length)}.`,
       title: this.app.data.metadata.name,
       description: this.app.data.metadata.author,
@@ -102,7 +104,7 @@ export class MultiUpdateGuiRuntime extends AppProcess {
     for (const update of this.updates) {
       this.currentPackage.set(update.pkg);
       const id = update.pkg.pkg.appId;
-      const installer = await this.distrib.updatePackage(update.pkg._id, true, (progress) => {
+      const installer = await this.distrib.updateStoreItem(update.pkg._id, true, (progress) => {
         this.updatePackageStatus(id, { max: progress.max, done: progress.value, state: "downloading" });
       });
 
@@ -111,7 +113,7 @@ export class MultiUpdateGuiRuntime extends AppProcess {
         continue;
       }
 
-      await this.distrib!.removeFromInstalled(update.pkg._id);
+      await this.distrib!.removeStoreItemFromInstalled(update.pkg._id);
 
       installer.TOTAL_COUNT.subscribe((v) => this.updatePackageStatus(id, { max: v }));
       installer.COUNT.subscribe((v) => this.updatePackageStatus(id, { done: v }));
@@ -127,7 +129,7 @@ export class MultiUpdateGuiRuntime extends AppProcess {
 
       this.updatePackageStatus(id, { state: "working" });
 
-      const result = await installer.go();
+      const result = await installer.__go();
 
       if (!result) {
         this.packageFailed(id);

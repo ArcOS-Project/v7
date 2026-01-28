@@ -1,15 +1,17 @@
 import type { FileProgressMutator } from "$apps/components/fsprogress/types";
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { Fs } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { MessagingInterface } from "$ts/server/messaging";
+import { Daemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import { sortByKey } from "$ts/util";
-import { arrayToBlob, arrayToText, textToBlob } from "$ts/util/convert";
+import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
-import type { ExpandedMessage, MessageAttachment, PartialMessage } from "$types/messaging";
+import type { ExpandedMessage, MessageAttachment } from "$types/messaging";
 import type { PublicUserInfo } from "$types/user";
 import dayjs from "dayjs";
 import Fuse from "fuse.js";
@@ -20,8 +22,8 @@ export class MessagingAppRuntime extends AppProcess {
   service: MessagingInterface;
   page = Store<MessagingPage | undefined>();
   pageId = Store<string | undefined>();
-  buffer = Store<PartialMessage[]>([]);
-  correlated = Store<PartialMessage[][]>([]);
+  buffer = Store<ExpandedMessage[]>([]);
+  correlated = Store<ExpandedMessage[][]>([]);
   loading = Store<boolean>(false);
   refreshing = Store<boolean>(true);
   errored = Store<boolean>(false);
@@ -38,7 +40,7 @@ export class MessagingAppRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData, pageOrMessagePath = "inbox", messageId?: string) {
     super(pid, parentPid, app);
 
-    this.service = this.userDaemon?.serviceHost?.getService<MessagingInterface>("MessagingService")!;
+    this.service = Daemon?.serviceHost?.getService<MessagingInterface>("MessagingService")!;
 
     const path = pageOrMessagePath.includes(":/") && pageOrMessagePath.endsWith(".msg") ? pageOrMessagePath : undefined;
 
@@ -66,14 +68,15 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   //#endregion
+  //#region GETTERS
 
   async getInbox() {
     if (this.messageWindow) return [];
 
-    const received = await this.service.getReceivedMessages();
+    const inbox = await this.service.getInboxListing();
     const archived = this.getArchiveState();
 
-    return received.filter((m) => !archived.includes(m._id));
+    return inbox.filter((m) => !archived.includes(m._id));
   }
 
   async getSent() {
@@ -94,6 +97,168 @@ export class MessagingAppRuntime extends AppProcess {
 
     return [...sent.filter((m) => archived.includes(m._id)), ...received.filter((m) => archived.includes(m._id))];
   }
+
+  async readMessage(messageId: string, force = false) {
+    if (this.message()?._id === messageId && !force) return;
+
+    this.messageNotFound.set(false);
+    this.loading.set(true);
+
+    const message = await this.service.readMessage(messageId);
+    if (!message) this.messageNotFound.set(true);
+
+    this.message.set(message);
+    this.loading.set(false);
+
+    if (this.messageWindow && message)
+      this.windowTitle.set(`${message.title} from ${message.author?.displayName || message.author?.username || "unknown user"}`);
+  }
+
+  async userInfo(userId: string): Promise<PublicUserInfo | undefined> {
+    if (this.userInfoCache[userId]) return this.userInfoCache[userId];
+
+    const info = await Daemon?.account?.getPublicUserInfoOf(userId);
+    if (!info) return undefined;
+
+    this.userInfoCache[userId] = info;
+
+    return info;
+  }
+
+  async readMessageFromFile(path: string) {
+    this.messageFromFile = true;
+
+    try {
+      const contents = await Fs.readFile(path);
+      if (!contents) return this.closeWindow();
+
+      const json = tryJsonParse(arrayBufferToText(contents));
+      if (typeof json === "string") return this.closeWindow();
+
+      this.message.set(json as ExpandedMessage);
+      this.windowTitle.set(path);
+    } catch {}
+  }
+
+  //#endregion
+  //#region ACTIONS
+
+  async deleteMessage(id: string) {
+    MessageBox(
+      {
+        title: "Delete message?",
+        message: "Are you sure you want to delete this message? This cannot be undone.",
+        buttons: [
+          { caption: "Cancel", action: () => {} },
+          {
+            caption: "Delete",
+            action: async () => {
+              await this.service.deleteMessage(id);
+              this.message.set(undefined);
+              if (this.messageWindow) this.closeWindow();
+            },
+            suggested: true,
+          },
+        ],
+      },
+      this.pid,
+      true
+    );
+  }
+
+  compose() {
+    this.spawnOverlayApp("MessageComposer", this.pid);
+  }
+
+  replyTo(message: ExpandedMessage) {
+    this.spawnOverlayApp(
+      "MessageComposer",
+      this.pid,
+      {
+        title: message.title.startsWith("Re: ") ? message.title : `Re: ${message.title}`,
+        body: "",
+        recipients: [message.author!.username],
+        attachments: [],
+      },
+      message._id
+    );
+  }
+
+  async forward(message: ExpandedMessage) {
+    const attachments: File[] = [];
+
+    const prog = await Daemon?.files?.FileProgress(
+      {
+        type: "none",
+        max: 100,
+        caption: `Reading attachments`,
+        icon: "MessagingIcon",
+        subtitle: `Just a moment...`,
+      },
+      this.pid
+    );
+
+    if (message.attachmentData) {
+      for (const attachment of message.attachmentData) {
+        const contents = await this.readAttachment(attachment, message._id, prog!);
+
+        if (!contents) continue;
+
+        attachments.push(new File([contents], attachment.filename, { type: attachment.mimeType }));
+      }
+    }
+
+    prog?.stop();
+
+    this.spawnOverlayApp("MessageComposer", this.pid, {
+      title: `Fw: ${message.title}`,
+      body: message.body,
+      recipients: [],
+      attachments,
+    });
+  }
+
+  async saveMessage() {
+    const message = this.message();
+
+    if (!message) return;
+
+    const date = dayjs(message.createdAt).format("DD MMM YYYY, HH.mm.ss");
+    const [path] = await Daemon!.files!.LoadSaveDialog({
+      title: "Choose where to save the message",
+      icon: "MessagingIcon",
+      isSave: true,
+      extensions: [".arcmsg"],
+      saveName: `${message.title} from ${
+        message.author?.displayName || message.author?.displayName || "unknown user"
+      } - ${date}.msg`,
+    });
+
+    if (!path) return;
+
+    const prog = await Daemon?.files?.FileProgress(
+      {
+        type: "size",
+        caption: `Writing message...`,
+        icon: "MessagingIcon",
+        subtitle: path,
+      },
+      this.pid
+    );
+
+    try {
+      await Fs.writeFile(path, textToBlob(JSON.stringify(message, null, 2)), (progress) => {
+        prog?.show();
+        prog?.setDone(progress.value);
+        prog?.setMax(progress.max);
+      });
+    } catch {}
+
+    await prog?.stop();
+  }
+
+  //#endregion
+  //#region ARCHIVAL
 
   getArchiveState(): string[] {
     const preferences = this.userPreferences().appPreferences.Messages;
@@ -131,6 +296,21 @@ export class MessagingAppRuntime extends AppProcess {
     this.setArchiveState(state);
   }
 
+  toggleArchived(message: ExpandedMessage) {
+    if (this.isArchived(message._id)) {
+      this.removeFromArchive(message._id);
+      this.switchPage(message.authorId === Daemon?.userInfo?._id ? "sent" : "inbox");
+    } else {
+      this.addToArchive(message._id);
+      this.switchPage("archived");
+    }
+
+    this.readMessage(message._id, true);
+  }
+
+  //#endregion
+  //#region PAGING
+
   async switchPage(id: string) {
     if (this.messageWindow) return;
     if (this.pageId() === id && !this.errored()) return;
@@ -160,8 +340,8 @@ export class MessagingAppRuntime extends AppProcess {
     this.correlated.set(this.correlateMessages(messages));
   }
 
-  correlateMessages(messages: PartialMessage[]): PartialMessage[][] {
-    const result: Record<string, PartialMessage[]> = {};
+  correlateMessages(messages: ExpandedMessage[]): ExpandedMessage[][] {
+    const result: Record<string, ExpandedMessage[]> = {};
 
     for (const message of messages) {
       result[message.correlationId] ||= [];
@@ -188,97 +368,6 @@ export class MessagingAppRuntime extends AppProcess {
       this.pid,
       true
     );
-  }
-
-  async readMessage(messageId: string, force = false) {
-    if (this.message()?._id === messageId && !force) return;
-
-    this.messageNotFound.set(false);
-    this.loading.set(true);
-
-    const message = await this.service.readMessage(messageId);
-    if (!message) this.messageNotFound.set(true);
-
-    this.message.set(message);
-    this.loading.set(false);
-
-    if (this.messageWindow && message)
-      this.windowTitle.set(`${message.title} from ${message.author?.displayName || message.author?.username || "unknown user"}`);
-  }
-
-  async userInfo(userId: string): Promise<PublicUserInfo | undefined> {
-    if (this.userInfoCache[userId]) return this.userInfoCache[userId];
-
-    const info = await this.userDaemon?.getPublicUserInfoOf(userId);
-    if (!info) return undefined;
-
-    this.userInfoCache[userId] = info;
-
-    return info;
-  }
-
-  async readAttachment(attachment: MessageAttachment, messageId: string, prog: FileProgressMutator) {
-    const path = `T:/Apps/${this.app.id}/${messageId}/${attachment.filename}`;
-
-    try {
-      const existing = await this.fs.readFile(path);
-
-      if (existing) return existing;
-
-      const contents = await this.service.readAttachment(messageId, attachment._id, (progress) => {
-        prog?.show();
-        prog?.setType("size");
-        prog?.setDone(0);
-        prog?.setMax(progress.max + 1);
-        prog?.setDone(progress.value);
-      });
-
-      return contents;
-    } catch {}
-  }
-
-  async openAttachment(attachment: MessageAttachment, messageId: string) {
-    const path = `T:/Apps/${this.app.id}/${messageId}/${attachment.filename}`;
-
-    const prog = await this.userDaemon?.FileProgress(
-      {
-        type: "size",
-        max: attachment.size,
-        caption: `Reading Attachment...`,
-        icon: "MessagingIcon",
-        subtitle: attachment.filename,
-      },
-      this.pid
-    );
-
-    const contents = await this.readAttachment(attachment, messageId, prog!);
-
-    await Sleep(300);
-    await prog?.stop();
-
-    if (!contents) {
-      const info = this.userDaemon?.assoc?.getFileAssociation(attachment.filename);
-      MessageBox(
-        {
-          title: `'${attachment.filename}' unavailable`,
-          message:
-            "The attachment you tried to open could not be found, it may have been deleted. Please ask the sender of the message to send the attachment again.",
-          image: info?.icon || this.getIconCached("DefaultMimeIcon"),
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          sound: "arcos.dialog.error",
-        },
-        this.pid,
-        true
-      );
-      return;
-    }
-
-    try {
-      await this.fs.createDirectory(getParentDirectory(path));
-      await this.fs.writeFile(path, arrayToBlob(contents, attachment.mimeType));
-    } catch {}
-
-    await this.userDaemon?.openFile(path);
   }
 
   Search(query: string) {
@@ -309,145 +398,72 @@ export class MessagingAppRuntime extends AppProcess {
     this.spawnApp(this.app.id, this.parentPid, this.pageId(), messageId);
   }
 
-  async saveMessage() {
-    const message = this.message();
+  //#endregion
+  //#region ATTACHMENTS
 
-    if (!message) return;
+  async readAttachment(attachment: MessageAttachment, messageId: string, prog: FileProgressMutator) {
+    const path = `T:/Apps/${this.app.id}/${messageId}/${attachment.filename}`;
 
-    const date = dayjs(message.createdAt).format("DD MMM YYYY, HH.mm.ss");
-    const [path] = await this.userDaemon!.LoadSaveDialog({
-      title: "Choose where to save the message",
-      icon: "MessagingIcon",
-      isSave: true,
-      extensions: [".arcmsg"],
-      saveName: `${message.title} from ${
-        message.author?.displayName || message.author?.displayName || "unknown user"
-      } - ${date}.msg`,
-    });
+    try {
+      const existing = await Fs.readFile(path);
 
-    if (!path) return;
+      if (existing) return existing;
 
-    const prog = await this.userDaemon?.FileProgress(
+      const contents = await this.service.readAttachment(messageId, attachment._id, (progress) => {
+        prog?.show();
+        prog?.setType("size");
+        prog?.setDone(0);
+        prog?.setMax(progress.max + 1);
+        prog?.setDone(progress.value);
+      });
+
+      return contents;
+    } catch {}
+  }
+
+  async openAttachment(attachment: MessageAttachment, messageId: string) {
+    const path = `T:/Apps/${this.app.id}/${messageId}/${attachment.filename}`;
+
+    const prog = await Daemon?.files?.FileProgress(
       {
         type: "size",
-        caption: `Writing message...`,
+        max: attachment.size,
+        caption: `Reading Attachment...`,
         icon: "MessagingIcon",
-        subtitle: path,
+        subtitle: attachment.filename,
       },
       this.pid
     );
 
-    try {
-      await this.fs.writeFile(path, textToBlob(JSON.stringify(message, null, 2)), (progress) => {
-        prog?.show();
-        prog?.setDone(progress.value);
-        prog?.setMax(progress.max);
-      });
-    } catch {}
+    const contents = await this.readAttachment(attachment, messageId, prog!);
 
+    await Sleep(300);
     await prog?.stop();
-  }
 
-  async readMessageFromFile(path: string) {
-    this.messageFromFile = true;
+    if (!contents) {
+      const info = Daemon?.assoc?.getFileAssociation(attachment.filename);
+      MessageBox(
+        {
+          title: `'${attachment.filename}' unavailable`,
+          message:
+            "The attachment you tried to open could not be found, it may have been deleted. Please ask the sender of the message to send the attachment again.",
+          image: info?.icon || this.getIconCached("DefaultMimeIcon"),
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          sound: "arcos.dialog.error",
+        },
+        this.pid,
+        true
+      );
+      return;
+    }
 
     try {
-      const contents = await this.fs.readFile(path);
-      if (!contents) return this.closeWindow();
-
-      const json = tryJsonParse(arrayToText(contents));
-      if (typeof json === "string") return this.closeWindow();
-
-      this.message.set(json as ExpandedMessage);
-      this.windowTitle.set(path);
+      await Fs.createDirectory(getParentDirectory(path));
+      await Fs.writeFile(path, arrayBufferToBlob(contents, attachment.mimeType));
     } catch {}
+
+    await Daemon?.files?.openFile(path);
   }
 
-  compose() {
-    this.spawnOverlayApp("MessageComposer", this.pid);
-  }
-
-  replyTo(message: ExpandedMessage) {
-    const originalDate = dayjs(message.createdAt).format("ddd, D MMM YYYY [at] HH:mm");
-    this.spawnOverlayApp(
-      "MessageComposer",
-      this.pid,
-      {
-        title: message.title.startsWith("Re: ") ? message.title : `Re: ${message.title}`,
-        body: `\n\n------\n\nOn ${originalDate}, ${
-          message.author?.displayName || message.author?.username || "unknown user"
-        } wrote:\n\n${message.body}`,
-        recipients: [message.author!.username],
-        attachments: [],
-      },
-      message._id
-    );
-  }
-
-  async forward(message: ExpandedMessage) {
-    const attachments: File[] = [];
-
-    const prog = await this.userDaemon?.FileProgress(
-      {
-        type: "none",
-        max: 100,
-        caption: `Reading attachments`,
-        icon: "MessagingIcon",
-        subtitle: `Just a moment...`,
-      },
-      this.pid
-    );
-
-    for (const attachment of message.attachments) {
-      const contents = await this.readAttachment(attachment, message._id, prog!);
-
-      if (!contents) continue;
-
-      attachments.push(new File([contents], attachment.filename, { type: attachment.mimeType }));
-    }
-
-    prog?.stop();
-
-    this.spawnOverlayApp("MessageComposer", this.pid, {
-      title: `Fw: ${message.title}`,
-      body: message.body,
-      recipients: [],
-      attachments,
-    });
-  }
-
-  toggleArchived(message: ExpandedMessage) {
-    if (this.isArchived(message._id)) {
-      this.removeFromArchive(message._id);
-      this.switchPage(message.authorId === this.userDaemon?.userInfo?._id ? "sent" : "inbox");
-    } else {
-      this.addToArchive(message._id);
-      this.switchPage("archived");
-    }
-
-    this.readMessage(message._id, true);
-  }
-
-  async deleteMessage(id: string) {
-    MessageBox(
-      {
-        title: "Delete message?",
-        message: "Are you sure you want to delete this message? This cannot be undone.",
-        buttons: [
-          { caption: "Cancel", action: () => {} },
-          {
-            caption: "Delete",
-            action: async () => {
-              await this.service.deleteMessage(id);
-              this.message.set(undefined);
-              if (this.messageWindow) this.closeWindow();
-            },
-            suggested: true,
-          },
-        ],
-      },
-      this.pid,
-      true
-    );
-  }
+  //#endregion
 }

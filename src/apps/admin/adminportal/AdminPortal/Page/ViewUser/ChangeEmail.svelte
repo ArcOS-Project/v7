@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import { Daemon } from "$ts/server/user/daemon";
   import type { ExpandedUserInfo } from "$types/user";
 
   const { process, user }: { process: AdminPortalRuntime; user: ExpandedUserInfo } = $props();
@@ -7,7 +8,7 @@
   let loading = $state<boolean>(false);
 
   async function rename() {
-    const confirm = await process.userDaemon?.Confirm(
+    const confirm = await Daemon?.helpers?.Confirm(
       "Confirm rename?",
       `Are you sure you want to change the email of '${user.username}' to '${newEmail}'?`,
       "Cancel",

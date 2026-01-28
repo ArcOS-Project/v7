@@ -1,6 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
+import { Fs } from "$ts/env";
 import { MessagingInterface } from "$ts/server/messaging";
+import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { getItemNameFromPath } from "$ts/util/fs";
@@ -33,7 +35,7 @@ export class MessageComposerRuntime extends AppProcess {
     }
     if (replyId) this.replyId = replyId;
 
-    this.service = this.userDaemon!.serviceHost!.getService<MessagingInterface>("MessagingService")!;
+    this.service = Daemon!.serviceHost!.getService<MessagingInterface>("MessagingService")!;
 
     this.setSource(__SOURCE__);
   }
@@ -46,7 +48,7 @@ export class MessageComposerRuntime extends AppProcess {
 
     this.sending.set(true);
 
-    const prog = await this.userDaemon?.FileProgress(
+    const prog = await Daemon?.files!.FileProgress(
       {
         type: "none",
         caption: "Sending message",
@@ -118,14 +120,14 @@ export class MessageComposerRuntime extends AppProcess {
 
   async addAttachment() {
     const attachments: Attachment[] = [];
-    const paths = await this.userDaemon!.LoadSaveDialog({
+    const paths = await Daemon!.files!.LoadSaveDialog({
       title: "Choose one or more files to attach",
       icon: "UploadIcon",
       startDir: UserPaths.Documents,
       multiple: true,
     });
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         max: 100,
         type: "none",
@@ -141,7 +143,7 @@ export class MessageComposerRuntime extends AppProcess {
       const mimetype = mime.getType(path);
       const filename = getItemNameFromPath(path);
       try {
-        const contents = await this.fs.readFile(path, (progress) => {
+        const contents = await Fs.readFile(path, (progress) => {
           prog.show();
           prog.updateCaption(progress.what ? `Reading ${progress.what}` : "Reading file...");
           prog.updSub(path);

@@ -1,6 +1,8 @@
 <script lang="ts">
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
   import Spinner from "$lib/Spinner.svelte";
+  import { Env } from "$ts/env";
+  import { Daemon } from "$ts/server/user/daemon";
   import { onMount, type Component } from "svelte";
   import Sidebar from "./AppStore/Sidebar.svelte";
   import type { AppStoreRuntime } from "./runtime";
@@ -53,7 +55,7 @@
 
       <button
         class="suggested"
-        onclick={() => process.userDaemon?.spawnApp("systemSettings", +process.env.get("shell_pid"), "apps")}
+        onclick={() => Daemon?.spawn?.spawnApp("systemSettings", +Env.get("shell_pid"), "apps")}
       >
         Take me there
       </button>

@@ -1,3 +1,4 @@
+@import url("./fields/range.css");
 div.window div.body input,
 div.window div.body select {
   background-color: var(--win-bg);

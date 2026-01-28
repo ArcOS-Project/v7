@@ -1,6 +1,6 @@
-import { KernelStack } from "$ts/env";
+import { Env, Stack, SysDispatch } from "$ts/env";
 import { Process } from "$ts/process/instance";
-import type { UserDaemon } from "$ts/server/user/daemon";
+import { Daemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import { TrayIconProcess } from "$ts/ui/tray/process";
 import { Store } from "$ts/writable";
@@ -9,7 +9,6 @@ import type { UserPreferencesStore } from "$types/user";
 import type { TrayIconDiscriminator, TrayIconOptions } from "../shell/types";
 
 export class TrayHostRuntime extends Process {
-  userDaemon: UserDaemon | undefined;
   userPreferences?: UserPreferencesStore;
   public trayIcons = Store<Record<TrayIconDiscriminator, TrayIconProcess>>({});
 
@@ -24,12 +23,11 @@ export class TrayHostRuntime extends Process {
   }
 
   async start() {
-    if (this.env.get("trayhost_pid") && KernelStack().getProcess(+this.env.get("trayhost_pid"))) return false;
+    if (Env.get("trayhost_pid") && Stack.getProcess(+Env.get("trayhost_pid"))) return false;
 
-    this.userDaemon = KernelStack().getProcess<UserDaemon>(+this.env.get("userdaemon_pid"));
-    this.userPreferences = this.userDaemon!.preferences;
+    this.userPreferences = Daemon!.preferences;
 
-    this.env.set("trayhost_pid", this.pid);
+    Env.set("trayhost_pid", this.pid);
   }
 
   //#endregion
@@ -41,12 +39,12 @@ export class TrayHostRuntime extends Process {
     options: TrayIconOptions,
     process: typeof TrayIconProcess = TrayIconProcess
   ) {
-    await KernelStack().waitForAvailable();
+    await Stack.waitForAvailable();
     const trayIcons = this.trayIcons();
 
     if (trayIcons[`${pid}#${identifier}`]) return false;
 
-    const proc = await KernelStack().spawn<TrayIconProcess>(process, undefined, this.userDaemon?.userInfo?._id, pid, {
+    const proc = await Stack.spawn<TrayIconProcess>(process, undefined, Daemon?.userInfo?._id, pid, {
       ...options,
       pid,
       identifier,
@@ -57,7 +55,7 @@ export class TrayHostRuntime extends Process {
     trayIcons[`${pid}#${identifier}`] = proc;
 
     this.trayIcons.set(trayIcons);
-    this.systemDispatch.dispatch("tray-icon-create", [pid, identifier]);
+    SysDispatch.dispatch("tray-icon-create", [pid, identifier]);
 
     await Sleep(100);
 
@@ -72,12 +70,12 @@ export class TrayHostRuntime extends Process {
 
     if (!trayIcons[discriminator]) return false;
 
-    await KernelStack().kill(trayIcons[discriminator].pid);
+    await Stack.kill(trayIcons[discriminator].pid);
 
     delete trayIcons[discriminator];
 
     this.trayIcons.set(trayIcons);
-    this.systemDispatch.dispatch("tray-icon-dispose", [pid, identifier]);
+    SysDispatch.dispatch("tray-icon-dispose", [pid, identifier]);
   }
 
   disposeProcessTrayIcons(pid: number) {
@@ -90,7 +88,7 @@ export class TrayHostRuntime extends Process {
     }
 
     this.trayIcons.set(trayIcons);
-    this.systemDispatch.dispatch("tray-icon-dispose", [pid]);
+    SysDispatch.dispatch("tray-icon-dispose", [pid]);
   }
 
   //#endregion

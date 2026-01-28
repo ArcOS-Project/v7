@@ -141,7 +141,7 @@
   gap: 5px;
 }
 
-#processManager > div.body div.row div.segment.name img {
+#processManager > div.body div.row div.segment img {
   height: 16px;
 }
 
@@ -181,6 +181,11 @@
 #processManager > div.body div.row div.segment.status {
   text-align: left;
   width: 70px;
+}
+
+#processManager > div.body div.row div.segment.memory {
+  width: 80px;
+  text-align: left;
 }
 
 #processManager > div.body div.row div.segment.app-id {

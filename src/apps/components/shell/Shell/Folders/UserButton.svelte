@@ -1,5 +1,6 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
+  import { Daemon } from "$ts/server/user/daemon";
   import type { UserPreferencesStore } from "$types/user";
   import type { ShellRuntime } from "../../runtime";
 
@@ -13,7 +14,7 @@
     username: string;
   } = $props();
 
-  const { userDaemon } = process;
+  const userDaemon = Daemon;
 
   function onclick() {
     process.spawnApp("systemSettings", process.pid);
@@ -21,7 +22,7 @@
 </script>
 
 <button class="user-button" {onclick}>
-  <ProfilePicture height={24} {userDaemon} />
+  <ProfilePicture height={24} />
   <span class="name">
     {#if username}
       {$userPreferences.account.displayName || username}

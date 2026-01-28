@@ -1,8 +1,7 @@
 import { MessageBox } from "$ts/dialog";
-import { getKMod, KernelStack } from "$ts/env";
-import { KernelStateHandler } from "$ts/getters";
+import { Env, getKMod, Server, Stack, State } from "$ts/env";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
-import { SecurityMediumIcon } from "$ts/images/general";
+import { AccountIcon, SecurityMediumIcon } from "$ts/images/general";
 import { ArcLicense } from "$ts/metadata/license";
 import { LoginUser, RegisterUser } from "$ts/server/user/auth";
 import { UserDaemon } from "$ts/server/user/daemon";
@@ -33,6 +32,7 @@ export class InitialSetupRuntime extends AppProcess {
   public showMainContent = Store<boolean>(false);
   public displayName = Store<string>();
   public server: ServerManagerType;
+  #userDaemon?: UserDaemon;
 
   public readonly pages = [Welcome, License, Identity, CheckInbox, Finish, FreshDeployment];
 
@@ -41,7 +41,7 @@ export class InitialSetupRuntime extends AppProcess {
       left: {
         caption: "Cancel",
         action: async () => {
-          KernelStateHandler()?.loadState("login");
+          State?.loadState("login");
         },
         disabled: () => !!this.server?.serverInfo?.freshBackend,
       },
@@ -136,6 +136,7 @@ export class InitialSetupRuntime extends AppProcess {
       );
     };
 
+    this.#userDaemon = Stack.getProcess(Env.get("userdaemon_pid"));
     this.newUsername.subscribe(update);
     this.password.subscribe(update);
     this.confirm.subscribe(update);
@@ -158,7 +159,6 @@ export class InitialSetupRuntime extends AppProcess {
       throw new Error("InitialSetupWizardRender: Registration is disabled on this server");
     }
 
-    // TODO: some kind of intro animation
     await Sleep(1000);
 
     this.showMainContent.set(true);
@@ -221,7 +221,7 @@ export class InitialSetupRuntime extends AppProcess {
           {
             caption: "Decline",
             action: () => {
-              KernelStateHandler()?.loadState("licenseDeclined");
+              State?.loadState("licenseDeclined");
             },
           },
           {
@@ -255,6 +255,7 @@ export class InitialSetupRuntime extends AppProcess {
           image: WarningIcon,
           title: "You made a typo!",
           message: "The passwords you entered don't match. Please re-enter them, and then try again.",
+          sound: "arcos.dialog.warning",
           buttons: [
             {
               caption: "Okay",
@@ -269,6 +270,48 @@ export class InitialSetupRuntime extends AppProcess {
         true
       );
 
+      return;
+    }
+
+    const confirmed = await new Promise<boolean>((r) => {
+      const emailNotice = !Server.serverInfo?.noEmailVerify
+        ? ` Please note that you <b>need</b> a valid email address in order to activate your account. Entering a non-existent email address will prevent you from creating your account.`
+        : ``;
+
+      MessageBox(
+        {
+          title: "Confirm details",
+          message: `Are you sure that the following information is correct?${emailNotice}<br>
+<br>
+<ul>
+  <li><b>Username:</b> ${htmlspecialchars(username)}</li>
+  <li><b>Email:</b> ${htmlspecialchars(email)}</li>
+</ul>`,
+          sound: "arcos.dialog.warning",
+          buttons: [
+            {
+              caption: "Go back",
+              action: () => {
+                r(false);
+              },
+            },
+            {
+              caption: "Confirm",
+              suggested: true,
+              action: () => {
+                r(true);
+              },
+            },
+          ],
+          image: AccountIcon,
+        },
+        this.pid,
+        true
+      );
+    });
+
+    if (!confirmed) {
+      this.actionsDisabled.set(false);
       return;
     }
 
@@ -298,7 +341,7 @@ export class InitialSetupRuntime extends AppProcess {
       return;
     }
 
-    this.pageNumber.set(this.pageNumber() + 1);
+    this.pageNumber.set(this.pageNumber() + (Server.serverInfo?.noEmailVerify ? 2 : 1));
   }
 
   async checkAccountActivation() {
@@ -321,7 +364,8 @@ export class InitialSetupRuntime extends AppProcess {
               suggested: true,
             },
           ],
-          image: WarningIcon,
+          sound: "arcos.dialog.error",
+          image: ErrorIcon,
         },
         this.pid,
         true
@@ -329,19 +373,19 @@ export class InitialSetupRuntime extends AppProcess {
       return;
     }
 
-    this.userDaemon = await KernelStack().spawn(
+    this.#userDaemon = await Stack.spawn(
       UserDaemon,
       undefined,
-      this.userDaemon?.userInfo?._id,
+      this.#userDaemon?.userInfo?._id,
       this.pid,
       token,
       this.newUsername()
     );
 
-    await this.userDaemon?.getUserInfo();
-    await this.userDaemon?.startPreferencesSync();
-    await this.userDaemon?.startFilesystemSupplier();
-    this.userDaemon?.preferences.update((v) => {
+    await this.#userDaemon?.account?.getUserInfo();
+    await this.#userDaemon?.init?.startPreferencesSync();
+    await this.#userDaemon?.init?.startFilesystemSupplier();
+    this.#userDaemon?.preferences.update((v) => {
       v.account.displayName = this.displayName();
 
       return v;

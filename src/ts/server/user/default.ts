@@ -19,6 +19,7 @@ export const DefaultUserPreferences: UserPreferences = {
       clockDate: false,
       clockSecs: false,
       batteryPercentage: false,
+      openedAppsPerWorkspace: false,
     },
     actionCenter: {
       weatherLocation: {
@@ -34,6 +35,7 @@ export const DefaultUserPreferences: UserPreferences = {
     },
     start: {
       noGroups: false,
+      actions: [],
     },
     visuals: {
       noAnimations: false,
@@ -43,6 +45,7 @@ export const DefaultUserPreferences: UserPreferences = {
       noGlass: false,
       trafficLights: false,
       blurRadius: 10,
+      hideAltmenus: false,
     },
     customStyle: {
       enabled: false,
@@ -56,7 +59,7 @@ export const DefaultUserPreferences: UserPreferences = {
     cacheFilesystem: true,
     showHiddenApps: false,
     showThirdPartyApps: true,
-    excludeShortcuts: true
+    excludeShortcuts: true,
   },
   security: {
     lockdown: false,
@@ -67,6 +70,9 @@ export const DefaultUserPreferences: UserPreferences = {
   },
   appPreferences: {
     experiments: {},
+    fileManager: {
+      renderThumbnails: true,
+    },
   },
   account: {
     profilePicture: 3,

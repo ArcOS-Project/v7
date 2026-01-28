@@ -22,7 +22,7 @@
     {#if loading}
       <Spinner height={32} />
     {:else if report}
-      <ViewBugReport {process} data={{ report }} />
+      <ViewBugReport {process} data={{ report, quickView }} />
     {:else}
       404
     {/if}

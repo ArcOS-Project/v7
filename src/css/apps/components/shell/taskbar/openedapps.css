@@ -117,7 +117,6 @@ div.shell div.taskbar div.opened-apps button.active img.backdrop {
   background-color: var(--button-glass-bg);
 }
 
-.theme-light #arcShell div.shell div.taskbar div.opened-apps button:not(.active),
-.theme-light #arcShell div.shell div.taskbar button.start-button:not(.active) {
+.theme-light #arcShell div.shell div.taskbar div.opened-apps button:not(.active) {
   opacity: 0.7;
 }

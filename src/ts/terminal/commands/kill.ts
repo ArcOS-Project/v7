@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
-import { KernelStack } from "$ts/env";
+import { Stack } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
+import { ProcessKillResultCaptions } from "$ts/process/store";
 import { ElevationLevel } from "$types/elevation";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";
@@ -22,9 +23,8 @@ export class KillCommand extends TerminalProcess {
   //#endregion
 
   protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
-    const force = flags.force || flags.f;
     const pid = tryJsonParse<number>(argv[0]) as number;
-    const process = KernelStack().getProcess(pid);
+    const process = Stack.getProcess(pid);
 
     if (!pid) {
       term.Error("Missing process ID.");
@@ -36,28 +36,15 @@ export class KillCommand extends TerminalProcess {
       return 1;
     }
 
-    const elevated = await term.elevate({
-      what: "ArcOS needs your permission to kill a process",
-      image: "",
-      title: process.name,
-      description: process instanceof AppProcess ? "Application" : "Process",
-      level: ElevationLevel.high,
-    });
-
-    if (!elevated) return 1;
-
-    if (force) {
-      const select = new SelectionList(term.term, ["Yes", "No"], "Force flag specified. Are you sure?");
-
-      await select.show();
-
-      if (select.selectedIndex !== 0) return 1;
+    if (!this.HAS_SUDO && process._criticalProcess) {
+      term.Error("Can't kill a critical process without sudo");
+      return 1;
     }
 
-    const result = await KernelStack().kill(process.pid, !!force);
+    const result = await Stack.kill(process.pid, !!this.HAS_SUDO);
 
     if (result !== "success") {
-      term.Error(result);
+      term.Error(ProcessKillResultCaptions[result]);
       return 1;
     }
 

@@ -2,6 +2,7 @@
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { MessageBox } from "$ts/dialog";
+  import { Daemon } from "$ts/server/user/daemon";
   import { Sleep } from "$ts/sleep";
   import type { ExpandedToken } from "$types/admin";
   import dayjs from "dayjs";
@@ -25,7 +26,7 @@
             caption: "Log In As",
             suggested: true,
             action: async () => {
-              await process.userDaemon?.logoff();
+              await Daemon?.power?.logoff();
               await Sleep(3000);
               const cookieOptions = {
                 expires: 14,
@@ -33,8 +34,8 @@
               };
               Cookies.set("arcToken", token.value, cookieOptions);
               Cookies.set("arcUsername", token.user?.username!, cookieOptions);
-              process.userDaemon!._disposed = false;
-              await process.userDaemon?.restart();
+              Daemon!.STATE = "running";
+              await Daemon?.power?.restart();
             },
           },
         ],

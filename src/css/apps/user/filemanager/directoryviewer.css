@@ -1,5 +1,6 @@
 @import url("./directoryviewer/grid.css");
 @import url("./directoryviewer/thumbnail.css");
+@import url("./directoryviewer/compact.css");
 
 #fileManager div.directory-viewer button div.segment {
   text-align: left;
@@ -122,19 +123,6 @@
   margin-left: -1px;
 }
 
-#fileManager div.directory-viewer.compact {
-  gap: 2px;
-}
-
-#fileManager div.directory-viewer.compact button {
-  gap: 5px;
-}
-
-#fileManager div.directory-viewer.compact button div.segment.icon,
-#fileManager div.directory-viewer.compact button div.segment.icon img {
-  width: 16px;
-  height: 16px;
-}
 
 #fileManager div.directory-viewer.grid button div.segment.icon span {
   font-size: 8px !important;
@@ -182,6 +170,7 @@
   z-index: 100000;
   padding-top: 15px;
   padding-bottom: 5px;
+  border-radius: 0;
 }
 
 #fileManager div.directory-viewer.loading {

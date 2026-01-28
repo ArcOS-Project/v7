@@ -14,7 +14,6 @@ export const ArcOSApp: App = RegisteredProcess({
     icon: ReleaseLogo,
   },
   assets: {
-    // We need something, so might as well use the init
     runtime: Process,
   },
   id: "ArcOS", // Note: might confict with older versions of NikN_ArcOS

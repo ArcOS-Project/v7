@@ -1,10 +1,11 @@
 import { FilesystemDrive } from "$ts/drives/drive";
-import { getKMod } from "$ts/env";
+import { getKMod, Server } from "$ts/env";
 import { toForm } from "$ts/form";
 import { ArcBuild } from "$ts/metadata/build";
 import { Backend } from "$ts/server/axios";
+import { Daemon } from "$ts/server/user/daemon";
 import { authcode } from "$ts/util";
-import { arrayToBlob } from "$ts/util/convert";
+import { arrayBufferToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, join } from "$ts/util/fs";
 import type {
   DirectoryReadReturn,
@@ -18,7 +19,6 @@ import type {
 import type { EnvironmentType } from "$types/kernel";
 
 export class ServerDrive extends FilesystemDrive {
-  private token = "";
   private isNightly = false;
   override label = "Your Drive";
   override FIXED = true;
@@ -40,17 +40,16 @@ export class ServerDrive extends FilesystemDrive {
     stat: true,
   };
 
-  constructor(uuid: string, letter: string, token: string) {
+  constructor(uuid: string, letter: string) {
     super(uuid, letter);
 
-    this.token = token;
     this.isNightly = !!getKMod<EnvironmentType>("env").get(`NIGHTLY_WHODIS_${ArcBuild()}`);
   }
 
   async readDir(path: string = ""): Promise<DirectoryReadReturn | undefined> {
     try {
       const response = await Backend.get<DirectoryReadReturn>(path ? `/fs/dir/${path}` : `/fs/dir`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.data;
@@ -70,7 +69,7 @@ export class ServerDrive extends FilesystemDrive {
       const response = await Backend.post<DirectoryReadReturn>(
         `/fs/dir/${path}`,
         {},
-        { headers: { Authorization: `Bearer ${this.token}` } }
+        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
       );
 
       return response.status === 200;
@@ -84,7 +83,7 @@ export class ServerDrive extends FilesystemDrive {
 
     try {
       const response = await Backend.get(`/fs/file/${path}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
         responseType: "arraybuffer",
         onDownloadProgress: (progress) => {
           onProgress({
@@ -110,7 +109,7 @@ export class ServerDrive extends FilesystemDrive {
 
     try {
       const response = await Backend.post(`/fs/file/${path}`, blob, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
         onUploadProgress: (progress) => {
           onProgress({
             max: progress.total || 0,
@@ -129,7 +128,7 @@ export class ServerDrive extends FilesystemDrive {
   async tree(path: string = ""): Promise<RecursiveDirectoryReadReturn | undefined> {
     try {
       const response = await Backend.get(path ? `/fs/tree/${path}` : `/fs/tree`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.data;
@@ -154,7 +153,7 @@ export class ServerDrive extends FilesystemDrive {
           destination: destination.endsWith(sourceFilename) ? destination : join(destination, sourceFilename),
         }),
         {
-          headers: { Authorization: `Bearer ${this.token}` },
+          headers: { Authorization: `Bearer ${Daemon!.token}` },
         }
       );
 
@@ -180,7 +179,7 @@ export class ServerDrive extends FilesystemDrive {
           destination,
         }),
         {
-          headers: { Authorization: `Bearer ${this.token}` },
+          headers: { Authorization: `Bearer ${Daemon!.token}` },
         }
       );
 
@@ -201,7 +200,7 @@ export class ServerDrive extends FilesystemDrive {
 
     try {
       const response = await Backend.delete(`/fs/rm/${path}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -213,7 +212,7 @@ export class ServerDrive extends FilesystemDrive {
   async quota(): Promise<UserQuota> {
     try {
       const response = await Backend.get("/fs/quota", {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.data as UserQuota;
@@ -229,7 +228,7 @@ export class ServerDrive extends FilesystemDrive {
 
   async direct(path: string): Promise<string | undefined> {
     try {
-      const response = await Backend.post(`/fs/accessors/${path}`, {}, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.post(`/fs/accessors/${path}`, {}, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       const data = response.data as FsAccess;
 
@@ -242,7 +241,7 @@ export class ServerDrive extends FilesystemDrive {
   async bulk<T = any>(path: string, extension: string): Promise<Record<string, T>> {
     try {
       const response = await Backend.get(`/fs/bulk/${extension}/${path}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       if (response.status !== 200) return {};
@@ -257,18 +256,14 @@ export class ServerDrive extends FilesystemDrive {
 
   async stat(path: string): Promise<ExtendedStat | undefined> {
     try {
-      const response = await Backend.get(`/fs/stat/${path}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/fs/stat/${path}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
       const data = response.data as ExtendedStat;
 
       if (data.modifiers?.createdBy?.user) {
-        data.modifiers.createdBy.user.profilePicture = `${import.meta.env.DW_SERVER_URL}${
-          data.modifiers.createdBy.user.profilePicture
-        }`;
+        data.modifiers.createdBy.user.profilePicture = `${Server.url}${data.modifiers.createdBy.user.profilePicture}`;
       }
       if (data.modifiers?.lastWrite?.user) {
-        data.modifiers.lastWrite.user.profilePicture = `${import.meta.env.DW_SERVER_URL}${
-          data.modifiers.lastWrite.user.profilePicture
-        }`;
+        data.modifiers.lastWrite.user.profilePicture = `${Server.url}${data.modifiers.lastWrite.user.profilePicture}`;
       }
 
       return data as ExtendedStat;
@@ -280,13 +275,13 @@ export class ServerDrive extends FilesystemDrive {
   async imageThumbnail(path: string, width: number, height?: number): Promise<string | undefined> {
     try {
       const response = await Backend.get(`/fs/thumbnail/${width}x${height ?? width}/${path}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
         responseType: "arraybuffer",
       });
 
       if (response.status !== 200) return undefined;
 
-      const blob = arrayToBlob(response.data, response.headers["Content-Type"]?.toString());
+      const blob = arrayBufferToBlob(response.data, response.headers["Content-Type"]?.toString());
       const url = URL.createObjectURL(blob);
 
       return url;

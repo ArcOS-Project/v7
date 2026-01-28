@@ -3,7 +3,7 @@
 
   const { process }: { process: AppInstallerRuntime } = $props();
   const { completed, failReason, installing } = process.progress!;
-  const { metadata } = process;
+  const { metadata, isLibrary } = process;
 </script>
 
 <div class="header">
@@ -11,9 +11,17 @@
   <div>
     <h1>
       {#if $completed}
-        Package installed!
+        {#if isLibrary}
+          Library installed!
+        {:else}
+          Package installed!
+        {/if}
       {:else if $installing}
-        Installing package...
+        {#if isLibrary}
+          Installing library...
+        {:else}
+          Installing package...
+        {/if}
       {:else if $failReason}
         Installation failed
       {:else}
@@ -22,7 +30,11 @@
     </h1>
     <p>
       {#if $completed}
-        Click <b>Open now</b> to launch the app
+        {#if isLibrary}
+          Operation completed successfully.
+        {:else}
+          Click <b>Open now</b> to launch the app
+        {/if}
       {:else if $installing}
         {metadata?.name} by {metadata?.author}
       {:else if $failReason}

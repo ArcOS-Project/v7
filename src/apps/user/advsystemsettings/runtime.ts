@@ -9,6 +9,7 @@ import DispatchClients from "./AdvancedSystemSettings/DispatchClients.svelte";
 import Main from "./AdvancedSystemSettings/Main.svelte";
 import Recycling from "./AdvancedSystemSettings/Recycling.svelte";
 import Startup from "./AdvancedSystemSettings/Startup.svelte";
+import Migrations from "./AdvancedSystemSettings/Migrations.svelte";
 
 export class AdvSysSetRuntime extends AppProcess {
   public currentTab = Store<string>("Main");
@@ -17,6 +18,7 @@ export class AdvSysSetRuntime extends AppProcess {
     Recycling: Recycling as any,
     Login: Startup as any,
     "Dispatch Clients": DispatchClients as any,
+    Migrations: Migrations as any,
   };
   public preferencesBuffer = Store<UserPreferences>();
   syncInitialized = false;
@@ -36,7 +38,7 @@ export class AdvSysSetRuntime extends AppProcess {
     this.setSource(__SOURCE__);
   }
 
-  async start() {
+  async render() {
     if (await this.closeIfSecondInstance()) return false;
 
     this.preferencesBuffer.set(this.userPreferences());

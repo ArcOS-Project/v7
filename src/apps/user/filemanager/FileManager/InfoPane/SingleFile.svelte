@@ -45,13 +45,13 @@
     {#if modifiers?.createdBy?.user}
       <div class="modifier">
         <h1>Created By</h1>
-        <UserLink user={modifiers.createdBy.user} />
+        <UserLink user={modifiers?.createdBy?.user} />
       </div>
     {/if}
     {#if modifiers?.lastWrite?.user}
       <div class="modifier">
         <h1>Last Modified By</h1>
-        <UserLink user={modifiers.lastWrite.user} />
+        <UserLink user={modifiers?.lastWrite?.user} />
       </div>
     {/if}
   </div>

@@ -2,8 +2,7 @@ import { FirstRunApp } from "$apps/components/firstrun/FirstRun";
 import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/TotpAuthGui";
 import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
-import { getKMod, KernelStack } from "$ts/env";
-import { KernelStateHandler } from "$ts/getters";
+import { Env, getKMod, SoundBus, Stack, State, SysDispatch } from "$ts/env";
 import { ProfilePictures } from "$ts/images/pfp";
 import { tryJsonParse } from "$ts/json";
 import { ProtocolServiceProcess } from "$ts/proto";
@@ -20,6 +19,7 @@ import type { ServerInfo } from "$types/server";
 import type { UserInfo } from "$types/user";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
+import { MigrationService } from "../../../ts/migrations";
 import { AppProcess } from "../../../ts/apps/process";
 import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps, PersistenceInfo } from "./types";
@@ -33,7 +33,8 @@ export class LoginAppRuntime extends AppProcess {
   public loginBackground = Store<string>(this.DEFAULT_WALLPAPER());
   public hideProfileImage = Store<boolean>(false);
   public persistence = Store<PersistenceInfo | undefined>();
-  public serverInfo: ServerInfo | undefined;
+  public serverInfo = Store<ServerInfo>();
+  public server: ServerManagerType;
   public unexpectedInvocation = false;
   public safeMode = false;
   private type = "";
@@ -45,20 +46,20 @@ export class LoginAppRuntime extends AppProcess {
 
     const server = getKMod<ServerManagerType>("server");
 
-    this.DEFAULT_WALLPAPER.set(server.serverInfo?.loginWallpaper ? `${server.url}/loginbg${authcode()}` : Wallpapers.img18.url);
+    this.unexpectedInvocation = State?.currentState !== "boot" && State?.currentState !== "initialSetup" && !props?.type;
+    this.server = server;
+    this.serverInfo.set(server.serverInfo!);
+    this.safeMode = !!(props?.safeMode || Env.get("safemode"));
+
+    if (this.safeMode) Env.set("safemode", true);
+
+    this.updateServerStuff();
+
     this.errorMessage.subscribe((v) => {
       if (!v) {
-        this.profileImage.set(ProfilePictures.def);
         this.loadPersistence();
       }
     });
-
-    this.unexpectedInvocation =
-      KernelStateHandler()?.currentState !== "boot" && KernelStateHandler()?.currentState !== "initialSetup" && !props?.type;
-    this.serverInfo = server.serverInfo;
-    this.safeMode = !!(props?.safeMode || this.env.get("safemode"));
-    if (this.safeMode) this.env.set("safemode", true);
-    this.loginBackground.set(this.DEFAULT_WALLPAPER());
 
     if (this.unexpectedInvocation) {
       this.app.data.core = false;
@@ -83,8 +84,8 @@ export class LoginAppRuntime extends AppProcess {
 
       if (!props.userDaemon) throw new Error(`LoginAppRuntimeConstructor: Irregular login type without daemon`);
 
-      this.soundBus.playSound("arcos.system.logoff");
-      props.userDaemon?.setAppRendererClasses(props.userDaemon.preferences());
+      SoundBus.playSound("arcos.system.logoff");
+      props.userDaemon?.renderer?.setAppRendererClasses(props.userDaemon.preferences());
 
       switch (props.type) {
         case "logoff":
@@ -100,33 +101,35 @@ export class LoginAppRuntime extends AppProcess {
           throw new Error(`LoginAppRuntimeConstructor: invalid login type '${props.type}'`);
       }
     } else {
-      KernelStateHandler()?.getStateLoaders()?.main?.removeAttribute("style");
+      State?.getStateLoaders()?.main?.removeAttribute("style");
     }
 
     this.setSource(__SOURCE__);
   }
 
   async start() {
-    this.env.set("loginapp_pid", this.pid);
+    Env.set("loginapp_pid", this.pid);
   }
 
   async stop() {
-    this.env.delete("loginapp_pid");
+    Env.delete("loginapp_pid");
   }
 
   async render() {
     this.getBody().classList.add("theme-dark");
 
-    if (this.serverInfo?.freshBackend) {
-      KernelStateHandler()?.loadState("initialSetup");
+    if (this.serverInfo().freshBackend) {
+      State?.loadState("initialSetup");
       return false;
     }
 
     if (!this.type && !this.unexpectedInvocation) {
+      await this.loadPersistence();
+
       const tokenResult = await this.loadToken();
 
-      if (!tokenResult && this.serverInfo?.loginNotice) {
-        this.errorMessage.set(this.serverInfo.loginNotice);
+      if (!tokenResult && this.serverInfo().loginNotice) {
+        this.errorMessage.set(this.serverInfo().loginNotice);
       }
     }
   }
@@ -148,15 +151,7 @@ export class LoginAppRuntime extends AppProcess {
 
     this.loadingStatus.set(this.getWelcomeString());
 
-    const userDaemon = await KernelStack().spawn<UserDaemon>(
-      UserDaemon,
-      undefined,
-      info?._id || "SYSTEM",
-      1,
-      token,
-      username,
-      info
-    );
+    const userDaemon = await Stack.spawn<UserDaemon>(UserDaemon, undefined, info?._id || "SYSTEM", 1, token, username, info);
 
     if (!userDaemon) {
       this.loadingStatus.set("");
@@ -171,7 +166,7 @@ export class LoginAppRuntime extends AppProcess {
 
     this.loadingStatus.set("Loading your settings");
 
-    const userInfo = await userDaemon.getUserInfo();
+    const userInfo = await userDaemon.account!.getUserInfo();
 
     if (!userInfo) {
       this.loadingStatus.set("");
@@ -180,14 +175,14 @@ export class LoginAppRuntime extends AppProcess {
       return;
     }
 
-    this.profileImage.set(`${import.meta.env.DW_SERVER_URL}/user/pfp/${userInfo._id}${authcode()}`);
+    this.profileImage.set(`${this.server.url}/user/pfp/${userInfo._id}${authcode()}`);
 
     if (userInfo.hasTotp && userInfo.restricted) {
       this.loadingStatus.set("Requesting 2FA");
       const unlocked = await this.askForTotp(token, userDaemon.userInfo?._id);
 
       if (!unlocked) {
-        await userDaemon.discontinueToken();
+        await userDaemon.account!.discontinueToken();
         await userDaemon.killSelf();
         this.resetCookies();
         this.loadingStatus.set("");
@@ -204,42 +199,40 @@ export class LoginAppRuntime extends AppProcess {
       this.loadingStatus.set(message);
     };
 
-    this.loadPersistence();
+    await this.loadPersistence();
 
     this.savePersistence(username, this.profileImage());
 
     broadcast("Starting filesystem");
-
-    await userDaemon.startFilesystemSupplier();
+    await userDaemon.init!.startFilesystemSupplier();
 
     broadcast("Starting synchronization");
-
-    await userDaemon.startPreferencesSync();
+    await userDaemon.init!.startPreferencesSync();
 
     broadcast("Reading profile customization");
 
     this.profileName.set(userDaemon.preferences().account.displayName || username);
     if (!this.safeMode) {
-      this.loginBackground.set((await userDaemon.getWallpaper(userDaemon.preferences().account.loginBackground)).url);
+      this.loginBackground.set((await userDaemon.wallpaper!.getWallpaper(userDaemon.preferences().account.loginBackground)).url);
 
       this.savePersistence(username, this.profileImage(), this.loginBackground());
     }
 
     broadcast("Notifying login activity");
-    await userDaemon.logActivity("login");
+    await userDaemon.activity!.logActivity("login");
 
     broadcast("Starting service host");
-    await userDaemon.startServiceHost(async (serviceStep) => {
-      if (serviceStep.id === "AppStorage") {
-        broadcast("Loading apps");
-        await userDaemon.initAppStorage(userDaemon.appStorage()!, (app) => broadcast(`Loaded ${app.metadata.name}`));
-      } else {
-        broadcast(`Started ${serviceStep.name}`);
+    await userDaemon.init?.startServiceHost(async (serviceStep) => {
+      switch (serviceStep.id) {
+        case "AppStorage":
+          broadcast("Loading apps");
+          await userDaemon.appreg!.initAppStorage(userDaemon.appStorage()!, (app) => broadcast(`Loaded ${app.metadata.name}`));
+          break;
+        default:
+          broadcast(`Started ${serviceStep.name}`);
+          break;
       }
     });
-
-    broadcast("Checking associations");
-    await userDaemon.updateFileAssociations();
 
     broadcast("Connecting global dispatch");
     await userDaemon.activateGlobalDispatch();
@@ -250,10 +243,19 @@ export class LoginAppRuntime extends AppProcess {
     }
 
     broadcast("Starting drive notifier watcher");
-    userDaemon.startDriveNotifierWatcher();
+    userDaemon.init!.startDriveNotifierWatcher();
+
+    broadcast("Starting permission manager");
+    await userDaemon.init!.startPermissionHandler();
 
     broadcast("Starting share management");
-    await userDaemon.startShareManager();
+    await userDaemon.init!.startShareManager();
+
+    broadcast("Indexing your files");
+    await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
+
+    broadcast("Running migrations");
+    await userDaemon.serviceHost?.getService<MigrationService>("MigrationSvc")?.runMigrations(broadcast);
 
     const storage = userDaemon.appStorage();
 
@@ -265,27 +267,25 @@ export class LoginAppRuntime extends AppProcess {
     }
 
     broadcast("Starting status refresh");
-    await userDaemon.startSystemStatusRefresh();
+    await userDaemon.init!.startSystemStatusRefresh();
 
     broadcast("Let's go!");
-    await KernelStateHandler()?.loadState("desktop", { userDaemon });
-    this.soundBus.playSound("arcos.system.logon");
-    userDaemon.setAppRendererClasses(userDaemon.preferences());
-    userDaemon.checkNightly();
+    await State?.loadState("desktop", { userDaemon });
+    SoundBus.playSound("arcos.system.logon");
+    userDaemon.renderer!.setAppRendererClasses(userDaemon.preferences());
+    userDaemon.checks!.checkNightly();
 
     broadcast("Starting Workspaces");
-    await userDaemon.startVirtualDesktops();
+    await userDaemon.init!.startVirtualDesktops();
 
     broadcast("Running autorun");
-    await userDaemon.spawnAutoload();
+    await userDaemon.apps!.spawnAutoload();
 
     await this.appStore()?.refresh();
 
-    await userDaemon.checkForUpdates();
+    await userDaemon.checks!.checkForUpdates();
     userDaemon.serviceHost?.getService<ProtocolServiceProcess>("ProtoService")?.parseProtoParam();
-    await userDaemon.checkForMissedMessages();
-    await userDaemon.updateAppShortcutsDir();
-    await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
+    await userDaemon.checks!.checkForMissedMessages();
 
     userDaemon._blockLeaveInvocations = false;
   }
@@ -302,32 +302,29 @@ export class LoginAppRuntime extends AppProcess {
     this.loadingStatus.set(`Goodbye, ${daemon.username}!`);
     this.errorMessage.set("");
 
-    for (const [_, proc] of [...KernelStack().store()]) {
+    for (const [_, proc] of [...Stack.store()]) {
       if (proc && !proc._disposed && proc instanceof AppProcess && proc.pid !== this.pid) {
         await proc.killSelf();
       }
     }
 
-    this.profileImage.set(`${import.meta.env.DW_SERVER_URL}/user/pfp/${daemon.userInfo._id}${authcode()}`);
-
     this.profileName.set(daemon.preferences().account.displayName || daemon.username);
-    this.loginBackground.set((await daemon.getWallpaper(daemon.preferences().account.loginBackground)).url);
+    this.loginBackground.set((await daemon.wallpaper!.getWallpaper(daemon.preferences().account.loginBackground)).url);
 
     await Sleep(2000);
-
-    await daemon.logActivity("logout");
+    await daemon.activity!.logActivity("logout");
 
     this.resetCookies();
-    await daemon.discontinueToken();
+    await daemon.account!.discontinueToken();
+    await daemon.stopUserContexts();
     await daemon.killSelf();
 
-    setTimeout(() => {
+    setTimeout(async () => {
       this.loadingStatus.set("");
       this.hideProfileImage.set(false);
-      this.profileImage.set(ProfilePictures.def);
-      this.profileName.set("");
-      this.loginBackground.set(this.DEFAULT_WALLPAPER());
-      KernelStateHandler()?.getStateLoaders()?.main?.removeAttribute("style");
+      State?.getStateLoaders()?.main?.removeAttribute("style");
+
+      await this.loadPersistence();
     }, 600);
   }
 
@@ -337,8 +334,8 @@ export class LoginAppRuntime extends AppProcess {
     this.type = "shutdown";
 
     if (daemon) {
-      this.profileImage.set(`${import.meta.env.DW_SERVER_URL}/user/pfp/${daemon.userInfo._id}${authcode()}`);
-      this.loginBackground.set((await daemon.getWallpaper(daemon.preferences().account.loginBackground)).url);
+      this.profileImage.set(`${this.server.url}/user/pfp/${daemon.userInfo._id}${authcode()}`);
+      this.loginBackground.set((await daemon.wallpaper!.getWallpaper(daemon.preferences().account.loginBackground)).url);
 
       this.profileName.set(daemon.preferences().account.displayName || daemon.username);
     }
@@ -349,7 +346,7 @@ export class LoginAppRuntime extends AppProcess {
     await Sleep(2000);
 
     if (daemon) await daemon.killSelf();
-    KernelStateHandler()?.loadState("turnedOff");
+    State?.loadState("turnedOff");
   }
 
   async restart(daemon?: UserDaemon) {
@@ -358,8 +355,10 @@ export class LoginAppRuntime extends AppProcess {
     this.type = "restart";
 
     if (daemon) {
-      this.profileImage.set(`${import.meta.env.DW_SERVER_URL}/user/pfp/${daemon.userInfo._id}${authcode()}`);
-      this.loginBackground.set((await daemon.getWallpaper(daemon.preferences().account.loginBackground)).url);
+      this.profileImage.set(`${this.server.url}/user/pfp/${daemon.userInfo._id}${authcode()}`);
+      this.loginBackground.set(
+        (await daemon.wallpaper?.getWallpaper(daemon.preferences().account.loginBackground))?.url || this.DEFAULT_WALLPAPER()
+      );
 
       this.profileName.set(daemon.preferences().account.displayName || daemon.username);
     }
@@ -386,6 +385,8 @@ export class LoginAppRuntime extends AppProcess {
     if (!token) {
       this.loadingStatus.set("");
       this.errorMessage.set("Username or password incorrect.");
+
+      this.updateServerStuff();
 
       return;
     }
@@ -458,28 +459,27 @@ export class LoginAppRuntime extends AppProcess {
     const returnId = UUID();
 
     return new Promise(async (r) => {
-      this.systemDispatch.subscribe("totp-unlock-success", ([id]) => {
+      SysDispatch.subscribe("totp-unlock-success", ([id]) => {
         if (id === returnId) r(true);
       });
 
-      this.systemDispatch.subscribe("totp-unlock-cancel", ([id]) => {
+      SysDispatch.subscribe("totp-unlock-cancel", ([id]) => {
         if (id === returnId) r(false);
       });
 
-      await KernelStack().spawn(
+      await Stack.spawn(
         TotpAuthGuiRuntime,
         undefined,
         userId,
         this.pid,
         { data: { ...TotpAuthGuiApp, overlay: true }, id: "TotpAuthGuiApp" },
-        token,
         returnId
       );
     });
   }
 
   async firstRun(daemon: UserDaemon) {
-    const process = await KernelStack().spawn<FirstRunRuntime>(
+    const process = await Stack.spawn<FirstRunRuntime>(
       FirstRunRuntime,
       undefined,
       daemon.userInfo?._id,
@@ -490,26 +490,27 @@ export class LoginAppRuntime extends AppProcess {
 
     if (!process) return;
 
+    Env.set("shell_pid", this.pid);
+
     await new Promise<void>((r) => process.done.subscribe((v) => v && r()));
 
-    // daemon.preferences.update((v) => {
-    //   v.firstRunDone = true;
-    //   return v;
-    // });
+    Env.delete("shell_pid");
   }
 
   createUser() {
-    KernelStateHandler()?.loadState("initialSetup");
+    State?.loadState("initialSetup");
   }
 
   //#endregion
 
   //#region PERSISTENCE
 
-  loadPersistence() {
+  async loadPersistence() {
     const persistence = tryJsonParse<PersistenceInfo>(localStorage.getItem("arcLoginPersistence"));
 
     if (!persistence) return;
+
+    this.updateServerStuff();
 
     this.persistence.set(persistence);
     this.profileImage.set(persistence.profilePicture);
@@ -518,15 +519,27 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   savePersistence(username: string, profilePicture: string, loginWallpaper?: string) {
-    localStorage.setItem("arcLoginPersistence", JSON.stringify({ username, profilePicture, loginWallpaper }));
+    localStorage.setItem(
+      "arcLoginPersistence",
+      JSON.stringify({ username, profilePicture, loginWallpaper, serverUrl: this.server.url })
+    );
   }
 
-  deletePersistence() {
+  async deletePersistence() {
+    this.updateServerStuff();
     localStorage.removeItem("arcLoginPersistence");
     this.persistence.set(undefined);
     this.profileImage.set(ProfilePictures.def);
     this.loginBackground.set(this.DEFAULT_WALLPAPER());
     this.profileName.set("");
+  }
+
+  updateServerStuff() {
+    if (this.server.serverInfo) this.serverInfo.set(this.server.serverInfo);
+    this.DEFAULT_WALLPAPER.set(
+      this.serverInfo()?.loginWallpaper ? `${this.server.url}/loginbg${authcode()}` : Wallpapers.img18.url
+    );
+    this.loginBackground.set(this.DEFAULT_WALLPAPER());
   }
 
   //#endregion

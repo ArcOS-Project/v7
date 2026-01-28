@@ -1,5 +1,5 @@
 import { ShellRuntime } from "$apps/components/shell/runtime";
-import { KernelStack } from "$ts/env";
+import { Env, Stack } from "$ts/env";
 import type { Arguments } from "$types/terminal";
 import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
@@ -21,8 +21,8 @@ export class FindCommand extends TerminalProcess {
 
   protected async main(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const query = argv.join(" ");
-    const shellPid = +term.env.get("shell_pid");
-    const shellProc = KernelStack().getProcess<ShellRuntime>(shellPid);
+    const shellPid = +Env.get("shell_pid");
+    const shellProc = Stack.getProcess<ShellRuntime>(shellPid);
 
     if (!query) {
       term.Info("What do you want me to search for?");

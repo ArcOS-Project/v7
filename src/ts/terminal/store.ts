@@ -17,7 +17,9 @@ import { ExploreCommand } from "./commands/explore";
 import { FindCommand } from "./commands/find";
 import { HelpCommand } from "./commands/help";
 import { HistoryCommand } from "./commands/history";
+import { InputCommand } from "./commands/input";
 import { KillCommand } from "./commands/kill";
+import { KlogCommand } from "./commands/klog";
 import { LogoutCommand } from "./commands/logout";
 import { MkdirCommand } from "./commands/mkdir";
 import { OpenCommand } from "./commands/open";
@@ -28,6 +30,7 @@ import { RestartCommand } from "./commands/restart";
 import { RmCommand } from "./commands/rm";
 import { ShutdownCommand } from "./commands/shutdown";
 import { SpawnCommand } from "./commands/spawn";
+import { SudoCommand } from "./commands/sudo";
 import { TasksCommand } from "./commands/tasks";
 import { TestCommand } from "./commands/test";
 import { TouchCommand } from "./commands/touch";
@@ -64,11 +67,14 @@ export const TerminalCommandStore: (typeof TerminalProcess)[] = [
   AtConfCommand,
   ConfigCommand,
   SpawnCommand,
+  SudoCommand,
   TasksCommand,
   AdminCommand,
   DrivesCommand,
   DevenvCommand,
   PkgCommand,
+  KlogCommand,
+  InputCommand,
   TouchCommand,
 ];
 
@@ -101,9 +107,32 @@ export const CURLEFT = `${ESC}1C`;
 export const CURRIGHT = `${ESC}1D`;
 export const CLRROW = `${ESC}2K`;
 
+export const DefaultColors = {
+  red: "#ff7e7e",
+  green: "#82ff80",
+  yellow: "#ffe073",
+  blue: "#96d3ff",
+  cyan: "#79ffd0",
+  magenta: "#d597ff",
+  background: "#000000",
+  foreground: "#dddddd",
+  brightBlack: "#555753",
+  backdropOpacity: 0.6,
+};
+
 export const DefaultArcTermConfiguration: ArcTermConfiguration = {
   prompt: `$BRGREEN$username$RESET: $BRGREEN$pwd $RESULTCOLOR$ $RESET`,
   greeting:
     "ArcTerm & ArcOS $BRBLUEv$version$RESET\r\n\r\nLicensed under $BRBLUEGPLv3$RESET. Created by Izaak Kuipers.\r\nType $BRBLUEHELP$RESET for a list of commands.\r\n",
   noLogo: false,
+  red: DefaultColors.red,
+  green: DefaultColors.green,
+  yellow: DefaultColors.yellow,
+  blue: DefaultColors.blue,
+  cyan: DefaultColors.cyan,
+  magenta: DefaultColors.magenta,
+  background: DefaultColors.background,
+  foreground: DefaultColors.foreground,
+  brightBlack: DefaultColors.brightBlack,
+  backdropOpacity: DefaultColors.backdropOpacity,
 };

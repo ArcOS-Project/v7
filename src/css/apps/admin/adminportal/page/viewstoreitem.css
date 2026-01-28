@@ -138,4 +138,13 @@
 }
 #AdminPortal div.container.viewStoreItem div.installed-by {
   border-bottom: var(--win-border);
+  min-height: 150px;
+}
+
+#AdminPortal div.container.viewStoreItem div.installed-by.empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
 }

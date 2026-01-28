@@ -1,5 +1,6 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
+  import { Daemon } from "$ts/server/user/daemon";
   import dayjs from "dayjs";
   import type { BugHuntRuntime } from "../runtime";
   import Loading from "./Loading.svelte";
@@ -36,10 +37,10 @@
     {/if}
   </div>
   <div class="account">
-    <ProfilePicture userDaemon={process.userDaemon} height={32}></ProfilePicture>
+    <ProfilePicture height={32}></ProfilePicture>
     <div>
       <h1>{$userPreferences.account.displayName || username}</h1>
-      <p>{process.userDaemon?.userInfo?.email || "ArcOS User"}</p>
+      <p>{Daemon?.userInfo?.email || "ArcOS User"}</p>
     </div>
   </div>
 </div>

@@ -7,6 +7,7 @@
   import Delete from "./Header/Delete.svelte";
   import Download from "./Header/Download.svelte";
   import OpenLogs from "./Header/OpenLogs.svelte";
+  import StoreItemLink from "./Header/StoreItemLink.svelte";
   import UserData from "./Header/UserData.svelte";
 
   const { process, data }: { process: AdminPortalRuntime; data: ViewBugReportData } = $props();
@@ -19,6 +20,9 @@
     <span>{report.title}</span>
   </div>
   <div class="shortcuts">
+    {#if report.isAppReport}
+      <StoreItemLink {data} {process} />
+    {/if}
     <Copy {data} {process} />
     <Download {data} {process} />
     <UserData {data} {process} />

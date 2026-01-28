@@ -1,5 +1,6 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
+  import { Daemon } from "$ts/server/user/daemon";
   import { ShareManager } from "$ts/shares";
   import type { OverlayRuntime } from "../../overlay";
 
@@ -25,7 +26,7 @@
       return;
     }
 
-    const shares = process.userDaemon?.serviceHost?.getService<ShareManager>("ShareMgmt")!;
+    const shares = Daemon?.serviceHost?.getService<ShareManager>("ShareMgmt")!;
     const result = shares?.changeSharePassword(process.parentProcess.shareId, newPassword);
 
     process.closeWindow();

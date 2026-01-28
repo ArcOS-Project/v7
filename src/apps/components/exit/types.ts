@@ -4,5 +4,6 @@ export interface ExitAction {
   caption: string;
   action: (daemon: UserDaemon) => void;
   alternateAction?: (daemon: UserDaemon) => void; // Action upon submit w/ shift key
+  alternateCaption?: string;
   icon: string;
 }

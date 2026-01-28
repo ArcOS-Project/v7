@@ -1,5 +1,6 @@
 <script lang="ts">
   import HtmlSpinner from "$lib/HtmlSpinner.svelte";
+  import { Server } from "$ts/env";
   import { Sleep } from "$ts/sleep";
   import { checkPasswordStrength, validateEmail, validateUsername } from "$ts/util";
   import { PasswordStrengthCaptions, type PasswordStrength } from "$types/user";
@@ -113,7 +114,7 @@
     }
 
     passwordStrength = checkPasswordStrength(enteredPassword).value as PasswordStrength;
-    passwordInvalid = passwordStrength === "tooWeak" || passwordStrength === "weak";
+    passwordInvalid = passwordStrength === "tooWeak";
 
     if (!passwordInvalid) $password = enteredPassword;
   }
@@ -186,6 +187,9 @@
   </div>
   <p class="disclaimer">
     * You will receive an email with a link to activate your account. Your display name, username and password can be changed
-    later on. To change your email, contact an administrator.
+    later on. To change your email later on, contact an administrator.
+    {#if !Server.serverInfo?.noEmailVerify}
+      You need a valid email address to create an account.
+    {/if}
   </p>
 </div>

@@ -1,8 +1,10 @@
 <script lang="ts">
   import type { ShellRuntime } from "$apps/components/shell/runtime";
-  import { contextProps } from "$ts/context/actions.svelte";
+  import { contextMenu, contextProps } from "$ts/context/actions.svelte";
+  import { Fs } from "$ts/env";
+  import { Daemon } from "$ts/server/user/daemon";
   import { UserPaths } from "$ts/server/user/store";
-  import { arrayToBlob } from "$ts/util/convert";
+  import { arrayBufferToBlob } from "$ts/util/convert";
   import type { UserPreferencesStore } from "$types/user";
   import { onMount } from "svelte";
   import Spinner from "../../../../../../../lib/Spinner.svelte";
@@ -32,7 +34,7 @@
         errored = false;
         loading = true;
 
-        const contents = await process.fs.readFile(v.shell.actionCenter.galleryImage);
+        const contents = await Fs.readFile(v.shell.actionCenter.galleryImage);
 
         loading = false;
 
@@ -43,7 +45,7 @@
           return;
         }
 
-        const blob = arrayToBlob(contents);
+        const blob = arrayBufferToBlob(contents);
         url = URL.createObjectURL(blob);
       } catch {
         errored = true;
@@ -55,7 +57,7 @@
   });
 
   async function chooseImage() {
-    const [path] = await process.userDaemon!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Choose an image for the gallery",
       icon: "DesktopIcon",
       startDir: UserPaths.Pictures,
@@ -74,8 +76,21 @@
   class:no-image={noImage}
   class:errored
   class:loading
-  data-contextmenu="actioncenter-gallery-card"
-  use:contextProps={[chooseImage]}
+  use:contextMenu={[
+    [
+      {
+        caption: "Change image...",
+        action: () => chooseImage(),
+        icon: "pencil",
+      },
+      {
+        caption: "Remove image",
+        action: () => ($userPreferences.shell.actionCenter.galleryImage = ""),
+        icon: "x",
+      },
+    ],
+    process,
+  ]}
 >
   {#if !loading}
     {#if noImage}

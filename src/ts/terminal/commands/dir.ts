@@ -1,4 +1,5 @@
 import type { FilesystemDrive } from "$ts/drives/drive";
+import { Fs } from "$ts/env";
 import { FormatLargeNumber, Gap, maxLength, Plural, Truncate } from "$ts/util";
 import { formatBytes, join } from "$ts/util/fs";
 import type { Arguments } from "$types/terminal";
@@ -10,7 +11,7 @@ import { BRBLACK, BRBLUE, BRGREEN, RESET } from "../store";
 export class DirCommand extends TerminalProcess {
   public static keyword = "dir";
   public static description = "List the contents of the current or specified directory";
-
+  public static allowInterrupt: boolean = true;
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number) {
@@ -27,13 +28,15 @@ export class DirCommand extends TerminalProcess {
     try {
       let drive: FilesystemDrive | undefined;
       try {
-        drive = dir ? this.fs.getDriveByPath(dir) : term.drive;
+        drive = dir ? Fs.getDriveByPath(dir) : term.drive;
       } catch {
         drive = term.drive;
       }
 
       const contents = await term.readDir(dir);
       const quota = await drive?.quota();
+
+      if (this._disposed) return 0;
 
       if (!contents || !quota) {
         throw "";

@@ -1,7 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
 import type { BugHuntUserSpaceProcess } from "$ts/bughunt/process";
 import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
+import { Stack } from "$ts/env";
+import { Daemon } from "$ts/server/user/daemon";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { BugHuntProc } from "$types/bughunt";
@@ -28,11 +29,14 @@ export class BugHuntCreatorRuntime extends AppProcess {
   ) {
     super(pid, parentPid, app);
 
-    const parent = KernelStack().getProcess(this.parentPid);
-    const bugHuntInstances = KernelStack()
-      .renderer?.getAppInstances("BugHunt")
-      .map((p) => p.pid);
+    const parent = Stack.getProcess(this.parentPid);
+    const bugHuntInstances = Stack.renderer?.getAppInstances("BugHunt").map((p) => p.pid);
 
+    this.userPreferences.update((v) => {
+      v.appPreferences.BugHunt ||= {};
+      return v;
+    });
+    
     if (parent && bugHuntInstances?.includes(parent.pid)) this.parent = parent as any;
 
     if (title && body) {
@@ -41,7 +45,7 @@ export class BugHuntCreatorRuntime extends AppProcess {
     }
 
     if (options) this.overrideOptions = options;
-    this.bughunt = this.userDaemon?.serviceHost?.getService<BugHuntUserSpaceProcess>("BugHuntUsp")!;
+    this.bughunt = Daemon?.serviceHost?.getService<BugHuntUserSpaceProcess>("BugHuntUsp")!;
 
     this.setSource(__SOURCE__);
   }
@@ -60,9 +64,9 @@ export class BugHuntCreatorRuntime extends AppProcess {
     await this.bughunt.sendBugReport({
       title,
       body,
-      anonymous: options.sendAnonymously,
-      noLogs: options.excludeLogs,
-      public: options.makePublic,
+      anonymous: !!options.sendAnonymously,
+      noLogs: !!options.excludeLogs,
+      public: !!options.makePublic,
     });
 
     await this.closeWindow();

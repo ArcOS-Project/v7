@@ -2,13 +2,14 @@
   import type { MessagingAppRuntime } from "$apps/user/messages/runtime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
-  import type { PartialMessage } from "$types/messaging";
+  import { Daemon } from "$ts/server/user/daemon";
+  import type { ExpandedMessage } from "$types/messaging";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
   import { onMount, type Snippet } from "svelte";
 
-  const { process, message, children }: { process: MessagingAppRuntime; message: PartialMessage; children?: Snippet } = $props();
+  const { process, message, children }: { process: MessagingAppRuntime; message: ExpandedMessage; children?: Snippet } = $props();
   const { message: openedMessage } = process;
   let date = $state<string>();
 
@@ -27,7 +28,7 @@
     class="message"
     onclick={() => process.readMessage(message._id)}
     class:selected={$openedMessage?._id === message._id}
-    class:unread={!message.read && message.authorId !== process.userDaemon?.userInfo?._id}
+    class:unread={!message.read && message.authorId !== Daemon?.userInfo?._id}
     ondblclick={() => process.popoutMessage(message._id)}
   >
     <ProfilePicture fallback={message.author.profilePicture} showOnline online={message.author.dispatchClients > 0} height={40} />
@@ -38,7 +39,7 @@
           {#if message.repliesTo}
             <span class="lucide icon-reply"></span>
           {/if}
-          {#if message.attachmentCount > 0}
+          {#if message.attachments?.length}
             <span class="lucide icon-paperclip"></span>
           {/if}
         </div>

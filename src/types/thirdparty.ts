@@ -1,8 +1,11 @@
+import type { AppProcess } from "$ts/apps/process";
 import type { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import type { UserDaemon } from "$ts/server/user/daemon";
+import type { MessageBox } from "$ts/dialog";
+import type { FilesystemDrive } from "$ts/drives/drive";
+import type { Process } from "$ts/process/instance";
 import type { ServiceHost } from "$ts/services";
 import type { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";
-import type { arrayToBlob, arrayToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/util/convert";
+import type { arrayBufferToBlob, arrayBufferToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/util/convert";
 import type {
   DownloadFile,
   formatBytes,
@@ -16,14 +19,10 @@ import type {
 import type { App } from "./app";
 import type { AxiosInstance } from "./axios";
 import type { dayjs } from "./dayjs";
-import type { EnvironmentType, FilesystemType, SystemDispatchType } from "./kernel";
 
 export interface ThirdPartyPropMap {
-  daemon: UserDaemon;
-  fs: FilesystemType;
-  env: EnvironmentType;
   serviceHost: ServiceHost | undefined;
-  dispatch: SystemDispatchType;
+  MessageBox: typeof MessageBox;
   icons: Record<string, string>;
   util: {
     htmlspecialchars: typeof htmlspecialchars;
@@ -42,18 +41,24 @@ export interface ThirdPartyPropMap {
     onFolderChange: typeof onFolderChange;
   };
   convert: {
-    arrayToText: typeof arrayToText;
+    arrayToText: typeof arrayBufferToText;
     textToArrayBuffer: typeof textToArrayBuffer;
     blobToText: typeof blobToText;
     textToBlob: typeof textToBlob;
-    arrayToBlob: typeof arrayToBlob;
+    arrayToBlob: typeof arrayBufferToBlob;
     blobToDataURL: typeof blobToDataURL;
   };
   workingDirectory: string;
+  Process: typeof Process;
+  AppProcess: typeof AppProcess;
+  ThirdPartyAppProcess: typeof ThirdPartyAppProcess;
+  FilesystemDrive: typeof FilesystemDrive;
   argv: any[];
   app: App;
   $ENTRYPOINT: string;
   $METADATA: string;
+  SHELL_PID?: number;
+  OPERATION_ID: string;
   load: (path: string) => Promise<any>;
   runApp: (
     process: typeof ThirdPartyAppProcess,

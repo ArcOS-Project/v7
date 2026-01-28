@@ -167,3 +167,10 @@
   width: 100px;
   opacity: 0.5;
 }
+
+#DriveInfo > div.body div.advanced-info div.row p {
+  width: 0;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

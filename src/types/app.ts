@@ -49,6 +49,8 @@ export type RegisteredProcess = {
   };
   vital?: boolean;
   _internalMinVer?: string;
+  hidden?: boolean;
+  core?: boolean;
 };
 
 export interface InstalledApp extends App {

@@ -1,6 +1,6 @@
 import { FilesystemDrive } from "$ts/drives/drive";
 import { toForm } from "$ts/form";
-import { arrayToBlob } from "$ts/util/convert";
+import { arrayBufferToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, join } from "$ts/util/fs";
 import type {
   DirectoryReadReturn,
@@ -11,9 +11,9 @@ import type {
   UserQuota,
 } from "$types/fs";
 import { Backend } from "../axios";
+import { Daemon } from "../user/daemon";
 
 export class AdminFileSystem extends FilesystemDrive {
-  private token: string;
   override READONLY = false;
   override FIXED = true;
   override IDENTIFIES_AS: string = "admin";
@@ -35,16 +35,14 @@ export class AdminFileSystem extends FilesystemDrive {
     stat: true,
   };
 
-  constructor(uuid: string, letter: string, token: string) {
+  constructor(uuid: string, letter: string) {
     super(uuid, letter);
-
-    this.token = token;
   }
 
   async writeFile(path: string, data: Blob, onProgress?: FilesystemProgressCallback): Promise<boolean> {
     try {
       const response = await Backend.post(`/admin/afs/file/${path}`, data, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
         onUploadProgress: (progress) => {
           onProgress?.({
             max: progress.total || 0,
@@ -65,7 +63,7 @@ export class AdminFileSystem extends FilesystemDrive {
       const response = await Backend.post<DirectoryReadReturn>(
         `/admin/afs/dir/${path}`,
         {},
-        { headers: { Authorization: `Bearer ${this.token}` } }
+        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
       );
 
       return response.status === 200;
@@ -79,7 +77,7 @@ export class AdminFileSystem extends FilesystemDrive {
 
     try {
       const response = await Backend.delete(`/admin/afs/rm/${path}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.status === 200;
@@ -98,7 +96,7 @@ export class AdminFileSystem extends FilesystemDrive {
           destination: destination.endsWith(sourceFilename) ? destination : join(destination, sourceFilename),
         }),
         {
-          headers: { Authorization: `Bearer ${this.token}` },
+          headers: { Authorization: `Bearer ${Daemon!.token}` },
         }
       );
 
@@ -118,7 +116,7 @@ export class AdminFileSystem extends FilesystemDrive {
           destination,
         }),
         {
-          headers: { Authorization: `Bearer ${this.token}` },
+          headers: { Authorization: `Bearer ${Daemon!.token}` },
         }
       );
 
@@ -131,7 +129,7 @@ export class AdminFileSystem extends FilesystemDrive {
   async readDir(path: string = ""): Promise<DirectoryReadReturn | undefined> {
     try {
       const response = await Backend.get<DirectoryReadReturn>(path ? `/admin/afs/dir/${path}` : `/admin/afs/dir`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.data;
@@ -145,7 +143,7 @@ export class AdminFileSystem extends FilesystemDrive {
 
     try {
       const response = await Backend.get(`/admin/afs/file/${path}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
         responseType: "arraybuffer",
         onDownloadProgress: (progress) => {
           onProgress({
@@ -165,7 +163,7 @@ export class AdminFileSystem extends FilesystemDrive {
   async tree(path: string = ""): Promise<RecursiveDirectoryReadReturn | undefined> {
     try {
       const response = await Backend.get(path ? `/admin/afs/tree/${path}` : `/admin/afs/tree`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.data;
@@ -177,7 +175,7 @@ export class AdminFileSystem extends FilesystemDrive {
   async quota(): Promise<UserQuota> {
     try {
       const response = await Backend.get(`/admin/afs/quota`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
       return response.data as UserQuota;
@@ -199,13 +197,13 @@ export class AdminFileSystem extends FilesystemDrive {
     const content = await this.readFile(path, () => {});
     if (!content) return undefined;
 
-    const blob = arrayToBlob(content);
+    const blob = arrayBufferToBlob(content);
     return URL.createObjectURL(blob);
   }
 
   async stat(path: string): Promise<FilesystemStat | undefined> {
     try {
-      const response = await Backend.get(`/admin/afs/stat/${path}`, { headers: { Authorization: `Bearer ${this.token}` } });
+      const response = await Backend.get(`/admin/afs/stat/${path}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.data as FilesystemStat;
     } catch {

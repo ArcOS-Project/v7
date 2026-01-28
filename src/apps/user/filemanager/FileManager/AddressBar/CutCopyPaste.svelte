@@ -1,9 +1,11 @@
 <script lang="ts">
+  import { Daemon } from "$ts/server/user/daemon";
   import type { FileManagerRuntime } from "../../runtime";
 
   const { process }: { process: FileManagerRuntime } = $props();
 
-  const { cutList, copyList, selection, drive } = process;
+  const { selection, drive } = process;
+  const { cutList, copyList } = Daemon!;
 </script>
 
 <div class="portion copy-paste">

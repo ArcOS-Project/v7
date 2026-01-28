@@ -2,9 +2,10 @@
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import type { AppProcess } from "$ts/apps/process";
   import { ProfilePictures } from "$ts/images/pfp";
+  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: AppProcess } = $props();
-  const { userPreferences, userDaemon } = process;
+  const { userPreferences } = process;
 </script>
 
 <div class="top">
@@ -14,10 +15,10 @@
     {#each Object.values(ProfilePictures) as pfp, i}
       <button
         class="picture-option"
-        onclick={() => process.userDaemon?.changeProfilePicture(i + 1)}
+        onclick={() => Daemon?.preferencesCtx?.changeProfilePicture(i + 1)}
         class:selected={$userPreferences.account.profilePicture === i + 1}
       >
-        <ProfilePicture {userDaemon} fallback={pfp} height={40} />
+        <ProfilePicture fallback={pfp} height={40} />
       </button>
     {/each}
   </div>

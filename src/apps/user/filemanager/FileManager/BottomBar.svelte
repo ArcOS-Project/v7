@@ -1,5 +1,6 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
+  import { Fs } from "$ts/env";
   import { Plural } from "$ts/util";
   import { getDriveLetter, getItemNameFromPath } from "$ts/util/fs";
   import { onMount } from "svelte";
@@ -21,7 +22,7 @@
 
       if (driveIdentifier) {
         try {
-          const drive = process.fs.getDriveByLetter(driveIdentifier.slice(0, -1), false);
+          const drive = Fs.getDriveByLetter(driveIdentifier.slice(0, -1), false);
 
           driveLabel = drive?.label || "";
         } catch {}
@@ -32,7 +33,6 @@
   function thumbnails() {
     process.userPreferences.update((v) => {
       v.appPreferences.fileManager.grid = false;
-      v.appPreferences.fileManager.compact = false;
       v.appPreferences.fileManager.thumbnails = true;
       return v;
     });
@@ -41,7 +41,6 @@
   function grid() {
     process.userPreferences.update((v) => {
       v.appPreferences.fileManager.grid = true;
-      v.appPreferences.fileManager.compact = false;
       v.appPreferences.fileManager.thumbnails = false;
       return v;
     });
@@ -50,7 +49,6 @@
   function list() {
     process.userPreferences.update((v) => {
       v.appPreferences.fileManager.grid = false;
-      v.appPreferences.fileManager.compact = false;
       v.appPreferences.fileManager.thumbnails = false;
       return v;
     });

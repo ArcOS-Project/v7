@@ -1,6 +1,7 @@
 import { MessageBox } from "$ts/dialog";
+import { Env, Fs } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
-import { arrayToText } from "$ts/util/convert";
+import { arrayBufferToText } from "$ts/util/convert";
 import type { FileHandler } from "$types/fs";
 import type { UserTheme } from "$types/theme";
 import type { UserDaemon } from "../daemon";
@@ -23,19 +24,21 @@ const applyArcTheme: (d: UserDaemon) => FileHandler = (daemon) => ({
           sound: "arcos.dialog.error",
           image: "ThemesIcon",
         },
-        +daemon.env.get("shell_pid"),
+        +Env.get("shell_pid"),
         true
       );
     }
-    const content = await daemon.fs.readFile(path);
+    const content = await Fs.readFile(path);
     if (!content) return fail("The contents of the file could not be read");
 
-    const json = tryJsonParse<UserTheme>(arrayToText(content));
+    const json = tryJsonParse<UserTheme>(arrayBufferToText(content));
 
     if (typeof json === "string") return fail("Couldn't parse the JSON object");
-    if (!daemon.verifyTheme(json)) return fail("The theme is missing some required data");
+    if (!daemon.themes!.verifyTheme(json)) return fail("The theme is missing some required data");
 
-    daemon.applyThemeData(json);
+    const applied = daemon.themes!.applyThemeData(json);
+
+    if (!applied) fail("The theme could not be applied.");
   },
 });
 

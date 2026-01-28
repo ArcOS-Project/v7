@@ -2,12 +2,12 @@
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import Spinner from "$lib/Spinner.svelte";
   import { sortByKey } from "$ts/util";
+  import { formatBytes } from "$ts/util/fs";
   import { Store } from "$ts/writable";
   import { onMount } from "svelte";
   import type { AdminPortalRuntime } from "../../runtime";
   import type { FilesystemsData, FilesystemsPageQuota } from "../../types";
   import FilesystemRow from "./Filesystems/FilesystemRow.svelte";
-  import { formatBytes } from "$ts/util/fs";
 
   const { process, data }: { process: AdminPortalRuntime; data: FilesystemsData } = $props();
   const { users } = data;

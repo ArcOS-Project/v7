@@ -6,6 +6,7 @@ import type { SharedDriveType } from "$types/shares";
 import type { ExpandedUserInfo, UserInfo } from "$types/user";
 import type { Component } from "svelte";
 import type { AdminPortalRuntime } from "./runtime";
+import type { ReadableStore } from "$ts/writable";
 
 export interface AdminPortalPage {
   name: string;
@@ -32,6 +33,10 @@ export type DashboardData = {
   logs: ServerLogItem[];
 };
 
+export type QueryData = {
+  users: ExpandedUserInfo[];
+};
+
 export type BugHuntData = {
   users: User[];
   reports: BugReport[];
@@ -40,6 +45,7 @@ export type BugHuntData = {
 
 export type ViewBugReportData = {
   report: BugReport;
+  quickView?: ReadableStore<string>;
 };
 
 export type UsersData = {

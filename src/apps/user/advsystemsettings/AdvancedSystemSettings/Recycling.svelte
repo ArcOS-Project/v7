@@ -1,5 +1,7 @@
 <script lang="ts">
   import { MessageBox } from "$ts/dialog";
+  import { Env } from "$ts/env";
+  import { Daemon } from "$ts/server/user/daemon";
   import { TrashCanService } from "$ts/server/user/trash";
   import { Plural } from "$ts/util";
   import { onMount } from "svelte";
@@ -8,7 +10,7 @@
   const { process }: { process: AdvSysSetRuntime } = $props();
   const { preferencesBuffer } = process;
 
-  const trash = process.userDaemon?.serviceHost?.getService<TrashCanService>("TrashSvc");
+  const trash = Daemon?.serviceHost?.getService<TrashCanService>("TrashSvc");
   let size = $state(Object.entries(trash?.IndexBuffer() || {}).length);
 
   onMount(() => {
@@ -70,6 +72,6 @@
 </section>
 
 <section class="actions">
-  <button onclick={emptyBin}>Empty...</button>
-  <button onclick={() => process.spawnApp("fileManager", +process.env.get("shell_pid"), "::recycle_bin")}>Open bin</button>
+  <button onclick={emptyBin} disabled={!size}>Empty...</button>
+  <button onclick={() => process.spawnApp("fileManager", +Env.get("shell_pid"), "::recycle_bin")}>Open bin</button>
 </section>

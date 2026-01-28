@@ -1,12 +1,13 @@
 <script lang="ts">
-  import type { UserDaemon } from "$ts/server/user/daemon";
+  import { Server, SysDispatch } from "$ts/env";
+  import { TryGetDaemon } from "$ts/server/user/daemon";
+  import { DefaultUserPreferences } from "$ts/server/user/default";
   import { Sleep } from "$ts/sleep";
   import { authcode } from "$ts/util";
   import type { UserPreferences } from "$types/user";
   import { onMount } from "svelte";
 
   interface Props {
-    userDaemon?: UserDaemon | undefined;
     fallback?: string;
     pfp?: string | number;
     height: number;
@@ -14,9 +15,9 @@
     showOnline?: boolean;
     online?: boolean;
   }
-  const { userDaemon, fallback = "", pfp = "", height, className = "", showOnline = false, online = false }: Props = $props();
+  const { fallback = "", pfp = "", height, className = "", showOnline = false, online = false }: Props = $props();
+  const userDaemon = TryGetDaemon();
   const { preferences } = userDaemon || {}!;
-
   let url = $state<string | undefined>("");
   let currentPfp = $state<string | number>();
   let loading = $state<boolean>(false);
@@ -25,7 +26,7 @@
     url = fallback;
 
     preferences?.subscribe(update);
-    userDaemon?.systemDispatch.subscribe("pfp-changed", () => update(preferences?.()!));
+    SysDispatch.subscribe("pfp-changed", () => update(preferences?.() || DefaultUserPreferences));
   });
 
   async function update(v: UserPreferences) {
@@ -34,8 +35,7 @@
     if (url) await Sleep(100);
 
     const code = authcode();
-    url =
-      fallback || `${import.meta.env.DW_SERVER_URL}/user/pfp/${userDaemon?.userInfo._id}${code}${code ? "&" : "?"}${Date.now()}`;
+    url = fallback || `${Server.url}/user/pfp/${userDaemon?.userInfo._id}${code}${code ? "&" : "?"}${Date.now()}`;
 
     currentPfp = pfp || v.account.profilePicture!;
   }

@@ -1,0 +1,62 @@
+
+#fileManager > div.body div.my_arcos section.drives > div.content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+#fileManager > div.body div.my_arcos section.drives > div.content button {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  text-align: left;
+  padding: 10px;
+  background-color: transparent;
+  width: 275px;
+  transition: none;
+  outline: none;
+}
+#fileManager > div.body div.my_arcos section.drives > div.content button:hover {
+  background-color: var(--accent-transparent);
+}
+
+#fileManager > div.body div.my_arcos section.drives > div.content button img {
+  height: 32px;
+}
+
+#fileManager > div.body div.my_arcos section.drives > div.content button p.fs {
+  opacity: 0.5;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+#fileManager > div.body div.my_arcos section.drives > div.content button div.bar {
+  width: 100%;
+  height: 7px;
+  background-color: var(--button-glass-bg);
+  border-radius: 3.5px;
+}
+
+#fileManager > div.body div.my_arcos section.drives > div.content button > div {
+  flex-grow: 1;
+}
+
+#fileManager > div.body div.my_arcos section.drives > div.content button div.usage {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#fileManager > div.body div.my_arcos section.drives > div.content button div.usage p {
+  opacity: 0.5;
+  font-size: 10px;
+  line-height: 8px;
+  height: 7px;
+}
+
+#fileManager > div.body div.my_arcos section.drives > div.content button div.bar div.inner {
+  width: var(--w);
+  height: 7px;
+  border-radius: 3.5px;
+  background-color: var(--accent-lighter);
+}

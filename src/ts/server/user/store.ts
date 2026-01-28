@@ -1,8 +1,11 @@
+import type { AppProcess } from "$ts/apps/process";
+import { Env } from "$ts/env";
 import { Process } from "$ts/process/instance";
-import type { App } from "$types/app";
-import type { FileHandler } from "$types/fs";
+import type { App, ContextMenuItem } from "$types/app";
+import type { FileEntry, FileHandler } from "$types/fs";
+import type { ArcShortcut } from "$types/shortcut";
 import type { ThemeStore, UserTheme } from "$types/theme";
-import type { UserDaemon } from "./daemon";
+import { Daemon, type UserDaemon } from "./daemon";
 import installArcPkg from "./handlers/arcpkg";
 import applyArcTheme from "./handlers/arctheme";
 import installTpaFile from "./handlers/installtpa";
@@ -318,6 +321,7 @@ export const AppGroups: Record<string, string> = {
   thirdParty: "Third-party apps",
   components: "Components",
   coreApps: "Core Applications",
+  adminTools: "Administrative tools",
   entertainment: "Entertainment",
 };
 
@@ -326,10 +330,10 @@ export const UserPaths = {
   Home: "U:/Home",
   Documents: "U:/Home/Documents",
   Pictures: "U:/Home/Pictures",
-  Downloads: "U:/Home/Downloads",
-  Wallpapers: "U:/Home/Wallpapers",
-  Desktop: "U:/Home/Desktop",
   Music: "U:/Home/Music",
+  Downloads: "U:/Home/Downloads",
+  Desktop: "U:/Home/Desktop",
+  Wallpapers: "U:/Home/Wallpapers",
   Applications: "U:/Applications",
   Trashcan: "U:/System/Trashcan",
   Root: "U:/",
@@ -338,6 +342,8 @@ export const UserPaths = {
   Configuration: "U:/System/Config",
   AppShortcuts: "U:/System/AppShortcuts",
   AppRepository: "U:/System/AppRepository",
+  Libraries: "U:/System/Libraries",
+  StartMenu: "U:/System/Start",
 };
 
 export const SystemFolders = [
@@ -366,6 +372,8 @@ export const UserPathCaptions: Record<string, string> = {
   Configuration: "Configuration",
   AppShortcuts: "Application Shortcuts",
   AppRepository: "Application Repository",
+  Libraries: "System Libraries",
+  StartMenu: "Start Menu",
 };
 
 export const HiddenUserPaths: string[] = [
@@ -376,6 +384,9 @@ export const HiddenUserPaths: string[] = [
   "AppShortcuts",
   "Applications",
   "AppRepository",
+  "Libraries",
+  "StartMenu",
+  "Root",
 ];
 
 export const UserPathIcons: Record<string, string> = {
@@ -394,6 +405,8 @@ export const UserPathIcons: Record<string, string> = {
   Configuration: "folder-cog",
   AppShortcuts: "arrow-up-right",
   AppRepository: "cog",
+  Libraries: "cog",
+  StartMenu: "square-menu",
 };
 
 export const UserFonts: string[] = [

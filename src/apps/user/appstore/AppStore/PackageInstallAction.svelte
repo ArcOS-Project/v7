@@ -1,5 +1,7 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
+  import { Env } from "$ts/env";
+  import { Daemon } from "$ts/server/user/daemon";
   import { Store } from "$ts/writable";
   import type { StoreItem, UpdateInfo } from "$types/package";
   import { onMount } from "svelte";
@@ -15,8 +17,8 @@
   let store = Store<StoreItem>(pkg);
 
   onMount(async () => {
-    $installed = await process.distrib.getInstalledPackage($store._id);
-    $update = await process.distrib.checkForUpdate($store._id, undefined, [$store]);
+    $installed = await process.distrib.getInstalledStoreItem($store._id);
+    $update = await process.distrib.checkForStoreItemUpdate($store._id, undefined, [$store]);
     loading = false;
   });
 </script>
@@ -26,7 +28,7 @@
     <Spinner height={24} />
   {:else if $installed}
     {#if !compact}
-      {#if pkg.userId === process.userDaemon?.userInfo._id}
+      {#if pkg.userId === Daemon?.userInfo._id}
         <button
           class="lucide icon-cog"
           aria-label="Manage"
@@ -38,7 +40,7 @@
           class="lucide icon-rocket"
           aria-label="Launch"
           title="Launch"
-          onclick={() => process.userDaemon!.spawnApp($store.pkg.appId, +process.env.get("shell_pid"))}
+          onclick={() => Daemon!.spawn?.spawnApp($store.pkg.appId, +Env.get("shell_pid"))}
         ></button>
       {/if}
     {/if}

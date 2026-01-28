@@ -8,7 +8,7 @@ export interface TerminalCommand {
   hidden?: boolean;
   exec: (term: ArcTerminal, flags: Arguments, argv: string[]) => number | Promise<number>;
 }
-export type Arguments = Record<string, string | boolean>;
+export type Arguments = Record<string, string | boolean | any[] | object>;
 export interface Variable {
   get: () => string | undefined;
   set?: (v: string) => Promise<any> | any;
@@ -27,5 +27,15 @@ export interface ArcTermConfiguration {
   prompt?: string;
   greeting?: string;
   noLogo?: boolean;
+  red?: string;
+  green?: string;
+  yellow?: string;
+  blue?: string;
+  cyan?: string;
+  magenta?: string;
+  foreground?: string;
+  background?: string;
+  brightBlack?: string;
+  backdropOpacity?: number;
 }
 export type ExpandedTerminal = Terminal & { process?: TerminalWindowRuntime };

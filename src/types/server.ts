@@ -6,4 +6,14 @@ export interface ServerInfo {
   loginNotice: string;
   disableRegistration: boolean;
   freshBackend: boolean;
+  rejectTargetedAuthorization: boolean;
+  noEmailVerify: boolean;
+}
+
+export interface ServerOption {
+  url: string;
+  authCode?: string;
+  name?: string;
+  system?: boolean;
+  icon?: string;
 }

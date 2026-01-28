@@ -38,6 +38,20 @@
   gap: 10px;
 }
 
+#fileManager div.address-bar div.path.manual-entry {
+  padding-left: 8px;
+  gap: 5px;
+}
+
+#fileManager div.address-bar div.path input {
+  height: 24px;
+  border: none;
+  border-radius: 0;
+  width: 0;
+  flex-grow: 1;
+  padding: 0 5px;
+}
+
 #fileManager div.address-bar div.path div.current-dir {
   display: flex;
   align-items: center;
@@ -70,6 +84,23 @@
   background-color: var(--button-glass-bg);
   height: 24px;
   border-radius: 7px;
+  width: 0;
+  max-width: fit-content;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#fileManager div.address-bar div.path div.pill span.lucide {
+  display: block;
+  min-width: 16px !important;
+}
+
+#fileManager div.address-bar div.path div.pill span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 #fileManager div.address-bar div.path div.pill.readonly-notice {

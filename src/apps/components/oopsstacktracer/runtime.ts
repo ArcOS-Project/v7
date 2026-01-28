@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import type { App, AppProcessData } from "$types/app";
-import type { ParsedStackFrame } from "../oopsnotifier/types";
+import type { ParsedStackFrame } from "$types/error";
 
 export class OopsStackTracerRuntime extends AppProcess {
   data: App;

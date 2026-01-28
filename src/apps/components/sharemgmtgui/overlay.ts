@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { KernelStack } from "$ts/env";
+import { Stack } from "$ts/env";
 import type { AppProcessData } from "$types/app";
 import type { ShareMgmtGuiRuntime } from "./runtime";
 
@@ -11,7 +11,7 @@ export class OverlayRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
-    this.parentProcess = KernelStack().getProcess(this.parentPid)!; // Get the parent process
+    this.parentProcess = Stack.getProcess(this.parentPid)!; // Get the parent process
 
     this.setSource(__SOURCE__);
   }

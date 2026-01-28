@@ -21,7 +21,7 @@
   <div class="screen" class:login class:desktop style="--url: url('{background}');">
     {#if login}
       <div class="center">
-        <ProfilePicture height={36} {userDaemon} />
+        <ProfilePicture height={36} />
         <p>{$userPreferences.account.displayName || userInfo.username}</p>
       </div>
     {:else}
