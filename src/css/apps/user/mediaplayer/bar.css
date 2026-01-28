@@ -55,7 +55,7 @@
   width: 15px;
   height: 11px;
   /* the offset can be anywhere from -7px to 7px. Added due to weird response of new width/height. */
-  transform: translateX(var(--slider-thumb-offset));
+  translate: var(--slider-thumb-offset) 0px;
   box-shadow: 0 0 4px rgb(0, 0, 0);
 }
 

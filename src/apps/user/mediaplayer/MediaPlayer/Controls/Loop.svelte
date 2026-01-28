@@ -17,6 +17,20 @@
         process.SetLoopNone();
         break;
     }
+    process.updateState();
+  }
+
+  function getLoopTitle() {
+    switch ($State.loopMode) {
+      case LoopMode.None:
+        return "Loop None";
+      case LoopMode.All:
+        return "Loop All";
+      case LoopMode.One:
+        return "Loop One";
+      default:
+        return "Loop mode toggle";
+    }
   }
 </script>
 
@@ -27,7 +41,7 @@
   class:icon-repeat-1={$State.loopMode == LoopMode.One}
   onclick={toggleLoopOne}
   disabled={!$Loaded || !$State.duration}
-  aria-label="Loop mode toggle"
-  title="Loop mode toggle"
+  aria-label={getLoopTitle()}
+  title={getLoopTitle()}
 >
 </button>

@@ -18,7 +18,6 @@ import { MediaPlayerAltMenu } from "./altmenu";
 import TrayPopup from "./MediaPlayer/TrayPopup.svelte";
 import { LoopMode, type AudioFileMetadata, type MetadataConfiguration, type PlayerState } from "./types";
 import { getReadableVibrantColor } from "$ts/color";
-import Loop from "./MediaPlayer/Controls/Loop.svelte";
 
 export class MediaPlayerRuntime extends AppProcess {
   private readonly METADATA_PATH = join(UserPaths.Configuration, "MediaPlayer", "Metadata.json");
@@ -245,13 +244,14 @@ export class MediaPlayerRuntime extends AppProcess {
         paused: true,
         current: 0,
         duration: 0,
+        loopMode: this.loopMode(),
       };
 
     const state = {
       paused: this.player.paused,
       current: this.player.currentTime,
       duration: this.player.duration,
-      loopMode: this.loopMode.get(),
+      loopMode: this.loopMode(),
     };
 
     this.State.set(state);
