@@ -439,7 +439,7 @@ export class MediaPlayerRuntime extends AppProcess {
       const contents = await Fs.readFile(path);
       if (!contents) throw new Error("Failed to read playlist");
 
-      const queue = JSON.parse(atob(arrayBufferToText(contents)));
+      const queue = JSON.parse(atob(arrayBufferToText(contents)!));
       if (!queue || !Array.isArray(queue)) throw new Error("Playlist is not valid");
 
       const queueIndex = this.queueIndex();

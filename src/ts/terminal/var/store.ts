@@ -188,5 +188,10 @@ export function getArcTermStore(term: ArcTerminal): VariableStore {
       readOnly: true,
       canDelete: false,
     },
+    ERRORVALUE: {
+      get: () => (term.lastCommandErrored ? "true" : ""),
+      readOnly: true,
+      canDelete: false,
+    },
   };
 }

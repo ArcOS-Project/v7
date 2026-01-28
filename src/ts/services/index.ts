@@ -10,6 +10,7 @@ import { adminService } from "$ts/server/admin";
 import { messagingService } from "$ts/server/messaging";
 import { fileAssocService } from "$ts/server/user/assoc";
 import { Daemon } from "$ts/server/user/daemon";
+import { recentFilesService } from "$ts/server/user/recents";
 import { trashService } from "$ts/server/user/trash";
 import { globalDispatchService } from "$ts/server/ws";
 import { shareService } from "$ts/shares";
@@ -84,6 +85,7 @@ export class ServiceHost extends Process {
     ["IconService", { ...iconService }],
     ["LibMgmtSvc", { ...libraryManagementService }],
     ["MigrationSvc", { ...migrationService }],
+    ["RecentFilesSvc", { ...recentFilesService }],
   ]);
 
   public loadStore(store: ServiceStore) {
@@ -195,7 +197,10 @@ export class ServiceHost extends Process {
     const store = this.Services();
     const service = store.get(id);
 
-    if (!store.has(id) || !service || !service.pid) return undefined;
+    if (!service?.pid) {
+      if (store.has(id)) this.Log(`Tried to get inactive service '${id}'!`, LogLevel.warning);
+      return undefined;
+    }
 
     return Stack.getProcess(service.pid) as T;
   }

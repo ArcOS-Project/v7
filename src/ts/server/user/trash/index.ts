@@ -35,7 +35,7 @@ export class TrashCanService extends BaseService {
     if (!content) return await this.writeIndex({});
 
     try {
-      const parsed = JSON.parse(arrayBufferToText(content));
+      const parsed = JSON.parse(arrayBufferToText(content)!);
 
       return parsed as Record<string, TrashIndexNode>;
     } catch {

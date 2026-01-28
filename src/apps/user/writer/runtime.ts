@@ -122,7 +122,7 @@ export class WriterRuntime extends AppProcess {
 
       const info = Daemon?.assoc?.getFileAssociation(path);
 
-      this.buffer.set(arrayBufferToText(contents));
+      this.buffer.set(arrayBufferToText(contents)!);
       this.openedFile.set(path);
       this.filename.set(getItemNameFromPath(path));
       this.directoryName.set(getItemNameFromPath(getParentDirectory(path)));

@@ -98,7 +98,7 @@ export class ArcTermRuntime extends Process {
 
     if (!contents) return;
 
-    const json = JSON.parse(arrayBufferToText(contents));
+    const json = JSON.parse(arrayBufferToText(contents)!);
 
     this.config = json as ArcTermConfiguration;
   }

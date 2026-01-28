@@ -1,0 +1,57 @@
+#fileManager > div.body div.my_arcos section.recent-files > div {
+  padding: 10px !important;
+}
+
+#fileManager > div.body div.my_arcos section.recent-files > div button {
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 5px;
+  background-color: transparent;
+  outline: none;
+  width: 100%;
+  margin-bottom: 5px;
+  transition: none;
+  pointer-events: initial !important;
+
+}
+
+#fileManager > div.body div.my_arcos section.recent-files > div button:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#fileManager > div.body div.my_arcos section.recent-files > div button.selected {
+  background-color: var(--accent-transparent);
+  opacity: 1 !important;
+}
+
+#fileManager > div.body div.my_arcos section.recent-files > div button img {
+  height: 24px;
+  width: 24px;
+}
+
+#fileManager > div.body div.my_arcos section.recent-files > div button span.name {
+  display: block;
+  width: 0;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#fileManager > div.body div.my_arcos section.recent-files > div button span.path {
+  margin-left: auto;
+  width: 50%;
+  opacity: 0.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#fileManager > div.body div.my_arcos section.recent-files p.empty {
+  opacity: 0.5;
+  margin-top: 15px;
+  text-align: center;
+  font-style: italic;
+}

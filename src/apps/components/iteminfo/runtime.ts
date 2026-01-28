@@ -62,7 +62,7 @@ export class ItemInfoRuntime extends AppProcess {
 
       if (isShortcut) {
         // Longwinded and godawful way to get the shortcut metadata in this file
-        this.shortcut.set(JSON.parse(arrayBufferToText((await Fs.readFile(this.info().location.fullPath))!)));
+        this.shortcut.set(JSON.parse(arrayBufferToText((await Fs.readFile(this.info().location.fullPath))!)!));
       }
     } catch {
       this.closeWindow();

@@ -46,7 +46,7 @@ export class DispatchCommand extends TerminalProcess {
     }
 
     if (!pid) {
-      const result = SysDispatch.dispatch(command, data, false);
+      const result = SysDispatch.dispatch(command.toString(), data, false);
 
       if (result !== "success") {
         term.Error(`failed: ${command}: ${result}`);
@@ -66,7 +66,7 @@ export class DispatchCommand extends TerminalProcess {
         return 1;
       }
 
-      const result = await dispatch.dispatch(command, ...(data || []));
+      const result = await dispatch.dispatch(command.toString(), ...(data || []));
 
       if (!result) {
         term.Error(`Failed to dispatch "${command}": not found.`);

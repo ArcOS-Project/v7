@@ -9,12 +9,12 @@ import {
   type RecursiveDirectoryReadReturn,
   type UploadReturn,
 } from "$types/fs";
-import type { ConstructedWaveKernel, SystemDispatchType } from "$types/kernel";
+import type { ConstructedWaveKernel, FilesystemType, SystemDispatchType } from "$types/kernel";
 import type { FilesystemDrive } from "../../../drives/drive";
 import { arrayBufferToBlob } from "../../../util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "../../../util/fs";
 
-export class Filesystem extends KernelModule {
+export class Filesystem extends KernelModule implements FilesystemType {
   private dispatch: SystemDispatchType;
   public drives: Record<string, FilesystemDrive> = {};
 
@@ -557,14 +557,14 @@ export class Filesystem extends KernelModule {
 
       drive.isCapable("stat");
 
-      return (await this.stat(path))?.isDirectory;
+      return !!(await this.stat(path))?.isDirectory;
     } catch {
       const contents = await this.readDir(path);
       const fileContents = await this.readFile(path);
 
       if (fileContents) return false;
 
-      return contents;
+      return contents!;
     }
   }
 
