@@ -17,6 +17,7 @@ import { ExploreCommand } from "./commands/explore";
 import { FindCommand } from "./commands/find";
 import { HelpCommand } from "./commands/help";
 import { HistoryCommand } from "./commands/history";
+import { InputCommand } from "./commands/input";
 import { KillCommand } from "./commands/kill";
 import { KlogCommand } from "./commands/klog";
 import { LogoutCommand } from "./commands/logout";
@@ -72,6 +73,7 @@ export const TerminalCommandStore: (typeof TerminalProcess)[] = [
   DevenvCommand,
   PkgCommand,
   KlogCommand,
+  InputCommand
 ];
 
 export const ESC = `\x1b[`;

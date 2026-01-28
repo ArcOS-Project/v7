@@ -1,9 +1,11 @@
 <script lang="ts">
   import type { FileManagerRuntime } from "$apps/user/filemanager/runtime";
   import { contextMenu } from "$ts/context/actions.svelte";
+  import { Fs } from "$ts/env";
   import { Daemon } from "$ts/server/user/daemon";
   import type { RecentFilesService } from "$ts/server/user/recents";
   import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
+  import { onMount } from "svelte";
 
   let {
     path,
@@ -15,6 +17,16 @@
   const icon = Daemon.icons?.getIconCached(Daemon.assoc?.getFileAssociation(path)?.icon || "DefaultMimeIcon");
   const name = getItemNameFromPath(path);
   const parent = getParentDirectory(path);
+
+  let driveIsMounted = $state<boolean>(true);
+
+  onMount(() => {
+    try {
+      Fs.getDriveByPath(path);
+    } catch {
+      driveIsMounted = false;
+    }
+  });
 </script>
 
 <button
@@ -22,6 +34,7 @@
   class:selected={selected === path}
   onclick={() => (selected = path)}
   ondblclick={() => Daemon.files?.openFile(path)}
+  disabled={!driveIsMounted}
   use:contextMenu={[
     [
       {
@@ -52,5 +65,5 @@
 >
   <img src={icon} alt="" />
   <span class="name" title={name}>{name}</span>
-  <span class="path">{parent}</span>
+  <span class="path">{driveIsMounted ? "" : "(Not mounted) "}{parent}</span>
 </button>

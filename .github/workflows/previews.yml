@@ -13,6 +13,7 @@ on:
 
 jobs:
   deploy:
+    environment: ArcOS
     if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
@@ -38,13 +39,7 @@ jobs:
           remote_host: 62.171.184.106
           remote_user: deploy
           remote_key: |
-            -----BEGIN OPENSSH PRIVATE KEY-----
-            b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
-            QyNTUxOQAAACBtBBl56BnT/9yIK91YsuwwZD6M2o+1VoIxWPkS7xSyqQAAAKD8u48e/LuP
-            HgAAAAtzc2gtZWQyNTUxOQAAACBtBBl56BnT/9yIK91YsuwwZD6M2o+1VoIxWPkS7xSyqQ
-            AAAEDNhg/XnRG5d+K7QNMZkLDsUxkceMttrqkBnytqtJXO/G0EGXnoGdP/3Igr3Viy7DBk
-            Pozaj7VWgjFY+RLvFLKpAAAAGGRlcGxveUBwcmV2aWV3LmFyY3dlYi5ubAECAwQF
-            -----END OPENSSH PRIVATE KEY-----
+            ${{ secrets.SSH_KEY }}
       - name: Comment preview link
         if: ${{ github.event_name == 'pull_request' }}
         uses: thollander/actions-comment-pull-request@v3

@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { FileManagerRuntime } from "$apps/user/filemanager/runtime";
+  import { contextMenu } from "$ts/context/actions.svelte";
   import { Daemon } from "$ts/server/user/daemon";
   import { RecentFilesService } from "$ts/server/user/recents";
   import RecentFile from "./RecentFiles/RecentFile.svelte";
@@ -20,6 +21,16 @@
         ($userPreferences.appPreferences.fileManager.myExpandRecents =
           !$userPreferences.appPreferences.fileManager.myExpandRecents)}
       class:expanded={$userPreferences.appPreferences.fileManager.myExpandRecents}
+      use:contextMenu={[
+        [
+          {
+            caption: "Clear recents",
+            icon: "x",
+            action: () => service.Configuration.set([]),
+          },
+        ],
+        process,
+      ]}
     >
       <span>Recent files</span>
       <span class="lucide icon-chevron-down"></span>

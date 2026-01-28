@@ -1,10 +1,10 @@
 # ArcOS v7
 
-This is the main repository for the ArcOS v7 project. This code is to remain private until further notice. Do not share any code from this repository with other people. If you're reading this, that means that you have exclusive access to this code, which means you'll honour its secrecy.
+This is the main repository for the ArcOS v7 project. All of the frontend code is open for educational and viewing purposes.
 
 ## Getting started
 
-You'll need the latest version of [NodeJS](https://nodejs.org/), along with [Git](https://git-scm.com/). If you don't want to use the deployed ArcOS backend, you'll have to clone it yourself. For more information, go to [ReArc-Backend-v1](https://github.com/IzK-ArcOS/ReArc-Backend-v1)
+You'll need the latest version of [NodeJS](https://nodejs.org/), along with [Git](https://git-scm.com/). If you don't want to use the deployed ArcOS backend, you'll have to clone it yourself. For more information, go to [ReArc-Backend-v1](https://github.com/IzK-ArcOS/ReArc-Backend-v1) (this only applies to team members)
 
 > [!WARNING]
 > ArcOS v7 only works when using Yarn. Dependency conflicts occur if using npm, pnpm or other managers like bun.
@@ -12,7 +12,7 @@ You'll need the latest version of [NodeJS](https://nodejs.org/), along with [Git
 1. Clone the repository:
 
 ```bash
-$ git clone git@github.com:IzK-ArcOS/v7
+$ git clone git@github.com:ArcOS-Project/v7
 ```
 
 2. Satisfy dependencies:
@@ -46,7 +46,6 @@ The compiled copy of ArcOS v7 will be in the `dist/` directory.
 If you don't have a backend and you're not able to host one yourself, use these credentials in your `.env` file to connect to the deployed ReArc backend:
 
 - set `DW_SERVER_URL` to `https://arcapi.nl`
-- ~~set `DW_SERVER_AUTHCODE` to `ohshitv7iscoming`~~
 
 ## License
 
