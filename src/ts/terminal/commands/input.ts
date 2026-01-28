@@ -7,9 +7,13 @@ export class InputCommand extends TerminalProcess {
   static description: string = "Input a string from the user";
   static allowInterrupt: boolean = true;
 
+  //#region LIFECYCLE
+
   constructor(pid: number, parentPid: number) {
     super(pid, parentPid);
   }
+
+  //#endregion LIFECYCLE
 
   async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const target = argv[0];
@@ -20,8 +24,7 @@ export class InputCommand extends TerminalProcess {
     const result = await term.rl?.read(prompt);
 
     if (!result) return 0;
-    console.log(validation);
-
+    
     if (Array.isArray(validation) && validation.length === 2 && validation[1].match(/^[gmJAUsxi]+$/g)) {
       const [regexStr, flags] = validation;
 
