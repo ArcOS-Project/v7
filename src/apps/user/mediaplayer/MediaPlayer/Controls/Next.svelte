@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { MediaPlayerRuntime } from "../../runtime";
   import { LoopMode } from "../../types";
-  import Loop from "./Loop.svelte";
 
   const { process }: { process: MediaPlayerRuntime } = $props();
   const { queueIndex, queue, Loaded, State } = process;

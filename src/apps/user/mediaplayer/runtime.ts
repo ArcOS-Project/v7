@@ -305,7 +305,14 @@ export class MediaPlayerRuntime extends AppProcess {
     const queue = this.queue();
 
     if (index + 1 > queue.length - 1) {
-      if (this.loopMode() == LoopMode.All) this.queueIndex.set(0);
+      if (this.loopMode() == LoopMode.All) {
+        this.queueIndex.set(0);
+        if (queue.length - 1 === 0) {
+          // handle singular song loop
+          this.SeekTo(0);
+          this.Play();
+        }
+      }
       return;
     }
     index++;
@@ -324,7 +331,14 @@ export class MediaPlayerRuntime extends AppProcess {
     }
 
     if (index - 1 < 0) {
-      if (this.loopMode() == LoopMode.All) this.queueIndex.set(queue.length - 1);
+      if (this.loopMode() == LoopMode.All) {
+        this.queueIndex.set(queue.length - 1);
+        if (queue.length - 1 === 0) {
+          // handle singular song loop
+          this.SeekTo(0);
+          this.Play();
+        }
+      }
       return;
     }
     index--;
