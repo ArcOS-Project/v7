@@ -11,7 +11,7 @@
 
   onMount(() => {
     setInterval(() => {
-      if (!draggingSlider) sliderProgress = (100 / $State.duration) * $State.current;
+      if (!draggingSlider && !$State.seeking) sliderProgress = (100 / $State.duration) * $State.current;
     }, 100);
   });
 

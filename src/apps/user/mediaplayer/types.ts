@@ -9,8 +9,8 @@ export interface PlayerState {
   current: number;
   duration: number;
   loopMode: LoopMode;
+  seeking: boolean;
 }
-
 
 export interface AudioFileMetadata {
   coverImagePath?: string;

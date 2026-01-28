@@ -26,8 +26,9 @@ export class MediaPlayerRuntime extends AppProcess {
   public queueIndex = Store<number>(0);
   public url = Store<string>();
   public player: HTMLVideoElement | undefined;
+  public seeking = Store<boolean>(false);
   public loopMode = Store<LoopMode>(LoopMode.None);
-  public State = Store<PlayerState>({ paused: true, current: 0, duration: 0, loopMode: LoopMode.None });
+  public State = Store<PlayerState>({ paused: true, current: 0, duration: 0, loopMode: LoopMode.None, seeking: false });
   public isVideo = Store<boolean>(false);
   public Loaded = Store<boolean>(false);
   public playlistPath = Store<string>();
@@ -155,6 +156,14 @@ export class MediaPlayerRuntime extends AppProcess {
     this.player.addEventListener("timeupdate", () => this.updateState());
     this.player.addEventListener("pause", () => this.updateState());
     this.player.addEventListener("play", () => this.updateState());
+    this.player.addEventListener("seeking", () => {
+      this.seeking.set(true);
+      this.updateState();
+    });
+    this.player.addEventListener("seeked", () => {
+      this.seeking.set(false);
+      this.updateState();
+    });
   }
 
   public Reset() {
@@ -245,6 +254,7 @@ export class MediaPlayerRuntime extends AppProcess {
         current: 0,
         duration: 0,
         loopMode: this.loopMode(),
+        seeking: this.seeking(),
       };
 
     const state = {
@@ -252,6 +262,7 @@ export class MediaPlayerRuntime extends AppProcess {
       current: this.player.currentTime,
       duration: this.player.duration,
       loopMode: this.loopMode(),
+      seeking: this.seeking(),
     };
 
     this.State.set(state);
