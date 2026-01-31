@@ -129,3 +129,15 @@
 #arcShell div.virtual-desktops button.add:active {
   background-color: var(--button-glass-active-bg);
 }
+
+.tb-vertical-left #arcShell div.virtual-desktops {
+  width: calc(100% - var(--taskbar-allocation));
+  bottom: 0;
+  left: var(--taskbar-allocation);
+}
+
+.tb-vertical-right #arcShell div.virtual-desktops {
+  width: calc(100% - var(--taskbar-allocation));
+  bottom: 0;
+  left: 0;
+}

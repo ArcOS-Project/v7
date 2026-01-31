@@ -49,6 +49,11 @@
   position: relative;
 }
 
+.tb-vertical-left #arcShell div.shell div.primary,
+.tb-vertical-right #arcShell div.shell div.primary {
+  align-items: start;
+}
+
 #arcShell div.shell div.secondary {
   z-index: 10000;
   position: relative;

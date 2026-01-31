@@ -20,6 +20,21 @@
   padding: 10px;
 }
 
+.tb-vertical-right #arcShell div.taskbar div.calendar-popup {
+  top: var(--h);
+  left: calc(0px - var(--w) - 10px);
+  margin-top: 0;
+  margin-left: 20px;
+}
+
+
+.tb-vertical-left #arcShell div.taskbar div.calendar-popup {
+  top: var(--h);
+  right: calc(0px - var(--w) - 10px);
+  margin-top: 0;
+  margin-right: 20px;
+}
+
 .theme-light div.taskbar div.calendar-popup::before {
   opacity: 0.1;
 }
@@ -52,7 +67,7 @@
 #arcShell div.taskbar div.calendar-popup div.top h1.date {
   font-size: 28px;
   white-space: nowrap;
-  overflow:hidden;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 
@@ -62,7 +77,7 @@
   font-family: "fredoka";
   font-weight: 500;
   white-space: nowrap;
-  overflow:hidden;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 
@@ -74,6 +89,8 @@
 #arcShell div.taskbar div.calendar-popup.opened {
   opacity: 1;
   margin-top: 0;
+  margin-left: 0;
+  margin-right: 0;
   pointer-events: initial !important;
   /** Don't remove the below scale call, it glitches out otherwise. */
   scale: 1;

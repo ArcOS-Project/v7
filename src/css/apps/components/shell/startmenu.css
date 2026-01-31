@@ -35,6 +35,14 @@ div.shell div.startmenu:not(.opened) {
   visibility: hidden !important;
 }
 
+.tb-vertical-left div.shell div.startmenu:not(.opened) {
+  translate: -50px 0;
+}
+
+.tb-vertical-right div.shell div.startmenu:not(.opened) {
+  translate: -50px 0;
+}
+
 div.shell div.startmenu div.top {
   display: flex;
   gap: 10px;
