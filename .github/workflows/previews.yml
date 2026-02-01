@@ -44,4 +44,4 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         uses: thollander/actions-comment-pull-request@v3
         with:
-          message: "✅ Preview deployment is ready: https://team.arcweb.nl/${{ github.head_ref }}"
+          message: "✅ Preview deployment is ready: https://team.arcweb.nl/previews/framed/${{ github.head_ref }}"
