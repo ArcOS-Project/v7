@@ -66,3 +66,7 @@ div.shell div.actioncenter div.top > div {
 .theme-light div.shell div.actioncenter::before {
   opacity: 0.1;
 }
+
+.tb-vertical-right div.shell div.actioncenter {
+  right: 0;
+}

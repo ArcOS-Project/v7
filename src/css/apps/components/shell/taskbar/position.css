@@ -1,0 +1,91 @@
+.tb-horizontal-top #arcShell div.shell {
+  flex-direction: column-reverse;
+}
+
+.tb-vertical-left #arcShell div.shell {
+  flex-direction: row-reverse;
+}
+
+.tb-vertical-right #arcShell div.shell {
+  flex-direction: row;
+}
+
+.tb-vertical-left #arcShell div.shell div.primary,
+.tb-vertical-right #arcShell div.shell div.primary {
+  width: calc(100% - var(--taskbar-allocation));
+  max-width: calc(100% - var(--taskbar-allocation));
+  height: 100%;
+  max-height: 100%;
+}
+
+.tb-vertical-left #arcShell div.shell div.secondary,
+.tb-vertical-right #arcShell div.shell div.secondary {
+  width: var(--taskbar-allocation);
+  max-width: var(--taskbar-allocation);
+  height: 100%;
+  max-height: 100%;
+}
+
+.tb-vertical-left #arcShell div.taskbar,
+.tb-vertical-right #arcShell div.taskbar {
+  width: 50px;
+  height: calc(100% - 20px);
+  border-top: none;
+  flex-direction: column;
+  margin: 10px;
+}
+
+.tb-vertical-left #arcShell div.shell.docked div.taskbar,
+.tb-vertical-right #arcShell div.shell.docked div.taskbar {
+  width: 50px;
+  height: 100%;
+  border-top: none;
+  flex-direction: column;
+  margin: 0;
+}
+.tb-vertical-left #arcShell div.taskbar {
+  border-right: var(--border);
+}
+
+.tb-vertical-right #arcShell div.taskbar {
+  border-left: var(--border);
+}
+#appRenderer[class*="tb-vertical"] #arcShell div.taskbar div.pinned-apps {
+  height: 0;
+  flex-grow: 1;
+  overflow-y: scroll;
+  width: 40px;
+  max-width: 40px;
+}
+
+#appRenderer[class*="tb-vertical"] #arcShell div.taskbar div.pinned-apps::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+#appRenderer[class*="tb-vertical"] #arcShell div.taskbar button.pinned-app {
+  display: block;
+  margin-left: 0;
+}
+#appRenderer[class*="tb-vertical"] #arcShell div.taskbar button.pinned-app + button.pinned-app {
+  margin-top: 5px;
+}
+
+#appRenderer[class*="tb-vertical"] #arcShell div.taskbar div.opened-apps {
+  overflow-y: scroll;
+}
+
+#appRenderer[class*="tb-vertical"] #arcShell div.taskbar div.opened-apps button.opened-app {
+  flex-direction: column;
+  width: 40px;
+  height: 40px;
+  display: block;
+  margin-left: 0;
+  margin-bottom: 5px;
+  padding: 8px !important;
+}
+
+#appRenderer[class*="tb-vertical"] #arcShell div.taskbar > button {
+  min-height: 40px;
+}

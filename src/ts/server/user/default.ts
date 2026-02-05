@@ -19,6 +19,7 @@ export const DefaultUserPreferences: UserPreferences = {
       clockDate: false,
       clockSecs: false,
       batteryPercentage: false,
+      position: "horizontal-bottom",
       openedAppsPerWorkspace: false,
     },
     actionCenter: {
