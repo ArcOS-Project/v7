@@ -185,7 +185,7 @@ export function deepCopyWithBlobs<T>(obj: T): Promise<T> {
 }
 
 export function authcode() {
-  return Server.authCode ?? "";
+  return Server.authCode ? `?authcode=${Server.authCode}` : "";
 }
 
 export function groupByTimeFrame<T extends Record<string, any>>(items: T[], column: keyof T = "createdAt") {
