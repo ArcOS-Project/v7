@@ -28,6 +28,8 @@ export class ProcessInfoRuntime extends AppProcess {
   //#endregion
 
   async kill(proc: Process) {
+    this.Log(`kill: ${proc.pid}`);
+
     const elevated = await Daemon!.elevation!.manuallyElevate({
       what: `ArcOS needs your permission to kill a process`,
       image:
@@ -69,6 +71,8 @@ export class ProcessInfoRuntime extends AppProcess {
   }
 
   killError(name: string, result: ProcessKillResult) {
+    this.Log(`killError: ${name} -> ${result}`);
+
     const caption = ProcessKillResultCaptions[result];
 
     MessageBox(

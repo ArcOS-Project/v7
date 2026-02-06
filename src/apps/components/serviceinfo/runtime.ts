@@ -40,6 +40,8 @@ export class ServiceInfoRuntime extends AppProcess {
   //#endregion
 
   async toggleRunningState() {
+    this.Log(`toggleRunningState`);
+
     if (this.service()?.pid) {
       MessageBox(
         {

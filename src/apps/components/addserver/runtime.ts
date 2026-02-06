@@ -24,6 +24,8 @@ export class AddServerRuntime extends AppProcess {
   //#endregion LIFECYCLE
 
   async addServer(hostname: string, port: number, authCode?: string) {
+    this.Log(`addServer: ${hostname}:${port}`);
+
     const url = this.createServerUrl(hostname, port);
 
     if (Server.isAdded(url)) {
@@ -74,6 +76,8 @@ export class AddServerRuntime extends AppProcess {
   }
 
   private async callServer(url: string, authCode?: string) {
+    this.Log(`callServer: ${url}`);
+
     try {
       const response = await axios.get(`/ping`, {
         timeout: 3000,
@@ -90,6 +94,8 @@ export class AddServerRuntime extends AppProcess {
   }
 
   async testServer(hostname: string, port: number, authCode?: string) {
+    this.Log(`testServer: ${hostname}:${port}`);
+
     const url = this.createServerUrl(hostname, port);
     const isValid = await this.callServer(url, authCode);
 

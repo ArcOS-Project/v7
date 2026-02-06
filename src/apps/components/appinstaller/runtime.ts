@@ -91,6 +91,8 @@ export class AppInstallerRuntime extends AppProcess {
   //#region DISTRIB
 
   async revert() {
+    this.Log(`Reverting changes`);
+
     // I don't know how well this revert works because a package install
     // has never really errored for me before.
 
@@ -113,6 +115,8 @@ export class AppInstallerRuntime extends AppProcess {
   }
 
   runNow() {
+    this.Log(`Running freshly installed application`);
+
     this.closeWindow();
     this.spawnApp(this.metadata!.appId, +Env.get("shell_pid"));
   }

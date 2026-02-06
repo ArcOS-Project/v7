@@ -91,6 +91,8 @@ export class AdminPortalRuntime extends AppProcess {
   //#region TPA
 
   async saveTpaFilesOfBugReport(report: BugReport) {
+    this.Log(`saveTpaFilesOfBugReport: ${report._id ?? "<unknown report>"}`);
+    
     // Regular expression assumes URL format:
     // https://domain.tld/tpa/v3/userId/timestamp/appId@filename.js
     const regex =
@@ -133,10 +135,10 @@ export class AdminPortalRuntime extends AppProcess {
 
   //#endregion
   //#region UTILS
-  
+
   async viewUserById(userId: string) {
     const user = (await this.admin.getAllUsers()).find((u) => u._id === userId);
-    
+
     this.switchPage("viewUser", { user });
   }
 

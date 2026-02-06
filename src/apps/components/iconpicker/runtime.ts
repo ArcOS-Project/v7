@@ -44,12 +44,16 @@ export class IconPickerRuntime extends AppProcess {
   //#endregion
 
   async confirm() {
+    this.Log(`Confirm: dispatching selection to ${this.returnId}`);
+
     SysDispatch.dispatch("ip-confirm", [this.returnId, this.selected()]); // Return selection to invocator
 
     await this.closeWindow();
   }
 
   async cancel() {
+    this.Log(`Cancel: dispatching cancel to ${this.returnId}`);
+
     SysDispatch.dispatch("ip-cancel", [this.returnId]); // Broadcast cancel to invocator
 
     await this.closeWindow();

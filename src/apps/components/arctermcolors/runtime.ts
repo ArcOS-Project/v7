@@ -47,6 +47,8 @@ export class ArcTermColorsRuntime extends AppProcess {
   //#endregion LIFECYCLE
 
   async writeDefaultConfiguration() {
+    this.Log(`Writing default configuration`);
+
     await Fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(DefaultArcTermConfiguration, null, 2)), undefined, false);
 
     this.arcTermConfiguration.set(DefaultArcTermConfiguration);
@@ -58,6 +60,8 @@ export class ArcTermColorsRuntime extends AppProcess {
   }
 
   choosePreset(preset: ArcTermColorPreset) {
+    this.Log(`Choosing preset: ${preset.name ?? "<untitled>"}`);
+
     // Remove additional metadata from preset
     const newData = {
       ...preset,
@@ -73,6 +77,8 @@ export class ArcTermColorsRuntime extends AppProcess {
   }
 
   async savePresetToFile(state = this.arcTermConfiguration()) {
+    this.Log(`Saving preset to file`);
+
     const [path] = await Daemon.files!.LoadSaveDialog({
       title: "Choose where to save the colors",
       icon: "ArcTermIcon",
@@ -96,6 +102,8 @@ export class ArcTermColorsRuntime extends AppProcess {
   }
 
   async openPreset() {
+    this.Log(`Opening preset from file`);
+
     const [path] = await Daemon.files!.LoadSaveDialog({
       title: "Choose a colorset to open",
       icon: "ArcTermIcon",
@@ -108,6 +116,8 @@ export class ArcTermColorsRuntime extends AppProcess {
   }
 
   async readPresetFromFile(path = this.savePath) {
+    this.Log(`Reading preset from file`);
+
     if (!path) return;
 
     const contents = await Fs.readFile(path);
@@ -126,6 +136,8 @@ export class ArcTermColorsRuntime extends AppProcess {
   }
 
   async applyConfiguration() {
+    this.Log(`Applying configuration`);
+
     const { stop } = await Daemon.helpers?.GlobalLoadIndicator("Saving configuration...")!;
     await Fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(this.arcTermConfiguration(), null, 2)), undefined, false);
 
@@ -134,6 +146,8 @@ export class ArcTermColorsRuntime extends AppProcess {
   }
 
   async readConfiguration() {
+    this.Log(`Reading configuration`);
+
     const path = this.CONFIG_PATH;
 
     const contents = await Fs.readFile(path);
@@ -151,6 +165,8 @@ export class ArcTermColorsRuntime extends AppProcess {
   }
 
   async error_savePath() {
+    this.Log(`error_savePath`);
+
     return new Promise<boolean>((r) => {
       MessageBox(
         {

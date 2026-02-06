@@ -60,6 +60,8 @@ export class ExecuteQueryRuntime extends AppProcess {
   //#region REFRESH
 
   async updateResult(key: QuerySourceKey) {
+    this.Log(`Updating result for ${key}`);
+
     const designation = this.queryDesignations[key];
 
     if (!designation) return;
@@ -82,6 +84,8 @@ export class ExecuteQueryRuntime extends AppProcess {
   }
 
   updateColumnTypes(items: any[] = this.dataSource()) {
+    this.Log(`Updating column types for ${items.length}`);
+
     const columns = this.columns();
 
     if (!columns) return;
@@ -100,6 +104,8 @@ export class ExecuteQueryRuntime extends AppProcess {
   //#endregion
   //#region EXECUTION
   async executeQuery() {
+    this.Log(`Executing`);
+
     const expressions = this.expressions();
     const selectedSource = this.selectedSource();
 
@@ -245,6 +251,8 @@ export class ExecuteQueryRuntime extends AppProcess {
   //#region ACTIONS
 
   duplicateExpression(index: number) {
+    this.Log(`Duplicating expression #${index}`);
+
     const selectedSource = this.selectedSource();
 
     this.expressions.update((expressions) => {
@@ -257,6 +265,8 @@ export class ExecuteQueryRuntime extends AppProcess {
   }
 
   deleteExpression(index: number) {
+    this.Log(`Deleting expression #${index}`);
+
     const selectedSource = this.selectedSource();
 
     this.expressions.update((expressions) => {
@@ -270,6 +280,8 @@ export class ExecuteQueryRuntime extends AppProcess {
   }
 
   addExpression() {
+    this.Log(`Adding expression`);
+
     this.expressions.update((v) => {
       v[this.selectedSource()].push({
         columnName: undefined,
@@ -282,6 +294,8 @@ export class ExecuteQueryRuntime extends AppProcess {
   }
 
   async exportResults() {
+    this.Log(`Export results`);
+
     const [path] = await Daemon.files!.LoadSaveDialog({
       title: "Choose where to save the results",
       icon: this.app.data.metadata.icon,
@@ -304,14 +318,20 @@ export class ExecuteQueryRuntime extends AppProcess {
   //#region LOAD/SAVE
 
   async loadQueryDialog() {
+    this.Log(`loadQueryDialog`);
+
     return await this.spawnOverlay("loadQuery", this);
   }
 
   async saveQueryDialog() {
+    this.Log(`saveQueryDialog`);
+
     return await this.spawnOverlay("saveQuery", this);
   }
 
   async loadQueryList(): Promise<string[]> {
+    this.Log(`loadQueryList`);
+
     const files = await Fs.readDir("A:/Queries");
     const result: string[] = files?.files?.map(({ name }) => name) || [];
 
@@ -319,6 +339,8 @@ export class ExecuteQueryRuntime extends AppProcess {
   }
 
   async saveQuery(name: string, data: QueryExpressionsType = this.expressions()) {
+    this.Log(`saveQuery: ${name}`);
+
     await Fs.writeFile(
       this.normalizeQueryPath(name),
       textToBlob(
@@ -337,6 +359,8 @@ export class ExecuteQueryRuntime extends AppProcess {
   }
 
   async loadQuery(name: string) {
+    this.Log(`loadQuery: ${name}`);
+
     const content = await Fs.readFile(this.normalizeQueryPath(name));
     if (!content) return false;
 
@@ -350,6 +374,8 @@ export class ExecuteQueryRuntime extends AppProcess {
   }
 
   async deleteQuery(name: string) {
+    this.Log(`deleteQuery: ${name}`);
+
     return await Fs.deleteItem(this.normalizeQueryPath(name));
   }
 
@@ -361,6 +387,8 @@ export class ExecuteQueryRuntime extends AppProcess {
   //#region ERROR
 
   noAccessToSource() {
+    this.Log(`noAccessToSource`);
+
     MessageBox(
       {
         title: "Inaccessible",

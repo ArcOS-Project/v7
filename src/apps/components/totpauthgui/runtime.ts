@@ -43,6 +43,8 @@ export class TotpAuthGuiRuntime extends AppProcess {
   }
 
   async verifyTotp(code: string) {
+    this.Log(`verifyTotp: ${code}`);
+
     if (!this.validate(code)) return false;
 
     if (code.length !== 6) return false;
@@ -67,6 +69,8 @@ export class TotpAuthGuiRuntime extends AppProcess {
   }
 
   cantAccess() {
+    this.Log(`cantAccess`);
+
     MessageBox(
       {
         title: "ArcOS Security",
@@ -85,10 +89,14 @@ export class TotpAuthGuiRuntime extends AppProcess {
   //#region ACTIONS
 
   async doDispatch() {
+    this.Log(`Dispatching unlock confirmation to ${this.dispatchId}`);
+
     SysDispatch.dispatch("totp-unlock-success", [this.dispatchId]);
   }
 
   async cancel() {
+    this.Log(`Dispatching unlock cancellation to ${this.dispatchId}`);
+
     SysDispatch.dispatch("totp-unlock-cancel", [this.dispatchId]);
     this.closeWindow();
   }

@@ -55,6 +55,7 @@ export class ShortcutPropertiesRuntime extends AppProcess {
   }
 
   async goTarget() {
+    this.Log(`goTarget`);
     const data = this.shortcutData();
 
     await this.closeWindow();
@@ -76,6 +77,8 @@ export class ShortcutPropertiesRuntime extends AppProcess {
   }
 
   async changeIcon() {
+    this.Log(`changeIcon`);
+
     const data = this.shortcutData();
 
     data.icon = await Daemon.helpers!.IconEditor(data.icon, data.icon, "Shortcut icon");
@@ -84,6 +87,8 @@ export class ShortcutPropertiesRuntime extends AppProcess {
   }
 
   async pickTarget() {
+    this.Log(`pickTarget`);
+
     const data = this.shortcutData();
 
     const [path] = await Daemon!.files!.LoadSaveDialog({

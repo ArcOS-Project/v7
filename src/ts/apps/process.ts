@@ -12,7 +12,7 @@ import type { RenderArgs } from "$types/process";
 import type { UserPreferences } from "$types/user";
 import type { Draggable } from "@neodrag/vanilla";
 import { mount } from "svelte";
-import { type App, type AppContextMenu, type AppProcessData, type ContextMenuItem } from "../../types/app";
+import { type App, type AppContextMenu, type AppProcessData, type ContextMenuItem, type ToastMessage } from "../../types/app";
 import { Sleep } from "../sleep";
 import { Store, type ReadableStore } from "../writable";
 import { AppRuntimeError } from "./error";
@@ -30,6 +30,8 @@ export class AppProcess extends ProcessWithPermissions {
   username: string = "";
   shell: ShellRuntime | undefined;
   overridePopulatable: boolean = false;
+  private toastTimeout?: NodeJS.Timeout;
+  public toastMessage = Store<ToastMessage | undefined>();
   public safeMode = false;
   protected overlayStore: Record<string, App> = {};
   protected elevations: Record<string, ElevationData> = {};
@@ -38,6 +40,7 @@ export class AppProcess extends ProcessWithPermissions {
   public readonly contextMenu: AppContextMenu = {};
   public altMenu = Store<ContextMenuItem[]>([]);
   public windowFullscreen = Store<boolean>(false);
+
   draggable: Draggable | undefined;
 
   //#region LIFECYCLE
@@ -90,6 +93,21 @@ export class AppProcess extends ProcessWithPermissions {
   // Conditional function that can prohibit closing if it returns false
   async onClose() {
     return true;
+  }
+
+  async ShowToast(toast: ToastMessage, durationMs: number = 3000) {
+    await this.HideToast();
+
+    this.toastMessage.set(toast);
+    this.toastTimeout = setTimeout(() => {
+      this.toastMessage.set(undefined);
+    }, durationMs);
+  }
+
+  async HideToast() {
+    this.toastMessage.set(undefined);
+    clearTimeout(this.toastTimeout);
+    await Sleep(200); // Delay to wait for the hide animation
   }
 
   async closeWindow(kill = true) {
@@ -402,5 +420,9 @@ export class AppProcess extends ProcessWithPermissions {
 
   getIconStore(id: string): ReadableStore<string> {
     return Daemon?.icons?.getIconStore(id)!;
+  }
+
+  override Log(message: string, level?: LogLevel) {
+    this.ShowToast({ content: message }, 3000);
   }
 }

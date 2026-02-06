@@ -42,19 +42,24 @@ export class ShareListGuiRuntime extends AppProcess {
     this.joinedShares.set(await this.shares.getJoinedShares()); // Get joined shares from manager
     this.loading.set(false);
 
-    stop()
+    stop();
   }
 
   //#endregion
   //#region ACTIONS
 
   async manageShare() {
+    this.Log(`manageShare: ${this.selectedShare()}`);
+
     this.closeWindow(); // Close the listgui
     this.spawnOverlayApp("ShareMgmtGui", this.parentPid, this.selectedShare()); // Spawn the mgmtgui
   }
 
   async leaveShare() {
     const shareId = this.selectedShare(); // Get the selected share
+
+    this.Log(`leaveShare: ${shareId}`);
+
     MessageBox(
       {
         title: "Leave share?",
@@ -90,6 +95,8 @@ export class ShareListGuiRuntime extends AppProcess {
     const isMounted = this.selectedIsMounted(); // Is mounted?
     const shareId = this.selectedShare(); // Selected share
 
+    this.Log(`mountShare: ${shareId}`);
+
     if (isMounted) {
       MessageBox(
         {
@@ -123,6 +130,8 @@ export class ShareListGuiRuntime extends AppProcess {
   async openShare() {
     const shareId = this.selectedShare(); // Get the selected share
     const drive = Fs.drives[shareId] as SharedDrive; // Get the mount
+
+    this.Log(`openShare: ${shareId}`);
 
     if (!drive) return; // No mount? return
 
