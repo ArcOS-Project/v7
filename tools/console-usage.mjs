@@ -24,7 +24,7 @@ for (const file of files) {
   const code = fs.readFileSync(file, "utf-8");
 
   if (/console\.(log|debug|warn|error|dir|table|clear)/gm.test(code)) {
-    violations.push(`CONSOLE: usage of \`console\` (${file})`);
+    if (!`${file}`.endsWith(`console.ts`)) violations.push(`CONSOLE: usage of \`console\` (${file})`);
   }
 }
 

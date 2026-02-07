@@ -421,8 +421,4 @@ export class AppProcess extends ProcessWithPermissions {
   getIconStore(id: string): ReadableStore<string> {
     return Daemon?.icons?.getIconStore(id)!;
   }
-
-  override Log(message: string, level?: LogLevel) {
-    this.ShowToast({ content: message }, 3000);
-  }
 }
