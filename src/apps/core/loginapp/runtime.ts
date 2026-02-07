@@ -19,8 +19,8 @@ import type { ServerInfo } from "$types/server";
 import type { UserInfo } from "$types/user";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
-import { MigrationService } from "../../../ts/migrations";
 import { AppProcess } from "../../../ts/apps/process";
+import { MigrationService } from "../../../ts/migrations";
 import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps, PersistenceInfo } from "./types";
 
@@ -179,7 +179,8 @@ export class LoginAppRuntime extends AppProcess {
 
     if (userInfo.hasTotp && userInfo.restricted) {
       this.loadingStatus.set("Requesting 2FA");
-      const unlocked = await this.askForTotp(token, userDaemon.userInfo?._id);
+      
+      const unlocked = await this.askForTotp(userDaemon.userInfo?._id);
 
       if (!unlocked) {
         await userDaemon.account!.discontinueToken();
@@ -455,7 +456,7 @@ export class LoginAppRuntime extends AppProcess {
     Cookies.remove("arcUsername");
   }
 
-  private async askForTotp(token: string, userId: string | undefined) {
+  private async askForTotp(userId: string | undefined) {
     const returnId = UUID();
 
     return new Promise(async (r) => {

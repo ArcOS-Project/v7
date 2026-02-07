@@ -39,6 +39,8 @@ export class TrayHostRuntime extends Process {
     options: TrayIconOptions,
     process: typeof TrayIconProcess = TrayIconProcess
   ) {
+    this.Log(`createTrayIcon: for PID ${pid}, identifier=${identifier}`);
+
     await Stack.waitForAvailable();
     const trayIcons = this.trayIcons();
 
@@ -65,6 +67,8 @@ export class TrayHostRuntime extends Process {
   }
 
   async disposeTrayIcon(pid: number, identifier: string) {
+    this.Log(`disposeTrayIcon: for PID ${pid}, identifier=${identifier}`);
+
     const trayIcons = this.trayIcons();
     const discriminator: TrayIconDiscriminator = `${pid}#${identifier}`;
 
@@ -79,6 +83,8 @@ export class TrayHostRuntime extends Process {
   }
 
   disposeProcessTrayIcons(pid: number) {
+    this.Log(`disposeProcessTrayIcons: for PID ${pid}`);
+
     const trayIcons = this.trayIcons();
 
     for (const id of Object.keys(trayIcons) as TrayIconDiscriminator[]) {

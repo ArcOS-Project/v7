@@ -33,6 +33,7 @@ export class ImageViewerRuntime extends AppProcess {
   //#endregion
 
   async readFile(path: string) {
+    this.Log(`readFile: ${path}`);
     try {
       const url = await Fs.direct(path);
 
@@ -50,6 +51,8 @@ export class ImageViewerRuntime extends AppProcess {
   }
 
   async readFileIndirectFallback(path: string) {
+    this.Log(`Reading file in full using readFile because accessing using DFA failed: ${path}`);
+
     const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",

@@ -59,6 +59,7 @@ export class IconEditorRuntime extends AppProcess {
   //#endregion
 
   revert() {
+    this.Log(`Reverting changes`);
     this.icons.set({ ...(this.iconService?.Configuration() || {}) });
     this.setGroups();
     this.selectedIcon.set("");
@@ -67,8 +68,9 @@ export class IconEditorRuntime extends AppProcess {
   }
 
   setGroups() {
-    const groups = this.iconService?.getGroupedIcons();
+    this.Log(`setGroups`);
 
+    const groups = this.iconService?.getGroupedIcons();
     if (!groups) return;
 
     const result: Record<string, string[]> = Object.fromEntries(Object.entries(groups).map(([k, v]) => [k, Object.keys(v)]));
@@ -77,11 +79,15 @@ export class IconEditorRuntime extends AppProcess {
   }
 
   updateFiltered(v = this.selectedGroup()) {
+    this.Log(`updateFiltered`);
+
     const icons = this.icons();
     this.filtered.set(!v ? icons : Object.fromEntries(Object.entries(icons).filter(([k]) => this.iconGroups()[v]?.includes(k))));
   }
 
   async save() {
+    this.Log(`Saving changes`);
+
     this.iconService?.Configuration.set({ ...this.icons() });
     this.hasChanges.set(false);
     await this.closeWindow();
@@ -103,6 +109,7 @@ export class IconEditorRuntime extends AppProcess {
   }
 
   async editIcon() {
+    this.Log(`editIcon: ${this.selectedIcon()}`);
     const icon = await Daemon.helpers!.IconEditor(
       this.icons()[this.selectedIcon()],
       `@builtin::${this.selectedIcon()}`,

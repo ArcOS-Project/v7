@@ -189,6 +189,8 @@ export class WallpaperRuntime extends AppProcess {
   //#region FILESYSTEM
 
   async deleteItem(path: string) {
+    this.Log(`deleteItem`);
+
     const filename = getItemNameFromPath(path);
 
     MessageBox(
@@ -216,6 +218,8 @@ export class WallpaperRuntime extends AppProcess {
   }
 
   async uploadItems() {
+    this.Log(`uploadItems`);
+
     if (this._disposed) return;
 
     const prog = await Daemon!.files!.FileProgress(
@@ -247,6 +251,8 @@ export class WallpaperRuntime extends AppProcess {
   //#region CONFIGURATION
 
   async loadConfiguration() {
+    this.Log(`Loading configuration`);
+
     try {
       const contents = await Fs.readFile(this.CONFIG_PATH);
       if (!contents) return await this.writeConfiguration({});
@@ -259,6 +265,8 @@ export class WallpaperRuntime extends AppProcess {
   }
 
   async writeConfiguration(data: DesktopIcons) {
+    this.Log(`Writing configuration`);
+
     await Fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(data, null, 2)));
 
     return data;
@@ -267,6 +275,8 @@ export class WallpaperRuntime extends AppProcess {
   // 7.0.5 -> 7.0.6+
   // Migration of desktop icons from the preferences to a dedicated file in U:/System
   async migrateDesktopIcons() {
+    this.Log(`migrateDesktopIcons`);
+
     const migrationPath = join(UserPaths.Migrations, "DeskIconMig-706.lock");
     const pref = this.userPreferences().appPreferences.desktopIcons;
     const migration = await Fs.stat(migrationPath);

@@ -104,11 +104,15 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async Search() {
+    this.Log(`Searching`);
+
     this.searching.set(true);
     this.switchPage("search", { query: this.searchQuery() });
   }
 
   async installPackage(pkg: StoreItem, onDownloadProgress?: FilesystemProgressCallback) {
+    this.Log(`installPackage: ${pkg?._id}`);
+
     const freshPkg = (await this.distrib.getStoreItem(pkg._id))!;
     if (freshPkg.deprecated) {
       const go = await Daemon!.helpers?.Confirm(
@@ -162,6 +166,8 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async updatePackage(pkg: StoreItem, onDownloadProgress?: FilesystemProgressCallback) {
+    this.Log(`updatePackage: ${pkg._id}`);
+
     const freshPkg = (await this.distrib.getStoreItem(pkg._id))!;
     if (freshPkg.deprecated) {
       const go = await Daemon!.helpers?.Confirm(
@@ -217,6 +223,8 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async deprecatePackage(pkg: StoreItem) {
+    this.Log(`deprecatePackage: ${pkg._id}`);
+
     const elevated = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to deprecate one of your packages",
       title: pkg.pkg.name,
@@ -233,6 +241,8 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async deletePackage(pkg: StoreItem) {
+    this.Log(`deletePackage: ${pkg._id}`);
+
     const elevated = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to delete one of your packages",
       title: pkg.pkg.name,
@@ -249,6 +259,8 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async publishPackage() {
+    this.Log(`publishPackage`);
+
     const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Select package to publish",
       icon: "AppStoreIcon",
@@ -299,6 +311,8 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async updateStoreItem(pkg: StoreItem) {
+    this.Log(`updateStoreItem: ${pkg._id}`);
+
     const [path] = await Daemon!.files!.LoadSaveDialog({
       title: `Select update for '${pkg.pkg.name}'`,
       icon: StoreItemIcon(pkg),
@@ -347,6 +361,8 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   readmeFallback(pkg: StoreItem): string {
+    this.Log(`readmeFallback: ${pkg._id}`);
+
     const times = Plural("time", pkg.installCount);
     dayjs.extend(advancedFormat);
 
@@ -369,6 +385,8 @@ The author hasn't provided a readme file themselves, so this one has been automa
   }
 
   learnMoreBlocking() {
+    this.Log(`learnMoreBlocking`);
+
     MessageBox(
       {
         title: "What is a blocked package?",
@@ -383,6 +401,8 @@ The author hasn't provided a readme file themselves, so this one has been automa
   }
 
   registerOperation(id: string, proc: InstallerProcessBase) {
+    this.Log(`registerOperation: ${id} for ${proc.pid}`);
+
     if (this.operations[id]) return false;
 
     this.operations[id] = proc;
@@ -391,6 +411,8 @@ The author hasn't provided a readme file themselves, so this one has been automa
   }
 
   discardOperation(id: string) {
+    this.Log(`discardOperation: ${id}`);
+
     if (!this.operations[id]) return false;
 
     delete this.operations[id];
@@ -403,6 +425,8 @@ The author hasn't provided a readme file themselves, so this one has been automa
   }
 
   async viewImage(url: string, name?: string) {
+    this.Log(`viewImage: ${url} name=${name}`);
+
     const uuid = name || UUID();
     const path = `T:/Apps/${this.app.id}/${uuid}`;
     const array = await axios.get(url, { responseType: "arraybuffer" });

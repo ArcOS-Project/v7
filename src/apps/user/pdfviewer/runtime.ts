@@ -30,6 +30,8 @@ export class PdfViewerRuntime extends AppProcess {
   //#endregion
 
   async readFile(path: string) {
+    this.Log(`readFile: ${path}`);
+
     try {
       const url = await Fs.direct(path);
 
@@ -46,6 +48,8 @@ export class PdfViewerRuntime extends AppProcess {
   }
 
   async readFileIndirectFallback(path: string) {
+    this.Log(`Reading file in full using readFile because DFA accessing failed: ${path}`);
+
     const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
