@@ -18,6 +18,7 @@ import { MediaPlayerAltMenu } from "./altmenu";
 import TrayPopup from "./MediaPlayer/TrayPopup.svelte";
 import { LoopMode, type AudioFileMetadata, type MetadataConfiguration, type PlayerState } from "./types";
 import { getReadableVibrantColor } from "$ts/color";
+import { CommandResult } from "$ts/result";
 
 export class MediaPlayerRuntime extends AppProcess {
   private readonly METADATA_PATH = join(UserPaths.Configuration, "MediaPlayer", "Metadata.json");
@@ -649,7 +650,7 @@ export class MediaPlayerRuntime extends AppProcess {
     return result;
   }
 
-  async parseMetadata(path: string, apply = true) {
+  async parseMetadata(path: string, apply = true): Promise<CommandResult<AudioFileMetadata>> {
     this.Log(`parseMetadata: ${path} apply=${apply}`);
 
     try {
@@ -661,7 +662,7 @@ export class MediaPlayerRuntime extends AppProcess {
       const existing = this.MetadataConfiguration()[path];
       if (existing) {
         if (apply) this.CurrentMediaMetadata.set(existing);
-        return existing;
+        return CommandResult.Ok(existing);
       }
 
       if (apply) {
@@ -672,7 +673,7 @@ export class MediaPlayerRuntime extends AppProcess {
       const content = await Fs.readFile(path);
       if (!content) {
         if (apply) this.LoadingMetadata.set(false);
-        return undefined;
+        return CommandResult.Error("Failed to read the source file");
       }
 
       const metadata = await parseBuffer(new Uint8Array(content));
@@ -687,8 +688,10 @@ export class MediaPlayerRuntime extends AppProcess {
 
         return v;
       });
-    } catch {
-      return;
+
+      return CommandResult.Ok(normalized);
+    } catch (e) {
+      return CommandResult.Error(`${e}`);
     }
   }
 

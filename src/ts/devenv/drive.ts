@@ -43,7 +43,7 @@ export class DevDrive extends FilesystemDrive {
   }
 
   async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
-    try {
+      try {
       const response = await this.axios.get<DirectoryReadReturn>(path ? `/fs/dir/${path}` : `/fs/dir`);
 
       return response.data;

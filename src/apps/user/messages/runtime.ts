@@ -17,6 +17,7 @@ import dayjs from "dayjs";
 import Fuse from "fuse.js";
 import { messagingPages } from "./store";
 import type { MessagingPage } from "./types";
+import { CommandResult } from "$ts/result";
 
 export class MessagingAppRuntime extends AppProcess {
   service: MessagingInterface;
@@ -122,17 +123,17 @@ export class MessagingAppRuntime extends AppProcess {
       this.windowTitle.set(`${message.title} from ${message.author?.displayName || message.author?.username || "unknown user"}`);
   }
 
-  async userInfo(userId: string): Promise<PublicUserInfo | undefined> {
+  async userInfo(userId: string): Promise<CommandResult<PublicUserInfo>> {
     this.Log(`userInfo: ${userId}`);
 
-    if (this.userInfoCache[userId]) return this.userInfoCache[userId];
+    if (this.userInfoCache[userId]) return CommandResult.Ok(this.userInfoCache[userId]);
 
     const info = await Daemon?.account?.getPublicUserInfoOf(userId);
-    if (!info) return undefined;
+    if (!info) return CommandResult.Error("Failed to obtain user info");
 
     this.userInfoCache[userId] = info;
 
-    return info;
+    return CommandResult.Ok(info);
   }
 
   async readMessageFromFile(path: string) {

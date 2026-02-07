@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { Fs, SoundBus, Stack } from "$ts/env";
+import { CommandResult } from "$ts/result";
 import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
@@ -237,9 +238,10 @@ export class SqeletonRuntime extends AppProcess {
     });
   }
 
-  async tableToSql(table: SqlTable, pretty = true, dropFirst = false) {
+  async tableToSql(table: SqlTable, pretty = true, dropFirst = false): Promise<CommandResult<string>> {
     const items = (await this.execute(`SELECT * FROM ${table.name} WHERE 1;`, true, true))?.[0];
-    if (!items) return undefined;
+
+    if (!items) return CommandResult.Error("Didn't find any items");
 
     let result = ``;
     const delimiter = pretty ? ", " : ",";
@@ -271,7 +273,7 @@ export class SqeletonRuntime extends AppProcess {
       result += `${columns.join(delimiter)})${items.length - 1 <= i ? ";" : ","}${nl}`;
     }
 
-    return result;
+    return CommandResult.Ok(result);
   }
 
   async hasSyntaxError(input: string) {

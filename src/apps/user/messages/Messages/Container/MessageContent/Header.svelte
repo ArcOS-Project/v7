@@ -3,6 +3,7 @@
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import UserLink from "$lib/UserLink.svelte";
   import { ProfilePictures } from "$ts/images/pfp";
+  import { CommandResult } from "$ts/result";
   import { Daemon } from "$ts/server/user/daemon";
   import type { ExpandedMessage } from "$types/messaging";
   import type { PublicUserInfo } from "$types/user";
@@ -18,12 +19,21 @@
   onMount(async () => {
     if (!message) return;
 
-    user = (isSent ? await process.userInfo(message?.recipient) : message?.author!) || {
-      username: "(deleted user)",
-      profilePicture: ProfilePictures.def,
-      admin: false,
-      dispatchClients: 0,
-    };
+    const userInfoResult = isSent
+      ? await process.userInfo(message?.recipient)
+      : CommandResult.Ok<PublicUserInfo>(message?.author!);
+
+    if (!userInfoResult?.success) {
+      user = {
+        username: "(deleted user)",
+        profilePicture: ProfilePictures.def,
+        admin: false,
+        dispatchClients: 0,
+      };
+    } else {
+      user = userInfoResult.result;
+    }
+
     date = dayjs(message?.createdAt).format("D MMMM YYYY, hh:mm A");
   });
 </script>
