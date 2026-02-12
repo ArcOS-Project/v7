@@ -31,7 +31,7 @@ export class AppRegistrationUserContext extends UserContext {
       Object.keys(BuiltinAppImportPathAbsolutes).map(async (path) => {
         if (!this.safeMode && blocklist.includes(path)) return null;
         const regex = new RegExp(/import\(\"(?<path>.*?)\"\)/gm);
-        await Fs.createDirectory("T:/AppMeta");
+        
         try {
           const start = performance.now();
           const fn = BuiltinAppImportPathAbsolutes[path];
@@ -52,27 +52,7 @@ export class AppRegistrationUserContext extends UserContext {
           appCopy._internalSysVer = `v${ArcOSVersion}-${ArcMode()}_${ArcBuild()}`;
           appCopy._internalOriginalPath = path;
           appCopy._internalLoadTime = end;
-          if (originalPath) {
-            try {
-              appCopy._internalResolvedPath = originalPath;
-              const result = await (await fetch(import.meta.env.DEV ? originalPath : `./assets/${originalPath}`)).text();
-              await Fs.writeFile(`T:/AppMeta/${appCopy.id}.js`, textToBlob(`// #unsafe\n${result}`,"text/javascript"));
-              await Fs.writeFile(
-                `T:/AppMeta/${appCopy.id}.tpa`,
-                textToBlob(
-                  JSON.stringify({
-                    ...appCopy,
-                    workingDirectory: `T:/AppMeta`,
-                    entrypoint: `${appCopy.id}.js`,
-                    assets: undefined,
-                    thirdParty: true,
-                  })
-                )
-              );
-            } catch (e) {
-              this.Log(`Failed to write AppMeta file for ${originalPath}: ${e}`, LogLevel.warning);
-            }
-          }
+          if (originalPath) appCopy._internalResolvedPath = originalPath;
 
           cb(appCopy);
           this.Log(
