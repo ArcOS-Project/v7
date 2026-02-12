@@ -1,8 +1,8 @@
+import type { IUserDaemon } from "$interfaces/daemon";
 import { Env } from "$ts/env";
 import type { FileHandler } from "$types/fs";
-import type { UserDaemon } from "../daemon";
 
-const installArcPkg: (d: UserDaemon) => FileHandler = (daemon) => ({
+const installArcPkg: (d: IUserDaemon) => FileHandler = (daemon) => ({
   isHandler: true,
   name: "Install package",
   description: "Installs this ArcOS package on your account",

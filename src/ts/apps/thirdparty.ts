@@ -3,9 +3,10 @@ import { Daemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import { join } from "$ts/util/fs";
 import type { AppProcessData } from "$types/app";
+import type { IThirdPartyAppProcess } from "$types/thirdparty";
 import { AppProcess } from "./process";
 
-export class ThirdPartyAppProcess extends AppProcess {
+export class ThirdPartyAppProcess extends AppProcess implements IThirdPartyAppProcess {
   public static readonly TPA_REV = 1;
   workingDirectory: string;
   operationId: string;

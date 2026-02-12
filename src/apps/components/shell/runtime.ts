@@ -1,3 +1,4 @@
+import type { IArcFindRuntime } from "$interfaces/arcfind";
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { Env, Fs, Stack, SysDispatch } from "$ts/env";
@@ -12,13 +13,12 @@ import type { Workspace } from "$types/user";
 import dayjs from "dayjs";
 import { type FuseResult } from "fuse.js";
 import { fetchWeatherApi } from "openmeteo";
-import type { ArcFindRuntime } from "../arcfind/runtime";
-import type { TrayHostRuntime } from "../trayhost/runtime";
+import type { IShellRuntime, ITrayHostRuntime } from "../../../interfaces/shell";
 import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
 import { shortWeekDays, type CalendarMonth, type WeatherInformation } from "./types";
 
-export class ShellRuntime extends AppProcess {
+export class ShellRuntime extends AppProcess implements IShellRuntime {
   public startMenuOpened = Store<boolean>(false);
   public actionCenterOpened = Store<boolean>(false);
   public workspaceManagerOpened = Store<boolean>(false);
@@ -31,8 +31,8 @@ export class ShellRuntime extends AppProcess {
   public FullscreenCount = Store<Record<string, Set<number>>>({});
   public openedTrayPopup = Store<string>();
   public searchLoading = Store<boolean>(true);
-  public trayHost?: TrayHostRuntime;
-  public arcFind?: ArcFindRuntime;
+  public trayHost?: ITrayHostRuntime;
+  public arcFind?: IArcFindRuntime;
   public ready = Store<boolean>(false);
   public STARTMENU_FOLDER = UserPaths.StartMenu;
   public StartMenuContents = Store<RecursiveDirectoryReadReturn>();

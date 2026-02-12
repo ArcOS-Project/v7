@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ReadableStore } from "$ts/writable";
+  import type { ReadableStore } from "$types/writable";
   import Spinner from "../../../lib/Spinner.svelte";
 
   const { loadingStatus }: { loadingStatus: ReadableStore<string> } = $props();

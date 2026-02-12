@@ -8,8 +8,7 @@
   import sql from "highlight.js/lib/languages/sql";
   import xml from "highlight.js/lib/languages/xml";
   import yaml from "highlight.js/lib/languages/yaml";
-
-  import type { ReadableStore } from "$ts/writable";
+  import type { ReadableStore } from "$types/writable";
   import hljs from "highlight.js";
   import { onMount } from "svelte";
 

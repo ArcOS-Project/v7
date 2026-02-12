@@ -1,8 +1,9 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
-import { Store, type ReadableStore } from "$ts/writable";
+import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { LogLevel } from "$types/logging";
+import type { ReadableStore } from "$types/writable";
 import { LightsOffLevels } from "./levels";
 import type { LightsOffGrid } from "./types";
 

@@ -1,5 +1,5 @@
 import { Process } from "$ts/process/instance";
-import type { ArcTerminal } from "..";
+import type { IArcTerminal } from "$interfaces/terminal";
 
 /**
  * strtok/xterm-readline 1.1.2
@@ -19,11 +19,11 @@ export class History extends Process {
   public entries: string[] = [];
   public maxEntries: number;
   public cursor = -1;
-  private terminal: ArcTerminal | undefined;
+  private terminal: IArcTerminal | undefined;
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, maxEntries: number, terminal?: ArcTerminal) {
+  constructor(pid: number, parentPid: number, maxEntries: number, terminal?: IArcTerminal) {
     super(pid, parentPid);
 
     this.maxEntries = maxEntries;

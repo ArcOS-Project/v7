@@ -1,7 +1,7 @@
-import { Process } from "$ts/process/instance";
 import type { ContextMenuItem } from "$types/app";
 import type { Component } from "svelte";
 import type { ShellRuntime } from "./runtime";
+import type { IProcess } from "../../../interfaces/process";
 
 export interface WeatherMeta {
   caption: string;
@@ -37,14 +37,14 @@ export interface ShellTrayIcon {
   popup?: TrayPopup;
   icon: string;
   context?: ContextMenuItem[];
-  action?: (targetedProcess: Process) => void;
+  action?: (targetedProcess: IProcess) => void;
 }
 
 export interface TrayIconOptions {
   popup?: TrayPopup;
   icon: string;
   context?: ContextMenuItem[];
-  action?: (targetedProcess: Process) => void;
+  action?: (targetedProcess: IProcess) => void;
 }
 
 export interface TrayPopup {

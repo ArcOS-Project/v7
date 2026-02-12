@@ -18,8 +18,8 @@ import { libraryManagementService } from "$ts/tpa/libraries";
 import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
 import type { ReadableServiceStore, Service, ServiceChangeResult, ServiceStore } from "$types/service";
+import type { IBaseService } from "../../interfaces/service";
 import { migrationService } from "../migrations";
-import type { BaseService } from "./base";
 
 export class ServiceHost extends Process {
   public Services: ReadableServiceStore = Store<ServiceStore>();
@@ -193,7 +193,7 @@ export class ServiceHost extends Process {
     }
   }
 
-  public getService<T extends BaseService = BaseService>(id: string): T | undefined {
+  public getService<T extends IBaseService = IBaseService>(id: string): T | undefined {
     const store = this.Services();
     const service = store.get(id);
 

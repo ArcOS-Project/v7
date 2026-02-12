@@ -1,4 +1,14 @@
-import type { PermissionString } from "$ts/permissions/store";
+import type { IProcess } from "$interfaces/process";
+import type { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
+import type { PermissionedFilesystemInteractor } from "$ts/permissions/filesystem";
+import type { PermissionError, PermissionString } from "$ts/permissions/store";
+import type {
+  DirectoryReadReturn,
+  ExtendedStat,
+  FilesystemProgressCallback,
+  RecursiveDirectoryReadReturn,
+  UploadReturn,
+} from "./fs";
 
 export enum PermissionGrantResult {
   InvalidPermission,

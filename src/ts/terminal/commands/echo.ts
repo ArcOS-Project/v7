@@ -1,6 +1,6 @@
+import type { IArcTerminal } from "$interfaces/terminal";
 import { tryJsonParse } from "$ts/json";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { BRBLUE, BRCYAN, BRPURPLE, BRYELLOW, RESET } from "../store";
 
@@ -18,7 +18,7 @@ export class EchoCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const thing = tryJsonParse(argv.join(" "));
 
     let result = "";

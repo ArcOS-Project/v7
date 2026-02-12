@@ -3,7 +3,7 @@ import { Daemon } from "$ts/server/user/daemon";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import type { BugReport, ReportOptions } from "$types/bughunt";
-import type { BugHuntType } from "$types/kernel";
+import type { IBugHunt } from "$interfaces/kernel";
 import type { Service } from "$types/service";
 
 export class BugHuntUserSpaceProcess extends BaseService {
@@ -12,14 +12,14 @@ export class BugHuntUserSpaceProcess extends BaseService {
   publicCache: BugReport[] = [];
   cachedPrivateResponseCount = 0;
   cachedPublicResponseCount = 0;
-  module: BugHuntType;
+  module: IBugHunt;
 
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(pid, parentPid, name, host);
 
-    this.module = getKMod<BugHuntType>("bughunt");
+    this.module = getKMod<IBugHunt>("bughunt");
 
     this.setSource(__SOURCE__);
   }

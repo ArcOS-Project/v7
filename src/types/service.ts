@@ -1,13 +1,12 @@
-import type { UserDaemon } from "$ts/server/user/daemon";
-import type { BaseService } from "$ts/services/base";
-import type { ReadableStore } from "$ts/writable";
+import type { IUserDaemon } from "../interfaces/daemon";
 import type { MaybePromise } from "./common";
+import type { ReadableStore } from "./writable";
 
 export interface Service {
   name: string;
   description: string;
-  process: typeof BaseService;
-  startCondition?: (daemon: UserDaemon) => MaybePromise<boolean>;
+  process: Function;
+  startCondition?: (daemon: IUserDaemon) => MaybePromise<boolean>;
   pid?: number;
   id?: string;
   initialState?: InitialServiceState;

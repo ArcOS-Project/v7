@@ -5,12 +5,13 @@ import {
   type FsProgressProc,
 } from "$apps/components/fsprogress/types";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
+import type { IFilesystemUserContext, IUserDaemon } from "$interfaces/daemon";
 import { MessageBox } from "$ts/dialog";
-import { LegacyServerDrive } from "$ts/drives/legacy";
-import type { MemoryFilesystemDrive } from "$ts/drives/temp";
-import { ZIPDrive } from "$ts/drives/zipdrive";
 import { Env, Fs, Stack, SysDispatch } from "$ts/env";
 import { applyDefaults } from "$ts/hierarchy";
+import { LegacyServerDrive } from "$ts/kernel/mods/fs/drives/legacy";
+import type { MemoryFilesystemDrive } from "$ts/kernel/mods/fs/drives/temp";
+import { ZIPDrive } from "$ts/kernel/mods/fs/drives/zipdrive";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
@@ -19,13 +20,13 @@ import type { FileHandler, FileOpenerResult } from "$types/fs";
 import type { LegacyConnectionInfo } from "$types/legacy";
 import type { ArcShortcut } from "$types/shortcut";
 import type { CategorizedDiskUsage } from "$types/user";
-import { Daemon, type UserDaemon } from "..";
+import { Daemon } from "..";
 import { RecentFilesService } from "../../recents";
 import { DefaultFileHandlers, UserPaths } from "../../store";
 import { TrashCanService } from "../../trash";
 import { UserContext } from "../context";
 
-export class FilesystemUserContext extends UserContext {
+export class FilesystemUserContext extends UserContext implements IFilesystemUserContext {
   private thumbnailCache: Record<string, string> = {};
   public TempFs?: MemoryFilesystemDrive;
   public fileHandlers: Record<string, FileHandler>;
@@ -36,7 +37,7 @@ export class FilesystemUserContext extends UserContext {
     return Daemon.serviceHost?.getService<RecentFilesService>("RecentFilesSvc");
   }
 
-  constructor(id: string, daemon: UserDaemon) {
+  constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
 
     this.fileHandlers = DefaultFileHandlers(Daemon!);

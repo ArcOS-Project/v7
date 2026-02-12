@@ -1,14 +1,15 @@
+import type { IElevationUserContext, IUserDaemon } from "$interfaces/daemon";
 import { Env, SysDispatch } from "$ts/env";
 import { UUID } from "$ts/uuid";
 import type { ElevationData } from "$types/elevation";
-import { Daemon, type UserDaemon } from "..";
+import { Daemon } from "..";
 import { UserContext } from "../context";
 
-export class ElevationUserContext extends UserContext {
+export class ElevationUserContext extends UserContext implements IElevationUserContext {
   public _elevating = false;
   private elevations: Record<string, ElevationData> = {};
 
-  constructor(id: string, daemon: UserDaemon) {
+  constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
 

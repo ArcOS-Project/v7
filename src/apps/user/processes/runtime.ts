@@ -1,10 +1,9 @@
+import type { IServiceHost } from "$interfaces/service";
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { Env, Stack } from "$ts/env";
-import type { Process } from "$ts/process/instance";
 import { ProcessKillResultCaptions } from "$ts/process/store";
 import { Daemon } from "$ts/server/user/daemon";
-import type { ServiceHost } from "$ts/services";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
@@ -12,6 +11,8 @@ import type { ProcessKillResult } from "$types/process";
 import type { Component } from "svelte";
 import Processes from "./ProcessManager/Page/Processes.svelte";
 import Services from "./ProcessManager/Page/Services.svelte";
+import type { IProcess } from "$interfaces/process";
+import type { IAppProcess } from "$interfaces/app";
 
 export class ProcessManagerRuntime extends AppProcess {
   public selected = Store<string>();
@@ -21,7 +22,7 @@ export class ProcessManagerRuntime extends AppProcess {
     Processes: Processes as any,
     Services: Services as any,
   };
-  host: ServiceHost;
+  host: IServiceHost;
 
   //#region LIFECYCLE
 
@@ -44,7 +45,7 @@ export class ProcessManagerRuntime extends AppProcess {
 
   //#endregion
 
-  async kill(proc: Process) {
+  async kill(proc: IProcess) {
     const name = proc instanceof AppProcess ? proc.app.data.metadata.name : proc.name;
 
     const elevated = await Daemon!.elevation!.manuallyElevate({
@@ -165,11 +166,11 @@ export class ProcessManagerRuntime extends AppProcess {
     this.spawnOverlayApp("ServiceInfo", +Env.get("shell_pid"), id);
   }
 
-  appInfoFor(proc: AppProcess) {
+  appInfoFor(proc: IAppProcess) {
     this.spawnOverlayApp("AppInfo", +Env.get("shell_pid"), proc.app.id);
   }
 
-  processInfoFor(proc: Process) {
+  processInfoFor(proc: IProcess) {
     this.spawnOverlayApp("ProcessInfoApp", +Env.get("shell_pid"), proc);
   }
 }

@@ -1,4 +1,4 @@
-import { FilesystemDrive } from "$ts/drives/drive";
+import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
 import { Backend } from "$ts/server/axios";
 import { Daemon } from "$ts/server/user/daemon";
 import { authcode } from "$ts/util";

@@ -1,5 +1,6 @@
 import type { GlobalLoadIndicatorProgress } from "$apps/components/globalloadindicator/types";
 import type { IconPickerData } from "$apps/components/iconpicker/types";
+import type { IUserDaemon } from "$interfaces/daemon";
 import SafeModeNotice from "$lib/Daemon/SafeModeNotice.svelte";
 import type { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
@@ -11,11 +12,11 @@ import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
 import type { App } from "$types/app";
 import type { ExpandedTerminal } from "$types/terminal";
-import { Daemon, type UserDaemon } from "..";
+import { Daemon } from "..";
 import { UserContext } from "../context";
 
 export class HelpersUserContext extends UserContext {
-  constructor(id: string, daemon: UserDaemon) {
+  constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
 

@@ -1,6 +1,6 @@
+import type { IArcTerminal } from "$interfaces/terminal";
 import { Fs } from "$ts/env";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { arrayToAsciiTable } from "../util";
 
@@ -18,7 +18,7 @@ export class DrivesCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const drives = Fs.drives;
     const showHidden = flags.h || flags.hidden;
     const goTo = argv[0];

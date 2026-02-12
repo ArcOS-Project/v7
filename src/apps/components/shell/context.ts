@@ -1,10 +1,10 @@
 import type { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
-import type { Process } from "$ts/process/instance";
 import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import type { TrayIconProcess } from "$ts/ui/tray/process";
 import type { AppContextMenu } from "$types/app";
+import type { IProcess } from "../../../interfaces/process";
 import type { ShellRuntime } from "./runtime";
 
 export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
@@ -165,7 +165,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
         icon: "book",
         caption: "Process info",
         action: async (proc: TrayIconProcess) => {
-          const parentProc = Stack.getProcess(proc.parentPid) as Process;
+          const parentProc = Stack.getProcess(proc.parentPid) as IProcess;
           if (!parentProc) return;
 
           await runtime.spawnOverlayApp("ProcessInfoApp", runtime.pid, parentProc);

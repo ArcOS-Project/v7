@@ -1,3 +1,4 @@
+import type { IChecksUserContext, IUserDaemon } from "$interfaces/daemon";
 import { MessageBox } from "$ts/dialog";
 import type { DistributionServiceProcess } from "$ts/distrib";
 import { StoreItemIcon } from "$ts/distrib/util";
@@ -6,17 +7,17 @@ import { NightlyLogo } from "$ts/images/branding";
 import { ArcBuild } from "$ts/metadata/build";
 import type { MessagingInterface } from "$ts/server/messaging";
 import { Plural } from "$ts/util";
-import { Daemon, type UserDaemon } from "..";
+import { Daemon } from "..";
 import { UserContext } from "../context";
 
 /**
  * RESTRICTED: this class does not have an entry in ProcessWithPermissions,
  * and as such cannot be accessed by third-party applications.
  */
-export class ChecksUserContext extends UserContext {
+export class ChecksUserContext extends UserContext implements IChecksUserContext {
   public NIGHTLY = false;
 
-  constructor(id: string, daemon: UserDaemon) {
+  constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
 

@@ -19,6 +19,7 @@ import {
   type PermissionError,
   type PermissionString,
 } from "./store";
+import type { IProcess } from "$interfaces/process";
 
 export let Permissions: PermissionHandler;
 
@@ -83,7 +84,7 @@ export class PermissionHandler extends Process {
 
   //#region APPROVAL
 
-  hasPermission(process: Process, permission: PermissionString) {
+  hasPermission(process: IProcess, permission: PermissionString) {
     this.validatePermissionString(permission);
     const id = this.getPermissionId(process);
 
@@ -97,7 +98,7 @@ export class PermissionHandler extends Process {
     return this.Configuration().allowed[permissionId]?.includes(permission);
   }
 
-  grantPermission(process: Process, permission: PermissionString) {
+  grantPermission(process: IProcess, permission: PermissionString) {
     this.validatePermissionString(permission);
     const id = this.getPermissionId(process);
 
@@ -125,7 +126,7 @@ export class PermissionHandler extends Process {
     });
   }
 
-  revokePermission(process: Process, permission: PermissionString) {
+  revokePermission(process: IProcess, permission: PermissionString) {
     this.validatePermissionString(permission);
     const id = this.getPermissionId(process);
 
@@ -152,7 +153,7 @@ export class PermissionHandler extends Process {
   //#endregion
   //#region DENIAL
 
-  isDenied(process: Process, permission: PermissionString) {
+  isDenied(process: IProcess, permission: PermissionString) {
     this.validatePermissionString(permission);
 
     const id = this.getPermissionId(process);
@@ -166,7 +167,7 @@ export class PermissionHandler extends Process {
     return this.Configuration().denied[permissionId]?.includes(permission);
   }
 
-  denyPermission(process: Process, permission: PermissionString) {
+  denyPermission(process: IProcess, permission: PermissionString) {
     this.validatePermissionString(permission);
 
     const id = this.getPermissionId(process);
@@ -197,7 +198,7 @@ export class PermissionHandler extends Process {
     });
   }
 
-  revokeDenial(process: Process, permission: PermissionString) {
+  revokeDenial(process: IProcess, permission: PermissionString) {
     this.validatePermissionString(permission);
 
     const id = this.getPermissionId(process);
@@ -229,7 +230,7 @@ export class PermissionHandler extends Process {
   //#endregion
   //#region EXTERNAL IFACE
 
-  async requestPermission(process: Process, permission: PermissionString) {
+  async requestPermission(process: IProcess, permission: PermissionString) {
     const id = this.getPermissionId(process);
     const app = process instanceof AppProcess ? process.app.data : undefined;
     const noun = app ? "application" : "process";
@@ -253,7 +254,7 @@ export class PermissionHandler extends Process {
     this.grantPermission(process, permission);
   }
 
-  hasPermissionExplicit<T>(process: Process, permission: PermissionString, returnValue?: T): T | undefined {
+  hasPermissionExplicit<T>(process: IProcess, permission: PermissionString, returnValue?: T): T | undefined {
     const id = this.getPermissionId(process);
 
     if (this.hasSudo(process)) return returnValue;
@@ -264,7 +265,7 @@ export class PermissionHandler extends Process {
     return returnValue;
   }
 
-  getOrCreatePermissionedFilesystemInteractor(process: Process) {
+  getOrCreatePermissionedFilesystemInteractor(process: IProcess) {
     const id = this.getPermissionId(process);
 
     if (!this.hasPermission(process, "PERMISSION_FS_READ")) this.throwError("PERMERR_DENIED", id, "PERMISSION_FS_READ");
@@ -275,7 +276,7 @@ export class PermissionHandler extends Process {
     return this.#permissionedFilesystemInteractors[id];
   }
 
-  hasReadPermissionForPathExplicit(process: Process, path: string) {
+  hasReadPermissionForPathExplicit(process: IProcess, path: string) {
     path = Daemon.files?.normalizePath(path)!;
     if (path === "U:/System/Permissions.json") Permissions.throwError("PERMERR_DENIED");
 
@@ -289,7 +290,7 @@ export class PermissionHandler extends Process {
     if (path.startsWith("U:/System")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_READ_SYSTEM");
   }
 
-  hasWritePermissionForPathExplicit(process: Process, path: string) {
+  hasWritePermissionForPathExplicit(process: IProcess, path: string) {
     path = Daemon.files?.normalizePath(path)!;
     if (path === "U:/System/Permissions.json") Permissions.throwError("PERMERR_DENIED");
 
@@ -333,7 +334,7 @@ export class PermissionHandler extends Process {
     throw new Error(`${reason} (${code})`);
   }
 
-  getPermissionId(process: Process, sudo?: boolean) {
+  getPermissionId(process: IProcess, sudo?: boolean) {
     let str = "";
 
     if (sudo) {
@@ -396,7 +397,7 @@ export class PermissionHandler extends Process {
   //#endregion
   //#region SUDO
 
-  hasSudo(process: Process) {
+  hasSudo(process: IProcess) {
     const id = this.getPermissionId(process, true);
     const config = this.SudoConfiguration();
 
@@ -411,7 +412,7 @@ export class PermissionHandler extends Process {
     return has;
   }
 
-  grantSudo(process: Process) {
+  grantSudo(process: IProcess) {
     const id = this.getPermissionId(process, true);
 
     return this.SudoConfiguration.update((v) => {
@@ -425,7 +426,7 @@ export class PermissionHandler extends Process {
     });
   }
 
-  revokeSudo(process: Process) {
+  revokeSudo(process: IProcess) {
     const id = this.getPermissionId(process, true);
 
     if (!this.hasSudo(process)) this.throwError("PERMERR_SUDO_NOT_GRANTED", id);
@@ -437,7 +438,7 @@ export class PermissionHandler extends Process {
     });
   }
 
-  refreshSudo(process: Process) {
+  refreshSudo(process: IProcess) {
     const id = this.getPermissionId(process, true);
     const config = this.SudoConfiguration();
 

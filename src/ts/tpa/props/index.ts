@@ -3,7 +3,7 @@ import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { __Console__ } from "$ts/console";
 import { contextProps } from "$ts/context/actions.svelte";
 import { MessageBox } from "$ts/dialog";
-import { FilesystemDrive } from "$ts/drives/drive";
+import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
 import { Env } from "$ts/env";
 import { getAllImages } from "$ts/images";
 import type { JsExec } from "$ts/jsexec";

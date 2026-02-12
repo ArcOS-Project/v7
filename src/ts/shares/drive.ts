@@ -13,7 +13,7 @@ import type {
   UserQuota,
 } from "$types/fs";
 import type { SharedDriveType } from "$types/shares";
-import { FilesystemDrive } from "../drives/drive";
+import { FilesystemDrive } from "../kernel/mods/fs/drives/drive";
 import { arrayBufferToBlob } from "../util/convert";
 import { getItemNameFromPath, join } from "../util/fs";
 

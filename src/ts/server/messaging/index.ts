@@ -1,19 +1,20 @@
+import type { IUserDaemon } from "$interfaces/daemon";
+import type { IServerManager } from "$interfaces/kernel";
 import { Env, Fs, getKMod, Server, Stack } from "$ts/env";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import { authcode } from "$ts/util";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import type { FilesystemProgressCallback } from "$types/fs";
-import type { ServerManagerType } from "$types/kernel";
 import type { ExpandedMessage, ExpandedMessageNode } from "$types/messaging";
 import type { Service } from "$types/service";
 import { Backend } from "../axios";
-import { Daemon, UserDaemon } from "../user/daemon";
+import { Daemon } from "../user/daemon";
 import { GlobalDispatch } from "../ws";
 
 export class MessagingInterface extends BaseService {
   get serverUrl() {
-    return getKMod<ServerManagerType>("server").url;
+    return getKMod<IServerManager>("server").url;
   }
 
   get serverAuthCode() {
@@ -28,7 +29,7 @@ export class MessagingInterface extends BaseService {
   }
 
   async start() {
-    const daemon = Stack.getProcess<UserDaemon>(+Env.get("userdaemon_pid")!)!;
+    const daemon = Stack.getProcess<IUserDaemon>(+Env.get("userdaemon_pid")!)!;
     const dispatch = daemon.serviceHost?.getService<GlobalDispatch>("GlobalDispatch")!;
 
     dispatch?.subscribe("incoming-message", (message: ExpandedMessage) => {

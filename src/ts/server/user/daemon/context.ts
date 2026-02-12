@@ -1,13 +1,13 @@
+import type { IUserContext, IUserDaemon } from "$interfaces/daemon";
 import { Log } from "$ts/logging";
 import { LogLevel } from "$types/logging";
 import type { UserInfo } from "$types/user";
-import type { UserDaemon } from ".";
 
-export class UserContext {
-  #daemon: UserDaemon;
+export class UserContext implements IUserContext {
+  #daemon: IUserDaemon;
   #id: string;
 
-  constructor(id: string, daemon: UserDaemon) {
+  constructor(id: string, daemon: IUserDaemon) {
     this.#daemon = daemon;
     this.#id = id;
   }

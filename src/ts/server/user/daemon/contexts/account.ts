@@ -1,3 +1,4 @@
+import type { IAccountUserContext, IUserDaemon } from "$interfaces/daemon";
 import DeleteUser from "$lib/Daemon/DeleteUser.svelte";
 import { MessageBox } from "$ts/dialog";
 import { Env, Server, SysDispatch } from "$ts/env";
@@ -8,11 +9,11 @@ import { ElevationLevel } from "$types/elevation";
 import { LogLevel } from "$types/logging";
 import type { PublicUserInfo, UserInfo } from "$types/user";
 import Cookies from "js-cookie";
-import { Daemon, type UserDaemon } from "..";
+import { Daemon } from "..";
 import { UserContext } from "../context";
 
-export class AccountUserContext extends UserContext {
-  constructor(id: string, daemon: UserDaemon) {
+export class AccountUserContext extends UserContext implements IAccountUserContext {
+  constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
 
@@ -57,7 +58,7 @@ export class AccountUserContext extends UserContext {
 
       Daemon!.preferencesCtx?.preferences.set(data.preferences);
 
-      Daemon!?.preferencesCtx?.sanitizeUserPreferences(); 
+      Daemon!?.preferencesCtx?.sanitizeUserPreferences();
 
       this.initialized = true;
       this.userInfo = data;
@@ -174,5 +175,5 @@ export class AccountUserContext extends UserContext {
       +Env.get("shell_pid"),
       true
     );
-  }  
+  }
 }

@@ -1,15 +1,15 @@
 <script lang="ts">
   import type { SettingsRuntime } from "$apps/user/settings/runtime";
+  import type { IUserDaemon } from "$interfaces/daemon";
   import { contextProps } from "$ts/context/actions.svelte";
   import { MessageBox } from "$ts/dialog";
-  import type { UserDaemon } from "$ts/server/user/daemon";
   import type { UserTheme } from "$types/theme";
   import { onMount } from "svelte";
 
   interface Props {
     id: string;
     theme: UserTheme;
-    userDaemon: UserDaemon;
+    userDaemon: IUserDaemon;
     isUser?: boolean;
     process: SettingsRuntime;
   }

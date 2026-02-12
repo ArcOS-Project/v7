@@ -6,9 +6,9 @@ import { formatBytes, join } from "$ts/util/fs";
 import { ElevationLevel } from "$types/elevation";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
-import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { BRBLUE, BRGREEN, BRPURPLE, CLRROW, CURUP, RESET } from "../store";
+import type { IArcTerminal } from "$interfaces/terminal";
 
 const typeCaptions: Record<string, string> = {
   mkdir: "Creating folder",
@@ -32,7 +32,7 @@ export class PkgCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     this.distrib = this.term!.daemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
 
     if (!argv[0]) {

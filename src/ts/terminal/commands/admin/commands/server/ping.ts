@@ -3,14 +3,14 @@ import { Backend } from "$ts/server/axios";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { BOLD, BRBLACK, BRGREEN, BRPURPLE, BRRED, RESET } from "$ts/terminal/store";
 import { sha256 } from "$ts/util";
-import type { ServerManagerType } from "$types/kernel";
+import type { IServerManager } from "$interfaces/kernel";
 import type { ServerInfo } from "$types/server";
 
 export const AdminServerPing: AdminCommandType = async (term, admin) => {
   try {
     const start = performance.now();
     const response = await Backend.get("/ping");
-    const server = getKMod<ServerManagerType>("server");
+    const server = getKMod<IServerManager>("server");
 
     if (response.status !== 200) return 3;
 

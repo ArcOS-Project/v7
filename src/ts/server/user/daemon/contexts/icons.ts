@@ -1,14 +1,14 @@
+import type { IUserDaemon } from "$interfaces/daemon";
 import type { AppProcess } from "$ts/apps/process";
 import type { IconService } from "$ts/icon";
 import { maybeIconId } from "$ts/images";
-import { ComponentIcon } from "$ts/images/general";
-import { Store, type ReadableStore } from "$ts/writable";
+import { Store } from "$ts/writable";
 import type { App } from "$types/app";
-import type { UserDaemon } from "..";
+import type { ReadableStore } from "$types/writable";
 import { UserContext } from "../context";
 
 export class IconsUserContext extends UserContext {
-  constructor(id: string, daemon: UserDaemon) {
+  constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
 

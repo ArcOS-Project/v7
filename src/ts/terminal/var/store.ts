@@ -1,9 +1,9 @@
+import type { IArcTerminal } from "$interfaces/terminal";
 import { ArcOSVersion, Env } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { UserPaths } from "$ts/server/user/store";
 import type { VariableStore } from "$types/terminal";
-import type { ArcTerminal } from "..";
 import {
   BLACK,
   BLUE,
@@ -29,7 +29,7 @@ import {
   YELLOW,
 } from "../store";
 
-export function getArcTermStore(term: ArcTerminal): VariableStore {
+export function getArcTermStore(term: IArcTerminal): VariableStore {
   return {
     username: {
       get: () => Env.get("currentuser") || "stranger",

@@ -1,16 +1,17 @@
+import type { IAppRendererUserContext, IUserDaemon } from "$interfaces/daemon";
 import { bestForeground, darkenColor, hex3to6, invertColor, lightenColor } from "$ts/color";
 import { Stack } from "$ts/env";
 import { Wallpapers } from "$ts/wallpaper/store";
 import type { CustomStylePreferences, UserPreferences } from "$types/user";
-import { Daemon, type UserDaemon } from "..";
+import { Daemon } from "..";
 import { UserContext } from "../context";
 
 /**
  * RESTRICTED: this class does not have an entry in ProcessWithPermissions,
  * and as such cannot be accessed by third-party applications.
  */
-export class AppRendererUserContext extends UserContext {
-  constructor(id: string, daemon: UserDaemon) {
+export class AppRendererUserContext extends UserContext implements IAppRendererUserContext {
+  constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
 

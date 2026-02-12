@@ -1,11 +1,11 @@
 import { __Console__ } from "$ts/console";
-import { MemoryFilesystemDrive } from "$ts/drives/temp";
+import { MemoryFilesystemDrive } from "$ts/kernel/mods/fs/drives/temp";
 import { ArcOSVersion, Env, Fs, getKMod, Kernel, SetCurrentStateHandler, SetKernelExports, Stack } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { States } from "$ts/state/store";
 import { textToBlob } from "$ts/util/convert";
-import type { ServerManagerType } from "$types/kernel";
+import type { IServerManager } from "$interfaces/kernel";
 import { Process } from "../process/instance";
 import { StateHandler } from "../state";
 
@@ -28,7 +28,7 @@ export class InitProcess extends Process {
 
     await Stack.startRenderer(this.pid);
 
-    const server = getKMod<ServerManagerType>("server");
+    const server = getKMod<IServerManager>("server");
     const connected = server.connected;
     const state = await Stack.spawn<StateHandler>(StateHandler, undefined, "SYSTEM", this.pid, "ArcOS", States);
     const kernel = Kernel;

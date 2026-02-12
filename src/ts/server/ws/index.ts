@@ -1,16 +1,17 @@
+import type { IUserDaemon } from "$interfaces/daemon";
+import type { IServerManager } from "$interfaces/kernel";
 import { Env, getKMod, Stack } from "$ts/env";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
 import type { GlobalDispatchClient } from "$types/dispatch";
-import type { ServerManagerType } from "$types/kernel";
 import type { Service } from "$types/service";
 import io, { Socket } from "socket.io-client";
 import { Backend } from "../axios";
-import { Daemon, UserDaemon } from "../user/daemon";
+import { Daemon } from "../user/daemon";
 
 export class GlobalDispatch extends BaseService {
   client: Socket | undefined;
-  server: ServerManagerType;
+  server: IServerManager;
   authorized = false;
 
   //#region LIFECYCLE
@@ -18,7 +19,7 @@ export class GlobalDispatch extends BaseService {
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
     super(pid, parentPid, name, host);
 
-    this.server = getKMod<ServerManagerType>("server");
+    this.server = getKMod<IServerManager>("server");
 
     window.addEventListener("beforeunload", () => {
       this.stop();
@@ -36,7 +37,7 @@ export class GlobalDispatch extends BaseService {
       });
 
       this.client.on("kicked", () => {
-        const daemon = Stack.getProcess<UserDaemon>(+Env.get("userdaemon_pid"));
+        const daemon = Stack.getProcess<IUserDaemon>(+Env.get("userdaemon_pid"));
         daemon?.power?.logoff();
       });
     });

@@ -1,15 +1,15 @@
+import type { IArcTerminal } from "$interfaces/terminal";
 import { getKMod } from "$ts/env";
-import type { EnvironmentType } from "$types/kernel";
+import type { IEnvironment } from "$interfaces/kernel";
 import type { StaticVariableStore, Variable, VariableStore } from "$types/terminal";
-import type { ArcTerminal } from ".";
 import { getArcTermStore } from "./var/store";
 
 export class ArcTermVariables {
-  term: ArcTerminal;
+  term: IArcTerminal;
 
   private store: VariableStore = {};
 
-  constructor(t: ArcTerminal) {
+  constructor(t: IArcTerminal) {
     this.term = t;
     this.store = getArcTermStore(t);
   }
@@ -70,7 +70,7 @@ export class ArcTermVariables {
 
   replace(str: string) {
     const all = this.getAll();
-    const envVars = getKMod<EnvironmentType>("env").getAll();
+    const envVars = getKMod<IEnvironment>("env").getAll();
 
     for (const key in envVars) {
       all[`$${key}`] = {

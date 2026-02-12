@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { BooleanStore } from "$ts/writable";
   import type { UserPreferencesStore } from "$types/user";
+  import type { BooleanStore } from "$types/writable";
   import type { ShellRuntime } from "../runtime";
   import { QuickSettings } from "../store";
   import CardStack from "./ActionCenter/CardStack.svelte";

@@ -1,5 +1,5 @@
 import { DistributionServiceProcess } from "$ts/distrib";
-import { AdminServerDrive } from "$ts/drives/admin";
+import { AdminServerDrive } from "$ts/kernel/mods/fs/drives/admin";
 import { Fs, Server } from "$ts/env";
 import { toForm } from "$ts/form";
 import { tryJsonParse } from "$ts/json";

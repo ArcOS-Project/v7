@@ -1,7 +1,8 @@
+import type { IUserDaemon } from "$interfaces/daemon";
 import { ArcOSVersion, Env, Fs } from "$ts/env";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
-import { Daemon, type UserDaemon } from "..";
+import { Daemon } from "..";
 import { UserPaths } from "../../store";
 import { UserContext } from "../context";
 
@@ -10,7 +11,7 @@ import { UserContext } from "../context";
  * and as such cannot be accessed by third-party applications.
  */
 export class VersionUserContext extends UserContext {
-  constructor(id: string, daemon: UserDaemon) {
+  constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
 

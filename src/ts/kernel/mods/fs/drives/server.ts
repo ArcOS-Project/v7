@@ -1,4 +1,4 @@
-import { FilesystemDrive } from "$ts/drives/drive";
+import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
 import { getKMod, Server } from "$ts/env";
 import { toForm } from "$ts/form";
 import { ArcBuild } from "$ts/metadata/build";
@@ -16,7 +16,7 @@ import type {
   RecursiveDirectoryReadReturn,
   UserQuota,
 } from "$types/fs";
-import type { EnvironmentType } from "$types/kernel";
+import type { IEnvironment } from "$interfaces/kernel";
 
 export class ServerDrive extends FilesystemDrive {
   private isNightly = false;
@@ -43,7 +43,7 @@ export class ServerDrive extends FilesystemDrive {
   constructor(uuid: string, letter: string) {
     super(uuid, letter);
 
-    this.isNightly = !!getKMod<EnvironmentType>("env").get(`NIGHTLY_WHODIS_${ArcBuild()}`);
+    this.isNightly = !!getKMod<IEnvironment>("env").get(`NIGHTLY_WHODIS_${ArcBuild()}`);
   }
 
   async readDir(path: string = ""): Promise<DirectoryReadReturn | undefined> {

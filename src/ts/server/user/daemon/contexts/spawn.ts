@@ -1,3 +1,4 @@
+import type { IUserDaemon } from "$interfaces/daemon";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { MessageBox } from "$ts/dialog";
 import { Env, Stack, SysDispatch } from "$ts/env";
@@ -6,11 +7,11 @@ import { getParentDirectory, join } from "$ts/util/fs";
 import type { App, InstalledApp } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
 import { LogLevel } from "$types/logging";
-import { Daemon, type UserDaemon } from "..";
+import { Daemon } from "..";
 import { UserContext } from "../context";
 
 export class SpawnUserContext extends UserContext {
-  constructor(id: string, daemon: UserDaemon) {
+  constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
 

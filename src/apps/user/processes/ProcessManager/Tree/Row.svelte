@@ -2,7 +2,6 @@
   import { AppProcess } from "$ts/apps/process";
   import { contextMenu } from "$ts/context/actions.svelte";
   import { Stack, SysDispatch } from "$ts/env";
-  import type { Process } from "$ts/process/instance";
   import { Daemon } from "$ts/server/user/daemon";
   import { BaseService } from "$ts/services/base";
   import { formatBytes } from "$ts/util/fs";
@@ -10,13 +9,14 @@
   import { onDestroy, onMount } from "svelte";
   import type { ProcessManagerRuntime } from "../../runtime";
   import Row from "./Row.svelte";
+  import type { IProcess } from "$interfaces/process";
 
   const {
     pid,
     proc,
     process,
     orphan = false,
-  }: { pid: number; proc: Process; process: ProcessManagerRuntime; orphan?: boolean } = $props();
+  }: { pid: number; proc: IProcess; process: ProcessManagerRuntime; orphan?: boolean } = $props();
 
   const { selected } = process;
   const { focusedPid } = Stack.renderer!;
@@ -24,7 +24,7 @@
   let name = $state<string>();
   let icon = $state<string>();
   let appId = $state<string>();
-  let children = $state<Map<number, Process>>(new Map());
+  let children = $state<Map<number, IProcess>>(new Map());
   let closing = $state<boolean>(false);
   let memory = $state<number>();
   let memoryInterval = $state<NodeJS.Timeout>();

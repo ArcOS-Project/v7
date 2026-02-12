@@ -1,55 +1,49 @@
+import type { IStateHandler } from "$interfaces/state";
 import type {
-  BugHuntType,
-  ConstructedWaveKernel,
-  EnvironmentType,
-  FilesystemType,
-  ProcessHandlerType,
-  ServerManagerType,
-  SoundbusType,
-  SystemDispatchType,
-} from "$types/kernel";
-import { TryGetDaemon } from "./server/user/daemon";
-import type { TrashCanService } from "./server/user/trash";
-import { StateHandler } from "./state";
-import { Store } from "./writable";
+  IBugHunt,
+  IEnvironment,
+  IFilesystem,
+  IProcessHandler,
+  IServerManager,
+  ISoundbus,
+  ISystemDispatch,
+  IWaveKernel,
+} from "$interfaces/kernel";
 
 export const ArcOSVersion = "7.0.9";
 export const BETA = true;
 export const USERFS_UUID = "233D-CE74-18C0-0B08";
-export let Kernel: ConstructedWaveKernel;
+export let Kernel: IWaveKernel;
 
-export let Fs: FilesystemType;
-export let LiteralFs: FilesystemType;
-export let Env: EnvironmentType;
-export let Stack: ProcessHandlerType;
-export let Server: ServerManagerType;
-export let SysDispatch: SystemDispatchType;
-export let SoundBus: SoundbusType;
-export let State: StateHandler;
-export let BugHunt: BugHuntType;
+export let Fs: IFilesystem;
+export let Env: IEnvironment;
+export let Stack: IProcessHandler;
+export let Server: IServerManager;
+export let SysDispatch: ISystemDispatch;
+export let SoundBus: ISoundbus;
+export let State: IStateHandler;
+export let BugHunt: IBugHunt;
 
-export function SetCurrentKernel(kernel: ConstructedWaveKernel) {
+export function SetCurrentKernel(kernel: IWaveKernel) {
   if (Kernel) throw new Error("Tried to reassign CurrentKernel");
 
   Kernel = kernel;
 }
 
-export function SetCurrentStateHandler(state: StateHandler) {
+export function SetCurrentStateHandler(state: IStateHandler) {
   if (State) throw new Error("Tried to reassign StateHandler");
 
   State = state;
 }
 
 export function SetKernelExports() {
-  LiteralFs = getKMod<FilesystemType>("fs");
-  Fs = LiteralFs; // TODO: remove LiteralFs export and resort to Fs only
-
-  Env = getKMod<EnvironmentType>("env");
-  Stack = getKMod<ProcessHandlerType>("stack");
-  Server = getKMod<ServerManagerType>("server");
-  SysDispatch = getKMod<SystemDispatchType>("dispatch");
-  SoundBus = getKMod<SoundbusType>("soundbus");
-  BugHunt = getKMod<BugHuntType>("bughunt");
+  Fs = getKMod<IFilesystem>("fs");
+  Env = getKMod<IEnvironment>("env");
+  Stack = getKMod<IProcessHandler>("stack");
+  Server = getKMod<IServerManager>("server");
+  SysDispatch = getKMod<ISystemDispatch>("dispatch");
+  SoundBus = getKMod<ISoundbus>("soundbus");
+  BugHunt = getKMod<IBugHunt>("bughunt");
 }
 
 export function getKMod<T = any>(id: string, dontCrash = false): T {

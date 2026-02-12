@@ -1,4 +1,4 @@
-import type { FilesystemDrive } from "$ts/drives/drive";
+import type { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
 import type { UserQuota } from "$types/fs";
 import type { Component } from "svelte";
 

@@ -1,7 +1,7 @@
+import type { IUserDaemon } from "$interfaces/daemon";
 import type { FileHandler } from "$types/fs";
-import type { UserDaemon } from "../daemon";
 
-const mountZipFile: (d: UserDaemon) => FileHandler = (daemon) => ({
+const mountZipFile: (d: IUserDaemon) => FileHandler = (daemon) => ({
   opens: {
     extensions: [".zip", ".tpab", ".arc"],
   },

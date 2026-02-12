@@ -1,8 +1,8 @@
-import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
+import type { IUserDaemon } from "$interfaces/daemon";
+import type { IArcTerminal, ITerminalWindowRuntime } from "$interfaces/terminal";
 import { hexToRgb } from "$ts/color";
 import { Env, Fs, Stack } from "$ts/env";
 import { Process } from "$ts/process/instance";
-import { UserDaemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { ArcTerminal } from "$ts/terminal";
 import { DefaultColors } from "$ts/terminal/store";
@@ -15,7 +15,7 @@ export class ArcTermRuntime extends Process {
   readonly CONFIG_PATH = join(UserPaths.Configuration, "ArcTerm/arcterm.conf");
 
   config?: ArcTermConfiguration;
-  term: ArcTerminal | undefined;
+  term: IArcTerminal | undefined;
   path: string | undefined;
   app: AppProcessData;
 
@@ -34,13 +34,13 @@ export class ArcTermRuntime extends Process {
 
   protected async start(): Promise<any> {
     const daemonPid = +Env.get("userdaemon_pid");
-    const daemon = Stack.getProcess<UserDaemon>(daemonPid);
+    const daemon = Stack.getProcess<IUserDaemon>(daemonPid);
 
     await this.readConfig();
 
     if (!daemon) return false;
 
-    const proc = await daemon.spawn?.spawnApp<TerminalWindowRuntime>("TerminalWindow", this.pid);
+    const proc = await daemon.spawn?.spawnApp<ITerminalWindowRuntime>("TerminalWindow", this.pid);
 
     if (!proc) return false;
 
@@ -82,7 +82,7 @@ export class ArcTermRuntime extends Process {
     window?.style.setProperty("--terminal-background-inactive", this.config?.background || DefaultColors.background);
     window?.style.setProperty("--fg", this.config?.foreground || DefaultColors.foreground);
 
-    this.term = await Stack.spawn<ArcTerminal>(
+    this.term = await Stack.spawn<IArcTerminal>(
       ArcTerminal,
       daemon.workspaces?.getCurrentDesktop(),
       daemon.userInfo?._id,

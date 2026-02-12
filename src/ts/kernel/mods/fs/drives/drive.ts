@@ -1,3 +1,4 @@
+import type { IServerManager } from "$interfaces/kernel";
 import { getKMod } from "$ts/env";
 import { Log } from "$ts/logging";
 import type {
@@ -5,14 +6,14 @@ import type {
   DriveCapabilities,
   FilesystemProgressCallback,
   FilesystemStat,
+  IFilesystemDrive,
   RecursiveDirectoryReadReturn,
 } from "$types/fs";
-import type { ServerManagerType } from "$types/kernel";
 import { LogLevel } from "$types/logging";
-import type { UserQuota } from "../../types/fs";
+import type { UserQuota } from "../../../../../types/fs";
 
-export class FilesystemDrive {
-  server: ServerManagerType;
+export class FilesystemDrive implements IFilesystemDrive {
+  server: IServerManager;
   public driveLetter: string | undefined;
   public label = "";
   public uuid = "";

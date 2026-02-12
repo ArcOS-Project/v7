@@ -1,7 +1,7 @@
 import { ShellRuntime } from "$apps/components/shell/runtime";
+import type { IArcTerminal } from "$interfaces/terminal";
 import { Env, Stack } from "$ts/env";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { SelectionList } from "../select";
 
@@ -19,7 +19,7 @@ export class FindCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const query = argv.join(" ");
     const shellPid = +Env.get("shell_pid");
     const shellProc = Stack.getProcess<ShellRuntime>(shellPid);

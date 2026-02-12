@@ -8,11 +8,12 @@
  *
  * © IzKuipers 2025
  */
+import type { IUserDaemon } from "$interfaces/daemon";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { Fs, Server, Stack } from "$ts/env";
+import { Fs, Server } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import { Backend } from "$ts/server/axios";
-import { Daemon, TryGetDaemon, UserDaemon } from "$ts/server/user/daemon";
+import { TryGetDaemon } from "$ts/server/user/daemon";
 import { ThirdPartyProps } from "$ts/tpa/props";
 import { authcode } from "$ts/util";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
@@ -26,7 +27,7 @@ import * as walk from "acorn-walk";
 export class JsExec extends Process {
   public readonly TPA_REVISION = ThirdPartyAppProcess.TPA_REV;
   props?: ThirdPartyPropMap;
-  userDaemon?: UserDaemon;
+  userDaemon?: IUserDaemon;
   app?: App;
   args: any[];
   metaPath?: string;

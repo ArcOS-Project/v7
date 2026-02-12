@@ -1,12 +1,12 @@
 import type { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
-import type { ArcTerminal } from "$ts/terminal";
+import type { IArcTerminal } from "$interfaces/terminal";
 import type { Terminal } from "xterm";
 
 export interface TerminalCommand {
   keyword: string;
   description: string;
   hidden?: boolean;
-  exec: (term: ArcTerminal, flags: Arguments, argv: string[]) => number | Promise<number>;
+  exec: (term: IArcTerminal, flags: Arguments, argv: string[]) => number | Promise<number>;
 }
 export type Arguments = Record<string, string | boolean | any[] | object>;
 export interface Variable {

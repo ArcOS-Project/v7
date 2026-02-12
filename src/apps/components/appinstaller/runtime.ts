@@ -4,9 +4,9 @@ import { DistributionServiceProcess } from "$ts/distrib";
 import type { InstallerProcessBase } from "$ts/distrib/installer/base";
 import { Env, Fs } from "$ts/env";
 import { Daemon } from "$ts/server/user/daemon";
-import { type ReadableStore } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { ArcPackage } from "$types/package";
+import type { ReadableStore } from "$types/writable";
 import JSZip from "jszip";
 
 export class AppInstallerRuntime extends AppProcess {

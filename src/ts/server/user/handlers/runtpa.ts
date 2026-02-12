@@ -1,10 +1,10 @@
+import type { IUserDaemon } from "$interfaces/daemon";
 import { Fs } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { arrayBufferToText } from "$ts/util/convert";
 import type { FileHandler } from "$types/fs";
-import type { UserDaemon } from "../daemon";
 
-const runTpaFile: (d: UserDaemon) => FileHandler = (daemon) => ({
+const runTpaFile: (d: IUserDaemon) => FileHandler = (daemon) => ({
   opens: {
     extensions: [".tpa"],
   },

@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
-import { FilesystemDrive } from "$ts/drives/drive";
-import { ServerDrive } from "$ts/drives/server";
+import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
+import { ServerDrive } from "$ts/kernel/mods/fs/drives/server";
 import { USERFS_UUID } from "$ts/env";
 import { Daemon } from "$ts/server/user/daemon";
 import type { AppProcessData } from "$types/app";

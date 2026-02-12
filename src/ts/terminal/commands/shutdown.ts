@@ -2,7 +2,7 @@ import { State, SysDispatch } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { logItemToStr } from "$ts/util";
 import { type LogItem } from "$types/logging";
-import type { ArcTerminal } from "..";
+import type { IArcTerminal } from "$interfaces/terminal";
 import { TerminalProcess } from "../process";
 import { BRBLUE, RESET } from "../store";
 
@@ -12,7 +12,7 @@ export class ShutdownCommand extends TerminalProcess {
 
   //#region LIFECYCLE
 
-  protected async main(term: ArcTerminal) {
+  protected async main(term: IArcTerminal) {
     if (this.term?.IS_ARCTERM_MODE) {
       term.rl?.println(`${BRBLUE}Goodbye.${RESET}`);
 

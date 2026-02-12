@@ -1,10 +1,10 @@
-import type { FilesystemDrive } from "$ts/drives/drive";
+import type { IArcTerminal } from "$interfaces/terminal";
 import { Fs } from "$ts/env";
 import { FormatLargeNumber, Gap, maxLength, Plural, Truncate } from "$ts/util";
 import { formatBytes, join } from "$ts/util/fs";
+import type { IFilesystemDrive } from "$types/fs";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
-import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { BRBLACK, BRBLUE, BRGREEN, RESET } from "../store";
 
@@ -22,11 +22,11 @@ export class DirCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const dir = argv.join(" ") || "";
 
     try {
-      let drive: FilesystemDrive | undefined;
+      let drive: IFilesystemDrive | undefined;
       try {
         drive = dir ? Fs.getDriveByPath(dir) : term.drive;
       } catch {

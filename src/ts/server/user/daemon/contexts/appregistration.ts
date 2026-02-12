@@ -1,3 +1,4 @@
+import type { IAppRegistrationUserContext, IUserDaemon } from "$interfaces/daemon";
 import type { ApplicationStorage } from "$ts/apps/storage";
 import { BuiltinAppImportPathAbsolutes } from "$ts/apps/store";
 import { MessageBox } from "$ts/dialog";
@@ -13,12 +14,12 @@ import { getParentDirectory, join } from "$ts/util/fs";
 import { compareVersion } from "$ts/version";
 import type { App, AppStorage, InstalledApp } from "$types/app";
 import { LogLevel } from "$types/logging";
-import { Daemon, UserDaemon } from "..";
+import { Daemon } from "..";
 import { AppGroups, UserPaths } from "../../store";
 import { UserContext } from "../context";
 
-export class AppRegistrationUserContext extends UserContext {
-  constructor(id: string, daemon: UserDaemon) {
+export class AppRegistrationUserContext extends UserContext implements IAppRegistrationUserContext {
+  constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
 
@@ -31,7 +32,7 @@ export class AppRegistrationUserContext extends UserContext {
       Object.keys(BuiltinAppImportPathAbsolutes).map(async (path) => {
         if (!this.safeMode && blocklist.includes(path)) return null;
         const regex = new RegExp(/import\(\"(?<path>.*?)\"\)/gm);
-        
+
         try {
           const start = performance.now();
           const fn = BuiltinAppImportPathAbsolutes[path];

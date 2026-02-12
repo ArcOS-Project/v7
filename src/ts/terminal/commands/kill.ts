@@ -1,12 +1,9 @@
-import { AppProcess } from "$ts/apps/process";
+import type { IArcTerminal } from "$interfaces/terminal";
 import { Stack } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { ProcessKillResultCaptions } from "$ts/process/store";
-import { ElevationLevel } from "$types/elevation";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
-import { SelectionList } from "../select";
 
 export class KillCommand extends TerminalProcess {
   public static keyword = "kill";
@@ -22,7 +19,7 @@ export class KillCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const pid = tryJsonParse<number>(argv[0]) as number;
     const process = Stack.getProcess(pid);
 

@@ -1,11 +1,8 @@
-import type { AppProcess } from "$ts/apps/process";
-import { Env } from "$ts/env";
+import type { IUserDaemon } from "$interfaces/daemon";
 import { Process } from "$ts/process/instance";
-import type { App, ContextMenuItem } from "$types/app";
-import type { FileEntry, FileHandler } from "$types/fs";
-import type { ArcShortcut } from "$types/shortcut";
+import type { App } from "$types/app";
+import type { FileHandler } from "$types/fs";
 import type { ThemeStore, UserTheme } from "$types/theme";
-import { Daemon, type UserDaemon } from "./daemon";
 import installArcPkg from "./handlers/arcpkg";
 import applyArcTheme from "./handlers/arctheme";
 import installTpaFile from "./handlers/installtpa";
@@ -234,7 +231,7 @@ export const BlankUserTheme: UserTheme = {
   loginBackground: "",
 };
 
-export function DefaultFileHandlers(daemon: UserDaemon): Record<string, FileHandler> {
+export function DefaultFileHandlers(daemon: IUserDaemon): Record<string, FileHandler> {
   return {
     runTpaFile: runTpaFile(daemon),
     installTpaFile: installTpaFile(daemon),

@@ -1,14 +1,14 @@
 import { getKMod } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
-import type { SystemDispatchType, ConstructedWaveKernel, ServerManagerType } from "$types/kernel";
 import type { ServerInfo, ServerOption } from "$types/server";
 import axios from "axios";
 import { Backend } from "../../server/axios";
 import { KernelModule } from "../module";
+import type { IServerManager, ISystemDispatch, IWaveKernel } from "$interfaces/kernel";
 
 export const VALIDATION_STR = "thisWonderfulArcOSServerIdentifiedByTheseWordsPleaseDontSteal(c)IzKuipers";
 
-export class ServerManager extends KernelModule {
+export class ServerManager extends KernelModule implements IServerManager {
   private get SERVERS_LOCALSTORAGE_KEY() {
     return "v7-servers";
   }
@@ -16,7 +16,7 @@ export class ServerManager extends KernelModule {
     return "v7-currentserver";
   }
   private currentServer?: ServerOption;
-  private dispatch: SystemDispatchType;
+  private dispatch: ISystemDispatch;
   public connected: boolean = false;
   public serverInfo: ServerInfo | undefined;
   public previewBranch?: string;
@@ -31,22 +31,22 @@ export class ServerManager extends KernelModule {
   }
 
   public static isConnected() {
-    const server = getKMod<ServerManagerType>("server", true);
+    const server = getKMod<IServerManager>("server", true);
 
     return server && server.connected;
   }
   public static url() {
-    const server = getKMod<ServerManagerType>("server", true);
+    const server = getKMod<IServerManager>("server", true);
 
     return server ? server.url : undefined;
   }
 
   //#region LIFECYCLE
 
-  constructor(kernel: ConstructedWaveKernel, id: string) {
+  constructor(kernel: IWaveKernel, id: string) {
     super(kernel, id);
 
-    this.dispatch = getKMod<SystemDispatchType>("dispatch");
+    this.dispatch = getKMod<ISystemDispatch>("dispatch");
   }
 
   async _init() {

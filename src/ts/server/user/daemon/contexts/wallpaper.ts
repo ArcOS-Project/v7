@@ -1,3 +1,4 @@
+import type { IUserDaemon } from "$interfaces/daemon";
 import { Fs } from "$ts/env";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { getParentDirectory } from "$ts/util/fs";
@@ -6,7 +7,7 @@ import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
 import type { UserPreferences, WallpaperGetters } from "$types/user";
 import type { Wallpaper } from "$types/wallpaper";
-import { Daemon, type UserDaemon } from "..";
+import { Daemon } from "..";
 import { UserPaths } from "../../store";
 import { UserContext } from "../context";
 
@@ -19,7 +20,7 @@ export class WallpaperUserContext extends UserContext {
     ["img", (id) => Wallpapers[id] || Wallpapers["img04"]],
   ];
 
-  constructor(id: string, daemon: UserDaemon) {
+  constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
 

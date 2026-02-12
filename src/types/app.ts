@@ -2,8 +2,8 @@ import type { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import type { Process } from "$ts/process/instance";
 import type { SvelteComponent } from "svelte";
 import type { AppProcess } from "../ts/apps/process";
-import type { ReadableStore } from "../ts/writable";
 import type { MaybePromise } from "./common";
+import type { ReadableStore } from "./writable";
 
 export interface App {
   metadata: AppMetadata;

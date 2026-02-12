@@ -1,4 +1,4 @@
-import type { FilesystemDrive } from "$ts/drives/drive";
+import type { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
 import { HiddenUserPaths, UserPathCaptions, UserPathIcons, UserPaths } from "$ts/server/user/store";
 import type { ContextMenuItem } from "$types/app";
 import type { FileManagerRuntime } from "../runtime";

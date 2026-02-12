@@ -1,12 +1,12 @@
+import type { IUserDaemon } from "$interfaces/daemon";
 import { MessageBox } from "$ts/dialog";
 import { Env, Fs } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { arrayBufferToText } from "$ts/util/convert";
 import type { FileHandler } from "$types/fs";
 import type { UserTheme } from "$types/theme";
-import type { UserDaemon } from "../daemon";
 
-const applyArcTheme: (d: UserDaemon) => FileHandler = (daemon) => ({
+const applyArcTheme: (d: IUserDaemon) => FileHandler = (daemon) => ({
   isHandler: true,
   opens: {
     extensions: [".arctheme"],

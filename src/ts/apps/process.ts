@@ -1,26 +1,29 @@
 import type { ShellRuntime } from "$apps/components/shell/runtime";
+import type { IUserDaemon } from "$interfaces/daemon";
 import { ArcOSVersion, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { ProcessWithPermissions } from "$ts/permissions/process";
-import { Daemon, TryGetDaemon, UserDaemon } from "$ts/server/user/daemon";
+import { Daemon, TryGetDaemon } from "$ts/server/user/daemon";
 import { DefaultUserPreferences } from "$ts/server/user/default";
 import type { AppKeyCombinations } from "$types/accelerator";
+import type { MaybePromise } from "$types/common";
 import { type ElevationData } from "$types/elevation";
 import { LogLevel } from "$types/logging";
 import type { RenderArgs } from "$types/process";
 import type { UserPreferences } from "$types/user";
+import type { ReadableStore } from "$types/writable";
 import type { Draggable } from "@neodrag/vanilla";
 import { mount } from "svelte";
+import type { IAppProcess } from "../../interfaces/app";
+import type { IApplicationStorage } from "../../interfaces/service";
 import { type App, type AppContextMenu, type AppProcessData, type ContextMenuItem } from "../../types/app";
 import { Sleep } from "../sleep";
-import { Store, type ReadableStore } from "../writable";
+import { Store } from "../writable";
 import { AppRuntimeError } from "./error";
-import { ApplicationStorage } from "./storage";
-import type { MaybePromise } from "$types/common";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
-export class AppProcess extends ProcessWithPermissions {
+export class AppProcess extends ProcessWithPermissions implements IAppProcess {
   crashReason = "";
   windowTitle = Store("");
   windowIcon = Store("");
@@ -58,7 +61,7 @@ export class AppProcess extends ProcessWithPermissions {
     this.shell = Stack.getProcess(+Env.get("shell_pid"));
 
     const desktopProps = State?.stateProps["desktop"];
-    const daemon: UserDaemon | undefined = desktopProps?.userDaemon || TryGetDaemon();
+    const daemon: IUserDaemon | undefined = desktopProps?.userDaemon || TryGetDaemon();
 
     if (daemon) {
       this.userPreferences = daemon.preferences;
@@ -389,7 +392,7 @@ export class AppProcess extends ProcessWithPermissions {
   }
 
   appStore() {
-    return Daemon?.serviceHost?.getService("AppStorage") as ApplicationStorage;
+    return Daemon?.serviceHost?.getService("AppStorage") as IApplicationStorage;
   }
 
   async getIcon(id: string): Promise<string> {

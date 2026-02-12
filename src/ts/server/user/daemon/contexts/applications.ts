@@ -1,3 +1,4 @@
+import type { IApplicationsUserContext, IUserDaemon } from "$interfaces/daemon";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { isPopulatable } from "$ts/apps/util";
 import { MessageBox } from "$ts/dialog";
@@ -5,11 +6,11 @@ import { Env, Stack, SysDispatch } from "$ts/env";
 import type { ShareManager } from "$ts/shares";
 import type { App } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
-import { Daemon, type UserDaemon } from "..";
+import { Daemon } from "..";
 import { UserContext } from "../context";
 
-export class ApplicationsUserContext extends UserContext {
-  constructor(id: string, daemon: UserDaemon) {
+export class ApplicationsUserContext extends UserContext implements IApplicationsUserContext {
+  constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
 

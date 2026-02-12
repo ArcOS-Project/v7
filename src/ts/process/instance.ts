@@ -1,3 +1,4 @@
+import type { IProcess } from "$interfaces/process";
 import { Fs, getKMod } from "$ts/env";
 import { calculateMemory } from "$ts/util";
 import type { ProcessState } from "$types/process";
@@ -5,7 +6,7 @@ import { LogLevel } from "../../types/logging";
 import { Log } from "../logging";
 import { ProcessDispatch } from "./dispatch";
 
-export class Process {
+export class Process implements IProcess {
   public dispatch: ProcessDispatch;
   public pid: number;
   public parentPid: number;
@@ -13,7 +14,7 @@ export class Process {
   public get _disposed() {
     return this.STATE === "disposed" || this.STATE === "error";
   }
-  
+
   public _criticalProcess = false;
   public sourceUrl: string = "undetermined";
   private fileLocks: string[] = [];
@@ -27,7 +28,7 @@ export class Process {
     this.dispatch = new ProcessDispatch(this);
   }
 
-  get MEMORY() {
+  get MEMORY(): number {
     return calculateMemory(this);
   }
 

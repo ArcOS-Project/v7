@@ -1,14 +1,14 @@
+import type { IArcTerminal } from "$interfaces/terminal";
 import { SysDispatch } from "$ts/env";
 import { ProcessWithPermissions } from "$ts/permissions/process";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from ".";
 
 export class TerminalProcess extends ProcessWithPermissions {
   public static keyword: string;
   public static description: string;
   public static hidden = false;
   public static allowInterrupt = false;
-  protected term?: ArcTerminal;
+  protected term?: IArcTerminal;
   protected flags?: Arguments;
   protected argv?: string[];
   private exitCode: number = 0;
@@ -24,11 +24,11 @@ export class TerminalProcess extends ProcessWithPermissions {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     return 0;
   }
 
-  public async _main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<any> {
+  public async _main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<any> {
     this.term = term;
     this.flags = flags;
     this.argv = argv;

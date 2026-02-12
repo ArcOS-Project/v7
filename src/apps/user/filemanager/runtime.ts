@@ -1,7 +1,7 @@
 import { AppConfigError } from "$ts/apps/error";
 import { AppProcess } from "$ts/apps/process";
 import { ConditionalButton, GetConfirmation, MessageBox } from "$ts/dialog";
-import { FilesystemDrive } from "$ts/drives/drive";
+import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
 import { Fs, SysDispatch } from "$ts/env";
 import { AdminScopes } from "$ts/server/admin/store";
 import { Daemon } from "$ts/server/user/daemon";

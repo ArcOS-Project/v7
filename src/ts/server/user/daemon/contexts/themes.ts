@@ -1,13 +1,14 @@
+import type { IUserDaemon } from "$interfaces/daemon";
 import { LogLevel } from "$types/logging";
 import { UserThemeKeys, type UserTheme } from "$types/theme";
 import type { UserPreferences } from "$types/user";
-import { Daemon, type UserDaemon } from "..";
+import { Daemon } from "..";
 import { DefaultUserPreferences } from "../../default";
 import { BuiltinThemes } from "../../store";
 import { UserContext } from "../context";
 
 export class ThemesUserContext extends UserContext {
-  constructor(id: string, daemon: UserDaemon) {
+  constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
 

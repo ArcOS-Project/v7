@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import type { ReadableStore } from "$ts/writable";
   import type { ExpandedUserInfo } from "$types/user";
+  import type { ReadableStore } from "$types/writable";
   import dayjs from "dayjs";
 
   const {

@@ -1,12 +1,12 @@
+import type { IUserDaemon } from "$interfaces/daemon";
 import { SysDispatch } from "$ts/env";
 import type { Notification } from "$types/notification";
-import type { UserDaemon } from "..";
 import { UserContext } from "../context";
 
 export class NotificationsUserContext extends UserContext {
   public notifications = new Map<string, Notification>([]);
 
-  constructor(id: string, daemon: UserDaemon) {
+  constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
 

@@ -1,55 +1,56 @@
 //#region IMPORTS
-import type { ShellRuntime } from "$apps/components/shell/runtime";
-import { ApplicationStorage } from "$ts/apps/storage";
+import type {
+  IAccountUserContext,
+  IApplicationsUserContext,
+  IAppRegistrationUserContext,
+  IAppRendererUserContext,
+  IChecksUserContext,
+  IElevationUserContext,
+  IFilesystemUserContext,
+  IHelpersUserContext,
+  IIconsUserContext,
+  IInitUserContext,
+  ILoginActivityUserContext,
+  INotificationsUserContext,
+  IPowerUserContext,
+  IPreferencesUserContext,
+  IShortcutsUserContext,
+  ISpawnUserContext,
+  IThemesUserContext,
+  IUserContext,
+  IUserDaemon,
+  IVersionUserContext,
+  IWallpaperUserContext,
+  IWorkspaceUserContext,
+} from "$interfaces/daemon";
+import type { IEnvironment } from "$interfaces/kernel";
+import type { IApplicationStorage, IGlobalDispatch, IProtocolServiceProcess } from "$interfaces/service";
+import type { IShellRuntime } from "$interfaces/shell";
+import { AdminAppImportPathAbsolutes } from "$ts/apps/store";
+import { MessageBox } from "$ts/dialog";
 import { ArcOSVersion, Env, Fs, getKMod, Stack, State, SysDispatch } from "$ts/env";
+import { ArcBuild } from "$ts/metadata/build";
+import { ArcMode } from "$ts/metadata/mode";
 import { Process } from "$ts/process/instance";
-import type { ProtocolServiceProcess } from "$ts/proto";
 import { AdminProtocolHandlers } from "$ts/server/admin/proto";
-import type { GlobalDispatch } from "$ts/server/ws";
 import { ServiceHost } from "$ts/services";
 import { Sleep } from "$ts/sleep";
 import { LibraryManagement } from "$ts/tpa/libraries";
+import { deepCopyWithBlobs } from "$ts/util";
+import { textToBlob } from "$ts/util/convert";
+import { join } from "$ts/util/fs";
+import { compareVersion } from "$ts/version";
 import { Store } from "$ts/writable";
 import type { App } from "$types/app";
-import type { EnvironmentType } from "$types/kernel";
 import type { UserInfo, UserPreferences } from "$types/user";
 import type { FileAssocService } from "../assoc";
 import { DefaultUserInfo } from "../default";
-import type { UserContext } from "./context";
-import type { AccountUserContext } from "./contexts/account";
-import type { LoginActivityUserContext } from "./contexts/activity";
-import type { ApplicationsUserContext } from "./contexts/applications";
-import type { AppRegistrationUserContext } from "./contexts/appregistration";
-import type { AppRendererUserContext } from "./contexts/apprenderer";
-import type { ChecksUserContext } from "./contexts/checks";
-import type { ElevationUserContext } from "./contexts/elevation";
-import type { FilesystemUserContext } from "./contexts/filesystem";
-import type { HelpersUserContext } from "./contexts/helpers";
-import type { IconsUserContext } from "./contexts/icons";
-import type { InitUserContext } from "./contexts/init";
-import type { NotificationsUserContext } from "./contexts/notifications";
-import type { PowerUserContext } from "./contexts/power";
-import type { PreferencesUserContext } from "./contexts/preferences";
-import type { ShortcutsUserContext } from "./contexts/shortcuts";
-import type { SpawnUserContext } from "./contexts/spawn";
-import type { ThemesUserContext } from "./contexts/themes";
-import type { VersionUserContext } from "./contexts/version";
-import type { WallpaperUserContext } from "./contexts/wallpaper";
-import type { WorkspaceUserContext } from "./contexts/workspaces";
-import { UserContexts } from "./store";
-import { AdminAppImportPathAbsolutes } from "$ts/apps/store";
-import { compareVersion } from "$ts/version";
-import { MessageBox } from "$ts/dialog";
-import { ArcMode } from "$ts/metadata/mode";
-import { ArcBuild } from "$ts/metadata/build";
-import { deepCopyWithBlobs } from "$ts/util";
-import { join } from "$ts/util/fs";
 import { UserPaths } from "../store";
-import { textToBlob } from "$ts/util/convert";
+import { UserContexts } from "./store";
 
 //#endregion
 
-export class UserDaemon extends Process {
+export class UserDaemon extends Process implements IUserDaemon {
   public username: string;
   public token: string;
   public userInfo: UserInfo = DefaultUserInfo;
@@ -61,33 +62,33 @@ export class UserDaemon extends Process {
   override _criticalProcess: boolean = true;
   public copyList = Store<string[]>([]);
   public cutList = Store<string[]>([]);
-  public globalDispatch?: GlobalDispatch;
+  public globalDispatch?: IGlobalDispatch;
   public assoc?: FileAssocService;
   public serviceHost?: ServiceHost;
   public libraries?: LibraryManagement;
 
   // CONTEXTS
 
-  account?: AccountUserContext;
-  activity?: LoginActivityUserContext;
-  apps?: ApplicationsUserContext;
-  appreg?: AppRegistrationUserContext;
-  renderer?: AppRendererUserContext;
-  checks?: ChecksUserContext;
-  elevation?: ElevationUserContext;
-  files?: FilesystemUserContext;
-  helpers?: HelpersUserContext;
-  icons?: IconsUserContext;
-  init?: InitUserContext;
-  notifications?: NotificationsUserContext;
-  power?: PowerUserContext;
-  preferencesCtx?: PreferencesUserContext;
-  spawn?: SpawnUserContext;
-  themes?: ThemesUserContext;
-  version?: VersionUserContext;
-  wallpaper?: WallpaperUserContext;
-  workspaces?: WorkspaceUserContext;
-  shortcuts?: ShortcutsUserContext;
+  account?: IAccountUserContext;
+  activity?: ILoginActivityUserContext;
+  apps?: IApplicationsUserContext;
+  appreg?: IAppRegistrationUserContext;
+  renderer?: IAppRendererUserContext;
+  checks?: IChecksUserContext;
+  elevation?: IElevationUserContext;
+  files?: IFilesystemUserContext;
+  helpers?: IHelpersUserContext;
+  icons?: IIconsUserContext;
+  init?: IInitUserContext;
+  notifications?: INotificationsUserContext;
+  power?: IPowerUserContext;
+  preferencesCtx?: IPreferencesUserContext;
+  spawn?: ISpawnUserContext;
+  themes?: IThemesUserContext;
+  version?: IVersionUserContext;
+  wallpaper?: IWallpaperUserContext;
+  workspaces?: IWorkspaceUserContext;
+  shortcuts?: IShortcutsUserContext;
 
   get preferences() {
     return this.preferencesCtx!.preferences!;
@@ -147,7 +148,7 @@ export class UserDaemon extends Process {
 
   async stopUserContexts() {
     for (const id in UserContexts) {
-      const context = (this as any)[id] as UserContext;
+      const context = (this as any)[id] as IUserContext;
 
       await context.__deactivate();
     }
@@ -211,7 +212,7 @@ export class UserDaemon extends Process {
 
     await appStore.refresh();
 
-    const proto = this.serviceHost?.getService<ProtocolServiceProcess>("ProtoService");
+    const proto = this.serviceHost?.getService<IProtocolServiceProcess>("ProtoService");
 
     for (const key in AdminProtocolHandlers) {
       proto?.registerHandler(key, AdminProtocolHandlers[key]);
@@ -258,7 +259,7 @@ export class UserDaemon extends Process {
   }
 
   async activateGlobalDispatch() {
-    this.globalDispatch = this.serviceHost!.getService<GlobalDispatch>("GlobalDispatch");
+    this.globalDispatch = this.serviceHost!.getService<IGlobalDispatch>("GlobalDispatch");
 
     this.globalDispatch?.subscribe("update-preferences", async (preferences: UserPreferences) => {
       this.preferencesCtx!.syncLock = true;
@@ -278,26 +279,26 @@ export class UserDaemon extends Process {
   }
 
   appStorage() {
-    return this.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    return this.serviceHost?.getService<IApplicationStorage>("AppStorage");
   }
 
-  getShell(): ShellRuntime | undefined {
-    return Stack.getProcess(+getKMod<EnvironmentType>("env").get("shell_pid"));
+  getShell(): IShellRuntime | undefined {
+    return Stack.getProcess(+getKMod<IEnvironment>("env").get("shell_pid"));
   }
 
   //#endregion INIT
 
   updateGlobalDispatch() {
-    this.serviceHost?.getService<GlobalDispatch>?.("GlobalDispatch")?.sendUpdate();
+    this.serviceHost?.getService<IGlobalDispatch>?.("GlobalDispatch")?.sendUpdate();
   }
 }
 
-export function TryGetDaemon(): UserDaemon | undefined {
-  const env = getKMod<EnvironmentType>("env");
+export function TryGetDaemon(): IUserDaemon | undefined {
+  const env = getKMod<IEnvironment>("env");
   const stack = Stack;
   const daemonPid = +env.get("userdaemon_pid");
 
-  return stack.getProcess<UserDaemon>(daemonPid);
+  return stack.getProcess<IUserDaemon>(daemonPid);
 }
 
-export let Daemon: UserDaemon;
+export let Daemon: IUserDaemon;

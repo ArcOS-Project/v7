@@ -2,8 +2,8 @@
   import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import { LogoTranslations } from "$apps/admin/adminportal/store";
   import { StoreItemIconPrimitive } from "$ts/distrib/util";
-  import type { ReadableStore } from "$ts/writable";
   import type { BugReport } from "$types/bughunt";
+  import type { ReadableStore } from "$types/writable";
   import dayjs from "dayjs";
 
   const {

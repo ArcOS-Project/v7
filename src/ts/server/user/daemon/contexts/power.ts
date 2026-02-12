@@ -1,14 +1,15 @@
+import type { IUserDaemon } from "$interfaces/daemon";
 import type { AppProcess } from "$ts/apps/process";
 import { Env, Stack, State } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { BatteryType } from "$types/navigator";
-import { Daemon, type UserDaemon } from "..";
+import { Daemon } from "..";
 import { UserContext } from "../context";
 
 export class PowerUserContext extends UserContext {
   public battery = Store<BatteryType | undefined>();
 
-  constructor(id: string, daemon: UserDaemon) {
+  constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
 

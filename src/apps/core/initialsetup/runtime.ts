@@ -1,3 +1,5 @@
+import type { IUserDaemon } from "$interfaces/daemon";
+import type { IServerManager } from "$interfaces/kernel";
 import { MessageBox } from "$ts/dialog";
 import { Env, getKMod, Server, Stack, State } from "$ts/env";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
@@ -8,7 +10,6 @@ import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import { htmlspecialchars } from "$ts/util";
 import { Store } from "$ts/writable";
-import type { ServerManagerType } from "$types/kernel";
 import { AppProcess } from "../../../ts/apps/process";
 import type { AppProcessData } from "../../../types/app";
 import CheckInbox from "./InitialSetup/Page/CheckInbox.svelte";
@@ -31,8 +32,8 @@ export class InitialSetupRuntime extends AppProcess {
   public actionsDisabled = Store<boolean>(false);
   public showMainContent = Store<boolean>(false);
   public displayName = Store<string>();
-  public server: ServerManagerType;
-  #userDaemon?: UserDaemon;
+  public server: IServerManager;
+  #userDaemon?: IUserDaemon;
 
   public readonly pages = [Welcome, License, Identity, CheckInbox, Finish, FreshDeployment];
 
@@ -147,7 +148,7 @@ export class InitialSetupRuntime extends AppProcess {
       this.actionsDisabled.set(false);
     });
 
-    this.server = getKMod<ServerManagerType>("server");
+    this.server = getKMod<IServerManager>("server");
 
     this.pageNumber.set(this.server.serverInfo?.freshBackend ? this.pages.length - 1 : 0);
 

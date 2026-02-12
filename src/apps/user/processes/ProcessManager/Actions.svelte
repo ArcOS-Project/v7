@@ -1,14 +1,14 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
   import { Stack } from "$ts/env";
-  import { Process } from "$ts/process/instance";
   import { Plural } from "$ts/util";
+  import type { IProcess } from "../../../../interfaces/process";
   import type { ProcessManagerRuntime } from "../runtime";
 
   const { process }: { process: ProcessManagerRuntime } = $props();
   const { running, selected } = process;
 
-  let proc = $state<Process>();
+  let proc = $state<IProcess>();
 
   selected.subscribe((v) => {
     proc = Stack.getProcess(+v.replace("proc#", ""));

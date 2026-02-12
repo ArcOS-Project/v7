@@ -1,12 +1,13 @@
+import type { IUserDaemon } from "$interfaces/daemon";
 import { MessageBox } from "$ts/dialog";
-import { ServerDrive } from "$ts/drives/server";
 import { Env, Fs, Stack, State, SysDispatch } from "$ts/env";
+import { ServerDrive } from "$ts/kernel/mods/fs/drives/server";
 import { PermissionHandler } from "$ts/permissions";
 import { ServiceHost } from "$ts/services";
 import type { ShareManager } from "$ts/shares";
 import type { LibraryManagement } from "$ts/tpa/libraries";
 import type { Service } from "$types/service";
-import { Daemon, type UserDaemon } from "..";
+import { Daemon } from "..";
 import type { FileAssocService } from "../../assoc";
 import { UserContext } from "../context";
 
@@ -19,7 +20,7 @@ export class InitUserContext extends UserContext {
   private firstSyncDone = false;
   public anchorInterceptObserver?: MutationObserver;
 
-  constructor(id: string, daemon: UserDaemon) {
+  constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
 

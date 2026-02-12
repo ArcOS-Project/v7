@@ -3,11 +3,11 @@ import type { AppProcess } from "$ts/apps/process";
 import { Env, getKMod, Stack } from "$ts/env";
 import { UUID } from "$ts/uuid";
 import type { ContextMenuItem } from "$types/app";
-import type { EnvironmentType, ProcessHandlerType } from "$types/kernel";
+import type { IEnvironment, IProcessHandler } from "$interfaces/kernel";
 
 export function contextProps(node: HTMLElement, args: any[]) {
-  const env = getKMod<EnvironmentType>("env", true);
-  const stack = getKMod<ProcessHandlerType>("stack", true);
+  const env = getKMod<IEnvironment>("env", true);
+  const stack = getKMod<IProcessHandler>("stack", true);
 
   const contextMenuPid = env?.get("contextmenu_pid");
   if (!contextMenuPid) return;

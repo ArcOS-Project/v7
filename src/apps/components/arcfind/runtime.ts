@@ -10,8 +10,9 @@ import type { PathedFileEntry, RecursiveDirectoryReadReturn } from "$types/fs";
 import type { SearchItem } from "$types/search";
 import type { UserPreferences } from "$types/user";
 import Fuse from "fuse.js";
+import type { IArcFindRuntime } from "../../../interfaces/arcfind";
 
-export class ArcFindRuntime extends AppProcess {
+export class ArcFindRuntime extends AppProcess implements IArcFindRuntime {
   private fileSystemIndex: PathedFileEntry[] = [];
   private searchItems: SearchItem[] = [];
   public loading = Store<boolean>(false);

@@ -1,11 +1,12 @@
+import { ShortLogLevelCaptions, type LogItem } from "$types/logging";
 import { passwordStrength } from "check-password-strength";
 import { sha256 as sha256Fallback } from "js-sha256";
 import leoProfanity from "leo-profanity";
 import validator from "validator";
+import { Kernel, Server } from "./env";
 import { getJsonHierarchy } from "./hierarchy";
 import { Process } from "./process/instance";
-import { Kernel, Server } from "./env";
-import { ShortLogLevelCaptions, type LogItem } from "$types/logging";
+import type { IProcess } from "$interfaces/process";
 
 leoProfanity.loadDictionary("en");
 
@@ -226,7 +227,7 @@ export function groupByTimeFrame<T extends Record<string, any>>(items: T[], colu
 
 export function noop() {} // empty filler method
 
-export function calculateMemory(process: Process): number {
+export function calculateMemory(process: IProcess): number {
   const seen = new WeakSet();
 
   function walk(node: any, root = false): number {
@@ -269,7 +270,7 @@ export function calculateMemory(process: Process): number {
   return walk(process, true);
 }
 
-export function stringifyProcess(obj: Process): string {
+export function stringifyProcess(obj: IProcess): string {
   const seen = new WeakSet();
 
   function walk(value: any, root = false): string {

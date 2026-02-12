@@ -1,9 +1,10 @@
+import type { IUserDaemon } from "$interfaces/daemon";
 import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { UUID } from "$ts/uuid";
 import type { UserPreferences } from "$types/user";
-import { Daemon, type UserDaemon } from "..";
+import { Daemon } from "..";
 import { UserContext } from "../context";
 
 export class WorkspaceUserContext extends UserContext {
@@ -12,7 +13,7 @@ export class WorkspaceUserContext extends UserContext {
   private virtualdesktopChangingTimeout: NodeJS.Timeout | undefined;
   public virtualDesktop: HTMLDivElement | undefined;
 
-  constructor(id: string, daemon: UserDaemon) {
+  constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
 

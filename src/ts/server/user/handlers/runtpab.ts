@@ -1,3 +1,4 @@
+import type { IUserDaemon } from "$interfaces/daemon";
 import { MessageBox } from "$ts/dialog";
 import { Env, Fs } from "$ts/env";
 import { arrayBufferToBlob } from "$ts/util/convert";
@@ -6,9 +7,8 @@ import { UUID } from "$ts/uuid";
 import type { FileHandler } from "$types/fs";
 import { fromExtension } from "human-filetypes";
 import JSZip from "jszip";
-import type { UserDaemon } from "../daemon";
 
-const runTpaBundle: (d: UserDaemon) => FileHandler = (daemon) => ({
+const runTpaBundle: (d: IUserDaemon) => FileHandler = (daemon) => ({
   opens: {
     extensions: [".tpab"],
   },

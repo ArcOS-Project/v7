@@ -1,21 +1,21 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { Stack } from "$ts/env";
-import type { Process } from "$ts/process/instance";
 import { ProcessKillResultCaptions } from "$ts/process/store";
 import { Daemon } from "$ts/server/user/daemon";
 import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
 import type { ProcessKillResult } from "$types/process";
+import type { IProcess } from "../../../interfaces/process";
 
 export class ProcessInfoRuntime extends AppProcess {
-  parent?: Process;
-  proc?: Process;
-  inherit?: typeof Process;
+  parent?: IProcess;
+  proc?: IProcess;
+  inherit?: Function;
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, app: AppProcessData, proc: Process) {
+  constructor(pid: number, parentPid: number, app: AppProcessData, proc: IProcess) {
     super(pid, parentPid, app);
 
     this.proc = proc || this;
@@ -27,7 +27,7 @@ export class ProcessInfoRuntime extends AppProcess {
 
   //#endregion
 
-  async kill(proc: Process) {
+  async kill(proc: IProcess) {
     const elevated = await Daemon!.elevation!.manuallyElevate({
       what: `ArcOS needs your permission to kill a process`,
       image:

@@ -4,9 +4,9 @@ import type { FsAccess } from "$types/fs";
 import type { StoreItem } from "$types/package";
 import type { SharedDriveType } from "$types/shares";
 import type { ExpandedUserInfo, UserInfo } from "$types/user";
+import type { ReadableStore } from "$types/writable";
 import type { Component } from "svelte";
 import type { AdminPortalRuntime } from "./runtime";
-import type { ReadableStore } from "$ts/writable";
 
 export interface AdminPortalPage {
   name: string;

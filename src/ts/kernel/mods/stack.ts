@@ -3,18 +3,19 @@ import { __Console__ } from "$ts/console";
 import { Env, Kernel, State, SysDispatch } from "$ts/env";
 import { calculateMemory } from "$ts/util";
 import type { App } from "$types/app";
-import type { ConstructedWaveKernel } from "$types/kernel";
 import type { ProcessContext, ProcessKillResult } from "$types/process";
 import { parse } from "stacktrace-parser";
 import { AppRenderer } from "../../apps/renderer";
 import type { Process } from "../../process/instance";
 import { Store } from "../../writable";
 import { KernelModule } from "../module";
+import type { IProcess } from "$interfaces/process";
+import type { IProcessHandler, IWaveKernel } from "$interfaces/kernel";
 
-export class ProcessHandler extends KernelModule {
+export class ProcessHandler extends KernelModule implements IProcessHandler {
   private _busy: string = "";
   private lastPid: number = 0;
-  public store = Store<Map<number, Process>>(new Map([]));
+  public store = Store<Map<number, IProcess>>(new Map([]));
   public rendererPid = -1;
   public renderer: AppRenderer | undefined;
   public processContexts = new Map<number, ProcessContext>([]);
@@ -53,7 +54,7 @@ export class ProcessHandler extends KernelModule {
 
   //#region LIFECYCLE
 
-  constructor(kernel: ConstructedWaveKernel, id: string) {
+  constructor(kernel: IWaveKernel, id: string) {
     super(kernel, id);
   }
 
@@ -65,7 +66,7 @@ export class ProcessHandler extends KernelModule {
 
   //#endregion
 
-  async spawn<T = Process>(
+  async spawn<T = IProcess>(
     process: typeof Process,
     renderTarget: HTMLDivElement | undefined = undefined,
     userId: string | undefined,
@@ -88,7 +89,7 @@ export class ProcessHandler extends KernelModule {
     __Console__.time(`process spawn: ${pid}`);
 
     try {
-      const proc = new (process as any)(pid, parentPid, ...args) as Process;
+      const proc = new (process as any)(pid, parentPid, ...args) as IProcess;
 
       this.Log(`Spawning new ${proc.constructor.name} with PID ${pid}`);
 
@@ -229,7 +230,7 @@ export class ProcessHandler extends KernelModule {
   public getSubProcesses(parentPid: number) {
     this.isKmod();
 
-    const result = new Map<number, Process>([]);
+    const result = new Map<number, IProcess>([]);
 
     if (!this.isPid(parentPid)) return result;
 
@@ -242,7 +243,7 @@ export class ProcessHandler extends KernelModule {
     return result;
   }
 
-  getProcess<T = Process>(pid: number) {
+  getProcess<T = IProcess>(pid: number) {
     this.isKmod();
 
     const proc = this.store().get(pid);

@@ -1,7 +1,7 @@
 import { SysDispatch } from "$ts/env";
-import { logItemToStr, noop } from "$ts/util";
+import { logItemToStr } from "$ts/util";
 import type { LogItem } from "$types/logging";
-import type { ArcTerminal } from "..";
+import type { IArcTerminal } from "$interfaces/terminal";
 import { TerminalProcess } from "../process";
 
 export class KlogCommand extends TerminalProcess {
@@ -16,7 +16,7 @@ export class KlogCommand extends TerminalProcess {
     super(pid, parentPid);
   }
 
-  async main(term: ArcTerminal): Promise<number> {
+  async main(term: IArcTerminal): Promise<number> {
     this.eventId = SysDispatch.subscribe<[LogItem]>("kernel-log", ([data]) => {
       term.rl?.println(logItemToStr(data));
     });

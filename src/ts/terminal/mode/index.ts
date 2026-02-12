@@ -1,3 +1,5 @@
+import type { IUserDaemon } from "$interfaces/daemon";
+import type { IArcTerminal } from "$interfaces/terminal";
 import { ArcOSVersion, Env, Stack, SysDispatch } from "$ts/env";
 import { toForm } from "$ts/form";
 import { ArcBuild } from "$ts/metadata/build";
@@ -16,16 +18,16 @@ import { WebLinksAddon } from "@xterm/addon-web-links";
 import Cookies from "js-cookie";
 import { Terminal } from "xterm";
 import { ArcTerminal } from "..";
+import type { MigrationService } from "../../migrations";
 import { Readline } from "../readline/readline";
 import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../store";
-import type { MigrationService } from "../../migrations";
 
 export class TerminalMode extends Process {
-  userDaemon?: UserDaemon;
+  userDaemon?: IUserDaemon;
   target: HTMLDivElement;
   term?: Terminal;
   rl?: Readline;
-  arcTerm?: ArcTerminal;
+  arcTerm?: IArcTerminal;
 
   //#region LIFECYCLE
 
@@ -105,7 +107,7 @@ export class TerminalMode extends Process {
 
   async startDaemon(token: string, username: string): Promise<boolean> {
     try {
-      const userDaemon = await Stack.spawn<UserDaemon>(UserDaemon, undefined, "SYSTEM", 1, token, username);
+      const userDaemon = await Stack.spawn<IUserDaemon>(UserDaemon, undefined, "SYSTEM", 1, token, username);
 
       const broadcast = (m: string) => {
         this.rl?.println(`${CURUP}${CLRROW}${m}`);
@@ -196,7 +198,7 @@ export class TerminalMode extends Process {
 
       this.term?.clear();
 
-      this.arcTerm = await Stack.spawn<ArcTerminal>(ArcTerminal, undefined, userDaemon.userInfo?._id, this.pid, this.term);
+      this.arcTerm = await Stack.spawn<IArcTerminal>(ArcTerminal, undefined, userDaemon.userInfo?._id, this.pid, this.term);
       this.arcTerm!.IS_ARCTERM_MODE = true;
 
       this.term?.focus();
@@ -274,7 +276,7 @@ export class TerminalMode extends Process {
     return true;
   }
 
-  private saveToken(daemon: UserDaemon) {
+  private saveToken(daemon: IUserDaemon) {
     const token = daemon.token;
     const username = daemon.username;
 

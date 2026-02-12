@@ -1,7 +1,7 @@
-import { FilesystemDrive } from "$ts/drives/drive";
+import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
 import { getKMod } from "$ts/env";
 import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback, RecursiveDirectoryReadReturn } from "$types/fs";
-import type { FilesystemType } from "$types/kernel";
+import type { IFilesystem } from "$interfaces/kernel";
 import JSZip from "jszip";
 
 export class ZIPDrive extends FilesystemDrive {
@@ -35,7 +35,7 @@ export class ZIPDrive extends FilesystemDrive {
   }
 
   async _spinUp(onProgress?: FilesystemProgressCallback): Promise<boolean> {
-    const fs = getKMod<FilesystemType>("fs");
+    const fs = getKMod<IFilesystem>("fs");
     const contents = await fs.readFile(this._path, onProgress);
 
     if (!contents) {
@@ -175,7 +175,7 @@ export class ZIPDrive extends FilesystemDrive {
   async _sync(progress?: FilesystemProgressCallback) {
     this.Log("Syncing " + this._path);
     const file = await this._buffer?.generateAsync({ type: "blob" });
-    const fs = getKMod<FilesystemType>("fs");
+    const fs = getKMod<IFilesystem>("fs");
 
     if (!file) throw new Error(`Failed to sync to file '${this._path}'`);
 

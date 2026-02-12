@@ -9,21 +9,21 @@ import {
   type RecursiveDirectoryReadReturn,
   type UploadReturn,
 } from "$types/fs";
-import type { ConstructedWaveKernel, FilesystemType, SystemDispatchType } from "$types/kernel";
-import type { FilesystemDrive } from "../../../drives/drive";
+import type { IWaveKernel, IFilesystem, ISystemDispatch } from "$interfaces/kernel";
+import type { FilesystemDrive } from "./drives/drive";
 import { arrayBufferToBlob } from "../../../util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "../../../util/fs";
 
-export class Filesystem extends KernelModule implements FilesystemType {
-  private dispatch: SystemDispatchType;
+export class Filesystem extends KernelModule implements IFilesystem {
+  private dispatch: ISystemDispatch;
   public drives: Record<string, FilesystemDrive> = {};
 
   //#region LIFECYCLE
 
-  constructor(kernel: ConstructedWaveKernel, id: string) {
+  constructor(kernel: IWaveKernel, id: string) {
     super(kernel, id);
 
-    this.dispatch = getKMod<SystemDispatchType>("dispatch");
+    this.dispatch = getKMod<ISystemDispatch>("dispatch");
   }
 
   async _init() {}

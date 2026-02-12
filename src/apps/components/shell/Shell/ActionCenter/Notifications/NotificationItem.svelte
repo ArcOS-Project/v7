@@ -1,7 +1,7 @@
 <script lang="ts">
+  import type { IUserDaemon } from "$interfaces/daemon";
   import { RelativeTimeMod } from "$ts/dayjs";
   import { SysDispatch } from "$ts/env";
-  import { UserDaemon } from "$ts/server/user/daemon";
   import { Sleep } from "$ts/sleep";
   import type { ErrorButton, Notification } from "$types/notification";
   import dayjs from "dayjs";
@@ -14,7 +14,7 @@
     id,
     notification,
   }: {
-    userDaemon: UserDaemon;
+    userDaemon: IUserDaemon;
     id: string;
     notification: Notification;
   } = $props();

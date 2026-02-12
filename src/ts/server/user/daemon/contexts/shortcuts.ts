@@ -1,14 +1,15 @@
+import type { IUserDaemon } from "$interfaces/daemon";
 import { MessageBox } from "$ts/dialog";
 import { Env, Fs } from "$ts/env";
 import { textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, join } from "$ts/util/fs";
 import { UUID } from "$ts/uuid";
 import type { ArcShortcut } from "$types/shortcut";
-import { Daemon, type UserDaemon } from "..";
+import { Daemon } from "..";
 import { UserContext } from "../context";
 
 export class ShortcutsUserContext extends UserContext {
-  constructor(id: string, daemon: UserDaemon) {
+  constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
 

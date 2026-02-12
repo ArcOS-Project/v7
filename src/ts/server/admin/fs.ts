@@ -1,4 +1,4 @@
-import { FilesystemDrive } from "$ts/drives/drive";
+import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
 import { toForm } from "$ts/form";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, join } from "$ts/util/fs";

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { BooleanStore } from "$ts/writable";
   import type { UserPreferencesStore } from "$types/user";
+  import type { BooleanStore } from "$types/writable";
   import type { ShellRuntime } from "../runtime";
   import Bottom from "./StartMenu/Bottom.svelte";
   import Folders from "./StartMenu/Folders.svelte";

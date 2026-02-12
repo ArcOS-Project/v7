@@ -1,4 +1,4 @@
-import { FilesystemDrive } from "$ts/drives/drive";
+import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
 import { deepCopyWithBlobs, sortByKey } from "$ts/util";
 import { UUID } from "$ts/uuid";
 import type {

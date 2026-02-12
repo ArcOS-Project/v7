@@ -1,4 +1,4 @@
-import type { ArcTerminal } from "..";
+import type { IArcTerminal } from "$interfaces/terminal";
 import { TerminalProcess } from "../process";
 
 export class AtConfCommand extends TerminalProcess {
@@ -15,7 +15,7 @@ export class AtConfCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal): Promise<number> {
+  protected async main(term: IArcTerminal): Promise<number> {
     await term.daemon?.files?.openFile(term.CONFIG_PATH);
     return 0;
   }

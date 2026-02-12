@@ -1,11 +1,13 @@
 import { DefaultPinnedApps, DefaultStartMenuActions } from "$apps/components/shell/store";
+import type { IUserDaemon } from "$interfaces/daemon";
 import { Fs, SysDispatch } from "$ts/env";
 import { applyDefaults } from "$ts/hierarchy";
 import { Backend } from "$ts/server/axios";
-import { Store, type Unsubscriber } from "$ts/writable";
+import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
 import type { UserPreferences } from "$types/user";
-import { Daemon, type UserDaemon } from "..";
+import type { Unsubscriber } from "$types/writable";
+import { Daemon } from "..";
 import { DefaultUserPreferences } from "../../default";
 import { UserPaths } from "../../store";
 import { UserContext } from "../context";
@@ -15,7 +17,7 @@ export class PreferencesUserContext extends UserContext {
   public preferencesUnsubscribe: Unsubscriber | undefined;
   public preferences = Store<UserPreferences>(DefaultUserPreferences);
 
-  constructor(id: string, daemon: UserDaemon) {
+  constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
 

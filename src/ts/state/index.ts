@@ -1,6 +1,6 @@
+import type { IProcessHandler } from "$interfaces/kernel";
 import { AppProcess } from "$ts/apps/process";
 import { getKMod, Kernel, Stack } from "$ts/env";
-import type { ProcessHandlerType } from "$types/kernel";
 import { LogLevel } from "$types/logging";
 import type { State } from "../../types/state";
 import { Process } from "../process/instance";
@@ -138,7 +138,7 @@ export class StateHandler extends Process {
 
     this.Log(`BEGINNING LOAD OF ${data.name} (${data.identifier}) IN APP MODE`);
 
-    const stack = getKMod<ProcessHandlerType>("stack");
+    const stack = getKMod<IProcessHandler>("stack");
 
     if (!data.appModule) return;
 

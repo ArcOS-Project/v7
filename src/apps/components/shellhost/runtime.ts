@@ -1,3 +1,4 @@
+import type { IProcess } from "$interfaces/process";
 import { MessageBox } from "$ts/dialog";
 import { Env } from "$ts/env";
 import { ErrorIcon } from "$ts/images/dialog";
@@ -31,7 +32,7 @@ export class ShellHostRuntime extends Process {
     // Autoload completed? Then stop the process immediately
     if (Daemon?.autoLoadComplete) return false;
 
-    const procs: Record<string, Process> = {}; // Object of executed shell components
+    const procs: Record<string, IProcess> = {}; // Object of executed shell components
 
     const proc = await Daemon?.spawn?._spawnApp<ShellRuntime>(
       this.userPreferences().globalSettings.shellExec,

@@ -1,12 +1,12 @@
+import type { IProcess, IProcessDispatch } from "$interfaces/process";
 import type { DispatchCallback } from "../../types/dispatch";
 import { Log } from "../logging";
-import { Process } from "./instance";
 
-export class ProcessDispatch {
+export class ProcessDispatch implements IProcessDispatch {
   private store: Record<string, DispatchCallback[]> = {};
-  private parent: Process;
+  private parent: IProcess;
 
-  constructor(process: Process) {
+  constructor(process: IProcess) {
     Log(`ProcessDispatch::'${process.name}'`, `Constructing new dispatch for ${process.name}`);
     this.parent = process;
   }

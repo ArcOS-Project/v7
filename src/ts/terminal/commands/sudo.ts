@@ -1,9 +1,9 @@
+import type { IArcTerminal } from "$interfaces/terminal";
 import { Stack } from "$ts/env";
 import { Permissions } from "$ts/permissions";
 import { LoginUser } from "$ts/server/user/auth";
 import { Daemon } from "$ts/server/user/daemon";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { TerminalCommandStore } from "../store";
 
@@ -18,7 +18,7 @@ export class SudoCommand extends TerminalProcess {
     super(pid, parentPid);
   }
 
-  protected async main(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     if (Permissions.hasSudo(term)) return await this.execute(term, argv);
 
     while (this.retryCount < 3) {
@@ -46,7 +46,7 @@ export class SudoCommand extends TerminalProcess {
 
   //#endregion
 
-  async execute(term: ArcTerminal, parentArgv: string[]) {
+  async execute(term: IArcTerminal, parentArgv: string[]) {
     const text = parentArgv.join(" ");
     const str = term.var?.replace(text.trim()) || "";
     const [flags, args] = term.parseFlags(str);

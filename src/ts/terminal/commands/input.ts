@@ -1,5 +1,5 @@
+import type { IArcTerminal } from "$interfaces/terminal";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 
 export class InputCommand extends TerminalProcess {
@@ -15,7 +15,7 @@ export class InputCommand extends TerminalProcess {
 
   //#endregion LIFECYCLE
 
-  async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const target = argv[0];
     const prompt = `${flags.prompt || "?"}`;
     const validation = flags.validation;

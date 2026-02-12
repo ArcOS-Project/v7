@@ -1,18 +1,19 @@
+import type { ILoginActivityUserContext, IUserDaemon } from "$interfaces/daemon";
 import { toForm } from "$ts/form";
 import { Backend } from "$ts/server/axios";
 import type { LoginActivity } from "$types/activity";
-import { Daemon, type UserDaemon } from "..";
+import { Daemon } from "..";
 import { UserContext } from "../context";
 
 /**
  * RESTRICTED: this class does not have an entry in ProcessWithPermissions,
  * and as such cannot be accessed by third-party applications.
- * 
+ *
  * Access is restricted because login activities return the user's token,
  * which we do not want TPAs to obtain.
  */
-export class LoginActivityUserContext extends UserContext {
-  constructor(id: string, daemon: UserDaemon) {
+export class LoginActivityUserContext extends UserContext implements ILoginActivityUserContext {
+  constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
 
