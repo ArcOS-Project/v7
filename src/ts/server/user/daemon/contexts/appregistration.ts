@@ -30,10 +30,15 @@ export class AppRegistrationUserContext extends UserContext {
     const builtins: App[] = await Promise.all(
       Object.keys(BuiltinAppImportPathAbsolutes).map(async (path) => {
         if (!this.safeMode && blocklist.includes(path)) return null;
+        const regex = new RegExp(/import\(\"(?<path>.*?)\"\)/gm);
+        await Fs.createDirectory("T:/AppMeta");
         try {
           const start = performance.now();
+          const fn = BuiltinAppImportPathAbsolutes[path];
           const mod = await BuiltinAppImportPathAbsolutes[path]();
           const app = (mod as any).default as App;
+          const originalPathRegexp = regex.exec(fn.toString());
+          const originalPath = originalPathRegexp?.groups?.path;
 
           if (app._internalMinVer && compareVersion(ArcOSVersion, app._internalMinVer) === "higher")
             throw `Not loading ${app.metadata.name} because this app requires a newer version of ArcOS`;
@@ -47,6 +52,27 @@ export class AppRegistrationUserContext extends UserContext {
           appCopy._internalSysVer = `v${ArcOSVersion}-${ArcMode()}_${ArcBuild()}`;
           appCopy._internalOriginalPath = path;
           appCopy._internalLoadTime = end;
+          if (originalPath) {
+            try {
+              appCopy._internalResolvedPath = originalPath;
+              const result = await (await fetch(import.meta.env.DEV ? originalPath : `./assets/${originalPath}`)).text();
+              await Fs.writeFile(`T:/AppMeta/${appCopy.id}.js`, textToBlob(`// #unsafe\n${result}`,"text/javascript"));
+              await Fs.writeFile(
+                `T:/AppMeta/${appCopy.id}.tpa`,
+                textToBlob(
+                  JSON.stringify({
+                    ...appCopy,
+                    workingDirectory: `T:/AppMeta`,
+                    entrypoint: `${appCopy.id}.js`,
+                    assets: undefined,
+                    thirdParty: true,
+                  })
+                )
+              );
+            } catch (e) {
+              this.Log(`Failed to write AppMeta file for ${originalPath}: ${e}`, LogLevel.warning);
+            }
+          }
 
           cb(appCopy);
           this.Log(

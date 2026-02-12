@@ -9,10 +9,10 @@
  * © IzKuipers 2025
  */
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { Fs, Server } from "$ts/env";
+import { Fs, Server, Stack } from "$ts/env";
 import { Process } from "$ts/process/instance";
 import { Backend } from "$ts/server/axios";
-import { TryGetDaemon, UserDaemon } from "$ts/server/user/daemon";
+import { Daemon, TryGetDaemon, UserDaemon } from "$ts/server/user/daemon";
 import { ThirdPartyProps } from "$ts/tpa/props";
 import { authcode } from "$ts/util";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
@@ -33,6 +33,7 @@ export class JsExec extends Process {
   filePath?: string;
   workingDirectory: string;
   operationId: string;
+  isNative = false;
 
   //#region LIFECYCLE
 
@@ -110,12 +111,37 @@ export class JsExec extends Process {
       await this.killSelf();
     }
   }
+  async execNative() {
+    if (!this.filePath) throw new JsExecError(`Native execution of ${this.app?.id} failed: no file`);
+
+    const dfaPath = await Fs.direct(this.app?._internalResolvedPath!);
+    if (!dfaPath) throw new JsExecError(`Native execution of ${this.app?.id} failed: DFA failed`);
+
+    const mod = await import(/* @vite-ignore */ dfaPath);
+    const app = mod.default as App;
+
+    if (!app) throw new JsExecError(`Native execution of ${this.app?.id} failed: no default export`);
+
+    return await Stack.spawn(
+      app.assets.runtime,
+      Daemon.workspaces?.getCurrentDesktop(),
+      Daemon.userInfo._id,
+      this.pid,
+      {
+        desktop: Daemon.workspaces?.getCurrentDesktop(),
+        data: app,
+      },
+      ...this.args
+    );
+  }
 
   async getContents() {
     this.Log(`Reading script contents`);
 
     const unwrapped = arrayBufferToText((await Fs.readFile(this.filePath!))!);
     if (!unwrapped) throw new JsExecError(`Failed to read ${this.filePath}: not found`);
+
+    if (this.isNative) return await this.execNative();
 
     await this.testFileContents(unwrapped);
 
@@ -137,6 +163,16 @@ export class JsExec extends Process {
       throw new JsExecError(
         `This application expects a newer version of the TPA framework than what ArcOS can supply. Please update your ArcOS version and try again.`
       );
+
+    if (
+      app._internalResolvedPath &&
+      app.id &&
+      Daemon.appStorage()
+        ?.buffer()
+        .find((a) => a.id === app.id && a._internalResolvedPath === app._internalResolvedPath)
+    ) {
+      this.isNative = true;
+    }
 
     this.app = app;
     this.metaPath = metaPath;
@@ -173,8 +209,8 @@ export class JsExec extends Process {
       if (hasExport) throw new JsExecError("Export statements are not valid inside of ArcOS");
       if (hasImport) throw new JsExecError("Import statements are not valid inside of ArcOS");
       if (hasDebugger) throw new JsExecError("Debugger triggers are not valid inside of ArcOS");
-    } catch {
-      throw new JsExecError("An error occurred while parsing the source file");
+    } catch (e) {
+      throw new JsExecError(`An error occurred while parsing the source file: ${e}`);
     }
   }
 

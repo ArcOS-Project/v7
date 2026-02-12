@@ -35,6 +35,7 @@ export interface App {
   tpaRevision?: number;
   noSafeMode?: boolean;
   vital?: boolean;
+  _internalResolvedPath?: string;
   _internalOriginalPath?: string;
   _internalMinVer?: string;
   _internalSysVer?: string;

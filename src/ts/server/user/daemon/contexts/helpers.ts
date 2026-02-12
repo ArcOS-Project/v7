@@ -1,9 +1,5 @@
-import GlobalLoadIndicatorApp from "$apps/components/globalloadindicator/GlobalLoadIndicator";
-import { GlobalLoadIndicatorRuntime } from "$apps/components/globalloadindicator/runtime";
 import type { GlobalLoadIndicatorProgress } from "$apps/components/globalloadindicator/types";
 import type { IconPickerData } from "$apps/components/iconpicker/types";
-import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
-import TerminalWindowApp from "$apps/components/terminalwindow/TerminalWindow";
 import SafeModeNotice from "$lib/Daemon/SafeModeNotice.svelte";
 import type { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
@@ -13,6 +9,7 @@ import { ArcMode } from "$ts/metadata/mode";
 import { Sleep } from "$ts/sleep";
 import { UUID } from "$ts/uuid";
 import { Store } from "$ts/writable";
+import type { App } from "$types/app";
 import type { ExpandedTerminal } from "$types/terminal";
 import { Daemon, type UserDaemon } from "..";
 import { UserContext } from "../context";
@@ -25,9 +22,12 @@ export class HelpersUserContext extends UserContext {
   async GlobalLoadIndicator(caption?: string, pid?: number, progress?: Partial<GlobalLoadIndicatorProgress>) {
     pid ||= +Env.get("shell_pid");
 
+    const module = await import("$apps/components/globalloadindicator/GlobalLoadIndicator");
+    const GlobalLoadIndicator = module.default as App;
+
     const data = {
-      data: { ...GlobalLoadIndicatorApp, overlay: true },
-      id: GlobalLoadIndicatorApp.id,
+      data: { ...GlobalLoadIndicator, overlay: true },
+      id: "GlobalLoadIndicator",
       desktop: undefined,
     };
 
@@ -37,8 +37,8 @@ export class HelpersUserContext extends UserContext {
       data.data.position = { x: 60, y: 60 };
     }
 
-    const process = await Stack.spawn<GlobalLoadIndicatorRuntime>(
-      GlobalLoadIndicatorRuntime,
+    const process = await Stack.spawn<any>(
+      GlobalLoadIndicator.assets.runtime,
       undefined,
       this.userInfo!._id,
       pid,
@@ -88,7 +88,10 @@ export class HelpersUserContext extends UserContext {
   }
 
   async TerminalWindow(pid = +Env.get("shell_pid")): Promise<ExpandedTerminal | undefined> {
-    const process = await Stack.spawn<TerminalWindowRuntime>(TerminalWindowRuntime, undefined, this.userInfo!._id, pid, {
+    const module = await import("$apps/components/terminalwindow/TerminalWindow");
+    const TerminalWindowApp = module.default as App;
+
+    const process = await Stack.spawn<any>(TerminalWindowApp.assets.runtime, undefined, this.userInfo!._id, pid, {
       data: { ...TerminalWindowApp },
       id: TerminalWindowApp.id,
       desktop: undefined,

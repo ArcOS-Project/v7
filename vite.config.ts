@@ -37,7 +37,7 @@ export default defineConfig({
       },
     },
     assetsInlineLimit: 1,
-    minify: true,
+    minify: false,
   },
   base: "",
 });
