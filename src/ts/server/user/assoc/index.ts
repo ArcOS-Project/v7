@@ -1,3 +1,4 @@
+import type { IFileAssocService } from "$interfaces/service";
 import { ApplicationStorage } from "$ts/apps/storage";
 import { Fs } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
@@ -12,7 +13,7 @@ import { Daemon } from "../daemon";
 import { UserPaths } from "../store";
 import { DefaultFileDefinitions } from "./store";
 
-export class FileAssocService extends BaseService {
+export class FileAssocService extends BaseService implements IFileAssocService {
   private CONFIG_PATH = join(UserPaths.System, "FileAssociations.json");
   private Configuration = Store<FileAssociationConfig>();
 

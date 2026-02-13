@@ -18,7 +18,8 @@
     "console:check": "node tools/console-usage.mjs",
     "method:check": "node tools/check-params.mjs",
     "circularity": "npx madge --circular --extensions ts,svelte ./src",
-    "check:everything": "yarn run check && yarn console:check && yarn region:check && yarn method:check"
+    "type:check": "node tools/typeoutblow.mjs",
+    "check:everything": "yarn run check && yarn console:check && yarn region:check && yarn method:check && yarn type:check"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "5.1.0",

@@ -1,6 +1,7 @@
 import type { IAppProcess } from "$interfaces/app";
+import type { Constructs } from "$interfaces/common";
+import type { IProcess } from "$interfaces/process";
 import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
-import type { Process } from "$ts/process/instance";
 import type { SvelteComponent } from "svelte";
 import type { MaybePromise } from "./common";
 import type { ReadableStore } from "./writable";
@@ -46,7 +47,7 @@ export type RegisteredProcess = {
   metadata: AppMetadata;
   id: string;
   assets: {
-    runtime: typeof Process;
+    runtime: Constructs<IProcess>;
   };
   vital?: boolean;
   _internalMinVer?: string;
@@ -84,7 +85,7 @@ export interface WindowControls {
 }
 
 export interface AppAssets {
-  runtime: typeof Process;
+  runtime: Constructs<IProcess>;
   component?: typeof SvelteComponent;
 }
 

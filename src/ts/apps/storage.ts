@@ -1,3 +1,4 @@
+import type { IApplicationStorage } from "$interfaces/service";
 import { Fs, SysDispatch } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import type { ServiceHost } from "$ts/services";
@@ -9,7 +10,7 @@ import { Store } from "$ts/writable";
 import type { App, AppStorage, AppStoreCb, InstalledApp } from "$types/app";
 import type { Service } from "$types/service";
 
-export class ApplicationStorage extends BaseService {
+export class ApplicationStorage extends BaseService implements IApplicationStorage {
   private origins = new Map<string, AppStoreCb>([]);
   private injectedStore = new Map<string, App>([]);
   public buffer = Store<AppStorage>([]);

@@ -2,6 +2,7 @@ import type { ArcPackage, InstallStatus, InstallStatusMode, InstallStatusType } 
 import type { ReadableStore } from "$types/writable";
 import type JSZip from "jszip";
 import type { IDistributionServiceProcess } from "./service";
+import type { Constructs } from "./common";
 
 export interface IInstallerProcessBase {
   parent: IDistributionServiceProcess;
@@ -31,6 +32,9 @@ export interface IInstallerProcessBase {
     };
     sortedPaths: string[];
   }>;
+}
+
+export interface IInstallerProcessBaseConstructor extends Constructs<IInstallerProcessBase> {
   validatePackage(metadata: ArcPackage, zip: JSZip): Promise<boolean>;
   uninstallPackage(metadata: ArcPackage, deleteFiles?: boolean, onStage?: (stage: string) => void): Promise<void>;
 }

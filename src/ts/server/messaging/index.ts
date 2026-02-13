@@ -1,5 +1,6 @@
 import type { IUserDaemon } from "$interfaces/daemon";
 import type { IServerManager } from "$interfaces/kernel";
+import type { IMessagingInterface } from "$interfaces/service";
 import { Env, Fs, getKMod, Server, Stack } from "$ts/env";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
@@ -12,13 +13,9 @@ import { Backend } from "../axios";
 import { Daemon } from "../user/daemon";
 import { GlobalDispatch } from "../ws";
 
-export class MessagingInterface extends BaseService {
+export class MessagingInterface extends BaseService implements IMessagingInterface {
   get serverUrl() {
     return getKMod<IServerManager>("server").url;
-  }
-
-  get serverAuthCode() {
-    return authcode();
   }
 
   //#region LIFECYCLE

@@ -33,8 +33,9 @@ import { Daemon } from "../user/daemon";
 import { UserPaths } from "../user/store";
 import { AdminFileSystem } from "./fs";
 import { AdminScopes } from "./store";
+import type { IAdminBootstrapper } from "$interfaces/service";
 
-export class AdminBootstrapper extends BaseService {
+export class AdminBootstrapper extends BaseService implements IAdminBootstrapper {
   private userInfo: UserInfo | undefined;
 
   //#region LIFECYCLE
@@ -599,7 +600,9 @@ export class AdminBootstrapper extends BaseService {
   async getFsAccessorsOf(username: string): Promise<FsAccess[]> {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get(`/admin/accessors/${username}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await Backend.get(`/admin/accessors/${username}`, {
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
+      });
 
       return response.data;
     } catch {
@@ -656,7 +659,11 @@ export class AdminBootstrapper extends BaseService {
   async forceIndexFor(username: string): Promise<string[]> {
     if (this._disposed) return [];
     try {
-      const response = await Backend.post(`/admin/index/${username}`, {}, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await Backend.post(
+        `/admin/index/${username}`,
+        {},
+        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
+      );
 
       return response.data as string[];
     } catch {
@@ -667,7 +674,9 @@ export class AdminBootstrapper extends BaseService {
   async deleteIndexingOf(username: string): Promise<boolean> {
     if (this._disposed) return false;
     try {
-      const response = await Backend.delete(`/admin/index/${username}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await Backend.delete(`/admin/index/${username}`, {
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
+      });
 
       return response.status === 200;
     } catch {
@@ -718,7 +727,9 @@ export class AdminBootstrapper extends BaseService {
   async getSharesOf(userId: string): Promise<SharedDriveType[]> {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get(`/admin/share/list/${userId}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await Backend.get(`/admin/share/list/${userId}`, {
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
+      });
 
       return response.data as SharedDriveType[];
     } catch {
@@ -831,7 +842,9 @@ export class AdminBootstrapper extends BaseService {
   async getStatisticsOf(userId: string): Promise<UserStatistics | undefined> {
     if (this._disposed) return;
     try {
-      const response = await Backend.get(`/admin/users/stats/${userId}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await Backend.get(`/admin/users/stats/${userId}`, {
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
+      });
 
       return response.data as UserStatistics;
     } catch {
@@ -855,7 +868,9 @@ export class AdminBootstrapper extends BaseService {
   async getShareQuotaOf(shareId: string): Promise<UserQuota | undefined> {
     if (this._disposed) return undefined;
     try {
-      const response = await Backend.get(`/admin/share/quota/${shareId}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await Backend.get(`/admin/share/quota/${shareId}`, {
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
+      });
 
       return response.data as UserQuota;
     } catch {
@@ -933,7 +948,9 @@ export class AdminBootstrapper extends BaseService {
   async getUserStoreItems(userId: string) {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get(`/admin/storel/list/${userId}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await Backend.get(`/admin/storel/list/${userId}`, {
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
+      });
 
       return response.data as StoreItem[];
     } catch {
@@ -1018,7 +1035,11 @@ export class AdminBootstrapper extends BaseService {
     }
 
     try {
-      const response = await Backend.post(`/admin/store/block/${id}`, {}, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await Backend.post(
+        `/admin/store/block/${id}`,
+        {},
+        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
+      );
 
       return response.status === 200;
     } catch {
@@ -1186,10 +1207,7 @@ export class AdminBootstrapper extends BaseService {
       }
 
       await Fs.createDirectory(join(UserPaths.Documents, `AdminBootstrapper`));
-      await Fs.writeFile(
-        join(UserPaths.Documents, `AdminBootstrapper/Verification_${id}_${Date.now()}.txt`),
-        textToBlob(note)
-      );
+      await Fs.writeFile(join(UserPaths.Documents, `AdminBootstrapper/Verification_${id}_${Date.now()}.txt`), textToBlob(note));
 
       return true;
     } catch {

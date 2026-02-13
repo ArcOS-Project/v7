@@ -8,8 +8,9 @@ import type { Service } from "$types/service";
 import io, { Socket } from "socket.io-client";
 import { Backend } from "../axios";
 import { Daemon } from "../user/daemon";
+import type { IGlobalDispatch } from "$interfaces/service";
 
-export class GlobalDispatch extends BaseService {
+export class GlobalDispatch extends BaseService implements IGlobalDispatch {
   client: Socket | undefined;
   server: IServerManager;
   authorized = false;

@@ -5,8 +5,9 @@ import { BaseService } from "$ts/services/base";
 import type { BugReport, ReportOptions } from "$types/bughunt";
 import type { IBugHunt } from "$interfaces/kernel";
 import type { Service } from "$types/service";
+import type { IBugHuntUserSpaceProcess } from "$interfaces/service";
 
-export class BugHuntUserSpaceProcess extends BaseService {
+export class BugHuntUserSpaceProcess extends BaseService implements IBugHuntUserSpaceProcess {
   INVALIDATION_THRESHOLD = 10;
   privateCache: BugReport[] = [];
   publicCache: BugReport[] = [];

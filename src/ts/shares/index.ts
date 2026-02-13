@@ -1,3 +1,4 @@
+import type { IShareManager } from "$interfaces/service";
 import { Fs } from "$ts/env";
 import { toForm } from "$ts/form";
 import { Backend } from "$ts/server/axios";
@@ -9,7 +10,7 @@ import type { Service } from "$types/service";
 import type { SharedDriveType } from "$types/shares";
 import { SharedDrive } from "./drive";
 
-export class ShareManager extends BaseService {
+export class ShareManager extends BaseService implements IShareManager {
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
@@ -115,7 +116,11 @@ export class ShareManager extends BaseService {
     await this.unmountIfMounted(shareId);
 
     try {
-      const response = await Backend.post(`/share/leave/${shareId}`, {}, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await Backend.post(
+        `/share/leave/${shareId}`,
+        {},
+        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
+      );
 
       return response.status === 200;
     } catch {

@@ -1,3 +1,5 @@
+import type { IInstallerProcessBase, IInstallerProcessBaseConstructor } from "$interfaces/distrib";
+import type { IDistributionServiceProcess } from "$interfaces/service";
 import { Fs, Stack } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { Backend } from "$ts/server/axios";
@@ -14,11 +16,9 @@ import type { Service } from "$types/service";
 import type { UserPreferencesStore } from "$types/user";
 import JSZip from "jszip";
 import { AppInstallerProcess } from "./installer/appinstaller";
-import { InstallerProcessBase } from "./installer/base";
 import { LibraryInstallerProcess } from "./installer/libraryinstaller";
-import type { IInstallerProcessBase } from "$interfaces/distrib";
 
-export class DistributionServiceProcess extends BaseService {
+export class DistributionServiceProcess extends BaseService implements IDistributionServiceProcess {
   private readonly dataFolder = join(UserPaths.Configuration, "DistribSvc");
   private readonly tempFolder = `T:/DistribSvcTemp`;
   private readonly installedStoreItemListPath = join(this.dataFolder, "Installed.json");
@@ -303,7 +303,7 @@ export class DistributionServiceProcess extends BaseService {
     return await this.packageInstaller<T>(zip, metadata, item);
   }
 
-  getInstallerProcess(metadata: ArcPackage): typeof InstallerProcessBase {
+  getInstallerProcess(metadata: ArcPackage): IInstallerProcessBaseConstructor {
     switch (metadata.type) {
       case "library":
         return LibraryInstallerProcess;

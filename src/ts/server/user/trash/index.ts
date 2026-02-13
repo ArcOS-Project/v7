@@ -1,3 +1,4 @@
+import type { ITrashCanService } from "$interfaces/service";
 import { Env, Fs, SysDispatch } from "$ts/env";
 import type { ServiceHost } from "$ts/services";
 import { BaseService } from "$ts/services/base";
@@ -10,7 +11,7 @@ import type { TrashIndexNode } from "$types/trash";
 import { Daemon } from "../daemon";
 import { UserPaths } from "../store";
 
-export class TrashCanService extends BaseService {
+export class TrashCanService extends BaseService implements ITrashCanService {
   INDEX_PATH = join(UserPaths.System, `TrashIndex.json`);
   IndexBuffer = Store<Record<string, TrashIndexNode>>({});
 

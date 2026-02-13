@@ -1,3 +1,4 @@
+import type { ILibraryManagement } from "$interfaces/service";
 import { Fs, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { Daemon } from "$ts/server/user/daemon";
@@ -9,7 +10,7 @@ import type { TpaLibrary } from "$types/libraries";
 import { LogLevel } from "$types/logging";
 import type { Service } from "$types/service";
 
-export class LibraryManagement extends BaseService {
+export class LibraryManagement extends BaseService implements ILibraryManagement {
   Index: Map<string, TpaLibrary> = new Map([]);
 
   //#region LIFECYCLE

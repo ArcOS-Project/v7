@@ -1,8 +1,7 @@
 import type { Readline } from "$ts/terminal/readline/readline";
-import type { ArcTermVariables } from "$ts/terminal/var";
 import type { ElevationData } from "$types/elevation";
 import type { DirectoryReadReturn, RecursiveDirectoryReadReturn } from "$types/fs";
-import type { ArcTermConfiguration, Arguments } from "$types/terminal";
+import type { ArcTermConfiguration, Arguments, StaticVariableStore } from "$types/terminal";
 import type ansiEscapes from "ansi-escapes";
 import type { Terminal } from "xterm";
 import type { IAppProcess } from "./app";
@@ -19,7 +18,7 @@ export interface IArcTerminal extends IProcess {
   drive: IFilesystemDrive | undefined;
   term: Terminal;
   rl: Readline | undefined;
-  var: ArcTermVariables | undefined;
+  var: IArcTermVariables | undefined;
   contents: DirectoryReadReturn | undefined;
   daemon: IUserDaemon | undefined;
   ansiEscapes: typeof ansiEscapes;
@@ -63,4 +62,20 @@ export interface ITerminalWindowRuntime extends IAppProcess {
 
 export interface ITerminalProcess extends IProcess {
   _main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<any>;
+}
+
+export interface ITerminalProcessConstructor extends Constructs<ITerminalProcess> {
+  keyword: string;
+  description: string;
+  hidden: boolean;
+  allowInterrupt: boolean;
+}
+
+export interface IArcTermVariables {
+  term: IArcTerminal;
+  getAll(): StaticVariableStore;
+  get(key: string): string | undefined;
+  set(key: string, value: string): Promise<boolean>;
+  delete(key: string): Promise<boolean>;
+  replace(str: string): string;
 }

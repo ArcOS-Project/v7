@@ -1,3 +1,4 @@
+import type { IIconService } from "$interfaces/service";
 import { Fs } from "$ts/env";
 import { getAllImages, getGroupedIcons, iconIdFromPath, maybeIconId } from "$ts/images";
 import { tryJsonParse } from "$ts/json";
@@ -11,7 +12,7 @@ import { Store } from "$ts/writable";
 import type { App } from "$types/app";
 import type { Service } from "$types/service";
 
-export class IconService extends BaseService {
+export class IconService extends BaseService implements IIconService {
   PATH = join(UserPaths.System, "IconSet.json");
   FILE_CACHE: Record<string, string> = {}; // R<id, url>
   ICON_TYPES = ["fs", "builtin", "app"];

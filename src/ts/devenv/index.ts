@@ -11,8 +11,9 @@ import type { AxiosInstance } from "axios";
 import axios from "axios";
 import { io, Socket } from "socket.io-client";
 import { DevDrive } from "./drive";
+import type { IDevelopmentEnvironment } from "$interfaces/service";
 
-export class DevelopmentEnvironment extends BaseService {
+export class DevelopmentEnvironment extends BaseService implements IDevelopmentEnvironment {
   public connected = false;
   private port?: number;
   private url?: string;

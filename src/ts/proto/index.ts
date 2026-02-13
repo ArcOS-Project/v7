@@ -7,8 +7,9 @@ import type { ArcProtocol, ProtocolHandler } from "$types/proto";
 import type { Service } from "$types/service";
 import { navigate } from "svelte-navigator";
 import { SpawnAppHandler } from "./handlers/spawn";
+import type { IProtocolServiceProcess } from "$interfaces/service";
 
-export class ProtocolServiceProcess extends BaseService {
+export class ProtocolServiceProcess extends BaseService implements IProtocolServiceProcess {
   lockObserver = false;
   observer?: MutationObserver;
   store: Record<string, ProtocolHandler> = {

@@ -9,8 +9,9 @@ import type { ArcPackage, StoreItem } from "$types/package";
 import type JSZip from "jszip";
 import type { DistributionServiceProcess } from "..";
 import { InstallerProcessBase } from "./base";
+import type { IInstallerProcessBase } from "$interfaces/distrib";
 
-export class LibraryInstallerProcess extends InstallerProcessBase {
+export class LibraryInstallerProcess extends InstallerProcessBase implements IInstallerProcessBase {
   library?: TpaLibrary;
 
   //#region LIFECYCLE
@@ -67,12 +68,7 @@ export class LibraryInstallerProcess extends InstallerProcessBase {
 
     this.logStatus("Library information", "file");
     try {
-      await Fs.writeFile(
-        `${this.workingDirectory}.json`,
-        textToBlob(JSON.stringify(this.library!, null, 2)),
-        undefined,
-        false
-      );
+      await Fs.writeFile(`${this.workingDirectory}.json`, textToBlob(JSON.stringify(this.library!, null, 2)), undefined, false);
       this.setCurrentStatus("done");
       return true;
     } catch {

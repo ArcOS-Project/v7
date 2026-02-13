@@ -1,10 +1,10 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal, IArcTermVariables } from "$interfaces/terminal";
 import { getKMod } from "$ts/env";
 import type { IEnvironment } from "$interfaces/kernel";
 import type { StaticVariableStore, Variable, VariableStore } from "$types/terminal";
 import { getArcTermStore } from "./var/store";
 
-export class ArcTermVariables {
+export class ArcTermVariables implements IArcTermVariables {
   term: IArcTerminal;
 
   private store: VariableStore = {};

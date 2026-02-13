@@ -152,6 +152,7 @@ export interface IDistributionServiceProcess extends IBaseService {
     onProgress?: FilesystemProgressCallback
   ): Promise<boolean>;
 }
+
 export interface IIconService extends IBaseService {
   PATH: string;
   FILE_CACHE: Record<string, string>;
@@ -169,6 +170,7 @@ export interface IIconService extends IBaseService {
   getAppIcon(app: App, workingDirectory?: string): string;
   getGroupedIcons(): Record<string, Record<string, string>>;
 }
+
 export interface IProtocolServiceProcess extends IBaseService {
   lockObserver: boolean;
   observer?: MutationObserver;
@@ -182,6 +184,7 @@ export interface IProtocolServiceProcess extends IBaseService {
   registerHandler(command: string, handler: ProtocolHandler): boolean;
   unregisterHandler(command: string): boolean;
 }
+
 export interface IGlobalDispatch extends IBaseService {
   client: Socket | undefined;
   server: IServerManager;
@@ -195,9 +198,9 @@ export interface IGlobalDispatch extends IBaseService {
   getClients(): Promise<GlobalDispatchClient[]>;
   disconnectClient(clientId: string): Promise<boolean>;
 }
+
 export interface IMessagingInterface extends IBaseService {
-  get serverUrl(): string;
-  get serverAuthCode(): string;
+  get serverUrl(): string | undefined;
   start(): Promise<void>;
   getSentMessages(): Promise<ExpandedMessage[]>;
   getReceivedMessages(): Promise<ExpandedMessage[]>;
@@ -220,6 +223,7 @@ export interface IMessagingInterface extends IBaseService {
   getMessageThread(messageId?: string): Promise<ExpandedMessageNode[]>;
   buildAttachment(filePath: string, onProgress?: FilesystemProgressCallback): Promise<File | undefined>;
 }
+
 export interface IAdminBootstrapper extends IBaseService {
   start(): Promise<void>;
   getUserInfo(): Promise<UserInfo | undefined>;
