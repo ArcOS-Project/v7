@@ -55,6 +55,8 @@ export type UsersData = {
 export type ViewUserData = {
   user: ExpandedUserInfo;
   reports: BugReport[];
+  osVersion: string;
+  migrations: Record<string, number>;
 };
 
 export type SharesData = {
@@ -88,6 +90,10 @@ export type TokensData = {
 
 export type ActivitiesData = {
   activities: Activity[];
+  users: ExpandedUserInfo[];
+};
+
+export type VersioningData = {
   users: ExpandedUserInfo[];
 };
 
@@ -144,4 +150,9 @@ export interface BugReportTpaFile {
   filePath: string;
   filename: string;
   size: number;
+}
+
+export interface VersioningNode {
+  os: string;
+  migrations: Record<string, number>;
 }

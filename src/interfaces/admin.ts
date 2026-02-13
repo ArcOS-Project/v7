@@ -16,4 +16,6 @@ export interface IAdminPortalRuntime extends IAppProcess {
   switchPage(pageId: string, props?: Record<string, any>, force?: boolean): Promise<void>;
   saveTpaFilesOfBugReport(report: BugReport): Promise<BugReportTpaFile[]>;
   viewUserById(userId: string): Promise<void>;
+  getRegisteredVersionFor(userId: string): Promise<string>;
+  getMigrationIndexFor(userId: string): Promise<Record<string, number>>;
 }

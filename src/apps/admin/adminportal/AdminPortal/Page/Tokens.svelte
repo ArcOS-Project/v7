@@ -10,22 +10,38 @@
 
   const { process, data }: { process: IAdminPortalRuntime; data: TokensData } = $props();
   const { users, tokens } = data;
+
   const sortMode = Store<string>("lastUsed");
-  const total = tokens.flat().length;
+  const filtered = Store<ExpandedToken[]>([]);
+  const userFilter = Store<string>("");
   let chunks = $state<ExpandedToken[][]>([]);
 
   onMount(() => {
-    sortMode.subscribe((v) => {
-      chunks = sliceIntoChunks(sortByKey(tokens, v, true), 50);
+    sortMode.subscribe(updateChunks);
+    userFilter.subscribe(() => {
+      currentChunk = 0;
+      updateChunks();
     });
   });
+
+  function updateChunks() {
+    const newList = tokens.filter((t) => ($userFilter ? $userFilter === t.userId : true));
+    chunks = sliceIntoChunks(sortByKey(newList, $sortMode, true), 50);
+    $filtered = newList;
+  }
 
   let currentChunk = $state(0);
 </script>
 
 <div class="header">
   <h1>TOKENS ({tokens.length})</h1>
-  <Pagination bind:currentChunk chunkSize={50} totalChunks={chunks.length - 1} totalItems={total} />
+  <select bind:value={$userFilter}>
+    <option value="" selected>All users</option>
+    {#each users as user (user._id)}
+      <option value={user._id}>{user.username}</option>
+    {/each}
+  </select>
+  <Pagination bind:currentChunk chunkSize={50} totalChunks={chunks.length - 1} totalItems={$filtered.length} />
 </div>
 <div class="token-list">
   <div class="row header">

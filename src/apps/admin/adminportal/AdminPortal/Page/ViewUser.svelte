@@ -17,7 +17,7 @@
 
   const { process, data }: { process: IAdminPortalRuntime; data: ViewUserData } = $props();
   const { redacted } = process;
-  const { user, reports } = data;
+  const { user, reports, osVersion, migrations } = data;
 
   let statistics: UserStatistics | undefined = $state();
 
@@ -179,6 +179,20 @@
     </div>
     <div class="split">
       <div class="resets">
+        <div class="section versioning">
+          <h1>Versioning</h1>
+          <div class="versions">
+            <div class="os">OS: {osVersion}</div>
+            <div class="migrations">
+              {#each Object.entries(migrations) as [migration, version]}
+                <div class="version {migration}">
+                  <span class="id" title={migration}>{migration.slice(0, 8)}</span>
+                  <span class="value">{version}</span>
+                </div>
+              {/each}
+            </div>
+          </div>
+        </div>
         <ChangeEmail {process} {user} />
         <ChangePassword {process} {user} />
         <ChangeQuota {process} {user} />

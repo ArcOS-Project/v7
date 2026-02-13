@@ -14,6 +14,7 @@ import Shares from "./AdminPortal/Page/Shares.svelte";
 import Store from "./AdminPortal/Page/Store.svelte";
 import Tokens from "./AdminPortal/Page/Tokens.svelte";
 import Users from "./AdminPortal/Page/Users.svelte";
+import Versioning from "./AdminPortal/Page/Versioning.svelte";
 import ViewBugReport from "./AdminPortal/Page/ViewBugReport.svelte";
 import ViewScopes from "./AdminPortal/Page/ViewScopes.svelte";
 import ViewShare from "./AdminPortal/Page/ViewShare.svelte";
@@ -98,7 +99,13 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       icon: "",
       content: ViewUser,
       props: async (process) => {
-        return { reports: await process.admin.getAllBugReports() };
+        const username = process.switchPageProps().user.username;
+
+        return {
+          reports: await process.admin.getAllBugReports(),
+          osVersion: await process.getRegisteredVersionFor(username),
+          migrations: await process.getMigrationIndexFor(username),
+        };
       },
       scopes: [AdminScopes.adminBugHuntGet],
       parent: "users",
@@ -207,12 +214,24 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     },
   ],
   [
+    "versioning",
+    {
+      name: "Versioning",
+      icon: "git-branch",
+      content: Versioning,
+      scopes: [AdminScopes.adminUserfsFile, AdminScopes.adminUsersList],
+      props: async (process) => {
+        return { users: await process.admin.getAllUsers() };
+      },
+      separator: true,
+    },
+  ],
+  [
     "scopes",
     {
       name: "Scopes",
       icon: "telescope",
       content: Scopes,
-      separator: true,
       props: async (process) => {
         return { admins: (await process.admin.getAllUsers()).filter((u) => u.admin) }; // Filter
       },

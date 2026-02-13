@@ -380,6 +380,7 @@ export interface ILibraryManagement extends IBaseService {
 
 export interface IMigrationService extends IBaseService {
   get Config(): Record<string, number>;
+  MIGRATIONS: IMigrationNodeConstructor[];
   runMigrations(cb?: MigrationStatusCallback): Promise<Record<string, MigrationResult>>;
   runMigration(migration: IMigrationNodeConstructor, cb?: MigrationStatusCallback): Promise<MigrationResult>;
   loadConfiguration(): Promise<Record<string, number>>;
