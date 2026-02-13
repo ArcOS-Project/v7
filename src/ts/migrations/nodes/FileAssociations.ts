@@ -1,15 +1,16 @@
+import type { IMigrationNodeConstructor } from "$interfaces/migration";
+import type { IMigrationService } from "$interfaces/service";
 import type { ApplicationStorage } from "$ts/apps/storage";
 import type { FileAssocService } from "$ts/server/user/assoc";
 import { DefaultFileDefinitions } from "$ts/server/user/assoc/store";
 import type { MigrationResult, MigrationStatusCallback } from "$types/migrations";
-import type { MigrationService } from "..";
 import { MigrationNode } from "../node";
 
 export class FileAssociationsMigration extends MigrationNode {
   static override name = "FileAssociationsMig";
   static override friendlyName = "File associations migration";
 
-  constructor(self: typeof MigrationNode, svc: MigrationService) {
+  constructor(self: IMigrationNodeConstructor, svc: IMigrationService) {
     super(self, svc);
   }
 
@@ -25,7 +26,7 @@ export class FileAssociationsMigration extends MigrationNode {
         if (!app.opens?.extensions) continue;
 
         for (const extension of app.opens.extensions) {
-          // 
+          //
           const existingAssociation = assoc?.getFileAssociation(
             !extension.includes(".") || !extension.startsWith(".") ? extension : `dummy${extension}`
           );

@@ -12,8 +12,9 @@ import { AppRendererError } from "./error";
 import { BuiltinAppImportPathAbsolutes } from "./store";
 import { DistributionServiceProcess } from "$ts/distrib";
 import type { IAppProcess } from "$interfaces/app";
+import type { IAppRenderer } from "$interfaces/renderer";
 
-export class AppRenderer extends Process {
+export class AppRenderer extends Process implements IAppRenderer {
   currentState: number[] = [];
   target: HTMLDivElement;
   maxZIndex = 1e6;

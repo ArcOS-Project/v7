@@ -4,7 +4,6 @@ import type { IFilesystemDrive } from "$interfaces/fs";
 import type { IProcess } from "$interfaces/process";
 import type { IServiceHost } from "$interfaces/service";
 import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
-import type { MessageBox } from "$ts/dialog";
 import type { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";
 import type {
   arrayBufferToBlob,
@@ -27,10 +26,11 @@ import type {
 import type { App } from "./app";
 import type { AxiosInstance } from "./axios";
 import type { dayjs } from "./dayjs";
+import type { MessageBoxData } from "./messagebox";
 
 export interface ThirdPartyPropMap {
   serviceHost: IServiceHost | undefined;
-  MessageBox: typeof MessageBox;
+  MessageBox(data: MessageBoxData, parentPid: number, overlay?: boolean): Promise<void>;
   icons: Record<string, string>;
   util: {
     htmlspecialchars: typeof htmlspecialchars;

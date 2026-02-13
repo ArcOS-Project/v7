@@ -1,17 +1,18 @@
+import type { IMigrationNodeConstructor } from "$interfaces/migration";
+import type { IMigrationService } from "$interfaces/service";
 import { Fs } from "$ts/env";
 import { Daemon } from "$ts/server/user/daemon";
 import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
 import { join } from "$ts/util/fs";
 import type { MigrationResult, MigrationStatusCallback } from "$types/migrations";
-import type { MigrationService } from "..";
 import { MigrationNode } from "../node";
 
 export class AppShortcutsMigration extends MigrationNode {
   static override name = "AppShortcutsMig";
   static override friendlyName = "App shortcuts migration";
 
-  constructor(self: typeof MigrationNode, svc: MigrationService) {
+  constructor(self: IMigrationNodeConstructor, svc: IMigrationService) {
     super(self, svc);
   }
 

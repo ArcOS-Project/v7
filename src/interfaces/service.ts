@@ -28,7 +28,7 @@ import type { GlobalDispatchClient } from "$types/dispatch";
 import type { FilesystemProgressCallback, FsAccess, UserQuota } from "$types/fs";
 import type { TpaLibrary } from "$types/libraries";
 import type { ExpandedMessage, ExpandedMessageNode } from "$types/messaging";
-import type { MigrationResultCollection, MigrationStatusCallback } from "$types/migrations";
+import type { MigrationResult, MigrationResultCollection, MigrationStatusCallback } from "$types/migrations";
 import type { ArcPackage, PartialStoreItem, StoreItem, UpdateInfo } from "$types/package";
 import type { ArcProtocol, ProtocolHandler } from "$types/proto";
 import type { ReadableServiceStore, Service, ServiceChangeResult, ServiceStore } from "$types/service";
@@ -43,6 +43,7 @@ import type { IInstallerProcessBase } from "./distrib";
 import type { IFilesystemDrive } from "./fs";
 import type { IProcess } from "./process";
 import type { IThirdPartyAppProcess } from "./thirdparty";
+import type { IMigrationNodeConstructor } from "./migration";
 
 export interface IBaseService extends IProcess {
   host: IServiceHost;
@@ -375,8 +376,8 @@ export interface ILibraryManagement extends IBaseService {
 
 export interface IMigrationService extends IBaseService {
   get Config(): Record<string, number>;
-  runMigrations(cb?: MigrationStatusCallback): Promise<Record<string, MigrationResultCollection>>;
-  runMigration(migration: Function, cb?: MigrationStatusCallback): Promise<MigrationResultCollection>;
+  runMigrations(cb?: MigrationStatusCallback): Promise<Record<string, MigrationResult>>;
+  runMigration(migration: IMigrationNodeConstructor, cb?: MigrationStatusCallback): Promise<MigrationResult>;
   loadConfiguration(): Promise<Record<string, number>>;
   writeConfiguration(config: Record<string, number>): Promise<Record<string, number>>;
 }

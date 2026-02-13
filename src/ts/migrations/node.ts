@@ -1,10 +1,11 @@
+import type { IMigrationNode, IMigrationNodeConstructor } from "$interfaces/migration";
+import type { IMigrationService } from "$interfaces/service";
 import { Log } from "$ts/logging";
 import { LogLevel } from "$types/logging";
 import type { MigrationResult, MigrationStatusCallback } from "$types/migrations";
-import type { MigrationService } from ".";
 import packageJson from "../../../package.json";
 
-export class MigrationNode {
+export class MigrationNode implements IMigrationNode {
   public static name = "MigrationNode";
   public static friendlyName = "Unknown Migration";
   public static inversional = false;
@@ -14,11 +15,11 @@ export class MigrationNode {
     .splice(1, 2)
     .map(Number)
     .reduce((p, v, i) => p + (i == 1 ? v / 10 : v)); // float, defaults to ArcOS version (more or less)
-  public svc: MigrationService;
+  public svc: IMigrationService;
 
-  protected self: typeof MigrationNode;
+  protected self: IMigrationNodeConstructor;
 
-  constructor(self: typeof MigrationNode, svc: MigrationService) {
+  constructor(self: IMigrationNodeConstructor, svc: IMigrationService) {
     this.self = self;
     this.svc = svc;
   }

@@ -1,3 +1,5 @@
+import type { IMigrationNodeConstructor } from "$interfaces/migration";
+import type { IMigrationService } from "$interfaces/service";
 import { Fs } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import { UserPaths } from "$ts/server/user/store";
@@ -9,17 +11,16 @@ import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
 import type { MigrationResult, MigrationStatusCallback } from "$types/migrations";
 import type { Service } from "$types/service";
-import type { MigrationNode } from "./node";
 import { AppShortcutsMigration } from "./nodes/AppShortcuts";
 import { FileAssociationsMigration } from "./nodes/FileAssociations";
 import { IconConfigurationMigration } from "./nodes/IconConfiguration";
 
 // TODO
-export class MigrationService extends BaseService {
+export class MigrationService extends BaseService implements IMigrationService {
   private Configuration = Store<Record<string, number>>({});
   private CONFIG_PATH = join(UserPaths.Migrations, "Index.json");
 
-  public MIGRATIONS: (typeof MigrationNode)[] = [FileAssociationsMigration, IconConfigurationMigration, AppShortcutsMigration];
+  public MIGRATIONS: IMigrationNodeConstructor[] = [FileAssociationsMigration, IconConfigurationMigration, AppShortcutsMigration];
 
   public get Config() {
     return this.Configuration();
@@ -100,7 +101,7 @@ export class MigrationService extends BaseService {
     return results;
   }
 
-  async runMigration(migration: typeof MigrationNode, cb?: MigrationStatusCallback): Promise<MigrationResult> {
+  async runMigration(migration: IMigrationNodeConstructor, cb?: MigrationStatusCallback): Promise<MigrationResult> {
     const instance = new migration(migration, this);
     const result = await instance._runMigration(cb);
 

@@ -1,16 +1,16 @@
 <script lang="ts">
-  import type { AppRenderer } from "$ts/apps/renderer";
+  import type { IAppProcess } from "$interfaces/app";
+  import type { IAppRenderer } from "$interfaces/renderer";
   import { contextProps } from "$ts/context/actions.svelte";
   import { BETA, Stack } from "$ts/env";
   import { onMount, type Snippet } from "svelte";
   import AltMenu from "./CustomTitlebar/AltMenu.svelte";
-  import type { IAppProcess } from "$interfaces/app";
 
   const { process, children, className = "" }: { process: IAppProcess; children?: Snippet; className?: string } = $props();
   const { windowTitle, windowIcon } = process;
   const { data } = process.app;
 
-  let renderer: AppRenderer | undefined;
+  let renderer: IAppRenderer | undefined;
 
   onMount(() => {
     renderer = Stack.renderer;

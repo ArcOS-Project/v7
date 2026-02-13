@@ -1,12 +1,13 @@
+import type { IMigrationNodeConstructor } from "$interfaces/migration";
+import type { IMigrationService } from "$interfaces/service";
 import type { MigrationResult } from "$types/migrations";
-import type { MigrationService } from "..";
 import { MigrationNode } from "../node";
 
 export class IconConfigurationMigration extends MigrationNode {
   static override name = "IconConfigurationMig";
   static override friendlyName = "Icon Configuration Migration";
 
-  constructor(self: typeof MigrationNode, svc: MigrationService) {
+  constructor(self: IMigrationNodeConstructor, svc: IMigrationService) {
     super(self, svc);
   }
 

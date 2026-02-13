@@ -1,3 +1,6 @@
+import type { IProcessHandler, IWaveKernel } from "$interfaces/kernel";
+import type { IProcess } from "$interfaces/process";
+import type { IAppRenderer } from "$interfaces/renderer";
 import { AppProcess } from "$ts/apps/process";
 import { __Console__ } from "$ts/console";
 import { Env, Kernel, State, SysDispatch } from "$ts/env";
@@ -9,15 +12,13 @@ import { AppRenderer } from "../../apps/renderer";
 import type { Process } from "../../process/instance";
 import { Store } from "../../writable";
 import { KernelModule } from "../module";
-import type { IProcess } from "$interfaces/process";
-import type { IProcessHandler, IWaveKernel } from "$interfaces/kernel";
 
 export class ProcessHandler extends KernelModule implements IProcessHandler {
   private _busy: string = "";
   private lastPid: number = 0;
   public store = Store<Map<number, IProcess>>(new Map([]));
   public rendererPid = -1;
-  public renderer: AppRenderer | undefined;
+  public renderer: IAppRenderer | undefined;
   public processContexts = new Map<number, ProcessContext>([]);
 
   get IS_BUSY() {

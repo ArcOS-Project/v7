@@ -1,5 +1,4 @@
 import type { IProcess, IProcessDispatch } from "$interfaces/process";
-import type { AppRenderer } from "$ts/apps/renderer";
 import type { App } from "$types/app";
 import type { BugReport, OutgoingBugReport, ReportOptions } from "$types/bughunt";
 import type { SystemDispatchResult } from "$types/dispatch";
@@ -16,6 +15,7 @@ import type { ProcessContext, ProcessKillResult } from "$types/process";
 import type { ServerInfo, ServerOption } from "$types/server";
 import type { ReadableStore } from "$types/writable";
 import type { IFilesystemDrive } from "./fs";
+import type { IAppRenderer } from "./renderer";
 import type { IStateHandler } from "./state";
 
 export interface IWaveKernel {
@@ -127,7 +127,7 @@ export interface IProcessHandler {
   get MEMORY(): number;
   store: ReadableStore<Map<number, IProcess>>;
   rendererPid: number;
-  renderer: AppRenderer | undefined;
+  renderer: IAppRenderer | undefined;
   _init(): Promise<void>;
   startRenderer(initPid: number): Promise<void>;
   spawn<T = IProcess>(
