@@ -1,7 +1,7 @@
+import type { IInstallerProcessBase } from "$interfaces/distrib";
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
-import type { InstallerProcessBase } from "$ts/distrib/installer/base";
 import { StoreItemIcon } from "$ts/distrib/util";
 import { Env, Fs, SysDispatch } from "$ts/env";
 import { Daemon } from "$ts/server/user/daemon";
@@ -27,7 +27,7 @@ export class AppStoreRuntime extends AppProcess {
   pageProps = Store<Record<string, any>>({});
   searching = Store<boolean>(false);
   currentPage = Store<string>("");
-  operations: Record<string, InstallerProcessBase> = {};
+  operations: Record<string, IInstallerProcessBase> = {};
   distrib: DistributionServiceProcess;
 
   //#region LIFECYCLE
@@ -382,7 +382,7 @@ The author hasn't provided a readme file themselves, so this one has been automa
     );
   }
 
-  registerOperation(id: string, proc: InstallerProcessBase) {
+  registerOperation(id: string, proc: IInstallerProcessBase) {
     if (this.operations[id]) return false;
 
     this.operations[id] = proc;

@@ -3,12 +3,12 @@
   import { Daemon } from "$ts/server/user/daemon";
   import type { ArcShortcut } from "$types/shortcut";
   import { onMount } from "svelte";
-  import type { ShellRuntime } from "../../runtime";
+  import type { IShellRuntime } from "$interfaces/shell";
   import NewAppGroups from "./AppList/NewAppGroups.svelte";
   import NewListItem from "./AppList/NewListItem.svelte";
   import { sortByKey } from "$ts/util";
 
-  const { process }: { process: ShellRuntime } = $props();
+  const { process }: { process: IShellRuntime } = $props();
   const { searchResults, searchQuery, searching, SelectionIndex, userPreferences, StartMenuContents } = process;
 
   let singleDepthList = $state<ArcShortcut[]>([]);

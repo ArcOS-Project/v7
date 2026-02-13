@@ -1,3 +1,4 @@
+import type { IAppProcess } from "$interfaces/app";
 import { AppProcess } from "$ts/apps/process";
 import { ApplicationStorage } from "$ts/apps/storage";
 import { Env, SoundBus } from "$ts/env";
@@ -9,7 +10,7 @@ import type { ParsedStackFrame } from "$types/error";
 export class OopsNotifierRuntime extends AppProcess {
   data: App;
   exception: Error | PromiseRejectionEvent;
-  process?: AppProcess;
+  process?: IAppProcess;
   installed = false;
   parseFailed = false;
   stackFrames: ParsedStackFrame[] = [];
@@ -22,7 +23,7 @@ export class OopsNotifierRuntime extends AppProcess {
     app: AppProcessData,
     data: App,
     exception: Error | PromiseRejectionEvent,
-    process?: AppProcess
+    process?: IAppProcess
   ) {
     super(pid, parentPid, app);
 

@@ -5,6 +5,7 @@ import type { ReadableStore } from "$types/writable";
 import type { FuseResultMatch } from "fuse.js";
 import type { IAppProcess } from "./app";
 
+// TODO: Why is this an app process and not a service?
 export interface IArcFindRuntime extends IAppProcess {
   loading: ReadableStore<boolean>;
   start(): Promise<false | undefined>;

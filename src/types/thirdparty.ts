@@ -1,4 +1,9 @@
+import type { IAppProcess } from "$interfaces/app";
+import type { Constructs } from "$interfaces/common";
+import type { IFilesystemDrive } from "$interfaces/fs";
+import type { IProcess } from "$interfaces/process";
 import type { IServiceHost } from "$interfaces/service";
+import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
 import type { MessageBox } from "$ts/dialog";
 import type { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";
 import type {
@@ -19,7 +24,6 @@ import type {
   onFileChange,
   onFolderChange,
 } from "$ts/util/fs";
-import type { IAppProcess } from "../interfaces/app";
 import type { App } from "./app";
 import type { AxiosInstance } from "./axios";
 import type { dayjs } from "./dayjs";
@@ -53,10 +57,10 @@ export interface ThirdPartyPropMap {
     blobToDataURL: typeof blobToDataURL;
   };
   workingDirectory: string;
-  Process: Function;
-  AppProcess: Function;
-  ThirdPartyAppProcess: Function;
-  FilesystemDrive: Function;
+  Process: Constructs<IProcess>; // TODO: constructor interface
+  AppProcess: Constructs<IAppProcess>; // TODO: constructor interface
+  ThirdPartyAppProcess: Constructs<IThirdPartyAppProcess>; // TODO: constructor interface
+  FilesystemDrive: Constructs<IFilesystemDrive>; // TODO: constructor interface
   argv: any[];
   app: App;
   $ENTRYPOINT: string;
@@ -65,13 +69,13 @@ export interface ThirdPartyPropMap {
   OPERATION_ID: string;
   load: (path: string) => Promise<any>;
   runApp: (
-    process: Function,
+    process: Constructs<IAppProcess>,
     metadataPath: string,
     parentPid?: number,
     ...args: any[]
   ) => Promise<IThirdPartyAppProcess | undefined>;
   runAppDirect: (
-    process: Function,
+    process: Constructs<IAppProcess>,
     metadataPath: string,
     parentPid?: number,
     ...args: any[]
@@ -82,13 +86,4 @@ export interface ThirdPartyPropMap {
   Debug: (m: any) => void;
   dayjs: (s: string) => dayjs.Dayjs;
   [key: string]: any;
-}
-
-export interface IThirdPartyAppProcess extends IAppProcess {
-  workingDirectory: string;
-  operationId: string;
-  mutationLock: boolean;
-  urlCache: Record<string, string>;
-  elements: Record<string, Element>;
-  __render__(body: HTMLDivElement): Promise<void>;
 }

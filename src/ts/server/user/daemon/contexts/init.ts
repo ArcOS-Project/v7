@@ -1,4 +1,4 @@
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IInitUserContext, IUserDaemon } from "$interfaces/daemon";
 import { MessageBox } from "$ts/dialog";
 import { Env, Fs, Stack, State, SysDispatch } from "$ts/env";
 import { ServerDrive } from "$ts/kernel/mods/fs/drives/server";
@@ -15,7 +15,7 @@ import { UserContext } from "../context";
  * RESTRICTED: this class does not have an entry in ProcessWithPermissions,
  * and as such cannot be accessed by third-party applications.
  */
-export class InitUserContext extends UserContext {
+export class InitUserContext extends UserContext implements IInitUserContext {
   private registeredAnchors: HTMLAnchorElement[] = [];
   private firstSyncDone = false;
   public anchorInterceptObserver?: MutationObserver;
@@ -90,7 +90,7 @@ export class InitUserContext extends UserContext {
     this.Log(`Starting filesystem supplier`);
 
     try {
-      await Fs.mountDrive<ServerDrive>("userfs", ServerDrive, "U", undefined);
+      await Fs.mountDrive("userfs", ServerDrive, "U", undefined);
     } catch {
       throw new Error("UserDaemon: Failed to start filesystem supplier");
     }

@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { UserPreferencesStore } from "$types/user";
   import type { BooleanStore } from "$types/writable";
-  import type { ShellRuntime } from "../runtime";
+  import type { IShellRuntime } from "$interfaces/shell";
   import Bottom from "./StartMenu/Bottom.svelte";
   import Folders from "./StartMenu/Folders.svelte";
   import NewAppList from "./StartMenu/NewAppList.svelte";
@@ -14,7 +14,7 @@
   }: {
     userPreferences: UserPreferencesStore;
     startMenuOpened: BooleanStore;
-    process: ShellRuntime;
+    process: IShellRuntime;
     username: string;
   } = $props();
 

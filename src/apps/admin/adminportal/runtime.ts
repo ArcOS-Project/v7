@@ -1,3 +1,4 @@
+import type { IAdminPortalRuntime } from "$interfaces/admin";
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { Fs } from "$ts/env";
@@ -16,7 +17,7 @@ import { AdminPortalPageStore } from "./store";
 import type { BugReportFileUrlParseResult, BugReportTpaFile } from "./types";
 import { BugHuntUserDataApp } from "./userdata/metadata";
 
-export class AdminPortalRuntime extends AppProcess {
+export class AdminPortalRuntime extends AppProcess implements IAdminPortalRuntime {
   ready = Store<boolean>(false);
   currentPage = Store<string>("");
   switchPageProps = Store<Record<string, any>>({});
@@ -133,10 +134,10 @@ export class AdminPortalRuntime extends AppProcess {
 
   //#endregion
   //#region UTILS
-  
+
   async viewUserById(userId: string) {
     const user = (await this.admin.getAllUsers()).find((u) => u._id === userId);
-    
+
     this.switchPage("viewUser", { user });
   }
 

@@ -1,3 +1,4 @@
+import type { IFilesystemDrive } from "$interfaces/fs";
 import type { IServerManager } from "$interfaces/kernel";
 import { getKMod } from "$ts/env";
 import { Log } from "$ts/logging";
@@ -6,7 +7,6 @@ import type {
   DriveCapabilities,
   FilesystemProgressCallback,
   FilesystemStat,
-  IFilesystemDrive,
   RecursiveDirectoryReadReturn,
 } from "$types/fs";
 import { LogLevel } from "$types/logging";

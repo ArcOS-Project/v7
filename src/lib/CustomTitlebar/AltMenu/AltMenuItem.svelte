@@ -1,12 +1,12 @@
 <script lang="ts">
   import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
-  import type { AppProcess } from "$ts/apps/process";
+  import type { IAppProcess } from "$interfaces/app";
   import { Env, Stack } from "$ts/env";
   import { UUID } from "$ts/uuid";
   import type { ContextMenuItem } from "$types/app";
   import { onMount } from "svelte";
 
-  const { process, menu }: { process: AppProcess; menu: ContextMenuItem } = $props();
+  const { process, menu }: { process: IAppProcess; menu: ContextMenuItem } = $props();
 
   let selected = $state<boolean>(false);
   let button: HTMLButtonElement | undefined = $state();

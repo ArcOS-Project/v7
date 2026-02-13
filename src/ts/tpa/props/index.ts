@@ -1,13 +1,14 @@
+import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
 import { AppProcess } from "$ts/apps/process";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { __Console__ } from "$ts/console";
 import { contextProps } from "$ts/context/actions.svelte";
 import { MessageBox } from "$ts/dialog";
-import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
 import { Env } from "$ts/env";
 import { getAllImages } from "$ts/images";
 import type { JsExec } from "$ts/jsexec";
 import { tryJsonStringify } from "$ts/json";
+import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
 import { Process } from "$ts/process/instance";
 import { Backend } from "$ts/server/axios";
 import { HiddenUserPaths, SystemFolders, UserPathCaptions, UserPathIcons, UserPaths } from "$ts/server/user/store";
@@ -81,7 +82,7 @@ export function ThirdPartyProps(engine: JsExec): ThirdPartyPropMap {
       metadataPath: string,
       parentPid?: number,
       ...args: any[]
-    ): Promise<ThirdPartyAppProcess | undefined> => undefined,
+    ): Promise<IThirdPartyAppProcess | undefined> => undefined,
     loadHtml: async (path: string): Promise<string | undefined> => undefined,
     axios,
     Server: Backend, // TODO: PERMISSION_SERVER_INTERACT

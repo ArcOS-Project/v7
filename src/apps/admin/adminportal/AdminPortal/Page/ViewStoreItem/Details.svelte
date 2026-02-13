@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
@@ -8,7 +8,7 @@
   import dayjs from "dayjs";
   import InstalledBy from "./Details/InstalledBy.svelte";
 
-  const { item, process }: { item: StoreItem; process: AdminPortalRuntime } = $props();
+  const { item, process }: { item: StoreItem; process: IAdminPortalRuntime } = $props();
 </script>
 
 <div class="details">

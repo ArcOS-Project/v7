@@ -16,6 +16,7 @@ import JSZip from "jszip";
 import { AppInstallerProcess } from "./installer/appinstaller";
 import { InstallerProcessBase } from "./installer/base";
 import { LibraryInstallerProcess } from "./installer/libraryinstaller";
+import type { IInstallerProcessBase } from "$interfaces/distrib";
 
 export class DistributionServiceProcess extends BaseService {
   private readonly dataFolder = join(UserPaths.Configuration, "DistribSvc");
@@ -276,7 +277,7 @@ export class DistributionServiceProcess extends BaseService {
     return true;
   }
 
-  async packageInstallerFromPath<T = InstallerProcessBase>(
+  async packageInstallerFromPath<T = IInstallerProcessBase>(
     path: string,
     progress?: FilesystemProgressCallback,
     item?: StoreItem
@@ -312,7 +313,7 @@ export class DistributionServiceProcess extends BaseService {
     }
   }
 
-  async packageInstaller<T = InstallerProcessBase>(zip: JSZip, metadata: ArcPackage, item?: StoreItem): Promise<T | undefined> {
+  async packageInstaller<T = IInstallerProcessBase>(zip: JSZip, metadata: ArcPackage, item?: StoreItem): Promise<T | undefined> {
     this.Log(`packageInstaller: ${metadata.appId}, ${item?._id || "no store item"}`);
 
     if (this.checkBusy("packageInstaller")) return undefined;
@@ -420,7 +421,7 @@ export class DistributionServiceProcess extends BaseService {
     return result;
   }
 
-  async updateStoreItem<T = InstallerProcessBase>(
+  async updateStoreItem<T = IInstallerProcessBase>(
     id: string,
     force = false,
     progress?: FilesystemProgressCallback

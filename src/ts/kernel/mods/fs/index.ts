@@ -13,10 +13,11 @@ import type { IWaveKernel, IFilesystem, ISystemDispatch } from "$interfaces/kern
 import type { FilesystemDrive } from "./drives/drive";
 import { arrayBufferToBlob } from "../../../util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "../../../util/fs";
+import type { IFilesystemDrive } from "$interfaces/fs";
 
 export class Filesystem extends KernelModule implements IFilesystem {
   private dispatch: ISystemDispatch;
-  public drives: Record<string, FilesystemDrive> = {};
+  public drives: Record<string, IFilesystemDrive> = {};
 
   //#region LIFECYCLE
 
@@ -36,7 +37,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
     return this.drives[id];
   }
 
-  async mountDrive<T = FilesystemDrive>(
+  async mountDrive<T = IFilesystemDrive>(
     id: string,
     supplier: typeof FilesystemDrive,
     letter?: string,
@@ -557,7 +558,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
       drive.isCapable("stat");
 
-      return !!(await this.stat(path))?.isDirectory;
+      return !!(await this.stat(path))?.isDirectory as false;
     } catch {
       const contents = await this.readDir(path);
       const fileContents = await this.readFile(path);

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { StoreItemIcon } from "$ts/distrib/util";
   import { formatBytes } from "$ts/util/fs";
@@ -13,7 +13,7 @@
     item,
     user,
     selection,
-  }: { process: AdminPortalRuntime; item: StoreItem; user: ExpandedUserInfo; selection: ReadableStore<string> } = $props();
+  }: { process: IAdminPortalRuntime; item: StoreItem; user: ExpandedUserInfo; selection: ReadableStore<string> } = $props();
   const { redacted } = process;
   const { profile } = user;
   const lastUpdated = dayjs(item.lastUpdated).format("DD MMM YYYY");

@@ -1,5 +1,6 @@
-import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
+import type { IFilesystemDrive } from "$interfaces/fs";
 import { toForm } from "$ts/form";
+import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
 import { getItemNameFromPath, join } from "$ts/util/fs";
 import type {
   DirectoryReadReturn,
@@ -11,7 +12,7 @@ import type {
 } from "$types/fs";
 import type { AxiosInstance } from "axios";
 
-export class DevDrive extends FilesystemDrive {
+export class DevDrive extends FilesystemDrive implements IFilesystemDrive {
   override FIXED = true;
   override REMOVABLE = true;
   override IDENTIFIES_AS: string = "devenv";

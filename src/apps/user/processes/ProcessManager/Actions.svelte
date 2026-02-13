@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { IAppProcess } from "$interfaces/app";
   import { AppProcess } from "$ts/apps/process";
   import { Stack } from "$ts/env";
   import { Plural } from "$ts/util";
@@ -23,7 +24,7 @@
     <button
       class="app-info"
       disabled={!proc || !(proc instanceof AppProcess)}
-      onclick={() => process.appInfoFor(proc as AppProcess)}
+      onclick={() => process.appInfoFor(proc as IAppProcess)}
     >
       App Info
     </button>

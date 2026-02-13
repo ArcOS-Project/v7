@@ -1,4 +1,4 @@
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IThemesUserContext, IUserDaemon } from "$interfaces/daemon";
 import { LogLevel } from "$types/logging";
 import { UserThemeKeys, type UserTheme } from "$types/theme";
 import type { UserPreferences } from "$types/user";
@@ -7,7 +7,7 @@ import { DefaultUserPreferences } from "../../default";
 import { BuiltinThemes } from "../../store";
 import { UserContext } from "../context";
 
-export class ThemesUserContext extends UserContext {
+export class ThemesUserContext extends UserContext implements IThemesUserContext {
   constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }

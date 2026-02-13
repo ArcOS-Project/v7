@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
+  import type { IShellRuntime } from "$interfaces/shell";
   import { isPopulatable } from "$ts/apps/util";
   import { Daemon } from "$ts/server/user/daemon";
   import { AppGroups } from "$ts/server/user/store";
@@ -7,7 +7,7 @@
   import AppGroup from "./AppGroups/AppGroup.svelte";
   import ListItem from "./ListItem.svelte";
 
-  const { process, apps }: { process: ShellRuntime; apps: AppStorage } = $props();
+  const { process, apps }: { process: IShellRuntime; apps: AppStorage } = $props();
   const { userPreferences } = process;
 </script>
 

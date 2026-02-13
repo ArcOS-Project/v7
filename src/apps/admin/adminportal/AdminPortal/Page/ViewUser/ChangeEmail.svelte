@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import { Daemon } from "$ts/server/user/daemon";
   import type { ExpandedUserInfo } from "$types/user";
 
-  const { process, user }: { process: AdminPortalRuntime; user: ExpandedUserInfo } = $props();
+  const { process, user }: { process: IAdminPortalRuntime; user: ExpandedUserInfo } = $props();
   let newEmail = $state<string>();
   let loading = $state<boolean>(false);
 

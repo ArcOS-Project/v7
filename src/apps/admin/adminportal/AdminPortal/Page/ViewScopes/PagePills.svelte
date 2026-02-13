@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import { AdminPortalPageStore } from "$apps/admin/adminportal/store";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import { MessageBox } from "$ts/dialog";
   import { AdminScopeCaptions } from "$ts/server/admin/store";
   import { scopeToScopeCaption } from "$ts/server/admin/util";
@@ -13,7 +13,7 @@
   }: {
     append: (scopes: string[]) => void;
     canAccess: (...scopes: string[]) => boolean;
-    process: AdminPortalRuntime;
+    process: IAdminPortalRuntime;
     scopeList: string[];
   } = $props();
 

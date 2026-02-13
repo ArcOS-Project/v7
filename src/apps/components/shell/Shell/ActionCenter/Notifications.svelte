@@ -5,13 +5,13 @@
   import type { Notification } from "$types/notification";
   import { onMount } from "svelte";
   import Spinner from "../../../../../lib/Spinner.svelte";
-  import type { ShellRuntime } from "../../runtime";
+  import type { IShellRuntime } from "$interfaces/shell";
   import NotificationItem from "./Notifications/NotificationItem.svelte";
 
-  const { process }: { process: ShellRuntime } = $props();
+  const { process }: { process: IShellRuntime } = $props();
   const { userPreferences } = process;
   const userDaemon = Daemon;
-  
+
   let loading = $state(true);
   let noDaemon = $state(false);
   let store = $state<[string, Notification][]>();

@@ -1,4 +1,4 @@
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IUserDaemon, IWorkspaceUserContext } from "$interfaces/daemon";
 import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
 import { Sleep } from "$ts/sleep";
@@ -7,7 +7,7 @@ import type { UserPreferences } from "$types/user";
 import { Daemon } from "..";
 import { UserContext } from "../context";
 
-export class WorkspaceUserContext extends UserContext {
+export class WorkspaceUserContext extends UserContext implements IWorkspaceUserContext {
   private virtualDesktops: Record<string, HTMLDivElement> = {};
   private virtualDesktopIndex = -1;
   private virtualdesktopChangingTimeout: NodeJS.Timeout | undefined;

@@ -4,11 +4,11 @@
   import { Daemon } from "$ts/server/user/daemon";
   import type { AppStorage } from "$types/app";
   import { onMount } from "svelte";
-  import type { ShellRuntime } from "../../runtime";
+  import type { IShellRuntime } from "$interfaces/shell";
   import AppGroups from "./AppList/AppGroups.svelte";
   import ListItem from "./AppList/ListItem.svelte";
 
-  const { process }: { process: ShellRuntime } = $props();
+  const { process }: { process: IShellRuntime } = $props();
   const { searchResults, searchQuery, searching, SelectionIndex, userPreferences } = process;
 
   let apps = $state<AppStorage>([]);

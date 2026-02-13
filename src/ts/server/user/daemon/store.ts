@@ -1,4 +1,5 @@
-import type { UserContext } from "./context";
+import type { Constructs } from "$interfaces/common";
+import type { IUserContext } from "$interfaces/daemon";
 import { AccountUserContext } from "./contexts/account";
 import { LoginActivityUserContext } from "./contexts/activity";
 import { ApplicationsUserContext } from "./contexts/applications";
@@ -20,7 +21,7 @@ import { VersionUserContext } from "./contexts/version";
 import { WallpaperUserContext } from "./contexts/wallpaper";
 import { WorkspaceUserContext } from "./contexts/workspaces";
 
-export const UserContexts: Record<string, typeof UserContext> = {
+export const UserContexts: Record<string, Constructs<IUserContext>> = {
   account: AccountUserContext,
   activity: LoginActivityUserContext,
   apps: ApplicationsUserContext,

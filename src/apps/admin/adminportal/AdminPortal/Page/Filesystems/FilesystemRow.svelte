@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import type { FilesystemsPageQuota } from "$apps/admin/adminportal/types";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminBootstrapper } from "$interfaces/service";
   import CircularProgress from "$lib/CircularProgress.svelte";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import Spinner from "$lib/Spinner.svelte";
   import { Env, Fs } from "$ts/env";
-  import type { AdminBootstrapper } from "$ts/server/admin";
   import { Daemon } from "$ts/server/user/daemon";
   import { formatBytes } from "$ts/util/fs";
 
@@ -14,8 +14,8 @@
     process,
     quota,
   }: {
-    admin: AdminBootstrapper;
-    process: AdminPortalRuntime;
+    admin: IAdminBootstrapper;
+    process: IAdminPortalRuntime;
     quota: FilesystemsPageQuota;
   } = $props();
 

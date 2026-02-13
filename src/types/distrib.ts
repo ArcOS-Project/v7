@@ -1,9 +1,9 @@
-import type { InstallerProcessBase } from "$ts/distrib/installer/base";
+import type { IInstallerProcessBase } from "$interfaces/distrib";
 import type { InstallStatus } from "./package";
 import type { ReadableStore } from "./writable";
 
 export interface InstallerProcProgressNode {
-  proc: InstallerProcessBase | undefined;
+  proc: IInstallerProcessBase | undefined;
   status: ReadableStore<InstallStatus>;
   failReason: ReadableStore<string>;
   installing: ReadableStore<boolean>;

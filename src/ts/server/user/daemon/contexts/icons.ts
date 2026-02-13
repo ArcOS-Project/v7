@@ -1,5 +1,5 @@
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { AppProcess } from "$ts/apps/process";
+import type { IAppProcess } from "$interfaces/app";
+import type { IIconsUserContext, IUserDaemon } from "$interfaces/daemon";
 import type { IconService } from "$ts/icon";
 import { maybeIconId } from "$ts/images";
 import { Store } from "$ts/writable";
@@ -7,7 +7,7 @@ import type { App } from "$types/app";
 import type { ReadableStore } from "$types/writable";
 import { UserContext } from "../context";
 
-export class IconsUserContext extends UserContext {
+export class IconsUserContext extends UserContext implements IIconsUserContext {
   constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
@@ -17,7 +17,7 @@ export class IconsUserContext extends UserContext {
     return this.getIconCached(`@app::${app.id}`) || this?.getIconCached("ComponentIcon");
   }
 
-  getAppIconByProcess(process: AppProcess) {
+  getAppIconByProcess(process: IAppProcess) {
     if (!process) return this.getIconCached("ComponentIcon");
 
     return this.getAppIcon(process.app?.data) || this?.getIconCached("ComponentIcon");

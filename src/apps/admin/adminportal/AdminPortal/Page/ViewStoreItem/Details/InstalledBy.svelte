@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import Spinner from "$lib/Spinner.svelte";
   import { Backend } from "$ts/server/axios";
   import { Daemon } from "$ts/server/user/daemon";
@@ -7,7 +7,7 @@
   import type { ExpandedUserInfo } from "$types/user";
   import Users from "../../Users.svelte";
 
-  const { item, process }: { item: StoreItem; process: AdminPortalRuntime } = $props();
+  const { item, process }: { item: StoreItem; process: IAdminPortalRuntime } = $props();
 
   let loading = $state(false);
   let installed = $state<ExpandedUserInfo[]>([]);

@@ -6,11 +6,12 @@ import {
 } from "$apps/components/fsprogress/types";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import type { IFilesystemUserContext, IUserDaemon } from "$interfaces/daemon";
+import type { ILegacyServerDrive, IMemoryFilesystemDrive } from "$interfaces/fs";
+import type { IRecentFilesService, ITrashCanService } from "$interfaces/service";
 import { MessageBox } from "$ts/dialog";
 import { Env, Fs, Stack, SysDispatch } from "$ts/env";
 import { applyDefaults } from "$ts/hierarchy";
 import { LegacyServerDrive } from "$ts/kernel/mods/fs/drives/legacy";
-import type { MemoryFilesystemDrive } from "$ts/kernel/mods/fs/drives/temp";
 import { ZIPDrive } from "$ts/kernel/mods/fs/drives/zipdrive";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { UUID } from "$ts/uuid";
@@ -21,20 +22,18 @@ import type { LegacyConnectionInfo } from "$types/legacy";
 import type { ArcShortcut } from "$types/shortcut";
 import type { CategorizedDiskUsage } from "$types/user";
 import { Daemon } from "..";
-import { RecentFilesService } from "../../recents";
 import { DefaultFileHandlers, UserPaths } from "../../store";
-import { TrashCanService } from "../../trash";
 import { UserContext } from "../context";
 
 export class FilesystemUserContext extends UserContext implements IFilesystemUserContext {
   private thumbnailCache: Record<string, string> = {};
-  public TempFs?: MemoryFilesystemDrive;
+  public TempFs?: IMemoryFilesystemDrive;
   public fileHandlers: Record<string, FileHandler>;
   public mountedDrives: string[] = [];
   private TempFsSnapshot: Record<string, any> = {};
 
   private get RecentFiles() {
-    return Daemon.serviceHost?.getService<RecentFilesService>("RecentFilesSvc");
+    return Daemon.serviceHost?.getService<IRecentFilesService>("RecentFilesSvc");
   }
 
   constructor(id: string, daemon: IUserDaemon) {
@@ -44,7 +43,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
   }
 
   async _init() {
-    this.TempFs = Fs.getDriveById("temp") as MemoryFilesystemDrive;
+    this.TempFs = Fs.getDriveById("temp") as IMemoryFilesystemDrive;
     this.TempFsSnapshot = await this.TempFs.takeSnapshot();
   }
 
@@ -522,7 +521,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
   }
 
   async mountLegacyFilesystem(connectionInfo: LegacyConnectionInfo) {
-    return await Fs.mountDrive<LegacyServerDrive>(
+    return await Fs.mountDrive<ILegacyServerDrive>(
       btoa(`${connectionInfo.username}@${connectionInfo.url}`),
       LegacyServerDrive,
       undefined,
@@ -537,7 +536,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
    * @param dispatch Whether or not to trigger fs-flush
    */
   async moveToTrashOrDeleteItem(path: string, dispatch = false): Promise<boolean> {
-    const trashSvc = Daemon.serviceHost?.getService<TrashCanService>("TrashSvc");
+    const trashSvc = Daemon.serviceHost?.getService<ITrashCanService>("TrashSvc");
 
     if (path.startsWith("U:/") && trashSvc) {
       return !!(await trashSvc.moveToTrash(path, dispatch));

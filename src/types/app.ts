@@ -1,7 +1,7 @@
-import type { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
+import type { IAppProcess } from "$interfaces/app";
+import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
 import type { Process } from "$ts/process/instance";
 import type { SvelteComponent } from "svelte";
-import type { AppProcess } from "../ts/apps/process";
 import type { MaybePromise } from "./common";
 import type { ReadableStore } from "./writable";
 
@@ -31,7 +31,7 @@ export interface App {
   elevated?: boolean;
   acceleratorDescriptions?: Record<string, string>; // <[combo in One+Two+Key format], description>
   fileSignatures?: Record<string, string>;
-  process?: ThirdPartyAppProcess;
+  process?: IThirdPartyAppProcess;
   tpaRevision?: number;
   noSafeMode?: boolean;
   vital?: boolean;
@@ -88,7 +88,7 @@ export interface AppAssets {
   component?: typeof SvelteComponent;
 }
 
-export interface AppComponentProps<T = AppProcess> {
+export interface AppComponentProps<T = IAppProcess> {
   process: T;
   pid: number;
   app: App;
@@ -124,7 +124,7 @@ export interface ContextMenuInstance {
   x: number;
   y: number;
   items: ContextMenuItem[];
-  process?: AppProcess;
+  process?: IAppProcess;
   artificial?: boolean;
   props?: any[];
 }

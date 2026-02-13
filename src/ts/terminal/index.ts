@@ -1,12 +1,12 @@
 import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import TerminalWindow from "$apps/components/terminalwindow/TerminalWindow.svelte";
 import type { IUserDaemon } from "$interfaces/daemon";
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IFilesystemDrive } from "$interfaces/fs";
+import type { IArcTerminal, ITerminalProcess, ITerminalWindowRuntime } from "$interfaces/terminal";
 import { hexToRgb } from "$ts/color";
 import { Env, Fs, Stack, State } from "$ts/env";
 import { ASCII_ART } from "$ts/intro";
 import { tryJsonParse } from "$ts/json";
-import type { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
 import { Process } from "$ts/process/instance";
 import { LoginUser } from "$ts/server/user/auth";
 import { Daemon, TryGetDaemon } from "$ts/server/user/daemon";
@@ -36,11 +36,12 @@ import {
   TerminalCommandStore,
 } from "./store";
 import { ArcTermVariables } from "./var";
+import type { Constructs } from "$interfaces/common";
 
 export class ArcTerminal extends Process implements IArcTerminal {
   readonly CONFIG_PATH = join(UserPaths.Configuration, "ArcTerm/arcterm.conf");
   path: string;
-  drive: FilesystemDrive | undefined;
+  drive: IFilesystemDrive | undefined;
   term: Terminal;
   rl: Readline | undefined;
   var: ArcTermVariables | undefined;
@@ -51,7 +52,7 @@ export class ArcTerminal extends Process implements IArcTerminal {
   lastLine?: string;
   config: ArcTermConfiguration = DefaultArcTermConfiguration;
   configProvidedExternal = false;
-  window: TerminalWindowRuntime | undefined;
+  window: ITerminalWindowRuntime | undefined;
   IS_ARCTERM_MODE = false;
 
   //#region LIFECYCLE
@@ -538,7 +539,7 @@ export class ArcTerminal extends Process implements IArcTerminal {
     noop();
   }
 
-  handleCommandError(e: Error, command: typeof TerminalProcess) {
+  handleCommandError(e: Error, command: Constructs<ITerminalProcess>) {
     this.rl?.println(ErrorUtils.abbreviatedStackTrace(e, `${BRRED}${command.name}: `));
     this.rl?.println(`${RESET}`);
   }

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
+  import type { IShellRuntime } from "$interfaces/shell";
   import { type CalendarMonth } from "$apps/components/shell/types";
   import Spinner from "$lib/Spinner.svelte";
   import dayjs, { Dayjs } from "dayjs";
@@ -9,7 +9,7 @@
   import Header from "./Calendar/Header.svelte";
   import Top from "./Calendar/Top.svelte";
 
-  const { process }: { process: ShellRuntime } = $props();
+  const { process }: { process: IShellRuntime } = $props();
   const { calendarOpened, userPreferences } = process;
 
   dayjs.extend(weekOfYear);

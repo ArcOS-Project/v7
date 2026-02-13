@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import { Daemon } from "$ts/server/user/daemon";
   import { formatBytes } from "$ts/util/fs";
   import type { ExpandedUserInfo } from "$types/user";
 
-  const { user, process }: { user: ExpandedUserInfo; process: AdminPortalRuntime } = $props();
+  const { user, process }: { user: ExpandedUserInfo; process: IAdminPortalRuntime } = $props();
 
   let newQuota = $state<number | undefined>();
   let loading = $state<boolean>(false);

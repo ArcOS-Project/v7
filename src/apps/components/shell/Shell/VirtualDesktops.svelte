@@ -1,15 +1,15 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
-  import { contextMenu, contextProps } from "$ts/context/actions.svelte";
+  import { contextMenu } from "$ts/context/actions.svelte";
   import { Stack } from "$ts/env";
   import { Daemon } from "$ts/server/user/daemon";
   import { Wallpapers } from "$ts/wallpaper/store";
   import { Store } from "$ts/writable";
   import type { Workspace } from "$types/user";
   import { onMount } from "svelte";
-  import type { ShellRuntime } from "../runtime";
+  import type { IShellRuntime } from "$interfaces/shell";
 
-  const { process }: { process: ShellRuntime } = $props();
+  const { process }: { process: IShellRuntime } = $props();
   const { userPreferences, workspaceManagerOpened } = process;
   const userDaemon = Daemon;
   const { Wallpaper } = userDaemon?.wallpaper! || {}!;

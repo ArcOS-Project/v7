@@ -1,14 +1,14 @@
 <script lang="ts">
+  import type { IShellRuntime } from "$interfaces/shell";
   import { Daemon } from "$ts/server/user/daemon";
   import { Sleep } from "$ts/sleep";
   import type { UserPreferencesStore } from "$types/user";
-  import type { ShellRuntime } from "../../runtime";
   import Gallery from "./CardStack/Cards/Gallery.svelte";
   import Notes from "./CardStack/Cards/Notes.svelte";
   import Weather from "./CardStack/Cards/Weather.svelte";
   import Indicator from "./CardStack/Indicator.svelte";
 
-  const { userPreferences, process }: { userPreferences: UserPreferencesStore; process: ShellRuntime } = $props();
+  const { userPreferences, process }: { userPreferences: UserPreferencesStore; process: IShellRuntime } = $props();
   const userDaemon = Daemon;
 
   let changing = $state(false);

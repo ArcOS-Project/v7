@@ -1,5 +1,5 @@
 import { DefaultPinnedApps, DefaultStartMenuActions } from "$apps/components/shell/store";
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IPreferencesUserContext, IUserDaemon } from "$interfaces/daemon";
 import { Fs, SysDispatch } from "$ts/env";
 import { applyDefaults } from "$ts/hierarchy";
 import { Backend } from "$ts/server/axios";
@@ -12,7 +12,7 @@ import { DefaultUserPreferences } from "../../default";
 import { UserPaths } from "../../store";
 import { UserContext } from "../context";
 
-export class PreferencesUserContext extends UserContext {
+export class PreferencesUserContext extends UserContext implements IPreferencesUserContext {
   public syncLock = false;
   public preferencesUnsubscribe: Unsubscriber | undefined;
   public preferences = Store<UserPreferences>(DefaultUserPreferences);

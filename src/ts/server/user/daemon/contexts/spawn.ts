@@ -1,4 +1,4 @@
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { ISpawnUserContext, IUserDaemon } from "$interfaces/daemon";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { MessageBox } from "$ts/dialog";
 import { Env, Stack, SysDispatch } from "$ts/env";
@@ -10,7 +10,7 @@ import { LogLevel } from "$types/logging";
 import { Daemon } from "..";
 import { UserContext } from "../context";
 
-export class SpawnUserContext extends UserContext {
+export class SpawnUserContext extends UserContext implements ISpawnUserContext {
   constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }

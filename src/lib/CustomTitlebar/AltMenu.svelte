@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { AppProcess } from "$ts/apps/process";
+  import type { IAppProcess } from "$interfaces/app";
   import AltMenuItem from "./AltMenu/AltMenuItem.svelte";
 
-  const { process }: { process: AppProcess } = $props();
+  const { process }: { process: IAppProcess } = $props();
   const { altMenu } = process;
 </script>
 

@@ -1,4 +1,4 @@
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IUserDaemon, IWallpaperUserContext } from "$interfaces/daemon";
 import { Fs } from "$ts/env";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { getParentDirectory } from "$ts/util/fs";
@@ -11,7 +11,7 @@ import { Daemon } from "..";
 import { UserPaths } from "../../store";
 import { UserContext } from "../context";
 
-export class WallpaperUserContext extends UserContext {
+export class WallpaperUserContext extends UserContext implements IWallpaperUserContext {
   public Wallpaper = Store<Wallpaper>(Wallpapers.img0);
   public lastWallpaper = Store<string>("img0");
   private localWallpaperCache: Record<string, Blob> = {};

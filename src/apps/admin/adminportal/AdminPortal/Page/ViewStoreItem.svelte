@@ -1,13 +1,13 @@
 <script lang="ts">
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import { MessageBox } from "$ts/dialog";
   import { StoreItemIcon } from "$ts/distrib/util";
   import { Env } from "$ts/env";
   import { Daemon } from "$ts/server/user/daemon";
-  import type { AdminPortalRuntime } from "../../runtime";
   import type { ViewStoreItemData } from "../../types";
   import Details from "./ViewStoreItem/Details.svelte";
 
-  const { process, data }: { process: AdminPortalRuntime; data: ViewStoreItemData } = $props();
+  const { process, data }: { process: IAdminPortalRuntime; data: ViewStoreItemData } = $props();
   const { item } = data;
 
   let blocking = $state<boolean>(false);

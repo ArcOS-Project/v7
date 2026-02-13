@@ -1,7 +1,7 @@
+import type { IFilesystemDrive } from "$interfaces/fs";
 import { AppConfigError } from "$ts/apps/error";
 import { AppProcess } from "$ts/apps/process";
 import { ConditionalButton, GetConfirmation, MessageBox } from "$ts/dialog";
-import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
 import { Fs, SysDispatch } from "$ts/env";
 import { AdminScopes } from "$ts/server/admin/store";
 import { Daemon } from "$ts/server/user/daemon";
@@ -37,7 +37,7 @@ export class FileManagerRuntime extends AppProcess {
   loadSave: LoadSaveDialogData | undefined;
   saveName = Store<string>();
   virtual = Store<VirtualFileManagerLocation | undefined>();
-  drive = Store<FilesystemDrive | undefined>();
+  drive = Store<IFilesystemDrive | undefined>();
   directoryListing = Store<HTMLDivElement>();
   virtualLocations: Record<string, VirtualFileManagerLocation> = {
     my_arcos: {
@@ -215,7 +215,7 @@ export class FileManagerRuntime extends AppProcess {
     this.updateAltMenu(); // Update the alt menu so that the Go menu is up-to-date
   }
 
-  unmountDrive(drive: FilesystemDrive, id: string) {
+  unmountDrive(drive: IFilesystemDrive, id: string) {
     if (this._disposed) return;
 
     const identifier = `${drive.driveLetter || drive.uuid}:`;
@@ -242,7 +242,7 @@ export class FileManagerRuntime extends AppProcess {
     );
   }
 
-  async confirmUmountDrive(drive: FilesystemDrive, id: string) {
+  async confirmUmountDrive(drive: IFilesystemDrive, id: string) {
     if (this._disposed) return;
 
     const prog = await Daemon!.files!.FileProgress(
@@ -708,7 +708,7 @@ export class FileManagerRuntime extends AppProcess {
     return dir?.dirs.map((a) => join(workingPath, a.name)).includes(path);
   }
 
-  shareAccessIsAdministrative(drive: FilesystemDrive) {
+  shareAccessIsAdministrative(drive: IFilesystemDrive) {
     const userInfo = Daemon?.userInfo!;
     const thisUser = userInfo._id;
     const userIsAdmin =

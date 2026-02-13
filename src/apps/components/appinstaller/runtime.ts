@@ -1,7 +1,7 @@
+import type { IInstallerProcessBase } from "$interfaces/distrib";
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { DistributionServiceProcess } from "$ts/distrib";
-import type { InstallerProcessBase } from "$ts/distrib/installer/base";
 import { Env, Fs } from "$ts/env";
 import { Daemon } from "$ts/server/user/daemon";
 import type { AppProcessData } from "$types/app";
@@ -10,7 +10,7 @@ import type { ReadableStore } from "$types/writable";
 import JSZip from "jszip";
 
 export class AppInstallerRuntime extends AppProcess {
-  progress?: InstallerProcessBase;
+  progress?: IInstallerProcessBase;
   metadata?: ArcPackage;
   isLibrary = false;
   zip?: JSZip;

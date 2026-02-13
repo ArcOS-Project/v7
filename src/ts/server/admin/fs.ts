@@ -12,8 +12,9 @@ import type {
 } from "$types/fs";
 import { Backend } from "../axios";
 import { Daemon } from "../user/daemon";
+import type { IFilesystemDrive } from "$interfaces/fs";
 
-export class AdminFileSystem extends FilesystemDrive {
+export class AdminFileSystem extends FilesystemDrive implements IFilesystemDrive {
   override READONLY = false;
   override FIXED = true;
   override IDENTIFIES_AS: string = "admin";

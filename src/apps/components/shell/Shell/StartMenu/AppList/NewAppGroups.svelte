@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
+  import type { IShellRuntime } from "$interfaces/shell";
   import Spinner from "$lib/Spinner.svelte";
   import { Daemon } from "$ts/server/user/daemon";
   import { UUID } from "$ts/uuid";
   import NewAppGroup from "./NewAppGroups/NewAppGroup.svelte";
   import NewListItem from "./NewListItem.svelte";
 
-  const { process }: { process: ShellRuntime } = $props();
+  const { process }: { process: IShellRuntime } = $props();
   const { userPreferences, StartMenuContents } = process;
 </script>
 

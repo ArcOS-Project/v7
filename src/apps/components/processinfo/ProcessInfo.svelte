@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { IAppProcess } from "$interfaces/app";
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
@@ -16,7 +17,7 @@
   const context = Stack.getProcessContext(proc!.pid);
 
   function info() {
-    process.spawnOverlayApp("AppInfo", +Env.get("shell_pid"), (proc as AppProcess).app.id);
+    process.spawnOverlayApp("AppInfo", +Env.get("shell_pid"), (proc as IAppProcess).app.id);
   }
 </script>
 

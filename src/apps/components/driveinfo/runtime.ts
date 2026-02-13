@@ -1,21 +1,22 @@
+import type { IFilesystemDrive } from "$interfaces/fs";
 import { AppProcess } from "$ts/apps/process";
+import { USERFS_UUID } from "$ts/env";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
 import { ServerDrive } from "$ts/kernel/mods/fs/drives/server";
-import { USERFS_UUID } from "$ts/env";
 import { Daemon } from "$ts/server/user/daemon";
 import type { AppProcessData } from "$types/app";
 import type { UserQuota } from "$types/fs";
 import type { CategorizedDiskUsage } from "$types/user";
 
 export class DriveInfoRuntime extends AppProcess {
-  drive?: FilesystemDrive;
+  drive?: IFilesystemDrive;
   isUserFs = false;
   usage?: CategorizedDiskUsage;
   quota?: UserQuota;
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, app: AppProcessData, drive: FilesystemDrive) {
+  constructor(pid: number, parentPid: number, app: AppProcessData, drive: IFilesystemDrive) {
     super(pid, parentPid, app);
 
     if (drive && drive instanceof FilesystemDrive) this.drive = drive;

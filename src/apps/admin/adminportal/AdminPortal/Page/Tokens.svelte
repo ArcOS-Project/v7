@@ -1,14 +1,14 @@
 <script lang="ts">
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import { sliceIntoChunks, sortByKey } from "$ts/util";
   import { Store } from "$ts/writable";
   import type { ExpandedToken } from "$types/admin";
   import { onMount } from "svelte";
-  import type { AdminPortalRuntime } from "../../runtime";
   import type { TokensData } from "../../types";
   import Pagination from "../Pagination.svelte";
   import TokenRow from "./Tokens/TokenRow.svelte";
 
-  const { process, data }: { process: AdminPortalRuntime; data: TokensData } = $props();
+  const { process, data }: { process: IAdminPortalRuntime; data: TokensData } = $props();
   const { users, tokens } = data;
   const sortMode = Store<string>("lastUsed");
   const total = tokens.flat().length;

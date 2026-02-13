@@ -1,10 +1,11 @@
+import type { ILegacyServerDrive } from "$interfaces/fs";
 import { toBase64 } from "$ts/base64";
 import { type DirectoryReadReturn, type DriveCapabilities, type FolderEntry, type UserQuota } from "$types/fs";
 import type { FSQuota, LegacyConnectionInfo, UserDirectory } from "$types/legacy";
 import axios, { type AxiosInstance } from "axios";
 import { FilesystemDrive } from "./drive";
 
-export class LegacyServerDrive extends FilesystemDrive {
+export class LegacyServerDrive extends FilesystemDrive implements ILegacyServerDrive {
   override FILESYSTEM_LONG: string = "Legacy Server FS";
   override FILESYSTEM_SHORT: string = "LSFS";
   override IDENTIFIES_AS: string = "legacy";

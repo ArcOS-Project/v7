@@ -1,8 +1,8 @@
 <script lang="ts">
+  import type { IShellRuntime } from "$interfaces/shell";
   import { Daemon } from "$ts/server/user/daemon";
   import type { AppComponentProps } from "$types/app";
   import { onMount } from "svelte";
-  import type { ShellRuntime } from "./runtime";
   import ActionCenter from "./Shell/ActionCenter.svelte";
   import PushNotification from "./Shell/PushNotification.svelte";
   import StartMenu from "./Shell/StartMenu.svelte";
@@ -10,7 +10,7 @@
   import VirtualDesktopIndicator from "./Shell/VirtualDesktopIndicator.svelte";
   import VirtualDesktops from "./Shell/VirtualDesktops.svelte";
 
-  const { process }: AppComponentProps<ShellRuntime> = $props();
+  const { process }: AppComponentProps<IShellRuntime> = $props();
   const { userPreferences, startMenuOpened, actionCenterOpened, username, FullscreenCount, ready } = process;
 
   let currentDesktop = $state<string>();

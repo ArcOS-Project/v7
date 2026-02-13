@@ -2,15 +2,15 @@
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { Daemon } from "$ts/server/user/daemon";
   import type { UserPreferencesStore } from "$types/user";
-  import type { ShellRuntime } from "../../runtime";
-
+  import type { IShellRuntime } from "$interfaces/shell";
+  
   const {
     userPreferences,
     process,
     username,
   }: {
     userPreferences: UserPreferencesStore;
-    process: ShellRuntime;
+    process: IShellRuntime;
     username: string;
   } = $props();
 

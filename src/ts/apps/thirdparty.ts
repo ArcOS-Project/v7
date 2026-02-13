@@ -1,9 +1,9 @@
+import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
 import { Fs, Stack, SysDispatch } from "$ts/env";
 import { Daemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import { join } from "$ts/util/fs";
 import type { AppProcessData } from "$types/app";
-import type { IThirdPartyAppProcess } from "$types/thirdparty";
 import { AppProcess } from "./process";
 
 export class ThirdPartyAppProcess extends AppProcess implements IThirdPartyAppProcess {

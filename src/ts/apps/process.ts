@@ -1,5 +1,6 @@
-import type { ShellRuntime } from "$apps/components/shell/runtime";
 import type { IUserDaemon } from "$interfaces/daemon";
+import type { IShellRuntime } from "$interfaces/shell";
+import { MessageBox } from "$ts/dialog";
 import { ArcOSVersion, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -31,7 +32,7 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
   componentMount: Record<string, any> = {};
   userPreferences: ReadableStore<UserPreferences> = Store<UserPreferences>(DefaultUserPreferences);
   username: string = "";
-  shell: ShellRuntime | undefined;
+  shell: IShellRuntime | undefined;
   overridePopulatable: boolean = false;
   public safeMode = false;
   protected overlayStore: Record<string, App> = {};
@@ -219,7 +220,7 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
   async closeIfSecondInstance(): Promise<this | undefined> {
     if (this.STATE !== "rendering") {
       throw new AppRuntimeError(
-        "Violation: only call closeIfSecondInstance in AppProcess.render so that it doesn't hang the stack."
+        "Violation: only call closeIfSecondInstance in IAppProcess.render so that it doesn't hang the stack."
       );
     }
     this.Log("Closing if second instance");
@@ -345,7 +346,7 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
       return false;
     }
 
-    const proc = await Stack.spawn<AppProcess>(
+    const proc = await Stack.spawn<IAppProcess>(
       metadata.assets.runtime,
       undefined,
       Daemon?.userInfo?._id,
@@ -362,11 +363,11 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
     return !!proc;
   }
 
-  async spawnApp<T = AppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
+  async spawnApp<T = IAppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
     return await Daemon?.spawn?.spawnApp<T>(id, parentPid ?? this.parentPid, ...args);
   }
 
-  async spawnOverlayApp<T = AppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
+  async spawnOverlayApp<T = IAppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
     return await Daemon?.spawn?.spawnOverlay<T>(id, parentPid ?? this.parentPid, ...args);
   }
 
@@ -377,18 +378,20 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
 
   notImplemented(what?: string) {
     this.Log(`Not implemented: ${what || "<unknown>"}`);
-    // Manually invoking spawnOverlay method on daemon to work around AppProcess <> MessageBox circular import
-    Daemon?.spawn?.spawnOverlay("messageBox", this.pid, {
-      title: "Not implemented",
-      message: `${
-        what || "This feature"
-      } isn't implemented yet ¯\\_(ツ)_/¯<br><br>Encountering this in a (recent) <b>release</b> build of ArcOS? Then I forgot to make something. Please let me know. Do that with this information:<br><code class='block'>ArcOS v${ArcOSVersion}-${ArcMode()} (${ArcBuild()}) - ${
-        location.hostname
-      }</code>`,
-      buttons: [{ caption: "Sad :(", action: () => {}, suggested: true }],
-      image: "BugReportIcon",
-      sound: "arcos.dialog.warning",
-    });
+    MessageBox(
+      {
+        title: "Not implemented",
+        message: `${
+          what || "This feature"
+        } isn't implemented yet ¯\\_(ツ)_/¯<br><br>Encountering this in a (recent) <b>release</b> build of ArcOS? Then I forgot to make something. Please let me know. Do that with this information:<br><code class='block'>ArcOS v${ArcOSVersion}-${ArcMode()} (${ArcBuild()}) - ${
+          location.hostname
+        }</code>`,
+        buttons: [{ caption: "Sad :(", action: () => {}, suggested: true }],
+        image: "BugReportIcon",
+        sound: "arcos.dialog.warning",
+      },
+      this.pid
+    );
   }
 
   appStore() {

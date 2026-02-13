@@ -1,4 +1,4 @@
-import { ShellRuntime } from "$apps/components/shell/runtime";
+import type { IShellRuntime } from "$interfaces/shell";
 import type { IArcTerminal } from "$interfaces/terminal";
 import { Env, Stack } from "$ts/env";
 import type { Arguments } from "$types/terminal";
@@ -22,7 +22,7 @@ export class FindCommand extends TerminalProcess {
   protected async main(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const query = argv.join(" ");
     const shellPid = +Env.get("shell_pid");
-    const shellProc = Stack.getProcess<ShellRuntime>(shellPid);
+    const shellProc = Stack.getProcess<IShellRuntime>(shellPid);
 
     if (!query) {
       term.Info("What do you want me to search for?");

@@ -1,9 +1,9 @@
+import type { ISharedDrive } from "$interfaces/fs";
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { Env, Fs, Stack } from "$ts/env";
 import { Daemon } from "$ts/server/user/daemon";
 import type { ShareManager } from "$ts/shares";
-import type { SharedDrive } from "$ts/shares/drive";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { SharedDriveType } from "$types/shares";
@@ -122,7 +122,7 @@ export class ShareListGuiRuntime extends AppProcess {
 
   async openShare() {
     const shareId = this.selectedShare(); // Get the selected share
-    const drive = Fs.drives[shareId] as SharedDrive; // Get the mount
+    const drive = Fs.drives[shareId] as ISharedDrive; // Get the mount
 
     if (!drive) return; // No mount? return
 

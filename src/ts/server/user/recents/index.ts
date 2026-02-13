@@ -1,3 +1,4 @@
+import type { IRecentFilesService } from "$interfaces/service";
 import { Fs } from "$ts/env";
 import { tryJsonParse } from "$ts/json";
 import type { ServiceHost } from "$ts/services";
@@ -8,7 +9,7 @@ import { Store } from "$ts/writable";
 import type { Service } from "$types/service";
 import { UserPaths } from "../store";
 
-export class RecentFilesService extends BaseService {
+export class RecentFilesService extends BaseService implements IRecentFilesService {
   Configuration = Store<string[]>([]);
   readonly CONFIG_PATH = join(UserPaths.System, "RecentFiles.json");
 

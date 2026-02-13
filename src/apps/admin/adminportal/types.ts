@@ -1,3 +1,4 @@
+import type { IAdminPortalRuntime } from "$interfaces/admin";
 import type { Activity, AuditLog, ExpandedToken, ServerLogItem, ServerStatistics, User } from "$types/admin";
 import type { BugReport, ReportStatistics } from "$types/bughunt";
 import type { FsAccess } from "$types/fs";
@@ -6,7 +7,6 @@ import type { SharedDriveType } from "$types/shares";
 import type { ExpandedUserInfo, UserInfo } from "$types/user";
 import type { ReadableStore } from "$types/writable";
 import type { Component } from "svelte";
-import type { AdminPortalRuntime } from "./runtime";
 
 export interface AdminPortalPage {
   name: string;
@@ -18,7 +18,7 @@ export interface AdminPortalPage {
   // should go in here, rest is handled in the UI.
   scopes?: string[];
   parent?: string;
-  props?: (process: AdminPortalRuntime) => Promise<Record<string, any>> | Record<string, any>; // = any data to be gathered before rendering ('Loading <page>...' spinner)
+  props?: (process: IAdminPortalRuntime) => Promise<Record<string, any>> | Record<string, any>; // = any data to be gathered before rendering ('Loading <page>...' spinner)
 }
 
 export type AdminPortalPages = Map<string, AdminPortalPage>;

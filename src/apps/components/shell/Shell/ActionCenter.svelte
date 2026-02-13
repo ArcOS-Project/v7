@@ -1,7 +1,7 @@
 <script lang="ts">
+  import type { IShellRuntime } from "$interfaces/shell";
   import type { UserPreferencesStore } from "$types/user";
   import type { BooleanStore } from "$types/writable";
-  import type { ShellRuntime } from "../runtime";
   import { QuickSettings } from "../store";
   import CardStack from "./ActionCenter/CardStack.svelte";
   import Clock from "./ActionCenter/Clock.svelte";
@@ -15,7 +15,7 @@
   }: {
     actionCenterOpened: BooleanStore;
     userPreferences: UserPreferencesStore;
-    process: ShellRuntime;
+    process: IShellRuntime;
   } = $props();
 </script>
 

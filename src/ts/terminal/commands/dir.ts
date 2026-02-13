@@ -1,8 +1,8 @@
+import type { IFilesystemDrive } from "$interfaces/fs";
 import type { IArcTerminal } from "$interfaces/terminal";
 import { Fs } from "$ts/env";
 import { FormatLargeNumber, Gap, maxLength, Plural, Truncate } from "$ts/util";
 import { formatBytes, join } from "$ts/util/fs";
-import type { IFilesystemDrive } from "$types/fs";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
 import { TerminalProcess } from "../process";

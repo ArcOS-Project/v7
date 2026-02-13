@@ -1,7 +1,7 @@
 import type { ContextMenuItem } from "$types/app";
 import type { Component } from "svelte";
-import type { ShellRuntime } from "./runtime";
 import type { IProcess } from "../../../interfaces/process";
+import type { IShellRuntime } from "$interfaces/shell";
 
 export interface WeatherMeta {
   caption: string;
@@ -55,8 +55,8 @@ export interface TrayPopup {
 }
 
 export interface QuickSetting {
-  isActive: (process: ShellRuntime) => boolean | Promise<boolean>;
-  action: (process: ShellRuntime) => any;
+  isActive: (process: IShellRuntime) => boolean | Promise<boolean>;
+  action: (process: IShellRuntime) => any;
   icon: string;
   className?: string;
   caption: string;
@@ -83,6 +83,6 @@ export const shortWeekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 export interface StartMenuAction {
   caption: string;
   icon: string;
-  action: (process: ShellRuntime) => void;
+  action: (process: IShellRuntime) => void;
   className?: string;
 }

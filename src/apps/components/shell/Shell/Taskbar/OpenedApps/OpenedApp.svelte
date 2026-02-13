@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
-  import type { AppProcess } from "$ts/apps/process";
+  import type { IAppProcess } from "$interfaces/app";
+  import type { IShellRuntime } from "$interfaces/shell";
   import { contextProps } from "$ts/context/actions.svelte";
   import { Stack } from "$ts/env";
   import { Daemon } from "$ts/server/user/daemon";
   import { onMount } from "svelte";
 
-  const { openedProcess, pid, process }: { openedProcess: AppProcess; pid: number; process: ShellRuntime } = $props();
+  const { openedProcess, pid, process }: { openedProcess: IAppProcess; pid: number; process: IShellRuntime } = $props();
   const { windowTitle, windowIcon } = openedProcess;
   const { userPreferences } = process;
   const { focusedPid } = Stack.renderer!;

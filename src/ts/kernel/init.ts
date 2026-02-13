@@ -1,11 +1,12 @@
+import type { IServerManager } from "$interfaces/kernel";
+import type { IStateHandler } from "$interfaces/state";
 import { __Console__ } from "$ts/console";
+import { ArcOSVersion, Env, Fs, getKMod, Kernel, SetCurrentStateHandler, Stack } from "$ts/env";
 import { MemoryFilesystemDrive } from "$ts/kernel/mods/fs/drives/temp";
-import { ArcOSVersion, Env, Fs, getKMod, Kernel, SetCurrentStateHandler, SetKernelExports, Stack } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { States } from "$ts/state/store";
 import { textToBlob } from "$ts/util/convert";
-import type { IServerManager } from "$interfaces/kernel";
 import { Process } from "../process/instance";
 import { StateHandler } from "../state";
 
@@ -30,7 +31,7 @@ export class InitProcess extends Process {
 
     const server = getKMod<IServerManager>("server");
     const connected = server.connected;
-    const state = await Stack.spawn<StateHandler>(StateHandler, undefined, "SYSTEM", this.pid, "ArcOS", States);
+    const state = await Stack.spawn<IStateHandler>(StateHandler, undefined, "SYSTEM", this.pid, "ArcOS", States);
     const kernel = Kernel;
 
     if (!state) throw new Error("State handler failed to spawn");

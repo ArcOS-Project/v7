@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import { Logo } from "$ts/branding";
   import { MessageBox } from "$ts/dialog";
   import { Daemon } from "$ts/server/user/daemon";
@@ -6,12 +7,11 @@
   import { Store } from "$ts/writable";
   import type { BugReport } from "$types/bughunt";
   import { onMount } from "svelte";
-  import type { AdminPortalRuntime } from "../../runtime";
   import type { BugHuntData } from "../../types";
   import QuickView from "./BugHunt/QuickView.svelte";
   import Row from "./BugHunt/Row.svelte";
 
-  const { process, data }: { process: AdminPortalRuntime; data: BugHuntData } = $props();
+  const { process, data }: { process: IAdminPortalRuntime; data: BugHuntData } = $props();
   const { reports, stats, users } = data;
   const pages = ["all", "sys", "apps", "closed"] as const;
   type PagesType = (typeof pages)[number];

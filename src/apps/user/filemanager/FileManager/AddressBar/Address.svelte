@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
+  import type { IFilesystemDrive } from "$interfaces/fs";
+  import { contextMenu } from "$ts/context/actions.svelte";
   import { Fs } from "$ts/env";
   import { getDriveLetter, getItemNameFromPath } from "$ts/util/fs";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../../runtime";
   import { DriveIcons } from "../../store";
-  import { contextMenu } from "$ts/context/actions.svelte";
 
   const { process }: { process: FileManagerRuntime } = $props();
   const { path, virtual } = process;
@@ -14,7 +14,7 @@
   let isManuallyEntering = $state<boolean>(false);
   let driveLetter = $state<string | undefined>();
   let driveLabel = $state<string>("");
-  let drive = $state<FilesystemDrive>();
+  let drive = $state<IFilesystemDrive>();
   let name = $state<string>("");
 
   onMount(() => {

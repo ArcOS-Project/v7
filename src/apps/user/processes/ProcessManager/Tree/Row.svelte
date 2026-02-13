@@ -10,6 +10,7 @@
   import type { ProcessManagerRuntime } from "../../runtime";
   import Row from "./Row.svelte";
   import type { IProcess } from "$interfaces/process";
+  import type { IAppProcess } from "$interfaces/app";
 
   const {
     pid,
@@ -81,7 +82,7 @@
         {
           caption: "App info",
           disabled: () => !(proc instanceof AppProcess),
-          action: () => process.appInfoFor(proc as AppProcess),
+          action: () => process.appInfoFor(proc as IAppProcess),
           icon: "app-window-mac",
         },
         {

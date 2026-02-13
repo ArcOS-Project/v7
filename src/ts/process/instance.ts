@@ -1,4 +1,4 @@
-import type { IProcess } from "$interfaces/process";
+import type { IProcess, IProcessDispatch } from "$interfaces/process";
 import { Fs, getKMod } from "$ts/env";
 import { calculateMemory } from "$ts/util";
 import type { ProcessState } from "$types/process";
@@ -7,7 +7,7 @@ import { Log } from "../logging";
 import { ProcessDispatch } from "./dispatch";
 
 export class Process implements IProcess {
-  public dispatch: ProcessDispatch;
+  public dispatch: IProcessDispatch;
   public pid: number;
   public parentPid: number;
   public name = "";

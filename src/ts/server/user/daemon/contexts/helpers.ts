@@ -1,8 +1,8 @@
 import type { GlobalLoadIndicatorProgress } from "$apps/components/globalloadindicator/types";
 import type { IconPickerData } from "$apps/components/iconpicker/types";
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IAppProcess } from "$interfaces/app";
+import type { IHelpersUserContext, IUserDaemon } from "$interfaces/daemon";
 import SafeModeNotice from "$lib/Daemon/SafeModeNotice.svelte";
-import type { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { ArcOSVersion, Env, Stack, SysDispatch } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
@@ -15,7 +15,7 @@ import type { ExpandedTerminal } from "$types/terminal";
 import { Daemon } from "..";
 import { UserContext } from "../context";
 
-export class HelpersUserContext extends UserContext {
+export class HelpersUserContext extends UserContext implements IHelpersUserContext {
   constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
@@ -143,7 +143,7 @@ export class HelpersUserContext extends UserContext {
     });
   }
 
-  ParentIs(proc: AppProcess, appId: string) {
+  ParentIs(proc: IAppProcess, appId: string) {
     const targetAppInstances = Stack.renderer?.getAppInstances(appId).map((p) => p.pid);
 
     return targetAppInstances?.includes(proc.parentPid);
@@ -173,7 +173,7 @@ export class HelpersUserContext extends UserContext {
     );
   }
 
-  iHaveFeedback(process: AppProcess) {
+  iHaveFeedback(process: IAppProcess) {
     Daemon!.spawn?.spawnApp(
       "BugHuntCreator",
       undefined,

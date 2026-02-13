@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
+  import type { IShellRuntime } from "$interfaces/shell";
   import type { ShellTrayIcon } from "$apps/components/shell/types";
   import type { IProcess } from "$interfaces/process";
 
@@ -8,7 +8,7 @@
     discriminator,
     icon,
     targetedProcess,
-  }: { process: ShellRuntime; discriminator: string; icon: ShellTrayIcon; targetedProcess: IProcess } = $props();
+  }: { process: IShellRuntime; discriminator: string; icon: ShellTrayIcon; targetedProcess: IProcess } = $props();
   const { openedTrayPopup } = process;
 
   async function openThis() {

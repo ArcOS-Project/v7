@@ -17,8 +17,9 @@ import type {
   UserQuota,
 } from "$types/fs";
 import type { IEnvironment } from "$interfaces/kernel";
+import type { IFilesystemDrive } from "$interfaces/fs";
 
-export class ServerDrive extends FilesystemDrive {
+export class ServerDrive extends FilesystemDrive implements IFilesystemDrive {
   private isNightly = false;
   override label = "Your Drive";
   override FIXED = true;

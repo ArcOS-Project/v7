@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import { formatBytes } from "$ts/util/fs";
   import type { SharedDriveType } from "$types/shares";
   import type { ReadableStore } from "$types/writable";
 
-  const { share, selection, process }: { share: SharedDriveType; selection: ReadableStore<string>; process: AdminPortalRuntime } =
+  const { share, selection, process }: { share: SharedDriveType; selection: ReadableStore<string>; process: IAdminPortalRuntime } =
     $props();
 </script>
 

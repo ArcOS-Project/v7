@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import { AdminScopes } from "$ts/server/admin/store";
   import { Daemon } from "$ts/server/user/daemon";
   import type { ExpandedUserInfo } from "$types/user";
   import { generate } from "generate-password-ts";
 
-  const { process, user }: { process: AdminPortalRuntime; user: ExpandedUserInfo } = $props();
+  const { process, user }: { process: IAdminPortalRuntime; user: ExpandedUserInfo } = $props();
   let newPassword = $state<string>();
   let loading = $state<boolean>(false);
 

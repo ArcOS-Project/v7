@@ -1,4 +1,5 @@
 import type { IEnvironment, IProcessHandler, ISystemDispatch, IWaveKernel } from "$interfaces/kernel";
+import type { IStateHandler } from "$interfaces/state";
 import { __Console__ } from "$ts/console";
 import { ArcOSVersion, SetCurrentKernel, SetKernelExports } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
@@ -8,7 +9,6 @@ import { getLicense } from "$ts/metadata/license";
 import { getMode } from "$ts/metadata/mode";
 import { LogLevel, ShortLogLevelCaptions, type LogItem } from "../../types/logging";
 import { handleGlobalErrors } from "../error";
-import { StateHandler } from "../state";
 import { InitProcess } from "./init";
 import { KernelModules } from "./module/store";
 import { prematurePanic } from "./premature";
@@ -19,7 +19,7 @@ export class WaveKernel implements IWaveKernel {
   public Logs: LogItem[] = [];
   public startMs: number;
   public init: InitProcess | undefined;
-  public state: StateHandler | undefined;
+  public state: IStateHandler | undefined;
   public initPid = -1;
   public params = new URLSearchParams(location.search);
   public ARCOS_MODE = "release";

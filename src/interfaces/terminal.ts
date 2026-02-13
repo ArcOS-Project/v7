@@ -1,14 +1,15 @@
-import type { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import type { Readline } from "$ts/terminal/readline/readline";
 import type { ArcTermVariables } from "$ts/terminal/var";
 import type { ElevationData } from "$types/elevation";
-import type { DirectoryReadReturn, IFilesystemDrive, RecursiveDirectoryReadReturn } from "$types/fs";
+import type { DirectoryReadReturn, RecursiveDirectoryReadReturn } from "$types/fs";
 import type { ArcTermConfiguration, Arguments } from "$types/terminal";
 import type ansiEscapes from "ansi-escapes";
 import type { Terminal } from "xterm";
-import type { IUserDaemon } from "./daemon";
-import type { IProcess } from "./process";
 import type { IAppProcess } from "./app";
+import type { IUserDaemon } from "./daemon";
+import type { IFilesystemDrive } from "./fs";
+import type { IProcess } from "./process";
+import type { Constructs } from "./common";
 
 export interface IArcTerminal extends IProcess {
   readonly CONFIG_PATH: string;
@@ -25,7 +26,7 @@ export interface IArcTerminal extends IProcess {
   lastCommandErrored: boolean;
   config: ArcTermConfiguration;
   configProvidedExternal: boolean;
-  window: TerminalWindowRuntime | undefined;
+  window: ITerminalWindowRuntime | undefined;
   start(): Promise<false | void>;
   readline(): Promise<void>;
   processLine(text: string | undefined): Promise<void>;
@@ -50,7 +51,7 @@ export interface IArcTerminal extends IProcess {
   reload(): Promise<void>;
   tryGetTermWindow(): void;
   migrateConfigurationPath(): Promise<void>;
-  handleCommandError(e: Error, command: Function): void;
+  handleCommandError(e: Error, command: Constructs<ITerminalProcess>): void;
 }
 
 export interface ITerminalWindowRuntime extends IAppProcess {
@@ -58,4 +59,8 @@ export interface ITerminalWindowRuntime extends IAppProcess {
   overridePopulatable: boolean;
   start(): Promise<void>;
   render(): Promise<void>;
+}
+
+export interface ITerminalProcess extends IProcess {
+  _main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<any>;
 }

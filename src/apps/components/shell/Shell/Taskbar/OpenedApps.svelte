@@ -3,10 +3,10 @@
   import { isPopulatable } from "$ts/apps/util";
   import { Stack } from "$ts/env";
   import { Daemon } from "$ts/server/user/daemon";
-  import type { ShellRuntime } from "../../runtime";
+  import type { IShellRuntime } from "$interfaces/shell";
   import OpenedApp from "./OpenedApps/OpenedApp.svelte";
 
-  const { process }: { process: ShellRuntime } = $props();
+  const { process }: { process: IShellRuntime } = $props();
   const { userPreferences } = process;
   const { store } = Stack;
 </script>

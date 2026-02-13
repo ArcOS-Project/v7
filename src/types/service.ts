@@ -1,3 +1,5 @@
+import type { Constructs } from "$interfaces/common";
+import type { IBaseService } from "$interfaces/service";
 import type { IUserDaemon } from "../interfaces/daemon";
 import type { MaybePromise } from "./common";
 import type { ReadableStore } from "./writable";
@@ -5,7 +7,7 @@ import type { ReadableStore } from "./writable";
 export interface Service {
   name: string;
   description: string;
-  process: Function;
+  process: Constructs<IBaseService>;
   startCondition?: (daemon: IUserDaemon) => MaybePromise<boolean>;
   pid?: number;
   id?: string;

@@ -2,9 +2,6 @@ import type { FileProgressMutator, FsProgressOperation } from "$apps/components/
 import type { GlobalLoadIndicatorProgress } from "$apps/components/globalloadindicator/types";
 import type { IconPickerData } from "$apps/components/iconpicker/types";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
-import type { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
-import type { LegacyServerDrive } from "$ts/kernel/mods/fs/drives/legacy";
-import type { MemoryFilesystemDrive } from "$ts/kernel/mods/fs/drives/temp";
 import type { LoginActivity } from "$types/activity";
 import type { App, AppStorage, InstalledApp } from "$types/app";
 import type { ElevationData } from "$types/elevation";
@@ -20,6 +17,7 @@ import type { CategorizedDiskUsage, CustomStylePreferences, PublicUserInfo, User
 import type { Wallpaper } from "$types/wallpaper";
 import type { ReadableStore, Unsubscriber } from "$types/writable";
 import type { IAppProcess } from "./app";
+import type { IFilesystemDrive, ILegacyServerDrive, IMemoryFilesystemDrive } from "./fs";
 import type { IProcess } from "./process";
 import type { IApplicationStorage, IFileAssocService, IGlobalDispatch, ILibraryManagement, IServiceHost } from "./service";
 import type { IShellRuntime } from "./shell";
@@ -68,7 +66,7 @@ export interface IUserDaemon extends IProcess {
   activateAdminBootstrapper(): Promise<void>;
   activateGlobalDispatch(): Promise<void>;
   appStorage(): IApplicationStorage | undefined;
-  // getShell(): ShellRuntime | undefined;
+  getShell(): IShellRuntime | undefined;
   updateGlobalDispatch(): void;
   getShell(): IShellRuntime | undefined;
 }
@@ -139,12 +137,12 @@ export interface IElevationUserContext extends IUserContext {
   loadElevation(id: string, data: ElevationData): void;
 }
 export interface IFilesystemUserContext extends IUserContext {
-  TempFs?: MemoryFilesystemDrive;
+  TempFs?: IMemoryFilesystemDrive;
   fileHandlers: Record<string, FileHandler>;
   mountedDrives: string[];
   _init(): Promise<void>;
   _deactivate(): Promise<void>;
-  mountZip(path: string, letter?: string, fromSystem?: boolean): Promise<false | FilesystemDrive | undefined>;
+  mountZip(path: string, letter?: string, fromSystem?: boolean): Promise<false | IFilesystemDrive | undefined>;
   unmountMountedDrives(): Promise<void>;
   FileProgress(initialData: Partial<FsProgressOperation>, parentPid?: number): Promise<FileProgressMutator>;
   moveMultiple(sources: string[], destination: string, pid: number): Promise<void>;
@@ -156,7 +154,7 @@ export interface IFilesystemUserContext extends IUserContext {
   openWith(path: string): Promise<void>;
   determineCategorizedDiskUsage(): Promise<CategorizedDiskUsage>;
   getThumbnailFor(path: string): Promise<string | undefined>;
-  mountLegacyFilesystem(connectionInfo: LegacyConnectionInfo): Promise<false | LegacyServerDrive>;
+  mountLegacyFilesystem(connectionInfo: LegacyConnectionInfo): Promise<false | ILegacyServerDrive>;
   moveToTrashOrDeleteItem(path: string, dispatch?: boolean): Promise<boolean>;
   normalizePath(path: string): string;
 }

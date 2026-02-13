@@ -1,10 +1,10 @@
 <script lang="ts">
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import Spinner from "$lib/Spinner.svelte";
   import { MessageBox } from "$ts/dialog";
   import { AdminScopes } from "$ts/server/admin/store";
   import type { UserStatistics } from "$types/admin";
   import { onMount } from "svelte";
-  import type { AdminPortalRuntime } from "../../runtime";
   import type { ViewUserData } from "../../types";
   import ChangeEmail from "./ViewUser/ChangeEmail.svelte";
   import ChangePassword from "./ViewUser/ChangePassword.svelte";
@@ -15,7 +15,7 @@
   import Shares from "./ViewUser/Shares.svelte";
   import TwoFactor from "./ViewUser/TwoFactor.svelte";
 
-  const { process, data }: { process: AdminPortalRuntime; data: ViewUserData } = $props();
+  const { process, data }: { process: IAdminPortalRuntime; data: ViewUserData } = $props();
   const { redacted } = process;
   const { user, reports } = data;
 

@@ -1,14 +1,14 @@
-import type { AppProcess } from "$ts/apps/process";
+import type { IAppProcess } from "$interfaces/app";
 import { contextProps } from "$ts/context/actions.svelte";
 import { Stack } from "$ts/env";
 
 export class CustomTitlebar {
   #className = "";
-  #process: AppProcess;
+  #process: IAppProcess;
   #titlebar?: HTMLDivElement;
   #target?: HTMLElement;
 
-  constructor(process: AppProcess, className = "") {
+  constructor(process: IAppProcess, className = "") {
     this.#process = process;
     this.#className = className;
   }

@@ -1,3 +1,4 @@
+import type { Constructs } from "$interfaces/common";
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/dialog";
 import { Stack } from "$ts/env";
@@ -11,7 +12,7 @@ import type { IProcess } from "../../../interfaces/process";
 export class ProcessInfoRuntime extends AppProcess {
   parent?: IProcess;
   proc?: IProcess;
-  inherit?: Function;
+  inherit?: Constructs<IProcess>;
 
   //#region LIFECYCLE
 

@@ -1,10 +1,10 @@
 <script lang="ts">
   import { Daemon } from "$ts/server/user/daemon";
-  import type { ShellRuntime } from "../../runtime";
+  import type { IShellRuntime } from "$interfaces/shell";
   import Battery from "./StatusTray/Battery.svelte";
   import StackBusy from "./StatusTray/StackBusy.svelte";
 
-  const { process }: { process: ShellRuntime } = $props();
+  const { process }: { process: IShellRuntime } = $props();
   const { stackBusy } = process;
   const { battery } = Daemon?.power! || {}!;
 </script>

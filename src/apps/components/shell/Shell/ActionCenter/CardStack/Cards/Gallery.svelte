@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
+  import type { IShellRuntime } from "$interfaces/shell";
   import { contextMenu, contextProps } from "$ts/context/actions.svelte";
   import { Fs } from "$ts/env";
   import { Daemon } from "$ts/server/user/daemon";
@@ -9,7 +9,7 @@
   import { onMount } from "svelte";
   import Spinner from "../../../../../../../lib/Spinner.svelte";
 
-  const { userPreferences, process }: { userPreferences: UserPreferencesStore; process: ShellRuntime } = $props();
+  const { userPreferences, process }: { userPreferences: UserPreferencesStore; process: IShellRuntime } = $props();
 
   let url = $state("");
   let errored = $state(false);

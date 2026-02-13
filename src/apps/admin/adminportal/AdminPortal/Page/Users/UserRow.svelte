@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import type { ExpandedUserInfo } from "$types/user";
   import type { ReadableStore } from "$types/writable";
@@ -10,7 +10,7 @@
     user,
     selection,
     compact = false,
-  }: { process: AdminPortalRuntime; user: ExpandedUserInfo; selection: ReadableStore<string>; compact?: boolean } = $props();
+  }: { process: IAdminPortalRuntime; user: ExpandedUserInfo; selection: ReadableStore<string>; compact?: boolean } = $props();
   const { redacted } = process;
   const { profile } = user;
   const created = dayjs(user.createdAt).format("DD MMM YYYY");

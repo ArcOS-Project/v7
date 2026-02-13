@@ -5,7 +5,7 @@
   import type { FolderEntry } from "$types/fs";
   import type { UserPreferencesStore } from "$types/user";
   import { onMount } from "svelte";
-  import type { ShellRuntime } from "../../runtime";
+  import type { IShellRuntime } from "$interfaces/shell";
   import UserButton from "../Folders/UserButton.svelte";
 
   const {
@@ -13,7 +13,7 @@
     userPreferences,
     username,
   }: {
-    process: ShellRuntime;
+    process: IShellRuntime;
     userPreferences: UserPreferencesStore;
     username: string;
   } = $props();

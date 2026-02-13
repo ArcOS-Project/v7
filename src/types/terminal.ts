@@ -1,5 +1,4 @@
-import type { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal, ITerminalWindowRuntime } from "$interfaces/terminal";
 import type { Terminal } from "xterm";
 
 export interface TerminalCommand {
@@ -38,4 +37,4 @@ export interface ArcTermConfiguration {
   brightBlack?: string;
   backdropOpacity?: number;
 }
-export type ExpandedTerminal = Terminal & { process?: TerminalWindowRuntime };
+export type ExpandedTerminal = Terminal & { process?: ITerminalWindowRuntime };

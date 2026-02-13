@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import { LogoTranslations } from "$apps/admin/adminportal/store";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import { StoreItemIconPrimitive } from "$ts/distrib/util";
   import type { BugReport } from "$types/bughunt";
   import type { ReadableStore } from "$types/writable";
@@ -13,7 +13,7 @@
     quickView,
     selectionList,
   }: {
-    process: AdminPortalRuntime;
+    process: IAdminPortalRuntime;
     report: BugReport;
     idEntry: ReadableStore<string>;
     quickView: ReadableStore<string>;

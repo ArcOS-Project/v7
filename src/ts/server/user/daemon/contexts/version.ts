@@ -1,4 +1,4 @@
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IUserDaemon, IVersionUserContext } from "$interfaces/daemon";
 import { ArcOSVersion, Env, Fs } from "$ts/env";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
@@ -10,7 +10,7 @@ import { UserContext } from "../context";
  * RESTRICTED: this class does not have an entry in ProcessWithPermissions,
  * and as such cannot be accessed by third-party applications.
  */
-export class VersionUserContext extends UserContext {
+export class VersionUserContext extends UserContext implements IVersionUserContext {
   constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }

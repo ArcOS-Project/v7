@@ -17,6 +17,7 @@
     "region:check": "node tools/validate-regions.mjs",
     "console:check": "node tools/console-usage.mjs",
     "method:check": "node tools/check-params.mjs",
+    "circularity": "npx madge --circular --extensions ts,svelte ./src",
     "check:everything": "yarn run check && yarn console:check && yarn region:check && yarn method:check"
   },
   "devDependencies": {

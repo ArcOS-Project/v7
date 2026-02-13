@@ -1,12 +1,12 @@
-import type { StateHandler } from "$ts/state";
 import type { IWaveKernel } from "$interfaces/kernel";
+import type { IStateHandler } from "$interfaces/state";
 import { LogLevel } from "../../../types/logging";
 import { Log } from "../../logging";
 
 export class KernelModule {
   protected readonly IS_KMOD = true;
   public id: string;
-  protected state?: StateHandler;
+  protected state?: IStateHandler;
 
   constructor(kernel: IWaveKernel, id: string) {
     this.id = id;

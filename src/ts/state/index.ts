@@ -1,5 +1,5 @@
+import type { IAppProcess } from "$interfaces/app";
 import type { IProcessHandler } from "$interfaces/kernel";
-import { AppProcess } from "$ts/apps/process";
 import { getKMod, Kernel, Stack } from "$ts/env";
 import { LogLevel } from "$types/logging";
 import type { State } from "../../types/state";
@@ -12,7 +12,7 @@ export class StateHandler extends Process {
   store: Record<string, State> = {};
   currentState: string = "";
   stateProps: Record<string, Record<any, any>> = {};
-  stateAppProcess: AppProcess | undefined;
+  stateAppProcess: IAppProcess | undefined;
   public _criticalProcess: boolean = true;
 
   //#region LIFECYCLE
@@ -144,7 +144,7 @@ export class StateHandler extends Process {
 
     const mod = await data.appModule();
     const app = mod.default;
-    const proc = await stack.spawn<AppProcess>(
+    const proc = await stack.spawn<IAppProcess>(
       app.assets.runtime,
       undefined,
       "SYSTEM",

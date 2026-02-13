@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import CircularProgress from "$lib/CircularProgress.svelte";
   import Spinner from "$lib/Spinner.svelte";
   import { Env, Fs } from "$ts/env";
@@ -15,7 +15,7 @@
     process,
     share,
     author,
-  }: { process: AdminPortalRuntime; share: SharedDriveType; author: ExpandedUserInfo | undefined } = $props();
+  }: { process: IAdminPortalRuntime; share: SharedDriveType; author: ExpandedUserInfo | undefined } = $props();
 
   const username = author?.username;
 

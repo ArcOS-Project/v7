@@ -1,3 +1,4 @@
+import type { IFilesystemDrive, ISharedDrive } from "$interfaces/fs";
 import { Server } from "$ts/env";
 import { toForm } from "$ts/form";
 import { Backend } from "$ts/server/axios";
@@ -17,7 +18,7 @@ import { FilesystemDrive } from "../kernel/mods/fs/drives/drive";
 import { arrayBufferToBlob } from "../util/convert";
 import { getItemNameFromPath, join } from "../util/fs";
 
-export class SharedDrive extends FilesystemDrive {
+export class SharedDrive extends FilesystemDrive implements ISharedDrive {
   shareId: string | undefined;
   shareInfo: SharedDriveType;
   public IDENTIFIES_AS: string = "share";

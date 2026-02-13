@@ -1,4 +1,5 @@
 import type { IProcess } from "$interfaces/process";
+import type { IShellRuntime, ITrayHostRuntime } from "$interfaces/shell";
 import { MessageBox } from "$ts/dialog";
 import { Env } from "$ts/env";
 import { ErrorIcon } from "$ts/images/dialog";
@@ -7,8 +8,6 @@ import { Daemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import type { AppProcessData } from "$types/app";
 import type { UserPreferencesStore } from "$types/user";
-import type { ShellRuntime } from "../shell/runtime";
-import type { TrayHostRuntime } from "../trayhost/runtime";
 
 export class ShellHostRuntime extends Process {
   private autoloadApps: string[];
@@ -34,7 +33,7 @@ export class ShellHostRuntime extends Process {
 
     const procs: Record<string, IProcess> = {}; // Object of executed shell components
 
-    const proc = await Daemon?.spawn?._spawnApp<ShellRuntime>(
+    const proc = await Daemon?.spawn?._spawnApp<IShellRuntime>(
       this.userPreferences().globalSettings.shellExec,
       undefined,
       this.pid
@@ -59,7 +58,7 @@ export class ShellHostRuntime extends Process {
       procs[id] = (await Daemon!.spawn?._spawnApp(id, undefined, this.pid))!; // Then spawn each shell component
     }
 
-    const trayHost = procs.TrayHostProc as TrayHostRuntime; // Get the tray host
+    const trayHost = procs.TrayHostProc as ITrayHostRuntime; // Get the tray host
 
     await trayHost?.createTrayIcon(this.pid, "shellHost_loading", {
       icon: proc!.getIconCached("SpinnerIcon"),

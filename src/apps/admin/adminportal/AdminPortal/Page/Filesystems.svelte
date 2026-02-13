@@ -5,11 +5,11 @@
   import { formatBytes } from "$ts/util/fs";
   import { Store } from "$ts/writable";
   import { onMount } from "svelte";
-  import type { AdminPortalRuntime } from "../../runtime";
   import type { FilesystemsData, FilesystemsPageQuota } from "../../types";
   import FilesystemRow from "./Filesystems/FilesystemRow.svelte";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
 
-  const { process, data }: { process: AdminPortalRuntime; data: FilesystemsData } = $props();
+  const { process, data }: { process: IAdminPortalRuntime; data: FilesystemsData } = $props();
   const { users } = data;
   const { admin } = process;
 

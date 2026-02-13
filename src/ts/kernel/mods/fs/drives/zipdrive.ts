@@ -1,10 +1,11 @@
-import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
-import { getKMod } from "$ts/env";
-import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback, RecursiveDirectoryReadReturn } from "$types/fs";
+import type { IZipDrive } from "$interfaces/fs";
 import type { IFilesystem } from "$interfaces/kernel";
+import { getKMod } from "$ts/env";
+import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
+import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback, RecursiveDirectoryReadReturn } from "$types/fs";
 import JSZip from "jszip";
 
-export class ZIPDrive extends FilesystemDrive {
+export class ZIPDrive extends FilesystemDrive implements IZipDrive {
   override label = "";
   private _buffer: JSZip | undefined;
   private _path: string;

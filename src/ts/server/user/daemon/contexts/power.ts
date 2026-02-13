@@ -1,4 +1,5 @@
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IAppProcess } from "$interfaces/app";
+import type { IPowerUserContext, IUserDaemon } from "$interfaces/daemon";
 import type { AppProcess } from "$ts/apps/process";
 import { Env, Stack, State } from "$ts/env";
 import { Store } from "$ts/writable";
@@ -6,7 +7,7 @@ import type { BatteryType } from "$types/navigator";
 import { Daemon } from "..";
 import { UserContext } from "../context";
 
-export class PowerUserContext extends UserContext {
+export class PowerUserContext extends UserContext implements IPowerUserContext {
   public battery = Store<BatteryType | undefined>();
 
   constructor(id: string, daemon: IUserDaemon) {
@@ -66,7 +67,7 @@ export class PowerUserContext extends UserContext {
     if (force) return true;
 
     const windows = Stack.renderer?.currentState
-      .map((pid) => Stack.getProcess<AppProcess>(pid))
+      .map((pid) => Stack.getProcess<IAppProcess>(pid))
       .filter((proc) => !proc?.app?.data?.core);
 
     if (!windows) return true;

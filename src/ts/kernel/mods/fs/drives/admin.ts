@@ -1,3 +1,4 @@
+import type { IFilesystemDrive } from "$interfaces/fs";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
 import { Backend } from "$ts/server/axios";
 import { Daemon } from "$ts/server/user/daemon";
@@ -12,7 +13,7 @@ import type {
   UserQuota,
 } from "$types/fs";
 
-export class AdminServerDrive extends FilesystemDrive {
+export class AdminServerDrive extends FilesystemDrive implements IFilesystemDrive {
   private targetUsername: string;
   override READONLY = true;
   override FIXED = false;

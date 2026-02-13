@@ -8,6 +8,7 @@ import type { FuseResult } from "fuse.js";
 import type { IAppProcess } from "./app";
 import type { IArcFindRuntime } from "./arcfind";
 import type { IProcess } from "./process";
+import type { Constructs } from "./common";
 
 export interface IShellRuntime extends IAppProcess {
   startMenuOpened: ReadableStore<boolean>;
@@ -45,11 +46,11 @@ export interface IShellRuntime extends IAppProcess {
   changeShell(id: string): Promise<false | undefined>;
 }
 
-export interface ITrayHostRuntime {
+export interface ITrayHostRuntime extends IProcess {
   userPreferences?: UserPreferencesStore;
   trayIcons: ReadableStore<Record<`${number}#${string}`, ITrayIconProcess>>;
   start(): Promise<false | undefined>;
-  createTrayIcon(pid: number, identifier: string, options: TrayIconOptions, process?: Function): Promise<boolean>;
+  createTrayIcon(pid: number, identifier: string, options: TrayIconOptions, process?: Constructs<IProcess>): Promise<boolean>;
   disposeTrayIcon(pid: number, identifier: string): Promise<false | undefined>;
   disposeProcessTrayIcons(pid: number): void;
 }

@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import { Daemon } from "$ts/server/user/daemon";
   import { formatBytes } from "$ts/util/fs";
   import type { SharedDriveType } from "$types/shares";
 
-  const { share, process }: { share: SharedDriveType; process: AdminPortalRuntime } = $props();
+  const { share, process }: { share: SharedDriveType; process: IAdminPortalRuntime } = $props();
 
   let newQuota = $state<number | undefined>();
   let loading = $state<boolean>(false);

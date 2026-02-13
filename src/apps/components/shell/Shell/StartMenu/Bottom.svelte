@@ -2,10 +2,10 @@
   import HtmlSpinner from "$lib/HtmlSpinner.svelte";
   import { Sleep } from "$ts/sleep";
   import { onMount } from "svelte";
-  import type { ShellRuntime } from "../../runtime";
   import { StartMenuActions } from "../../store";
+  import type { IShellRuntime } from "$interfaces/shell";
 
-  const { process }: { process: ShellRuntime } = $props();
+  const { process }: { process: IShellRuntime } = $props();
   const { searchQuery, startMenuOpened, searchLoading, userPreferences } = process;
 
   let searchBar = $state<HTMLInputElement>();

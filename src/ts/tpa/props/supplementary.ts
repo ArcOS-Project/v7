@@ -1,3 +1,4 @@
+import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { Fs, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
@@ -82,7 +83,7 @@ export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
 
         if (typeof metadata === "string") throw new Error("Failed to parse metadata");
 
-        const proc = await Stack.spawn<ThirdPartyAppProcess>(
+        const proc = await Stack.spawn<IThirdPartyAppProcess>(
           process,
           undefined,
           daemon.userInfo!._id,

@@ -3,15 +3,17 @@ import type {
   DirectoryReadReturn,
   ExtendedStat,
   FilesystemProgressCallback,
-  IFilesystemDrive,
   RecursiveDirectoryReadReturn,
   UploadReturn,
 } from "$types/fs";
 import type { PermissionStorage } from "$types/permission";
+import type { ReadableStore } from "$types/writable";
+import type { IFilesystemDrive } from "./fs";
 import type { IProcess } from "./process";
 
 export interface IPermissionHandler {
   _criticalProcess: boolean;
+  Configuration: ReadableStore<PermissionStorage>;
   readConfiguration(): Promise<void>;
   writeConfiguration(config: PermissionStorage): Promise<void>;
   hasPermission(process: IProcess, permission: PermissionString): boolean;
@@ -35,12 +37,21 @@ export interface IPermissionHandler {
   grantSudo(process: IProcess): void;
   revokeSudo(process: IProcess): void;
   refreshSudo(process: IProcess): void;
+  resetPermissionsById(permissionId: string): void;
+  isDenied(process: IProcess, permission: PermissionString): boolean;
+  revokeDenialById(permissionId: string, permission: PermissionString): void;
+  grantPermissionById(permissionId: string, permission: PermissionString): void;
+  hasPermissionById(permissionId: string, permission: PermissionString): boolean;
+  denyPermissionById(permissionId: string, permission: PermissionString): void;
+  isDeniedById(permissionId: string, permission: PermissionString): boolean;
+  revokePermissionById(permissionId: string, permission: PermissionString): void;
 }
+
 export interface IPermissionedFilesystemInteractor {
   get mountDrive():
-    | (<T = IFilesystemDrive>(
+    | (<T extends IFilesystemDrive = IFilesystemDrive>(
         id: string,
-        supplier: IFilesystemDrive,
+        supplier: any,
         letter?: string,
         onProgress?: FilesystemProgressCallback,
         ...args: any[]
@@ -72,6 +83,6 @@ export interface IPermissionedFilesystemInteractor {
     onProgress?: FilesystemProgressCallback
   ): Promise<UploadReturn>;
   direct(path: string): Promise<string | undefined>;
-  isDirectory(path: string): Promise<false | DirectoryReadReturn | undefined>;
+  isDirectory(path: string): Promise<false | DirectoryReadReturn>;
   stat(path: string): Promise<ExtendedStat | undefined>;
 }

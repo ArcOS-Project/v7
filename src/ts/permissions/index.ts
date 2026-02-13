@@ -1,3 +1,5 @@
+import type { IPermissionedFilesystemInteractor, IPermissionHandler } from "$interfaces/permission";
+import type { IProcess } from "$interfaces/process";
 import { AppProcess } from "$ts/apps/process";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { Fs, USERFS_UUID } from "$ts/env";
@@ -19,11 +21,10 @@ import {
   type PermissionError,
   type PermissionString,
 } from "./store";
-import type { IProcess } from "$interfaces/process";
 
-export let Permissions: PermissionHandler;
+export let Permissions: IPermissionHandler;
 
-export class PermissionHandler extends Process {
+export class PermissionHandler extends Process implements IPermissionHandler {
   public _criticalProcess: boolean = true;
   private PERMISSION_ID_REGEX = /^([0-9A-Z]{4}-){3}[0-9A-Z]{4}$/gm;
   #PERMISSION_FILE = "U:/System/Permissions.json";
@@ -32,7 +33,7 @@ export class PermissionHandler extends Process {
   private SudoConfiguration = Store<SudoPermissions>({});
   private FirstSubDone = false;
   private configurationWriteTimeout?: NodeJS.Timeout;
-  #permissionedFilesystemInteractors: Record<string, PermissionedFilesystemInteractor> = {};
+  #permissionedFilesystemInteractors: Record<string, IPermissionedFilesystemInteractor> = {};
 
   get #PERMISSION_EXPIRY_DYN() {
     return Date.now() + this.#PERMISSION_EXPIRY;

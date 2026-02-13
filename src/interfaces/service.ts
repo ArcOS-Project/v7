@@ -1,4 +1,4 @@
-import type { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
+import type { IBugHunt, IServerManager } from "$interfaces/kernel";
 import type {
   Activity,
   AuditLog,
@@ -23,27 +23,26 @@ import type {
 } from "$types/app";
 import type { ExpandedFileAssociationInfo, FileAssociationConfig } from "$types/assoc";
 import type { BugReport, ReportOptions, ReportStatistics } from "$types/bughunt";
-import type { MaybePromise } from "$types/common";
 import type { DevEnvActivationResult, ProjectMetadata } from "$types/devenv";
 import type { GlobalDispatchClient } from "$types/dispatch";
 import type { FilesystemProgressCallback, FsAccess, UserQuota } from "$types/fs";
-import type { IBugHunt, IServerManager } from "$interfaces/kernel";
 import type { TpaLibrary } from "$types/libraries";
 import type { ExpandedMessage, ExpandedMessageNode } from "$types/messaging";
 import type { MigrationResultCollection, MigrationStatusCallback } from "$types/migrations";
 import type { ArcPackage, PartialStoreItem, StoreItem, UpdateInfo } from "$types/package";
 import type { ArcProtocol, ProtocolHandler } from "$types/proto";
-import type { InitialServiceState, ReadableServiceStore, Service, ServiceChangeResult, ServiceStore } from "$types/service";
+import type { ReadableServiceStore, Service, ServiceChangeResult, ServiceStore } from "$types/service";
 import type { SharedDriveType } from "$types/shares";
-import type { IThirdPartyAppProcess } from "$types/thirdparty";
 import type { TrashIndexNode } from "$types/trash";
 import type { ExpandedUserInfo, UserInfo, UserPreferences, UserPreferencesStore } from "$types/user";
 import type { ReadableStore } from "$types/writable";
 import type JSZip from "jszip";
-import type { IInstallerProcessBase } from "./distrib";
-import type { IProcess } from "./process";
-import type { IUserDaemon } from "./daemon";
 import type { Socket } from "socket.io-client";
+import type { Constructs } from "./common";
+import type { IInstallerProcessBase } from "./distrib";
+import type { IFilesystemDrive } from "./fs";
+import type { IProcess } from "./process";
+import type { IThirdPartyAppProcess } from "./thirdparty";
 
 export interface IBaseService extends IProcess {
   host: IServiceHost;
@@ -56,20 +55,7 @@ export interface IServiceHost extends IProcess {
   initialRun(svcPreRun?: (service: Service) => void): Promise<void>;
   init(svcPreRun?: (service: Service) => void): Promise<void>;
   stop(): Promise<void>;
-  readonly STORE: Map<
-    string,
-    {
-      name: string;
-      description: string;
-      process: Function;
-      startCondition?: (daemon: IUserDaemon) => MaybePromise<boolean>;
-      pid?: number;
-      id?: string;
-      initialState?: InitialServiceState;
-      loadedAt?: number;
-      changedAt?: number;
-    }
-  >;
+  readonly STORE: Map<string, Service>;
   loadStore(store: ServiceStore): boolean;
   getServiceInfo(id: string): Service | undefined;
   startService(id: string): Promise<"success" | "err_noExist" | "err_alreadyRunning" | "err_startCondition" | "err_spawnFailed">;
@@ -134,7 +120,7 @@ export interface IDistributionServiceProcess extends IBaseService {
     progress?: FilesystemProgressCallback,
     item?: StoreItem
   ): Promise<T | undefined>;
-  getInstallerProcess(metadata: ArcPackage): Function;
+  getInstallerProcess(metadata: ArcPackage): Constructs<IInstallerProcessBase>;
   packageInstaller<T = IInstallerProcessBase>(zip: JSZip, metadata: ArcPackage, item?: StoreItem): Promise<T | undefined>;
   validatePackage(path: string, progress?: FilesystemProgressCallback): Promise<boolean>;
   getAllStoreItems(): Promise<StoreItem[]>;
@@ -240,7 +226,7 @@ export interface IAdminBootstrapper extends IBaseService {
     username: string,
     driveLetter?: string,
     onProgress?: FilesystemProgressCallback
-  ): Promise<false | FilesystemDrive | undefined>;
+  ): Promise<false | IFilesystemDrive | undefined>;
   mountAllUsers(): Promise<void>;
   getAllUsers(): Promise<ExpandedUserInfo[]>;
   getUserByUsername(username: string): Promise<UserInfo | undefined>;
@@ -363,7 +349,7 @@ export interface IShareManager extends IBaseService {
     shareName: string,
     password: string,
     mountAlso?: boolean
-  ): Promise<boolean | FilesystemDrive | undefined>;
+  ): Promise<boolean | IFilesystemDrive | undefined>;
   leaveShare(shareId: string): Promise<boolean>;
   unmountIfMounted(shareId: string): Promise<void>;
   kickUserFromShare(shareId: string, userId: string): Promise<boolean>;
@@ -372,8 +358,8 @@ export interface IShareManager extends IBaseService {
     shareName: string,
     letter?: string,
     onProgress?: FilesystemProgressCallback
-  ): Promise<false | FilesystemDrive | undefined>;
-  mountShareById(shareId: string, letter?: string, onProgress?: FilesystemProgressCallback): Promise<false | FilesystemDrive>;
+  ): Promise<false | IFilesystemDrive | undefined>;
+  mountShareById(shareId: string, letter?: string, onProgress?: FilesystemProgressCallback): Promise<false | IFilesystemDrive>;
   getShareMembers(shareId: string): Promise<Record<string, string>>;
   getShareInfoByName(username: string, shareName: string): Promise<SharedDriveType | undefined>;
   getShareInfoById(shareId: string): Promise<SharedDriveType | undefined>;
@@ -441,4 +427,12 @@ export interface IApplicationStorage extends IBaseService {
   get(): Promise<AppStorage>;
   getAppSynchronous(id: string): App | undefined;
   getAppById(id: string, fromBuffer?: boolean): Promise<App | undefined>;
+}
+
+export interface IRecentFilesService extends IBaseService {
+  loadConfiguration(): Promise<void>;
+  writeConfiguration(configuration: string[]): Promise<void>;
+  addToRecents(path: string): boolean;
+  removeFromRecents(path: string): boolean;
+  getRecents(): string[];
 }

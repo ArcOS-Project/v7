@@ -1,7 +1,5 @@
 import type { IProcess, IProcessDispatch } from "$interfaces/process";
 import type { AppRenderer } from "$ts/apps/renderer";
-import type { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
-import type { StateHandler } from "$ts/state";
 import type { App } from "$types/app";
 import type { BugReport, OutgoingBugReport, ReportOptions } from "$types/bughunt";
 import type { SystemDispatchResult } from "$types/dispatch";
@@ -17,6 +15,8 @@ import type { LogItem, LogLevel } from "$types/logging";
 import type { ProcessContext, ProcessKillResult } from "$types/process";
 import type { ServerInfo, ServerOption } from "$types/server";
 import type { ReadableStore } from "$types/writable";
+import type { IFilesystemDrive } from "./fs";
+import type { IStateHandler } from "./state";
 
 export interface IWaveKernel {
   modules: string[];
@@ -24,7 +24,7 @@ export interface IWaveKernel {
   PANICKED: boolean;
   startMs: number;
   init: IProcess | undefined;
-  state: StateHandler | undefined;
+  state: IStateHandler | undefined;
   initPid: number;
   params: URLSearchParams;
   ARCOS_MODE: string;
@@ -69,21 +69,21 @@ export interface IServerManager {
 }
 
 export interface IFilesystem {
-  drives: Record<string, FilesystemDrive>;
+  drives: Record<string, IFilesystemDrive>;
   _init(): Promise<void>;
-  getDriveById(id: string): FilesystemDrive;
-  mountDrive<T = FilesystemDrive>(
+  getDriveById(id: string): IFilesystemDrive;
+  mountDrive<T extends IFilesystemDrive = IFilesystemDrive>(
     id: string,
-    supplier: typeof FilesystemDrive,
+    supplier: any,// TODO: construtor interface
     letter?: string,
     onProgress?: FilesystemProgressCallback,
     ...args: any[]
   ): Promise<T | false>;
   getDriveIdByIdentifier(identifier: string): string;
   umountDrive(id: string, fromSystem?: boolean, onProgress?: FilesystemProgressCallback): Promise<boolean>;
-  getDriveByLetter(letter: string, error?: boolean): FilesystemDrive;
+  getDriveByLetter(letter: string, error?: boolean): IFilesystemDrive;
   getDriveIdentifier(path: string): string;
-  getDriveByPath(path: string): FilesystemDrive;
+  getDriveByPath(path: string): IFilesystemDrive;
   validatePath(p: string): void;
   removeDriveLetter(p: string): string;
   validateDriveLetter(letter: string): void;
@@ -107,7 +107,7 @@ export interface IFilesystem {
   releaseLock(path: string, pid: number): Promise<void>;
   direct(path: string): Promise<string | undefined>;
   nextAvailableDriveLetter(): string | undefined;
-  isDirectory(path: string): Promise<boolean | DirectoryReadReturn>;
+  isDirectory(path: string): Promise<false | DirectoryReadReturn>;
   stat(path: string): Promise<ExtendedStat | undefined>;
   imageThumbnail(path: string, width: number, height?: number): Promise<string | undefined>;
 }
@@ -131,7 +131,7 @@ export interface IProcessHandler {
   _init(): Promise<void>;
   startRenderer(initPid: number): Promise<void>;
   spawn<T = IProcess>(
-    process: Function,
+    process: any, // TODO: constructor interface
     renderTarget?: HTMLDivElement | undefined,
     userId?: string,
     parentPid?: number | undefined,

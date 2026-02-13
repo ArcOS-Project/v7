@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
+  import type { IShellRuntime } from "$interfaces/shell";
   import { contextMenu } from "$ts/context/actions.svelte";
   import { Env } from "$ts/env";
   import { Daemon } from "$ts/server/user/daemon";
   import { UserPaths } from "$ts/server/user/store";
   import type { ArcShortcut } from "$types/shortcut";
 
-  const { shortcut, process }: { shortcut: ArcShortcut; process: ShellRuntime } = $props();
+  const { shortcut, process }: { shortcut: ArcShortcut; process: IShellRuntime } = $props();
   const { userPreferences, startMenuOpened } = process;
 
   const app = Daemon?.appStorage()?.getAppSynchronous(shortcut.target);

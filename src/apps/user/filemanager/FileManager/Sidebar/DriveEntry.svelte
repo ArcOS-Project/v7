@@ -1,7 +1,7 @@
 <script lang="ts">
+  import type { ISharedDrive } from "$interfaces/fs";
   import CircularProgress from "$lib/CircularProgress.svelte";
   import { contextProps } from "$ts/context/actions.svelte";
-  import { SharedDrive } from "$ts/shares/drive";
   import { formatBytes } from "$ts/util/fs";
   import type { FileManagerRuntime } from "../../runtime";
   import { DriveIcons } from "../../store";
@@ -11,7 +11,7 @@
 
   const { path } = process;
 
-  const locked = drive.data.IDENTIFIES_AS === "share" && (drive.data as SharedDrive).shareInfo?.locked;
+  const locked = drive.data.IDENTIFIES_AS === "share" && (drive.data as ISharedDrive).shareInfo?.locked;
   let identifier = `${drive.data.driveLetter || drive.data.uuid}:`;
   let identifiesAs = drive.data.IDENTIFIES_AS || "generic";
 

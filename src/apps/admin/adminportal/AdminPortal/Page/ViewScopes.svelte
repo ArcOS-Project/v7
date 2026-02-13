@@ -1,15 +1,15 @@
 <script lang="ts">
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import { AdminScopes } from "$ts/server/admin/store";
   import { scopeToScopeCaption } from "$ts/server/admin/util";
   import { Daemon } from "$ts/server/user/daemon";
   import { onMount } from "svelte";
-  import { AdminPortalRuntime } from "../../runtime";
   import type { ViewScopesData } from "../../types";
   import GlobalPills from "./ViewScopes/GlobalPills.svelte";
   import PagePills from "./ViewScopes/PagePills.svelte";
   import SpecificPills from "./ViewScopes/SpecificPills.svelte";
 
-  const { process, data }: { process: AdminPortalRuntime; data: ViewScopesData } = $props();
+  const { process, data }: { process: IAdminPortalRuntime; data: ViewScopesData } = $props();
   const { admin, scopes } = data;
 
   let scopeList = $state<string[]>([...(admin.adminScopes || [])]);

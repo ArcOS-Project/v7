@@ -1,3 +1,4 @@
+import type { IMemoryFilesystemDrive } from "$interfaces/fs";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
 import { deepCopyWithBlobs, sortByKey } from "$ts/util";
 import { UUID } from "$ts/uuid";
@@ -10,7 +11,7 @@ import type {
   UserQuota,
 } from "$types/fs";
 
-export class MemoryFilesystemDrive extends FilesystemDrive {
+export class MemoryFilesystemDrive extends FilesystemDrive implements IMemoryFilesystemDrive {
   private readonly data: Record<string, any> = {};
   public FIXED: boolean = true;
   public override IDENTIFIES_AS: string = "temp";
