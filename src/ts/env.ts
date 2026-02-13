@@ -10,7 +10,7 @@ import type {
   IWaveKernel,
 } from "$interfaces/kernel";
 
-export const ArcOSVersion = "7.0.9";
+export const ArcOSVersion = "7.0.10";
 export const BETA = true;
 export const USERFS_UUID = "233D-CE74-18C0-0B08";
 export let Kernel: IWaveKernel;
