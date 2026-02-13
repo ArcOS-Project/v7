@@ -63,7 +63,8 @@ export class WaveKernel implements IWaveKernel {
   }
 
   async _init() {
-    (window as any).__DW_INIT__ = true;
+    window.__DW_STATUS__ = "async WaveKernel._init";
+    window.__DW_INIT__ = true;
 
     __Console__.time("** Kernel init");
     this.Log(`KERNEL`, `Called _init`);
