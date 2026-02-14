@@ -1,28 +1,25 @@
 //#region IMPORTS
-import type {
-  IAccountUserContext,
-  IApplicationsUserContext,
-  IAppRegistrationUserContext,
-  IAppRendererUserContext,
-  IChecksUserContext,
-  IElevationUserContext,
-  IFilesystemUserContext,
-  IHelpersUserContext,
-  IIconsUserContext,
-  IInitUserContext,
-  ILoginActivityUserContext,
-  INotificationsUserContext,
-  IPowerUserContext,
-  IPreferencesUserContext,
-  IShortcutsUserContext,
-  ISpawnUserContext,
-  IThemesUserContext,
-  IUserContext,
-  IUserDaemon,
-  IVersionUserContext,
-  IWallpaperUserContext,
-  IWorkspaceUserContext,
-} from "$interfaces/daemon";
+import type { IAccountUserContext } from "$interfaces/contexts/account";
+import type { ILoginActivityUserContext } from "$interfaces/contexts/activity";
+import type { IAppRegistrationUserContext } from "$interfaces/contexts/appreg";
+import type { IApplicationsUserContext } from "$interfaces/contexts/apps";
+import type { IChecksUserContext } from "$interfaces/contexts/checks";
+import type { IElevationUserContext } from "$interfaces/contexts/elevation";
+import type { IFilesystemUserContext } from "$interfaces/contexts/files";
+import type { IHelpersUserContext } from "$interfaces/contexts/helpers";
+import type { IIconsUserContext } from "$interfaces/contexts/icons";
+import type { IInitUserContext } from "$interfaces/contexts/init";
+import type { INotificationsUserContext } from "$interfaces/contexts/notifications";
+import type { IPowerUserContext } from "$interfaces/contexts/power";
+import type { IPreferencesUserContext } from "$interfaces/contexts/preferences";
+import type { IAppRendererUserContext } from "$interfaces/contexts/renderer";
+import type { IShortcutsUserContext } from "$interfaces/contexts/shortcuts";
+import type { ISpawnUserContext } from "$interfaces/contexts/spawn";
+import type { IThemesUserContext } from "$interfaces/contexts/themes";
+import type { IVersionUserContext } from "$interfaces/contexts/version";
+import type { IWallpaperUserContext } from "$interfaces/contexts/wallpaper";
+import type { IWorkspaceUserContext } from "$interfaces/contexts/workspaces";
+import type { IUserContext, IUserDaemon } from "$interfaces/daemon";
 import type { IEnvironment } from "$interfaces/kernel";
 import type { IApplicationStorage, IGlobalDispatch, IProtocolServiceProcess } from "$interfaces/service";
 import type { IShellRuntime } from "$interfaces/shell";

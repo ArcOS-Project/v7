@@ -1,4 +1,5 @@
-import type { ISpawnUserContext, IUserDaemon } from "$interfaces/daemon";
+import type { ISpawnUserContext } from "$interfaces/contexts/spawn";
+import type { IUserDaemon } from "$interfaces/daemon";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { Env, Stack, SysDispatch } from "$ts/env";
 import { JsExec } from "$ts/jsexec";

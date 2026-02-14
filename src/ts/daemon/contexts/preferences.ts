@@ -1,5 +1,6 @@
 import { DefaultPinnedApps, DefaultStartMenuActions } from "$apps/components/shell/store";
-import type { IPreferencesUserContext, IUserDaemon } from "$interfaces/daemon";
+import type { IPreferencesUserContext } from "$interfaces/contexts/preferences";
+import type { IUserDaemon } from "$interfaces/daemon";
 import { Fs, SysDispatch } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { DefaultUserPreferences } from "$ts/user/default";

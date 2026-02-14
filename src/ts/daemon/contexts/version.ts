@@ -1,4 +1,5 @@
-import type { IUserDaemon, IVersionUserContext } from "$interfaces/daemon";
+import type { IVersionUserContext } from "$interfaces/contexts/version";
+import type { IUserDaemon } from "$interfaces/daemon";
 import type { IFilesystemDrive } from "$interfaces/fs";
 import SourceDriveEnable from "$lib/Daemon/SourceDriveEnable.svelte";
 import { ArcOSVersion, Env, Fs, Kernel } from "$ts/env";

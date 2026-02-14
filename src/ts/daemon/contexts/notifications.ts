@@ -1,4 +1,5 @@
-import type { INotificationsUserContext, IUserDaemon } from "$interfaces/daemon";
+import type { INotificationsUserContext } from "$interfaces/contexts/notifications";
+import type { IUserDaemon } from "$interfaces/daemon";
 import { SysDispatch } from "$ts/env";
 import type { Notification } from "$types/notification";
 import { UserContext } from "../context";

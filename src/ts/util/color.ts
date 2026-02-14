@@ -130,8 +130,6 @@ export async function getReadableVibrantColor(url: string): Promise<string> {
 
       bestColor = bestColor.replace("#", "").slice(0, 6);
 
-      console.log(bestColor);
-
       resolve(bestColor);
     };
 

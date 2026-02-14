@@ -1,4 +1,5 @@
-import type { IAccountUserContext, IUserDaemon } from "$interfaces/daemon";
+import type { IAccountUserContext } from "$interfaces/contexts/account";
+import type { IUserDaemon } from "$interfaces/daemon";
 import DeleteUser from "$lib/Daemon/DeleteUser.svelte";
 import { Env, Server, SysDispatch } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";

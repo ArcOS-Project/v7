@@ -1,4 +1,5 @@
-import type { IAppRegistrationUserContext, IUserDaemon } from "$interfaces/daemon";
+import type { IAppRegistrationUserContext } from "$interfaces/contexts/appreg";
+import type { IUserDaemon } from "$interfaces/daemon";
 import { BuiltinAppImportPathAbsolutes } from "$ts/apps/store";
 import { ArcOSVersion, Env, Fs, SysDispatch } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";

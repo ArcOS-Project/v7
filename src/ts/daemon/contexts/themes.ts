@@ -1,4 +1,5 @@
-import type { IThemesUserContext, IUserDaemon } from "$interfaces/daemon";
+import type { IThemesUserContext } from "$interfaces/contexts/themes";
+import type { IUserDaemon } from "$interfaces/daemon";
 import { DefaultUserPreferences } from "$ts/user/default";
 import { BuiltinThemes } from "$ts/user/store";
 import { LogLevel } from "$types/logging";

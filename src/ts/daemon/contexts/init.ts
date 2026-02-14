@@ -1,4 +1,5 @@
-import type { IInitUserContext, IUserDaemon } from "$interfaces/daemon";
+import type { IInitUserContext } from "$interfaces/contexts/init";
+import type { IUserDaemon } from "$interfaces/daemon";
 import { Env, Fs, Stack, State, SysDispatch } from "$ts/env";
 import { UserDrive } from "$ts/kernel/mods/fs/drives/userfs";
 import { PermissionHandler } from "$ts/permissions";

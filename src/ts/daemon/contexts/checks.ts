@@ -1,4 +1,5 @@
-import type { IChecksUserContext, IUserDaemon } from "$interfaces/daemon";
+import type { IChecksUserContext } from "$interfaces/contexts/checks";
+import type { IUserDaemon } from "$interfaces/daemon";
 import { Env } from "$ts/env";
 import { NightlyLogo } from "$ts/images/branding";
 import { ArcBuild } from "$ts/metadata/build";
@@ -159,7 +160,12 @@ export class ChecksUserContext extends UserContext implements IChecksUserContext
         message:
           "You're running a nightly build of ArcOS. Because of potentially major changes, user preference committing and file writes have been disabled to prevent your account from breaking when you return to the stable release. Nightly is NOT recommended for daily use (looking at you, Nik).<br><br>Just a reminder: ArcOS developers cannot be held accountable for breakages when using unstable ArcOS builds. We can however assist and resolve problems when something does go wrong.",
         buttons: [
-          { caption: "Jump to stable", action: () => (location.href = "/") },
+          {
+            caption: "Jump to stable",
+            action: () => {
+              location.href = "/";
+            },
+          },
           { caption: "Okay", action: () => {}, suggested: true },
         ],
         image: NightlyLogo,

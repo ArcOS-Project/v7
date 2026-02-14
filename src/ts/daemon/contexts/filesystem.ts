@@ -5,7 +5,8 @@ import {
   type FsProgressProc,
 } from "$apps/components/fsprogress/types";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
-import type { IFilesystemUserContext, IUserDaemon } from "$interfaces/daemon";
+import type { IFilesystemUserContext } from "$interfaces/contexts/files";
+import type { IUserDaemon } from "$interfaces/daemon";
 import type { ILegacyServerDrive } from "$interfaces/drives/legacy";
 import type { IMemoryFilesystemDrive } from "$interfaces/drives/temp";
 import type { IFilesystemDrive } from "$interfaces/fs";

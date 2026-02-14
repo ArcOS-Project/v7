@@ -1,4 +1,5 @@
-import type { IApplicationsUserContext, IUserDaemon } from "$interfaces/daemon";
+import type { IApplicationsUserContext } from "$interfaces/contexts/apps";
+import type { IUserDaemon } from "$interfaces/daemon";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { Env, Stack, SysDispatch } from "$ts/env";
 import type { ShareManager } from "$ts/servicehost/services/ShareMgmt";

@@ -1,7 +1,8 @@
 import type { GlobalLoadIndicatorProgress } from "$apps/components/globalloadindicator/types";
 import type { IconPickerData } from "$apps/components/iconpicker/types";
 import type { IAppProcess } from "$interfaces/app";
-import type { IHelpersUserContext, IUserDaemon } from "$interfaces/daemon";
+import type { IHelpersUserContext } from "$interfaces/contexts/helpers";
+import type { IUserDaemon } from "$interfaces/daemon";
 import SafeModeNotice from "$lib/Daemon/SafeModeNotice.svelte";
 import { ArcOSVersion, Env, Stack, SysDispatch } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
