@@ -1,9 +1,9 @@
 <script lang="ts">
   import { AdminPortalPageStore } from "$apps/admin/adminportal/store";
   import type { IAdminPortalRuntime } from "$interfaces/admin";
-  import { MessageBox } from "$ts/dialog";
-  import { AdminScopeCaptions } from "$ts/server/admin/store";
-  import { scopeToScopeCaption } from "$ts/server/admin/util";
+  import { MessageBox } from "$ts/util/dialog";
+  import { AdminScopeCaptions } from "$ts/servicehost/services/AdminBootstrapper/store";
+  import { scopeToScopeCaption } from "$ts/util/admin";
 
   const {
     append,

@@ -8,8 +8,8 @@
  */
 
 import { Env, Stack } from "$ts/env";
-import { Process } from "$ts/process/instance";
-import { Daemon } from "$ts/server/user/daemon";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
+import { Daemon } from "$ts/daemon";
 import { Permissions } from ".";
 import type { PermissionString } from "./store";
 

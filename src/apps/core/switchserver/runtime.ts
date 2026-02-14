@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { MessageBox } from "$ts/util/dialog";
 import { Server, Stack, SysDispatch } from "$ts/env";
 import { WarningIcon } from "$ts/images/dialog";
 import { Store } from "$ts/writable";

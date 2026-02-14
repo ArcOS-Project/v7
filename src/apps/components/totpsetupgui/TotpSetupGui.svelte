@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { MessageBox } from "$ts/dialog";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { MessageBox } from "$ts/util/dialog";
+  import { Daemon } from "$ts/daemon";
   import QRCode from "@castlenine/svelte-qrcode";
   import { onMount } from "svelte";
   import Input from "./TotpSetupGui/Input.svelte";

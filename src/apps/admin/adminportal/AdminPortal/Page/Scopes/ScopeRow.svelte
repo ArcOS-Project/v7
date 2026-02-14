@@ -3,7 +3,7 @@
   import type { AdminPortalPage } from "$apps/admin/adminportal/types";
   import type { IAdminPortalRuntime } from "$interfaces/admin";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import { AdminScopes } from "$ts/server/admin/store";
+  import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";
 

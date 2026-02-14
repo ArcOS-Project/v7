@@ -1,7 +1,7 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import { Daemon } from "$ts/server/user/daemon";
-  import { DefaultUserInfo } from "$ts/server/user/default";
+  import { Daemon } from "$ts/daemon";
+  import { DefaultUserInfo } from "$ts/user/default";
   import type { SettingsRuntime } from "../../runtime";
 
   const { process }: { process: SettingsRuntime } = $props();

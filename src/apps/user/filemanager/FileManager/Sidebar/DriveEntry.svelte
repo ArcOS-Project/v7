@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ISharedDrive } from "$interfaces/fs";
   import CircularProgress from "$lib/CircularProgress.svelte";
-  import { contextProps } from "$ts/context/actions.svelte";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
   import { formatBytes } from "$ts/util/fs";
   import type { FileManagerRuntime } from "../../runtime";
   import { DriveIcons } from "../../store";

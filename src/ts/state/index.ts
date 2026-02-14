@@ -3,7 +3,7 @@ import type { IProcessHandler } from "$interfaces/kernel";
 import { getKMod, Kernel, Stack } from "$ts/env";
 import { LogLevel } from "$types/logging";
 import type { State } from "../../types/state";
-import { Process } from "../process/instance";
+import { Process } from "../kernel/mods/stack/process/instance";
 import { Sleep } from "../sleep";
 import { StateError } from "./error";
 import { States } from "./store";

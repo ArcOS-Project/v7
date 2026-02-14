@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/shell";
-  import { contextProps } from "$ts/context/actions.svelte";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
   import { Stack } from "$ts/env";
   import { onMount } from "svelte";
   import Popup from "./TrayIcon/Popup.svelte";

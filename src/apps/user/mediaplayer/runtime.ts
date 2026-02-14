@@ -1,13 +1,13 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { MessageBox } from "$ts/util/dialog";
 import { Fs, Stack } from "$ts/env";
-import { tryJsonParse } from "$ts/json";
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
+import { tryJsonParse } from "$ts/util/json";
+import { Daemon } from "$ts/daemon";
+import { UserPaths } from "$ts/user/store";
 import { Sleep } from "$ts/sleep";
 import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
-import { UUID } from "$ts/uuid";
+import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { FileEntry } from "$types/fs";
@@ -17,7 +17,7 @@ import { MediaPlayerAccelerators } from "./accelerators";
 import { MediaPlayerAltMenu } from "./altmenu";
 import TrayPopup from "./MediaPlayer/TrayPopup.svelte";
 import { LoopMode, type AudioFileMetadata, type MetadataConfiguration, type PlayerState } from "./types";
-import { getReadableVibrantColor } from "$ts/color";
+import { getReadableVibrantColor } from "$ts/util/color";
 
 export class MediaPlayerRuntime extends AppProcess {
   private readonly METADATA_PATH = join(UserPaths.Configuration, "MediaPlayer", "Metadata.json");

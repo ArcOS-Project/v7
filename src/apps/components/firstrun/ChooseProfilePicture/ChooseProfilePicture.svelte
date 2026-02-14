@@ -2,7 +2,7 @@
   import type { IAppProcess } from "$interfaces/app";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { ProfilePictures } from "$ts/images/pfp";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
 
   const { process }: { process: IAppProcess } = $props();
   const { userPreferences } = process;

@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/shell";
-  import { contextProps } from "$ts/context/actions.svelte";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
+  import { Daemon } from "$ts/daemon";
   import type { App } from "$types/app";
   import { onMount } from "svelte";
 

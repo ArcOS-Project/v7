@@ -10,9 +10,9 @@ import {
   type UploadReturn,
 } from "$types/fs";
 import type { IWaveKernel, IFilesystem, ISystemDispatch } from "$interfaces/kernel";
-import type { FilesystemDrive } from "./drives/drive";
-import { arrayBufferToBlob } from "../../../util/convert";
-import { getItemNameFromPath, getParentDirectory, join } from "../../../util/fs";
+import type { FilesystemDrive } from "./drives/generic";
+import { arrayBufferToBlob } from "$ts/util/convert";
+import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import type { IFilesystemDrive } from "$interfaces/fs";
 
 export class Filesystem extends KernelModule implements IFilesystem {

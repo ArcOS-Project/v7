@@ -2,7 +2,7 @@ import type { IArcTerminal } from "$interfaces/terminal";
 import { ArcOSVersion, Env } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { UserPaths } from "$ts/server/user/store";
+import { UserPaths } from "$ts/user/store";
 import type { VariableStore } from "$types/terminal";
 import {
   BLACK,

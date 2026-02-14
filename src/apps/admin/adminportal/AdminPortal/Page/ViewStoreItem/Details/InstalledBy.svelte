@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/admin";
   import Spinner from "$lib/Spinner.svelte";
-  import { Backend } from "$ts/server/axios";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Backend } from "$ts/kernel/mods/server/axios";
+  import { Daemon } from "$ts/daemon";
   import type { StoreItem } from "$types/package";
   import type { ExpandedUserInfo } from "$types/user";
   import Users from "../../Users.svelte";

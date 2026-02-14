@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/admin";
-  import { MessageBox } from "$ts/dialog";
-  import { StoreItemIcon } from "$ts/distrib/util";
+  import { MessageBox } from "$ts/util/dialog";
   import { Env } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import type { ViewStoreItemData } from "../../types";
   import Details from "./ViewStoreItem/Details.svelte";
+  import { StoreItemIcon } from "$ts/util/distrib";
 
   const { process, data }: { process: IAdminPortalRuntime; data: ViewStoreItemData } = $props();
   const { item } = data;

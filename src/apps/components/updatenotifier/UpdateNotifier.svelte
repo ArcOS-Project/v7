@@ -1,6 +1,6 @@
 <script lang="ts">
   import HtmlSpinner from "$lib/HtmlSpinner.svelte";
-  import { MessageBox } from "$ts/dialog";
+  import { MessageBox } from "$ts/util/dialog";
   import { ArcOSVersion } from "$ts/env";
   import { ChangeLogs } from "$ts/metadata/changelog";
   import { onMount } from "svelte";

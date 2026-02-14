@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { contextProps } from "$ts/context/actions.svelte";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
   import { Fs, SysDispatch } from "$ts/env";
-  import { UserPaths } from "$ts/server/user/store";
+  import { UserPaths } from "$ts/user/store";
   import type { FolderEntry } from "$types/fs";
   import type { UserPreferencesStore } from "$types/user";
   import { onMount } from "svelte";

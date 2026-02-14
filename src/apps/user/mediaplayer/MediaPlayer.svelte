@@ -6,7 +6,7 @@
   import QueueItem from "./MediaPlayer/QueueItem.svelte";
   import type { MediaPlayerRuntime } from "./runtime";
   import CoverImage from "./MediaPlayer/CoverImage.svelte";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
 
   const { process }: { process: MediaPlayerRuntime } = $props();
 

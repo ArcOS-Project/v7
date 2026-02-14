@@ -6,7 +6,7 @@
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import Spinner from "$lib/Spinner.svelte";
   import { Env, Fs } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import { formatBytes } from "$ts/util/fs";
 
   const {

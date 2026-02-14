@@ -1,6 +1,6 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import type { UserPreferencesStore } from "$types/user";
   import type { IShellRuntime } from "$interfaces/shell";
   

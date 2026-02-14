@@ -4,7 +4,7 @@
   import HtmlSpinner from "$lib/HtmlSpinner.svelte";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { Logo } from "$ts/branding";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import type { VersioningData, VersioningNode } from "../../types";
 
   const migrationService = Daemon.serviceHost?.getService<IMigrationService>("MigrationSvc");
@@ -30,8 +30,8 @@
       );
 
       versions[user._id] = {
-        os: await process.getRegisteredVersionFor(user.username),
-        migrations: await process.getMigrationIndexFor(user.username),
+        os: await process.admin.getRegisteredVersionFor(user.username),
+        migrations: await process.admin.getMigrationIndexFor(user.username),
       };
 
       incrementProgress?.(1);

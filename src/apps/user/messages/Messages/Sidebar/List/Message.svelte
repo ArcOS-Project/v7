@@ -2,7 +2,7 @@
   import type { MessagingAppRuntime } from "$apps/user/messages/runtime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import type { ExpandedMessage } from "$types/messaging";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";

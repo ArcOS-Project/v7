@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import { onMount } from "svelte";
-  import { MigrationService } from "$ts/migrations";
   import { Sleep } from "$ts/sleep";
   import Row from "./Migrations/Row.svelte";
+  import type { MigrationService } from "$ts/servicehost/services/MigrationSvc";
 
   const migrationService = Daemon.serviceHost?.getService<MigrationService>("MigrationSvc");
 

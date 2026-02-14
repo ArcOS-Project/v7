@@ -1,9 +1,9 @@
 import type { IServerManager } from "$interfaces/kernel";
 import type { IArcTerminal } from "$interfaces/terminal";
 import { getKMod } from "$ts/env";
-import { getAllJsonPaths, getJsonHierarchy } from "$ts/hierarchy";
-import { tryJsonParse } from "$ts/json";
-import { AdminBootstrapper } from "$ts/server/admin";
+import { getAllJsonPaths, getJsonHierarchy } from "$ts/util/hierarchy";
+import { tryJsonParse } from "$ts/util/json";
+import { AdminBootstrapper } from "$ts/servicehost/services/AdminBootstrapper";
 import { ElevationLevel } from "$types/elevation";
 import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";

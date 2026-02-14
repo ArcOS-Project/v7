@@ -1,5 +1,5 @@
 import { getKMod } from "$ts/env";
-import { Backend } from "$ts/server/axios";
+import { Backend } from "$ts/kernel/mods/server/axios";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { BOLD, BRBLACK, BRGREEN, BRPURPLE, BRRED, RESET } from "$ts/terminal/store";
 import { sha256 } from "$ts/util";

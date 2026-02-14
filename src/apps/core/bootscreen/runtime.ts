@@ -1,9 +1,8 @@
+import { AppProcess } from "$ts/apps/process";
 import { State } from "$ts/env";
-import { KernelStateHandler } from "$ts/getters";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
-import { AppProcess } from "../../../ts/apps/process";
-import type { AppProcessData } from "../../../types/app";
+import type { AppProcessData } from "$types/app";
 
 export class BootScreenRuntime extends AppProcess {
   public progress = Store<boolean>(false);

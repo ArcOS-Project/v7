@@ -1,12 +1,12 @@
 import type { IUserDaemon } from "$interfaces/daemon";
 import type { IShellRuntime } from "$interfaces/shell";
-import { MessageBox } from "$ts/dialog";
+import { MessageBox } from "$ts/util/dialog";
 import { ArcOSVersion, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { ProcessWithPermissions } from "$ts/permissions/process";
-import { Daemon, TryGetDaemon } from "$ts/server/user/daemon";
-import { DefaultUserPreferences } from "$ts/server/user/default";
+import { Daemon, TryGetDaemon } from "$ts/daemon";
+import { DefaultUserPreferences } from "$ts/user/default";
 import type { AppKeyCombinations } from "$types/accelerator";
 import type { MaybePromise } from "$types/common";
 import { type ElevationData } from "$types/elevation";

@@ -1,5 +1,5 @@
 import { DevelopmentLogo, EsrLogo, RcLogo, ReleaseLogo, UnstableLogo } from "$ts/images/branding";
-import { AdminScopes } from "$ts/server/admin/store";
+import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
 import { sliceIntoChunks } from "$ts/util";
 import type { PartialUserTotp, Token } from "$types/admin";
 import Activities from "./AdminPortal/Page/Activities.svelte";
@@ -103,8 +103,8 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
 
         return {
           reports: await process.admin.getAllBugReports(),
-          osVersion: await process.getRegisteredVersionFor(username),
-          migrations: await process.getMigrationIndexFor(username),
+          osVersion: await process.admin.getRegisteredVersionFor(username),
+          migrations: await process.admin.getMigrationIndexFor(username),
         };
       },
       scopes: [AdminScopes.adminBugHuntGet],

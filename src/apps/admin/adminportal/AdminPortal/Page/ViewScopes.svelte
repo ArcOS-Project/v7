@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/admin";
-  import { AdminScopes } from "$ts/server/admin/store";
-  import { scopeToScopeCaption } from "$ts/server/admin/util";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
+  import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
+  import { scopeToScopeCaption } from "$ts/util/admin";
   import { onMount } from "svelte";
   import type { ViewScopesData } from "../../types";
   import GlobalPills from "./ViewScopes/GlobalPills.svelte";

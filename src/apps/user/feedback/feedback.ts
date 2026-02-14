@@ -1,4 +1,4 @@
-import { RegisteredProcess } from "$ts/apps/util";
+import { RegisteredProcess } from "$ts/util/apps";
 import { ArcOSVersion } from "$ts/env";
 import { BugReportIcon } from "$ts/images/general";
 import { FeedbackProcess } from "./runtime";

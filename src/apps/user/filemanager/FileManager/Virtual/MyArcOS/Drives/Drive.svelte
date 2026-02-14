@@ -3,7 +3,7 @@
   import { DriveIconsMulticolor } from "$apps/user/filemanager/store";
   import type { QuotedDrive } from "$apps/user/filemanager/types";
   import type { ISharedDrive } from "$interfaces/fs";
-  import { contextProps } from "$ts/context/actions.svelte";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
 
   const { drive, id, process }: { drive: QuotedDrive; id: string; process: FileManagerRuntime } = $props();
   const { userPreferences } = process;

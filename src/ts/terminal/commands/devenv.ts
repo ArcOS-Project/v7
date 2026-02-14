@@ -1,5 +1,5 @@
 import type { IArcTerminal } from "$interfaces/terminal";
-import { DevelopmentEnvironment } from "$ts/devenv";
+import { DevelopmentEnvironment } from "$ts/servicehost/services/DevEnvironment";
 import { DevEnvActivationResultCaptions } from "$types/devenv";
 import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";

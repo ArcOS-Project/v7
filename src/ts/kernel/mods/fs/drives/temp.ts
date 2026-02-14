@@ -1,7 +1,7 @@
 import type { IMemoryFilesystemDrive } from "$interfaces/fs";
-import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
+import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
 import { deepCopyWithBlobs, sortByKey } from "$ts/util";
-import { UUID } from "$ts/uuid";
+import { UUID } from "$ts/util/uuid";
 import type {
   DirectoryReadReturn,
   DriveCapabilities,

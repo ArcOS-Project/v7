@@ -1,6 +1,5 @@
 <script lang="ts">
   import UserLink from "$lib/UserLink.svelte";
-  import { StoreItemBanner, StoreItemIcon } from "$ts/distrib/util";
   import { formatBytes } from "$ts/util/fs";
   import type { StoreItem } from "$types/package";
   import { onMount } from "svelte";
@@ -8,6 +7,7 @@
   import PackageInstallAction from "../AppStore/PackageInstallAction.svelte";
   import type { AppStoreRuntime } from "../runtime";
   import Screenshots from "./ViewStoreItem/Screenshots.svelte";
+  import { StoreItemBanner, StoreItemIcon } from "$ts/util/distrib";
 
   const { process, pkg }: { process: AppStoreRuntime; pkg: StoreItem } = $props();
 

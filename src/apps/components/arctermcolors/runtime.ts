@@ -1,9 +1,9 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { MessageBox } from "$ts/util/dialog";
 import { Env, Fs } from "$ts/env";
-import { tryJsonParse } from "$ts/json";
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
+import { tryJsonParse } from "$ts/util/json";
+import { Daemon } from "$ts/daemon";
+import { UserPaths } from "$ts/user/store";
 import { DefaultArcTermConfiguration } from "$ts/terminal/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";

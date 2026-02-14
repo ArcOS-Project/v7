@@ -2,7 +2,7 @@
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
   import Spinner from "$lib/Spinner.svelte";
   import { Env } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import { onMount, type Component } from "svelte";
   import Sidebar from "./AppStore/Sidebar.svelte";
   import type { AppStoreRuntime } from "./runtime";

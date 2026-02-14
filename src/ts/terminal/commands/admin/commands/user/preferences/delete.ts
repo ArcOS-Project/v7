@@ -1,5 +1,5 @@
-import { setJsonHierarchy } from "$ts/hierarchy";
-import { AdminScopes } from "$ts/server/admin/store";
+import { setJsonHierarchy } from "$ts/util/hierarchy";
+import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
 export const AdminUserPreferencesDelete: AdminCommandType = async (term, admin, [username, path]) => {

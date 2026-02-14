@@ -1,7 +1,7 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
   import { Env } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import { Store } from "$ts/writable";
   import type { StoreItem, UpdateInfo } from "$types/package";
   import { onMount } from "svelte";

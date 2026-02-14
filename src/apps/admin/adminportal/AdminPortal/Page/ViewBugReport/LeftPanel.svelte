@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { BugReportTpaFile } from "$apps/admin/adminportal/types";
   import type { IAdminPortalRuntime } from "$interfaces/admin";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import { formatBytes } from "$ts/util/fs";
   import type { BugReport } from "$types/bughunt";
   import { onMount } from "svelte";

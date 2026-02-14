@@ -1,4 +1,4 @@
-import { getAllJsonPaths } from "$ts/hierarchy";
+import { getAllJsonPaths } from "$ts/util/hierarchy";
 import { BRBLACK, BRPURPLE, RESET } from "$ts/terminal/store";
 import type { AdminCommandType } from "../../admin";
 import { AdminCommandStore } from "../store";

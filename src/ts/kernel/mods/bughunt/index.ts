@@ -1,11 +1,11 @@
 import type { IUserDaemon } from "$interfaces/daemon";
 import type { IBugHunt, IWaveKernel } from "$interfaces/kernel";
 import { ArcOSVersion, Env, Server, Stack } from "$ts/env";
-import { KernelLogs } from "$ts/getters";
+import { KernelLogs } from "$ts/kernel/getters";
 import { KernelModule } from "$ts/kernel/module";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { Backend } from "$ts/server/axios";
+import { Backend } from "$ts/kernel/mods/server/axios";
 import type { App } from "$types/app";
 import type { BugReport, OutgoingBugReport } from "$types/bughunt";
 import { defaultReportOptions } from "./store";

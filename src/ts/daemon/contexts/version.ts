@@ -1,0 +1,44 @@
+import type { IUserDaemon, IVersionUserContext } from "$interfaces/daemon";
+import { ArcOSVersion, Env, Fs } from "$ts/env";
+import { UserPaths } from "$ts/user/store";
+import { arrayBufferToText, textToBlob } from "$ts/util/convert";
+import { join } from "$ts/util/fs";
+import { Daemon } from "..";
+import { UserContext } from "../context";
+
+/**
+ * RESTRICTED: this class does not have an entry in ProcessWithPermissions,
+ * and as such cannot be accessed by third-party applications.
+ */
+export class VersionUserContext extends UserContext implements IVersionUserContext {
+  constructor(id: string, daemon: IUserDaemon) {
+    super(id, daemon);
+  }
+
+  async isRegisteredVersionOutdated() {
+    try {
+      const contents = await Fs.readFile(join(UserPaths.System, "RegisteredVersion"));
+      const isOutdated = !contents || arrayBufferToText(contents) !== ArcOSVersion;
+
+      return isOutdated;
+    } catch {
+      return false;
+    }
+  }
+
+  async updateRegisteredVersion() {
+    try {
+      await Fs.writeFile(join(UserPaths.System, "RegisteredVersion"), textToBlob(ArcOSVersion));
+    } catch {
+      return;
+    }
+  }
+
+  async checkForNewVersion() {
+    const isOutdated = await this.isRegisteredVersionOutdated();
+
+    if (!isOutdated) return;
+
+    Daemon!.spawn?.spawnOverlay("UpdateNotifierApp", +Env.get("shell_pid"));
+  }
+}

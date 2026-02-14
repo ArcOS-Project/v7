@@ -1,6 +1,6 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import type { ArcShortcut } from "$types/shortcut";
   import { onMount } from "svelte";
   import type { IShellRuntime } from "$interfaces/shell";

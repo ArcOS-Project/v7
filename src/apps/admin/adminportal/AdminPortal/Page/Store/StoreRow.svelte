@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/admin";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import { StoreItemIcon } from "$ts/distrib/util";
+  import { StoreItemIcon } from "$ts/util/distrib";
   import { formatBytes } from "$ts/util/fs";
   import type { StoreItem } from "$types/package";
   import type { ExpandedUserInfo } from "$types/user";

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Server, SysDispatch } from "$ts/env";
-  import { TryGetDaemon } from "$ts/server/user/daemon";
-  import { DefaultUserPreferences } from "$ts/server/user/default";
+  import { TryGetDaemon } from "$ts/daemon";
+  import { DefaultUserPreferences } from "$ts/user/default";
   import { Sleep } from "$ts/sleep";
   import { authcode } from "$ts/util";
   import type { UserPreferences } from "$types/user";

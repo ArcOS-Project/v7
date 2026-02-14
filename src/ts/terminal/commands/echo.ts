@@ -1,5 +1,5 @@
 import type { IArcTerminal } from "$interfaces/terminal";
-import { tryJsonParse } from "$ts/json";
+import { tryJsonParse } from "$ts/util/json";
 import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";
 import { BRBLUE, BRCYAN, BRPURPLE, BRYELLOW, RESET } from "../store";

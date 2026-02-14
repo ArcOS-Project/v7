@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { UserPreferences } from "$types/user";

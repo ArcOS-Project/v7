@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { MessagingAppRuntime } from "$apps/user/messages/runtime";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import { formatBytes } from "$ts/util/fs";
   import type { MessageAttachment } from "$types/messaging";
 

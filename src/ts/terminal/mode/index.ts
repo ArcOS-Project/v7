@@ -1,13 +1,13 @@
 import type { IUserDaemon } from "$interfaces/daemon";
 import type { IArcTerminal } from "$interfaces/terminal";
 import { ArcOSVersion, Env, Stack, SysDispatch } from "$ts/env";
-import { toForm } from "$ts/form";
+import { toForm } from "$ts/util/form";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { Process } from "$ts/process/instance";
-import { Backend } from "$ts/server/axios";
-import { LoginUser } from "$ts/server/user/auth";
-import { UserDaemon } from "$ts/server/user/daemon";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
+import { Backend } from "$ts/kernel/mods/server/axios";
+import { LoginUser } from "$ts/user/auth";
+import { UserDaemon } from "$ts/daemon";
 import { Sleep } from "$ts/sleep";
 import type { UserInfo } from "$types/user";
 import { ClipboardAddon } from "@xterm/addon-clipboard";
@@ -18,7 +18,7 @@ import { WebLinksAddon } from "@xterm/addon-web-links";
 import Cookies from "js-cookie";
 import { Terminal } from "xterm";
 import { ArcTerminal } from "..";
-import type { MigrationService } from "../../migrations";
+import type { MigrationService } from "../../servicehost/services/MigrationSvc";
 import { Readline } from "../readline/readline";
 import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../store";
 

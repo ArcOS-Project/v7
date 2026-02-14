@@ -315,6 +315,8 @@ export interface IAdminBootstrapper extends IBaseService {
   ): Promise<string | false>;
   deleteStoreItemVerification(id: string): Promise<boolean>;
   verifyStoreItem(id: string, note: string): Promise<boolean>;
+  getRegisteredVersionFor(userId: string): Promise<string>;
+  getMigrationIndexFor(userId: string): Promise<Record<string, number>>;
 }
 
 export interface IFileAssocService extends IBaseService {

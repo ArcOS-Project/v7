@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { FileManagerRuntime } from "$apps/user/filemanager/runtime";
-  import { contextMenu } from "$ts/context/actions.svelte";
+  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { Fs } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
-  import type { RecentFilesService } from "$ts/server/user/recents";
+  import { Daemon } from "$ts/daemon";
+  import type { RecentFilesService } from "$ts/servicehost/services/RecentFilesSvc";
   import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
   import { onMount } from "svelte";
 

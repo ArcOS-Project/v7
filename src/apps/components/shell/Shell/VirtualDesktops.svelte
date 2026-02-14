@@ -1,9 +1,9 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
-  import { contextMenu } from "$ts/context/actions.svelte";
+  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { Stack } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
-  import { Wallpapers } from "$ts/wallpaper/store";
+  import { Daemon } from "$ts/daemon";
+  import { Wallpapers } from "$ts/user/wallpaper/store";
   import { Store } from "$ts/writable";
   import type { Workspace } from "$types/user";
   import { onMount } from "svelte";

@@ -3,8 +3,8 @@
   import CircularProgress from "$lib/CircularProgress.svelte";
   import Spinner from "$lib/Spinner.svelte";
   import { Env, Fs } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
-  import { ShareManager } from "$ts/shares";
+  import { Daemon } from "$ts/daemon";
+  import { ShareManager } from "$ts/servicehost/services/ShareMgmt";
   import { formatBytes } from "$ts/util/fs";
   import type { UserQuota } from "$types/fs";
   import type { SharedDriveType } from "$types/shares";

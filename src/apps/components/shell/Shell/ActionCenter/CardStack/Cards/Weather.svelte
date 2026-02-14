@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
   import type { WeatherInformation } from "$apps/components/shell/types";
-  import { contextMenu, contextProps } from "$ts/context/actions.svelte";
+  import type { IShellRuntime } from "$interfaces/shell";
+  import Spinner from "$lib/Spinner.svelte";
+  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { Sleep } from "$ts/sleep";
   import { onMount } from "svelte";
-  import Spinner from "../../../../../../../lib/Spinner.svelte";
 
   const { process }: { process: IShellRuntime } = $props();
   const { userPreferences } = process;

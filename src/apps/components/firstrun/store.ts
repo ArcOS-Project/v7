@@ -1,5 +1,5 @@
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
+import { Daemon } from "$ts/daemon";
+import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
 import type { ArcShortcut } from "$types/shortcut";
 import Finish from "./FirstRun/Page/Finish.svelte";

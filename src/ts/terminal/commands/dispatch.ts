@@ -1,6 +1,6 @@
 import type { IArcTerminal } from "$interfaces/terminal";
 import { Stack, SysDispatch } from "$ts/env";
-import { tryJsonParse } from "$ts/json";
+import { tryJsonParse } from "$ts/util/json";
 import { KnownSystemDispatchers, SystemOnlyDispatches } from "$ts/kernel/mods/dispatch/store";
 import { tryParseInt } from "$ts/util";
 import type { Arguments } from "$types/terminal";

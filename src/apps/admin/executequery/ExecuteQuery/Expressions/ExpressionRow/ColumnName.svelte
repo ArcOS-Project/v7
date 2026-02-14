@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { ExecuteQueryRuntime } from "../../../runtime";
-
+  import type { ExecuteQueryRuntime } from "$apps/admin/executequery/runtime";
+  
   const { process, i }: { process: ExecuteQueryRuntime; i: number } = $props();
   const { expressions, selectedSource, columns } = process;
 </script>

@@ -1,12 +1,13 @@
 import type { IAdminPortalRuntime } from "$interfaces/admin";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import { ArcOSVersion, Fs } from "$ts/env";
-import { AdminBootstrapper } from "$ts/server/admin";
-import { Daemon } from "$ts/server/user/daemon";
-import { ShareManager } from "$ts/shares";
+import { MessageBox } from "$ts/util/dialog";
+import { Fs } from "$ts/env";
+import { AdminBootstrapper } from "$ts/servicehost/services/AdminBootstrapper";
+import { Backend } from "$ts/kernel/mods/server/axios";
+import { Daemon } from "$ts/daemon";
+import { ShareManager } from "$ts/servicehost/services/ShareMgmt";
 import { Sleep } from "$ts/sleep";
-import { arrayBufferToText, textToBlob } from "$ts/util/convert";
+import { textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
@@ -16,7 +17,6 @@ import { AdminPortalAltMenu } from "./altmenu";
 import { AdminPortalPageStore } from "./store";
 import type { BugReportFileUrlParseResult, BugReportTpaFile } from "./types";
 import { BugHuntUserDataApp } from "./userdata/metadata";
-import { Backend } from "$ts/server/axios";
 
 export class AdminPortalRuntime extends AppProcess implements IAdminPortalRuntime {
   ready = Store<boolean>(false);
@@ -141,39 +141,6 @@ export class AdminPortalRuntime extends AppProcess implements IAdminPortalRuntim
     const user = (await this.admin.getAllUsers()).find((u) => u._id === userId);
 
     this.switchPage("viewUser", { user });
-  }
-
-  // TODO: make use of CommandResult<string> once that branch has been merged
-  async getRegisteredVersionFor(username: string): Promise<string> {
-    this.Log(`getRegisteredVersionFor: ${username}`);
-
-    try {
-      const contents = await Backend.get(`/admin/fs/file/${username}/System/RegisteredVersion`, {
-        responseType: "text",
-        headers: { Authorization: `Bearer ${Daemon.token}` },
-      });
-      if (contents.status !== 200) throw "";
-
-      return contents.data;
-    } catch {
-      return "-";
-    }
-  }
-
-  async getMigrationIndexFor(username: string): Promise<Record<string, number>> {
-    this.Log(`getMigrationIndexFor: ${username}`);
-
-    try {
-      const contents = await Backend.get(`/admin/fs/file/${username}/System/Migrations/Index.json`, {
-        responseType: "json",
-        headers: { Authorization: `Bearer ${Daemon.token}` },
-      });
-      if (contents.status !== 200) throw "";
-
-      return contents.data;
-    } catch {
-      return {};
-    }
   }
 
   //#endregion

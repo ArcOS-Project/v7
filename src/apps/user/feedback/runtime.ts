@@ -1,5 +1,5 @@
-import { Process } from "$ts/process/instance";
-import { Daemon } from "$ts/server/user/daemon";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
+import { Daemon } from "$ts/daemon";
 import type { AppProcessData } from "$types/app";
 
 export class FeedbackProcess extends Process {

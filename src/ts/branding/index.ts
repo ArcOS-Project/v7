@@ -1,7 +1,7 @@
 import { ReleaseLogo } from "$ts/images/branding";
 import { ChristmasLogo } from "$ts/images/branding";
 import { ArcMode } from "$ts/metadata/mode";
-import { TryGetDaemon } from "$ts/server/user/daemon";
+import { TryGetDaemon } from "$ts/daemon";
 import { ALIASED_MODES, MODES } from "./stores";
 
 export const Logo = () => {

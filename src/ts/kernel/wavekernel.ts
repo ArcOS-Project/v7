@@ -10,6 +10,7 @@ import { getMode } from "$ts/metadata/mode";
 import { LogLevel, ShortLogLevelCaptions, type LogItem } from "../../types/logging";
 import { handleGlobalErrors } from "../error";
 import { InitProcess } from "./init";
+import { EchoIntro } from "./intro";
 import { KernelModules } from "./module/store";
 import { prematurePanic } from "./premature";
 
@@ -63,6 +64,8 @@ export class WaveKernel implements IWaveKernel {
   }
 
   async _init() {
+    EchoIntro();
+
     window.__DW_STATUS__ = "async WaveKernel._init";
     window.__DW_INIT__ = true;
 

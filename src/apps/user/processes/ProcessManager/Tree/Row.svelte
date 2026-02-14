@@ -1,9 +1,9 @@
 <script lang="ts">
   import { AppProcess } from "$ts/apps/process";
-  import { contextMenu } from "$ts/context/actions.svelte";
+  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { Stack, SysDispatch } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
-  import { BaseService } from "$ts/services/base";
+  import { Daemon } from "$ts/daemon";
+  import { BaseService } from "$ts/servicehost/base";
   import { formatBytes } from "$ts/util/fs";
   import { ProcessStateIcons } from "$types/process";
   import { onDestroy, onMount } from "svelte";

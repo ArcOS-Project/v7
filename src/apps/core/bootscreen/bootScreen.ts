@@ -1,5 +1,5 @@
 import "$css/apps/core/bootscreen.css";
-import type { App } from "../../../types/app";
+import type { App } from "$types/app";
 import Boot from "./Boot.svelte";
 import { BootScreenRuntime } from "./runtime";
 

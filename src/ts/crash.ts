@@ -1,8 +1,8 @@
 import type { IBugHunt, IServerManager } from "$interfaces/kernel";
 import { LogLevel } from "../types/logging";
 import { Env, getKMod, Kernel } from "./env";
-import { KernelIsPanicked, KernelLogs, KernelPremature } from "./getters";
-import { ASCII_ART } from "./intro";
+import { KernelIsPanicked, KernelLogs, KernelPremature } from "./kernel/getters";
+import { ASCII_ART } from "./kernel/intro";
 
 export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
   if (KernelIsPanicked()) return;

@@ -1,83 +1,137 @@
-import type { IFilesystemDrive } from "$interfaces/fs";
-import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
-import { Backend } from "$ts/server/axios";
-import { Daemon } from "$ts/server/user/daemon";
-import { authcode } from "$ts/util";
+import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
+import { toForm } from "$ts/util/form";
+import { arrayBufferToBlob } from "$ts/util/convert";
+import { getItemNameFromPath, join } from "$ts/util/fs";
 import type {
   DirectoryReadReturn,
   DriveCapabilities,
   FilesystemProgressCallback,
   FilesystemStat,
-  FsAccess,
   RecursiveDirectoryReadReturn,
   UserQuota,
 } from "$types/fs";
+import { Backend } from "$ts/kernel/mods/server/axios";
+import { Daemon } from "$ts/daemon";
+import type { IFilesystemDrive } from "$interfaces/fs";
 
-export class AdminServerDrive extends FilesystemDrive implements IFilesystemDrive {
-  private targetUsername: string;
-  override READONLY = true;
-  override FIXED = false;
-  override IDENTIFIES_AS: string = "aefs";
-  override FILESYSTEM_SHORT: string = "AEFS";
-  override FILESYSTEM_LONG: string = "Admin Enforcement FS";
+export class AdminFileSystem extends FilesystemDrive implements IFilesystemDrive {
+  override READONLY = false;
+  override FIXED = true;
+  override IDENTIFIES_AS: string = "admin";
+  override FILESYSTEM_SHORT: string = "AFS";
+  override FILESYSTEM_LONG: string = "Admin Filesystem";
+  public label: string = "Administrators";
   protected override CAPABILITIES: Record<DriveCapabilities, boolean> = {
     readDir: true,
-    makeDir: false,
+    makeDir: true,
     readFile: true,
-    writeFile: false,
+    writeFile: true,
     tree: true,
-    copyItem: false,
-    moveItem: false,
-    deleteItem: false,
+    copyItem: true,
+    moveItem: true,
+    deleteItem: true,
     direct: true,
     quota: true,
-    bulk: true,
+    bulk: false,
     stat: true,
   };
 
-  constructor(uuid: string, letter: string, targetUsername: string) {
+  constructor(uuid: string, letter: string) {
     super(uuid, letter);
-
-    this.targetUsername = targetUsername;
-    this.label = targetUsername;
   }
 
-  async _spinUp(): Promise<boolean> {
-    return true;
-  }
   async writeFile(path: string, data: Blob, onProgress?: FilesystemProgressCallback): Promise<boolean> {
-    onProgress?.({
-      value: 0,
-      max: 0,
-      type: "items",
-    });
-    return false;
+    try {
+      const response = await Backend.post(`/admin/afs/file/${path}`, data, {
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
+        onUploadProgress: (progress) => {
+          onProgress?.({
+            max: progress.total || 0,
+            value: progress.loaded || 0,
+            type: "size",
+          });
+        },
+      });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
   }
 
   async createDirectory(path: string): Promise<boolean> {
-    return false;
+    try {
+      const response = await Backend.post<DirectoryReadReturn>(
+        `/admin/afs/dir/${path}`,
+        {},
+        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
+      );
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
   }
 
   async deleteItem(path: string): Promise<boolean> {
-    return false;
+    if (this.fileLocks[path]) throw new Error(`Not deleting locked file '${path}'`);
+
+    try {
+      const response = await Backend.delete(`/admin/afs/rm/${path}`, {
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
+      });
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
   }
 
   async copyItem(source: string, destination: string): Promise<boolean> {
-    return false;
-  }
+    const sourceFilename = getItemNameFromPath(source);
 
-  async moveItem(source: string, destination: string): Promise<boolean> {
-    return false;
-  }
-
-  async readDir(path: string = ""): Promise<DirectoryReadReturn | undefined> {
     try {
-      const response = await Backend.get<DirectoryReadReturn>(
-        path ? `/admin/fs/dir/${this.targetUsername}/${path}` : `/admin/fs/dir/${this.targetUsername}`,
+      const response = await Backend.post(
+        `/admin/afs/cp/${source}`,
+        toForm({
+          destination: destination.endsWith(sourceFilename) ? destination : join(destination, sourceFilename),
+        }),
         {
           headers: { Authorization: `Bearer ${Daemon!.token}` },
         }
       );
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async moveItem(source: string, destination: string): Promise<boolean> {
+    if (this.fileLocks[source]) throw new Error(`Not moving locked file '${source}'`);
+
+    try {
+      const response = await Backend.post(
+        `/admin/afs/mv/${source}`,
+        toForm({
+          destination,
+        }),
+        {
+          headers: { Authorization: `Bearer ${Daemon!.token}` },
+        }
+      );
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async readDir(path: string = ""): Promise<DirectoryReadReturn | undefined> {
+    try {
+      const response = await Backend.get<DirectoryReadReturn>(path ? `/admin/afs/dir/${path}` : `/admin/afs/dir`, {
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
+      });
 
       return response.data;
     } catch {
@@ -89,7 +143,7 @@ export class AdminServerDrive extends FilesystemDrive implements IFilesystemDriv
     if (this.fileLocks[path]) throw new Error(`Not reading locked file '${path}'`);
 
     try {
-      const response = await Backend.get(`/admin/fs/file/${this.targetUsername}/${path}`, {
+      const response = await Backend.get(`/admin/afs/file/${path}`, {
         headers: { Authorization: `Bearer ${Daemon!.token}` },
         responseType: "arraybuffer",
         onDownloadProgress: (progress) => {
@@ -109,12 +163,9 @@ export class AdminServerDrive extends FilesystemDrive implements IFilesystemDriv
 
   async tree(path: string = ""): Promise<RecursiveDirectoryReadReturn | undefined> {
     try {
-      const response = await Backend.get(
-        path ? `/admin/fs/tree/${this.targetUsername}/${path}` : `/admin/fs/tree/${this.targetUsername}`,
-        {
-          headers: { Authorization: `Bearer ${Daemon!.token}` },
-        }
-      );
+      const response = await Backend.get(path ? `/admin/afs/tree/${path}` : `/admin/afs/tree`, {
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
+      });
 
       return response.data;
     } catch {
@@ -124,7 +175,7 @@ export class AdminServerDrive extends FilesystemDrive implements IFilesystemDriv
 
   async quota(): Promise<UserQuota> {
     try {
-      const response = await Backend.get(`/admin/fs/quota/${this.targetUsername}`, {
+      const response = await Backend.get(`/admin/afs/quota`, {
         headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
@@ -139,43 +190,21 @@ export class AdminServerDrive extends FilesystemDrive implements IFilesystemDriv
     }
   }
 
-  async direct(path: string): Promise<string | undefined> {
-    try {
-      const response = await Backend.post(
-        `/admin/fs/direct/${this.targetUsername}/${path}`,
-        {},
-        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
-      );
-
-      const data = response.data as FsAccess;
-
-      return `${this.server.url}/fs/direct/${data.userId}/${data.accessor}${authcode()}`;
-    } catch {
-      return undefined;
-    }
+  async bulk<T = any>(path: string, extension: string): Promise<Record<string, T>> {
+    return {};
   }
 
-  async bulk<T = any>(path: string, extension: string): Promise<Record<string, T>> {
-    try {
-      const response = await Backend.get(`/admin/fs/bulk/${this.targetUsername}/${extension}/${path}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+  async direct(path: string): Promise<string | undefined> {
+    const content = await this.readFile(path, () => {});
+    if (!content) return undefined;
 
-      if (response.status !== 200) return {};
-
-      const data = response.data as Record<string, any>;
-
-      return data;
-    } catch {
-      return {};
-    }
+    const blob = arrayBufferToBlob(content);
+    return URL.createObjectURL(blob);
   }
 
   async stat(path: string): Promise<FilesystemStat | undefined> {
     try {
-      const response = await Backend.get(`/admin/fs/stat/${this.targetUsername}/${path}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+      const response = await Backend.get(`/admin/afs/stat/${path}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
       return response.data as FilesystemStat;
     } catch {

@@ -2,7 +2,7 @@ import type { IArcTerminal } from "$interfaces/terminal";
 import { Fs } from "$ts/env";
 import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";
-import { arrayToAsciiTable } from "../util";
+import { arrayToAsciiTable } from "../../util/terminal";
 
 export class DrivesCommand extends TerminalProcess {
   public static keyword = "drives";

@@ -1,5 +1,5 @@
 import type { IFilesystemDrive } from "$interfaces/fs";
-import { HiddenUserPaths, UserPathCaptions, UserPathIcons, UserPaths } from "$ts/server/user/store";
+import { HiddenUserPaths, UserPathCaptions, UserPathIcons, UserPaths } from "$ts/user/store";
 import type { ContextMenuItem } from "$types/app";
 import type { FileManagerRuntime } from "../runtime";
 

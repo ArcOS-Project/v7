@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import { getItemNameFromPath } from "$ts/util/fs";
   import { onMount } from "svelte";
   import type { MediaPlayerRuntime } from "../runtime";

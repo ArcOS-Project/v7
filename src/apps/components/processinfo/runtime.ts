@@ -1,18 +1,19 @@
 import type { Constructs } from "$interfaces/common";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { MessageBox } from "$ts/util/dialog";
 import { Stack } from "$ts/env";
-import { ProcessKillResultCaptions } from "$ts/process/store";
-import { Daemon } from "$ts/server/user/daemon";
+import { ProcessKillResultCaptions } from "$ts/kernel/mods/stack/process/store";
+import { Daemon } from "$ts/daemon";
 import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
 import type { ProcessKillResult } from "$types/process";
-import type { IProcess } from "../../../interfaces/process";
+import type { IProcess } from "$interfaces/process";
 
 export class ProcessInfoRuntime extends AppProcess {
   parent?: IProcess;
   proc?: IProcess;
-  inherit?: Constructs<IProcess>;
+  // The class constructor of the targeted process
+  procConstructor?: Constructs<IProcess>;
 
   //#region LIFECYCLE
 
@@ -21,7 +22,7 @@ export class ProcessInfoRuntime extends AppProcess {
 
     this.proc = proc || this;
     this.parent = Stack.getProcess(this.proc.parentPid);
-    this.inherit = Object.getPrototypeOf(this.proc.constructor);
+    this.procConstructor = Object.getPrototypeOf(this.proc.constructor);
 
     this.setSource(__SOURCE__);
   }

@@ -13,7 +13,7 @@
  * © IzKuipers 2025
  */
 import { Stack } from "$ts/env";
-import { Process } from "$ts/process/instance";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
 import type { IArcTerminal } from "$interfaces/terminal";
 import { type IDisposable, type ITerminalAddon, Terminal } from "@xterm/xterm";
 import { type Highlighter, IdentityHighlighter } from "./highlight";

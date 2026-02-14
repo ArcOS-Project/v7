@@ -2,8 +2,8 @@
   import type { ViewBugReportData } from "$apps/admin/adminportal/types";
   import type { IAdminPortalRuntime } from "$interfaces/admin";
   import { Fs } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
-  import { UserPaths } from "$ts/server/user/store";
+  import { Daemon } from "$ts/daemon";
+  import { UserPaths } from "$ts/user/store";
   import { textToBlob } from "$ts/util/convert";
   import { getItemNameFromPath } from "$ts/util/fs";
 

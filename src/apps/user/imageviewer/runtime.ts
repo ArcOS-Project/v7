@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { MessageBox } from "$ts/util/dialog";
 import { Fs } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
+import { Daemon } from "$ts/daemon";
 import { Sleep } from "$ts/sleep";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { getItemNameFromPath } from "$ts/util/fs";

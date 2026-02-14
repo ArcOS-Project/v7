@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/shell";
-  import { isPopulatable } from "$ts/apps/util";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { isPopulatable } from "$ts/util/apps";
+  import { Daemon } from "$ts/daemon";
   import type { AppStorage } from "$types/app";
   import ListItem from "../ListItem.svelte";
 

@@ -1,6 +1,6 @@
-import { DistributionServiceProcess } from "$ts/distrib";
+import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
 import { Fs } from "$ts/env";
-import { UserPaths } from "$ts/server/user/store";
+import { UserPaths } from "$ts/user/store";
 import { Plural } from "$ts/util";
 import { formatBytes, join } from "$ts/util/fs";
 import { ElevationLevel } from "$types/elevation";

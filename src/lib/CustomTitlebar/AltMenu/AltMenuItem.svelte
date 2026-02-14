@@ -2,7 +2,7 @@
   import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
   import type { IAppProcess } from "$interfaces/app";
   import { Env, Stack } from "$ts/env";
-  import { UUID } from "$ts/uuid";
+  import { UUID } from "$ts/util/uuid";
   import type { ContextMenuItem } from "$types/app";
   import { onMount } from "svelte";
 

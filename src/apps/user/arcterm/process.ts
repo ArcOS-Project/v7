@@ -1,9 +1,9 @@
 import type { IUserDaemon } from "$interfaces/daemon";
 import type { IArcTerminal, ITerminalWindowRuntime } from "$interfaces/terminal";
-import { hexToRgb } from "$ts/color";
+import { hexToRgb } from "$ts/util/color";
 import { Env, Fs, Stack } from "$ts/env";
-import { Process } from "$ts/process/instance";
-import { UserPaths } from "$ts/server/user/store";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
+import { UserPaths } from "$ts/user/store";
 import { ArcTerminal } from "$ts/terminal";
 import { DefaultColors } from "$ts/terminal/store";
 import { arrayBufferToText } from "$ts/util/convert";

@@ -1,8 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { MessageBox } from "$ts/util/dialog";
 import { Env, Stack } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
-import type { ShareManager } from "$ts/shares";
+import { Daemon } from "$ts/daemon";
+import type { ShareManager } from "$ts/servicehost/services/ShareMgmt";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 

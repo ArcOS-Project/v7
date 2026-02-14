@@ -1,6 +1,6 @@
-import { setJsonHierarchy } from "$ts/hierarchy";
-import { tryJsonParse } from "$ts/json";
-import { AdminScopes } from "$ts/server/admin/store";
+import { setJsonHierarchy } from "$ts/util/hierarchy";
+import { tryJsonParse } from "$ts/util/json";
+import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
 export const AdminUserPreferencesSet: AdminCommandType = async (term, admin, argv) => {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import { onMount } from "svelte";
   import type { ItemInfoRuntime } from "../runtime";
   import type { ItemInfo } from "../types";

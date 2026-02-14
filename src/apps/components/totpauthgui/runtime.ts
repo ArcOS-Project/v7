@@ -1,9 +1,9 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { MessageBox } from "$ts/util/dialog";
 import { SysDispatch } from "$ts/env";
-import { toForm } from "$ts/form";
-import { Backend } from "$ts/server/axios";
-import { Daemon } from "$ts/server/user/daemon";
+import { toForm } from "$ts/util/form";
+import { Backend } from "$ts/kernel/mods/server/axios";
+import { Daemon } from "$ts/daemon";
 import type { AppProcessData } from "$types/app";
 import type { RenderArgs } from "$types/process";
 

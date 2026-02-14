@@ -1,16 +1,16 @@
 import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
-import { contextProps } from "$ts/context/actions.svelte";
+import { contextProps } from "$ts/ui/context/actions.svelte";
 import { BETA, BugHunt, Env, Stack, SysDispatch } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
-import { UUID } from "$ts/uuid";
+import { Daemon } from "$ts/daemon";
+import { UUID } from "$ts/util/uuid";
 import { Draggable } from "@neodrag/vanilla";
 import { unmount } from "svelte";
 import type { App, AppProcessData, WindowResizer } from "../../types/app";
-import { Process } from "../process/instance";
+import { Process } from "../kernel/mods/stack/process/instance";
 import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { BuiltinAppImportPathAbsolutes } from "./store";
-import { DistributionServiceProcess } from "$ts/distrib";
+import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
 import type { IAppProcess } from "$interfaces/app";
 import type { IAppRenderer } from "$interfaces/renderer";
 

@@ -1,6 +1,6 @@
 <script lang="ts">
   import UserLink from "$lib/UserLink.svelte";
-  import { StoreItemIcon } from "$ts/distrib/util";
+  import { StoreItemIcon } from "$ts/util/distrib";
   import { Sleep } from "$ts/sleep";
   import { Plural } from "$ts/util";
   import type { MultiUpdateGuiRuntime } from "./runtime";

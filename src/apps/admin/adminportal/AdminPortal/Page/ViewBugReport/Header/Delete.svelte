@@ -2,7 +2,7 @@
   import type { ViewBugReportData } from "$apps/admin/adminportal/types";
   import type { IAdminPortalRuntime } from "$interfaces/admin";
   import Spinner from "$lib/Spinner.svelte";
-  import { MessageBox } from "$ts/dialog";
+  import { MessageBox } from "$ts/util/dialog";
 
   const { process, data }: { process: IAdminPortalRuntime; data: ViewBugReportData } = $props();
   const { report, quickView } = data;

@@ -4,7 +4,7 @@ import { Env, Stack } from "$ts/env";
 import { ProcessWithPermissions } from "$ts/permissions/process";
 import type { ContextMenuItem } from "$types/app";
 import { mount, unmount } from "svelte";
-import type { IShellRuntime, ITrayIconProcess } from "../../../interfaces/shell";
+import type { IShellRuntime, ITrayIconProcess } from "$interfaces/shell";
 
 export class TrayIconProcess extends ProcessWithPermissions implements ITrayIconProcess {
   targetPid: number;

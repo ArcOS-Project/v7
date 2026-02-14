@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/admin";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import type { ExpandedUserInfo } from "$types/user";
 
   const { process, user }: { process: IAdminPortalRuntime; user: ExpandedUserInfo } = $props();

@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { IAppProcess } from "$interfaces/app";
   import type { IShellRuntime } from "$interfaces/shell";
-  import { contextProps } from "$ts/context/actions.svelte";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
   import { Stack } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import { onMount } from "svelte";
 
   const { openedProcess, pid, process }: { openedProcess: IAppProcess; pid: number; process: IShellRuntime } = $props();

@@ -1,12 +1,12 @@
 <script lang="ts">
   import { SysDispatch } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import { Sleep } from "$ts/sleep";
   import type { Notification } from "$types/notification";
   import { onMount } from "svelte";
-  import Spinner from "../../../../../lib/Spinner.svelte";
   import type { IShellRuntime } from "$interfaces/shell";
   import NotificationItem from "./Notifications/NotificationItem.svelte";
+  import Spinner from "$lib/Spinner.svelte";
 
   const { process }: { process: IShellRuntime } = $props();
   const { userPreferences } = process;

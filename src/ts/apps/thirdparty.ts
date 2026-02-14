@@ -1,6 +1,6 @@
 import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
 import { Fs, Stack, SysDispatch } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
+import { Daemon } from "$ts/daemon";
 import { Sleep } from "$ts/sleep";
 import { join } from "$ts/util/fs";
 import type { AppProcessData } from "$types/app";

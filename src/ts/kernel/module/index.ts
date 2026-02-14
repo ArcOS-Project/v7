@@ -1,6 +1,6 @@
 import type { IWaveKernel } from "$interfaces/kernel";
 import type { IStateHandler } from "$interfaces/state";
-import { LogLevel } from "../../../types/logging";
+import { LogLevel } from "$types/logging";
 import { Log } from "../../logging";
 
 export class KernelModule {

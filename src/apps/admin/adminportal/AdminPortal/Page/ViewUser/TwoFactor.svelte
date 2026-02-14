@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/admin";
-  import { MessageBox } from "$ts/dialog";
-  import { AdminScopes } from "$ts/server/admin/store";
+  import { MessageBox } from "$ts/util/dialog";
+  import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
   import type { UserTotp } from "$types/admin";
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";

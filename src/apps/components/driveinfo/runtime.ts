@@ -1,9 +1,9 @@
 import type { IFilesystemDrive } from "$interfaces/fs";
 import { AppProcess } from "$ts/apps/process";
 import { USERFS_UUID } from "$ts/env";
-import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/drive";
-import { ServerDrive } from "$ts/kernel/mods/fs/drives/server";
-import { Daemon } from "$ts/server/user/daemon";
+import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
+import { UserDrive } from "$ts/kernel/mods/fs/drives/userfs";
+import { Daemon } from "$ts/daemon";
 import type { AppProcessData } from "$types/app";
 import type { UserQuota } from "$types/fs";
 import type { CategorizedDiskUsage } from "$types/user";
@@ -27,7 +27,7 @@ export class DriveInfoRuntime extends AppProcess {
   async start() {
     if (!this.drive) return false;
 
-    this.isUserFs = this.drive instanceof ServerDrive && this.drive.uuid === USERFS_UUID;
+    this.isUserFs = this.drive instanceof UserDrive && this.drive.uuid === USERFS_UUID;
 
     const { stop } = await Daemon.helpers?.GlobalLoadIndicator(this.isUserFs ? "Probing and categorizing your filesystem..." : "Probing drive information...")!;
 

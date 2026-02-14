@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
-import { toForm } from "$ts/form";
-import { Backend } from "$ts/server/axios";
-import { Daemon } from "$ts/server/user/daemon";
+import { toForm } from "$ts/util/form";
+import { Backend } from "$ts/kernel/mods/server/axios";
+import { Daemon } from "$ts/daemon";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 

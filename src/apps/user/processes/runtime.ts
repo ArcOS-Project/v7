@@ -1,9 +1,9 @@
 import type { IServiceHost } from "$interfaces/service";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { MessageBox } from "$ts/util/dialog";
 import { Env, Stack } from "$ts/env";
-import { ProcessKillResultCaptions } from "$ts/process/store";
-import { Daemon } from "$ts/server/user/daemon";
+import { ProcessKillResultCaptions } from "$ts/kernel/mods/stack/process/store";
+import { Daemon } from "$ts/daemon";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";

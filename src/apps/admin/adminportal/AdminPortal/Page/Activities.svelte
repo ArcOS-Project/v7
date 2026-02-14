@@ -1,12 +1,12 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/admin";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import { ActivityCaptionTranslations, ActivityIconTranslations } from "$ts/server/user/store";
+  import { ActivityCaptionTranslations, ActivityIconTranslations } from "$ts/user/store";
   import { sliceIntoChunks } from "$ts/util";
   import type { ExpandedActivity } from "$types/admin";
   import dayjs from "dayjs";
-  import type { ActivitiesData } from "../../types";
   import Pagination from "../Pagination.svelte";
+  import type { ActivitiesData } from "../../types";
 
   const { process, data }: { process: IAdminPortalRuntime; data: ActivitiesData } = $props();
   const { redacted } = process;

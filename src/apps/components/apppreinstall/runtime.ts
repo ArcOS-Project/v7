@@ -1,9 +1,9 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import type { DistributionServiceProcess } from "$ts/distrib";
+import { MessageBox } from "$ts/util/dialog";
+import type { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
 import { Env, Fs } from "$ts/env";
-import { tryJsonParse } from "$ts/json";
-import { Daemon } from "$ts/server/user/daemon";
+import { tryJsonParse } from "$ts/util/json";
+import { Daemon } from "$ts/daemon";
 import { arrayBufferToText } from "$ts/util/convert";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";

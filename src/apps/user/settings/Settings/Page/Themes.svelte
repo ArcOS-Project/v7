@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Daemon } from "$ts/server/user/daemon";
-  import { BuiltinThemes, VisualStyles } from "$ts/server/user/store";
+  import { Daemon } from "$ts/daemon";
+  import { BuiltinThemes, VisualStyles } from "$ts/user/store";
   import type { Wallpaper } from "$types/wallpaper";
   import { onMount } from "svelte";
   import type { SettingsRuntime } from "../../runtime";
