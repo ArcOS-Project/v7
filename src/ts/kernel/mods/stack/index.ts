@@ -2,16 +2,16 @@ import type { IProcessHandler, IWaveKernel } from "$interfaces/kernel";
 import type { IProcess } from "$interfaces/process";
 import type { IAppRenderer } from "$interfaces/renderer";
 import { AppProcess } from "$ts/apps/process";
+import { AppRenderer } from "$ts/apps/renderer";
 import { __Console__ } from "$ts/console";
 import { Env, Kernel, State, SysDispatch } from "$ts/env";
 import { calculateMemory } from "$ts/util";
+import { Store } from "$ts/writable";
 import type { App } from "$types/app";
 import type { ProcessContext, ProcessKillResult } from "$types/process";
 import { parse } from "stacktrace-parser";
-import { AppRenderer } from "$ts/apps/renderer";
-import type { Process } from "./process/instance";
-import { Store } from "$ts/writable";
 import { KernelModule } from "../../module";
+import type { Process } from "./process/instance";
 
 export class ProcessHandler extends KernelModule implements IProcessHandler {
   private _busy: string = "";

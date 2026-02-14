@@ -1,9 +1,9 @@
 import type { IAppRendererUserContext, IUserDaemon } from "$interfaces/daemon";
-import { bestForeground, darkenColor, hex3to6, invertColor, lightenColor } from "$ts/util/color";
 import { Stack } from "$ts/env";
-import { Wallpapers } from "../../user/wallpaper/store";
+import { bestForeground, darkenColor, hex3to6, invertColor, lightenColor } from "$ts/util/color";
 import type { CustomStylePreferences, UserPreferences } from "$types/user";
 import { Daemon } from "..";
+import { Wallpapers } from "../../user/wallpaper/store";
 import { UserContext } from "../context";
 
 /**

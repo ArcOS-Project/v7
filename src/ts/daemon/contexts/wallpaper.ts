@@ -1,14 +1,14 @@
 import type { IUserDaemon, IWallpaperUserContext } from "$interfaces/daemon";
 import { Fs } from "$ts/env";
+import { UserPaths } from "$ts/user/store";
+import { Wallpapers } from "$ts/user/wallpaper/store";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { getParentDirectory } from "$ts/util/fs";
-import { Wallpapers } from "$ts/user/wallpaper/store";
 import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
 import type { UserPreferences, WallpaperGetters } from "$types/user";
 import type { Wallpaper } from "$types/wallpaper";
 import { Daemon } from "..";
-import { UserPaths } from "$ts/user/store";
 import { UserContext } from "../context";
 
 export class WallpaperUserContext extends UserContext implements IWallpaperUserContext {

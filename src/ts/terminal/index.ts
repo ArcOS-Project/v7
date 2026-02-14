@@ -1,21 +1,22 @@
 import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import TerminalWindow from "$apps/components/terminalwindow/TerminalWindow.svelte";
+import type { Constructs } from "$interfaces/common";
 import type { IUserDaemon } from "$interfaces/daemon";
 import type { IFilesystemDrive } from "$interfaces/fs";
 import type { IArcTerminal, ITerminalProcess, ITerminalWindowRuntime } from "$interfaces/terminal";
-import { hexToRgb } from "$ts/util/color";
+import { Daemon, TryGetDaemon } from "$ts/daemon";
 import { Env, Fs, Stack, State } from "$ts/env";
 import { ASCII_ART } from "$ts/kernel/intro";
-import { tryJsonParse } from "$ts/util/json";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
-import { LoginUser } from "$ts/user/auth";
-import { Daemon, TryGetDaemon } from "$ts/daemon";
-import { UserPaths } from "$ts/user/store";
 import { Sleep } from "$ts/sleep";
+import { LoginUser } from "$ts/user/auth";
+import { UserPaths } from "$ts/user/store";
 import { noop, sha256 } from "$ts/util";
+import { hexToRgb } from "$ts/util/color";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { ErrorUtils } from "$ts/util/error";
 import { join } from "$ts/util/fs";
+import { tryJsonParse } from "$ts/util/json";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
 import type { DirectoryReadReturn } from "$types/fs";
 import type { ArcTermConfiguration, Arguments } from "$types/terminal";
@@ -36,7 +37,6 @@ import {
   TerminalCommandStore,
 } from "./store";
 import { ArcTermVariables } from "./var";
-import type { Constructs } from "$interfaces/common";
 
 export class ArcTerminal extends Process implements IArcTerminal {
   readonly CONFIG_PATH = join(UserPaths.Configuration, "ArcTerm/arcterm.conf");

@@ -1,13 +1,13 @@
 import type { IRecentFilesService } from "$interfaces/service";
 import { Fs } from "$ts/env";
-import { tryJsonParse } from "$ts/util/json";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
+import { UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
+import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
 import type { Service } from "$types/service";
-import { UserPaths } from "$ts/user/store";
 
 export class RecentFilesService extends BaseService implements IRecentFilesService {
   Configuration = Store<string[]>([]);

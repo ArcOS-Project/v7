@@ -1,9 +1,9 @@
 import type { IInstallerProcessBase } from "$interfaces/distrib";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/util/dialog";
-import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
-import { Env, Fs } from "$ts/env";
 import { Daemon } from "$ts/daemon";
+import { Env, Fs } from "$ts/env";
+import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
+import { MessageBox } from "$ts/util/dialog";
 import type { AppProcessData } from "$types/app";
 import type { ArcPackage } from "$types/package";
 import type { ReadableStore } from "$types/writable";

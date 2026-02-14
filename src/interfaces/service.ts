@@ -28,7 +28,7 @@ import type { GlobalDispatchClient } from "$types/dispatch";
 import type { FilesystemProgressCallback, FsAccess, UserQuota } from "$types/fs";
 import type { TpaLibrary } from "$types/libraries";
 import type { ExpandedMessage, ExpandedMessageNode } from "$types/messaging";
-import type { MigrationResult, MigrationResultCollection, MigrationStatusCallback } from "$types/migrations";
+import type { MigrationResult, MigrationStatusCallback } from "$types/migrations";
 import type { ArcPackage, PartialStoreItem, StoreItem, UpdateInfo } from "$types/package";
 import type { ArcProtocol, ProtocolHandler } from "$types/proto";
 import type { ReadableServiceStore, Service, ServiceChangeResult, ServiceStore } from "$types/service";
@@ -41,9 +41,9 @@ import type { Socket } from "socket.io-client";
 import type { Constructs } from "./common";
 import type { IInstallerProcessBase } from "./distrib";
 import type { IFilesystemDrive } from "./fs";
+import type { IMigrationNodeConstructor } from "./migration";
 import type { IProcess } from "./process";
 import type { IThirdPartyAppProcess } from "./thirdparty";
-import type { IMigrationNodeConstructor } from "./migration";
 
 export interface IBaseService extends IProcess {
   host: IServiceHost;

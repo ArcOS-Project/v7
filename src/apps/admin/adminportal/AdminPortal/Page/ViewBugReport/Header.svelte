@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ViewBugReportData } from "$apps/admin/adminportal/types";
-  import { getReportIcon } from "$ts/util/admin";
   import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import { getReportIcon } from "$ts/util/admin";
   import Close from "./Header/Close.svelte";
   import Copy from "./Header/Copy.svelte";
   import Delete from "./Header/Delete.svelte";

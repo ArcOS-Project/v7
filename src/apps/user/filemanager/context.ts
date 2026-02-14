@@ -1,9 +1,9 @@
 import type { ISharedDrive } from "$interfaces/fs";
-import { MessageBox } from "$ts/util/dialog";
-import { Env, Fs } from "$ts/env";
 import { Daemon } from "$ts/daemon";
-import { UserPaths } from "$ts/user/store";
+import { Env, Fs } from "$ts/env";
 import { ShareManager } from "$ts/servicehost/services/ShareMgmt";
+import { UserPaths } from "$ts/user/store";
+import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import type { AppContextMenu } from "$types/app";
 import type { FileEntry, FolderEntry } from "$types/fs";

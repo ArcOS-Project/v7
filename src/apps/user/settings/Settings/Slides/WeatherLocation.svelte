@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { SettingsRuntime } from "$apps/user/settings/runtime";
-  import { MessageBox } from "$ts/util/dialog";
   import { Env, Stack } from "$ts/env";
+  import { MessageBox } from "$ts/util/dialog";
   import type { WeatherSearchResponse, WeatherSearchResult } from "$types/weather";
   import axios from "axios";
   import Section from "../Section.svelte";

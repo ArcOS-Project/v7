@@ -1,13 +1,13 @@
 import type { IIconService } from "$interfaces/service";
+import { Daemon } from "$ts/daemon";
 import { Fs } from "$ts/env";
 import { getAllImages, getGroupedIcons, iconIdFromPath, maybeIconId } from "$ts/images";
-import { tryJsonParse } from "$ts/util/json";
-import { Daemon } from "$ts/daemon";
-import { UserPaths } from "$ts/user/store";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
+import { UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
+import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
 import type { App } from "$types/app";
 import type { Service } from "$types/service";

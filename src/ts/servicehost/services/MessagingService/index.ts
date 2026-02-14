@@ -1,7 +1,9 @@
 import type { IUserDaemon } from "$interfaces/daemon";
 import type { IServerManager } from "$interfaces/kernel";
 import type { IMessagingInterface } from "$interfaces/service";
+import { Daemon } from "$ts/daemon";
 import { Env, Fs, getKMod, Server, Stack } from "$ts/env";
+import { Backend } from "$ts/kernel/mods/server/axios";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { authcode } from "$ts/util";
@@ -9,8 +11,6 @@ import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import type { FilesystemProgressCallback } from "$types/fs";
 import type { ExpandedMessage, ExpandedMessageNode } from "$types/messaging";
 import type { Service } from "$types/service";
-import { Backend } from "$ts/kernel/mods/server/axios";
-import { Daemon } from "$ts/daemon";
 import { GlobalDispatch } from "../GlobalDispatch";
 
 export class MessagingInterface extends BaseService implements IMessagingInterface {

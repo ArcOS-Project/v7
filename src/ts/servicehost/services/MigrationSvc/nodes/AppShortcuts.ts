@@ -1,9 +1,9 @@
 import type { IMigrationNodeConstructor } from "$interfaces/migration";
 import type { IMigrationService } from "$interfaces/service";
-import { Fs } from "$ts/env";
 import { Daemon } from "$ts/daemon";
-import { UserPaths } from "$ts/user/store";
+import { Fs } from "$ts/env";
 import { Sleep } from "$ts/sleep";
+import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
 import type { MigrationResult, MigrationStatusCallback } from "$types/migrations";
 import { MigrationNode } from "../node";

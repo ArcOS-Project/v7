@@ -5,8 +5,8 @@
   import CircularProgress from "$lib/CircularProgress.svelte";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import Spinner from "$lib/Spinner.svelte";
-  import { Env, Fs } from "$ts/env";
   import { Daemon } from "$ts/daemon";
+  import { Env, Fs } from "$ts/env";
   import { formatBytes } from "$ts/util/fs";
 
   const {

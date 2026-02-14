@@ -20,7 +20,7 @@
     onclick={() => process.navigate(`${drive.data.driveLetter || drive.data.uuid}:/`)}
     data-contextmenu={isShare ? "sidebar-shared-drive" : "sidebar-drive"}
     use:contextProps={[drive, `${drive.data.driveLetter || drive.data.uuid}:`, () => process.unmountDrive(drive.data, id)]}
-    disabled={isLocked} 
+    disabled={isLocked}
   >
     <img src={icon} alt="" />
     <div>

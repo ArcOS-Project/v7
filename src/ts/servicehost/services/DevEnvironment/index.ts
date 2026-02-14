@@ -1,17 +1,17 @@
+import type { IDevelopmentEnvironment } from "$interfaces/service";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { MessageBox } from "$ts/util/dialog";
-import { Env, Fs, Stack } from "$ts/env";
-import { ArcBuild } from "$ts/metadata/build";
 import { Daemon } from "$ts/daemon";
+import { Env, Fs, Stack } from "$ts/env";
+import { DevDrive } from "$ts/kernel/mods/fs/drives/devenv";
+import { ArcBuild } from "$ts/metadata/build";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
+import { MessageBox } from "$ts/util/dialog";
 import type { DevEnvActivationResult, ProjectMetadata } from "$types/devenv";
 import type { Service } from "$types/service";
 import type { AxiosInstance } from "axios";
 import axios from "axios";
 import { io, Socket } from "socket.io-client";
-import { DevDrive } from "$ts/kernel/mods/fs/drives/devenv";
-import type { IDevelopmentEnvironment } from "$interfaces/service";
 
 export class DevelopmentEnvironment extends BaseService implements IDevelopmentEnvironment {
   public connected = false;

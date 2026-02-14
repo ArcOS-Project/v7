@@ -4,8 +4,11 @@
   import type { SharedDriveType } from "$types/shares";
   import type { ReadableStore } from "$types/writable";
 
-  const { share, selection, process }: { share: SharedDriveType; selection: ReadableStore<string>; process: IAdminPortalRuntime } =
-    $props();
+  const {
+    share,
+    selection,
+    process,
+  }: { share: SharedDriveType; selection: ReadableStore<string>; process: IAdminPortalRuntime } = $props();
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->

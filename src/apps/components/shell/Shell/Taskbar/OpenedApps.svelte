@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { AppProcess } from "$ts/apps/process";
-  import { isPopulatable } from "$ts/util/apps";
-  import { Stack } from "$ts/env";
-  import { Daemon } from "$ts/daemon";
   import type { IShellRuntime } from "$interfaces/shell";
+  import { AppProcess } from "$ts/apps/process";
+  import { Daemon } from "$ts/daemon";
+  import { Stack } from "$ts/env";
+  import { isPopulatable } from "$ts/util/apps";
   import OpenedApp from "./OpenedApps/OpenedApp.svelte";
 
   const { process }: { process: IShellRuntime } = $props();

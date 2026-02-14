@@ -61,5 +61,7 @@
   </div>
   <div class="segment timestamp">{timestamp}</div>
   <div class="segment title">{report.title}</div>
-  <div class="segment author" class:redacted={$redacted && !!report.userData?.username}>{report.userData?.username || "Stranger"}</div>
+  <div class="segment author" class:redacted={$redacted && !!report.userData?.username}>
+    {report.userData?.username || "Stranger"}
+  </div>
 </div>

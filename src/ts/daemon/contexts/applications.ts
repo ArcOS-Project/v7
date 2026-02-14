@@ -1,9 +1,9 @@
 import type { IApplicationsUserContext, IUserDaemon } from "$interfaces/daemon";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { isPopulatable } from "$ts/util/apps";
-import { MessageBox } from "$ts/util/dialog";
 import { Env, Stack, SysDispatch } from "$ts/env";
 import type { ShareManager } from "$ts/servicehost/services/ShareMgmt";
+import { isPopulatable } from "$ts/util/apps";
+import { MessageBox } from "$ts/util/dialog";
 import type { App } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
 import { Daemon } from "..";

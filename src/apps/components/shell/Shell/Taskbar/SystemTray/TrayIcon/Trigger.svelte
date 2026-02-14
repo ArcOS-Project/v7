@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
   import type { ShellTrayIcon } from "$apps/components/shell/types";
   import type { IProcess } from "$interfaces/process";
+  import type { IShellRuntime } from "$interfaces/shell";
 
   const {
     process,

@@ -1,8 +1,8 @@
+import type { IEnvironment } from "$interfaces/kernel";
 import { __Console__ } from "$ts/console";
 import { Kernel } from "$ts/env";
 import { ArcMode } from "$ts/metadata/mode";
 import { UUID } from "$ts/util/uuid";
-import type { IEnvironment } from "$interfaces/kernel";
 import axios, { type AxiosRequestConfig, type InternalAxiosRequestConfig } from "axios";
 
 export const Backend = axios.create({

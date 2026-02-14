@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/admin";
   import { Logo } from "$ts/branding";
-  import { MessageBox } from "$ts/util/dialog";
   import { Daemon } from "$ts/daemon";
   import { sortByKey } from "$ts/util";
+  import { MessageBox } from "$ts/util/dialog";
   import { Store } from "$ts/writable";
   import type { BugReport } from "$types/bughunt";
   import { onMount } from "svelte";

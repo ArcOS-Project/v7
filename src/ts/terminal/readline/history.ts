@@ -1,5 +1,5 @@
-import { Process } from "$ts/kernel/mods/stack/process/instance";
 import type { IArcTerminal } from "$interfaces/terminal";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
 
 /**
  * strtok/xterm-readline 1.1.2

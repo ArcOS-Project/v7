@@ -1,7 +1,7 @@
 <script lang="ts">
+  import type { IShellRuntime } from "$interfaces/shell";
   import type { UserPreferencesStore } from "$types/user";
   import type { BooleanStore } from "$types/writable";
-  import type { IShellRuntime } from "$interfaces/shell";
   import Bottom from "./StartMenu/Bottom.svelte";
   import Folders from "./StartMenu/Folders.svelte";
   import NewAppList from "./StartMenu/NewAppList.svelte";

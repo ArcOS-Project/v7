@@ -1,12 +1,12 @@
+import type { IProcess } from "$interfaces/process";
 import { ShortLogLevelCaptions, type LogItem } from "$types/logging";
 import { passwordStrength } from "check-password-strength";
 import { sha256 as sha256Fallback } from "js-sha256";
 import leoProfanity from "leo-profanity";
 import validator from "validator";
 import { Kernel, Server } from "../env";
-import { getJsonHierarchy } from "./hierarchy";
 import { Process } from "../kernel/mods/stack/process/instance";
-import type { IProcess } from "$interfaces/process";
+import { getJsonHierarchy } from "./hierarchy";
 
 leoProfanity.loadDictionary("en");
 

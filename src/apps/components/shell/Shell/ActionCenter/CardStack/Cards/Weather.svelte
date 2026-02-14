@@ -2,8 +2,8 @@
   import type { WeatherInformation } from "$apps/components/shell/types";
   import type { IShellRuntime } from "$interfaces/shell";
   import Spinner from "$lib/Spinner.svelte";
-  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { Sleep } from "$ts/sleep";
+  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { onMount } from "svelte";
 
   const { process }: { process: IShellRuntime } = $props();

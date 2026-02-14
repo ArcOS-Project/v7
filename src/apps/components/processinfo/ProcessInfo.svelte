@@ -4,8 +4,8 @@
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
   import { AppProcess } from "$ts/apps/process";
-  import { Env, Stack } from "$ts/env";
   import { Daemon } from "$ts/daemon";
+  import { Env, Stack } from "$ts/env";
   import { formatBytes } from "$ts/util/fs";
   import type { ProcessInfoRuntime } from "./runtime";
 

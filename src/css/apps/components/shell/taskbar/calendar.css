@@ -52,7 +52,7 @@
 #arcShell div.taskbar div.calendar-popup div.top h1.date {
   font-size: 28px;
   white-space: nowrap;
-  overflow:hidden;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 
@@ -62,7 +62,7 @@
   font-family: "fredoka";
   font-weight: 500;
   white-space: nowrap;
-  overflow:hidden;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 

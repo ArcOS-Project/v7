@@ -1,11 +1,10 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
-  import { contextProps } from "$ts/ui/context/actions.svelte";
+  import type { IShellRuntime, ITrayIconProcess } from "$interfaces/shell";
   import { Stack } from "$ts/env";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
   import { onMount } from "svelte";
   import Popup from "./TrayIcon/Popup.svelte";
   import Trigger from "./TrayIcon/Trigger.svelte";
-  import type { ITrayIconProcess } from "$interfaces/shell";
 
   const { process, discriminator, icon }: { process: IShellRuntime; discriminator: string; icon: ITrayIconProcess } = $props();
   const targetedProcess = Stack.getProcess(icon.pid);

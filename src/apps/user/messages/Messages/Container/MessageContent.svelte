@@ -1,11 +1,11 @@
 <script lang="ts">
+  import Spinner from "$lib/Spinner.svelte";
   import type { ExpandedMessageNode } from "$types/messaging";
   import { onMount } from "svelte";
   import SvelteMarkdown from "svelte-markdown";
   import type { MessagingAppRuntime } from "../../runtime";
   import Header from "./MessageContent/Header.svelte";
   import MessageThread from "./MessageThread.svelte";
-  import Spinner from "$lib/Spinner.svelte";
 
   const { process }: { process: MessagingAppRuntime } = $props();
   const { message } = process;

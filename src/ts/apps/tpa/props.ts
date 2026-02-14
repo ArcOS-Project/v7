@@ -2,22 +2,21 @@ import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
 import { AppProcess } from "$ts/apps/process";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { __Console__ } from "$ts/console";
-import { contextProps } from "$ts/ui/context/actions.svelte";
-import { MessageBox } from "$ts/util/dialog";
 import { Env } from "$ts/env";
 import { getAllImages } from "$ts/images";
 import type { JsExec } from "$ts/jsexec";
-import { tryJsonStringify } from "$ts/util/json";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
-import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { Backend } from "$ts/kernel/mods/server/axios";
-import { HiddenUserPaths, SystemFolders, UserPathCaptions, UserPathIcons, UserPaths } from "$ts/user/store";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { BaseService } from "$ts/servicehost/base";
 import { Sleep } from "$ts/sleep";
+import { contextProps } from "$ts/ui/context/actions.svelte";
 import { CustomTitlebar } from "$ts/ui/thirdparty/titlebar";
 import { TrayIconProcess } from "$ts/ui/tray/process";
+import { HiddenUserPaths, SystemFolders, UserPathCaptions, UserPathIcons, UserPaths } from "$ts/user/store";
 import { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";
 import { arrayBufferToBlob, arrayBufferToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/util/convert";
+import { MessageBox } from "$ts/util/dialog";
 import {
   DownloadFile,
   formatBytes,
@@ -28,6 +27,7 @@ import {
   onFileChange,
   onFolderChange,
 } from "$ts/util/fs";
+import { tryJsonStringify } from "$ts/util/json";
 import { Store } from "$ts/writable";
 import type { ThirdPartyPropMap } from "$types/thirdparty";
 import axios from "axios";

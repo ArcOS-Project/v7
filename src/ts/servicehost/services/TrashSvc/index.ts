@@ -1,15 +1,15 @@
 import type { ITrashCanService } from "$interfaces/service";
+import { Daemon } from "$ts/daemon";
 import { Env, Fs, SysDispatch } from "$ts/env";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
+import { UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import type { Service } from "$types/service";
 import type { TrashIndexNode } from "$types/trash";
-import { Daemon } from "$ts/daemon";
-import { UserPaths } from "$ts/user/store";
 
 export class TrashCanService extends BaseService implements ITrashCanService {
   INDEX_PATH = join(UserPaths.System, `TrashIndex.json`);

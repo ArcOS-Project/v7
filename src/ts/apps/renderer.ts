@@ -1,7 +1,10 @@
 import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
-import { contextProps } from "$ts/ui/context/actions.svelte";
-import { BETA, BugHunt, Env, Stack, SysDispatch } from "$ts/env";
+import type { IAppProcess } from "$interfaces/app";
+import type { IAppRenderer } from "$interfaces/renderer";
 import { Daemon } from "$ts/daemon";
+import { BETA, BugHunt, Env, Stack, SysDispatch } from "$ts/env";
+import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
+import { contextProps } from "$ts/ui/context/actions.svelte";
 import { UUID } from "$ts/util/uuid";
 import { Draggable } from "@neodrag/vanilla";
 import { unmount } from "svelte";
@@ -10,9 +13,6 @@ import { Process } from "../kernel/mods/stack/process/instance";
 import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { BuiltinAppImportPathAbsolutes } from "./store";
-import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
-import type { IAppProcess } from "$interfaces/app";
-import type { IAppRenderer } from "$interfaces/renderer";
 
 export class AppRenderer extends Process implements IAppRenderer {
   currentState: number[] = [];

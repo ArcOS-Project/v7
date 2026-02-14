@@ -1,5 +1,6 @@
-import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
+import type { IArcTerminal } from "$interfaces/terminal";
 import { Fs } from "$ts/env";
+import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
 import { UserPaths } from "$ts/user/store";
 import { Plural } from "$ts/util";
 import { formatBytes, join } from "$ts/util/fs";
@@ -8,7 +9,6 @@ import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
 import { TerminalProcess } from "../process";
 import { BRBLUE, BRGREEN, BRPURPLE, CLRROW, CURUP, RESET } from "../store";
-import type { IArcTerminal } from "$interfaces/terminal";
 
 const typeCaptions: Record<string, string> = {
   mkdir: "Creating folder",

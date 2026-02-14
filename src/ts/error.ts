@@ -2,7 +2,7 @@ import type { IProcessHandler } from "$interfaces/kernel";
 import * as stackTraceParser from "stacktrace-parser";
 import { __Console__ } from "./console";
 import { Crash } from "./crash";
-import { Kernel, SysDispatch } from "./env";
+import { Kernel } from "./env";
 import { Log } from "./logging";
 
 export function handleGlobalErrors() {

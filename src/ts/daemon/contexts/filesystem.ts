@@ -8,12 +8,13 @@ import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import type { IFilesystemUserContext, IUserDaemon } from "$interfaces/daemon";
 import type { ILegacyServerDrive, IMemoryFilesystemDrive } from "$interfaces/fs";
 import type { IRecentFilesService, ITrashCanService } from "$interfaces/service";
-import { MessageBox } from "$ts/util/dialog";
 import { Env, Fs, Stack, SysDispatch } from "$ts/env";
-import { applyDefaults } from "$ts/util/hierarchy";
 import { LegacyServerDrive } from "$ts/kernel/mods/fs/drives/legacy";
 import { ZIPDrive } from "$ts/kernel/mods/fs/drives/zip";
+import { DefaultFileHandlers, UserPaths } from "$ts/user/store";
+import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
+import { applyDefaults } from "$ts/util/hierarchy";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import { ElevationLevel } from "$types/elevation";
@@ -22,7 +23,6 @@ import type { LegacyConnectionInfo } from "$types/legacy";
 import type { ArcShortcut } from "$types/shortcut";
 import type { CategorizedDiskUsage } from "$types/user";
 import { Daemon } from "..";
-import { DefaultFileHandlers, UserPaths } from "$ts/user/store";
 import { UserContext } from "../context";
 
 export class FilesystemUserContext extends UserContext implements IFilesystemUserContext {

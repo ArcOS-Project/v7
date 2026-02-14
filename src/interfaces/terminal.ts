@@ -5,10 +5,10 @@ import type { ArcTermConfiguration, Arguments, StaticVariableStore } from "$type
 import type ansiEscapes from "ansi-escapes";
 import type { Terminal } from "xterm";
 import type { IAppProcess } from "./app";
+import type { Constructs } from "./common";
 import type { IUserDaemon } from "./daemon";
 import type { IFilesystemDrive } from "./fs";
 import type { IProcess } from "./process";
-import type { Constructs } from "./common";
 
 export interface IArcTerminal extends IProcess {
   readonly CONFIG_PATH: string;

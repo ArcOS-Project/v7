@@ -1,10 +1,10 @@
 import type { ILibraryManagement } from "$interfaces/service";
+import { Daemon } from "$ts/daemon";
 import { Fs, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
-import { Daemon } from "$ts/daemon";
-import { UserPaths } from "$ts/user/store";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
+import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
 import type { TpaLibrary } from "$types/libraries";
 import { LogLevel } from "$types/logging";

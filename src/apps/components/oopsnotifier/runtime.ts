@@ -1,8 +1,8 @@
 import type { IAppProcess } from "$interfaces/app";
 import { AppProcess } from "$ts/apps/process";
-import { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
-import { Env, SoundBus } from "$ts/env";
 import { Daemon } from "$ts/daemon";
+import { Env, SoundBus } from "$ts/env";
+import { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
 import { ErrorUtils } from "$ts/util/error";
 import type { App, AppProcessData } from "$types/app";
 import type { ParsedStackFrame } from "$types/error";

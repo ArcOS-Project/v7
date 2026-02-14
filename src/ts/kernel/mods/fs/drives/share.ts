@@ -1,9 +1,11 @@
-import type { IFilesystemDrive, ISharedDrive } from "$interfaces/fs";
-import { Server } from "$ts/env";
-import { toForm } from "$ts/util/form";
-import { Backend } from "$ts/kernel/mods/server/axios";
+import type { ISharedDrive } from "$interfaces/fs";
 import { Daemon } from "$ts/daemon";
+import { Server } from "$ts/env";
+import { Backend } from "$ts/kernel/mods/server/axios";
 import { authcode } from "$ts/util";
+import { arrayBufferToBlob } from "$ts/util/convert";
+import { toForm } from "$ts/util/form";
+import { getItemNameFromPath, join } from "$ts/util/fs";
 import type {
   DirectoryReadReturn,
   DriveCapabilities,
@@ -15,8 +17,6 @@ import type {
 } from "$types/fs";
 import type { SharedDriveType } from "$types/shares";
 import { FilesystemDrive } from "./generic";
-import { arrayBufferToBlob } from "$ts/util/convert";
-import { getItemNameFromPath, join } from "$ts/util/fs";
 
 export class SharedDrive extends FilesystemDrive implements ISharedDrive {
   shareId: string | undefined;

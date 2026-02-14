@@ -1,8 +1,8 @@
 import type { ArcPackage, InstallStatus, InstallStatusMode, InstallStatusType } from "$types/package";
 import type { ReadableStore } from "$types/writable";
 import type JSZip from "jszip";
-import type { IDistributionServiceProcess } from "./service";
 import type { Constructs } from "./common";
+import type { IDistributionServiceProcess } from "./service";
 
 export interface IInstallerProcessBase {
   parent: IDistributionServiceProcess;

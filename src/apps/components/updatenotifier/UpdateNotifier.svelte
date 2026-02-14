@@ -1,8 +1,8 @@
 <script lang="ts">
   import HtmlSpinner from "$lib/HtmlSpinner.svelte";
-  import { MessageBox } from "$ts/util/dialog";
   import { ArcOSVersion } from "$ts/env";
   import { ChangeLogs } from "$ts/metadata/changelog";
+  import { MessageBox } from "$ts/util/dialog";
   import { onMount } from "svelte";
   import Dialog from "./Dialog.svelte";
   import type { UpdateNotifierRuntime } from "./runtime";

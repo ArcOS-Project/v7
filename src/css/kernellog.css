@@ -22,7 +22,6 @@
   font-family: "Fira Mono";
 }
 
-
 #kernelLog.visible {
-  z-index:calc(infinity);
+  z-index: calc(infinity);
 }

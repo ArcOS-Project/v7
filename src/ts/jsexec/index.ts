@@ -10,11 +10,11 @@
  */
 import type { IUserDaemon } from "$interfaces/daemon";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { Fs, Server } from "$ts/env";
-import { Process } from "$ts/kernel/mods/stack/process/instance";
-import { Backend } from "$ts/kernel/mods/server/axios";
-import { TryGetDaemon } from "$ts/daemon";
 import { ThirdPartyProps } from "$ts/apps/tpa/props";
+import { TryGetDaemon } from "$ts/daemon";
+import { Fs, Server } from "$ts/env";
+import { Backend } from "$ts/kernel/mods/server/axios";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { authcode } from "$ts/util";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";

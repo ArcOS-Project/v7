@@ -8,9 +8,9 @@ import type {
   FilesystemProgressCallback,
   FilesystemStat,
   RecursiveDirectoryReadReturn,
+  UserQuota,
 } from "$types/fs";
 import { LogLevel } from "$types/logging";
-import type { UserQuota } from "$types/fs";
 
 export class FilesystemDrive implements IFilesystemDrive {
   server: IServerManager;

@@ -1,7 +1,7 @@
-import { RegisteredProcess } from "$ts/util/apps";
 import { ArcOSVersion } from "$ts/env";
 import { ReleaseLogo } from "$ts/images/branding";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
+import { RegisteredProcess } from "$ts/util/apps";
 import type { App } from "$types/app";
 
 // Dummy app metadata that can be used when ArcOS encounters

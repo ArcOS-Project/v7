@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/shell";
-  import { contextMenu } from "$ts/ui/context/actions.svelte";
-  import { Env } from "$ts/env";
   import { Daemon } from "$ts/daemon";
+  import { Env } from "$ts/env";
+  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { UserPaths } from "$ts/user/store";
   import type { ArcShortcut } from "$types/shortcut";
 

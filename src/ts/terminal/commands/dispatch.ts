@@ -1,8 +1,8 @@
 import type { IArcTerminal } from "$interfaces/terminal";
 import { Stack, SysDispatch } from "$ts/env";
-import { tryJsonParse } from "$ts/util/json";
 import { KnownSystemDispatchers, SystemOnlyDispatches } from "$ts/kernel/mods/dispatch/store";
 import { tryParseInt } from "$ts/util";
+import { tryJsonParse } from "$ts/util/json";
 import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";
 import { BRBLUE, RESET } from "../store";

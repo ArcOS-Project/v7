@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { ViewBugReportData } from "$apps/admin/adminportal/types";
   import type { IAdminPortalRuntime } from "$interfaces/admin";
-  import { Fs } from "$ts/env";
   import { Daemon } from "$ts/daemon";
+  import { Fs } from "$ts/env";
   import { UserPaths } from "$ts/user/store";
   import { textToBlob } from "$ts/util/convert";
   import { getItemNameFromPath } from "$ts/util/fs";

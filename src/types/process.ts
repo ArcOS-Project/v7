@@ -1,4 +1,3 @@
-
 export interface ProcessContext {
   pid: number;
   userId: string | "SYSTEM";

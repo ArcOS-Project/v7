@@ -1,11 +1,13 @@
-import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
-import { getKMod, Server } from "$ts/env";
-import { toForm } from "$ts/util/form";
-import { ArcBuild } from "$ts/metadata/build";
-import { Backend } from "$ts/kernel/mods/server/axios";
+import type { IFilesystemDrive } from "$interfaces/fs";
+import type { IEnvironment } from "$interfaces/kernel";
 import { Daemon } from "$ts/daemon";
+import { getKMod, Server } from "$ts/env";
+import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
+import { Backend } from "$ts/kernel/mods/server/axios";
+import { ArcBuild } from "$ts/metadata/build";
 import { authcode } from "$ts/util";
 import { arrayBufferToBlob } from "$ts/util/convert";
+import { toForm } from "$ts/util/form";
 import { getItemNameFromPath, join } from "$ts/util/fs";
 import type {
   DirectoryReadReturn,
@@ -16,8 +18,6 @@ import type {
   RecursiveDirectoryReadReturn,
   UserQuota,
 } from "$types/fs";
-import type { IEnvironment } from "$interfaces/kernel";
-import type { IFilesystemDrive } from "$interfaces/fs";
 
 export class UserDrive extends FilesystemDrive implements IFilesystemDrive {
   private isNightly = false;

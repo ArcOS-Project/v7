@@ -1,12 +1,12 @@
+import type { ITrayHostRuntime, ITrayIconProcess } from "$interfaces/shell";
+import { Daemon } from "$ts/daemon";
 import { Env, Stack, SysDispatch } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
-import { Daemon } from "$ts/daemon";
 import { Sleep } from "$ts/sleep";
 import { TrayIconProcess } from "$ts/ui/tray/process";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { UserPreferencesStore } from "$types/user";
-import type { ITrayHostRuntime, ITrayIconProcess } from "$interfaces/shell";
 import type { TrayIconDiscriminator, TrayIconOptions } from "../shell/types";
 
 export class TrayHostRuntime extends Process implements ITrayHostRuntime {

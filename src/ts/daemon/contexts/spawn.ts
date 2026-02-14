@@ -1,8 +1,8 @@
 import type { ISpawnUserContext, IUserDaemon } from "$interfaces/daemon";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { MessageBox } from "$ts/util/dialog";
 import { Env, Stack, SysDispatch } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
+import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory, join } from "$ts/util/fs";
 import type { App, InstalledApp } from "$types/app";
 import { ElevationLevel } from "$types/elevation";

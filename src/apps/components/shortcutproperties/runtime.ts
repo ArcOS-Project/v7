@@ -1,8 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/util/dialog";
+import { Daemon } from "$ts/daemon";
 import { Env } from "$ts/env";
 import { getAllImages } from "$ts/images";
-import { Daemon } from "$ts/daemon";
+import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";

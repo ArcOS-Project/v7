@@ -1,6 +1,4 @@
-import type { IServerManager } from "$interfaces/kernel";
 import type { App } from "./app";
-import type { LogLevel } from "./logging";
 import type { ArcShortcut, ShortcutStore } from "./shortcut";
 import type { PublicUserInfo } from "./user";
 

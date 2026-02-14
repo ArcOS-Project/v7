@@ -1,5 +1,5 @@
-import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
 import { Env } from "$ts/env";
+import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
 import type { ProtocolHandler } from "$types/proto";
 
 export const SpawnAppHandler: ProtocolHandler = {

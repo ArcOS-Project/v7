@@ -1,10 +1,10 @@
+import type { IServerManager, ISystemDispatch, IWaveKernel } from "$interfaces/kernel";
 import { getKMod } from "$ts/env";
 import { tryJsonParse } from "$ts/util/json";
 import type { ServerInfo, ServerOption } from "$types/server";
 import axios from "axios";
-import { Backend } from "./axios";
 import { KernelModule } from "../../module";
-import type { IServerManager, ISystemDispatch, IWaveKernel } from "$interfaces/kernel";
+import { Backend } from "./axios";
 
 export const VALIDATION_STR = "thisWonderfulArcOSServerIdentifiedByTheseWordsPleaseDontSteal(c)IzKuipers";
 

@@ -1,8 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/util/dialog";
+import { Daemon } from "$ts/daemon";
 import { Env, SoundBus, SysDispatch } from "$ts/env";
 import { LoginUser } from "$ts/user/auth";
-import { Daemon } from "$ts/daemon";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { ElevationData } from "$types/elevation";

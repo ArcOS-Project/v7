@@ -1,12 +1,12 @@
 <script lang="ts">
+  import type { IShellRuntime } from "$interfaces/shell";
   import Spinner from "$lib/Spinner.svelte";
   import { Daemon } from "$ts/daemon";
+  import { sortByKey } from "$ts/util";
   import type { ArcShortcut } from "$types/shortcut";
   import { onMount } from "svelte";
-  import type { IShellRuntime } from "$interfaces/shell";
   import NewAppGroups from "./AppList/NewAppGroups.svelte";
   import NewListItem from "./AppList/NewListItem.svelte";
-  import { sortByKey } from "$ts/util";
 
   const { process }: { process: IShellRuntime } = $props();
   const { searchResults, searchQuery, searching, SelectionIndex, userPreferences, StartMenuContents } = process;

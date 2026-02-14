@@ -1,12 +1,12 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/util/dialog";
-import { Env, Stack } from "$ts/env";
-import { ArcLicense } from "$ts/metadata/license";
-import { Backend } from "$ts/kernel/mods/server/axios";
 import { Daemon } from "$ts/daemon";
-import { UserPaths } from "$ts/user/store";
+import { Env, Stack } from "$ts/env";
+import { Backend } from "$ts/kernel/mods/server/axios";
+import { ArcLicense } from "$ts/metadata/license";
 import { Sleep } from "$ts/sleep";
+import { UserPaths } from "$ts/user/store";
 import { htmlspecialchars } from "$ts/util";
+import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";

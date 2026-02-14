@@ -1,16 +1,16 @@
 import { DefaultPinnedApps, DefaultStartMenuActions } from "$apps/components/shell/store";
 import type { IPreferencesUserContext, IUserDaemon } from "$interfaces/daemon";
 import { Fs, SysDispatch } from "$ts/env";
-import { applyDefaults } from "$ts/util/hierarchy";
 import { Backend } from "$ts/kernel/mods/server/axios";
+import { DefaultUserPreferences } from "$ts/user/default";
+import { UserPaths } from "$ts/user/store";
+import { applyDefaults } from "$ts/util/hierarchy";
 import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
 import type { UserPreferences } from "$types/user";
 import type { Unsubscriber } from "$types/writable";
 import { Daemon } from "..";
 import { UserContext } from "../context";
-import { DefaultUserPreferences } from "$ts/user/default";
-import { UserPaths } from "$ts/user/store";
 
 export class PreferencesUserContext extends UserContext implements IPreferencesUserContext {
   public syncLock = false;

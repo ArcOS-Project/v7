@@ -38,7 +38,7 @@ function userPathsGoItems(runtime: FileManagerRuntime): ContextMenuItem {
 
   for (const id in UserPaths) {
     if (HiddenUserPaths.includes(id)) continue;
-    
+
     result.push({
       caption: UserPathCaptions[id],
       icon: UserPathIcons[id] || "folder",

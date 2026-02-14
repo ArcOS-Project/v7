@@ -1,10 +1,10 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/util/dialog";
-import type { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
-import { Env, Fs } from "$ts/env";
-import { tryJsonParse } from "$ts/util/json";
 import { Daemon } from "$ts/daemon";
+import { Env, Fs } from "$ts/env";
+import type { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
 import { arrayBufferToText } from "$ts/util/convert";
+import { MessageBox } from "$ts/util/dialog";
+import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
   import type { IShellRuntime } from "$interfaces/shell";
+  import { onDestroy } from "svelte";
 
   const { process }: { process: IShellRuntime } = $props();
   const { workspaceManagerOpened, userPreferences } = process;

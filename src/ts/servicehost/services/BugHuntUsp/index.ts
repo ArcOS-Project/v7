@@ -1,11 +1,11 @@
-import { getKMod } from "$ts/env";
+import type { IBugHunt } from "$interfaces/kernel";
+import type { IBugHuntUserSpaceProcess } from "$interfaces/service";
 import { Daemon } from "$ts/daemon";
+import { getKMod } from "$ts/env";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import type { BugReport, ReportOptions } from "$types/bughunt";
-import type { IBugHunt } from "$interfaces/kernel";
 import type { Service } from "$types/service";
-import type { IBugHuntUserSpaceProcess } from "$interfaces/service";
 
 export class BugHuntUserSpaceProcess extends BaseService implements IBugHuntUserSpaceProcess {
   INVALIDATION_THRESHOLD = 10;

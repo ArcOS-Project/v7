@@ -1,14 +1,14 @@
 import type { IInstallerProcessBase, IInstallerProcessBaseConstructor } from "$interfaces/distrib";
 import type { IDistributionServiceProcess } from "$interfaces/service";
-import { Fs, Stack } from "$ts/env";
-import { tryJsonParse } from "$ts/util/json";
-import { Backend } from "$ts/kernel/mods/server/axios";
 import { Daemon } from "$ts/daemon";
-import { UserPaths } from "$ts/user/store";
+import { Fs, Stack } from "$ts/env";
+import { Backend } from "$ts/kernel/mods/server/axios";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
+import { UserPaths } from "$ts/user/store";
 import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
+import { tryJsonParse } from "$ts/util/json";
 import { compareVersion } from "$ts/util/version";
 import type { FilesystemProgressCallback } from "$types/fs";
 import type { ArcPackage, PartialStoreItem, StoreItem, UpdateInfo } from "$types/package";

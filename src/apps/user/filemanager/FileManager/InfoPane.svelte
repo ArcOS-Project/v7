@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Fs } from "$ts/env";
   import { Daemon } from "$ts/daemon";
+  import { Fs } from "$ts/env";
   import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
   import type { ExpandedFileAssociationInfo } from "$types/assoc";
   import type { ExtendedStat, SummarizedFsModifiers } from "$types/fs";

@@ -1,6 +1,6 @@
-import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
-import { Env, Fs } from "$ts/env";
 import { Daemon, TryGetDaemon } from "$ts/daemon";
+import { Env, Fs } from "$ts/env";
+import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
 import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
 import type { ArcPackage, StoreItem } from "$types/package";

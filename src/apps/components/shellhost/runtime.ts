@@ -1,11 +1,11 @@
 import type { IProcess } from "$interfaces/process";
 import type { IShellRuntime, ITrayHostRuntime } from "$interfaces/shell";
-import { MessageBox } from "$ts/util/dialog";
+import { Daemon } from "$ts/daemon";
 import { Env } from "$ts/env";
 import { ErrorIcon } from "$ts/images/dialog";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
-import { Daemon } from "$ts/daemon";
 import { Sleep } from "$ts/sleep";
+import { MessageBox } from "$ts/util/dialog";
 import type { AppProcessData } from "$types/app";
 import type { UserPreferencesStore } from "$types/user";
 

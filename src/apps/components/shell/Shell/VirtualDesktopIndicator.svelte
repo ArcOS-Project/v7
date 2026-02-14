@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import type { IShellRuntime } from "$interfaces/shell";
+  import { onMount } from "svelte";
 
   const { process }: { process: IShellRuntime } = $props();
   const { userPreferences, workspaceManagerOpened } = process;

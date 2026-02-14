@@ -26,10 +26,10 @@
             caption: "Delete",
             action: async () => {
               await process.admin.deleteBugReport(report._id!);
-             
+
               if ($quickView) $quickView = "";
               else await process.switchPage("bughunt");
-             
+
               loading = false;
             },
             suggested: true,

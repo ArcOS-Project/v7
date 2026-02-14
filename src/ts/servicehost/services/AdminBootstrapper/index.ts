@@ -1,12 +1,17 @@
-import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
-import { AdminServerDrive } from "$ts/kernel/mods/fs/drives/aefs";
+import type { IAdminBootstrapper } from "$interfaces/service";
+import { Daemon } from "$ts/daemon";
 import { Fs, Server } from "$ts/env";
-import { toForm } from "$ts/util/form";
-import { tryJsonParse } from "$ts/util/json";
+import { AdminFileSystem } from "$ts/kernel/mods/fs/drives/admin";
+import { AdminServerDrive } from "$ts/kernel/mods/fs/drives/aefs";
+import { Backend } from "$ts/kernel/mods/server/axios";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
+import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
+import { UserPaths } from "$ts/user/store";
 import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
+import { toForm } from "$ts/util/form";
 import { join } from "$ts/util/fs";
+import { tryJsonParse } from "$ts/util/json";
 import type {
   Activity,
   AuditLog,
@@ -27,13 +32,8 @@ import type { SharedDriveType } from "$types/shares";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
 import { fromExtension } from "human-filetypes";
 import JSZip from "jszip";
-import { Backend } from "$ts/kernel/mods/server/axios";
 import { MessagingInterface } from "../MessagingService";
-import { Daemon } from "$ts/daemon";
-import { UserPaths } from "$ts/user/store";
-import { AdminFileSystem } from "$ts/kernel/mods/fs/drives/admin";
 import { AdminScopes } from "./store";
-import type { IAdminBootstrapper } from "$interfaces/service";
 
 export class AdminBootstrapper extends BaseService implements IAdminBootstrapper {
   private userInfo: UserInfo | undefined;

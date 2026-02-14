@@ -24,7 +24,7 @@ export class InputCommand extends TerminalProcess {
     const result = await term.rl?.read(prompt);
 
     if (!result) return 0;
-    
+
     if (Array.isArray(validation) && validation.length === 2 && validation[1].match(/^[gmJAUsxi]+$/g)) {
       const [regexStr, flags] = validation;
 

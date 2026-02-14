@@ -1,12 +1,12 @@
 <script lang="ts">
+  import { Daemon } from "$ts/daemon";
   import { onMount } from "svelte";
   import Bar from "./MediaPlayer/Bar.svelte";
   import Controls from "./MediaPlayer/Controls.svelte";
+  import CoverImage from "./MediaPlayer/CoverImage.svelte";
   import File from "./MediaPlayer/File.svelte";
   import QueueItem from "./MediaPlayer/QueueItem.svelte";
   import type { MediaPlayerRuntime } from "./runtime";
-  import CoverImage from "./MediaPlayer/CoverImage.svelte";
-  import { Daemon } from "$ts/daemon";
 
   const { process }: { process: MediaPlayerRuntime } = $props();
 

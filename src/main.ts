@@ -5,7 +5,7 @@ async function Main() {
   const { WaveKernel } = await import("$ts/kernel/wavekernel");
 
   const kernel = new WaveKernel();
-  
+
   window.__DW_STATUS__ = "async Main";
   document.querySelector<HTMLDivElement>("#stateLoader")!.innerText = "..";
 

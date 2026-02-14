@@ -1,7 +1,7 @@
 import type { IArcTerminal } from "$interfaces/terminal";
 import { Stack } from "$ts/env";
-import { tryJsonParse } from "$ts/util/json";
 import { ProcessKillResultCaptions } from "$ts/kernel/mods/stack/process/store";
+import { tryJsonParse } from "$ts/util/json";
 import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";
 

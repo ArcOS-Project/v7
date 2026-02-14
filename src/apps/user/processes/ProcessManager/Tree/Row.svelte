@@ -1,16 +1,16 @@
 <script lang="ts">
+  import type { IAppProcess } from "$interfaces/app";
+  import type { IProcess } from "$interfaces/process";
   import { AppProcess } from "$ts/apps/process";
-  import { contextMenu } from "$ts/ui/context/actions.svelte";
-  import { Stack, SysDispatch } from "$ts/env";
   import { Daemon } from "$ts/daemon";
+  import { Stack, SysDispatch } from "$ts/env";
   import { BaseService } from "$ts/servicehost/base";
+  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { formatBytes } from "$ts/util/fs";
   import { ProcessStateIcons } from "$types/process";
   import { onDestroy, onMount } from "svelte";
   import type { ProcessManagerRuntime } from "../../runtime";
   import Row from "./Row.svelte";
-  import type { IProcess } from "$interfaces/process";
-  import type { IAppProcess } from "$interfaces/app";
 
   const {
     pid,

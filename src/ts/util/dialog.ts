@@ -1,6 +1,6 @@
 import { MessageBoxRuntime } from "$apps/components/messagebox/runtime";
-import type { App } from "$types/app";
 import type { IProcessHandler } from "$interfaces/kernel";
+import type { App } from "$types/app";
 import type { ConfirmationData, MessageBoxData } from "$types/messagebox";
 import type { ErrorButton } from "$types/notification";
 import { getKMod } from "../env";

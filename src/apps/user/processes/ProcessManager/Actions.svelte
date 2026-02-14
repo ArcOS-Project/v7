@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { IAppProcess } from "$interfaces/app";
+  import type { IProcess } from "$interfaces/process";
   import { AppProcess } from "$ts/apps/process";
   import { Stack } from "$ts/env";
   import { Plural } from "$ts/util";
-  import type { IProcess } from "$interfaces/process";
   import type { ProcessManagerRuntime } from "../runtime";
 
   const { process }: { process: ProcessManagerRuntime } = $props();

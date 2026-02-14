@@ -1,7 +1,7 @@
-import type { ContextMenuItem } from "$types/app";
-import type { Component } from "svelte";
 import type { IProcess } from "$interfaces/process";
 import type { IShellRuntime } from "$interfaces/shell";
+import type { ContextMenuItem } from "$types/app";
+import type { Component } from "svelte";
 
 export interface WeatherMeta {
   caption: string;

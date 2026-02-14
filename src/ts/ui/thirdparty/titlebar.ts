@@ -1,6 +1,6 @@
 import type { IAppProcess } from "$interfaces/app";
-import { contextProps } from "$ts/ui/context/actions.svelte";
 import { Stack } from "$ts/env";
+import { contextProps } from "$ts/ui/context/actions.svelte";
 
 export class CustomTitlebar {
   #className = "";

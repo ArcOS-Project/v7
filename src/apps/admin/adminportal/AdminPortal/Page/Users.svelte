@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import { Logo } from "$ts/branding";
   import { Store } from "$ts/writable";
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";
   import type { UsersData, UsersPageFilters } from "../../types";
   import UserRow from "./Users/UserRow.svelte";
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
 
   const { process, data, compact = false }: { process: IAdminPortalRuntime; data: UsersData; compact?: boolean } = $props();
   const { users } = data;

@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { FileManagerRuntime } from "$apps/user/filemanager/runtime";
-  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { Daemon } from "$ts/daemon";
   import { RecentFilesService } from "$ts/servicehost/services/RecentFilesSvc";
+  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import RecentFile from "./RecentFiles/RecentFile.svelte";
 
   const { process }: { process: FileManagerRuntime } = $props();

@@ -1,21 +1,21 @@
 import type { IAppRegistrationUserContext, IUserDaemon } from "$interfaces/daemon";
-import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
 import { BuiltinAppImportPathAbsolutes } from "$ts/apps/store";
-import { MessageBox } from "$ts/util/dialog";
-import type { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
 import { ArcOSVersion, Env, Fs, SysDispatch } from "$ts/env";
-import { tryJsonParse } from "$ts/util/json";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { Permissions } from "$ts/permissions";
+import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
+import type { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
+import { AppGroups, UserPaths } from "$ts/user/store";
 import { deepCopyWithBlobs } from "$ts/util";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
+import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory, join } from "$ts/util/fs";
+import { tryJsonParse } from "$ts/util/json";
 import { compareVersion } from "$ts/util/version";
 import type { App, AppStorage, InstalledApp } from "$types/app";
 import { LogLevel } from "$types/logging";
 import { Daemon } from "..";
-import { AppGroups, UserPaths } from "$ts/user/store";
 import { UserContext } from "../context";
 
 export class AppRegistrationUserContext extends UserContext implements IAppRegistrationUserContext {

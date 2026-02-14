@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { IAppProcess } from "$interfaces/app";
   import type { IAppRenderer } from "$interfaces/renderer";
-  import { contextProps } from "$ts/ui/context/actions.svelte";
   import { BETA, Stack } from "$ts/env";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
   import { onMount, type Snippet } from "svelte";
   import AltMenu from "./CustomTitlebar/AltMenu.svelte";
 

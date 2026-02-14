@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
-import { isPopulatable } from "$ts/util/apps";
 import { Daemon } from "$ts/daemon";
+import { isPopulatable } from "$ts/util/apps";
 import { getItemNameFromPath } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";

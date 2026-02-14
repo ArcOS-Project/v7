@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { IShellRuntime } from "$interfaces/shell";
   import HtmlSpinner from "$lib/HtmlSpinner.svelte";
   import { Sleep } from "$ts/sleep";
   import { onMount } from "svelte";
   import { StartMenuActions } from "../../store";
-  import type { IShellRuntime } from "$interfaces/shell";
 
   const { process }: { process: IShellRuntime } = $props();
   const { searchQuery, startMenuOpened, searchLoading, userPreferences } = process;

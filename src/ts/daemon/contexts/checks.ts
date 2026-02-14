@@ -1,12 +1,12 @@
 import type { IChecksUserContext, IUserDaemon } from "$interfaces/daemon";
-import { MessageBox } from "$ts/util/dialog";
-import type { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
-import { StoreItemIcon } from "$ts/util/distrib";
 import { Env } from "$ts/env";
 import { NightlyLogo } from "$ts/images/branding";
 import { ArcBuild } from "$ts/metadata/build";
+import type { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
 import type { MessagingInterface } from "$ts/servicehost/services/MessagingService";
 import { Plural } from "$ts/util";
+import { MessageBox } from "$ts/util/dialog";
+import { StoreItemIcon } from "$ts/util/distrib";
 import { Daemon } from "..";
 import { UserContext } from "../context";
 

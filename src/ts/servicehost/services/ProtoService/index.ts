@@ -1,13 +1,13 @@
-import { KernelParams } from "$ts/kernel/getters";
-import { tryJsonParse } from "$ts/util/json";
+import type { IProtocolServiceProcess } from "$interfaces/service";
 import { Daemon } from "$ts/daemon";
+import { KernelParams } from "$ts/kernel/getters";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
+import { tryJsonParse } from "$ts/util/json";
 import type { ArcProtocol, ProtocolHandler } from "$types/proto";
 import type { Service } from "$types/service";
 import { navigate } from "svelte-navigator";
 import { SpawnAppHandler } from "./handlers/spawn";
-import type { IProtocolServiceProcess } from "$interfaces/service";
 
 export class ProtocolServiceProcess extends BaseService implements IProtocolServiceProcess {
   lockObserver = false;

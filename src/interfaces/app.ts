@@ -1,13 +1,13 @@
 import type { AppKeyCombinations } from "$types/accelerator";
 import type { AppContextMenu, AppProcessData, ContextMenuItem } from "$types/app";
 import type { MaybePromise } from "$types/common";
+import type { RenderArgs } from "$types/process";
 import type { UserPreferences } from "$types/user";
 import type { ReadableStore } from "$types/writable";
 import type { Draggable } from "@neodrag/vanilla";
-import type { IShellRuntime } from "./shell";
-import type { IApplicationStorage } from "./service";
-import type { RenderArgs } from "$types/process";
 import type { IProcess } from "./process";
+import type { IApplicationStorage } from "./service";
+import type { IShellRuntime } from "./shell";
 
 export interface IAppProcess extends IProcess {
   crashReason: string;

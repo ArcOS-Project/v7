@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IFilesystemDrive } from "$interfaces/fs";
-  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { Fs } from "$ts/env";
+  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { getDriveLetter, getItemNameFromPath } from "$ts/util/fs";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../../runtime";

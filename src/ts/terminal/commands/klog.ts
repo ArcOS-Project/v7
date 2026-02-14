@@ -1,7 +1,7 @@
+import type { IArcTerminal } from "$interfaces/terminal";
 import { SysDispatch } from "$ts/env";
 import { logItemToStr } from "$ts/util";
 import type { LogItem } from "$types/logging";
-import type { IArcTerminal } from "$interfaces/terminal";
 import { TerminalProcess } from "../process";
 
 export class KlogCommand extends TerminalProcess {

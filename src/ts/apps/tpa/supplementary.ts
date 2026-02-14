@@ -2,10 +2,10 @@ import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { Fs, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
-import { tryJsonParse } from "$ts/util/json";
 import { detectJavaScript } from "$ts/util";
 import { arrayBufferToText } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
+import { tryJsonParse } from "$ts/util/json";
 
 export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
   return {

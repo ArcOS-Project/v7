@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
   import { type CalendarMonth } from "$apps/components/shell/types";
+  import type { IShellRuntime } from "$interfaces/shell";
   import Spinner from "$lib/Spinner.svelte";
   import dayjs, { Dayjs } from "dayjs";
   import weekOfYear from "dayjs/plugin/weekOfYear";

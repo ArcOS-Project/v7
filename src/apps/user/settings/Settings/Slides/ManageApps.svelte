@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { isPopulatable } from "$ts/util/apps";
   import { Daemon } from "$ts/daemon";
+  import { isPopulatable } from "$ts/util/apps";
   import { Store } from "$ts/writable";
   import type { AppStorage } from "$types/app";
   import Fuse from "fuse.js";

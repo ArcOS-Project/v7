@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Server, SysDispatch } from "$ts/env";
   import { TryGetDaemon } from "$ts/daemon";
-  import { DefaultUserPreferences } from "$ts/user/default";
+  import { Server, SysDispatch } from "$ts/env";
   import { Sleep } from "$ts/sleep";
+  import { DefaultUserPreferences } from "$ts/user/default";
   import { authcode } from "$ts/util";
   import type { UserPreferences } from "$types/user";
   import { onMount } from "svelte";

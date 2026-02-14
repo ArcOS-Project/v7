@@ -1,4 +1,4 @@
-import type { PermissionInfo, PermissionStorage } from "$types/permission";
+import type { PermissionStorage } from "$types/permission";
 
 export const PERMISSIONS = [
   "PERMISSION_USER_CONTEXT_ACCOUNT",

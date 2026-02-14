@@ -1,6 +1,6 @@
+import { TryGetDaemon } from "$ts/daemon";
 import { Server } from "$ts/env";
 import { ComponentIcon } from "$ts/images/general";
-import { TryGetDaemon } from "$ts/daemon";
 import { authcode } from "$ts/util";
 import type { PartialStoreItem, StoreItem } from "$types/package";
 
@@ -15,9 +15,7 @@ export function StoreItemIconPrimitive(id: string) {
 }
 
 export function StoreItemScreenshot(item: PartialStoreItem | StoreItem, index = 0) {
-  return item.pkg.store?.screenshots?.[index]
-    ? `${Server.url}/store/assets/${item._id}/screenshot/${index}${authcode()}`
-    : "";
+  return item.pkg.store?.screenshots?.[index] ? `${Server.url}/store/assets/${item._id}/screenshot/${index}${authcode()}` : "";
 }
 
 export function StoreItemBanner(item: PartialStoreItem | StoreItem) {

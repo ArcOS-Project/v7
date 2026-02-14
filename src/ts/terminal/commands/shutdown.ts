@@ -1,8 +1,8 @@
+import type { IArcTerminal } from "$interfaces/terminal";
 import { State, SysDispatch } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { logItemToStr } from "$ts/util";
 import { type LogItem } from "$types/logging";
-import type { IArcTerminal } from "$interfaces/terminal";
 import { TerminalProcess } from "../process";
 import { BRBLUE, RESET } from "../store";
 

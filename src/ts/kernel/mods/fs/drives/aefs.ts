@@ -1,7 +1,7 @@
 import type { IFilesystemDrive } from "$interfaces/fs";
+import { Daemon } from "$ts/daemon";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
 import { Backend } from "$ts/kernel/mods/server/axios";
-import { Daemon } from "$ts/daemon";
 import { authcode } from "$ts/util";
 import type {
   DirectoryReadReturn,

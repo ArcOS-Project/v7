@@ -1,15 +1,15 @@
-import { Fs } from "$ts/env";
-import { tryJsonParse } from "$ts/util/json";
+import type { IInstallerProcessBase } from "$interfaces/distrib";
 import { Daemon, TryGetDaemon } from "$ts/daemon";
+import { Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
+import { tryJsonParse } from "$ts/util/json";
 import type { TpaLibrary } from "$types/libraries";
 import type { ArcPackage, StoreItem } from "$types/package";
 import type JSZip from "jszip";
 import type { DistributionServiceProcess } from "..";
 import { InstallerProcessBase } from "./base";
-import type { IInstallerProcessBase } from "$interfaces/distrib";
 
 export class LibraryInstallerProcess extends InstallerProcessBase implements IInstallerProcessBase {
   library?: TpaLibrary;

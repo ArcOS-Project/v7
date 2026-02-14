@@ -1,6 +1,5 @@
 import type { IAppProcess } from "$interfaces/app";
 import type { IPowerUserContext, IUserDaemon } from "$interfaces/daemon";
-import type { AppProcess } from "$ts/apps/process";
 import { Env, Stack, State } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { BatteryType } from "$types/navigator";

@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/shell";
-  import { contextProps } from "$ts/ui/context/actions.svelte";
   import { Daemon } from "$ts/daemon";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
   import type { App } from "$types/app";
 
   const { app, process }: { app: App; process: IShellRuntime } = $props();

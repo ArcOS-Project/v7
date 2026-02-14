@@ -1,11 +1,11 @@
-import { getDeviceInfo } from "../../kernel/device";
+import type { IServerManager } from "$interfaces/kernel";
+import type { IArcTerminal } from "$interfaces/terminal";
 import { ArcOSVersion, Env, getKMod, State } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { authcode } from "$ts/util";
 import { formatBytes } from "$ts/util/fs";
-import type { IServerManager } from "$interfaces/kernel";
-import type { IArcTerminal } from "$interfaces/terminal";
+import { getDeviceInfo } from "../../kernel/device";
 import { TerminalProcess } from "../process";
 import { BRBLACK, BRBLUE, BRCYAN, BRGREEN, BRPURPLE, BRRED, BRYELLOW, RESET } from "../store";
 

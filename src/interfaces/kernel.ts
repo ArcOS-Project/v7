@@ -74,7 +74,7 @@ export interface IFilesystem {
   getDriveById(id: string): IFilesystemDrive;
   mountDrive<T extends IFilesystemDrive = IFilesystemDrive>(
     id: string,
-    supplier: any,// TODO: construtor interface
+    supplier: any, // TODO: construtor interface
     letter?: string,
     onProgress?: FilesystemProgressCallback,
     ...args: any[]

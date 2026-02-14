@@ -2,8 +2,8 @@ import type { IMigrationNodeConstructor } from "$interfaces/migration";
 import type { IMigrationService } from "$interfaces/service";
 import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
 import type { FileAssocService } from "$ts/servicehost/services/FileAssocSvc";
-import { DefaultFileDefinitions } from "../../FileAssocSvc/store";
 import type { MigrationResult, MigrationStatusCallback } from "$types/migrations";
+import { DefaultFileDefinitions } from "../../FileAssocSvc/store";
 import { MigrationNode } from "../node";
 
 export class FileAssociationsMigration extends MigrationNode {

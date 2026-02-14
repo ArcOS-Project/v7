@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { MessageBox } from "$ts/util/dialog";
-  import { Env } from "$ts/env";
   import { Daemon } from "$ts/daemon";
+  import { Env } from "$ts/env";
   import { TrashCanService } from "$ts/servicehost/services/TrashSvc";
   import { Plural } from "$ts/util";
+  import { MessageBox } from "$ts/util/dialog";
   import { onMount } from "svelte";
   import type { AdvSysSetRuntime } from "../runtime";
 

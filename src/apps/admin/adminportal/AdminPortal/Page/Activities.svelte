@@ -5,8 +5,8 @@
   import { sliceIntoChunks } from "$ts/util";
   import type { ExpandedActivity } from "$types/admin";
   import dayjs from "dayjs";
-  import Pagination from "../Pagination.svelte";
   import type { ActivitiesData } from "../../types";
+  import Pagination from "../Pagination.svelte";
 
   const { process, data }: { process: IAdminPortalRuntime; data: ActivitiesData } = $props();
   const { redacted } = process;

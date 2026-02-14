@@ -21,7 +21,6 @@ export class AppPermissionsRuntime extends AppProcess {
   }
 
   async render() {
-
     const targetApp = this.appStore()?.getAppSynchronous(this.targetAppId);
 
     if (!targetApp) {

@@ -1,16 +1,16 @@
 import type { IFileAssocService } from "$interfaces/service";
-import { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
+import { Daemon } from "$ts/daemon";
 import { Fs } from "$ts/env";
-import { tryJsonParse } from "$ts/util/json";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
+import { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
+import { UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, join } from "$ts/util/fs";
+import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
 import type { ExpandedFileAssociationInfo, FileAssociationConfig } from "$types/assoc";
 import type { Service } from "$types/service";
-import { Daemon } from "$ts/daemon";
-import { UserPaths } from "$ts/user/store";
 import { DefaultFileDefinitions } from "./store";
 
 export class FileAssocService extends BaseService implements IFileAssocService {

@@ -1,9 +1,11 @@
+import type { IAppProcess } from "$interfaces/app";
+import type { IProcess } from "$interfaces/process";
 import type { IServiceHost } from "$interfaces/service";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/util/dialog";
+import { Daemon } from "$ts/daemon";
 import { Env, Stack } from "$ts/env";
 import { ProcessKillResultCaptions } from "$ts/kernel/mods/stack/process/store";
-import { Daemon } from "$ts/daemon";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
@@ -11,8 +13,6 @@ import type { ProcessKillResult } from "$types/process";
 import type { Component } from "svelte";
 import Processes from "./ProcessManager/Page/Processes.svelte";
 import Services from "./ProcessManager/Page/Services.svelte";
-import type { IProcess } from "$interfaces/process";
-import type { IAppProcess } from "$interfaces/app";
 
 export class ProcessManagerRuntime extends AppProcess {
   public selected = Store<string>();

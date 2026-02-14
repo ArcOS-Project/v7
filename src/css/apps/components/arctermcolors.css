@@ -64,7 +64,7 @@
   padding: 15px;
   border-radius: 10px;
   border: var(--win-border);
-  height:0;
+  height: 0;
 }
 
 #ArcTermColors > div.body > div.content.presets {

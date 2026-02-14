@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { contextProps } from "$ts/ui/context/actions.svelte";
-  import { RelativeTimeMod } from "$ts/dayjs";
   import { Daemon } from "$ts/daemon";
+  import { RelativeTimeMod } from "$ts/dayjs";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
   import { formatBytes, join } from "$ts/util/fs";
   import type { FileEntry } from "$types/fs";
   import type { ArcShortcut } from "$types/shortcut";

@@ -2,12 +2,12 @@ import type { IPermissionedFilesystemInteractor, IPermissionHandler } from "$int
 import type { IProcess } from "$interfaces/process";
 import { AppProcess } from "$ts/apps/process";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { Fs, USERFS_UUID } from "$ts/env";
-import { tryJsonParse } from "$ts/util/json";
-import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { Daemon } from "$ts/daemon";
+import { Fs, USERFS_UUID } from "$ts/env";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { sliceIntoChunks } from "$ts/util";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
+import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
 import { ElevationLevel } from "$types/elevation";
 import type { PermissionStorage, SudoPermissions } from "$types/permission";

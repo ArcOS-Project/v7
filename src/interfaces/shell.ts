@@ -7,8 +7,8 @@ import type { ReadableStore } from "$types/writable";
 import type { FuseResult } from "fuse.js";
 import type { IAppProcess } from "./app";
 import type { IArcFindRuntime } from "./arcfind";
-import type { IProcess } from "./process";
 import type { Constructs } from "./common";
+import type { IProcess } from "./process";
 
 export interface IShellRuntime extends IAppProcess {
   startMenuOpened: ReadableStore<boolean>;

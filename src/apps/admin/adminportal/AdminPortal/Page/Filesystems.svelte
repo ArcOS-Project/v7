@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import Spinner from "$lib/Spinner.svelte";
   import { sortByKey } from "$ts/util";
@@ -7,7 +8,6 @@
   import { onMount } from "svelte";
   import type { FilesystemsData, FilesystemsPageQuota } from "../../types";
   import FilesystemRow from "./Filesystems/FilesystemRow.svelte";
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
 
   const { process, data }: { process: IAdminPortalRuntime; data: FilesystemsData } = $props();
   const { users } = data;

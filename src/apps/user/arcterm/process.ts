@@ -1,11 +1,11 @@
 import type { IUserDaemon } from "$interfaces/daemon";
 import type { IArcTerminal, ITerminalWindowRuntime } from "$interfaces/terminal";
-import { hexToRgb } from "$ts/util/color";
 import { Env, Fs, Stack } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
-import { UserPaths } from "$ts/user/store";
 import { ArcTerminal } from "$ts/terminal";
 import { DefaultColors } from "$ts/terminal/store";
+import { UserPaths } from "$ts/user/store";
+import { hexToRgb } from "$ts/util/color";
 import { arrayBufferToText } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
 import type { AppProcessData } from "$types/app";

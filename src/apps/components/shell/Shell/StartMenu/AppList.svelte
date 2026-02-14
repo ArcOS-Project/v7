@@ -1,10 +1,10 @@
 <script lang="ts">
+  import type { IShellRuntime } from "$interfaces/shell";
   import Spinner from "$lib/Spinner.svelte";
-  import { isPopulatable } from "$ts/util/apps";
   import { Daemon } from "$ts/daemon";
+  import { isPopulatable } from "$ts/util/apps";
   import type { AppStorage } from "$types/app";
   import { onMount } from "svelte";
-  import type { IShellRuntime } from "$interfaces/shell";
   import AppGroups from "./AppList/AppGroups.svelte";
   import ListItem from "./AppList/ListItem.svelte";
 

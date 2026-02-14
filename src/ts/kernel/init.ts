@@ -7,8 +7,8 @@ import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { States } from "$ts/state/store";
 import { textToBlob } from "$ts/util/convert";
-import { Process } from "./mods/stack/process/instance";
 import { StateHandler } from "../state";
+import { Process } from "./mods/stack/process/instance";
 
 export class InitProcess extends Process {
   public _criticalProcess: boolean = true;

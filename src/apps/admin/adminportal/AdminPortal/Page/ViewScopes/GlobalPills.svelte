@@ -1,8 +1,8 @@
 <script lang="ts">
   import { globalAdminActions } from "$apps/admin/adminportal/store";
   import type { IAdminPortalRuntime } from "$interfaces/admin";
-  import { MessageBox } from "$ts/util/dialog";
   import { scopeToScopeCaption } from "$ts/util/admin";
+  import { MessageBox } from "$ts/util/dialog";
 
   const {
     append,

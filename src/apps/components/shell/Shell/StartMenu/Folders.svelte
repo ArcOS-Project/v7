@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { contextProps } from "$ts/ui/context/actions.svelte";
+  import type { IShellRuntime } from "$interfaces/shell";
   import { Fs, SysDispatch } from "$ts/env";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
   import { UserPaths } from "$ts/user/store";
   import type { FolderEntry } from "$types/fs";
   import type { UserPreferencesStore } from "$types/user";
   import { onMount } from "svelte";
-  import type { IShellRuntime } from "$interfaces/shell";
   import UserButton from "../Folders/UserButton.svelte";
 
   const {

@@ -1,8 +1,8 @@
 import type { IArcTerminal } from "$interfaces/terminal";
+import { Daemon } from "$ts/daemon";
 import { Stack } from "$ts/env";
 import { Permissions } from "$ts/permissions";
 import { LoginUser } from "$ts/user/auth";
-import { Daemon } from "$ts/daemon";
 import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";
 import { TerminalCommandStore } from "../store";

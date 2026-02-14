@@ -10,7 +10,7 @@
 
   let icon = $state<string>();
   let filename = $state<string>();
-  let metadata = $state<AudioFileMetadata|undefined>();
+  let metadata = $state<AudioFileMetadata | undefined>();
 
   onMount(() => {
     filename = getItemNameFromPath(path);

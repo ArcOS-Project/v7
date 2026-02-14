@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
   import type { IShellRuntime } from "$interfaces/shell";
+  import { Daemon } from "$ts/daemon";
   import Battery from "./StatusTray/Battery.svelte";
   import StackBusy from "./StatusTray/StackBusy.svelte";
 

@@ -1,9 +1,9 @@
 <script lang="ts">
   import { Daemon } from "$ts/daemon";
+  import type { ReadableStore } from "$types/writable";
   import { onMount } from "svelte";
   import type { ItemInfoRuntime } from "../runtime";
   import type { ItemInfo } from "../types";
-  import type { ReadableStore } from "$types/writable";
 
   const { info, process }: { info: ReadableStore<ItemInfo>; process: ItemInfoRuntime } = $props();
 
