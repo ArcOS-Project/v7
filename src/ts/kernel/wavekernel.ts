@@ -1,3 +1,5 @@
+import type { IEnvironment, IProcessHandler, ISystemDispatch, IWaveKernel } from "$interfaces/kernel";
+import type { IStateHandler } from "$interfaces/state";
 import { __Console__ } from "$ts/console";
 import { ArcOSVersion, SetCurrentKernel, SetKernelExports } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
@@ -5,21 +7,20 @@ import { getBuild } from "$ts/metadata/build";
 import { ChangeLogs } from "$ts/metadata/changelog";
 import { getLicense } from "$ts/metadata/license";
 import { getMode } from "$ts/metadata/mode";
-import type { SystemDispatchType, EnvironmentType, ProcessHandlerType } from "$types/kernel";
 import { LogLevel, ShortLogLevelCaptions, type LogItem } from "../../types/logging";
 import { handleGlobalErrors } from "../error";
-import { StateHandler } from "../state";
 import { InitProcess } from "./init";
+import { EchoIntro } from "./intro";
 import { KernelModules } from "./module/store";
 import { prematurePanic } from "./premature";
 
-export class WaveKernel {
+export class WaveKernel implements IWaveKernel {
   public modules: string[] = [];
   public PANICKED = false;
   public Logs: LogItem[] = [];
   public startMs: number;
   public init: InitProcess | undefined;
-  public state: StateHandler | undefined;
+  public state: IStateHandler | undefined;
   public initPid = -1;
   public params = new URLSearchParams(location.search);
   public ARCOS_MODE = "release";
@@ -63,7 +64,10 @@ export class WaveKernel {
   }
 
   async _init() {
-    (window as any).__DW_INIT__ = true;
+    EchoIntro();
+
+    window.__DW_STATUS__ = "async WaveKernel._init";
+    window.__DW_INIT__ = true;
 
     __Console__.time("** Kernel init");
     this.Log(`KERNEL`, `Called _init`);
@@ -80,7 +84,7 @@ export class WaveKernel {
     await this._kernelModules();
 
     // Absolutely oblivious piece of code
-    this.getModule<EnvironmentType>("env").set(
+    this.getModule<IEnvironment>("env").set(
       "MIGVER",
       ArcOSVersion.split(".")
         .splice(1, 2)
@@ -90,7 +94,7 @@ export class WaveKernel {
 
     SetKernelExports();
 
-    const stack = this.getModule<ProcessHandlerType>("stack");
+    const stack = this.getModule<IProcessHandler>("stack");
 
     this.init = await stack.spawn<InitProcess>(InitProcess, undefined, "SYSTEM");
     this.initPid = this.init?.pid ?? 0;
@@ -136,7 +140,7 @@ export class WaveKernel {
 
     this.Logs.push(data);
 
-    const dispatch = this.getModule<SystemDispatchType>("dispatch", true);
+    const dispatch = this.getModule<ISystemDispatch>("dispatch", true);
     dispatch?.dispatch<[LogItem]>("kernel-log", [data]);
 
     __Console__.log(

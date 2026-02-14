@@ -3,15 +3,15 @@
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
   import { formatBytes } from "$ts/util/fs";
-  import type { ReadableStore } from "$ts/writable";
+  import type { ReadableStore } from "$types/writable";
   import dayjs from "dayjs";
   import advancedFormat from "dayjs/plugin/advancedFormat";
   import { onMount } from "svelte";
-  import type { ItemInfoRuntime } from "../runtime";
   import type { ItemInfo } from "../types";
+
   dayjs.extend(advancedFormat);
 
-  const { info, process }: { info: ReadableStore<ItemInfo>; process: ItemInfoRuntime } = $props();
+  const { info }: { info: ReadableStore<ItemInfo> } = $props();
 
   let created = $state<string>();
   let modified = $state<string>();

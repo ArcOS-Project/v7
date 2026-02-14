@@ -1,14 +1,14 @@
-import type { BugHuntType, ServerManagerType } from "$types/kernel";
+import type { IBugHunt, IServerManager } from "$interfaces/kernel";
 import { LogLevel } from "../types/logging";
 import { Env, getKMod, Kernel } from "./env";
-import { KernelIsPanicked, KernelLogs, KernelPremature } from "./getters";
-import { ASCII_ART } from "./intro";
+import { KernelIsPanicked, KernelLogs, KernelPremature } from "./kernel/getters";
+import { ASCII_ART } from "./kernel/intro";
 
 export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
   if (KernelIsPanicked()) return;
 
-  const bughunt = getKMod<BugHuntType>("bughunt", true);
-  const serverManager = getKMod<ServerManagerType>("server", true);
+  const bughunt = getKMod<IBugHunt>("bughunt", true);
+  const serverManager = getKMod<IServerManager>("server", true);
   const connected = serverManager?.connected;
 
   const HEADER = [

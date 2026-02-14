@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { tryJsonStringify } from "$ts/json";
+  import { tryJsonStringify } from "$ts/util/json";
   /**
    * This is a messy file. Yes.
    */

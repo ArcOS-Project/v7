@@ -1,11 +1,18 @@
-import type { AppProcess } from "$ts/apps/process";
-import type { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import type { MessageBox } from "$ts/dialog";
-import type { FilesystemDrive } from "$ts/drives/drive";
-import type { Process } from "$ts/process/instance";
-import type { ServiceHost } from "$ts/services";
+import type { IAppProcess } from "$interfaces/app";
+import type { Constructs } from "$interfaces/common";
+import type { IFilesystemDrive } from "$interfaces/fs";
+import type { IProcess } from "$interfaces/process";
+import type { IServiceHost } from "$interfaces/service";
+import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
 import type { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";
-import type { arrayBufferToBlob, arrayBufferToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/util/convert";
+import type {
+  arrayBufferToBlob,
+  arrayBufferToText,
+  blobToDataURL,
+  blobToText,
+  textToArrayBuffer,
+  textToBlob,
+} from "$ts/util/convert";
 import type {
   DownloadFile,
   formatBytes,
@@ -19,10 +26,11 @@ import type {
 import type { App } from "./app";
 import type { AxiosInstance } from "./axios";
 import type { dayjs } from "./dayjs";
+import type { MessageBoxData } from "./messagebox";
 
 export interface ThirdPartyPropMap {
-  serviceHost: ServiceHost | undefined;
-  MessageBox: typeof MessageBox;
+  serviceHost: IServiceHost | undefined;
+  MessageBox(data: MessageBoxData, parentPid: number, overlay?: boolean): Promise<void>;
   icons: Record<string, string>;
   util: {
     htmlspecialchars: typeof htmlspecialchars;
@@ -49,10 +57,10 @@ export interface ThirdPartyPropMap {
     blobToDataURL: typeof blobToDataURL;
   };
   workingDirectory: string;
-  Process: typeof Process;
-  AppProcess: typeof AppProcess;
-  ThirdPartyAppProcess: typeof ThirdPartyAppProcess;
-  FilesystemDrive: typeof FilesystemDrive;
+  Process: Constructs<IProcess>; // TODO: constructor interface
+  AppProcess: Constructs<IAppProcess>; // TODO: constructor interface
+  ThirdPartyAppProcess: Constructs<IThirdPartyAppProcess>; // TODO: constructor interface
+  FilesystemDrive: Constructs<IFilesystemDrive>; // TODO: constructor interface
   argv: any[];
   app: App;
   $ENTRYPOINT: string;
@@ -61,17 +69,17 @@ export interface ThirdPartyPropMap {
   OPERATION_ID: string;
   load: (path: string) => Promise<any>;
   runApp: (
-    process: typeof ThirdPartyAppProcess,
+    process: Constructs<IAppProcess>,
     metadataPath: string,
     parentPid?: number,
     ...args: any[]
-  ) => Promise<ThirdPartyAppProcess | undefined>;
+  ) => Promise<IThirdPartyAppProcess | undefined>;
   runAppDirect: (
-    process: typeof ThirdPartyAppProcess,
+    process: Constructs<IAppProcess>,
     metadataPath: string,
     parentPid?: number,
     ...args: any[]
-  ) => Promise<ThirdPartyAppProcess | undefined>;
+  ) => Promise<IThirdPartyAppProcess | undefined>;
   loadHtml: (path: string) => Promise<string | undefined>;
   loadDirect: (path: string) => Promise<string | undefined>;
   Server: AxiosInstance;

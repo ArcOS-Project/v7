@@ -1,3 +1,5 @@
+import type { IPermissionedFilesystemInteractor } from "$interfaces/permission";
+import type { IProcess } from "$interfaces/process";
 import { Fs } from "$ts/env";
 import type {
   DirectoryReadReturn,
@@ -8,10 +10,10 @@ import type {
 } from "$types/fs";
 import { Permissions } from ".";
 
-export class PermissionedFilesystemInteractor {
-  #process: any;
+export class PermissionedFilesystemInteractor implements IPermissionedFilesystemInteractor {
+  #process: IProcess;
 
-  constructor(process: any) {
+  constructor(process: IProcess) {
     this.#process = process;
   }
 
@@ -139,7 +141,7 @@ export class PermissionedFilesystemInteractor {
     return await Fs.direct(path);
   }
 
-  async isDirectory(path: string): Promise<boolean | DirectoryReadReturn> {
+  async isDirectory(path: string): Promise<false | DirectoryReadReturn> {
     Permissions.hasReadPermissionForPathExplicit(this.#process, path);
 
     return await Fs.isDirectory(path);

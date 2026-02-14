@@ -1,7 +1,7 @@
 <script lang="ts">
+  import { Daemon } from "$ts/daemon";
   import { UploadIcon } from "$ts/images/general";
-  import { Daemon } from "$ts/server/user/daemon";
-  import { UserPaths } from "$ts/server/user/store";
+  import { UserPaths } from "$ts/user/store";
   import type { IconEditDialogRuntime } from "../runtime";
 
   const { process }: { process: IconEditDialogRuntime } = $props();

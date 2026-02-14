@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import type { ViewBugReportData } from "$apps/admin/adminportal/types";
-  import { getReportIcon } from "$apps/admin/adminportal/util";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import { getReportIcon } from "$ts/util/admin";
   import Close from "./Header/Close.svelte";
   import Copy from "./Header/Copy.svelte";
   import Delete from "./Header/Delete.svelte";
@@ -10,7 +10,7 @@
   import StoreItemLink from "./Header/StoreItemLink.svelte";
   import UserData from "./Header/UserData.svelte";
 
-  const { process, data }: { process: AdminPortalRuntime; data: ViewBugReportData } = $props();
+  const { process, data }: { process: IAdminPortalRuntime; data: ViewBugReportData } = $props();
   const { report } = data;
 </script>
 

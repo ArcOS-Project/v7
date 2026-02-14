@@ -1,15 +1,15 @@
+import type { IInstallerProcessBase } from "$interfaces/distrib";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import { DistributionServiceProcess } from "$ts/distrib";
-import type { InstallerProcessBase } from "$ts/distrib/installer/base";
-import { StoreItemIcon } from "$ts/distrib/util";
+import { Daemon } from "$ts/daemon";
 import { Env, Fs, SysDispatch } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
+import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
 import { Sleep } from "$ts/sleep";
+import { UserPaths } from "$ts/user/store";
 import { Plural } from "$ts/util";
 import { arrayBufferToBlob } from "$ts/util/convert";
-import { UUID } from "$ts/uuid";
+import { MessageBox } from "$ts/util/dialog";
+import { StoreItemIcon } from "$ts/util/distrib";
+import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
@@ -27,7 +27,7 @@ export class AppStoreRuntime extends AppProcess {
   pageProps = Store<Record<string, any>>({});
   searching = Store<boolean>(false);
   currentPage = Store<string>("");
-  operations: Record<string, InstallerProcessBase> = {};
+  operations: Record<string, IInstallerProcessBase> = {};
   distrib: DistributionServiceProcess;
 
   //#region LIFECYCLE
@@ -400,11 +400,10 @@ The author hasn't provided a readme file themselves, so this one has been automa
     );
   }
 
-  registerOperation(id: string, proc: InstallerProcessBase) {
+  registerOperation(id: string, proc: IInstallerProcessBase) {
     this.Log(`registerOperation: ${id} for ${proc.pid}`);
 
     if (this.operations[id]) return false;
-
     this.operations[id] = proc;
 
     return true;

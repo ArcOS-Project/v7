@@ -1,4 +1,4 @@
-import type { AdminScopesType } from "$ts/server/admin/store";
+import type { AdminScopesType } from "$ts/servicehost/services/AdminBootstrapper/store";
 import type { MaybePromise } from "$types/common";
 import type { QueryComparisonTypes, QuerySources } from "./store";
 

@@ -1,7 +1,7 @@
+import type { IAdminPortalRuntime } from "$interfaces/admin";
 import type { ContextMenuItem } from "$types/app";
-import type { AdminPortalRuntime } from "../runtime";
 
-export function ToolsMenu(runtime: AdminPortalRuntime): ContextMenuItem {
+export function ToolsMenu(runtime: IAdminPortalRuntime): ContextMenuItem {
   return {
     caption: "Tools",
     subItems: [

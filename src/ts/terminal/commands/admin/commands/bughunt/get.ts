@@ -1,7 +1,7 @@
-import { AdminScopes } from "$ts/server/admin/store";
+import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { BOLD, BRGREEN, BRPURPLE, BRRED, RESET } from "$ts/terminal/store";
-import { arrayToAsciiTable } from "$ts/terminal/util";
+import { arrayToAsciiTable } from "$ts/util/terminal";
 import dayjs from "dayjs";
 
 export const AdminBugHuntReportGet: AdminCommandType = async (term, admin, [id]) => {

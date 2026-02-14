@@ -1,14 +1,14 @@
 <script lang="ts">
+  import type { IShellRuntime } from "$interfaces/shell";
   import Spinner from "$lib/Spinner.svelte";
-  import { isPopulatable } from "$ts/apps/util";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
+  import { isPopulatable } from "$ts/util/apps";
   import type { AppStorage } from "$types/app";
   import { onMount } from "svelte";
-  import type { ShellRuntime } from "../../runtime";
   import AppGroups from "./AppList/AppGroups.svelte";
   import ListItem from "./AppList/ListItem.svelte";
 
-  const { process }: { process: ShellRuntime } = $props();
+  const { process }: { process: IShellRuntime } = $props();
   const { searchResults, searchQuery, searching, SelectionIndex, userPreferences } = process;
 
   let apps = $state<AppStorage>([]);

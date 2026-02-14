@@ -1,3 +1,4 @@
+/** @namespace KernelSpace */
 export function prematurePanic(reason?: string) {
   const main = document.querySelector("#main");
 

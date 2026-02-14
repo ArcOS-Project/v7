@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
+import { Daemon } from "$ts/daemon";
 import { SysDispatch } from "$ts/env";
-import { IconService } from "$ts/icon";
-import { Daemon } from "$ts/server/user/daemon";
+import { IconService } from "$ts/servicehost/services/IconService";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { IconPickerData } from "./types";

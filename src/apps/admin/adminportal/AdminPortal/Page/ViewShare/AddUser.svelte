@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
-  import { Daemon } from "$ts/server/user/daemon";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import { Daemon } from "$ts/daemon";
   import type { SharedDriveType } from "$types/shares";
   import type { ExpandedUserInfo } from "$types/user";
 
-  const { process, users, share }: { process: AdminPortalRuntime; users: ExpandedUserInfo[]; share: SharedDriveType } = $props();
+  const { process, users, share }: { process: IAdminPortalRuntime; users: ExpandedUserInfo[]; share: SharedDriveType } = $props();
 
   let contestant = $state<string>();
   let loading = $state<boolean>(false);

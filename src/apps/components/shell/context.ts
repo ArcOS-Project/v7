@@ -1,13 +1,12 @@
-import type { AppProcess } from "$ts/apps/process";
+import type { IAppProcess } from "$interfaces/app";
+import type { IProcess } from "$interfaces/process";
+import type { IShellRuntime, ITrayIconProcess } from "$interfaces/shell";
+import { Daemon } from "$ts/daemon";
 import { Stack } from "$ts/env";
-import type { Process } from "$ts/process/instance";
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
-import type { TrayIconProcess } from "$ts/ui/tray/process";
+import { UserPaths } from "$ts/user/store";
 import type { AppContextMenu } from "$types/app";
-import type { ShellRuntime } from "./runtime";
 
-export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
+export function ShellContextMenu(runtime: IShellRuntime): AppContextMenu {
   return {
     "shell-taskbar": [
       {
@@ -37,7 +36,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       {
         caption: "Launch another",
         icon: "rocket",
-        action: (proc: AppProcess) => {
+        action: (proc: IAppProcess) => {
           if (!proc) return;
           runtime.spawnApp(proc.app.id, runtime.pid);
         },
@@ -46,7 +45,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       {
         caption: "Create shortcut",
         icon: "arrow-up-right",
-        action: async (proc: AppProcess) => {
+        action: async (proc: IAppProcess) => {
           const { data: appData } = proc.app;
           const [path] = await Daemon!.files!.LoadSaveDialog({
             title: "Choose where to save the app shortcut",
@@ -72,23 +71,23 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       },
       {
         caption: "Pin app",
-        action: async (proc: AppProcess) => {
+        action: async (proc: IAppProcess) => {
           if (runtime.userPreferences().pinnedApps?.includes(proc.app.id)) runtime.unpinApp(proc.app.id);
           else await runtime.pinApp(proc.app.id);
         },
-        disabled: async (proc: AppProcess) => {
+        disabled: async (proc: IAppProcess) => {
           const x = await runtime.appStore()?.getAppSynchronous(proc.app.id);
 
           return !x;
         },
-        isActive: (proc: AppProcess) => runtime.userPreferences().pinnedApps?.includes(proc.app.id),
+        isActive: (proc: IAppProcess) => runtime.userPreferences().pinnedApps?.includes(proc.app.id),
         icon: "pin",
       },
       { sep: true },
       {
         caption: "App info",
         icon: "info",
-        action: (proc: AppProcess) => {
+        action: (proc: IAppProcess) => {
           if (!proc) return;
 
           runtime.spawnOverlayApp("AppInfo", runtime.pid, proc.app.id);
@@ -97,7 +96,7 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       {
         caption: "Close window",
         image: "ShutdownIcon",
-        action: (proc: AppProcess) => {
+        action: (proc: IAppProcess) => {
           if (!proc) return;
 
           proc.closeWindow();
@@ -143,8 +142,8 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       {
         icon: "arrow-up-from-line",
         caption: "Focus App",
-        action: (proc: TrayIconProcess) => {
-          const appProc = Stack.getProcess(proc.parentPid) as AppProcess;
+        action: (proc: ITrayIconProcess) => {
+          const appProc = Stack.getProcess(proc.parentPid) as IAppProcess;
           if (!appProc || !appProc.app) return;
 
           Stack.renderer?.focusPid(appProc.pid);
@@ -154,8 +153,8 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       {
         icon: "book-copy",
         caption: "App info",
-        action: async (proc: TrayIconProcess) => {
-          const appProc = Stack.getProcess(proc.parentPid) as AppProcess;
+        action: async (proc: ITrayIconProcess) => {
+          const appProc = Stack.getProcess(proc.parentPid) as IAppProcess;
           if (!appProc || !appProc.app) return;
 
           await runtime.spawnOverlayApp("AppInfo", runtime.pid, appProc.app.id);
@@ -164,8 +163,8 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       {
         icon: "book",
         caption: "Process info",
-        action: async (proc: TrayIconProcess) => {
-          const parentProc = Stack.getProcess(proc.parentPid) as Process;
+        action: async (proc: ITrayIconProcess) => {
+          const parentProc = Stack.getProcess(proc.parentPid) as IProcess;
           if (!parentProc) return;
 
           await runtime.spawnOverlayApp("ProcessInfoApp", runtime.pid, parentProc);
@@ -175,8 +174,8 @@ export function ShellContextMenu(runtime: ShellRuntime): AppContextMenu {
       {
         icon: "circle-x",
         caption: "Close app",
-        action: async (proc: TrayIconProcess) => {
-          const appProc = Stack.getProcess(proc.parentPid) as AppProcess;
+        action: async (proc: ITrayIconProcess) => {
+          const appProc = Stack.getProcess(proc.parentPid) as IAppProcess;
 
           if (!appProc) return;
           if (appProc.app) {

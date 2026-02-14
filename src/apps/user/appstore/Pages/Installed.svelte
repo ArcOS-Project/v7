@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { StoreItemIcon } from "$ts/distrib/util";
   import { Env } from "$ts/env";
   import { Plural } from "$ts/util";
+  import { StoreItemIcon } from "$ts/util/distrib";
   import type { StoreItem, UpdateInfo } from "$types/package";
   import PackageGrid from "../AppStore/PackageGrid.svelte";
   import PackageInstallAction from "../AppStore/PackageInstallAction.svelte";

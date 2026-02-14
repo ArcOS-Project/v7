@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import CircularProgress from "$lib/CircularProgress.svelte";
   import Spinner from "$lib/Spinner.svelte";
+  import { Daemon } from "$ts/daemon";
   import { Env, Fs } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
-  import { ShareManager } from "$ts/shares";
+  import { ShareManager } from "$ts/servicehost/services/ShareMgmt";
   import { formatBytes } from "$ts/util/fs";
   import type { UserQuota } from "$types/fs";
   import type { SharedDriveType } from "$types/shares";
@@ -15,7 +15,7 @@
     process,
     share,
     author,
-  }: { process: AdminPortalRuntime; share: SharedDriveType; author: ExpandedUserInfo | undefined } = $props();
+  }: { process: IAdminPortalRuntime; share: SharedDriveType; author: ExpandedUserInfo | undefined } = $props();
 
   const username = author?.username;
 

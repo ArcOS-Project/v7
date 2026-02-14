@@ -1,8 +1,8 @@
+import type { IArcTerminal } from "$interfaces/terminal";
 import { Plural } from "$ts/util";
 import { join } from "$ts/util/fs";
 import type { RecursiveDirectory } from "$types/fs";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { BRBLUE, BRGREEN, RESET } from "../store";
 
@@ -20,7 +20,7 @@ export class TreeCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const noColor = flags["no-color"];
     const resolveShortcuts = flags.shortcuts || flags.s;
     const filename = argv.join(" ");

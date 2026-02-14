@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
-import { DistributionServiceProcess } from "$ts/distrib";
+import { Daemon } from "$ts/daemon";
 import { SysDispatch } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
+import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";

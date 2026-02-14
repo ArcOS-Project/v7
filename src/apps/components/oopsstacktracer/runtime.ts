@@ -1,10 +1,11 @@
+import type { IAppProcess } from "$interfaces/app";
 import { AppProcess } from "$ts/apps/process";
 import type { App, AppProcessData } from "$types/app";
 import type { ParsedStackFrame } from "$types/error";
 
 export class OopsStackTracerRuntime extends AppProcess {
   data: App;
-  proc?: AppProcess;
+  proc?: IAppProcess;
   exception: Error | PromiseRejectionEvent;
   stackFrames: ParsedStackFrame[];
   trace: string = "";
@@ -18,7 +19,7 @@ export class OopsStackTracerRuntime extends AppProcess {
     app: AppProcessData,
     data: App,
     exception: Error | PromiseRejectionEvent,
-    process: AppProcess | undefined,
+    process: IAppProcess | undefined,
     stackFrames: ParsedStackFrame[]
   ) {
     super(pid, parentPid, app);

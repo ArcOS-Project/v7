@@ -1,5 +1,5 @@
-import type { FilesystemDrive } from "$ts/drives/drive";
-import { HiddenUserPaths, UserPathCaptions, UserPathIcons, UserPaths } from "$ts/server/user/store";
+import type { IFilesystemDrive } from "$interfaces/fs";
+import { HiddenUserPaths, UserPathCaptions, UserPathIcons, UserPaths } from "$ts/user/store";
 import type { ContextMenuItem } from "$types/app";
 import type { FileManagerRuntime } from "../runtime";
 
@@ -38,7 +38,7 @@ function userPathsGoItems(runtime: FileManagerRuntime): ContextMenuItem {
 
   for (const id in UserPaths) {
     if (HiddenUserPaths.includes(id)) continue;
-    
+
     result.push({
       caption: UserPathCaptions[id],
       icon: UserPathIcons[id] || "folder",
@@ -57,7 +57,7 @@ function userPathsGoItems(runtime: FileManagerRuntime): ContextMenuItem {
 
 function driveGoItems(runtime: FileManagerRuntime) {
   const result = [];
-  const driveSubmenu = (drive: FilesystemDrive, id: string) => [
+  const driveSubmenu = (drive: IFilesystemDrive, id: string) => [
     {
       caption: "Go here",
       action: () => {

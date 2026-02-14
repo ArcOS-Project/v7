@@ -1,5 +1,5 @@
-import type { ReadableStore } from "$ts/writable";
 import type { LogItem, LogLevel } from "$types/logging";
+import type { ReadableStore } from "$types/writable";
 
 export type CollectorResult = { [key: string]: LogItem[] };
 export type IterableCollectorResult = [string, LogItem[]][];

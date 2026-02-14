@@ -1,7 +1,7 @@
 <script lang="ts">
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
-  import type { ReadableStore } from "$ts/writable";
+  import type { ReadableStore } from "$types/writable";
   import type { ItemInfoRuntime } from "../runtime";
   import type { ItemInfo } from "../types";
 

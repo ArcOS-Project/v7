@@ -1,10 +1,11 @@
 <script lang="ts">
+  import type { IAppProcess } from "$interfaces/app";
+  import type { IProcess } from "$interfaces/process";
   import { AppProcess } from "$ts/apps/process";
-  import { contextMenu } from "$ts/context/actions.svelte";
+  import { Daemon } from "$ts/daemon";
   import { Stack, SysDispatch } from "$ts/env";
-  import type { Process } from "$ts/process/instance";
-  import { Daemon } from "$ts/server/user/daemon";
-  import { BaseService } from "$ts/services/base";
+  import { BaseService } from "$ts/servicehost/base";
+  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { formatBytes } from "$ts/util/fs";
   import { ProcessStateIcons } from "$types/process";
   import { onDestroy, onMount } from "svelte";
@@ -16,7 +17,7 @@
     proc,
     process,
     orphan = false,
-  }: { pid: number; proc: Process; process: ProcessManagerRuntime; orphan?: boolean } = $props();
+  }: { pid: number; proc: IProcess; process: ProcessManagerRuntime; orphan?: boolean } = $props();
 
   const { selected } = process;
   const { focusedPid } = Stack.renderer!;
@@ -24,7 +25,7 @@
   let name = $state<string>();
   let icon = $state<string>();
   let appId = $state<string>();
-  let children = $state<Map<number, Process>>(new Map());
+  let children = $state<Map<number, IProcess>>(new Map());
   let closing = $state<boolean>(false);
   let memory = $state<number>();
   let memoryInterval = $state<NodeJS.Timeout>();
@@ -81,7 +82,7 @@
         {
           caption: "App info",
           disabled: () => !(proc instanceof AppProcess),
-          action: () => process.appInfoFor(proc as AppProcess),
+          action: () => process.appInfoFor(proc as IAppProcess),
           icon: "app-window-mac",
         },
         {

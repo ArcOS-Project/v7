@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
-  import { contextProps } from "$ts/context/actions.svelte";
-  import { Daemon } from "$ts/server/user/daemon";
+  import type { IShellRuntime } from "$interfaces/shell";
+  import { Daemon } from "$ts/daemon";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
   import type { App } from "$types/app";
 
-  const { app, process }: { app: App; process: ShellRuntime } = $props();
+  const { app, process }: { app: App; process: IShellRuntime } = $props();
 
   let disabled = $state(false);
 

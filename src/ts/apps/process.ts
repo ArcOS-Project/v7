@@ -1,26 +1,30 @@
-import type { ShellRuntime } from "$apps/components/shell/runtime";
+import type { IUserDaemon } from "$interfaces/daemon";
+import type { IShellRuntime } from "$interfaces/shell";
+import { Daemon, TryGetDaemon } from "$ts/daemon";
 import { ArcOSVersion, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { ProcessWithPermissions } from "$ts/permissions/process";
-import { Daemon, TryGetDaemon, UserDaemon } from "$ts/server/user/daemon";
-import { DefaultUserPreferences } from "$ts/server/user/default";
+import { DefaultUserPreferences } from "$ts/user/default";
+import { MessageBox } from "$ts/util/dialog";
 import type { AppKeyCombinations } from "$types/accelerator";
+import type { MaybePromise } from "$types/common";
 import { type ElevationData } from "$types/elevation";
 import { LogLevel } from "$types/logging";
 import type { RenderArgs } from "$types/process";
 import type { UserPreferences } from "$types/user";
+import type { ReadableStore } from "$types/writable";
 import type { Draggable } from "@neodrag/vanilla";
 import { mount } from "svelte";
+import type { IAppProcess } from "$interfaces/app";
+import type { IApplicationStorage } from "$interfaces/service";
 import { type App, type AppContextMenu, type AppProcessData, type ContextMenuItem, type ToastMessage } from "../../types/app";
 import { Sleep } from "../sleep";
-import { Store, type ReadableStore } from "../writable";
+import { Store } from "../writable";
 import { AppRuntimeError } from "./error";
-import { ApplicationStorage } from "./storage";
-import type { MaybePromise } from "$types/common";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
-export class AppProcess extends ProcessWithPermissions {
+export class AppProcess extends ProcessWithPermissions implements IAppProcess {
   crashReason = "";
   windowTitle = Store("");
   windowIcon = Store("");
@@ -28,7 +32,7 @@ export class AppProcess extends ProcessWithPermissions {
   componentMount: Record<string, any> = {};
   userPreferences: ReadableStore<UserPreferences> = Store<UserPreferences>(DefaultUserPreferences);
   username: string = "";
-  shell: ShellRuntime | undefined;
+  shell: IShellRuntime | undefined;
   overridePopulatable: boolean = false;
   private toastTimeout?: NodeJS.Timeout;
   public toastMessage = Store<ToastMessage | undefined>();
@@ -61,7 +65,7 @@ export class AppProcess extends ProcessWithPermissions {
     this.shell = Stack.getProcess(+Env.get("shell_pid"));
 
     const desktopProps = State?.stateProps["desktop"];
-    const daemon: UserDaemon | undefined = desktopProps?.userDaemon || TryGetDaemon();
+    const daemon: IUserDaemon | undefined = desktopProps?.userDaemon || TryGetDaemon();
 
     if (daemon) {
       this.userPreferences = daemon.preferences;
@@ -234,7 +238,7 @@ export class AppProcess extends ProcessWithPermissions {
   async closeIfSecondInstance(): Promise<this | undefined> {
     if (this.STATE !== "rendering") {
       throw new AppRuntimeError(
-        "Violation: only call closeIfSecondInstance in AppProcess.render so that it doesn't hang the stack."
+        "Violation: only call closeIfSecondInstance in IAppProcess.render so that it doesn't hang the stack."
       );
     }
     this.Log("Closing if second instance");
@@ -360,7 +364,7 @@ export class AppProcess extends ProcessWithPermissions {
       return false;
     }
 
-    const proc = await Stack.spawn<AppProcess>(
+    const proc = await Stack.spawn<IAppProcess>(
       metadata.assets.runtime,
       undefined,
       Daemon?.userInfo?._id,
@@ -377,11 +381,11 @@ export class AppProcess extends ProcessWithPermissions {
     return !!proc;
   }
 
-  async spawnApp<T = AppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
+  async spawnApp<T = IAppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
     return await Daemon?.spawn?.spawnApp<T>(id, parentPid ?? this.parentPid, ...args);
   }
 
-  async spawnOverlayApp<T = AppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
+  async spawnOverlayApp<T = IAppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
     return await Daemon?.spawn?.spawnOverlay<T>(id, parentPid ?? this.parentPid, ...args);
   }
 
@@ -392,22 +396,24 @@ export class AppProcess extends ProcessWithPermissions {
 
   notImplemented(what?: string) {
     this.Log(`Not implemented: ${what || "<unknown>"}`);
-    // Manually invoking spawnOverlay method on daemon to work around AppProcess <> MessageBox circular import
-    Daemon?.spawn?.spawnOverlay("messageBox", this.pid, {
-      title: "Not implemented",
-      message: `${
-        what || "This feature"
-      } isn't implemented yet ¯\\_(ツ)_/¯<br><br>Encountering this in a (recent) <b>release</b> build of ArcOS? Then I forgot to make something. Please let me know. Do that with this information:<br><code class='block'>ArcOS v${ArcOSVersion}-${ArcMode()} (${ArcBuild()}) - ${
-        location.hostname
-      }</code>`,
-      buttons: [{ caption: "Sad :(", action: () => {}, suggested: true }],
-      image: "BugReportIcon",
-      sound: "arcos.dialog.warning",
-    });
+    MessageBox(
+      {
+        title: "Not implemented",
+        message: `${
+          what || "This feature"
+        } isn't implemented yet ¯\\_(ツ)_/¯<br><br>Encountering this in a (recent) <b>release</b> build of ArcOS? Then I forgot to make something. Please let me know. Do that with this information:<br><code class='block'>ArcOS v${ArcOSVersion}-${ArcMode()} (${ArcBuild()}) - ${
+          location.hostname
+        }</code>`,
+        buttons: [{ caption: "Sad :(", action: () => {}, suggested: true }],
+        image: "BugReportIcon",
+        sound: "arcos.dialog.warning",
+      },
+      this.pid
+    );
   }
 
   appStore() {
-    return Daemon?.serviceHost?.getService("AppStorage") as ApplicationStorage;
+    return Daemon?.serviceHost?.getService("AppStorage") as IApplicationStorage;
   }
 
   async getIcon(id: string): Promise<string> {

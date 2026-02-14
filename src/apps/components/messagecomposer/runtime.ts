@@ -1,12 +1,12 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Fs } from "$ts/env";
-import { MessagingInterface } from "$ts/server/messaging";
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
+import { MessagingInterface } from "$ts/servicehost/services/MessagingService";
 import { Sleep } from "$ts/sleep";
+import { UserPaths } from "$ts/user/store";
+import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath } from "$ts/util/fs";
-import { UUID } from "$ts/uuid";
+import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { MessageCreateData } from "$types/messaging";

@@ -2,26 +2,27 @@ import { FirstRunApp } from "$apps/components/firstrun/FirstRun";
 import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/TotpAuthGui";
 import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
+import type { IUserDaemon } from "$interfaces/daemon";
+import type { IServerManager } from "$interfaces/kernel";
+import { AppProcess } from "$ts/apps/process";
+import { UserDaemon } from "$ts/daemon";
 import { Env, getKMod, SoundBus, Stack, State, SysDispatch } from "$ts/env";
 import { ProfilePictures } from "$ts/images/pfp";
-import { tryJsonParse } from "$ts/json";
-import { ProtocolServiceProcess } from "$ts/proto";
-import { Backend } from "$ts/server/axios";
-import { LoginUser } from "$ts/server/user/auth";
-import { UserDaemon } from "$ts/server/user/daemon";
+import { Backend } from "$ts/kernel/mods/server/axios";
+import { MigrationService } from "$ts/servicehost/services/MigrationSvc";
+import { ProtocolServiceProcess } from "$ts/servicehost/services/ProtoService";
 import { Sleep } from "$ts/sleep";
+import { LoginUser } from "$ts/user/auth";
+import { Wallpapers } from "$ts/user/wallpaper/store";
 import { authcode } from "$ts/util";
-import { UUID } from "$ts/uuid";
-import { Wallpapers } from "$ts/wallpaper/store";
+import { tryJsonParse } from "$ts/util/json";
+import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import type { ServerManagerType } from "$types/kernel";
+import type { AppProcessData } from "$types/app";
 import type { ServerInfo } from "$types/server";
 import type { UserInfo } from "$types/user";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
-import { AppProcess } from "../../../ts/apps/process";
-import { MigrationService } from "../../../ts/migrations";
-import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps, PersistenceInfo } from "./types";
 
 export class LoginAppRuntime extends AppProcess {
@@ -34,7 +35,7 @@ export class LoginAppRuntime extends AppProcess {
   public hideProfileImage = Store<boolean>(false);
   public persistence = Store<PersistenceInfo | undefined>();
   public serverInfo = Store<ServerInfo>();
-  public server: ServerManagerType;
+  public server: IServerManager;
   public unexpectedInvocation = false;
   public safeMode = false;
   private type = "";
@@ -44,7 +45,7 @@ export class LoginAppRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData, props?: LoginAppProps) {
     super(pid, parentPid, app);
 
-    const server = getKMod<ServerManagerType>("server");
+    const server = getKMod<IServerManager>("server");
 
     this.unexpectedInvocation = State?.currentState !== "boot" && State?.currentState !== "initialSetup" && !props?.type;
     this.server = server;
@@ -151,7 +152,7 @@ export class LoginAppRuntime extends AppProcess {
 
     this.loadingStatus.set(this.getWelcomeString());
 
-    const userDaemon = await Stack.spawn<UserDaemon>(UserDaemon, undefined, info?._id || "SYSTEM", 1, token, username, info);
+    const userDaemon = await Stack.spawn<IUserDaemon>(UserDaemon, undefined, info?._id || "SYSTEM", 1, token, username, info);
 
     if (!userDaemon) {
       this.loadingStatus.set("");
@@ -294,7 +295,7 @@ export class LoginAppRuntime extends AppProcess {
   //#endregion
   //#region POWER
 
-  async logoff(daemon: UserDaemon) {
+  async logoff(daemon: IUserDaemon) {
     this.Log(`Logging off user '${daemon.username}'`);
 
     // this.hideProfileImage.set(true);
@@ -329,7 +330,7 @@ export class LoginAppRuntime extends AppProcess {
     }, 600);
   }
 
-  async shutdown(daemon?: UserDaemon) {
+  async shutdown(daemon?: IUserDaemon) {
     this.Log(`Handling shutdown`);
 
     this.type = "shutdown";
@@ -350,7 +351,7 @@ export class LoginAppRuntime extends AppProcess {
     State?.loadState("turnedOff");
   }
 
-  async restart(daemon?: UserDaemon) {
+  async restart(daemon?: IUserDaemon) {
     this.Log(`Handling restart`);
 
     this.type = "restart";
@@ -395,7 +396,7 @@ export class LoginAppRuntime extends AppProcess {
     await this.startDaemon(token, username);
   }
 
-  private saveToken(daemon: UserDaemon) {
+  private saveToken(daemon: IUserDaemon) {
     const token = daemon.token;
     const username = daemon.username;
 
@@ -479,7 +480,7 @@ export class LoginAppRuntime extends AppProcess {
     });
   }
 
-  async firstRun(daemon: UserDaemon) {
+  async firstRun(daemon: IUserDaemon) {
     const process = await Stack.spawn<FirstRunRuntime>(
       FirstRunRuntime,
       undefined,

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { SettingsRuntime } from "$apps/user/settings/runtime";
-  import { MessageBox } from "$ts/dialog";
+  import { MessageBox } from "$ts/util/dialog";
   import { formatBytes } from "$ts/util/fs";
   import { onMount } from "svelte";
   import UserStyleWarning from "./UserStyles/UserStyleWarning.svelte";

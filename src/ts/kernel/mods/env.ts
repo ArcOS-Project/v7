@@ -1,13 +1,13 @@
-import type { ConstructedWaveKernel } from "$types/kernel";
+import type { IEnvironment, IWaveKernel } from "$interfaces/kernel";
 import { KernelModule } from "../module";
 
-export class Environment extends KernelModule {
+export class Environment extends KernelModule implements IEnvironment {
   private store: Map<string, any> = new Map([]);
   private readOnlyValues: string[] = [];
 
   //#region LIFECYCLE
 
-  constructor(kernel: ConstructedWaveKernel, id: string) {
+  constructor(kernel: IWaveKernel, id: string) {
     super(kernel, id);
   }
 

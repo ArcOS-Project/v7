@@ -1,4 +1,4 @@
-import type { UserDaemon } from "$ts/server/user/daemon";
+import type { IUserDaemon } from "$interfaces/daemon";
 import type { MaybePromise } from "./common";
 
 export interface ArcProtocol {
@@ -21,6 +21,6 @@ export interface SpawnAppProtocol extends ArcProtocol {
 export interface ProtocolHandler {
   name: string;
   className?: string;
-  info: (payload: Record<string, any>, daemon: UserDaemon) => { icon: string; caption: string; title?: string } | undefined;
-  action: (payload: Record<string, any>, daemon: UserDaemon, proto: ArcProtocol) => MaybePromise<boolean>;
+  info: (payload: Record<string, any>, daemon: IUserDaemon) => { icon: string; caption: string; title?: string } | undefined;
+  action: (payload: Record<string, any>, daemon: IUserDaemon, proto: ArcProtocol) => MaybePromise<boolean>;
 }

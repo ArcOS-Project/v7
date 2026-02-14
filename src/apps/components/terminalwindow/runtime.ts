@@ -1,3 +1,4 @@
+import type { ITerminalWindowRuntime } from "$interfaces/terminal";
 import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
 import { DefaultColors } from "$ts/terminal/store";
@@ -9,7 +10,7 @@ import { Unicode11Addon } from "@xterm/addon-unicode11";
 import { WebLinksAddon } from "@xterm/addon-web-links";
 import { Terminal } from "xterm";
 
-export class TerminalWindowRuntime extends AppProcess {
+export class TerminalWindowRuntime extends AppProcess implements ITerminalWindowRuntime {
   term: Terminal | undefined;
   overridePopulatable: boolean = true;
 
@@ -21,9 +22,7 @@ export class TerminalWindowRuntime extends AppProcess {
     this.setSource(__SOURCE__);
   }
 
-  async start() {
-    
-  }
+  async start() {}
 
   async render() {
     const body = this.getBody();

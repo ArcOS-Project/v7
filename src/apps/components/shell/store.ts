@@ -1,4 +1,4 @@
-import { UserPaths } from "$ts/server/user/store";
+import { UserPaths } from "$ts/user/store";
 import type { QuickSetting, StartMenuAction, WeatherMeta } from "./types";
 
 export const weatherMetadata: Record<number, WeatherMeta> = {

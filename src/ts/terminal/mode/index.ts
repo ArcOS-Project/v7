@@ -1,12 +1,14 @@
+import type { IUserDaemon } from "$interfaces/daemon";
+import type { IArcTerminal } from "$interfaces/terminal";
+import { UserDaemon } from "$ts/daemon";
 import { ArcOSVersion, Env, Stack, SysDispatch } from "$ts/env";
-import { toForm } from "$ts/form";
+import { Backend } from "$ts/kernel/mods/server/axios";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { Process } from "$ts/process/instance";
-import { Backend } from "$ts/server/axios";
-import { LoginUser } from "$ts/server/user/auth";
-import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
+import { LoginUser } from "$ts/user/auth";
+import { toForm } from "$ts/util/form";
 import type { UserInfo } from "$types/user";
 import { ClipboardAddon } from "@xterm/addon-clipboard";
 import { FitAddon } from "@xterm/addon-fit";
@@ -16,16 +18,16 @@ import { WebLinksAddon } from "@xterm/addon-web-links";
 import Cookies from "js-cookie";
 import { Terminal } from "xterm";
 import { ArcTerminal } from "..";
+import type { MigrationService } from "../../servicehost/services/MigrationSvc";
 import { Readline } from "../readline/readline";
 import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../store";
-import type { MigrationService } from "../../migrations";
 
 export class TerminalMode extends Process {
-  userDaemon?: UserDaemon;
+  userDaemon?: IUserDaemon;
   target: HTMLDivElement;
   term?: Terminal;
   rl?: Readline;
-  arcTerm?: ArcTerminal;
+  arcTerm?: IArcTerminal;
 
   //#region LIFECYCLE
 
@@ -105,7 +107,7 @@ export class TerminalMode extends Process {
 
   async startDaemon(token: string, username: string): Promise<boolean> {
     try {
-      const userDaemon = await Stack.spawn<UserDaemon>(UserDaemon, undefined, "SYSTEM", 1, token, username);
+      const userDaemon = await Stack.spawn<IUserDaemon>(UserDaemon, undefined, "SYSTEM", 1, token, username);
 
       const broadcast = (m: string) => {
         this.rl?.println(`${CURUP}${CLRROW}${m}`);
@@ -196,7 +198,7 @@ export class TerminalMode extends Process {
 
       this.term?.clear();
 
-      this.arcTerm = await Stack.spawn<ArcTerminal>(ArcTerminal, undefined, userDaemon.userInfo?._id, this.pid, this.term);
+      this.arcTerm = await Stack.spawn<IArcTerminal>(ArcTerminal, undefined, userDaemon.userInfo?._id, this.pid, this.term);
       this.arcTerm!.IS_ARCTERM_MODE = true;
 
       this.term?.focus();
@@ -274,7 +276,7 @@ export class TerminalMode extends Process {
     return true;
   }
 
-  private saveToken(daemon: UserDaemon) {
+  private saveToken(daemon: IUserDaemon) {
     const token = daemon.token;
     const username = daemon.username;
 

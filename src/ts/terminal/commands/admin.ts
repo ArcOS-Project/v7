@@ -1,11 +1,11 @@
+import type { IServerManager } from "$interfaces/kernel";
+import type { IArcTerminal } from "$interfaces/terminal";
 import { getKMod } from "$ts/env";
-import { getAllJsonPaths, getJsonHierarchy } from "$ts/hierarchy";
-import { tryJsonParse } from "$ts/json";
-import { AdminBootstrapper } from "$ts/server/admin";
+import { AdminBootstrapper } from "$ts/servicehost/services/AdminBootstrapper";
+import { getAllJsonPaths, getJsonHierarchy } from "$ts/util/hierarchy";
+import { tryJsonParse } from "$ts/util/json";
 import { ElevationLevel } from "$types/elevation";
-import type { ServerManagerType } from "$types/kernel";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { BOLD, BRBLACK, BRRED, BRYELLOW, RESET, UNDERLINE } from "../store";
 import { AdminCommandStore, RESULT_CAPTIONS } from "./admin/store";
@@ -25,7 +25,7 @@ export class AdminCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const elevated = await term.elevate({
       what: "ArcTerm wants to open the Administrator Console",
       title: "Administrator Console",
@@ -38,7 +38,7 @@ export class AdminCommand extends TerminalProcess {
 
     const paths = getAllJsonPaths(AdminCommandStore).map((a) => a.replaceAll(".", " "));
     const admin = term.daemon?.serviceHost?.getService<AdminBootstrapper>("AdminBootstrapper");
-    const server = getKMod<ServerManagerType>("server");
+    const server = getKMod<IServerManager>("server");
 
     term.term.clear();
     term.rl?.println(`ArcOS Administrator Console version 1.0.0\r\n\r\n© 2025 Izaak Z. Kuipers\r\nOn server: ${server.url}\r\n`);
@@ -96,4 +96,4 @@ export class AdminCommand extends TerminalProcess {
   }
 }
 
-export type AdminCommandType = (term: ArcTerminal, admin: AdminBootstrapper, argv: string[]) => Promise<number>;
+export type AdminCommandType = (term: IArcTerminal, admin: AdminBootstrapper, argv: string[]) => Promise<number>;

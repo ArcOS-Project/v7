@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import { LogoTranslations } from "$apps/admin/adminportal/store";
-  import { StoreItemIconPrimitive } from "$ts/distrib/util";
-  import type { ReadableStore } from "$ts/writable";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import { StoreItemIconPrimitive } from "$ts/util/distrib";
   import type { BugReport } from "$types/bughunt";
+  import type { ReadableStore } from "$types/writable";
   import dayjs from "dayjs";
 
   const {
@@ -13,7 +13,7 @@
     quickView,
     selectionList,
   }: {
-    process: AdminPortalRuntime;
+    process: IAdminPortalRuntime;
     report: BugReport;
     idEntry: ReadableStore<string>;
     quickView: ReadableStore<string>;
@@ -61,5 +61,7 @@
   </div>
   <div class="segment timestamp">{timestamp}</div>
   <div class="segment title">{report.title}</div>
-  <div class="segment author" class:redacted={$redacted && !!report.userData?.username}>{report.userData?.username || "Stranger"}</div>
+  <div class="segment author" class:redacted={$redacted && !!report.userData?.username}>
+    {report.userData?.username || "Stranger"}
+  </div>
 </div>

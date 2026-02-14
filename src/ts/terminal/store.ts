@@ -1,3 +1,4 @@
+import type { ITerminalProcessConstructor } from "$interfaces/terminal";
 import type { ArcTermConfiguration } from "$types/terminal";
 import { AdminCommand } from "./commands/admin";
 import { AppListCommand } from "./commands/applist";
@@ -35,9 +36,8 @@ import { TasksCommand } from "./commands/tasks";
 import { TestCommand } from "./commands/test";
 import { TreeCommand } from "./commands/tree";
 import { VerCommand } from "./commands/ver";
-import type { TerminalProcess } from "./process";
 
-export const TerminalCommandStore: (typeof TerminalProcess)[] = [
+export const TerminalCommandStore: ITerminalProcessConstructor[] = [
   AppListCommand,
   DirCommand,
   CdCommand,
@@ -73,7 +73,7 @@ export const TerminalCommandStore: (typeof TerminalProcess)[] = [
   DevenvCommand,
   PkgCommand,
   KlogCommand,
-  InputCommand
+  InputCommand,
 ];
 
 export const ESC = `\x1b[`;

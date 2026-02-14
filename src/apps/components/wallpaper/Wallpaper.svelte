@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Daemon } from "$ts/server/user/daemon";
-  import { Wallpapers } from "$ts/wallpaper/store";
+  import { Daemon } from "$ts/daemon";
+  import { Wallpapers } from "$ts/user/wallpaper/store";
   import type { AppComponentProps } from "$types/app";
   import type { WallpaperRuntime } from "./runtime";
   import File from "./Wallpaper/DesktopIcon/File.svelte";

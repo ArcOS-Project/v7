@@ -1,7 +1,7 @@
-import type { ReadableStore } from "$ts/writable";
 import type { App } from "./app";
 import type { ThemeStore } from "./theme";
 import type { Wallpaper } from "./wallpaper";
+import type { ReadableStore } from "./writable";
 
 export interface UserInfo {
   username: string;
@@ -112,7 +112,7 @@ export interface DesktopPreferences {
 
 export interface StartMenuPreferences {
   noGroups: boolean;
-  actions: string[]
+  actions: string[];
 }
 
 export interface VisualPreferences {

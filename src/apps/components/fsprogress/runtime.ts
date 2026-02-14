@@ -1,8 +1,9 @@
 import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
-import { Store, type ReadableStore } from "$ts/writable";
+import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { RenderArgs } from "$types/process";
+import type { ReadableStore } from "$types/writable";
 import type { FsProgressOperation } from "./types";
 
 export class FsProgressRuntime extends AppProcess {

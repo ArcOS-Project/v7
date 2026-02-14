@@ -1,17 +1,22 @@
 import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import TerminalWindow from "$apps/components/terminalwindow/TerminalWindow.svelte";
-import { hexToRgb } from "$ts/color";
-import type { FilesystemDrive } from "$ts/drives/drive";
+import type { Constructs } from "$interfaces/common";
+import type { IUserDaemon } from "$interfaces/daemon";
+import type { IFilesystemDrive } from "$interfaces/fs";
+import type { IArcTerminal, ITerminalProcess, ITerminalWindowRuntime } from "$interfaces/terminal";
+import { Daemon, TryGetDaemon } from "$ts/daemon";
 import { Env, Fs, Stack, State } from "$ts/env";
-import { ASCII_ART } from "$ts/intro";
-import { Process } from "$ts/process/instance";
-import { LoginUser } from "$ts/server/user/auth";
-import { Daemon, TryGetDaemon, type UserDaemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
+import { ASCII_ART } from "$ts/kernel/intro";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
+import { Sleep } from "$ts/sleep";
+import { LoginUser } from "$ts/user/auth";
+import { UserPaths } from "$ts/user/store";
 import { noop, sha256 } from "$ts/util";
+import { hexToRgb } from "$ts/util/color";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { ErrorUtils } from "$ts/util/error";
 import { join } from "$ts/util/fs";
+import { tryJsonParse } from "$ts/util/json";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
 import type { DirectoryReadReturn } from "$types/fs";
 import type { ArcTermConfiguration, Arguments } from "$types/terminal";
@@ -32,24 +37,22 @@ import {
   TerminalCommandStore,
 } from "./store";
 import { ArcTermVariables } from "./var";
-import { Sleep } from "$ts/sleep";
-import { tryJsonParse } from "$ts/json";
 
-export class ArcTerminal extends Process {
+export class ArcTerminal extends Process implements IArcTerminal {
   readonly CONFIG_PATH = join(UserPaths.Configuration, "ArcTerm/arcterm.conf");
   path: string;
-  drive: FilesystemDrive | undefined;
+  drive: IFilesystemDrive | undefined;
   term: Terminal;
   rl: Readline | undefined;
   var: ArcTermVariables | undefined;
   contents: DirectoryReadReturn | undefined;
-  daemon: UserDaemon | undefined;
+  daemon: IUserDaemon | undefined;
   ansiEscapes = ansiEscapes;
   lastCommandErrored = false;
   lastLine?: string;
   config: ArcTermConfiguration = DefaultArcTermConfiguration;
   configProvidedExternal = false;
-  window: TerminalWindowRuntime | undefined;
+  window: ITerminalWindowRuntime | undefined;
   IS_ARCTERM_MODE = false;
 
   //#region LIFECYCLE
@@ -536,7 +539,7 @@ export class ArcTerminal extends Process {
     noop();
   }
 
-  handleCommandError(e: Error, command: typeof TerminalProcess) {
+  handleCommandError(e: Error, command: Constructs<ITerminalProcess>) {
     this.rl?.println(ErrorUtils.abbreviatedStackTrace(e, `${BRRED}${command.name}: `));
     this.rl?.println(`${RESET}`);
   }

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TimeFrames } from "$ts/server/user/store";
+  import { TimeFrames } from "$ts/user/store";
   import type { PartialStoreItem, StoreItem } from "$types/package";
   import PackageGrid from "../AppStore/PackageGrid.svelte";
   import type { AppStoreRuntime } from "../runtime";

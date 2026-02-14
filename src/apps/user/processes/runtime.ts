@@ -1,10 +1,11 @@
+import type { IAppProcess } from "$interfaces/app";
+import type { IProcess } from "$interfaces/process";
+import type { IServiceHost } from "$interfaces/service";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Env, Stack } from "$ts/env";
-import type { Process } from "$ts/process/instance";
-import { ProcessKillResultCaptions } from "$ts/process/store";
-import { Daemon } from "$ts/server/user/daemon";
-import type { ServiceHost } from "$ts/services";
+import { ProcessKillResultCaptions } from "$ts/kernel/mods/stack/process/store";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
@@ -21,7 +22,7 @@ export class ProcessManagerRuntime extends AppProcess {
     Processes: Processes as any,
     Services: Services as any,
   };
-  host: ServiceHost;
+  host: IServiceHost;
 
   //#region LIFECYCLE
 
@@ -44,7 +45,7 @@ export class ProcessManagerRuntime extends AppProcess {
 
   //#endregion
 
-  async kill(proc: Process) {
+  async kill(proc: IProcess) {
     this.Log(`kill: ${proc.pid}`);
 
     const name = proc instanceof AppProcess ? proc.app.data.metadata.name : proc.name;
@@ -174,12 +175,12 @@ export class ProcessManagerRuntime extends AppProcess {
     this.spawnOverlayApp("ServiceInfo", +Env.get("shell_pid"), id);
   }
 
-  appInfoFor(proc: AppProcess) {
+  appInfoFor(proc: IAppProcess) {
     this.Log(`appInfoFor: ${proc.pid}`);
     this.spawnOverlayApp("AppInfo", +Env.get("shell_pid"), proc.app.id);
   }
 
-  processInfoFor(proc: Process) {
+  processInfoFor(proc: IProcess) {
     this.Log(`processInfoFor: ${proc.pid}`);
     this.spawnOverlayApp("ProcessInfoApp", +Env.get("shell_pid"), proc);
   }

@@ -163,4 +163,3 @@ export interface FsModifierOptions {
 export interface ExtendedStat extends FilesystemStat {
   modifiers?: SummarizedFsModifiers;
 }
-// uhhh yes?

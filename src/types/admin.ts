@@ -133,7 +133,7 @@ export interface PartialUserTotp {
   userId: string;
 }
 
-export interface SharedDrive {
+export interface SharedDriveItem {
   userId: string;
   accessors: string[];
   shareName: string;

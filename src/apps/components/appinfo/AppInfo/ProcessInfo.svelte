@@ -1,16 +1,16 @@
 <script lang="ts">
+  import type { IProcessHandler } from "$interfaces/kernel";
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
   import { getKMod } from "$ts/env";
   import { Sleep } from "$ts/sleep";
-  import type { ProcessHandlerType } from "$types/kernel";
   import { onMount } from "svelte";
   import type { AppInfoRuntime } from "../runtime";
 
   const { appId, process }: { appId: string; process: AppInfoRuntime } = $props();
 
-  const stack = getKMod<ProcessHandlerType>("stack");
+  const stack = getKMod<IProcessHandler>("stack");
   let pid = $state(-1);
   let count = $state(0);
 

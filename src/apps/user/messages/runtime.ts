@@ -1,14 +1,14 @@
 import type { FileProgressMutator } from "$apps/components/fsprogress/types";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Fs } from "$ts/env";
-import { tryJsonParse } from "$ts/json";
-import { MessagingInterface } from "$ts/server/messaging";
-import { Daemon } from "$ts/server/user/daemon";
+import { MessagingInterface } from "$ts/servicehost/services/MessagingService";
 import { Sleep } from "$ts/sleep";
 import { sortByKey } from "$ts/util";
 import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
+import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory } from "$ts/util/fs";
+import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { ExpandedMessage, MessageAttachment } from "$types/messaging";

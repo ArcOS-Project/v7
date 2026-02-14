@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { UUID } from "$ts/uuid";
+  import { UUID } from "$ts/util/uuid";
   import type { SwitchServerRuntime } from "./runtime";
   import ServerOption from "./SwitchServer/ServerOption.svelte";
 

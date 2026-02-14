@@ -1,11 +1,14 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import { formatBytes } from "$ts/util/fs";
-  import type { ReadableStore } from "$ts/writable";
   import type { SharedDriveType } from "$types/shares";
+  import type { ReadableStore } from "$types/writable";
 
-  const { share, selection, process }: { share: SharedDriveType; selection: ReadableStore<string>; process: AdminPortalRuntime } =
-    $props();
+  const {
+    share,
+    selection,
+    process,
+  }: { share: SharedDriveType; selection: ReadableStore<string>; process: IAdminPortalRuntime } = $props();
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
