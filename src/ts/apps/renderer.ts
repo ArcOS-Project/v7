@@ -403,32 +403,6 @@ export class AppRenderer extends Process implements IAppRenderer {
     return toast;
   }
 
-  _renderToast(process: AppProcess) {
-    const toast = document.createElement("div");
-    const content = document.createElement("span");
-    const icon = document.createElement("span");
-
-    content.className = "content";
-    toast.className = "window-toast-popup";
-    icon.className = "lucide icon-info";
-
-    toast.append(icon, content);
-
-    process.toastMessage.subscribe((v) => {
-      if (!v) {
-        toast.classList.remove("show");
-
-        return;
-      }
-
-      content.innerText = v.content;
-      icon.className = "lucide icon-" + (v.icon ?? "");
-      toast.classList.add("show");
-    });
-
-    return toast;
-  }
-
   _resizeGrabbers(process: IAppProcess, window: HTMLDivElement) {
     if (!process.app.data.state.resizable || process.app.data.core) return undefined;
 

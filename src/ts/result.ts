@@ -1,7 +1,8 @@
+import type { ICommandResult } from "$interfaces/result";
 import { DefaultCommandResultOptions, type CommandResultOptions } from "$types/result";
 import { Log } from "./logging";
 
-export class CommandResult<T = string> {
+export class CommandResult<T = string> implements ICommandResult<T> {
   public result: T | undefined;
   public error?: Error;
   public errorMessage?: string;
