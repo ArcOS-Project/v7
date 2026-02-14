@@ -2,7 +2,7 @@ import type { IAppProcess } from "$interfaces/app";
 import type { Constructs } from "$interfaces/common";
 import type { IUserDaemon } from "$interfaces/daemon";
 import type { IProcess } from "$interfaces/process";
-import type { IApplicationStorage } from "$interfaces/service";
+import type { IApplicationStorage } from "$interfaces/services/AppStorage";
 import type { IShellRuntime } from "$interfaces/shell";
 import { Daemon, TryGetDaemon } from "$ts/daemon";
 import { ArcOSVersion, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";

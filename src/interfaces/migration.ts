@@ -1,7 +1,7 @@
 import type { LogLevel } from "$types/logging";
 import type { MigrationResult, MigrationStatusCallback } from "$types/migrations";
 import type { Constructs } from "./common";
-import type { IMigrationService } from "./service";
+import type { IMigrationService } from "./services/MigrationSvc";
 
 export interface IMigrationNode {
   svc: IMigrationService;

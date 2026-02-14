@@ -1,5 +1,5 @@
 import type { IMigrationNodeConstructor } from "$interfaces/migration";
-import type { IMigrationService } from "$interfaces/service";
+import type { IMigrationService } from "$interfaces/services/MigrationSvc";
 import { Fs } from "$ts/env";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
@@ -15,7 +15,6 @@ import { AppShortcutsMigration } from "./nodes/AppShortcuts";
 import { FileAssociationsMigration } from "./nodes/FileAssociations";
 import { IconConfigurationMigration } from "./nodes/IconConfiguration";
 
-// TODO
 export class MigrationService extends BaseService implements IMigrationService {
   private Configuration = Store<Record<string, number>>({});
   private CONFIG_PATH = join(UserPaths.Migrations, "Index.json");

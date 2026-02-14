@@ -21,7 +21,11 @@ import type { IVersionUserContext } from "./contexts/version";
 import type { IWallpaperUserContext } from "./contexts/wallpaper";
 import type { IWorkspaceUserContext } from "./contexts/workspaces";
 import type { IProcess } from "./process";
-import type { IApplicationStorage, IFileAssocService, IGlobalDispatch, ILibraryManagement, IServiceHost } from "./service";
+import type { IServiceHost } from "./service";
+import type { IApplicationStorage } from "./services/AppStorage";
+import type { IFileAssocService } from "./services/FileAssocSvc";
+import type { IGlobalDispatch } from "./services/GlobalDispatch";
+import type { ILibraryManagement } from "./services/LibMgmtSvc";
 import type { IShellRuntime } from "./shell";
 
 export interface IUserDaemon extends IProcess {

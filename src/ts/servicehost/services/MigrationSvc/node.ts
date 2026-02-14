@@ -1,5 +1,5 @@
 import type { IMigrationNode, IMigrationNodeConstructor } from "$interfaces/migration";
-import type { IMigrationService } from "$interfaces/service";
+import type { IMigrationService } from "$interfaces/services/MigrationSvc";
 import { Log } from "$ts/logging";
 import { LogLevel } from "$types/logging";
 import type { MigrationResult, MigrationStatusCallback } from "$types/migrations";
@@ -10,6 +10,7 @@ export class MigrationNode implements IMigrationNode {
   public static friendlyName = "Unknown Migration";
   public static inversional = false;
   public static deprecated = false;
+  // TODO: below version aggregation is bugged, 7.0.1 resolves to the same as 7.0.10 and 7.1.0
   public static version = packageJson.version
     .split(".")
     .splice(1, 2)

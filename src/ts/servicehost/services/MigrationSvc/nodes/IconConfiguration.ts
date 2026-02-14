@@ -1,5 +1,5 @@
 import type { IMigrationNodeConstructor } from "$interfaces/migration";
-import type { IMigrationService } from "$interfaces/service";
+import type { IMigrationService } from "$interfaces/services/MigrationSvc";
 import type { MigrationResult } from "$types/migrations";
 import { MigrationNode } from "../node";
 

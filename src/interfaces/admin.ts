@@ -2,7 +2,8 @@ import type { BugReportTpaFile } from "$apps/admin/adminportal/types";
 import type { BugReport } from "$types/bughunt";
 import type { ReadableStore } from "$types/writable";
 import type { IAppProcess } from "./app";
-import type { IAdminBootstrapper, IShareManager } from "./service";
+import type { IAdminBootstrapper } from "./services/AdminBootstrapper";
+import type { IShareManager } from "./services/ShareMgmt";
 
 export interface IAdminPortalRuntime extends IAppProcess {
   ready: ReadableStore<boolean>;

@@ -1,4 +1,4 @@
-import type { ITrashCanService } from "$interfaces/service";
+import type { ITrashCanService } from "$interfaces/services/TrashSvc";
 import { Daemon } from "$ts/daemon";
 import { Env, Fs, SysDispatch } from "$ts/env";
 import type { ServiceHost } from "$ts/servicehost";

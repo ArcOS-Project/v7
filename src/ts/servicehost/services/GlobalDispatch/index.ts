@@ -1,6 +1,6 @@
 import type { IUserDaemon } from "$interfaces/daemon";
 import type { IServerManager } from "$interfaces/modules/server";
-import type { IGlobalDispatch } from "$interfaces/service";
+import type { IGlobalDispatch } from "$interfaces/services/GlobalDispatch";
 import { Daemon } from "$ts/daemon";
 import { Env, getKMod, Stack } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";

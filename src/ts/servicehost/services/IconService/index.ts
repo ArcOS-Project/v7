@@ -1,4 +1,4 @@
-import type { IIconService } from "$interfaces/service";
+import type { IIconService } from "$interfaces/services/IconService";
 import { Daemon } from "$ts/daemon";
 import { Fs } from "$ts/env";
 import { getAllImages, getGroupedIcons, iconIdFromPath, maybeIconId } from "$ts/images";

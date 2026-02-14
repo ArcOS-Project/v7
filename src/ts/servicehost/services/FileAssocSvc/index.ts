@@ -1,4 +1,4 @@
-import type { IFileAssocService } from "$interfaces/service";
+import type { IFileAssocService } from "$interfaces/services/FileAssocSvc";
 import { Daemon } from "$ts/daemon";
 import { Fs } from "$ts/env";
 import type { ServiceHost } from "$ts/servicehost";

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/admin";
-  import type { IMigrationService } from "$interfaces/service";
+  import type { IMigrationService } from "$interfaces/services/MigrationSvc";
   import HtmlSpinner from "$lib/HtmlSpinner.svelte";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { Logo } from "$ts/branding";

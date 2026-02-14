@@ -1,4 +1,4 @@
-import type { IRecentFilesService } from "$interfaces/service";
+import type { IRecentFilesService } from "$interfaces/services/RecentFilesSvc";
 import { Fs } from "$ts/env";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";

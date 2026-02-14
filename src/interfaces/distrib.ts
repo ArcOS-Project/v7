@@ -3,7 +3,7 @@ import type { ReadableStore } from "$types/writable";
 import type JSZip from "jszip";
 import type { Constructs } from "./common";
 import type { IProcess } from "./process";
-import type { IDistributionServiceProcess } from "./service";
+import type { IDistributionServiceProcess } from "./services/DistribSvc";
 
 export interface IInstallerProcessBase extends IProcess {
   parent: IDistributionServiceProcess;

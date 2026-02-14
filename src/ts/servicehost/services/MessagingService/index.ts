@@ -1,6 +1,6 @@
 import type { IUserDaemon } from "$interfaces/daemon";
 import type { IServerManager } from "$interfaces/modules/server";
-import type { IMessagingInterface } from "$interfaces/service";
+import type { IMessagingInterface } from "$interfaces/services/MessagingService";
 import { Daemon } from "$ts/daemon";
 import { Env, Fs, getKMod, Server, Stack } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";

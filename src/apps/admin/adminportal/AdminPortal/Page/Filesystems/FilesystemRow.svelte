@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { FilesystemsPageQuota } from "$apps/admin/adminportal/types";
   import type { IAdminPortalRuntime } from "$interfaces/admin";
-  import type { IAdminBootstrapper } from "$interfaces/service";
+  import type { IAdminBootstrapper } from "$interfaces/services/AdminBootstrapper";
   import CircularProgress from "$lib/CircularProgress.svelte";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import Spinner from "$lib/Spinner.svelte";

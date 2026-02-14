@@ -1,4 +1,4 @@
-import type { IApplicationStorage } from "$interfaces/service";
+import type { IApplicationStorage } from "$interfaces/services/AppStorage";
 import { Fs, SysDispatch } from "$ts/env";
 import { CommandResult } from "$ts/result";
 import type { ServiceHost } from "$ts/servicehost";

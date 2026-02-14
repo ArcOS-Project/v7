@@ -1,4 +1,4 @@
-import type { IAdminBootstrapper } from "$interfaces/service";
+import type { IAdminBootstrapper } from "$interfaces/services/AdminBootstrapper";
 import { Daemon } from "$ts/daemon";
 import { Fs, Server } from "$ts/env";
 import { AdminFileSystem } from "$ts/kernel/mods/fs/drives/admin";

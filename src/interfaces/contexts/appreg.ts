@@ -1,5 +1,5 @@
 import type { IUserContext } from "$interfaces/daemon";
-import type { IApplicationStorage } from "$interfaces/service";
+import type { IApplicationStorage } from "$interfaces/services/AppStorage";
 import type { App, AppStorage, InstalledApp } from "$types/app";
 
 export interface IAppRegistrationUserContext extends IUserContext {
