@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "../runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import { AdminPortalPageStore } from "../store";
 
-  const { process }: { process: AdminPortalRuntime } = $props();
+  const { process }: { process: IAdminPortalRuntime } = $props();
   const { currentPage, ready } = process;
 </script>
 

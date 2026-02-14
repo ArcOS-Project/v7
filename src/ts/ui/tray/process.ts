@@ -1,20 +1,20 @@
-import type { ShellRuntime } from "$apps/components/shell/runtime";
 import type { ShellTrayIcon, TrayPopup } from "$apps/components/shell/types";
+import type { IProcess } from "$interfaces/process";
+import type { IShellRuntime, ITrayIconProcess } from "$interfaces/shell";
 import { Env, Stack } from "$ts/env";
 import { ProcessWithPermissions } from "$ts/permissions/process";
-import { Process } from "$ts/process/instance";
 import type { ContextMenuItem } from "$types/app";
 import { mount, unmount } from "svelte";
 
-export class TrayIconProcess extends ProcessWithPermissions {
+export class TrayIconProcess extends ProcessWithPermissions implements ITrayIconProcess {
   targetPid: number;
   identifier: string;
   popup?: TrayPopup;
   context?: ContextMenuItem[];
-  action?: (targetedProcess: Process) => void;
+  action?: (targetedProcess: IProcess) => void;
   componentMount: Record<string, any> = {};
   icon: string;
-  shell: ShellRuntime;
+  shell: IShellRuntime;
 
   //#region LIFECYCLE
 
@@ -59,7 +59,7 @@ export class TrayIconProcess extends ProcessWithPermissions {
     this.shell.trayHost?.disposeTrayIcon?.(this.targetPid, this.identifier);
   }
 
-  async renderPopup(popup: HTMLDivElement, target: Process) {}
+  async renderPopup(popup: HTMLDivElement, target: IProcess) {}
 
   //#endregion
 

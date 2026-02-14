@@ -1,9 +1,9 @@
-import { AppProcess } from "$ts/apps/process";
+import type { IAppProcess } from "$interfaces/app";
+import type { IProcessHandler } from "$interfaces/kernel";
 import { getKMod, Kernel, Stack } from "$ts/env";
-import type { ProcessHandlerType } from "$types/kernel";
 import { LogLevel } from "$types/logging";
 import type { State } from "../../types/state";
-import { Process } from "../process/instance";
+import { Process } from "../kernel/mods/stack/process/instance";
 import { Sleep } from "../sleep";
 import { StateError } from "./error";
 import { States } from "./store";
@@ -12,7 +12,7 @@ export class StateHandler extends Process {
   store: Record<string, State> = {};
   currentState: string = "";
   stateProps: Record<string, Record<any, any>> = {};
-  stateAppProcess: AppProcess | undefined;
+  stateAppProcess: IAppProcess | undefined;
   public _criticalProcess: boolean = true;
 
   //#region LIFECYCLE
@@ -138,13 +138,13 @@ export class StateHandler extends Process {
 
     this.Log(`BEGINNING LOAD OF ${data.name} (${data.identifier}) IN APP MODE`);
 
-    const stack = getKMod<ProcessHandlerType>("stack");
+    const stack = getKMod<IProcessHandler>("stack");
 
     if (!data.appModule) return;
 
     const mod = await data.appModule();
     const app = mod.default;
-    const proc = await stack.spawn<AppProcess>(
+    const proc = await stack.spawn<IAppProcess>(
       app.assets.runtime,
       undefined,
       "SYSTEM",

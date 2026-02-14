@@ -1,9 +1,11 @@
+import type { IArcFindRuntime } from "$interfaces/arcfind";
+import type { IShellRuntime, ITrayHostRuntime } from "$interfaces/shell";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Env, Fs, Stack, SysDispatch } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
+import { UserPaths } from "$ts/user/store";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { RecursiveDirectoryReadReturn } from "$types/fs";
@@ -12,13 +14,11 @@ import type { Workspace } from "$types/user";
 import dayjs from "dayjs";
 import { type FuseResult } from "fuse.js";
 import { fetchWeatherApi } from "openmeteo";
-import type { ArcFindRuntime } from "../arcfind/runtime";
-import type { TrayHostRuntime } from "../trayhost/runtime";
 import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
 import { shortWeekDays, type CalendarMonth, type WeatherInformation } from "./types";
 
-export class ShellRuntime extends AppProcess {
+export class ShellRuntime extends AppProcess implements IShellRuntime {
   public startMenuOpened = Store<boolean>(false);
   public actionCenterOpened = Store<boolean>(false);
   public workspaceManagerOpened = Store<boolean>(false);
@@ -31,8 +31,8 @@ export class ShellRuntime extends AppProcess {
   public FullscreenCount = Store<Record<string, Set<number>>>({});
   public openedTrayPopup = Store<string>();
   public searchLoading = Store<boolean>(true);
-  public trayHost?: TrayHostRuntime;
-  public arcFind?: ArcFindRuntime;
+  public trayHost?: ITrayHostRuntime;
+  public arcFind?: IArcFindRuntime;
   public ready = Store<boolean>(false);
   public STARTMENU_FOLDER = UserPaths.StartMenu;
   public StartMenuContents = Store<RecursiveDirectoryReadReturn>();

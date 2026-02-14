@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import { formatBytes, join } from "$ts/util/fs";
   import type { FileEntry } from "$types/fs";
   import type { ArcShortcut } from "$types/shortcut";

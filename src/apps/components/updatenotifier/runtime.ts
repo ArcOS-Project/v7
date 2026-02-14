@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/server/user/daemon";
+import { Daemon } from "$ts/daemon";
 import type { AppProcessData } from "$types/app";
 
 export class UpdateNotifierRuntime extends AppProcess {

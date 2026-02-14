@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { ApplicationStorage } from "$ts/apps/storage";
+  import { Daemon } from "$ts/daemon";
   import { ArcOSVersion, Env, Stack, State } from "$ts/env";
-  import { KernelModules } from "$ts/getters";
+  import { KernelModules } from "$ts/kernel/getters";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
   import type { AdvSysSetRuntime } from "../runtime";
 
   const { process }: { process: AdvSysSetRuntime } = $props();

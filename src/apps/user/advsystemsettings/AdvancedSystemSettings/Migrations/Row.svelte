@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { MigrationService } from "$ts/migrations";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
+  import type { MigrationService } from "$ts/servicehost/services/MigrationSvc";
 
   const {
     migrationService,

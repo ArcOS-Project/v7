@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { contextProps } from "$ts/context/actions.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
   import { join } from "$ts/util/fs";
   import type { FolderEntry } from "$types/fs";
   import dayjs from "dayjs";

@@ -2,7 +2,7 @@
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
-  import { StoreItemIcon } from "$ts/distrib/util";
+  import { StoreItemIcon } from "$ts/util/distrib";
   import { formatBytes } from "$ts/util/fs";
   import type { StoreItem } from "$types/package";
   import dayjs from "dayjs";

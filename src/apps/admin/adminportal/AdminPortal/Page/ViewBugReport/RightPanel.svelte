@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { stringifyLogs } from "$apps/admin/adminportal/util";
+  import { stringifyLogs } from "$ts/util/admin";
   import type { BugReport } from "$types/bughunt";
 
   const { report }: { report: BugReport } = $props();

@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { IShellRuntime } from "$interfaces/shell";
   import { onMount } from "svelte";
-  import type { ShellRuntime } from "../../runtime";
   import type { QuickSetting } from "../../types";
 
-  const { setting, process }: { setting: QuickSetting; process: ShellRuntime } = $props();
+  const { setting, process }: { setting: QuickSetting; process: IShellRuntime } = $props();
   const { userPreferences } = process;
 
   let active = $state(false);

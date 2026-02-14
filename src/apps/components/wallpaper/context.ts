@@ -1,8 +1,7 @@
+import { Daemon } from "$ts/daemon";
 import { Env, Fs } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
-import { getParentDirectory, join } from "$ts/util/fs";
-import { UUID } from "$ts/uuid";
+import { UserPaths } from "$ts/user/store";
+import { getParentDirectory } from "$ts/util/fs";
 import type { AppContextMenu } from "$types/app";
 import type { FileEntry } from "$types/fs";
 import type { WallpaperRuntime } from "./runtime";

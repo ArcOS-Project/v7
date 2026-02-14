@@ -1,6 +1,6 @@
 <script lang="ts">
   import UserLink from "$lib/UserLink.svelte";
-  import { StoreItemBanner, StoreItemIcon } from "$ts/distrib/util";
+  import { StoreItemBanner, StoreItemIcon } from "$ts/util/distrib";
   import { formatBytes } from "$ts/util/fs";
   import type { StoreItem } from "$types/package";
   import { onMount } from "svelte";

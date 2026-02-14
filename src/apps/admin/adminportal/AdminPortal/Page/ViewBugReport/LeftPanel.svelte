@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import type { BugReportTpaFile } from "$apps/admin/adminportal/types";
-  import { Daemon } from "$ts/server/user/daemon";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import { Daemon } from "$ts/daemon";
   import { formatBytes } from "$ts/util/fs";
   import type { BugReport } from "$types/bughunt";
   import { onMount } from "svelte";
@@ -11,7 +11,7 @@
   import Server from "./LeftPanel/Server.svelte";
   import UserAgent from "./LeftPanel/UserAgent.svelte";
 
-  const { report, process }: { report: BugReport; process: AdminPortalRuntime } = $props();
+  const { report, process }: { report: BugReport; process: IAdminPortalRuntime } = $props();
 
   let loadingFiles = $state<boolean>(true);
   let tpaFiles: BugReportTpaFile[] = $state([]);

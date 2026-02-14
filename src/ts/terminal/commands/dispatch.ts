@@ -1,10 +1,9 @@
-// import { KnownSystemDispatchers, SystemOnlyDispatches } from "$ts/kernel/mods/dispatch/store";
+import type { IArcTerminal } from "$interfaces/terminal";
 import { Stack, SysDispatch } from "$ts/env";
-import { tryJsonParse } from "$ts/json";
 import { KnownSystemDispatchers, SystemOnlyDispatches } from "$ts/kernel/mods/dispatch/store";
 import { tryParseInt } from "$ts/util";
+import { tryJsonParse } from "$ts/util/json";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { BRBLUE, RESET } from "../store";
 
@@ -22,7 +21,7 @@ export class DispatchCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, flags: Arguments): Promise<number> {
+  protected async main(term: IArcTerminal, flags: Arguments): Promise<number> {
     const command = flags.cmd;
     const data = tryJsonParse(flags.data);
     const pid = tryParseInt(flags.pid, true);

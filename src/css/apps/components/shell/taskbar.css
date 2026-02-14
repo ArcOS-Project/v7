@@ -159,7 +159,7 @@ div.shell div.taskbar div.pinned-apps > button {
 }
 
 .theme-light #arcShell div.shell div.taskbar div.pinned-apps > button:active {
-opacity: 0.5;
+  opacity: 0.5;
   filter: brightness(0.9);
 }
 

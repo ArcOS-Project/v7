@@ -1,5 +1,5 @@
-import type { App } from "$types/app";
 import "$css/apps/components/apppermissions.css";
+import type { App } from "$types/app";
 import AppPermissions from "./AppPermissions.svelte";
 import { AppPermissionsRuntime } from "./runtime";
 

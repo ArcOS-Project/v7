@@ -10,5 +10,5 @@
     <input type="color" bind:value bind:this={colorPicker} />
     <button class="dot" aria-label="Color" style="--color: {value};" onclick={() => colorPicker?.click()}></button>
   </div>
-  <input type="text" bind:value maxlength="7" placeholder="#000000">
+  <input type="text" bind:value maxlength="7" placeholder="#000000" />
 </div>

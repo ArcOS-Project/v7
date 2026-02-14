@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import { MessageBox } from "$ts/dialog";
+  import { MessageBox } from "$ts/util/dialog";
   import type { SharedDriveType } from "$types/shares";
   import type { ExpandedUserInfo } from "$types/user";
   import dayjs from "dayjs";
 
-  const { member, process, share }: { member: ExpandedUserInfo; process: AdminPortalRuntime; share: SharedDriveType } = $props();
+  const { member, process, share }: { member: ExpandedUserInfo; process: IAdminPortalRuntime; share: SharedDriveType } = $props();
   const { profile } = member;
   const created = dayjs(member.createdAt).format("DD MMM YYYY");
 

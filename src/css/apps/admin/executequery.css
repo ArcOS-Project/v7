@@ -13,7 +13,7 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  position:relative;
+  position: relative;
 }
 
 #ExecuteQueryApp > div.body div.page-content {

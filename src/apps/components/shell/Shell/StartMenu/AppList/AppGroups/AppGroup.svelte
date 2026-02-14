@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
-  import { isPopulatable } from "$ts/apps/util";
-  import { Daemon } from "$ts/server/user/daemon";
+  import type { IShellRuntime } from "$interfaces/shell";
+  import { Daemon } from "$ts/daemon";
+  import { isPopulatable } from "$ts/util/apps";
   import type { AppStorage } from "$types/app";
   import ListItem from "../ListItem.svelte";
 
-  const { apps, id, groupName, process }: { process: ShellRuntime; apps: AppStorage; id: string; groupName: string } = $props();
+  const { apps, id, groupName, process }: { process: IShellRuntime; apps: AppStorage; id: string; groupName: string } = $props();
   const { userPreferences } = process;
 
   let expand = $state<boolean>(false);

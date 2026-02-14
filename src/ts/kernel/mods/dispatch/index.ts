@@ -1,21 +1,21 @@
+import type { ISystemDispatch, IWaveKernel } from "$interfaces/kernel";
+import { Kernel } from "$ts/env";
+import { DefaultColors } from "$ts/terminal/store";
+import { logItemToStr } from "$ts/util";
 import type { SystemDispatchResult } from "$types/dispatch";
-import type { ConstructedWaveKernel } from "$types/kernel";
+import { type LogItem } from "$types/logging";
+import { FitAddon } from "@xterm/addon-fit";
+import { Unicode11Addon } from "@xterm/addon-unicode11";
 import { Terminal } from "@xterm/xterm";
 import { KernelModule } from "../../module";
 import { SystemOnlyDispatches } from "./store";
-import { DefaultColors } from "$ts/terminal/store";
-import { FitAddon } from "@xterm/addon-fit";
-import { Unicode11Addon } from "@xterm/addon-unicode11";
-import { ShortLogLevelCaptions, type LogItem } from "$types/logging";
-import { Kernel } from "$ts/env";
-import { logItemToStr } from "$ts/util";
 
-export class SystemDispatch extends KernelModule {
+export class SystemDispatch extends KernelModule implements ISystemDispatch {
   public subscribers: Record<string, Record<number, (data: any) => void>> = {};
 
   //#region LIFECYCLE
 
-  constructor(kernel: ConstructedWaveKernel, id: string) {
+  constructor(kernel: IWaveKernel, id: string) {
     super(kernel, id);
   }
 

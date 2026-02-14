@@ -1,8 +1,8 @@
+import type { IBaseService } from "$interfaces/service";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Stack } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
-import { BaseService } from "$ts/services/base";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { Service } from "$types/service";
@@ -11,7 +11,7 @@ import type { Unsubscriber } from "svelte/store";
 export class ServiceInfoRuntime extends AppProcess {
   serviceId: string;
   service = Store<Service | undefined>();
-  serviceProcess = Store<BaseService | undefined>();
+  serviceProcess = Store<IBaseService | undefined>();
   serviceSubscriber?: Unsubscriber;
 
   //#region LIFECYCLE

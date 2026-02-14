@@ -1,6 +1,7 @@
+import type { IAppProcess } from "$interfaces/app";
+import type { IArcTerminal } from "$interfaces/terminal";
 import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
-import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 
 export class ExitCommand extends TerminalProcess {
@@ -17,8 +18,8 @@ export class ExitCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal): Promise<number> {
-    const proc = Stack.getProcess<AppProcess>(term.parentPid);
+  protected async main(term: IArcTerminal): Promise<number> {
+    const proc = Stack.getProcess<IAppProcess>(term.parentPid);
 
     if (!(proc instanceof AppProcess)) {
       return 1;

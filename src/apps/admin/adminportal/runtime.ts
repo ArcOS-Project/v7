@@ -1,11 +1,12 @@
+import type { IAdminPortalRuntime } from "$interfaces/admin";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Fs } from "$ts/env";
-import { AdminBootstrapper } from "$ts/server/admin";
-import { Daemon } from "$ts/server/user/daemon";
-import { ShareManager } from "$ts/shares";
+import { AdminBootstrapper } from "$ts/servicehost/services/AdminBootstrapper";
+import { ShareManager } from "$ts/servicehost/services/ShareMgmt";
 import { Sleep } from "$ts/sleep";
 import { textToBlob } from "$ts/util/convert";
+import { MessageBox } from "$ts/util/dialog";
 import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
@@ -16,7 +17,7 @@ import { AdminPortalPageStore } from "./store";
 import type { BugReportFileUrlParseResult, BugReportTpaFile } from "./types";
 import { BugHuntUserDataApp } from "./userdata/metadata";
 
-export class AdminPortalRuntime extends AppProcess {
+export class AdminPortalRuntime extends AppProcess implements IAdminPortalRuntime {
   ready = Store<boolean>(false);
   currentPage = Store<string>("");
   switchPageProps = Store<Record<string, any>>({});
@@ -133,10 +134,11 @@ export class AdminPortalRuntime extends AppProcess {
 
   //#endregion
   //#region UTILS
-  
+
   async viewUserById(userId: string) {
+    this.Log(`viewUserById: ${userId}`);
     const user = (await this.admin.getAllUsers()).find((u) => u._id === userId);
-    
+
     this.switchPage("viewUser", { user });
   }
 

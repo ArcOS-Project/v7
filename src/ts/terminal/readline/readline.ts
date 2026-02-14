@@ -12,10 +12,10 @@
  *
  * © IzKuipers 2025
  */
+import type { IArcTerminal } from "$interfaces/terminal";
 import { Stack } from "$ts/env";
-import { Process } from "$ts/process/instance";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { type IDisposable, type ITerminalAddon, Terminal } from "@xterm/xterm";
-import type { ArcTerminal } from "..";
 import { type Highlighter, IdentityHighlighter } from "./highlight";
 import { History } from "./history";
 import { type Input, InputType, parseInput } from "./keymap";
@@ -48,13 +48,13 @@ export class Readline extends Process implements ITerminalAddon {
   private ctrlCHandler: CtrlCHandler = () => {
     return;
   };
-  public terminal: ArcTerminal | undefined;
+  public terminal: IArcTerminal | undefined;
 
   private pauseHandler: PauseHandler = (resume: boolean) => {
     return;
   };
 
-  constructor(pid: number, parentPid: number, terminal?: ArcTerminal) {
+  constructor(pid: number, parentPid: number, terminal?: IArcTerminal) {
     super(pid, parentPid);
     this.terminal = terminal;
     this.name = "Readline";

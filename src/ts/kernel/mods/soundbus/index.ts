@@ -1,16 +1,16 @@
+import type { ISoundbus, IWaveKernel } from "$interfaces/kernel";
 import { Env } from "$ts/env";
 import { KernelModule } from "$ts/kernel/module";
-import type { ConstructedWaveKernel } from "$types/kernel";
 import type { SoundBusStore, SoundStore } from "$types/soundbus";
 import { ArcSounds } from "./store";
 
-export class SoundBus extends KernelModule {
+export class SoundBus extends KernelModule implements ISoundbus {
   private store: SoundStore = {};
   private _bus: SoundBusStore = {};
 
   //#region LIFECYCLE
 
-  constructor(kernel: ConstructedWaveKernel, id: string) {
+  constructor(kernel: IWaveKernel, id: string) {
     super(kernel, id);
 
     this.store = ArcSounds;

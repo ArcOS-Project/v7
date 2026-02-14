@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ActivityCaptionTranslations, ActivityIconTranslations } from "$ts/server/user/store";
+  import { ActivityCaptionTranslations, ActivityIconTranslations } from "$ts/user/store";
   import type { LoginActivity } from "$types/activity";
   import dayjs from "dayjs";
 

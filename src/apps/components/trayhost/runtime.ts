@@ -1,6 +1,7 @@
+import type { ITrayHostRuntime, ITrayIconProcess } from "$interfaces/shell";
+import { Daemon } from "$ts/daemon";
 import { Env, Stack, SysDispatch } from "$ts/env";
-import { Process } from "$ts/process/instance";
-import { Daemon } from "$ts/server/user/daemon";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { Sleep } from "$ts/sleep";
 import { TrayIconProcess } from "$ts/ui/tray/process";
 import { Store } from "$ts/writable";
@@ -8,9 +9,9 @@ import type { AppProcessData } from "$types/app";
 import type { UserPreferencesStore } from "$types/user";
 import type { TrayIconDiscriminator, TrayIconOptions } from "../shell/types";
 
-export class TrayHostRuntime extends Process {
+export class TrayHostRuntime extends Process implements ITrayHostRuntime {
   userPreferences?: UserPreferencesStore;
-  public trayIcons = Store<Record<TrayIconDiscriminator, TrayIconProcess>>({});
+  public trayIcons = Store<Record<TrayIconDiscriminator, ITrayIconProcess>>({});
 
   //#region LIFECYCLE
 
@@ -44,7 +45,7 @@ export class TrayHostRuntime extends Process {
 
     if (trayIcons[`${pid}#${identifier}`]) return false;
 
-    const proc = await Stack.spawn<TrayIconProcess>(process, undefined, Daemon?.userInfo?._id, pid, {
+    const proc = await Stack.spawn<ITrayIconProcess>(process, undefined, Daemon?.userInfo?._id, pid, {
       ...options,
       pid,
       identifier,

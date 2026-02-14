@@ -1,15 +1,15 @@
 <script lang="ts">
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
-  import { contextMenu } from "$ts/context/actions.svelte";
+  import type { IShellRuntime } from "$interfaces/shell";
+  import { Daemon } from "$ts/daemon";
   import { Env } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
-  import { AppGroups, UserPaths } from "$ts/server/user/store";
+  import { contextMenu } from "$ts/ui/context/actions.svelte";
+  import { AppGroups, UserPaths } from "$ts/user/store";
   import { join } from "$ts/util/fs";
   import { Store } from "$ts/writable";
   import type { ArcShortcut } from "$types/shortcut";
   import NewListItem from "../NewListItem.svelte";
 
-  const { shortcuts, name, process }: { process: ShellRuntime; shortcuts: Record<string, ArcShortcut>; name: string } = $props();
+  const { shortcuts, name, process }: { process: IShellRuntime; shortcuts: Record<string, ArcShortcut>; name: string } = $props();
   const { userPreferences, startMenuOpened } = process;
   const populatable = Store<ArcShortcut[]>([]);
 

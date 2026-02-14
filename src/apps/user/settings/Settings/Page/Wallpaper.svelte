@@ -1,15 +1,14 @@
 <script lang="ts">
-  import Spinner from "$lib/Spinner.svelte";
-  import { Daemon } from "$ts/server/user/daemon";
-  import { Wallpapers } from "$ts/wallpaper/store";
+  import { Daemon } from "$ts/daemon";
+  import { Wallpapers } from "$ts/user/wallpaper/store";
   import type { Wallpaper } from "$types/wallpaper";
   import { onMount } from "svelte";
   import type { SettingsRuntime } from "../../runtime";
+  import Section from "../Section.svelte";
+  import Option from "../Section/Option.svelte";
   import ThemesHeader from "../ThemesHeader.svelte";
   import Setting from "../ThemesHeader/Setting.svelte";
   import WallpaperOption from "./Wallpaper/WallpaperOption.svelte";
-  import Section from "../Section.svelte";
-  import Option from "../Section/Option.svelte";
 
   const { process }: { process: SettingsRuntime } = $props();
   const { userInfo, preferences: userPreferences } = Daemon || {}!;

@@ -1,5 +1,6 @@
+import type { IUserDaemon } from "$interfaces/daemon";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon, type UserDaemon } from "$ts/server/user/daemon";
+import { Daemon } from "$ts/daemon";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import { ChooseProfilePictureApp } from "./ChooseProfilePicture/metadata";
@@ -16,7 +17,7 @@ export class FirstRunRuntime extends AppProcess {
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, app: AppProcessData, daemon: UserDaemon) {
+  constructor(pid: number, parentPid: number, app: AppProcessData, daemon: IUserDaemon) {
     super(pid, parentPid, app);
 
     this.setSource(__SOURCE__);

@@ -1,9 +1,9 @@
-import { MessageBox } from "$ts/dialog";
+import type { ISharedDrive } from "$interfaces/fs";
+import { Daemon } from "$ts/daemon";
 import { Env, Fs } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
-import { ShareManager } from "$ts/shares";
-import type { SharedDrive } from "$ts/shares/drive";
+import { ShareManager } from "$ts/servicehost/services/ShareMgmt";
+import { UserPaths } from "$ts/user/store";
+import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import type { AppContextMenu } from "$types/app";
 import type { FileEntry, FolderEntry } from "$types/fs";
@@ -52,12 +52,12 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         },
         icon: "x",
         disabled: (drive: QuotedDrive) =>
-          drive.data.FIXED || (drive.data as SharedDrive).shareInfo.userId === Daemon?.userInfo?._id,
+          drive.data.FIXED || (drive.data as ISharedDrive).shareInfo.userId === Daemon?.userInfo?._id,
       },
       {
         caption: "Leave share",
         action: (drive: QuotedDrive) => {
-          const share = drive.data as SharedDrive;
+          const share = drive.data as ISharedDrive;
 
           MessageBox(
             {
@@ -92,13 +92,13 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         },
         icon: "log-out",
         disabled: (drive: QuotedDrive) =>
-          (drive.data as SharedDrive).shareInfo.userId === Daemon?.userInfo?._id ||
+          (drive.data as ISharedDrive).shareInfo.userId === Daemon?.userInfo?._id ||
           runtime.shareAccessIsAdministrative(drive.data),
       },
       { sep: true },
       {
         caption: "Manage share...",
-        action: (drive: QuotedDrive) => runtime.spawnOverlayApp("ShareMgmtGui", runtime.pid, (drive.data as SharedDrive).shareId),
+        action: (drive: QuotedDrive) => runtime.spawnOverlayApp("ShareMgmtGui", runtime.pid, (drive.data as ISharedDrive).shareId),
         icon: "wrench",
       },
       {

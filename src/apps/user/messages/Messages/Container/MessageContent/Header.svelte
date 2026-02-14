@@ -2,8 +2,8 @@
   import type { MessagingAppRuntime } from "$apps/user/messages/runtime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import UserLink from "$lib/UserLink.svelte";
+  import { Daemon } from "$ts/daemon";
   import { ProfilePictures } from "$ts/images/pfp";
-  import { Daemon } from "$ts/server/user/daemon";
   import type { ExpandedMessage } from "$types/messaging";
   import type { PublicUserInfo } from "$types/user";
   import dayjs from "dayjs";

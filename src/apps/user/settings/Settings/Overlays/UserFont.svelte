@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { UserFonts } from "$ts/server/user/store";
+  import { UserFonts } from "$ts/user/store";
   import type { OverlayRuntime } from "../../overlay";
   const { process }: { process: OverlayRuntime } = $props();
   const { userPreferences } = process;

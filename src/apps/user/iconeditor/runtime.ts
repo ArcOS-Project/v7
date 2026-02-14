@@ -1,8 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Env } from "$ts/env";
-import { IconService } from "$ts/icon";
-import { Daemon } from "$ts/server/user/daemon";
+import { IconService } from "$ts/servicehost/services/IconService";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 

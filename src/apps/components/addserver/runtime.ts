@@ -1,8 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
 import { Server } from "$ts/env";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { GoodStatusIcon } from "$ts/images/status";
+import { MessageBox } from "$ts/util/dialog";
 import type { AppProcessData } from "$types/app";
 import axios from "axios";
 
