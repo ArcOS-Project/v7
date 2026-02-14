@@ -6,7 +6,9 @@ import {
 } from "$apps/components/fsprogress/types";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import type { IFilesystemUserContext, IUserDaemon } from "$interfaces/daemon";
-import type { IFilesystemDrive, ILegacyServerDrive, IMemoryFilesystemDrive } from "$interfaces/fs";
+import type { ILegacyServerDrive } from "$interfaces/drives/legacy";
+import type { IMemoryFilesystemDrive } from "$interfaces/drives/temp";
+import type { IFilesystemDrive } from "$interfaces/fs";
 import type { IRecentFilesService, ITrashCanService } from "$interfaces/service";
 import { Env, Fs, Stack, SysDispatch } from "$ts/env";
 import { LegacyServerDrive } from "$ts/kernel/mods/fs/drives/legacy";

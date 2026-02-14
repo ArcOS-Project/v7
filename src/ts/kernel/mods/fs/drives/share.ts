@@ -1,4 +1,4 @@
-import type { ISharedDrive } from "$interfaces/fs";
+import type { ISharedDrive } from "$interfaces/drives/share";
 import { Daemon } from "$ts/daemon";
 import { Server } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";

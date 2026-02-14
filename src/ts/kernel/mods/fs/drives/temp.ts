@@ -1,4 +1,4 @@
-import type { IMemoryFilesystemDrive } from "$interfaces/fs";
+import type { IMemoryFilesystemDrive } from "$interfaces/drives/temp";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
 import { deepCopyWithBlobs, sortByKey } from "$ts/util";
 import { UUID } from "$ts/util/uuid";

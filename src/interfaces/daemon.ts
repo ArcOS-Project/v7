@@ -17,7 +17,9 @@ import type { CategorizedDiskUsage, CustomStylePreferences, PublicUserInfo, User
 import type { Wallpaper } from "$types/wallpaper";
 import type { ReadableStore, Unsubscriber } from "$types/writable";
 import type { IAppProcess } from "./app";
-import type { IFilesystemDrive, ILegacyServerDrive, IMemoryFilesystemDrive } from "./fs";
+import type { ILegacyServerDrive } from "./drives/legacy";
+import type { IMemoryFilesystemDrive } from "./drives/temp";
+import type { IFilesystemDrive } from "./fs";
 import type { IProcess } from "./process";
 import type { IApplicationStorage, IFileAssocService, IGlobalDispatch, ILibraryManagement, IServiceHost } from "./service";
 import type { IShellRuntime } from "./shell";
