@@ -1,4 +1,6 @@
-import type { IEnvironment, IProcessHandler, ISystemDispatch, IWaveKernel } from "$interfaces/kernel";
+import type { IWaveKernel } from "$interfaces/kernel";
+import type { ISystemDispatch } from "$interfaces/modules/dispatch";
+import type { IProcessHandler } from "$interfaces/modules/stack";
 import type { IStateHandler } from "$interfaces/state";
 import { __Console__ } from "$ts/console";
 import { ArcOSVersion, SetCurrentKernel, SetKernelExports } from "$ts/env";
@@ -82,15 +84,6 @@ export class WaveKernel implements IWaveKernel {
     this.Log(`ArcOS`, `***** [v7 -> ArcOS InDev v${ArcOSVersion}-${this.ARCOS_MODE}_${this.ARCOS_BUILD}] *****`);
 
     await this._kernelModules();
-
-    // Absolutely oblivious piece of code
-    this.getModule<IEnvironment>("env").set(
-      "MIGVER",
-      ArcOSVersion.split(".")
-        .splice(1, 2)
-        .map(Number)
-        .reduce((p, v, i) => p + (i == 1 ? v / 10 : v))
-    );
 
     SetKernelExports();
 

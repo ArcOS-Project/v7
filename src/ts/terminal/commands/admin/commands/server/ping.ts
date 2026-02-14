@@ -1,4 +1,4 @@
-import type { IServerManager } from "$interfaces/kernel";
+import type { IServerManager } from "$interfaces/modules/server";
 import { getKMod } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";

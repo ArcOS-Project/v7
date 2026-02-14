@@ -1,5 +1,6 @@
 import type { IAppProcess } from "$interfaces/app";
-import type { IProcessHandler } from "$interfaces/kernel";
+import type { Constructs } from "$interfaces/common";
+import type { IProcessHandler } from "$interfaces/modules/stack";
 import { getKMod, Kernel, Stack } from "$ts/env";
 import { LogLevel } from "$types/logging";
 import type { State } from "../../types/state";
@@ -145,7 +146,7 @@ export class StateHandler extends Process {
     const mod = await data.appModule();
     const app = mod.default;
     const proc = await stack.spawn<IAppProcess>(
-      app.assets.runtime,
+      app.assets.runtime as Constructs<IAppProcess>,
       undefined,
       "SYSTEM",
       this.pid,

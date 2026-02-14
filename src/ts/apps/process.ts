@@ -1,4 +1,8 @@
+import type { IAppProcess } from "$interfaces/app";
+import type { Constructs } from "$interfaces/common";
 import type { IUserDaemon } from "$interfaces/daemon";
+import type { IProcess } from "$interfaces/process";
+import type { IApplicationStorage } from "$interfaces/service";
 import type { IShellRuntime } from "$interfaces/shell";
 import { Daemon, TryGetDaemon } from "$ts/daemon";
 import { ArcOSVersion, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";
@@ -16,8 +20,6 @@ import type { UserPreferences } from "$types/user";
 import type { ReadableStore } from "$types/writable";
 import type { Draggable } from "@neodrag/vanilla";
 import { mount } from "svelte";
-import type { IAppProcess } from "$interfaces/app";
-import type { IApplicationStorage } from "$interfaces/service";
 import { type App, type AppContextMenu, type AppProcessData, type ContextMenuItem, type ToastMessage } from "../../types/app";
 import { Sleep } from "../sleep";
 import { Store } from "../writable";
@@ -365,7 +367,7 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
     }
 
     const proc = await Stack.spawn<IAppProcess>(
-      metadata.assets.runtime,
+      metadata.assets.runtime as Constructs<IAppProcess>,
       undefined,
       Daemon?.userInfo?._id,
       this.pid,
@@ -381,11 +383,11 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
     return !!proc;
   }
 
-  async spawnApp<T = IAppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
+  async spawnApp<T extends IProcess = IAppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
     return await Daemon?.spawn?.spawnApp<T>(id, parentPid ?? this.parentPid, ...args);
   }
 
-  async spawnOverlayApp<T = IAppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
+  async spawnOverlayApp<T extends IProcess = IAppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
     return await Daemon?.spawn?.spawnOverlay<T>(id, parentPid ?? this.parentPid, ...args);
   }
 

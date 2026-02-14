@@ -1,4 +1,4 @@
-import type { IServerManager } from "$interfaces/kernel";
+import type { IServerManager } from "$interfaces/modules/server";
 import type { IArcTerminal } from "$interfaces/terminal";
 import { getKMod } from "$ts/env";
 import { AdminBootstrapper } from "$ts/servicehost/services/AdminBootstrapper";

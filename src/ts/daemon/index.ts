@@ -20,7 +20,7 @@ import type { IVersionUserContext } from "$interfaces/contexts/version";
 import type { IWallpaperUserContext } from "$interfaces/contexts/wallpaper";
 import type { IWorkspaceUserContext } from "$interfaces/contexts/workspaces";
 import type { IUserContext, IUserDaemon } from "$interfaces/daemon";
-import type { IEnvironment } from "$interfaces/kernel";
+import type { IEnvironment } from "$interfaces/modules/env";
 import type { IApplicationStorage, IGlobalDispatch, IProtocolServiceProcess } from "$interfaces/service";
 import type { IShellRuntime } from "$interfaces/shell";
 import { AdminAppImportPathAbsolutes } from "$ts/apps/store";

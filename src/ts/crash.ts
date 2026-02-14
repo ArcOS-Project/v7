@@ -1,4 +1,5 @@
-import type { IBugHunt, IServerManager } from "$interfaces/kernel";
+import type { IBugHunt } from "$interfaces/modules/bughunt";
+import type { IServerManager } from "$interfaces/modules/server";
 import { LogLevel } from "../types/logging";
 import { Env, getKMod, Kernel } from "./env";
 import { KernelIsPanicked, KernelLogs, KernelPremature } from "./kernel/getters";

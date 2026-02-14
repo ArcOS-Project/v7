@@ -61,7 +61,13 @@ export class SwitchServerRuntime extends AppProcess {
         message: "Are you sure you want to remove this server?",
         buttons: [
           { caption: "Cancel", action: () => {} },
-          { caption: "Remove", action: () => Server.removeServer(server.url), suggested: true },
+          {
+            caption: "Remove",
+            action: () => {
+              Server.removeServer(server.url);
+            },
+            suggested: true,
+          },
         ],
         image: WarningIcon,
       },

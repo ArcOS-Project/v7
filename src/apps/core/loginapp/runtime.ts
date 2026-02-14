@@ -3,7 +3,7 @@ import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/TotpAuthGui";
 import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
 import type { IUserDaemon } from "$interfaces/daemon";
-import type { IServerManager } from "$interfaces/kernel";
+import type { IServerManager } from "$interfaces/modules/server";
 import { AppProcess } from "$ts/apps/process";
 import { UserDaemon } from "$ts/daemon";
 import { Env, getKMod, SoundBus, Stack, State, SysDispatch } from "$ts/env";

@@ -1,13 +1,11 @@
-import type {
-  IBugHunt,
-  IEnvironment,
-  IFilesystem,
-  IProcessHandler,
-  IServerManager,
-  ISoundbus,
-  ISystemDispatch,
-  IWaveKernel,
-} from "$interfaces/kernel";
+import type { IWaveKernel } from "$interfaces/kernel";
+import type { IBugHunt } from "$interfaces/modules/bughunt";
+import type { ISystemDispatch } from "$interfaces/modules/dispatch";
+import type { IEnvironment } from "$interfaces/modules/env";
+import type { IFilesystem } from "$interfaces/modules/fs";
+import type { IServerManager } from "$interfaces/modules/server";
+import type { ISoundbus } from "$interfaces/modules/soundbus";
+import type { IProcessHandler } from "$interfaces/modules/stack";
 import type { IStateHandler } from "$interfaces/state";
 import packageJson from "../../package.json";
 

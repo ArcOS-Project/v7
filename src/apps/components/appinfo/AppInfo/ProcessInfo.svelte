@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IProcessHandler } from "$interfaces/kernel";
+  import type { IProcessHandler } from "$interfaces/modules/stack";
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";

@@ -1,4 +1,4 @@
-import type { IBugHunt } from "$interfaces/kernel";
+import type { IBugHunt } from "$interfaces/modules/bughunt";
 import type { IBugHuntUserSpaceProcess } from "$interfaces/service";
 import { Daemon } from "$ts/daemon";
 import { getKMod } from "$ts/env";

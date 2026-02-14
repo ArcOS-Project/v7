@@ -1,5 +1,7 @@
+import type { Constructs } from "$interfaces/common";
 import type { ISpawnUserContext } from "$interfaces/contexts/spawn";
 import type { IUserDaemon } from "$interfaces/daemon";
+import type { IProcess } from "$interfaces/process";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { Env, Stack, SysDispatch } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
@@ -16,19 +18,19 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
     super(id, daemon);
   }
 
-  async spawnApp<T>(id: string, parentPid?: number, ...args: any[]) {
+  async spawnApp<T extends IProcess>(id: string, parentPid?: number, ...args: any[]) {
     if (this._disposed) return;
 
     return await this._spawnApp<T>(id, Daemon!.workspaces?.getCurrentDesktop(), parentPid, ...args);
   }
 
-  async spawnOverlay<T>(id: string, parentPid?: number, ...args: any[]) {
+  async spawnOverlay<T extends IProcess>(id: string, parentPid?: number, ...args: any[]) {
     if (this._disposed) return;
 
     return await this._spawnOverlay<T>(id, Daemon!.workspaces?.getCurrentDesktop(), parentPid, ...args);
   }
 
-  async _spawnApp<T>(
+  async _spawnApp<T extends IProcess>(
     id: string,
     renderTarget: HTMLDivElement | undefined = undefined,
     parentPid?: number,
@@ -98,7 +100,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
     }
 
     return await Stack.spawn<T>(
-      app.assets.runtime,
+      app.assets.runtime as Constructs<T>,
       renderTarget,
       this.userInfo!._id,
       parentPid || this.pid,
@@ -111,7 +113,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
     );
   }
 
-  async _spawnOverlay<T>(
+  async _spawnOverlay<T extends IProcess>(
     id: string,
     renderTarget: HTMLDivElement | undefined = undefined,
     parentPid?: number,
@@ -181,7 +183,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
     }
 
     return await Stack.spawn<T>(
-      app.assets.runtime,
+      app.assets.runtime as Constructs<T>,
       renderTarget,
       this.userInfo!._id,
       pid || this.pid,

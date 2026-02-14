@@ -1,5 +1,5 @@
 import type { IUserDaemon } from "$interfaces/daemon";
-import type { IServerManager } from "$interfaces/kernel";
+import type { IServerManager } from "$interfaces/modules/server";
 import type { IMessagingInterface } from "$interfaces/service";
 import { Daemon } from "$ts/daemon";
 import { Env, Fs, getKMod, Server, Stack } from "$ts/env";

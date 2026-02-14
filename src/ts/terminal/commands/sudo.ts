@@ -1,4 +1,4 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal, ITerminalProcess } from "$interfaces/terminal";
 import { Daemon } from "$ts/daemon";
 import { Stack } from "$ts/env";
 import { Permissions } from "$ts/permissions";
@@ -68,7 +68,7 @@ export class SudoCommand extends TerminalProcess {
         term.Error("Command not found.");
         term.lastCommandErrored = true;
       } else {
-        const proc = await Stack.spawn<TerminalProcess>(command, undefined, Daemon?.userInfo?._id, this.pid);
+        const proc = await Stack.spawn<ITerminalProcess>(command, undefined, Daemon?.userInfo?._id, this.pid);
 
         // BUG 68798d6957684017c3e9a085
         if (!proc) {

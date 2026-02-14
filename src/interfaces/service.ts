@@ -1,4 +1,3 @@
-import type { IBugHunt, IServerManager } from "$interfaces/kernel";
 import type {
   Activity,
   AuditLog,
@@ -42,6 +41,8 @@ import type { Constructs } from "./common";
 import type { IInstallerProcessBase } from "./distrib";
 import type { IFilesystemDrive } from "./fs";
 import type { IMigrationNodeConstructor } from "./migration";
+import type { IBugHunt } from "./modules/bughunt";
+import type { IServerManager } from "./modules/server";
 import type { IProcess } from "./process";
 import type { ICommandResult } from "./result";
 import type { IThirdPartyAppProcess } from "./thirdparty";

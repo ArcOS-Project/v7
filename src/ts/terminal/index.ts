@@ -162,7 +162,7 @@ export class ArcTerminal extends Process implements IArcTerminal {
         this.lastCommandErrored = true;
       } else {
         try {
-          const proc = await Stack.spawn<TerminalProcess>(command, undefined, Daemon?.userInfo?._id, this.pid);
+          const proc = await Stack.spawn<ITerminalProcess>(command, undefined, Daemon?.userInfo?._id, this.pid);
 
           // BUG 68798d6957684017c3e9a085
           if (!proc) {

@@ -1,4 +1,6 @@
-import type { IServerManager, ISystemDispatch, IWaveKernel } from "$interfaces/kernel";
+import type { IWaveKernel } from "$interfaces/kernel";
+import type { ISystemDispatch } from "$interfaces/modules/dispatch";
+import type { IServerManager } from "$interfaces/modules/server";
 import { getKMod } from "$ts/env";
 import { tryJsonParse } from "$ts/util/json";
 import type { ServerInfo, ServerOption } from "$types/server";
@@ -146,7 +148,7 @@ export class ServerManager extends KernelModule implements IServerManager {
 
       if (!server.system) document.title = `ArcOS - ${server.name || new URL(server.url).hostname}`;
       else document.title = "ArcOS";
-      
+
       return true;
     } catch (e) {
       this.dispatch.dispatch("server-connection-failed");

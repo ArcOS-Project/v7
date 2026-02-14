@@ -91,7 +91,13 @@ export class MessageComposerRuntime extends AppProcess {
         message: "Are you sure you want to discard this message? This cannot be undone.",
         buttons: [
           { caption: "Cancel", action: () => {} },
-          { caption: "Discard", action: () => this.closeWindow(), suggested: true },
+          {
+            caption: "Discard",
+            action: () => {
+              this.closeWindow();
+            },
+            suggested: true,
+          },
         ],
         image: "WarningIcon",
         sound: "arcos.dialog.warning",

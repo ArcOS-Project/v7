@@ -1,5 +1,6 @@
 import type { IUserDaemon } from "$interfaces/daemon";
-import type { IBugHunt, IWaveKernel } from "$interfaces/kernel";
+import type { IWaveKernel } from "$interfaces/kernel";
+import type { IBugHunt } from "$interfaces/modules/bughunt";
 import { ArcOSVersion, Env, Server, Stack } from "$ts/env";
 import { KernelLogs } from "$ts/kernel/getters";
 import { Backend } from "$ts/kernel/mods/server/axios";

@@ -1,4 +1,5 @@
-import type { ISystemDispatch, IWaveKernel } from "$interfaces/kernel";
+import type { IWaveKernel } from "$interfaces/kernel";
+import type { ISystemDispatch } from "$interfaces/modules/dispatch";
 import { Kernel } from "$ts/env";
 import { DefaultColors } from "$ts/terminal/store";
 import { logItemToStr } from "$ts/util";

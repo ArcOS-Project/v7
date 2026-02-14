@@ -1,4 +1,4 @@
-import type { IEnvironment } from "$interfaces/kernel";
+import type { IEnvironment } from "$interfaces/modules/env";
 import { __Console__ } from "$ts/console";
 import { Kernel } from "$ts/env";
 import { ArcMode } from "$ts/metadata/mode";

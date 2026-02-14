@@ -1,4 +1,4 @@
-import type { IServerManager } from "$interfaces/kernel";
+import type { IServerManager } from "$interfaces/modules/server";
 import type { IStateHandler } from "$interfaces/state";
 import { __Console__ } from "$ts/console";
 import { ArcOSVersion, Env, Fs, getKMod, Kernel, SetCurrentStateHandler, Stack } from "$ts/env";

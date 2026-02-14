@@ -6,10 +6,8 @@ import type {
   RecursiveDirectoryReadReturn,
   UserQuota,
 } from "$types/fs";
-import type { FSQuota, UserDirectory } from "$types/legacy";
 import type { LogLevel } from "$types/logging";
-import type { SharedDriveType } from "$types/shares";
-import type { IServerManager } from "./kernel";
+import type { IServerManager } from "./modules/server";
 
 export interface IFilesystemDrive {
   server: IServerManager;

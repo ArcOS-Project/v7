@@ -44,8 +44,8 @@ export interface IAppProcess extends IProcess {
   __stop(): Promise<any>;
   unfocusActiveElement(): void;
   spawnOverlay(id: string, ...args: any[]): Promise<boolean>;
-  spawnApp<T = IAppProcess>(id: string, parentPid?: number | undefined, ...args: any[]): Promise<T | undefined>;
-  spawnOverlayApp<T = IAppProcess>(id: string, parentPid?: number | undefined, ...args: any[]): Promise<T | undefined>;
+  spawnApp<T extends IAppProcess = IAppProcess>(id: string, parentPid?: number | undefined, ...args: any[]): Promise<T | undefined>;
+  spawnOverlayApp<T extends IAppProcess = IAppProcess>(id: string, parentPid?: number | undefined, ...args: any[]): Promise<T | undefined>;
   elevate(id: string): Promise<unknown>;
   notImplemented(what?: string): void;
   appStore(): IApplicationStorage;

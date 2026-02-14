@@ -84,7 +84,12 @@ export class BugHuntCreatorRuntime extends AppProcess {
         title: "Please keep in mind",
         content: DataPrivacy,
         buttons: [
-          { caption: "Decline", action: () => this.closeWindow() },
+          {
+            caption: "Decline",
+            action: () => {
+              this.closeWindow();
+            },
+          },
           { caption: "I Agree", action() {}, suggested: true },
         ],
         sound: "arcos.dialog.info",
