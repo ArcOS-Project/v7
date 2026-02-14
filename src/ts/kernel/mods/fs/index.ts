@@ -549,11 +549,6 @@ export class Filesystem extends KernelModule implements IFilesystem {
     }
   }
 
-  // COMPAT: not using stat calls here because we don't
-  // know if the designated drive will have such capability
-
-  // TODO: Add support for both stat-based checks and a
-  // fallback for drives that can't stat
   async isDirectory(path: string) {
     try {
       const drive = this.getDriveByPath(path);

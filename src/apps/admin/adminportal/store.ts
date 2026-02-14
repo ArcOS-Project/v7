@@ -310,7 +310,6 @@ export const LogoTranslations: Record<string, string> = {
   unstable: UnstableLogo,
 };
 
-// TODO: MOVE TO ADMIN RESOURCE DRIVE
 export const specificAdminActions: SpecificAdminActions = {
   logs: {
     caption: "View logs",
@@ -484,7 +483,6 @@ export const specificAdminActions: SpecificAdminActions = {
   },
 };
 
-// TODO: MOVE TO ADMIN RESOURCE DRIVE
 export const globalAdminActions: SpecificAdminActions = {
   god: {
     caption: "God Admin",

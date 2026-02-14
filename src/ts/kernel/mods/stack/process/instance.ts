@@ -1,3 +1,4 @@
+import type { IProcessHandler } from "$interfaces/modules/stack";
 import type { IProcess, IProcessDispatch } from "$interfaces/process";
 import { Fs, getKMod } from "$ts/env";
 import { Log } from "$ts/logging";
@@ -65,8 +66,10 @@ export class Process implements IProcess {
   async killSelf() {
     if (this._disposed) return;
     this.Log(`Killing self (PID ${this.pid})`);
-    await getKMod<any>("stack").waitForAvailable(); // any because circular imports otherwise.
-    await getKMod<any>("stack").kill(this.pid, true);
+
+    const stack = getKMod<IProcessHandler>("stack");
+    await stack.waitForAvailable();
+    await stack.kill(this.pid, true);
   }
 
   protected Log(message: string, level = LogLevel.info) {

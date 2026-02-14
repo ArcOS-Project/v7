@@ -57,10 +57,10 @@ export interface ThirdPartyPropMap {
     blobToDataURL: typeof blobToDataURL;
   };
   workingDirectory: string;
-  Process: Constructs<IProcess>; // TODO: constructor interface
-  AppProcess: Constructs<IAppProcess>; // TODO: constructor interface
-  ThirdPartyAppProcess: Constructs<IThirdPartyAppProcess>; // TODO: constructor interface
-  FilesystemDrive: Constructs<IFilesystemDrive>; // TODO: constructor interface
+  Process: Constructs<IProcess>;
+  AppProcess: Constructs<IAppProcess>;
+  ThirdPartyAppProcess: Constructs<IThirdPartyAppProcess>;
+  FilesystemDrive: Constructs<IFilesystemDrive>;
   argv: any[];
   app: App;
   $ENTRYPOINT: string;
