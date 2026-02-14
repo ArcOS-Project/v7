@@ -1,8 +1,9 @@
 import fs from "fs";
 import { glob } from "glob";
 
-const WHITELIST = ["$types/", "$interfaces/", "./", "svelte", "../interfaces", "../types","xterm","fuse.js"];
+const WHITELIST = ["$types/", "$interfaces/", "./", "svelte", "../interfaces", "../types", "xterm", "fuse.js"];
 const ITEM_WHITELIST = ["PermissionString", "PermissionError", "Readline"];
+const FILE_WHITELIST = ["src/types/thirdparty.ts"];
 
 async function main() {
   const blown = [];
@@ -51,6 +52,8 @@ async function main() {
       const { isType, items, path } = result;
 
       let isValid = false;
+
+      if (FILE_WHITELIST.includes(file)) isValid = true;
 
       for (const allowedItem of ITEM_WHITELIST) {
         if (items.includes(allowedItem)) isValid = true;
