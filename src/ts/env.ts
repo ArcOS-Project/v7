@@ -11,7 +11,7 @@ import type {
 import type { IStateHandler } from "$interfaces/state";
 import packageJson from "../../package.json";
 
-export const ArcOSVersion = packageJson.version;
+export const ArcOSVersion = packageJson.version as `${number}.${number}.${number}`;
 export const BETA = true;
 export const USERFS_UUID = "233D-CE74-18C0-0B08";
 export let Kernel: IWaveKernel;
