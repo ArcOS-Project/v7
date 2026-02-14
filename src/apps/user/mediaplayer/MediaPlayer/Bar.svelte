@@ -4,14 +4,14 @@
 
   const { process }: { process: MediaPlayerRuntime } = $props();
 
-  const { State, Loaded, queue } = process;
+  const { State, Loaded, queue, seeking } = process;
 
   let sliderProgress = $state((100 / $State.duration) * $State.current);
   let draggingSlider = $state(false);
 
   onMount(() => {
     setInterval(() => {
-      if (!draggingSlider && !$State.seeking) sliderProgress = (100 / $State.duration) * $State.current;
+      if (!draggingSlider && !$seeking) sliderProgress = (100 / $State.duration) * $State.current;
     }, 100);
   });
 

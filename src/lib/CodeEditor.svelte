@@ -4,6 +4,7 @@
   import css from "highlight.js/lib/languages/css";
   import ini from "highlight.js/lib/languages/ini";
   import javascript from "highlight.js/lib/languages/javascript";
+  import typescript from "highlight.js/lib/languages/typescript";
   import json from "highlight.js/lib/languages/json";
   import markdown from "highlight.js/lib/languages/markdown";
   import plaintext from "highlight.js/lib/languages/plaintext";
@@ -30,6 +31,7 @@
     if (!hlInit) {
       hlInit = true;
       hljs.registerLanguage("javascript", javascript);
+      hljs.registerLanguage("typescript", typescript);
       hljs.registerLanguage("css", css);
       hljs.registerLanguage("json", json);
       hljs.registerLanguage("ini", ini);

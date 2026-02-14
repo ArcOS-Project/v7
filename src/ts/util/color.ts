@@ -128,6 +128,10 @@ export async function getReadableVibrantColor(url: string): Promise<string> {
         bestColor = ensureContrast(fallbackColor, bgColor, minContrast);
       }
 
+      bestColor = bestColor.replace("#", "").slice(0, 6);
+
+      console.log(bestColor);
+
       resolve(bestColor);
     };
 

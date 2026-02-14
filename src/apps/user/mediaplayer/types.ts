@@ -8,8 +8,6 @@ export interface PlayerState {
   paused: boolean;
   current: number;
   duration: number;
-  loopMode: LoopMode;
-  seeking: boolean;
 }
 
 export interface AudioFileMetadata {

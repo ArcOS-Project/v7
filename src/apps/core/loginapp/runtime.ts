@@ -180,7 +180,7 @@ export class LoginAppRuntime extends AppProcess {
 
     if (userInfo.hasTotp && userInfo.restricted) {
       this.loadingStatus.set("Requesting 2FA");
-      
+
       const unlocked = await this.askForTotp(userDaemon.userInfo?._id);
 
       if (!unlocked) {
@@ -207,6 +207,7 @@ export class LoginAppRuntime extends AppProcess {
 
     broadcast("Starting filesystem");
     await userDaemon.init!.startFilesystemSupplier();
+    await userDaemon.version!.mountSourceDrive();
 
     broadcast("Starting synchronization");
     await userDaemon.init!.startPreferencesSync();

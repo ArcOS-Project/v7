@@ -3,7 +3,7 @@
   import { LoopMode } from "../../types";
 
   const { process }: { process: MediaPlayerRuntime } = $props();
-  const { queueIndex, Loaded, State } = process;
+  const { Loaded, State, loopMode } = process;
 
   function toggleLoopOne() {
     switch (process.loopMode()) {
@@ -21,7 +21,7 @@
   }
 
   function getLoopTitle() {
-    switch ($State.loopMode) {
+    switch ($loopMode) {
       case LoopMode.None:
         return "Loop None";
       case LoopMode.All:
@@ -36,9 +36,9 @@
 
 <button
   class="lucide loop-toggle icon-repeat"
-  class:icon-repeat-2={$State.loopMode == LoopMode.None}
-  class:icon-repeat={$State.loopMode == LoopMode.All}
-  class:icon-repeat-1={$State.loopMode == LoopMode.One}
+  class:icon-repeat-2={$loopMode == LoopMode.None}
+  class:icon-repeat={$loopMode == LoopMode.All}
+  class:icon-repeat-1={$loopMode == LoopMode.One}
   onclick={toggleLoopOne}
   disabled={!$Loaded || !$State.duration}
   aria-label={getLoopTitle()}

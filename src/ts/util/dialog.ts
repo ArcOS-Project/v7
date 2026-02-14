@@ -1,5 +1,6 @@
 import { MessageBoxRuntime } from "$apps/components/messagebox/runtime";
 import type { IProcessHandler } from "$interfaces/kernel";
+import { Daemon } from "$ts/daemon";
 import type { App } from "$types/app";
 import type { ConfirmationData, MessageBoxData } from "$types/messagebox";
 import type { ErrorButton } from "$types/notification";
@@ -9,14 +10,15 @@ export async function MessageBox(data: MessageBoxData, parentPid: number, overla
   const stack = getKMod<IProcessHandler>("stack");
   const messageBox = (await import("$apps/components/messagebox/messageBox")).default as App;
   const appData = { ...messageBox, overlay: overlay && !!stack.getProcess(parentPid) };
+  const desktop = Daemon?.workspaces?.getCurrentDesktop();
 
   await stack.spawn(
     MessageBoxRuntime,
-    undefined,
+    desktop,
     "SYSTEM",
     parentPid,
     {
-      ...{ data: appData, id: appData.id },
+      ...{ data: appData, id: appData.id, desktop },
     },
     data
   );

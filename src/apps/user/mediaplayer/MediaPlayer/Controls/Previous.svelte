@@ -3,7 +3,7 @@
   import { LoopMode } from "../../types";
 
   const { process }: { process: MediaPlayerRuntime } = $props();
-  const { queueIndex, Loaded, State } = process;
+  const { queueIndex, Loaded, State, loopMode } = process;
 
   function previous() {
     process.previousSong();
@@ -13,7 +13,7 @@
 <button
   class="lucide previous icon-skip-back"
   onclick={previous}
-  disabled={($State.current <= 2 ? $queueIndex == 0 && $State.loopMode != LoopMode.All : false) || !$Loaded || !$State.duration}
+  disabled={($State.current <= 2 ? $queueIndex == 0 && $loopMode != LoopMode.All : false) || !$Loaded || !$State.duration}
   aria-label="Previous song"
   title="Previous song"
 >

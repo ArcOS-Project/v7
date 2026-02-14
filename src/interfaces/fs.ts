@@ -44,6 +44,7 @@ export interface IFilesystemDrive {
   bulk<T = any>(path: string, extension: string): Promise<Record<string, T>>;
   stat(path: string): Promise<FilesystemStat | undefined>;
   isCapable(capability: DriveCapabilities): void;
+  tryIsCapable(capability: DriveCapabilities): boolean;
   imageThumbnail(path: string, width: number, height?: number): Promise<string | undefined>;
 }
 

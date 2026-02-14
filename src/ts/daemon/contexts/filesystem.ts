@@ -6,10 +6,11 @@ import {
 } from "$apps/components/fsprogress/types";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import type { IFilesystemUserContext, IUserDaemon } from "$interfaces/daemon";
-import type { ILegacyServerDrive, IMemoryFilesystemDrive } from "$interfaces/fs";
+import type { IFilesystemDrive, ILegacyServerDrive, IMemoryFilesystemDrive } from "$interfaces/fs";
 import type { IRecentFilesService, ITrashCanService } from "$interfaces/service";
 import { Env, Fs, Stack, SysDispatch } from "$ts/env";
 import { LegacyServerDrive } from "$ts/kernel/mods/fs/drives/legacy";
+import { SourceFilesystemDrive } from "$ts/kernel/mods/fs/drives/src";
 import { ZIPDrive } from "$ts/kernel/mods/fs/drives/zip";
 import { DefaultFileHandlers, UserPaths } from "$ts/user/store";
 import { MessageBox } from "$ts/util/dialog";
@@ -568,5 +569,9 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
 
     const result = prefix + (hasLeading ? "/" : "") + stack.join("/");
     return result || prefix || ".";
+  }
+
+  async mountSourceDrive(): Promise<IFilesystemDrive | false> {
+    return await Fs.mountDrive<IFilesystemDrive>("src", SourceFilesystemDrive, "S");
   }
 }

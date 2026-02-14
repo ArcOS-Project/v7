@@ -6,6 +6,7 @@
   import { AppProcess } from "$ts/apps/process";
   import { Daemon } from "$ts/daemon";
   import { Env, Stack } from "$ts/env";
+  import { Sleep } from "$ts/sleep";
   import { formatBytes } from "$ts/util/fs";
   import type { ProcessInfoRuntime } from "./runtime";
 
@@ -18,6 +19,16 @@
 
   function info() {
     process.spawnOverlayApp("AppInfo", +Env.get("shell_pid"), (proc as IAppProcess).app.id);
+  }
+
+  async function viewSourceFile() {
+    await process.closeWindow();
+    const enabled = await Daemon.version?.enableSourceDrive();
+
+    if (!enabled) return;
+
+    await Sleep(10);
+    await process.spawnApp("cod", +Env.get("shell_pid"), `S:/${proc?.sourceUrl!}`);
   }
 </script>
 
@@ -59,6 +70,9 @@
   {/if}
   <div class="actions">
     <button class="kill" onclick={() => process.kill(proc)}>Kill</button>
+    {#if proc.sourceUrl && proc.sourceUrl !== "undetermined"}
+      <button onclick={viewSourceFile}>View source</button>
+    {/if}
     <button onclick={info} disabled={!(proc instanceof AppProcess)}>App Info</button>
     <button class="suggested" onclick={() => process.closeWindow()}>Okay</button>
   </div>

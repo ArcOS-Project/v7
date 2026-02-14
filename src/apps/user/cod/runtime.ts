@@ -41,6 +41,10 @@ export class CodRuntime extends AppProcess {
     if (!path) return;
 
     await this.readFile(path);
+
+    this.language.subscribe(() => {
+      if (!this._disposed) this.buffer.set(this.buffer()); // Force re-render of <CodeEditor/>
+    });
   }
 
   async onClose(): Promise<boolean> {

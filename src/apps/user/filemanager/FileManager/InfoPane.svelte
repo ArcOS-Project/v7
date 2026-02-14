@@ -10,6 +10,7 @@
   import Drive from "./InfoPane/Drive.svelte";
   import MultiFile from "./InfoPane/MultiFile.svelte";
   import SingleFile from "./InfoPane/SingleFile.svelte";
+  import { Sleep } from "$ts/sleep";
 
   const { process }: { process: FileManagerRuntime } = $props();
   const { path, contents, selection, drives } = process;
@@ -24,14 +25,27 @@
   let variant: "singleSelection" | "multiSelection" | "drive" | "" = $state("");
 
   onMount(() => {
-    path.subscribe(update);
+    let lastPath = "";
+    let lastSelection: string[] = [];
+
+    path.subscribe((v) => {
+      if (lastPath === v) return;
+      lastPath = v;
+      update();
+    });
+    selection.subscribe((v) => {
+      if (JSON.stringify(lastSelection) === JSON.stringify(v)) return;
+      lastSelection = v;
+      update();
+    });
+    
     contents.subscribe(update);
-    selection.subscribe(update);
     drives.subscribe(update);
   });
 
   async function update() {
     variant = "";
+    await Sleep(0);
 
     try {
       const driveId = Fs.getDriveIdByIdentifier(Fs.getDriveIdentifier($path));

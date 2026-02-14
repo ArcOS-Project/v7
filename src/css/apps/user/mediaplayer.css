@@ -13,6 +13,7 @@
   display: flex;
   align-items: center;
   padding: 0;
+  position: relative;
 }
 
 #MediaPlayer > div.body > div.container {
@@ -21,7 +22,10 @@
   width: calc(100% - 200px);
   height: 100%;
   /* padding: 20px; */
-  background-color: var(--win-bg);
+}
+
+#MediaPlayer > div.body > div.container::before {
+  z-index: 0;
 }
 
 #MediaPlayer.fullscreen {

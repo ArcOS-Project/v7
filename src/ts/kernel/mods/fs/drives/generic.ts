@@ -187,6 +187,10 @@ export class FilesystemDrive implements IFilesystemDrive {
     }
   }
 
+  tryIsCapable(capability: DriveCapabilities) {
+    return !!this.CAPABILITIES[capability];
+  }
+
   async imageThumbnail(path: string, width: number, height?: number): Promise<string | undefined> {
     return undefined;
   }

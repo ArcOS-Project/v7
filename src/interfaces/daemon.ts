@@ -157,6 +157,7 @@ export interface IFilesystemUserContext extends IUserContext {
   mountLegacyFilesystem(connectionInfo: LegacyConnectionInfo): Promise<false | ILegacyServerDrive>;
   moveToTrashOrDeleteItem(path: string, dispatch?: boolean): Promise<boolean>;
   normalizePath(path: string): string;
+  mountSourceDrive(): Promise<IFilesystemDrive | false>;
 }
 
 export interface IHelpersUserContext extends IUserContext {
@@ -275,6 +276,8 @@ export interface IVersionUserContext extends IUserContext {
   isRegisteredVersionOutdated(): Promise<boolean>;
   updateRegisteredVersion(): Promise<void>;
   checkForNewVersion(): Promise<void>;
+  mountSourceDrive(): Promise<IFilesystemDrive | false>;
+  enableSourceDrive(openAlso?: boolean): Promise<boolean>;
 }
 
 export interface IWallpaperUserContext extends IUserContext {

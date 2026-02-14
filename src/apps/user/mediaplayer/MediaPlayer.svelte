@@ -12,6 +12,7 @@
 
   let audio: HTMLVideoElement;
   let hideControls = $state<boolean>(false);
+  let style = $state<string | undefined>();
   let hideTimeout: NodeJS.Timeout | undefined;
 
   function onmousemove() {
@@ -37,18 +38,22 @@
 
   onMount(() => {
     process.setPlayer(audio);
+
+    mediaSpecificAccentColor.subscribe((v) => {
+      style = v ? Daemon.renderer?.getAppRendererStyle(v.replace("#", "")) : "";
+    });
   });
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
-  class="container"
+  class="container shell-colored colored"
   class:hide-controls={hideControls}
   {onmousemove}
   data-contextmenu={$queue.length && $Loaded ? "player" : ""}
   class:is-video={$isVideo && $Loaded}
   class:theme-dark={$windowFullscreen}
-  style={$mediaSpecificAccentColor ? Daemon.renderer?.getAppRendererStyle($mediaSpecificAccentColor.replace("#","")) : ""}
+  {style}
 >
   <div class="video-wrapper" class:show={$isVideo}>
     <video bind:this={audio}>
@@ -75,7 +80,7 @@
     </div>
   {/if}
 </div>
-<div class="queue" class:hide={hideControls}>
+<div class="queue shell-colored colored" class:hide={hideControls} {style}>
   {#each $queue as path, i (path + `${i}`)}
     <QueueItem {path} {i} {process} />
   {/each}
