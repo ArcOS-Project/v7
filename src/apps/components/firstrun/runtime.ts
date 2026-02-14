@@ -50,6 +50,8 @@ export class FirstRunRuntime extends AppProcess {
   //#endregion
 
   switchPage(id: string) {
+    this.Log(`switchPage: ${id}`);
+
     if (!FirstRunPages.has(id)) this.notImplemented(`Page ${id}`);
 
     this.currentPage.set(FirstRunPages.get(id)!);

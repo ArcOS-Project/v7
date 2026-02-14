@@ -40,6 +40,8 @@ export class SwitchServerRuntime extends AppProcess {
   //#endregion LIFECYCLE
 
   async switchServer(server: ServerOption) {
+    this.Log(`switchServer: ${server.url}`);
+
     this.loading.set(true);
     this.connectionError.set(false);
 
@@ -51,6 +53,8 @@ export class SwitchServerRuntime extends AppProcess {
   }
 
   async removeServer(server: ServerOption) {
+    this.Log(`removeServer: ${server.url}`);
+
     MessageBox(
       {
         title: "Remove server?",
@@ -67,6 +71,8 @@ export class SwitchServerRuntime extends AppProcess {
   }
 
   async addServer() {
+    this.Log(`addServer`);
+
     const module: App = (await import("$apps/components/addserver/AddServer")).default;
 
     await Stack.spawn(module.assets.runtime, undefined, "SYSTEM", this.pid, { data: module, id: module.id });

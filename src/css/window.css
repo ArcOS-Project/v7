@@ -13,6 +13,7 @@
 @import url("./window/proto.css");
 @import url("./window/userlink.css");
 @import url("./window/splitpanes.css");
+@import url("./window/toast.css");
 
 div.window:not(.core) {
   position: absolute;

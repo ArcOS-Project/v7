@@ -49,6 +49,8 @@ export class TotpSetupGuiRuntime extends AppProcess {
 
     const string = this.code();
 
+    this.Log(`activateTotp: ${string}`)
+
     if (string.length !== 6) return false;
 
     try {

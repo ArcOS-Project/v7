@@ -82,6 +82,8 @@ export class MessageComposerRuntime extends AppProcess {
   }
 
   async discard() {
+    this.Log(`discard`);
+
     if (!this.isModified()) return this.closeWindow();
     MessageBox(
       {
@@ -100,6 +102,8 @@ export class MessageComposerRuntime extends AppProcess {
   }
 
   sendFailed() {
+    this.Log(`sendFailed`);
+
     this.sending.set(false);
     MessageBox(
       {
@@ -119,6 +123,8 @@ export class MessageComposerRuntime extends AppProcess {
   //#region ATTACHMENTS
 
   async addAttachment() {
+    this.Log(`addAttachment`);
+
     const attachments: Attachment[] = [];
     const paths = await Daemon!.files!.LoadSaveDialog({
       title: "Choose one or more files to attach",
@@ -176,10 +182,14 @@ export class MessageComposerRuntime extends AppProcess {
   }
 
   filesToAttachments(...files: File[]): Attachment[] {
+    this.Log(`filesToAttachments: ${files.length} specimens`);
+
     return files.map((f) => ({ data: f, uuid: UUID() })); // Give each Node file a UUID
   }
 
   removeAttachment(uuid: string) {
+    this.Log(`removeAttachment: ${uuid}`);
+
     this.attachments.update((v) => v.filter((a) => a.uuid !== uuid));
   }
 
@@ -187,6 +197,8 @@ export class MessageComposerRuntime extends AppProcess {
   //#region MISC
 
   removeRecipient(recipient: string) {
+    this.Log(`removeRecipient: ${recipient}`);
+
     this.recipients.update((v) => {
       return v.filter((r) => r !== recipient);
     });

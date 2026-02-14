@@ -26,6 +26,8 @@ export class ShareConnGuiRuntime extends AppProcess {
   //#region MASTER
 
   async go() {
+    this.Log(`GO!`);
+
     // Join the share
     const result = await this.shares.joinShare(this.shareUsername(), this.shareName(), this.sharePassword(), true);
 
@@ -71,6 +73,8 @@ export class ShareConnGuiRuntime extends AppProcess {
   }
 
   async myShares() {
+    this.Log(`myShares`);
+
     await this.closeWindow(); // Close the conngui
     this.spawnOverlayApp("ShareListGui", this.parentPid); // Spawn the listgui
   }

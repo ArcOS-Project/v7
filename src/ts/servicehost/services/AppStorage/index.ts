@@ -1,5 +1,6 @@
 import type { IApplicationStorage } from "$interfaces/service";
 import { Fs, SysDispatch } from "$ts/env";
+import { CommandResult } from "$ts/result";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { sortByHierarchy } from "$ts/util";
@@ -150,8 +151,11 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
     return this.buffer().filter((a) => a.id === id)[0];
   }
 
-  async getAppById(id: string, fromBuffer = false): Promise<App | undefined> {
-    if (this._disposed) return undefined;
+  /**
+   * @deprecated This method is ancient and should not be used. Use `ApplicationStorage.getAppSynchronous` instead.
+   */
+  async getAppById(id: string, fromBuffer = false): Promise<CommandResult<App>> {
+    if (this._disposed) return CommandResult.Error("The process is disposed");
 
     const apps = fromBuffer ? this.buffer() : await this.get();
 
@@ -163,7 +167,7 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
           try {
             const json = tryJsonParse(arrayBufferToText((await Fs.readFile(tpaPath))!));
 
-            if (!json || typeof json !== "object") return undefined;
+            if (!json || typeof json !== "object") return CommandResult.Error("Failed to parse the TPA JSON contents");
 
             return {
               ...Object.freeze({ ...json, workingDirectory: getParentDirectory(tpaPath), tpaPath, originId: "userApps" }),
@@ -173,11 +177,11 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
           }
         }
 
-        return { ...Object.freeze({ ...app }) };
+        return CommandResult.Ok({ ...Object.freeze({ ...app }) });
       }
     }
 
-    return undefined;
+    return CommandResult.Error("Application not found.");
   }
 }
 

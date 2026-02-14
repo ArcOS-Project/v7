@@ -53,10 +53,13 @@ export class ShareMgmtGuiRuntime extends AppProcess {
   //#region ACTIONS
 
   async updateMembers() {
+    this.Log(`updateMembers`);
+
     this.members.set(await this.shares.getShareMembers(this.shareId));
   }
 
   async kickUser(id: string, username: string) {
+    this.Log(`kickUser: ${id} (${username})`);
     MessageBox(
       {
         title: `Kick '${username}'?`,
@@ -82,6 +85,8 @@ export class ShareMgmtGuiRuntime extends AppProcess {
   }
 
   async deleteShare() {
+    this.Log(`deleteShare`);
+
     MessageBox(
       {
         title: "Delete share?",

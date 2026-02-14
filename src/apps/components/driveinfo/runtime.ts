@@ -35,7 +35,9 @@ export class DriveInfoRuntime extends AppProcess {
 
     this.quota = await this.drive.quota();
 
-    if (this.isUserFs) this.usage = await Daemon?.files?.determineCategorizedDiskUsage();
+    if (this.isUserFs) {
+      this.usage = await Daemon?.files?.determineCategorizedDiskUsage();
+    }
 
     stop();
   }

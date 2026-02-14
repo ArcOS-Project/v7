@@ -1,5 +1,5 @@
 import type { AppKeyCombinations } from "$types/accelerator";
-import type { AppContextMenu, AppProcessData, ContextMenuItem } from "$types/app";
+import type { AppContextMenu, AppProcessData, ContextMenuItem, ToastMessage } from "$types/app";
 import type { MaybePromise } from "$types/common";
 import type { RenderArgs } from "$types/process";
 import type { UserPreferences } from "$types/user";
@@ -19,6 +19,7 @@ export interface IAppProcess extends IProcess {
   username: string;
   shell: IShellRuntime | undefined;
   overridePopulatable: boolean;
+  toastMessage: ReadableStore<ToastMessage | undefined>;
   safeMode: boolean;
   renderArgs: RenderArgs;
   acceleratorStore: AppKeyCombinations;
@@ -27,6 +28,8 @@ export interface IAppProcess extends IProcess {
   windowFullscreen: ReadableStore<boolean>;
   draggable: Draggable | undefined;
   onClose(): Promise<boolean>;
+  ShowToast(toast: ToastMessage, durationMs?: number): Promise<void>;
+  HideToast(): Promise<void>;
   closeWindow(kill?: boolean): Promise<boolean | void>;
   render(args: RenderArgs): MaybePromise<any>;
   __render__(body: HTMLDivElement): Promise<void>;

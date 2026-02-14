@@ -180,7 +180,8 @@ export class LoginAppRuntime extends AppProcess {
 
     if (userInfo.hasTotp && userInfo.restricted) {
       this.loadingStatus.set("Requesting 2FA");
-      const unlocked = await this.askForTotp(token, userDaemon.userInfo?._id);
+      
+      const unlocked = await this.askForTotp(userDaemon.userInfo?._id);
 
       if (!unlocked) {
         await userDaemon.account!.discontinueToken();
@@ -456,7 +457,7 @@ export class LoginAppRuntime extends AppProcess {
     Cookies.remove("arcUsername");
   }
 
-  private async askForTotp(token: string, userId: string | undefined) {
+  private async askForTotp(userId: string | undefined) {
     const returnId = UUID();
 
     return new Promise(async (r) => {

@@ -94,6 +94,8 @@ export class WriterRuntime extends AppProcess {
   //#endregion
 
   async readFile(path: string) {
+    this.Log(`readFile`);
+
     const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
@@ -150,6 +152,8 @@ export class WriterRuntime extends AppProcess {
   }
 
   async saveChanges(force = false) {
+    this.Log(`saveChanges`);
+
     const opened = this.openedFile();
     const buffer = this.buffer();
 
@@ -181,6 +185,8 @@ export class WriterRuntime extends AppProcess {
   }
 
   async saveAs() {
+    this.Log(`saveAs`);
+
     const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Choose where to save the file",
       icon: "TextMimeIcon",
@@ -205,6 +211,8 @@ export class WriterRuntime extends AppProcess {
   }
 
   async openFile() {
+    this.Log(`openFile`);
+
     const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Select a file to open",
       icon: "TextMimeIcon",
@@ -217,6 +225,8 @@ export class WriterRuntime extends AppProcess {
   }
 
   public selectAll() {
+    this.Log(`selectAll`);
+
     this.input()?.select();
   }
 }

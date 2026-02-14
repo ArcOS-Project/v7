@@ -43,6 +43,7 @@ import type { IInstallerProcessBase } from "./distrib";
 import type { IFilesystemDrive } from "./fs";
 import type { IMigrationNodeConstructor } from "./migration";
 import type { IProcess } from "./process";
+import type { ICommandResult } from "./result";
 import type { IThirdPartyAppProcess } from "./thirdparty";
 
 export interface IBaseService extends IProcess {
@@ -434,7 +435,7 @@ export interface IApplicationStorage extends IBaseService {
   refresh(): Promise<void>;
   get(): Promise<AppStorage>;
   getAppSynchronous(id: string): App | undefined;
-  getAppById(id: string, fromBuffer?: boolean): Promise<App | undefined>;
+  getAppById(id: string, fromBuffer?: boolean): Promise<ICommandResult<App>>;
 }
 
 export interface IRecentFilesService extends IBaseService {

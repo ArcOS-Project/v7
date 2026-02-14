@@ -23,9 +23,13 @@ export class LoadQueryOverlayRuntime extends AppProcess {
   //#endregion LIFECYCLE
 
   async Confirm() {
-    if (!this.queries.includes(this.selectedQuery())) return;
+    const selected = this.selectedQuery();
+    
+    this.Log(`Confirm -> ${selected}`);
 
-    await this.parent.loadQuery(this.selectedQuery().replace(".json", ""));
+    if (!this.queries.includes(selected)) return;
+
+    await this.parent.loadQuery(selected.replace(".json", ""));
     await this.closeWindow();
   }
 }

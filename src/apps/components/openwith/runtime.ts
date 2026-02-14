@@ -47,6 +47,8 @@ export class OpenWithRuntime extends AppProcess {
   //#endregion
 
   async go(id = this.selectedId()) {
+    this.Log(`GO!`);
+
     if (!id) return;
 
     await this.closeWindow();

@@ -140,3 +140,8 @@ export interface WindowResizer {
   left?: string;
   right?: string;
 }
+
+export interface ToastMessage {
+  content: string;
+  icon?: string;
+}

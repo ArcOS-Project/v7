@@ -104,6 +104,8 @@ export class AppPreInstallRuntime extends AppProcess {
   //#region DISTRIB
 
   fail(reason: string) {
+    this.Log(`Fail: ${reason}`);
+
     MessageBox(
       {
         title: "Failed to open package",
@@ -119,6 +121,8 @@ export class AppPreInstallRuntime extends AppProcess {
   }
 
   async install() {
+    this.Log(`Proceeding with installation`);
+
     const meta = this.metadata();
     const elevated = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS wants to install an application",

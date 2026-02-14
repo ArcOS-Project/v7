@@ -58,6 +58,8 @@ export class OopsNotifierRuntime extends AppProcess {
   //#region ACTIONS
 
   async details() {
+    this.Log(`Invoking the power of OopsStackTracer to bestow upon the user the details of the error that lies within`);
+
     const proc = await Daemon?.spawn?.spawnOverlay(
       "OopsStackTracer",
       +Env.get("shell_pid"),
@@ -71,6 +73,8 @@ export class OopsNotifierRuntime extends AppProcess {
   }
 
   async reopen() {
+    this.Log(`Reopening crashed application!`);
+
     if (!this.installed) return;
 
     await this.spawnApp(this.data.id, this.process?.parentPid || +Env.get("shell_pid"));

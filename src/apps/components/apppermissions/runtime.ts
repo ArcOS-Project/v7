@@ -8,6 +8,7 @@ export class AppPermissionsRuntime extends AppProcess {
   targetAppId: string;
 
   //#region LIFECYCLE
+
   constructor(pid: number, parentPid: number, app: AppProcessData, appId: string) {
     super(pid, parentPid, app);
 
@@ -38,4 +39,6 @@ export class AppPermissionsRuntime extends AppProcess {
 
     this.targetApp.set(targetApp);
   }
+
+  //#endregion
 }

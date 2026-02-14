@@ -70,6 +70,8 @@ export class MultiUpdateGuiRuntime extends AppProcess {
   //#region PACKAGE
 
   updatePackageStatus(appId: string, newData: Partial<MultiUpdateStatusNode>) {
+    this.Log(`updatePackageStatus: ${appId}: ${newData.state}`);
+
     this.status.update((v) => {
       const index = v.map((n) => n.pkg.pkg.appId).indexOf(appId);
       v[index] = { ...v[index], ...newData };
@@ -79,6 +81,8 @@ export class MultiUpdateGuiRuntime extends AppProcess {
   }
 
   packageFailed(appId: string) {
+    this.Log(`packageFailed: ${appId}`);
+
     this.updatePackageStatus(appId, { state: "failed", done: 100, max: 100 });
   }
 
@@ -86,6 +90,8 @@ export class MultiUpdateGuiRuntime extends AppProcess {
   //#region ACTIONS
 
   async go() {
+    this.Log(`GO!`);
+
     this.working.set(true);
 
     const elevated = await Daemon!.elevation!.manuallyElevate({

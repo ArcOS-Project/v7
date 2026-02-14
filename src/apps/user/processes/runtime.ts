@@ -46,6 +46,8 @@ export class ProcessManagerRuntime extends AppProcess {
   //#endregion
 
   async kill(proc: IProcess) {
+    this.Log(`kill: ${proc.pid}`);
+
     const name = proc instanceof AppProcess ? proc.app.data.metadata.name : proc.name;
 
     const elevated = await Daemon!.elevation!.manuallyElevate({
@@ -88,6 +90,8 @@ export class ProcessManagerRuntime extends AppProcess {
   }
 
   killError(name: string, result: ProcessKillResult) {
+    this.Log(`killError: ${name}, ${result}`);
+
     const caption = ProcessKillResultCaptions[result];
 
     MessageBox(
@@ -104,6 +108,8 @@ export class ProcessManagerRuntime extends AppProcess {
   }
 
   async stopService(id: string) {
+    this.Log(`stopService: ${id}`);
+
     if (!this.host.getService(id)) return;
     MessageBox(
       {
@@ -156,21 +162,26 @@ export class ProcessManagerRuntime extends AppProcess {
   }
 
   async startService(id: string) {
+    this.Log(`startService: ${id}`);
+
     if (this.host.getService(id)) return;
     Daemon?.serviceHost?.startService(id);
   }
 
   serviceInfoFor(id: string) {
-    if (!this.host.hasService(id)) return;
+    this.Log(`serviceInfoFor: ${id}`);
 
+    if (!this.host.hasService(id)) return;
     this.spawnOverlayApp("ServiceInfo", +Env.get("shell_pid"), id);
   }
 
   appInfoFor(proc: IAppProcess) {
+    this.Log(`appInfoFor: ${proc.pid}`);
     this.spawnOverlayApp("AppInfo", +Env.get("shell_pid"), proc.app.id);
   }
 
   processInfoFor(proc: IProcess) {
+    this.Log(`processInfoFor: ${proc.pid}`);
     this.spawnOverlayApp("ProcessInfoApp", +Env.get("shell_pid"), proc);
   }
 }

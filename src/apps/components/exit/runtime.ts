@@ -21,6 +21,8 @@ export class ExitRuntime extends AppProcess {
   //#endregion
 
   async go(action: ExitAction | undefined, alternate = false) {
+    this.Log(`${action?.icon}: alternate=${alternate}`);
+
     const option = action || ExitActions[this.selected()];
 
     if (!option) return;

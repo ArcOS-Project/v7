@@ -25,6 +25,8 @@ export class ShareCreateGuiRuntime extends AppProcess {
   //#region MASTER
 
   async go() {
+    this.Log(`GO!`);
+
     const name = this.shareName();
     const password = this.sharePassword();
 
@@ -72,6 +74,8 @@ export class ShareCreateGuiRuntime extends AppProcess {
   }
 
   async myShares() {
+    this.Log(`myShares`);
+
     await this.closeWindow(); // Close the creategui
     this.spawnOverlayApp("ShareListGui", this.parentPid); // Spawn the listgui
   }

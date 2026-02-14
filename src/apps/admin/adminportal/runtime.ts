@@ -92,6 +92,8 @@ export class AdminPortalRuntime extends AppProcess implements IAdminPortalRuntim
   //#region TPA
 
   async saveTpaFilesOfBugReport(report: BugReport) {
+    this.Log(`saveTpaFilesOfBugReport: ${report._id ?? "<unknown report>"}`);
+    
     // Regular expression assumes URL format:
     // https://domain.tld/tpa/v3/userId/timestamp/appId@filename.js
     const regex =

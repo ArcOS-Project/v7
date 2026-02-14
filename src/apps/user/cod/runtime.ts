@@ -91,6 +91,7 @@ export class CodRuntime extends AppProcess {
   //#endregion
 
   async readFile(path: string) {
+    this.Log(`readFile: ${path}`);
     const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
@@ -152,6 +153,8 @@ export class CodRuntime extends AppProcess {
   }
 
   async saveChanges(force = false) {
+    this.Log(`saveChanges force=${force}`);
+
     const opened = this.openedFile();
     const buffer = this.buffer();
 
@@ -183,6 +186,8 @@ export class CodRuntime extends AppProcess {
   }
 
   async saveAs() {
+    this.Log(`saveAs`);
+
     const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Choose where to save the file",
       icon: "CodIcon",
@@ -207,6 +212,8 @@ export class CodRuntime extends AppProcess {
   }
 
   async openFile() {
+    this.Log(`openFile`);
+
     const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Select a file to open",
       icon: "CodIcon",

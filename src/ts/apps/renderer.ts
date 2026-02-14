@@ -65,6 +65,7 @@ export class AppRenderer extends Process implements IAppRenderer {
     renderTarget ||= this.target;
     const window = document.createElement("div");
     const titlebar = this._renderTitlebar(process);
+    const toast = this._renderToast(process);
     const body = document.createElement("div");
     this._resizeGrabbers(process, window);
 
@@ -88,9 +89,9 @@ export class AppRenderer extends Process implements IAppRenderer {
     });
 
     if (!data.core && !data.state.headless) {
-      window.append(titlebar as HTMLDivElement, body);
+      window.append(titlebar as HTMLDivElement, body, toast);
     } else {
-      window.append(body);
+      window.append(body, toast);
     }
 
     if (data.state.headless) window.classList.add("headless");
@@ -374,6 +375,32 @@ export class AppRenderer extends Process implements IAppRenderer {
     });
 
     return menu;
+  }
+
+  _renderToast(process: IAppProcess) {
+    const toast = document.createElement("div");
+    const content = document.createElement("span");
+    const icon = document.createElement("span");
+
+    content.className = "content";
+    toast.className = "window-toast-popup";
+    icon.className = "lucide icon-info";
+
+    toast.append(icon, content);
+
+    process.toastMessage.subscribe((v) => {
+      if (!v) {
+        toast.classList.remove("show");
+
+        return;
+      }
+
+      content.innerText = v.content;
+      icon.className = "lucide icon-" + (v.icon ?? "");
+      toast.classList.add("show");
+    });
+
+    return toast;
   }
 
   _resizeGrabbers(process: IAppProcess, window: HTMLDivElement) {
