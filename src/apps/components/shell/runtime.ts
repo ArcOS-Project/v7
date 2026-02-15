@@ -36,6 +36,7 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
   public ready = Store<boolean>(false);
   public STARTMENU_FOLDER = UserPaths.StartMenu;
   public StartMenuContents = Store<RecursiveDirectoryReadReturn>();
+  public selectedAppGroup = Store<string>("");
 
   override contextMenu: AppContextMenu = ShellContextMenu(this);
 
@@ -211,8 +212,10 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
     this.dispatch.subscribe("close-calendar", () => this.calendarOpened.set(false));
 
     this.startMenuOpened.subscribe((v) => {
-      if (!v) this.searchQuery.set(""); // Remove search query on close
-
+      if (!v) {
+        this.searchQuery.set(""); // Remove search query on close
+        this.selectedAppGroup.set(""); // Remove selected app group on close
+      }
       if (v) Stack.renderer?.focusedPid.set(-1); // Unfocus window on start menu invocation
     });
 

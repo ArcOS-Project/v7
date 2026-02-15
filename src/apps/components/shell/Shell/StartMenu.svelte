@@ -3,8 +3,8 @@
   import type { UserPreferencesStore } from "$types/user";
   import type { BooleanStore } from "$types/writable";
   import Bottom from "./StartMenu/Bottom.svelte";
-  import Folders from "./StartMenu/Folders.svelte";
-  import NewAppList from "./StartMenu/NewAppList.svelte";
+  import RightPane from "./StartMenu/RightPane.svelte";
+  import LeftPane from "./StartMenu/LeftPane.svelte";
 
   const {
     process,
@@ -28,8 +28,8 @@
   class:searching={$searchQuery}
 >
   <div class="top">
-    <NewAppList {process} />
-    <Folders {process} {userPreferences} {username} />
+    <LeftPane {process} />
+    <RightPane {process} {userPreferences} {username} />
   </div>
   <Bottom {process} />
 </div>

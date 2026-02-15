@@ -35,7 +35,6 @@
   async function update() {
     try {
       const root = await Fs.readDir(UserPaths.Home);
-
       if (!root) return;
 
       dirs = root?.dirs;
@@ -43,7 +42,7 @@
   }
 </script>
 
-<div class="folders">
+<div class="right-pane">
   <UserButton {userPreferences} {username} {process} />
   <div class="content">
     {#each dirs as dir}
