@@ -34,7 +34,6 @@ export class LoginAppRuntime extends AppProcess {
   public persistence = Store<PersistenceInfo | undefined>();
   public serverInfo = Store<ServerInfo>();
   public server: IServerManager;
-  public unexpectedInvocation = false;
   public safeMode = false;
   public loginProps?: LoginAppProps;
   private type = "";
@@ -46,7 +45,6 @@ export class LoginAppRuntime extends AppProcess {
 
     const server = getKMod<IServerManager>("server");
 
-    this.unexpectedInvocation = State?.currentState !== "boot" && State?.currentState !== "initialSetup" && !props?.type;
     this.server = server;
     this.serverInfo.set(server.serverInfo!);
     this.safeMode = !!(props?.safeMode || Env.get("safemode"));
@@ -81,25 +79,8 @@ export class LoginAppRuntime extends AppProcess {
       await State?.loadState("initialSetup");
       return false;
     }
-    if (this.unexpectedInvocation) {
-      this.app.data.core = false;
-      this.app.data.position = { centered: true };
-      this.app.data.minSize = { w: 700, h: 500 };
-      this.app.data.maxSize = { w: NaN, h: NaN };
-      this.app.data.size = { w: 700, h: 500 };
-      this.app.data.state = {
-        maximized: false,
-        minimized: false,
-        resizable: true,
-        headless: false,
-        fullscreen: false,
-      };
-      this.app.data.controls = {
-        maximize: true,
-        minimize: true,
-        close: true,
-      };
-    } else if (this.loginProps?.type) {
+
+    if (this.loginProps?.type) {
       State?.getStateLoaders()?.main?.removeAttribute("style");
       this.hideProfileImage.set(true);
 
@@ -125,7 +106,7 @@ export class LoginAppRuntime extends AppProcess {
       State?.getStateLoaders()?.main?.removeAttribute("style");
     }
 
-    if (!this.type && !this.unexpectedInvocation) {
+    if (!this.type) {
       await this.loadPersistence();
 
       const tokenResult = await this.loadToken();
