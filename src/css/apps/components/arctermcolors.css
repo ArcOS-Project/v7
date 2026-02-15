@@ -19,6 +19,7 @@
   background-color: var(--button-glass-bg);
   outline-offset: -1px;
   border-radius: 10px;
+  box-shadow: var(--secondary-box-shadow);
 }
 
 #ArcTermColors > div.body > div.mode-selector button {
@@ -270,7 +271,9 @@
   gap: 5px;
   background-color: var(--button-bg);
   border-radius: 10px;
-  border: var(--button-glass-bg) 1px solid;
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
+  box-shadow: var(--secondary-box-shadow);
 }
 
 #ArcTermColors > div.body > div.actions button {

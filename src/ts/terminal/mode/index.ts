@@ -42,7 +42,6 @@ export class TerminalMode extends Process {
 
   async start() {
     await this.initializeTerminal();
-
     if (await this.loadToken()) return;
 
     return await this.loginPrompt();
@@ -121,7 +120,6 @@ export class TerminalMode extends Process {
       this.saveToken(userDaemon);
 
       const userInfo = await userDaemon.account!.getUserInfo();
-
       if (!userInfo) {
         this.rl?.println(`Failed to request user info`);
         return false;
@@ -148,19 +146,7 @@ export class TerminalMode extends Process {
       await userDaemon.activity?.logActivity(`login`);
 
       broadcast(`Starting service host`);
-      await userDaemon.init?.startServiceHost(async (serviceStep) => {
-        if (serviceStep.id === "AppStorage") {
-          broadcast(`Loading apps...`);
-          await userDaemon.appreg!.initAppStorage(userDaemon.appStorage()!, (app) => {
-            broadcast(`Loading apps... ${app.id}`);
-          });
-        } else {
-          broadcast(`Started ${serviceStep.id}`);
-        }
-      });
-
-      broadcast(`Connecting global dispatch`);
-      await userDaemon.activateGlobalDispatch();
+      await userDaemon.init?.startServiceHost(broadcast);
 
       broadcast(`Starting drive notifier watcher`);
       userDaemon.init!.startDriveNotifierWatcher();
@@ -168,20 +154,12 @@ export class TerminalMode extends Process {
       broadcast(`Starting permission manager`);
       await userDaemon.init!.startPermissionHandler();
 
-      broadcast(`Starting share management`);
-      await userDaemon.init!.startShareManager();
-
       broadcast(`Indexing your files`);
       await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
 
       await userDaemon.serviceHost
         ?.getService<MigrationService>("MigrationSvc")
         ?.runMigrations((m) => this.rl?.println(`${CURUP}${CLRROW}${m}`));
-
-      if (userDaemon.userInfo.admin) {
-        broadcast(`Activating admin bootstrapper`);
-        await userDaemon.activateAdminBootstrapper();
-      }
 
       broadcast(`Starting status refresh`);
       await userDaemon.init!.startSystemStatusRefresh();
@@ -197,10 +175,8 @@ export class TerminalMode extends Process {
       await Sleep(10);
 
       this.term?.clear();
-
       this.arcTerm = await Stack.spawn<IArcTerminal>(ArcTerminal, undefined, userDaemon.userInfo?._id, this.pid, this.term);
       this.arcTerm!.IS_ARCTERM_MODE = true;
-
       this.term?.focus();
 
       return true;
@@ -219,11 +195,9 @@ export class TerminalMode extends Process {
 
     const token = Cookies.get(`arcToken`);
     const username = Cookies.get(`arcUsername`);
-
     if (!token || !username) return false;
 
     const userInfo = await this.validateUserToken(token);
-
     if (!userInfo) {
       this.resetCookies();
 

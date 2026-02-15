@@ -53,6 +53,8 @@ export class PowerUserContext extends UserContext implements IPowerUserContext {
     if (this._disposed || !canLeave) return;
     if (this.serviceHost) this.serviceHost._holdRestart = true;
 
+    await this.serviceHost?.spinDown();
+    await Stack._killSubProceses(this.pid, true);
     await State?.loadState("login", {
       type,
       userDaemon: Daemon,
@@ -64,7 +66,9 @@ export class PowerUserContext extends UserContext implements IPowerUserContext {
   async closeOpenedApps(type: string, props: Record<string, any> = {}, force = false): Promise<boolean> {
     if (force) return true;
 
-    const windows = Stack.renderer?.currentState.map((pid) => Stack.getProcess<IAppProcess>(pid));
+    const windows = Stack.renderer?.currentState
+      .map((pid) => Stack.getProcess<IAppProcess>(pid))
+      .filter((proc) => !proc?.app?.data?.core);
 
     if (!windows) return true;
 
