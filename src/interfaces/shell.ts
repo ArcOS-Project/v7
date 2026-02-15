@@ -29,6 +29,7 @@ export interface IShellRuntime extends IAppProcess {
   STARTMENU_FOLDER: string;
   StartMenuContents: ReadableStore<RecursiveDirectoryReadReturn>;
   contextMenu: AppContextMenu;
+  selectedAppGroup: ReadableStore<string>;
   start(): Promise<false | undefined>;
   render(): Promise<void>;
   stop(): Promise<boolean>;
