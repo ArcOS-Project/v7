@@ -1,3 +1,4 @@
+import type { IFilesystemDrive } from "$interfaces/fs";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/daemon";
 import { Fs } from "$ts/env";
@@ -22,6 +23,7 @@ export class CodRuntime extends AppProcess {
   mimetype = Store<string>("");
   directoryName = Store<string>("");
   original = Store<string>("");
+  drive = Store<IFilesystemDrive | undefined>();
   mimeIcon = Store<string>(this.getIconCached("DefaultMimeIcon"));
   public acceleratorStore: AppKeyCombinations = CodAccelerators(this);
 
@@ -121,6 +123,8 @@ export class CodRuntime extends AppProcess {
       if (!contents) {
         throw new Error("Failed to get the contents of the file.");
       }
+
+      this.drive.set(Fs.getDriveByPath(path));
 
       const info = Daemon?.assoc?.getFileAssociation(path);
 
