@@ -1,17 +1,24 @@
 import type { IAdminBootstrapper } from "$interfaces/services/AdminBootstrapper";
+import type { IProtocolServiceProcess } from "$interfaces/services/ProtoService";
+import { AdminAppImportPathAbsolutes } from "$ts/apps/store";
 import { Daemon } from "$ts/daemon";
-import { Fs, Server } from "$ts/env";
+import { ArcOSVersion, Env, Fs, Server } from "$ts/env";
 import { AdminFileSystem } from "$ts/kernel/mods/fs/drives/admin";
 import { AdminServerDrive } from "$ts/kernel/mods/fs/drives/aefs";
 import { Backend } from "$ts/kernel/mods/server/axios";
+import { ArcBuild } from "$ts/metadata/build";
+import { ArcMode } from "$ts/metadata/mode";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
 import { UserPaths } from "$ts/user/store";
+import { deepCopyWithBlobs } from "$ts/util";
 import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
+import { MessageBox } from "$ts/util/dialog";
 import { toForm } from "$ts/util/form";
 import { join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
+import { compareVersion } from "$ts/util/version";
 import type {
   Activity,
   AuditLog,
@@ -24,6 +31,7 @@ import type {
   UserStatistics,
   UserTotp,
 } from "$types/admin";
+import type { App } from "$types/app";
 import type { BugReport, ReportStatistics } from "$types/bughunt";
 import type { FilesystemProgressCallback, UserQuota } from "$types/fs";
 import type { ArcPackage, StoreItem } from "$types/package";
@@ -33,6 +41,7 @@ import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
 import { fromExtension } from "human-filetypes";
 import JSZip from "jszip";
 import { MessagingInterface } from "../MessagingService";
+import { AdminProtocolHandlers } from "./proto";
 import { AdminScopes } from "./store";
 
 export class AdminBootstrapper extends BaseService implements IAdminBootstrapper {
@@ -40,21 +49,80 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
-    super(pid, parentPid, name, host);
+  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+    super(pid, parentPid, name, host, initBroadcast);
 
     this.setSource(__SOURCE__);
   }
 
   async start() {
-    await this.getUserInfo();
+    this.initBroadcast?.("Activating admin bootstrapper");
 
+    await this.getUserInfo();
     if (!this.userInfo || !this.userInfo.admin) throw new Error("Invalid user or not an admin");
+
+    await this._loadAdminApps();
+    const proto = this.host.getService<IProtocolServiceProcess>("ProtoService");
+
+    for (const key in AdminProtocolHandlers) {
+      proto?.registerHandler(key, AdminProtocolHandlers[key]);
+    }
 
     try {
       await Fs.createDirectory("T:/AdminBootstrapper");
       await Fs.mountDrive("admin", AdminFileSystem, "A", undefined);
     } catch {}
+  }
+
+  private async _loadAdminApps() {
+    const appStore = Daemon.appStorage()!;
+    const adminApps = await Promise.all(
+      Object.keys(AdminAppImportPathAbsolutes).map(async (path) => {
+        try {
+          const start = performance.now();
+          const mod = await AdminAppImportPathAbsolutes[path]();
+          const app = (mod as any).default as App;
+
+          if (app._internalMinVer && compareVersion(ArcOSVersion, app._internalMinVer) === "higher")
+            throw `Not loading ${app.metadata.name} because this app requires a newer version of ArcOS`;
+
+          if (app._internalSysVer || app._internalOriginalPath)
+            throw `Can't load dubious built-in app '${app.id}' because it contains runtime-level properties set before runtime`;
+
+          const end = performance.now() - start;
+          const appCopy = await deepCopyWithBlobs<App>(app);
+
+          appCopy._internalSysVer = `v${ArcOSVersion}-${ArcMode()}-${ArcBuild()}`;
+          appCopy._internalOriginalPath = path;
+          appCopy._internalLoadTime = end;
+
+          this.Log(
+            `Loaded admin app: ${path}: ${appCopy.metadata.name} by ${appCopy.metadata.author}, version ${appCopy.metadata.version} (${end.toFixed(2)}ms)`
+          );
+
+          return appCopy;
+        } catch (e) {
+          await new Promise<void>((r) => {
+            MessageBox(
+              {
+                title: "Admin app load error",
+                message: `ArcOS failed to load an administrative application because of an error. ${e}.`,
+                buttons: [{ caption: "Okay", action: () => r(), suggested: true }],
+                image: "WarningIcon",
+              },
+              +Env.get("loginapp_pid"),
+              true
+            );
+            this.Log(`Failed to load admin app ${path}: ${e}`);
+            return null;
+          });
+        }
+      })
+    ).then((apps) => apps.filter((a): a is App => a !== null));
+
+    appStore?.loadOrigin("admin", () => adminApps);
+
+    await appStore?.refresh();
   }
 
   //#endregion

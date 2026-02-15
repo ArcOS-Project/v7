@@ -15,4 +15,5 @@ export interface IGlobalDispatch extends IBaseService {
   emit(event: string, ...data: any[]): void;
   getClients(): Promise<GlobalDispatchClient[]>;
   disconnectClient(clientId: string): Promise<boolean>;
+  enableListener(): void;
 }

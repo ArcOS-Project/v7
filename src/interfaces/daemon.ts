@@ -40,10 +40,10 @@ export interface IUserDaemon extends IProcess {
   _criticalProcess: boolean;
   copyList: ReadableStore<string[]>;
   cutList: ReadableStore<string[]>;
-  globalDispatch?: IGlobalDispatch;
-  assoc?: IFileAssocService;
+  get globalDispatch(): IGlobalDispatch | undefined;
+  get assoc(): IFileAssocService | undefined;
   serviceHost?: IServiceHost;
-  libraries?: ILibraryManagement;
+  get libraries(): ILibraryManagement | undefined;
   account?: IAccountUserContext;
   activity?: ILoginActivityUserContext;
   apps?: IApplicationsUserContext;
@@ -69,8 +69,6 @@ export interface IUserDaemon extends IProcess {
   stop(): Promise<false | undefined>;
   startUserContexts(): Promise<void>;
   stopUserContexts(): Promise<void>;
-  activateAdminBootstrapper(): Promise<void>;
-  activateGlobalDispatch(): Promise<void>;
   appStorage(): IApplicationStorage | undefined;
   getShell(): IShellRuntime | undefined;
   updateGlobalDispatch(): void;

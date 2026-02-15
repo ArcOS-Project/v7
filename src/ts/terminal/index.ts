@@ -4,7 +4,7 @@ import type { Constructs } from "$interfaces/common";
 import type { IUserDaemon } from "$interfaces/daemon";
 import type { IFilesystemDrive } from "$interfaces/fs";
 import type { IArcTerminal, ITerminalProcess, ITerminalWindowRuntime } from "$interfaces/terminal";
-import { Daemon, TryGetDaemon } from "$ts/daemon";
+import { Daemon } from "$ts/daemon";
 import { Env, Fs, Stack, State } from "$ts/env";
 import { ASCII_ART } from "$ts/kernel/intro";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
@@ -22,7 +22,6 @@ import type { DirectoryReadReturn } from "$types/fs";
 import type { ArcTermConfiguration, Arguments } from "$types/terminal";
 import ansiEscapes from "ansi-escapes";
 import { Terminal } from "xterm";
-import { TerminalProcess } from "./process";
 import { Readline } from "./readline/readline";
 import {
   BOLD,
@@ -62,7 +61,7 @@ export class ArcTerminal extends Process implements IArcTerminal {
 
     this.path = path || UserPaths.Home;
     this.changeDirectory(this.path);
-    this.daemon = TryGetDaemon();
+    this.daemon = Daemon;
 
     this.term = term;
     this.tryGetTermWindow();

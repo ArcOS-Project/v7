@@ -1,4 +1,4 @@
-import { TryGetDaemon } from "$ts/daemon";
+import { Daemon } from "$ts/daemon";
 import { Server } from "$ts/env";
 import { ComponentIcon } from "$ts/images/general";
 import { authcode } from "$ts/util";
@@ -7,7 +7,7 @@ import type { PartialStoreItem, StoreItem } from "$types/package";
 export function StoreItemIcon(item: PartialStoreItem | StoreItem) {
   return item.pkg.store?.image
     ? `${Server.url}/store/assets/${item._id}/icon${authcode()}`
-    : TryGetDaemon()?.icons!.getIconCached("ComponentIcon") || ComponentIcon;
+    : Daemon?.icons!.getIconCached("ComponentIcon") || ComponentIcon;
 }
 
 export function StoreItemIconPrimitive(id: string) {

@@ -15,13 +15,14 @@ export class RecentFilesService extends BaseService implements IRecentFilesServi
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
-    super(pid, parentPid, name, host);
+  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+    super(pid, parentPid, name, host, initBroadcast);
 
     this.setSource(__SOURCE__);
   }
 
   protected async start(): Promise<any> {
+    this.initBroadcast?.("Starting recent files service");
     await this.loadConfiguration();
 
     let firstDone = false;

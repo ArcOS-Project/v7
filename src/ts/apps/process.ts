@@ -4,7 +4,7 @@ import type { IUserDaemon } from "$interfaces/daemon";
 import type { IProcess } from "$interfaces/process";
 import type { IApplicationStorage } from "$interfaces/services/AppStorage";
 import type { IShellRuntime } from "$interfaces/shell";
-import { Daemon, TryGetDaemon } from "$ts/daemon";
+import { Daemon } from "$ts/daemon";
 import { ArcOSVersion, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -67,7 +67,7 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
     this.shell = Stack.getProcess(+Env.get("shell_pid"));
 
     const desktopProps = State?.stateProps["desktop"];
-    const daemon: IUserDaemon | undefined = desktopProps?.userDaemon || TryGetDaemon();
+    const daemon: IUserDaemon | undefined = desktopProps?.userDaemon || Daemon;
 
     if (daemon) {
       this.userPreferences = daemon.preferences;

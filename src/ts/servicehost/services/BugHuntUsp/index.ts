@@ -17,8 +17,8 @@ export class BugHuntUserSpaceProcess extends BaseService implements IBugHuntUser
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
-    super(pid, parentPid, name, host);
+  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+    super(pid, parentPid, name, host, initBroadcast);
 
     this.module = getKMod<IBugHunt>("bughunt");
 
@@ -27,6 +27,10 @@ export class BugHuntUserSpaceProcess extends BaseService implements IBugHuntUser
 
   async afterActivate() {
     await this.refreshAllCaches();
+  }
+
+  async start() {
+    this.initBroadcast?.("Activating Bug Hunt");
   }
 
   //#endregion

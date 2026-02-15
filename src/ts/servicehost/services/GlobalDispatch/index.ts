@@ -2,12 +2,14 @@ import type { IUserDaemon } from "$interfaces/daemon";
 import type { IServerManager } from "$interfaces/modules/server";
 import type { IGlobalDispatch } from "$interfaces/services/GlobalDispatch";
 import { Daemon } from "$ts/daemon";
-import { Env, getKMod, Stack } from "$ts/env";
+import { Env, getKMod, Stack, SysDispatch } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
+import { Sleep } from "$ts/sleep";
 import type { GlobalDispatchClient } from "$types/dispatch";
 import type { Service } from "$types/service";
+import type { UserPreferences } from "$types/user";
 import io, { Socket } from "socket.io-client";
 
 export class GlobalDispatch extends BaseService implements IGlobalDispatch {
@@ -30,6 +32,7 @@ export class GlobalDispatch extends BaseService implements IGlobalDispatch {
   }
 
   async start() {
+    this.initBroadcast?.("Connecting global dispatch");
     return new Promise<void>((resolve) => {
       this.client = io(this.server.url, { transports: ["websocket"] });
       this.client.on("connect", async () => {
@@ -58,12 +61,16 @@ export class GlobalDispatch extends BaseService implements IGlobalDispatch {
     await new Promise<void>((resolve, reject) => {
       this.client?.once("authorized", () => {
         this.Log(`Global Dispatch is good to go :D`);
+
         Env.set("dispatch_sock_id", this.client?.id);
         this.authorized = true;
+        this.enableListener();
         resolve();
       });
+
       this.client?.once("auth-failed", () => {
         this.Log(`The server rejected our token :(`);
+
         reject();
       });
     });
@@ -109,6 +116,24 @@ export class GlobalDispatch extends BaseService implements IGlobalDispatch {
     } catch {
       return false;
     }
+  }
+
+  enableListener() {
+    this?.subscribe("update-preferences", async (preferences: UserPreferences) => {
+      Daemon.preferencesCtx!.syncLock = true;
+      await Sleep(0);
+      Daemon.preferencesCtx!.preferences.set(preferences);
+      await Sleep(0);
+      Daemon.preferencesCtx!.syncLock = false;
+    });
+
+    this?.subscribe("fs-flush-folder", (path) => {
+      SysDispatch.dispatch("fs-flush-folder", path);
+    });
+
+    this?.subscribe("fs-flush-file", (path) => {
+      SysDispatch.dispatch("fs-flush-file", path);
+    });
   }
 }
 

@@ -14,7 +14,7 @@
 
   async function update() {
     loading = true;
-    clients = await Daemon!.globalDispatch!.getClients();
+    clients = (await Daemon?.globalDispatch?.getClients()) || [];
     loading = false;
   }
 

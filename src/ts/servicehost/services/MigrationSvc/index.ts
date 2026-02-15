@@ -27,8 +27,8 @@ export class MigrationService extends BaseService implements IMigrationService {
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
-    super(pid, parentPid, name, host);
+  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, broadcast?: (msg: string) => void) {
+    super(pid, parentPid, name, host, broadcast);
 
     this.setSource(__SOURCE__);
   }
@@ -42,6 +42,9 @@ export class MigrationService extends BaseService implements IMigrationService {
 
       this.writeConfiguration(v);
     });
+
+    this.initBroadcast?.("Running migrations");
+    await this.runMigrations(this.initBroadcast);
   }
 
   //#endregion

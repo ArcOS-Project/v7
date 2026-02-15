@@ -1,5 +1,4 @@
 import type { IUserContext } from "$interfaces/daemon";
-import type { Service } from "$types/service";
 
 export interface IInitUserContext extends IUserContext {
   anchorInterceptObserver?: MutationObserver;
@@ -8,10 +7,9 @@ export interface IInitUserContext extends IUserContext {
   startAnchorRedirectionIntercept(): void;
   startFilesystemSupplier(): Promise<void>;
   startDriveNotifierWatcher(): void;
-  startShareManager(): Promise<void>;
   startPreferencesSync(): Promise<void>;
   startSystemStatusRefresh(): Promise<void>;
   startVirtualDesktops(): Promise<void>;
-  startServiceHost(svcPreRun?: (service: Service) => void): Promise<void>;
+  startServiceHost(broadcast?: (msg: string) => void): Promise<void>;
   startPermissionHandler(): Promise<boolean>;
 }

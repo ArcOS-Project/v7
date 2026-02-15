@@ -24,8 +24,8 @@ export class DevelopmentEnvironment extends BaseService implements IDevelopmentE
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
-    super(pid, parentPid, name, host);
+  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+    super(pid, parentPid, name, host, initBroadcast);
 
     window.addEventListener("onbeforeunload", () => {
       this.stop();
@@ -36,6 +36,10 @@ export class DevelopmentEnvironment extends BaseService implements IDevelopmentE
 
   async stop() {
     await this.disconnect();
+  }
+
+  async start() {
+    this.initBroadcast?.("Starting development environment");
   }
 
   //#endregion

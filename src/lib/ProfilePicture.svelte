@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TryGetDaemon } from "$ts/daemon";
+  import { Daemon } from "$ts/daemon";
   import { Server, SysDispatch } from "$ts/env";
   import { Sleep } from "$ts/sleep";
   import { DefaultUserPreferences } from "$ts/user/default";
@@ -16,8 +16,7 @@
     online?: boolean;
   }
   const { fallback = "", pfp = "", height, className = "", showOnline = false, online = false }: Props = $props();
-  const userDaemon = TryGetDaemon();
-  const { preferences } = userDaemon || {}!;
+  const { preferences } = Daemon || {}!;
   let url = $state<string | undefined>("");
   let currentPfp = $state<string | number>();
   let loading = $state<boolean>(false);
@@ -35,7 +34,7 @@
     if (url) await Sleep(100);
 
     const code = authcode();
-    url = fallback || `${Server.url}/user/pfp/${userDaemon?.userInfo._id}${code}${code ? "&" : "?"}${Date.now()}`;
+    url = fallback || `${Server.url}/user/pfp/${Daemon?.userInfo._id}${code}${code ? "&" : "?"}${Date.now()}`;
 
     currentPfp = pfp || v.account.profilePicture!;
   }

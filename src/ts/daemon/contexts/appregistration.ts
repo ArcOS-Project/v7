@@ -1,19 +1,14 @@
 import type { IAppRegistrationUserContext } from "$interfaces/contexts/appreg";
 import type { IUserDaemon } from "$interfaces/daemon";
-import { BuiltinAppImportPathAbsolutes } from "$ts/apps/store";
-import { ArcOSVersion, Env, Fs, SysDispatch } from "$ts/env";
-import { ArcBuild } from "$ts/metadata/build";
-import { ArcMode } from "$ts/metadata/mode";
+import { Env, Fs, SysDispatch } from "$ts/env";
 import { Permissions } from "$ts/permissions";
 import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
 import type { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
 import { AppGroups, UserPaths } from "$ts/user/store";
-import { deepCopyWithBlobs } from "$ts/util";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory, join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
-import { compareVersion } from "$ts/util/version";
 import type { App, AppStorage, InstalledApp } from "$types/app";
 import { LogLevel } from "$types/logging";
 import { Daemon } from "..";
@@ -22,68 +17,6 @@ import { UserContext } from "../context";
 export class AppRegistrationUserContext extends UserContext implements IAppRegistrationUserContext {
   constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
-  }
-
-  async initAppStorage(storage: ApplicationStorage, cb: (app: App) => void) {
-    this.Log(`Now trying to load built-in applications...`);
-
-    const blocklist = Daemon!.preferences()._internalImportBlocklist || [];
-
-    const builtins: App[] = await Promise.all(
-      Object.keys(BuiltinAppImportPathAbsolutes).map(async (path) => {
-        if (!this.safeMode && blocklist.includes(path)) return null;
-        const regex = new RegExp(/import\(\"(?<path>.*?)\"\)/gm);
-
-        try {
-          const start = performance.now();
-          const fn = BuiltinAppImportPathAbsolutes[path];
-          const mod = await BuiltinAppImportPathAbsolutes[path]();
-          const app = (mod as any).default as App;
-          const originalPathRegexp = regex.exec(fn.toString());
-          const originalPath = originalPathRegexp?.groups?.path;
-
-          if (app._internalMinVer && compareVersion(ArcOSVersion, app._internalMinVer) === "higher")
-            throw `Not loading ${app.metadata.name} because this app requires a newer version of ArcOS`;
-
-          if (app._internalSysVer || app._internalOriginalPath)
-            throw `Can't load dubious built-in app '${app.id}' because it contains runtime-level properties set before runtime`;
-
-          const end = performance.now() - start;
-          const appCopy = await deepCopyWithBlobs<App>(app);
-
-          appCopy._internalSysVer = `v${ArcOSVersion}-${ArcMode()}_${ArcBuild()}`;
-          appCopy._internalOriginalPath = path;
-          appCopy._internalLoadTime = end;
-          if (originalPath) appCopy._internalResolvedPath = originalPath;
-
-          cb(appCopy);
-          this.Log(
-            `Loaded app: ${path}: ${appCopy.metadata.name} by ${appCopy.metadata.author}, version ${app.metadata.version} (${end.toFixed(2)}ms)`
-          );
-
-          return appCopy;
-        } catch (e) {
-          await new Promise<void>((r) => {
-            MessageBox(
-              {
-                title: "App load error",
-                message: `ArcOS failed to load a built-in app because of an error. ${e}.`,
-                buttons: [{ caption: "Okay", action: () => r(), suggested: true }],
-                image: "WarningIcon",
-              },
-              +Env.get("loginapp_pid"),
-              true
-            );
-          });
-          this.Log(`Failed to load app ${path}: ${e}`);
-          return null;
-        }
-      })
-    ).then((apps) => apps.filter((a): a is App => a !== null));
-
-    storage.loadOrigin("builtin", () => builtins);
-    storage.loadOrigin("userApps", async () => await this.getUserApps());
-    await storage.refresh();
   }
 
   async getUserApps(): Promise<AppStorage> {

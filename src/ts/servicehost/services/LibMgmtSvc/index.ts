@@ -15,14 +15,15 @@ export class LibraryManagement extends BaseService implements ILibraryManagement
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
-    super(pid, parentPid, name, host);
+  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+    super(pid, parentPid, name, host, initBroadcast);
 
     this.setSource(__SOURCE__);
   }
 
   async start() {
-    this.populateIndex();
+    this.initBroadcast?.("Starting library management");
+    await this.populateIndex();
   }
 
   //#endregion

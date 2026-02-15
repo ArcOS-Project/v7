@@ -9,8 +9,8 @@ export interface IBaseService extends IProcess {
 export interface IServiceHost extends IProcess {
   Services: ReadableServiceStore;
   _holdRestart: boolean;
-  initialRun(svcPreRun?: (service: Service) => void): Promise<void>;
-  init(svcPreRun?: (service: Service) => void): Promise<void>;
+  initialRun(broadcast?: (m: string) => void): Promise<void>;
+  init(broadcast?: (m: string) => void): Promise<void>;
   stop(): Promise<void>;
   readonly STORE: Map<string, Service>;
   loadStore(store: ServiceStore): boolean;
