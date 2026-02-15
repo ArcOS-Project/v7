@@ -1,4 +1,4 @@
-import type { IFilesystemDrive } from "$interfaces/fs";
+import type { IFilesystemDrive, IFilesystemProxy, IFilesystemProxyConstructor } from "$interfaces/fs";
 import type { IWaveKernel } from "$interfaces/kernel";
 import type { ISystemDispatch } from "$interfaces/modules/dispatch";
 import type { IFilesystem } from "$interfaces/modules/fs";
@@ -12,14 +12,18 @@ import {
   type ExtendedStat,
   type FilesystemProgress,
   type FilesystemProgressCallback,
+  type FsProxyInfo,
   type RecursiveDirectoryReadReturn,
   type UploadReturn,
 } from "$types/fs";
 import type { FilesystemDrive } from "./drives/generic";
+import { SourceFilesystemProxy } from "./proxies/src";
 
 export class Filesystem extends KernelModule implements IFilesystem {
+  private readonly PROXIES: IFilesystemProxyConstructor[] = [SourceFilesystemProxy];
   private dispatch: ISystemDispatch;
   public drives: Record<string, IFilesystemDrive> = {};
+  public loadedProxies: IFilesystemProxy[] = [];
 
   //#region LIFECYCLE
 
@@ -29,7 +33,11 @@ export class Filesystem extends KernelModule implements IFilesystem {
     this.dispatch = getKMod<ISystemDispatch>("dispatch");
   }
 
-  async _init() {}
+  async _init() {
+    for (const proxy of this.PROXIES) {
+      this.loadedProxies.push(new proxy(proxy.PROXY_UUID));
+    }
+  }
 
   //#endregion
 
@@ -145,14 +153,60 @@ export class Filesystem extends KernelModule implements IFilesystem {
       throw new Error(`FilesystemValidateDriveLetter: Invalid drive letter or UUID "${letter}"`);
   }
 
-  async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
+  getProxyInfo(path: string, topLevel?: boolean): FsProxyInfo | undefined {
     this.isKmod();
 
+    const regex = /::\{(?<id>[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})\}/g;
+    const uuid = regex.exec(path)?.groups?.id;
+    if (!uuid) return undefined;
+
+    const [prefix, proxyPath] = path.split(`::{${uuid}}`);
+    const proxyHandler = this.loadedProxies.find((p) => p.uuid === uuid);
+    if (topLevel && proxyPath) return undefined;
+    if (!proxyHandler) throw new Error(`GetProxyInfo: Filesystem proxy with UUID ${uuid} does not exist.`);
+
+    this.Log(`getProxyInfo: ${path} -> ${uuid} (${proxyPath})`);
+
+    return {
+      prefix,
+      path: proxyPath,
+      proxyHandler,
+      proxyUuid: uuid,
+      displayName: proxyHandler.displayName ? `${proxyHandler.displayName} (proxy)` : undefined,
+    };
+  }
+
+  tryGetProxyInfo(path: string, topLevel?: boolean): FsProxyInfo | undefined {
+    try {
+      return this.getProxyInfo(path, topLevel);
+    } catch {
+      return undefined;
+    }
+  }
+
+  async tryHandleProxyReadDir(path: string): Promise<DirectoryReadReturn | undefined> {
+    const info = this.getProxyInfo(path);
+    if (!info) return undefined;
+
+    return await info.proxyHandler.readDir(info.path);
+  }
+
+  async tryHandleProxyReadFile(path: string): Promise<ArrayBuffer | undefined> {
+    const info = this.getProxyInfo(path);
+    if (!info) return undefined;
+
+    return await info.proxyHandler.readFile(info.path);
+  }
+
+  async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
+    this.isKmod();
     this.Log(`Reading directory '${path}'`);
-
     this.validatePath(path);
-    const drive = this.getDriveByPath(path);
 
+    const proxyRead = await this.tryHandleProxyReadDir(path);
+    if (proxyRead) return proxyRead;
+
+    const drive = this.getDriveByPath(path);
     drive.isCapable("readDir");
 
     return await drive.readDir(this.removeDriveLetter(path));
@@ -194,9 +248,11 @@ export class Filesystem extends KernelModule implements IFilesystem {
     onProgress ||= this.defaultProgress.bind(this);
 
     this.isKmod();
-
     this.Log(`Reading file '${path}'`);
     this.validatePath(path);
+
+    const proxyRead = await this.tryHandleProxyReadFile(path);
+    if (proxyRead) return proxyRead;
 
     const drive = this.getDriveByPath(path);
     path = this.removeDriveLetter(path);

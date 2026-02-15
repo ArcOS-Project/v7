@@ -3,6 +3,7 @@
   import { Fs } from "$ts/env";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { getDriveLetter, getItemNameFromPath } from "$ts/util/fs";
+  import type { FsProxyInfo } from "$types/fs";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../../runtime";
   import { DriveIcons } from "../../store";
@@ -16,6 +17,7 @@
   let driveLabel = $state<string>("");
   let drive = $state<IFilesystemDrive>();
   let name = $state<string>("");
+  let proxy = $state<FsProxyInfo | undefined>();
 
   onMount(() => {
     const sub = path.subscribe((v) => {
@@ -31,6 +33,7 @@
         } catch {}
       }
 
+      proxy = Fs.tryGetProxyInfo(v, true);
       name = getItemNameFromPath(v);
     });
 
@@ -82,9 +85,13 @@
     </div>
     {#if name && !$virtual}
       <div class="current-dir">
-        <img src={process.getIconCached("FolderIcon")} alt="" />
+        <img src={process.getIconCached(proxy ? "DefaultIcon" : "FolderIcon")} alt="" />
         <span>
-          {name}
+          {#if proxy}
+            {proxy.displayName}
+          {:else}
+            {name}
+          {/if}
         </span>
       </div>
     {/if}
