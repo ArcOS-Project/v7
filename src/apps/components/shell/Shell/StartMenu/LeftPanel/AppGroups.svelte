@@ -5,7 +5,7 @@
   import { UUID } from "$ts/util/uuid";
   import AppGroup from "./AppGroups/AppGroup.svelte";
   import AppGroupButton from "./AppGroups/AppGroupButton.svelte";
-  import NewListItem from "./ListItem.svelte";
+  import ListItem from "./ListItem.svelte";
 
   const { process }: { process: IShellRuntime } = $props();
   const { userPreferences, StartMenuContents, selectedAppGroup } = process;
@@ -20,7 +20,7 @@
         {/each}
         {#each Object.values($StartMenuContents.shortcuts) as shortcut (`${shortcut.target}-${shortcut.name}-${shortcut.icon}-${shortcut.type}`)}
           {#if (Daemon?.apps?.isPopulatableByAppIdSync(shortcut.target) || $userPreferences.shell.visuals.showHiddenApps) && !Daemon?.apps?.checkDisabled(shortcut.target) && shortcut.type === "app"}
-            <NewListItem {process} {shortcut} />
+            <ListItem {process} {shortcut} />
           {/if}
         {/each}
       {:else}

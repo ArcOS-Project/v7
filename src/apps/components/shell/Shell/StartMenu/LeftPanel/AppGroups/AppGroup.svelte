@@ -3,7 +3,7 @@
   import { Daemon } from "$ts/daemon";
   import { Store } from "$ts/writable";
   import type { ArcShortcut } from "$types/shortcut";
-  import NewListItem from "../ListItem.svelte";
+  import ListItem from "../ListItem.svelte";
 
   const { process }: { process: IShellRuntime } = $props();
   const { userPreferences, StartMenuContents, selectedAppGroup } = process;
@@ -28,7 +28,7 @@
 {#if $populatable.length}
   {#each $populatable as shortcut (`${shortcut.target}-${shortcut.name}-${shortcut.icon}-${shortcut.type}`)}
     {#if !Daemon?.apps?.checkDisabled(shortcut.target)}
-      <NewListItem {shortcut} {process} />
+      <ListItem {shortcut} {process} />
     {/if}
   {/each}
 {/if}
