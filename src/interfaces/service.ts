@@ -4,6 +4,7 @@ import type { IProcess } from "./process";
 export interface IBaseService extends IProcess {
   host: IServiceHost;
   activated: boolean;
+  deactivate(broadcast?: (m: string) => void): Promise<void>;
 }
 
 export interface IServiceHost extends IProcess {
@@ -21,4 +22,5 @@ export interface IServiceHost extends IProcess {
   verifyServicesProcesses(): Promise<void>;
   getService<T extends IBaseService = IBaseService>(id: string): T | undefined;
   hasService(id: string): boolean;
+  spinDown(broadcast?: (message: string) => void): Promise<void>;
 }

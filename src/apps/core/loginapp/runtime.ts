@@ -36,6 +36,7 @@ export class LoginAppRuntime extends AppProcess {
   public server: IServerManager;
   public unexpectedInvocation = false;
   public safeMode = false;
+  public loginProps?: LoginAppProps;
   private type = "";
 
   //#region LIFECYCLE
@@ -60,6 +61,26 @@ export class LoginAppRuntime extends AppProcess {
       }
     });
 
+    this.loginProps = props;
+
+    this.setSource(__SOURCE__);
+  }
+
+  async start() {
+    Env.set("loginapp_pid", this.pid);
+  }
+
+  async stop() {
+    Env.delete("loginapp_pid");
+  }
+
+  async render() {
+    this.getBody().classList.add("theme-dark");
+
+    if (this.serverInfo().freshBackend) {
+      await State?.loadState("initialSetup");
+      return false;
+    }
     if (this.unexpectedInvocation) {
       this.app.data.core = false;
       this.app.data.position = { centered: true };
@@ -78,48 +99,30 @@ export class LoginAppRuntime extends AppProcess {
         minimize: true,
         close: true,
       };
-    } else if (props?.type) {
+    } else if (this.loginProps?.type) {
+      State?.getStateLoaders()?.main?.removeAttribute("style");
       this.hideProfileImage.set(true);
 
-      if (!props.userDaemon) throw new Error(`LoginAppRuntimeConstructor: Irregular login type without daemon`);
+      if (!this.loginProps.userDaemon) throw new Error(`LoginAppRuntimeConstructor: Irregular login type without daemon`);
 
       SoundBus.playSound("arcos.system.logoff");
-      props.userDaemon?.renderer?.setAppRendererClasses(props.userDaemon.preferences());
+      await this.loginProps.userDaemon?.renderer?.setAppRendererClasses(this.loginProps.userDaemon.preferences());
 
-      switch (props.type) {
+      switch (this.loginProps.type) {
         case "logoff":
-          this.logoff(props.userDaemon);
+          await this.logoff(this.loginProps.userDaemon);
           break;
         case "shutdown":
-          this.shutdown(props.userDaemon);
+          await this.shutdown(this.loginProps.userDaemon);
           break;
         case "restart":
-          this.restart(props.userDaemon);
+          await this.restart(this.loginProps.userDaemon);
           break;
         default:
-          throw new Error(`LoginAppRuntimeConstructor: invalid login type '${props.type}'`);
+          throw new Error(`LoginAppRuntimeConstructor: invalid login type '${this.loginProps.type}'`);
       }
     } else {
       State?.getStateLoaders()?.main?.removeAttribute("style");
-    }
-
-    this.setSource(__SOURCE__);
-  }
-
-  async start() {
-    Env.set("loginapp_pid", this.pid);
-  }
-
-  async stop() {
-    Env.delete("loginapp_pid");
-  }
-
-  async render() {
-    this.getBody().classList.add("theme-dark");
-
-    if (this.serverInfo().freshBackend) {
-      State?.loadState("initialSetup");
-      return false;
     }
 
     if (!this.type && !this.unexpectedInvocation) {
@@ -275,21 +278,36 @@ export class LoginAppRuntime extends AppProcess {
     this.loadingStatus.set(`Goodbye, ${userDaemon.username}!`);
     this.errorMessage.set("");
 
+    const verbose = userDaemon.preferences().enableVerboseLogin;
+    const broadcast = (message: string) => {
+      if (!verbose) return;
+      this.loadingStatus.set(message);
+    };
+
+    broadcast("Stopping Service Host");
+    await userDaemon.serviceHost?.spinDown(broadcast);
+
+    broadcast("Stopping processes");
     for (const [_, proc] of [...Stack.store()]) {
       if (proc && !proc._disposed && proc instanceof AppProcess && proc.pid !== this.pid) {
         await proc.killSelf();
       }
     }
 
+    broadcast("Reading user preferences");
     this.profileName.set(userDaemon.preferences().account.displayName || userDaemon.username);
     this.loginBackground.set((await userDaemon.wallpaper!.getWallpaper(userDaemon.preferences().account.loginBackground)).url);
 
+    broadcast("Notifying activity");
     await Sleep(2000);
     await userDaemon.activity!.logActivity("logout");
 
     this.resetCookies();
-    await userDaemon.account!.discontinueToken();
+    broadcast("Stopping User Contexts");
     await userDaemon.stopUserContexts();
+    broadcast("Discontinuing token");
+    await userDaemon.account!.discontinueToken();
+    broadcast("Stopping User Daemon");
     await userDaemon.killSelf();
 
     setTimeout(async () => {
@@ -305,14 +323,30 @@ export class LoginAppRuntime extends AppProcess {
     this.Log(`Handling shutdown`);
     this.type = "shutdown";
 
-    if (userDaemon) await this.setUserDisplayStuff(userDaemon);
-
     this.loadingStatus.set(`Shutting down...`);
     this.errorMessage.set("");
 
+    const verbose = userDaemon?.preferences().enableVerboseLogin;
+    const broadcast = (message: string) => {
+      if (!verbose) return;
+      this.loadingStatus.set(message);
+    };
+
+    if (userDaemon) {
+      broadcast("Stopping Service Host");
+      await userDaemon.serviceHost?.spinDown(broadcast);
+
+      broadcast("Stopping User Contexts");
+      await userDaemon?.stopUserContexts();
+      await this.setUserDisplayStuff(userDaemon);
+    }
+
     await Sleep(2000);
 
-    if (userDaemon) await userDaemon.killSelf();
+    if (userDaemon) {
+      broadcast("Stopping User Daemon");
+      await userDaemon.killSelf();
+    }
     State?.loadState("turnedOff");
   }
 
@@ -320,14 +354,32 @@ export class LoginAppRuntime extends AppProcess {
     this.Log(`Handling restart`);
     this.type = "restart";
 
-    if (userDaemon) await this.setUserDisplayStuff(userDaemon);
+    const verbose = userDaemon?.preferences().enableVerboseLogin;
+    const broadcast = (message: string) => {
+      if (!verbose) return;
+      this.loadingStatus.set(message);
+      this.Log(message);
+    };
 
     this.loadingStatus.set(`Restarting...`);
+
+    if (userDaemon) {
+      broadcast("Stopping Service Host");
+      await userDaemon.serviceHost?.spinDown(broadcast);
+
+      broadcast("Stopping User Contexts");
+      await userDaemon?.stopUserContexts();
+      await this.setUserDisplayStuff(userDaemon);
+    }
+
     this.errorMessage.set("");
 
     await Sleep(2000);
 
-    if (userDaemon) await userDaemon.killSelf();
+    if (userDaemon) {
+      broadcast("Stopping User Daemon");
+      await userDaemon.killSelf();
+    }
     location.reload();
   }
 

@@ -34,7 +34,9 @@ export class DevelopmentEnvironment extends BaseService implements IDevelopmentE
     this.setSource(__SOURCE__);
   }
 
-  async stop() {
+  async deactivate(broadcast?: (m: string) => void) {
+    broadcast?.("Stopping development environment");
+    
     await this.disconnect();
   }
 

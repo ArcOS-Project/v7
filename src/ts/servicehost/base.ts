@@ -17,5 +17,9 @@ export class BaseService extends Process implements IBaseService {
     this.initBroadcast = initBroadcast;
   }
 
+  async deactivate(broadcast?: (m: string) => void) {
+    //
+  }
+
   //#endregion
 }

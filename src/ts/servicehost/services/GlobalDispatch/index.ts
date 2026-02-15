@@ -47,8 +47,8 @@ export class GlobalDispatch extends BaseService implements IGlobalDispatch {
     });
   }
 
-  async stop() {
-    this.Log(`Disconnecting websocket`);
+  async stop(broadcast?: (m: string) => void) {
+    broadcast?.("Stopping development environment");
     this.client?.disconnect();
   }
 

@@ -47,6 +47,16 @@ export class ServiceHost extends Process implements IServiceHost {
     }
   }
 
+  public async spinDown(broadcast?: (msg: string) => void) {
+    this._holdRestart = true;
+
+    for (const [id, service] of [...this.Services()]) {
+      if (service.pid) await this.stopService(id, broadcast);
+    }
+
+    await this.killSelf();
+  }
+
   async init(broadcast?: (msg: string) => void) {
     this.loadStore(this.STORE);
     await this.initialRun(broadcast);
@@ -71,13 +81,13 @@ export class ServiceHost extends Process implements IServiceHost {
     ["BugHuntUsp", { ...bhuspService }],
     ["ShareMgmt", { ...shareService }],
     ["AppStorage", { ...appStoreService }],
+    ["ProtoService", { ...protoService }],
     ["AdminBootstrapper", { ...adminService }],
     ["FileAssocSvc", { ...fileAssocService }],
     ["GlobalDispatch", { ...globalDispatchService }],
     ["MessagingService", { ...messagingService }],
     ["DevEnvironment", { ...devEnvironmentService }],
     ["DistribSvc", { ...distributionService }],
-    ["ProtoService", { ...protoService }],
     ["IconService", { ...iconService }],
     ["LibMgmtSvc", { ...libraryManagementService }],
     ["MigrationSvc", { ...migrationService }],
@@ -114,11 +124,11 @@ export class ServiceHost extends Process implements IServiceHost {
   }
 
   async startService(id: string, broadcast?: (msg: string) => void) {
+    broadcast ||= (m) => this.Log(`startService for ${id}: ${m}`);
     this.Log(`Starting service ${id}...`);
 
     const services = this.Services.get();
     const service = services.get(id);
-
     if (!services.has(id) || !service) return "err_noExist";
 
     const canStart = service.startCondition ? await service.startCondition(Stack.getProcess(this.parentPid)!) : true;
@@ -127,7 +137,6 @@ export class ServiceHost extends Process implements IServiceHost {
     if (service.pid) return "err_alreadyRunning";
 
     const instance = await Stack.spawn(service.process, undefined, Daemon?.userInfo?._id, this.pid, id, this, broadcast);
-
     if (!instance) return "err_spawnFailed";
 
     service.pid = instance.pid;
@@ -139,26 +148,28 @@ export class ServiceHost extends Process implements IServiceHost {
     return "success";
   }
 
-  public async stopService(id: string): Promise<ServiceChangeResult> {
+  public async stopService(id: string, broadcast?: (m: string) => void): Promise<ServiceChangeResult> {
+    broadcast ||= (m) => this.Log(`stopService for ${id}: ${m}`);
     this.Log(`Stopping service ${id}...`);
 
     const services = this.Services.get();
     const service = services.get(id);
 
     if (!services.has(id) || !service) return "err_noExist";
-
     if (!service.pid) return "err_notRunning";
 
     this._holdRestart = true;
+
+    const proc = Stack.getProcess<IBaseService>(service.pid);
+
+    proc?.deactivate(broadcast);
 
     await Stack.kill(service.pid, true);
 
     service.pid = undefined;
     service.changedAt = new Date().getTime();
-
     services.set(id, service);
     this.Services.set(services);
-
     this._holdRestart = false;
 
     return "success";
