@@ -17,10 +17,11 @@ import {
   type UploadReturn,
 } from "$types/fs";
 import type { FilesystemDrive } from "./drives/generic";
+import { MountsFilesystemProxy } from "./proxies/mounts";
 import { SourceFilesystemProxy } from "./proxies/src";
 
 export class Filesystem extends KernelModule implements IFilesystem {
-  private readonly PROXIES: IFilesystemProxyConstructor[] = [SourceFilesystemProxy];
+  private readonly PROXIES: IFilesystemProxyConstructor[] = [SourceFilesystemProxy, MountsFilesystemProxy];
   private dispatch: ISystemDispatch;
   public drives: Record<string, IFilesystemDrive> = {};
   public loadedProxies: IFilesystemProxy[] = [];
