@@ -18,6 +18,8 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
     super(id, daemon);
   }
 
+  //#region SPAWN
+
   async spawnApp<T extends IProcess>(id: string, parentPid?: number, ...args: any[]) {
     if (this._disposed) return;
 
@@ -68,7 +70,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
     this.Log(`SPAWNING APP ${id}`);
 
     if (app.thirdParty || app.entrypoint) {
-      return await this.spawnThirdParty<T>(app, (app as InstalledApp).tpaPath!, ...args);
+      return await this._spawnThirdParty<T>(app.id, renderTarget, parentPid, ...args);
     }
 
     if (app.elevated) {
@@ -124,7 +126,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
     const appStore = this.appStorage();
     const app = await appStore?.getAppSynchronous(id);
 
-    if (Daemon!?.apps?.checkDisabled(id, app?.noSafeMode)) return;
+    if (Daemon!.apps?.checkDisabled(id, app?.noSafeMode)) return;
 
     if (app?.id.includes("-") || app?.id.includes(".")) {
       Daemon!.notifications?.sendNotification({
@@ -141,7 +143,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
     if (!app) {
       Daemon!.notifications?.sendNotification({
         title: "Application not found",
-        message: `ArcOS can't find an application with ID '${id}'. Is it installed?`,
+        message: `ArcOS tried to launch an application with ID '${id}', but it could not be found. Is it installed?`,
         timeout: 3000,
         image: "QuestionIcon",
       });
@@ -151,9 +153,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
     this.Log(`SPAWNING OVERLAY APP ${id}`);
 
     if (app.thirdParty) {
-      this.Log("Can't spawn a third party app as an overlay: not in our control", LogLevel.error);
-
-      return;
+      return await this._spawnThirdPartyOverlay<T>(id, renderTarget, parentPid, ...args);
     }
 
     if (app.elevated) {
@@ -196,7 +196,278 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
     );
   }
 
-  async spawnThirdParty<T>(app: App, metaPath: string, ...args: any[]): Promise<T | undefined> {
+  async _spawnThirdParty<T extends IProcess>(
+    id: string,
+    renderTarget: HTMLDivElement | undefined = undefined,
+    parentPid?: number,
+    ...args: any[]
+  ): Promise<T | undefined> {
+    const appStore = this.appStorage();
+    const app = appStore?.getAppSynchronous(id);
+
+    if (Daemon!.apps?.checkDisabled(id, app?.noSafeMode)) return;
+
+    if (app?.id.includes("-") || app?.id.includes(".")) {
+      Daemon!.notifications?.sendNotification({
+        title: `Refusing to spawn '${id}'`,
+        message:
+          "The application ID is malformed: it contains periods or dashes. If you're the creator of the app, be sure to use the suggested format for application IDs.",
+        timeout: 3000,
+        image: "WarningIcon",
+      });
+
+      return;
+    }
+
+    if (!app) {
+      Daemon!.notifications?.sendNotification({
+        title: "Application not found",
+        message: `ArcOS tried to launch an application with ID '${id}', but it could not be found. Is it installed?`,
+        timeout: 3000,
+        image: "QuestionIcon",
+      });
+      return undefined;
+    }
+
+    this.Log(`SPAWNING THIRDPARTY APP ${id}`);
+
+    if (app.elevated) {
+      const elevated = await Daemon!?.elevation?.manuallyElevate({
+        what: "ArcOS needs your permission to open the following application:",
+        title: app.metadata.name,
+        description: `by ${app.metadata.author}`,
+        image: app.metadata.icon,
+        level: ElevationLevel.low,
+      });
+
+      if (!elevated) return;
+    }
+
+    await Stack.waitForAvailable("spawn");
+
+    const pid = parentPid || +Env.get("shell_pid");
+    const engine = await JsExec.Invoke(join(app.workingDirectory!, app.entrypoint!), ...args);
+
+    const operationId = engine?.operationId;
+    engine?.setApp(app, app.tpaPath);
+    const module = await engine?.getContents();
+
+    if (!(module?.prototype instanceof ThirdPartyAppProcess)) {
+      return await new Promise<T | undefined>((r) => {
+        MessageBox(
+          {
+            title: "Incompatible app",
+            message: `${app.metadata.name} uses a format that ins't compatible with the updated TPA framework. Click <b>Compatibility mode</b> to run the application using the old version.`,
+            buttons: [
+              {
+                caption: "Compatibility mode",
+                action: async () => {
+                  r(await this.legacy_spawnThirdParty(app, app.tpaPath, ...args));
+                },
+                disabled: () => !app.tpaPath,
+                suggested: true,
+              },
+              {
+                caption: "Okay",
+                action: async () => {},
+                suggested: true,
+              },
+            ],
+            image: "ErrorIcon",
+            sound: "arcos.dialog.error",
+          },
+          pid,
+          true
+        );
+      });
+    }
+
+    const proc = await Stack.spawn<T>(
+      module,
+      renderTarget,
+      Daemon.userInfo._id,
+      pid,
+      {
+        data: app,
+        id: app.id,
+        desktop: renderTarget?.id,
+      },
+      operationId,
+      app.workingDirectory!,
+      ...args
+    );
+
+    return proc;
+  }
+
+  async _spawnThirdPartyOverlay<T extends IProcess>(
+    id: string,
+    renderTarget: HTMLDivElement | undefined = undefined,
+    parentPid?: number,
+    ...args: any[]
+  ): Promise<T | undefined> {
+    const appStore = this.appStorage();
+    const app = appStore?.getAppSynchronous(id);
+
+    if (Daemon!.apps?.checkDisabled(id, app?.noSafeMode)) return;
+
+    if (app?.id.includes("-") || app?.id.includes(".")) {
+      Daemon!.notifications?.sendNotification({
+        title: `Refusing to spawn '${id}'`,
+        message:
+          "The application ID is malformed: it contains periods or dashes. If you're the creator of the app, be sure to use the suggested format for application IDs.",
+        timeout: 3000,
+        image: "WarningIcon",
+      });
+
+      return;
+    }
+
+    if (!app) {
+      Daemon!.notifications?.sendNotification({
+        title: "Application not found",
+        message: `ArcOS tried to launch an application with ID '${id}', but it could not be found. Is it installed?`,
+        timeout: 3000,
+        image: "QuestionIcon",
+      });
+      return undefined;
+    }
+
+    this.Log(`SPAWNING THIRDPARTY OVERLAY APP ${id}`);
+
+    if (app.elevated) {
+      const elevated = await Daemon!?.elevation?.manuallyElevate({
+        what: "ArcOS needs your permission to open the following application as an overlay:",
+        title: app.metadata.name,
+        description: `by ${app.metadata.author}`,
+        image: app.metadata.icon,
+        level: ElevationLevel.low,
+      });
+
+      if (!elevated) return;
+    }
+
+    await Stack.waitForAvailable("spawn");
+
+    const pid = parentPid || +Env.get("shell_pid");
+
+    if (!pid) {
+      this.Log(`Spawning overlay app '${app.id}' as normal app: no suitable parent process`, LogLevel.warning);
+
+      app.overlay = false;
+      app.state.headless = false;
+      app.position = { centered: true };
+    } else {
+      app.overlay = true;
+      app.state.headless = true;
+    }
+
+    const engine = await Stack.spawn<JsExec>(
+      JsExec,
+      undefined,
+      Daemon.userInfo._id,
+      pid,
+      join(app.workingDirectory!, app.entrypoint!),
+      ...args
+    );
+
+    const operationId = engine?.operationId;
+    engine?.setApp(app);
+    const module = await engine?.getContents();
+
+    if (!(module?.prototype instanceof ThirdPartyAppProcess)) {
+      return await new Promise<T | undefined>((r) => {
+        MessageBox(
+          {
+            title: "Incompatible app",
+            message: `${app.metadata.name} uses a format that ins't compatible with the updated TPA framework. Click <b>Compatibility mode</b> to run the application using the old version.`,
+            buttons: [
+              {
+                caption: "Compatibility mode",
+                action: async () => {
+                  r(await this.legacy_spawnThirdParty(app, app.tpaPath, ...args));
+                },
+                disabled: () => !app.tpaPath,
+                suggested: true,
+              },
+              {
+                caption: "Okay",
+                action: async () => {},
+                suggested: true,
+              },
+            ],
+            image: "ErrorIcon",
+            sound: "arcos.dialog.error",
+          },
+          pid,
+          true
+        );
+      });
+    }
+
+    const proc = await Stack.spawn<T>(
+      module,
+      renderTarget,
+      Daemon.userInfo._id,
+      pid,
+      {
+        data: app,
+        id: app.id,
+        desktop: renderTarget?.id,
+      },
+      operationId,
+      app.workingDirectory!,
+      ...args
+    );
+
+    return proc;
+  }
+
+  //#endregion
+  //#region ERRORS
+
+  tpaError_revisionIncompatible(app: App) {
+    MessageBox(
+      {
+        title: `${app.metadata.name}`,
+        message: `This application expects a newer version of the TPA framework than what ArcOS can supply. Please update your ArcOS version and try again.`,
+        buttons: [{ caption: "Okay", action: () => {} }],
+        sound: "arcos.dialog.error",
+        image: "ErrorIcon",
+      },
+      +Env.get("shell_pid"),
+      true
+    );
+  }
+
+  tpaError_noEnableThirdParty() {
+    if (Daemon!.autoLoadComplete)
+      MessageBox(
+        {
+          title: "Third-party apps",
+          message:
+            "ArcOS can't run third-party apps without your permission. Please enable third-party apps in Settings to access this app.",
+          image: "AppsIcon",
+          sound: "arcos.dialog.warning",
+          buttons: [
+            {
+              caption: "Take me there",
+              action: () => {
+                this.spawnApp("systemSettings", +Env.get("shell_pid"), "apps");
+              },
+            },
+            { caption: "Okay", suggested: true, action: () => {} },
+          ],
+        },
+        +Env.get("shell_pid"),
+        true
+      );
+  }
+
+  //#endregion
+  //#region LEGACY
+
+  async legacy_spawnThirdParty<T>(app: App, metaPath: string, ...args: any[]): Promise<T | undefined> {
     if (this._disposed) return;
 
     if (this.safeMode) {
@@ -241,7 +512,28 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
 
       await stop?.();
 
-      return await engine?.getContents();
+      const result = await engine?.getContents();
+
+      if (result?.prototype instanceof ThirdPartyAppProcess) {
+        // todo: make renderTarget a parameter instead of just hardcoding getCurrentDesktop
+        const desktop = Daemon.workspaces?.getCurrentDesktop();
+
+        return (await Stack.spawn(
+          result,
+          desktop,
+          Daemon.userInfo._id,
+          Daemon.getShell()?.pid || Daemon.pid,
+          {
+            id: app.id,
+            data: app,
+            desktop,
+          },
+          engine?.operationId,
+          app.workingDirectory
+        )) as T | undefined;
+      }
+
+      return result;
     } catch (e) {
       Stack.renderer?.notifyCrash(app as any, e as Error, app.process!);
       this.Log(`Execution error in third-party application "${app.id}": ${(e as any).stack}`);
@@ -249,41 +541,5 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
     }
   }
 
-  tpaError_revisionIncompatible(app: App) {
-    MessageBox(
-      {
-        title: `${app.metadata.name}`,
-        message: `This application expects a newer version of the TPA framework than what ArcOS can supply. Please update your ArcOS version and try again.`,
-        buttons: [{ caption: "Okay", action: () => {} }],
-        sound: "arcos.dialog.error",
-        image: "ErrorIcon",
-      },
-      +Env.get("shell_pid"),
-      true
-    );
-  }
-
-  tpaError_noEnableThirdParty() {
-    if (Daemon!.autoLoadComplete)
-      MessageBox(
-        {
-          title: "Third-party apps",
-          message:
-            "ArcOS can't run third-party apps without your permission. Please enable third-party apps in Settings to access this app.",
-          image: "AppsIcon",
-          sound: "arcos.dialog.warning",
-          buttons: [
-            {
-              caption: "Take me there",
-              action: () => {
-                this.spawnApp("systemSettings", +Env.get("shell_pid"), "apps");
-              },
-            },
-            { caption: "Okay", suggested: true, action: () => {} },
-          ],
-        },
-        +Env.get("shell_pid"),
-        true
-      );
-  }
+  //#endregion
 }

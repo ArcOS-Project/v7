@@ -17,7 +17,7 @@ export interface ISpawnUserContext extends IUserContext {
     parentPid?: number,
     ...args: any[]
   ): Promise<T | undefined>;
-  spawnThirdParty<T extends IProcess>(app: App, metaPath: string, ...args: any[]): Promise<T | undefined>;
+  legacy_spawnThirdParty<T extends IProcess>(app: App, metaPath: string, ...args: any[]): Promise<T | undefined>;
   tpaError_revisionIncompatible(app: App): void;
   tpaError_noEnableThirdParty(): void;
 }

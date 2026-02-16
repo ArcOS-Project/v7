@@ -19,7 +19,7 @@ import type { Service } from "$types/service";
 
 export class ApplicationStorage extends BaseService implements IApplicationStorage {
   private origins = new Map<string, AppStoreCb>([]);
-  private injectedStore = new Map<string, App>([]);
+  private injectedStore = new Map<string, InstalledApp>([]);
   public buffer = Store<AppStorage>([]);
   public appIconCache: Record<string, string> = {};
 
@@ -41,7 +41,7 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
     this.initBroadcast?.("Loading applications...");
     
     const blocklist = Daemon!.preferences()._internalImportBlocklist || [];
-    const builtins: App[] = await Promise.all(
+    const builtins: InstalledApp[] = await Promise.all(
       Object.keys(BuiltinAppImportPathAbsolutes).map(async (path) => {
         if (!Daemon.safeMode && blocklist.includes(path)) return null;
         const regex = new RegExp(/import\(\"(?<path>.*?)\"\)/gm);
@@ -91,7 +91,7 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
           return null;
         }
       })
-    ).then((apps) => apps.filter((a): a is App => a !== null));
+    ).then((apps) => apps.filter((a): a is InstalledApp => a !== null));
 
     this.loadOrigin("builtin", () => builtins);
     this.loadOrigin("userApps", async () => await Daemon.appreg!.getUserApps());
@@ -125,7 +125,7 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
     return true;
   }
 
-  loadApp(app: App) {
+  loadApp(app: InstalledApp) {
     if (this._disposed) return false;
 
     this.Log(`Loading injected app '${app.id}'`);
@@ -140,7 +140,7 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
   async loadAppModuleFile(path: string) {
     try {
       const module = await import(/* @vite-ignore */ path);
-      const app = module?.default as App;
+      const app = module?.default as InstalledApp;
 
       if (!app) return false;
       if (this.getAppSynchronous(app.id)) return false;
@@ -214,7 +214,7 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
     ) as AppStorage;
   }
 
-  getAppSynchronous(id: string): App | undefined {
+  getAppSynchronous(id: string): InstalledApp | undefined {
     return this.buffer().filter((a) => a.id === id)[0];
   }
 
