@@ -103,7 +103,7 @@ export type MaybeCenteredPosition = Partial<Position> & { centered?: boolean };
 
 export type AppProcessData = { data: App; id: string; desktop?: string };
 
-export type AppStorage = ((InstalledApp) & { originId?: string })[];
+export type AppStorage = (InstalledApp & { originId?: string })[];
 export type AppStoreCb = () => MaybePromise<AppStorage>;
 
 export interface ContextMenuItem {
@@ -144,4 +144,10 @@ export interface WindowResizer {
 export interface ToastMessage {
   content: string;
   icon?: string;
+}
+
+export interface AppProcessSpawnOptions {
+  asOverlay?: boolean;
+  noWorkspace?: boolean;
+  renderTarget?: HTMLDivElement;
 }

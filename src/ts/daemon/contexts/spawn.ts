@@ -7,12 +7,14 @@ import { Env, Stack, SysDispatch } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory, join } from "$ts/util/fs";
-import type { App, InstalledApp } from "$types/app";
+import { UUID } from "$ts/util/uuid";
+import type { App, AppProcessData, AppProcessSpawnOptions } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
 import { LogLevel } from "$types/logging";
 import { Daemon } from "..";
 import { UserContext } from "../context";
 
+//
 export class SpawnUserContext extends UserContext implements ISpawnUserContext {
   constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
@@ -21,58 +23,97 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
   //#region SPAWN
 
   async spawnApp<T extends IProcess>(id: string, parentPid?: number, ...args: any[]) {
-    if (this._disposed) return;
-
-    return await this._spawnApp<T>(id, Daemon!.workspaces?.getCurrentDesktop(), parentPid, ...args);
+    return await this.newSpawnApp<T>(id, parentPid, {}, ...args);
   }
 
   async spawnOverlay<T extends IProcess>(id: string, parentPid?: number, ...args: any[]) {
-    if (this._disposed) return;
-
-    return await this._spawnOverlay<T>(id, Daemon!.workspaces?.getCurrentDesktop(), parentPid, ...args);
+    return await this.newSpawnApp<T>(id, parentPid, { asOverlay: true }, ...args);
   }
 
-  async _spawnApp<T extends IProcess>(
+  async _spawnApp<T extends IProcess>(id: string, renderTarget?: HTMLDivElement, parentPid?: number, ...args: any[]) {
+    return await this.newSpawnApp<T>(id, parentPid, { renderTarget, noWorkspace: !renderTarget }, ...args);
+  }
+
+  async _spawnOverlay<T extends IProcess>(id: string, renderTarget?: HTMLDivElement, parentPid?: number, ...args: any[]) {
+    return await this.newSpawnApp<T>(id, parentPid, { renderTarget, noWorkspace: !renderTarget, asOverlay: true }, ...args);
+  }
+
+  async newSpawnApp<T extends IProcess>(
     id: string,
-    renderTarget: HTMLDivElement | undefined = undefined,
     parentPid?: number,
+    options?: AppProcessSpawnOptions,
     ...args: any[]
   ): Promise<T | undefined> {
-    if (this._disposed) return;
+    const renderTarget = options?.noWorkspace ? undefined : (options?.renderTarget ?? Daemon.workspaces?.getCurrentDesktop());
 
-    const appStore = this.appStorage();
-    const app = appStore?.getAppSynchronous(id);
+    try {
+      const appResult = await Daemon.appStorage()?.getAppById(id, true);
+      if (!appResult?.success) throw new Error(appResult?.errorMessage ?? "The application could not be found");
 
-    if (Daemon!.apps?.checkDisabled(id, app?.noSafeMode)) return;
+      const app = appResult.result!;
 
-    if (app?.id.includes("-") || app?.id.includes(".")) {
-      Daemon!.notifications?.sendNotification({
-        title: `Refusing to spawn '${id}'`,
-        message:
-          "The application ID is malformed: it contains periods or dashes. If you're the creator of the app, be sure to use the suggested format for application IDs.",
-        timeout: 3000,
-        image: "WarningIcon",
-      });
+      if (Daemon?.apps?.checkDisabled(app.id, app.noSafeMode)) return;
 
-      return;
-    }
+      this.check_malformedAppId(app);
+      await this.check_elevation(app);
 
-    if (!app) {
-      Daemon!.notifications?.sendNotification({
-        title: "Application not found",
-        message: `ArcOS tried to launch an application with ID '${id}', but it could not be found. Is it installed?`,
-        timeout: 3000,
-        image: "QuestionIcon",
-      });
+      const shellDispatch = Stack.ConnectDispatch(+Env.get("shell_pid"));
+
+      if (shellDispatch) {
+        shellDispatch?.dispatch("close-start-menu");
+        shellDispatch?.dispatch("close-action-center");
+      }
+
+      const pid = parentPid || +Env.get("shell_pid");
+
+      if (options?.asOverlay) {
+        if (!pid) {
+          this.Log(`Spawning overlay app '${app.id}' as normal app: no suitable parent process`, LogLevel.warning);
+          app.overlay = false;
+          app.state.headless = false;
+          app.position = { centered: true };
+        } else {
+          app.overlay = true;
+          app.state.headless = true;
+        }
+      }
+
+      const argv = app.thirdParty ? [UUID(), app.workingDirectory, ...args] : args;
+
+      const proc = await Stack.spawn<T>(
+        app.assets.runtime as Constructs<T>,
+        renderTarget,
+        this.userInfo._id,
+        parentPid || this.pid,
+        this.generateAppProcessData(app, renderTarget),
+        ...argv
+      );
+
+      return proc;
+    } catch (e) {
+      this.Log(`spawnApp for ${id} failed: ${e}`, LogLevel.error);
       return undefined;
     }
+  }
 
-    this.Log(`SPAWNING APP ${id}`);
+  //#endregion
+  //#region CHECKS
 
-    if (app.thirdParty || app.entrypoint) {
-      return await this._spawnThirdParty<T>(app.id, renderTarget, parentPid, ...args);
-    }
+  check_malformedAppId(app: App) {
+    if (!app.id.includes("-") && !app.id.includes(".")) return;
 
+    Daemon.notifications?.sendNotification({
+      title: `Refusing to spawn '${app.id}'`,
+      message:
+        "The application ID is malformed: it contains periods or dashes. If you're the creator of the app, be sure to use the suggested format for application IDs.",
+      timeout: 3000,
+      image: "WarningIcon",
+    });
+
+    throw new Error("Malformed app ID");
+  }
+
+  async check_elevation(app: App) {
     if (app.elevated) {
       const elevated = await Daemon!.elevation?.manuallyElevate({
         what: "ArcOS needs your permission to open the following application:",
@@ -82,345 +123,8 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
         level: ElevationLevel.low,
       });
 
-      if (!elevated) return;
+      if (!elevated) throw new Error("Elevation is required but wasn't provided.");
     }
-
-    const shellDispatch = Stack.ConnectDispatch(+Env.get("shell_pid"));
-
-    if (shellDispatch) {
-      shellDispatch?.dispatch("close-start-menu");
-      shellDispatch?.dispatch("close-action-center");
-    }
-
-    await Stack.waitForAvailable("spawn");
-
-    Daemon!.updateGlobalDispatch();
-
-    if (app.overlay) {
-      app.overlay = false;
-      app.position = { centered: true };
-    }
-
-    return await Stack.spawn<T>(
-      app.assets.runtime as Constructs<T>,
-      renderTarget,
-      this.userInfo!._id,
-      parentPid || this.pid,
-      {
-        data: app,
-        id: app.id,
-        desktop: renderTarget ? renderTarget.id : undefined,
-      },
-      ...args
-    );
-  }
-
-  async _spawnOverlay<T extends IProcess>(
-    id: string,
-    renderTarget: HTMLDivElement | undefined = undefined,
-    parentPid?: number,
-    ...args: any[]
-  ): Promise<T | undefined> {
-    if (this._disposed) return;
-
-    const appStore = this.appStorage();
-    const app = await appStore?.getAppSynchronous(id);
-
-    if (Daemon!.apps?.checkDisabled(id, app?.noSafeMode)) return;
-
-    if (app?.id.includes("-") || app?.id.includes(".")) {
-      Daemon!.notifications?.sendNotification({
-        title: `Refusing to spawn '${id}'`,
-        message:
-          "The application ID is malformed: it contains periods or dashes. If you're the creator of the app, be sure to use the suggested format for application IDs.",
-        timeout: 3000,
-        image: "WarningIcon",
-      });
-
-      return;
-    }
-
-    if (!app) {
-      Daemon!.notifications?.sendNotification({
-        title: "Application not found",
-        message: `ArcOS tried to launch an application with ID '${id}', but it could not be found. Is it installed?`,
-        timeout: 3000,
-        image: "QuestionIcon",
-      });
-      return undefined;
-    }
-
-    this.Log(`SPAWNING OVERLAY APP ${id}`);
-
-    if (app.thirdParty) {
-      return await this._spawnThirdPartyOverlay<T>(id, renderTarget, parentPid, ...args);
-    }
-
-    if (app.elevated) {
-      const elevated = await Daemon!?.elevation?.manuallyElevate({
-        what: "ArcOS needs your permission to open the following application as an overlay:",
-        title: app.metadata.name,
-        description: `by ${app.metadata.author}`,
-        image: app.metadata.icon,
-        level: ElevationLevel.low,
-      });
-
-      if (!elevated) return;
-    }
-
-    await Stack.waitForAvailable("spawn");
-
-    const pid = parentPid || +Env.get("shell_pid");
-
-    if (!pid) {
-      this.Log(`Spawning overlay app '${app.id}' as normal app: no suitable parent process`, LogLevel.warning);
-      app.overlay = false;
-      app.state.headless = false;
-      app.position = { centered: true };
-    } else {
-      app.overlay = true;
-      app.state.headless = true;
-    }
-
-    return await Stack.spawn<T>(
-      app.assets.runtime as Constructs<T>,
-      renderTarget,
-      this.userInfo!._id,
-      pid || this.pid,
-      {
-        data: app,
-        id: app.id,
-        desktop: renderTarget ? renderTarget.id : undefined,
-      },
-      ...args
-    );
-  }
-
-  async _spawnThirdParty<T extends IProcess>(
-    id: string,
-    renderTarget: HTMLDivElement | undefined = undefined,
-    parentPid?: number,
-    ...args: any[]
-  ): Promise<T | undefined> {
-    const appStore = this.appStorage();
-    const app = appStore?.getAppSynchronous(id);
-
-    if (Daemon!.apps?.checkDisabled(id, app?.noSafeMode)) return;
-
-    if (app?.id.includes("-") || app?.id.includes(".")) {
-      Daemon!.notifications?.sendNotification({
-        title: `Refusing to spawn '${id}'`,
-        message:
-          "The application ID is malformed: it contains periods or dashes. If you're the creator of the app, be sure to use the suggested format for application IDs.",
-        timeout: 3000,
-        image: "WarningIcon",
-      });
-
-      return;
-    }
-
-    if (!app) {
-      Daemon!.notifications?.sendNotification({
-        title: "Application not found",
-        message: `ArcOS tried to launch an application with ID '${id}', but it could not be found. Is it installed?`,
-        timeout: 3000,
-        image: "QuestionIcon",
-      });
-      return undefined;
-    }
-
-    this.Log(`SPAWNING THIRDPARTY APP ${id}`);
-
-    if (app.elevated) {
-      const elevated = await Daemon!?.elevation?.manuallyElevate({
-        what: "ArcOS needs your permission to open the following application:",
-        title: app.metadata.name,
-        description: `by ${app.metadata.author}`,
-        image: app.metadata.icon,
-        level: ElevationLevel.low,
-      });
-
-      if (!elevated) return;
-    }
-
-    await Stack.waitForAvailable("spawn");
-
-    const pid = parentPid || +Env.get("shell_pid");
-    const engine = await JsExec.Invoke(join(app.workingDirectory!, app.entrypoint!), ...args);
-
-    const operationId = engine?.operationId;
-    engine?.setApp(app, app.tpaPath);
-    const module = await engine?.getContents();
-
-    if (!(module?.prototype instanceof ThirdPartyAppProcess)) {
-      return await new Promise<T | undefined>((r) => {
-        MessageBox(
-          {
-            title: "Incompatible app",
-            message: `${app.metadata.name} uses a format that ins't compatible with the updated TPA framework. Click <b>Compatibility mode</b> to run the application using the old version.`,
-            buttons: [
-              {
-                caption: "Compatibility mode",
-                action: async () => {
-                  r(await this.legacy_spawnThirdParty(app, app.tpaPath, ...args));
-                },
-                disabled: () => !app.tpaPath,
-                suggested: true,
-              },
-              {
-                caption: "Okay",
-                action: async () => {},
-                suggested: true,
-              },
-            ],
-            image: "ErrorIcon",
-            sound: "arcos.dialog.error",
-          },
-          pid,
-          true
-        );
-      });
-    }
-
-    const proc = await Stack.spawn<T>(
-      module,
-      renderTarget,
-      Daemon.userInfo._id,
-      pid,
-      {
-        data: app,
-        id: app.id,
-        desktop: renderTarget?.id,
-      },
-      operationId,
-      app.workingDirectory!,
-      ...args
-    );
-
-    return proc;
-  }
-
-  async _spawnThirdPartyOverlay<T extends IProcess>(
-    id: string,
-    renderTarget: HTMLDivElement | undefined = undefined,
-    parentPid?: number,
-    ...args: any[]
-  ): Promise<T | undefined> {
-    const appStore = this.appStorage();
-    const app = appStore?.getAppSynchronous(id);
-
-    if (Daemon!.apps?.checkDisabled(id, app?.noSafeMode)) return;
-
-    if (app?.id.includes("-") || app?.id.includes(".")) {
-      Daemon!.notifications?.sendNotification({
-        title: `Refusing to spawn '${id}'`,
-        message:
-          "The application ID is malformed: it contains periods or dashes. If you're the creator of the app, be sure to use the suggested format for application IDs.",
-        timeout: 3000,
-        image: "WarningIcon",
-      });
-
-      return;
-    }
-
-    if (!app) {
-      Daemon!.notifications?.sendNotification({
-        title: "Application not found",
-        message: `ArcOS tried to launch an application with ID '${id}', but it could not be found. Is it installed?`,
-        timeout: 3000,
-        image: "QuestionIcon",
-      });
-      return undefined;
-    }
-
-    this.Log(`SPAWNING THIRDPARTY OVERLAY APP ${id}`);
-
-    if (app.elevated) {
-      const elevated = await Daemon!?.elevation?.manuallyElevate({
-        what: "ArcOS needs your permission to open the following application as an overlay:",
-        title: app.metadata.name,
-        description: `by ${app.metadata.author}`,
-        image: app.metadata.icon,
-        level: ElevationLevel.low,
-      });
-
-      if (!elevated) return;
-    }
-
-    await Stack.waitForAvailable("spawn");
-
-    const pid = parentPid || +Env.get("shell_pid");
-
-    if (!pid) {
-      this.Log(`Spawning overlay app '${app.id}' as normal app: no suitable parent process`, LogLevel.warning);
-
-      app.overlay = false;
-      app.state.headless = false;
-      app.position = { centered: true };
-    } else {
-      app.overlay = true;
-      app.state.headless = true;
-    }
-
-    const engine = await Stack.spawn<JsExec>(
-      JsExec,
-      undefined,
-      Daemon.userInfo._id,
-      pid,
-      join(app.workingDirectory!, app.entrypoint!),
-      ...args
-    );
-
-    const operationId = engine?.operationId;
-    engine?.setApp(app);
-    const module = await engine?.getContents();
-
-    if (!(module?.prototype instanceof ThirdPartyAppProcess)) {
-      return await new Promise<T | undefined>((r) => {
-        MessageBox(
-          {
-            title: "Incompatible app",
-            message: `${app.metadata.name} uses a format that ins't compatible with the updated TPA framework. Click <b>Compatibility mode</b> to run the application using the old version.`,
-            buttons: [
-              {
-                caption: "Compatibility mode",
-                action: async () => {
-                  r(await this.legacy_spawnThirdParty(app, app.tpaPath, ...args));
-                },
-                disabled: () => !app.tpaPath,
-                suggested: true,
-              },
-              {
-                caption: "Okay",
-                action: async () => {},
-                suggested: true,
-              },
-            ],
-            image: "ErrorIcon",
-            sound: "arcos.dialog.error",
-          },
-          pid,
-          true
-        );
-      });
-    }
-
-    const proc = await Stack.spawn<T>(
-      module,
-      renderTarget,
-      Daemon.userInfo._id,
-      pid,
-      {
-        data: app,
-        id: app.id,
-        desktop: renderTarget?.id,
-      },
-      operationId,
-      app.workingDirectory!,
-      ...args
-    );
-
-    return proc;
   }
 
   //#endregion
@@ -453,7 +157,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
             {
               caption: "Take me there",
               action: () => {
-                this.spawnApp("systemSettings", +Env.get("shell_pid"), "apps");
+                this.spawnApp("systemSettings", +Env.get("shell_pid"), {}, "apps");
               },
             },
             { caption: "Okay", suggested: true, action: () => {} },
@@ -539,6 +243,17 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
       this.Log(`Execution error in third-party application "${app.id}": ${(e as any).stack}`);
       stop?.();
     }
+  }
+
+  //#endregion
+  //#region UTIL
+
+  generateAppProcessData(app: App, renderTarget?: HTMLDivElement): AppProcessData {
+    return {
+      id: app.id,
+      data: app,
+      desktop: renderTarget?.id,
+    };
   }
 
   //#endregion

@@ -1,7 +1,11 @@
+import type { Constructs } from "$interfaces/common";
 import type { IApplicationStorage } from "$interfaces/services/AppStorage";
+import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
+import { AppProcess } from "$ts/apps/process";
 import { BuiltinAppImportPathAbsolutes } from "$ts/apps/store";
 import { Daemon } from "$ts/daemon";
 import { ArcOSVersion, Env, Fs, SysDispatch } from "$ts/env";
+import { JsExec } from "$ts/jsexec";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { CommandResult } from "$ts/result";
@@ -22,6 +26,7 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
   private injectedStore = new Map<string, InstalledApp>([]);
   public buffer = Store<AppStorage>([]);
   public appIconCache: Record<string, string> = {};
+  public tpaModuleCache: Record<string, Constructs<IThirdPartyAppProcess>> = {};
 
   //#region LIFECYCLE
 
@@ -39,7 +44,7 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
 
   protected async start(): Promise<any> {
     this.initBroadcast?.("Loading applications...");
-    
+
     const blocklist = Daemon!.preferences()._internalImportBlocklist || [];
     const builtins: InstalledApp[] = await Promise.all(
       Object.keys(BuiltinAppImportPathAbsolutes).map(async (path) => {
@@ -228,20 +233,13 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
 
     for (const app of apps) {
       if (app.id === id) {
-        const tpaPath = (app as InstalledApp).tpaPath;
+        if (app.thirdParty && app.entrypoint && app.workingDirectory && app.tpaPath) {
+          const procResult = await this.obtainTpaAppProc(app);
 
-        if (tpaPath) {
-          try {
-            const json = tryJsonParse(arrayBufferToText((await Fs.readFile(tpaPath))!));
+          console.log(procResult)
 
-            if (!json || typeof json !== "object") return CommandResult.Error("Failed to parse the TPA JSON contents");
-
-            return {
-              ...Object.freeze({ ...json, workingDirectory: getParentDirectory(tpaPath), tpaPath, originId: "userApps" }),
-            };
-          } catch {
-            continue;
-          }
+          if (procResult.success)
+            return CommandResult.Ok({ ...Object.freeze({ ...app, assets: { runtime: procResult.result! } }) });
         }
 
         return CommandResult.Ok({ ...Object.freeze({ ...app }) });
@@ -249,6 +247,29 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
     }
 
     return CommandResult.Error("Application not found.");
+  }
+
+  async obtainTpaAppProc(app: InstalledApp): Promise<CommandResult<Constructs<IThirdPartyAppProcess>>> {
+    if (this.tpaModuleCache[app.id]) return CommandResult.Ok(this.tpaModuleCache[app.id]);
+    if (!app.entrypoint || !app.thirdParty || !app.workingDirectory || !app.tpaPath)
+      return CommandResult.Error("The application does not define an entrypoint.");
+
+    try {
+      const entrypoint = join(app.workingDirectory, app.entrypoint);
+      const engine = await JsExec.Invoke(entrypoint);
+      engine?.setApp(app, app.tpaPath);
+
+      const result = await engine?.getContents();
+      if (!(result?.prototype instanceof AppProcess))
+        return CommandResult.Error(`The module does not provide a process as primary export.`);
+
+      const proc = result as Constructs<IThirdPartyAppProcess>;
+      this.tpaModuleCache[app.id] = proc;
+
+      return CommandResult.Ok(proc);
+    } catch (e) {
+      throw e;
+    }
   }
 }
 
