@@ -1,15 +1,12 @@
 import type { IInitUserContext } from "$interfaces/contexts/init";
 import type { IUserDaemon } from "$interfaces/daemon";
+import type { IServiceHost } from "$interfaces/service";
 import { Env, Fs, Stack, State, SysDispatch } from "$ts/env";
 import { UserDrive } from "$ts/kernel/mods/fs/drives/userfs";
 import { PermissionHandler } from "$ts/permissions";
 import { ServiceHost } from "$ts/servicehost";
-import type { LibraryManagement } from "$ts/servicehost/services/LibMgmtSvc";
-import type { ShareManager } from "$ts/servicehost/services/ShareMgmt";
 import { MessageBox } from "$ts/util/dialog";
-import type { Service } from "$types/service";
 import { Daemon } from "..";
-import type { FileAssocService } from "../../servicehost/services/FileAssocSvc";
 import { UserContext } from "../context";
 
 /**
@@ -45,7 +42,6 @@ export class InitUserContext extends UserContext implements IInitUserContext {
         const href = anchor.getAttribute("href");
 
         if (this.registeredAnchors.includes(anchor) || href?.startsWith("@client/")) continue;
-
         this.registeredAnchors.push(anchor);
 
         anchor.addEventListener("click", (e) => {
@@ -102,15 +98,14 @@ export class InitUserContext extends UserContext implements IInitUserContext {
 
     this.Log("Starting drive notifier watcher");
 
-    SysDispatch.subscribe("fs-mount-drive", (id) => {
+    SysDispatch.subscribe<string>("fs-mount-drive", (id) => {
       if (this._disposed) return;
 
       try {
-        const drive = Fs.getDriveById(id as unknown as string);
+        const drive = Fs.getDriveById(id);
         if (!drive) return;
 
-        Daemon!.files?.mountedDrives.push(id as unknown as string);
-
+        Daemon!.files?.mountedDrives.push(id);
         if (!drive.REMOVABLE) return;
 
         const notificationId = Daemon!?.notifications?.sendNotification({
@@ -133,14 +128,6 @@ export class InitUserContext extends UserContext implements IInitUserContext {
         return;
       }
     });
-  }
-
-  async startShareManager() {
-    this.Log("Starting share manager");
-
-    const share = this.serviceHost!.getService<ShareManager>("ShareMgmt");
-
-    await share?.mountOwnedShares();
   }
 
   async startPreferencesSync() {
@@ -196,14 +183,11 @@ export class InitUserContext extends UserContext implements IInitUserContext {
     Daemon!.workspaces!.syncVirtualDesktops(Daemon!.preferences());
   }
 
-  async startServiceHost(svcPreRun?: (service: Service) => void) {
+  async startServiceHost(broadcast?: (msg: string) => void) {
     this.Log("Starting service host");
 
-    Daemon!.serviceHost = await Stack.spawn<ServiceHost>(ServiceHost, undefined, this.userInfo!._id, this.pid);
-    await this.serviceHost?.init(svcPreRun);
-
-    Daemon!.assoc = this.serviceHost?.getService<FileAssocService>("FileAssocSvc");
-    Daemon!.libraries = this.serviceHost?.getService<LibraryManagement>("LibMgmtSvc")!;
+    Daemon!.serviceHost = await Stack.spawn<IServiceHost>(ServiceHost, undefined, this.userInfo!._id, this.pid);
+    await this.serviceHost?.init(broadcast);
   }
 
   async startPermissionHandler() {

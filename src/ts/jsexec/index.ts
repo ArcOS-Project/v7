@@ -11,7 +11,7 @@
 import type { IUserDaemon } from "$interfaces/daemon";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { ThirdPartyProps } from "$ts/apps/tpa/props";
-import { TryGetDaemon } from "$ts/daemon";
+import { Daemon } from "$ts/daemon";
 import { Fs, Server } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
@@ -40,7 +40,7 @@ export class JsExec extends Process {
   constructor(pid: number, parentPid: number, filePath: string, ...args: any[]) {
     super(pid, parentPid);
 
-    this.userDaemon = TryGetDaemon();
+    this.userDaemon = Daemon;
     this.args = args;
     this.filePath = filePath;
     this.workingDirectory = getParentDirectory(filePath);

@@ -4,7 +4,7 @@ import type { Constructs } from "$interfaces/common";
 import type { IUserDaemon } from "$interfaces/daemon";
 import type { IFilesystemDrive } from "$interfaces/fs";
 import type { IArcTerminal, ITerminalProcess, ITerminalWindowRuntime } from "$interfaces/terminal";
-import { Daemon, TryGetDaemon } from "$ts/daemon";
+import { Daemon } from "$ts/daemon";
 import { Env, Fs, Stack, State } from "$ts/env";
 import { ASCII_ART } from "$ts/kernel/intro";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
@@ -22,7 +22,6 @@ import type { DirectoryReadReturn } from "$types/fs";
 import type { ArcTermConfiguration, Arguments } from "$types/terminal";
 import ansiEscapes from "ansi-escapes";
 import { Terminal } from "xterm";
-import { TerminalProcess } from "./process";
 import { Readline } from "./readline/readline";
 import {
   BOLD,
@@ -62,11 +61,11 @@ export class ArcTerminal extends Process implements IArcTerminal {
 
     this.path = path || UserPaths.Home;
     this.changeDirectory(this.path);
-    this.daemon = TryGetDaemon();
-
+    this.daemon = Daemon;
     this.term = term;
     this.tryGetTermWindow();
     this.name = "ArcTerminal";
+
     if (config) {
       this.config = config;
       this.configProvidedExternal = true;
@@ -107,9 +106,7 @@ export class ArcTerminal extends Process implements IArcTerminal {
     if (this._disposed) return;
 
     this.window?.windowTitle.set(`ArcTerm - ${this.path}`);
-
     const line = await this.rl?.read(this.var?.replace(this.config.prompt || "$")!);
-
     await this.processLine(line);
   }
 
@@ -196,7 +193,6 @@ export class ArcTerminal extends Process implements IArcTerminal {
 
     if (!path) return this.path;
     if (path.includes(":/")) return path;
-
     return join(this.path, path || "");
   }
 
@@ -204,7 +200,6 @@ export class ArcTerminal extends Process implements IArcTerminal {
     this.Log(`FS: list: ${path}`);
 
     if (this._disposed) return;
-
     return await Fs.readDir(this.join(path));
   }
 
@@ -212,7 +207,6 @@ export class ArcTerminal extends Process implements IArcTerminal {
     this.Log(`FS: mkdir: ${path}`);
 
     if (this._disposed) return;
-
     return await Fs.createDirectory(this.join(path));
   }
 
@@ -220,7 +214,6 @@ export class ArcTerminal extends Process implements IArcTerminal {
     this.Log(`FS: write: ${path}`);
 
     if (this._disposed) return;
-
     return await Fs.writeFile(this.join(path), data);
   }
 
@@ -228,7 +221,6 @@ export class ArcTerminal extends Process implements IArcTerminal {
     this.Log(`FS: tree: ${path}`);
 
     if (this._disposed) return;
-
     return await Fs.tree(this.join(path));
   }
 
@@ -236,7 +228,6 @@ export class ArcTerminal extends Process implements IArcTerminal {
     this.Log(`FS: cp: ${source} -> ${destination}`);
 
     if (this._disposed) return;
-
     return await Fs.copyItem(this.join(source), this.join(destination));
   }
 
@@ -244,7 +235,6 @@ export class ArcTerminal extends Process implements IArcTerminal {
     this.Log(`FS: mv: ${source} -> destination`);
 
     if (this._disposed) return;
-
     return await Fs.moveItem(this.join(source), this.join(destination));
   }
 
@@ -252,7 +242,6 @@ export class ArcTerminal extends Process implements IArcTerminal {
     this.Log(`FS: read: ${path}`);
 
     if (this._disposed) return;
-
     return await Fs.readFile(this.join(path));
   }
 
@@ -260,25 +249,21 @@ export class ArcTerminal extends Process implements IArcTerminal {
     this.Log(`FS: rm: ${path}`);
 
     if (this._disposed) return;
-
     return await Fs.deleteItem(this.join(path));
   }
 
   async Error(message: string, prefix = "Error") {
     if (this._disposed) return;
-
     this.rl?.println(`${BRRED}${prefix}${RESET}: ${message}`);
   }
 
   async Warning(message: string, prefix = "Warning") {
     if (this._disposed) return;
-
     this.rl?.println(`${BRYELLOW}${prefix}${RESET}: ${message}`);
   }
 
   async Info(message: string, prefix = "Info") {
     if (this._disposed) return;
-
     this.rl?.println(`${BRBLUE}${prefix}${RESET}: ${message}`);
   }
 
@@ -289,7 +274,6 @@ export class ArcTerminal extends Process implements IArcTerminal {
 
     try {
       const drive = Fs.getDriveByPath(path);
-
       if (!drive) return false;
 
       this.drive = drive;
@@ -300,7 +284,6 @@ export class ArcTerminal extends Process implements IArcTerminal {
 
     try {
       const contents = await Fs.readDir(path);
-
       if (!contents) throw "";
 
       this.contents = contents;
@@ -320,7 +303,6 @@ export class ArcTerminal extends Process implements IArcTerminal {
 
     const regex = /(?: --(?<nl>[a-z\-]+)(?:=(?<vl>.*?)(?= --|$)|))/gm; //--name=?value
     const matches: RegExpMatchArray[] = [];
-
     let match: RegExpExecArray | null;
 
     while ((match = regex.exec(args))) {

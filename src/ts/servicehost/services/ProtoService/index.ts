@@ -18,16 +18,17 @@ export class ProtocolServiceProcess extends BaseService implements IProtocolServ
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
-    super(pid, parentPid, name, host);
+  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+    super(pid, parentPid, name, host, initBroadcast);
 
     this.setSource(__SOURCE__);
   }
 
   async start() {
+    this.initBroadcast?.("Starting protocol service");
     this.observer = new MutationObserver((mutations) => this.processMutations(mutations));
-
     this.observer.observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
+    this.parseProtoParam();
   }
 
   //#endregion

@@ -4,13 +4,14 @@ import type { IProcess } from "./process";
 export interface IBaseService extends IProcess {
   host: IServiceHost;
   activated: boolean;
+  deactivate(broadcast?: (m: string) => void): Promise<void>;
 }
 
 export interface IServiceHost extends IProcess {
   Services: ReadableServiceStore;
   _holdRestart: boolean;
-  initialRun(svcPreRun?: (service: Service) => void): Promise<void>;
-  init(svcPreRun?: (service: Service) => void): Promise<void>;
+  initialRun(broadcast?: (m: string) => void): Promise<void>;
+  init(broadcast?: (m: string) => void): Promise<void>;
   stop(): Promise<void>;
   readonly STORE: Map<string, Service>;
   loadStore(store: ServiceStore): boolean;
@@ -21,4 +22,5 @@ export interface IServiceHost extends IProcess {
   verifyServicesProcesses(): Promise<void>;
   getService<T extends IBaseService = IBaseService>(id: string): T | undefined;
   hasService(id: string): boolean;
+  spinDown(broadcast?: (message: string) => void): Promise<void>;
 }

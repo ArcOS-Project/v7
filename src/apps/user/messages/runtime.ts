@@ -62,6 +62,10 @@ export class MessagingAppRuntime extends AppProcess {
     this.setSource(__SOURCE__);
   }
 
+  async start() {
+    if (!this.service) return false;
+  }
+
   async render({ page }: { page: string }) {
     await this.switchPage(page);
 

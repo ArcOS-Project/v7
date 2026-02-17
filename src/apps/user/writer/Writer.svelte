@@ -3,7 +3,8 @@
   import type { WriterRuntime } from "./runtime";
 
   const { process }: { process: WriterRuntime } = $props();
-  const { buffer, filename, original, input, mimetype, directoryName, mimeIcon, userPreferences, windowFullscreen } = process;
+  const { buffer, filename, original, input, mimetype, directoryName, mimeIcon, userPreferences, windowFullscreen, drive } =
+    process;
 </script>
 
 <textarea
@@ -14,6 +15,7 @@
   class:wrap={$userPreferences.appPreferences.writer.wordWrap}
   class:no-statusbar={$userPreferences.appPreferences.writer.hideStatusBar}
   class:zen={$windowFullscreen}
+  readonly={$drive?.READONLY}
 ></textarea>
 {#if !$userPreferences.appPreferences.writer.hideStatusBar}
   <div class="status-bar">
@@ -27,6 +29,9 @@
     <div class="mimetype">{$mimetype || "unknown"}</div>
     {#if $directoryName}
       <div class="parent">in {$directoryName}</div>
+    {/if}
+    {#if $drive?.READONLY}
+      <div class="readonly">Read-only</div>
     {/if}
     {#if $buffer !== $original}
       <div class="modified">Modified</div>

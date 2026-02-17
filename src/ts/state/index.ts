@@ -1,6 +1,7 @@
 import type { IAppProcess } from "$interfaces/app";
 import type { Constructs } from "$interfaces/common";
 import type { IProcessHandler } from "$interfaces/modules/stack";
+import type { IStateHandler } from "$interfaces/state";
 import { getKMod, Kernel, Stack } from "$ts/env";
 import { LogLevel } from "$types/logging";
 import type { State } from "../../types/state";
@@ -9,7 +10,7 @@ import { Sleep } from "../sleep";
 import { StateError } from "./error";
 import { States } from "./store";
 
-export class StateHandler extends Process {
+export class StateHandler extends Process implements IStateHandler {
   store: Record<string, State> = {};
   currentState: string = "";
   stateProps: Record<string, Record<any, any>> = {};
@@ -42,13 +43,10 @@ export class StateHandler extends Process {
 
   async loadState(id: string, props: Record<string, any> = {}, instant = false) {
     if (this._disposed) return;
-
     if (Kernel?.PANICKED && id !== "crash-screen") return;
 
     const data = this.store[id];
-
     if (!data) throw new StateError(`No such state ${id} on handler with PID ${this.pid}`);
-
     if (this.stateAppProcess) {
       this.Log(`Closing previous state app process...`);
 
@@ -162,7 +160,6 @@ export class StateHandler extends Process {
     if (!proc) throw new StateError(`Failed to spawn state app ${app.id}`);
 
     this.stateAppProcess = proc;
-
     this.Log(` -> Loaded ${data.identifier}`);
   }
 

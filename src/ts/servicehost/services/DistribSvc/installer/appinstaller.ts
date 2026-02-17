@@ -1,4 +1,4 @@
-import { Daemon, TryGetDaemon } from "$ts/daemon";
+import { Daemon } from "$ts/daemon";
 import { Env, Fs } from "$ts/env";
 import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
 import { UserPaths } from "$ts/user/store";
@@ -133,7 +133,7 @@ export class AppInstallerProcess extends InstallerProcessBase {
   static async uninstallPackage(metadata: ArcPackage, deleteFiles = true, onStage?: (stage: string) => void): Promise<void> {
     onStage?.("Getting installed package");
 
-    const host = TryGetDaemon()?.serviceHost;
+    const host = Daemon?.serviceHost;
     const distrib = host?.getService<DistributionServiceProcess>("DistribSvc")!;
     const appStore = host?.getService<ApplicationStorage>("AppStorage");
 

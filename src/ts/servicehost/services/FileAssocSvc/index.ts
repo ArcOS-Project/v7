@@ -19,16 +19,15 @@ export class FileAssocService extends BaseService implements IFileAssocService {
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
-    super(pid, parentPid, name, host);
+  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+    super(pid, parentPid, name, host, initBroadcast);
 
     this.setSource(__SOURCE__);
   }
 
   async start() {
+    this.initBroadcast?.("Starting file associations");
     await this.loadConfiguration();
-
-    Daemon!.assoc = this;
   }
 
   //#endregion

@@ -493,7 +493,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
     this.isKmod();
 
-    await this.createDirectory(target);
+    if (!(await this.isDirectory(target))) await this.createDirectory(target);
 
     this.validatePath(target);
     const uploader = document.createElement("input");

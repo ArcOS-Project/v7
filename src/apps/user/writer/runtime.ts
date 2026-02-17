@@ -1,3 +1,4 @@
+import type { IFilesystemDrive } from "$interfaces/fs";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/daemon";
 import { Fs } from "$ts/env";
@@ -21,6 +22,7 @@ export class WriterRuntime extends AppProcess {
   directoryName = Store<string>("");
   original = Store<string>("");
   input = Store<HTMLTextAreaElement>();
+  drive = Store<IFilesystemDrive | undefined>();
   mimeIcon = Store<string>(this.getIconCached("DefaultMimeIcon"));
 
   protected overlayStore: Record<string, App> = {
@@ -121,6 +123,8 @@ export class WriterRuntime extends AppProcess {
       if (!contents) {
         throw new Error("Failed to get the contents of the file.");
       }
+
+      this.drive.set(Fs.getDriveByPath(path));
 
       const info = Daemon?.assoc?.getFileAssociation(path);
 

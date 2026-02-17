@@ -19,13 +19,15 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
   }
 
   //#region LIFECYCLE
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
-    super(pid, parentPid, name, host);
+  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+    super(pid, parentPid, name, host, initBroadcast);
 
     this.setSource(__SOURCE__);
   }
 
   async start() {
+    this.initBroadcast?.("Starting messaging service");
+    
     const daemon = Stack.getProcess<IUserDaemon>(+Env.get("userdaemon_pid")!)!;
     const dispatch = daemon.serviceHost?.getService<GlobalDispatch>("GlobalDispatch")!;
 

@@ -1,9 +1,7 @@
 import type { IUserContext } from "$interfaces/daemon";
-import type { IApplicationStorage } from "$interfaces/services/AppStorage";
 import type { App, AppStorage, InstalledApp } from "$types/app";
 
 export interface IAppRegistrationUserContext extends IUserContext {
-  initAppStorage(storage: IApplicationStorage, cb: (app: App) => void): Promise<void>;
   getUserApps(): Promise<AppStorage>;
   registerApp(data: InstalledApp): Promise<void>;
   uninstallPackageWithStatus(id: string, deleteFiles?: boolean): Promise<boolean>;

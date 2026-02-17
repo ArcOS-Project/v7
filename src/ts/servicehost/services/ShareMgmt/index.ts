@@ -19,6 +19,11 @@ export class ShareManager extends BaseService implements IShareManager {
     this.setSource(__SOURCE__);
   }
 
+  protected async start(): Promise<any> {
+    this.initBroadcast?.("Mounting your shares");
+    this.mountOwnedShares();
+  }
+
   //#endregion
 
   async getOwnedShares(): Promise<SharedDriveType[]> {
@@ -158,8 +163,11 @@ export class ShareManager extends BaseService implements IShareManager {
 
   async mountShareById(shareId: string, letter?: string, onProgress?: FilesystemProgressCallback) {
     const info = await this.getShareInfoById(shareId);
-
     if (!info) return false;
+
+    // Don't bother calling mountDrive if the drive is already mounted
+    const mounted = Fs.getDriveById(shareId);
+    if (mounted) return false;
 
     try {
       return await Fs.mountDrive(shareId, SharedDrive, letter, onProgress, info);

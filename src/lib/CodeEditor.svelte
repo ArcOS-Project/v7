@@ -18,7 +18,8 @@
     language,
     className = "",
     disabled = false,
-  }: { value: ReadableStore<string>; language: string; className?: string; disabled?: boolean } = $props();
+    readonly = false,
+  }: { value: ReadableStore<string>; language: string; className?: string; disabled?: boolean; readonly?: boolean } = $props();
 
   let highlight = $state<string>("");
   let textarea: HTMLTextAreaElement;
@@ -64,11 +65,11 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="code-editor-wrapper" onclick={() => textarea?.focus()}>
+<div class="code-editor-wrapper {className}" onclick={() => textarea?.focus()}>
   <div class="code-editor">
     <div class="highlight">
       <pre><code class="hljs">{@html highlight}</code></pre>
     </div>
-    <textarea name="" id="" bind:this={textarea} bind:value={$value} spellcheck={false}></textarea>
+    <textarea name="" id="" bind:this={textarea} bind:value={$value} spellcheck={false} {disabled} {readonly}></textarea>
   </div>
 </div>

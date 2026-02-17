@@ -31,8 +31,9 @@ export class ShellHostRuntime extends Process {
     // Autoload completed? Then stop the process immediately
     if (Daemon?.autoLoadComplete) return false;
 
+    Env.set("SHELLHOST_PID", this.pid);
+    
     const procs: Record<string, IProcess> = {}; // Object of executed shell components
-
     const proc = await Daemon?.spawn?._spawnApp<IShellRuntime>(
       this.userPreferences().globalSettings.shellExec,
       undefined,

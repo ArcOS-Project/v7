@@ -1,5 +1,5 @@
 import type { IInstallerProcessBase } from "$interfaces/distrib";
-import { Daemon, TryGetDaemon } from "$ts/daemon";
+import { Daemon } from "$ts/daemon";
 import { Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { textToBlob } from "$ts/util/convert";
@@ -90,10 +90,9 @@ export class LibraryInstallerProcess extends InstallerProcessBase implements IIn
   static async uninstallPackage(metadata: ArcPackage, deleteFiles = true, onStage?: (stage: string) => void): Promise<void> {
     onStage?.("Getting installed package");
 
-    const daemon = TryGetDaemon();
-    const host = daemon!.serviceHost;
+    const host = Daemon!.serviceHost;
     const distrib = host?.getService<DistributionServiceProcess>("DistribSvc")!;
-    const libraries = daemon?.libraries!;
+    const libraries = Daemon?.libraries!;
 
     await libraries.deleteLibrary(metadata.appId.replace("Library::", ""), onStage);
 

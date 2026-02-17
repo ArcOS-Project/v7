@@ -1,12 +1,18 @@
 import type { IApplicationStorage } from "$interfaces/services/AppStorage";
-import { Fs, SysDispatch } from "$ts/env";
+import { BuiltinAppImportPathAbsolutes } from "$ts/apps/store";
+import { Daemon } from "$ts/daemon";
+import { ArcOSVersion, Env, Fs, SysDispatch } from "$ts/env";
+import { ArcBuild } from "$ts/metadata/build";
+import { ArcMode } from "$ts/metadata/mode";
 import { CommandResult } from "$ts/result";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
-import { sortByHierarchy } from "$ts/util";
+import { deepCopyWithBlobs, sortByHierarchy } from "$ts/util";
 import { arrayBufferToText } from "$ts/util/convert";
+import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory, join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
+import { compareVersion } from "$ts/util/version";
 import { Store } from "$ts/writable";
 import type { App, AppStorage, AppStoreCb, InstalledApp } from "$types/app";
 import type { Service } from "$types/service";
@@ -19,8 +25,8 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
-    super(pid, parentPid, name, host);
+  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+    super(pid, parentPid, name, host, initBroadcast);
 
     this.loadOrigin("injected", () => this.injected());
 
@@ -29,6 +35,67 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
     });
 
     this.setSource(__SOURCE__);
+  }
+
+  protected async start(): Promise<any> {
+    this.initBroadcast?.("Loading applications...");
+    
+    const blocklist = Daemon!.preferences()._internalImportBlocklist || [];
+    const builtins: App[] = await Promise.all(
+      Object.keys(BuiltinAppImportPathAbsolutes).map(async (path) => {
+        if (!Daemon.safeMode && blocklist.includes(path)) return null;
+        const regex = new RegExp(/import\(\"(?<path>.*?)\"\)/gm);
+
+        try {
+          const start = performance.now();
+          const fn = BuiltinAppImportPathAbsolutes[path];
+          const mod = await BuiltinAppImportPathAbsolutes[path]();
+          const app = (mod as any).default as App;
+          const originalPathRegexp = regex.exec(fn.toString());
+          const originalPath = originalPathRegexp?.groups?.path;
+
+          if (app._internalMinVer && compareVersion(ArcOSVersion, app._internalMinVer) === "higher")
+            throw `Not loading ${app.metadata.name} because this app requires a newer version of ArcOS`;
+
+          if (app._internalSysVer || app._internalOriginalPath)
+            throw `Can't load dubious built-in app '${app.id}' because it contains runtime-level properties set before runtime`;
+
+          const end = performance.now() - start;
+          const appCopy = await deepCopyWithBlobs<App>(app);
+
+          appCopy._internalSysVer = `v${ArcOSVersion}-${ArcMode()}_${ArcBuild()}`;
+          appCopy._internalOriginalPath = path;
+          appCopy._internalLoadTime = end;
+          if (originalPath) appCopy._internalResolvedPath = originalPath;
+
+          this.initBroadcast?.(`Loaded ${app.metadata.name}`);
+          this.Log(
+            `Loaded app: ${path}: ${appCopy.metadata.name} by ${appCopy.metadata.author}, version ${app.metadata.version} (${end.toFixed(2)}ms)`
+          );
+
+          return appCopy;
+        } catch (e) {
+          await new Promise<void>((r) => {
+            MessageBox(
+              {
+                title: "App load error",
+                message: `ArcOS failed to load a built-in app because of an error. ${e}.`,
+                buttons: [{ caption: "Okay", action: () => r(), suggested: true }],
+                image: "WarningIcon",
+              },
+              +Env.get("loginapp_pid"),
+              true
+            );
+          });
+          this.Log(`Failed to load app ${path}: ${e}`);
+          return null;
+        }
+      })
+    ).then((apps) => apps.filter((a): a is App => a !== null));
+
+    this.loadOrigin("builtin", () => builtins);
+    this.loadOrigin("userApps", async () => await Daemon.appreg!.getUserApps());
+    await this.refresh();
   }
 
   //#endregion

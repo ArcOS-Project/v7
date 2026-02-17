@@ -53,13 +53,13 @@ export class PowerUserContext extends UserContext implements IPowerUserContext {
     if (this._disposed || !canLeave) return;
     if (this.serviceHost) this.serviceHost._holdRestart = true;
 
+    await this.serviceHost?.spinDown();
     await Stack._killSubProceses(this.pid, true);
     await State?.loadState("login", {
       type,
       userDaemon: Daemon,
       ...props,
     });
-    await this.serviceHost?.killSelf?.();
     await Daemon?.files?.unmountMountedDrives();
   }
 
