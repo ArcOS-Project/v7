@@ -2,9 +2,9 @@ name: Svelte code check
 
 on:
   pull_request:
-    branches: [main] # or whatever branch you protect
+    branches: [main, development, beta]
   workflow_dispatch:
-    branches: [main]
+    branches: [main, development, beta]
   push:
     branches: [main]
 
