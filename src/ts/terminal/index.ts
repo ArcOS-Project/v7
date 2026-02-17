@@ -277,7 +277,8 @@ export class ArcTerminal extends Process implements IArcTerminal {
       if (!drive) return false;
 
       this.drive = drive;
-    } catch {
+    } catch (e) {
+      this.Error(`${e}`);
       return false;
     }
 
@@ -286,7 +287,8 @@ export class ArcTerminal extends Process implements IArcTerminal {
       if (!contents) throw "";
 
       this.contents = contents;
-    } catch {
+    } catch (e) {
+      this.Error(`${e}`);
       return false;
     }
 

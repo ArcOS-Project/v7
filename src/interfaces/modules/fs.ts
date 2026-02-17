@@ -1,16 +1,18 @@
 import type { Constructs } from "$interfaces/common";
-import type { IFilesystemDrive } from "$interfaces/fs";
+import type { IFilesystemDrive, IFilesystemProxy } from "$interfaces/fs";
 import type {
   DirectoryReadReturn,
   ExtendedStat,
   FilesystemProgress,
   FilesystemProgressCallback,
+  FsProxyInfo,
   RecursiveDirectoryReadReturn,
   UploadReturn,
 } from "$types/fs";
 
 export interface IFilesystem {
   drives: Record<string, IFilesystemDrive>;
+  loadedProxies: IFilesystemProxy[];
   _init(): Promise<void>;
   getDriveById(id: string): IFilesystemDrive;
   mountDrive<T extends IFilesystemDrive = IFilesystemDrive>(
@@ -28,6 +30,10 @@ export interface IFilesystem {
   validatePath(p: string): void;
   removeDriveLetter(p: string): string;
   validateDriveLetter(letter: string): void;
+  getProxyInfo(p: string, topLevel?: boolean): FsProxyInfo | undefined;
+  tryGetProxyInfo(p: string, topLevel?: boolean): FsProxyInfo | undefined;
+  tryHandleProxyReadDir(p: string): Promise<DirectoryReadReturn | undefined>;
+  tryHandleProxyReadFile(p: string): Promise<ArrayBuffer | undefined>;
   readDir(path: string): Promise<DirectoryReadReturn | undefined>;
   bulk<T = any>(path: string, extension: string): Promise<Record<string, T>>;
   createDirectory(path: string, dispatch?: boolean): Promise<boolean>;
