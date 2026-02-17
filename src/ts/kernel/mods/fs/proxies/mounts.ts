@@ -16,7 +16,6 @@ export class MountsFilesystemProxy extends FilesystemProxy {
       const drive = Fs.getDriveByPath(`${parts[0]}:/`);
       return { drive, path: path.replace(`${parts[0]}`, "").split("/").filter(Boolean).join("/") };
     } catch (e) {
-      console.log(e);
       return { drive: undefined, path: undefined };
     }
   }
