@@ -2,9 +2,9 @@ name: Format check
 
 on:
   pull_request:
-    branches: [main] # or whatever branch you protect
+    branches: [development, main, beta] # or whatever branch you protect
   workflow_dispatch:
-    branches: [main]
+    branches: [development, main, beta]
   push:
     branches: [main]
 

@@ -2,7 +2,7 @@ name: Test typedef generation
 
 on:
   pull_request:
-    branches: [main] # or whatever branch you protect
+    branches: [main, development, beta] # or whatever branch you protect
   workflow_dispatch:
     branches: [main]
 

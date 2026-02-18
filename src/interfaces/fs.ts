@@ -7,6 +7,7 @@ import type {
   UserQuota,
 } from "$types/fs";
 import type { LogLevel } from "$types/logging";
+import type { Constructs } from "./common";
 import type { IServerManager } from "./modules/server";
 
 export interface IFilesystemDrive {
@@ -44,4 +45,15 @@ export interface IFilesystemDrive {
   isCapable(capability: DriveCapabilities): void;
   tryIsCapable(capability: DriveCapabilities): boolean;
   imageThumbnail(path: string, width: number, height?: number): Promise<string | undefined>;
+}
+
+export interface IFilesystemProxy {
+  uuid: string;
+  readonly displayName?: string;
+  readDir(path: string): Promise<DirectoryReadReturn | undefined>;
+  readFile(path: string, onProgress?: FilesystemProgressCallback): Promise<ArrayBuffer | undefined>;
+}
+
+export interface IFilesystemProxyConstructor extends Constructs<IFilesystemProxy, [string]> {
+  PROXY_UUID: string;
 }
