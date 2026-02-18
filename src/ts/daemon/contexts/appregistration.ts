@@ -4,11 +4,11 @@ import { Env, Fs, SysDispatch } from "$ts/env";
 import { Permissions } from "$ts/permissions";
 import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
 import type { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
-import { AppGroups, UserPaths } from "$ts/user/store";
+import { AppGroups, DefaultAppData, UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory, join } from "$ts/util/fs";
-import { tryJsonParse } from "$ts/util/json";
+import { tryJsonParse, validateObject } from "$ts/util/json";
 import type { App, AppStorage, InstalledApp } from "$types/app";
 import { LogLevel } from "$types/logging";
 import { Daemon } from "..";
@@ -29,7 +29,15 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
         Object.entries((await Fs.bulk(UserPaths.AppRepository, "json")) || {}).map(([k, v]) => [k.replace(".json", ""), v])
       );
 
-      return Object.values(bulk) as AppStorage;
+      const brokenApps = Object.entries(bulk)
+        .filter(([_, v]) => !v || typeof v !== "object" || validateObject(v, DefaultAppData))
+        .map(([k]) => k);
+
+      if (brokenApps.length) {
+        this.Log(`AppRepository contains malformed data: ${brokenApps.join(", ")}`, LogLevel.warning);
+      }
+
+      return Object.values(bulk).filter((a) => typeof a === "object") as AppStorage;
     } catch {
       return [];
     }
@@ -86,10 +94,8 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
     return new Promise<boolean>((r) => {
       MessageBox(
         {
-          title: "Uninstall app?",
-          message: `You're about to uninstall "${app?.metadata?.name || "Unknown"}" by ${
-            app?.metadata?.author || "nobody"
-          }. Do you want to just uninstall it, or do you want to delete its files also?`,
+          title: `${app.metadata.name}`,
+          message: `Are you sure you want to uninstall this application? The application's files will also be deleted.`,
           image: "WarningIcon",
           sound: "arcos.dialog.warning",
           buttons: [
@@ -100,16 +106,9 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
               },
             },
             {
-              caption: "Delete",
+              caption: "Uninstall",
               action: () => {
                 this.uninstallPackageWithStatus(app?.id, true);
-                r(true);
-              },
-            },
-            {
-              caption: "Just uninstall",
-              action: () => {
-                this.uninstallPackageWithStatus(app?.id, false);
                 r(true);
               },
               suggested: true,

@@ -137,7 +137,7 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
 
     const elements = [
       ...document.querySelectorAll(`div.window[data-pid="${this.pid}"]`),
-      ...(document.querySelectorAll(`div.overlay-wrapper[data-pid="${this.pid}"]`) || []),
+      ...(document.querySelectorAll(`div.window-overlay-wrapper[data-pid="${this.pid}"]`) || []),
       ...(document.querySelectorAll(`button.opened-app[data-pid="${this.pid}"]`) || []),
     ];
 
@@ -283,7 +283,7 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
 
     if (!window) return false;
 
-    return window.querySelectorAll("div.overlay-wrapper").length > 0;
+    return window.querySelectorAll("div.window-overlay-wrapper").length > 0;
   }
 
   public startAcceleratorListener() {

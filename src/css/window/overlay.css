@@ -1,4 +1,4 @@
-div.window > div.overlay-wrapper {
+div.window-overlay-wrapper {
   position: absolute;
   top: 0;
   left: 0;
@@ -17,22 +17,27 @@ div.window > div.overlay-wrapper {
   opacity: 0;
 }
 
-div.window > div.overlay-wrapper div.window.overlay div.titlebar.custom {
+div.window-overlay-wrapper div.window.overlay.visible,
+div.window-overlay-wrapper div.window.overlay.visible * {
+  pointer-events: initial;
+}
+
+div.window-overlay-wrapper div.window.overlay div.titlebar.custom {
   opacity: 1 !important;
 }
 
-div.window > div.overlay-wrapper div.window.overlay div.titlebar:not(.custom) {
+div.window-overlay-wrapper div.window.overlay div.titlebar:not(.custom) {
   display: none;
 }
-div.window > div.overlay-wrapper div.window.overlay div.body {
+div.window-overlay-wrapper div.window.overlay div.body {
   border-top: none;
   height: 100%;
 }
 
-div.window > div.overlay-wrapper.visible:not(.closing) {
+div.window-overlay-wrapper.visible:not(.closing) {
   opacity: 1;
 }
-div.window > div.overlay-wrapper.visible.closing {
+div.window-overlay-wrapper.visible.closing {
   opacity: 0;
   pointer-events: none !important;
   visibility: hidden !important;

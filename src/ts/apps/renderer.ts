@@ -105,13 +105,13 @@ export class AppRenderer extends Process implements IAppRenderer {
 
     if (data.overlay && process.parentPid) {
       const wrapper = document.createElement("div");
-      const parent = document.querySelector(`div.window[data-pid="${process.parentPid}"]`);
+      const parent = document.querySelector(`div.window[data-pid="${process.parentPid}"]`) || this.target;
 
       if (!parent) {
         renderTarget.append(window);
       } else {
         wrapper.setAttribute("data-pid", process.pid.toString());
-        wrapper.className = `overlay-wrapper shade-${process.app.id}`;
+        wrapper.className = `window-overlay-wrapper shade-${process.app.id}`;
 
         window.classList.add("overlay");
 
@@ -529,7 +529,7 @@ export class AppRenderer extends Process implements IAppRenderer {
     if (process?.componentMount && Object.entries(process.componentMount).length) unmount(process?.componentMount);
 
     const window = this.target.querySelector(`div.window[data-pid="${pid}"]`);
-    const wrapper = this.target.querySelector(`div.overlay-wrapper[data-pid="${pid}"]`);
+    const wrapper = this.target.querySelector(`div.window-overlay-wrapper[data-pid="${pid}"]`);
     const styling = document.body.querySelector(`link[id="$${pid}"]`);
 
     if (window) window.remove();
