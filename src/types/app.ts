@@ -151,3 +151,8 @@ export interface AppProcessSpawnOptions {
   noWorkspace?: boolean;
   renderTarget?: HTMLDivElement;
 }
+
+export interface TpaSpawnEntrypointResult<T = any> {
+  runtime?: Constructs<IProcess>;
+  returnValue?: T;
+}

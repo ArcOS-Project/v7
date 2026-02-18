@@ -20,6 +20,7 @@ export const SpawnAppHandler: ProtocolHandler = {
     return !!(await daemon.spawn!.spawnApp(
       payload.id,
       +Env.get("shell_pid"),
+      {},
       ...(Array.isArray(payload.args) ? payload.args : [])
     ));
   },

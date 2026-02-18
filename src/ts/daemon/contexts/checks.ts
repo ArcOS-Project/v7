@@ -85,7 +85,7 @@ export class ChecksUserContext extends UserContext implements IChecksUserContext
             action: () => {
               if (notif) Daemon!.notifications?.deleteNotification(notif);
 
-              Daemon!.spawn?.spawnApp("AppStore", +Env.get("shell_pid"), "installed");
+              Daemon!.spawn?.spawnApp("AppStore", +Env.get("shell_pid"), {}, "installed");
             },
             suggested: true,
           },
@@ -117,7 +117,7 @@ export class ChecksUserContext extends UserContext implements IChecksUserContext
 
     if (messages?.length === 1) {
       const message = messages[0];
-      Daemon!?.notifications?.sendNotification({
+      Daemon!.notifications?.sendNotification({
         className: "incoming-message",
         image: message.author?.profilePicture,
         title: message.author?.username || "New message",
@@ -126,13 +126,13 @@ export class ChecksUserContext extends UserContext implements IChecksUserContext
           {
             caption: "View message",
             action: () => {
-              Daemon!.spawn?.spawnApp("Messages", +Env.get("shell_pid"), "inbox", message._id);
+              Daemon!.spawn?.spawnApp("Messages", +Env.get("shell_pid"), {}, "inbox", message._id);
             },
           },
         ],
       });
     } else {
-      Daemon!?.notifications?.sendNotification({
+      Daemon!.notifications?.sendNotification({
         title: "Missed messages",
         message: `You have ${messages.length} ${Plural("message", messages.length)} in your inbox that you haven't read yet.`,
         image: "MessagingIcon",
@@ -140,7 +140,7 @@ export class ChecksUserContext extends UserContext implements IChecksUserContext
           {
             caption: "Open inbox",
             action: () => {
-              Daemon!.spawn?.spawnApp("Messages", +Env.get("shell_pid"), "inbox");
+              Daemon!.spawn?.spawnApp("Messages", +Env.get("shell_pid"), {}, "inbox");
             },
           },
         ],

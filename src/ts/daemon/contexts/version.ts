@@ -45,7 +45,7 @@ export class VersionUserContext extends UserContext implements IVersionUserConte
 
     if (!isOutdated) return;
 
-    Daemon!.spawn?.spawnOverlay("UpdateNotifierApp", +Env.get("shell_pid"));
+    Daemon!.spawn?.spawnApp("UpdateNotifierApp", +Env.get("shell_pid"), { asOverlay: true });
   }
 
   async mountSourceDrive(): Promise<IFilesystemDrive | false> {
@@ -67,7 +67,7 @@ export class VersionUserContext extends UserContext implements IVersionUserConte
               caption: "View license",
               action: async () => {
                 await Fs.writeFile(`T:/Meta/LICENSE`, textToBlob(Kernel.ARCOS_LICENSE));
-                await Daemon.spawn?.spawnApp("writer", shellPid, `T:/Meta/LICENSE`);
+                await Daemon.spawn?.spawnApp("writer", shellPid, {}, `T:/Meta/LICENSE`);
                 return false; // Don't close the dialog
               },
             },
@@ -99,7 +99,7 @@ export class VersionUserContext extends UserContext implements IVersionUserConte
       await this.mountSourceDrive();
 
       if (openAlso) {
-        await Daemon.spawn?.spawnApp("fileManager", shellPid, `S:/`);
+        await Daemon.spawn?.spawnApp("fileManager", shellPid, {}, `S:/`);
       }
     }
 

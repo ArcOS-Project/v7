@@ -3,12 +3,13 @@ import type { ISpawnUserContext } from "$interfaces/contexts/spawn";
 import type { IUserDaemon } from "$interfaces/daemon";
 import type { IProcess } from "$interfaces/process";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { Env, Stack, SysDispatch } from "$ts/env";
+import { Env, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
+import { CommandResult } from "$ts/result";
 import { MessageBox } from "$ts/util/dialog";
-import { getParentDirectory, join } from "$ts/util/fs";
+import { join } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
-import type { App, AppProcessData, AppProcessSpawnOptions } from "$types/app";
+import type { App, AppProcessData, AppProcessSpawnOptions, TpaSpawnEntrypointResult } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
 import { LogLevel } from "$types/logging";
 import { Daemon } from "..";
@@ -16,46 +17,27 @@ import { UserContext } from "../context";
 
 //
 export class SpawnUserContext extends UserContext implements ISpawnUserContext {
+  private tpaEntrypointCache: Record<string, Constructs<IProcess>> = {};
   constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
 
   //#region SPAWN
 
-  async spawnApp<T extends IProcess>(id: string, parentPid?: number, ...args: any[]) {
-    return await this.newSpawnApp<T>(id, parentPid, {}, ...args);
-  }
-
-  async spawnOverlay<T extends IProcess>(id: string, parentPid?: number, ...args: any[]) {
-    return await this.newSpawnApp<T>(id, parentPid, { asOverlay: true }, ...args);
-  }
-
-  async _spawnApp<T extends IProcess>(id: string, renderTarget?: HTMLDivElement, parentPid?: number, ...args: any[]) {
-    return await this.newSpawnApp<T>(id, parentPid, { renderTarget, noWorkspace: !renderTarget }, ...args);
-  }
-
-  async _spawnOverlay<T extends IProcess>(id: string, renderTarget?: HTMLDivElement, parentPid?: number, ...args: any[]) {
-    return await this.newSpawnApp<T>(id, parentPid, { renderTarget, noWorkspace: !renderTarget, asOverlay: true }, ...args);
-  }
-
-  async newSpawnApp<T extends IProcess>(
-    id: string,
+  async spawnAppMeta<T extends IProcess>(
+    app: App,
     parentPid?: number,
     options?: AppProcessSpawnOptions,
     ...args: any[]
   ): Promise<T | undefined> {
+    this.Log(`newSpawnApp: spawning ${app.id} against parent PID ${parentPid}`);
     const renderTarget = options?.noWorkspace ? undefined : (options?.renderTarget ?? Daemon.workspaces?.getCurrentDesktop());
 
     try {
-      const appResult = await Daemon.appStorage()?.getAppById(id, true);
-      if (!appResult?.success) throw new Error(appResult?.errorMessage ?? "The application could not be found");
-
-      const app = appResult.result!;
-
       if (Daemon?.apps?.checkDisabled(app.id, app.noSafeMode)) return;
 
-      this.check_malformedAppId(app);
       await this.check_elevation(app);
+      this.check_malformedAppId(app);
 
       const shellDispatch = Stack.ConnectDispatch(+Env.get("shell_pid"));
 
@@ -78,10 +60,28 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
         }
       }
 
-      const argv = app.thirdParty ? [UUID(), app.workingDirectory, ...args] : args;
+      let runtime = app?.assets?.runtime;
+      let isTpaProc = false;
 
+      if (app.thirdParty && app.workingDirectory) {
+        const tpaRuntimeResult = await this.tpaEntrypoint(app.id, ...args);
+        if (tpaRuntimeResult.success) {
+          const value = tpaRuntimeResult.result;
+
+          if (value?.runtime) {
+            runtime = value?.runtime;
+            isTpaProc = true;
+          }
+
+          return value?.returnValue;
+        }
+      }
+
+      if (!runtime) throw new Error("Did not find a suitable runtime for execution");
+
+      const argv = isTpaProc ? [UUID(), app.workingDirectory, ...args] : args;
       const proc = await Stack.spawn<T>(
-        app.assets.runtime as Constructs<T>,
+        runtime as Constructs<T>,
         renderTarget,
         this.userInfo._id,
         parentPid || this.pid,
@@ -91,8 +91,70 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
 
       return proc;
     } catch (e) {
-      this.Log(`spawnApp for ${id} failed: ${e}`, LogLevel.error);
+      this.handleSpawnError(app.id, e);
       return undefined;
+    }
+  }
+
+  async spawnApp<T extends IProcess>(
+    id: string,
+    parentPid?: number,
+    options?: AppProcessSpawnOptions,
+    ...args: any[]
+  ): Promise<T | undefined> {
+    const app = Daemon.appStorage()?.getAppSynchronous(id);
+    if (!app) {
+      Daemon.notifications?.sendNotification({
+        title: "App not found",
+        message: `ArcOS tried to launch an application with ID <b>${id}</b>, but it could not be found. Is it installed?`,
+        image: "QuestionIcon",
+        timeout: 3000,
+      });
+      return undefined;
+    }
+
+    return await this.spawnAppMeta(app, parentPid, options, ...args);
+  }
+
+  async tpaEntrypoint(appId: string, ...args: any[]): Promise<CommandResult<TpaSpawnEntrypointResult>> {
+    this.Log(`Invoking TPA Entrypoint for ${appId}`);
+    if (this.tpaEntrypointCache[appId]) return CommandResult.Ok({ runtime: this.tpaEntrypointCache[appId] });
+
+    const app = this.appStorage()?.getAppSynchronous(appId);
+    if (!app || !app.thirdParty || !app.workingDirectory || !app.entrypoint) {
+      if (app) this.tpaError_malformedMetadata(app);
+      return CommandResult.Ok({ returnValue: undefined });
+    }
+
+    if (!Daemon.preferences().security.enableThirdParty) {
+      this.tpaError_noEnableThirdParty();
+      return CommandResult.Ok({ returnValue: undefined });
+    }
+
+    const gli = Daemon.autoLoadComplete
+      ? await Daemon.helpers!.GlobalLoadIndicator(`Opening ${app.metadata.name}...`)
+      : undefined;
+
+    try {
+      const entrypoint = join(app.workingDirectory, app.entrypoint);
+      const engine = await JsExec.Invoke(entrypoint, ...args);
+      engine?.setApp(app, app.tpaPath);
+      const result = await engine?.getContents();
+
+      gli?.stop?.();
+
+      if (!(result?.prototype instanceof ThirdPartyAppProcess)) {
+        return CommandResult.Ok({ returnValue: result });
+      }
+
+      this.tpaEntrypointCache[appId] = result;
+
+      return CommandResult.Ok({ runtime: result });
+    } catch (e) {
+      Stack.renderer?.notifyCrash(app, e);
+      gli?.stop?.();
+
+      return CommandResult.Ok({ returnValue: undefined });
     }
   }
 
@@ -130,14 +192,14 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
   //#endregion
   //#region ERRORS
 
-  tpaError_revisionIncompatible(app: App) {
+  tpaError_malformedMetadata(app: App) {
     MessageBox(
       {
-        title: `${app.metadata.name}`,
-        message: `This application expects a newer version of the TPA framework than what ArcOS can supply. Please update your ArcOS version and try again.`,
-        buttons: [{ caption: "Okay", action: () => {} }],
-        sound: "arcos.dialog.error",
-        image: "ErrorIcon",
+        title: "Third-party application error",
+        message: `ArcOS tried to launch ${app.metadata.name} by ${app.metadata.author} as a third-party application, but the app does not contain sufficient information to run as a TPA. Please try to reinstall the application to fix this problem.`,
+        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        image: "WarningIcon",
+        sound: "arcos.dialog.warning",
       },
       +Env.get("shell_pid"),
       true
@@ -168,81 +230,20 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
       );
   }
 
-  //#endregion
-  //#region LEGACY
+  handleSpawnError(appId: string, e?: any) {
+    const message = e ?? "Unknown error";
 
-  async legacy_spawnThirdParty<T>(app: App, metaPath: string, ...args: any[]): Promise<T | undefined> {
-    if (this._disposed) return;
-
-    if (this.safeMode) {
-      this.Log(`TPA execution in Safe Mode is prohibited: ${app.id}`, LogLevel.error);
-      return;
-    }
-
-    if (!Daemon!.preferences().security.enableThirdParty) {
-      this.tpaError_noEnableThirdParty();
-      return;
-    }
-
-    const compatibleRevision = !app.tpaRevision || ThirdPartyAppProcess.TPA_REV >= app.tpaRevision;
-
-    if (!compatibleRevision) {
-      this.tpaError_revisionIncompatible(app);
-      return;
-    }
-
-    app.workingDirectory ||= getParentDirectory(metaPath);
-
-    let stop: (() => Promise<void>) | undefined;
-
-    if (Daemon!.autoLoadComplete) stop = (await Daemon!.helpers!.GlobalLoadIndicator(`Opening ${app.metadata.name}...`)).stop;
-
-    try {
-      const engine = await Stack.spawn<JsExec>(
-        JsExec,
-        undefined,
-        this.userInfo._id,
-        this.pid,
-        join(app.workingDirectory, app.entrypoint!),
-        ...args
-      );
-
-      const num = SysDispatch.subscribe("tpa-spawn-done", ([operationId]) => {
-        if (operationId === engine?.operationId) stop?.();
-        SysDispatch.unsubscribeId("tpa-spawn-done", num);
-      });
-
-      engine?.setApp(app, metaPath);
-
-      await stop?.();
-
-      const result = await engine?.getContents();
-
-      if (result?.prototype instanceof ThirdPartyAppProcess) {
-        // todo: make renderTarget a parameter instead of just hardcoding getCurrentDesktop
-        const desktop = Daemon.workspaces?.getCurrentDesktop();
-
-        return (await Stack.spawn(
-          result,
-          desktop,
-          Daemon.userInfo._id,
-          Daemon.getShell()?.pid || Daemon.pid,
-          {
-            id: app.id,
-            data: app,
-            desktop,
-          },
-          engine?.operationId,
-          app.workingDirectory
-        )) as T | undefined;
-      }
-
-      return result;
-    } catch (e) {
-      Stack.renderer?.notifyCrash(app as any, e as Error, app.process!);
-      this.Log(`Execution error in third-party application "${app.id}": ${(e as any).stack}`);
-      stop?.();
-    }
+    MessageBox(
+      {
+        title: "Application error",
+        message: `An error occurred whilst spawning an application with ID <b>${appId}</b>.<br><br>Details: ${message}`,
+        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        sound: "arcos.dialog.error",
+        image: "ErrorIcon",
+      },
+      Daemon.getShell()?.pid || Daemon.pid,
+      true
+    );
   }
 
   //#endregion

@@ -66,13 +66,13 @@ export class AppInfoRuntime extends AppProcess {
   async openPermissions() {
     this.Log(`openPermissions`);
 
-    await Daemon?.spawn?.spawnOverlay("AppPermissions", +Env.get("shell_pid"), this.targetAppId);
+    await Daemon?.spawn?.spawnApp("AppPermissions", +Env.get("shell_pid"), { asOverlay: true }, this.targetAppId);
   }
 
   async processManager() {
     this.Log(`processManager`);
 
-    await Daemon?.spawn?.spawnApp("processManager", +Env.get("shell_pid"));
+    await this.spawnApp("processManager", +Env.get("shell_pid"));
     this.closeWindow();
   }
 }

@@ -85,7 +85,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
         caption: "Open file location",
         icon: "folder-open",
         action: (id: string) => {
-          Daemon?.spawn?.spawnApp("fileManager", +Env.get("shell_pid"), getParentDirectory(atob(id.replace("@local:", ""))));
+          runtime.spawnApp("fileManager", +Env.get("shell_pid"), getParentDirectory(atob(id.replace("@local:", ""))));
         },
       },
       { sep: true },

@@ -178,7 +178,7 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
             {
               caption: "Manage apps",
               action: () => {
-                Daemon?.spawn?.spawnApp("systemSettings", +Env.get("shell_pid"), "apps", "apps_manageApps");
+                this.spawnApp("systemSettings", +Env.get("shell_pid"), "apps", "apps_manageApps");
               },
             },
           ],
@@ -384,11 +384,11 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
   }
 
   async spawnApp<T extends IProcess = IAppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
-    return await Daemon?.spawn?.spawnApp<T>(id, parentPid ?? this.parentPid, ...args);
+    return await Daemon?.spawn?.spawnApp<T>(id, parentPid ?? this.parentPid, {}, ...args);
   }
 
   async spawnOverlayApp<T extends IProcess = IAppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
-    return await Daemon?.spawn?.spawnOverlay<T>(id, parentPid ?? this.parentPid, ...args);
+    return await Daemon?.spawn?.spawnApp<T>(id, parentPid ?? this.parentPid, { asOverlay: true }, ...args);
   }
 
   async elevate(id: string) {

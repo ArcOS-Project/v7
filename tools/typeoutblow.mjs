@@ -80,7 +80,7 @@ async function main() {
 
     process.exit(1);
   } else {
-    console.log("✅ No blown references detected!");
+    console.log("\n✅ No blown references detected!");
   }
 }
 

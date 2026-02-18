@@ -495,7 +495,7 @@ export class ArcTerminal extends Process implements IArcTerminal {
             {
               caption: "New window",
               action: () => {
-                Daemon.spawn?.spawnApp("ArcTerm", this.window?.parentPid, this.path);
+                Daemon.spawn?.spawnApp("ArcTerm", this.window?.parentPid, {}, this.path);
               },
               icon: "square-plus",
             },

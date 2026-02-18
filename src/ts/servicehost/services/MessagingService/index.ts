@@ -27,7 +27,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
 
   async start() {
     this.initBroadcast?.("Starting messaging service");
-    
+
     const daemon = Stack.getProcess<IUserDaemon>(+Env.get("userdaemon_pid")!)!;
     const dispatch = daemon.serviceHost?.getService<GlobalDispatch>("GlobalDispatch")!;
 
@@ -41,7 +41,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
           {
             caption: "View message",
             action: () => {
-              daemon?.spawn?.spawnApp("Messages", +Env.get("shell_pid"), "inbox", message._id);
+              daemon?.spawn?.spawnApp("Messages", +Env.get("shell_pid"), {}, "inbox", message._id);
             },
           },
         ],

@@ -32,13 +32,11 @@ export class ShellHostRuntime extends Process {
     if (Daemon?.autoLoadComplete) return false;
 
     Env.set("SHELLHOST_PID", this.pid);
-    
+
     const procs: Record<string, IProcess> = {}; // Object of executed shell components
-    const proc = await Daemon?.spawn?._spawnApp<IShellRuntime>(
-      this.userPreferences().globalSettings.shellExec,
-      undefined,
-      this.pid
-    ); // Let's first spawn the shell exec from globalSettings
+    const proc = await Daemon?.spawn?.spawnApp<IShellRuntime>(this.userPreferences().globalSettings.shellExec, this.pid, {
+      noWorkspace: true,
+    }); // Let's first spawn the shell exec from globalSettings
 
     // BUG 695905e6e49c74867e992655
     if (!proc) {
@@ -56,7 +54,7 @@ export class ShellHostRuntime extends Process {
     }
 
     for (const id of this.shellComponents) {
-      procs[id] = (await Daemon!.spawn?._spawnApp(id, undefined, this.pid))!; // Then spawn each shell component
+      procs[id] = (await Daemon!.spawn?.spawnApp(id, this.pid, { noWorkspace: true }))!; // Then spawn each shell component
     }
 
     const trayHost = procs.TrayHostProc as ITrayHostRuntime; // Get the tray host
@@ -77,7 +75,7 @@ export class ShellHostRuntime extends Process {
     for (const app of this.autoloadApps) {
       if (app === "shellHost") continue; // Ignore the shellHost in autoload
 
-      await Daemon?.spawn?._spawnApp(app, undefined, this.pid); // Spawn autoload app
+      await Daemon?.spawn?.spawnApp(app, this.pid, { noWorkspace: true }); // Spawn autoload app
     }
 
     // Change the tray icon to good status icon
