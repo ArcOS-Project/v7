@@ -30,7 +30,7 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
       );
 
       const brokenApps = Object.entries(bulk)
-        .filter(([_, v]) => !v || typeof v !== "object" || validateObject(v, DefaultAppData))
+        .filter(([_, v]) => !v || typeof v !== "object" || !validateObject(v, DefaultAppData))
         .map(([k]) => k);
 
       if (brokenApps.length) {
