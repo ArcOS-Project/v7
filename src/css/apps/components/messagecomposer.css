@@ -1,10 +1,15 @@
-#MessageComposer > div.body {
+#MessageComposer {
+  max-width: 90%;
+  max-height: 95%;
+}
+
+#MessageComposer>div.body {
   padding: 0;
   display: flex;
   flex-direction: column;
 }
 
-#MessageComposer > div.body div.fields > div.field {
+#MessageComposer>div.body div.fields>div.field {
   display: flex;
   align-items: center;
   height: 36px;
@@ -12,12 +17,12 @@
   padding: 0 15px;
 }
 
-#MessageComposer > div.body div.fields > div.field p.name {
+#MessageComposer>div.body div.fields>div.field p.name {
   width: 70px;
   min-width: 70px;
 }
 
-#MessageComposer > div.body div.fields > div.field input {
+#MessageComposer>div.body div.fields>div.field input {
   margin: 0;
   padding: 0;
   height: fit-content;
@@ -25,21 +30,22 @@
   border-radius: 0;
   width: 100%;
 }
-#MessageComposer > div.body div.fields > div.field > div.value {
+
+#MessageComposer>div.body div.fields>div.field>div.value {
   flex-grow: 1;
 }
 
-#MessageComposer > div.body div.fields > div.field.to {
+#MessageComposer>div.body div.fields>div.field.to {
   min-height: 36px;
   height: fit-content;
   align-items: start;
 }
 
-#MessageComposer > div.body div.fields > div.field.to p.name {
+#MessageComposer>div.body div.fields>div.field.to p.name {
   line-height: 35px;
 }
 
-#MessageComposer > div.body div.fields > div.field.to > div.value {
+#MessageComposer>div.body div.fields>div.field.to>div.value {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -47,12 +53,12 @@
   gap: 5px;
 }
 
-#MessageComposer > div.body div.fields > div.field > div.value input {
+#MessageComposer>div.body div.fields>div.field>div.value input {
   flex-grow: 1;
   height: 21px;
 }
 
-#MessageComposer > div.body div.fields > div.field.to div.recipient {
+#MessageComposer>div.body div.fields>div.field.to div.recipient {
   background-color: var(--button-glass-bg);
   height: 21px;
   display: flex;
@@ -62,7 +68,7 @@
   border-radius: 3px;
 }
 
-#MessageComposer > div.body div.fields > div.field.to div.recipient button {
+#MessageComposer>div.body div.fields>div.field.to div.recipient button {
   margin: 0;
   padding: 0;
   font-size: 16px;
@@ -70,16 +76,16 @@
   outline: none;
 }
 
-#MessageComposer > div.body div.fields > div.field.to input {
+#MessageComposer>div.body div.fields>div.field.to input {
   width: initial;
 }
 
-#MessageComposer > div.body div.message-body {
+#MessageComposer>div.body div.message-body {
   flex-grow: 1;
   border-bottom: var(--win-border);
 }
 
-#MessageComposer > div.body div.message-body textarea {
+#MessageComposer>div.body div.message-body textarea {
   width: 100%;
   height: 100%;
   resize: none;
@@ -88,9 +94,10 @@
   padding: 15px;
 }
 
-#MessageComposer > div.body div.attachment-bar {
-  height: 47px;
-  min-height: fit-content;
+#MessageComposer>div.body div.attachment-bar {
+  height: fit-content;
+  max-height: 85%;
+  overflow-y: auto;
   padding: 8px 10px;
   display: flex;
   align-items: center;
@@ -99,11 +106,11 @@
   gap: 5px;
 }
 
-#MessageComposer > div.body div.attachment-bar.visible {
+#MessageComposer>div.body div.attachment-bar.visible {
   border-top: var(--win-border);
 }
 
-#MessageComposer > div.body div.attachment-bar div {
+#MessageComposer>div.body div.attachment-bar div {
   display: flex;
   padding: 0 5px;
   align-items: center;
@@ -113,21 +120,21 @@
   height: 30px;
 }
 
-#MessageComposer > div.body div.attachment-bar div img {
+#MessageComposer>div.body div.attachment-bar div img {
   height: 16px;
 }
 
-#MessageComposer > div.body div.attachment-bar div span.size {
+#MessageComposer>div.body div.attachment-bar div span.size {
   opacity: 0.5;
 }
 
-#MessagseComposer > div.body div.attachment-bar div p {
+#MessagseComposer>div.body div.attachment-bar div p {
   display: flex;
   align-items: center;
   gap: 5px;
 }
 
-#MessageComposer > div.body div.attachment-bar button {
+#MessageComposer>div.body div.attachment-bar button {
   width: 16px;
   height: 16px;
   padding: 0;
@@ -137,7 +144,7 @@
   outline: none;
 }
 
-#MessageComposer > div.body div.action-bar {
+#MessageComposer>div.body div.action-bar {
   height: 50px;
   padding: 10px;
   display: flex;
@@ -145,36 +152,36 @@
   gap: 10px;
 }
 
-#MessageComposer > div.body div.action-bar button {
+#MessageComposer>div.body div.action-bar button {
   height: 30px;
 }
 
-#MessageComposer > div.body div.action-bar button.lucide {
+#MessageComposer>div.body div.action-bar button.lucide {
   width: 30px;
   height: 30px;
   padding: 0;
   font-size: 16px;
 }
 
-#MessageComposer > div.body div.action-bar button.discard {
+#MessageComposer>div.body div.action-bar button.discard {
   background-color: var(--clr-red-fg);
   color: var(--clr-red-bg);
 }
 
-#MessageComposer > div.body div.action-bar div.actions {
+#MessageComposer>div.body div.action-bar div.actions {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-left: auto;
 }
 
-#MessageComposer > div.body div.action-bar div.sep {
+#MessageComposer>div.body div.action-bar div.sep {
   width: 1px;
   height: 20px;
   background-color: var(--button-glass-hover-bg);
 }
 
-#MessageComposer > div.body div.action-bar div.pill {
+#MessageComposer>div.body div.action-bar div.pill {
   height: 30px;
   border-radius: 8px;
   padding: 0 8px;
@@ -186,7 +193,7 @@
   background-color: transparent;
 }
 
-#MessageComposer > div.body div.action-bar div.pill p.caption {
+#MessageComposer>div.body div.action-bar div.pill p.caption {
   font-weight: bold;
   opacity: 0.5;
   padding-right: 8px;
