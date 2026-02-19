@@ -1,3 +1,4 @@
+import type { IFilesystemProxy } from "$interfaces/fs";
 import type { App } from "./app";
 import type { ArcShortcut, ShortcutStore } from "./shortcut";
 import type { PublicUserInfo } from "./user";
@@ -162,4 +163,12 @@ export interface FsModifierOptions {
 
 export interface ExtendedStat extends FilesystemStat {
   modifiers?: SummarizedFsModifiers;
+}
+
+export interface FsProxyInfo {
+  prefix: string;
+  proxyUuid: string;
+  proxyHandler: IFilesystemProxy;
+  path: string;
+  displayName?: string;
 }

@@ -62,6 +62,9 @@ export class InitProcess extends Process {
       await Fs.writeFile("T:/Meta/ARCOS_BUILD", textToBlob(ArcBuild()));
       await Fs.writeFile("T:/Meta/ARCOS_MODE", textToBlob(ArcMode()));
       await Fs.writeFile("T:/Meta/ARCOS_VERSION", textToBlob(ArcOSVersion));
+      for (const proxy of Fs.loadedProxies) {
+        await Fs.createDirectory(`T:/::{${proxy.uuid}}`);
+      }
     } catch {}
   }
 
