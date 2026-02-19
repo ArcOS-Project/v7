@@ -7,3 +7,5 @@ export { default as NightlyLogo } from "$assets/branding/nightly.svg";
 export { default as RcLogo } from "$assets/branding/rc.svg";
 export { default as ReleaseLogo } from "$assets/branding/release.svg";
 export { default as UnstableLogo } from "$assets/branding/unstable.svg";
+export { default as DevBranchLogo } from "$assets/branding/devbranch.svg";
+export { default as BetaBranchLogo } from "$assets/branding/betabranch.svg";
