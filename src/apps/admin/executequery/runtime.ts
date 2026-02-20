@@ -309,7 +309,7 @@ export class ExecuteQueryRuntime extends AppProcess {
 
     await Fs.writeFile(path, textToBlob(JSON.stringify(this.result(), null, 2)), undefined, false);
 
-    const proc = await Daemon.spawn?.spawnApp<FileManagerRuntime>("fileManager", this.parentPid, getParentDirectory(path));
+    const proc = await Daemon.spawn?.spawnApp<FileManagerRuntime>("fileManager", this.parentPid, {}, getParentDirectory(path));
 
     proc?.selection.set([path]);
   }

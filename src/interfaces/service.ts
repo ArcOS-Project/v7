@@ -16,7 +16,7 @@ export interface IServiceHost extends IProcess {
   readonly STORE: Map<string, Service>;
   loadStore(store: ServiceStore): boolean;
   getServiceInfo(id: string): Service | undefined;
-  startService(id: string): Promise<"success" | "err_noExist" | "err_alreadyRunning" | "err_startCondition" | "err_spawnFailed">;
+  startService(id: string): Promise<ServiceChangeResult>;
   stopService(id: string): Promise<ServiceChangeResult>;
   restartService(id: string): Promise<ServiceChangeResult>;
   verifyServicesProcesses(): Promise<void>;

@@ -25,7 +25,7 @@ export class ShortcutsUserContext extends UserContext implements IShortcutsUserC
         case "file":
           return await Daemon!.files?.openFile(shortcut.target);
         case "folder":
-          return await Daemon!.spawn?.spawnApp("fileManager", +Env.get("shell_pid"), shortcut.target);
+          return await Daemon!.spawn?.spawnApp("fileManager", +Env.get("shell_pid"), {}, shortcut.target);
         default:
           MessageBox(
             {
@@ -67,7 +67,7 @@ export class ShortcutsUserContext extends UserContext implements IShortcutsUserC
   }
 
   async newShortcut(location: string) {
-    Daemon.spawn?.spawnOverlay("ShortcutProperties", +Env.get("shell_pid"), join(location, `${UUID()}.arclnk`), {
+    Daemon.spawn?.spawnApp("ShortcutProperties", +Env.get("shell_pid"), { asOverlay: true }, join(location, `${UUID()}.arclnk`), {
       icon: "ShortcutMimeIcon",
       name: "New shortcut",
       type: "new",

@@ -19,8 +19,10 @@ export class SpawnCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const id = argv.shift();
+    const noWorkspace = flags.nows;
+    const asOverlay = flags.overlay;
 
     argv = argv.map(tryJsonParse);
 
@@ -29,7 +31,15 @@ export class SpawnCommand extends TerminalProcess {
       return 1;
     }
 
-    const proc = await term.daemon?.spawn?.spawnApp<IProcess>(id, term.daemon?.pid, ...argv);
+    const proc = await term.daemon?.spawn?.spawnApp<IProcess>(
+      id,
+      term.daemon?.pid,
+      {
+        noWorkspace: !!noWorkspace,
+        asOverlay: !!asOverlay,
+      },
+      ...argv
+    );
 
     if (!proc) return 1;
 

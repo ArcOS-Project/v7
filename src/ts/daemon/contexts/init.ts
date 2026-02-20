@@ -108,16 +108,16 @@ export class InitUserContext extends UserContext implements IInitUserContext {
         Daemon!.files?.mountedDrives.push(id);
         if (!drive.REMOVABLE) return;
 
-        const notificationId = Daemon!?.notifications?.sendNotification({
+        const notificationId = Daemon!.notifications?.sendNotification({
           title: drive.driveLetter ? `${drive.label} (${drive.driveLetter}:)` : drive.label,
           message: "This drive just got mounted! Click the button to view it in the file manager",
           buttons: [
             {
               caption: "Open Drive",
               action: () => {
-                Daemon!?.spawn?.spawnApp("fileManager", undefined, `${drive.driveLetter || drive.uuid}:/`);
+                Daemon!.spawn?.spawnApp("fileManager", undefined, {}, `${drive.driveLetter || drive.uuid}:/`);
 
-                if (notificationId) Daemon!?.notifications?.deleteNotification(notificationId);
+                if (notificationId) Daemon!.notifications?.deleteNotification(notificationId);
               },
             },
           ],

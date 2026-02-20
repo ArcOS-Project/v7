@@ -31,7 +31,7 @@ import type {
   UserStatistics,
   UserTotp,
 } from "$types/admin";
-import type { App } from "$types/app";
+import type { App, InstalledApp } from "$types/app";
 import type { BugReport, ReportStatistics } from "$types/bughunt";
 import type { FilesystemProgressCallback, UserQuota } from "$types/fs";
 import type { ArcPackage, StoreItem } from "$types/package";
@@ -118,7 +118,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
           });
         }
       })
-    ).then((apps) => apps.filter((a): a is App => a !== null));
+    ).then((apps) => apps.filter((a): a is InstalledApp => a !== null));
 
     appStore?.loadOrigin("admin", () => adminApps);
 

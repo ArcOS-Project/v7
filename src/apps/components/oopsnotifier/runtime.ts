@@ -60,9 +60,10 @@ export class OopsNotifierRuntime extends AppProcess {
   async details() {
     this.Log(`Invoking the power of OopsStackTracer to bestow upon the user the details of the error that lies within`);
 
-    const proc = await Daemon?.spawn?.spawnOverlay(
+    const proc = await Daemon?.spawn?.spawnApp(
       "OopsStackTracer",
       +Env.get("shell_pid"),
+      { asOverlay: true },
       this.data,
       this.exception,
       this.process,

@@ -1,4 +1,6 @@
+import type { Constructs } from "$interfaces/common";
 import type { IApplicationStorage } from "$interfaces/services/AppStorage";
+import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
 import { BuiltinAppImportPathAbsolutes } from "$ts/apps/store";
 import { Daemon } from "$ts/daemon";
 import { ArcOSVersion, Env, Fs, SysDispatch } from "$ts/env";
@@ -8,10 +10,8 @@ import { CommandResult } from "$ts/result";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { deepCopyWithBlobs, sortByHierarchy } from "$ts/util";
-import { arrayBufferToText } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
-import { getParentDirectory, join } from "$ts/util/fs";
-import { tryJsonParse } from "$ts/util/json";
+import { join } from "$ts/util/fs";
 import { compareVersion } from "$ts/util/version";
 import { Store } from "$ts/writable";
 import type { App, AppStorage, AppStoreCb, InstalledApp } from "$types/app";
@@ -19,9 +19,10 @@ import type { Service } from "$types/service";
 
 export class ApplicationStorage extends BaseService implements IApplicationStorage {
   private origins = new Map<string, AppStoreCb>([]);
-  private injectedStore = new Map<string, App>([]);
+  private injectedStore = new Map<string, InstalledApp>([]);
   public buffer = Store<AppStorage>([]);
   public appIconCache: Record<string, string> = {};
+  public tpaModuleCache: Record<string, Constructs<IThirdPartyAppProcess>> = {};
 
   //#region LIFECYCLE
 
@@ -39,9 +40,9 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
 
   protected async start(): Promise<any> {
     this.initBroadcast?.("Loading applications...");
-    
+
     const blocklist = Daemon!.preferences()._internalImportBlocklist || [];
-    const builtins: App[] = await Promise.all(
+    const builtins: InstalledApp[] = await Promise.all(
       Object.keys(BuiltinAppImportPathAbsolutes).map(async (path) => {
         if (!Daemon.safeMode && blocklist.includes(path)) return null;
         const regex = new RegExp(/import\(\"(?<path>.*?)\"\)/gm);
@@ -91,7 +92,7 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
           return null;
         }
       })
-    ).then((apps) => apps.filter((a): a is App => a !== null));
+    ).then((apps) => apps.filter((a): a is InstalledApp => a !== null));
 
     this.loadOrigin("builtin", () => builtins);
     this.loadOrigin("userApps", async () => await Daemon.appreg!.getUserApps());
@@ -125,7 +126,7 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
     return true;
   }
 
-  loadApp(app: App) {
+  loadApp(app: InstalledApp) {
     if (this._disposed) return false;
 
     this.Log(`Loading injected app '${app.id}'`);
@@ -140,7 +141,7 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
   async loadAppModuleFile(path: string) {
     try {
       const module = await import(/* @vite-ignore */ path);
-      const app = module?.default as App;
+      const app = module?.default as InstalledApp;
 
       if (!app) return false;
       if (this.getAppSynchronous(app.id)) return false;
@@ -214,7 +215,7 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
     ) as AppStorage;
   }
 
-  getAppSynchronous(id: string): App | undefined {
+  getAppSynchronous(id: string): InstalledApp | undefined {
     return this.buffer().filter((a) => a.id === id)[0];
   }
 
@@ -228,22 +229,6 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
 
     for (const app of apps) {
       if (app.id === id) {
-        const tpaPath = (app as InstalledApp).tpaPath;
-
-        if (tpaPath) {
-          try {
-            const json = tryJsonParse(arrayBufferToText((await Fs.readFile(tpaPath))!));
-
-            if (!json || typeof json !== "object") return CommandResult.Error("Failed to parse the TPA JSON contents");
-
-            return {
-              ...Object.freeze({ ...json, workingDirectory: getParentDirectory(tpaPath), tpaPath, originId: "userApps" }),
-            };
-          } catch {
-            continue;
-          }
-        }
-
         return CommandResult.Ok({ ...Object.freeze({ ...app }) });
       }
     }

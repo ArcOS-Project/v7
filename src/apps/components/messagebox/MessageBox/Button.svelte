@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { MessageBoxButton } from "$types/messagebox";
+  import { onMount } from "svelte";
   import type { MessageBoxRuntime } from "../runtime";
 
   let disabled = $state(false);
@@ -9,6 +10,12 @@
     process,
     suggestedDisabled,
   }: { button: MessageBoxButton; process: MessageBoxRuntime; suggestedDisabled: boolean } = $props();
+
+  onMount(async () => {
+    if (button.disabled) {
+      disabled = await button.disabled();
+    }
+  });
 
   async function go() {
     disabled = true;
