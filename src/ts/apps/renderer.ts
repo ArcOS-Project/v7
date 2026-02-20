@@ -44,6 +44,7 @@ export class AppRenderer extends Process implements IAppRenderer {
       if (this._disposed || !v) return;
 
       this.lastInteract = Stack.getProcess(v);
+      if (this.lastInteract) this.lastInteract.blinking.set(false);
     });
   }
 
