@@ -6,7 +6,6 @@ import { BaseService } from "$ts/servicehost/base";
 import { tryJsonParse } from "$ts/util/json";
 import type { ArcProtocol, ProtocolHandler } from "$types/proto";
 import type { Service } from "$types/service";
-import { navigate } from "svelte-navigator";
 import { SpawnAppHandler } from "./handlers/spawn";
 
 export class ProtocolServiceProcess extends BaseService implements IProtocolServiceProcess {
@@ -39,7 +38,7 @@ export class ProtocolServiceProcess extends BaseService implements IProtocolServ
 
     if (param) {
       this.executeUrl(decodeURIComponent(param));
-      navigate("./");
+      history.replaceState(null, "", "./");
       KernelParams().delete("proto");
     }
   }

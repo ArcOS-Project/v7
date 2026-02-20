@@ -85,7 +85,6 @@
     "stacktrace-parser": "^0.1.11",
     "string-width": "^7.2.0",
     "svelte-markdown": "^0.4.1",
-    "svelte-navigator": "^3.2.2",
     "svelte-splitpanes": "^8.0.9",
     "ua-parser-js": "^2.0.3",
     "validator": "^13.12.0",
