@@ -121,7 +121,7 @@ div.shell div.taskbar div.opened-apps button.active img.backdrop {
   opacity: 0.7;
 }
 
-.opened-app.blinking {
+#arcShell > div.body div.taskbar button.opened-app.blinking {
   animation: blinking 1s infinite alternate;
 }
 

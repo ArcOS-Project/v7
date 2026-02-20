@@ -44,6 +44,7 @@ export class AppRenderer extends Process implements IAppRenderer {
       if (this._disposed || !v) return;
 
       this.lastInteract = Stack.getProcess(v);
+      if (this.lastInteract) this.lastInteract.blinking.set(false);
     });
   }
 
@@ -80,7 +81,6 @@ export class AppRenderer extends Process implements IAppRenderer {
     window.setAttribute("data-pid", process.pid.toString());
     window.addEventListener("click", () => {
       this.lastInteract = process;
-      process.blinking.set(false);
     });
     window.id = data.id;
     window.classList.toggle("no-shell", !shell);
@@ -224,9 +224,6 @@ export class AppRenderer extends Process implements IAppRenderer {
     const window = document.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
 
     this.unMinimize(pid);
-
-    const process = Stack.getProcess<IAppProcess>(+pid);
-    process?.blinking.set(false);
 
     if (!window || currentFocus === pid) return;
 
