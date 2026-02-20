@@ -30,6 +30,7 @@ import { ReloadCommand } from "./commands/reload";
 import { RestartCommand } from "./commands/restart";
 import { RmCommand } from "./commands/rm";
 import { ShutdownCommand } from "./commands/shutdown";
+import { SoundbusCommand } from "./commands/soundbus";
 import { SpawnCommand } from "./commands/spawn";
 import { SudoCommand } from "./commands/sudo";
 import { TasksCommand } from "./commands/tasks";
@@ -74,6 +75,7 @@ export const TerminalCommandStore: ITerminalProcessConstructor[] = [
   PkgCommand,
   KlogCommand,
   InputCommand,
+  SoundbusCommand,
 ];
 
 export const ESC = `\x1b[`;
