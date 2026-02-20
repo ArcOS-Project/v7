@@ -9,6 +9,8 @@ export class SoundbusCommand extends TerminalProcess {
   static keyword = "soundbus";
   static description = "SoundBus CLI";
 
+  //#region LIFECYCLE
+
   constructor(pid: number, parentPid: number) {
     super(pid, parentPid);
   }
@@ -29,6 +31,9 @@ export class SoundbusCommand extends TerminalProcess {
         return 1;
     }
   }
+
+  //#endregion
+  //#region SUBCOMMANDS
 
   playCommand() {
     const sound = this.argv?.[1];
@@ -83,4 +88,6 @@ export class SoundbusCommand extends TerminalProcess {
 
     return 0;
   }
+
+  //#endregion
 }
