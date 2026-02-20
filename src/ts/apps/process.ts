@@ -46,6 +46,7 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
   public readonly contextMenu: AppContextMenu = {};
   public altMenu = Store<ContextMenuItem[]>([]);
   public windowFullscreen = Store<boolean>(false);
+  public blinking = Store<boolean>(false);
 
   draggable: Draggable | undefined;
 
@@ -428,5 +429,9 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
 
   getIconStore(id: string): ReadableStore<string> {
     return Daemon?.icons?.getIconStore(id)!;
+  }
+
+  blink() {
+    this.blinking.set(!this.blinking());
   }
 }
