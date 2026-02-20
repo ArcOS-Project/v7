@@ -2,6 +2,7 @@ import type { IApplicationStorage } from "$interfaces/services/AppStorage";
 import { BuiltinAppImportPathAbsolutes } from "$ts/apps/store";
 import { Daemon } from "$ts/daemon";
 import { ArcOSVersion, Env, Fs, SysDispatch } from "$ts/env";
+import { WarningIcon } from "$ts/images/dialog";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { CommandResult } from "$ts/result";
@@ -39,7 +40,7 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
 
   protected async start(): Promise<any> {
     this.initBroadcast?.("Loading applications...");
-    
+
     const blocklist = Daemon!.preferences()._internalImportBlocklist || [];
     const builtins: App[] = await Promise.all(
       Object.keys(BuiltinAppImportPathAbsolutes).map(async (path) => {
@@ -79,9 +80,9 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
             MessageBox(
               {
                 title: "App load error",
-                message: `ArcOS failed to load a built-in app because of an error. ${e}.`,
+                message: `<p>ArcOS failed to load a built-in app because of an error.</p><code class='block'>${e}</code>`,
                 buttons: [{ caption: "Okay", action: () => r(), suggested: true }],
-                image: "WarningIcon",
+                image: WarningIcon,
               },
               +Env.get("loginapp_pid"),
               true

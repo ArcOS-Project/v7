@@ -1,3 +1,4 @@
+import type { IAppProcess } from "$interfaces/app";
 import type { IArcFindRuntime } from "$interfaces/arcfind";
 import type { IShellRuntime, ITrayHostRuntime } from "$interfaces/shell";
 import { AppProcess } from "$ts/apps/process";
@@ -5,8 +6,10 @@ import { Daemon } from "$ts/daemon";
 import { Env, Fs, Stack, SysDispatch } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";
+import { isPopulatable } from "$ts/util/apps";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
+import type { AppKeyCombinations } from "$types/accelerator";
 import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { RecursiveDirectoryReadReturn } from "$types/fs";
 import type { SearchItem } from "$types/search";
@@ -14,6 +17,7 @@ import type { Workspace } from "$types/user";
 import dayjs from "dayjs";
 import { type FuseResult } from "fuse.js";
 import { fetchWeatherApi } from "openmeteo";
+import { ShellAccelerators } from "./accelerators";
 import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
 import { shortWeekDays, type CalendarMonth, type WeatherInformation } from "./types";
@@ -23,6 +27,11 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
   public actionCenterOpened = Store<boolean>(false);
   public workspaceManagerOpened = Store<boolean>(false);
   public calendarOpened = Store<boolean>(false);
+  public windowSwitcherOpened = Store<boolean>(false);
+  public windowSwitcherTimeout?: NodeJS.Timeout;
+  public windowSwitcherProcs = Store<IAppProcess[]>([]);
+  public windowSwitcherIndex = Store<number>(0);
+  public windowSwitcherOrder = Store<number[]>([]);
   public stackBusy = Store<boolean>(false);
   public searchQuery = Store<string>();
   public searchResults = Store<FuseResult<SearchItem>[]>([]);
@@ -37,8 +46,10 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
   public STARTMENU_FOLDER = UserPaths.StartMenu;
   public StartMenuContents = Store<RecursiveDirectoryReadReturn>();
   public selectedAppGroup = Store<string>("");
+  public openedApps = Store<[number, IAppProcess][]>([]);
 
   override contextMenu: AppContextMenu = ShellContextMenu(this);
+  override acceleratorStore: AppKeyCombinations<IShellRuntime> = ShellAccelerators(this);
 
   //#region LIFECYCLE
 
@@ -137,6 +148,35 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
 
     SysDispatch.subscribe("startmenu-refresh", () => {
       this.refreshStartMenu();
+    });
+
+    Stack.renderer?.focusedPid.subscribe((v) => {
+      this.windowSwitcherIndex.set(0);
+    });
+
+    Stack.store.subscribe((v) => {
+      this.windowSwitcherIndex.set(0);
+      this.openedApps.set(
+        [...v].filter(
+          ([_, proc]) =>
+            proc instanceof AppProcess &&
+            !proc._disposed &&
+            (isPopulatable(proc.app.data) || proc.overridePopulatable) &&
+            (!this.userPreferences().shell.taskbar.openedAppsPerWorkspace ||
+              Daemon?.workspaces?.getDesktopIndexByUuid(proc.app.desktop || "") === this.userPreferences().workspaces.index)
+        ) as [number, IAppProcess][]
+      );
+    });
+
+    this.windowSwitcherOpened.subscribe((v) => {
+      if (!v) {
+        const target = this.openedApps()[this.windowSwitcherIndex()];
+
+        if (!target) return;
+
+        Stack.renderer?.focusPid(target[0]);
+        if (target[1].app.desktop) Daemon?.workspaces?.switchToDesktopByUuid(target[1].app.desktop);
+      }
     });
   }
 
@@ -425,6 +465,53 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
     }
 
     return result;
+  }
+
+  //#endregion
+  //#region WINDOW SWITCHER
+
+  windowSwitcherNext() {
+    if (!this.openedApps()?.length) return;
+
+    this.windowSwitcherOpened.set(true);
+    let newIndex = this.windowSwitcherIndex() + 1;
+
+    if (newIndex >= this.openedApps().length) {
+      newIndex = 0;
+    }
+
+    this.windowSwitcherIndex.set(newIndex);
+
+    const event = (e: KeyboardEvent) => {
+      if (!e.altKey) {
+        this.windowSwitcherOpened.set(false);
+        document.removeEventListener("keyup", event);
+      }
+    };
+
+    document.addEventListener("keyup", event);
+  }
+
+  windowSwitcherPrevious() {
+    if (!this.openedApps()?.length) return;
+
+    this.windowSwitcherOpened.set(true);
+    let newIndex = this.windowSwitcherIndex() - 1;
+
+    if (newIndex < 0) {
+      newIndex = this.openedApps().length - 1;
+    }
+
+    this.windowSwitcherIndex.set(newIndex);
+
+    const event = (e: KeyboardEvent) => {
+      if (!e.altKey) {
+        this.windowSwitcherOpened.set(false);
+        document.removeEventListener("keyup", event);
+      }
+    };
+
+    document.addEventListener("keyup", event);
   }
 
   //#endregion

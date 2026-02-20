@@ -15,6 +15,8 @@ export interface IShellRuntime extends IAppProcess {
   actionCenterOpened: ReadableStore<boolean>;
   workspaceManagerOpened: ReadableStore<boolean>;
   calendarOpened: ReadableStore<boolean>;
+  windowSwitcherOpened: ReadableStore<boolean>;
+  windowSwitcherIndex: ReadableStore<number>;
   stackBusy: ReadableStore<boolean>;
   searchQuery: ReadableStore<string>;
   searchResults: ReadableStore<FuseResult<SearchItem>[]>;
@@ -30,6 +32,8 @@ export interface IShellRuntime extends IAppProcess {
   StartMenuContents: ReadableStore<RecursiveDirectoryReadReturn>;
   contextMenu: AppContextMenu;
   selectedAppGroup: ReadableStore<string>;
+  openedApps: ReadableStore<[number, IAppProcess][]>;
+  windowSwitcherTimeout?: NodeJS.Timeout;
   start(): Promise<false | undefined>;
   render(): Promise<void>;
   stop(): Promise<boolean>;
@@ -45,6 +49,8 @@ export interface IShellRuntime extends IAppProcess {
   getWeather(): Promise<WeatherInformation>;
   exit(): Promise<void>;
   changeShell(id: string): Promise<false | undefined>;
+  windowSwitcherPrevious(): void;
+  windowSwitcherNext(): void;
 }
 
 export interface ITrayHostRuntime extends IProcess {

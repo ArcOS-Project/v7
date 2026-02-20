@@ -9,6 +9,7 @@
   import Taskbar from "./Shell/Taskbar.svelte";
   import VirtualDesktopIndicator from "./Shell/VirtualDesktopIndicator.svelte";
   import VirtualDesktops from "./Shell/VirtualDesktops.svelte";
+  import WindowSwitcher from "./Shell/WindowSwitcher.svelte";
 
   const { process }: AppComponentProps<IShellRuntime> = $props();
   const { userPreferences, startMenuOpened, actionCenterOpened, username, FullscreenCount, ready } = process;
@@ -44,4 +45,5 @@
       <Taskbar {process} />
     </div>
   </div>
+  <WindowSwitcher {process} />
 {/if}

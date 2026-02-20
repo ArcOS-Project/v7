@@ -4,6 +4,7 @@
 @import url("./shell/workspaces.css");
 @import url("./shell/workspaceindicator.css");
 @import url("./shell/pushnotification.css");
+@import url("./shell/windowswitcher.css");
 @import url("./shell/colored.css");
 
 #arcShell {

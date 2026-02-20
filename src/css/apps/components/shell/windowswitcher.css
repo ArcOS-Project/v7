@@ -1,0 +1,74 @@
+#arcShell div.window-switcher-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+#arcShell div.window-switcher-wrapper div.window-switcher {
+  min-width: 350px;
+  min-height: 100px;
+  height: fit-content;
+  background-color: var(--glass-bg);
+  border: var(--border);
+  box-shadow: 0 5px 15px 5px #0003;
+  border-radius: 10px;
+  padding: 15px;
+  scale: 0.95;
+  opacity: 0;
+  pointer-events: none;
+  backdrop-filter: blur(var(--blur));
+  transition:
+    scale 0.1s,
+    opacity 0.1s;
+}
+
+#arcShell div.window-switcher-wrapper div.window-switcher hr {
+  border: none;
+  border-top: var(--button-glass-hover-bg) 1px solid;
+  margin: 15px 0;
+}
+
+#arcShell div.window-switcher-wrapper div.window-switcher div.current {
+  text-align: center;
+  /* line-height: 40px; */
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#arcShell div.window-switcher-wrapper.show div.window-switcher {
+  scale: 1;
+  opacity: 1;
+  pointer-events: initial !important;
+}
+
+#arcShell div.window-switcher-wrapper div.window-switcher div.options {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+#arcShell div.window-switcher-wrapper div.window-switcher div.options button {
+  width: 40px;
+  height: 40px;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+#arcShell div.window-switcher-wrapper div.window-switcher div.options button.selected {
+  background-color: var(--accent-transparent);
+}
+
+#arcShell div.window-switcher-wrapper div.window-switcher div.options button img {
+  height: 24px;
+}
