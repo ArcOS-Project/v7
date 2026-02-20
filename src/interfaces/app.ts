@@ -27,6 +27,7 @@ export interface IAppProcess extends IProcess {
   altMenu: ReadableStore<ContextMenuItem[]>;
   windowFullscreen: ReadableStore<boolean>;
   draggable: Draggable | undefined;
+  blinking: ReadableStore<boolean>;
   onClose(): Promise<boolean>;
   ShowToast(toast: ToastMessage, durationMs?: number): Promise<void>;
   HideToast(): Promise<void>;
@@ -60,4 +61,5 @@ export interface IAppProcess extends IProcess {
   getIcon(id: string): Promise<string>;
   getIconCached(id: string): string;
   getIconStore(id: string): ReadableStore<string>;
+  blink(): void;
 }
