@@ -122,11 +122,11 @@ div.shell div.taskbar div.opened-apps button.active img.backdrop {
 }
 
 #arcShell > div.body div.taskbar button.opened-app.blinking {
-  animation: blinking 1s infinite alternate;
+  animation: blinking 0.7s infinite alternate;
 }
 
 @keyframes blinking {
   to {
-    background-color: var(--clr-red-fg);
+    background-color: var(--clr-orange-fg);
   }
 }
