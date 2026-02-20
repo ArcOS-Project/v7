@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { MessagingAppRuntime } from "$apps/user/messages/runtime";
   import { Daemon } from "$ts/daemon";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
   import { formatBytes } from "$ts/util/fs";
   import type { MessageAttachment } from "$types/messaging";
 
@@ -14,6 +15,7 @@
     title={`Name: ${attachment.filename}\nSize: ${formatBytes(attachment.size)}\nType: ${attachment.mimeType}`}
     ondblclick={() => process.openAttachment(attachment, $message._id)}
     data-contextmenu="message-attachment"
+    use:contextProps={[message, attachment]}
   >
     <img src={Daemon?.assoc?.getFileAssociation(attachment.filename)?.icon || process.getIconCached("DefaultMimeIcon")} alt="" />
     <p>
