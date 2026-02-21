@@ -1,8 +1,25 @@
 <script lang="ts">
+  import { forEach } from "jszip";
   import type { MessagingAppRuntime } from "../../runtime";
+  import type { MessageAttachment } from "$types/messaging";
+  import { Daemon } from "$ts/daemon";
+  import { UserPaths } from "$ts/user/store";
 
   const { process }: { process: MessagingAppRuntime } = $props();
   const { message, messageWindow, messageFromFile } = process;
+
+  async function downloadAttachments() {
+    const [path] = await Daemon!.files!.LoadSaveDialog({
+      title: "Choose where to save the attachment",
+      startDir: UserPaths.Downloads,
+      icon: "MessagingIcon",
+      folder: true,
+    });
+
+    if (!path) return;
+
+    process.service.downloadAttachments(message()!, message()?.attachmentData!, path);
+  }
 </script>
 
 <div class="action-bar">
@@ -11,6 +28,14 @@
       <span class="lucide icon-plus"></span>
       <span>Compose</span>
     </button>
+  {/if}
+  {#if $message?.attachmentData}
+    <button
+      class="lucide icon-file-down"
+      onclick={downloadAttachments}
+      aria-label="Download Attachments"
+      title="Download Attachments"
+    ></button>
   {/if}
   <div class="actions">
     <div class="reply-forward">

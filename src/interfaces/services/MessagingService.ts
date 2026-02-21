@@ -1,6 +1,6 @@
 import type { IBaseService } from "$interfaces/service";
 import type { FilesystemProgressCallback } from "$types/fs";
-import type { ExpandedMessage, ExpandedMessageNode } from "$types/messaging";
+import type { ExpandedMessage, ExpandedMessageNode, MessageAttachment } from "$types/messaging";
 
 export interface IMessagingInterface extends IBaseService {
   get serverUrl(): string | undefined;
@@ -25,4 +25,5 @@ export interface IMessagingInterface extends IBaseService {
   ): Promise<ArrayBuffer | undefined>;
   getMessageThread(messageId?: string): Promise<ExpandedMessageNode[]>;
   buildAttachment(filePath: string, onProgress?: FilesystemProgressCallback): Promise<File | undefined>;
+  downloadAttachments(message: ExpandedMessage, attachments: MessageAttachment[], savePath: string): void;
 }
