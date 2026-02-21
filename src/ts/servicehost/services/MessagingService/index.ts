@@ -7,9 +7,10 @@ import { Backend } from "$ts/kernel/mods/server/axios";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { authcode } from "$ts/util";
+import { arrayBufferToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import type { FilesystemProgressCallback } from "$types/fs";
-import type { ExpandedMessage, ExpandedMessageNode } from "$types/messaging";
+import type { ExpandedMessage, ExpandedMessageNode, MessageAttachment } from "$types/messaging";
 import type { Service } from "$types/service";
 import { GlobalDispatch } from "../GlobalDispatch";
 
@@ -27,7 +28,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
 
   async start() {
     this.initBroadcast?.("Starting messaging service");
-    
+
     const daemon = Stack.getProcess<IUserDaemon>(+Env.get("userdaemon_pid")!)!;
     const dispatch = daemon.serviceHost?.getService<GlobalDispatch>("GlobalDispatch")!;
 
@@ -232,6 +233,58 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
       return new File([contents], filename, { type: partial.mimeType });
     } catch {
       return undefined;
+    }
+  }
+
+  async downloadAttachments(message: ExpandedMessage, attachments: MessageAttachment[], savePath: string) {
+    const dlProg = await Daemon?.files?.FileProgress(
+      {
+        type: "quantity",
+        max: attachments.length,
+        caption: `Reading attachment data`,
+        icon: "MessagingIcon",
+        subtitle: `Just a moment...`,
+      },
+      Daemon.getShell()?.pid || this.pid
+    );
+
+    dlProg?.setDone(0);
+    // dlProg?.setMax(attachments.length);
+
+    let responses: Array<ArrayBuffer> = [];
+
+    dlProg?.show();
+    await Promise.all(
+      attachments.map(async (attachment: MessageAttachment) => {
+        const data = await this.readAttachment(message._id, attachment._id);
+        if (!data) return;
+
+        responses.push(data);
+        dlProg?.mutDone(+1);
+      })
+    );
+
+    if (!responses) return;
+
+    const saveProg = await Daemon?.files?.FileProgress(
+      {
+        type: "quantity",
+        max: responses.length,
+        caption: "Saving attachment",
+        icon: "MessagingIcon",
+        subtitle: `Saving to ${savePath}/`,
+      },
+      Daemon.getShell()?.pid || this.pid
+    );
+    saveProg?.setDone(0);
+    saveProg?.show();
+
+    for (let i = 0; i < responses.length; i++) {
+      saveProg?.updSub(`Saving to ${savePath}/${attachments[i].filename}`);
+
+      await Fs.writeFile(`${savePath}/${attachments[i].filename}`, arrayBufferToBlob(responses[i]));
+
+      saveProg?.mutDone(+1);
     }
   }
 }
