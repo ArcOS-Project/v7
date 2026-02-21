@@ -284,7 +284,6 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
 
       await Fs.writeFile(`${savePath}/${attachments[i].filename}`, arrayBufferToBlob(responses[i]));
 
-      console.log(arrayBufferToBlob(responses[i]));
       saveProg?.mutDone(+1);
     }
   }
