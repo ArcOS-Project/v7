@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { BooleanStore } from "$ts/writable";
+  import type { IShellRuntime } from "$interfaces/shell";
   import type { UserPreferencesStore } from "$types/user";
-  import type { ShellRuntime } from "../runtime";
+  import type { BooleanStore } from "$types/writable";
   import Bottom from "./StartMenu/Bottom.svelte";
-  import Folders from "./StartMenu/Folders.svelte";
-  import NewAppList from "./StartMenu/NewAppList.svelte";
+  import RightPane from "./StartMenu/RightPane.svelte";
+  import LeftPane from "./StartMenu/LeftPane.svelte";
 
   const {
     process,
@@ -14,7 +14,7 @@
   }: {
     userPreferences: UserPreferencesStore;
     startMenuOpened: BooleanStore;
-    process: ShellRuntime;
+    process: IShellRuntime;
     username: string;
   } = $props();
 
@@ -28,8 +28,8 @@
   class:searching={$searchQuery}
 >
   <div class="top">
-    <NewAppList {process} />
-    <Folders {process} {userPreferences} {username} />
+    <LeftPane {process} />
+    <RightPane {process} {userPreferences} {username} />
   </div>
   <Bottom {process} />
 </div>

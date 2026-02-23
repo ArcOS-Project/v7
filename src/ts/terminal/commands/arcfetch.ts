@@ -1,11 +1,11 @@
-import { getDeviceInfo } from "$ts/device";
+import type { IServerManager } from "$interfaces/modules/server";
+import type { IArcTerminal } from "$interfaces/terminal";
 import { ArcOSVersion, Env, getKMod, State } from "$ts/env";
-import { KernelStateHandler } from "$ts/getters";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
+import { authcode } from "$ts/util";
 import { formatBytes } from "$ts/util/fs";
-import type { ServerManagerType } from "$types/kernel";
-import type { ArcTerminal } from "..";
+import { getDeviceInfo } from "../../kernel/device";
 import { TerminalProcess } from "../process";
 import { BRBLACK, BRBLUE, BRCYAN, BRGREEN, BRPURPLE, BRRED, BRYELLOW, RESET } from "../store";
 
@@ -23,7 +23,7 @@ export class ArcFetchCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal): Promise<number> {
+  protected async main(term: IArcTerminal): Promise<number> {
     term.rl?.println("");
 
     this.graphic(term);
@@ -34,14 +34,14 @@ export class ArcFetchCommand extends TerminalProcess {
     return 0;
   }
 
-  getItems(term: ArcTerminal) {
-    const server = getKMod<ServerManagerType>("server", true);
+  getItems(term: IArcTerminal) {
+    const server = getKMod<IServerManager>("server", true);
     const info = getDeviceInfo();
     const state = State?.currentState;
 
     return Object.entries({
       OS: `ArcOS ${ArcOSVersion}-${ArcMode()} (${ArcBuild()})`,
-      Host: `${server?.url} ${BRBLACK}(${import.meta.env.DW_SERVER_AUTHCODE ? "Protected" : "Open"})${RESET}`,
+      Host: `${server?.url} ${BRBLACK}(${authcode() ? "Protected" : "Open"})${RESET}`,
       Username: `${Env.get("currentuser")} ${BRBLACK}(${Env.get("administrator") ? "Administrator" : "Regular User"})${RESET}`,
       Mode: `Browser ${BRBLACK}(on state ${state?.toUpperCase()})${RESET}`,
       Terminal: `PID ${term.pid} (${term.name}) on parent PID ${term.parentPid}`,
@@ -51,7 +51,7 @@ export class ArcFetchCommand extends TerminalProcess {
     });
   }
 
-  graphic(term: ArcTerminal) {
+  graphic(term: IArcTerminal) {
     const items = this.getItems(term);
 
     const graphicParts = [
@@ -76,7 +76,7 @@ export class ArcFetchCommand extends TerminalProcess {
     }
   }
 
-  colorBar(term: ArcTerminal) {
+  colorBar(term: IArcTerminal) {
     term.rl?.println(`\n${" ".repeat(31)}${BRRED}██ ${BRGREEN}██ ${BRYELLOW}██ ${BRCYAN}██ ${BRCYAN}██ ${BRPURPLE}██${RESET} `);
   }
 }

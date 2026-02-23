@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { MessageBox } from "$ts/dialog";
-  import type { ReadableStore } from "$ts/writable";
+  import { MessageBox } from "$ts/util/dialog";
   import type { StoreItem } from "$types/package";
+  import type { ReadableStore } from "$types/writable";
   import { onMount } from "svelte";
   import type { AppStoreRuntime } from "../../runtime";
 

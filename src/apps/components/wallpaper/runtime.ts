@@ -1,11 +1,11 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Env, Fs, SysDispatch } from "$ts/env";
-import { tryJsonParse } from "$ts/json";
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
+import { UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
+import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, join } from "$ts/util/fs";
+import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { DirectoryReadReturn } from "$types/fs";
@@ -60,7 +60,7 @@ export class WallpaperRuntime extends AppProcess {
   }
 
   async render() {
-    this.closeIfSecondInstance();
+    if (await this.closeIfSecondInstance()) return false;
 
     try {
       await this.updateContents();
@@ -189,6 +189,8 @@ export class WallpaperRuntime extends AppProcess {
   //#region FILESYSTEM
 
   async deleteItem(path: string) {
+    this.Log(`deleteItem`);
+
     const filename = getItemNameFromPath(path);
 
     MessageBox(
@@ -201,7 +203,7 @@ export class WallpaperRuntime extends AppProcess {
             caption: "Delete",
             action: () => {
               try {
-                Fs.deleteItem(path, true);
+                Daemon.files?.moveToTrashOrDeleteItem(path, true);
               } catch {}
             },
             suggested: true,
@@ -216,6 +218,8 @@ export class WallpaperRuntime extends AppProcess {
   }
 
   async uploadItems() {
+    this.Log(`uploadItems`);
+
     if (this._disposed) return;
 
     const prog = await Daemon!.files!.FileProgress(
@@ -247,16 +251,22 @@ export class WallpaperRuntime extends AppProcess {
   //#region CONFIGURATION
 
   async loadConfiguration() {
-    const contents = await Fs.readFile(this.CONFIG_PATH);
-    if (!contents) return await this.writeConfiguration({});
+    this.Log(`Loading configuration`);
 
-    const json = tryJsonParse<DesktopIcons>(arrayBufferToText(contents));
-    if (!json || typeof json === "string") return await this.writeConfiguration({});
+    try {
+      const contents = await Fs.readFile(this.CONFIG_PATH);
+      if (!contents) return await this.writeConfiguration({});
 
-    this.Configuration.set(json);
+      const json = tryJsonParse<DesktopIcons>(arrayBufferToText(contents));
+      if (!json || typeof json === "string") return await this.writeConfiguration({});
+
+      this.Configuration.set(json);
+    } catch {}
   }
 
   async writeConfiguration(data: DesktopIcons) {
+    this.Log(`Writing configuration`);
+
     await Fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(data, null, 2)));
 
     return data;
@@ -265,6 +275,8 @@ export class WallpaperRuntime extends AppProcess {
   // 7.0.5 -> 7.0.6+
   // Migration of desktop icons from the preferences to a dedicated file in U:/System
   async migrateDesktopIcons() {
+    this.Log(`migrateDesktopIcons`);
+
     const migrationPath = join(UserPaths.Migrations, "DeskIconMig-706.lock");
     const pref = this.userPreferences().appPreferences.desktopIcons;
     const migration = await Fs.stat(migrationPath);

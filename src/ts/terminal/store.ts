@@ -1,3 +1,4 @@
+import type { ITerminalProcessConstructor } from "$interfaces/terminal";
 import type { ArcTermConfiguration } from "$types/terminal";
 import { AdminCommand } from "./commands/admin";
 import { AppListCommand } from "./commands/applist";
@@ -17,7 +18,9 @@ import { ExploreCommand } from "./commands/explore";
 import { FindCommand } from "./commands/find";
 import { HelpCommand } from "./commands/help";
 import { HistoryCommand } from "./commands/history";
+import { InputCommand } from "./commands/input";
 import { KillCommand } from "./commands/kill";
+import { KlogCommand } from "./commands/klog";
 import { LogoutCommand } from "./commands/logout";
 import { MkdirCommand } from "./commands/mkdir";
 import { OpenCommand } from "./commands/open";
@@ -27,15 +30,15 @@ import { ReloadCommand } from "./commands/reload";
 import { RestartCommand } from "./commands/restart";
 import { RmCommand } from "./commands/rm";
 import { ShutdownCommand } from "./commands/shutdown";
+import { SoundbusCommand } from "./commands/soundbus";
 import { SpawnCommand } from "./commands/spawn";
 import { SudoCommand } from "./commands/sudo";
 import { TasksCommand } from "./commands/tasks";
 import { TestCommand } from "./commands/test";
 import { TreeCommand } from "./commands/tree";
 import { VerCommand } from "./commands/ver";
-import type { TerminalProcess } from "./process";
 
-export const TerminalCommandStore: (typeof TerminalProcess)[] = [
+export const TerminalCommandStore: ITerminalProcessConstructor[] = [
   AppListCommand,
   DirCommand,
   CdCommand,
@@ -70,6 +73,9 @@ export const TerminalCommandStore: (typeof TerminalProcess)[] = [
   DrivesCommand,
   DevenvCommand,
   PkgCommand,
+  KlogCommand,
+  InputCommand,
+  SoundbusCommand,
 ];
 
 export const ESC = `\x1b[`;

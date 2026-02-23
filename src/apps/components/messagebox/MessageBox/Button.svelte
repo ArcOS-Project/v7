@@ -14,8 +14,14 @@
     disabled = true;
 
     process.acted.set(true);
-    await button.action();
-    await process.closeWindow();
+    const actionResult = await button.action();
+
+    if (actionResult !== false) {
+      await process.closeWindow();
+    } else {
+      process.acted.set(false);
+      disabled = true;
+    }
   }
 </script>
 

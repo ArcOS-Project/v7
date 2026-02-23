@@ -12,16 +12,16 @@ export const ProcessesApp: App = {
     appGroup: "systemTools",
   },
   size: {
-    w: 750,
+    w: 850,
     h: 500,
   },
   minSize: {
-    w: 750,
-    h: 500,
+    w: 850,
+    h: 450,
   },
   maxSize: {
-    w: 950,
-    h: 700,
+    w: NaN,
+    h: NaN,
   },
   controls: {
     minimize: false,

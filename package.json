@@ -1,7 +1,7 @@
 {
   "name": "waveos",
   "private": true,
-  "version": "7.0.7",
+  "version": "7.0.9",
   "type": "module",
   "scripts": {
     "dev": "git rev-parse --short HEAD > ./public/build && vite",
@@ -17,7 +17,9 @@
     "region:check": "node tools/validate-regions.mjs",
     "console:check": "node tools/console-usage.mjs",
     "method:check": "node tools/check-params.mjs",
-    "check:everything": "yarn run check && yarn console:check && yarn region:check && yarn method:check"
+    "circularity": "npx madge --circular --extensions ts,svelte ./src",
+    "type:check": "node tools/typeoutblow.mjs",
+    "check:everything": "yarn run check && yarn console:check && yarn region:check && yarn method:check && yarn type:check"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "5.1.0",
@@ -76,13 +78,13 @@
     "jszip": "^3.10.1",
     "leo-profanity": "^1.7.0",
     "mime": "^4.0.7",
+    "music-metadata": "^11.10.3",
     "openmeteo": "^1.1.4",
     "socket.io-client": "^4.8.1",
     "sql.js": "^1.13.0",
     "stacktrace-parser": "^0.1.11",
     "string-width": "^7.2.0",
     "svelte-markdown": "^0.4.1",
-    "svelte-navigator": "^3.2.2",
     "svelte-splitpanes": "^8.0.9",
     "ua-parser-js": "^2.0.3",
     "validator": "^13.12.0",

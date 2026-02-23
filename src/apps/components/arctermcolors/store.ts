@@ -25,7 +25,7 @@ export const DarkColorPresets: ArcTermColorPreset[] = [
     brightBlack: "#a89984",
     backdropOpacity: 1,
   },
-    {
+  {
     name: "One Dark Pro",
     author: "Atom",
     variant: "dark",
@@ -38,7 +38,7 @@ export const DarkColorPresets: ArcTermColorPreset[] = [
     brightBlack: "#51565f",
     foreground: "#abb2bf",
     background: "#232936",
-    backdropOpacity: 1
+    backdropOpacity: 1,
   },
   {
     name: "Nord",

@@ -1,12 +1,12 @@
-import { DistributionServiceProcess } from "$ts/distrib";
+import type { IArcTerminal } from "$interfaces/terminal";
 import { Fs } from "$ts/env";
-import { UserPaths } from "$ts/server/user/store";
+import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
+import { UserPaths } from "$ts/user/store";
 import { Plural } from "$ts/util";
 import { formatBytes, join } from "$ts/util/fs";
 import { ElevationLevel } from "$types/elevation";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
-import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { BRBLUE, BRGREEN, BRPURPLE, CLRROW, CURUP, RESET } from "../store";
 
@@ -32,7 +32,7 @@ export class PkgCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     this.distrib = this.term!.daemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
 
     if (!argv[0]) {

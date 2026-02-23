@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import { getItemNameFromPath } from "$ts/util/fs";
   import { onMount } from "svelte";
   import type { MediaPlayerRuntime } from "../runtime";
 
   const { process, i, path }: { process: MediaPlayerRuntime; i: number; path: string } = $props();
-  const { queueIndex, queue, State, Loaded } = process;
+  const { queueIndex, queue, State, Loaded, MetadataConfiguration } = process;
 
   let icon = $state<string>();
   let filename = $state<string>();
@@ -39,7 +39,7 @@
     {:else}
       <img src={icon} alt="" />
     {/if}
-    <span class="name">{filename}</span>
+    <span class="name">{$MetadataConfiguration[path]?.title || filename}</span>
     <button
       class="lucide icon-x"
       aria-label="Remove from queue"

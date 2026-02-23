@@ -1,7 +1,7 @@
-import type { ReadableStore } from "$ts/writable";
 import type { App } from "./app";
 import type { ThemeStore } from "./theme";
 import type { Wallpaper } from "./wallpaper";
+import type { ReadableStore } from "./writable";
 
 export interface UserInfo {
   username: string;
@@ -96,6 +96,7 @@ export interface TaskbarPreferences {
   clockDate: boolean;
   clock12hr: boolean;
   batteryPercentage: boolean;
+  openedAppsPerWorkspace?: boolean;
 }
 
 export interface DesktopPreferences {
@@ -106,10 +107,12 @@ export interface DesktopPreferences {
   accent: string;
   noIconGrid: boolean;
   lockIcons: boolean;
+  nativeNotificationsState?: NotificationPermission;
 }
 
 export interface StartMenuPreferences {
   noGroups: boolean;
+  actions: string[];
 }
 
 export interface VisualPreferences {
@@ -121,6 +124,7 @@ export interface VisualPreferences {
   userFont?: string;
   trafficLights: boolean;
   blurRadius: number;
+  hideAltmenus?: boolean;
 }
 
 export interface SecurityPreferences {

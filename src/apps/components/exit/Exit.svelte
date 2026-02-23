@@ -1,9 +1,30 @@
 <script lang="ts">
+  import { onDestroy, onMount } from "svelte";
   import { ExitRuntime } from "./runtime";
   import { ExitActions } from "./store";
 
   const { process }: { process: ExitRuntime } = $props();
   const { selected } = process;
+
+  let shiftKey = $state<boolean>(false);
+
+  onMount(() => {
+    document.addEventListener("keydown", keydown);
+    document.addEventListener("keyup", keyup);
+  });
+
+  onDestroy(() => {
+    document.removeEventListener("keydown", keydown);
+    document.removeEventListener("keyup", keyup);
+  });
+
+  function keydown(e: KeyboardEvent) {
+    if (e.key.toLowerCase().includes("shift")) shiftKey = true;
+  }
+
+  function keyup(e: KeyboardEvent) {
+    if (e.key.toLowerCase().includes("shift")) shiftKey = false;
+  }
 </script>
 
 <div class="header">
@@ -20,7 +41,7 @@
       class:selected={$selected == id}
     >
       <img src={process.getIconCached(action.icon)} alt="" class="icon" />
-      <p>{action.caption}</p>
+      <p>{shiftKey && action.alternateCaption ? action.alternateCaption : action.caption}</p>
     </button>
   {/each}
 </div>

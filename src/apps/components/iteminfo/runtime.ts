@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
+import { Daemon } from "$ts/daemon";
 import { Env, Fs } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
 import { arrayBufferToText } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
@@ -62,7 +62,7 @@ export class ItemInfoRuntime extends AppProcess {
 
       if (isShortcut) {
         // Longwinded and godawful way to get the shortcut metadata in this file
-        this.shortcut.set(JSON.parse(arrayBufferToText((await Fs.readFile(this.info().location.fullPath))!)));
+        this.shortcut.set(JSON.parse(arrayBufferToText((await Fs.readFile(this.info().location.fullPath))!)!)); // hoooo this is awful ;-;
       }
     } catch {
       this.closeWindow();
@@ -73,6 +73,8 @@ export class ItemInfoRuntime extends AppProcess {
   //#region ACTIONS
 
   async open() {
+    this.Log(`Opening item`);
+
     const info = this.info();
     await this.closeWindow(); // First get the process out of here
 
@@ -86,10 +88,14 @@ export class ItemInfoRuntime extends AppProcess {
   }
 
   async openWith(path: string) {
+    this.Log(`openWith: ${path}`);
+
     await this.spawnOverlayApp("OpenWith", this.parentPid, path);
   }
 
   async renameItem() {
+    this.Log(`renameItem`);
+
     this.spawnOverlayApp("FsRenameItem", this.pid, this.info().location.fullPath);
   }
 

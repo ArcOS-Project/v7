@@ -8,11 +8,9 @@ export interface Message {
   attachments?: string[]; // attachmentId[]
   _id: string;
   repliesTo?: string;
-  deleted?: boolean;
   correlationId: string;
   createdAt: string;
   updatedAt: string;
-  author?: PublicUserInfo;
   read: boolean;
 }
 
@@ -23,35 +21,20 @@ export interface MessageCreateData {
   attachments: File[];
 }
 
-export interface MessageNode extends Message {
-  replies: MessageNode[];
-}
-
-export interface PartialMessage {
-  _id: string;
-  authorId: string;
-  title: string;
-  recipient: string;
-  attachmentCount: number;
-  deleted?: boolean;
-  repliesTo?: string;
-  createdAt: string;
+export interface ExpandedMessage extends Message {
+  attachmentData?: MessageAttachment[];
   author?: PublicUserInfo;
-  correlationId: string;
-  read: boolean;
 }
 
-export type ExpandedMessage = Omit<Message, "attachments"> & {
-  attachments: MessageAttachment[];
-};
-export type ExpandedPartialMessage = Omit<PartialMessage, "attachments"> & {
-  attachments: MessageAttachment[];
-};
+export interface ExpandedMessageNode extends ExpandedMessage {
+  replies: ExpandedMessageNode[];
+}
 
 export interface MessageAttachment {
   filename: string;
   size: number;
   mimeType: string;
+  realPath: string; // /attachments/*
   signature: string; // sha256
   _id: string;
 }

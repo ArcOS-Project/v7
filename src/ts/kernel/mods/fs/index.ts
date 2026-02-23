@@ -1,32 +1,44 @@
+import type { IFilesystemDrive, IFilesystemProxy, IFilesystemProxyConstructor } from "$interfaces/fs";
+import type { IWaveKernel } from "$interfaces/kernel";
+import type { ISystemDispatch } from "$interfaces/modules/dispatch";
+import type { IFilesystem } from "$interfaces/modules/fs";
 import { getKMod } from "$ts/env";
 import { KernelModule } from "$ts/kernel/module";
 import { sha256, sliceIntoChunks } from "$ts/util";
+import { arrayBufferToBlob } from "$ts/util/convert";
+import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import {
   type DirectoryReadReturn,
   type ExtendedStat,
   type FilesystemProgress,
   type FilesystemProgressCallback,
+  type FsProxyInfo,
   type RecursiveDirectoryReadReturn,
   type UploadReturn,
 } from "$types/fs";
-import type { ConstructedWaveKernel, SystemDispatchType } from "$types/kernel";
-import type { FilesystemDrive } from "../../../drives/drive";
-import { arrayBufferToBlob } from "../../../util/convert";
-import { getItemNameFromPath, getParentDirectory, join } from "../../../util/fs";
+import type { FilesystemDrive } from "./drives/generic";
+import { MountsFilesystemProxy } from "./proxies/mounts";
+import { SourceFilesystemProxy } from "./proxies/src";
 
-export class Filesystem extends KernelModule {
-  private dispatch: SystemDispatchType;
-  public drives: Record<string, FilesystemDrive> = {};
+export class Filesystem extends KernelModule implements IFilesystem {
+  private readonly PROXIES: IFilesystemProxyConstructor[] = [SourceFilesystemProxy, MountsFilesystemProxy];
+  private dispatch: ISystemDispatch;
+  public drives: Record<string, IFilesystemDrive> = {};
+  public loadedProxies: IFilesystemProxy[] = [];
 
   //#region LIFECYCLE
 
-  constructor(kernel: ConstructedWaveKernel, id: string) {
+  constructor(kernel: IWaveKernel, id: string) {
     super(kernel, id);
 
-    this.dispatch = getKMod<SystemDispatchType>("dispatch");
+    this.dispatch = getKMod<ISystemDispatch>("dispatch");
   }
 
-  async _init() {}
+  async _init() {
+    for (const proxy of this.PROXIES) {
+      this.loadedProxies.push(new proxy(proxy.PROXY_UUID));
+    }
+  }
 
   //#endregion
 
@@ -36,7 +48,7 @@ export class Filesystem extends KernelModule {
     return this.drives[id];
   }
 
-  async mountDrive<T = FilesystemDrive>(
+  async mountDrive<T = IFilesystemDrive>(
     id: string,
     supplier: typeof FilesystemDrive,
     letter?: string,
@@ -142,14 +154,60 @@ export class Filesystem extends KernelModule {
       throw new Error(`FilesystemValidateDriveLetter: Invalid drive letter or UUID "${letter}"`);
   }
 
-  async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
+  getProxyInfo(path: string, topLevel?: boolean): FsProxyInfo | undefined {
     this.isKmod();
 
+    const regex = /::\{(?<id>[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})\}/g;
+    const uuid = regex.exec(path)?.groups?.id;
+    if (!uuid) return undefined;
+
+    const [prefix, proxyPath] = path.split(`::{${uuid}}`);
+    const proxyHandler = this.loadedProxies.find((p) => p.uuid === uuid);
+    if (topLevel && proxyPath) return undefined;
+    if (!proxyHandler) throw new Error(`GetProxyInfo: Filesystem proxy with UUID ${uuid} does not exist.`);
+
+    this.Log(`getProxyInfo: ${path} -> ${uuid} (${proxyPath})`);
+
+    return {
+      prefix,
+      path: proxyPath,
+      proxyHandler,
+      proxyUuid: uuid,
+      displayName: proxyHandler.displayName ? `${proxyHandler.displayName} (proxy)` : undefined,
+    };
+  }
+
+  tryGetProxyInfo(path: string, topLevel?: boolean): FsProxyInfo | undefined {
+    try {
+      return this.getProxyInfo(path, topLevel);
+    } catch {
+      return undefined;
+    }
+  }
+
+  async tryHandleProxyReadDir(path: string): Promise<DirectoryReadReturn | undefined> {
+    const info = this.getProxyInfo(path);
+    if (!info) return undefined;
+
+    return await info.proxyHandler.readDir(info.path);
+  }
+
+  async tryHandleProxyReadFile(path: string): Promise<ArrayBuffer | undefined> {
+    const info = this.getProxyInfo(path);
+    if (!info) return undefined;
+
+    return await info.proxyHandler.readFile(info.path);
+  }
+
+  async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
+    this.isKmod();
     this.Log(`Reading directory '${path}'`);
-
     this.validatePath(path);
-    const drive = this.getDriveByPath(path);
 
+    const proxyRead = await this.tryHandleProxyReadDir(path);
+    if (proxyRead) return proxyRead;
+
+    const drive = this.getDriveByPath(path);
     drive.isCapable("readDir");
 
     return await drive.readDir(this.removeDriveLetter(path));
@@ -191,9 +249,11 @@ export class Filesystem extends KernelModule {
     onProgress ||= this.defaultProgress.bind(this);
 
     this.isKmod();
-
     this.Log(`Reading file '${path}'`);
     this.validatePath(path);
+
+    const proxyRead = await this.tryHandleProxyReadFile(path);
+    if (proxyRead) return proxyRead;
 
     const drive = this.getDriveByPath(path);
     path = this.removeDriveLetter(path);
@@ -255,71 +315,7 @@ export class Filesystem extends KernelModule {
     const drive = this.getDriveByPath(source);
 
     if (sourceId !== destinationId) {
-      const sourceDirectory = await this.isDirectory(source);
-
-      if (sourceDirectory) {
-        const tree = await this.tree(source);
-        const sourceName = getItemNameFromPath(source);
-        const target = destination.endsWith(sourceName) ? "" : sourceName;
-
-        if (!tree) return false;
-
-        let counter = 0;
-
-        onProgress?.({
-          max: sourceDirectory.totalFiles - sourceDirectory.totalFolders,
-          value: 0,
-          type: "items",
-        });
-
-        await this.createDirectory(join(destination, target));
-
-        const walk = async (data: RecursiveDirectoryReadReturn = tree, path = "") => {
-          for (const dir of data.dirs) {
-            await this.createDirectory(join(destination, target, path, dir.name));
-            const result = await walk(
-              {
-                dirs: dir.children.dirs,
-                files: dir.children.files,
-                shortcuts: {},
-              },
-              join(path, dir.name)
-            );
-
-            if (!result) return false;
-          }
-
-          for (const file of data.files) {
-            const sourcePath = join(source, path, file.name);
-            const destinationPath = join(destination, target, path, file.name);
-            const sourceContent = await this.readFile(sourcePath);
-            if (!sourceContent) return false;
-
-            const result = await this.writeFile(destinationPath, arrayBufferToBlob(sourceContent), undefined, false);
-
-            if (!result) return false;
-
-            counter++;
-
-            onProgress?.({
-              max: sourceDirectory.totalFiles - sourceDirectory.totalFolders,
-              value: counter,
-              type: "items",
-            });
-          }
-
-          return true;
-        };
-
-        return await walk();
-      } else {
-        const destinationIsDir = await this.isDirectory(destination);
-        const sourceName = getItemNameFromPath(source);
-        const sourceContent = await this.readFile(source);
-        if (!sourceContent) return false;
-
-        return await this.writeFile(destinationIsDir ? join(destination, sourceName) : destination, arrayBufferToBlob(sourceContent));
-      }
+      return await this.transferFileBetweenDrives(source, destination, onProgress, true);
     } else {
       drive.isCapable("copyItem");
 
@@ -354,80 +350,7 @@ export class Filesystem extends KernelModule {
     const drive = this.getDriveByPath(source);
 
     if (sourceId !== destinationId) {
-      const sourceDirectory = await this.isDirectory(source);
-
-      if (sourceDirectory) {
-        const tree = await this.tree(source);
-        const sourceName = getItemNameFromPath(source);
-        const target = destination.endsWith(sourceName) ? "" : sourceName;
-
-        if (!tree) return false;
-
-        let counter = 0;
-
-        onProgress?.({
-          max: sourceDirectory.totalFiles - sourceDirectory.totalFolders,
-          value: 0,
-          type: "items",
-        });
-
-        await this.createDirectory(join(destination, target));
-
-        const walk = async (data: RecursiveDirectoryReadReturn = tree, path = "") => {
-          for (const dir of data.dirs) {
-            await this.createDirectory(join(destination, target, path, dir.name));
-            const result = await walk(
-              {
-                dirs: dir.children.dirs,
-                files: dir.children.files,
-                shortcuts: {},
-              },
-              join(path, dir.name)
-            );
-
-            if (!result) return false;
-          }
-
-          for (const file of data.files) {
-            const sourcePath = join(source, path, file.name);
-            const destinationPath = join(destination, target, path, file.name);
-            const sourceContent = await this.readFile(sourcePath);
-            if (!sourceContent) return false;
-
-            const result = await this.writeFile(destinationPath, arrayBufferToBlob(sourceContent), undefined, false);
-
-            counter++;
-
-            if (!result) return false;
-
-            onProgress?.({
-              max: sourceDirectory.totalFiles - sourceDirectory.totalFolders,
-              value: counter,
-              type: "items",
-            });
-          }
-
-          await this.deleteItem(join(source, path));
-
-          return true;
-        };
-
-        const result = await walk();
-        await this.deleteItem(source);
-        return result;
-      } else {
-        const destinationIsDir = await this.isDirectory(destination);
-        const sourceName = getItemNameFromPath(source);
-        const sourceContent = await this.readFile(source);
-        if (!sourceContent) return false;
-
-        const result = await this.writeFile(
-          destinationIsDir ? join(destination, sourceName) : destination,
-          arrayBufferToBlob(sourceContent)
-        );
-        await this.deleteItem(source);
-        return result;
-      }
+      return await this.transferFileBetweenDrives(source, destination, onProgress, false);
     } else {
       drive.isCapable("moveItem");
 
@@ -442,6 +365,102 @@ export class Filesystem extends KernelModule {
         this.dispatch.dispatch("fs-flush-folder", destinationParent);
         if (sourceParent !== destinationParent) this.dispatch.dispatch("fs-flush-folder", sourceParent);
       }
+
+      return result;
+    }
+  }
+
+  private async transferFileBetweenDrives(
+    source: string,
+    destination: string,
+    onProgress?: FilesystemProgressCallback,
+    keepSource = false
+  ) {
+    const isDirectory = await this.isDirectory(source);
+
+    if (isDirectory) {
+      // We're transferring a folder
+
+      const sourceDirectory = await this.readDir(source);
+      if (!sourceDirectory) return false;
+
+      const tree = await this.tree(source);
+      if (!tree) return false;
+
+      const sourceName = getItemNameFromPath(source);
+      const target = destination.endsWith(sourceName) ? "" : sourceName;
+
+      let counter = 0;
+
+      onProgress?.({
+        max: sourceDirectory.totalFiles - sourceDirectory.totalFolders,
+        value: 0,
+        type: "items",
+      });
+
+      await this.createDirectory(join(destination, target), false);
+
+      const walk = async (data: RecursiveDirectoryReadReturn = tree, path = "") => {
+        for (const dir of data.dirs) {
+          await this.createDirectory(join(destination, target, path, dir.name), false);
+          const result = await walk(
+            {
+              dirs: dir.children.dirs,
+              files: dir.children.files,
+              shortcuts: {},
+            },
+            join(path, dir.name)
+          );
+
+          if (!result) return false;
+        }
+
+        for (const file of data.files) {
+          const sourcePath = join(source, path, file.name);
+          const destinationPath = join(destination, target, path, file.name);
+          const sourceContent = await this.readFile(sourcePath);
+          if (!sourceContent) return false;
+
+          const result = await this.writeFile(destinationPath, arrayBufferToBlob(sourceContent), undefined, false);
+
+          counter++;
+
+          if (!result) return false;
+
+          onProgress?.({
+            max: sourceDirectory.totalFiles - sourceDirectory.totalFolders,
+            value: counter,
+            type: "items",
+          });
+        }
+
+        await this.deleteItem(join(source, path), false);
+
+        return true;
+      };
+
+      const result = await walk();
+
+      if (!keepSource) await this.deleteItem(source, false);
+
+      return result;
+    } else {
+      // We're transferring a file
+
+      const destinationIsDir = await this.isDirectory(destination);
+      const sourceName = getItemNameFromPath(source);
+      const sourceContent = await this.readFile(source);
+
+      if (!sourceContent) return false;
+
+      const result = await this.writeFile(
+        destinationIsDir ? join(destination, sourceName) : destination,
+        arrayBufferToBlob(sourceContent),
+        undefined,
+        false
+      );
+
+      if (!keepSource) await this.deleteItem(source, false);
 
       return result;
     }
@@ -474,7 +493,7 @@ export class Filesystem extends KernelModule {
 
     this.isKmod();
 
-    await this.createDirectory(target);
+    if (!(await this.isDirectory(target))) await this.createDirectory(target);
 
     this.validatePath(target);
     const uploader = document.createElement("input");
@@ -587,21 +606,20 @@ export class Filesystem extends KernelModule {
     }
   }
 
-  // COMPAT: not using stat calls here because we don't
-  // know if the designated drive will have such capability
-
-  // TODO: Add support for both stat-based checks and a
-  // fallback for drives that can't stat
   async isDirectory(path: string) {
     try {
+      const drive = this.getDriveByPath(path);
+
+      drive.isCapable("stat");
+
+      return !!(await this.stat(path))?.isDirectory as false;
+    } catch {
       const contents = await this.readDir(path);
       const fileContents = await this.readFile(path);
 
       if (fileContents) return false;
 
-      return contents;
-    } catch {
-      return false;
+      return contents!;
     }
   }
 

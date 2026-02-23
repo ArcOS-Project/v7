@@ -1,9 +1,9 @@
+import type { ISharedDrive } from "$interfaces/drives/share";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Env, Fs, Stack } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
-import type { ShareManager } from "$ts/shares";
-import type { SharedDrive } from "$ts/shares/drive";
+import type { ShareManager } from "$ts/servicehost/services/ShareMgmt";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { SharedDriveType } from "$types/shares";
@@ -42,19 +42,24 @@ export class ShareListGuiRuntime extends AppProcess {
     this.joinedShares.set(await this.shares.getJoinedShares()); // Get joined shares from manager
     this.loading.set(false);
 
-    stop()
+    stop();
   }
 
   //#endregion
   //#region ACTIONS
 
   async manageShare() {
+    this.Log(`manageShare: ${this.selectedShare()}`);
+
     this.closeWindow(); // Close the listgui
     this.spawnOverlayApp("ShareMgmtGui", this.parentPid, this.selectedShare()); // Spawn the mgmtgui
   }
 
   async leaveShare() {
     const shareId = this.selectedShare(); // Get the selected share
+
+    this.Log(`leaveShare: ${shareId}`);
+
     MessageBox(
       {
         title: "Leave share?",
@@ -90,6 +95,8 @@ export class ShareListGuiRuntime extends AppProcess {
     const isMounted = this.selectedIsMounted(); // Is mounted?
     const shareId = this.selectedShare(); // Selected share
 
+    this.Log(`mountShare: ${shareId}`);
+
     if (isMounted) {
       MessageBox(
         {
@@ -122,7 +129,9 @@ export class ShareListGuiRuntime extends AppProcess {
 
   async openShare() {
     const shareId = this.selectedShare(); // Get the selected share
-    const drive = Fs.drives[shareId] as SharedDrive; // Get the mount
+    const drive = Fs.drives[shareId] as ISharedDrive; // Get the mount
+
+    this.Log(`openShare: ${shareId}`);
 
     if (!drive) return; // No mount? return
 

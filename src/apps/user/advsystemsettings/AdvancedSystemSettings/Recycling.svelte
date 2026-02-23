@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { MessageBox } from "$ts/dialog";
+  import { Daemon } from "$ts/daemon";
   import { Env } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
-  import { TrashCanService } from "$ts/server/user/trash";
+  import { TrashCanService } from "$ts/servicehost/services/TrashSvc";
   import { Plural } from "$ts/util";
+  import { MessageBox } from "$ts/util/dialog";
   import { onMount } from "svelte";
   import type { AdvSysSetRuntime } from "../runtime";
 
@@ -72,6 +72,6 @@
 </section>
 
 <section class="actions">
-  <button onclick={emptyBin}>Empty...</button>
+  <button onclick={emptyBin} disabled={!size}>Empty...</button>
   <button onclick={() => process.spawnApp("fileManager", +Env.get("shell_pid"), "::recycle_bin")}>Open bin</button>
 </section>

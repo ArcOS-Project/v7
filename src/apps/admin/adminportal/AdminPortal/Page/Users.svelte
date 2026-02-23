@@ -1,13 +1,13 @@
 <script lang="ts">
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import { Logo } from "$ts/branding";
   import { Store } from "$ts/writable";
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";
-  import type { AdminPortalRuntime } from "../../runtime";
   import type { UsersData, UsersPageFilters } from "../../types";
   import UserRow from "./Users/UserRow.svelte";
 
-  const { process, data, compact = false }: { process: AdminPortalRuntime; data: UsersData; compact?: boolean } = $props();
+  const { process, data, compact = false }: { process: IAdminPortalRuntime; data: UsersData; compact?: boolean } = $props();
   const { users } = data;
 
   const states: UsersPageFilters[] = ["all", "online", "regular", "admins", "disapproved"];

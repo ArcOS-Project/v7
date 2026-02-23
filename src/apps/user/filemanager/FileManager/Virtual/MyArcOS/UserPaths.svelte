@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { FileManagerRuntime } from "$apps/user/filemanager/runtime";
-  import { HiddenUserPaths, UserPaths } from "$ts/server/user/store";
+  import { HiddenUserPaths, UserPaths } from "$ts/user/store";
   import { onMount } from "svelte";
   import Item from "./UserPaths/Item.svelte";
 

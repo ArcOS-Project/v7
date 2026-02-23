@@ -1,7 +1,7 @@
 <script lang="ts">
+  import { Daemon } from "$ts/daemon";
   import { UploadIcon } from "$ts/images/general";
-  import { Daemon } from "$ts/server/user/daemon";
-  import { UserPaths } from "$ts/server/user/store";
+  import { UserPaths } from "$ts/user/store";
   import type { IconEditDialogRuntime } from "../runtime";
 
   const { process }: { process: IconEditDialogRuntime } = $props();
@@ -22,7 +22,7 @@
 <div class="edit type-app">
   <h2>File path:</h2>
   <div class="input">
-    <input type="text" readonly value={$values[$type]} />
+    <input type="text" readonly value={$values[$type]} placeholder="Choose a file path" />
     <button class="lucide icon-folder-open" onclick={browse} aria-label="Choose file" title="Choose file"></button>
   </div>
 </div>

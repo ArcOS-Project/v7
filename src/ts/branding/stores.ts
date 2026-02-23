@@ -5,6 +5,8 @@ import {
   RcLogo as rc,
   ReleaseLogo as release,
   UnstableLogo as unstable,
+  DevBranchLogo as devbranch,
+  BetaBranchLogo as betabranch,
 } from "$ts/images/branding";
 
 export const MODES: Record<string, string> = {
@@ -14,6 +16,8 @@ export const MODES: Record<string, string> = {
   rc,
   esr,
   nightly,
+  betabranch,
+  devbranch
 };
 
 export const ALIASED_MODES: Record<string, string> = {
@@ -23,4 +27,6 @@ export const ALIASED_MODES: Record<string, string> = {
   rc: "RcLogo",
   esr: "EsrLogo",
   nightly: "NightlyLogo",
+  devbranch: "DevBranchLogo",
+  betabranch: "BetaBranchLogo",
 };

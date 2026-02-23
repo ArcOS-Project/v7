@@ -1,0 +1,104 @@
+#AppPermissions > div.body {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#AppPermissions > div.body div.header img.icon {
+  height: 48px;
+}
+
+#AppPermissions > div.body div.header h1 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+#AppPermissions > div.body div.header p {
+  opacity: 0.5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#AppPermissions > div.body div.header p img {
+  height: 16px;
+}
+
+#AppPermissions > div.body div.permissions-list {
+  overflow: scroll;
+  border-radius: 15px;
+  border: var(--win-border);
+  padding: 15px;
+  height: 0;
+  flex-grow: 1;
+}
+#AppPermissions > div.body div.permissions-list div.permission-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+#AppPermissions > div.body div.permissions-list div.permission-row:last-child {
+  margin-bottom: 0;
+}
+
+#AppPermissions div.body div.permissions-list div.permission-row select.option {
+  width: 120px;
+}
+
+#AppPermissions > div.body div.permissions-list div.permission-row div.name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#AppPermissions > div.body div.permissions-list div.permission-row div.name span.lucide {
+  font-size: 16px;
+  color: var(--accent-lighter);
+}
+
+#AppPermissions > div.body div.actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  height: 50px;
+}
+
+#AppPermissions > div.body div.actions button {
+  height: 30px;
+  padding: 0 15px;
+}
+
+#AppPermissions > div.body div.permissions-list.empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#AppPermissions > div.body div.empty-notice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#AppPermissions > div.body div.empty-notice span.lucide {
+  font-size: 64px;
+  margin-bottom: 15px;
+  color: var(--accent-lighter);
+}
+
+#AppPermissions > div.body div.empty-notice h1 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+#AppPermissions > div.body div.empty-notice p {
+  opacity: 0.5;
+  max-width: 300px;
+  text-align: center;
+  margin-bottom: 15px;
+}

@@ -7,7 +7,7 @@ export const ArcShellApp: App = {
   metadata: {
     name: "ArcOS Shell",
     author: "Izaak Kuipers",
-    version: "4.1.0",
+    version: "4.1.1",
     icon: "ComponentIcon",
     appGroup: "coreApps",
   },
@@ -34,6 +34,7 @@ export const ArcShellApp: App = {
   id: "arcShell",
   core: true,
   hidden: true,
+  vital: true,
   acceleratorDescriptions: {
     "Ctrl+Q": "Close the currently focused application",
     "Alt+[": "Switch to the previous workspace",

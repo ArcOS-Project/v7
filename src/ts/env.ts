@@ -1,72 +1,48 @@
-import type {
-  ConstructedWaveKernel,
-  EnvironmentType,
-  FilesystemType,
-  ProcessHandlerType,
-  ServerManagerType,
-  SoundbusType,
-  SystemDispatchType,
-} from "$types/kernel";
-import { TryGetDaemon } from "./server/user/daemon";
-import type { TrashCanService } from "./server/user/trash";
-import { StateHandler } from "./state";
-import { Store } from "./writable";
+import type { IWaveKernel } from "$interfaces/kernel";
+import type { IBugHunt } from "$interfaces/modules/bughunt";
+import type { ISystemDispatch } from "$interfaces/modules/dispatch";
+import type { IEnvironment } from "$interfaces/modules/env";
+import type { IFilesystem } from "$interfaces/modules/fs";
+import type { IServerManager } from "$interfaces/modules/server";
+import type { ISoundbus } from "$interfaces/modules/soundbus";
+import type { IProcessHandler } from "$interfaces/modules/stack";
+import type { IStateHandler } from "$interfaces/state";
+import packageJson from "../../package.json";
 
-export const ArcOSVersion = "7.0.7";
+export const ArcOSVersion = packageJson.version as `${number}.${number}.${number}`;
 export const BETA = true;
 export const USERFS_UUID = "233D-CE74-18C0-0B08";
-export const IsMobile = Store<boolean>(false);
-export let Kernel: ConstructedWaveKernel;
-export let KernelServerUrl: string;
+export let Kernel: IWaveKernel;
 
-export let Fs: FilesystemType;
-export let Env: EnvironmentType;
-export let Stack: ProcessHandlerType;
-export let Server: ServerManagerType;
-export let SysDispatch: SystemDispatchType;
-export let SoundBus: SoundbusType;
-export let State: StateHandler;
+export let Fs: IFilesystem;
+export let Env: IEnvironment;
+export let Stack: IProcessHandler;
+export let Server: IServerManager;
+export let SysDispatch: ISystemDispatch;
+export let SoundBus: ISoundbus;
+export let State: IStateHandler;
+export let BugHunt: IBugHunt;
 
-export function SetCurrentKernel(kernel: ConstructedWaveKernel) {
+export function SetCurrentKernel(kernel: IWaveKernel) {
   if (Kernel) throw new Error("Tried to reassign CurrentKernel");
 
   Kernel = kernel;
 }
 
-export function SetCurrentStateHandler(state: StateHandler) {
+export function SetCurrentStateHandler(state: IStateHandler) {
   if (State) throw new Error("Tried to reassign StateHandler");
 
   State = state;
 }
 
 export function SetKernelExports() {
-  Fs = new Proxy(getKMod<FilesystemType>("fs"), {
-    get: (target, prop, receiver) => {
-      // recycle bin interceptor
-      if (prop === "deleteItem" && typeof target[prop] === "function") {
-        return async (path: string, dispatch?: boolean) => {
-          if (!path.startsWith("U:/")) {
-            return await target[prop].call(Fs, path, dispatch);
-          }
-
-          const daemon = TryGetDaemon();
-          const trash = daemon?.serviceHost?.getService("TrashSvc") as TrashCanService;
-
-          if (!trash) return await target[prop].call(Fs, path, dispatch);
-
-          return await trash.moveToTrash(path, dispatch);
-        };
-      }
-      return Reflect.get(target, prop, receiver);
-    },
-  });
-
-  Env = getKMod<EnvironmentType>("env");
-  Stack = getKMod<ProcessHandlerType>("stack");
-  Server = getKMod<ServerManagerType>("server");
-  KernelServerUrl = Server.url;
-  SysDispatch = getKMod<SystemDispatchType>("dispatch");
-  SoundBus = getKMod<SoundbusType>("soundbus");
+  Fs = getKMod<IFilesystem>("fs");
+  Env = getKMod<IEnvironment>("env");
+  Stack = getKMod<IProcessHandler>("stack");
+  Server = getKMod<IServerManager>("server");
+  SysDispatch = getKMod<ISystemDispatch>("dispatch");
+  SoundBus = getKMod<ISoundbus>("soundbus");
+  BugHunt = getKMod<IBugHunt>("bughunt");
 }
 
 export function getKMod<T = any>(id: string, dontCrash = false): T {

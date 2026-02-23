@@ -1,8 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Env } from "$ts/env";
 import { getAllImages } from "$ts/images";
-import { Daemon } from "$ts/server/user/daemon";
+import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -34,7 +34,7 @@ export class ShortcutPropertiesRuntime extends AppProcess {
   //#region ACTIONS
 
   async save() {
-    const result = await Daemon?.shortcuts?.createShortcut(this.shortcutData(), this.path!);
+    const result = await Daemon?.shortcuts?.createShortcut(this.shortcutData(), this.path!, true);
 
     if (result) {
       await this.closeWindow();
@@ -55,6 +55,7 @@ export class ShortcutPropertiesRuntime extends AppProcess {
   }
 
   async goTarget() {
+    this.Log(`goTarget`);
     const data = this.shortcutData();
 
     await this.closeWindow();
@@ -76,18 +77,18 @@ export class ShortcutPropertiesRuntime extends AppProcess {
   }
 
   async changeIcon() {
-    const data = this.shortcutData();
-    const icon = await Daemon?.helpers?.IconPicker({
-      defaultIcon: data.icon,
-      forWhat: data.name,
-    });
+    this.Log(`changeIcon`);
 
-    data.icon = icon || data.icon;
+    const data = this.shortcutData();
+
+    data.icon = await Daemon.helpers!.IconEditor(data.icon, data.icon, "Shortcut icon");
 
     this.shortcutData.set(data);
   }
 
   async pickTarget() {
+    this.Log(`pickTarget`);
+
     const data = this.shortcutData();
 
     const [path] = await Daemon!.files!.LoadSaveDialog({

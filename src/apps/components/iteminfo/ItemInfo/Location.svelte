@@ -2,11 +2,10 @@
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
-  import type { ReadableStore } from "$ts/writable";
-  import type { ItemInfoRuntime } from "../runtime";
+  import type { ReadableStore } from "$types/writable";
   import type { ItemInfo } from "../types";
 
-  const { info, process }: { info: ReadableStore<ItemInfo>; process: ItemInfoRuntime } = $props();
+  const { info }: { info: ReadableStore<ItemInfo> } = $props();
 </script>
 
 <InfoBlock>

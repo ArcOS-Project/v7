@@ -8,7 +8,7 @@
 #contextMenu div.context-menu div.sub-items {
   position: absolute;
   min-width: 180px;
-  min-height: 42px;
+  min-height: 40px;
   background-color: var(--glass-bg);
   backdrop-filter: blur(10px);
   color: var(--fg);

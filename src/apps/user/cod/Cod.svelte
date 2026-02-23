@@ -4,10 +4,10 @@
   import type { CodRuntime } from "./runtime";
 
   const { process }: { process: CodRuntime } = $props();
-  const { buffer, language, filename, original, mimetype, directoryName, mimeIcon, userPreferences, windowFullscreen } = process;
+  const { buffer, language, filename, original, mimetype, directoryName, mimeIcon, drive } = process;
 </script>
 
-<CodeEditor value={buffer} language={$language} />
+<CodeEditor value={buffer} language={$language} readonly={$drive?.READONLY} />
 <div class="status-bar">
   <div class="file">
     <img src={$mimeIcon} alt="" />
@@ -18,6 +18,10 @@
   <div class="language">{$language || "plain"}</div>
   {#if $directoryName}
     <div class="parent">in {$directoryName}</div>
+  {/if}
+
+  {#if $drive?.READONLY}
+    <div class="readonly">Read-only</div>
   {/if}
   {#if $buffer !== $original}
     <div class="modified">Modified</div>

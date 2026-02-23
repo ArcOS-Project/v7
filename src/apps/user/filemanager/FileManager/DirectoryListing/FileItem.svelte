@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { contextProps } from "$ts/context/actions.svelte";
+  import { Daemon } from "$ts/daemon";
   import { RelativeTimeMod } from "$ts/dayjs";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
   import { formatBytes, join } from "$ts/util/fs";
   import type { FileEntry } from "$types/fs";
   import type { ArcShortcut } from "$types/shortcut";
@@ -37,7 +37,7 @@
     mime = info?.friendlyName || "Unknown";
     icon = info?.icon || process.getIconCached("DefaultMimeIcon");
 
-    if (shortcut) shortcutIcon = process.getIconCached(shortcut.icon);
+    if (shortcut) shortcutIcon = await process.getIcon(shortcut.icon);
 
     if (info?.friendlyName === "Image file" && process.userPreferences().appPreferences.fileManager?.renderThumbnails)
       thumbnail = await Daemon?.files?.getThumbnailFor(thisPath);

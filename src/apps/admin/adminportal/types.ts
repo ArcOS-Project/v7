@@ -1,11 +1,12 @@
+import type { IAdminPortalRuntime } from "$interfaces/admin";
 import type { Activity, AuditLog, ExpandedToken, ServerLogItem, ServerStatistics, User } from "$types/admin";
 import type { BugReport, ReportStatistics } from "$types/bughunt";
 import type { FsAccess } from "$types/fs";
 import type { StoreItem } from "$types/package";
 import type { SharedDriveType } from "$types/shares";
 import type { ExpandedUserInfo, UserInfo } from "$types/user";
+import type { ReadableStore } from "$types/writable";
 import type { Component } from "svelte";
-import type { AdminPortalRuntime } from "./runtime";
 
 export interface AdminPortalPage {
   name: string;
@@ -17,7 +18,7 @@ export interface AdminPortalPage {
   // should go in here, rest is handled in the UI.
   scopes?: string[];
   parent?: string;
-  props?: (process: AdminPortalRuntime) => Promise<Record<string, any>> | Record<string, any>; // = any data to be gathered before rendering ('Loading <page>...' spinner)
+  props?: (process: IAdminPortalRuntime) => Promise<Record<string, any>> | Record<string, any>; // = any data to be gathered before rendering ('Loading <page>...' spinner)
 }
 
 export type AdminPortalPages = Map<string, AdminPortalPage>;
@@ -32,6 +33,10 @@ export type DashboardData = {
   logs: ServerLogItem[];
 };
 
+export type QueryData = {
+  users: ExpandedUserInfo[];
+};
+
 export type BugHuntData = {
   users: User[];
   reports: BugReport[];
@@ -40,6 +45,7 @@ export type BugHuntData = {
 
 export type ViewBugReportData = {
   report: BugReport;
+  quickView?: ReadableStore<string>;
 };
 
 export type UsersData = {
@@ -49,6 +55,8 @@ export type UsersData = {
 export type ViewUserData = {
   user: ExpandedUserInfo;
   reports: BugReport[];
+  osVersion: string;
+  migrations: Record<string, number>;
 };
 
 export type SharesData = {
@@ -82,6 +90,10 @@ export type TokensData = {
 
 export type ActivitiesData = {
   activities: Activity[];
+  users: ExpandedUserInfo[];
+};
+
+export type VersioningData = {
   users: ExpandedUserInfo[];
 };
 
@@ -138,4 +150,9 @@ export interface BugReportTpaFile {
   filePath: string;
   filename: string;
   size: number;
+}
+
+export interface VersioningNode {
+  os: string;
+  migrations: Record<string, number>;
 }

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Daemon } from "$ts/server/user/daemon";
-  import type { ReadableStore } from "$ts/writable";
+  import { Daemon } from "$ts/daemon";
   import { ElevationLevel } from "$types/elevation";
   import type { StoreItem, UpdateInfo } from "$types/package";
+  import type { ReadableStore } from "$types/writable";
   import type { AppStoreRuntime } from "../../runtime";
 
   const {

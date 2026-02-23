@@ -247,6 +247,68 @@
   opacity: 0.5;
 }
 
+#Messages > div.body div.container div.message-content div.thread-wrapper div.notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 10px;
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
+  background-color: var(--button-glass-bg);
+  padding-left: 15px;
+}
+
+#Messages > div.body div.container div.message-content div.thread-wrapper.expand {
+  background-color: var(--button-glass-bg);
+  border-radius: 10px;
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
+}
+
+#Messages > div.body div.container div.message-content div.thread-wrapper.expand div.notice {
+  background-color: transparent;
+  outline: none;
+}
+
+#Messages > div.body div.container div.message-content div.message-thread div.sub-thread {
+  margin-left: 9.5px;
+  padding-left: 9.5px;
+  border-left: var(--win-border);
+}
+
+#Messages > div.body div.container div.message-content div.message-thread button.thread-item {
+  width: 100%;
+  background-color: transparent;
+  outline: none;
+  text-align: left;
+  padding: 10px;
+}
+
+#Messages > div.body div.container div.message-content div.message-thread button.thread-item > p {
+  opacity: 0.5;
+  margin-top: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 600px;
+}
+
+#Messages > div.body div.container div.message-content div.message-thread button.thread-item:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#Messages > div.body div.container div.message-content div.message-thread button div.header {
+  flex-grow: 1;
+  margin-bottom: 0;
+  width: 100%;
+}
+
+#Messages > div.body div.container div.message-content div.message-thread button div.header > div:last-child {
+  width: 0;
+  flex-grow: 1;
+}
+
 #Messages > div.body div.container div.attachment-bar {
   height: 48px;
   padding: 8px 10px;

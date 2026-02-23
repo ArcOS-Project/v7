@@ -1,4 +1,4 @@
-import { Daemon } from "$ts/server/user/daemon";
+import { Daemon } from "$ts/daemon";
 import type { ContextMenuItem } from "$types/app";
 import type { FileManagerRuntime } from "../runtime";
 

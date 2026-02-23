@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
@@ -51,6 +51,9 @@
         onclick={() => ($userPreferences.shell.taskbar.clockDate = !$userPreferences.shell.taskbar.clockDate)}>Date</button
       >
     </Option>
+    <Option caption="Only show apps from the current workspace">
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.taskbar.openedAppsPerWorkspace} />
+    </Option>
   </Section>
   <Section caption="Action Center">
     <Option caption="Weather location">
@@ -68,6 +71,9 @@
   <Section caption="Start Menu">
     <Option caption="Disable app groups">
       <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.start.noGroups} />
+    </Option>
+    <Option caption="Actions">
+      <button onclick={() => process.showSlide("shell_startMenuActions")}>Customize...</button>
     </Option>
   </Section>
 </div>

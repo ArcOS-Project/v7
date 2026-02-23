@@ -1,5 +1,6 @@
 <script lang="ts">
   import safeModeBg from "$assets/bg/safemode.png";
+  import { Server } from "$ts/env";
   import type { AppComponentProps } from "$types/app";
   import ErrorMessage from "./ErrorMessage.svelte";
   import Loading from "./Loading.svelte";
@@ -54,3 +55,4 @@
     {`${$serverInfo?.loginBottomText} ${import.meta.env.DW_PREVIEW_DEP_BRANCH ? `-- ${import.meta.env.DW_PREVIEW_DEP_BRANCH}` : ""}`.trim()}
   </p>
 {/if}
+<p>{Server.url} -- {Server.authCode}</p>

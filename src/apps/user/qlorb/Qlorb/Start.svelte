@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { MessageBox } from "$ts/dialog";
+  import { MessageBox } from "$ts/util/dialog";
   import type { QlorbRuntime } from "../runtime";
   import Background from "./Main/Background.svelte";
   import Help from "./Start/Help.svelte";

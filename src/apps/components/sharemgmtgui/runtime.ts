@@ -1,8 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Fs } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
-import type { ShareManager } from "$ts/shares";
+import type { ShareManager } from "$ts/servicehost/services/ShareMgmt";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import type { SharedDriveType } from "$types/shares";
@@ -53,10 +53,13 @@ export class ShareMgmtGuiRuntime extends AppProcess {
   //#region ACTIONS
 
   async updateMembers() {
+    this.Log(`updateMembers`);
+
     this.members.set(await this.shares.getShareMembers(this.shareId));
   }
 
   async kickUser(id: string, username: string) {
+    this.Log(`kickUser: ${id} (${username})`);
     MessageBox(
       {
         title: `Kick '${username}'?`,
@@ -82,6 +85,8 @@ export class ShareMgmtGuiRuntime extends AppProcess {
   }
 
   async deleteShare() {
+    this.Log(`deleteShare`);
+
     MessageBox(
       {
         title: "Delete share?",

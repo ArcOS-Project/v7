@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { MessageBox } from "$ts/dialog";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
+  import { MessageBox } from "$ts/util/dialog";
   import type { SettingsRuntime } from "../../runtime";
 
   const { process }: { process: SettingsRuntime } = $props();

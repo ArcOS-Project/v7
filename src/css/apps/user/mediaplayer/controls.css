@@ -14,6 +14,10 @@
   outline: none;
 }
 
+#MediaPlayer div.media-controls button:not(.play) {
+  border-radius: 8px;
+}
+
 #MediaPlayer > div.body div.media-controls button.fullscreen-toggle {
   width: 30px;
   height: 30px;
@@ -32,12 +36,20 @@
   background-color: transparent;
 }
 
+#MediaPlayer > div.body div.media-controls button.loop-toggle {
+  width: 26px;
+  height: 26px;
+  font-size: 16px;
+  background-color: transparent;
+}
+
 #MediaPlayer > div.body div.media-controls button.stop {
   width: 26px;
   height: 26px;
   font-size: 14px;
   background-color: transparent;
 }
+
 #MediaPlayer > div.body div.media-controls button.previous,
 #MediaPlayer > div.body div.media-controls button.next {
   font-size: 16px;
@@ -47,6 +59,17 @@
 #MediaPlayer > div.body div.media-controls button.previous::before,
 #MediaPlayer > div.body div.media-controls button.next::before {
   height: 16px;
+}
+
+#MediaPlayer div.media-controls,
+#MediaPlayer > div.body div.media-controls {
+  button:hover:not(:disabled) {
+    background-color: var(--button-glass-bg);
+  }
+
+  button:active:not(:disabled) {
+    background-color: var(--button-glass-active-bg);
+  }
 }
 
 #MediaPlayer > div.body div.media-controls div.group {

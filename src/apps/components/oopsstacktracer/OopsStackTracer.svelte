@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import type { OopsStackTracerRuntime } from "./runtime";
 
   const { process }: { process: OopsStackTracerRuntime } = $props();

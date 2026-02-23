@@ -85,7 +85,7 @@ div.shell div.push-notification div.buttons {
 div.shell div.push-notification div.buttons button {
   flex-grow: 1;
   margin: 0;
-  background-color: var(--button-glass-bg);
+  background-color: var(--shell-component-bg);
   height: 32px;
   outline: var(--button-glass-bg) 1px solid;
   outline-offset: -1px;
@@ -94,6 +94,20 @@ div.shell div.push-notification div.buttons button {
 div.shell div.push-notification div.buttons button:hover {
   background-color: var(--button-glass-hover-bg);
 }
+
 div.shell div.push-notification div.buttons button:active {
   background-color: var(--button-glass-active-bg);
+}
+
+.theme-light div.shell div.push-notification div.buttons button:hover {
+  background-color: var(--shell-component-bg);
+  filter: brightness(0.95);
+}
+.theme-light div.shell div.push-notification div.buttons button:active {
+  background-color: var(--shell-component-bg) !important;
+  opacity: 0.5;
+}
+
+.theme-light div.shell div.push-notification::before {
+  opacity: 0.1;
 }

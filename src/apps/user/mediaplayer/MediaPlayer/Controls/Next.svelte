@@ -1,8 +1,9 @@
 <script lang="ts">
   import type { MediaPlayerRuntime } from "../../runtime";
+  import { LoopMode } from "../../types";
 
   const { process }: { process: MediaPlayerRuntime } = $props();
-  const { queueIndex, queue, Loaded, State } = process;
+  const { queueIndex, queue, Loaded, State, loopMode } = process;
 
   function next() {
     process.nextSong();
@@ -12,7 +13,7 @@
 <button
   class="lucide next icon-skip-forward"
   onclick={next}
-  disabled={$queueIndex >= $queue.length - 1 || !$Loaded || !$State.duration}
+  disabled={($queueIndex >= $queue.length - 1 && $loopMode != LoopMode.All) || !$Loaded || !$State.duration}
   aria-label="Next song"
   title="Next song"
 >

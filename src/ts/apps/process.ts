@@ -1,27 +1,32 @@
-import type { ShellRuntime } from "$apps/components/shell/runtime";
+import type { IAppProcess } from "$interfaces/app";
+import type { Constructs } from "$interfaces/common";
+import type { IUserDaemon } from "$interfaces/daemon";
+import type { IProcess } from "$interfaces/process";
+import type { IApplicationStorage } from "$interfaces/services/AppStorage";
+import type { IShellRuntime } from "$interfaces/shell";
+import { Daemon } from "$ts/daemon";
 import { ArcOSVersion, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { Permissions } from "$ts/permissions";
-import type { PermissionString } from "$ts/permissions/store";
-import { Daemon, TryGetDaemon, UserDaemon } from "$ts/server/user/daemon";
-import { DefaultUserPreferences } from "$ts/server/user/default";
+import { ProcessWithPermissions } from "$ts/permissions/process";
+import { DefaultUserPreferences } from "$ts/user/default";
+import { MessageBox } from "$ts/util/dialog";
 import type { AppKeyCombinations } from "$types/accelerator";
+import type { MaybePromise } from "$types/common";
 import { type ElevationData } from "$types/elevation";
 import { LogLevel } from "$types/logging";
 import type { RenderArgs } from "$types/process";
 import type { UserPreferences } from "$types/user";
+import type { ReadableStore } from "$types/writable";
 import type { Draggable } from "@neodrag/vanilla";
 import { mount } from "svelte";
-import { type App, type AppContextMenu, type AppProcessData, type ContextMenuItem } from "../../types/app";
-import { Process } from "../process/instance";
+import { type App, type AppContextMenu, type AppProcessData, type ContextMenuItem, type ToastMessage } from "../../types/app";
 import { Sleep } from "../sleep";
-import { Store, type ReadableStore } from "../writable";
+import { Store } from "../writable";
 import { AppRuntimeError } from "./error";
-import { ApplicationStorage } from "./storage";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
-export class AppProcess extends Process {
+export class AppProcess extends ProcessWithPermissions implements IAppProcess {
   crashReason = "";
   windowTitle = Store("");
   windowIcon = Store("");
@@ -29,8 +34,10 @@ export class AppProcess extends Process {
   componentMount: Record<string, any> = {};
   userPreferences: ReadableStore<UserPreferences> = Store<UserPreferences>(DefaultUserPreferences);
   username: string = "";
-  shell: ShellRuntime | undefined;
+  shell: IShellRuntime | undefined;
   overridePopulatable: boolean = false;
+  private toastTimeout?: NodeJS.Timeout;
+  public toastMessage = Store<ToastMessage | undefined>();
   public safeMode = false;
   protected overlayStore: Record<string, App> = {};
   protected elevations: Record<string, ElevationData> = {};
@@ -39,15 +46,9 @@ export class AppProcess extends Process {
   public readonly contextMenu: AppContextMenu = {};
   public altMenu = Store<ContextMenuItem[]>([]);
   public windowFullscreen = Store<boolean>(false);
-  draggable: Draggable | undefined;
+  public blinking = Store<boolean>(false);
 
-  get HAS_SUDO() {
-    try {
-      return Permissions.hasSudo(this);
-    } catch {
-      return false;
-    }
-  }
+  draggable: Draggable | undefined;
 
   //#region LIFECYCLE
 
@@ -67,7 +68,7 @@ export class AppProcess extends Process {
     this.shell = Stack.getProcess(+Env.get("shell_pid"));
 
     const desktopProps = State?.stateProps["desktop"];
-    const daemon: UserDaemon | undefined = desktopProps?.userDaemon || TryGetDaemon();
+    const daemon: IUserDaemon | undefined = desktopProps?.userDaemon || Daemon;
 
     if (daemon) {
       this.userPreferences = daemon.preferences;
@@ -76,7 +77,6 @@ export class AppProcess extends Process {
     }
 
     this.windowIcon.set(Daemon?.icons?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
-    this.startAcceleratorListener();
 
     SysDispatch.subscribe("window-unfullscreen", ([pid]) => {
       if (this.pid === pid) this.windowFullscreen.set(false);
@@ -102,6 +102,21 @@ export class AppProcess extends Process {
     return true;
   }
 
+  async ShowToast(toast: ToastMessage, durationMs: number = 3000) {
+    await this.HideToast();
+
+    this.toastMessage.set(toast);
+    this.toastTimeout = setTimeout(() => {
+      this.toastMessage.set(undefined);
+    }, durationMs);
+  }
+
+  async HideToast() {
+    this.toastMessage.set(undefined);
+    clearTimeout(this.toastTimeout);
+    await Sleep(200); // Delay to wait for the hide animation
+  }
+
   async closeWindow(kill = true) {
     this.Log(`Closing window ${this.pid}`);
 
@@ -113,6 +128,8 @@ export class AppProcess extends Process {
       this.Log(`Can't close`);
       return false;
     }
+
+    this.STATE = "stopping";
 
     this.shell?.trayHost?.disposeProcessTrayIcons?.(this.pid);
 
@@ -145,11 +162,14 @@ export class AppProcess extends Process {
     return true;
   }
 
-  render(args: RenderArgs): any {
+  render(args: RenderArgs): MaybePromise<any> {
     /** */
   }
 
   async __render__(body: HTMLDivElement) {
+    this.STATE = "rendering";
+    this.startAcceleratorListener();
+
     if (this.userPreferences().disabledApps.includes(this.app.id)) {
       if (this.safeMode) {
         Daemon?.notifications?.sendNotification({
@@ -189,7 +209,11 @@ export class AppProcess extends Process {
         },
       });
 
-    this.render(this.renderArgs);
+    const result = this.render(this.renderArgs);
+
+    // Below lines make sure render methods can be either asynchronous or synchronous.
+    if (result instanceof Promise) result.then(() => (this.STATE = "running"));
+    else this.STATE = "running";
   }
 
   //#endregion
@@ -208,13 +232,18 @@ export class AppProcess extends Process {
     }
   }
 
-  getSingleton() {
+  getSingleton(): this[] {
     const { renderer } = Stack;
 
-    return renderer?.getAppInstances(this.app.data.id, this.pid) || [];
+    return (renderer?.getAppInstances(this.app.data.id, this.pid) || []) as this[];
   }
 
-  async closeIfSecondInstance() {
+  async closeIfSecondInstance(): Promise<this | undefined> {
+    if (this.STATE !== "rendering") {
+      throw new AppRuntimeError(
+        "Violation: only call closeIfSecondInstance in IAppProcess.render so that it doesn't hang the stack."
+      );
+    }
     this.Log("Closing if second instance");
 
     const instances = this.getSingleton();
@@ -231,12 +260,20 @@ export class AppProcess extends Process {
   }
 
   getWindow() {
+    if (this.STATE === "starting") {
+      throw new AppRuntimeError("Violation: Called getWindow during process startup: there's no window at this point.");
+    }
+
     const window = document.querySelector(`div.window[data-pid="${this.pid}"]`);
 
     return (window as HTMLDivElement) || undefined;
   }
 
   getBody() {
+    if (this.STATE === "starting") {
+      throw new AppRuntimeError("Violation: Called getBody during process startup: there's no window body at this point.");
+    }
+
     const body = document.querySelector(`div.window[data-pid="${this.pid}"] > div.body`);
 
     return (body as HTMLDivElement) || undefined;
@@ -330,8 +367,8 @@ export class AppProcess extends Process {
       return false;
     }
 
-    const proc = await Stack.spawn<AppProcess>(
-      metadata.assets.runtime,
+    const proc = await Stack.spawn<IAppProcess>(
+      metadata.assets.runtime as Constructs<IAppProcess>,
       undefined,
       Daemon?.userInfo?._id,
       this.pid,
@@ -347,11 +384,11 @@ export class AppProcess extends Process {
     return !!proc;
   }
 
-  async spawnApp<T = AppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
+  async spawnApp<T extends IProcess = IAppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
     return await Daemon?.spawn?.spawnApp<T>(id, parentPid ?? this.parentPid, ...args);
   }
 
-  async spawnOverlayApp<T = AppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
+  async spawnOverlayApp<T extends IProcess = IAppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
     return await Daemon?.spawn?.spawnOverlay<T>(id, parentPid ?? this.parentPid, ...args);
   }
 
@@ -362,22 +399,24 @@ export class AppProcess extends Process {
 
   notImplemented(what?: string) {
     this.Log(`Not implemented: ${what || "<unknown>"}`);
-    // Manually invoking spawnOverlay method on daemon to work around AppProcess <> MessageBox circular import
-    Daemon?.spawn?.spawnOverlay("messageBox", this.pid, {
-      title: "Not implemented",
-      message: `${
-        what || "This feature"
-      } isn't implemented yet ¯\\_(ツ)_/¯<br><br>Encountering this in a (recent) <b>release</b> build of ArcOS? Then I forgot to make something. Please let me know. Do that with this information:<br><code class='block'>ArcOS v${ArcOSVersion}-${ArcMode()} (${ArcBuild()}) - ${
-        location.hostname
-      }</code>`,
-      buttons: [{ caption: "Sad :(", action: () => {}, suggested: true }],
-      image: "BugReportIcon",
-      sound: "arcos.dialog.warning",
-    });
+    MessageBox(
+      {
+        title: "Not implemented",
+        message: `${
+          what || "This feature"
+        } isn't implemented yet ¯\\_(ツ)_/¯<br><br>Encountering this in a (recent) <b>release</b> build of ArcOS? Then I forgot to make something. Please let me know. Do that with this information:<br><code class='block'>ArcOS v${ArcOSVersion}-${ArcMode()} (${ArcBuild()}) - ${
+          location.hostname
+        }</code>`,
+        buttons: [{ caption: "Sad :(", action: () => {}, suggested: true }],
+        image: "BugReportIcon",
+        sound: "arcos.dialog.warning",
+      },
+      this.pid
+    );
   }
 
   appStore() {
-    return Daemon?.serviceHost?.getService("AppStorage") as ApplicationStorage;
+    return Daemon?.serviceHost?.getService("AppStorage") as IApplicationStorage;
   }
 
   async getIcon(id: string): Promise<string> {
@@ -385,113 +424,14 @@ export class AppProcess extends Process {
   }
 
   getIconCached(id: string): string {
-    return Daemon?.icons?.getIconCached(id)!;
+    return Daemon?.icons?.getIconCached(id)! || id;
   }
 
   getIconStore(id: string): ReadableStore<string> {
     return Daemon?.icons?.getIconStore(id)!;
   }
 
-  async requestPermission(permission: PermissionString) {
-    return await Permissions.requestPermission(this, permission);
+  blink() {
+    this.blinking.set(!this.blinking());
   }
-
-  //#region USER CONTEXTS GETTERS
-
-  get accountContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_ACCOUNT", Daemon?.account);
-  }
-
-  get activityContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_ACTIVITY", Daemon?.activity);
-  }
-
-  get applicationsContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_APPLICATIONS", Daemon?.apps);
-  }
-
-  get appregistrationContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_APPREGISTRATION", Daemon?.appreg);
-  }
-
-  get apprendererContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_APPRENDERER", Daemon?.renderer);
-  }
-
-  get checksContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_CHECKS", Daemon?.checks);
-  }
-
-  get elevationContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_ELEVATION", Daemon?.elevation);
-  }
-
-  get filesystemContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_FILESYSTEM", Daemon?.files);
-  }
-
-  get helpersContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_HELPERS", Daemon?.helpers);
-  }
-
-  get iconsContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_ICONS", Daemon?.icons);
-  }
-
-  get initContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_INIT", Daemon?.init);
-  }
-
-  get migrationsContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_MIGRATIONS", Daemon?.migrations);
-  }
-
-  get notificationsContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_NOTIFICATIONS", Daemon?.notifications);
-  }
-
-  get powerContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_POWER", Daemon?.power);
-  }
-
-  get preferencesContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_PREFERENCES", Daemon?.preferences);
-  }
-
-  get shortcutsContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_SHORTCUTS", Daemon?.shortcuts);
-  }
-
-  get spawnContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_SPAWN", Daemon?.spawn);
-  }
-
-  get themesContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_THEMES", Daemon?.themes);
-  }
-
-  get versionContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_VERSION", Daemon?.version);
-  }
-
-  get wallpaperContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_WALLPAPER", Daemon?.wallpaper);
-  }
-
-  get workspacesContext() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_USER_CONTEXT_WORKSPACES", Daemon?.workspaces);
-  }
-
-  //#endregion USER CONTEXTS GETTERS
-  //#region KERNEL MODULE GETTERS
-
-  get env() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_KMOD_ENV", Env);
-  }
-
-  get appRenderer() {
-    return Permissions?.hasPermissionExplicit(this, "PERMISSION_APPRENDERER", Stack.renderer);
-  }
-
-  //#endregion
 }

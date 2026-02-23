@@ -1,10 +1,10 @@
 <script lang="ts">
+  import type { IAppProcess } from "$interfaces/app";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import type { AppProcess } from "$ts/apps/process";
+  import { Daemon } from "$ts/daemon";
   import { ProfilePictures } from "$ts/images/pfp";
-  import { Daemon } from "$ts/server/user/daemon";
 
-  const { process }: { process: AppProcess } = $props();
+  const { process }: { process: IAppProcess } = $props();
   const { userPreferences } = process;
 </script>
 

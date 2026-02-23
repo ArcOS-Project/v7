@@ -1,3 +1,4 @@
+import type { IFilesystemProxy } from "$interfaces/fs";
 import type { App } from "./app";
 import type { ArcShortcut, ShortcutStore } from "./shortcut";
 import type { PublicUserInfo } from "./user";
@@ -63,6 +64,14 @@ export interface UserQuota extends Record<string, number | boolean | undefined> 
   percentage: number;
   unknown?: boolean;
 }
+
+export const DefaultUserQuota: UserQuota = {
+  used: 0,
+  max: 100,
+  free: 100,
+  percentage: 0,
+  unknown: true,
+};
 
 export interface SingleUploadReturn {
   path: string;
@@ -155,4 +164,11 @@ export interface FsModifierOptions {
 export interface ExtendedStat extends FilesystemStat {
   modifiers?: SummarizedFsModifiers;
 }
-// uhhh yes?
+
+export interface FsProxyInfo {
+  prefix: string;
+  proxyUuid: string;
+  proxyHandler: IFilesystemProxy;
+  path: string;
+  displayName?: string;
+}

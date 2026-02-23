@@ -1,5 +1,5 @@
 import "$css/apps/core/loginapp.css";
-import type { App } from "../../../types/app";
+import type { App } from "$types/app";
 import Login from "./LoginApp.svelte";
 import { LoginAppRuntime } from "./runtime";
 

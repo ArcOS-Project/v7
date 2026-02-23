@@ -1,4 +1,4 @@
-import type { ArcTerminal } from "..";
+import type { IArcTerminal } from "$interfaces/terminal";
 import { TerminalProcess } from "../process";
 import { BRBLACK, RESET } from "../store";
 
@@ -16,7 +16,7 @@ export class HistoryCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal): Promise<number> {
+  protected async main(term: IArcTerminal): Promise<number> {
     const pref = term.daemon?.preferences();
 
     if (!pref) return 1;

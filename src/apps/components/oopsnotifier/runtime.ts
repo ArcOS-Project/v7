@@ -1,7 +1,8 @@
+import type { IAppProcess } from "$interfaces/app";
 import { AppProcess } from "$ts/apps/process";
-import { ApplicationStorage } from "$ts/apps/storage";
+import { Daemon } from "$ts/daemon";
 import { Env, SoundBus } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
+import { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
 import { ErrorUtils } from "$ts/util/error";
 import type { App, AppProcessData } from "$types/app";
 import type { ParsedStackFrame } from "$types/error";
@@ -9,7 +10,7 @@ import type { ParsedStackFrame } from "$types/error";
 export class OopsNotifierRuntime extends AppProcess {
   data: App;
   exception: Error | PromiseRejectionEvent;
-  process?: AppProcess;
+  process?: IAppProcess;
   installed = false;
   parseFailed = false;
   stackFrames: ParsedStackFrame[] = [];
@@ -22,7 +23,7 @@ export class OopsNotifierRuntime extends AppProcess {
     app: AppProcessData,
     data: App,
     exception: Error | PromiseRejectionEvent,
-    process?: AppProcess
+    process?: IAppProcess
   ) {
     super(pid, parentPid, app);
 
@@ -57,6 +58,8 @@ export class OopsNotifierRuntime extends AppProcess {
   //#region ACTIONS
 
   async details() {
+    this.Log(`Invoking the power of OopsStackTracer to bestow upon the user the details of the error that lies within`);
+
     const proc = await Daemon?.spawn?.spawnOverlay(
       "OopsStackTracer",
       +Env.get("shell_pid"),
@@ -70,6 +73,8 @@ export class OopsNotifierRuntime extends AppProcess {
   }
 
   async reopen() {
+    this.Log(`Reopening crashed application!`);
+
     if (!this.installed) return;
 
     await this.spawnApp(this.data.id, this.process?.parentPid || +Env.get("shell_pid"));

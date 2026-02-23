@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { StoreItemIcon } from "$ts/distrib/util";
-  import { UUID } from "$ts/uuid";
+  import { StoreItemIcon } from "$ts/util/distrib";
+  import { UUID } from "$ts/util/uuid";
   import type { PartialStoreItem } from "$types/package";
   import type { AppStoreRuntime } from "../runtime";
   import PackageInstallAction from "./PackageInstallAction.svelte";

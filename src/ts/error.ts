@@ -1,8 +1,8 @@
-import type { ProcessHandlerType } from "$types/kernel";
+import type { IProcessHandler } from "$interfaces/modules/stack";
 import * as stackTraceParser from "stacktrace-parser";
 import { __Console__ } from "./console";
 import { Crash } from "./crash";
-import { Kernel, Stack, SysDispatch } from "./env";
+import { Kernel, Stack } from "./env";
 import { Log } from "./logging";
 
 export function handleGlobalErrors() {
@@ -63,27 +63,23 @@ export function interceptTpaErrors(stack: string, e: Error): boolean {
   //
   const isTpa = !!parsed[0]?.file?.includes(`localhost:3128`) || !!parsed[0]?.file?.includes(`/tpa/`);
   const isFpa = parsed[0]?.file && FPA_TEST_REGEXP.test(parsed[0].file);
-  //
 
-  if (!renderer?.lastInteract) return false;
+  if (renderer?.lastInteract) {
+    if (isTpa && parsed[0]?.file?.includes(`/${renderer.lastInteract.app.id}@`)) {
+      Log("interceptTpaErrors", `Not crashing for ${e instanceof PromiseRejectionEvent ? e.reason : e}: source is a TPA`);
+      handler.BUSY = "";
+      renderer.notifyCrash(renderer.lastInteract.app.data, e, renderer.lastInteract);
+      handler.kill(renderer.lastInteract.pid);
+      renderer.lastInteract = undefined;
+    } else if (!isTpa && isFpa) {
+      const parsedAppId = parsed[0]?.file?.match(FPA_TEST_REGEXP)?.groups?.appId;
 
-  const prevent = () => {
-    handler.BUSY = false;
-    SysDispatch.dispatch("stack-not-busy");
-    renderer.notifyCrash(renderer!.lastInteract!.app.data, e, renderer.lastInteract);
-    handler.kill(renderer!.lastInteract!.pid);
-    renderer.lastInteract = undefined;
-  };
-
-  if (isTpa && parsed[0]?.file?.includes(`/${renderer.lastInteract.app.id}@`)) {
-    Log("interceptTpaErrors", `Not crashing for ${e instanceof PromiseRejectionEvent ? e.reason : e}: source is a TPA`);
-
-    prevent();
-  } else if (!isTpa && isFpa) {
-    const parsedAppId = parsed[0]?.file?.match(FPA_TEST_REGEXP)?.groups?.appId;
-
-    if (parsedAppId) {
-      prevent();
+      if (parsedAppId) {
+        handler.BUSY = "";
+        renderer.notifyCrash(renderer.lastInteract.app.data, e, renderer.lastInteract);
+        handler.kill(renderer.lastInteract.pid);
+        renderer.lastInteract = undefined;
+      }
     }
   }
 

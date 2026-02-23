@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import { globalAdminActions } from "$apps/admin/adminportal/store";
-  import { MessageBox } from "$ts/dialog";
-  import { scopeToScopeCaption } from "$ts/server/admin/util";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import { scopeToScopeCaption } from "$ts/util/admin";
+  import { MessageBox } from "$ts/util/dialog";
 
   const {
     append,
@@ -12,7 +12,7 @@
   }: {
     append: (scopes: string[]) => void;
     canAccess: (...scopes: string[]) => boolean;
-    process: AdminPortalRuntime;
+    process: IAdminPortalRuntime;
     scopeList: string[];
   } = $props();
 

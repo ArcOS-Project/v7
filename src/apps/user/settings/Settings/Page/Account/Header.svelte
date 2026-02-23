@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { SettingsRuntime } from "$apps/user/settings/runtime";
+  import type { IUserDaemon } from "$interfaces/daemon";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import type { UserDaemon } from "$ts/server/user/daemon";
   import type { UserInfo } from "$types/user";
   import AccountName from "./Header/AccountName.svelte";
 
@@ -12,7 +12,7 @@
   }: {
     process: SettingsRuntime;
     userInfo: UserInfo;
-    userDaemon: UserDaemon;
+    userDaemon: IUserDaemon;
   } = $props();
 </script>
 

@@ -1,9 +1,9 @@
-import { MessageBox } from "$ts/dialog";
+import type { ISharedDrive } from "$interfaces/drives/share";
+import { Daemon } from "$ts/daemon";
 import { Env, Fs } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
-import { ShareManager } from "$ts/shares";
-import type { SharedDrive } from "$ts/shares/drive";
+import { ShareManager } from "$ts/servicehost/services/ShareMgmt";
+import { UserPaths } from "$ts/user/store";
+import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import type { AppContextMenu } from "$types/app";
 import type { FileEntry, FolderEntry } from "$types/fs";
@@ -52,12 +52,12 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         },
         icon: "x",
         disabled: (drive: QuotedDrive) =>
-          drive.data.FIXED || (drive.data as SharedDrive).shareInfo.userId === Daemon?.userInfo?._id,
+          drive.data.FIXED || (drive.data as ISharedDrive).shareInfo.userId === Daemon?.userInfo?._id,
       },
       {
         caption: "Leave share",
         action: (drive: QuotedDrive) => {
-          const share = drive.data as SharedDrive;
+          const share = drive.data as ISharedDrive;
 
           MessageBox(
             {
@@ -92,13 +92,13 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         },
         icon: "log-out",
         disabled: (drive: QuotedDrive) =>
-          (drive.data as SharedDrive).shareInfo.userId === Daemon?.userInfo?._id ||
+          (drive.data as ISharedDrive).shareInfo.userId === Daemon?.userInfo?._id ||
           runtime.shareAccessIsAdministrative(drive.data),
       },
       { sep: true },
       {
         caption: "Manage share...",
-        action: (drive: QuotedDrive) => runtime.spawnOverlayApp("ShareMgmtGui", runtime.pid, (drive.data as SharedDrive).shareId),
+        action: (drive: QuotedDrive) => runtime.spawnOverlayApp("ShareMgmtGui", runtime.pid, (drive.data as ISharedDrive).shareId),
         icon: "wrench",
       },
       {
@@ -114,26 +114,42 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         icon: "eye",
         subItems: [
           {
-            caption: "Compact grid",
-            icon: "columns-3",
-            action: () => {
+            caption: "Thumbnail view",
+            isActive: () => !!runtime.userPreferences().appPreferences.fileManager?.thumbnails,
+            icon: "file-image",
+            disabled: () => !!runtime.virtual(),
+            action: () =>
               runtime.userPreferences.update((v) => {
-                v.appPreferences.fileManager!.grid = true;
+                v.appPreferences.fileManager.thumbnails = true;
+                v.appPreferences.fileManager.grid = false;
                 return v;
-              });
-            },
-            isActive: () => !!runtime.userPreferences().appPreferences.fileManager?.grid,
+              }),
           },
           {
-            caption: "List view",
-            icon: "list",
-            action: () => {
+            caption: "Grid view",
+            isActive: () => !!runtime.userPreferences().appPreferences.fileManager?.grid,
+            icon: "columns-3",
+            disabled: () => !!runtime.virtual(),
+            action: () =>
               runtime.userPreferences.update((v) => {
-                v.appPreferences.fileManager!.grid = false;
+                v.appPreferences.fileManager.thumbnails = false;
+                v.appPreferences.fileManager.grid = true;
                 return v;
-              });
-            },
-            isActive: () => !runtime.userPreferences().appPreferences.fileManager?.grid,
+              }),
+          },
+          {
+            caption: "Thumbnail view",
+            isActive: () =>
+              !runtime.userPreferences().appPreferences.fileManager?.grid &&
+              !runtime.userPreferences().appPreferences.fileManager?.thumbnails,
+            icon: "list",
+            disabled: () => !!runtime.virtual(),
+            action: () =>
+              runtime.userPreferences.update((v) => {
+                v.appPreferences.fileManager.thumbnails = false;
+                v.appPreferences.fileManager.grid = false;
+                return v;
+              }),
           },
         ],
       },

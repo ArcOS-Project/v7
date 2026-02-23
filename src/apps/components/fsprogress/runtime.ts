@@ -1,8 +1,9 @@
 import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
-import { Store, type ReadableStore } from "$ts/writable";
+import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { RenderArgs } from "$types/process";
+import type { ReadableStore } from "$types/writable";
 import type { FsProgressOperation } from "./types";
 
 export class FsProgressRuntime extends AppProcess {
@@ -18,12 +19,12 @@ export class FsProgressRuntime extends AppProcess {
     this.setSource(__SOURCE__);
   }
 
-  render({ store }: RenderArgs) {
+  render({ store }: { store: ReadableStore<FsProgressOperation> }) {
     if (!store.subscribe) return this.closeWindow();
 
     let errorNotified = false; // true if errors have been broadcasted
 
-    (store as ReadableStore<FsProgressOperation>).subscribe(async (v) => {
+    store.subscribe(async (v) => {
       this.Progress.set(v);
       this.windowTitle.set(v.caption);
       this.windowIcon.set(v.icon);

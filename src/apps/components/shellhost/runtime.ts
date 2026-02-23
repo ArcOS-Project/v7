@@ -1,11 +1,13 @@
+import type { IProcess } from "$interfaces/process";
+import type { IShellRuntime, ITrayHostRuntime } from "$interfaces/shell";
+import { Daemon } from "$ts/daemon";
 import { Env } from "$ts/env";
-import { Process } from "$ts/process/instance";
-import { Daemon } from "$ts/server/user/daemon";
+import { ErrorIcon } from "$ts/images/dialog";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { Sleep } from "$ts/sleep";
+import { MessageBox } from "$ts/util/dialog";
 import type { AppProcessData } from "$types/app";
 import type { UserPreferencesStore } from "$types/user";
-import type { ShellRuntime } from "../shell/runtime";
-import type { TrayHostRuntime } from "../trayhost/runtime";
 
 export class ShellHostRuntime extends Process {
   private autoloadApps: string[];
@@ -29,19 +31,35 @@ export class ShellHostRuntime extends Process {
     // Autoload completed? Then stop the process immediately
     if (Daemon?.autoLoadComplete) return false;
 
-    const procs: Record<string, Process> = {}; // Object of executed shell components
-
-    const proc = await Daemon?.spawn?._spawnApp<ShellRuntime>(
+    Env.set("SHELLHOST_PID", this.pid);
+    
+    const procs: Record<string, IProcess> = {}; // Object of executed shell components
+    const proc = await Daemon?.spawn?._spawnApp<IShellRuntime>(
       this.userPreferences().globalSettings.shellExec,
       undefined,
       this.pid
     ); // Let's first spawn the shell exec from globalSettings
 
+    // BUG 695905e6e49c74867e992655
+    if (!proc) {
+      MessageBox(
+        {
+          title: "Shell failed",
+          message: "An error occurred while trying to spawn the shell. Please try again by restarting.",
+          buttons: [{ caption: "Restart", action: () => Daemon.power?.restart(), suggested: true }],
+          sound: "arcos.dialog.error",
+          image: ErrorIcon,
+        },
+        Daemon.pid
+      );
+      return;
+    }
+
     for (const id of this.shellComponents) {
       procs[id] = (await Daemon!.spawn?._spawnApp(id, undefined, this.pid))!; // Then spawn each shell component
     }
 
-    const trayHost = procs.TrayHostProc as TrayHostRuntime; // Get the tray host
+    const trayHost = procs.TrayHostProc as ITrayHostRuntime; // Get the tray host
 
     await trayHost?.createTrayIcon(this.pid, "shellHost_loading", {
       icon: proc!.getIconCached("SpinnerIcon"),

@@ -2,7 +2,11 @@
   import type { ArcTermColorsRuntime } from "../runtime";
   import type { ArcTermColorPreset } from "../types";
 
-  let { preset, selected = $bindable(), process }: { preset: ArcTermColorPreset; selected?: ArcTermColorPreset; process: ArcTermColorsRuntime } = $props();
+  let {
+    preset,
+    selected = $bindable(),
+    process,
+  }: { preset: ArcTermColorPreset; selected?: ArcTermColorPreset; process: ArcTermColorsRuntime } = $props();
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->

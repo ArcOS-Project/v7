@@ -1,12 +1,14 @@
+import type { IUserDaemon } from "$interfaces/daemon";
+import type { IArcTerminal } from "$interfaces/terminal";
+import { UserDaemon } from "$ts/daemon";
 import { ArcOSVersion, Env, Stack, SysDispatch } from "$ts/env";
-import { toForm } from "$ts/form";
+import { Backend } from "$ts/kernel/mods/server/axios";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { Process } from "$ts/process/instance";
-import { Backend } from "$ts/server/axios";
-import { LoginUser } from "$ts/server/user/auth";
-import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
+import { LoginUser } from "$ts/user/auth";
+import { toForm } from "$ts/util/form";
 import type { UserInfo } from "$types/user";
 import { ClipboardAddon } from "@xterm/addon-clipboard";
 import { FitAddon } from "@xterm/addon-fit";
@@ -16,15 +18,16 @@ import { WebLinksAddon } from "@xterm/addon-web-links";
 import Cookies from "js-cookie";
 import { Terminal } from "xterm";
 import { ArcTerminal } from "..";
+import type { MigrationService } from "../../servicehost/services/MigrationSvc";
 import { Readline } from "../readline/readline";
 import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../store";
 
 export class TerminalMode extends Process {
-  userDaemon?: UserDaemon;
+  userDaemon?: IUserDaemon;
   target: HTMLDivElement;
   term?: Terminal;
   rl?: Readline;
-  arcTerm?: ArcTerminal;
+  arcTerm?: IArcTerminal;
 
   //#region LIFECYCLE
 
@@ -39,7 +42,6 @@ export class TerminalMode extends Process {
 
   async start() {
     await this.initializeTerminal();
-
     if (await this.loadToken()) return;
 
     return await this.loginPrompt();
@@ -104,19 +106,20 @@ export class TerminalMode extends Process {
 
   async startDaemon(token: string, username: string): Promise<boolean> {
     try {
-      const userDaemon = await Stack.spawn<UserDaemon>(UserDaemon, undefined, "SYSTEM", 1, token, username);
+      const userDaemon = await Stack.spawn<IUserDaemon>(UserDaemon, undefined, "SYSTEM", 1, token, username);
 
+      const broadcast = (m: string) => {
+        this.rl?.println(`${CURUP}${CLRROW}${m}`);
+      };
       this.rl?.println(`Starting daemon`);
 
       if (!userDaemon) {
-        this.rl?.println(`Failed to start user daemon`);
-        return false;
+        throw new Error("Daemon process didn't come up.");
       }
 
       this.saveToken(userDaemon);
 
       const userInfo = await userDaemon.account!.getUserInfo();
-
       if (!userInfo) {
         this.rl?.println(`Failed to request user info`);
         return false;
@@ -133,72 +136,54 @@ export class TerminalMode extends Process {
         }
       }
 
-      this.rl?.println(`${CURUP}${CLRROW}Starting filesystem`);
+      broadcast(`Starting filesystem`);
       await userDaemon.init?.startFilesystemSupplier();
 
-      this.rl?.println(`${CURUP}${CLRROW}Starting synchronization`);
+      broadcast(`Starting synchronization`);
       await userDaemon.init?.startPreferencesSync();
 
-      this.rl?.println(`${CURUP}${CLRROW}Notifying login activity`);
+      broadcast(`Notifying login activity`);
       await userDaemon.activity?.logActivity(`login`);
 
-      this.rl?.println(`${CURUP}${CLRROW}Starting service host`);
-      await userDaemon.init?.startServiceHost(async (serviceStep) => {
-        if (serviceStep.id === "AppStorage") {
-          this.rl?.println(`${CURUP}${CLRROW}Loading apps...`);
-          await userDaemon.appreg!.initAppStorage(userDaemon.appStorage()!, (app) => {
-            this.rl?.println(`${CURUP}${CLRROW}Loading apps... ${app.id}`);
-          });
-        } else {
-          this.rl?.println(`${CURUP}${CLRROW}Started ${serviceStep.id}`);
-        }
-      });
+      broadcast(`Starting service host`);
+      await userDaemon.init?.startServiceHost(broadcast);
 
-      this.rl?.println(`${CURUP}${CLRROW}Checking associations`);
-      await userDaemon.migrations!.updateFileAssociations();
-
-      this.rl?.println(`${CURUP}${CLRROW}Connecting global dispatch`);
-      await userDaemon.activateGlobalDispatch();
-
-      this.rl?.println(`${CURUP}${CLRROW}Starting drive notifier watcher`);
+      broadcast(`Starting drive notifier watcher`);
       userDaemon.init!.startDriveNotifierWatcher();
 
-      this.rl?.println(`${CURUP}${CLRROW}Starting permission manager`);
+      broadcast(`Starting permission manager`);
       await userDaemon.init!.startPermissionHandler();
 
-      this.rl?.println(`${CURUP}${CLRROW}Starting share management`);
-      await userDaemon.init!.startShareManager();
+      broadcast(`Indexing your files`);
+      await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
 
-      if (userDaemon.userInfo.admin) {
-        this.rl?.println(`${CURUP}${CLRROW}Activating admin bootstrapper`);
-        await userDaemon.activateAdminBootstrapper();
-      }
+      await userDaemon.serviceHost
+        ?.getService<MigrationService>("MigrationSvc")
+        ?.runMigrations((m) => this.rl?.println(`${CURUP}${CLRROW}${m}`));
 
-      this.rl?.println(`${CURUP}${CLRROW}Starting status refresh`);
+      broadcast(`Starting status refresh`);
       await userDaemon.init!.startSystemStatusRefresh();
 
-      this.rl?.println(`${CURUP}${CLRROW}Refreshing app storage`);
+      broadcast(`Refreshing app storage`);
       SysDispatch.dispatch(`app-store-refresh`);
 
       Env.set("currentuser", username);
       Env.set("shell_pid", undefined);
 
-      await userDaemon.migrations!.updateAppShortcutsDir();
       userDaemon.checks!.checkNightly();
 
       await Sleep(10);
 
       this.term?.clear();
-
-      this.arcTerm = await Stack.spawn<ArcTerminal>(ArcTerminal, undefined, userDaemon.userInfo?._id, this.pid, this.term);
-
+      this.arcTerm = await Stack.spawn<IArcTerminal>(ArcTerminal, undefined, userDaemon.userInfo?._id, this.pid, this.term);
+      this.arcTerm!.IS_ARCTERM_MODE = true;
       this.term?.focus();
 
       return true;
     } catch (e) {
       const stack = e instanceof PromiseRejectionEvent ? e.reason.stack : e instanceof Error ? e.stack : "Unknown error";
 
-      this.rl?.println(`\n${BRRED}Failed to start User Daemon:\n\n${stack}${RESET}`);
+      this.rl?.println(`\n${BRRED}Failed to start ArcTerm Mode:\n\n${stack}${RESET}`);
       this.rl?.println(`\nArcTerm Mode couldn't start, and ArcOS has been halted.\nTo try again, please reload the page.`);
 
       return false;
@@ -210,11 +195,9 @@ export class TerminalMode extends Process {
 
     const token = Cookies.get(`arcToken`);
     const username = Cookies.get(`arcUsername`);
-
     if (!token || !username) return false;
 
     const userInfo = await this.validateUserToken(token);
-
     if (!userInfo) {
       this.resetCookies();
 
@@ -267,7 +250,7 @@ export class TerminalMode extends Process {
     return true;
   }
 
-  private saveToken(daemon: UserDaemon) {
+  private saveToken(daemon: IUserDaemon) {
     const token = daemon.token;
     const username = daemon.username;
 

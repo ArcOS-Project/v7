@@ -1,4 +1,4 @@
-import type { StateHandler } from "../ts/state";
+import type { IStateHandler } from "$interfaces/state";
 import type { App } from "./app";
 
 export type AppModuleLoader = () => Promise<{ default: App }>;
@@ -12,7 +12,7 @@ export interface State {
 }
 
 export interface StateRendererAccessors {
-  state: StateHandler;
+  state: IStateHandler;
 }
 
 export type StateProps = Record<string, any>;

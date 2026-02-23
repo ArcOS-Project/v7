@@ -1,22 +1,23 @@
 <script lang="ts">
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import { Logo } from "$ts/branding";
-  import { MessageBox } from "$ts/dialog";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import { sortByKey } from "$ts/util";
+  import { MessageBox } from "$ts/util/dialog";
   import { Store } from "$ts/writable";
   import type { BugReport } from "$types/bughunt";
   import { onMount } from "svelte";
-  import type { AdminPortalRuntime } from "../../runtime";
   import type { BugHuntData } from "../../types";
   import QuickView from "./BugHunt/QuickView.svelte";
   import Row from "./BugHunt/Row.svelte";
 
-  const { process, data }: { process: AdminPortalRuntime; data: BugHuntData } = $props();
+  const { process, data }: { process: IAdminPortalRuntime; data: BugHuntData } = $props();
   const { reports, stats, users } = data;
-  const pages: ("all" | "opened" | "closed")[] = ["all", "opened", "closed"];
+  const pages = ["all", "sys", "apps", "closed"] as const;
+  type PagesType = (typeof pages)[number];
 
   let store = Store<BugReport[]>([]);
-  let sortState = Store<"all" | "opened" | "closed">("opened");
+  let sortState = Store<PagesType>("sys");
   let filterId = Store<string>("");
   let idEntry = Store("");
   let quickView = Store<string>("");
@@ -29,8 +30,10 @@
           return true;
         case "closed":
           return report.closed;
-        case "opened":
-          return !report.closed;
+        case "sys":
+          return !report.closed && !report.isAppReport;
+        case "apps":
+          return report.isAppReport;
       }
     });
   }
@@ -103,23 +106,16 @@
 
     if (!go) return;
 
+    const { stop, incrementProgress } = await Daemon.helpers!.GlobalLoadIndicator("Deleting reports...", process.pid, {
+      max: $selectionList.length,
+    });
+
     for (const report of $selectionList) {
       await process.admin.deleteBugReport(report);
+      incrementProgress?.();
     }
 
-    process.switchPage("bughunt", {}, true);
-  }
-  async function closeSelectedMulti() {
-    const go = await Daemon!.helpers?.Confirm(
-      "Confirm Close?",
-      `Are you sure you want to close ${$selectionList.length} reports? This is a potentially destructive action!`,
-      "Abort!",
-      "Continue"
-    );
-
-    if (!go) return;
-
-    await process.admin.closeBugReport($idEntry);
+    await stop();
 
     process.switchPage("bughunt", {}, true);
   }
@@ -129,7 +125,7 @@
   <div class="tabs">
     <p>{$sortState} ({$store.length})</p>
     <select name="" id="" bind:value={$filterId}>
-      <option value="">None</option>
+      <option value="">Any user</option>
       {#each users as user (user._id)}
         <option value={user._id}>{user.username}</option>
       {/each}

@@ -1,7 +1,7 @@
+import type { IArcTerminal } from "$interfaces/terminal";
 import { Fs } from "$ts/env";
 import { formatBytes } from "$ts/util/fs";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { BRBLACK, BRBLUE, RESET } from "../store";
 
@@ -19,7 +19,7 @@ export class QuotaCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const BAR_LENGTH = 50;
     const quota = await Fs.drives.userfs?.quota();
 

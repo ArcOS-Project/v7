@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { UserPreferences } from "$types/user";
@@ -7,6 +7,7 @@ import type { Component } from "svelte";
 import type { Unsubscriber } from "svelte/store";
 import DispatchClients from "./AdvancedSystemSettings/DispatchClients.svelte";
 import Main from "./AdvancedSystemSettings/Main.svelte";
+import Migrations from "./AdvancedSystemSettings/Migrations.svelte";
 import Recycling from "./AdvancedSystemSettings/Recycling.svelte";
 import Startup from "./AdvancedSystemSettings/Startup.svelte";
 
@@ -17,6 +18,7 @@ export class AdvSysSetRuntime extends AppProcess {
     Recycling: Recycling as any,
     Login: Startup as any,
     "Dispatch Clients": DispatchClients as any,
+    Migrations: Migrations as any,
   };
   public preferencesBuffer = Store<UserPreferences>();
   syncInitialized = false;
@@ -36,7 +38,7 @@ export class AdvSysSetRuntime extends AppProcess {
     this.setSource(__SOURCE__);
   }
 
-  async start() {
+  async render() {
     if (await this.closeIfSecondInstance()) return false;
 
     this.preferencesBuffer.set(this.userPreferences());
@@ -88,6 +90,8 @@ export class AdvSysSetRuntime extends AppProcess {
   //#endregion
 
   apply(close?: boolean) {
+    this.Log(`apply`);
+    
     this.syncInitialized = false;
     this.userPreferences.set(this.preferencesBuffer());
     this.bufferChanged.set(false);

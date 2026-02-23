@@ -1,17 +1,16 @@
 <script lang="ts">
-  import { AppProcess } from "$ts/apps/process";
-  import type { AppRenderer } from "$ts/apps/renderer";
-  import { contextProps } from "$ts/context/actions.svelte";
+  import type { IAppProcess } from "$interfaces/app";
+  import type { IAppRenderer } from "$interfaces/renderer";
   import { BETA, Stack } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
   import { onMount, type Snippet } from "svelte";
   import AltMenu from "./CustomTitlebar/AltMenu.svelte";
 
-  const { process, children, className = "" }: { process: AppProcess; children?: Snippet; className?: string } = $props();
+  const { process, children, className = "" }: { process: IAppProcess; children?: Snippet; className?: string } = $props();
   const { windowTitle, windowIcon } = process;
   const { data } = process.app;
 
-  let renderer: AppRenderer | undefined;
+  let renderer: IAppRenderer | undefined;
 
   onMount(() => {
     renderer = Stack.renderer;
@@ -51,9 +50,6 @@
     {/if}
     <AltMenu {process} />
   </div>
-  {#if BETA}
-    <button class="link feedback" onclick={() => Daemon?.helpers?.iHaveFeedback(process)}>Feedback?</button>
-  {/if}
   <div class="controls">
     {#if data.controls.minimize && !data.overlay}
       <button class="minimize icon-chevron-down" aria-label="minimize" onclick={minimize}></button>

@@ -1,4 +1,4 @@
-import type { AppProcess } from "$ts/apps/process";
+import type { IAppProcess } from "$interfaces/app";
 import type { LogItem } from "./logging";
 
 export interface BugReport {
@@ -20,6 +20,9 @@ export interface BugReport {
   mode: string;
   build: string;
   public: boolean;
+  isAppReport?: boolean;
+  reportAppId?: string;
+  reportAppPkgId?: string;
 }
 
 export interface OutgoingBugReport {
@@ -35,6 +38,9 @@ export interface OutgoingBugReport {
   mode: string;
   build: string;
   public?: boolean;
+  isAppReport?: boolean;
+  reportAppId?: string;
+  reportAppPkgId?: string;
 }
 
 export interface Location {
@@ -74,6 +80,6 @@ export interface ReportOptions {
   public?: boolean;
 }
 
-export interface BugHuntProc extends AppProcess {
+export interface BugHuntProc extends IAppProcess {
   invalidateCaches: (restoreSelected?: boolean) => Promise<void>;
 }

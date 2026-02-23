@@ -6,9 +6,12 @@ export const CodTranslations: Record<string, CodLang> = {
   html: "xml",
   css: "css",
   js: "javascript",
+  ts: "typescript",
   tpa: "json",
   conf: "json",
   md: "markdown",
   ini: "ini",
   xml: "xml",
+  arclnk: "json",
+  arcpl: "plaintext",
 };

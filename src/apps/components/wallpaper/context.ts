@@ -1,8 +1,7 @@
+import { Daemon } from "$ts/daemon";
 import { Env, Fs } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
-import { getParentDirectory, join } from "$ts/util/fs";
-import { UUID } from "$ts/uuid";
+import { UserPaths } from "$ts/user/store";
+import { getParentDirectory } from "$ts/util/fs";
 import type { AppContextMenu } from "$types/app";
 import type { FileEntry } from "$types/fs";
 import type { WallpaperRuntime } from "./runtime";
@@ -213,12 +212,7 @@ export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu 
             caption: "Shortcut...",
             icon: "arrow-up-right",
             action: () => {
-              runtime.spawnOverlayApp("ShortcutProperties", shellPid(), join(UserPaths.Desktop, `${UUID()}.arclnk`), {
-                icon: "ShortcutMimeIcon",
-                name: "New shortcut",
-                type: "new",
-                target: UserPaths.Desktop,
-              });
+              Daemon.shortcuts?.newShortcut(UserPaths.Desktop);
             },
           },
           {

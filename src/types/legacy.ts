@@ -86,3 +86,10 @@ export interface ServerSelectOption {
   hostname: string;
   authCode: string;
 }
+
+export interface LegacyConnectionInfo {
+  url: string;
+  authCode?: string;
+  username: string;
+  password: string;
+}

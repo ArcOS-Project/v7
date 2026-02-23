@@ -1,5 +1,5 @@
+import type { IArcTerminal } from "$interfaces/terminal";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 
 export class ClearCommand extends TerminalProcess {
@@ -16,7 +16,7 @@ export class ClearCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     term.term.clear();
     return 0;
   }

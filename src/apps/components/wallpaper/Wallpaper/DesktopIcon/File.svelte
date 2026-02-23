@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import { formatBytes, join } from "$ts/util/fs";
   import type { FileEntry } from "$types/fs";
   import type { ArcShortcut } from "$types/shortcut";
@@ -20,7 +20,7 @@
   onMount(async () => {
     const info = Daemon?.assoc?.getFileAssociation(file.name);
     shortcut = $shortcuts[file.name];
-    if (shortcut) shortcutIcon = process.getIconCached(shortcut.icon);
+    if (shortcut) shortcutIcon = await process.getIcon(shortcut.icon);
     icon = info?.icon || process.getIconCached("DefaultMimeIcon");
     if (info?.friendlyName === "Image file") icon = (await Daemon?.files?.getThumbnailFor(path)) || icon;
     render = true;

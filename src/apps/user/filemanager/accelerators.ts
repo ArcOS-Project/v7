@@ -81,5 +81,12 @@ export function FileManagerAccelerators(runtime: FileManagerRuntime): AppKeyComb
         runtime.EnterKey(false);
       },
     },
+    {
+      alt: true,
+      key: "N",
+      action: () => {
+        runtime.spawnApp(runtime.app.data.id, runtime.parentPid);
+      },
+    },
   ];
 }

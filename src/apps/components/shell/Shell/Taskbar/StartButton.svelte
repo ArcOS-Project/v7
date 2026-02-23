@@ -1,8 +1,8 @@
 <script lang="ts">
+  import type { IShellRuntime } from "$interfaces/shell";
   import { Logo } from "$ts/branding";
-  import type { ShellRuntime } from "../../runtime";
 
-  const { process }: { process: ShellRuntime } = $props();
+  const { process }: { process: IShellRuntime } = $props();
   const { startMenuOpened } = process;
 
   function toggle() {

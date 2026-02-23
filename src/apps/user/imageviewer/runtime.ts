@@ -1,9 +1,9 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Fs } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import { arrayBufferToBlob } from "$ts/util/convert";
+import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -33,6 +33,7 @@ export class ImageViewerRuntime extends AppProcess {
   //#endregion
 
   async readFile(path: string) {
+    this.Log(`readFile: ${path}`);
     try {
       const url = await Fs.direct(path);
 
@@ -50,6 +51,8 @@ export class ImageViewerRuntime extends AppProcess {
   }
 
   async readFileIndirectFallback(path: string) {
+    this.Log(`Reading file in full using readFile because accessing using DFA failed: ${path}`);
+
     const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",

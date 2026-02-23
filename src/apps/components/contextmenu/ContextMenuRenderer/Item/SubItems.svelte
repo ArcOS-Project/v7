@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { AppProcess } from "$ts/apps/process";
+  import type { IAppProcess } from "$interfaces/app";
   import { Store } from "$ts/writable";
   import type { ContextMenuItem } from "$types/app";
   import type { ContextMenuRuntime } from "../../runtime";
@@ -10,7 +10,7 @@
     showSub?: boolean;
     mW: number;
     x: number;
-    process: AppProcess | undefined;
+    process: IAppProcess | undefined;
     shell: ContextMenuRuntime;
     props: any[];
   }

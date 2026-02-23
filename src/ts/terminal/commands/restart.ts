@@ -1,4 +1,4 @@
-import type { ArcTerminal } from "..";
+import type { IArcTerminal } from "$interfaces/terminal";
 import { TerminalProcess } from "../process";
 
 export class RestartCommand extends TerminalProcess {
@@ -15,7 +15,7 @@ export class RestartCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal) {
+  protected async main(term: IArcTerminal) {
     term.daemon?.power?.restart();
     return -256;
   }

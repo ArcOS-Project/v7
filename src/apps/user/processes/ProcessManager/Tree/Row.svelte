@@ -1,12 +1,14 @@
 <script lang="ts">
+  import type { IAppProcess } from "$interfaces/app";
+  import type { IProcess } from "$interfaces/process";
   import { AppProcess } from "$ts/apps/process";
-  import { contextMenu } from "$ts/context/actions.svelte";
+  import { Daemon } from "$ts/daemon";
   import { Stack, SysDispatch } from "$ts/env";
-  import type { Process } from "$ts/process/instance";
-  import { Daemon } from "$ts/server/user/daemon";
-  import { BaseService } from "$ts/services/base";
-  import type { ProcessContext } from "$types/process";
-  import { onMount } from "svelte";
+  import { BaseService } from "$ts/servicehost/base";
+  import { contextMenu } from "$ts/ui/context/actions.svelte";
+  import { formatBytes } from "$ts/util/fs";
+  import { ProcessStateIcons } from "$types/process";
+  import { onDestroy, onMount } from "svelte";
   import type { ProcessManagerRuntime } from "../../runtime";
   import Row from "./Row.svelte";
 
@@ -15,7 +17,7 @@
     proc,
     process,
     orphan = false,
-  }: { pid: number; proc: Process; process: ProcessManagerRuntime; orphan?: boolean } = $props();
+  }: { pid: number; proc: IProcess; process: ProcessManagerRuntime; orphan?: boolean } = $props();
 
   const { selected } = process;
   const { focusedPid } = Stack.renderer!;
@@ -23,16 +25,19 @@
   let name = $state<string>();
   let icon = $state<string>();
   let appId = $state<string>();
-  let children = $state<Map<number, Process>>(new Map());
+  let children = $state<Map<number, IProcess>>(new Map());
   let closing = $state<boolean>(false);
-  let context = $state<ProcessContext>();
+  let memory = $state<number>();
+  let memoryInterval = $state<NodeJS.Timeout>();
 
   onMount(() => {
-    Stack.store.subscribe(async () => {
-      children = await Stack.getSubProcesses(proc.pid);
+    Stack.store.subscribe(() => {
+      children = Stack.getSubProcesses(proc.pid);
     });
 
-    context = Stack.getProcessContext(pid);
+    memoryInterval = setInterval(() => {
+      memory = proc.MEMORY;
+    }, 2000); // every 2 seconds
 
     if (proc instanceof AppProcess) {
       const { app } = proc;
@@ -54,6 +59,10 @@
     name = proc.name;
     icon = process.getIconCached("DefaultIcon");
   });
+
+  onDestroy(() => {
+    clearInterval(memoryInterval);
+  });
 </script>
 
 {#if !proc._disposed}
@@ -73,7 +82,7 @@
         {
           caption: "App info",
           disabled: () => !(proc instanceof AppProcess),
-          action: () => process.appInfoFor(proc as AppProcess),
+          action: () => process.appInfoFor(proc as IAppProcess),
           icon: "app-window-mac",
         },
         {
@@ -106,10 +115,14 @@
     <div class="segment name">
       <img src={icon} alt="" />
       <span>{name}{orphan ? " (orphaned)" : ""}</span>
+      <span class="lucide icon-{ProcessStateIcons[proc.STATE]}"></span>
     </div>
     <div class="segment pid" class:flagged={$focusedPid === proc.pid}>
       <img src={process.getIconCached("FlagIcon")} alt="" class="flag" />
       <span>{proc.pid}</span>
+    </div>
+    <div class="segment memory">
+      <span>{formatBytes(memory ?? 0)}</span>
     </div>
     <div class="segment app-id">{appId || "-"}</div>
   </div>

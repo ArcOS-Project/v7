@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import type { FirstRunRuntime } from "../../runtime";
   import { FirstRunThemes } from "../../store";
   import type { FirstRunTheme } from "../../types";

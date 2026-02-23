@@ -1,15 +1,15 @@
 <script lang="ts">
+  import type { IShellRuntime } from "$interfaces/shell";
   import { AppProcess } from "$ts/apps/process";
-  import { contextProps } from "$ts/context/actions.svelte";
+  import { Daemon } from "$ts/daemon";
   import { Stack } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
-  import { Wallpapers } from "$ts/wallpaper/store";
+  import { contextMenu } from "$ts/ui/context/actions.svelte";
+  import { Wallpapers } from "$ts/user/wallpaper/store";
   import { Store } from "$ts/writable";
   import type { Workspace } from "$types/user";
   import { onMount } from "svelte";
-  import type { ShellRuntime } from "../runtime";
 
-  const { process }: { process: ShellRuntime } = $props();
+  const { process }: { process: IShellRuntime } = $props();
   const { userPreferences, workspaceManagerOpened } = process;
   const userDaemon = Daemon;
   const { Wallpaper } = userDaemon?.wallpaper! || {}!;
@@ -54,8 +54,24 @@
           style="--wallpaper: url('{$Wallpaper ? $Wallpaper.url : Wallpapers.img0.url}');"
           onclick={() => ($userPreferences.workspaces.index = i)}
           class:selected={$userPreferences.workspaces.index === i}
-          data-contextmenu="workspaces-desktop"
-          use:contextProps={[desktop]}
+          use:contextMenu={[
+            [
+              {
+                caption: "Go here",
+                action: () => {
+                  Daemon?.workspaces?.switchToDesktopByUuid(desktop.uuid);
+                },
+                icon: "arrow-right",
+              },
+              {
+                caption: "Delete workspace",
+                action: () => {
+                  process.deleteWorkspace(desktop);
+                },
+              },
+            ],
+            process,
+          ]}
         >
           <div class="number">{i + 1}</div>
           <div class="bottom">

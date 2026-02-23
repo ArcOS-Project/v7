@@ -1,17 +1,37 @@
 <script lang="ts">
+  import HtmlSpinner from "$lib/HtmlSpinner.svelte";
   import type { MediaPlayerRuntime } from "../runtime";
   import Bar from "./Bar.svelte";
   import Next from "./Controls/Next.svelte";
   import PlayPause from "./Controls/PlayPause.svelte";
   import Previous from "./Controls/Previous.svelte";
   import Time from "./Controls/Time.svelte";
-  import File from "./File.svelte";
+  import CoverImage from "./CoverImage.svelte";
 
   const { process }: { process: MediaPlayerRuntime } = $props();
-  const { queueIndex, queue } = process;
+  const { queueIndex, queue, CurrentMediaMetadata, windowTitle, LoadingMetadata } = process;
 </script>
 
-<File {process} />
+<CoverImage {process} />
+<div class="file">
+  {#if $LoadingMetadata || !$CurrentMediaMetadata?.title}
+    <h1 class="title">
+      <span>{$windowTitle.split("-")[0]}</span>
+      {#if $LoadingMetadata}
+        <HtmlSpinner height={16} thickness={3} />
+      {/if}
+    </h1>
+  {:else}
+    <h1 class="title">
+      {$CurrentMediaMetadata.title}
+    </h1>
+    {#if $CurrentMediaMetadata?.artist}
+      <p class="author">
+        By {$CurrentMediaMetadata?.artist}
+      </p>
+    {/if}
+  {/if}
+</div>
 <div class="media-controls">
   <Previous {process} />
   <PlayPause {process} />

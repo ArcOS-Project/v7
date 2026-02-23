@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import type { BugReport } from "$types/bughunt";
   import type { ExpandedUserInfo } from "$types/user";
 
-  const { process, reports, user }: { process: AdminPortalRuntime; reports: BugReport[]; user: ExpandedUserInfo } = $props();
+  const { process, reports, user }: { process: IAdminPortalRuntime; reports: BugReport[]; user: ExpandedUserInfo } = $props();
   const userReports = reports.filter((r) => r.authorId === user._id);
 </script>
 

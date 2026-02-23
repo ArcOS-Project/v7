@@ -3,7 +3,7 @@
   import type { LightsOffRuntime } from "../runtime";
 
   const { app, process }: { app: App; process: LightsOffRuntime } = $props();
-  const { LEVEL, Clicks, userPreferences } = process;
+  const { LEVEL, Clicks, userPreferences, Transitioning } = process;
 
   function reset() {
     $userPreferences.appPreferences[app.id] = {};
@@ -13,8 +13,8 @@
 </script>
 
 <div class="statistics">
-  <button class="reset-game" onclick={reset} disabled={$LEVEL == 0 && $Clicks == 0}> Start Over </button>
-  <div class="right">
+  <button class="reset-game" onclick={reset} disabled={$Transitioning || ($LEVEL == 0 && $Clicks == 0)}> Start Over </button>
+  <div class="right" class:hide={$Transitioning}>
     <div class="stat">Level {$LEVEL + 1}</div>
     <div class="stat">{$Clicks} Click{$Clicks == 1 ? "" : "s"}</div>
   </div>
@@ -44,6 +44,11 @@
     border: var(--button-glass-bg) 1px solid;
     padding: 0 10px;
     border-radius: var(--button-border-rad);
+    transition: opacity 0.2s;
+  }
+
+  div.statistics div.right.hide {
+    opacity: 0;
   }
 
   div.statistics div.right div.stat {

@@ -13,7 +13,7 @@
  * © IzKuipers 2025
  */
 /* tslint:disable:max-classes-per-file */
-import { Process } from "$ts/process/instance";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
 import stringWidth from "string-width";
 import type { Highlighter } from "./highlight";
 import { History } from "./history";

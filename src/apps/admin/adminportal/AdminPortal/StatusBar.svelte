@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { formatBytes } from "$ts/util/fs";
-  import type { AdminPortalRuntime } from "../runtime";
   import { AdminPortalPageStore } from "../store";
   import type { AdminPortalPage } from "../types";
 
-  const { process, pageData }: { process: AdminPortalRuntime; pageData: AdminPortalPage } = $props();
+  const { process, pageData }: { process: IAdminPortalRuntime; pageData: AdminPortalPage } = $props();
   const { redacted, propSize } = process;
 </script>
 

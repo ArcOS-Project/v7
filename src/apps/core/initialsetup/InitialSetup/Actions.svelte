@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Sleep } from "$ts/sleep";
-  import { Store, type ReadableStore } from "$ts/writable";
+  import { Store } from "$ts/writable";
+  import type { ReadableStore } from "$types/writable";
   import type { PageButtonPage, PageButtons } from "../types";
   import Button from "./Actions/Button.svelte";
 

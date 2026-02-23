@@ -1,16 +1,17 @@
-import { MessageBox } from "$ts/dialog";
-import { Env, getKMod, Stack, State } from "$ts/env";
+import type { IUserDaemon } from "$interfaces/daemon";
+import type { IServerManager } from "$interfaces/modules/server";
+import { AppProcess } from "$ts/apps/process";
+import { UserDaemon } from "$ts/daemon";
+import { Env, getKMod, Server, Stack, State } from "$ts/env";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
-import { SecurityMediumIcon } from "$ts/images/general";
+import { AccountIcon, SecurityMediumIcon } from "$ts/images/general";
 import { ArcLicense } from "$ts/metadata/license";
-import { LoginUser, RegisterUser } from "$ts/server/user/auth";
-import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
+import { LoginUser, RegisterUser } from "$ts/user/auth";
 import { htmlspecialchars } from "$ts/util";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import type { ServerManagerType } from "$types/kernel";
-import { AppProcess } from "../../../ts/apps/process";
-import type { AppProcessData } from "../../../types/app";
+import type { AppProcessData } from "$types/app";
 import CheckInbox from "./InitialSetup/Page/CheckInbox.svelte";
 import Finish from "./InitialSetup/Page/Finish.svelte";
 import FreshDeployment from "./InitialSetup/Page/FreshDeployment.svelte";
@@ -31,8 +32,8 @@ export class InitialSetupRuntime extends AppProcess {
   public actionsDisabled = Store<boolean>(false);
   public showMainContent = Store<boolean>(false);
   public displayName = Store<string>();
-  public server: ServerManagerType;
-  #userDaemon?: UserDaemon;
+  public server: IServerManager;
+  #userDaemon?: IUserDaemon;
 
   public readonly pages = [Welcome, License, Identity, CheckInbox, Finish, FreshDeployment];
 
@@ -147,7 +148,7 @@ export class InitialSetupRuntime extends AppProcess {
       this.actionsDisabled.set(false);
     });
 
-    this.server = getKMod<ServerManagerType>("server");
+    this.server = getKMod<IServerManager>("server");
 
     this.pageNumber.set(this.server.serverInfo?.freshBackend ? this.pages.length - 1 : 0);
 
@@ -156,10 +157,9 @@ export class InitialSetupRuntime extends AppProcess {
 
   async render() {
     if (this.server.serverInfo?.disableRegistration) {
-      throw new Error("InitialSetupWizardRender: Registration is disabled on this server");
+      throw new Error("InitialSetupRuntime.render: Registration is disabled on this server");
     }
 
-    // TODO: some kind of intro animation
     await Sleep(1000);
 
     this.showMainContent.set(true);
@@ -256,6 +256,7 @@ export class InitialSetupRuntime extends AppProcess {
           image: WarningIcon,
           title: "You made a typo!",
           message: "The passwords you entered don't match. Please re-enter them, and then try again.",
+          sound: "arcos.dialog.warning",
           buttons: [
             {
               caption: "Okay",
@@ -270,6 +271,48 @@ export class InitialSetupRuntime extends AppProcess {
         true
       );
 
+      return;
+    }
+
+    const confirmed = await new Promise<boolean>((r) => {
+      const emailNotice = !Server.serverInfo?.noEmailVerify
+        ? ` Please note that you <b>need</b> a valid email address in order to activate your account. Entering a non-existent email address will prevent you from creating your account.`
+        : ``;
+
+      MessageBox(
+        {
+          title: "Confirm details",
+          message: `Are you sure that the following information is correct?${emailNotice}<br>
+<br>
+<ul>
+  <li><b>Username:</b> ${htmlspecialchars(username)}</li>
+  <li><b>Email:</b> ${htmlspecialchars(email)}</li>
+</ul>`,
+          sound: "arcos.dialog.warning",
+          buttons: [
+            {
+              caption: "Go back",
+              action: () => {
+                r(false);
+              },
+            },
+            {
+              caption: "Confirm",
+              suggested: true,
+              action: () => {
+                r(true);
+              },
+            },
+          ],
+          image: AccountIcon,
+        },
+        this.pid,
+        true
+      );
+    });
+
+    if (!confirmed) {
+      this.actionsDisabled.set(false);
       return;
     }
 
@@ -299,7 +342,7 @@ export class InitialSetupRuntime extends AppProcess {
       return;
     }
 
-    this.pageNumber.set(this.pageNumber() + 1);
+    this.pageNumber.set(this.pageNumber() + (Server.serverInfo?.noEmailVerify ? 2 : 1));
   }
 
   async checkAccountActivation() {
@@ -322,7 +365,8 @@ export class InitialSetupRuntime extends AppProcess {
               suggested: true,
             },
           ],
-          image: WarningIcon,
+          sound: "arcos.dialog.error",
+          image: ErrorIcon,
         },
         this.pid,
         true

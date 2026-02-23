@@ -1,7 +1,7 @@
-import type { UserDaemon } from "$ts/server/user/daemon";
+import type { IUserDaemon } from "$interfaces/daemon";
 
 export interface LoginAppProps {
-  userDaemon?: UserDaemon;
+  userDaemon?: IUserDaemon;
   type?: string;
   safeMode?: boolean;
 }
@@ -10,5 +10,4 @@ export interface PersistenceInfo {
   username: string;
   profilePicture: string;
   loginWallpaper?: string;
-  serverUrl: string;
 }

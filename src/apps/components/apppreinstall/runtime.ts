@@ -1,10 +1,10 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import type { DistributionServiceProcess } from "$ts/distrib";
+import { Daemon } from "$ts/daemon";
 import { Env, Fs } from "$ts/env";
-import { tryJsonParse } from "$ts/json";
-import { Daemon } from "$ts/server/user/daemon";
+import type { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
 import { arrayBufferToText } from "$ts/util/convert";
+import { MessageBox } from "$ts/util/dialog";
+import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
@@ -104,6 +104,8 @@ export class AppPreInstallRuntime extends AppProcess {
   //#region DISTRIB
 
   fail(reason: string) {
+    this.Log(`Fail: ${reason}`);
+
     MessageBox(
       {
         title: "Failed to open package",
@@ -119,6 +121,8 @@ export class AppPreInstallRuntime extends AppProcess {
   }
 
   async install() {
+    this.Log(`Proceeding with installation`);
+
     const meta = this.metadata();
     const elevated = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS wants to install an application",

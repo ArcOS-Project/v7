@@ -144,6 +144,9 @@
   background-color: var(--button-bg);
   border-radius: 15px;
   margin-top: auto;
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
+  box-shadow: var(--secondary-box-shadow);
 }
 
 #DriveInfo > div.body div.actions button.suggested {
@@ -166,4 +169,11 @@
 #DriveInfo > div.body div.advanced-info div.row h1 {
   width: 100px;
   opacity: 0.5;
+}
+
+#DriveInfo > div.body div.advanced-info div.row p {
+  width: 0;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

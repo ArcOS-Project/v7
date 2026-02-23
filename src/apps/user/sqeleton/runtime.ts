@@ -1,12 +1,13 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Fs, SoundBus, Stack } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
+import { CommandResult } from "$ts/result";
 import { Sleep } from "$ts/sleep";
 import { SqlInterfaceProcess } from "$ts/sql";
+import { UserPaths } from "$ts/user/store";
+import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath } from "$ts/util/fs";
-import { UUID } from "$ts/uuid";
+import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { SqeletonError, SqeletonHistoryItem, SqeletonTabs, SqlTable, SqlTableColumn } from "./types";
@@ -22,7 +23,7 @@ export class SqeletonRuntime extends AppProcess {
   working = Store<boolean>(false);
   errored = Store<boolean>(false);
   result = Store<Record<string, any>[][] | undefined>();
-  tables = Store<SqlTable[]>(); // TODO: dedicated type
+  tables = Store<SqlTable[]>();
   busy = false;
   currentTab = Store<string>("result");
   syntaxError = Store<boolean>(false);
@@ -237,9 +238,10 @@ export class SqeletonRuntime extends AppProcess {
     });
   }
 
-  async tableToSql(table: SqlTable, pretty = true, dropFirst = false) {
+  async tableToSql(table: SqlTable, pretty = true, dropFirst = false): Promise<CommandResult<string>> {
     const items = (await this.execute(`SELECT * FROM ${table.name} WHERE 1;`, true, true))?.[0];
-    if (!items) return undefined;
+
+    if (!items) return CommandResult.Error("Didn't find any items");
 
     let result = ``;
     const delimiter = pretty ? ", " : ",";
@@ -271,7 +273,7 @@ export class SqeletonRuntime extends AppProcess {
       result += `${columns.join(delimiter)})${items.length - 1 <= i ? ";" : ","}${nl}`;
     }
 
-    return result;
+    return CommandResult.Ok(result);
   }
 
   async hasSyntaxError(input: string) {

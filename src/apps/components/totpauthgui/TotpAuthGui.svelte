@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { MessageBox } from "$ts/dialog";
+  import { MessageBox } from "$ts/util/dialog";
   import { Store } from "$ts/writable";
   import { onMount } from "svelte";
   import type { TotpAuthGuiRuntime } from "./runtime";

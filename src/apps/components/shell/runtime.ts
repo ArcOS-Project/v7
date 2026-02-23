@@ -1,9 +1,11 @@
+import type { IArcFindRuntime } from "$interfaces/arcfind";
+import type { IShellRuntime, ITrayHostRuntime } from "$interfaces/shell";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Env, Fs, Stack, SysDispatch } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
+import { UserPaths } from "$ts/user/store";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { RecursiveDirectoryReadReturn } from "$types/fs";
@@ -12,13 +14,11 @@ import type { Workspace } from "$types/user";
 import dayjs from "dayjs";
 import { type FuseResult } from "fuse.js";
 import { fetchWeatherApi } from "openmeteo";
-import type { ArcFindRuntime } from "../arcfind/runtime";
-import type { TrayHostRuntime } from "../trayhost/runtime";
 import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
 import { shortWeekDays, type CalendarMonth, type WeatherInformation } from "./types";
 
-export class ShellRuntime extends AppProcess {
+export class ShellRuntime extends AppProcess implements IShellRuntime {
   public startMenuOpened = Store<boolean>(false);
   public actionCenterOpened = Store<boolean>(false);
   public workspaceManagerOpened = Store<boolean>(false);
@@ -31,11 +31,12 @@ export class ShellRuntime extends AppProcess {
   public FullscreenCount = Store<Record<string, Set<number>>>({});
   public openedTrayPopup = Store<string>();
   public searchLoading = Store<boolean>(true);
-  public trayHost?: TrayHostRuntime;
-  public arcFind?: ArcFindRuntime;
+  public trayHost?: ITrayHostRuntime;
+  public arcFind?: IArcFindRuntime;
   public ready = Store<boolean>(false);
   public STARTMENU_FOLDER = UserPaths.StartMenu;
   public StartMenuContents = Store<RecursiveDirectoryReadReturn>();
+  public selectedAppGroup = Store<string>("");
 
   override contextMenu: AppContextMenu = ShellContextMenu(this);
 
@@ -45,6 +46,13 @@ export class ShellRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.setSource(__SOURCE__);
+
+    this.acceleratorStore.push({
+      alt: true,
+      action: () => {
+        this.startMenuOpened.set(!this.startMenuOpened());
+      },
+    });
   }
 
   async start() {
@@ -204,8 +212,10 @@ export class ShellRuntime extends AppProcess {
     this.dispatch.subscribe("close-calendar", () => this.calendarOpened.set(false));
 
     this.startMenuOpened.subscribe((v) => {
-      if (!v) this.searchQuery.set(""); // Remove search query on close
-
+      if (!v) {
+        this.searchQuery.set(""); // Remove search query on close
+        this.selectedAppGroup.set(""); // Remove selected app group on close
+      }
       if (v) Stack.renderer?.focusedPid.set(-1); // Unfocus window on start menu invocation
     });
 
@@ -261,9 +271,7 @@ export class ShellRuntime extends AppProcess {
   //#region WORKSPACES
 
   async deleteWorkspace(workspace: Workspace) {
-    const windowCount = [...Stack.store()].filter(
-      ([_, p]) => p instanceof AppProcess && p.app.desktop === workspace.uuid
-    ).length; // Get the window count using some arguably unreadable code
+    const windowCount = [...Stack.store()].filter(([_, p]) => p instanceof AppProcess && p.app.desktop === workspace.uuid).length; // Get the window count using some arguably unreadable code
 
     if (windowCount > 0) {
       MessageBox(
@@ -339,15 +347,19 @@ export class ShellRuntime extends AppProcess {
   //#region STARTMENU
 
   public async refreshStartMenu(): Promise<void> {
-    const tree = await Fs.tree(this.STARTMENU_FOLDER);
+    try {
+      const tree = await Fs.tree(this.STARTMENU_FOLDER);
 
-    if (!tree?.files?.length && !tree?.dirs?.length) {
-      await Daemon?.appreg?.updateStartMenuFolder(); // Populate it if there's no content
-      
-      return; // Don't try again here because this method will be reinvoked by dispatch
+      if (!tree?.files?.length && !tree?.dirs?.length) {
+        await Daemon?.appreg?.updateStartMenuFolder(); // Populate it if there's no content
+
+        return; // Don't try again here because this method will be reinvoked by dispatch
+      }
+
+      this.StartMenuContents.set(tree);
+    } catch {
+      return;
     }
-
-    this.StartMenuContents.set(tree);
   }
 
   //#endregion

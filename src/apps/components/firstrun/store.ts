@@ -1,5 +1,5 @@
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
+import { Daemon } from "$ts/daemon";
+import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
 import type { ArcShortcut } from "$types/shortcut";
 import Finish from "./FirstRun/Page/Finish.svelte";
@@ -169,6 +169,12 @@ export const FirstRunShortcuts: Record<string, ArcShortcut> = {
     name: "App Store",
     type: "app",
     target: "AppStore",
+  },
+  [join(UserPaths.Desktop, "iHaveFeedback.arclnk")]: {
+    icon: "BugReportIcon",
+    name: "Give feedback",
+    type: "app",
+    target: "feedback",
   },
   [join(UserPaths.Documents, "pictures.arclnk")]: {
     icon: "WallpapersFolderIcon",

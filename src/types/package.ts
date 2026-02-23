@@ -1,6 +1,7 @@
 import type { PublicUserInfo } from "./user";
 
 export interface ArcPackage {
+  _id?: string;
   name: string;
   author: string;
   version: string;

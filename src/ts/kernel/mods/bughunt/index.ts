@@ -1,18 +1,20 @@
+import type { IUserDaemon } from "$interfaces/daemon";
+import type { IWaveKernel } from "$interfaces/kernel";
+import type { IBugHunt } from "$interfaces/modules/bughunt";
 import { ArcOSVersion, Env, Server, Stack } from "$ts/env";
-import { KernelLogs } from "$ts/getters";
+import { KernelLogs } from "$ts/kernel/getters";
+import { Backend } from "$ts/kernel/mods/server/axios";
 import { KernelModule } from "$ts/kernel/module";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { Backend } from "$ts/server/axios";
-import { UserDaemon } from "$ts/server/user/daemon";
+import type { App } from "$types/app";
 import type { BugReport, OutgoingBugReport } from "$types/bughunt";
-import type { ConstructedWaveKernel } from "$types/kernel";
 import { defaultReportOptions } from "./store";
 
-export class BugHunt extends KernelModule {
+export class BugHunt extends KernelModule implements IBugHunt {
   //#region LIFECYCLE
 
-  constructor(kernel: ConstructedWaveKernel, id: string) {
+  constructor(kernel: IWaveKernel, id: string) {
     super(kernel, id);
   }
 
@@ -20,8 +22,8 @@ export class BugHunt extends KernelModule {
 
   //#endregion
 
-  createReport(options = defaultReportOptions): OutgoingBugReport {
-    const server = URL.parse(Server.url)?.host;
+  createReport(options = defaultReportOptions, app?: App, storeItemId?: string): OutgoingBugReport {
+    const server = URL.parse(Server.url || "https://arcapi.nl")?.host;
 
     return {
       title: options.title,
@@ -36,6 +38,9 @@ export class BugHunt extends KernelModule {
       mode: ArcMode(),
       build: ArcBuild(),
       public: options.public,
+      isAppReport: !!app,
+      reportAppId: app?.id,
+      reportAppPkgId: storeItemId,
     };
   }
 
@@ -53,7 +58,7 @@ export class BugHunt extends KernelModule {
 
   getToken() {
     const daemonPid = +Env.get("userdaemon_pid");
-    const userDaemon = Stack.getProcess<UserDaemon>(daemonPid);
+    const userDaemon = Stack.getProcess<IUserDaemon>(daemonPid);
 
     if (!daemonPid || !userDaemon) return "";
 

@@ -1,18 +1,20 @@
-import { AppProcess } from "$ts/apps/process";
-import { getKMod, IsMobile, Kernel, Stack } from "$ts/env";
-import type { ProcessHandlerType } from "$types/kernel";
+import type { IAppProcess } from "$interfaces/app";
+import type { Constructs } from "$interfaces/common";
+import type { IProcessHandler } from "$interfaces/modules/stack";
+import type { IStateHandler } from "$interfaces/state";
+import { getKMod, Kernel, Stack } from "$ts/env";
 import { LogLevel } from "$types/logging";
 import type { State } from "../../types/state";
-import { Process } from "../process/instance";
+import { Process } from "../kernel/mods/stack/process/instance";
 import { Sleep } from "../sleep";
 import { StateError } from "./error";
 import { States } from "./store";
 
-export class StateHandler extends Process {
+export class StateHandler extends Process implements IStateHandler {
   store: Record<string, State> = {};
   currentState: string = "";
   stateProps: Record<string, Record<any, any>> = {};
-  stateAppProcess: AppProcess | undefined;
+  stateAppProcess: IAppProcess | undefined;
   public _criticalProcess: boolean = true;
 
   //#region LIFECYCLE
@@ -40,14 +42,11 @@ export class StateHandler extends Process {
   //#endregion
 
   async loadState(id: string, props: Record<string, any> = {}, instant = false) {
-    if (this._disposed || IsMobile()) return;
-
+    if (this._disposed) return;
     if (Kernel?.PANICKED && id !== "crash-screen") return;
 
     const data = this.store[id];
-
     if (!data) throw new StateError(`No such state ${id} on handler with PID ${this.pid}`);
-
     if (this.stateAppProcess) {
       this.Log(`Closing previous state app process...`);
 
@@ -138,14 +137,14 @@ export class StateHandler extends Process {
 
     this.Log(`BEGINNING LOAD OF ${data.name} (${data.identifier}) IN APP MODE`);
 
-    const stack = getKMod<ProcessHandlerType>("stack");
+    const stack = getKMod<IProcessHandler>("stack");
 
     if (!data.appModule) return;
 
     const mod = await data.appModule();
     const app = mod.default;
-    const proc = await stack.spawn<AppProcess>(
-      app.assets.runtime,
+    const proc = await stack.spawn<IAppProcess>(
+      app.assets.runtime as Constructs<IAppProcess>,
       undefined,
       "SYSTEM",
       this.pid,
@@ -161,7 +160,6 @@ export class StateHandler extends Process {
     if (!proc) throw new StateError(`Failed to spawn state app ${app.id}`);
 
     this.stateAppProcess = proc;
-
     this.Log(` -> Loaded ${data.identifier}`);
   }
 

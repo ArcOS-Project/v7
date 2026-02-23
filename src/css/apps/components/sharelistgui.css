@@ -25,7 +25,7 @@
 
 #ShareListGui > div.body div.listing {
   padding: 15px;
-  border-radius: 10px;
+  border-radius: 15px;
   border: var(--win-border);
   margin-bottom: 20px;
   height: calc(100% - 50px - 20px - 20px - 52px);
@@ -84,9 +84,11 @@
   gap: 10px;
   height: 52px;
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 15px;
   background-color: var(--button-bg);
   box-shadow: var(--secondary-box-shadow);
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
 }
 
 #ShareListGui > div.body div.actions div.sep {

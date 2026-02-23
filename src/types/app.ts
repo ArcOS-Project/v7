@@ -1,9 +1,10 @@
-import type { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import type { Process } from "$ts/process/instance";
+import type { IAppProcess } from "$interfaces/app";
+import type { Constructs } from "$interfaces/common";
+import type { IProcess } from "$interfaces/process";
+import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
 import type { SvelteComponent } from "svelte";
-import type { AppProcess } from "../ts/apps/process";
-import type { ReadableStore } from "../ts/writable";
 import type { MaybePromise } from "./common";
+import type { ReadableStore } from "./writable";
 
 export interface App {
   metadata: AppMetadata;
@@ -31,10 +32,11 @@ export interface App {
   elevated?: boolean;
   acceleratorDescriptions?: Record<string, string>; // <[combo in One+Two+Key format], description>
   fileSignatures?: Record<string, string>;
-  process?: ThirdPartyAppProcess;
+  process?: IThirdPartyAppProcess;
   tpaRevision?: number;
   noSafeMode?: boolean;
   vital?: boolean;
+  _internalResolvedPath?: string;
   _internalOriginalPath?: string;
   _internalMinVer?: string;
   _internalSysVer?: string;
@@ -45,10 +47,12 @@ export type RegisteredProcess = {
   metadata: AppMetadata;
   id: string;
   assets: {
-    runtime: typeof Process;
+    runtime: Constructs<IProcess>;
   };
   vital?: boolean;
   _internalMinVer?: string;
+  hidden?: boolean;
+  core?: boolean;
 };
 
 export interface InstalledApp extends App {
@@ -81,11 +85,11 @@ export interface WindowControls {
 }
 
 export interface AppAssets {
-  runtime: typeof Process;
+  runtime: Constructs<IProcess>;
   component?: typeof SvelteComponent;
 }
 
-export interface AppComponentProps<T = AppProcess> {
+export interface AppComponentProps<T = IAppProcess> {
   process: T;
   pid: number;
   app: App;
@@ -121,7 +125,7 @@ export interface ContextMenuInstance {
   x: number;
   y: number;
   items: ContextMenuItem[];
-  process?: AppProcess;
+  process?: IAppProcess;
   artificial?: boolean;
   props?: any[];
 }
@@ -135,4 +139,9 @@ export interface WindowResizer {
   bottom?: string;
   left?: string;
   right?: string;
+}
+
+export interface ToastMessage {
+  content: string;
+  icon?: string;
 }

@@ -1,10 +1,11 @@
+import type { IFilesystemDrive } from "$interfaces/fs";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Fs } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
+import { UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
+import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppKeyCombinations } from "$types/accelerator";
@@ -22,6 +23,7 @@ export class CodRuntime extends AppProcess {
   mimetype = Store<string>("");
   directoryName = Store<string>("");
   original = Store<string>("");
+  drive = Store<IFilesystemDrive | undefined>();
   mimeIcon = Store<string>(this.getIconCached("DefaultMimeIcon"));
   public acceleratorStore: AppKeyCombinations = CodAccelerators(this);
 
@@ -41,6 +43,10 @@ export class CodRuntime extends AppProcess {
     if (!path) return;
 
     await this.readFile(path);
+
+    this.language.subscribe(() => {
+      if (!this._disposed) this.buffer.set(this.buffer()); // Force re-render of <CodeEditor/>
+    });
   }
 
   async onClose(): Promise<boolean> {
@@ -91,6 +97,7 @@ export class CodRuntime extends AppProcess {
   //#endregion
 
   async readFile(path: string) {
+    this.Log(`readFile: ${path}`);
     const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
@@ -109,16 +116,19 @@ export class CodRuntime extends AppProcess {
         prog.setDone(progress.value);
       });
 
-      await Sleep(0);
+      // Sleeping to give FsProgress the time to render if the file is done loading before FsProgress has a chance to show.
+      await Sleep(500);
       await prog.stop();
 
       if (!contents) {
         throw new Error("Failed to get the contents of the file.");
       }
 
+      this.drive.set(Fs.getDriveByPath(path));
+
       const info = Daemon?.assoc?.getFileAssociation(path);
 
-      this.buffer.set(arrayBufferToText(contents));
+      this.buffer.set(arrayBufferToText(contents)!);
       this.openedFile.set(path);
       this.filename.set(getItemNameFromPath(path));
       this.directoryName.set(getItemNameFromPath(getParentDirectory(path)));
@@ -151,6 +161,8 @@ export class CodRuntime extends AppProcess {
   }
 
   async saveChanges(force = false) {
+    this.Log(`saveChanges force=${force}`);
+
     const opened = this.openedFile();
     const buffer = this.buffer();
 
@@ -182,6 +194,8 @@ export class CodRuntime extends AppProcess {
   }
 
   async saveAs() {
+    this.Log(`saveAs`);
+
     const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Choose where to save the file",
       icon: "CodIcon",
@@ -206,6 +220,8 @@ export class CodRuntime extends AppProcess {
   }
 
   async openFile() {
+    this.Log(`openFile`);
+
     const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Select a file to open",
       icon: "CodIcon",

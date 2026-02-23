@@ -1,11 +1,12 @@
+import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
+import { Daemon } from "$ts/daemon";
 import { Fs, Stack, SysDispatch } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
 import { join } from "$ts/util/fs";
 import type { AppProcessData } from "$types/app";
 import { AppProcess } from "./process";
 
-export class ThirdPartyAppProcess extends AppProcess {
+export class ThirdPartyAppProcess extends AppProcess implements IThirdPartyAppProcess {
   public static readonly TPA_REV = 1;
   workingDirectory: string;
   operationId: string;
@@ -87,11 +88,6 @@ export class ThirdPartyAppProcess extends AppProcess {
       }
 
       this.mutationLock = false;
-      SysDispatch.dispatch("tpa-spawn-done", [this.operationId]);
-
-      await Sleep(1000); // 1s to give invocator's GLI the time it needs
-      
-      Stack.renderer?.focusPid(this.pid);
     };
 
     const observer = new MutationObserver(async (mutations) => {
@@ -105,6 +101,12 @@ export class ThirdPartyAppProcess extends AppProcess {
     observer.observe(body, { childList: true, subtree: true, attributes: true });
     await this.render(this.renderArgs);
     await processElements(body);
+
+    SysDispatch.dispatch("tpa-spawn-done", [this.operationId]);
+
+    await Sleep(1000); // 1s to give invocator's GLI the time it needs
+
+    Stack.renderer?.focusPid(this.pid);
   }
 
   //#endregion

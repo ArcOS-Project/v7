@@ -50,10 +50,12 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px;
-  border-radius: 8px;
+  border-radius: 15px;
   background-color: var(--button-bg);
   box-shadow: var(--secondary-box-shadow);
   height: 51px;
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
 }
 
 #ShareMgmtGui > div.body > div.actions button.delete {
@@ -63,7 +65,7 @@
 #ShareMgmtGui > div.body div.user-list {
   padding: 15px;
   border: var(--win-border);
-  border-radius: 10px;
+  border-radius: 15px;
   height: calc(100% - 30px - 65px - 51px);
   overflow-y: auto;
   margin-bottom: 15px;

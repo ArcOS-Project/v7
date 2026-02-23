@@ -183,6 +183,11 @@
   width: 70px;
 }
 
+#processManager > div.body div.row div.segment.memory {
+  width: 80px;
+  text-align: left;
+}
+
 #processManager > div.body div.row div.segment.app-id {
   width: 150px;
 }

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { contextProps } from "$ts/context/actions.svelte";
   import { Sleep } from "$ts/sleep";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
   import { Store } from "$ts/writable";
   import { draggable, type DragEventData } from "@neodrag/svelte";
   import { onMount } from "svelte";

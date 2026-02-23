@@ -18,3 +18,31 @@ div.server-down p {
   width: 100%;
   font-size: 18px;
 }
+
+div.server-down div.shortcut-hint {
+  position: absolute;
+  bottom: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  font-size: 14px;
+}
+
+div.server-down div.shortcut-hint span.lucide {
+  font-size: 16px;
+  height: 16px;
+}
+
+div.server-down div.shortcut-hint span.key {
+  padding: 2px 6px;
+  background-color: #fff3;
+  border-radius: 5px;
+}
+
+div.server-down div.shortcut-hint div.sep {
+  width: 1px;
+  height: 30px;
+  background-color: #fff3;
+}

@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
   import type { WeatherInformation } from "$apps/components/shell/types";
-  import { contextProps } from "$ts/context/actions.svelte";
+  import type { IShellRuntime } from "$interfaces/shell";
+  import Spinner from "$lib/Spinner.svelte";
   import { Sleep } from "$ts/sleep";
+  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { onMount } from "svelte";
-  import Spinner from "../../../../../../../lib/Spinner.svelte";
 
-  const { process }: { process: ShellRuntime } = $props();
+  const { process }: { process: IShellRuntime } = $props();
   const { userPreferences } = process;
 
   let data = $state<WeatherInformation>();
@@ -40,8 +40,25 @@
   class:loading
   class:errored={$userPreferences.shell.actionCenter.weatherLocation.name === "unset" || !data}
   class:night={data && data.isNight}
-  data-contextmenu="actioncenter-weather-card"
-  use:contextProps={[changeLocation, refresh]}
+  use:contextMenu={[
+    [
+      {
+        caption: "Refresh",
+        action: () => {
+          refresh(true);
+        },
+        icon: "rotate-cw",
+      },
+      {
+        caption: "Change location...",
+        icon: "map-pin",
+        action: () => {
+          changeLocation();
+        },
+      },
+    ],
+    process,
+  ]}
 >
   {#if $userPreferences.shell.actionCenter.weatherLocation.name === "unset"}
     <p>Set-up weather</p>

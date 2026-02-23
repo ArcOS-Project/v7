@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { FileManagerRuntime } from "../../runtime";
   import Drives from "./MyArcOS/Drives.svelte";
-  import UserPaths from "./MyArcOS/UserPaths.svelte";
+  import RecentFiles from "./MyArcOS/RecentFiles.svelte";
 
   const { process }: { process: FileManagerRuntime } = $props();
 </script>
 
 <Drives {process} />
-<UserPaths {process} />
+<RecentFiles {process} />

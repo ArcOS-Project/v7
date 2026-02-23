@@ -1,5 +1,5 @@
-import type { ReadableStore } from "$ts/writable";
 import type { IntBool } from "$types/common";
+import type { ReadableStore } from "$types/writable";
 
 export interface SqlTable {
   uuid: string;

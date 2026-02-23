@@ -14,7 +14,6 @@ export function ViewMenu(runtime: FileManagerRuntime): ContextMenuItem {
           runtime.userPreferences.update((v) => {
             v.appPreferences.fileManager.thumbnails = true;
             v.appPreferences.fileManager.grid = false;
-            v.appPreferences.fileManager.compact = false;
             return v;
           }),
       },
@@ -27,7 +26,6 @@ export function ViewMenu(runtime: FileManagerRuntime): ContextMenuItem {
           runtime.userPreferences.update((v) => {
             v.appPreferences.fileManager.thumbnails = false;
             v.appPreferences.fileManager.grid = true;
-            v.appPreferences.fileManager.compact = false;
             return v;
           }),
       },
@@ -42,7 +40,18 @@ export function ViewMenu(runtime: FileManagerRuntime): ContextMenuItem {
           runtime.userPreferences.update((v) => {
             v.appPreferences.fileManager.thumbnails = false;
             v.appPreferences.fileManager.grid = false;
-            v.appPreferences.fileManager.compact = false;
+            return v;
+          }),
+      },
+      { sep: true },
+      {
+        caption: "Enable compact mode",
+        isActive: () => !!runtime.userPreferences().appPreferences.fileManager?.compact,
+        icon: "list-chevrons-down-up",
+        disabled: () => !!runtime.virtual() || !!runtime.userPreferences().appPreferences.fileManager?.thumbnails,
+        action: () =>
+          runtime.userPreferences.update((v) => {
+            v.appPreferences.fileManager.compact = !v.appPreferences.fileManager.compact;
             return v;
           }),
       },

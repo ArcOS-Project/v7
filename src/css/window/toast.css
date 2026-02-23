@@ -1,0 +1,47 @@
+div.window-toast-popup {
+  min-width: 100px;
+  max-width: 80%;
+  width: fit-content;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  translate: -50% 0;
+  min-height: 40px;
+  background-color: #f0f;
+  border-radius: 10px;
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: var(--win-border);
+  box-shadow: 0 5px 15px 5px #0003;
+  padding: 10px;
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: -30px;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    margin-bottom 0.2s,
+    opacity 0.2s;
+  z-index: calc(infinity);
+}
+
+div.window-toast-popup.show {
+  margin-bottom: 0;
+  opacity: 1;
+  pointer-events: initial;
+}
+
+div.window-toast-popup span.lucide {
+  font-size: 16px;
+  color: var(--accent);
+  display: block;
+  height: 16px;
+  margin: 2px;
+}
+
+/* Don't render the span if no icon was provided */
+div.window-toast-popup span.lucide.icon- {
+  display: none;
+}

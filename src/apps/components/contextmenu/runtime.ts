@@ -24,15 +24,13 @@ export class ContextMenuRuntime extends AppProcess {
     this.setSource(__SOURCE__);
   }
 
-  async start() {
-    if (await this.closeIfSecondInstance()) return false;
-  }
-
   async stop() {
     this.abortController.abort();
   }
 
   async render() {
+    if (await this.closeIfSecondInstance()) return false;
+
     this.assignContextMenuHooks();
   }
 

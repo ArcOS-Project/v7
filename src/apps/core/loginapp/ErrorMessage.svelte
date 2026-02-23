@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ReadableStore } from "$ts/writable";
+  import type { ReadableStore } from "$types/writable";
 
   const { errorMessage }: { errorMessage: ReadableStore<string> } = $props();
 </script>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import type { GlobalDispatchClient } from "$types/dispatch";
   import { onMount } from "svelte";
   import type { AdvSysSetRuntime } from "../runtime";
@@ -14,7 +14,7 @@
 
   async function update() {
     loading = true;
-    clients = await Daemon!.globalDispatch!.getClients();
+    clients = (await Daemon?.globalDispatch?.getClients()) || [];
     loading = false;
   }
 

@@ -1,6 +1,6 @@
 <script lang="ts">
   import UserLink from "$lib/UserLink.svelte";
-  import { StoreItemBanner, StoreItemIcon } from "$ts/distrib/util";
+  import { StoreItemBanner, StoreItemIcon } from "$ts/util/distrib";
   import { formatBytes } from "$ts/util/fs";
   import type { StoreItem } from "$types/package";
   import { onMount } from "svelte";
@@ -32,7 +32,7 @@
         </h1>
         <p class="description" title={pkg.pkg.description}>{pkg.pkg.description}</p>
         <p class="author">
-          <UserLink user={pkg.user!} onClick={() => process.switchPage("userPage", { userId: pkg.userId })} /> · {pkg.installCount}
+          <UserLink user={pkg?.user!} onClick={() => process.switchPage("userPage", { userId: pkg.userId })} /> · {pkg.installCount}
           downloads
         </p>
       </div>

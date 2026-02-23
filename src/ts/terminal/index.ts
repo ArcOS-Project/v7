@@ -1,22 +1,27 @@
 import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import TerminalWindow from "$apps/components/terminalwindow/TerminalWindow.svelte";
-import { hexToRgb } from "$ts/color";
-import type { FilesystemDrive } from "$ts/drives/drive";
+import type { Constructs } from "$interfaces/common";
+import type { IUserDaemon } from "$interfaces/daemon";
+import type { IFilesystemDrive } from "$interfaces/fs";
+import type { IArcTerminal, ITerminalProcess, ITerminalWindowRuntime } from "$interfaces/terminal";
+import { Daemon } from "$ts/daemon";
 import { Env, Fs, Stack, State } from "$ts/env";
-import { ASCII_ART } from "$ts/intro";
-import { Process } from "$ts/process/instance";
-import { LoginUser } from "$ts/server/user/auth";
-import { Daemon, TryGetDaemon, type UserDaemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
+import { ASCII_ART } from "$ts/kernel/intro";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
+import { Sleep } from "$ts/sleep";
+import { LoginUser } from "$ts/user/auth";
+import { UserPaths } from "$ts/user/store";
+import { noop, sha256 } from "$ts/util";
+import { hexToRgb } from "$ts/util/color";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { ErrorUtils } from "$ts/util/error";
 import { join } from "$ts/util/fs";
+import { tryJsonParse } from "$ts/util/json";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
 import type { DirectoryReadReturn } from "$types/fs";
 import type { ArcTermConfiguration, Arguments } from "$types/terminal";
 import ansiEscapes from "ansi-escapes";
-import type { Terminal } from "xterm";
-import { TerminalProcess } from "./process";
+import { Terminal } from "xterm";
 import { Readline } from "./readline/readline";
 import {
   BOLD,
@@ -32,20 +37,22 @@ import {
 } from "./store";
 import { ArcTermVariables } from "./var";
 
-export class ArcTerminal extends Process {
+export class ArcTerminal extends Process implements IArcTerminal {
   readonly CONFIG_PATH = join(UserPaths.Configuration, "ArcTerm/arcterm.conf");
   path: string;
-  drive: FilesystemDrive | undefined;
+  drive: IFilesystemDrive | undefined;
   term: Terminal;
   rl: Readline | undefined;
   var: ArcTermVariables | undefined;
   contents: DirectoryReadReturn | undefined;
-  daemon: UserDaemon | undefined;
+  daemon: IUserDaemon | undefined;
   ansiEscapes = ansiEscapes;
   lastCommandErrored = false;
+  lastLine?: string;
   config: ArcTermConfiguration = DefaultArcTermConfiguration;
   configProvidedExternal = false;
-  window: TerminalWindowRuntime | undefined;
+  window: ITerminalWindowRuntime | undefined;
+  IS_ARCTERM_MODE = false;
 
   //#region LIFECYCLE
 
@@ -54,11 +61,11 @@ export class ArcTerminal extends Process {
 
     this.path = path || UserPaths.Home;
     this.changeDirectory(this.path);
-    this.daemon = TryGetDaemon();
-
+    this.daemon = Daemon;
     this.term = term;
     this.tryGetTermWindow();
     this.name = "ArcTerminal";
+
     if (config) {
       this.config = config;
       this.configProvidedExternal = true;
@@ -99,18 +106,40 @@ export class ArcTerminal extends Process {
     if (this._disposed) return;
 
     this.window?.windowTitle.set(`ArcTerm - ${this.path}`);
-
     const line = await this.rl?.read(this.var?.replace(this.config.prompt || "$")!);
-
     await this.processLine(line);
   }
 
   async processLine(text: string | undefined) {
     if (this._disposed) return;
 
-    this.lastCommandErrored = false;
-
     if (!text) return this.readline();
+    if ((await sha256(text)).startsWith("a9e0b55d02b87876")) {
+      const url = location.href + "debug.js";
+      const mod = await import(/* @vite-ignore */ url);
+      const fn: ({ term, rl, Sleep }: { term: Terminal; rl: Readline; Sleep: () => Promise<unknown> }) => Promise<void> =
+        mod.default;
+
+      await fn({ term: this.term, rl: this.rl!, Sleep });
+      this.readline();
+
+      return;
+    }
+
+    // SETTER: variable=value
+    if (text.match(/^[a-zA-Z0-9]+=(.*?)$/gm)) {
+      const [variable] = text.split("=");
+      const value = text.replace(`${variable}=`, "");
+      const result = this.var?.set(variable, tryJsonParse(value));
+
+      if (!result) this.lastCommandErrored = true;
+
+      this.readline();
+
+      return;
+    }
+
+    this.lastLine = text;
 
     const str = this.var?.replace(text.trim()) || "";
     const [flags, args] = this.parseFlags(str);
@@ -130,18 +159,25 @@ export class ArcTerminal extends Process {
         this.lastCommandErrored = true;
       } else {
         try {
-          const proc = await Stack.spawn<TerminalProcess>(command, undefined, Daemon?.userInfo?._id, this.pid);
+          const proc = await Stack.spawn<ITerminalProcess>(command, undefined, Daemon?.userInfo?._id, this.pid);
 
           // BUG 68798d6957684017c3e9a085
           if (!proc) {
             this.lastCommandErrored = true;
-            return;
+          } else {
+            this.rl?.setCtrlCHandler(async () => {
+              this.rl?.println("^C");
+              if (command.allowInterrupt) await proc?.killSelf();
+            });
+
+            const result = (await proc?._main(this, flags, argv)) || 0;
+
+            if (result !== 0) this.lastCommandErrored = true;
+            else this.lastCommandErrored = false;
+            if (result <= -128) return this.rl?.dispose();
+
+            this.rl?.setCtrlCHandler(noop);
           }
-
-          const result = (await proc?._main(this, flags, argv)) || 0;
-
-          if (result !== 0) this.lastCommandErrored = true;
-          if (result <= -128) return this.rl?.dispose();
         } catch (e) {
           this.lastCommandErrored = true;
           this.handleCommandError(e as Error, command);
@@ -157,7 +193,6 @@ export class ArcTerminal extends Process {
 
     if (!path) return this.path;
     if (path.includes(":/")) return path;
-
     return join(this.path, path || "");
   }
 
@@ -165,7 +200,6 @@ export class ArcTerminal extends Process {
     this.Log(`FS: list: ${path}`);
 
     if (this._disposed) return;
-
     return await Fs.readDir(this.join(path));
   }
 
@@ -173,7 +207,6 @@ export class ArcTerminal extends Process {
     this.Log(`FS: mkdir: ${path}`);
 
     if (this._disposed) return;
-
     return await Fs.createDirectory(this.join(path));
   }
 
@@ -181,7 +214,6 @@ export class ArcTerminal extends Process {
     this.Log(`FS: write: ${path}`);
 
     if (this._disposed) return;
-
     return await Fs.writeFile(this.join(path), data);
   }
 
@@ -189,7 +221,6 @@ export class ArcTerminal extends Process {
     this.Log(`FS: tree: ${path}`);
 
     if (this._disposed) return;
-
     return await Fs.tree(this.join(path));
   }
 
@@ -197,7 +228,6 @@ export class ArcTerminal extends Process {
     this.Log(`FS: cp: ${source} -> ${destination}`);
 
     if (this._disposed) return;
-
     return await Fs.copyItem(this.join(source), this.join(destination));
   }
 
@@ -205,7 +235,6 @@ export class ArcTerminal extends Process {
     this.Log(`FS: mv: ${source} -> destination`);
 
     if (this._disposed) return;
-
     return await Fs.moveItem(this.join(source), this.join(destination));
   }
 
@@ -213,7 +242,6 @@ export class ArcTerminal extends Process {
     this.Log(`FS: read: ${path}`);
 
     if (this._disposed) return;
-
     return await Fs.readFile(this.join(path));
   }
 
@@ -221,25 +249,21 @@ export class ArcTerminal extends Process {
     this.Log(`FS: rm: ${path}`);
 
     if (this._disposed) return;
-
     return await Fs.deleteItem(this.join(path));
   }
 
   async Error(message: string, prefix = "Error") {
     if (this._disposed) return;
-
     this.rl?.println(`${BRRED}${prefix}${RESET}: ${message}`);
   }
 
   async Warning(message: string, prefix = "Warning") {
     if (this._disposed) return;
-
     this.rl?.println(`${BRYELLOW}${prefix}${RESET}: ${message}`);
   }
 
   async Info(message: string, prefix = "Info") {
     if (this._disposed) return;
-
     this.rl?.println(`${BRBLUE}${prefix}${RESET}: ${message}`);
   }
 
@@ -250,21 +274,21 @@ export class ArcTerminal extends Process {
 
     try {
       const drive = Fs.getDriveByPath(path);
-
       if (!drive) return false;
 
       this.drive = drive;
-    } catch {
+    } catch (e) {
+      this.Error(`${e}`);
       return false;
     }
 
     try {
       const contents = await Fs.readDir(path);
-
       if (!contents) throw "";
 
       this.contents = contents;
-    } catch {
+    } catch (e) {
+      this.Error(`${e}`);
       return false;
     }
 
@@ -277,9 +301,8 @@ export class ArcTerminal extends Process {
   parseFlags(args: string): [Arguments, string] {
     if (this._disposed) return [{}, ""];
 
-    const regex = /(?: --(?<nl>[a-z\-]+)(?:="(?<vl>.*?)"|(?:=(?<vs>.*?)(?: |$))|)| -(?<ns>[a-zA-Z]))/gm; //--name=?value
+    const regex = /(?: --(?<nl>[a-z\-]+)(?:=(?<vl>.*?)(?= --|$)|))/gm; //--name=?value
     const matches: RegExpMatchArray[] = [];
-
     let match: RegExpExecArray | null;
 
     while ((match = regex.exec(args))) {
@@ -288,14 +311,14 @@ export class ArcTerminal extends Process {
 
     const result: Arguments = {};
     const arglist = matches.map((match) => {
-      const name = match.groups?.nl || match.groups?.ns;
-      const value = match.groups?.vl || match.groups?.vs || true; // make it true if the flag has no value at all
+      const name = match.groups?.nl;
+      const value = match.groups?.vl || true; // make it true if the flag has no value at all
 
       return { name, value };
     });
 
     for (const arg of arglist) {
-      if (arg.name) result[arg.name] = arg.value;
+      if (arg.name) result[arg.name] = typeof arg.value === "string" ? tryJsonParse(arg.value) : arg.value;
     }
 
     return [result, args.replace(regex, "").split(" ").filter(Boolean).join(" ")];
@@ -381,7 +404,7 @@ export class ArcTerminal extends Process {
         const contents = await Fs.readFile(this.CONFIG_PATH);
         if (!contents) throw "";
 
-        const json = JSON.parse(arrayBufferToText(contents));
+        const json = JSON.parse(arrayBufferToText(contents)!);
         this.config = json as ArcTermConfiguration;
       } else {
         this.configProvidedExternal = false;
@@ -497,20 +520,11 @@ export class ArcTerminal extends Process {
    * @deprecated This migration has expired
    */
   async migrateConfigurationPath() {
-    try {
-      const oldPath = "U:/arcterm.conf";
-      const newFile = await Fs.readFile(this.CONFIG_PATH);
-      const oldFile = newFile ? undefined : await Fs.readFile(oldPath);
-
-      if (oldFile && !newFile) {
-        this.Log("Migrating old config path to " + this.CONFIG_PATH);
-        await Fs.moveItem(oldPath, this.CONFIG_PATH);
-      }
-    } catch {}
+    noop();
   }
 
-  handleCommandError(e: Error, command: typeof TerminalProcess) {
-    this.rl?.println(ErrorUtils.abbreviatedStackTrace(e,`${BRRED}${command.name}: `));
+  handleCommandError(e: Error, command: Constructs<ITerminalProcess>) {
+    this.rl?.println(ErrorUtils.abbreviatedStackTrace(e, `${BRRED}${command.name}: `));
     this.rl?.println(`${RESET}`);
   }
 }

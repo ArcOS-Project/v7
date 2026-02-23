@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Daemon } from "$ts/server/user/daemon";
-  import { TimeFrames } from "$ts/server/user/store";
+  import { Daemon } from "$ts/daemon";
+  import { TimeFrames } from "$ts/user/store";
   import { groupByTimeFrame } from "$ts/util";
   import type { LoginActivity } from "$types/activity";
   import { onMount } from "svelte";

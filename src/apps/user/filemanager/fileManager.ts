@@ -7,7 +7,7 @@ export const FileManagerApp: App = {
   metadata: {
     name: "File Manager",
     author: "Izaak Kuipers",
-    version: "8.0.0",
+    version: "8.0.3",
     icon: "FileManagerIcon",
   },
   size: {

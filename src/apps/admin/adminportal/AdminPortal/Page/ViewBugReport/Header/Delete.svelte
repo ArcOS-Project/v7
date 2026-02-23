@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import type { ViewBugReportData } from "$apps/admin/adminportal/types";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import Spinner from "$lib/Spinner.svelte";
-  import { MessageBox } from "$ts/dialog";
+  import { MessageBox } from "$ts/util/dialog";
 
-  const { process, data }: { process: AdminPortalRuntime; data: ViewBugReportData } = $props();
-  const { report } = data;
+  const { process, data }: { process: IAdminPortalRuntime; data: ViewBugReportData } = $props();
+  const { report, quickView } = data;
 
   let loading = $state(false);
 
@@ -16,12 +16,21 @@
         message:
           "Are you really, really REALLY sure you want to delete this report? It may be a smarter option to simply close it as this action CANNOT be reverted.",
         buttons: [
-          { caption: "Cancel", action: () => {} },
+          {
+            caption: "Cancel",
+            action: () => {
+              loading = false;
+            },
+          },
           {
             caption: "Delete",
-            action: () => {
-              process.admin.deleteBugReport(report._id!);
-              process.switchPage("bughunt");
+            action: async () => {
+              await process.admin.deleteBugReport(report._id!);
+
+              if ($quickView) $quickView = "";
+              else await process.switchPage("bughunt");
+
+              loading = false;
             },
             suggested: true,
           },

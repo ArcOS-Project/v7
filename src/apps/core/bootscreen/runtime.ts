@@ -1,9 +1,8 @@
+import { AppProcess } from "$ts/apps/process";
 import { State } from "$ts/env";
-import { KernelStateHandler } from "$ts/getters";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
-import { AppProcess } from "../../../ts/apps/process";
-import type { AppProcessData } from "../../../types/app";
+import type { AppProcessData } from "$types/app";
 
 export class BootScreenRuntime extends AppProcess {
   public progress = Store<boolean>(false);
@@ -46,6 +45,9 @@ export class BootScreenRuntime extends AppProcess {
       this.status.set("Entering Safe Mode");
       await Sleep(2000);
       State?.loadState("login", { safeMode: true });
+    } else if (e?.key === "F4") {
+      this.status.set("Opening server selector");
+      State?.loadState("switchServer", { safeMode: true });
     } else if (e?.key.toLowerCase() === "a") {
       this.status.set("Starting ArcTerm");
       State?.loadState("arcterm");

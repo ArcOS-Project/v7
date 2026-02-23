@@ -1,5 +1,5 @@
+import type { IArcTerminal } from "$interfaces/terminal";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 
 export class OpenCommand extends TerminalProcess {
@@ -16,7 +16,7 @@ export class OpenCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const filename = argv.join(" ");
     const shortcuts = Object.entries(term.contents?.shortcuts || {});
     const translated = shortcuts.filter(([_, v]) => v.name === filename).map(([k, v]) => ({ ...v, filename: k }))[0];

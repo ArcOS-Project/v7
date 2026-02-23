@@ -1,16 +1,16 @@
 <script lang="ts">
+  import type { IShellRuntime } from "$interfaces/shell";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import type { UserPreferencesStore } from "$types/user";
-  import type { ShellRuntime } from "../../runtime";
-
+  
   const {
     userPreferences,
     process,
     username,
   }: {
     userPreferences: UserPreferencesStore;
-    process: ShellRuntime;
+    process: IShellRuntime;
     username: string;
   } = $props();
 

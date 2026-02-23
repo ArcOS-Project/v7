@@ -1,15 +1,15 @@
 <script lang="ts">
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
-  import { contextProps } from "$ts/context/actions.svelte";
+  import type { IShellRuntime } from "$interfaces/shell";
+  import Spinner from "$lib/Spinner.svelte";
+  import { Daemon } from "$ts/daemon";
   import { Fs } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
-  import { UserPaths } from "$ts/server/user/store";
+  import { contextMenu } from "$ts/ui/context/actions.svelte";
+  import { UserPaths } from "$ts/user/store";
   import { arrayBufferToBlob } from "$ts/util/convert";
   import type { UserPreferencesStore } from "$types/user";
   import { onMount } from "svelte";
-  import Spinner from "../../../../../../../lib/Spinner.svelte";
 
-  const { userPreferences, process }: { userPreferences: UserPreferencesStore; process: ShellRuntime } = $props();
+  const { userPreferences, process }: { userPreferences: UserPreferencesStore; process: IShellRuntime } = $props();
 
   let url = $state("");
   let errored = $state(false);
@@ -76,8 +76,21 @@
   class:no-image={noImage}
   class:errored
   class:loading
-  data-contextmenu="actioncenter-gallery-card"
-  use:contextProps={[chooseImage]}
+  use:contextMenu={[
+    [
+      {
+        caption: "Change image...",
+        action: () => chooseImage(),
+        icon: "pencil",
+      },
+      {
+        caption: "Remove image",
+        action: () => ($userPreferences.shell.actionCenter.galleryImage = ""),
+        icon: "x",
+      },
+    ],
+    process,
+  ]}
 >
   {#if !loading}
     {#if noImage}

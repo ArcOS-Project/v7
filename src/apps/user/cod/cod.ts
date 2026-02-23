@@ -37,7 +37,7 @@ export const CodApp: App = {
     fullscreen: false,
   },
   opens: {
-    extensions: [".json", ".svg", ".html", ".css", ".js", ".tpa", "arcterm.conf", ".md", ".ini", ".xml", ".sql"],
+    extensions: [".json", ".svg", ".html", ".css", ".js", ".ts", ".tpa", "arcterm.conf", ".md", ".ini", ".xml", ".sql"],
   },
   assets: {
     runtime: CodRuntime,

@@ -1,8 +1,8 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
-  import { contextProps } from "$ts/context/actions.svelte";
-  import { Daemon } from "$ts/server/user/daemon";
-  import { Wallpapers } from "$ts/wallpaper/store";
+  import { Daemon } from "$ts/daemon";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
+  import { Wallpapers } from "$ts/user/wallpaper/store";
   import type { UserPreferencesStore } from "$types/user";
   import type { Wallpaper } from "$types/wallpaper";
   import { onMount } from "svelte";

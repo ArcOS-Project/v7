@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
+import { Daemon } from "$ts/daemon";
 import { Env, Stack } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
 import type { AppProcessData } from "$types/app";
 
 export class SystemShortcutsRuntime extends AppProcess {
@@ -10,8 +10,10 @@ export class SystemShortcutsRuntime extends AppProcess {
 
     this.setSource(__SOURCE__);
   }
+  
+  //#endregion
 
-  async start() {
+  async render() {
     if (await this.closeIfSecondInstance()) return false;
 
     this.acceleratorStore.push(
@@ -49,8 +51,6 @@ export class SystemShortcutsRuntime extends AppProcess {
       }
     );
   }
-
-  //#endregion
 
   async closeFocused() {
     this.Log("Attempting to close focused window");

@@ -1,5 +1,5 @@
+import type { IArcTerminal } from "$interfaces/terminal";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 
 export class LogoutCommand extends TerminalProcess {
@@ -16,7 +16,7 @@ export class LogoutCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]) {
+  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]) {
     term.daemon?.power?.logoff();
     return -256;
   }

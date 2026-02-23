@@ -1,6 +1,6 @@
 <script lang="ts">
+  import type { IProcess } from "$interfaces/process";
   import { Stack } from "$ts/env";
-  import type { Process } from "$ts/process/instance";
   import { onMount } from "svelte";
   import type { ProcessManagerRuntime } from "../runtime";
   import Row from "./Tree/Row.svelte";
@@ -8,7 +8,7 @@
   const { process }: { process: ProcessManagerRuntime } = $props();
   const { running } = process;
 
-  let map = $state<Map<number, Process>>(new Map());
+  let map = $state<Map<number, IProcess>>(new Map());
 
   onMount(() => {
     Stack.store.subscribe(async (v) => {
