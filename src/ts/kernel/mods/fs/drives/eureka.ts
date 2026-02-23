@@ -1,6 +1,6 @@
 import { sortByKey } from "$ts/util";
 import { blobToText, textToArrayBuffer } from "$ts/util/convert";
-import { getParentDirectory } from "$ts/util/fs";
+import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import type { ExistingEurekaNote, ExistingEurekaUser, FolderRead } from "$types/eureka";
 import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback } from "$types/fs";
 import type { AxiosInstance } from "axios";
@@ -139,8 +139,8 @@ export class EurekaDrive extends FilesystemDrive {
 
   async _noteIdFromPath(path: string) {
     const parent = getParentDirectory(path);
-    const filename = path.replace(`${parent}/`, "");
-    const folder = await this._readFolderByPath(parent);
+    const filename = getItemNameFromPath(path);
+    const folder = await this._readFolderByPath(parent == path ? undefined : parent);
     if (!folder) return undefined;
 
     const note = folder.notes.filter((n) => n.name === filename)[0];
@@ -163,7 +163,7 @@ export class EurekaDrive extends FilesystemDrive {
         headers: { Authorization: `Bearer ${this.token}` },
       });
 
-      return response.status === 200;
+      return response.status === 200; 
     } catch (e) {
       return false;
     }

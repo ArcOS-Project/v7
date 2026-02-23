@@ -13,6 +13,7 @@ import type { IFilesystemDrive } from "$interfaces/fs";
 import type { IRecentFilesService } from "$interfaces/services/RecentFilesSvc";
 import type { ITrashCanService } from "$interfaces/services/TrashSvc";
 import { Env, Fs, Stack, SysDispatch } from "$ts/env";
+import { EurekaDrive } from "$ts/kernel/mods/fs/drives/eureka";
 import { LegacyServerDrive } from "$ts/kernel/mods/fs/drives/legacy";
 import { SourceFilesystemDrive } from "$ts/kernel/mods/fs/drives/src";
 import { ZIPDrive } from "$ts/kernel/mods/fs/drives/zip";
@@ -577,5 +578,9 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
 
   async mountSourceDrive(): Promise<IFilesystemDrive | false> {
     return await Fs.mountDrive<IFilesystemDrive>("src", SourceFilesystemDrive, "S");
+  }
+
+  async mountEureka(token: string): Promise<false | IFilesystemDrive> {
+    return await Fs.mountDrive<IFilesystemDrive>("eureka", EurekaDrive, "E", undefined, token);
   }
 }

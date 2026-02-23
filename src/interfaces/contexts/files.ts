@@ -28,6 +28,7 @@ export interface IFilesystemUserContext extends IUserContext {
   determineCategorizedDiskUsage(): Promise<CategorizedDiskUsage>;
   getThumbnailFor(path: string): Promise<string | undefined>;
   mountLegacyFilesystem(connectionInfo: LegacyConnectionInfo): Promise<false | ILegacyServerDrive>;
+  mountEureka(token: string): Promise<false | IFilesystemDrive>;
   moveToTrashOrDeleteItem(path: string, dispatch?: boolean): Promise<boolean>;
   normalizePath(path: string): string;
   mountSourceDrive(): Promise<IFilesystemDrive | false>;
