@@ -2,7 +2,7 @@ import type { IProcessHandler } from "$interfaces/modules/stack";
 import * as stackTraceParser from "stacktrace-parser";
 import { __Console__ } from "./console";
 import { Crash } from "./crash";
-import { Kernel, Stack } from "./env";
+import { Kernel } from "./env";
 import { Log } from "./logging";
 
 export function handleGlobalErrors() {
@@ -56,13 +56,12 @@ export function handleGlobalErrors() {
 
 export function interceptTpaErrors(stack: string, e: Error): boolean {
   const FPA_TEST_REGEXP = /http(s|):\/\/[a-zA-Z.0-9\/]+\/assets\/(?<appId>[a-zA-Z]+)-[a-f0-9A-F\-_]+\.js/gm;
-  const handler = Stack;
-  const renderer = Stack?.renderer;
-
-  const parsed = stackTraceParser.parse(stack).filter((p) => !p.file?.includes("<anonymous>"));
-  //
+  let parsed = stackTraceParser.parse(stack);
+  parsed = parsed.filter((p) => !p.file?.includes("<anonymous>"));
   const isTpa = !!parsed[0]?.file?.includes(`localhost:3128`) || !!parsed[0]?.file?.includes(`/tpa/`);
   const isFpa = parsed[0]?.file && FPA_TEST_REGEXP.test(parsed[0].file);
+  const handler = Kernel!.getModule<IProcessHandler>?.("stack", true);
+  const renderer = handler?.renderer;
 
   if (renderer?.lastInteract) {
     if (isTpa && parsed[0]?.file?.includes(`/${renderer.lastInteract.app.id}@`)) {

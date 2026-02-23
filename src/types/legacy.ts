@@ -1,4 +1,6 @@
 export interface Cred {
+  url: string;
+  authCode?: string;
   username: string;
   password: string;
 }
