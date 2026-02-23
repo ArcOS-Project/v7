@@ -22,6 +22,7 @@ export interface IFilesystemDrive {
   readonly IDENTIFIES_AS: string;
   readonly FILESYSTEM_SHORT: string;
   readonly FILESYSTEM_LONG: string;
+  readonly CAPABILITIES: Record<DriveCapabilities, boolean>;
   BUSY: boolean;
   Log(message: string, level?: LogLevel): void;
   lockFile(path: string, pid: number): Promise<void>;

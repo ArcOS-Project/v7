@@ -24,19 +24,19 @@ export class SharedDrive extends FilesystemDrive implements ISharedDrive {
   public IDENTIFIES_AS: string = "share";
   public FILESYSTEM_SHORT: string = "SDFS";
   public FILESYSTEM_LONG: string = "Shared Drive Filesystem";
-  protected override CAPABILITIES: Record<DriveCapabilities, boolean> = {
+  public override CAPABILITIES: Record<DriveCapabilities, boolean> = {
     readDir: true,
     makeDir: true,
     readFile: true,
     writeFile: true,
-    tree: true,
     copyItem: true,
     moveItem: true,
     deleteItem: true,
+    tree: true,
     direct: true,
-    quota: true,
     bulk: true,
     stat: true,
+    quota: true,
   };
   constructor(uuid: string, letter: string, info: SharedDriveType) {
     super(uuid, letter);

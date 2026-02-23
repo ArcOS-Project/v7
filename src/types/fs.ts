@@ -115,14 +115,14 @@ export type DriveCapabilities =
   | "makeDir"
   | "readFile"
   | "writeFile"
-  | "tree"
   | "copyItem"
   | "moveItem"
   | "deleteItem"
+  | "tree"
   | "direct"
-  | "quota"
   | "bulk"
-  | "stat";
+  | "stat"
+  | "quota";
 
 export interface FilesystemStat {
   isFile: boolean;

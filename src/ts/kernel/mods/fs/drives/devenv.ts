@@ -21,19 +21,19 @@ export class DevDrive extends FilesystemDrive implements IFilesystemDrive {
   private axios: AxiosInstance;
   private url: string;
   public label: string = "Dev Drive";
-  protected override CAPABILITIES: Record<DriveCapabilities, boolean> = {
+  public override CAPABILITIES: Record<DriveCapabilities, boolean> = {
     readDir: true,
     makeDir: true,
     readFile: true,
     writeFile: true,
-    tree: true,
     copyItem: true,
     moveItem: true,
     deleteItem: true,
+    tree: true,
     direct: true,
-    quota: true,
     bulk: true,
     stat: false,
+    quota: true,
   };
 
   constructor(uuid: string, letter: string, axios: AxiosInstance, url: string) {
@@ -44,7 +44,7 @@ export class DevDrive extends FilesystemDrive implements IFilesystemDrive {
   }
 
   async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
-      try {
+    try {
       const response = await this.axios.get<DirectoryReadReturn>(path ? `/fs/dir/${path}` : `/fs/dir`);
 
       return response.data;

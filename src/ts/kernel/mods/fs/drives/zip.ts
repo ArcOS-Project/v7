@@ -14,19 +14,19 @@ export class ZIPDrive extends FilesystemDrive implements IZipDrive {
   public IDENTIFIES_AS: string = "zip";
   public FILESYSTEM_SHORT: string = "ZipFS";
   public FILESYSTEM_LONG: string = "ZIP Filesystem";
-  protected override CAPABILITIES: Record<DriveCapabilities, boolean> = {
+  public override CAPABILITIES: Record<DriveCapabilities, boolean> = {
     readDir: true,
     makeDir: false,
     readFile: true,
     writeFile: false,
-    tree: true,
     copyItem: false,
     moveItem: false,
     deleteItem: false,
+    tree: true,
     direct: false,
-    quota: false,
     bulk: false,
     stat: false,
+    quota: false,
   };
 
   constructor(uuid: string, letter: string, path: string) {
