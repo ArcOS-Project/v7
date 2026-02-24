@@ -1,13 +1,11 @@
 import type { IFileAssocService } from "$interfaces/services/FileAssocSvc";
+import { ConfigurationBuilder } from "$ts/config";
 import { Daemon } from "$ts/daemon";
-import { Fs } from "$ts/env";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
 import { UserPaths } from "$ts/user/store";
-import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, join } from "$ts/util/fs";
-import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
 import type { ExpandedFileAssociationInfo, FileAssociationConfig } from "$types/assoc";
 import type { Service } from "$types/service";
@@ -15,7 +13,13 @@ import { DefaultFileDefinitions } from "./store";
 
 export class FileAssocService extends BaseService implements IFileAssocService {
   private CONFIG_PATH = join(UserPaths.System, "FileAssociations.json");
-  private Configuration = Store<FileAssociationConfig>();
+  private Associations = Store<FileAssociationConfig>();
+  private Configuration = new ConfigurationBuilder<FileAssociationConfig>()
+    .ForProcess(this)
+    .ReadsFrom(this.Associations)
+    .WritesTo(this.CONFIG_PATH)
+    .WithDefaults(this.defaultFileAssociations())
+    .Build();
 
   //#region LIFECYCLE
 
@@ -27,44 +31,18 @@ export class FileAssocService extends BaseService implements IFileAssocService {
 
   async start() {
     this.initBroadcast?.("Starting file associations");
-    await this.loadConfiguration();
+    await this.Configuration.initialize();
   }
 
   //#endregion
-
-  private async loadConfiguration() {
-    if (this._disposed) return;
-
-    this.Log("Loading configuration");
-    const contents = await Fs.readFile(this.CONFIG_PATH);
-
-    const json = contents ? tryJsonParse<FileAssociationConfig>(arrayBufferToText(contents)) : undefined;
-
-    if (!json || typeof json === "string") return await this.writeConfiguration(this.defaultFileAssociations());
-
-    this.Configuration.set(json);
-  }
-
-  private async writeConfiguration(configuration: FileAssociationConfig) {
-    if (this._disposed) return configuration;
-    this.Log("Writing configuration");
-
-    await Fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(configuration, null, 2)));
-
-    this.Configuration.set(configuration);
-
-    return configuration;
-  }
-
   public async updateConfiguration(
     callback: (config: FileAssociationConfig) => FileAssociationConfig | Promise<FileAssociationConfig>
   ) {
     if (this._disposed) return;
 
-    const result = await callback(this.Configuration());
+    const result = await callback(this.Associations());
 
-    this.Configuration.set(result);
-    await this.writeConfiguration(result);
+    this.Associations.set(result);
   }
 
   public defaultFileAssociations(): FileAssociationConfig {
@@ -98,7 +76,7 @@ export class FileAssocService extends BaseService implements IFileAssocService {
     if (this._disposed || !path) return;
 
     const storage = this.host.getService<ApplicationStorage>("AppStorage");
-    const config = this.Configuration();
+    const config = this.Associations();
     const associations = config?.associations;
     const definitions = config?.definitions;
     const split = path.split(".");
@@ -130,7 +108,7 @@ export class FileAssocService extends BaseService implements IFileAssocService {
   }
 
   getUnresolvedAssociationIcon(path: string): string {
-    const config = this.Configuration();
+    const config = this.Associations();
     const associations = config?.associations;
     const definitions = config?.definitions;
     const split = path.split(".");
@@ -144,7 +122,7 @@ export class FileAssocService extends BaseService implements IFileAssocService {
   }
 
   getConfiguration() {
-    return this.Configuration();
+    return this.Associations();
   }
 }
 

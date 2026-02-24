@@ -40,7 +40,7 @@
   let movingX = $state<number>();
   let movingY = $state<number>();
 
-  const { userPreferences, Configuration, selected, orphaned } = process;
+  const { userPreferences, Positions: Configuration, selected, orphaned } = process;
 
   async function updatePos() {
     const pos = $Configuration[`icon$${identifier}`] as {

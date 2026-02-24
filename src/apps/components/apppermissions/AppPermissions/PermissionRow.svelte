@@ -4,7 +4,7 @@
   import { onMount } from "svelte";
 
   const { id, permissionId }: { id: PermissionString; permissionId: string } = $props();
-  const { Configuration } = Permissions!;
+  const { Storage: Configuration } = Permissions!;
 
   const options = ["Unset", "Allow", "Deny"] as const;
   type Option = (typeof options)[number];

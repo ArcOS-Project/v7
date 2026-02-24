@@ -1,11 +1,10 @@
 import { AppProcess } from "$ts/apps/process";
+import { ConfigurationBuilder } from "$ts/config";
 import { Daemon } from "$ts/daemon";
 import { Env, Fs, SysDispatch } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
-import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, join } from "$ts/util/fs";
-import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { DirectoryReadReturn } from "$types/fs";
@@ -23,7 +22,14 @@ export class WallpaperRuntime extends AppProcess {
   orphaned = Store<string[]>([]);
   loading = Store<boolean>(false);
   directory: string;
-  Configuration = Store<DesktopIcons>({});
+  Positions = Store<DesktopIcons>({});
+  Configuration = new ConfigurationBuilder<DesktopIcons>()
+    .ForProcess(this)
+    .ReadsFrom(this.Positions)
+    .WritesTo(this.CONFIG_PATH)
+    .WithDefaults({})
+    .WithCooldown(500)
+    .Build();
 
   public contextMenu: AppContextMenu = WallpaperContextMenu(this);
 
@@ -45,18 +51,7 @@ export class WallpaperRuntime extends AppProcess {
   }
 
   async start() {
-    const migrated = await this.migrateDesktopIcons();
-    if (!migrated) await this.loadConfiguration();
-
-    let firstSub = false;
-
-    this.Configuration.subscribe((v) => {
-      if (!firstSub) {
-        firstSub = true;
-        return;
-      }
-      this.writeConfiguration(v);
-    });
+    await this.Configuration.initialize();
   }
 
   async render() {
@@ -105,7 +100,7 @@ export class WallpaperRuntime extends AppProcess {
 
   findAndDeleteOrphans(contents: DirectoryReadReturn | undefined) {
     const orphaned = this.orphaned();
-    const config = this.Configuration();
+    const config = this.Positions();
     let orphanedCount = 0;
 
     for (const id of Object.keys(config)) {
@@ -123,7 +118,7 @@ export class WallpaperRuntime extends AppProcess {
       }
     }
 
-    if (orphanedCount) this.Configuration.set(config);
+    if (orphanedCount) this.Positions.set(config);
     this.orphaned.set(orphaned);
   }
 
@@ -133,7 +128,7 @@ export class WallpaperRuntime extends AppProcess {
     if (!wrapper) return { x: 0, y: 0 };
 
     return new Promise((r) => {
-      this.Configuration.update((v) => {
+      this.Positions.update((v) => {
         function resolve(x: number, y: number) {
           r({ x, y });
           v[`icon$${identifier}`] = { x, y };
@@ -245,56 +240,6 @@ export class WallpaperRuntime extends AppProcess {
     }
 
     prog.mutDone(+1);
-  }
-
-  //#endregion
-  //#region CONFIGURATION
-
-  async loadConfiguration() {
-    this.Log(`Loading configuration`);
-
-    try {
-      const contents = await Fs.readFile(this.CONFIG_PATH);
-      if (!contents) return await this.writeConfiguration({});
-
-      const json = tryJsonParse<DesktopIcons>(arrayBufferToText(contents));
-      if (!json || typeof json === "string") return await this.writeConfiguration({});
-
-      this.Configuration.set(json);
-    } catch {}
-  }
-
-  async writeConfiguration(data: DesktopIcons) {
-    this.Log(`Writing configuration`);
-
-    await Fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(data, null, 2)));
-
-    return data;
-  }
-
-  // 7.0.5 -> 7.0.6+
-  // Migration of desktop icons from the preferences to a dedicated file in U:/System
-  async migrateDesktopIcons() {
-    this.Log(`migrateDesktopIcons`);
-
-    const migrationPath = join(UserPaths.Migrations, "DeskIconMig-706.lock");
-    const pref = this.userPreferences().appPreferences.desktopIcons;
-    const migration = await Fs.stat(migrationPath);
-
-    if (pref && !migration) {
-      await this.writeConfiguration(pref);
-      this.Configuration.set(pref);
-
-      this.userPreferences.update((v) => {
-        delete v.appPreferences.desktopIcons;
-        return v;
-      });
-
-      await Fs.writeFile(migrationPath, textToBlob(`${Date.now()}`));
-      return true;
-    }
-
-    return false;
   }
 
   //#endregion

@@ -24,7 +24,7 @@ export class IconEditorRuntime extends AppProcess {
   async start() {
     this.iconService = Daemon?.serviceHost?.getService<IconService>("IconService");
     this.setGroups();
-    this.icons.set({ ...(this.iconService?.Configuration() || {}) });
+    this.icons.set({ ...(this.iconService?.Icons() || {}) });
     this.icons.subscribe(() => {
       this.hasChanges.set(true);
       this.updateFiltered();
@@ -49,7 +49,7 @@ export class IconEditorRuntime extends AppProcess {
     );
 
     if (saveChanges) {
-      this.iconService?.Configuration.set({ ...this.icons() });
+      this.iconService?.Icons.set({ ...this.icons() });
       this.hasChanges.set(false);
     }
 
@@ -60,7 +60,7 @@ export class IconEditorRuntime extends AppProcess {
 
   revert() {
     this.Log(`Reverting changes`);
-    this.icons.set({ ...(this.iconService?.Configuration() || {}) });
+    this.icons.set({ ...(this.iconService?.Icons() || {}) });
     this.setGroups();
     this.selectedIcon.set("");
     this.selectedGroup.set("");
@@ -88,7 +88,7 @@ export class IconEditorRuntime extends AppProcess {
   async save() {
     this.Log(`Saving changes`);
 
-    this.iconService?.Configuration.set({ ...this.icons() });
+    this.iconService?.Icons.set({ ...this.icons() });
     this.hasChanges.set(false);
     await this.closeWindow();
 

@@ -1,13 +1,12 @@
 import type { IIconService } from "$interfaces/services/IconService";
+import { ConfigurationBuilder } from "$ts/config";
 import { Daemon } from "$ts/daemon";
 import { Fs } from "$ts/env";
 import { getAllImages, getGroupedIcons, iconIdFromPath, maybeIconId } from "$ts/images";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
-import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
-import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
 import type { App } from "$types/app";
 import type { Service } from "$types/service";
@@ -17,7 +16,15 @@ export class IconService extends BaseService implements IIconService {
   FILE_CACHE: Record<string, string> = {}; // R<id, url>
   ICON_TYPES = ["fs", "builtin", "app"];
   DEFAULT_ICON = "";
-  Configuration = Store<Record<string, string>>({});
+  Icons = Store<Record<string, string>>({});
+  Configuration = new ConfigurationBuilder<Record<string, string>>()
+    .ForProcess(this)
+    .ReadsFrom(this.Icons)
+    .WritesTo(this.PATH)
+    .WithDefaults({})
+    .WithCooldown(50)
+    .Build();
+
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
@@ -28,40 +35,16 @@ export class IconService extends BaseService implements IIconService {
 
   async start() {
     this.initBroadcast?.("Starting icon service");
-    this.Configuration.set(await this.loadConfiguration());
+    await this.Configuration.initialize();
     await this.cacheEverything();
 
-    let initialDone = false;
-
-    this.Configuration.subscribe((v) => {
-      if (!initialDone) return (initialDone = true);
-
-      this.writeConfiguration(v);
+    this.Icons.subscribe(() => {
       this.cacheEverything();
     });
   }
 
   //#endregion
   //#region CONFIGURATION
-
-  async loadConfiguration() {
-    this.Log(`Loading configuration`);
-    const config = tryJsonParse<Record<string, string>>(arrayBufferToText((await Fs.readFile(this.PATH))!));
-
-    if (!config || typeof config === "string") {
-      return await this.writeConfiguration(this.defaultConfiguration());
-    }
-
-    return config;
-  }
-
-  async writeConfiguration(config: Record<string, string>) {
-    this.Log(`Writing configuration: ${Object.keys(config).length} icons`);
-
-    await Fs.writeFile(this.PATH, textToBlob(JSON.stringify(config, null, 2)));
-
-    return config;
-  }
 
   defaultConfiguration() {
     const icons = getAllImages();
@@ -78,7 +61,7 @@ export class IconService extends BaseService implements IIconService {
 
   async getIcon(id: string, noCache = false): Promise<string> {
     if (!id) return this.DEFAULT_ICON;
-    const icon = id.startsWith("@") ? id : this.Configuration()[id];
+    const icon = id.startsWith("@") ? id : this.Icons()[id];
 
     if (!icon) return this.DEFAULT_ICON;
     try {
@@ -125,7 +108,7 @@ export class IconService extends BaseService implements IIconService {
     // - Izaak Kuipers, September 25th 2025
     if (id.startsWith("@local:")) return this.DEFAULT_ICON;
 
-    const icon = id.startsWith("@") ? id : this.Configuration()[id];
+    const icon = id.startsWith("@") ? id : this.Icons()[id];
 
     if (!icon) return this.DEFAULT_ICON;
     try {
@@ -168,7 +151,7 @@ export class IconService extends BaseService implements IIconService {
   }
 
   async cacheEverything() {
-    const icons = this.Configuration();
+    const icons = this.Icons();
     const promises = [];
     const known: string[] = [];
 

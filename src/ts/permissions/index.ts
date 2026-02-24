@@ -2,12 +2,11 @@ import type { IPermissionedFilesystemInteractor, IPermissionHandler } from "$int
 import type { IProcess } from "$interfaces/process";
 import { AppProcess } from "$ts/apps/process";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
+import { ConfigurationBuilder } from "$ts/config";
 import { Daemon } from "$ts/daemon";
-import { Fs, USERFS_UUID } from "$ts/env";
+import { USERFS_UUID } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { sliceIntoChunks } from "$ts/util";
-import { arrayBufferToText, textToBlob } from "$ts/util/convert";
-import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
 import { ElevationLevel } from "$types/elevation";
 import type { PermissionStorage, SudoPermissions } from "$types/permission";
@@ -29,10 +28,14 @@ export class PermissionHandler extends Process implements IPermissionHandler {
   private PERMISSION_ID_REGEX = /^([0-9A-Z]{4}-){3}[0-9A-Z]{4}$/gm;
   #PERMISSION_FILE = "U:/System/Permissions.json";
   #PERMISSION_EXPIRY = 1000 * 60 * 10; // 10 minutes
-  public Configuration = Store<PermissionStorage>(DefaultPermissionStorage);
+  public Storage = Store<PermissionStorage>(DefaultPermissionStorage);
+  Configuration = new ConfigurationBuilder<PermissionStorage>()
+    .ForProcess(this)
+    .ReadsFrom(this.Storage)
+    .WritesTo(this.#PERMISSION_FILE)
+    .WithCooldown(100)
+    .Build();
   private SudoConfiguration = Store<SudoPermissions>({});
-  private FirstSubDone = false;
-  private configurationWriteTimeout?: NodeJS.Timeout;
   #permissionedFilesystemInteractors: Record<string, IPermissionedFilesystemInteractor> = {};
 
   get #PERMISSION_EXPIRY_DYN() {
@@ -50,35 +53,7 @@ export class PermissionHandler extends Process implements IPermissionHandler {
   }
 
   protected async start(): Promise<any> {
-    await this.readConfiguration();
-
-    this.Configuration.subscribe((v) => {
-      if (!this.FirstSubDone) return (this.FirstSubDone = true);
-
-      clearTimeout(this.configurationWriteTimeout);
-
-      this.configurationWriteTimeout = setTimeout(() => {
-        this.writeConfiguration(v);
-      }, 100);
-    });
-  }
-
-  //#endregion
-
-  //#region CONFIGURATION
-
-  async readConfiguration() {
-    const content = await Fs.readFile(this.#PERMISSION_FILE);
-    if (!content) return this.writeConfiguration(this.Configuration());
-
-    const json = tryJsonParse<PermissionStorage>(arrayBufferToText(content));
-    if (typeof json === "string") return this.writeConfiguration(DefaultPermissionStorage);
-
-    this.Configuration.set(json);
-  }
-
-  async writeConfiguration(config: PermissionStorage) {
-    await Fs.writeFile(this.#PERMISSION_FILE, textToBlob(JSON.stringify(config, null, 2)), undefined, false);
+    await this.Configuration.initialize();
   }
 
   //#endregion
@@ -89,14 +64,14 @@ export class PermissionHandler extends Process implements IPermissionHandler {
     this.validatePermissionString(permission);
     const id = this.getPermissionId(process);
 
-    return this.Configuration().allowed[id]?.includes(permission);
+    return this.Storage().allowed[id]?.includes(permission);
   }
 
   hasPermissionById(permissionId: string, permission: PermissionString) {
     this.validatePermissionString(permission);
     this.validatePermissionId(permissionId);
 
-    return this.Configuration().allowed[permissionId]?.includes(permission);
+    return this.Storage().allowed[permissionId]?.includes(permission);
   }
 
   grantPermission(process: IProcess, permission: PermissionString) {
@@ -105,7 +80,7 @@ export class PermissionHandler extends Process implements IPermissionHandler {
 
     if (this.hasPermission(process, permission)) this.throwError("PERMERR_ALREADY_OWNED", id, permission);
 
-    this.Configuration.update((v) => {
+    this.Storage.update((v) => {
       v.allowed[id] ||= [];
       v.allowed[id].push(permission);
 
@@ -119,7 +94,7 @@ export class PermissionHandler extends Process implements IPermissionHandler {
 
     if (this.hasPermissionById(permissionId, permission)) this.throwError("PERMERR_ALREADY_OWNED", permissionId, permission);
 
-    this.Configuration.update((v) => {
+    this.Storage.update((v) => {
       v.allowed[permissionId] ||= [];
       v.allowed[permissionId].push(permission);
 
@@ -131,7 +106,7 @@ export class PermissionHandler extends Process implements IPermissionHandler {
     this.validatePermissionString(permission);
     const id = this.getPermissionId(process);
 
-    this.Configuration.update((v) => {
+    this.Storage.update((v) => {
       v.allowed[id] ||= [];
       v.allowed[id].splice(v.allowed[id].indexOf(permission), 1);
 
@@ -143,7 +118,7 @@ export class PermissionHandler extends Process implements IPermissionHandler {
     this.validatePermissionString(permission);
     this.validatePermissionId(permissionId);
 
-    this.Configuration.update((v) => {
+    this.Storage.update((v) => {
       v.allowed[permissionId] ||= [];
       v.allowed[permissionId].splice(v.allowed[permissionId].indexOf(permission), 1);
 
@@ -158,14 +133,14 @@ export class PermissionHandler extends Process implements IPermissionHandler {
     this.validatePermissionString(permission);
 
     const id = this.getPermissionId(process);
-    return this.Configuration().denied[id]?.includes(permission);
+    return this.Storage().denied[id]?.includes(permission);
   }
 
   isDeniedById(permissionId: string, permission: PermissionString) {
     this.validatePermissionId(permissionId);
     this.validatePermissionString(permission);
 
-    return this.Configuration().denied[permissionId]?.includes(permission);
+    return this.Storage().denied[permissionId]?.includes(permission);
   }
 
   denyPermission(process: IProcess, permission: PermissionString) {
@@ -176,7 +151,7 @@ export class PermissionHandler extends Process implements IPermissionHandler {
     if (this.isDenied(process, permission)) this.throwError("PERMERR_ALREADY_DENIED", id, permission);
     if (this.hasPermission(process, permission)) this.revokePermission(process, permission);
 
-    this.Configuration.update((v) => {
+    this.Storage.update((v) => {
       v.denied[id] ||= [];
       v.denied[id].push(permission);
 
@@ -191,7 +166,7 @@ export class PermissionHandler extends Process implements IPermissionHandler {
     if (this.isDeniedById(permissionId, permission)) this.throwError("PERMERR_ALREADY_DENIED", permissionId, permission);
     if (this.hasPermissionById(permissionId, permission)) this.revokePermissionById(permissionId, permission);
 
-    this.Configuration.update((v) => {
+    this.Storage.update((v) => {
       v.denied[permissionId] ||= [];
       v.denied[permissionId].push(permission);
 
@@ -206,7 +181,7 @@ export class PermissionHandler extends Process implements IPermissionHandler {
 
     if (!this.isDenied(process, permission)) this.throwError("PERMERR_NOT_DENIED", id, permission);
 
-    this.Configuration.update((v) => {
+    this.Storage.update((v) => {
       v.denied[id] ||= [];
       v.denied[id].splice(v.denied[id].indexOf(permission), 1);
 
@@ -220,7 +195,7 @@ export class PermissionHandler extends Process implements IPermissionHandler {
 
     if (!this.isDeniedById(permissionId, permission)) this.throwError("PERMERR_NOT_DENIED", permissionId, permission);
 
-    this.Configuration.update((v) => {
+    this.Storage.update((v) => {
       v.denied[permissionId] ||= [];
       v.denied[permissionId].splice(v.denied[permissionId].indexOf(permission), 1);
 
@@ -308,7 +283,7 @@ export class PermissionHandler extends Process implements IPermissionHandler {
   resetPermissionsById(permissionId: string) {
     this.validatePermissionId(permissionId);
 
-    this.Configuration.update((v) => {
+    this.Storage.update((v) => {
       delete v.allowed[permissionId];
       delete v.denied[permissionId];
       delete v.registration[permissionId];
@@ -363,7 +338,7 @@ export class PermissionHandler extends Process implements IPermissionHandler {
   //#region REGISTRATION
 
   setRegistration(clientId: string, appId: string) {
-    this.Configuration.update((v) => {
+    this.Storage.update((v) => {
       v.registration[clientId] = appId;
 
       return v;
@@ -371,7 +346,7 @@ export class PermissionHandler extends Process implements IPermissionHandler {
   }
 
   removeRegistration(clientId: string) {
-    this.Configuration.update((v) => {
+    this.Storage.update((v) => {
       delete v.registration[clientId];
 
       return v;
@@ -379,14 +354,14 @@ export class PermissionHandler extends Process implements IPermissionHandler {
   }
 
   removeApplication(appId: string) {
-    const clients = Object.entries(this.Configuration().registration)
+    const clients = Object.entries(this.Storage().registration)
       .filter(([_, v]) => v === appId)
       .map(([k]) => k);
 
     for (const clientId of clients) {
       this.removeRegistration(clientId);
 
-      this.Configuration.update((v) => {
+      this.Storage.update((v) => {
         delete v.allowed[clientId];
         delete v.denied[clientId];
 

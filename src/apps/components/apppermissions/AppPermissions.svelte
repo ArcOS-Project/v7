@@ -8,7 +8,7 @@
 
   const { process }: { process: AppPermissionsRuntime } = $props();
   const { targetApp } = process;
-  const { Configuration } = Permissions!;
+  const { Storage: Configuration } = Permissions!;
 
   let permissionId = $state<string>("");
 

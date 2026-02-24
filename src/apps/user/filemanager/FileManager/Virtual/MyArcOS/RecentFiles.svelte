@@ -8,7 +8,7 @@
   const { process }: { process: FileManagerRuntime } = $props();
   const { userPreferences } = process;
   const service = Daemon.serviceHost?.getService<RecentFilesService>("RecentFilesSvc");
-  const Configuration = service?.Configuration;
+  const Configuration = service?.Recents;
 
   let selected = $state<string>("");
 </script>
@@ -26,7 +26,7 @@
           {
             caption: "Clear recents",
             icon: "x",
-            action: () => service.Configuration.set([]),
+            action: () => service.Recents.set([]),
           },
         ],
         process,
