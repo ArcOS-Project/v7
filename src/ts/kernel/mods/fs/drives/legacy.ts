@@ -39,19 +39,19 @@ export class LegacyServerDrive extends FilesystemDrive implements ILegacyServerD
     username: "ArcOS",
   };
 
-  protected override CAPABILITIES: Record<DriveCapabilities, boolean> = {
+  public override CAPABILITIES: Record<DriveCapabilities, boolean> = {
     readDir: true,
     makeDir: false,
     readFile: true,
     writeFile: false,
-    tree: false,
     copyItem: false,
     moveItem: false,
     deleteItem: false,
+    tree: false,
     direct: false,
-    quota: true,
     bulk: false,
     stat: false,
+    quota: true,
   };
 
   constructor(uuid: string, letter: string, connection: LegacyConnectionInfo) {

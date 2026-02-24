@@ -19,19 +19,19 @@ export class MemoryFilesystemDrive extends FilesystemDrive implements IMemoryFil
   public override FILESYSTEM_SHORT: string = "TFS";
   public override HIDDEN: boolean = true;
   public label: string = "TEMP";
-  protected override CAPABILITIES: Record<DriveCapabilities, boolean> = {
+  public override CAPABILITIES: Record<DriveCapabilities, boolean> = {
     readDir: true,
     makeDir: true,
     readFile: true,
     writeFile: true,
-    tree: true,
     copyItem: true,
     moveItem: true,
     deleteItem: true,
-    direct: true,
-    quota: true,
     bulk: true,
+    direct: true,
+    tree: true,
     stat: false,
+    quota: true,
   };
 
   constructor(kernel: any, uuid: string, letter?: string) {
