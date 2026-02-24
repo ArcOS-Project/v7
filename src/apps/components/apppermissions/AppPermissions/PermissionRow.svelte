@@ -4,7 +4,7 @@
   import { onMount } from "svelte";
 
   const { id, permissionId }: { id: PermissionString; permissionId: string } = $props();
-  const { Storage: Configuration } = Permissions!;
+  const { Storage } = Permissions!;
 
   const options = ["Unset", "Allow", "Deny"] as const;
   type Option = (typeof options)[number];
@@ -12,7 +12,7 @@
   let option = $state<Option>("Unset");
 
   onMount(() => {
-    Configuration.subscribe((permissions) => {
+    Storage.subscribe((permissions) => {
       const state = permissions.allowed[permissionId]?.includes(id)
         ? "Allow"
         : permissions.denied[permissionId]?.includes(id)

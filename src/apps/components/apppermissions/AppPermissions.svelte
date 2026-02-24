@@ -8,12 +8,12 @@
 
   const { process }: { process: AppPermissionsRuntime } = $props();
   const { targetApp } = process;
-  const { Storage: Configuration } = Permissions!;
+  const { Storage } = Permissions!;
 
   let permissionId = $state<string>("");
 
   onMount(() => {
-    Configuration.subscribe((permissions) => {
+    Storage.subscribe((permissions) => {
       const reg = permissions?.registration ?? {};
       permissionId = Object.keys(reg).find((key) => reg[key] === $targetApp.id) ?? "";
     });
