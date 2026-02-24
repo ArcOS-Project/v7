@@ -27,19 +27,19 @@ export class FilesystemDrive implements IFilesystemDrive {
   public BUSY: boolean = false;
   protected fileLocks: Record<string, number> = {};
 
-  protected CAPABILITIES: Record<DriveCapabilities, boolean> = {
+  public CAPABILITIES: Record<DriveCapabilities, boolean> = {
     readDir: false,
     makeDir: false,
     readFile: false,
     writeFile: false,
-    tree: false,
     copyItem: false,
     moveItem: false,
     deleteItem: false,
+    tree: false,
     direct: false,
-    quota: false,
     bulk: false,
     stat: false,
+    quota: false,
   };
 
   constructor(uuid: string, letter?: string, ...args: any[]) {

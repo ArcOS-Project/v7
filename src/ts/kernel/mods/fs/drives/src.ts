@@ -24,19 +24,19 @@ export class SourceFilesystemDrive extends FilesystemDrive {
   private rawClient = axios.create({ baseURL: this.GIT_RAW });
   private apiClient = axios.create({ baseURL: this.GIT_API });
 
-  protected override CAPABILITIES: Record<DriveCapabilities, boolean> = {
+  public override CAPABILITIES: Record<DriveCapabilities, boolean> = {
     readDir: true,
     makeDir: false,
     readFile: true,
     writeFile: false,
-    tree: false,
     copyItem: false,
     moveItem: false,
     deleteItem: false,
+    tree: false,
     direct: false,
-    quota: false,
     bulk: false,
     stat: false,
+    quota: false,
   };
 
   constructor(uuid: string, letter?: string) {
