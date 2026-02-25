@@ -36,7 +36,7 @@ export class DevelopmentEnvironment extends BaseService implements IDevelopmentE
 
   async deactivate(broadcast?: (m: string) => void) {
     broadcast?.("Stopping development environment");
-    
+
     await this.disconnect();
   }
 
@@ -151,6 +151,7 @@ export class DevelopmentEnvironment extends BaseService implements IDevelopmentE
     this.url = undefined;
     this.port = undefined;
     this.client?.disconnect();
+    this.client?.removeAllListeners();
     this.connected = false;
     await Fs.umountDrive("devenv", true);
     return undefined;

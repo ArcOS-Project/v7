@@ -7,7 +7,7 @@
   import { onMount } from "svelte";
 
   const { openedProcess, pid, process }: { openedProcess: IAppProcess; pid: number; process: IShellRuntime } = $props();
-  const { windowTitle, windowIcon } = openedProcess;
+  const { windowTitle, windowIcon, blinking } = openedProcess;
   const { userPreferences } = process;
   const { focusedPid } = Stack.renderer!;
 
@@ -31,6 +31,7 @@
   onclick={focus}
   class:active={$focusedPid == openedProcess.pid}
   class:iconic={!$userPreferences.shell.taskbar.labels}
+  class:blinking={$blinking}
   data-pid={pid}
   data-contextmenu="taskbar-openedapp"
   use:contextProps={[openedProcess]}

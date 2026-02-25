@@ -21,19 +21,19 @@ export class AdminFileSystem extends FilesystemDrive implements IFilesystemDrive
   override FILESYSTEM_SHORT: string = "AFS";
   override FILESYSTEM_LONG: string = "Admin Filesystem";
   public label: string = "Administrators";
-  protected override CAPABILITIES: Record<DriveCapabilities, boolean> = {
+  public override CAPABILITIES: Record<DriveCapabilities, boolean> = {
     readDir: true,
     makeDir: true,
     readFile: true,
     writeFile: true,
-    tree: true,
     copyItem: true,
     moveItem: true,
     deleteItem: true,
+    tree: true,
     direct: true,
-    quota: true,
     bulk: false,
     stat: true,
+    quota: true,
   };
 
   constructor(uuid: string, letter: string) {

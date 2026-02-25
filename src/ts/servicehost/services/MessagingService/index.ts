@@ -7,9 +7,10 @@ import { Backend } from "$ts/kernel/mods/server/axios";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { authcode } from "$ts/util";
-import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
+import { arrayBufferToBlob } from "$ts/util/convert";
+import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import type { FilesystemProgressCallback } from "$types/fs";
-import type { ExpandedMessage, ExpandedMessageNode } from "$types/messaging";
+import type { ExpandedMessage, ExpandedMessageNode, MessageAttachment } from "$types/messaging";
 import type { Service } from "$types/service";
 import { GlobalDispatch } from "../GlobalDispatch";
 
@@ -233,6 +234,74 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
     } catch {
       return undefined;
     }
+  }
+
+  async downloadAttachments(message: ExpandedMessage, attachments: MessageAttachment[], savePath: string) {
+    let totalSize = attachments.map((a) => a.size).reduce((a, b) => a + b, 0);
+    const dlProg = await Daemon!.files!.FileProgress(
+      {
+        type: "size",
+        max: totalSize,
+        caption: `Reading attachments`,
+        icon: "MessagingIcon",
+        subtitle: `Just a moment...`,
+      },
+      Daemon.getShell()?.pid || this.pid
+    );
+
+    dlProg.setDone(0);
+    dlProg?.show();
+
+    const result: Record<string, ArrayBuffer> = {};
+
+    for (const attachment of attachments) {
+      let lastValue = 0;
+
+      const data = await this.readAttachment(message._id, attachment._id, (prog) => {
+        // Using some math to increase the byte size of the progress appropriately
+        dlProg.mutDone(Math.max(0, prog.value - lastValue));
+        lastValue = prog.value;
+      });
+
+      if (data) result[attachment._id] = data;
+      else totalSize -= attachment.size; // If the attachment could not be obtained, subtract it from the total for the save progress
+    }
+
+    await dlProg.stop();
+
+    const saveProg = await Daemon!.files!.FileProgress(
+      {
+        type: "size",
+        max: totalSize,
+        caption: "Saving attachments",
+        icon: "MessagingIcon",
+        subtitle: `Saving to ${savePath}/`,
+      },
+      Daemon.getShell()?.pid || this.pid
+    );
+
+    saveProg.setDone(0);
+    saveProg.show();
+
+    for (const attachmentId in result) {
+      const attachmentData = result[attachmentId];
+      const attachment = attachments.find((a) => a._id === attachmentId);
+
+      if (!attachment || !attachmentData) {
+        saveProg.mutDone(+1);
+        continue;
+      }
+
+      const destination = join(savePath, attachment.filename);
+      saveProg.updSub(`Saving ${savePath}`);
+      let lastValue = 0;
+      await Fs.writeFile(destination, arrayBufferToBlob(attachmentData), (prog) => {
+        saveProg.mutDone(Math.max(0, prog.value - lastValue));
+        lastValue = prog.value;
+      });
+    }
+
+    saveProg.stop();
   }
 }
 

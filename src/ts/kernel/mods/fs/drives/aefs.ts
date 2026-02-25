@@ -20,19 +20,19 @@ export class AdminServerDrive extends FilesystemDrive implements IFilesystemDriv
   override IDENTIFIES_AS: string = "aefs";
   override FILESYSTEM_SHORT: string = "AEFS";
   override FILESYSTEM_LONG: string = "Admin Enforcement FS";
-  protected override CAPABILITIES: Record<DriveCapabilities, boolean> = {
+  public override CAPABILITIES: Record<DriveCapabilities, boolean> = {
     readDir: true,
     makeDir: false,
     readFile: true,
     writeFile: false,
-    tree: true,
     copyItem: false,
     moveItem: false,
     deleteItem: false,
+    tree: true,
     direct: true,
-    quota: true,
-    bulk: true,
+    bulk: false,
     stat: true,
+    quota: true,
   };
 
   constructor(uuid: string, letter: string, targetUsername: string) {
@@ -152,22 +152,6 @@ export class AdminServerDrive extends FilesystemDrive implements IFilesystemDriv
       return `${this.server.url}/fs/direct/${data.userId}/${data.accessor}${authcode()}`;
     } catch {
       return undefined;
-    }
-  }
-
-  async bulk<T = any>(path: string, extension: string): Promise<Record<string, T>> {
-    try {
-      const response = await Backend.get(`/admin/fs/bulk/${this.targetUsername}/${extension}/${path}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
-
-      if (response.status !== 200) return {};
-
-      const data = response.data as Record<string, any>;
-
-      return data;
-    } catch {
-      return {};
     }
   }
 

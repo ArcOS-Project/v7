@@ -26,19 +26,19 @@ export class UserDrive extends FilesystemDrive implements IFilesystemDrive {
   public IDENTIFIES_AS: string = "userfs";
   public FILESYSTEM_SHORT: string = "UFS";
   public FILESYSTEM_LONG: string = "User Filesystem";
-  protected override CAPABILITIES: Record<DriveCapabilities, boolean> = {
+  public override CAPABILITIES: Record<DriveCapabilities, boolean> = {
     readDir: true,
     makeDir: true,
     readFile: true,
     writeFile: true,
-    tree: true,
     copyItem: true,
     moveItem: true,
     deleteItem: true,
+    tree: true,
     direct: true,
-    quota: true,
     bulk: true,
     stat: true,
+    quota: true,
   };
 
   constructor(uuid: string, letter: string) {
