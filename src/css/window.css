@@ -14,6 +14,7 @@
 @import url("./window/userlink.css");
 @import url("./window/splitpanes.css");
 @import url("./window/toast.css");
+@import url("./window/actionbar.css");
 
 div.window:not(.core) {
   position: absolute;

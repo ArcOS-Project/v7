@@ -1,5 +1,8 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import Separator from "$lib/Window/ActionBar/Separator.svelte";
   import type { ShareListGuiRuntime } from "./runtime";
 
   const { process }: { process: ShareListGuiRuntime } = $props();
@@ -58,18 +61,22 @@
     <Spinner height={32} />
   {/if}
 </div>
-<div class="actions">
-  <button class="create" onclick={() => process.createShare()}>Create...</button>
 
-  {#if $selectedShare && !$loading}
-    {#if $selectedIsOwn}
-      <button class="manage" onclick={() => process.manageShare()}>Manage</button>
-    {:else}
-      <button class="leave" onclick={() => process.leaveShare()}>Leave</button>
-      <button class="mount" onclick={() => process.mountShare()}>{$selectedIsMounted ? "Unmount" : "Mount"}</button>
+<ActionBar floating>
+  {#snippet leftContent()}
+    <ActionButton onclick={() => process.createShare()}>Create...</ActionButton>
+  {/snippet}
+  {#snippet rightContent()}
+    {#if $selectedShare && !$loading}
+      {#if $selectedIsOwn}
+        <ActionButton onclick={() => process.manageShare()}>Manage</ActionButton>
+      {:else}
+        <ActionButton onclick={() => process.leaveShare()}>Leave</ActionButton>
+        <ActionButton onclick={() => process.mountShare()}>{$selectedIsMounted ? "Unmount" : "Mount"}</ActionButton>
+      {/if}
+      <ActionButton onclick={() => process.openShare()} disabled={!$selectedIsMounted}>Open</ActionButton>
+      <Separator></Separator>
     {/if}
-    <button class="manage" onclick={() => process.openShare()} disabled={!$selectedIsMounted}>Open</button>
-    <div class="sep"></div>
-  {/if}
-  <button class="suggested" onclick={() => process.closeWindow()}>Done</button>
-</div>
+    <ActionButton suggested onclick={() => process.closeWindow()}>Done</ActionButton>
+  {/snippet}
+</ActionBar>

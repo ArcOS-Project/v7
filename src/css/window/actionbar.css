@@ -1,0 +1,78 @@
+div.window div.window-action-bar {
+  height: 51px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-top: var(--win-border);
+  justify-content: space-between;
+}
+
+div.window div.window-action-bar > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+div.window div.window-action-bar.floating {
+  height: 52px;
+  border-radius: 15px;
+  box-shadow: var(--secondary-box-shadow);
+  background-color: var(--button-bg);
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
+  border-top: none;
+  width: 100%;
+  margin-top: auto;
+}
+
+div.window div.window-action-bar .lucide {
+  font-weight: normal !important;
+}
+
+div.window div.action-bar-sep {
+  width: 1px;
+  height: 20px;
+  background-color: var(--button-glass-hover-bg);
+}
+
+div.window div.window-action-bar div.icon-action-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+div.window div.window-action-bar button.action-bar-button {
+  padding: 0 15px;
+  height: 30px;
+}
+
+div.window div.window-action-bar button.action-bar-button.has-icon {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  padding-right: 15px;
+}
+
+div.window div.window-action-bar button.action-bar-button.has-icon span.lucide {
+  font-size: 16px;
+  display: block;
+  height: 16px;
+}
+
+div.window div.window-action-bar button.action-bar-icon-button {
+  width: 30px;
+  height: 30px;
+  padding: 0 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+}
+
+div.window div.window-action-bar div.sep {
+  width: 1px;
+  height: 20px;
+  background-color: var(--button-glass-hover-bg);
+}

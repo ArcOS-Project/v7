@@ -43,23 +43,14 @@
 
 #ShareMgmtGui > div.body div.header h1 {
   font-size: 22px;
-}
-
-#ShareMgmtGui > div.body > div.actions {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px;
-  border-radius: 15px;
-  background-color: var(--button-bg);
-  box-shadow: var(--secondary-box-shadow);
-  height: 51px;
-  outline: var(--button-glass-bg) 1px solid;
-  outline-offset: -1px;
+  gap: 10px;
 }
 
-#ShareMgmtGui > div.body > div.actions button.delete {
-  font-weight: bold;
+#ShareMgmtGui > div.body div.header h1 span.lucide {
+  font-size: 16px;
+  color: var(--clr-orange-fg);
 }
 
 #ShareMgmtGui > div.body div.user-list {
@@ -117,6 +108,7 @@
 #ShareMgmtGui > div.body button.delete {
   background-color: var(--clr-red-fg);
   color: var(--clr-red-bg);
+  font-weight: bold !important;
 }
 
 #ShareMgmtGui > div.body div.user-list div.no-members {
