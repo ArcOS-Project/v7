@@ -281,13 +281,13 @@ export class PermissionHandler extends Process implements IPermissionHandler {
     path = Daemon.files?.normalizePath(path)!;
     if (path === "U:/System/Permissions.json") Permissions.throwError("PERMERR_DENIED");
 
-    Permissions.hasPermissionExplicit(process, "PERMISSION_FS_READ");
+    // Permissions.hasPermissionExplicit(process, "PERMISSION_FS_READ");
 
-    if (!path.startsWith("U:/") && !path.startsWith(`${USERFS_UUID}:/`))
-      Permissions.hasPermissionExplicit(process, "PERMISSION_FS_READ_EXTERNAL");
-    if (path.startsWith("U:/Applications")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_READ_APPLICATIONS");
-    if (path.startsWith("U:/Home")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_READ_USER");
-    if (path.startsWith("U:/System/Config")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_READ_CONFIG");
+    // if (!path.startsWith("U:/") && !path.startsWith(`${USERFS_UUID}:/`))
+    //   Permissions.hasPermissionExplicit(process, "PERMISSION_FS_READ_EXTERNAL");
+    // if (path.startsWith("U:/Applications")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_READ_APPLICATIONS");
+    // if (path.startsWith("U:/Home")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_READ_USER");
+    // if (path.startsWith("U:/System/Config")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_READ_CONFIG");
     if (path.startsWith("U:/System")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_READ_SYSTEM");
   }
 
@@ -295,13 +295,13 @@ export class PermissionHandler extends Process implements IPermissionHandler {
     path = Daemon.files?.normalizePath(path)!;
     if (path === "U:/System/Permissions.json") Permissions.throwError("PERMERR_DENIED");
 
-    Permissions.hasPermissionExplicit(process, "PERMISSION_FS_WRITE");
+    // Permissions.hasPermissionExplicit(process, "PERMISSION_FS_WRITE");
 
-    if (!path.startsWith("U:/") && !path.startsWith(`${USERFS_UUID}:/`))
-      Permissions.hasPermissionExplicit(process, "PERMISSION_FS_WRITE_EXTERNAL");
-    if (path.startsWith("U:/Applications")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_WRITE_APPLICATIONS");
-    if (path.startsWith("U:/Home")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_WRITE_USER");
-    if (path.startsWith("U:/System/Config")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_WRITE_CONFIG");
+    // if (!path.startsWith("U:/") && !path.startsWith(`${USERFS_UUID}:/`))
+    //  Permissions.hasPermissionExplicit(process, "PERMISSION_FS_WRITE_EXTERNAL");
+    // if (path.startsWith("U:/Applications")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_WRITE_APPLICATIONS");
+    // if (path.startsWith("U:/Home")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_WRITE_USER");
+    // if (path.startsWith("U:/System/Config")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_WRITE_CONFIG");
     if (path.startsWith("U:/System")) Permissions.hasPermissionExplicit(process, "PERMISSION_FS_WRITE_SYSTEM");
   }
 

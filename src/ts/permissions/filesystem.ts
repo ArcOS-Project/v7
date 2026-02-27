@@ -18,39 +18,48 @@ export class PermissionedFilesystemInteractor implements IPermissionedFilesystem
   }
 
   get mountDrive() {
-    return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.mountDrive);
+    return Fs.mountDrive;
+    // return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.mountDrive);
   }
 
   get getDriveIdByIdentifier() {
-    return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.getDriveIdByIdentifier);
+    return Fs.getDriveIdByIdentifier;
+    //return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.getDriveIdByIdentifier);
   }
 
   get umountDrive() {
-    return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.umountDrive);
+    return Fs.umountDrive;
+    // return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.umountDrive);
   }
 
   get getDriveByLetter() {
-    return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.getDriveByLetter);
+    return Fs.getDriveByLetter;
+    // return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.getDriveByLetter);
   }
 
   get getDriveIdentifier() {
-    return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.getDriveIdentifier);
+    return Fs.getDriveIdentifier;
+    // return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.getDriveIdentifier);
   }
 
   get getDriveByPath() {
-    return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.getDriveByPath);
+    return Fs.getDriveByPath;
+    // return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.getDriveByPath);
   }
 
   get validatePath() {
-    return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.validatePath);
+    return Fs.validatePath;
+    // return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.validatePath);
   }
 
   get removeDriveLetter() {
-    return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.removeDriveLetter);
+    return Fs.removeDriveLetter;
+    // return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.removeDriveLetter);
   }
 
   get validateDriveLetter() {
-    return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.validateDriveLetter);
+    return Fs.validateDriveLetter;
+    // return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.validateDriveLetter);
   }
 
   //#region CAPABILITIES
