@@ -116,11 +116,7 @@
   padding-right: 10px;
 }
 
-#AppInfo div.info-block.actions div.row button {
-  margin: 0;
-}
-
-#AppInfo div.info-block.actions div.row p.id {
+#AppInfo div.window-action-bar p.id {
   margin: 0;
   margin-right: auto;
   padding: 0 5px;
