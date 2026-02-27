@@ -20,7 +20,7 @@ div.window-toast-popup {
   gap: 10px;
   margin-bottom: -30px;
   opacity: 0;
-  pointer-events: none;
+  pointer-events: none !important;
   transition:
     margin-bottom 0.2s,
     opacity 0.2s;
