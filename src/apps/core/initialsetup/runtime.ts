@@ -10,6 +10,7 @@ import { Sleep } from "$ts/sleep";
 import { LoginUser, RegisterUser } from "$ts/user/auth";
 import { htmlspecialchars } from "$ts/util";
 import { MessageBox } from "$ts/util/dialog";
+import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import CheckInbox from "./InitialSetup/Page/CheckInbox.svelte";
@@ -342,20 +343,46 @@ export class InitialSetupRuntime extends AppProcess {
       return;
     }
 
+    if (Server?.serverInfo?.noEmailVerify) {
+      Env.set("DISPATCH_SOCK_ID", UUID());
+      const tokenResult = await LoginUser(this.newUsername(), this.password());
+
+      if (tokenResult.success) {
+        this.#userDaemon = await Stack.spawn(
+          UserDaemon,
+          undefined,
+          this.#userDaemon?.userInfo?._id,
+          this.pid,
+          tokenResult.result!,
+          this.newUsername()
+        );
+
+        await this.#userDaemon?.account?.getUserInfo();
+        await this.#userDaemon?.init?.startPreferencesSync();
+        await this.#userDaemon?.init?.startFilesystemSupplier();
+        
+        this.#userDaemon?.preferences.update((v) => {
+          v.isDefault = false;
+          v.account.displayName = this.displayName();
+
+          return v;
+        });
+      }
+    }
+
     this.pageNumber.set(this.pageNumber() + (Server.serverInfo?.noEmailVerify ? 2 : 1));
   }
 
   async checkAccountActivation() {
     this.Log(`Checking account activation of '${this.newUsername()}'`);
 
-    const token = await LoginUser(this.newUsername(), this.password());
+    const tokenResult = await LoginUser(this.newUsername(), this.password());
 
-    if (!token) {
+    if (!tokenResult.success) {
       MessageBox(
         {
           title: "Did you click the link?",
-          message:
-            "Our systems tell me that your account hasn't been activated yet. Are you sure you clicked the link? If you did, and you're still seeing this, please contact support.",
+          message: `Our systems tell me that your account hasn't been activated yet. Are you sure you clicked the link? If you did, and you're still seeing this, please contact support.<br><br>Details: ${tokenResult.errorMessage ?? "Unknown error"}`,
           buttons: [
             {
               caption: "Okay",
@@ -379,14 +406,18 @@ export class InitialSetupRuntime extends AppProcess {
       undefined,
       this.#userDaemon?.userInfo?._id,
       this.pid,
-      token,
+      tokenResult.result!,
       this.newUsername()
     );
+
+    // set the socket ID to something bogus to fool the backend into thinking we're connected to the websocket
+    Env.set("DISPATCH_SOCK_ID", UUID());
 
     await this.#userDaemon?.account?.getUserInfo();
     await this.#userDaemon?.init?.startPreferencesSync();
     await this.#userDaemon?.init?.startFilesystemSupplier();
     this.#userDaemon?.preferences.update((v) => {
+      v.isDefault = false;
       v.account.displayName = this.displayName();
 
       return v;

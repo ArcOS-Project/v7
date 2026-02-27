@@ -29,7 +29,7 @@
       <span>Compose</span>
     </button>
   {/if}
-  {#if $message?.attachmentData}
+  {#if $message?.attachmentData?.length}
     <button
       class="lucide icon-file-down"
       onclick={downloadAttachments}

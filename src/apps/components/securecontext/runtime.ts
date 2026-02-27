@@ -49,14 +49,14 @@ export class SecureContextRuntime extends AppProcess {
     if (security.noPassword) return true; // Password field is irrelevant if noPassword is set
     if (security.disabled || !Daemon?.username) return false; // 'Reject all elevation requests'
 
-    const token = await LoginUser(Daemon!.username, this.password()); // Try to create a token to validate
+    const tokenResult = await LoginUser(Daemon!.username, this.password()); // Try to create a token to validate
 
-    if (!token) {
+    if (!tokenResult.success) {
       await this.passwordIncorrect();
       return false;
     }
 
-    await Daemon?.account!.discontinueToken(token); // Discontinue validated token
+    await Daemon?.account!.discontinueToken(tokenResult.result); // Discontinue validated token
 
     return true;
   }

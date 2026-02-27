@@ -119,11 +119,13 @@ export class TerminalMode extends Process {
 
       this.saveToken(userDaemon);
 
-      const userInfo = await userDaemon.account!.getUserInfo();
-      if (!userInfo) {
-        this.rl?.println(`Failed to request user info`);
+      const userInfoResult = await userDaemon.account!.getUserInfo();
+      if (!userInfoResult.success) {
+        this.rl?.println(userInfoResult.errorMessage ?? `Failed to request user info`);
         return false;
       }
+
+      const userInfo = userInfoResult.result!;
 
       if (userInfo.hasTotp && userInfo.restricted) {
         const unlocked = await this.askForTotp(token);

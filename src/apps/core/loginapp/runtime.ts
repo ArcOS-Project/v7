@@ -158,14 +158,16 @@ export class LoginAppRuntime extends AppProcess {
     this.saveToken(userDaemon);
     this.loadingStatus.set("Loading your settings");
 
-    const userInfo = await userDaemon.account!.getUserInfo();
+    const userInfoResult = await userDaemon.account!.getUserInfo();
 
-    if (!userInfo) {
+    if (!userInfoResult.success) {
       this.loadingStatus.set("");
-      this.errorMessage.set("Failed to request user info");
+      this.errorMessage.set(userInfoResult.errorMessage ?? "Failed to request user info");
 
       return;
     }
+
+    const userInfo = userInfoResult.result!;
 
     this.profileImage.set(`${this.server.url}/user/pfp/${userInfo._id}${authcode()}`);
 

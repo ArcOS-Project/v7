@@ -12,6 +12,8 @@ import type { PublicUserInfo, UserInfo } from "$types/user";
 import Cookies from "js-cookie";
 import { Daemon } from "..";
 import { UserContext } from "../context";
+import { CommandResult } from "$ts/result";
+import { AxiosError } from "axios";
 
 export class AccountUserContext extends UserContext implements IAccountUserContext {
   constructor(id: string, daemon: IUserDaemon) {
@@ -32,13 +34,11 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
     }
   }
 
-  async getUserInfo(): Promise<UserInfo | undefined> {
-    if (this._disposed) return;
+  async getUserInfo(): Promise<CommandResult<UserInfo>> {
+    if (this._disposed) return CommandResult.Error("Disposed");
 
     if (this.initialized) {
-      this.Log(`Tried to get user info while initialization is already complete`, LogLevel.warning);
-
-      return;
+      return CommandResult.Error(`Tried to get user info while initialization is already complete`);
     }
 
     this.Log("Getting user information");
@@ -55,7 +55,7 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
 
       const data = response.status === 200 ? (response.data as UserInfo) : undefined;
 
-      if (!data) return undefined;
+      if (!data) return CommandResult.Error(response.data?.e ?? "Failed to request user info");
 
       Daemon!.preferencesCtx?.preferences.set(data.preferences);
 
@@ -66,11 +66,13 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
       Env.set("currentuser", this.username);
       if (data.admin) Env.set("administrator", data.admin);
 
-      return response.status === 200 ? (response.data as UserInfo) : undefined;
-    } catch {
+      return CommandResult.Ok(response.data as UserInfo);
+    } catch (e) {
       await Daemon!.killSelf();
 
-      return undefined;
+      const error = (e instanceof AxiosError ? e?.response?.data?.e : `${e}`) || `Unknown error`;
+
+      return CommandResult.Error(error);
     }
   }
 
