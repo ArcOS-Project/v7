@@ -281,6 +281,7 @@ export class PermissionHandler extends Process implements IPermissionHandler {
     path = Daemon.files?.normalizePath(path)!;
     if (path === "U:/System/Permissions.json") Permissions.throwError("PERMERR_DENIED");
 
+    // TEMP
     // Permissions.hasPermissionExplicit(process, "PERMISSION_FS_READ");
 
     // if (!path.startsWith("U:/") && !path.startsWith(`${USERFS_UUID}:/`))
@@ -295,6 +296,7 @@ export class PermissionHandler extends Process implements IPermissionHandler {
     path = Daemon.files?.normalizePath(path)!;
     if (path === "U:/System/Permissions.json") Permissions.throwError("PERMERR_DENIED");
 
+    // TEMP
     // Permissions.hasPermissionExplicit(process, "PERMISSION_FS_WRITE");
 
     // if (!path.startsWith("U:/") && !path.startsWith(`${USERFS_UUID}:/`))

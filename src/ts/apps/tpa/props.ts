@@ -37,11 +37,11 @@ import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
 
 export function ThirdPartyProps(engine: JsExec): ThirdPartyPropMap {
   const props = {
-    env: Env,
-    handler: Stack,
-    fs: Fs,
-    daemon: Daemon,
-    serviceHost: engine.userDaemon?.serviceHost, // TODO: PERMISSION_SERVICE_HOST
+    env: Env, // TEMP
+    handler: Stack, // TEMP
+    fs: Fs, // TEMP
+    daemon: Daemon, // TEMP
+    serviceHost: engine.userDaemon?.serviceHost, // TEMP
     MessageBox,
     icons: getAllImages(),
     util: {

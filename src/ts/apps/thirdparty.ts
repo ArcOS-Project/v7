@@ -13,7 +13,7 @@ export class ThirdPartyAppProcess extends AppProcess implements IThirdPartyAppPr
   mutationLock = false;
   urlCache: Record<string, string> = {};
   elements: Record<string, Element> = {};
-  handler = Stack;
+  handler = Stack; // TEMP
 
   //#region LIFECYCLE
 

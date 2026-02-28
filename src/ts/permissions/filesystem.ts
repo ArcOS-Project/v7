@@ -18,47 +18,47 @@ export class PermissionedFilesystemInteractor implements IPermissionedFilesystem
   }
 
   get mountDrive() {
-    return Fs.mountDrive;
+    return Fs.mountDrive; // TEMP
     // return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.mountDrive);
   }
 
   get getDriveIdByIdentifier() {
-    return Fs.getDriveIdByIdentifier;
+    return Fs.getDriveIdByIdentifier; // TEMP
     //return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.getDriveIdByIdentifier);
   }
 
   get umountDrive() {
-    return Fs.umountDrive;
+    return Fs.umountDrive; // TEMP
     // return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.umountDrive);
   }
 
   get getDriveByLetter() {
-    return Fs.getDriveByLetter;
+    return Fs.getDriveByLetter; // TEMP
     // return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.getDriveByLetter);
   }
 
   get getDriveIdentifier() {
-    return Fs.getDriveIdentifier;
+    return Fs.getDriveIdentifier; // TEMP
     // return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.getDriveIdentifier);
   }
 
   get getDriveByPath() {
-    return Fs.getDriveByPath;
+    return Fs.getDriveByPath; // TEMP
     // return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.getDriveByPath);
   }
 
   get validatePath() {
-    return Fs.validatePath;
+    return Fs.validatePath; // TEMP
     // return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.validatePath);
   }
 
   get removeDriveLetter() {
-    return Fs.removeDriveLetter;
+    return Fs.removeDriveLetter; // TEMP
     // return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.removeDriveLetter);
   }
 
   get validateDriveLetter() {
-    return Fs.validateDriveLetter;
+    return Fs.validateDriveLetter; // TEMP
     // return Permissions.hasPermissionExplicit(this.#process, "PERMISSION_FS_DRIVES", Fs.validateDriveLetter);
   }
 
