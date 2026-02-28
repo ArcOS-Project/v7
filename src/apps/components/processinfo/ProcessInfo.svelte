@@ -3,6 +3,8 @@
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { AppProcess } from "$ts/apps/process";
   import { Daemon } from "$ts/daemon";
   import { Env, Stack } from "$ts/env";
@@ -68,12 +70,16 @@
       </InfoRow>
     </InfoBlock>
   {/if}
-  <div class="actions">
-    <button class="kill" onclick={() => process.kill(proc)}>Kill</button>
-    {#if proc.sourceUrl && proc.sourceUrl !== "undetermined"}
-      <button onclick={viewSourceFile}>View source</button>
-    {/if}
-    <button onclick={info} disabled={!(proc instanceof AppProcess)}>App Info</button>
-    <button class="suggested" onclick={() => process.closeWindow()}>Okay</button>
-  </div>
+  <ActionBar floating>
+    {#snippet leftContent()}
+      <ActionButton className="kill" onclick={() => process.kill(proc)}>Kill</ActionButton>
+    {/snippet}
+    {#snippet rightContent()}
+      {#if proc.sourceUrl && proc.sourceUrl !== "undetermined"}
+        <ActionButton onclick={viewSourceFile}>View source</ActionButton>
+      {/if}
+      <ActionButton onclick={info} disabled={!(proc instanceof AppProcess)}>App Info</ActionButton>
+      <ActionButton suggested onclick={() => process.closeWindow()}>Okay</ActionButton>
+    {/snippet}
+  </ActionBar>
 {/if}
