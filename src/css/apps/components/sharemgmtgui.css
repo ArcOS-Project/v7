@@ -107,7 +107,7 @@
 
 #ShareMgmtGui > div.body button.delete {
   background-color: var(--clr-red-fg);
-  color: var(--clr-red-bg);
+  color: var(--win-bg);
   font-weight: bold !important;
 }
 

@@ -116,6 +116,10 @@ div.window div.window-action-bar button.action-bar-icon-button {
   min-width: fit-content;
 }
 
+div.window div.window-action-bar button.action-bar-button * {
+  color: inherit !important;
+}
+
 div.window div.window-action-bar div.sep {
   width: 1px;
   height: 20px;
