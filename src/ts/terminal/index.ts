@@ -381,16 +381,16 @@ export class ArcTerminal extends Process implements IArcTerminal {
 
     if (lockdown || !password) return false;
 
-    const token = await LoginUser(this.daemon?.username!, password!);
+    const tokenResult = await LoginUser(this.daemon?.username!, password!);
 
-    if (!token) {
-      this.Error("Incorrect password");
+    if (!tokenResult.result) {
+      this.Error(tokenResult.errorMessage ?? "Incorrect password");
       this.rl?.println("");
 
       return false;
     }
 
-    await this.daemon?.account?.discontinueToken(token);
+    await this.daemon?.account?.discontinueToken(tokenResult.result!);
 
     return true;
   }

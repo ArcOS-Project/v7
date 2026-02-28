@@ -98,10 +98,10 @@ export class TerminalMode extends Process {
   async proceed(username: string, password: string) {
     this.Log(`Trying login of '${username}'`);
 
-    const token = await LoginUser(username, password);
-    if (!token) return false;
+    const tokenResult = await LoginUser(username, password);
+    if (!tokenResult) return false;
 
-    return await this.startDaemon(token, username);
+    return await this.startDaemon(tokenResult.result!, username);
   }
 
   async startDaemon(token: string, username: string): Promise<boolean> {
