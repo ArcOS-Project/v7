@@ -33,6 +33,9 @@
 
 #ProcessInfoApp > div.body div.window-action-bar button.kill {
   background-color: var(--clr-red-fg) !important;
-  color: var(--win-bg) !important;
   font-weight: bold;
+}
+
+#ProcessInfoApp > div.body div.window-action-bar button.kill * {
+  color: var(--win-bg) !important;
 }

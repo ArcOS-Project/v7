@@ -9,6 +9,8 @@
   align-items: start;
   gap: 15px;
   padding: 15px;
+  height: 0;
+  flex-grow: 1;
 }
 
 #FsNewFolder > div.body div.top img {
@@ -25,7 +27,7 @@
   margin-top: 15px;
 }
 
-#FsNewFolder > div.body div.right {
+#FsNewFolder > div.body > div.top div.right {
+  width: 0;
   flex-grow: 1;
-  max-width: calc(100% - 48px - 15px);
 }

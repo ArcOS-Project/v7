@@ -144,6 +144,12 @@
   outline: none;
 }
 
+#MessageComposer > div.body div.window-action-bar {
+  background-color: var(--win-bg);
+  border-top: none;
+  height: 50px;
+}
+
 #MessageComposer > div.body div.window-action-bar .discard-button {
   background-color: var(--clr-red-fg);
   color: var(--clr-red-bg);

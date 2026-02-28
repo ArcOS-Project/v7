@@ -57,6 +57,7 @@
   border: var(--win-border);
   background-color: var(--win-bg);
   border-radius: 4px;
+  overflow: hidden;
 }
 
 #processManager > div.body div.top {
@@ -101,6 +102,11 @@
   display: flex;
   align-items: center;
   gap: 5px;
+}
+
+#processManager > div.body div.row div.segment.name span.lucide {
+  font-size: 10px;
+  opacity: 0.5;
 }
 
 #processManager > div.body div.row div.segment img {
@@ -200,6 +206,15 @@
 
 #processManager > div.body button.restart {
   background-color: var(--clr-orange-fg) !important;
-  color: var(--win-bg);
   font-weight: bold;
+}
+
+#processManager > div.body button.stop *,
+#processManager > div.body button.start *,
+#processManager > div.body button.restart * {
+  color: var(--win-bg);
+}
+
+#processManager > div.body div.window-action-bar {
+  background-color: var(--win-bg);
 }

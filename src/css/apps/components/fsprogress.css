@@ -12,6 +12,6 @@
   padding: 0;
   overflow: hidden;
   flex-grow: 1;
-  display: Flex;
+  display: flex;
   flex-direction: column;
 }
