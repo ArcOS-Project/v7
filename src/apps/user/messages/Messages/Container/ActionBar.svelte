@@ -6,9 +6,9 @@
   import { UserPaths } from "$ts/user/store";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
-  import IconActionButton from "$lib/Window/ActionBar/IconActionButton.svelte";
-  import IconActionGroup from "$lib/Window/ActionBar/IconActionGroup.svelte";
-  import Separator from "$lib/Window/ActionBar/Separator.svelte";
+  import IconActionButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
+  import IconActionGroup from "$lib/Window/ActionBar/ActionGroup.svelte";
+  import Separator from "$lib/Window/ActionBar/ActionSeparator.svelte";
 
   const { process }: { process: MessagingAppRuntime } = $props();
   const { message, messageWindow, messageFromFile } = process;

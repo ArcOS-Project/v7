@@ -1,4 +1,7 @@
 <script lang="ts">
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
   import { ArcOSVersion } from "$ts/env";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
@@ -10,11 +13,15 @@
 </script>
 
 <Fields {process} />
-<div class="actions">
-  <p class="version">
-    ArcOS {ArcOSVersion}-{ArcMode()}_{ArcBuild()}
-  </p>
-  <button onclick={() => process.dataPrivacy()} disabled={$loading}>Data Privacy</button>
-  <button onclick={() => process.closeWindow()} disabled={$loading}>Cancel</button>
-  <button class="suggested" disabled={$loading || !$title || !$body} onclick={() => process.Send()}>Submit Report</button>
-</div>
+<ActionBar>
+  {#snippet leftContent()}
+    <ActionSubtle text="ArcOS {ArcOSVersion}-{ArcMode()}_{ArcBuild()}" />
+  {/snippet}
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.dataPrivacy()} disabled={$loading}>Data Privacy</ActionButton>
+    <ActionButton onclick={() => process.closeWindow()} disabled={$loading}>Cancel</ActionButton>
+    <ActionButton suggested disabled={!$title || !$body} onclick={() => process.Send()} loading={$loading}>
+      Submit Report
+    </ActionButton>
+  {/snippet}
+</ActionBar>

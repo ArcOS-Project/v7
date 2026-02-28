@@ -8,6 +8,10 @@
   height: 100%;
 }
 
+#Messages > div.body div.window-action-bar {
+  background-color: var(--win-bg);
+}
+
 #Messages > div.body div.sidebar {
   display: flex;
 }

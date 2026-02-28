@@ -107,14 +107,6 @@
   width: 35px;
   font-size: 20px;
 }
-#AppInfo div.info-block.actions {
-  margin-top: auto;
-}
-
-#AppInfo > div.body div.info-block.actions div.row {
-  gap: 10px;
-  padding-right: 10px;
-}
 
 #AppInfo div.window-action-bar p.id {
   margin: 0;
@@ -123,8 +115,6 @@
   opacity: 0.5;
   font-family: "Source Code Pro", monospace;
   line-height: 30px;
-  width: 0;
-  flex-grow: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

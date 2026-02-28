@@ -2,7 +2,7 @@
   import Spinner from "$lib/Spinner.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
-  import Separator from "$lib/Window/ActionBar/Separator.svelte";
+  import Separator from "$lib/Window/ActionBar/ActionSeparator.svelte";
   import type { ShareListGuiRuntime } from "./runtime";
 
   const { process }: { process: ShareListGuiRuntime } = $props();

@@ -66,44 +66,6 @@
   overflow-x: hidden;
   padding-right: 7px;
 }
-#processManager > div.body div.actions {
-  border-top: var(--win-border);
-  padding: 10px;
-  background-color: var(--win-bg);
-  display: flex;
-  align-items: center;
-}
-
-#processManager > div.body div.actions div.buttons {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-left: auto;
-}
-
-#processManager > div.body div.actions button {
-  background-color: var(--button-glass-bg);
-  height: 30px;
-}
-
-#processManager > div.body div.actions button:hover {
-  background-color: var(--button-glass-hover-bg);
-}
-
-#processManager > div.body div.actions button:active {
-  background-color: var(--button-glass-active-bg);
-}
-
-#processManager > div.body div.actions div.sep {
-  width: 1px;
-  height: 20px;
-  background-color: var(--button-hover-bg);
-}
-
-#processManager > div.body div.actions p.running {
-  opacity: 0.5;
-  padding: 5px;
-}
 
 #processManager div.process-tree,
 #processManager div.indent {

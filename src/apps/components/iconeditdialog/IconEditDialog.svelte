@@ -1,4 +1,6 @@
 <script lang="ts">
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import AppType from "./IconEditDialog/AppType.svelte";
   import BuiltinType from "./IconEditDialog/BuiltinType.svelte";
   import FileType from "./IconEditDialog/FileType.svelte";
@@ -21,15 +23,19 @@
       <BuiltinType {process} />
     {/if}
   </div>
-  <div class="bottom">
-    {#if process.defaultIcon}
-      <button class="default" onclick={() => process.default()} disabled={`${$type}::${$values[$type]}` === process.defaultIcon}>
-        Default
-      </button>
-    {/if}
-    <button class="cancel" onclick={() => process.closeWindow()}>Cancel</button>
-    <button class="save suggested" onclick={() => process.save()}>Save</button>
-  </div>
+  <ActionBar>
+    {#snippet leftContent()}
+      {#if process.defaultIcon}
+        <ActionButton onclick={() => process.default} disabled={`${$type}::${$values[$type]}` === process.defaultIcon}>
+          Default
+        </ActionButton>
+      {/if}
+    {/snippet}
+    {#snippet rightContent()}
+      <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
+      <ActionButton suggested onclick={() => process.save()}>Save</ActionButton>
+    {/snippet}
+  </ActionBar>
 </div>
 <div class="right">
   <div class="icon">

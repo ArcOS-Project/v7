@@ -3,6 +3,7 @@
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { onMount } from "svelte";
   import type { AppInfoRuntime } from "../runtime";
+  import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
 
   const { appId, process }: { appId: string; process: AppInfoRuntime } = $props();
   const { userPreferences } = process;
@@ -20,7 +21,7 @@
 
 <ActionBar floating>
   {#snippet leftContent()}
-    <p class="id" title={appId}>{appId}</p>
+    <ActionSubtle mono text={appId} />
   {/snippet}
   {#snippet rightContent()}
     <ActionButton onclick={() => process.openPermissions()}>Permissions</ActionButton>

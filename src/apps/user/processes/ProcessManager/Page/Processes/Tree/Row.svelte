@@ -9,7 +9,7 @@
   import { formatBytes } from "$ts/util/fs";
   import { ProcessStateIcons } from "$types/process";
   import { onDestroy, onMount } from "svelte";
-  import type { ProcessManagerRuntime } from "../../runtime";
+  import type { ProcessManagerRuntime } from "$apps/user/processes/runtime";
   import Row from "./Row.svelte";
 
   const {

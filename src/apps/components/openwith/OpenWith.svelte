@@ -1,4 +1,6 @@
 <script lang="ts">
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { Daemon } from "$ts/daemon";
   import Options from "./OpenWith/Options.svelte";
   import type { OpenWithRuntime } from "./runtime";
@@ -26,12 +28,15 @@
     {/if}
   </div>
 </div>
-<div class="bottom">
-  <div class="mode">
-    <button onclick={() => ($viewMode = "all")} class:suggested={$viewMode === "all"}> All </button>
-    <button onclick={() => ($viewMode = "apps")} class:suggested={$viewMode === "apps"}> Apps </button>
-    <button onclick={() => ($viewMode = "compatible")} class:suggested={$viewMode === "compatible"}> Compatible </button>
-  </div>
-  <button onclick={() => process.closeWindow()}>Cancel</button>
-  <button class="suggested" disabled={!$selectedId} onclick={() => process.go()}> Open </button>
-</div>
+
+<ActionBar>
+  {#snippet leftContent()}
+    <ActionButton suggested={$viewMode === "all"} onclick={() => ($viewMode = "all")}>All</ActionButton>
+    <ActionButton suggested={$viewMode === "apps"} onclick={() => ($viewMode = "apps")}>Apps</ActionButton>
+    <ActionButton suggested={$viewMode === "compatible"} onclick={() => ($viewMode = "compatible")}>Compatible</ActionButton>
+  {/snippet}
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
+    <ActionButton suggested disabled={!$selectedId} onclick={() => process.go()}>Open</ActionButton>
+  {/snippet}
+</ActionBar>

@@ -1,11 +1,12 @@
 div.window-toast-popup {
+  --offset: -15px;
   min-width: 100px;
   max-width: 80%;
   width: fit-content;
   position: absolute;
   bottom: 20px;
   left: 50%;
-  translate: -50% 0;
+  translate: -50% var(--offset);
   min-height: 40px;
   background-color: #f0f;
   border-radius: 10px;
@@ -18,17 +19,16 @@ div.window-toast-popup {
   align-items: start;
   justify-content: center;
   gap: 10px;
-  margin-bottom: -30px;
   opacity: 0;
   pointer-events: none !important;
   transition:
-    margin-bottom 0.2s,
+    translate 0.2s,
     opacity 0.2s;
   z-index: calc(infinity);
 }
 
 div.window-toast-popup.show {
-  margin-bottom: 0;
+  --offset: 0px;
   opacity: 1;
   pointer-events: initial;
 }

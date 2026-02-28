@@ -31,20 +31,8 @@
   margin-right: 5px;
 }
 
-#ProcessInfoApp > div.body div.actions {
-  padding: 10px;
-  border-radius: 15px;
-  background-color: var(--button-bg);
-  box-shadow: var(--secondary-box-shadow);
-  margin-top: auto;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-#ProcessInfoApp > div.body div.actions button.kill {
+#ProcessInfoApp > div.body div.window-action-bar button.kill {
   background-color: var(--clr-red-fg) !important;
   color: var(--win-bg) !important;
   font-weight: bold;
-  margin-right: auto;
 }

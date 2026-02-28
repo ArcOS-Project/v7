@@ -29,16 +29,3 @@
   flex-grow: 1;
   max-width: calc(100% - 48px - 15px);
 }
-
-#FsRenameItem > div.body div.bottom {
-  border-top: var(--win-border);
-  padding: 10px;
-  background-color: var(--button-glass-bg);
-  margin: 0;
-  display: flex;
-  margin-left: auto;
-  margin-top: auto;
-  gap: 10px;
-  width: 100%;
-  justify-content: end;
-}

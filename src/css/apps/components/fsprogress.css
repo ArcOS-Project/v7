@@ -1,7 +1,6 @@
 @import url("./fsprogress/bar.css");
 @import url("./fsprogress/display.css");
 @import url("./fsprogress/top.css");
-@import url("./fsprogress/bottom.css");
 
 #FsProgress {
   display: flex;

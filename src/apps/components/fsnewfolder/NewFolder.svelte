@@ -1,4 +1,6 @@
 <script lang="ts">
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import type { NewFolderRuntime } from "./runtime";
 
   const { process }: { process: NewFolderRuntime } = $props();
@@ -13,7 +15,10 @@
     <input type="text" bind:value={$newFolder} />
   </div>
 </div>
-<div class="bottom">
-  <button onclick={() => process.closeWindow()}>Cancel</button>
-  <button class="suggested" disabled={!$newFolder} onclick={() => process.createFolder()}> Create </button>
-</div>
+
+<ActionBar>
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
+    <ActionButton suggested disabled={!$newFolder} onclick={() => process.createFolder()}>Create</ActionButton>
+  {/snippet}
+</ActionBar>

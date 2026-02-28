@@ -1,4 +1,9 @@
 <script lang="ts">
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import IconActionButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
+  import Pill from "$lib/Window/ActionBar/ActionPill.svelte";
+  import Separator from "$lib/Window/ActionBar/ActionSeparator.svelte";
   import { formatBytes } from "$ts/util/fs";
   import type { MessageComposerRuntime } from "../runtime";
 
@@ -6,34 +11,17 @@
   const { title, body, recipients, sending, attachments } = process;
 </script>
 
-<div class="action-bar">
-  <!-- Sum of attachments: https://stackoverflow.com/a/16751601 -->
-  <div class="pill">
-    <p class="caption">Body</p>
-    <p class="value">{formatBytes($body.length)}</p>
-  </div>
-  <div class="pill">
-    <p class="caption">Attachments</p>
-    <p class="value">{formatBytes($attachments.map((a) => a.data.size).reduce((partialSum, a) => partialSum + a, 0))}</p>
-  </div>
-  <div class="actions">
-    <button
-      class="lucide icon-paperclip"
-      title="Add attachment"
-      onclick={() => process.addAttachment()}
-      aria-label="Add attachment"
-      disabled={$sending}
-    ></button>
-    <div class="sep"></div>
-    <button
-      class="lucide icon-trash-2 discard"
-      title="Discard message"
-      onclick={() => process.discard()}
-      aria-label="Discard message"
-      disabled={$sending}
-    ></button>
-    <button class="suggested" disabled={!$title || !$body || !$recipients.length || $sending} onclick={() => process.send()}
-      >Send</button
-    >
-  </div>
-</div>
+<ActionBar>
+  {#snippet leftContent()}
+    <Pill key={"Body"}>{formatBytes($body.length)}</Pill>
+    <Pill key={"Attachments"}>{formatBytes($attachments.map((a) => a.data.size).reduce((a, b) => a + b, 0))}</Pill>
+  {/snippet}
+  {#snippet rightContent()}
+    <IconActionButton icon="paperclip" title="Add attachment" disabled={$sending} onclick={() => process.addAttachment()} />
+    <Separator />
+    <IconActionButton icon="trash-2" title="Discard message" disabled={$sending} onclick={() => process.discard()} className="discard-button"/>
+    <ActionButton suggested disabled={!$title || !$body || !$recipients.length || !$sending} onclick={() => process.send()}>
+      Send
+    </ActionButton>
+  {/snippet}
+</ActionBar>
