@@ -1,5 +1,6 @@
 <script lang="ts">
-  import HtmlSpinner from "$lib/HtmlSpinner.svelte";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { ElevationLevel } from "$types/elevation";
   import type { SecureContextRuntime } from "../runtime";
 
@@ -13,19 +14,18 @@
   }
 </script>
 
-<div class="actions">
-  <button class="reject" onclick={() => process.deny()}>Reject</button>
-  {#if !$userPreferences.security.lockdown}
-    <button
-      class="approve level-{ElevationLevel[data.level]}"
-      onclick={approve}
-      disabled={$loading || (!$password && !$userPreferences.security.noPassword)}
-    >
-      {#if $loading}
-        <HtmlSpinner height={16} thickness={3} />
-      {:else}
+<ActionBar>
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.deny()}>Reject</ActionButton>
+    {#if !$userPreferences.security.lockdown}
+      <ActionButton
+        className="approve level-{ElevationLevel[data.level]}"
+        loading={$loading}
+        onclick={approve}
+        disabled={!$password && !$userPreferences.security.noPassword}
+      >
         Approve
-      {/if}
-    </button>
-  {/if}
-</div>
+      </ActionButton>
+    {/if}
+  {/snippet}
+</ActionBar>

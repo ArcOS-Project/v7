@@ -1,5 +1,8 @@
 <script lang="ts">
   import type { SettingsRuntime } from "$apps/user/settings/runtime";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
   import { MessageBox } from "$ts/util/dialog";
   import { formatBytes } from "$ts/util/fs";
   import { onMount } from "svelte";
@@ -41,11 +44,13 @@
 <div class="top">
   <textarea bind:value maxlength="4096"></textarea>
 </div>
-<div class="bottom">
-  <div class="left">{formatBytes(value.length)} / 4.0KB</div>
-  <div class="right">
-    <button onclick={() => process.slideVisible.set(false)}>Cancel</button>
-    <button onclick={reset}>Discard</button>
-    <button onclick={apply} class="suggested">Apply</button>
-  </div>
-</div>
+<ActionBar>
+  {#snippet leftContent()}
+    <ActionSubtle text="{formatBytes(value.length)} / 4.0KB" />
+  {/snippet}
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.slideVisible.set(false)}>Cancel</ActionButton>
+    <ActionButton onclick={reset}>Discard</ActionButton>
+    <ActionButton onclick={apply} suggested>Apply</ActionButton>
+  {/snippet}
+</ActionBar>

@@ -56,7 +56,6 @@ div.window div.body button:not(.reset):not(:disabled):active {
 }
 
 div.window div.body button:not(.reset).suggested {
-  /* background-color: var(--accent-light) !important; */
   background: linear-gradient(to bottom, var(--accent-suggested-start) 0%, var(--accent-suggested-end) 100%);
   color: var(--accent-suggested-fg) !important;
   min-width: 80px;
@@ -71,7 +70,7 @@ div.window div.body button:not(.reset).suggested {
 }
 
 div.window div.body button:not(.reset).suggested * {
-  color: var(--accent-darkest);
+  color: var(--accent-suggested-fg);
 }
 
 div.window div.body button:not(.reset).suggested:disabled {

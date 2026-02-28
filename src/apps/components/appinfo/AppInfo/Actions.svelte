@@ -1,8 +1,9 @@
 <script lang="ts">
-  import InfoBlock from "$lib/InfoBlock.svelte";
-  import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { onMount } from "svelte";
   import type { AppInfoRuntime } from "../runtime";
+  import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
 
   const { appId, process }: { appId: string; process: AppInfoRuntime } = $props();
   const { userPreferences } = process;
@@ -18,11 +19,13 @@
   });
 </script>
 
-<InfoBlock className="actions">
-  <InfoRow>
-    <p class="id" title={appId}>{appId}</p>
-    <button onclick={() => process.openPermissions()} {disabled}>Permissions</button>
-    <button onclick={() => process.killAll()} {disabled}>Kill all</button>
-    <button class="suggested" onclick={() => process.closeWindow()}>Close</button>
-  </InfoRow>
-</InfoBlock>
+<ActionBar floating>
+  {#snippet leftContent()}
+    <ActionSubtle mono text={appId} />
+  {/snippet}
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.openPermissions()}>Permissions</ActionButton>
+    <ActionButton onclick={() => process.killAll()}>Kill all</ActionButton>
+    <ActionButton suggested onclick={() => process.closeWindow()}>Close</ActionButton>
+  {/snippet}
+</ActionBar>

@@ -1,10 +1,20 @@
 <script lang="ts">
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import ActionSeparator from "$lib/Window/ActionBar/ActionSeparator.svelte";
+  import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
   import type { ProcessManagerRuntime } from "../../runtime";
   import Service from "./Services/Service.svelte";
 
   const { process }: { process: ProcessManagerRuntime } = $props();
   const { Services } = process.host;
   const { selected } = process;
+
+  let serviceId = $state<string>("");
+
+  selected.subscribe((v) => {
+    serviceId = v.replace("svc#", "");
+  });
 </script>
 
 <div class="top">
@@ -18,23 +28,30 @@
     <Service {process} {id} {service} />
   {/each}
 </div>
-<div class="actions">
-  <p class="running">{$Services.size} services</p>
-  <div class="buttons">
-    <button disabled={!$selected} onclick={() => process.serviceInfoFor($selected.replace("svc#", ""))}>Service info</button>
-    <div class="sep"></div>
-    <button
-      class="start"
-      disabled={!$selected || !!$Services.get($selected.replace("svc#", ""))?.pid}
-      onclick={() => process.startService($selected.replace("svc#", ""))}>Start</button
+
+<ActionBar>
+  {#snippet leftContent()}
+    <ActionSubtle text="{$Services.size} services" />
+  {/snippet}
+  {#snippet rightContent()}
+    <ActionButton disabled={!$selected} onclick={() => process.serviceInfoFor(serviceId)}>Service info</ActionButton>
+    <ActionSeparator />
+    <ActionButton
+      className="start"
+      disabled={!$selected || !!$Services.get(serviceId)?.pid}
+      onclick={() => process.startService(serviceId)}
     >
-    <button
-      class="stop"
-      disabled={!$selected || !$Services.get($selected.replace("svc#", ""))?.pid}
-      onclick={() => process.stopService($selected.replace("svc#", ""))}>Stop</button
+      Start
+    </ActionButton>
+    <ActionButton
+      className="stop"
+      disabled={!$selected || !$Services.get(serviceId)?.pid}
+      onclick={() => process.startService(serviceId)}
     >
-    <button class="restart" disabled={!$selected} onclick={() => process.restartService($selected.replace("svc#", ""))}
-      >Restart</button
-    >
-  </div>
-</div>
+      Stop
+    </ActionButton>
+    <ActionButton className="restart" disabled={!$selected} onclick={() => process.restartService(serviceId)}>
+      Restart
+    </ActionButton>
+  {/snippet}
+</ActionBar>

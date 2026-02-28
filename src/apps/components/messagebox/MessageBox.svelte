@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ActionBar from "$lib/Window/ActionBar.svelte";
   import { getIconPath } from "$ts/images";
   import type { AppComponentProps } from "$types/app";
   import Button from "./MessageBox/Button.svelte";
@@ -29,9 +30,11 @@
       {/if}
     </div>
   </div>
-  <div class="bottom">
-    {#each data.buttons as button}
-      <Button {button} {process} suggestedDisabled={disabled} />
-    {/each}
-  </div>
+  <ActionBar>
+    {#snippet rightContent()}
+      {#each data.buttons as button}
+        <Button {button} {process} suggestedDisabled={disabled} />
+      {/each}
+    {/snippet}
+  </ActionBar>
 {/if}

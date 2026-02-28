@@ -1,4 +1,6 @@
 <script lang="ts">
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { Daemon } from "$ts/daemon";
   import { onMount } from "svelte";
   import type { NewFileRuntime } from "./runtime";
@@ -24,7 +26,10 @@
     <input type="text" bind:value={$newFile} />
   </div>
 </div>
-<div class="bottom">
-  <button onclick={() => process.closeWindow()}>Cancel</button>
-  <button class="suggested" disabled={!$newFile} onclick={() => process.createFile()}> Create </button>
-</div>
+
+<ActionBar>
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
+    <ActionButton suggested disabled={!$newFile} onclick={() => process.createFile()}>Create</ActionButton>
+  {/snippet}
+</ActionBar>
