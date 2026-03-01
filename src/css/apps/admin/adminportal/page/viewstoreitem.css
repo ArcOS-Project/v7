@@ -138,7 +138,7 @@
 }
 #AdminPortal div.container.viewStoreItem div.installed-by {
   border-bottom: var(--win-border);
-  min-height: 150px;
+  min-height: 100px;
 }
 
 #AdminPortal div.container.viewStoreItem div.installed-by.empty {
