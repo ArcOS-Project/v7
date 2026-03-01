@@ -56,7 +56,7 @@ export class SystemShortcutsRuntime extends AppProcess {
         alt: true,
         key: "Backspace",
         action: () => {
-          this.spawnOverlayApp("processManager", +Env.get("shell_pid"), "Processes");
+          this.spawnOverlayApp("MasterOptions", +Env.get("shell_pid"));
         },
         global: true,
       }

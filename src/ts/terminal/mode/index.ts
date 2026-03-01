@@ -1,7 +1,7 @@
 import type { IUserDaemon } from "$interfaces/daemon";
 import type { IArcTerminal } from "$interfaces/terminal";
 import { UserDaemon } from "$ts/daemon";
-import { ArcOSVersion, Env, Stack, SysDispatch } from "$ts/env";
+import { ArcOSVersion, Env, Server, Stack, SysDispatch } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { ArcBuild } from "$ts/metadata/build";
@@ -234,7 +234,7 @@ export class TerminalMode extends Process {
 
   async loginPrompt(): Promise<boolean> {
     this.rl?.println(`ArcTerm ${ArcOSVersion}-${ArcMode()}_${ArcBuild()}\n`);
-    const username = await this.rl?.read(`arcapi.nl login: `);
+    const username = await this.rl?.read(`${Server.hostname ?? "ArcOS"} login: `);
     const password = await this.rl?.read(`Password:`);
 
     if (!username || !password) {
