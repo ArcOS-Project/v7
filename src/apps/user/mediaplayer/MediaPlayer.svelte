@@ -9,7 +9,8 @@
   import type { MediaPlayerRuntime } from "./runtime";
 
   const { process }: { process: MediaPlayerRuntime } = $props();
-
+  const { pinControls } = process;
+  
   let audio: HTMLVideoElement;
   let hideControls = $state<boolean>(false);
   let style = $state<string | undefined>();
@@ -48,7 +49,7 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
   class="container shell-colored colored"
-  class:hide-controls={hideControls}
+  class:hide-controls={hideControls && !$pinControls}
   {onmousemove}
   data-contextmenu={$queue.length && $Loaded ? "player" : ""}
   class:is-video={$isVideo && $Loaded}
