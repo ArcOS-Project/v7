@@ -14,36 +14,36 @@ export class PowerUserContext extends UserContext implements IPowerUserContext {
     super(id, daemon);
   }
 
-  async logoff() {
+  async logoff(force = false) {
     if (this._disposed) return;
 
     this.Log(`Logging off NOW`);
 
-    await this.toLogin("logoff");
+    await this.toLogin("logoff", {}, force);
   }
 
-  async shutdown() {
+  async shutdown(force = false) {
     if (this._disposed) return;
 
     this.Log(`Shutting down NOW`);
 
-    await this.toLogin("shutdown");
+    await this.toLogin("shutdown", {}, force);
   }
 
-  async restart() {
+  async restart(force = false) {
     if (this._disposed) return;
 
     this.Log(`Restarting NOW`);
 
-    await this.toLogin("restart");
+    await this.toLogin("restart", {}, force);
   }
 
-  async logoffSafeMode() {
+  async logoffSafeMode(force = false) {
     this.Log(`Logging off NOW (safe mode)`);
 
     Env.set("safemode", true);
 
-    await this.toLogin("logoff", { safeMode: true });
+    await this.toLogin("logoff", { safeMode: true }, force);
   }
 
   async toLogin(type: string, props: Record<string, any> = {}, force = false) {

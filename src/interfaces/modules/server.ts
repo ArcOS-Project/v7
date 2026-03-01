@@ -6,6 +6,7 @@ export interface IServerManager {
   previewBranch?: string;
   servers: ServerOption[];
   url?: string;
+  hostname?: string;
   authCode?: string;
   checkUsernameAvailability(username: string): Promise<boolean>;
   checkEmailAvailability(username: string): Promise<boolean>;

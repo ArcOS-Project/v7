@@ -28,6 +28,11 @@ export class ServerManager extends KernelModule implements IServerManager {
     return this.currentServer?.url;
   }
 
+  get hostname() {
+    if (!this.url) return undefined;
+    return new URL(this.url).hostname;
+  }
+
   get authCode() {
     return this.currentServer?.authCode;
   }
