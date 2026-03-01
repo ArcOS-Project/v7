@@ -8,12 +8,12 @@
   const { process }: { process: FileManagerRuntime } = $props();
   const { userPreferences } = process;
   const service = Daemon.serviceHost?.getService<RecentFilesService>("RecentFilesSvc");
-  const Configuration = service?.Configuration;
+  const Rrecents = service?.Recents;
 
   let selected = $state<string>("");
 </script>
 
-{#if Configuration}
+{#if Rrecents}
   <section class="recent-files">
     <button
       class="expander"
@@ -26,7 +26,7 @@
           {
             caption: "Clear recents",
             icon: "x",
-            action: () => service.Configuration.set([]),
+            action: () => service.Recents.set([]),
           },
         ],
         process,
@@ -37,10 +37,10 @@
     </button>
     {#if $userPreferences.appPreferences.fileManager.myExpandRecents}
       <div class="content">
-        {#if !$Configuration?.length}
+        {#if !$Rrecents?.length}
           <p class="empty">The files you open will appear in this list.</p>
         {:else}
-          {#each $Configuration as path (path)}
+          {#each $Rrecents as path (path)}
             <RecentFile {path} {service} {process} bind:selected />
           {/each}
         {/if}

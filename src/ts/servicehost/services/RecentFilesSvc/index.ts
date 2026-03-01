@@ -1,17 +1,23 @@
 import type { IRecentFilesService } from "$interfaces/services/RecentFilesSvc";
+import { ConfigurationBuilder } from "$ts/config";
 import { Fs } from "$ts/env";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
-import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
-import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
 import type { Service } from "$types/service";
 
 export class RecentFilesService extends BaseService implements IRecentFilesService {
-  Configuration = Store<string[]>([]);
+  Recents = Store<string[]>([]);
   readonly CONFIG_PATH = join(UserPaths.System, "RecentFiles.json");
+  private Configuration = new ConfigurationBuilder<string[]>()
+    .ForProcess(this)
+    .ReadsFrom(this.Recents)
+    .WritesTo(this.CONFIG_PATH)
+    .WithDefaults([])
+    .WithCooldown(100)
+    .Build();
 
   //#region LIFECYCLE
 
@@ -23,36 +29,10 @@ export class RecentFilesService extends BaseService implements IRecentFilesServi
 
   protected async start(): Promise<any> {
     this.initBroadcast?.("Starting recent files service");
-    await this.loadConfiguration();
-
-    let firstDone = false;
-    this.Configuration.subscribe((v) => {
-      if (!firstDone) return (firstDone = true);
-
-      this.writeConfiguration(v);
-    });
+    await this.Configuration.initialize();
   }
 
   //#endregion LIFECYCLE
-  //#region CONFIGURATION
-
-  async loadConfiguration() {
-    try {
-      const content = tryJsonParse(arrayBufferToText((await Fs.readFile(this.CONFIG_PATH))!));
-
-      if (!content || typeof content === "string") throw "";
-
-      this.Configuration.set(content as string[]);
-    } catch {
-      await this.writeConfiguration([]);
-    }
-  }
-
-  async writeConfiguration(configuration: string[]) {
-    await Fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(configuration, null, 2)));
-  }
-
-  //#endregion
   //#region EXTERNAL API
 
   addToRecents(path: string) {
@@ -66,11 +46,11 @@ export class RecentFilesService extends BaseService implements IRecentFilesServi
     if (path.startsWith(UserPaths.System) || path.startsWith(UserPaths.Applications) || path.startsWith("T:/")) return false;
 
     // Remove if the path already exists in the list so that it'll be moved to the top
-    if (this.Configuration().includes(path)) {
+    if (this.Recents().includes(path)) {
       this.removeFromRecents(path);
     }
 
-    this.Configuration.update((v) => {
+    this.Recents.update((v) => {
       v = [path].concat(v); // Push path to start of array
       return v;
     });
@@ -79,9 +59,9 @@ export class RecentFilesService extends BaseService implements IRecentFilesServi
   }
 
   removeFromRecents(path: string) {
-    if (!this.Configuration().includes(path)) return false;
+    if (!this.Recents().includes(path)) return false;
 
-    this.Configuration.update((v) => {
+    this.Recents.update((v) => {
       v.splice(v.indexOf(path), 1);
       return v;
     });
@@ -90,7 +70,7 @@ export class RecentFilesService extends BaseService implements IRecentFilesServi
   }
 
   getRecents() {
-    return this.Configuration();
+    return this.Recents();
   }
 
   //#endregion
