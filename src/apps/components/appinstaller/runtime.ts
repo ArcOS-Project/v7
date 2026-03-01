@@ -68,7 +68,7 @@ export class AppInstallerRuntime extends AppProcess {
             {
               caption: "Take me there",
               action: () => {
-                Daemon?.spawn?.spawnApp("systemSettings", +Env.get("shell_pid"), "apps");
+                this.spawnApp("systemSettings", +Env.get("shell_pid"), "apps");
               },
             },
             {

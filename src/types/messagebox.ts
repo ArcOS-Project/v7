@@ -13,6 +13,7 @@ export interface MessageBoxData {
 export interface MessageBoxButton {
   caption: string;
   action: () => MaybePromise<void | false>;
+  disabled?: () => MaybePromise<boolean>;
   suggested?: boolean;
 }
 

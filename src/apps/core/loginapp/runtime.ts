@@ -233,7 +233,7 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.init!.startSystemStatusRefresh();
 
     broadcast("Let's go!");
-    await State?.loadState("desktop", { userDaemon });
+    await State?.loadState("desktop", { userDaemon }, true);
     SoundBus.playSound("arcos.system.logon");
     userDaemon.renderer!.setAppRendererClasses(userDaemon.preferences());
     userDaemon.checks!.checkNightly();

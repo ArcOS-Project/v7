@@ -114,10 +114,15 @@ export class HelpersUserContext extends UserContext implements IHelpersUserConte
 
     const uuid = UUID();
 
-    await Daemon!.spawn?.spawnOverlay("IconPicker", +Env.get("shell_pid"), {
-      ...data,
-      returnId: uuid,
-    });
+    await Daemon!.spawn?.spawnApp(
+      "IconPicker",
+      +Env.get("shell_pid"),
+      { asOverlay: true },
+      {
+        ...data,
+        returnId: uuid,
+      }
+    );
 
     return new Promise<string>(async (r) => {
       SysDispatch.subscribe<[string, string]>("ip-confirm", ([id, icon]) => {
@@ -132,7 +137,15 @@ export class HelpersUserContext extends UserContext implements IHelpersUserConte
   async IconEditor(initialValue: string, defaultIcon?: string, name?: string) {
     const returnId = UUID();
 
-    await Daemon!.spawn?.spawnOverlay("IconEditDialog", +Env.get("shell_pid"), returnId, initialValue, name, defaultIcon);
+    await Daemon!.spawn?.spawnApp(
+      "IconEditDialog",
+      +Env.get("shell_pid"),
+      { asOverlay: true },
+      returnId,
+      initialValue,
+      name,
+      defaultIcon
+    );
 
     return new Promise<string>(async (r) => {
       SysDispatch.subscribe<[string, string]>("ied-confirm", ([id, icon]) => {
@@ -178,6 +191,7 @@ export class HelpersUserContext extends UserContext implements IHelpersUserConte
     Daemon!.spawn?.spawnApp(
       "BugHuntCreator",
       undefined,
+      {},
       `[${process.app.id}] Feedback report - ${process.windowTitle()}`,
       `Thank you for submitting feedback to ArcOS! Any feedback is of great help to make ArcOS the best we can. Please write your feedback in between the lines:
 

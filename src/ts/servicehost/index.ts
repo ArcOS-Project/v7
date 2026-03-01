@@ -1,5 +1,5 @@
 import { Daemon } from "$ts/daemon";
-import { Stack, SysDispatch } from "$ts/env";
+import { Env, Stack, SysDispatch } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { adminService } from "$ts/servicehost/services/AdminBootstrapper";
 import { appStoreService } from "$ts/servicehost/services/AppStorage";
@@ -15,11 +15,13 @@ import { protoService } from "$ts/servicehost/services/ProtoService";
 import { recentFilesService } from "$ts/servicehost/services/RecentFilesSvc";
 import { shareService } from "$ts/servicehost/services/ShareMgmt";
 import { trashService } from "$ts/servicehost/services/TrashSvc";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
 import type { ReadableServiceStore, ServiceChangeResult, ServiceStore } from "$types/service";
 import type { IBaseService, IServiceHost } from "../../interfaces/service";
 import { migrationService } from "./services/MigrationSvc";
+import { ServiceChangeResultCaptions } from "./store";
 
 export class ServiceHost extends Process implements IServiceHost {
   public Services: ReadableServiceStore = Store<ServiceStore>();
@@ -38,12 +40,40 @@ export class ServiceHost extends Process implements IServiceHost {
 
   public async initialRun(broadcast?: (msg: string) => void) {
     const services = this.Services.get();
+    const startErrors: Record<string, ServiceChangeResult> = {};
 
     for (const [id, service] of [...services]) {
       if (!service.initialState || service.initialState != "started") continue;
       service.id = id;
 
-      await this.startService(id, broadcast);
+      const startResult = await this.startService(id, broadcast);
+      if (startResult.startsWith("err_")) {
+        startErrors[service.name] = startResult;
+        broadcast?.(`Service ${service.name} failed to start.`);
+      }
+    }
+
+    if (Object.keys(startErrors).length) {
+      let list = "";
+
+      for (const serviceName in startErrors) {
+        list += `<li>${serviceName}: ${ServiceChangeResultCaptions[startErrors[serviceName]]}</li>`;
+      }
+
+      MessageBox(
+        {
+          title: "Service Host",
+          message: `One or more services failed to start. ArcOS might not behave as usual. You can choose to restart to try again.<br><br><ul>${list}</ul>`,
+          buttons: [
+            { caption: "Restart", action: () => {} },
+            { caption: "Ignore", action: () => {}, suggested: true },
+          ],
+          sound: "arcos.dialog.error",
+          image: "ErrorIcon",
+        },
+        +Env.get("userdaemon_pid"),
+        true
+      );
     }
   }
 
@@ -123,7 +153,7 @@ export class ServiceHost extends Process implements IServiceHost {
     return service;
   }
 
-  async startService(id: string, broadcast?: (msg: string) => void) {
+  async startService(id: string, broadcast?: (msg: string) => void): Promise<ServiceChangeResult> {
     broadcast ||= (m) => this.Log(`startService for ${id}: ${m}`);
     this.Log(`Starting service ${id}...`);
 

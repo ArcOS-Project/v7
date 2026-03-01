@@ -42,7 +42,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
           {
             caption: "View message",
             action: () => {
-              daemon?.spawn?.spawnApp("Messages", +Env.get("shell_pid"), "inbox", message._id);
+              daemon?.spawn?.spawnApp("Messages", +Env.get("shell_pid"), {}, "inbox", message._id);
             },
           },
         ],

@@ -29,7 +29,7 @@
   flex-direction: column;
 }
 
-#fileManager > div.overlay-wrapper > div.window.overlay {
+#fileManager > div.window-overlay-wrapper > div.window.overlay {
   top: 15px;
   scale: 1 !important;
   margin-top: -100px;

@@ -40,7 +40,7 @@
           class="lucide icon-rocket"
           aria-label="Launch"
           title="Launch"
-          onclick={() => Daemon!.spawn?.spawnApp($store.pkg.appId, +Env.get("shell_pid"))}
+          onclick={() => process.spawnApp($store.pkg.appId, +Env.get("shell_pid"))}
         ></button>
       {/if}
     {/if}

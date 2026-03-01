@@ -59,7 +59,7 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
 
       Daemon!.preferencesCtx?.preferences.set(data.preferences);
 
-      Daemon!?.preferencesCtx?.sanitizeUserPreferences();
+      Daemon!.preferencesCtx?.sanitizeUserPreferences();
 
       this.initialized = true;
       this.userInfo = data;
@@ -166,7 +166,7 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
             caption: "Delete account",
             action: async () => {
               await Backend.delete(`/user`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
-              Daemon!?.power?.logoff();
+              Daemon!.power?.logoff();
             },
             suggested: true,
           },
