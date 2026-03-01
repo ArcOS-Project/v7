@@ -40,10 +40,10 @@
   let movingX = $state<number>();
   let movingY = $state<number>();
 
-  const { userPreferences, Configuration, selected, orphaned } = process;
+  const { userPreferences, Positions, selected, orphaned } = process;
 
   async function updatePos() {
-    const pos = $Configuration[`icon$${identifier}`] as {
+    const pos = $Positions[`icon$${identifier}`] as {
       x: number;
       y: number;
     };
@@ -64,8 +64,8 @@
 
     const { x, y } = target.getBoundingClientRect();
 
-    if (!Object.values($Configuration).filter((pos) => pos.x === x && pos.y === y).length) {
-      $Configuration[`icon$${identifier}`] = {
+    if (!Object.values($Positions).filter((pos) => pos.x === x && pos.y === y).length) {
+      $Positions[`icon$${identifier}`] = {
         x,
         y,
       };
@@ -87,7 +87,7 @@
   }
 
   onMount(updatePos);
-  Configuration.subscribe(updatePos);
+  Positions.subscribe(updatePos);
 </script>
 
 <!-- svelte-ignore event_directive_deprecated -->

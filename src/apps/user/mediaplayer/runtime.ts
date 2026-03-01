@@ -19,6 +19,7 @@ import { MediaPlayerAltMenu } from "./altmenu";
 import TrayPopup from "./MediaPlayer/TrayPopup.svelte";
 import { LoopMode, type AudioFileMetadata, type MetadataConfiguration, type PlayerState } from "./types";
 import { CommandResult } from "$ts/result";
+import { ConfigurationBuilder } from "$ts/config";
 
 export class MediaPlayerRuntime extends AppProcess {
   private readonly METADATA_PATH = join(UserPaths.Configuration, "MediaPlayer", "Metadata.json");
@@ -39,6 +40,12 @@ export class MediaPlayerRuntime extends AppProcess {
   CurrentCoverUrl = Store<string | undefined>();
   LoadingMetadata = Store<boolean>(false);
   mediaSpecificAccentColor = Store<string>("");
+  Configuration = new ConfigurationBuilder()
+    .ForProcess(this)
+    .ReadsFrom(this.MetadataConfiguration)
+    .WritesTo(this.METADATA_PATH)
+    .WithDefaults({})
+    .Build();
 
   override contextMenu: AppContextMenu = {
     player: [
@@ -112,14 +119,8 @@ export class MediaPlayerRuntime extends AppProcess {
   protected async start(): Promise<any> {
     await Fs.createDirectory(getParentDirectory(this.METADATA_PATH));
     await Fs.createDirectory(this.COVERIMAGES_PATH);
-    await this.readConfiguration();
+    await this.Configuration.initialize();
 
-    let firstSub = false;
-    this.MetadataConfiguration.subscribe((v) => {
-      if (!firstSub) return (firstSub = true);
-
-      this.writeConfiguration(v);
-    });
     this.CurrentMediaMetadata.subscribe((v) => {
       if (!v?.title) return;
 
@@ -597,26 +598,6 @@ export class MediaPlayerRuntime extends AppProcess {
 
   //#endregion
   //#region METADATA
-
-  async readConfiguration() {
-    try {
-      const content = await Fs.readFile(this.METADATA_PATH);
-      if (!content) throw new Error("Failed to read file contents");
-
-      const json = tryJsonParse(arrayBufferToText(content));
-      if (!json || typeof json === "string") throw new Error("File contents could not be parsed as JSON");
-
-      this.MetadataConfiguration.set(json);
-    } catch {
-      return await this.writeConfiguration({});
-    }
-  }
-
-  async writeConfiguration(configuration: MetadataConfiguration) {
-    this.Log(`writeConfiguration`);
-
-    await Fs.writeFile(this.METADATA_PATH, textToBlob(JSON.stringify(configuration, null, 2)), undefined, false);
-  }
 
   async normalizeMetadata(meta: IAudioMetadata): Promise<AudioFileMetadata> {
     this.Log(`normalizeMetadata`);

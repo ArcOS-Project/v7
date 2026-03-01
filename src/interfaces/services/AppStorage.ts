@@ -1,6 +1,6 @@
 import type { ICommandResult } from "$interfaces/result";
 import type { IBaseService } from "$interfaces/service";
-import type { App, AppStorage, AppStoreCb } from "$types/app";
+import type { App, AppStorage, AppStoreCb, InstalledApp } from "$types/app";
 import type { ReadableStore } from "$types/writable";
 
 export interface IApplicationStorage extends IBaseService {
@@ -13,6 +13,6 @@ export interface IApplicationStorage extends IBaseService {
   injected(): App[];
   refresh(): Promise<void>;
   get(): Promise<AppStorage>;
-  getAppSynchronous(id: string): App | undefined;
+  getAppSynchronous(id: string): InstalledApp | undefined;
   getAppById(id: string, fromBuffer?: boolean): Promise<ICommandResult<App>>;
 }

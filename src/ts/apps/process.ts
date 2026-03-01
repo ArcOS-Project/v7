@@ -138,7 +138,7 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
 
     const elements = [
       ...document.querySelectorAll(`div.window[data-pid="${this.pid}"]`),
-      ...(document.querySelectorAll(`div.overlay-wrapper[data-pid="${this.pid}"]`) || []),
+      ...(document.querySelectorAll(`div.window-overlay-wrapper[data-pid="${this.pid}"]`) || []),
       ...(document.querySelectorAll(`button.opened-app[data-pid="${this.pid}"]`) || []),
     ];
 
@@ -179,7 +179,7 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
             {
               caption: "Manage apps",
               action: () => {
-                Daemon?.spawn?.spawnApp("systemSettings", +Env.get("shell_pid"), "apps", "apps_manageApps");
+                this.spawnApp("systemSettings", +Env.get("shell_pid"), "apps", "apps_manageApps");
               },
             },
           ],
@@ -284,7 +284,7 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
 
     if (!window) return false;
 
-    return window.querySelectorAll("div.overlay-wrapper").length > 0;
+    return window.querySelectorAll("div.window-overlay-wrapper").length > 0;
   }
 
   public startAcceleratorListener() {
@@ -385,11 +385,11 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
   }
 
   async spawnApp<T extends IProcess = IAppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
-    return await Daemon?.spawn?.spawnApp<T>(id, parentPid ?? this.parentPid, ...args);
+    return await Daemon?.spawn?.spawnApp<T>(id, parentPid ?? this.parentPid, {}, ...args);
   }
 
   async spawnOverlayApp<T extends IProcess = IAppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
-    return await Daemon?.spawn?.spawnOverlay<T>(id, parentPid ?? this.parentPid, ...args);
+    return await Daemon?.spawn?.spawnApp<T>(id, parentPid ?? this.parentPid, { asOverlay: true }, ...args);
   }
 
   async elevate(id: string) {

@@ -62,13 +62,13 @@ export class ShortcutPropertiesRuntime extends AppProcess {
 
     switch (data.type) {
       case "app":
-        await Daemon?.spawn?.spawnOverlay("AppInfo", +Env.get("shell_pid"), data.target);
+        await this.spawnOverlayApp("AppInfo", +Env.get("shell_pid"), data.target);
         break;
       case "file":
-        await Daemon?.spawn?.spawnApp("fileManager", +Env.get("shell_pid"), getParentDirectory(data.target));
+        await this.spawnApp("fileManager", +Env.get("shell_pid"), getParentDirectory(data.target));
         break;
       case "folder":
-        await Daemon?.spawn?.spawnApp("fileManager", +Env.get("shell_pid"), data.target);
+        await this.spawnApp("fileManager", +Env.get("shell_pid"), data.target);
         break;
       case "new":
         await this.closeWindow();

@@ -37,7 +37,7 @@ export class ApplicationsUserContext extends UserContext implements IApplication
           if (!this.safeMode) await Daemon!.files?.openFile(payload);
           break;
         case "folder":
-          if (!this.safeMode) await Daemon!.spawn?.spawnApp("fileManager", undefined, payload);
+          if (!this.safeMode) await Daemon!.spawn?.spawnApp("fileManager", this.pid, {}, payload);
           break;
         case "share":
           await shares?.mountShareById(payload);
@@ -49,7 +49,7 @@ export class ApplicationsUserContext extends UserContext implements IApplication
       }
     }
 
-    await Daemon!.spawn?._spawnApp("shellHost", undefined, this.pid, autoloadApps);
+    await Daemon!.spawn?.spawnApp("shellHost", this.pid, { noWorkspace: true }, autoloadApps);
 
     if (this.safeMode) Daemon!.helpers?.safeModeNotice();
 

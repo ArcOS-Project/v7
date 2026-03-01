@@ -12,7 +12,7 @@ import type { IUserDaemon } from "$interfaces/daemon";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { ThirdPartyProps } from "$ts/apps/tpa/props";
 import { Daemon } from "$ts/daemon";
-import { Fs, Server } from "$ts/env";
+import { Env, Fs, Server, Stack } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { authcode } from "$ts/util";
@@ -129,8 +129,8 @@ export class JsExec extends Process {
   //#endregion
   //#region HELPERS
 
-  setApp(app: App, metaPath: string) {
-    this.Log(`Setting app data to ${app.id} (${metaPath})`);
+  setApp(app: App, metaPath?: string) {
+    this.Log(`Setting app data to ${app.id} (${metaPath ?? "<unknown meta>"})`);
 
     if (this.app) return;
 
@@ -202,6 +202,10 @@ export class JsExec extends Process {
   }
 
   //#endregion
+
+  static async Invoke(filePath: string, ...args: any[]) {
+    return await Stack.spawn<JsExec>(JsExec, undefined, undefined, +Env.get("userdaemon_pid"), filePath, ...args);
+  }
 }
 
 export class JsExecError extends Error {

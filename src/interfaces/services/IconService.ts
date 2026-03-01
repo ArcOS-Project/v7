@@ -7,10 +7,8 @@ export interface IIconService extends IBaseService {
   FILE_CACHE: Record<string, string>;
   ICON_TYPES: string[];
   DEFAULT_ICON: string;
-  Configuration: ReadableStore<Record<string, string>>;
+  Icons: ReadableStore<Record<string, string>>;
   start(): Promise<void>;
-  loadConfiguration(): Promise<Record<string, string>>;
-  writeConfiguration(config: Record<string, string>): Promise<Record<string, string>>;
   defaultConfiguration(): Record<string, string>;
   getIcon(id: string, noCache?: boolean): Promise<string>;
   getIconCached(id: string): string;

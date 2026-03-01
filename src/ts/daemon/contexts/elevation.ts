@@ -42,11 +42,18 @@ export class ElevationUserContext extends UserContext implements IElevationUserC
     Daemon!.renderer?.setAppRendererClasses(Daemon!.preferences());
 
     if (shellPid) {
-      const proc = await Daemon!.spawn?._spawnOverlay("SecureContext", undefined, +shellPid, id, key, data);
+      const proc = await Daemon!.spawn?.spawnApp(
+        "SecureContext",
+        +shellPid,
+        { noWorkspace: true, asOverlay: true },
+        id,
+        key,
+        data
+      );
 
       if (!proc) return false;
     } else {
-      const proc = await Daemon!.spawn?._spawnApp("SecureContext", undefined, this.pid, id, key, data);
+      const proc = await Daemon!.spawn?.spawnApp("SecureContext", this.pid, { noWorkspace: true }, id, key, data);
 
       if (!proc) return false;
     }

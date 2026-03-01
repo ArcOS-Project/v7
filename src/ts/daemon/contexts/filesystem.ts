@@ -67,7 +67,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
 
     const elevated =
       fromSystem ||
-      (await Daemon!?.elevation?.manuallyElevate({
+      (await Daemon!.elevation?.manuallyElevate({
         what: "ArcOS needs your permission to mount a ZIP file",
         title: getItemNameFromPath(path),
         description: letter ? `As ${letter}:/` : "As a drive",
@@ -134,11 +134,11 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
       shown = true;
 
       if (!parentPid) {
-        process = await Daemon!.spawn?.spawnApp<FsProgressProc>("FsProgress", 0, progress);
+        process = await Daemon!.spawn?.spawnApp<FsProgressProc>("FsProgress", 0, { asOverlay: true }, progress);
 
         if (typeof process == "string") return DummyFileProgress;
       } else {
-        process = await Daemon!.spawn?.spawnOverlay<FsProgressProc>("FsProgress", parentPid, progress);
+        process = await Daemon!.spawn?.spawnApp<FsProgressProc>("FsProgress", parentPid, { asOverlay: true }, progress);
 
         if (typeof process == "string") return DummyFileProgress;
       }
@@ -419,7 +419,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
 
     this.Log(`Spawning LoadSaveDialog with UUID ${uuid}`);
 
-    await Daemon!.spawn?.spawnOverlay("fileManager", +Env.get("shell_pid"), data.startDir || UserPaths.Home, {
+    await Daemon!.spawn?.spawnApp("fileManager", +Env.get("shell_pid"), { asOverlay: true }, data.startDir || UserPaths.Home, {
       ...data,
       returnId: uuid,
     });
@@ -438,7 +438,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
     this.Log(`Opening file "${path}" (${shortcut ? "Shortcut" : "File"})`);
 
     if (this._disposed) return;
-    if (shortcut) return await Daemon!?.shortcuts?.handleShortcut(path, shortcut);
+    if (shortcut) return await Daemon!.shortcuts?.handleShortcut(path, shortcut);
 
     const filename = getItemNameFromPath(path);
     const result = Daemon!.assoc?.getFileAssociation(path);
@@ -471,7 +471,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
 
     if (result.handledBy.handler) return await result.handledBy.handler.handle(path);
 
-    return await Daemon!?.spawn?.spawnApp(result.handledBy.app?.id!, +Env.get("shell_pid"), path);
+    return await Daemon!.spawn?.spawnApp(result.handledBy.app?.id!, +Env.get("shell_pid"), {}, path);
   }
 
   async openWith(path: string) {
@@ -479,7 +479,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
 
     if (this._disposed) return;
 
-    await Daemon!?.spawn?.spawnOverlay("OpenWith", +Env.get("shell_pid"), path);
+    await Daemon!.spawn?.spawnApp("OpenWith", +Env.get("shell_pid"), { asOverlay: true }, path);
   }
 
   async determineCategorizedDiskUsage(): Promise<CategorizedDiskUsage> {
