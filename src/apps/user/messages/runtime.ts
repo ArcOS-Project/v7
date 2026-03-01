@@ -10,7 +10,7 @@ import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { ExpandedMessage, MessageAttachment } from "$types/messaging";
 import type { PublicUserInfo } from "$types/user";
 import dayjs from "dayjs";
@@ -18,6 +18,7 @@ import Fuse from "fuse.js";
 import { messagingPages } from "./store";
 import type { MessagingPage } from "./types";
 import { CommandResult } from "$ts/result";
+import { MessagesContextMenu } from "./context";
 
 export class MessagingAppRuntime extends AppProcess {
   service: MessagingInterface;
@@ -35,6 +36,8 @@ export class MessagingAppRuntime extends AppProcess {
   searchResults = Store<string[]>([]);
   messageWindow = false;
   messageFromFile = false;
+
+  override contextMenu: AppContextMenu = MessagesContextMenu(this);
 
   //#region LIFECYCLE
 

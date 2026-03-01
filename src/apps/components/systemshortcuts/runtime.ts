@@ -4,13 +4,15 @@ import { Env, Stack } from "$ts/env";
 import type { AppProcessData } from "$types/app";
 
 export class SystemShortcutsRuntime extends AppProcess {
+  closingFocused = false;
+
   //#region LIFECYCLE
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
     this.setSource(__SOURCE__);
   }
-  
+
   //#endregion
 
   async render() {
@@ -55,23 +57,33 @@ export class SystemShortcutsRuntime extends AppProcess {
   async closeFocused() {
     this.Log("Attempting to close focused window");
 
+    if (this.closingFocused) return;
+
     const focusedPid = Stack.renderer?.focusedPid();
     if (!focusedPid) return;
 
     const focusedProc = Stack.getProcess(focusedPid);
+    if (!focusedProc || !(focusedProc instanceof AppProcess) || focusedProc.app.data.overlay) return;
 
-    if (!focusedProc || !(focusedProc instanceof AppProcess)) return;
+    this.closingFocused = true;
 
-    await focusedProc?.closeWindow();
+    const closeResult = await focusedProc?.closeWindow();
+    if (!closeResult) {
+      this.closingFocused = false;
+      return; // onClose did not permit the exit
+    }
 
     const appProcesses = (Stack.renderer?.currentState || [])
       .map((pid) => Stack.getProcess(pid))
       .filter((proc) => proc && !proc._disposed && proc instanceof AppProcess && !proc.app.data.core && !proc.app.data.overlay)
       .filter((proc) => !!proc);
 
-    const targetProcess = appProcesses[appProcesses.length - 1];
+    this.closingFocused = false;
 
-    if (!targetProcess) return;
+    const targetProcess = appProcesses[appProcesses.length - 1];
+    if (!targetProcess) {
+      return;
+    }
 
     Stack.renderer?.focusPid(targetProcess.pid);
   }

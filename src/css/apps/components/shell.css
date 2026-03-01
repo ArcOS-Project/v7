@@ -34,7 +34,8 @@
 }
 
 #arcShell div.overlay-wrapper,
-#arcShell div.overlay-wrapper * {
+#arcShell div.overlay-wrapper > div.window,
+#arcShell div.overlay-wrapper > div.window > div.body * {
   pointer-events: initial !important;
 }
 

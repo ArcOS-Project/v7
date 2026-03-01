@@ -1,4 +1,9 @@
 <script lang="ts">
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import ActionIconButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
+  import ActionSeparator from "$lib/Window/ActionBar/ActionSeparator.svelte";
+  import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
   import { Daemon } from "$ts/daemon";
   import { TrashCanService } from "$ts/servicehost/services/TrashSvc";
   import { Plural } from "$ts/util";
@@ -7,6 +12,7 @@
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../../runtime";
   import DeletedItem from "./TrashCan/DeletedItem.svelte";
+  import ActionGroup from "$lib/Window/ActionBar/ActionGroup.svelte";
 
   const { process }: { process: FileManagerRuntime } = $props();
   const { selection } = process;
@@ -143,25 +149,17 @@
       <p class="empty">There's nothing in the bin</p>
     {/if}
   </div>
-  <div class="bottom">
-    <div class="stat">{items.length} recycled {Plural("item", items.length)}</div>
-    <div class="trash-actions">
-      <button disabled={!items.length} class:suggested={items.length} onclick={emptyBin}>Empty trash</button>
-      <div class="sep"></div>
-      <button
-        class="lucide icon-iteration-cw"
-        aria-label="Restore item(s)"
-        title="Restore item(s)"
-        disabled={!$selection.length}
-        onclick={restoreSelected}
-      ></button>
-      <button
-        class="lucide icon-trash-2"
-        aria-label="Delete item(s)"
-        title="Delete item(s)"
-        disabled={!$selection.length}
-        onclick={deleteSelected}
-      ></button>
-    </div>
-  </div>
+  <ActionBar>
+    {#snippet leftContent()}
+      <ActionSubtle text="{items.length} recycled {Plural('item', items.length)}" />
+    {/snippet}
+    {#snippet rightContent()}
+      <ActionButton disabled={!items.length} suggested={!!items.length} onclick={emptyBin}>Empty trash</ActionButton>
+      <ActionSeparator />
+      <ActionGroup>
+        <ActionIconButton icon="iteration-cw" title="Restore item(s)" disabled={!$selection.length} onclick={restoreSelected} />
+        <ActionIconButton icon="trash-2" title="Delete item(s)" disabled={!$selection.length} onclick={deleteSelected} />
+      </ActionGroup>
+    {/snippet}
+  </ActionBar>
 {/if}

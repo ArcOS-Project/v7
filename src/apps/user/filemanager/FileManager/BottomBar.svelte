@@ -1,10 +1,14 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionIconButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
+  import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
   import { Fs } from "$ts/env";
   import { Plural } from "$ts/util";
   import { getDriveLetter, getItemNameFromPath } from "$ts/util/fs";
   import { onMount } from "svelte";
   import type { FileManagerRuntime } from "../runtime";
+  import ActionGroup from "$lib/Window/ActionBar/ActionGroup.svelte";
 
   const { process }: { process: FileManagerRuntime } = $props();
   const { contents, path, userPreferences, notice, showNotice, virtual } = process;
@@ -55,50 +59,52 @@
   }
 </script>
 
-<div class="bottom">
-  <div class="stat">
+<ActionBar>
+  {#snippet leftContent()}
     {#if $contents || $virtual}
       {#if !$virtual}
-        {$contents!.dirs.length + $contents!.files.length}
-        {Plural("item", $contents!.dirs.length + $contents!.files.length)} in {dirName || driveLetter || driveLabel}
+        <ActionSubtle
+          text="{$contents!.dirs.length + $contents!.files.length} {Plural(
+            'item',
+            $contents!.dirs.length + $contents!.files.length
+          )} in {dirName || driveLetter || driveLabel}"
+        />
       {:else}
-        in {$virtual.name}
+        <ActionSubtle text="in {$virtual.name}" />
       {/if}
     {:else}
       <Spinner height={16} />
     {/if}
-  </div>
-  {#if $showNotice && $notice}
-    <div class="notice {$notice.className || ''}" title={$notice.text}>
-      <span class="lucide icon-{$notice.icon}"></span>
-      <span>{$notice.text}</span>
-    </div>
-  {/if}
-  <div class="view-toggle">
-    <button
-      class="lucide icon-file-image"
-      aria-label="Thumbnail view"
-      class:suggested={$userPreferences.appPreferences.fileManager!.thumbnails}
-      onclick={thumbnails}
-      disabled={!!$virtual}
-      title="Thumbnail view"
-    ></button>
-    <button
-      class="lucide icon-columns-3"
-      aria-label="Grid view"
-      class:suggested={$userPreferences.appPreferences.fileManager!.grid}
-      onclick={grid}
-      disabled={!!$virtual}
-      title="Compact view"
-    ></button>
-    <button
-      class="lucide icon-list"
-      aria-label="List view"
-      class:suggested={!$userPreferences.appPreferences.fileManager!.grid &&
-        !$userPreferences.appPreferences.fileManager!.thumbnails}
-      onclick={list}
-      disabled={!!$virtual}
-      title="List view"
-    ></button>
-  </div>
-</div>
+  {/snippet}
+  {#snippet rightContent()}
+    {#if $showNotice && $notice}
+      <div class="notice {$notice.className || ''}" title={$notice.text}>
+        <span class="lucide icon-{$notice.icon}"></span>
+        <span>{$notice.text}</span>
+      </div>
+    {/if}
+    <ActionGroup>
+      <ActionIconButton
+        icon="file-image"
+        suggested={$userPreferences.appPreferences.fileManager!.thumbnails}
+        onclick={thumbnails}
+        disabled={!!$virtual}
+        title="Thumbnail view"
+      ></ActionIconButton>
+      <ActionIconButton
+        icon="columns-3"
+        suggested={$userPreferences.appPreferences.fileManager!.grid}
+        onclick={grid}
+        disabled={!!$virtual}
+        title="Compact view"
+      ></ActionIconButton>
+      <ActionIconButton
+        icon="list"
+        suggested={!$userPreferences.appPreferences.fileManager!.grid && !$userPreferences.appPreferences.fileManager!.thumbnails}
+        onclick={list}
+        disabled={!!$virtual}
+        title="List view"
+      ></ActionIconButton>
+    </ActionGroup>
+  {/snippet}
+</ActionBar>

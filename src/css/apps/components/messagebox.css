@@ -48,33 +48,9 @@
   text-overflow: ellipsis;
 }
 
-#messageBox div.bottom {
-  display: flex;
+#messageBox div.window-action-bar {
   margin-top: auto;
-  justify-content: end;
-  align-items: end;
-  border-top: var(--win-border);
-  padding: 10px;
   background-color: var(--button-bg);
-  min-height: 50px;
-  gap: 10px;
-}
-
-#messageBox div.bottom button {
-  min-width: 70px;
-  margin: 0;
-}
-
-#messageBox div.bottom button:not(.suggested) {
-  background-color: var(--button-hover-bg);
-}
-
-#messageBox div.bottom button:not(.suggested):hover {
-  background-color: var(--button-glass-hover-bg);
-}
-
-#messageBox div.bottom button:not(.suggested):active {
-  background-color: var(--button-active-bg);
 }
 
 #messageBox div.top code.block {

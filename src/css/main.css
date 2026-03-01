@@ -112,11 +112,10 @@ span.beta-pill {
   padding: 0 8px;
   height: 18px;
   border-radius: 9px;
-  background-color: var(--clr-orange-bg);
-  border: var(--clr-orange-fg) 1px solid;
-  color: var(--clr-orange-fg);
+  background-color: var(--clr-orange-fg);
+  color: var(--win-bg);
   font-weight: bold;
   font-family: "Source Code Pro";
-  line-height: 16px;
+  line-height: 18px;
   min-width: fit-content;
 }

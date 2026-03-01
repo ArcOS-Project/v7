@@ -120,7 +120,7 @@
   width: 14px;
   height: 14px;
   border-radius: 7px;
-  background-color: #f0f;
+  background-color: var(--button-glass-bg);
 }
 
 #DriveInfo > div.body div.usage div.legend div.part h1 {
@@ -132,25 +132,6 @@
 #DriveInfo > div.body div.usage div.legend div.part p {
   opacity: 0.5;
   font-size: 12px;
-}
-
-#DriveInfo > div.body div.actions {
-  width: 100%;
-  height: 50px;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background-color: var(--button-bg);
-  border-radius: 15px;
-  margin-top: auto;
-  outline: var(--button-glass-bg) 1px solid;
-  outline-offset: -1px;
-  box-shadow: var(--secondary-box-shadow);
-}
-
-#DriveInfo > div.body div.actions button.suggested {
-  margin-left: auto;
 }
 
 #DriveInfo > div.body div.advanced-info {

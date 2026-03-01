@@ -78,32 +78,6 @@
   color: var(--accent-light);
 }
 
-#ShareListGui > div.body div.actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  height: 52px;
-  padding: 10px;
-  border-radius: 15px;
-  background-color: var(--button-bg);
-  box-shadow: var(--secondary-box-shadow);
-  outline: var(--button-glass-bg) 1px solid;
-  outline-offset: -1px;
-}
-
-#ShareListGui > div.body div.actions div.sep {
-  width: 1px;
-  height: 20px;
-  background-color: var(--button-glass-hover-bg);
-}
-#ShareListGui > div.body div.actions button {
-  height: 32px;
-}
-
-#ShareListGui > div.body div.actions button.create {
-  margin-right: auto;
-}
-
 #ShareListGui > div.body button.refresh {
   width: 16px;
   height: 16px;

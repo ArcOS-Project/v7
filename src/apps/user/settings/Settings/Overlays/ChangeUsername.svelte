@@ -1,4 +1,6 @@
 <script lang="ts">
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { Daemon } from "$ts/daemon";
   import { MessageBox } from "$ts/util/dialog";
   import type { OverlayRuntime } from "../../overlay";
@@ -51,7 +53,10 @@
     <input type="username" placeholder="New username" bind:value={newUsername} />
   </div>
 </div>
-<div class="bottom">
-  <button onclick={() => process.closeWindow()}>Cancel</button>
-  <button class="suggested" disabled={!newUsername} onclick={changeIt}>Confirm</button>
-</div>
+
+<ActionBar>
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
+    <ActionButton suggested disabled={!newUsername} onclick={changeIt}>Confirm</ActionButton>
+  {/snippet}
+</ActionBar>

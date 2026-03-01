@@ -1,7 +1,5 @@
 <script lang="ts">
   import CodeEditor from "$lib/CodeEditor.svelte";
-  import { Plural } from "$ts/util";
-  import { formatBytes } from "$ts/util/fs";
   import { Store } from "$ts/writable";
   import { onMount } from "svelte";
   import { Pane, Splitpanes } from "svelte-splitpanes";
@@ -11,10 +9,11 @@
   import Intro from "./Sqeleton/Intro.svelte";
   import ResultList from "./Sqeleton/ResultList.svelte";
   import Sidebar from "./Sqeleton/Sidebar.svelte";
+  import StatusBar from "./Sqeleton/StatusBar.svelte";
   import Tabs from "./Sqeleton/Tabs.svelte";
 
   const { process }: { process: SqeletonRuntime } = $props();
-  const { queries, queryIndex, openedFile, currentTab, openedFileName, result, errors, tables, queryHistory, working } = process;
+  const { queries, queryIndex, openedFile, currentTab } = process;
 
   let sqlCode = Store<string>("");
   let syncLock = $state(false);
@@ -85,43 +84,7 @@
       </Pane>
     </Splitpanes>
   </div>
-  <div class="status-bar">
-    <div class="segment filename">
-      <img src={process.getIconCached("DbMimeIcon")} alt="" />
-      <span>{$openedFileName}</span>
-    </div>
-    <div class="segment query-index">
-      In query #{$queryIndex}
-    </div>
-    <div class="segment query-size">
-      {formatBytes($sqlCode.length)}
-    </div>
-
-    <div class="segment stats">
-      <div class="stat" title="{$result?.length || 0} {Plural('result', $result?.length || 0)}">
-        <span class="lucide icon-circle-arrow-up"></span>
-        <span>{$result?.length || 0}</span>
-      </div>
-      <div class="stat" title="{$errors?.length || 0} {Plural('error', $errors?.length || 0)}">
-        <span class="lucide icon-triangle-alert"></span>
-        <span>{$errors?.length || 0}</span>
-      </div>
-      <div class="stat" title="{$tables?.length || 0} {Plural('table', $tables?.length || 0)}">
-        <span class="lucide icon-table"></span>
-        <span>{$tables?.length || 0}</span>
-      </div>
-      <div class="sep"></div>
-      <div class="stat" title="{$queryHistory?.length || 0} {Plural('execution', $queryHistory?.length || 0)}">
-        <span class="lucide icon-history"></span>
-        <span>{$queryHistory?.length || 0}</span>
-      </div>
-      <div class="stat" title="{$tables?.length || 0} queries">
-        <span class="lucide icon-scroll-text"></span>
-        <span>{$queries.length}</span>
-      </div>
-    </div>
-    <div class="segment status">{$working ? "Working..." : "Ready!"}</div>
-  </div>
+  <StatusBar {process} />
 {:else}
   <Intro {process} />
 {/if}

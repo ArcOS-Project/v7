@@ -45,12 +45,3 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
-#ItemInfo > div.body div.actions {
-  margin-top: auto;
-}
-
-#ItemInfo > div.body div.actions div.row {
-  justify-content: end;
-  gap: 10px;
-}
