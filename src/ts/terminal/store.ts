@@ -4,6 +4,7 @@ import { AdminCommand } from "./commands/admin";
 import { AppListCommand } from "./commands/applist";
 import { ArcFetchCommand } from "./commands/arcfetch";
 import { AtConfCommand } from "./commands/atconf";
+import { Base64Command } from "./commands/base64";
 import { CdCommand } from "./commands/cd";
 import { ClearCommand } from "./commands/clear";
 import { ConfigCommand } from "./commands/config";
@@ -35,11 +36,14 @@ import { SpawnCommand } from "./commands/spawn";
 import { SudoCommand } from "./commands/sudo";
 import { TasksCommand } from "./commands/tasks";
 import { TestCommand } from "./commands/test";
+import { TostrCommand } from "./commands/tostr";
 import { TreeCommand } from "./commands/tree";
+import { UuidCommand } from "./commands/uuid";
 import { VerCommand } from "./commands/ver";
 
 export const TerminalCommandStore: ITerminalProcessConstructor[] = [
   AppListCommand,
+  Base64Command,
   DirCommand,
   CdCommand,
   ClearCommand,
@@ -76,6 +80,8 @@ export const TerminalCommandStore: ITerminalProcessConstructor[] = [
   KlogCommand,
   InputCommand,
   SoundbusCommand,
+  UuidCommand,
+  TostrCommand,
 ];
 
 export const ESC = `\x1b[`;

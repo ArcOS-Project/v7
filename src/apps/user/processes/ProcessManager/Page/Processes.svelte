@@ -46,5 +46,9 @@
     <ActionButton suggested onclick={() => proc && process.kill(proc)} disabled={!proc}>
       Kill {proc && proc instanceof AppProcess ? "App" : "Process"}
     </ActionButton>
+    {#if process.app.data.overlay}
+      <ActionSeparator />
+      <ActionButton suggested onclick={() => process.closeWindow()}>Close</ActionButton>
+    {/if}
   {/snippet}
 </ActionBar>

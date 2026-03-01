@@ -158,14 +158,16 @@ export class LoginAppRuntime extends AppProcess {
     this.saveToken(userDaemon);
     this.loadingStatus.set("Loading your settings");
 
-    const userInfo = await userDaemon.account!.getUserInfo();
+    const userInfoResult = await userDaemon.account!.getUserInfo();
 
-    if (!userInfo) {
+    if (!userInfoResult.success) {
       this.loadingStatus.set("");
-      this.errorMessage.set("Failed to request user info");
+      this.errorMessage.set(userInfoResult.errorMessage ?? "Failed to request user info");
 
       return;
     }
+
+    const userInfo = userInfoResult.result!;
 
     this.profileImage.set(`${this.server.url}/user/pfp/${userInfo._id}${authcode()}`);
 
@@ -372,18 +374,18 @@ export class LoginAppRuntime extends AppProcess {
 
     this.loadingStatus.set(`Hi, ${username}!`);
 
-    const token = await LoginUser(username, password);
+    const tokenResult = await LoginUser(username, password);
 
-    if (!token) {
+    if (!tokenResult.success) {
       this.loadingStatus.set("");
-      this.errorMessage.set("Username or password incorrect.");
+      this.errorMessage.set(tokenResult.errorMessage ?? "Username or password incorrect");
 
       this.updateServerStuff();
 
       return;
     }
 
-    await this.startDaemon(token, username);
+    await this.startDaemon(tokenResult.result!, username);
   }
 
   private saveToken(userDaemon: IUserDaemon) {

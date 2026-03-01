@@ -142,7 +142,7 @@ export class AppRenderer extends Process implements IAppRenderer {
         process.STATE = "error";
         this.notifyCrash(data, e as Error, process);
       }
-
+      await this.remove(process.pid);
       await Stack.kill(process.pid);
     }
   }

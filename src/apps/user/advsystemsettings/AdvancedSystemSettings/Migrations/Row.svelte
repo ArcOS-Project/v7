@@ -31,7 +31,6 @@
     <div class="version current">{migration.version}</div>
     <button
       class="run-migration"
-      disabled={upToDate}
       onclick={runMigration}
       title={upToDate ? "This migration is up to date" : "Click to run this migration now"}
     >

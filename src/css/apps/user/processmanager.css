@@ -3,6 +3,9 @@
   padding-bottom: 10px;
   border-top: none;
 }
+#processManager.overlay > div.body {
+  padding-top: 10px;
+}
 
 #processManager > div.body div.tabs {
   display: flex;
@@ -206,13 +209,8 @@
 
 #processManager > div.body button.restart {
   background-color: var(--clr-orange-fg) !important;
-  font-weight: bold;
-}
-
-#processManager > div.body button.stop *,
-#processManager > div.body button.start *,
-#processManager > div.body button.restart * {
   color: var(--win-bg);
+  font-weight: bold;
 }
 
 #processManager > div.body div.window-action-bar {

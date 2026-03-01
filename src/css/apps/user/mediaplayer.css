@@ -35,6 +35,7 @@
 #MediaPlayer.fullscreen > div.body > div.container {
   width: 100%;
   padding: 0;
+  background-color: var(--win-bg);
 }
 
 #MediaPlayer.fullscreen > div.body > div.container.hide-controls {

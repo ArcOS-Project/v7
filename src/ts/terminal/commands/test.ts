@@ -18,8 +18,7 @@ export class TestCommand extends TerminalProcess {
   //#endregion
 
   protected async main(term: IArcTerminal, flags: Arguments): Promise<number> {
-    term.rl?.println(JSON.stringify(flags, null, 2));
-
+    term.rl?.println(await term.rl?.read("test: ", true));
     return 0;
   }
 }

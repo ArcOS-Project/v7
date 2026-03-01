@@ -42,6 +42,19 @@ export class DevelopmentEnvironment extends BaseService implements IDevelopmentE
 
   async start() {
     this.initBroadcast?.("Starting development environment");
+
+    setTimeout(() => {
+      if (!this.connected && this.host.getService("DevEnvironment")?.pid) {
+        Daemon.notifications?.sendNotification({
+          title: "Development Environment",
+          message:
+            "The Development Environment service wasn't connected within 5 seconds of its startup. The service will be stopped.",
+          timeout: 3000,
+          image: "DevEnvFsIcon",
+        });
+        this.host.stopService("DevEnvironment");
+      }
+    }, 5000);
   }
 
   //#endregion
@@ -154,6 +167,7 @@ export class DevelopmentEnvironment extends BaseService implements IDevelopmentE
     this.client?.removeAllListeners();
     this.connected = false;
     await Fs.umountDrive("devenv", true);
+    this.host.stopService("DevEnvironment");
     return undefined;
   }
 

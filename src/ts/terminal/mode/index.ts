@@ -98,10 +98,10 @@ export class TerminalMode extends Process {
   async proceed(username: string, password: string) {
     this.Log(`Trying login of '${username}'`);
 
-    const token = await LoginUser(username, password);
-    if (!token) return false;
+    const tokenResult = await LoginUser(username, password);
+    if (!tokenResult) return false;
 
-    return await this.startDaemon(token, username);
+    return await this.startDaemon(tokenResult.result!, username);
   }
 
   async startDaemon(token: string, username: string): Promise<boolean> {
@@ -119,11 +119,13 @@ export class TerminalMode extends Process {
 
       this.saveToken(userDaemon);
 
-      const userInfo = await userDaemon.account!.getUserInfo();
-      if (!userInfo) {
-        this.rl?.println(`Failed to request user info`);
+      const userInfoResult = await userDaemon.account!.getUserInfo();
+      if (!userInfoResult.success) {
+        this.rl?.println(userInfoResult.errorMessage ?? `Failed to request user info`);
         return false;
       }
+
+      const userInfo = userInfoResult.result!;
 
       if (userInfo.hasTotp && userInfo.restricted) {
         const unlocked = await this.askForTotp(token);

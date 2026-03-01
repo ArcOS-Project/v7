@@ -34,6 +34,7 @@ export class MediaPlayerRuntime extends AppProcess {
   public isVideo = Store<boolean>(false);
   public Loaded = Store<boolean>(false);
   public playlistPath = Store<string>();
+  public pinControls = Store<boolean>(false);
   MetadataConfiguration = Store<MetadataConfiguration>({});
   CurrentMediaMetadata = Store<AudioFileMetadata | undefined>();
   CurrentCoverUrl = Store<string | undefined>();
@@ -133,8 +134,17 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   async render({ file }: RenderArgs) {
-    if (await this.closeIfSecondInstance()) return;
+    const firstInstance = await this.closeIfSecondInstance();
 
+    if (firstInstance) {
+      if (file) {
+        if (file.endsWith(".arcpl")) firstInstance.readPlaylist(file);
+        else firstInstance.readFile([file]);
+      }
+
+      return;
+    }
+    
     if (file) {
       if (file.endsWith(".arcpl")) this.readPlaylist(file);
       else this.readFile([file]);

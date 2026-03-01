@@ -88,6 +88,7 @@
   justify-content: center;
   scale: 1 !important;
   background-color: transparent;
+  outline: none;
 }
 
 #ShareListGui > div.body button.refresh.loading {

@@ -106,8 +106,6 @@ export class State extends Process {
   }
 
   public clearScreen() {
-    if (this.conceiled) return;
-
     this.tty.clearScreen();
     this.layout.cursor = new Position();
     this.layout.end = new Position();
@@ -123,6 +121,7 @@ export class State extends Process {
         this.layout.cursor.col += width;
         this.layout.end.col += width;
         if (!this.conceiled) this.tty.write(text);
+        else this.tty.write("*");
       } else {
         this.refresh();
       }
@@ -143,16 +142,12 @@ export class State extends Process {
   }
 
   public editDelete(n: number) {
-    if (this.conceiled) return;
-
     if (this.line.delete(n)) {
       this.refresh();
     }
   }
 
   public editDeleteEndOfLine() {
-    if (this.conceiled) return;
-
     if (this.line.deleteEndOfLine()) {
       this.refresh();
     }
@@ -165,21 +160,18 @@ export class State extends Process {
   }
 
   public moveCursorBack(n: number) {
-    if (this.conceiled) return;
     if (this.line.moveBack(n)) {
       this.moveCursor();
     }
   }
 
   public moveCursorForward(n: number) {
-    if (this.conceiled) return;
     if (this.line.moveForward(n)) {
       this.moveCursor();
     }
   }
 
   public moveCursorUp(n: number) {
-    if (this.conceiled) return;
     if (this.line.moveLineUp(n)) {
       this.moveCursor();
     } else {
@@ -188,7 +180,6 @@ export class State extends Process {
   }
 
   public moveCursorDown(n: number) {
-    if (this.conceiled) return;
     if (this.line.moveLineDown(n)) {
       this.moveCursor();
     } else {
@@ -197,21 +188,18 @@ export class State extends Process {
   }
 
   public moveCursorHome() {
-    if (this.conceiled) return;
     if (this.line.moveHome()) {
       this.moveCursor();
     }
   }
 
   public moveCursorEnd() {
-    if (this.conceiled) return;
     if (this.line.moveEnd()) {
       this.moveCursor();
     }
   }
 
   public moveCursorToEnd() {
-    if (this.conceiled) return;
     if (this.layout.cursor === this.layout.end) {
       return;
     }
@@ -220,8 +208,6 @@ export class State extends Process {
   }
 
   public previousHistory() {
-    if (this.conceiled) return;
-
     if (this.history?.cursor === -1 && this.line.length() > 0) {
       return;
     }
@@ -232,8 +218,6 @@ export class State extends Process {
   }
 
   public nextHistory() {
-    if (this.conceiled) return;
-
     if (this.history?.cursor === -1) {
       return;
     }
@@ -246,8 +230,6 @@ export class State extends Process {
   }
 
   public moveCursor() {
-    if (this.conceiled) return;
-
     const cursor = this.tty.calculatePosition(this.line.pos_buffer(), this.promptSize);
     if (cursor === this.layout.cursor) {
       return;

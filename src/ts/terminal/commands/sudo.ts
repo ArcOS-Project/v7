@@ -24,15 +24,15 @@ export class SudoCommand extends TerminalProcess {
     while (this.retryCount < 3) {
       const password = await term.rl?.read(`[sudo] password for ${Daemon.username}: `, true);
 
-      const token = await LoginUser(Daemon?.username!, password!);
+      const tokenResult = await LoginUser(Daemon?.username!, password!);
 
-      if (!token) {
+      if (!tokenResult.success) {
         term.rl?.println("Sorry, try again.");
 
         this.retryCount++;
       }
 
-      await Daemon?.account?.discontinueToken(token);
+      await Daemon?.account?.discontinueToken(tokenResult.result!);
 
       Permissions.grantSudo(term);
 

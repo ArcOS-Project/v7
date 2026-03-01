@@ -30,7 +30,7 @@
 
         if (typeof response.data !== "object" || !Array.isArray(response.data)) throw "";
 
-        if (response.data.filter((i) => i?._id === item._id)) installed.push(user);
+        if (response.data.find((i) => i?._id === item._id)) installed.push(user);
       } catch {
         continue;
       } finally {
