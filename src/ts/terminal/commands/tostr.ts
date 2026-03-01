@@ -6,6 +6,8 @@ export class TostrCommand extends TerminalProcess {
   static keyword = "tostr";
   static description: string = "Convert something to a string";
 
+  //#region LIFECYCLE
+
   protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const radix = Number.isInteger(+flags.radix) ? (+flags.radix as number) : 16;
     const join = flags.join;
@@ -24,4 +26,6 @@ export class TostrCommand extends TerminalProcess {
     term.rl?.println(result);
     return 0;
   }
+
+  //#endregion
 }

@@ -7,6 +7,8 @@ export class Base64Command extends TerminalProcess {
   static keyword = "base64";
   static description: string = "Encode or decode a base64 string of text";
 
+  //#region LIFECYCLE
+
   protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const keyword = argv.shift();
     const target = argv.join(" ");
@@ -23,4 +25,6 @@ export class Base64Command extends TerminalProcess {
         return 1;
     }
   }
+
+  //#endregion
 }

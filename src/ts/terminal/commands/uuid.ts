@@ -7,6 +7,8 @@ export class UuidCommand extends TerminalProcess {
   static keyword = "uuid";
   static description = "Generate a random UUID";
 
+  //#region LIFECYCLE
+
   protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const copy = flags.c || flags.copy;
     const uuid = UUID();
@@ -16,4 +18,6 @@ export class UuidCommand extends TerminalProcess {
 
     return 0;
   }
+
+  //#endregion
 }
