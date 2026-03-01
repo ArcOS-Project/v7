@@ -37,7 +37,7 @@ export class IconPickerRuntime extends AppProcess {
     const iconService = Daemon?.serviceHost?.getService<IconService>("IconService");
 
     if (!iconService) return false;
-    this.store = iconService.Configuration();
+    this.store = iconService.Icons();
     this.groups = iconService.getGroupedIcons();
   }
 

@@ -2,6 +2,8 @@
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { Daemon } from "$ts/daemon";
   import dayjs from "dayjs";
   import type { ServiceInfoRuntime } from "./runtime";
@@ -41,6 +43,8 @@
   </InfoBlock>
 {/if}
 
-<div class="actions">
-  <button class="suggested" onclick={() => process.closeWindow()}>Close</button>
-</div>
+<ActionBar floating>
+  {#snippet rightContent()}
+    <ActionButton suggested onclick={() => process.closeWindow()}>Close</ActionButton>
+  {/snippet}
+</ActionBar>

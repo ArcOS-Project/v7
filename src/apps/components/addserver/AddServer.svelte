@@ -1,7 +1,10 @@
 <script lang="ts">
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import type { AddServerRuntime } from "./runtime";
 
   const { process }: { process: AddServerRuntime } = $props();
+  const { loading, action } = process;
 
   let hostname = $state<string>("");
   let authCode = $state<string>("");
@@ -39,16 +42,25 @@
   </div>
 </div>
 
-<div class="actions">
-  <button
-    class="test"
-    disabled={!hostname || port <= 100 || port > 65535}
-    onclick={() => process.testServer(hostname, port, authCode)}>Test</button
-  >
-  <button class="cancel" onclick={() => process.closeWindow()}>Cancel</button>
-  <button
-    class="suggested"
-    disabled={!hostname || port <= 100 || port > 65535}
-    onclick={() => process.addServer(hostname, port, authCode)}>Add</button
-  >
-</div>
+<ActionBar floating>
+  {#snippet leftContent()}
+    <ActionButton
+      disabled={!hostname || port <= 100 || port > 65535 || $loading}
+      onclick={() => process.testServer(hostname, port, authCode)}
+      loading={$action === "callServer"}
+    >
+      Test
+    </ActionButton>
+  {/snippet}
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
+    <ActionButton
+      disabled={!hostname || port <= 100 || port > 65535 || $loading}
+      onclick={() => process.addServer(hostname, port, authCode)}
+      loading={$action === "addServer"}
+      suggested
+    >
+      Add
+    </ActionButton>
+  {/snippet}
+</ActionBar>

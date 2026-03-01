@@ -8,14 +8,14 @@ import type {
 } from "$types/fs";
 import type { PermissionStorage } from "$types/permission";
 import type { ReadableStore } from "$types/writable";
+import type { IConfigurator } from "./config";
 import type { IFilesystemDrive } from "./fs";
 import type { IProcess } from "./process";
 
 export interface IPermissionHandler {
   _criticalProcess: boolean;
-  Configuration: ReadableStore<PermissionStorage>;
-  readConfiguration(): Promise<void>;
-  writeConfiguration(config: PermissionStorage): Promise<void>;
+  Storage: ReadableStore<PermissionStorage>;
+  Configuration: IConfigurator<PermissionStorage>;
   hasPermission(process: IProcess, permission: PermissionString): boolean;
   grantPermission(process: IProcess, permission: PermissionString): void;
   revokePermission(process: IProcess, permission: PermissionString): void;

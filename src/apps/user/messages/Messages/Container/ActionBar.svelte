@@ -4,6 +4,11 @@
   import type { MessageAttachment } from "$types/messaging";
   import { Daemon } from "$ts/daemon";
   import { UserPaths } from "$ts/user/store";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import IconActionButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
+  import IconActionGroup from "$lib/Window/ActionBar/ActionGroup.svelte";
+  import Separator from "$lib/Window/ActionBar/ActionSeparator.svelte";
 
   const { process }: { process: MessagingAppRuntime } = $props();
   const { message, messageWindow, messageFromFile } = process;
@@ -22,67 +27,50 @@
   }
 </script>
 
-<div class="action-bar">
-  {#if !messageWindow}
-    <button class="compose suggested" onclick={() => process.compose()}>
-      <span class="lucide icon-plus"></span>
-      <span>Compose</span>
-    </button>
-  {/if}
-  {#if $message?.attachmentData}
-    <button
-      class="lucide icon-file-down"
-      onclick={downloadAttachments}
-      aria-label="Download Attachments"
-      title="Download Attachments"
-    ></button>
-  {/if}
-  <div class="actions">
-    <div class="reply-forward">
-      <button
-        class="lucide icon-reply"
-        aria-label="Reply"
+<ActionBar>
+  {#snippet leftContent()}
+    {#if !messageWindow}
+      <ActionButton suggested icon="plus" onclick={() => process.compose()}>Compose</ActionButton>
+    {/if}
+    {#if $message?.attachmentData?.length}
+      <IconActionButton icon="file-down" onclick={downloadAttachments}></IconActionButton>
+    {/if}
+  {/snippet}
+  {#snippet rightContent()}
+    <IconActionGroup>
+      <IconActionButton
         disabled={!$message || messageFromFile}
-        onclick={() => process.replyTo($message!)}
         title="Reply to message"
-      ></button>
-      <button
-        class="lucide icon-forward"
-        title="Forward message"
-        aria-label="Forward"
-        disabled={!$message}
-        onclick={() => process.forward($message!)}
-      ></button>
-    </div>
-    <div class="sep"></div>
-    <div class="modifiers">
-      <button
-        class="lucide icon-save"
-        aria-label="Save"
+        icon="reply"
+        onclick={() => process.replyTo($message!)}
+      />
+      <IconActionButton disabled={!$message} title="Forward message" icon="forward" onclick={() => process.forward($message!)} />
+    </IconActionGroup>
+    <Separator />
+
+    <IconActionGroup>
+      <IconActionButton
+        icon="save"
         disabled={!$message || messageFromFile}
         onclick={() => process.saveMessage()}
         title="Save message to file..."
-      ></button>
-      <button
-        class="lucide icon-trash-2"
-        aria-label="Delete"
+      ></IconActionButton>
+      <IconActionButton
+        icon="trash-2"
         disabled={!$message || messageFromFile}
-        onclick={() => $message && process.deleteMessage($message._id)}
+        onclick={() => process.deleteMessage($message!._id)}
         title="Delete message"
-      ></button>
-      <button
-        class="lucide"
-        aria-label="Archive"
+      ></IconActionButton>
+      <IconActionButton
+        icon={$message && process.isArchived($message._id) ? "archive-x" : "archive"}
         disabled={!$message || messageFromFile}
-        onclick={() => $message && process.toggleArchived($message)}
-        class:icon-archive-x={$message && process.isArchived($message!._id)}
-        class:icon-archive={$message && !process.isArchived($message!._id)}
+        onclick={() => process.saveMessage()}
         title="Archive/unarchive message"
-      ></button>
-    </div>
+      ></IconActionButton>
+    </IconActionGroup>
     {#if !messageWindow}
-      <div class="sep"></div>
-      <button class="lucide icon-rotate-cw" title="Refresh" aria-label="Refresh" onclick={() => process.refresh()}></button>
+      <Separator />
+      <IconActionButton icon="rotate-cw" title="Refresh" onclick={() => process.refresh()}></IconActionButton>
     {/if}
-  </div>
-</div>
+  {/snippet}
+</ActionBar>

@@ -19,13 +19,3 @@
   padding: 0 10px;
   height: 30px;
 }
-
-#ExecuteQueryApp #SaveQueryOverlay > div.body div.actions {
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: end;
-  gap: 10px;
-  border-top: var(--win-border);
-  background-color: var(--win-bg);
-}

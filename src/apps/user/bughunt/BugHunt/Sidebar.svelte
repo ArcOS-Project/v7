@@ -11,10 +11,20 @@
 
 <div class="sidebar">
   <div class="tabs">
-    <button class="tab private" onclick={() => process.changeTab("private")} class:suggested={$currentTab === "private"}>
+    <button
+      class="tab private"
+      onclick={() => process.changeTab("private")}
+      class:suggested={$currentTab === "private"}
+      disabled={$loading}
+    >
       Yours
     </button>
-    <button class="tab public" onclick={() => process.changeTab("public")} class:suggested={$currentTab === "public"}>
+    <button
+      class="tab public"
+      onclick={() => process.changeTab("public")}
+      class:suggested={$currentTab === "public"}
+      disabled={$loading}
+    >
       Public
     </button>
   </div>

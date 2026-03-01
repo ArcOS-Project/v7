@@ -1,10 +1,10 @@
 import type { ITrashCanService } from "$interfaces/services/TrashSvc";
+import { ConfigurationBuilder } from "$ts/config";
 import { Daemon } from "$ts/daemon";
 import { Env, Fs, SysDispatch } from "$ts/env";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
-import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
@@ -14,6 +14,12 @@ import type { TrashIndexNode } from "$types/trash";
 export class TrashCanService extends BaseService implements ITrashCanService {
   INDEX_PATH = join(UserPaths.System, `TrashIndex.json`);
   IndexBuffer = Store<Record<string, TrashIndexNode>>({});
+  Configuration = new ConfigurationBuilder<Record<string, TrashIndexNode>>()
+    .ForProcess(this)
+    .ReadsFrom(this.IndexBuffer)
+    .WritesTo(this.INDEX_PATH)
+    .WithDefaults({})
+    .Build();
 
   //#region LIFECYCLE
 
@@ -25,31 +31,10 @@ export class TrashCanService extends BaseService implements ITrashCanService {
 
   async start() {
     this.initBroadcast?.("Starting trash service");
-    this.IndexBuffer.set(await this.readIndex());
-    this.IndexBuffer.subscribe((v) => this.writeIndex(v));
+    await this.Configuration.initialize();
   }
 
   //#endregion
-
-  async readIndex(): Promise<Record<string, TrashIndexNode>> {
-    const content = await Fs.readFile(this.INDEX_PATH);
-
-    if (!content) return await this.writeIndex({});
-
-    try {
-      const parsed = JSON.parse(arrayBufferToText(content)!);
-
-      return parsed as Record<string, TrashIndexNode>;
-    } catch {
-      return await this.writeIndex({});
-    }
-  }
-
-  async writeIndex(index: Record<string, TrashIndexNode>) {
-    await Fs.writeFile(this.INDEX_PATH, textToBlob(JSON.stringify(index, null, 2)));
-
-    return index;
-  }
 
   async moveToTrash(path: string, dispatch = false): Promise<TrashIndexNode | undefined> {
     if (Daemon?.preferences().globalSettings.disableTrashCan) {

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import type { MessageBoxButton } from "$types/messagebox";
   import { onMount } from "svelte";
   import type { MessageBoxRuntime } from "../runtime";
@@ -32,6 +33,6 @@
   }
 </script>
 
-<button onclick={go} class:suggested={button.suggested} disabled={disabled || (suggestedDisabled && button.suggested)}>
+<ActionButton suggested={button.suggested} onclick={go} disabled={disabled || (suggestedDisabled && button.suggested)}>
   {button.caption}
-</button>
+</ActionButton>

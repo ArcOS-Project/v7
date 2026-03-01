@@ -1,6 +1,6 @@
 <script lang="ts">
-  import InfoBlock from "$lib/InfoBlock.svelte";
-  import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import type { ReadableStore } from "$types/writable";
   import type { ItemInfoRuntime } from "../runtime";
   import type { ItemInfo } from "../types";
@@ -8,16 +8,16 @@
   const { info, process }: { info: ReadableStore<ItemInfo>; process: ItemInfoRuntime } = $props();
 </script>
 
-<InfoBlock className="actions">
-  <InfoRow>
+<ActionBar floating>
+  {#snippet rightContent()}
     {#if $info.isShortcut}
-      <button
+      <ActionButton
         onclick={() => process.spawnOverlayApp("ShortcutProperties", process.pid, $info.location.fullPath, process.shortcut())}
       >
         Edit Shortcut...
-      </button>
+      </ActionButton>
     {/if}
-    <button onclick={() => process.open()}>Open</button>
-    <button class="suggested" onclick={() => process.closeWindow()}> Okay </button>
-  </InfoRow>
-</InfoBlock>
+    <ActionButton onclick={() => process.open()}>Open</ActionButton>
+    <ActionButton suggested onclick={() => process.closeWindow()}>Okay</ActionButton>
+  {/snippet}
+</ActionBar>
