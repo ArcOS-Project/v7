@@ -5,4 +5,5 @@
   gap: 20px;
   height: 0;
   flex-grow: 1;
+  min-height: 110px !important;
 }

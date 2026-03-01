@@ -50,6 +50,15 @@ export class SystemShortcutsRuntime extends AppProcess {
           this.spawnOverlayApp("AcceleratorOverview", +Env.get("shell_pid"));
         },
         global: true,
+      },
+      {
+        ctrl: true,
+        alt: true,
+        key: "Backspace",
+        action: () => {
+          this.spawnOverlayApp("processManager", +Env.get("shell_pid"), "Processes");
+        },
+        global: true,
       }
     );
   }

@@ -22,9 +22,7 @@
   <img
     src={$working && $currentPackage
       ? StoreItemIcon($currentPackage)
-      : $done
-        ? process.getIconCached("GoodStatusIcon")
-        : "UpdateIcon"}
+      : process.getIconCached($done ? "GoodStatusIcon" : "UpdateIcon")}
     alt=""
   />
   <div class="info">

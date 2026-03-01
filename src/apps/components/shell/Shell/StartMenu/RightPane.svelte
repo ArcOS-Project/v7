@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/shell";
   import { Fs, SysDispatch } from "$ts/env";
-  import { contextProps } from "$ts/ui/context/actions.svelte";
+  import { contextMenu, contextProps } from "$ts/ui/context/actions.svelte";
   import { UserPaths } from "$ts/user/store";
   import type { FolderEntry } from "$types/fs";
   import type { UserPreferencesStore } from "$types/user";
@@ -44,7 +44,24 @@
 
 <div class="right-pane">
   <UserButton {userPreferences} {username} {process} />
-  <div class="content">
+  <div
+    class="content"
+    use:contextMenu={[
+      [
+        {
+          caption: "Refresh",
+          icon: "refresh-cw",
+          action: () => update(),
+        },
+        {
+          caption: "Open home folder",
+          icon: "folder-open",
+          action: () => process.spawnApp("fileManager", process.pid, UserPaths.Home),
+        },
+      ],
+      process,
+    ]}
+  >
     {#each dirs as dir}
       <button
         class="folder"

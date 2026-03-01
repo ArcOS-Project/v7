@@ -62,6 +62,8 @@ export class ChecksUserContext extends UserContext implements IChecksUserContext
     const distrib = this.serviceHost?.getService<DistributionServiceProcess>("DistribSvc");
     const updates = await distrib?.checkForAllStoreItemUpdates();
 
+    console.log(updates);
+
     if (updates?.length) {
       const first = updates[0];
       const notif = Daemon!.notifications?.sendNotification({

@@ -46,12 +46,16 @@
     <ActionButton
       className="stop"
       disabled={!$selected || !$Services.get(serviceId)?.pid}
-      onclick={() => process.startService(serviceId)}
+      onclick={() => process.stopService(serviceId)}
     >
       Stop
     </ActionButton>
     <ActionButton className="restart" disabled={!$selected} onclick={() => process.restartService(serviceId)}>
       Restart
     </ActionButton>
+    {#if process.app.data.overlay}
+      <ActionSeparator />
+      <ActionButton suggested onclick={() => process.closeWindow()}>Close</ActionButton>
+    {/if}
   {/snippet}
 </ActionBar>
