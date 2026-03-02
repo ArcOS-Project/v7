@@ -47,7 +47,7 @@ export class ServiceHost extends Process implements IServiceHost {
       service.id = id;
 
       const startResult = await this.startService(id, broadcast);
-      if (startResult.startsWith("err_")) {
+      if (startResult.startsWith("err_") && startResult !== "err_startCondition") {
         startErrors[service.name] = startResult;
         broadcast?.(`Service ${service.name} failed to start.`);
       }

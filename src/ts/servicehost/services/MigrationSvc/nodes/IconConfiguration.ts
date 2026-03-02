@@ -1,4 +1,5 @@
 import type { IMigrationNodeConstructor } from "$interfaces/migration";
+import type { IIconService } from "$interfaces/services/IconService";
 import type { IMigrationService } from "$interfaces/services/MigrationSvc";
 import type { MigrationResult } from "$types/migrations";
 import { MigrationNode } from "../node";
@@ -12,10 +13,10 @@ export class IconConfigurationMigration extends MigrationNode {
   }
 
   async runMigration(): Promise<MigrationResult> {
-    const service = this.svc.host.getService<any>("IconService");
+    const service = this.svc.host.getService<IIconService>("IconService");
     const icons = service?.defaultConfiguration();
 
-    service?.Configuration.update((v: any) => {
+    service?.Icons.update((v: any) => {
       for (const icon in icons) {
         if (!v[icon]) {
           v[icon] = icons[icon];

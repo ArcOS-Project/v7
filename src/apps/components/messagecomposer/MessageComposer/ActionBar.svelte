@@ -19,8 +19,14 @@
   {#snippet rightContent()}
     <IconActionButton icon="paperclip" title="Add attachment" disabled={$sending} onclick={() => process.addAttachment()} />
     <Separator />
-    <IconActionButton icon="trash-2" title="Discard message" disabled={$sending} onclick={() => process.discard()} className="discard-button"/>
-    <ActionButton suggested disabled={!$title || !$body || !$recipients.length || !$sending} onclick={() => process.send()}>
+    <IconActionButton
+      icon="trash-2"
+      title="Discard message"
+      disabled={$sending}
+      onclick={() => process.discard()}
+      className="discard-button"
+    />
+    <ActionButton suggested disabled={!$title || !$body || !$recipients.length} loading={$sending} onclick={() => process.send()}>
       Send
     </ActionButton>
   {/snippet}
