@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { Server } from "$ts/env";
+import { Server, SoundBus } from "$ts/env";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { GoodStatusIcon } from "$ts/images/status";
 import { MessageBox } from "$ts/util/dialog";
@@ -90,6 +90,7 @@ export class AddServerRuntime extends AppProcess {
     if (this.action() === "") this.action.set("callServer");
 
     try {
+      SoundBus.playSound("arcos.bip");
       const response = await axios.get(`/ping`, {
         timeout: 3000,
         timeoutErrorMessage: "We're offline",
@@ -98,6 +99,7 @@ export class AddServerRuntime extends AppProcess {
       });
 
       if (response.status !== 200) return false;
+      SoundBus.playSound("arcos.bop");
 
       return true;
     } catch {
