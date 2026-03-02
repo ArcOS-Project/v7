@@ -343,7 +343,7 @@ export class AppStoreRuntime extends AppProcess {
         {
           title: "Failed to update store item",
           message:
-            "The server didn't accept your update package. Maybe its format is incorrect, the app ID differs, or the version isn't increased. Please check the package and try again.",
+            `The server didn't accept your update package. Maybe its format is incorrect, the app ID differs, or the version isn't increased. Please check the package and try again.<br><br>Details: `,
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
@@ -352,6 +352,7 @@ export class AppStoreRuntime extends AppProcess {
         true
       );
 
+      prog.stop();
       return;
     }
 

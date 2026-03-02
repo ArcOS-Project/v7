@@ -30,7 +30,7 @@ export class SourceFilesystemProxy extends FilesystemProxy {
 
       return CommandResult.Ok<ArrayBuffer>(response.data);
     } catch (e) {
-      return CommandResult.Error(`Failed to read file: ${e}`);
+      return CommandResult.AxiosError(e);
     }
   }
 
@@ -41,7 +41,7 @@ export class SourceFilesystemProxy extends FilesystemProxy {
 
       return CommandResult.Ok<GitFolder>(response.data);
     } catch (e) {
-      return CommandResult.Error(`Failed to read folder: ${e}`);
+      return CommandResult.AxiosError(e);
     }
   }
 

@@ -22,11 +22,12 @@ export async function LoginUser(identity: string, password: string): Promise<Com
 
     return CommandResult.Ok(response.data.token);
   } catch (e) {
-    const err = e as AxiosError;
+    Log("LoginUser", "API request errored:\n" + e, LogLevel.error);
 
-    Log("LoginUser", "API request errored:\n" + err, LogLevel.error);
-
-    return CommandResult.Error(err instanceof AxiosError ? (err.response?.data as any)?.e : `${e}` || "Unknown Message");
+    return CommandResult.AxiosError(
+      e,
+      "An unknown error occurred. Please check your credentials, and then try again. If the problem persists, please contact an ArcOS administrator."
+    );
   }
 }
 
