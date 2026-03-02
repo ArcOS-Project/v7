@@ -144,7 +144,7 @@ export class MediaPlayerRuntime extends AppProcess {
 
       return;
     }
-    
+
     if (file) {
       if (file.endsWith(".arcpl")) this.readPlaylist(file);
       else this.readFile([file]);
@@ -411,17 +411,15 @@ export class MediaPlayerRuntime extends AppProcess {
       this.url.set(url);
       this.windowTitle.set(`${getItemNameFromPath(path)} - Media Player`);
       this.windowIcon.set(fileAssociation?.icon || this.getIconCached("MediaPlayerIcon"));
-
-      this.parseMetadata(path);
-
       this.Reset();
 
       await Sleep(10);
       await this.player?.play();
 
+      this.parseMetadata(path);
       this.Loaded.set(true);
-    } catch {
-      this.failedToPlay();
+    } catch (e) {
+      this.failedToPlay(e);
     }
   }
 
@@ -585,7 +583,7 @@ export class MediaPlayerRuntime extends AppProcess {
       {
         title: "Failed to play",
         message:
-          `Media Player failed to play the file you wanted to open. It might not be a (supported) audio or video file. Please try a different file. ${e ?? ""}`.trim(),
+          `Media Player failed to play the file you wanted to open. It might not be a (supported) audio or video file. Please try a different file.<br><br>Details: ${e ?? ""}`.trim(),
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
         image: "MediaPlayerIcon",
         sound: "arcos.dialog.error",
