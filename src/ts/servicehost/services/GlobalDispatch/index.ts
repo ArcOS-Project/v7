@@ -2,7 +2,7 @@ import type { IUserDaemon } from "$interfaces/daemon";
 import type { IServerManager } from "$interfaces/modules/server";
 import type { IGlobalDispatch } from "$interfaces/services/GlobalDispatch";
 import { Daemon } from "$ts/daemon";
-import { Env, getKMod, Stack, SysDispatch } from "$ts/env";
+import { Env, getKMod, SoundBus, Stack, SysDispatch } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
@@ -38,6 +38,14 @@ export class GlobalDispatch extends BaseService implements IGlobalDispatch {
       this.client.on("connect", async () => {
         await this.connected();
         resolve();
+      });
+
+      this.client.onAnyOutgoing(() => {
+        SoundBus?.playSound("arcos.bip");
+      });
+
+      this.client.onAny(() => {
+        SoundBus?.playSound("arcos.bop");
       });
 
       this.client.on("kicked", () => {

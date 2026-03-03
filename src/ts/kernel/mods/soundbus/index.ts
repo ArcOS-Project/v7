@@ -1,6 +1,5 @@
 import type { IWaveKernel } from "$interfaces/kernel";
 import type { ISoundbus } from "$interfaces/modules/soundbus";
-import { Env } from "$ts/env";
 import { KernelModule } from "$ts/kernel/module";
 import type { SoundBusStore, SoundStore } from "$types/soundbus";
 import { ArcSounds } from "./store";
@@ -8,6 +7,7 @@ import { ArcSounds } from "./store";
 export class SoundBus extends KernelModule implements ISoundbus {
   private store: SoundStore = {};
   private _bus: SoundBusStore = {};
+  private readonly SOUNDBUS_LIMIT = 40;
 
   //#region LIFECYCLE
 
@@ -21,8 +21,14 @@ export class SoundBus extends KernelModule implements ISoundbus {
 
   public playSound(id: string, volume = 1) {
     this.isKmod();
-    if (Env.get("safemode")) return;
+    // if (Env.get("safemode")) return;
     if (!this.store[id]) return false;
+
+    const totalCount = Object.values(this._bus)
+      .map((s) => s.length)
+      .reduce((a, b) => a + b, 0);
+
+    if (totalCount > this.SOUNDBUS_LIMIT) return false;
 
     this.Log(`Playing sound ${id} from store`);
 

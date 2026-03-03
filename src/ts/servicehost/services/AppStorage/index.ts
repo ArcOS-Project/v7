@@ -3,7 +3,7 @@ import type { IApplicationStorage } from "$interfaces/services/AppStorage";
 import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
 import { BuiltinAppImportPathAbsolutes } from "$ts/apps/store";
 import { Daemon } from "$ts/daemon";
-import { ArcOSVersion, Env, Fs, SysDispatch } from "$ts/env";
+import { ArcOSVersion, Env, Fs, SoundBus, SysDispatch } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { CommandResult } from "$ts/result";
@@ -63,6 +63,7 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
 
           const end = performance.now() - start;
           const appCopy = await deepCopyWithBlobs<App>(app);
+          SoundBus?.playSound("arcos.bop");
 
           appCopy._internalSysVer = `v${ArcOSVersion}-${ArcMode()}_${ArcBuild()}`;
           appCopy._internalOriginalPath = path;

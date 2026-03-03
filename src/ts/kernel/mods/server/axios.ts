@@ -1,6 +1,6 @@
 import type { IEnvironment } from "$interfaces/modules/env";
 import { __Console__ } from "$ts/console";
-import { Kernel } from "$ts/env";
+import { Kernel, SoundBus } from "$ts/env";
 import { ArcMode } from "$ts/metadata/mode";
 import { UUID } from "$ts/util/uuid";
 import axios, { type AxiosRequestConfig, type InternalAxiosRequestConfig } from "axios";
@@ -12,6 +12,16 @@ export const Backend = axios.create({
     Expires: "0",
   },
 });
+
+Backend.interceptors.request.use((config) => {
+  SoundBus?.playSound("arcos.bip");
+  return config;
+})
+
+Backend.interceptors.response.use((config) => {
+  SoundBus?.playSound("arcos.bop");
+  return config;
+})
 
 Backend.interceptors.request.use(
   (config) => {
