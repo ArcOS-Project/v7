@@ -1,7 +1,9 @@
 import type { Constructs } from "$interfaces/common";
 import type { IInstallerProcessBase } from "$interfaces/distrib";
 import type { IBaseService } from "$interfaces/service";
+import type { CommandResult } from "$ts/result";
 import type { FilesystemProgressCallback } from "$types/fs";
+import type { UpdateWriteOpResult } from "$types/mongo";
 import type { ArcPackage, PartialStoreItem, StoreItem, UpdateInfo } from "$types/package";
 import type { UserPreferencesStore } from "$types/user";
 import type JSZip from "jszip";
@@ -60,5 +62,5 @@ export interface IDistributionServiceProcess extends IBaseService {
     itemId: string,
     updatePath: string,
     onProgress?: FilesystemProgressCallback
-  ): Promise<boolean>;
+  ): Promise<CommandResult<UpdateWriteOpResult>>;
 }
