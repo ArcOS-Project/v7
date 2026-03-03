@@ -24,6 +24,11 @@ export class ServiceCommand extends TerminalProcess {
       return 1;
     }
 
+    if (!subCommand) {
+      term.Error("Missing arguments.");
+      return 1;
+    }
+
     switch (subCommand) {
       case "start":
         return await this.startCommand(argv, flags);
