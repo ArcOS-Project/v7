@@ -1,5 +1,5 @@
 import type { IUserDaemon } from "$interfaces/daemon";
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal, ITerminalMode } from "$interfaces/terminal";
 import { UserDaemon } from "$ts/daemon";
 import { ArcOSVersion, Env, Server, Stack, SysDispatch } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
@@ -8,6 +8,7 @@ import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { Sleep } from "$ts/sleep";
 import { LoginUser } from "$ts/user/auth";
+import { UserPaths } from "$ts/user/store";
 import { toForm } from "$ts/util/form";
 import type { UserInfo } from "$types/user";
 import { ClipboardAddon } from "@xterm/addon-clipboard";
@@ -15,6 +16,7 @@ import { FitAddon } from "@xterm/addon-fit";
 import { ImageAddon } from "@xterm/addon-image";
 import { Unicode11Addon } from "@xterm/addon-unicode11";
 import { WebLinksAddon } from "@xterm/addon-web-links";
+import "@xterm/xterm/css/xterm.css";
 import Cookies from "js-cookie";
 import { Terminal } from "xterm";
 import { ArcTerminal } from "..";
@@ -22,7 +24,7 @@ import type { MigrationService } from "../../servicehost/services/MigrationSvc";
 import { Readline } from "../readline/readline";
 import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../store";
 
-export class TerminalMode extends Process {
+export class TerminalMode extends Process implements ITerminalMode {
   userDaemon?: IUserDaemon;
   target: HTMLDivElement;
   term?: Terminal;
@@ -31,7 +33,7 @@ export class TerminalMode extends Process {
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, target: HTMLDivElement, wrapper: HTMLDivElement) {
+  constructor(pid: number, parentPid: number, target: HTMLDivElement) {
     super(pid, parentPid);
 
     this.target = target;
@@ -44,7 +46,7 @@ export class TerminalMode extends Process {
     await this.initializeTerminal();
     if (await this.loadToken()) return;
 
-    return await this.loginPrompt();
+    return await this.serverPrompt();
   }
 
   //#endregion
@@ -99,7 +101,7 @@ export class TerminalMode extends Process {
     this.Log(`Trying login of '${username}'`);
 
     const tokenResult = await LoginUser(username, password);
-    if (!tokenResult) return false;
+    if (!tokenResult.success) return false;
 
     return await this.startDaemon(tokenResult.result!, username);
   }
@@ -121,7 +123,7 @@ export class TerminalMode extends Process {
 
       const userInfoResult = await userDaemon.account!.getUserInfo();
       if (!userInfoResult.success) {
-        this.rl?.println(userInfoResult.errorMessage ?? `Failed to request user info`);
+        this.rl?.println(`${CURUP}${CLRROW}${userInfoResult.errorMessage ?? "Failed to request user info"}\n`);
         return false;
       }
 
@@ -131,7 +133,7 @@ export class TerminalMode extends Process {
         const unlocked = await this.askForTotp(token);
 
         if (!unlocked) {
-          this.rl?.println(`2FA code invalid!`);
+          this.rl?.println(`${CURUP}${CLRROW}2FA code invalid!`);
           await userDaemon.account?.discontinueToken();
           await userDaemon.killSelf();
           return false;
@@ -177,7 +179,16 @@ export class TerminalMode extends Process {
       await Sleep(10);
 
       this.term?.clear();
-      this.arcTerm = await Stack.spawn<IArcTerminal>(ArcTerminal, undefined, userDaemon.userInfo?._id, this.pid, this.term);
+      this.arcTerm = await Stack.spawn<IArcTerminal>(
+        ArcTerminal,
+        undefined,
+        userDaemon.userInfo?._id,
+        this.pid,
+        this.term,
+        UserPaths.Home,
+        undefined,
+        this
+      );
       this.arcTerm!.IS_ARCTERM_MODE = true;
       this.term?.focus();
 
@@ -206,7 +217,12 @@ export class TerminalMode extends Process {
       return false;
     }
 
-    await this.startDaemon(token, username);
+    const result = await this.startDaemon(token, username);
+    if (!result) {
+      this.rl?.println("");
+      await this.rl?.read("Press Enter to continue...");
+      return await this.loginPrompt();
+    }
 
     return true;
   }
@@ -232,21 +248,51 @@ export class TerminalMode extends Process {
     Cookies.remove(`arcUsername`);
   }
 
-  async loginPrompt(): Promise<boolean> {
+  async serverPrompt(): Promise<boolean> {
+    this.term?.clear();
     this.rl?.println(`ArcTerm ${ArcOSVersion}-${ArcMode()}_${ArcBuild()}\n`);
+
+    const hostname = await this.rl?.read(`Hostname: `);
+    const server = Server.servers.find((s) => s.url.includes(hostname!));
+
+    if (!server) {
+      this.rl?.println(`Not configured: ${hostname}\n`);
+      await this.rl?.read("Press Enter to continue...");
+      return await this.serverPrompt();
+    }
+
+    this.rl?.println(`Connecting...`);
+    const switchResult = await Server.switchServer(server.url);
+
+    if (!switchResult) {
+      this.rl?.println(`\nFailed to connect to server.`);
+      return await this.serverPrompt();
+    }
+
+    return await this.loginPrompt();
+  }
+
+  async loginPrompt(clear = true): Promise<boolean> {
+    if (clear) {
+      this.term?.clear();
+      this.rl?.println(`ArcTerm ${ArcOSVersion}-${ArcMode()}_${ArcBuild()} ${Server.hostname ?? "unknown"}\n`);
+    }
+
     const username = await this.rl?.read(`${Server.hostname ?? "ArcOS"} login: `);
-    const password = await this.rl?.read(`Password:`);
+    const password = await this.rl?.read(`Password: `, true);
 
     if (!username || !password) {
-      this.rl?.println(`\nLogin incorrect`);
-      return await this.loginPrompt();
+      this.rl?.println(`Login incorrect`);
+      return await this.loginPrompt(false);
     }
+
+    this.rl?.println(``);
 
     const valid = await this.proceed(username, password);
 
     if (!valid) {
-      this.rl?.println(`\nLogin incorrect`);
-      return await this.loginPrompt();
+      this.rl?.println(`Login incorrect`);
+      return await this.loginPrompt(false);
     }
 
     return true;
@@ -268,6 +314,7 @@ export class TerminalMode extends Process {
   }
 
   async askForTotp(token: string): Promise<boolean> {
+    this.rl?.println(`${CURUP}${CLRROW}${CURUP}`);
     const code = await this.rl?.read(`Enter 2FA code: `);
 
     if (!Number(code) || code?.length !== 6) {

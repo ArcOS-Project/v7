@@ -1,6 +1,5 @@
 import type { IArcTerminal } from "$interfaces/terminal";
 import { State, SysDispatch } from "$ts/env";
-import { Sleep } from "$ts/sleep";
 import { logItemToStr } from "$ts/util";
 import { type LogItem } from "$types/logging";
 import { TerminalProcess } from "../process";
@@ -22,8 +21,6 @@ export class ShutdownCommand extends TerminalProcess {
 
       await term.daemon?.serviceHost?.stop();
       await term.daemon?.killSelf();
-      await Sleep(1000);
-
       State.loadState("turnedOff");
     } else {
       await term.daemon?.power?.shutdown();

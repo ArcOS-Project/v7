@@ -17,6 +17,7 @@ export interface IArcTerminal extends IProcess {
   path: string;
   drive: IFilesystemDrive | undefined;
   term: Terminal;
+  terminalMode?: ITerminalMode;
   rl: Readline | undefined;
   var: IArcTermVariables | undefined;
   contents: DirectoryReadReturn | undefined;
@@ -78,4 +79,19 @@ export interface IArcTermVariables {
   set(key: string, value: string): Promise<boolean>;
   delete(key: string): Promise<boolean>;
   replace(str: string): string;
+}
+
+export interface ITerminalMode extends IProcess {
+  userDaemon?: IUserDaemon;
+  target: HTMLDivElement;
+  term?: Terminal;
+  rl?: Readline;
+  arcTerm?: IArcTerminal;
+  initializeTerminal(): Promise<void>;
+  proceed(username: string, password: string): Promise<boolean>;
+  startDaemon(token: string, username: string): Promise<boolean>;
+  resetCookies(): void;
+  serverPrompt(): Promise<boolean>;
+  loginPrompt(clear?: boolean): Promise<boolean>;
+  askForTotp(token: string): Promise<boolean>;
 }

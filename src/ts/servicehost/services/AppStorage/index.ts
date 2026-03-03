@@ -3,7 +3,7 @@ import type { IApplicationStorage } from "$interfaces/services/AppStorage";
 import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
 import { BuiltinAppImportPathAbsolutes } from "$ts/apps/store";
 import { Daemon } from "$ts/daemon";
-import { ArcOSVersion, Env, Fs, SysDispatch } from "$ts/env";
+import { ArcOSVersion, Env, Fs, State, SysDispatch } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { CommandResult } from "$ts/result";
@@ -242,4 +242,5 @@ export const appStoreService: Service = {
   description: "Host process for application storage",
   process: ApplicationStorage,
   initialState: "started",
+  startCondition: () => State.currentState !== "arcterm",
 };

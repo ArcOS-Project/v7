@@ -26,7 +26,7 @@ export class AppListCommand extends TerminalProcess {
     const store = term.daemon?.serviceHost?.getService<ApplicationStorage>("AppStorage")?.buffer();
 
     if (!store) {
-      term.Error("ERR_NO_DAEMON");
+      term.Error(`AppStorage is not running.`);
       return 1;
     }
 

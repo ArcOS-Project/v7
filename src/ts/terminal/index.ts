@@ -3,7 +3,7 @@ import TerminalWindow from "$apps/components/terminalwindow/TerminalWindow.svelt
 import type { Constructs } from "$interfaces/common";
 import type { IUserDaemon } from "$interfaces/daemon";
 import type { IFilesystemDrive } from "$interfaces/fs";
-import type { IArcTerminal, ITerminalProcess, ITerminalWindowRuntime } from "$interfaces/terminal";
+import type { IArcTerminal, ITerminalMode, ITerminalProcess, ITerminalWindowRuntime } from "$interfaces/terminal";
 import { Daemon } from "$ts/daemon";
 import { Env, Fs, Stack, State } from "$ts/env";
 import { ASCII_ART } from "$ts/kernel/intro";
@@ -53,10 +53,18 @@ export class ArcTerminal extends Process implements IArcTerminal {
   configProvidedExternal = false;
   window: ITerminalWindowRuntime | undefined;
   IS_ARCTERM_MODE = false;
+  terminalMode?: ITerminalMode;
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, term: Terminal, path?: string, config?: ArcTermConfiguration) {
+  constructor(
+    pid: number,
+    parentPid: number,
+    term: Terminal,
+    path?: string,
+    config?: ArcTermConfiguration,
+    mode?: ITerminalMode
+  ) {
     super(pid, parentPid);
 
     this.path = path || UserPaths.Home;
@@ -65,6 +73,7 @@ export class ArcTerminal extends Process implements IArcTerminal {
     this.term = term;
     this.tryGetTermWindow();
     this.name = "ArcTerminal";
+    this.terminalMode = mode;
 
     if (config) {
       this.config = config;
