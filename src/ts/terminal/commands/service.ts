@@ -10,6 +10,8 @@ export class ServiceCommand extends TerminalProcess {
   static keyword = "service";
   static description = "Manage ArcOS services";
 
+  //#region LIFECYCLE
+
   constructor(pid: number, parentPid: number) {
     super(pid, parentPid);
   }
@@ -38,6 +40,8 @@ export class ServiceCommand extends TerminalProcess {
         return 1;
     }
   }
+
+  //#endregion
 
   async startCommand(argv: string[], flags: Arguments): Promise<number> {
     this.term?.rl?.println("");
