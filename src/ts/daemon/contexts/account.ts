@@ -3,17 +3,15 @@ import type { IUserDaemon } from "$interfaces/daemon";
 import DeleteUser from "$lib/Daemon/DeleteUser.svelte";
 import { Env, Server, SysDispatch } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
+import { CommandResult } from "$ts/result";
 import { authcode } from "$ts/util";
 import { MessageBox } from "$ts/util/dialog";
 import { toForm } from "$ts/util/form";
 import { ElevationLevel } from "$types/elevation";
-import { LogLevel } from "$types/logging";
 import type { PublicUserInfo, UserInfo } from "$types/user";
 import Cookies from "js-cookie";
 import { Daemon } from "..";
 import { UserContext } from "../context";
-import { CommandResult } from "$ts/result";
-import { AxiosError } from "axios";
 
 export class AccountUserContext extends UserContext implements IAccountUserContext {
   constructor(id: string, daemon: IUserDaemon) {
@@ -69,10 +67,7 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
       return CommandResult.Ok(response.data as UserInfo);
     } catch (e) {
       await Daemon!.killSelf();
-
-      const error = (e instanceof AxiosError ? e?.response?.data?.e : `${e}`) || `Unknown error`;
-
-      return CommandResult.Error(error);
+      return CommandResult.AxiosError(e, "Unknown error while obtaining user information. Please try again.");
     }
   }
 
