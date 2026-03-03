@@ -168,7 +168,8 @@ div.window#loginApp > div.body div.login-form button.continue:active span.lucide
 }
 div.window#loginApp > div.body p.error-message {
   font-size: 16px;
-  max-width: 600px;
+  max-width: 550px;
+  width: fit-content;
   text-align: center;
 }
 

@@ -3,6 +3,7 @@ import type { IDistributionServiceProcess } from "$interfaces/services/DistribSv
 import { Daemon } from "$ts/daemon";
 import { Fs, Stack } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
+import { CommandResult } from "$ts/result";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
@@ -11,6 +12,7 @@ import { join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
 import { compareVersion } from "$ts/util/version";
 import type { FilesystemProgressCallback } from "$types/fs";
+import type { UpdateWriteOpResult } from "$types/mongo";
 import type { ArcPackage, PartialStoreItem, StoreItem, UpdateInfo } from "$types/package";
 import type { Service } from "$types/service";
 import type { UserPreferencesStore } from "$types/user";
@@ -670,17 +672,21 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
     }
   }
 
-  async publishing_updateStoreItemFromPath(itemId: string, updatePath: string, onProgress?: FilesystemProgressCallback) {
+  async publishing_updateStoreItemFromPath(
+    itemId: string,
+    updatePath: string,
+    onProgress?: FilesystemProgressCallback
+  ): Promise<CommandResult<UpdateWriteOpResult>> {
     this.Log(`publishing_updateStoreItemFromPath: ${itemId} -> ${updatePath}`);
 
-    if (this.checkBusy("publishing_updateStoreItemFromPath")) return false;
+    if (this.checkBusy("publishing_updateStoreItemFromPath")) return CommandResult.Error("Distribution Service is busy");
 
     try {
       const contents = await Fs.readFile(updatePath, (p) => {
         onProgress?.({ ...p, what: "Loading update package" });
       });
 
-      if (!contents) return false;
+      if (!contents) return CommandResult.Error("Failed to read the update file");
 
       const newData = arrayBufferToBlob(contents);
       const response = await Backend.patch(`/store/publish/${itemId}`, newData, {
@@ -695,9 +701,11 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
         },
       });
 
-      return response.status === 200;
-    } catch {
-      return false;
+      if (response.status !== 200) return CommandResult.AxiosError(response.data?.e ?? "Unknown error");
+
+      return CommandResult.Ok<UpdateWriteOpResult>(response.data);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
     }
   }
 

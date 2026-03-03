@@ -58,7 +58,7 @@ export class SourceFilesystemDrive extends FilesystemDrive {
 
       return CommandResult.Ok<ArrayBuffer>(response.data);
     } catch (e) {
-      return CommandResult.Error(`Failed to read file: ${e}`);
+      return CommandResult.AxiosError(e);
     }
   }
 
@@ -69,7 +69,7 @@ export class SourceFilesystemDrive extends FilesystemDrive {
 
       return CommandResult.Ok<GitFolder>(response.data);
     } catch (e) {
-      return CommandResult.Error(`Failed to read folder: ${e}`);
+      return CommandResult.AxiosError(e);
     }
   }
 

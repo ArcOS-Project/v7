@@ -331,19 +331,20 @@ export class AppStoreRuntime extends AppProcess {
       this.pid
     );
 
-    const result = await this.distrib.publishing_updateStoreItemFromPath(pkg._id, path, (progress) => {
+    const updateResult = await this.distrib.publishing_updateStoreItemFromPath(pkg._id, path, (progress) => {
       prog.show();
       prog.setMax(progress.max + 1);
       prog.setDone(progress.value);
       if (progress.what) prog.updSub(progress.what);
     });
 
-    if (!result) {
+    prog.stop();
+
+    if (!updateResult.success) {
       MessageBox(
         {
           title: "Failed to update store item",
-          message:
-            "The server didn't accept your update package. Maybe its format is incorrect, the app ID differs, or the version isn't increased. Please check the package and try again.",
+          message: `The server didn't accept your update package. Maybe its format is incorrect, the app ID differs, or the version isn't increased. Please check the package and try again.<br><br>Details: ${updateResult.errorMessage ?? "Unknown error"}`,
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
@@ -356,8 +357,6 @@ export class AppStoreRuntime extends AppProcess {
     }
 
     await this.switchPage("manageStoreItem", { id: pkg._id }, true);
-
-    prog.stop();
   }
 
   readmeFallback(pkg: StoreItem): string {

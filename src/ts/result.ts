@@ -1,5 +1,6 @@
 import type { ICommandResult } from "$interfaces/result";
 import { DefaultCommandResultOptions, type CommandResultOptions } from "$types/result";
+import { AxiosError } from "axios";
 import { Log } from "./logging";
 
 export class CommandResult<T = string> implements ICommandResult<T> {
@@ -26,5 +27,9 @@ export class CommandResult<T = string> implements ICommandResult<T> {
     Log(`CommandResult.Error`, errorMessage ?? "<no message>"); // DEBUG
 
     return new this<T>(undefined, { errorMessage });
+  }
+
+  static AxiosError<T = any>(e: unknown, fallback: string = "Unknown error") {
+    return new this<T>(undefined, { errorMessage: (e instanceof AxiosError ? e.response?.data?.e : `${e || ""}`) || fallback });
   }
 }
