@@ -21,7 +21,7 @@ export class InputCommand extends TerminalProcess {
     const validation = flags.validation;
     const validationError = `${flags.validationError || "Try again"}`;
 
-    const result = await term.rl?.read(prompt);
+    const result = await this.rl?.read(prompt);
 
     if (!result) return 0;
 

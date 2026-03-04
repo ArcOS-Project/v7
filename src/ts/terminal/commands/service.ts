@@ -1,10 +1,10 @@
 import type { IArcTerminal } from "$interfaces/terminal";
 import { ServiceChangeResultCaptions } from "$ts/servicehost/store";
+import { maxLength } from "$ts/util";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
 import { TerminalProcess } from "../process";
 import { BRBLACK, BRBLUE, BRGREEN, BRPURPLE, BRRED, BRWHITE, RESET } from "../store";
-import { maxLength } from "$ts/util";
 
 export class ServiceCommand extends TerminalProcess {
   static keyword = "service";
@@ -14,12 +14,14 @@ export class ServiceCommand extends TerminalProcess {
 
   constructor(pid: number, parentPid: number) {
     super(pid, parentPid);
+
+    this.setSource(__SOURCE__);
   }
 
   protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const subCommand = argv.shift();
 
-    if (!term.daemon?.serviceHost) {
+    if (!this.daemon?.serviceHost) {
       term.Error("The service host isn't running.");
       return 1;
     }
@@ -57,13 +59,13 @@ export class ServiceCommand extends TerminalProcess {
       return 1;
     }
 
-    const service = this.term?.daemon?.serviceHost?.getServiceInfo(serviceId);
+    const service = this.serviceHost?.getServiceInfo(serviceId);
     if (!service) {
       this.term?.Error(`Service not found`);
       return 1;
     }
 
-    const startResult = await this.term?.daemon?.serviceHost!.startService(serviceId)!;
+    const startResult = await this.serviceHost!.startService(serviceId)!;
     if (startResult !== "success") {
       this.term?.Error(`${ServiceChangeResultCaptions[startResult]} (${BRBLACK}${startResult}${RESET})`);
       return 1;
@@ -81,13 +83,13 @@ export class ServiceCommand extends TerminalProcess {
       return 1;
     }
 
-    const service = this.term?.daemon?.serviceHost?.getServiceInfo(serviceId);
+    const service = this.serviceHost?.getServiceInfo(serviceId);
     if (!service) {
       this.term?.Error(`Service not found`);
       return 1;
     }
 
-    const stopResult = await this.term?.daemon?.serviceHost!.stopService(serviceId)!;
+    const stopResult = await this.serviceHost!.stopService(serviceId)!;
     if (stopResult !== "success") {
       this.term?.Error(`${ServiceChangeResultCaptions[stopResult]} (${BRBLACK}${stopResult}${RESET})`);
       return 1;
@@ -105,13 +107,13 @@ export class ServiceCommand extends TerminalProcess {
       return 1;
     }
 
-    const service = this.term?.daemon?.serviceHost?.getServiceInfo(serviceId);
+    const service = this.serviceHost?.getServiceInfo(serviceId);
     if (!service) {
       this.term?.Error(`Service not found`);
       return 1;
     }
 
-    const restartResult = await this.term?.daemon?.serviceHost!.restartService(serviceId)!;
+    const restartResult = await this.serviceHost!.restartService(serviceId)!;
     if (restartResult !== "success") {
       this.term?.Error(`${ServiceChangeResultCaptions[restartResult]} (${BRBLACK}${restartResult}${RESET})`);
       return 1;
@@ -123,7 +125,7 @@ export class ServiceCommand extends TerminalProcess {
   async listCommand(): Promise<number> {
     this.term?.rl?.println("");
 
-    const services = this.term?.daemon?.serviceHost?.Services()!;
+    const services = this.serviceHost?.Services()!;
 
     const padding = maxLength(
       [...services].map(([k]) => k),
@@ -145,7 +147,7 @@ export class ServiceCommand extends TerminalProcess {
       return 1;
     }
 
-    const service = this.term?.daemon?.serviceHost?.getServiceInfo(serviceId);
+    const service = this.serviceHost?.getServiceInfo(serviceId);
     if (!service) {
       this.term?.Error(`Service not found`);
       return 1;

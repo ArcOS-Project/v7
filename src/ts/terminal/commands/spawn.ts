@@ -31,9 +31,10 @@ export class SpawnCommand extends TerminalProcess {
       return 1;
     }
 
-    const proc = await term.daemon?.spawn?.spawnApp<IProcess>(
+    const pid = this.daemon?.getShell()?.pid ?? this.daemon?.pid;
+    const proc = await this.daemon?.spawn?.spawnApp<IProcess>(
       id,
-      term.daemon?.pid,
+      pid,
       {
         noWorkspace: !!noWorkspace,
         asOverlay: !!asOverlay,

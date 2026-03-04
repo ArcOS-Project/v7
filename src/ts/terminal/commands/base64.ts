@@ -9,13 +9,19 @@ export class Base64Command extends TerminalProcess {
 
   //#region LIFECYCLE
 
-  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  constructor(pid: number, parentPid: number) {
+    super(pid, parentPid);
+
+    this.setSource(__SOURCE__);
+  }
+
+  protected async main(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const keyword = argv.shift();
     const target = argv.join(" ");
 
     switch (keyword) {
       case "decode":
-        term.rl?.println(`${target} -> ${BRBLUE}${atob(target)}${RESET}`);
+        this.rl?.println(`${target} -> ${BRBLUE}${atob(target)}${RESET}`);
         return 0;
       case "encode":
         term.rl?.println(`${target} -> ${BRBLUE}${btoa(target)}${RESET}`);

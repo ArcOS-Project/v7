@@ -27,13 +27,13 @@ export class RestartCommand extends TerminalProcess {
         term.rl?.println(logItemToStr(data));
       });
 
-      await term.daemon?.serviceHost?.stop();
-      await term.daemon?.killSelf();
+      await this.daemon?.serviceHost?.stop();
+      await this.daemon?.killSelf();
       location.reload();
 
       return -256;
     } else {
-      term.daemon?.power?.restart();
+      this.daemon?.power?.restart();
       return -256;
     }
   }

@@ -23,7 +23,7 @@ export class AppListCommand extends TerminalProcess {
   async main(term: IArcTerminal, flags: Arguments) {
     const all = flags.a || flags.all;
     const countInstead = flags.c || flags.count;
-    const store = term.daemon?.serviceHost?.getService<ApplicationStorage>("AppStorage")?.buffer();
+    const store = this.serviceHost?.getService<ApplicationStorage>("AppStorage")?.buffer();
 
     if (!store) {
       term.Error(`AppStorage is not running.`);

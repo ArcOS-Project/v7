@@ -22,7 +22,7 @@ export class DirCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const dir = argv.join(" ") || "";
 
     try {

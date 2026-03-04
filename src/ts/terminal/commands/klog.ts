@@ -1,4 +1,3 @@
-import type { IArcTerminal } from "$interfaces/terminal";
 import { SysDispatch } from "$ts/env";
 import { logItemToStr } from "$ts/util";
 import type { LogItem } from "$types/logging";
@@ -16,9 +15,9 @@ export class KlogCommand extends TerminalProcess {
     super(pid, parentPid);
   }
 
-  async main(term: IArcTerminal): Promise<number> {
+  async main(): Promise<number> {
     this.eventId = SysDispatch.subscribe<[LogItem]>("kernel-log", ([data]) => {
-      term.rl?.println(logItemToStr(data));
+      this.rl?.println(logItemToStr(data));
     });
 
     // Keep going until interrupted by Ctrl+C

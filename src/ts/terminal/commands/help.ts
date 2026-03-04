@@ -18,7 +18,7 @@ export class HelpCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: IArcTerminal, flags: Arguments): Promise<number> {
+  protected async main(_: IArcTerminal, flags: Arguments): Promise<number> {
     const showHidden = flags.a || flags.all;
     const maxLen = maxLength(
       TerminalCommandStore.map((c) => c.keyword),
@@ -26,7 +26,7 @@ export class HelpCommand extends TerminalProcess {
     );
     for (const command of TerminalCommandStore) {
       if (command.hidden && !showHidden) continue;
-      term.rl?.println(
+      this.rl?.println(
         `${command.hidden ? BRPURPLE : BRYELLOW}${command.keyword.padEnd(maxLen, " ")}${RESET}${command.description}`
       );
     }

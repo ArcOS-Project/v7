@@ -38,15 +38,15 @@ export class DevenvCommand extends TerminalProcess {
 
   async connect(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const port = +argv[0] || 3128;
-    const serviceInfo = term.daemon?.serviceHost?.getServiceInfo("DevEnvironment");
+    const serviceInfo = this.serviceHost?.getServiceInfo("DevEnvironment");
 
     if (serviceInfo?.pid) {
       term.Error("ArcDev is already running. Disconnect first with 'devenv disconnect'.");
       return 1;
     }
 
-    await term.daemon?.serviceHost?.startService("DevEnvironment");
-    const service = term.daemon?.serviceHost?.getService<DevelopmentEnvironment>("DevEnvironment");
+    await this.serviceHost?.startService("DevEnvironment");
+    const service = this.serviceHost?.getService<DevelopmentEnvironment>("DevEnvironment");
 
     if (!service) {
       term.Warning("Failed to start DevEnvironment service. Please report.");
@@ -69,14 +69,14 @@ export class DevenvCommand extends TerminalProcess {
   }
 
   async disconnect(term: IArcTerminal) {
-    const service = term.daemon?.serviceHost?.getService<DevelopmentEnvironment>("DevEnvironment");
+    const service = this.serviceHost?.getService<DevelopmentEnvironment>("DevEnvironment");
 
     if (!service) {
       term.Error("There is no development environment running");
       return 1;
     }
 
-    await term.daemon?.serviceHost?.stopService("DevEnvironment");
+    await this.serviceHost?.stopService("DevEnvironment");
     term.Info("Disconnected successfully.");
 
     return 0;

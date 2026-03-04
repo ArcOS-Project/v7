@@ -22,6 +22,7 @@ import { HistoryCommand } from "./commands/history";
 import { InputCommand } from "./commands/input";
 import { KillCommand } from "./commands/kill";
 import { KlogCommand } from "./commands/klog";
+import { LoadCommand } from "./commands/load";
 import { LogoutCommand } from "./commands/logout";
 import { MigrationsCommand } from "./commands/migrations";
 import { MkdirCommand } from "./commands/mkdir";
@@ -86,6 +87,7 @@ export const TerminalCommandStore: ITerminalProcessConstructor[] = [
   TostrCommand,
   ServiceCommand,
   MigrationsCommand,
+  LoadCommand,
 ];
 
 export const ESC = `\x1b[`;

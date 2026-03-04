@@ -293,7 +293,7 @@ export class ArcTerminal extends Process implements IArcTerminal {
 
     try {
       const contents = await Fs.readDir(path);
-      if (!contents) throw "";
+      if (!contents) throw `Directory not found: ${path}`;
 
       this.contents = contents;
     } catch (e) {

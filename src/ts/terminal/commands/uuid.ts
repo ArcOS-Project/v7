@@ -9,12 +9,18 @@ export class UuidCommand extends TerminalProcess {
 
   //#region LIFECYCLE
 
-  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  constructor(pid: number, parentPid: number) {
+    super(pid, parentPid);
+
+    this.setSource(__SOURCE__);
+  }
+
+  protected async main(_: IArcTerminal, flags: Arguments): Promise<number> {
     const copy = flags.c || flags.copy;
     const uuid = UUID();
 
     if (copy) await navigator.clipboard.writeText(uuid);
-    term.rl?.println(uuid);
+    this.rl?.println(uuid);
 
     return 0;
   }

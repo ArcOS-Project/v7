@@ -1,4 +1,3 @@
-import type { IArcTerminal } from "$interfaces/terminal";
 import { State, SysDispatch } from "$ts/env";
 import { logItemToStr } from "$ts/util";
 import { type LogItem } from "$types/logging";
@@ -11,19 +10,25 @@ export class ShutdownCommand extends TerminalProcess {
 
   //#region LIFECYCLE
 
-  protected async main(term: IArcTerminal) {
+  constructor(pid: number, parentPid: number) {
+    super(pid, parentPid);
+
+    this.setSource(__SOURCE__);
+  }
+
+  protected async main() {
     if (this.term?.IS_ARCTERM_MODE) {
-      term.rl?.println(`${BRBLUE}Goodbye.${RESET}`);
+      this.rl?.println(`${BRBLUE}Goodbye.${RESET}`);
 
       SysDispatch.subscribe<[LogItem]>("kernel-log", ([data]) => {
-        term.rl?.println(logItemToStr(data));
+        this.rl?.println(logItemToStr(data));
       });
 
-      await term.daemon?.serviceHost?.stop();
-      await term.daemon?.killSelf();
+      await this.daemon?.serviceHost?.stop();
+      await this.daemon?.killSelf();
       State.loadState("turnedOff");
     } else {
-      await term.daemon?.power?.shutdown();
+      await this.daemon?.power?.shutdown();
     }
 
     return -256;

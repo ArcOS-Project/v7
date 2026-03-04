@@ -3,7 +3,6 @@ import { Fs } from "$ts/env";
 import { DriveCapabilityShorts } from "$ts/kernel/mods/fs/store";
 import type { DriveCapabilities } from "$types/fs";
 import type { Arguments } from "$types/terminal";
-import { arrayToAsciiTable } from "../../util/terminal";
 import { TerminalProcess } from "../process";
 import { BRBLACK, BRBLUE, BRCYAN, BRGREEN, BRPURPLE, BRWHITE, BRYELLOW, RESET } from "../store";
 
@@ -55,12 +54,12 @@ export class DrivesCommand extends TerminalProcess {
       const fullCapabilities = `${BRCYAN}${filteredCap.join(`${BRBLACK}, ${BRCYAN}`)}${RESET}`;
       const abbreviatedCapabilities = `${BRCYAN}${shortCaps} ${BRBLACK}(use --c to expand)${RESET}`;
 
-      term.rl?.println("");
-      term.rl?.println(`Drive ${label} on ${identifier}`);
-      term.rl?.println(`  ${BRWHITE}Filesystem${RESET}: ${drive.FILESYSTEM_LONG} (${drive.FILESYSTEM_SHORT})`);
-      term.rl?.println(`  ${BRWHITE}Identifies as${RESET}: ${identifiesAs} (ID ${id})`);
-      term.rl?.println(`  ${BRWHITE}Flags${RESET}: ${hiddenFlag}${removableFlag}${fixedFlag}`);
-      term.rl?.println(`  ${BRWHITE}Capabilities${RESET}: ${showCapabilities ? fullCapabilities : abbreviatedCapabilities}`);
+      this.rl?.println("");
+      this.rl?.println(`Drive ${label} on ${identifier}`);
+      this.rl?.println(`  ${BRWHITE}Filesystem${RESET}: ${drive.FILESYSTEM_LONG} (${drive.FILESYSTEM_SHORT})`);
+      this.rl?.println(`  ${BRWHITE}Identifies as${RESET}: ${identifiesAs} (ID ${id})`);
+      this.rl?.println(`  ${BRWHITE}Flags${RESET}: ${hiddenFlag}${removableFlag}${fixedFlag}`);
+      this.rl?.println(`  ${BRWHITE}Capabilities${RESET}: ${showCapabilities ? fullCapabilities : abbreviatedCapabilities}`);
     }
 
     return 0;

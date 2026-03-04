@@ -19,7 +19,7 @@ export class LogoutCommand extends TerminalProcess {
 
   protected async main(term: IArcTerminal) {
     if (this.term?.IS_ARCTERM_MODE) {
-      term.rl?.println(`${BRBLUE}Goodbye.${RESET}`);
+      this.rl?.println(`${BRBLUE}Goodbye.${RESET}`);
 
       term.terminalMode?.resetCookies();
       await term.daemon?.account?.discontinueToken();

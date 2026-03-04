@@ -1,7 +1,10 @@
+import type { IUserDaemon } from "$interfaces/daemon";
+import type { IServiceHost } from "$interfaces/service";
 import type { IArcTerminal } from "$interfaces/terminal";
 import { SysDispatch } from "$ts/env";
 import { ProcessWithPermissions } from "$ts/permissions/process";
 import type { Arguments } from "$types/terminal";
+import type { Readline } from "./readline/readline";
 
 export class TerminalProcess extends ProcessWithPermissions {
   public static keyword: string;
@@ -11,6 +14,9 @@ export class TerminalProcess extends ProcessWithPermissions {
   protected term?: IArcTerminal;
   protected flags?: Arguments;
   protected argv?: string[];
+  protected daemon?: IUserDaemon;
+  protected serviceHost?: IServiceHost;
+  protected rl?: Readline;
   private exitCode: number = 0;
 
   //#region LIFECYCLE
@@ -32,6 +38,9 @@ export class TerminalProcess extends ProcessWithPermissions {
     this.term = term;
     this.flags = flags;
     this.argv = argv;
+    this.daemon = term.daemon;
+    this.serviceHost = this.daemon?.serviceHost;
+    this.rl = term.rl;
 
     const result = await new Promise((r) => {
       this.main(term, flags, argv).then((result) => r(result));

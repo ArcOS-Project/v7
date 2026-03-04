@@ -14,10 +14,12 @@ export class MigrationsCommand extends TerminalProcess {
 
   constructor(pid: number, parentPid: number) {
     super(pid, parentPid);
+
+    this.setSource(__SOURCE__);
   }
 
   protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
-    const service = term.daemon?.serviceHost?.getService<IMigrationService>("MigrationSvc");
+    const service = this.serviceHost?.getService<IMigrationService>("MigrationSvc");
 
     if (!service) {
       term.Error("Migration service is not running.");

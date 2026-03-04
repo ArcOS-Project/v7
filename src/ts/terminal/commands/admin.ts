@@ -5,7 +5,6 @@ import { AdminBootstrapper } from "$ts/servicehost/services/AdminBootstrapper";
 import { getAllJsonPaths, getJsonHierarchy } from "$ts/util/hierarchy";
 import { tryJsonParse } from "$ts/util/json";
 import { ElevationLevel } from "$types/elevation";
-import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";
 import { BOLD, BRBLACK, BRRED, BRYELLOW, RESET, UNDERLINE } from "../store";
 import { AdminCommandStore, RESULT_CAPTIONS } from "./admin/store";
@@ -25,7 +24,7 @@ export class AdminCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal): Promise<number> {
     const elevated = await term.elevate({
       what: "ArcTerm wants to open the Administrator Console",
       title: "Administrator Console",
@@ -41,7 +40,7 @@ export class AdminCommand extends TerminalProcess {
     const server = getKMod<IServerManager>("server");
 
     term.term.clear();
-    term.rl?.println(`ArcOS Administrator Console version 1.0.0\r\n\r\n© 2025 Izaak Z. Kuipers\r\nOn server: ${server.url}\r\n`);
+    this.rl?.println(`ArcOS Administrator Console version 1.0.0\r\n\r\n© 2025 Izaak Z. Kuipers\r\nOn server: ${server.url}\r\n`);
 
     if (!admin) {
       term.Error("Access is denied.");
@@ -49,11 +48,11 @@ export class AdminCommand extends TerminalProcess {
       return 1;
     }
 
-    term.rl?.println(
+    this.rl?.println(
       `${BRRED}${BOLD}WARNING!${RESET} Sensitive information may be displayed in query results.\r\n         ${BOLD}Do not share screenshots of this utility.${RESET}\r\n`
     );
 
-    if (!term.daemon?.userInfo?.hasTotp && term.daemon?.userInfo?.admin) {
+    if (!this.daemon?.userInfo?.hasTotp && this.daemon?.userInfo?.admin) {
       term.Warning(
         `\r\nYou're an administrator ${BOLD}without two-factor authentication enabled${RESET}.\r\nThis is grounds for revoking of administrative privileges.\r\nPlease go to Settings and enable 2FA ${UNDERLINE}${BOLD}as soon as possible${RESET}.\r\n`,
         "Security Vulnerability"

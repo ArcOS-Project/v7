@@ -25,45 +25,45 @@ export class TasksCommand extends TerminalProcess {
     const store = Stack.store();
 
     if (!tree) {
-      term.rl?.println("");
+      this.rl?.println("");
 
       for (const [pid, proc] of [...store]) {
         const name = proc instanceof AppProcess ? proc.app.data.metadata.name : proc.name;
         const color = proc instanceof AppProcess ? BRBLUE : RESET;
-        term.rl?.println(`${BRYELLOW}${pid.toString().padStart(3, " ")}  ${color}${name}${RESET}`);
+        this.rl?.println(`${BRYELLOW}${pid.toString().padStart(3, " ")}  ${color}${name}${RESET}`);
       }
 
       return 0;
     }
 
-    function branch(proc: IProcess, indent = "", isLast = true) {
-      const subProcesses = Stack.getSubProcesses(proc.pid);
-      const prefix = indent + (isLast ? "└── " : "├── ");
-
-      term.rl?.println(
-        `${prefix}${proc instanceof AppProcess ? proc.app.data.metadata.name : proc.name} ${BRBLACK}(${proc.pid})${RESET}`
-      );
-
-      if (subProcesses) {
-        const subList = [...subProcesses.values()];
-        const newIndent = indent + (isLast ? "    " : "│   ");
-
-        subList.forEach((subProcess, index) => {
-          branch(subProcess, newIndent, index === subList.length - 1);
-        });
-      }
-    }
-
-    term.rl?.println("\r\nKernelModule::stack");
+    this.rl?.println("\r\nKernelModule::stack");
 
     const entries = [...store].filter(([_, proc]) => !proc.parentPid);
 
     for (let i = 0; i < entries.length; i++) {
       const [_, proc] = entries[i];
 
-      branch(proc, "", entries.length - 1 === i);
+      this.branch(proc, "", entries.length - 1 === i);
     }
 
     return 0;
+  }
+
+  branch(proc: IProcess, indent = "", isLast = true) {
+    const subProcesses = Stack.getSubProcesses(proc.pid);
+    const prefix = indent + (isLast ? "└── " : "├── ");
+
+    this.rl?.println(
+      `${prefix}${proc instanceof AppProcess ? proc.app.data.metadata.name : proc.name} ${BRBLACK}(${proc.pid})${RESET}`
+    );
+
+    if (subProcesses) {
+      const subList = [...subProcesses.values()];
+      const newIndent = indent + (isLast ? "    " : "│   ");
+
+      subList.forEach((subProcess, index) => {
+        this.branch(subProcess, newIndent, index === subList.length - 1);
+      });
+    }
   }
 }

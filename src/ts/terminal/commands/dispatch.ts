@@ -28,12 +28,12 @@ export class DispatchCommand extends TerminalProcess {
     const list = flags.list;
 
     if (list) {
-      term.rl?.println("Global dispatches known to ArcOS:");
+      this.rl?.println("Global dispatches known to ArcOS:");
 
       for (const key of KnownSystemDispatchers) {
         const keyStr = key.padEnd(25, " ");
 
-        term.rl?.println(`${SystemOnlyDispatches.includes(key) ? "#" : " "} ${BRBLUE}${keyStr}${RESET}`);
+        this.rl?.println(`${SystemOnlyDispatches.includes(key) ? "#" : " "} ${BRBLUE}${keyStr}${RESET}`);
       }
 
       return 0;

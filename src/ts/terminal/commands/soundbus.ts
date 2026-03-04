@@ -13,6 +13,8 @@ export class SoundbusCommand extends TerminalProcess {
 
   constructor(pid: number, parentPid: number) {
     super(pid, parentPid);
+
+    this.setSource(__SOURCE__);
   }
 
   protected async main(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {

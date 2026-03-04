@@ -1,5 +1,4 @@
 import type { IArcTerminal, ITerminalProcess } from "$interfaces/terminal";
-import { Daemon } from "$ts/daemon";
 import { Stack } from "$ts/env";
 import { Permissions } from "$ts/permissions";
 import { LoginUser } from "$ts/user/auth";
@@ -16,23 +15,25 @@ export class SudoCommand extends TerminalProcess {
 
   constructor(pid: number, parentPid: number) {
     super(pid, parentPid);
+
+    this.setSource(__SOURCE__);
   }
 
   protected async main(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     if (Permissions.hasSudo(term)) return await this.execute(term, argv);
 
     while (this.retryCount < 3) {
-      const password = await term.rl?.read(`[sudo] password for ${Daemon.username}: `, true);
+      const password = await this.rl?.read(`[sudo] password for ${this.daemon?.username}: `, true);
 
-      const tokenResult = await LoginUser(Daemon?.username!, password!);
+      const tokenResult = await LoginUser(this.daemon?.username!, password!);
 
       if (!tokenResult.success) {
-        term.rl?.println("Sorry, try again.");
+        this.rl?.println("Sorry, try again.");
 
         this.retryCount++;
       }
 
-      await Daemon?.account?.discontinueToken(tokenResult.result!);
+      await this.daemon?.account?.discontinueToken(tokenResult.result!);
 
       Permissions.grantSudo(term);
 
@@ -68,7 +69,7 @@ export class SudoCommand extends TerminalProcess {
         term.Error("Command not found.");
         term.lastCommandErrored = true;
       } else {
-        const proc = await Stack.spawn<ITerminalProcess>(command, undefined, Daemon?.userInfo?._id, this.pid);
+        const proc = await Stack.spawn<ITerminalProcess>(command, undefined, this.daemon?.userInfo?._id, this.pid);
 
         // BUG 68798d6957684017c3e9a085
         if (!proc) {

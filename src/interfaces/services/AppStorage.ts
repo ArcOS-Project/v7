@@ -1,5 +1,6 @@
 import type { ICommandResult } from "$interfaces/result";
 import type { IBaseService } from "$interfaces/service";
+import type { CommandResult } from "$ts/result";
 import type { App, AppStorage, AppStoreCb, InstalledApp } from "$types/app";
 import type { ReadableStore } from "$types/writable";
 
@@ -9,7 +10,7 @@ export interface IApplicationStorage extends IBaseService {
   loadOrigin(id: string, store: AppStoreCb): boolean;
   unloadOrigin(id: string): boolean;
   loadApp(app: App): false | App;
-  loadAppModuleFile(path: string): Promise<boolean>;
+  loadAppModuleFile(path: string, noVerify?: boolean): Promise<CommandResult<App>>;
   injected(): App[];
   refresh(): Promise<void>;
   get(): Promise<AppStorage>;
