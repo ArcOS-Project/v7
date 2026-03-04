@@ -2,7 +2,7 @@ import type { IUserDaemon } from "$interfaces/daemon";
 import type { IServerManager } from "$interfaces/modules/server";
 import type { IGlobalDispatch } from "$interfaces/services/GlobalDispatch";
 import { Daemon } from "$ts/daemon";
-import { Env, getKMod, Stack, SysDispatch } from "$ts/env";
+import { Env, getKMod, Stack } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
@@ -127,13 +127,15 @@ export class GlobalDispatch extends BaseService implements IGlobalDispatch {
       Daemon.preferencesCtx!.syncLock = false;
     });
 
-    this?.subscribe("fs-flush-folder", (path) => {
-      SysDispatch.dispatch("fs-flush-folder", path);
-    });
+    // TODO - IzKuipers #229
 
-    this?.subscribe("fs-flush-file", (path) => {
-      SysDispatch.dispatch("fs-flush-file", path);
-    });
+    // this?.subscribe("fs-flush-folder", (path) => {
+    //   SysDispatch.dispatch("fs-flush-folder", path);
+    // });
+
+    // this?.subscribe("fs-flush-file", (path) => {
+    //   SysDispatch.dispatch("fs-flush-file", path);
+    // });
   }
 }
 
