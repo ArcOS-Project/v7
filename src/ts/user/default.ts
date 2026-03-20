@@ -20,6 +20,7 @@ export const DefaultUserPreferences: UserPreferences = {
       clockSecs: false,
       batteryPercentage: false,
       openedAppsPerWorkspace: false,
+      accentedStartButton: false
     },
     actionCenter: {
       weatherLocation: {

@@ -97,6 +97,7 @@ export interface TaskbarPreferences {
   clock12hr: boolean;
   batteryPercentage: boolean;
   openedAppsPerWorkspace?: boolean;
+  accentedStartButton?: boolean;
 }
 
 export interface DesktopPreferences {
