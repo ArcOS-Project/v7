@@ -17,6 +17,8 @@ import { fetchWeatherApi } from "openmeteo";
 import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
 import { shortWeekDays, type CalendarMonth, type WeatherInformation } from "./types";
+import type { AppKeyCombinations } from "$types/accelerator";
+import { ShellAccelerators } from "./accelerators";
 
 export class ShellRuntime extends AppProcess implements IShellRuntime {
   public startMenuOpened = Store<boolean>(false);
@@ -39,6 +41,7 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
   public selectedAppGroup = Store<string>("");
 
   override contextMenu: AppContextMenu = ShellContextMenu(this);
+  override acceleratorStore: AppKeyCombinations = ShellAccelerators(this);
 
   //#region LIFECYCLE
 
@@ -46,13 +49,6 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
     super(pid, parentPid, app);
 
     this.setSource(__SOURCE__);
-
-    this.acceleratorStore.push({
-      alt: true,
-      action: () => {
-        this.startMenuOpened.set(!this.startMenuOpened());
-      },
-    });
   }
 
   async start() {
