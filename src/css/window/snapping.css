@@ -67,14 +67,14 @@ div.window:not(.core).snapped.bottom-right {
   grid-column: right;
 }
 
-div.window:not(.core):not(.snapped) div.titlebar div.controls button.unsnap {
+div.window:not(.core):not(.snapped) div.window-titlebar div.controls button.unsnap {
   display: none;
 }
 
-div.window:not(.core).snapped div.titlebar div.controls button.unsnap {
+div.window:not(.core).snapped div.window-titlebar div.controls button.unsnap {
   display: block;
 }
 
-div.window:not(.core).snapped div.titlebar div.controls button.maximize {
+div.window:not(.core).snapped div.window-titlebar div.controls button.maximize {
   display: none;
 }

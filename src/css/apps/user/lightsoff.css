@@ -3,7 +3,7 @@
   border-top: var(--win-border);
 }
 
-#LightsOff > div.titlebar {
+#LightsOff > div.window-titlebar {
   border-radius: 9.5px;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;

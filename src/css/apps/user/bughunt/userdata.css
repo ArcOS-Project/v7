@@ -7,7 +7,7 @@
   /* overflow-y: scroll; */
   max-height: calc(100% - 40px);
 }
-#BugHunt #BugHuntUserData > div.body > div.titlebar {
+#BugHunt #BugHuntUserData > div.body > div.window-titlebar {
   border-bottom: var(--win-border);
 }
 

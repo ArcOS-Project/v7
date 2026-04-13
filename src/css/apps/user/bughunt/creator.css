@@ -4,7 +4,7 @@
   min-height: fit-content !important;
 }
 
-#BugHuntCreator div.titlebar button.feedback {
+#BugHuntCreator div.window-titlebar button.feedback {
   pointer-events: none;
   opacity: 0;
 }

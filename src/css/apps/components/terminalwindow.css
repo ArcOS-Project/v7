@@ -36,6 +36,6 @@
   outline: var(--fg) 1px solid;
 }
 
-#TerminalWindow > div.titlebar {
+#TerminalWindow > div.window-titlebar {
   backdrop-filter: unset;
 }
