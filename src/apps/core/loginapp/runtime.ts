@@ -22,6 +22,7 @@ import type { UserInfo } from "$types/user";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
 import type { LoginAppProps, PersistenceInfo } from "./types";
+import { UserConnector } from "$ts/kernel/mods/server/connectors/user";
 
 export class LoginAppRuntime extends AppProcess {
   public DEFAULT_WALLPAPER = Store<string>("");
@@ -431,15 +432,10 @@ export class LoginAppRuntime extends AppProcess {
   private async validateUserToken(token: string) {
     this.Log(`Validating user token for token login`);
 
-    try {
-      const response = await Backend.get(`/user/self`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+    const infoResult = await UserConnector.Self(token);
+    if (!infoResult.success) return false;
 
-      return response.status === 200 ? (response.data as UserInfo) : false;
-    } catch {
-      return false;
-    }
+    return infoResult.result;
   }
 
   resetCookies() {

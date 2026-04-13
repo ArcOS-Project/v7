@@ -1,4 +1,6 @@
+import type { LogLevel } from "$types/logging";
 import type { ServerInfo, ServerOption } from "$types/server";
+import type { AxiosInstance } from "axios";
 
 export interface IServerManager {
   connected: boolean;
@@ -17,4 +19,9 @@ export interface IServerManager {
   addServer(config: ServerOption): boolean;
   removeServer(url: string): boolean;
   isAdded(url: string): boolean;
+}
+
+export declare class IServerConnector {
+  static prefix: string;
+  static server: AxiosInstance;
 }

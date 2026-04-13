@@ -41,6 +41,8 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
 
     this.Log("Getting user information");
 
+    console.log(this.userInfo);
+
     try {
       const response = this.userInfo._id
         ? {
