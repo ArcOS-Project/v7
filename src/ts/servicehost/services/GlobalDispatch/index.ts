@@ -3,7 +3,7 @@ import type { IServerManager } from "$interfaces/modules/server";
 import type { IGlobalDispatch } from "$interfaces/services/GlobalDispatch";
 import { Daemon } from "$ts/daemon";
 import { Env, getKMod, Stack, SysDispatch } from "$ts/env";
-import { Backend } from "$ts/kernel/mods/server/axios";
+import { UserConnector } from "$ts/kernel/mods/server/connectors/user";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { Sleep } from "$ts/sleep";
@@ -95,27 +95,12 @@ export class GlobalDispatch extends BaseService implements IGlobalDispatch {
   }
 
   async getClients(): Promise<GlobalDispatchClient[]> {
-    try {
-      const response = await Backend.get("/user/dispatch", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
-
-      return response.data as GlobalDispatchClient[];
-    } catch {
-      return [];
-    }
+    const result = await UserConnector.DispatchGet(Daemon!.token);
+    return result?.result ?? [];
   }
 
   async disconnectClient(clientId: string) {
-    try {
-      const response = await Backend.post(
-        `/user/dispatch/kick/${clientId}`,
-        {},
-        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
-      );
-
-      return response.status === 200;
-    } catch {
-      return false;
-    }
+    return (await UserConnector.DispatchKick(Daemon!.token, clientId)).success;
   }
 
   enableListener() {

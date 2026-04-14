@@ -3,13 +3,13 @@ import type { IArcTerminal } from "$interfaces/terminal";
 import { UserDaemon } from "$ts/daemon";
 import { ArcOSVersion, Env, Server, Stack, SysDispatch } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
+import { UserConnector } from "$ts/kernel/mods/server/connectors/user";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { Sleep } from "$ts/sleep";
 import { LoginUser } from "$ts/user/auth";
 import { toForm } from "$ts/util/form";
-import type { UserInfo } from "$types/user";
 import { ClipboardAddon } from "@xterm/addon-clipboard";
 import { FitAddon } from "@xterm/addon-fit";
 import { ImageAddon } from "@xterm/addon-image";
@@ -214,15 +214,10 @@ export class TerminalMode extends Process {
   private async validateUserToken(token: string) {
     this.Log(`Validating user token for token login`);
 
-    try {
-      const response = await Backend.get(`/user/self`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+    const result = await UserConnector.Self(token);
+    if (!result.success) return false;
 
-      return response.status === 200 ? (response.data as UserInfo) : false;
-    } catch {
-      return false;
-    }
+    return result.result!;
   }
 
   resetCookies() {

@@ -6,6 +6,7 @@ import { ArcOSVersion, Env, Fs, Server } from "$ts/env";
 import { AdminFileSystem } from "$ts/kernel/mods/fs/drives/admin";
 import { AdminServerDrive } from "$ts/kernel/mods/fs/drives/aefs";
 import { Backend } from "$ts/kernel/mods/server/axios";
+import { UserConnector } from "$ts/kernel/mods/server/connectors/user";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import type { ServiceHost } from "$ts/servicehost";
@@ -132,23 +133,11 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
     this.Log("Getting user information");
 
-    try {
-      const response = await Backend.get(`/user/self`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+    const result = await UserConnector.Self(Daemon!.token);
+    if (!result.success) return undefined;
 
-      const data = response.status === 200 ? (response.data as UserInfo) : undefined;
-
-      if (!data) return undefined;
-
-      this.userInfo = data;
-
-      return response.status === 200 ? (response.data as UserInfo) : undefined;
-    } catch {
-      await this.killSelf();
-
-      return undefined;
-    }
+    this.userInfo = result.result;
+    return this.userInfo!;
   }
 
   async mountUserDrive(username: string, driveLetter?: string, onProgress?: FilesystemProgressCallback) {

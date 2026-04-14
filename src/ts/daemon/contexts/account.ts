@@ -80,25 +80,17 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
 
     if (!elevated) return false;
 
-    try {
-      const response = await Backend.patch("/user/rename", toForm({ newUsername }), {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+    const result = await UserConnector.Rename(Daemon!.token, newUsername);
+    if (!result.success) return false;
 
-      if (response.status !== 200) return false;
+    this.username = newUsername;
+    SysDispatch.dispatch("change-username", [newUsername]);
+    Cookies.set("arcUsername", newUsername, {
+      expires: 14,
+      domain: import.meta.env.DEV ? "localhost" : "izk-arcos.nl",
+    });
 
-      this.username = newUsername;
-      SysDispatch.dispatch("change-username", [newUsername]);
-
-      Cookies.set("arcUsername", newUsername, {
-        expires: 14,
-        domain: import.meta.env.DEV ? "localhost" : "izk-arcos.nl",
-      });
-
-      return true;
-    } catch {
-      return false;
-    }
+    return true;
   }
 
   async changePassword(newPassword: string): Promise<boolean> {
@@ -116,30 +108,20 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
 
     if (!elevated) return false;
 
-    try {
-      const response = await Backend.post("/user/changepswd", toForm({ newPassword }), {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+    const result = await UserConnector.ChangePassword(Daemon!.token, newPassword);
+    if (!result.success) return false;
 
-      if (response.status !== 200) return false;
-
-      return true;
-    } catch {
-      return false;
-    }
+    return true;
   }
 
   async getPublicUserInfoOf(userId: string): Promise<PublicUserInfo | undefined> {
-    try {
-      const response = await Backend.get(`/user/info/${userId}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
-      const information = response.data as PublicUserInfo;
+    const result = await UserConnector.Info(Daemon!.token, userId);
+    if (!result.success) return undefined;
 
-      information.profilePicture = `${Server.url}/user/pfp/${userId}${authcode()}`;
+    const information = result.result as PublicUserInfo;
+    information.profilePicture = `${Server.url}/user/pfp/${userId}${authcode()}`;
 
-      return information;
-    } catch {
-      return undefined;
-    }
+    return information;
   }
 
   async deleteAccount() {

@@ -7,6 +7,7 @@ import type { ServerInfo, ServerOption } from "$types/server";
 import axios from "axios";
 import { KernelModule } from "../../module";
 import { Backend } from "./axios";
+import { UserConnector } from "./connectors/user";
 
 export const VALIDATION_STR = "thisWonderfulArcOSServerIdentifiedByTheseWordsPleaseDontSteal(c)IzKuipers";
 
@@ -100,26 +101,12 @@ export class ServerManager extends KernelModule implements IServerManager {
 
   async checkUsernameAvailability(username: string) {
     this.isKmod();
-
-    try {
-      const response = await Backend.get(`/user/availability/username?name=${username}`);
-
-      return response.status === 200;
-    } catch {
-      return false;
-    }
+    return (await UserConnector.AvailabilityUsername(username)).success;
   }
 
   async checkEmailAvailability(email: string) {
     this.isKmod();
-
-    try {
-      const response = await Backend.get(`/user/availability/email?email=${email}`);
-
-      return response.status === 200;
-    } catch {
-      return false;
-    }
+    return (await UserConnector.AvailabilityEmail(email)).success;
   }
 
   private checkIfPreviewDeployment() {

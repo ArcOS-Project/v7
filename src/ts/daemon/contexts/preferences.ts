@@ -2,7 +2,7 @@ import { DefaultPinnedApps, DefaultStartMenuActions } from "$apps/components/she
 import type { IPreferencesUserContext } from "$interfaces/contexts/preferences";
 import type { IUserDaemon } from "$interfaces/daemon";
 import { Fs, SysDispatch } from "$ts/env";
-import { Backend } from "$ts/kernel/mods/server/axios";
+import { UserConnector } from "$ts/kernel/mods/server/connectors/user";
 import { DefaultUserPreferences } from "$ts/user/default";
 import { UserPaths } from "$ts/user/store";
 import { applyDefaults } from "$ts/util/hierarchy";
@@ -35,15 +35,13 @@ export class PreferencesUserContext extends UserContext implements IPreferencesU
     }
     this.Log(`Committing user preferences`);
 
-    try {
-      const response = await Backend.put(`/user/preferences`, preferences, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
-
-      return response.status === 200;
-    } catch {
-      this.Log(`Failed to commit user preferences!`, LogLevel.error);
+    const result = await UserConnector.PreferencesPut(Daemon!.token, preferences);
+    if (!result.success) {
+      this.Log(`Failed to commit user preferences! ${result.errorMessage}`, LogLevel.error);
+      return false;
     }
+
+    return true;
   }
 
   async sanitizeUserPreferences() {

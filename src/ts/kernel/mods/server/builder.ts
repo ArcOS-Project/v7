@@ -4,7 +4,7 @@ import { Backend } from "./axios";
 import { Log } from "$ts/logging";
 import { LogLevel } from "$types/logging";
 
-export class ApiCallBuilder<Result = object> {
+export class ApiCallBuilder<Result = never> {
   token?: string;
   built = false;
   axios?: AxiosInstance = Backend;
@@ -84,7 +84,7 @@ export class ApiCallBuilder<Result = object> {
     return this;
   }
 
-  Produces<T = object>() {
+  Produces<T = never>() {
     return new ApiCallBuilder<T>(this); // Changes the return type
   }
 
@@ -122,33 +122,24 @@ export class ApiCallBuilder<Result = object> {
     if (this.built) throw new Error("ApiCallBuilder has to be fully configured before building");
   }
 
-  public static Get<Result = object>(token?: string) {
-    return new this<Result>().WithMethod("GET").WithToken(token);
+  public static Get<Result = never>() {
+    return new this<Result>().WithMethod("GET");
   }
 
-  public static Post<Result = object>(token?: string, postBody?: any) {
-    const builder = new this<Result>().WithMethod("POST").WithToken(token);
-    if (postBody) builder?.WithPostBody(postBody);
-
-    return builder;
+  public static Post<Result = never>() {
+    return new this<Result>().WithMethod("POST");
   }
 
-  public static Patch<Result = object>(token?: string, patchBody?: any) {
-    const builder = new this<Result>().WithMethod("PATCH").WithToken(token);
-    if (patchBody) builder?.WithPostBody(patchBody);
-
-    return builder;
+  public static Patch<Result = never>() {
+    return new this<Result>().WithMethod("PATCH");
   }
 
-  public static Delete<Result = object>(token?: string) {
-    return new this<Result>().WithMethod("DELETE").WithToken(token);
+  public static Delete<Result = never>() {
+    return new this<Result>().WithMethod("DELETE");
   }
 
-  public static Put<Result = object>(token?: string, putBody?: any) {
-    const builder = new this<Result>().WithMethod("PUT").WithToken(token);
-    if (putBody) builder?.WithPostBody(putBody);
-
-    return builder;
+  public static Put<Result = never>() {
+    return new this<Result>().WithMethod("PUT");
   }
 
   private Log(message: string, level = LogLevel.info) {
