@@ -12,7 +12,7 @@
   pointer-events: initial !important;
 }
 
-#QlorbApp div.window-titlebar {
+#QlorbApp div.titlebar {
   z-index: 20000;
 }
 

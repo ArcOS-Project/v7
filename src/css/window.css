@@ -78,7 +78,7 @@ div.window:not(.core).fullscreen {
   backdrop-filter: none !important;
 }
 
-div.window:not(.core).fullscreen div.window-titlebar {
+div.window:not(.core).fullscreen div.titlebar {
   display: none !important;
 }
 
@@ -92,7 +92,7 @@ div.window:not(.core):not(.glass).focused {
   background-color: var(--glass-bg);
 }
 
-div.window:not(.core):not(.glass).focused > div.window-titlebar {
+div.window:not(.core):not(.glass).focused > div.titlebar {
   backdrop-filter: blur(var(--blur));
 }
 

@@ -193,7 +193,7 @@ export class AppRenderer extends Process implements IAppRenderer {
 
     const draggable = new Draggable(window, {
       bounds: { top: 0, left: -10000000, right: -10000000, bottom: -10000000 },
-      handle: `.window-titlebar, .draggable`,
+      handle: `.titlebar, .draggable`,
       cancel: `button, .nodrag`,
       legacyTranslate: false,
       gpuAcceleration: false,
@@ -309,7 +309,7 @@ export class AppRenderer extends Process implements IAppRenderer {
       title.append(beta);
     }
 
-    titlebar.className = "window-titlebar";
+    titlebar.className = "titlebar";
     titlebar.append(title);
 
     titlebar.append(controls);

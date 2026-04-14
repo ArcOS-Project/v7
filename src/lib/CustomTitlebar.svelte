@@ -34,7 +34,7 @@
 </script>
 
 <div
-  class="window-titlebar custom {className}"
+  class="titlebar custom {className}"
   data-contextmenu={process.app.data.overlay ? "" : "_window-titlebar"}
   use:contextProps={[process]}
 >

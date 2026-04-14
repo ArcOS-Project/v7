@@ -1,4 +1,4 @@
-#Messages > div.body div.window-titlebar.custom {
+#Messages > div.body div.titlebar.custom {
   border-bottom: var(--win-border);
 }
 
