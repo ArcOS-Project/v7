@@ -9,6 +9,7 @@ import { UserDaemon } from "$ts/daemon";
 import { Env, getKMod, SoundBus, Stack, State, SysDispatch } from "$ts/env";
 import { ProfilePictures } from "$ts/images/pfp";
 import { Backend } from "$ts/kernel/mods/server/axios";
+import { UserConnector } from "$ts/kernel/mods/server/connectors/user";
 import { Sleep } from "$ts/sleep";
 import { LoginUser } from "$ts/user/auth";
 import { Wallpapers } from "$ts/user/wallpaper/store";
@@ -22,8 +23,6 @@ import type { UserInfo } from "$types/user";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
 import type { LoginAppProps, PersistenceInfo } from "./types";
-import { UserConnector } from "$ts/kernel/mods/server/connectors/user";
-import { ImplicitLog } from "$ts/logging";
 
 export class LoginAppRuntime extends AppProcess {
   public DEFAULT_WALLPAPER = Store<string>("");
@@ -74,7 +73,6 @@ export class LoginAppRuntime extends AppProcess {
     Env.delete("loginapp_pid");
   }
 
-  @ImplicitLog
   async render() {
     this.getBody().classList.add("theme-dark");
 

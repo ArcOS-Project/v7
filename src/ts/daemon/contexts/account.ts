@@ -12,6 +12,7 @@ import type { PublicUserInfo, UserInfo } from "$types/user";
 import Cookies from "js-cookie";
 import { Daemon } from "..";
 import { UserContext } from "../context";
+import { UserConnector } from "$ts/kernel/mods/server/connectors/user";
 
 export class AccountUserContext extends UserContext implements IAccountUserContext {
   constructor(id: string, daemon: IUserDaemon) {
@@ -44,21 +45,12 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
     console.log(this.userInfo);
 
     try {
-      const response = this.userInfo._id
-        ? {
-            status: 200,
-            data: this.userInfo,
-          }
-        : await Backend.get(`/user/self`, {
-            headers: { Authorization: `Bearer ${Daemon!.token}` },
-          });
+      const response = this.userInfo._id ? CommandResult.Ok(this.userInfo) : await UserConnector.Self(Daemon!.token);
+      if (!response.success) return response;
 
-      const data = response.status === 200 ? (response.data as UserInfo) : undefined;
-
-      if (!data) return CommandResult.Error(response.data?.e ?? "Failed to request user info");
+      const data = response.result as UserInfo;
 
       Daemon!.preferencesCtx?.preferences.set(data.preferences);
-
       Daemon!.preferencesCtx?.sanitizeUserPreferences();
 
       this.initialized = true;
@@ -66,7 +58,7 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
       Env.set("currentuser", this.username);
       if (data.admin) Env.set("administrator", data.admin);
 
-      return CommandResult.Ok(response.data as UserInfo);
+      return response;
     } catch (e) {
       await Daemon!.killSelf();
       return CommandResult.AxiosError(e, "Unknown error while obtaining user information. Please try again.");

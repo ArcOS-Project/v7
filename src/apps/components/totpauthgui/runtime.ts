@@ -1,6 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/daemon";
 import { SysDispatch } from "$ts/env";
+import { InfoIcon } from "$ts/images/dialog";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { MessageBox } from "$ts/util/dialog";
 import { toForm } from "$ts/util/form";
@@ -78,7 +79,7 @@ export class TotpAuthGuiRuntime extends AppProcess {
           "Lost access to your authenticator app? Not a problem! Please contact an ArcOS System Admin in the Discord server to get your 2FA removed. We'll ask you questions to verify you own the account, and after that you can access it again.",
         buttons: [{ caption: "Okay", action: () => this.cancel(), suggested: true }],
         sound: "arcos.dialog.info",
-        image: "InfoIcon",
+        image: InfoIcon,
       },
       this.parentPid,
       true
