@@ -23,6 +23,7 @@ import dayjs from "dayjs";
 import Cookies from "js-cookie";
 import type { LoginAppProps, PersistenceInfo } from "./types";
 import { UserConnector } from "$ts/kernel/mods/server/connectors/user";
+import { ImplicitLog } from "$ts/logging";
 
 export class LoginAppRuntime extends AppProcess {
   public DEFAULT_WALLPAPER = Store<string>("");
@@ -73,6 +74,7 @@ export class LoginAppRuntime extends AppProcess {
     Env.delete("loginapp_pid");
   }
 
+  @ImplicitLog
   async render() {
     this.getBody().classList.add("theme-dark");
 

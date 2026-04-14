@@ -25,7 +25,8 @@
       "$ts/*": ["./src/ts/*"],
       "$interfaces/*": ["./src/interfaces/*"]
     },
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "experimentalDecorators": true
   },
   "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte", "src/**/*.html"]
 }
