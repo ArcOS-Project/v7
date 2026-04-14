@@ -1,12 +1,15 @@
-div.window-titlebar {
+div.window:not(.focused) > div.titlebar,
+div.window:not(.focused) > div.body div.titlebar.custom {
   opacity: 0.5;
 }
 
-div.window-titlebar button {
+div.window > div.titlebar button,
+div.window > div.body div.titlebar.custom button {
   outline: none !important;
 }
 
-div.window-titlebar {
+div.window > div.titlebar,
+div.window > div.body div.titlebar.custom {
   display: flex;
   flex-direction: row;
 
@@ -21,7 +24,8 @@ div.window-titlebar {
   min-height: 40px;
   transition: opacity 0.1s !important;
 }
-div.window-titlebar div.window-title {
+div.window > div.titlebar div.window-title,
+div.window > div.body div.titlebar.custom div.window-title {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -33,19 +37,21 @@ div.window-titlebar div.window-title {
   white-space: nowrap;
 }
 
-div.window-titlebar div.window-title > img {
+div.window > div.titlebar div.window-title > img,
+div.window > div.body div.titlebar.custom div.window-title > img {
   height: 20px;
   min-width: 20px;
 }
 
-div.window-titlebar div.window-title > span {
+div.window > div.titlebar div.window-title > span,
+div.window > div.body div.titlebar.custom div.window-title > span {
   max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-div.window div.window-titlebar button.feedback {
+div.window div.titlebar button.feedback {
   margin: 0;
   padding: 0;
   border: none;

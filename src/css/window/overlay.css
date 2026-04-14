@@ -22,11 +22,11 @@ div.window-overlay-wrapper div.window.overlay.visible * {
   pointer-events: initial;
 }
 
-div.window-overlay-wrapper div.window.overlay div.window-titlebar.custom {
+div.window-overlay-wrapper div.window.overlay div.titlebar.custom {
   opacity: 1 !important;
 }
 
-div.window-overlay-wrapper div.window.overlay div.window-titlebar:not(.custom) {
+div.window-overlay-wrapper div.window.overlay div.titlebar:not(.custom) {
   display: none;
 }
 div.window-overlay-wrapper div.window.overlay div.body {

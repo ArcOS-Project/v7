@@ -4,7 +4,7 @@
 @import url("./qlorb/osd.css");
 @import url("./qlorb/game.css");
 
-#QlorbApp > div.window-titlebar {
+#QlorbApp > div.titlebar {
   border-bottom: none !important;
   background-color: transparent;
 }

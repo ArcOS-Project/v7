@@ -46,7 +46,7 @@
   position: relative;
 }
 
-#IconEditorApp > div.body div.window-titlebar {
+#IconEditorApp > div.body div.titlebar {
   border-bottom: var(--win-border);
 }
 

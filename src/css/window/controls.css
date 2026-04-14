@@ -1,6 +1,7 @@
 @import url("./controls/traffic.css");
 
-div.window-titlebar div.controls {
+div.window > div.body div.titlebar.custom div.controls,
+div.window > div.titlebar div.controls {
   display: flex;
   gap: 2px;
   height: 16px;
@@ -8,11 +9,13 @@ div.window-titlebar div.controls {
   margin-left: auto;
 }
 
-div.window-titlebar button.feedback + div.controls {
+div.window > div.body div.titlebar.custom button.feedback + div.controls,
+div.window > div.titlebar button.feedback + div.controls {
   margin-left: 0;
 }
 
-div.window-titlebar div.controls button {
+div.window > div.body div.titlebar.custom div.controls button,
+div.window > div.titlebar div.controls button {
   margin: 0;
   padding: 0;
   background-color: transparent !important;
@@ -24,7 +27,7 @@ div.window-titlebar div.controls button {
   transition: opacity 0.2s;
 }
 
-div.window-titlebar div.alt-menu {
+div.window div.titlebar div.alt-menu {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -33,45 +36,47 @@ div.window-titlebar div.alt-menu {
   border-left: var(--button-glass-hover-bg) 1px solid;
 }
 
-.hide-altmenus div.window-titlebar div.alt-menu {
+.hide-altmenus div.window div.titlebar div.alt-menu {
   opacity: 0;
   transition: opacity 0.2s;
 }
 
-.hide-altmenus div.window-titlebar div.alt-menu:has(button.selected),
-.hide-altmenus div.window-titlebar:hover div.alt-menu {
+.hide-altmenus div.window div.titlebar div.alt-menu:has(button.selected),
+.hide-altmenus div.window div.titlebar:hover div.alt-menu {
   opacity: 1;
 }
 
-div.window-titlebar div.alt-menu > button.menu-item {
+div.window div.titlebar div.alt-menu button {
   margin: 0;
-  padding: 0 10px !important;
-  height: 24px !important;
-  background-color: transparent !important;
-  color: var(--fg) !important;
-  border: none !important;
-  border-radius: 8px !important;
+  padding: 0 10px;
+  height: 24px;
+  background-color: transparent;
+  color: var(--fg);
+  border: none;
+  border-radius: 8px;
   transition: background-color 0.3s;
-  min-width: unset !important;
+  min-width: unset;
 }
 
-div.window-titlebar div.alt-menu button:hover {
+div.window > div.titlebar div.alt-menu button:hover {
   background-color: var(--button-glass-bg);
 }
-
-div.window-titlebar div.controls button:hover {
+div.window > div.body div.titlebar.custom div.controls button:hover,
+div.window > div.titlebar div.controls button:hover {
   color: var(--accent-light);
 }
 
-div.window-titlebar div.controls button:disabled,
-div.window-titlebar div.controls button:active {
+div.window > div.body div.titlebar.custom div.controls button:disabled,
+div.window > div.body div.titlebar.custom div.controls button:active,
+div.window > div.titlebar div.controls button:disabled,
+div.window > div.titlebar div.controls button:active {
   opacity: 0.2;
 }
 
-div.window-titlebar div.alt-menu.hidden {
+div.window div.titlebar div.alt-menu.hidden {
   display: none;
 }
 
-div.window-titlebar div.alt-menu button.selected {
+div.window div.titlebar div.alt-menu button.selected {
   background-color: var(--accent-light-transparent) !important;
 }
