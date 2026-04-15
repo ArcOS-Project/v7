@@ -3,7 +3,7 @@ import type { IBugHunt } from "$interfaces/modules/bughunt";
 import type { ISystemDispatch } from "$interfaces/modules/dispatch";
 import type { IEnvironment } from "$interfaces/modules/env";
 import type { IFilesystem } from "$interfaces/modules/fs";
-import type { IServerManager } from "$interfaces/modules/server";
+import type { IServerConnector, IServerManager } from "$interfaces/modules/server";
 import type { ISoundbus } from "$interfaces/modules/soundbus";
 import type { IProcessHandler } from "$interfaces/modules/stack";
 import type { IStateHandler } from "$interfaces/state";
@@ -49,4 +49,8 @@ export function getKMod<T = any>(id: string, dontCrash = false): T {
   const kernel = Kernel!;
 
   return kernel.getModule<T>(id, dontCrash) as T;
+}
+
+export function GetConnector<T extends IServerConnector>(name: string, token?: string): T {
+  return getKMod<IServerManager>("server").GetConn(name, token || "");
 }

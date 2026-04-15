@@ -1,12 +1,12 @@
+import type { IUserConnector } from "$interfaces/modules/server/UserConnector";
 import type { IAdminBootstrapper } from "$interfaces/services/AdminBootstrapper";
 import type { IProtocolServiceProcess } from "$interfaces/services/ProtoService";
 import { AdminAppImportPathAbsolutes } from "$ts/apps/store";
 import { Daemon } from "$ts/daemon";
-import { ArcOSVersion, Env, Fs, Server } from "$ts/env";
+import { ArcOSVersion, Env, Fs, GetConnector, Server } from "$ts/env";
 import { AdminFileSystem } from "$ts/kernel/mods/fs/drives/admin";
 import { AdminServerDrive } from "$ts/kernel/mods/fs/drives/aefs";
 import { Backend } from "$ts/kernel/mods/server/axios";
-import { UserConnector } from "$ts/kernel/mods/server/connectors/user";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import type { ServiceHost } from "$ts/servicehost";
@@ -133,7 +133,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
     this.Log("Getting user information");
 
-    const result = await UserConnector.Self(Daemon!.token);
+    const result = await GetConnector<IUserConnector>("UserConnector", Daemon!.token).Self();
     if (!result.success) return undefined;
 
     this.userInfo = result.result;

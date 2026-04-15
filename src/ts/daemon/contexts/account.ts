@@ -1,18 +1,17 @@
 import type { IAccountUserContext } from "$interfaces/contexts/account";
 import type { IUserDaemon } from "$interfaces/daemon";
+import type { IUserConnector } from "$interfaces/modules/server/UserConnector";
 import DeleteUser from "$lib/Daemon/DeleteUser.svelte";
-import { Env, Server, SysDispatch } from "$ts/env";
+import { Env, GetConnector, Server, SysDispatch } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { CommandResult } from "$ts/result";
 import { authcode } from "$ts/util";
 import { MessageBox } from "$ts/util/dialog";
-import { toForm } from "$ts/util/form";
 import { ElevationLevel } from "$types/elevation";
 import type { PublicUserInfo, UserInfo } from "$types/user";
 import Cookies from "js-cookie";
 import { Daemon } from "..";
 import { UserContext } from "../context";
-import { UserConnector } from "$ts/kernel/mods/server/connectors/user";
 
 export class AccountUserContext extends UserContext implements IAccountUserContext {
   constructor(id: string, daemon: IUserDaemon) {
@@ -45,7 +44,9 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
     console.log(this.userInfo);
 
     try {
-      const response = this.userInfo._id ? CommandResult.Ok(this.userInfo) : await UserConnector.Self(Daemon!.token);
+      const response = this.userInfo._id
+        ? CommandResult.Ok(this.userInfo)
+        : await GetConnector<IUserConnector>("UserConnector", Daemon!.token).Self();
       if (!response.success) return response;
 
       const data = response.result as UserInfo;
@@ -80,7 +81,7 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
 
     if (!elevated) return false;
 
-    const result = await UserConnector.Rename(Daemon!.token, newUsername);
+    const result = await GetConnector<IUserConnector>("UserConnector", Daemon!.token).Rename(newUsername);
     if (!result.success) return false;
 
     this.username = newUsername;
@@ -108,14 +109,14 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
 
     if (!elevated) return false;
 
-    const result = await UserConnector.ChangePassword(Daemon!.token, newPassword);
+    const result = await GetConnector<IUserConnector>("UserConnector", Daemon!.token).ChangePassword(newPassword);
     if (!result.success) return false;
 
     return true;
   }
 
   async getPublicUserInfoOf(userId: string): Promise<PublicUserInfo | undefined> {
-    const result = await UserConnector.Info(Daemon!.token, userId);
+    const result = await GetConnector<IUserConnector>("UserConnector", Daemon!.token).Info(userId);
     if (!result.success) return undefined;
 
     const information = result.result as PublicUserInfo;

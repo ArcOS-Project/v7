@@ -1,8 +1,8 @@
 import { DefaultPinnedApps, DefaultStartMenuActions } from "$apps/components/shell/store";
 import type { IPreferencesUserContext } from "$interfaces/contexts/preferences";
 import type { IUserDaemon } from "$interfaces/daemon";
-import { Fs, SysDispatch } from "$ts/env";
-import { UserConnector } from "$ts/kernel/mods/server/connectors/user";
+import type { IUserConnector } from "$interfaces/modules/server/UserConnector";
+import { Fs, GetConnector, SysDispatch } from "$ts/env";
 import { DefaultUserPreferences } from "$ts/user/default";
 import { UserPaths } from "$ts/user/store";
 import { applyDefaults } from "$ts/util/hierarchy";
@@ -35,7 +35,7 @@ export class PreferencesUserContext extends UserContext implements IPreferencesU
     }
     this.Log(`Committing user preferences`);
 
-    const result = await UserConnector.PreferencesPut(Daemon!.token, preferences);
+    const result = await GetConnector<IUserConnector>("UserConnector", Daemon!.token).PreferencesPut(preferences);
     if (!result.success) {
       this.Log(`Failed to commit user preferences! ${result.errorMessage}`, LogLevel.error);
       return false;

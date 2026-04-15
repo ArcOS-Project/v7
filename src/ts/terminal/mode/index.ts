@@ -1,9 +1,10 @@
 import type { IUserDaemon } from "$interfaces/daemon";
+import type { ITotpConnector } from "$interfaces/modules/server/TotpConnector";
+import type { IUserConnector } from "$interfaces/modules/server/UserConnector";
 import type { IArcTerminal } from "$interfaces/terminal";
 import { UserDaemon } from "$ts/daemon";
-import { ArcOSVersion, Env, Server, Stack, SysDispatch } from "$ts/env";
+import { ArcOSVersion, Env, GetConnector, Server, Stack, SysDispatch } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
-import { UserConnector } from "$ts/kernel/mods/server/connectors/user";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -214,7 +215,7 @@ export class TerminalMode extends Process {
   private async validateUserToken(token: string) {
     this.Log(`Validating user token for token login`);
 
-    const result = await UserConnector.Self(token);
+    const result = await GetConnector<IUserConnector>("UserConnector", token).Self();
     if (!result.success) return false;
 
     return result.result!;
@@ -268,6 +269,8 @@ export class TerminalMode extends Process {
     if (!Number(code) || code?.length !== 6) {
       return await this.askForTotp(token);
     }
+
+    const result = await GetConnector<ITotpConnector>("totp", token).Unlock(code);
 
     try {
       const response = await Backend.post("/totp/unlock", toForm({ code }), {

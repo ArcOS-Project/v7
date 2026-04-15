@@ -1,8 +1,8 @@
+import { Log } from "$ts/logging";
 import { CommandResult } from "$ts/result";
+import { LogLevel } from "$types/logging";
 import type { AxiosInstance, Method, MethodsHeaders, RawAxiosRequestHeaders, ResponseType } from "axios";
 import { Backend } from "./axios";
-import { Log } from "$ts/logging";
-import { LogLevel } from "$types/logging";
 
 export class ApiCallBuilder<Result = never> {
   token?: string;
@@ -88,7 +88,7 @@ export class ApiCallBuilder<Result = never> {
     return new ApiCallBuilder<T>(this); // Changes the return type
   }
 
-  async Execute(url: string): Promise<CommandResult<Result>> {
+  async Execute(url?: string): Promise<CommandResult<Result>> {
     if (this.built) throw new Error("ApiCallBuilder already consumed");
     this.built = true;
     this.Log("Execute");
@@ -100,7 +100,7 @@ export class ApiCallBuilder<Result = never> {
     try {
       const response = await this.axios?.request({
         method: this.method ?? "get",
-        url: url ?? "/ping",
+        url: url ?? "",
         params: this.params ?? {},
         data: this.postBody,
         headers,

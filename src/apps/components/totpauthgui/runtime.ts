@@ -1,10 +1,9 @@
+import type { ITotpConnector } from "$interfaces/modules/server/TotpConnector";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/daemon";
-import { SysDispatch } from "$ts/env";
+import { GetConnector, SysDispatch } from "$ts/env";
 import { InfoIcon } from "$ts/images/dialog";
-import { Backend } from "$ts/kernel/mods/server/axios";
 import { MessageBox } from "$ts/util/dialog";
-import { toForm } from "$ts/util/form";
 import type { AppProcessData } from "$types/app";
 import type { RenderArgs } from "$types/process";
 
@@ -46,27 +45,15 @@ export class TotpAuthGuiRuntime extends AppProcess {
   async verifyTotp(code: string) {
     this.Log(`verifyTotp: ${code}`);
 
-    if (!this.validate(code)) return false;
+    if (!this.validate(code) || code.length !== 6) return false;
 
-    if (code.length !== 6) return false;
+    const result = await GetConnector<ITotpConnector>("totp", Daemon!.token).Unlock(code);
+    if (!result.success) return false;
 
-    try {
-      const response = await Backend.post("/totp/unlock", toForm({ code }), {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+    await this.closeWindow();
+    this.doDispatch();
 
-      const unlocked = response.status === 200;
-
-      if (!unlocked) return false;
-
-      await this.closeWindow();
-
-      this.doDispatch();
-
-      return true;
-    } catch {
-      return false;
-    }
+    return true;
   }
 
   cantAccess() {

@@ -1,5 +1,7 @@
+import type { ITotpConnector } from "$interfaces/modules/server/TotpConnector";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/daemon";
+import { GetConnector } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { toForm } from "$ts/util/form";
 import { Store } from "$ts/writable";
@@ -18,15 +20,13 @@ export class TotpSetupGuiRuntime extends AppProcess {
   }
 
   async render() {
-    try {
-      const response = await Backend.post("/totp/setup", {}, { headers: { Authorization: `Bearer ${Daemon?.token}` } });
-
-      if (response.status !== 200) throw "";
-
-      this.url.set(response.data.url);
-    } catch {
+    const result = await GetConnector<ITotpConnector>("totp", Daemon!.token).Setup();
+    if (!result.success) {
       this.closeWindow();
+      return;
     }
+
+    this.url.set(result.result!.url);
   }
 
   //#endregion
@@ -49,7 +49,7 @@ export class TotpSetupGuiRuntime extends AppProcess {
 
     const string = this.code();
 
-    this.Log(`activateTotp: ${string}`)
+    this.Log(`activateTotp: ${string}`);
 
     if (string.length !== 6) return false;
 

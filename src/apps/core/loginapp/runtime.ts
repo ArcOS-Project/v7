@@ -4,12 +4,12 @@ import { TotpAuthGuiApp } from "$apps/components/totpauthgui/TotpAuthGui";
 import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
 import type { IUserDaemon } from "$interfaces/daemon";
 import type { IServerManager } from "$interfaces/modules/server";
+import type { IUserConnector } from "$interfaces/modules/server/UserConnector";
 import { AppProcess } from "$ts/apps/process";
 import { UserDaemon } from "$ts/daemon";
-import { Env, getKMod, SoundBus, Stack, State, SysDispatch } from "$ts/env";
+import { Env, GetConnector, getKMod, SoundBus, Stack, State, SysDispatch } from "$ts/env";
 import { ProfilePictures } from "$ts/images/pfp";
 import { Backend } from "$ts/kernel/mods/server/axios";
-import { UserConnector } from "$ts/kernel/mods/server/connectors/user";
 import { Sleep } from "$ts/sleep";
 import { LoginUser } from "$ts/user/auth";
 import { Wallpapers } from "$ts/user/wallpaper/store";
@@ -432,7 +432,7 @@ export class LoginAppRuntime extends AppProcess {
   private async validateUserToken(token: string) {
     this.Log(`Validating user token for token login`);
 
-    const infoResult = await UserConnector.Self(token);
+    const infoResult = await GetConnector<IUserConnector>("UserConnector", token).Self();
     if (!infoResult.success) return false;
 
     return infoResult.result;
