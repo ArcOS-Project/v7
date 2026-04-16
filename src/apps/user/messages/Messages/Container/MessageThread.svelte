@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
-  import { GetConnector, Server } from "$ts/env";
-  import { authcode } from "$ts/util";
+  import { GetConnector } from "$ts/env";
   import type { ExpandedMessageNode } from "$types/messaging";
   import type { MessagingAppRuntime } from "../../runtime";
   import Header from "./MessageContent/Header.svelte";

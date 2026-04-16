@@ -1,7 +1,7 @@
 import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/daemon";
-import { Env, GetConnector, Stack } from "$ts/env";
+import { Env, Stack } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { ArcLicense } from "$ts/metadata/license";
 import { Sleep } from "$ts/sleep";
@@ -340,7 +340,7 @@ export class SettingsRuntime extends AppProcess {
 
     if (!elevated) return;
 
-    const result = await GetConnector<ITotpConnector>("totp", Daemon!.token).Delete();
+    const result = await Daemon.GetConnector<ITotpConnector>("TotpConnector").Delete();
 
     if (!result.success) {
       MessageBox(

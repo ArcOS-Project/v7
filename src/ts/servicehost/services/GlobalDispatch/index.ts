@@ -3,7 +3,7 @@ import type { IServerManager } from "$interfaces/modules/IServerManager";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import type { IGlobalDispatch } from "$interfaces/services/IGlobalDispatch";
 import { Daemon } from "$ts/daemon";
-import { Env, GetConnector, getKMod, Stack, SysDispatch } from "$ts/env";
+import { Env, getKMod, Stack, SysDispatch } from "$ts/env";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { Sleep } from "$ts/sleep";
@@ -95,12 +95,12 @@ export class GlobalDispatch extends BaseService implements IGlobalDispatch {
   }
 
   async getClients(): Promise<GlobalDispatchClient[]> {
-    const result = await GetConnector<IUserConnector>("UserConnector", Daemon!.token).DispatchGet();
+    const result = await Daemon.GetConnector<IUserConnector>("UserConnector").DispatchGet();
     return result?.result ?? [];
   }
 
   async disconnectClient(clientId: string) {
-    return (await GetConnector<IUserConnector>("UserConnector", Daemon!.token).DispatchKick(clientId)).success;
+    return (await Daemon.GetConnector<IUserConnector>("UserConnector").DispatchKick(clientId)).success;
   }
 
   enableListener() {

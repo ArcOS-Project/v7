@@ -1,18 +1,18 @@
 //#region IMPORTS
 import type { IAccountUserContext } from "$interfaces/contexts/IAccountUserContext";
-import type { ILoginActivityUserContext } from "$interfaces/contexts/ILoginActivityUserContext";
-import type { IAppRegistrationUserContext } from "$interfaces/contexts/IAppRegistrationUserContext";
 import type { IApplicationsUserContext } from "$interfaces/contexts/IApplicationsUserContext";
+import type { IAppRegistrationUserContext } from "$interfaces/contexts/IAppRegistrationUserContext";
+import type { IAppRendererUserContext } from "$interfaces/contexts/IAppRendererUserContext";
 import type { IChecksUserContext } from "$interfaces/contexts/IChecksUserContext";
 import type { IElevationUserContext } from "$interfaces/contexts/IElevationUserContext";
 import type { IFilesystemUserContext } from "$interfaces/contexts/IFilesystemUserContext";
 import type { IHelpersUserContext } from "$interfaces/contexts/IHelpersUserContext";
 import type { IIconsUserContext } from "$interfaces/contexts/IIconsUserContext";
 import type { IInitUserContext } from "$interfaces/contexts/IInitUserContext";
+import type { ILoginActivityUserContext } from "$interfaces/contexts/ILoginActivityUserContext";
 import type { INotificationsUserContext } from "$interfaces/contexts/INotificationsUserContext";
 import type { IPowerUserContext } from "$interfaces/contexts/IPowerUserContext";
 import type { IPreferencesUserContext } from "$interfaces/contexts/IPreferencesUserContext";
-import type { IAppRendererUserContext } from "$interfaces/contexts/IAppRendererUserContext";
 import type { IShortcutsUserContext } from "$interfaces/contexts/IShortcutsUserContext";
 import type { ISpawnUserContext } from "$interfaces/contexts/ISpawnUserContext";
 import type { IThemesUserContext } from "$interfaces/contexts/IThemesUserContext";
@@ -21,12 +21,13 @@ import type { IWallpaperUserContext } from "$interfaces/contexts/IWallpaperUserC
 import type { IWorkspaceUserContext } from "$interfaces/contexts/IWorkspaceUserContext";
 import type { IUserContext, IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IEnvironment } from "$interfaces/modules/IEnvironment";
+import type { IServerConnector } from "$interfaces/modules/IServerManager";
+import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
 import type { IFileAssocService } from "$interfaces/services/IFileAssocService";
 import type { IGlobalDispatch } from "$interfaces/services/IGlobalDispatch";
 import type { ILibraryManagement } from "$interfaces/services/ILibraryManagement";
-import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
-import { Env, Fs, getKMod, Stack, State } from "$ts/env";
+import { Env, Fs, GetConnector, getKMod, Stack, State } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { ServiceHost } from "$ts/servicehost";
 import { DefaultUserInfo } from "$ts/user/default";
@@ -204,6 +205,10 @@ export class UserDaemon extends Process implements IUserDaemon {
 
   updateGlobalDispatch() {
     this.serviceHost?.getService<IGlobalDispatch>?.("GlobalDispatch")?.sendUpdate();
+  }
+
+  GetConnector<T extends IServerConnector>(name: string): T {
+    return GetConnector<T>(name, this.token);
   }
 }
 

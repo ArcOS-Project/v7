@@ -8,12 +8,11 @@
  *
  * © IzKuipers 2025
  */
-import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { ITpaConnector } from "$interfaces/modules/server/ITpaConnector";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { ThirdPartyProps } from "$ts/apps/tpa/props";
 import { Daemon } from "$ts/daemon";
-import { Env, Fs, GetConnector, Stack } from "$ts/env";
+import { Env, Fs, Stack } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { arrayBufferToText } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
@@ -26,7 +25,6 @@ import * as walk from "acorn-walk";
 export class JsExec extends Process {
   public readonly TPA_REVISION = ThirdPartyAppProcess.TPA_REV;
   props?: ThirdPartyPropMap;
-  userDaemon?: IUserDaemon;
   app?: App;
   args: any[];
   metaPath?: string;
@@ -39,7 +37,6 @@ export class JsExec extends Process {
   constructor(pid: number, parentPid: number, filePath: string, ...args: any[]) {
     super(pid, parentPid);
 
-    this.userDaemon = Daemon;
     this.args = args;
     this.filePath = filePath;
     this.workingDirectory = getParentDirectory(filePath);
@@ -49,7 +46,7 @@ export class JsExec extends Process {
   }
 
   async start() {
-    if (!this.userDaemon || !this.filePath) return false;
+    if (!this.filePath) return false;
 
     this.props = ThirdPartyProps(this);
   }
@@ -62,12 +59,7 @@ export class JsExec extends Process {
 
     const { appId, userId, filename } = this.getTpaUrlInfo();
     try {
-      const urlResult = await GetConnector<ITpaConnector>("TpaConnector", this.userDaemon?.token).CreateUrl(
-        wrapped,
-        userId,
-        appId,
-        filename
-      );
+      const urlResult = await Daemon!.GetConnector<ITpaConnector>("TpaConnector").CreateUrl(wrapped, userId, appId, filename);
 
       if (!urlResult.success) throw new JsExecError();
       return urlResult.result!;
@@ -84,7 +76,7 @@ export class JsExec extends Process {
 
   getTpaUrlInfo() {
     const appId = this.app?.id || "ArcOS";
-    const userId = this.userDaemon?.userInfo?._id || "SYSTEM";
+    const userId = Daemon?.userInfo?._id || "SYSTEM";
     const filename = getItemNameFromPath(this.filePath!);
 
     return { appId, userId, filename };

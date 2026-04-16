@@ -35,7 +35,7 @@ export class PreferencesUserContext extends UserContext implements IPreferencesU
     }
     this.Log(`Committing user preferences`);
 
-    const result = await GetConnector<IUserConnector>("UserConnector", Daemon!.token).PreferencesPut(preferences);
+    const result = await Daemon.GetConnector<IUserConnector>("UserConnector").PreferencesPut(preferences);
     if (!result.success) {
       this.Log(`Failed to commit user preferences! ${result.errorMessage}`, LogLevel.error);
       return false;

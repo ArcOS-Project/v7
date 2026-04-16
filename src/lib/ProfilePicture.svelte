@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
   import { Daemon } from "$ts/daemon";
-  import { GetConnector, SysDispatch } from "$ts/env";
+  import { SysDispatch } from "$ts/env";
   import { Sleep } from "$ts/sleep";
   import { DefaultUserPreferences } from "$ts/user/default";
   import { authcode } from "$ts/util";
@@ -35,7 +35,7 @@
     if (url) await Sleep(100);
 
     const code = authcode();
-    url = fallback || GetConnector<IUserConnector>("UserConnector").PictureUrl(Daemon!.userInfo!._id);
+    url = fallback || Daemon!.GetConnector<IUserConnector>("UserConnector").PictureUrl(Daemon!.userInfo!._id);
 
     currentPfp = pfp || v.account.profilePicture!;
   }

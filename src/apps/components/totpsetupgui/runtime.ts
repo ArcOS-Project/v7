@@ -1,7 +1,6 @@
 import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/daemon";
-import { GetConnector } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
@@ -18,7 +17,7 @@ export class TotpSetupGuiRuntime extends AppProcess {
   }
 
   async render() {
-    const result = await GetConnector<ITotpConnector>("totp", Daemon!.token).Setup();
+    const result = await Daemon.GetConnector<ITotpConnector>("totp").Setup();
     if (!result.success) {
       this.closeWindow();
       return;
@@ -51,7 +50,7 @@ export class TotpSetupGuiRuntime extends AppProcess {
 
     if (string.length !== 6) return false;
 
-    const result = await GetConnector<ITotpConnector>("totp", Daemon!.token).Activate(string);
+    const result = await Daemon.GetConnector<ITotpConnector>("totp").Activate(string);
     if (!result.success) return false;
 
     await this.closeWindow();

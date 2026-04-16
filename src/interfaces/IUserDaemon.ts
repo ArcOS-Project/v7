@@ -27,6 +27,7 @@ import type { IFileAssocService } from "./services/IFileAssocService";
 import type { IGlobalDispatch } from "./services/IGlobalDispatch";
 import type { ILibraryManagement } from "./services/ILibraryManagement";
 import type { IShellRuntime } from "./runtimes/IShellRuntime";
+import type { IServerConnector } from "./modules/IServerManager";
 
 export interface IUserDaemon extends IProcess {
   username: string;
@@ -73,6 +74,7 @@ export interface IUserDaemon extends IProcess {
   getShell(): IShellRuntime | undefined;
   updateGlobalDispatch(): void;
   getShell(): IShellRuntime | undefined;
+  GetConnector<T extends IServerConnector>(name: string): T;
 }
 
 export interface IUserContext {

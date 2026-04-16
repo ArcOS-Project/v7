@@ -1,7 +1,7 @@
 import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/daemon";
-import { GetConnector, SysDispatch } from "$ts/env";
+import { SysDispatch } from "$ts/env";
 import { InfoIcon } from "$ts/images/dialog";
 import { MessageBox } from "$ts/util/dialog";
 import type { AppProcessData } from "$types/app";
@@ -47,7 +47,7 @@ export class TotpAuthGuiRuntime extends AppProcess {
 
     if (!this.validate(code) || code.length !== 6) return false;
 
-    const result = await GetConnector<ITotpConnector>("totp", Daemon!.token).Unlock(code);
+    const result = await Daemon.GetConnector<ITotpConnector>("totp").Unlock(code);
     if (!result.success) return false;
 
     await this.closeWindow();

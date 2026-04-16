@@ -60,7 +60,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
       const response = await Backend.get("/messaging/sent", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
       const data = (response.data as ExpandedMessage[]).map((message) => {
         if (message.author) {
-          message.author.profilePicture = GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
+          message.author.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
         }
 
         return message;
@@ -78,7 +78,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
       const response = await Backend.get("/messaging/received", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
       const data = (response.data as ExpandedMessage[]).map((message) => {
         if (message.author) {
-          message.author.profilePicture = GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
+          message.author.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
         }
 
         return message;
@@ -97,7 +97,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
       const response = await Backend.get("/messaging/inbox", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
       const data = (response.data as ExpandedMessage[]).map((message) => {
         if (message.author) {
-          message.author.profilePicture = GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
+          message.author.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
         }
 
         return message;
@@ -169,7 +169,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
       const data = response.data as ExpandedMessage;
 
       if (data && data.author) {
-        data.author.profilePicture = GetConnector<IUserConnector>("UserConnector").PictureUrl(data.authorId);
+        data.author.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(data.authorId);
       }
 
       return response.data as ExpandedMessage;

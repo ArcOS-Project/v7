@@ -1,9 +1,10 @@
+import type { IStoreConnector } from "$interfaces/modules/server/IStoreConnector";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
 import type { IProtocolServiceProcess } from "$interfaces/services/IProtocolServiceProcess";
 import { AdminAppImportPathAbsolutes } from "$ts/apps/store";
 import { Daemon } from "$ts/daemon";
-import { ArcOSVersion, Env, Fs, GetConnector, Server } from "$ts/env";
+import { ArcOSVersion, Env, Fs, Server } from "$ts/env";
 import { AdminFileSystem } from "$ts/kernel/mods/fs/drives/admin";
 import { AdminServerDrive } from "$ts/kernel/mods/fs/drives/aefs";
 import { Backend } from "$ts/kernel/mods/server/axios";
@@ -133,7 +134,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
     this.Log("Getting user information");
 
-    const result = await GetConnector<IUserConnector>("UserConnector", Daemon!.token).Self();
+    const result = await Daemon.GetConnector<IUserConnector>("UserConnector").Self();
     if (!result.success) return undefined;
 
     this.userInfo = result.result;
@@ -1046,29 +1047,11 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   }
 
   async getStoreItem(id: string): Promise<StoreItem | undefined> {
-    if (this._disposed) return;
-    try {
-      const response = await Backend.get(`/store/package/id/${id}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
-
-      return response.data as StoreItem;
-    } catch {
-      return undefined;
-    }
+    return (await Daemon.GetConnector<IStoreConnector>("StoreConnector").GetPackageById(id)).result;
   }
 
   async getStoreItemByName(name: string): Promise<StoreItem | undefined> {
-    if (this._disposed) return;
-    try {
-      const response = await Backend.get(`/store/package/name/${name}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
-
-      return response.data as StoreItem;
-    } catch {
-      return undefined;
-    }
+    return (await Daemon.GetConnector<IStoreConnector>("StoreConnector").GetPackageByName(name)).result;
   }
 
   async blockStoreItem(id: string, reason?: string): Promise<boolean> {

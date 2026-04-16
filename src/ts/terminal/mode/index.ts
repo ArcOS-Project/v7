@@ -1,3 +1,4 @@
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
@@ -20,7 +21,6 @@ import { ArcTerminal } from "..";
 import type { MigrationService } from "../../servicehost/services/MigrationSvc";
 import { Readline } from "../readline/readline";
 import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../store";
-import type { IArcTerminal } from "$interfaces/IArcTerminal";
 
 export class TerminalMode extends Process {
   userDaemon?: IUserDaemon;

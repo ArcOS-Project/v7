@@ -2,10 +2,9 @@ import type { IAccountUserContext } from "$interfaces/contexts/IAccountUserConte
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import DeleteUser from "$lib/Daemon/DeleteUser.svelte";
-import { Env, GetConnector, Server, SysDispatch } from "$ts/env";
+import { Env, SysDispatch } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { CommandResult } from "$ts/result";
-import { authcode } from "$ts/util";
 import { MessageBox } from "$ts/util/dialog";
 import { ElevationLevel } from "$types/elevation";
 import type { PublicUserInfo, UserInfo } from "$types/user";
@@ -46,7 +45,7 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
     try {
       const response = this.userInfo._id
         ? CommandResult.Ok(this.userInfo)
-        : await GetConnector<IUserConnector>("UserConnector", Daemon!.token).Self();
+        : await Daemon.GetConnector<IUserConnector>("UserConnector").Self();
       if (!response.success) return response;
 
       const data = response.result as UserInfo;
@@ -81,7 +80,7 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
 
     if (!elevated) return false;
 
-    const result = await GetConnector<IUserConnector>("UserConnector", Daemon!.token).Rename(newUsername);
+    const result = await Daemon.GetConnector<IUserConnector>("UserConnector").Rename(newUsername);
     if (!result.success) return false;
 
     this.username = newUsername;
@@ -109,18 +108,18 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
 
     if (!elevated) return false;
 
-    const result = await GetConnector<IUserConnector>("UserConnector", Daemon!.token).ChangePassword(newPassword);
+    const result = await Daemon.GetConnector<IUserConnector>("UserConnector").ChangePassword(newPassword);
     if (!result.success) return false;
 
     return true;
   }
 
   async getPublicUserInfoOf(userId: string): Promise<PublicUserInfo | undefined> {
-    const result = await GetConnector<IUserConnector>("UserConnector", Daemon!.token).Info(userId);
+    const result = await Daemon.GetConnector<IUserConnector>("UserConnector").Info(userId);
     if (!result.success) return undefined;
 
     const information = result.result as PublicUserInfo;
-    information.profilePicture = GetConnector<IUserConnector>("UserConnector").PictureUrl(userId);
+    information.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(userId);
 
     return information;
   }
