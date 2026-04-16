@@ -8,15 +8,14 @@
  *
  * © IzKuipers 2025
  */
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { ITpaConnector } from "$interfaces/modules/server/ITpaConnector";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { ThirdPartyProps } from "$ts/apps/tpa/props";
 import { Daemon } from "$ts/daemon";
-import { Env, Fs, Server, Stack } from "$ts/env";
-import { Backend } from "$ts/kernel/mods/server/axios";
+import { Env, Fs, GetConnector, Stack } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
-import { authcode } from "$ts/util";
-import { arrayBufferToText, textToBlob } from "$ts/util/convert";
+import { arrayBufferToText } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
 import type { App } from "$types/app";
@@ -61,20 +60,19 @@ export class JsExec extends Process {
   async getTpaUrl(wrapped: string) {
     this.Log(`Getting TPA file URL`);
 
-    const postUrl = this.getTpaPostUrl();
-    const serverUrl = Server.url;
     const { appId, userId, filename } = this.getTpaUrlInfo();
-    const now = Date.now();
-    const ac = authcode();
-
     try {
-      await Backend.post(postUrl, textToBlob(wrapped), {
-        headers: { Authorization: `Bearer ${this.userDaemon?.token}` },
-      });
+      const urlResult = await GetConnector<ITpaConnector>("TpaConnector", this.userDaemon?.token).CreateUrl(
+        wrapped,
+        userId,
+        appId,
+        filename
+      );
 
-      return `${serverUrl}/tpa/v3/${userId}/${now}/${appId}@${filename}${ac}`;
-    } catch {
-      throw new JsExecError(`Failed to create momentary TPA URL`);
+      if (!urlResult.success) throw new JsExecError();
+      return urlResult.result!;
+    } catch (e: any) {
+      throw new JsExecError(`Failed to create momentary TPA URL: ${e?.message ?? e}`);
     }
   }
 

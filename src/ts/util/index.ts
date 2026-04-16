@@ -1,4 +1,4 @@
-import type { IProcess } from "$interfaces/process";
+import type { IProcess } from "$interfaces/IProcess";
 import { ShortLogLevelCaptions, type LogItem } from "$types/logging";
 import { passwordStrength } from "check-password-strength";
 import { sha256 as sha256Fallback } from "js-sha256";

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { LogoTranslations } from "$apps/admin/adminportal/store";
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import { StoreItemIconPrimitive } from "$ts/util/distrib";
   import type { BugReport } from "$types/bughunt";
   import type { ReadableStore } from "$types/writable";

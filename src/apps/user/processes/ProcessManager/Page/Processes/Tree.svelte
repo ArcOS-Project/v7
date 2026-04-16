@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IProcess } from "$interfaces/process";
+  import type { IProcess } from "$interfaces/IProcess";
   import { Stack } from "$ts/env";
   import { onMount } from "svelte";
   import type { ProcessManagerRuntime } from "$apps/user/processes/runtime";

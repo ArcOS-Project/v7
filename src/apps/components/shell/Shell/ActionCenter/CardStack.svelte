@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import { Daemon } from "$ts/daemon";
   import { Sleep } from "$ts/sleep";
   import type { UserPreferencesStore } from "$types/user";

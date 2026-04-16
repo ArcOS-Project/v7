@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import { Daemon } from "$ts/daemon";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import type { App } from "$types/app";

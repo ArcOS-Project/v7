@@ -1,4 +1,4 @@
-import type { IShareManager } from "$interfaces/services/ShareMgmt";
+import type { IShareManager } from "$interfaces/services/IShareManager";
 import { Daemon } from "$ts/daemon";
 import { Fs } from "$ts/env";
 import { SharedDrive } from "$ts/kernel/mods/fs/drives/share";

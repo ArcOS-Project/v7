@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import type { UserPreferencesStore } from "$types/user";
   import dayjs from "dayjs";
   import { onMount } from "svelte";

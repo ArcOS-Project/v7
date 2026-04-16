@@ -1,7 +1,6 @@
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { ITotpConnector } from "$interfaces/modules/server/TotpConnector";
-import type { IUserConnector } from "$interfaces/modules/server/UserConnector";
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
+import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import { UserDaemon } from "$ts/daemon";
 import { ArcOSVersion, Env, GetConnector, Server, Stack, SysDispatch } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
@@ -10,7 +9,6 @@ import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { Sleep } from "$ts/sleep";
 import { LoginUser } from "$ts/user/auth";
-import { toForm } from "$ts/util/form";
 import { ClipboardAddon } from "@xterm/addon-clipboard";
 import { FitAddon } from "@xterm/addon-fit";
 import { ImageAddon } from "@xterm/addon-image";
@@ -22,6 +20,7 @@ import { ArcTerminal } from "..";
 import type { MigrationService } from "../../servicehost/services/MigrationSvc";
 import { Readline } from "../readline/readline";
 import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../store";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 
 export class TerminalMode extends Process {
   userDaemon?: IUserDaemon;
@@ -272,16 +271,6 @@ export class TerminalMode extends Process {
 
     const result = await GetConnector<ITotpConnector>("totp", token).Unlock(code);
 
-    try {
-      const response = await Backend.post("/totp/unlock", toForm({ code }), {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (response.status !== 200) return false;
-
-      return true;
-    } catch {
-      return false;
-    }
+    return !!result.success;
   }
 }

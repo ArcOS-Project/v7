@@ -1,4 +1,4 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { SoundBus } from "$ts/env";
 import { maxLength } from "$ts/util";
 import type { Arguments } from "$types/terminal";

@@ -1,5 +1,5 @@
-import type { IPermissionedFilesystemInteractor } from "$interfaces/permission";
-import type { IProcess } from "$interfaces/process";
+import type { IPermissionedFilesystemInteractor } from "$interfaces/IPermissionHandler";
+import type { IProcess } from "$interfaces/IProcess";
 import { Fs } from "$ts/env";
 import type {
   DirectoryReadReturn,

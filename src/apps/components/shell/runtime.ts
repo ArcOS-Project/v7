@@ -1,5 +1,5 @@
-import type { IArcFindRuntime } from "$interfaces/arcfind";
-import type { IShellRuntime, ITrayHostRuntime } from "$interfaces/shell";
+import type { IArcFindRuntime } from "$interfaces/runtimes/IArcFindRuntime";
+import type { IShellRuntime, ITrayHostRuntime } from "$interfaces/runtimes/IShellRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/daemon";
 import { Env, Fs, Stack, SysDispatch } from "$ts/env";

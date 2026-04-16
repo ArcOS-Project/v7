@@ -5,13 +5,13 @@ import {
   type FsProgressProc,
 } from "$apps/components/fsprogress/types";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
-import type { IFilesystemUserContext } from "$interfaces/contexts/files";
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { ILegacyServerDrive } from "$interfaces/drives/legacy";
-import type { IMemoryFilesystemDrive } from "$interfaces/drives/temp";
-import type { IFilesystemDrive } from "$interfaces/fs";
-import type { IRecentFilesService } from "$interfaces/services/RecentFilesSvc";
-import type { ITrashCanService } from "$interfaces/services/TrashSvc";
+import type { IFilesystemUserContext } from "$interfaces/contexts/IFilesystemUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { ILegacyServerDrive } from "$interfaces/drives/ILegacyServerDrive";
+import type { IMemoryFilesystemDrive } from "$interfaces/drives/IMemoryFilesystemDrive";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { IRecentFilesService } from "$interfaces/services/IRecentFilesService";
+import type { ITrashCanService } from "$interfaces/services/ITrashCanService";
 import { Env, Fs, Stack, SysDispatch } from "$ts/env";
 import { LegacyServerDrive } from "$ts/kernel/mods/fs/drives/legacy";
 import { SourceFilesystemDrive } from "$ts/kernel/mods/fs/drives/src";

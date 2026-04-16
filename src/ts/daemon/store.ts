@@ -1,5 +1,5 @@
 import type { Constructs } from "$interfaces/common";
-import type { IUserContext } from "$interfaces/daemon";
+import type { IUserContext } from "$interfaces/IUserDaemon";
 import { AccountUserContext } from "./contexts/account";
 import { LoginActivityUserContext } from "./contexts/activity";
 import { ApplicationsUserContext } from "./contexts/applications";

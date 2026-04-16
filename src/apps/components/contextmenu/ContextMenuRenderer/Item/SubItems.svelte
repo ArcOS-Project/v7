@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IAppProcess } from "$interfaces/app";
+  import type { IAppProcess } from "$interfaces/IAppProcess";
   import { Store } from "$ts/writable";
   import type { ContextMenuItem } from "$types/app";
   import type { ContextMenuRuntime } from "../../runtime";

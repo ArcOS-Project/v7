@@ -1,5 +1,5 @@
-import type { IShortcutsUserContext } from "$interfaces/contexts/shortcuts";
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IShortcutsUserContext } from "$interfaces/contexts/IShortcutsUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Env, Fs } from "$ts/env";
 import { textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";

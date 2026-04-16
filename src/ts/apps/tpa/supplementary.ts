@@ -1,4 +1,4 @@
-import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
+import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { Fs, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";

@@ -1,7 +1,7 @@
-import type { IWaveKernel } from "$interfaces/kernel";
-import type { ISystemDispatch } from "$interfaces/modules/dispatch";
-import type { IProcessHandler } from "$interfaces/modules/stack";
-import type { IStateHandler } from "$interfaces/state";
+import type { IWaveKernel } from "$interfaces/IWaveKernel";
+import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
+import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
+import type { IStateHandler } from "$interfaces/IStateHandler";
 import { __Console__ } from "$ts/console";
 import { ArcOSVersion, SetCurrentKernel, SetKernelExports } from "$ts/env";
 import { JsExec } from "$ts/jsexec";

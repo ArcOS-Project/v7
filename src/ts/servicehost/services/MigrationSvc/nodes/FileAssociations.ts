@@ -1,5 +1,5 @@
-import type { IMigrationNodeConstructor } from "$interfaces/migration";
-import type { IMigrationService } from "$interfaces/services/MigrationSvc";
+import type { IMigrationNodeConstructor } from "$interfaces/IMigrationNode";
+import type { IMigrationService } from "$interfaces/services/IMigrationService";
 import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
 import type { FileAssocService } from "$ts/servicehost/services/FileAssocSvc";
 import type { MigrationResult, MigrationStatusCallback } from "$types/migrations";

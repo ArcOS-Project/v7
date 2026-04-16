@@ -1,4 +1,4 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { UUID } from "$ts/util/uuid";
 import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";

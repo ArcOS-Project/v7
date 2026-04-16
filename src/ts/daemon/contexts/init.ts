@@ -1,6 +1,6 @@
-import type { IInitUserContext } from "$interfaces/contexts/init";
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IServiceHost } from "$interfaces/service";
+import type { IInitUserContext } from "$interfaces/contexts/IInitUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IServiceHost } from "$interfaces/IServiceHost";
 import { Env, Fs, Stack, State, SysDispatch } from "$ts/env";
 import { UserDrive } from "$ts/kernel/mods/fs/drives/userfs";
 import { PermissionHandler } from "$ts/permissions";

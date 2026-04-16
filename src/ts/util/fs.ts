@@ -1,4 +1,4 @@
-import type { ISystemDispatch } from "$interfaces/modules/dispatch";
+import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
 import { getKMod } from "$ts/env";
 import { arrayBufferToBlob } from "./convert";
 

@@ -1,8 +1,9 @@
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IServerManager } from "$interfaces/modules/server";
-import type { IMessagingInterface } from "$interfaces/services/MessagingService";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IServerManager } from "$interfaces/modules/IServerManager";
+import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
+import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import { Daemon } from "$ts/daemon";
-import { Env, Fs, getKMod, Server, Stack } from "$ts/env";
+import { Env, Fs, GetConnector, getKMod, Server, Stack } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
@@ -59,7 +60,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
       const response = await Backend.get("/messaging/sent", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
       const data = (response.data as ExpandedMessage[]).map((message) => {
         if (message.author) {
-          message.author.profilePicture = `${this.serverUrl}/user/pfp/${message.authorId}${authcode()}`;
+          message.author.profilePicture = GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
         }
 
         return message;
@@ -77,7 +78,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
       const response = await Backend.get("/messaging/received", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
       const data = (response.data as ExpandedMessage[]).map((message) => {
         if (message.author) {
-          message.author.profilePicture = `${this.serverUrl}/user/pfp/${message.authorId}${authcode()}`;
+          message.author.profilePicture = GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
         }
 
         return message;
@@ -96,7 +97,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
       const response = await Backend.get("/messaging/inbox", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
       const data = (response.data as ExpandedMessage[]).map((message) => {
         if (message.author) {
-          message.author.profilePicture = `${this.serverUrl}/user/pfp/${message.authorId}${authcode()}`;
+          message.author.profilePicture = GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
         }
 
         return message;
@@ -168,7 +169,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
       const data = response.data as ExpandedMessage;
 
       if (data && data.author) {
-        data.author.profilePicture = `${this.serverUrl}/user/pfp/${data.authorId}${authcode()}`;
+        data.author.profilePicture = GetConnector<IUserConnector>("UserConnector").PictureUrl(data.authorId);
       }
 
       return response.data as ExpandedMessage;

@@ -1,5 +1,5 @@
-import type { IShellRuntime } from "$interfaces/shell";
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { Env, Stack } from "$ts/env";
 import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";

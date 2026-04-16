@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IFilesystemDrive } from "$interfaces/fs";
+  import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 
   const { drive }: { drive: IFilesystemDrive } = $props();
 </script>

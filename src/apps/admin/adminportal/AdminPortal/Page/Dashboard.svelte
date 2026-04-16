@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import type { DashboardData } from "../../types";
 
   const { process, data }: { process: IAdminPortalRuntime; data: DashboardData } = $props();

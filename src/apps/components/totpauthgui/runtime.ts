@@ -1,4 +1,4 @@
-import type { ITotpConnector } from "$interfaces/modules/server/TotpConnector";
+import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/daemon";
 import { GetConnector, SysDispatch } from "$ts/env";

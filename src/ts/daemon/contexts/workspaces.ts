@@ -1,5 +1,5 @@
-import type { IWorkspaceUserContext } from "$interfaces/contexts/workspaces";
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IWorkspaceUserContext } from "$interfaces/contexts/IWorkspaceUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
 import { Sleep } from "$ts/sleep";

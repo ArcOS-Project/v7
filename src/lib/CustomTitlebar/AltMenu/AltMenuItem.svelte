@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
-  import type { IAppProcess } from "$interfaces/app";
+  import type { IAppProcess } from "$interfaces/IAppProcess";
   import { Env, Stack } from "$ts/env";
   import { UUID } from "$ts/util/uuid";
   import type { ContextMenuItem } from "$types/app";

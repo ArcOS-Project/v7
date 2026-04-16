@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { IAppProcess } from "$interfaces/app";
-  import type { IProcess } from "$interfaces/process";
+  import type { IAppProcess } from "$interfaces/IAppProcess";
+  import type { IProcess } from "$interfaces/IProcess";
   import { AppProcess } from "$ts/apps/process";
   import { Daemon } from "$ts/daemon";
   import { Stack, SysDispatch } from "$ts/env";

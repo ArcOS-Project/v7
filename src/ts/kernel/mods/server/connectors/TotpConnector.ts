@@ -1,48 +1,49 @@
-import type { ITotpConnector } from "$interfaces/modules/server/TotpConnector";
-import type { CommandResult } from "$ts/result";
+import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
+import { CommandResult } from "$ts/result";
 import { toForm } from "$ts/util/form";
 import type { DeleteResult, UpdateResult } from "$types/mongo";
 import type { TotpSetupResponse } from "$types/user";
 import { ServerConnector } from ".";
-import { ApiCallBuilder } from "../builder";
 
 export class TotpConnector extends ServerConnector implements ITotpConnector {
   override prefix = "/totp";
-  override name = "totp";
 
   async Activate(code: string): Promise<CommandResult> {
-    return await ApiCallBuilder.Post()
-      .UseInstance(this.server)
-      .WithToken(this.token)
-      .WithPostBody(toForm({ code }))
-      .Execute("/activate");
+    try {
+      return CommandResult.FromResponse(await this.server.post("/activate", toForm({ code })));
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
   }
 
   async Auth(code: string): Promise<CommandResult> {
-    return await ApiCallBuilder.Post()
-      .UseInstance(this.server)
-      .WithToken(this.token)
-      .WithPostBody(toForm({ code }))
-      .Execute("/auth");
+    try {
+      return CommandResult.FromResponse(await this.server.post("/auth", toForm({ code })));
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
   }
   async Delete(): Promise<CommandResult<DeleteResult>> {
-    return await ApiCallBuilder.Delete().UseInstance(this.server).WithToken(this.token).Execute();
+    try {
+      return CommandResult.FromResponse(await this.server.delete("/"));
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
   }
 
   async Setup(): Promise<CommandResult<TotpSetupResponse>> {
-    return await ApiCallBuilder.Post()
-      .UseInstance(this.server)
-      .WithToken(this.token)
-      .Produces<TotpSetupResponse>()
-      .Execute("/setup");
+    try {
+      return CommandResult.FromResponse(await this.server.post("/setup"));
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
   }
 
   async Unlock(code: string): Promise<CommandResult<UpdateResult>> {
-    return await ApiCallBuilder.Post()
-      .UseInstance(this.server)
-      .WithToken(this.token)
-      .WithPostBody(toForm({ code }))
-      .Produces<UpdateResult>()
-      .Execute("/unlock");
+    try {
+      return CommandResult.FromResponse(await this.server.post("/unlock", toForm({ code })));
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
   }
 }

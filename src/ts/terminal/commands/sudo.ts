@@ -1,4 +1,4 @@
-import type { IArcTerminal, ITerminalProcess } from "$interfaces/terminal";
+import type { IArcTerminal, ITerminalProcess } from "$interfaces/IArcTerminal";
 import { Daemon } from "$ts/daemon";
 import { Stack } from "$ts/env";
 import { Permissions } from "$ts/permissions";

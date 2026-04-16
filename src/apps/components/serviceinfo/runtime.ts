@@ -1,4 +1,4 @@
-import type { IBaseService } from "$interfaces/service";
+import type { IBaseService } from "$interfaces/IServiceHost";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/daemon";
 import { Stack } from "$ts/env";

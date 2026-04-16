@@ -1,9 +1,9 @@
 import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import TerminalWindow from "$apps/components/terminalwindow/TerminalWindow.svelte";
 import type { Constructs } from "$interfaces/common";
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IFilesystemDrive } from "$interfaces/fs";
-import type { IArcTerminal, ITerminalProcess, ITerminalWindowRuntime } from "$interfaces/terminal";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { IArcTerminal, ITerminalProcess, ITerminalWindowRuntime } from "$interfaces/IArcTerminal";
 import { Daemon } from "$ts/daemon";
 import { Env, Fs, Stack, State } from "$ts/env";
 import { ASCII_ART } from "$ts/kernel/intro";

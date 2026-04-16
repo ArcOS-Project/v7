@@ -1,5 +1,5 @@
-import type { IProcessHandler } from "$interfaces/modules/stack";
-import type { IProcess, IProcessDispatch } from "$interfaces/process";
+import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
+import type { IProcess, IProcessDispatch } from "$interfaces/IProcess";
 import { Fs, getKMod } from "$ts/env";
 import { Log } from "$ts/logging";
 import { calculateMemory } from "$ts/util";

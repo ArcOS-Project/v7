@@ -1,13 +1,14 @@
-import type { IWaveKernel } from "$interfaces/kernel";
-import type { IBugHunt } from "$interfaces/modules/bughunt";
-import type { ISystemDispatch } from "$interfaces/modules/dispatch";
-import type { IEnvironment } from "$interfaces/modules/env";
-import type { IFilesystem } from "$interfaces/modules/fs";
-import type { IServerConnector, IServerManager } from "$interfaces/modules/server";
-import type { ISoundbus } from "$interfaces/modules/soundbus";
-import type { IProcessHandler } from "$interfaces/modules/stack";
-import type { IStateHandler } from "$interfaces/state";
+import type { IWaveKernel } from "$interfaces/IWaveKernel";
+import type { IBugHunt } from "$interfaces/modules/IBugHunt";
+import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
+import type { IEnvironment } from "$interfaces/modules/IEnvironment";
+import type { IFilesystem } from "$interfaces/modules/IFilesystem";
+import type { IServerConnector, IServerManager } from "$interfaces/modules/IServerManager";
+import type { ISoundbus } from "$interfaces/modules/ISoundbus";
+import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
+import type { IStateHandler } from "$interfaces/IStateHandler";
 import packageJson from "../../package.json";
+import type { IKernelModule } from "$interfaces/modules/IKernelModule";
 
 export const ArcOSVersion = packageJson.version as `${number}.${number}.${number}`;
 export const BETA = true;
@@ -45,7 +46,7 @@ export function SetKernelExports() {
   BugHunt = getKMod<IBugHunt>("bughunt");
 }
 
-export function getKMod<T = any>(id: string, dontCrash = false): T {
+export function getKMod<T extends IKernelModule>(id: string, dontCrash = false): T {
   const kernel = Kernel!;
 
   return kernel.getModule<T>(id, dontCrash) as T;

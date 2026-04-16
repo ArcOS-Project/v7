@@ -1,4 +1,4 @@
-import type { IBaseService } from "$interfaces/service";
+import type { IBaseService } from "$interfaces/IServiceHost";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import type { ServiceHost } from ".";
 

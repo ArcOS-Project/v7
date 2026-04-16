@@ -1,72 +1,105 @@
-import type { IUserConnector } from "$interfaces/modules/server/UserConnector";
+import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
+import { Server } from "$ts/env";
 import { CommandResult } from "$ts/result";
+import { authcode } from "$ts/util";
 import { toForm } from "$ts/util/form";
 import type { GlobalDispatchClient } from "$types/dispatch";
 import type { PublicUserInfo, UserInfo, UserPreferences } from "$types/user";
 import { ServerConnector } from ".";
-import { ApiCallBuilder } from "../builder";
 
 export class UserConnector extends ServerConnector implements IUserConnector {
   override prefix = "/user";
-  override name = "UserConnector";
 
   async Self(): Promise<CommandResult<UserInfo>> {
-    return await ApiCallBuilder.Get().UseInstance(this.server).WithToken(this.token).Produces<UserInfo>().Execute(`/self`);
+    try {
+      return CommandResult.FromResponse(await this.server.get("/self"));
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
   }
 
   async Rename(newUsername: string): Promise<CommandResult> {
-    return await ApiCallBuilder.Patch()
-      .UseInstance(this.server)
-      .WithToken(this.token)
-      .WithPostBody(toForm({ newUsername }))
-      .Execute("/rename");
+    try {
+      return CommandResult.FromResponse(await this.server.patch("/rename", toForm({ newUsername })));
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
   }
 
   async ChangePassword(newPassword: string): Promise<CommandResult> {
-    return await ApiCallBuilder.Post()
-      .UseInstance(this.server)
-      .WithToken(this.token)
-      .WithPostBody(toForm({ newPassword }))
-      .Execute("/changepswd");
+    try {
+      return CommandResult.FromResponse(await this.server.patch("/changepswd", toForm({ newPassword })));
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
   }
 
   async Info(userId: string): Promise<CommandResult<PublicUserInfo>> {
-    return await ApiCallBuilder.Get()
-      .UseInstance(this.server)
-      .WithToken(this.token)
-      .Produces<PublicUserInfo>()
-      .Execute(`/info/${userId}`);
+    try {
+      return CommandResult.FromResponse(await this.server.get(`/info/${userId}`));
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
   }
 
   async PreferencesPut(userPreferences: UserPreferences): Promise<CommandResult> {
-    return await ApiCallBuilder.Put()
-      .UseInstance(this.server)
-      .WithToken(this.token)
-      .WithPostBody(userPreferences)
-      .Execute("/preferences");
+    try {
+      return CommandResult.FromResponse(await this.server.put("/preferences", userPreferences));
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
   }
 
   async AvailabilityUsername(username: string): Promise<CommandResult> {
-    return await ApiCallBuilder.Get().UseInstance(this.server).WithParams({ name: username }).Execute("/availability/username");
+    try {
+      return CommandResult.FromResponse(
+        await this.server.get("/availability/username", {
+          params: { name: username },
+        })
+      );
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
   }
 
   async AvailabilityEmail(email: string): Promise<CommandResult> {
-    return await ApiCallBuilder.Get().UseInstance(this.server).WithParams({ email }).Execute("/availability/email");
+    try {
+      return CommandResult.FromResponse(
+        await this.server.get("/availability/email", {
+          params: { email },
+        })
+      );
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
   }
 
   async DispatchGet(): Promise<CommandResult<GlobalDispatchClient[]>> {
-    return await ApiCallBuilder.Get()
-      .UseInstance(this.server)
-      .WithToken(this.token)
-      .Produces<GlobalDispatchClient[]>()
-      .Execute("/dispatch");
+    try {
+      return CommandResult.FromResponse(await this.server.get("/dispatch"));
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
   }
 
   async DispatchKick(clientId: string): Promise<CommandResult> {
-    return await ApiCallBuilder.Post()
-      .UseInstance(this.server)
-      .WithToken(this.token)
-      .WithParams({ clientId })
-      .Execute("/dispatch/kick");
+    try {
+      return CommandResult.FromResponse(await this.server.post(`/dispatch/kick/${clientId}`));
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async RegisterUser(username: string, email: string, password: string) {
+    try {
+      return CommandResult.FromResponse(await this.server.post(`/`, toForm({ username, password, email })));
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  PictureUrl(userId: string) {
+    const code = authcode();
+    return `${Server.url}/user/pfp/${userId}${code}${code ? "&" : "?"}${Date.now()}`;
   }
 }

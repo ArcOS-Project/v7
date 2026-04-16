@@ -1,6 +1,6 @@
-import type { IMigrationNodeConstructor } from "$interfaces/migration";
-import type { IIconService } from "$interfaces/services/IconService";
-import type { IMigrationService } from "$interfaces/services/MigrationSvc";
+import type { IMigrationNodeConstructor } from "$interfaces/IMigrationNode";
+import type { IIconService } from "$interfaces/services/IIconService";
+import type { IMigrationService } from "$interfaces/services/IMigrationService";
 import type { MigrationResult } from "$types/migrations";
 import { MigrationNode } from "../node";
 

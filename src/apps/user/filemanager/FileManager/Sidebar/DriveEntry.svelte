@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ISharedDrive } from "$interfaces/drives/share";
+  import type { ISharedDrive } from "$interfaces/drives/ISharedDrive";
   import CircularProgress from "$lib/CircularProgress.svelte";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { formatBytes } from "$ts/util/fs";

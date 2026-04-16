@@ -1,6 +1,6 @@
 import type { Constructs } from "$interfaces/common";
-import type { IApplicationStorage } from "$interfaces/services/AppStorage";
-import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
+import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
 import { BuiltinAppImportPathAbsolutes } from "$ts/apps/store";
 import { Daemon } from "$ts/daemon";
 import { ArcOSVersion, Env, Fs, SysDispatch } from "$ts/env";

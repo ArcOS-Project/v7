@@ -2,9 +2,9 @@ import { FirstRunApp } from "$apps/components/firstrun/FirstRun";
 import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/TotpAuthGui";
 import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IServerManager } from "$interfaces/modules/server";
-import type { IUserConnector } from "$interfaces/modules/server/UserConnector";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IServerManager } from "$interfaces/modules/IServerManager";
+import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import { AppProcess } from "$ts/apps/process";
 import { UserDaemon } from "$ts/daemon";
 import { Env, GetConnector, getKMod, SoundBus, Stack, State, SysDispatch } from "$ts/env";
@@ -129,7 +129,7 @@ export class LoginAppRuntime extends AppProcess {
 
   async setUserDisplayStuff(userDaemon: IUserDaemon, applyBackground = true) {
     this.profileName.set(userDaemon.preferences().account.displayName || userDaemon.username);
-    this.profileImage.set(`${this.server.url}/user/pfp/${userDaemon.userInfo._id}${authcode()}`);
+    this.profileImage.set(GetConnector<IUserConnector>("UserConnector").PictureUrl(userDaemon.userInfo._id));
 
     if (!this.safeMode && applyBackground) {
       this.loginBackground.set(
@@ -170,7 +170,7 @@ export class LoginAppRuntime extends AppProcess {
 
     const userInfo = userInfoResult.result!;
 
-    this.profileImage.set(`${this.server.url}/user/pfp/${userInfo._id}${authcode()}`);
+    this.profileImage.set(GetConnector<IUserConnector>("UserConnector").PictureUrl(userInfo._id));
 
     if (userInfo.hasTotp && userInfo.restricted) {
       this.loadingStatus.set("Requesting 2FA");

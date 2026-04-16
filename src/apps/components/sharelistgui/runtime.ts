@@ -1,4 +1,4 @@
-import type { ISharedDrive } from "$interfaces/drives/share";
+import type { ISharedDrive } from "$interfaces/drives/ISharedDrive";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/daemon";
 import { Env, Fs, Stack } from "$ts/env";

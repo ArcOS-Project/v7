@@ -1,4 +1,4 @@
-import type { ITerminalProcessConstructor } from "$interfaces/terminal";
+import type { ITerminalProcessConstructor } from "$interfaces/IArcTerminal";
 import type { ArcTermConfiguration } from "$types/terminal";
 import { AdminCommand } from "./commands/admin";
 import { AppListCommand } from "./commands/applist";

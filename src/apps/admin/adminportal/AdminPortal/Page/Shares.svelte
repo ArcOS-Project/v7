@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import { Env, Fs } from "$ts/env";
   import { formatBytes } from "$ts/util/fs";
   import { Store } from "$ts/writable";

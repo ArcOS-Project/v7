@@ -1,7 +1,7 @@
-import type { IFilesystemDrive, IFilesystemProxy, IFilesystemProxyConstructor } from "$interfaces/fs";
-import type { IWaveKernel } from "$interfaces/kernel";
-import type { ISystemDispatch } from "$interfaces/modules/dispatch";
-import type { IFilesystem } from "$interfaces/modules/fs";
+import type { IFilesystemDrive, IFilesystemProxy, IFilesystemProxyConstructor } from "$interfaces/IFilesystemDrive";
+import type { IWaveKernel } from "$interfaces/IWaveKernel";
+import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
+import type { IFilesystem } from "$interfaces/modules/IFilesystem";
 import { getKMod } from "$ts/env";
 import { KernelModule } from "$ts/kernel/module";
 import { sha256, sliceIntoChunks } from "$ts/util";

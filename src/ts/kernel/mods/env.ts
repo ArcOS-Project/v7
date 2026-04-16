@@ -1,5 +1,5 @@
-import type { IWaveKernel } from "$interfaces/kernel";
-import type { IEnvironment } from "$interfaces/modules/env";
+import type { IWaveKernel } from "$interfaces/IWaveKernel";
+import type { IEnvironment } from "$interfaces/modules/IEnvironment";
 import { KernelModule } from "../module";
 
 export class Environment extends KernelModule implements IEnvironment {

@@ -1,5 +1,5 @@
-import type { IEnvironment } from "$interfaces/modules/env";
-import type { IArcTerminal, IArcTermVariables } from "$interfaces/terminal";
+import type { IEnvironment } from "$interfaces/modules/IEnvironment";
+import type { IArcTerminal, IArcTermVariables } from "$interfaces/IArcTerminal";
 import { getKMod } from "$ts/env";
 import type { StaticVariableStore, Variable, VariableStore } from "$types/terminal";
 import { getArcTermStore } from "./var/store";

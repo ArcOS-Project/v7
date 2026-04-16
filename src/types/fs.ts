@@ -1,4 +1,4 @@
-import type { IFilesystemProxy } from "$interfaces/fs";
+import type { IFilesystemProxy } from "$interfaces/IFilesystemDrive";
 import type { App } from "./app";
 import type { ArcShortcut, ShortcutStore } from "./shortcut";
 import type { PublicUserInfo } from "./user";

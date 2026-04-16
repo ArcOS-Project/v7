@@ -1,5 +1,5 @@
-import type { IAppRegistrationUserContext } from "$interfaces/contexts/appreg";
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IAppRegistrationUserContext } from "$interfaces/contexts/IAppRegistrationUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Env, Fs, SysDispatch } from "$ts/env";
 import { Permissions } from "$ts/permissions";
 import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";

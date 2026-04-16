@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import { formatBytes } from "$ts/util/fs";
   import type { SharedDriveType } from "$types/shares";
   import type { ReadableStore } from "$types/writable";

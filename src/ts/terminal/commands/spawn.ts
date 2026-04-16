@@ -1,5 +1,5 @@
-import type { IProcess } from "$interfaces/process";
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IProcess } from "$interfaces/IProcess";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { Permissions } from "$ts/permissions";
 import { tryJsonParse } from "$ts/util/json";
 import type { Arguments } from "$types/terminal";

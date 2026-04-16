@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { IAppProcess } from "$interfaces/app";
-  import type { IProcess } from "$interfaces/process";
+  import type { IAppProcess } from "$interfaces/IAppProcess";
+  import type { IProcess } from "$interfaces/IProcess";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import ActionSeparator from "$lib/Window/ActionBar/ActionSeparator.svelte";

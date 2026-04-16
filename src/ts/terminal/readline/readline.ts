@@ -12,7 +12,7 @@
  *
  * © IzKuipers 2025
  */
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { Stack } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { type IDisposable, type ITerminalAddon, Terminal } from "@xterm/xterm";

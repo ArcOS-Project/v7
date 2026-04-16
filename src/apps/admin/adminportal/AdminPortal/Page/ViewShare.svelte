@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import { MessageBox } from "$ts/util/dialog";
   import type { ViewShareData } from "../../types";
   import Accessors from "./ViewShare/Accessors.svelte";

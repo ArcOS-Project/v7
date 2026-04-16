@@ -1,4 +1,4 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { Plural } from "$ts/util";
 import { join } from "$ts/util/fs";
 import type { RecursiveDirectory } from "$types/fs";

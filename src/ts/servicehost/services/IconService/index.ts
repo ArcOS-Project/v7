@@ -1,4 +1,4 @@
-import type { IIconService } from "$interfaces/services/IconService";
+import type { IIconService } from "$interfaces/services/IIconService";
 import { ConfigurationBuilder } from "$ts/config";
 import { Daemon } from "$ts/daemon";
 import { Fs } from "$ts/env";

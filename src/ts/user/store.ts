@@ -1,4 +1,4 @@
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import installArcPkg from "$ts/kernel/mods/fs/handlers/arcpkg";
 import applyArcTheme from "$ts/kernel/mods/fs/handlers/arctheme";
 import installTpaFile from "$ts/kernel/mods/fs/handlers/installtpa";

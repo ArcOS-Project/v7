@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { Daemon } from "$ts/daemon";
   import type { UserPreferencesStore } from "$types/user";

@@ -1,6 +1,6 @@
-import type { IUserConnector } from "$interfaces/modules/server/UserConnector";
-import type { IAdminBootstrapper } from "$interfaces/services/AdminBootstrapper";
-import type { IProtocolServiceProcess } from "$interfaces/services/ProtoService";
+import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
+import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
+import type { IProtocolServiceProcess } from "$interfaces/services/IProtocolServiceProcess";
 import { AdminAppImportPathAbsolutes } from "$ts/apps/store";
 import { Daemon } from "$ts/daemon";
 import { ArcOSVersion, Env, Fs, GetConnector, Server } from "$ts/env";

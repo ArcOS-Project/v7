@@ -1,4 +1,4 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { State, SysDispatch } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { logItemToStr } from "$ts/util";

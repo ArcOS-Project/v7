@@ -1,7 +1,7 @@
 import { DefaultPinnedApps, DefaultStartMenuActions } from "$apps/components/shell/store";
-import type { IPreferencesUserContext } from "$interfaces/contexts/preferences";
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IUserConnector } from "$interfaces/modules/server/UserConnector";
+import type { IPreferencesUserContext } from "$interfaces/contexts/IPreferencesUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import { Fs, GetConnector, SysDispatch } from "$ts/env";
 import { DefaultUserPreferences } from "$ts/user/default";
 import { UserPaths } from "$ts/user/store";

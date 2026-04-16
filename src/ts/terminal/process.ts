@@ -1,4 +1,4 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { SysDispatch } from "$ts/env";
 import { ProcessWithPermissions } from "$ts/permissions/process";
 import type { Arguments } from "$types/terminal";

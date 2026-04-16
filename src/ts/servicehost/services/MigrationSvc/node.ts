@@ -1,5 +1,5 @@
-import type { IMigrationNode, IMigrationNodeConstructor } from "$interfaces/migration";
-import type { IMigrationService } from "$interfaces/services/MigrationSvc";
+import type { IMigrationNode, IMigrationNodeConstructor } from "$interfaces/IMigrationNode";
+import type { IMigrationService } from "$interfaces/services/IMigrationService";
 import { Log } from "$ts/logging";
 import { LogLevel } from "$types/logging";
 import type { MigrationResult, MigrationStatusCallback } from "$types/migrations";

@@ -1,4 +1,4 @@
-import type { IAdminPortalRuntime } from "$interfaces/admin";
+import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/daemon";
 import { Fs } from "$ts/env";

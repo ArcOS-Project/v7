@@ -1,7 +1,7 @@
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IServerManager } from "$interfaces/modules/server";
-import type { IUserConnector } from "$interfaces/modules/server/UserConnector";
-import type { IGlobalDispatch } from "$interfaces/services/GlobalDispatch";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IServerManager } from "$interfaces/modules/IServerManager";
+import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
+import type { IGlobalDispatch } from "$interfaces/services/IGlobalDispatch";
 import { Daemon } from "$ts/daemon";
 import { Env, GetConnector, getKMod, Stack, SysDispatch } from "$ts/env";
 import type { ServiceHost } from "$ts/servicehost";

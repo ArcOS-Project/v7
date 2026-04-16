@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IAppProcess } from "$interfaces/app";
+  import type { IAppProcess } from "$interfaces/IAppProcess";
   import { Sleep } from "$ts/sleep";
   import type { ContextMenuItem } from "$types/app";
   import type { ReadableStore } from "$types/writable";

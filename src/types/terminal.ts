@@ -1,4 +1,4 @@
-import type { IArcTerminal, ITerminalWindowRuntime } from "$interfaces/terminal";
+import type { IArcTerminal, ITerminalWindowRuntime } from "$interfaces/IArcTerminal";
 import type { Terminal } from "xterm";
 
 export interface TerminalCommand {

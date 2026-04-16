@@ -1,4 +1,4 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
 import { isPopulatable } from "$ts/util/apps";
 import type { App, InstalledApp } from "$types/app";

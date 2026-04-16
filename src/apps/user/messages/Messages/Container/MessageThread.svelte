@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { Server } from "$ts/env";
+  import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
+  import { GetConnector, Server } from "$ts/env";
   import { authcode } from "$ts/util";
   import type { ExpandedMessageNode } from "$types/messaging";
   import type { MessagingAppRuntime } from "../../runtime";
@@ -12,7 +13,9 @@
     originalMessageId,
   }: { message: ExpandedMessageNode; process: MessagingAppRuntime; originalMessageId: string } = $props();
 
-  if (message.author) message.author.profilePicture = `${Server.url}/user/pfp/${message.authorId}${authcode()}`;
+  if (message.author) {
+    message.author.profilePicture = GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
+  }
 </script>
 
 <div class="message-thread">

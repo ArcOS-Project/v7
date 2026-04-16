@@ -1,4 +1,4 @@
-import type { IInstallerProcessBase } from "$interfaces/distrib";
+import type { IInstallerProcessBase } from "$interfaces/IInstallerProcessBase";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/daemon";
 import { Env, Fs, SysDispatch } from "$ts/env";

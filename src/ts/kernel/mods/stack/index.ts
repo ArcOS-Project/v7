@@ -1,8 +1,8 @@
 import type { Constructs } from "$interfaces/common";
-import type { IWaveKernel } from "$interfaces/kernel";
-import type { IProcessHandler } from "$interfaces/modules/stack";
-import type { IProcess } from "$interfaces/process";
-import type { IAppRenderer } from "$interfaces/renderer";
+import type { IAppRenderer } from "$interfaces/IAppRenderer";
+import type { IProcess } from "$interfaces/IProcess";
+import type { IWaveKernel } from "$interfaces/IWaveKernel";
+import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
 import { AppProcess } from "$ts/apps/process";
 import { AppRenderer } from "$ts/apps/renderer";
 import { __Console__ } from "$ts/console";

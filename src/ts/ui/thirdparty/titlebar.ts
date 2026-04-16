@@ -1,4 +1,4 @@
-import type { IAppProcess } from "$interfaces/app";
+import type { IAppProcess } from "$interfaces/IAppProcess";
 import { Stack } from "$ts/env";
 import { contextProps } from "$ts/ui/context/actions.svelte";
 

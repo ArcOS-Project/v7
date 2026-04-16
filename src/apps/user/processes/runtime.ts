@@ -1,6 +1,6 @@
-import type { IAppProcess } from "$interfaces/app";
-import type { IProcess } from "$interfaces/process";
-import type { IServiceHost } from "$interfaces/service";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IProcess } from "$interfaces/IProcess";
+import type { IServiceHost } from "$interfaces/IServiceHost";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/daemon";
 import { Env, Stack } from "$ts/env";

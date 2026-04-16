@@ -1,5 +1,5 @@
-import type { IFilesystemDrive } from "$interfaces/fs";
-import type { IEnvironment } from "$interfaces/modules/env";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { IEnvironment } from "$interfaces/modules/IEnvironment";
 import { Daemon } from "$ts/daemon";
 import { getKMod, Server } from "$ts/env";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";

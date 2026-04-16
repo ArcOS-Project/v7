@@ -1,4 +1,4 @@
-import type { ITotpConnector } from "$interfaces/modules/server/TotpConnector";
+import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/daemon";
 import { Env, GetConnector, Stack } from "$ts/env";
@@ -340,25 +340,9 @@ export class SettingsRuntime extends AppProcess {
 
     if (!elevated) return;
 
-    try {
-      await GetConnector<ITotpConnector>("totp", Daemon!.token).Delete();
+    const result = await GetConnector<ITotpConnector>("totp", Daemon!.token).Delete();
 
-      MessageBox(
-        {
-          title: "ArcOS Security",
-          message:
-            "Two-factor authentication has now been disabled for your account. You must restart for the changes to fully take effect.",
-          buttons: [
-            { caption: "Restart later", action: () => {} },
-            { caption: "Restart now", suggested: true, action: () => Daemon?.power?.restart() },
-          ],
-          sound: "arcos.dialog.info",
-          image: "GoodStatusIcon",
-        },
-        this.pid,
-        true
-      );
-    } catch {
+    if (!result.success) {
       MessageBox(
         {
           title: "Something went wrong",
@@ -370,6 +354,23 @@ export class SettingsRuntime extends AppProcess {
         this.pid,
         true
       );
+      return;
     }
+
+    MessageBox(
+      {
+        title: "ArcOS Security",
+        message:
+          "Two-factor authentication has now been disabled for your account. You must restart for the changes to fully take effect.",
+        buttons: [
+          { caption: "Restart later", action: () => {} },
+          { caption: "Restart now", suggested: true, action: () => Daemon?.power?.restart() },
+        ],
+        sound: "arcos.dialog.info",
+        image: "GoodStatusIcon",
+      },
+      this.pid,
+      true
+    );
   }
 }

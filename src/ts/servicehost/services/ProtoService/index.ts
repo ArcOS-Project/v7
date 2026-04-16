@@ -1,4 +1,4 @@
-import type { IProtocolServiceProcess } from "$interfaces/services/ProtoService";
+import type { IProtocolServiceProcess } from "$interfaces/services/IProtocolServiceProcess";
 import { Daemon } from "$ts/daemon";
 import { KernelParams } from "$ts/kernel/getters";
 import type { ServiceHost } from "$ts/servicehost";

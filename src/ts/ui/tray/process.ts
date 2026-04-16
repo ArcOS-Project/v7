@@ -1,6 +1,6 @@
 import type { ShellTrayIcon, TrayPopup } from "$apps/components/shell/types";
-import type { IProcess } from "$interfaces/process";
-import type { IShellRuntime, ITrayIconProcess } from "$interfaces/shell";
+import type { IProcess } from "$interfaces/IProcess";
+import type { IShellRuntime, ITrayIconProcess } from "$interfaces/runtimes/IShellRuntime";
 import { Env, Stack } from "$ts/env";
 import { ProcessWithPermissions } from "$ts/permissions/process";
 import type { ContextMenuItem } from "$types/app";

@@ -1,5 +1,5 @@
 import type { Constructs } from "$interfaces/common";
-import type { IProcess } from "$interfaces/process";
+import type { IProcess } from "$interfaces/IProcess";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/daemon";
 import { Stack } from "$ts/env";

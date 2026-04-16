@@ -1,7 +1,7 @@
 import type { Constructs } from "$interfaces/common";
-import type { ISpawnUserContext } from "$interfaces/contexts/spawn";
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IProcess } from "$interfaces/process";
+import type { ISpawnUserContext } from "$interfaces/contexts/ISpawnUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IProcess } from "$interfaces/IProcess";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { Env, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";

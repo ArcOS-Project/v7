@@ -1,5 +1,5 @@
-import type { IPermissionedFilesystemInteractor, IPermissionHandler } from "$interfaces/permission";
-import type { IProcess } from "$interfaces/process";
+import type { IPermissionedFilesystemInteractor, IPermissionHandler } from "$interfaces/IPermissionHandler";
+import type { IProcess } from "$interfaces/IProcess";
 import { AppProcess } from "$ts/apps/process";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { ConfigurationBuilder } from "$ts/config";

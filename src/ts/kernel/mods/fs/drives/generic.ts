@@ -1,5 +1,5 @@
-import type { IFilesystemDrive } from "$interfaces/fs";
-import type { IServerManager } from "$interfaces/modules/server";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { IServerManager } from "$interfaces/modules/IServerManager";
 import { getKMod } from "$ts/env";
 import { Log } from "$ts/logging";
 import type {

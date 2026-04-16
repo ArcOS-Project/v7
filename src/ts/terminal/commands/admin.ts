@@ -1,5 +1,5 @@
-import type { IServerManager } from "$interfaces/modules/server";
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IServerManager } from "$interfaces/modules/IServerManager";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { getKMod } from "$ts/env";
 import { AdminBootstrapper } from "$ts/servicehost/services/AdminBootstrapper";
 import { getAllJsonPaths, getJsonHierarchy } from "$ts/util/hierarchy";

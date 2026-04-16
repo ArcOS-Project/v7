@@ -1,4 +1,4 @@
-import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
+import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
 import { AppProcess } from "$ts/apps/process";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { __Console__ } from "$ts/console";

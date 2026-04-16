@@ -19,7 +19,7 @@ import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
 import type { ReadableServiceStore, ServiceChangeResult, ServiceStore } from "$types/service";
-import type { IBaseService, IServiceHost } from "../../interfaces/service";
+import type { IBaseService, IServiceHost } from "../../interfaces/IServiceHost";
 import { migrationService } from "./services/MigrationSvc";
 import { ServiceChangeResultCaptions } from "./store";
 

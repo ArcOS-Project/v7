@@ -1,5 +1,5 @@
-import type { IChecksUserContext } from "$interfaces/contexts/checks";
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IChecksUserContext } from "$interfaces/contexts/IChecksUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Env } from "$ts/env";
 import { NightlyLogo } from "$ts/images/branding";
 import { ArcBuild } from "$ts/metadata/build";

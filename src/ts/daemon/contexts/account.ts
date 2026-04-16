@@ -1,6 +1,6 @@
-import type { IAccountUserContext } from "$interfaces/contexts/account";
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IUserConnector } from "$interfaces/modules/server/UserConnector";
+import type { IAccountUserContext } from "$interfaces/contexts/IAccountUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import DeleteUser from "$lib/Daemon/DeleteUser.svelte";
 import { Env, GetConnector, Server, SysDispatch } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
@@ -120,7 +120,7 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
     if (!result.success) return undefined;
 
     const information = result.result as PublicUserInfo;
-    information.profilePicture = `${Server.url}/user/pfp/${userId}${authcode()}`;
+    information.profilePicture = GetConnector<IUserConnector>("UserConnector").PictureUrl(userId);
 
     return information;
   }

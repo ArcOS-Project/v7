@@ -1,8 +1,8 @@
 import type { Constructs } from "$interfaces/common";
-import type { IWaveKernel } from "$interfaces/kernel";
-import type { ISystemDispatch } from "$interfaces/modules/dispatch";
-import type { IServerConnector, IServerManager } from "$interfaces/modules/server";
-import type { IUserConnector } from "$interfaces/modules/server/UserConnector";
+import type { IWaveKernel } from "$interfaces/IWaveKernel";
+import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
+import type { IServerConnector, IServerManager } from "$interfaces/modules/IServerManager";
+import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import { getKMod } from "$ts/env";
 import { tryJsonParse } from "$ts/util/json";
 import type { ServerInfo, ServerOption } from "$types/server";
@@ -10,6 +10,7 @@ import axios from "axios";
 import { KernelModule } from "../../module";
 import { Backend } from "./axios";
 import { TotpConnector } from "./connectors/TotpConnector";
+import { TpaConnector } from "./connectors/TpaConnector";
 import { UserConnector } from "./connectors/UserConnector";
 
 export const VALIDATION_STR = "thisWonderfulArcOSServerIdentifiedByTheseWordsPleaseDontSteal(c)IzKuipers";
@@ -28,7 +29,7 @@ export class ServerManager extends KernelModule implements IServerManager {
   public previewBranch?: string;
   public servers: ServerOption[] = [];
 
-  private readonly STORE = [UserConnector, TotpConnector];
+  private readonly STORE = [UserConnector, TotpConnector, TpaConnector];
   private _store: Record<"" | string, IServerConnector[]> = {};
 
   public GetConn<T extends IServerConnector>(id: string, token: "" | string = ""): T {

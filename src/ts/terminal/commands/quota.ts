@@ -1,4 +1,4 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { Fs } from "$ts/env";
 import { formatBytes } from "$ts/util/fs";
 import type { Arguments } from "$types/terminal";

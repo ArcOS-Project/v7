@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IFilesystemDrive } from "$interfaces/fs";
+  import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
   import { Fs } from "$ts/env";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { getDriveLetter, getItemNameFromPath } from "$ts/util/fs";

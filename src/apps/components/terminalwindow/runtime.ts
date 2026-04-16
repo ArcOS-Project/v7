@@ -1,4 +1,4 @@
-import type { ITerminalWindowRuntime } from "$interfaces/terminal";
+import type { ITerminalWindowRuntime } from "$interfaces/IArcTerminal";
 import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
 import { DefaultColors } from "$ts/terminal/store";

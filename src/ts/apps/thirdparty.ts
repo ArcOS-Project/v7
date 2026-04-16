@@ -1,4 +1,4 @@
-import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
+import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
 import { Daemon } from "$ts/daemon";
 import { Fs, Stack, SysDispatch } from "$ts/env";
 import { Sleep } from "$ts/sleep";

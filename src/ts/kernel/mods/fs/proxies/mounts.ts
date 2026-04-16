@@ -1,9 +1,9 @@
-import type { IFilesystemDrive } from "$interfaces/fs";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import { Fs } from "$ts/env";
 import type { DirectoryReadReturn, FilesystemProgressCallback } from "$types/fs";
 import { FilesystemProxy } from "./generic";
 
-export class MountsFilesystemProxy extends FilesystemProxy {
+export class MountsFilesystemProxy extends FilesystemProxy  {
   static PROXY_UUID: string = "fedd3ed3-3550-4850-a7c4-c096b1907d91";
 
   constructor(uuid: string) {

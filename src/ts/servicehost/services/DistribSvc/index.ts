@@ -1,5 +1,5 @@
-import type { IInstallerProcessBase, IInstallerProcessBaseConstructor } from "$interfaces/distrib";
-import type { IDistributionServiceProcess } from "$interfaces/services/DistribSvc";
+import type { IInstallerProcessBase, IInstallerProcessBaseConstructor } from "$interfaces/IInstallerProcessBase";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import { Daemon } from "$ts/daemon";
 import { Fs, Stack } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";

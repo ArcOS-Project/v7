@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import { Daemon } from "$ts/daemon";
   import { Env } from "$ts/env";
   import { MessageBox } from "$ts/util/dialog";

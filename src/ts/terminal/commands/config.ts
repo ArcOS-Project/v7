@@ -1,4 +1,4 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { TerminalProcess } from "../process";
 import { BRBLACK, BRBLUE, RESET } from "../store";
 

@@ -1,4 +1,4 @@
-import type { IInstallerProcessBase } from "$interfaces/distrib";
+import type { IInstallerProcessBase } from "$interfaces/IInstallerProcessBase";
 import { Daemon } from "$ts/daemon";
 import { Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";

@@ -1,5 +1,5 @@
-import type { IElevationUserContext } from "$interfaces/contexts/elevation";
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IElevationUserContext } from "$interfaces/contexts/IElevationUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Env, SysDispatch } from "$ts/env";
 import { UUID } from "$ts/util/uuid";
 import type { ElevationData } from "$types/elevation";

@@ -1,4 +1,4 @@
-import type { IDevelopmentEnvironment } from "$interfaces/services/DevEnvironment";
+import type { IDevelopmentEnvironment } from "$interfaces/services/IDevelopmentEnvironment";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { Daemon } from "$ts/daemon";
 import { Env, Fs, Stack } from "$ts/env";

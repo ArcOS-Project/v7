@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import { AppProcess } from "$ts/apps/process";
   import { Daemon } from "$ts/daemon";
   import { Stack } from "$ts/env";

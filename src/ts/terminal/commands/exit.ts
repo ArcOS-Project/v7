@@ -1,5 +1,5 @@
-import type { IAppProcess } from "$interfaces/app";
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
 import { TerminalProcess } from "../process";

@@ -1,5 +1,5 @@
-import type { IWallpaperUserContext } from "$interfaces/contexts/wallpaper";
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IWallpaperUserContext } from "$interfaces/contexts/IWallpaperUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { Wallpapers } from "$ts/user/wallpaper/store";

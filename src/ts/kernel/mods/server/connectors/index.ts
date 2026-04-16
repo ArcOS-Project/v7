@@ -1,5 +1,5 @@
-import type { IEnvironment } from "$interfaces/modules/env";
-import type { IServerConnector } from "$interfaces/modules/server";
+import type { IEnvironment } from "$interfaces/modules/IEnvironment";
+import type { IServerConnector } from "$interfaces/modules/IServerManager";
 import { getKMod } from "$ts/env";
 import { Log } from "$ts/logging";
 import { LogLevel } from "$types/logging";
@@ -23,12 +23,20 @@ export abstract class ServerConnector implements IServerConnector {
 
     const backend = Backend.create({
       baseURL: url.toString(),
+      responseType: "json",
+      headers: {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+      },
     });
 
     backend.interceptors.request.use((config) => {
       config.headers.set("X-Request-ID", getKMod<IEnvironment>("env").get("dispatch_sock_id"));
       return config;
     });
+
+    if (this.token) backend.defaults.headers.common.Authorization = `Bearer ${this.token}`;
 
     return backend;
   }

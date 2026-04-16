@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IAppProcess } from "$interfaces/app";
+  import type { IAppProcess } from "$interfaces/IAppProcess";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { Daemon } from "$ts/daemon";
   import { ProfilePictures } from "$ts/images/pfp";

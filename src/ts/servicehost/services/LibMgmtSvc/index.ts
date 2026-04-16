@@ -1,4 +1,4 @@
-import type { ILibraryManagement } from "$interfaces/services/LibMgmtSvc";
+import type { ILibraryManagement } from "$interfaces/services/ILibraryManagement";
 import { Daemon } from "$ts/daemon";
 import { Fs, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
