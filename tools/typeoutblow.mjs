@@ -5,7 +5,9 @@ const WHITELIST = ["$types/", "$interfaces/", "./", "svelte", "../interfaces", "
 const ITEM_WHITELIST = ["PermissionString", "PermissionError", "Readline"];
 const FILE_WHITELIST = ["src/types/thirdparty.ts"];
 
-async function main() {
+export async function checkTypeOutblow() {
+  console.log("Checking type outblow...");
+
   const blown = [];
   const files = await glob("src/{types,interfaces}/**/*.{ts,svelte}");
 
@@ -80,11 +82,6 @@ async function main() {
 
     process.exit(1);
   } else {
-    console.log("\n✅ No blown references detected!");
+    console.log("\n✅ No blown references detected!\n");
   }
 }
-
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
