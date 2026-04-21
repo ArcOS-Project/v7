@@ -3,7 +3,7 @@ import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { toForm } from "$ts/util/form";
 import type { LoginActivity } from "$types/activity";
-import { Daemon } from "..";
+import { Daemon } from "$ts/env";
 import { UserContext } from "../context";
 
 /**

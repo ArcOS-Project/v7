@@ -4,7 +4,7 @@ import type { Constructs } from "$interfaces/common";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IArcTerminal, ITerminalProcess, ITerminalWindowRuntime } from "$interfaces/IArcTerminal";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Env, Fs, Stack, State } from "$ts/env";
 import { ASCII_ART } from "$ts/kernel/intro";
 import { Process } from "$ts/kernel/mods/stack/process/instance";

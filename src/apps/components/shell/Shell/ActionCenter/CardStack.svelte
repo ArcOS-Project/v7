@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { Sleep } from "$ts/sleep";
   import type { UserPreferencesStore } from "$types/user";
   import Gallery from "./CardStack/Cards/Gallery.svelte";

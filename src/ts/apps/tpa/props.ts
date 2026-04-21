@@ -2,8 +2,7 @@ import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
 import { AppProcess } from "$ts/apps/process";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { __Console__ } from "$ts/console";
-import { Daemon } from "$ts/daemon";
-import { Env, Fs, Stack } from "$ts/env";
+import { Daemon, Env, Fs, Stack } from "$ts/env";
 import { getAllImages } from "$ts/images";
 import type { JsExec } from "$ts/jsexec";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
@@ -41,7 +40,7 @@ export function ThirdPartyProps(engine: JsExec): ThirdPartyPropMap {
     handler: Stack, // TEMP
     fs: Fs, // TEMP
     daemon: Daemon, // TEMP
-    serviceHost: engine.userDaemon?.serviceHost, // TEMP
+    serviceHost: Daemon!.serviceHost, // TEMP
     MessageBox,
     icons: getAllImages(),
     util: {

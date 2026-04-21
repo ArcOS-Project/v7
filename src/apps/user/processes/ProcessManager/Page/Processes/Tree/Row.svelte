@@ -2,7 +2,7 @@
   import type { IAppProcess } from "$interfaces/IAppProcess";
   import type { IProcess } from "$interfaces/IProcess";
   import { AppProcess } from "$ts/apps/process";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { Stack, SysDispatch } from "$ts/env";
   import { BaseService } from "$ts/servicehost/base";
   import { contextMenu } from "$ts/ui/context/actions.svelte";

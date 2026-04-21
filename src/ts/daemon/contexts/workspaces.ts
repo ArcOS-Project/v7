@@ -5,7 +5,7 @@ import { Stack } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { UUID } from "$ts/util/uuid";
 import type { UserPreferences } from "$types/user";
-import { Daemon } from "..";
+import { Daemon } from "$ts/env";
 import { UserContext } from "../context";
 
 export class WorkspaceUserContext extends UserContext implements IWorkspaceUserContext {

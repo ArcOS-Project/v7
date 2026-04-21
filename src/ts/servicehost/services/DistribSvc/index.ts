@@ -1,7 +1,7 @@
 import type { IInstallerProcessBase, IInstallerProcessBaseConstructor } from "$interfaces/IInstallerProcessBase";
 import type { IStoreConnector } from "$interfaces/modules/server/IStoreConnector";
 import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Fs, GetConnector, Stack } from "$ts/env";
 import { CommandResult } from "$ts/result";
 import type { ServiceHost } from "$ts/servicehost";

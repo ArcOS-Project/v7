@@ -1,4 +1,4 @@
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Env, Fs } from "$ts/env";
 import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
 import { UserPaths } from "$ts/user/store";

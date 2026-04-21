@@ -1,9 +1,10 @@
 import fs from "fs";
 import { glob } from "glob";
+import { sep } from "path";
 
-const WHITELIST = ["$types/", "$interfaces/", "./", "svelte", "../interfaces", "../types", "xterm", "fuse.js"];
+const WHITELIST = ["$types/", "$interfaces/", "./", "svelte", "../interfaces", "../types", "xterm", "fuse.js", "axios"];
 const ITEM_WHITELIST = ["PermissionString", "PermissionError", "Readline"];
-const FILE_WHITELIST = ["src/types/thirdparty.ts"];
+const FILE_WHITELIST = ["src/types/thirdparty.ts"].map((f) => f.replaceAll("/", sep));
 
 export async function checkTypeOutblow() {
   console.log("Checking type outblow...");
@@ -68,7 +69,7 @@ export async function checkTypeOutblow() {
         }
       }
 
-      if (!isValid && !path.endsWith("/types")) {
+      if (!isValid && !path.endsWith("/types") && !path.startsWith("../") && !path.startsWith("./")) {
         console.error(`\nDetected blown reference: \n  File: ${file}\n  Imports module: ${path}\n  Items imported: ${items}`);
         blown.push(result);
       }

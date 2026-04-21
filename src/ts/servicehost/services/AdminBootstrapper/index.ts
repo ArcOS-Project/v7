@@ -3,7 +3,7 @@ import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
 import type { IProtocolServiceProcess } from "$interfaces/services/IProtocolServiceProcess";
 import { AdminAppImportPathAbsolutes } from "$ts/apps/store";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { ArcOSVersion, Env, Fs, Server } from "$ts/env";
 import { AdminFileSystem } from "$ts/kernel/mods/fs/drives/admin";
 import { AdminServerDrive } from "$ts/kernel/mods/fs/drives/aefs";

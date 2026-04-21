@@ -3,7 +3,7 @@ import type { IProcess } from "$interfaces/IProcess";
 import { AppProcess } from "$ts/apps/process";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { ConfigurationBuilder } from "$ts/config";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { USERFS_UUID } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { sliceIntoChunks } from "$ts/util";

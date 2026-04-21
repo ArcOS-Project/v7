@@ -3,7 +3,7 @@
   import type { ExpandedFileAssociationInfo } from "$types/assoc";
   import type { SummarizedFsModifiers } from "$types/fs";
   import dayjs from "dayjs";
-  import type { FileManagerRuntime } from "../../runtime";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
 
   const {
     modifiers,
@@ -20,7 +20,7 @@
     dateModified: number;
     filename: string;
     thumbnail?: string;
-    process: FileManagerRuntime;
+    process: IFileManagerRuntime;
   } = $props();
 </script>
 

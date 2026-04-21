@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { SysDispatch } from "$ts/env";
   import { Sleep } from "$ts/sleep";
   import { DefaultUserPreferences } from "$ts/user/default";

@@ -4,7 +4,7 @@
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import dayjs from "dayjs";
   import type { ServiceInfoRuntime } from "./runtime";
   import Header from "./ServiceInfo/Header.svelte";

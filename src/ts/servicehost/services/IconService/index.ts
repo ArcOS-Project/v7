@@ -1,6 +1,6 @@
 import type { IIconService } from "$interfaces/services/IIconService";
 import { ConfigurationBuilder } from "$ts/config";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Fs } from "$ts/env";
 import { getAllImages, getGroupedIcons, iconIdFromPath, maybeIconId } from "$ts/images";
 import type { ServiceHost } from "$ts/servicehost";

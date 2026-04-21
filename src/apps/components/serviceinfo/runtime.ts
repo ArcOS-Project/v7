@@ -1,6 +1,6 @@
 import type { IBaseService } from "$interfaces/IServiceHost";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Stack } from "$ts/env";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";

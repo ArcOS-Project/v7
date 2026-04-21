@@ -1,6 +1,6 @@
 import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 

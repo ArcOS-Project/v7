@@ -1,6 +1,6 @@
 import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { Fs, Stack } from "$ts/env";
+import { Daemon, Fs, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { detectJavaScript } from "$ts/util";
 import { arrayBufferToText } from "$ts/util/convert";
@@ -22,7 +22,7 @@ export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
         const subEngine = await Stack.spawn<JsExec>(
           JsExec,
           undefined,
-          engine.userDaemon?.userInfo?._id,
+          Daemon?.userInfo?._id,
           engine.pid,
           join(engine.workingDirectory, path)
         );
@@ -37,22 +37,21 @@ export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
       }
     },
     runApp: async (process: typeof ThirdPartyAppProcess, metadataPath: string, parentPid?: number, ...args: any[]) => {
-      const daemon = engine.userDaemon;
       const app = engine.app;
 
-      if (!app || !daemon) throw new Error(`Illegal runApp operation on a non-app JsExec`);
+      if (!app || !Daemon) throw new Error(`Illegal runApp operation on a non-app JsExec`);
 
       try {
         const metaStr = arrayBufferToText((await Fs.readFile(metadataPath))!);
         const metadata = tryJsonParse(metaStr);
-        const renderTarget = daemon.workspaces!.getCurrentDesktop();
+        const renderTarget = Daemon.workspaces!.getCurrentDesktop();
 
         if (typeof metadata === "string") throw new Error("Failed to parse metadata");
 
         const proc = await Stack.spawn<ThirdPartyAppProcess>(
           process,
           renderTarget,
-          daemon.userInfo!._id,
+          Daemon.userInfo!._id,
           parentPid,
           {
             data: metadata,
@@ -72,10 +71,9 @@ export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
       }
     },
     runAppDirect: async (process: typeof ThirdPartyAppProcess, metadataPath: string, parentPid?: number, ...args: any[]) => {
-      const daemon = engine.userDaemon;
       const app = engine.app;
 
-      if (!app || !daemon) throw new Error(`Illegal runApp operation on a non-app JsExec`);
+      if (!app || !Daemon) throw new Error(`Illegal runApp operation on a non-app JsExec`);
 
       try {
         const metaStr = arrayBufferToText((await Fs.readFile(metadataPath))!);
@@ -86,7 +84,7 @@ export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
         const proc = await Stack.spawn<IThirdPartyAppProcess>(
           process,
           undefined,
-          daemon.userInfo!._id,
+          Daemon.userInfo!._id,
           parentPid,
           {
             data: metadata,

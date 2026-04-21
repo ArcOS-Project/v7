@@ -1,6 +1,6 @@
 import type { IInstallerProcessBase } from "$interfaces/IInstallerProcessBase";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Env, Fs } from "$ts/env";
 import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
 import { MessageBox } from "$ts/util/dialog";

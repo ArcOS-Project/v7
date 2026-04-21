@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { Wallpapers } from "$ts/user/wallpaper/store";
   import type { AppComponentProps } from "$types/app";
   import type { WallpaperRuntime } from "./runtime";

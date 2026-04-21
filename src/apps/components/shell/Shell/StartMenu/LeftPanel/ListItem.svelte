@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { Env } from "$ts/env";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { UserPaths } from "$ts/user/store";

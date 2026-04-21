@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { isPopulatable } from "$ts/util/apps";
 import { getItemNameFromPath } from "$ts/util/fs";
 import { Store } from "$ts/writable";

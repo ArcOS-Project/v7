@@ -1,6 +1,6 @@
 import type { ITrashCanService } from "$interfaces/services/ITrashCanService";
 import { ConfigurationBuilder } from "$ts/config";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Env, Fs, SysDispatch } from "$ts/env";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";

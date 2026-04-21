@@ -1,5 +1,6 @@
 import type { ISharedDrive } from "$interfaces/drives/ISharedDrive";
-import { Daemon } from "$ts/daemon";
+import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+import { Daemon } from "$ts/env";
 import { Env, Fs } from "$ts/env";
 import { ShareManager } from "$ts/servicehost/services/ShareMgmt";
 import { UserPaths } from "$ts/user/store";
@@ -7,10 +8,9 @@ import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import type { AppContextMenu } from "$types/app";
 import type { FileEntry, FolderEntry } from "$types/fs";
-import type { FileManagerRuntime } from "./runtime";
 import type { QuotedDrive } from "./types";
 
-export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextMenu {
+export function FileManagerContextMenu(runtime: IFileManagerRuntime): AppContextMenu {
   return {
     "sidebar-drive": [
       {
@@ -98,7 +98,8 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       { sep: true },
       {
         caption: "Manage share...",
-        action: (drive: QuotedDrive) => runtime.spawnOverlayApp("ShareMgmtGui", runtime.pid, (drive.data as ISharedDrive).shareId),
+        action: (drive: QuotedDrive) =>
+          runtime.spawnOverlayApp("ShareMgmtGui", runtime.pid, (drive.data as ISharedDrive).shareId),
         icon: "wrench",
       },
       {

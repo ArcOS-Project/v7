@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Env, Stack } from "$ts/env";
 import { SharedDrive } from "$ts/kernel/mods/fs/drives/share";
 import type { ShareManager } from "$ts/servicehost/services/ShareMgmt";

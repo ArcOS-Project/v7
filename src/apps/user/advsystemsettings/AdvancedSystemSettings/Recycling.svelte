@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { Env } from "$ts/env";
   import { TrashCanService } from "$ts/servicehost/services/TrashSvc";
   import { Plural } from "$ts/util";

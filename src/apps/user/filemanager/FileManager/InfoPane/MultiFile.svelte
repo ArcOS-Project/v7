@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Plural } from "$ts/util";
-  import type { FileManagerRuntime } from "../../runtime";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import type { QuotedDrive } from "../../types";
 
   const {
@@ -8,7 +8,7 @@
     itemCount,
     currentDrive,
     process,
-  }: { name: string; itemCount: number; currentDrive: QuotedDrive; process: FileManagerRuntime } = $props();
+  }: { name: string; itemCount: number; currentDrive: QuotedDrive; process: IFileManagerRuntime } = $props();
 </script>
 
 <div class="multi-file">

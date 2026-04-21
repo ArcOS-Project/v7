@@ -8,7 +8,7 @@ import type { MessagingInterface } from "$ts/servicehost/services/MessagingServi
 import { Plural } from "$ts/util";
 import { MessageBox } from "$ts/util/dialog";
 import { StoreItemIcon } from "$ts/util/distrib";
-import { Daemon } from "..";
+import { Daemon } from "$ts/env";
 import { UserContext } from "../context";
 
 /**

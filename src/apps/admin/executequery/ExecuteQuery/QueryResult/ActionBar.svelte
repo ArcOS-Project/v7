@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { ExecuteQueryRuntime } from "../../runtime";
+  import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
 
-  const { process }: { process: ExecuteQueryRuntime } = $props();
+  const { process }: { process: IExecuteQueryRuntime } = $props();
   const { result, truncated, totalCount } = process;
 </script>
 

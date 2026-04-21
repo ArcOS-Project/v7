@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { MessageBox } from "$ts/util/dialog";
   import QRCode from "@castlenine/svelte-qrcode";
   import { onMount } from "svelte";

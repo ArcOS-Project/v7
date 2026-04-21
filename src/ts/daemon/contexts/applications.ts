@@ -7,7 +7,7 @@ import { isPopulatable } from "$ts/util/apps";
 import { MessageBox } from "$ts/util/dialog";
 import type { App } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
-import { Daemon } from "..";
+import { Daemon } from "$ts/env";
 import { UserContext } from "../context";
 
 export class ApplicationsUserContext extends UserContext implements IApplicationsUserContext {

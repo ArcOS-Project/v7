@@ -2,7 +2,7 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Env, Stack } from "$ts/env";
 import { ProcessKillResultCaptions } from "$ts/kernel/mods/stack/process/store";
 import { MessageBox } from "$ts/util/dialog";

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import type { SharedDriveType } from "$types/shares";
 
   const { share, process }: { share: SharedDriveType; process: IAdminPortalRuntime } = $props();

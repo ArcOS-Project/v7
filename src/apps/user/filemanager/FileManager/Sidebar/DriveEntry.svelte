@@ -3,11 +3,11 @@
   import CircularProgress from "$lib/CircularProgress.svelte";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { formatBytes } from "$ts/util/fs";
-  import type { FileManagerRuntime } from "../../runtime";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import { DriveIcons } from "../../store";
   import type { QuotedDrive } from "../../types";
 
-  const { process, drive, id }: { process: FileManagerRuntime; drive: QuotedDrive; id: string } = $props();
+  const { process, drive, id }: { process: IFileManagerRuntime; drive: QuotedDrive; id: string } = $props();
 
   const { path } = process;
 

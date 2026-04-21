@@ -1,6 +1,6 @@
 import type { IDevelopmentEnvironment } from "$interfaces/services/IDevelopmentEnvironment";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Env, Fs, Stack } from "$ts/env";
 import { DevDrive } from "$ts/kernel/mods/fs/drives/devenv";
 import { ArcBuild } from "$ts/metadata/build";

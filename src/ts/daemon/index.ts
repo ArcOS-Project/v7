@@ -27,7 +27,7 @@ import type { IApplicationStorage } from "$interfaces/services/IApplicationStora
 import type { IFileAssocService } from "$interfaces/services/IFileAssocService";
 import type { IGlobalDispatch } from "$interfaces/services/IGlobalDispatch";
 import type { ILibraryManagement } from "$interfaces/services/ILibraryManagement";
-import { Env, Fs, GetConnector, getKMod, Stack, State } from "$ts/env";
+import { Daemon, Env, Fs, GetConnector, getKMod, SetDaemon, Stack, State } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { ServiceHost } from "$ts/servicehost";
 import { DefaultUserInfo } from "$ts/user/default";
@@ -108,7 +108,7 @@ export class UserDaemon extends Process implements IUserDaemon {
     this.name = "UserDaemon";
 
     this.setSource(__SOURCE__);
-    Daemon = this;
+    SetDaemon(this)
   }
 
   async start() {
@@ -211,5 +211,3 @@ export class UserDaemon extends Process implements IUserDaemon {
     return GetConnector<T>(name, this.token);
   }
 }
-
-export let Daemon: IUserDaemon;

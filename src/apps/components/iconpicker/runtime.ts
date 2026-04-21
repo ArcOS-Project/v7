@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { SysDispatch } from "$ts/env";
 import { IconService } from "$ts/servicehost/services/IconService";
 import { Store } from "$ts/writable";

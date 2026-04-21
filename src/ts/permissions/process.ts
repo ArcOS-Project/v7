@@ -7,7 +7,7 @@
  * © IzKuipers 2025
  */
 
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Env, Stack } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { Permissions } from ".";

@@ -1,6 +1,6 @@
 import type { IFileAssocService } from "$interfaces/services/IFileAssocService";
 import { ConfigurationBuilder } from "$ts/config";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { ApplicationStorage } from "$ts/servicehost/services/AppStorage";

@@ -11,7 +11,7 @@ import { getParentDirectory, join } from "$ts/util/fs";
 import { tryJsonParse, validateObject } from "$ts/util/json";
 import type { App, AppStorage, InstalledApp } from "$types/app";
 import { LogLevel } from "$types/logging";
-import { Daemon } from "..";
+import { Daemon } from "$ts/env";
 import { UserContext } from "../context";
 
 export class AppRegistrationUserContext extends UserContext implements IAppRegistrationUserContext {

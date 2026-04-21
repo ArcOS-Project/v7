@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { onMount } from "svelte";
   import Bar from "./MediaPlayer/Bar.svelte";
   import Controls from "./MediaPlayer/Controls.svelte";

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import type { IconEditDialogRuntime } from "../runtime";
 
   const { process }: { process: IconEditDialogRuntime } = $props();

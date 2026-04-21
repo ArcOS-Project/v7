@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { ExecuteQueryRuntime } from "$apps/admin/executequery/runtime";
+  import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
   import { QueryUserColumns } from "$apps/admin/executequery/store";
   import BasicComparisonValue from "./ComparisonValue/BasicComparisonValue.svelte";
   import BooleanComparisonValue from "./ComparisonValue/BooleanComparisonValue.svelte";
   import JsonHierarchyComparisonValue from "./ComparisonValue/JsonHierarchyComparisonValue.svelte";
   import UserComparisonValue from "./ComparisonValue/UserComparisonValue.svelte";
 
-  const { process, i }: { process: ExecuteQueryRuntime; i: number } = $props();
+  const { process, i }: { process: IExecuteQueryRuntime; i: number } = $props();
   const { selectedSource, columns, columnTypes, expressions } = process;
 </script>
 

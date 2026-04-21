@@ -1,6 +1,6 @@
 import type { IMigrationNodeConstructor } from "$interfaces/IMigrationNode";
 import type { IMigrationService } from "$interfaces/services/IMigrationService";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Fs } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";

@@ -1,4 +1,4 @@
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Env, Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { textToBlob } from "$ts/util/convert";

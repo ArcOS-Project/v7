@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Fs } from "$ts/env";
 import type { BugHuntUserSpaceProcess } from "$ts/servicehost/services/BugHuntUsp";
 import { UserPaths } from "$ts/user/store";

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import AppGroups from "./LeftPanel/AppGroups.svelte";
   import AppListing from "./LeftPanel/AppListing.svelte";
   import SearchResults from "./LeftPanel/SearchResults.svelte";

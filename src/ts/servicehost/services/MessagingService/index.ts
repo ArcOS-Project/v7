@@ -2,7 +2,7 @@ import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IServerManager } from "$interfaces/modules/IServerManager";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Env, Fs, GetConnector, getKMod, Server, Stack } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import type { ServiceHost } from "$ts/servicehost";

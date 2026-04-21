@@ -4,7 +4,7 @@ import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
 import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { ArcOSVersion, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";

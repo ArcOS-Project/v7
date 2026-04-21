@@ -1,4 +1,4 @@
-import type { ExecuteQueryRuntime } from "./runtime";
+import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
 import type { QueryDesignation, QueryDesignationsType } from "./types";
 
 export const QuerySources = [
@@ -33,7 +33,7 @@ export const QueryUserColumns = ["userId", "authorId", "recipient", "repliesTo"]
 
 export const EmptyQueryDesignation: QueryDesignation = { obtainer: () => [], scopes: [] };
 
-export function QueryDesignations(runtime: ExecuteQueryRuntime): QueryDesignationsType {
+export function QueryDesignations(runtime: IExecuteQueryRuntime): QueryDesignationsType {
   return {
     "": EmptyQueryDesignation,
     users: {

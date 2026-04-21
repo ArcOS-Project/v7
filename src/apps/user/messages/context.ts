@@ -1,4 +1,4 @@
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import type { AppContextMenu, ContextMenuItem } from "$types/app";
 import type { ExpandedMessage, MessageAttachment } from "$types/messaging";

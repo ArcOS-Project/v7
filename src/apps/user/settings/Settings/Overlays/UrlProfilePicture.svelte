@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { onMount } from "svelte";
   import type { OverlayRuntime } from "../../overlay";
   import ActionBar from "$lib/Window/ActionBar.svelte";

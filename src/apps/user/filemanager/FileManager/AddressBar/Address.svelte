@@ -5,10 +5,10 @@
   import { getDriveLetter, getItemNameFromPath } from "$ts/util/fs";
   import type { FsProxyInfo } from "$types/fs";
   import { onMount } from "svelte";
-  import type { FileManagerRuntime } from "../../runtime";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import { DriveIcons } from "../../store";
 
-  const { process }: { process: FileManagerRuntime } = $props();
+  const { process }: { process: IFileManagerRuntime } = $props();
   const { path, virtual } = process;
 
   let manualPath = $state<string>();

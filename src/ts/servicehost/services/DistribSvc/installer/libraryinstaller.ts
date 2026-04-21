@@ -1,5 +1,5 @@
 import type { IInstallerProcessBase } from "$interfaces/IInstallerProcessBase";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { textToBlob } from "$ts/util/convert";

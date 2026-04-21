@@ -27,7 +27,7 @@ import type { FileHandler, FileOpenerResult } from "$types/fs";
 import type { LegacyConnectionInfo } from "$types/legacy";
 import type { ArcShortcut } from "$types/shortcut";
 import type { CategorizedDiskUsage } from "$types/user";
-import { Daemon } from "..";
+import { Daemon } from "$ts/env";
 import { UserContext } from "../context";
 
 export class FilesystemUserContext extends UserContext implements IFilesystemUserContext {

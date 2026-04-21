@@ -13,7 +13,7 @@ import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import type { App } from "$types/app";
 import type { ExpandedTerminal } from "$types/terminal";
-import { Daemon } from "..";
+import { Daemon } from "$ts/env";
 import { UserContext } from "../context";
 
 export class HelpersUserContext extends UserContext implements IHelpersUserContext {

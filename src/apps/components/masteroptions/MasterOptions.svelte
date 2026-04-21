@@ -3,7 +3,7 @@
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import ActionGroup from "$lib/Window/ActionBar/ActionGroup.svelte";
   import ActionIconButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { Server } from "$ts/env";
   import MasterOptionButton from "./MasterOptions/MasterOptionButton.svelte";
   import type { MasterOptionsRuntime } from "./runtime";

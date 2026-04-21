@@ -1,6 +1,6 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { ProfilePictures } from "$ts/images/pfp";
   import { onMount } from "svelte";
   import type { SettingsRuntime } from "../../runtime";

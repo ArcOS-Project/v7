@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { ArcOSVersion, Env, Stack, State } from "$ts/env";
   import { KernelModules } from "$ts/kernel/getters";
   import { ArcBuild } from "$ts/metadata/build";

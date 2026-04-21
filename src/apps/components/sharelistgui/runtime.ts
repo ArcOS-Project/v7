@@ -1,6 +1,6 @@
 import type { ISharedDrive } from "$interfaces/drives/ISharedDrive";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Env, Fs, Stack } from "$ts/env";
 import type { ShareManager } from "$ts/servicehost/services/ShareMgmt";
 import { MessageBox } from "$ts/util/dialog";

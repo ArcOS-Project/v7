@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Env, Fs } from "$ts/env";
 import { DefaultArcTermConfiguration } from "$ts/terminal/store";
 import { UserPaths } from "$ts/user/store";

@@ -1,10 +1,11 @@
 <script lang="ts">
+  import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
   import { UUID } from "$ts/util/uuid";
-  import type { ExecuteQueryRuntime } from "../runtime";
+
   import ActionBar from "./QueryResult/ActionBar.svelte";
   import QueryResultRow from "./QueryResult/QueryResultRow.svelte";
 
-  const { process }: { process: ExecuteQueryRuntime } = $props();
+  const { process }: { process: IExecuteQueryRuntime } = $props();
   const { result } = process;
   const columns = process.findMostColumnsOf($result);
 </script>

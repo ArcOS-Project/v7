@@ -9,7 +9,7 @@ import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
 import type { UserPreferences, WallpaperGetters } from "$types/user";
 import type { Wallpaper } from "$types/wallpaper";
-import { Daemon } from "..";
+import { Daemon } from "$ts/env";
 import { UserContext } from "../context";
 
 export class WallpaperUserContext extends UserContext implements IWallpaperUserContext {

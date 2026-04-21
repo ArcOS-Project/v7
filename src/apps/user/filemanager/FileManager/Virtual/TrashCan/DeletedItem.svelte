@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { FileManagerRuntime } from "$apps/user/filemanager/runtime";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import { RelativeTimeMod } from "$ts/dayjs";
   import type { TrashIndexNode } from "$types/trash";
   import dayjs from "dayjs";
@@ -7,7 +7,7 @@
   import updateLocale from "dayjs/plugin/updateLocale";
   import { onMount } from "svelte";
 
-  const { process, item, uuid }: { process: FileManagerRuntime; item: TrashIndexNode; uuid: string } = $props();
+  const { process, item, uuid }: { process: IFileManagerRuntime; item: TrashIndexNode; uuid: string } = $props();
   const { selection } = process;
 
   let date = $state<string>();

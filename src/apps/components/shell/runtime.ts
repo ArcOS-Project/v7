@@ -1,7 +1,7 @@
 import type { IArcFindRuntime } from "$interfaces/runtimes/IArcFindRuntime";
 import type { IShellRuntime, ITrayHostRuntime } from "$interfaces/runtimes/IShellRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Env, Fs, Stack, SysDispatch } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";

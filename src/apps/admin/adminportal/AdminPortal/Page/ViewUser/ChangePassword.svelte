@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
   import type { ExpandedUserInfo } from "$types/user";
   import { generate } from "generate-password-ts";

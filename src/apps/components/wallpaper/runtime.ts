@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { ConfigurationBuilder } from "$ts/config";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Env, Fs, SysDispatch } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { MessageBox } from "$ts/util/dialog";

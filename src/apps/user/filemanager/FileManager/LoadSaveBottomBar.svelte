@@ -6,9 +6,9 @@
   import { Plural } from "$ts/util";
   import { getDriveLetter, getItemNameFromPath } from "$ts/util/fs";
   import { onMount } from "svelte";
-  import type { FileManagerRuntime } from "../runtime";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
 
-  const { process }: { process: FileManagerRuntime } = $props();
+  const { process }: { process: IFileManagerRuntime } = $props();
   const { saveName, path, contents, selection } = process;
 
   let dirName = $state("");

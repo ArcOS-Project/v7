@@ -1,6 +1,6 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";

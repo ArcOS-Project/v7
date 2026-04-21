@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
 import { Store } from "$ts/writable";
 import type { AppProcessData, AppStorage } from "$types/app";

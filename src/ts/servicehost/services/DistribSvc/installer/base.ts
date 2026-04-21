@@ -1,4 +1,4 @@
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Fs } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { arrayBufferToBlob } from "$ts/util/convert";

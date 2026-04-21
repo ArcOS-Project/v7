@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { RelativeTimeMod } from "$ts/dayjs";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { formatBytes, join } from "$ts/util/fs";
@@ -9,9 +9,9 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
   import { onMount } from "svelte";
-  import type { FileManagerRuntime } from "../../runtime";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
 
-  const { process, file }: { process: FileManagerRuntime; file: FileEntry } = $props();
+  const { process, file }: { process: IFileManagerRuntime; file: FileEntry } = $props();
   const { selection, shortcuts } = process;
 
   let date = $state<string>();

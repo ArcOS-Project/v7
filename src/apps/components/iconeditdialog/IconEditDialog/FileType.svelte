@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { UploadIcon } from "$ts/images/general";
   import { UserPaths } from "$ts/user/store";
   import type { IconEditDialogRuntime } from "../runtime";

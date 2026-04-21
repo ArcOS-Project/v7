@@ -1,7 +1,7 @@
 <script lang="ts">
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { onMount } from "svelte";
   import type { NewFileRuntime } from "./runtime";
 

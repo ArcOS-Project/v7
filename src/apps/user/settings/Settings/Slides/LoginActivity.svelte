@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { TimeFrames } from "$ts/user/store";
   import { groupByTimeFrame } from "$ts/util";
   import type { LoginActivity } from "$types/activity";

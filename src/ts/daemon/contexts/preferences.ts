@@ -10,7 +10,7 @@ import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
 import type { UserPreferences } from "$types/user";
 import type { Unsubscriber } from "$types/writable";
-import { Daemon } from "..";
+import { Daemon } from "$ts/env";
 import { UserContext } from "../context";
 
 export class PreferencesUserContext extends UserContext implements IPreferencesUserContext {

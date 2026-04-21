@@ -1,5 +1,5 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Env, Stack } from "$ts/env";
 import type { AppContextMenu } from "$types/app";
 

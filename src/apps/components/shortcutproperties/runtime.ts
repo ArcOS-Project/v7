@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Env } from "$ts/env";
 import { getAllImages } from "$ts/images";
 import { MessageBox } from "$ts/util/dialog";

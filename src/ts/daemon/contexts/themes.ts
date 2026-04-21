@@ -5,7 +5,7 @@ import { BuiltinThemes } from "$ts/user/store";
 import { LogLevel } from "$types/logging";
 import { UserThemeKeys, type UserTheme } from "$types/theme";
 import type { UserPreferences } from "$types/user";
-import { Daemon } from "..";
+import { Daemon } from "$ts/env";
 import { UserContext } from "../context";
 
 export class ThemesUserContext extends UserContext implements IThemesUserContext {

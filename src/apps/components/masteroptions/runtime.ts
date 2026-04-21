@@ -1,6 +1,6 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Stack } from "$ts/env";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";

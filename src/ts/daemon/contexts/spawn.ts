@@ -12,7 +12,7 @@ import { UUID } from "$ts/util/uuid";
 import type { App, AppProcessData, AppProcessSpawnOptions, TpaSpawnEntrypointResult } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
 import { LogLevel } from "$types/logging";
-import { Daemon } from "..";
+import { Daemon } from "$ts/env";
 import { UserContext } from "../context";
 
 //

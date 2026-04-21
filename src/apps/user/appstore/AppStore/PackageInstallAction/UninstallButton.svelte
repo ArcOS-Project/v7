@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { ElevationLevel } from "$types/elevation";
   import type { StoreItem, UpdateInfo } from "$types/package";
   import type { ReadableStore } from "$types/writable";

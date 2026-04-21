@@ -1,3 +1,4 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IStoreConnector } from "$interfaces/modules/server/IStoreConnector";
 import { CommandResult } from "$ts/result";
 import type { FilesystemProgressCallback } from "$types/fs";
@@ -8,7 +9,7 @@ import { ServerConnector } from ".";
 export class StoreConnector extends ServerConnector implements IStoreConnector {
   prefix = "/store";
 
-  async GetPackageById(id: string): Promise<CommandResult<StoreItem>> {
+  async GetPackageById(id: string): Promise<ICommandResult<StoreItem>> {
     try {
       return CommandResult.FromResponse(await this.server.get(`/id/${id}`));
     } catch (e) {
@@ -16,7 +17,7 @@ export class StoreConnector extends ServerConnector implements IStoreConnector {
     }
   }
 
-  async GetPackageByName(name: string): Promise<CommandResult<StoreItem>> {
+  async GetPackageByName(name: string): Promise<ICommandResult<StoreItem>> {
     try {
       return CommandResult.FromResponse(await this.server.get(`/name/${name}`));
     } catch (e) {
@@ -24,7 +25,7 @@ export class StoreConnector extends ServerConnector implements IStoreConnector {
     }
   }
 
-  async DeleteStoreItem(id: string): Promise<CommandResult> {
+  async DeleteStoreItem(id: string): Promise<ICommandResult> {
     try {
       return CommandResult.FromResponse(await this.server.delete(`/publish/${id}`));
     } catch (e) {
@@ -32,7 +33,7 @@ export class StoreConnector extends ServerConnector implements IStoreConnector {
     }
   }
 
-  async DeprecateStoreItem(id: string): Promise<CommandResult> {
+  async DeprecateStoreItem(id: string): Promise<ICommandResult> {
     try {
       return CommandResult.FromResponse(await this.server.post(`/publish/deprecate/${id}`));
     } catch (e) {
@@ -40,7 +41,7 @@ export class StoreConnector extends ServerConnector implements IStoreConnector {
     }
   }
 
-  async GetPublishedStoreItems(): Promise<CommandResult<StoreItem[]>> {
+  async GetPublishedStoreItems(): Promise<ICommandResult<StoreItem[]>> {
     try {
       return CommandResult.FromResponse(await this.server.post(`/publish/list`));
     } catch (e) {
@@ -48,7 +49,7 @@ export class StoreConnector extends ServerConnector implements IStoreConnector {
     }
   }
 
-  async PublishStoreItem(data: Blob, onProgress?: FilesystemProgressCallback): Promise<CommandResult> {
+  async PublishStoreItem(data: Blob, onProgress?: FilesystemProgressCallback): Promise<ICommandResult> {
     try {
       return CommandResult.FromResponse(await this.server.post(`/publish`, data));
     } catch (e) {
@@ -60,7 +61,7 @@ export class StoreConnector extends ServerConnector implements IStoreConnector {
     id: string,
     data: Blob,
     onProgress?: FilesystemProgressCallback
-  ): Promise<CommandResult<UpdateWriteOpResult>> {
+  ): Promise<ICommandResult<UpdateWriteOpResult>> {
     try {
       return CommandResult.FromResponse(await this.server.post(`/publish/${id}`, data));
     } catch (e) {
@@ -68,7 +69,7 @@ export class StoreConnector extends ServerConnector implements IStoreConnector {
     }
   }
 
-  async Download(id: string, onProgress?: FilesystemProgressCallback): Promise<CommandResult<ArrayBuffer>> {
+  async Download(id: string, onProgress?: FilesystemProgressCallback): Promise<ICommandResult<ArrayBuffer>> {
     try {
       return CommandResult.FromResponse(
         await this.server.get(`/download/${id}`, {
@@ -87,7 +88,7 @@ export class StoreConnector extends ServerConnector implements IStoreConnector {
     }
   }
 
-  async GetAllStoreItems(): Promise<CommandResult<PartialStoreItem[]>> {
+  async GetAllStoreItems(): Promise<ICommandResult<PartialStoreItem[]>> {
     try {
       return CommandResult.FromResponse(await this.server.get(`/list`));
     } catch (e) {
@@ -95,7 +96,7 @@ export class StoreConnector extends ServerConnector implements IStoreConnector {
     }
   }
 
-  async SearchStoreItems(query: string): Promise<CommandResult<PartialStoreItem[]>> {
+  async SearchStoreItems(query: string): Promise<ICommandResult<PartialStoreItem[]>> {
     try {
       return CommandResult.FromResponse(await this.server.get(`/search/${query}`));
     } catch (e) {
@@ -103,7 +104,7 @@ export class StoreConnector extends ServerConnector implements IStoreConnector {
     }
   }
 
-  async GetPackageReadme(id: string): Promise<CommandResult<string>> {
+  async GetPackageReadme(id: string): Promise<ICommandResult<string>> {
     try {
       return CommandResult.FromResponse(await this.server.get(`/assets/${id}/readme`, { responseType: "text" }));
     } catch (e) {

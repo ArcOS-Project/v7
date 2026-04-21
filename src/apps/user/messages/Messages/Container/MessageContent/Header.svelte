@@ -2,7 +2,7 @@
   import type { MessagingAppRuntime } from "$apps/user/messages/runtime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import UserLink from "$lib/UserLink.svelte";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { ProfilePictures } from "$ts/images/pfp";
   import { CommandResult } from "$ts/result";
   import type { ExpandedMessage } from "$types/messaging";

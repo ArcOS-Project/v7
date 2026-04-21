@@ -1,4 +1,4 @@
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { ChristmasLogo, ReleaseLogo } from "$ts/images/branding";
 import { ArcMode } from "$ts/metadata/mode";
 import { ALIASED_MODES, MODES } from "./stores";

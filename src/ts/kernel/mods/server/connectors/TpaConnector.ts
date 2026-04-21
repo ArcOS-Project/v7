@@ -1,3 +1,4 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { ITpaConnector } from "$interfaces/modules/server/ITpaConnector";
 import { Server } from "$ts/env";
 import { CommandResult } from "$ts/result";
@@ -8,7 +9,7 @@ import { ServerConnector } from ".";
 export class TpaConnector extends ServerConnector implements ITpaConnector {
   public prefix: string = "/tpa";
 
-  async CreateUrl(contents: string, userId: string, appId: string, filename: string): Promise<CommandResult<string>> {
+  async CreateUrl(contents: string, userId: string, appId: string, filename: string): Promise<ICommandResult<string>> {
     try {
       const result = CommandResult.FromResponse(
         await this.server.post(`/v2/${userId}/${appId}/${filename}`, textToBlob(contents))

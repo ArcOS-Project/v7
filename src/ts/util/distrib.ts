@@ -1,4 +1,4 @@
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Server } from "$ts/env";
 import { ComponentIcon } from "$ts/images/general";
 import { authcode } from "$ts/util";

@@ -1,5 +1,5 @@
 import type { ILibraryManagement } from "$interfaces/services/ILibraryManagement";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Fs, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import type { ServiceHost } from "$ts/servicehost";

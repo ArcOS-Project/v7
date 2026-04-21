@@ -1,6 +1,6 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Env, SoundBus } from "$ts/env";
 import { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
 import { ErrorUtils } from "$ts/util/error";

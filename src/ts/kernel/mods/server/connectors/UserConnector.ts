@@ -1,3 +1,4 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import { Server } from "$ts/env";
 import { CommandResult } from "$ts/result";
@@ -10,7 +11,7 @@ import { ServerConnector } from ".";
 export class UserConnector extends ServerConnector implements IUserConnector {
   override prefix = "/user";
 
-  async Self(): Promise<CommandResult<UserInfo>> {
+  async Self(): Promise<ICommandResult<UserInfo>> {
     try {
       return CommandResult.FromResponse(await this.server.get("/self"));
     } catch (e) {
@@ -18,7 +19,7 @@ export class UserConnector extends ServerConnector implements IUserConnector {
     }
   }
 
-  async Rename(newUsername: string): Promise<CommandResult> {
+  async Rename(newUsername: string): Promise<ICommandResult> {
     try {
       return CommandResult.FromResponse(await this.server.patch("/rename", toForm({ newUsername })));
     } catch (e) {
@@ -26,7 +27,7 @@ export class UserConnector extends ServerConnector implements IUserConnector {
     }
   }
 
-  async ChangePassword(newPassword: string): Promise<CommandResult> {
+  async ChangePassword(newPassword: string): Promise<ICommandResult> {
     try {
       return CommandResult.FromResponse(await this.server.patch("/changepswd", toForm({ newPassword })));
     } catch (e) {
@@ -34,7 +35,7 @@ export class UserConnector extends ServerConnector implements IUserConnector {
     }
   }
 
-  async Info(userId: string): Promise<CommandResult<PublicUserInfo>> {
+  async Info(userId: string): Promise<ICommandResult<PublicUserInfo>> {
     try {
       return CommandResult.FromResponse(await this.server.get(`/info/${userId}`));
     } catch (e) {
@@ -42,7 +43,7 @@ export class UserConnector extends ServerConnector implements IUserConnector {
     }
   }
 
-  async PreferencesPut(userPreferences: UserPreferences): Promise<CommandResult> {
+  async PreferencesPut(userPreferences: UserPreferences): Promise<ICommandResult> {
     try {
       return CommandResult.FromResponse(await this.server.put("/preferences", userPreferences));
     } catch (e) {
@@ -50,7 +51,7 @@ export class UserConnector extends ServerConnector implements IUserConnector {
     }
   }
 
-  async AvailabilityUsername(username: string): Promise<CommandResult> {
+  async AvailabilityUsername(username: string): Promise<ICommandResult> {
     try {
       return CommandResult.FromResponse(
         await this.server.get("/availability/username", {
@@ -62,7 +63,7 @@ export class UserConnector extends ServerConnector implements IUserConnector {
     }
   }
 
-  async AvailabilityEmail(email: string): Promise<CommandResult> {
+  async AvailabilityEmail(email: string): Promise<ICommandResult> {
     try {
       return CommandResult.FromResponse(
         await this.server.get("/availability/email", {
@@ -74,7 +75,7 @@ export class UserConnector extends ServerConnector implements IUserConnector {
     }
   }
 
-  async DispatchGet(): Promise<CommandResult<GlobalDispatchClient[]>> {
+  async DispatchGet(): Promise<ICommandResult<GlobalDispatchClient[]>> {
     try {
       return CommandResult.FromResponse(await this.server.get("/dispatch"));
     } catch (e) {
@@ -82,7 +83,7 @@ export class UserConnector extends ServerConnector implements IUserConnector {
     }
   }
 
-  async DispatchKick(clientId: string): Promise<CommandResult> {
+  async DispatchKick(clientId: string): Promise<ICommandResult> {
     try {
       return CommandResult.FromResponse(await this.server.post(`/dispatch/kick/${clientId}`));
     } catch (e) {

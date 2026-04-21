@@ -2,7 +2,7 @@
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import CircularProgress from "$lib/CircularProgress.svelte";
   import Spinner from "$lib/Spinner.svelte";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { Env, Fs } from "$ts/env";
   import { ShareManager } from "$ts/servicehost/services/ShareMgmt";
   import { formatBytes } from "$ts/util/fs";

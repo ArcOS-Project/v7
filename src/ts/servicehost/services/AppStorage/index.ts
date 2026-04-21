@@ -2,7 +2,7 @@ import type { Constructs } from "$interfaces/common";
 import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
 import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
 import { BuiltinAppImportPathAbsolutes } from "$ts/apps/store";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { ArcOSVersion, Env, Fs, SysDispatch } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";

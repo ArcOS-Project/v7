@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import type { MigrationService } from "$ts/servicehost/services/MigrationSvc";
   import { Sleep } from "$ts/sleep";
   import { onMount } from "svelte";

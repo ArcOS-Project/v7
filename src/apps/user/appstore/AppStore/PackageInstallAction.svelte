@@ -1,6 +1,6 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { Env } from "$ts/env";
   import { Store } from "$ts/writable";
   import type { StoreItem, UpdateInfo } from "$types/package";

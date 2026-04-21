@@ -1,6 +1,6 @@
 import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { SysDispatch } from "$ts/env";
 import { InfoIcon } from "$ts/images/dialog";
 import { MessageBox } from "$ts/util/dialog";

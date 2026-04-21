@@ -4,7 +4,7 @@ import type { GitFolder } from "$types/git";
 import axios from "axios";
 import { fromExtension } from "human-filetypes";
 import { FilesystemDrive } from "./generic";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 
 export class SourceFilesystemDrive extends FilesystemDrive {
   override IDENTIFIES_AS: string = "src";

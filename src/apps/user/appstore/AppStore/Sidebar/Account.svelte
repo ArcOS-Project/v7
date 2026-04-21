@@ -1,6 +1,6 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import type { AppStoreRuntime } from "../../runtime";
 
   const { process }: { process: AppStoreRuntime } = $props();

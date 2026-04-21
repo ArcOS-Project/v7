@@ -1,7 +1,8 @@
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
 import { AppConfigError } from "$ts/apps/error";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Fs, SysDispatch } from "$ts/env";
 import { SharedDrive } from "$ts/kernel/mods/fs/drives/share";
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
@@ -22,7 +23,7 @@ import MyArcOs from "./FileManager/Virtual/MyArcOS.svelte";
 import TrashCan from "./FileManager/Virtual/TrashCan.svelte";
 import type { FileManagerNotice, LoadSaveDialogData, QuotedDrive, VirtualFileManagerLocation } from "./types";
 
-export class FileManagerRuntime extends AppProcess {
+export class FileManagerRuntime extends AppProcess implements IFileManagerRuntime {
   path = Store<string>("");
   contents = Store<DirectoryReadReturn | undefined>();
   shortcuts = Store<ShortcutStore>({});
@@ -568,7 +569,7 @@ export class FileManagerRuntime extends AppProcess {
       DownloadFile(file!, filename);
     } catch {
       prog.stop();
-      return false;
+      return;
     }
   }
 
@@ -701,11 +702,11 @@ export class FileManagerRuntime extends AppProcess {
   //#region CHECKS
 
   public isDirectory(path: string, workingPath?: string) {
-    if (this._disposed) return;
+    if (this._disposed) return false;
     workingPath ||= this.path();
     const dir = this.contents.get();
 
-    return dir?.dirs.map((a) => join(workingPath, a.name)).includes(path);
+    return dir?.dirs.map((a) => join(workingPath, a.name)).includes(path) ?? false;
   }
 
   shareAccessIsAdministrative(drive: IFilesystemDrive) {

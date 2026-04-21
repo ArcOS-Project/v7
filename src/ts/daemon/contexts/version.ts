@@ -9,7 +9,7 @@ import { UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { join } from "$ts/util/fs";
-import { Daemon } from "..";
+import { Daemon } from "$ts/env";
 import { UserContext } from "../context";
 
 /**

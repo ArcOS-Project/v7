@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Fs, Stack } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";

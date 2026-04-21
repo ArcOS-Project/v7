@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { MessagingAppRuntime } from "$apps/user/messages/runtime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { RelativeTimeMod } from "$ts/dayjs";
   import type { ExpandedMessage } from "$types/messaging";
   import dayjs from "dayjs";

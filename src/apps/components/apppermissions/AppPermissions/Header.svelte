@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import type { App } from "$types/app";
   import type { AppPermissionsRuntime } from "../runtime";
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import { AppProcess } from "$ts/apps/process";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { Stack } from "$ts/env";
   import { isPopulatable } from "$ts/util/apps";
   import OpenedApp from "./OpenedApps/OpenedApp.svelte";

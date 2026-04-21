@@ -1,6 +1,6 @@
 import { MessageBoxRuntime } from "$apps/components/messagebox/runtime";
 import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import type { App } from "$types/app";
 import type { ConfirmationData, MessageBoxData } from "$types/messagebox";
 import type { ErrorButton } from "$types/notification";

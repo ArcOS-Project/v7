@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Env, Stack } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";

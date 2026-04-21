@@ -1,6 +1,6 @@
 import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Fs } from "$ts/env";
 import { AdminBootstrapper } from "$ts/servicehost/services/AdminBootstrapper";
 import { ShareManager } from "$ts/servicehost/services/ShareMgmt";

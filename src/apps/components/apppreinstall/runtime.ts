@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Env, Fs } from "$ts/env";
 import type { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
 import { arrayBufferToText } from "$ts/util/convert";

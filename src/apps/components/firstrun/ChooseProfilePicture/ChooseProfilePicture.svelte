@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IAppProcess } from "$interfaces/IAppProcess";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { ProfilePictures } from "$ts/images/pfp";
 
   const { process }: { process: IAppProcess } = $props();

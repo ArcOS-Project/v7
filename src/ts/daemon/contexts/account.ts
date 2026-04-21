@@ -9,7 +9,7 @@ import { MessageBox } from "$ts/util/dialog";
 import { ElevationLevel } from "$types/elevation";
 import type { PublicUserInfo, UserInfo } from "$types/user";
 import Cookies from "js-cookie";
-import { Daemon } from "..";
+import { Daemon } from "$ts/env";
 import { UserContext } from "../context";
 
 export class AccountUserContext extends UserContext implements IAccountUserContext {
@@ -39,8 +39,6 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
     }
 
     this.Log("Getting user information");
-
-    console.log(this.userInfo);
 
     try {
       const response = this.userInfo._id

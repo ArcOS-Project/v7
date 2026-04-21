@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { isPopulatable } from "$ts/util/apps";
   import { Store } from "$ts/writable";
   import type { AppStorage } from "$types/app";

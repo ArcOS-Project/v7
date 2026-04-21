@@ -9,6 +9,7 @@ import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
 import type { IStateHandler } from "$interfaces/IStateHandler";
 import packageJson from "../../package.json";
 import type { IKernelModule } from "$interfaces/modules/IKernelModule";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 
 export const ArcOSVersion = packageJson.version as `${number}.${number}.${number}`;
 export const BETA = true;
@@ -54,4 +55,10 @@ export function getKMod<T extends IKernelModule>(id: string, dontCrash = false):
 
 export function GetConnector<T extends IServerConnector>(name: string, token?: string): T {
   return getKMod<IServerManager>("server").GetConn(name, token || "");
+}
+
+export let Daemon: IUserDaemon;
+
+export function SetDaemon(daemon: IUserDaemon) {
+  Daemon = daemon;
 }

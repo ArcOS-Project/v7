@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import type { AppComponentProps } from "$types/app";
   import { onMount } from "svelte";
   import ActionCenter from "./Shell/ActionCenter.svelte";

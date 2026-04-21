@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { ShareManager } from "$ts/servicehost/services/ShareMgmt";
   import { MessageBox } from "$ts/util/dialog";
   import type { OverlayRuntime } from "../../overlay";

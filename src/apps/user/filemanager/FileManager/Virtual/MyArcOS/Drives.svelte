@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { FileManagerRuntime } from "$apps/user/filemanager/runtime";
   import type { QuotedDrive } from "$apps/user/filemanager/types";
   import { onMount } from "svelte";
   import Drive from "./Drives/Drive.svelte";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
 
-  const { process }: { process: FileManagerRuntime } = $props();
+  const { process }: { process: IFileManagerRuntime } = $props();
   const { drives, userPreferences } = process;
 
   let sorted = $state<[string, QuotedDrive][]>([]);

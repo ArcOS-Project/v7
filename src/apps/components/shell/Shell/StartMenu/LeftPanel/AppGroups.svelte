@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import Spinner from "$lib/Spinner.svelte";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { UUID } from "$ts/util/uuid";
   import AppGroup from "./AppGroups/AppGroup.svelte";
   import AppGroupButton from "./AppGroups/AppGroupButton.svelte";

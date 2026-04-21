@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Fs } from "$ts/env";
 import { MessagingInterface } from "$ts/servicehost/services/MessagingService";
 import { Sleep } from "$ts/sleep";

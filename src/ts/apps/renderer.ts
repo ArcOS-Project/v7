@@ -1,7 +1,7 @@
 import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IAppRenderer } from "$interfaces/IAppRenderer";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { BETA, BugHunt, Env, Stack, SysDispatch } from "$ts/env";
 import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
 import { contextProps } from "$ts/ui/context/actions.svelte";

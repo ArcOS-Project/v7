@@ -2,7 +2,7 @@
   import { forEach } from "jszip";
   import type { MessagingAppRuntime } from "../../runtime";
   import type { MessageAttachment } from "$types/messaging";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { UserPaths } from "$ts/user/store";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";

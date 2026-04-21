@@ -1,5 +1,5 @@
 import type { ISharedDrive } from "$interfaces/drives/ISharedDrive";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Server } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { authcode } from "$ts/util";
