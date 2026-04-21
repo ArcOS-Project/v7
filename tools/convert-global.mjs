@@ -138,12 +138,14 @@ function stripOriginalTypesFile() {
   return kept.join("\n\n");
 }
 
-const exportedDeclarations = extractAndConvertDeclarations().filter(Boolean);
-const stripped = stripOriginalTypesFile();
-const header =
-  "/// ARCOS GLOBAL TYPE DEFINITIONS\n///\n/// This file contains errors. I know. The important thing is that all relevant types\n/// are detected and processed properly. Don't worry about it.\n///\n/// © IzKuipers 2025. Licensed under GPLv3.\n///\n\n";
-const globalBlock = `declare global {\n${exportedDeclarations.map((s) => "  " + s.replace(/\n/g, "\n  ")).join("\n\n")}\n}`;
-const footer = `\n\nexport {};`;
+export function convertGlobals() {
+  const exportedDeclarations = extractAndConvertDeclarations().filter(Boolean);
+  const stripped = stripOriginalTypesFile();
+  const header =
+    "/// ARCOS GLOBAL TYPE DEFINITIONS\n///\n/// This file contains errors. I know. The important thing is that all relevant types\n/// are detected and processed properly. Don't worry about it.\n///\n/// © IzKuipers 2025. Licensed under GPLv3.\n///\n\n";
+  const globalBlock = `declare global {\n${exportedDeclarations.map((s) => "  " + s.replace(/\n/g, "\n  ")).join("\n\n")}\n}`;
+  const footer = `\n\nexport {};`;
 
-fs.writeFileSync(OUTPUT_PATH, "// @ts-nocheck\n" + header + stripped + globalBlock + footer);
-console.log("✅ dist/arcos.d.ts written.");
+  fs.writeFileSync(OUTPUT_PATH, "// @ts-nocheck\n" + header + stripped + globalBlock + footer);
+  console.log("\n✅ dist/arcos.d.ts written.\n");
+}
