@@ -12,10 +12,6 @@ import { join } from "$ts/util/fs";
 import { Daemon } from "..";
 import { UserContext } from "../context";
 
-/**
- * RESTRICTED: this class does not have an entry in ProcessWithPermissions,
- * and as such cannot be accessed by third-party applications.
- */
 export class VersionUserContext extends UserContext implements IVersionUserContext {
   constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);

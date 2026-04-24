@@ -6,13 +6,6 @@ import type { LoginActivity } from "$types/activity";
 import { Daemon } from "..";
 import { UserContext } from "../context";
 
-/**
- * RESTRICTED: this class does not have an entry in ProcessWithPermissions,
- * and as such cannot be accessed by third-party applications.
- *
- * Access is restricted because login activities return the user's token,
- * which we do not want TPAs to obtain.
- */
 export class LoginActivityUserContext extends UserContext implements ILoginActivityUserContext {
   constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);

@@ -153,9 +153,6 @@ export class TerminalMode extends Process {
       broadcast(`Starting drive notifier watcher`);
       userDaemon.init!.startDriveNotifierWatcher();
 
-      broadcast(`Starting permission manager`);
-      await userDaemon.init!.startPermissionHandler();
-
       broadcast(`Indexing your files`);
       await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
 
