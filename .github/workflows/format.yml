@@ -23,4 +23,4 @@ jobs:
       - name: Satisfy dependencies
         run: yarn install --frozen-lockfile
       - name: Check console usages
-        run: yarn build -dh
+        run: yarn build -bh
