@@ -1,18 +1,18 @@
+import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IStoreConnector } from "$interfaces/modules/server/IStoreConnector";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
+import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import type { IProtocolServiceProcess } from "$interfaces/services/IProtocolServiceProcess";
 import { AdminAppImportPathAbsolutes } from "$ts/apps/store";
-import { Daemon } from "$ts/env";
-import { ArcOSVersion, Env, Fs, Server } from "$ts/env";
+import { ArcOSVersion, Daemon, Env, Fs, Server } from "$ts/env";
 import { AdminFileSystem } from "$ts/kernel/mods/fs/drives/admin";
 import { AdminServerDrive } from "$ts/kernel/mods/fs/drives/aefs";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
-import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
 import { UserPaths } from "$ts/user/store";
 import { deepCopyWithBlobs } from "$ts/util";
 import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
@@ -42,7 +42,6 @@ import type { SharedDriveType } from "$types/shares";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
 import { fromExtension } from "human-filetypes";
 import JSZip from "jszip";
-import { MessagingInterface } from "../MessagingService";
 import { AdminProtocolHandlers } from "./proto";
 import { AdminScopes } from "./store";
 
@@ -51,7 +50,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
 
     this.setSource(__SOURCE__);
@@ -1057,7 +1056,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async blockStoreItem(id: string, reason?: string): Promise<boolean> {
     if (this._disposed) return false;
     const item = await this.getStoreItem(id);
-    const messaging = this.host.getService<MessagingInterface>("MessagingService");
+    const messaging = this.host.getService<IMessagingInterface>("MessagingService");
 
     if (!item || item.blocked) return false;
 
@@ -1090,7 +1089,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async unblockStoreItem(id: string, reason?: string) {
     if (this._disposed) return false;
     const item = await this.getStoreItem(id);
-    const messaging = this.host.getService<MessagingInterface>("MessagingService");
+    const messaging = this.host.getService<IMessagingInterface>("MessagingService");
 
     if (!item || !item.blocked) return false;
 
@@ -1154,7 +1153,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     if (this._disposed) return false;
     const target = `T:/AdminBootstrapper/${id}`;
     const pkg = await this.getStoreItem(id);
-    const distrib = this.host.getService<DistributionServiceProcess>("DistribSvc");
+    const distrib = this.host.getService<IDistributionServiceProcess>("DistribSvc");
 
     const status = (s: string) => {
       this.Log(`readStoreItemFiles: ${id}: ${s}`);

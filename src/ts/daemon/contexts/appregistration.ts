@@ -1,8 +1,8 @@
 import type { IAppRegistrationUserContext } from "$interfaces/contexts/IAppRegistrationUserContext";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
-import { Env, Fs, SysDispatch } from "$ts/env";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
+import { Daemon, Env, Fs, SysDispatch } from "$ts/env";
 import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
-import type { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
 import { AppGroups, DefaultAppData, UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
@@ -10,7 +10,6 @@ import { getParentDirectory, join } from "$ts/util/fs";
 import { tryJsonParse, validateObject } from "$ts/util/json";
 import type { App, AppStorage, InstalledApp } from "$types/app";
 import { LogLevel } from "$types/logging";
-import { Daemon } from "$ts/env";
 import { UserContext } from "../context";
 
 export class AppRegistrationUserContext extends UserContext implements IAppRegistrationUserContext {
@@ -53,7 +52,7 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
 
   async uninstallPackageWithStatus(id: string, deleteFiles = false) {
     this.Log(`Attempting to uninstall app '${id}'`);
-    const distrib = this.serviceHost?.getService<DistributionServiceProcess>("DistribSvc");
+    const distrib = this.serviceHost?.getService<IDistributionServiceProcess>("DistribSvc");
 
     if (!distrib) return false;
 

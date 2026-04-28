@@ -5,6 +5,7 @@ import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IServerManager } from "$interfaces/modules/IServerManager";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
+import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { UserDaemon } from "$ts/daemon";
 import { Env, GetConnector, getKMod, SoundBus, Stack, State, SysDispatch } from "$ts/env";
@@ -466,7 +467,7 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async firstRun(daemon: IUserDaemon) {
-    const process = await Stack.spawn<FirstRunRuntime>(
+    const process = await Stack.spawn<IFirstRunRuntime>(
       FirstRunRuntime,
       undefined,
       daemon.userInfo?._id,

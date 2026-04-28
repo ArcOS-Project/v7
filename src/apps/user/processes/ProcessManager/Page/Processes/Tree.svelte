@@ -1,8 +1,8 @@
 <script lang="ts">
+  import type { ProcessManagerRuntime } from "$apps/user/processes/runtime";
   import type { IProcess } from "$interfaces/IProcess";
   import { Stack } from "$ts/env";
   import { onMount } from "svelte";
-  import type { ProcessManagerRuntime } from "$apps/user/processes/runtime";
   import Row from "./Tree/Row.svelte";
 
   const { process }: { process: ProcessManagerRuntime } = $props();

@@ -1,8 +1,7 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/env";
-import { Env, SoundBus } from "$ts/env";
-import { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
+import { Daemon, Env, SoundBus } from "$ts/env";
 import { ErrorUtils } from "$ts/util/error";
 import type { App, AppProcessData } from "$types/app";
 import type { ParsedStackFrame } from "$types/error";
@@ -40,7 +39,7 @@ export class OopsNotifierRuntime extends AppProcess {
     try {
       this.stackFrames = ErrorUtils.parseStack(this.exception);
 
-      const storage = Daemon?.serviceHost?.getService<ApplicationStorage>("AppStorage");
+      const storage = Daemon?.serviceHost?.getService<IApplicationStorage>("AppStorage");
 
       if (storage && this.stackFrames[0].parsed?.appId) {
         const app = storage.getAppSynchronous(this.stackFrames[0].parsed.appId);

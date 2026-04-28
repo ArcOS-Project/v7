@@ -1,6 +1,6 @@
 <script lang="ts">
+  import type { IShareManager } from "$interfaces/services/IShareManager";
   import { Daemon } from "$ts/env";
-  import { ShareManager } from "$ts/servicehost/services/ShareMgmt";
   import { MessageBox } from "$ts/util/dialog";
   import type { OverlayRuntime } from "../../overlay";
 
@@ -8,7 +8,7 @@
   let newName = $state<string>();
 
   async function changeIt() {
-    const shares = Daemon?.serviceHost?.getService<ShareManager>("ShareMgmt")!;
+    const shares = Daemon?.serviceHost?.getService<IShareManager>("ShareMgmt")!;
     const result = await shares?.renameShare(process.parentProcess.shareId, newName!);
 
     process.closeWindow();

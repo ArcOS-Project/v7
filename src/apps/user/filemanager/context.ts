@@ -1,8 +1,7 @@
 import type { ISharedDrive } from "$interfaces/drives/ISharedDrive";
 import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
-import { Daemon } from "$ts/env";
-import { Env, Fs } from "$ts/env";
-import { ShareManager } from "$ts/servicehost/services/ShareMgmt";
+import type { IShareManager } from "$interfaces/services/IShareManager";
+import { Daemon, Env, Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
@@ -68,7 +67,7 @@ export function FileManagerContextMenu(runtime: IFileManagerRuntime): AppContext
                 {
                   caption: "Leave",
                   action: async () => {
-                    const shares = Daemon?.serviceHost?.getService<ShareManager>("ShareMgmt");
+                    const shares = Daemon?.serviceHost?.getService<IShareManager>("ShareMgmt");
 
                     await Fs.umountDrive(share.shareId!);
                     await shares?.leaveShare(share.shareId!);

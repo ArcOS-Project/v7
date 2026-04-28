@@ -3,7 +3,7 @@
   import { UserPaths } from "$ts/user/store";
   import type { FolderEntry } from "$types/fs";
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
-  
+
   const { process, folder }: { process: IFileManagerRuntime; folder: FolderEntry } = $props();
 
   const { path } = process;

@@ -108,7 +108,7 @@ export class UserDaemon extends Process implements IUserDaemon {
     this.name = "UserDaemon";
 
     this.setSource(__SOURCE__);
-    SetDaemon(this)
+    SetDaemon(this);
   }
 
   async start() {

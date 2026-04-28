@@ -1,5 +1,5 @@
-import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { ICommandResult } from "$interfaces/ICommandResult";
+import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { PublicUserInfo, UserInfo } from "$types/user";
 
 export interface IAccountUserContext extends IUserContext {

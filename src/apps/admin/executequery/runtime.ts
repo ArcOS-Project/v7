@@ -1,8 +1,8 @@
 import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
 import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Fs } from "$ts/env";
-import { AdminBootstrapper } from "$ts/servicehost/services/AdminBootstrapper";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory } from "$ts/util/fs";
@@ -14,8 +14,15 @@ import type { ExpandedUserInfo } from "$types/user";
 import { ExecuteQueryAltMenu } from "./altmenu";
 import LoadQueryOverlayApp from "./LoadQuery/LoadQuery";
 import SaveQueryOverlayApp from "./SaveQuery/SaveQuery";
-import { QueryDesignations, QuerySources } from "./store";
-import type { QueryDesignationsType, QueryExpression, QueryExpressionsType, QuerySourceKey, SavedQuery } from "./types";
+import { QueryDesignations } from "./store";
+import {
+  QuerySources,
+  type QueryDesignationsType,
+  type QueryExpression,
+  type QueryExpressionsType,
+  type QuerySourceKey,
+  type SavedQuery,
+} from "./types";
 
 export class ExecuteQueryRuntime extends AppProcess implements IExecuteQueryRuntime {
   result = Store<any[]>([]);
@@ -29,7 +36,7 @@ export class ExecuteQueryRuntime extends AppProcess implements IExecuteQueryRunt
   expressions = Store<QueryExpressionsType>(
     Object.fromEntries(QuerySources.map((s) => [s, [] as QueryExpression[]])) as QueryExpressionsType
   );
-  admin: AdminBootstrapper;
+  admin: IAdminBootstrapper;
   users: ExpandedUserInfo[] = [];
   readonly queryDesignations: QueryDesignationsType = QueryDesignations(this);
   protected override overlayStore: Record<string, App> = {
@@ -43,7 +50,7 @@ export class ExecuteQueryRuntime extends AppProcess implements IExecuteQueryRunt
     super(pid, parentPid, app);
 
     this.setSource(__SOURCE__);
-    this.admin = Daemon.serviceHost?.getService<AdminBootstrapper>("AdminBootstrapper")!;
+    this.admin = Daemon.serviceHost?.getService<IAdminBootstrapper>("AdminBootstrapper")!;
     this.altMenu.set(ExecuteQueryAltMenu(this));
   }
 

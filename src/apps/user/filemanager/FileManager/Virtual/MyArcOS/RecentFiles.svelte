@@ -1,13 +1,13 @@
 <script lang="ts">
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+  import type { IRecentFilesService } from "$interfaces/services/IRecentFilesService";
   import { Daemon } from "$ts/env";
-  import { RecentFilesService } from "$ts/servicehost/services/RecentFilesSvc";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import RecentFile from "./RecentFiles/RecentFile.svelte";
 
   const { process }: { process: IFileManagerRuntime } = $props();
   const { userPreferences } = process;
-  const service = Daemon.serviceHost?.getService<RecentFilesService>("RecentFilesSvc");
+  const service = Daemon.serviceHost?.getService<IRecentFilesService>("RecentFilesSvc");
   const Rrecents = service?.Recents;
 
   let selected = $state<string>("");

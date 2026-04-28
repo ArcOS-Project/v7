@@ -1,5 +1,5 @@
-import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { IProcess } from "$interfaces/IProcess";
+import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { App, AppProcessSpawnOptions } from "$types/app";
 
 export interface ISpawnUserContext extends IUserContext {

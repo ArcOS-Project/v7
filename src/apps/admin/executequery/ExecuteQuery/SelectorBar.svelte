@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
-  import { QuerySources } from "../store";
+  import { QuerySources } from "../types";
 
   const { process }: { process: IExecuteQueryRuntime } = $props();
   const { selectedSource } = process;

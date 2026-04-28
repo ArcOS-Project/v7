@@ -1,11 +1,10 @@
-import { Daemon } from "$ts/env";
-import { Env, Fs } from "$ts/env";
-import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
+import { Daemon, Env, Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
 import type { ArcPackage, StoreItem } from "$types/package";
 import type JSZip from "jszip";
-import type { DistributionServiceProcess } from "..";
 import { InstallerProcessBase } from "./base";
 
 export class AppInstallerProcess extends InstallerProcessBase {
@@ -65,7 +64,7 @@ export class AppInstallerProcess extends InstallerProcessBase {
     if (!this.item) return;
 
     const existing = Daemon?.preferences().pinnedApps.includes(this.metadata?.appId!);
-    const appStore = Daemon?.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const appStore = Daemon?.serviceHost?.getService<IApplicationStorage>("AppStorage");
     const app = appStore?.getAppSynchronous(this.metadata?.appId!)!;
 
     if (existing) return;
@@ -134,8 +133,8 @@ export class AppInstallerProcess extends InstallerProcessBase {
     onStage?.("Getting installed package");
 
     const host = Daemon?.serviceHost;
-    const distrib = host?.getService<DistributionServiceProcess>("DistribSvc")!;
-    const appStore = host?.getService<ApplicationStorage>("AppStorage");
+    const distrib = host?.getService<IDistributionServiceProcess>("DistribSvc")!;
+    const appStore = host?.getService<IApplicationStorage>("AppStorage");
 
     const installedPkg = await distrib?.getInstalledStoreItemById(metadata.appId);
 

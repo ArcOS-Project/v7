@@ -1,10 +1,10 @@
 import type { GlobalLoadIndicatorProgress } from "$apps/components/globalloadindicator/types";
 import type { IconPickerData } from "$apps/components/iconpicker/types";
-import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IHelpersUserContext } from "$interfaces/contexts/IHelpersUserContext";
+import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import SafeModeNotice from "$lib/Daemon/SafeModeNotice.svelte";
-import { ArcOSVersion, Env, Stack, SysDispatch } from "$ts/env";
+import { ArcOSVersion, Daemon, Env, Stack, SysDispatch } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { Sleep } from "$ts/sleep";
@@ -13,7 +13,6 @@ import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import type { App } from "$types/app";
 import type { ExpandedTerminal } from "$types/terminal";
-import { Daemon } from "$ts/env";
 import { UserContext } from "../context";
 
 export class HelpersUserContext extends UserContext implements IHelpersUserContext {

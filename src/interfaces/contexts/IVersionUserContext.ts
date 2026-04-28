@@ -1,5 +1,5 @@
-import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { IUserContext } from "$interfaces/IUserDaemon";
 
 export interface IVersionUserContext extends IUserContext {
   isRegisteredVersionOutdated(): Promise<boolean>;

@@ -1,7 +1,6 @@
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/env";
-import { SysDispatch } from "$ts/env";
-import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
+import { Daemon, SysDispatch } from "$ts/env";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -11,7 +10,7 @@ import type { MultiUpdateStatus, MultiUpdateStatusNode } from "./types";
 
 export class MultiUpdateGuiRuntime extends AppProcess {
   private updates: UpdateInfo[];
-  private distrib: DistributionServiceProcess;
+  private distrib: IDistributionServiceProcess;
   private win: HTMLDivElement | undefined;
   public status = Store<MultiUpdateStatus>([]);
   public currentPackage = Store<StoreItem | undefined>();
@@ -28,7 +27,7 @@ export class MultiUpdateGuiRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData, updates: UpdateInfo[]) {
     super(pid, parentPid, app);
 
-    this.distrib = Daemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
+    this.distrib = Daemon!.serviceHost!.getService<IDistributionServiceProcess>("DistribSvc")!;
     this.updates = Array.isArray(updates) ? updates : [];
 
     this.setSource(__SOURCE__);

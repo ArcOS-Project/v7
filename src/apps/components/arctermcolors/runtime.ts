@@ -1,6 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/env";
-import { Env, Fs } from "$ts/env";
+import { Daemon, Env, Fs } from "$ts/env";
 import { DefaultArcTermConfiguration } from "$ts/terminal/store";
 import { UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";

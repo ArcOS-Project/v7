@@ -1,11 +1,11 @@
 <script lang="ts">
   import StatusBar from "$lib/Window/StatusBar.svelte";
   import StatusSegment from "$lib/Window/StatusBar/StatusSegment.svelte";
+  import { Plural } from "$ts/util";
   import { formatBytes } from "$ts/util/fs";
   import { Store } from "$ts/writable";
   import { onMount } from "svelte";
   import type { SqeletonRuntime } from "../runtime";
-  import { Plural } from "$ts/util";
 
   const { process }: { process: SqeletonRuntime } = $props();
   const { openedFileName, queryIndex, queries, result, queryHistory, tables, errors, working } = process;

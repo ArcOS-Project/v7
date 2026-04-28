@@ -1,8 +1,7 @@
+import type { IShareManager } from "$interfaces/services/IShareManager";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/env";
-import { Env, Stack } from "$ts/env";
+import { Daemon, Env, Stack } from "$ts/env";
 import { SharedDrive } from "$ts/kernel/mods/fs/drives/share";
-import type { ShareManager } from "$ts/servicehost/services/ShareMgmt";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -11,7 +10,7 @@ export class ShareConnGuiRuntime extends AppProcess {
   shareUsername = Store<string>();
   shareName = Store<string>();
   sharePassword = Store<string>();
-  shares: ShareManager;
+  shares: IShareManager;
 
   //#region LIFECYCLE
   constructor(pid: number, parentPid: number, app: AppProcessData) {

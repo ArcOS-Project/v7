@@ -1,6 +1,8 @@
+import type { IAppProcess } from "$interfaces/IAppProcess";
 import { AppProcess } from "$ts/apps/process";
 import { Env, Stack } from "$ts/env";
 import { Sleep } from "$ts/sleep";
+import { safeIsAppProc } from "$ts/util/apps";
 import { Store } from "$ts/writable";
 import type { AppProcessData, ContextMenuInstance, ContextMenuItem } from "$types/app";
 import { WindowSystemContextMenu } from "./system";
@@ -104,7 +106,7 @@ export class ContextMenuRuntime extends AppProcess {
       x: e.clientX,
       y: e.clientY,
       items,
-      process: proc && proc instanceof AppProcess ? proc : undefined,
+      process: proc && safeIsAppProc(proc) ? (proc as IAppProcess) : undefined,
       props: this.contextProps[contextProps] || [],
     });
   }
@@ -125,11 +127,11 @@ export class ContextMenuRuntime extends AppProcess {
   //#region GETTERS
 
   getContextEntry(pid: number, scope: string): ContextMenuItem[] {
-    const proc = Stack.getProcess(pid);
+    const proc = Stack.getProcess(pid) as IAppProcess;
 
-    if (!(proc instanceof AppProcess)) return [];
+    if (!safeIsAppProc(proc)) return [];
 
-    const menu = Object.entries({ ...proc.contextMenu, ...WindowSystemContextMenu() }); // Concatenate process context menu with the system contexts
+    const menu = Object.entries({ ...proc!.contextMenu, ...WindowSystemContextMenu() }); // Concatenate process context menu with the system contexts
 
     for (const [key, items] of menu) {
       if (scope.includes(key)) return items;

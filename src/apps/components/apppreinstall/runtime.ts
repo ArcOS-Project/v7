@@ -1,7 +1,6 @@
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/env";
-import { Env, Fs } from "$ts/env";
-import type { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
+import { Daemon, Env, Fs } from "$ts/env";
 import { arrayBufferToText } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { tryJsonParse } from "$ts/util/json";
@@ -72,7 +71,7 @@ export class AppPreInstallRuntime extends AppProcess {
     );
 
     try {
-      const distrib = Daemon?.serviceHost?.getService<DistributionServiceProcess>("DistribSvc")!;
+      const distrib = Daemon?.serviceHost?.getService<IDistributionServiceProcess>("DistribSvc")!;
 
       if (!(await distrib.validatePackage(this.pkgPath))) {
         return this.fail("Package is corrupt; missing files");

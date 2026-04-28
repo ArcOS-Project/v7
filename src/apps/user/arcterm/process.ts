@@ -1,5 +1,5 @@
-import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IArcTerminal, ITerminalWindowRuntime } from "$interfaces/IArcTerminal";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Env, Fs, Stack } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { ArcTerminal } from "$ts/terminal";

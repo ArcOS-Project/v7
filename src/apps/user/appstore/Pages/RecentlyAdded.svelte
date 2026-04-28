@@ -1,10 +1,10 @@
 <script lang="ts">
+  import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import { TimeFrames } from "$ts/user/store";
   import type { PartialStoreItem, StoreItem } from "$types/package";
   import PackageGrid from "../AppStore/PackageGrid.svelte";
-  import type { AppStoreRuntime } from "../runtime";
 
-  const { groups, all, process }: { groups: Record<string, StoreItem[]>; all: PartialStoreItem[]; process: AppStoreRuntime } =
+  const { groups, all, process }: { groups: Record<string, StoreItem[]>; all: PartialStoreItem[]; process: IAppStoreRuntime } =
     $props();
 </script>
 

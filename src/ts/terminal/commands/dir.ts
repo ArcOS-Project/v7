@@ -1,5 +1,5 @@
-import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import { Fs } from "$ts/env";
 import { FormatLargeNumber, Gap, maxLength, Plural, Truncate } from "$ts/util";
 import { formatBytes, join } from "$ts/util/fs";

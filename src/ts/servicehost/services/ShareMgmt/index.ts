@@ -1,9 +1,8 @@
+import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IShareManager } from "$interfaces/services/IShareManager";
-import { Daemon } from "$ts/env";
-import { Fs } from "$ts/env";
+import { Daemon, Fs } from "$ts/env";
 import { SharedDrive } from "$ts/kernel/mods/fs/drives/share";
 import { Backend } from "$ts/kernel/mods/server/axios";
-import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { toForm } from "$ts/util/form";
 import type { FilesystemProgressCallback } from "$types/fs";
@@ -13,7 +12,7 @@ import type { SharedDriveType } from "$types/shares";
 export class ShareManager extends BaseService implements IShareManager {
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost) {
     super(pid, parentPid, name, host);
 
     this.setSource(__SOURCE__);

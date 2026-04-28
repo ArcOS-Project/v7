@@ -1,7 +1,7 @@
-import type { IServerManager } from "$interfaces/modules/IServerManager";
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import type { IServerManager } from "$interfaces/modules/IServerManager";
+import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
 import { getKMod } from "$ts/env";
-import { AdminBootstrapper } from "$ts/servicehost/services/AdminBootstrapper";
 import { getAllJsonPaths, getJsonHierarchy } from "$ts/util/hierarchy";
 import { tryJsonParse } from "$ts/util/json";
 import { ElevationLevel } from "$types/elevation";
@@ -37,7 +37,7 @@ export class AdminCommand extends TerminalProcess {
     if (!elevated) return 1;
 
     const paths = getAllJsonPaths(AdminCommandStore).map((a) => a.replaceAll(".", " "));
-    const admin = term.daemon?.serviceHost?.getService<AdminBootstrapper>("AdminBootstrapper");
+    const admin = term.daemon?.serviceHost?.getService<IAdminBootstrapper>("AdminBootstrapper");
     const server = getKMod<IServerManager>("server");
 
     term.term.clear();
@@ -96,4 +96,4 @@ export class AdminCommand extends TerminalProcess {
   }
 }
 
-export type AdminCommandType = (term: IArcTerminal, admin: AdminBootstrapper, argv: string[]) => Promise<number>;
+export type AdminCommandType = (term: IArcTerminal, admin: IAdminBootstrapper, argv: string[]) => Promise<number>;

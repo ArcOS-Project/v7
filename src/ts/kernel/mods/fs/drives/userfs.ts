@@ -1,7 +1,6 @@
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IEnvironment } from "$interfaces/modules/IEnvironment";
-import { Daemon } from "$ts/env";
-import { getKMod, Server } from "$ts/env";
+import { Daemon, getKMod, Server } from "$ts/env";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { ArcBuild } from "$ts/metadata/build";

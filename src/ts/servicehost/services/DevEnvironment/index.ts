@@ -1,10 +1,9 @@
+import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IDevelopmentEnvironment } from "$interfaces/services/IDevelopmentEnvironment";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { Daemon } from "$ts/env";
-import { Env, Fs, Stack } from "$ts/env";
+import { Daemon, Env, Fs, Stack } from "$ts/env";
 import { DevDrive } from "$ts/kernel/mods/fs/drives/devenv";
 import { ArcBuild } from "$ts/metadata/build";
-import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { MessageBox } from "$ts/util/dialog";
 import type { DevEnvActivationResult, ProjectMetadata } from "$types/devenv";
@@ -24,7 +23,7 @@ export class DevelopmentEnvironment extends BaseService implements IDevelopmentE
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
 
     window.addEventListener("onbeforeunload", () => {

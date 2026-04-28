@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
   import { QueryUserColumns } from "$apps/admin/executequery/store";
+  import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
   import BasicComparisonValue from "./ComparisonValue/BasicComparisonValue.svelte";
   import BooleanComparisonValue from "./ComparisonValue/BooleanComparisonValue.svelte";
   import JsonHierarchyComparisonValue from "./ComparisonValue/JsonHierarchyComparisonValue.svelte";

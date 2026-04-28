@@ -1,7 +1,7 @@
 import type { Constructs } from "$interfaces/common";
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
-import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
 import type { IServerConnector, IServerManager } from "$interfaces/modules/IServerManager";
+import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import { getKMod } from "$ts/env";
 import { tryJsonParse } from "$ts/util/json";
@@ -9,10 +9,10 @@ import type { ServerInfo, ServerOption } from "$types/server";
 import axios from "axios";
 import { KernelModule } from "../../module";
 import { Backend } from "./axios";
+import { ServerConnector } from "./connectors";
 import { TotpConnector } from "./connectors/TotpConnector";
 import { TpaConnector } from "./connectors/TpaConnector";
 import { UserConnector } from "./connectors/UserConnector";
-import { ServerConnector } from "./connectors";
 
 export const VALIDATION_STR = "thisWonderfulArcOSServerIdentifiedByTheseWordsPleaseDontSteal(c)IzKuipers";
 

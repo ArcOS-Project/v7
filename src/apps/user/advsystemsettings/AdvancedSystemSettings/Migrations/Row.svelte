@@ -1,13 +1,13 @@
 <script lang="ts">
+  import type { IMigrationService } from "$interfaces/services/IMigrationService";
   import { Daemon } from "$ts/env";
-  import type { MigrationService } from "$ts/servicehost/services/MigrationSvc";
 
   const {
     migrationService,
     id,
     version,
     refresh,
-  }: { migrationService: MigrationService; id: string; version: number; refresh: () => void } = $props();
+  }: { migrationService: IMigrationService; id: string; version: number; refresh: () => void } = $props();
   const migration = migrationService.MIGRATIONS.find((m) => m.name === id);
   const upToDate = migration?.version === version && !migration?.inversional;
 

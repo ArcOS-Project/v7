@@ -6,13 +6,13 @@ import {
 } from "$apps/components/fsprogress/types";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import type { IFilesystemUserContext } from "$interfaces/contexts/IFilesystemUserContext";
-import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { ILegacyServerDrive } from "$interfaces/drives/ILegacyServerDrive";
 import type { IMemoryFilesystemDrive } from "$interfaces/drives/IMemoryFilesystemDrive";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IRecentFilesService } from "$interfaces/services/IRecentFilesService";
 import type { ITrashCanService } from "$interfaces/services/ITrashCanService";
-import { Env, Fs, Stack, SysDispatch } from "$ts/env";
+import { Daemon, Env, Fs, Stack, SysDispatch } from "$ts/env";
 import { LegacyServerDrive } from "$ts/kernel/mods/fs/drives/legacy";
 import { SourceFilesystemDrive } from "$ts/kernel/mods/fs/drives/src";
 import { ZIPDrive } from "$ts/kernel/mods/fs/drives/zip";
@@ -27,7 +27,6 @@ import type { FileHandler, FileOpenerResult } from "$types/fs";
 import type { LegacyConnectionInfo } from "$types/legacy";
 import type { ArcShortcut } from "$types/shortcut";
 import type { CategorizedDiskUsage } from "$types/user";
-import { Daemon } from "$ts/env";
 import { UserContext } from "../context";
 
 export class FilesystemUserContext extends UserContext implements IFilesystemUserContext {

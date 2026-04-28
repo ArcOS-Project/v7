@@ -1,9 +1,8 @@
+import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IIconService } from "$interfaces/services/IIconService";
 import { ConfigurationBuilder } from "$ts/config";
-import { Daemon } from "$ts/env";
-import { Fs } from "$ts/env";
+import { Daemon, Fs } from "$ts/env";
 import { getAllImages, getGroupedIcons, iconIdFromPath, maybeIconId } from "$ts/images";
-import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
@@ -27,7 +26,7 @@ export class IconService extends BaseService implements IIconService {
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
 
     this.setSource(__SOURCE__);

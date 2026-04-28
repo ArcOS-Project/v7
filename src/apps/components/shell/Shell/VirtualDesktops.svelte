@@ -1,8 +1,7 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import { AppProcess } from "$ts/apps/process";
-  import { Daemon } from "$ts/env";
-  import { Stack } from "$ts/env";
+  import { Daemon, Stack } from "$ts/env";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { Wallpapers } from "$ts/user/wallpaper/store";
   import { Store } from "$ts/writable";

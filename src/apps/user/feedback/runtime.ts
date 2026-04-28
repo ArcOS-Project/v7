@@ -4,7 +4,7 @@ import type { AppProcessData } from "$types/app";
 
 export class FeedbackProcess extends Process {
   //#region LIFECYCLE
-    
+
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid);
 

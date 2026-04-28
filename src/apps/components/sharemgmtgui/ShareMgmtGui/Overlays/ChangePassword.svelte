@@ -1,6 +1,6 @@
 <script lang="ts">
+  import type { IShareManager } from "$interfaces/services/IShareManager";
   import { Daemon } from "$ts/env";
-  import { ShareManager } from "$ts/servicehost/services/ShareMgmt";
   import { MessageBox } from "$ts/util/dialog";
   import type { OverlayRuntime } from "../../overlay";
 
@@ -26,7 +26,7 @@
       return;
     }
 
-    const shares = Daemon?.serviceHost?.getService<ShareManager>("ShareMgmt")!;
+    const shares = Daemon?.serviceHost?.getService<IShareManager>("ShareMgmt")!;
     const result = shares?.changeSharePassword(process.parentProcess.shareId, newPassword);
 
     process.closeWindow();

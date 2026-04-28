@@ -1,16 +1,15 @@
 <script lang="ts">
-  import { Daemon } from "$ts/env";
-  import { ArcOSVersion, Env, Stack, State } from "$ts/env";
+  import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
+  import { ArcOSVersion, Daemon, Env, Stack, State } from "$ts/env";
   import { KernelModules } from "$ts/kernel/getters";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
-  import { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
   import type { AdvSysSetRuntime } from "../runtime";
 
   const { process }: { process: AdvSysSetRuntime } = $props();
   const { userPreferences } = process;
   const userInfo = Daemon?.userInfo;
-  const appStore = Daemon?.serviceHost?.getService<ApplicationStorage>("AppStorage")?.buffer();
+  const appStore = Daemon?.serviceHost?.getService<IApplicationStorage>("AppStorage")?.buffer();
 </script>
 
 <div class="left">

@@ -11,8 +11,7 @@
 import type { ITpaConnector } from "$interfaces/modules/server/ITpaConnector";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { ThirdPartyProps } from "$ts/apps/tpa/props";
-import { Daemon } from "$ts/env";
-import { Env, Fs, Stack } from "$ts/env";
+import { Daemon, Env, Fs, Stack } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { arrayBufferToText } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";

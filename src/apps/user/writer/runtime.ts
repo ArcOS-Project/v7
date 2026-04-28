@@ -1,7 +1,6 @@
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/env";
-import { Fs } from "$ts/env";
+import { Daemon, Fs } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";

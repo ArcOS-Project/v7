@@ -3,7 +3,7 @@
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { Daemon } from "$ts/env";
   import type { UserPreferencesStore } from "$types/user";
-  
+
   const {
     userPreferences,
     process,

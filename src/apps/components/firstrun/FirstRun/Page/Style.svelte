@@ -1,10 +1,11 @@
 <script lang="ts">
+  import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
   import { Daemon } from "$ts/env";
-  import type { FirstRunRuntime } from "../../runtime";
+
   import { FirstRunThemes } from "../../store";
   import type { FirstRunTheme } from "../../types";
 
-  const { process }: { process: FirstRunRuntime } = $props();
+  const { process }: { process: IFirstRunRuntime } = $props();
 
   let selection = $state<string>("dark");
 

@@ -1,5 +1,5 @@
-import { Daemon } from "$ts/env";
-import { Fs } from "$ts/env";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
+import { Daemon, Fs } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { UUID } from "$ts/util/uuid";
@@ -7,7 +7,6 @@ import { Store } from "$ts/writable";
 import type { ArcPackage, InstallStatus, InstallStatusMode, InstallStatusType, StoreItem } from "$types/package";
 import { fromExtension } from "human-filetypes";
 import type JSZip from "jszip";
-import type { DistributionServiceProcess } from "..";
 
 export class InstallerProcessBase extends Process {
   protected verboseLog: string[] = [];
@@ -16,7 +15,7 @@ export class InstallerProcessBase extends Process {
   protected workingDirectory: string = "";
   protected zip?: JSZip;
   protected MISC_STEPCOUNT = 2;
-  parent: DistributionServiceProcess;
+  parent: IDistributionServiceProcess;
   failReason = Store<string>();
   installing = Store<boolean>(false);
   TOTAL_COUNT = Store<number>(this.MISC_STEPCOUNT);
@@ -38,7 +37,7 @@ export class InstallerProcessBase extends Process {
 
     if (item) this.item = item;
 
-    this.parent = Daemon?.serviceHost?.getService<DistributionServiceProcess>("DistribSvc")!;
+    this.parent = Daemon?.serviceHost?.getService<IDistributionServiceProcess>("DistribSvc")!;
     this.name = "InstallerProcess";
 
     this.setSource(__SOURCE__);

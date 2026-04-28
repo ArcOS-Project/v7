@@ -1,5 +1,5 @@
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
-import { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
 import { isPopulatable } from "$ts/util/apps";
 import type { App, InstalledApp } from "$types/app";
 import type { Arguments } from "$types/terminal";
@@ -23,7 +23,7 @@ export class AppListCommand extends TerminalProcess {
   async main(term: IArcTerminal, flags: Arguments) {
     const all = flags.a || flags.all;
     const countInstead = flags.c || flags.count;
-    const store = term.daemon?.serviceHost?.getService<ApplicationStorage>("AppStorage")?.buffer();
+    const store = term.daemon?.serviceHost?.getService<IApplicationStorage>("AppStorage")?.buffer();
 
     if (!store) {
       term.Error("ERR_NO_DAEMON");

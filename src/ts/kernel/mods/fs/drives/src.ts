@@ -1,10 +1,10 @@
+import { Daemon } from "$ts/env";
 import { CommandResult } from "$ts/result";
 import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback } from "$types/fs";
 import type { GitFolder } from "$types/git";
 import axios from "axios";
 import { fromExtension } from "human-filetypes";
 import { FilesystemDrive } from "./generic";
-import { Daemon } from "$ts/env";
 
 export class SourceFilesystemDrive extends FilesystemDrive {
   override IDENTIFIES_AS: string = "src";

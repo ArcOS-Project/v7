@@ -1,8 +1,8 @@
-import type { IWaveKernel } from "$interfaces/IWaveKernel";
 import type { IStateHandler } from "$interfaces/IStateHandler";
+import type { IWaveKernel } from "$interfaces/IWaveKernel";
+import type { IKernelModule } from "$interfaces/modules/IKernelModule";
 import { LogLevel } from "$types/logging";
 import { Log } from "../../logging";
-import type { IKernelModule } from "$interfaces/modules/IKernelModule";
 
 export class KernelModule implements IKernelModule {
   protected readonly IS_KMOD = true;

@@ -1,5 +1,4 @@
-import { Daemon } from "$ts/env";
-import { Env, Fs } from "$ts/env";
+import { Daemon, Env, Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";

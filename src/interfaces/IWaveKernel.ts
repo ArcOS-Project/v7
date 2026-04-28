@@ -20,5 +20,3 @@ export interface IWaveKernel {
   Log(source: string, message: string, level?: LogLevel): void;
   panic(reason: string, brief?: string): Promise<void>;
 }
-
-

@@ -4,11 +4,11 @@
   import css from "highlight.js/lib/languages/css";
   import ini from "highlight.js/lib/languages/ini";
   import javascript from "highlight.js/lib/languages/javascript";
-  import typescript from "highlight.js/lib/languages/typescript";
   import json from "highlight.js/lib/languages/json";
   import markdown from "highlight.js/lib/languages/markdown";
   import plaintext from "highlight.js/lib/languages/plaintext";
   import sql from "highlight.js/lib/languages/sql";
+  import typescript from "highlight.js/lib/languages/typescript";
   import xml from "highlight.js/lib/languages/xml";
   import yaml from "highlight.js/lib/languages/yaml";
   import { onMount } from "svelte";

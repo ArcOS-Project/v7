@@ -1,12 +1,11 @@
-import { Daemon } from "$ts/env";
-import { Env, Fs } from "$ts/env";
+import type { IWallpaperRuntime } from "$interfaces/runtimes/IWallpaperRuntime";
+import { Daemon, Env, Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { getParentDirectory } from "$ts/util/fs";
 import type { AppContextMenu } from "$types/app";
 import type { FileEntry } from "$types/fs";
-import type { WallpaperRuntime } from "./runtime";
 
-export function WallpaperContextMenu(runtime: WallpaperRuntime): AppContextMenu {
+export function WallpaperContextMenu(runtime: IWallpaperRuntime): AppContextMenu {
   const shellPid = () => +Env.get("shell_pid");
   return {
     "file-icon": [

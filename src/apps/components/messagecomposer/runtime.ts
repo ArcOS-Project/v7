@@ -1,7 +1,6 @@
+import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/env";
-import { Fs } from "$ts/env";
-import { MessagingInterface } from "$ts/servicehost/services/MessagingService";
+import { Daemon, Fs } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";
 import { MessageBox } from "$ts/util/dialog";
@@ -20,7 +19,7 @@ export class MessageComposerRuntime extends AppProcess {
   title = Store<string>("");
   body = Store<string>("");
   replyId: string | undefined;
-  service: MessagingInterface;
+  service: IMessagingInterface;
 
   //#region LIFECYCLE
 
@@ -35,7 +34,7 @@ export class MessageComposerRuntime extends AppProcess {
     }
     if (replyId) this.replyId = replyId;
 
-    this.service = Daemon!.serviceHost!.getService<MessagingInterface>("MessagingService")!;
+    this.service = Daemon!.serviceHost!.getService<IMessagingInterface>("MessagingService")!;
 
     this.setSource(__SOURCE__);
   }

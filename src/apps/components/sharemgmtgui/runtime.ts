@@ -1,7 +1,7 @@
+import type { IShareMgmtGuiRuntime } from "$interfaces/runtimes/IShareMgmtGuiRuntime";
+import type { IShareManager } from "$interfaces/services/IShareManager";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/env";
-import { Fs } from "$ts/env";
-import type { ShareManager } from "$ts/servicehost/services/ShareMgmt";
+import { Daemon, Fs } from "$ts/env";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
@@ -9,10 +9,10 @@ import type { SharedDriveType } from "$types/shares";
 import { ChangePasswordApp } from "./overlays/changepassword";
 import { RenameShareApp } from "./overlays/renameShare";
 
-export class ShareMgmtGuiRuntime extends AppProcess {
+export class ShareMgmtGuiRuntime extends AppProcess implements IShareMgmtGuiRuntime {
   members = Store<Record<string, string>>({});
-  info: SharedDriveType | undefined;
-  shares: ShareManager;
+  info?: SharedDriveType;
+  shares: IShareManager;
   shareId: string;
   selectedMember = Store<string>("");
   myShare = false;

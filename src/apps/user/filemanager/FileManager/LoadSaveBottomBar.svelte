@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
@@ -6,7 +7,6 @@
   import { Plural } from "$ts/util";
   import { getDriveLetter, getItemNameFromPath } from "$ts/util/fs";
   import { onMount } from "svelte";
-  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
 
   const { process }: { process: IFileManagerRuntime } = $props();
   const { saveName, path, contents, selection } = process;

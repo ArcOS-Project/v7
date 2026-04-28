@@ -1,5 +1,5 @@
-import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { Constructs } from "$interfaces/common";
+import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
 import type { SvelteComponent } from "svelte";

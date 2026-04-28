@@ -1,19 +1,19 @@
 import type { UserInfo, UserPreferences } from "$types/user";
 import type { ReadableStore } from "$types/writable";
 import type { IAccountUserContext } from "./contexts/IAccountUserContext";
-import type { ILoginActivityUserContext } from "./contexts/ILoginActivityUserContext";
-import type { IAppRegistrationUserContext } from "./contexts/IAppRegistrationUserContext";
 import type { IApplicationsUserContext } from "./contexts/IApplicationsUserContext";
+import type { IAppRegistrationUserContext } from "./contexts/IAppRegistrationUserContext";
+import type { IAppRendererUserContext } from "./contexts/IAppRendererUserContext";
 import type { IChecksUserContext } from "./contexts/IChecksUserContext";
 import type { IElevationUserContext } from "./contexts/IElevationUserContext";
 import type { IFilesystemUserContext } from "./contexts/IFilesystemUserContext";
 import type { IHelpersUserContext } from "./contexts/IHelpersUserContext";
 import type { IIconsUserContext } from "./contexts/IIconsUserContext";
 import type { IInitUserContext } from "./contexts/IInitUserContext";
+import type { ILoginActivityUserContext } from "./contexts/ILoginActivityUserContext";
 import type { INotificationsUserContext } from "./contexts/INotificationsUserContext";
 import type { IPowerUserContext } from "./contexts/IPowerUserContext";
 import type { IPreferencesUserContext } from "./contexts/IPreferencesUserContext";
-import type { IAppRendererUserContext } from "./contexts/IAppRendererUserContext";
 import type { IShortcutsUserContext } from "./contexts/IShortcutsUserContext";
 import type { ISpawnUserContext } from "./contexts/ISpawnUserContext";
 import type { IThemesUserContext } from "./contexts/IThemesUserContext";
@@ -22,12 +22,12 @@ import type { IWallpaperUserContext } from "./contexts/IWallpaperUserContext";
 import type { IWorkspaceUserContext } from "./contexts/IWorkspaceUserContext";
 import type { IProcess } from "./IProcess";
 import type { IServiceHost } from "./IServiceHost";
+import type { IServerConnector } from "./modules/IServerManager";
+import type { IShellRuntime } from "./runtimes/IShellRuntime";
 import type { IApplicationStorage } from "./services/IApplicationStorage";
 import type { IFileAssocService } from "./services/IFileAssocService";
 import type { IGlobalDispatch } from "./services/IGlobalDispatch";
 import type { ILibraryManagement } from "./services/ILibraryManagement";
-import type { IShellRuntime } from "./runtimes/IShellRuntime";
-import type { IServerConnector } from "./modules/IServerManager";
 
 export interface IUserDaemon extends IProcess {
   username: string;

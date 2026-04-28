@@ -1,11 +1,10 @@
 import type { IWorkspaceUserContext } from "$interfaces/contexts/IWorkspaceUserContext";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { AppProcess } from "$ts/apps/process";
-import { Stack } from "$ts/env";
+import { Daemon, Stack } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { UUID } from "$ts/util/uuid";
 import type { UserPreferences } from "$types/user";
-import { Daemon } from "$ts/env";
 import { UserContext } from "../context";
 
 export class WorkspaceUserContext extends UserContext implements IWorkspaceUserContext {

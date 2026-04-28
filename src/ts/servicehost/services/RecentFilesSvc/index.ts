@@ -1,7 +1,7 @@
+import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IRecentFilesService } from "$interfaces/services/IRecentFilesService";
 import { ConfigurationBuilder } from "$ts/config";
 import { Fs } from "$ts/env";
-import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
@@ -21,7 +21,7 @@ export class RecentFilesService extends BaseService implements IRecentFilesServi
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
 
     this.setSource(__SOURCE__);

@@ -1,7 +1,6 @@
+import type { IIconService } from "$interfaces/services/IIconService";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/env";
-import { SysDispatch } from "$ts/env";
-import { IconService } from "$ts/servicehost/services/IconService";
+import { Daemon, SysDispatch } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { IconPickerData } from "./types";
@@ -34,7 +33,7 @@ export class IconPickerRuntime extends AppProcess {
   async start() {
     if (!this.forWhat) return false;
 
-    const iconService = Daemon?.serviceHost?.getService<IconService>("IconService");
+    const iconService = Daemon?.serviceHost?.getService<IIconService>("IconService");
 
     if (!iconService) return false;
     this.store = iconService.Icons();

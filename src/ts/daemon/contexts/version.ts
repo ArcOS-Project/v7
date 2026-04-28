@@ -1,15 +1,14 @@
 import type { IVersionUserContext } from "$interfaces/contexts/IVersionUserContext";
-import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import SourceDriveEnable from "$lib/Daemon/SourceDriveEnable.svelte";
-import { ArcOSVersion, Env, Fs, Kernel } from "$ts/env";
+import { ArcOSVersion, Daemon, Env, Fs, Kernel } from "$ts/env";
 import { SecurityMediumIcon } from "$ts/images/general";
 import { SourceFilesystemDrive } from "$ts/kernel/mods/fs/drives/src";
 import { UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { join } from "$ts/util/fs";
-import { Daemon } from "$ts/env";
 import { UserContext } from "../context";
 
 export class VersionUserContext extends UserContext implements IVersionUserContext {

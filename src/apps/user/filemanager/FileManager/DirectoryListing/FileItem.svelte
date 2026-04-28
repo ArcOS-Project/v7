@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { Daemon } from "$ts/env";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import { RelativeTimeMod } from "$ts/dayjs";
+  import { Daemon } from "$ts/env";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { formatBytes, join } from "$ts/util/fs";
   import type { FileEntry } from "$types/fs";
@@ -9,7 +10,6 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
   import { onMount } from "svelte";
-  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
 
   const { process, file }: { process: IFileManagerRuntime; file: FileEntry } = $props();
   const { selection, shortcuts } = process;

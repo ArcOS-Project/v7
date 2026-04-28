@@ -1,10 +1,9 @@
 import type { IInstallerProcessBase, IInstallerProcessBaseConstructor } from "$interfaces/IInstallerProcessBase";
+import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IStoreConnector } from "$interfaces/modules/server/IStoreConnector";
 import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
-import { Daemon } from "$ts/env";
-import { Fs, GetConnector, Stack } from "$ts/env";
+import { Daemon, Fs, Stack } from "$ts/env";
 import { CommandResult } from "$ts/result";
-import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
 import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
@@ -33,7 +32,7 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
 
     this.preferences = Daemon!.preferences;
@@ -550,11 +549,7 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
 
     this.BUSY = "publishing_updateStoreItem";
 
-    const result = await Daemon!.GetConnector<IStoreConnector>("StoreConnector").UpdateStoreItem(
-      itemId,
-      newData,
-      onProgress
-    );
+    const result = await Daemon!.GetConnector<IStoreConnector>("StoreConnector").UpdateStoreItem(itemId, newData, onProgress);
 
     this.BUSY = "";
     return result.success;

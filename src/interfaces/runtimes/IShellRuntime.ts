@@ -5,10 +5,10 @@ import type { SearchItem } from "$types/search";
 import type { UserPreferencesStore, Workspace } from "$types/user";
 import type { ReadableStore } from "$types/writable";
 import type { FuseResult } from "fuse.js";
-import type { IAppProcess } from "../IAppProcess";
-import type { IArcFindRuntime } from "./IArcFindRuntime";
 import type { Constructs } from "../common";
+import type { IAppProcess } from "../IAppProcess";
 import type { IProcess } from "../IProcess";
+import type { IArcFindRuntime } from "./IArcFindRuntime";
 
 export interface IShellRuntime extends IAppProcess {
   startMenuOpened: ReadableStore<boolean>;

@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { IShareMgmtGuiRuntime } from "$interfaces/runtimes/IShareMgmtGuiRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
-  import type { ShareMgmtGuiRuntime } from "./runtime";
 
-  const { process }: { process: ShareMgmtGuiRuntime } = $props();
+  const { process }: { process: IShareMgmtGuiRuntime } = $props();
   const { members, info, selectedMember, myShare } = process;
 </script>
 

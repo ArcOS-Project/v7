@@ -1,9 +1,9 @@
 import type { Constructs } from "$interfaces/common";
 import type { ISpawnUserContext } from "$interfaces/contexts/ISpawnUserContext";
-import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IProcess } from "$interfaces/IProcess";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { Env, Stack } from "$ts/env";
+import { Daemon, Env, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { CommandResult } from "$ts/result";
 import { cloneAppMeta } from "$ts/util/apps";
@@ -13,7 +13,6 @@ import { UUID } from "$ts/util/uuid";
 import type { App, AppProcessData, AppProcessSpawnOptions, TpaSpawnEntrypointResult } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
 import { LogLevel } from "$types/logging";
-import { Daemon } from "$ts/env";
 import { UserContext } from "../context";
 
 //

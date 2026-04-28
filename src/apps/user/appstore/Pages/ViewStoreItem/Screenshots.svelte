@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import { StoreItemScreenshot } from "$ts/util/distrib";
   import type { StoreItem } from "$types/package";
-  import type { AppStoreRuntime } from "../../runtime";
 
-  const { pkg, process }: { pkg: StoreItem; process: AppStoreRuntime } = $props();
+  const { pkg, process }: { pkg: StoreItem; process: IAppStoreRuntime } = $props();
 
   let index = $state<number>(0);
 </script>

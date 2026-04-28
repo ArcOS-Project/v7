@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { Daemon } from "$ts/env";
-  import { Env } from "$ts/env";
-  import { TrashCanService } from "$ts/servicehost/services/TrashSvc";
+  import type { ITrashCanService } from "$interfaces/services/ITrashCanService";
+  import { Daemon, Env } from "$ts/env";
   import { Plural } from "$ts/util";
   import { MessageBox } from "$ts/util/dialog";
   import { onMount } from "svelte";
@@ -10,7 +9,7 @@
   const { process }: { process: AdvSysSetRuntime } = $props();
   const { preferencesBuffer } = process;
 
-  const trash = Daemon?.serviceHost?.getService<TrashCanService>("TrashSvc");
+  const trash = Daemon?.serviceHost?.getService<ITrashCanService>("TrashSvc");
   let size = $state(Object.entries(trash?.IndexBuffer() || {}).length);
 
   onMount(() => {

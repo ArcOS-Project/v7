@@ -1,7 +1,6 @@
+import type { IBugHuntUserSpaceProcess } from "$interfaces/services/IBugHuntUserSpaceProcess";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/env";
-import { Stack } from "$ts/env";
-import type { BugHuntUserSpaceProcess } from "$ts/servicehost/services/BugHuntUsp";
+import { Daemon, Stack } from "$ts/env";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -15,7 +14,7 @@ export class BugHuntCreatorRuntime extends AppProcess {
   body = Store<string>();
   loading = Store<boolean>();
   overrideOptions: BugHuntCreatorOptions | undefined;
-  bughunt: BugHuntUserSpaceProcess;
+  bughunt: IBugHuntUserSpaceProcess;
 
   //#region LIFECYCLE
 
@@ -45,7 +44,7 @@ export class BugHuntCreatorRuntime extends AppProcess {
     }
 
     if (options) this.overrideOptions = options;
-    this.bughunt = Daemon?.serviceHost?.getService<BugHuntUserSpaceProcess>("BugHuntUsp")!;
+    this.bughunt = Daemon?.serviceHost?.getService<IBugHuntUserSpaceProcess>("BugHuntUsp")!;
 
     this.setSource(__SOURCE__);
   }

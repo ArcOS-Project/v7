@@ -1,4 +1,4 @@
-import type { AppProcess } from "$ts/apps/process";
+import type { IAppProcess } from "$interfaces/IAppProcess";
 import { Store } from "$ts/writable";
 import type { ReadableStore } from "$types/writable";
 
@@ -47,6 +47,6 @@ export const DummyFileProgress: FileProgressMutator = {
   process: () => undefined,
 };
 
-export interface FsProgressProc extends AppProcess {
+export interface FsProgressProc extends IAppProcess {
   Progress: ReadableStore<FsProgressOperation>;
 }

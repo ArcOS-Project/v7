@@ -1,11 +1,11 @@
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
 import { Env } from "$ts/env";
-import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
 import type { ProtocolHandler } from "$types/proto";
 
 export const SpawnAppHandler: ProtocolHandler = {
   name: "Spawn app",
   info: (payload, daemon) => {
-    const appStore = daemon.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const appStore = daemon.serviceHost?.getService<IApplicationStorage>("AppStorage");
     const app = appStore?.buffer().filter((a) => a.id === payload.id)[0];
 
     if (!app) return undefined;

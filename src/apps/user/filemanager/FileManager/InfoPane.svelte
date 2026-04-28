@@ -38,7 +38,7 @@
       lastSelection = v;
       update();
     });
-    
+
     contents.subscribe(update);
     drives.subscribe(update);
   });

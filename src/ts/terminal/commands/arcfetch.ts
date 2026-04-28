@@ -1,5 +1,5 @@
-import type { IServerManager } from "$interfaces/modules/IServerManager";
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import type { IServerManager } from "$interfaces/modules/IServerManager";
 import { ArcOSVersion, Env, getKMod, State } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";

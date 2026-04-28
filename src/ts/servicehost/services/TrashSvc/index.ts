@@ -1,8 +1,7 @@
+import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { ITrashCanService } from "$interfaces/services/ITrashCanService";
 import { ConfigurationBuilder } from "$ts/config";
-import { Daemon } from "$ts/env";
-import { Env, Fs, SysDispatch } from "$ts/env";
-import type { ServiceHost } from "$ts/servicehost";
+import { Daemon, Env, Fs, SysDispatch } from "$ts/env";
 import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
@@ -23,7 +22,7 @@ export class TrashCanService extends BaseService implements ITrashCanService {
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
 
     this.setSource(__SOURCE__);

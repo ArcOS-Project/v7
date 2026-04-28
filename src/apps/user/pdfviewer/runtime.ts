@@ -1,6 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/env";
-import { Fs } from "$ts/env";
+import { Daemon, Fs } from "$ts/env";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath } from "$ts/util/fs";

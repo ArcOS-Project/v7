@@ -2,7 +2,7 @@ import { DefaultPinnedApps, DefaultStartMenuActions } from "$apps/components/she
 import type { IPreferencesUserContext } from "$interfaces/contexts/IPreferencesUserContext";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
-import { Fs, GetConnector, SysDispatch } from "$ts/env";
+import { Daemon, Fs, SysDispatch } from "$ts/env";
 import { DefaultUserPreferences } from "$ts/user/default";
 import { UserPaths } from "$ts/user/store";
 import { applyDefaults } from "$ts/util/hierarchy";
@@ -10,7 +10,6 @@ import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
 import type { UserPreferences } from "$types/user";
 import type { Unsubscriber } from "$types/writable";
-import { Daemon } from "$ts/env";
 import { UserContext } from "../context";
 
 export class PreferencesUserContext extends UserContext implements IPreferencesUserContext {

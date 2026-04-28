@@ -91,7 +91,7 @@ export class AdvSysSetRuntime extends AppProcess {
 
   apply(close?: boolean) {
     this.Log(`apply`);
-    
+
     this.syncInitialized = false;
     this.userPreferences.set(this.preferencesBuffer());
     this.bufferChanged.set(false);

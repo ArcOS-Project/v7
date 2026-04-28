@@ -2,6 +2,7 @@ import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
+import type { IMigrationService } from "$interfaces/services/IMigrationService";
 import { UserDaemon } from "$ts/daemon";
 import { ArcOSVersion, Env, GetConnector, Server, Stack, SysDispatch } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
@@ -18,7 +19,6 @@ import { WebLinksAddon } from "@xterm/addon-web-links";
 import Cookies from "js-cookie";
 import { Terminal } from "xterm";
 import { ArcTerminal } from "..";
-import type { MigrationService } from "../../servicehost/services/MigrationSvc";
 import { Readline } from "../readline/readline";
 import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../store";
 
@@ -157,7 +157,7 @@ export class TerminalMode extends Process {
       await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
 
       await userDaemon.serviceHost
-        ?.getService<MigrationService>("MigrationSvc")
+        ?.getService<IMigrationService>("MigrationSvc")
         ?.runMigrations((m) => this.rl?.println(`${CURUP}${CLRROW}${m}`));
 
       broadcast(`Starting status refresh`);

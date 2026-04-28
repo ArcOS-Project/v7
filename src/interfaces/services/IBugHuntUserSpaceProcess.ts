@@ -1,5 +1,5 @@
-import type { IBugHunt } from "$interfaces/modules/IBugHunt";
 import type { IBaseService } from "$interfaces/IServiceHost";
+import type { IBugHunt } from "$interfaces/modules/IBugHunt";
 import type { BugReport, ReportOptions } from "$types/bughunt";
 
 export interface IBugHuntUserSpaceProcess extends IBaseService {

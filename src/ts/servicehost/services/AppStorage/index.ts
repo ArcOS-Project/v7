@@ -1,13 +1,12 @@
 import type { Constructs } from "$interfaces/common";
-import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
+import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
 import { BuiltinAppImportPathAbsolutes } from "$ts/apps/store";
-import { Daemon } from "$ts/env";
-import { ArcOSVersion, Env, Fs, SysDispatch } from "$ts/env";
+import { ArcOSVersion, Daemon, Env, Fs, SysDispatch } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { CommandResult } from "$ts/result";
-import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { deepCopyWithBlobs, sortByHierarchy } from "$ts/util";
 import { cloneAppMeta } from "$ts/util/apps";
@@ -27,7 +26,7 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
 
     this.loadOrigin("injected", () => this.injected());

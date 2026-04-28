@@ -10,7 +10,7 @@
 
   const { process }: { process: MediaPlayerRuntime } = $props();
   const { pinControls } = process;
-  
+
   let audio: HTMLVideoElement;
   let hideControls = $state<boolean>(false);
   let style = $state<string | undefined>();

@@ -1,8 +1,8 @@
 import type { FileProgressMutator } from "$apps/components/fsprogress/types";
+import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/env";
-import { Fs } from "$ts/env";
-import { MessagingInterface } from "$ts/servicehost/services/MessagingService";
+import { Daemon, Fs } from "$ts/env";
+import { CommandResult } from "$ts/result";
 import { Sleep } from "$ts/sleep";
 import { sortByKey } from "$ts/util";
 import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
@@ -15,13 +15,12 @@ import type { ExpandedMessage, MessageAttachment } from "$types/messaging";
 import type { PublicUserInfo } from "$types/user";
 import dayjs from "dayjs";
 import Fuse from "fuse.js";
+import { MessagesContextMenu } from "./context";
 import { messagingPages } from "./store";
 import type { MessagingPage } from "./types";
-import { CommandResult } from "$ts/result";
-import { MessagesContextMenu } from "./context";
 
 export class MessagingAppRuntime extends AppProcess {
-  service: MessagingInterface;
+  service: IMessagingInterface;
   page = Store<MessagingPage | undefined>();
   pageId = Store<string | undefined>();
   buffer = Store<ExpandedMessage[]>([]);
@@ -44,7 +43,7 @@ export class MessagingAppRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData, pageOrMessagePath = "inbox", messageId?: string) {
     super(pid, parentPid, app);
 
-    this.service = Daemon?.serviceHost?.getService<MessagingInterface>("MessagingService")!;
+    this.service = Daemon?.serviceHost?.getService<IMessagingInterface>("MessagingService")!;
 
     const path = pageOrMessagePath.includes(":/") && pageOrMessagePath.endsWith(".msg") ? pageOrMessagePath : undefined;
 

@@ -1,15 +1,14 @@
-import type { IBaseService } from "$interfaces/IServiceHost";
+import type { IBaseService, IServiceHost } from "$interfaces/IServiceHost";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
-import type { ServiceHost } from ".";
 
 export class BaseService extends Process implements IBaseService {
-  host: ServiceHost;
+  host: IServiceHost;
   activated: boolean = false;
   initBroadcast?: (msg: string) => void;
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid);
 
     this.name = `svc#${name}`;

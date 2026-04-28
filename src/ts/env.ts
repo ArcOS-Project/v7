@@ -1,15 +1,15 @@
+import type { IStateHandler } from "$interfaces/IStateHandler";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
 import type { IBugHunt } from "$interfaces/modules/IBugHunt";
-import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
 import type { IEnvironment } from "$interfaces/modules/IEnvironment";
 import type { IFilesystem } from "$interfaces/modules/IFilesystem";
+import type { IKernelModule } from "$interfaces/modules/IKernelModule";
+import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
 import type { IServerConnector, IServerManager } from "$interfaces/modules/IServerManager";
 import type { ISoundbus } from "$interfaces/modules/ISoundbus";
-import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
-import type { IStateHandler } from "$interfaces/IStateHandler";
+import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
 import packageJson from "../../package.json";
-import type { IKernelModule } from "$interfaces/modules/IKernelModule";
-import type { IUserDaemon } from "$interfaces/IUserDaemon";
 
 export const ArcOSVersion = packageJson.version as `${number}.${number}.${number}`;
 export const BETA = true;

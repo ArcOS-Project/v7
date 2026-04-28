@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { Daemon } from "$ts/env";
-  import type { AppStoreRuntime } from "../../runtime";
 
-  const { process }: { process: AppStoreRuntime } = $props();
+  const { process }: { process: IAppStoreRuntime } = $props();
   const { userPreferences } = process;
 </script>
 

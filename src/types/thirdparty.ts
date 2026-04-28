@@ -1,5 +1,5 @@
-import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { Constructs } from "$interfaces/common";
+import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IServiceHost } from "$interfaces/IServiceHost";

@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { Plural } from "$ts/util";
   import type { PartialStoreItem } from "$types/package";
   import type { PublicUserInfo } from "$types/user";
-  import type { AppStoreRuntime } from "../../runtime";
 
-  const { process, user, results }: { process: AppStoreRuntime; user: PublicUserInfo; results: PartialStoreItem[] } = $props();
+  const { process, user, results }: { process: IAppStoreRuntime; user: PublicUserInfo; results: PartialStoreItem[] } = $props();
 
   const hasOfficials = results.filter((r) => r.official).length > 0;
   const hasPackages = results.length > 0;

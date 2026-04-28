@@ -1,9 +1,9 @@
 <script lang="ts">
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { Daemon } from "$ts/env";
   import { onMount } from "svelte";
   import type { OverlayRuntime } from "../../overlay";
-  import ActionBar from "$lib/Window/ActionBar.svelte";
-  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
 
   const { process }: { process: OverlayRuntime } = $props();
   const { userPreferences } = process;

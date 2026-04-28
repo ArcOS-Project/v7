@@ -1,19 +1,17 @@
+import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IServerManager } from "$interfaces/modules/IServerManager";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
+import type { IGlobalDispatch } from "$interfaces/services/IGlobalDispatch";
 import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
-import { Daemon } from "$ts/env";
-import { Env, Fs, GetConnector, getKMod, Server, Stack } from "$ts/env";
+import { Daemon, Env, Fs, getKMod, Server, Stack } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
-import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
-import { authcode } from "$ts/util";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import type { FilesystemProgressCallback } from "$types/fs";
 import type { ExpandedMessage, ExpandedMessageNode, MessageAttachment } from "$types/messaging";
 import type { Service } from "$types/service";
-import { GlobalDispatch } from "../GlobalDispatch";
 
 export class MessagingInterface extends BaseService implements IMessagingInterface {
   get serverUrl() {
@@ -21,7 +19,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
   }
 
   //#region LIFECYCLE
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
 
     this.setSource(__SOURCE__);
@@ -31,7 +29,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
     this.initBroadcast?.("Starting messaging service");
 
     const daemon = Stack.getProcess<IUserDaemon>(+Env.get("userdaemon_pid")!)!;
-    const dispatch = daemon.serviceHost?.getService<GlobalDispatch>("GlobalDispatch")!;
+    const dispatch = daemon.serviceHost?.getService<IGlobalDispatch>("GlobalDispatch")!;
 
     dispatch?.subscribe("incoming-message", (message: ExpandedMessage) => {
       daemon?.notifications?.sendNotification({

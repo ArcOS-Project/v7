@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { QuotedDrive } from "$apps/user/filemanager/types";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import { onMount } from "svelte";
   import Drive from "./Drives/Drive.svelte";
-  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
 
   const { process }: { process: IFileManagerRuntime } = $props();
   const { drives, userPreferences } = process;

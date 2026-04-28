@@ -1,6 +1,6 @@
 <script lang="ts">
+  import { QueryComparisonTypes } from "$apps/admin/executequery/types";
   import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
-  import { QueryComparisonTypes } from "$apps/admin/executequery/store";
 
   const { process, i }: { process: IExecuteQueryRuntime; i: number } = $props();
   const { expressions, selectedSource } = process;

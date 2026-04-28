@@ -1,8 +1,7 @@
 import type { ISharedDrive } from "$interfaces/drives/ISharedDrive";
+import type { IShareManager } from "$interfaces/services/IShareManager";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/env";
-import { Env, Fs, Stack } from "$ts/env";
-import type { ShareManager } from "$ts/servicehost/services/ShareMgmt";
+import { Daemon, Env, Fs, Stack } from "$ts/env";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -15,7 +14,7 @@ export class ShareListGuiRuntime extends AppProcess {
   selectedIsOwn = Store<boolean>(false);
   selectedIsMounted = Store<boolean>(false);
   loading = Store<boolean>(false);
-  shares: ShareManager;
+  shares: IShareManager;
   thisUserId: string;
 
   //#region LIFECYCLE

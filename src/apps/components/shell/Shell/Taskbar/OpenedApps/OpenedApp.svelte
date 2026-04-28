@@ -1,8 +1,7 @@
 <script lang="ts">
   import type { IAppProcess } from "$interfaces/IAppProcess";
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
-  import { Daemon } from "$ts/env";
-  import { Stack } from "$ts/env";
+  import { Daemon, Stack } from "$ts/env";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { onMount } from "svelte";
 
