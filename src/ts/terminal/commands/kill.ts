@@ -33,12 +33,12 @@ export class KillCommand extends TerminalProcess {
       return 1;
     }
 
-    if (!this.HAS_SUDO && process._criticalProcess) {
+    if (process._criticalProcess) {
       term.Error("Can't kill a critical process without sudo");
       return 1;
     }
 
-    const result = await Stack.kill(process.pid, !!this.HAS_SUDO);
+    const result = await Stack.kill(process.pid);
 
     if (result !== "success") {
       term.Error(ProcessKillResultCaptions[result]);

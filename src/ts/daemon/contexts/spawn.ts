@@ -6,6 +6,7 @@ import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { Env, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { CommandResult } from "$ts/result";
+import { cloneAppMeta } from "$ts/util/apps";
 import { MessageBox } from "$ts/util/dialog";
 import { join } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
@@ -33,7 +34,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
     this.Log(`newSpawnApp: spawning ${app.id} against parent PID ${parentPid}`);
     const renderTarget = options?.noWorkspace ? undefined : (options?.renderTarget ?? Daemon.workspaces?.getCurrentDesktop());
 
-    app = { ...Object.freeze({ ...app }) };
+    app = cloneAppMeta(app);
 
     try {
       if (Daemon?.apps?.checkDisabled(app.id, app.noSafeMode)) return;

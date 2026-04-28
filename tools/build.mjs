@@ -29,6 +29,7 @@ const flags = program
   .option("-m, --no-minify", "Don't minify the compiled JS")
   .option("-t, --build-types", "Build type definitions instead of building ArcOS")
   .option("-b, --no-build", "Skip building ArcOS itself")
+  .option("-b, --no-build", "Don't build ArcOS itself")
   .parse()
   .opts();
 
@@ -36,6 +37,7 @@ const runChecks = !!flags.checks;
 const getHash = !!flags.hash;
 const minify = !!flags.minify;
 const buildTypes = !!flags.buildTypes;
+const doBuild = !!flags.build;
 const doBuild = !!flags.build;
 
 async function sh(cmd) {
@@ -94,5 +96,6 @@ async function doGitHash() {
 
   if (buildTypes) return await doTypedefs();
   if (getHash) await doGitHash();
+
   if (doBuild) await buildIt();
 })();

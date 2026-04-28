@@ -7,10 +7,6 @@ import { Daemon } from "$ts/env";
 import { Wallpapers } from "../../user/wallpaper/store";
 import { UserContext } from "../context";
 
-/**
- * RESTRICTED: this class does not have an entry in ProcessWithPermissions,
- * and as such cannot be accessed by third-party applications.
- */
 export class AppRendererUserContext extends UserContext implements IAppRendererUserContext {
   constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);

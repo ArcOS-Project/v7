@@ -1,9 +1,9 @@
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { SysDispatch } from "$ts/env";
-import { ProcessWithPermissions } from "$ts/permissions/process";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
 import type { Arguments } from "$types/terminal";
 
-export class TerminalProcess extends ProcessWithPermissions {
+export class TerminalProcess extends Process {
   public static keyword: string;
   public static description: string;
   public static hidden = false;

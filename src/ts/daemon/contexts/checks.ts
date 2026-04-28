@@ -11,10 +11,6 @@ import { StoreItemIcon } from "$ts/util/distrib";
 import { Daemon } from "$ts/env";
 import { UserContext } from "../context";
 
-/**
- * RESTRICTED: this class does not have an entry in ProcessWithPermissions,
- * and as such cannot be accessed by third-party applications.
- */
 export class ChecksUserContext extends UserContext implements IChecksUserContext {
   public NIGHTLY = false;
 
