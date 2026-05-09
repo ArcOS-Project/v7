@@ -26,6 +26,7 @@ import { DefaultArcTermConfiguration } from "./config";
 import { Readline } from "./readline/readline";
 import { TerminalCommandStore } from "./store";
 import { ArcTermVariables } from "./var";
+import { HelpCommand } from "./commands/help";
 
 export class ArcTerminal extends Process implements IArcTerminal {
   readonly CONFIG_PATH = join(UserPaths.Configuration, "ArcTerm/arcterm.conf");
@@ -142,7 +143,7 @@ export class ArcTerminal extends Process implements IArcTerminal {
     if (cmd.endsWith(":")) {
       await this.changeDirectory(`${cmd}/`);
     } else {
-      const command = TerminalCommandStore.filter((a) => a.keyword === cmd)[0];
+      const command = cmd === "help" ? HelpCommand : TerminalCommandStore.filter((a) => a.keyword === cmd)[0];
 
       if (!command) {
         this.Error("Command not found.");

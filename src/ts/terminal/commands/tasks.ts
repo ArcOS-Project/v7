@@ -1,10 +1,9 @@
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import type { IProcess } from "$interfaces/IProcess";
-import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
 import type { Arguments } from "$types/terminal";
+import { BRBLACK, BRYELLOW, RESET } from "../colors";
 import { TerminalProcess } from "../process";
-import { BRBLACK, BRBLUE, BRYELLOW, RESET } from "../colors";
 
 export class TasksCommand extends TerminalProcess {
   public static keyword = "tasks";
@@ -28,8 +27,8 @@ export class TasksCommand extends TerminalProcess {
       term.rl?.println("");
 
       for (const [pid, proc] of [...store]) {
-        const name = proc instanceof AppProcess ? proc.app.data.metadata.name : proc.name;
-        const color = proc instanceof AppProcess ? BRBLUE : RESET;
+        const name = proc.name;
+        const color = RESET;
         term.rl?.println(`${BRYELLOW}${pid.toString().padStart(3, " ")}  ${color}${name}${RESET}`);
       }
 
@@ -41,7 +40,7 @@ export class TasksCommand extends TerminalProcess {
       const prefix = indent + (isLast ? "└── " : "├── ");
 
       term.rl?.println(
-        `${prefix}${proc instanceof AppProcess ? proc.app.data.metadata.name : proc.name} ${BRBLACK}(${proc.pid})${RESET}`
+        `${prefix}${proc.name} ${BRBLACK}(${proc.pid})${RESET}`
       );
 
       if (subProcesses) {

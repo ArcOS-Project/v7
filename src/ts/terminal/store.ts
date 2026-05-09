@@ -1,5 +1,4 @@
 import type { ITerminalProcessConstructor } from "$interfaces/IArcTerminal";
-import type { ArcTermConfiguration } from "$types/terminal";
 import { AdminCommand } from "./commands/admin";
 import { AppListCommand } from "./commands/applist";
 import { ArcFetchCommand } from "./commands/arcfetch";
@@ -17,7 +16,6 @@ import { EchoCommand } from "./commands/echo";
 import { ExitCommand } from "./commands/exit";
 import { ExploreCommand } from "./commands/explore";
 import { FindCommand } from "./commands/find";
-import { HelpCommand } from "./commands/help";
 import { HistoryCommand } from "./commands/history";
 import { InputCommand } from "./commands/input";
 import { KillCommand } from "./commands/kill";
@@ -54,7 +52,6 @@ export const TerminalCommandStore: ITerminalProcessConstructor[] = [
   ExitCommand,
   DispatchCommand,
   EchoCommand,
-  HelpCommand,
   ExploreCommand,
   TestCommand,
   FindCommand,

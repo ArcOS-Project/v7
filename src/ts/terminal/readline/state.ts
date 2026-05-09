@@ -17,38 +17,9 @@ import { Process } from "$ts/kernel/mods/stack/process/instance";
 import stringWidth from "string-width";
 import type { Highlighter } from "./highlight";
 import { History } from "./history";
+import { Layout, Position } from "./layout";
 import { LineBuffer } from "./line";
 import { Tty } from "./tty";
-
-export class Position {
-  public col: number;
-  public row: number;
-
-  constructor(rows?: number, cols?: number) {
-    if (rows !== undefined) {
-      this.row = rows;
-    } else {
-      this.row = 0;
-    }
-    if (cols !== undefined) {
-      this.col = cols;
-    } else {
-      this.col = 0;
-    }
-  }
-}
-
-export class Layout {
-  public promptSize: Position;
-  public cursor: Position;
-  public end: Position;
-
-  constructor(promptSize: Position) {
-    this.promptSize = promptSize;
-    this.cursor = new Position();
-    this.end = new Position();
-  }
-}
 
 export class State extends Process {
   private prompt: string;

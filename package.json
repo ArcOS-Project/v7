@@ -12,7 +12,7 @@
     "build:globals": "node tools/build-globals.mjs && node tools/convert-global.mjs",
     "build:types:all": "npm run build:types && npm run build:globals",
     "check:everything": "node tools/build.mjs --no-build",
-    "circularity": "npx madge --circular --extensions ts,svelte ./src"
+    "circularity": "npx madge --circular --extensions ts,svelte ./src --warning"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "5.1.0",

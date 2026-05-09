@@ -15,7 +15,7 @@
 import stringWidth from "string-width";
 import type { Highlighter } from "./highlight";
 import { LineBuffer } from "./line";
-import { Layout, Position } from "./state";
+import type { Layout, Position } from "./layout";
 
 export interface Output {
   write(text: string): void;
