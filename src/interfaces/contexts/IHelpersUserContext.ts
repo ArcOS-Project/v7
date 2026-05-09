@@ -10,20 +10,12 @@ export interface IHelpersUserContext extends IUserContext {
     caption?: string,
     pid?: number,
     progress?: Partial<GlobalLoadIndicatorProgress>
-  ): Promise<
-    | {
-        caption: ReadableStore<string>;
-        stop: () => Promise<void>;
-        incrementProgress?: undefined;
-        progress?: undefined;
-      }
-    | {
-        caption: ReadableStore<string>;
-        stop: () => Promise<void>;
-        incrementProgress: (amount?: number) => void;
-        progress: ReadableStore<GlobalLoadIndicatorProgress | undefined>;
-      }
-  >;
+  ): Promise<{
+    caption: ReadableStore<string>;
+    stop: () => Promise<void>;
+    incrementProgress?: ((amount?: number) => void) | undefined;
+    progress?: ReadableStore<GlobalLoadIndicatorProgress | undefined> | undefined;
+  }>;
   Confirm(title: string, message: string, no: string, yes: string, image?: string, pid?: number): Promise<unknown>;
   TerminalWindow(pid?: number): Promise<ExpandedTerminal | undefined>;
   IconPicker(data: Omit<IconPickerData, "returnId">): Promise<string | undefined>;

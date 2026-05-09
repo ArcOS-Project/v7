@@ -1,9 +1,9 @@
-import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
+import type { IExecuteQueryRuntime, ISaveQueryOverlayRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
-export class SaveQueryOverlayRuntime extends AppProcess {
+export class SaveQueryOverlayRuntime extends AppProcess implements ISaveQueryOverlayRuntime {
   parent: IExecuteQueryRuntime;
   queryName = Store<string>();
   //#region LIFECYCLE

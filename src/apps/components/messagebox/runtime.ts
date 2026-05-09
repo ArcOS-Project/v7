@@ -1,3 +1,4 @@
+import type { IMessageBoxRuntime } from "$interfaces/runtimes/IMessageBoxRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { SoundBus } from "$ts/env";
 import { Store } from "$ts/writable";
@@ -5,7 +6,7 @@ import type { AppProcessData } from "$types/app";
 import { LogLevel } from "$types/logging";
 import type { MessageBoxData } from "$types/messagebox";
 
-export class MessageBoxRuntime extends AppProcess {
+export class MessageBoxRuntime extends AppProcess implements IMessageBoxRuntime {
   data: MessageBoxData | undefined;
   acted = Store<boolean>(false);
 

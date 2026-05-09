@@ -1,3 +1,4 @@
+import type { IIconPickerRuntime } from "$interfaces/runtimes/IIconPickerRuntime";
 import type { IIconService } from "$interfaces/services/IIconService";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, SysDispatch } from "$ts/env";
@@ -5,7 +6,7 @@ import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { IconPickerData } from "./types";
 
-export class IconPickerRuntime extends AppProcess {
+export class IconPickerRuntime extends AppProcess implements IIconPickerRuntime {
   forWhat?: string;
   defaultIcon?: string;
   selected = Store<string>();

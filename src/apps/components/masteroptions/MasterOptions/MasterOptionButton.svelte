@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { MasterOptionsRuntime } from "../runtime";
+  import type { IMasterOptionsRuntime } from "$interfaces/runtimes/IMasterOptionsRuntime";
   import type { MasterOption } from "../types";
 
-  const { process, option }: { process: MasterOptionsRuntime; option: MasterOption } = $props();
+  const { process, option }: { process: IMasterOptionsRuntime; option: MasterOption } = $props();
   const { loading } = process;
 
   async function exec() {

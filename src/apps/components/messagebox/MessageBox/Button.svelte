@@ -1,8 +1,8 @@
 <script lang="ts">
+  import type { IMessageBoxRuntime } from "$interfaces/runtimes/IMessageBoxRuntime";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import type { MessageBoxButton } from "$types/messagebox";
   import { onMount } from "svelte";
-  import type { MessageBoxRuntime } from "../runtime";
 
   let disabled = $state(false);
 
@@ -10,7 +10,7 @@
     button,
     process,
     suggestedDisabled,
-  }: { button: MessageBoxButton; process: MessageBoxRuntime; suggestedDisabled: boolean } = $props();
+  }: { button: MessageBoxButton; process: IMessageBoxRuntime; suggestedDisabled: boolean } = $props();
 
   onMount(async () => {
     if (button.disabled) {

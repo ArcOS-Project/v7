@@ -6,9 +6,9 @@
   import { getKMod } from "$ts/env";
   import { Sleep } from "$ts/sleep";
   import { onMount } from "svelte";
-  import type { AppInfoRuntime } from "../runtime";
+  import type { IAppInfoRuntime } from "$interfaces/runtimes/IAppInfoRuntime";
 
-  const { appId, process }: { appId: string; process: AppInfoRuntime } = $props();
+  const { appId, process }: { appId: string; process: IAppInfoRuntime } = $props();
 
   const stack = getKMod<IProcessHandler>("stack");
   let pid = $state(-1);

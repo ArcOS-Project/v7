@@ -1,3 +1,4 @@
+import type { IArcTermColorsRuntime } from "$interfaces/runtimes/IArcTermColorsRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, Fs } from "$ts/env";
 import { DefaultArcTermConfiguration } from "$ts/terminal/config";
@@ -11,7 +12,7 @@ import type { AppProcessData } from "$types/app";
 import type { ArcTermConfiguration } from "$types/terminal";
 import type { ArcTermColorPreset, ArcTermColors } from "./types";
 
-export class ArcTermColorsRuntime extends AppProcess {
+export class ArcTermColorsRuntime extends AppProcess implements IArcTermColorsRuntime {
   CONFIG_PATH = join(UserPaths.Configuration, "ArcTerm/arcterm.conf");
   arcTermConfiguration = Store<ArcTermConfiguration>(DefaultArcTermConfiguration);
   mode = Store<"presets" | "custom">("custom");
@@ -117,7 +118,7 @@ export class ArcTermColorsRuntime extends AppProcess {
   async readPresetFromFile(path = this.savePath) {
     this.Log(`Reading preset from file`);
 
-    if (!path) return;
+    if (!path) return false;
 
     const contents = await Fs.readFile(path);
     if (!contents) {
@@ -132,6 +133,7 @@ export class ArcTermColorsRuntime extends AppProcess {
     this.choosePreset(json as ArcTermColorPreset);
     this.mode.set("custom");
     this.changed.set(false);
+    return true;
   }
 
   async applyConfiguration() {

@@ -1,10 +1,11 @@
+import type { IAppInfoRuntime } from "$interfaces/runtimes/IAppInfoRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, Stack } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
 
-export class AppInfoRuntime extends AppProcess {
+export class AppInfoRuntime extends AppProcess implements IAppInfoRuntime {
   targetApp = Store<App>();
   targetAppId: string;
 

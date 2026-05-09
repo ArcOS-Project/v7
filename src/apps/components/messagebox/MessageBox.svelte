@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { IMessageBoxRuntime } from "$interfaces/runtimes/IMessageBoxRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import { getIconPath } from "$ts/images";
   import type { AppComponentProps } from "$types/app";
   import Button from "./MessageBox/Button.svelte";
-  import type { MessageBoxRuntime } from "./runtime";
 
-  const { process }: AppComponentProps<MessageBoxRuntime> = $props();
+  const { process }: AppComponentProps<IMessageBoxRuntime> = $props();
   const { data } = process;
   const Component = data?.content;
 

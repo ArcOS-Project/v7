@@ -1,13 +1,13 @@
 <script lang="ts">
+  import type { IAppInfoRuntime } from "$interfaces/runtimes/IAppInfoRuntime";
   import { Daemon } from "$ts/env";
   import type { App } from "$types/app";
   import { onMount } from "svelte";
-  import type { AppInfoRuntime } from "../runtime";
 
   interface Props {
     target: App;
     id: string;
-    process: AppInfoRuntime;
+    process: IAppInfoRuntime;
   }
 
   const { target, id, process }: Props = $props();

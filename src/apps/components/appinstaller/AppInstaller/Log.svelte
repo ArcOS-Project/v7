@@ -1,8 +1,8 @@
 <script lang="ts">
+  import type { IAppInstallerRuntime } from "$interfaces/runtimes/IAppInstallerRuntime";
   import { Sleep } from "$ts/sleep";
-  import type { AppInstallerRuntime } from "../runtime";
 
-  const { process }: { process: AppInstallerRuntime } = $props();
+  const { process }: { process: IAppInstallerRuntime } = $props();
   const { status, focused, installing } = process.progress!;
 
   focused.subscribe(async (v) => {

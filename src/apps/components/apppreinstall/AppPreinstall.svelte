@@ -1,8 +1,8 @@
 <script lang="ts">
+  import type { IAppPreInstallRuntime } from "$interfaces/runtimes/IAppPreinstallRuntime";
   import Spinner from "$lib/Spinner.svelte";
-  import type { AppPreInstallRuntime } from "./runtime";
 
-  const { process }: { process: AppPreInstallRuntime } = $props();
+  const { process }: { process: IAppPreInstallRuntime } = $props();
   const { metadata } = process;
 </script>
 

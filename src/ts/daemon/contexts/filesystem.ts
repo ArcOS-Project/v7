@@ -2,7 +2,6 @@ import {
   DummyFileProgress,
   type FileProgressMutator,
   type FsProgressOperation,
-  type FsProgressProc,
 } from "$apps/components/fsprogress/types";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import type { IFilesystemUserContext } from "$interfaces/contexts/IFilesystemUserContext";
@@ -10,6 +9,7 @@ import type { ILegacyServerDrive } from "$interfaces/drives/ILegacyServerDrive";
 import type { IMemoryFilesystemDrive } from "$interfaces/drives/IMemoryFilesystemDrive";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IFsProgressRuntime } from "$interfaces/runtimes/IFsProgressRuntime";
 import type { IRecentFilesService } from "$interfaces/services/IRecentFilesService";
 import type { ITrashCanService } from "$interfaces/services/ITrashCanService";
 import { Daemon, Env, Fs, Stack, SysDispatch } from "$ts/env";
@@ -123,7 +123,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
         errors: [],
       })
     );
-    let process: FsProgressProc | undefined;
+    let process: IFsProgressRuntime | undefined;
     let shown = false;
 
     this.Log(`Creating file progress '${uuid}': ${initialData.caption}`);
@@ -133,11 +133,11 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
       shown = true;
 
       if (!parentPid) {
-        process = await Daemon!.spawn?.spawnApp<FsProgressProc>("FsProgress", 0, { asOverlay: true }, progress);
+        process = await Daemon!.spawn?.spawnApp<IFsProgressRuntime>("FsProgress", 0, { asOverlay: true }, progress);
 
         if (typeof process == "string") return DummyFileProgress;
       } else {
-        process = await Daemon!.spawn?.spawnApp<FsProgressProc>("FsProgress", parentPid, { asOverlay: true }, progress);
+        process = await Daemon!.spawn?.spawnApp<IFsProgressRuntime>("FsProgress", parentPid, { asOverlay: true }, progress);
 
         if (typeof process == "string") return DummyFileProgress;
       }

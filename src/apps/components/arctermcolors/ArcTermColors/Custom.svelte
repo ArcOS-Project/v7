@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { ArcTermColorsRuntime } from "../runtime";
+  import type { IArcTermColorsRuntime } from "$interfaces/runtimes/IArcTermColorsRuntime";
   import ColorModifier from "./ColorModifier.svelte";
 
-  const { process }: { process: ArcTermColorsRuntime } = $props();
+  const { process }: { process: IArcTermColorsRuntime } = $props();
   const { arcTermConfiguration } = process;
 </script>
 

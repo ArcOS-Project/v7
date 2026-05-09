@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { IconPickerRuntime } from "../runtime";
+  import type { IIconPickerRuntime } from "$interfaces/runtimes/IIconPickerRuntime";
 
-  const { process }: { process: IconPickerRuntime } = $props();
+  const { process }: { process: IIconPickerRuntime } = $props();
   const { forWhat, selected, store } = process;
 </script>
 

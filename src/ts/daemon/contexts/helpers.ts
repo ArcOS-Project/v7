@@ -39,7 +39,7 @@ export class HelpersUserContext extends UserContext implements IHelpersUserConte
     }
 
     const process = await Stack.spawn<any>(
-      GlobalLoadIndicator.assets.runtime,
+      GlobalLoadIndicator.assets.runtime, // Not directly importing the runtime to prevent potential circularity (unlikely, but still)
       undefined,
       this.userInfo!._id,
       pid,

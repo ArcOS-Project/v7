@@ -1,11 +1,12 @@
-import { exec, execSync } from "child_process";
+import { exec } from "child_process";
 import { program } from "commander";
 import { build } from "vite";
+import packageJson from "../package.json" with { type: "json" };
 import { checkParameters } from "./check-params.mjs";
 import { checkConsoleUsages } from "./console-usage.mjs";
+import { checkRuntimeInterfaces } from "./runtime-interfaces.mjs";
 import { checkTypeOutblow } from "./typeoutblow.mjs";
 import { validateRegions } from "./validate-regions.mjs";
-import packageJson from "../package.json" with { type: "json" };
 
 export const ASCII_ART = [
   "    _           ___  ___ ",
@@ -90,6 +91,7 @@ async function doGitHash() {
     validateRegions();
     await checkParameters();
     await checkTypeOutblow();
+    checkRuntimeInterfaces();
   }
 
   if (buildTypes) return await doTypedefs();

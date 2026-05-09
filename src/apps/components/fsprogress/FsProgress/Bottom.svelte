@@ -3,9 +3,9 @@
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
   import { formatBytes } from "$ts/util/fs";
-  import type { FsProgressRuntime } from "../runtime";
+  import type { IFsProgressRuntime } from "$interfaces/runtimes/IFsProgressRuntime";
 
-  const { process }: { process: FsProgressRuntime } = $props();
+  const { process }: { process: IFsProgressRuntime } = $props();
   const { Progress } = process;
 
   let canceling = $state(false);

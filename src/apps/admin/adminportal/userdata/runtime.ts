@@ -1,10 +1,11 @@
+import type { IAppProcess } from "$interfaces/IAppProcess";
 import { AppProcess } from "$ts/apps/process";
 import type { AppProcessData } from "$types/app";
 import type { UserInfo } from "$types/user";
 import hljs, { type HLJSApi } from "highlight.js";
 import json from "highlight.js/lib/languages/json";
 
-export class BugHuntUserDataRuntime extends AppProcess {
+export class BugHuntUserDataRuntime extends AppProcess implements IAppProcess {
   data: UserInfo;
   hljs: HLJSApi;
   html: string;

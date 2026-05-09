@@ -1,4 +1,5 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IContextMenuRuntime } from "$interfaces/runtimes/IContextMenuRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Env, Stack } from "$ts/env";
 import { Sleep } from "$ts/sleep";
@@ -7,7 +8,7 @@ import { Store } from "$ts/writable";
 import type { AppProcessData, ContextMenuInstance, ContextMenuItem } from "$types/app";
 import { WindowSystemContextMenu } from "./system";
 
-export class ContextMenuRuntime extends AppProcess {
+export class ContextMenuRuntime extends AppProcess implements IContextMenuRuntime {
   public contextData = Store<ContextMenuInstance | null>();
   public CLICKLOCKED = false;
   public contextProps: Record<string, any[]> = {};

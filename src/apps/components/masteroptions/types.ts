@@ -1,7 +1,7 @@
-import type { MasterOptionsRuntime } from "./runtime";
+import type { IMasterOptionsRuntime } from "$interfaces/runtimes/IMasterOptionsRuntime";
 
 export interface MasterOption {
   caption: string;
   image: string;
-  action: (process: MasterOptionsRuntime) => Promise<any>;
+  action: (process: IMasterOptionsRuntime) => Promise<any>;
 }

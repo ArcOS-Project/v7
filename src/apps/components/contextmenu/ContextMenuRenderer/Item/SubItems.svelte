@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { IAppProcess } from "$interfaces/IAppProcess";
+  import type { IContextMenuRuntime } from "$interfaces/runtimes/IContextMenuRuntime";
   import { Store } from "$ts/writable";
   import type { ContextMenuItem } from "$types/app";
-  import type { ContextMenuRuntime } from "../../runtime";
   import Item from "../Item.svelte";
 
   interface Props {
@@ -11,7 +11,7 @@
     mW: number;
     x: number;
     process: IAppProcess | undefined;
-    shell: ContextMenuRuntime;
+    shell: IContextMenuRuntime;
     props: any[];
   }
 

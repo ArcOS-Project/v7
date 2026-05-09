@@ -2,9 +2,9 @@
   import { Daemon } from "$ts/env";
   import { UploadIcon } from "$ts/images/general";
   import { UserPaths } from "$ts/user/store";
-  import type { IconEditDialogRuntime } from "../runtime";
+  import type { IIconEditDialogRuntime } from "$interfaces/runtimes/IIconEditDialogRuntime";
 
-  const { process }: { process: IconEditDialogRuntime } = $props();
+  const { process }: { process: IIconEditDialogRuntime } = $props();
   const { values, type } = process;
 
   async function browse() {

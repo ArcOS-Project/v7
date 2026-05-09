@@ -1,3 +1,4 @@
+import type { IAppPreInstallRuntime } from "$interfaces/runtimes/IAppPreinstallRuntime";
 import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, Fs } from "$ts/env";
@@ -10,7 +11,7 @@ import { ElevationLevel } from "$types/elevation";
 import type { ArcPackage } from "$types/package";
 import JSZip from "jszip";
 
-export class AppPreInstallRuntime extends AppProcess {
+export class AppPreInstallRuntime extends AppProcess implements IAppPreInstallRuntime{
   pkgPath: string;
   zip: JSZip | undefined;
   metadata = Store<ArcPackage>();

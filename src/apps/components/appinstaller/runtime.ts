@@ -1,4 +1,5 @@
 import type { IInstallerProcessBase } from "$interfaces/IInstallerProcessBase";
+import type { IAppInstallerRuntime } from "$interfaces/runtimes/IAppInstallerRuntime";
 import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, Fs } from "$ts/env";
@@ -8,7 +9,7 @@ import type { ArcPackage } from "$types/package";
 import type { ReadableStore } from "$types/writable";
 import JSZip from "jszip";
 
-export class AppInstallerRuntime extends AppProcess {
+export class AppInstallerRuntime extends AppProcess implements IAppInstallerRuntime {
   progress?: IInstallerProcessBase;
   metadata?: ArcPackage;
   isLibrary = false;

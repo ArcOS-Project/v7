@@ -1,4 +1,5 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IMasterOptionsRuntime } from "$interfaces/runtimes/IMasterOptionsRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Stack } from "$ts/env";
 import { Plural } from "$ts/util";
@@ -6,7 +7,7 @@ import { safeIsAppProc } from "$ts/util/apps";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
-export class MasterOptionsRuntime extends AppProcess {
+export class MasterOptionsRuntime extends AppProcess implements IMasterOptionsRuntime {
   loading = Store<boolean>(false);
 
   //#region LIFECYCLE

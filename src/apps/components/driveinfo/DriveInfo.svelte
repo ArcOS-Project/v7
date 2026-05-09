@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { IDriveInfoRuntime } from "$interfaces/runtimes/IDriveInfoRuntime";
   import CircularProgress from "$lib/CircularProgress.svelte";
   import Spinner from "$lib/Spinner.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
@@ -6,8 +7,8 @@
   import AdvancedInfo from "./DriveInfo/AdvancedInfo.svelte";
   import Quota from "./DriveInfo/Quota.svelte";
   import Usage from "./DriveInfo/Usage.svelte";
-  import type { DriveInfoRuntime } from "./runtime";
-  const { process }: { process: DriveInfoRuntime } = $props();
+
+  const { process }: { process: IDriveInfoRuntime } = $props();
   const { usage, quota, drive, isUserFs } = process;
 
   let advanced = $state(!isUserFs);

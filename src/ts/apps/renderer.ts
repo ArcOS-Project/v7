@@ -1,6 +1,6 @@
-import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IAppRenderer } from "$interfaces/IAppRenderer";
+import type { IContextMenuRuntime } from "$interfaces/runtimes/IContextMenuRuntime";
 import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import { BETA, BugHunt, Daemon, Env, Stack, SysDispatch } from "$ts/env";
 import { contextProps } from "$ts/ui/context/actions.svelte";
@@ -322,7 +322,7 @@ export class AppRenderer extends Process implements IAppRenderer {
     menu.className = "alt-menu nodrag";
 
     const contextMenuPid = Env.get("contextmenu_pid");
-    const contextMenu = Stack.getProcess<ContextMenuRuntime>(+contextMenuPid);
+    const contextMenu = Stack.getProcess<IContextMenuRuntime>(+contextMenuPid);
     if (!contextMenu) return menu;
 
     process.altMenu.subscribe((v) => {

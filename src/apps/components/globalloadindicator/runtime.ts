@@ -1,9 +1,10 @@
+import type { IGlobalLoadIndicatorRuntime } from "$interfaces/runtimes/IGlobalLoadIndicatorRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { GlobalLoadIndicatorProgress } from "./types";
 
-export class GlobalLoadIndicatorRuntime extends AppProcess {
+export class GlobalLoadIndicatorRuntime extends AppProcess implements IGlobalLoadIndicatorRuntime {
   caption = Store<string>("Just a moment...");
   progress = Store<GlobalLoadIndicatorProgress | undefined>();
 
