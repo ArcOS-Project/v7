@@ -4,7 +4,7 @@ import { join } from "$ts/util/fs";
 import type { RecursiveDirectory } from "$types/fs";
 import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";
-import { BRBLUE, BRGREEN, RESET } from "../store";
+import { BRBLUE, BRGREEN, RESET } from "../colors";
 
 export class TreeCommand extends TerminalProcess {
   public static keyword = "tree";

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { MediaPlayerRuntime } from "../../runtime";
+  import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
   import { LoopMode } from "../../types";
 
-  const { process }: { process: MediaPlayerRuntime } = $props();
+  const { process }: { process: IMediaPlayerRuntime } = $props();
   const { queueIndex, queue, Loaded, State, loopMode } = process;
 
   function next() {

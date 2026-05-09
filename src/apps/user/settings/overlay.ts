@@ -1,10 +1,10 @@
+import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
 import type { AppProcessData } from "$types/app";
-import type { SettingsRuntime } from "./runtime";
 
 export class OverlayRuntime extends AppProcess {
-  parentProcess: SettingsRuntime;
+  parentProcess: ISettingsRuntime;
 
   //#region LIFECYCLE
 

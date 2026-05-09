@@ -2,9 +2,9 @@
   import { Daemon } from "$ts/env";
   import { getItemNameFromPath } from "$ts/util/fs";
   import { onMount } from "svelte";
-  import type { MediaPlayerRuntime } from "../runtime";
+  import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
 
-  const { process, i, path }: { process: MediaPlayerRuntime; i: number; path: string } = $props();
+  const { process, i, path }: { process: IMediaPlayerRuntime; i: number; path: string } = $props();
   const { queueIndex, queue, State, Loaded, MetadataConfiguration } = process;
 
   let icon = $state<string>();

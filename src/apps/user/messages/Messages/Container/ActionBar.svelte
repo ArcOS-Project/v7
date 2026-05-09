@@ -6,9 +6,9 @@
   import Separator from "$lib/Window/ActionBar/ActionSeparator.svelte";
   import { Daemon } from "$ts/env";
   import { UserPaths } from "$ts/user/store";
-  import type { MessagingAppRuntime } from "../../runtime";
+  import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
 
-  const { process }: { process: MessagingAppRuntime } = $props();
+  const { process }: { process: IMessagingAppRuntime } = $props();
   const { message, messageWindow, messageFromFile } = process;
 
   async function downloadAttachments() {

@@ -20,7 +20,7 @@ import Cookies from "js-cookie";
 import { Terminal } from "xterm";
 import { ArcTerminal } from "..";
 import { Readline } from "../readline/readline";
-import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../store";
+import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../colors";
 
 export class TerminalMode extends Process {
   userDaemon?: IUserDaemon;

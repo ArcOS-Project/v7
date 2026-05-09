@@ -1,5 +1,5 @@
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-import type { AdminCommandType } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$types/terminal";
 
 export const AdminShareRename: AdminCommandType = async (term, admin, [shareId]) => {
   if (!admin.canAccess(AdminScopes.adminShareRename)) return 2;

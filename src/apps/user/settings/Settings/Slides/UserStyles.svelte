@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { SettingsRuntime } from "$apps/user/settings/runtime";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
@@ -10,7 +10,7 @@
 
   let value = $state("");
 
-  const { process }: { process: SettingsRuntime } = $props();
+  const { process }: { process: ISettingsRuntime } = $props();
   const { userPreferences, slideVisible } = process;
 
   onMount(() => {

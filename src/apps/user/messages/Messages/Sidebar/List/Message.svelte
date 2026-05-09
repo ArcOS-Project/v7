@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { MessagingAppRuntime } from "$apps/user/messages/runtime";
+  import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
   import { Daemon } from "$ts/env";
@@ -9,7 +9,7 @@
   import updateLocale from "dayjs/plugin/updateLocale";
   import { onMount, type Snippet } from "svelte";
 
-  const { process, message, children }: { process: MessagingAppRuntime; message: ExpandedMessage; children?: Snippet } = $props();
+  const { process, message, children }: { process: IMessagingAppRuntime; message: ExpandedMessage; children?: Snippet } = $props();
   const { message: openedMessage } = process;
   let date = $state<string>();
 

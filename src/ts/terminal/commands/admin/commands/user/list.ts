@@ -1,6 +1,6 @@
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-import type { AdminCommandType } from "$ts/terminal/commands/admin";
-import { BRBLACK, BRPURPLE, BRRED, RESET } from "$ts/terminal/store";
+import type { AdminCommandType } from "$types/terminal";
+import { BRBLACK, BRPURPLE, BRRED, RESET } from "$ts/terminal/colors";
 import { maxLength } from "$ts/util";
 
 export const AdminUserList: AdminCommandType = async (term, admin) => {

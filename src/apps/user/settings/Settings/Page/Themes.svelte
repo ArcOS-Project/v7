@@ -3,13 +3,13 @@
   import { BuiltinThemes, VisualStyles } from "$ts/user/store";
   import type { Wallpaper } from "$types/wallpaper";
   import { onMount } from "svelte";
-  import type { SettingsRuntime } from "../../runtime";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import ThemesHeader from "../ThemesHeader.svelte";
   import Setting from "../ThemesHeader/Setting.svelte";
   import AccentColor from "./Themes/AccentColor.svelte";
   import Theme from "./Themes/Theme.svelte";
 
-  const { process }: { process: SettingsRuntime } = $props();
+  const { process }: { process: ISettingsRuntime } = $props();
   const { userInfo, preferences: userPreferences } = Daemon || {}!;
 
   let currentWallpaper: Wallpaper | undefined = $state();

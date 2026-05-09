@@ -2,13 +2,13 @@
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
   import { Sleep } from "$ts/sleep";
   import { onMount, type Component } from "svelte";
-  import type { SettingsRuntime } from "./runtime";
   import Sidebar from "./Settings/Sidebar.svelte";
   import Slide from "./Settings/Slide.svelte";
   import { settingsPageStore } from "./store";
   import type { SettingsPage } from "./types";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
 
-  const { process }: { process: SettingsRuntime } = $props();
+  const { process }: { process: ISettingsRuntime } = $props();
   const { currentPage, slideVisible, userPreferences } = process;
 
   let hide = $state(true);

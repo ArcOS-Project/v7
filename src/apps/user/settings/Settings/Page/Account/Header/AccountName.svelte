@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { SettingsRuntime } from "$apps/user/settings/runtime";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import { Store } from "$ts/writable";
   import type { UserInfo } from "$types/user";
 
-  const { process, userInfo }: { process: SettingsRuntime; userInfo: UserInfo } = $props();
+  const { process, userInfo }: { process: ISettingsRuntime; userInfo: UserInfo } = $props();
   const { userPreferences } = process;
 
   const editing = Store<boolean>(false);

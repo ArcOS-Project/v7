@@ -1,3 +1,4 @@
+import type { IBugHuntRuntime } from "$interfaces/runtimes/IBugHuntRuntime";
 import type { IBugHuntUserSpaceProcess } from "$interfaces/services/IBugHuntUserSpaceProcess";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Fs } from "$ts/env";
@@ -11,7 +12,7 @@ import { BugReportsCreatorApp } from "../bughuntcreator/BugHuntCreator";
 import { BugHuntAltMenu } from "./context";
 import { BugHuntUserDataApp } from "./userdata/metadata";
 
-export class BugHuntRuntime extends AppProcess {
+export class BugHuntRuntime extends AppProcess implements IBugHuntRuntime {
   loading = Store<boolean>(true);
   currentTab = Store<string>();
   store = Store<BugReport[]>([]);

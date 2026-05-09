@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
+  import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import type { PartialStoreItem } from "$types/package";
   import PackageGrid from "../AppStore/PackageGrid.svelte";
 

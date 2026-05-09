@@ -1,10 +1,10 @@
 <script lang="ts">
   import { Sleep } from "$ts/sleep";
   import { onMount, type Component } from "svelte";
-  import type { SettingsRuntime } from "../runtime";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import { SlideStore } from "../store/slides";
 
-  const { process }: { process: SettingsRuntime } = $props();
+  const { process }: { process: ISettingsRuntime } = $props();
   const { slideVisible, currentSlide } = process;
 
   let Slide: Component | undefined = $state();

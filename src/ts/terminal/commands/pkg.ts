@@ -8,7 +8,7 @@ import { ElevationLevel } from "$types/elevation";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
 import { TerminalProcess } from "../process";
-import { BRBLUE, BRGREEN, BRPURPLE, CLRROW, CURUP, RESET } from "../store";
+import { BRBLUE, BRGREEN, BRPURPLE, CLRROW, CURUP, RESET } from "../colors";
 
 const typeCaptions: Record<string, string> = {
   mkdir: "Creating folder",

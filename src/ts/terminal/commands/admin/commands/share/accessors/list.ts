@@ -1,6 +1,6 @@
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-import type { AdminCommandType } from "$ts/terminal/commands/admin";
-import { BRBLACK, RESET } from "$ts/terminal/store";
+import type { AdminCommandType } from "$types/terminal";
+import { BRBLACK, RESET } from "$ts/terminal/colors";
 
 export const AdminShareAccessorsList: AdminCommandType = async (term, admin, [shareId]) => {
   if (!admin.canAccess(AdminScopes.adminShareAccessorsGet)) return 2;

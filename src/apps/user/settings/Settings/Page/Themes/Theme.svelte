@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { SettingsRuntime } from "$apps/user/settings/runtime";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import type { IUserDaemon } from "$interfaces/IUserDaemon";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { MessageBox } from "$ts/util/dialog";
@@ -11,7 +11,7 @@
     theme: UserTheme;
     userDaemon: IUserDaemon;
     isUser?: boolean;
-    process: SettingsRuntime;
+    process: ISettingsRuntime;
   }
 
   const { id, theme, userDaemon, isUser = false, process }: Props = $props();

@@ -4,7 +4,7 @@ import { isPopulatable } from "$ts/util/apps";
 import type { App, InstalledApp } from "$types/app";
 import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";
-import { BRBLUE, BRYELLOW, RESET } from "../store";
+import { BRBLUE, BRYELLOW, RESET } from "../colors";
 
 export class AppListCommand extends TerminalProcess {
   public static keyword = "applist";

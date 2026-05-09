@@ -2,7 +2,18 @@ import fs from "fs";
 import { glob } from "glob";
 import { sep } from "path";
 
-const WHITELIST = ["$types/", "$interfaces/", "./", "svelte", "../interfaces", "../types", "xterm", "fuse.js", "axios"];
+const WHITELIST = [
+  "$types/",
+  "$interfaces/",
+  "./",
+  "svelte",
+  "../interfaces",
+  "../types",
+  "xterm",
+  "fuse.js",
+  "axios",
+  "music-metadata",
+];
 const ITEM_WHITELIST = ["PermissionString", "PermissionError", "Readline"];
 const FILE_WHITELIST = ["src/types/thirdparty.ts"].map((f) => f.replaceAll("/", sep));
 

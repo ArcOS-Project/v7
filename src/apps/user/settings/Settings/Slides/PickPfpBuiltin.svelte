@@ -3,9 +3,9 @@
   import { Daemon } from "$ts/env";
   import { ProfilePictures } from "$ts/images/pfp";
   import { onMount } from "svelte";
-  import type { SettingsRuntime } from "../../runtime";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
 
-  const { process }: { process: SettingsRuntime } = $props();
+  const { process }: { process: ISettingsRuntime } = $props();
   const { userPreferences, slideVisible } = process;
 
   onMount(() => {

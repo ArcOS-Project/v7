@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
+  import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
   import { GetConnector } from "$ts/env";
   import type { ExpandedMessageNode } from "$types/messaging";
-  import type { MessagingAppRuntime } from "../../runtime";
   import Header from "./MessageContent/Header.svelte";
   import MessageThread from "./MessageThread.svelte";
 
@@ -10,7 +10,7 @@
     message,
     process,
     originalMessageId,
-  }: { message: ExpandedMessageNode; process: MessagingAppRuntime; originalMessageId: string } = $props();
+  }: { message: ExpandedMessageNode; process: IMessagingAppRuntime; originalMessageId: string } = $props();
 
   if (message.author) {
     message.author.profilePicture = GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);

@@ -1,5 +1,5 @@
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-import type { AdminCommandType } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$types/terminal";
 
 export const AdminIndexingDelete: AdminCommandType = async (term, admin, [username]) => {
   if (!admin.canAccess(AdminScopes.adminIndexDeleteUser)) return 2;

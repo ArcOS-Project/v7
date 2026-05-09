@@ -1,6 +1,6 @@
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { TerminalProcess } from "../process";
-import { BRBLACK, BRBLUE, RESET } from "../store";
+import { BRBLACK, BRBLUE, RESET } from "../colors";
 
 export class ConfigCommand extends TerminalProcess {
   public static keyword = "config";

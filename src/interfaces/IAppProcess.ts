@@ -7,7 +7,6 @@ import type { ReadableStore } from "$types/writable";
 import type { Draggable } from "@neodrag/vanilla";
 import type { IProcess } from "./IProcess";
 import type { IApplicationStorage } from "./services/IApplicationStorage";
-import type { IShellRuntime } from "./runtimes/IShellRuntime";
 
 export interface IAppProcess extends IProcess {
   crashReason: string;
@@ -17,7 +16,6 @@ export interface IAppProcess extends IProcess {
   componentMount: Record<string, any>;
   userPreferences: ReadableStore<UserPreferences>;
   username: string;
-  shell: IShellRuntime | undefined;
   overridePopulatable: boolean;
   toastMessage: ReadableStore<ToastMessage | undefined>;
   safeMode: boolean;

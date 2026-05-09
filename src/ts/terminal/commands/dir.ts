@@ -6,7 +6,7 @@ import { formatBytes, join } from "$ts/util/fs";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
 import { TerminalProcess } from "../process";
-import { BRBLACK, BRBLUE, BRGREEN, RESET } from "../store";
+import { BRBLACK, BRBLUE, BRGREEN, RESET } from "../colors";
 
 export class DirCommand extends TerminalProcess {
   public static keyword = "dir";

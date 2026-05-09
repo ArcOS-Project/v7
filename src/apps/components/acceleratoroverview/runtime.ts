@@ -1,3 +1,4 @@
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/env";
 import { Store } from "$ts/writable";

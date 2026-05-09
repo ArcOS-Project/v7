@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { MessagingAppRuntime } from "$apps/user/messages/runtime";
+  import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
   import type { ExpandedMessage } from "$types/messaging";
   import Message from "./Message.svelte";
 
-  const { process, messages }: { process: MessagingAppRuntime; messages: ExpandedMessage[] } = $props();
+  const { process, messages }: { process: IMessagingAppRuntime; messages: ExpandedMessage[] } = $props();
   let expanded = $state<boolean>(false);
   const first = messages.shift();
 </script>

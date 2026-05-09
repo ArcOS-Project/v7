@@ -1,8 +1,8 @@
 <script lang="ts">
+  import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
   import { onMount } from "svelte";
-  import type { MediaPlayerRuntime } from "../runtime";
 
-  const { process }: { process: MediaPlayerRuntime } = $props();
+  const { process }: { process: IMediaPlayerRuntime } = $props();
 
   const { State, Loaded, queue, seeking } = process;
 

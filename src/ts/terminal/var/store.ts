@@ -27,7 +27,7 @@ import {
   RESET,
   WHITE,
   YELLOW,
-} from "../store";
+} from "../colors";
 
 export function getArcTermStore(term: IArcTerminal): VariableStore {
   return {

@@ -1,7 +1,6 @@
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
 import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
 import { Kernel } from "$ts/env";
-import { DefaultColors } from "$ts/terminal/store";
 import { logItemToStr } from "$ts/util";
 import type { SystemDispatchResult } from "$types/dispatch";
 import { type LogItem } from "$types/logging";
@@ -10,6 +9,7 @@ import { Unicode11Addon } from "@xterm/addon-unicode11";
 import { Terminal } from "@xterm/xterm";
 import { KernelModule } from "../../module";
 import { SystemOnlyDispatches } from "./store";
+import { DefaultColors } from "$ts/terminal/colors";
 
 export class SystemDispatch extends KernelModule implements ISystemDispatch {
   public subscribers: Record<string, Record<number, (data: any) => void>> = {};

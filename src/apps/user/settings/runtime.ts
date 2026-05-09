@@ -1,4 +1,5 @@
 import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
+import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, Stack } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
@@ -22,7 +23,7 @@ import { UserFontApp } from "./overlays/userFont";
 import { settingsPageStore } from "./store";
 import { SlideStore } from "./store/slides";
 
-export class SettingsRuntime extends AppProcess {
+export class SettingsRuntime extends AppProcess implements ISettingsRuntime {
   currentPage = Store<string>("");
   currentSlide = Store<string>("");
   slideVisible = Store<boolean>(false);

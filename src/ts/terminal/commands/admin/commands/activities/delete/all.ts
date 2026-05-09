@@ -1,5 +1,5 @@
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-import type { AdminCommandType } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$types/terminal";
 
 export const AdminActivitiesDeleteAll: AdminCommandType = async (term, admin) => {
   if (!admin.canAccess(AdminScopes.adminActivitiesDelete)) return 2;

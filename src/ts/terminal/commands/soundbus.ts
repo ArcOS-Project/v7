@@ -3,7 +3,7 @@ import { SoundBus } from "$ts/env";
 import { maxLength } from "$ts/util";
 import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";
-import { BRBLUE, BRRED, RESET } from "../store";
+import { BRBLUE, BRRED, RESET } from "../colors";
 
 export class SoundbusCommand extends TerminalProcess {
   static keyword = "soundbus";

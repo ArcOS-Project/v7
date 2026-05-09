@@ -3,7 +3,7 @@ import type { IDevelopmentEnvironment } from "$interfaces/services/IDevelopmentE
 import { DevEnvActivationResultCaptions } from "$types/devenv";
 import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";
-import { BRGREEN, RESET } from "../store";
+import { BRGREEN, RESET } from "../colors";
 
 export class DevenvCommand extends TerminalProcess {
   static keyword: string = "devenv";

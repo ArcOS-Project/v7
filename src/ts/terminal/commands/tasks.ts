@@ -4,7 +4,7 @@ import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
 import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";
-import { BRBLACK, BRBLUE, BRYELLOW, RESET } from "../store";
+import { BRBLACK, BRBLUE, BRYELLOW, RESET } from "../colors";
 
 export class TasksCommand extends TerminalProcess {
   public static keyword = "tasks";

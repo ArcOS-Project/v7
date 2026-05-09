@@ -1,4 +1,5 @@
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { IWriterRuntime } from "$interfaces/runtimes/IWriterRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Fs } from "$ts/env";
 import { Sleep } from "$ts/sleep";
@@ -13,7 +14,7 @@ import { WriterAccelerators } from "./accelerators";
 import { WriterAltMenu } from "./altmenu";
 import { ReplaceOverlay } from "./replace/metadata";
 
-export class WriterRuntime extends AppProcess {
+export class WriterRuntime extends AppProcess implements IWriterRuntime {
   buffer = Store<string>("");
   openedFile = Store<string>("");
   filename = Store<string>("");

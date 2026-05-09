@@ -1,5 +1,5 @@
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-import type { AdminCommandType } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$types/terminal";
 import { formatBytes } from "$ts/util/fs";
 
 export const AdminUserQuotaGet: AdminCommandType = async (term, admin, argv) => {

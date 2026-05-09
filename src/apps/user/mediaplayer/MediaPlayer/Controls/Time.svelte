@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { MediaPlayerRuntime } from "../../runtime";
+  import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
 
-  const { process }: { process: MediaPlayerRuntime } = $props();
+  const { process }: { process: IMediaPlayerRuntime } = $props();
   const { State, Loaded } = process;
 
   let current = $state<string>("--:--");

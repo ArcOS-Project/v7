@@ -9,7 +9,7 @@ import type { ServerInfo, ServerOption } from "$types/server";
 import axios from "axios";
 import { KernelModule } from "../../module";
 import { Backend } from "./axios";
-import { ServerConnector } from "./connectors";
+import { StoreConnector } from "./connectors/StoreConnector";
 import { TotpConnector } from "./connectors/TotpConnector";
 import { TpaConnector } from "./connectors/TpaConnector";
 import { UserConnector } from "./connectors/UserConnector";
@@ -30,7 +30,7 @@ export class ServerManager extends KernelModule implements IServerManager {
   public previewBranch?: string;
   public servers: ServerOption[] = [];
 
-  private readonly STORE = [UserConnector, TotpConnector, TpaConnector, ServerConnector];
+  private readonly STORE = [UserConnector, TotpConnector, TpaConnector, StoreConnector];
   private _store: Record<"" | string, IServerConnector[]> = {};
 
   public GetConn<T extends IServerConnector>(id: string, token: "" | string = ""): T {

@@ -21,19 +21,10 @@ import type { DirectoryReadReturn } from "$types/fs";
 import type { ArcTermConfiguration, Arguments } from "$types/terminal";
 import ansiEscapes from "ansi-escapes";
 import { Terminal } from "xterm";
+import { BOLD, BRBLACK, BRBLUE, BRGREEN, BRRED, BRYELLOW, DefaultColors, RESET } from "./colors";
+import { DefaultArcTermConfiguration } from "./config";
 import { Readline } from "./readline/readline";
-import {
-  BOLD,
-  BRBLACK,
-  BRBLUE,
-  BRGREEN,
-  BRRED,
-  BRYELLOW,
-  DefaultArcTermConfiguration,
-  DefaultColors,
-  RESET,
-  TerminalCommandStore,
-} from "./store";
+import { TerminalCommandStore } from "./store";
 import { ArcTermVariables } from "./var";
 
 export class ArcTerminal extends Process implements IArcTerminal {

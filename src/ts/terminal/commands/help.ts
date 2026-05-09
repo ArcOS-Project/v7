@@ -1,8 +1,9 @@
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { maxLength } from "$ts/util";
 import type { Arguments } from "$types/terminal";
+import { BRPURPLE, BRYELLOW, RESET } from "../colors";
 import { TerminalProcess } from "../process";
-import { BRPURPLE, BRYELLOW, RESET, TerminalCommandStore } from "../store";
+import { TerminalCommandStore } from "../store";
 
 export class HelpCommand extends TerminalProcess {
   public static description: string = "Shows a list of built-in ArcTerm commands";

@@ -1,6 +1,8 @@
+import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
+import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { ConfigurationBuilder } from "$ts/config";
-import { Daemon, Fs, Stack } from "$ts/env";
+import { Daemon, Env, Fs, Stack } from "$ts/env";
 import { CommandResult } from "$ts/result";
 import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";
@@ -19,7 +21,7 @@ import { MediaPlayerAltMenu } from "./altmenu";
 import TrayPopup from "./MediaPlayer/TrayPopup.svelte";
 import { LoopMode, type AudioFileMetadata, type MetadataConfiguration, type PlayerState } from "./types";
 
-export class MediaPlayerRuntime extends AppProcess {
+export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntime {
   private readonly METADATA_PATH = join(UserPaths.Configuration, "MediaPlayer", "Metadata.json");
   private readonly COVERIMAGES_PATH = join(UserPaths.Configuration, "MediaPlayer", "CoverImages");
   public queue = Store<string[]>([]);
@@ -148,7 +150,7 @@ export class MediaPlayerRuntime extends AppProcess {
       else this.readFile([file]);
     }
 
-    this.shell?.trayHost?.createTrayIcon?.(this.pid, this.app.id, {
+    Stack.getProcess<IShellRuntime>(+Env.get("shell_pid"))?.trayHost?.createTrayIcon?.(this.pid, this.app.id, {
       icon: "MediaPlayerIcon",
       popup: {
         width: 250,

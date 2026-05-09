@@ -1,9 +1,9 @@
 <script lang="ts">
   import { Fs } from "$ts/env";
   import { onMount } from "svelte";
-  import type { MediaPlayerRuntime } from "../runtime";
+  import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
 
-  const { process }: { process: MediaPlayerRuntime } = $props();
+  const { process }: { process: IMediaPlayerRuntime } = $props();
   const { CurrentMediaMetadata, LoadingMetadata, CurrentCoverUrl } = process;
 
   onMount(() => {

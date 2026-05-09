@@ -1,10 +1,10 @@
 <script lang="ts">
+  import type { IWriterRuntime } from "$interfaces/runtimes/IWriterRuntime";
   import StatusBar from "$lib/Window/StatusBar.svelte";
   import StatusSegment from "$lib/Window/StatusBar/StatusSegment.svelte";
   import { formatBytes } from "$ts/util/fs";
-  import type { WriterRuntime } from "./runtime";
 
-  const { process }: { process: WriterRuntime } = $props();
+  const { process }: { process: IWriterRuntime } = $props();
   const { buffer, filename, original, input, mimetype, directoryName, mimeIcon, userPreferences, windowFullscreen, drive } =
     process;
 </script>

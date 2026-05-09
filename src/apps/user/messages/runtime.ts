@@ -18,8 +18,9 @@ import Fuse from "fuse.js";
 import { MessagesContextMenu } from "./context";
 import { messagingPages } from "./store";
 import type { MessagingPage } from "./types";
+import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
 
-export class MessagingAppRuntime extends AppProcess {
+export class MessagingAppRuntime extends AppProcess implements IMessagingAppRuntime {
   service: IMessagingInterface;
   page = Store<MessagingPage | undefined>();
   pageId = Store<string | undefined>();

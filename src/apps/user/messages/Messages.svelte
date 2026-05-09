@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
   import Container from "./Messages/Container.svelte";
   import Sidebar from "./Messages/Sidebar.svelte";
-  import type { MessagingAppRuntime } from "./runtime";
 
-  const { process }: { process: MessagingAppRuntime } = $props();
+  const { process }: { process: IMessagingAppRuntime } = $props();
   const { messageWindow } = process;
 </script>
 

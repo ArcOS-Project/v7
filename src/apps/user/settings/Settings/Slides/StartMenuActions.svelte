@@ -1,10 +1,10 @@
 <script lang="ts">
   import { StartMenuActions } from "$apps/components/shell/store";
-  import type { SettingsRuntime } from "../../runtime";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
 
-  const { process }: { process: SettingsRuntime } = $props();
+  const { process }: { process: ISettingsRuntime } = $props();
   const { userPreferences } = process;
 
   function toggle(id: string, e: MouseEvent) {

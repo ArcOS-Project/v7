@@ -4,7 +4,7 @@ import { Sleep } from "$ts/sleep";
 import { logItemToStr } from "$ts/util";
 import { type LogItem } from "$types/logging";
 import { TerminalProcess } from "../process";
-import { BRBLUE, RESET } from "../store";
+import { BRBLUE, RESET } from "../colors";
 
 export class ShutdownCommand extends TerminalProcess {
   public static keyword = "shutdown";

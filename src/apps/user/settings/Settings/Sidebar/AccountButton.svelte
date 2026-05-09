@@ -2,9 +2,9 @@
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { Daemon } from "$ts/env";
   import { DefaultUserInfo } from "$ts/user/default";
-  import type { SettingsRuntime } from "../../runtime";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
 
-  const { process }: { process: SettingsRuntime } = $props();
+  const { process }: { process: ISettingsRuntime } = $props();
   const { userPreferences, currentPage } = process;
   const userInfo = Daemon?.userInfo || DefaultUserInfo;
 </script>

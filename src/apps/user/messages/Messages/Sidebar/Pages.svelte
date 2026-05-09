@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { MessagingAppRuntime } from "../../runtime";
+  import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
   import { messagingPages } from "../../store";
 
-  const { process }: { process: MessagingAppRuntime } = $props();
+  const { process }: { process: IMessagingAppRuntime } = $props();
   const { pageId } = process;
 </script>
 

@@ -1,7 +1,7 @@
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";
-import { BRBLUE, RESET } from "../store";
+import { BRBLUE, RESET } from "../colors";
 
 export class Base64Command extends TerminalProcess {
   static keyword = "base64";

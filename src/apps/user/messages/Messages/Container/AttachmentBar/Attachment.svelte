@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { MessagingAppRuntime } from "$apps/user/messages/runtime";
+  import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
   import { Daemon } from "$ts/env";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { formatBytes } from "$ts/util/fs";
   import type { MessageAttachment } from "$types/messaging";
 
-  const { process, attachment }: { process: MessagingAppRuntime; attachment: MessageAttachment } = $props();
+  const { process, attachment }: { process: IMessagingAppRuntime; attachment: MessageAttachment } = $props();
   const { message } = process;
 </script>
 
