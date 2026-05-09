@@ -54,7 +54,6 @@ export interface IAppProcess extends IProcess {
     ...args: any[]
   ): Promise<T | undefined>;
   elevate(id: string): Promise<unknown>;
-  notImplemented(what?: string): void;
   appStore(): IApplicationStorage;
   getIcon(id: string): Promise<string>;
   getIconCached(id: string): string;

@@ -2,8 +2,8 @@ import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { ArcOSVersion } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { TerminalProcess } from "../process";
 import { BRBLUE, RESET } from "../colors";
+import { TerminalProcess } from "../process";
 
 export class VerCommand extends TerminalProcess {
   public static keyword: string = "ver";

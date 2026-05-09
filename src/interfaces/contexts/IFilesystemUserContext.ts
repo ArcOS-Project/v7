@@ -1,9 +1,9 @@
 import type { FileProgressMutator, FsProgressOperation } from "$apps/components/fsprogress/types";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
-import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { ILegacyServerDrive } from "$interfaces/drives/ILegacyServerDrive";
 import type { IMemoryFilesystemDrive } from "$interfaces/drives/IMemoryFilesystemDrive";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { FileHandler, FileOpenerResult } from "$types/fs";
 import type { LegacyConnectionInfo } from "$types/legacy";
 import type { ArcShortcut } from "$types/shortcut";

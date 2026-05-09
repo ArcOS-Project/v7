@@ -3,8 +3,8 @@ import { State, SysDispatch } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { logItemToStr } from "$ts/util";
 import { type LogItem } from "$types/logging";
-import { TerminalProcess } from "../process";
 import { BRBLUE, RESET } from "../colors";
+import { TerminalProcess } from "../process";
 
 export class ShutdownCommand extends TerminalProcess {
   public static keyword = "shutdown";

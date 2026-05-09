@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { Daemon } from "$ts/env";
   import { ProfilePictures } from "$ts/images/pfp";
   import { onMount } from "svelte";
-  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
 
   const { process }: { process: ISettingsRuntime } = $props();
   const { userPreferences, slideVisible } = process;

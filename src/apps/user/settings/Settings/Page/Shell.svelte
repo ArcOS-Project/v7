@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Daemon } from "$ts/env";
   import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+  import { Daemon } from "$ts/env";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
 

@@ -1,9 +1,9 @@
 <script lang="ts">
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
   import { onMount } from "svelte";
   import type { AppInfoRuntime } from "../runtime";
-  import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
 
   const { appId, process }: { appId: string; process: AppInfoRuntime } = $props();
   const { userPreferences } = process;

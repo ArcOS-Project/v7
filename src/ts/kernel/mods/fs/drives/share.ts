@@ -1,6 +1,5 @@
 import type { ISharedDrive } from "$interfaces/drives/ISharedDrive";
-import { Daemon } from "$ts/env";
-import { Server } from "$ts/env";
+import { Daemon, Server } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { authcode } from "$ts/util";
 import { arrayBufferToBlob } from "$ts/util/convert";

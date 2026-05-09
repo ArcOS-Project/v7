@@ -6,8 +6,7 @@
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { AppProcess } from "$ts/apps/process";
-  import { Daemon } from "$ts/env";
-  import { Env, Stack } from "$ts/env";
+  import { Daemon, Env, Stack } from "$ts/env";
   import { Sleep } from "$ts/sleep";
   import { formatBytes } from "$ts/util/fs";
   import type { ProcessInfoRuntime } from "./runtime";

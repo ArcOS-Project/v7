@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Plural } from "$ts/util";
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+  import { Plural } from "$ts/util";
   import type { QuotedDrive } from "../../types";
 
   const {

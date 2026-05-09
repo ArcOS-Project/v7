@@ -6,8 +6,8 @@ import { getAllJsonPaths, getJsonHierarchy } from "$ts/util/hierarchy";
 import { tryJsonParse } from "$ts/util/json";
 import { ElevationLevel } from "$types/elevation";
 import type { AdminCommandType, Arguments } from "$types/terminal";
-import { TerminalProcess } from "../process";
 import { BOLD, BRBLACK, BRRED, BRYELLOW, RESET, UNDERLINE } from "../colors";
+import { TerminalProcess } from "../process";
 import { AdminHelp } from "./admin/commands/help";
 import { AdminCommandStore, RESULT_CAPTIONS } from "./admin/store";
 

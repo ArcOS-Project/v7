@@ -1,8 +1,8 @@
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-import type { AdminCommandType } from "$types/terminal";
-import { maxLength } from "$ts/util";
-import dayjs from "dayjs";
 import { BRBLACK, BRBLUE, BRPURPLE, RESET } from "$ts/terminal/colors";
+import { maxLength } from "$ts/util";
+import type { AdminCommandType } from "$types/terminal";
+import dayjs from "dayjs";
 
 export const AdminActivitiesListAll: AdminCommandType = async (term, admin) => {
   if (!admin.canAccess(AdminScopes.adminActivitiesList, AdminScopes.adminUsersList)) return 2;

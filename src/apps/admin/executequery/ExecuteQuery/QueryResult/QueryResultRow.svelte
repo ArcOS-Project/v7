@@ -1,7 +1,7 @@
 <script lang="ts">
+  import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { tryJsonStringify } from "$ts/util/json";
-  import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
   import { QueryUserColumns } from "../../store";
 
   const { item, process, columns }: { item: any; process: IExecuteQueryRuntime; columns: string[] } = $props();

@@ -17,7 +17,7 @@ export class TotpSetupGuiRuntime extends AppProcess {
   }
 
   async render() {
-    const result = await Daemon.GetConnector<ITotpConnector>("totp").Setup();
+    const result = await Daemon.GetConnector<ITotpConnector>("TotpConnector").Setup();
     if (!result.success) {
       this.closeWindow();
       return;
@@ -50,7 +50,7 @@ export class TotpSetupGuiRuntime extends AppProcess {
 
     if (string.length !== 6) return false;
 
-    const result = await Daemon.GetConnector<ITotpConnector>("totp").Activate(string);
+    const result = await Daemon.GetConnector<ITotpConnector>("TotpConnector").Activate(string);
     if (!result.success) return false;
 
     await this.closeWindow();

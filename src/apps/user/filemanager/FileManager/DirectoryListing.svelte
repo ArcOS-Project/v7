@@ -5,7 +5,7 @@
   import FolderItem from "./DirectoryListing/FolderItem.svelte";
   import HeaderRow from "./DirectoryListing/HeaderRow.svelte";
   import InfoPane from "./InfoPane.svelte";
-  
+
   const { process }: { process: IFileManagerRuntime } = $props();
   const { loading, contents, userPreferences, directoryListing, loadSave } = process;
 </script>

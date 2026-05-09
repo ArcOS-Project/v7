@@ -2,6 +2,7 @@ import { FirstRunApp } from "$apps/components/firstrun/FirstRun";
 import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/TotpAuthGui";
 import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
+import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IServerManager } from "$interfaces/modules/IServerManager";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
@@ -270,8 +271,8 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.serviceHost?.spinDown(broadcast);
 
     broadcast("Stopping processes");
-    for (const [_, proc] of [...Stack.store()]) {
-      if (proc && !proc._disposed && proc instanceof AppProcess && proc.pid !== this.pid) {
+    for (const proc of Stack.renderer?.currentState.map((pid) => Stack.getProcess(pid) as IAppProcess) ?? []) {
+      if (!proc._disposed && proc.pid !== this.pid) {
         await proc.killSelf();
       }
     }

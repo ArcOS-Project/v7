@@ -17,7 +17,7 @@ export const MODES: Record<string, string> = {
   esr,
   nightly,
   betabranch,
-  devbranch
+  devbranch,
 };
 
 export const ALIASED_MODES: Record<string, string> = {

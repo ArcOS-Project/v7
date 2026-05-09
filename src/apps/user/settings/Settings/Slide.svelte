@@ -1,7 +1,7 @@
 <script lang="ts">
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import { Sleep } from "$ts/sleep";
   import { onMount, type Component } from "svelte";
-  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import { SlideStore } from "../store/slides";
 
   const { process }: { process: ISettingsRuntime } = $props();

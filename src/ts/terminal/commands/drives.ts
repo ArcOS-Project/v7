@@ -3,8 +3,8 @@ import { Fs } from "$ts/env";
 import { DriveCapabilityShorts } from "$ts/kernel/mods/fs/store";
 import type { DriveCapabilities } from "$types/fs";
 import type { Arguments } from "$types/terminal";
-import { TerminalProcess } from "../process";
 import { BRBLACK, BRBLUE, BRCYAN, BRGREEN, BRPURPLE, BRWHITE, BRYELLOW, RESET } from "../colors";
+import { TerminalProcess } from "../process";
 
 export class DrivesCommand extends TerminalProcess {
   public static keyword = "drives";

@@ -4,12 +4,9 @@ import type { IProcess } from "$interfaces/IProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
-import { ArcOSVersion, Daemon, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";
+import { Daemon, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
-import { ArcBuild } from "$ts/metadata/build";
-import { ArcMode } from "$ts/metadata/mode";
 import { DefaultUserPreferences } from "$ts/user/default";
-import { MessageBox } from "$ts/util/dialog";
 import type { AppKeyCombinations } from "$types/accelerator";
 import type { MaybePromise } from "$types/common";
 import { type ElevationData } from "$types/elevation";
@@ -392,24 +389,6 @@ export class AppProcess extends Process implements IAppProcess {
   async elevate(id: string) {
     if (!this.elevations[id]) return false;
     return await Daemon!.elevation!.manuallyElevate(this.elevations[id]);
-  }
-
-  notImplemented(what?: string) {
-    this.Log(`Not implemented: ${what || "<unknown>"}`);
-    MessageBox(
-      {
-        title: "Not implemented",
-        message: `${
-          what || "This feature"
-        } isn't implemented yet ¯\\_(ツ)_/¯<br><br>Encountering this in a (recent) <b>release</b> build of ArcOS? Then I forgot to make something. Please let me know. Do that with this information:<br><code class='block'>ArcOS v${ArcOSVersion}-${ArcMode()} (${ArcBuild()}) - ${
-          location.hostname
-        }</code>`,
-        buttons: [{ caption: "Sad :(", action: () => {}, suggested: true }],
-        image: "BugReportIcon",
-        sound: "arcos.dialog.warning",
-      },
-      this.pid
-    );
   }
 
   appStore() {

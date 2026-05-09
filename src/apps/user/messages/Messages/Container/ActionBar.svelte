@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import IconActionGroup from "$lib/Window/ActionBar/ActionGroup.svelte";
@@ -6,7 +7,6 @@
   import Separator from "$lib/Window/ActionBar/ActionSeparator.svelte";
   import { Daemon } from "$ts/env";
   import { UserPaths } from "$ts/user/store";
-  import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
 
   const { process }: { process: IMessagingAppRuntime } = $props();
   const { message, messageWindow, messageFromFile } = process;

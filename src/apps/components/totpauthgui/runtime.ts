@@ -46,7 +46,7 @@ export class TotpAuthGuiRuntime extends AppProcess {
 
     if (!this.validate(code) || code.length !== 6) return false;
 
-    const result = await Daemon.GetConnector<ITotpConnector>("totp").Unlock(code);
+    const result = await Daemon.GetConnector<ITotpConnector>("TotpConnector").Unlock(code);
     if (!result.success) return false;
 
     await this.closeWindow();

@@ -6,6 +6,7 @@ import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import type { ServerOption } from "$types/server";
 import Cookies from "js-cookie";
+
 export class SwitchServerRuntime extends AppProcess {
   servers = Store<ServerOption[]>([]);
   selected = Store<string>();

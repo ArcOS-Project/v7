@@ -1,6 +1,6 @@
 <script lang="ts">
-  import HtmlSpinner from "$lib/HtmlSpinner.svelte";
   import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
+  import HtmlSpinner from "$lib/HtmlSpinner.svelte";
 
   const { process }: { process: IMediaPlayerRuntime } = $props();
   const { windowTitle, windowIcon, CurrentMediaMetadata, LoadingMetadata } = process;

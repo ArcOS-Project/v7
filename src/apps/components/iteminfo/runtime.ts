@@ -1,6 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/env";
-import { Env, Fs } from "$ts/env";
+import { Daemon, Env, Fs } from "$ts/env";
 import { arrayBufferToText } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";

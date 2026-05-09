@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import { Daemon } from "$ts/env";
   import { isPopulatable } from "$ts/util/apps";
   import { Store } from "$ts/writable";
   import type { AppStorage } from "$types/app";
   import Fuse from "fuse.js";
   import { onMount } from "svelte";
-  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
 
   const { process }: { process: ISettingsRuntime } = $props();
   const { userPreferences } = process;

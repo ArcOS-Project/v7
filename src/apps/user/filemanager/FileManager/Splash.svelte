@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Spinner from "$lib/Spinner.svelte";
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+  import Spinner from "$lib/Spinner.svelte";
 
   const { process }: { process: IFileManagerRuntime } = $props();
 </script>

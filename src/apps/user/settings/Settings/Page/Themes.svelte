@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import { Daemon } from "$ts/env";
   import { BuiltinThemes, VisualStyles } from "$ts/user/store";
   import type { Wallpaper } from "$types/wallpaper";
   import { onMount } from "svelte";
-  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import ThemesHeader from "../ThemesHeader.svelte";
   import Setting from "../ThemesHeader/Setting.svelte";
   import AccentColor from "./Themes/AccentColor.svelte";

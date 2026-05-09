@@ -3,8 +3,8 @@
   import type { UserPreferencesStore } from "$types/user";
   import type { BooleanStore } from "$types/writable";
   import Bottom from "./StartMenu/Bottom.svelte";
-  import RightPane from "./StartMenu/RightPane.svelte";
   import LeftPane from "./StartMenu/LeftPane.svelte";
+  import RightPane from "./StartMenu/RightPane.svelte";
 
   const {
     process,

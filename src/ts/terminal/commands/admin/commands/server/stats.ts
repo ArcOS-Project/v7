@@ -1,6 +1,6 @@
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-import type { AdminCommandType } from "$types/terminal";
 import { BOLD, BRGREEN, BRPURPLE, BRYELLOW, RESET } from "$ts/terminal/colors";
+import type { AdminCommandType } from "$types/terminal";
 
 export const AdminServerStats: AdminCommandType = async (term, admin) => {
   if (!admin.canAccess(AdminScopes.adminStats)) return 2;

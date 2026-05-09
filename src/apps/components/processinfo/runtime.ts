@@ -1,8 +1,7 @@
 import type { Constructs } from "$interfaces/common";
 import type { IProcess } from "$interfaces/IProcess";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/env";
-import { Stack } from "$ts/env";
+import { Daemon, Stack } from "$ts/env";
 import { ProcessKillResultCaptions } from "$ts/kernel/mods/stack/process/store";
 import { MessageBox } from "$ts/util/dialog";
 import type { AppProcessData } from "$types/app";
@@ -31,7 +30,7 @@ export class ProcessInfoRuntime extends AppProcess {
 
   async kill(proc: IProcess) {
     this.Log(`kill: ${proc.pid}`);
-    
+
     const elevated = await Daemon!.elevation!.manuallyElevate({
       what: `ArcOS needs your permission to kill a process`,
       image:

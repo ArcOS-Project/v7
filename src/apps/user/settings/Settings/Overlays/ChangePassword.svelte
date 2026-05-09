@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { Daemon } from "$ts/env";
   import { MessageBox } from "$ts/util/dialog";
-  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
 
   const { process }: { process: ISettingsRuntime } = $props();
 

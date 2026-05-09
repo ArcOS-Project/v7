@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { onMount, type Component } from "svelte";
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+  import { onMount, type Component } from "svelte";
 
   const { process }: { process: IFileManagerRuntime } = $props();
   const { virtual, path } = process;

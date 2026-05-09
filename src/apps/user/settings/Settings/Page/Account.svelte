@@ -1,7 +1,7 @@
 <script lang="ts">
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { Daemon } from "$ts/env";
-  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
   import Header from "./Account/Header.svelte";

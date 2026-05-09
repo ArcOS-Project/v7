@@ -1,8 +1,8 @@
 <script lang="ts">
+  import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
   import { Daemon } from "$ts/env";
   import { getItemNameFromPath } from "$ts/util/fs";
   import { onMount } from "svelte";
-  import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
 
   const { process, i, path }: { process: IMediaPlayerRuntime; i: number; path: string } = $props();
   const { queueIndex, queue, State, Loaded, MetadataConfiguration } = process;

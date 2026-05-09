@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
   import { Sleep } from "$ts/sleep";
   import { onMount, type Component } from "svelte";
@@ -6,7 +7,6 @@
   import Slide from "./Settings/Slide.svelte";
   import { settingsPageStore } from "./store";
   import type { SettingsPage } from "./types";
-  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
 
   const { process }: { process: ISettingsRuntime } = $props();
   const { currentPage, slideVisible, userPreferences } = process;

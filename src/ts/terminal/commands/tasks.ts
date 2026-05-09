@@ -39,9 +39,7 @@ export class TasksCommand extends TerminalProcess {
       const subProcesses = Stack.getSubProcesses(proc.pid);
       const prefix = indent + (isLast ? "└── " : "├── ");
 
-      term.rl?.println(
-        `${prefix}${proc.name} ${BRBLACK}(${proc.pid})${RESET}`
-      );
+      term.rl?.println(`${prefix}${proc.name} ${BRBLACK}(${proc.pid})${RESET}`);
 
       if (subProcesses) {
         const subList = [...subProcesses.values()];

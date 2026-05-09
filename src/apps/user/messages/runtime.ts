@@ -1,4 +1,5 @@
 import type { FileProgressMutator } from "$apps/components/fsprogress/types";
+import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
 import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Fs } from "$ts/env";
@@ -18,7 +19,6 @@ import Fuse from "fuse.js";
 import { MessagesContextMenu } from "./context";
 import { messagingPages } from "./store";
 import type { MessagingPage } from "./types";
-import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
 
 export class MessagingAppRuntime extends AppProcess implements IMessagingAppRuntime {
   service: IMessagingInterface;

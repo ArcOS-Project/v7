@@ -1,6 +1,6 @@
 import type { Constructs } from "$interfaces/common";
-import type { IInstallerProcessBase } from "$interfaces/IInstallerProcessBase";
 import type { ICommandResult } from "$interfaces/ICommandResult";
+import type { IInstallerProcessBase } from "$interfaces/IInstallerProcessBase";
 import type { IBaseService } from "$interfaces/IServiceHost";
 import type { FilesystemProgressCallback } from "$types/fs";
 import type { UpdateWriteOpResult } from "$types/mongo";

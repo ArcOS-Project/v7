@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import type { IUserDaemon } from "$interfaces/IUserDaemon";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { MessageBox } from "$ts/util/dialog";
   import type { UserTheme } from "$types/theme";

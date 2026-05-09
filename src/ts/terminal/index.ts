@@ -22,11 +22,11 @@ import type { ArcTermConfiguration, Arguments } from "$types/terminal";
 import ansiEscapes from "ansi-escapes";
 import { Terminal } from "xterm";
 import { BOLD, BRBLACK, BRBLUE, BRGREEN, BRRED, BRYELLOW, DefaultColors, RESET } from "./colors";
+import { HelpCommand } from "./commands/help";
 import { DefaultArcTermConfiguration } from "./config";
 import { Readline } from "./readline/readline";
 import { TerminalCommandStore } from "./store";
 import { ArcTermVariables } from "./var";
-import { HelpCommand } from "./commands/help";
 
 export class ArcTerminal extends Process implements IArcTerminal {
   readonly CONFIG_PATH = join(UserPaths.Configuration, "ArcTerm/arcterm.conf");

@@ -2,8 +2,8 @@ import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import type { IDevelopmentEnvironment } from "$interfaces/services/IDevelopmentEnvironment";
 import { DevEnvActivationResultCaptions } from "$types/devenv";
 import type { Arguments } from "$types/terminal";
-import { TerminalProcess } from "../process";
 import { BRGREEN, RESET } from "../colors";
+import { TerminalProcess } from "../process";
 
 export class DevenvCommand extends TerminalProcess {
   static keyword: string = "devenv";

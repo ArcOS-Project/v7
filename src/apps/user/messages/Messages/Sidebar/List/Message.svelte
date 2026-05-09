@@ -9,7 +9,8 @@
   import updateLocale from "dayjs/plugin/updateLocale";
   import { onMount, type Snippet } from "svelte";
 
-  const { process, message, children }: { process: IMessagingAppRuntime; message: ExpandedMessage; children?: Snippet } = $props();
+  const { process, message, children }: { process: IMessagingAppRuntime; message: ExpandedMessage; children?: Snippet } =
+    $props();
   const { message: openedMessage } = process;
   let date = $state<string>();
 
