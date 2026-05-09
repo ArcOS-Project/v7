@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { IServiceInfoRuntime } from "$interfaces/runtimes/IServiceInfoRuntime";
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
@@ -6,10 +7,9 @@
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { Daemon } from "$ts/env";
   import dayjs from "dayjs";
-  import type { ServiceInfoRuntime } from "./runtime";
   import Header from "./ServiceInfo/Header.svelte";
 
-  const { process }: { process: ServiceInfoRuntime } = $props();
+  const { process }: { process: IServiceInfoRuntime } = $props();
   const { service, serviceProcess } = process;
 </script>
 

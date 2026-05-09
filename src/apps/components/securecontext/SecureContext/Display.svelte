@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { ElevationData } from "$types/elevation";
-  import type { SecureContextRuntime } from "../runtime";
+  import type { ISecureContextRuntime } from "$interfaces/runtimes/ISecureContextRuntime";
 
-  const { data, process }: { data: ElevationData; process: SecureContextRuntime } = $props();
+  const { data, process }: { data: ElevationData; process: ISecureContextRuntime } = $props();
 </script>
 
 <div class="display">

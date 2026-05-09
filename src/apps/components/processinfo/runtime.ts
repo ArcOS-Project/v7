@@ -1,5 +1,6 @@
 import type { Constructs } from "$interfaces/common";
 import type { IProcess } from "$interfaces/IProcess";
+import type { IProcessInfoRuntime } from "$interfaces/runtimes/IProcessInfoRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Stack } from "$ts/env";
 import { ProcessKillResultCaptions } from "$ts/kernel/mods/stack/process/store";
@@ -8,7 +9,7 @@ import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
 import type { ProcessKillResult } from "$types/process";
 
-export class ProcessInfoRuntime extends AppProcess {
+export class ProcessInfoRuntime extends AppProcess implements IProcessInfoRuntime {
   parent?: IProcess;
   proc?: IProcess;
   // The class constructor of the targeted process

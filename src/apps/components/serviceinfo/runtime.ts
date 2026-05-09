@@ -1,4 +1,5 @@
 import type { IBaseService } from "$interfaces/IServiceHost";
+import type { IServiceInfoRuntime } from "$interfaces/runtimes/IServiceInfoRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Stack } from "$ts/env";
 import { MessageBox } from "$ts/util/dialog";
@@ -7,7 +8,7 @@ import type { AppProcessData } from "$types/app";
 import type { Service } from "$types/service";
 import type { Unsubscriber } from "svelte/store";
 
-export class ServiceInfoRuntime extends AppProcess {
+export class ServiceInfoRuntime extends AppProcess implements IServiceInfoRuntime {
   serviceId: string;
   service = Store<Service | undefined>();
   serviceProcess = Store<IBaseService | undefined>();

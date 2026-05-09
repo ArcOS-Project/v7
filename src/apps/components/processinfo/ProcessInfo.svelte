@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IAppProcess } from "$interfaces/IAppProcess";
+  import type { IProcessInfoRuntime } from "$interfaces/runtimes/IProcessInfoRuntime";
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
@@ -9,9 +10,8 @@
   import { Daemon, Env, Stack } from "$ts/env";
   import { Sleep } from "$ts/sleep";
   import { formatBytes } from "$ts/util/fs";
-  import type { ProcessInfoRuntime } from "./runtime";
 
-  const { process }: { process: ProcessInfoRuntime } = $props();
+  const { process }: { process: IProcessInfoRuntime } = $props();
   const { proc, parent, procConstructor: inherit } = process;
 
   const icon = proc instanceof AppProcess ? Daemon?.icons?.getAppIcon(proc.app.data)! : process.getIconCached("ComponentIcon");

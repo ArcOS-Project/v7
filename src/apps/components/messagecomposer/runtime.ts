@@ -1,3 +1,4 @@
+import type { IMessageComposerRuntime } from "$interfaces/runtimes/IMessageComposerRuntime";
 import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Fs } from "$ts/env";
@@ -12,7 +13,7 @@ import type { MessageCreateData } from "$types/messaging";
 import mime from "mime";
 import type { Attachment } from "./types";
 
-export class MessageComposerRuntime extends AppProcess {
+export class MessageComposerRuntime extends AppProcess implements IMessageComposerRuntime {
   sending = Store<boolean>(false);
   recipients = Store<string[]>([]);
   attachments = Store<Attachment[]>([]);

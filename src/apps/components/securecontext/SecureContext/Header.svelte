@@ -1,9 +1,9 @@
 <script lang="ts">
   import { ElevationLevel, type ElevationData } from "$types/elevation";
-  import type { SecureContextRuntime } from "../runtime";
+  import type { ISecureContextRuntime } from "$interfaces/runtimes/ISecureContextRuntime";
   import { ElevationLevelIcons } from "../store";
 
-  const { data, process }: { data: ElevationData; process: SecureContextRuntime } = $props();
+  const { data, process }: { data: ElevationData; process: ISecureContextRuntime } = $props();
 </script>
 
 <div class="header level-{ElevationLevel[data.level]}">

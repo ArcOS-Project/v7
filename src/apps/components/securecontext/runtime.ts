@@ -1,3 +1,4 @@
+import type { ISecureContextRuntime } from "$interfaces/runtimes/ISecureContextRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, SoundBus, SysDispatch } from "$ts/env";
 import { LoginUser } from "$ts/user/auth";
@@ -6,7 +7,7 @@ import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { ElevationData } from "$types/elevation";
 
-export class SecureContextRuntime extends AppProcess {
+export class SecureContextRuntime extends AppProcess implements ISecureContextRuntime {
   private id: string;
   private key: string;
   public data: ElevationData;

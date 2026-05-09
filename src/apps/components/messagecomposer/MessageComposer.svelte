@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { IMessageComposerRuntime } from "$interfaces/runtimes/IMessageComposerRuntime";
   import ActionBar from "./MessageComposer/ActionBar.svelte";
   import AttachmentBar from "./MessageComposer/AttachmentBar.svelte";
   import SubjectField from "./MessageComposer/SubjectField.svelte";
   import ToField from "./MessageComposer/ToField.svelte";
-  import type { MessageComposerRuntime } from "./runtime";
 
-  const { process }: { process: MessageComposerRuntime } = $props();
+  const { process }: { process: IMessageComposerRuntime } = $props();
   const { body, sending } = process;
 </script>
 

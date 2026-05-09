@@ -1,3 +1,4 @@
+import type { IShareConnGuiRuntime } from "$interfaces/runtimes/IShareConnGuiRuntime";
 import type { IShareManager } from "$interfaces/services/IShareManager";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, Stack } from "$ts/env";
@@ -6,7 +7,7 @@ import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
-export class ShareConnGuiRuntime extends AppProcess {
+export class ShareConnGuiRuntime extends AppProcess implements IShareConnGuiRuntime {
   shareUsername = Store<string>();
   shareName = Store<string>();
   sharePassword = Store<string>();

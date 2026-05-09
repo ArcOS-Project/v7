@@ -1,4 +1,5 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IOopsNotifierRuntime } from "$interfaces/runtimes/IOopsNotifierRuntime";
 import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, SoundBus } from "$ts/env";
@@ -6,7 +7,7 @@ import { ErrorUtils } from "$ts/util/error";
 import type { App, AppProcessData } from "$types/app";
 import type { ParsedStackFrame } from "$types/error";
 
-export class OopsNotifierRuntime extends AppProcess {
+export class OopsNotifierRuntime extends AppProcess implements IOopsNotifierRuntime {
   data: App;
   exception: Error | PromiseRejectionEvent;
   process?: IAppProcess;

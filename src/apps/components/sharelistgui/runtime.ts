@@ -1,4 +1,5 @@
 import type { ISharedDrive } from "$interfaces/drives/ISharedDrive";
+import type { IShareListGuiRuntime } from "$interfaces/runtimes/IShareListGuiRuntime";
 import type { IShareManager } from "$interfaces/services/IShareManager";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, Fs, Stack } from "$ts/env";
@@ -7,7 +8,7 @@ import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { SharedDriveType } from "$types/shares";
 
-export class ShareListGuiRuntime extends AppProcess {
+export class ShareListGuiRuntime extends AppProcess implements IShareListGuiRuntime {
   ownedShares = Store<SharedDriveType[]>([]);
   joinedShares = Store<SharedDriveType[]>([]);
   selectedShare = Store<string>();

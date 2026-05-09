@@ -1,12 +1,12 @@
 <script lang="ts">
+  import type { IOpenWithRuntime } from "$interfaces/runtimes/IOpenWithRuntime";
   import type { FileOpenerResult } from "$types/fs";
-  import type { OpenWithRuntime } from "../../runtime";
 
   const {
     process,
     handler,
   }: {
-    process: OpenWithRuntime;
+    process: IOpenWithRuntime;
     handler: FileOpenerResult;
   } = $props();
   const { selectedId } = process;

@@ -1,3 +1,4 @@
+import type { IMultiUpdateGuiRuntime } from "$interfaces/runtimes/IMultiUpdateGuiRuntime";
 import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, SysDispatch } from "$ts/env";
@@ -8,7 +9,7 @@ import { ElevationLevel } from "$types/elevation";
 import type { InstallStatus, StoreItem, UpdateInfo } from "$types/package";
 import type { MultiUpdateStatus, MultiUpdateStatusNode } from "./types";
 
-export class MultiUpdateGuiRuntime extends AppProcess {
+export class MultiUpdateGuiRuntime extends AppProcess implements IMultiUpdateGuiRuntime {
   private updates: UpdateInfo[];
   private distrib: IDistributionServiceProcess;
   private win: HTMLDivElement | undefined;

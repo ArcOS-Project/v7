@@ -1,8 +1,8 @@
 <script lang="ts">
+  import type { IOopsStackTracerRuntime } from "$interfaces/runtimes/IOopsStackTracerRuntime";
   import { Daemon } from "$ts/env";
-  import type { OopsStackTracerRuntime } from "./runtime";
 
-  const { process }: { process: OopsStackTracerRuntime } = $props();
+  const { process }: { process: IOopsStackTracerRuntime } = $props();
   const { data, proc, trace, stackFrames } = process;
   let original = $state<boolean>(false);
 </script>

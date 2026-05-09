@@ -1,9 +1,9 @@
 <script lang="ts">
   import { Daemon } from "$ts/env";
   import { formatBytes } from "$ts/util/fs";
-  import type { MessageComposerRuntime } from "../runtime";
+  import type { IMessageComposerRuntime } from "$interfaces/runtimes/IMessageComposerRuntime";
 
-  const { process }: { process: MessageComposerRuntime } = $props();
+  const { process }: { process: IMessageComposerRuntime } = $props();
   const { attachments, sending } = process;
 </script>
 
