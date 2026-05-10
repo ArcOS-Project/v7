@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { ISettingsOverlayRuntime } from "$interfaces/runtimes/ISettingsOverlayRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { Daemon } from "$ts/env";
   import { onMount } from "svelte";
-  import type { OverlayRuntime } from "../../overlay";
 
-  const { process }: { process: OverlayRuntime } = $props();
+  const { process }: { process: ISettingsOverlayRuntime } = $props();
   const { userPreferences } = process;
 
   let pfp = $state("");

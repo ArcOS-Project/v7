@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { IconEditorRuntime } from "../runtime";
+  import type { IIconEditorRuntime } from "$interfaces/runtimes/IIconEditorRuntime";
   import IconDetails from "./IconGrid/IconDetails.svelte";
 
-  const { process }: { process: IconEditorRuntime } = $props();
+  const { process }: { process: IIconEditorRuntime } = $props();
   const { selectedIcon, filtered } = process;
 </script>
 

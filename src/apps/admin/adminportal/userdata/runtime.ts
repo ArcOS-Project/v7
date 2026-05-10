@@ -1,11 +1,12 @@
-import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IBugHuntUserDataRuntime } from "$interfaces/runtimes/IBugHuntUserDataRuntime";
 import { AppProcess } from "$ts/apps/process";
 import type { AppProcessData } from "$types/app";
 import type { UserInfo } from "$types/user";
 import hljs, { type HLJSApi } from "highlight.js";
 import json from "highlight.js/lib/languages/json";
 
-export class BugHuntUserDataRuntime extends AppProcess implements IAppProcess {
+// TODO: generalize the two dodgy UserData viewers into one good quality application
+export class BugHuntUserDataRuntime extends AppProcess implements IBugHuntUserDataRuntime {
   data: UserInfo;
   hljs: HLJSApi;
   html: string;

@@ -1,10 +1,11 @@
 import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
+import type { ITotpSetupGuiRuntime } from "$interfaces/runtimes/ITotpSetupGuiRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
-export class TotpSetupGuiRuntime extends AppProcess {
+export class TotpSetupGuiRuntime extends AppProcess implements ITotpSetupGuiRuntime {
   public code = Store<string>("");
   public url = Store<string>("");
 

@@ -39,6 +39,6 @@ export function checkRuntimeInterfaces() {
     );
     process.exit(1);
   } else {
-    console.log("\n✅ All app process implement interfaces.\n");
+    console.log("\n✅ All app processes implement interfaces.\n");
   }
 }

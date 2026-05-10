@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
   import HighlightComponent from "$lib/HighlightComponent.svelte";
-  import type { SqeletonRuntime } from "../../runtime";
   import type { SqeletonHistoryItem } from "../../types";
 
-  const { query, process, i }: { query: SqeletonHistoryItem; process: SqeletonRuntime; i: number } = $props();
+  const { query, process, i }: { query: SqeletonHistoryItem; process: ISqeletonRuntime; i: number } = $props();
   const { queryHistory } = process;
   let expand = $state(false);
 </script>

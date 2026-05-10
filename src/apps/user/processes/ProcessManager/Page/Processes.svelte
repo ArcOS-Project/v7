@@ -8,11 +8,11 @@
   import { AppProcess } from "$ts/apps/process";
   import { Stack } from "$ts/env";
   import { Plural } from "$ts/util";
-  import type { ProcessManagerRuntime } from "../../runtime";
+  import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
   import Header from "./Processes/Header.svelte";
   import Tree from "./Processes/Tree.svelte";
 
-  const { process }: { process: ProcessManagerRuntime } = $props();
+  const { process }: { process: IProcessManagerRuntime } = $props();
   const { running, selected } = process;
 
   let proc = $state<IProcess>();

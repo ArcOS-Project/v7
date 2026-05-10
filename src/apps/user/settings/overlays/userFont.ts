@@ -1,5 +1,5 @@
 import type { App } from "$types/app";
-import { OverlayRuntime } from "../overlay";
+import { SettingsOverlayRuntime } from "../overlay";
 import UserFont from "../Settings/Overlays/UserFont.svelte";
 
 export const UserFontApp: App = {
@@ -26,7 +26,7 @@ export const UserFontApp: App = {
     close: false,
   },
   assets: {
-    runtime: OverlayRuntime,
+    runtime: SettingsOverlayRuntime,
     component: UserFont as any,
   },
   overlay: true,

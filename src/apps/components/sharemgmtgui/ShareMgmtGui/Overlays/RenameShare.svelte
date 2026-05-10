@@ -2,9 +2,9 @@
   import type { IShareManager } from "$interfaces/services/IShareManager";
   import { Daemon } from "$ts/env";
   import { MessageBox } from "$ts/util/dialog";
-  import type { OverlayRuntime } from "../../overlay";
+  import type { IShareMgmtOverlayRuntime } from "$interfaces/runtimes/IShareMgmtGuiRuntime";
 
-  const { process }: { process: OverlayRuntime } = $props();
+  const { process }: { process: IShareMgmtOverlayRuntime } = $props();
   let newName = $state<string>();
 
   async function changeIt() {

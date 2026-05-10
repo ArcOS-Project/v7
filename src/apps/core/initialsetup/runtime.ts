@@ -1,5 +1,6 @@
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IServerManager } from "$interfaces/modules/IServerManager";
+import type { IInitialSetupRuntime } from "$interfaces/runtimes/IIntialSetupRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { UserDaemon } from "$ts/daemon";
 import { Env, getKMod, Server, Stack, State } from "$ts/env";
@@ -21,7 +22,7 @@ import License from "./InitialSetup/Page/License.svelte";
 import Welcome from "./InitialSetup/Page/Welcome.svelte";
 import type { PageButtons } from "./types";
 
-export class InitialSetupRuntime extends AppProcess {
+export class InitialSetupRuntime extends AppProcess implements IInitialSetupRuntime {
   //#region VARIABLES
 
   public pageNumber = Store<number>();

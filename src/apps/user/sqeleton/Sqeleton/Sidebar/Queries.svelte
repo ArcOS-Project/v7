@@ -1,9 +1,9 @@
 <script lang="ts">
   import HighlightComponent from "$lib/HighlightComponent.svelte";
   import { UUID } from "$ts/util/uuid";
-  import type { SqeletonRuntime } from "../../runtime";
+  import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
 
-  const { process }: { process: SqeletonRuntime } = $props();
+  const { process }: { process: ISqeletonRuntime } = $props();
   const { queries, queryIndex } = process;
 </script>
 

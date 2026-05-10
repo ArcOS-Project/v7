@@ -1,10 +1,10 @@
 <script lang="ts">
+  import type { IShareMgmtOverlayRuntime } from "$interfaces/runtimes/IShareMgmtGuiRuntime";
   import type { IShareManager } from "$interfaces/services/IShareManager";
   import { Daemon } from "$ts/env";
   import { MessageBox } from "$ts/util/dialog";
-  import type { OverlayRuntime } from "../../overlay";
 
-  const { process }: { process: OverlayRuntime } = $props();
+  const { process }: { process: IShareMgmtOverlayRuntime } = $props();
 
   let newPassword = $state("");
   let confirmNewPassword = $state("");

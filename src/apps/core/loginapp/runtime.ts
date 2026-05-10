@@ -1,12 +1,12 @@
 import { FirstRunApp } from "$apps/components/firstrun/FirstRun";
 import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/TotpAuthGui";
-import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IServerManager } from "$interfaces/modules/IServerManager";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
+import type { ILoginAppRuntime } from "$interfaces/runtimes/ILoginAppRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { UserDaemon } from "$ts/daemon";
 import { Env, GetConnector, getKMod, SoundBus, Stack, State, SysDispatch } from "$ts/env";
@@ -26,7 +26,7 @@ import dayjs from "dayjs";
 import Cookies from "js-cookie";
 import type { LoginAppProps, PersistenceInfo } from "./types";
 
-export class LoginAppRuntime extends AppProcess {
+export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
   public DEFAULT_WALLPAPER = Store<string>("");
   public loadingStatus = Store<string>("");
   public errorMessage = Store<string>("");
@@ -457,7 +457,7 @@ export class LoginAppRuntime extends AppProcess {
       });
 
       await Stack.spawn(
-        TotpAuthGuiRuntime,
+        TotpAuthGuiApp.assets.runtime,
         undefined,
         userId,
         this.pid,

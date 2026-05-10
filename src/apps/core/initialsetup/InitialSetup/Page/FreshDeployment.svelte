@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { InitialSetupRuntime } from "../../runtime";
+  import type { IInitialSetupRuntime } from "$interfaces/runtimes/IIntialSetupRuntime";
 
-  const { process }: { process: InitialSetupRuntime } = $props();
+  const { process }: { process: IInitialSetupRuntime } = $props();
 </script>
 
 <div class="fresh-deployment">

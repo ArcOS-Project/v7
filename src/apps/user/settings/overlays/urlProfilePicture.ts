@@ -1,5 +1,5 @@
 import type { App } from "$types/app";
-import { OverlayRuntime } from "../overlay";
+import { SettingsOverlayRuntime } from "../overlay";
 import UrlProfilePictureSvelte from "../Settings/Overlays/UrlProfilePicture.svelte";
 
 export const UrlProfilePicture: App = {
@@ -26,7 +26,7 @@ export const UrlProfilePicture: App = {
     close: false,
   },
   assets: {
-    runtime: OverlayRuntime,
+    runtime: SettingsOverlayRuntime,
     component: UrlProfilePictureSvelte as any,
   },
   overlay: true,

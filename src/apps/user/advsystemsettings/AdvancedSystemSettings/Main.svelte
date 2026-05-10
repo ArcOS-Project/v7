@@ -4,9 +4,9 @@
   import { KernelModules } from "$ts/kernel/getters";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
-  import type { AdvSysSetRuntime } from "../runtime";
+  import type { IAdvSysSetRuntime } from "$interfaces/runtimes/IAdvSysSetRuntime";
 
-  const { process }: { process: AdvSysSetRuntime } = $props();
+  const { process }: { process: IAdvSysSetRuntime } = $props();
   const { userPreferences } = process;
   const userInfo = Daemon?.userInfo;
   const appStore = Daemon?.serviceHost?.getService<IApplicationStorage>("AppStorage")?.buffer();

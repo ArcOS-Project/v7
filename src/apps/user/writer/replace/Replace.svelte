@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { IWriterReplaceRuntime } from "$interfaces/runtimes/IWriterReplaceRuntime";
   import { Store } from "$ts/writable";
-  import type { ReplaceRuntime } from "./runtime";
 
   let search = Store<string>();
   let replace = Store<string>();
 
-  const { process }: { process: ReplaceRuntime } = $props();
+  const { process }: { process: IWriterReplaceRuntime } = $props();
 </script>
 
 <div class="top">

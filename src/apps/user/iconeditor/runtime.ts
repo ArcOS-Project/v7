@@ -1,3 +1,4 @@
+import type { IIconEditorRuntime } from "$interfaces/runtimes/IIconEditorRuntime";
 import type { IIconService } from "$interfaces/services/IIconService";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env } from "$ts/env";
@@ -5,7 +6,7 @@ import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
-export class IconEditorRuntime extends AppProcess {
+export class IconEditorRuntime extends AppProcess implements IIconEditorRuntime {
   iconGroups = Store<Record<string, string[]>>({});
   icons = Store<Record<string, string>>({});
   filtered = Store<Record<string, string>>({});

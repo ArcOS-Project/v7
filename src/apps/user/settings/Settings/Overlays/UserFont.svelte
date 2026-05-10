@@ -1,7 +1,8 @@
 <script lang="ts">
+  import type { ISettingsOverlayRuntime } from "$interfaces/runtimes/ISettingsOverlayRuntime";
   import { UserFonts } from "$ts/user/store";
-  import type { OverlayRuntime } from "../../overlay";
-  const { process }: { process: OverlayRuntime } = $props();
+
+  const { process }: { process: ISettingsOverlayRuntime } = $props();
   const { userPreferences } = process;
 </script>
 

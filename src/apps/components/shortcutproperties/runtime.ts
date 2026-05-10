@@ -1,3 +1,4 @@
+import type { IShortcutPropertiesRuntime } from "$interfaces/runtimes/IShortcutPropertiesRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env } from "$ts/env";
 import { getAllImages } from "$ts/images";
@@ -7,7 +8,7 @@ import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { ArcShortcut } from "$types/shortcut";
 
-export class ShortcutPropertiesRuntime extends AppProcess {
+export class ShortcutPropertiesRuntime extends AppProcess implements IShortcutPropertiesRuntime {
   shortcutData = Store<ArcShortcut>();
   iconStore = getAllImages();
   path?: string;

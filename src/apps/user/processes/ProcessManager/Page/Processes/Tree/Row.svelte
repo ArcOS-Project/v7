@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ProcessManagerRuntime } from "$apps/user/processes/runtime";
+  import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
   import type { IAppProcess } from "$interfaces/IAppProcess";
   import type { IProcess } from "$interfaces/IProcess";
   import { AppProcess } from "$ts/apps/process";
@@ -16,7 +16,7 @@
     proc,
     process,
     orphan = false,
-  }: { pid: number; proc: IProcess; process: ProcessManagerRuntime; orphan?: boolean } = $props();
+  }: { pid: number; proc: IProcess; process: IProcessManagerRuntime; orphan?: boolean } = $props();
 
   const { selected } = process;
   const { focusedPid } = Stack.renderer!;

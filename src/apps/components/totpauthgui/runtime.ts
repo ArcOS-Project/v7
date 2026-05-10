@@ -1,12 +1,12 @@
 import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
+import type { ITotpAuthGuiRuntime } from "$interfaces/runtimes/ITotpAuthGuiRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, SysDispatch } from "$ts/env";
 import { InfoIcon } from "$ts/images/dialog";
 import { MessageBox } from "$ts/util/dialog";
 import type { AppProcessData } from "$types/app";
-import type { RenderArgs } from "$types/process";
 
-export class TotpAuthGuiRuntime extends AppProcess {
+export class TotpAuthGuiRuntime extends AppProcess implements ITotpAuthGuiRuntime {
   private dispatchId: string;
 
   //#region LIFECYCLE
@@ -19,7 +19,7 @@ export class TotpAuthGuiRuntime extends AppProcess {
     this.setSource(__SOURCE__);
   }
 
-  render(args: RenderArgs) {
+  render() {
     if (!Daemon!.token || !this.dispatchId) {
       this.closeWindow();
       return false;

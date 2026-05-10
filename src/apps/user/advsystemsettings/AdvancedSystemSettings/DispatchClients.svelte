@@ -3,9 +3,6 @@
   import { Daemon } from "$ts/env";
   import type { GlobalDispatchClient } from "$types/dispatch";
   import { onMount } from "svelte";
-  import type { AdvSysSetRuntime } from "../runtime";
-
-  const { process }: { process: AdvSysSetRuntime } = $props();
 
   let clients = $state<GlobalDispatchClient[]>([]);
   let loading = $state<boolean>(false);

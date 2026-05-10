@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { IconEditorRuntime } from "../runtime";
+  import type { IIconEditorRuntime } from "$interfaces/runtimes/IIconEditorRuntime";
   import { IconGroupIcons } from "../store";
 
-  const { process }: { process: IconEditorRuntime } = $props();
+  const { process }: { process: IIconEditorRuntime } = $props();
   const { iconGroups, selectedGroup } = process;
 </script>
 

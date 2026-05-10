@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { SqeletonRuntime } from "../../runtime";
+  import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
   import type { SqeletonTab } from "../../types";
 
-  const { process, data, id }: { process: SqeletonRuntime; data: SqeletonTab; id: string } = $props();
+  const { process, data, id }: { process: ISqeletonRuntime; data: SqeletonTab; id: string } = $props();
   const { currentTab } = process;
   const count = data.count;
 </script>

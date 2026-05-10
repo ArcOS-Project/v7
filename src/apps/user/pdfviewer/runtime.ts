@@ -1,3 +1,4 @@
+import type { IPdfViewerRuntime } from "$interfaces/runtimes/IPdfViewerRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Fs } from "$ts/env";
 import { arrayBufferToBlob } from "$ts/util/convert";
@@ -6,7 +7,7 @@ import { getItemNameFromPath } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
-export class PdfViewerRuntime extends AppProcess {
+export class PdfViewerRuntime extends AppProcess implements IPdfViewerRuntime {
   openedFile = Store<string>();
   documentUrl = Store<string>();
 

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { QlorbRuntime } from "$apps/user/qlorb/runtime";
+  import type { IQlorbRuntime } from "$interfaces/runtimes/IQlorbRuntime";
 
-  const { process }: { process: QlorbRuntime } = $props();
+  const { process }: { process: IQlorbRuntime } = $props();
   const { userPreferences, Score, Clicks } = process;
 
   let topScore = $state("");

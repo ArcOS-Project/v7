@@ -1,10 +1,11 @@
+import type { IQlorbRuntime } from "$interfaces/runtimes/IQlorbRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { LogLevel } from "$types/logging";
 import type { Box } from "./types";
 
-export class QlorbRuntime extends AppProcess {
+export class QlorbRuntime extends AppProcess implements IQlorbRuntime {
   public readonly random = (m: number) => Math.floor(Math.random() * m);
   public readonly Boxes = Store<Box[]>([]);
   public readonly BoxesOffset = Store<number>(0);

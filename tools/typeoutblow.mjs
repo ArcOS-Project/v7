@@ -13,6 +13,8 @@ const WHITELIST = [
   "fuse.js",
   "axios",
   "music-metadata",
+  "highlight.js",
+  "sql.js",
 ];
 const ITEM_WHITELIST = ["PermissionString", "PermissionError", "Readline"];
 const FILE_WHITELIST = ["src/types/thirdparty.ts"].map((f) => f.replaceAll("/", sep));

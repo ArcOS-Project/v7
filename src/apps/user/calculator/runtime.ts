@@ -1,3 +1,4 @@
+import type { ICalculatorRuntime } from "$interfaces/runtimes/ICalculatorRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Store } from "$ts/writable";
 import type { AppKeyCombinations } from "$types/accelerator";
@@ -6,7 +7,7 @@ import type { RenderArgs } from "$types/process";
 import { CalculatorStore } from "./store";
 import type { CalculatorKey, CalculatorKeys, CalculatorOverrides } from "./types";
 
-export class CalculatorRuntime extends AppProcess {
+export class CalculatorRuntime extends AppProcess implements ICalculatorRuntime {
   public Value = Store<string>("");
   public Store = new CalculatorStore();
 

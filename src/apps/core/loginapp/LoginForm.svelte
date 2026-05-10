@@ -1,12 +1,12 @@
 <script lang="ts">
   import { Store } from "$ts/writable";
   import Field from "./LoginForm/Field.svelte";
-  import type { LoginAppRuntime } from "./runtime";
+  import type { ILoginAppRuntime } from "$interfaces/runtimes/ILoginAppRuntime";
 
   let username = Store("");
   let password = Store("");
 
-  const { process }: { process: LoginAppRuntime } = $props();
+  const { process }: { process: ILoginAppRuntime } = $props();
   const { serverInfo, persistence } = process;
 
   function go() {

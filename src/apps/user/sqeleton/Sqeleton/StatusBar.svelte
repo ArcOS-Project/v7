@@ -5,9 +5,9 @@
   import { formatBytes } from "$ts/util/fs";
   import { Store } from "$ts/writable";
   import { onMount } from "svelte";
-  import type { SqeletonRuntime } from "../runtime";
+  import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
 
-  const { process }: { process: SqeletonRuntime } = $props();
+  const { process }: { process: ISqeletonRuntime } = $props();
   const { openedFileName, queryIndex, queries, result, queryHistory, tables, errors, working } = process;
 
   let sqlCode = Store<string>("");

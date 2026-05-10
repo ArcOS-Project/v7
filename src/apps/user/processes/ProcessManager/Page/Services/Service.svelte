@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { ProcessManagerRuntime } from "$apps/user/processes/runtime";
+  import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
   import type { Service } from "$types/service";
 
-  const { process, service, id }: { process: ProcessManagerRuntime; service: Service; id: string } = $props();
+  const { process, service, id }: { process: IProcessManagerRuntime; service: Service; id: string } = $props();
   const { selected } = process;
 </script>
 

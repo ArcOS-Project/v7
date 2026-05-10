@@ -15,3 +15,7 @@ export interface IShareMgmtGuiRuntime extends IAppProcess {
   kickUser(id: string, username: string): Promise<void>;
   deleteShare(): Promise<void>;
 }
+
+export interface IShareMgmtOverlayRuntime extends IAppProcess {
+  parentProcess: IShareMgmtGuiRuntime;
+}

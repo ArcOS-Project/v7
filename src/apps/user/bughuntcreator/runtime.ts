@@ -1,3 +1,4 @@
+import type { IBugHuntCreatorRuntime } from "$interfaces/runtimes/IBugHuntCreatorRuntime";
 import type { IBugHuntUserSpaceProcess } from "$interfaces/services/IBugHuntUserSpaceProcess";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Stack } from "$ts/env";
@@ -8,7 +9,7 @@ import type { BugHuntProc } from "$types/bughunt";
 import DataPrivacy from "./Creator/DataPrivacy.svelte";
 import type { BugHuntCreatorOptions } from "./types";
 
-export class BugHuntCreatorRuntime extends AppProcess {
+export class BugHuntCreatorRuntime extends AppProcess implements IBugHuntCreatorRuntime {
   parent: BugHuntProc | undefined;
   title = Store<string>();
   body = Store<string>();

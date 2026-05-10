@@ -10,8 +10,9 @@ import Main from "./AdvancedSystemSettings/Main.svelte";
 import Migrations from "./AdvancedSystemSettings/Migrations.svelte";
 import Recycling from "./AdvancedSystemSettings/Recycling.svelte";
 import Startup from "./AdvancedSystemSettings/Startup.svelte";
+import type { IAdvSysSetRuntime } from "$interfaces/runtimes/IAdvSysSetRuntime";
 
-export class AdvSysSetRuntime extends AppProcess {
+export class AdvSysSetRuntime extends AppProcess implements IAdvSysSetRuntime {
   public currentTab = Store<string>("Main");
   public tabs: Record<string, Component> = {
     Main: Main as any,

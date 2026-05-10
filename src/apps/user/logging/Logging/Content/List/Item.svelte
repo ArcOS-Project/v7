@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { LoggingRuntime } from "$apps/user/logging/runtime";
+  import type { ILoggingRuntime } from "$interfaces/runtimes/ILoggingRuntime";
   import { LogItemIcons } from "$apps/user/logging/store";
   import { LogLevel, type LogItem } from "$types/logging";
   import dayjs from "dayjs";
   import { onMount } from "svelte";
 
-  const { item, process }: { item: LogItem; process: LoggingRuntime } = $props();
+  const { item, process }: { item: LogItem; process: ILoggingRuntime } = $props();
   let timestamp = $state("");
   let now = $state(0);
 

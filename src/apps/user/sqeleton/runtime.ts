@@ -1,3 +1,5 @@
+import type { ISqlInterfaceProcess } from "$interfaces/ISqlInterfaceProcess";
+import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Fs, SoundBus, Stack } from "$ts/env";
 import { CommandResult } from "$ts/result";
@@ -11,10 +13,10 @@ import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { SqeletonError, SqeletonHistoryItem, SqeletonTabs, SqlTable, SqlTableColumn } from "./types";
 
-export class SqeletonRuntime extends AppProcess {
+export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
   openedFile = Store<string>("");
   openedFileName = Store<string>("");
-  _intf = Store<SqlInterfaceProcess | undefined>();
+  _intf = Store<ISqlInterfaceProcess | undefined>();
   queries = Store<string[]>([""]);
   queryIndex = Store<number>(0);
   errors = Store<SqeletonError[]>([]);
@@ -27,7 +29,7 @@ export class SqeletonRuntime extends AppProcess {
   currentTab = Store<string>("result");
   syntaxError = Store<boolean>(false);
   tempDbPath = `T:/${UUID()}.db.tmp`;
-  tempDb?: SqlInterfaceProcess;
+  tempDb?: ISqlInterfaceProcess;
   tabs: SqeletonTabs = {
     result: {
       name: "Result",
@@ -42,11 +44,11 @@ export class SqeletonRuntime extends AppProcess {
     },
   };
 
-  get Interface(): SqlInterfaceProcess | undefined {
+  get Interface(): ISqlInterfaceProcess | undefined {
     return this._intf();
   }
 
-  set Interface(value: SqlInterfaceProcess | undefined) {
+  set Interface(value: ISqlInterfaceProcess | undefined) {
     if (this.Interface && value) {
       this.ExistingConnectionError();
       return;
@@ -127,7 +129,7 @@ export class SqeletonRuntime extends AppProcess {
 
     if (!path) return;
 
-    const db = await Stack.spawn<SqlInterfaceProcess>(SqlInterfaceProcess, undefined, Daemon?.userInfo?._id, this.pid, path);
+    const db = await Stack.spawn<ISqlInterfaceProcess>(SqlInterfaceProcess, undefined, Daemon?.userInfo?._id, this.pid, path);
     await db?.writeFile();
     await db?.killSelf();
 

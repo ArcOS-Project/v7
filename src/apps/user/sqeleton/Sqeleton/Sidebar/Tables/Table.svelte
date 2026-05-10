@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { SqeletonRuntime } from "$apps/user/sqeleton/runtime";
+  import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
   import type { SqlTable } from "$apps/user/sqeleton/types";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import TableColumn from "./TableColumn.svelte";
 
-  const { process, table }: { process: SqeletonRuntime; table: SqlTable } = $props();
+  const { process, table }: { process: ISqeletonRuntime; table: SqlTable } = $props();
 </script>
 
 <button
