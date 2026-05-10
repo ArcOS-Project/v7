@@ -1,4 +1,5 @@
 import type { FileProgressMutator } from "$apps/components/fsprogress/types";
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
 import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import { AppProcess } from "$ts/apps/process";
@@ -130,7 +131,7 @@ export class MessagingAppRuntime extends AppProcess implements IMessagingAppRunt
       this.windowTitle.set(`${message.title} from ${message.author?.displayName || message.author?.username || "unknown user"}`);
   }
 
-  async userInfo(userId: string): Promise<CommandResult<PublicUserInfo>> {
+  async userInfo(userId: string): Promise<ICommandResult<PublicUserInfo>> {
     this.Log(`userInfo: ${userId}`);
 
     if (this.userInfoCache[userId]) return CommandResult.Ok(this.userInfoCache[userId]);

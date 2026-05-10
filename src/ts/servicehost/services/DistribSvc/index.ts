@@ -1,3 +1,4 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IInstallerProcessBase, IInstallerProcessBaseConstructor } from "$interfaces/IInstallerProcessBase";
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IStoreConnector } from "$interfaces/modules/server/IStoreConnector";
@@ -559,7 +560,7 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
     itemId: string,
     updatePath: string,
     onProgress?: FilesystemProgressCallback
-  ): Promise<CommandResult<UpdateWriteOpResult>> {
+  ): Promise<ICommandResult<UpdateWriteOpResult>> {
     this.Log(`publishing_updateStoreItemFromPath: ${itemId} -> ${updatePath}`);
 
     if (this.checkBusy("publishing_updateStoreItemFromPath")) return CommandResult.Error("Distribution Service is busy");

@@ -1,4 +1,5 @@
 import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
 import type { IDevelopmentEnvironment } from "$interfaces/services/IDevelopmentEnvironment";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { Daemon, Env, Fs, Stack } from "$ts/env";
@@ -210,7 +211,7 @@ export class DevelopmentEnvironment extends BaseService implements IDevelopmentE
   }
 
   async refreshCSS(filename: string) {
-    const processes = this.pids.map((pid) => Stack.getProcess<ThirdPartyAppProcess>(pid)).filter((proc) => !!proc);
+    const processes = this.pids.map((pid) => Stack.getProcess<IThirdPartyAppProcess>(pid)).filter((proc) => !!proc);
 
     for (const proc of processes) {
       if (proc.elements[filename] && proc.elements[filename] instanceof HTMLLinkElement) {

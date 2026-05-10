@@ -1,3 +1,4 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { ISqlInterfaceProcess } from "$interfaces/ISqlInterfaceProcess";
 import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
 import { AppProcess } from "$ts/apps/process";
@@ -239,7 +240,7 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
     });
   }
 
-  async tableToSql(table: SqlTable, pretty = true, dropFirst = false): Promise<CommandResult<string>> {
+  async tableToSql(table: SqlTable, pretty = true, dropFirst = false): Promise<ICommandResult<string>> {
     const items = (await this.execute(`SELECT * FROM ${table.name} WHERE 1;`, true, true))?.[0];
 
     if (!items) return CommandResult.Error("Didn't find any items");

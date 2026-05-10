@@ -1,5 +1,6 @@
 import type { Constructs } from "$interfaces/common";
 import type { ISpawnUserContext } from "$interfaces/contexts/ISpawnUserContext";
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
@@ -116,7 +117,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
     return await this.spawnAppMeta(app, parentPid, options, ...args);
   }
 
-  async tpaEntrypoint(appId: string, ...args: any[]): Promise<CommandResult<TpaSpawnEntrypointResult>> {
+  async tpaEntrypoint(appId: string, ...args: any[]): Promise<ICommandResult<TpaSpawnEntrypointResult>> {
     this.Log(`Invoking TPA Entrypoint for ${appId}`);
     if (this.tpaEntrypointCache[appId]) return CommandResult.Ok({ runtime: this.tpaEntrypointCache[appId] });
 

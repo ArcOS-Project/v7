@@ -1,4 +1,5 @@
 import type { Constructs } from "$interfaces/common";
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
 import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
@@ -222,7 +223,7 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
   /**
    * @deprecated This method is ancient and should not be used. Use `ApplicationStorage.getAppSynchronous` instead.
    */
-  async getAppById(id: string, fromBuffer = false): Promise<CommandResult<App>> {
+  async getAppById(id: string, fromBuffer = false): Promise<ICommandResult<App>> {
     if (this._disposed) return CommandResult.Error("The process is disposed");
 
     const apps = fromBuffer ? this.buffer() : await this.get();

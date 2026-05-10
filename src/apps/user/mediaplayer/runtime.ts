@@ -1,3 +1,4 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
 import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import { AppProcess } from "$ts/apps/process";
@@ -627,7 +628,7 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
     return result;
   }
 
-  async parseMetadata(path: string, apply = true): Promise<CommandResult<AudioFileMetadata>> {
+  async parseMetadata(path: string, apply = true): Promise<ICommandResult<AudioFileMetadata>> {
     this.Log(`parseMetadata: ${path} apply=${apply}`);
 
     try {

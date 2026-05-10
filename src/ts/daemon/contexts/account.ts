@@ -1,4 +1,5 @@
 import type { IAccountUserContext } from "$interfaces/contexts/IAccountUserContext";
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import DeleteUser from "$lib/Daemon/DeleteUser.svelte";
@@ -30,7 +31,7 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
     }
   }
 
-  async getUserInfo(): Promise<CommandResult<UserInfo>> {
+  async getUserInfo(): Promise<ICommandResult<UserInfo>> {
     if (this._disposed) return CommandResult.Error("Disposed");
 
     if (this.initialized) {

@@ -1,3 +1,4 @@
+import type { Constructs } from "$interfaces/common";
 import type { IFilesystemDrive, IFilesystemProxy, IFilesystemProxyConstructor } from "$interfaces/IFilesystemDrive";
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
 import type { IFilesystem } from "$interfaces/modules/IFilesystem";
@@ -48,9 +49,9 @@ export class Filesystem extends KernelModule implements IFilesystem {
     return this.drives[id];
   }
 
-  async mountDrive<T = IFilesystemDrive>(
+  async mountDrive<T extends IFilesystemDrive = IFilesystemDrive>(
     id: string,
-    supplier: typeof FilesystemDrive,
+    supplier: Constructs<T>,
     letter?: string,
     onProgress?: FilesystemProgressCallback,
     ...args: any[]

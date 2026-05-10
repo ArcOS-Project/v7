@@ -1,5 +1,5 @@
+import type { Constructs } from "$interfaces/common";
 import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
-import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { Daemon, Fs, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { detectJavaScript } from "$ts/util";
@@ -36,7 +36,7 @@ export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
         throw e;
       }
     },
-    runApp: async (process: typeof ThirdPartyAppProcess, metadataPath: string, parentPid?: number, ...args: any[]) => {
+    runApp: async (process: Constructs<IThirdPartyAppProcess>, metadataPath: string, parentPid?: number, ...args: any[]) => {
       const app = engine.app;
 
       if (!app || !Daemon) throw new Error(`Illegal runApp operation on a non-app JsExec`);
@@ -48,7 +48,7 @@ export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
 
         if (typeof metadata === "string") throw new Error("Failed to parse metadata");
 
-        const proc = await Stack.spawn<ThirdPartyAppProcess>(
+        const proc = await Stack.spawn<IThirdPartyAppProcess>(
           process,
           renderTarget,
           Daemon.userInfo!._id,
@@ -70,7 +70,7 @@ export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
         throw e;
       }
     },
-    runAppDirect: async (process: typeof ThirdPartyAppProcess, metadataPath: string, parentPid?: number, ...args: any[]) => {
+    runAppDirect: async (process: Constructs<IThirdPartyAppProcess>, metadataPath: string, parentPid?: number, ...args: any[]) => {
       const app = engine.app;
 
       if (!app || !Daemon) throw new Error(`Illegal runApp operation on a non-app JsExec`);

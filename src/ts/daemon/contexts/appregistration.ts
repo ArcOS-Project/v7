@@ -1,8 +1,8 @@
 import type { IAppRegistrationUserContext } from "$interfaces/contexts/IAppRegistrationUserContext";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
 import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import { Daemon, Env, Fs, SysDispatch } from "$ts/env";
-import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
 import { AppGroups, DefaultAppData, UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
@@ -120,7 +120,7 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
   async pinApp(appId: string) {
     this.Log(`Pinning ${appId}`);
 
-    const appStore = this.serviceHost?.getService("AppStorage") as ApplicationStorage;
+    const appStore = this.serviceHost?.getService("AppStorage") as IApplicationStorage;
     const app = appStore?.getAppSynchronous(appId);
 
     if (!app) return;

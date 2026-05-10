@@ -18,7 +18,7 @@ export interface IFilesystem extends IKernelModule {
   getDriveById(id: string): IFilesystemDrive;
   mountDrive<T extends IFilesystemDrive = IFilesystemDrive>(
     id: string,
-    supplier: Constructs<IFilesystemDrive>,
+    supplier: Constructs<T>,
     letter?: string,
     onProgress?: FilesystemProgressCallback,
     ...args: any[]

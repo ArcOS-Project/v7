@@ -1,10 +1,10 @@
 import type { IChecksUserContext } from "$interfaces/contexts/IChecksUserContext";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
+import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import { Daemon, Env } from "$ts/env";
 import { NightlyLogo } from "$ts/images/branding";
 import { ArcBuild } from "$ts/metadata/build";
-import type { MessagingInterface } from "$ts/servicehost/services/MessagingService";
 import { Plural } from "$ts/util";
 import { MessageBox } from "$ts/util/dialog";
 import { StoreItemIcon } from "$ts/util/distrib";
@@ -101,7 +101,7 @@ export class ChecksUserContext extends UserContext implements IChecksUserContext
   }
 
   async checkForMissedMessages() {
-    const service = this.serviceHost!.getService<MessagingInterface>("MessagingService")!;
+    const service = this.serviceHost!.getService<IMessagingInterface>("MessagingService")!;
     const archived = Daemon!.preferences().appPreferences?.Messages?.archive || [];
     const messages =
       (await service?.getReceivedMessages())?.filter(
