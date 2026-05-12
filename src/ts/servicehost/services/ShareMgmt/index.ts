@@ -127,4 +127,5 @@ export const shareService: Service = {
   description: "Host process for shared drives",
   process: ShareManager,
   initialState: "started",
+  startCondition: (d) => !d.safeMode,
 };

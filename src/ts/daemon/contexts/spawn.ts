@@ -118,6 +118,11 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
   }
 
   async tpaEntrypoint(appId: string, ...args: any[]): Promise<ICommandResult<TpaSpawnEntrypointResult>> {
+    if (Daemon.safeMode) {
+      this.tpaError_safeMode();
+      return CommandResult.Ok({ returnValue: undefined });
+    }
+
     this.Log(`Invoking TPA Entrypoint for ${appId}`);
     if (this.tpaEntrypointCache[appId]) return CommandResult.Ok({ runtime: this.tpaEntrypointCache[appId] });
 
@@ -205,6 +210,21 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
       +Env.get("shell_pid"),
       true
     );
+  }
+
+  tpaError_safeMode() {
+    if (Daemon!.autoLoadComplete)
+      MessageBox(
+        {
+          title: "Safe Mode",
+          message:
+            "Third-party applications are disabled in Safe Mode in case one of them caused a problem that prevents you from logging in. You can run third-party apps by restarting and running ArcOS normally.",
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          image: "WarningIcon",
+        },
+        +Env.get("shell_pid"),
+        true
+      );
   }
 
   tpaError_noEnableThirdParty() {

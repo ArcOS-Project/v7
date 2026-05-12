@@ -4,6 +4,7 @@
   import dayjs from "dayjs";
   import { onMount } from "svelte";
   import Calendar from "./Calendar.svelte";
+  import { Daemon } from "$ts/env";
 
   const { process, userPreferences }: { process: IShellRuntime; userPreferences: UserPreferencesStore } = $props();
   const { calendarOpened } = process;
@@ -27,7 +28,8 @@
   <Calendar {process} />
   <button
     class="clock-button"
-    class:active={$calendarOpened}
+    class:active={$calendarOpened && !Daemon.safeMode}
+    disabled={Daemon.safeMode}
     data-contextmenu="taskbar-clock"
     onclick={() => ($calendarOpened = true)}
   >

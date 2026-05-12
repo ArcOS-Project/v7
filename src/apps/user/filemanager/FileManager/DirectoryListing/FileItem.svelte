@@ -39,7 +39,11 @@
 
     if (shortcut) shortcutIcon = await process.getIcon(shortcut.icon);
 
-    if (info?.friendlyName === "Image file" && process.userPreferences().appPreferences.fileManager?.renderThumbnails)
+    if (
+      info?.friendlyName === "Image file" &&
+      process.userPreferences().appPreferences.fileManager?.renderThumbnails &&
+      !Daemon.safeMode
+    )
       thumbnail = await Daemon?.files?.getThumbnailFor(thisPath);
   });
 
